@@ -1,54 +1,53 @@
-
-
-let props={
-    configuration={
-        serieStyle: {
-            unselected: {
-                // if the spectrum is not selected
-                line: {}, // SVG line properties for color, width, styl
-                marker: {} // SVG line properties for size, shape (???), color, border, etc.
-              },
-              selected: {
-                // if the spectrum is selected
-                line: {}, // SVG line properties
-                marker: {} // SVG line properties
-              }
-        },
-      xAxis: {
-        label: 'δ (ppm)',
-        min: 0, // by default if undefined min value
-        max: 10, // by default max value
-        flipped: true,
-        primaryGrid: true,
-        secondaryGrid: true,
-        primaryGridColor: '#AAAAAA',
-        secondaryGridColor: '#DDDDDD',
-        styles: {
-          line: {},
-          text: {}
-        }
+let props = {
+  configuration: {
+    serieStyle: {
+      unselected: {
+        // if the spectrum is not selected
+        line: {}, // SVG line properties for color, width, styl
+        marker: {}, // SVG line properties for size, shape (???), color, border, etc.
       },
-      yAxis: {
-        label: 'Intensity',
-        primaryGrid: true,
-        secondaryGrid: true,
-        primaryGridColor: '#AAAAAA',
-        secondaryGridColor: '#DDDDDD'
-      }
+      selected: {
+        // if the spectrum is selected
+        line: {}, // SVG line properties
+        marker: {}, // SVG line properties
+      },
     },
+    xAxis: {
+      label: 'δ (ppm)',
+      min: 0, // by default if undefined min value
+      max: 10, // by default max value
+      flipped: true,
+      primaryGrid: true,
+      secondaryGrid: true,
+      primaryGridColor: '#AAAAAA',
+      secondaryGridColor: '#DDDDDD',
+      styles: {
+        line: {},
+        text: {},
+      },
+    },
+    yAxis: {
+      label: 'Intensity',
+      primaryGrid: true,
+      secondaryGrid: true,
+      primaryGridColor: '#AAAAAA',
+      secondaryGridColor: '#DDDDDD',
+    },
+  },
   data: [
     // array of spectra. They will share the same axis
     // each series is a React component in the SVG dom
     // if a series has to be rerender a new object in the array is created
     {
-        id: '',
-      data: [{x:1, y:1, color:'red'}], // an array of colors for each segment of line. Use always modulo color.length to get the color
+      id: '',
+      data: [{ x: 1, y: 1, color: 'red' }], // an array of colors for each segment of line. Use always modulo color.length to get the color
       isFid: true, // allows to determine the label of the axis
       is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'green',
-    }
+    },
   ],
-  annotations: [ // different react component per annotation type and annotations
+  annotations: [
+    // different react component per annotation type and annotations
     /*
         Each data may be associated with one or many annotations
         Annotations include:
@@ -68,12 +67,12 @@ let props={
           x: 1, // units may be a number or a string with px or %
           y: 1,
           dx: '2px', // dx and dy allows to specify a shift from X / Y. The unit can change
-          dy: '1px'
+          dy: '1px',
         },
         {
           x: 1.5,
-          y: 1.5
-        }
+          y: 1.5,
+        },
       ],
       style: {},
     },
@@ -86,60 +85,19 @@ let props={
           x: 1, // units may be a number or a string with px or %
           y: 1,
           dx: '2px', // dx and dy allows to specify a shift from X / Y. The unit can change
-          dy: '1px'
-        }
+          dy: '1px',
+        },
       ],
       style: {},
-    }
-  ]
-},
-onProcess: (type, value, meta) => {
-
-    switch(type) {
-        case 'zoomOut':
-
-        break;
-        case 'fourrierTransform':
-
-        break;
-    }
-}
-
-
-
-  events: [
-    {
-        type: 'key',
-        modifiers: ['alt', 'shift'],
-       
-        callback: (event) => {}
-        // be able to
-      },
-    {
-      type: 'mouseClick',
-      modifiers: ['alt', 'shift'],
-      style: {
-        crosshair,
-        pointer,
-        zoom,
-        none
-      },
-      callback: (event, {x,y,...}) => {}
-      // be able to
     },
-    {
-        type: 'mouseMove',
-        modifiers: [],
-        style: {
-          crosshair,
-          pointer,
-          zoom,
-          none
-        },
-        callback: (event, {x,y,...}) => {}
-        // be able to
-      }
-  ]
+  ],
+  onProcess: (type, value, meta) => {
+    // call back received from the `Data manager`
+    switch (type) {
+      case 'zoomOut':
+        break;
+      case 'fourrierTransform':
+        break;
+    }
+  },
 };
-
-module.exports={configuration,chart}
