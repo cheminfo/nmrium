@@ -1,40 +1,41 @@
-const configuration={
-    serieStyle: {
-        unselected: {
-            // if the spectrum is not selected
-            line: {}, // SVG line properties for color, width, styl
-            marker: {} // SVG line properties for size, shape (???), color, border, etc.
-          },
-          selected: {
-            // if the spectrum is selected
-            line: {}, // SVG line properties
-            marker: {} // SVG line properties
-          }
-    },
-  xAxis: {
-    label: 'δ (ppm)',
-    forcedMin: 0, // by default min value
-    forceMax: 10, // by default max value
-    flipped: true,
-    primaryGrid: true,
-    secondaryGrid: true,
-    primaryGridColor: '#AAAAAA',
-    secondaryGridColor: '#DDDDDD',
-    styles: {
-      line: {},
-      text: {}
-    }
-  },
-  yAxis: {
-    label: 'Intensity',
-    primaryGrid: true,
-    secondaryGrid: true,
-    primaryGridColor: '#AAAAAA',
-    secondaryGridColor: '#DDDDDD'
-  }
-}
 
-let chart={
+
+let props={
+    configuration={
+        serieStyle: {
+            unselected: {
+                // if the spectrum is not selected
+                line: {}, // SVG line properties for color, width, styl
+                marker: {} // SVG line properties for size, shape (???), color, border, etc.
+              },
+              selected: {
+                // if the spectrum is selected
+                line: {}, // SVG line properties
+                marker: {} // SVG line properties
+              }
+        },
+      xAxis: {
+        label: 'δ (ppm)',
+        min: 0, // by default if undefined min value
+        max: 10, // by default max value
+        flipped: true,
+        primaryGrid: true,
+        secondaryGrid: true,
+        primaryGridColor: '#AAAAAA',
+        secondaryGridColor: '#DDDDDD',
+        styles: {
+          line: {},
+          text: {}
+        }
+      },
+      yAxis: {
+        label: 'Intensity',
+        primaryGrid: true,
+        secondaryGrid: true,
+        primaryGridColor: '#AAAAAA',
+        secondaryGridColor: '#DDDDDD'
+      }
+    },
   data: [
     // array of spectra. They will share the same axis
     // each series is a React component in the SVG dom
@@ -43,7 +44,7 @@ let chart={
         id: '',
       data: [{x:1, y:1, color:'red'}], // an array of colors for each segment of line. Use always modulo color.length to get the color
       isFid: true, // allows to determine the label of the axis
-      is2D: false,
+      is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'green',
     }
   ],
@@ -77,8 +78,8 @@ let chart={
       style: {},
     },
     {
-      type: 'label',
-      text: 'My label',
+      type: 'text',
+      value: 'My label',
       position: [
         // to be defined how to specify the position
         {
@@ -92,6 +93,20 @@ let chart={
     }
   ]
 },
+onProcess: (type, value, meta) => {
+
+    switch(type) {
+        case 'zoomOut':
+
+        break;
+        case 'fourrierTransform':
+
+        break;
+    }
+}
+
+
+
   events: [
     {
         type: 'key',
