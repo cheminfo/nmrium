@@ -40,7 +40,14 @@ let props = {
     // if a series has to be rerender a new object in the array is created
     {
       id: '',
-      data: [{ x: 1, y: 1, color: 'red' }], // an array of colors for each segment of line. Use always modulo color.length to get the color
+
+      data: [{ x: 1, y: 1, color: 'red' }],
+      // we could rather than have data use 3 different array. It could be faster
+
+      x: [1, 2, 3, 4, 5],
+      y: [1, 2, 3, 2, 1],
+      color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
+
       isFid: true, // allows to determine the label of the axis
       is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'green',
