@@ -41,9 +41,6 @@ let props = {
     {
       id: '',
 
-      data: [{ x: 1, y: 1, color: 'red' }],
-      // we could rather than have data use 3 different array. It could be faster
-
       x: [1, 2, 3, 4, 5],
       y: [1, 2, 3, 2, 1],
       color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
@@ -59,6 +56,7 @@ let props = {
         Each data may be associated with one or many annotations
         Annotations include:
         - line
+        - peak picking
         - rectangle
         - integral (surface under the line)
         - circle / ellipse
@@ -95,7 +93,7 @@ let props = {
           dy: '1px',
         },
       ],
-      style: {},
+      style: {}, // center ?
     },
   ],
   onProcess: (type, value, meta) => {
