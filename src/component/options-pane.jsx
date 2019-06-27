@@ -28,7 +28,7 @@ const OptionsPane = ({onChangeOption}) => {
   };
 
   return (
-    <div>
+    <div className="option-container">
       <ToggleButtonGroup
         size="small"
         value={option}

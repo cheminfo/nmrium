@@ -8,6 +8,27 @@ body { font: 12px Arial;}
    
 }
 
+
+.option-container{
+  display: flex;
+  padding: 5px;
+  /* bo
+  rder-bottom:0.55px solid gray; */
+}
+
+.MuiToggleButton-root
+{
+  text-transform: none !important;
+  
+
+}
+
+.MuiToggleButton-root.Mui-selected{
+  background-color: transparent !important;
+  border-bottom:2px solid rgb(255, 0, 24);
+}
+
+
 path {
   /* stroke: steelblue; */
   stroke-width: 1;
