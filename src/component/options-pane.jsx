@@ -1,10 +1,8 @@
-import React, { Component } from "react";
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import CropFree from '@material-ui/icons/CropFree'
-import ZoomIn from '@material-ui/icons/ZoomIn'
-
-
+import React, {useState } from "react";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import CropFree from "@material-ui/icons/CropFree";
+import ZoomIn from "@material-ui/icons/ZoomIn";
 
 // const GreenRadio = withStyles({
 //   root: {
@@ -13,56 +11,42 @@ import ZoomIn from '@material-ui/icons/ZoomIn'
 //       color: green[600]
 //     }
 //   },
-//   checked: { 
+//   checked: {
 // })(props => <Radio color="default" {...props} />);
 
-export let options ={
-    zoom:{id:"zoom",label:"Zoom"},
-    brush:{id:"brush",label:"Brush"}
+export let options = {
+  zoom: { id: "zoom", label: "Zoom" },
+  brush: { id: "brush", label: "Brush" }
+};
 
-}
+const OptionsPane = ({onChangeOption}) => {
+  const [option, setOption] = useState({ zoom: false, brush: false });
 
-class OptionsPane extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = { zoom: false, brush: false };
-  }
-
-
- 
-  handleChange = (event,selectedOption) => {
-    this.setState({ selectedOption });
-    this.props.onChangeOption(selectedOption)
-    // console.log(event.target.value);
-    console.log(selectedOption);
+  const handleChange = (event, selectedOption) => {
+    setOption(selectedOption);
+    onChangeOption(selectedOption);
   };
 
-  render() {
-    const { selectedOption } = this.state;
+  return (
+    <div>
+      <ToggleButtonGroup
+        size="small"
+        value={option}
+        exclusive
+        onChange={handleChange}
+      >
+        <ToggleButton key={1} value={options.zoom.id}>
+          <ZoomIn />
+          <label>{options.zoom.label}</label>
+        </ToggleButton>
 
-    return (
-      <div>
-        <ToggleButtonGroup
-          size="small"
-          value={selectedOption}
-          exclusive
-          onChange={this.handleChange}
-        >
-          <ToggleButton key={1} value={options.zoom.id}>
-            <ZoomIn />
-            <label >{options.zoom.label}</label>
-          </ToggleButton>
-          
-          <ToggleButton key={2} value={options.brush.id}>
-            <CropFree />
-          <label >{options.brush.label}</label>
-          </ToggleButton>
-        
-        </ToggleButtonGroup>
-      </div>
-    );
-  }
-}
+        <ToggleButton key={2} value={options.brush.id}>
+          <CropFree />
+          <label>{options.brush.label}</label>
+        </ToggleButton>
+      </ToggleButtonGroup>
+    </div>
+  );
+};
 
 export default OptionsPane;

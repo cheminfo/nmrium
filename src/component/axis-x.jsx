@@ -1,100 +1,90 @@
-import React, { Component } from "react";
+import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import PropTypes from "prop-types";
 
-export default class XAxis extends Component {
-  constructor(props) {
-    super(props);
+const XAxis = ({width,height,margin,data,domain,label,show,showGrid,isFID,onAxisDidMount}) => {
 
-    const { width, height, margin, data } = this.props;
-    this.width = width;
-    this.height = height;
-    this.margin = margin;
-    this.data = data;
+  const xAxis = d3.axisBottom().ticks(10).tickFormat(d3.format("0"));
 
-    this.xAxis = d3.axisBottom().ticks(10).tickFormat(d3.format("0"));
+  const grid = d3
+    .axisBottom()
+    .ticks(20)
+    .tickSize(-(height - margin.top - margin.bottom))
+    .tickFormat("");
+    
+  const scale = getScale(data);
+  const refaxis = useRef();
+  const refgrid = useRef();
 
-    this.grid = d3
-      .axisBottom()
-      .ticks(20)
-      .tickSize(-(height - margin.top - margin.bottom))
-      .tickFormat("");
+  label = (label) ? label: (isFID)?'δ [ppm]':'time [s]';
 
-    this.scale = this.getScale(data);
-  }
-
-  getDomain = (data = []) => {
+  function getDomain(data = []) {
     let array = [];
 
     for (let d of data) {
       array = array.concat(d["x"]);
     }
     return d3.extent(array);
-  };
+  }
 
-  getScale = data => {
-    const domain = this.getDomain(data);
-    const scale = d3.scaleLinear(domain, [
-      this.margin.left,
-      this.width - this.margin.right
-    ]);
+  function getScale(data) {
+    const domain = getDomain(data);
+    const scale = d3.scaleLinear(domain, [margin.left, width - margin.right]);
 
     return scale;
-  };
+  }
 
-  componentDidMount() {
-    const { label } = this.props;
-    //drwa x axis
-    d3.select(this.refs.xAxis)
-      .call(this.xAxis.scale(this.scale))
+  useEffect(() => {
+    if(show){
+    d3.select(refaxis.current)
+      .call(xAxis.scale(scale))
       .append("text")
       .attr("fill", "black")
       .attr("y", 20)
-      .attr("x", this.width -60)
+      .attr("x", width - 60)
       .attr("dy", "0.71em")
       .attr("text-anchor", "end")
       .text(label);
     //drwa grid at x axis
-    d3.select(this.refs.grid).call(this.grid.scale(this.scale));
+    d3.select(refgrid.current).call(grid.scale(scale));
+    }
 
-    this.props.onAxisDidMount(this.scale.domain());
-  }
+    onAxisDidMount(scale.domain());
 
-  componentDidUpdate(prevProps, prevState) {
-    const { domain } = this.props;
-    if (domain && domain.length > 0)
-      d3.select(".x")
+  }, []);
+
+  useEffect(() => {
+       if(show){
+      d3.select(refaxis.current)
         .transition()
         .duration(500)
-        .call(this.xAxis.scale(this.scale.domain(domain)));
-  }
+        .call(xAxis.scale(scale.domain(domain)));
+       }
+  }, [domain]);
 
-  render() {
-    const { showGrid } = this.props;
 
-    return (
-      <React.Fragment>
+
+  return (
+    <React.Fragment>
+       {show ? <g
+        className="x axis"
+        transform={`translate(0,${height - margin.bottom})`}
+        ref={refaxis}
+      />:null}
+      {showGrid ? 
         <g
-          className="x axis"
-          transform={`translate(0,${this.height - this.margin.bottom})`}
-          ref="xAxis"
-          //   ref={xAxis => {
-          //     this.props.ref(xAxis);
-          //   }}
+          className="grid"
+          ref={refgrid}
+          transform={`translate(0,${height - margin.bottom})`}
         />
-        {showGrid ? (
-          <g
-            className="grid"
-            ref="grid"
-            transform={`translate(0,${this.height - this.margin.bottom})`}
-          />
-        ) : (
-          ""
-        )}
-      </React.Fragment>
-    );
-  }
-}
+       : 
+      null
+      }
+    </React.Fragment>
+  );
+};
+
+export default XAxis;
 
 XAxis.propTypes = {
   width: PropTypes.number,
@@ -107,7 +97,9 @@ XAxis.propTypes = {
     left: PropTypes.number.isRequired
   }),
   showGrid: PropTypes.bool,
+  show:PropTypes.bool,
   label: PropTypes.string,
+  isFID :PropTypes.bool,
   onAxisDidMount: PropTypes.func
 };
 
@@ -117,7 +109,9 @@ XAxis.defaultProps = {
   data: [],
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
   showGrid: false,
+  show:true,
   label: "",
+  isFID:true,
   onAxisDidMount: () => {
     return null;
   }

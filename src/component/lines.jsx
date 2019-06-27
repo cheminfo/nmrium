@@ -1,24 +1,16 @@
-import React, { Component } from "react";
+import React, {useRef } from "react";
 import * as d3 from "d3";
 import PropTypes from "prop-types";
 
-class Lines extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { data: [], domain: {} };
-    const { width, height, margin, data } = this.props;
-    this.width = width;
-    this.margin = margin;
-    this.height = height;
-    this.data = data;
-  }
+const Lines =({ width, height, margin, data,domain }) =>{
+  // const {_data,setData} = useState(data);
+  // const {_domain,setDomain} =domain(domain);
 
-  makePath(data) {
-    const { domain } = this.state;
-    const scale = this.getScale(domain);
+  const refPathsContainer = useRef();
 
+  function makePath(data) {
+    const scale = getScale(domain);
     let path = `M ${scale.x(data.x[0])} ${scale.y(data.y[0])}`;
-
     path += data.x.map((element, i) => {
       return ` L ${scale.x(element)} ${scale.y(data.y[i])}`;
     });
@@ -26,60 +18,53 @@ class Lines extends Component {
     return path;
   }
 
-  getScale = domain => {
+  function getScale (domain ) {
     const x = d3.scaleLinear(domain.x, [
-      this.margin.left,
-      this.width - this.margin.right
+      margin.left,
+      width - margin.right
     ]);
 
     const y = d3.scaleLinear(domain.y, [
-      this.height - this.margin.bottom,
-      this.margin.top
+      height - margin.bottom,
+      margin.top
     ]);
 
     return { x, y };
   };
 
-  generatePaths() {
-    return this.state.data.map((d, i) => {
+  function generatePaths() {
+    return data.map((d, i) => {
       return (
         <path
           className="line"
           key={d.id}
           stroke={d.color}
-          d={this.makePath(d)}
+          d={makePath(d)}
         />
       );
     });
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const { data, domain } = props;
-
-    return { data, domain };
-  }
-
-  render() {
     return (
       <React.Fragment>
         <defs>
           <clipPath id="clip">
             <rect
-              width={`${this.width - this.margin.left - this.margin.right}`}
-              height={`${this.height - this.margin.top - this.margin.bottom}`}
-              x={`${this.margin.left}`}
-              y={`${this.margin.top}`}
+              width={`${width - margin.left - margin.right}`}
+              height={`${height - margin.top - margin.bottom}`}
+              x={`${margin.left}`}
+              y={`${margin.top}`}
             />
           </clipPath>
         </defs>
 
-        <g className="paths" ref="paths" clipPath="url(#clip)">
-          {this.generatePaths()}
+        <g className="paths" ref={refPathsContainer} clipPath="url(#clip)">
+          {generatePaths()}
         </g>
       </React.Fragment>
     );
+
   }
-}
 
 export default Lines;
 
