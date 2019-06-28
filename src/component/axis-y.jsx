@@ -40,7 +40,7 @@ const YAxis = ({ width, height, margin, data, show, label,onAxisDidMount }) => {
 
     onAxisDidMount(scale.domain());
 
-  });
+  },[]);
  
   return ( (show) ? <g className="y axis" transform={`translate(${margin.left},0)`} /> :null);
 }

@@ -26,17 +26,6 @@ const margin = { top: 20, right: 40, bottom: 40, left: 40 };
     is2D: false, // TODO: need to define where to put the spectrum if it is 1D
     color: "green"
   },
-  // {
-  //   id: "5",
-  //   isHover: false,
-    
-  //   color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
-  //   ...json2,
-
-  //   isFid: true, // allows to determine the label of the axis
-  //   is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-  //   color: "red"
-  // }
 ];
 
 
@@ -53,17 +42,7 @@ const data2 = [
     is2D: false, // TODO: need to define where to put the spectrum if it is 1D
     color: "green"
   },
-  // {
-  //   id: "5",
-  //   isHover: false,
-    
-  //   color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
-  //   ...json2,
 
-  //   isFid: true, // allows to determine the label of the axis
-  //   is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-  //   color: "red"
-  // }
 ];
 
 storiesOf('1d spectrum samples', module)
@@ -76,12 +55,3 @@ storiesOf('1d spectrum samples', module)
  </div>
  );
 
-// storiesOf('Button', module)
-//   .add('with text', () => <Button onClick={action('clicked')}>Hello Button</Button>)
-//   .add('with some emoji', () => (
-//     <Button onClick={action('clicked')}>
-//       <span role="img" aria-label="so cool">
-//         😀 😎 👍 💯
-//       </span>
-//     </Button>
-//   ));
