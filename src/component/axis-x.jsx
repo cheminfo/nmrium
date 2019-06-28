@@ -51,14 +51,6 @@ const XAxis = ({
     if (show) {
       d3.select(refaxis.current)
         .call(xAxis.scale(scale))
-        // .append('text')
-        // .attr('fill', 'black')
-        // .attr('y', 20)
-        // .attr('x', width - 60)
-        // .attr('dy', '0.71em')
-        // .attr('text-anchor', 'end')
-        // .text(label);
-      //drwa grid at x axis
       d3.select(refgrid.current).call(grid.scale(scale));
     }
 

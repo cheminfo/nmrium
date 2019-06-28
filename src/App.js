@@ -21,7 +21,7 @@ function App() {
     {
       id: "2",
       isHover: false,
-      ...json2,
+      ...json,
       color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
       isFid: true, // allows to determine the label of the axis
       is2D: false, // TODO: need to define where to put the spectrum if it is 1D
