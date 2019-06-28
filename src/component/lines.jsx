@@ -9,9 +9,7 @@ const Lines = ({ width, height, margin, data, domain }) => {
 
   const refPathsContainer = useRef();
 
-
   function makePath(data) {
-
     const scale = getScale(domain);
     const pathPoints = mapArrayToPoints(data);
 
@@ -30,7 +28,7 @@ const Lines = ({ width, height, margin, data, domain }) => {
       return { x: xValue, y: data.y[i] };
     });
 
-    return simplify(result,0.005,false);
+    return simplify(result, 0.006, false);
   }
 
   function getScale(domain) {
@@ -46,7 +44,6 @@ const Lines = ({ width, height, margin, data, domain }) => {
       );
     });
   }
-  
 
   return (
     <React.Fragment>
