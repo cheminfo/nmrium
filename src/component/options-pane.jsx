@@ -1,8 +1,8 @@
-import React, {useState } from "react";
-import ToggleButton from "@material-ui/lab/ToggleButton";
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
-import CropFree from "@material-ui/icons/CropFree";
-import ZoomIn from "@material-ui/icons/ZoomIn";
+import React, { useState } from 'react';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import CropFree from '@material-ui/icons/CropFree';
+import ZoomIn from '@material-ui/icons/ZoomIn';
 
 // const GreenRadio = withStyles({
 //   root: {
@@ -15,11 +15,11 @@ import ZoomIn from "@material-ui/icons/ZoomIn";
 // })(props => <Radio color="default" {...props} />);
 
 export let options = {
-  zoom: { id: "zoom", label: "Zoom" },
-  brush: { id: "brush", label: "Brush" }
+  zoom: { id: 'zoom', label: 'Zoom' },
+  brush: { id: 'brush', label: 'Brush' },
 };
 
-const OptionsPane = ({onChangeOption}) => {
+const OptionsPane = ({ onChangeOption }) => {
   const [option, setOption] = useState({ zoom: false, brush: false });
 
   const handleChange = (event, selectedOption) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import SpectrumChart from './component/spectrum-chart';
-// import json from './component/test.json';
+import json from './samples/test.json';
 import json2 from './samples/test2.json';
 import json1 from './samples/test1.json';
 
@@ -10,8 +10,8 @@ function App() {
   
   //  console.log(json);
 
-  const width = 650;
-  const height = 400;
+  const width = 800;
+  const height = 600;
   const margin = { top: 20, right: 40, bottom: 40, left: 40 };
   
    const data = [
@@ -21,7 +21,7 @@ function App() {
     {
       id: "2",
       isHover: false,
-      ...json1,
+      ...json2,
       color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
       isFid: true, // allows to determine the label of the axis
       is2D: false, // TODO: need to define where to put the spectrum if it is 1D

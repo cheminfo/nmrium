@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import * as d3 from "d3";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import * as d3 from 'd3';
+import PropTypes from 'prop-types';
 
 class BrushTool extends Component {
   constructor(props) {
@@ -17,7 +17,7 @@ class BrushTool extends Component {
       .brushX()
       .extent([
         [margin.left, margin.top],
-        [width - margin.right, height - margin.bottom]
+        [width - margin.right, height - margin.bottom],
       ]);
   }
 
@@ -34,16 +34,16 @@ class BrushTool extends Component {
     const [x1, x2] = d3.event.selection;
     const scale = d3.scaleLinear(this.domain, [
       this.margin.left,
-      this.width - this.margin.right
+      this.width - this.margin.right,
     ]);
 
     const range = [scale.invert(x1), scale.invert(x2)];
-    d3.select(".brush").call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
+    d3.select('.brush').call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
 
     this.props.onDomainUpdate(range);
   };
 
-  reset = e => {
+  reset = (e) => {
     this.props.onDomainUpdate(this.orign_domain);
   };
 
@@ -53,17 +53,22 @@ class BrushTool extends Component {
     this.orign_domain = orignXDomain;
 
     if (isActive) {
-      this.brush.on("end", this.brushEnd);
+      this.brush.on('end', this.brushEnd);
     } else {
-      this.brush.on("end", null);
+      this.brush.on('end', null);
     }
   }
-  
 
   render() {
-    const {isActive}  = this.props;
+    const { isActive } = this.props;
 
-    return <g className={(isActive)?'brush-conatiner brush ':'brush-conatiner'} onDoubleClick={this.reset}  ref="brush" />;
+    return (
+      <g
+        className={isActive ? 'brush-conatiner brush ' : 'brush-conatiner'}
+        onDoubleClick={this.reset}
+        ref="brush"
+      />
+    );
   }
 }
 
@@ -77,12 +82,12 @@ BrushTool.propTypes = {
     top: PropTypes.number.isRequired,
     right: PropTypes.number.isRequired,
     bottom: PropTypes.number.isRequired,
-    left: PropTypes.number.isRequired
+    left: PropTypes.number.isRequired,
   }),
   domain: PropTypes.array.isRequired,
   orign_domain: PropTypes.array.isRequired,
   showGrid: PropTypes.bool,
-  onDomainUpdate: PropTypes.func
+  onDomainUpdate: PropTypes.func,
 };
 
 BrushTool.defaultProps = {
@@ -95,5 +100,5 @@ BrushTool.defaultProps = {
   showGrid: false,
   onDomainUpdate: () => {
     return [];
-  }
+  },
 };

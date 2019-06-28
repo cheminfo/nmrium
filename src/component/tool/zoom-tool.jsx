@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import * as d3 from "d3";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import * as d3 from 'd3';
+import PropTypes from 'prop-types';
 
 class ZoomTool extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isActive: false
+      isActive: false,
     };
     const { width, height, margin, data, domain } = this.props;
     this.width = width;
@@ -21,22 +21,22 @@ class ZoomTool extends Component {
       .scaleExtent([1, Infinity])
       .translateExtent([
         [margin.left, margin.top],
-        [width - margin.right, height - margin.bottom]
+        [width - margin.right, height - margin.bottom],
       ])
       .extent([
         [margin.left, margin.top],
-        [width - margin.right, height - margin.bottom]
+        [width - margin.right, height - margin.bottom],
       ]);
   }
 
   componentDidMount() {
     d3.select(this.refs.zoom)
-      .append("rect")
-      .attr("width", this.width - this.margin.right - this.margin.left)
-      .attr("height", this.height - this.margin.bottom - this.margin.top)
+      .append('rect')
+      .attr('width', this.width - this.margin.right - this.margin.left)
+      .attr('height', this.height - this.margin.bottom - this.margin.top)
       .attr(
-        "transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")"
+        'transform',
+        'translate(' + this.margin.left + ',' + this.margin.top + ')',
       )
       .call(this.zoom);
   }
@@ -46,7 +46,7 @@ class ZoomTool extends Component {
     let t = d3.event.transform;
     const scale = d3.scaleLinear(this.orign_domain, [
       this.margin.left,
-      this.width - this.margin.right
+      this.width - this.margin.right,
     ]);
 
     const domain = t.rescaleX(scale).domain();
@@ -59,17 +59,21 @@ class ZoomTool extends Component {
     this.orign_domain = orignXDomain;
 
     if (isActive) {
-      this.zoom.on("zoom", this.zoomed);
+      this.zoom.on('zoom', this.zoomed);
     } else {
-      this.zoom.on("zoom", null);
+      this.zoom.on('zoom', null);
     }
   }
 
-
-
   render() {
-    const {isActive}  = this.props;
-    return <g className={(isActive)?'zoom-container zoom ':'zoom-container'}onDoubleClick={this.reset}  ref="zoom" />;
+    const { isActive } = this.props;
+    return (
+      <g
+        className={isActive ? 'zoom-container zoom ' : 'zoom-container'}
+        onDoubleClick={this.reset}
+        ref="zoom"
+      />
+    );
   }
 }
 
@@ -83,12 +87,12 @@ ZoomTool.propTypes = {
     top: PropTypes.number.isRequired,
     right: PropTypes.number.isRequired,
     bottom: PropTypes.number.isRequired,
-    left: PropTypes.number.isRequired
+    left: PropTypes.number.isRequired,
   }),
   domain: PropTypes.array.isRequired,
   orign_domain: PropTypes.array.isRequired,
   onDomainUpdate: PropTypes.func,
-  isActive: PropTypes.bool
+  isActive: PropTypes.bool,
 };
 
 ZoomTool.defaultProps = {
@@ -101,5 +105,5 @@ ZoomTool.defaultProps = {
   onDomainUpdate: () => {
     return [];
   },
-  isActive: false
+  isActive: false,
 };
