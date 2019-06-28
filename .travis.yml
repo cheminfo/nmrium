@@ -10,4 +10,4 @@ jobs:
       if: branch = master
 stages:
   - test
-  - name: deploy storybook
+  - deploy storybook
