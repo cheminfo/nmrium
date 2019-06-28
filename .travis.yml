@@ -6,3 +6,6 @@ jobs:
     - stage: deploy storybook
       script: npm run deploy-storybook -- --ci
       if: branch = master
+stages:
+  - test
+  - name: deploy storybook
