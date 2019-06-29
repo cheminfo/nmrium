@@ -1,10 +1,9 @@
 import reduce from '../reduce';
 
 describe('test reduce', () => {
+  const x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const y = [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0];
   test('All', () => {
-    let x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let y = [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0];
-
     let result = {
       x: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       y: [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0],
@@ -12,10 +11,17 @@ describe('test reduce', () => {
     expect(reduce(x, y, { nbPoints: 20 })).toStrictEqual(result);
   });
 
-  test('Part exact', () => {
-    let x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let y = [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0];
+  test('Too large', () => {
+    let result = {
+      x: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      y: [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0],
+    };
+    expect(reduce(x, y, { nbPoints: 20, from: -10, to: 20 })).toStrictEqual(
+      result,
+    );
+  });
 
+  test('Part exact', () => {
     let result = {
       x: [3, 4, 5],
       y: [3, 4, 5],
@@ -26,9 +32,6 @@ describe('test reduce', () => {
   });
 
   test('Part rounded close', () => {
-    let x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let y = [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0];
-
     let result = {
       x: [3, 4, 5],
       y: [3, 4, 5],
@@ -39,9 +42,6 @@ describe('test reduce', () => {
   });
 
   test('Part rounded far', () => {
-    let x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let y = [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0];
-
     let result = {
       x: [3, 4, 5],
       y: [3, 4, 5],
@@ -52,9 +52,6 @@ describe('test reduce', () => {
   });
 
   test('Part rounded far', () => {
-    let x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let y = [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0];
-
     let result = reduce(x, y, { nbPoints: 5 });
 
     expect(result).toStrictEqual({
