@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import * as simplify from 'simplify-js';
 import reduce from '../util/reduce';
 
 
