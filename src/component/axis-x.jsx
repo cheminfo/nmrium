@@ -42,15 +42,17 @@ const XAxis = ({
 
   function getScale(data) {
     const domain = getDomain(data);
-    const scale = d3.scaleLinear([domain[1],domain[0]], [margin.left, width - margin.right]);
+    const scale = d3.scaleLinear(
+      [domain[1], domain[0]],
+      [margin.left, width - margin.right],
+    );
 
     return scale;
   }
 
   useEffect(() => {
     if (show) {
-      d3.select(refaxis.current)
-        .call(xAxis.scale(scale))
+      d3.select(refaxis.current).call(xAxis.scale(scale));
       d3.select(refgrid.current).call(grid.scale(scale));
     }
 
@@ -60,8 +62,8 @@ const XAxis = ({
   useEffect(() => {
     if (show) {
       d3.select(refaxis.current)
-        .transition()
-        .duration(500)
+        // .transition()
+        // .duration(500)
         .call(xAxis.scale(scale.domain(domain)));
     }
   }, [domain]);
@@ -69,15 +71,15 @@ const XAxis = ({
   return (
     <React.Fragment>
       {show ? (
-         
         <g
           className="x axis"
           transform={`translate(0,${height - margin.bottom})`}
           ref={refaxis}
         >
-          <text fill= "#000" x={width - 60}  y ="20" dy="0.71em"  text-anchor= "end" >{label}</text>
+          <text fill="#000" x={width - 60} y="20" dy="0.71em" text-anchor="end">
+            {label}
+          </text>
         </g>
-
       ) : null}
       {showGrid ? (
         <g

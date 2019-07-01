@@ -11,10 +11,11 @@ import binarySearch from 'binary-search';
  */
 
 export default function reduce(x, y, options = {}) {
-  let { from = x[0], to = x[x.length - 1], nbPoints = 4001 } = options;
+  let { from = x[0], to = x[x.length - 1], nbPoints = 4000 } = options;
 
   let fromIndex = closestIndex(x, from);
   let toIndex = closestIndex(x, to);
+
   if (fromIndex > 0 && x[fromIndex] > from) fromIndex--;
   if (toIndex < x.length - 1 && x[toIndex] < to) toIndex++;
 
@@ -34,6 +35,7 @@ export default function reduce(x, y, options = {}) {
   } else {
     nbPoints = (nbPoints - 1) / 2 + 1;
   }
+
   let slot = (x[toIndex] - x[fromIndex]) / (nbPoints - 1);
   let currentX = x[fromIndex] + slot;
   let first = true;
