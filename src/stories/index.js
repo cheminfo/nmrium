@@ -53,5 +53,13 @@ storiesOf('1d spectrum samples', module)
  <p>it's seem to be we have lack of performance related to svg, any suggestion will be great. as you see in the spectruc chart i extract sample from jcamp file for real experiement and i get 500k of points, if you try to use tool at the above of the chart for exmple brush it will take time from chart to respond and rfresh itseld.</p> 
  <SpectrumChart  width={width} height={height} data={data2} margin={margin}  updateRange={(d)=>{console.log(d)}}/>
  </div>
+ )
+ .add('sample 2 (real sample) with more than 500k points',
+() => 
+<div>
+ <p>improved performance by using function to reduce the number of points, the quality will increas whn you zoom in</p> 
+ <SpectrumChart  width={width} height={height} data={data2} margin={margin}  updateRange={(d)=>{console.log(d)}}/>
+ </div>
  );
+
 
