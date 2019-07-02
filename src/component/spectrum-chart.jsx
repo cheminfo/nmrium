@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
 import OptionsPane, { options } from './options-pane';
@@ -7,12 +7,38 @@ import XAxis from './axis-x';
 import BrushTool from './tool/brush-tool';
 import Lines from './lines';
 import ZoomTool from './tool/zoom-tool';
+import * as d3 from 'd3';
+// import { Window, TitleBar } from 'react-desktop/windows';
+// import Draggable from 'react-draggable';
 
-const SpectrumChart = ({ margin, width, height, data }) => {
+const SpectrumChart = ({
+  margin,
+  width,
+  height,
+  data,
+}) => {
   const [_xDomain, setXDomain] = useState(0);
   const [_yDomain, setYDomain] = useState(0);
-  const [_orignXDomain, setOriginalXDomain] = useState([]);
+  const [_orignDomain, setOriginDomain] = useState([]);
   const [_toolOption, setToolOption] = useState({ brush: false, zoom: false });
+
+  
+
+  // const [_width, setWidth] = useState(width);
+  // const [_height, setHeight] = useState(height);
+  // const [_isMaximized, setIsMaximized] = useState(false);
+  // const [_windowPosition, setWindowPosition] = useState(null);
+
+  useEffect(() => {
+    console.log(width);
+
+    const domain = getDomain(data);
+    console.log(domain);
+
+    setOriginDomain(domain);
+    setXDomain(domain.x);
+    setYDomain(domain.y);
+  }, []);
 
   const handleChangeOption = (option) => {
     if (option === options.brush.id) {
@@ -24,82 +50,153 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     }
   };
 
-  const brushUpdate = (xDomain) => {
+  /**
+   * get Domain for x axis and y axis
+   * @param {array} data
+   */
+  function getDomain(data = []) {
+    let xArray = [];
+    let yArray = [];
+
+    for (let d of data) {
+      xArray = xArray.concat(d['x']);
+      yArray = yArray.concat(d['y']);
+    }
+    return { x: d3.extent(xArray), y: d3.extent(yArray) };
+  }
+
+  const handleXDomainUpdate = (xDomain) => {
     setXDomain(xDomain);
   };
 
-  const handleXAxisDidMount = (xDomain) => {
-    setXDomain(xDomain);
-    setOriginalXDomain(xDomain);
-  };
-
-  const handleYAxisDidMount = (yDomain) => {
+  const handleYDomainUpdate = (yDomain) => {
     setYDomain(yDomain);
   };
 
+  const handleRestDomain = (domain) => {
+    setXDomain(domain.x);
+    setYDomain(domain.y);
+  };
+
+  // const handleXAxisDidMount = (xDomain) => {
+  //   // setXDomain(xDomain);
+  //   // setOriginalXDomain(xDomain);
+  // };
+
+  // const handleYAxisDidMount = (yDomain) => {
+  //   // setYDomain(yDomain);
+  // };
+  
+  // const toggleMaximize = () => {
+  //   setIsMaximized(!_isMaximized);
+  //   if (_isMaximized) {
+  //     setWindowPosition(null);
+
+  //     setWidth(width);
+  //     setHeight(height);
+  //   } else {
+  //     setWindowPosition({ x: 0, y: 0 });
+  //     setWidth(window.innerWidth-5);
+  //     setHeight(window.innerHeight-82);
+  //   }
+  // };
+
   return (
-    <div className="main-container" style={{ width: `${width}px` }}>
-      <div>
-        <OptionsPane onChangeOption={handleChangeOption} />
-      </div>
-      <div>
-        <svg width={width} height={height}>
-          {(_xDomain, _yDomain) ? (
-            <Lines
-              margin={margin}
-              width={width}
-              height={height}
-              data={data}
-              domain={{ x: _xDomain, y: _yDomain }}
-            />
-          ) : null}
 
-          <g className="container">
-            <XAxis
-              onAxisDidMount={handleXAxisDidMount}
-              margin={margin}
-              width={width}
-              height={height}
-              data={data}
-              domain={_xDomain}
-              showGrid={true}
-              isFID={true}
-            />
+    // <Draggable
+    //   // axis="x"
+    //   handle=".handle"
+    //   defaultPosition={{ x: 0, y: 0 }}
+    //   position={_windowPosition}
+    //   grid={[25, 25]}
+    //   scale={1}
+    // >
+    //   <Window
+    //     color="white"
+    //     theme="dark"
+    //     chrome
+    //     height={_height+80}
+    //     width={_width}
+    //     // padding="12px"
+    //     background="white"
+    //   >
+    //     <TitleBar
+    //       className="handle"
+    //       title="Spectrum Chart"
+    //       isMaximized={_isMaximized}
+    //       theme="black"
+    //       color="red"
+    //       controls={true}
+    //       onMaximizeClick={toggleMaximize}
+    //       onRestoreDownClick={toggleMaximize}
+    //     />
+      
 
-            <YAxis
-              onAxisDidMount={handleYAxisDidMount}
-              margin={margin}
-              width={width}
-              height={height}
-              data={data}
-              label="PPM"
-              show={false}
-            />
+        <div className="main-container" style={{ width: `${width}px` }} >
+          <div>
+            <OptionsPane onChangeOption={handleChangeOption} />
+          </div>
+          <div>
+            <svg width={width} height={height}>
+              {(_xDomain, _yDomain) ? (
+                <Lines
+                  margin={margin}
+                  width={width}
+                  height={height}
+                  data={data}
+                  domain={{ x: _xDomain, y: _yDomain }}
+                />
+              ) : null}
 
-            <BrushTool
-              onDomainUpdate={brushUpdate}
-              margin={margin}
-              width={width}
-              height={height}
-              data={data}
-              domain={_xDomain}
-              orignXDomain={_orignXDomain}
-              isActive={_toolOption.brush}
-            />
-            <ZoomTool
-              onDomainUpdate={brushUpdate}
-              margin={margin}
-              width={width}
-              height={height}
-              data={data}
-              domain={_xDomain}
-              orignXDomain={_orignXDomain}
-              isActive={_toolOption.zoom}
-            />
-          </g>
-        </svg>
-      </div>
-    </div>
+              <g className="container">
+                <XAxis
+                  margin={margin}
+                  width={width}
+                  height={height}
+                  data={data}
+                  domain={_xDomain}
+                  showGrid={true}
+                  isFID={true}
+                />
+
+                <YAxis
+                  margin={margin}
+                  width={width}
+                  height={height}
+                  domain={_yDomain}
+                  data={data}
+                  label="PPM"
+                  show={false}
+                />
+
+                <BrushTool
+                  onDomainReset={handleRestDomain}
+                  onXAxisDomainUpdate={handleXDomainUpdate}
+                  onYAxisDomainUpdate={handleYDomainUpdate}
+                  margin={margin}
+                  width={width}
+                  height={height}
+                  data={data}
+                  domain={{ x: _xDomain, y: _yDomain }}
+                  originDomain={_orignDomain}
+                  isActive={_toolOption.brush}
+                />
+                <ZoomTool
+                  onXAxisDomainUpdate={handleXDomainUpdate}
+                  margin={margin}
+                  width={width}
+                  height={height}
+                  data={data}
+                  domain={{ x: _xDomain, y: _yDomain }}
+                  originDomain={_orignDomain}
+                  isActive={_toolOption.zoom}
+                />
+              </g>
+            </svg>
+          </div>
+        </div>
+      // </Window>
+    // </Draggable>
   );
 };
 
@@ -112,7 +209,7 @@ SpectrumChart.propTypes = {
     right: PropTypes.number.isRequired,
     bottom: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
-  }),
+  })
 };
 
 SpectrumChart.defaultProps = {

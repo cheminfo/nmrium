@@ -10,27 +10,19 @@ const YAxis = ({
   show,
   label,
   onAxisDidMount,
+  domain,
 }) => {
+  const refaxis = useRef();
+
   const axis = d3
     .axisLeft()
     .ticks(10)
     .tickFormat(d3.format('~s'));
-  const scale = getScale(data);
-  const refaxis = useRef();
 
-  function getDomain(data = []) {
-    let array = [];
-    for (let d of data) {
-      array = array.concat(d['y']);
-    }
-    return d3.extent(array);
-  }
+  const scale = getScale(data);
 
   function getScale(data) {
-    const domain = getDomain(data);
-
     const scale = d3.scaleLinear(domain, [height - margin.bottom, margin.top]);
-
     return scale;
   }
 
@@ -38,9 +30,7 @@ const YAxis = ({
     if (show) {
       d3.select(refaxis.current).call(axis.scale(scale));
     }
-
-    onAxisDidMount(scale.domain());
-  }, []);
+  }, [domain]);
 
   return show ? (
     <React.Fragment>
@@ -48,7 +38,6 @@ const YAxis = ({
         className="y axis"
         transform={`translate(${margin.left},0)`}
         ref={refaxis}
-
       >
         <text
           fill="#000"
@@ -80,7 +69,6 @@ YAxis.propTypes = {
   showGrid: PropTypes.bool,
   show: PropTypes.bool,
   label: PropTypes.string,
-  onAxisDidMount: PropTypes.func,
 };
 
 YAxis.defaultProps = {
@@ -91,7 +79,4 @@ YAxis.defaultProps = {
   showGrid: false,
   show: true,
   label: '',
-  onAxisDidMount: () => {
-    return null;
-  },
 };

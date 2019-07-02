@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 
 class BrushTool extends Component {
   constructor(props) {
     super(props);
-    const { width, height, margin, data, domain } = this.props;
+    const { width, height, margin, data, domain, originDomain } = this.props;
     this.width = width;
     this.height = height;
     this.margin = margin;
     this.data = data;
     this.domain = domain;
-    this.orign_domain = domain;
+    this.originDomain = originDomain;
 
     this.brush = d3
       .brushX()
@@ -19,10 +19,25 @@ class BrushTool extends Component {
         [margin.left, margin.top],
         [width - margin.right, height - margin.bottom],
       ]);
+
+    this.zoom = d3
+      .zoom()
+      .scaleExtent([1, Infinity])
+      .translateExtent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ])
+      .extent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ]);
   }
 
   componentDidMount() {
-    d3.select(this.refs.brush).call(this.brush);
+    d3.select(this.refs.brush)
+      .call(this.brush)
+      .call(this.zoom)
+      .on('dblclick.zoom', null);
   }
 
   brushEnd = () => {
@@ -32,30 +47,77 @@ class BrushTool extends Component {
       return;
     }
     const [x1, x2] = d3.event.selection;
-    const scale = d3.scaleLinear(this.domain, [
+    const scale = d3.scaleLinear(this.domain.x, [
       this.margin.left,
       this.width - this.margin.right,
     ]);
 
     const range = [scale.invert(x1), scale.invert(x2)];
-    d3.select('.brush').call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
+    d3.select(this.refs.brush).call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
 
-    this.props.onDomainUpdate(range);
+    this.props.onXAxisDomainUpdate(range);
+  };
+
+  zoomed = () => {
+    // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+    let t = d3.event.transform;
+
+    const scale = d3.scaleLinear(this.originDomain.y, [
+      this.height - this.margin.bottom,
+      this.margin.top,
+    ]);
+
+    const _domain = t.rescaleY(scale).domain();
+    this.props.onYAxisDomainUpdate([0, _domain[1]]);
   };
 
   reset = (e) => {
-    this.props.onDomainUpdate(this.orign_domain);
+    this.props.onDomainReset(this.originDomain);
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { domain, orignXDomain, isActive } = this.props;
+    const {
+      domain,
+      isActive,
+      originDomain,
+      width,
+      height,
+      margin,
+    } = this.props;
     this.domain = domain;
-    this.orign_domain = orignXDomain;
+    this.originDomain = originDomain;
+    this.width = width;
+    this.height = height;
+
+    this.brush.extent([
+      [margin.left, margin.top],
+      [width - margin.right, height - margin.bottom],
+    ]);
+
+    this.zoom
+      .translateExtent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ])
+      .extent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ]);
+
+    d3.select(this.refs.brush)
+      .selectAll('*')
+      .remove();
+    d3.select(this.refs.brush)
+      .call(this.brush)
+      .call(this.zoom)
+      .on('dblclick.zoom', null);
 
     if (isActive) {
       this.brush.on('end', this.brushEnd);
+      this.zoom.on('zoom', this.zoomed);
     } else {
       this.brush.on('end', null);
+      this.zoom.on('zoom', null);
     }
   }
 
@@ -85,9 +147,11 @@ BrushTool.propTypes = {
     left: PropTypes.number.isRequired,
   }),
   domain: PropTypes.array.isRequired,
-  orign_domain: PropTypes.array.isRequired,
+  originDomain: PropTypes.array.isRequired,
   showGrid: PropTypes.bool,
-  onDomainUpdate: PropTypes.func,
+  onXAxisDomainUpdate: PropTypes.func,
+  onYAxisDomainUpdate: PropTypes.func,
+  onDomainReset: PropTypes.func,
 };
 
 BrushTool.defaultProps = {
@@ -96,9 +160,15 @@ BrushTool.defaultProps = {
   data: [],
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
   domain: [],
-  orign_domain: [],
+  originDomain: [],
   showGrid: false,
-  onDomainUpdate: () => {
+  onXAxisDomainUpdate: () => {
+    return [];
+  },
+  onYAxisDomainUpdate: () => {
+    return [];
+  },
+  onDomainReset: () => {
     return [];
   },
 };

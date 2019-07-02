@@ -8,13 +8,13 @@ class ZoomTool extends Component {
     this.state = {
       isActive: false,
     };
-    const { width, height, margin, data, domain } = this.props;
+    const { width, height, margin, data, domain, originDomain } = this.props;
     this.width = width;
     this.height = height;
     this.margin = margin;
     this.data = data;
     this.domain = domain;
-    this.orign_domain = domain;
+    this.originDomain = originDomain;
 
     this.zoom = d3
       .zoom()
@@ -29,34 +29,53 @@ class ZoomTool extends Component {
       ]);
   }
 
+  initZoomArea() {
+    // 
+  }
+
   componentDidMount() {
-    d3.select(this.refs.zoom)
-      .append('rect')
-      .attr('width', this.width - this.margin.right - this.margin.left)
-      .attr('height', this.height - this.margin.bottom - this.margin.top)
-      .attr(
-        'transform',
-        'translate(' + this.margin.left + ',' + this.margin.top + ')',
-      )
-      .call(this.zoom);
+    // this.initZoomArea();
+    d3.select(this.refs.zoom).call(this.zoom);
   }
 
   zoomed = () => {
     // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
     let t = d3.event.transform;
-    const scale = d3.scaleLinear(this.orign_domain, [
+    const scale = d3.scaleLinear(this.originDomain.x, [
       this.margin.left,
       this.width - this.margin.right,
     ]);
 
-    const domain = t.rescaleX(scale).domain();
-    this.props.onDomainUpdate(domain);
+    const _domain = t.rescaleX(scale).domain();
+    this.props.onXAxisDomainUpdate(_domain);
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { domain, orignXDomain, isActive } = this.props;
+    const {
+      domain,
+      originDomain,
+      isActive,
+      margin,
+      width,
+      height,
+    } = this.props;
     this.domain = domain;
-    this.orign_domain = orignXDomain;
+    this.originDomain = originDomain;
+    this.width = width;
+    this.height = height;
+
+    this.zoom
+      .scaleExtent([1, Infinity])
+      .translateExtent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ])
+      .extent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ]);
+
+    // this.initZoomArea();
 
     if (isActive) {
       this.zoom.on('zoom', this.zoomed);
@@ -66,13 +85,25 @@ class ZoomTool extends Component {
   }
 
   render() {
-    const { isActive } = this.props;
+    const {
+      isActive,
+      margin,
+      width,
+      height,
+    } = this.props;
     return (
       <g
         className={isActive ? 'zoom-container zoom ' : 'zoom-container'}
         onDoubleClick={this.reset}
         ref="zoom"
-      />
+      >
+        <rect
+          width={`${width - margin.left -margin.right}`}
+          height={`${height - margin.top - margin.bottom}`}
+          transform={`translate(${margin.left},${margin.top})`}
+   
+        />
+      </g>
     );
   }
 }
@@ -91,7 +122,7 @@ ZoomTool.propTypes = {
   }),
   domain: PropTypes.array.isRequired,
   orign_domain: PropTypes.array.isRequired,
-  onDomainUpdate: PropTypes.func,
+  onXAxisDomainUpdate: PropTypes.func,
   isActive: PropTypes.bool,
 };
 
@@ -102,7 +133,7 @@ ZoomTool.defaultProps = {
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
   domain: [],
   orign_domain: [],
-  onDomainUpdate: () => {
+  onXAxisDomainUpdate: () => {
     return [];
   },
   isActive: false,

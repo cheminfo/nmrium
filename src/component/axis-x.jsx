@@ -16,7 +16,7 @@ const XAxis = ({
 }) => {
   const xAxis = d3
     .axisBottom()
-    .ticks(10)
+    .ticks(20)
     .tickFormat(d3.format('0'));
 
   const grid = d3
@@ -25,26 +25,16 @@ const XAxis = ({
     .tickSize(-(height - margin.top - margin.bottom))
     .tickFormat('');
 
-  const scale = getScale(data);
   const refaxis = useRef();
   const refgrid = useRef();
+  const scale = getScale(data);
 
   label = label ? label : isFID ? 'δ [ppm]' : 'time [s]';
 
-  function getDomain(data = []) {
-    let array = [];
-
-    for (let d of data) {
-      array = array.concat(d['x']);
-    }
-    return d3.extent(array);
-  }
-
   function getScale(data) {
-    const domain = getDomain(data);
     const scale = d3.scaleLinear(
-      [domain[1], domain[0]],
-      [margin.left, width - margin.right],
+      [domain[0], domain[1]],
+      [width - margin.right,margin.left],
     );
 
     return scale;
@@ -55,8 +45,6 @@ const XAxis = ({
       d3.select(refaxis.current).call(xAxis.scale(scale));
       d3.select(refgrid.current).call(grid.scale(scale));
     }
-
-    onAxisDidMount(scale.domain());
   }, []);
 
   useEffect(() => {
@@ -65,8 +53,10 @@ const XAxis = ({
         // .transition()
         // .duration(500)
         .call(xAxis.scale(scale.domain(domain)));
+
+      d3.select(refgrid.current).call(grid.scale(scale.domain(domain)));
     }
-  }, [domain]);
+  }, [domain, height, width]);
 
   return (
     <React.Fragment>
@@ -76,7 +66,7 @@ const XAxis = ({
           transform={`translate(0,${height - margin.bottom})`}
           ref={refaxis}
         >
-          <text fill="#000" x={width - 60} y="20" dy="0.71em" text-anchor="end">
+          <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
             {label}
           </text>
         </g>
@@ -108,7 +98,6 @@ XAxis.propTypes = {
   show: PropTypes.bool,
   label: PropTypes.string,
   isFID: PropTypes.bool,
-  onAxisDidMount: PropTypes.func,
 };
 
 XAxis.defaultProps = {
@@ -120,7 +109,4 @@ XAxis.defaultProps = {
   show: true,
   label: '',
   isFID: true,
-  onAxisDidMount: () => {
-    return null;
-  },
 };

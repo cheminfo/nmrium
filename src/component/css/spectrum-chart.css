@@ -16,6 +16,8 @@ body { font: 12px Arial;}
   rder-bottom:0.55px solid gray; */
 }
 
+
+
 .MuiToggleButton-root
 {
   text-transform: none !important;
@@ -29,8 +31,7 @@ body { font: 12px Arial;}
 }
 
 
-path {
-  /* stroke: steelblue; */
+.paths path {
   stroke-width: 1;
   fill: none;
 }
@@ -76,4 +77,14 @@ path {
 
 .MuiToggleButton-sizeSmall {
   height: 30px !important;
+}
+
+
+ .handle div:last-child a[title="Minimize"] {
+  display: none !important;
+}
+
+
+.handle div:last-child a[title="Close"] {
+  display: none !important;
 }
