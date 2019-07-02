@@ -11,7 +11,7 @@ import json2 from '../samples/test.json';
 import ChartWindow from '../component/chart-window';
 
 const width = 650;
-const height = 400;
+const height = 200;
 const margin = { top: 20, right: 40, bottom: 40, left: 40 };
 
  const data = [
@@ -63,14 +63,14 @@ storiesOf('1d spectrum samples', module)
 
  <ChartWindow width={width} height={height} title="Spectrum Chart 1">
       <SpectrumChart
-          data={data}
+          data={data2}
           margin={margin}
         />
       </ChartWindow>
 
       <ChartWindow width={width} height={height} title="Spectrum Chart 2">
       <SpectrumChart
-          data={data}
+          data={data2}
           margin={margin}
         />
       </ChartWindow>
