@@ -3,15 +3,16 @@ import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 import reduce from '../util/reduce';
 
-
-const Lines = ({ width, height, margin, data, domain }) => {
-
-
+const Lines = ({ width, height, margin, data, xDomain,yDomain }) => {
   const refPathsContainer = useRef();
+  // const [_data,setData]=useState(data);
 
-   function makePath(data) {
-    const scale = getScale(domain);
-    const pathPoints = reduce(data.x,data.y,{from:domain.x[0],to:domain.x[1]});
+  function makePath(data) {
+    const scale = getScale(xDomain,yDomain);
+    const pathPoints = reduce(data.x, data.y, {
+      from: xDomain[0],
+      to: xDomain[1],
+    });
 
     let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
     path += pathPoints.x.slice(1).map((point, i) => {
@@ -21,14 +22,14 @@ const Lines = ({ width, height, margin, data, domain }) => {
     return path;
   }
 
-
-  function getScale(domain) {
-    const x = d3.scaleLinear(domain.x, [margin.left, width - margin.right]);
-    const y = d3.scaleLinear(domain.y, [height - margin.bottom, margin.top]);
+  function getScale(xDomain,yDomain) {
+    const x = d3.scaleLinear(xDomain, [margin.left, width - margin.right]);
+    const y = d3.scaleLinear(yDomain, [height - margin.bottom, margin.top]);
     return { x, y };
   }
 
   function generatePaths() {
+
     return data.map((d, i) => {
       return (
         <path className="line" key={d.id} stroke={d.color} d={makePath(d)} />
@@ -36,8 +37,10 @@ const Lines = ({ width, height, margin, data, domain }) => {
     });
   }
 
+
+
   return (
-    <React.Fragment>
+    <g>
       <defs>
         <clipPath id="clip">
           <rect
@@ -52,7 +55,7 @@ const Lines = ({ width, height, margin, data, domain }) => {
       <g className="paths" ref={refPathsContainer} clipPath="url(#clip)">
         {generatePaths()}
       </g>
-    </React.Fragment>
+    </g>
   );
 };
 
@@ -68,10 +71,12 @@ Lines.propTypes = {
     bottom: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
   }),
-  domain: PropTypes.shape({
-    x: PropTypes.array.isRequired,
-    y: PropTypes.array.isRequired,
-  }),
+  xDomain:PropTypes.array.isRequired,
+  yDomain:PropTypes.array.isRequired
+  // domain: PropTypes.shape({
+  //   x: PropTypes.array.isRequired,
+  //   y: PropTypes.array.isRequired,
+  // }),
 };
 
 Lines.defaultProps = {
@@ -79,5 +84,7 @@ Lines.defaultProps = {
   height: 800,
   data: [],
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
-  domain: { x: 0, y: 0 },
+  // domain: { x: 0, y: 0 },
+  xDomain:[],
+  yDomain:[]
 };

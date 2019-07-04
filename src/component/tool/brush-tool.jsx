@@ -34,10 +34,10 @@ class BrushTool extends Component {
   }
 
   componentDidMount() {
-    d3.select(this.refs.brush)
-      .call(this.brush)
-      .call(this.zoom)
-      .on('dblclick.zoom', null);
+    // d3.select(this.refs.brush)
+    //   .call(this.brush)
+    //   .call(this.zoom)
+    //   .on('dblclick.zoom', null);
   }
 
   brushEnd = () => {
@@ -107,12 +107,12 @@ class BrushTool extends Component {
     d3.select(this.refs.brush)
       .selectAll('*')
       .remove();
-    d3.select(this.refs.brush)
-      .call(this.brush)
-      .call(this.zoom)
-      .on('dblclick.zoom', null);
 
     if (isActive) {
+      d3.select(this.refs.brush)
+        .call(this.brush)
+        .call(this.zoom)
+        .on('dblclick.zoom', null);
       this.brush.on('end', this.brushEnd);
       this.zoom.on('zoom', this.zoomed);
     } else {

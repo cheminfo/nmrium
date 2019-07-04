@@ -13,7 +13,7 @@ function App() {
 
   const width = 800;
   const height = 200;
-  const margin = { top: 40, right: 40, bottom: 40, left: 40 };
+  const margin = { top: 0, right: 40, bottom: 40, left: 40 };
 
   const data = [
     // array of spectra. They will share the same axis
@@ -76,21 +76,21 @@ function App() {
       >
         <TitleBar title="Spectrum Chart" controls/> */}
       {/* <Text color={this.props.theme === 'dark' ? 'white' : '#333'}>Hello World</Text> */}
-      {/* <ChartWindow width={width} height={height} title="Spectrum Chart">
+      <ChartWindow width={width} height={height} title="Spectrum Chart">
       <SpectrumChart
           data={data}
           margin={margin}
         />
-      </ChartWindow> */}
+      </ChartWindow>
       
 
-  <SpectrumChart
+  {/* <SpectrumChart
           width={width}
           height={height}
           data={data}
           margin={margin}
       
-        /> 
+        />  */}
       {/* <SpectrumChart
           width={width}
           height={height}

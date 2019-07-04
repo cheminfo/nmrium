@@ -6,30 +6,26 @@ const YAxis = ({
   width,
   height,
   margin,
-  data,
   show,
   label,
-  onAxisDidMount,
   domain,
 }) => {
   const refaxis = useRef();
 
-  const axis = d3
-    .axisLeft()
-    .ticks(10)
-    .tickFormat(d3.format('~s'));
-
-  const scale = getScale(data);
-
-  function getScale(data) {
-    const scale = d3.scaleLinear(domain, [height - margin.bottom, margin.top]);
-    return scale;
-  }
 
   useEffect(() => {
+
+
     if (show) {
+      const scale = d3.scaleLinear(domain, [height - margin.bottom, margin.top]);
+      const axis = d3
+      .axisLeft()
+      .ticks(10)
+      .tickFormat(d3.format('~s'));
       d3.select(refaxis.current).call(axis.scale(scale));
     }
+
+   
   }, [domain]);
 
   return show ? (

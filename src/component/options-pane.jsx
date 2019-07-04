@@ -3,6 +3,7 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import CropFree from '@material-ui/icons/CropFree';
 import ZoomIn from '@material-ui/icons/ZoomIn';
+import Timeline from '@material-ui/icons/Timeline';
 
 // const GreenRadio = withStyles({
 //   root: {
@@ -17,6 +18,8 @@ import ZoomIn from '@material-ui/icons/ZoomIn';
 export let options = {
   zoom: { id: 'zoom', label: 'Zoom' },
   brush: { id: 'brush', label: 'Brush' },
+  peaktool: { id: 'peakTool', label: 'Peak Tool' },
+
 };
 
 const OptionsPane = ({ onChangeOption }) => {
@@ -44,6 +47,12 @@ const OptionsPane = ({ onChangeOption }) => {
           <CropFree />
           <label>{options.brush.label}</label>
         </ToggleButton>
+
+        <ToggleButton key={3} value={options.peaktool.id}>
+          <Timeline />
+          <label>{options.peaktool.label}</label>
+        </ToggleButton>
+
       </ToggleButtonGroup>
     </div>
   );

@@ -6,13 +6,11 @@ const XAxis = ({
   width,
   height,
   margin,
-  data,
   domain,
   label,
   show,
   showGrid,
   isFID,
-  onAxisDidMount,
 }) => {
   const xAxis = d3
     .axisBottom()
@@ -27,21 +25,25 @@ const XAxis = ({
 
   const refaxis = useRef();
   const refgrid = useRef();
-  const scale = getScale(data);
+  // const scale = getScale(data);
 
   label = label ? label : isFID ? 'δ [ppm]' : 'time [s]';
 
-  function getScale(data) {
-    const scale = d3.scaleLinear(
-      [domain[0], domain[1]],
-      [width - margin.right,margin.left],
-    );
+  // function getScale(data) {
+  //   const scale = d3.scaleLinear(
+  //     [domain[0], domain[1]],
+  //     [width - margin.right,margin.left],
+  //   );
 
-    return scale;
-  }
+  //   return scale;
+  // }
 
   useEffect(() => {
     if (show) {
+      const scale = d3.scaleLinear(
+        [domain[0], domain[1]],
+        [width - margin.right,margin.left],
+      );
       d3.select(refaxis.current).call(xAxis.scale(scale));
       d3.select(refgrid.current).call(grid.scale(scale));
     }
@@ -49,6 +51,11 @@ const XAxis = ({
 
   useEffect(() => {
     if (show) {
+
+      const scale = d3.scaleLinear(
+        [domain[0], domain[1]],
+        [width - margin.right,margin.left],
+      );
       d3.select(refaxis.current)
         // .transition()
         // .duration(500)
@@ -56,6 +63,9 @@ const XAxis = ({
 
       d3.select(refgrid.current).call(grid.scale(scale.domain(domain)));
     }
+
+    console.log('alway generated');
+
   }, [domain, height, width]);
 
   return (
