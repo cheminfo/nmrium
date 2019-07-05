@@ -1,7 +1,7 @@
 import baseline from './baseline';
 import { convert } from 'jcampconverter';
 
-export class Data1D {
+export class Datum1D {
   constructor(x, re, im, options = {}) {
     this.x = x;
     this.re = re;
@@ -44,6 +44,6 @@ export class Data1D {
       result.spectra[1].data[0].y
         ? result.spectra[1].data[0].y
         : [];
-    return new Data1D(x, re, im);
+    return new Datum1D(x, re, im);
   };
 }
