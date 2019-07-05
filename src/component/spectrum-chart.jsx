@@ -106,7 +106,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   const getScale = () => {
-    const x = d3.scaleLinear(_xDomain, [margin.left, width - margin.right]);
+    const x = d3.scaleLinear(_xDomain, [width - margin.right,margin.left]);
     const y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
     return { x, y };
   };

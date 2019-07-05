@@ -22,7 +22,7 @@ class BrushTool extends Component {
 
     this.zoom = d3
       .zoom()
-      .scaleExtent([1, Infinity])
+      .scaleExtent([-Infinity, Infinity])
       .translateExtent([
         [margin.left, margin.top],
         [width - margin.right, height - margin.bottom],
@@ -48,13 +48,13 @@ class BrushTool extends Component {
     }
     const [x1, x2] = d3.event.selection;
     const scale = d3.scaleLinear(this.domain.x, [
-      this.margin.left,
       this.width - this.margin.right,
+      this.margin.left
     ]);
 
-    const range = [scale.invert(x1), scale.invert(x2)];
+    const range = [scale.invert(x2), scale.invert(x1)];
     d3.select(this.refs.brush).call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
-
+  console.log(range);
     this.props.onXAxisDomainUpdate(range);
   };
 
@@ -64,11 +64,11 @@ class BrushTool extends Component {
 
     const scale = d3.scaleLinear(this.originDomain.y, [
       this.height - this.margin.bottom,
-      this.margin.top,
+      this.margin.top
     ]);
 
-    const _domain = t.rescaleY(scale).domain();
-    this.props.onYAxisDomainUpdate([0, _domain[1]]);
+    const _domain =  t.rescaleY(scale).domain();
+    this.props.onYAxisDomainUpdate([_domain[0],_domain[1]]);
   };
 
   reset = (e) => {

@@ -18,10 +18,10 @@ class ZoomTool extends Component {
 
     this.zoom = d3
       .zoom()
-      .scaleExtent([1, Infinity])
+      .scaleExtent([-Infinity, Infinity])
       .translateExtent([
         [margin.left, margin.top],
-        [width - margin.right, height - margin.bottom],
+        [this.width - this.margin.right, this.margin.left],
       ])
       .extent([
         [margin.left, margin.top],
@@ -30,7 +30,7 @@ class ZoomTool extends Component {
   }
 
   initZoomArea() {
-    // 
+    //
   }
 
   componentDidMount() {
@@ -85,12 +85,7 @@ class ZoomTool extends Component {
   }
 
   render() {
-    const {
-      isActive,
-      margin,
-      width,
-      height,
-    } = this.props;
+    const { isActive, margin, width, height } = this.props;
     return (
       <g
         className={isActive ? 'zoom-container zoom ' : 'zoom-container'}
@@ -98,10 +93,9 @@ class ZoomTool extends Component {
         ref="zoom"
       >
         <rect
-          width={`${width - margin.left -margin.right}`}
+          width={`${width - margin.left - margin.right}`}
           height={`${height - margin.top - margin.bottom}`}
           transform={`translate(${margin.left},${margin.top})`}
-   
         />
       </g>
     );

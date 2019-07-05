@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import '../css/peak-notification-tool.css';
+import '../css/peak-notification-tool.scss';
 
 export const NotationTemplate = ({ id, x, y, value }) => {
   // console.log(x);
@@ -52,13 +52,17 @@ const PeakNotaion = ({
   const [scale, setScale] = useState();
 
   const getScale = () => {
-    const x = d3.scaleLinear(xDomain, [margin.left, width - margin.right]);
+    const x = d3.scaleLinear(xDomain, [width - margin.right,margin.left]);
     const y = d3.scaleLinear(yDomain, [height - margin.bottom, margin.top]);
     return { x, y };
   };
 
   useEffect(() => {
     setScale(getScale());
+
+
+    console.log(yDomain);
+    
   }, [xDomain, yDomain,width,height]);
 
   return (

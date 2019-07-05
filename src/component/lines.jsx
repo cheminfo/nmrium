@@ -23,8 +23,8 @@ const Lines = ({ width, height, margin, data, xDomain,yDomain }) => {
   }
 
   function getScale(xDomain,yDomain) {
-    const x = d3.scaleLinear(xDomain, [margin.left, width - margin.right]);
-    const y = d3.scaleLinear(yDomain, [height - margin.bottom, margin.top]);
+    const x = d3.scaleLinear(xDomain, [width - margin.right,margin.left]);
+    const y = d3.scaleLinear([0,yDomain[1]], [height - margin.bottom, margin.top]);
     return { x, y };
   }
 
