@@ -1,0 +1,36 @@
+.notification-label:hover{
+    /* background-color: red; */
+    /* display: block; */
+    /* visibility: visible; */
+
+}
+
+.notification-label{
+    /* display: none; */
+    /* visibility: hidden; */
+    stroke:rgba(255, 223, 158,0.5);
+    stroke-opacity: 1;
+    shape-rendering: crispEdges;
+    stroke-dasharray: 4;
+    stroke-width: 0.55px;
+    fill:rgba(255, 223, 158,0.5);
+
+
+}
+
+
+.notifcate-selected{
+    opacity:0;
+ 
+}
+
+.notifcate-selected:hover{
+
+    stroke-opacity: 1;
+    shape-rendering: crispEdges;
+    stroke-dasharray: 4;
+    stroke-width: 0.55;
+    opacity: 0.2;
+
+    
+}

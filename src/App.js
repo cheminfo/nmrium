@@ -12,8 +12,8 @@ function App() {
   //  console.log(json);
 
   const width = 800;
-  const height = 200;
-  const margin = { top: 0, right: 40, bottom: 40, left: 40 };
+  const height = 300;
+  const margin = { top:10, right: 40, bottom: 40, left: 40 };
 
   const data = [
     // array of spectra. They will share the same axis

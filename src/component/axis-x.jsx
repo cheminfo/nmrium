@@ -14,12 +14,12 @@ const XAxis = ({
 }) => {
   const xAxis = d3
     .axisBottom()
-    .ticks(20)
+    .ticks(15)
     .tickFormat(d3.format('0'));
 
   const grid = d3
     .axisBottom()
-    .ticks(20)
+    .ticks(15)
     .tickSize(-(height - margin.top - margin.bottom))
     .tickFormat('');
 

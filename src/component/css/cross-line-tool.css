@@ -1,0 +1,8 @@
+.vertical_line{
+    stroke: rgb(0, 0, 0);
+    stroke-opacity: 1;
+    shape-rendering: crispEdges;
+    /* stroke-dasharray: 4; */
+    stroke-width: 0.55;
+  }
+  

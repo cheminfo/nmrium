@@ -240,7 +240,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               height={height}
               domain={_yDomain}
               label="PPM"
-              show={false}
+              show={true}
             />
 
             <BrushTool
