@@ -1,3 +1,18 @@
+## Testing
+
+There is an automatic build on each commit. You can test the application at:
+
+https://cheminfo.github.io/nmr-displayer/
+
+## Install and test locally
+
+```
+git clone https://github.com/cheminfo/nmr-displayer.git
+cd nmr-displayer
+npm i
+npm start
+```
+
 ## General information about the programmation
 
 * Useful vscode plugins:
@@ -20,7 +35,4 @@ The idea is to use the approach described in the bottom of the document:
 "React for element creation, D3 as the visualization kernel" : 
 https://medium.com/@Elijah_Meeks/interactive-applications-with-react-d3-f76f7b3ebc71
 
-## Example of data
-
-We will add more example in `data-set`
 
