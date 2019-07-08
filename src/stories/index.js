@@ -13,6 +13,16 @@ import ChartWindow from '../component/chart-window';
 const width = 650;
 const height = 200;
 const margin = { top: 20, right: 40, bottom: 40, left: 40 };
+const real_data ={
+  id: '2',
+  isHover: false,
+  x:{...json2}.x,
+  y:{...json2}.y,
+  color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
+  isFid: true, // allows to determine the label of the axis
+  is2D: false, // TODO: need to define where to put the spectrum if it is 1D
+  color: 'green',
+};
 
  const data = [
   // array of spectra. They will share the same axis
@@ -48,7 +58,7 @@ const data2 = [
 ];
 
 storiesOf('1d spectrum samples', module)
-.add('sample 1 with 100 points', () =>   <SpectrumChart  width={width} height={height} data={data} margin={margin}  updateRange={(d)=>{console.log(d)}}/>)
+.add('sample 1 with 100 points', () =>   <SpectrumChart  width={width} height={height} data={real_data} margin={margin}  updateRange={(d)=>{console.log(d)}}/>)
 .add('sample 2 (real sample) with more than 500k points',
 () => 
 <div>
@@ -63,14 +73,14 @@ storiesOf('1d spectrum samples', module)
 
  <ChartWindow width={width} height={height} title="Spectrum Chart 1">
       <SpectrumChart
-          data={data2}
+          data={real_data}
           margin={margin}
         />
       </ChartWindow>
 
       <ChartWindow width={width} height={height} title="Spectrum Chart 2">
       <SpectrumChart
-          data={data2}
+          data={real_data}
           margin={margin}
         />
       </ChartWindow>

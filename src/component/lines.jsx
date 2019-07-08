@@ -1,43 +1,47 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, Fragment } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 import reduce from '../util/reduce';
 
-const Lines = ({ width, height, margin, data, xDomain,yDomain }) => {
+const Lines = ({ width, height, margin, data, xDomain, yDomain }) => {
   const refPathsContainer = useRef();
-  // const [_data,setData]=useState(data);
+  // const [paths, setPaths] = useState([]);
 
   function makePath(data) {
-    const scale = getScale(xDomain,yDomain);
+    const scale = getScale(xDomain, yDomain);
     const pathPoints = reduce(data.x, data.y, {
       from: xDomain[0],
       to: xDomain[1],
     });
 
     let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
-    path += pathPoints.x.slice(1).map((point, i) => {
-      return ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
-    });
+
+    path += pathPoints.x
+      .slice(1)
+      .map((point, i) => {
+        return ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
+      })
+      .join('');
+    // console.log(path);
 
     return path;
   }
 
-  function getScale(xDomain,yDomain) {
-    const x = d3.scaleLinear(xDomain, [width - margin.right,margin.left]);
-    const y = d3.scaleLinear([0,yDomain[1]], [height - margin.bottom, margin.top]);
+  // useEffect(() => {
+  //   const paths = data.map((d, i) => {
+  //     return { path: makePath(d), id: d.id, color: d.color };
+  //   });
+
+  //   setPaths(paths);
+  // }, [xDomain, yDomain]);
+
+  function getScale(xDomain, yDomain) {
+    console.log(width);
+    console.log(height);
+    const x = d3.scaleLinear(xDomain, [width - margin.right, margin.left]);
+    const y = d3.scaleLinear(yDomain, [height - margin.bottom, margin.top]);
     return { x, y };
   }
-
-  function generatePaths() {
-
-    return data.map((d, i) => {
-      return (
-        <path className="line" key={d.id} stroke={d.color} d={makePath(d)} />
-      );
-    });
-  }
-
-
 
   return (
     <g>
@@ -53,7 +57,9 @@ const Lines = ({ width, height, margin, data, xDomain,yDomain }) => {
       </defs>
 
       <g className="paths" ref={refPathsContainer} clipPath="url(#clip)">
-        {generatePaths()}
+        {/* {paths.map((d, i) => ( */}
+          <path className="line" key={data.id} stroke={data.color} d={makePath(data)} />
+        {/* ))} */}
       </g>
     </g>
   );
@@ -71,8 +77,8 @@ Lines.propTypes = {
     bottom: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
   }),
-  xDomain:PropTypes.array.isRequired,
-  yDomain:PropTypes.array.isRequired
+  xDomain: PropTypes.array.isRequired,
+  yDomain: PropTypes.array.isRequired,
   // domain: PropTypes.shape({
   //   x: PropTypes.array.isRequired,
   //   y: PropTypes.array.isRequired,
@@ -85,6 +91,6 @@ Lines.defaultProps = {
   data: [],
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
   // domain: { x: 0, y: 0 },
-  xDomain:[],
-  yDomain:[]
+  xDomain: [],
+  yDomain: [],
 };

@@ -40,9 +40,10 @@ const XAxis = ({
 
   useEffect(() => {
     if (show) {
+      console.log(domain);
       const scale = d3.scaleLinear(
         [domain[0], domain[1]],
-        [width - margin.right,margin.left],
+        [width - margin.right, margin.left],
       );
       d3.select(refaxis.current).call(xAxis.scale(scale));
       d3.select(refgrid.current).call(grid.scale(scale));
@@ -51,10 +52,9 @@ const XAxis = ({
 
   useEffect(() => {
     if (show) {
-
       const scale = d3.scaleLinear(
         [domain[0], domain[1]],
-        [width - margin.right,margin.left],
+        [width - margin.right, margin.left],
       );
       d3.select(refaxis.current)
         // .transition()
@@ -65,7 +65,6 @@ const XAxis = ({
     }
 
     console.log('alway generated');
-
   }, [domain, height, width]);
 
   return (
@@ -97,7 +96,6 @@ export default XAxis;
 XAxis.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  data: PropTypes.array.isRequired,
   margin: PropTypes.shape({
     top: PropTypes.number.isRequired,
     right: PropTypes.number.isRequired,
@@ -113,7 +111,6 @@ XAxis.propTypes = {
 XAxis.defaultProps = {
   width: 800,
   height: 800,
-  data: [],
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
   showGrid: false,
   show: true,

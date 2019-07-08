@@ -15,6 +15,18 @@ function App() {
   const height = 300;
   const margin = { top:10, right: 40, bottom: 40, left: 40 };
 
+  const real_data ={
+    id: '2',
+    isHover: false,
+    x:{...json}.x,
+    y:{...json}.y,
+    color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
+    isFid: true, // allows to determine the label of the axis
+    is2D: false, // TODO: need to define where to put the spectrum if it is 1D
+    color: 'green',
+  };
+  
+  
   const data = [
     // array of spectra. They will share the same axis
     // each series is a React component in the SVG dom
@@ -78,7 +90,7 @@ function App() {
       {/* <Text color={this.props.theme === 'dark' ? 'white' : '#333'}>Hello World</Text> */}
       <ChartWindow width={width} height={height} title="Spectrum Chart">
       <SpectrumChart
-          data={data}
+          data={real_data}
           margin={margin}
         />
       </ChartWindow>

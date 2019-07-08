@@ -61,6 +61,7 @@ class BrushTool extends Component {
   zoomed = () => {
     // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
     let t = d3.event.transform;
+    
 
     const scale = d3.scaleLinear(this.originDomain.y, [
       this.height - this.margin.bottom,
@@ -68,7 +69,7 @@ class BrushTool extends Component {
     ]);
 
     const _domain =  t.rescaleY(scale).domain();
-    this.props.onYAxisDomainUpdate([_domain[0],_domain[1]]);
+    this.props.onYAxisDomainUpdate([0,_domain[1]]);
   };
 
   reset = (e) => {
@@ -139,7 +140,7 @@ export default BrushTool;
 BrushTool.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.any,
   margin: PropTypes.shape({
     top: PropTypes.number.isRequired,
     right: PropTypes.number.isRequired,
@@ -157,7 +158,7 @@ BrushTool.propTypes = {
 BrushTool.defaultProps = {
   width: 800,
   height: 800,
-  data: [],
+  data: {},
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
   domain: [],
   originDomain: [],

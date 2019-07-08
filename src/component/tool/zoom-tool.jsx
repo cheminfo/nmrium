@@ -42,8 +42,8 @@ class ZoomTool extends Component {
     // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
     let t = d3.event.transform;
     const scale = d3.scaleLinear(this.originDomain.x, [
-      this.margin.left,
       this.width - this.margin.right,
+      this.margin.left,
     ]);
 
     const _domain = t.rescaleX(scale).domain();

@@ -5,17 +5,41 @@
 
 }
 
+.notification-input{
+    background-color: rgb(255, 223, 158);
+    border: 0.55px solid rgb(219, 146, 0);
+    width: calc(100% - 10px) !important;
+    border: 0.55px solid rgb(219, 146, 0);
+
+}
+.input-over{
+    background-color: rgb(151, 185, 0);
+    border: 0.55px solid rgb(85, 104, 0);
+
+   
+}
+
 .notification-label{
     /* display: none; */
     /* visibility: hidden; */
-    stroke:rgba(255, 223, 158,0.5);
+    /* stroke:rgba(255, 223, 158,0.5);
     stroke-opacity: 1;
     shape-rendering: crispEdges;
     stroke-dasharray: 4;
     stroke-width: 0.55px;
-    fill:rgba(255, 223, 158,0.5);
+    fill:rgba(255, 223, 158,0.5); */
+    display: none;
+
+}
 
 
+
+.notification-group-over{
+    z-index: 9999999999;
+}
+
+.notification-group{
+    z-index: 1;
 }
 
 
@@ -24,7 +48,7 @@
  
 }
 
-.notifcate-selected:hover{
+/* .notifcate-selected:hover{
 
      stroke-opacity: 1;
      shape-rendering: crispEdges;
@@ -32,4 +56,4 @@
      stroke-width: 0.55;
      opacity: 0.2;
     
-}
+} */

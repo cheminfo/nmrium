@@ -30,10 +30,18 @@ body { font: 12px Arial;}
   border-bottom:2px solid rgb(255, 0, 24);
 }
 
+.paths{
+  -webkit-clip-path: url("#clip");
+  clip-path: url("#clip");
+
+}
+
 
 .paths path {
-  stroke-width: 1;
+  stroke-width: 1.5;
   fill: none;
+  stroke-linejoin:round;
+  stroke-linecap:round;
 }
 
 .axis path,

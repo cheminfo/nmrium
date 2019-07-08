@@ -26,7 +26,7 @@ const YAxis = ({
     }
 
    
-  }, [domain]);
+  }, [domain,width,height]);
 
   return show ? (
     <React.Fragment>
@@ -55,7 +55,6 @@ export default YAxis;
 YAxis.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  data: PropTypes.array.isRequired,
   margin: PropTypes.shape({
     top: PropTypes.number.isRequired,
     right: PropTypes.number.isRequired,
@@ -70,7 +69,6 @@ YAxis.propTypes = {
 YAxis.defaultProps = {
   width: 800,
   height: 800,
-  data: [],
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
   showGrid: false,
   show: true,

@@ -44,10 +44,9 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 
   useEffect(() => {
     console.log(width);
+   console.log(data);
 
     const domain = getDomain(data);
-    console.log(domain);
-
     setOriginDomain(domain);
     setXDomain(domain.x);
     setYDomain(domain.y);
@@ -69,15 +68,21 @@ const SpectrumChart = ({ margin, width, height, data }) => {
    * get Domain for x axis and y axis
    * @param {array} data
    */
-  function getDomain(data = []) {
-    let xArray = [];
-    let yArray = [];
+  // function getDomain(data = []) {
+  //   let xArray = [];
+  //   let yArray = [];
 
-    for (let d of data) {
-      xArray = xArray.concat(d['x']);
-      yArray = yArray.concat(d['y']);
-    }
-    return { x: d3.extent(xArray), y: d3.extent(yArray) };
+  //   for (let d of data) {
+  //     xArray = xArray.concat(d['x']);
+  //     yArray = yArray.concat(d['y']);
+  //   }
+  //   return { x: d3.extent(xArray), y: d3.extent(yArray) };
+  // }
+
+  function getDomain(data) {
+
+    console.log(data);
+    return { x: [data.x[0], data.x[data.x.length - 1]], y: d3.extent(data.y) };
   }
 
   const handleXDomainUpdate = (xDomain) => {
@@ -106,32 +111,76 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   const getScale = () => {
-    const x = d3.scaleLinear(_xDomain, [width - margin.right,margin.left]);
+    const x = d3.scaleLinear(_xDomain, [width - margin.right, margin.left]);
     const y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
     return { x, y };
   };
 
-
-
-  const handleAddPeak=(e)=>{
+  function getClosePeak(xShift = 5) {
     const scale = getScale();
-    const points = [...peakNotations];
-    points.push({
-      x: scale.x.invert(rulersCoordinates.x),
-      y: scale.y.invert(rulersCoordinates.y),
-      id:scale.x.invert(rulersCoordinates.x).toString()+"-"+scale.y.invert(rulersCoordinates.y)
-    });
-    setPeakNotaions(points);
+    const zoon = [
+      scale.x.invert(rulersCoordinates.x - xShift),
+      scale.x.invert(rulersCoordinates.x + xShift),
+    ];
+    console.log(zoon);
+
+    var maxIndex = data.x.findIndex((number) => number >= zoon[0]) - 1;
+    var minIndex = data.x.findIndex((number) => number >= zoon[1]);
+
+    const selctedYData = data.y.slice(minIndex, maxIndex);
+
+    const peakYValue = d3.max(selctedYData);
+    const xIndex = selctedYData.findIndex((value) => value === peakYValue);
+    const peakXValue = data.x[minIndex + xIndex];
+
+    return { x: peakXValue, y: peakYValue };
   }
 
+  const handleAddPeak = (e) => {
+    const peak = getClosePeak(10);
+    const points = [...peakNotations];
+
+    if (
+      peakNotations.findIndex(
+        (nelement) => nelement.id === peak.x.toString() + '-' + peak.y,
+      ) == -1
+    ) {
+      points.push({
+        x: peak.x,
+        y: peak.y,
+        id: peak.x.toString() + '-' + peak.y,
+      });
+
+      // points.push({
+      //   x: scale.x.invert(rulersCoordinates.x),
+      //   y: scale.y.invert(rulersCoordinates.y),
+      //   id:scale.x.invert(rulersCoordinates.x).toString()+"-"+scale.y.invert(rulersCoordinates.y)
+      // });
+      setPeakNotaions(points);
+    }
+  };
+
+  const handleOnPeakChange = (e) => {
+    const _peakNotations = [...peakNotations];
+    const notificationInex = _peakNotations.findIndex(
+      (item) => item.id === e.id,
+    );
+    // const notification  = {...peakNotations[notificationInex]};
+    _peakNotations[notificationInex].x = parseFloat(e.value);
+    console.log(_peakNotations);
+
+    // peakNotations[notificationInex] = notification;
+
+    setPeakNotaions(_peakNotations);
+
+    console.log(e);
+  };
+
   const mouseClick = (e) => {
-    
     //activat selected peak tool
     if (_toolOption.peakTool) {
-      
       handleAddPeak(e);
     }
-
   };
 
   // const handleXAxisDidMount = (xDomain) => {
@@ -202,16 +251,13 @@ const SpectrumChart = ({ margin, width, height, data }) => {
           width={width}
           height={height}
         >
-
-          
-<CrossLineCursorTool
+          <CrossLineCursorTool
             position={rulersCoordinates}
             // postion_y={yCoordinate}
             margin={margin}
             width={width}
             height={height}
           />
-     
 
           {(_xDomain, _yDomain) ? (
             <Lines
@@ -240,7 +286,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               height={height}
               domain={_yDomain}
               label="PPM"
-              show={false}
+              show={true}
             />
 
             <BrushTool
@@ -267,8 +313,6 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             />
           </g>
 
-
-
           <PeakNotaion
             notationData={peakNotations}
             xDomain={_xDomain}
@@ -276,9 +320,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             margin={margin}
             width={width}
             height={height}
+            onPeakValueChange={handleOnPeakChange}
           />
-
-
         </svg>
       </div>
     </div>
