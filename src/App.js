@@ -96,13 +96,13 @@ function App() {
       </ChartWindow>
       
 
-  {/* <SpectrumChart
+  <SpectrumChart
           width={width}
           height={height}
-          data={data}
+          data={real_data}
           margin={margin}
       
-        />  */}
+        /> 
       {/* <SpectrumChart
           width={width}
           height={height}

@@ -80,8 +80,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   const mouseMove = (e) => {
-    const mousex = e.pageX - refSVG.current.getBoundingClientRect().left;
-    const mousey = e.pageY - refSVG.current.getBoundingClientRect().top;
+    const mousex = e.clientX - refSVG.current.getBoundingClientRect().left;
+    const mousey = e.clientY - refSVG.current.getBoundingClientRect().top;
     requestAnimationFrame(() => {
       setRullerCoordinates({ x: mousex, y: mousey });
     });
@@ -188,10 +188,10 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         getScale: getScale,
       }}
     >
-      <div
+      <div ref={refMain}
         className="main-container"
-        className={classes.root}
-        // style={{ width: `${width}px` }}
+        // className={classes.root}
+        style={{ width: `${width+toolbarWidth}px` }}
       >
         <Grid container spacing={0}>
           <Grid item xs={1}>
@@ -203,7 +203,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               }}
             />
           </Grid>
-          <Grid ref={refMain} item xs={11}>
+          <Grid  item xs={11}>
             <svg
               ref={refSVG}
               onMouseMove={mouseMove}

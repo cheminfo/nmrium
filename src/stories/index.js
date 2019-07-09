@@ -12,7 +12,7 @@ import ChartWindow from '../component/chart-window';
 
 const width = 650;
 const height = 200;
-const margin = { top: 20, right: 40, bottom: 40, left: 40 };
+const margin = { top: 0, right: 0, bottom: 40, left: 0 };
 const real_data ={
   id: '2',
   isHover: false,
@@ -47,7 +47,7 @@ const data2 = [
   {
     id: "2",
     isHover: false,
-    x:{...json2}.x.reverse(),
+    x:{...json2}.x,
     y:{...json2}.y,
     color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
     isFid: true, // allows to determine the label of the axis
@@ -58,15 +58,8 @@ const data2 = [
 ];
 
 storiesOf('1d spectrum samples', module)
-.add('sample 1 with 100 points', () =>   <SpectrumChart  width={width} height={height} data={real_data} margin={margin}  updateRange={(d)=>{console.log(d)}}/>)
-.add('sample 2 (real sample) with more than 500k points',
-() => 
-<div>
- <p>improved performance by using function to reduce the number of points, the quality will increas whn you zoom in</p> 
- <SpectrumChart  width={width} height={height} data={data2} margin={margin}  updateRange={(d)=>{console.log(d)}}/>
- </div>
- )
- .add('sample 3 500k points with window container',
+.add('sample 1 with 100 points', () =>   <SpectrumChart  width={width} height={height} data={real_data} margin={margin} />)
+.add('sample 3 500k points with window container',
 () => 
 <div>
  <p>More than one Chart Window</p> 
