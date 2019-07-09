@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 class BrushTool extends Component {
   constructor(props) {
     super(props);
-    const { width, height, margin, data, domain, originDomain } = this.props;
+    const { width, height, margin } = this.props;
     // this.width = width;
     // this.height = height;
     // this.margin = margin;
