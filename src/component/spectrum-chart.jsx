@@ -1,67 +1,49 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
-import OptionsPane, { options } from './options-pane';
+import ToolBarPane, { options } from './toolbar-pane';
 import YAxis from './axis-y';
 import XAxis from './axis-x';
 import BrushTool from './tool/brush-tool';
 import Lines from './lines';
 import ZoomTool from './tool/zoom-tool';
 import CrossLineCursorTool from './tool/cross-line-tool';
-
 import * as d3 from 'd3';
 import PeakNotaion from './tool/peak-notation-tool';
-// import { Window, TitleBar } from 'react-desktop/windows';
-// import Draggable from 'react-draggable';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import { ChartContext } from './chart-context';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+}));
 
 const SpectrumChart = ({ margin, width, height, data }) => {
   const refSVG = useRef();
   const refMain = useRef();
 
-  const [_xDomain, setXDomain] = useState(0);
-  const [_yDomain, setYDomain] = useState(0);
-  const [_orignDomain, setOriginDomain] = useState([]);
-  const [_toolOption, setToolOption] = useState({
-    brush: false,
-    zoom: true,
-    peakTool: false,
-  });
+  const [_xDomain, setXDomain] = useState([]);
+  const [_yDomain, setYDomain] = useState([]);
+  const [_orignDomain, setOriginDomain] = useState({});
+  const [_selectedTool, setSelectedTool] = useState(options.zoom.id);
 
+  const [toolbarWidth, setToolbarWidth] = useState(0);
   const [rulersCoordinates, setRullerCoordinates] = useState({ x: 0, y: 0 });
-  // const [xCoordinate, setXcoordinate] = useState(0);
-  // const [yCoordinate, setYCoordinate] = useState(0);
-
-  // const [drawAreaCoordinates, setDrawAreaCoordinates] = useState({
-  //   x: 0,
-  //   y: 0,
-  // });
   const [peakNotations, setPeakNotaions] = useState([]);
 
-  // const [_width, setWidth] = useState(width);
-  // const [_height, setHeight] = useState(height);
-  // const [_isMaximized, setIsMaximized] = useState(false);
-  // const [_windowPosition, setWindowPosition] = useState(null);
+  const classes = useStyles();
 
   useEffect(() => {
-    console.log(width);
-   console.log(data);
-
     const domain = getDomain(data);
     setOriginDomain(domain);
     setXDomain(domain.x);
     setYDomain(domain.y);
-  }, []);
+  }, [width, height]);
 
   const handleChangeOption = (option) => {
-    if (option === options.brush.id) {
-      setToolOption({ brush: true, zoom: false, peakTool: false });
-    } else if (option === options.zoom.id) {
-      setToolOption({ brush: false, zoom: true, peakTool: false });
-    } else if (option === options.peaktool.id) {
-      setToolOption({ brush: false, zoom: false, peakTool: true });
-    } else {
-      setToolOption({ brush: false, zoom: false, peakTool: false });
-    }
+    setSelectedTool(option);
   };
 
   /**
@@ -80,7 +62,6 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   // }
 
   function getDomain(data) {
-
     console.log(data);
     return { x: [data.x[0], data.x[data.x.length - 1]], y: d3.extent(data.y) };
   }
@@ -100,13 +81,9 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 
   const mouseMove = (e) => {
     const mousex = e.pageX - refSVG.current.getBoundingClientRect().left;
-    // console.log(refSVG.current.getBoundingClientRect().top);
-    // console.log(refSVG.current.getBoundingClientRect());
     const mousey = e.pageY - refSVG.current.getBoundingClientRect().top;
-
     requestAnimationFrame(() => {
       setRullerCoordinates({ x: mousex, y: mousey });
-      // setXDomain(_orignDomain.x);
     });
   };
 
@@ -165,20 +142,13 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     const notificationInex = _peakNotations.findIndex(
       (item) => item.id === e.id,
     );
-    // const notification  = {...peakNotations[notificationInex]};
     _peakNotations[notificationInex].x = parseFloat(e.value);
-    console.log(_peakNotations);
-
-    // peakNotations[notificationInex] = notification;
-
     setPeakNotaions(_peakNotations);
-
-    console.log(e);
   };
 
   const mouseClick = (e) => {
     //activat selected peak tool
-    if (_toolOption.peakTool) {
+    if (_selectedTool === options.peaktool.id) {
       handleAddPeak(e);
     }
   };
@@ -207,133 +177,112 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   // };
 
   return (
-    // <Draggable
-    //   // axis="x"
-    //   handle=".handle"
-    //   defaultPosition={{ x: 0, y: 0 }}
-    //   position={_windowPosition}
-    //   grid={[25, 25]}
-    //   scale={1}
-    // >
-    //   <Window
-    //     color="white"
-    //     theme="dark"
-    //     chrome
-    //     height={_height+80}
-    //     width={_width}
-    //     // padding="12px"
-    //     background="white"
-    //   >
-    //     <TitleBar
-    //       className="handle"
-    //       title="Spectrum Chart"
-    //       isMaximized={_isMaximized}
-    //       theme="black"
-    //       color="red"
-    //       controls={true}
-    //       onMaximizeClick={toggleMaximize}
-    //       onRestoreDownClick={toggleMaximize}
-    //     />
-
-    <div
-      className="main-container"
-      ref={refMain}
-      style={{ width: `${width}px` }}
+    <ChartContext.Provider
+      value={{
+        margin: margin,
+        width: width - toolbarWidth,
+        height: height,
+        data: data,
+        xDomain: _xDomain,
+        yDomain: _yDomain,
+        getScale: getScale,
+      }}
     >
-      <div>
-        <OptionsPane onChangeOption={handleChangeOption} />
+      <div
+        className="main-container"
+        className={classes.root}
+        // style={{ width: `${width}px` }}
+      >
+        <Grid container spacing={0}>
+          <Grid item xs={1}>
+            <ToolBarPane
+              selectedValue={_selectedTool}
+              onChangeOption={handleChangeOption}
+              toolbarWidth={(w) => {
+                setToolbarWidth(w);
+              }}
+            />
+          </Grid>
+          <Grid ref={refMain} item xs={11}>
+            <svg
+              ref={refSVG}
+              onMouseMove={mouseMove}
+              onClick={mouseClick}
+              width={width - toolbarWidth}
+              height={height}
+            >
+              <CrossLineCursorTool
+                position={rulersCoordinates}
+                margin={margin}
+                width={width - toolbarWidth}
+                height={height}
+              />
+
+              {_xDomain && _yDomain && (
+                <Lines
+                  // margin={margin}
+                  // width={width - toolbarWidth}
+                  // height={height}
+                  // data={data}
+                  // xDomain={_xDomain}
+                  // yDomain={_yDomain}
+                  // getScale={getScale}
+                />
+              )}
+
+              <g className="container">
+                <XAxis
+                  showGrid={true}
+                  isFID={true}
+                />
+
+                <YAxis
+                  label="PPM"
+                  show={false}
+                />
+                {_selectedTool === options.zoom.id && (
+                  <BrushTool
+                    onDomainReset={handleRestDomain}
+                    onXAxisDomainUpdate={handleXDomainUpdate}
+                    onYAxisDomainUpdate={handleYDomainUpdate}
+                    margin={margin}
+                    width={width - toolbarWidth}
+                    height={height}
+                    data={data}
+                    domain={{ x: _xDomain, y: _yDomain }}
+                    originDomain={_orignDomain}
+                    isActive={true}
+                    getScale={getScale}
+                  />
+                )}
+                {/* <ZoomTool
+                  onXAxisDomainUpdate={handleXDomainUpdate}
+                  margin={margin}
+                  width={width - toolbarWidth}
+                  height={height}
+                  data={data}
+                  domain={{ x: _xDomain, y: _yDomain }}
+                  isActive={_toolOption.brush}
+                  getScale={getScale}
+                /> */}
+              </g>
+
+              <PeakNotaion
+                notationData={peakNotations}
+                onPeakValueChange={handleOnPeakChange}
+              />
+            </svg>
+          </Grid>
+        </Grid>
       </div>
-      <div>
-        <svg
-          ref={refSVG}
-          onMouseMove={mouseMove}
-          onClick={mouseClick}
-          width={width}
-          height={height}
-        >
-          <CrossLineCursorTool
-            position={rulersCoordinates}
-            // postion_y={yCoordinate}
-            margin={margin}
-            width={width}
-            height={height}
-          />
-
-          {(_xDomain, _yDomain) ? (
-            <Lines
-              margin={margin}
-              width={width}
-              height={height}
-              data={data}
-              xDomain={_xDomain}
-              yDomain={_yDomain}
-            />
-          ) : null}
-
-          <g className="container">
-            <XAxis
-              margin={margin}
-              width={width}
-              height={height}
-              domain={_xDomain}
-              showGrid={true}
-              isFID={true}
-            />
-
-            <YAxis
-              margin={margin}
-              width={width}
-              height={height}
-              domain={_yDomain}
-              label="PPM"
-              show={true}
-            />
-
-            <BrushTool
-              onDomainReset={handleRestDomain}
-              onXAxisDomainUpdate={handleXDomainUpdate}
-              onYAxisDomainUpdate={handleYDomainUpdate}
-              margin={margin}
-              width={width}
-              height={height}
-              data={data}
-              domain={{ x: _xDomain, y: _yDomain }}
-              originDomain={_orignDomain}
-              isActive={_toolOption.zoom}
-            />
-            <ZoomTool
-              onXAxisDomainUpdate={handleXDomainUpdate}
-              margin={margin}
-              width={width}
-              height={height}
-              data={data}
-              domain={{ x: _xDomain, y: _yDomain }}
-              originDomain={_orignDomain}
-              isActive={_toolOption.brush}
-            />
-          </g>
-
-          <PeakNotaion
-            notationData={peakNotations}
-            xDomain={_xDomain}
-            yDomain={_yDomain}
-            margin={margin}
-            width={width}
-            height={height}
-            onPeakValueChange={handleOnPeakChange}
-          />
-        </svg>
-      </div>
-    </div>
-    // </Window>
-    // </Draggable>
+    </ChartContext.Provider>
   );
 };
 
 SpectrumChart.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.object.isRequired,
   margin: PropTypes.shape({
     top: PropTypes.number.isRequired,
     right: PropTypes.number.isRequired,

@@ -1,17 +1,22 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
+import {ChartContext} from './chart-context';
 
 const XAxis = ({
-  width,
-  height,
-  margin,
-  domain,
   label,
   show,
   showGrid,
   isFID,
 }) => {
+
+  const {height,margin,xDomain,width,getScale} = useContext(ChartContext); 
+  const refaxis = useRef();
+  const refgrid = useRef();
+  // const scale = getScale(data);
+
+  label = label ? label : isFID ? 'δ [ppm]' : 'time [s]';
+
   const xAxis = d3
     .axisBottom()
     .ticks(15)
@@ -23,11 +28,7 @@ const XAxis = ({
     .tickSize(-(height - margin.top - margin.bottom))
     .tickFormat('');
 
-  const refaxis = useRef();
-  const refgrid = useRef();
-  // const scale = getScale(data);
 
-  label = label ? label : isFID ? 'δ [ppm]' : 'time [s]';
 
   // function getScale(data) {
   //   const scale = d3.scaleLinear(
@@ -39,10 +40,10 @@ const XAxis = ({
   // }
 
   useEffect(() => {
+    
     if (show) {
-      console.log(domain);
       const scale = d3.scaleLinear(
-        [domain[0], domain[1]],
+        [xDomain[0], xDomain[1]],
         [width - margin.right, margin.left],
       );
       d3.select(refaxis.current).call(xAxis.scale(scale));
@@ -52,20 +53,19 @@ const XAxis = ({
 
   useEffect(() => {
     if (show) {
-      const scale = d3.scaleLinear(
-        [domain[0], domain[1]],
-        [width - margin.right, margin.left],
-      );
+      // const scale = d3.scaleLinear(
+      //   [domain[0], domain[1]],
+      //   [width - margin.right, margin.left],
+      // );
+      const scale = getScale();
       d3.select(refaxis.current)
         // .transition()
         // .duration(500)
-        .call(xAxis.scale(scale.domain(domain)));
+        .call(xAxis.scale(scale.x.domain(xDomain)));
 
-      d3.select(refgrid.current).call(grid.scale(scale.domain(domain)));
+      d3.select(refgrid.current).call(grid.scale(scale.x.domain(xDomain)));
     }
-
-    console.log('alway generated');
-  }, [domain, height, width]);
+  }, [xDomain, height, width]);
 
   return (
     <React.Fragment>
@@ -93,7 +93,7 @@ const XAxis = ({
 
 export default XAxis;
 
-XAxis.propTypes = {
+XAxis.contextTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   margin: PropTypes.shape({
@@ -109,9 +109,6 @@ XAxis.propTypes = {
 };
 
 XAxis.defaultProps = {
-  width: 800,
-  height: 800,
-  margin: { top: 40, right: 40, bottom: 40, left: 40 },
   showGrid: false,
   show: true,
   label: '',

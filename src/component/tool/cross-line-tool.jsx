@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import '../css/cross-line-tool.css';
+import {ChartContext} from '../chart-context';
 
-const CrossLineCursorTool = ({ position, height, width, margin }) => {
+const CrossLineCursorTool = ({ position }) => {
+  const { height,width,margin } = useContext(ChartContext); 
+
   return (
     <g>
       <line

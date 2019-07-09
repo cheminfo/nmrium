@@ -62,7 +62,7 @@ const ChartWindow = ({width, height,title,children}) => {
 ChartWindow.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.object.isRequired,
   margin: PropTypes.shape({
     top: PropTypes.number.isRequired,
     right: PropTypes.number.isRequired,
@@ -75,7 +75,7 @@ ChartWindow.propTypes = {
 ChartWindow.defaultProps = {
   width: 800,
   height: 800,
-  data: [],
+  data: {},
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
   title:''
 };

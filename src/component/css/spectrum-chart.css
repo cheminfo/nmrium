@@ -2,32 +2,45 @@ body { font: 12px Arial;}
 
 .main-container{
   border: 0.55px #e6e6e6 solid;
-  display: block;
-  margin: 0 auto;
+  /* display: block; */
+  /* margin: 0 auto; */
   /* margin-top: 5px; */
    
 }
 
 
 .option-container{
-  display: flex;
-  padding: 5px;
+  /* display: flex; */
+  /* padding: 5px; */
   /* bo
   rder-bottom:0.55px solid gray; */
 }
 
 
+.MuiGrid-grid-xs-1 {
+  max-width: 40px !important;
+}
 
+
+
+.MuiToggleButtonGroup-root{
+
+  display:grid !important; 
+}
 .MuiToggleButton-root
 {
   text-transform: none !important;
-  
+ border: none !important ;   
 
 }
 
 .MuiToggleButton-root.Mui-selected{
-  background-color: transparent !important;
-  border-bottom:2px solid rgb(255, 0, 24);
+  background-color: #afabab14 !important;
+  border-left:2px solid rgb(207, 2, 53)!important ;   
+}
+
+.MuiToggleButton-label svg,.MuiToggleButton-label .label{
+  font-size: 1.1em;
 }
 
 .paths{

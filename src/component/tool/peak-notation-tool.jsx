@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState, Fragment } from 'react';
-import * as d3 from 'd3';
+import React, { useEffect, useRef, useState, Fragment, useContext } from 'react';
 import PropTypes from 'prop-types';
 import '../css/peak-notification-tool.css';
+import {ChartContext} from '../chart-context';
 
 export const NotationTemplate = ({
   id,
@@ -109,40 +109,25 @@ export const NotationTemplate = ({
 
 const PeakNotaion = ({
   notationData,
-  xDomain,
-  yDomain,
-  height,
-  width,
-  margin,
-  onPeakValueChange,
+  onPeakValueChange
 }) => {
-  const [scale, setScale] = useState();
-  const [notationId, setNotationId] = useState();
+  const { getScale } = useContext(ChartContext); 
 
-  const getScale = () => {
-    const x = d3.scaleLinear(xDomain, [width - margin.right, margin.left]);
-    const y = d3.scaleLinear(yDomain, [height - margin.bottom, margin.top]);
-    return { x, y };
-  };
-
-  useEffect(() => {
-    setScale(getScale());
-
-    console.log(yDomain);
-  }, [xDomain, yDomain, width, height]);
+  // const [notationId, setNotationId] = useState();
 
   const handelOnSelected = (id) => {
     console.log(id);
-    setNotationId(id);
+    // setNotationId(id);
   };
 
   return (
+
     <g>
       {notationData.map((d, i) => (
         <NotationTemplate
           key={i}
-          x={scale.x(d.x)}
-          y={scale.y(d.y)}
+          x={getScale().x(d.x)}
+          y={getScale().y(d.y)}
           id={d.id}
           value={d.x.toFixed(5)}
           onPeakValueChange={onPeakValueChange}
@@ -155,7 +140,7 @@ const PeakNotaion = ({
 
 export default PeakNotaion;
 
-PeakNotaion.propTypes = {
+PeakNotaion.contextTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   margin: PropTypes.shape({
@@ -164,14 +149,6 @@ PeakNotaion.propTypes = {
     bottom: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
   }),
-  xDomain: PropTypes.array.isRequired,
-  yDomain: PropTypes.array.isRequired,
-};
-
-PeakNotaion.defaultProps = {
-  width: 800,
-  height: 800,
-  margin: { top: 40, right: 40, bottom: 40, left: 40 },
-  xDomain: 0,
-  yDomain: 0,
+  xDomain: PropTypes.array,
+  yDomain: PropTypes.array,
 };

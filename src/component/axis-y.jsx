@@ -1,32 +1,28 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
+import {ChartContext} from './chart-context';
 
 const YAxis = ({
-  width,
-  height,
-  margin,
   show,
   label,
-  domain,
 }) => {
   const refaxis = useRef();
+  const {width,height,margin,yDomain,getScale} = useContext(ChartContext);
 
 
   useEffect(() => {
 
-
     if (show) {
-      const scale = d3.scaleLinear([0,domain[1]], [height - margin.bottom, margin.top]);
+      // const scale = d3.scaleLinear([0,domain[1]], [height - margin.bottom, margin.top]);
+      const scale = getScale();
       const axis = d3
       .axisLeft()
       .ticks(10)
       .tickFormat(d3.format('~s'));
-      d3.select(refaxis.current).call(axis.scale(scale));
+      d3.select(refaxis.current).call(axis.scale(scale.y));
     }
-
-   
-  }, [domain,width,height]);
+  }, [width,height,yDomain]);
 
   return show ? (
     <React.Fragment>
@@ -52,7 +48,7 @@ const YAxis = ({
 
 export default YAxis;
 
-YAxis.propTypes = {
+YAxis.contextTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   margin: PropTypes.shape({
@@ -64,12 +60,10 @@ YAxis.propTypes = {
   showGrid: PropTypes.bool,
   show: PropTypes.bool,
   label: PropTypes.string,
+  getScale:PropTypes.func
 };
 
 YAxis.defaultProps = {
-  width: 800,
-  height: 800,
-  margin: { top: 40, right: 40, bottom: 40, left: 40 },
   showGrid: false,
   show: true,
   label: '',
