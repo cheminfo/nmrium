@@ -23,24 +23,26 @@ const useStyles = makeStyles((theme) => ({
 const SpectrumChart = ({ margin, width, height, data }) => {
   const refSVG = useRef();
   const refMain = useRef();
-
+  
+  const [_data,setData] = useState(data);
   const [_xDomain, setXDomain] = useState([]);
   const [_yDomain, setYDomain] = useState([]);
   const [_orignDomain, setOriginDomain] = useState({});
   const [_selectedTool, setSelectedTool] = useState(options.zoom.id);
-
   const [toolbarWidth, setToolbarWidth] = useState(0);
   const [rulersCoordinates, setRullerCoordinates] = useState({ x: 0, y: 0 });
   const [peakNotations, setPeakNotaions] = useState([]);
 
-  const classes = useStyles();
 
   useEffect(() => {
-    const domain = getDomain(data);
+    const domain = getDomain(_data);
     setOriginDomain(domain);
     setXDomain(domain.x);
     setYDomain(domain.y);
-  }, [width, height]);
+
+    console.log(domain);
+
+  }, [_data,width, height]);
 
   const handleChangeOption = (option) => {
     setSelectedTool(option);
@@ -101,14 +103,14 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     ];
     console.log(zoon);
 
-    var maxIndex = data.x.findIndex((number) => number >= zoon[0]) - 1;
-    var minIndex = data.x.findIndex((number) => number >= zoon[1]);
+    var maxIndex = _data.x.findIndex((number) => number >= zoon[0]) - 1;
+    var minIndex = _data.x.findIndex((number) => number >= zoon[1]);
 
-    const selctedYData = data.y.slice(minIndex, maxIndex);
+    const selctedYData = _data.y.slice(minIndex, maxIndex);
 
     const peakYValue = d3.max(selctedYData);
     const xIndex = selctedYData.findIndex((value) => value === peakYValue);
-    const peakXValue = data.x[minIndex + xIndex];
+    const peakXValue = _data.x[minIndex + xIndex];
 
     return { x: peakXValue, y: peakYValue };
   }
@@ -133,18 +135,38 @@ const SpectrumChart = ({ margin, width, height, data }) => {
       //   y: scale.y.invert(rulersCoordinates.y),
       //   id:scale.x.invert(rulersCoordinates.x).toString()+"-"+scale.y.invert(rulersCoordinates.y)
       // });
+
       setPeakNotaions(points);
     }
   };
 
   const handleOnPeakChange = (e) => {
-    const _peakNotations = [...peakNotations];
-    const notificationInex = _peakNotations.findIndex(
-      (item) => item.id === e.id,
-    );
-    _peakNotations[notificationInex].x = parseFloat(e.value);
-    setPeakNotaions(_peakNotations);
+    // const _peakNotations = [...peakNotations];
+    // const notificationInex = _peakNotations.findIndex(
+    //   (item) => item.id === e.id,
+    // );
+    
+    // _peakNotations[notificationInex].x = e.value;
+
+
+    // // setXShift(e.shiftValue);
+    // setPeakNotaions(_peakNotations);
+    shiftXAxis(e.shiftValue);
   };
+
+  function shiftXAxis(shiftValue,id){
+    const data = {..._data};
+        console.log(data)
+        //shifting the x value of the data
+        data.x=  data.x.map(val=>  val+shiftValue );
+        //shifting the notation
+    let  ndata = [...peakNotations];
+         ndata = ndata.map(e=>{ return{x:e.x+shiftValue,y:e.y,id: e.x+shiftValue+ '-' +e.y}}) ;
+
+   setPeakNotaions(ndata);
+     setData(data);
+
+  }
 
   const mouseClick = (e) => {
     //activat selected peak tool
@@ -182,7 +204,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         margin: margin,
         width: width - toolbarWidth,
         height: height,
-        data: data,
+        data: _data,
         xDomain: _xDomain,
         yDomain: _yDomain,
         getScale: getScale,
@@ -248,7 +270,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                     margin={margin}
                     width={width - toolbarWidth}
                     height={height}
-                    data={data}
+                    data={_data}
                     domain={{ x: _xDomain, y: _yDomain }}
                     originDomain={_orignDomain}
                     isActive={true}

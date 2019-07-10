@@ -28,7 +28,11 @@ export const NotationTemplate = ({
 
   const handleSaveChange = (event) => {
     if (event.key === 'Enter') {
-      onPeakValueChange({ id: id, value: event.target.value });
+      const newValue = parseFloat(event.target.value);
+      const oldValue = parseFloat(value);
+      const shiftValue = parseFloat(event.target.value) - parseFloat(value);
+       console.log({ id: id, value: newValue,oldValue:oldValue,shiftValue: shiftValue});
+      onPeakValueChange({ id: id, value: newValue,oldValue:oldValue,shiftValue: shiftValue});
     }
   };
 
@@ -88,6 +92,7 @@ export const NotationTemplate = ({
             value={_value}
             onKeyDown={handleSaveChange}
             onChange={handleChange}
+            type="number"
           />
         </div>
       </foreignObject>
@@ -129,7 +134,7 @@ const PeakNotaion = ({
           x={getScale().x(d.x)}
           y={getScale().y(d.y)}
           id={d.id}
-          value={d.x.toFixed(5)}
+          value={d.x}
           onPeakValueChange={onPeakValueChange}
           onSelected={handelOnSelected}
         />

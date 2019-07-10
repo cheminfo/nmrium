@@ -16,9 +16,8 @@ const margin = { top: 0, right: 0, bottom: 40, left: 0 };
 const real_data ={
   id: '2',
   isHover: false,
-  x:{...json2}.x,
+  x:{...json2}.x.reverse(),
   y:{...json2}.y,
-  color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
   isFid: true, // allows to determine the label of the axis
   is2D: false, // TODO: need to define where to put the spectrum if it is 1D
   color: 'green',

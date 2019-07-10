@@ -16,7 +16,7 @@ class BrushTool extends Component {
     this.brush = d3
       .brushX()
       .extent([
-        [margin.left, margin.top],
+        [0,0],
         [width - margin.right, height - margin.bottom],
       ]);
 
@@ -24,11 +24,11 @@ class BrushTool extends Component {
       .zoom()
       .scaleExtent([-Infinity, Infinity])
       .translateExtent([
-        [margin.left, margin.top],
+        [0,0],
         [width - margin.right, height - margin.bottom],
       ])
       .extent([
-        [margin.left, margin.top],
+        [0,0],
         [width - margin.right, height - margin.bottom],
       ]);
   }
