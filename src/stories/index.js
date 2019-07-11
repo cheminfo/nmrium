@@ -57,7 +57,7 @@ const data2 = [
 ];
 
 storiesOf('1d spectrum samples', module)
-.add('sample 1 with 100 points', () =>   <SpectrumChart  width={width} height={height} data={real_data} margin={margin} />)
+.add('13C 512k points', () =>   <SpectrumChart  width={width} height={height} data={real_data} margin={margin} />)
 .add('sample 3 500k points with window container',
 () => 
 <div>

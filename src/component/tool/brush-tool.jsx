@@ -66,7 +66,7 @@ class BrushTool extends Component {
     ]);
 
     const _domain = t.rescaleY(scale).domain();
-    this.props.onYAxisDomainUpdate([0, _domain[1]]);
+    this.props.onYAxisDomainUpdate(_domain);
   };
 
   reset = (e) => {

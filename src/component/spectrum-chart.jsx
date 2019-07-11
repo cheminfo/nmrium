@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
 import ToolBarPane, { options } from './toolbar-pane';
@@ -13,6 +13,9 @@ import PeakNotaion from './tool/peak-notation-tool';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import { ChartContext } from './chart-context';
+import { useDropzone } from 'react-dropzone';
+import { Datum1D } from '../data/Datum1D';
+import PublishRounded from '@material-ui/icons/PublishRounded';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,10 +24,44 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SpectrumChart = ({ margin, width, height, data }) => {
+  const onDrop = useCallback((acceptedFiles) => {
+    // Do something with the files
+    const reader = new FileReader();
+    acceptedFiles.forEach((file) => {
+      if (!file.name.endsWith('.dx')) {
+        alert('The file must be jcamp file .dx file extention');
+
+      } else {
+        reader.readAsBinaryString(file);
+
+      }
+    });
+
+    reader.onabort = () => console.log('file reading was aborted');
+    reader.onerror = () => console.log('file reading has failed');
+    reader.onload = () => {
+      // Do whatever you want with the file contents
+      if (reader.result) {
+        const fileStr = reader.result.toString();
+        const spectrumData = Datum1D.fromJcamp(fileStr)
+        console.log(_data);
+        const v_data = {..._data};
+        v_data.x = spectrumData.x;
+        v_data.y = spectrumData.im;
+        console.log(v_data);
+        setData(v_data);
+        console.log();
+      }
+      // console.log(binaryStr)
+    };
+
+    console.log(acceptedFiles);
+  }, []);
+
   const refSVG = useRef();
-  const refMain = useRef();
-  
-  const [_data,setData] = useState(data);
+  const chartArea = useRef();
+
+  const [_data, setData] = useState(data);
   const [_xDomain, setXDomain] = useState([]);
   const [_yDomain, setYDomain] = useState([]);
   const [_orignDomain, setOriginDomain] = useState({});
@@ -32,7 +69,11 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   const [toolbarWidth, setToolbarWidth] = useState(0);
   const [rulersCoordinates, setRullerCoordinates] = useState({ x: 0, y: 0 });
   const [peakNotations, setPeakNotaions] = useState([]);
-
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    noClick: true,
+  });
+  const [_width, setWidth] = useState(width);
 
   useEffect(() => {
     const domain = getDomain(_data);
@@ -41,8 +82,16 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     setYDomain(domain.y);
 
     console.log(domain);
+    setWidth(chartArea.current.clientWidth);
+  }, [_data, width, height]);
 
-  }, [_data,width, height]);
+  // useEffect(()=>{
+
+  //   // console.log();
+
+  //   setWidth(chartArea.current.clientWidth);
+
+  // },[]);
 
   const handleChangeOption = (option) => {
     setSelectedTool(option);
@@ -90,7 +139,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   const getScale = () => {
-    const x = d3.scaleLinear(_xDomain, [width - margin.right, margin.left]);
+    const x = d3.scaleLinear(_xDomain, [_width - margin.right, margin.left]);
     const y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
     return { x, y };
   };
@@ -145,27 +194,27 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     // const notificationInex = _peakNotations.findIndex(
     //   (item) => item.id === e.id,
     // );
-    
-    // _peakNotations[notificationInex].x = e.value;
 
+    // _peakNotations[notificationInex].x = e.value;
 
     // // setXShift(e.shiftValue);
     // setPeakNotaions(_peakNotations);
     shiftXAxis(e.shiftValue);
   };
 
-  function shiftXAxis(shiftValue,id){
-    const data = {..._data};
-        console.log(data)
-        //shifting the x value of the data
-        data.x=  data.x.map(val=>  val+shiftValue );
-        //shifting the notation
-    let  ndata = [...peakNotations];
-         ndata = ndata.map(e=>{ return{x:e.x+shiftValue,y:e.y,id: e.x+shiftValue+ '-' +e.y}}) ;
+  function shiftXAxis(shiftValue, id) {
+    const data = { ..._data };
+    console.log(data);
+    //shifting the x value of the data
+    data.x = data.x.map((val) => val + shiftValue);
+    //shifting the notation
+    let ndata = [...peakNotations];
+    ndata = ndata.map((e) => {
+      return { x: e.x + shiftValue, y: e.y, id: e.x + shiftValue + '-' + e.y };
+    });
 
-   setPeakNotaions(ndata);
-     setData(data);
-
+    setPeakNotaions(ndata);
+    setData(data);
   }
 
   const mouseClick = (e) => {
@@ -202,7 +251,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     <ChartContext.Provider
       value={{
         margin: margin,
-        width: width - toolbarWidth,
+        width: _width,
         height: height,
         data: _data,
         xDomain: _xDomain,
@@ -210,11 +259,21 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         getScale: getScale,
       }}
     >
-      <div ref={refMain}
-        className="main-container"
+      <div
         // className={classes.root}
-        style={{ width: `${width+toolbarWidth}px` }}
+        {...getRootProps()}
+        className={isDragActive ? 'main-container over' : 'main-container'}
+        style={{ width: `${width}px` }}
       >
+        <input {...getInputProps()} />
+        {isDragActive && (
+          <div className="drop-zoon-over" style={{ width: `${width}px` }}>
+            <PublishRounded/>
+            <p>Drop your file here</p>
+          </div>
+        )}
+
+        {/* className={isDragActive?'drop-zoon-blur':''} */}
         <Grid container spacing={0}>
           <Grid item xs={1}>
             <ToolBarPane
@@ -225,50 +284,44 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               }}
             />
           </Grid>
-          <Grid  item xs={11}>
+          <Grid ref={chartArea} item xs={11} flexGrow={1}>
             <svg
               ref={refSVG}
               onMouseMove={mouseMove}
               onClick={mouseClick}
-              width={width - toolbarWidth}
+              width={_width}
               height={height}
             >
               <CrossLineCursorTool
                 position={rulersCoordinates}
                 margin={margin}
-                width={width - toolbarWidth}
+                width={_width}
                 height={height}
               />
 
               {_xDomain && _yDomain && (
                 <Lines
-                  // margin={margin}
-                  // width={width - toolbarWidth}
-                  // height={height}
-                  // data={data}
-                  // xDomain={_xDomain}
-                  // yDomain={_yDomain}
-                  // getScale={getScale}
+                // margin={margin}
+                // width={width - toolbarWidth}
+                // height={height}
+                // data={data}
+                // xDomain={_xDomain}
+                // yDomain={_yDomain}
+                // getScale={getScale}
                 />
               )}
 
               <g className="container">
-                <XAxis
-                  showGrid={true}
-                  isFID={true}
-                />
+                <XAxis showGrid={true} isFID={true} />
 
-                <YAxis
-                  label="PPM"
-                  show={false}
-                />
+                <YAxis label="PPM" show={false} />
                 {_selectedTool === options.zoom.id && (
                   <BrushTool
                     onDomainReset={handleRestDomain}
                     onXAxisDomainUpdate={handleXDomainUpdate}
                     onYAxisDomainUpdate={handleYDomainUpdate}
                     margin={margin}
-                    width={width - toolbarWidth}
+                    width={_width}
                     height={height}
                     data={_data}
                     domain={{ x: _xDomain, y: _yDomain }}
