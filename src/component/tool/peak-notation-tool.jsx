@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, Fragment, useContext } from 'react';
 import PropTypes from 'prop-types';
 import '../css/peak-notification-tool.css';
-import {ChartContext} from '../chart-context';
+import {ChartContext} from '../context/chart-context';
 
 export const NotationTemplate = ({
   id,

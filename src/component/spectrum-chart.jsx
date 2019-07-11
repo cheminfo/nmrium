@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, {
+  // useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useReducer,
+} from 'react';
 import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
 import ToolBarPane, { options } from './toolbar-pane';
@@ -6,84 +12,137 @@ import YAxis from './axis-y';
 import XAxis from './axis-x';
 import BrushTool from './tool/brush-tool';
 import Lines from './lines';
-import ZoomTool from './tool/zoom-tool';
+// import ZoomTool from './tool/zoom-tool';
 import CrossLineCursorTool from './tool/cross-line-tool';
 import * as d3 from 'd3';
 import PeakNotaion from './tool/peak-notation-tool';
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import { ChartContext } from './chart-context';
+import { ChartContext } from './context/chart-context';
 import { useDropzone } from 'react-dropzone';
 import { Datum1D } from '../data/Datum1D';
 import PublishRounded from '@material-ui/icons/PublishRounded';
+import { spectrumReducer } from './reducer/reducer';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-}));
+import {
+  SET_ORGINAL_DOMAIN,
+  SET_X_DOMAIN,
+  SET_Y_DOMAIN,
+  SET_WIDTH,
+  SET_POINTER_COORDINATES,
+  SET_SELECTED_TOOL,
+} from './reducer/action';
+
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     flexGrow: 1,
+//   },
+// }));
 
 const SpectrumChart = ({ margin, width, height, data }) => {
-  const onDrop = useCallback((acceptedFiles) => {
-    // Do something with the files
-    const reader = new FileReader();
-    acceptedFiles.forEach((file) => {
-      if (!file.name.endsWith('.dx')) {
-        alert('The file must be jcamp file .dx file extention');
+  const onDrop = useCallback((acceptedFiles) => {});
+  // const onDrop = useCallback((acceptedFiles) => {
+  //   // Do something with the files
+  //   const reader = new FileReader();
+  //   acceptedFiles.forEach((file) => {
+  //     if (!file.name.endsWith('.dx')) {
+  //       alert('The file must be jcamp file .dx file extention');
+  //     } else {
+  //       reader.readAsBinaryString(file);
+  //     }
+  //   });
 
-      } else {
-        reader.readAsBinaryString(file);
+  //   reader.onabort = () => console.log('file reading was aborted');
+  //   reader.onerror = () => console.log('file reading has failed');
+  //   reader.onload = () => {
+  //     // Do whatever you want with the file contents
+  //     if (reader.result) {
+  //       const fileStr = reader.result.toString();
+  //       const spectrumData = Datum1D.fromJcamp(fileStr);
+  //       console.log(_data);
+  //       const v_data = { ..._data };
+  //       v_data.x = spectrumData.x;
+  //       v_data.y = spectrumData.im;
+  //       console.log(v_data);
+  //       setData(v_data);
+  //       console.log();
+  //     }
+  //     // console.log(binaryStr)
+  //   };
 
-      }
-    });
-
-    reader.onabort = () => console.log('file reading was aborted');
-    reader.onerror = () => console.log('file reading has failed');
-    reader.onload = () => {
-      // Do whatever you want with the file contents
-      if (reader.result) {
-        const fileStr = reader.result.toString();
-        const spectrumData = Datum1D.fromJcamp(fileStr)
-        console.log(_data);
-        const v_data = {..._data};
-        v_data.x = spectrumData.x;
-        v_data.y = spectrumData.im;
-        console.log(v_data);
-        setData(v_data);
-        console.log();
-      }
-      // console.log(binaryStr)
-    };
-
-    console.log(acceptedFiles);
-  }, []);
+  //   console.log(acceptedFiles);
+  // }, []);
 
   const refSVG = useRef();
   const chartArea = useRef();
 
-  const [_data, setData] = useState(data);
-  const [_xDomain, setXDomain] = useState([]);
-  const [_yDomain, setYDomain] = useState([]);
-  const [_orignDomain, setOriginDomain] = useState({});
-  const [_selectedTool, setSelectedTool] = useState(options.zoom.id);
-  const [toolbarWidth, setToolbarWidth] = useState(0);
-  const [rulersCoordinates, setRullerCoordinates] = useState({ x: 0, y: 0 });
-  const [peakNotations, setPeakNotaions] = useState([]);
+  const intialState = {
+    _data: data,
+    _xDomain: [],
+    _yDomain: [],
+    _orignDomain: {},
+    _selectedTool: options.zoom.id,
+    _pointerCorrdinates: { x: 0, y: 0 },
+    _peakNotations: [],
+    _width: width,
+    _height: height,
+    _margin: margin,
+  };
+
+  const [state, dispatch] = useReducer(spectrumReducer, intialState);
+  const {
+    _data,
+    _xDomain,
+    _yDomain,
+    _orignDomain,
+    _selectedTool,
+    _pointerCorrdinates,
+    _peakNotations,
+    _width,
+    _height,
+    _margin,
+  } = state;
+
+  // const [_data, setData] = useState(data);
+  // const [_xDomain, setXDomain] = useState([]);
+  // const [_yDomain, setYDomain] = useState([]);
+  // const [_orignDomain, setOriginDomain] = useState({});
+  // const [_selectedTool, setSelectedTool] = useState(options.zoom.id);
+  // // const [toolbarWidth, setToolbarWidth] = useState(0);
+  // const [_rulersCoordinates, setRullerCoordinates] = useState({ x: 0, y: 0 });
+  // const [_peakNotations, setPeakNotaions] = useState([]);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    // onDrop,
     onDrop,
     noClick: true,
   });
-  const [_width, setWidth] = useState(width);
+  // const [_width, setWidth] = useState(width);
+  // const [_height, setHeight] = useState(height);
+  // const [_margin, setMargin] = useState(margin);
+
+  // function getStates(){
+
+  //   return {
+  //     _data,_xDomain,_yDomain,_orignDomain,_rulersCoordinates,_peakNotations,_width,_height,_margin
+  //   }
+  // }
 
   useEffect(() => {
+    console.log(state)
     const domain = getDomain(_data);
-    setOriginDomain(domain);
-    setXDomain(domain.x);
-    setYDomain(domain.y);
 
-    console.log(domain);
-    setWidth(chartArea.current.clientWidth);
-  }, [_data, width, height]);
+    dispatch(state, { type: SET_ORGINAL_DOMAIN, domain: domain });
+    dispatch(state, { type: SET_X_DOMAIN, xDomain: domain.x });
+    dispatch(state, { type: SET_Y_DOMAIN, yDomain: domain.y });
+    dispatch(state, { type: SET_WIDTH, width: chartArea.current.clientWidth });
+
+    // setOriginDomain(domain);
+    // setXDomain(domain.x);
+    // setYDomain(domain.y);
+
+    // console.log(domain);
+    // setWidth(chartArea.current.clientWidth);
+  }, [state._data, width, height]);
 
   // useEffect(()=>{
 
@@ -93,8 +152,9 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 
   // },[]);
 
-  const handleChangeOption = (option) => {
-    setSelectedTool(option);
+  const handleChangeOption = (selectedTool) => {
+    // setSelectedTool(selectedTool);
+    dispatch(state, { type: SET_SELECTED_TOOL, selectedTool });
   };
 
   /**
@@ -118,23 +178,31 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   }
 
   const handleXDomainUpdate = (xDomain) => {
-    setXDomain(xDomain);
+    // setXDomain(xDomain);
+    dispatch(state, { type: SET_X_DOMAIN, xDomain });
   };
 
   const handleYDomainUpdate = (yDomain) => {
-    setYDomain(yDomain);
+    // setYDomain(yDomain);
+    dispatch(state, { type: SET_Y_DOMAIN, yDomain });
   };
 
   const handleRestDomain = (domain) => {
-    setXDomain(domain.x);
-    setYDomain(domain.y);
+    // setXDomain(domain.x);
+    // setYDomain(domain.y);
+    dispatch(state, { type: SET_X_DOMAIN, xDomain: domain.x });
+    dispatch(state, { type: SET_Y_DOMAIN, yDomain: domain.y });
   };
 
   const mouseMove = (e) => {
-    const mousex = e.clientX - refSVG.current.getBoundingClientRect().left;
-    const mousey = e.clientY - refSVG.current.getBoundingClientRect().top;
+    const x = e.clientX - refSVG.current.getBoundingClientRect().left;
+    const y = e.clientY - refSVG.current.getBoundingClientRect().top;
     requestAnimationFrame(() => {
-      setRullerCoordinates({ x: mousex, y: mousey });
+      // setRullerCoordinates({ x: mousex, y: mousey });
+      dispatch(state, {
+        type: SET_POINTER_COORDINATES,
+        pointerCorrdinates: { x, y },
+      });
     });
   };
 
@@ -147,8 +215,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   function getClosePeak(xShift = 5) {
     const scale = getScale();
     const zoon = [
-      scale.x.invert(rulersCoordinates.x - xShift),
-      scale.x.invert(rulersCoordinates.x + xShift),
+      scale.x.invert(_pointerCorrdinates.x - xShift),
+      scale.x.invert(_pointerCorrdinates.x + xShift),
     ];
     console.log(zoon);
 
@@ -166,10 +234,10 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 
   const handleAddPeak = (e) => {
     const peak = getClosePeak(10);
-    const points = [...peakNotations];
+    const points = [..._peakNotations];
 
     if (
-      peakNotations.findIndex(
+      _peakNotations.findIndex(
         (nelement) => nelement.id === peak.x.toString() + '-' + peak.y,
       ) == -1
     ) {
@@ -185,7 +253,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
       //   id:scale.x.invert(rulersCoordinates.x).toString()+"-"+scale.y.invert(rulersCoordinates.y)
       // });
 
-      setPeakNotaions(points);
+      // setPeakNotaions(points);
     }
   };
 
@@ -208,13 +276,13 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     //shifting the x value of the data
     data.x = data.x.map((val) => val + shiftValue);
     //shifting the notation
-    let ndata = [...peakNotations];
+    let ndata = [..._peakNotations];
     ndata = ndata.map((e) => {
       return { x: e.x + shiftValue, y: e.y, id: e.x + shiftValue + '-' + e.y };
     });
 
-    setPeakNotaions(ndata);
-    setData(data);
+    // setPeakNotaions(ndata);
+    // setData(data);
   }
 
   const mouseClick = (e) => {
@@ -268,7 +336,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         <input {...getInputProps()} />
         {isDragActive && (
           <div className="drop-zoon-over" style={{ width: `${width}px` }}>
-            <PublishRounded/>
+            <PublishRounded />
             <p>Drop your file here</p>
           </div>
         )}
@@ -279,12 +347,12 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             <ToolBarPane
               selectedValue={_selectedTool}
               onChangeOption={handleChangeOption}
-              toolbarWidth={(w) => {
-                setToolbarWidth(w);
-              }}
+              // toolbarWidth={(w) => {
+              //   setToolbarWidth(w);
+              // }}
             />
           </Grid>
-          <Grid ref={chartArea} item xs={11} flexGrow={1}>
+          <Grid ref={chartArea} item xs={11}>
             <svg
               ref={refSVG}
               onMouseMove={mouseMove}
@@ -293,7 +361,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               height={height}
             >
               <CrossLineCursorTool
-                position={rulersCoordinates}
+                position={_pointerCorrdinates}
                 margin={margin}
                 width={_width}
                 height={height}
@@ -343,7 +411,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               </g>
 
               <PeakNotaion
-                notationData={peakNotations}
+                notationData={_peakNotations}
                 onPeakValueChange={handleOnPeakChange}
               />
             </svg>

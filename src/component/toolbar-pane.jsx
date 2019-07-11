@@ -23,7 +23,7 @@ export let options = {
   peaktool: { id: 'peakTool', label: 'Peak Tool' },
 };
 
-const ToolBarPane = ({ onChangeOption, toolbarWidth,selectedValue }) => {
+const ToolBarPane = ({ onChangeOption,selectedValue }) => {
   const [option, setOption] = useState();
   const toolbarRef = useRef();
   const handleChange = (event, selectedOption) => {
@@ -34,7 +34,7 @@ const ToolBarPane = ({ onChangeOption, toolbarWidth,selectedValue }) => {
   };
 
   useEffect(() => {
-    toolbarWidth(toolbarRef.current.clientWidth);
+    // toolbarWidth(toolbarRef.current.clientWidth);
     console.log(option);
     setOption(option);
     onChangeOption(selectedValue);

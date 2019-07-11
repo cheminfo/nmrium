@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import {ChartContext} from './chart-context';
+import {ChartContext} from './context/chart-context';
 
 const YAxis = ({
   show,

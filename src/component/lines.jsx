@@ -1,7 +1,7 @@
 import React, { useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import reduce from '../util/reduce';
-import {ChartContext} from './chart-context';
+import {ChartContext} from './context/chart-context';
 // { width, height, margin, data, xDomain, yDomain, getScale }
 const Lines = () => {
   const refPathsContainer = useRef();
