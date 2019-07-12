@@ -1,5 +1,4 @@
 import React, {
-  // useState,
   useEffect,
   useRef,
   useCallback,
@@ -20,7 +19,6 @@ import PeakNotaion from './tool/peak-notation-tool';
 import Grid from '@material-ui/core/Grid';
 import { ChartContext } from './context/chart-context';
 import { useDropzone } from 'react-dropzone';
-import { Datum1D } from '../data/Datum1D';
 import PublishRounded from '@material-ui/icons/PublishRounded';
 import { spectrumReducer } from './reducer/reducer';
 
@@ -31,6 +29,9 @@ import {
   SET_WIDTH,
   SET_POINTER_COORDINATES,
   SET_SELECTED_TOOL,
+  PEAK_PICKING,
+  LOADING_SPECTRUM,
+  SHIFT_SPECTRUM
 } from './reducer/action';
 
 // const useStyles = makeStyles((theme) => ({
@@ -40,38 +41,43 @@ import {
 // }));
 
 const SpectrumChart = ({ margin, width, height, data }) => {
-  const onDrop = useCallback((acceptedFiles) => {});
-  // const onDrop = useCallback((acceptedFiles) => {
-  //   // Do something with the files
-  //   const reader = new FileReader();
-  //   acceptedFiles.forEach((file) => {
-  //     if (!file.name.endsWith('.dx')) {
-  //       alert('The file must be jcamp file .dx file extention');
-  //     } else {
-  //       reader.readAsBinaryString(file);
-  //     }
-  //   });
 
-  //   reader.onabort = () => console.log('file reading was aborted');
-  //   reader.onerror = () => console.log('file reading has failed');
-  //   reader.onload = () => {
-  //     // Do whatever you want with the file contents
-  //     if (reader.result) {
-  //       const fileStr = reader.result.toString();
-  //       const spectrumData = Datum1D.fromJcamp(fileStr);
-  //       console.log(_data);
-  //       const v_data = { ..._data };
-  //       v_data.x = spectrumData.x;
-  //       v_data.y = spectrumData.im;
-  //       console.log(v_data);
-  //       setData(v_data);
-  //       console.log();
-  //     }
-  //     // console.log(binaryStr)
-  //   };
+  const LoadFile =  (acceptedFiles) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      acceptedFiles.forEach((file) => {
+        if (!file.name.endsWith('.dx')) {
+          reject('The file must be jcamp file .dx file extention');
+        } else {
+          reader.readAsBinaryString(file);
+        }
+      });
 
-  //   console.log(acceptedFiles);
-  // }, []);
+      reader.onabort = (e) => reject('file reading was aborted', e);
+      reader.onerror = (e) => reject('file reading has failed', e);
+      reader.onload = () => {
+        // Do whatever you want with the file contents
+        if (reader.result) {
+          const binaryData = reader.result;
+          resolve(binaryData);
+
+        }
+      };
+
+      console.log(acceptedFiles);
+    });
+  };
+
+  const onDrop = useCallback((acceptedFiles) => {
+    // Do something with the file
+     LoadFile(acceptedFiles).then((binaryData)=>{
+               dispatch({type:LOADING_SPECTRUM,binaryData});
+    },(err)=>{
+
+      alert(err)
+    });
+
+  }, []);
 
   const refSVG = useRef();
   const chartArea = useRef();
@@ -103,58 +109,25 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _margin,
   } = state;
 
-  // const [_data, setData] = useState(data);
-  // const [_xDomain, setXDomain] = useState([]);
-  // const [_yDomain, setYDomain] = useState([]);
-  // const [_orignDomain, setOriginDomain] = useState({});
-  // const [_selectedTool, setSelectedTool] = useState(options.zoom.id);
-  // // const [toolbarWidth, setToolbarWidth] = useState(0);
-  // const [_rulersCoordinates, setRullerCoordinates] = useState({ x: 0, y: 0 });
-  // const [_peakNotations, setPeakNotaions] = useState([]);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     // onDrop,
     onDrop,
     noClick: true,
   });
-  // const [_width, setWidth] = useState(width);
-  // const [_height, setHeight] = useState(height);
-  // const [_margin, setMargin] = useState(margin);
-
-  // function getStates(){
-
-  //   return {
-  //     _data,_xDomain,_yDomain,_orignDomain,_rulersCoordinates,_peakNotations,_width,_height,_margin
-  //   }
-  // }
 
   useEffect(() => {
-    console.log(state)
+
     const domain = getDomain(_data);
+    dispatch({ type: SET_ORGINAL_DOMAIN, domain: domain });
+    dispatch({ type: SET_X_DOMAIN, xDomain: domain.x });
+    dispatch({ type: SET_Y_DOMAIN, yDomain: domain.y });
+    dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
 
-    dispatch(state, { type: SET_ORGINAL_DOMAIN, domain: domain });
-    dispatch(state, { type: SET_X_DOMAIN, xDomain: domain.x });
-    dispatch(state, { type: SET_Y_DOMAIN, yDomain: domain.y });
-    dispatch(state, { type: SET_WIDTH, width: chartArea.current.clientWidth });
-
-    // setOriginDomain(domain);
-    // setXDomain(domain.x);
-    // setYDomain(domain.y);
-
-    // console.log(domain);
-    // setWidth(chartArea.current.clientWidth);
   }, [state._data, width, height]);
-
-  // useEffect(()=>{
-
-  //   // console.log();
-
-  //   setWidth(chartArea.current.clientWidth);
-
-  // },[]);
 
   const handleChangeOption = (selectedTool) => {
     // setSelectedTool(selectedTool);
-    dispatch(state, { type: SET_SELECTED_TOOL, selectedTool });
+    dispatch({ type: SET_SELECTED_TOOL, selectedTool });
   };
 
   /**
@@ -178,28 +151,23 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   }
 
   const handleXDomainUpdate = (xDomain) => {
-    // setXDomain(xDomain);
-    dispatch(state, { type: SET_X_DOMAIN, xDomain });
+    dispatch({ type: SET_X_DOMAIN, xDomain });
   };
 
   const handleYDomainUpdate = (yDomain) => {
-    // setYDomain(yDomain);
-    dispatch(state, { type: SET_Y_DOMAIN, yDomain });
+    dispatch({ type: SET_Y_DOMAIN, yDomain });
   };
 
   const handleRestDomain = (domain) => {
-    // setXDomain(domain.x);
-    // setYDomain(domain.y);
-    dispatch(state, { type: SET_X_DOMAIN, xDomain: domain.x });
-    dispatch(state, { type: SET_Y_DOMAIN, yDomain: domain.y });
+    dispatch({ type: SET_X_DOMAIN, xDomain: domain.x });
+    dispatch({ type: SET_Y_DOMAIN, yDomain: domain.y });
   };
 
   const mouseMove = (e) => {
     const x = e.clientX - refSVG.current.getBoundingClientRect().left;
     const y = e.clientY - refSVG.current.getBoundingClientRect().top;
     requestAnimationFrame(() => {
-      // setRullerCoordinates({ x: mousex, y: mousey });
-      dispatch(state, {
+      dispatch({
         type: SET_POINTER_COORDINATES,
         pointerCorrdinates: { x, y },
       });
@@ -212,108 +180,21 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     return { x, y };
   };
 
-  function getClosePeak(xShift = 5) {
-    const scale = getScale();
-    const zoon = [
-      scale.x.invert(_pointerCorrdinates.x - xShift),
-      scale.x.invert(_pointerCorrdinates.x + xShift),
-    ];
-    console.log(zoon);
-
-    var maxIndex = _data.x.findIndex((number) => number >= zoon[0]) - 1;
-    var minIndex = _data.x.findIndex((number) => number >= zoon[1]);
-
-    const selctedYData = _data.y.slice(minIndex, maxIndex);
-
-    const peakYValue = d3.max(selctedYData);
-    const xIndex = selctedYData.findIndex((value) => value === peakYValue);
-    const peakXValue = _data.x[minIndex + xIndex];
-
-    return { x: peakXValue, y: peakYValue };
-  }
-
-  const handleAddPeak = (e) => {
-    const peak = getClosePeak(10);
-    const points = [..._peakNotations];
-
-    if (
-      _peakNotations.findIndex(
-        (nelement) => nelement.id === peak.x.toString() + '-' + peak.y,
-      ) == -1
-    ) {
-      points.push({
-        x: peak.x,
-        y: peak.y,
-        id: peak.x.toString() + '-' + peak.y,
-      });
-
-      // points.push({
-      //   x: scale.x.invert(rulersCoordinates.x),
-      //   y: scale.y.invert(rulersCoordinates.y),
-      //   id:scale.x.invert(rulersCoordinates.x).toString()+"-"+scale.y.invert(rulersCoordinates.y)
-      // });
-
-      // setPeakNotaions(points);
-    }
-  };
 
   const handleOnPeakChange = (e) => {
-    // const _peakNotations = [...peakNotations];
-    // const notificationInex = _peakNotations.findIndex(
-    //   (item) => item.id === e.id,
-    // );
-
-    // _peakNotations[notificationInex].x = e.value;
-
-    // // setXShift(e.shiftValue);
-    // setPeakNotaions(_peakNotations);
-    shiftXAxis(e.shiftValue);
+    dispatch({type:SHIFT_SPECTRUM,shiftValue:e.shiftValue})
   };
 
-  function shiftXAxis(shiftValue, id) {
-    const data = { ..._data };
-    console.log(data);
-    //shifting the x value of the data
-    data.x = data.x.map((val) => val + shiftValue);
-    //shifting the notation
-    let ndata = [..._peakNotations];
-    ndata = ndata.map((e) => {
-      return { x: e.x + shiftValue, y: e.y, id: e.x + shiftValue + '-' + e.y };
-    });
-
-    // setPeakNotaions(ndata);
-    // setData(data);
-  }
-
+ 
   const mouseClick = (e) => {
     //activat selected peak tool
     if (_selectedTool === options.peaktool.id) {
-      handleAddPeak(e);
+      dispatch({
+        type: PEAK_PICKING,
+      });
     }
   };
 
-  // const handleXAxisDidMount = (xDomain) => {
-  //   // setXDomain(xDomain);
-  //   // setOriginalXDomain(xDomain);
-  // };
-
-  // const handleYAxisDidMount = (yDomain) => {
-  //   // setYDomain(yDomain);
-  // };
-
-  // const toggleMaximize = () => {
-  //   setIsMaximized(!_isMaximized);
-  //   if (_isMaximized) {
-  //     setWindowPosition(null);
-
-  //     setWidth(width);
-  //     setHeight(height);
-  //   } else {
-  //     setWindowPosition({ x: 0, y: 0 });
-  //     setWidth(window.innerWidth-5);
-  //     setHeight(window.innerHeight-82);
-  //   }
-  // };
 
   return (
     <ChartContext.Provider

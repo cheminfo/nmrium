@@ -7,9 +7,11 @@ import {
   SET_Y_DOMAIN,
   SET_WIDTH,
   SET_POINTER_COORDINATES,
-  SET_SELECTED_TOOL
+  SET_SELECTED_TOOL,
 } from './action';
+
 import * as d3 from 'd3';
+import { Datum1D } from '../../data/Datum1D';
 
 const getScale = ({ _xDomain, _yDomain, _width, _height, _margin }) => {
   console.log(_xDomain);
@@ -18,12 +20,21 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin }) => {
   return { x, y };
 };
 
+const loadSpectrum = (state,binaryData)=>{
+      console.log(binaryData);
+      const data = Datum1D.fromJcamp(binaryData.toString());
+      const v_data = { ...state._data };
+      v_data.x = data.x;
+      v_data.y = data.im;
+      return {...state,_data:v_data};
+};
+
 const getClosePeak = (xShift, state) => {
   const scale = getScale(state);
-  const { _rulersCoordinates, _data } = state;
+  const { _pointerCorrdinates, _data } = state;
   const zoon = [
-    scale.x.invert(_rulersCoordinates.x - xShift),
-    scale.x.invert(_rulersCoordinates.x + xShift),
+    scale.x.invert(_pointerCorrdinates.x - xShift),
+    scale.x.invert(_pointerCorrdinates.x + xShift),
   ];
   console.log(zoon);
 
@@ -58,6 +69,23 @@ const addPeak = (state) => {
   }
 };
 
+const shiftSpectrumAlongXAxis = (state,shiftValue) =>{
+  const data = { ...state._data };
+  //shifting the x value of the data
+  data.x = data.x.map((val) => val + shiftValue);
+  //shifting the notation
+  let ndata = [...state._peakNotations];
+  ndata = ndata.map((e) => {
+    return { x: e.x + shiftValue, y: e.y, id: e.x + shiftValue + '-' + e.y };
+  });
+
+  return {...state,_peakNotations:ndata,_data:data};
+
+}
+
+
+
+
 const setOrginalDomain = (state, _orignDomain) => {
   return { ...state, _orignDomain };
 };
@@ -75,22 +103,21 @@ const setWidth = (state, _width) => {
 };
 
 const setPointerCoordinates = (state, _pointerCorrdinates) => {
-    return { ...state, _pointerCorrdinates };
-  };
+  return { ...state, _pointerCorrdinates };
+};
 
 const setSelectedTool = (state, _selectedTool) => {
-    return { ...state, _selectedTool };
-  };
+  return { ...state, _selectedTool };
+};
 
 export const spectrumReducer = (state, action) => {
-    console.log(state);
+  console.log(state);
 
   switch (action.type) {
     case PEAK_PICKING:
       return addPeak(state);
-
     case SET_ORGINAL_DOMAIN:
-      return setOrginalDomain(state, action.orignDomain);
+      return setOrginalDomain(state, action.domain);
 
     case SET_X_DOMAIN:
       return setXDomain(state, action.xDomain);
@@ -106,6 +133,12 @@ export const spectrumReducer = (state, action) => {
 
     case SET_SELECTED_TOOL:
       return setSelectedTool(state, action.selectedTool);
+
+    case LOADING_SPECTRUM:
+      return loadSpectrum(state, action.binaryData);
+
+    case SHIFT_SPECTRUM:
+      return shiftSpectrumAlongXAxis(state,action.shiftValue);
 
     default:
       return state;

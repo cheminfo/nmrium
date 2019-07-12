@@ -13,7 +13,7 @@ function App() {
 
   const width = 800;
   const height = 300;
-  const margin = { top:10, right: 0, bottom: 30, left: 0 };
+  const margin = { top:10, right: 20, bottom: 30, left: 0 };
 
   const real_data ={
     id: '2',
