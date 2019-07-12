@@ -3,9 +3,19 @@ import { convert } from 'jcampconverter';
 
 export class Datum1D {
   constructor(x, re, im, options = {}) {
+    this.original = {};
     this.x = x;
     this.re = re;
     this.im = im;
+    this.peaks = []; // array of object {index: xIndex}
+    this.integrals = []; // array of object (from: xIndex, to: xIndex)
+    this.signals = [];
+    this.filters = [
+      {
+        kind: 'shiftX',
+        value: -5,
+      },
+    ];
   }
 
   baseline(options) {
