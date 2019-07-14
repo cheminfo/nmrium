@@ -1,11 +1,13 @@
 import React, { useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
-import reduce from '../util/reduce';
-import {ChartContext} from './context/chart-context';
+import { xyReduce } from 'ml-spectra-processing';
+import { ChartContext } from './context/chart-context';
 // { width, height, margin, data, xDomain, yDomain, getScale }
 const Lines = () => {
   const refPathsContainer = useRef();
-  const {width,height,margin,data,xDomain,getScale} = useContext(ChartContext);
+  const { width, height, margin, data, xDomain, getScale } = useContext(
+    ChartContext,
+  );
   // const [paths, setPaths] = useState([]);
 
   function makePath(data) {
@@ -13,7 +15,7 @@ const Lines = () => {
 
     const scale = getScale();
 
-    const pathPoints = reduce(data.x, data.y, {
+    const pathPoints = xyReduce(data.x, data.y, {
       from: xDomain[0],
       to: xDomain[1],
     });
@@ -78,7 +80,7 @@ const Lines = () => {
 
 export default Lines;
 
-Lines.contextTypes   = {
+Lines.contextTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   data: PropTypes.object,
@@ -90,6 +92,5 @@ Lines.contextTypes   = {
   }),
   xDomain: PropTypes.array,
   yDomain: PropTypes.array,
-  getScale: PropTypes.func
+  getScale: PropTypes.func,
 };
-
