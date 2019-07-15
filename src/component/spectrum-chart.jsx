@@ -1,12 +1,9 @@
-import React, {
-  useEffect,
-  useRef,
-  useCallback,
-  useReducer,
-} from 'react';
+import React, { useEffect, useRef, useCallback, useReducer } from 'react';
 import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
 import ToolBarPane, { options } from './toolbar-pane';
+import ShowToolBar, { spectrum_type } from './show-toolbar';
+
 import YAxis from './axis-y';
 import XAxis from './axis-x';
 import BrushTool from './tool/brush-tool';
@@ -23,7 +20,6 @@ import PublishRounded from '@material-ui/icons/PublishRounded';
 import { spectrumReducer } from './reducer/reducer';
 
 import {
-  SET_ORGINAL_DOMAIN,
   SET_X_DOMAIN,
   SET_Y_DOMAIN,
   SET_WIDTH,
@@ -31,7 +27,9 @@ import {
   SET_SELECTED_TOOL,
   PEAK_PICKING,
   LOADING_SPECTRUM,
-  SHIFT_SPECTRUM
+  SET_DATA,
+  SHIFT_SPECTRUM,
+  CHANGE_SPECTRUM_TYPE,
 } from './reducer/action';
 
 // const useStyles = makeStyles((theme) => ({
@@ -41,8 +39,7 @@ import {
 // }));
 
 const SpectrumChart = ({ margin, width, height, data }) => {
-
-  const LoadFile =  (acceptedFiles) => {
+  const LoadFile = (acceptedFiles) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       acceptedFiles.forEach((file) => {
@@ -60,7 +57,6 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         if (reader.result) {
           const binaryData = reader.result;
           resolve(binaryData);
-
         }
       };
 
@@ -70,24 +66,32 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the file
-     LoadFile(acceptedFiles).then((binaryData)=>{
-               dispatch({type:LOADING_SPECTRUM,binaryData});
-    },(err)=>{
-
-      alert(err)
-    });
-
+    LoadFile(acceptedFiles).then(
+      (binaryData) => {
+        dispatch({ type: LOADING_SPECTRUM, binaryData });
+      },
+      (err) => {
+        alert(err);
+      },
+    );
   }, []);
 
   const refSVG = useRef();
   const chartArea = useRef();
 
   const intialState = {
-    _data: data,
+    _data: {
+      id: 1,
+      x: [],
+      y: [],
+      isFid: true, // allows to determine the label of the axis
+      color: 'green',
+    },
     _xDomain: [],
     _yDomain: [],
     _orignDomain: {},
     _selectedTool: options.zoom.id,
+    _isRealSpectrumVisible: true,
     _pointerCorrdinates: { x: 0, y: 0 },
     _peakNotations: [],
     _width: width,
@@ -102,6 +106,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _yDomain,
     _orignDomain,
     _selectedTool,
+    _spectrumType,
     _pointerCorrdinates,
     _peakNotations,
     _width,
@@ -114,20 +119,24 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     onDrop,
     noClick: true,
   });
-
   useEffect(() => {
 
-    const domain = getDomain(_data);
-    dispatch({ type: SET_ORGINAL_DOMAIN, domain: domain });
-    dispatch({ type: SET_X_DOMAIN, xDomain: domain.x });
-    dispatch({ type: SET_Y_DOMAIN, yDomain: domain.y });
-    dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
+  dispatch({ type: SET_DATA, data });
+}, []);
 
-  }, [state._data, width, height]);
+
+  useEffect(() => {
+    // const domain = getDomain(_data);
+    dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
+  }, [,width, height]);
 
   const handleChangeOption = (selectedTool) => {
     // setSelectedTool(selectedTool);
     dispatch({ type: SET_SELECTED_TOOL, selectedTool });
+  };
+
+  const handleShowSpectrumTypeChang = (isRealSpectrumVisible) => {
+    dispatch({ type: CHANGE_SPECTRUM_TYPE, isRealSpectrumVisible });
   };
 
   /**
@@ -145,10 +154,10 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   //   return { x: d3.extent(xArray), y: d3.extent(yArray) };
   // }
 
-  function getDomain(data) {
-    console.log(data);
-    return { x: [data.x[0], data.x[data.x.length - 1]], y: d3.extent(data.y) };
-  }
+  // function getDomain(data) {
+  //   console.log(data);
+  //   return { x: [data.x[0], data.x[data.x.length - 1]], y: d3.extent(data.y) };
+  // }
 
   const handleXDomainUpdate = (xDomain) => {
     dispatch({ type: SET_X_DOMAIN, xDomain });
@@ -180,12 +189,10 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     return { x, y };
   };
 
-
   const handleOnPeakChange = (e) => {
-    dispatch({type:SHIFT_SPECTRUM,shiftValue:e.shiftValue})
+    dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue });
   };
 
- 
   const mouseClick = (e) => {
     //activat selected peak tool
     if (_selectedTool === options.peaktool.id) {
@@ -194,7 +201,6 @@ const SpectrumChart = ({ margin, width, height, data }) => {
       });
     }
   };
-
 
   return (
     <ChartContext.Provider
@@ -231,6 +237,11 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               // toolbarWidth={(w) => {
               //   setToolbarWidth(w);
               // }}
+            />
+            <ShowToolBar
+              selectedValue={_spectrumType}
+              onChangeOption={handleShowSpectrumTypeChang}
+              defaultValue={true}
             />
           </Grid>
           <Grid ref={chartArea} item xs={11}>
@@ -292,6 +303,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               </g>
 
               <PeakNotaion
+                data={_data}
                 notationData={_peakNotations}
                 onPeakValueChange={handleOnPeakChange}
               />

@@ -45,11 +45,27 @@ body { font: 12px Arial;}
 }
 
 
-.option-container{
-  /* display: flex; */
-  /* padding: 5px; */
-  /* bo
-  rder-bottom:0.55px solid gray; */
+.option-container .MuiToggleButton-root.Mui-selected{
+  background-color: #afabab14 !important;
+  border-left:2px solid rgb(207, 2, 53)!important ;   
+}
+
+
+.show-option-container {
+  position: absolute;
+  bottom: 80px;
+}
+
+.show-option-container .MuiToggleButton-root,.show-option-container .MuiToggleButton-root.Mui-selected{
+  border-radius: 20px;
+
+}
+.show-option-container .MuiToggleButton-root.Mui-selected{
+
+  background-color: transparent;
+  border: 1px solid #ff0000 !important;
+
+  
 }
 
 
@@ -74,10 +90,7 @@ body { font: 12px Arial;}
 
 }
 
-.MuiToggleButton-root.Mui-selected{
-  background-color: #afabab14 !important;
-  border-left:2px solid rgb(207, 2, 53)!important ;   
-}
+
 
 .MuiToggleButton-label svg,.MuiToggleButton-label .label{
   font-size: 1.1em;

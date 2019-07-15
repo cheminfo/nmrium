@@ -30,6 +30,14 @@ export class Datum1D {
     return { x: this.x, y: this.im };
   }
 
+  setPeaks(peaks){
+    this.peaks = peaks;
+  }
+
+  getPeaks(){
+    return this.peaks;
+  }
+
   static fromJcamp = function fromJcamp(text) {
     let result = convert(text, { xy: true });
 

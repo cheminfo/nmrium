@@ -113,6 +113,7 @@ export const NotationTemplate = ({
 };
 
 const PeakNotaion = ({
+  data,
   notationData,
   onPeakValueChange
 }) => {
@@ -128,13 +129,13 @@ const PeakNotaion = ({
   return (
 
     <g>
-      {notationData.map((d, i) => (
+      {notationData.map(({xIndex}, i) => (
         <NotationTemplate
           key={i}
-          x={getScale().x(d.x)}
-          y={getScale().y(d.y)}
-          id={d.id}
-          value={d.x}
+          x={getScale().x(data.x[xIndex])}
+          y={getScale().y(data.y[xIndex])}
+          id={xIndex}
+          value={data.x[xIndex]}
           onPeakValueChange={onPeakValueChange}
           onSelected={handelOnSelected}
         />
