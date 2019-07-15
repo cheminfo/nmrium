@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useCallback, useReducer } from 'react';
 import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
 import ToolBarPane, { options } from './toolbar-pane';
-import ShowToolBar, { spectrum_type } from './show-toolbar';
+import ShowToolBar from './show-toolbar';
 
 import YAxis from './axis-y';
 import XAxis from './axis-x';
