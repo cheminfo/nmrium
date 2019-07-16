@@ -254,7 +254,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
       >
         <input {...getInputProps()} />
         {isDragActive && (
-          <div className="drop-zoon-over" style={{ width: `${width}px` ,height:`${height}px`}}>
+          <div className="drop-zoon-over" style={{ width: `${width}px`,height:`${height}px`}}>
             <PublishRounded />
             <p>Drop your file here</p>
           </div>
