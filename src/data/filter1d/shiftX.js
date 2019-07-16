@@ -1,11 +1,13 @@
 
 /**
  * 
- * @param {Array} datum1d 
+ * @param {Object} datum1d 
  * @param {number value  shift value
  */
 
-export function shiftX(datum1d, value) {
-  let x = datum1d.map();
-  return datum1d;
+export default function shiftX(data, shiftValue) {
+  
+  const result = data.map((val) => val + shiftValue);
+  
+  return result;
 }

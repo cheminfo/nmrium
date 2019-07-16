@@ -17,7 +17,15 @@ import Grid from '@material-ui/core/Grid';
 import { ChartContext } from './context/chart-context';
 import { useDropzone } from 'react-dropzone';
 import PublishRounded from '@material-ui/icons/PublishRounded';
+// import { spectrumReducer } from './reducer/reducer';
+// import { historyReducer } from './reducer/undo-reducer';
+import combineReducers from './reducer/combine-reducers';
 import { spectrumReducer } from './reducer/reducer';
+import { historyReducer } from './reducer/undo-reducer';
+
+import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+import { FaUndo, FaRedo } from 'react-icons/fa';
 
 import {
   SET_X_DOMAIN,
@@ -31,6 +39,8 @@ import {
   SHIFT_SPECTRUM,
   CHANGE_SPECTRUM_TYPE,
 } from './reducer/action';
+
+import { UNDO, REDO, RESET } from './reducer/undo-action';
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -99,15 +109,27 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _margin: margin,
   };
 
-  const [state, dispatch] = useReducer(spectrumReducer, intialState);
+  // const reduers = combineReducers({spectrumReducer,historyReducer});
+  const history = {
+    past: [],
+    present: null,
+    future: [],
+    hasUndo: false,
+    hasRedo: false,
+  };
+
+  const [state, dispatch] = useReducer(spectrumReducer, {
+    ...intialState,
+    history,
+  });
   const {
     _data,
     _xDomain,
     _yDomain,
     _orignDomain,
     _selectedTool,
-    _spectrumType,
-    _pointerCorrdinates,
+    _isRealSpectrumVisible,
+    _pointerCorrdinates = { x: 0, y: 0 },
     _peakNotations,
     _width,
     _height,
@@ -120,15 +142,13 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     noClick: true,
   });
   useEffect(() => {
-
-  dispatch({ type: SET_DATA, data });
-}, []);
-
+    dispatch({ type: SET_DATA, data });
+  }, []);
 
   useEffect(() => {
     // const domain = getDomain(_data);
     dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
-  }, [,width, height]);
+  }, [, width, height]);
 
   const handleChangeOption = (selectedTool) => {
     // setSelectedTool(selectedTool);
@@ -202,6 +222,18 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     }
   };
 
+  const redo = (e) => {
+    dispatch({
+      type: REDO,
+    });
+  };
+
+  const undo = (e) => {
+    dispatch({
+      type: UNDO,
+    });
+  };
+
   return (
     <ChartContext.Provider
       value={{
@@ -239,10 +271,32 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               // }}
             />
             <ShowToolBar
-              selectedValue={_spectrumType}
+              selectedValue={_isRealSpectrumVisible}
               onChangeOption={handleShowSpectrumTypeChang}
               defaultValue={true}
             />
+
+            
+            <Tooltip title="Redo" placement="right-start">
+              <Button
+                className="history-bt"
+                onClick={redo}
+                disabled={!state.history.hasRedo}
+              >
+                <FaRedo />
+              </Button>
+            </Tooltip>
+
+            <Tooltip title="Undo" placement="right-start">
+              <Button
+                className="history-bt"
+                onClick={undo}
+                disabled={!state.history.hasUndo}
+              >
+                <FaUndo />
+              </Button>
+            </Tooltip>
+
           </Grid>
           <Grid ref={chartArea} item xs={11}>
             <svg

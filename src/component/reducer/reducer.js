@@ -12,7 +12,11 @@ import {
   CHANGE_SPECTRUM_TYPE,
 } from './action';
 
-import { shiftX } from '../../data/filter1d/filter1d-type';
+import { UNDO, REDO, RESET } from './undo-action';
+
+import { SHIFT_X } from '../../data/filter1d/filter1d-type';
+import applyFilter from '../../data/filter1d/filter';
+
 import * as d3 from 'd3';
 import { Datum1D } from '../../data/Datum1D';
 
@@ -30,7 +34,8 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin }) => {
 
 const setData = (state, data) => {
   const domain = getDomain(data);
-  dataumObject = new Datum1D(data.x, data.y, data.y);
+  dataumObject = Datum1D.InitiateInstance(data.x, data.y, data.y);
+
   const v_data = { ...state._data };
   v_data.x = dataumObject.x;
   v_data.y = dataumObject.im;
@@ -93,15 +98,24 @@ const addPeak = (state) => {
 };
 
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
-  const data = { ...state._data };
-  data.x = data.x.map((val) => val + shiftValue);
-  const domain = getDomain({ x: data.x, y: data.y });
+  // const data = { ...state._data };
+  // data.x = data.x.map((val) => val + shiftValue);
+  dataumObject.addFilter({ kind: SHIFT_X, value: shiftValue });
+  dataumObject.applyShiftXFiliter(shiftValue);
+  //add to undo history
+  const history = handleHistorySet(state.history, {
+    kind: SHIFT_X,
+    value: shiftValue,
+  });
+
+  const domain = getDomain({ x: dataumObject.x, y: dataumObject.re });
   return {
     ...state,
-    _data: data,
+    _data: { ...state._data, x: dataumObject.x, y: dataumObject.re },
     _xDomain: domain.x,
     _yDomain: domain.y,
     _orignDomain: domain,
+    history,
   };
 };
 
@@ -136,6 +150,8 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
 
     if (isRealSpectrumVisible) {
       if (reY != null && reY != undefined) {
+        console.log(reY);
+
         return {
           ...state,
           _data: { ...state._data, y: reY },
@@ -145,6 +161,7 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
       }
     } else {
       if (imY != null && imY != undefined) {
+        console.log(imY);
         return {
           ...state,
           _data: { ...state._data, y: imY },
@@ -157,7 +174,103 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
   // return state;
 };
 
+//////////////////////////////////////////////////////////////////////
+//////////////// start undo and redo functions ///////////////////////
+//////////////////////////////////////////////////////////////////////
+
+const handleHistoryUndo = (state) => {
+  const { past, present, future } = state.history;
+  const previous = past[past.length - 1];
+  const newPast = past.slice(0, past.length - 1);
+  const newfuture = [present, ...future];
+
+  const hasRedo = newfuture.length !== 0;
+  const hasUndo = newPast.length !== 0; 
+  const data = Datum1D.getInstance().undoFilter(newPast);
+  const domain = getDomain(data);
+
+  return {
+    ...state,
+    _data: {...state._data,x:data.x,y:data.y},
+    _xDomain: domain.x,
+    _yDomain: domain.y,
+    _orignDomain: domain,
+    history: {
+      past: newPast,
+      present: previous,
+      future: newfuture,
+      hasRedo,
+      hasUndo,
+    },
+  };
+};
+
+const handleHistoryRedo = (state) => {
+  const { past, present, future } = state.history;
+  const next = future[0];
+  const newFuture = future.slice(1);
+  const newPast =  [...past, present];
+
+  const hasUndo = newPast.length !== 0;
+  const hasRedo = newFuture.length !== 0;
+
+  const data = Datum1D.getInstance().redoFilter(next);
+  const domain = getDomain(data);
+
+
+  return {
+    ...state,
+    _data: {...state._data,x:data.x,y:data.y},
+    _xDomain: domain.x,
+    _yDomain: domain.y,
+    _orignDomain: domain,
+    history: {
+      past: newPast,
+      present: next,
+      future: newFuture,
+      hasRedo,
+      hasUndo,
+    },
+  };
+};
+
+const handleHistorySet = (state, action) => {
+  const newValue = action;
+
+  const { past, present } = state;
+
+  if (newValue === present) {
+    return state;
+  }
+
+  return {
+    past: (present !=null)? [...past, present]:[...past],
+    present: newValue,
+    future: [],
+    hasUndo: true,
+    hasRedo:false,
+  };
+};
+
+const handleHistoryReset = (state, action) => {
+  const newValue = action;
+  return {
+    ...state,
+    history: {
+      past: [],
+      present: newValue,
+      future: [],
+      hasRedo: false,
+      hasUndo: false,
+    },
+  };
+};
+//////////////////////////////////////////////////////////////////////
+//////////////// end undo and redo functions /////////////////////////
+//////////////////////////////////////////////////////////////////////
+
 export const spectrumReducer = (state, action) => {
+
   switch (action.type) {
     case PEAK_PICKING:
       return addPeak(state);
@@ -190,6 +303,16 @@ export const spectrumReducer = (state, action) => {
 
     case CHANGE_SPECTRUM_TYPE:
       return changeSpectrumType(state, action.isRealSpectrumVisible);
+
+    // undo and redo operation
+    case UNDO:
+      return handleHistoryUndo(state);
+
+    case REDO:
+      return handleHistoryRedo(state);
+
+    case RESET:
+      return handleHistoryReset(state, action);
 
     default:
       return state;

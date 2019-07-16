@@ -57,15 +57,23 @@ body { font: 12px Arial;}
 }
 
 .show-option-container .MuiToggleButton-root,.show-option-container .MuiToggleButton-root.Mui-selected{
-  border-radius: 20px;
+  /* border-radius: 20px; */
 
 }
 .show-option-container .MuiToggleButton-root.Mui-selected{
 
-  background-color: transparent;
-  border: 1px solid #ff0000 !important;
+  /* background-color: transparent;
+  border: 1px solid #ff0000 !important; */
+  background-color: #01b517;
+
 
   
+}
+
+.history-bt{
+  min-width: 40px !important;
+  width: 40px;
+  margin-top: 5px!important;
 }
 
 

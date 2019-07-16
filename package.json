@@ -19,6 +19,7 @@
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",
     "react-dropzone": "^10.1.5",
+    "react-icons": "^3.7.0",
     "react-scripts": "3.0.1"
   },
   "prettier": {

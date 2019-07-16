@@ -1,1 +1,1 @@
-export const shiftX = 'shiftX';
+export const SHIFT_X = 'shiftX';
