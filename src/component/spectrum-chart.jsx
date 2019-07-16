@@ -254,7 +254,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
       >
         <input {...getInputProps()} />
         {isDragActive && (
-          <div className="drop-zoon-over" style={{ width: `${width}px` }}>
+          <div className="drop-zoon-over" style={{ width: `${width}px` ,height:`${height}px`}}>
             <PublishRounded />
             <p>Drop your file here</p>
           </div>
@@ -270,13 +270,9 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               //   setToolbarWidth(w);
               // }}
             />
-            <ShowToolBar
-              selectedValue={_isRealSpectrumVisible}
-              onChangeOption={handleShowSpectrumTypeChang}
-              defaultValue={true}
-            />
+           
 
-            
+
             <Tooltip title="Redo" placement="right-start">
               <Button
                 className="history-bt"
@@ -296,6 +292,13 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                 <FaUndo />
               </Button>
             </Tooltip>
+
+
+            <ShowToolBar
+              selectedValue={_isRealSpectrumVisible}
+              onChangeOption={handleShowSpectrumTypeChang}
+              defaultValue={true}
+            />
 
           </Grid>
           <Grid ref={chartArea} item xs={11}>
