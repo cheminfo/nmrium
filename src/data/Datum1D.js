@@ -20,6 +20,13 @@ export class Datum1D {
     this.filters = []; // [{kind: 'shiftX',value: -5,},{.....}]
   }
 
+  setData(x,re,im){
+    Datum1D.myInstance.x = x;
+    Datum1D.myInstance.re = re;
+    Datum1D.myInstance.im = im;
+    Datum1D.myInstance.original = { x, re, im };
+  }
+
   baseline(options) {
     let result = baseline(this.x, this.re, this.im);
   }
@@ -102,26 +109,24 @@ export class Datum1D {
         : [];
 
     if (Datum1D.myInstance == null) {
-      this.myInstance = new Datum1D(x, re, im);
+      Datum1D.myInstance = new Datum1D(x, re, im);
     } else {
-      Datum1D.myInstance.x = x;
-      Datum1D.myInstance.re = re;
-      Datum1D.myInstance.im = im;
+
+      Datum1D.myInstance.setData(x, re, im)
     }
 
-    return this.myInstance;
+    return Datum1D.myInstance;
   };
 
   static InitiateInstance(x, re, im) {
     if (Datum1D.myInstance == null) {
-      this.myInstance = new Datum1D(x, re, im);
+      Datum1D.myInstance = new Datum1D(x, re, im);
     } else {
-      Datum1D.myInstance.x = x;
-      Datum1D.myInstance.re = re;
-      Datum1D.myInstance.im = im;
+      Datum1D.myInstance.setData(x, re, im)
+
     }
 
-    return this.myInstance;
+    return Datum1D.myInstance;
   }
 
   static getInstance() {
