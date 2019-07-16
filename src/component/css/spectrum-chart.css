@@ -52,8 +52,9 @@ body { font: 12px Arial;}
 
 
 .show-option-container {
-  position: absolute;
-  bottom: 80px;
+  padding: 5px 0px;
+  /* position: absolute; */
+  /* bottom: 80px; */
 }
 
 .show-option-container .MuiToggleButton-root,.show-option-container .MuiToggleButton-root.Mui-selected{
