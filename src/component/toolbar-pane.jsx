@@ -27,15 +27,11 @@ const ToolBarPane = ({ onChangeOption,selectedValue }) => {
   const [option, setOption] = useState();
   const toolbarRef = useRef();
   const handleChange = (event, selectedOption) => {
-    console.log(selectedOption);
-
     setOption(selectedOption);
     onChangeOption(selectedOption);
   };
 
   useEffect(() => {
-    // toolbarWidth(toolbarRef.current.clientWidth);
-    console.log(option);
     setOption(option);
     onChangeOption(selectedValue);
   }, []);

@@ -10,12 +10,13 @@ import {
   SET_POINTER_COORDINATES,
   SET_SELECTED_TOOL,
   CHANGE_SPECTRUM_TYPE,
+  FULL_ZOOM_OUT
 } from './action';
 
 import { UNDO, REDO, RESET } from './undo-action';
 
 import { SHIFT_X } from '../../data/filter1d/filter1d-type';
-import applyFilter from '../../data/filter1d/filter';
+// import applyFilter from '../../data/filter1d/filter';
 
 import * as d3 from 'd3';
 import { Datum1D } from '../../data/Datum1D';
@@ -98,8 +99,6 @@ const addPeak = (state) => {
 };
 
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
-  // const data = { ...state._data };
-  // data.x = data.x.map((val) => val + shiftValue);
   dataumObject.addFilter({ kind: SHIFT_X, value: shiftValue });
   dataumObject.applyShiftXFiliter(shiftValue);
   //add to undo history
@@ -108,11 +107,13 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     value: shiftValue,
   });
 
+  // if(_orignDomain.x[0] == _xDomain[0] && _orignDomain.x[1] ==_xDomain[1] )
+
   const domain = getDomain({ x: dataumObject.x, y: dataumObject.re });
   return {
     ...state,
     _data: { ...state._data, x: dataumObject.x, y: dataumObject.re },
-    _xDomain: domain.x,
+    _xDomain: (state._orignDomain.x[0] === state._xDomain[0] && state._orignDomain.x[1] ===state._xDomain[1] ) ? domain.x:state._xDomain,
     _yDomain: domain.y,
     _orignDomain: domain,
     history,
@@ -142,6 +143,11 @@ const setPointerCoordinates = (state, _pointerCorrdinates) => {
 const setSelectedTool = (state, _selectedTool) => {
   return { ...state, _selectedTool };
 };
+
+
+const zoomOut = (state)=>{
+  return {...state,_xDomain:state._orignDomain.x,_yDomain:state._orignDomain.y};
+}
 
 const changeSpectrumType = (state, isRealSpectrumVisible) => {
   if (dataumObject) {
@@ -179,6 +185,7 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
 //////////////////////////////////////////////////////////////////////
 
 const handleHistoryUndo = (state) => {
+
   const { past, present, future } = state.history;
   const previous = past[past.length - 1];
   const newPast = past.slice(0, past.length - 1);
@@ -186,6 +193,7 @@ const handleHistoryUndo = (state) => {
 
   const hasRedo = newfuture.length !== 0;
   const hasUndo = newPast.length !== 0; 
+
   const data = Datum1D.getInstance().undoFilter(newPast);
   const domain = getDomain(data);
 
@@ -265,9 +273,14 @@ const handleHistoryReset = (state, action) => {
     },
   };
 };
+
+
+
+
 //////////////////////////////////////////////////////////////////////
 //////////////// end undo and redo functions /////////////////////////
 //////////////////////////////////////////////////////////////////////
+
 
 export const spectrumReducer = (state, action) => {
 
@@ -294,6 +307,9 @@ export const spectrumReducer = (state, action) => {
 
     case SET_DATA:
       return setData(state, action.data);
+
+    case FULL_ZOOM_OUT:
+      return zoomOut(state);  
 
     case LOADING_SPECTRUM:
       return loadSpectrum(state, action.binaryData);

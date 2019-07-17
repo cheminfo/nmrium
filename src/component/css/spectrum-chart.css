@@ -71,11 +71,17 @@ body { font: 12px Arial;}
   
 }
 
-.history-bt{
+.general-fun-bt{
   min-width: 40px !important;
   width: 40px;
   margin-top: 5px!important;
 }
+
+
+.general-fun-bt:not([disabled]) svg path{
+  fill: #4e4e4e;
+}
+
 
 
 .MuiGrid-grid-xs-1 {

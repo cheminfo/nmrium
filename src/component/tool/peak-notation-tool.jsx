@@ -31,7 +31,6 @@ export const NotationTemplate = ({
       const newValue = parseFloat(event.target.value);
       const oldValue = parseFloat(value);
       const shiftValue = parseFloat(event.target.value) - parseFloat(value);
-       console.log({ id: id, value: newValue,oldValue:oldValue,shiftValue: shiftValue});
       onPeakValueChange({ id: id, value: newValue,oldValue:oldValue,shiftValue: shiftValue});
     }
   };

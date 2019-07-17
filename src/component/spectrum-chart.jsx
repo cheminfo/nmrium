@@ -25,7 +25,7 @@ import { historyReducer } from './reducer/undo-reducer';
 
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
-import { FaUndo, FaRedo } from 'react-icons/fa';
+import { FaUndo, FaRedo, FaSearchMinus } from 'react-icons/fa';
 
 import {
   SET_X_DOMAIN,
@@ -38,6 +38,7 @@ import {
   SET_DATA,
   SHIFT_SPECTRUM,
   CHANGE_SPECTRUM_TYPE,
+  FULL_ZOOM_OUT,
 } from './reducer/action';
 
 import { UNDO, REDO, RESET } from './reducer/undo-action';
@@ -222,15 +223,21 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     }
   };
 
-  const redo = (e) => {
+  const handleRedo = (e) => {
     dispatch({
       type: REDO,
     });
   };
 
-  const undo = (e) => {
+  const handleUndo = (e) => {
     dispatch({
       type: UNDO,
+    });
+  };
+
+  const handlefFullZoomOut = (e) => {
+    dispatch({
+      type: FULL_ZOOM_OUT,
     });
   };
 
@@ -254,7 +261,10 @@ const SpectrumChart = ({ margin, width, height, data }) => {
       >
         <input {...getInputProps()} />
         {isDragActive && (
-          <div className="drop-zoon-over" style={{ width: `${width}px`,height:`${height}px`}}>
+          <div
+            className="drop-zoon-over"
+            style={{ width: `${width}px`, height: `${height}px` }}
+          >
             <PublishRounded />
             <p>Drop your file here</p>
           </div>
@@ -270,13 +280,11 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               //   setToolbarWidth(w);
               // }}
             />
-           
-
 
             <Tooltip title="Redo" placement="right-start">
               <Button
-                className="history-bt"
-                onClick={redo}
+                className="general-fun-bt"
+                onClick={handleRedo}
                 disabled={!state.history.hasRedo}
               >
                 <FaRedo />
@@ -285,21 +293,25 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 
             <Tooltip title="Undo" placement="right-start">
               <Button
-                className="history-bt"
-                onClick={undo}
+                className="general-fun-bt"
+                onClick={handleUndo}
                 disabled={!state.history.hasUndo}
               >
                 <FaUndo />
               </Button>
             </Tooltip>
 
+            <Tooltip title="Full Zoom Out" placement="right-start">
+              <Button className="general-fun-bt" onClick={handlefFullZoomOut}>
+                <FaSearchMinus />
+              </Button>
+            </Tooltip>
 
             <ShowToolBar
               selectedValue={_isRealSpectrumVisible}
               onChangeOption={handleShowSpectrumTypeChang}
               defaultValue={true}
             />
-
           </Grid>
           <Grid ref={chartArea} item xs={11}>
             <svg

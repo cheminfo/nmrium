@@ -15,11 +15,9 @@ const ShowToolBar = ({ onChangeOption,selectedValue,defaultValue }) => {
       onChangeOption(selectedOption);
   
     }
-    console.log(selectedOption);
   };
 
   useEffect(() => {
-    console.log(option);
     setOption(defaultValue);
     // onChangeOption(selectedValue);
   }, []);
