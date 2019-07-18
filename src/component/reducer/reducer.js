@@ -10,7 +10,8 @@ import {
   SET_POINTER_COORDINATES,
   SET_SELECTED_TOOL,
   CHANGE_SPECTRUM_TYPE,
-  FULL_ZOOM_OUT
+  FULL_ZOOM_OUT,
+  CHANGE_VISIBILITY
 } from './action';
 
 import { UNDO, REDO, RESET } from './undo-action';
@@ -159,6 +160,32 @@ const zoomOut = (state)=>{
   return {...state,_xDomain:state._orignDomain.x,_yDomain:state._orignDomain.y};
 }
 
+
+const handelSpectrumVisibility = (state,data) =>{
+
+    
+  if(data){
+    const newData = [...state._data];
+     
+    const rdata = newData.map((d)=>{
+      const result  = data.find((newd)=>newd.id === d.id);
+      console.log(result);
+      return (result !== undefined )?{...result,isVisible:true}: {...d,isVisible:false};
+    });
+
+
+    console.log(rdata);
+    // return state;
+
+    return {...state,_data:rdata};
+
+   }else{
+
+    return state;
+   }
+ 
+  
+}
 const changeSpectrumType = (state, isRealSpectrumVisible) => {
   if (dataumObject) {
     const reY = dataumObject.getReal().y;
@@ -329,6 +356,9 @@ export const spectrumReducer = (state, action) => {
 
     case CHANGE_SPECTRUM_TYPE:
       return changeSpectrumType(state, action.isRealSpectrumVisible);
+
+    case CHANGE_VISIBILITY:
+      return handelSpectrumVisibility(state,action.data);  
 
     // undo and redo operation
     case UNDO:

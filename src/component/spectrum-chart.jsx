@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useCallback, useReducer, useState } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useReducer,
+  useState,
+} from 'react';
 import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
 import ToolBarPane, { options } from './toolbar-pane';
@@ -41,6 +47,7 @@ import {
   SHIFT_SPECTRUM,
   CHANGE_SPECTRUM_TYPE,
   FULL_ZOOM_OUT,
+  CHANGE_VISIBILITY
 } from './reducer/action';
 
 import { UNDO, REDO, RESET } from './reducer/undo-action';
@@ -52,10 +59,7 @@ import { UNDO, REDO, RESET } from './reducer/undo-action';
 // }));
 
 const SpectrumChart = ({ margin, width, height, data }) => {
-
-
-  const [mouseCorrdinates,setMouseCorrdinates]=useState({ x: 0, y: 0 });
-
+  const [mouseCorrdinates, setMouseCorrdinates] = useState({ x: 0, y: 0 });
 
   const LoadFile = (acceptedFiles) => {
     return new Promise((resolve, reject) => {
@@ -124,8 +128,6 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     history,
   });
 
-
-  
   const {
     _data,
     _xDomain,
@@ -201,17 +203,17 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     const x = e.clientX - refSVG.current.getBoundingClientRect().left;
     const y = e.clientY - refSVG.current.getBoundingClientRect().top;
     requestAnimationFrame(() => {
-    //   dispatch({
-    //     type: SET_POINTER_COORDINATES,
-    //     pointerCorrdinates: { x, y },
-    //   });
+      //   dispatch({
+      //     type: SET_POINTER_COORDINATES,
+      //     pointerCorrdinates: { x, y },
+      //   });
       // setMouseCorrdinates( { x, y });
     });
   };
 
   const getScale = () => {
-    console.log(_xDomain)
-    console.log(_yDomain)
+    // console.log(_xDomain);
+    // console.log(_yDomain);
     const x = d3.scaleLinear(_xDomain, [_width - margin.right, margin.left]);
     const y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
     return { x, y };
@@ -246,6 +248,12 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     dispatch({
       type: FULL_ZOOM_OUT,
     });
+  };
+
+
+
+  const handleChangeVisibility = (data) =>{
+    dispatch({ type: CHANGE_VISIBILITY, data });
   };
 
   return (
@@ -319,8 +327,12 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               onChangeOption={handleShowSpectrumTypeChang}
               defaultValue={true}
             />
+
           </Grid>
+
           <Grid ref={chartArea} item xs={8}>
+
+
             <svg
               ref={refSVG}
               onMouseMove={mouseMove}
@@ -335,30 +347,26 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                 height={height}
               />
 
-              {_xDomain && _yDomain && (
-                
-                _data.map((d,i)=>
+              {_xDomain &&
+                _yDomain &&
+                // _data.map((d, i) => (
                   <Lines
-                  // margin={margin}
-                  // width={width - toolbarWidth}
-                  // height={height}
-                  key={d.id}
-                  data={d}
-                  // xDomain={_xDomain}
-                  // yDomain={_yDomain}
-                  // getScale={getScale}
+                    // margin={margin}
+                    // width={width - toolbarWidth}
+                    // height={height}
+                    // key={d.id}
+                    data={_data}
+                    // xDomain={_xDomain}
+                    // yDomain={_yDomain}
+                    // getScale={getScale}
                   />
-
-                )
-       
-
-
-              )}
+                // ))
+              }
 
               <g className="container">
                 <XAxis showGrid={true} isFID={true} />
 
-                <YAxis label="PPM" show={true} />
+                <YAxis label="PPM" show={false} />
                 {_selectedTool === options.zoom.id && (
                   <BrushTool
                     onDomainReset={handleRestDomain}
@@ -395,9 +403,12 @@ const SpectrumChart = ({ margin, width, height, data }) => {
           </Grid>
 
           <Grid item xs={3}>
-           
-             <SpectrumList/>
-     
+            { _data && _data[0] && <SpectrumList
+              data={_data}
+              onChangeVisibility={handleChangeVisibility}
+            />
+            }
+            
           </Grid>
         </Grid>
       </div>

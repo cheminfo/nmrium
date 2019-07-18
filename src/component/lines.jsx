@@ -10,13 +10,15 @@ const Lines = ({data}) => {
   );
 
   // const {data} = 
-  const [_data, setData] = useState([data]);
+  // const [_data, setData] = useState([data]);
 
 
   function makePath(data) {
-    
+     
+
+
     // const scale = getScale(xDomain, yDomain);
-     console.log(xDomain);
+    //  console.log(xDomain);
     const scale = getScale();
 
     // const pathPoints = xyReduce(data.x, data.y, {
@@ -25,13 +27,17 @@ const Lines = ({data}) => {
     // });
 
 
-  console.log(data);
+  // console.log(data);
+
+
+  // console.log(data);
+
     const pathPoints = xyReduce(data.x, data.y, {
       from: xDomain[0],
       to: xDomain[1],
     });
 
-    console.log(pathPoints);
+    // console.log(pathPoints);
 
     let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
 
@@ -50,12 +56,13 @@ const Lines = ({data}) => {
 
 
   
-  useEffect(() => {
+  // useEffect(() => {
      
-   console.log('domain changed')
-   setData(data);
+  //  console.log('domain changed')
+  //  console.log(data);
+  // //  setData(data);
 
-  },[xDomain]);
+  // },[xDomain]);
 
   // useEffect(() => {
   //   const paths = data.map((d, i) => {
@@ -87,14 +94,15 @@ const Lines = ({data}) => {
       </defs>
 
       <g className="paths" ref={refPathsContainer} clipPath="url(#clip)">
-        {_data.x && (
+        {data && data[0] && data[0].x &&  data.map((d, i) => ( 
+          d.isVisible && 
           <path
             className="line"
-            key={_data.id}
-            stroke={_data.color}
-            d={makePath(_data)}
+            key={d.id}
+            stroke={d.color}
+            d={makePath(d)}
           />
-        )}
+        ))}
       </g>
     </g>
   );

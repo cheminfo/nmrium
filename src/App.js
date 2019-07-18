@@ -13,20 +13,20 @@ function App() {
 
   const width = 800;
   const height = 300;
-  const margin = { top:10, right: 20, bottom: 30, left: 0 };
+  const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
-  const real_data ={
+  const real_data = {
     id: '2',
     isHover: false,
-    x:{...json}.x,
-    y:{...json}.y,
+    x: { ...json }.x,
+    y: { ...json }.y,
     color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
     isFid: true, // allows to determine the label of the axis
     is2D: false, // TODO: need to define where to put the spectrum if it is 1D
     color: 'green',
+    isVisible:true
   };
-  
-  
+
   const data = [
     // array of spectra. They will share the same axis
     // each series is a React component in the SVG dom
@@ -34,33 +34,39 @@ function App() {
     {
       id: '2',
       isHover: false,
-      x:{...json}.x.reverse(),
-      y:{...json}.y,
-      color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
+      x: { ...json }.x.reverse(),
+      y: { ...json }.y,
+      name: 'spectrum 101',
+      isFid: true, // allows to determine the label of the axis
+      is2D: false, // TODO: need to define where to put the spectrum if it is 1D
+      color: 'red',
+      isVisible:true
+
+    },
+    {
+      id: '3',
+      isHover: false,
+      x: { ...json }.x.reverse(),
+      y: { ...json }.y,
+      name: 'spectrum 102',
+      isFid: true, // allows to determine the label of the axis
+      is2D: false, // TODO: need to define where to put the spectrum if it is 1D
+      color: 'blue',
+      isVisible:true
+
+    },
+    {
+      id: '4',
+      isHover: false,
+      x: { ...json }.x.reverse(),
+      y: { ...json }.y,
+      name: 'spectrum 103',
       isFid: true, // allows to determine the label of the axis
       is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'green',
-      },
-      {
-        id: '3',
-        isHover: false,
-        x:{...json}.x.reverse(),
-        y:{...json}.y,
-        color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
-        isFid: true, // allows to determine the label of the axis
-        is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-        color: 'green',
-        },
-        {
-          id: '4',
-          isHover: false,
-          x:{...json}.x.reverse(),
-          y:{...json}.y,
-          color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
-          isFid: true, // allows to determine the label of the axis
-          is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-          color: 'green',
-          },
+      isVisible:true
+
+    },
 
     // {
     //   id: '3',
@@ -117,13 +123,12 @@ function App() {
       </ChartWindow>
        */}
 
-  <SpectrumChart
-          width={width}
-          height={height}
-          data={data}
-          margin={margin}
-      
-        /> 
+      <SpectrumChart
+        width={width}
+        height={height}
+        data={data}
+        margin={margin}
+      />
       {/* <SpectrumChart
           width={width}
           height={height}
