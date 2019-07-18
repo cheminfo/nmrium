@@ -85,7 +85,7 @@ body { font: 12px Arial;}
 
 
 .MuiGrid-grid-xs-1 {
-  max-width: 40px !important;
+  /* max-width: 40px !important; */
 }
 
 /* .MuiGrid-grid-xs-11 {

@@ -1,0 +1,71 @@
+
+.spectrum-list{
+    padding: 0px 1px !important;
+}
+
+
+.spectrum-list .MuiListItem-root{
+    padding-top: 0px;
+}
+
+
+.spectrum-list .MuiListItem-container {
+    border-bottom: 0.55px solid #efefef;
+}
+
+.spectrum-list .MuiListItem-gutters{
+    padding-left: 5px ; 
+    margin-right: 0px ;
+}
+
+.spectrum-list .MuiListItemIcon-root{
+    min-width: 20px ;
+    font-size:12px ;
+
+}
+
+.spectrum-list .MuiSvgIcon-root{
+    font-size: 12px;
+
+}
+
+
+.spectrum-list .MuiTypography-body1 {
+    font-size: 12px ;
+}
+
+.spectrum-list .MuiSwitch-root
+{
+    overflow: visible ;
+
+}
+
+
+
+.spectrum-list .MuiListItem-secondaryAction{
+    padding-right: 5px;
+}
+
+.spectrum-list .MuiToggleButton-root{
+  min-width: 15px ;
+  height: 25px;
+  width: 20px;
+  padding: 0px;
+
+}
+
+.spectrum-list .MuiToggleButton-root:last-child{
+    padding: 0px;
+
+}
+
+.spectrum-list .MuiButton-text{
+    padding: 5px;
+}
+
+.spectrum-list .MuiButton-root{
+    min-width: 25px;
+}
+
+
+

@@ -24,7 +24,14 @@ import { Datum1D } from '../../data/Datum1D';
 let dataumObject = null;
 
 function getDomain(data) {
-  return { x: [data.x[0], data.x[data.x.length - 1]], y: d3.extent(data.y) };
+  
+  let xArray = data.reduce( (acc,d) => acc.concat([d.x[0],d.x[d.x.length-1]]),[]);
+  let yArray = data.reduce((acc,d) => acc.concat(d3.extent(d.y)),[]); 
+  console.log(yArray);
+
+  console.log(d3.extent(yArray));
+  
+  return { x: d3.extent(xArray), y: d3.extent(yArray) };
 }
 
 const getScale = ({ _xDomain, _yDomain, _width, _height, _margin }) => {
@@ -35,16 +42,19 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin }) => {
 
 const setData = (state, data) => {
   const domain = getDomain(data);
-  dataumObject = Datum1D.InitiateInstance(data.x, data.y, data.y);
 
-  const v_data = { ...state._data };
-  v_data.x = dataumObject.x;
-  v_data.y = dataumObject.im;
+  console.log(domain);
+  
+  dataumObject = Datum1D.InitiateInstance(data.x, data.y, data.y);
+   console.log(data);
+  // const v_data = { ...state._data };
+  // v_data.x = dataumObject.x;
+  // v_data.y = dataumObject.im;
 
   return {
     ...state,
     _peakNotations: [],
-    _data: v_data,
+    _data: data,
     _xDomain: domain.x,
     _yDomain: domain.y,
     _orignDomain: domain,

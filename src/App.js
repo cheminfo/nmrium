@@ -40,12 +40,33 @@ function App() {
       isFid: true, // allows to determine the label of the axis
       is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'green',
-    },
+      },
+      {
+        id: '3',
+        isHover: false,
+        x:{...json}.x.reverse(),
+        y:{...json}.y,
+        color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
+        isFid: true, // allows to determine the label of the axis
+        is2D: false, // TODO: need to define where to put the spectrum if it is 1D
+        color: 'green',
+        },
+        {
+          id: '4',
+          isHover: false,
+          x:{...json}.x.reverse(),
+          y:{...json}.y,
+          color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
+          isFid: true, // allows to determine the label of the axis
+          is2D: false, // TODO: need to define where to put the spectrum if it is 1D
+          color: 'green',
+          },
 
     // {
     //   id: '3',
     //   isHover: false,
-    //   ...json2,
+    //   x:{...json}.x,
+    //   y:{...json}.y,
     //   color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
     //   isFid: true, // allows to determine the label of the axis
     //   is2D: false, // TODO: need to define where to put the spectrum if it is 1D
@@ -88,18 +109,18 @@ function App() {
       >
         <TitleBar title="Spectrum Chart" controls/> */}
       {/* <Text color={this.props.theme === 'dark' ? 'white' : '#333'}>Hello World</Text> */}
-      <ChartWindow width={width} height={height} title="Spectrum Chart">
+      {/* <ChartWindow width={width} height={height} title="Spectrum Chart">
       <SpectrumChart
           data={real_data}
           margin={margin}
         />
       </ChartWindow>
-      
+       */}
 
   <SpectrumChart
           width={width}
           height={height}
-          data={real_data}
+          data={data}
           margin={margin}
       
         /> 
