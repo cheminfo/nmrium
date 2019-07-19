@@ -81,7 +81,7 @@ const Lines = ({data}) => {
   // }
 
   return (
-    <g>
+    <g key={"path"}>
       <defs>
         <clipPath id="clip">
           <rect

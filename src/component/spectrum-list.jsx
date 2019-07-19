@@ -11,22 +11,20 @@ import { Button } from '@material-ui/core';
 
 import './css/spectrum-list.css';
 
-
-
-export default function SpectrumList({ data,onChangeVisibility,onChangeActive }) {
-
+export default function SpectrumList({
+  data,
+  onChangeVisibility,
+  onChangeActive,
+}) {
   const [activated, setActivated] = React.useState();
   const [visibled, setVisible] = React.useState([]);
 
-
-  useEffect(()=>{
-      setVisible(data);
-      setActivated(data[0])
-      // onChangeVisibility(data);
-      // onChangeActive(data[0])
-  },[]);
-
-
+  useEffect(() => {
+    setVisible(data);
+    setActivated(null);
+    // onChangeVisibility(data);
+    // onChangeActive(data[0])
+  }, []);
 
 
   const handleVisibility = (d) => {
@@ -36,7 +34,7 @@ export default function SpectrumList({ data,onChangeVisibility,onChangeActive })
     const newChecked = [...visibled];
 
     if (currentIndex === -1) {
-      newChecked.push(d);
+      newChecked.push({ id: d.id });
     } else {
       newChecked.splice(currentIndex, 1);
     }
@@ -50,8 +48,13 @@ export default function SpectrumList({ data,onChangeVisibility,onChangeActive })
   };
 
   const handleToggle = (d) => {
-    onChangeActive(d);
-    setActivated(d);
+    if (activated && activated.id === d.id) {
+      onChangeActive(null);
+      setActivated(null);
+    } else {
+      onChangeActive({ id: d.id });
+      setActivated({ id: d.id });
+    }
   };
 
   const isActivated = (id) => {
@@ -63,42 +66,48 @@ export default function SpectrumList({ data,onChangeVisibility,onChangeActive })
       // subheader={<ListSubheader>Spectrum List</ListSubheader>}
       className="spectrum-list"
     >
- 
-        {data.map((d) => {
-          return (
-            <ListItem key={d.id}>
-              <ListItemIcon>
-                <Button onClick={() => handleVisibility(d)} >
-                  <FaEye
-                    style={isVisible(d.id) ? { opacity: 1,stroke:"black",strokeWidth: "1px" } : { opacity: 0.1 }}
-                  />
-                </Button>
-              </ListItemIcon>
-              <ListItemText primary={d.name} />
-              <ListItemSecondaryAction>
-                <Button onClick={() => handleToggle(d)}>
-                  <FaMinus
-                    style={
-                      isActivated(d.id)
-                        ? { fill: d.color}
-                        : { fill: d.color, opacity: 0.1 }
-                    }
-                  />
-                </Button>
-              </ListItemSecondaryAction>
-            </ListItem>
-          );
-        })}
+      {data.map((d) => {
+        return (
+          <ListItem key={d.id}>
+            <ListItemIcon>
+              <Button onClick={() => handleVisibility(d)}>
+                <FaEye
+                  style={
+                    isVisible(d.id)
+                      ? { opacity: 1, stroke: 'black', strokeWidth: '1px' }
+                      : { opacity: 0.1 }
+                  }
+                />
+              </Button>
+            </ListItemIcon>
+            <ListItemText primary={d.name} />
+            <ListItemSecondaryAction>
+              <Button onClick={() => handleToggle(d)}>
+                <FaMinus
+                  style={
+                    isActivated(d.id)
+                      ? { fill: d.color }
+                      : { fill: d.color, opacity: 0.1 }
+                  }
+                />
+              </Button>
+            </ListItemSecondaryAction>
+          </ListItem>
+        );
+      })}
     </List>
   );
 }
 
 SpectrumList.propTypes = {
-  data:propTypes.array.isRequired
-}
+  data: propTypes.array.isRequired,
+};
 
 SpectrumList.defaultProps = {
-   
-  onChangeVisibility : function () { return null},
-  onChangeActive:function () { return null}
+  onChangeVisibility: function() {
+    return null;
+  },
+  onChangeActive: function() {
+    return null;
+  },
 };

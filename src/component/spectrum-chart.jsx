@@ -34,6 +34,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { FaUndo, FaRedo, FaSearchMinus } from 'react-icons/fa';
 
 import SpectrumList from './spectrum-list';
+import { Snackbar } from '@material-ui/core';
+import SnackbarContentWrapper,{MESSAGE_TYPE} from './snack-bar-content-wraper';
+
+
 
 import {
   SET_X_DOMAIN,
@@ -47,7 +51,8 @@ import {
   SHIFT_SPECTRUM,
   CHANGE_SPECTRUM_TYPE,
   FULL_ZOOM_OUT,
-  CHANGE_VISIBILITY
+  CHANGE_VISIBILITY,
+  CHNAGE_ACTIVE_SPECTRUM,
 } from './reducer/action';
 
 import { UNDO, REDO, RESET } from './reducer/undo-action';
@@ -60,6 +65,9 @@ import { UNDO, REDO, RESET } from './reducer/undo-action';
 
 const SpectrumChart = ({ margin, width, height, data }) => {
   const [mouseCorrdinates, setMouseCorrdinates] = useState({ x: 0, y: 0 });
+  const [message, openMessage] = React.useState({isOpen:false,messageText:"",messageType:MESSAGE_TYPE.success});
+   
+
 
   const LoadFile = (acceptedFiles) => {
     return new Promise((resolve, reject) => {
@@ -76,9 +84,13 @@ const SpectrumChart = ({ margin, width, height, data }) => {
       reader.onerror = (e) => reject('file reading has failed', e);
       reader.onload = () => {
         // Do whatever you want with the file contents
+        console.log(reader);
+
         if (reader.result) {
           const binaryData = reader.result;
-          resolve(binaryData);
+
+          const name =acceptedFiles[0].name.substr(0,acceptedFiles[0].name.lastIndexOf("."));
+          resolve({binary:binaryData,name:name});
         }
       };
 
@@ -89,8 +101,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the file
     LoadFile(acceptedFiles).then(
-      (binaryData) => {
-        dispatch({ type: LOADING_SPECTRUM, binaryData });
+      (file) => {
+        dispatch({ type: LOADING_SPECTRUM, ...file });
       },
       (err) => {
         alert(err);
@@ -112,6 +124,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _width: width,
     _height: height,
     _margin: margin,
+    _activeSpectrum: null,
+    openMessage:handelOpenMessage
   };
 
   // const reduers = combineReducers({spectrumReducer,historyReducer});
@@ -137,8 +151,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _isRealSpectrumVisible,
     _peakNotations,
     _width,
-    _height,
-    _margin,
+    _activeSpectrum,
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -198,16 +211,20 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   const mouseMove = (e) => {
+    // e.stopPropagation();
+    // e.preventDefault();
     e.stopPropagation();
-    e.preventDefault();
-    const x = e.clientX - refSVG.current.getBoundingClientRect().left;
+    e.nativeEvent.stopImmediatePropagation();
+
+
+      const x = e.clientX - refSVG.current.getBoundingClientRect().left;
     const y = e.clientY - refSVG.current.getBoundingClientRect().top;
     requestAnimationFrame(() => {
       //   dispatch({
       //     type: SET_POINTER_COORDINATES,
       //     pointerCorrdinates: { x, y },
       //   });
-      // setMouseCorrdinates( { x, y });
+      setMouseCorrdinates( { x, y });
     });
   };
 
@@ -228,6 +245,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     if (_selectedTool === options.peaktool.id) {
       dispatch({
         type: PEAK_PICKING,
+        mouseCorrdinates
       });
     }
   };
@@ -250,11 +268,28 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     });
   };
 
-
-
-  const handleChangeVisibility = (data) =>{
+  const handleChangeVisibility = (data) => {
     dispatch({ type: CHANGE_VISIBILITY, data });
   };
+
+  const handleChangeActiveSpectrum = (data) => {
+    dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data });
+  };
+
+  function  handelOpenMessage({messageType,messageText}) {
+    openMessage({messageType,messageText,isOpen:true});
+  }
+
+  function handleClose  (event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    openMessage({...message,isOpen:false});
+  }
+
+
+  
 
   return (
     <ChartContext.Provider
@@ -266,6 +301,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         xDomain: _xDomain,
         yDomain: _yDomain,
         getScale: getScale,
+        activeSpectrum: _activeSpectrum,
+        openMessage:handelOpenMessage
       }}
     >
       <div
@@ -327,12 +364,9 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               onChangeOption={handleShowSpectrumTypeChang}
               defaultValue={true}
             />
-
           </Grid>
 
           <Grid ref={chartArea} item xs={8}>
-
-
             <svg
               ref={refSVG}
               onMouseMove={mouseMove}
@@ -347,20 +381,20 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                 height={height}
               />
 
-              {_xDomain &&
-                _yDomain &&
+              {_xDomain && _yDomain && (
                 // _data.map((d, i) => (
-                  <Lines
-                    // margin={margin}
-                    // width={width - toolbarWidth}
-                    // height={height}
-                    // key={d.id}
-                    data={_data}
-                    // xDomain={_xDomain}
-                    // yDomain={_yDomain}
-                    // getScale={getScale}
-                  />
-                // ))
+                <Lines
+                  // margin={margin}
+                  // width={width - toolbarWidth}
+                  // height={height}
+                  // key={d.id}
+                  data={_data}
+                  // xDomain={_xDomain}
+                  // yDomain={_yDomain}
+                  // getScale={getScale}
+                />
+              )
+              // ))
               }
 
               <g className="container">
@@ -395,7 +429,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               </g>
 
               <PeakNotaion
-                data={_data}
+                // data={_data}
                 notationData={_peakNotations}
                 onPeakValueChange={handleOnPeakChange}
               />
@@ -403,14 +437,31 @@ const SpectrumChart = ({ margin, width, height, data }) => {
           </Grid>
 
           <Grid item xs={3}>
-            { _data && _data[0] && <SpectrumList
-              data={_data}
-              onChangeVisibility={handleChangeVisibility}
-            />
-            }
-            
+            {_data && _data[0] && (
+              <SpectrumList
+                data={_data}
+                onChangeVisibility={handleChangeVisibility}
+                onChangeActive={handleChangeActiveSpectrum}
+              />
+            )}
           </Grid>
         </Grid>
+
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={message.isOpen}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <SnackbarContentWrapper
+            onClose={handleClose}
+            variant={message.messageType}
+            message={message.messageText}
+          />
+        </Snackbar>
       </div>
     </ChartContext.Provider>
   );

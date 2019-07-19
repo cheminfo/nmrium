@@ -20,7 +20,8 @@
     "react-draggable": "^3.3.0",
     "react-dropzone": "^10.1.5",
     "react-icons": "^3.7.0",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "uuid": "^3.3.2"
   },
   "prettier": {
     "arrowParens": "always",
