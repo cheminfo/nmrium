@@ -12,13 +12,16 @@ const Lines = () => {
 
   function makePath(data) {
     // const scale = getScale(xDomain, yDomain);
-
+     console.log(xDomain);
     const scale = getScale();
 
     const pathPoints = xyReduce(data.x, data.y, {
       from: xDomain[0],
       to: xDomain[1],
     });
+
+
+    console.log(pathPoints);
 
     let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
 
