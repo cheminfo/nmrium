@@ -37,7 +37,7 @@ const YAxis = ({
           y={-(margin.left - 5)}
           dy="0.71em"
           transform="rotate(-90)"
-          text-anchor="end"
+          textAnchor="end"
         >
           {label}
         </text>

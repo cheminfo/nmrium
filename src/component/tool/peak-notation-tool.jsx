@@ -1,7 +1,13 @@
-import React, { useEffect, useRef, useState, Fragment, useContext } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  Fragment,
+  useContext,
+} from 'react';
 import PropTypes from 'prop-types';
 import '../css/peak-notification-tool.css';
-import {ChartContext} from '../context/chart-context';
+import { ChartContext } from '../context/chart-context';
 
 export const NotationTemplate = ({
   id,
@@ -10,6 +16,8 @@ export const NotationTemplate = ({
   value,
   onPeakValueChange,
   onSelected,
+  color,
+  isActive,
 }) => {
   const refText = useRef();
   const [isSelected, setIsSelected] = useState(false);
@@ -31,7 +39,12 @@ export const NotationTemplate = ({
       const newValue = parseFloat(event.target.value);
       const oldValue = parseFloat(value);
       const shiftValue = parseFloat(event.target.value) - parseFloat(value);
-      onPeakValueChange({ id: id, value: newValue,oldValue:oldValue,shiftValue: shiftValue});
+      onPeakValueChange({
+        id: id,
+        value: newValue,
+        oldValue: oldValue,
+        shiftValue: shiftValue,
+      });
     }
   };
 
@@ -51,51 +64,56 @@ export const NotationTemplate = ({
 
   return (
     <Fragment>
-    <g id={id} transform={`translate(${x}, ${y})`}>
-      {/* <rect
+      <g id={id} transform={`translate(${x}, ${y})`}>
+        {/* <rect
         x="0"
         y="-30"
         width={containerSize.width + 10}
         height={containerSize.height}
       /> */}
 
-      <line x1="0" x2="0" y1="0" y2={-30} stroke="black" strokeWidth="1" />
-      <text ref={refText} x="0" y={-20} dy="0.1em" dx="0.35em">
-        {value}
-      </text>
+        <line x1="0" x2="0" y1="0" y2={-30} stroke="black" strokeWidth="1" />
+        <text ref={refText} x="0" y={-20} dy="0.1em" dx="0.35em">
+          {value}
+        </text>
 
-      {/* <circle cx="0" cy="0" r="1" fill="red" /> */}
+        {/* <circle cx="0" cy="0" r="1" fill="red" /> */}
 
-      <foreignObject
-        onMouseOut={handleMouseOutPeakNotation}
-        x="0"
-        y="-30"
-        width={containerSize.width + 20}
-        height={containerSize.height + 10}
-      >
-        <div
-          style={{
-            width: containerSize.width + 20,
-            height: containerSize.height + 10,
-            paddingRight: 5,
-          }}
-          xmlns="http://www.w3.org/1999/xhtml"
+        <foreignObject
+          onMouseOut={handleMouseOutPeakNotation}
+          x="0"
+          y="-30"
+          width={containerSize.width + 20}
+          height={containerSize.height + 10}
         >
-          <input
-            onClick={handleSelectPeakNotation}
-            className={
-              isSelected
-                ? 'notification-input input-over'
-                : 'notification-input'
-            }
-            value={_value}
-            onKeyDown={handleSaveChange}
-            onChange={handleChange}
-            type="number"
-          />
-        </div>
-      </foreignObject>
-      {/* 
+          <div
+            style={{
+              width: containerSize.width + 20,
+              height: containerSize.height + 10,
+              paddingRight: 5,
+            }}
+            xmlns="http://www.w3.org/1999/xhtml"
+          >
+            <input
+              onClick={handleSelectPeakNotation}
+              className={
+                isSelected
+                  ? 'notification-input input-over'
+                  : 'notification-input'
+              }
+              style={{
+                border: `1px solid ${color}`,
+                opacity: isActive ? 1 : 0.2,
+              }}
+              value={_value}
+              onKeyDown={handleSaveChange}
+              onChange={handleChange}
+              type="number"
+              disabled={!isActive}
+            />
+          </div>
+        </foreignObject>
+        {/* 
       <rect
         x="0"
         y="0"
@@ -105,40 +123,73 @@ export const NotationTemplate = ({
         onMouseOut={handleMouseOutPeakNotation}
         className="notifcate-selected"
       /> */}
-    </g>
-
+      </g>
     </Fragment>
   );
 };
 
-const PeakNotaion = ({
-  data,
-  notationData,
-  onPeakValueChange
-}) => {
-  const { getScale } = useContext(ChartContext); 
+const PeakNotaion = ({ notationData, onPeakValueChange }) => {
+  const { getScale, data, activeSpectrum,vericalAlign } = useContext(ChartContext);
 
   // const [notationId, setNotationId] = useState();
+  useEffect(()=>{
+
+  },[])
 
   const handelOnSelected = (id) => {
     console.log(id);
     // setNotationId(id);
   };
 
-  return (
+  const reSortData = () => {
+    const _data = [...data];
 
-    <g>
-      {notationData.map(({xIndex}, i) => (
-        <NotationTemplate
-          key={i}
-          x={getScale().x(data.x[xIndex])}
-          y={getScale().y(data.y[xIndex])}
-          id={xIndex}
-          value={data.x[xIndex]}
-          onPeakValueChange={onPeakValueChange}
-          onSelected={handelOnSelected}
-        />
-      ))}
+    return activeSpectrum
+      ? _data.sort(function(x, y) {
+          return x.id === activeSpectrum.id
+            ? 1
+            : y.id === activeSpectrum.id
+            ? -1
+            : 0;
+        })
+      : _data;
+  };
+
+  const getVerticalAlign=(id)=>{
+    return data.findIndex((d)=>d.id == id) * vericalAlign;
+  }
+
+  return (
+    <g key="peakNotification">
+      {data &&
+        reSortData().map((d, i) => {
+          return (
+            <g key={i}  transform={`translate(0,${getVerticalAlign(d.id)})`} >
+              {notationData &&
+                notationData[d.id] &&
+                d.isVisible &&
+                notationData[d.id].map(({ xIndex }, i) => (
+                  <NotationTemplate
+                    key={i}
+                    x={getScale().x(d.x[xIndex])}
+                    y={getScale().y(d.y[xIndex])}
+                    id={xIndex}
+                    value={d.x[xIndex]}
+                    onPeakValueChange={onPeakValueChange}
+                    onSelected={handelOnSelected}
+                    color={d.color}
+                    isActive={
+                      activeSpectrum == null
+                        ? false
+                        : activeSpectrum.id == d.id
+                        ? true
+                        : false
+                    }
+                  />
+                ))}
+            </g>
+          );
+        })}
     </g>
   );
 };

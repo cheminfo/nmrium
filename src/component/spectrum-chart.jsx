@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useCallback, useReducer } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useReducer,
+  useState,
+} from 'react';
 import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
 import ToolBarPane, { options } from './toolbar-pane';
@@ -25,7 +31,13 @@ import { historyReducer } from './reducer/undo-reducer';
 
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
-import { FaUndo, FaRedo, FaSearchMinus } from 'react-icons/fa';
+import { FaUndo, FaRedo, FaSearchMinus, FaMinus, FaBars } from 'react-icons/fa';
+
+import SpectrumList from './spectrum-list';
+import { Snackbar } from '@material-ui/core';
+import SnackbarContentWrapper, {
+  MESSAGE_TYPE,
+} from './snack-bar-content-wraper';
 
 import {
   SET_X_DOMAIN,
@@ -39,6 +51,8 @@ import {
   SHIFT_SPECTRUM,
   CHANGE_SPECTRUM_TYPE,
   FULL_ZOOM_OUT,
+  CHANGE_VISIBILITY,
+  CHNAGE_ACTIVE_SPECTRUM,
 } from './reducer/action';
 
 import { UNDO, REDO, RESET } from './reducer/undo-action';
@@ -50,6 +64,14 @@ import { UNDO, REDO, RESET } from './reducer/undo-action';
 // }));
 
 const SpectrumChart = ({ margin, width, height, data }) => {
+  const [mouseCorrdinates, setMouseCorrdinates] = useState({ x: 0, y: 0 });
+  const [message, openMessage] = useState({
+    isOpen: false,
+    messageText: '',
+    messageType: MESSAGE_TYPE.success,
+  });
+  const [vericalAlign, setVerticalAlign] = useState(0);
+
   const LoadFile = (acceptedFiles) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -65,9 +87,16 @@ const SpectrumChart = ({ margin, width, height, data }) => {
       reader.onerror = (e) => reject('file reading has failed', e);
       reader.onload = () => {
         // Do whatever you want with the file contents
+        console.log(reader);
+
         if (reader.result) {
           const binaryData = reader.result;
-          resolve(binaryData);
+
+          const name = acceptedFiles[0].name.substr(
+            0,
+            acceptedFiles[0].name.lastIndexOf('.'),
+          );
+          resolve({ binary: binaryData, name: name });
         }
       };
 
@@ -78,8 +107,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the file
     LoadFile(acceptedFiles).then(
-      (binaryData) => {
-        dispatch({ type: LOADING_SPECTRUM, binaryData });
+      (file) => {
+        dispatch({ type: LOADING_SPECTRUM, ...file });
       },
       (err) => {
         alert(err);
@@ -91,23 +120,18 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   const chartArea = useRef();
 
   const intialState = {
-    _data: {
-      id: 1,
-      x: [],
-      y: [],
-      isFid: true, // allows to determine the label of the axis
-      color: 'green',
-    },
+    _data: [],
     _xDomain: [],
     _yDomain: [],
     _orignDomain: {},
     _selectedTool: options.zoom.id,
     _isRealSpectrumVisible: true,
-    _pointerCorrdinates: { x: 0, y: 0 },
     _peakNotations: [],
     _width: width,
     _height: height,
     _margin: margin,
+    _activeSpectrum: null,
+    openMessage: handelOpenMessage,
   };
 
   // const reduers = combineReducers({spectrumReducer,historyReducer});
@@ -123,6 +147,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     ...intialState,
     history,
   });
+
   const {
     _data,
     _xDomain,
@@ -130,11 +155,9 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _orignDomain,
     _selectedTool,
     _isRealSpectrumVisible,
-    _pointerCorrdinates = { x: 0, y: 0 },
     _peakNotations,
     _width,
-    _height,
-    _margin,
+    _activeSpectrum,
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -149,7 +172,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   useEffect(() => {
     // const domain = getDomain(_data);
     dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
-  }, [, width, height]);
+  }, [width, height]);
 
   const handleChangeOption = (selectedTool) => {
     // setSelectedTool(selectedTool);
@@ -194,17 +217,25 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   const mouseMove = (e) => {
+    // e.stopPropagation();
+    // e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+
     const x = e.clientX - refSVG.current.getBoundingClientRect().left;
     const y = e.clientY - refSVG.current.getBoundingClientRect().top;
     requestAnimationFrame(() => {
-      dispatch({
-        type: SET_POINTER_COORDINATES,
-        pointerCorrdinates: { x, y },
-      });
+      //   dispatch({
+      //     type: SET_POINTER_COORDINATES,
+      //     pointerCorrdinates: { x, y },
+      //   });
+      setMouseCorrdinates({ x, y });
     });
   };
 
   const getScale = () => {
+    // console.log(_xDomain);
+    // console.log(_yDomain);
     const x = d3.scaleLinear(_xDomain, [_width - margin.right, margin.left]);
     const y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
     return { x, y };
@@ -219,6 +250,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     if (_selectedTool === options.peaktool.id) {
       dispatch({
         type: PEAK_PICKING,
+        mouseCorrdinates,
       });
     }
   };
@@ -241,6 +273,34 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     });
   };
 
+  const handleChangeVisibility = (data) => {
+    dispatch({ type: CHANGE_VISIBILITY, data });
+  };
+
+  const handleChangeActiveSpectrum = (data) => {
+    dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data });
+  };
+
+  function handelOpenMessage({ messageType, messageText }) {
+    openMessage({ messageType, messageText, isOpen: true });
+  }
+
+  function handleClose(event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    openMessage({ ...message, isOpen: false });
+  }
+
+  const handleChangeVirticalAlignments = () => {
+    if (vericalAlign != 0) {
+      setVerticalAlign(0);
+    } else {
+      setVerticalAlign(Math.floor(-height / 10));
+    }
+  };
+
   return (
     <ChartContext.Provider
       value={{
@@ -251,6 +311,9 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         xDomain: _xDomain,
         yDomain: _yDomain,
         getScale: getScale,
+        activeSpectrum: _activeSpectrum,
+        openMessage: handelOpenMessage,
+        vericalAlign: vericalAlign,
       }}
     >
       <div
@@ -307,13 +370,23 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               </Button>
             </Tooltip>
 
+            <Tooltip title="Spectrums virtical alignment " placement="right-start">
+              <Button
+                className="general-fun-bt"
+                onClick={handleChangeVirticalAlignments}
+              >
+                {vericalAlign != 0 ? <FaMinus /> : <FaBars />}
+              </Button>
+            </Tooltip>
+
             <ShowToolBar
               selectedValue={_isRealSpectrumVisible}
               onChangeOption={handleShowSpectrumTypeChang}
               defaultValue={true}
             />
           </Grid>
-          <Grid ref={chartArea} item xs={11}>
+
+          <Grid ref={chartArea} item xs={8}>
             <svg
               ref={refSVG}
               onMouseMove={mouseMove}
@@ -322,23 +395,27 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               height={height}
             >
               <CrossLineCursorTool
-                position={_pointerCorrdinates}
+                position={mouseCorrdinates}
                 margin={margin}
                 width={_width}
                 height={height}
               />
 
               {_xDomain && _yDomain && (
+                // _data.map((d, i) => (
                 <Lines
-                // margin={margin}
-                // width={width - toolbarWidth}
-                // height={height}
-                // data={data}
-                // xDomain={_xDomain}
-                // yDomain={_yDomain}
-                // getScale={getScale}
+                  // margin={margin}
+                  // width={width - toolbarWidth}
+                  // height={height}
+                  // key={d.id}
+                  data={_data}
+                  // xDomain={_xDomain}
+                  // yDomain={_yDomain}
+                  // getScale={getScale}
                 />
-              )}
+              )
+              // ))
+              }
 
               <g className="container">
                 <XAxis showGrid={true} isFID={true} />
@@ -372,13 +449,39 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               </g>
 
               <PeakNotaion
-                data={_data}
+                // data={_data}
                 notationData={_peakNotations}
                 onPeakValueChange={handleOnPeakChange}
               />
             </svg>
           </Grid>
+
+          <Grid item xs={3}>
+            {_data && _data[0] && (
+              <SpectrumList
+                data={_data}
+                onChangeVisibility={handleChangeVisibility}
+                onChangeActive={handleChangeActiveSpectrum}
+              />
+            )}
+          </Grid>
         </Grid>
+
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={message.isOpen}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <SnackbarContentWrapper
+            onClose={handleClose}
+            variant={message.messageType}
+            message={message.messageText}
+          />
+        </Snackbar>
       </div>
     </ChartContext.Provider>
   );
@@ -387,7 +490,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 SpectrumChart.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  data: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
   margin: PropTypes.shape({
     top: PropTypes.number.isRequired,
     right: PropTypes.number.isRequired,
