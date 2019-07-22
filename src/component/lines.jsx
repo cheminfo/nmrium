@@ -15,7 +15,7 @@ const Lines = ({data}) => {
 
   function makePath(data) {
      
-
+  // console.log(data);
 
     // const scale = getScale(xDomain, yDomain);
     //  console.log(xDomain);

@@ -176,7 +176,7 @@ const PeakNotaion = ({ notationData, onPeakValueChange }) => {
                     color={d.color}
                     isActive={
                       activeSpectrum == null
-                        ? true
+                        ? false
                         : activeSpectrum.id == d.id
                         ? true
                         : false

@@ -30,7 +30,7 @@ import { Datum1D } from '../../data/Datum1D';
 import getKey from '../utility/key-generartor';
 import getColor from '../utility/color-generator';
 
-let dataumObject = null;
+// let datum1DObjects = [];
 
 function getDomain(data) {
   let xArray = data.reduce(
@@ -38,10 +38,6 @@ function getDomain(data) {
     [],
   );
   let yArray = data.reduce((acc, d) => acc.concat(d3.extent(d.y)), []);
-  console.log(yArray);
-
-  console.log(d3.extent(yArray));
-
   return { x: d3.extent(xArray), y: d3.extent(yArray) };
 }
 
@@ -53,11 +49,16 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin }) => {
 
 const setData = (state, data) => {
   const domain = getDomain(data);
+  for (let d of data) {
+    Datum1D.pushObject(
+      d.id,
+      new Datum1D(d.id, d.x, d.y, d.y, d.name, d.color, d.isVisible),
+    );
+  }
 
-  console.log(domain);
-
-  dataumObject = Datum1D.InitiateInstance(data.x, data.y, data.y);
-  console.log(data);
+  // let dataumObject =
+  // Datum1D.setObject(new Datum1D(data.x, data.y, data.y));
+  // const XYData = dataumObject.getReal();
   // const v_data = { ...state._data };
   // v_data.x = dataumObject.x;
   // v_data.y = dataumObject.im;
@@ -73,27 +74,31 @@ const setData = (state, data) => {
 };
 const loadSpectrum = (state, file) => {
   console.log(file.name);
-  dataumObject = Datum1D.fromJcamp(file.binary.toString());
+  const key = getKey();
+  const color = getColor();
 
-  console.log(dataumObject);
-  
+  let dataumObject = Datum1D.fromJcamp(
+    key,
+    file.binary.toString(),
+    color,
+    file.name,
+    true,
+  );
+  const xyData = Datum1D.getXYData;
+  const v_data = [...state._data];
+
+  const domain = getDomain(xyData);
   const realData = dataumObject.getReal();
-  const v_data = [ ...state._data ];
 
   v_data.push({
-    x: dataumObject.x,
-    y: dataumObject.im,
+    x: realData.x,
+    y: realData.im,
     name: file.name,
-    color: getColor(),
-    id: getKey(),
-    isVisible:true
+    color: key,
+    id: color,
+    isVisible: true,
   });
 
-  const domain = getDomain(v_data);
-  
-
-  // v_data.x = dataumObject.x;
-  // v_data.y = dataumObject.im;
   return {
     ...state,
     _peakNotations: [],
@@ -114,10 +119,6 @@ const getClosePeak = (xShift, mouseCorrdinates, state) => {
 
   //get the active sepectrum data by looking for it by id
   const selectedSpectrumData = _data.find((d) => d.id === _activeSpectrum.id);
-
-  console.log(selectedSpectrumData);
-  console.log(_activeSpectrum.id);
-
   var maxIndex =
     selectedSpectrumData.x.findIndex((number) => number >= zoon[0]) - 1;
   var minIndex = selectedSpectrumData.x.findIndex(
@@ -137,13 +138,14 @@ const addPeak = (state, mouseCorrdinates) => {
   const points = [...state._peakNotations];
 
   if (state._activeSpectrum) {
+    const id = state._activeSpectrum.id;
     const peak = getClosePeak(10, mouseCorrdinates, state);
     console.log(points);
     // if (points.findIndex((point) => point.xIndex === peak.xIndex) === -1) {
-    if (points[state._activeSpectrum.id]) {
-      points[state._activeSpectrum.id].push({ xIndex: peak.xIndex });
+    if (points[id]) {
+      points[id].push({ xIndex: peak.xIndex });
     } else {
-      points[state._activeSpectrum.id] = [{ xIndex: peak.xIndex }];
+      points[id] = [{ xIndex: peak.xIndex }];
     }
 
     console.log(points);
@@ -160,20 +162,44 @@ const addPeak = (state, mouseCorrdinates) => {
 };
 
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
-  dataumObject.addFilter({ kind: SHIFT_X, value: shiftValue });
-  dataumObject.applyShiftXFiliter(shiftValue);
-  //add to undo history
-  const history = handleHistorySet(state.history, {
+  const filterOption = {
     kind: SHIFT_X,
     value: shiftValue,
-  });
+  };
+  const activeSpectrumId = state._activeSpectrum.id;
+  const activeObject = Datum1D.getObject(activeSpectrumId);
 
-  // if(_orignDomain.x[0] == _xDomain[0] && _orignDomain.x[1] ==_xDomain[1] )
+  //appy filiter into the spectrum
+  activeObject.addFilter(filterOption);
 
-  const domain = getDomain({ x: dataumObject.x, y: dataumObject.re });
+  filterOption.id = activeSpectrumId;
+  console.log(filterOption);
+  //add the filiter action at the history
+  const history = handleHistorySet(state.history, filterOption);
+  console.log(
+    'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh',
+  );
+  console.log(history);
+  console.log(
+    'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh',
+  );
+
+  activeObject.applyShiftXFiliter(shiftValue);
+  //add to undo history
+
+  const XYData = activeObject.getReal();
+  let data = [...state._data];
+  const spectrumIndex = data.findIndex(
+    (spectrum) => spectrum.id === activeSpectrumId,
+  );
+
+  data[spectrumIndex] = { ...data[spectrumIndex], x: XYData.x, y: XYData.y };
+
+  const domain = getDomain(data);
+
   return {
     ...state,
-    _data: { ...state._data, x: dataumObject.x, y: dataumObject.re },
+    _data: data,
     _xDomain:
       state._orignDomain.x[0] === state._xDomain[0] &&
       state._orignDomain.x[1] === state._xDomain[1]
@@ -221,9 +247,16 @@ const handelSpectrumVisibility = (state, data) => {
   const newData = [...state._data];
   const rdata = newData.map((d) => {
     const result = data.find((newd) => newd.id === d.id);
-    return result !== undefined
-      ? { ...d, isVisible: true }
-      : { ...d, isVisible: false };
+    if (result !== undefined) {
+      Datum1D.getObject(d.id).isVisible = true;
+      return { ...d, isVisible: true };
+    } else {
+      Datum1D.getObject(d.id).isVisible = false;
+      return { ...d, isVisible: false };
+    }
+    // return result !== undefined
+    //   ? { ...d, isVisible: true }
+    //   : { ...d, isVisible: false };
   });
 
   return { ...state, _data: rdata };
@@ -234,9 +267,10 @@ const handelChangeActiveSpectrum = (state, data) => {
 };
 
 const changeSpectrumType = (state, isRealSpectrumVisible) => {
-  if (dataumObject) {
-    const reY = dataumObject.getReal().y;
-    const imY = dataumObject.getImaginary().y;
+  const ob = Datum1D.getObject(state._activeSpectrum.id);
+  if (ob) {
+    const reY = ob.getReal().y;
+    const imY = ob.getImaginary().y;
 
     if (isRealSpectrumVisible) {
       if (reY != null && reY != undefined) {
@@ -269,30 +303,37 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
 //////////////////////////////////////////////////////////////////////
 
 const handleHistoryUndo = (state) => {
+  console.log(state.history);
+
   const { past, present, future } = state.history;
   const previous = past[past.length - 1];
   const newPast = past.slice(0, past.length - 1);
   const newfuture = [present, ...future];
 
   const hasRedo = newfuture.length !== 0;
-  const hasUndo = newPast.length !== 0;
+  const hasUndo = past.length !== 0;
 
-  const data = Datum1D.getInstance().undoFilter(newPast);
-  const domain = getDomain(data);
+  Datum1D.undoFilter(past);
+  let resultData = Datum1D.getXYData();
+
+  const domain = getDomain(resultData);
+  const v_history = {
+    past: newPast,
+    present: previous,
+    future: newfuture,
+    hasRedo,
+    hasUndo,
+  };
+
+  console.log(v_history);
 
   return {
     ...state,
-    _data: { ...state._data, x: data.x, y: data.y },
+    _data: resultData,
     _xDomain: domain.x,
     _yDomain: domain.y,
     _orignDomain: domain,
-    history: {
-      past: newPast,
-      present: previous,
-      future: newfuture,
-      hasRedo,
-      hasUndo,
-    },
+    history: v_history,
   };
 };
 
@@ -300,27 +341,34 @@ const handleHistoryRedo = (state) => {
   const { past, present, future } = state.history;
   const next = future[0];
   const newFuture = future.slice(1);
-  const newPast = [...past, present];
-
-  const hasUndo = newPast.length !== 0;
+  console.log(present);
+  const newPast =  (present != undefined)?[...past, present]:past;
+  
+  const hasUndo = (present == undefined || newPast.length !== 0)?true:false;
   const hasRedo = newFuture.length !== 0;
 
-  const data = Datum1D.getInstance().redoFilter(next);
+  Datum1D.redoFilter(next);
+  let data = Datum1D.getXYData();
   const domain = getDomain(data);
+  const v_history = {
+    past: newPast,
+    present: next,
+    future: newFuture,
+    hasRedo,
+    hasUndo,
+  };
+
+
+  console.log(v_history);
+
 
   return {
     ...state,
-    _data: { ...state._data, x: data.x, y: data.y },
+    _data: data,
     _xDomain: domain.x,
     _yDomain: domain.y,
     _orignDomain: domain,
-    history: {
-      past: newPast,
-      present: next,
-      future: newFuture,
-      hasRedo,
-      hasUndo,
-    },
+    history: v_history,
   };
 };
 

@@ -6,25 +6,30 @@ import { tsParenthesizedType } from '@babel/types';
 import { SHIFT_X } from './filter1d/filter1d-type';
 
 export class Datum1D {
-  static myInstance = null;
+  // static myInstance = null;
 
-  constructor(x, re, im, options = {}) {
+  static dataum1Objects = [];
+
+  constructor(id,x, re, im,name,color,isVisible, options = {}) {
+    this.id = id;
+    this.name = name;
+    this.color = color;
+    this.isVisible= isVisible;
     this.original = { x, re, im };
     this.x = x;
     this.re = re;
     this.im = im;
-
     this.peaks = []; // array of object {index: xIndex}
     this.integrals = []; // array of object (from: xIndex, to: xIndex)
     this.signals = [];
-    this.filters = []; // [{kind: 'shiftX',value: -5,},{.....}]
+    this.filters = [];
+    // [{kind: 'shiftX',value: -5,},{.....}]
   }
 
-  setData(x,re,im){
-    Datum1D.myInstance.x = x;
-    Datum1D.myInstance.re = re;
-    Datum1D.myInstance.im = im;
-    Datum1D.myInstance.original = { x, re, im };
+  getInstance(id,x, re, im,name,color,isVisible) {
+    const ob = new Datum1D(id,x, re, im,name,color,isVisible);
+    Datum1D.dataum1Objects.push(ob);
+    return ob;
   }
 
   baseline(options) {
@@ -33,35 +38,10 @@ export class Datum1D {
 
   applyShiftXFiliter(shiftValue) {
     let data = { x: this.x, y: this.re };
-
     this.x = applyFilter({ kind: SHIFT_X, value: shiftValue }, data).x;
   }
 
-  undoFilter(pastChainFiliters = []) {
-    let data = { x: this.original.x, y: this.original.re };
-    
-    if (pastChainFiliters.length !== 0) {
-      pastChainFiliters.map((filiter) => {
-        data = applyFilter({ kind: filiter.kind, value: filiter.value }, data);
-      });
-    }
-
-    this.x = data.x;
-    this.re = data.y;
-
-    return data;
-  }
-
-  redoFilter(nextFiliter) {
-    let data = { x: this.x, y: this.re };
-    data = applyFilter(
-      { kind: nextFiliter.kind, value: nextFiliter.value },
-      data,
-    );
-    this.x = data.x;
-    this.re = data.y;
-    return data;
-  }
+ 
 
   getReal() {
     return { x: this.x, y: this.re };
@@ -79,11 +59,11 @@ export class Datum1D {
     return this.peaks;
   }
 
-  addFilter(filter) {
+   addFilter(filter) {
     this.filters.push(filter);
   }
 
-  static fromJcamp = function fromJcamp(text) {
+  static fromJcamp = function fromJcamp(text,id,name,color,isVisible) {
     let result = convert(text, { xy: true });
 
     let x =
@@ -108,32 +88,74 @@ export class Datum1D {
         ? result.spectra[1].data[0].y
         : [];
 
-    if (Datum1D.myInstance == null) {
-      Datum1D.myInstance = new Datum1D(x, re, im);
-    } else {
+    const ob = new Datum1D(id,x, re, im,name,color,isVisible);
+    Datum1D.dataum1Objects.push(ob);
 
-      Datum1D.myInstance.setData(x, re, im)
-    }
-
-    return Datum1D.myInstance;
+    return ob;
   };
 
-  static InitiateInstance(x, re, im) {
-    if (Datum1D.myInstance == null) {
-      Datum1D.myInstance = new Datum1D(x, re, im);
-    } else {
-      Datum1D.myInstance.setData(x, re, im)
+  // static InitiateInstance(x, re, im) {
+  //   if (Datum1D.myInstance == null) {
+  //     Datum1D.myInstance = new Datum1D(x, re, im);
+  //   } else {
+  //     Datum1D.myInstance.setData(x, re, im)
 
-    }
+  //   }
 
-    return Datum1D.myInstance;
+  //   return Datum1D.myInstance;
+  // }
+
+  static pushObject(id,object) {
+    Datum1D.dataum1Objects.push(object);
   }
 
-  static getInstance() {
-    // if (Datum1D.myInstance == null) {
-    //   Datum1D.myInstance = new Datum1D();
-    // }
+  static getObject(id) {
+    return Datum1D.dataum1Objects.find((ob)=>ob.id == id );
+  }
 
-    return this.myInstance;
+  static getXYData(){
+    return Datum1D.dataum1Objects.map(ob=>{return {id:ob.id, x:ob.x,y:ob.re,name:ob.name,color:ob.color,isVisible:ob.isVisible}});
+  }
+
+
+  static getOrinalData(){
+    return Datum1D.dataum1Objects.map(ob=>{return {id:ob.id, x:ob.x,y:ob.re,name:ob.name,color:ob.color,isVisible:ob.isVisible}});
+  }
+
+
+
+  static undoFilter(pastChainFiliters = []) {
+    // let data = { x: this.original.x, y: this.original.re };
+    Datum1D.dataum1Objects.forEach((ob)=>{
+      ob.x = ob.original.x;
+      ob.re = ob.original.re;
+    });
+
+    if (pastChainFiliters.length !== 0) {
+  
+    pastChainFiliters.forEach((filter) => {
+        const ob =Datum1D.getObject(filter.id);
+        let data = { x: ob.x, y: ob.re }
+        data = applyFilter({ kind: filter.kind, value: filter.value }, data);
+        Datum1D.getObject(filter.id).x = data.x;
+        Datum1D.getObject(filter.id).re = data.y;
+      });
+
+    // this.x = data.x;
+    // this.re = data.y;
+  }
+
+  }
+
+  static redoFilter(nextFilter) {
+    const ob =Datum1D.getObject(nextFilter.id);
+
+    let data = { x: ob.x, y: ob.re };
+    data = applyFilter(
+      { kind: nextFilter.kind, value: nextFilter.value },
+      data,
+    );
+    ob.x = data.x;
+    ob.re = data.y;
   }
 }
