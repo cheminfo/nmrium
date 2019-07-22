@@ -31,13 +31,13 @@ import { historyReducer } from './reducer/undo-reducer';
 
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
-import { FaUndo, FaRedo, FaSearchMinus } from 'react-icons/fa';
+import { FaUndo, FaRedo, FaSearchMinus, FaMinus, FaBars } from 'react-icons/fa';
 
 import SpectrumList from './spectrum-list';
 import { Snackbar } from '@material-ui/core';
-import SnackbarContentWrapper,{MESSAGE_TYPE} from './snack-bar-content-wraper';
-
-
+import SnackbarContentWrapper, {
+  MESSAGE_TYPE,
+} from './snack-bar-content-wraper';
 
 import {
   SET_X_DOMAIN,
@@ -65,9 +65,12 @@ import { UNDO, REDO, RESET } from './reducer/undo-action';
 
 const SpectrumChart = ({ margin, width, height, data }) => {
   const [mouseCorrdinates, setMouseCorrdinates] = useState({ x: 0, y: 0 });
-  const [message, openMessage] = React.useState({isOpen:false,messageText:"",messageType:MESSAGE_TYPE.success});
-   
-
+  const [message, openMessage] = useState({
+    isOpen: false,
+    messageText: '',
+    messageType: MESSAGE_TYPE.success,
+  });
+  const [vericalAlign, setVerticalAlign] = useState(0);
 
   const LoadFile = (acceptedFiles) => {
     return new Promise((resolve, reject) => {
@@ -89,8 +92,11 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         if (reader.result) {
           const binaryData = reader.result;
 
-          const name =acceptedFiles[0].name.substr(0,acceptedFiles[0].name.lastIndexOf("."));
-          resolve({binary:binaryData,name:name});
+          const name = acceptedFiles[0].name.substr(
+            0,
+            acceptedFiles[0].name.lastIndexOf('.'),
+          );
+          resolve({ binary: binaryData, name: name });
         }
       };
 
@@ -125,7 +131,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _height: height,
     _margin: margin,
     _activeSpectrum: null,
-    openMessage:handelOpenMessage
+    openMessage: handelOpenMessage,
   };
 
   // const reduers = combineReducers({spectrumReducer,historyReducer});
@@ -216,15 +222,14 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
 
-
-      const x = e.clientX - refSVG.current.getBoundingClientRect().left;
+    const x = e.clientX - refSVG.current.getBoundingClientRect().left;
     const y = e.clientY - refSVG.current.getBoundingClientRect().top;
     requestAnimationFrame(() => {
       //   dispatch({
       //     type: SET_POINTER_COORDINATES,
       //     pointerCorrdinates: { x, y },
       //   });
-      setMouseCorrdinates( { x, y });
+      setMouseCorrdinates({ x, y });
     });
   };
 
@@ -245,7 +250,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     if (_selectedTool === options.peaktool.id) {
       dispatch({
         type: PEAK_PICKING,
-        mouseCorrdinates
+        mouseCorrdinates,
       });
     }
   };
@@ -276,20 +281,25 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data });
   };
 
-  function  handelOpenMessage({messageType,messageText}) {
-    openMessage({messageType,messageText,isOpen:true});
+  function handelOpenMessage({ messageType, messageText }) {
+    openMessage({ messageType, messageText, isOpen: true });
   }
 
-  function handleClose  (event, reason) {
+  function handleClose(event, reason) {
     if (reason === 'clickaway') {
       return;
     }
 
-    openMessage({...message,isOpen:false});
+    openMessage({ ...message, isOpen: false });
   }
 
-
-  
+  const handleChangeVirticalAlignments = () => {
+    if (vericalAlign != 0) {
+      setVerticalAlign(0);
+    } else {
+      setVerticalAlign(Math.floor(-height / 10));
+    }
+  };
 
   return (
     <ChartContext.Provider
@@ -302,7 +312,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         yDomain: _yDomain,
         getScale: getScale,
         activeSpectrum: _activeSpectrum,
-        openMessage:handelOpenMessage
+        openMessage: handelOpenMessage,
+        vericalAlign: vericalAlign,
       }}
     >
       <div
@@ -356,6 +367,15 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             <Tooltip title="Full Zoom Out" placement="right-start">
               <Button className="general-fun-bt" onClick={handlefFullZoomOut}>
                 <FaSearchMinus />
+              </Button>
+            </Tooltip>
+
+            <Tooltip title="Spectrums virtical alignment " placement="right-start">
+              <Button
+                className="general-fun-bt"
+                onClick={handleChangeVirticalAlignments}
+              >
+                {vericalAlign != 0 ? <FaMinus /> : <FaBars />}
               </Button>
             </Tooltip>
 

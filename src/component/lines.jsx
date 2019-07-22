@@ -5,7 +5,7 @@ import { ChartContext } from './context/chart-context';
 // { width, height, margin, data, xDomain, yDomain, getScale }
 const Lines = ({data}) => {
   const refPathsContainer = useRef();
-  const { width, height, margin, xDomain, getScale } = useContext(
+  const { width, height, margin, xDomain, getScale ,vericalAlign} = useContext(
     ChartContext,
   );
 
@@ -101,6 +101,7 @@ const Lines = ({data}) => {
             key={d.id}
             stroke={d.color}
             d={makePath(d)}
+            transform={`translate(0,${i*vericalAlign})`}
           />
         ))}
       </g>

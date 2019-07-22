@@ -51,7 +51,6 @@ const setData = (state, data) => {
   const domain = getDomain(data);
   for (let d of data) {
     Datum1D.pushObject(
-      d.id,
       new Datum1D(d.id, d.x, d.y, d.y, d.name, d.color, d.isVisible),
     );
   }
@@ -73,36 +72,38 @@ const setData = (state, data) => {
   };
 };
 const loadSpectrum = (state, file) => {
-  console.log(file.name);
   const key = getKey();
   const color = getColor();
 
   let dataumObject = Datum1D.fromJcamp(
     key,
     file.binary.toString(),
-    color,
     file.name,
+    color,
     true,
   );
-  const xyData = Datum1D.getXYData;
-  const v_data = [...state._data];
+
+  Datum1D.pushObject(dataumObject);
+
+  const xyData = Datum1D.getXYData();
+  // const v_data = [...state._data];
 
   const domain = getDomain(xyData);
-  const realData = dataumObject.getReal();
+  // const realData = dataumObject.getReal();
 
-  v_data.push({
-    x: realData.x,
-    y: realData.im,
-    name: file.name,
-    color: key,
-    id: color,
-    isVisible: true,
-  });
+  // v_data.push({
+  //   x: realData.x,
+  //   y: realData.im,
+  //   name: file.name,
+  //   color: key,
+  //   id: color,
+  //   isVisible: true,
+  // });
 
   return {
     ...state,
     _peakNotations: [],
-    _data: v_data,
+    _data: xyData,
     _xDomain: domain.x,
     _yDomain: domain.y,
     _orignDomain: domain,
@@ -140,16 +141,12 @@ const addPeak = (state, mouseCorrdinates) => {
   if (state._activeSpectrum) {
     const id = state._activeSpectrum.id;
     const peak = getClosePeak(10, mouseCorrdinates, state);
-    console.log(points);
     // if (points.findIndex((point) => point.xIndex === peak.xIndex) === -1) {
     if (points[id]) {
       points[id].push({ xIndex: peak.xIndex });
     } else {
       points[id] = [{ xIndex: peak.xIndex }];
     }
-
-    console.log(points);
-
     // }
   } else {
     state.openMessage({
@@ -173,16 +170,8 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   activeObject.addFilter(filterOption);
 
   filterOption.id = activeSpectrumId;
-  console.log(filterOption);
   //add the filiter action at the history
   const history = handleHistorySet(state.history, filterOption);
-  console.log(
-    'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh',
-  );
-  console.log(history);
-  console.log(
-    'hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh',
-  );
 
   activeObject.applyShiftXFiliter(shiftValue);
   //add to undo history
@@ -267,34 +256,45 @@ const handelChangeActiveSpectrum = (state, data) => {
 };
 
 const changeSpectrumType = (state, isRealSpectrumVisible) => {
-  const ob = Datum1D.getObject(state._activeSpectrum.id);
-  if (ob) {
-    const reY = ob.getReal().y;
-    const imY = ob.getImaginary().y;
+  if (state._activeSpectrum != null) {
+    const activeSpectrumId = state._activeSpectrum.id;
+    const ob = Datum1D.getObject(activeSpectrumId);
 
-    if (isRealSpectrumVisible) {
-      if (reY != null && reY != undefined) {
-        console.log(reY);
+    if (ob) {
+      const v_data = [...state._data];
 
-        return {
-          ...state,
-          _data: { ...state._data, y: reY },
-        };
+      const reY = ob.getReal().y;
+      const imY = ob.getImaginary().y;
+      const index = state._data.findIndex((d) => d.id == activeSpectrumId);
+
+      if (isRealSpectrumVisible) {
+        if (reY != null && reY != undefined) {
+          v_data[index].y = reY;
+
+          return {
+            ...state,
+            _data: v_data,
+          };
+        } else {
+          return state;
+        }
       } else {
-        return state;
-      }
-    } else {
-      if (imY != null && imY != undefined) {
-        console.log(imY);
-        return {
-          ...state,
-          _data: { ...state._data, y: imY },
-        };
-      } else {
-        return state;
+        if (imY != null && imY != undefined) {
+          v_data[index].y = imY;
+
+          return {
+            ...state,
+            _data: v_data,
+          };
+        } else {
+          return state;
+        }
       }
     }
+  } else {
+    return state;
   }
+
   // return state;
 };
 
@@ -303,8 +303,6 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
 //////////////////////////////////////////////////////////////////////
 
 const handleHistoryUndo = (state) => {
-  console.log(state.history);
-
   const { past, present, future } = state.history;
   const previous = past[past.length - 1];
   const newPast = past.slice(0, past.length - 1);
@@ -325,8 +323,6 @@ const handleHistoryUndo = (state) => {
     hasUndo,
   };
 
-  console.log(v_history);
-
   return {
     ...state,
     _data: resultData,
@@ -341,10 +337,9 @@ const handleHistoryRedo = (state) => {
   const { past, present, future } = state.history;
   const next = future[0];
   const newFuture = future.slice(1);
-  console.log(present);
-  const newPast =  (present != undefined)?[...past, present]:past;
-  
-  const hasUndo = (present == undefined || newPast.length !== 0)?true:false;
+  const newPast = present != undefined ? [...past, present] : past;
+
+  const hasUndo = present == undefined || newPast.length !== 0 ? true : false;
   const hasRedo = newFuture.length !== 0;
 
   Datum1D.redoFilter(next);
@@ -357,10 +352,6 @@ const handleHistoryRedo = (state) => {
     hasRedo,
     hasUndo,
   };
-
-
-  console.log(v_history);
-
 
   return {
     ...state,

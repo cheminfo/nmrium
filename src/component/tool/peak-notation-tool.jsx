@@ -129,7 +129,7 @@ export const NotationTemplate = ({
 };
 
 const PeakNotaion = ({ notationData, onPeakValueChange }) => {
-  const { getScale, data, activeSpectrum } = useContext(ChartContext);
+  const { getScale, data, activeSpectrum,vericalAlign } = useContext(ChartContext);
 
   // const [notationId, setNotationId] = useState();
   useEffect(()=>{
@@ -155,12 +155,16 @@ const PeakNotaion = ({ notationData, onPeakValueChange }) => {
       : _data;
   };
 
+  const getVerticalAlign=(id)=>{
+    return data.findIndex((d)=>d.id == id) * vericalAlign;
+  }
+
   return (
     <g key="peakNotification">
       {data &&
         reSortData().map((d, i) => {
           return (
-            <g    key={i}>
+            <g key={i}  transform={`translate(0,${getVerticalAlign(d.id)})`} >
               {notationData &&
                 notationData[d.id] &&
                 d.isVisible &&

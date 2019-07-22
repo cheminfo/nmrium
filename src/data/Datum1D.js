@@ -63,7 +63,7 @@ export class Datum1D {
     this.filters.push(filter);
   }
 
-  static fromJcamp = function fromJcamp(text,id,name,color,isVisible) {
+  static fromJcamp = function fromJcamp(id,text,name,color,isVisible) {
     let result = convert(text, { xy: true });
 
     let x =
@@ -89,7 +89,6 @@ export class Datum1D {
         : [];
 
     const ob = new Datum1D(id,x, re, im,name,color,isVisible);
-    Datum1D.dataum1Objects.push(ob);
 
     return ob;
   };
@@ -105,8 +104,9 @@ export class Datum1D {
   //   return Datum1D.myInstance;
   // }
 
-  static pushObject(id,object) {
+  static pushObject(object) {
     Datum1D.dataum1Objects.push(object);
+    
   }
 
   static getObject(id) {
