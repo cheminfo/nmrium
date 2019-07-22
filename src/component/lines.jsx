@@ -5,7 +5,7 @@ import { ChartContext } from './context/chart-context';
 // { width, height, margin, data, xDomain, yDomain, getScale }
 const Lines = ({data}) => {
   const refPathsContainer = useRef();
-  const { width, height, margin, xDomain, getScale ,vericalAlign} = useContext(
+  const { width, height, margin, xDomain, getScale ,vericalAlign,activeSpectrum} = useContext(
     ChartContext,
   );
 
@@ -80,6 +80,10 @@ const Lines = ({data}) => {
   //   return { x, y };
   // }
 
+  const IsActive = (id) =>{
+     return (activeSpectrum == null)?true:(id == activeSpectrum.id )?true:false
+  }
+
   return (
     <g key={"path"}>
       <defs>
@@ -100,6 +104,7 @@ const Lines = ({data}) => {
             className="line"
             key={d.id}
             stroke={d.color}
+            style={{opacity:(IsActive(d.id))?1:0.2}}
             d={makePath(d)}
             transform={`translate(0,${i*vericalAlign})`}
           />

@@ -345,6 +345,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             />
 
             <Tooltip title="Redo" placement="right-start">
+            {/* component="div" */}
+
               <Button
                 className="general-fun-bt"
                 onClick={handleRedo}
@@ -355,6 +357,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             </Tooltip>
 
             <Tooltip title="Undo" placement="right-start">
+            {/* component="div" */}
               <Button
                 className="general-fun-bt"
                 onClick={handleUndo}
@@ -365,7 +368,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             </Tooltip>
 
             <Tooltip title="Full Zoom Out" placement="right-start">
-              <Button className="general-fun-bt" onClick={handlefFullZoomOut}>
+              <Button  className="general-fun-bt" onClick={handlefFullZoomOut}>
                 <FaSearchMinus />
               </Button>
             </Tooltip>
