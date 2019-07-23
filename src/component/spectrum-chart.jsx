@@ -43,7 +43,6 @@ import {
   SET_X_DOMAIN,
   SET_Y_DOMAIN,
   SET_WIDTH,
-  SET_POINTER_COORDINATES,
   SET_SELECTED_TOOL,
   PEAK_PICKING,
   LOADING_SPECTRUM,
@@ -53,6 +52,7 @@ import {
   FULL_ZOOM_OUT,
   CHANGE_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
+  CHNAGE_SPECTRUM_COLOR
 } from './reducer/action';
 
 import { UNDO, REDO, RESET } from './reducer/undo-action';
@@ -281,6 +281,15 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data });
   };
 
+
+  const handleSpectrumColorChanged=(data)=>{
+
+    console.log(data);
+    
+    dispatch({ type: CHNAGE_SPECTRUM_COLOR, data });
+
+  };
+
   function handelOpenMessage({ messageType, messageText }) {
     openMessage({ messageType, messageText, isOpen: true });
   }
@@ -465,6 +474,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                 data={_data}
                 onChangeVisibility={handleChangeVisibility}
                 onChangeActive={handleChangeActiveSpectrum}
+                onColorChanged={handleSpectrumColorChanged}
               />
             )}
           </Grid>

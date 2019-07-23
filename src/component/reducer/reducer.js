@@ -13,6 +13,7 @@ import {
   FULL_ZOOM_OUT,
   CHANGE_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
+  CHNAGE_SPECTRUM_COLOR,
 } from './action';
 
 import { UNDO, REDO, RESET } from './undo-action';
@@ -263,6 +264,17 @@ const handelChangeActiveSpectrum = (state, activeSpectrum) => {
   return { ...state, _data: data, _activeSpectrum: activeSpectrum };
 };
 
+const handelChangeSpectrumColor = (state, { id, color }) => {
+  const data = [...state._data];
+  const index = data.findIndex((d) => d.id === id);
+  if (index !== -1) {
+    data[index].color = color;
+    Datum1D.getObject(id).color = true;
+  }
+
+  return { ...state, _data: data };
+};
+
 const changeSpectrumType = (state, isRealSpectrumVisible) => {
   if (state._activeSpectrum != null) {
     const activeSpectrumId = state._activeSpectrum.id;
@@ -448,6 +460,9 @@ export const spectrumReducer = (state, action) => {
       return handelSpectrumVisibility(state, action.data);
     case CHNAGE_ACTIVE_SPECTRUM:
       return handelChangeActiveSpectrum(state, action.data);
+
+    case CHNAGE_SPECTRUM_COLOR:
+      return handelChangeSpectrumColor(state, action.data);
 
     // undo and redo operation
     case UNDO:
