@@ -16,23 +16,25 @@ export default function SpectrumList({
   onChangeVisibility,
   onChangeActive,
 }) {
-  const [activated, setActivated] = React.useState();
+  const [activated, setActivated] = React.useState(null);
   const [visibled, setVisible] = React.useState([]);
 
+  
+
+  
   useEffect(() => {
-    setVisible(data);
-    setActivated(null);
+    const v_data = data.filter((d)=>d.isVisible === true);
+    setVisible(v_data);
+    setActivated(activated);
     // onChangeVisibility(data);
     // onChangeActive(data[0])
-  }, []);
+  }, [data]);
+
 
 
   const handleVisibility = (d) => {
-    // console.log(d);
     const currentIndex = visibled.findIndex((v) => v.id === d.id);
-    // console.log(currentIndex);
     const newChecked = [...visibled];
-
     if (currentIndex === -1) {
       newChecked.push({ id: d.id });
     } else {
@@ -40,7 +42,6 @@ export default function SpectrumList({
     }
     onChangeVisibility(newChecked);
     setVisible(newChecked);
-    console.log(newChecked);
   };
 
   const isVisible = (id) => {

@@ -234,9 +234,9 @@ const zoomOut = (state) => {
 
 const handelSpectrumVisibility = (state, data) => {
   const newData = [...state._data];
-  const rdata = newData.map((d) => {
-    const result = data.find((newd) => newd.id === d.id);
-    if (result !== undefined) {
+  const rdata = newData.map((d, i) => {
+    const result = data.findIndex((newd) => newd.id == d.id);
+    if (result !== -1) {
       Datum1D.getObject(d.id).isVisible = true;
       return { ...d, isVisible: true };
     } else {
@@ -251,8 +251,16 @@ const handelSpectrumVisibility = (state, data) => {
   return { ...state, _data: rdata };
 };
 
-const handelChangeActiveSpectrum = (state, data) => {
-  return { ...state, _activeSpectrum: data };
+const handelChangeActiveSpectrum = (state, activeSpectrum) => {
+  const data = [...state._data];
+  if (activeSpectrum) {
+    Datum1D.getObject(activeSpectrum.id).isVisible = true;
+    const index = data.findIndex((d) => d.id === activeSpectrum.id);
+    if (index !== -1) {
+      data[index].isVisible = true;
+    }
+  }
+  return { ...state, _data: data, _activeSpectrum: activeSpectrum };
 };
 
 const changeSpectrumType = (state, isRealSpectrumVisible) => {

@@ -64,6 +64,12 @@ export class Datum1D {
   }
 
   static fromJcamp = function fromJcamp(id,text,name,color,isVisible) {
+
+    console.log(text);
+    console.log(typeof text);
+
+
+
     let result = convert(text, { xy: true });
 
     let x =
