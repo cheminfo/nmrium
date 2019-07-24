@@ -123,6 +123,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _data: [],
     _xDomain: [],
     _yDomain: [],
+    _yDomains:[],
     _orignDomain: {},
     _selectedTool: options.zoom.id,
     _isRealSpectrumVisible: true,
@@ -158,6 +159,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _peakNotations,
     _width,
     _activeSpectrum,
+    _yDomains
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -208,7 +210,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   const handleYDomainUpdate = (yDomain) => {
-    dispatch({ type: SET_Y_DOMAIN, yDomain });
+      dispatch({ type: SET_Y_DOMAIN,yDomain});
   };
 
   const handleRestDomain = (domain) => {
@@ -233,11 +235,30 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     });
   };
 
-  const getScale = () => {
+  const getScale = (spectrumId =null) => {
     // console.log(_xDomain);
     // console.log(_yDomain);
     const x = d3.scaleLinear(_xDomain, [_width - margin.right, margin.left]);
-    const y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
+    // console.log(spectrumId);
+    let y ;
+
+    if(spectrumId == null){
+      y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
+
+    }else 
+    if((_activeSpectrum == null  || _activeSpectrum.id != spectrumId)){
+      const index = _data.findIndex((d)=>d.id === spectrumId);
+       y = d3.scaleLinear(_yDomains[index], [height - margin.bottom, margin.top]);
+       console.log('22222222222222222222');
+
+
+    }else {
+      const index = _data.findIndex((d)=>d.id === _activeSpectrum.id);
+      // console.log(index);
+      // console.log(_yDomains);
+
+      y = d3.scaleLinear(_yDomains[index], [height - margin.bottom, margin.top]);
+    }
     return { x, y };
   };
 
@@ -283,8 +304,6 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 
 
   const handleSpectrumColorChanged=(data)=>{
-
-    console.log(data);
     
     dispatch({ type: CHNAGE_SPECTRUM_COLOR, data });
 

@@ -14,12 +14,17 @@ const Lines = ({data}) => {
 
 
   function makePath(data) {
+
+    const {id,x,y} = data;
      
-  // console.log(data);
 
     // const scale = getScale(xDomain, yDomain);
     //  console.log(xDomain);
-    const scale = getScale();
+    // if(id !== null && id !== undefined ){
+
+      // if(activeSpectrum != null && id === activeSpectru m.id){
+   
+    const scale = getScale(id);
 
     // const pathPoints = xyReduce(data.x, data.y, {
     //   from: xDomain[0],
@@ -32,7 +37,7 @@ const Lines = ({data}) => {
 
   // console.log(data);
 
-    const pathPoints = xyReduce(data.x, data.y, {
+    const pathPoints = xyReduce(x, y, {
       from: xDomain[0],
       to: xDomain[1],
     });
@@ -50,8 +55,11 @@ const Lines = ({data}) => {
     // console.log(path);
 
     // setPaths(path);
-
+ 
     return path;
+  // }
+
+  // }
   }
 
 
@@ -85,6 +93,7 @@ const Lines = ({data}) => {
   }
 
   return (
+    
     <g key={"path"}>
       <defs>
         <clipPath id="clip">
@@ -113,6 +122,9 @@ const Lines = ({data}) => {
     </g>
   );
 };
+
+
+
 
 export default Lines;
 

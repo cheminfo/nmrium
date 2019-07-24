@@ -171,8 +171,8 @@ const PeakNotaion = ({ notationData, onPeakValueChange }) => {
                 notationData[d.id].map(({ xIndex }, i) => (
                   <NotationTemplate
                     key={i}
-                    x={getScale().x(d.x[xIndex])}
-                    y={getScale().y(d.y[xIndex])}
+                    x={getScale(d.id).x(d.x[xIndex])}
+                    y={getScale(d.id).y(d.y[xIndex])}
                     id={xIndex}
                     value={d.x[xIndex]}
                     onPeakValueChange={onPeakValueChange}
