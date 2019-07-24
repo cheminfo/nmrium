@@ -231,11 +231,6 @@ const setYDomain = (state, _yDomain) => {
     const index = state._data.findIndex((d)=>d.id === state._activeSpectrum.id);
     const yDomains =  [...state._yDomains];
     yDomains[index] = _yDomain;
-   console.log('...............................................');
-    // console.log(yDomains);
-    // console.log(_yDomain);
-    console.log(yDomains[index]);
-    console.log('...............................................');
     return {...state,_yDomains:yDomains};
 
 

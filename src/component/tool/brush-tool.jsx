@@ -60,13 +60,13 @@ class BrushTool extends Component {
 
     // const { getScale } = this.props;
     // const scale = getScale().y;
-    const scale = d3.scaleLinear([1,90000], [
+    const scale = d3.scaleLinear(originDomain.y, [
       height - margin.bottom,
       margin.top,
     ]);
 
     const v_domain = t.rescaleY(scale).domain();
-    this.props.onYAxisDomainUpdate([originDomain.y[0],v_domain[1]]);
+    this.props.onYAxisDomainUpdate([domain.y[0],v_domain[1]]);
   };
 
   reset = (e) => {
