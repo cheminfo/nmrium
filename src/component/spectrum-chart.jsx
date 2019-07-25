@@ -235,6 +235,12 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     });
   };
 
+  const mouseMoveLeave= (e)=>{
+
+    setMouseCorrdinates({x: 0, y:0 });
+
+  };
+
   const getScale = (spectrumId =null) => {
     // console.log(_xDomain);
     // console.log(_yDomain);
@@ -249,14 +255,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     if((_activeSpectrum == null  || _activeSpectrum.id != spectrumId)){
       const index = _data.findIndex((d)=>d.id === spectrumId);
        y = d3.scaleLinear(_yDomains[index], [height - margin.bottom, margin.top]);
-       console.log('22222222222222222222');
-
-
     }else {
       const index = _data.findIndex((d)=>d.id === _activeSpectrum.id);
-      // console.log(index);
-      // console.log(_yDomains);
-
       y = d3.scaleLinear(_yDomains[index], [height - margin.bottom, margin.top]);
     }
     return { x, y };
@@ -421,6 +421,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             <svg
               ref={refSVG}
               onMouseMove={mouseMove}
+              onMouseLeave={mouseMoveLeave}
               onClick={mouseClick}
               width={_width}
               height={height}

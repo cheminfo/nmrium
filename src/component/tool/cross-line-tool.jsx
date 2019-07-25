@@ -7,7 +7,7 @@ const CrossLineCursorTool = ({ position }) => {
   const { height,width,margin } = useContext(ChartContext); 
 
   return (
-    <g key="crossLine">
+   position.x !=0 && position.y !=0 &&  <g key="crossLine">
       <line
         className="vertical_line"
         x1={position.x}
@@ -18,6 +18,7 @@ const CrossLineCursorTool = ({ position }) => {
       />
       <line className="vertical_line" x1="0" y1={position.y} x2={`${width}`} y2={position.y}   key="horizental_line" />
     </g>
+  
   );
 };
 
