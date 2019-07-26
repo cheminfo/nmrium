@@ -10,7 +10,7 @@ const ShowToolBar = ({ onChangeOption,selectedValue,defaultValue }) => {
   const [option, setOption] = useState();
   const toolbarRef = useRef();
   const handleChange = (event, selectedOption) => {
-    if(selectedOption != null){
+    if(selectedOption !== null){
       setOption(selectedOption);
       onChangeOption(selectedOption);
   

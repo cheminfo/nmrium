@@ -248,7 +248,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 
     if (spectrumId == null) {
       y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
-    } else if (_activeSpectrum == null || _activeSpectrum.id != spectrumId) {
+    } else if (_activeSpectrum == null || _activeSpectrum.id !== spectrumId) {
       const index = _data.findIndex((d) => d.id === spectrumId);
       y = d3.scaleLinear(_yDomains[index], [
         height - margin.bottom,
@@ -321,7 +321,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   }
 
   const handleChangeVirticalAlignments = () => {
-    if (verticalAlign != 0) {
+    if (verticalAlign !== 0) {
       setVerticalAlign(0);
     } else {
       setVerticalAlign(Math.floor(-height / 10));
@@ -408,7 +408,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                 className="general-fun-bt"
                 onClick={handleChangeVirticalAlignments}
               >
-                {verticalAlign != 0 ? <FaMinus /> : <FaBars />}
+                {verticalAlign !== 0 ? <FaMinus /> : <FaBars />}
               </Button>
             </Tooltip>
 

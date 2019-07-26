@@ -84,7 +84,7 @@ export default function SpectrumList({
   };
 
   const handleColorChanged = (color, event) => {
-    if (spectrumId != null) {
+    if (spectrumId !== null) {
       onColorChanged({ id: spectrumId, color: color.hex });
     }
   };

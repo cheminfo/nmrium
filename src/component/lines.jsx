@@ -25,7 +25,7 @@ const Lines = ({ data }) => {
     //  console.log(xDomain);
     // if(id !== null && id !== undefined ){
 
-    // if(activeSpectrum != null && id === activeSpectru m.id){
+    // if(activeSpectrum !== null && id === activeSpectru m.id){
 
     const scale = getScale(id);
 

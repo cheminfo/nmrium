@@ -300,7 +300,7 @@ const handelChangeSpectrumColor = (state, { id, color }) => {
 };
 
 const changeSpectrumType = (state, isRealSpectrumVisible) => {
-  if (state._activeSpectrum != null) {
+  if (state._activeSpectrum !== null) {
     const activeSpectrumId = state._activeSpectrum.id;
     const ob = Datum1D.getObject(activeSpectrumId);
 
@@ -312,7 +312,7 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
       const index = state._data.findIndex((d) => d.id == activeSpectrumId);
 
       if (isRealSpectrumVisible) {
-        if (reY != null && reY != undefined) {
+        if (reY !== null && reY !== undefined) {
           v_data[index].y = reY;
 
           return {
@@ -323,7 +323,7 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
           return state;
         }
       } else {
-        if (imY != null && imY != undefined) {
+        if (imY !== null && imY !== undefined) {
           v_data[index].y = imY;
 
           return {
@@ -381,7 +381,7 @@ const handleHistoryRedo = (state) => {
   const { past, present, future } = state.history;
   const next = future[0];
   const newFuture = future.slice(1);
-  const newPast = present != undefined ? [...past, present] : past;
+  const newPast = present !== undefined ? [...past, present] : past;
 
   const hasUndo = present == undefined || newPast.length !== 0 ? true : false;
   const hasRedo = newFuture.length !== 0;
@@ -417,7 +417,7 @@ const handleHistorySet = (state, action) => {
   }
 
   return {
-    past: present != null ? [...past, present] : [...past],
+    past: present !== null ? [...past, present] : [...past],
     present: newValue,
     future: [],
     hasUndo: true,
