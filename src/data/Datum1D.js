@@ -125,7 +125,7 @@ export class Datum1D {
     });
   }
 
-  static getOrinalData() {
+  static getOriginalData() {
     return Datum1D.dataum1Objects.map((ob) => {
       return {
         id: ob.id,
