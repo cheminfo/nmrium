@@ -3,27 +3,30 @@ import PropTypes from 'prop-types';
 import { xyReduce } from 'ml-spectra-processing';
 import { ChartContext } from './context/chart-context';
 // { width, height, margin, data, xDomain, yDomain, getScale }
-const Lines = ({data}) => {
+const Lines = ({ data }) => {
   const refPathsContainer = useRef();
-  const { width, height, margin, xDomain, getScale ,vericalAlign,activeSpectrum} = useContext(
-    ChartContext,
-  );
+  const {
+    width,
+    height,
+    margin,
+    xDomain,
+    getScale,
+    verticalAlign,
+    activeSpectrum,
+  } = useContext(ChartContext);
 
-  // const {data} = 
+  // const {data} =
   // const [_data, setData] = useState([data]);
 
-
   function makePath(data) {
-
-    const {id,x,y} = data;
-     
+    const { id, x, y } = data;
 
     // const scale = getScale(xDomain, yDomain);
     //  console.log(xDomain);
     // if(id !== null && id !== undefined ){
 
-      // if(activeSpectrum != null && id === activeSpectru m.id){
-   
+    // if(activeSpectrum != null && id === activeSpectru m.id){
+
     const scale = getScale(id);
 
     // const pathPoints = xyReduce(data.x, data.y, {
@@ -31,11 +34,9 @@ const Lines = ({data}) => {
     //   to: xDomain[1],
     // });
 
+    // console.log(data);
 
-  // console.log(data);
-
-
-  // console.log(data);
+    // console.log(data);
 
     const pathPoints = xyReduce(x, y, {
       from: xDomain[0],
@@ -55,17 +56,15 @@ const Lines = ({data}) => {
     // console.log(path);
 
     // setPaths(path);
- 
-    return path;
-  // }
 
-  // }
+    return path;
+    // }
+
+    // }
   }
 
-
-  
   // useEffect(() => {
-     
+
   //  console.log('domain changed')
   //  console.log(data);
   // //  setData(data);
@@ -88,13 +87,16 @@ const Lines = ({data}) => {
   //   return { x, y };
   // }
 
-  const IsActive = (id) =>{
-     return (activeSpectrum == null)?true:(id == activeSpectrum.id )?true:false
-  }
+  const IsActive = (id) => {
+    return activeSpectrum == null
+      ? true
+      : id == activeSpectrum.id
+      ? true
+      : false;
+  };
 
   return (
-    
-    <g key={"path"}>
+    <g key={'path'}>
       <defs>
         <clipPath id="clip">
           <rect
@@ -107,24 +109,26 @@ const Lines = ({data}) => {
       </defs>
 
       <g className="paths" ref={refPathsContainer} clipPath="url(#clip)">
-        {data && data[0] && data[0].x &&  data.map((d, i) => ( 
-          d.isVisible && 
-          <path
-            className="line"
-            key={d.id}
-            stroke={d.color}
-            style={{opacity:(IsActive(d.id))?1:0.2}}
-            d={makePath(d)}
-            transform={`translate(0,${i*vericalAlign})`}
-          />
-        ))}
+        {data &&
+          data[0] &&
+          data[0].x &&
+          data.map(
+            (d, i) =>
+              d.isVisible && (
+                <path
+                  className="line"
+                  key={d.id}
+                  stroke={d.color}
+                  style={{ opacity: IsActive(d.id) ? 1 : 0.2 }}
+                  d={makePath(d)}
+                  transform={`translate(0,${i * verticalAlign})`}
+                />
+              ),
+          )}
       </g>
     </g>
   );
 };
-
-
-
 
 export default Lines;
 

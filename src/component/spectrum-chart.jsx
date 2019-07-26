@@ -70,7 +70,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     messageText: '',
     messageType: MESSAGE_TYPE.success,
   });
-  const [vericalAlign, setVerticalAlign] = useState(0);
+  const [verticalAlign, setVerticalAlign] = useState(0);
 
   const LoadFile = (acceptedFiles) => {
     return new Promise((resolve, reject) => {
@@ -321,7 +321,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   }
 
   const handleChangeVirticalAlignments = () => {
-    if (vericalAlign != 0) {
+    if (verticalAlign != 0) {
       setVerticalAlign(0);
     } else {
       setVerticalAlign(Math.floor(-height / 10));
@@ -340,7 +340,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         getScale: getScale,
         activeSpectrum: _activeSpectrum,
         openMessage: handelOpenMessage,
-        vericalAlign: vericalAlign,
+        verticalAlign: verticalAlign,
       }}
     >
       <div
@@ -408,7 +408,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                 className="general-fun-bt"
                 onClick={handleChangeVirticalAlignments}
               >
-                {vericalAlign != 0 ? <FaMinus /> : <FaBars />}
+                {verticalAlign != 0 ? <FaMinus /> : <FaBars />}
               </Button>
             </Tooltip>
 
