@@ -113,7 +113,7 @@ export class Datum1D {
   };
 
   // static InitiateInstance(x, re, im) {
-  //   if (Datum1D.myInstance == null) {
+  //   if (Datum1D.myInstance === null) {
   //     Datum1D.myInstance = new Datum1D(x, re, im);
   //   } else {
   //     Datum1D.myInstance.setData(x, re, im)
@@ -128,7 +128,7 @@ export class Datum1D {
   }
 
   static getObject(id) {
-    return Datum1D.dataum1Objects.find((ob) => ob.id == id);
+    return Datum1D.dataum1Objects.find((ob) => ob.id === id);
   }
 
   static getXYData() {

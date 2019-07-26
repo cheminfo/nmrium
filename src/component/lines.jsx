@@ -88,9 +88,9 @@ const Lines = ({ data }) => {
   // }
 
   const IsActive = (id) => {
-    return activeSpectrum == null
+    return activeSpectrum === null
       ? true
-      : id == activeSpectrum.id
+      : id === activeSpectrum.id
       ? true
       : false;
   };

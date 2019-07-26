@@ -159,7 +159,7 @@ const PeakNotation = ({ notationData, onPeakValueChange }) => {
   };
 
   const getVerticalAlign = (id) => {
-    return data.findIndex((d) => d.id == id) * verticalAlign;
+    return data.findIndex((d) => d.id === id) * verticalAlign;
   };
 
   return (
@@ -182,9 +182,9 @@ const PeakNotation = ({ notationData, onPeakValueChange }) => {
                     onSelected={handelOnSelected}
                     color={d.color}
                     isActive={
-                      activeSpectrum == null
+                      activeSpectrum === null
                         ? false
-                        : activeSpectrum.id == d.id
+                        : activeSpectrum.id === d.id
                         ? true
                         : false
                     }

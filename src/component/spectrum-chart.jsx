@@ -246,9 +246,9 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     // console.log(spectrumId);
     let y;
 
-    if (spectrumId == null) {
+    if (spectrumId === null) {
       y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
-    } else if (_activeSpectrum == null || _activeSpectrum.id !== spectrumId) {
+    } else if (_activeSpectrum === null || _activeSpectrum.id !== spectrumId) {
       const index = _data.findIndex((d) => d.id === spectrumId);
       y = d3.scaleLinear(_yDomains[index], [
         height - margin.bottom,

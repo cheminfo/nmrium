@@ -219,7 +219,7 @@ const setXDomain = (state, _xDomain) => {
 };
 
 const setYDomain = (state, _yDomain) => {
-  if(state._activeSpectrum == null){
+  if(state._activeSpectrum === null){
     const _yDomains = state._yDomains.map((y)=>{
       return [y[0]+(_yDomain[0]-y[0]),y[1]+(_yDomain[1]-y[1])];
     })
@@ -260,7 +260,7 @@ const zoomOut = (state) => {
 const handelSpectrumVisibility = (state, data) => {
   const newData = [...state._data];
   const rdata = newData.map((d, i) => {
-    const result = data.findIndex((newd) => newd.id == d.id);
+    const result = data.findIndex((newd) => newd.id === d.id);
     if (result !== -1) {
       Datum1D.getObject(d.id).isVisible = true;
       return { ...d, isVisible: true };
@@ -309,7 +309,7 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
 
       const reY = ob.getReal().y;
       const imY = ob.getImaginary().y;
-      const index = state._data.findIndex((d) => d.id == activeSpectrumId);
+      const index = state._data.findIndex((d) => d.id === activeSpectrumId);
 
       if (isRealSpectrumVisible) {
         if (reY !== null && reY !== undefined) {
@@ -383,7 +383,7 @@ const handleHistoryRedo = (state) => {
   const newFuture = future.slice(1);
   const newPast = present !== undefined ? [...past, present] : past;
 
-  const hasUndo = present == undefined || newPast.length !== 0 ? true : false;
+  const hasUndo = present === undefined || newPast.length !== 0 ? true : false;
   const hasRedo = newFuture.length !== 0;
 
   Datum1D.redoFilter(next);
