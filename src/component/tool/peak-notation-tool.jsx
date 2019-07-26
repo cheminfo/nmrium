@@ -128,13 +128,13 @@ export const NotationTemplate = ({
   );
 };
 
-const PeakNotaion = ({ notationData, onPeakValueChange }) => {
-  const { getScale, data, activeSpectrum,vericalAlign } = useContext(ChartContext);
+const PeakNotation = ({ notationData, onPeakValueChange }) => {
+  const { getScale, data, activeSpectrum, vericalAlign } = useContext(
+    ChartContext,
+  );
 
   // const [notationId, setNotationId] = useState();
-  useEffect(()=>{
-
-  },[])
+  useEffect(() => {}, []);
 
   const handelOnSelected = (id) => {
     console.log(id);
@@ -155,16 +155,16 @@ const PeakNotaion = ({ notationData, onPeakValueChange }) => {
       : _data;
   };
 
-  const getVerticalAlign=(id)=>{
-    return data.findIndex((d)=>d.id == id) * vericalAlign;
-  }
+  const getVerticalAlign = (id) => {
+    return data.findIndex((d) => d.id == id) * vericalAlign;
+  };
 
   return (
     <g key="peakNotification">
       {data &&
         reSortData().map((d, i) => {
           return (
-            <g key={i}  transform={`translate(0,${getVerticalAlign(d.id)})`} >
+            <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
               {notationData &&
                 notationData[d.id] &&
                 d.isVisible &&
@@ -194,9 +194,9 @@ const PeakNotaion = ({ notationData, onPeakValueChange }) => {
   );
 };
 
-export default PeakNotaion;
+export default PeakNotation;
 
-PeakNotaion.contextTypes = {
+PeakNotation.contextTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   margin: PropTypes.shape({

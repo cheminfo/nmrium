@@ -15,10 +15,15 @@ export class Datum1D {
     this.color = color;
     this.isVisible = isVisible;
     this.original = { x, re, im };
+    this.nucleus = options.nucleus || '1H'; // 1H, 13C, 19F, ...
+    this.isFid = options.isFid || false;
+
     this.x = x;
     this.re = re;
     this.im = im;
     this.peaks = []; // array of object {index: xIndex}
+    // in case the peak does not exactly correspond to the point value
+    // we can think about a second attributed `xShift`
     this.integrals = []; // array of object (from: xIndex, to: xIndex)
     this.signals = [];
     this.filters = [];
@@ -51,6 +56,18 @@ export class Datum1D {
   setPeaks(peaks) {
     this.peaks = peaks;
   }
+
+  addIntegral(from, to) {}
+
+  /**
+   *
+   * @param {number} chemicalShift Target chemical shift
+   * @param {number} window Range of chemical shifts to look for
+   * @example  addPeak(5, 0.1)
+   */
+  addPeak(chemicalShift, window, options = {}) {}
+
+  autoPeakPicking() {}
 
   getPeaks() {
     return this.peaks;

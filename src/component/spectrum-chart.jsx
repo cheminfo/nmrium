@@ -17,7 +17,7 @@ import Lines from './lines';
 // import ZoomTool from './tool/zoom-tool';
 import CrossLineCursorTool from './tool/cross-line-tool';
 import * as d3 from 'd3';
-import PeakNotaion from './tool/peak-notation-tool';
+import PeakNotation from './tool/peak-notation-tool';
 // import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import { ChartContext } from './context/chart-context';
@@ -52,7 +52,7 @@ import {
   FULL_ZOOM_OUT,
   CHANGE_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
-  CHNAGE_SPECTRUM_COLOR
+  CHNAGE_SPECTRUM_COLOR,
 } from './reducer/action';
 
 import { UNDO, REDO, RESET } from './reducer/undo-action';
@@ -123,7 +123,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _data: [],
     _xDomain: [],
     _yDomain: [],
-    _yDomains:[],
+    _yDomains: [],
     _orignDomain: {},
     _selectedTool: options.zoom.id,
     _isRealSpectrumVisible: true,
@@ -159,7 +159,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _peakNotations,
     _width,
     _activeSpectrum,
-    _yDomains
+    _yDomains,
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -169,7 +169,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   });
   useEffect(() => {
     dispatch({ type: SET_DATA, data });
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     // const domain = getDomain(_data);
@@ -210,7 +210,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   const handleYDomainUpdate = (yDomain) => {
-      dispatch({ type: SET_Y_DOMAIN,yDomain});
+    dispatch({ type: SET_Y_DOMAIN, yDomain });
   };
 
   const handleRestDomain = (domain) => {
@@ -235,29 +235,31 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     });
   };
 
-  const mouseMoveLeave= (e)=>{
-
-    setMouseCorrdinates({x: 0, y:0 });
-
+  const mouseMoveLeave = (e) => {
+    setMouseCorrdinates({ x: 0, y: 0 });
   };
 
-  const getScale = (spectrumId =null) => {
+  const getScale = (spectrumId = null) => {
     // console.log(_xDomain);
     // console.log(_yDomain);
     const x = d3.scaleLinear(_xDomain, [_width - margin.right, margin.left]);
     // console.log(spectrumId);
-    let y ;
+    let y;
 
-    if(spectrumId == null){
+    if (spectrumId == null) {
       y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
-
-    }else 
-    if((_activeSpectrum == null  || _activeSpectrum.id != spectrumId)){
-      const index = _data.findIndex((d)=>d.id === spectrumId);
-       y = d3.scaleLinear(_yDomains[index], [height - margin.bottom, margin.top]);
-    }else {
-      const index = _data.findIndex((d)=>d.id === _activeSpectrum.id);
-      y = d3.scaleLinear(_yDomains[index], [height - margin.bottom, margin.top]);
+    } else if (_activeSpectrum == null || _activeSpectrum.id != spectrumId) {
+      const index = _data.findIndex((d) => d.id === spectrumId);
+      y = d3.scaleLinear(_yDomains[index], [
+        height - margin.bottom,
+        margin.top,
+      ]);
+    } else {
+      const index = _data.findIndex((d) => d.id === _activeSpectrum.id);
+      y = d3.scaleLinear(_yDomains[index], [
+        height - margin.bottom,
+        margin.top,
+      ]);
     }
     return { x, y };
   };
@@ -302,11 +304,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data });
   };
 
-
-  const handleSpectrumColorChanged=(data)=>{
-    
+  const handleSpectrumColorChanged = (data) => {
     dispatch({ type: CHNAGE_SPECTRUM_COLOR, data });
-
   };
 
   function handelOpenMessage({ messageType, messageText }) {
@@ -373,7 +372,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             />
 
             <Tooltip title="Redo" placement="right-start">
-            {/* component="div" */}
+              {/* component="div" */}
 
               <Button
                 className="general-fun-bt"
@@ -385,7 +384,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             </Tooltip>
 
             <Tooltip title="Undo" placement="right-start">
-            {/* component="div" */}
+              {/* component="div" */}
               <Button
                 className="general-fun-bt"
                 onClick={handleUndo}
@@ -396,12 +395,15 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             </Tooltip>
 
             <Tooltip title="Full Zoom Out" placement="right-start">
-              <Button  className="general-fun-bt" onClick={handlefFullZoomOut}>
+              <Button className="general-fun-bt" onClick={handlefFullZoomOut}>
                 <FaSearchMinus />
               </Button>
             </Tooltip>
 
-            <Tooltip title="Spectrums virtical alignment " placement="right-start">
+            <Tooltip
+              title="Spectrums virtical alignment "
+              placement="right-start"
+            >
               <Button
                 className="general-fun-bt"
                 onClick={handleChangeVirticalAlignments}
@@ -480,7 +482,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                 /> */}
               </g>
 
-              <PeakNotaion
+              <PeakNotation
                 // data={_data}
                 notationData={_peakNotations}
                 onPeakValueChange={handleOnPeakChange}
