@@ -2,7 +2,6 @@ import baseline from './baseline';
 import applyFilter from './filter1d/filter';
 
 import { convert } from 'jcampconverter';
-import { tsParenthesizedType } from '@babel/types';
 import { SHIFT_X } from './filter1d/filter1d-type';
 
 export class Datum1D {
@@ -10,11 +9,11 @@ export class Datum1D {
 
   static dataum1Objects = [];
 
-  constructor(id,x, re, im,name,color,isVisible, options = {}) {
+  constructor(id, x, re, im, name, color, isVisible, options = {}) {
     this.id = id;
     this.name = name;
     this.color = color;
-    this.isVisible= isVisible;
+    this.isVisible = isVisible;
     this.original = { x, re, im };
     this.x = x;
     this.re = re;
@@ -26,8 +25,8 @@ export class Datum1D {
     // [{kind: 'shiftX',value: -5,},{.....}]
   }
 
-  getInstance(id,x, re, im,name,color,isVisible) {
-    const ob = new Datum1D(id,x, re, im,name,color,isVisible);
+  getInstance(id, x, re, im, name, color, isVisible) {
+    const ob = new Datum1D(id, x, re, im, name, color, isVisible);
     Datum1D.dataum1Objects.push(ob);
     return ob;
   }
@@ -36,12 +35,10 @@ export class Datum1D {
     let result = baseline(this.x, this.re, this.im);
   }
 
-  applyShiftXFiliter(shiftValue) {
+  applyShiftXFilter(shiftValue) {
     let data = { x: this.x, y: this.re };
     this.x = applyFilter({ kind: SHIFT_X, value: shiftValue }, data).x;
   }
-
- 
 
   getReal() {
     return { x: this.x, y: this.re };
@@ -59,16 +56,13 @@ export class Datum1D {
     return this.peaks;
   }
 
-   addFilter(filter) {
+  addFilter(filter) {
     this.filters.push(filter);
   }
 
-  static fromJcamp = function fromJcamp(id,text,name,color,isVisible) {
-
+  static fromJcamp = function fromJcamp(id, text, name, color, isVisible) {
     console.log(text);
     console.log(typeof text);
-
-
 
     let result = convert(text, { xy: true });
 
@@ -94,7 +88,7 @@ export class Datum1D {
         ? result.spectra[1].data[0].y
         : [];
 
-    const ob = new Datum1D(id,x, re, im,name,color,isVisible);
+    const ob = new Datum1D(id, x, re, im, name, color, isVisible);
 
     return ob;
   };
@@ -112,49 +106,61 @@ export class Datum1D {
 
   static pushObject(object) {
     Datum1D.dataum1Objects.push(object);
-    
   }
 
   static getObject(id) {
-    return Datum1D.dataum1Objects.find((ob)=>ob.id == id );
+    return Datum1D.dataum1Objects.find((ob) => ob.id == id);
   }
 
-  static getXYData(){
-    return Datum1D.dataum1Objects.map(ob=>{return {id:ob.id, x:ob.x,y:ob.re,name:ob.name,color:ob.color,isVisible:ob.isVisible}});
+  static getXYData() {
+    return Datum1D.dataum1Objects.map((ob) => {
+      return {
+        id: ob.id,
+        x: ob.x,
+        y: ob.re,
+        name: ob.name,
+        color: ob.color,
+        isVisible: ob.isVisible,
+      };
+    });
   }
 
-
-  static getOrinalData(){
-    return Datum1D.dataum1Objects.map(ob=>{return {id:ob.id, x:ob.x,y:ob.re,name:ob.name,color:ob.color,isVisible:ob.isVisible}});
+  static getOrinalData() {
+    return Datum1D.dataum1Objects.map((ob) => {
+      return {
+        id: ob.id,
+        x: ob.x,
+        y: ob.re,
+        name: ob.name,
+        color: ob.color,
+        isVisible: ob.isVisible,
+      };
+    });
   }
-
-
 
   static undoFilter(pastChainFiliters = []) {
     // let data = { x: this.original.x, y: this.original.re };
-    Datum1D.dataum1Objects.forEach((ob)=>{
+    Datum1D.dataum1Objects.forEach((ob) => {
       ob.x = ob.original.x;
       ob.re = ob.original.re;
     });
 
     if (pastChainFiliters.length !== 0) {
-  
-    pastChainFiliters.forEach((filter) => {
-        const ob =Datum1D.getObject(filter.id);
-        let data = { x: ob.x, y: ob.re }
+      pastChainFiliters.forEach((filter) => {
+        const ob = Datum1D.getObject(filter.id);
+        let data = { x: ob.x, y: ob.re };
         data = applyFilter({ kind: filter.kind, value: filter.value }, data);
         Datum1D.getObject(filter.id).x = data.x;
         Datum1D.getObject(filter.id).re = data.y;
       });
 
-    // this.x = data.x;
-    // this.re = data.y;
-  }
-
+      // this.x = data.x;
+      // this.re = data.y;
+    }
   }
 
   static redoFilter(nextFilter) {
-    const ob =Datum1D.getObject(nextFilter.id);
+    const ob = Datum1D.getObject(nextFilter.id);
 
     let data = { x: ob.x, y: ob.re };
     data = applyFilter(

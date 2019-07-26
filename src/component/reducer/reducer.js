@@ -183,7 +183,7 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   //add the filiter action at the history
   const history = handleHistorySet(state.history, filterOption);
 
-  activeObject.applyShiftXFiliter(shiftValue);
+  activeObject.applyShiftXFilter(shiftValue);
   //add to undo history
 
   const XYData = activeObject.getReal();
