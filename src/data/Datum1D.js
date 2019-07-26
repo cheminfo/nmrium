@@ -1,4 +1,5 @@
 import baseline from './baseline';
+import autoPeakPicking from './autoPeakPicking';
 import applyFilter from './filter1d/filter';
 
 import { convert } from 'jcampconverter';
@@ -21,7 +22,7 @@ export class Datum1D {
     this.x = x;
     this.re = re;
     this.im = im;
-    this.peaks = []; // array of object {index: xIndex}
+    this.peaks = []; // array of object {index: xIndex, xShift}
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
     this.integrals = []; // array of object (from: xIndex, to: xIndex)
@@ -38,6 +39,10 @@ export class Datum1D {
 
   baseline(options) {
     let result = baseline(this.x, this.re, this.im);
+  }
+
+  autoPeakPicking(options) {
+    let result = autoPeakPicking(this.x, this.re);
   }
 
   applyShiftXFilter(shiftValue) {

@@ -3,8 +3,8 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 describe('test Datum1D', () => {
-  let jcamp = readFileSync(join(__dirname, './ethylbenzene-1h.jdx'), 'utf8');
-  let data = Datum1D.fromJcamp("1",jcamp,"test","red",true);
+  let jcamp = readFileSync(join(__dirname, './data/ethylbenzene-1h.jdx'), 'utf8');
+  let data = Datum1D.fromJcamp('1', jcamp, 'test', 'red', true);
 
   test('check x, re, im', () => {
     expect(data.x).toHaveLength(16384);
