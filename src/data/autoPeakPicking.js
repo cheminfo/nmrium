@@ -1,6 +1,6 @@
 import { gsd } from 'ml-gsd';
 
-export default function peakPicking(x, y, options = {}) {
+export default function autoPeakPicking(x, y, options = {}) {
   // we calculate the noise but this could be improved
   let noise = y.map((y) => Math.abs(y)).sort()[Math.floor(y.length / 2)];
 
