@@ -1,2 +1,2 @@
 import React from 'react';
-export const ChartContext  = React.createContext();
+export const ChartContext = React.createContext();

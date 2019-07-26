@@ -18,15 +18,14 @@ const variantIcon = {
   info: InfoIcon,
 };
 
-
 export const MESSAGE_TYPE = {
-    success:"success",
-    warning: "warning",
-    error: "error",
-    info: "info",
-  };
+  success: 'success',
+  warning: 'warning',
+  error: 'error',
+  info: 'info',
+};
 
-const useStyles1 = makeStyles(theme => ({
+const useStyles1 = makeStyles((theme) => ({
   success: {
     backgroundColor: green[600],
   },
@@ -52,7 +51,7 @@ const useStyles1 = makeStyles(theme => ({
   },
 }));
 
-  const SnackbarContentWrapper = (props) => {
+const SnackbarContentWrapper = (props) => {
   const classes = useStyles1();
   const { className, message, onClose, variant, ...other } = props;
   const Icon = variantIcon[variant];
@@ -68,14 +67,19 @@ const useStyles1 = makeStyles(theme => ({
         </span>
       }
       action={[
-        <IconButton key="close" aria-label="Close" color="inherit" onClick={onClose}>
+        <IconButton
+          key="close"
+          aria-label="Close"
+          color="inherit"
+          onClick={onClose}
+        >
           <CloseIcon className={classes.icon} />
         </IconButton>,
       ]}
       {...other}
     />
   );
-}
+};
 
 SnackbarContentWrapper.propTypes = {
   className: PropTypes.string,
@@ -83,6 +87,5 @@ SnackbarContentWrapper.propTypes = {
   onClose: PropTypes.func,
   variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired,
 };
-
 
 export default SnackbarContentWrapper;

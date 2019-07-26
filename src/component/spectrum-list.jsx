@@ -42,7 +42,7 @@ export default function SpectrumList({
     setActivated(activated);
     // onChangeVisibility(data);
     // onChangeActive(data[0])
-  }, [data]);
+  }, [activated, data]);
 
   const handleVisibility = (d) => {
     const currentIndex = visibled.findIndex((v) => v.id === d.id);

@@ -129,12 +129,9 @@ export const NotationTemplate = ({
 };
 
 const PeakNotation = ({ notationData, onPeakValueChange }) => {
-  const {
-    getScale,
-    data,
-    activeSpectrum,
-    verticalAlign,
-  } = useContext(ChartContext);
+  const { getScale, data, activeSpectrum, verticalAlign } = useContext(
+    ChartContext,
+  );
 
   // const [notationId, setNotationId] = useState();
   useEffect(() => {}, []);

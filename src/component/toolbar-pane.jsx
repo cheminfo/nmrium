@@ -16,14 +16,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 //   checked: {
 // })(props => <Radio color="default" {...props} />);
 
-
-
 export let options = {
   zoom: { id: 'zoom', label: 'Zoom' },
   peaktool: { id: 'peakTool', label: 'Peak Tool' },
 };
 
-const ToolBarPane = ({ onChangeOption,selectedValue }) => {
+const ToolBarPane = ({ onChangeOption, selectedValue }) => {
   const [option, setOption] = useState();
   const toolbarRef = useRef();
   const handleChange = (event, selectedOption) => {
@@ -34,7 +32,7 @@ const ToolBarPane = ({ onChangeOption,selectedValue }) => {
   useEffect(() => {
     setOption(option);
     onChangeOption(selectedValue);
-  }, []);
+  }, [onChangeOption, option, selectedValue]);
 
   return (
     <div ref={toolbarRef} className="option-container">
@@ -44,7 +42,11 @@ const ToolBarPane = ({ onChangeOption,selectedValue }) => {
         exclusive
         onChange={handleChange}
       >
-        <ToggleButton key={1} value={options.zoom.id} selected={(selectedValue === options.zoom.id)?true:false}>
+        <ToggleButton
+          key={1}
+          value={options.zoom.id}
+          selected={selectedValue === options.zoom.id ? true : false}
+        >
           <Tooltip title={options.zoom.label} placement="right-start">
             <ZoomIn />
           </Tooltip>
@@ -66,10 +68,6 @@ const ToolBarPane = ({ onChangeOption,selectedValue }) => {
 
 export default ToolBarPane;
 
-
 ToolBarPane.defaultProps = {
-
-  selectedValue : options.zoom.id
-
+  selectedValue: options.zoom.id,
 };
-

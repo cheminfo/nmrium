@@ -3,24 +3,20 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Tooltip from '@material-ui/core/Tooltip';
 
-
-
-
-const ShowToolBar = ({ onChangeOption,selectedValue,defaultValue }) => {
+const ShowToolBar = ({ onChangeOption, selectedValue, defaultValue }) => {
   const [option, setOption] = useState();
   const toolbarRef = useRef();
   const handleChange = (event, selectedOption) => {
-    if(selectedOption !== null){
+    if (selectedOption !== null) {
       setOption(selectedOption);
       onChangeOption(selectedOption);
-  
     }
   };
 
   useEffect(() => {
     setOption(defaultValue);
     // onChangeOption(selectedValue);
-  }, []);
+  }, [defaultValue]);
 
   return (
     <div ref={toolbarRef} className="show-option-container">
@@ -30,14 +26,14 @@ const ShowToolBar = ({ onChangeOption,selectedValue,defaultValue }) => {
         exclusive
         onChange={handleChange}
       >
-        <ToggleButton key={1} value={true} >
+        <ToggleButton key={1} value={true}>
           <Tooltip title="Real spectrum" placement="right-start">
             <label>re</label>
           </Tooltip>
         </ToggleButton>
         <ToggleButton key={2} value={false}>
           <Tooltip title="Imaginary spectrum" placement="right-start">
-             <label>im</label>
+            <label>im</label>
           </Tooltip>
         </ToggleButton>
       </ToggleButtonGroup>
@@ -47,11 +43,7 @@ const ShowToolBar = ({ onChangeOption,selectedValue,defaultValue }) => {
 
 export default ShowToolBar;
 
-
 ShowToolBar.defaultProps = {
-
-  selectedValue : true,
-  defaultValue:true
-
+  selectedValue: true,
+  defaultValue: true,
 };
-

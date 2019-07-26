@@ -1,10 +1,7 @@
 // import {spectrumReducer} from './reducer';
 // import {historyReducer} from './undo-reducer';
 
-
-
-
-const combineReducers = (reducer)  =>{
+const combineReducers = (reducer) => {
   return (state = {}, action) => {
     console.log(state);
     const keys = Object.keys(reducer);
@@ -17,7 +14,6 @@ const combineReducers = (reducer)  =>{
   };
 };
 
+// console.log(combineReducers);
 
-  // console.log(combineReducers);
-
-  export default combineReducers;
+export default combineReducers;

@@ -39,13 +39,13 @@ function getDomain(data) {
     [],
   );
   let _yDomains = [];
-  let yArray = data.reduce((acc,d,i) =>{
+  let yArray = data.reduce((acc, d, i) => {
     const extent = d3.extent(d.y);
-    _yDomains[i]=extent;
+    _yDomains[i] = extent;
     return acc.concat(extent);
   }, []);
-  
-  return { x: d3.extent(xArray), y: d3.extent(yArray),_yDomains:_yDomains };
+
+  return { x: d3.extent(xArray), y: d3.extent(yArray), _yDomains: _yDomains };
 }
 
 const getScale = ({ _xDomain, _yDomain, _width, _height, _margin }) => {
@@ -76,7 +76,7 @@ const setData = (state, data) => {
     _xDomain: domain.x,
     _yDomain: domain.y,
     _orignDomain: domain,
-    _yDomains:domain._yDomains
+    _yDomains: domain._yDomains,
   };
 };
 const loadSpectrum = (state, file) => {
@@ -115,8 +115,7 @@ const loadSpectrum = (state, file) => {
     _xDomain: domain.x,
     _yDomain: domain.y,
     _orignDomain: domain,
-    _yDomains:domain._yDomains
-
+    _yDomains: domain._yDomains,
   };
 };
 
@@ -219,21 +218,19 @@ const setXDomain = (state, _xDomain) => {
 };
 
 const setYDomain = (state, _yDomain) => {
-  if(state._activeSpectrum === null){
-    const _yDomains = state._yDomains.map((y)=>{
-      return [y[0]+(_yDomain[0]-y[0]),y[1]+(_yDomain[1]-y[1])];
-    })
+  if (state._activeSpectrum === null) {
+    const _yDomains = state._yDomains.map((y) => {
+      return [y[0] + (_yDomain[0] - y[0]), y[1] + (_yDomain[1] - y[1])];
+    });
 
-    return { ...state, _yDomain,_yDomains };
- 
-  }else{
-    
-    const index = state._data.findIndex((d)=>d.id === state._activeSpectrum.id);
-    const yDomains =  [...state._yDomains];
+    return { ...state, _yDomain, _yDomains };
+  } else {
+    const index = state._data.findIndex(
+      (d) => d.id === state._activeSpectrum.id,
+    );
+    const yDomains = [...state._yDomains];
     yDomains[index] = _yDomain;
-    return {...state,_yDomains:yDomains};
-
-
+    return { ...state, _yDomains: yDomains };
   }
 };
 

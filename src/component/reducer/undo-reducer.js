@@ -51,7 +51,6 @@ const handleReset = (action) => {
 };
 
 export const historyReducer = (state, action) => {
-
   switch (action.type) {
     case UNDO:
       return handleUndo(state);
@@ -66,7 +65,6 @@ export const historyReducer = (state, action) => {
       return handleReset(action);
 
     default:
-            return  null;
-
+      return null;
   }
 };
