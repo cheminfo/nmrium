@@ -28,7 +28,6 @@ const HistoryToolBar = ({
       )}
       {isRedoButtonVisible && (
         <Tooltip title="Undo" placement="right-start">
-          {/* component="div" */}
           <Button
             className="general-fun-bt"
             onClick={onUndo}
