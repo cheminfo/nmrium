@@ -1,8 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import SpectrumChart from './component/spectrum-chart';
-import ChartWindow from './component/chart-window';
+import SpectrumChart from './component/SpectrumChart';
+import ChartWindow from './component/ChartWindow';
 
 import json from './samples/test.json';
 import json2 from './samples/test2.json';

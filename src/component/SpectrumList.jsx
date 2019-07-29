@@ -8,6 +8,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { FaEye } from 'react-icons/fa';
 import { FaMinus } from 'react-icons/fa';
 import { FaCog } from 'react-icons/fa';
+import { FaMapMarker } from 'react-icons/fa';
+
 import { FaPaintBrush } from 'react-icons/fa';
 
 import { Button } from '@material-ui/core';
@@ -28,11 +30,13 @@ const ColorPicker = React.memo(({ onColorChanged }) => {
 export default function SpectrumList({
   data,
   onChangeVisibility,
+  onChangeMarkersVisibility,
   onChangeActive,
   onColorChanged,
 }) {
   const [activated, setActivated] = useState(null);
-  const [visibled, setVisible] = useState([]);
+  const [visible, setVisible] = useState([]);
+  const [markersVisible, setMarkersVisible] = useState([]);
   const [isColorPickerDisplayed, setIsColorPickerDisplayed] = useState(false);
   const [spectrumId, setSelectedSpectrumId] = useState(null);
 
@@ -40,13 +44,15 @@ export default function SpectrumList({
     const v_data = data.filter((d) => d.isVisible === true);
     setVisible(v_data);
     setActivated(activated);
+    setMarkersVisible(data);
+
     // onChangeVisibility(data);
     // onChangeActive(data[0])
   }, [data]);
 
   const handleVisibility = (d) => {
-    const currentIndex = visibled.findIndex((v) => v.id === d.id);
-    const newChecked = [...visibled];
+    const currentIndex = visible.findIndex((v) => v.id === d.id);
+    const newChecked = [...visible];
     if (currentIndex === -1) {
       newChecked.push({ id: d.id });
     } else {
@@ -57,7 +63,7 @@ export default function SpectrumList({
   };
 
   const isVisible = (id) => {
-    return visibled.findIndex((v) => v.id === id) !== -1 ? true : false;
+    return visible.findIndex((v) => v.id === id) !== -1 ? true : false;
   };
 
   const handleToggle = (d) => {
@@ -72,6 +78,22 @@ export default function SpectrumList({
 
   const isActivated = (id) => {
     return activated && activated.id === id;
+  };
+
+  const handleMarkersVisibility = (d) => {
+    const currentIndex = markersVisible.findIndex((v) => v.id === d.id);
+    const newChecked = [...markersVisible];
+    if (currentIndex === -1) {
+      newChecked.push({ id: d.id });
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+    onChangeMarkersVisibility(newChecked);
+    setMarkersVisible(newChecked);
+  };
+
+  const isMarkerVisible = (id) => {
+    return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
   };
 
   const handleOpenColorPicker = (selectedID) => {
@@ -109,8 +131,19 @@ export default function SpectrumList({
                   />
                 </Button>
               </ListItemIcon>
-              <ListItemText primary={d.name} />
+              {/* <ListItemText primary={d.name} /> */}
+              <div style={{ width: '50%' }}>{d.name}</div>
+
               <ListItemSecondaryAction>
+                <Button onClick={() => handleMarkersVisibility(d)}>
+                  <FaEye
+                    style={
+                      isMarkerVisible(d.id)
+                        ? { width: 12, opacity: 1, fill: d.color }
+                        : { width: 12, opacity: 0.1, fill: d.color }
+                    }
+                  />
+                </Button>
                 <Button onClick={() => handleToggle(d)}>
                   <FaMinus
                     style={
@@ -154,6 +187,9 @@ SpectrumList.propTypes = {
 
 SpectrumList.defaultProps = {
   onChangeVisibility: function() {
+    return null;
+  },
+  onChangeMarkersVisibility: function() {
     return null;
   },
   onChangeActive: function() {

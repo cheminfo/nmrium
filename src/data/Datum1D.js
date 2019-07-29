@@ -36,7 +36,7 @@ export class Datum1D {
     let result = baseline(this.x, this.re, this.im);
   }
 
-  applyShiftXFiliter(shiftValue) {
+  applyShiftXFilter(shiftValue) {
     let data = { x: this.x, y: this.re };
     this.x = applyFilter({ kind: SHIFT_X, value: shiftValue }, data).x;
   }

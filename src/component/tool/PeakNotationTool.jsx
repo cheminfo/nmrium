@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import '../css/peak-notification-tool.css';
-import { ChartContext } from '../context/chart-context';
+import { ChartContext } from '../context/ChartContext';
 
 export const NotationTemplate = ({
   id,
@@ -128,13 +128,18 @@ export const NotationTemplate = ({
   );
 };
 
-const PeakNotaion = ({ notationData, onPeakValueChange }) => {
-  const { getScale, data, activeSpectrum,vericalAlign } = useContext(ChartContext);
+const PeakNotationTool = ({
+  notationData,
+  onPeakValueChange,
+  position,
+  showCursorLabel,
+}) => {
+  const { getScale, data, activeSpectrum, verticalAlign } = useContext(
+    ChartContext,
+  );
 
   // const [notationId, setNotationId] = useState();
-  useEffect(()=>{
-
-  },[])
+  useEffect(() => {}, []);
 
   const handelOnSelected = (id) => {
     console.log(id);
@@ -155,48 +160,57 @@ const PeakNotaion = ({ notationData, onPeakValueChange }) => {
       : _data;
   };
 
-  const getVerticalAlign=(id)=>{
-    return data.findIndex((d)=>d.id == id) * vericalAlign;
-  }
+  const getVerticalAlign = (id) => {
+    return data.findIndex((d) => d.id == id) * verticalAlign;
+  };
 
   return (
-    <g key="peakNotification">
-      {data &&
-        reSortData().map((d, i) => {
-          return (
-            <g key={i}  transform={`translate(0,${getVerticalAlign(d.id)})`} >
-              {notationData &&
-                notationData[d.id] &&
-                d.isVisible &&
-                notationData[d.id].map(({ xIndex }, i) => (
-                  <NotationTemplate
-                    key={i}
-                    x={getScale(d.id).x(d.x[xIndex])}
-                    y={getScale(d.id).y(d.y[xIndex])}
-                    id={xIndex}
-                    value={d.x[xIndex]}
-                    onPeakValueChange={onPeakValueChange}
-                    onSelected={handelOnSelected}
-                    color={d.color}
-                    isActive={
-                      activeSpectrum == null
-                        ? false
-                        : activeSpectrum.id == d.id
-                        ? true
-                        : false
-                    }
-                  />
-                ))}
-            </g>
-          );
-        })}
-    </g>
+    <Fragment>
+      <g key="peakNotification">
+        {data &&
+          reSortData().map((d, i) => {
+            return (
+              <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
+                {notationData &&
+                  notationData[d.id] &&
+                  d.isVisible &&
+                  notationData[d.id].map(({ xIndex }, i) => (
+                    <NotationTemplate
+                      key={i}
+                      x={getScale(d.id).x(d.x[xIndex])}
+                      y={getScale(d.id).y(d.y[xIndex])}
+                      id={xIndex}
+                      value={d.x[xIndex]}
+                      onPeakValueChange={onPeakValueChange}
+                      onSelected={handelOnSelected}
+                      color={d.color}
+                      isActive={
+                        activeSpectrum == null
+                          ? false
+                          : activeSpectrum.id == d.id
+                          ? true
+                          : false
+                      }
+                    />
+                  ))}
+              </g>
+            );
+          })}
+      </g>
+      {showCursorLabel && (
+        <g>
+          <text x={position.x} y={position.y} dy="0em" dx="0.35em">
+            {getScale().x.invert(position.x)}
+          </text>
+        </g>
+      )}
+    </Fragment>
   );
 };
 
-export default PeakNotaion;
+export default PeakNotationTool;
 
-PeakNotaion.contextTypes = {
+PeakNotationTool.contextTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   margin: PropTypes.shape({

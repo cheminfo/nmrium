@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import {ChartContext} from './context/chart-context';
+import {ChartContext} from './context/ChartContext';
 
 const XAxis = ({
   label,
@@ -19,12 +19,12 @@ const XAxis = ({
 
   const xAxis = d3
     .axisBottom()
-    .ticks(15)
+    .ticks(8)
     .tickFormat(d3.format('0'));
 
   const grid = d3
     .axisBottom()
-    .ticks(15)
+    .ticks(10)
     .tickSize(-(height - margin.top - margin.bottom))
     .tickFormat('');
 

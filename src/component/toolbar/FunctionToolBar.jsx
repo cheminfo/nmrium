@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect ,useCallback} from 'react';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 // import CropFree from '@material-ui/icons/CropFree';
@@ -16,35 +16,60 @@ import Tooltip from '@material-ui/core/Tooltip';
 //   checked: {
 // })(props => <Radio color="default" {...props} />);
 
-
-
 export let options = {
   zoom: { id: 'zoom', label: 'Zoom' },
-  peaktool: { id: 'peakTool', label: 'Peak Tool' },
+  peakTool: { id: 'peakPicking', label: 'Peak Tool' },
 };
 
-const ToolBarPane = ({ onChangeOption,selectedValue }) => {
+const FunctionToolBar = ({ onChangeOption, defaultValue }) => {
   const [option, setOption] = useState();
-  const toolbarRef = useRef();
   const handleChange = (event, selectedOption) => {
-    setOption(selectedOption);
-    onChangeOption(selectedOption);
+
+    console.log(defaultValue);
+
+   console.log(selectedOption);
+
+    if (selectedOption != null) {
+      setOption(selectedOption);
+      onChangeOption(selectedOption);
+    }
   };
 
+  const handleOnKeyPressed = useCallback((e) => {
+    if (e.key === 'z') {
+      setOption(options.zoom.id);
+      onChangeOption(options.zoom.id);
+    } else if (e.key === 'p') {
+      setOption(options.peakTool.id);
+      onChangeOption(options.peakTool.id);
+    }
+  });
+
   useEffect(() => {
-    setOption(option);
-    onChangeOption(selectedValue);
+    setOption(defaultValue);
+    document.addEventListener('keydown', handleOnKeyPressed, false);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      document.removeEventListener('keydown', handleOnKeyPressed, false);
+    };
   }, []);
 
   return (
-    <div ref={toolbarRef} className="option-container">
+    <div
+      className="option-container"
+      onKeyDown={handleOnKeyPressed}
+    >
       <ToggleButtonGroup
         size="small"
         value={option}
         exclusive
         onChange={handleChange}
       >
-        <ToggleButton key={1} value={options.zoom.id} selected={(selectedValue === options.zoom.id)?true:false}>
+        {/* selected={(selectedValue === options.zoom.id)?true:false} */}
+
+        <ToggleButton key={1} value={options.zoom.id}>
           <Tooltip title={options.zoom.label} placement="right-start">
             <ZoomIn />
           </Tooltip>
@@ -54,8 +79,8 @@ const ToolBarPane = ({ onChangeOption,selectedValue }) => {
             <CropFree />
           </Tooltip>
         </ToggleButton> */}
-        <ToggleButton key={3} value={options.peaktool.id}>
-          <Tooltip title={options.peaktool.label} placement="right-start">
+        <ToggleButton key={3} value={options.peakTool.id}>
+          <Tooltip title={options.peakTool.label} placement="right-start">
             <Timeline />
           </Tooltip>
         </ToggleButton>
@@ -64,12 +89,8 @@ const ToolBarPane = ({ onChangeOption,selectedValue }) => {
   );
 };
 
-export default ToolBarPane;
+export default FunctionToolBar;
 
-
-ToolBarPane.defaultProps = {
-
-  selectedValue : options.zoom.id
-
+FunctionToolBar.defaultProps = {
+  defaultValue: options.zoom.id,
 };
-

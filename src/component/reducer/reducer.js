@@ -3,7 +3,7 @@ import {
   SHIFT_SPECTRUM,
   LOADING_SPECTRUM,
   SET_DATA,
-  SET_ORGINAL_DOMAIN,
+  SET_ORIGINAL_DOMAIN,
   SET_X_DOMAIN,
   SET_Y_DOMAIN,
   SET_WIDTH,
@@ -14,12 +14,12 @@ import {
   CHANGE_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
   CHNAGE_SPECTRUM_COLOR,
-} from './action';
+} from './Actions';
 
-import { UNDO, REDO, RESET } from './undo-action';
+import { UNDO, REDO, RESET } from './HistoryActions';
 
 import { SHIFT_X } from '../../data/filter1d/filter1d-type';
-import { MESSAGE_TYPE } from '../snack-bar-content-wraper';
+import { MESSAGE_TYPE } from '../SnackBarContentWraper';
 
 // { width, height, margin, data, xDomain, yDomain, getScale }
 
@@ -28,8 +28,8 @@ import { MESSAGE_TYPE } from '../snack-bar-content-wraper';
 import * as d3 from 'd3';
 import { Datum1D } from '../../data/Datum1D';
 
-import getKey from '../utility/key-generartor';
-import getColor from '../utility/color-generator';
+import getKey from '../utility/KeyGenerator';
+import getColor from '../utility/ColorGenerator';
 
 // let datum1DObjects = [];
 
@@ -75,7 +75,7 @@ const setData = (state, data) => {
     _data: data,
     _xDomain: domain.x,
     _yDomain: domain.y,
-    _orignDomain: domain,
+    _originDomain: domain,
     _yDomains:domain._yDomains
   };
 };
@@ -114,18 +114,18 @@ const loadSpectrum = (state, file) => {
     _data: xyData,
     _xDomain: domain.x,
     _yDomain: domain.y,
-    _orignDomain: domain,
+    _originDomain: domain,
     _yDomains:domain._yDomains
 
   };
 };
 
-const getClosePeak = (xShift, mouseCorrdinates, state) => {
+const getClosePeak = (xShift, mouseCoordinates, state) => {
   const scale = getScale(state);
   const { _data, _activeSpectrum } = state;
   const zoon = [
-    scale.x.invert(mouseCorrdinates.x - xShift),
-    scale.x.invert(mouseCorrdinates.x + xShift),
+    scale.x.invert(mouseCoordinates.x - xShift),
+    scale.x.invert(mouseCoordinates.x + xShift),
   ];
 
   //get the active sepectrum data by looking for it by id
@@ -136,21 +136,21 @@ const getClosePeak = (xShift, mouseCorrdinates, state) => {
     (number) => number >= zoon[1],
   );
 
-  const selctedYData = selectedSpectrumData.y.slice(minIndex, maxIndex);
+  const selectedYData = selectedSpectrumData.y.slice(minIndex, maxIndex);
 
-  const peakYValue = d3.max(selctedYData);
-  const xIndex = selctedYData.findIndex((value) => value === peakYValue);
+  const peakYValue = d3.max(selectedYData);
+  const xIndex = selectedYData.findIndex((value) => value === peakYValue);
   const peakXValue = selectedSpectrumData.x[minIndex + xIndex];
 
   return { x: peakXValue, y: peakYValue, xIndex: minIndex + xIndex };
 };
 
-const addPeak = (state, mouseCorrdinates) => {
+const addPeak = (state, mouseCoordinates) => {
   const points = [...state._peakNotations];
 
   if (state._activeSpectrum) {
     const id = state._activeSpectrum.id;
-    const peak = getClosePeak(10, mouseCorrdinates, state);
+    const peak = getClosePeak(10, mouseCoordinates, state);
     // if (points.findIndex((point) => point.xIndex === peak.xIndex) === -1) {
     if (points[id]) {
       points[id].push({ xIndex: peak.xIndex });
@@ -176,14 +176,17 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   const activeSpectrumId = state._activeSpectrum.id;
   const activeObject = Datum1D.getObject(activeSpectrumId);
 
-  //appy filiter into the spectrum
+  //apply filter into the spectrum
   activeObject.addFilter(filterOption);
 
   filterOption.id = activeSpectrumId;
-  //add the filiter action at the history
+  //add the filter action at the history
   const history = handleHistorySet(state.history, filterOption);
 
-  activeObject.applyShiftXFiliter(shiftValue);
+  console.log(history);
+  
+
+  activeObject.applyShiftXFilter(shiftValue);
   //add to undo history
 
   const XYData = activeObject.getReal();
@@ -200,18 +203,18 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     ...state,
     _data: data,
     _xDomain:
-      state._orignDomain.x[0] === state._xDomain[0] &&
-      state._orignDomain.x[1] === state._xDomain[1]
+      state._originDomain.x[0] === state._xDomain[0] &&
+      state._originDomain.x[1] === state._xDomain[1]
         ? domain.x
         : state._xDomain,
     _yDomain: domain.y,
-    _orignDomain: domain,
+    _originDomain: domain,
     history,
   };
 };
 
-const setOrginalDomain = (state, _orignDomain) => {
-  return { ...state, _orignDomain };
+const setOriginalDomain = (state, _originDomain) => {
+  return { ...state, _originDomain };
 };
 
 const setXDomain = (state, _xDomain) => {
@@ -252,8 +255,8 @@ const setSelectedTool = (state, _selectedTool) => {
 const zoomOut = (state) => {
   return {
     ...state,
-    _xDomain: state._orignDomain.x,
-    _yDomain: state._orignDomain.y,
+    _xDomain: state._originDomain.x,
+    _yDomain: state._originDomain.y,
   };
 };
 
@@ -372,7 +375,7 @@ const handleHistoryUndo = (state) => {
     _data: resultData,
     _xDomain: domain.x,
     _yDomain: domain.y,
-    _orignDomain: domain,
+    _originDomain: domain,
     history: v_history,
   };
 };
@@ -402,7 +405,7 @@ const handleHistoryRedo = (state) => {
     _data: data,
     _xDomain: domain.x,
     _yDomain: domain.y,
-    _orignDomain: domain,
+    _originDomain: domain,
     history: v_history,
   };
 };
@@ -446,9 +449,9 @@ const handleHistoryReset = (state, action) => {
 export const spectrumReducer = (state, action) => {
   switch (action.type) {
     case PEAK_PICKING:
-      return addPeak(state, action.mouseCorrdinates);
-    case SET_ORGINAL_DOMAIN:
-      return setOrginalDomain(state, action.domain);
+      return addPeak(state, action.mouseCoordinates);
+    case SET_ORIGINAL_DOMAIN:
+      return setOriginalDomain(state, action.domain);
 
     case SET_X_DOMAIN:
       return setXDomain(state, action.xDomain);
@@ -460,7 +463,7 @@ export const spectrumReducer = (state, action) => {
       return setWidth(state, action.width);
 
     case SET_POINTER_COORDINATES:
-      return setPointerCoordinates(state, action.pointerCorrdinates);
+      return setPointerCoordinates(state, action.pointerCoordinates);
 
     case SET_SELECTED_TOOL:
       return setSelectedTool(state, action.selectedTool);

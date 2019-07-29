@@ -75,6 +75,7 @@ body { font: 12px Arial;}
   min-width: 40px !important;
   width: 40px;
   margin-top: 5px!important;
+  text-transform: none !important;
 }
 
 
@@ -152,7 +153,7 @@ body { font: 12px Arial;}
 
 }
 
-.brush-conatiner{
+.brush-container{
   cursor: crosshair;
 }
 .zoom {

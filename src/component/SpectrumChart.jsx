@@ -7,37 +7,28 @@ import React, {
 } from 'react';
 import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
-import ToolBarPane, { options } from './toolbar-pane';
-import ShowToolBar from './show-toolbar';
+import FunctionToolBar, { options } from './toolbar/FunctionToolBar';
+import ViewButton from './toolbar/ViewButton';
 
-import YAxis from './axis-y';
-import XAxis from './axis-x';
-import BrushTool from './tool/brush-tool';
-import Lines from './lines';
-// import ZoomTool from './tool/zoom-tool';
-import CrossLineCursorTool from './tool/cross-line-tool';
+import YAxis from './YAxis';
+import XAxis from './XAxis';
+import BrushTool from './tool/BrushTool';
+import LinesSeries from './LinesSeries';
+// import CrossLinePointer from './tool/CrossLinePointer';
 import * as d3 from 'd3';
-import PeakNotaion from './tool/peak-notation-tool';
-// import { makeStyles } from '@material-ui/core/styles';
+import PeakNotationTool from './tool/PeakNotationTool';
 import Grid from '@material-ui/core/Grid';
-import { ChartContext } from './context/chart-context';
+import { ChartContext } from './context/ChartContext';
 import { useDropzone } from 'react-dropzone';
 import PublishRounded from '@material-ui/icons/PublishRounded';
-// import { spectrumReducer } from './reducer/reducer';
-// import { historyReducer } from './reducer/undo-reducer';
-import combineReducers from './reducer/combine-reducers';
-import { spectrumReducer } from './reducer/reducer';
-import { historyReducer } from './reducer/undo-reducer';
+import { spectrumReducer } from './reducer/Reducer';
+// import Button from '@material-ui/core/Button';
+// import Tooltip from '@material-ui/core/Tooltip';
+// import { FaUndo, FaRedo, FaSearchMinus, FaMinus, FaBars } from 'react-icons/fa';
 
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
-import { FaUndo, FaRedo, FaSearchMinus, FaMinus, FaBars } from 'react-icons/fa';
-
-import SpectrumList from './spectrum-list';
+import SpectrumList from './SpectrumList';
 import { Snackbar } from '@material-ui/core';
-import SnackbarContentWrapper, {
-  MESSAGE_TYPE,
-} from './snack-bar-content-wraper';
+import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
 
 import {
   SET_X_DOMAIN,
@@ -52,10 +43,12 @@ import {
   FULL_ZOOM_OUT,
   CHANGE_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
-  CHNAGE_SPECTRUM_COLOR
-} from './reducer/action';
+  CHNAGE_SPECTRUM_COLOR,
+} from './reducer/Actions';
 
-import { UNDO, REDO, RESET } from './reducer/undo-action';
+import { UNDO, REDO, RESET } from './reducer/HistoryActions';
+import BasicToolBar from './toolbar/BasicToolBar';
+import HistoryToolBar from './toolbar/HistoryToolBar';
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -64,13 +57,13 @@ import { UNDO, REDO, RESET } from './reducer/undo-action';
 // }));
 
 const SpectrumChart = ({ margin, width, height, data }) => {
-  const [mouseCorrdinates, setMouseCorrdinates] = useState({ x: 0, y: 0 });
+  const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
   const [message, openMessage] = useState({
     isOpen: false,
     messageText: '',
     messageType: MESSAGE_TYPE.success,
   });
-  const [vericalAlign, setVerticalAlign] = useState(0);
+  const [verticalAlign, setVerticalAlign] = useState(0);
 
   const LoadFile = (acceptedFiles) => {
     return new Promise((resolve, reject) => {
@@ -119,14 +112,13 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   const refSVG = useRef();
   const chartArea = useRef();
 
-  const intialState = {
+  const initialState = {
     _data: [],
     _xDomain: [],
     _yDomain: [],
-    _yDomains:[],
-    _orignDomain: {},
+    _yDomains: [],
+    _originDomain: {},
     _selectedTool: options.zoom.id,
-    _isRealSpectrumVisible: true,
     _peakNotations: [],
     _width: width,
     _height: height,
@@ -136,7 +128,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   // const reduers = combineReducers({spectrumReducer,historyReducer});
-  const history = {
+  const _history = {
     past: [],
     present: null,
     future: [],
@@ -145,21 +137,21 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   const [state, dispatch] = useReducer(spectrumReducer, {
-    ...intialState,
-    history,
+    ...initialState,
+    history:_history,
   });
 
   const {
     _data,
     _xDomain,
     _yDomain,
-    _orignDomain,
+    _originDomain,
     _selectedTool,
-    _isRealSpectrumVisible,
     _peakNotations,
     _width,
     _activeSpectrum,
-    _yDomains
+    _yDomains,
+    history
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -169,7 +161,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   });
   useEffect(() => {
     dispatch({ type: SET_DATA, data });
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     // const domain = getDomain(_data);
@@ -178,6 +170,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 
   const handleChangeOption = (selectedTool) => {
     // setSelectedTool(selectedTool);
+    console.log(selectedTool);
+
     dispatch({ type: SET_SELECTED_TOOL, selectedTool });
   };
 
@@ -210,7 +204,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   };
 
   const handleYDomainUpdate = (yDomain) => {
-      dispatch({ type: SET_Y_DOMAIN,yDomain});
+    dispatch({ type: SET_Y_DOMAIN, yDomain });
   };
 
   const handleRestDomain = (domain) => {
@@ -223,41 +217,45 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     // e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
+    const x = e.clientX - chartArea.current.getBoundingClientRect().left;
+    const y = e.clientY - chartArea.current.getBoundingClientRect().top;
 
-    const x = e.clientX - refSVG.current.getBoundingClientRect().left;
-    const y = e.clientY - refSVG.current.getBoundingClientRect().top;
+    // const x = e.clientX - refSVG.current.getBoundingClientRect().left;
+    // const y = e.clientY - refSVG.current.getBoundingClientRect().top;
     requestAnimationFrame(() => {
       //   dispatch({
       //     type: SET_POINTER_COORDINATES,
       //     pointerCorrdinates: { x, y },
       //   });
-      setMouseCorrdinates({ x, y });
-    });
+      setMouseCoordinates({ x, y });
+    }, 60);
   };
 
-  const mouseMoveLeave= (e)=>{
-
-    setMouseCorrdinates({x: 0, y:0 });
-
+  const mouseMoveLeave = (e) => {
+    setMouseCoordinates({ x: 0, y: 0 });
   };
 
-  const getScale = (spectrumId =null) => {
+  const getScale = (spectrumId = null) => {
     // console.log(_xDomain);
     // console.log(_yDomain);
     const x = d3.scaleLinear(_xDomain, [_width - margin.right, margin.left]);
     // console.log(spectrumId);
-    let y ;
+    let y;
 
-    if(spectrumId == null){
+    if (spectrumId == null) {
       y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
-
-    }else 
-    if((_activeSpectrum == null  || _activeSpectrum.id != spectrumId)){
-      const index = _data.findIndex((d)=>d.id === spectrumId);
-       y = d3.scaleLinear(_yDomains[index], [height - margin.bottom, margin.top]);
-    }else {
-      const index = _data.findIndex((d)=>d.id === _activeSpectrum.id);
-      y = d3.scaleLinear(_yDomains[index], [height - margin.bottom, margin.top]);
+    } else if (_activeSpectrum == null || _activeSpectrum.id !== spectrumId) {
+      const index = _data.findIndex((d) => d.id === spectrumId);
+      y = d3.scaleLinear(_yDomains[index], [
+        height - margin.bottom,
+        margin.top,
+      ]);
+    } else {
+      const index = _data.findIndex((d) => d.id === _activeSpectrum.id);
+      y = d3.scaleLinear(_yDomains[index], [
+        height - margin.bottom,
+        margin.top,
+      ]);
     }
     return { x, y };
   };
@@ -268,10 +266,10 @@ const SpectrumChart = ({ margin, width, height, data }) => {
 
   const mouseClick = (e) => {
     //activat selected peak tool
-    if (_selectedTool === options.peaktool.id) {
+    if (_selectedTool === options.peakTool.id) {
       dispatch({
         type: PEAK_PICKING,
-        mouseCorrdinates,
+        mouseCoordinates,
       });
     }
   };
@@ -288,7 +286,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     });
   };
 
-  const handlefFullZoomOut = (e) => {
+  const handleFullZoomOut = (e) => {
     dispatch({
       type: FULL_ZOOM_OUT,
     });
@@ -302,11 +300,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data });
   };
 
-
-  const handleSpectrumColorChanged=(data)=>{
-    
+  const handleSpectrumColorChanged = (data) => {
     dispatch({ type: CHNAGE_SPECTRUM_COLOR, data });
-
   };
 
   function handelOpenMessage({ messageType, messageText }) {
@@ -321,8 +316,8 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     openMessage({ ...message, isOpen: false });
   }
 
-  const handleChangeVirticalAlignments = () => {
-    if (vericalAlign != 0) {
+  const handleChangeVerticalAlignments = () => {
+    if (verticalAlign != 0) {
       setVerticalAlign(0);
     } else {
       setVerticalAlign(Math.floor(-height / 10));
@@ -341,7 +336,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         getScale: getScale,
         activeSpectrum: _activeSpectrum,
         openMessage: handelOpenMessage,
-        vericalAlign: vericalAlign,
+        verticalAlign: verticalAlign,
       }}
     >
       <div
@@ -364,16 +359,16 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         {/* className={isDragActive?'drop-zoon-blur':''} */}
         <Grid container spacing={0}>
           <Grid item xs={1}>
-            <ToolBarPane
-              selectedValue={_selectedTool}
+            <FunctionToolBar
               onChangeOption={handleChangeOption}
+              defaultValue={options.zoom.id}
+
               // toolbarWidth={(w) => {
               //   setToolbarWidth(w);
               // }}
             />
 
-            <Tooltip title="Redo" placement="right-start">
-            {/* component="div" */}
+            {/* <Tooltip title="Redo" placement="right-start">
 
               <Button
                 className="general-fun-bt"
@@ -385,7 +380,6 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             </Tooltip>
 
             <Tooltip title="Undo" placement="right-start">
-            {/* component="div" */}
               <Button
                 className="general-fun-bt"
                 onClick={handleUndo}
@@ -396,46 +390,47 @@ const SpectrumChart = ({ margin, width, height, data }) => {
             </Tooltip>
 
             <Tooltip title="Full Zoom Out" placement="right-start">
-              <Button  className="general-fun-bt" onClick={handlefFullZoomOut}>
+              <Button className="general-fun-bt" onClick={handleFullZoomOut}>
                 <FaSearchMinus />
               </Button>
             </Tooltip>
-
-            <Tooltip title="Spectrums virtical alignment " placement="right-start">
+            <Tooltip title="Spectrums  alignment " placement="right-start">
               <Button
                 className="general-fun-bt"
-                onClick={handleChangeVirticalAlignments}
+                onClick={handleChangeVerticalAlignments}
               >
-                {vericalAlign != 0 ? <FaMinus /> : <FaBars />}
+                {verticalAlign !== 0 ? <FaMinus /> : <FaBars />}
               </Button>
-            </Tooltip>
+            </Tooltip> */}
+            <HistoryToolBar
+              history={history}
+              onRedo={handleRedo}
+              onUndo={handleUndo}
+            />
+            <BasicToolBar
+              onFullZoomOut={handleFullZoomOut}
+              onViewChanged={handleChangeVerticalAlignments}
+              viewAlignValue={verticalAlign}
+            />
 
-            <ShowToolBar
-              selectedValue={_isRealSpectrumVisible}
-              onChangeOption={handleShowSpectrumTypeChang}
+            <ViewButton
+              onChange={handleShowSpectrumTypeChang}
               defaultValue={true}
             />
           </Grid>
 
           <Grid ref={chartArea} item xs={8}>
             <svg
-              ref={refSVG}
               onMouseMove={mouseMove}
+              ref={refSVG}
               onMouseLeave={mouseMoveLeave}
               onClick={mouseClick}
               width={_width}
               height={height}
             >
-              <CrossLineCursorTool
-                position={mouseCorrdinates}
-                margin={margin}
-                width={_width}
-                height={height}
-              />
-
               {_xDomain && _yDomain && (
                 // _data.map((d, i) => (
-                <Lines
+                <LinesSeries
                   // margin={margin}
                   // width={width - toolbarWidth}
                   // height={height}
@@ -463,9 +458,10 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                     height={height}
                     data={_data}
                     domain={{ x: _xDomain, y: _yDomain }}
-                    originDomain={_orignDomain}
+                    originDomain={_originDomain}
                     isActive={true}
                     getScale={getScale}
+                    position={mouseCoordinates}
                   />
                 )}
                 {/* <ZoomTool
@@ -480,11 +476,15 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                 /> */}
               </g>
 
-              <PeakNotaion
-                // data={_data}
-                notationData={_peakNotations}
-                onPeakValueChange={handleOnPeakChange}
-              />
+              {(_selectedTool === options.peakTool.id || _peakNotations) && (
+                <PeakNotationTool
+                  // data={_data}
+                  notationData={_peakNotations}
+                  onPeakValueChange={handleOnPeakChange}
+                  position={mouseCoordinates}
+                  showCursorLabel={_selectedTool === options.peakTool.id}
+                />
+              )}
             </svg>
           </Grid>
 

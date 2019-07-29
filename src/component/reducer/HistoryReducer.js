@@ -2,7 +2,7 @@
  * undo history base on Rdux implementation
  */
 
-import { UNDO, REDO, SET, RESET } from './undo-action';
+import { UNDO, REDO, SET, RESET } from './HistoryActions';
 
 const handleUndo = (state) => {
   const { past, present, future } = state;
@@ -50,7 +50,7 @@ const handleReset = (action) => {
   };
 };
 
-export const historyReducer = (state, action) => {
+export const HistoryReducer = (state, action) => {
 
   switch (action.type) {
     case UNDO:

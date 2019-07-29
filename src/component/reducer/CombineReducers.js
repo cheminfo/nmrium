@@ -4,7 +4,7 @@
 
 
 
-const combineReducers = (reducer)  =>{
+const CombineReducers = (reducer)  =>{
   return (state = {}, action) => {
     console.log(state);
     const keys = Object.keys(reducer);
@@ -20,4 +20,4 @@ const combineReducers = (reducer)  =>{
 
   // console.log(combineReducers);
 
-  export default combineReducers;
+  export default CombineReducers;

@@ -1,11 +1,11 @@
 import React, { useRef, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { xyReduce } from 'ml-spectra-processing';
-import { ChartContext } from './context/chart-context';
+import { ChartContext } from './context/ChartContext';
 // { width, height, margin, data, xDomain, yDomain, getScale }
-const Lines = ({data}) => {
+const LinesSeries = ({data}) => {
   const refPathsContainer = useRef();
-  const { width, height, margin, xDomain, getScale ,vericalAlign,activeSpectrum} = useContext(
+  const { width, height, margin, xDomain, getScale ,verticalAlign,activeSpectrum} = useContext(
     ChartContext,
   );
 
@@ -115,7 +115,7 @@ const Lines = ({data}) => {
             stroke={d.color}
             style={{opacity:(IsActive(d.id))?1:0.2}}
             d={makePath(d)}
-            transform={`translate(0,${i*vericalAlign})`}
+            transform={`translate(0,${i*verticalAlign})`}
           />
         ))}
       </g>
@@ -126,9 +126,9 @@ const Lines = ({data}) => {
 
 
 
-export default Lines;
+export default LinesSeries;
 
-Lines.contextTypes = {
+LinesSeries.contextTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   data: PropTypes.object,

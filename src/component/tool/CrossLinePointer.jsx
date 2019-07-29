@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import '../css/cross-line-tool.css';
-import {ChartContext} from '../context/chart-context';
+import {ChartContext} from '../context/ChartContext';
+import { SSL_OP_SINGLE_DH_USE } from 'constants';
 
-const CrossLineCursorTool = ({ position }) => {
+const CrossLinePointer = ({ position }) => {
   const { height,width,margin } = useContext(ChartContext); 
 
   return (
-   position.x !=0 && position.y !=0 &&  <g key="crossLine">
+   position.x !==0 && position.y !==0 &&  <g key="crossLine">
       <line
         className="vertical_line"
         x1={position.x}
@@ -16,15 +17,15 @@ const CrossLineCursorTool = ({ position }) => {
         y2={`${height - margin.top}`}
         key="vertical_line"
       />
-      <line className="vertical_line" x1="0" y1={position.y} x2={`${width}`} y2={position.y}   key="horizental_line" />
+      <line className="vertical_line" x1="0" y1={position.y} x2={`${width}`} y2={position.y}   key="horizontal_line" />
     </g>
   
   );
 };
 
-export default CrossLineCursorTool;
+export default CrossLinePointer;
 
-CrossLineCursorTool.propTypes = {
+CrossLinePointer.propTypes = {
   position: PropTypes.shape({
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,

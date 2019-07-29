@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
+import CrossLinePointer from './CrossLinePointer';
 
 class BrushTool extends Component {
   constructor(props) {
@@ -15,22 +16,13 @@ class BrushTool extends Component {
 
     this.brush = d3
       .brushX()
-      .extent([
-        [0,0],
-        [width - margin.right, height - margin.bottom],
-      ]);
+      .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
 
     this.zoom = d3
       .zoom()
       .scaleExtent([-Infinity, Infinity])
-      .translateExtent([
-        [0,0],
-        [width - margin.right, height - margin.bottom],
-      ])
-      .extent([
-        [0,0],
-        [width - margin.right, height - margin.bottom],
-      ]);
+      .translateExtent([[0, 0], [width - margin.right, height - margin.bottom]])
+      .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
   }
 
   brushEnd = () => {
@@ -56,7 +48,7 @@ class BrushTool extends Component {
   zoomed = () => {
     // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
     let t = d3.event.transform;
-    const { height, margin, originDomain,domain } = this.props;
+    const { height, margin, originDomain, domain } = this.props;
 
     // const { getScale } = this.props;
     // const scale = getScale().y;
@@ -66,7 +58,7 @@ class BrushTool extends Component {
     ]);
 
     const v_domain = t.rescaleY(scale).domain();
-    this.props.onYAxisDomainUpdate([domain.y[0],v_domain[1]]);
+    this.props.onYAxisDomainUpdate([domain.y[0], v_domain[1]]);
   };
 
   reset = (e) => {
@@ -74,7 +66,7 @@ class BrushTool extends Component {
     this.props.onDomainReset(originDomain);
   };
 
-  componentDidMount(){
+  componentDidMount() {
     const { isActive } = this.props;
     // width, height, margin
     // this.brush.extent([
@@ -109,19 +101,25 @@ class BrushTool extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    
-  }
+  componentDidUpdate(prevProps, prevState) {}
 
   render() {
-    const { isActive } = this.props;
+    const { isActive, width, height, margin, position } = this.props;
 
     return (
-      <g
-        className={isActive ? 'brush-conatiner brush ' : 'brush-conatiner'}
-        onDoubleClick={this.reset}
-        ref="brush"
-      />
+      <Fragment>
+        <CrossLinePointer
+          position={position}
+          margin={margin}
+          width={width}
+          height={height}
+        />
+        <g
+          className={isActive ? 'brush-container brush ' : 'brush-container'}
+          onDoubleClick={this.reset}
+          ref="brush"
+        />
+      </Fragment>
     );
   }
 }
