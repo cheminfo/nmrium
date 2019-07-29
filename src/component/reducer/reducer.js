@@ -27,6 +27,7 @@ import { MESSAGE_TYPE } from '../SnackBarContentWraper';
 
 import * as d3 from 'd3';
 import { Datum1D } from '../../data/Datum1D';
+import { Data1DManager } from '../../data/Data1DManager';
 
 import getKey from '../utility/KeyGenerator';
 import getColor from '../utility/ColorGenerator';
@@ -57,7 +58,7 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin }) => {
 const setData = (state, data) => {
   const domain = getDomain(data);
   for (let d of data) {
-    Datum1D.pushObject(
+    Data1DManager.pushObject(
       new Datum1D(d.id, d.x, d.y, d.y, d.name, d.color, d.isVisible),
     );
   }
@@ -83,7 +84,7 @@ const loadSpectrum = (state, file) => {
   const key = getKey();
   const color = getColor();
 
-  let dataumObject = Datum1D.fromJcamp(
+  let dataumObject = Data1DManager.fromJcamp(
     key,
     file.binary.toString(),
     file.name,
@@ -91,9 +92,9 @@ const loadSpectrum = (state, file) => {
     true,
   );
 
-  Datum1D.pushObject(dataumObject);
+  Data1DManager.pushObject(dataumObject);
 
-  const xyData = Datum1D.getXYData();
+  const xyData = Data1DManager.getXYData();
   // const v_data = [...state._data];
 
   const domain = getDomain(xyData);
@@ -174,7 +175,7 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     value: shiftValue,
   };
   const activeSpectrumId = state._activeSpectrum.id;
-  const activeObject = Datum1D.getObject(activeSpectrumId);
+  const activeObject = Data1DManager.getObject(activeSpectrumId);
 
   //apply filter into the spectrum
   activeObject.addFilter(filterOption);
@@ -263,10 +264,10 @@ const handelSpectrumVisibility = (state, data) => {
   const rdata = newData.map((d, i) => {
     const result = data.findIndex((newd) => newd.id === d.id);
     if (result !== -1) {
-      Datum1D.getObject(d.id).isVisible = true;
+      Data1DManager.getObject(d.id).isVisible = true;
       return { ...d, isVisible: true };
     } else {
-      Datum1D.getObject(d.id).isVisible = false;
+      Data1DManager.getObject(d.id).isVisible = false;
       return { ...d, isVisible: false };
     }
     // return result !== undefined
@@ -280,7 +281,7 @@ const handelSpectrumVisibility = (state, data) => {
 const handelChangeActiveSpectrum = (state, activeSpectrum) => {
   const data = [...state._data];
   if (activeSpectrum) {
-    Datum1D.getObject(activeSpectrum.id).isVisible = true;
+    Data1DManager.getObject(activeSpectrum.id).isVisible = true;
     const index = data.findIndex((d) => d.id === activeSpectrum.id);
     if (index !== -1) {
       data[index].isVisible = true;
@@ -294,7 +295,7 @@ const handelChangeSpectrumColor = (state, { id, color }) => {
   const index = data.findIndex((d) => d.id === id);
   if (index !== -1) {
     data[index].color = color;
-    Datum1D.getObject(id).color = true;
+    Data1DManager.getObject(id).color = true;
   }
 
   return { ...state, _data: data };
@@ -303,7 +304,7 @@ const handelChangeSpectrumColor = (state, { id, color }) => {
 const changeSpectrumType = (state, isRealSpectrumVisible) => {
   if (state._activeSpectrum !== null) {
     const activeSpectrumId = state._activeSpectrum.id;
-    const ob = Datum1D.getObject(activeSpectrumId);
+    const ob = Data1DManager.getObject(activeSpectrumId);
 
     if (ob) {
       const v_data = [...state._data];
@@ -356,8 +357,8 @@ const handleHistoryUndo = (state) => {
   const hasRedo = newfuture.length !== 0;
   const hasUndo = past.length !== 0;
 
-  Datum1D.undoFilter(past);
-  let resultData = Datum1D.getXYData();
+  Data1DManager.undoFilter(past);
+  let resultData = Data1DManager.getXYData();
 
   const domain = getDomain(resultData);
   const v_history = {
@@ -387,8 +388,8 @@ const handleHistoryRedo = (state) => {
   const hasUndo = present === undefined || newPast.length !== 0 ? true : false;
   const hasRedo = newFuture.length !== 0;
 
-  Datum1D.redoFilter(next);
-  let data = Datum1D.getXYData();
+  Data1DManager.redoFilter(next);
+  let data = Data1DManager.getXYData();
   const domain = getDomain(data);
   const v_history = {
     past: newPast,
