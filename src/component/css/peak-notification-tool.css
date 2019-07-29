@@ -1,60 +1,49 @@
-.notification-label:hover{
-    /* background-color: red; */
-    /* display: block; */
-    /* visibility: visible; */
-
+.notification-label:hover {
+  /* background-color: red; */
+  /* display: block; */
+  /* visibility: visible; */
 }
 
-.notification-input{
-    background-color: rgb(255, 223, 158);
-    border: 0.55px solid rgb(219, 146, 0);
-    width: calc(100% - 10px) !important;
-    border: 0.55px solid rgb(219, 146, 0);
-
+.notification-input {
+  background-color: rgb(255, 223, 158);
+  border: 0.55px solid rgb(219, 146, 0);
+  width: calc(100% - 10px) !important;
+  border: 0.55px solid rgb(219, 146, 0);
 }
-.input-over{
-    background-color: rgb(151, 185, 0);
-    border: 0.55px solid rgb(85, 104, 0);
-
-   
+.input-over {
+  background-color: rgb(151, 185, 0);
+  border: 0.55px solid rgb(85, 104, 0);
 }
 
-.notification-label{
-    /* display: none; */
-    /* visibility: hidden; */
-    /* stroke:rgba(255, 223, 158,0.5);
+.notification-label {
+  /* display: none; */
+  /* visibility: hidden; */
+  /* stroke:rgba(255, 223, 158,0.5);
     stroke-opacity: 1;
     shape-rendering: crispEdges;
     stroke-dasharray: 4;
     stroke-width: 0.55px;
     fill:rgba(255, 223, 158,0.5); */
-    display: none;
-
+  display: none;
 }
 
-
-
-.notification-group-over{
-    z-index: 9999999999;
+.notification-group-over {
+  z-index: 9999999999;
 }
 
-.notification-group{
-    z-index: 1;
+.notification-group {
+  z-index: 1;
 }
 
-
-.notifcate-selected{
-    opacity:0;
- 
+.notifcate-selected {
+  opacity: 0;
 }
 
-
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-
 
 /* .notifcate-selected:hover{
 

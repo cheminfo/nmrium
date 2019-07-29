@@ -66,7 +66,6 @@ export const HistoryReducer = (state, action) => {
       return handleReset(action);
 
     default:
-            return  null;
-
+      return null;
   }
 };

@@ -48,7 +48,7 @@ export default function SpectrumList({
 
     // onChangeVisibility(data);
     // onChangeActive(data[0])
-  }, [data]);
+  }, [activated, data]);
 
   const handleVisibility = (d) => {
     const currentIndex = visible.findIndex((v) => v.id === d.id);
@@ -106,7 +106,7 @@ export default function SpectrumList({
   };
 
   const handleColorChanged = (color, event) => {
-    if (spectrumId != null) {
+    if (spectrumId !== null) {
       onColorChanged({ id: spectrumId, color: color.hex });
     }
   };

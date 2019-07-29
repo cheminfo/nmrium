@@ -3,14 +3,8 @@ import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 import {ChartContext} from './context/ChartContext';
 
-const XAxis = ({
-  label,
-  show,
-  showGrid,
-  isFID,
-}) => {
-
-  const {height,margin,xDomain,width,getScale} = useContext(ChartContext); 
+const XAxis = ({ label, show, showGrid, isFID }) => {
+  const { height, margin, xDomain, width, getScale } = useContext(ChartContext);
   const refaxis = useRef();
   const refgrid = useRef();
   // const scale = getScale(data);
@@ -28,8 +22,6 @@ const XAxis = ({
     .tickSize(-(height - margin.top - margin.bottom))
     .tickFormat('');
 
-
-
   // function getScale(data) {
   //   const scale = d3.scaleLinear(
   //     [domain[0], domain[1]],
@@ -40,7 +32,6 @@ const XAxis = ({
   // }
 
   useEffect(() => {
-    
     if (show) {
       const scale = d3.scaleLinear(
         [xDomain[0], xDomain[1]],
@@ -49,7 +40,7 @@ const XAxis = ({
       d3.select(refaxis.current).call(xAxis.scale(scale));
       d3.select(refgrid.current).call(grid.scale(scale));
     }
-  }, []);
+  }, [grid, margin.left, margin.right, show, width, xAxis, xDomain]);
 
   useEffect(() => {
     if (show) {
@@ -65,7 +56,7 @@ const XAxis = ({
 
       d3.select(refgrid.current).call(grid.scale(scale.x.domain(xDomain)));
     }
-  }, [xDomain, height, width]);
+  }, [xDomain, height, width, show, getScale, xAxis, grid]);
 
   return (
     <React.Fragment>

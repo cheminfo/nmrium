@@ -1,14 +1,15 @@
-body { font: 12px Arial;}
+body {
+  font: 12px Arial;
+}
 
-.main-container{
+.main-container {
   border: 0.55px #e6e6e6 solid;
   /* display: block; */
   /* margin: 0 auto; */
   /* margin-top: 5px; */
-   
 }
 
-.drop-zoon-over{
+.drop-zoon-over {
   /* width: 100%; */
   height: 100%;
   background-color: #9a9a9ab5;
@@ -24,32 +25,27 @@ body { font: 12px Arial;}
   background-color: rgb(104, 104, 104);
   padding: 1.5%;
   border-radius: 30px;
-  margin:0px;
-
+  margin: 0px;
 }
 
-.drop-zoon-over  svg{
+.drop-zoon-over svg {
   stroke-width: 0;
   font-size: 3rem;
   fill: white;
-
-
 }
 
-.drop-zoon-blur{
+.drop-zoon-blur {
   -webkit-filter: blur(5px);
   -moz-filter: blur(5px);
   -o-filter: blur(5px);
   -ms-filter: blur(5px);
-    filter: blur(5px);
+  filter: blur(5px);
 }
 
-
-.option-container .MuiToggleButton-root.Mui-selected{
+.option-container .MuiToggleButton-root.Mui-selected {
   background-color: #afabab14 !important;
-  border-left:2px solid rgb(207, 2, 53)!important ;   
+  border-left: 2px solid rgb(207, 2, 53) !important ;
 }
-
 
 .show-option-container {
   padding: 5px 0px;
@@ -57,33 +53,26 @@ body { font: 12px Arial;}
   /* bottom: 80px; */
 }
 
-.show-option-container .MuiToggleButton-root,.show-option-container .MuiToggleButton-root.Mui-selected{
+.show-option-container .MuiToggleButton-root,
+.show-option-container .MuiToggleButton-root.Mui-selected {
   /* border-radius: 20px; */
-
 }
-.show-option-container .MuiToggleButton-root.Mui-selected{
-
+.show-option-container .MuiToggleButton-root.Mui-selected {
   /* background-color: transparent;
   border: 1px solid #ff0000 !important; */
   background-color: #01b517;
-
-
-  
 }
 
-.general-fun-bt{
+.general-fun-bt {
   min-width: 40px !important;
   width: 40px;
   margin-top: 5px!important;
   text-transform: none !important;
 }
 
-
-.general-fun-bt:not([disabled]) svg path{
+.general-fun-bt:not([disabled]) svg path {
   fill: #4e4e4e;
 }
-
-
 
 .MuiGrid-grid-xs-1 {
   /* max-width: 40px !important; */
@@ -93,37 +82,29 @@ body { font: 12px Arial;}
   flex-grow: 1 !important;
 } */
 
-
-
-.MuiToggleButtonGroup-root{
-
-  display:grid !important; 
+.MuiToggleButtonGroup-root {
+  display: grid !important;
 }
-.MuiToggleButton-root
-{
+.MuiToggleButton-root {
   text-transform: none !important;
- border: none !important ;   
-
+  border: none !important ;
 }
 
-
-
-.MuiToggleButton-label svg,.MuiToggleButton-label .label{
+.MuiToggleButton-label svg,
+.MuiToggleButton-label .label {
   font-size: 1.1em;
 }
 
-.paths{
-  -webkit-clip-path: url("#clip");
-  clip-path: url("#clip");
-
+.paths {
+  -webkit-clip-path: url('#clip');
+  clip-path: url('#clip');
 }
-
 
 .paths path {
   stroke-width: 1.5;
   fill: none;
-  stroke-linejoin:round;
-  stroke-linecap:round;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
 .axis path,
@@ -140,17 +121,14 @@ body { font: 12px Arial;}
   shape-rendering: crispEdges;
   stroke-dasharray: 3;
   stroke-width: 1;
-
-
 }
 
 .grid path {
   stroke-width: 0;
 }
 
-.zoom-container{
+.zoom-container {
   fill: none;
-
 }
 
 .brush-container{
@@ -161,12 +139,10 @@ body { font: 12px Arial;}
   pointer-events: all;
 }
 
-.MuiSvgIcon-root > path:first-child{
+.MuiSvgIcon-root > path:first-child {
   stroke: gray;
 }
 
 .MuiToggleButton-sizeSmall {
   height: 30px !important;
 }
-
-

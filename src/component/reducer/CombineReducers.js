@@ -17,6 +17,7 @@ const CombineReducers = (reducer)  =>{
   };
 };
 
+// console.log(combineReducers);
 
   // console.log(combineReducers);
 

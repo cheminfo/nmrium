@@ -4,7 +4,7 @@ import Draggable from 'react-draggable';
 import PropTypes from 'prop-types';
 import './css/chart-window.css';
 
-const ChartWindow = ({width, height,title,children}) => {
+const ChartWindow = ({ width, height, title, children }) => {
   const [_width, setWidth] = useState(width);
   const [_height, setHeight] = useState(height);
   const [_isMaximized, setIsMaximized] = useState(false);
@@ -25,37 +25,36 @@ const ChartWindow = ({width, height,title,children}) => {
   };
 
   return (
-      <Draggable
-        // axis="x"
-        handle=".handle"
-        defaultPosition={{ x: 0, y: 0 }}
-        position={_windowPosition}
-        grid={[25, 25]}
-        scale={1}
+    <Draggable
+      // axis="x"
+      handle=".handle"
+      defaultPosition={{ x: 0, y: 0 }}
+      position={_windowPosition}
+      grid={[25, 25]}
+      scale={1}
+    >
+      <Window
+        color="white"
+        theme="dark"
+        chrome
+        height={_height + 80}
+        width={_width}
+        // padding="12px"
+        background="white"
       >
-        <Window
-          color="white"
-          theme="dark"
-          chrome
-          height={_height + 80}
-          width={_width}
-          // padding="12px"
-          background="white"
-        >
-          <TitleBar
-            className="handle"
-            title={title}
-            isMaximized={_isMaximized}
-            theme="black"
-            color="red"
-            controls={true}
-            onMaximizeClick={toggleMaximize}
-            onRestoreDownClick={toggleMaximize}
-          />
-          {React.cloneElement(children, { width: _width,height:_height })}
-
-        </Window>
-      </Draggable>
+        <TitleBar
+          className="handle"
+          title={title}
+          isMaximized={_isMaximized}
+          theme="black"
+          color="red"
+          controls={true}
+          onMaximizeClick={toggleMaximize}
+          onRestoreDownClick={toggleMaximize}
+        />
+        {React.cloneElement(children, { width: _width, height: _height })}
+      </Window>
+    </Draggable>
   );
 };
 
@@ -69,7 +68,7 @@ ChartWindow.propTypes = {
     bottom: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
   }),
-  title:PropTypes.string
+  title: PropTypes.string,
 };
 
 ChartWindow.defaultProps = {
@@ -77,7 +76,7 @@ ChartWindow.defaultProps = {
   height: 800,
   data: {},
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
-  title:''
+  title: '',
 };
 
 export default ChartWindow;

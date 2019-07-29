@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import '../css/cross-line-tool.css';
 import {ChartContext} from '../context/ChartContext';
-import { SSL_OP_SINGLE_DH_USE } from 'constants';
 
 const CrossLinePointer = ({ position }) => {
   const { height,width,margin } = useContext(ChartContext); 

@@ -24,7 +24,7 @@ function App() {
     isFid: true, // allows to determine the label of the axis
     is2D: false, // TODO: need to define where to put the spectrum if it is 1D
     color: 'green',
-    isVisible:true
+    isVisible: true,
   };
 
   const data = [
@@ -40,8 +40,7 @@ function App() {
       isFid: true, // allows to determine the label of the axis
       is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'red',
-      isVisible:true
-
+      isVisible: true,
     },
     {
       id: '3',
@@ -52,8 +51,7 @@ function App() {
       isFid: true, // allows to determine the label of the axis
       is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'blue',
-      isVisible:true
-
+      isVisible: true,
     },
     {
       id: '4',
@@ -64,8 +62,7 @@ function App() {
       isFid: true, // allows to determine the label of the axis
       is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'green',
-      isVisible:true
-
+      isVisible: true,
     },
 
     // {
