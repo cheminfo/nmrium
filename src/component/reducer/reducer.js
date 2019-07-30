@@ -12,6 +12,7 @@ import {
   CHANGE_SPECTRUM_TYPE,
   FULL_ZOOM_OUT,
   CHANGE_VISIBILITY,
+  CHANGE_PEAKS_MARKERS_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
   CHNAGE_SPECTRUM_COLOR,
 } from './Actions';
@@ -49,8 +50,12 @@ function getDomain(data) {
   return { x: d3.extent(xArray), y: d3.extent(yArray), _yDomains: _yDomains };
 }
 
-const getScale = ({ _xDomain, _yDomain, _width, _height, _margin }) => {
-  const x = d3.scaleLinear(_xDomain, [_width - _margin.right, _margin.left]);
+const getScale = ({ _xDomain, _yDomain, _width, _height, _margin,mode }) => {
+  console.log(mode);
+  console.log(_margin);
+  const xRange = (mode === "RTL")?[_width - _margin.right, _margin.left]:[_margin.left,_width - _margin.right];
+
+  const x = d3.scaleLinear(_xDomain, xRange);
   const y = d3.scaleLinear(_yDomain, [_height - _margin.bottom, _margin.top]);
   return { x, y };
 };
@@ -59,7 +64,7 @@ const setData = (state, data) => {
   const domain = getDomain(data);
   for (let d of data) {
     Data1DManager.pushObject(
-      new Datum1D(d.id, d.x, d.y, d.y, d.name, d.color, d.isVisible),
+      new Datum1D(d.id, d.x, d.y, d.y, d.name, d.color, d.isVisible,d.isPeaksMarkersVisible),
     );
   }
 
@@ -90,6 +95,7 @@ const loadSpectrum = (state, file) => {
     file.name,
     color,
     true,
+    true
   );
 
   Data1DManager.pushObject(dataumObject);
@@ -123,7 +129,7 @@ const loadSpectrum = (state, file) => {
 
 const getClosePeak = (xShift, mouseCoordinates, state) => {
   const scale = getScale(state);
-  const { _data, _activeSpectrum } = state;
+  const { _data, _activeSpectrum,mode } = state;
   const zoon = [
     scale.x.invert(mouseCoordinates.x - xShift),
     scale.x.invert(mouseCoordinates.x + xShift),
@@ -132,9 +138,9 @@ const getClosePeak = (xShift, mouseCoordinates, state) => {
   //get the active sepectrum data by looking for it by id
   const selectedSpectrumData = _data.find((d) => d.id === _activeSpectrum.id);
   var maxIndex =
-    selectedSpectrumData.x.findIndex((number) => number >= zoon[0]) - 1;
+    selectedSpectrumData.x.findIndex((number) => number >= zoon[(mode==="RTL")?0:1]) - 1;
   var minIndex = selectedSpectrumData.x.findIndex(
-    (number) => number >= zoon[1],
+    (number) => number >= zoon[(mode==="RTL")?1:0],
   );
 
   const selectedYData = selectedSpectrumData.y.slice(minIndex, maxIndex);
@@ -261,7 +267,7 @@ const zoomOut = (state) => {
 
 const handelSpectrumVisibility = (state, data) => {
   const newData = [...state._data];
-  const rdata = newData.map((d, i) => {
+  const v_data = newData.map((d, i) => {
     const result = data.findIndex((newd) => newd.id === d.id);
     if (result !== -1) {
       Data1DManager.getObject(d.id).isVisible = true;
@@ -275,8 +281,28 @@ const handelSpectrumVisibility = (state, data) => {
     //   : { ...d, isVisible: false };
   });
 
-  return { ...state, _data: rdata };
+  return { ...state, _data: v_data };
 };
+
+
+const handleChangePeaksMarkersVisibility=(state, data)=>{
+  const newData = [...state._data];
+  const result = newData.map((d, i) => {
+    const result = data.findIndex((activeData) => activeData.id === d.id);
+    if (result !== -1) {
+      Data1DManager.getObject(d.id).isPeaksMarkersVisible = true;
+      return { ...d, isPeaksMarkersVisible: true };
+    } else {
+      Data1DManager.getObject(d.id).isPeaksMarkersVisible = false;
+      return { ...d, isPeaksMarkersVisible: false };
+    }
+    // return result !== undefined
+    //   ? { ...d, isVisible: true }
+    //   : { ...d, isVisible: false };
+  });
+
+  return { ...state, _data: result };
+}
 
 const handelChangeActiveSpectrum = (state, activeSpectrum) => {
   const data = [...state._data];
@@ -484,6 +510,9 @@ export const spectrumReducer = (state, action) => {
 
     case CHANGE_VISIBILITY:
       return handelSpectrumVisibility(state, action.data);
+
+    case CHANGE_PEAKS_MARKERS_VISIBILITY:
+      return handleChangePeaksMarkersVisibility(state,action.data);  
     case CHNAGE_ACTIVE_SPECTRUM:
       return handelChangeActiveSpectrum(state, action.data);
 

@@ -173,7 +173,7 @@ const PeakNotationTool = ({
               <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
                 {notationData &&
                   notationData[d.id] &&
-                  d.isVisible &&
+                  d.isVisible && d.isPeaksMarkersVisible && 
                   notationData[d.id].map(({ xIndex }, i) => (
                     <NotationTemplate
                       key={i}

@@ -37,10 +37,10 @@ class BrushTool extends Component {
     //   this.width - this.margin.right,
     //   this.margin.left
     // ]);
-    const { getScale } = this.props;
+    const { getScale,mode } = this.props;
     const scale = getScale().x;
 
-    const range = [scale.invert(x2), scale.invert(x1)];
+    const range = (mode ==="RTL")?[scale.invert(x2), scale.invert(x1)]: [scale.invert(x1), scale.invert(x2)];
     d3.select(this.refs.brush).call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
     this.props.onXAxisDomainUpdate(range);
   };

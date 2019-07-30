@@ -41,10 +41,12 @@ export default function SpectrumList({
   const [spectrumId, setSelectedSpectrumId] = useState(null);
 
   useEffect(() => {
-    const v_data = data.filter((d) => d.isVisible === true);
-    setVisible(v_data);
+    const visibleSpectrums = data.filter((d) => d.isVisible === true);
+    const visibleMarkers = data.filter((d) => d.isPeaksMarkersVisible === true);
+    console.log(visibleMarkers);
+    setVisible(visibleSpectrums);
+    setMarkersVisible(visibleMarkers);
     setActivated(activated);
-    setMarkersVisible(data);
 
     // onChangeVisibility(data);
     // onChangeActive(data[0])

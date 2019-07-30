@@ -25,6 +25,7 @@ function App() {
     is2D: false, // TODO: need to define where to put the spectrum if it is 1D
     color: 'green',
     isVisible: true,
+    isPeakMarkerVisible:true,
   };
 
   const data = [
@@ -38,9 +39,11 @@ function App() {
       y: { ...json }.y,
       name: 'spectrum 101',
       isFid: true, // allows to determine the label of the axis
-      is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'red',
       isVisible: true,
+      isPeaksMarkersVisible:true,
+
+      
     },
     {
       id: '3',
@@ -49,9 +52,10 @@ function App() {
       y: { ...json }.y,
       name: 'spectrum 102',
       isFid: true, // allows to determine the label of the axis
-      is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'blue',
       isVisible: true,
+      isPeaksMarkersVisible:true,
+
     },
     {
       id: '4',
@@ -60,9 +64,10 @@ function App() {
       y: { ...json }.y,
       name: 'spectrum 103',
       isFid: true, // allows to determine the label of the axis
-      is2D: false, // TODO: need to define where to put the spectrum if it is 1D
       color: 'green',
       isVisible: true,
+      isPeaksMarkersVisible:true,
+
     },
 
     // {
@@ -125,6 +130,7 @@ function App() {
         height={height}
         data={data}
         margin={margin}
+        mode="LTR"
       />
       {/* <SpectrumChart
           width={width}

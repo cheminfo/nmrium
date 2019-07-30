@@ -42,6 +42,7 @@ import {
   CHANGE_SPECTRUM_TYPE,
   FULL_ZOOM_OUT,
   CHANGE_VISIBILITY,
+  CHANGE_PEAKS_MARKERS_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
   CHNAGE_SPECTRUM_COLOR,
 } from './reducer/Actions';
@@ -56,7 +57,7 @@ import HistoryToolBar from './toolbar/HistoryToolBar';
 //   },
 // }));
 
-const SpectrumChart = ({ margin, width, height, data }) => {
+const SpectrumChart = ({ margin, width, height, data,mode }) => {
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
   const [message, openMessage] = useState({
     isOpen: false,
@@ -124,6 +125,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     _height: height,
     _margin: margin,
     _activeSpectrum: null,
+     mode,
     openMessage: handelOpenMessage,
   };
 
@@ -238,7 +240,10 @@ const SpectrumChart = ({ margin, width, height, data }) => {
   const getScale = (spectrumId = null) => {
     // console.log(_xDomain);
     // console.log(_yDomain);
-    const x = d3.scaleLinear(_xDomain, [_width - margin.right, margin.left]);
+
+    const range = (mode === "RTL")?[_width - margin.right, margin.left]:[margin.left,_width - margin.right];
+
+    const x = d3.scaleLinear(_xDomain, range);
     // console.log(spectrumId);
     let y;
 
@@ -296,6 +301,10 @@ const SpectrumChart = ({ margin, width, height, data }) => {
     dispatch({ type: CHANGE_VISIBILITY, data });
   };
 
+  const handleChangeMarkersVisibility = (data)=>{      
+     dispatch({ type: CHANGE_PEAKS_MARKERS_VISIBILITY, data });
+  }
+
   const handleChangeActiveSpectrum = (data) => {
     dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data });
   };
@@ -337,6 +346,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
         activeSpectrum: _activeSpectrum,
         openMessage: handelOpenMessage,
         verticalAlign: verticalAlign,
+        mode
       }}
     >
       <div
@@ -445,7 +455,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
               }
 
               <g className="container">
-                <XAxis showGrid={true} isFID={true} />
+                <XAxis showGrid={true} isFID={true} mode={mode} />
 
                 <YAxis label="PPM" show={false} />
                 {_selectedTool === options.zoom.id && (
@@ -462,6 +472,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                     isActive={true}
                     getScale={getScale}
                     position={mouseCoordinates}
+                    mode={mode}
                   />
                 )}
                 {/* <ZoomTool
@@ -495,6 +506,7 @@ const SpectrumChart = ({ margin, width, height, data }) => {
                 onChangeVisibility={handleChangeVisibility}
                 onChangeActive={handleChangeActiveSpectrum}
                 onColorChanged={handleSpectrumColorChanged}
+                onChangeMarkersVisibility={handleChangeMarkersVisibility}
               />
             )}
           </Grid>
@@ -530,6 +542,7 @@ SpectrumChart.propTypes = {
     bottom: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
   }),
+  mode:PropTypes.oneOf(["RTL","LTR"])
 };
 
 SpectrumChart.defaultProps = {
@@ -537,6 +550,7 @@ SpectrumChart.defaultProps = {
   height: 800,
   data: [],
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
+  mode:"RTL"
 };
 
 export default SpectrumChart;

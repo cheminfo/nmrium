@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 import {ChartContext} from './context/ChartContext';
 
-const XAxis = ({ label, show, showGrid, isFID }) => {
+const XAxis = ({ label, show, showGrid, isFID,mode }) => {
   const { height, margin, xDomain, width, getScale } = useContext(ChartContext);
   const refaxis = useRef();
   const refgrid = useRef();
@@ -33,14 +33,17 @@ const XAxis = ({ label, show, showGrid, isFID }) => {
 
   useEffect(() => {
     if (show) {
+      console.log(mode)
+      const range = (mode === "RTL")?[width - margin.right, margin.left]:[margin.left,width - margin.right];
+      
       const scale = d3.scaleLinear(
         [xDomain[0], xDomain[1]],
-        [width - margin.right, margin.left],
+        range,
       );
       d3.select(refaxis.current).call(xAxis.scale(scale));
       d3.select(refgrid.current).call(grid.scale(scale));
     }
-  }, [grid, margin.left, margin.right, show, width, xAxis, xDomain]);
+  }, []);
 
   useEffect(() => {
     if (show) {
@@ -56,7 +59,7 @@ const XAxis = ({ label, show, showGrid, isFID }) => {
 
       d3.select(refgrid.current).call(grid.scale(scale.x.domain(xDomain)));
     }
-  }, [xDomain, height, width, show, getScale, xAxis, grid]);
+  }, [xDomain]);
 
   return (
     <React.Fragment>
