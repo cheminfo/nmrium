@@ -2,7 +2,6 @@ import baseline from './baseline';
 import autoPeakPicking from './autoPeakPicking';
 import applyFilter from './filter1d/filter';
 
-import { convert } from 'jcampconverter';
 import { SHIFT_X } from './filter1d/filter1d-type';
 
 export class Datum1D {
@@ -10,12 +9,22 @@ export class Datum1D {
 
   // static dataum1Objects = [];
 
-  constructor(id, x, re, im, name, color, isVisible,isPeaksMarkersVisible, options = {}) {
+  constructor(
+    id,
+    x,
+    re,
+    im,
+    name,
+    color,
+    isVisible,
+    isPeaksMarkersVisible,
+    options = {},
+  ) {
     this.id = id;
     this.name = name;
     this.color = color;
     this.isVisible = isVisible;
-    this.isPeaksMarkersVisible= isPeaksMarkersVisible;
+    this.isPeaksMarkersVisible = isPeaksMarkersVisible;
     this.original = { x, re, im };
     this.nucleus = options.nucleus || '1H'; // 1H, 13C, 19F, ...
     this.isFid = options.isFid || false;
@@ -32,12 +41,11 @@ export class Datum1D {
     // [{kind: 'shiftX',value: -5,},{.....}]
   }
 
-
-  setPeaks(peaks){
+  setPeaks(peaks) {
     this.peaks = peaks;
   }
 
-  getPeaks(){
+  getPeaks() {
     return this.peaks;
   }
 
@@ -74,11 +82,7 @@ export class Datum1D {
    * @param {number} window Range of chemical shifts to look for
    * @example  addPeak(5, 0.1)
    */
-  addPeak(chemicalShift, window, options = {}) {
-
-      
-
-  }
+  addPeak(chemicalShift, window, options = {}) {}
 
   autoPeakPicking() {}
 
