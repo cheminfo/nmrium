@@ -45,6 +45,7 @@ import {
   CHANGE_PEAKS_MARKERS_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
   CHNAGE_SPECTRUM_COLOR,
+  DELETE_PEAK_NOTATION
 } from './reducer/Actions';
 
 import { UNDO, REDO, RESET } from './reducer/HistoryActions';
@@ -268,6 +269,11 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
   const handleOnPeakChange = (e) => {
     dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue });
   };
+
+
+  const handleDeleteNotation=(data)=>{
+    dispatch({ type: DELETE_PEAK_NOTATION, data });
+  }
 
   const mouseClick = (e) => {
     //activat selected peak tool
@@ -494,6 +500,7 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
                   onPeakValueChange={handleOnPeakChange}
                   position={mouseCoordinates}
                   showCursorLabel={_selectedTool === options.peakTool.id}
+                  onDeleteNotation={handleDeleteNotation}
                 />
               )}
             </svg>

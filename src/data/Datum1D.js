@@ -33,6 +33,13 @@ export class Datum1D {
   }
 
 
+  setPeaks(peaks){
+    this.peaks = peaks;
+  }
+
+  getPeaks(){
+    return this.peaks;
+  }
 
   baseline(options) {
     let result = baseline(this.x, this.re, this.im);

@@ -28,6 +28,8 @@ const data = [
     is2D: false, // TODO: need to define where to put the spectrum if it is 1D
     color: 'red',
     isVisible: true,
+    isPeaksMarkersVisible:true,
+
   },
   {
     id: '3',
@@ -39,6 +41,8 @@ const data = [
     is2D: false, // TODO: need to define where to put the spectrum if it is 1D
     color: 'blue',
     isVisible: true,
+    isPeaksMarkersVisible:true,
+
   },
   {
     id: '4',
@@ -50,6 +54,8 @@ const data = [
     is2D: false, // TODO: need to define where to put the spectrum if it is 1D
     color: 'green',
     isVisible: true,
+    isPeaksMarkersVisible:true,
+
   },
 
   // {

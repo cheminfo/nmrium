@@ -45,6 +45,20 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
+/* .delete-notation-bt{
+  background-color:"red" !important;
+  color:"white"!important;
+  border:0!important;
+  padding:0!important;
+  width:15!important;
+  height:15!important;
+  border-radius:15!important;
+  position:"absolute"!important;
+  display:"flex"!important;
+  align-items:"center"!important;
+  justify-content:"center"!important;
+} */
+
 /* .notifcate-selected:hover{
 
      stroke-opacity: 1;

@@ -8,22 +8,25 @@ import React, {
 import PropTypes from 'prop-types';
 import '../css/peak-notification-tool.css';
 import { ChartContext } from '../context/ChartContext';
+ import { FaMinus } from 'react-icons/fa';
 
 export const NotationTemplate = ({
   id,
+  spectrumID,
   x,
   y,
   value,
-  onPeakValueChange,
-  onSelected,
   color,
   isActive,
+  onPeakValueChange,
+  onSelected,
+  onDeleteNotation
 }) => {
   const refText = useRef();
   const [isSelected, setIsSelected] = useState(false);
   const [_value, setValue] = useState(value);
-
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [isOver,setIsOver] = useState({id:null,flag:false});
 
   useEffect(() => {
     const textBox = refText.current.getBBox();
@@ -62,9 +65,26 @@ export const NotationTemplate = ({
     setIsSelected(false);
   };
 
+
+  const handleOnOverNotation = (id)=>{
+    setIsOver({id:id,flag:true});
+  }
+
+  const handleOnMouseLeaveNotation = ()=>{
+    setTimeout(()=>{
+      setIsOver({id:null,flag:false});
+    },500);
+  }
+
+  const handleDeleteNotation = (e,data)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    onDeleteNotation(data);
+  }
+
   return (
     <Fragment>
-      <g id={id} transform={`translate(${x}, ${y})`}>
+      <g id={id} transform={`translate(${x}, ${y})`} onMouseOver={()=>{handleOnOverNotation(id)}} onMouseLeave={handleOnMouseLeaveNotation}>
         {/* <rect
         x="0"
         y="-30"
@@ -84,12 +104,12 @@ export const NotationTemplate = ({
           x="0"
           y="-30"
           width={containerSize.width + 20}
-          height={containerSize.height + 10}
+          height={containerSize.height + 30}
         >
           <div
             style={{
               width: containerSize.width + 20,
-              height: containerSize.height + 10,
+              height: containerSize.height + 30,
               paddingRight: 5,
             }}
             xmlns="http://www.w3.org/1999/xhtml"
@@ -111,6 +131,7 @@ export const NotationTemplate = ({
               type="number"
               disabled={!isActive}
             />
+            {isOver.id && isOver.flag === true && <button onClick={(e)=>handleDeleteNotation(e,{xIndex:id,id:spectrumID})} style={{backgroundColor:"red",color:"white",border:0,padding:0,width:15,height:15,borderRadius:15,position:"absolute",left:containerSize.width,top:containerSize.height+7,display:"flex",alignItems:"center",justifyContent:"center"}}><FaMinus/></button>}
           </div>
         </foreignObject>
         {/* 
@@ -130,9 +151,10 @@ export const NotationTemplate = ({
 
 const PeakNotationTool = ({
   notationData,
-  onPeakValueChange,
   position,
   showCursorLabel,
+  onPeakValueChange,
+  onDeleteNotation
 }) => {
   const { getScale, data, activeSpectrum, verticalAlign } = useContext(
     ChartContext,
@@ -180,9 +202,11 @@ const PeakNotationTool = ({
                       x={getScale(d.id).x(d.x[xIndex])}
                       y={getScale(d.id).y(d.y[xIndex])}
                       id={xIndex}
+                      spectrumID={d.id}
                       value={d.x[xIndex]}
                       onPeakValueChange={onPeakValueChange}
                       onSelected={handelOnSelected}
+                      onDeleteNotation={onDeleteNotation}
                       color={d.color}
                       isActive={
                         activeSpectrum == null
@@ -221,4 +245,17 @@ PeakNotationTool.contextTypes = {
   }),
   xDomain: PropTypes.array,
   yDomain: PropTypes.array,
+  onPeakValueChange:PropTypes.func,
+  onDeleteNotation:PropTypes.func
 };
+
+
+PeakNotationTool.defaultProps = {
+  onPeakValueChange: () => {
+    return null;
+  },
+  onDeleteNotation: () => {
+    return null;
+  }
+};
+

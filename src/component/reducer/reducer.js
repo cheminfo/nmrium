@@ -1,5 +1,6 @@
 import {
   PEAK_PICKING,
+  DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
   LOADING_SPECTRUM,
   SET_DATA,
@@ -50,10 +51,13 @@ function getDomain(data) {
   return { x: d3.extent(xArray), y: d3.extent(yArray), _yDomains: _yDomains };
 }
 
-const getScale = ({ _xDomain, _yDomain, _width, _height, _margin,mode }) => {
+const getScale = ({ _xDomain, _yDomain, _width, _height, _margin, mode }) => {
   console.log(mode);
   console.log(_margin);
-  const xRange = (mode === "RTL")?[_width - _margin.right, _margin.left]:[_margin.left,_width - _margin.right];
+  const xRange =
+    mode === 'RTL'
+      ? [_width - _margin.right, _margin.left]
+      : [_margin.left, _width - _margin.right];
 
   const x = d3.scaleLinear(_xDomain, xRange);
   const y = d3.scaleLinear(_yDomain, [_height - _margin.bottom, _margin.top]);
@@ -63,9 +67,17 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin,mode }) => {
 const setData = (state, data) => {
   const domain = getDomain(data);
   for (let d of data) {
-
     Data1DManager.pushObject(
-      new Datum1D(d.id, d.x, d.y, d.y, d.name, d.color, d.isVisible,d.isPeaksMarkersVisible),
+      new Datum1D(
+        d.id,
+        d.x,
+        d.y,
+        d.y,
+        d.name,
+        d.color,
+        d.isVisible,
+        d.isPeaksMarkersVisible,
+      ),
     );
   }
 
@@ -83,14 +95,13 @@ const setData = (state, data) => {
     _xDomain: domain.x,
     _yDomain: domain.y,
     _originDomain: domain,
-    _yDomains:domain._yDomains
+    _yDomains: domain._yDomains,
   };
 };
 const loadSpectrum = (state, file) => {
   const key = getKey();
-  const usedColors = state._data.map((d)=>d.color);
+  const usedColors = state._data.map((d) => d.color);
   const color = getColor(usedColors);
-
 
   let dataumObject = Data1DManager.fromJcamp(
     key,
@@ -98,7 +109,7 @@ const loadSpectrum = (state, file) => {
     file.name,
     color,
     true,
-    true
+    true,
   );
 
   Data1DManager.pushObject(dataumObject);
@@ -125,14 +136,13 @@ const loadSpectrum = (state, file) => {
     _xDomain: domain.x,
     _yDomain: domain.y,
     _originDomain: domain,
-    _yDomains:domain._yDomains
-
+    _yDomains: domain._yDomains,
   };
 };
 
 const getClosePeak = (xShift, mouseCoordinates, state) => {
   const scale = getScale(state);
-  const { _data, _activeSpectrum,mode } = state;
+  const { _data, _activeSpectrum, mode } = state;
   const zoon = [
     scale.x.invert(mouseCoordinates.x - xShift),
     scale.x.invert(mouseCoordinates.x + xShift),
@@ -141,9 +151,11 @@ const getClosePeak = (xShift, mouseCoordinates, state) => {
   //get the active sepectrum data by looking for it by id
   const selectedSpectrumData = _data.find((d) => d.id === _activeSpectrum.id);
   var maxIndex =
-    selectedSpectrumData.x.findIndex((number) => number >= zoon[(mode==="RTL")?0:1]) - 1;
+    selectedSpectrumData.x.findIndex(
+      (number) => number >= zoon[mode === 'RTL' ? 0 : 1],
+    ) - 1;
   var minIndex = selectedSpectrumData.x.findIndex(
-    (number) => number >= zoon[(mode==="RTL")?1:0],
+    (number) => number >= zoon[mode === 'RTL' ? 1 : 0],
   );
 
   const selectedYData = selectedSpectrumData.y.slice(minIndex, maxIndex);
@@ -167,6 +179,9 @@ const addPeak = (state, mouseCoordinates) => {
     } else {
       points[id] = [{ xIndex: peak.xIndex }];
     }
+   
+    Data1DManager.getObject(id).setPeaks(points[id]);
+
     // }
   } else {
     state.openMessage({
@@ -177,6 +192,16 @@ const addPeak = (state, mouseCoordinates) => {
 
   return { ...state, _peakNotations: points };
 };
+
+
+const deletePeak = (state,data) => {
+  const peakNotations = [...state._peakNotations];
+  const {xIndex,id} = data;
+  peakNotations[id] = peakNotations[id].filter((p)=>p.xIndex !==xIndex );
+  Data1DManager.getObject(id).setPeaks(peakNotations[id]);
+
+  return {...state,_peakNotations:peakNotations};
+}
 
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   const filterOption = {
@@ -194,7 +219,6 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   const history = handleHistorySet(state.history, filterOption);
 
   console.log(history);
-  
 
   activeObject.applyShiftXFilter(shiftValue);
   //add to undo history
@@ -287,8 +311,7 @@ const handelSpectrumVisibility = (state, data) => {
   return { ...state, _data: v_data };
 };
 
-
-const handleChangePeaksMarkersVisibility=(state, data)=>{
+const handleChangePeaksMarkersVisibility = (state, data) => {
   const newData = [...state._data];
   const result = newData.map((d, i) => {
     const result = data.findIndex((activeData) => activeData.id === d.id);
@@ -305,7 +328,7 @@ const handleChangePeaksMarkersVisibility=(state, data)=>{
   });
 
   return { ...state, _data: result };
-}
+};
 
 const handelChangeActiveSpectrum = (state, activeSpectrum) => {
   const data = [...state._data];
@@ -478,6 +501,8 @@ export const spectrumReducer = (state, action) => {
   switch (action.type) {
     case PEAK_PICKING:
       return addPeak(state, action.mouseCoordinates);
+    case DELETE_PEAK_NOTATION:
+      return deletePeak(state, action.data);
     case SET_ORIGINAL_DOMAIN:
       return setOriginalDomain(state, action.domain);
 
@@ -515,7 +540,7 @@ export const spectrumReducer = (state, action) => {
       return handelSpectrumVisibility(state, action.data);
 
     case CHANGE_PEAKS_MARKERS_VISIBILITY:
-      return handleChangePeaksMarkersVisibility(state,action.data);  
+      return handleChangePeaksMarkersVisibility(state, action.data);
     case CHNAGE_ACTIVE_SPECTRUM:
       return handelChangeActiveSpectrum(state, action.data);
 
