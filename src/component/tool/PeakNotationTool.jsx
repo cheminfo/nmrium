@@ -37,7 +37,7 @@ export const NotationTemplate = ({
     setValue(value);
   }, [value]);
 
-  const handleSaveChange = (event) => {
+  const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       const newValue = parseFloat(event.target.value);
       const oldValue = parseFloat(value);
@@ -48,12 +48,23 @@ export const NotationTemplate = ({
         oldValue: oldValue,
         shiftValue: shiftValue,
       });
+    } else if (event.keyCode === 27) {
+      setValue(value);
     }
   };
 
   const handleChange = (event) => {
     setValue(event.target.value);
   };
+
+
+  // const handleKeyDown=(event)=>{
+  //   console.log(event);
+
+  //   if (event.keyCode === 27) {
+  //     console.log('You pressed the escape key!')
+  //   }
+  // }
 
   const handleSelectPeakNotation = (e) => {
     e.preventDefault();
@@ -126,7 +137,7 @@ export const NotationTemplate = ({
                 opacity: isActive ? 1 : 0.2,
               }}
               value={_value}
-              onKeyDown={handleSaveChange}
+              onKeyDown={handleKeyDown}
               onChange={handleChange}
               type="number"
               disabled={!isActive}
