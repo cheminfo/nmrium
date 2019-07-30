@@ -18,13 +18,14 @@ import { Button } from '@material-ui/core';
 
 import './css/spectrum-list.css';
 
-import { ChromePicker } from 'react-color';
+import { SketchPicker } from 'react-color';
+import {COLORS} from './utility/ColorGenerator';
 
 function arePropsEqual(prevProps, nextProps) {
   return true;
 }
 const ColorPicker = React.memo(({ onColorChanged }) => {
-  return <ChromePicker onChangeComplete={onColorChanged} />;
+  return <SketchPicker presetColors={COLORS} onChangeComplete={onColorChanged} />;
 }, arePropsEqual);
 
 export default function SpectrumList({
@@ -43,7 +44,7 @@ export default function SpectrumList({
   useEffect(() => {
     const visibleSpectrums = data.filter((d) => d.isVisible === true);
     const visibleMarkers = data.filter((d) => d.isPeaksMarkersVisible === true);
-    console.log(visibleMarkers);
+
     setVisible(visibleSpectrums);
     setMarkersVisible(visibleMarkers);
     setActivated(activated);
@@ -176,7 +177,7 @@ export default function SpectrumList({
             className="color-picker-cover"
             onClick={handleCloseColorPicker}
           />
-          <ColorPicker onColorChanged={handleColorChanged} />
+          <ColorPicker  onColorChanged={handleColorChanged} />
         </div>
       ) : null}
     </Fragment>

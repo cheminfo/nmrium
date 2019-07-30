@@ -8,7 +8,7 @@ export class Data1DManager{
     static dataObjects = [];
 
 
-    static fromJcamp = function fromJcamp(id, text, name, color, isVisible) {
+    static fromJcamp = function fromJcamp(id, text, name, color, isVisible,isPeaksMarkersVisible) {
         let result = convert(text, { xy: true });
     
         let x =
@@ -33,7 +33,7 @@ export class Data1DManager{
             ? result.spectra[1].data[0].y
             : [];
     
-        const ob = new Datum1D(id, x, re, im, name, color, isVisible);
+        const ob = new Datum1D(id, x, re, im, name, color, isVisible,isPeaksMarkersVisible);
     
         return ob;
       };
@@ -66,6 +66,8 @@ export class Data1DManager{
             name: ob.name,
             color: ob.color,
             isVisible: ob.isVisible,
+            isPeaksMarkersVisible:ob.isPeaksMarkersVisible
+
           };
         });
       }
@@ -79,6 +81,7 @@ export class Data1DManager{
             name: ob.name,
             color: ob.color,
             isVisible: ob.isVisible,
+            isPeaksMarkersVisible:ob.isPeaksMarkersVisible
           };
         });
       }

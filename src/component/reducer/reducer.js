@@ -63,6 +63,7 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin,mode }) => {
 const setData = (state, data) => {
   const domain = getDomain(data);
   for (let d of data) {
+
     Data1DManager.pushObject(
       new Datum1D(d.id, d.x, d.y, d.y, d.name, d.color, d.isVisible,d.isPeaksMarkersVisible),
     );
@@ -87,7 +88,9 @@ const setData = (state, data) => {
 };
 const loadSpectrum = (state, file) => {
   const key = getKey();
-  const color = getColor();
+  const usedColors = state._data.map((d)=>d.color);
+  const color = getColor(usedColors);
+
 
   let dataumObject = Data1DManager.fromJcamp(
     key,

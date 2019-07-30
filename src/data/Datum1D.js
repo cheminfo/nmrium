@@ -10,11 +10,12 @@ export class Datum1D {
 
   // static dataum1Objects = [];
 
-  constructor(id, x, re, im, name, color, isVisible, options = {}) {
+  constructor(id, x, re, im, name, color, isVisible,isPeaksMarkersVisible, options = {}) {
     this.id = id;
     this.name = name;
     this.color = color;
     this.isVisible = isVisible;
+    this.isPeaksMarkersVisible= isPeaksMarkersVisible;
     this.original = { x, re, im };
     this.nucleus = options.nucleus || '1H'; // 1H, 13C, 19F, ...
     this.isFid = options.isFid || false;
@@ -66,7 +67,11 @@ export class Datum1D {
    * @param {number} window Range of chemical shifts to look for
    * @example  addPeak(5, 0.1)
    */
-  addPeak(chemicalShift, window, options = {}) {}
+  addPeak(chemicalShift, window, options = {}) {
+
+      
+
+  }
 
   autoPeakPicking() {}
 
