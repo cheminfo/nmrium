@@ -42,6 +42,8 @@ function App() {
       color: 'red',
       isVisible: true,
       isPeaksMarkersVisible:true,
+      nucleus:"1H"
+
 
       
     },
@@ -55,6 +57,7 @@ function App() {
       color: 'blue',
       isVisible: true,
       isPeaksMarkersVisible:true,
+      nucleus:"1H"
 
     },
     {
@@ -67,6 +70,8 @@ function App() {
       color: 'green',
       isVisible: true,
       isPeaksMarkersVisible:true,
+      nucleus:"13C"
+
 
     },
 
@@ -130,7 +135,7 @@ function App() {
         height={height}
         data={data}
         margin={margin}
-        mode="LTR"
+        mode="RTL"
       />
       {/* <SpectrumChart
           width={width}

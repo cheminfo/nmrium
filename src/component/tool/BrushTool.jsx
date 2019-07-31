@@ -67,26 +67,25 @@ class BrushTool extends Component {
   };
 
   componentDidMount() {
-    const { isActive } = this.props;
-    // width, height, margin
-    // this.brush.extent([
-    //   [margin.left, margin.top],
-    //   [width - margin.right, height - margin.bottom],
-    // ]);
+    const { isActive,width, height, margin } = this.props;
+    this.brush.extent([
+      [margin.left, margin.top],
+      [width - margin.right, height - margin.bottom],
+    ]);
 
-    // this.zoom
-    //   .translateExtent([
-    //     [margin.left, margin.top],
-    //     [width - margin.right, height - margin.bottom],
-    //   ])
-    //   .extent([
-    //     [margin.left, margin.top],
-    //     [width - margin.right, height - margin.bottom],
-    //   ]);
+    this.zoom
+      .translateExtent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ])
+      .extent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ]);
 
-    // d3.select(this.refs.brush)
-    //   .selectAll('*')
-    //   .remove();
+    d3.select(this.refs.brush)
+      .selectAll('*')
+      .remove();
 
     if (isActive) {
       d3.select(this.refs.brush)

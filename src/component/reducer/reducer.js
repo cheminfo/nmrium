@@ -70,17 +70,22 @@ const setData = (state, data) => {
     Data1DManager.pushObject(
       new Datum1D(
         d.id,
-        d.x,
-        d.y,
-        d.y,
-        d.name,
-        d.color,
-        d.isVisible,
-        d.isPeaksMarkersVisible,
-      ),
+        { x: d.x, re: d.y, im: d.y },
+        {
+          display: {
+            name: d.name,
+            color: d.color,
+            isVisible: d.isVisible,
+            isPeaksMarkersVisible: d.isPeaksMarkersVisible,
+          },
+          meta:{
+            nucleus:"1H",
+            isFid:true
+          }
+        }
+      )
     );
   }
-
   // let dataumObject =
   // Datum1D.setObject(new Datum1D(data.x, data.y, data.y));
   // const XYData = dataumObject.getReal();
@@ -179,7 +184,7 @@ const addPeak = (state, mouseCoordinates) => {
     } else {
       points[id] = [{ xIndex: peak.xIndex }];
     }
-   
+
     Data1DManager.getObject(id).setPeaks(points[id]);
 
     // }
@@ -193,15 +198,14 @@ const addPeak = (state, mouseCoordinates) => {
   return { ...state, _peakNotations: points };
 };
 
-
-const deletePeak = (state,data) => {
+const deletePeak = (state, data) => {
   const peakNotations = [...state._peakNotations];
-  const {xIndex,id} = data;
-  peakNotations[id] = peakNotations[id].filter((p)=>p.xIndex !==xIndex );
+  const { xIndex, id } = data;
+  peakNotations[id] = peakNotations[id].filter((p) => p.xIndex !== xIndex);
   Data1DManager.getObject(id).setPeaks(peakNotations[id]);
 
-  return {...state,_peakNotations:peakNotations};
-}
+  return { ...state, _peakNotations: peakNotations };
+};
 
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   const filterOption = {

@@ -8,7 +8,8 @@ import React, {
 import PropTypes from 'prop-types';
 import '../css/peak-notification-tool.css';
 import { ChartContext } from '../context/ChartContext';
- import { FaMinus } from 'react-icons/fa';
+import { FaMinus } from 'react-icons/fa';
+import {getPeakLabelNumberDecimals} from '../../data/default';
 
 export const NotationTemplate = ({
   id,
@@ -18,20 +19,23 @@ export const NotationTemplate = ({
   value,
   color,
   isActive,
+  decimalFraction,
   onPeakValueChange,
   onSelected,
-  onDeleteNotation
+  onDeleteNotation,
 }) => {
   const refText = useRef();
   const [isSelected, setIsSelected] = useState(false);
   const [_value, setValue] = useState(value);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const [isOver,setIsOver] = useState({id:null,flag:false});
+  const [isOver, setIsOver] = useState({ id: null, flag: false });
 
   useEffect(() => {
     const textBox = refText.current.getBBox();
     setContainerSize({ width: textBox.width, height: textBox.height });
-  }, []);
+  }, [isSelected]);
+
+
 
   useEffect(() => {
     setValue(value);
@@ -48,8 +52,13 @@ export const NotationTemplate = ({
         oldValue: oldValue,
         shiftValue: shiftValue,
       });
+
+      event.target.blur();
+      setIsSelected(false);
     } else if (event.keyCode === 27) {
       setValue(value);
+      event.target.blur();
+      setIsSelected(false);
     }
   };
 
@@ -57,45 +66,40 @@ export const NotationTemplate = ({
     setValue(event.target.value);
   };
 
-
-  // const handleKeyDown=(event)=>{
-  //   console.log(event);
-
-  //   if (event.keyCode === 27) {
-  //     console.log('You pressed the escape key!')
-  //   }
-  // }
-
   const handleSelectPeakNotation = (e) => {
     e.preventDefault();
     e.stopPropagation();
     onSelected(id);
     setIsSelected(true);
   };
-  const handleMouseOutPeakNotation = (e) => {
-    setIsSelected(false);
+  const handleMouseOutPeakNotation = (e) => {};
+
+  const handleOnOverNotation = (id) => {
+    setIsOver({ id: id, flag: true });
   };
 
+  const handleOnMouseLeaveNotation = () => {
+    setTimeout(() => {
+      setIsOver({ id: null, flag: false });
+    }, 300);
+  };
 
-  const handleOnOverNotation = (id)=>{
-    setIsOver({id:id,flag:true});
-  }
-
-  const handleOnMouseLeaveNotation = ()=>{
-    setTimeout(()=>{
-      setIsOver({id:null,flag:false});
-    },500);
-  }
-
-  const handleDeleteNotation = (e,data)=>{
+  const handleDeleteNotation = (e, data) => {
     e.preventDefault();
     e.stopPropagation();
     onDeleteNotation(data);
-  }
+  };
 
   return (
     <Fragment>
-      <g id={id} transform={`translate(${x}, ${y})`} onMouseOver={()=>{handleOnOverNotation(id)}} onMouseLeave={handleOnMouseLeaveNotation}>
+      <g
+        id={id}
+        transform={`translate(${x}, ${y})`}
+        onMouseOver={() => {
+          handleOnOverNotation(id);
+        }}
+        onMouseLeave={handleOnMouseLeaveNotation}
+      >
         {/* <rect
         x="0"
         y="-30"
@@ -103,9 +107,16 @@ export const NotationTemplate = ({
         height={containerSize.height}
       /> */}
 
-        <line x1="0" x2="0" y1="0" y2={-30} stroke="black" strokeWidth="1" />
-        <text ref={refText} x="0" y={-20} dy="0.1em" dx="0.35em">
-          {value}
+        <line x1="0" x2="0" y1="-5" y2={-30} stroke={color} strokeWidth="1" />
+        <text
+          ref={refText}
+          x="0"
+          y={-20}
+          dy="0.1em"
+          dx="0.35em"
+          fill="transparent"
+        >
+          {isSelected?value:value.toFixed(decimalFraction)}
         </text>
 
         {/* <circle cx="0" cy="0" r="1" fill="red" /> */}
@@ -130,19 +141,42 @@ export const NotationTemplate = ({
               className={
                 isSelected
                   ? 'notification-input input-over'
-                  : 'notification-input'
+                  : 'notification-input-normal'
               }
               style={{
-                border: `1px solid ${color}`,
+                border: isSelected ? `1px solid ${color}` : `0`,
                 opacity: isActive ? 1 : 0.2,
               }}
-              value={_value}
+              value={isSelected?_value:_value.toFixed(decimalFraction)}
               onKeyDown={handleKeyDown}
               onChange={handleChange}
               type="number"
               disabled={!isActive}
             />
-            {isOver.id && isOver.flag === true && <button onClick={(e)=>handleDeleteNotation(e,{xIndex:id,id:spectrumID})} style={{backgroundColor:"red",color:"white",border:0,padding:0,width:15,height:15,borderRadius:15,position:"absolute",left:containerSize.width,top:containerSize.height+7,display:"flex",alignItems:"center",justifyContent:"center"}}><FaMinus/></button>}
+            {isOver.id && isOver.flag === true && (
+              <button
+                onClick={(e) =>
+                  handleDeleteNotation(e, { xIndex: id, id: spectrumID })
+                }
+                style={{
+                  backgroundColor: 'red',
+                  color: 'white',
+                  border: 0,
+                  padding: 0,
+                  width: 15,
+                  height: 15,
+                  borderRadius: 15,
+                  position: 'absolute',
+                  left: containerSize.width,
+                  top: containerSize.height + 7,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <FaMinus />
+              </button>
+            )}
           </div>
         </foreignObject>
         {/* 
@@ -165,7 +199,7 @@ const PeakNotationTool = ({
   position,
   showCursorLabel,
   onPeakValueChange,
-  onDeleteNotation
+  onDeleteNotation,
 }) => {
   const { getScale, data, activeSpectrum, verticalAlign } = useContext(
     ChartContext,
@@ -193,8 +227,16 @@ const PeakNotationTool = ({
       : _data;
   };
 
+  const reSortNotificationLabel = (xIndex, notificationsData) => {
+    return notificationsData
+      ? notificationsData.sort(function(x, y) {
+          return x.xIndex === xIndex ? 1 : y.xIndex === xIndex ? -1 : 0;
+        })
+      : notificationsData;
+  };
+
   const getVerticalAlign = (id) => {
-    return data.findIndex((d) => d.id == id) * verticalAlign;
+    return data.findIndex((d) => d.id === id) * verticalAlign;
   };
 
   return (
@@ -206,7 +248,8 @@ const PeakNotationTool = ({
               <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
                 {notationData &&
                   notationData[d.id] &&
-                  d.isVisible && d.isPeaksMarkersVisible && 
+                  d.isVisible &&
+                  d.isPeaksMarkersVisible &&
                   notationData[d.id].map(({ xIndex }, i) => (
                     <NotationTemplate
                       key={i}
@@ -219,10 +262,11 @@ const PeakNotationTool = ({
                       onSelected={handelOnSelected}
                       onDeleteNotation={onDeleteNotation}
                       color={d.color}
+                      decimalFraction={getPeakLabelNumberDecimals(d.nucleus)}
                       isActive={
                         activeSpectrum == null
                           ? false
-                          : activeSpectrum.id == d.id
+                          : activeSpectrum.id === d.id
                           ? true
                           : false
                       }
@@ -256,10 +300,9 @@ PeakNotationTool.contextTypes = {
   }),
   xDomain: PropTypes.array,
   yDomain: PropTypes.array,
-  onPeakValueChange:PropTypes.func,
-  onDeleteNotation:PropTypes.func
+  onPeakValueChange: PropTypes.func,
+  onDeleteNotation: PropTypes.func,
 };
-
 
 PeakNotationTool.defaultProps = {
   onPeakValueChange: () => {
@@ -267,6 +310,5 @@ PeakNotationTool.defaultProps = {
   },
   onDeleteNotation: () => {
     return null;
-  }
+  },
 };
-

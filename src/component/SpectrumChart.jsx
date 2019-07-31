@@ -71,8 +71,8 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       acceptedFiles.forEach((file) => {
-        if (!file.name.endsWith('.dx')) {
-          reject('The file must be jcamp file .dx file extention');
+        if (!(file.name.endsWith('.dx') || file.name.endsWith('.jdx'))) {
+          reject('The file must be jcamp file .dx,.jdx file extention');
         } else {
           reader.readAsBinaryString(file);
         }
@@ -332,10 +332,16 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
   }
 
   const handleChangeVerticalAlignments = () => {
-    if (verticalAlign != 0) {
+
+    
+    if (verticalAlign !== 0) {
       setVerticalAlign(0);
     } else {
+
       setVerticalAlign(Math.floor(-height / 10));
+
+      console.log(verticalAlign);
+
     }
   };
 

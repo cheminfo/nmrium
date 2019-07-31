@@ -5,14 +5,32 @@
 }
 
 .notification-input {
-  background-color: rgb(255, 223, 158);
-  border: 0.55px solid rgb(219, 146, 0);
+  /* background-color: rgb(255, 223, 158); */
+  /* border: 0.55px solid rgb(219, 146, 0); */
   width: calc(100% - 10px) !important;
-  border: 0.55px solid rgb(219, 146, 0);
+  /* border: 0.55px solid rgb(219, 146, 0); */
 }
+
+.notification-input-normal{
+  /* border: 0 !important; */
+  opacity: 1;
+  left: 4px;
+  position: absolute;
+  font-size: 10px;
+  outline: none;
+  user-select: none;
+
+}
+
+.notification-input-normal input:focus {
+    outline: none;
+}
+
 .input-over {
-  background-color: rgb(151, 185, 0);
-  border: 0.55px solid rgb(85, 104, 0);
+  background-color: white;
+  outline: none;
+
+  /* border: 0.55px solid rgb(85, 104, 0); */
 }
 
 .notification-label {
