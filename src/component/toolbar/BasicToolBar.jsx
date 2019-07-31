@@ -11,8 +11,6 @@ const BasicToolBar = ({
   isViewButtonVisible = true,
 }) => {
   const handleOnKeyPressed = useCallback((e) => {
-    console.log(e.key);
-
     if (e.key === 'f') {
       onFullZoomOut();
     }
@@ -26,9 +24,9 @@ const BasicToolBar = ({
   }, []);
 
   useEffect(() => {
-    // return () => {
-    //   document.removeEventListener('keydown', handleOnKeyPressed, false);
-    // };
+    return () => {
+      document.removeEventListener('keydown', handleOnKeyPressed, false);
+    };
   }, []);
 
   return (

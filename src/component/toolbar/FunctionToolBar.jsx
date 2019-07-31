@@ -25,10 +25,6 @@ const FunctionToolBar = ({ onChangeOption, defaultValue }) => {
   const [option, setOption] = useState();
   const handleChange = (event, selectedOption) => {
 
-    console.log(defaultValue);
-
-   console.log(selectedOption);
-
     if (selectedOption != null) {
       setOption(selectedOption);
       onChangeOption(selectedOption);

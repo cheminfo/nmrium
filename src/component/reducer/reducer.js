@@ -407,12 +407,14 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
 const handleHistoryUndo = (state) => {
   const { past, present, future } = state.history;
   const previous = past[past.length - 1];
+  console.log(present);
   const newPast = past.slice(0, past.length - 1);
   const newfuture = [present, ...future];
 
   const hasRedo = newfuture.length !== 0;
-  const hasUndo = past.length !== 0;
+  const hasUndo = past.length !== 0 ;
 
+  
   Data1DManager.undoFilter(past);
   let resultData = Data1DManager.getXYData();
 
@@ -437,11 +439,15 @@ const handleHistoryUndo = (state) => {
 
 const handleHistoryRedo = (state) => {
   const { past, present, future } = state.history;
-  const next = future[0];
+  const next = future.length===0?null:future[0];
   const newFuture = future.slice(1);
-  const newPast = present !== undefined ? [...past, present] : past;
+  const newPast = present !== null && present !==undefined ? [...past, present] : past;
+ console.log(newPast);
+ console.log(past);
+ console.log(present);
+ const check = next !== null && next !==undefined ? [...past, present] : past;
 
-  const hasUndo = present === undefined || newPast.length !== 0 ? true : false;
+  const hasUndo = check !== 0 ;
   const hasRedo = newFuture.length !== 0;
 
   Data1DManager.redoFilter(next);
@@ -466,6 +472,7 @@ const handleHistoryRedo = (state) => {
 };
 
 const handleHistorySet = (state, action) => {
+  console.log(state);
   const newValue = action;
 
   const { past, present } = state;
@@ -475,7 +482,7 @@ const handleHistorySet = (state, action) => {
   }
 
   return {
-    past: present !== null ? [...past, present] : [...past],
+    past: present !== null && present !==undefined  ? [...past, present] : [...past],
     present: newValue,
     future: [],
     hasUndo: true,

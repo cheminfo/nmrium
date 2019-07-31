@@ -114,7 +114,7 @@ export class Data1DManager {
       ob.re = ob.original.re;
     });
 
-    if (pastChainFilters.length !== 0) {
+    if (pastChainFilters && pastChainFilters.length !== 0) {
       pastChainFilters.forEach((filter) => {
         const ob = Data1DManager.getDatum1D(filter.id);
         let data = { x: ob.x, y: ob.re };

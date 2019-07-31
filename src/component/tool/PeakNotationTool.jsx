@@ -116,7 +116,7 @@ export const NotationTemplate = ({
           dx="0.35em"
           fill="transparent"
         >
-          {isSelected?value:value.toFixed(decimalFraction)}
+          {isSelected?value:parseFloat(value).toFixed(decimalFraction)}
         </text>
 
         {/* <circle cx="0" cy="0" r="1" fill="red" /> */}
@@ -148,7 +148,7 @@ export const NotationTemplate = ({
                 border: isSelected ? `1px solid ${color}` : `0`,
                 opacity: isActive ? 1 : 0.2,
               }}
-              value={isSelected?_value:_value.toFixed(decimalFraction)}
+              value={isSelected?_value:parseFloat(_value).toFixed(decimalFraction)}
               onKeyDown={handleKeyDown}
               onChange={handleChange}
               type="number"
