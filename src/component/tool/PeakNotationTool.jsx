@@ -144,6 +144,7 @@ export const NotationTemplate = ({
                   : 'notification-input-normal'
               }
               style={{
+                width:"inherit",
                 border: isSelected ? `1px solid ${color}` : `0`,
                 opacity: isActive ? 1 : 0.2,
               }}

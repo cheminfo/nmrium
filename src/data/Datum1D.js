@@ -8,7 +8,6 @@ export class Datum1D {
   // static myInstance = null;
 
   // static dataum1Objects = [];
-<<<<<<< HEAD
    /**
     * 
     * @param {string} id 
@@ -27,32 +26,6 @@ export class Datum1D {
     this.x = data.x;
     this.re = data.re;
     this.im = data.im;
-=======
-
-  constructor(
-    id,
-    x,
-    re,
-    im,
-    name,
-    color,
-    isVisible,
-    isPeaksMarkersVisible,
-    options = {},
-  ) {
-    this.id = id;
-    this.name = name;
-    this.color = color;
-    this.isVisible = isVisible;
-    this.isPeaksMarkersVisible = isPeaksMarkersVisible;
-    this.original = { x, re, im };
-    this.nucleus = options.nucleus || '1H'; // 1H, 13C, 19F, ...
-    this.isFid = options.isFid || false;
-
-    this.x = x;
-    this.re = re;
-    this.im = im;
->>>>>>> 940dafa73fa9f946283af95385064028208ebfdb
     this.peaks = []; // array of object {index: xIndex, xShift}
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`

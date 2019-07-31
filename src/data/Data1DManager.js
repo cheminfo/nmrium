@@ -39,7 +39,6 @@ export class Data1DManager {
 
     const ob = new Datum1D(
       id,
-<<<<<<< HEAD
       { x: x, re: re, im: im },
       {
         display: {
@@ -53,15 +52,6 @@ export class Data1DManager {
           isFid: true,
         },
       },
-=======
-      x,
-      re,
-      im,
-      name,
-      color,
-      isVisible,
-      isPeaksMarkersVisible,
->>>>>>> 940dafa73fa9f946283af95385064028208ebfdb
     );
 
     return ob;
@@ -96,10 +86,7 @@ export class Data1DManager {
         color: ob.color,
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-<<<<<<< HEAD
         nucleus:ob.nucleus
-=======
->>>>>>> 940dafa73fa9f946283af95385064028208ebfdb
       };
     });
   }
@@ -114,11 +101,8 @@ export class Data1DManager {
         color: ob.color,
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-<<<<<<< HEAD
         nucleus:ob.nucleus
 
-=======
->>>>>>> 940dafa73fa9f946283af95385064028208ebfdb
       };
     });
   }
