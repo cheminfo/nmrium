@@ -67,7 +67,7 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin, mode }) => {
 const setData = (state, data) => {
   const domain = getDomain(data);
   for (let d of data) {
-    Data1DManager.pushObject(
+    Data1DManager.pushDatum1D(
       new Datum1D(
         d.id,
         { x: d.x, re: d.y, im: d.y },
@@ -117,7 +117,7 @@ const loadSpectrum = (state, file) => {
     true,
   );
 
-  Data1DManager.pushObject(dataumObject);
+  Data1DManager.pushDatum1D(dataumObject);
 
   const xyData = Data1DManager.getXYData();
   // const v_data = [...state._data];
@@ -185,7 +185,7 @@ const addPeak = (state, mouseCoordinates) => {
       points[id] = [{ xIndex: peak.xIndex }];
     }
 
-    Data1DManager.getObject(id).setPeaks(points[id]);
+    Data1DManager.getDatum1D(id).setPeaks(points[id]);
 
     // }
   } else {
@@ -202,7 +202,7 @@ const deletePeak = (state, data) => {
   const peakNotations = [...state._peakNotations];
   const { xIndex, id } = data;
   peakNotations[id] = peakNotations[id].filter((p) => p.xIndex !== xIndex);
-  Data1DManager.getObject(id).setPeaks(peakNotations[id]);
+  Data1DManager.getDatum1D(id).setPeaks(peakNotations[id]);
 
   return { ...state, _peakNotations: peakNotations };
 };
@@ -213,7 +213,7 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     value: shiftValue,
   };
   const activeSpectrumId = state._activeSpectrum.id;
-  const activeObject = Data1DManager.getObject(activeSpectrumId);
+  const activeObject = Data1DManager.getDatum1D(activeSpectrumId);
 
   //apply filter into the spectrum
   activeObject.addFilter(filterOption);
@@ -280,8 +280,8 @@ const setWidth = (state, _width) => {
   return { ...state, _width };
 };
 
-const setPointerCoordinates = (state, _pointerCorrdinates) => {
-  return { ...state, _pointerCorrdinates };
+const setPointerCoordinates = (state, _pointerCoordinates) => {
+  return { ...state, _pointerCoordinates };
 };
 
 const setSelectedTool = (state, _selectedTool) => {
@@ -301,10 +301,10 @@ const handelSpectrumVisibility = (state, data) => {
   const v_data = newData.map((d, i) => {
     const result = data.findIndex((newd) => newd.id === d.id);
     if (result !== -1) {
-      Data1DManager.getObject(d.id).isVisible = true;
+      Data1DManager.getDatum1D(d.id).isVisible = true;
       return { ...d, isVisible: true };
     } else {
-      Data1DManager.getObject(d.id).isVisible = false;
+      Data1DManager.getDatum1D(d.id).isVisible = false;
       return { ...d, isVisible: false };
     }
     // return result !== undefined
@@ -320,10 +320,10 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
   const result = newData.map((d, i) => {
     const result = data.findIndex((activeData) => activeData.id === d.id);
     if (result !== -1) {
-      Data1DManager.getObject(d.id).isPeaksMarkersVisible = true;
+      Data1DManager.getDatum1D(d.id).isPeaksMarkersVisible = true;
       return { ...d, isPeaksMarkersVisible: true };
     } else {
-      Data1DManager.getObject(d.id).isPeaksMarkersVisible = false;
+      Data1DManager.getDatum1D(d.id).isPeaksMarkersVisible = false;
       return { ...d, isPeaksMarkersVisible: false };
     }
     // return result !== undefined
@@ -337,7 +337,7 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
 const handelChangeActiveSpectrum = (state, activeSpectrum) => {
   const data = [...state._data];
   if (activeSpectrum) {
-    Data1DManager.getObject(activeSpectrum.id).isVisible = true;
+    Data1DManager.getDatum1D(activeSpectrum.id).isVisible = true;
     const index = data.findIndex((d) => d.id === activeSpectrum.id);
     if (index !== -1) {
       data[index].isVisible = true;
@@ -351,7 +351,7 @@ const handelChangeSpectrumColor = (state, { id, color }) => {
   const index = data.findIndex((d) => d.id === id);
   if (index !== -1) {
     data[index].color = color;
-    Data1DManager.getObject(id).color = true;
+    Data1DManager.getDatum1D(id).color = true;
   }
 
   return { ...state, _data: data };
@@ -360,7 +360,7 @@ const handelChangeSpectrumColor = (state, { id, color }) => {
 const changeSpectrumType = (state, isRealSpectrumVisible) => {
   if (state._activeSpectrum !== null) {
     const activeSpectrumId = state._activeSpectrum.id;
-    const ob = Data1DManager.getObject(activeSpectrumId);
+    const ob = Data1DManager.getDatum1D(activeSpectrumId);
 
     if (ob) {
       const v_data = [...state._data];

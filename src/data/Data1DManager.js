@@ -3,7 +3,7 @@ import { convert } from 'jcampconverter';
 import { Datum1D } from './Datum1D';
 
 export class Data1DManager {
-  static dataObjects = [];
+  static data1D = [];
 
   static fromJcamp = function fromJcamp(
     id,
@@ -68,16 +68,16 @@ export class Data1DManager {
   //   return Datum1D.myInstance;
   // }
 
-  static pushObject(object) {
-    Data1DManager.dataObjects.push(object);
+  static pushDatum1D(object) {
+    Data1DManager.data1D.push(object);
   }
 
-  static getObject(id) {
-    return Data1DManager.dataObjects.find((ob) => ob.id === id);
+  static getDatum1D(id) {
+    return Data1DManager.data1D.find((ob) => ob.id === id);
   }
 
   static getXYData() {
-    return Data1DManager.dataObjects.map((ob) => {
+    return Data1DManager.data1D.map((ob) => {
       return {
         id: ob.id,
         x: ob.x,
@@ -92,7 +92,7 @@ export class Data1DManager {
   }
 
   static getOriginalData() {
-    return Data1DManager.dataObjects.map((ob) => {
+    return Data1DManager.data1D.map((ob) => {
       return {
         id: ob.id,
         x: ob.x,
@@ -109,18 +109,18 @@ export class Data1DManager {
 
   static undoFilter(pastChainFilters = []) {
     // let data = { x: this.original.x, y: this.original.re };
-    Data1DManager.dataObjects.forEach((ob) => {
+    Data1DManager.data1D.forEach((ob) => {
       ob.x = ob.original.x;
       ob.re = ob.original.re;
     });
 
     if (pastChainFilters.length !== 0) {
       pastChainFilters.forEach((filter) => {
-        const ob = Data1DManager.getObject(filter.id);
+        const ob = Data1DManager.getDatum1D(filter.id);
         let data = { x: ob.x, y: ob.re };
         data = applyFilter({ kind: filter.kind, value: filter.value }, data);
-        Data1DManager.getObject(filter.id).x = data.x;
-        Data1DManager.getObject(filter.id).re = data.y;
+        Data1DManager.getDatum1D(filter.id).x = data.x;
+        Data1DManager.getDatum1D(filter.id).re = data.y;
       });
 
       // this.x = data.x;
@@ -129,7 +129,7 @@ export class Data1DManager {
   }
 
   static redoFilter(nextFilter) {
-    const ob = Data1DManager.getObject(nextFilter.id);
+    const ob = Data1DManager.getDatum1D(nextFilter.id);
 
     let data = { x: ob.x, y: ob.re };
     data = applyFilter(
