@@ -1,20 +1,12 @@
-import React, { useState, useRef, useEffect ,useCallback} from 'react';
+import React, { useState, useEffect ,useCallback} from 'react';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 // import CropFree from '@material-ui/icons/CropFree';
 import ZoomIn from '@material-ui/icons/ZoomIn';
 import Timeline from '@material-ui/icons/Timeline';
 import Tooltip from '@material-ui/core/Tooltip';
+import ShowChart from '@material-ui/icons/ShowChart';
 
-// const GreenRadio = withStyles({
-//   root: {
-//     color: green[400],
-//     "&$checked": {
-//       color: green[600]
-//     }
-//   },
-//   checked: {
-// })(props => <Radio color="default" {...props} />);
 
 export let options = {
   zoom: { id: 'zoom', label: 'Zoom' },
@@ -85,7 +77,7 @@ const FunctionToolBar = ({ onChangeOption, defaultValue }) => {
 
         <ToggleButton key={3} value={options.integral.id}>
           <Tooltip title={options.integral.label} placement="right-start">
-            <Timeline />
+            <ShowChart  />
           </Tooltip>
         </ToggleButton>
 

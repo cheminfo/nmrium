@@ -16,6 +16,7 @@ import {
   CHANGE_PEAKS_MARKERS_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
   CHNAGE_SPECTRUM_COLOR,
+  ADD_INTEGRAL,
 } from './Actions';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
@@ -78,12 +79,12 @@ const setData = (state, data) => {
             isVisible: d.isVisible,
             isPeaksMarkersVisible: d.isPeaksMarkersVisible,
           },
-          meta:{
-            nucleus:"1H",
-            isFid:true
-          }
-        }
-      )
+          meta: {
+            nucleus: '1H',
+            isFid: true,
+          },
+        },
+      ),
     );
   }
   // let dataumObject =
@@ -207,6 +208,26 @@ const deletePeak = (state, data) => {
   return { ...state, _peakNotations: peakNotations };
 };
 
+const addIntegral = (state, integralData) => {
+  const _data = [...state._data];
+  const integralID = integralData.id;
+  const index = _data.findIndex((d) => d.id === integralID);
+  delete integralData.id;
+
+  if (index !== -1) {
+    if (_data[index].integrals) {
+      _data[index].integrals.push(integralData);
+    } else {
+      _data[index].integrals = [integralData];
+    }
+
+    Data1DManager.getDatum1D(integralID).setIntegrals(
+      _data[index].integrals,
+    )
+  }
+  return { ...state, _data };
+};
+
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   const filterOption = {
     kind: SHIFT_X,
@@ -299,7 +320,7 @@ const zoomOut = (state) => {
 const handelSpectrumVisibility = (state, data) => {
   const newData = [...state._data];
   const v_data = newData.map((d, i) => {
-    const result = data.findIndex((newd) => newd.id === d.id);
+    const result = data.findIndex((sData) => sData.id === d.id);
     if (result !== -1) {
       Data1DManager.getDatum1D(d.id).isVisible = true;
       return { ...d, isVisible: true };
@@ -412,9 +433,8 @@ const handleHistoryUndo = (state) => {
   const newfuture = [present, ...future];
 
   const hasRedo = newfuture.length !== 0;
-  const hasUndo = past.length !== 0 ;
+  const hasUndo = past.length !== 0;
 
-  
   Data1DManager.undoFilter(past);
   let resultData = Data1DManager.getXYData();
 
@@ -439,15 +459,14 @@ const handleHistoryUndo = (state) => {
 
 const handleHistoryRedo = (state) => {
   const { past, present, future } = state.history;
-  const next = future.length===0?null:future[0];
+  const next = future.length === 0 ? null : future[0];
   const newFuture = future.slice(1);
-  const newPast = present !== null && present !==undefined ? [...past, present] : past;
- console.log(newPast);
- console.log(past);
- console.log(present);
- const check = next !== null && next !==undefined ? [...past, present] : past;
+  const newPast =
+    present !== null && present !== undefined ? [...past, present] : past;
 
-  const hasUndo = check !== 0 ;
+  const check = next !== null && next !== undefined ? [...past, present] : past;
+
+  const hasUndo = check !== 0;
   const hasRedo = newFuture.length !== 0;
 
   Data1DManager.redoFilter(next);
@@ -482,7 +501,10 @@ const handleHistorySet = (state, action) => {
   }
 
   return {
-    past: present !== null && present !==undefined  ? [...past, present] : [...past],
+    past:
+      present !== null && present !== undefined
+        ? [...past, present]
+        : [...past],
     present: newValue,
     future: [],
     hasUndo: true,
@@ -514,6 +536,10 @@ export const spectrumReducer = (state, action) => {
       return addPeak(state, action.mouseCoordinates);
     case DELETE_PEAK_NOTATION:
       return deletePeak(state, action.data);
+
+    case ADD_INTEGRAL:
+      return addIntegral(state, action.integral);
+
     case SET_ORIGINAL_DOMAIN:
       return setOriginalDomain(state, action.domain);
 

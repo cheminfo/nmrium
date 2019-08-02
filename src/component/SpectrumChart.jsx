@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useReducer,
   useState,
+  Fragment,
 } from 'react';
 import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
@@ -14,6 +15,7 @@ import YAxis from './YAxis';
 import XAxis from './XAxis';
 import BrushTool from './tool/BrushTool';
 import LinesSeries from './LinesSeries';
+import IntegralsSeries from './IntegralsSeries';
 // import CrossLinePointer from './tool/CrossLinePointer';
 import * as d3 from 'd3';
 import PeakNotationTool from './tool/PeakNotationTool';
@@ -45,7 +47,8 @@ import {
   CHANGE_PEAKS_MARKERS_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
   CHNAGE_SPECTRUM_COLOR,
-  DELETE_PEAK_NOTATION
+  DELETE_PEAK_NOTATION,
+  ADD_INTEGRAL,
 } from './reducer/Actions';
 
 import { UNDO, REDO, RESET } from './reducer/HistoryActions';
@@ -59,7 +62,7 @@ import IntegralTool from './tool/IntegralTool';
 //   },
 // }));
 
-const SpectrumChart = ({ margin, width, height, data,mode }) => {
+const SpectrumChart = ({ margin, width, height, data, mode }) => {
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
   const [message, openMessage] = useState({
     isOpen: false,
@@ -127,7 +130,8 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
     _height: height,
     _margin: margin,
     _activeSpectrum: null,
-     mode,
+    _integrals: [],
+    mode,
     openMessage: handelOpenMessage,
   };
 
@@ -142,7 +146,7 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
 
   const [state, dispatch] = useReducer(spectrumReducer, {
     ...initialState,
-    history:_history,
+    history: _history,
   });
 
   const {
@@ -155,7 +159,8 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
     _width,
     _activeSpectrum,
     _yDomains,
-    history
+    history,
+    _integrals,
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -243,7 +248,10 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
     // console.log(_xDomain);
     // console.log(_yDomain);
 
-    const range = (mode === "RTL")?[_width - margin.right, margin.left]:[margin.left,_width - margin.right];
+    const range =
+      mode === 'RTL'
+        ? [_width - margin.right, margin.left]
+        : [margin.left, _width - margin.right];
 
     const x = d3.scaleLinear(_xDomain, range);
     // console.log(spectrumId);
@@ -271,10 +279,9 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
     dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue });
   };
 
-
-  const handleDeleteNotation=(data)=>{
+  const handleDeleteNotation = (data) => {
     dispatch({ type: DELETE_PEAK_NOTATION, data });
-  }
+  };
 
   const mouseClick = (e) => {
     //activat selected peak tool
@@ -284,6 +291,15 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
         mouseCoordinates,
       });
     }
+  };
+
+  const handleAddIntegral = (integral) => {
+    dispatch({
+      type: ADD_INTEGRAL,
+      integral,
+    });
+
+    console.log(_integrals);
   };
 
   const handleRedo = (e) => {
@@ -308,9 +324,9 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
     dispatch({ type: CHANGE_VISIBILITY, data });
   };
 
-  const handleChangeMarkersVisibility = (data)=>{      
-     dispatch({ type: CHANGE_PEAKS_MARKERS_VISIBILITY, data });
-  }
+  const handleChangeMarkersVisibility = (data) => {
+    dispatch({ type: CHANGE_PEAKS_MARKERS_VISIBILITY, data });
+  };
 
   const handleChangeActiveSpectrum = (data) => {
     dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data });
@@ -333,16 +349,12 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
   }
 
   const handleChangeVerticalAlignments = () => {
-
-    
     if (verticalAlign !== 0) {
       setVerticalAlign(0);
     } else {
-
       setVerticalAlign(Math.floor(-height / 10));
 
       console.log(verticalAlign);
-
     }
   };
 
@@ -359,7 +371,7 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
         activeSpectrum: _activeSpectrum,
         openMessage: handelOpenMessage,
         verticalAlign: verticalAlign,
-        mode
+        mode,
       }}
     >
       <div
@@ -453,16 +465,20 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
             >
               {_xDomain && _yDomain && (
                 // _data.map((d, i) => (
-                <LinesSeries
-                  // margin={margin}
-                  // width={width - toolbarWidth}
-                  // height={height}
-                  // key={d.id}
-                  data={_data}
-                  // xDomain={_xDomain}
-                  // yDomain={_yDomain}
-                  // getScale={getScale}
-                />
+                <Fragment>
+                  <LinesSeries
+                    // margin={margin}
+                    // width={width - toolbarWidth}
+                    // height={height}
+                    // key={d.id}
+                    data={_data}
+                    // xDomain={_xDomain}
+                    // yDomain={_yDomain}
+                    // getScale={getScale}
+                  />
+
+                  <IntegralsSeries data={_data} integrals={_integrals} />
+                </Fragment>
               )
               // ))
               }
@@ -489,7 +505,7 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
                   />
                 )}
 
-              {_selectedTool === options.integral.id && (
+                {_selectedTool === options.integral.id && (
                   <IntegralTool
                     margin={margin}
                     width={_width}
@@ -501,22 +517,22 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
                     position={mouseCoordinates}
                     activeSpectrum={_activeSpectrum}
                     mode={mode}
+                    onIntegralDrawFinished={handleAddIntegral}
                   />
                 )}
-     
-     
 
-              {(_selectedTool === options.peakPicking.id || _peakNotations) && (
-                <PeakNotationTool
-                  // data={_data}
-                  notationData={_peakNotations}
-                  onPeakValueChange={handleOnPeakChange}
-                  position={mouseCoordinates}
-                  showCursorLabel={_selectedTool === options.peakPicking.id}
-                  onDeleteNotation={handleDeleteNotation}
-                />
-              )}
-                       </g>
+                {(_selectedTool === options.peakPicking.id ||
+                  _peakNotations) && (
+                  <PeakNotationTool
+                    // data={_data}
+                    notationData={_peakNotations}
+                    onPeakValueChange={handleOnPeakChange}
+                    position={mouseCoordinates}
+                    showCursorLabel={_selectedTool === options.peakPicking.id}
+                    onDeleteNotation={handleDeleteNotation}
+                  />
+                )}
+              </g>
             </svg>
           </Grid>
 
@@ -563,7 +579,7 @@ SpectrumChart.propTypes = {
     bottom: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
   }),
-  mode:PropTypes.oneOf(["RTL","LTR"])
+  mode: PropTypes.oneOf(['RTL', 'LTR']),
 };
 
 SpectrumChart.defaultProps = {
@@ -571,7 +587,7 @@ SpectrumChart.defaultProps = {
   height: 800,
   data: [],
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
-  mode:"RTL"
+  mode: 'RTL',
 };
 
 export default SpectrumChart;

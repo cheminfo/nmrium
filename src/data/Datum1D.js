@@ -43,6 +43,15 @@ export class Datum1D {
     return this.peaks;
   }
 
+  setIntegrals(integrals){
+    this.integrals = integrals;
+  }
+
+  getIntegrals(){
+    return this.integrals;
+  }
+  
+
   baseline(options) {
     let result = baseline(this.x, this.re, this.im);
   }
