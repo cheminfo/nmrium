@@ -18,7 +18,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 export let options = {
   zoom: { id: 'zoom', label: 'Zoom' },
-  peakTool: { id: 'peakPicking', label: 'Peak Tool' },
+  peakPicking: { id: 'peakPicking', label: 'Peak Tool' },
+  integral: { id: 'integral', label: 'integral Tool' },
+
 };
 
 const FunctionToolBar = ({ onChangeOption, defaultValue }) => {
@@ -36,8 +38,11 @@ const FunctionToolBar = ({ onChangeOption, defaultValue }) => {
       setOption(options.zoom.id);
       onChangeOption(options.zoom.id);
     } else if (e.key === 'p') {
-      setOption(options.peakTool.id);
-      onChangeOption(options.peakTool.id);
+      setOption(options.peakPicking.id);
+      onChangeOption(options.peakPicking.id);
+    }else if (e.key === 'i') {
+      setOption(options.integral.id);
+      onChangeOption(options.integral.id);
     }
   });
 
@@ -70,16 +75,20 @@ const FunctionToolBar = ({ onChangeOption, defaultValue }) => {
             <ZoomIn />
           </Tooltip>
         </ToggleButton>
-        {/* <ToggleButton key={2} value={options.brush.id}>
-          <Tooltip title={options.brush.label} placement="right-start">
-            <CropFree />
-          </Tooltip>
-        </ToggleButton> */}
-        <ToggleButton key={3} value={options.peakTool.id}>
-          <Tooltip title={options.peakTool.label} placement="right-start">
+
+        <ToggleButton key={2} value={options.peakPicking.id}>
+          <Tooltip title={options.peakPicking.label} placement="right-start">
             <Timeline />
           </Tooltip>
         </ToggleButton>
+
+
+        <ToggleButton key={3} value={options.integral.id}>
+          <Tooltip title={options.integral.label} placement="right-start">
+            <Timeline />
+          </Tooltip>
+        </ToggleButton>
+
       </ToggleButtonGroup>
     </div>
   );

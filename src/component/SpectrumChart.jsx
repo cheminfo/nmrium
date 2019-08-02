@@ -51,6 +51,7 @@ import {
 import { UNDO, REDO, RESET } from './reducer/HistoryActions';
 import BasicToolBar from './toolbar/BasicToolBar';
 import HistoryToolBar from './toolbar/HistoryToolBar';
+import IntegralTool from './tool/IntegralTool';
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -277,7 +278,7 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
 
   const mouseClick = (e) => {
     //activat selected peak tool
-    if (_selectedTool === options.peakTool.id) {
+    if (_selectedTool === options.peakPicking.id) {
       dispatch({
         type: PEAK_PICKING,
         mouseCoordinates,
@@ -487,28 +488,35 @@ const SpectrumChart = ({ margin, width, height, data,mode }) => {
                     mode={mode}
                   />
                 )}
-                {/* <ZoomTool
-                  onXAxisDomainUpdate={handleXDomainUpdate}
-                  margin={margin}
-                  width={width - toolbarWidth}
-                  height={height}
-                  data={data}
-                  domain={{ x: _xDomain, y: _yDomain }}
-                  isActive={_toolOption.brush}
-                  getScale={getScale}
-                /> */}
-              </g>
 
-              {(_selectedTool === options.peakTool.id || _peakNotations) && (
+              {_selectedTool === options.integral.id && (
+                  <IntegralTool
+                    margin={margin}
+                    width={_width}
+                    height={height}
+                    data={_data}
+                    domain={{ x: _xDomain, y: _yDomain }}
+                    isActive={true}
+                    getScale={getScale}
+                    position={mouseCoordinates}
+                    activeSpectrum={_activeSpectrum}
+                    mode={mode}
+                  />
+                )}
+     
+     
+
+              {(_selectedTool === options.peakPicking.id || _peakNotations) && (
                 <PeakNotationTool
                   // data={_data}
                   notationData={_peakNotations}
                   onPeakValueChange={handleOnPeakChange}
                   position={mouseCoordinates}
-                  showCursorLabel={_selectedTool === options.peakTool.id}
+                  showCursorLabel={_selectedTool === options.peakPicking.id}
                   onDeleteNotation={handleDeleteNotation}
                 />
               )}
+                       </g>
             </svg>
           </Grid>
 
