@@ -20,30 +20,11 @@ const LinesSeries = ({ data }) => {
 
   function makePath(data) {
     const { id, x, y } = data;
-
-    // const scale = getScale(xDomain, yDomain);
-    //  console.log(xDomain);
-    // if(id !== null && id !== undefined ){
-
-    // if(activeSpectrum !== null && id === activeSpectru m.id){
-
     const scale = getScale(id);
-
-    // const pathPoints = xyReduce(data.x, data.y, {
-    //   from: xDomain[0],
-    //   to: xDomain[1],
-    // });
-
-    // console.log(data);
-
-    // console.log(data);
-
     const pathPoints = XY.reduce(x, y, {
       from: xDomain[0],
       to: xDomain[1],
     });
-
-    // console.log(pathPoints);
 
     let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
 
@@ -53,9 +34,6 @@ const LinesSeries = ({ data }) => {
         return ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
       })
       .join('');
-    // console.log(path);
-
-    // setPaths(path);
 
     return path;
     // }

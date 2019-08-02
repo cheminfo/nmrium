@@ -1,0 +1,10 @@
+.integral-container .handle {
+    fill: #ff0000;
+    width: 1px;
+}
+
+.integral-container .selection{
+    stroke: none;
+    fill: #a2a2a2;
+    fill-opacity: 0.1;
+}
