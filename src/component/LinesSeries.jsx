@@ -1,6 +1,6 @@
 import React, { useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { xyReduce } from 'ml-spectra-processing';
+import { XY } from 'ml-spectra-processing';
 import { ChartContext } from './context/ChartContext';
 // { width, height, margin, data, xDomain, yDomain, getScale }
 const LinesSeries = ({ data }) => {
@@ -38,7 +38,7 @@ const LinesSeries = ({ data }) => {
 
     // console.log(data);
 
-    const pathPoints = xyReduce(x, y, {
+    const pathPoints = XY.reduce(x, y, {
       from: xDomain[0],
       to: xDomain[1],
     });
