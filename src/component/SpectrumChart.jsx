@@ -23,7 +23,7 @@ import Grid from '@material-ui/core/Grid';
 import { ChartContext } from './context/ChartContext';
 import { useDropzone } from 'react-dropzone';
 import PublishRounded from '@material-ui/icons/PublishRounded';
-import { spectrumReducer } from './reducer/Reducer.x';
+import { spectrumReducer } from './reducer/Reducer';
 // import Button from '@material-ui/core/Button';
 // import Tooltip from '@material-ui/core/Tooltip';
 // import { FaUndo, FaRedo, FaSearchMinus, FaMinus, FaBars } from 'react-icons/fa';
