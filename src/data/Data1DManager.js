@@ -38,24 +38,20 @@ export class Data1DManager {
         : [];
 
     // 2 cases. We have real and imaginary part of only real
-    let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, y });
+    let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
 
-    const ob = new Datum1D(
-      id,
-      data,
-      {
-        display: {
-          name: name,
-          color: color,
-          isVisible: isVisible,
-          isPeaksMarkersVisible: isPeaksMarkersVisible,
-        },
-        meta: {
-          nucleus: '1H',
-          isFid: true,
-        },
+    const ob = new Datum1D(id, data, {
+      display: {
+        name: name,
+        color: color,
+        isVisible: isVisible,
+        isPeaksMarkersVisible: isPeaksMarkersVisible,
       },
-    );
+      meta: {
+        nucleus: '1H',
+        isFid: true,
+      },
+    });
 
     return ob;
   };
