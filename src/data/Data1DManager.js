@@ -1,7 +1,7 @@
 import applyFilter from './filter1d/filter';
 import { convert } from 'jcampconverter';
 import { Datum1D } from './Datum1D';
-
+import { XY, XReIm } from 'ml-spectra-processing';
 export class Data1DManager {
   static data1D = [];
 
@@ -37,9 +37,12 @@ export class Data1DManager {
         ? result.spectra[1].data[0].y
         : [];
 
+    // 2 cases. We have real and imaginary part of only real
+    let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, y });
+
     const ob = new Datum1D(
       id,
-      { x: x, re: re, im: im },
+      data,
       {
         display: {
           name: name,
@@ -86,7 +89,7 @@ export class Data1DManager {
         color: ob.color,
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-        nucleus:ob.nucleus
+        nucleus: ob.nucleus,
       };
     });
   }
@@ -101,8 +104,7 @@ export class Data1DManager {
         color: ob.color,
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-        nucleus:ob.nucleus
-
+        nucleus: ob.nucleus,
       };
     });
   }
