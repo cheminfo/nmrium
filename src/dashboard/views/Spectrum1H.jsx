@@ -72,10 +72,11 @@ const Spectrum1H =()=> {
   const [data, setData] = useState([]);
   useEffect(() => {
     loadData().then((d) => {
-      
-      const _data = [...d];
-      _data[0].x = _data[0].x.reverse();
-      setData(_data);
+      setData(d);
+
+      // const _data = [...d];
+      // _data[0].x = _data[0].x.reverse();
+      // setData(_data);
     });
   }, []);
 
