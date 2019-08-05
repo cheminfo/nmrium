@@ -48,9 +48,9 @@
     "build-storybook": "build-storybook -c .storybook",
     "deploy-storybook": "storybook-to-ghpages",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
-    "compile-sass": "node-sass src/assets/scss/now-ui-dashboard.scss src/assets/css/now-ui-dashboard.css",
-    "minify-sass": "node-sass src/assets/scss/now-ui-dashboard.scss src/assets/css/now-ui-dashboard.min.css --output-style compressed",
-    "map-sass": "node-sass src/assets/scss/now-ui-dashboard.scss src/assets/css/now-ui-dashboard.css --source-map true"
+    "compile-sass": "node-sass src/dashboard/assets/scss/now-ui-dashboard.scss src/dashboard/assets/css/now-ui-dashboard.css",
+    "minify-sass": "node-sass src/dashboard/assets/scss/now-ui-dashboard.scss src/dashboard/assets/css/now-ui-dashboard.min.css --output-style compressed",
+    "map-sass": "node-sass src/dashboard/assets/scss/now-ui-dashboard.scss src/dashboard/assets/css/now-ui-dashboard.css --source-map true"
   },
   "eslintConfig": {
     "extends": "react-app"
