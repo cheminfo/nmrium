@@ -94,9 +94,11 @@ class BrushTool extends Component {
         .on('dblclick.zoom', null);
       this.brush.on('end', this.brushEnd);
       this.zoom.on('zoom', this.zoomed);
+
     } else {
       this.brush.on('end', null);
       this.zoom.on('zoom', null);
+
     }
   }
 

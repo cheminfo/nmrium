@@ -7,11 +7,12 @@ import ChartWindow from './component/ChartWindow';
 import json from './samples/test.json';
 import json2 from './samples/test2.json';
 import json1 from './samples/test1.json';
+import { Grid, Button } from '@material-ui/core';
 
 function App() {
   //  console.log(json);
 
-  const width = 800;
+  const width = 600;
   const height = 300;
   const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
@@ -25,55 +26,49 @@ function App() {
     is2D: false, // TODO: need to define where to put the spectrum if it is 1D
     color: 'green',
     isVisible: true,
-    isPeakMarkerVisible:true,
+    isPeakMarkerVisible: true,
   };
 
   const data = [
     // array of spectra. They will share the same axis
     // each series is a React component in the SVG dom
     // if a series has to be rerender a new object in the array is created
-    {
-      id: '2',
-      isHover: false,
-      x: { ...json }.x.reverse(),
-      y: { ...json }.y,
-      name: 'spectrum 101',
-      isFid: true, // allows to determine the label of the axis
-      color: 'red',
-      isVisible: true,
-      isPeaksMarkersVisible:true,
-      nucleus:"1H"
-
-
-      
-    },
-    {
-      id: '3',
-      isHover: false,
-      x: { ...json }.x.reverse(),
-      y: { ...json }.y,
-      name: 'spectrum 102',
-      isFid: true, // allows to determine the label of the axis
-      color: 'blue',
-      isVisible: true,
-      isPeaksMarkersVisible:true,
-      nucleus:"1H"
-
-    },
-    {
-      id: '4',
-      isHover: false,
-      x: { ...json }.x.reverse(),
-      y: { ...json }.y,
-      name: 'spectrum 103',
-      isFid: true, // allows to determine the label of the axis
-      color: 'green',
-      isVisible: true,
-      isPeaksMarkersVisible:true,
-      nucleus:"13C"
-
-
-    },
+    // {
+    //   id: '2',
+    //   isHover: false,
+    //   x: { ...json }.x.reverse(),
+    //   y: { ...json }.y,
+    //   name: 'spectrum 101',
+    //   isFid: true, // allows to determine the label of the axis
+    //   color: 'red',
+    //   isVisible: true,
+    //   isPeaksMarkersVisible: true,
+    //   nucleus: '1H',
+    // },
+    // {
+    //   id: '3',
+    //   isHover: false,
+    //   x: { ...json }.x.reverse(),
+    //   y: { ...json }.y,
+    //   name: 'spectrum 102',
+    //   isFid: true, // allows to determine the label of the axis
+    //   color: 'blue',
+    //   isVisible: true,
+    //   isPeaksMarkersVisible: true,
+    //   nucleus: '1H',
+    // },
+    // {
+    //   id: '4',
+    //   isHover: false,
+    //   x: { ...json }.x.reverse(),
+    //   y: { ...json }.y,
+    //   name: 'spectrum 103',
+    //   isFid: true, // allows to determine the label of the axis
+    //   color: 'green',
+    //   isVisible: true,
+    //   isPeaksMarkersVisible: true,
+    //   nucleus: '13C',
+    // },
 
     // {
     //   id: '3',
@@ -111,6 +106,15 @@ function App() {
     //   setData(_data);
 
     <div className="App">
+
+          <SpectrumChart
+            width={width}
+            height={height}
+            data={data}
+            margin={margin}
+            mode="RTL"
+          />
+      
       {/* 
 <Window
         color='#cc7f29'
@@ -130,13 +134,6 @@ function App() {
       </ChartWindow>
        */}
 
-      <SpectrumChart
-        width={width}
-        height={height}
-        data={data}
-        margin={margin}
-        mode="RTL"
-      />
       {/* <SpectrumChart
           width={width}
           height={height}

@@ -74,6 +74,12 @@ body {
   fill: #4e4e4e;
 }
 
+/* .MuiGrid-grid-lg-1,.MuiGrid-grid-xl-1{
+  max-width: 3.333333% !important;
+  flex-basis: 8.333333%!important;
+
+} */
+
 .MuiGrid-grid-xs-1 {
   /* max-width: 40px !important; */
 }

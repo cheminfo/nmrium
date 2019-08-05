@@ -36,7 +36,6 @@ export class Data1DManager {
       result.spectra[1].data[0].y
         ? result.spectra[1].data[0].y
         : [];
-
     const ob = new Datum1D(
       id,
       { x: x, re: re, im: im },

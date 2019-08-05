@@ -73,10 +73,6 @@ export class Datum1D {
     return { x: this.x, y: this.im };
   }
 
-  setPeaks(peaks) {
-    this.peaks = peaks;
-  }
-
   addIntegral(from, to) {}
 
   /**
@@ -89,9 +85,7 @@ export class Datum1D {
 
   autoPeakPicking() {}
 
-  getPeaks() {
-    return this.peaks;
-  }
+ 
 
   addFilter(filter) {
     this.filters.push(filter);
