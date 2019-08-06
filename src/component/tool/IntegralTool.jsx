@@ -6,7 +6,6 @@ import '../css/integral-tool.css';
 import { XY } from 'ml-spectra-processing';
 
 class IntegralTool extends Component {
- 
   constructor(props) {
     super(props);
     const { width, height, margin } = this.props;
@@ -35,17 +34,21 @@ class IntegralTool extends Component {
           ? [scale.invert(x2), scale.invert(x1)]
           : [scale.invert(x1), scale.invert(x2)];
 
-
       const _data = data.find((d) => d.id === activeSpectrum.id);
 
       const integralResult = XY.integral(_data, {
         from: range[0],
         to: range[1],
+        reverse: true,
       });
 
-
       d3.select(this.refs.brush).call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
-      this.props.onIntegralDrawFinished({ id: activeSpectrum.id,from:range[0],to:range[1], ...integralResult});
+      this.props.onIntegralDrawFinished({
+        id: activeSpectrum.id,
+        from: range[0],
+        to: range[1],
+        ...integralResult,
+      });
     }
   };
 
@@ -63,7 +66,6 @@ class IntegralTool extends Component {
     d3.select(this.refs.brush).call(this.brush);
     this.brush.on('end', this.brushEnd);
   }
-
 
   componentDidUpdate(prevProps, prevState) {}
 
