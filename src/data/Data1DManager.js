@@ -41,6 +41,7 @@ export class Data1DManager {
     // 2 cases. We have real and imaginary part of only real
     let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
     let meta = getMetaData(result.info);
+    if (Array.isArray(meta.nucleus)) meta.nucleus = meta.nucleus[0];
 
     const ob = new Datum1D(id, data, {
       display: {
