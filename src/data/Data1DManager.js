@@ -2,7 +2,7 @@ import applyFilter from './filter1d/filter';
 import { convert } from 'jcampconverter';
 import { Datum1D } from './Datum1D';
 import { XY, XReIm } from 'ml-spectra-processing';
-import getMetaData from './metadata/getMetaData';
+import { getMetaData } from './metadata/getMetaData';
 export class Data1DManager {
   static data1D = [];
 
