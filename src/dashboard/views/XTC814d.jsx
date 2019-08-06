@@ -15,27 +15,25 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // reactstrap components
 import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
 
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
-import SpectrumChart from '../../component/SpectrumChart.jsx';
-import json from '../../samples/test.json';
 import { Data1DManager } from '../../data/Data1DManager.js';
-
-
+import SpectrumChart from '../../component/SpectrumChart.jsx';
 const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
-function loadData() {
+function loadData(filePath) {
   return new Promise((resolve, reject) => {
-    fetch('/1H_Cytisin_600MHz-R+I.dx')
+    fetch('/XTC-814d_zg30.jdx')
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
+        // console.log(buffer);
         let datumObject = Data1DManager.fromJcamp(
           '12154545113318888',
           buffer,
@@ -65,9 +63,7 @@ function checkStatus(response) {
   return response;
 }
 
-
-const Spectrum1H =(props)=> {
-
+const XTC814d = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
     loadData().then((d) => {
@@ -75,36 +71,32 @@ const Spectrum1H =(props)=> {
     });
   }, []);
 
+  return (
+    <>
+      <PanelHeader size="sm" />
+      <div className="content">
+        <Row>
+          <Col md={12}>
+            <Card>
+              <CardHeader>
+                <h5 className="title">NMR Displayer</h5>
+                <p className="category">XTC 814d</p>
+              </CardHeader>
+              <CardBody>
+                <SpectrumChart
+                  width={width}
+                  height={height}
+                  data={data}
+                  margin={margin}
+                  mode="RTL"
+                />
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </>
+  );
+};
 
-      return (
-      <>
-        <PanelHeader size="sm" />
-        <div className="content">
-          <Row>
-            <Col md={12}>
-              <Card>
-                <CardHeader>
-                  <h5 className="title">NMR Displayer</h5>
-                  <p className="category">
-                    1H spectrum test
-                  </p>
-                </CardHeader>
-                <CardBody>
-                  <SpectrumChart
-                    width={width}
-                    height={height}
-                    data={data}
-                    margin={margin}
-                    mode="RTL"
-                  />
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </div>
-      </>
-    );
-  
-}
-
-export default Spectrum1H;
+export default XTC814d;

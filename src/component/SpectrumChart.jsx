@@ -393,7 +393,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
 
         {/* className={isDragActive?'drop-zoon-blur':''} */}
         <Grid container spacing={0}>
-          <Grid item xs={1}>
+          <Grid item xs={1} className="toolbar-container">
             <FunctionToolBar
               onChangeOption={handleChangeOption}
               defaultValue={options.zoom.id}

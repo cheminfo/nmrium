@@ -152,3 +152,12 @@ body {
 .MuiToggleButton-sizeSmall {
   height: 30px !important;
 }
+
+
+.toolbar-container{
+   
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+
+}
