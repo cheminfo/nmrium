@@ -85,9 +85,11 @@ class Sidebar extends React.Component {
                     to={prop.layout + prop.path}
                     className="nav-link"
                     activeClassName="active"
+                    style={{borderRadius:"10px"}}
+
                   >
                     <i className={"now-ui-icons " + prop.icon} />
-                    <p>{prop.name}</p>
+                    <p style={{whiteSpace:"pre-line",paddingLeft:"60px"}}>{prop.name}</p>
                   </NavLink>
                 </li>
               );

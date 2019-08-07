@@ -20,6 +20,7 @@
 import Spectrum13C from './dashboard/views/Fid13C';
 import Spectrum1H from './dashboard/views/Spectrum1H';
 import XTC814d from './dashboard/views/XTC814d';
+import CoupledDecoupled13C from './dashboard/views/CoupledDecoupled13C';
 
 var dashRoutes = [
   {
@@ -41,6 +42,13 @@ var dashRoutes = [
     name: 'XTC',
     icon: 'design-2_ruler-pencil',
     component: XTC814d,
+    layout: '/admin',
+  },
+  {
+    path: '/CoupledDecoupled13C',
+    name: '13C coupled / decoupled spectra',
+    icon: 'design-2_ruler-pencil',
+    component: CoupledDecoupled13C,
     layout: '/admin',
   },
 ];

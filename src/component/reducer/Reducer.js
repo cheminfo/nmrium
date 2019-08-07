@@ -84,8 +84,8 @@ const setData = (state, data) => {
             isPeaksMarkersVisible: d.isPeaksMarkersVisible,
           },
           meta: {
-            nucleus: '1H',
-            isFid: true,
+            nucleus: d.nucleus,
+            isFid: d.isFid,
           },
         },
       ),
