@@ -446,6 +446,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
               onFullZoomOut={handleFullZoomOut}
               onViewChanged={handleChangeVerticalAlignments}
               viewAlignValue={verticalAlign}
+              data={_data}
             />
 
             <ViewButton

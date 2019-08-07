@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useCallback } from 'react';
+import React, { Fragment, useEffect, useCallback, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { FaSearchMinus, FaMinus, FaBars } from 'react-icons/fa';
@@ -8,13 +8,18 @@ const BasicToolBar = ({
   onFullZoomOut,
   onViewChanged,
   isFullZoomButtonVisible = true,
+  isFullZoomButtonEnabled = true,
   isViewButtonVisible = true,
+  isViewButtonEnabled = true,
+  data,
 }) => {
+  const [_isViewButtonEnabled, setViewButtonEnabled] = useState(
+    isViewButtonEnabled,
+  );
   const handleOnKeyPressed = useCallback((e) => {
     if (e.key === 'f') {
       onFullZoomOut();
-    }
-    else if (e.key === 'v') {
+    } else if (e.key === 'v') {
       onViewChanged();
     }
   });
@@ -22,6 +27,16 @@ const BasicToolBar = ({
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
   }, []);
+
+  useEffect(() => {
+    if (data && data.length <= 1) {
+      setViewButtonEnabled(true);
+    } else {
+      setViewButtonEnabled(false);
+    }
+
+    console.log(`ist enabled ${_isViewButtonEnabled}`);
+  }, [data]);
 
   useEffect(() => {
     return () => {
@@ -33,7 +48,11 @@ const BasicToolBar = ({
     <Fragment>
       {isFullZoomButtonVisible && (
         <Tooltip title="Full Zoom Out" placement="right-start">
-          <Button className="general-fun-bt" onClick={onFullZoomOut}>
+          <Button
+            className="general-fun-bt"
+            onClick={onFullZoomOut}
+            disabled={isFullZoomButtonEnabled}
+          >
             <FaSearchMinus />
           </Button>
         </Tooltip>
@@ -41,9 +60,15 @@ const BasicToolBar = ({
 
       {isViewButtonVisible && (
         <Tooltip title="Spectrums  alignment " placement="right-start">
-          <Button className="general-fun-bt" onClick={onViewChanged}>
-            {viewAlignValue !== 0 ? <FaMinus /> : <FaBars />}
-          </Button>
+          <div>
+            <Button
+              className="general-fun-bt"
+              onClick={onViewChanged}
+              disabled={_isViewButtonEnabled}
+            >
+              {viewAlignValue !== 0 ? <FaMinus /> : <FaBars />}
+            </Button>
+          </div>
         </Tooltip>
       )}
     </Fragment>
