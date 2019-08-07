@@ -31,12 +31,14 @@ const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
+  const Data1DManagerObj = new Data1DManager();
+
   return new Promise((resolve, reject) => {
     fetch('/13C_Cytisin_600.dx')
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
         // console.log(buffer);
-        let datumObject = Data1DManager.fromJcamp(
+        let datumObject = Data1DManagerObj.fromJcamp(
           '12154545113318888',
           buffer,
           'test',
@@ -44,10 +46,9 @@ function loadData() {
           true,
           true,
         );
-        Data1DManager.data1D = [];
-        Data1DManager.pushDatum1D(datumObject);
+        Data1DManagerObj.pushDatum1D(datumObject);
 
-        const xyData = Data1DManager.getXYData();
+        const xyData = Data1DManagerObj.getXYData();
         // console.log(xyData);
         resolve(xyData);
       })

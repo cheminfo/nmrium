@@ -32,23 +32,26 @@ const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
+  const Data1DManagerObj = new Data1DManager();
+
   return new Promise((resolve, reject) => {
     fetch('/1H_Cytisin_600MHz-R+I.dx')
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
-        let datumObject = Data1DManager.fromJcamp(
-          '12154545113318888',
+        let datumObject = Data1DManagerObj.fromJcamp(
+          '123',
           buffer,
           'test',
           'red',
           true,
           true,
         );
-        Data1DManager.data1D = [];
-        Data1DManager.pushDatum1D(datumObject);
+        console.log(datumObject);
 
-        const xyData = Data1DManager.getXYData();
-        // console.log(xyData);
+        Data1DManagerObj.pushDatum1D(datumObject);
+
+        const xyData = Data1DManagerObj.getXYData();
+        console.log(xyData);
         resolve(xyData);
       })
       .catch((err) => {

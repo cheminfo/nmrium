@@ -38,7 +38,7 @@ var dashRoutes = [
   },
   {
     path: '/XTC814d',
-    name: 'XTC 814d',
+    name: 'XTC',
     icon: 'design-2_ruler-pencil',
     component: XTC814d,
     layout: '/admin',

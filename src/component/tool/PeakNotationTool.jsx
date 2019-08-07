@@ -244,7 +244,7 @@ const PeakNotationTool = ({
     <Fragment>
       <g key="peakNotification">
         {data &&
-          reSortData().map((d, i) => {
+          reSortData().filter((d)=>d.isVisible === true).map((d, i) => {
             return (
               <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
                 {notationData &&

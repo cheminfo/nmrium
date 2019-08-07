@@ -19,6 +19,9 @@ import React, { useEffect, useState } from 'react';
 
 // reactstrap components
 import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
+import getKey from '../../component/utility/KeyGenerator';
+import getColor from '../../component/utility/ColorGenerator';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
@@ -27,33 +30,48 @@ import SpectrumChart from '../../component/SpectrumChart.jsx';
 const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
+const jcampFiles = [
+  'XTC-814d_zg30',
+  'XTC-888_zg30',
+  'XTC-966_zg30',
+  'XTC-1111a_zg30',
+  'XTC-1132a_zg30',
+  'XTC-1153_zg30',
+  'XTC-1541_zg30',
+  'XTC-1675_zg30',
+  'XTC-1693_zg30',
+  'XTC-1731a_zg30',
+  'XTC-z189_zg30',
+];
+async function loadData() {
+  const Data1DManagerObj = new Data1DManager();
 
-function loadData(filePath) {
-  return new Promise((resolve, reject) => {
-    fetch('/XTC-814d_zg30.jdx')
-      .then((response) => checkStatus(response) && response.text())
-      .then((buffer) => {
-        // console.log(buffer);
-        let datumObject = Data1DManager.fromJcamp(
-          '12154545113318888',
-          buffer,
-          'test',
-          'red',
-          true,
-          true,
-        );
-        Data1DManager.data1D = [];
-        Data1DManager.pushDatum1D(datumObject);
+  try {
+    for (let i = 0; i < jcampFiles.length; i++) {
+      const key = getKey();
+      const usedColors = Data1DManagerObj.getXYData().map((d) => d.color);
+      const color = getColor(usedColors);
+      const result = await fetch(`/${jcampFiles[i]}.jdx`).then(
+        (response) => checkStatus(response) && response.text(),
+      );
 
-        const xyData = Data1DManager.getXYData();
-        // console.log(xyData);
-        resolve(xyData);
-      })
-      .catch((err) => {
-        reject(err);
-        console.error(err);
-      }); // Never forget the final catch!
-  });
+      // console.log(buffer);
+      let datumObject = Data1DManagerObj.fromJcamp(
+        `${key}`,
+        result,
+        `XTC ${i + 1}`,
+        color,
+        true,
+        true,
+      );
+      Data1DManagerObj.pushDatum1D(datumObject);
+    }
+  } catch (e) {}
+  const xyData = Data1DManagerObj.getXYData();
+  console.log(xyData);
+  return xyData;
+
+  // Never forget the final catch!
 }
 
 function checkStatus(response) {
@@ -65,9 +83,14 @@ function checkStatus(response) {
 
 const XTC814d = () => {
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
+    setIsLoading(true);
     loadData().then((d) => {
       setData(d);
+      setIsLoading(false);
+
     });
   }, []);
 
@@ -80,9 +103,17 @@ const XTC814d = () => {
             <Card>
               <CardHeader>
                 <h5 className="title">NMR Displayer</h5>
-                <p className="category">XTC 814d</p>
+                <p className="category">XTC </p>
               </CardHeader>
               <CardBody>
+                <ClipLoader
+                  css={{position:"absolute",left:((width)/2.5),top:((height+150)/2)}}
+                  sizeUnit={'px'}
+                  size={30}
+                  color={'#2ca8ff'}
+                  loading={isLoading}
+                />
+
                 <SpectrumChart
                   width={width}
                   height={height}

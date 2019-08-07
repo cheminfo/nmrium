@@ -352,7 +352,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     if (verticalAlign !== 0) {
       setVerticalAlign(0);
     } else {
-      setVerticalAlign(Math.floor(-height / 10));
+      setVerticalAlign(Math.floor(-height /( _data.length +2)));
 
       console.log(verticalAlign);
     }

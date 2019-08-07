@@ -4,9 +4,22 @@ import { Datum1D } from './Datum1D';
 import { XY, XReIm } from 'ml-spectra-processing';
 import { getMetaData } from './metadata/getMetaData';
 export class Data1DManager {
-  static data1D = [];
+  data1D = [];
+  instance = null;
 
-  static fromJcamp = function fromJcamp(
+  constructor() {
+    if (!!Data1DManager.instance) {
+     return Data1DManager.instance = new Data1DManager();
+    }
+
+    return this;
+  }
+
+  getInstance() {
+    return Data1DManager.instance;
+  }
+
+  fromJcamp = function fromJcamp(
     id,
     text,
     name,
@@ -67,16 +80,16 @@ export class Data1DManager {
   //   return Datum1D.myInstance;
   // }
 
-  static pushDatum1D(object) {
-    Data1DManager.data1D.push(object);
+  pushDatum1D(object) {
+    this.data1D.push(object);
   }
 
-  static getDatum1D(id) {
-    return Data1DManager.data1D.find((ob) => ob.id === id);
+  getDatum1D(id) {
+    return this.data1D.find((ob) => ob.id === id);
   }
 
-  static getXYData() {
-    return Data1DManager.data1D.map((ob) => {
+  getXYData() {
+    return this.data1D.map((ob) => {
       return {
         id: ob.id,
         x: ob.x,
@@ -90,8 +103,8 @@ export class Data1DManager {
     });
   }
 
-  static getOriginalData() {
-    return Data1DManager.data1D.map((ob) => {
+  getOriginalData() {
+    return this.data1D.map((ob) => {
       return {
         id: ob.id,
         x: ob.x,
@@ -105,9 +118,9 @@ export class Data1DManager {
     });
   }
 
-  static undoFilter(pastChainFilters = []) {
+  undoFilter(pastChainFilters = []) {
     // let data = { x: this.original.x, y: this.original.re };
-    Data1DManager.data1D.forEach((ob) => {
+    this.data1D.forEach((ob) => {
       ob.x = ob.original.x;
       ob.re = ob.original.re;
     });
@@ -126,7 +139,7 @@ export class Data1DManager {
     }
   }
 
-  static redoFilter(nextFilter) {
+  redoFilter(nextFilter) {
     const ob = Data1DManager.getDatum1D(nextFilter.id);
 
     let data = { x: ob.x, y: ob.re };

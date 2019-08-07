@@ -61,9 +61,9 @@ const IntegralsSeries = ({ data }) => {
       <g className="paths" clipPath="url(#clip)">
         {data &&
           data[0] &&
-          data.map(
+          data.filter((d)=>d.isVisible === true).map(
             (d, i) =>
-              d.isVisible &&
+              // d.isVisible &&
               d.integrals &&
               d.integrals.map((integral,j) => (
                 <path

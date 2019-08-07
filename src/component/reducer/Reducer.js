@@ -37,6 +37,8 @@ import getColor from '../utility/ColorGenerator';
 
 // let datum1DObjects = [];
 
+const Data1DManagerObj = new Data1DManager();
+
 function getDomain(data) {
   let xArray = data.reduce(
     (acc, d) => acc.concat([d.x[0], d.x[d.x.length - 1]]),
@@ -66,9 +68,11 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin, mode }) => {
 };
 
 const setData = (state, data) => {
+
+
   const domain = getDomain(data);
   for (let d of data) {
-    Data1DManager.pushDatum1D(
+    Data1DManagerObj.pushDatum1D(
       new Datum1D(
         d.id,
         { x: d.x, re: d.y, im: d.y },
@@ -105,11 +109,13 @@ const setData = (state, data) => {
   };
 };
 const loadSpectrum = (state, file) => {
+
+
   const key = getKey();
   const usedColors = state._data.map((d) => d.color);
   const color = getColor(usedColors);
 
-  let dataumObject = Data1DManager.fromJcamp(
+  let dataumObject = Data1DManagerObj.fromJcamp(
     key,
     file.binary.toString(),
     file.name,
@@ -118,9 +124,9 @@ const loadSpectrum = (state, file) => {
     true,
   );
 
-  Data1DManager.pushDatum1D(dataumObject);
+  Data1DManagerObj.pushDatum1D(dataumObject);
 
-  const xyData = Data1DManager.getXYData();
+  const xyData = Data1DManagerObj.getXYData();
   // const v_data = [...state._data];
 
   const domain = getDomain(xyData);
@@ -177,6 +183,8 @@ const addPeak = (state, mouseCoordinates) => {
   const points = [...state._peakNotations];
 
   if (state._activeSpectrum) {
+  
+
     const id = state._activeSpectrum.id;
     const peak = getClosePeak(10, mouseCoordinates, state);
     // if (points.findIndex((point) => point.xIndex === peak.xIndex) === -1) {
@@ -186,7 +194,7 @@ const addPeak = (state, mouseCoordinates) => {
       points[id] = [{ xIndex: peak.xIndex }];
     }
 
-    Data1DManager.getDatum1D(id).setPeaks(points[id]);
+    Data1DManagerObj.getDatum1D(id).setPeaks(points[id]);
 
     // }
   } else {
@@ -200,15 +208,19 @@ const addPeak = (state, mouseCoordinates) => {
 };
 
 const deletePeak = (state, data) => {
+
+
   const peakNotations = [...state._peakNotations];
   const { xIndex, id } = data;
   peakNotations[id] = peakNotations[id].filter((p) => p.xIndex !== xIndex);
-  Data1DManager.getDatum1D(id).setPeaks(peakNotations[id]);
+  Data1DManagerObj.getDatum1D(id).setPeaks(peakNotations[id]);
 
   return { ...state, _peakNotations: peakNotations };
 };
 
 const addIntegral = (state, integralData) => {
+
+
   const _data = [...state._data];
   const integralID = integralData.id;
   const index = _data.findIndex((d) => d.id === integralID);
@@ -221,7 +233,7 @@ const addIntegral = (state, integralData) => {
       _data[index].integrals = [integralData];
     }
 
-    Data1DManager.getDatum1D(integralID).setIntegrals(
+    Data1DManagerObj.getDatum1D(integralID).setIntegrals(
       _data[index].integrals,
     )
   }
@@ -229,12 +241,14 @@ const addIntegral = (state, integralData) => {
 };
 
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
+
+
   const filterOption = {
     kind: SHIFT_X,
     value: shiftValue,
   };
   const activeSpectrumId = state._activeSpectrum.id;
-  const activeObject = Data1DManager.getDatum1D(activeSpectrumId);
+  const activeObject = Data1DManagerObj.getDatum1D(activeSpectrumId);
 
   //apply filter into the spectrum
   activeObject.addFilter(filterOption);
@@ -318,14 +332,16 @@ const zoomOut = (state) => {
 };
 
 const handelSpectrumVisibility = (state, data) => {
+
+
   const newData = [...state._data];
   const v_data = newData.map((d, i) => {
     const result = data.findIndex((sData) => sData.id === d.id);
     if (result !== -1) {
-      Data1DManager.getDatum1D(d.id).isVisible = true;
+      Data1DManagerObj.getDatum1D(d.id).isVisible = true;
       return { ...d, isVisible: true };
     } else {
-      Data1DManager.getDatum1D(d.id).isVisible = false;
+      Data1DManagerObj.getDatum1D(d.id).isVisible = false;
       return { ...d, isVisible: false };
     }
     // return result !== undefined
@@ -337,14 +353,16 @@ const handelSpectrumVisibility = (state, data) => {
 };
 
 const handleChangePeaksMarkersVisibility = (state, data) => {
+
+
   const newData = [...state._data];
   const result = newData.map((d, i) => {
     const result = data.findIndex((activeData) => activeData.id === d.id);
     if (result !== -1) {
-      Data1DManager.getDatum1D(d.id).isPeaksMarkersVisible = true;
+      Data1DManagerObj.getDatum1D(d.id).isPeaksMarkersVisible = true;
       return { ...d, isPeaksMarkersVisible: true };
     } else {
-      Data1DManager.getDatum1D(d.id).isPeaksMarkersVisible = false;
+      Data1DManagerObj.getDatum1D(d.id).isPeaksMarkersVisible = false;
       return { ...d, isPeaksMarkersVisible: false };
     }
     // return result !== undefined
@@ -356,9 +374,11 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
 };
 
 const handelChangeActiveSpectrum = (state, activeSpectrum) => {
+
+
   const data = [...state._data];
   if (activeSpectrum) {
-    Data1DManager.getDatum1D(activeSpectrum.id).isVisible = true;
+    Data1DManagerObj.getDatum1D(activeSpectrum.id).isVisible = true;
     const index = data.findIndex((d) => d.id === activeSpectrum.id);
     if (index !== -1) {
       data[index].isVisible = true;
@@ -368,20 +388,24 @@ const handelChangeActiveSpectrum = (state, activeSpectrum) => {
 };
 
 const handelChangeSpectrumColor = (state, { id, color }) => {
+
+
   const data = [...state._data];
   const index = data.findIndex((d) => d.id === id);
   if (index !== -1) {
     data[index].color = color;
-    Data1DManager.getDatum1D(id).color = true;
+    Data1DManagerObj.getDatum1D(id).color = true;
   }
 
   return { ...state, _data: data };
 };
 
 const changeSpectrumType = (state, isRealSpectrumVisible) => {
+
+
   if (state._activeSpectrum !== null) {
     const activeSpectrumId = state._activeSpectrum.id;
-    const ob = Data1DManager.getDatum1D(activeSpectrumId);
+    const ob = Data1DManagerObj.getDatum1D(activeSpectrumId);
 
     if (ob) {
       const v_data = [...state._data];
@@ -426,6 +450,8 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
 //////////////////////////////////////////////////////////////////////
 
 const handleHistoryUndo = (state) => {
+
+
   const { past, present, future } = state.history;
   const previous = past[past.length - 1];
   console.log(present);
@@ -435,8 +461,8 @@ const handleHistoryUndo = (state) => {
   const hasRedo = newfuture.length !== 0;
   const hasUndo = past.length !== 0;
 
-  Data1DManager.undoFilter(past);
-  let resultData = Data1DManager.getXYData();
+  Data1DManagerObj.undoFilter(past);
+  let resultData = Data1DManagerObj.getXYData();
 
   const domain = getDomain(resultData);
   const v_history = {
@@ -458,6 +484,8 @@ const handleHistoryUndo = (state) => {
 };
 
 const handleHistoryRedo = (state) => {
+
+
   const { past, present, future } = state.history;
   const next = future.length === 0 ? null : future[0];
   const newFuture = future.slice(1);
@@ -469,8 +497,8 @@ const handleHistoryRedo = (state) => {
   const hasUndo = check !== 0;
   const hasRedo = newFuture.length !== 0;
 
-  Data1DManager.redoFilter(next);
-  let data = Data1DManager.getXYData();
+  Data1DManagerObj.redoFilter(next);
+  let data = Data1DManagerObj.getXYData();
   const domain = getDomain(data);
   const v_history = {
     past: newPast,

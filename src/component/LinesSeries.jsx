@@ -87,8 +87,8 @@ const LinesSeries = ({ data }) => {
       </defs>
 
       <g className="paths" ref={refPathsContainer} clipPath="url(#clip)">
-        {data && data[0] && data[0].x &&  data.map((d, i) => ( 
-          d.isVisible && 
+        {data && data[0] && data[0].x &&  data.filter((d)=>d.isVisible === true).map((d, i) => ( 
+          // d.isVisible && 
           <path
             className="line"
             key={d.id}
