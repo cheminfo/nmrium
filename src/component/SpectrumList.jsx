@@ -45,11 +45,19 @@ export default function SpectrumList({
 
     setVisible(visibleSpectrums);
     setMarkersVisible(visibleMarkers);
-    setActivated(activated);
 
     // onChangeVisibility(data);
     // onChangeActive(data[0])
-  }, [activated, data]);
+  }, [data]);
+
+
+  useEffect(()=>{
+    if(data && data.length === 1){
+      setActivated(data[0]);  
+      onChangeActive(data[0])
+    }
+  },[]);
+
 
   const handleVisibility = (d) => {
     const currentIndex = visible.findIndex((v) => v.id === d.id);
