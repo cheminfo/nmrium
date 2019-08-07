@@ -2,6 +2,7 @@ import applyFilter from './filter1d/filter';
 import { convert } from 'jcampconverter';
 import { Datum1D } from './Datum1D';
 import { XY, XReIm } from 'ml-spectra-processing';
+import { getMetaData } from './metadata/getMetaData';
 export class Data1DManager {
   static data1D = [];
 
@@ -39,6 +40,8 @@ export class Data1DManager {
 
     // 2 cases. We have real and imaginary part of only real
     let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
+    let meta = getMetaData(result.info);
+    if (Array.isArray(meta.nucleus)) meta.nucleus = meta.nucleus[0];
 
     const ob = new Datum1D(id, data, {
       display: {
@@ -47,10 +50,7 @@ export class Data1DManager {
         isVisible: isVisible,
         isPeaksMarkersVisible: isPeaksMarkersVisible,
       },
-      meta: {
-        nucleus: '1H',
-        isFid: true,
-      },
+      meta,
     });
 
     return ob;

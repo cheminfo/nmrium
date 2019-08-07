@@ -8,18 +8,18 @@ export class Datum1D {
   // static myInstance = null;
 
   // static dataum1Objects = [];
-   /**
-    * 
-    * @param {string} id 
-    * @param {object} data    {x, re, im}
-    * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
-    */
-  constructor(id,data,options = {}) {
+  /**
+   *
+   * @param {string} id
+   * @param {object} data    {x, re, im}
+   * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
+   */
+  constructor(id, data, options = {}) {
     this.id = id;
     this.name = options.display.name;
     this.color = options.display.color;
     this.isVisible = options.display.isVisible;
-    this.isPeaksMarkersVisible= options.display.isPeaksMarkersVisible;
+    this.isPeaksMarkersVisible = options.display.isPeaksMarkersVisible;
     this.original = data; //{ x, re, im }
     this.nucleus = options.meta.nucleus || '1H'; // 1H, 13C, 19F, ...
     this.isFid = options.meta.isFid || false;
@@ -43,14 +43,13 @@ export class Datum1D {
     return this.peaks;
   }
 
-  setIntegrals(integrals){
+  setIntegrals(integrals) {
     this.integrals = integrals;
   }
 
-  getIntegrals(){
+  getIntegrals() {
     return this.integrals;
   }
-  
 
   baseline(options) {
     let result = baseline(this.x, this.re, this.im);
@@ -84,8 +83,6 @@ export class Datum1D {
   addPeak(chemicalShift, window, options = {}) {}
 
   autoPeakPicking() {}
-
- 
 
   addFilter(filter) {
     this.filters.push(filter);
