@@ -9,7 +9,7 @@ export class Data1DManager {
 
   constructor() {
     if (!!Data1DManager.instance) {
-     return Data1DManager.instance = new Data1DManager();
+      return (Data1DManager.instance = new Data1DManager());
     }
 
     return this;
@@ -27,7 +27,7 @@ export class Data1DManager {
     isVisible,
     isPeaksMarkersVisible,
   ) {
-    let result = convert(text, { xy: true });
+    let result = convert(text, { xy: true, keepRecordsRegExp: /.*/ });
 
     let x =
       result.spectra[0] &&
@@ -53,9 +53,11 @@ export class Data1DManager {
 
     // 2 cases. We have real and imaginary part of only real
     let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
+    console.log(result.info);
     let meta = getMetaData(result.info);
+    console.log({ meta });
     if (Array.isArray(meta.nucleus)) meta.nucleus = meta.nucleus[0];
-       
+
     console.log(meta);
     const ob = new Datum1D(id, data, {
       display: {
