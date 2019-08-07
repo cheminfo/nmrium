@@ -103,7 +103,6 @@ const CoupledDecoupled13C = () => {
                   color={'#2ca8ff'}
                   loading={isLoading}
                 />
-
                 <SpectrumChart
                   width={width}
                   height={height}
