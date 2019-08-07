@@ -397,6 +397,8 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
             <FunctionToolBar
               onChangeOption={handleChangeOption}
               defaultValue={options.zoom.id}
+              data={_data}
+              activeSpectrum = {_activeSpectrum}
 
               // toolbarWidth={(w) => {
               //   setToolbarWidth(w);
@@ -447,6 +449,8 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
               onViewChanged={handleChangeVerticalAlignments}
               viewAlignValue={verticalAlign}
               data={_data}
+              activeSpectrum = {_activeSpectrum}
+
             />
 
             <ViewButton

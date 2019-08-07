@@ -13,9 +13,7 @@ const BasicToolBar = ({
   isViewButtonEnabled = true,
   data,
 }) => {
-  const [_isViewButtonEnabled, setViewButtonEnabled] = useState(
-    isViewButtonEnabled,
-  );
+
   const handleOnKeyPressed = useCallback((e) => {
     if (e.key === 'f') {
       onFullZoomOut();
@@ -27,16 +25,6 @@ const BasicToolBar = ({
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
   }, []);
-
-  useEffect(() => {
-    if (data && data.length <= 1) {
-      setViewButtonEnabled(true);
-    } else {
-      setViewButtonEnabled(false);
-    }
-
-    console.log(`ist enabled ${_isViewButtonEnabled}`);
-  }, [data]);
 
   useEffect(() => {
     return () => {
@@ -64,7 +52,7 @@ const BasicToolBar = ({
             <Button
               className="general-fun-bt"
               onClick={onViewChanged}
-              disabled={_isViewButtonEnabled}
+              disabled={data && data.length <=1}
             >
               {viewAlignValue !== 0 ? <FaMinus /> : <FaBars />}
             </Button>

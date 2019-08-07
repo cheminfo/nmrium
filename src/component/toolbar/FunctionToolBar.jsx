@@ -15,7 +15,7 @@ export let options = {
 
 };
 
-const FunctionToolBar = ({ onChangeOption, defaultValue }) => {
+const FunctionToolBar = ({ onChangeOption, defaultValue,data,activeSpectrum }) => {
   const [option, setOption] = useState();
   const handleChange = (event, selectedOption) => {
 
@@ -37,6 +37,11 @@ const FunctionToolBar = ({ onChangeOption, defaultValue }) => {
       onChangeOption(options.integral.id);
     }
   });
+
+  useEffect(() => {
+    setOption(defaultValue);
+    document.addEventListener('keydown', handleOnKeyPressed, false);
+  }, []);
 
   useEffect(() => {
     setOption(defaultValue);
@@ -68,14 +73,14 @@ const FunctionToolBar = ({ onChangeOption, defaultValue }) => {
           </Tooltip>
         </ToggleButton>
 
-        <ToggleButton key={2} value={options.peakPicking.id}>
+        <ToggleButton key={2} value={options.peakPicking.id} disabled={!activeSpectrum}>
           <Tooltip title={options.peakPicking.label} placement="right-start">
             <Timeline />
           </Tooltip>
         </ToggleButton>
 
 
-        <ToggleButton key={3} value={options.integral.id}>
+        <ToggleButton key={3} value={options.integral.id} disabled={!activeSpectrum}>
           <Tooltip title={options.integral.label} placement="right-start">
             <ShowChart  />
           </Tooltip>
