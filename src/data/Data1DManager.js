@@ -55,7 +55,8 @@ export class Data1DManager {
     let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
     let meta = getMetaData(result.info);
     if (Array.isArray(meta.nucleus)) meta.nucleus = meta.nucleus[0];
-
+       
+    console.log(meta);
     const ob = new Datum1D(id, data, {
       display: {
         name: name,
