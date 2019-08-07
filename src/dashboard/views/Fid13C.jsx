@@ -34,7 +34,7 @@ function loadData() {
   const Data1DManagerObj = new Data1DManager();
 
   return new Promise((resolve, reject) => {
-    fetch('/13C_Cytisin_600_fid.dx')
+    fetch('/cytisine/13C_Cytisin_600_fid.dx')
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
         // console.log(buffer);
