@@ -35,11 +35,10 @@ const jcampFiles = [
   {fileName:'108-21-4.13c-decoupled',label:"13C decoupled"},
 ];
 async function loadData() {
-   let data = [];
+  const Data1DManagerObj = new Data1DManager();
+
   try {
     for (let i = 0; i < jcampFiles.length; i++) {
-      const Data1DManagerObj = new Data1DManager();
-
       const key = getKey();
       const usedColors = Data1DManagerObj.getXYData().map((d) => d.color);
       const color = getColor(usedColors);
@@ -56,19 +55,15 @@ async function loadData() {
         true,
         true,
       );
-
-      console.log(datumObject);
       Data1DManagerObj.pushDatum1D(datumObject);
-      data[i] = Data1DManagerObj.getXYData();
-
     }
   } catch (e) {}
-  console.log(data);
-  return data;
+  const xyData = Data1DManagerObj.getXYData();
+  console.log(xyData);
+  return xyData;
 
   // Never forget the final catch!
 }
-
 function checkStatus(response) {
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} - ${response.statusText}`);
@@ -112,17 +107,11 @@ const CoupledDecoupled13C = () => {
                 <SpectrumChart
                   width={width}
                   height={height}
-                  data={data[0]}
+                  data={data}
                   margin={margin}
                   mode="RTL"
                 />
-                  <SpectrumChart
-                  width={width}
-                  height={height}
-                  data={data[1]}
-                  margin={margin}
-                  mode="RTL"
-                />
+            
               </CardBody>
             </Card>
           </Col>
