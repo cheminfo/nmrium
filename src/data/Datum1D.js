@@ -15,6 +15,7 @@ export class Datum1D {
    * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
    */
   constructor(id, data, options = {}) {
+    console.log(options);
     this.id = id;
     this.name = options.display.name;
     this.color = options.display.color;

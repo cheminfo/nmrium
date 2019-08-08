@@ -23,8 +23,8 @@ import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
 import SpectrumChart from '../../component/SpectrumChart.jsx';
-import json from '../../samples/test.json';
 import { Data1DManager } from '../../data/Data1DManager.js';
+import {COLORS} from '../../component/utility/ColorGenerator.js';
 
 const width = 800;
 const height = 400;
@@ -38,10 +38,10 @@ function loadData() {
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
         let datumObject = Data1DManagerObj.fromJcamp(
-          '123',
+          '1H_Cytisin_600MHz-R+I',
           buffer,
           'test',
-          'red',
+          COLORS[4],
           true,
           true,
         );

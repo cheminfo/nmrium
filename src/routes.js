@@ -21,6 +21,8 @@ import Spectrum13C from './dashboard/views/Fid13C';
 import Spectrum1H from './dashboard/views/Spectrum1H';
 import XTC814d from './dashboard/views/XTC814d';
 import CoupledDecoupled13C from './dashboard/views/CoupledDecoupled13C';
+import Big13CCytisin from './dashboard/views/Big13CCytisin';
+import CoffeView from './dashboard/views/CoffeView';
 
 var dashRoutes = [
   {
@@ -38,10 +40,24 @@ var dashRoutes = [
     layout: '/admin',
   },
   {
+    path: '/Big13CCytisin',
+    name: 'Big 13c',
+    icon: 'design-2_ruler-pencil',
+    component: Big13CCytisin,
+    layout: '/admin',
+  },
+  {
     path: '/XTC814d',
     name: 'XTC',
     icon: 'design-2_ruler-pencil',
     component: XTC814d,
+    layout: '/admin',
+  },
+  {
+    path: '/CoffeView',
+    name: 'Coffee',
+    icon: 'design-2_ruler-pencil',
+    component: CoffeView,
     layout: '/admin',
   },
   {
