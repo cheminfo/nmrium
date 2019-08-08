@@ -103,7 +103,11 @@ export class Data1DManager {
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
         nucleus: ob.nucleus,
         isFid:ob.isFid,
-        isComplex:ob.isComplex
+        isComplex:ob.isComplex,
+        peaks:ob.peaks,
+        integrals:ob.integrals,
+        filters:ob.filters
+
       };
     });
   }
@@ -119,7 +123,10 @@ export class Data1DManager {
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
         nucleus: ob.nucleus,
-        isComplex:ob.isComplex
+        isComplex:ob.isComplex,
+        peaks:ob.peaks,
+        integrals:ob.integrals,
+        filters:ob.filters
       };
     });
   }

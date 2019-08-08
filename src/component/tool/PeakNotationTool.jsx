@@ -207,10 +207,10 @@ const PeakNotationTool = ({
   );
 
   // const [notationId, setNotationId] = useState();
-  useEffect(() => {
-   console.log(data);
+  // useEffect(() => {
+  //  console.log(data);
 
-  });
+  // });
 
   const handelOnSelected = (id) => {
     console.log(id);

@@ -68,7 +68,7 @@ const IntegralsSeries = ({ data }) => {
               d.integrals.map((integral,j) => (
                 <path
                   className="line"
-                  key={d.id+j}
+                  key={`integral-${d.id}-${j}`}
                   stroke="black"
                   style={{ opacity: IsActive(d.id) ? 1 : 0.2 }}
                   d={makePath({id:d.id,x:integral.x,y:integral.y})}

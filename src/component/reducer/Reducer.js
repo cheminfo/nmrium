@@ -230,16 +230,8 @@ const deletePeak = (state, peakData) => {
   const _data = [...state._data];
   const spectrumID = state._activeSpectrum.id;
   const index = _data.findIndex((d) => d.id === spectrumID);
- 
-  console.log(spectrumID);
-  console.log(_data);
-  console.log(index);
-
   _data[index].peaks = _data[index].peaks.filter((p) => p.xIndex !== peakData.xIndex);
-  console.log(_data[index] );
-
   Data1DManagerObj.getDatum1D(spectrumID).setPeaks(_data[index].peaks);
-  console.log(_data);
 
   return { ...state, _data };
 };
@@ -291,6 +283,9 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   );
 
   data[spectrumIndex] = { ...data[spectrumIndex], x: XYData.x, y: XYData.y };
+
+  console.log(data[spectrumIndex]);
+  console.log(data);
 
   const domain = getDomain(data);
 
