@@ -26,7 +26,6 @@ import SpectrumChart from '../../component/SpectrumChart.jsx';
 import { Data1DManager } from '../../data/Data1DManager.js';
 import {COLORS} from '../../component/utility/ColorGenerator.js';
 
-
 const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
@@ -35,7 +34,7 @@ function loadData() {
   const Data1DManagerObj = new Data1DManager();
 
   return new Promise((resolve, reject) => {
-    fetch('/1H_Cytisin_600MHz-R+I.dx')
+    fetch('/cytisine/1H_Cytisin_600MHz-R+I.dx')
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
         let datumObject = Data1DManagerObj.fromJcamp(
@@ -68,9 +67,7 @@ function checkStatus(response) {
   return response;
 }
 
-
-const Spectrum1H =(props)=> {
-
+const Spectrum1H = (props) => {
   const [data, setData] = useState([]);
   useEffect(() => {
     loadData().then((d) => {
@@ -78,36 +75,32 @@ const Spectrum1H =(props)=> {
     });
   }, []);
 
-
-      return (
-      <>
-        <PanelHeader size="sm" />
-        <div className="content">
-          <Row>
-            <Col md={12}>
-              <Card>
-                <CardHeader>
-                  <h5 className="title">NMR Displayer</h5>
-                  <p className="category">
-                    1H spectrum test
-                  </p>
-                </CardHeader>
-                <CardBody>
-                  <SpectrumChart
-                    width={width}
-                    height={height}
-                    data={data}
-                    margin={margin}
-                    mode="RTL"
-                  />
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </div>
-      </>
-    );
-  
-}
+  return (
+    <>
+      <PanelHeader size="sm" />
+      <div className="content">
+        <Row>
+          <Col md={12}>
+            <Card>
+              <CardHeader>
+                <h5 className="title">NMR Displayer</h5>
+                <p className="category">1H spectrum test</p>
+              </CardHeader>
+              <CardBody>
+                <SpectrumChart
+                  width={width}
+                  height={height}
+                  data={data}
+                  margin={margin}
+                  mode="RTL"
+                />
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </>
+  );
+};
 
 export default Spectrum1H;

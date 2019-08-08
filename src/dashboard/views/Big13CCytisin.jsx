@@ -22,7 +22,7 @@ import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
 
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
-import {COLORS} from '../../component/utility/ColorGenerator.js';
+import { COLORS } from '../../component/utility/ColorGenerator.js';
 import { Data1DManager } from '../../data/Data1DManager.js';
 import SpectrumChart from '../../component/SpectrumChart.jsx';
 const width = 800;
@@ -33,7 +33,7 @@ function loadData() {
   const Data1DManagerObj = new Data1DManager();
 
   return new Promise((resolve, reject) => {
-    fetch('/13C_Cytisin_600.dx')
+    fetch('/cytisine/13C_Cytisin_600.dx')
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
         // console.log(buffer);
