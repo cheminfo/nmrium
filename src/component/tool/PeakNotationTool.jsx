@@ -207,7 +207,10 @@ const PeakNotationTool = ({
   );
 
   // const [notationId, setNotationId] = useState();
-  useEffect(() => {}, []);
+  useEffect(() => {
+   console.log(data);
+
+  });
 
   const handelOnSelected = (id) => {
     console.log(id);
@@ -240,6 +243,8 @@ const PeakNotationTool = ({
     return data.findIndex((d) => d.id === id) * verticalAlign;
   };
 
+  
+
   return (
     <Fragment>
       <g key="peakNotification">
@@ -247,13 +252,11 @@ const PeakNotationTool = ({
           reSortData().filter((d)=>d.isVisible === true).map((d, i) => {
             return (
               <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
-                {notationData &&
-                  notationData[d.id] &&
-                  d.isVisible &&
+                {d.peaks &&
                   d.isPeaksMarkersVisible &&
-                  notationData[d.id].map(({ xIndex }, i) => (
+                  d.peaks.map(({ xIndex }, j) => (
                     <NotationTemplate
-                      key={i}
+                      key={`peak-${d.id}-${j}`}
                       x={getScale(d.id).x(d.x[xIndex])}
                       y={getScale(d.id).y(d.y[xIndex])}
                       id={xIndex}
@@ -287,6 +290,56 @@ const PeakNotationTool = ({
     </Fragment>
   );
 };
+
+// return (
+//   <Fragment>
+//     <g key="peakNotification">
+//       {data &&
+//         reSortData().filter((d)=>d.isVisible === true).map((d, i) => {
+//           return (
+//             <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
+//               {notationData &&
+//                 notationData[d.id] &&
+//                 d.isVisible &&
+//                 d.isPeaksMarkersVisible &&
+//                 notationData[d.id].map(({ xIndex }, i) => (
+//                   <NotationTemplate
+//                     key={i}
+//                     x={getScale(d.id).x(d.x[xIndex])}
+//                     y={getScale(d.id).y(d.y[xIndex])}
+//                     id={xIndex}
+//                     spectrumID={d.id}
+//                     value={d.x[xIndex]}
+//                     onPeakValueChange={onPeakValueChange}
+//                     onSelected={handelOnSelected}
+//                     onDeleteNotation={onDeleteNotation}
+//                     color={d.color}
+//                     decimalFraction={getPeakLabelNumberDecimals(d.nucleus)}
+//                     isActive={
+//                       activeSpectrum == null
+//                         ? false
+//                         : activeSpectrum.id === d.id
+//                         ? true
+//                         : false
+//                     }
+//                   />
+//                 ))}
+//             </g>
+//           );
+//         })}
+//     </g>
+//     {showCursorLabel && (
+//       <g>
+//         <text x={position.x} y={position.y} dy="0em" dx="0.35em">
+//           {getScale().x.invert(position.x)}
+//         </text>
+//       </g>
+//     )}
+//   </Fragment>
+// );
+// };
+
+
 
 export default PeakNotationTool;
 

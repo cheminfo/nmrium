@@ -457,6 +457,10 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
             <ViewButton
               onChange={handleShowSpectrumTypeChang}
               defaultValue={true}
+              data={_data}
+              activeSpectrum = {_activeSpectrum}
+
+
             />
           </Grid>
 

@@ -28,6 +28,7 @@ function App() {
     isPeakMarkerVisible: true,
     isFid: true, // allows to determine the label of the axis
     nucleus: '1H',
+    isComplex:false
 
   };
 

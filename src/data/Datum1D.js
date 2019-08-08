@@ -24,6 +24,7 @@ export class Datum1D {
     this.original = data; //{ x, re, im }
     this.nucleus = options.meta.nucleus || '1H'; // 1H, 13C, 19F, ...
     this.isFid = options.meta.isFid || false;
+    this.isComplex = options.meta.isComplex || false; // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button . 
     this.x = data.x;
     this.re = data.re;
     this.im = data.im;

@@ -53,9 +53,7 @@ export class Data1DManager {
 
     // 2 cases. We have real and imaginary part of only real
     let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
-    console.log(result.info);
     let meta = getMetaData(result.info);
-    console.log({ meta });
     if (Array.isArray(meta.nucleus)) meta.nucleus = meta.nucleus[0];
 
     console.log(meta);
@@ -102,7 +100,8 @@ export class Data1DManager {
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
         nucleus: ob.nucleus,
-        isFid:ob.isFid
+        isFid:ob.isFid,
+        isComplex:ob.isComplex
       };
     });
   }
@@ -118,6 +117,7 @@ export class Data1DManager {
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
         nucleus: ob.nucleus,
+        isComplex:ob.isComplex
       };
     });
   }
@@ -131,11 +131,11 @@ export class Data1DManager {
 
     if (pastChainFilters && pastChainFilters.length !== 0) {
       pastChainFilters.forEach((filter) => {
-        const ob = Data1DManager.getDatum1D(filter.id);
+        const ob = this.getDatum1D(filter.id);
         let data = { x: ob.x, y: ob.re };
         data = applyFilter({ kind: filter.kind, value: filter.value }, data);
-        Data1DManager.getDatum1D(filter.id).x = data.x;
-        Data1DManager.getDatum1D(filter.id).re = data.y;
+        this.getDatum1D(filter.id).x = data.x;
+        this.getDatum1D(filter.id).re = data.y;
       });
 
       // this.x = data.x;
@@ -144,8 +144,7 @@ export class Data1DManager {
   }
 
   redoFilter(nextFilter) {
-    const ob = Data1DManager.getDatum1D(nextFilter.id);
-
+    const ob = this.getDatum1D(nextFilter.id);
     let data = { x: ob.x, y: ob.re };
     data = applyFilter(
       { kind: nextFilter.kind, value: nextFilter.value },

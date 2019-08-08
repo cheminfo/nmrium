@@ -91,7 +91,7 @@ const LinesSeries = ({ data }) => {
           // d.isVisible && 
           <path
             className="line"
-            key={d.id}
+            key={`line-${d.id}-${i}`}
             stroke={d.color}
             style={{opacity:(IsActive(d.id))?1:0.2}}
             d={makePath(d)}
