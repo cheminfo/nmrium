@@ -19,44 +19,63 @@ import React, { useEffect, useState } from 'react';
 
 // reactstrap components
 import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
+import getKey from '../../component/utility/KeyGenerator';
+import getColor from '../../component/utility/ColorGenerator';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
-import {COLORS} from '../../component/utility/ColorGenerator.js';
 import { Data1DManager } from '../../data/Data1DManager.js';
 import SpectrumChart from '../../component/SpectrumChart.jsx';
-
 const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
-
-function loadData() {
+const jcampFiles = [
+  'coffee/coffee_1198',
+  'coffee/coffee_1199',
+  'coffee/coffee_1208',
+  'coffee/coffee_1241',
+  'coffee/coffee_1246',
+  'coffee/coffee_1307',
+  'coffee/coffee_1309',
+  'coffee/coffee_1310',
+  'coffee/coffee_1316',
+  'coffee/coffee_1317',
+  'coffee/coffee_1318',
+  'coffee/coffee_1319',
+  'coffee/coffee_1321'
+];
+async function loadData() {
   const Data1DManagerObj = new Data1DManager();
 
-  return new Promise((resolve, reject) => {
-    fetch('/13C_Cytisin_600_fid.dx')
-      .then((response) => checkStatus(response) && response.text())
-      .then((buffer) => {
-        // console.log(buffer);
-        let datumObject = Data1DManagerObj.fromJcamp(
-          '13C_Cytisin_600_fid',
-          buffer,
-          'test',
-          COLORS[6],
-          true,
-          true,
-        );
-        Data1DManagerObj.pushDatum1D(datumObject);
+  try {
+    for (let i = 0; i < jcampFiles.length; i++) {
+      const key = getKey();
+      const usedColors = Data1DManagerObj.getXYData().map((d) => d.color);
+      const color = getColor(usedColors);
+      const result = await fetch(`/${jcampFiles[i]}.jdx`).then(
+        (response) => checkStatus(response) && response.text(),
+      );
 
-        const xyData = Data1DManagerObj.getXYData();
-        // console.log(xyData);
-        resolve(xyData);
-      })
-      .catch((err) => {
-        reject(err);
-        console.error(err);
-      }); // Never forget the final catch!
-  });
+      let datumObject = Data1DManagerObj.fromJcamp(
+        `${key}`,
+        result,
+        `coffee ${i + 1}`,
+        color,
+        true,
+        true,
+      );
+
+      console.log(datumObject);
+
+      Data1DManagerObj.pushDatum1D(datumObject);
+    }
+  } catch (e) {}
+  const xyData = Data1DManagerObj.getXYData();
+  console.log(xyData);
+  return xyData;
+
+  // Never forget the final catch!
 }
 
 function checkStatus(response) {
@@ -66,11 +85,15 @@ function checkStatus(response) {
   return response;
 }
 
-const Spectrum13C = () => {
+const CoffeView = () => {
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
+    setIsLoading(true);
     loadData().then((d) => {
       setData(d);
+      setIsLoading(false);
     });
   }, []);
 
@@ -83,9 +106,21 @@ const Spectrum13C = () => {
             <Card>
               <CardHeader>
                 <h5 className="title">NMR Displayer</h5>
-                <p className="category">13C Spectrum</p>
+                <p className="category">Coffee </p>
               </CardHeader>
               <CardBody>
+                <ClipLoader
+                  css={{
+                    position: 'absolute',
+                    left: width / 2.5,
+                    top: (height + 150) / 2,
+                  }}
+                  sizeUnit={'px'}
+                  size={30}
+                  color={'#2ca8ff'}
+                  loading={isLoading}
+                />
+
                 <SpectrumChart
                   width={width}
                   height={height}
@@ -102,4 +137,4 @@ const Spectrum13C = () => {
   );
 };
 
-export default Spectrum13C;
+export default CoffeView;

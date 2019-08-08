@@ -25,7 +25,6 @@ import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
 import {COLORS} from '../../component/utility/ColorGenerator.js';
 import { Data1DManager } from '../../data/Data1DManager.js';
 import SpectrumChart from '../../component/SpectrumChart.jsx';
-
 const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
@@ -34,15 +33,15 @@ function loadData() {
   const Data1DManagerObj = new Data1DManager();
 
   return new Promise((resolve, reject) => {
-    fetch('/13C_Cytisin_600_fid.dx')
+    fetch('/13C_Cytisin_600.dx')
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
         // console.log(buffer);
         let datumObject = Data1DManagerObj.fromJcamp(
-          '13C_Cytisin_600_fid',
+          '13ccytisin600',
           buffer,
           'test',
-          COLORS[6],
+          COLORS[1],
           true,
           true,
         );
@@ -66,7 +65,7 @@ function checkStatus(response) {
   return response;
 }
 
-const Spectrum13C = () => {
+const Big13CCytisin = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
     loadData().then((d) => {
@@ -83,7 +82,7 @@ const Spectrum13C = () => {
             <Card>
               <CardHeader>
                 <h5 className="title">NMR Displayer</h5>
-                <p className="category">13C Spectrum</p>
+                <p className="category">Big 13C</p>
               </CardHeader>
               <CardBody>
                 <SpectrumChart
@@ -102,4 +101,4 @@ const Spectrum13C = () => {
   );
 };
 
-export default Spectrum13C;
+export default Big13CCytisin;
