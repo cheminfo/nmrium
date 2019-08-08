@@ -490,7 +490,8 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
               }
 
               <g className="container">
-                <XAxis showGrid={true} isFID={true} mode={_mode} />
+              {/* isFID={true} */}
+                <XAxis showGrid={true}  mode={_mode} />
 
                 <YAxis label="PPM" show={false} />
                 {_selectedTool === options.zoom.id && (

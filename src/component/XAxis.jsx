@@ -3,13 +3,14 @@ import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 import {ChartContext} from './context/ChartContext';
 
-const XAxis = ({ label, show, showGrid, isFID,mode }) => {
+const XAxis = ({ label, show, showGrid,mode }) => {
   const { height, margin, xDomain, width, getScale } = useContext(ChartContext);
-  const refaxis = useRef();
-  const refgrid = useRef();
+  const refAxis = useRef();
+  const refGrid = useRef();
   // const scale = getScale(data);
 
-  label = label ? label : isFID ? 'δ [ppm]' : 'time [s]';
+  // label = label ? label : isFID ? 'δ [ppm]' : 'time [s]';
+  label = label ? label : (mode === "RTL") ? 'δ [ppm]' : 'time [s]';
 
   const xAxis = d3
     .axisBottom()
@@ -40,8 +41,8 @@ const XAxis = ({ label, show, showGrid, isFID,mode }) => {
         [xDomain[0], xDomain[1]],
         range,
       );
-      d3.select(refaxis.current).call(xAxis.scale(scale));
-      d3.select(refgrid.current).call(grid.scale(scale));
+      d3.select(refAxis.current).call(xAxis.scale(scale));
+      d3.select(refGrid.current).call(grid.scale(scale));
     }
   }, []);
 
@@ -52,12 +53,12 @@ const XAxis = ({ label, show, showGrid, isFID,mode }) => {
       //   [width - margin.right, margin.left],
       // );
       const scale = getScale();
-      d3.select(refaxis.current)
+      d3.select(refAxis.current)
         // .transition()
         // .duration(500)
         .call(xAxis.scale(scale.x.domain(xDomain)));
 
-      d3.select(refgrid.current).call(grid.scale(scale.x.domain(xDomain)));
+      d3.select(refGrid.current).call(grid.scale(scale.x.domain(xDomain)));
     }
   }, [xDomain]);
 
@@ -67,7 +68,7 @@ const XAxis = ({ label, show, showGrid, isFID,mode }) => {
         <g
           className="x axis"
           transform={`translate(0,${height - margin.bottom})`}
-          ref={refaxis}
+          ref={refAxis}
         >
           <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
             {label}
@@ -77,7 +78,7 @@ const XAxis = ({ label, show, showGrid, isFID,mode }) => {
       {showGrid ? (
         <g
           className="grid"
-          ref={refgrid}
+          ref={refGrid}
           transform={`translate(0,${height - margin.bottom})`}
         />
       ) : null}
