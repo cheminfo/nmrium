@@ -17,14 +17,32 @@ import { Button } from '@material-ui/core';
 import './css/spectrum-list.css';
 
 import { SketchPicker } from 'react-color';
-import {COLORS} from './utility/ColorGenerator';
+import { COLORS } from './utility/ColorGenerator';
 
 function arePropsEqual(prevProps, nextProps) {
   return true;
 }
-const ColorPicker = React.memo(({ onColorChanged }) => {
-  return <SketchPicker presetColors={COLORS} onChangeComplete={onColorChanged} />;
-}, arePropsEqual);
+const ColorPicker = React.memo(
+  ({ colorPickerPosition, selectedSpectrumData, onColorChanged, onMouseLeave }) => {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          left: colorPickerPosition.x,
+          top: colorPickerPosition.y,
+        }}
+        onMouseLeave={onMouseLeave}
+      >
+        <SketchPicker
+          color={selectedSpectrumData.color}
+          presetColors={COLORS}
+          onChangeComplete={onColorChanged}
+        />
+      </div>
+    );
+  },
+  arePropsEqual,
+);
 
 export default function SpectrumList({
   data,
@@ -37,7 +55,8 @@ export default function SpectrumList({
   const [visible, setVisible] = useState([]);
   const [markersVisible, setMarkersVisible] = useState([]);
   const [isColorPickerDisplayed, setIsColorPickerDisplayed] = useState(false);
-  const [spectrumId, setSelectedSpectrumId] = useState(null);
+  const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
+  const [colorPickerPosition, setColorPickerPosition] = useState(null);
 
   useEffect(() => {
     const visibleSpectrums = data.filter((d) => d.isVisible === true);
@@ -50,14 +69,12 @@ export default function SpectrumList({
     // onChangeActive(data[0])
   }, [data]);
 
-
-  useEffect(()=>{
-    if(data && data.length === 1){
-      setActivated(data[0]);  
-      onChangeActive(data[0])
+  useEffect(() => {
+    if (data && data.length === 1) {
+      setActivated(data[0]);
+      onChangeActive(data[0]);
     }
-  },[]);
-
+  }, []);
 
   const handleVisibility = (d) => {
     const currentIndex = visible.findIndex((v) => v.id === d.id);
@@ -105,8 +122,13 @@ export default function SpectrumList({
     return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
   };
 
-  const handleOpenColorPicker = (selectedID) => {
-    setSelectedSpectrumId(selectedID);
+  const handleOpenColorPicker = (selectedSpectrum, event) => {
+    console.log(event.nativeEvent)
+    setColorPickerPosition({
+      x: event.nativeEvent.clientX,
+      y: event.nativeEvent.clientY,
+    });
+    setSelectedSpectrum(selectedSpectrum);
     setIsColorPickerDisplayed(true);
   };
 
@@ -115,8 +137,8 @@ export default function SpectrumList({
   };
 
   const handleColorChanged = (color, event) => {
-    if (spectrumId !== null) {
-      onColorChanged({ id: spectrumId, color: color.hex });
+    if (selectedSpectrumData !== null) {
+      onColorChanged({ id: selectedSpectrumData.id, color: color.hex });
     }
   };
 
@@ -164,7 +186,7 @@ export default function SpectrumList({
                 </Button>
                 <Button
                   className="color-change-bt"
-                  onClick={() => handleOpenColorPicker(d.id)}
+                  onClick={(event) => handleOpenColorPicker(d, event)}
                 >
                   <FaPaintBrush />
                 </Button>
@@ -175,16 +197,14 @@ export default function SpectrumList({
       </List>
 
       {isColorPickerDisplayed ? (
-        <div
-          className="color-picker-popover"
-          onMouseLeave={handleCloseColorPicker}
-        >
-          <div
-            className="color-picker-cover"
-            onClick={handleCloseColorPicker}
+        // <div className="color-picker-popover">
+          <ColorPicker
+            onMouseLeave={handleCloseColorPicker}
+            selectedSpectrumData={selectedSpectrumData}
+            colorPickerPosition={colorPickerPosition}
+            onColorChanged={handleColorChanged}
           />
-          <ColorPicker  onColorChanged={handleColorChanged} />
-        </div>
+        // </div>
       ) : null}
     </Fragment>
   );
