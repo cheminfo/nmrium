@@ -49,16 +49,16 @@ export class Data1DManager {
       result.spectra[1].data[0] &&
       result.spectra[1].data[0].y
         ? result.spectra[1].data[0].y
-        : [];
-
+        : new Array(re.length);
     // 2 cases. We have real and imaginary part of only real
+    console.log({ info: result.info });
     let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
-    console.log(result.info);
+
     let meta = getMetaData(result.info);
     console.log({ meta });
+
     if (Array.isArray(meta.nucleus)) meta.nucleus = meta.nucleus[0];
 
-    console.log(meta);
     const ob = new Datum1D(id, data, {
       display: {
         name: name,
@@ -102,7 +102,7 @@ export class Data1DManager {
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
         nucleus: ob.nucleus,
-        isFid:ob.isFid
+        isFid: ob.isFid,
       };
     });
   }
