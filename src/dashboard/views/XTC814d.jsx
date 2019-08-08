@@ -31,17 +31,17 @@ const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 const jcampFiles = [
-  'XTC-814d_zg30',
-  'XTC-888_zg30',
-  'XTC-966_zg30',
-  'XTC-1111a_zg30',
-  'XTC-1132a_zg30',
-  'XTC-1153_zg30',
-  'XTC-1541_zg30',
-  'XTC-1675_zg30',
-  'XTC-1693_zg30',
-  'XTC-1731a_zg30',
-  'XTC-z189_zg30',
+  'xtc/XTC-814d_zg30',
+  'xtc/XTC-888_zg30',
+  'xtc/XTC-966_zg30',
+  'xtc/XTC-1111a_zg30',
+  'xtc/XTC-1132a_zg30',
+  'xtc/XTC-1153_zg30',
+  'xtc/XTC-1541_zg30',
+  'xtc/XTC-1675_zg30',
+  'xtc/XTC-1693_zg30',
+  'xtc/XTC-1731a_zg30',
+  'xtc/XTC-z189_zg30',
 ];
 async function loadData() {
   const Data1DManagerObj = new Data1DManager();
@@ -90,7 +90,6 @@ const XTC814d = () => {
     loadData().then((d) => {
       setData(d);
       setIsLoading(false);
-
     });
   }, []);
 
@@ -107,7 +106,11 @@ const XTC814d = () => {
               </CardHeader>
               <CardBody>
                 <ClipLoader
-                  css={{position:"absolute",left:((width)/2.5),top:((height+150)/2)}}
+                  css={{
+                    position: 'absolute',
+                    left: width / 2.5,
+                    top: (height + 150) / 2,
+                  }}
                   sizeUnit={'px'}
                   size={30}
                   color={'#2ca8ff'}

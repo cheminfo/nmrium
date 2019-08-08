@@ -1,4 +1,3 @@
-
 /**
  * Returns an experiment string based on a pulse sequence
  * @param {string} pulse
@@ -9,7 +8,11 @@ export function getSpectrumType(meta = {}, info = {}) {
   if (typeof meta === 'string') {
     meta = { pulse: meta };
   }
-  let spectyp = (info.$SPECTYP || '')
+  console.log({ meta, info, test: info.$SPECTYP });
+  let spectyp = (Array.isArray(info.$SPECTYP)
+    ? info.$SPECTYP[0]
+    : info.$SPECTYP || ''
+  )
     .replace(/^<(.*)>$/, '$1')
     .toLowerCase();
 
