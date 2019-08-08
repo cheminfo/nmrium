@@ -100,6 +100,7 @@ export class Data1DManager {
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
         nucleus: ob.nucleus,
+        isFid:ob.isFid
       };
     });
   }

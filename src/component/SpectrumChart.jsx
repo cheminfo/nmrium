@@ -131,7 +131,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     _margin: margin,
     _activeSpectrum: null,
     _integrals: [],
-    mode,
+    _mode:mode,
     openMessage: handelOpenMessage,
   };
 
@@ -161,6 +161,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     _yDomains,
     history,
     _integrals,
+    _mode
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -249,7 +250,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     // console.log(_yDomain);
 
     const range =
-      mode === 'RTL'
+    _mode === 'RTL'
         ? [_width - margin.right, margin.left]
         : [margin.left, _width - margin.right];
 
@@ -371,7 +372,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
         activeSpectrum: _activeSpectrum,
         openMessage: handelOpenMessage,
         verticalAlign: verticalAlign,
-        mode,
+        mode:_mode,
       }}
     >
       <div
@@ -489,7 +490,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
               }
 
               <g className="container">
-                <XAxis showGrid={true} isFID={true} mode={mode} />
+                <XAxis showGrid={true} isFID={true} mode={_mode} />
 
                 <YAxis label="PPM" show={false} />
                 {_selectedTool === options.zoom.id && (
@@ -506,7 +507,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
                     isActive={true}
                     getScale={getScale}
                     position={mouseCoordinates}
-                    mode={mode}
+                    mode={_mode}
                   />
                 )}
 
@@ -521,7 +522,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
                     getScale={getScale}
                     position={mouseCoordinates}
                     activeSpectrum={_activeSpectrum}
-                    mode={mode}
+                    mode={_mode}
                     onIntegralDrawFinished={handleAddIntegral}
                   />
                 )}

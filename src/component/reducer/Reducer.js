@@ -91,6 +91,11 @@ const setData = (state, data) => {
       ),
     );
   }
+
+ //change x axis from right to left or vice versa according to isFid value
+//  console.log(data && data[0] && data[0].isFid);
+  const v_mode =  data && data[0] && data[0].isFid?"LTR":"RTL";
+
   // let dataumObject =
   // Datum1D.setObject(new Datum1D(data.x, data.y, data.y));
   // const XYData = dataumObject.getReal();
@@ -106,6 +111,7 @@ const setData = (state, data) => {
     _yDomain: domain.y,
     _originDomain: domain,
     _yDomains: domain._yDomains,
+    _mode:v_mode
   };
 };
 const loadSpectrum = (state, file) => {
