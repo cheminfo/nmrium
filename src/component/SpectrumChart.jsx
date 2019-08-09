@@ -485,7 +485,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
               {/* isFID={true} */}
                 <XAxis showGrid={true}  mode={_mode} />
 
-                <YAxis label="PPM" show={true} />
+                <YAxis label="PPM" show={false} />
                 {_selectedTool === options.zoom.id && (
                   <BrushTool
                     onDomainReset={handleRestDomain}
