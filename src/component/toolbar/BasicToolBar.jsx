@@ -35,7 +35,7 @@ const BasicToolBar = ({
   return (
     <Fragment>
       {isFullZoomButtonVisible && (
-        <Tooltip title="Full Zoom Out" placement="right-start">
+        <Tooltip title="Full Zoom Out ( Press f )" placement="right-start">
           <Button
             className="general-fun-bt"
             onClick={onFullZoomOut}

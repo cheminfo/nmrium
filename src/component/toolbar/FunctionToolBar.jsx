@@ -68,20 +68,20 @@ const FunctionToolBar = ({ onChangeOption, defaultValue,data,activeSpectrum }) =
         {/* selected={(selectedValue === options.zoom.id)?true:false} */}
 
         <ToggleButton key={1} value={options.zoom.id}>
-          <Tooltip title={options.zoom.label} placement="right-start">
+          <Tooltip title={options.zoom.label+' ( Press z )'} placement="right-start">
             <ZoomIn />
           </Tooltip>
         </ToggleButton>
 
         <ToggleButton key={2} value={options.peakPicking.id} disabled={!activeSpectrum}>
-          <Tooltip title={options.peakPicking.label} placement="right-start">
+          <Tooltip title={options.peakPicking.label+' ( Press p )'} placement="right-start">
             <Timeline />
           </Tooltip>
         </ToggleButton>
 
 
         <ToggleButton key={3} value={options.integral.id} disabled={!activeSpectrum}>
-          <Tooltip title={options.integral.label} placement="right-start">
+          <Tooltip title={options.integral.label+' ( Press i )'} placement="right-start">
             <ShowChart  />
           </Tooltip>
         </ToggleButton>
