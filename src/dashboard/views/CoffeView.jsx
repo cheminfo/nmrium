@@ -127,6 +127,7 @@ const CoffeView = () => {
                   data={data}
                   margin={margin}
                   mode="RTL"
+                  stackedMode={true}
                 />
               </CardBody>
             </Card>

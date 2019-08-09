@@ -26,6 +26,7 @@ const LinesSeries = ({ data }) => {
       to: xDomain[1],
     });
 
+
     let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
 
     path += pathPoints.x

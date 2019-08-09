@@ -15,12 +15,12 @@ export class Datum1D {
    * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
    */
   constructor(id, data, options = {}) {
-    console.log(options);
     this.id = id;
     this.name = options.display.name;
     this.color = options.display.color;
     this.isVisible = options.display.isVisible;
     this.isPeaksMarkersVisible = options.display.isPeaksMarkersVisible;
+    this.isRealSpectrumVisible = options.display.isRealSpectrumVisible || true;
     this.original = data; //{ x, re, im }
     this.nucleus = options.meta.nucleus || '1H'; // 1H, 13C, 19F, ...
     this.isFid = options.meta.isFid || false;
@@ -35,6 +35,10 @@ export class Datum1D {
     this.signals = [];
     this.filters = [];
     // [{kind: 'shiftX',value: -5,},{.....}]
+  }
+
+  setIsRealSpectrumVisible(isVisible){
+    this.isRealSpectrumVisible = isVisible;
   }
 
   setPeaks(peaks) {

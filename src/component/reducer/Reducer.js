@@ -10,13 +10,14 @@ import {
   SET_WIDTH,
   SET_POINTER_COORDINATES,
   SET_SELECTED_TOOL,
-  CHANGE_SPECTRUM_TYPE,
+  // CHANGE_SPECTRUM_TYPE,
   FULL_ZOOM_OUT,
   CHANGE_VISIBILITY,
   CHANGE_PEAKS_MARKERS_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
   CHNAGE_SPECTRUM_COLOR,
   ADD_INTEGRAL,
+  TOGGLE_REAL_IMAGINARY_VISIBILITY,
 } from './Actions';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
@@ -71,7 +72,7 @@ const setData = (state, data) => {
     Data1DManagerObj.pushDatum1D(
       new Datum1D(
         d.id,
-        { x: d.x, re: d.y, im: d.y },
+        { x: d.x, re: d.y, im: d.im },
         {
           display: {
             name: d.name,
@@ -230,7 +231,9 @@ const deletePeak = (state, peakData) => {
   const _data = [...state._data];
   const spectrumID = state._activeSpectrum.id;
   const index = _data.findIndex((d) => d.id === spectrumID);
-  _data[index].peaks = _data[index].peaks.filter((p) => p.xIndex !== peakData.xIndex);
+  _data[index].peaks = _data[index].peaks.filter(
+    (p) => p.xIndex !== peakData.xIndex,
+  );
   Data1DManagerObj.getDatum1D(spectrumID).setPeaks(_data[index].peaks);
 
   return { ...state, _data };
@@ -410,6 +413,58 @@ const handelChangeSpectrumColor = (state, { id, color }) => {
 };
 
 const changeSpectrumType = (state, isRealSpectrumVisible) => {
+  // if (state._activeSpectrum !== null) {
+  //   const activeSpectrumId = state._activeSpectrum.id;
+  //   const ob = Data1DManagerObj.getDatum1D(activeSpectrumId);
+  //   if (ob) {
+  //     const v_data = [...state._data];
+  //     const reY = ob.getReal().y;
+  //     const imY = ob.getImaginary().y;
+  //     const index = state._data.findIndex((d) => d.id === activeSpectrumId);
+  //     if (isRealSpectrumVisible) {
+  //       if (reY !== null && reY !== undefined) {
+  //         v_data[index].y = reY;
+  //         const domain = getDomain(v_data);
+  //         return {
+  //           ...state,
+  //           _xDomain: domain.x,
+  //           _yDomain: domain.y,
+  //           _yDomains: domain._yDomains,
+  //           _data: v_data,
+  //         };
+  //       } else {
+  //         return state;
+  //       }
+  //     } else {
+  //       if (imY !== null && imY !== undefined) {
+  //         v_data[index].y = imY;
+  //         const domain = getDomain(v_data);
+  //         return {
+  //           ...state,
+  //           _xDomain: domain.x,
+  //           _yDomain: domain.y,
+  //           _yDomains: domain._yDomains,
+  //           _data: v_data,
+  //         };
+  //       } else {
+  //         return state;
+  //       }
+  //     }
+  //   }
+  // } else {
+  //   return state;
+  // }
+  // return state;
+};
+
+const handleToggleRealImaginaryVisibility = (state, isRealSpectrumVisible) => {
+  // const _data = [...state._data];
+  // if(state._activeSpectrum != null){
+  //   const activeSpectrumID = state._activeSpectrum.id;
+  //   const index = _data.findIndex((d)=>d.id === activeSpectrumID);
+  //   _data[index].isRealSpectrumVisible = !_data[index].isRealSpectrumVisible;
+  // }
+
   if (state._activeSpectrum !== null) {
     const activeSpectrumId = state._activeSpectrum.id;
     const ob = Data1DManagerObj.getDatum1D(activeSpectrumId);
@@ -420,13 +475,22 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
       const reY = ob.getReal().y;
       const imY = ob.getImaginary().y;
       const index = state._data.findIndex((d) => d.id === activeSpectrumId);
-
-      if (isRealSpectrumVisible) {
+      ob.setIsRealSpectrumVisible(!v_data[index]);
+      
+      v_data[index].isRealSpectrumVisible = !v_data[index]
+        .isRealSpectrumVisible;
+        ob.setIsRealSpectrumVisible()
+      // isRealSpectrumVisible
+      if (v_data[index].isRealSpectrumVisible) {
         if (reY !== null && reY !== undefined) {
           v_data[index].y = reY;
+          const domain = getDomain(v_data);
 
           return {
             ...state,
+            _xDomain: domain.x,
+            _yDomain: domain.y,
+            _yDomains: domain._yDomains,
             _data: v_data,
           };
         } else {
@@ -435,9 +499,13 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
       } else {
         if (imY !== null && imY !== undefined) {
           v_data[index].y = imY;
+          const domain = getDomain(v_data);
 
           return {
             ...state,
+            _xDomain: domain.x,
+            _yDomain: domain.y,
+            _yDomains: domain._yDomains,
             _data: v_data,
           };
         } else {
@@ -448,8 +516,6 @@ const changeSpectrumType = (state, isRealSpectrumVisible) => {
   } else {
     return state;
   }
-
-  // return state;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -601,8 +667,8 @@ export const spectrumReducer = (state, action) => {
     case SHIFT_SPECTRUM:
       return shiftSpectrumAlongXAxis(state, action.shiftValue);
 
-    case CHANGE_SPECTRUM_TYPE:
-      return changeSpectrumType(state, action.isRealSpectrumVisible);
+    // case CHANGE_SPECTRUM_TYPE:
+    //   return changeSpectrumType(state, action.isRealSpectrumVisible);
 
     case CHANGE_VISIBILITY:
       return handelSpectrumVisibility(state, action.data);
@@ -614,6 +680,11 @@ export const spectrumReducer = (state, action) => {
 
     case CHNAGE_SPECTRUM_COLOR:
       return handelChangeSpectrumColor(state, action.data);
+    case TOGGLE_REAL_IMAGINARY_VISIBILITY:
+      return handleToggleRealImaginaryVisibility(
+        state,
+        action.isRealSpectrumVisible,
+      );
 
     // undo and redo operation
     case UNDO:

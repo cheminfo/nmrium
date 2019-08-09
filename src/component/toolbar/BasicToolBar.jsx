@@ -11,7 +11,7 @@ const BasicToolBar = ({
   isFullZoomButtonEnabled = true,
   isViewButtonVisible = true,
   isViewButtonEnabled = true,
-  data,
+  data
 }) => {
 
   const handleOnKeyPressed = useCallback((e) => {

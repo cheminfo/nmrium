@@ -11,7 +11,7 @@ const ViewButton = ({
   activeSpectrum,
 }) => {
   const [option, setOption] = useState();
-  const [isDisabled, setDisabled] = useState(false);
+  const [isDisabled, setDisabled] = useState(true);
 
   const handleChange = () => {
     setOption(!option);
@@ -25,13 +25,15 @@ const ViewButton = ({
   useEffect(() => {
     const sData =
       data && activeSpectrum && data.find((d) => d.id === activeSpectrum.id);
-      console.log(sData);
     if (activeSpectrum == null || sData === -1) {
       setDisabled(true);
+      setOption(defaultValue);
     } else {
-      setDisabled(data.isComplex);
+      setOption(sData.isRealSpectrumVisible);
+      console.log(sData.isComplex);
+      setDisabled(!sData.isComplex);
     }
-  },[activeSpectrum]);
+  }, [activeSpectrum]);
 
   return (
     <Tooltip

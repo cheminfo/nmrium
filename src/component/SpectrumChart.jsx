@@ -41,7 +41,7 @@ import {
   LOADING_SPECTRUM,
   SET_DATA,
   SHIFT_SPECTRUM,
-  CHANGE_SPECTRUM_TYPE,
+  // CHANGE_SPECTRUM_TYPE,
   FULL_ZOOM_OUT,
   CHANGE_VISIBILITY,
   CHANGE_PEAKS_MARKERS_VISIBILITY,
@@ -49,6 +49,7 @@ import {
   CHNAGE_SPECTRUM_COLOR,
   DELETE_PEAK_NOTATION,
   ADD_INTEGRAL,
+  TOGGLE_REAL_IMAGINARY_VISIBILITY,
 } from './reducer/Actions';
 
 import { UNDO, REDO, RESET } from './reducer/HistoryActions';
@@ -86,8 +87,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
       reader.onerror = (e) => reject('file reading has failed', e);
       reader.onload = () => {
         // Do whatever you want with the file contents
-        console.log(reader);
-
         if (reader.result) {
           const binaryData = reader.result;
 
@@ -99,7 +98,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
         }
       };
 
-      console.log(acceptedFiles);
     });
   };
 
@@ -179,14 +177,12 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   }, [width, height]);
 
   const handleChangeOption = (selectedTool) => {
-    // setSelectedTool(selectedTool);
-    console.log(selectedTool);
-
     dispatch({ type: SET_SELECTED_TOOL, selectedTool });
+
   };
 
   const handleShowSpectrumTypeChang = (isRealSpectrumVisible) => {
-    dispatch({ type: CHANGE_SPECTRUM_TYPE, isRealSpectrumVisible });
+    dispatch({ type: TOGGLE_REAL_IMAGINARY_VISIBILITY, isRealSpectrumVisible });
   };
 
   /**
@@ -246,9 +242,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   };
 
   const getScale = (spectrumId = null) => {
-    // console.log(_xDomain);
-    // console.log(_yDomain);
-
     const range =
     _mode === 'RTL'
         ? [_width - margin.right, margin.left]
@@ -257,7 +250,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     const x = d3.scaleLinear(_xDomain, range);
     // console.log(spectrumId);
     let y;
-
     if (spectrumId == null) {
       y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
     } else if (_activeSpectrum == null || _activeSpectrum.id !== spectrumId) {
@@ -299,8 +291,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
       type: ADD_INTEGRAL,
       integral,
     });
-
-    console.log(_integrals);
   };
 
   const handleRedo = (e) => {
@@ -354,8 +344,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
       setVerticalAlign(0);
     } else {
       setVerticalAlign(Math.floor(-height /( _data.length +2)));
-
-      console.log(verticalAlign);
     }
   };
 
@@ -497,7 +485,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
               {/* isFID={true} */}
                 <XAxis showGrid={true}  mode={_mode} />
 
-                <YAxis label="PPM" show={false} />
+                <YAxis label="PPM" show={true} />
                 {_selectedTool === options.zoom.id && (
                   <BrushTool
                     onDomainReset={handleRestDomain}

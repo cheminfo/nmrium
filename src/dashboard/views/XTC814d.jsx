@@ -68,7 +68,6 @@ async function loadData() {
     }
   } catch (e) {}
   const xyData = Data1DManagerObj.getXYData();
-  console.log(xyData);
   return xyData;
 
   // Never forget the final catch!
@@ -123,6 +122,8 @@ const XTC814d = () => {
                   data={data}
                   margin={margin}
                   mode="RTL"
+                  stackedMode={true}
+
                 />
               </CardBody>
             </Card>

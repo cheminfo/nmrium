@@ -24,12 +24,12 @@ const IntegralsSeries = ({ data }) => {
       to: xDomain[1],
     });
 
-    let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
+    let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0]*50)}`;
 
     path += pathPoints.x
       .slice(1)
       .map((point, i) => {
-        return ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
+        return ` L ${scale.x(point)} ${scale.y(pathPoints.y[i]*50)}`;
       })
       .join('');
 
