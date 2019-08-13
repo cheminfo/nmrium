@@ -111,25 +111,28 @@ const setData = (state, data) => {
     _mode: v_mode,
   };
 };
-const loadSpectrum = (state, file) => {
-  const key = getKey();
-  const usedColors = state._data.map((d) => d.color);
-  const color = getColor(usedColors);
+const loadSpectrum = (state, files) => {
+  let usedColors = state._data.map((d) => d.color);
+  console.log(files.length);
+  for (let i=0; i < files.length; i++) {
+     const key = getKey();
+    const color = getColor(usedColors);
 
-  let dataumObject = Data1DManagerObj.fromJcamp(
-    key,
-    file.binary.toString(),
-    file.name,
-    color,
-    true,
-    true,
-  );
+    let dataumObject = Data1DManagerObj.fromJcamp(
+      key,
+      files[i].binary.toString(),
+      files[i].name,
+      color,
+      true,
+      true,
+    );
+    usedColors.push(color);
 
-  Data1DManagerObj.pushDatum1D(dataumObject);
+    Data1DManagerObj.pushDatum1D(dataumObject);
+  }
 
   const xyData = Data1DManagerObj.getXYData();
   // const v_data = [...state._data];
-
   const domain = getDomain(xyData);
   // const realData = dataumObject.getReal();
 
@@ -476,10 +479,10 @@ const handleToggleRealImaginaryVisibility = (state, isRealSpectrumVisible) => {
       const imY = ob.getImaginary().y;
       const index = state._data.findIndex((d) => d.id === activeSpectrumId);
       ob.setIsRealSpectrumVisible(!v_data[index]);
-      
+
       v_data[index].isRealSpectrumVisible = !v_data[index]
         .isRealSpectrumVisible;
-        ob.setIsRealSpectrumVisible()
+      ob.setIsRealSpectrumVisible();
       // isRealSpectrumVisible
       if (v_data[index].isRealSpectrumVisible) {
         if (reY !== null && reY !== undefined) {
@@ -662,7 +665,7 @@ export const spectrumReducer = (state, action) => {
       return zoomOut(state);
 
     case LOADING_SPECTRUM:
-      return loadSpectrum(state, action);
+      return loadSpectrum(state, action.files);
 
     case SHIFT_SPECTRUM:
       return shiftSpectrumAlongXAxis(state, action.shiftValue);

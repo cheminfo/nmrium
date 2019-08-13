@@ -72,40 +72,52 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   });
   const [verticalAlign, setVerticalAlign] = useState(0);
 
-  const LoadFile = (acceptedFiles) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      acceptedFiles.forEach((file) => {
-        if (!(file.name.endsWith('.dx') || file.name.endsWith('.jdx'))) {
-          reject('The file must be jcamp file .dx,.jdx file extention');
-        } else {
-          reader.readAsBinaryString(file);
-        }
-      });
+  const LoadFiles = (acceptedFiles) => {
+    //   return Promise.all([].map.call(files, function (file) {
+    //     return new Promise(function (resolve, reject) {
+    //         var reader = new FileReader();
+    //         reader.onloadend = function () {
+    //             resolve({ result: reader.result, file: file });
+    //         };
+    //         reader.readAsArrayBuffer(file);
+    //     });
+    // }))
+    return Promise.all(
+      [].map.call(acceptedFiles, (file)=> {
+        return new Promise((resolve, reject) => {
+          // acceptedFiles.forEach((file) => {
+          const reader = new FileReader();
 
-      reader.onabort = (e) => reject('file reading was aborted', e);
-      reader.onerror = (e) => reject('file reading has failed', e);
-      reader.onload = () => {
-        // Do whatever you want with the file contents
-        if (reader.result) {
-          const binaryData = reader.result;
+          if (!(file.name.endsWith('.dx') || file.name.endsWith('.jdx'))) {
+            reject('The file must be jcamp file .dx,.jdx file extention');
+          } else {
+            reader.onabort = (e) => reject('file reading was aborted', e);
+            reader.onerror = (e) => reject('file reading has failed', e);
+            reader.onload = () => {
+              // Do whatever you want with the file contents
+              if (reader.result) {
+                const binaryData = reader.result;
 
-          const name = acceptedFiles[0].name.substr(
-            0,
-            acceptedFiles[0].name.lastIndexOf('.'),
-          );
-          resolve({ binary: binaryData, name: name });
-        }
-      };
+                const name = file.name.substr(0, file.name.lastIndexOf('.'));
+                // filesReader.push({ binary: binaryData, name: name });
+                resolve({ binary: binaryData, name: name });
+              }
+            };
 
-    });
+            reader.readAsBinaryString(file);
+            // console.log(filesReader)
+          }
+        });
+      }),
+    );
   };
 
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the file
-    LoadFile(acceptedFiles).then(
-      (file) => {
-        dispatch({ type: LOADING_SPECTRUM, ...file });
+    LoadFiles(acceptedFiles).then(
+      (files) => {
+        console.log(files);
+        dispatch({ type: LOADING_SPECTRUM, files });
       },
       (err) => {
         alert(err);
@@ -129,7 +141,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     _margin: margin,
     _activeSpectrum: null,
     _integrals: [],
-    _mode:mode,
+    _mode: mode,
     openMessage: handelOpenMessage,
   };
 
@@ -159,7 +171,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     _yDomains,
     history,
     _integrals,
-    _mode
+    _mode,
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -178,7 +190,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
 
   const handleChangeOption = (selectedTool) => {
     dispatch({ type: SET_SELECTED_TOOL, selectedTool });
-
   };
 
   const handleShowSpectrumTypeChang = (isRealSpectrumVisible) => {
@@ -243,7 +254,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
 
   const getScale = (spectrumId = null) => {
     const range =
-    _mode === 'RTL'
+      _mode === 'RTL'
         ? [_width - margin.right, margin.left]
         : [margin.left, _width - margin.right];
 
@@ -343,7 +354,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     if (verticalAlign !== 0) {
       setVerticalAlign(0);
     } else {
-      setVerticalAlign(Math.floor(-height /( _data.length +2)));
+      setVerticalAlign(Math.floor(-height / (_data.length + 2)));
     }
   };
 
@@ -360,7 +371,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
         activeSpectrum: _activeSpectrum,
         openMessage: handelOpenMessage,
         verticalAlign: verticalAlign,
-        mode:_mode,
+        mode: _mode,
       }}
     >
       <div
@@ -387,7 +398,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
               onChangeOption={handleChangeOption}
               defaultValue={options.zoom.id}
               data={_data}
-              activeSpectrum = {_activeSpectrum}
+              activeSpectrum={_activeSpectrum}
 
               // toolbarWidth={(w) => {
               //   setToolbarWidth(w);
@@ -438,17 +449,14 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
               onViewChanged={handleChangeVerticalAlignments}
               viewAlignValue={verticalAlign}
               data={_data}
-              activeSpectrum = {_activeSpectrum}
-
+              activeSpectrum={_activeSpectrum}
             />
 
             <ViewButton
               onChange={handleShowSpectrumTypeChang}
               defaultValue={true}
               data={_data}
-              activeSpectrum = {_activeSpectrum}
-
-
+              activeSpectrum={_activeSpectrum}
             />
           </Grid>
 
@@ -482,8 +490,8 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
               }
 
               <g className="container">
-              {/* isFID={true} */}
-                <XAxis showGrid={true}  mode={_mode} />
+                {/* isFID={true} */}
+                <XAxis showGrid={true} mode={_mode} />
 
                 <YAxis label="PPM" show={false} />
                 {_selectedTool === options.zoom.id && (
