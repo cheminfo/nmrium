@@ -18,7 +18,6 @@ const ExpansionPanel = withStyles({
     '&$expanded': {
       margin: 'auto',
     },
-
   },
   expanded: {},
 })(MuiExpansionPanel);
@@ -32,15 +31,13 @@ const ExpansionPanelSummary = withStyles({
     '&$expanded': {
       minHeight: 36,
     },
-    fontSize:"12px"
-
+    fontSize: '12px',
   },
   content: {
     '&$expanded': {
       margin: '3px 0',
     },
     margin: '3px 0',
-
   },
   expanded: {},
 })(MuiExpansionPanelSummary);
@@ -52,7 +49,7 @@ const ExpansionPanelDetails = withStyles((theme) => ({
   },
 }))(MuiExpansionPanelDetails);
 
-const InformationPanel = ({ listItem, activeItem=null }) => {
+const InformationPanel = ({ listItem, activeItem = null }) => {
   const [expanded, setExpanded] = React.useState(activeItem);
 
   const handleChange = (panel) => (event, newExpanded) => {
@@ -64,6 +61,7 @@ const InformationPanel = ({ listItem, activeItem=null }) => {
       {listItem &&
         listItem.map((item) => (
           <ExpansionPanel
+            key={item.id}
             square
             expanded={expanded === item.id}
             onChange={handleChange(item.id)}
@@ -72,7 +70,7 @@ const InformationPanel = ({ listItem, activeItem=null }) => {
               aria-controls="panel1d-content"
               id="panel1d-header"
             >
-              <Typography style={{fontSize:"12px"}}>{item.title}</Typography>
+              <Typography style={{ fontSize: '12px' }}>{item.title}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
           </ExpansionPanel>

@@ -180,20 +180,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     noClick: true,
   });
 
-  const infoPanel = [
-    {
-      title: 'spectra',
-      component: (
-        <SpectrumList
-          data={_data}
-          onChangeVisibility={handleChangeVisibility}
-          onChangeActive={handleChangeActiveSpectrum}
-          onColorChanged={handleSpectrumColorChanged}
-          onChangeMarkersVisibility={handleChangeMarkersVisibility}
-        />
-      ),
-    },
-  ];
+
 
   useEffect(() => {
     dispatch({ type: SET_DATA, data });
