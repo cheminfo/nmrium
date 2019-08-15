@@ -15,6 +15,17 @@ export class Datum1D {
    * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
    */
   constructor(id, data, options = {}) {
+    /*
+    What are the different categories of information about a Datum1D ?
+    * display: {color, isVisible, ...} // all that is related to display information
+    * data: {re:[], im:[], y:[], meta: {}}
+    * info: {isFid, isComplex, nucleus, solvent, frequency, temperature, ...}
+    * ranges: [],
+    * signals: [],
+    * annotations: [],
+    * 
+*/
+
     this.id = id;
     this.name = options.display.name;
     this.color = options.display.color;
@@ -24,7 +35,7 @@ export class Datum1D {
     this.original = data; //{ x, re, im }
     this.nucleus = options.meta.nucleus || '1H'; // 1H, 13C, 19F, ...
     this.isFid = options.meta.isFid || false;
-    this.isComplex = options.meta.isComplex || false; // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button . 
+    this.isComplex = options.meta.isComplex || false; // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     this.x = data.x;
     this.re = data.re;
     this.im = data.im;
@@ -37,7 +48,7 @@ export class Datum1D {
     // [{kind: 'shiftX',value: -5,},{.....}]
   }
 
-  setIsRealSpectrumVisible(isVisible){
+  setIsRealSpectrumVisible(isVisible) {
     this.isRealSpectrumVisible = isVisible;
   }
 
