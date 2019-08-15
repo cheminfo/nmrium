@@ -14,10 +14,10 @@ import { Button } from '@material-ui/core';
 // import { ChromePicker } from 'react-color';
 // import ColorPicker from './color-picker';
 
-import './css/spectrum-list.css';
+import '../css/spectrum-list.css';
 
 import { SketchPicker } from 'react-color';
-import { COLORS } from './utility/ColorGenerator';
+import { COLORS } from '../utility/ColorGenerator';
 
 function arePropsEqual(prevProps, nextProps) {
   return true;
@@ -123,7 +123,6 @@ export default function SpectrumList({
   };
 
   const handleOpenColorPicker = (selectedSpectrum, event) => {
-    console.log(event.nativeEvent)
     setColorPickerPosition({
       x: event.nativeEvent.clientX,
       y: event.nativeEvent.clientY,

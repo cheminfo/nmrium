@@ -5,19 +5,25 @@ import { XY, XReIm } from 'ml-spectra-processing';
 import { getMetaData } from './metadata/getMetaData';
 export class Data1DManager {
   data1D = [];
-  instance = null;
+  // instance = null;
 
   constructor() {
-    if (!!Data1DManager.instance) {
-      return (Data1DManager.instance = new Data1DManager());
-    }
+    this.data1D = [];
 
-    return this;
+
+    console.log(this.data1D);
+    // if (!!Data1DManager.instance) {
+    //   console.log('1');
+    //   return (Data1DManager.instance = new Data1DManager());
+    // }
+    // console.log('2');
+
+    // return this;
   }
 
-  getInstance() {
-    return Data1DManager.instance;
-  }
+  // getInstance() {
+  //   return Data1DManager.instance;
+  // }
 
   fromJcamp = function fromJcamp(
     id,

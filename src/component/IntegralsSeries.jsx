@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 import { ChartContext } from './context/ChartContext';
+import * as d3 from 'd3'
 // { width, height, margin, data, xDomain, yDomain, getScale }
 const IntegralsSeries = ({ data }) => {
 
@@ -14,6 +15,35 @@ const IntegralsSeries = ({ data }) => {
     verticalAlign,
     activeSpectrum,
   } = useContext(ChartContext);
+  
+  // const [integralYDomain,setIntegralYDomain] = useState();
+
+
+// const getIntegralYDomain = () =>{
+//   // console.log(data);
+//   let yArray = data.reduce((acc, d, i) => {
+//     console.log((d.hasOwnProperty('integrals')) ? d3.extent( d.integrals.map((integral)=>integral.y)): []);
+//     const extent = ((d.hasOwnProperty('integrals')) ? d3.extent(d.integrals && d.integrals.map((integral)=>integral.y)): [];
+//     return acc.concat(extent);
+//   }, []);
+
+//   console.log(yArray);
+
+//  return d3.extent(yArray);
+// }
+
+// useEffect(()=>{
+//   console.log(data);
+//   getIntegralYDomain();
+//   // const yIntegralDomain = getIntegralYDomain();
+//   // console.log(yIntegralDomain);
+//   // setIntegralYDomain(yIntegralDomain);
+// },[data]);
+
+// const getIntegralYScale = () =>{
+
+//   return d3.scaleLinear(integralYDomain, [height - margin.bottom, margin.top]);
+// }
 
   function makePath(data) {
 
@@ -23,13 +53,13 @@ const IntegralsSeries = ({ data }) => {
       from: xDomain[0],
       to: xDomain[1],
     });
-
-    let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0]*50)}`;
+    // scale.y
+    let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
 
     path += pathPoints.x
       .slice(1)
       .map((point, i) => {
-        return ` L ${scale.x(point)} ${scale.y(pathPoints.y[i]*50)}`;
+        return ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
       })
       .join('');
 

@@ -28,7 +28,7 @@ import { spectrumReducer } from './reducer/Reducer';
 // import Tooltip from '@material-ui/core/Tooltip';
 // import { FaUndo, FaRedo, FaSearchMinus, FaMinus, FaBars } from 'react-icons/fa';
 
-import SpectrumList from './SpectrumList';
+import SpectrumList from './toolbar/SpectrumList';
 import { Snackbar } from '@material-ui/core';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
 
@@ -56,6 +56,7 @@ import { UNDO, REDO, RESET } from './reducer/HistoryActions';
 import BasicToolBar from './toolbar/BasicToolBar';
 import HistoryToolBar from './toolbar/HistoryToolBar';
 import IntegralTool from './tool/IntegralTool';
+import InformationPanel from './toolbar/InformationPanel';
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -83,7 +84,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     //     });
     // }))
     return Promise.all(
-      [].map.call(acceptedFiles, (file)=> {
+      [].map.call(acceptedFiles, (file) => {
         return new Promise((resolve, reject) => {
           // acceptedFiles.forEach((file) => {
           const reader = new FileReader();
@@ -175,10 +176,25 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    // onDrop,
     onDrop,
     noClick: true,
   });
+
+  const infoPanel = [
+    {
+      title: 'spectra',
+      component: (
+        <SpectrumList
+          data={_data}
+          onChangeVisibility={handleChangeVisibility}
+          onChangeActive={handleChangeActiveSpectrum}
+          onColorChanged={handleSpectrumColorChanged}
+          onChangeMarkersVisibility={handleChangeMarkersVisibility}
+        />
+      ),
+    },
+  ];
+
   useEffect(() => {
     dispatch({ type: SET_DATA, data });
   }, [data]);
@@ -322,19 +338,19 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     });
   };
 
-  const handleChangeVisibility = (data) => {
+  function handleChangeVisibility (data) {
     dispatch({ type: CHANGE_VISIBILITY, data });
   };
 
-  const handleChangeMarkersVisibility = (data) => {
+  function handleChangeMarkersVisibility (data){
     dispatch({ type: CHANGE_PEAKS_MARKERS_VISIBILITY, data });
   };
 
-  const handleChangeActiveSpectrum = (data) => {
+  function handleChangeActiveSpectrum  (data) {
     dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data });
   };
 
-  const handleSpectrumColorChanged = (data) => {
+  function handleSpectrumColorChanged  (data) {
     dispatch({ type: CHNAGE_SPECTRUM_COLOR, data });
   };
 
@@ -387,7 +403,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
             style={{ width: `${width}px`, height: `${height}px` }}
           >
             <PublishRounded />
-            <p>Drop your file here</p>
+            <p>Drop your files here</p>
           </div>
         )}
 
@@ -544,7 +560,46 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
           </Grid>
 
           <Grid item xs={3}>
-            {_data && _data[0] && (
+            <InformationPanel
+              activeItem="spectraPanel"
+              listItem={[
+                {
+                  id:'spectraPanel',
+                  title: 'spectra',
+                  component: (
+                    <SpectrumList
+                      data={_data}
+                      onChangeVisibility={handleChangeVisibility}
+                      onChangeActive={handleChangeActiveSpectrum}
+                      onColorChanged={handleSpectrumColorChanged}
+                      onChangeMarkersVisibility={handleChangeMarkersVisibility}
+                    />
+                  ),
+
+                },
+                {
+                  id:'informationPanel',
+                  title: 'Information',
+                  component: (<p>information</p>)
+                },
+                {
+                  id:'integralsPanel',
+                  title: 'Integrals',
+                  component:  (<p>Integrals</p>)
+                },
+                {
+                  id:'peaksPanel',
+                  title: 'Peaks',
+                  component:  (<p>Peaks</p>)
+                },
+                {
+                  id:'structuresPanel',
+                  title: 'Structures',
+                  component:  (<p>Structures</p>)
+                },
+              ]}
+            />
+            {/* {_data && _data[0] && (
               <SpectrumList
                 data={_data}
                 onChangeVisibility={handleChangeVisibility}
@@ -552,7 +607,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
                 onColorChanged={handleSpectrumColorChanged}
                 onChangeMarkersVisibility={handleChangeMarkersVisibility}
               />
-            )}
+            )} */}
           </Grid>
         </Grid>
 

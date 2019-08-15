@@ -25,6 +25,7 @@
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",
     "react-dropzone": "^10.1.7",
+    "react-full-screen": "^0.2.4",
     "react-icons": "^3.7.0",
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
