@@ -1,4 +1,4 @@
-import React, { useRef, useContext } from 'react';
+import React, { useRef, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 import { ChartContext } from './context/ChartContext';
@@ -16,9 +16,13 @@ const LinesSeries = ({ data }) => {
   } = useContext(ChartContext);
 
   // const {data} =
-  // const [_data, setData] = useState([data]);
+  const [_data, setData] = useState([]);
 
   function makePath(data) {
+   
+
+    console.log('draw path');
+
     const { id, x, y } = data;
     const scale = getScale(id);
     const pathPoints = XY.reduce(x, y, {
@@ -41,6 +45,14 @@ const LinesSeries = ({ data }) => {
 
     // }
   }
+
+  useEffect(()=>{
+
+    console.log('line searise updated');
+    setData(data);
+
+
+  },[data]);
 
   // useEffect(() => {
 
@@ -88,7 +100,7 @@ const LinesSeries = ({ data }) => {
       </defs>
 
       <g className="paths" ref={refPathsContainer} clipPath="url(#clip)">
-        {data && data[0] && data[0].x &&  data.filter((d)=>d.isVisible === true).map((d, i) => ( 
+        {_data && _data[0] && _data[0].x &&  _data.filter((d)=>d.isVisible === true).map((d, i) => ( 
           // d.isVisible && 
           <path
             className="line"
