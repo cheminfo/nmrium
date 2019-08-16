@@ -1,10 +1,9 @@
-import React, { useRef, useContext, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 import { ChartContext } from './context/ChartContext';
 
 export default function LinesSeries({ data }) {
-  const refPathsContainer = useRef();
   const {
     width,
     height,
@@ -75,7 +74,7 @@ export default function LinesSeries({ data }) {
         </clipPath>
       </defs>
 
-      <g className="paths" ref={refPathsContainer} clipPath="url(#clip)">
+      <g className="paths" clipPath="url(#clip)">
         {paths}
       </g>
     </g>
