@@ -65,16 +65,22 @@ export default function SpectrumList({
     setVisible(visibleSpectrums);
     setMarkersVisible(visibleMarkers);
 
+
+    // if (data && data.length === 1) {
+    //   setActivated(data[0]);
+    //   onChangeActive(data[0]);
+    // }
     // onChangeVisibility(data);
     // onChangeActive(data[0])
   }, [data]);
 
-  useEffect(() => {
-    if (data && data.length === 1) {
-      setActivated(data[0]);
-      onChangeActive(data[0]);
-    }
-  }, []);
+  // useEffect(() => {
+    
+  //   if (data && data.length === 1) {
+  //     setActivated(data[0]);
+  //     onChangeActive(data[0]);
+  //   }
+  // }, []);
 
   const handleVisibility = (d) => {
     const currentIndex = visible.findIndex((v) => v.id === d.id);
@@ -149,7 +155,7 @@ export default function SpectrumList({
       >
         {data.map((d) => {
           return (
-            <ListItem key={d.id}>
+            <ListItem key={'slist'+d.id}>
               <ListItemIcon>
                 <Button onClick={() => handleVisibility(d)}>
                   <FaEye

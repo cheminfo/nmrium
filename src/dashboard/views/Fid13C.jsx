@@ -68,6 +68,7 @@ function checkStatus(response) {
 
 const Spectrum13C = () => {
   const [data, setData] = useState([]);
+  
   useEffect(() => {
     loadData().then((d) => {
       setData(d);

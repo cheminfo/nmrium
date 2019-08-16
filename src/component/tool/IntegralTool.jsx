@@ -42,12 +42,19 @@ class IntegralTool extends Component {
         reverse: true,
       });
 
+      const integralValue = XY.integration(_data, {
+        from: range[0],
+        to: range[1],
+        reverse: true,
+      });
+
       d3.select(this.refs.brush).call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
       this.props.onIntegralDrawFinished({
         id: activeSpectrum.id,
         from: range[0],
         to: range[1],
         ...integralResult,
+        value:integralValue
       });
     }
   };

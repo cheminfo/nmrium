@@ -631,6 +631,7 @@ const handleHistoryReset = (state, action) => {
 //////////////////////////////////////////////////////////////////////
 
 export const spectrumReducer = (state, action) => {
+    console.log(action);
   switch (action.type) {
     case PEAK_PICKING:
       return addPeak(state, action.mouseCoordinates);

@@ -57,6 +57,7 @@ import BasicToolBar from './toolbar/BasicToolBar';
 import HistoryToolBar from './toolbar/HistoryToolBar';
 import IntegralTool from './tool/IntegralTool';
 import InformationPanel from './toolbar/InformationPanel';
+import IntegralTable from './toolbar/IntegralTable';
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -130,7 +131,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   const chartArea = useRef();
 
   const initialState = {
-    _data: [],
+    _data: data,
     _xDomain: [],
     _yDomain: [],
     _yDomains: [],
@@ -141,7 +142,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     _height: height,
     _margin: margin,
     _activeSpectrum: null,
-    _integrals: [],
+    // _integrals: [],
     _mode: mode,
     openMessage: handelOpenMessage,
   };
@@ -181,8 +182,49 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   });
 
 
+  const infoList = [
+    {
+      id: 'spectraPanel',
+      title: 'spectra',
+      component: (
+        <SpectrumList
+          data={_data}
+          onChangeVisibility={handleChangeVisibility}
+          onChangeActive={handleChangeActiveSpectrum}
+          onColorChanged={handleSpectrumColorChanged}
+          onChangeMarkersVisibility={handleChangeMarkersVisibility}
+        />
+      ),
+    },
+    {
+      id: 'informationPanel',
+      title: 'Information',
+      component: (<p>information</p>)
+        },
+    {
+      id: 'integralsPanel',
+      title: 'Integrals',
+      component:(
+        <IntegralTable
+        data={_data}
+        activeSpectrum={_activeSpectrum}
+        />
+      ),
+    },
+    {
+      id: 'peaksPanel',
+      title: 'Peaks',
+      component: <p>Peaks</p>,
+    },
+    {
+      id: 'structuresPanel',
+      title: 'Structures',
+      component: <p>Structures</p>,
+    },
+  ];
 
   useEffect(() => {
+    console.log(data)
     dispatch({ type: SET_DATA, data });
   }, [data]);
 
@@ -325,21 +367,21 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     });
   };
 
-  function handleChangeVisibility (data) {
+  function handleChangeVisibility(data) {
     dispatch({ type: CHANGE_VISIBILITY, data });
-  };
+  }
 
-  function handleChangeMarkersVisibility (data){
+  function handleChangeMarkersVisibility(data) {
     dispatch({ type: CHANGE_PEAKS_MARKERS_VISIBILITY, data });
-  };
+  }
 
-  function handleChangeActiveSpectrum  (data) {
+  function handleChangeActiveSpectrum(data) {
     dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data });
-  };
+  }
 
-  function handleSpectrumColorChanged  (data) {
+  function handleSpectrumColorChanged(data) {
     dispatch({ type: CHNAGE_SPECTRUM_COLOR, data });
-  };
+  }
 
   function handelOpenMessage({ messageType, messageText }) {
     openMessage({ messageType, messageText, isOpen: true });
@@ -549,42 +591,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
           <Grid item xs={3}>
             <InformationPanel
               activeItem="spectraPanel"
-              listItem={[
-                {
-                  id:'spectraPanel',
-                  title: 'spectra',
-                  component: (
-                    <SpectrumList
-                      data={_data}
-                      onChangeVisibility={handleChangeVisibility}
-                      onChangeActive={handleChangeActiveSpectrum}
-                      onColorChanged={handleSpectrumColorChanged}
-                      onChangeMarkersVisibility={handleChangeMarkersVisibility}
-                    />
-                  ),
-
-                },
-                {
-                  id:'informationPanel',
-                  title: 'Information',
-                  component: (<p>information</p>)
-                },
-                {
-                  id:'integralsPanel',
-                  title: 'Integrals',
-                  component:  (<p>Integrals</p>)
-                },
-                {
-                  id:'peaksPanel',
-                  title: 'Peaks',
-                  component:  (<p>Peaks</p>)
-                },
-                {
-                  id:'structuresPanel',
-                  title: 'Structures',
-                  component:  (<p>Structures</p>)
-                },
-              ]}
+              listItem={infoList}
             />
             {/* {_data && _data[0] && (
               <SpectrumList

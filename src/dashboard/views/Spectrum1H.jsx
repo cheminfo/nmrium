@@ -45,12 +45,12 @@ function loadData() {
           true,
           true,
         );
-        console.log(datumObject);
+        // console.log(datumObject);
 
         Data1DManagerObj.pushDatum1D(datumObject);
 
         const xyData = Data1DManagerObj.getXYData();
-        console.log(xyData);
+        // console.log(xyData);
         resolve(xyData);
       })
       .catch((err) => {
@@ -68,9 +68,15 @@ function checkStatus(response) {
 }
 
 const Spectrum1H = (props) => {
-  const [data, setData] = useState([]);
+  const [_data, setData] = useState();
+
+
+
+
   useEffect(() => {
     loadData().then((d) => {
+
+     console.log(d);
       setData(d);
     });
   }, []);
@@ -90,7 +96,7 @@ const Spectrum1H = (props) => {
                 <SpectrumChart
                   width={width}
                   height={height}
-                  data={data}
+                  data={_data}
                   margin={margin}
                   mode="RTL"
                 />
