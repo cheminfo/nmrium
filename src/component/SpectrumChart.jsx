@@ -53,6 +53,7 @@ import HistoryToolBar from './toolbar/HistoryToolBar';
 import IntegralTool from './tool/IntegralTool';
 import InformationPanel from './toolbar/InformationPanel';
 import IntegralTable from './toolbar/IntegralTable';
+import { DispatchProvider } from './context/DispatchContext';
 
 function loadFiles(acceptedFiles) {
   return Promise.all(
@@ -199,10 +200,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
   }, [width, height]);
 
-  const handleChangeOption = (selectedTool) => {
-    dispatch({ type: SET_SELECTED_TOOL, selectedTool });
-  };
-
   const handleShowSpectrumTypeChang = (isRealSpectrumVisible) => {
     dispatch({ type: TOGGLE_REAL_IMAGINARY_VISIBILITY, isRealSpectrumVisible });
   };
@@ -339,155 +336,156 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   };
 
   return (
-    <ChartContext.Provider
-      value={{
-        margin: margin,
-        width: _width,
-        height: height,
-        data: _data,
-        xDomain: _xDomain,
-        yDomain: _yDomain,
-        getScale: getScale,
-        activeSpectrum: _activeSpectrum,
-        openMessage: handelOpenMessage,
-        verticalAlign: verticalAlign,
-        mode: _mode,
-      }}
-    >
-      <div
-        {...getRootProps()}
-        className={isDragActive ? 'main-container over' : 'main-container'}
-        style={{ width: `${width}px` }}
+    <DispatchProvider>
+      <ChartContext.Provider
+        value={{
+          margin: margin,
+          width: _width,
+          height: height,
+          data: _data,
+          xDomain: _xDomain,
+          yDomain: _yDomain,
+          getScale: getScale,
+          activeSpectrum: _activeSpectrum,
+          openMessage: handelOpenMessage,
+          verticalAlign: verticalAlign,
+          mode: _mode,
+        }}
       >
-        <input {...getInputProps()} />
-        {isDragActive && (
-          <div
-            className="drop-zoon-over"
-            style={{ width: `${width}px`, height: `${height}px` }}
-          >
-            <PublishRounded />
-            <p>Drop your files here</p>
-          </div>
-        )}
-        <Grid container spacing={0}>
-          <Grid item xs={1} className="toolbar-container">
-            <FunctionToolBar
-              onChangeOption={handleChangeOption}
-              defaultValue={options.zoom.id}
-              data={_data}
-              activeSpectrum={_activeSpectrum}
-            />
-            <HistoryToolBar
-              history={history}
-              onRedo={handleRedo}
-              onUndo={handleUndo}
-            />
-            <BasicToolBar
-              onFullZoomOut={handleFullZoomOut}
-              onViewChanged={handleChangeVerticalAlignments}
-              viewAlignValue={verticalAlign}
-              data={_data}
-              activeSpectrum={_activeSpectrum}
-            />
-
-            <ViewButton
-              onChange={handleShowSpectrumTypeChang}
-              defaultValue={true}
-              data={_data}
-              activeSpectrum={_activeSpectrum}
-            />
-          </Grid>
-
-          <Grid ref={chartArea} item xs={8}>
-            <svg
-              onMouseMove={mouseMove}
-              ref={refSVG}
-              onMouseLeave={mouseMoveLeave}
-              onClick={mouseClick}
-              width={_width}
-              height={height}
-            >
-              {_xDomain && _yDomain && (
-                <Fragment>
-                  <LinesSeries data={_data} />
-                  <IntegralsSeries data={_data} integrals={_integrals} />
-                </Fragment>
-              )}
-
-              <g className="container">
-                <XAxis showGrid={true} mode={_mode} />
-
-                <YAxis label="PPM" show={false} />
-                {_selectedTool === options.zoom.id && (
-                  <BrushTool
-                    onDomainReset={handleRestDomain}
-                    onXAxisDomainUpdate={handleXDomainUpdate}
-                    onYAxisDomainUpdate={handleYDomainUpdate}
-                    margin={margin}
-                    width={_width}
-                    height={height}
-                    data={_data}
-                    domain={{ x: _xDomain, y: _yDomain }}
-                    originDomain={_originDomain}
-                    isActive={true}
-                    getScale={getScale}
-                    position={mouseCoordinates}
-                    mode={_mode}
-                  />
-                )}
-
-                {_selectedTool === options.integral.id && (
-                  <IntegralTool
-                    margin={margin}
-                    width={_width}
-                    height={height}
-                    data={_data}
-                    domain={{ x: _xDomain, y: _yDomain }}
-                    isActive={true}
-                    getScale={getScale}
-                    position={mouseCoordinates}
-                    activeSpectrum={_activeSpectrum}
-                    mode={_mode}
-                    onIntegralDrawFinished={handleAddIntegral}
-                  />
-                )}
-
-                {(_selectedTool === options.peakPicking.id ||
-                  _peakNotations) && (
-                  <PeakNotationTool
-                    notationData={_peakNotations}
-                    onPeakValueChange={handleOnPeakChange}
-                    position={mouseCoordinates}
-                    showCursorLabel={_selectedTool === options.peakPicking.id}
-                    onDeleteNotation={handleDeleteNotation}
-                  />
-                )}
-              </g>
-            </svg>
-          </Grid>
-
-          <Grid item xs={3}>
-            <InformationPanel activeItem="spectraPanel" listItem={infoList} />
-          </Grid>
-        </Grid>
-
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          open={message.isOpen}
-          autoHideDuration={3000}
-          onClose={handleClose}
+        <div
+          {...getRootProps()}
+          className={isDragActive ? 'main-container over' : 'main-container'}
+          style={{ width: `${width}px` }}
         >
-          <SnackbarContentWrapper
+          <input {...getInputProps()} />
+          {isDragActive && (
+            <div
+              className="drop-zoon-over"
+              style={{ width: `${width}px`, height: `${height}px` }}
+            >
+              <PublishRounded />
+              <p>Drop your files here</p>
+            </div>
+          )}
+          <Grid container spacing={0}>
+            <Grid item xs={1} className="toolbar-container">
+              <FunctionToolBar
+                defaultValue={options.zoom.id}
+                data={_data}
+                activeSpectrum={_activeSpectrum}
+              />
+              <HistoryToolBar
+                history={history}
+                onRedo={handleRedo}
+                onUndo={handleUndo}
+              />
+              <BasicToolBar
+                onFullZoomOut={handleFullZoomOut}
+                onViewChanged={handleChangeVerticalAlignments}
+                viewAlignValue={verticalAlign}
+                data={_data}
+                activeSpectrum={_activeSpectrum}
+              />
+
+              <ViewButton
+                onChange={handleShowSpectrumTypeChang}
+                defaultValue={true}
+                data={_data}
+                activeSpectrum={_activeSpectrum}
+              />
+            </Grid>
+
+            <Grid ref={chartArea} item xs={8}>
+              <svg
+                onMouseMove={mouseMove}
+                ref={refSVG}
+                onMouseLeave={mouseMoveLeave}
+                onClick={mouseClick}
+                width={_width}
+                height={height}
+              >
+                {_xDomain && _yDomain && (
+                  <Fragment>
+                    <LinesSeries data={_data} />
+                    <IntegralsSeries data={_data} integrals={_integrals} />
+                  </Fragment>
+                )}
+
+                <g className="container">
+                  <XAxis showGrid={true} mode={_mode} />
+
+                  <YAxis label="PPM" show={false} />
+                  {_selectedTool === options.zoom.id && (
+                    <BrushTool
+                      onDomainReset={handleRestDomain}
+                      onXAxisDomainUpdate={handleXDomainUpdate}
+                      onYAxisDomainUpdate={handleYDomainUpdate}
+                      margin={margin}
+                      width={_width}
+                      height={height}
+                      data={_data}
+                      domain={{ x: _xDomain, y: _yDomain }}
+                      originDomain={_originDomain}
+                      isActive={true}
+                      getScale={getScale}
+                      position={mouseCoordinates}
+                      mode={_mode}
+                    />
+                  )}
+
+                  {_selectedTool === options.integral.id && (
+                    <IntegralTool
+                      margin={margin}
+                      width={_width}
+                      height={height}
+                      data={_data}
+                      domain={{ x: _xDomain, y: _yDomain }}
+                      isActive={true}
+                      getScale={getScale}
+                      position={mouseCoordinates}
+                      activeSpectrum={_activeSpectrum}
+                      mode={_mode}
+                      onIntegralDrawFinished={handleAddIntegral}
+                    />
+                  )}
+
+                  {(_selectedTool === options.peakPicking.id ||
+                    _peakNotations) && (
+                    <PeakNotationTool
+                      notationData={_peakNotations}
+                      onPeakValueChange={handleOnPeakChange}
+                      position={mouseCoordinates}
+                      showCursorLabel={_selectedTool === options.peakPicking.id}
+                      onDeleteNotation={handleDeleteNotation}
+                    />
+                  )}
+                </g>
+              </svg>
+            </Grid>
+
+            <Grid item xs={3}>
+              <InformationPanel activeItem="spectraPanel" listItem={infoList} />
+            </Grid>
+          </Grid>
+
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            open={message.isOpen}
+            autoHideDuration={3000}
             onClose={handleClose}
-            variant={message.messageType}
-            message={message.messageText}
-          />
-        </Snackbar>
-      </div>
-    </ChartContext.Provider>
+          >
+            <SnackbarContentWrapper
+              onClose={handleClose}
+              variant={message.messageType}
+              message={message.messageText}
+            />
+          </Snackbar>
+        </div>
+      </ChartContext.Provider>
+    </DispatchProvider>
   );
 };
 
