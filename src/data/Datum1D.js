@@ -18,6 +18,16 @@ export class Datum1D {
   // TODO id can become optional
   // by default Math.random().toString(36).replace('0.','')
 
+  /*
+constructor(data, options = {}) {
+  this.id = options.id 
+    id = Math.random().toString(36).replace('0.',''),
+    display = {color: ...},
+    info = {isFid, isComplex, nucleus, solvent, frequency, temperature, ...}
+  } = options;
+  this.data = data;
+*/
+
   constructor(id, data, options = {}) {
     /* TODO
     What are the different categories of information about a Datum1D ?
@@ -28,6 +38,7 @@ export class Datum1D {
     * ranges: [],
     * signals: [],
     * annotations: [],
+    * filters = [],
     * 
 */
 

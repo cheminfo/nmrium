@@ -25,7 +25,7 @@ export class Analysis {
     let result = convert(jcamp, { withoutXY: true, keepRecordsRegExp: /.*/ });
     let meta = getMetaData(result.info);
     if (meta.dimension === 1) {
-      this.data1d.push(Datum1DManager.fromJcamp(jcamp, options));
+      this.data1d.push(Data1DManager.fromJcamp(jcamp, options));
     } else {
     }
   }
