@@ -14,11 +14,16 @@ export class Datum1D {
    * @param {object} data    {x, re, im}
    * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
    */
+
+  // TODO id can become optional
+  // by default Math.random().toString(36).replace('0.','')
+
   constructor(id, data, options = {}) {
-    /*
+    /* TODO
     What are the different categories of information about a Datum1D ?
     * display: {color, isVisible, ...} // all that is related to display information
     * data: {re:[], im:[], y:[], meta: {}}
+    * dataSource ????
     * info: {isFid, isComplex, nucleus, solvent, frequency, temperature, ...}
     * ranges: [],
     * signals: [],

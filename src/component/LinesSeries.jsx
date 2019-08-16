@@ -50,8 +50,6 @@ const LinesSeries = ({ data }) => {
 
     console.log('line searise updated');
     setData(data);
-
-
   },[data]);
 
   // useEffect(() => {
