@@ -54,6 +54,32 @@ import IntegralTool from './tool/IntegralTool';
 import InformationPanel from './toolbar/InformationPanel';
 import IntegralTable from './toolbar/IntegralTable';
 
+function loadFiles(acceptedFiles) {
+  return Promise.all(
+    [].map.call(acceptedFiles, (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        if (!(file.name.endsWith('.dx') || file.name.endsWith('.jdx'))) {
+          reject('The file must be jcamp file .dx,.jdx file extention');
+        } else {
+          reader.onabort = (e) => reject('file reading was aborted', e);
+          reader.onerror = (e) => reject('file reading has failed', e);
+          reader.onload = () => {
+            if (reader.result) {
+              const binaryData = reader.result;
+
+              const name = file.name.substr(0, file.name.lastIndexOf('.'));
+              resolve({ binary: binaryData, name: name });
+            }
+          };
+          reader.readAsBinaryString(file);
+        }
+      });
+    }),
+  );
+}
+
 const SpectrumChart = ({ margin, width, height, data, mode }) => {
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
   const [message, openMessage] = useState({
@@ -63,37 +89,9 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   });
   const [verticalAlign, setVerticalAlign] = useState(0);
 
-  const LoadFiles = (acceptedFiles) => {
-    return Promise.all(
-      [].map.call(acceptedFiles, (file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-
-          if (!(file.name.endsWith('.dx') || file.name.endsWith('.jdx'))) {
-            reject('The file must be jcamp file .dx,.jdx file extention');
-          } else {
-            reader.onabort = (e) => reject('file reading was aborted', e);
-            reader.onerror = (e) => reject('file reading has failed', e);
-            reader.onload = () => {
-              if (reader.result) {
-                const binaryData = reader.result;
-
-                const name = file.name.substr(0, file.name.lastIndexOf('.'));
-                resolve({ binary: binaryData, name: name });
-              }
-            };
-
-            reader.readAsBinaryString(file);
-          }
-        });
-      }),
-    );
-  };
-
   const onDrop = useCallback((acceptedFiles) => {
-    LoadFiles(acceptedFiles).then(
+    loadFiles(acceptedFiles).then(
       (files) => {
-        console.log(files);
         dispatch({ type: LOADING_SPECTRUM, files });
       },
       (err) => {
