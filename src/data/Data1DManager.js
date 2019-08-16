@@ -10,7 +10,6 @@ export class Data1DManager {
   constructor() {
     this.data1D = [];
 
-
     console.log(this.data1D);
     // if (!!Data1DManager.instance) {
     //   console.log('1');
@@ -24,6 +23,16 @@ export class Data1DManager {
   // getInstance() {
   //   return Data1DManager.instance;
   // }
+
+  /* TODO
+  fromJcamp(jcamp, options={});
+
+
+*/
+
+  fromJSON = function fromJSON(json) {
+    return [];
+  };
 
   fromJcamp = function fromJcamp(
     id,
@@ -39,7 +48,7 @@ export class Data1DManager {
       result.spectra[0] &&
       result.spectra[0].data &&
       result.spectra[0].data[0] &&
-      result.spectra[0].data[0].y
+      result.spectra[0].data[0].x
         ? result.spectra[0].data[0].x
         : [];
     let re =
@@ -102,19 +111,18 @@ export class Data1DManager {
         id: ob.id,
         x: ob.x,
         y: ob.re,
-        im:ob.im,
+        im: ob.im,
         name: ob.name,
         color: ob.color,
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-        isRealSpectrumVisible:ob.isRealSpectrumVisible,
+        isRealSpectrumVisible: ob.isRealSpectrumVisible,
         nucleus: ob.nucleus,
-        isFid:ob.isFid,
-        isComplex:ob.isComplex,
-        peaks:ob.peaks,
-        integrals:ob.integrals,
-        filters:ob.filters
-
+        isFid: ob.isFid,
+        isComplex: ob.isComplex,
+        peaks: ob.peaks,
+        integrals: ob.integrals,
+        filters: ob.filters,
       };
     });
   }
@@ -125,17 +133,17 @@ export class Data1DManager {
         id: ob.id,
         x: ob.x,
         y: ob.re,
-        im:ob.im,
+        im: ob.im,
         name: ob.name,
         color: ob.color,
         isVisible: ob.isVisible,
         isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-        isRealSpectrumVisible:ob.isRealSpectrumVisible,
+        isRealSpectrumVisible: ob.isRealSpectrumVisible,
         nucleus: ob.nucleus,
-        isComplex:ob.isComplex,
-        peaks:ob.peaks,
-        integrals:ob.integrals,
-        filters:ob.filters
+        isComplex: ob.isComplex,
+        peaks: ob.peaks,
+        integrals: ob.integrals,
+        filters: ob.filters,
       };
     });
   }

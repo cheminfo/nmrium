@@ -26,9 +26,8 @@ const LinesSeries = ({ data }) => {
       to: xDomain[1],
     });
 
-
     let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
-
+    console.log('makePath', id);
     path += pathPoints.x
       .slice(1)
       .map((point, i) => {
@@ -88,24 +87,26 @@ const LinesSeries = ({ data }) => {
       </defs>
 
       <g className="paths" ref={refPathsContainer} clipPath="url(#clip)">
-        {data && data[0] && data[0].x &&  data.filter((d)=>d.isVisible === true).map((d, i) => ( 
-          // d.isVisible && 
-          <path
-            className="line"
-            key={`line-${d.id}-${i}`}
-            stroke={d.color}
-            style={{opacity:(IsActive(d.id))?1:0.2}}
-            d={makePath(d)}
-            transform={`translate(0,${i*verticalAlign})`}
-          />
-        ))}
+        {data &&
+          data[0] &&
+          data[0].x &&
+          data
+            .filter((d) => d.isVisible === true)
+            .map((d, i) => (
+              // d.isVisible &&
+              <path
+                className="line"
+                key={`line-${d.id}-${i}`}
+                stroke={d.color}
+                style={{ opacity: IsActive(d.id) ? 1 : 0.2 }}
+                d={makePath(d)}
+                transform={`translate(0,${i * verticalAlign})`}
+              />
+            ))}
       </g>
     </g>
   );
 };
-
-
-
 
 export default LinesSeries;
 
