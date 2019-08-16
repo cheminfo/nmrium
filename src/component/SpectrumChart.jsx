@@ -336,7 +336,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   };
 
   return (
-    <DispatchProvider>
+    <DispatchProvider value={dispatch}>
       <ChartContext.Provider
         value={{
           margin: margin,
