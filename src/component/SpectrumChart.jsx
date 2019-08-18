@@ -181,7 +181,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     noClick: true,
   });
 
-
   const infoList = [
     {
       id: 'spectraPanel',
@@ -199,16 +198,13 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     {
       id: 'informationPanel',
       title: 'Information',
-      component: (<p>information</p>)
-        },
+      component: <p>information</p>,
+    },
     {
       id: 'integralsPanel',
       title: 'Integrals',
-      component:(
-        <IntegralTable
-        data={_data}
-        activeSpectrum={_activeSpectrum}
-        />
+      component: (
+        <IntegralTable data={_data} activeSpectrum={_activeSpectrum} />
       ),
     },
     {
@@ -224,7 +220,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   ];
 
   useEffect(() => {
-    console.log(data)
+    console.log(data);
     dispatch({ type: SET_DATA, data });
   }, [data]);
 
@@ -282,14 +278,8 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     const x = e.clientX - chartArea.current.getBoundingClientRect().left;
     const y = e.clientY - chartArea.current.getBoundingClientRect().top;
 
-    // const x = e.clientX - refSVG.current.getBoundingClientRect().left;
-    // const y = e.clientY - refSVG.current.getBoundingClientRect().top;
     requestAnimationFrame(() => {
-      //   dispatch({
-      //     type: SET_POINTER_COORDINATES,
-      //     pointerCorrdinates: { x, y },
-      //   });
-      // setMouseCoordinates({ x, y });
+      setMouseCoordinates({ x, y });
     }, 60);
   };
 
@@ -444,46 +434,8 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
               defaultValue={options.zoom.id}
               data={_data}
               activeSpectrum={_activeSpectrum}
-
-              // toolbarWidth={(w) => {
-              //   setToolbarWidth(w);
-              // }}
             />
 
-            {/* <Tooltip title="Redo" placement="right-start">
-
-              <Button
-                className="general-fun-bt"
-                onClick={handleRedo}
-                disabled={!state.history.hasRedo}
-              >
-                <FaRedo />
-              </Button>
-            </Tooltip>
-
-            <Tooltip title="Undo" placement="right-start">
-              <Button
-                className="general-fun-bt"
-                onClick={handleUndo}
-                disabled={!state.history.hasUndo}
-              >
-                <FaUndo />
-              </Button>
-            </Tooltip>
-
-            <Tooltip title="Full Zoom Out" placement="right-start">
-              <Button className="general-fun-bt" onClick={handleFullZoomOut}>
-                <FaSearchMinus />
-              </Button>
-            </Tooltip>
-            <Tooltip title="Spectrums  alignment " placement="right-start">
-              <Button
-                className="general-fun-bt"
-                onClick={handleChangeVerticalAlignments}
-              >
-                {verticalAlign !== 0 ? <FaMinus /> : <FaBars />}
-              </Button>
-            </Tooltip> */}
             <HistoryToolBar
               history={history}
               onRedo={handleRedo}
@@ -589,10 +541,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
           </Grid>
 
           <Grid item xs={3}>
-            <InformationPanel
-              activeItem="spectraPanel"
-              listItem={infoList}
-            />
+            <InformationPanel activeItem="spectraPanel" listItem={infoList} />
             {/* {_data && _data[0] && (
               <SpectrumList
                 data={_data}
