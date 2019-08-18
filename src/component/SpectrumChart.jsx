@@ -204,18 +204,18 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     dispatch({ type: TOGGLE_REAL_IMAGINARY_VISIBILITY, isRealSpectrumVisible });
   };
 
-  const handleXDomainUpdate = (xDomain) => {
-    dispatch({ type: SET_X_DOMAIN, xDomain });
-  };
+  // const handleXDomainUpdate = (xDomain) => {
+  //   dispatch({ type: SET_X_DOMAIN, xDomain });
+  // };
 
-  const handleYDomainUpdate = (yDomain) => {
-    dispatch({ type: SET_Y_DOMAIN, yDomain });
-  };
+  // const handleYDomainUpdate = (yDomain) => {
+  //   dispatch({ type: SET_Y_DOMAIN, yDomain });
+  // };
 
-  const handleRestDomain = (domain) => {
-    dispatch({ type: SET_X_DOMAIN, xDomain: domain.x });
-    dispatch({ type: SET_Y_DOMAIN, yDomain: domain.y });
-  };
+  // const handleRestDomain = (domain) => {
+  //   dispatch({ type: SET_X_DOMAIN, xDomain: domain.x });
+  //   dispatch({ type: SET_Y_DOMAIN, yDomain: domain.y });
+  // };
 
   const mouseMove = (e) => {
     e.stopPropagation();
@@ -417,9 +417,9 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
                   <YAxis label="PPM" show={false} />
                   {_selectedTool === options.zoom.id && (
                     <BrushTool
-                      onDomainReset={handleRestDomain}
-                      onXAxisDomainUpdate={handleXDomainUpdate}
-                      onYAxisDomainUpdate={handleYDomainUpdate}
+                      // onDomainReset={handleRestDomain}
+                      // onXAxisDomainUpdate={handleXDomainUpdate}
+                      // onYAxisDomainUpdate={handleYDomainUpdate}
                       margin={margin}
                       width={_width}
                       height={height}

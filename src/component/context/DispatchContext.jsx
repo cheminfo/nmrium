@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-const dispatchContext = createContext();
+export const dispatchContext = createContext();
 
 export const DispatchProvider = dispatchContext.Provider;
 
