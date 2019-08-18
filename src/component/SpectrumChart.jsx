@@ -6,30 +6,26 @@ import React, {
   useState,
   Fragment,
 } from 'react';
-import './css/spectrum-chart.css';
 import PropTypes from 'prop-types';
+import * as d3 from 'd3';
+import Grid from '@material-ui/core/Grid';
+import PublishRounded from '@material-ui/icons/PublishRounded';
+import { useDropzone } from 'react-dropzone';
+import { Snackbar } from '@material-ui/core';
+
+import './css/spectrum-chart.css';
 import FunctionToolBar, { options } from './toolbar/FunctionToolBar';
 import ViewButton from './toolbar/ViewButton';
-
 import YAxis from './YAxis';
 import XAxis from './XAxis';
 import BrushTool from './tool/BrushTool';
 import LinesSeries from './LinesSeries';
 import IntegralsSeries from './IntegralsSeries';
-// import CrossLinePointer from './tool/CrossLinePointer';
-import * as d3 from 'd3';
 import PeakNotationTool from './tool/PeakNotationTool';
-import Grid from '@material-ui/core/Grid';
 import { ChartContext } from './context/ChartContext';
-import { useDropzone } from 'react-dropzone';
-import PublishRounded from '@material-ui/icons/PublishRounded';
 import { spectrumReducer } from './reducer/Reducer';
-// import Button from '@material-ui/core/Button';
-// import Tooltip from '@material-ui/core/Tooltip';
-// import { FaUndo, FaRedo, FaSearchMinus, FaMinus, FaBars } from 'react-icons/fa';
 
 import SpectrumList from './toolbar/SpectrumList';
-import { Snackbar } from '@material-ui/core';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
 
 import {
@@ -41,7 +37,6 @@ import {
   LOADING_SPECTRUM,
   SET_DATA,
   SHIFT_SPECTRUM,
-  // CHANGE_SPECTRUM_TYPE,
   FULL_ZOOM_OUT,
   CHANGE_VISIBILITY,
   CHANGE_PEAKS_MARKERS_VISIBILITY,
@@ -52,18 +47,39 @@ import {
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
 } from './reducer/Actions';
 
-import { UNDO, REDO, RESET } from './reducer/HistoryActions';
+import { UNDO, REDO } from './reducer/HistoryActions';
 import BasicToolBar from './toolbar/BasicToolBar';
 import HistoryToolBar from './toolbar/HistoryToolBar';
 import IntegralTool from './tool/IntegralTool';
 import InformationPanel from './toolbar/InformationPanel';
 import IntegralTable from './toolbar/IntegralTable';
+import { DispatchProvider } from './context/DispatchContext';
 
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     flexGrow: 1,
-//   },
-// }));
+function loadFiles(acceptedFiles) {
+  return Promise.all(
+    [].map.call(acceptedFiles, (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        if (!(file.name.endsWith('.dx') || file.name.endsWith('.jdx'))) {
+          reject('The file must be jcamp file .dx,.jdx file extention');
+        } else {
+          reader.onabort = (e) => reject('file reading was aborted', e);
+          reader.onerror = (e) => reject('file reading has failed', e);
+          reader.onload = () => {
+            if (reader.result) {
+              const binaryData = reader.result;
+
+              const name = file.name.substr(0, file.name.lastIndexOf('.'));
+              resolve({ binary: binaryData, name: name });
+            }
+          };
+          reader.readAsBinaryString(file);
+        }
+      });
+    }),
+  );
+}
 
 const SpectrumChart = ({ margin, width, height, data, mode }) => {
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
@@ -74,51 +90,9 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   });
   const [verticalAlign, setVerticalAlign] = useState(0);
 
-  const LoadFiles = (acceptedFiles) => {
-    //   return Promise.all([].map.call(files, function (file) {
-    //     return new Promise(function (resolve, reject) {
-    //         var reader = new FileReader();
-    //         reader.onloadend = function () {
-    //             resolve({ result: reader.result, file: file });
-    //         };
-    //         reader.readAsArrayBuffer(file);
-    //     });
-    // }))
-    return Promise.all(
-      [].map.call(acceptedFiles, (file) => {
-        return new Promise((resolve, reject) => {
-          // acceptedFiles.forEach((file) => {
-          const reader = new FileReader();
-
-          if (!(file.name.endsWith('.dx') || file.name.endsWith('.jdx'))) {
-            reject('The file must be jcamp file .dx,.jdx file extention');
-          } else {
-            reader.onabort = (e) => reject('file reading was aborted', e);
-            reader.onerror = (e) => reject('file reading has failed', e);
-            reader.onload = () => {
-              // Do whatever you want with the file contents
-              if (reader.result) {
-                const binaryData = reader.result;
-
-                const name = file.name.substr(0, file.name.lastIndexOf('.'));
-                // filesReader.push({ binary: binaryData, name: name });
-                resolve({ binary: binaryData, name: name });
-              }
-            };
-
-            reader.readAsBinaryString(file);
-            // console.log(filesReader)
-          }
-        });
-      }),
-    );
-  };
-
   const onDrop = useCallback((acceptedFiles) => {
-    // Do something with the file
-    LoadFiles(acceptedFiles).then(
+    loadFiles(acceptedFiles).then(
       (files) => {
-        console.log(files);
         dispatch({ type: LOADING_SPECTRUM, files });
       },
       (err) => {
@@ -142,12 +116,10 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     _height: height,
     _margin: margin,
     _activeSpectrum: null,
-    // _integrals: [],
     _mode: mode,
     openMessage: handelOpenMessage,
   };
 
-  // const reduers = combineReducers({spectrumReducer,historyReducer});
   const _history = {
     past: [],
     present: null,
@@ -225,37 +197,12 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   }, [data]);
 
   useEffect(() => {
-    // const domain = getDomain(_data);
     dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
   }, [width, height]);
-
-  const handleChangeOption = (selectedTool) => {
-    dispatch({ type: SET_SELECTED_TOOL, selectedTool });
-  };
 
   const handleShowSpectrumTypeChang = (isRealSpectrumVisible) => {
     dispatch({ type: TOGGLE_REAL_IMAGINARY_VISIBILITY, isRealSpectrumVisible });
   };
-
-  /**
-   * get Domain for x axis and y axis
-   * @param {array} data
-   */
-  // function getDomain(data = []) {
-  //   let xArray = [];
-  //   let yArray = [];
-
-  //   for (let d of data) {
-  //     xArray = xArray.concat(d['x']);
-  //     yArray = yArray.concat(d['y']);
-  //   }
-  //   return { x: d3.extent(xArray), y: d3.extent(yArray) };
-  // }
-
-  // function getDomain(data) {
-  //   console.log(data);
-  //   return { x: [data.x[0], data.x[data.x.length - 1]], y: d3.extent(data.y) };
-  // }
 
   const handleXDomainUpdate = (xDomain) => {
     dispatch({ type: SET_X_DOMAIN, xDomain });
@@ -271,13 +218,10 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   };
 
   const mouseMove = (e) => {
-    // e.stopPropagation();
-    // e.preventDefault();
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
     const x = e.clientX - chartArea.current.getBoundingClientRect().left;
     const y = e.clientY - chartArea.current.getBoundingClientRect().top;
-
     requestAnimationFrame(() => {
       setMouseCoordinates({ x, y });
     }, 60);
@@ -294,7 +238,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
         : [margin.left, _width - margin.right];
 
     const x = d3.scaleLinear(_xDomain, range);
-    // console.log(spectrumId);
     let y;
     if (spectrumId == null) {
       y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
@@ -323,7 +266,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   };
 
   const mouseClick = (e) => {
-    //activat selected peak tool
     if (_selectedTool === options.peakPicking.id) {
       dispatch({
         type: PEAK_PICKING,
@@ -394,183 +336,156 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   };
 
   return (
-    <ChartContext.Provider
-      value={{
-        margin: margin,
-        width: _width,
-        height: height,
-        data: _data,
-        xDomain: _xDomain,
-        yDomain: _yDomain,
-        getScale: getScale,
-        activeSpectrum: _activeSpectrum,
-        openMessage: handelOpenMessage,
-        verticalAlign: verticalAlign,
-        mode: _mode,
-      }}
-    >
-      <div
-        // className={classes.root}
-        {...getRootProps()}
-        className={isDragActive ? 'main-container over' : 'main-container'}
-        style={{ width: `${width}px` }}
+    <DispatchProvider value={dispatch}>
+      <ChartContext.Provider
+        value={{
+          margin: margin,
+          width: _width,
+          height: height,
+          data: _data,
+          xDomain: _xDomain,
+          yDomain: _yDomain,
+          getScale: getScale,
+          activeSpectrum: _activeSpectrum,
+          openMessage: handelOpenMessage,
+          verticalAlign: verticalAlign,
+          mode: _mode,
+        }}
       >
-        <input {...getInputProps()} />
-        {isDragActive && (
-          <div
-            className="drop-zoon-over"
-            style={{ width: `${width}px`, height: `${height}px` }}
-          >
-            <PublishRounded />
-            <p>Drop your files here</p>
-          </div>
-        )}
-
-        {/* className={isDragActive?'drop-zoon-blur':''} */}
-        <Grid container spacing={0}>
-          <Grid item xs={1} className="toolbar-container">
-            <FunctionToolBar
-              onChangeOption={handleChangeOption}
-              defaultValue={options.zoom.id}
-              data={_data}
-              activeSpectrum={_activeSpectrum}
-            />
-
-            <HistoryToolBar
-              history={history}
-              onRedo={handleRedo}
-              onUndo={handleUndo}
-            />
-            <BasicToolBar
-              onFullZoomOut={handleFullZoomOut}
-              onViewChanged={handleChangeVerticalAlignments}
-              viewAlignValue={verticalAlign}
-              data={_data}
-              activeSpectrum={_activeSpectrum}
-            />
-
-            <ViewButton
-              onChange={handleShowSpectrumTypeChang}
-              defaultValue={true}
-              data={_data}
-              activeSpectrum={_activeSpectrum}
-            />
-          </Grid>
-
-          <Grid ref={chartArea} item xs={8}>
-            <svg
-              onMouseMove={mouseMove}
-              ref={refSVG}
-              onMouseLeave={mouseMoveLeave}
-              onClick={mouseClick}
-              width={_width}
-              height={height}
-            >
-              {_xDomain && _yDomain && (
-                // _data.map((d, i) => (
-                <Fragment>
-                  <LinesSeries
-                    // margin={margin}
-                    // width={width - toolbarWidth}
-                    // height={height}
-                    // key={d.id}
-                    data={_data}
-                    // xDomain={_xDomain}
-                    // yDomain={_yDomain}
-                    // getScale={getScale}
-                  />
-
-                  <IntegralsSeries data={_data} integrals={_integrals} />
-                </Fragment>
-              )
-              // ))
-              }
-
-              <g className="container">
-                {/* isFID={true} */}
-                <XAxis showGrid={true} mode={_mode} />
-
-                <YAxis label="PPM" show={false} />
-                {_selectedTool === options.zoom.id && (
-                  <BrushTool
-                    onDomainReset={handleRestDomain}
-                    onXAxisDomainUpdate={handleXDomainUpdate}
-                    onYAxisDomainUpdate={handleYDomainUpdate}
-                    margin={margin}
-                    width={_width}
-                    height={height}
-                    data={_data}
-                    domain={{ x: _xDomain, y: _yDomain }}
-                    originDomain={_originDomain}
-                    isActive={true}
-                    getScale={getScale}
-                    position={mouseCoordinates}
-                    mode={_mode}
-                  />
-                )}
-
-                {_selectedTool === options.integral.id && (
-                  <IntegralTool
-                    margin={margin}
-                    width={_width}
-                    height={height}
-                    data={_data}
-                    domain={{ x: _xDomain, y: _yDomain }}
-                    isActive={true}
-                    getScale={getScale}
-                    position={mouseCoordinates}
-                    activeSpectrum={_activeSpectrum}
-                    mode={_mode}
-                    onIntegralDrawFinished={handleAddIntegral}
-                  />
-                )}
-
-                {(_selectedTool === options.peakPicking.id ||
-                  _peakNotations) && (
-                  <PeakNotationTool
-                    // data={_data}
-                    notationData={_peakNotations}
-                    onPeakValueChange={handleOnPeakChange}
-                    position={mouseCoordinates}
-                    showCursorLabel={_selectedTool === options.peakPicking.id}
-                    onDeleteNotation={handleDeleteNotation}
-                  />
-                )}
-              </g>
-            </svg>
-          </Grid>
-
-          <Grid item xs={3}>
-            <InformationPanel activeItem="spectraPanel" listItem={infoList} />
-            {/* {_data && _data[0] && (
-              <SpectrumList
-                data={_data}
-                onChangeVisibility={handleChangeVisibility}
-                onChangeActive={handleChangeActiveSpectrum}
-                onColorChanged={handleSpectrumColorChanged}
-                onChangeMarkersVisibility={handleChangeMarkersVisibility}
-              />
-            )} */}
-          </Grid>
-        </Grid>
-
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          open={message.isOpen}
-          autoHideDuration={3000}
-          onClose={handleClose}
+        <div
+          {...getRootProps()}
+          className={isDragActive ? 'main-container over' : 'main-container'}
+          style={{ width: `${width}px` }}
         >
-          <SnackbarContentWrapper
+          <input {...getInputProps()} />
+          {isDragActive && (
+            <div
+              className="drop-zoon-over"
+              style={{ width: `${width}px`, height: `${height}px` }}
+            >
+              <PublishRounded />
+              <p>Drop your files here</p>
+            </div>
+          )}
+          <Grid container spacing={0}>
+            <Grid item xs={1} className="toolbar-container">
+              <FunctionToolBar
+                defaultValue={options.zoom.id}
+                data={_data}
+                activeSpectrum={_activeSpectrum}
+              />
+              <HistoryToolBar
+                history={history}
+                onRedo={handleRedo}
+                onUndo={handleUndo}
+              />
+              <BasicToolBar
+                onFullZoomOut={handleFullZoomOut}
+                onViewChanged={handleChangeVerticalAlignments}
+                viewAlignValue={verticalAlign}
+                data={_data}
+                activeSpectrum={_activeSpectrum}
+              />
+
+              <ViewButton
+                onChange={handleShowSpectrumTypeChang}
+                defaultValue={true}
+                data={_data}
+                activeSpectrum={_activeSpectrum}
+              />
+            </Grid>
+
+            <Grid ref={chartArea} item xs={8}>
+              <svg
+                onMouseMove={mouseMove}
+                ref={refSVG}
+                onMouseLeave={mouseMoveLeave}
+                onClick={mouseClick}
+                width={_width}
+                height={height}
+              >
+                {_xDomain && _yDomain && (
+                  <Fragment>
+                    <LinesSeries data={_data} />
+                    <IntegralsSeries data={_data} integrals={_integrals} />
+                  </Fragment>
+                )}
+
+                <g className="container">
+                  <XAxis showGrid={true} mode={_mode} />
+
+                  <YAxis label="PPM" show={false} />
+                  {_selectedTool === options.zoom.id && (
+                    <BrushTool
+                      onDomainReset={handleRestDomain}
+                      onXAxisDomainUpdate={handleXDomainUpdate}
+                      onYAxisDomainUpdate={handleYDomainUpdate}
+                      margin={margin}
+                      width={_width}
+                      height={height}
+                      data={_data}
+                      domain={{ x: _xDomain, y: _yDomain }}
+                      originDomain={_originDomain}
+                      isActive={true}
+                      getScale={getScale}
+                      position={mouseCoordinates}
+                      mode={_mode}
+                    />
+                  )}
+
+                  {_selectedTool === options.integral.id && (
+                    <IntegralTool
+                      margin={margin}
+                      width={_width}
+                      height={height}
+                      data={_data}
+                      domain={{ x: _xDomain, y: _yDomain }}
+                      isActive={true}
+                      getScale={getScale}
+                      position={mouseCoordinates}
+                      activeSpectrum={_activeSpectrum}
+                      mode={_mode}
+                      onIntegralDrawFinished={handleAddIntegral}
+                    />
+                  )}
+
+                  {(_selectedTool === options.peakPicking.id ||
+                    _peakNotations) && (
+                    <PeakNotationTool
+                      notationData={_peakNotations}
+                      onPeakValueChange={handleOnPeakChange}
+                      position={mouseCoordinates}
+                      showCursorLabel={_selectedTool === options.peakPicking.id}
+                      onDeleteNotation={handleDeleteNotation}
+                    />
+                  )}
+                </g>
+              </svg>
+            </Grid>
+
+            <Grid item xs={3}>
+              <InformationPanel activeItem="spectraPanel" listItem={infoList} />
+            </Grid>
+          </Grid>
+
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            open={message.isOpen}
+            autoHideDuration={3000}
             onClose={handleClose}
-            variant={message.messageType}
-            message={message.messageText}
-          />
-        </Snackbar>
-      </div>
-    </ChartContext.Provider>
+          >
+            <SnackbarContentWrapper
+              onClose={handleClose}
+              variant={message.messageType}
+              message={message.messageText}
+            />
+          </Snackbar>
+        </div>
+      </ChartContext.Provider>
+    </DispatchProvider>
   );
 };
 
