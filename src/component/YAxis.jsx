@@ -4,18 +4,19 @@ import PropTypes from 'prop-types';
 import {ChartContext} from './context/ChartContext';
 
 const YAxis = ({ show, label }) => {
-  const refaxis = useRef();
+  const refAxis = useRef();
   const { width, height, margin, yDomain, getScale } = useContext(ChartContext);
 
   useEffect(() => {
+
     if (show) {
       // const scale = d3.scaleLinear([0,domain[1]], [height - margin.bottom, margin.top]);
       const scale = getScale();
       const axis = d3
         .axisLeft()
-        .ticks(10)
+        .ticks(5)
         .tickFormat(d3.format('~s'));
-      d3.select(refaxis.current).call(axis.scale(scale.y));
+      d3.select(refAxis.current).call(axis.scale(scale.y));
     }
   }, [width, height, yDomain, show, getScale]);
 
@@ -23,8 +24,8 @@ const YAxis = ({ show, label }) => {
     <React.Fragment>
       <g
         className="y axis"
-        transform={`translate(${margin.left},0)`}
-        ref={refaxis}
+        transform={`translate(${margin.left+50},0)`}
+        ref={refAxis}
       >
         <text
           fill="#000"

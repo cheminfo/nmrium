@@ -4,12 +4,15 @@ import React, {
   useState,
   Fragment,
   useContext,
+  useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 import '../css/peak-notification-tool.css';
 import { ChartContext } from '../context/ChartContext';
 import { FaMinus } from 'react-icons/fa';
 import { getPeakLabelNumberDecimals } from '../../data/default';
+import { useDispatch } from '../context/DispatchContext';
+import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
 
 export const NotationTemplate = ({
   id,
@@ -20,15 +23,42 @@ export const NotationTemplate = ({
   color,
   isActive,
   decimalFraction,
-  onPeakValueChange,
-  onSelected,
-  onDeleteNotation,
+  // onPeakValueChange,
+  // onSelected,
+  // onDeleteNotation,
 }) => {
   const refText = useRef();
   const [isSelected, setIsSelected] = useState(false);
   const [_value, setValue] = useState(value);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [isOver, setIsOver] = useState({ id: null, flag: false });
+
+  const dispatch = useDispatch();
+  const handleOnPeakChange = useCallback(
+    (e) => dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue }),
+    [dispatch],
+  );
+  const handleDeleteNotation = useCallback(
+    (e, data) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dispatch({ type: DELETE_PEAK_NOTATION, data });
+    },
+    [dispatch],
+  );
+
+  // const [notationId, setNotationId] = useState();
+  // useEffect(() => {
+  //  console.log(data);
+
+  // });
+  // const handleOnPeakChange = (e) => {
+  //   dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue });
+  // };
+
+  // const handleDeleteNotation = (data) => {
+  //   dispatch({ type: DELETE_PEAK_NOTATION, data });
+  // };
 
   useEffect(() => {
     const textBox = refText.current.getBBox();
@@ -44,7 +74,13 @@ export const NotationTemplate = ({
       const newValue = parseFloat(event.target.value);
       const oldValue = parseFloat(value);
       const shiftValue = parseFloat(event.target.value) - parseFloat(value);
-      onPeakValueChange({
+      // onPeakValueChange({
+      //   id: id,
+      //   value: newValue,
+      //   oldValue: oldValue,
+      //   shiftValue: shiftValue,
+      // });
+      handleOnPeakChange({
         id: id,
         value: newValue,
         oldValue: oldValue,
@@ -67,7 +103,7 @@ export const NotationTemplate = ({
   const handleSelectPeakNotation = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    onSelected(id);
+    // onSelected(id);
     setIsSelected(true);
   };
   const handleMouseOutPeakNotation = (e) => {};
@@ -82,11 +118,11 @@ export const NotationTemplate = ({
     }, 300);
   };
 
-  const handleDeleteNotation = (e, data) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onDeleteNotation(data);
-  };
+  // const handleDeleteNotation = (e, data) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   onDeleteNotation(data);
+  // };
 
   return (
     <Fragment>
@@ -201,23 +237,17 @@ const PeakNotationTool = ({
   notationData,
   position,
   showCursorLabel,
-  onPeakValueChange,
-  onDeleteNotation,
+  // onPeakValueChange,
+  // onDeleteNotation,
 }) => {
   const { getScale, data, activeSpectrum, verticalAlign } = useContext(
     ChartContext,
   );
 
-  // const [notationId, setNotationId] = useState();
-  // useEffect(() => {
-  //  console.log(data);
-
-  // });
-
-  const handelOnSelected = (id) => {
-    console.log(id);
-    // setNotationId(id);
-  };
+  // const handelOnSelected = (id) => {
+  //   console.log(id);
+  //   // setNotationId(id);
+  // };
 
   const reSortData = () => {
     const _data = [...data];
@@ -245,10 +275,12 @@ const PeakNotationTool = ({
     return data.findIndex((d) => d.id === id) * verticalAlign;
   };
 
-  const getXValue=(xVal)=>{
-    const spectrumData = data.find((d)=>d.id === activeSpectrum.id);
-    return getScale().x.invert(xVal).toFixed(getPeakLabelNumberDecimals(spectrumData.nucleus))
-  }
+  const getXValue = (xVal) => {
+    const spectrumData = data.find((d) => d.id === activeSpectrum.id);
+    return getScale()
+      .x.invert(xVal)
+      .toFixed(getPeakLabelNumberDecimals(spectrumData.nucleus));
+  };
 
   return (
     <Fragment>
@@ -269,9 +301,9 @@ const PeakNotationTool = ({
                         id={xIndex}
                         spectrumID={d.id}
                         value={d.x[xIndex]}
-                        onPeakValueChange={onPeakValueChange}
-                        onSelected={handelOnSelected}
-                        onDeleteNotation={onDeleteNotation}
+                        // onPeakValueChange={onPeakValueChange}
+                        // onSelected={handelOnSelected}
+                        // onDeleteNotation={onDeleteNotation}
                         color={d.color}
                         decimalFraction={getPeakLabelNumberDecimals(d.nucleus)}
                         isActive={
@@ -287,7 +319,7 @@ const PeakNotationTool = ({
               );
             })}
       </g>
-      {showCursorLabel && (
+      {showCursorLabel && activeSpectrum && (
         <g>
           <text x={position.x} y={position.y} dy="0em" dx="0.35em">
             {getXValue(position.x)}

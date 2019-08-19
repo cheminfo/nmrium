@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-// import ToggleButton from '@material-ui/lab/ToggleButton';
-// import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import React, { useState, useEffect, useCallback } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
+import { useDispatch } from '../context/DispatchContext';
+import { TOGGLE_REAL_IMAGINARY_VISIBILITY } from '../reducer/Actions';
 
 const ViewButton = ({
   onChange,
@@ -12,11 +12,18 @@ const ViewButton = ({
 }) => {
   const [option, setOption] = useState();
   const [isDisabled, setDisabled] = useState(true);
+  const dispatch = useDispatch();
+
+  const handleShowSpectrumTypeChang = useCallback(
+    () => dispatch({ type: TOGGLE_REAL_IMAGINARY_VISIBILITY, isRealSpectrumVisible:!option }),
+    [dispatch, option],
+  );
 
   const handleChange = () => {
     setOption(!option);
-    onChange(!option);
+    handleShowSpectrumTypeChang()
   };
+
 
   useEffect(() => {
     setOption(defaultValue);
@@ -30,10 +37,9 @@ const ViewButton = ({
       setOption(defaultValue);
     } else {
       setOption(sData.isRealSpectrumVisible);
-      console.log(sData.isComplex);
       setDisabled(!sData.isComplex);
     }
-  }, [activeSpectrum]);
+  }, [activeSpectrum, data, defaultValue]);
 
   return (
     <Tooltip

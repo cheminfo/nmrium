@@ -1,16 +1,31 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { FaUndo, FaRedo } from 'react-icons/fa';
+import { useDispatch } from '../context/DispatchContext';
+import { REDO, UNDO } from '../reducer/HistoryActions';
 
 const HistoryToolBar = ({
   history,
-  onUndo,
-  onRedo,
   isUndoButtonVisible = true,
   isRedoButtonVisible = true,
-
 }) => {
+  const dispatch = useDispatch();
+  const handleRedo = useCallback(
+    (e) =>
+      dispatch({
+        type: REDO,
+      }),
+    [dispatch],
+  );
+  const handleUndo = useCallback(
+    (e) =>
+      dispatch({
+        type: UNDO,
+      }),
+    [dispatch],
+  );
+
   return (
     <Fragment>
       {isUndoButtonVisible && (
@@ -19,7 +34,7 @@ const HistoryToolBar = ({
 
           <Button
             className="general-fun-bt"
-            onClick={onRedo}
+            onClick={handleRedo}
             disabled={!history.hasRedo}
           >
             <FaRedo />
@@ -30,14 +45,13 @@ const HistoryToolBar = ({
         <Tooltip title="Undo" placement="right-start">
           <Button
             className="general-fun-bt"
-            onClick={onUndo}
+            onClick={handleUndo}
             disabled={!history.hasUndo}
           >
             <FaUndo />
           </Button>
         </Tooltip>
       )}
-
     </Fragment>
   );
 };

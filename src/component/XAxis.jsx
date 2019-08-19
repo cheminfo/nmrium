@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import {ChartContext} from './context/ChartContext';
+import { ChartContext } from './context/ChartContext';
 
-const XAxis = ({ label, show, showGrid,mode }) => {
+const XAxis = ({ label, show, showGrid, mode }) => {
   const { height, margin, xDomain, width, getScale } = useContext(ChartContext);
   const refAxis = useRef();
   const refGrid = useRef();
-  // const scale = getScale(data);
 
   // label = label ? label : isFID ? 'δ [ppm]' : 'time [s]';
-  label = label ? label : (mode === "RTL") ? 'δ [ppm]' : 'time [s]';
+  label = label ? label : mode === 'RTL' ? 'δ [ppm]' : 'time [s]';
 
   const xAxis = d3
     .axisBottom()
@@ -34,17 +33,15 @@ const XAxis = ({ label, show, showGrid,mode }) => {
 
   useEffect(() => {
     if (show) {
-      console.log(mode)
-      const range = (mode === "RTL")?[width - margin.right, margin.left]:[margin.left,width - margin.right];
-      
-      const scale = d3.scaleLinear(
-        [xDomain[0], xDomain[1]],
-        range,
-      );
+      const range =
+        mode === 'RTL'
+          ? [width - margin.right, margin.left]
+          : [margin.left, width - margin.right];
+      const scale = d3.scaleLinear([xDomain[0], xDomain[1]], range);
       d3.select(refAxis.current).call(xAxis.scale(scale));
       d3.select(refGrid.current).call(grid.scale(scale));
     }
-  }, []);
+  }, [grid, margin.left, margin.right, mode, show, width, xAxis, xDomain]);
 
   useEffect(() => {
     if (show) {
@@ -60,7 +57,7 @@ const XAxis = ({ label, show, showGrid,mode }) => {
 
       d3.select(refGrid.current).call(grid.scale(scale.x.domain(xDomain)));
     }
-  }, [xDomain]);
+  }, [getScale, grid, show, xAxis, xDomain]);
 
   return (
     <React.Fragment>

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -49,38 +49,34 @@ const ExpansionPanelDetails = withStyles((theme) => ({
   },
 }))(MuiExpansionPanelDetails);
 
-const InformationPanel =({ listItem, activeItem }) => {
-    const [expanded, setExpanded] = React.useState(activeItem);
+const InformationPanel = ({ listItem, activeItem }) => {
+  const [expanded, setExpanded] = React.useState(activeItem);
 
-    const handleChange = (panel) => (event, newExpanded) => {
-      setExpanded(newExpanded ? panel : false);
-    };
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
 
-    return (
-      <div>
-        {listItem &&
-          listItem.map((item) => (
-            <ExpansionPanel
-              square
-              expanded={expanded === item.id}
-              onChange={handleChange(item.id)}
-              key={item.id}
+  return (
+    <div>
+      {listItem &&
+        listItem.map((item) => (
+          <ExpansionPanel
+            square
+            expanded={expanded === item.id}
+            onChange={handleChange(item.id)}
+            key={item.id}
+          >
+            <ExpansionPanelSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
             >
-              <ExpansionPanelSummary
-                aria-controls="panel1d-content"
-                id="panel1d-header"
-              >
-                <Typography style={{ fontSize: '12px' }}>
-                  {item.title}
-                </Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails >
-                {item.component}
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          ))}
-      </div>
-    );
-  }
+              <Typography style={{ fontSize: '12px' }}>{item.title}</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
+          </ExpansionPanel>
+        ))}
+    </div>
+  );
+};
 
 export default InformationPanel;
