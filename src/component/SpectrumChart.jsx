@@ -37,7 +37,6 @@ import {
   ADD_INTEGRAL,
 } from './reducer/Actions';
 
-import { UNDO, REDO } from './reducer/HistoryActions';
 import BasicToolBar from './toolbar/BasicToolBar';
 import HistoryToolBar from './toolbar/HistoryToolBar';
 import IntegralTool from './tool/IntegralTool';
@@ -237,18 +236,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     });
   };
 
-  // const handleRedo = (e) => {
-  //   dispatch({
-  //     type: REDO,
-  //   });
-  // };
-
-  // const handleUndo = (e) => {
-  //   dispatch({
-  //     type: UNDO,
-  //   });
-  // };
-
   const handleFullZoomOut = (e) => {
     dispatch({
       type: FULL_ZOOM_OUT,
@@ -349,7 +336,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
                 <g className="container">
                   <XAxis showGrid={true} mode={_mode} />
 
-                  <YAxis label="PPM" show={true} />
+                  <YAxis label="PPM" show={false} />
                   {_selectedTool === options.zoom.id && (
                     <BrushTool
                       margin={margin}

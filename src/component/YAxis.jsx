@@ -24,7 +24,7 @@ const YAxis = ({ show, label }) => {
     <React.Fragment>
       <g
         className="y axis"
-        transform={`translate(${margin.left+50},0)`}
+        transform={`translate(${margin.left+20},0)`}
         ref={refAxis}
       >
         <text
