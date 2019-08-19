@@ -289,7 +289,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
       //     type: SET_POINTER_COORDINATES,
       //     pointerCorrdinates: { x, y },
       //   });
-      // setMouseCoordinates({ x, y });
+      setMouseCoordinates({ x, y });
     }, 60);
   };
 
