@@ -35,7 +35,6 @@ export class Data1DManager {
   };
 
   fromJcamp = function fromJcamp(
-    id,
     text,
     name,
     color,
@@ -73,16 +72,17 @@ export class Data1DManager {
 
     if (Array.isArray(meta.nucleus)) meta.nucleus = meta.nucleus[0];
 
-    const ob = new Datum1D(id, data, {
+    const ob = new Datum1D(data, {
       display: {
         name: name,
         color: color,
         isVisible: isVisible,
         isPeaksMarkersVisible: isPeaksMarkersVisible,
       },
-      meta,
+      info:meta,
     });
-
+    
+    console.log(ob);
     return ob;
   };
 

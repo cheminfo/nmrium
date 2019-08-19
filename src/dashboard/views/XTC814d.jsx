@@ -57,7 +57,6 @@ async function loadData() {
 
       // console.log(buffer);
       let datumObject = Data1DManagerObj.fromJcamp(
-        `${key}`,
         result,
         `XTC ${i + 1}`,
         color,

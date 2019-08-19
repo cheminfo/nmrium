@@ -22,7 +22,7 @@ import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
 
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
-import {COLORS} from '../../component/utility/ColorGenerator.js';
+import { COLORS } from '../../component/utility/ColorGenerator.js';
 import { Data1DManager } from '../../data/Data1DManager.js';
 import SpectrumChart from '../../component/SpectrumChart.jsx';
 
@@ -39,7 +39,6 @@ function loadData() {
       .then((buffer) => {
         // console.log(buffer);
         let datumObject = Data1DManagerObj.fromJcamp(
-          '13C_Cytisin_600_fid',
           buffer,
           'test',
           COLORS[6],
@@ -68,7 +67,7 @@ function checkStatus(response) {
 
 const Spectrum13C = () => {
   const [data, setData] = useState([]);
-  
+
   useEffect(() => {
     loadData().then((d) => {
       setData(d);

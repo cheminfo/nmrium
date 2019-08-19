@@ -18,7 +18,7 @@ export class Datum1D {
   // TODO id can become optional
   // by default Math.random().toString(36).replace('0.','')
 
-  constructor(id, data, options = {}) {
+  constructor(data, options = {}) {
     /* TODO
     What are the different categories of information about a Datum1D ?
     * display: {color, isVisible, ...} // all that is related to display information
@@ -31,16 +31,16 @@ export class Datum1D {
     * 
 */
 
-    this.id = id;
+    this.id = options.id || Math.random().toString(36).replace('0.','');
     this.name = options.display.name;
     this.color = options.display.color;
     this.isVisible = options.display.isVisible;
     this.isPeaksMarkersVisible = options.display.isPeaksMarkersVisible;
     this.isRealSpectrumVisible = options.display.isRealSpectrumVisible || true;
     this.original = data; //{ x, re, im }
-    this.nucleus = options.meta.nucleus || '1H'; // 1H, 13C, 19F, ...
-    this.isFid = options.meta.isFid || false;
-    this.isComplex = options.meta.isComplex || false; // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+    this.nucleus = options.info.nucleus || '1H'; // 1H, 13C, 19F, ...
+    this.isFid = options.info.isFid || false;
+    this.isComplex = options.info.isComplex || false; // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
     this.x = data.x;
     this.re = data.re;
     this.im = data.im;

@@ -38,7 +38,6 @@ function loadData() {
       .then((buffer) => {
         // console.log(buffer);
         let datumObject = Data1DManagerObj.fromJcamp(
-          '13ccytisin600',
           buffer,
           'test',
           COLORS[1],

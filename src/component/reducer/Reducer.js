@@ -71,16 +71,16 @@ const setData = (state, data) => {
   for (let d of data) {
     Data1DManagerObj.pushDatum1D(
       new Datum1D(
-        d.id,
         { x: d.x, re: d.y, im: d.im },
         {
+          id:d.id,
           display: {
             name: d.name,
             color: d.color,
             isVisible: d.isVisible,
             isPeaksMarkersVisible: d.isPeaksMarkersVisible,
           },
-          meta: {
+          info: {
             nucleus: d.nucleus,
             isFid: d.isFid,
             isComplex: d.isComplex,

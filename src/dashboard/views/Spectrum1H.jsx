@@ -38,7 +38,6 @@ function loadData() {
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
         let datumObject = Data1DManagerObj.fromJcamp(
-          '1H_Cytisin_600MHz-R+I',
           buffer,
           'test',
           COLORS[4],

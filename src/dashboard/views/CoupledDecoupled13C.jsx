@@ -39,7 +39,6 @@ async function loadData() {
 
   try {
     for (let i = 0; i < jcampFiles.length; i++) {
-      const key = getKey();
       const usedColors = Data1DManagerObj.getXYData().map((d) => d.color);
       const color = getColor(usedColors);
       const result = await fetch(`/${jcampFiles[i].fileName}.jdx`).then(
@@ -47,8 +46,7 @@ async function loadData() {
       );
 
       // console.log(buffer);
-      let datumObject = Data1DManagerObj.fromJcamp(
-        `${key}`,
+      let datumObject = Data1DManagerObj.fromJcamp(     
         result,
         jcampFiles[i].label,
         color,

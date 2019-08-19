@@ -43,7 +43,7 @@ const jcampFiles = [
   'coffee/coffee_1317',
   'coffee/coffee_1318',
   'coffee/coffee_1319',
-  'coffee/coffee_1321'
+  'coffee/coffee_1321',
 ];
 async function loadData() {
   const Data1DManagerObj = new Data1DManager();
@@ -58,7 +58,6 @@ async function loadData() {
       );
 
       let datumObject = Data1DManagerObj.fromJcamp(
-        `${key}`,
         result,
         `coffee ${i + 1}`,
         color,
