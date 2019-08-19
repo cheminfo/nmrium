@@ -1,17 +1,10 @@
-import React, { Component, Fragment, useContext } from 'react';
+import React, { Component, Fragment } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 import CrossLinePointer from './CrossLinePointer';
 import {dispatchContext } from '../context/DispatchContext';
-// import {ChartContext } from '../context/ChartContext';
 import {event as currentEvent} from 'd3-selection';
-
 import { SET_X_DOMAIN,SET_Y_DOMAIN } from '../reducer/Actions';
-
-
-
-// const useDispatch = () => useContext(dispatchContext);
-// const useProps = () => useContext(ChartContext);
 
 class BrushTool extends Component {
 
@@ -19,12 +12,6 @@ class BrushTool extends Component {
   constructor(props) {
     super(props);
     const { width, height, margin } = this.props;
-    // this.width = width;
-    // this.height = height;
-    // this.margin = margin;
-    // this.data = data;
-    // this.domain = domain;
-    // this.originDomain = originDomain;
 
     this.brush = d3
       .brushX()

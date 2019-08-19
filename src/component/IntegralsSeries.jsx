@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 import { ChartContext } from './context/ChartContext';

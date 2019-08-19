@@ -114,8 +114,8 @@ const setData = (state, data) => {
 const loadSpectrum = (state, files) => {
   let usedColors = state._data.map((d) => d.color);
   console.log(files.length);
-  for (let i=0; i < files.length; i++) {
-     const key = getKey();
+  for (let i = 0; i < files.length; i++) {
+    const key = getKey();
     const color = getColor(usedColors);
 
     let dataumObject = Data1DManagerObj.fromJcamp(
@@ -183,7 +183,6 @@ const getClosePeak = (xShift, mouseCoordinates, state) => {
 };
 
 const addPeak = (state, mouseCoordinates) => {
-  // const points = [...state._peakNotations];
   const _data = [...state._data];
 
   if (state._activeSpectrum) {
@@ -200,25 +199,6 @@ const addPeak = (state, mouseCoordinates) => {
 
       Data1DManagerObj.getDatum1D(spectrumID).setPeaks(_data[index].peaks);
     }
-
-    // const id = state._activeSpectrum.id;
-
-    // console.log(id)
-    // console.log(points);
-
-    // const peak = getClosePeak(10, mouseCoordinates, state);
-    // // if (points.findIndex((point) => point.xIndex === peak.xIndex) === -1) {
-    // if (points[id] != null && points[id] !== undefined) {
-    //   points[id].push({ xIndex: peak.xIndex });
-    // } else {
-    //   points[id] = [{ xIndex: peak.xIndex }];
-    // }
-
-    // console.log(points[id]);
-
-    // Data1DManagerObj.getDatum1D(id).setPeaks(points);
-
-    // }
   } else {
     state.openMessage({
       messageType: MESSAGE_TYPE.error,
@@ -365,9 +345,6 @@ const handelSpectrumVisibility = (state, data) => {
       Data1DManagerObj.getDatum1D(d.id).isVisible = false;
       return { ...d, isVisible: false };
     }
-    // return result !== undefined
-    //   ? { ...d, isVisible: true }
-    //   : { ...d, isVisible: false };
   });
 
   return { ...state, _data: v_data };
@@ -384,9 +361,6 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
       Data1DManagerObj.getDatum1D(d.id).isPeaksMarkersVisible = false;
       return { ...d, isPeaksMarkersVisible: false };
     }
-    // return result !== undefined
-    //   ? { ...d, isVisible: true }
-    //   : { ...d, isVisible: false };
   });
 
   return { ...state, _data: result };
@@ -415,59 +389,7 @@ const handelChangeSpectrumColor = (state, { id, color }) => {
   return { ...state, _data: data };
 };
 
-const changeSpectrumType = (state, isRealSpectrumVisible) => {
-  // if (state._activeSpectrum !== null) {
-  //   const activeSpectrumId = state._activeSpectrum.id;
-  //   const ob = Data1DManagerObj.getDatum1D(activeSpectrumId);
-  //   if (ob) {
-  //     const v_data = [...state._data];
-  //     const reY = ob.getReal().y;
-  //     const imY = ob.getImaginary().y;
-  //     const index = state._data.findIndex((d) => d.id === activeSpectrumId);
-  //     if (isRealSpectrumVisible) {
-  //       if (reY !== null && reY !== undefined) {
-  //         v_data[index].y = reY;
-  //         const domain = getDomain(v_data);
-  //         return {
-  //           ...state,
-  //           _xDomain: domain.x,
-  //           _yDomain: domain.y,
-  //           _yDomains: domain._yDomains,
-  //           _data: v_data,
-  //         };
-  //       } else {
-  //         return state;
-  //       }
-  //     } else {
-  //       if (imY !== null && imY !== undefined) {
-  //         v_data[index].y = imY;
-  //         const domain = getDomain(v_data);
-  //         return {
-  //           ...state,
-  //           _xDomain: domain.x,
-  //           _yDomain: domain.y,
-  //           _yDomains: domain._yDomains,
-  //           _data: v_data,
-  //         };
-  //       } else {
-  //         return state;
-  //       }
-  //     }
-  //   }
-  // } else {
-  //   return state;
-  // }
-  // return state;
-};
-
 const handleToggleRealImaginaryVisibility = (state, isRealSpectrumVisible) => {
-  // const _data = [...state._data];
-  // if(state._activeSpectrum != null){
-  //   const activeSpectrumID = state._activeSpectrum.id;
-  //   const index = _data.findIndex((d)=>d.id === activeSpectrumID);
-  //   _data[index].isRealSpectrumVisible = !_data[index].isRealSpectrumVisible;
-  // }
-
   if (state._activeSpectrum !== null) {
     const activeSpectrumId = state._activeSpectrum.id;
     const ob = Data1DManagerObj.getDatum1D(activeSpectrumId);
@@ -631,7 +553,7 @@ const handleHistoryReset = (state, action) => {
 //////////////////////////////////////////////////////////////////////
 
 export const spectrumReducer = (state, action) => {
-    console.log(action);
+  console.log(action);
   switch (action.type) {
     case PEAK_PICKING:
       return addPeak(state, action.mouseCoordinates);
@@ -670,9 +592,6 @@ export const spectrumReducer = (state, action) => {
 
     case SHIFT_SPECTRUM:
       return shiftSpectrumAlongXAxis(state, action.shiftValue);
-
-    // case CHANGE_SPECTRUM_TYPE:
-    //   return changeSpectrumType(state, action.isRealSpectrumVisible);
 
     case CHANGE_VISIBILITY:
       return handelSpectrumVisibility(state, action.data);

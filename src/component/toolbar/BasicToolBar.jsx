@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useCallback, useState } from 'react';
+import React, { Fragment, useEffect, useCallback } from 'react';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { FaSearchMinus, FaMinus, FaBars } from 'react-icons/fa';
@@ -10,7 +10,6 @@ const BasicToolBar = ({
   isFullZoomButtonVisible = true,
   isFullZoomButtonEnabled = true,
   isViewButtonVisible = true,
-  isViewButtonEnabled = true,
   data
 }) => {
 
@@ -20,17 +19,17 @@ const BasicToolBar = ({
     } else if (e.key === 'v') {
       onViewChanged();
     }
-  });
+  },[onFullZoomOut, onViewChanged]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
-  }, []);
+  }, [handleOnKeyPressed]);
 
   useEffect(() => {
     return () => {
       document.removeEventListener('keydown', handleOnKeyPressed, false);
     };
-  }, []);
+  }, [handleOnKeyPressed]);
 
   return (
     <Fragment>

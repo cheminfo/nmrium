@@ -23,9 +23,6 @@ export const NotationTemplate = ({
   color,
   isActive,
   decimalFraction,
-  // onPeakValueChange,
-  // onSelected,
-  // onDeleteNotation,
 }) => {
   const refText = useRef();
   const [isSelected, setIsSelected] = useState(false);
@@ -46,19 +43,6 @@ export const NotationTemplate = ({
     },
     [dispatch],
   );
-
-  // const [notationId, setNotationId] = useState();
-  // useEffect(() => {
-  //  console.log(data);
-
-  // });
-  // const handleOnPeakChange = (e) => {
-  //   dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue });
-  // };
-
-  // const handleDeleteNotation = (data) => {
-  //   dispatch({ type: DELETE_PEAK_NOTATION, data });
-  // };
 
   useEffect(() => {
     const textBox = refText.current.getBBox();
@@ -233,21 +217,10 @@ export const NotationTemplate = ({
   );
 };
 
-const PeakNotationTool = ({
-  notationData,
-  position,
-  showCursorLabel,
-  // onPeakValueChange,
-  // onDeleteNotation,
-}) => {
+const PeakNotationTool = ({ notationData, position, showCursorLabel }) => {
   const { getScale, data, activeSpectrum, verticalAlign } = useContext(
     ChartContext,
   );
-
-  // const handelOnSelected = (id) => {
-  //   console.log(id);
-  //   // setNotationId(id);
-  // };
 
   const reSortData = () => {
     const _data = [...data];
@@ -261,14 +234,6 @@ const PeakNotationTool = ({
             : 0;
         })
       : _data;
-  };
-
-  const reSortNotificationLabel = (xIndex, notificationsData) => {
-    return notificationsData
-      ? notificationsData.sort(function(x, y) {
-          return x.xIndex === xIndex ? 1 : y.xIndex === xIndex ? -1 : 0;
-        })
-      : notificationsData;
   };
 
   const getVerticalAlign = (id) => {
@@ -301,9 +266,6 @@ const PeakNotationTool = ({
                         id={xIndex}
                         spectrumID={d.id}
                         value={d.x[xIndex]}
-                        // onPeakValueChange={onPeakValueChange}
-                        // onSelected={handelOnSelected}
-                        // onDeleteNotation={onDeleteNotation}
                         color={d.color}
                         decimalFraction={getPeakLabelNumberDecimals(d.nucleus)}
                         isActive={
@@ -329,54 +291,6 @@ const PeakNotationTool = ({
     </Fragment>
   );
 };
-
-// return (
-//   <Fragment>
-//     <g key="peakNotification">
-//       {data &&
-//         reSortData().filter((d)=>d.isVisible === true).map((d, i) => {
-//           return (
-//             <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
-//               {notationData &&
-//                 notationData[d.id] &&
-//                 d.isVisible &&
-//                 d.isPeaksMarkersVisible &&
-//                 notationData[d.id].map(({ xIndex }, i) => (
-//                   <NotationTemplate
-//                     key={i}
-//                     x={getScale(d.id).x(d.x[xIndex])}
-//                     y={getScale(d.id).y(d.y[xIndex])}
-//                     id={xIndex}
-//                     spectrumID={d.id}
-//                     value={d.x[xIndex]}
-//                     onPeakValueChange={onPeakValueChange}
-//                     onSelected={handelOnSelected}
-//                     onDeleteNotation={onDeleteNotation}
-//                     color={d.color}
-//                     decimalFraction={getPeakLabelNumberDecimals(d.nucleus)}
-//                     isActive={
-//                       activeSpectrum == null
-//                         ? false
-//                         : activeSpectrum.id === d.id
-//                         ? true
-//                         : false
-//                     }
-//                   />
-//                 ))}
-//             </g>
-//           );
-//         })}
-//     </g>
-//     {showCursorLabel && (
-//       <g>
-//         <text x={position.x} y={position.y} dy="0em" dx="0.35em">
-//           {getScale().x.invert(position.x)}
-//         </text>
-//       </g>
-//     )}
-//   </Fragment>
-// );
-// };
 
 export default PeakNotationTool;
 

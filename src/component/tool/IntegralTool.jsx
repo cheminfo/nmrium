@@ -1,10 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import CrossLinePointer from './CrossLinePointer';
 import '../css/integral-tool.css';
 import { XY } from 'ml-spectra-processing';
-import { width, sizeWidth } from '@material-ui/system';
 
 class IntegralTool extends Component {
   constructor(props) {
@@ -23,10 +21,6 @@ class IntegralTool extends Component {
       }
 
       const [x1, x2] = d3.event.selection;
-      // const scale = d3.scaleLinear(this.domain.x, [
-      //   this.width - this.margin.right,
-      //   this.margin.left
-      // ]);
 
       const scale = getScale().x;
 
@@ -49,7 +43,6 @@ class IntegralTool extends Component {
         reverse: true,
       });
 
-      // d3.select(this.refs.brush).call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
       this.props.onIntegralDrawFinished({
         id: activeSpectrum.id,
         from: range[0],
@@ -61,7 +54,7 @@ class IntegralTool extends Component {
   };
 
   componentDidMount() {
-    const { isActive, width, height, margin } = this.props;
+    const { width, height, margin } = this.props;
     this.brush.extent([
       [margin.left, margin.top],
       [width - margin.right, height - margin.bottom],
