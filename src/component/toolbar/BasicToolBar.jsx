@@ -1,25 +1,39 @@
 import React, { Fragment, useEffect, useCallback } from 'react';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
-import { FaSearchMinus, FaMinus, FaBars } from 'react-icons/fa';
+import { FaSearchMinus, FaMinus, FaBars, FaDownload } from 'react-icons/fa';
+import { useDispatch } from '../context/DispatchContext';
+import { SAVE_DATA_AS_JSON } from '../reducer/Actions';
 
 const BasicToolBar = ({
   viewAlignValue,
   onFullZoomOut,
   onViewChanged,
+  onSave,
   isFullZoomButtonVisible = true,
   isFullZoomButtonEnabled = true,
   isViewButtonVisible = true,
-  data
-}) => {
+  isSaveButtonVisible = true,
+  isSaveButtonEnabled = true,
 
-  const handleOnKeyPressed = useCallback((e) => {
-    if (e.key === 'f') {
-      onFullZoomOut();
-    } else if (e.key === 'v') {
-      onViewChanged();
-    }
-  },[onFullZoomOut, onViewChanged]);
+  data,
+}) => {
+  const dispatch = useDispatch();
+
+  const handleSaveDataAsJSON = useCallback(
+    () => dispatch({ type: SAVE_DATA_AS_JSON }),
+    [dispatch],
+  );
+  const handleOnKeyPressed = useCallback(
+    (e) => {
+      if (e.key === 'f') {
+        onFullZoomOut();
+      } else if (e.key === 'v') {
+        onViewChanged();
+      }
+    },
+    [onFullZoomOut, onViewChanged],
+  );
 
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
@@ -51,11 +65,26 @@ const BasicToolBar = ({
             <Button
               className="general-fun-bt"
               onClick={onViewChanged}
-              disabled={data && data.length <=1}
+              disabled={data && data.length <= 1}
             >
               {viewAlignValue !== 0 ? <FaMinus /> : <FaBars />}
             </Button>
           </div>
+        </Tooltip>
+      )}
+
+      {isSaveButtonVisible && (
+        <Tooltip
+          title="Save Data as JSON File ( Press Ctrl + S )"
+          placement="right-start"
+        >
+          <Button
+            className="general-fun-bt"
+            onClick={handleSaveDataAsJSON}
+            disabled={!isSaveButtonEnabled}
+          >
+            <FaDownload />
+          </Button>
         </Tooltip>
       )}
     </Fragment>

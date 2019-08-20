@@ -19,7 +19,6 @@ import React, { useEffect, useState } from 'react';
 
 // reactstrap components
 import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
-import getKey from '../../component/utility/KeyGenerator';
 import getColor from '../../component/utility/ColorGenerator';
 import ClipLoader from 'react-spinners/ClipLoader';
 
@@ -48,7 +47,6 @@ async function loadData() {
 
   try {
     for (let i = 0; i < jcampFiles.length; i++) {
-      const key = getKey();
       const usedColors = Data1DManagerObj.getXYData().map((d) => d.color);
       const color = getColor(usedColors);
       const result = await fetch(`/${jcampFiles[i]}.jdx`).then(
@@ -56,7 +54,7 @@ async function loadData() {
       );
 
       // console.log(buffer);
-      let datumObject = Data1DManagerObj.fromJcamp(
+      let datumObject = Data1DManager.fromJcamp(
         result,
         `XTC ${i + 1}`,
         color,

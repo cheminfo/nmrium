@@ -38,7 +38,7 @@ function loadData() {
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
         // console.log(buffer);
-        let datumObject = Data1DManagerObj.fromJcamp(
+        let datumObject = Data1DManager.fromJcamp(
           buffer,
           'test',
           COLORS[6],

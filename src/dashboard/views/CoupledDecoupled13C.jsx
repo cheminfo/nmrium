@@ -19,7 +19,6 @@ import React, { useEffect, useState } from 'react';
 
 // reactstrap components
 import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
-import getKey from '../../component/utility/KeyGenerator';
 import getColor from '../../component/utility/ColorGenerator';
 import ClipLoader from 'react-spinners/ClipLoader';
 
@@ -31,8 +30,8 @@ const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 const jcampFiles = [
-  {fileName:'108-21-4.13c-coupled',label:"13C coupled"},
-  {fileName:'108-21-4.13c-decoupled',label:"13C decoupled"},
+  { fileName: '108-21-4.13c-coupled', label: '13C coupled' },
+  { fileName: '108-21-4.13c-decoupled', label: '13C decoupled' },
 ];
 async function loadData() {
   const Data1DManagerObj = new Data1DManager();
@@ -46,7 +45,7 @@ async function loadData() {
       );
 
       // console.log(buffer);
-      let datumObject = Data1DManagerObj.fromJcamp(     
+      let datumObject = Data1DManager.fromJcamp(
         result,
         jcampFiles[i].label,
         color,
@@ -78,7 +77,6 @@ const CoupledDecoupled13C = () => {
     loadData().then((d) => {
       setData(d);
       setIsLoading(false);
-
     });
   }, []);
 
@@ -95,7 +93,11 @@ const CoupledDecoupled13C = () => {
               </CardHeader>
               <CardBody>
                 <ClipLoader
-                  css={{position:"absolute",left:((width)/2.5),top:((height+150)/2)}}
+                  css={{
+                    position: 'absolute',
+                    left: width / 2.5,
+                    top: (height + 150) / 2,
+                  }}
                   sizeUnit={'px'}
                   size={30}
                   color={'#2ca8ff'}
@@ -108,7 +110,6 @@ const CoupledDecoupled13C = () => {
                   margin={margin}
                   mode="RTL"
                 />
-            
               </CardBody>
             </Card>
           </Col>

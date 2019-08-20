@@ -30,11 +30,16 @@ export class Data1DManager {
 
 */
 
-  fromJSON = function fromJSON(json) {
-    return [];
+  static fromJSON = function fromJSON(json = []) {
+    let data1D = [];
+    json.forEach((datum) => {
+      data1D.push(new Datum1D(datum));
+    });
+    return data1D;
   };
 
-  fromJcamp = function fromJcamp(
+
+  static fromJcamp = function fromJcamp(
     text,
     name,
     color,
@@ -79,10 +84,9 @@ export class Data1DManager {
         isVisible: isVisible,
         isPeaksMarkersVisible: isPeaksMarkersVisible,
       },
-      info:meta,
+      info: meta,
     });
-    
-    console.log(ob);
+
     return ob;
   };
 
@@ -96,6 +100,44 @@ export class Data1DManager {
 
   //   return Datum1D.myInstance;
   // }
+
+  saveDataToJSON() {
+    const data1d = this.data1D.map((ob) => {
+      return {
+        data: {
+          x: ob.x,
+          y: ob.re,
+          im: ob.im,
+        },
+        options: {
+          display: {
+            id: ob.id,
+            name: ob.name,
+            color: ob.color,
+            isVisible: ob.isVisible,
+            isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
+            isRealSpectrumVisible: ob.isRealSpectrumVisible,
+            peaks: ob.peaks,
+            integrals: ob.integrals,
+            filters: ob.filters,
+          },
+          info: {
+            nucleus: ob.nucleus,
+            isFid: ob.isFid,
+            isComplex: ob.isComplex,
+          },
+        },
+      };
+    });
+
+    const fileData = JSON.stringify({data1d});
+    const blob = new Blob([fileData], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = 'experiment.json';
+    link.href = url;
+    link.click();
+  }
 
   pushDatum1D(object) {
     this.data1D.push(object);

@@ -57,7 +57,7 @@ async function loadData() {
         (response) => checkStatus(response) && response.text(),
       );
 
-      let datumObject = Data1DManagerObj.fromJcamp(
+      let datumObject = Data1DManager.fromJcamp(
         result,
         `coffee ${i + 1}`,
         color,

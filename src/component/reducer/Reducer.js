@@ -1,4 +1,5 @@
 import {
+  SAVE_DATA_AS_JSON,
   PEAK_PICKING,
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
@@ -66,6 +67,11 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin, _mode }) => {
   return { x, y };
 };
 
+const saveDataAsJson = (state)=>{
+  Data1DManagerObj.saveDataToJSON();
+  return state;
+}
+
 const setData = (state, data) => {
   const domain = getDomain(data);
   for (let d of data) {
@@ -73,7 +79,7 @@ const setData = (state, data) => {
       new Datum1D(
         { x: d.x, re: d.y, im: d.im },
         {
-          id:d.id,
+          id: d.id,
           display: {
             name: d.name,
             color: d.color,
@@ -115,11 +121,9 @@ const loadSpectrum = (state, files) => {
   let usedColors = state._data.map((d) => d.color);
   console.log(files.length);
   for (let i = 0; i < files.length; i++) {
-    const key = getKey();
     const color = getColor(usedColors);
 
-    let dataumObject = Data1DManagerObj.fromJcamp(
-      key,
+    let dataumObject = Data1DManager.fromJcamp(
       files[i].binary.toString(),
       files[i].name,
       color,
@@ -555,6 +559,8 @@ const handleHistoryReset = (state, action) => {
 export const spectrumReducer = (state, action) => {
   console.log(action);
   switch (action.type) {
+    case SAVE_DATA_AS_JSON:
+      return saveDataAsJson(state);
     case PEAK_PICKING:
       return addPeak(state, action.mouseCoordinates);
     case DELETE_PEAK_NOTATION:

@@ -37,7 +37,7 @@ function loadData() {
     fetch('/cytisine/1H_Cytisin_600MHz-R+I.dx')
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
-        let datumObject = Data1DManagerObj.fromJcamp(
+        let datumObject = Data1DManager.fromJcamp(
           buffer,
           'test',
           COLORS[4],

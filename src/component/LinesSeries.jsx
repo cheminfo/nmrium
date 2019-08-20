@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 import { ChartContext } from './context/ChartContext';
 
-export default function LinesSeries({ data }) {
+export default function LinesSeries() {
   const {
     width,
     height,
@@ -12,6 +12,7 @@ export default function LinesSeries({ data }) {
     getScale,
     verticalAlign,
     activeSpectrum,
+    data
   } = useContext(ChartContext);
 
   const paths = useMemo(() => {

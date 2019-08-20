@@ -118,12 +118,10 @@ export default function SpectrumList({ data }) {
     setVisible(visibleSpectrums);
     setMarkersVisible(visibleMarkers);
 
-    if (data && data.length === 1 && activated == null) {
-      handleChangeActiveSpectrum(data[0]);
-    }
-
-    
-  }, [activated, data, handleChangeActiveSpectrum]);
+    // if (data && data.length === 1 && activated == null) {
+    //   handleChangeActiveSpectrum(data[0]);
+    // }
+  }, [data]);
 
   useEffect(() => {
     //  })

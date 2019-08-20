@@ -5,6 +5,7 @@ import React, {
   useReducer,
   useState,
   Fragment,
+  useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
@@ -27,6 +28,7 @@ import { spectrumReducer } from './reducer/Reducer';
 
 import SpectrumList from './toolbar/SpectrumList';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
+
 
 import {
   SET_WIDTH,
@@ -194,31 +196,43 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     setMouseCoordinates({ x: 0, y: 0 });
   };
 
-  const getScale = (spectrumId = null) => {
-    const range =
-      _mode === 'RTL'
-        ? [_width - margin.right, margin.left]
-        : [margin.left, _width - margin.right];
+  const getScale = useMemo(() => {
+    return (spectrumId = null) => {
+      const range =
+        _mode === 'RTL'
+          ? [_width - margin.right, margin.left]
+          : [margin.left, _width - margin.right];
 
-    const x = d3.scaleLinear(_xDomain, range);
-    let y;
-    if (spectrumId == null) {
-      y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
-    } else if (_activeSpectrum == null || _activeSpectrum.id !== spectrumId) {
-      const index = _data.findIndex((d) => d.id === spectrumId);
-      y = d3.scaleLinear(_yDomains[index], [
-        height - margin.bottom,
-        margin.top,
-      ]);
-    } else {
-      const index = _data.findIndex((d) => d.id === _activeSpectrum.id);
-      y = d3.scaleLinear(_yDomains[index], [
-        height - margin.bottom,
-        margin.top,
-      ]);
-    }
-    return { x, y };
-  };
+      const x = d3.scaleLinear(_xDomain, range);
+      let y;
+      if (spectrumId == null) {
+        y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
+      } else if (_activeSpectrum == null || _activeSpectrum.id !== spectrumId) {
+        const index = _data.findIndex((d) => d.id === spectrumId);
+        y = d3.scaleLinear(_yDomains[index], [
+          height - margin.bottom,
+          margin.top,
+        ]);
+      } else {
+        const index = _data.findIndex((d) => d.id === _activeSpectrum.id);
+        y = d3.scaleLinear(_yDomains[index], [
+          height - margin.bottom,
+          margin.top,
+        ]);
+      }
+      return { x, y };
+    };
+  }, [
+    _activeSpectrum,
+    _data,
+    _mode,
+    _width,
+    _xDomain,
+    _yDomain,
+    _yDomains,
+    height,
+    margin,
+  ]);
 
   const mouseClick = (e) => {
     if (_selectedTool === options.peakPicking.id) {
