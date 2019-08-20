@@ -52,17 +52,19 @@ function loadFiles(acceptedFiles) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
 
-        if (!(file.name.endsWith('.dx') || file.name.endsWith('.jdx'))) {
-          reject('The file must be jcamp file .dx,.jdx file extention');
+        if (!(file.name.endsWith('.dx') || file.name.endsWith('.jdx') || file.name.endsWith('.json'))) {
+          reject('The file must be jcamp file .dx,.jdx,.json file extention');
         } else {
           reader.onabort = (e) => reject('file reading was aborted', e);
           reader.onerror = (e) => reject('file reading has failed', e);
           reader.onload = () => {
             if (reader.result) {
-              const binaryData = reader.result;
+              const binary = reader.result;
 
               const name = file.name.substr(0, file.name.lastIndexOf('.'));
-              resolve({ binary: binaryData, name: name });
+              const extension = file.name.substr(file.name.lastIndexOf('.'),file.name.length );
+              console.log(extension)
+              resolve({ binary, name,extension });
             }
           };
           reader.readAsBinaryString(file);
@@ -275,6 +277,8 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
       setVerticalAlign(Math.floor(-height / (_data.length + 2)));
     }
   };
+
+
 
   return (
     <DispatchProvider value={dispatch}>

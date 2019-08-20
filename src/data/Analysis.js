@@ -7,7 +7,6 @@ export class Analysis {
   
   constructor(json = {}) {
    
-   console.log('dddddddddddddd');
     this.data1d = json.data1d ? Data1DManager.fromJSON(json.data1d) : [];
     this.data2d = [];
     this.molecules = []; // chemical structures
@@ -74,10 +73,12 @@ export class Analysis {
 
   saveDataToJSON() {
     const data1d = this.data1d.map((ob) => {
+
+      console.log(ob);
       return {
         data: {
           x: ob.x,
-          y: ob.re,
+          re: ob.re,
           im: ob.im,
         },
         options: {

@@ -45,12 +45,12 @@ export class Datum1D {
     this.x = data.x;
     this.re = data.re;
     this.im = data.im;
-    this.peaks = []; // array of object {index: xIndex, xShift}
+    this.peaks = options.display.peaks || []; // array of object {index: xIndex, xShift}
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
-    this.integrals = []; // array of object (from: xIndex, to: xIndex)
-    this.signals = [];
-    this.filters = [];
+    this.integrals = options.display.integrals || []; // array of object (from: xIndex, to: xIndex)
+    this.signals = options.display.signals || [];
+    this.filters = options.display.filters || [];
     // [{kind: 'shiftX',value: -5,},{.....}]
   }
 

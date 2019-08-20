@@ -35,6 +35,8 @@ const ColorPicker = React.memo(
           position: 'fixed',
           left: colorPickerPosition.x,
           top: colorPickerPosition.y,
+          zIndex: 999999999
+
         }}
         onMouseLeave={onMouseLeave}
       >

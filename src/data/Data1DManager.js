@@ -4,36 +4,11 @@ import { Datum1D } from './Datum1D';
 import { XY, XReIm } from 'ml-spectra-processing';
 import { getMetaData } from './metadata/getMetaData';
 export class Data1DManager {
-  data1D = [];
-  // instance = null;
-
-  constructor() {
-    this.data1D = [];
-
-    console.log(this.data1D);
-    // if (!!Data1DManager.instance) {
-    //   console.log('1');
-    //   return (Data1DManager.instance = new Data1DManager());
-    // }
-    // console.log('2');
-
-    // return this;
-  }
-
-  // getInstance() {
-  //   return Data1DManager.instance;
-  // }
-
-  /* TODO
-  fromJcamp(jcamp, options={});
-
-
-*/
 
   static fromJSON = function fromJSON(json = []) {
     let data1D = [];
     json.forEach((datum) => {
-      data1D.push(new Datum1D(datum));
+      data1D.push(new Datum1D(datum.data,datum.options));
     });
     return data1D;
   };
@@ -90,160 +65,7 @@ export class Data1DManager {
     return ob;
   };
 
-  // static InitiateInstance(x, re, im) {
-  //   if (Datum1D.myInstance === null) {
-  //     Datum1D.myInstance = new Datum1D(x, re, im);
-  //   } else {
-  //     Datum1D.myInstance.setData(x, re, im)
 
-  //   }
 
-  //   return Datum1D.myInstance;
-  // }
 
-  // saveDataToJSON(data1D) {
-  //   const data1d = this.data1D.map((ob) => {
-  //     return {
-  //       data: {
-  //         x: ob.x,
-  //         y: ob.re,
-  //         im: ob.im,
-  //       },
-  //       options: {
-  //         display: {
-  //           id: ob.id,
-  //           name: ob.name,
-  //           color: ob.color,
-  //           isVisible: ob.isVisible,
-  //           isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-  //           isRealSpectrumVisible: ob.isRealSpectrumVisible,
-  //           peaks: ob.peaks,
-  //           integrals: ob.integrals,
-  //           filters: ob.filters,
-  //         },
-  //         info: {
-  //           nucleus: ob.nucleus,
-  //           isFid: ob.isFid,
-  //           isComplex: ob.isComplex,
-  //         },
-  //       },
-  //     };
-  //   });
-
-  //   const fileData = JSON.stringify({data1d});
-  //   const blob = new Blob([fileData], { type: 'text/plain' });
-  //   const url = URL.createObjectURL(blob);
-  //   const link = document.createElement('a');
-  //   link.download = 'experiment.json';
-  //   link.href = url;
-  //   link.click();
-  // }
-
-  pushDatum1D(object) {
-    this.data1D.push(object);
-  }
-
-  getDatum1D(id) {
-    return this.data1D.find((ob) => ob.id === id);
-  }
-  /**
-   * 
-   * @param {boolean} isRealData 
-   */
-  getData(isRealData = true) {
-    return this.data1D.map((ob) => {
-      return {
-        id: ob.id,
-        x: ob.x,
-        y: isRealData?ob.re:ob.im,
-        im: ob.im,
-        name: ob.name,
-        color: ob.color,
-        isVisible: ob.isVisible,
-        isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-        isRealSpectrumVisible: ob.isRealSpectrumVisible,
-        nucleus: ob.nucleus,
-        isFid: ob.isFid,
-        isComplex: ob.isComplex,
-        peaks: ob.peaks,
-        integrals: ob.integrals,
-        filters: ob.filters,
-      };
-    });
-  }
-
-  // getData() {
-  //   return this.data1D.map((ob) => {
-  //     return {
-  //       id: ob.id,
-  //       x: ob.x,
-  //       y: ob.re,
-  //       im: ob.im,
-  //       name: ob.name,
-  //       color: ob.color,
-  //       isVisible: ob.isVisible,
-  //       isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-  //       isRealSpectrumVisible: ob.isRealSpectrumVisible,
-  //       nucleus: ob.nucleus,
-  //       isFid: ob.isFid,
-  //       isComplex: ob.isComplex,
-  //       peaks: ob.peaks,
-  //       integrals: ob.integrals,
-  //       filters: ob.filters,
-  //     };
-  //   });
-  // }
-
-  // getOriginalData() {
-  //   return this.data1D.map((ob) => {
-  //     return {
-  //       id: ob.id,
-  //       x: ob.x,
-  //       y: ob.re,
-  //       im: ob.im,
-  //       name: ob.name,
-  //       color: ob.color,
-  //       isVisible: ob.isVisible,
-  //       isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-  //       isRealSpectrumVisible: ob.isRealSpectrumVisible,
-  //       nucleus: ob.nucleus,
-  //       isComplex: ob.isComplex,
-  //       peaks: ob.peaks,
-  //       integrals: ob.integrals,
-  //       filters: ob.filters,
-  //     };
-  //   });
-  // }
-
-  // undoFilter(pastChainFilters = []) {
-  //   // let data = { x: this.original.x, y: this.original.re };
-  //   this.data1D.forEach((ob) => {
-  //     ob.x = ob.original.x;
-  //     ob.re = ob.original.re;
-  //   });
-
-  //   if (pastChainFilters && pastChainFilters.length !== 0) {
-  //     pastChainFilters.forEach((filter) => {
-  //       const ob = this.getDatum1D(filter.id);
-  //       let data = { x: ob.x, y: ob.re };
-  //       data = applyFilter({ kind: filter.kind, value: filter.value }, data);
-  //       this.getDatum1D(filter.id).x = data.x;
-  //       this.getDatum1D(filter.id).re = data.y;
-  //     });
-
-  //     // this.x = data.x;
-  //     // this.re = data.y;
-  //   }
-  // }
-
-  // redoFilter(nextFilter) {
-  //   const ob = this.getDatum1D(nextFilter.id);
-  //   let data = { x: ob.x, y: ob.re };
-  //   data = applyFilter(
-  //     { kind: nextFilter.kind, value: nextFilter.value },
-  //     data,
-  //   );
-  //   ob.x = data.x;
-  //   ob.re = data.y;
-  // }
 }
