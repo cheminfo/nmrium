@@ -30,8 +30,9 @@ export class Datum1D {
     * annotations: [],
     * 
 */
-
-    this.id = options.id || Math.random().toString(36).replace('0.','');
+   console.log(options);
+   
+    this.id =options.id ||Math.random().toString(36).replace('0.', '');
     this.name = options.display.name;
     this.color = options.display.color;
     this.isVisible = options.display.isVisible;
@@ -110,5 +111,23 @@ export class Datum1D {
     this.filters.push(filter);
   }
 
-
+  toJSON() {
+    return {
+      data: { x: this.x, re: this.re, im: this.im },
+      options: {
+          id: this.id,
+          display: {
+            name: this.name,
+            color: this.color,
+            isVisible: this.isVisible,
+            isPeaksMarkersVisible: this.isPeaksMarkersVisible,
+          },
+          info: {
+            nucleus: this.nucleus,
+            isFid: this.isFid,
+            isComplex: this.isComplex,
+          }
+      },
+    };
+  }
 }

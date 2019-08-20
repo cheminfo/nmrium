@@ -34,11 +34,10 @@ const jcampFiles = [
   { fileName: '108-21-4.13c-decoupled', label: '13C decoupled' },
 ];
 async function loadData() {
-  const Data1DManagerObj = new Data1DManager();
-
+   let data1d = [];  
   try {
     for (let i = 0; i < jcampFiles.length; i++) {
-      const usedColors = Data1DManagerObj.getXYData().map((d) => d.color);
+      const usedColors = data1d.map((d) => d.options && d.options.display && d.options.display.color);
       const color = getColor(usedColors);
       const result = await fetch(`/${jcampFiles[i].fileName}.jdx`).then(
         (response) => checkStatus(response) && response.text(),
@@ -52,12 +51,13 @@ async function loadData() {
         true,
         true,
       );
-      Data1DManagerObj.pushDatum1D(datumObject);
+      data1d.push(datumObject.toJSON());
     }
-  } catch (e) {}
-  const xyData = Data1DManagerObj.getXYData();
-  console.log(xyData);
-  return xyData;
+  } catch (e) {
+    console.log(e);
+  }
+
+  return data1d;
 
   // Never forget the final catch!
 }

@@ -43,17 +43,14 @@ const jcampFiles = [
   'xtc/XTC-z189_zg30',
 ];
 async function loadData() {
-  const Data1DManagerObj = new Data1DManager();
-
+  let data1d = [];
   try {
     for (let i = 0; i < jcampFiles.length; i++) {
-      const usedColors = Data1DManagerObj.getXYData().map((d) => d.color);
+      const usedColors = data1d.map((d) => d.options && d.options.display && d.options.display.color);
       const color = getColor(usedColors);
       const result = await fetch(`/${jcampFiles[i]}.jdx`).then(
         (response) => checkStatus(response) && response.text(),
       );
-
-      // console.log(buffer);
       let datumObject = Data1DManager.fromJcamp(
         result,
         `XTC ${i + 1}`,
@@ -61,11 +58,13 @@ async function loadData() {
         true,
         true,
       );
-      Data1DManagerObj.pushDatum1D(datumObject);
+
+      data1d.push(datumObject.toJSON());
     }
-  } catch (e) {}
-  const xyData = Data1DManagerObj.getXYData();
-  return xyData;
+    console.log(data1d);
+
+  } catch (e) {console.log(e)}
+  return data1d;
 
   // Never forget the final catch!
 }

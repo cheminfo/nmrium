@@ -31,8 +31,7 @@ const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
-  const Data1DManagerObj = new Data1DManager();
-
+  let data1d = [];
   return new Promise((resolve, reject) => {
     fetch('/cytisine/13C_Cytisin_600_fid.dx')
       .then((response) => checkStatus(response) && response.text())
@@ -45,11 +44,9 @@ function loadData() {
           true,
           true,
         );
-        Data1DManagerObj.pushDatum1D(datumObject);
-
-        const xyData = Data1DManagerObj.getXYData();
+        data1d.push(datumObject.toJSON());
         // console.log(xyData);
-        resolve(xyData);
+        resolve(data1d);
       })
       .catch((err) => {
         reject(err);

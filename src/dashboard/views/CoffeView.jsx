@@ -46,12 +46,10 @@ const jcampFiles = [
   'coffee/coffee_1321',
 ];
 async function loadData() {
-  const Data1DManagerObj = new Data1DManager();
-
+  let data1d = [];
   try {
     for (let i = 0; i < jcampFiles.length; i++) {
-      const key = getKey();
-      const usedColors = Data1DManagerObj.getXYData().map((d) => d.color);
+      const usedColors = data1d.map((d) => d.options && d.options.display && d.options.display.color);
       const color = getColor(usedColors);
       const result = await fetch(`/${jcampFiles[i]}.jdx`).then(
         (response) => checkStatus(response) && response.text(),
@@ -65,14 +63,10 @@ async function loadData() {
         true,
       );
 
-      console.log(datumObject);
-
-      Data1DManagerObj.pushDatum1D(datumObject);
+      data1d.push(datumObject.toJSON());
     }
   } catch (e) {}
-  const xyData = Data1DManagerObj.getXYData();
-  console.log(xyData);
-  return xyData;
+  return data1d;
 
   // Never forget the final catch!
 }

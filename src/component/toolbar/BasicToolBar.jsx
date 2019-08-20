@@ -24,15 +24,21 @@ const BasicToolBar = ({
     () => dispatch({ type: SAVE_DATA_AS_JSON }),
     [dispatch],
   );
+
   const handleOnKeyPressed = useCallback(
     (e) => {
+    
       if (e.key === 'f') {
         onFullZoomOut();
       } else if (e.key === 'v') {
         onViewChanged();
+      } else if (e.ctrlKey && e.key === 's') {
+        handleSaveDataAsJSON();
+        e.preventDefault();
+
       }
     },
-    [onFullZoomOut, onViewChanged],
+    [onFullZoomOut, onViewChanged, handleSaveDataAsJSON],
   );
 
   useEffect(() => {

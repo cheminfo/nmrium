@@ -31,8 +31,7 @@ const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
-  const Data1DManagerObj = new Data1DManager();
-
+   let data1d = [];
   return new Promise((resolve, reject) => {
     fetch('/cytisine/1H_Cytisin_600MHz-R+I.dx')
       .then((response) => checkStatus(response) && response.text())
@@ -44,13 +43,8 @@ function loadData() {
           true,
           true,
         );
-        // console.log(datumObject);
-
-        Data1DManagerObj.pushDatum1D(datumObject);
-
-        const xyData = Data1DManagerObj.getXYData();
-        // console.log(xyData);
-        resolve(xyData);
+        data1d.push(datumObject.toJSON());
+        resolve(data1d);
       })
       .catch((err) => {
         reject(err);

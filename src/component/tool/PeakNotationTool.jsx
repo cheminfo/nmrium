@@ -81,6 +81,7 @@ export const NotationTemplate = ({
   };
 
   const handleChange = (event) => {
+    console.log(event);
     setValue(event.target.value);
   };
 
