@@ -1,14 +1,13 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef, useContext, useMemo } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import {ChartContext} from './context/ChartContext';
+import { ChartContext } from './context/ChartContext';
 
 const YAxis = ({ show, label }) => {
   const refAxis = useRef();
   const { width, height, margin, yDomain, getScale } = useContext(ChartContext);
 
   useEffect(() => {
-
     if (show) {
       // const scale = d3.scaleLinear([0,domain[1]], [height - margin.bottom, margin.top]);
       const scale = getScale();
@@ -20,26 +19,34 @@ const YAxis = ({ show, label }) => {
     }
   }, [width, height, yDomain, show, getScale]);
 
-  return show ? (
-    <React.Fragment>
-      <g
-        className="y axis"
-        transform={`translate(${margin.left+20},0)`}
-        ref={refAxis}
-      >
-        <text
-          fill="#000"
-          x={-(margin.top + 20)}
-          y={-(margin.left - 5)}
-          dy="0.71em"
-          transform="rotate(-90)"
-          textAnchor="end"
-        >
-          {label}
-        </text>
-      </g>
-    </React.Fragment>
-  ) : null;
+  const Axis = useMemo(
+    () =>
+      show &&
+      show === true && (
+        <React.Fragment>
+          <g
+            className="y axis"
+            transform={`translate(${margin.left + 20},0)`}
+            ref={refAxis}
+          >
+            <text
+              fill="#000"
+              x={-(margin.top + 20)}
+              y={-(margin.left - 5)}
+              dy="0.71em"
+              transform="rotate(-90)"
+              textAnchor="end"
+            >
+              {label}
+            </text>
+          </g>
+        </React.Fragment>
+      ),
+
+    [label, margin.left, margin.top, show]
+  );
+
+  return Axis;
 };
 
 export default YAxis;

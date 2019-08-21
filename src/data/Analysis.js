@@ -82,8 +82,8 @@ export class Analysis {
           im: ob.im,
         },
         options: {
+          id: ob.id,
           display: {
-            id: ob.id,
             name: ob.name,
             color: ob.color,
             isVisible: ob.isVisible,
@@ -131,7 +131,7 @@ export class Analysis {
    * @param {boolean} isRealData 
    */
   getData1d(isRealData = true) {
-    return this.data1d.map((ob) => {
+    return this.data1d.map((ob,i) => {
       return {
         id: ob.id,
         x: ob.x,

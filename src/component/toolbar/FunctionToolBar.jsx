@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ZoomIn from '@material-ui/icons/ZoomIn';
@@ -100,7 +100,7 @@ const FunctionToolBar = ({ defaultValue, activeSpectrum }) => {
   );
 };
 
-export default FunctionToolBar;
+export default memo(FunctionToolBar);
 
 FunctionToolBar.defaultProps = {
   defaultValue: options.zoom.id,

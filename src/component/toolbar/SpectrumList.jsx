@@ -1,4 +1,11 @@
-import React, { useEffect, useState, Fragment, useCallback } from 'react';
+import React, {
+  useEffect,
+  useState,
+  Fragment,
+  useCallback,
+  useMemo,
+  memo,
+} from 'react';
 import propTypes from 'prop-types';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -35,8 +42,7 @@ const ColorPicker = React.memo(
           position: 'fixed',
           left: colorPickerPosition.x,
           top: colorPickerPosition.y,
-          zIndex: 999999999
-
+          zIndex: 999999999,
         }}
         onMouseLeave={onMouseLeave}
       >
@@ -51,7 +57,7 @@ const ColorPicker = React.memo(
   arePropsEqual,
 );
 
-export default function SpectrumList({ data }) {
+const SpectrumList = ({ data }) => {
   const [activated, setActivated] = useState(null);
   const [visible, setVisible] = useState([]);
   const [markersVisible, setMarkersVisible] = useState([]);
@@ -120,26 +126,12 @@ export default function SpectrumList({ data }) {
     setVisible(visibleSpectrums);
     setMarkersVisible(visibleMarkers);
 
+    console.log(data);
+
     // if (data && data.length === 1 && activated == null) {
     //   handleChangeActiveSpectrum(data[0]);
     // }
   }, [data]);
-
-  useEffect(() => {
-    //  })
-  }, [data]);
-
-  const isVisible = (id) => {
-    return visible.findIndex((v) => v.id === id) !== -1 ? true : false;
-  };
-
-  const isActivated = (id) => {
-    return activated && activated.id === id;
-  };
-
-  const isMarkerVisible = (id) => {
-    return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
-  };
 
   const handleOpenColorPicker = (selectedSpectrum, event) => {
     setColorPickerPosition({
@@ -154,55 +146,78 @@ export default function SpectrumList({ data }) {
     setIsColorPickerDisplayed(false);
   };
 
+  const ListItems = useMemo(() => {
+    const isVisible = (id) => {
+      return visible.findIndex((v) => v.id === id) !== -1 ? true : false;
+    };
+
+    const isActivated = (id) => {
+      return activated && activated.id === id;
+    };
+
+    const isMarkerVisible = (id) => {
+      return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
+    };
+    return (
+      data &&
+      data.map((d, i) => {
+        return (
+          <ListItem key={'slist' + d.id}>
+            <ListItemIcon>
+              <Button onClick={() => handleChangeVisibility(d)}>
+                <FaEye
+                  style={
+                    isVisible(d.id)
+                      ? { opacity: 1, stroke: 'black', strokeWidth: '1px' }
+                      : { opacity: 0.1 }
+                  }
+                />
+              </Button>
+            </ListItemIcon>
+            <div style={{ width: '50%' }}>{d.name}</div>
+
+            <ListItemSecondaryAction>
+              <Button onClick={() => handleChangeMarkersVisibility(d)}>
+                <FaEye
+                  style={
+                    isMarkerVisible(d.id)
+                      ? { width: 12, opacity: 1, fill: d.color }
+                      : { width: 12, opacity: 0.1, fill: d.color }
+                  }
+                />
+              </Button>
+              <Button onClick={() => handleChangeActiveSpectrum(d)}>
+                <FaMinus
+                  style={
+                    isActivated(d.id)
+                      ? { fill: d.color, height: '15px' }
+                      : { fill: d.color, opacity: 0.1 }
+                  }
+                />
+              </Button>
+              <Button
+                className="color-change-bt"
+                onClick={(event) => handleOpenColorPicker(d, event)}
+              >
+                <FaPaintBrush />
+              </Button>
+            </ListItemSecondaryAction>
+          </ListItem>
+        );
+      })
+    );
+  }, [
+    data,
+    handleChangeActiveSpectrum,
+    handleChangeMarkersVisibility,
+    handleChangeVisibility,
+    activated,
+    markersVisible,
+    visible,
+  ]);
   return (
     <Fragment>
-      <List className="spectrum-list">
-        {data.map((d) => {
-          return (
-            <ListItem key={'slist' + d.id}>
-              <ListItemIcon>
-                <Button onClick={() => handleChangeVisibility(d)}>
-                  <FaEye
-                    style={
-                      isVisible(d.id)
-                        ? { opacity: 1, stroke: 'black', strokeWidth: '1px' }
-                        : { opacity: 0.1 }
-                    }
-                  />
-                </Button>
-              </ListItemIcon>
-              <div style={{ width: '50%' }}>{d.name}</div>
-
-              <ListItemSecondaryAction>
-                <Button onClick={() => handleChangeMarkersVisibility(d)}>
-                  <FaEye
-                    style={
-                      isMarkerVisible(d.id)
-                        ? { width: 12, opacity: 1, fill: d.color }
-                        : { width: 12, opacity: 0.1, fill: d.color }
-                    }
-                  />
-                </Button>
-                <Button onClick={() => handleChangeActiveSpectrum(d)}>
-                  <FaMinus
-                    style={
-                      isActivated(d.id)
-                        ? { fill: d.color, height: '15px' }
-                        : { fill: d.color, opacity: 0.1 }
-                    }
-                  />
-                </Button>
-                <Button
-                  className="color-change-bt"
-                  onClick={(event) => handleOpenColorPicker(d, event)}
-                >
-                  <FaPaintBrush />
-                </Button>
-              </ListItemSecondaryAction>
-            </ListItem>
-          );
-        })}
-      </List>
+      <List className="spectrum-list">{ListItems}</List>
 
       {isColorPickerDisplayed ? (
         <ColorPicker
@@ -214,11 +229,13 @@ export default function SpectrumList({ data }) {
       ) : null}
     </Fragment>
   );
-}
+};
 
 SpectrumList.propTypes = {
   data: propTypes.array.isRequired,
 };
+
+export default SpectrumList;
 
 // SpectrumList.defaultProps = {
 //   onChangeVisibility: function() {

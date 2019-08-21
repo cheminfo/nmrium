@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -56,27 +56,29 @@ const InformationPanel = ({ listItem, activeItem }) => {
     setExpanded(newExpanded ? panel : false);
   };
 
-  return (
-    <div>
-      {listItem &&
-        listItem.map((item) => (
-          <ExpansionPanel
-            square
-            expanded={expanded === item.id}
-            onChange={handleChange(item.id)}
-            key={item.id}
+  const Accordion = useMemo(
+    () =>
+      listItem &&
+      listItem.map((item) => (
+        <ExpansionPanel
+          square
+          expanded={expanded === item.id}
+          onChange={handleChange(item.id)}
+          key={item.id}
+        >
+          <ExpansionPanelSummary
+            aria-controls="panel1d-content"
+            id="panel1d-header"
           >
-            <ExpansionPanelSummary
-              aria-controls="panel1d-content"
-              id="panel1d-header"
-            >
-              <Typography style={{ fontSize: '12px' }}>{item.title}</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
-          </ExpansionPanel>
-        ))}
-    </div>
+            <Typography style={{ fontSize: '12px' }}>{item.title}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
+        </ExpansionPanel>
+      )),
+    [expanded, listItem],
   );
+
+  return <div>{Accordion}</div>;
 };
 
-export default InformationPanel;
+export default memo(InformationPanel);

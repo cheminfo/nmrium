@@ -15,96 +15,60 @@ const height = 300;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 const data = [
-  // array of spectra. They will share the same axis
-  // each series is a React component in the SVG dom
-  // if a series has to be rerender a new object in the array is created
   {
-    id: '2',
-    isHover: false,
-    x: { ...json2 }.x,
-    y: { ...json2 }.y,
-    name: 'spectrum 101',
-    isFid: true, // allows to determine the label of the axis
-    is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-    color: 'red',
-    isVisible: true,
-    isPeaksMarkersVisible:true,
-
+    data: {
+      x: { ...json2 }.x,
+      re: { ...json2 }.y,
+      im: { ...json2 }.y,
+    },
+    options: {
+      display: {
+        name: 'spectrum 101',
+        color: 'red',
+      },
+      info: {
+        nucleus: 'H1',
+        isFid: false,
+        isComplex: false,
+      },
+    },
   },
   {
-    id: '3',
-    isHover: false,
-    x: { ...json2 }.x,
-    y: { ...json2 }.y,
-    name: 'spectrum 102',
-    isFid: true, // allows to determine the label of the axis
-    is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-    color: 'blue',
-    isVisible: true,
-    isPeaksMarkersVisible:true,
-
+    data: {
+      x: { ...json2 }.x,
+      re: { ...json2 }.y,
+      im: { ...json2 }.y,
+    },
+    options: {
+      display: {
+        name: 'spectrum 102',
+        color: 'blue',
+      },
+      info: {
+        nucleus: 'H1',
+        isFid: false,
+        isComplex: false,
+      },
+    },
   },
   {
-    id: '4',
-    isHover: false,
-    x: { ...json2 }.x,
-    y: { ...json2 }.y,
-    name: 'spectrum 103',
-    isFid: true, // allows to determine the label of the axis
-    is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-    color: 'green',
-    isVisible: true,
-    isPeaksMarkersVisible:true,
-
-  },
-
-  // {
-  //   id: '3',
-  //   isHover: false,
-  //   x:{...json}.x,
-  //   y:{...json}.y,
-  //   color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
-  //   isFid: true, // allows to determine the label of the axis
-  //   is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-  //   color: 'red',
-  // },
-  // {
-  //   id: "5",
-  //   isHover: false,
-
-  //   color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
-  //   ...json2,
-
-  //   isFid: true, // allows to determine the label of the axis
-  //   is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-  //   color: "red"
-  // }
-];
-
-const real_data = {
-  id: '2',
-  isHover: false,
-  x: { ...json2 }.x.reverse(),
-  y: { ...json2 }.y,
-  isFid: true, // allows to determine the label of the axis
-  is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-  color: 'green',
-};
-
-const data2 = [
-  // array of spectra. They will share the same axis
-  // each series is a React component in the SVG dom
-  // if a series has to be rerender a new object in the array is created
-  {
-    id: '2',
-    isHover: false,
-    x: { ...json2 }.x,
-    y: { ...json2 }.y,
-    color: undefined, // an array of colors for each segment of line. Use always modulo color.length to get the color
-    isFid: true, // allows to determine the label of the axis
-    is2D: false, // TODO: need to define where to put the spectrum if it is 1D
-    color: 'green',
-  },
+    data: {
+      x: { ...json2 }.x,
+      re: { ...json2 }.y,
+      im: { ...json2 }.y,
+    },
+    options: {
+      display: {
+        name: 'spectrum 103',
+        color: 'green',
+      },
+      info: {
+        nucleus: 'H1',
+        isFid: false,
+        isComplex: false,
+      },
+    },
+  }
 ];
 
 storiesOf('1d spectrum samples', module)

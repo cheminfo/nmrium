@@ -66,7 +66,6 @@ function loadFiles(acceptedFiles) {
 
               const name = file.name.substr(0, file.name.lastIndexOf('.'));
               const extension = file.name.substr(file.name.lastIndexOf('.'),file.name.length );
-              console.log(extension)
               resolve({ binary, name,extension });
             }
           };
@@ -149,7 +148,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     noClick: true,
   });
 
-  const infoList = [
+  const infoList = useMemo(()=> [
     {
       id: 'spectraPanel',
       title: 'spectra',
@@ -177,7 +176,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
       title: 'Structures',
       component: <p>Structures</p>,
     },
-  ];
+  ],[_activeSpectrum,_data]);
 
   useEffect(()=>{
     const AnalysisObj = new Analysis();

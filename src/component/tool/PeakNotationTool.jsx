@@ -5,6 +5,7 @@ import React, {
   Fragment,
   useContext,
   useCallback,
+  useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 import '../css/peak-notification-tool.css';
@@ -81,7 +82,6 @@ export const NotationTemplate = ({
   };
 
   const handleChange = (event) => {
-    console.log(event);
     setValue(event.target.value);
   };
 
@@ -223,24 +223,6 @@ const PeakNotationTool = ({ notationData, position, showCursorLabel }) => {
     ChartContext,
   );
 
-  const reSortData = () => {
-    const _data = [...data];
-
-    return activeSpectrum
-      ? _data.sort(function(x, y) {
-          return x.id === activeSpectrum.id
-            ? 1
-            : y.id === activeSpectrum.id
-            ? -1
-            : 0;
-        })
-      : _data;
-  };
-
-  const getVerticalAlign = (id) => {
-    return data.findIndex((d) => d.id === id) * verticalAlign;
-  };
-
   const getXValue = (xVal) => {
     const spectrumData = data.find((d) => d.id === activeSpectrum.id);
     return getScale()
@@ -248,40 +230,64 @@ const PeakNotationTool = ({ notationData, position, showCursorLabel }) => {
       .toFixed(getPeakLabelNumberDecimals(spectrumData.nucleus));
   };
 
+  const PeaksNotations = useMemo(() => {
+    const getVerticalAlign = (id) => {
+      return data.findIndex((d) => d.id === id) * verticalAlign;
+    };
+
+    const reSortData = () => {
+      const _data = [...data];
+
+      return activeSpectrum
+        ? _data.sort(function(x, y) {
+            return x.id === activeSpectrum.id
+              ? 1
+              : y.id === activeSpectrum.id
+              ? -1
+              : 0;
+          })
+        : _data;
+    };
+
+    return (
+      data &&
+      reSortData()
+        .filter((d) => d.isVisible === true)
+        .map((d, i) => {
+          console.log('cccccccccccccc');
+          return (
+            <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
+              {d.peaks &&
+                d.isPeaksMarkersVisible &&
+                d.peaks.map(({ xIndex }, j) => (
+                  <NotationTemplate
+                    key={`peak-${d.id}-${j}`}
+                    x={getScale(d.id).x(d.x[xIndex])}
+                    y={getScale(d.id).y(d.y[xIndex])}
+                    id={xIndex}
+                    spectrumID={d.id}
+                    value={d.x[xIndex]}
+                    color={d.color}
+                    decimalFraction={getPeakLabelNumberDecimals(d.nucleus)}
+                    isActive={
+                      activeSpectrum == null
+                        ? false
+                        : activeSpectrum.id === d.id
+                        ? true
+                        : false
+                    }
+                  />
+                ))}
+            </g>
+          );
+        })
+    );
+  }, [data, activeSpectrum, getScale,verticalAlign]);
+
   return (
     <Fragment>
-      <g key="peakNotification">
-        {data &&
-          reSortData()
-            .filter((d) => d.isVisible === true)
-            .map((d, i) => {
-              return (
-                <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
-                  {d.peaks &&
-                    d.isPeaksMarkersVisible &&
-                    d.peaks.map(({ xIndex }, j) => (
-                      <NotationTemplate
-                        key={`peak-${d.id}-${j}`}
-                        x={getScale(d.id).x(d.x[xIndex])}
-                        y={getScale(d.id).y(d.y[xIndex])}
-                        id={xIndex}
-                        spectrumID={d.id}
-                        value={d.x[xIndex]}
-                        color={d.color}
-                        decimalFraction={getPeakLabelNumberDecimals(d.nucleus)}
-                        isActive={
-                          activeSpectrum == null
-                            ? false
-                            : activeSpectrum.id === d.id
-                            ? true
-                            : false
-                        }
-                      />
-                    ))}
-                </g>
-              );
-            })}
-      </g>
+      <g key="peakNotification" />
+      {PeaksNotations}
       {showCursorLabel && activeSpectrum && (
         <g>
           <text x={position.x} y={position.y} dy="0em" dx="0.35em">

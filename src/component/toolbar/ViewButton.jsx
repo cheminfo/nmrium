@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback,memo } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from '../context/DispatchContext';
@@ -57,7 +57,7 @@ const ViewButton = ({
   );
 };
 
-export default ViewButton;
+export default memo(ViewButton);
 
 ViewButton.defaultProps = {
   defaultValue: true,

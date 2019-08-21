@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment, useCallback, memo } from 'react';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { FaUndo, FaRedo } from 'react-icons/fa';
@@ -56,4 +56,4 @@ const HistoryToolBar = ({
   );
 };
 
-export default HistoryToolBar;
+export default memo(HistoryToolBar);

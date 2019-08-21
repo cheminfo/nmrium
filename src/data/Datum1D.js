@@ -31,10 +31,10 @@ export class Datum1D {
     * 
 */   
     this.id =options.id ||Math.random().toString(36).replace('0.', '');
-    this.name = options.display.name;
-    this.color = options.display.color;
-    this.isVisible = options.display.isVisible;
-    this.isPeaksMarkersVisible = options.display.isPeaksMarkersVisible;
+    this.name = options.display.name || Math.random().toString(36).replace('0.', '');
+    this.color = options.display.color || 'black';
+    this.isVisible = options.display.isVisible || true;
+    this.isPeaksMarkersVisible = options.display.isPeaksMarkersVisible|| true;
     this.isRealSpectrumVisible = options.display.isRealSpectrumVisible || true;
     this.original = data; //{ x, re, im }
     this.nucleus = options.info.nucleus || '1H'; // 1H, 13C, 19F, ...
