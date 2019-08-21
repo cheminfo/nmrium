@@ -29,8 +29,11 @@ import { spectrumReducer } from './reducer/Reducer';
 import SpectrumList from './toolbar/SpectrumList';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
 
+import { Analysis } from '../data/Analysis';
+
 
 import {
+  INITIATE,
   SET_WIDTH,
   PEAK_PICKING,
   LOADING_SPECTRUM,
@@ -175,6 +178,11 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
       component: <p>Structures</p>,
     },
   ];
+
+  useEffect(()=>{
+    const AnalysisObj = new Analysis();
+     dispatch(({type:INITIATE,data:{AnalysisObj}}))
+  },[])
 
   useEffect(() => {
     dispatch({ type: SET_DATA, data });

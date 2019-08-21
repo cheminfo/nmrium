@@ -29,9 +29,7 @@ export class Datum1D {
     * signals: [],
     * annotations: [],
     * 
-*/
-   console.log(options);
-   
+*/   
     this.id =options.id ||Math.random().toString(36).replace('0.', '');
     this.name = options.display.name;
     this.color = options.display.color;

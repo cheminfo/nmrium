@@ -1,4 +1,5 @@
 import {
+  INITIATE,
   SAVE_DATA_AS_JSON,
   PEAK_PICKING,
   DELETE_PEAK_NOTATION,
@@ -33,7 +34,12 @@ import getKey from '../utility/KeyGenerator';
 import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';
 
-let AnalysisObj ;
+let AnalysisObj = new Analysis();
+
+const initiate = (state, data) => {
+  AnalysisObj = data.AnalysisObj;
+  return state;
+};
 
 function getDomain(data) {
   let xArray = data.reduce(
@@ -67,7 +73,7 @@ const saveDataAsJson = (state) => {
 };
 
 const setData = (state, data) => {
-  AnalysisObj= new Analysis()
+  // AnalysisObj= new Analysis()
   for (let d of data) {
     AnalysisObj.pushDatum1D(new Datum1D(d.data, d.options));
   }
@@ -91,19 +97,19 @@ const loadSpectrum = (state, files) => {
   let usedColors = state._data.map((d) => d.color);
   console.log(files.length);
   for (let i = 0; i < files.length; i++) {
-    if(files[i].extension.toLowerCase() !== '.json'){
-    const color = getColor(usedColors);
+    if (files[i].extension.toLowerCase() !== '.json') {
+      const color = getColor(usedColors);
 
-    let datumObject = Data1DManager.fromJcamp(
-      files[i].binary.toString(),
-      files[i].name,
-      color,
-      true,
-      true,
-    );
-    usedColors.push(color);
-    AnalysisObj.pushDatum1D(datumObject);
-    }else{
+      let datumObject = Data1DManager.fromJcamp(
+        files[i].binary.toString(),
+        files[i].name,
+        color,
+        true,
+        true,
+      );
+      usedColors.push(color);
+      AnalysisObj.pushDatum1D(datumObject);
+    } else {
       console.log(files[i].binary.toString());
       AnalysisObj = new Analysis(JSON.parse(files[i].binary.toString()));
     }
@@ -112,7 +118,7 @@ const loadSpectrum = (state, files) => {
   console.log(AnalysisObj);
 
   const _data = AnalysisObj.getData1d();
-  console.log(_data)
+  console.log(_data);
   const domain = getDomain(_data);
 
   return {
@@ -523,6 +529,8 @@ const handleHistoryReset = (state, action) => {
 export const spectrumReducer = (state, action) => {
   console.log(action);
   switch (action.type) {
+    case INITIATE:
+      return initiate(state, action.data);
     case SAVE_DATA_AS_JSON:
       return saveDataAsJson(state);
     case PEAK_PICKING:
