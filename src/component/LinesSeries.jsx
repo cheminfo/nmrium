@@ -12,7 +12,7 @@ export default function LinesSeries() {
     getScale,
     verticalAlign,
     activeSpectrum,
-    data
+    data,
   } = useContext(ChartContext);
 
   const paths = useMemo(() => {

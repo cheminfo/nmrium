@@ -126,25 +126,23 @@ const SpectrumList = ({ data }) => {
     setVisible(visibleSpectrums);
     setMarkersVisible(visibleMarkers);
 
-    console.log(data);
-
     // if (data && data.length === 1 && activated == null) {
     //   handleChangeActiveSpectrum(data[0]);
     // }
   }, [data]);
 
-  const handleOpenColorPicker = (selectedSpectrum, event) => {
+  const handleOpenColorPicker = useCallback((selectedSpectrum, event) => {
     setColorPickerPosition({
       x: event.nativeEvent.clientX,
       y: event.nativeEvent.clientY,
     });
     setSelectedSpectrum(selectedSpectrum);
     setIsColorPickerDisplayed(true);
-  };
+  }, []);
 
-  const handleCloseColorPicker = () => {
+  const handleCloseColorPicker = useCallback(() => {
     setIsColorPickerDisplayed(false);
-  };
+  }, []);
 
   const ListItems = useMemo(() => {
     const isVisible = (id) => {
@@ -211,6 +209,7 @@ const SpectrumList = ({ data }) => {
     handleChangeActiveSpectrum,
     handleChangeMarkersVisibility,
     handleChangeVisibility,
+    handleOpenColorPicker,
     activated,
     markersVisible,
     visible,

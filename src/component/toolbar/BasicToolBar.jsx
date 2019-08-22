@@ -9,13 +9,11 @@ const BasicToolBar = ({
   viewAlignValue,
   onFullZoomOut,
   onViewChanged,
-  onSave,
   isFullZoomButtonVisible = true,
   isFullZoomButtonEnabled = true,
   isViewButtonVisible = true,
   isSaveButtonVisible = true,
   isSaveButtonEnabled = true,
-
   data,
 }) => {
   const dispatch = useDispatch();

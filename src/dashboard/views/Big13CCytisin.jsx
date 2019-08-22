@@ -30,7 +30,6 @@ const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
-  const Data1DManagerObj = new Data1DManager();
   let data1d = [];
 
   return new Promise((resolve, reject) => {
@@ -45,10 +44,7 @@ function loadData() {
           true,
           true,
         );
-        data1d.push(datumObject.toJSON());
-        // console.log(xyData);
-        console.log(data1d);
-        
+        data1d.push(datumObject.toJSON());        
         resolve(data1d);
       })
       .catch((err) => {

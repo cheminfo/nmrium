@@ -6,6 +6,7 @@ import React, {
   useContext,
   useCallback,
   useMemo,
+  useLayoutEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import '../css/peak-notification-tool.css';
@@ -45,7 +46,7 @@ export const NotationTemplate = ({
     [dispatch],
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const textBox = refText.current.getBBox();
     setContainerSize({ width: textBox.width, height: textBox.height });
   }, [isSelected]);
@@ -54,60 +55,51 @@ export const NotationTemplate = ({
     setValue(value);
   }, [value]);
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      const newValue = parseFloat(event.target.value);
-      const oldValue = parseFloat(value);
-      const shiftValue = parseFloat(event.target.value) - parseFloat(value);
-      // onPeakValueChange({
-      //   id: id,
-      //   value: newValue,
-      //   oldValue: oldValue,
-      //   shiftValue: shiftValue,
-      // });
-      handleOnPeakChange({
-        id: id,
-        value: newValue,
-        oldValue: oldValue,
-        shiftValue: shiftValue,
-      });
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === 'Enter') {
+        const newValue = parseFloat(event.target.value);
+        const oldValue = parseFloat(value);
+        const shiftValue = parseFloat(event.target.value) - parseFloat(value);
 
-      event.target.blur();
-      setIsSelected(false);
-    } else if (event.keyCode === 27) {
-      setValue(value);
-      event.target.blur();
-      setIsSelected(false);
-    }
-  };
+        handleOnPeakChange({
+          id: id,
+          value: newValue,
+          oldValue: oldValue,
+          shiftValue: shiftValue,
+        });
 
-  const handleChange = (event) => {
+        event.target.blur();
+        setIsSelected(false);
+      } else if (event.keyCode === 27) {
+        setValue(value);
+        event.target.blur();
+        setIsSelected(false);
+      }
+    },
+    [id, value, handleOnPeakChange],
+  );
+
+  const handleChange = useCallback((event) => {
     setValue(event.target.value);
-  };
+  }, []);
 
-  const handleSelectPeakNotation = (e) => {
+  const handleSelectPeakNotation = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     // onSelected(id);
     setIsSelected(true);
-  };
-  const handleMouseOutPeakNotation = (e) => {};
+  }, []);
 
-  const handleOnOverNotation = (id) => {
+  const handleOnOverNotation = useCallback((id) => {
     setIsOver({ id: id, flag: true });
-  };
+  }, []);
 
-  const handleOnMouseLeaveNotation = () => {
+  const handleOnMouseLeaveNotation = useCallback(() => {
     setTimeout(() => {
       setIsOver({ id: null, flag: false });
-    }, 300);
-  };
-
-  // const handleDeleteNotation = (e, data) => {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   onDeleteNotation(data);
-  // };
+    }, 200);
+  }, []);
 
   return (
     <Fragment>
@@ -141,7 +133,6 @@ export const NotationTemplate = ({
         {/* <circle cx="0" cy="0" r="1" fill="red" /> */}
 
         <foreignObject
-          onMouseOut={handleMouseOutPeakNotation}
           x="0"
           y="-30"
           width={containerSize.width + 20}
@@ -218,7 +209,7 @@ export const NotationTemplate = ({
   );
 };
 
-const PeakNotationTool = ({ notationData, position, showCursorLabel }) => {
+const PeakNotationTool = ({ position, showCursorLabel }) => {
   const { getScale, data, activeSpectrum, verticalAlign } = useContext(
     ChartContext,
   );
@@ -254,7 +245,6 @@ const PeakNotationTool = ({ notationData, position, showCursorLabel }) => {
       reSortData()
         .filter((d) => d.isVisible === true)
         .map((d, i) => {
-          console.log('cccccccccccccc');
           return (
             <g key={i} transform={`translate(0,${getVerticalAlign(d.id)})`}>
               {d.peaks &&
@@ -282,7 +272,7 @@ const PeakNotationTool = ({ notationData, position, showCursorLabel }) => {
           );
         })
     );
-  }, [data, activeSpectrum, getScale,verticalAlign]);
+  }, [data, activeSpectrum, getScale, verticalAlign]);
 
   return (
     <Fragment>

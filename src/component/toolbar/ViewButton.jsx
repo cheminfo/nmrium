@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback,memo } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from '../context/DispatchContext';
@@ -15,15 +15,18 @@ const ViewButton = ({
   const dispatch = useDispatch();
 
   const handleShowSpectrumTypeChang = useCallback(
-    () => dispatch({ type: TOGGLE_REAL_IMAGINARY_VISIBILITY, isRealSpectrumVisible:!option }),
+    () =>
+      dispatch({
+        type: TOGGLE_REAL_IMAGINARY_VISIBILITY,
+        isRealSpectrumVisible: !option,
+      }),
     [dispatch, option],
   );
 
-  const handleChange = () => {
+  const handleChange = useCallback(() => {
     setOption(!option);
-    handleShowSpectrumTypeChang()
-  };
-
+    handleShowSpectrumTypeChang();
+  }, [option, handleShowSpectrumTypeChang]);
 
   useEffect(() => {
     setOption(defaultValue);

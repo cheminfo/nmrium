@@ -20,6 +20,8 @@ import ViewButton from './toolbar/ViewButton';
 import YAxis from './YAxis';
 import XAxis from './XAxis';
 import BrushTool from './tool/BrushTool';
+import CrossLinePointer from './tool/CrossLinePointer';
+
 import LinesSeries from './LinesSeries';
 import IntegralsSeries from './IntegralsSeries';
 import PeakNotationTool from './tool/PeakNotationTool';
@@ -30,7 +32,6 @@ import SpectrumList from './toolbar/SpectrumList';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
 
 import { Analysis } from '../data/Analysis';
-
 
 import {
   INITIATE,
@@ -55,7 +56,13 @@ function loadFiles(acceptedFiles) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
 
-        if (!(file.name.endsWith('.dx') || file.name.endsWith('.jdx') || file.name.endsWith('.json'))) {
+        if (
+          !(
+            file.name.endsWith('.dx') ||
+            file.name.endsWith('.jdx') ||
+            file.name.endsWith('.json')
+          )
+        ) {
           reject('The file must be jcamp file .dx,.jdx,.json file extention');
         } else {
           reader.onabort = (e) => reject('file reading was aborted', e);
@@ -65,8 +72,11 @@ function loadFiles(acceptedFiles) {
               const binary = reader.result;
 
               const name = file.name.substr(0, file.name.lastIndexOf('.'));
-              const extension = file.name.substr(file.name.lastIndexOf('.'),file.name.length );
-              resolve({ binary, name,extension });
+              const extension = file.name.substr(
+                file.name.lastIndexOf('.'),
+                file.name.length,
+              );
+              resolve({ binary, name, extension });
             }
           };
           reader.readAsBinaryString(file);
@@ -148,40 +158,43 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     noClick: true,
   });
 
-  const infoList = useMemo(()=> [
-    {
-      id: 'spectraPanel',
-      title: 'spectra',
-      component: <SpectrumList data={_data} />,
-    },
-    {
-      id: 'informationPanel',
-      title: 'Information',
-      component: <p>information</p>,
-    },
-    {
-      id: 'integralsPanel',
-      title: 'Integrals',
-      component: (
-        <IntegralTable data={_data} activeSpectrum={_activeSpectrum} />
-      ),
-    },
-    {
-      id: 'peaksPanel',
-      title: 'Peaks',
-      component: <p>Peaks</p>,
-    },
-    {
-      id: 'structuresPanel',
-      title: 'Structures',
-      component: <p>Structures</p>,
-    },
-  ],[_activeSpectrum,_data]);
+  const infoList = useMemo(
+    () => [
+      {
+        id: 'spectraPanel',
+        title: 'spectra',
+        component: <SpectrumList data={_data} />,
+      },
+      {
+        id: 'informationPanel',
+        title: 'Information',
+        component: <p>information</p>,
+      },
+      {
+        id: 'integralsPanel',
+        title: 'Integrals',
+        component: (
+          <IntegralTable data={_data} activeSpectrum={_activeSpectrum} />
+        ),
+      },
+      {
+        id: 'peaksPanel',
+        title: 'Peaks',
+        component: <p>Peaks</p>,
+      },
+      {
+        id: 'structuresPanel',
+        title: 'Structures',
+        component: <p>Structures</p>,
+      },
+    ],
+    [_activeSpectrum, _data],
+  );
 
-  useEffect(()=>{
+  useEffect(() => {
     const AnalysisObj = new Analysis();
-     dispatch(({type:INITIATE,data:{AnalysisObj}}))
-  },[])
+    dispatch({ type: INITIATE, data: { AnalysisObj } });
+  }, []);
 
   useEffect(() => {
     dispatch({ type: SET_DATA, data });
@@ -191,7 +204,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
   }, [width, height]);
 
-  const mouseMove = (e) => {
+  const mouseMove = useCallback((e) => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
     const x = e.clientX - chartArea.current.getBoundingClientRect().left;
@@ -199,11 +212,11 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     requestAnimationFrame(() => {
       setMouseCoordinates({ x, y });
     }, 60);
-  };
+  }, []);
 
-  const mouseMoveLeave = (e) => {
+  const mouseMoveLeave = useCallback((e) => {
     setMouseCoordinates({ x: 0, y: 0 });
-  };
+  }, []);
 
   const getScale = useMemo(() => {
     return (spectrumId = null) => {
@@ -252,18 +265,18 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     }
   };
 
-  const handleAddIntegral = (integral) => {
+  const handleAddIntegral = useCallback((integral) => {
     dispatch({
       type: ADD_INTEGRAL,
       integral,
     });
-  };
+  }, []);
 
-  const handleFullZoomOut = (e) => {
+  const handleFullZoomOut = useCallback((e) => {
     dispatch({
       type: FULL_ZOOM_OUT,
     });
-  };
+  }, []);
 
   function handelOpenMessage({ messageType, messageText }) {
     openMessage({ messageType, messageText, isOpen: true });
@@ -277,15 +290,21 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     openMessage({ ...message, isOpen: false });
   }
 
-  const handleChangeVerticalAlignments = () => {
+  // const handleChangeVerticalAlignments = () => {
+  //   if (verticalAlign !== 0) {
+  //     setVerticalAlign(0);
+  //   } else {
+  //     setVerticalAlign(Math.floor(-height / (_data.length + 2)));
+  //   }
+  // };
+
+  const handleChangeVerticalAlignments = useCallback(() => {
     if (verticalAlign !== 0) {
       setVerticalAlign(0);
     } else {
       setVerticalAlign(Math.floor(-height / (_data.length + 2)));
     }
-  };
-
-
+  }, [verticalAlign, _data, height]);
 
   return (
     <DispatchProvider value={dispatch}>
@@ -363,18 +382,24 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
 
                   <YAxis label="PPM" show={false} />
                   {_selectedTool === options.zoom.id && (
-                    <BrushTool
-                      margin={margin}
-                      width={_width}
-                      height={height}
-                      data={_data}
-                      domain={{ x: _xDomain, y: _yDomain }}
-                      originDomain={_originDomain}
-                      isActive={true}
-                      getScale={getScale}
-                      position={mouseCoordinates}
-                      mode={_mode}
-                    />
+                    <Fragment>
+                      <CrossLinePointer
+                        position={mouseCoordinates}
+                        margin={margin}
+                        width={width}
+                        height={height}
+                      />
+                      <BrushTool
+                        margin={margin}
+                        width={_width}
+                        height={height}
+                        domain={{ x: _xDomain, y: _yDomain }}
+                        originDomain={_originDomain}
+                        isActive={true}
+                        getScale={getScale}
+                        mode={_mode}
+                      />
+                    </Fragment>
                   )}
 
                   {_selectedTool === options.integral.id && (
@@ -396,7 +421,6 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
                   {(_selectedTool === options.peakPicking.id ||
                     _peakNotations) && (
                     <PeakNotationTool
-                      notationData={_peakNotations}
                       position={mouseCoordinates}
                       showCursorLabel={_selectedTool === options.peakPicking.id}
                     />

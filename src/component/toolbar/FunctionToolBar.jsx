@@ -22,12 +22,15 @@ const FunctionToolBar = ({ defaultValue, activeSpectrum }) => {
     [dispatch],
   );
 
-  const handleChange = (event, selectedOption) => {
-    if (selectedOption != null) {
-      setOption(selectedOption);
-      handleChangeOption(selectedOption);
-    }
-  };
+  const handleChange = useCallback(
+    (event, selectedOption) => {
+      if (selectedOption != null) {
+        setOption(selectedOption);
+        handleChangeOption(selectedOption);
+      }
+    },
+    [handleChangeOption],
+  );
 
   const handleOnKeyPressed = useCallback(
     (e) => {

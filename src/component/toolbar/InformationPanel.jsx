@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -52,9 +52,12 @@ const ExpansionPanelDetails = withStyles((theme) => ({
 const InformationPanel = ({ listItem, activeItem }) => {
   const [expanded, setExpanded] = React.useState(activeItem);
 
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
+  const handleChange = useCallback(
+    (panel) => (event, newExpanded) => {
+      setExpanded(newExpanded ? panel : false);
+    },
+    [],
+  );
 
   const Accordion = useMemo(
     () =>

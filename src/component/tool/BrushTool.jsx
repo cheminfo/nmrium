@@ -1,14 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import CrossLinePointer from './CrossLinePointer';
-import {dispatchContext } from '../context/DispatchContext';
-import {event as currentEvent} from 'd3-selection';
-import { SET_X_DOMAIN,SET_Y_DOMAIN } from '../reducer/Actions';
+// import CrossLinePointer from './CrossLinePointer';
+import { dispatchContext } from '../context/DispatchContext';
+import { event as currentEvent } from 'd3-selection';
+import { SET_X_DOMAIN, SET_Y_DOMAIN } from '../reducer/Actions';
 
 class BrushTool extends Component {
-
-  
   constructor(props) {
     super(props);
     const { width, height, margin } = this.props;
@@ -24,8 +22,6 @@ class BrushTool extends Component {
       .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
   }
 
- 
-
   brushEnd = () => {
     // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
 
@@ -38,15 +34,18 @@ class BrushTool extends Component {
     //   this.width - this.margin.right,
     //   this.margin.left
     // ]);
-    const { getScale,mode } = this.props;
+    const { getScale, mode } = this.props;
     const scale = getScale().x;
 
-    const range = (mode ==="RTL")?[scale.invert(x2), scale.invert(x1)]: [scale.invert(x1), scale.invert(x2)];
+    const range =
+      mode === 'RTL'
+        ? [scale.invert(x2), scale.invert(x1)]
+        : [scale.invert(x1), scale.invert(x2)];
     d3.select(this.refs.brush).call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
-    
-     const dispatch = this.context;
+
+    const dispatch = this.context;
     //  console.log(useContext(dispatchContext))
-    dispatch({ type: SET_X_DOMAIN, xDomain:range });
+    dispatch({ type: SET_X_DOMAIN, xDomain: range });
     // dispatchContext({ type: SET_X_DOMAIN, xDomain:range });
     // this.props.onXAxisDomainUpdate(range);
   };
@@ -57,7 +56,7 @@ class BrushTool extends Component {
     const { height, margin, originDomain, domain } = this.props;
 
     console.log(domain);
-  
+
     // const { getScale } = this.props;
     // const scale = getScale().y;
     const scale = d3.scaleLinear(originDomain.y, [
@@ -66,9 +65,9 @@ class BrushTool extends Component {
     ]);
 
     const v_domain = t.rescaleY(scale).domain();
-    
+
     const dispatch = this.context;
-    dispatch({ type: SET_Y_DOMAIN, yDomain:[domain.y[0], v_domain[1]] });
+    dispatch({ type: SET_Y_DOMAIN, yDomain: [domain.y[0], v_domain[1]] });
 
     // this.props.onYAxisDomainUpdate([domain.y[0], v_domain[1]]);
   };
@@ -78,12 +77,11 @@ class BrushTool extends Component {
     const dispatch = this.context;
     dispatch({ type: SET_X_DOMAIN, xDomain: originDomain.x });
     dispatch({ type: SET_Y_DOMAIN, yDomain: originDomain.y });
-// this.props.onDomainReset(originDomain);
-    
+    // this.props.onDomainReset(originDomain);
   };
 
   componentDidMount() {
-    const { isActive,width, height, margin } = this.props;
+    const { isActive, width, height, margin } = this.props;
     this.brush.extent([
       [margin.left, margin.top],
       [width - margin.right, height - margin.bottom],
@@ -110,27 +108,17 @@ class BrushTool extends Component {
         .on('dblclick.zoom', null);
       this.brush.on('end', this.brushEnd);
       this.zoom.on('zoom', this.zoomed);
-
     } else {
       this.brush.on('end', null);
       this.zoom.on('zoom', null);
-
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {}
-
   render() {
-    const { isActive, width, height, margin, position } = this.props;
+    const { isActive } = this.props;
 
     return (
       <Fragment>
-        <CrossLinePointer
-          position={position}
-          margin={margin}
-          width={width}
-          height={height}
-        />
         <g
           className={isActive ? 'brush-container brush ' : 'brush-container'}
           onDoubleClick={this.reset}
@@ -141,12 +129,20 @@ class BrushTool extends Component {
   }
 }
 BrushTool.contextType = dispatchContext;
-export default BrushTool;
+
+function isEqual(prevProps, nextProps) {
+  if (JSON.stringify(prevProps).trim() === JSON.stringify(nextProps).trim()) {
+    return true;
+  }
+
+  return false;
+}
+
+export default React.memo(BrushTool, isEqual);
 
 BrushTool.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
-  data: PropTypes.array.isRequired,
   margin: PropTypes.shape({
     top: PropTypes.number.isRequired,
     right: PropTypes.number.isRequired,
