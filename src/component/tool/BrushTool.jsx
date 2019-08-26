@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 // import CrossLinePointer from './CrossLinePointer';
 import { dispatchContext } from '../context/DispatchContext';
 import { event as currentEvent } from 'd3-selection';
-import { SET_X_DOMAIN, SET_Y_DOMAIN } from '../reducer/Actions';
+import {
+  SET_X_DOMAIN,
+  SET_Y_DOMAIN,
+  SET_ZOOM_FACTOR,
+} from '../reducer/Actions';
 
 class BrushTool extends Component {
   constructor(props) {
@@ -20,6 +24,16 @@ class BrushTool extends Component {
       .scaleExtent([-Infinity, Infinity])
       .translateExtent([[0, 0], [width - margin.right, height - margin.bottom]])
       .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
+
+    this.zoomed = this.zoomed.bind(this);
+    this.zoom.wheelDelta(() => {
+      return (
+        -d3.event.deltaY *
+        (d3.event.deltaMode === 1 ? 0.05 : d3.event.deltaMode ? 1 : 0.002)
+      );
+    });
+
+    this.state = { k: 0 };
   }
 
   brushEnd = () => {
@@ -50,27 +64,26 @@ class BrushTool extends Component {
     // this.props.onXAxisDomainUpdate(range);
   };
 
-  zoomed = () => {
+  zoomed() {
     // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
     let t = currentEvent.transform;
+    // let t = d3.zoomIdentity
+    //   .scale(currentEvent.transform.k)
+    //   .translate(0,currentEvent.transform.y);
     const { height, margin, originDomain, domain } = this.props;
-
-    console.log(domain);
-
-    // const { getScale } = this.props;
-    // const scale = getScale().y;
+    console.log(t);
     const scale = d3.scaleLinear(originDomain.y, [
       height - margin.bottom,
       margin.top,
     ]);
 
     const v_domain = t.rescaleY(scale).domain();
-
     const dispatch = this.context;
     dispatch({ type: SET_Y_DOMAIN, yDomain: [domain.y[0], v_domain[1]] });
+    dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: t });
 
     // this.props.onYAxisDomainUpdate([domain.y[0], v_domain[1]]);
-  };
+  }
 
   reset = (e) => {
     const { originDomain } = this.props;
@@ -81,30 +94,36 @@ class BrushTool extends Component {
   };
 
   componentDidMount() {
-    const { isActive, width, height, margin } = this.props;
-    this.brush.extent([
-      [margin.left, margin.top],
-      [width - margin.right, height - margin.bottom],
-    ]);
+    const { isActive, width, height, margin, domain } = this.props;
 
-    this.zoom
-      .translateExtent([
-        [margin.left, margin.top],
-        [width - margin.right, height - margin.bottom],
-      ])
-      .extent([
-        [margin.left, margin.top],
-        [width - margin.right, height - margin.bottom],
-      ]);
+    // this.brush.extent([
+    //   [margin.left, margin.top],
+    //   [width - margin.right, height - margin.bottom],
+    // ]);
+    // this.zoom = d3
+    // .zoom()
+    // .scaleExtent([-Infinity, Infinity])
+    // .translateExtent([[0, 0], [width - margin.right, height - margin.bottom]])
+    // .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
 
-    d3.select(this.refs.brush)
-      .selectAll('*')
-      .remove();
+    // this.zoom
+    //   .translateExtent([
+    //     [margin.left, margin.top],
+    //     [width - margin.right, height - margin.bottom],
+    //   ])
+    //   .extent([
+    //     [margin.left, margin.top],
+    //     [width - margin.right, height - margin.bottom],
+    //   ]);
+
+    // d3.select(this.refs.brush)
+    //   .selectAll('*')
+    //   .remove();
 
     if (isActive) {
       d3.select(this.refs.brush)
         .call(this.brush)
-        .call(this.zoom)
+        .call(this.zoom, d3.zoomIdentity)
         .on('dblclick.zoom', null);
       this.brush.on('end', this.brushEnd);
       this.zoom.on('zoom', this.zoomed);
@@ -115,15 +134,24 @@ class BrushTool extends Component {
   }
 
   render() {
-    const { isActive } = this.props;
+    const { isActive, width, height, margin } = this.props;
 
     return (
       <Fragment>
         <g
-          className={isActive ? 'brush-container brush ' : 'brush-container'}
+          className={isActive ? 'brush-container brush ' : ' brush-container'}
           onDoubleClick={this.reset}
           ref="brush"
-        />
+        >
+          {/* <rect
+            width={`${width - margin.left - margin.right}`}
+            height={`${height - margin.top - margin.bottom}`}
+            transform={`translate(${margin.left},${margin.top})`}
+            className="zoom"
+            id="zoom"
+            ref="zoom"
+          /> */}
+        </g>
       </Fragment>
     );
   }

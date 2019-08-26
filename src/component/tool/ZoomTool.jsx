@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
+import { dispatchContext } from '../context/DispatchContext';
+import { SET_X_DOMAIN, SET_Y_DOMAIN } from '../reducer/Actions';
 
 class ZoomTool extends Component {
   constructor(props) {
@@ -30,7 +32,7 @@ class ZoomTool extends Component {
   zoomed = () => {
     // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
     let t = d3.event.transform;
-    const { width, margin, originDomain } = this.props;
+    const { width, margin, originDomain,domain } = this.props;
 
     const scale = d3.scaleLinear(originDomain.x, [
       width - margin.right,
@@ -38,14 +40,17 @@ class ZoomTool extends Component {
     ]);
 
     const _domain = t.rescaleX(scale).domain();
-    this.props.onXAxisDomainUpdate(_domain);
+    const dispatch = this.context;
+    dispatch({ type: SET_Y_DOMAIN, yDomain: [domain.y[0], _domain[1]] });
+
+    // this.props.onXAxisDomainUpdate(_domain);
   };
 
   componentDidUpdate(prevProps, prevState) {
     const { isActive, margin, width, height } = this.props;
 
     this.zoom
-      .scaleExtent([1, Infinity])
+      .scaleExtent([-Infinity, Infinity])
       .translateExtent([
         [margin.left, margin.top],
         [width - margin.right, height - margin.bottom],
@@ -79,6 +84,7 @@ class ZoomTool extends Component {
     );
   }
 }
+ZoomTool.contextType = dispatchContext;
 
 export default ZoomTool;
 

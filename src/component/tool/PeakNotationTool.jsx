@@ -216,6 +216,7 @@ const PeakNotationTool = ({ position, showCursorLabel }) => {
 
   const getXValue = (xVal) => {
     const spectrumData = data.find((d) => d.id === activeSpectrum.id);
+    
     return getScale()
       .x.invert(xVal)
       .toFixed(getPeakLabelNumberDecimals(spectrumData.nucleus));

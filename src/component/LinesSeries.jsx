@@ -19,6 +19,7 @@ export default function LinesSeries() {
     function makePath(data) {
       const { id, x, y } = data;
       const scale = getScale(id);
+
       const pathPoints = XY.reduce(x, y, {
         from: xDomain[0],
         to: xDomain[1],
@@ -54,13 +55,18 @@ export default function LinesSeries() {
             className="line"
             key={`line-${d.id}-${i}`}
             stroke={d.color}
-            style={{ opacity: isActive(d.id) ? 1 : 0.2 }}
+            style={{
+              transformOrigin: 'center bottom',
+              opacity: isActive(d.id) ? 1 : 0.2,
+            }}
             d={makePath(d)}
-            transform={`translate(0,${i * verticalAlign})`}
+            transform={`translate(0,${
+              verticalAlign === 0 ? 0 : i * verticalAlign
+            })`}
           />
         ))
     );
-  }, [activeSpectrum, data, getScale, verticalAlign, xDomain]);
+  }, [activeSpectrum, data, verticalAlign, getScale, xDomain,]);
 
   return (
     <g key={'path'}>

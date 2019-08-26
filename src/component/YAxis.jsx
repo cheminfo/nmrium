@@ -5,19 +5,25 @@ import { ChartContext } from './context/ChartContext';
 
 const YAxis = ({ show, label }) => {
   const refAxis = useRef();
-  const { width, height, margin, yDomain, getScale } = useContext(ChartContext);
+
+  const { margin, yDomain, getScale } = useContext(ChartContext);
 
   useEffect(() => {
     if (show) {
       // const scale = d3.scaleLinear([0,domain[1]], [height - margin.bottom, margin.top]);
       const scale = getScale();
+      console.log('7');
       const axis = d3
-        .axisLeft()
-        .ticks(5)
-        .tickFormat(d3.format('~s'));
-      d3.select(refAxis.current).call(axis.scale(scale.y));
+      .axisLeft()
+      .ticks(5)
+      .tickFormat(d3.format('~s'));
+  
+      // d3.select(refAxis.current)
+      //   .selectAll('*')
+      //   .remove();
+      d3.select(refAxis.current).call(axis.scale([0,scale.y[1]]));
     }
-  }, [width, height, yDomain, show, getScale]);
+  }, [show,yDomain,getScale]);
 
   const Axis = useMemo(
     () =>
@@ -26,7 +32,7 @@ const YAxis = ({ show, label }) => {
         <React.Fragment>
           <g
             className="y axis"
-            transform={`translate(${margin.left + 20},0)`}
+            transform={`translate(${margin.left + 30},0)`}
             ref={refAxis}
           >
             <text
@@ -43,7 +49,7 @@ const YAxis = ({ show, label }) => {
         </React.Fragment>
       ),
 
-    [label, margin.left, margin.top, show]
+    [label, margin, show],
   );
 
   return Axis;

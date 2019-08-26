@@ -19,6 +19,7 @@ import {
   CHNAGE_SPECTRUM_COLOR,
   ADD_INTEGRAL,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
+  SET_ZOOM_FACTOR,
 } from './Actions';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
@@ -94,7 +95,6 @@ const setData = (state, data) => {
 };
 const loadSpectrum = (state, files) => {
   let usedColors = state._data.map((d) => d.color);
-  console.log(files.length);
   for (let i = 0; i < files.length; i++) {
     if (files[i].extension.toLowerCase() !== '.json') {
       const color = getColor(usedColors);
@@ -109,15 +109,10 @@ const loadSpectrum = (state, files) => {
       usedColors.push(color);
       AnalysisObj.pushDatum1D(datumObject);
     } else {
-      console.log(files[i].binary.toString());
       AnalysisObj = new Analysis(JSON.parse(files[i].binary.toString()));
     }
   }
-
-  console.log(AnalysisObj);
-
   const _data = AnalysisObj.getData1d();
-  console.log(_data);
   const domain = getDomain(_data);
 
   return {
@@ -585,6 +580,11 @@ export const spectrumReducer = (state, action) => {
         state,
         action.isRealSpectrumVisible,
       );
+    case SET_ZOOM_FACTOR:
+      return {
+        ...state,
+        _zoomFactor: action.zoomFactor,
+      };
 
     // undo and redo operation
     case UNDO:

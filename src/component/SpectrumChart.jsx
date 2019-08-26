@@ -31,6 +31,7 @@ import { spectrumReducer } from './reducer/Reducer';
 import SpectrumList from './toolbar/SpectrumList';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
 
+
 import { Analysis } from '../data/Analysis';
 
 import {
@@ -49,8 +50,10 @@ import IntegralTool from './tool/IntegralTool';
 import InformationPanel from './toolbar/InformationPanel';
 import IntegralTable from './toolbar/IntegralTable';
 import { DispatchProvider } from './context/DispatchContext';
+import ZoomTool from './tool/ZoomTool';
 
 function loadFiles(acceptedFiles) {
+  
   return Promise.all(
     [].map.call(acceptedFiles, (file) => {
       return new Promise((resolve, reject) => {
@@ -122,6 +125,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     _margin: margin,
     _activeSpectrum: null,
     _mode: mode,
+    _zoomFactor:{},
     openMessage: handelOpenMessage,
   };
 
@@ -151,6 +155,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     history,
     _integrals,
     _mode,
+    _zoomFactor,
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -321,6 +326,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
           openMessage: handelOpenMessage,
           verticalAlign: verticalAlign,
           mode: _mode,
+          zoomFactor:_zoomFactor
         }}
       >
         <div
@@ -389,6 +395,15 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
                         width={width}
                         height={height}
                       />
+                      {/* <ZoomTool  margin={margin}
+                        width={_width}
+                        height={height}
+                        domain={{ x: _xDomain, y: _yDomain }}
+                        originDomain={_originDomain}
+                        isActive={true}
+                        getScale={getScale}
+                        mode={_mode}
+                        /> */}
                       <BrushTool
                         margin={margin}
                         width={_width}
