@@ -113,6 +113,7 @@ const loadSpectrum = (state, files) => {
     }
   }
   const _data = AnalysisObj.getData1d();
+
   const domain = getDomain(_data);
 
   return {
