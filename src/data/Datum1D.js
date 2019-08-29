@@ -31,33 +31,45 @@ export class Datum1D {
       Math.random()
         .toString(36)
         .replace('0.', '');
-    this.source = {
-      sourceURL: options.sourceURL || null,
-      sourceData: options.sourceData || null,
-      original: options.data,
-    };
-    this.display = {
-      name:
-        options.display.name ||
-        Math.random()
-          .toString(36)
-          .replace('0.', ''),
-      color: options.display.color || 'black',
-      isVisible: options.display.isVisible || true,
-      isPeaksMarkersVisible: options.display.isPeaksMarkersVisible || true,
-      isRealSpectrumVisible: options.display.isRealSpectrumVisible || true,
-    };
+    this.source = Object.assign(
+      {
+        sourceURL: null,
+        sourceData: null,
+        original: [],
+      },
+      options.source,
+    );
+    this.display = Object.assign(
+      {
+        name:
+          options.display.name ||
+          Math.random()
+            .toString(36)
+            .replace('0.', ''),
+        color: 'black',
+        isVisible: true,
+        isPeaksMarkersVisible: true,
+        isRealSpectrumVisible: true,
+      },
+      options.display,
+    );
     // this.original = options.data; //{ x, re, im }
-    this.info = {
-      nucleus: options.info.nucleus || '1H', // 1H, 13C, 19F, ...
-      isFid: options.info.isFid || false,
-      isComplex: options.info.isComplex || false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
-    };
-    this.data = {
-      x: options.data.x || [],
-      re: options.data.re || [],
-      im: options.data.im || [],
-    };
+    this.info = Object.assign(
+      {
+        nucleus: '1H', // 1H, 13C, 19F, ...
+        isFid: false,
+        isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+      },
+      options.info,
+    );
+    this.data = Object.assign(
+      {
+        x: [],
+        re: [],
+        im: [],
+      },
+      options.data,
+    );
     this.peaks = options.peaks || []; // array of object {index: xIndex, xShift}
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
@@ -132,7 +144,7 @@ export class Datum1D {
       source: {
         jcamp: this.sourceData,
         jcampURL: this.sourceURL,
-        original:[]
+        original: [],
       },
       display: this.display,
       info: this.info,
