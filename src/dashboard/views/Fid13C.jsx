@@ -37,13 +37,14 @@ function loadData() {
       .then((response) => checkStatus(response) && response.text())
       .then((buffer) => {
         // console.log(buffer);
-        let datumObject = Data1DManager.fromJcamp(
-          buffer,
-          'test',
-          COLORS[6],
-          true,
-          true,
-        );
+        let datumObject = Data1DManager.fromJcamp(buffer, {
+          display: {
+            name: 'test',
+            color: COLORS[6],
+            isVisible: true,
+            isPeaksMarkersVisible: true,
+          },
+        });
         data1d.push(datumObject.toJSON());
         // console.log(xyData);
         resolve(data1d);

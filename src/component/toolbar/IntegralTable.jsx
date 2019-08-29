@@ -27,10 +27,11 @@ const IntegralTable = ({ activeSpectrum, data }) => {
   const [integrals, setIntegrals] = useState([]);
 
   useEffect(() => {
-    const integrals = activeSpectrum
-      ? data.find((d) => d.id === activeSpectrum.id).integrals
+    const spectrum = activeSpectrum
+      ? data.find((d) => d.id === activeSpectrum.id)
       : [];
-    setIntegrals(integrals);
+    const hasData = spectrum && spectrum.integrals;
+    setIntegrals(hasData ?spectrum.integrals:[]);
   }, [activeSpectrum,data]);
 
   return activeSpectrum && data && integrals.length > 0 ? (

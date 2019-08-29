@@ -4,15 +4,28 @@ import { Data1DManager } from './Data1DManager';
 import { getMetaData } from './metadata/getMetaData';
 
 export class Analysis {
-  
-  constructor(json = {}) {
-   
-    this.data1d = json.data1d ? Data1DManager.fromJSON(json.data1d) : [];
+  data1d = [];
+  constructor(data1d) {
+    this.data1d = data1d;
     this.data2d = [];
     this.molecules = []; // chemical structures
     this.preferences = {
       display: {},
     };
+  }
+  // constructor(json = {}) {
+  //    this.data1d = json.data1d ? Data1DManager.fromJSON(json.data1d) : [];
+  //    this.data2d = [];
+  //    this.molecules = []; // chemical structures
+  //    this.preferences = {
+  //      display: {},
+  //    };
+  // }
+
+  static async build(json = {}) {
+    const v_data1d = await Data1DManager.fromJSON(json.data1d);
+    const data1d = json.data1d ? v_data1d : [];
+    return new Analysis(data1d);
   }
 
   async addJcampFromURL(id, jcampURL, options) {
@@ -47,75 +60,33 @@ export class Analysis {
    * @param {boolean} [options.includeData=false]
    */
 
-  toJson(options = {}) {
-    return {
-      display: {}, // global display information
-      spectra1d: [
-        {
-          source: {
-            // either we have the source of we have the data
-            jcamp: '',
-            jcampURL: '',
-          },
-          data: {
-            re: [],
-            im: [],
-            y: [],
-            meta: {},
-          },
-          info: {},
-          display: {},
-        },
-      ], // need to ask the Data1DManager
-      spectra2d: [],
-    };
-  }
-
-  saveDataToJSON() {
+  toJSON(options = {}) {
     const data1d = this.data1d.map((ob) => {
-
-      console.log(ob);
-      return {
-        data: {
-          x: ob.x,
-          re: ob.re,
-          im: ob.im,
-        },
-        options: {
-          id: ob.id,
-          display: {
-            name: ob.name,
-            color: ob.color,
-            isVisible: ob.isVisible,
-            isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-            isRealSpectrumVisible: ob.isRealSpectrumVisible,
-            peaks: ob.peaks,
-            integrals: ob.integrals,
-            filters: ob.filters,
-          },
-          info: {
-            nucleus: ob.nucleus,
-            isFid: ob.isFid,
-            isComplex: ob.isComplex,
-          },
-        },
-      };
+      return { ...ob.toJSON(), data: {} };
     });
-   try{
-    const fileData = JSON.stringify({data1d});
-    const blob = new Blob([fileData], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    console.log(link);
-    link.download = 'experiment.json';
-    link.href = url;
-    link.dispatchEvent(new MouseEvent(`click`, {bubbles: true, cancelable: true, view: window}));
-    // console.log(link.click());
-   }catch(e){
-     console.log(e);
-   }
+    return { data1d };
+    // return {
+    //   display: {}, // global display information
+    //   spectra1d: [
+    //     {
+    //       source: {
+    //         // either we have the source of we have the data
+    //         jcamp: '',
+    //         jcampURL: '',
+    //       },
+    //       data: {
+    //         re: [],
+    //         im: [],
+    //         y: [],
+    //         meta: {},
+    //       },
+    //       info: {},
+    //       display: {},
+    //     },
+    //   ], // need to ask the Data1DManager
+    //   spectra2d: [],
+    // };
   }
-
 
   pushDatum1D(object) {
     this.data1d.push(object);
@@ -125,48 +96,48 @@ export class Analysis {
     return this.data1d.find((ob) => ob.id === id);
   }
 
-
-/**
-   * 
-   * @param {boolean} isRealData 
+  /**
+   *
+   * @param {boolean} isRealData
    */
   getData1d(isRealData = true) {
-    return this.data1d.map((ob,i) => {
-      return {
-        id: ob.id,
-        x: ob.x,
-        y: isRealData?ob.re:ob.im,
-        im: ob.im,
-        name: ob.name,
-        color: ob.color,
-        isVisible: ob.isVisible,
-        isPeaksMarkersVisible: ob.isPeaksMarkersVisible,
-        isRealSpectrumVisible: ob.isRealSpectrumVisible,
-        nucleus: ob.nucleus,
-        isFid: ob.isFid,
-        isComplex: ob.isComplex,
-        peaks: ob.peaks,
-        integrals: ob.integrals,
-        filters: ob.filters,
-      };
-    });
+    return this.data1d
+      ? this.data1d.map((ob, i) => {
+          return {
+            id: ob.id,
+            x: ob.data.x,
+            y: isRealData ? ob.data.re : ob.data.im,
+            im: ob.data.im,
+            name: ob.display.name,
+            color: ob.display.color,
+            isVisible: ob.display.isVisible,
+            isPeaksMarkersVisible: ob.display.isPeaksMarkersVisible,
+            isRealSpectrumVisible: ob.display.isRealSpectrumVisible,
+            nucleus: ob.info.nucleus,
+            isFid: ob.info.isFid,
+            isComplex: ob.info.isComplex,
+            peaks: ob.peaks,
+            integrals: ob.integrals,
+            filters: ob.filters,
+          };
+        })
+      : [];
   }
-
 
   undoFilter(pastChainFilters = []) {
     // let data = { x: this.original.x, y: this.original.re };
     this.data1d.forEach((ob) => {
-      ob.x = ob.original.x;
-      ob.re = ob.original.re;
+      ob.x = ob.source.original.x;
+      ob.re = ob.source.original.re;
     });
 
     if (pastChainFilters && pastChainFilters.length !== 0) {
       pastChainFilters.forEach((filter) => {
         const ob = this.getDatum1D(filter.id);
-        let data = { x: ob.x, y: ob.re };
+        let data = { x: ob.data.x, y: ob.data.re };
         data = applyFilter({ kind: filter.kind, value: filter.value }, data);
-        this.getDatum1D(filter.id).x = data.x;
-        this.getDatum1D(filter.id).re = data.y;
+        this.getDatum1D(filter.id).data.x = data.x;
+        this.getDatum1D(filter.id).data.re = data.y;
       });
 
       // this.x = data.x;
@@ -176,7 +147,7 @@ export class Analysis {
 
   redoFilter(nextFilter) {
     const ob = this.getDatum1D(nextFilter.id);
-    let data = { x: ob.x, y: ob.re };
+    let data = { x: ob.data.x, y: ob.data.re };
     data = applyFilter(
       { kind: nextFilter.kind, value: nextFilter.value },
       data,
@@ -184,7 +155,6 @@ export class Analysis {
     ob.x = data.x;
     ob.re = data.y;
   }
-
 }
 
 Analysis.prototype.fromNMReData = function(zipBuffer) {};

@@ -34,23 +34,24 @@ const jcampFiles = [
   { fileName: '108-21-4.13c-decoupled', label: '13C decoupled' },
 ];
 async function loadData() {
-   let data1d = [];  
+  let data1d = [];
   try {
     for (let i = 0; i < jcampFiles.length; i++) {
-      const usedColors = data1d.map((d) => d.options && d.options.display && d.options.display.color);
+      const usedColors = data1d.map((d) =>  d.display && d.display.color);
       const color = getColor(usedColors);
       const result = await fetch(`/${jcampFiles[i].fileName}.jdx`).then(
         (response) => checkStatus(response) && response.text(),
       );
 
       // console.log(buffer);
-      let datumObject = Data1DManager.fromJcamp(
-        result,
-        jcampFiles[i].label,
-        color,
-        true,
-        true,
-      );
+      let datumObject = Data1DManager.fromJcamp(result, {
+        display: {
+          name: jcampFiles[i].label,
+          color: color,
+          isVisible: true,
+          isPeaksMarkersVisible: true,
+        },
+      });
       data1d.push(datumObject.toJSON());
     }
   } catch (e) {

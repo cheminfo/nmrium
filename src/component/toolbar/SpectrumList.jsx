@@ -122,14 +122,14 @@ const SpectrumList = ({ data }) => {
   useEffect(() => {
     const visibleSpectrums = data.filter((d) => d.isVisible === true);
     const visibleMarkers = data.filter((d) => d.isPeaksMarkersVisible === true);
-
+    
     setVisible(visibleSpectrums);
     setMarkersVisible(visibleMarkers);
 
     if (data && data.length === 1 && activated == null) {
       handleChangeActiveSpectrum(data[0]);
     }
-  }, [data,handleChangeActiveSpectrum,activated]);
+  }, [data, handleChangeActiveSpectrum, activated]);
 
   const handleOpenColorPicker = useCallback((selectedSpectrum, event) => {
     setColorPickerPosition({
@@ -166,8 +166,8 @@ const SpectrumList = ({ data }) => {
                 <FaEye
                   style={
                     isVisible(d.id)
-                      ? { opacity: 1, stroke: 'black', strokeWidth: '1px' }
-                      : { opacity: 0.1 }
+                      ? { opacity: 1, strokeWidth: '1px', fill: d.color }
+                      : { opacity: 0.1, fill: d.color }
                   }
                 />
               </Button>
@@ -179,8 +179,8 @@ const SpectrumList = ({ data }) => {
                 <FaEye
                   style={
                     isMarkerVisible(d.id)
-                      ? { width: 12, opacity: 1, fill: d.color }
-                      : { width: 12, opacity: 0.1, fill: d.color }
+                      ? { width: 12, opacity: 1, fill: 'black' }
+                      : { width: 12, opacity: 0.1, fill: 'black' }
                   }
                 />
               </Button>
@@ -204,7 +204,8 @@ const SpectrumList = ({ data }) => {
         );
       })
     );
-  }, [
+  }
+  , [
     data,
     handleChangeActiveSpectrum,
     handleChangeMarkersVisibility,

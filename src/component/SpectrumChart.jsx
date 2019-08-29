@@ -31,7 +31,6 @@ import { spectrumReducer } from './reducer/Reducer';
 import SpectrumList from './toolbar/SpectrumList';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
 
-
 import { Analysis } from '../data/Analysis';
 
 import {
@@ -42,6 +41,7 @@ import {
   SET_DATA,
   FULL_ZOOM_OUT,
   ADD_INTEGRAL,
+  IMPORT_JSON,
 } from './reducer/Actions';
 
 import BasicToolBar from './toolbar/BasicToolBar';
@@ -50,14 +50,22 @@ import IntegralTool from './tool/IntegralTool';
 import InformationPanel from './toolbar/InformationPanel';
 import IntegralTable from './toolbar/IntegralTable';
 import { DispatchProvider } from './context/DispatchContext';
-import ZoomTool from './tool/ZoomTool';
 
 function loadFiles(acceptedFiles) {
-  
   return Promise.all(
     [].map.call(acceptedFiles, (file) => {
+      console.log(acceptedFiles);
+
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
+        if (
+          acceptedFiles.filter((f) => {
+            console.log(f);
+            return f.name.toLowerCase().includes('.json');
+          }).length > 1
+        ) {
+          reject('You can add only one json file');
+        }
 
         if (
           !(
@@ -73,7 +81,6 @@ function loadFiles(acceptedFiles) {
           reader.onload = () => {
             if (reader.result) {
               const binary = reader.result;
-
               const name = file.name.substr(0, file.name.lastIndexOf('.'));
               const extension = file.name.substr(
                 file.name.lastIndexOf('.'),
@@ -99,14 +106,33 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   const [verticalAlign, setVerticalAlign] = useState(0);
 
   const onDrop = useCallback((acceptedFiles) => {
-    loadFiles(acceptedFiles).then(
-      (files) => {
-        dispatch({ type: LOADING_SPECTRUM, files });
-      },
-      (err) => {
-        alert(err);
-      },
-    );
+    const filesLength = acceptedFiles.length;
+    if (
+      filesLength === 1 &&
+      acceptedFiles[0].name.toLowerCase().includes('.json')
+    ) {
+      loadFiles(acceptedFiles).then(
+        (files) => {
+          Analysis.build(JSON.parse(files[0].binary.toString())).then(
+            (AnalysisObj) => {
+              dispatch({ type: IMPORT_JSON, data: { AnalysisObj } });
+            },
+          );
+        },
+        (err) => {
+          alert(err);
+        },
+      );
+    } else {
+      loadFiles(acceptedFiles).then(
+        (files) => {
+          dispatch({ type: LOADING_SPECTRUM, files });
+        },
+        (err) => {
+          alert(err);
+        },
+      );
+    }
   }, []);
 
   const refSVG = useRef();
@@ -125,7 +151,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
     _margin: margin,
     _activeSpectrum: null,
     _mode: mode,
-    _zoomFactor:{},
+    _zoomFactor: {},
     openMessage: handelOpenMessage,
   };
 
@@ -197,12 +223,13 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   );
 
   useEffect(() => {
-    const AnalysisObj = new Analysis();
-    dispatch({ type: INITIATE, data: { AnalysisObj } });
+    Analysis.build().then((AnalysisObj) => {
+      dispatch({ type: INITIATE, data: { AnalysisObj } });
+    });
   }, []);
 
   useEffect(() => {
-    dispatch({ type: SET_DATA, data });
+    data && data.length > 0 && dispatch({ type: SET_DATA, data });
   }, [data]);
 
   useEffect(() => {
@@ -326,7 +353,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
           openMessage: handelOpenMessage,
           verticalAlign: verticalAlign,
           mode: _mode,
-          zoomFactor:_zoomFactor
+          zoomFactor: _zoomFactor,
         }}
       >
         <div

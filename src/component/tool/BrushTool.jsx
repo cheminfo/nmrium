@@ -4,8 +4,11 @@ import PropTypes from 'prop-types';
 // import CrossLinePointer from './CrossLinePointer';
 import { dispatchContext } from '../context/DispatchContext';
 import { event as currentEvent } from 'd3-selection';
-import { SET_X_DOMAIN, SET_Y_DOMAIN,SET_ZOOM_FACTOR } from '../reducer/Actions';
-import { thisExpression } from '@babel/types';
+import {
+  SET_X_DOMAIN,
+  SET_Y_DOMAIN,
+  SET_ZOOM_FACTOR,
+} from '../reducer/Actions';
 
 class BrushTool extends Component {
   constructor(props) {
@@ -16,14 +19,14 @@ class BrushTool extends Component {
       .brushX()
       .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
 
-    this.zoom = d3.zoom()
+    this.zoom = d3
+      .zoom()
       .scaleExtent([-Infinity, Infinity])
       .translateExtent([[0, 0], [width - margin.right, height - margin.bottom]])
       .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
-
+  
     this.zoomed = this.zoomed.bind(this);
 
-    this.state = { k: 0 };
   }
 
   brushEnd = () => {
@@ -55,13 +58,16 @@ class BrushTool extends Component {
   };
 
   zoomed() {
-    const { height, margin, originDomain, domain } = this.props;
-
+    const { height, margin, originDomain } = this.props;
     // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
     // let t = currentEvent.transform;
     // let t = d3.zoomIdentity.translate(0,height/2).scale(currentEvent.transform.k).translate(0,-d3.select('.line').node().getBBox().height);
-    let t = d3.zoomIdentity.translate(0,height-margin.bottom).scale(currentEvent.transform.k).translate(0,-(height-margin.bottom));
-   
+    let t = d3.zoomIdentity
+      .translate(0, height - margin.bottom)
+       .scale(currentEvent.transform.k)
+      .translate(0, -(height - margin.bottom));
+      
+
     console.log(t);
     const scale = d3.scaleLinear(originDomain.y, [
       height - margin.bottom,
@@ -70,11 +76,8 @@ class BrushTool extends Component {
 
     const v_domain = t.rescaleY(scale).domain();
     const dispatch = this.context;
-    dispatch({ type: SET_Y_DOMAIN, yDomain: [v_domain[0], v_domain[1]] });
-    dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: t});
-
-
-    // this.props.onYAxisDomainUpdate([domain.y[0], v_domain[1]]);
+    dispatch({ type: SET_Y_DOMAIN, yDomain: v_domain });
+    dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: t });
   }
 
   reset = (e) => {
@@ -82,11 +85,10 @@ class BrushTool extends Component {
     const dispatch = this.context;
     dispatch({ type: SET_X_DOMAIN, xDomain: originDomain.x });
     dispatch({ type: SET_Y_DOMAIN, yDomain: originDomain.y });
-    // this.props.onDomainReset(originDomain);
   };
 
   componentDidMount() {
-    const { isActive, width, height, margin, domain } = this.props;
+    const { isActive } = this.props;
 
     // this.brush.extent([
     //   [margin.left, margin.top],
@@ -131,23 +133,10 @@ class BrushTool extends Component {
     return (
       <Fragment>
         <g
-          className={
-            isActive
-              ? 'brush-container brush '
-              : ' brush-container'
-          }
+          className={isActive ? 'brush-container brush ' : ' brush-container'}
           onDoubleClick={this.reset}
           ref="brush"
-        >
-          {/* <rect
-            width={`${width - margin.left - margin.right}`}
-            height={`${height - margin.top - margin.bottom}`}
-            transform={`translate(${margin.left},${margin.top})`}
-            className="zoom"
-            id="zoom"
-            ref="zoom"
-          /> */}
-        </g>
+        ></g>
       </Fragment>
     );
   }

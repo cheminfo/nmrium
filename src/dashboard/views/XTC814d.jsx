@@ -46,19 +46,22 @@ async function loadData() {
   let data1d = [];
   try {
     for (let i = 0; i < jcampFiles.length; i++) {
-      const usedColors = data1d.map((d) => d.options && d.options.display && d.options.display.color);
+      const usedColors = data1d.map((d) =>  d.display && d.display.color);
       const color = getColor(usedColors);
       const result = await fetch(`/${jcampFiles[i]}.jdx`).then(
         (response) => checkStatus(response) && response.text(),
       );
       let datumObject = Data1DManager.fromJcamp(
         result,
-        `XTC ${i + 1}`,
-        color,
-        true,
-        true,
+        {
+          display: {
+            name: `XTC ${i + 1}`,
+            color: color,
+            isVisible: true,
+            isPeaksMarkersVisible: true,
+          },
+        }
       );
-
       data1d.push(datumObject.toJSON());
     }
     console.log(data1d);

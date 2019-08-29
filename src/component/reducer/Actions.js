@@ -1,5 +1,6 @@
 export const INITIATE = 'INITIATE';
 export const SAVE_DATA_AS_JSON = 'SAVE_DATA_AS_JSON';
+export const IMPORT_JSON = 'IMPORT_JSON';
 export const PEAK_PICKING = 'PEAK_PICKING';
 export const DELETE_PEAK_NOTATION = 'DELETE_PEAK_NOTATION';
 export const SHIFT_SPECTRUM = "SHIFT_SPECTRUM";

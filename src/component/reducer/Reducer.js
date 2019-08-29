@@ -20,6 +20,7 @@ import {
   ADD_INTEGRAL,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
   SET_ZOOM_FACTOR,
+  IMPORT_JSON,
 } from './Actions';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
@@ -35,11 +36,6 @@ import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';
 
 let AnalysisObj = new Analysis();
-
-const initiate = (state, data) => {
-  AnalysisObj = data.AnalysisObj;
-  return state;
-};
 
 function getDomain(data) {
   let xArray = data.reduce(
@@ -67,15 +63,57 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin, _mode }) => {
   return { x, y };
 };
 
+const initiate = (state, data) => {
+  AnalysisObj = data.AnalysisObj;
+  return state;
+};
+
+const importJson = (state, data) => {
+  AnalysisObj = data.AnalysisObj;
+  const _data = AnalysisObj.getData1d();
+
+  const domain = getDomain(_data);
+
+  return {
+    ...state,
+    _data,
+    _xDomain: domain.x,
+    _yDomain: domain.y,
+    _originDomain: domain,
+    _yDomains: domain._yDomains,
+  };
+
+  // return state;
+};
+
 const saveDataAsJson = (state) => {
-  AnalysisObj.saveDataToJSON();
+  const data = AnalysisObj.toJSON();
+
+  try {
+    const fileData = JSON.stringify(data, undefined, 2);
+    const blob = new Blob([fileData], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = 'experiment.json';
+    link.href = url;
+    link.dispatchEvent(
+      new MouseEvent(`click`, {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      }),
+    );
+  } catch (e) {
+    console.log(e);
+  }
+
   return state;
 };
 
 const setData = (state, data) => {
   // AnalysisObj= new Analysis()
   for (let d of data) {
-    AnalysisObj.pushDatum1D(new Datum1D(d.data, d.options));
+    AnalysisObj.pushDatum1D(new Datum1D(d));
   }
   const _data = AnalysisObj.getData1d();
   const domain = getDomain(_data);
@@ -93,25 +131,29 @@ const setData = (state, data) => {
     _mode: v_mode,
   };
 };
+
 const loadSpectrum = (state, files) => {
   let usedColors = state._data.map((d) => d.color);
-  for (let i = 0; i < files.length; i++) {
-    if (files[i].extension.toLowerCase() !== '.json') {
+
+  const filesLength = files.length;
+  if (filesLength >= 1 && files[0].extension.toLowerCase() !== '.json') {
+    for (let i = 0; i < filesLength; i++) {
+      // if (files[i].extension.toLowerCase() !== '.json') {
       const color = getColor(usedColors);
 
-      let datumObject = Data1DManager.fromJcamp(
-        files[i].binary.toString(),
-        files[i].name,
-        color,
-        true,
-        true,
-      );
+      let datumObject = Data1DManager.fromJcamp(files[i].binary.toString(), {
+        display: {
+          name: files[i].name,
+          color: color,
+          isVisible: true,
+          isPeaksMarkersVisible: true,
+        },
+      });
       usedColors.push(color);
       AnalysisObj.pushDatum1D(datumObject);
-    } else {
-      AnalysisObj = new Analysis(JSON.parse(files[i].binary.toString()));
     }
   }
+
   const _data = AnalysisObj.getData1d();
 
   const domain = getDomain(_data);
@@ -526,6 +568,10 @@ export const spectrumReducer = (state, action) => {
   switch (action.type) {
     case INITIATE:
       return initiate(state, action.data);
+
+    case IMPORT_JSON:
+      return importJson(state, action.data);
+
     case SAVE_DATA_AS_JSON:
       return saveDataAsJson(state);
     case PEAK_PICKING:

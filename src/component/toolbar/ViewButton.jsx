@@ -35,12 +35,15 @@ const ViewButton = ({
   useEffect(() => {
     const sData =
       data && activeSpectrum && data.find((d) => d.id === activeSpectrum.id);
-    if (activeSpectrum == null || sData === -1) {
-      setDisabled(true);
-      setOption(defaultValue);
-    } else {
-      setOption(sData.isRealSpectrumVisible);
-      setDisabled(!sData.isComplex);
+
+    if (sData) {
+      if (activeSpectrum == null || sData === -1) {
+        setDisabled(true);
+        setOption(defaultValue);
+      } else {
+        setOption(sData.isRealSpectrumVisible);
+        setDisabled(!sData.isComplex);
+      }
     }
   }, [activeSpectrum, data, defaultValue]);
 
