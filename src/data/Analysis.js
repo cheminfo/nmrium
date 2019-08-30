@@ -2,6 +2,7 @@ import applyFilter from './filter1d/filter';
 import { convert } from 'jcampconverter';
 import { Data1DManager } from './Data1DManager';
 import { getMetaData } from './metadata/getMetaData';
+import { Molecule } from 'openchemlib';
 
 export class Analysis {
   data1d = [];
@@ -50,8 +51,29 @@ export class Analysis {
     this.addMolfile(molfile);
   }
 
+  getMolecules() {
+    return this.molecules;
+  }
+
+  removeMolecule(index) {
+    this.molecules.splice(index, 1);
+  }
+
   addMolfile(molfile) {
-    this.molecules.push({ molfile });
+    // try to parse molfile
+    // this will throw if the molecule can not be parsed !
+    let molecule = Molecule.fromMolfile(molfile);
+    let fragments = molecule.getFragments();
+    for (let fragment of fragments) {
+      this.molecules.push({
+        molfile: fragment.toMolfileV3,
+        svg: fragment.toSVG(),
+        mf: fragment.getMolecularFormula().formula,
+        em: fragment.getMolecularFormula().absoluteWeight,
+        mw: fragment.getMolecularFormula().relativeWeight,
+      });
+    }
+    // we will split if we have many fragments
   }
 
   /**
