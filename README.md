@@ -31,7 +31,7 @@ npm start
 
 ## Commit messages
 
-Please use `semantic commit messages` : https://seesparkbox.com/foundry/semantic_commit_messages
+Please use `semantic commit messages` : https://www.conventionalcommits.org/en/v1.0.0-beta.4/
 
 ## Programming with React and D3
 
