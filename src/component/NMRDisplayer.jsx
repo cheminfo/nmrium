@@ -96,7 +96,7 @@ function loadFiles(acceptedFiles) {
   );
 }
 
-const SpectrumChart = ({ margin, width, height, data, mode }) => {
+const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
   const [message, openMessage] = useState({
     isOpen: false,
@@ -139,7 +139,7 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   const chartArea = useRef();
 
   const initialState = {
-    _data: data,
+    _data: [],
     _xDomain: [],
     _yDomain: [],
     _yDomains: [],
@@ -223,14 +223,12 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   );
 
   useEffect(() => {
-    Analysis.build().then((AnalysisObj) => {
-      dispatch({ type: INITIATE, data: { AnalysisObj } });
-    });
-  }, []);
-
-  useEffect(() => {
-    data && data.length > 0 && dispatch({ type: SET_DATA, data });
+      data   &&  dispatch({ type: INITIATE, data: { AnalysisObj:data } });
   }, [data]);
+
+  // useEffect(() => {
+  //   data && data.length > 0 && dispatch({ type: SET_DATA, data });
+  // }, [data]);
 
   useEffect(() => {
     dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
@@ -497,10 +495,10 @@ const SpectrumChart = ({ margin, width, height, data, mode }) => {
   );
 };
 
-SpectrumChart.propTypes = {
+NMRDisplayer.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.objectOf(Analysis),
   margin: PropTypes.shape({
     top: PropTypes.number.isRequired,
     right: PropTypes.number.isRequired,
@@ -510,12 +508,12 @@ SpectrumChart.propTypes = {
   mode: PropTypes.oneOf(['RTL', 'LTR']),
 };
 
-SpectrumChart.defaultProps = {
+NMRDisplayer.defaultProps = {
   width: 800,
   height: 800,
-  data: [],
+  data: null,
   margin: { top: 40, right: 40, bottom: 40, left: 40 },
   mode: 'RTL',
 };
 
-export default SpectrumChart;
+export default NMRDisplayer;

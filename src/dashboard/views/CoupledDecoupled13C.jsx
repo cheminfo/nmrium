@@ -19,48 +19,30 @@ import React, { useEffect, useState } from 'react';
 
 // reactstrap components
 import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
-import getColor from '../../component/utility/ColorGenerator';
 import ClipLoader from 'react-spinners/ClipLoader';
 
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
-import { Data1DManager } from '../../data/Data1DManager.js';
-import SpectrumChart from '../../component/SpectrumChart.jsx';
+import NMRDisplayer from '../../component/NMRDisplayer.jsx';
+import { Analysis } from '../../data/Analysis.js';
 const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
-const jcampFiles = [
-  { fileName: '108-21-4.13c-coupled', label: '13C coupled' },
-  { fileName: '108-21-4.13c-decoupled', label: '13C decoupled' },
-];
-async function loadData() {
-  let data1d = [];
-  try {
-    for (let i = 0; i < jcampFiles.length; i++) {
-      const usedColors = data1d.map((d) =>  d.display && d.display.color);
-      const color = getColor(usedColors);
-      const result = await fetch(`/${jcampFiles[i].fileName}.jdx`).then(
-        (response) => checkStatus(response) && response.text(),
-      );
 
-      // console.log(buffer);
-      let datumObject = Data1DManager.fromJcamp(result, {
-        display: {
-          name: jcampFiles[i].label,
-          color: color,
-          isVisible: true,
-          isPeaksMarkersVisible: true,
-        },
-      });
-      data1d.push(datumObject.toJSON());
-    }
-  } catch (e) {
-    console.log(e);
-  }
-
-  return data1d;
-
-  // Never forget the final catch!
+function loadData() {
+  return new Promise((resolve, reject) => {
+    fetch('/json-files/CoupledDecoupled13C.json')
+      .then((response) => checkStatus(response) && response.json())
+      .then((data) => {
+        Analysis.build(data).then((obj) => {
+          resolve(obj);
+        });
+      })
+      .catch((err) => {
+        reject(err);
+        console.error(err);
+      }); // Never forget the final catch!
+  });
 }
 function checkStatus(response) {
   if (!response.ok) {
@@ -70,7 +52,7 @@ function checkStatus(response) {
 }
 
 const CoupledDecoupled13C = () => {
-  const [data, setData] = useState([]);
+  const [_data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -104,10 +86,10 @@ const CoupledDecoupled13C = () => {
                   color={'#2ca8ff'}
                   loading={isLoading}
                 />
-                <SpectrumChart
+                <NMRDisplayer
                   width={width}
                   height={height}
-                  data={data}
+                  data={_data}
                   margin={margin}
                   mode="RTL"
                 />

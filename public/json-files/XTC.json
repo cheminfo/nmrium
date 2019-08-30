@@ -1,0 +1,422 @@
+{
+  "data1d": [
+    {
+      "data": {},
+      "id": "jfifyn63qvb",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-814d_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 1",
+        "color": "#FFB300",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-814d_3",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1507,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-19T07:58:55.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "agzvgu6uyzh",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-888_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 2",
+        "color": "#803E75",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-888_2",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1491,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-19T10:18:08.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "3fdei77roo7",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-966_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 3",
+        "color": "#FF6800",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-966_3",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1504,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-19T14:56:55.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "e08n3mnzdav",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-1111a_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 4",
+        "color": "#A6BDD7",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-1111a_2",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1507,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-19T17:15:55.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "djgcchhzgqr",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-1132a_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 5",
+        "color": "#C10020",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-1132a_3",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1499,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-19T21:53:44.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "f71hpoksjts",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-1153_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 6",
+        "color": "#CEA262",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-1153_2",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1479,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-21T05:59:06.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "403og8ejy3d",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-1541_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 7",
+        "color": "#817066",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-1541_2",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1499,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-20T02:34:10.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "f0hzonelyw",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-1675_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 8",
+        "color": "#007D34",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-1675_3",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1493,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-20T07:11:56.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "gyat3r5waac",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-1693_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 9",
+        "color": "#F6768E",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-1693_3",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1477,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-20T10:40:17.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "w9o3u6uwq1",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-1731a_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 10",
+        "color": "#00538A",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-1731a_3",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1499,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-20T19:55:35.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "0ulbu89d8ynb",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/xtc/XTC-z189_zg30.jdx"
+      },
+      "display": {
+        "name": "XTC 11",
+        "color": "#FF7A5C",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "XTC-z189_3",
+        "solvent": "D2O",
+        "pulse": "zg30",
+        "experiment": "1d",
+        "temperature": 298.1503,
+        "frequency": 400.13188181139,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm PABBO BB/19F-1H/D Z-GRD Z108618/0487",
+        "acquisitionMode": 0,
+        "expno": 10,
+        "date": "2012-05-21T02:46:40.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    }
+  ]
+}

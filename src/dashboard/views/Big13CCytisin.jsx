@@ -22,31 +22,20 @@ import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
 
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
-import { COLORS } from '../../component/utility/ColorGenerator.js';
-import { Data1DManager } from '../../data/Data1DManager.js';
-import SpectrumChart from '../../component/SpectrumChart.jsx';
+import NMRDisplayer from '../../component/NMRDisplayer.jsx';
+import { Analysis } from '../../data/Analysis.js';
 const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
-  let data1d = [];
-
   return new Promise((resolve, reject) => {
-    fetch('/cytisine/13C_Cytisin_600.dx')
-      .then((response) => checkStatus(response) && response.text())
-      .then((buffer) => {
-        // console.log(buffer);
-        let datumObject = Data1DManager.fromJcamp(buffer, {
-          display: {
-            name: 'test',
-            color: COLORS[1],
-            isVisible: true,
-            isPeaksMarkersVisible: true,
-          },
+    fetch('/json-files/CoupledDecoupled13C.json')
+      .then((response) => checkStatus(response) && response.json())
+      .then((data) => {
+        Analysis.build(data).then((obj) => {
+          resolve(obj);
         });
-        data1d.push(datumObject.toJSON());
-        resolve(data1d);
       })
       .catch((err) => {
         reject(err);
@@ -63,7 +52,7 @@ function checkStatus(response) {
 }
 
 const Big13CCytisin = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
   useEffect(() => {
     loadData().then((d) => {
       setData(d);
@@ -82,7 +71,7 @@ const Big13CCytisin = () => {
                 <p className="category">Big 13C</p>
               </CardHeader>
               <CardBody>
-                <SpectrumChart
+                <NMRDisplayer
                   width={width}
                   height={height}
                   data={data}

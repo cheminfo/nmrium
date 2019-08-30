@@ -1,0 +1,40 @@
+{
+  "data1d": [
+    {
+      "data": {},
+      "id": "s3uzq2xc2od",
+      "source": {
+        "original": []
+ ,"jcamp": null, "jcampURL": "/cytisine/13C_Cytisin_600.dx"     },
+      "display": {
+        "name": "test",
+        "color": "#803E75",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "13C zgdc30 TBI",
+        "solvent": "CD2Cl2",
+        "pulse": "zgdc30",
+        "experiment": "1d",
+        "temperature": 293,
+        "frequency": 150.93550309,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm TBI 1H/31P/D-BB Z-GRD Z8704/0003",
+        "acquisitionMode": 0,
+        "expno": 13,
+        "date": "2010-04-11T13:05:24.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    }
+  ]
+}

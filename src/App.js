@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import SpectrumChart from './component/SpectrumChart';
+import NMRDisplayer from './component/NMRDisplayer';
 import ChartWindow from './component/ChartWindow';
 
 import json from './samples/test.json';
@@ -110,7 +110,7 @@ function App() {
 
     <div className="App">
 
-          <SpectrumChart
+          <NMRDisplayer
             width={width}
             height={height}
             data={data}

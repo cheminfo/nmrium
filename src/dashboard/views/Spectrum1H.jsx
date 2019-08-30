@@ -22,30 +22,21 @@ import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
 
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
-import SpectrumChart from '../../component/SpectrumChart.jsx';
-import { Data1DManager } from '../../data/Data1DManager.js';
-import { COLORS } from '../../component/utility/ColorGenerator.js';
+import NMRDisplayer from '../../component/NMRDisplayer.jsx';
+import { Analysis } from '../../data/Analysis';
 
 const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
-  let data1d = [];
   return new Promise((resolve, reject) => {
-    fetch('/cytisine/1H_Cytisin_600MHz-R+I.dx')
-      .then((response) => checkStatus(response) && response.text())
-      .then((buffer) => {
-        let datumObject = Data1DManager.fromJcamp(buffer, {
-          display: {
-            name: 'test',
-            color: COLORS[4],
-            isVisible: true,
-            isPeaksMarkersVisible: true,
-          },
+    fetch('/json-files/1HSpectrum.json')
+      .then((response) => checkStatus(response) && response.json())
+      .then((data) => {
+        Analysis.build(data).then((obj) => {
+          resolve(obj);
         });
-        data1d.push(datumObject.toJSON());
-        resolve(data1d);
       })
       .catch((err) => {
         reject(err);
@@ -62,7 +53,7 @@ function checkStatus(response) {
 }
 
 const Spectrum1H = (props) => {
-  const [_data, setData] = useState();
+  const [data, setData] = useState();
 
   useEffect(() => {
     loadData().then((d) => {
@@ -83,10 +74,10 @@ const Spectrum1H = (props) => {
                 <p className="category">1H spectrum test</p>
               </CardHeader>
               <CardBody>
-                <SpectrumChart
+                <NMRDisplayer
                   width={width}
                   height={height}
-                  data={_data}
+                  data={data}
                   margin={margin}
                   mode="RTL"
                 />

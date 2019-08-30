@@ -19,57 +19,31 @@ import React, { useEffect, useState } from 'react';
 
 // reactstrap components
 import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
-import getColor from '../../component/utility/ColorGenerator';
 import ClipLoader from 'react-spinners/ClipLoader';
 
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
-import { Data1DManager } from '../../data/Data1DManager.js';
-import SpectrumChart from '../../component/SpectrumChart.jsx';
+import NMRDisplayer from '../../component/NMRDisplayer.jsx';
+import { Analysis } from '../../data/Analysis';
 const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
-const jcampFiles = [
-  'xtc/XTC-814d_zg30',
-  'xtc/XTC-888_zg30',
-  'xtc/XTC-966_zg30',
-  'xtc/XTC-1111a_zg30',
-  'xtc/XTC-1132a_zg30',
-  'xtc/XTC-1153_zg30',
-  'xtc/XTC-1541_zg30',
-  'xtc/XTC-1675_zg30',
-  'xtc/XTC-1693_zg30',
-  'xtc/XTC-1731a_zg30',
-  'xtc/XTC-z189_zg30',
-];
-async function loadData() {
-  let data1d = [];
-  try {
-    for (let i = 0; i < jcampFiles.length; i++) {
-      const usedColors = data1d.map((d) =>  d.display && d.display.color);
-      const color = getColor(usedColors);
-      const result = await fetch(`/${jcampFiles[i]}.jdx`).then(
-        (response) => checkStatus(response) && response.text(),
-      );
-      let datumObject = Data1DManager.fromJcamp(
-        result,
-        {
-          display: {
-            name: `XTC ${i + 1}`,
-            color: color,
-            isVisible: true,
-            isPeaksMarkersVisible: true,
-          },
-        }
-      );
-      data1d.push(datumObject.toJSON());
-    }
-    console.log(data1d);
 
-  } catch (e) {console.log(e)}
-  return data1d;
+function loadData() {
+  return new Promise((resolve, reject) => {
+    fetch('/json-files/XTC.json')
+      .then((response) => checkStatus(response) && response.json())
+      .then((data) => {
+        Analysis.build(data).then((obj)=>{
+          resolve(obj);
 
-  // Never forget the final catch!
+        })
+      })
+      .catch((err) => {
+        reject(err);
+        console.error(err);
+      }); // Never forget the final catch!
+  });
 }
 
 function checkStatus(response) {
@@ -80,7 +54,7 @@ function checkStatus(response) {
 }
 
 const XTC814d = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -115,14 +89,13 @@ const XTC814d = () => {
                   loading={isLoading}
                 />
 
-                <SpectrumChart
+                <NMRDisplayer
                   width={width}
                   height={height}
                   data={data}
                   margin={margin}
                   mode="RTL"
                   stackedMode={true}
-
                 />
               </CardBody>
             </Card>

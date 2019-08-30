@@ -2,7 +2,6 @@ import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 import { ChartContext } from './context/ChartContext';
-import * as d3 from 'd3';
 
 export default function LinesSeries() {
   const {

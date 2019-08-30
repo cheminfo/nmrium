@@ -1,0 +1,78 @@
+{
+  "data1d": [
+    {
+      "data": {},
+      "id": "2x1trt1trwd",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/108-21-4.13c-coupled.jdx"
+      },
+      "display": {
+        "name": "13C coupled",
+        "color": "#FFB300",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "108-21-4 -",
+        "solvent": "CDCl3",
+        "pulse": "LPc13couple",
+        "experiment": "",
+        "temperature": 300,
+        "frequency": 100.61776077,
+        "type": "NMR SPECTRUM",
+        "probe": "5 mm TBI 1H-13C/BB-D XYZ-GRD  Z5580/003",
+        "expno": 3,
+        "date": "2005-01-25T11:47:21.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "fjcm2t4nlei",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/108-21-4.13c-decoupled.jdx"
+
+      },
+      "display": {
+        "name": "13C decoupled",
+        "color": "#803E75",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "\"108-21-4",
+        "pulse": "zgp",
+        "experiment": "1d",
+        "temperature": 300,
+        "frequency": 100.61776077,
+        "type": "NMR Spectrum",
+        "probe": "5 mm TBI 1H-13C/BB-D XYZ-GRD  Z5580/003",
+        "expno": 2,
+        "date": "2005-01-25T11:22:02.000Z"
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    }
+  ]
+}

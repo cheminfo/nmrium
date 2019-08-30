@@ -19,60 +19,30 @@ import React, { useEffect, useState } from 'react';
 
 // reactstrap components
 import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap';
-import getKey from '../../component/utility/KeyGenerator';
-import getColor from '../../component/utility/ColorGenerator';
 import ClipLoader from 'react-spinners/ClipLoader';
 
 // core components
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
-import { Data1DManager } from '../../data/Data1DManager.js';
-import SpectrumChart from '../../component/SpectrumChart.jsx';
+import NMRDisplayer from '../../component/NMRDisplayer.jsx';
+import { Analysis } from '../../data/Analysis';
 const width = 800;
 const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
-const jcampFiles = [
-  'coffee/coffee_1198',
-  'coffee/coffee_1199',
-  'coffee/coffee_1208',
-  'coffee/coffee_1241',
-  'coffee/coffee_1246',
-  'coffee/coffee_1307',
-  'coffee/coffee_1309',
-  'coffee/coffee_1310',
-  'coffee/coffee_1316',
-  'coffee/coffee_1317',
-  'coffee/coffee_1318',
-  'coffee/coffee_1319',
-  'coffee/coffee_1321',
-];
-async function loadData() {
-  let data1d = [];
-  try {
-    for (let i = 0; i < jcampFiles.length; i++) {
-      const usedColors = data1d.map((d) => d.display && d.display.color);
-      const color = getColor(usedColors);
-      const result = await fetch(`/${jcampFiles[i]}.jdx`).then(
-        (response) => checkStatus(response) && response.text(),
-      );
 
-      let datumObject = Data1DManager.fromJcamp(result, {
-        display: {
-          name: `coffee ${i + 1}`,
-          color: color,
-          isVisible: true,
-          isPeaksMarkersVisible: true,
-        },
-      });
-
-      data1d.push(datumObject.toJSON());
-    }
-  } catch (e) {
-    console.log(e);
-  }
-
-  return data1d;
-
-  // Never forget the final catch!
+function loadData() {
+  return new Promise((resolve, reject) => {
+    fetch('/json-files/Coffe.json')
+      .then((response) => checkStatus(response) && response.json())
+      .then((data) => {
+        Analysis.build(data).then((obj) => {
+          resolve(obj);
+        });
+      })
+      .catch((err) => {
+        reject(err);
+        console.error(err);
+      }); // Never forget the final catch!
+  });
 }
 
 function checkStatus(response) {
@@ -83,7 +53,7 @@ function checkStatus(response) {
 }
 
 const CoffeView = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -118,7 +88,7 @@ const CoffeView = () => {
                   loading={isLoading}
                 />
 
-                <SpectrumChart
+                <NMRDisplayer
                   width={width}
                   height={height}
                   data={data}

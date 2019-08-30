@@ -31,7 +31,6 @@ import * as d3 from 'd3';
 import { Datum1D } from '../../data/Datum1D';
 import { Data1DManager } from '../../data/Data1DManager';
 
-import getKey from '../utility/KeyGenerator';
 import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';
 
@@ -65,7 +64,20 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin, _mode }) => {
 
 const initiate = (state, data) => {
   AnalysisObj = data.AnalysisObj;
-  return state;
+
+  const _data = AnalysisObj.getData1d();
+  const domain = getDomain(_data);
+  const v_mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
+
+  return {
+    ...state,
+    _data,
+    _xDomain: domain.x,
+    _yDomain: domain.y,
+    _originDomain: domain,
+    _yDomains: domain._yDomains,
+    _mode: v_mode,
+  };
 };
 
 const importJson = (state, data) => {
@@ -157,6 +169,7 @@ const loadSpectrum = (state, files) => {
   const _data = AnalysisObj.getData1d();
 
   const domain = getDomain(_data);
+  const v_mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
 
   return {
     ...state,
@@ -165,6 +178,7 @@ const loadSpectrum = (state, files) => {
     _yDomain: domain.y,
     _originDomain: domain,
     _yDomains: domain._yDomains,
+    _mode: v_mode,
   };
 };
 

@@ -5,7 +5,7 @@ import { join } from 'path';
 
 describe('test Datum1D', () => {
   let jcamp = readFileSync(join(__dirname, './data/ethylbenzene-1h.jdx'), 'utf8');
-  let data = Data1DManager.fromJcamp( jcamp, 'test', 'red', true,true);
+  let data = Data1DManager.fromJcamp( jcamp, {name:'test', color:'red'});
 
   test('check x, re, im', () => {
     expect(data.x).toHaveLength(16384);

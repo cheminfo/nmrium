@@ -3,8 +3,8 @@ import React, {
   useState,
   Fragment,
   useCallback,
-  useMemo,
-  memo,
+  useMemo
+  
 } from 'react';
 import propTypes from 'prop-types';
 import List from '@material-ui/core/List';

@@ -1,0 +1,316 @@
+{
+  "data1d": [
+    {
+      "data": {},
+      "id": "rwqz5z8yebh",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1198.jdx"
+      },
+      "display": {
+        "name": "coffee 1",
+        "color": "#FFB300",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "kpxtkoo33f",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1199.jdx"
+      },
+      "display": {
+        "name": "coffee 2",
+        "color": "#803E75",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "q8opnudaw8d",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1208.jdx"
+      },
+      "display": {
+        "name": "coffee 3",
+        "color": "#FF6800",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "2pjw8olyu6k",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1241.jdx"
+      },
+      "display": {
+        "name": "coffee 4",
+        "color": "#A6BDD7",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "veddl783al",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1246.jdx"
+      },
+      "display": {
+        "name": "coffee 5",
+        "color": "#C10020",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "if7hw45b3b9",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1307.jdx"
+      },
+      "display": {
+        "name": "coffee 6",
+        "color": "#CEA262",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "izg1s7e3xg",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1309.jdx"
+      },
+      "display": {
+        "name": "coffee 7",
+        "color": "#817066",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "NA",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "zz8lhfdklw",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1310.jdx"
+      },
+      "display": {
+        "name": "coffee 8",
+        "color": "#007D34",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "pomzxk2wpv",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1316.jdx"
+      },
+      "display": {
+        "name": "coffee 9",
+        "color": "#F6768E",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "4u5bfuoe95o",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1317.jdx"
+      },
+      "display": {
+        "name": "coffee 10",
+        "color": "#00538A",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "4thl4vvvadj",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1318.jdx"
+      },
+      "display": {
+        "name": "coffee 11",
+        "color": "#FF7A5C",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "jc1abm02de9",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1319.jdx"
+      },
+      "display": {
+        "name": "coffee 12",
+        "color": "#53377A",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "0girvqjgxb8p",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "/coffee/coffee_1321.jdx"
+      },
+      "display": {
+        "name": "coffee 13",
+        "color": "#FF8E00",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible":true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    }
+  ]
+}
