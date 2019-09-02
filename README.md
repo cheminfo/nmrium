@@ -29,6 +29,10 @@ npm start
 * When you develop 2 different projects in parallel that depends of each other don't forget to   use `npm link`.
 
 
+## Commit messages
+
+Please use `semantic commit messages` : https://www.conventionalcommits.org/en/v1.0.0-beta.4/
+
 ## Programming with React and D3
 
 The idea is to use the approach described in the bottom of the document:

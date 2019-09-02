@@ -4,8 +4,10 @@
       "data": {},
       "id": "n4eu7cs22v",
       "source": {
-        "original": []
- , "jcamp": null,"jcampURL": "/cytisine/13C_Cytisin_600_fid.dx"        },
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "/cytisine/13C_Cytisin_600_fid.dx"
+      },
       "display": {
         "name": "test",
         "color": "#817066",
