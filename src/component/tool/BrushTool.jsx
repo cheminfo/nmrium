@@ -24,9 +24,8 @@ class BrushTool extends Component {
       .scaleExtent([-Infinity, Infinity])
       .translateExtent([[0, 0], [width - margin.right, height - margin.bottom]])
       .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
-  
-    this.zoomed = this.zoomed.bind(this);
 
+    this.zoomed = this.zoomed.bind(this);
   }
 
   brushEnd = () => {
@@ -64,9 +63,8 @@ class BrushTool extends Component {
     // let t = d3.zoomIdentity.translate(0,height/2).scale(currentEvent.transform.k).translate(0,-d3.select('.line').node().getBBox().height);
     let t = d3.zoomIdentity
       .translate(0, height - margin.bottom)
-       .scale(currentEvent.transform.k)
+      .scale(currentEvent.transform.k)
       .translate(0, -(height - margin.bottom));
-      
 
     console.log(t);
     const scale = d3.scaleLinear(originDomain.y, [
@@ -87,32 +85,73 @@ class BrushTool extends Component {
     dispatch({ type: SET_Y_DOMAIN, yDomain: originDomain.y });
   };
 
+  componentDidUpdate() {
+    const { isActive, width, height, margin } = this.props;
+
+    this.brush.extent([
+      [margin.left, margin.top],
+      [width - margin.right, height - margin.bottom],
+    ]);
+    this.zoom = d3
+      .zoom()
+      .scaleExtent([-Infinity, Infinity])
+      .translateExtent([[0, 0], [width - margin.right, height - margin.bottom]])
+      .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
+
+    this.zoom
+      .translateExtent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ])
+      .extent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ]);
+
+    d3.select(this.refs.brush)
+      .selectAll('*')
+      .remove();
+
+
+      if (isActive) {
+        d3.select(this.refs.brush)
+          .call(this.brush)
+          .call(this.zoom, d3.zoomIdentity)
+          .on('dblclick.zoom', null);
+        this.brush.on('end', this.brushEnd);
+        this.zoom.on('zoom', this.zoomed);
+      } else {
+        this.brush.on('end', null);
+        this.zoom.on('zoom', null);
+      }
+  }
+
   componentDidMount() {
-    const { isActive } = this.props;
+    const { isActive, width, height, margin } = this.props;
 
-    // this.brush.extent([
-    //   [margin.left, margin.top],
-    //   [width - margin.right, height - margin.bottom],
-    // ]);
-    // this.zoom = d3
-    // .zoom()
-    // .scaleExtent([-Infinity, Infinity])
-    // .translateExtent([[0, 0], [width - margin.right, height - margin.bottom]])
-    // .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
+    this.brush.extent([
+      [margin.left, margin.top],
+      [width - margin.right, height - margin.bottom],
+    ]);
+    this.zoom = d3
+    .zoom()
+    .scaleExtent([-Infinity, Infinity])
+    .translateExtent([[0, 0], [width - margin.right, height - margin.bottom]])
+    .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
 
-    // this.zoom
-    //   .translateExtent([
-    //     [margin.left, margin.top],
-    //     [width - margin.right, height - margin.bottom],
-    //   ])
-    //   .extent([
-    //     [margin.left, margin.top],
-    //     [width - margin.right, height - margin.bottom],
-    //   ]);
+    this.zoom
+      .translateExtent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ])
+      .extent([
+        [margin.left, margin.top],
+        [width - margin.right, height - margin.bottom],
+      ]);
 
-    // d3.select(this.refs.brush)
-    //   .selectAll('*')
-    //   .remove();
+    d3.select(this.refs.brush)
+      .selectAll('*')
+      .remove();
 
     if (isActive) {
       d3.select(this.refs.brush)

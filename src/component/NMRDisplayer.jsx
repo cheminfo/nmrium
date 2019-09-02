@@ -50,6 +50,7 @@ import IntegralTool from './tool/IntegralTool';
 import InformationPanel from './toolbar/InformationPanel';
 import IntegralTable from './toolbar/IntegralTable';
 import { DispatchProvider } from './context/DispatchContext';
+import SplitPane from 'react-split-pane';
 
 function loadFiles(acceptedFiles) {
   return Promise.all(
@@ -104,6 +105,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     messageType: MESSAGE_TYPE.success,
   });
   const [verticalAlign, setVerticalAlign] = useState(0);
+  const [splitPanelWidth, setSplitPanelWidth] = useState(0);
 
   const onDrop = useCallback((acceptedFiles) => {
     const filesLength = acceptedFiles.length;
@@ -223,7 +225,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   );
 
   useEffect(() => {
-      data   &&  dispatch({ type: INITIATE, data: { AnalysisObj:data } });
+    data && dispatch({ type: INITIATE, data: { AnalysisObj: data } });
   }, [data]);
 
   // useEffect(() => {
@@ -320,6 +322,16 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     openMessage({ ...message, isOpen: false });
   }
 
+  const handleSpiltPanelSizeChanged = useCallback((size) => {
+    console.log(chartArea.current.clientWidth);
+    dispatch({ type: SET_WIDTH, width: size });
+
+    // dispatch({ type: SET_WIDTH, width: size });
+
+    // dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
+
+  },[]);
+
   // const handleChangeVerticalAlignments = () => {
   //   if (verticalAlign !== 0) {
   //     setVerticalAlign(0);
@@ -357,7 +369,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
         <div
           {...getRootProps()}
           className={isDragActive ? 'main-container over' : 'main-container'}
-          style={{ width: `${width}px` }}
+          // style={{ width: `${width}px` }}
         >
           <input {...getInputProps()} />
           {isDragActive && (
@@ -369,30 +381,44 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
               <p>Drop your files here</p>
             </div>
           )}
-          <Grid container spacing={0}>
-            <Grid item xs={1} className="toolbar-container">
-              <FunctionToolBar
-                defaultValue={options.zoom.id}
-                data={_data}
-                activeSpectrum={_activeSpectrum}
-              />
-              <HistoryToolBar history={history} />
-              <BasicToolBar
-                onFullZoomOut={handleFullZoomOut}
-                onViewChanged={handleChangeVerticalAlignments}
-                viewAlignValue={verticalAlign}
-                data={_data}
-                activeSpectrum={_activeSpectrum}
-              />
+          {/* <Grid container spacing={0}> */}
+          <div className="toolbar-container">
+            {/* <div></div> */}
+            {/* <div></div> */}
+            {/* <Grid item xs={1} className="toolbar-container"> */}
+            <FunctionToolBar
+              defaultValue={options.zoom.id}
+              data={_data}
+              activeSpectrum={_activeSpectrum}
+            />
+            <HistoryToolBar history={history} />
+            <BasicToolBar
+              onFullZoomOut={handleFullZoomOut}
+              onViewChanged={handleChangeVerticalAlignments}
+              viewAlignValue={verticalAlign}
+              data={_data}
+              activeSpectrum={_activeSpectrum}
+            />
 
-              <ViewButton
-                defaultValue={true}
-                data={_data}
-                activeSpectrum={_activeSpectrum}
-              />
-            </Grid>
+            <ViewButton
+              defaultValue={true}
+              data={_data}
+              activeSpectrum={_activeSpectrum}
+            />
+          </div>
 
-            <Grid ref={chartArea} item xs={8}>
+          {/* </Grid> */}
+          {/* <Grid item xs={10}> */}
+          <SplitPane
+            className="split-container"
+            split="vertical"
+            minSize="80%"
+            defaultSize="80%"
+            onDragFinished={handleSpiltPanelSizeChanged}
+            onChange={(size)=>setSplitPanelWidth(size)}
+          >
+            <div ref={chartArea}>
+              {/* <Grid ref={chartArea} item xs={8}> */}
               <svg
                 onMouseMove={mouseMove}
                 ref={refSVG}
@@ -467,12 +493,16 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                   )}
                 </g>
               </svg>
-            </Grid>
-
-            <Grid item xs={3}>
+              {/* </Grid> */}
+            </div>
+            <div>
+              {/* <Grid item xs={3}> */}
               <InformationPanel activeItem="spectraPanel" listItem={infoList} />
-            </Grid>
-          </Grid>
+              {/* </Grid> */}
+            </div>
+          </SplitPane>
+          {/* </Grid> */}
+          {/* </Grid> */}
 
           <Snackbar
             anchorOrigin={{
