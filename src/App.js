@@ -9,6 +9,7 @@ import json2 from './samples/test2.json';
 import json1 from './samples/test1.json';
 import { Grid, Button } from '@material-ui/core';
 
+import {MolfileDemo} from './test'
 function App() {
   //  console.log(json);
 
@@ -109,6 +110,8 @@ function App() {
     //   setData(_data);
 
     <div className="App">
+        
+  
 
           <NMRDisplayer
             width={width}

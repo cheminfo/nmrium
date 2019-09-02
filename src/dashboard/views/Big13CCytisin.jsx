@@ -30,7 +30,7 @@ const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
   return new Promise((resolve, reject) => {
-    fetch('/json-files/CoupledDecoupled13C.json')
+    fetch('/json-files/Big13C.json')
       .then((response) => checkStatus(response) && response.json())
       .then((data) => {
         Analysis.build(data).then((obj) => {

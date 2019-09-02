@@ -51,6 +51,7 @@ import InformationPanel from './toolbar/InformationPanel';
 import IntegralTable from './toolbar/IntegralTable';
 import { DispatchProvider } from './context/DispatchContext';
 import SplitPane from 'react-split-pane';
+import MoleculePanel from './toolbar/MoleculePanel';
 
 function loadFiles(acceptedFiles) {
   return Promise.all(
@@ -218,7 +219,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
       {
         id: 'structuresPanel',
         title: 'Structures',
-        component: <p>Structures</p>,
+        component: (<MoleculePanel/>),
       },
     ],
     [_activeSpectrum, _data],

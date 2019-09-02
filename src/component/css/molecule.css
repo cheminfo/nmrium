@@ -1,0 +1,29 @@
+.molecule-container{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.molecule-toolbar{
+    display: flex;
+    flex-direction: row;
+    border-bottom: 0.55px solid rgb(240, 240, 240);
+}
+
+
+.molecule-toolbar button svg{
+
+    fill: #4e4e4e;
+
+}
+
+.molecule-toolbar button{
+    width: 40px !important;
+    padding: 5px 0px !important;
+    min-width: 10px !important;
+}
+
+
+.molecule-body{
+    
+}

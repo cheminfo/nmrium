@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+import {MolfileDemo} from './test'
 
 import { createBrowserHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
@@ -16,6 +17,10 @@ import AdminLayout from "./dashboard/layouts/Admin.jsx";
 const hist = createBrowserHistory();
 
 ReactDOM.render(
+//   <MolfileDemo
+//   svgMenu={true}
+//   fragment={false}
+// />,
   <Router history={hist}>
     <Switch>
       <Route path="/admin" render={props => <AdminLayout {...props} />} />
