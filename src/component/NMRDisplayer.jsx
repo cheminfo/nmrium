@@ -6,10 +6,10 @@ import React, {
   useState,
   Fragment,
   useMemo,
+  ReactDOM
 } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import Grid from '@material-ui/core/Grid';
 import PublishRounded from '@material-ui/icons/PublishRounded';
 import { useDropzone } from 'react-dropzone';
 import { Snackbar } from '@material-ui/core';
@@ -413,7 +413,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           <SplitPane
             className="split-container"
             split="vertical"
-            minSize="80%"
             defaultSize="80%"
             onDragFinished={handleSpiltPanelSizeChanged}
             onChange={(size)=>setSplitPanelWidth(size)}

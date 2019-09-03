@@ -240,3 +240,8 @@ cursor: not-allowed;
 border-color: transparent;
 }
 
+
+.SplitPane  .Pane1  {
+  min-width: 80% !important;
+}
+
