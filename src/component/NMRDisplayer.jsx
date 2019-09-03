@@ -115,7 +115,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     messageType: MESSAGE_TYPE.success,
   });
   const [verticalAlign, setVerticalAlign] = useState(0);
-  const [splitPanelWidth, setSplitPanelWidth] = useState(0);
 
   const onFullScreenChange = useCallback((isFullScreen) => {
     setIsFullScreen(isFullScreen);
@@ -186,61 +185,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
         default:
           break;
       }
-
-      // if (acceptedFilesbyExtensions.length ===1) {
-      //   loadFiles(acceptedFiles).then(
-      //     (files) => {
-      //       Analysis.build(JSON.parse(files[0].binary.toString())).then(
-      //         (AnalysisObj) => {
-      //           dispatch({ type: IMPORT_JSON, data: { AnalysisObj } });
-      //         },
-      //       );
-      //     },
-      //     (err) => {
-      //       alert(err);
-      //     },
-      //   );
-      // } else {
-      //   loadFiles(acceptedFiles).then(
-      //     (files) => {
-      //       dispatch({ type: LOADING_SPECTRUM, files });
-      //     },
-      //     (err) => {
-      //       alert(err);
-      //     },
-      //   );
-      // }
     }
-
-    // console.log(uniqueAges);
-
-    // const filesLength = acceptedFiles.length;
-    // if (
-    //   filesLength === 1 &&
-    //   acceptedFiles[0].name.toLowerCase().includes('.json')
-    // ) {
-    //   loadFiles(acceptedFiles).then(
-    //     (files) => {
-    //       Analysis.build(JSON.parse(files[0].binary.toString())).then(
-    //         (AnalysisObj) => {
-    //           dispatch({ type: IMPORT_JSON, data: { AnalysisObj } });
-    //         },
-    //       );
-    //     },
-    //     (err) => {
-    //       alert(err);
-    //     },
-    //   );
-    // } else {
-    //   loadFiles(acceptedFiles).then(
-    //     (files) => {
-    //       dispatch({ type: LOADING_SPECTRUM, files });
-    //     },
-    //     (err) => {
-    //       alert(err);
-    //     },
-    //   );
-    // }
   }, []);
 
   const initialState = {
@@ -258,7 +203,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     _mode: mode,
     _zoomFactor: {},
     openMessage: handelOpenMessage,
-    _molecules:[]
+    _molecules: [],
   };
 
   const _history = {
@@ -288,7 +233,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     _integrals,
     _mode,
     _zoomFactor,
-    _molecules
+    _molecules,
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -326,7 +271,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
         component: <MoleculePanel molecules={_molecules} />,
       },
     ],
-    [_activeSpectrum, _data,_molecules],
+    [_activeSpectrum, _data, _molecules],
   );
 
   useEffect(() => {
@@ -523,7 +468,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
               split="vertical"
               defaultSize="80%"
               onDragFinished={handleSpiltPanelSizeChanged}
-              onChange={(size) => setSplitPanelWidth(size)}
             >
               <div ref={chartArea}>
                 {/* <Grid ref={chartArea} item xs={8}> */}

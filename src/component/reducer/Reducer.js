@@ -498,20 +498,13 @@ const handelAddMolecule = (state, molfile) => {
   };
 };
 
-const handeleSetMolecule = (state, molfile,key) => {
-  alert(key)
-  const _molecules = AnalysisObj.setMolfile(molfile,key);
-
-  // console.log(AnalysisObj.getMolecules());
-
-  // const _molecules = AnalysisObj.getMolecules();
-
+const handeleSetMolecule = (state, molfile, key) => {
+  const _molecules = AnalysisObj.setMolfile(molfile, key);
   return {
     ...state,
     _molecules,
   };
 };
-
 
 //////////////////////////////////////////////////////////////////////
 //////////////// start undo and redo functions ///////////////////////
@@ -696,7 +689,7 @@ export const spectrumReducer = (state, action) => {
       return handelAddMolecule(state, action.molfile);
 
     case SET_MOLECULE:
-      return handeleSetMolecule(state, action.molfile,action.key);
+      return handeleSetMolecule(state, action.molfile, action.key);
 
     // undo and redo operation
     case UNDO:

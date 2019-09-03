@@ -10,7 +10,6 @@ import {
   Button,
   Tooltip,
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogActions,
 } from '@material-ui/core';
