@@ -27,3 +27,21 @@
 .molecule-body{
     
 }
+
+
+.molecule-body .slider{
+    height: 150px;
+    padding: 0px;
+}
+
+.molecule-body .slider p{
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+    position: absolute;
+    top:5px;
+}
+
+.molecule-body  .slider svg polygon{
+      fill:gray !important;
+}

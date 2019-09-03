@@ -4,7 +4,9 @@ import {
   PEAK_PICKING,
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
-  LOADING_SPECTRUM,
+  LOAD_JCAMP_FILE,
+  LOAD_JSON_FILE,
+  LOAD_MOL_FILE,
   SET_DATA,
   SET_ORIGINAL_DOMAIN,
   SET_X_DOMAIN,
@@ -20,7 +22,8 @@ import {
   ADD_INTEGRAL,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
   SET_ZOOM_FACTOR,
-  IMPORT_JSON,
+  ADD_MOLECULE,
+  SET_MOLECULE,
 } from './Actions';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
@@ -80,24 +83,6 @@ const initiate = (state, data) => {
   };
 };
 
-const importJson = (state, data) => {
-  AnalysisObj = data.AnalysisObj;
-  const _data = AnalysisObj.getData1d();
-
-  const domain = getDomain(_data);
-
-  return {
-    ...state,
-    _data,
-    _xDomain: domain.x,
-    _yDomain: domain.y,
-    _originDomain: domain,
-    _yDomains: domain._yDomains,
-  };
-
-  // return state;
-};
-
 const saveDataAsJson = (state) => {
   const data = AnalysisObj.toJSON();
 
@@ -144,26 +129,25 @@ const setData = (state, data) => {
   };
 };
 
-const loadSpectrum = (state, files) => {
+const loadJcampFile = (state, files) => {
   let usedColors = state._data.map((d) => d.color);
 
   const filesLength = files.length;
-  if (filesLength >= 1 && files[0].extension.toLowerCase() !== '.json') {
-    for (let i = 0; i < filesLength; i++) {
-      // if (files[i].extension.toLowerCase() !== '.json') {
-      const color = getColor(usedColors);
-
-      let datumObject = Data1DManager.fromJcamp(files[i].binary.toString(), {
-        display: {
-          name: files[i].name,
-          color: color,
-          isVisible: true,
-          isPeaksMarkersVisible: true,
-        },
-      });
-      usedColors.push(color);
-      AnalysisObj.pushDatum1D(datumObject);
-    }
+  // if (filesLength >= 1 && files[0].extension.toLowerCase() !== '.json') {
+  for (let i = 0; i < filesLength; i++) {
+    // if (files[i].extension.toLowerCase() !== '.json') {
+    const color = getColor(usedColors);
+    let datumObject = Data1DManager.fromJcamp(files[i].binary.toString(), {
+      display: {
+        name: files[i].name,
+        color: color,
+        isVisible: true,
+        isPeaksMarkersVisible: true,
+      },
+    });
+    usedColors.push(color);
+    AnalysisObj.pushDatum1D(datumObject);
+    // }
   }
 
   const _data = AnalysisObj.getData1d();
@@ -179,6 +163,39 @@ const loadSpectrum = (state, files) => {
     _originDomain: domain,
     _yDomains: domain._yDomains,
     _mode: v_mode,
+  };
+};
+
+const handleLoadJsonFile = (state, data) => {
+  AnalysisObj = data.AnalysisObj;
+  const _data = AnalysisObj.getData1d();
+
+  const domain = getDomain(_data);
+
+  return {
+    ...state,
+    _data,
+    _xDomain: domain.x,
+    _yDomain: domain.y,
+    _originDomain: domain,
+    _yDomains: domain._yDomains,
+  };
+};
+
+const handleLoadMOLFile = (state, files) => {
+  const filesLength = files.length;
+  // if (filesLength >= 1 && files[0].extension.toLowerCase() !== '.json') {
+  for (let i = 0; i < filesLength; i++) {
+    AnalysisObj.addMolfile(files[i].binary.toString());
+  }
+
+  console.log(AnalysisObj.getMolecules());
+
+  const _molecules = AnalysisObj.getMolecules();
+
+  return {
+    ...state,
+    _molecules,
   };
 };
 
@@ -468,6 +485,34 @@ const handleToggleRealImaginaryVisibility = (state, isRealSpectrumVisible) => {
   }
 };
 
+const handelAddMolecule = (state, molfile) => {
+  AnalysisObj.addMolfile(molfile);
+
+  console.log(AnalysisObj.getMolecules());
+
+  const _molecules = AnalysisObj.getMolecules();
+
+  return {
+    ...state,
+    _molecules,
+  };
+};
+
+const handeleSetMolecule = (state, molfile,key) => {
+  alert(key)
+  const _molecules = AnalysisObj.setMolfile(molfile,key);
+
+  // console.log(AnalysisObj.getMolecules());
+
+  // const _molecules = AnalysisObj.getMolecules();
+
+  return {
+    ...state,
+    _molecules,
+  };
+};
+
+
 //////////////////////////////////////////////////////////////////////
 //////////////// start undo and redo functions ///////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -582,9 +627,12 @@ export const spectrumReducer = (state, action) => {
   switch (action.type) {
     case INITIATE:
       return initiate(state, action.data);
-
-    case IMPORT_JSON:
-      return importJson(state, action.data);
+    case LOAD_JSON_FILE:
+      return handleLoadJsonFile(state, action.data);
+    case LOAD_JCAMP_FILE:
+      return loadJcampFile(state, action.files);
+    case LOAD_MOL_FILE:
+      return handleLoadMOLFile(state, action.files);
 
     case SAVE_DATA_AS_JSON:
       return saveDataAsJson(state);
@@ -620,9 +668,6 @@ export const spectrumReducer = (state, action) => {
     case FULL_ZOOM_OUT:
       return zoomOut(state);
 
-    case LOADING_SPECTRUM:
-      return loadSpectrum(state, action.files);
-
     case SHIFT_SPECTRUM:
       return shiftSpectrumAlongXAxis(state, action.shiftValue);
 
@@ -646,6 +691,12 @@ export const spectrumReducer = (state, action) => {
         ...state,
         _zoomFactor: action.zoomFactor,
       };
+
+    case ADD_MOLECULE:
+      return handelAddMolecule(state, action.molfile);
+
+    case SET_MOLECULE:
+      return handeleSetMolecule(state, action.molfile,action.key);
 
     // undo and redo operation
     case UNDO:

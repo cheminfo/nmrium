@@ -63,16 +63,53 @@ export class Analysis {
     // try to parse molfile
     // this will throw if the molecule can not be parsed !
     let molecule = Molecule.fromMolfile(molfile);
+    console.log(molecule);
     let fragments = molecule.getFragments();
+    console.log(fragments);
+
     for (let fragment of fragments) {
       this.molecules.push({
-        molfile: fragment.toMolfileV3,
-        svg: fragment.toSVG(),
+        key: Math.random()
+          .toString(36)
+          .replace('0.', ''),
+        molfile: fragment.toMolfileV3(),
+        svg: fragment.toSVG(150, 150),
         mf: fragment.getMolecularFormula().formula,
         em: fragment.getMolecularFormula().absoluteWeight,
         mw: fragment.getMolecularFormula().relativeWeight,
       });
     }
+    // we will split if we have many fragments
+  }
+
+  setMolfile(molfile, key) {
+    // try to parse molfile
+    // this will throw if the molecule can not be parsed !
+    // console.log(index);
+    let molecule = Molecule.fromMolfile(molfile);
+    // console.log(molecule)
+    let fragments = molecule.getFragments();
+    // console.log(fragments)
+    // console.log(this.molecules.filter(index, 1));
+
+    this.molecules = this.molecules.filter((m) => m.key !== key);
+     
+    console.log(this.molecules);
+
+    for (let fragment of fragments) {
+      this.molecules.push({
+        key: Math.random()
+          .toString(36)
+          .replace('0.', ''),
+        molfile: fragment.toMolfileV3(),
+        svg: fragment.toSVG(150, 150),
+        mf: fragment.getMolecularFormula().formula,
+        em: fragment.getMolecularFormula().absoluteWeight,
+        mw: fragment.getMolecularFormula().relativeWeight,
+      });
+    }
+
+    return this.molecules;
     // we will split if we have many fragments
   }
 

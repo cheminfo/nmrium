@@ -6,7 +6,7 @@ import React, {
   useState,
   Fragment,
   useMemo,
-  ReactDOM
+  ReactDOM,
 } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
@@ -37,11 +37,11 @@ import {
   INITIATE,
   SET_WIDTH,
   PEAK_PICKING,
-  LOADING_SPECTRUM,
-  SET_DATA,
+  LOAD_JCAMP_FILE,
+  LOAD_MOL_FILE,
+  LOAD_JSON_FILE,
   FULL_ZOOM_OUT,
   ADD_INTEGRAL,
-  IMPORT_JSON,
 } from './reducer/Actions';
 
 import BasicToolBar from './toolbar/BasicToolBar';
@@ -52,6 +52,17 @@ import IntegralTable from './toolbar/IntegralTable';
 import { DispatchProvider } from './context/DispatchContext';
 import SplitPane from 'react-split-pane';
 import MoleculePanel from './toolbar/MoleculePanel';
+import FullScreen from 'react-full-screen';
+
+function getFileExtension(file) {
+  return file.name
+    .substr(file.name.lastIndexOf('.'), file.name.length)
+    .toLowerCase();
+}
+
+function getFileName(file) {
+  return file.name.substr(0, file.name.lastIndexOf('.'));
+}
 
 function loadFiles(acceptedFiles) {
   return Promise.all(
@@ -60,20 +71,16 @@ function loadFiles(acceptedFiles) {
 
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        if (
-          acceptedFiles.filter((f) => {
-            console.log(f);
-            return f.name.toLowerCase().includes('.json');
-          }).length > 1
-        ) {
-          reject('You can add only one json file');
-        }
+
+        const fileName = file.name.toLowerCase();
+        console.log(fileName);
 
         if (
           !(
-            file.name.endsWith('.dx') ||
-            file.name.endsWith('.jdx') ||
-            file.name.endsWith('.json')
+            fileName.endsWith('.dx') ||
+            fileName.endsWith('.jdx') ||
+            fileName.endsWith('.json') ||
+            fileName.endsWith('.mol')
           )
         ) {
           reject('The file must be jcamp file .dx,.jdx,.json file extention');
@@ -83,11 +90,8 @@ function loadFiles(acceptedFiles) {
           reader.onload = () => {
             if (reader.result) {
               const binary = reader.result;
-              const name = file.name.substr(0, file.name.lastIndexOf('.'));
-              const extension = file.name.substr(
-                file.name.lastIndexOf('.'),
-                file.name.length,
-              );
+              const name = getFileName(file);
+              const extension = getFileExtension(file);
               resolve({ binary, name, extension });
             }
           };
@@ -99,7 +103,12 @@ function loadFiles(acceptedFiles) {
 }
 
 const NMRDisplayer = ({ margin, width, height, data, mode }) => {
+  const refSVG = useRef();
+  const chartArea = useRef();
+  const fullScreenRef = useRef();
+
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [message, openMessage] = useState({
     isOpen: false,
     messageText: '',
@@ -108,38 +117,131 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   const [verticalAlign, setVerticalAlign] = useState(0);
   const [splitPanelWidth, setSplitPanelWidth] = useState(0);
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const filesLength = acceptedFiles.length;
-    if (
-      filesLength === 1 &&
-      acceptedFiles[0].name.toLowerCase().includes('.json')
-    ) {
-      loadFiles(acceptedFiles).then(
-        (files) => {
-          Analysis.build(JSON.parse(files[0].binary.toString())).then(
-            (AnalysisObj) => {
-              dispatch({ type: IMPORT_JSON, data: { AnalysisObj } });
-            },
-          );
-        },
-        (err) => {
-          alert(err);
-        },
-      );
-    } else {
-      loadFiles(acceptedFiles).then(
-        (files) => {
-          dispatch({ type: LOADING_SPECTRUM, files });
-        },
-        (err) => {
-          alert(err);
-        },
-      );
-    }
+  const onFullScreenChange = useCallback((isFullScreen) => {
+    setIsFullScreen(isFullScreen);
   }, []);
 
-  const refSVG = useRef();
-  const chartArea = useRef();
+  const requestOrExitFullScreen = useCallback(() => {
+    fullScreenRef.current.fullScreen();
+  }, [fullScreenRef]);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    console.log(acceptedFiles);
+
+    const uniqueFileExtentions = [
+      ...new Set(acceptedFiles.map((file) => getFileExtension(file))),
+    ];
+
+    console.log(uniqueFileExtentions);
+
+    for (let i = 0; i < uniqueFileExtentions.length; i++) {
+      const acceptedFilesbyExtensions = acceptedFiles.filter(
+        (file) => getFileExtension(file) === uniqueFileExtentions[i],
+      );
+
+      if (uniqueFileExtentions[i] === '.mol') {
+      }
+      switch (uniqueFileExtentions[i]) {
+        case '.mol':
+          loadFiles(acceptedFiles).then(
+            (files) => {
+              dispatch({ type: LOAD_MOL_FILE, files });
+            },
+            (err) => {
+              alert(err);
+            },
+          );
+          break;
+
+        case '.json':
+          if (acceptedFilesbyExtensions.length === 1) {
+            loadFiles(acceptedFilesbyExtensions).then(
+              (files) => {
+                Analysis.build(JSON.parse(files[0].binary.toString())).then(
+                  (AnalysisObj) => {
+                    dispatch({ type: LOAD_JSON_FILE, data: { AnalysisObj } });
+                  },
+                );
+              },
+              (err) => {
+                alert(err);
+              },
+            );
+          } else {
+            alert('You can add only one json file');
+          }
+
+          break;
+
+        case '.jdx':
+          loadFiles(acceptedFiles).then(
+            (files) => {
+              dispatch({ type: LOAD_JCAMP_FILE, files });
+            },
+            (err) => {
+              alert(err);
+            },
+          );
+          break;
+        default:
+          break;
+      }
+
+      // if (acceptedFilesbyExtensions.length ===1) {
+      //   loadFiles(acceptedFiles).then(
+      //     (files) => {
+      //       Analysis.build(JSON.parse(files[0].binary.toString())).then(
+      //         (AnalysisObj) => {
+      //           dispatch({ type: IMPORT_JSON, data: { AnalysisObj } });
+      //         },
+      //       );
+      //     },
+      //     (err) => {
+      //       alert(err);
+      //     },
+      //   );
+      // } else {
+      //   loadFiles(acceptedFiles).then(
+      //     (files) => {
+      //       dispatch({ type: LOADING_SPECTRUM, files });
+      //     },
+      //     (err) => {
+      //       alert(err);
+      //     },
+      //   );
+      // }
+    }
+
+    // console.log(uniqueAges);
+
+    // const filesLength = acceptedFiles.length;
+    // if (
+    //   filesLength === 1 &&
+    //   acceptedFiles[0].name.toLowerCase().includes('.json')
+    // ) {
+    //   loadFiles(acceptedFiles).then(
+    //     (files) => {
+    //       Analysis.build(JSON.parse(files[0].binary.toString())).then(
+    //         (AnalysisObj) => {
+    //           dispatch({ type: IMPORT_JSON, data: { AnalysisObj } });
+    //         },
+    //       );
+    //     },
+    //     (err) => {
+    //       alert(err);
+    //     },
+    //   );
+    // } else {
+    //   loadFiles(acceptedFiles).then(
+    //     (files) => {
+    //       dispatch({ type: LOADING_SPECTRUM, files });
+    //     },
+    //     (err) => {
+    //       alert(err);
+    //     },
+    //   );
+    // }
+  }, []);
 
   const initialState = {
     _data: [],
@@ -156,6 +258,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     _mode: mode,
     _zoomFactor: {},
     openMessage: handelOpenMessage,
+    _molecules:[]
   };
 
   const _history = {
@@ -185,6 +288,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     _integrals,
     _mode,
     _zoomFactor,
+    _molecules
   } = state;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -219,10 +323,10 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
       {
         id: 'structuresPanel',
         title: 'Structures',
-        component: (<MoleculePanel/>),
+        component: <MoleculePanel molecules={_molecules} />,
       },
     ],
-    [_activeSpectrum, _data],
+    [_activeSpectrum, _data,_molecules],
   );
 
   useEffect(() => {
@@ -330,8 +434,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     // dispatch({ type: SET_WIDTH, width: size });
 
     // dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
-
-  },[]);
+  }, []);
 
   // const handleChangeVerticalAlignments = () => {
   //   if (verticalAlign !== 0) {
@@ -367,86 +470,91 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           zoomFactor: _zoomFactor,
         }}
       >
-        <div
-          {...getRootProps()}
-          className={isDragActive ? 'main-container over' : 'main-container'}
-          // style={{ width: `${width}px` }}
-        >
-          <input {...getInputProps()} />
-          {isDragActive && (
-            <div
-              className="drop-zoon-over"
-              style={{ width: `${width}px`, height: `${height}px` }}
-            >
-              <PublishRounded />
-              <p>Drop your files here</p>
-            </div>
-          )}
-          {/* <Grid container spacing={0}> */}
-          <div className="toolbar-container">
-            {/* <div></div> */}
-            {/* <div></div> */}
-            {/* <Grid item xs={1} className="toolbar-container"> */}
-            <FunctionToolBar
-              defaultValue={options.zoom.id}
-              data={_data}
-              activeSpectrum={_activeSpectrum}
-            />
-            <HistoryToolBar history={history} />
-            <BasicToolBar
-              onFullZoomOut={handleFullZoomOut}
-              onViewChanged={handleChangeVerticalAlignments}
-              viewAlignValue={verticalAlign}
-              data={_data}
-              activeSpectrum={_activeSpectrum}
-            />
-
-            <ViewButton
-              defaultValue={true}
-              data={_data}
-              activeSpectrum={_activeSpectrum}
-            />
+        {/* ref={fullScreenRef}  */}
+        <FullScreen ref={fullScreenRef} onFullScreenChange={onFullScreenChange}>
+          <div className="rq" onClick={requestOrExitFullScreen}>
+            {!isFullScreen ? 'Request FullScreen' : 'Exit FullScreen'}
           </div>
-
-          {/* </Grid> */}
-          {/* <Grid item xs={10}> */}
-          <SplitPane
-            className="split-container"
-            split="vertical"
-            defaultSize="80%"
-            onDragFinished={handleSpiltPanelSizeChanged}
-            onChange={(size)=>setSplitPanelWidth(size)}
+          <div
+            {...getRootProps()}
+            className={isDragActive ? 'main-container over' : 'main-container'}
+            // style={{ width: `${width}px` }}
           >
-            <div ref={chartArea}>
-              {/* <Grid ref={chartArea} item xs={8}> */}
-              <svg
-                onMouseMove={mouseMove}
-                ref={refSVG}
-                onMouseLeave={mouseMoveLeave}
-                onClick={mouseClick}
-                width={_width}
-                height={height}
+            <input {...getInputProps()} />
+            {isDragActive && (
+              <div
+                className="drop-zoon-over"
+                style={{ width: `${width}px`, height: `${height}px` }}
               >
-                {_xDomain && _yDomain && (
-                  <Fragment>
-                    <LinesSeries data={_data} />
-                    <IntegralsSeries data={_data} integrals={_integrals} />
-                  </Fragment>
-                )}
+                <PublishRounded />
+                <p>Drop your files here</p>
+              </div>
+            )}
+            {/* <Grid container spacing={0}> */}
+            <div className="toolbar-container">
+              {/* <div></div> */}
+              {/* <div></div> */}
+              {/* <Grid item xs={1} className="toolbar-container"> */}
+              <FunctionToolBar
+                defaultValue={options.zoom.id}
+                data={_data}
+                activeSpectrum={_activeSpectrum}
+              />
+              <HistoryToolBar history={history} />
+              <BasicToolBar
+                onFullZoomOut={handleFullZoomOut}
+                onViewChanged={handleChangeVerticalAlignments}
+                viewAlignValue={verticalAlign}
+                data={_data}
+                activeSpectrum={_activeSpectrum}
+              />
 
-                <g className="container">
-                  <XAxis showGrid={true} mode={_mode} />
+              <ViewButton
+                defaultValue={true}
+                data={_data}
+                activeSpectrum={_activeSpectrum}
+              />
+            </div>
 
-                  <YAxis label="PPM" show={false} />
-                  {_selectedTool === options.zoom.id && (
+            {/* </Grid> */}
+            {/* <Grid item xs={10}> */}
+            <SplitPane
+              className="split-container"
+              split="vertical"
+              defaultSize="80%"
+              onDragFinished={handleSpiltPanelSizeChanged}
+              onChange={(size) => setSplitPanelWidth(size)}
+            >
+              <div ref={chartArea}>
+                {/* <Grid ref={chartArea} item xs={8}> */}
+                <svg
+                  onMouseMove={mouseMove}
+                  ref={refSVG}
+                  onMouseLeave={mouseMoveLeave}
+                  onClick={mouseClick}
+                  width={_width}
+                  height={height}
+                >
+                  {_xDomain && _yDomain && (
                     <Fragment>
-                      <CrossLinePointer
-                        position={mouseCoordinates}
-                        margin={margin}
-                        width={width}
-                        height={height}
-                      />
-                      {/* <ZoomTool  margin={margin}
+                      <LinesSeries data={_data} />
+                      <IntegralsSeries data={_data} integrals={_integrals} />
+                    </Fragment>
+                  )}
+
+                  <g className="container">
+                    <XAxis showGrid={true} mode={_mode} />
+
+                    <YAxis label="PPM" show={false} />
+                    {_selectedTool === options.zoom.id && (
+                      <Fragment>
+                        <CrossLinePointer
+                          position={mouseCoordinates}
+                          margin={margin}
+                          width={width}
+                          height={height}
+                        />
+                        {/* <ZoomTool  margin={margin}
                         width={_width}
                         height={height}
                         domain={{ x: _xDomain, y: _yDomain }}
@@ -455,71 +563,77 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                         getScale={getScale}
                         mode={_mode}
                         /> */}
-                      <BrushTool
+                        <BrushTool
+                          margin={margin}
+                          width={_width}
+                          height={height}
+                          domain={{ x: _xDomain, y: _yDomain }}
+                          originDomain={_originDomain}
+                          isActive={true}
+                          getScale={getScale}
+                          mode={_mode}
+                        />
+                      </Fragment>
+                    )}
+
+                    {_selectedTool === options.integral.id && (
+                      <IntegralTool
                         margin={margin}
                         width={_width}
                         height={height}
+                        data={_data}
                         domain={{ x: _xDomain, y: _yDomain }}
-                        originDomain={_originDomain}
                         isActive={true}
                         getScale={getScale}
+                        position={mouseCoordinates}
+                        activeSpectrum={_activeSpectrum}
                         mode={_mode}
+                        onIntegralDrawFinished={handleAddIntegral}
                       />
-                    </Fragment>
-                  )}
+                    )}
 
-                  {_selectedTool === options.integral.id && (
-                    <IntegralTool
-                      margin={margin}
-                      width={_width}
-                      height={height}
-                      data={_data}
-                      domain={{ x: _xDomain, y: _yDomain }}
-                      isActive={true}
-                      getScale={getScale}
-                      position={mouseCoordinates}
-                      activeSpectrum={_activeSpectrum}
-                      mode={_mode}
-                      onIntegralDrawFinished={handleAddIntegral}
-                    />
-                  )}
+                    {(_selectedTool === options.peakPicking.id ||
+                      _peakNotations) && (
+                      <PeakNotationTool
+                        position={mouseCoordinates}
+                        showCursorLabel={
+                          _selectedTool === options.peakPicking.id
+                        }
+                      />
+                    )}
+                  </g>
+                </svg>
+                {/* </Grid> */}
+              </div>
+              <div>
+                {/* <Grid item xs={3}> */}
+                <InformationPanel
+                  activeItem="spectraPanel"
+                  listItem={infoList}
+                />
+                {/* </Grid> */}
+              </div>
+            </SplitPane>
+            {/* </Grid> */}
+            {/* </Grid> */}
 
-                  {(_selectedTool === options.peakPicking.id ||
-                    _peakNotations) && (
-                    <PeakNotationTool
-                      position={mouseCoordinates}
-                      showCursorLabel={_selectedTool === options.peakPicking.id}
-                    />
-                  )}
-                </g>
-              </svg>
-              {/* </Grid> */}
-            </div>
-            <div>
-              {/* <Grid item xs={3}> */}
-              <InformationPanel activeItem="spectraPanel" listItem={infoList} />
-              {/* </Grid> */}
-            </div>
-          </SplitPane>
-          {/* </Grid> */}
-          {/* </Grid> */}
-
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            open={message.isOpen}
-            autoHideDuration={3000}
-            onClose={handleClose}
-          >
-            <SnackbarContentWrapper
+            <Snackbar
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              open={message.isOpen}
+              autoHideDuration={3000}
               onClose={handleClose}
-              variant={message.messageType}
-              message={message.messageText}
-            />
-          </Snackbar>
-        </div>
+            >
+              <SnackbarContentWrapper
+                onClose={handleClose}
+                variant={message.messageType}
+                message={message.messageText}
+              />
+            </Snackbar>
+          </div>
+        </FullScreen>
       </ChartContext.Provider>
     </DispatchProvider>
   );

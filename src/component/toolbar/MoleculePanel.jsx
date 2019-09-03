@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { SmilesSvgRenderer } from 'react-ocl';
+import { MolfileSvgRenderer } from 'react-ocl';
 
 // import StructureEditor from 'openchemlib';
 import { StructureEditor } from 'react-ocl/full';
@@ -14,6 +14,12 @@ import {
   DialogContent,
   DialogActions,
 } from '@material-ui/core';
+
+import Slider from 'react-animated-slider-2';
+import 'react-animated-slider-2/build/horizontal.css';
+import { useDispatch } from '../context/DispatchContext';
+import { ADD_MOLECULE, SET_MOLECULE } from '../reducer/Actions';
+
 // import { SVGRenderer } from 'openchemlib/types';
 
 const initialMolfile = `
@@ -34,19 +40,39 @@ M  END
 `;
 
 export const StructureEditorModal = (props) => {
-  const { onClose, selectedValue, open } = props;
-  const [molfile, setMolfile] = useState(initialMolfile);
+  const { onClose, open, selectedMolFile } = props;
+  const [molfile, setMolfile] = useState(selectedMolFile);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(selectedMolFile);
+    if (selectedMolFile) {
+      setMolfile(selectedMolFile.molfile);
+    } else {
+      setMolfile(initialMolfile);
+    }
+  }, [selectedMolFile]);
 
   const cb = useCallback(
     (newMolfile) => {
+      console.log(newMolfile);
       setMolfile(newMolfile);
     },
     [setMolfile],
   );
 
   const handleClose = useCallback(() => {
-    onClose(selectedValue);
-  }, [selectedValue, onClose]);
+    onClose();
+  }, [onClose]);
+
+  const handleSave = useCallback(() => {
+    if (selectedMolFile) {
+      dispatch({ type: SET_MOLECULE, molfile,key:selectedMolFile.key });
+    } else {
+      dispatch({ type: ADD_MOLECULE, molfile });
+    }
+    onClose();
+  }, [dispatch, selectedMolFile, molfile, onClose]);
 
   return (
     <Dialog
@@ -57,9 +83,8 @@ export const StructureEditorModal = (props) => {
       maxWidth="md"
     >
       <DialogContent dividers>
-        {console.log(open)}
-        {/* <DialogTitle id="simple-dialog-title">Set backup account</DialogTitle> */}
         <StructureEditor
+          molfile={molfile}
           initialMolfile={molfile}
           svgMenu={true}
           fragment={false}
@@ -71,7 +96,7 @@ export const StructureEditorModal = (props) => {
         <Button onClick={handleClose} color="primary">
           Close
         </Button>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={handleSave} color="primary">
           Save
         </Button>
       </DialogActions>
@@ -79,17 +104,28 @@ export const StructureEditorModal = (props) => {
   );
 };
 
-const MoleculePanel = () => {
+const MoleculePanel = ({ molecules }) => {
   const [open, setOpen] = React.useState(false);
+  const [currentMolFile, setCurrentMolFile] = useState();
 
   const handleClose = useCallback(() => {
     setOpen(false);
   }, []);
 
-  const handleOpen = useCallback(() => {
-    console.log('ssss');
+  const handleOpen = useCallback((event,key,molfile) => {
+
+    console.log(key);
+    if (molfile) {
+      setCurrentMolFile({molfile,key});
+    } else {
+      setCurrentMolFile(null);
+    }
     setOpen(true);
   }, []);
+
+  useEffect(() => {
+    console.log(molecules);
+  }, [molecules]);
 
   return (
     <div className="molecule-container">
@@ -106,8 +142,28 @@ const MoleculePanel = () => {
         </Tooltip>
       </div>
       <div className="molecule-body">
-        <SmilesSvgRenderer smiles="COCCOOOCO" />
-        <StructureEditorModal open={open} onClose={handleClose} />
+        <Slider>
+          {molecules &&
+            molecules != null &&
+            molecules.map((mol, index) => (
+              <div
+                key={mol.mf + index}
+                onClick={(event) => handleOpen(event, mol.key,mol.molfile)}
+              >
+                {' '}
+                <p>( {index + 1} )</p>
+                <MolfileSvgRenderer molfile={mol.molfile} />
+              </div>
+            ))}
+        </Slider>
+
+        {molecules != null && molecules && console.log(molecules)}
+
+        <StructureEditorModal
+          open={open}
+          onClose={handleClose}
+          selectedMolFile={currentMolFile}
+        />
       </div>
     </div>
   );

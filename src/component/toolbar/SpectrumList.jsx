@@ -81,6 +81,11 @@ const SpectrumList = ({ data }) => {
     [dispatch, visible],
   );
 
+
+  function  fullScreen (){
+    console.log('test');
+  }
+
   const handleChangeMarkersVisibility = useCallback(
     (d) => {
       const currentIndex = markersVisible.findIndex((v) => v.id === d.id);
