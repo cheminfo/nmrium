@@ -12,6 +12,7 @@ import {
   SET_X_DOMAIN,
   SET_Y_DOMAIN,
   SET_WIDTH,
+  SET_DIMENSIONS,
   SET_POINTER_COORDINATES,
   SET_SELECTED_TOOL,
   FULL_ZOOM_OUT,
@@ -360,6 +361,10 @@ const setWidth = (state, _width) => {
   return { ...state, _width };
 };
 
+const handleSetDimensions = (state, _width, _height) => {
+  return { ...state, _width, _height };
+};
+
 const setPointerCoordinates = (state, _pointerCoordinates) => {
   return { ...state, _pointerCoordinates };
 };
@@ -648,6 +653,9 @@ export const spectrumReducer = (state, action) => {
 
     case SET_WIDTH:
       return setWidth(state, action.width);
+
+    case SET_DIMENSIONS:
+      return handleSetDimensions(state, action.width, action.height);
 
     case SET_POINTER_COORDINATES:
       return setPointerCoordinates(state, action.pointerCoordinates);

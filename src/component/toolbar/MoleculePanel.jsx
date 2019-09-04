@@ -66,7 +66,7 @@ export const StructureEditorModal = (props) => {
 
   const handleSave = useCallback(() => {
     if (selectedMolFile) {
-      dispatch({ type: SET_MOLECULE, molfile,key:selectedMolFile.key });
+      dispatch({ type: SET_MOLECULE, molfile, key: selectedMolFile.key });
     } else {
       dispatch({ type: ADD_MOLECULE, molfile });
     }
@@ -106,21 +106,27 @@ export const StructureEditorModal = (props) => {
 const MoleculePanel = ({ molecules }) => {
   const [open, setOpen] = React.useState(false);
   const [currentMolFile, setCurrentMolFile] = useState();
+  const dispatch = useDispatch();
 
   const handleClose = useCallback(() => {
     setOpen(false);
   }, []);
 
-  const handleOpen = useCallback((event,key,molfile) => {
-
+  const handleOpen = useCallback((event, key, molfile) => {
     console.log(key);
     if (molfile) {
-      setCurrentMolFile({molfile,key});
+      setCurrentMolFile({ molfile, key });
     } else {
       setCurrentMolFile(null);
     }
     setOpen(true);
   }, []);
+
+  const handlePast = useCallback((event) => {
+    navigator.clipboard.readText().then((molfile) => {
+      dispatch({ type: ADD_MOLECULE, molfile });
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     console.log(molecules);
@@ -130,7 +136,7 @@ const MoleculePanel = ({ molecules }) => {
     <div className="molecule-container">
       <div className="molecule-toolbar">
         <Tooltip title="Past Molecule" placement="left-start">
-          <Button>
+          <Button onClick={handlePast}>
             <FaPaste />
           </Button>
         </Tooltip>
@@ -147,9 +153,10 @@ const MoleculePanel = ({ molecules }) => {
             molecules.map((mol, index) => (
               <div
                 key={mol.mf + index}
-                onClick={(event) => handleOpen(event, mol.key,mol.molfile)}
+                onDoubleClick={(event) =>
+                  handleOpen(event, mol.key, mol.molfile)
+                }
               >
-                {' '}
                 <p>( {index + 1} )</p>
                 <MolfileSvgRenderer molfile={mol.molfile} />
               </div>

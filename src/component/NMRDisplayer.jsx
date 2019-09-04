@@ -6,7 +6,7 @@ import React, {
   useState,
   Fragment,
   useMemo,
-  ReactDOM,
+  useLayoutEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
@@ -42,6 +42,7 @@ import {
   LOAD_JSON_FILE,
   FULL_ZOOM_OUT,
   ADD_INTEGRAL,
+  SET_DIMENSIONS
 } from './reducer/Actions';
 
 import BasicToolBar from './toolbar/BasicToolBar';
@@ -52,7 +53,7 @@ import IntegralTable from './toolbar/IntegralTable';
 import { DispatchProvider } from './context/DispatchContext';
 import SplitPane from 'react-split-pane';
 import MoleculePanel from './toolbar/MoleculePanel';
-import FullScreen from 'react-full-screen';
+import { useFullscreen, useToggle } from 'react-use';
 
 function getFileExtension(file) {
   return file.name
@@ -108,21 +109,24 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   const fullScreenRef = useRef();
 
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
-  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [chartDiemensions,setChartDimensions]= useState({});
+  // const [isFullScreen, setIsFullScreen] = useState(false);
   const [message, openMessage] = useState({
     isOpen: false,
     messageText: '',
     messageType: MESSAGE_TYPE.success,
   });
   const [verticalAlign, setVerticalAlign] = useState(0);
+  const [show, toggle] = useToggle(false);
+  const isFullscreen = useFullscreen(fullScreenRef, show, {
+    onClose: () => toggle(false),
+  });
 
-  const onFullScreenChange = useCallback((isFullScreen) => {
-    setIsFullScreen(isFullScreen);
-  }, []);
+  // useEffect(()=>{
+  //   dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
 
-  const requestOrExitFullScreen = useCallback(() => {
-    fullScreenRef.current.fullScreen();
-  }, [fullScreenRef]);
+  // },[isFullscreen])
+
 
   const onDrop = useCallback((acceptedFiles) => {
     console.log(acceptedFiles);
@@ -227,6 +231,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     _selectedTool,
     _peakNotations,
     _width,
+    _height,
     _activeSpectrum,
     _yDomains,
     history,
@@ -274,6 +279,39 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     [_activeSpectrum, _data, _molecules],
   );
 
+
+  useEffect(()=>{
+
+    function handleResize(){
+      console.log(height);
+      console.log(width);
+
+      if(isFullscreen){
+        
+        dispatch({ type: SET_DIMENSIONS, width: window.innerWidth,height:window.innerHeight-margin.bottom});
+      }else{
+
+        console.log(height);
+        console.log(width);
+
+        console.log(chartDiemensions)
+
+        dispatch({ type: SET_DIMENSIONS, width: chartDiemensions.width,height:chartDiemensions.height});
+
+      }
+
+
+      console.log(window.innerWidth,window.innerHeight);
+
+    }
+
+
+    window.addEventListener('resize',handleResize);
+
+    return _=> window.removeEventListener('resize',handleResize);          
+
+  },[chartDiemensions,height,width,isFullscreen,margin])
+
   useEffect(() => {
     data && dispatch({ type: INITIATE, data: { AnalysisObj: data } });
   }, [data]);
@@ -281,8 +319,16 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   // useEffect(() => {
   //   data && data.length > 0 && dispatch({ type: SET_DATA, data });
   // }, [data]);
+    
+  useLayoutEffect(()=>{
+    setChartDimensions({width:chartArea.current.clientWidth,height:chartArea.current.clientHeight});
+    console.log(chartArea.current.clientWidth)
+    console.log(chartArea.current.clientHeight)
+  
+  },[data]);
 
   useEffect(() => {
+    
     dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
   }, [width, height]);
 
@@ -310,17 +356,17 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
       const x = d3.scaleLinear(_xDomain, range);
       let y;
       if (spectrumId == null) {
-        y = d3.scaleLinear(_yDomain, [height - margin.bottom, margin.top]);
+        y = d3.scaleLinear(_yDomain, [_height - margin.bottom, margin.top]);
       } else if (_activeSpectrum == null || _activeSpectrum.id !== spectrumId) {
         const index = _data.findIndex((d) => d.id === spectrumId);
         y = d3.scaleLinear(_yDomains[index], [
-          height - margin.bottom,
+          _height - margin.bottom,
           margin.top,
         ]);
       } else {
         const index = _data.findIndex((d) => d.id === _activeSpectrum.id);
         y = d3.scaleLinear(_yDomains[index], [
-          height - margin.bottom,
+          _height - margin.bottom,
           margin.top,
         ]);
       }
@@ -334,7 +380,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     _xDomain,
     _yDomain,
     _yDomains,
-    height,
+    _height,
     margin,
   ]);
 
@@ -393,9 +439,10 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     if (verticalAlign !== 0) {
       setVerticalAlign(0);
     } else {
-      setVerticalAlign(Math.floor(-height / (_data.length + 2)));
+      setVerticalAlign(Math.floor(-_height / (_data.length + 2)));
     }
-  }, [verticalAlign, _data, height]);
+  }, [verticalAlign, _data, _height]);
+
 
   return (
     <DispatchProvider value={dispatch}>
@@ -403,7 +450,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
         value={{
           margin: margin,
           width: _width,
-          height: height,
+          height: _height,
           data: _data,
           xDomain: _xDomain,
           yDomain: _yDomain,
@@ -415,10 +462,10 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           zoomFactor: _zoomFactor,
         }}
       >
-        {/* ref={fullScreenRef}  */}
-        <FullScreen ref={fullScreenRef} onFullScreenChange={onFullScreenChange}>
-          <div className="rq" onClick={requestOrExitFullScreen}>
-            {!isFullScreen ? 'Request FullScreen' : 'Exit FullScreen'}
+        <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
+          
+          <div className="rq" onClick={toggle}>
+            {!isFullscreen ? 'Request FullScreen' : 'Exit FullScreen'}
           </div>
           <div
             {...getRootProps()}
@@ -429,7 +476,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
             {isDragActive && (
               <div
                 className="drop-zoon-over"
-                style={{ width: `${width}px`, height: `${height}px` }}
+                style={{ width: `${_width}px`, height: `${_height}px` }}
               >
                 <PublishRounded />
                 <p>Drop your files here</p>
@@ -467,6 +514,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
               className="split-container"
               split="vertical"
               defaultSize="80%"
+              minSize="80%"
               onDragFinished={handleSpiltPanelSizeChanged}
             >
               <div ref={chartArea}>
@@ -477,7 +525,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                   onMouseLeave={mouseMoveLeave}
                   onClick={mouseClick}
                   width={_width}
-                  height={height}
+                  height={_height}
                 >
                   {_xDomain && _yDomain && (
                     <Fragment>
@@ -495,8 +543,8 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                         <CrossLinePointer
                           position={mouseCoordinates}
                           margin={margin}
-                          width={width}
-                          height={height}
+                          width={_width}
+                          height={_height}
                         />
                         {/* <ZoomTool  margin={margin}
                         width={_width}
@@ -510,7 +558,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                         <BrushTool
                           margin={margin}
                           width={_width}
-                          height={height}
+                          height={_height}
                           domain={{ x: _xDomain, y: _yDomain }}
                           originDomain={_originDomain}
                           isActive={true}
@@ -524,7 +572,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                       <IntegralTool
                         margin={margin}
                         width={_width}
-                        height={height}
+                        height={_height}
                         data={_data}
                         domain={{ x: _xDomain, y: _yDomain }}
                         isActive={true}
@@ -577,7 +625,8 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
               />
             </Snackbar>
           </div>
-        </FullScreen>
+        </div>
+        {/* </FullScreen> */}
       </ChartContext.Provider>
     </DispatchProvider>
   );
