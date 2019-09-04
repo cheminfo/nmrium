@@ -25,6 +25,7 @@ import {
   SET_ZOOM_FACTOR,
   ADD_MOLECULE,
   SET_MOLECULE,
+  DELETE_MOLECULE,
 } from './Actions';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
@@ -510,6 +511,15 @@ const handeleSetMolecule = (state, molfile, key) => {
     _molecules,
   };
 };
+const handeleDeleteMolecule = (state, key) => {
+  let _molecules = [...state._molecules];
+  _molecules = _molecules.filter((m) => m.key !== key);
+  AnalysisObj.setMolecules(_molecules);
+  return {
+    ...state,
+    _molecules,
+  };
+};
 
 //////////////////////////////////////////////////////////////////////
 //////////////// start undo and redo functions ///////////////////////
@@ -698,6 +708,9 @@ export const spectrumReducer = (state, action) => {
 
     case SET_MOLECULE:
       return handeleSetMolecule(state, action.molfile, action.key);
+
+    case DELETE_MOLECULE:
+      return handeleDeleteMolecule(state, action.key);
 
     // undo and redo operation
     case UNDO:

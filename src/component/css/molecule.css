@@ -30,7 +30,7 @@
 
 
 .molecule-body .slider{
-    height: 150px;
+    height: 180px;
     padding: 0px;
 }
 
@@ -38,8 +38,7 @@
     width: 100%;
     margin: 0 auto;
     display: block;
-    position: absolute;
-    top:5px;
+    position: relative;
 }
 
 .molecule-body  .slider svg polygon{

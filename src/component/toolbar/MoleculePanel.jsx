@@ -3,7 +3,7 @@ import { MolfileSvgRenderer } from 'react-ocl';
 
 // import StructureEditor from 'openchemlib';
 import { StructureEditor } from 'react-ocl/full';
-import { FaPlus, FaPaste } from 'react-icons/fa';
+import { FaPlus, FaPaste,FaRegTrashAlt } from 'react-icons/fa';
 
 import '../css/molecule.css';
 import {
@@ -17,7 +17,7 @@ import {
 import Slider from 'react-animated-slider-2';
 import 'react-animated-slider-2/build/horizontal.css';
 import { useDispatch } from '../context/DispatchContext';
-import { ADD_MOLECULE, SET_MOLECULE } from '../reducer/Actions';
+import { ADD_MOLECULE, SET_MOLECULE,DELETE_MOLECULE } from '../reducer/Actions';
 
 // import { SVGRenderer } from 'openchemlib/types';
 
@@ -106,6 +106,7 @@ export const StructureEditorModal = (props) => {
 const MoleculePanel = ({ molecules }) => {
   const [open, setOpen] = React.useState(false);
   const [currentMolFile, setCurrentMolFile] = useState();
+  const [currentIndex,setCurrentIndex]=useState(0);
   const dispatch = useDispatch();
 
   const handleClose = useCallback(() => {
@@ -128,6 +129,17 @@ const MoleculePanel = ({ molecules }) => {
     });
   }, [dispatch]);
 
+  const handleDelete = useCallback(() => {
+      if(molecules[currentIndex] && molecules[currentIndex].key){
+         setCurrentIndex(0);
+      dispatch({ type: DELETE_MOLECULE, key:molecules[currentIndex].key });
+      }
+  }, [dispatch,molecules,currentIndex]);
+
+
+
+  
+
   useEffect(() => {
     console.log(molecules);
   }, [molecules]);
@@ -145,11 +157,16 @@ const MoleculePanel = ({ molecules }) => {
             <FaPlus />
           </Button>
         </Tooltip>
+        <Tooltip title="Delete Molecule" placement="left-start">
+          <Button onClick={handleDelete}>
+            <FaRegTrashAlt />
+          </Button>
+        </Tooltip>
+        <span> {molecules  && molecules.length >0 && `( `+(currentIndex + 1)+ ` )`} </span>
       </div>
       <div className="molecule-body">
-        <Slider>
-          {molecules &&
-            molecules != null &&
+        <Slider onSlideChange={event => setCurrentIndex(event.slideIndex)}>
+          {molecules  &&
             molecules.map((mol, index) => (
               <div
                 key={mol.mf + index}
@@ -157,8 +174,11 @@ const MoleculePanel = ({ molecules }) => {
                   handleOpen(event, mol.key, mol.molfile)
                 }
               >
-                <p>( {index + 1} )</p>
+                {/* <p>( {index + 1} )</p> */}
+                <div>
                 <MolfileSvgRenderer molfile={mol.molfile} />
+                </div>
+                <p>{mol.mf} - {mol.mw.toFixed(2)}</p>
               </div>
             ))}
         </Slider>

@@ -82,6 +82,10 @@ export class Analysis {
     // we will split if we have many fragments
   }
 
+  setMolecules(molecules){
+    this.molecules = molecules;
+  }
+
   setMolfile(molfile, key) {
     // try to parse molfile
     // this will throw if the molecule can not be parsed !
