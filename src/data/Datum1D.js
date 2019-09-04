@@ -101,11 +101,11 @@ export class Datum1D {
   }
 
   baseline(options) {
-    let result = baseline(this.data.x, this.data.re, this.data.im);
+    // let result = baseline(this.data.x, this.data.re, this.data.im);
   }
 
   applyAutoPeakPicking(options) {
-    let result = autoPeakPicking(this.data.x, this.data.re);
+    // let result = autoPeakPicking(this.data.x, this.data.re);
   }
 
   applyShiftXFilter(shiftValue) {

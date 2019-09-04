@@ -82,9 +82,7 @@ const SpectrumList = ({ data }) => {
   );
 
 
-  function  fullScreen (){
-    console.log('test');
-  }
+ 
 
   const handleChangeMarkersVisibility = useCallback(
     (d) => {

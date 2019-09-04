@@ -167,7 +167,7 @@ class BrushTool extends Component {
   }
 
   render() {
-    const { isActive, width, height, margin } = this.props;
+    const { isActive } = this.props;
 
     return (
       <Fragment>

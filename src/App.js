@@ -1,15 +1,15 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import NMRDisplayer from './component/NMRDisplayer';
-import ChartWindow from './component/ChartWindow';
+// import ChartWindow from './component/ChartWindow';
 
 import json from './samples/test.json';
-import json2 from './samples/test2.json';
-import json1 from './samples/test1.json';
-import { Grid, Button } from '@material-ui/core';
+// import json2 from './samples/test2.json';
+// import json1 from './samples/test1.json';
+// import { Grid, Button } from '@material-ui/core';
 
-import {MolfileDemo} from './test'
+// import {MolfileDemo} from './test'
 function App() {
   //  console.log(json);
 

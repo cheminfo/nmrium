@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, {useEffect, useState, useCallback } from 'react';
 import { MolfileSvgRenderer } from 'react-ocl';
 
 // import StructureEditor from 'openchemlib';
