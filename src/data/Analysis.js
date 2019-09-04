@@ -3,13 +3,16 @@ import { convert } from 'jcampconverter';
 import { Data1DManager } from './Data1DManager';
 import { getMetaData } from './metadata/getMetaData';
 import { Molecule } from 'openchemlib';
+import { Molecule as mol } from './Molecule';
+import { MoleculeManager } from './MoleculeManager';
 
 export class Analysis {
   data1d = [];
-  constructor(data1d) {
+  molecules=[];
+  constructor(data1d,molecules) {
     this.data1d = data1d;
     this.data2d = [];
-    this.molecules = []; // chemical structures
+    this.molecules =molecules; // chemical structures
     this.preferences = {
       display: {},
     };
@@ -26,7 +29,10 @@ export class Analysis {
   static async build(json = {}) {
     const v_data1d = await Data1DManager.fromJSON(json.data1d);
     const data1d = json.data1d ? v_data1d : [];
-    return new Analysis(data1d);
+    const molecules = json.molecules ? MoleculeManager.fromJSON(json.molecules) : [];
+    
+    console.log(molecules)
+    return new Analysis(data1d,molecules);
   }
 
   async addJcampFromURL(id, jcampURL, options) {
@@ -55,6 +61,17 @@ export class Analysis {
     return this.molecules;
   }
 
+  // .map((molecule) => {
+  //   return {
+  //     key: molecule.key,
+  //     molfile: molecule.molfile,
+  //     svg: molecule.svg,
+  //     mf: molecule.mf,
+  //     em: molecule.em,
+  //     mw: molecule.mw,
+  //   };
+  // });
+
   removeMolecule(index) {
     this.molecules.splice(index, 1);
   }
@@ -68,21 +85,20 @@ export class Analysis {
     console.log(fragments);
 
     for (let fragment of fragments) {
-      this.molecules.push({
-        key: Math.random()
-          .toString(36)
-          .replace('0.', ''),
-        molfile: fragment.toMolfileV3(),
-        svg: fragment.toSVG(150, 150),
-        mf: fragment.getMolecularFormula().formula,
-        em: fragment.getMolecularFormula().absoluteWeight,
-        mw: fragment.getMolecularFormula().relativeWeight,
-      });
+      this.molecules.push(
+        new mol({
+          molfile: fragment.toMolfileV3(),
+          svg: fragment.toSVG(150, 150),
+          mf: fragment.getMolecularFormula().formula,
+          em: fragment.getMolecularFormula().absoluteWeight,
+          mw: fragment.getMolecularFormula().relativeWeight,
+        }),
+      );
     }
     // we will split if we have many fragments
   }
 
-  setMolecules(molecules){
+  setMolecules(molecules) {
     this.molecules = molecules;
   }
 
@@ -97,20 +113,19 @@ export class Analysis {
     // console.log(this.molecules.filter(index, 1));
 
     this.molecules = this.molecules.filter((m) => m.key !== key);
-     
+
     console.log(this.molecules);
 
     for (let fragment of fragments) {
-      this.molecules.push({
-        key: Math.random()
-          .toString(36)
-          .replace('0.', ''),
-        molfile: fragment.toMolfileV3(),
-        svg: fragment.toSVG(150, 150),
-        mf: fragment.getMolecularFormula().formula,
-        em: fragment.getMolecularFormula().absoluteWeight,
-        mw: fragment.getMolecularFormula().relativeWeight,
-      });
+      this.molecules.push(
+        new mol({
+          molfile: fragment.toMolfileV3(),
+          svg: fragment.toSVG(150, 150),
+          mf: fragment.getMolecularFormula().formula,
+          em: fragment.getMolecularFormula().absoluteWeight,
+          mw: fragment.getMolecularFormula().relativeWeight,
+        }),
+      );
     }
 
     return this.molecules;
@@ -127,7 +142,9 @@ export class Analysis {
     const data1d = this.data1d.map((ob) => {
       return { ...ob.toJSON(), data: {} };
     });
-    return { data1d };
+
+    const molecules = this.molecules.map((ob)=>ob.toJSON());
+    return { data1d,molecules };
     // return {
     //   display: {}, // global display information
     //   spectra1d: [

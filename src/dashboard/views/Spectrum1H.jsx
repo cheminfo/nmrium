@@ -30,7 +30,9 @@ const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
+
   return new Promise((resolve, reject) => {
+
     fetch('/json-files/1HSpectrum.json')
       .then((response) => checkStatus(response) && response.json())
       .then((data) => {

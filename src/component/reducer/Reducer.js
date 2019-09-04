@@ -71,12 +71,17 @@ const initiate = (state, data) => {
   AnalysisObj = data.AnalysisObj;
 
   const _data = AnalysisObj.getData1d();
+  const _molecules = AnalysisObj.getMolecules();
+
+  console.log(_data)
+
   const domain = getDomain(_data);
   const v_mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
 
   return {
     ...state,
     _data,
+    _molecules,
     _xDomain: domain.x,
     _yDomain: domain.y,
     _originDomain: domain,
@@ -115,6 +120,8 @@ const setData = (state, data) => {
     AnalysisObj.pushDatum1D(new Datum1D(d));
   }
   const _data = AnalysisObj.getData1d();
+  const _molecules = AnalysisObj.getMolecules();
+
   const domain = getDomain(_data);
 
   //change x axis from right to left or vice versa according to isFid value
@@ -123,6 +130,7 @@ const setData = (state, data) => {
   return {
     ...state,
     _data,
+    _molecules,
     _xDomain: domain.x,
     _yDomain: domain.y,
     _originDomain: domain,
@@ -171,12 +179,14 @@ const loadJcampFile = (state, files) => {
 const handleLoadJsonFile = (state, data) => {
   AnalysisObj = data.AnalysisObj;
   const _data = AnalysisObj.getData1d();
-
+  const _molecules = AnalysisObj.getMolecules();
+    
   const domain = getDomain(_data);
 
   return {
     ...state,
     _data,
+    _molecules,
     _xDomain: domain.x,
     _yDomain: domain.y,
     _originDomain: domain,

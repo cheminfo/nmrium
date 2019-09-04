@@ -54,6 +54,7 @@ import { DispatchProvider } from './context/DispatchContext';
 import SplitPane from 'react-split-pane';
 import MoleculePanel from './toolbar/MoleculePanel';
 import { useFullscreen, useToggle } from 'react-use';
+import { Molecule } from '../data/Molecule';
 
 function getFileExtension(file) {
   return file.name
@@ -324,6 +325,11 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     setChartDimensions({width:chartArea.current.clientWidth,height:chartArea.current.clientHeight});
     console.log(chartArea.current.clientWidth)
     console.log(chartArea.current.clientHeight)
+
+
+
+
+    console.log(new Molecule({key:"ddd"}));
   
   },[data]);
 
