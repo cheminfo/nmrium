@@ -4,6 +4,7 @@ import { MolfileSvgRenderer } from 'react-ocl';
 // import StructureEditor from 'openchemlib';
 import { StructureEditor } from 'react-ocl/full';
 import { FaPlus, FaPaste,FaRegTrashAlt } from 'react-icons/fa';
+import { MF } from 'react-mf';
 
 import '../css/molecule.css';
 import {
@@ -178,12 +179,11 @@ const MoleculePanel = ({ molecules }) => {
                 <div>
                 <MolfileSvgRenderer molfile={mol.molfile} />
                 </div>
-                <p>{mol.mf} - {mol.mw.toFixed(2)}</p>
+                <p><MF mf={mol.mf} /> - {mol.mw.toFixed(2)}</p>
               </div>
             ))}
         </Slider>
 
-        {molecules != null && molecules && console.log(molecules)}
 
         <StructureEditorModal
           open={open}
