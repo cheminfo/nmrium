@@ -1,46 +1,40 @@
-.molecule-container{
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+.molecule-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
-.molecule-toolbar{
-    display: flex;
-    flex-direction: row;
-    border-bottom: 0.55px solid rgb(240, 240, 240);
+.molecule-toolbar {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 0.55px solid rgb(240, 240, 240);
 }
 
-
-.molecule-toolbar button svg{
-
-    fill: #4e4e4e;
-
+.molecule-toolbar button svg {
+  fill: #4e4e4e;
 }
 
-.molecule-toolbar button{
-    width: 40px !important;
-    padding: 5px 0px !important;
-    min-width: 10px !important;
+.molecule-toolbar button {
+  width: 40px !important;
+  padding: 5px 0px !important;
+  min-width: 10px !important;
 }
 
-
-.molecule-body{
-    
+.molecule-body {
 }
 
-
-.molecule-body .slider{
-    height: 180px;
-    padding: 0px;
+.molecule-body .slider {
+  height: 180px;
+  padding: 0px;
 }
 
-.molecule-body .slider p{
-    width: 100%;
-    margin: 0 auto;
-    display: block;
-    position: relative;
+.molecule-body .slider p {
+  width: 100%;
+  margin: 0 auto;
+  display: block;
+  position: relative;
 }
 
-.molecule-body  .slider svg polygon{
-      fill:gray !important;
+.molecule-body .slider svg polygon {
+  fill: gray !important;
 }
