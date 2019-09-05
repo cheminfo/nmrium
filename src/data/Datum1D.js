@@ -144,7 +144,7 @@ export class Datum1D {
       source: {
         jcamp: this.source.jcamp,
         jcampURL: this.source.jcampURL,
-        original: [],
+        original: (this.source.jcampURL)?[]:this.source.original,
       },
       display: this.display,
       info: this.info,

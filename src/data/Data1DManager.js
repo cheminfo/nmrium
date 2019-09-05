@@ -19,7 +19,7 @@ export class Data1DManager {
         const datumObject = Data1DManager.fromJcamp(jcamp, datum);
         data1D.push(datumObject);
       } else {
-        data1D.push(new Datum1D(datum));
+        data1D.push(new Datum1D({...datum,data:datum.source.original}));
       }
     }
 
@@ -78,7 +78,7 @@ export class Data1DManager {
     let meta = getMetaData(result.info);
 
     if (Array.isArray(meta.nucleus)) meta.nucleus = meta.nucleus[0];
-    const ob = new Datum1D({ ...options, info: meta, data });
+    const ob = new Datum1D({ ...options, info: meta, data,source:{jcamp:null,jcampURL:null,original:data} });
 
     return ob;
   };

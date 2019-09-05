@@ -180,13 +180,16 @@ const handleLoadJsonFile = (state, data) => {
   AnalysisObj = data.AnalysisObj;
   const _data = AnalysisObj.getData1d();
   const _molecules = AnalysisObj.getMolecules();
-    
+  
+  const _mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
+ 
   const domain = getDomain(_data);
 
   return {
     ...state,
     _data,
     _molecules,
+    _mode,
     _xDomain: domain.x,
     _yDomain: domain.y,
     _originDomain: domain,
@@ -507,9 +510,7 @@ const handelAddMolecule = (state, molfile) => {
   console.log(AnalysisObj.getMolecules());
 
   const _molecules = AnalysisObj.getMolecules();
- console.log('55555555555555555555555555555555555555555555555555')
   console.log(_molecules);
-  console.log('55555555555555555555555555555555555555555555555555')
 
   return {
     ...state,
