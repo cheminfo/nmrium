@@ -24,7 +24,6 @@ import {
 
 
 
-
 export const StructureEditorModal = (props) => {
   const { onClose, open, selectedMolFile } = props;
   const [molfile, setMolfile] = useState(selectedMolFile);
@@ -37,7 +36,7 @@ export const StructureEditorModal = (props) => {
     } else {
       setMolfile(null);
     }
-  }, [selectedMolFile]);
+  }, [selectedMolFile,open]);
 
   const cb = useCallback(
     (newMolfile) => {
@@ -164,6 +163,7 @@ const MoleculePanel = ({ molecules }) => {
                   handleOpen(event, mol.key, mol.molfile)
                 }
               >
+                {/* <p>( {index + 1} )</p> */}
                 <div>
                   <MolfileSvgRenderer width={refContainer && refContainer.current.clientWidth-70} molfile={mol.molfile} />
                 </div>
