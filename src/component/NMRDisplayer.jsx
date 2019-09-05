@@ -143,20 +143,16 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   const onDrop = useCallback((acceptedFiles) => {
     console.log(acceptedFiles);
 
-    const uniqueFileExtentions = [
+    const uniqueFileExtensions = [
       ...new Set(acceptedFiles.map((file) => getFileExtension(file))),
     ];
 
-    console.log(uniqueFileExtentions);
-
-    for (let i = 0; i < uniqueFileExtentions.length; i++) {
+    for (let i = 0; i < uniqueFileExtensions.length; i++) {
       const acceptedFilesbyExtensions = acceptedFiles.filter(
-        (file) => getFileExtension(file) === uniqueFileExtentions[i],
+        (file) => getFileExtension(file) === uniqueFileExtensions[i],
       );
 
-      if (uniqueFileExtentions[i] === '.mol') {
-      }
-      switch (uniqueFileExtentions[i]) {
+      switch (uniqueFileExtensions[i]) {
         case '.mol':
           loadFiles(acceptedFiles).then(
             (files) => {
@@ -188,6 +184,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
 
           break;
 
+        case '.dx':
         case '.jdx':
           loadFiles(acceptedFiles).then(
             (files) => {
