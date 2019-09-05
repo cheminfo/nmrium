@@ -29,12 +29,12 @@ import {
 } from './Actions';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
-import { SHIFT_X } from '../../data/filter1d/filter1d-type';
+import { SHIFT_X } from '../../data/data1d/filter1d/filter1d-type';
 import { MESSAGE_TYPE } from '../SnackBarContentWraper';
 
 import * as d3 from 'd3';
-import { Datum1D } from '../../data/Datum1D';
-import { Data1DManager } from '../../data/Data1DManager';
+import { Datum1D } from '../../data/data1d/Datum1D';
+import { Data1DManager } from '../../data/data1d/Data1DManager';
 
 import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';

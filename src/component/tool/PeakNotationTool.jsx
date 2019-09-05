@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import '../css/peak-notification-tool.css';
 import { ChartContext } from '../context/ChartContext';
 import { FaMinus } from 'react-icons/fa';
-import { getPeakLabelNumberDecimals } from '../../data/default';
+import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { useDispatch } from '../context/DispatchContext';
 import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
 
@@ -216,7 +216,7 @@ const PeakNotationTool = ({ position, showCursorLabel }) => {
 
   const getXValue = (xVal) => {
     const spectrumData = data.find((d) => d.id === activeSpectrum.id);
-    
+
     return getScale()
       .x.invert(xVal)
       .toFixed(getPeakLabelNumberDecimals(spectrumData.nucleus));

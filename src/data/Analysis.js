@@ -1,18 +1,18 @@
-import applyFilter from './filter1d/filter';
+import applyFilter from './data1d/filter1d/filter';
 import { convert } from 'jcampconverter';
-import { Data1DManager } from './Data1DManager';
-import { getMetaData } from './metadata/getMetaData';
+import { Data1DManager } from './data1d/Data1DManager';
+import { getMetaData } from './data1d/metadata/getMetaData';
 import { Molecule } from 'openchemlib';
-import { Molecule as mol } from './Molecule';
-import { MoleculeManager } from './MoleculeManager';
+import { Molecule as mol } from './molecules/Molecule';
+import { MoleculeManager } from './molecules/MoleculeManager';
 
 export class Analysis {
   data1d = [];
-  molecules=[];
-  constructor(data1d,molecules) {
+  molecules = [];
+  constructor(data1d, molecules) {
     this.data1d = data1d;
     this.data2d = [];
-    this.molecules =molecules; // chemical structures
+    this.molecules = molecules; // chemical structures
     this.preferences = {
       display: {},
     };
@@ -29,10 +29,12 @@ export class Analysis {
   static async build(json = {}) {
     const v_data1d = await Data1DManager.fromJSON(json.data1d);
     const data1d = json.data1d ? v_data1d : [];
-    const molecules = json.molecules ? MoleculeManager.fromJSON(json.molecules) : [];
-    
-    console.log(molecules)
-    return new Analysis(data1d,molecules);
+    const molecules = json.molecules
+      ? MoleculeManager.fromJSON(json.molecules)
+      : [];
+
+    console.log(molecules);
+    return new Analysis(data1d, molecules);
   }
 
   async addJcampFromURL(id, jcampURL, options) {
@@ -143,8 +145,8 @@ export class Analysis {
       return { ...ob.toJSON(), data: {} };
     });
 
-    const molecules = this.molecules.map((ob)=>ob.toJSON());
-    return { data1d,molecules };
+    const molecules = this.molecules.map((ob) => ob.toJSON());
+    return { data1d, molecules };
     // return {
     //   display: {}, // global display information
     //   spectra1d: [

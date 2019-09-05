@@ -1,6 +1,6 @@
 const defaults = {
-  '1h': require('./defaults/1h.json'),
-  '13c': require('./defaults/13c.json'),
+  '1h': require('./1h.json'),
+  '13c': require('./13c.json'),
 };
 
 export function getPeakLabelNumberDecimals(nucleus) {
