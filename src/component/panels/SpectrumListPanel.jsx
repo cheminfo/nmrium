@@ -3,8 +3,7 @@ import React, {
   useState,
   Fragment,
   useCallback,
-  useMemo
-  
+  useMemo,
 } from 'react';
 import propTypes from 'prop-types';
 import List from '@material-ui/core/List';
@@ -57,7 +56,7 @@ const ColorPicker = React.memo(
   arePropsEqual,
 );
 
-const SpectrumList = ({ data }) => {
+const SpectrumListPanel = ({ data }) => {
   const [activated, setActivated] = useState(null);
   const [visible, setVisible] = useState([]);
   const [markersVisible, setMarkersVisible] = useState([]);
@@ -80,9 +79,6 @@ const SpectrumList = ({ data }) => {
     },
     [dispatch, visible],
   );
-
-
- 
 
   const handleChangeMarkersVisibility = useCallback(
     (d) => {
@@ -125,7 +121,7 @@ const SpectrumList = ({ data }) => {
   useEffect(() => {
     const visibleSpectrums = data.filter((d) => d.isVisible === true);
     const visibleMarkers = data.filter((d) => d.isPeaksMarkersVisible === true);
-    
+
     setVisible(visibleSpectrums);
     setMarkersVisible(visibleMarkers);
 
@@ -207,8 +203,7 @@ const SpectrumList = ({ data }) => {
         );
       })
     );
-  }
-  , [
+  }, [
     data,
     handleChangeActiveSpectrum,
     handleChangeMarkersVisibility,
@@ -234,13 +229,13 @@ const SpectrumList = ({ data }) => {
   );
 };
 
-SpectrumList.propTypes = {
+SpectrumListPanel.propTypes = {
   data: propTypes.array.isRequired,
 };
 
-export default SpectrumList;
+export default SpectrumListPanel;
 
-// SpectrumList.defaultProps = {
+// SpectrumListPanel.defaultProps = {
 //   onChangeVisibility: function() {
 //     return null;
 //   },

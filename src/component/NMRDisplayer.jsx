@@ -28,7 +28,7 @@ import PeakNotationTool from './tool/PeakNotationTool';
 import { ChartContext } from './context/ChartContext';
 import { spectrumReducer } from './reducer/Reducer';
 
-import SpectrumList from './panels/SpectrumList';
+import SpectrumListPanel from './panels/SpectrumListPanel';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
 import { FaRegWindowMaximize } from 'react-icons/fa';
 
@@ -50,7 +50,7 @@ import BasicToolBar from './toolbar/BasicToolBar';
 import HistoryToolBar from './toolbar/HistoryToolBar';
 import IntegralTool from './tool/IntegralTool';
 import InformationPanel from './panels/InformationPanel';
-import IntegralTable from './panels/IntegralTable';
+import IntegralTablePanel from './panels/IntegralTablePanel';
 import { DispatchProvider } from './context/DispatchContext';
 import SplitPane from 'react-split-pane';
 import MoleculePanel from './panels/MoleculePanel';
@@ -263,7 +263,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     {
       id: 'spectraPanel',
       title: 'spectra',
-      component: <SpectrumList data={_data} />,
+      component: <SpectrumListPanel data={_data} />,
     },
     {
       id: 'informationPanel',
@@ -274,7 +274,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
       id: 'integralsPanel',
       title: 'Integrals',
       component: (
-        <IntegralTable data={_data} activeSpectrum={_activeSpectrum} />
+        <IntegralTablePanel data={_data} activeSpectrum={_activeSpectrum} />
       ),
     },
     {

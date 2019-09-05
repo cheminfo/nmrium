@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const IntegralTable = ({ activeSpectrum, data }) => {
+const IntegralTablePanel = ({ activeSpectrum, data }) => {
   const classes = useStyles();
   const [integrals, setIntegrals] = useState([]);
 
@@ -87,4 +87,4 @@ const IntegralTable = ({ activeSpectrum, data }) => {
   );
 };
 
-export default IntegralTable;
+export default IntegralTablePanel;
