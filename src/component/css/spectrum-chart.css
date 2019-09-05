@@ -261,4 +261,21 @@ border-color: transparent;
 }
 
 
+.header-toolbar{
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+
+}
+
+
+.header-toolbar button{
+  width: 40px !important;
+  min-width: 40px !important;
+}
+
+
+button:focus {outline:0;}
+
+
 

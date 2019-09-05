@@ -17,7 +17,7 @@ export class MoleculeManager {
         molecules.push(
           new mol({
             molfile: fragment.toMolfileV3(),
-            svg: fragment.toSVG(150, 150),
+            svg: fragment.toSVG(50, 50),
             mf: fragment.getMolecularFormula().formula,
             em: fragment.getMolecularFormula().absoluteWeight,
             mw: fragment.getMolecularFormula().relativeWeight,

@@ -28,6 +28,14 @@
   padding: 0px;
 }
 
+ .molecule-pager-number{
+    margin: 0;
+    text-align: right;
+    width: 100%;
+    line-height: 22px;
+    padding: 0px 10px;
+}
+
 .molecule-body .slider p {
   width: 100%;
   margin: 0 auto;
@@ -38,3 +46,6 @@
 .molecule-body .slider svg polygon {
   fill: gray !important;
 }
+
+
+

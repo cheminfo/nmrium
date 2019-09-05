@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import PublishRounded from '@material-ui/icons/PublishRounded';
 import { useDropzone } from 'react-dropzone';
-import { Snackbar } from '@material-ui/core';
+import { Snackbar, Button } from '@material-ui/core';
 
 import './css/spectrum-chart.css';
 import FunctionToolBar, { options } from './toolbar/FunctionToolBar';
@@ -30,6 +30,7 @@ import { spectrumReducer } from './reducer/Reducer';
 
 import SpectrumList from './toolbar/SpectrumList';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
+import { FaRegWindowMaximize } from 'react-icons/fa';
 
 import { Analysis } from '../data/Analysis';
 
@@ -256,9 +257,9 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     onDrop,
     noClick: true,
   });
-
-  const infoList = useMemo(
-    () => [
+  // useMemo(
+  //   () =>
+  const infoList =  [
       {
         id: 'spectraPanel',
         title: 'spectra',
@@ -284,11 +285,12 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
       {
         id: 'structuresPanel',
         title: 'Structures',
-        component: <MoleculePanel molecules={_molecules} />,
+        component: <MoleculePanel molecules={_molecules}  />,
       },
-    ],
-    [_activeSpectrum, _data, _molecules],
-  );
+    ]
+  //   ,
+  //   [_activeSpectrum, _data, _molecules,isResizeEventStart],
+  // );
 
   useEffect(() => {
     function handleResize() {
@@ -473,9 +475,19 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
         }}
       >
         <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
-          <div className="rq" onClick={toggle}>
-            {!isFullscreen ? 'Request FullScreen' : 'Exit FullScreen'}
+          <div className="header-toolbar">
+            {!isFullscreen ? (
+              <Button onClick={toggle}>
+                <FaRegWindowMaximize />
+              </Button>
+            ) : (
+              ''
+            )}
           </div>
+          {/* <div className="rq" onClick={toggle}>
+
+            {!isFullscreen ? 'Request FullScreen' : 'Exit FullScreen'}
+          </div> */}
           <div
             {...getRootProps()}
             className={isDragActive ? 'main-container over' : 'main-container'}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { MolfileSvgRenderer } from 'react-ocl';
 
 // import StructureEditor from 'openchemlib';
@@ -24,24 +24,8 @@ import {
   DELETE_MOLECULE,
 } from '../reducer/Actions';
 
-// import { SVGRenderer } from 'openchemlib/types';
 
-const initialMolfile = `
-Actelion Java MolfileCreator 1.0
-  6  5  0  0  0  0  0  0  0  0999 V2000
-    3.4641   -0.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-    2.5981   -0.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-    1.7321   -0.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-    1.7321   -1.5000   -0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
-    0.8660   -0.0000   -0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
-    0.0000   -0.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-  2  1  1  0  0  0  0
-  3  2  1  0  0  0  0
-  4  3  2  0  0  0  0
-  5  3  1  0  0  0  0
-  6  5  1  0  0  0  0
-M  END
-`;
+
 
 export const StructureEditorModal = (props) => {
   const { onClose, open, selectedMolFile } = props;
@@ -53,7 +37,7 @@ export const StructureEditorModal = (props) => {
     if (selectedMolFile) {
       setMolfile(selectedMolFile.molfile);
     } else {
-      setMolfile(initialMolfile);
+      setMolfile(null);
     }
   }, [selectedMolFile]);
 
@@ -109,6 +93,9 @@ export const StructureEditorModal = (props) => {
 };
 
 const MoleculePanel = ({ molecules }) => {
+
+  const refContainer = useRef();
+
   const [open, setOpen] = React.useState(false);
   const [currentMolFile, setCurrentMolFile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -143,10 +130,7 @@ const MoleculePanel = ({ molecules }) => {
     }
   }, [dispatch, molecules, currentIndex]);
 
-  useEffect(() => {
-    console.log(molecules);
-  }, [molecules]);
-
+ 
   return (
     <div className="molecule-container">
       <div className="molecule-toolbar">
@@ -165,14 +149,14 @@ const MoleculePanel = ({ molecules }) => {
             <FaRegTrashAlt />
           </Button>
         </Tooltip>
-        <div>
+        <p className="molecule-pager-number">
           {' '}
           {molecules &&
             molecules.length > 0 &&
             +(currentIndex + 1) + ` / ` + molecules.length}{' '}
-        </div>
+        </p>
       </div>
-      <div className="molecule-body">
+      <div className="molecule-body" ref={refContainer}> 
         <Slider onSlideChange={(event) => setCurrentIndex(event.slideIndex)}>
           {molecules &&
             molecules.map((mol, index) => (
@@ -184,7 +168,7 @@ const MoleculePanel = ({ molecules }) => {
               >
                 {/* <p>( {index + 1} )</p> */}
                 <div>
-                  <MolfileSvgRenderer molfile={mol.molfile} />
+                  <MolfileSvgRenderer width={refContainer && refContainer.current.clientWidth-70} molfile={mol.molfile} />
                 </div>
                 <p>
                   <MF mf={mol.mf} /> - {mol.mw.toFixed(2)}

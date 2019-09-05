@@ -507,6 +507,9 @@ const handelAddMolecule = (state, molfile) => {
   console.log(AnalysisObj.getMolecules());
 
   const _molecules = AnalysisObj.getMolecules();
+ console.log('55555555555555555555555555555555555555555555555555')
+  console.log(_molecules);
+  console.log('55555555555555555555555555555555555555555555555555')
 
   return {
     ...state,
