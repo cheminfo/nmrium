@@ -28,7 +28,7 @@ import PeakNotationTool from './tool/PeakNotationTool';
 import { ChartContext } from './context/ChartContext';
 import { spectrumReducer } from './reducer/Reducer';
 
-import SpectrumList from './toolbar/SpectrumList';
+import SpectrumList from './panels/SpectrumList';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
 import { FaRegWindowMaximize } from 'react-icons/fa';
 
@@ -49,11 +49,11 @@ import {
 import BasicToolBar from './toolbar/BasicToolBar';
 import HistoryToolBar from './toolbar/HistoryToolBar';
 import IntegralTool from './tool/IntegralTool';
-import InformationPanel from './toolbar/InformationPanel';
-import IntegralTable from './toolbar/IntegralTable';
+import InformationPanel from './panels/InformationPanel';
+import IntegralTable from './panels/IntegralTable';
 import { DispatchProvider } from './context/DispatchContext';
 import SplitPane from 'react-split-pane';
-import MoleculePanel from './toolbar/MoleculePanel';
+import MoleculePanel from './panels/MoleculePanel';
 import { useFullscreen, useToggle } from 'react-use';
 
 function getFileExtension(file) {
@@ -259,35 +259,35 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   });
   // useMemo(
   //   () =>
-  const infoList =  [
-      {
-        id: 'spectraPanel',
-        title: 'spectra',
-        component: <SpectrumList data={_data} />,
-      },
-      {
-        id: 'informationPanel',
-        title: 'Information',
-        component: <p>information</p>,
-      },
-      {
-        id: 'integralsPanel',
-        title: 'Integrals',
-        component: (
-          <IntegralTable data={_data} activeSpectrum={_activeSpectrum} />
-        ),
-      },
-      {
-        id: 'peaksPanel',
-        title: 'Peaks',
-        component: <p>Peaks</p>,
-      },
-      {
-        id: 'structuresPanel',
-        title: 'Structures',
-        component: <MoleculePanel molecules={_molecules}  />,
-      },
-    ]
+  const infoList = [
+    {
+      id: 'spectraPanel',
+      title: 'spectra',
+      component: <SpectrumList data={_data} />,
+    },
+    {
+      id: 'informationPanel',
+      title: 'Information',
+      component: <p>information</p>,
+    },
+    {
+      id: 'integralsPanel',
+      title: 'Integrals',
+      component: (
+        <IntegralTable data={_data} activeSpectrum={_activeSpectrum} />
+      ),
+    },
+    {
+      id: 'peaksPanel',
+      title: 'Peaks',
+      component: <p>Peaks</p>,
+    },
+    {
+      id: 'structuresPanel',
+      title: 'Structures',
+      component: <MoleculePanel molecules={_molecules} />,
+    },
+  ];
   //   ,
   //   [_activeSpectrum, _data, _molecules,isResizeEventStart],
   // );
