@@ -25,7 +25,7 @@ export class Datum1D {
     * annotations: [],
     * 
 */
-
+   console.log(options.source);
     this.id =
       options.id ||
       Math.random()
@@ -33,8 +33,8 @@ export class Datum1D {
         .replace('0.', '');
     this.source = Object.assign(
       {
-        sourceURL: null,
-        sourceData: null,
+        jcamp: null,
+        jcampURL: null,
         original: [],
       },
       options.source,
@@ -142,8 +142,8 @@ export class Datum1D {
       data: this.data,
       id: this.id,
       source: {
-        jcamp: this.sourceData,
-        jcampURL: this.sourceURL,
+        jcamp: this.source.jcamp,
+        jcampURL: this.source.jcampURL,
         original: [],
       },
       display: this.display,

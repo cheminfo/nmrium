@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { MolfileSvgRenderer } from 'react-ocl';
-
-// import StructureEditor from 'openchemlib';
 import { StructureEditor } from 'react-ocl/full';
 import { FaPlus, FaPaste, FaRegTrashAlt } from 'react-icons/fa';
 import { MF } from 'react-mf';
@@ -166,7 +164,6 @@ const MoleculePanel = ({ molecules }) => {
                   handleOpen(event, mol.key, mol.molfile)
                 }
               >
-                {/* <p>( {index + 1} )</p> */}
                 <div>
                   <MolfileSvgRenderer width={refContainer && refContainer.current.clientWidth-70} molfile={mol.molfile} />
                 </div>
