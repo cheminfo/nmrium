@@ -42,7 +42,7 @@ import {
   LOAD_JSON_FILE,
   FULL_ZOOM_OUT,
   ADD_INTEGRAL,
-  SET_DIMENSIONS
+  SET_DIMENSIONS,
 } from './reducer/Actions';
 
 import BasicToolBar from './toolbar/BasicToolBar';
@@ -105,12 +105,14 @@ function loadFiles(acceptedFiles) {
 
 const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   const refSVG = useRef();
-  const chartArea = useRef();
+  const refChartPanel = useRef();
+  const refInformationPanel = useRef();
+
   const fullScreenRef = useRef();
 
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
-  const [chartDiemensions,setChartDimensions]= useState({});
-  const [isResizeEventStart,setResizeEventStart] = useState(false);
+  const [chartDiemensions, setChartDimensions] = useState({});
+  const [isResizeEventStart, setResizeEventStart] = useState(false);
   // const [isFullScreen, setIsFullScreen] = useState(false);
   const [message, openMessage] = useState({
     isOpen: false,
@@ -120,14 +122,22 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   const [verticalAlign, setVerticalAlign] = useState(0);
   const [show, toggle] = useToggle(false);
   const isFullscreen = useFullscreen(fullScreenRef, show, {
-    onClose: () => toggle(false),
+    onClose: () => {
+      toggle(false);
+      setTimeout(() => {
+        dispatch({
+          type: SET_DIMENSIONS,
+          width: refChartPanel.current.clientWidth,
+          height: chartDiemensions.height,
+        });
+      }, 100);
+    },
   });
 
   // useEffect(()=>{
   //   dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
 
   // },[isFullscreen])
-
 
   const onDrop = useCallback((acceptedFiles) => {
     console.log(acceptedFiles);
@@ -280,38 +290,36 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     [_activeSpectrum, _data, _molecules],
   );
 
-
-  useEffect(()=>{
-
-    function handleResize(){
+  useEffect(() => {
+    function handleResize() {
       console.log(height);
       console.log(width);
 
-      if(isFullscreen){
-        
-        dispatch({ type: SET_DIMENSIONS, width: window.innerWidth,height:window.innerHeight-margin.bottom});
-      }else{
-
-        console.log(height);
-        console.log(width);
-
-        console.log(chartDiemensions)
-
-        dispatch({ type: SET_DIMENSIONS, width: chartDiemensions.width,height:chartDiemensions.height});
-
+      if (isFullscreen) {
+        setTimeout(() => {
+          dispatch({
+            type: SET_DIMENSIONS,
+            width: refChartPanel.current.clientWidth,
+            height: window.innerHeight - margin.bottom,
+          });
+        }, 100);
+      } else {
+        setTimeout(() => {
+          dispatch({
+            type: SET_DIMENSIONS,
+            width: refChartPanel.current.clientWidth,
+            height: chartDiemensions.height,
+          });
+        }, 100);
       }
 
-
-      console.log(window.innerWidth,window.innerHeight);
-
+      console.log(window.innerWidth, window.innerHeight);
     }
 
+    window.addEventListener('resize', handleResize);
 
-    window.addEventListener('resize',handleResize);
-
-    return _=> window.removeEventListener('resize',handleResize);          
-
-  },[chartDiemensions,height,width,isFullscreen,margin])
+    return (_) => window.removeEventListener('resize', handleResize);
+  }, [chartDiemensions, height, width, isFullscreen, margin]);
 
   useEffect(() => {
     data && dispatch({ type: INITIATE, data: { AnalysisObj: data } });
@@ -320,24 +328,25 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   // useEffect(() => {
   //   data && data.length > 0 && dispatch({ type: SET_DATA, data });
   // }, [data]);
-    
-  useLayoutEffect(()=>{
-    setChartDimensions({width:chartArea.current.clientWidth,height:chartArea.current.clientHeight});
-    console.log(chartArea.current.clientWidth)
-    console.log(chartArea.current.clientHeight)
-  
-  },[data]);
+
+  useLayoutEffect(() => {
+    setChartDimensions({
+      width: refChartPanel.current.clientWidth,
+      height: refChartPanel.current.clientHeight,
+    });
+    console.log(refChartPanel.current.clientWidth);
+    console.log(refChartPanel.current.clientHeight);
+  }, [data]);
 
   useEffect(() => {
-    
-    dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
+    dispatch({ type: SET_WIDTH, width: refChartPanel.current.clientWidth });
   }, [width, height]);
 
   const mouseMove = useCallback((e) => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
-    const x = e.clientX - chartArea.current.getBoundingClientRect().left;
-    const y = e.clientY - chartArea.current.getBoundingClientRect().top;
+    const x = e.clientX - refChartPanel.current.getBoundingClientRect().left;
+    const y = e.clientY - refChartPanel.current.getBoundingClientRect().top;
     requestAnimationFrame(() => {
       setMouseCoordinates({ x, y });
     }, 60);
@@ -420,8 +429,8 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   }
 
   const handleSpiltPanelSizeChanged = useCallback((size) => {
-    setResizeEventStart(false)
-    console.log(chartArea.current.clientWidth);
+    setResizeEventStart(false);
+    console.log(refChartPanel.current.clientWidth);
     dispatch({ type: SET_WIDTH, width: size });
 
     // dispatch({ type: SET_WIDTH, width: size });
@@ -445,7 +454,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     }
   }, [verticalAlign, _data, _height]);
 
-
   return (
     <DispatchProvider value={dispatch}>
       <ChartContext.Provider
@@ -465,7 +473,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
         }}
       >
         <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
-          
           <div className="rq" onClick={toggle}>
             {!isFullscreen ? 'Request FullScreen' : 'Exit FullScreen'}
           </div>
@@ -518,12 +525,14 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
               defaultSize="80%"
               minSize="80%"
               onDragFinished={handleSpiltPanelSizeChanged}
-              onDragStarted={()=>{setResizeEventStart(true)}}
+              onDragStarted={() => {
+                setResizeEventStart(true);
+              }}
             >
-              <div ref={chartArea}>
+              <div ref={refChartPanel}>
                 {/* <Grid ref={chartArea} item xs={8}> */}
                 <svg
-                  onMouseMove={isResizeEventStart ? null :mouseMove}
+                  onMouseMove={isResizeEventStart ? null : mouseMove}
                   ref={refSVG}
                   onMouseLeave={mouseMoveLeave}
                   onClick={mouseClick}
@@ -589,9 +598,8 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                     )}
                   </g>
                 </svg>
-
               </div>
-              <div>
+              <div ref={refInformationPanel}>
                 {/* <Grid item xs={3}> */}
                 <InformationPanel
                   activeItem="spectraPanel"
