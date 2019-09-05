@@ -206,14 +206,15 @@ input[type=number] {
   /* padding: 6px 4px; */
   text-decoration: none;
   /* text-shadow: 0px 1px 0px #ffffff; */
-  display: flex;
-  align-items: center;
+  /* display: flex; */
+  /* align-items: center; */
 }
 
 .Resizer:after {
   content: '\2847';
   font-size: 16px;
-
+  position: absolute;
+  top: 50%;
   }
 
 .Resizer.vertical {
