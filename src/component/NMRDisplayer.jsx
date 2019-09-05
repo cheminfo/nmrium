@@ -54,7 +54,6 @@ import { DispatchProvider } from './context/DispatchContext';
 import SplitPane from 'react-split-pane';
 import MoleculePanel from './toolbar/MoleculePanel';
 import { useFullscreen, useToggle } from 'react-use';
-import { Molecule } from '../data/Molecule';
 
 function getFileExtension(file) {
   return file.name
@@ -111,6 +110,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
 
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
   const [chartDiemensions,setChartDimensions]= useState({});
+  const [isResizeEventStart,setResizeEventStart] = useState(false);
   // const [isFullScreen, setIsFullScreen] = useState(false);
   const [message, openMessage] = useState({
     isOpen: false,
@@ -325,11 +325,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     setChartDimensions({width:chartArea.current.clientWidth,height:chartArea.current.clientHeight});
     console.log(chartArea.current.clientWidth)
     console.log(chartArea.current.clientHeight)
-
-
-
-
-    console.log(new Molecule({key:"ddd"}));
   
   },[data]);
 
@@ -425,6 +420,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   }
 
   const handleSpiltPanelSizeChanged = useCallback((size) => {
+    setResizeEventStart(false)
     console.log(chartArea.current.clientWidth);
     dispatch({ type: SET_WIDTH, width: size });
 
@@ -522,11 +518,12 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
               defaultSize="80%"
               minSize="80%"
               onDragFinished={handleSpiltPanelSizeChanged}
+              onDragStarted={()=>{setResizeEventStart(true)}}
             >
               <div ref={chartArea}>
                 {/* <Grid ref={chartArea} item xs={8}> */}
                 <svg
-                  onMouseMove={mouseMove}
+                  onMouseMove={isResizeEventStart ? null :mouseMove}
                   ref={refSVG}
                   onMouseLeave={mouseMoveLeave}
                   onClick={mouseClick}
@@ -552,15 +549,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                           width={_width}
                           height={_height}
                         />
-                        {/* <ZoomTool  margin={margin}
-                        width={_width}
-                        height={height}
-                        domain={{ x: _xDomain, y: _yDomain }}
-                        originDomain={_originDomain}
-                        isActive={true}
-                        getScale={getScale}
-                        mode={_mode}
-                        /> */}
                         <BrushTool
                           margin={margin}
                           width={_width}
@@ -601,7 +589,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                     )}
                   </g>
                 </svg>
-                {/* </Grid> */}
+
               </div>
               <div>
                 {/* <Grid item xs={3}> */}

@@ -25,7 +25,6 @@ const BasicToolBar = ({
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-    
       if (e.key === 'f') {
         onFullZoomOut();
       } else if (e.key === 'v') {
@@ -33,7 +32,6 @@ const BasicToolBar = ({
       } else if (e.ctrlKey && e.key === 's') {
         handleSaveDataAsJSON();
         e.preventDefault();
-
       }
     },
     [onFullZoomOut, onViewChanged, handleSaveDataAsJSON],
@@ -41,10 +39,8 @@ const BasicToolBar = ({
 
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
-  }, [handleOnKeyPressed]);
 
-  useEffect(() => {
-    return () => {
+    return (_) => {
       document.removeEventListener('keydown', handleOnKeyPressed, false);
     };
   }, [handleOnKeyPressed]);

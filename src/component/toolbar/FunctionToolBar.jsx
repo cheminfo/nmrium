@@ -51,7 +51,7 @@ const FunctionToolBar = ({ defaultValue, activeSpectrum }) => {
   useEffect(() => {
     setOption(defaultValue);
     document.addEventListener('keydown', handleOnKeyPressed, false);
-    return () => {
+    return _=> {
       document.removeEventListener('keydown', handleOnKeyPressed, false);
     };
   }, [defaultValue, handleOnKeyPressed]);
