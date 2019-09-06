@@ -85,7 +85,7 @@ function loadFiles(acceptedFiles) {
             fileName.endsWith('.mol')
           )
         ) {
-          reject('The file must be jcamp file .dx,.jdx,.json file extention');
+          reject('The file must be jcamp file .dx,.jdx,.json file extension');
         } else {
           reader.onabort = (e) => reject('file reading was aborted', e);
           reader.onerror = (e) => reject('file reading has failed', e);
@@ -148,7 +148,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     ];
 
     for (let i = 0; i < uniqueFileExtensions.length; i++) {
-      const acceptedFilesbyExtensions = acceptedFiles.filter(
+      const acceptedFilesByExtensions = acceptedFiles.filter(
         (file) => getFileExtension(file) === uniqueFileExtensions[i],
       );
 
@@ -165,8 +165,8 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           break;
 
         case '.json':
-          if (acceptedFilesbyExtensions.length === 1) {
-            loadFiles(acceptedFilesbyExtensions).then(
+          if (acceptedFilesByExtensions.length === 1) {
+            loadFiles(acceptedFilesByExtensions).then(
               (files) => {
                 Analysis.build(JSON.parse(files[0].binary.toString())).then(
                   (AnalysisObj) => {
