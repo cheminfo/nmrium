@@ -245,7 +245,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   const infoList = [
     {
       id: 'spectraPanel',
-      title: 'spectra',
+      title: 'Spectra',
       component: <SpectrumListPanel data={_data} />,
     },
     {
