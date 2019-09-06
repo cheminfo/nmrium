@@ -40,3 +40,10 @@ The idea is to use the approach described in the bottom of the document:
 https://medium.com/@Elijah_Meeks/interactive-applications-with-react-d3-f76f7b3ebc71
 
 
+## Immutable javascript
+
+Please read the following blog post:
+
+https://dev.to/glebec/four-ways-to-immutability-in-javascript-3b3l
+
+And in particular we want to use immer: https://github.com/immerjs/immer
