@@ -15,25 +15,25 @@ import { useDropzone } from 'react-dropzone';
 import { Snackbar, Button } from '@material-ui/core';
 
 import './css/spectrum-chart.css';
+import { FaRegWindowMaximize } from 'react-icons/fa';
+import SplitPane from 'react-split-pane';
+import { useFullscreen, useToggle } from 'react-use';
+
+import { Analysis } from '../data/Analysis';
+
 import FunctionToolBar, { options } from './toolbar/FunctionToolBar';
 import ViewButton from './toolbar/ViewButton';
 import YAxis from './YAxis';
 import XAxis from './XAxis';
 import BrushTool from './tool/BrushTool';
 import CrossLinePointer from './tool/CrossLinePointer';
-
 import LinesSeries from './LinesSeries';
 import IntegralsSeries from './IntegralsSeries';
 import PeakNotationTool from './tool/PeakNotationTool';
 import { ChartContext } from './context/ChartContext';
 import { spectrumReducer } from './reducer/Reducer';
-
 import SpectrumListPanel from './panels/SpectrumListPanel';
 import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
-import { FaRegWindowMaximize } from 'react-icons/fa';
-
-import { Analysis } from '../data/Analysis';
-
 import {
   INITIATE,
   SET_WIDTH,
@@ -45,16 +45,13 @@ import {
   ADD_INTEGRAL,
   SET_DIMENSIONS,
 } from './reducer/Actions';
-
 import BasicToolBar from './toolbar/BasicToolBar';
 import HistoryToolBar from './toolbar/HistoryToolBar';
 import IntegralTool from './tool/IntegralTool';
 import InformationPanel from './panels/InformationPanel';
 import IntegralTablePanel from './panels/IntegralTablePanel';
 import { DispatchProvider } from './context/DispatchContext';
-import SplitPane from 'react-split-pane';
 import MoleculePanel from './panels/MoleculePanel';
-import { useFullscreen, useToggle } from 'react-use';
 
 function getFileExtension(file) {
   return file.name
@@ -69,8 +66,6 @@ function getFileName(file) {
 function loadFiles(acceptedFiles) {
   return Promise.all(
     [].map.call(acceptedFiles, (file) => {
-      console.log(acceptedFiles);
-
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onabort = (e) => reject('file reading was aborted', e);
@@ -125,21 +120,19 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
 
   // },[isFullscreen])
 
-  const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles);
-
+  const onDrop = useCallback((droppedFiles) => {
     const uniqueFileExtensions = [
-      ...new Set(acceptedFiles.map((file) => getFileExtension(file))),
+      ...new Set(droppedFiles.map((file) => getFileExtension(file))),
     ];
 
-    for (let i = 0; i < uniqueFileExtensions.length; i++) {
-      const acceptedFilesByExtensions = acceptedFiles.filter(
-        (file) => getFileExtension(file) === uniqueFileExtensions[i],
+    for (let extension of uniqueFileExtensions) {
+      const selectedFilesByExtensions = droppedFiles.filter(
+        (file) => getFileExtension(file) === extension,
       );
 
-      switch (uniqueFileExtensions[i]) {
+      switch (extension) {
         case '.mol':
-          loadFiles(acceptedFiles).then(
+          loadFiles(selectedFilesByExtensions).then(
             (files) => {
               dispatch({ type: LOAD_MOL_FILE, files });
             },
@@ -150,8 +143,8 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           break;
 
         case '.json':
-          if (acceptedFilesByExtensions.length === 1) {
-            loadFiles(acceptedFilesByExtensions).then(
+          if (selectedFilesByExtensions.length === 1) {
+            loadFiles(selectedFilesByExtensions).then(
               (files) => {
                 Analysis.build(JSON.parse(files[0].binary.toString())).then(
                   (AnalysisObj) => {
@@ -166,12 +159,11 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           } else {
             alert('You can add only one json file');
           }
-
           break;
 
         case '.dx':
         case '.jdx':
-          loadFiles(acceptedFiles).then(
+          loadFiles(selectedFilesByExtensions).then(
             (files) => {
               dispatch({ type: LOAD_JCAMP_FILE, files });
             },
@@ -277,9 +269,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
 
   useEffect(() => {
     function handleResize() {
-      console.log(height);
-      console.log(width);
-
       if (isFullscreen) {
         setTimeout(() => {
           dispatch({
