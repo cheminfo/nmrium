@@ -10,10 +10,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import { FaEye } from 'react-icons/fa';
+import { FaEye, FaRegTrashAlt } from 'react-icons/fa';
 import { FaMinus } from 'react-icons/fa';
 import { FaPaintBrush } from 'react-icons/fa';
-import { Button } from '@material-ui/core';
+import { Button, Tooltip } from '@material-ui/core';
 import '../css/spectrum-list.css';
 import { SketchPicker } from 'react-color';
 import { COLORS } from '../utility/ColorGenerator';
@@ -23,6 +23,7 @@ import {
   CHANGE_PEAKS_MARKERS_VISIBILITY,
   CHNAGE_ACTIVE_SPECTRUM,
   CHNAGE_SPECTRUM_COLOR,
+  DELETE_SPECTRA,
 } from '../reducer/Actions';
 
 function arePropsEqual(prevProps, nextProps) {
@@ -39,7 +40,7 @@ const ColorPicker = React.memo(
       <div
         style={{
           position: 'fixed',
-          left: colorPickerPosition.x-200,
+          left: colorPickerPosition.x - 200,
           top: colorPickerPosition.y,
           zIndex: 999999999,
         }}
@@ -213,19 +214,36 @@ const SpectrumListPanel = ({ data }) => {
     markersVisible,
     visible,
   ]);
-  return (
-    <Fragment>
-      <List className="spectrum-list">{ListItems}</List>
 
-      {isColorPickerDisplayed ? (
-        <ColorPicker
-          onMouseLeave={handleCloseColorPicker}
-          selectedSpectrumData={selectedSpectrumData}
-          colorPickerPosition={colorPickerPosition}
-          onColorChanged={handleOnColorChanged}
-        />
-      ) : null}
-    </Fragment>
+  const handleDelete = useCallback(() => {
+    dispatch({ type: DELETE_SPECTRA });
+  }, [dispatch]);
+
+  return (
+    // <Fragment>
+    <div className="spectrum-list-container">
+      <div className="spectrum-list-toolbar">
+        <Tooltip title="Delete Spectrum" placement="left-start">
+          <Button onClick={handleDelete}>
+            <FaRegTrashAlt />
+          </Button>
+        </Tooltip>
+        <p className="spectrum-list-counter">[ {data.length} ]</p>
+      </div>
+      <div>
+        <List className="spectrum-list">{ListItems}</List>
+
+        {isColorPickerDisplayed ? (
+          <ColorPicker
+            onMouseLeave={handleCloseColorPicker}
+            selectedSpectrumData={selectedSpectrumData}
+            colorPickerPosition={colorPickerPosition}
+            onColorChanged={handleOnColorChanged}
+          />
+        ) : null}
+      </div>
+    </div>
+    // </Fragment>
   );
 };
 

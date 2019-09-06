@@ -206,6 +206,11 @@ export class Analysis {
       : [];
   }
 
+  deleteDatum1DByID(id){
+    this.data1d = this.data1d.filter((d)=>d.id !== id);
+    console.log(this.data1d)
+  }
+
   undoFilter(pastChainFilters = []) {
     // let data = { x: this.original.x, y: this.original.re };
     this.data1d.forEach((ob) => {

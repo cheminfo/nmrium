@@ -26,6 +26,7 @@ import {
   ADD_MOLECULE,
   SET_MOLECULE,
   DELETE_MOLECULE,
+  DELETE_SPECTRA,
 } from './Actions';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
@@ -73,7 +74,7 @@ const initiate = (state, data) => {
   const _data = AnalysisObj.getData1d();
   const _molecules = AnalysisObj.getMolecules();
 
-  console.log(_data)
+  console.log(_data);
 
   const domain = getDomain(_data);
   const v_mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
@@ -180,9 +181,9 @@ const handleLoadJsonFile = (state, data) => {
   AnalysisObj = data.AnalysisObj;
   const _data = AnalysisObj.getData1d();
   const _molecules = AnalysisObj.getMolecules();
-  
+
   const _mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
- 
+
   const domain = getDomain(_data);
 
   return {
@@ -535,6 +536,30 @@ const handeleDeleteMolecule = (state, key) => {
   };
 };
 
+const handelDeleteSpectra = (state) => {
+  let _data = [...state._data];
+  const { _activeSpectrum } = state;
+
+  if (_activeSpectrum && _activeSpectrum.id) {
+    AnalysisObj.deleteDatum1DByID(_activeSpectrum.id);
+    _data = AnalysisObj.getData1d();
+    const domain = getDomain(_data);
+    const v_mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
+
+    return {
+      ...state,
+      _data,
+      _xDomain: domain.x,
+      _yDomain: domain.y,
+      _originDomain: domain,
+      _yDomains: domain._yDomains,
+      _mode: v_mode,
+    };
+  } else {
+    return state;
+  }
+};
+
 //////////////////////////////////////////////////////////////////////
 //////////////// start undo and redo functions ///////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -725,6 +750,9 @@ export const spectrumReducer = (state, action) => {
 
     case DELETE_MOLECULE:
       return handeleDeleteMolecule(state, action.key);
+
+    case DELETE_SPECTRA:
+      return handelDeleteSpectra(state);
 
     // undo and redo operation
     case UNDO:
