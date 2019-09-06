@@ -73,32 +73,17 @@ function loadFiles(acceptedFiles) {
 
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-
-        const fileName = file.name.toLowerCase();
-        console.log(fileName);
-
-        if (
-          !(
-            fileName.endsWith('.dx') ||
-            fileName.endsWith('.jdx') ||
-            fileName.endsWith('.json') ||
-            fileName.endsWith('.mol')
-          )
-        ) {
-          reject('The file must be jcamp file .dx,.jdx,.json file extension');
-        } else {
-          reader.onabort = (e) => reject('file reading was aborted', e);
-          reader.onerror = (e) => reject('file reading has failed', e);
-          reader.onload = () => {
-            if (reader.result) {
-              const binary = reader.result;
-              const name = getFileName(file);
-              const extension = getFileExtension(file);
-              resolve({ binary, name, extension });
-            }
-          };
-          reader.readAsBinaryString(file);
-        }
+        reader.onabort = (e) => reject('file reading was aborted', e);
+        reader.onerror = (e) => reject('file reading has failed', e);
+        reader.onload = () => {
+          if (reader.result) {
+            const binary = reader.result;
+            const name = getFileName(file);
+            const extension = getFileExtension(file);
+            resolve({ binary, name, extension });
+          }
+        };
+        reader.readAsBinaryString(file);
       });
     }),
   );
@@ -196,6 +181,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           );
           break;
         default:
+          alert('The file must be ( .dx,.jdx,.json,.mol ) extension');
           break;
       }
     }
@@ -429,21 +415,8 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
 
   const handleSpiltPanelSizeChanged = useCallback((size) => {
     setResizeEventStart(false);
-    console.log(refChartPanel.current.clientWidth);
     dispatch({ type: SET_WIDTH, width: size });
-
-    // dispatch({ type: SET_WIDTH, width: size });
-
-    // dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
   }, []);
-
-  // const handleChangeVerticalAlignments = () => {
-  //   if (verticalAlign !== 0) {
-  //     setVerticalAlign(0);
-  //   } else {
-  //     setVerticalAlign(Math.floor(-height / (_data.length + 2)));
-  //   }
-  // };
 
   const handleChangeVerticalAlignments = useCallback(() => {
     if (verticalAlign !== 0) {
@@ -481,30 +454,23 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
               ''
             )}
           </div>
-          {/* <div className="rq" onClick={toggle}>
 
-            {!isFullscreen ? 'Request FullScreen' : 'Exit FullScreen'}
-          </div> */}
           <div
             {...getRootProps()}
             className={isDragActive ? 'main-container over' : 'main-container'}
-            // style={{ width: `${width}px` }}
           >
             <input {...getInputProps()} />
             {isDragActive && (
               <div
                 className="drop-zoon-over"
-                style={{ width: `${_width}px`, height: `${_height}px` }}
+                style={{ width: `${_width + 41}px`, height: `${_height}px` }}
               >
                 <PublishRounded />
                 <p>Drop your files here</p>
               </div>
             )}
-            {/* <Grid container spacing={0}> */}
+
             <div className="toolbar-container">
-              {/* <div></div> */}
-              {/* <div></div> */}
-              {/* <Grid item xs={1} className="toolbar-container"> */}
               <FunctionToolBar
                 defaultValue={options.zoom.id}
                 data={_data}
@@ -525,9 +491,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                 activeSpectrum={_activeSpectrum}
               />
             </div>
-
-            {/* </Grid> */}
-            {/* <Grid item xs={10}> */}
             <SplitPane
               className="split-container"
               split="vertical"
@@ -539,7 +502,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
               }}
             >
               <div ref={refChartPanel}>
-                {/* <Grid ref={chartArea} item xs={8}> */}
                 <svg
                   onMouseMove={isResizeEventStart ? null : mouseMove}
                   ref={refSVG}
@@ -609,17 +571,12 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                 </svg>
               </div>
               <div ref={refInformationPanel}>
-                {/* <Grid item xs={3}> */}
                 <InformationPanel
                   activeItem="spectraPanel"
                   listItem={infoList}
                 />
-                {/* </Grid> */}
               </div>
             </SplitPane>
-            {/* </Grid> */}
-            {/* </Grid> */}
-
             <Snackbar
               anchorOrigin={{
                 vertical: 'bottom',
@@ -637,7 +594,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
             </Snackbar>
           </div>
         </div>
-        {/* </FullScreen> */}
       </ChartContext.Provider>
     </DispatchProvider>
   );

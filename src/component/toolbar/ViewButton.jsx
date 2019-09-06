@@ -48,7 +48,7 @@ const ViewButton = ({
   }, [activeSpectrum, data, defaultValue]);
 
   return (
-    <Tooltip
+    activeSpectrum && <Tooltip
       title={option ? 'Real Spectrum' : 'Imaginary Spectrum'}
       placement="right-start"
     >

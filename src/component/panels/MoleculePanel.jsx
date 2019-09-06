@@ -8,9 +8,6 @@ import '../css/molecule.css';
 import {
   Button,
   Tooltip,
-  Dialog,
-  DialogContent,
-  DialogActions,
 } from '@material-ui/core';
 
 import Slider from 'react-animated-slider-2';
@@ -21,8 +18,6 @@ import {
   SET_MOLECULE,
   DELETE_MOLECULE,
 } from '../reducer/Actions';
-
-
 
 export const StructureEditorModal = (props) => {
   const { onClose, open, selectedMolFile } = props;
@@ -36,7 +31,7 @@ export const StructureEditorModal = (props) => {
     } else {
       setMolfile(null);
     }
-  }, [selectedMolFile,open]);
+  }, [selectedMolFile, open]);
 
   const cb = useCallback(
     (newMolfile) => {
@@ -59,38 +54,92 @@ export const StructureEditorModal = (props) => {
     onClose();
   }, [dispatch, selectedMolFile, molfile, onClose]);
 
-  return (
-    <Dialog
-      onClose={handleClose}
-      aria-labelledby="simple-dialog-title"
-      open={open}
-      fullWidth={true}
-      maxWidth="md"
-    >
-      <DialogContent dividers>
-        <StructureEditor
-          molfile={molfile}
-          initialMolfile={molfile}
-          svgMenu={true}
-          fragment={false}
-          onChange={cb}
-        />
-      </DialogContent>
+  const styles = {
+    outerContainer: {
+      position: 'fixed',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      backgroundColor: 'rgba(255,255,255,0.8)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1
 
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Close
-        </Button>
-        <Button onClick={handleSave} color="primary">
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
+    },
+    innerContainer: {
+      padding: '10px 10px 0',
+      boxSizing: 'initial',
+      background: '#fff',
+      borderRadius: '4px',
+      boxShadow: '0 0 0 0, 0 8px 16px rgba(0,0,0,.30)',
+      display: 'flex',
+      flexDirection:"column"
+    },
+    footer: {
+      display: 'flex',
+      alignItems: 'flex-end',
+      justifyContent: 'flex-end',
+      margin:5
+    },
+  };
+
+  return (
+    open && (
+      <div style={styles.outerContainer} onClick={handleClose}>
+        <div
+          style={styles.innerContainer}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <StructureEditor
+            molfile={molfile}
+            initialMolfile={molfile}
+            svgMenu={true}
+            fragment={false}
+            onChange={cb}
+          />
+          <div style={styles.footer}>
+            <button className="modal-bt" onClick={handleClose}>Close</button>
+            <button className="modal-bt"onClick={handleSave}>Save</button>
+
+          </div>
+        </div>
+      </div>
+    )
+    // <Dialog
+    //   onClose={handleClose}
+    //   aria-labelledby="simple-dialog-title"
+    //   open={open}
+    //   fullWidth={true}
+    //   maxWidth="md"
+    // >
+    //   <DialogContent dividers>
+    //     <StructureEditor
+    //       molfile={molfile}
+    //       initialMolfile={molfile}
+    //       svgMenu={true}
+    //       fragment={false}
+    //       onChange={cb}
+    //     />
+    //   </DialogContent>
+
+    //   <DialogActions>
+    //     <Button onClick={handleClose} color="primary">
+    //       Close
+    //     </Button>
+    //     <Button onClick={handleSave} color="primary">
+    //       Save
+    //     </Button>
+    //   </DialogActions>
+    // </Dialog>
   );
 };
 
 const MoleculePanel = ({ molecules }) => {
-
   const refContainer = useRef();
 
   const [open, setOpen] = React.useState(false);
@@ -127,7 +176,6 @@ const MoleculePanel = ({ molecules }) => {
     }
   }, [dispatch, molecules, currentIndex]);
 
- 
   return (
     <div className="molecule-container">
       <div className="molecule-toolbar">
@@ -153,7 +201,7 @@ const MoleculePanel = ({ molecules }) => {
             +(currentIndex + 1) + ` / ` + molecules.length}{' '}
         </p>
       </div>
-      <div className="molecule-body" ref={refContainer}> 
+      <div className="molecule-body" ref={refContainer}>
         <Slider onSlideChange={(event) => setCurrentIndex(event.slideIndex)}>
           {molecules &&
             molecules.map((mol, index) => (
@@ -165,7 +213,12 @@ const MoleculePanel = ({ molecules }) => {
               >
                 {/* <p>( {index + 1} )</p> */}
                 <div>
-                  <MolfileSvgRenderer width={refContainer && refContainer.current.clientWidth-70} molfile={mol.molfile} />
+                  <MolfileSvgRenderer
+                    width={
+                      refContainer && refContainer.current.clientWidth - 70
+                    }
+                    molfile={mol.molfile}
+                  />
                 </div>
                 <p>
                   <MF mf={mol.mf} /> - {mol.mw.toFixed(2)}

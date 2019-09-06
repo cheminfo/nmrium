@@ -39,7 +39,7 @@ const ColorPicker = React.memo(
       <div
         style={{
           position: 'fixed',
-          left: colorPickerPosition.x,
+          left: colorPickerPosition.x-200,
           top: colorPickerPosition.y,
           zIndex: 999999999,
         }}
