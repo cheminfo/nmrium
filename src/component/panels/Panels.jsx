@@ -9,7 +9,7 @@ const Panels = () => {
   const infoList = [
     {
       id: 'spectraPanel',
-      title: 'spectra',
+      title: 'Spectra',
       component: <SpectrumListPanel />,
     },
     {

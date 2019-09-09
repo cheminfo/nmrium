@@ -54,21 +54,19 @@ const DropZone = (props) => {
   const dispatch = useDispatch();
 
   const onDrop = useCallback(
-    (acceptedFiles) => {
-      debug(acceptedFiles);
-
+    (droppedFiles) => {
       const uniqueFileExtensions = [
-        ...new Set(acceptedFiles.map((file) => getFileExtension(file))),
+        ...new Set(droppedFiles.map((file) => getFileExtension(file))),
       ];
 
-      for (let i = 0; i < uniqueFileExtensions.length; i++) {
-        const acceptedFilesByExtensions = acceptedFiles.filter(
-          (file) => getFileExtension(file) === uniqueFileExtensions[i],
+      for (let extension of uniqueFileExtensions) {
+        const selectedFilesByExtensions = droppedFiles.filter(
+          (file) => getFileExtension(file) === extension,
         );
 
-        switch (uniqueFileExtensions[i]) {
+        switch (extension) {
           case '.mol':
-            loadFiles(acceptedFiles).then(
+            loadFiles(selectedFilesByExtensions).then(
               (files) => {
                 dispatch({ type: LOAD_MOL_FILE, files });
               },
@@ -80,8 +78,8 @@ const DropZone = (props) => {
             break;
 
           case '.json':
-            if (acceptedFilesByExtensions.length === 1) {
-              loadFiles(acceptedFilesByExtensions).then(
+            if (selectedFilesByExtensions.length === 1) {
+              loadFiles(selectedFilesByExtensions).then(
                 // eslint-disable-next-line no-loop-func
                 (files) => {
                   // eslint-disable-next-line no-undef
@@ -105,7 +103,7 @@ const DropZone = (props) => {
 
           case '.dx':
           case '.jdx':
-            loadFiles(acceptedFiles).then(
+            loadFiles(selectedFilesByExtensions).then(
               // eslint-disable-next-line no-loop-func
               (files) => {
                 dispatch({ type: LOAD_JCAMP_FILE, files });
