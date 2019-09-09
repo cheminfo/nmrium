@@ -28,7 +28,6 @@ import IntegralsSeries from './IntegralsSeries';
 import PeakNotationTool from './tool/PeakNotationTool';
 import { ChartContext } from './context/ChartContext';
 import { spectrumReducer } from './reducer/Reducer';
-import SpectrumListPanel from './panels/SpectrumListPanel';
 import {
   INITIATE,
   SET_WIDTH,
@@ -37,9 +36,7 @@ import {
   SET_DIMENSIONS,
 } from './reducer/Actions';
 import IntegralTool from './tool/IntegralTool';
-import IntegralTablePanel from './panels/IntegralTablePanel';
 import { DispatchProvider } from './context/DispatchContext';
-import MoleculePanel from './panels/MoleculePanel';
 import DropZone from './DropZone';
 import ToolBar from './toolbar/ToolBar';
 import { options } from './toolbar/FunctionToolBar';
