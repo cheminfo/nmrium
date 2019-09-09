@@ -1,21 +1,20 @@
 import React, {
   useEffect,
   useState,
-  Fragment,
   useCallback,
   useMemo,
+  useContext,
 } from 'react';
 import propTypes from 'prop-types';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import { FaEye, FaRegTrashAlt } from 'react-icons/fa';
-import { FaMinus } from 'react-icons/fa';
-import { FaPaintBrush } from 'react-icons/fa';
+import { FaEye, FaRegTrashAlt, FaMinus, FaPaintBrush } from 'react-icons/fa';
 import { Button, Tooltip } from '@material-ui/core';
 import '../css/spectrum-list.css';
 import { SketchPicker } from 'react-color';
+
 import { COLORS } from '../utility/ColorGenerator';
 import { useDispatch } from '../context/DispatchContext';
 import {
@@ -25,8 +24,9 @@ import {
   CHNAGE_SPECTRUM_COLOR,
   DELETE_SPECTRA,
 } from '../reducer/Actions';
+import { ChartContext } from '../context/ChartContext';
 
-function arePropsEqual(prevProps, nextProps) {
+function arePropsEqual() {
   return true;
 }
 const ColorPicker = React.memo(
@@ -57,13 +57,14 @@ const ColorPicker = React.memo(
   arePropsEqual,
 );
 
-const SpectrumListPanel = ({ data }) => {
+const SpectrumListPanel = () => {
   const [activated, setActivated] = useState(null);
   const [visible, setVisible] = useState([]);
   const [markersVisible, setMarkersVisible] = useState([]);
   const [isColorPickerDisplayed, setIsColorPickerDisplayed] = useState(false);
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [colorPickerPosition, setColorPickerPosition] = useState(null);
+  const { data } = useContext(ChartContext);
 
   const dispatch = useDispatch();
   const handleChangeVisibility = useCallback(
@@ -120,8 +121,12 @@ const SpectrumListPanel = ({ data }) => {
   );
 
   useEffect(() => {
-    const visibleSpectrums = data.filter((d) => d.isVisible === true);
-    const visibleMarkers = data.filter((d) => d.isPeaksMarkersVisible === true);
+    const visibleSpectrums = data
+      ? data.filter((d) => d.isVisible === true)
+      : [];
+    const visibleMarkers = data
+      ? data.filter((d) => d.isPeaksMarkersVisible === true)
+      : [];
 
     setVisible(visibleSpectrums);
     setMarkersVisible(visibleMarkers);
@@ -158,9 +163,9 @@ const SpectrumListPanel = ({ data }) => {
     };
     return (
       data &&
-      data.map((d, i) => {
+      data.map((d) => {
         return (
-          <ListItem key={'slist' + d.id}>
+          <ListItem key={`slist${d.id}`}>
             <ListItemIcon>
               <Button onClick={() => handleChangeVisibility(d)}>
                 <FaEye
@@ -220,7 +225,6 @@ const SpectrumListPanel = ({ data }) => {
   }, [dispatch]);
 
   return (
-    // <Fragment>
     <div className="spectrum-list-container">
       <div className="spectrum-list-toolbar">
         <Tooltip title="Delete Spectrum" placement="left-start">
@@ -228,7 +232,7 @@ const SpectrumListPanel = ({ data }) => {
             <FaRegTrashAlt />
           </Button>
         </Tooltip>
-        <p className="spectrum-list-counter">[ {data.length} ]</p>
+        <p className="spectrum-list-counter">[ {data && data.length} ]</p>
       </div>
       <div>
         <List className="spectrum-list">{ListItems}</List>
@@ -243,12 +247,11 @@ const SpectrumListPanel = ({ data }) => {
         ) : null}
       </div>
     </div>
-    // </Fragment>
   );
 };
 
 SpectrumListPanel.propTypes = {
-  data: propTypes.array.isRequired,
+  // data: propTypes.array.isRequired,
 };
 
 export default SpectrumListPanel;

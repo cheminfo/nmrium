@@ -1,18 +1,21 @@
-import React, { useState, useEffect, useCallback, memo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  memo,
+  useContext,
+} from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from '../context/DispatchContext';
 import { TOGGLE_REAL_IMAGINARY_VISIBILITY } from '../reducer/Actions';
+import { ChartContext } from '../context/ChartContext';
 
-const ViewButton = ({
-  onChange,
-  defaultValue = true,
-  data,
-  activeSpectrum,
-}) => {
+const ViewButton = ({ defaultValue = true }) => {
   const [option, setOption] = useState();
   const [isDisabled, setDisabled] = useState(true);
   const dispatch = useDispatch();
+  const { data, activeSpectrum } = useContext(ChartContext);
 
   const handleShowSpectrumTypeChang = useCallback(
     () =>
@@ -47,8 +50,8 @@ const ViewButton = ({
     }
   }, [activeSpectrum, data, defaultValue]);
 
-  return (
-    activeSpectrum && <Tooltip
+  return activeSpectrum ? (
+    <Tooltip
       title={option ? 'Real Spectrum' : 'Imaginary Spectrum'}
       placement="right-start"
     >
@@ -60,7 +63,7 @@ const ViewButton = ({
         {option ? 'Re' : 'Im'}
       </Button>
     </Tooltip>
-  );
+  ) : null;
 };
 
 export default memo(ViewButton);

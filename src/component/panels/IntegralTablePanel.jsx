@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -6,6 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { ChartContext } from '../context/ChartContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,17 +23,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const IntegralTablePanel = ({ activeSpectrum, data }) => {
+const IntegralTablePanel = () => {
   const classes = useStyles();
   const [integrals, setIntegrals] = useState([]);
+  const { activeSpectrum, data } = useContext(ChartContext);
 
   useEffect(() => {
     const spectrum = activeSpectrum
       ? data.find((d) => d.id === activeSpectrum.id)
       : [];
     const hasData = spectrum && spectrum.integrals;
-    setIntegrals(hasData ?spectrum.integrals:[]);
-  }, [activeSpectrum,data]);
+    setIntegrals(hasData ? spectrum.integrals : []);
+  }, [activeSpectrum, data]);
 
   return activeSpectrum && data && integrals.length > 0 ? (
     <Paper className={classes.root}>
@@ -52,7 +54,7 @@ const IntegralTablePanel = ({ activeSpectrum, data }) => {
         </TableHead>
         <TableBody>
           {integrals.map((row) => (
-            <TableRow key={row.to + row.from+row.value}>
+            <TableRow key={row.to + row.from + row.value}>
               <TableCell
                 className={classes.cell}
                 align="center"

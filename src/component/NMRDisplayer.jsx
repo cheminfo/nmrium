@@ -1,3 +1,5 @@
+/* eslint-disable react/button-has-type */
+import * as d3 from 'd3';
 import React, {
   useEffect,
   useRef,
@@ -9,103 +11,49 @@ import React, {
   useLayoutEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import * as d3 from 'd3';
-import PublishRounded from '@material-ui/icons/PublishRounded';
-import { useDropzone } from 'react-dropzone';
-import { Snackbar, Button } from '@material-ui/core';
 
 import './css/spectrum-chart.css';
-import FunctionToolBar, { options } from './toolbar/FunctionToolBar';
-import ViewButton from './toolbar/ViewButton';
+import { useFullscreen, useToggle } from 'react-use';
+import SplitPane from 'react-split-pane';
+import { FaRegWindowMaximize } from 'react-icons/fa';
+
+import { Analysis } from '../data/Analysis';
+
 import YAxis from './YAxis';
 import XAxis from './XAxis';
 import BrushTool from './tool/BrushTool';
 import CrossLinePointer from './tool/CrossLinePointer';
-
 import LinesSeries from './LinesSeries';
 import IntegralsSeries from './IntegralsSeries';
 import PeakNotationTool from './tool/PeakNotationTool';
 import { ChartContext } from './context/ChartContext';
 import { spectrumReducer } from './reducer/Reducer';
-
 import SpectrumListPanel from './panels/SpectrumListPanel';
-import SnackbarContentWrapper, { MESSAGE_TYPE } from './SnackBarContentWraper';
-import { FaRegWindowMaximize } from 'react-icons/fa';
-
-import { Analysis } from '../data/Analysis';
-
 import {
   INITIATE,
   SET_WIDTH,
   PEAK_PICKING,
-  LOAD_JCAMP_FILE,
-  LOAD_MOL_FILE,
-  LOAD_JSON_FILE,
-  FULL_ZOOM_OUT,
   ADD_INTEGRAL,
   SET_DIMENSIONS,
 } from './reducer/Actions';
-
-import BasicToolBar from './toolbar/BasicToolBar';
-import HistoryToolBar from './toolbar/HistoryToolBar';
 import IntegralTool from './tool/IntegralTool';
-import InformationPanel from './panels/InformationPanel';
 import IntegralTablePanel from './panels/IntegralTablePanel';
 import { DispatchProvider } from './context/DispatchContext';
-import SplitPane from 'react-split-pane';
 import MoleculePanel from './panels/MoleculePanel';
-import { useFullscreen, useToggle } from 'react-use';
-
-function getFileExtension(file) {
-  return file.name
-    .substr(file.name.lastIndexOf('.'), file.name.length)
-    .toLowerCase();
-}
-
-function getFileName(file) {
-  return file.name.substr(0, file.name.lastIndexOf('.'));
-}
-
-function loadFiles(acceptedFiles) {
-  return Promise.all(
-    [].map.call(acceptedFiles, (file) => {
-      console.log(acceptedFiles);
-
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onabort = (e) => reject('file reading was aborted', e);
-        reader.onerror = (e) => reject('file reading has failed', e);
-        reader.onload = () => {
-          if (reader.result) {
-            const binary = reader.result;
-            const name = getFileName(file);
-            const extension = getFileExtension(file);
-            resolve({ binary, name, extension });
-          }
-        };
-        reader.readAsBinaryString(file);
-      });
-    }),
-  );
-}
+import DropZone from './DropZone';
+import ToolBar from './toolbar/ToolBar';
+import { options } from './toolbar/FunctionToolBar';
+import Panels from './panels/Panels';
 
 const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   const refSVG = useRef();
   const refChartPanel = useRef();
-  const refInformationPanel = useRef();
-
   const fullScreenRef = useRef();
 
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
   const [chartDiemensions, setChartDimensions] = useState({});
   const [isResizeEventStart, setResizeEventStart] = useState(false);
-  // const [isFullScreen, setIsFullScreen] = useState(false);
-  const [message, openMessage] = useState({
-    isOpen: false,
-    messageText: '',
-    messageType: MESSAGE_TYPE.success,
-  });
-  const [verticalAlign, setVerticalAlign] = useState(0);
+
   const [show, toggle] = useToggle(false);
   const isFullscreen = useFullscreen(fullScreenRef, show, {
     onClose: () => {
@@ -119,73 +67,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
       }, 100);
     },
   });
-
-  // useEffect(()=>{
-  //   dispatch({ type: SET_WIDTH, width: chartArea.current.clientWidth });
-
-  // },[isFullscreen])
-
-  const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles);
-
-    const uniqueFileExtensions = [
-      ...new Set(acceptedFiles.map((file) => getFileExtension(file))),
-    ];
-
-    for (let i = 0; i < uniqueFileExtensions.length; i++) {
-      const acceptedFilesByExtensions = acceptedFiles.filter(
-        (file) => getFileExtension(file) === uniqueFileExtensions[i],
-      );
-
-      switch (uniqueFileExtensions[i]) {
-        case '.mol':
-          loadFiles(acceptedFiles).then(
-            (files) => {
-              dispatch({ type: LOAD_MOL_FILE, files });
-            },
-            (err) => {
-              alert(err);
-            },
-          );
-          break;
-
-        case '.json':
-          if (acceptedFilesByExtensions.length === 1) {
-            loadFiles(acceptedFilesByExtensions).then(
-              (files) => {
-                Analysis.build(JSON.parse(files[0].binary.toString())).then(
-                  (AnalysisObj) => {
-                    dispatch({ type: LOAD_JSON_FILE, data: { AnalysisObj } });
-                  },
-                );
-              },
-              (err) => {
-                alert(err);
-              },
-            );
-          } else {
-            alert('You can add only one json file');
-          }
-
-          break;
-
-        case '.dx':
-        case '.jdx':
-          loadFiles(acceptedFiles).then(
-            (files) => {
-              dispatch({ type: LOAD_JCAMP_FILE, files });
-            },
-            (err) => {
-              alert(err);
-            },
-          );
-          break;
-        default:
-          alert('The file must be ( .dx,.jdx,.json,.mol ) extension');
-          break;
-      }
-    }
-  }, []);
 
   const initialState = {
     _data: [],
@@ -201,8 +82,8 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     _activeSpectrum: null,
     _mode: mode,
     _zoomFactor: {},
-    openMessage: handelOpenMessage,
     _molecules: [],
+    verticalAlign: 0,
   };
 
   const _history = {
@@ -229,57 +110,16 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     _height,
     _activeSpectrum,
     _yDomains,
-    history,
     _integrals,
     _mode,
     _zoomFactor,
     _molecules,
+    verticalAlign,
+    history,
   } = state;
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    noClick: true,
-  });
-  // useMemo(
-  //   () =>
-  const infoList = [
-    {
-      id: 'spectraPanel',
-      title: 'spectra',
-      component: <SpectrumListPanel data={_data} />,
-    },
-    {
-      id: 'informationPanel',
-      title: 'Information',
-      component: <p>information</p>,
-    },
-    {
-      id: 'integralsPanel',
-      title: 'Integrals',
-      component: (
-        <IntegralTablePanel data={_data} activeSpectrum={_activeSpectrum} />
-      ),
-    },
-    {
-      id: 'peaksPanel',
-      title: 'Peaks',
-      component: <p>Peaks</p>,
-    },
-    {
-      id: 'structuresPanel',
-      title: 'Structures',
-      component: <MoleculePanel molecules={_molecules} />,
-    },
-  ];
-  //   ,
-  //   [_activeSpectrum, _data, _molecules,isResizeEventStart],
-  // );
 
   useEffect(() => {
     function handleResize() {
-      console.log(height);
-      console.log(width);
-
       if (isFullscreen) {
         setTimeout(() => {
           dispatch({
@@ -297,30 +137,22 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           });
         }, 100);
       }
-
-      console.log(window.innerWidth, window.innerHeight);
     }
 
     window.addEventListener('resize', handleResize);
 
-    return (_) => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [chartDiemensions, height, width, isFullscreen, margin]);
 
   useEffect(() => {
     data && dispatch({ type: INITIATE, data: { AnalysisObj: data } });
   }, [data]);
 
-  // useEffect(() => {
-  //   data && data.length > 0 && dispatch({ type: SET_DATA, data });
-  // }, [data]);
-
   useLayoutEffect(() => {
     setChartDimensions({
       width: refChartPanel.current.clientWidth,
       height: refChartPanel.current.clientHeight,
     });
-    console.log(refChartPanel.current.clientWidth);
-    console.log(refChartPanel.current.clientHeight);
   }, [data]);
 
   useEffect(() => {
@@ -379,7 +211,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     margin,
   ]);
 
-  const mouseClick = (e) => {
+  const mouseClick = () => {
     if (_selectedTool === options.peakPicking.id) {
       dispatch({
         type: PEAK_PICKING,
@@ -395,36 +227,10 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     });
   }, []);
 
-  const handleFullZoomOut = useCallback((e) => {
-    dispatch({
-      type: FULL_ZOOM_OUT,
-    });
-  }, []);
-
-  function handelOpenMessage({ messageType, messageText }) {
-    openMessage({ messageType, messageText, isOpen: true });
-  }
-
-  function handleClose(event, reason) {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    openMessage({ ...message, isOpen: false });
-  }
-
   const handleSpiltPanelSizeChanged = useCallback((size) => {
     setResizeEventStart(false);
     dispatch({ type: SET_WIDTH, width: size });
   }, []);
-
-  const handleChangeVerticalAlignments = useCallback(() => {
-    if (verticalAlign !== 0) {
-      setVerticalAlign(0);
-    } else {
-      setVerticalAlign(Math.floor(-_height / (_data.length + 2)));
-    }
-  }, [verticalAlign, _data, _height]);
 
   return (
     <DispatchProvider value={dispatch}>
@@ -438,59 +244,25 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           yDomain: _yDomain,
           getScale: getScale,
           activeSpectrum: _activeSpectrum,
-          openMessage: handelOpenMessage,
           verticalAlign: verticalAlign,
           mode: _mode,
           zoomFactor: _zoomFactor,
+          history: history,
+          molecules: _molecules,
         }}
       >
         <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
           <div className="header-toolbar">
             {!isFullscreen ? (
-              <Button onClick={toggle}>
+              <button onClick={toggle}>
                 <FaRegWindowMaximize />
-              </Button>
+              </button>
             ) : (
               ''
             )}
           </div>
-
-          <div
-            {...getRootProps()}
-            className={isDragActive ? 'main-container over' : 'main-container'}
-          >
-            <input {...getInputProps()} />
-            {isDragActive && (
-              <div
-                className="drop-zoon-over"
-                style={{ width: `${_width + 41}px`, height: `${_height}px` }}
-              >
-                <PublishRounded />
-                <p>Drop your files here</p>
-              </div>
-            )}
-
-            <div className="toolbar-container">
-              <FunctionToolBar
-                defaultValue={options.zoom.id}
-                data={_data}
-                activeSpectrum={_activeSpectrum}
-              />
-              <HistoryToolBar history={history} />
-              <BasicToolBar
-                onFullZoomOut={handleFullZoomOut}
-                onViewChanged={handleChangeVerticalAlignments}
-                viewAlignValue={verticalAlign}
-                data={_data}
-                activeSpectrum={_activeSpectrum}
-              />
-
-              <ViewButton
-                defaultValue={true}
-                data={_data}
-                activeSpectrum={_activeSpectrum}
-              />
-            </div>
+          <DropZone>
+            <ToolBar />
             <SplitPane
               className="split-container"
               split="vertical"
@@ -570,29 +342,9 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                   </g>
                 </svg>
               </div>
-              <div ref={refInformationPanel}>
-                <InformationPanel
-                  activeItem="spectraPanel"
-                  listItem={infoList}
-                />
-              </div>
+              <Panels />
             </SplitPane>
-            <Snackbar
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              open={message.isOpen}
-              autoHideDuration={3000}
-              onClose={handleClose}
-            >
-              <SnackbarContentWrapper
-                onClose={handleClose}
-                variant={message.messageType}
-                message={message.messageText}
-              />
-            </Snackbar>
-          </div>
+          </DropZone>
         </div>
       </ChartContext.Provider>
     </DispatchProvider>

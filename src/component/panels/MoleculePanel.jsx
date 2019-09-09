@@ -1,16 +1,20 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+/* eslint-disable react/button-has-type */
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  useContext,
+} from 'react';
 import { MolfileSvgRenderer } from 'react-ocl';
 import { StructureEditor } from 'react-ocl/full';
 import { FaPlus, FaPaste, FaRegTrashAlt } from 'react-icons/fa';
 import { MF } from 'react-mf';
 
 import '../css/molecule.css';
-import {
-  Button,
-  Tooltip,
-} from '@material-ui/core';
-
+import { Button, Tooltip } from '@material-ui/core';
 import Slider from 'react-animated-slider-2';
+
 import 'react-animated-slider-2/build/horizontal.css';
 import { useDispatch } from '../context/DispatchContext';
 import {
@@ -18,6 +22,7 @@ import {
   SET_MOLECULE,
   DELETE_MOLECULE,
 } from '../reducer/Actions';
+import { ChartContext } from '../context/ChartContext';
 
 export const StructureEditorModal = (props) => {
   const { onClose, open, selectedMolFile } = props;
@@ -25,7 +30,6 @@ export const StructureEditorModal = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(selectedMolFile);
     if (selectedMolFile) {
       setMolfile(selectedMolFile.molfile);
     } else {
@@ -35,7 +39,6 @@ export const StructureEditorModal = (props) => {
 
   const cb = useCallback(
     (newMolfile) => {
-      console.log(newMolfile);
       setMolfile(newMolfile);
     },
     [setMolfile],
@@ -65,8 +68,7 @@ export const StructureEditorModal = (props) => {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      zIndex: 1
-
+      zIndex: 1,
     },
     innerContainer: {
       padding: '10px 10px 0',
@@ -75,13 +77,13 @@ export const StructureEditorModal = (props) => {
       borderRadius: '4px',
       boxShadow: '0 0 0 0, 0 8px 16px rgba(0,0,0,.30)',
       display: 'flex',
-      flexDirection:"column"
+      flexDirection: 'column',
     },
     footer: {
       display: 'flex',
       alignItems: 'flex-end',
       justifyContent: 'flex-end',
-      margin:5
+      margin: 5,
     },
   };
 
@@ -103,49 +105,32 @@ export const StructureEditorModal = (props) => {
             onChange={cb}
           />
           <div style={styles.footer}>
-            <button className="modal-bt" onClick={handleClose}>Close</button>
-            <button className="modal-bt"onClick={handleSave}>Save</button>
-
+            <button className="modal-bt" onClick={handleClose}>
+              Close
+            </button>
+            <button className="modal-bt" onClick={handleSave}>
+              Save
+            </button>
           </div>
         </div>
       </div>
     )
-    // <Dialog
-    //   onClose={handleClose}
-    //   aria-labelledby="simple-dialog-title"
-    //   open={open}
-    //   fullWidth={true}
-    //   maxWidth="md"
-    // >
-    //   <DialogContent dividers>
-    //     <StructureEditor
-    //       molfile={molfile}
-    //       initialMolfile={molfile}
-    //       svgMenu={true}
-    //       fragment={false}
-    //       onChange={cb}
-    //     />
-    //   </DialogContent>
-
-    //   <DialogActions>
-    //     <Button onClick={handleClose} color="primary">
-    //       Close
-    //     </Button>
-    //     <Button onClick={handleSave} color="primary">
-    //       Save
-    //     </Button>
-    //   </DialogActions>
-    // </Dialog>
   );
 };
 
-const MoleculePanel = ({ molecules }) => {
+const MoleculePanel = () => {
   const refContainer = useRef();
 
   const [open, setOpen] = React.useState(false);
   const [currentMolFile, setCurrentMolFile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
   const dispatch = useDispatch();
+
+  const { molecules } = useContext(ChartContext);
+
+  useEffect(() => {
+    console.log(molecules);
+  }, [molecules]);
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -160,14 +145,11 @@ const MoleculePanel = ({ molecules }) => {
     setOpen(true);
   }, []);
 
-  const handlePast = useCallback(
-    (event) => {
-      navigator.clipboard.readText().then((molfile) => {
-        dispatch({ type: ADD_MOLECULE, molfile });
-      });
-    },
-    [dispatch],
-  );
+  const handlePast = useCallback(() => {
+    navigator.clipboard.readText().then((molfile) => {
+      dispatch({ type: ADD_MOLECULE, molfile });
+    });
+  }, [dispatch]);
 
   const handleDelete = useCallback(() => {
     if (molecules[currentIndex] && molecules[currentIndex].key) {
@@ -198,7 +180,7 @@ const MoleculePanel = ({ molecules }) => {
           {' '}
           {molecules &&
             molecules.length > 0 &&
-            +(currentIndex + 1) + ` / ` + molecules.length}{' '}
+            `${+(currentIndex + 1)} / ${molecules.length}`}{' '}
         </p>
       </div>
       <div className="molecule-body" ref={refContainer}>
@@ -211,7 +193,6 @@ const MoleculePanel = ({ molecules }) => {
                   handleOpen(event, mol.key, mol.molfile)
                 }
               >
-                {/* <p>( {index + 1} )</p> */}
                 <div>
                   <MolfileSvgRenderer
                     width={

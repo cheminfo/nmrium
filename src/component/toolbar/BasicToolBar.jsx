@@ -1,46 +1,60 @@
-import React, { Fragment, useEffect, useCallback } from 'react';
+import React, { Fragment, useEffect, useCallback, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { FaSearchMinus, FaMinus, FaBars, FaDownload } from 'react-icons/fa';
 import { useDispatch } from '../context/DispatchContext';
-import { SAVE_DATA_AS_JSON } from '../reducer/Actions';
+import {
+  SAVE_DATA_AS_JSON,
+  FULL_ZOOM_OUT,
+  CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
+} from '../reducer/Actions';
+import { ChartContext } from '../context/ChartContext';
 
 const BasicToolBar = ({
-  viewAlignValue,
-  onFullZoomOut,
-  onViewChanged,
   isFullZoomButtonVisible = true,
   isFullZoomButtonEnabled = true,
   isViewButtonVisible = true,
   isSaveButtonVisible = true,
   isSaveButtonEnabled = true,
-  data,
 }) => {
   const dispatch = useDispatch();
+  const { data, verticalAlign } = useContext(ChartContext);
 
   const handleSaveDataAsJSON = useCallback(
     () => dispatch({ type: SAVE_DATA_AS_JSON }),
     [dispatch],
   );
 
+  const handleFullZoomOut = useCallback(() => {
+    dispatch({
+      type: FULL_ZOOM_OUT,
+    });
+  }, [dispatch]);
+
+  const handleChangeDisplayViewMode = useCallback(() => {
+    dispatch({
+      type: CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
+    });
+  }, [dispatch]);
+
   const handleOnKeyPressed = useCallback(
     (e) => {
       if (e.key === 'f') {
-        onFullZoomOut();
+        handleFullZoomOut();
       } else if (e.key === 'v') {
-        onViewChanged();
+        handleChangeDisplayViewMode();
       } else if (e.ctrlKey && e.key === 's') {
         handleSaveDataAsJSON();
         e.preventDefault();
       }
     },
-    [onFullZoomOut, onViewChanged, handleSaveDataAsJSON],
+    [handleFullZoomOut, handleSaveDataAsJSON, handleChangeDisplayViewMode],
   );
 
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
 
-    return (_) => {
+    return () => {
       document.removeEventListener('keydown', handleOnKeyPressed, false);
     };
   }, [handleOnKeyPressed]);
@@ -51,7 +65,7 @@ const BasicToolBar = ({
         <Tooltip title="Full Zoom Out ( Press f )" placement="right-start">
           <Button
             className="general-fun-bt"
-            onClick={onFullZoomOut}
+            onClick={handleFullZoomOut}
             disabled={isFullZoomButtonEnabled}
           >
             <FaSearchMinus />
@@ -64,10 +78,10 @@ const BasicToolBar = ({
           <div>
             <Button
               className="general-fun-bt"
-              onClick={onViewChanged}
+              onClick={handleChangeDisplayViewMode}
               disabled={data && data.length <= 1}
             >
-              {viewAlignValue !== 0 ? <FaMinus /> : <FaBars />}
+              {verticalAlign !== 0 ? <FaMinus /> : <FaBars />}
             </Button>
           </div>
         </Tooltip>

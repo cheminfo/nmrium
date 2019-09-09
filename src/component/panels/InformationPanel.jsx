@@ -78,7 +78,7 @@ const InformationPanel = ({ listItem, activeItem }) => {
           <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
         </ExpansionPanel>
       )),
-    [expanded, listItem,handleChange]
+    [expanded, listItem, handleChange],
   );
 
   return <div>{Accordion}</div>;

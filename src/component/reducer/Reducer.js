@@ -1,3 +1,12 @@
+import * as d3 from 'd3';
+
+import { SHIFT_X } from '../../data/data1d/filter1d/filter1d-type';
+import { Datum1D } from '../../data/data1d/Datum1D';
+import { Data1DManager } from '../../data/data1d/Data1DManager';
+import getColor from '../utility/ColorGenerator';
+import { Analysis } from '../../data/Analysis';
+
+import { UNDO, REDO, RESET } from './HistoryActions';
 import {
   INITIATE,
   SAVE_DATA_AS_JSON,
@@ -27,18 +36,8 @@ import {
   SET_MOLECULE,
   DELETE_MOLECULE,
   DELETE_SPECTRA,
+  CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
 } from './Actions';
-
-import { UNDO, REDO, RESET } from './HistoryActions';
-import { SHIFT_X } from '../../data/data1d/filter1d/filter1d-type';
-import { MESSAGE_TYPE } from '../SnackBarContentWraper';
-
-import * as d3 from 'd3';
-import { Datum1D } from '../../data/data1d/Datum1D';
-import { Data1DManager } from '../../data/data1d/Data1DManager';
-
-import getColor from '../utility/ColorGenerator';
-import { Analysis } from '../../data/Analysis';
 
 let AnalysisObj = new Analysis();
 
@@ -74,10 +73,8 @@ const initiate = (state, data) => {
   const _data = AnalysisObj.getData1d();
   const _molecules = AnalysisObj.getMolecules();
 
-  console.log(_data);
-
   const domain = getDomain(_data);
-  const v_mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
+  const Mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
 
   return {
     ...state,
@@ -87,7 +84,7 @@ const initiate = (state, data) => {
     _yDomain: domain.y,
     _originDomain: domain,
     _yDomains: domain._yDomains,
-    _mode: v_mode,
+    _mode: Mode,
   };
 };
 
@@ -126,7 +123,7 @@ const setData = (state, data) => {
   const domain = getDomain(_data);
 
   //change x axis from right to left or vice versa according to isFid value
-  const v_mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
+  const Mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
 
   return {
     ...state,
@@ -136,7 +133,7 @@ const setData = (state, data) => {
     _yDomain: domain.y,
     _originDomain: domain,
     _yDomains: domain._yDomains,
-    _mode: v_mode,
+    _mode: Mode,
   };
 };
 
@@ -164,7 +161,7 @@ const loadJcampFile = (state, files) => {
   const _data = AnalysisObj.getData1d();
 
   const domain = getDomain(_data);
-  const v_mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
+  const Mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
 
   return {
     ...state,
@@ -173,7 +170,7 @@ const loadJcampFile = (state, files) => {
     _yDomain: domain.y,
     _originDomain: domain,
     _yDomains: domain._yDomains,
-    _mode: v_mode,
+    _mode: Mode,
   };
 };
 
@@ -225,11 +222,11 @@ const getClosePeak = (xShift, mouseCoordinates, state) => {
 
   //get the active sepectrum data by looking for it by id
   const selectedSpectrumData = _data.find((d) => d.id === _activeSpectrum.id);
-  var maxIndex =
+  const maxIndex =
     selectedSpectrumData.x.findIndex(
       (number) => number >= zoon[_mode === 'RTL' ? 0 : 1],
     ) - 1;
-  var minIndex = selectedSpectrumData.x.findIndex(
+  const minIndex = selectedSpectrumData.x.findIndex(
     (number) => number >= zoon[_mode === 'RTL' ? 1 : 0],
   );
 
@@ -260,10 +257,7 @@ const addPeak = (state, mouseCoordinates) => {
       AnalysisObj.getDatum1D(spectrumID).setPeaks(_data[index].peaks);
     }
   } else {
-    state.openMessage({
-      messageType: MESSAGE_TYPE.error,
-      messageText: 'you must select spectrum from the spectrum list',
-    });
+    alert('you must select spectrum from the spectrum list');
   }
 
   // return { ...state, _peakNotations: points };
@@ -398,7 +392,7 @@ const zoomOut = (state) => {
 
 const handelSpectrumVisibility = (state, data) => {
   const newData = [...state._data];
-  const v_data = newData.map((d, i) => {
+  const Data = newData.map((d, i) => {
     const result = data.findIndex((sData) => sData.id === d.id);
     if (result !== -1) {
       AnalysisObj.getDatum1D(d.id).isVisible = true;
@@ -409,7 +403,7 @@ const handelSpectrumVisibility = (state, data) => {
     }
   });
 
-  return { ...state, _data: v_data };
+  return { ...state, _data: Data };
 };
 
 const handleChangePeaksMarkersVisibility = (state, data) => {
@@ -457,43 +451,42 @@ const handleToggleRealImaginaryVisibility = (state, isRealSpectrumVisible) => {
     const ob = AnalysisObj.getDatum1D(activeSpectrumId);
 
     if (ob) {
-      const v_data = [...state._data];
+      const Data = [...state._data];
 
       const reY = ob.getReal().y;
       const imY = ob.getImaginary().y;
       const index = state._data.findIndex((d) => d.id === activeSpectrumId);
-      ob.setIsRealSpectrumVisible(!v_data[index]);
+      ob.setIsRealSpectrumVisible(!Data[index]);
 
-      v_data[index].isRealSpectrumVisible = !v_data[index]
-        .isRealSpectrumVisible;
+      Data[index].isRealSpectrumVisible = !Data[index].isRealSpectrumVisible;
       ob.setIsRealSpectrumVisible();
       // isRealSpectrumVisible
-      if (v_data[index].isRealSpectrumVisible) {
+      if (Data[index].isRealSpectrumVisible) {
         if (reY !== null && reY !== undefined) {
-          v_data[index].y = reY;
-          const domain = getDomain(v_data);
+          Data[index].y = reY;
+          const domain = getDomain(Data);
 
           return {
             ...state,
             _xDomain: domain.x,
             _yDomain: domain.y,
             _yDomains: domain._yDomains,
-            _data: v_data,
+            _data: Data,
           };
         } else {
           return state;
         }
       } else {
         if (imY !== null && imY !== undefined) {
-          v_data[index].y = imY;
-          const domain = getDomain(v_data);
+          Data[index].y = imY;
+          const domain = getDomain(Data);
 
           return {
             ...state,
             _xDomain: domain.x,
             _yDomain: domain.y,
             _yDomains: domain._yDomains,
-            _data: v_data,
+            _data: Data,
           };
         } else {
           return state;
@@ -544,7 +537,7 @@ const handelDeleteSpectra = (state) => {
     AnalysisObj.deleteDatum1DByID(_activeSpectrum.id);
     _data = AnalysisObj.getData1d();
     const domain = getDomain(_data);
-    const v_mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
+    const Mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
 
     return {
       ...state,
@@ -553,11 +546,19 @@ const handelDeleteSpectra = (state) => {
       _yDomain: domain.y,
       _originDomain: domain,
       _yDomains: domain._yDomains,
-      _mode: v_mode,
+      _mode: Mode,
     };
   } else {
     return state;
   }
+};
+
+const handleChangeSpectrumDisplayMode = (state) => {
+  const { _height, _data, verticalAlign } = state;
+  const VerticalAlign =
+    verticalAlign !== 0 ? 0 : Math.floor(-_height / (_data.length + 2));
+
+  return { ...state, verticalAlign: VerticalAlign };
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -670,7 +671,6 @@ const handleHistoryReset = (state, action) => {
 //////////////////////////////////////////////////////////////////////
 
 export const spectrumReducer = (state, action) => {
-  console.log(action);
   switch (action.type) {
     case INITIATE:
       return initiate(state, action.data);
@@ -741,6 +741,9 @@ export const spectrumReducer = (state, action) => {
         ...state,
         _zoomFactor: action.zoomFactor,
       };
+
+    case CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE:
+      return handleChangeSpectrumDisplayMode(state);
 
     case ADD_MOLECULE:
       return handelAddMolecule(state, action.molfile);

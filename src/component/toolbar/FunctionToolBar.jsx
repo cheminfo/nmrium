@@ -1,12 +1,20 @@
-import React, { useState, useEffect, useCallback, memo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  memo,
+  useContext,
+} from 'react';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ZoomIn from '@material-ui/icons/ZoomIn';
 import Timeline from '@material-ui/icons/Timeline';
 import Tooltip from '@material-ui/core/Tooltip';
 import ShowChart from '@material-ui/icons/ShowChart';
+
 import { useDispatch } from '../context/DispatchContext';
 import { SET_SELECTED_TOOL } from '../reducer/Actions';
+import { ChartContext } from '../context/ChartContext';
 
 export let options = {
   zoom: { id: 'zoom', label: 'Zoom' },
@@ -14,13 +22,15 @@ export let options = {
   integral: { id: 'integral', label: 'integral Tool' },
 };
 
-const FunctionToolBar = ({ defaultValue, activeSpectrum }) => {
+const FunctionToolBar = ({ defaultValue }) => {
   const [option, setOption] = useState();
   const dispatch = useDispatch();
   const handleChangeOption = useCallback(
     (selectedTool) => dispatch({ type: SET_SELECTED_TOOL, selectedTool }),
     [dispatch],
   );
+
+  const { activeSpectrum } = useContext(ChartContext);
 
   const handleChange = useCallback(
     (event, selectedOption) => {
@@ -51,7 +61,7 @@ const FunctionToolBar = ({ defaultValue, activeSpectrum }) => {
   useEffect(() => {
     setOption(defaultValue);
     document.addEventListener('keydown', handleOnKeyPressed, false);
-    return _=> {
+    return () => {
       document.removeEventListener('keydown', handleOnKeyPressed, false);
     };
   }, [defaultValue, handleOnKeyPressed]);
@@ -66,7 +76,7 @@ const FunctionToolBar = ({ defaultValue, activeSpectrum }) => {
       >
         <ToggleButton key={1} value={options.zoom.id}>
           <Tooltip
-            title={options.zoom.label + ' ( Press z )'}
+            title={`${options.zoom.label} ( Press z )`}
             placement="right-start"
           >
             <ZoomIn />
@@ -79,7 +89,7 @@ const FunctionToolBar = ({ defaultValue, activeSpectrum }) => {
           disabled={!activeSpectrum}
         >
           <Tooltip
-            title={options.peakPicking.label + ' ( Press p )'}
+            title={`${options.peakPicking.label} ( Press p )`}
             placement="right-start"
           >
             <Timeline />
@@ -92,7 +102,7 @@ const FunctionToolBar = ({ defaultValue, activeSpectrum }) => {
           disabled={!activeSpectrum}
         >
           <Tooltip
-            title={options.integral.label + ' ( Press i )'}
+            title={`${options.integral.label} ( Press i )`}
             placement="right-start"
           >
             <ShowChart />
