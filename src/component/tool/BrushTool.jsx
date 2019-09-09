@@ -1,8 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 
-// import CrossLinePointer from './CrossLinePointer';
 import { event as currentEvent } from 'd3-selection';
 
 import { dispatchContext } from '../context/DispatchContext';
@@ -170,13 +169,11 @@ class BrushTool extends Component {
     const { isActive } = this.props;
 
     return (
-      <Fragment>
-        <g
-          className={isActive ? 'brush-container brush ' : ' brush-container'}
-          onDoubleClick={this.reset}
-          ref={(ref)=>this.refBrush = ref}
-        ></g>
-      </Fragment>
+      <g
+        className={isActive ? 'brush-container brush ' : ' brush-container'}
+        onDoubleClick={this.reset}
+        ref={(ref) => (this.refBrush = ref)}
+      />
     );
   }
 }
@@ -201,11 +198,8 @@ BrushTool.propTypes = {
     bottom: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
   }),
-  domain: PropTypes.object.isRequired,
+  // domain: PropTypes.object.isRequired,
   originDomain: PropTypes.object.isRequired,
-  onXAxisDomainUpdate: PropTypes.func,
-  onYAxisDomainUpdate: PropTypes.func,
-  onDomainReset: PropTypes.func,
   getScale: PropTypes.func.isRequired,
 };
 

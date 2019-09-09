@@ -439,7 +439,7 @@ const handelChangeSpectrumColor = (state, { id, color }) => {
   const index = data.findIndex((d) => d.id === id);
   if (index !== -1) {
     data[index].color = color;
-    AnalysisObj.getDatum1D(id).color = true;
+    AnalysisObj.getDatum1D(id).display.color = color;
   }
 
   return { ...state, _data: data };

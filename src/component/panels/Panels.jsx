@@ -1,9 +1,8 @@
-import React, { useEffect, useContext } from 'react';
+import React from 'react';
 import InformationPanel from './InformationPanel';
 import SpectrumListPanel from './SpectrumListPanel';
 import IntegralTablePanel from './IntegralTablePanel';
 import MoleculePanel from './MoleculePanel';
-import { ChartContext } from '../context/ChartContext';
 
 const Panels = () => {
   const infoList = [

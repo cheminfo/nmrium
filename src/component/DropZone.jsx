@@ -1,18 +1,16 @@
 import React, { useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import PublishRounded from '@material-ui/icons/PublishRounded';
-
-import { useDispatch } from './context/DispatchContext';
-
 import debug from 'debug';
+import { Analysis } from '../data/Analysis';
 import {
   LOAD_MOL_FILE,
   LOAD_JSON_FILE,
   LOAD_JCAMP_FILE,
 } from './reducer/Actions';
-
-import './css/drop-zone.css';
+import { useDispatch } from './context/DispatchContext';
 import { ChartContext } from './context/ChartContext';
+import './css/drop-zone.css';
 
 const logger = new debug('development');
 
@@ -82,7 +80,6 @@ const DropZone = (props) => {
               loadFiles(selectedFilesByExtensions).then(
                 // eslint-disable-next-line no-loop-func
                 (files) => {
-                  // eslint-disable-next-line no-undef
                   Analysis.build(JSON.parse(files[0].binary.toString())).then(
                     (AnalysisObj) => {
                       dispatch({ type: LOAD_JSON_FILE, data: { AnalysisObj } });
@@ -104,7 +101,6 @@ const DropZone = (props) => {
           case '.dx':
           case '.jdx':
             loadFiles(selectedFilesByExtensions).then(
-              // eslint-disable-next-line no-loop-func
               (files) => {
                 dispatch({ type: LOAD_JCAMP_FILE, files });
               },
