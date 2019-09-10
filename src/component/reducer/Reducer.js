@@ -1,3 +1,5 @@
+import { log } from 'util';
+
 import * as d3 from 'd3';
 
 import { SHIFT_X } from '../../data/data1d/filter1d/filter1d-type';
@@ -69,6 +71,7 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin, _mode }) => {
 
 const initiate = (state, data) => {
   AnalysisObj = data.AnalysisObj;
+  log('app:Reducer');
 
   const _data = AnalysisObj.getData1d();
   const _molecules = AnalysisObj.getMolecules();
@@ -106,7 +109,7 @@ const saveDataAsJson = (state) => {
       }),
     );
   } catch (e) {
-    console.log(e);
+    log(e);
   }
 
   return state;
@@ -202,7 +205,7 @@ const handleLoadMOLFile = (state, files) => {
     AnalysisObj.addMolfile(files[i].binary.toString());
   }
 
-  console.log(AnalysisObj.getMolecules());
+  log(AnalysisObj.getMolecules());
 
   const _molecules = AnalysisObj.getMolecules();
 
@@ -309,7 +312,7 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   //add the filter action at the history
   const history = handleHistorySet(state.history, filterOption);
 
-  console.log(history);
+  log(history);
 
   activeObject.applyShiftXFilter(shiftValue);
   //add to undo history
@@ -322,8 +325,8 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
 
   data[spectrumIndex] = { ...data[spectrumIndex], x: XYData.x, y: XYData.y };
 
-  console.log(data[spectrumIndex]);
-  console.log(data);
+  log(data[spectrumIndex]);
+  log(data);
 
   const domain = getDomain(data);
 
@@ -408,9 +411,9 @@ const handelSpectrumVisibility = (state, data) => {
 
 const handleChangePeaksMarkersVisibility = (state, data) => {
   const newData = [...state._data];
-  const result = newData.map((d, i) => {
-    const result = data.findIndex((activeData) => activeData.id === d.id);
-    if (result !== -1) {
+  const result = newData.map((d) => {
+    const val = data.findIndex((activeData) => activeData.id === d.id);
+    if (val !== -1) {
       AnalysisObj.getDatum1D(d.id).isPeaksMarkersVisible = true;
       return { ...d, isPeaksMarkersVisible: true };
     } else {
@@ -500,12 +503,7 @@ const handleToggleRealImaginaryVisibility = (state, isRealSpectrumVisible) => {
 
 const handelAddMolecule = (state, molfile) => {
   AnalysisObj.addMolfile(molfile);
-
-  console.log(AnalysisObj.getMolecules());
-
   const _molecules = AnalysisObj.getMolecules();
-  console.log(_molecules);
-
   return {
     ...state,
     _molecules,
@@ -568,7 +566,7 @@ const handleChangeSpectrumDisplayMode = (state) => {
 const handleHistoryUndo = (state) => {
   const { past, present, future } = state.history;
   const previous = past[past.length - 1];
-  console.log(present);
+  log(present);
   const newPast = past.slice(0, past.length - 1);
   const newfuture = [present, ...future];
 
@@ -631,7 +629,7 @@ const handleHistoryRedo = (state) => {
 };
 
 const handleHistorySet = (state, action) => {
-  console.log(state);
+  log(state);
   const newValue = action;
 
   const { past, present } = state;

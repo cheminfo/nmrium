@@ -1,5 +1,5 @@
-import baseline from './baseline';
-import autoPeakPicking from './autoPeakPicking';
+// import baseline from './baseline';
+// import autoPeakPicking from './autoPeakPicking';
 import applyFilter from './filter1d/filter';
 
 import { SHIFT_X } from './filter1d/filter1d-type';
@@ -25,7 +25,6 @@ export class Datum1D {
     * annotations: [],
     * 
 */
-   console.log(options.source);
     this.id =
       options.id ||
       Math.random()
@@ -100,11 +99,11 @@ export class Datum1D {
     return this.integrals;
   }
 
-  baseline(options) {
+  baseline(option = {}) {
     // let result = baseline(this.data.x, this.data.re, this.data.im);
   }
 
-  applyAutoPeakPicking(options) {
+  applyAutoPeakPicking(option = {}) {
     // let result = autoPeakPicking(this.data.x, this.data.re);
   }
 
@@ -144,7 +143,7 @@ export class Datum1D {
       source: {
         jcamp: this.source.jcamp,
         jcampURL: this.source.jcampURL,
-        original: (this.source.jcampURL)?[]:this.source.original,
+        original: this.source.jcampURL ? [] : this.source.original,
       },
       display: this.display,
       info: this.info,

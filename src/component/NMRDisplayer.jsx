@@ -6,7 +6,6 @@ import React, {
   useCallback,
   useReducer,
   useState,
-  Fragment,
   useMemo,
   useLayoutEffect,
 } from 'react';
@@ -282,15 +281,10 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                       </clipPath>
                     </defs>
 
+                    <LinesSeries data={_data} />
+                    <IntegralsSeries data={_data} integrals={_integrals} />
                     <g className="container">
-                      {/* {_xDomain && _yDomain && ( */}
-                      <Fragment>
-                        <LinesSeries data={_data} />
-                        <IntegralsSeries data={_data} integrals={_integrals} />
-                      </Fragment>
-                      {/* )} */}
                       <XAxis showGrid={true} mode={_mode} />
-
                       <YAxis label="PPM" show={false} />
                       <Tools
                         selectedTool={_selectedTool}
