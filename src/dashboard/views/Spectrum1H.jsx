@@ -30,9 +30,7 @@ const height = 400;
 const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
-
   return new Promise((resolve, reject) => {
-
     fetch('/json-files/1HSpectrum.json')
       .then((response) => checkStatus(response) && response.json())
       .then((data) => {
@@ -42,7 +40,6 @@ function loadData() {
       })
       .catch((err) => {
         reject(err);
-        console.error(err);
       }); // Never forget the final catch!
   });
 }
@@ -54,12 +51,11 @@ function checkStatus(response) {
   return response;
 }
 
-const Spectrum1H = (props) => {
+const Spectrum1H = () => {
   const [data, setData] = useState();
 
   useEffect(() => {
     loadData().then((d) => {
-      console.log(d);
       setData(d);
     });
   }, []);

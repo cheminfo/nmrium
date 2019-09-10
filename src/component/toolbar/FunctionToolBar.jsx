@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  memo,
-  useContext,
-} from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ZoomIn from '@material-ui/icons/ZoomIn';
@@ -14,7 +8,7 @@ import ShowChart from '@material-ui/icons/ShowChart';
 
 import { useDispatch } from '../context/DispatchContext';
 import { SET_SELECTED_TOOL } from '../reducer/Actions';
-import { ChartContext } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext';
 
 export let options = {
   zoom: { id: 'zoom', label: 'Zoom' },
@@ -30,7 +24,7 @@ const FunctionToolBar = ({ defaultValue }) => {
     [dispatch],
   );
 
-  const { activeSpectrum } = useContext(ChartContext);
+  const { activeSpectrum } = useChartData();
 
   const handleChange = useCallback(
     (event, selectedOption) => {

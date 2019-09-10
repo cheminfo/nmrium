@@ -579,7 +579,7 @@ const handleHistoryUndo = (state) => {
   let resultData = AnalysisObj.getData1d();
 
   const domain = getDomain(resultData);
-  const v_history = {
+  const history = {
     past: newPast,
     present: previous,
     future: newfuture,
@@ -593,7 +593,7 @@ const handleHistoryUndo = (state) => {
     _xDomain: domain.x,
     _yDomain: domain.y,
     _originDomain: domain,
-    history: v_history,
+    history,
   };
 };
 
@@ -612,7 +612,7 @@ const handleHistoryRedo = (state) => {
   AnalysisObj.redoFilter(next);
   let data = AnalysisObj.getData1d();
   const domain = getDomain(data);
-  const v_history = {
+  const history = {
     past: newPast,
     present: next,
     future: newFuture,
@@ -626,7 +626,7 @@ const handleHistoryRedo = (state) => {
     _xDomain: domain.x,
     _yDomain: domain.y,
     _originDomain: domain,
-    history: v_history,
+    history,
   };
 };
 

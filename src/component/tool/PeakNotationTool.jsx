@@ -3,18 +3,35 @@ import React, {
   useRef,
   useState,
   Fragment,
-  useContext,
   useCallback,
   useMemo,
   useLayoutEffect,
 } from 'react';
 import PropTypes from 'prop-types';
+
 import '../css/peak-notification-tool.css';
-import { ChartContext } from '../context/ChartContext';
 import { FaMinus } from 'react-icons/fa';
+
+import { useChartData } from '../context/ChartContext';
 import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { useDispatch } from '../context/DispatchContext';
 import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
+
+const styles = {
+  deleteButton: {
+    backgroundColor: 'red',
+    color: 'white',
+    border: 0,
+    padding: 0,
+    width: 15,
+    height: 15,
+    borderRadius: 15,
+    position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+};
 
 export const NotationTemplate = ({
   id,
@@ -87,7 +104,6 @@ export const NotationTemplate = ({
   const handleSelectPeakNotation = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
-    // onSelected(id);
     setIsSelected(true);
   }, []);
 
@@ -111,13 +127,6 @@ export const NotationTemplate = ({
         }}
         onMouseLeave={handleOnMouseLeaveNotation}
       >
-        {/* <rect
-        x="0"
-        y="-30"
-        width={containerSize.width + 10}
-        height={containerSize.height}
-      /> */}
-
         <line x1="0" x2="0" y1="-5" y2={-30} stroke={color} strokeWidth="1" />
         <text
           ref={refText}
@@ -129,9 +138,6 @@ export const NotationTemplate = ({
         >
           {isSelected ? value : parseFloat(value).toFixed(decimalFraction)}
         </text>
-
-        {/* <circle cx="0" cy="0" r="1" fill="red" /> */}
-
         <foreignObject
           x="0"
           y="-30"
@@ -174,19 +180,9 @@ export const NotationTemplate = ({
                   handleDeleteNotation(e, { xIndex: id, id: spectrumID })
                 }
                 style={{
-                  backgroundColor: 'red',
-                  color: 'white',
-                  border: 0,
-                  padding: 0,
-                  width: 15,
-                  height: 15,
-                  borderRadius: 15,
-                  position: 'absolute',
+                  ...styles.deleteButton,
                   left: containerSize.width,
                   top: containerSize.height + 7,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
                 }}
               >
                 <FaMinus />
@@ -194,25 +190,13 @@ export const NotationTemplate = ({
             )}
           </div>
         </foreignObject>
-        {/* 
-      <rect
-        x="0"
-        y="0"
-        width={containerSize.width + 10}
-        height={containerSize.height + 30}
-        onMouseEnter={handleMouseOverPeakNotation}
-        onMouseOut={handleMouseOutPeakNotation}
-        className="notifcate-selected"
-      /> */}
       </g>
     </Fragment>
   );
 };
 
 const PeakNotationTool = ({ position, showCursorLabel }) => {
-  const { getScale, data, activeSpectrum, verticalAlign } = useContext(
-    ChartContext,
-  );
+  const { getScale, data, activeSpectrum, verticalAlign } = useChartData();
 
   const getXValue = (xVal) => {
     const spectrumData = data.find((d) => d.id === activeSpectrum.id);
@@ -303,15 +287,4 @@ PeakNotationTool.contextTypes = {
   }),
   xDomain: PropTypes.array,
   yDomain: PropTypes.array,
-  onPeakValueChange: PropTypes.func,
-  onDeleteNotation: PropTypes.func,
-};
-
-PeakNotationTool.defaultProps = {
-  onPeakValueChange: () => {
-    return null;
-  },
-  onDeleteNotation: () => {
-    return null;
-  },
 };

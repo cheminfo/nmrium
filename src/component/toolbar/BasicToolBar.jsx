@@ -1,14 +1,15 @@
-import React, { Fragment, useEffect, useCallback, useContext } from 'react';
+import React, { Fragment, useEffect, useCallback } from 'react';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { FaSearchMinus, FaMinus, FaBars, FaDownload } from 'react-icons/fa';
+
 import { useDispatch } from '../context/DispatchContext';
 import {
   SAVE_DATA_AS_JSON,
   FULL_ZOOM_OUT,
   CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
 } from '../reducer/Actions';
-import { ChartContext } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext';
 
 const BasicToolBar = ({
   isFullZoomButtonVisible = true,
@@ -18,7 +19,7 @@ const BasicToolBar = ({
   isSaveButtonEnabled = true,
 }) => {
   const dispatch = useDispatch();
-  const { data, verticalAlign } = useContext(ChartContext);
+  const { data, verticalAlign } = useChartData();
 
   const handleSaveDataAsJSON = useCallback(
     () => dispatch({ type: SAVE_DATA_AS_JSON }),

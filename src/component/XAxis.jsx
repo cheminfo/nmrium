@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useContext, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import { ChartContext } from './context/ChartContext';
+
+import { useChartData } from './context/ChartContext';
+import { useDimension } from './context/DimensionsContext';
 
 const XAxis = ({ label, show, showGrid, mode }) => {
-  const { height, margin, xDomain, width, getScale } = useContext(ChartContext);
+  const { height, margin, width } = useDimension();
+  const { xDomain, getScale } = useChartData();
   const refAxis = useRef();
   const refGrid = useRef();
 

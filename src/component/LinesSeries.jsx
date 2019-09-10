@@ -1,19 +1,17 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
-import { ChartContext } from './context/ChartContext';
+
+import { useChartData } from './context/ChartContext';
 
 export default function LinesSeries() {
   const {
-    width,
-    height,
-    margin,
     xDomain,
     getScale,
     verticalAlign,
     activeSpectrum,
     data,
-  } = useContext(ChartContext);
+  } = useChartData();
 
   const paths = useMemo(() => {
     function makePath(data) {
@@ -66,24 +64,11 @@ export default function LinesSeries() {
           />
         ))
     );
-  }, [activeSpectrum, data, verticalAlign, getScale, xDomain,]);
+  }, [activeSpectrum, data, verticalAlign, getScale, xDomain]);
 
   return (
-    <g key={'path'}>
-      <defs>
-        <clipPath id="clip">
-          <rect
-            width={`${width - margin.left - margin.right}`}
-            height={`${height - margin.top - margin.bottom}`}
-            x={`${margin.left}`}
-            y={`${margin.top}`}
-          />
-        </clipPath>
-      </defs>
-
-      <g className="paths" clipPath="url(#clip)">
-        {paths}
-      </g>
+    <g className="paths" clipPath="url(#clip)">
+      {paths}
     </g>
   );
 }

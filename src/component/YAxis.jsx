@@ -1,35 +1,36 @@
-import React, { useEffect, useRef, useContext, useMemo } from 'react';
+import React, { Fragment, useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import { ChartContext } from './context/ChartContext';
+
+import { useChartData } from './context/ChartContext';
+import { useDimension } from './context/DimensionsContext';
 
 const YAxis = ({ show, label }) => {
   const refAxis = useRef();
-
-  const { margin, yDomain, getScale } = useContext(ChartContext);
+  const { margin } = useDimension();
+  const { yDomain, getScale } = useChartData();
 
   useEffect(() => {
     if (show) {
       // const scale = d3.scaleLinear([0,domain[1]], [height - margin.bottom, margin.top]);
       const scale = getScale();
-      console.log('7');
       const axis = d3
-      .axisLeft()
-      .ticks(5)
-      .tickFormat(d3.format('~s'));
-  
+        .axisLeft()
+        .ticks(5)
+        .tickFormat(d3.format('~s'));
+
       // d3.select(refAxis.current)
       //   .selectAll('*')
       //   .remove();
-      d3.select(refAxis.current).call(axis.scale([0,scale.y[1]]));
+      d3.select(refAxis.current).call(axis.scale([0, scale.y[1]]));
     }
-  }, [show,yDomain,getScale]);
+  }, [show, yDomain, getScale]);
 
   const Axis = useMemo(
     () =>
       show &&
       show === true && (
-        <React.Fragment>
+        <Fragment>
           <g
             className="y axis"
             transform={`translate(${margin.left + 30},0)`}
@@ -46,7 +47,7 @@ const YAxis = ({ show, label }) => {
               {label}
             </text>
           </g>
-        </React.Fragment>
+        </Fragment>
       ),
 
     [label, margin, show],
@@ -58,18 +59,9 @@ const YAxis = ({ show, label }) => {
 export default YAxis;
 
 YAxis.contextTypes = {
-  width: PropTypes.number,
-  height: PropTypes.number,
-  margin: PropTypes.shape({
-    top: PropTypes.number.isRequired,
-    right: PropTypes.number.isRequired,
-    bottom: PropTypes.number.isRequired,
-    left: PropTypes.number.isRequired,
-  }),
   showGrid: PropTypes.bool,
   show: PropTypes.bool,
   label: PropTypes.string,
-  getScale: PropTypes.func,
 };
 
 YAxis.defaultProps = {

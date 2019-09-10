@@ -1,18 +1,11 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
-import { ChartContext } from './context/ChartContext';
+
+import { useChartData } from './context/ChartContext';
 
 const IntegralsSeries = ({ data }) => {
-  const {
-    width,
-    height,
-    margin,
-    xDomain,
-    getScale,
-    verticalAlign,
-    activeSpectrum,
-  } = useContext(ChartContext);
+  const { xDomain, getScale, verticalAlign, activeSpectrum } = useChartData();
 
   const Integrals = useMemo(() => {
     const makePath = (data) => {
@@ -65,20 +58,8 @@ const IntegralsSeries = ({ data }) => {
   }, [data, activeSpectrum, getScale, verticalAlign, xDomain]);
 
   return (
-    <g key={'path'}>
-      <defs>
-        <clipPath id="clip">
-          <rect
-            width={`${width - margin.left - margin.right}`}
-            height={`${height - margin.top - margin.bottom}`}
-            x={`${margin.left}`}
-            y={`${margin.top}`}
-          />
-        </clipPath>
-      </defs>
-      <g className="paths" clipPath="url(#clip)">
-        {Integrals}
-      </g>
+    <g className="paths" clipPath="url(#clip)">
+      {Integrals}
     </g>
   );
 };

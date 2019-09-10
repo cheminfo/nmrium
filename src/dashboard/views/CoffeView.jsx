@@ -40,7 +40,6 @@ function loadData() {
       })
       .catch((err) => {
         reject(err);
-        console.error(err);
       }); // Never forget the final catch!
   });
 }

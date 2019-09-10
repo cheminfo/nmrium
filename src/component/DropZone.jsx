@@ -1,16 +1,17 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import PublishRounded from '@material-ui/icons/PublishRounded';
 import debug from 'debug';
 import { Analysis } from '../data/Analysis';
+
 import {
   LOAD_MOL_FILE,
   LOAD_JSON_FILE,
   LOAD_JCAMP_FILE,
 } from './reducer/Actions';
 import { useDispatch } from './context/DispatchContext';
-import { ChartContext } from './context/ChartContext';
 import './css/drop-zone.css';
+import { useDimension } from './context/DimensionsContext';
 
 const logger = new debug('development');
 
@@ -48,7 +49,7 @@ function loadFiles(acceptedFiles) {
 }
 
 const DropZone = (props) => {
-  const { width, height } = useContext(ChartContext);
+  const { width, height } = useDimension();
   const dispatch = useDispatch();
 
   const onDrop = useCallback(

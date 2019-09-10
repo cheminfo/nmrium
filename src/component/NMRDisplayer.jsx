@@ -21,26 +21,23 @@ import { Analysis } from '../data/Analysis';
 
 import YAxis from './YAxis';
 import XAxis from './XAxis';
-import BrushTool from './tool/BrushTool';
-import CrossLinePointer from './tool/CrossLinePointer';
 import LinesSeries from './LinesSeries';
 import IntegralsSeries from './IntegralsSeries';
-import PeakNotationTool from './tool/PeakNotationTool';
-import { ChartContext } from './context/ChartContext';
+import { ChartDataProvider } from './context/ChartContext';
 import { spectrumReducer } from './reducer/Reducer';
 import {
   INITIATE,
   SET_WIDTH,
   PEAK_PICKING,
-  ADD_INTEGRAL,
   SET_DIMENSIONS,
 } from './reducer/Actions';
-import IntegralTool from './tool/IntegralTool';
 import { DispatchProvider } from './context/DispatchContext';
 import DropZone from './DropZone';
 import ToolBar from './toolbar/ToolBar';
 import { options } from './toolbar/FunctionToolBar';
 import Panels from './panels/Panels';
+import Tools from './tool/Tools';
+import { DimensionProvider } from './context/DimensionsContext';
 
 const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   const refSVG = useRef();
@@ -102,7 +99,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     _yDomain,
     _originDomain,
     _selectedTool,
-    _peakNotations,
     _width,
     _height,
     _activeSpectrum,
@@ -142,7 +138,9 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   }, [chartDiemensions, height, width, isFullscreen, margin]);
 
   useEffect(() => {
-    data && dispatch({ type: INITIATE, data: { AnalysisObj: data } });
+    if (data) {
+      dispatch({ type: INITIATE, data: { AnalysisObj: data } });
+    }
   }, [data]);
 
   useLayoutEffect(() => {
@@ -166,7 +164,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     }, 60);
   }, []);
 
-  const mouseMoveLeave = useCallback((e) => {
+  const mouseMoveLeave = useCallback(() => {
     setMouseCoordinates({ x: 0, y: 0 });
   }, []);
 
@@ -217,13 +215,6 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     }
   };
 
-  const handleAddIntegral = useCallback((integral) => {
-    dispatch({
-      type: ADD_INTEGRAL,
-      integral,
-    });
-  }, []);
-
   const handleSpiltPanelSizeChanged = useCallback((size) => {
     setResizeEventStart(false);
     dispatch({ type: SET_WIDTH, width: size });
@@ -231,119 +222,89 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
 
   return (
     <DispatchProvider value={dispatch}>
-      <ChartContext.Provider
-        value={{
-          margin: margin,
-          width: _width,
-          height: _height,
-          data: _data,
-          xDomain: _xDomain,
-          yDomain: _yDomain,
-          getScale: getScale,
-          activeSpectrum: _activeSpectrum,
-          verticalAlign: verticalAlign,
-          mode: _mode,
-          zoomFactor: _zoomFactor,
-          history: history,
-          molecules: _molecules,
-        }}
+      <DimensionProvider
+        value={{ margin: margin, width: _width, height: _height }}
       >
-        <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
-          <div className="header-toolbar">
-            {!isFullscreen ? (
-              <button onClick={toggle}>
-                <FaRegWindowMaximize />
-              </button>
-            ) : (
-              ''
-            )}
-          </div>
-          <DropZone>
-            <ToolBar />
-            <SplitPane
-              className="split-container"
-              split="vertical"
-              defaultSize="80%"
-              minSize="80%"
-              onDragFinished={handleSpiltPanelSizeChanged}
-              onDragStarted={() => {
-                setResizeEventStart(true);
-              }}
-            >
-              <div ref={refChartPanel}>
-                <svg
-                  onMouseMove={isResizeEventStart ? null : mouseMove}
-                  ref={refSVG}
-                  onMouseLeave={mouseMoveLeave}
-                  onClick={mouseClick}
-                  width={_width}
-                  height={_height}
-                >
-                  {_xDomain && _yDomain && (
-                    <Fragment>
-                      <LinesSeries data={_data} />
-                      <IntegralsSeries data={_data} integrals={_integrals} />
-                    </Fragment>
-                  )}
+        <ChartDataProvider
+          value={{
+            data: _data,
+            xDomain: _xDomain,
+            yDomain: _yDomain,
+            getScale: getScale,
+            activeSpectrum: _activeSpectrum,
+            verticalAlign: verticalAlign,
+            mode: _mode,
+            zoomFactor: _zoomFactor,
+            history: history,
+            molecules: _molecules,
+            originDomain: _originDomain,
+          }}
+        >
+          <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
+            <div className="header-toolbar">
+              {!isFullscreen ? (
+                <button onClick={toggle}>
+                  <FaRegWindowMaximize />
+                </button>
+              ) : (
+                ''
+              )}
+            </div>
+            <DropZone>
+              <ToolBar />
+              <SplitPane
+                className="split-container"
+                split="vertical"
+                defaultSize="80%"
+                minSize="80%"
+                onDragFinished={handleSpiltPanelSizeChanged}
+                onDragStarted={() => {
+                  setResizeEventStart(true);
+                }}
+              >
+                <div ref={refChartPanel}>
+                  <svg
+                    onMouseMove={isResizeEventStart ? null : mouseMove}
+                    ref={refSVG}
+                    onMouseLeave={mouseMoveLeave}
+                    onClick={mouseClick}
+                    width={_width}
+                    height={_height}
+                  >
+                    <defs>
+                      <clipPath id="clip">
+                        <rect
+                          width={`${_width - margin.left - margin.right}`}
+                          height={`${_height - margin.top - margin.bottom}`}
+                          x={`${margin.left}`}
+                          y={`${margin.top}`}
+                        />
+                      </clipPath>
+                    </defs>
 
-                  <g className="container">
-                    <XAxis showGrid={true} mode={_mode} />
-
-                    <YAxis label="PPM" show={false} />
-                    {_selectedTool === options.zoom.id && (
+                    <g className="container">
+                      {/* {_xDomain && _yDomain && ( */}
                       <Fragment>
-                        <CrossLinePointer
-                          position={mouseCoordinates}
-                          margin={margin}
-                          width={_width}
-                          height={_height}
-                        />
-                        <BrushTool
-                          margin={margin}
-                          width={_width}
-                          height={_height}
-                          domain={{ x: _xDomain, y: _yDomain }}
-                          originDomain={_originDomain}
-                          isActive={true}
-                          getScale={getScale}
-                          mode={_mode}
-                        />
+                        <LinesSeries data={_data} />
+                        <IntegralsSeries data={_data} integrals={_integrals} />
                       </Fragment>
-                    )}
+                      {/* )} */}
+                      <XAxis showGrid={true} mode={_mode} />
 
-                    {_selectedTool === options.integral.id && (
-                      <IntegralTool
-                        margin={margin}
-                        width={_width}
-                        height={_height}
-                        data={_data}
-                        domain={{ x: _xDomain, y: _yDomain }}
-                        isActive={true}
-                        getScale={getScale}
-                        position={mouseCoordinates}
-                        activeSpectrum={_activeSpectrum}
-                        mode={_mode}
-                        onIntegralDrawFinished={handleAddIntegral}
+                      <YAxis label="PPM" show={false} />
+                      <Tools
+                        selectedTool={_selectedTool}
+                        mouseCoordinates={mouseCoordinates}
                       />
-                    )}
-
-                    {(_selectedTool === options.peakPicking.id ||
-                      _peakNotations) && (
-                      <PeakNotationTool
-                        position={mouseCoordinates}
-                        showCursorLabel={
-                          _selectedTool === options.peakPicking.id
-                        }
-                      />
-                    )}
-                  </g>
-                </svg>
-              </div>
-              <Panels />
-            </SplitPane>
-          </DropZone>
-        </div>
-      </ChartContext.Provider>
+                    </g>
+                  </svg>
+                </div>
+                <Panels />
+              </SplitPane>
+            </DropZone>
+          </div>
+        </ChartDataProvider>
+      </DimensionProvider>
     </DispatchProvider>
   );
 };

@@ -1,21 +1,15 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  memo,
-  useContext,
-} from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from '../context/DispatchContext';
 import { TOGGLE_REAL_IMAGINARY_VISIBILITY } from '../reducer/Actions';
-import { ChartContext } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext';
 
 const ViewButton = ({ defaultValue = true }) => {
   const [option, setOption] = useState();
   const [isDisabled, setDisabled] = useState(true);
   const dispatch = useDispatch();
-  const { data, activeSpectrum } = useContext(ChartContext);
+  const { data, activeSpectrum } = useChartData();
 
   const handleShowSpectrumTypeChang = useCallback(
     () =>

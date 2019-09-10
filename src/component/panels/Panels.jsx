@@ -1,4 +1,5 @@
 import React from 'react';
+
 import InformationPanel from './InformationPanel';
 import SpectrumListPanel from './SpectrumListPanel';
 import IntegralTablePanel from './IntegralTablePanel';

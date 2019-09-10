@@ -1,22 +1,11 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  useContext,
-} from 'react';
-import propTypes from 'prop-types';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import { FaEye, FaRegTrashAlt, FaMinus, FaPaintBrush } from 'react-icons/fa';
-import { Button, Tooltip } from '@material-ui/core';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import '../css/spectrum-list.css';
-import { SketchPicker } from 'react-color';
+import { Tooltip, Button } from '@material-ui/core';
 
-import { COLORS } from '../utility/ColorGenerator';
 import { useDispatch } from '../context/DispatchContext';
+import { useChartData } from '../context/ChartContext';
 import {
   CHANGE_VISIBILITY,
   CHANGE_PEAKS_MARKERS_VISIBILITY,
@@ -24,38 +13,9 @@ import {
   CHNAGE_SPECTRUM_COLOR,
   DELETE_SPECTRA,
 } from '../reducer/Actions';
-import { ChartContext } from '../context/ChartContext';
 
-function arePropsEqual() {
-  return true;
-}
-const ColorPicker = React.memo(
-  ({
-    colorPickerPosition,
-    selectedSpectrumData,
-    onColorChanged,
-    onMouseLeave,
-  }) => {
-    return (
-      <div
-        style={{
-          position: 'fixed',
-          left: colorPickerPosition.x - 200,
-          top: colorPickerPosition.y,
-          zIndex: 999999999,
-        }}
-        onMouseLeave={onMouseLeave}
-      >
-        <SketchPicker
-          color={selectedSpectrumData.color}
-          presetColors={COLORS}
-          onChangeComplete={onColorChanged}
-        />
-      </div>
-    );
-  },
-  arePropsEqual,
-);
+import SpectrumListItem from './SpectrumListItem';
+import ColorPicker from './ColorPicker';
 
 const SpectrumListPanel = () => {
   const [activated, setActivated] = useState(null);
@@ -64,7 +24,7 @@ const SpectrumListPanel = () => {
   const [isColorPickerDisplayed, setIsColorPickerDisplayed] = useState(false);
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [colorPickerPosition, setColorPickerPosition] = useState(null);
-  const { data } = useContext(ChartContext);
+  const { data } = useChartData();
 
   const dispatch = useDispatch();
   const handleChangeVisibility = useCallback(
@@ -150,64 +110,21 @@ const SpectrumListPanel = () => {
   }, []);
 
   const ListItems = useMemo(() => {
-    const isVisible = (id) => {
-      return visible.findIndex((v) => v.id === id) !== -1 ? true : false;
-    };
-
-    const isActivated = (id) => {
-      return activated && activated.id === id;
-    };
-
-    const isMarkerVisible = (id) => {
-      return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
-    };
     return (
       data &&
-      data.map((d) => {
-        return (
-          <ListItem key={`slist${d.id}`}>
-            <ListItemIcon>
-              <Button onClick={() => handleChangeVisibility(d)}>
-                <FaEye
-                  style={
-                    isVisible(d.id)
-                      ? { opacity: 1, strokeWidth: '1px', fill: d.color }
-                      : { opacity: 0.1, fill: d.color }
-                  }
-                />
-              </Button>
-            </ListItemIcon>
-            <div style={{ width: '50%' }}>{d.name}</div>
-
-            <ListItemSecondaryAction>
-              <Button onClick={() => handleChangeMarkersVisibility(d)}>
-                <FaEye
-                  style={
-                    isMarkerVisible(d.id)
-                      ? { width: 12, opacity: 1, fill: 'black' }
-                      : { width: 12, opacity: 0.1, fill: 'black' }
-                  }
-                />
-              </Button>
-              <Button onClick={() => handleChangeActiveSpectrum(d)}>
-                <FaMinus
-                  style={
-                    isActivated(d.id)
-                      ? { fill: d.color, height: '15px' }
-                      : { fill: d.color, opacity: 0.1 }
-                  }
-                />
-              </Button>
-              <Button
-                className="color-change-bt"
-                onClick={(event) => handleOpenColorPicker(d, event)}
-              >
-                <FaPaintBrush />
-              </Button>
-            </ListItemSecondaryAction>
-          </ListItem>
-        );
-      })
+      data.map((d) => (
+        <SpectrumListItem
+          key={d.id}
+          visible={visible}
+          activated={activated}
+          markersVisible={markersVisible}
+          data={d}
+          onChangeVisibility={handleChangeVisibility}
+          onChangeMarkersVisibility={handleChangeMarkersVisibility}
+          onChangeActiveSpectrum={handleChangeActiveSpectrum}
+          onOpenColorPicker={handleOpenColorPicker}
+        />
+      ))
     );
   }, [
     data,
@@ -250,23 +167,4 @@ const SpectrumListPanel = () => {
   );
 };
 
-SpectrumListPanel.propTypes = {
-  // data: propTypes.array.isRequired,
-};
-
 export default SpectrumListPanel;
-
-// SpectrumListPanel.defaultProps = {
-//   onChangeVisibility: function() {
-//     return null;
-//   },
-//   onChangeMarkersVisibility: function() {
-//     return null;
-//   },
-//   onChangeActive: function() {
-//     return null;
-//   },
-//   onColorChanged: function() {
-//     return null;
-//   },
-// };

@@ -1,17 +1,17 @@
-import React, { Fragment, useCallback, memo, useContext } from 'react';
+import React, { Fragment, useCallback, memo } from 'react';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { FaUndo, FaRedo } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import { REDO, UNDO } from '../reducer/HistoryActions';
-import { ChartContext } from '../context/ChartContext';
+import { ChartContext, useChartData } from '../context/ChartContext';
 
 const HistoryToolBar = ({
   isUndoButtonVisible = true,
   isRedoButtonVisible = true,
 }) => {
-  const { history } = useContext(ChartContext);
+  const { history } = useChartData(ChartContext);
 
   const dispatch = useDispatch();
   const handleRedo = useCallback(

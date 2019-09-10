@@ -1,20 +1,26 @@
-import React, { Component, Fragment } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import '../css/integral-tool.css';
 import { XY } from 'ml-spectra-processing';
 
-class IntegralTool extends Component {
-  constructor(props) {
-    super(props);
-    const { width, height, margin } = this.props;
-    this.brush = d3
-      .brushX()
-      .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
-  }
+import { useDispatch } from '../context/DispatchContext';
+import { ADD_INTEGRAL } from '../reducer/Actions';
+import { useChartData } from '../context/ChartContext';
+import { useDimension } from '../context/DimensionsContext';
 
-  brushEnd = () => {
-    const { getScale, mode, data, activeSpectrum } = this.props;
+const IntegralTool = () => {
+  const { width, height, margin } = useDimension();
+  const { getScale, mode, data, activeSpectrum, isActive } = useChartData();
+
+  const refBrush = useRef();
+  const dispatch = useDispatch();
+
+  const brush = d3
+    .brushX()
+    .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
+
+  const brushEnd = useCallback(() => {
     if (activeSpectrum) {
       if (!d3.event.selection) {
         return;
@@ -43,77 +49,53 @@ class IntegralTool extends Component {
         reverse: true,
       });
 
-
-      d3.select(this.refs.brush).call(this.brush.move, null); // This remove the grey brush area as soon as the selection has been done
-
-      this.props.onIntegralDrawFinished({
+      d3.select(refBrush.current).call(brush.move, null); // This remove the grey brush area as soon as the selection has been done
+      const integral = {
         id: activeSpectrum.id,
         from: range[0],
         to: range[1],
         ...integralResult,
         value: integralValue,
+      };
+      dispatch({
+        type: ADD_INTEGRAL,
+        integral,
       });
     }
-  };
+  }, [activeSpectrum, brush.move, data, dispatch, getScale, mode]);
 
-  componentDidMount() {
-    const { width, height, margin } = this.props;
-    this.brush.extent([
+  useEffect(() => {
+    brush.extent([
       [margin.left, margin.top],
       [width - margin.right, height - margin.bottom],
     ]);
 
-    d3.select(this.refs.brush)
+    d3.select(refBrush.current)
       .selectAll('*')
       .remove();
 
-    d3.select(this.refs.brush).call(this.brush);
-    this.brush.on('end', this.brushEnd);
-  }
+    d3.select(refBrush.current).call(brush);
+    brush.on('end', brushEnd);
+  });
 
-  componentDidUpdate(prevProps, prevState) {}
-
-  render() {
-    const { isActive } = this.props;
-
-    return (
-      <Fragment>
-        {/* <CrossLinePointer
-          position={position}
-          margin={margin}
-          width={width}
-          height={height}
-        /> */}
-        <g
-          className={
-            isActive ? 'integral-container brush ' : 'integral-container'
-          }
-          onDoubleClick={this.reset}
-          ref="brush"
-        />
-      </Fragment>
-    );
-  }
-}
+  return (
+    <g
+      className={isActive ? 'integral-container brush ' : 'integral-container'}
+      ref={refBrush}
+    />
+  );
+};
 
 export default IntegralTool;
 
-IntegralTool.propTypes = {
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  data: PropTypes.array.isRequired,
-  margin: PropTypes.shape({
-    top: PropTypes.number.isRequired,
-    right: PropTypes.number.isRequired,
-    bottom: PropTypes.number.isRequired,
-    left: PropTypes.number.isRequired,
-  }),
-  domain: PropTypes.object.isRequired,
-  onIntegralDrawFinished: PropTypes.func.isRequired,
-};
-
-IntegralTool.defaultProps = {
-  onIntegralDrawFinished: () => {
-    return [];
-  },
-};
+// IntegralTool.propTypes = {
+//   width: PropTypes.number.isRequired,
+//   height: PropTypes.number.isRequired,
+//   data: PropTypes.array.isRequired,
+//   margin: PropTypes.shape({
+//     top: PropTypes.number.isRequired,
+//     right: PropTypes.number.isRequired,
+//     bottom: PropTypes.number.isRequired,
+//     left: PropTypes.number.isRequired,
+//   }),
+// };
