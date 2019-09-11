@@ -1,8 +1,10 @@
 // import applyFilter from './filter1d/filter';
 import { convert } from 'jcampconverter';
-import { Datum1D } from './Datum1D';
 import { XY, XReIm } from 'ml-spectra-processing';
+
+import { Datum1D } from './Datum1D';
 import { getMetaData } from './metadata/getMetaData';
+
 export class Data1DManager {
   static fromJSON = async function fromJSON(json = []) {
     let data1D = [];
@@ -27,7 +29,7 @@ export class Data1DManager {
   };
 
   static loadFileFromURL = async function loadFileFromURL(Url) {
-    return await fetch(Url)
+    return fetch(Url)
       .then(
         (response) => Data1DManager.checkStatus(response) && response.text(),
       )
@@ -78,7 +80,12 @@ export class Data1DManager {
     let meta = getMetaData(result.info);
 
     if (Array.isArray(meta.nucleus)) meta.nucleus = meta.nucleus[0];
-    const ob = new Datum1D({ ...options, info: meta, data,source:{jcamp:null,jcampURL:null,original:data} });
+    const ob = new Datum1D({
+      ...options,
+      info: meta,
+      data,
+      source: { jcamp: null, jcampURL: null, original: data },
+    });
 
     return ob;
   };

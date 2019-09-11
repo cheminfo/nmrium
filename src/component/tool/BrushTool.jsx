@@ -14,10 +14,17 @@ import { useDimension } from '../context/DimensionsContext';
 
 const BrushTool = ({ isActive }) => {
   const { width, height, margin } = useDimension();
-  const { getScale, mode, originDomain } = useChartData();
+  const { getScale, mode, originDomain, data } = useChartData();
 
   const refBrush = useRef();
   const dispatch = useDispatch();
+
+  const getClosestNumber = (array = [], goal = 0) => {
+    const closest = array.reduce((prev, curr) => {
+      return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
+    });
+    return closest;
+  };
 
   const brush = d3
     .brushX()
@@ -34,7 +41,6 @@ const BrushTool = ({ isActive }) => {
     if (!currentEvent.selection) {
       return;
     }
-
     const [x1, x2] = currentEvent.selection;
     // const scale = d3.scaleLinear(this.domain.x, [
     //   this.width - this.margin.right,
@@ -55,20 +61,38 @@ const BrushTool = ({ isActive }) => {
     // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
     // let t = currentEvent.transform;
     // let t = d3.zoomIdentity.translate(0,height/2).scale(currentEvent.transform.k).translate(0,-d3.select('.line').node().getBBox().height);
-    let t = d3.zoomIdentity
-      .translate(0, height - margin.bottom)
-      .scale(currentEvent.transform.k)
-      .translate(0, -(height - margin.bottom));
 
     const scale = d3.scaleLinear(originDomain.y, [
       height - margin.bottom,
       margin.top,
     ]);
+    let t;
+    if (data.length === 1) {
+      const closest = getClosestNumber(data[0].y);
+      const referencePoint = getScale().y(closest);
+      t = d3.zoomIdentity
+        .translate(0, referencePoint)
+        .scale(currentEvent.transform.k)
+        .translate(0, -referencePoint);
+    } else {
+      t = d3.zoomIdentity
+        .translate(0, height - margin.bottom)
+        .scale(currentEvent.transform.k)
+        .translate(0, -(height - margin.bottom));
+    }
 
     const yDomain = t.rescaleY(scale).domain();
     dispatch({ type: SET_Y_DOMAIN, yDomain: yDomain });
     dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: t });
-  }, [dispatch, height, margin.bottom, margin.top, originDomain]);
+  }, [
+    dispatch,
+    height,
+    margin.bottom,
+    margin.top,
+    originDomain,
+    getScale,
+    data,
+  ]);
 
   const reset = useCallback(() => {
     dispatch({ type: SET_X_DOMAIN, xDomain: originDomain.x });

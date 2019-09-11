@@ -1,4 +1,3 @@
-/* eslint-disable react/button-has-type */
 import * as d3 from 'd3';
 import React, {
   useEffect,
@@ -272,9 +271,10 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                   >
                     <defs>
                       <clipPath id="clip">
+                      {/* - margin.top - margin.bottom */}
                         <rect
                           width={`${_width - margin.left - margin.right}`}
-                          height={`${_height - margin.top - margin.bottom}`}
+                          height={`${_height}`}
                           x={`${margin.left}`}
                           y={`${margin.top}`}
                         />

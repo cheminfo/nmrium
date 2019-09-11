@@ -36,11 +36,7 @@ const Panels = () => {
 
   return (
     <div>
-      <InformationPanel
-        key={123456789}
-        activeItem="spectraPanel"
-        listItem={infoList}
-      />
+      <InformationPanel activeItem="spectraPanel" listItem={infoList} />
     </div>
   );
 };
