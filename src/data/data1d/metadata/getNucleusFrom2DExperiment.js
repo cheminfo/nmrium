@@ -5,7 +5,6 @@
  * @return {string[]}
  */
 
-
 export function getNucleusFrom2DExperiment(experiment) {
   if (typeof experiment !== 'string') {
     return [];

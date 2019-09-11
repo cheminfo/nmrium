@@ -24,7 +24,7 @@ import CoupledDecoupled13C from './dashboard/views/CoupledDecoupled13C';
 import Big13CCytisin from './dashboard/views/Big13CCytisin';
 import CoffeView from './dashboard/views/CoffeView';
 
-var dashRoutes = [
+let dashRoutes = [
   {
     path: '/Spectrum1H',
     name: '1H Spectrum',

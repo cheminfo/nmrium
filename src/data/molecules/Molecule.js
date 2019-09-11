@@ -2,7 +2,7 @@ export class Molecule {
   /**
    * @param {object} options {key,molfile,svg,mf,em,mw}
    */
-  constructor(options={}) {
+  constructor(options = {}) {
     this.key =
       options.key ||
       Math.random()
@@ -14,8 +14,6 @@ export class Molecule {
     this.em = options.em || 0;
     this.mw = options.mw || 0;
   }
-
-
 
   toJSON() {
     return {

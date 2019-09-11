@@ -1,7 +1,6 @@
 // import baseline from './baseline';
 // import autoPeakPicking from './autoPeakPicking';
 import applyFilter from './filter1d/filter';
-
 import { SHIFT_X } from './filter1d/filter1d-type';
 
 export class Datum1D {
@@ -23,7 +22,7 @@ export class Datum1D {
     * ranges: [],
     * signals: [],
     * annotations: [],
-    * 
+    *
 */
     this.id =
       options.id ||

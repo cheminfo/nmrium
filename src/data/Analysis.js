@@ -1,8 +1,9 @@
-import applyFilter from './data1d/filter1d/filter';
 import { convert } from 'jcampconverter';
+import { Molecule } from 'openchemlib';
+
+import applyFilter from './data1d/filter1d/filter';
 import { Data1DManager } from './data1d/Data1DManager';
 import { getMetaData } from './data1d/metadata/getMetaData';
-import { Molecule } from 'openchemlib';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 
@@ -27,8 +28,8 @@ export class Analysis {
   // }
 
   static async build(json = {}) {
-    const v_data1d = await Data1DManager.fromJSON(json.data1d);
-    const data1d = json.data1d ? v_data1d : [];
+    const vData1d = await Data1DManager.fromJSON(json.data1d);
+    const data1d = json.data1d ? vData1d : [];
     const molecules = json.molecules
       ? MoleculeManager.fromJSON(json.molecules)
       : [];
@@ -50,7 +51,6 @@ export class Analysis {
     let meta = getMetaData(result.info);
     if (meta.dimension === 1) {
       this.data1d.push(Data1DManager.fromJcamp(jcamp, options));
-    } else {
     }
   }
 
@@ -82,9 +82,7 @@ export class Analysis {
     // try to parse molfile
     // this will throw if the molecule can not be parsed !
     let molecule = Molecule.fromMolfile(molfile);
-    console.log(molecule);
     let fragments = molecule.getFragments();
-    console.log(fragments);
 
     for (let fragment of fragments) {
       this.molecules.push(
@@ -184,7 +182,7 @@ export class Analysis {
    */
   getData1d(isRealData = true) {
     return this.data1d
-      ? this.data1d.map((ob, i) => {
+      ? this.data1d.map((ob) => {
           return {
             id: ob.id,
             x: ob.data.x,
@@ -206,9 +204,8 @@ export class Analysis {
       : [];
   }
 
-  deleteDatum1DByID(id){
-    this.data1d = this.data1d.filter((d)=>d.id !== id);
-    console.log(this.data1d)
+  deleteDatum1DByID(id) {
+    this.data1d = this.data1d.filter((d) => d.id !== id);
   }
 
   undoFilter(pastChainFilters = []) {

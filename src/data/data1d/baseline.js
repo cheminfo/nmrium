@@ -1,7 +1,7 @@
 export default function baseline(data, options = {}) {
   let x = data.x.slice(0);
-  let re = data.re.map((re) => re * re);
-  let im = data.im.map((im) => im * im);
+  let re = data.re.map((real) => real * re);
+  let im = data.im.map((imaginary) => imaginary * im);
   return {
     x,
     re,

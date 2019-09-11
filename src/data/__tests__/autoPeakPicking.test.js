@@ -8,8 +8,8 @@ describe('test peakPicking', () => {
     readFileSync(join(__dirname, './data/13c.json'), 'utf8'),
   );
 
-  test('check baseline', () => {
+  it('check baseline', () => {
     let peaks = autoPeakPicking(data.x, data.re);
-    expect(peaks.length).toBe(106);
+    expect(peaks).toHaveLength(106);
   });
 });

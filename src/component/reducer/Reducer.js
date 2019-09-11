@@ -259,10 +259,7 @@ const addPeak = (state, mouseCoordinates) => {
 
       AnalysisObj.getDatum1D(spectrumID).setPeaks(_data[index].peaks);
     }
-  } else {
-    alert('you must select spectrum from the spectrum list');
   }
-
   // return { ...state, _peakNotations: points };
   return { ...state, _data };
 };
@@ -395,7 +392,7 @@ const zoomOut = (state) => {
 
 const handelSpectrumVisibility = (state, data) => {
   const newData = [...state._data];
-  const Data = newData.map((d, i) => {
+  const Data = newData.map((d) => {
     const result = data.findIndex((sData) => sData.id === d.id);
     if (result !== -1) {
       AnalysisObj.getDatum1D(d.id).isVisible = true;
@@ -448,7 +445,7 @@ const handelChangeSpectrumColor = (state, { id, color }) => {
   return { ...state, _data: data };
 };
 
-const handleToggleRealImaginaryVisibility = (state, isRealSpectrumVisible) => {
+const handleToggleRealImaginaryVisibility = (state) => {
   if (state._activeSpectrum !== null) {
     const activeSpectrumId = state._activeSpectrum.id;
     const ob = AnalysisObj.getDatum1D(activeSpectrumId);
@@ -730,10 +727,7 @@ export const spectrumReducer = (state, action) => {
     case CHNAGE_SPECTRUM_COLOR:
       return handelChangeSpectrumColor(state, action.data);
     case TOGGLE_REAL_IMAGINARY_VISIBILITY:
-      return handleToggleRealImaginaryVisibility(
-        state,
-        action.isRealSpectrumVisible,
-      );
+      return handleToggleRealImaginaryVisibility(state);
     case SET_ZOOM_FACTOR:
       return {
         ...state,

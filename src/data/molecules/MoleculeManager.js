@@ -1,17 +1,13 @@
 import { Molecule } from 'openchemlib';
+
 import { Molecule as mol } from './Molecule';
 
 export class MoleculeManager {
-  static fromJSON =  function fromJSON(mols = []) {
-
-    console.log(mols);
-
+  static fromJSON = function fromJSON(mols = []) {
     let molecules = [];
     for (let i = 0; i < mols.length; i++) {
       let molecule = Molecule.fromMolfile(mols[i].molfile);
-      console.log(molecule);
       let fragments = molecule.getFragments();
-      console.log(fragments);
 
       for (let fragment of fragments) {
         molecules.push(
@@ -25,9 +21,7 @@ export class MoleculeManager {
         );
       }
     }
-     
-    console.log(molecules);
-    return molecules;
 
+    return molecules;
   };
 }

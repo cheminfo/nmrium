@@ -1,10 +1,9 @@
 import React from 'react';
-
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
-
 import { Button, Welcome } from '@storybook/react/demo';
+
 import SpectrumChart from '../component/SpectrumChart';
 import json1 from '../samples/test1.json';
 import json2 from '../samples/test.json';
@@ -68,7 +67,7 @@ const data = [
         isComplex: false,
       },
     },
-  }
+  },
 ];
 
 storiesOf('1d spectrum samples', module)
