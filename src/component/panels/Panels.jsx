@@ -1,6 +1,6 @@
 import React from 'react';
 
-import InformationPanel from './InformationPanel';
+import InformationPanel from './PanelsWrapper';
 import SpectrumListPanel from './SpectrumListPanel';
 import IntegralTablePanel from './IntegralTablePanel';
 import MoleculePanel from './MoleculePanel';
