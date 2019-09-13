@@ -176,6 +176,7 @@ export const NotationTemplate = ({
             />
             {isOver.id && isOver.flag === true && (
               <button
+                type="button"
                 onClick={(e) =>
                   handleDeleteNotation(e, { xIndex: id, id: spectrumID })
                 }

@@ -1,5 +1,6 @@
 import { log } from 'util';
 
+import { produce } from 'immer';
 import * as d3 from 'd3';
 
 import { SHIFT_X } from '../../data/data1d/filter1d/filter1d-type';
@@ -72,23 +73,18 @@ const getScale = ({ _xDomain, _yDomain, _width, _height, _margin, _mode }) => {
 const initiate = (state, data) => {
   AnalysisObj = data.AnalysisObj;
   log('app:Reducer');
-
-  const _data = AnalysisObj.getData1d();
-  const _molecules = AnalysisObj.getMolecules();
-
-  const domain = getDomain(_data);
-  const Mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
-
-  return {
-    ...state,
-    _data,
-    _molecules,
-    _xDomain: domain.x,
-    _yDomain: domain.y,
-    _originDomain: domain,
-    _yDomains: domain._yDomains,
-    _mode: Mode,
-  };
+  return produce(state, (draft) => {
+    const spectraData = AnalysisObj.getData1d();
+    const domain = getDomain(spectraData);
+    draft._data = AnalysisObj.getData1d();
+    draft._molecules = AnalysisObj.getMolecules();
+    draft._xDomain = domain.x;
+    draft._yDomain = domain.y;
+    draft._originDomain = domain;
+    draft._yDomains = domain._yDomains;
+    draft._mode =
+      spectraData && spectraData[0] && spectraData[0].isFid ? 'LTR' : 'RTL';
+  });
 };
 
 const saveDataAsJson = (state) => {
@@ -117,102 +113,59 @@ const saveDataAsJson = (state) => {
 
 const setData = (state, data) => {
   // AnalysisObj= new Analysis()
-  for (let d of data) {
-    AnalysisObj.pushDatum1D(new Datum1D(d));
-  }
-  const _data = AnalysisObj.getData1d();
-  const _molecules = AnalysisObj.getMolecules();
-
-  const domain = getDomain(_data);
-
-  //change x axis from right to left or vice versa according to isFid value
-  const Mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
-
-  return {
-    ...state,
-    _data,
-    _molecules,
-    _xDomain: domain.x,
-    _yDomain: domain.y,
-    _originDomain: domain,
-    _yDomains: domain._yDomains,
-    _mode: Mode,
-  };
+  return produce(state, (draft) => {
+    for (let d of data) {
+      AnalysisObj.pushDatum1D(new Datum1D(d));
+    }
+    draft._data = AnalysisObj.getData1d();
+    draft._molecules = AnalysisObj.getMolecules();
+    setDomain(draft);
+    setMode(draft);
+  });
 };
 
 const loadJcampFile = (state, files) => {
-  let usedColors = state._data.map((d) => d.color);
+  return produce(state, (draft) => {
+    let usedColors = draft._data.map((d) => d.color);
+    const filesLength = files.length;
+    for (let i = 0; i < filesLength; i++) {
+      const color = getColor(usedColors);
+      let datumObject = Data1DManager.fromJcamp(files[i].binary.toString(), {
+        display: {
+          name: files[i].name,
+          color: color,
+          isVisible: true,
+          isPeaksMarkersVisible: true,
+        },
+      });
+      usedColors.push(color);
+      AnalysisObj.pushDatum1D(datumObject);
+    }
 
-  const filesLength = files.length;
-  // if (filesLength >= 1 && files[0].extension.toLowerCase() !== '.json') {
-  for (let i = 0; i < filesLength; i++) {
-    // if (files[i].extension.toLowerCase() !== '.json') {
-    const color = getColor(usedColors);
-    let datumObject = Data1DManager.fromJcamp(files[i].binary.toString(), {
-      display: {
-        name: files[i].name,
-        color: color,
-        isVisible: true,
-        isPeaksMarkersVisible: true,
-      },
-    });
-    usedColors.push(color);
-    AnalysisObj.pushDatum1D(datumObject);
-    // }
-  }
-
-  const _data = AnalysisObj.getData1d();
-
-  const domain = getDomain(_data);
-  const Mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
-
-  return {
-    ...state,
-    _data,
-    _xDomain: domain.x,
-    _yDomain: domain.y,
-    _originDomain: domain,
-    _yDomains: domain._yDomains,
-    _mode: Mode,
-  };
+    draft._data = AnalysisObj.getData1d();
+    setDomain(draft);
+    setMode(draft);
+  });
 };
 
 const handleLoadJsonFile = (state, data) => {
-  AnalysisObj = data.AnalysisObj;
-  const _data = AnalysisObj.getData1d();
-  const _molecules = AnalysisObj.getMolecules();
-
-  const _mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
-
-  const domain = getDomain(_data);
-
-  return {
-    ...state,
-    _data,
-    _molecules,
-    _mode,
-    _xDomain: domain.x,
-    _yDomain: domain.y,
-    _originDomain: domain,
-    _yDomains: domain._yDomains,
-  };
+  return produce(state, (draft) => {
+    AnalysisObj = data.AnalysisObj;
+    draft._data = AnalysisObj.getData1d();
+    draft._molecules = AnalysisObj.getMolecules();
+    setDomain(draft);
+    setMode(draft);
+  });
 };
 
 const handleLoadMOLFile = (state, files) => {
-  const filesLength = files.length;
-  // if (filesLength >= 1 && files[0].extension.toLowerCase() !== '.json') {
-  for (let i = 0; i < filesLength; i++) {
-    AnalysisObj.addMolfile(files[i].binary.toString());
-  }
-
-  log(AnalysisObj.getMolecules());
-
-  const _molecules = AnalysisObj.getMolecules();
-
-  return {
-    ...state,
-    _molecules,
-  };
+  return produce(state, (draft) => {
+    const filesLength = files.length;
+    for (let i = 0; i < filesLength; i++) {
+      AnalysisObj.addMolfile(files[i].binary.toString());
+    }
+    draft._molecules = AnalysisObj.getMolecules();
+  });
 };
 
 const getClosePeak = (xShift, mouseCoordinates, state) => {
@@ -243,110 +196,97 @@ const getClosePeak = (xShift, mouseCoordinates, state) => {
 };
 
 const addPeak = (state, mouseCoordinates) => {
-  const _data = [...state._data];
+  return produce(state, (draft) => {
+    if (state._activeSpectrum) {
+      const spectrumID = state._activeSpectrum.id;
+      const index = draft._data.findIndex((d) => d.id === spectrumID);
 
-  if (state._activeSpectrum) {
-    const spectrumID = state._activeSpectrum.id;
-    const index = _data.findIndex((d) => d.id === spectrumID);
+      const peak = getClosePeak(10, mouseCoordinates, state);
+      if (index !== -1) {
+        if (draft._data[index].peaks) {
+          draft._data[index].peaks.push({ xIndex: peak.xIndex });
+        } else {
+          draft._data[index].peaks = [{ xIndex: peak.xIndex }];
+        }
 
-    const peak = getClosePeak(10, mouseCoordinates, state);
-    if (index !== -1) {
-      if (_data[index].peaks) {
-        _data[index].peaks.push({ xIndex: peak.xIndex });
-      } else {
-        _data[index].peaks = [{ xIndex: peak.xIndex }];
+        AnalysisObj.getDatum1D(spectrumID).setPeaks(draft._data[index].peaks);
       }
-
-      AnalysisObj.getDatum1D(spectrumID).setPeaks(_data[index].peaks);
     }
-  }
-  // return { ...state, _peakNotations: points };
-  return { ...state, _data };
+  });
 };
 
 const deletePeak = (state, peakData) => {
-  const _data = [...state._data];
-  const spectrumID = state._activeSpectrum.id;
-  const index = _data.findIndex((d) => d.id === spectrumID);
-  _data[index].peaks = _data[index].peaks.filter(
-    (p) => p.xIndex !== peakData.xIndex,
-  );
-  AnalysisObj.getDatum1D(spectrumID).setPeaks(_data[index].peaks);
-
-  return { ...state, _data };
+  return produce(state, (draft) => {
+    const spectrumID = state._activeSpectrum.id;
+    const index = draft._data.findIndex((d) => d.id === spectrumID);
+    draft._data[index].peaks = draft._data[index].peaks.filter(
+      (p) => p.xIndex !== peakData.xIndex,
+    );
+    AnalysisObj.getDatum1D(spectrumID).setPeaks(draft._data[index].peaks);
+  });
 };
 
 const addIntegral = (state, integralData) => {
-  const _data = [...state._data];
-  const integralID = integralData.id;
-  const index = _data.findIndex((d) => d.id === integralID);
-  delete integralData.id;
+  return produce(state, (draft) => {
+    const integralID = integralData.id;
+    const index = draft._data.findIndex((d) => d.id === integralID);
+    delete integralData.id;
 
-  if (index !== -1) {
-    if (_data[index].integrals) {
-      _data[index].integrals.push(integralData);
-    } else {
-      _data[index].integrals = [integralData];
+    if (index !== -1) {
+      if (draft._data[index].integrals) {
+        draft._data[index].integrals.push(integralData);
+      } else {
+        draft._data[index].integrals = [integralData];
+      }
+
+      AnalysisObj.getDatum1D(integralID).setIntegrals(
+        draft._data[index].integrals,
+      );
     }
-
-    AnalysisObj.getDatum1D(integralID).setIntegrals(_data[index].integrals);
-  }
-  return { ...state, _data };
+  });
 };
 
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
-  const filterOption = {
-    kind: SHIFT_X,
-    value: shiftValue,
-  };
-  const activeSpectrumId = state._activeSpectrum.id;
-  const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+  return produce(state, (draft) => {
+    const filterOption = {
+      kind: SHIFT_X,
+      value: shiftValue,
+    };
+    const activeSpectrumId = state._activeSpectrum.id;
+    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
-  //apply filter into the spectrum
-  activeObject.addFilter(filterOption);
+    //apply filter into the spectrum
+    activeObject.addFilter(filterOption);
 
-  filterOption.id = activeSpectrumId;
-  //add the filter action at the history
-  const history = handleHistorySet(state.history, filterOption);
+    filterOption.id = activeSpectrumId;
+    //add the filter action at the history
+    const history = handleHistorySet(state.history, filterOption);
 
-  log(history);
+    activeObject.applyShiftXFilter(shiftValue);
+    //add to undo history
 
-  activeObject.applyShiftXFilter(shiftValue);
-  //add to undo history
+    const XYData = activeObject.getReal();
+    const spectrumIndex = draft._data.findIndex(
+      (spectrum) => spectrum.id === activeSpectrumId,
+    );
 
-  const XYData = activeObject.getReal();
-  let data = [...state._data];
-  const spectrumIndex = data.findIndex(
-    (spectrum) => spectrum.id === activeSpectrumId,
-  );
-
-  data[spectrumIndex] = { ...data[spectrumIndex], x: XYData.x, y: XYData.y };
-
-  log(data[spectrumIndex]);
-  log(data);
-
-  const domain = getDomain(data);
-
-  return {
-    ...state,
-    _data: data,
-    _xDomain:
-      state._originDomain.x[0] === state._xDomain[0] &&
-      state._originDomain.x[1] === state._xDomain[1]
-        ? domain.x
-        : state._xDomain,
-    _yDomain: domain.y,
-    _originDomain: domain,
-    history,
-  };
+    draft._data[spectrumIndex].x = XYData.x;
+    draft._data[spectrumIndex].y = XYData.y;
+    draft.history = history;
+    setDomain(draft);
+  });
 };
 
 const setOriginalDomain = (state, _originDomain) => {
-  return { ...state, _originDomain };
+  return produce(state, (draft) => {
+    draft._originDomain = _originDomain;
+  });
 };
 
 const setXDomain = (state, _xDomain) => {
-  return { ...state, _xDomain };
+  return produce(state, (draft) => {
+    draft._xDomain = _xDomain;
+  });
 };
 
 const setYDomain = (state, _yDomain) => {
@@ -383,177 +323,156 @@ const setSelectedTool = (state, _selectedTool) => {
 };
 
 const zoomOut = (state) => {
-  return {
-    ...state,
-    _xDomain: state._originDomain.x,
-    _yDomain: state._originDomain.y,
-  };
+  return produce(state, (draft) => {
+    draft._xDomain = state._originDomain.x;
+    draft._yDomain = state._originDomain.y;
+  });
 };
 
+// TODO: this is really strange
 const handelSpectrumVisibility = (state, data) => {
-  const newData = [...state._data];
-  const Data = newData.map((d) => {
-    const result = data.findIndex((sData) => sData.id === d.id);
-    if (result !== -1) {
-      AnalysisObj.getDatum1D(d.id).isVisible = true;
-      return { ...d, isVisible: true };
-    } else {
-      AnalysisObj.getDatum1D(d.id).isVisible = false;
-      return { ...d, isVisible: false };
+  return produce(state, (draft) => {
+    for (let datum of draft._data) {
+      if (data.some((sData) => sData.id === datum.id)) {
+        datum.isVisible = true;
+      } else {
+        datum.isVisible = false;
+      }
     }
   });
-
-  return { ...state, _data: Data };
 };
 
 const handleChangePeaksMarkersVisibility = (state, data) => {
-  const newData = [...state._data];
-  const result = newData.map((d) => {
-    const val = data.findIndex((activeData) => activeData.id === d.id);
-    if (val !== -1) {
-      AnalysisObj.getDatum1D(d.id).isPeaksMarkersVisible = true;
-      return { ...d, isPeaksMarkersVisible: true };
-    } else {
-      AnalysisObj.getDatum1D(d.id).isPeaksMarkersVisible = false;
-      return { ...d, isPeaksMarkersVisible: false };
+  return produce(state, (draft) => {
+    for (let datum of draft._data) {
+      if (data.some((activeData) => activeData.id === datum.id)) {
+        AnalysisObj.getDatum1D(datum.id).isPeaksMarkersVisible = true;
+        datum.isPeaksMarkersVisible = true;
+      } else {
+        AnalysisObj.getDatum1D(datum.id).isPeaksMarkersVisible = false;
+        datum.isPeaksMarkersVisible = false;
+      }
     }
   });
-
-  return { ...state, _data: result };
 };
 
 const handelChangeActiveSpectrum = (state, activeSpectrum) => {
-  const data = [...state._data];
-  if (activeSpectrum) {
-    AnalysisObj.getDatum1D(activeSpectrum.id).isVisible = true;
-    const index = data.findIndex((d) => d.id === activeSpectrum.id);
-    if (index !== -1) {
-      data[index].isVisible = true;
+  return produce(state, (draft) => {
+    if (activeSpectrum) {
+      AnalysisObj.getDatum1D(activeSpectrum.id).isVisible = true;
+      const index = draft._data.findIndex((d) => d.id === activeSpectrum.id);
+      if (index !== -1) {
+        draft._data[index].isVisible = true;
+      }
     }
-  }
-  return { ...state, _data: data, _activeSpectrum: activeSpectrum };
+    draft._activeSpectrum = activeSpectrum;
+  });
 };
 
 const handelChangeSpectrumColor = (state, { id, color }) => {
-  const data = [...state._data];
-  const index = data.findIndex((d) => d.id === id);
-  if (index !== -1) {
-    data[index].color = color;
-    AnalysisObj.getDatum1D(id).display.color = color;
-  }
-
-  return { ...state, _data: data };
+  return produce(state, (draft) => {
+    const index = draft._data.findIndex((d) => d.id === id);
+    if (index !== -1) {
+      draft._data[index].color = color;
+      AnalysisObj.getDatum1D(id).display.color = color;
+    }
+  });
 };
 
 const handleToggleRealImaginaryVisibility = (state) => {
-  if (state._activeSpectrum !== null) {
+  return produce(state, (draft) => {
+    if (state._activeSpectrum === null) return;
     const activeSpectrumId = state._activeSpectrum.id;
     const ob = AnalysisObj.getDatum1D(activeSpectrumId);
 
     if (ob) {
-      const Data = [...state._data];
-
       const reY = ob.getReal().y;
       const imY = ob.getImaginary().y;
       const index = state._data.findIndex((d) => d.id === activeSpectrumId);
-      ob.setIsRealSpectrumVisible(!Data[index]);
+      ob.setIsRealSpectrumVisible(!draft._data[index]);
 
-      Data[index].isRealSpectrumVisible = !Data[index].isRealSpectrumVisible;
+      draft._data[index].isRealSpectrumVisible = !draft._data[index]
+        .isRealSpectrumVisible;
       ob.setIsRealSpectrumVisible();
       // isRealSpectrumVisible
-      if (Data[index].isRealSpectrumVisible) {
+      if (draft._data[index].isRealSpectrumVisible) {
         if (reY !== null && reY !== undefined) {
-          Data[index].y = reY;
-          const domain = getDomain(Data);
-
-          return {
-            ...state,
-            _xDomain: domain.x,
-            _yDomain: domain.y,
-            _yDomains: domain._yDomains,
-            _data: Data,
-          };
-        } else {
-          return state;
+          draft._data[index].y = reY;
+          const domain = getDomain(draft._data);
+          draft._xDomain = domain.x;
+          draft._yDomain = domain.y;
+          draft._yDomains = domain._yDomains;
         }
       } else {
         if (imY !== null && imY !== undefined) {
-          Data[index].y = imY;
-          const domain = getDomain(Data);
-
-          return {
-            ...state,
-            _xDomain: domain.x,
-            _yDomain: domain.y,
-            _yDomains: domain._yDomains,
-            _data: Data,
-          };
-        } else {
-          return state;
+          draft._data[index].y = imY;
+          const domain = getDomain(draft._data);
+          draft._xDomain = domain.x;
+          draft._yDomain = domain.y;
+          draft._yDomains = domain._yDomains;
         }
       }
     }
-  } else {
-    return state;
-  }
+  });
 };
 
 const handelAddMolecule = (state, molfile) => {
   AnalysisObj.addMolfile(molfile);
-  const _molecules = AnalysisObj.getMolecules();
-  return {
-    ...state,
-    _molecules,
-  };
+  return produce(state, (draft) => {
+    draft._molecules = AnalysisObj.getMolecules();
+  });
 };
 
 const handeleSetMolecule = (state, molfile, key) => {
-  const _molecules = AnalysisObj.setMolfile(molfile, key);
-  return {
-    ...state,
-    _molecules,
-  };
+  return produce(state, (draft) => {
+    draft._molecules = AnalysisObj.setMolfile(molfile, key);
+  });
 };
+
 const handeleDeleteMolecule = (state, key) => {
-  let _molecules = [...state._molecules];
-  _molecules = _molecules.filter((m) => m.key !== key);
-  AnalysisObj.setMolecules(_molecules);
-  return {
-    ...state,
-    _molecules,
-  };
+  return produce(state, (draft) => {
+    const index = draft._molecules.findIndex(
+      (molecule) => molecule.key === key,
+    );
+    if (index !== -1) {
+      draft._molecules.splice(index, 1);
+    }
+  });
 };
+
+function setMode(draft) {
+  draft._mode =
+    draft._data && draft._data[0] && draft._data[0].isFid ? 'LTR' : 'RTL';
+}
+
+function setDomain(draft) {
+  const domain = getDomain(draft._data);
+  draft._xDomain = domain.x;
+  draft._yDomainh = domain.y;
+  draft._originDomain = domain;
+  draft._yDomains = domain._yDomains;
+}
 
 const handelDeleteSpectra = (state) => {
-  let _data = [...state._data];
-  const { _activeSpectrum } = state;
+  return produce(state, (draft) => {
+    const { _activeSpectrum } = draft;
 
-  if (_activeSpectrum && _activeSpectrum.id) {
-    AnalysisObj.deleteDatum1DByID(_activeSpectrum.id);
-    _data = AnalysisObj.getData1d();
-    const domain = getDomain(_data);
-    const Mode = _data && _data[0] && _data[0].isFid ? 'LTR' : 'RTL';
-
-    return {
-      ...state,
-      _data,
-      _xDomain: domain.x,
-      _yDomain: domain.y,
-      _originDomain: domain,
-      _yDomains: domain._yDomains,
-      _mode: Mode,
-    };
-  } else {
-    return state;
-  }
+    if (_activeSpectrum && _activeSpectrum.id) {
+      AnalysisObj.deleteDatum1DByID(_activeSpectrum.id);
+      draft._data = AnalysisObj.getData1d();
+      setDomain(draft);
+      setMode(draft);
+    }
+  });
 };
 
 const handleChangeSpectrumDisplayMode = (state) => {
-  const { _height, _data, verticalAlign } = state;
-  const VerticalAlign =
-    verticalAlign !== 0 ? 0 : Math.floor(-_height / (_data.length + 2));
-
-  return { ...state, verticalAlign: VerticalAlign };
+  return produce(state, (draft) => {
+    draft.verticalAlign =
+      draft.verticalAlign !== 0
+        ? 0
+        : Math.floor(-draft._height / (draft._data.length + 2));
+  });
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -593,72 +512,45 @@ const handleHistoryUndo = (state) => {
 };
 
 const handleHistoryRedo = (state) => {
-  const { past, present, future } = state.history;
-  const next = future.length === 0 ? null : future[0];
-  const newFuture = future.slice(1);
-  const newPast =
-    present !== null && present !== undefined ? [...past, present] : past;
+  return produce(state, (draft) => {
+    const { history } = draft;
+    const next = history.future[0];
+    const newPresent = history.future.shift();
+    history.past.push(history.present);
+    history.present = newPresent;
+    history.hasUndo = true;
+    history.hasRedo = history.future.length > 0;
 
-  const check = next !== null && next !== undefined ? [...past, present] : past;
-
-  const hasUndo = check !== 0;
-  const hasRedo = newFuture.length !== 0;
-
-  AnalysisObj.redoFilter(next);
-  let data = AnalysisObj.getData1d();
-  const domain = getDomain(data);
-  const history = {
-    past: newPast,
-    present: next,
-    future: newFuture,
-    hasRedo,
-    hasUndo,
-  };
-
-  return {
-    ...state,
-    _data: data,
-    _xDomain: domain.x,
-    _yDomain: domain.y,
-    _originDomain: domain,
-    history,
-  };
+    AnalysisObj.redoFilter(next);
+    draft._data = AnalysisObj.getData1d();
+    setDomain(draft);
+  });
 };
 
-const handleHistorySet = (state, action) => {
-  log(state);
-  const newValue = action;
+const handleHistorySet = (historyDraft, newValue) => {
+  log(historyDraft);
 
-  const { past, present } = state;
+  if (newValue === historyDraft.present) return;
 
-  if (newValue === present) {
-    return state;
+  if (historyDraft.present) {
+    historyDraft.past.push(historyDraft.present);
   }
-
-  return {
-    past:
-      present !== null && present !== undefined
-        ? [...past, present]
-        : [...past],
-    present: newValue,
-    future: [],
-    hasUndo: true,
-    hasRedo: false,
-  };
+  historyDraft.present = newValue;
+  historyDraft.future = [];
+  historyDraft.hasUndo = true;
+  historyDraft.hasRedo = false;
 };
 
 const handleHistoryReset = (state, action) => {
-  const newValue = action;
-  return {
-    ...state,
-    history: {
+  return produce(state, (draft) => {
+    draft.history = {
       past: [],
-      present: newValue,
+      present: action,
       future: [],
       hasRedo: false,
       hasUndo: false,
-    },
-  };
+    };
+  });
 };
 
 //////////////////////////////////////////////////////////////////////
