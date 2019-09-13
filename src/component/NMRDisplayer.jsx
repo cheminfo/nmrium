@@ -241,7 +241,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
             <div className="header-toolbar">
               {!isFullscreen ? (
-                <button onClick={toggle}>
+                <button type="button" onClick={toggle}>
                   <FaRegWindowMaximize />
                 </button>
               ) : (
@@ -271,7 +271,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                   >
                     <defs>
                       <clipPath id="clip">
-                      {/* - margin.top - margin.bottom */}
+                        {/* - margin.top - margin.bottom */}
                         <rect
                           width={`${_width - margin.left - margin.right}`}
                           height={`${_height}`}
