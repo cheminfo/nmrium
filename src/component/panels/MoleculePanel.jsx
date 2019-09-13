@@ -79,9 +79,9 @@ const MoleculePanel = () => {
       <div className="molecule-body" ref={refContainer}>
         <Slider onSlideChange={(event) => setCurrentIndex(event.slideIndex)}>
           {molecules &&
-            molecules.map((mol, index) => (
+            molecules.map((mol) => (
               <div
-                key={mol.mf + index}
+                key={mol.key}
                 onDoubleClick={(event) =>
                   handleOpen(event, mol.key, mol.molfile)
                 }
