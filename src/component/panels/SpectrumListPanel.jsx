@@ -9,8 +9,8 @@ import { useChartData } from '../context/ChartContext';
 import {
   CHANGE_VISIBILITY,
   CHANGE_PEAKS_MARKERS_VISIBILITY,
-  CHNAGE_ACTIVE_SPECTRUM,
-  CHNAGE_SPECTRUM_COLOR,
+  CHANGE_ACTIVE_SPECTRUM,
+  CHANGE_SPECTRUM_COLOR,
   DELETE_SPECTRA,
 } from '../reducer/Actions';
 
@@ -59,10 +59,10 @@ const SpectrumListPanel = () => {
   const handleChangeActiveSpectrum = useCallback(
     (d) => {
       if (activated && activated.id === d.id) {
-        dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data: null });
+        dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: null });
         setActivated(null);
       } else {
-        dispatch({ type: CHNAGE_ACTIVE_SPECTRUM, data: { id: d.id } });
+        dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: { id: d.id } });
         setActivated({ id: d.id });
       }
     },
@@ -72,7 +72,7 @@ const SpectrumListPanel = () => {
     (color) => {
       if (selectedSpectrumData !== null) {
         dispatch({
-          type: CHNAGE_SPECTRUM_COLOR,
+          type: CHANGE_SPECTRUM_COLOR,
           data: { id: selectedSpectrumData.id, color: color.hex },
         });
       }

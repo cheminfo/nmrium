@@ -28,8 +28,8 @@ import {
   FULL_ZOOM_OUT,
   CHANGE_VISIBILITY,
   CHANGE_PEAKS_MARKERS_VISIBILITY,
-  CHNAGE_ACTIVE_SPECTRUM,
-  CHNAGE_SPECTRUM_COLOR,
+  CHANGE_ACTIVE_SPECTRUM,
+  CHANGE_SPECTRUM_COLOR,
   ADD_INTEGRAL,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
   SET_ZOOM_FACTOR,
@@ -321,7 +321,7 @@ const zoomOut = (state) => {
 };
 
 // TODO: this is really strange
-const handelSpectrumVisibility = (state, data) => {
+const handleSpectrumVisibility = (state, data) => {
   return produce(state, (draft) => {
     for (let datum of draft.data) {
       if (data.some((sData) => sData.id === datum.id)) {
@@ -347,7 +347,7 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
   });
 };
 
-const handelChangeActiveSpectrum = (state, activeSpectrum) => {
+const handleChangeActiveSpectrum = (state, activeSpectrum) => {
   return produce(state, (draft) => {
     if (activeSpectrum) {
       AnalysisObj.getDatum1D(activeSpectrum.id).isVisible = true;
@@ -360,7 +360,7 @@ const handelChangeActiveSpectrum = (state, activeSpectrum) => {
   });
 };
 
-const handelChangeSpectrumColor = (state, { id, color }) => {
+const handleChangeSpectrumColor = (state, { id, color }) => {
   return produce(state, (draft) => {
     const index = draft.data.findIndex((d) => d.id === id);
     if (index !== -1) {
@@ -407,20 +407,20 @@ const handleToggleRealImaginaryVisibility = (state) => {
   });
 };
 
-const handelAddMolecule = (state, molfile) => {
+const handleAddMolecule = (state, molfile) => {
   AnalysisObj.addMolfile(molfile);
   return produce(state, (draft) => {
     draft.molecules = AnalysisObj.getMolecules();
   });
 };
 
-const handeleSetMolecule = (state, molfile, key) => {
+const handleSetMolecule = (state, molfile, key) => {
   return produce(state, (draft) => {
     draft.molecules = AnalysisObj.setMolfile(molfile, key);
   });
 };
 
-const handeleDeleteMolecule = (state, key) => {
+const handleDeleteMolecule = (state, key) => {
   return produce(state, (draft) => {
     const index = draft.molecules.findIndex((molecule) => molecule.key === key);
     if (index !== -1) {
@@ -442,7 +442,7 @@ function setDomain(draft) {
   draft.yDomains = domain.yDomains;
 }
 
-const handelDeleteSpectra = (state) => {
+const handleDeleteSpectra = (state) => {
   return produce(state, (draft) => {
     const { activeSpectrum } = draft;
 
@@ -595,15 +595,15 @@ export const spectrumReducer = (state, action) => {
       return shiftSpectrumAlongXAxis(state, action.shiftValue);
 
     case CHANGE_VISIBILITY:
-      return handelSpectrumVisibility(state, action.data);
+      return handleSpectrumVisibility(state, action.data);
 
     case CHANGE_PEAKS_MARKERS_VISIBILITY:
       return handleChangePeaksMarkersVisibility(state, action.data);
-    case CHNAGE_ACTIVE_SPECTRUM:
-      return handelChangeActiveSpectrum(state, action.data);
+    case CHANGE_ACTIVE_SPECTRUM:
+      return handleChangeActiveSpectrum(state, action.data);
 
-    case CHNAGE_SPECTRUM_COLOR:
-      return handelChangeSpectrumColor(state, action.data);
+    case CHANGE_SPECTRUM_COLOR:
+      return handleChangeSpectrumColor(state, action.data);
     case TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return handleToggleRealImaginaryVisibility(state);
     case SET_ZOOM_FACTOR:
@@ -616,16 +616,16 @@ export const spectrumReducer = (state, action) => {
       return handleChangeSpectrumDisplayMode(state);
 
     case ADD_MOLECULE:
-      return handelAddMolecule(state, action.molfile);
+      return handleAddMolecule(state, action.molfile);
 
     case SET_MOLECULE:
-      return handeleSetMolecule(state, action.molfile, action.key);
+      return handleSetMolecule(state, action.molfile, action.key);
 
     case DELETE_MOLECULE:
-      return handeleDeleteMolecule(state, action.key);
+      return handleDeleteMolecule(state, action.key);
 
     case DELETE_SPECTRA:
-      return handelDeleteSpectra(state);
+      return handleDeleteSpectra(state);
 
     // undo and redo operation
     case UNDO:
