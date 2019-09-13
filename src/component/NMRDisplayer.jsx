@@ -37,7 +37,13 @@ import Panels from './panels/Panels';
 import Tools from './tool/Tools';
 import { DimensionProvider } from './context/DimensionsContext';
 
-const NMRDisplayer = ({ margin, width, height, data, mode }) => {
+const NMRDisplayer = ({
+  margin: marginProp,
+  width: widthProp,
+  height: heightProp,
+  data: dataProp,
+  mode: modeProp,
+}) => {
   const refSVG = useRef();
   const refChartPanel = useRef();
   const fullScreenRef = useRef();
@@ -61,50 +67,48 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   });
 
   const initialState = {
-    _data: [],
-    _xDomain: [],
-    _yDomain: [],
-    _yDomains: [],
-    _originDomain: {},
-    _selectedTool: options.zoom.id,
-    _peakNotations: [],
-    _width: width,
-    _height: height,
-    _margin: margin,
-    _activeSpectrum: null,
-    _mode: mode,
-    _zoomFactor: {},
-    _molecules: [],
+    data: [],
+    xDomain: [],
+    yDomain: [],
+    yDomains: [],
+    originDomain: {},
+    selectedTool: options.zoom.id,
+    peakNotations: [],
+    width: widthProp,
+    height: heightProp,
+    margin: marginProp,
+    activeSpectrum: null,
+    mode: modeProp,
+    zoomFactor: {},
+    molecules: [],
     verticalAlign: 0,
-  };
-
-  const _history = {
-    past: [],
-    present: null,
-    future: [],
-    hasUndo: false,
-    hasRedo: false,
   };
 
   const [state, dispatch] = useReducer(spectrumReducer, {
     ...initialState,
-    history: _history,
+    history: {
+      past: [],
+      present: null,
+      future: [],
+      hasUndo: false,
+      hasRedo: false,
+    },
   });
 
   const {
-    _data,
-    _xDomain,
-    _yDomain,
-    _originDomain,
-    _selectedTool,
-    _width,
-    _height,
-    _activeSpectrum,
-    _yDomains,
-    _integrals,
-    _mode,
-    _zoomFactor,
-    _molecules,
+    data,
+    xDomain,
+    yDomain,
+    originDomain,
+    selectedTool,
+    width,
+    height,
+    activeSpectrum,
+    yDomains,
+    integrals,
+    mode,
+    zoomFactor,
+    molecules,
     verticalAlign,
     history,
   } = state;
@@ -116,7 +120,7 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
           dispatch({
             type: SET_DIMENSIONS,
             width: refChartPanel.current.clientWidth,
-            height: window.innerHeight - margin.bottom,
+            height: window.innerHeight - marginProp.bottom,
           });
         }, 100);
       } else {
@@ -133,24 +137,24 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
     window.addEventListener('resize', handleResize);
 
     return () => window.removeEventListener('resize', handleResize);
-  }, [chartDiemensions, height, width, isFullscreen, margin]);
+  }, [chartDiemensions, heightProp, widthProp, isFullscreen, marginProp]);
 
   useEffect(() => {
-    if (data) {
-      dispatch({ type: INITIATE, data: { AnalysisObj: data } });
+    if (dataProp) {
+      dispatch({ type: INITIATE, data: { AnalysisObj: dataProp } });
     }
-  }, [data]);
+  }, [dataProp]);
 
   useLayoutEffect(() => {
     setChartDimensions({
       width: refChartPanel.current.clientWidth,
       height: refChartPanel.current.clientHeight,
     });
-  }, [data]);
+  }, [dataProp]);
 
   useEffect(() => {
     dispatch({ type: SET_WIDTH, width: refChartPanel.current.clientWidth });
-  }, [width, height]);
+  }, [widthProp, heightProp]);
 
   const mouseMove = useCallback((e) => {
     e.stopPropagation();
@@ -169,43 +173,46 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   const getScale = useMemo(() => {
     return (spectrumId = null) => {
       const range =
-        _mode === 'RTL'
-          ? [_width - margin.right, margin.left]
-          : [margin.left, _width - margin.right];
+        mode === 'RTL'
+          ? [width - marginProp.right, marginProp.left]
+          : [marginProp.left, width - marginProp.right];
 
-      const x = d3.scaleLinear(_xDomain, range);
+      const x = d3.scaleLinear(xDomain, range);
       let y;
       if (spectrumId == null) {
-        y = d3.scaleLinear(_yDomain, [_height - margin.bottom, margin.top]);
-      } else if (_activeSpectrum == null || _activeSpectrum.id !== spectrumId) {
-        const index = _data.findIndex((d) => d.id === spectrumId);
-        y = d3.scaleLinear(_yDomains[index], [
-          _height - margin.bottom,
-          margin.top,
+        y = d3.scaleLinear(yDomain, [
+          height - marginProp.bottom,
+          marginProp.top,
+        ]);
+      } else if (activeSpectrum == null || activeSpectrum.id !== spectrumId) {
+        const index = data.findIndex((d) => d.id === spectrumId);
+        y = d3.scaleLinear(yDomains[index], [
+          height - marginProp.bottom,
+          marginProp.top,
         ]);
       } else {
-        const index = _data.findIndex((d) => d.id === _activeSpectrum.id);
-        y = d3.scaleLinear(_yDomains[index], [
-          _height - margin.bottom,
-          margin.top,
+        const index = data.findIndex((d) => d.id === activeSpectrum.id);
+        y = d3.scaleLinear(yDomains[index], [
+          height - marginProp.bottom,
+          marginProp.top,
         ]);
       }
       return { x, y };
     };
   }, [
-    _activeSpectrum,
-    _data,
-    _mode,
-    _width,
-    _xDomain,
-    _yDomain,
-    _yDomains,
-    _height,
-    margin,
+    activeSpectrum,
+    data,
+    mode,
+    width,
+    xDomain,
+    yDomain,
+    yDomains,
+    height,
+    marginProp,
   ]);
 
   const mouseClick = () => {
-    if (_selectedTool === options.peakPicking.id) {
+    if (selectedTool === options.peakPicking.id) {
       dispatch({
         type: PEAK_PICKING,
         mouseCoordinates,
@@ -221,21 +228,21 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
   return (
     <DispatchProvider value={dispatch}>
       <DimensionProvider
-        value={{ margin: margin, width: _width, height: _height }}
+        value={{ margin: marginProp, width: width, height: height }}
       >
         <ChartDataProvider
           value={{
-            data: _data,
-            xDomain: _xDomain,
-            yDomain: _yDomain,
+            data: data,
+            xDomain: xDomain,
+            yDomain: yDomain,
             getScale: getScale,
-            activeSpectrum: _activeSpectrum,
+            activeSpectrum: activeSpectrum,
             verticalAlign: verticalAlign,
-            mode: _mode,
-            zoomFactor: _zoomFactor,
+            mode: mode,
+            zoomFactor: zoomFactor,
             history: history,
-            molecules: _molecules,
-            originDomain: _originDomain,
+            molecules: molecules,
+            originDomain: originDomain,
           }}
         >
           <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
@@ -266,28 +273,30 @@ const NMRDisplayer = ({ margin, width, height, data, mode }) => {
                     ref={refSVG}
                     onMouseLeave={mouseMoveLeave}
                     onClick={mouseClick}
-                    width={_width}
-                    height={_height}
+                    width={width}
+                    height={height}
                   >
                     <defs>
                       <clipPath id="clip">
                         {/* - margin.top - margin.bottom */}
                         <rect
-                          width={`${_width - margin.left - margin.right}`}
-                          height={`${_height}`}
-                          x={`${margin.left}`}
-                          y={`${margin.top}`}
+                          width={`${width -
+                            marginProp.left -
+                            marginProp.right}`}
+                          height={`${height}`}
+                          x={`${marginProp.left}`}
+                          y={`${marginProp.top}`}
                         />
                       </clipPath>
                     </defs>
 
-                    <LinesSeries data={_data} />
-                    <IntegralsSeries data={_data} integrals={_integrals} />
+                    <LinesSeries data={data} />
+                    <IntegralsSeries data={data} integrals={integrals} />
                     <g className="container">
-                      <XAxis showGrid={true} mode={_mode} />
+                      <XAxis showGrid={true} mode={mode} />
                       <YAxis label="PPM" show={false} />
                       <Tools
-                        selectedTool={_selectedTool}
+                        selectedTool={selectedTool}
                         mouseCoordinates={mouseCoordinates}
                       />
                     </g>
