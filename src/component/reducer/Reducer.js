@@ -1,5 +1,3 @@
-import { log } from 'util';
-
 import { produce } from 'immer';
 import * as d3 from 'd3';
 
@@ -72,7 +70,6 @@ const getScale = ({ xDomain, yDomain, width, height, margin, mode }) => {
 
 const initiate = (state, data) => {
   AnalysisObj = data.AnalysisObj;
-  log('app:Reducer');
   return produce(state, (draft) => {
     const spectraData = AnalysisObj.getData1d();
     const domain = getDomain(spectraData);
@@ -90,23 +87,19 @@ const initiate = (state, data) => {
 const saveDataAsJson = (state) => {
   const data = AnalysisObj.toJSON();
 
-  try {
-    const fileData = JSON.stringify(data, undefined, 2);
-    const blob = new Blob([fileData], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.download = 'experiment.json';
-    link.href = url;
-    link.dispatchEvent(
-      new MouseEvent(`click`, {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-      }),
-    );
-  } catch (e) {
-    log(e);
-  }
+  const fileData = JSON.stringify(data, undefined, 2);
+  const blob = new Blob([fileData], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.download = 'experiment.json';
+  link.href = url;
+  link.dispatchEvent(
+    new MouseEvent(`click`, {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+    }),
+  );
 
   return state;
 };
@@ -478,7 +471,6 @@ const handleChangeSpectrumDisplayMode = (state) => {
 const handleHistoryUndo = (state) => {
   const { past, present, future } = state.history;
   const previous = past[past.length - 1];
-  log(present);
   const newPast = past.slice(0, past.length - 1);
   const newfuture = [present, ...future];
 
@@ -524,8 +516,6 @@ const handleHistoryRedo = (state) => {
 };
 
 const handleHistorySet = (historyDraft, newValue) => {
-  log(historyDraft);
-
   if (newValue === historyDraft.present) return;
 
   if (historyDraft.present) {

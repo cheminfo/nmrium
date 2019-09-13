@@ -34,7 +34,6 @@ export class Analysis {
       ? MoleculeManager.fromJSON(json.molecules)
       : [];
 
-    console.log(molecules);
     return new Analysis(data1d, molecules);
   }
 
@@ -105,16 +104,10 @@ export class Analysis {
   setMolfile(molfile, key) {
     // try to parse molfile
     // this will throw if the molecule can not be parsed !
-    // console.log(index);
     let molecule = Molecule.fromMolfile(molfile);
-    // console.log(molecule)
     let fragments = molecule.getFragments();
-    // console.log(fragments)
-    // console.log(this.molecules.filter(index, 1));
 
     this.molecules = this.molecules.filter((m) => m.key !== key);
-
-    console.log(this.molecules);
 
     for (let fragment of fragments) {
       this.molecules.push(
