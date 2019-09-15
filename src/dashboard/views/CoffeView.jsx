@@ -25,9 +25,6 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
 import NMRDisplayer from '../../component/NMRDisplayer.jsx';
 import { Analysis } from '../../data/Analysis';
-const width = 800;
-const height = 400;
-const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
   return new Promise((resolve, reject) => {
@@ -78,8 +75,8 @@ const CoffeView = () => {
                 <ClipLoader
                   css={{
                     position: 'absolute',
-                    left: width / 2.5,
-                    top: (height + 150) / 2,
+                    left: 350,
+                    top: 275,
                   }}
                   sizeUnit={'px'}
                   size={30}
@@ -87,14 +84,7 @@ const CoffeView = () => {
                   loading={isLoading}
                 />
 
-                <NMRDisplayer
-                  width={width}
-                  height={height}
-                  data={data}
-                  margin={margin}
-                  mode="RTL"
-                  stackedMode={true}
-                />
+                <NMRDisplayer data={data} stackedMode={true} />
               </CardBody>
             </Card>
           </Col>

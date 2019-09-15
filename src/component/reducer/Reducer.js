@@ -6,6 +6,7 @@ import { Datum1D } from '../../data/data1d/Datum1D';
 import { Data1DManager } from '../../data/data1d/Data1DManager';
 import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';
+import { options } from '../toolbar/FunctionToolBar';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
 import {
@@ -79,8 +80,7 @@ const initiate = (state, data) => {
     draft.yDomain = domain.y;
     draft.originDomain = domain;
     draft.yDomains = domain.yDomains;
-    draft.mode =
-      spectraData && spectraData[0] && spectraData[0].isFid ? 'LTR' : 'RTL';
+    setMode(draft);
   });
 };
 
@@ -542,6 +542,36 @@ const handleHistoryReset = (state, action) => {
 //////////////////////////////////////////////////////////////////////
 //////////////// end undo and redo functions /////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+export const initialState = {
+  data: null,
+  xDomain: [],
+  yDomain: [],
+  yDomains: [],
+  originDomain: {},
+  selectedTool: options.zoom.id,
+  peakNotations: [],
+  width: null,
+  height: null,
+  margin: {
+    top: 10,
+    right: 20,
+    bottom: 30,
+    left: 0,
+  },
+  activeSpectrum: null,
+  mode: 'RTL',
+  zoomFactor: {},
+  molecules: [],
+  verticalAlign: 0,
+  history: {
+    past: [],
+    present: null,
+    future: [],
+    hasUndo: false,
+    hasRedo: false,
+  },
+};
 
 export const spectrumReducer = (state, action) => {
   switch (action.type) {

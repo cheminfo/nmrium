@@ -13,24 +13,21 @@ import BrushTool from './BrushTool';
 
 const Tools = ({ disabled }) => {
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
-  const { width, height, margin } = useDimension();
+  const { width, height } = useDimension();
   const dispatch = useDispatch();
   const state = useChartData();
   const selectedTool = state.selectedTool;
-  const mouseMove = useCallback(
-    (e) => {
-      e.stopPropagation();
-      e.nativeEvent.stopImmediatePropagation();
-      const boundingRect = e.target.getBoundingClientRect();
-      const x = e.clientX - boundingRect.x + margin.left;
-      const y = e.clientY - boundingRect.y + margin.top;
+  const mouseMove = useCallback((e) => {
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+    const boundingRect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - boundingRect.x;
+    const y = e.clientY - boundingRect.y;
 
-      requestAnimationFrame(() => {
-        setMouseCoordinates({ x, y });
-      }, 60);
-    },
-    [margin.left, margin.top],
-  );
+    requestAnimationFrame(() => {
+      setMouseCoordinates({ x, y });
+    }, 60);
+  }, []);
 
   const mouseMoveLeave = useCallback(() => {
     setMouseCoordinates({ x: 0, y: 0 });
@@ -58,6 +55,9 @@ const Tools = ({ disabled }) => {
         onMouseMove={mouseMove}
         onMouseLeave={mouseMoveLeave}
         onClick={mouseClick}
+        style={{
+          cursor: 'crosshair',
+        }}
         width={width}
         height={height}
       >

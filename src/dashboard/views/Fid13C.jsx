@@ -25,10 +25,6 @@ import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
 import NMRDisplayer from '../../component/NMRDisplayer.jsx';
 import { Analysis } from '../../data/Analysis.js';
 
-const width = 800;
-const height = 400;
-const margin = { top: 10, right: 20, bottom: 30, left: 0 };
-
 function loadData() {
   return new Promise((resolve, reject) => {
     fetch('/json-files/13CFID.json')
@@ -72,13 +68,7 @@ const Spectrum13C = () => {
                 <p className="category">13C Spectrum</p>
               </CardHeader>
               <CardBody>
-                <NMRDisplayer
-                  width={width}
-                  height={height}
-                  data={data}
-                  margin={margin}
-                  mode="RTL"
-                />
+                <NMRDisplayer data={data} />
               </CardBody>
             </Card>
           </Col>

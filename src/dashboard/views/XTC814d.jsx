@@ -25,19 +25,18 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
 import NMRDisplayer from '../../component/NMRDisplayer.jsx';
 import { Analysis } from '../../data/Analysis';
+
 const width = 800;
 const height = 400;
-const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
   return new Promise((resolve, reject) => {
     fetch('/json-files/XTC.json')
       .then((response) => checkStatus(response) && response.json())
       .then((data) => {
-        Analysis.build(data).then((obj)=>{
+        Analysis.build(data).then((obj) => {
           resolve(obj);
-
-        })
+        });
       })
       .catch((err) => {
         reject(err);
@@ -89,14 +88,7 @@ const XTC814d = () => {
                   loading={isLoading}
                 />
 
-                <NMRDisplayer
-                  width={width}
-                  height={height}
-                  data={data}
-                  margin={margin}
-                  mode="RTL"
-                  stackedMode={true}
-                />
+                <NMRDisplayer data={data} stackedMode={true} />
               </CardBody>
             </Card>
           </Col>

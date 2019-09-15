@@ -11,54 +11,21 @@ import SplitPane from 'react-split-pane';
 
 import './css/spectrum-chart.css';
 import { ChartDataProvider } from './context/ChartContext';
-import { spectrumReducer } from './reducer/Reducer';
+import { spectrumReducer, initialState } from './reducer/Reducer';
 import { INITIATE, SET_WIDTH, SET_DIMENSIONS } from './reducer/Actions';
 import { DispatchProvider, useDispatch } from './context/DispatchContext';
 import DropZone from './DropZone';
 import ToolBar from './toolbar/ToolBar';
-import { options } from './toolbar/FunctionToolBar';
 import Panels from './panels/Panels';
 import Tools from './tool/Tools';
 import { DimensionProvider } from './context/DimensionsContext';
 import NMRChart from './NMRChart';
 
-const NMRDisplayer = ({
-  margin: marginProp,
-  width: widthProp,
-  height: heightProp,
-  data: dataProp,
-  mode: modeProp,
-}) => {
+const NMRDisplayer = (props) => {
+  const { data: dataProp } = props;
   const [isResizeEventStart, setResizeEventStart] = useState(false);
 
-  const initialState = {
-    data: [],
-    xDomain: [],
-    yDomain: [],
-    yDomains: [],
-    originDomain: {},
-    selectedTool: options.zoom.id,
-    peakNotations: [],
-    width: widthProp,
-    height: heightProp,
-    margin: marginProp,
-    activeSpectrum: null,
-    mode: modeProp,
-    zoomFactor: {},
-    molecules: [],
-    verticalAlign: 0,
-  };
-
-  const [state, dispatch] = useReducer(spectrumReducer, {
-    ...initialState,
-    history: {
-      past: [],
-      present: null,
-      future: [],
-      hasUndo: false,
-      hasRedo: false,
-    },
-  });
+  const [state, dispatch] = useReducer(spectrumReducer, initialState);
 
   const {
     data,
@@ -69,6 +36,7 @@ const NMRDisplayer = ({
     activeSpectrum,
     yDomains,
     mode,
+    margin,
   } = state;
 
   useEffect(() => {
@@ -81,27 +49,24 @@ const NMRDisplayer = ({
     return (spectrumId = null) => {
       const range =
         mode === 'RTL'
-          ? [width - marginProp.right, marginProp.left]
-          : [marginProp.left, width - marginProp.right];
+          ? [width - margin.right, margin.left]
+          : [margin.left, width - margin.right];
 
       const x = d3.scaleLinear(xDomain, range);
       let y;
       if (spectrumId == null) {
-        y = d3.scaleLinear(yDomain, [
-          height - marginProp.bottom,
-          marginProp.top,
-        ]);
+        y = d3.scaleLinear(yDomain, [height - margin.bottom, margin.top]);
       } else if (activeSpectrum == null || activeSpectrum.id !== spectrumId) {
         const index = data.findIndex((d) => d.id === spectrumId);
         y = d3.scaleLinear(yDomains[index], [
-          height - marginProp.bottom,
-          marginProp.top,
+          height - margin.bottom,
+          margin.top,
         ]);
       } else {
         const index = data.findIndex((d) => d.id === activeSpectrum.id);
         y = d3.scaleLinear(yDomains[index], [
-          height - marginProp.bottom,
-          marginProp.top,
+          height - margin.bottom,
+          margin.top,
         ]);
       }
       return { x, y };
@@ -115,7 +80,7 @@ const NMRDisplayer = ({
     yDomain,
     yDomains,
     height,
-    marginProp,
+    margin,
   ]);
 
   const handleSplitPanelDragFinished = useCallback((size) => {
@@ -126,7 +91,7 @@ const NMRDisplayer = ({
   return (
     <DispatchProvider value={dispatch}>
       <DimensionProvider
-        value={{ margin: marginProp, width: width, height: height }}
+        value={{ margin: margin, width: width, height: height }}
       >
         <ChartDataProvider
           value={{
@@ -163,7 +128,7 @@ const NMRDisplayer = ({
 function ChartPanel({ tools = true }) {
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
-      <div style={{ width: '100%' }}>
+      <div style={{ width: '100%', height: '400px' }}>
         <NMRChart />
       </div>
     );
@@ -189,13 +154,5 @@ function ChartPanel({ tools = true }) {
     </div>
   );
 }
-
-NMRDisplayer.defaultProps = {
-  width: 800,
-  height: 800,
-  data: null,
-  margin: { top: 40, right: 40, bottom: 40, left: 40 },
-  mode: 'RTL',
-};
 
 export default NMRDisplayer;

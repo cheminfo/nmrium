@@ -25,9 +25,6 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import PanelHeader from '../components/PanelHeader/PanelHeader.jsx';
 import NMRDisplayer from '../../component/NMRDisplayer.jsx';
 import { Analysis } from '../../data/Analysis.js';
-const width = 800;
-const height = 400;
-const margin = { top: 10, right: 20, bottom: 30, left: 0 };
 
 function loadData() {
   return new Promise((resolve, reject) => {
@@ -51,7 +48,7 @@ function checkStatus(response) {
 }
 
 const CoupledDecoupled13C = () => {
-  const [_data, setData] = useState(null);
+  const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -77,21 +74,15 @@ const CoupledDecoupled13C = () => {
                 <ClipLoader
                   css={{
                     position: 'absolute',
-                    left: width / 2.5,
-                    top: (height + 150) / 2,
+                    left: 350,
+                    top: 275,
                   }}
                   sizeUnit={'px'}
                   size={30}
                   color={'#2ca8ff'}
                   loading={isLoading}
                 />
-                <NMRDisplayer
-                  width={width}
-                  height={height}
-                  data={_data}
-                  margin={margin}
-                  mode="RTL"
-                />
+                <NMRDisplayer data={data} />
               </CardBody>
             </Card>
           </Col>
