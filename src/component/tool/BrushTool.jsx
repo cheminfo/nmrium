@@ -43,15 +43,11 @@ const BrushTool = ({ isActive }) => {
     .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
 
   const brushEnd = useCallback(() => {
-    // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+    console.log('brushend');
     if (!currentEvent.selection) {
       return;
     }
     const [x1, x2] = currentEvent.selection;
-    // const scale = d3.scaleLinear(this.domain.x, [
-    //   this.width - this.margin.right,
-    //   this.margin.left
-    // ]);
     const scale = getScale().x;
 
     const range =
@@ -64,10 +60,7 @@ const BrushTool = ({ isActive }) => {
   }, [brush, getScale, mode, dispatch]);
 
   const zoomed = useCallback(() => {
-    // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-    // let t = currentEvent.transform;
-    // let t = d3.zoomIdentity.translate(0,height/2).scale(currentEvent.transform.k).translate(0,-d3.select('.line').node().getBBox().height);
-
+    console.log('zoomed');
     const scale = d3.scaleLinear(originDomain.y, [
       height - margin.bottom,
       margin.top,

@@ -13,7 +13,6 @@ const IntegralsSeries = () => {
     data,
   } = useChartData();
 
-  console.log('render integrals');
   const Integrals = useMemo(() => {
     const makePath = (data) => {
       const { id, x, y } = data;
