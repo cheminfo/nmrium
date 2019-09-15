@@ -23,12 +23,7 @@ import LinesSeries from './LinesSeries';
 import IntegralsSeries from './IntegralsSeries';
 import { ChartDataProvider } from './context/ChartContext';
 import { spectrumReducer } from './reducer/Reducer';
-import {
-  INITIATE,
-  SET_WIDTH,
-  PEAK_PICKING,
-  SET_DIMENSIONS,
-} from './reducer/Actions';
+import { INITIATE, SET_WIDTH, SET_DIMENSIONS } from './reducer/Actions';
 import { DispatchProvider } from './context/DispatchContext';
 import DropZone from './DropZone';
 import ToolBar from './toolbar/ToolBar';
@@ -48,7 +43,6 @@ const NMRDisplayer = ({
   const refChartPanel = useRef();
   const fullScreenRef = useRef();
 
-  const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
   const [chartDiemensions, setChartDimensions] = useState({});
   const [isResizeEventStart, setResizeEventStart] = useState(false);
 
@@ -99,18 +93,12 @@ const NMRDisplayer = ({
     data,
     xDomain,
     yDomain,
-    originDomain,
-    selectedTool,
     width,
     height,
     activeSpectrum,
     yDomains,
     integrals,
     mode,
-    zoomFactor,
-    molecules,
-    verticalAlign,
-    history,
   } = state;
 
   useEffect(() => {
@@ -156,20 +144,6 @@ const NMRDisplayer = ({
     dispatch({ type: SET_WIDTH, width: refChartPanel.current.clientWidth });
   }, [widthProp, heightProp]);
 
-  const mouseMove = useCallback((e) => {
-    e.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
-    const x = e.clientX - refChartPanel.current.getBoundingClientRect().left;
-    const y = e.clientY - refChartPanel.current.getBoundingClientRect().top;
-    requestAnimationFrame(() => {
-      setMouseCoordinates({ x, y });
-    }, 60);
-  }, []);
-
-  const mouseMoveLeave = useCallback(() => {
-    setMouseCoordinates({ x: 0, y: 0 });
-  }, []);
-
   const getScale = useMemo(() => {
     return (spectrumId = null) => {
       const range =
@@ -211,15 +185,6 @@ const NMRDisplayer = ({
     marginProp,
   ]);
 
-  const mouseClick = () => {
-    if (selectedTool === options.peakPicking.id) {
-      dispatch({
-        type: PEAK_PICKING,
-        mouseCoordinates,
-      });
-    }
-  };
-
   const handleSpiltPanelSizeChanged = useCallback((size) => {
     setResizeEventStart(false);
     dispatch({ type: SET_WIDTH, width: size });
@@ -232,17 +197,9 @@ const NMRDisplayer = ({
       >
         <ChartDataProvider
           value={{
-            data: data,
-            xDomain: xDomain,
-            yDomain: yDomain,
-            getScale: getScale,
-            activeSpectrum: activeSpectrum,
-            verticalAlign: verticalAlign,
-            mode: mode,
-            zoomFactor: zoomFactor,
-            history: history,
-            molecules: molecules,
-            originDomain: originDomain,
+            ...state,
+            getScale,
+            isResizeEventStart,
           }}
         >
           <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
@@ -268,17 +225,9 @@ const NMRDisplayer = ({
                 }}
               >
                 <div ref={refChartPanel}>
-                  <svg
-                    onMouseMove={isResizeEventStart ? null : mouseMove}
-                    ref={refSVG}
-                    onMouseLeave={mouseMoveLeave}
-                    onClick={mouseClick}
-                    width={width}
-                    height={height}
-                  >
+                  <svg ref={refSVG} width={width} height={height}>
                     <defs>
                       <clipPath id="clip">
-                        {/* - margin.top - margin.bottom */}
                         <rect
                           width={`${width -
                             marginProp.left -
@@ -292,15 +241,13 @@ const NMRDisplayer = ({
 
                     <LinesSeries data={data} />
                     <IntegralsSeries data={data} integrals={integrals} />
+
                     <g className="container">
                       <XAxis showGrid={true} mode={mode} />
                       <YAxis label="PPM" show={false} />
-                      <Tools
-                        selectedTool={selectedTool}
-                        mouseCoordinates={mouseCoordinates}
-                      />
                     </g>
                   </svg>
+                  <Tools />
                 </div>
                 <Panels />
               </SplitPane>
