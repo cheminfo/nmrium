@@ -30,7 +30,7 @@ const Tools = ({ disabled }) => {
   }, []);
 
   const mouseMoveLeave = useCallback(() => {
-    setMouseCoordinates({ x: 0, y: 0 });
+    setMouseCoordinates(null);
   }, []);
 
   const mouseClick = () => {
@@ -55,9 +55,6 @@ const Tools = ({ disabled }) => {
         onMouseMove={mouseMove}
         onMouseLeave={mouseMoveLeave}
         onClick={mouseClick}
-        style={{
-          cursor: 'crosshair',
-        }}
         width={width}
         height={height}
       >
