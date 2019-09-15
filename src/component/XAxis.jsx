@@ -11,6 +11,8 @@ const XAxis = ({ label, show, showGrid, mode }) => {
   const refAxis = useRef();
   const refGrid = useRef();
 
+  console.log('render x axis');
+
   // label = label ? label : isFID ? 'δ [ppm]' : 'time [s]';
   label = label ? label : mode === 'RTL' ? 'δ [ppm]' : 'time [s]';
 

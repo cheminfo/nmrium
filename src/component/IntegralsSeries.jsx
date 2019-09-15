@@ -4,9 +4,16 @@ import { XY } from 'ml-spectra-processing';
 
 import { useChartData } from './context/ChartContext';
 
-const IntegralsSeries = ({ data }) => {
-  const { xDomain, getScale, verticalAlign, activeSpectrum } = useChartData();
+const IntegralsSeries = () => {
+  const {
+    xDomain,
+    getScale,
+    verticalAlign,
+    activeSpectrum,
+    data,
+  } = useChartData();
 
+  console.log('render integrals');
   const Integrals = useMemo(() => {
     const makePath = (data) => {
       const { id, x, y } = data;

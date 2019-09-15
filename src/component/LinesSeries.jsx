@@ -13,6 +13,7 @@ export default function LinesSeries() {
     data,
   } = useChartData();
 
+  console.log('render line series');
   const paths = useMemo(() => {
     function makePath(data) {
       const { id, x, y } = data;

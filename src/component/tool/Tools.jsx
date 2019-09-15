@@ -11,7 +11,7 @@ import PeakNotationTool from './PeakNotationTool';
 import IntegralTool from './IntegralTool';
 import BrushTool from './BrushTool';
 
-const Tools = () => {
+const Tools = ({ disabled }) => {
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
   const { width, height, margin } = useDimension();
   const dispatch = useDispatch();
@@ -45,39 +45,45 @@ const Tools = () => {
     }
   };
 
+  if (disabled) return null;
   return (
-    <svg
+    <div
       style={{
         position: 'absolute',
         top: 0,
         left: 0,
       }}
-      onMouseMove={mouseMove}
-      onMouseLeave={mouseMoveLeave}
-      onClick={mouseClick}
-      width={width}
-      height={height}
     >
-      <Fragment>
-        {selectedTool === options.zoom.id && (
-          <Fragment>
-            <CrossLinePointer position={mouseCoordinates} />
-            <BrushTool isActive={true} />
-          </Fragment>
-        )}
+      <svg
+        onMouseMove={mouseMove}
+        onMouseLeave={mouseMoveLeave}
+        onClick={mouseClick}
+        width={width}
+        height={height}
+      >
+        <Fragment>
+          {selectedTool === options.zoom.id && (
+            <Fragment>
+              <BrushTool isActive={true} />
+            </Fragment>
+          )}
 
-        {selectedTool === options.integral.id && (
-          <IntegralTool isActive={true} />
-        )}
+          {selectedTool === options.integral.id && (
+            <IntegralTool isActive={true} />
+          )}
 
-        {selectedTool === options.peakPicking.id && (
-          <PeakNotationTool
-            position={mouseCoordinates}
-            showCursorLabel={selectedTool === options.peakPicking.id}
-          />
-        )}
-      </Fragment>
-    </svg>
+          {selectedTool === options.peakPicking.id && (
+            <PeakNotationTool
+              position={mouseCoordinates}
+              showCursorLabel={selectedTool === options.peakPicking.id}
+            />
+          )}
+        </Fragment>
+      </svg>
+      {selectedTool === options.zoom.id && (
+        <CrossLinePointer position={mouseCoordinates} />
+      )}
+    </div>
   );
 };
 

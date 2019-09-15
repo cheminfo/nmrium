@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-// import PropTypes from 'prop-types';
 import '../css/integral-tool.css';
 import { XY } from 'ml-spectra-processing';
 
@@ -87,15 +86,3 @@ const IntegralTool = () => {
 };
 
 export default IntegralTool;
-
-// IntegralTool.propTypes = {
-//   width: PropTypes.number.isRequired,
-//   height: PropTypes.number.isRequired,
-//   data: PropTypes.array.isRequired,
-//   margin: PropTypes.shape({
-//     top: PropTypes.number.isRequired,
-//     right: PropTypes.number.isRequired,
-//     bottom: PropTypes.number.isRequired,
-//     left: PropTypes.number.isRequired,
-//   }),
-// };

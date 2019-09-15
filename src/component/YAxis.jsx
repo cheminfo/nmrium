@@ -10,6 +10,8 @@ const YAxis = ({ show, label }) => {
   const { margin } = useDimension();
   const { yDomain, getScale } = useChartData();
 
+  console.log('render y axis');
+
   useEffect(() => {
     if (show) {
       // const scale = d3.scaleLinear([0,domain[1]], [height - margin.bottom, margin.top]);

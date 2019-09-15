@@ -1,36 +1,26 @@
 import * as d3 from 'd3';
 import React, {
   useEffect,
-  useRef,
   useCallback,
   useReducer,
   useState,
   useMemo,
-  useLayoutEffect,
 } from 'react';
-import PropTypes from 'prop-types';
+import { useSize, useDebounce } from 'react-use';
+import SplitPane from 'react-split-pane';
 
 import './css/spectrum-chart.css';
-import { useFullscreen, useToggle } from 'react-use';
-import SplitPane from 'react-split-pane';
-import { FaRegWindowMaximize } from 'react-icons/fa';
-
-import { Analysis } from '../data/Analysis';
-
-import YAxis from './YAxis';
-import XAxis from './XAxis';
-import LinesSeries from './LinesSeries';
-import IntegralsSeries from './IntegralsSeries';
 import { ChartDataProvider } from './context/ChartContext';
 import { spectrumReducer } from './reducer/Reducer';
 import { INITIATE, SET_WIDTH, SET_DIMENSIONS } from './reducer/Actions';
-import { DispatchProvider } from './context/DispatchContext';
+import { DispatchProvider, useDispatch } from './context/DispatchContext';
 import DropZone from './DropZone';
 import ToolBar from './toolbar/ToolBar';
 import { options } from './toolbar/FunctionToolBar';
 import Panels from './panels/Panels';
 import Tools from './tool/Tools';
 import { DimensionProvider } from './context/DimensionsContext';
+import NMRChart from './NMRChart';
 
 const NMRDisplayer = ({
   margin: marginProp,
@@ -39,26 +29,7 @@ const NMRDisplayer = ({
   data: dataProp,
   mode: modeProp,
 }) => {
-  const refSVG = useRef();
-  const refChartPanel = useRef();
-  const fullScreenRef = useRef();
-
-  const [chartDiemensions, setChartDimensions] = useState({});
   const [isResizeEventStart, setResizeEventStart] = useState(false);
-
-  const [show, toggle] = useToggle(false);
-  const isFullscreen = useFullscreen(fullScreenRef, show, {
-    onClose: () => {
-      toggle(false);
-      setTimeout(() => {
-        dispatch({
-          type: SET_DIMENSIONS,
-          width: refChartPanel.current.clientWidth,
-          height: chartDiemensions.height,
-        });
-      }, 100);
-    },
-  });
 
   const initialState = {
     data: [],
@@ -97,52 +68,14 @@ const NMRDisplayer = ({
     height,
     activeSpectrum,
     yDomains,
-    integrals,
     mode,
   } = state;
-
-  useEffect(() => {
-    function handleResize() {
-      if (isFullscreen) {
-        setTimeout(() => {
-          dispatch({
-            type: SET_DIMENSIONS,
-            width: refChartPanel.current.clientWidth,
-            height: window.innerHeight - marginProp.bottom,
-          });
-        }, 100);
-      } else {
-        setTimeout(() => {
-          dispatch({
-            type: SET_DIMENSIONS,
-            width: refChartPanel.current.clientWidth,
-            height: chartDiemensions.height,
-          });
-        }, 100);
-      }
-    }
-
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, [chartDiemensions, heightProp, widthProp, isFullscreen, marginProp]);
 
   useEffect(() => {
     if (dataProp) {
       dispatch({ type: INITIATE, data: { AnalysisObj: dataProp } });
     }
   }, [dataProp]);
-
-  useLayoutEffect(() => {
-    setChartDimensions({
-      width: refChartPanel.current.clientWidth,
-      height: refChartPanel.current.clientHeight,
-    });
-  }, [dataProp]);
-
-  useEffect(() => {
-    dispatch({ type: SET_WIDTH, width: refChartPanel.current.clientWidth });
-  }, [widthProp, heightProp]);
 
   const getScale = useMemo(() => {
     return (spectrumId = null) => {
@@ -185,7 +118,7 @@ const NMRDisplayer = ({
     marginProp,
   ]);
 
-  const handleSpiltPanelSizeChanged = useCallback((size) => {
+  const handleSplitPanelDragFinished = useCallback((size) => {
     setResizeEventStart(false);
     dispatch({ type: SET_WIDTH, width: size });
   }, []);
@@ -202,53 +135,21 @@ const NMRDisplayer = ({
             isResizeEventStart,
           }}
         >
-          <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
-            <div className="header-toolbar">
-              {!isFullscreen ? (
-                <button type="button" onClick={toggle}>
-                  <FaRegWindowMaximize />
-                </button>
-              ) : (
-                ''
-              )}
-            </div>
+          <div style={{ backgroundColor: 'white' }}>
             <DropZone>
               <ToolBar />
               <SplitPane
+                paneStyle={{ overflow: 'hidden' }}
                 className="split-container"
                 split="vertical"
                 defaultSize="80%"
                 minSize="80%"
-                onDragFinished={handleSpiltPanelSizeChanged}
+                onDragFinished={handleSplitPanelDragFinished}
                 onDragStarted={() => {
                   setResizeEventStart(true);
                 }}
               >
-                <div ref={refChartPanel}>
-                  <svg ref={refSVG} width={width} height={height}>
-                    <defs>
-                      <clipPath id="clip">
-                        <rect
-                          width={`${width -
-                            marginProp.left -
-                            marginProp.right}`}
-                          height={`${height}`}
-                          x={`${marginProp.left}`}
-                          y={`${marginProp.top}`}
-                        />
-                      </clipPath>
-                    </defs>
-
-                    <LinesSeries data={data} />
-                    <IntegralsSeries data={data} integrals={integrals} />
-
-                    <g className="container">
-                      <XAxis showGrid={true} mode={mode} />
-                      <YAxis label="PPM" show={false} />
-                    </g>
-                  </svg>
-                  <Tools />
-                </div>
+                <ChartPanel tools={!isResizeEventStart} />
                 <Panels />
               </SplitPane>
             </DropZone>
@@ -259,18 +160,35 @@ const NMRDisplayer = ({
   );
 };
 
-NMRDisplayer.propTypes = {
-  width: PropTypes.number,
-  height: PropTypes.number,
-  data: PropTypes.objectOf(Analysis),
-  margin: PropTypes.shape({
-    top: PropTypes.number.isRequired,
-    right: PropTypes.number.isRequired,
-    bottom: PropTypes.number.isRequired,
-    left: PropTypes.number.isRequired,
-  }),
-  mode: PropTypes.oneOf(['RTL', 'LTR']),
-};
+function ChartPanel({ tools = true }) {
+  const [sizedNMRChart, { width, height }] = useSize(() => {
+    return (
+      <div style={{ width: '100%' }}>
+        <NMRChart />
+      </div>
+    );
+  });
+  const dispatch = useDispatch();
+  const [finalSize, setFinalSize] = useState();
+
+  useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
+
+  useEffect(() => {
+    if (finalSize) {
+      dispatch({
+        type: SET_DIMENSIONS,
+        ...finalSize,
+      });
+    }
+  }, [dispatch, finalSize]);
+
+  return (
+    <div>
+      {sizedNMRChart}
+      <Tools disabled={!tools} />
+    </div>
+  );
+}
 
 NMRDisplayer.defaultProps = {
   width: 800,

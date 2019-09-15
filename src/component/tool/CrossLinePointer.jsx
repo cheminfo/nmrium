@@ -5,29 +5,45 @@ import '../css/cross-line-tool.css';
 import { useDimension } from '../context/DimensionsContext';
 
 const CrossLinePointer = ({ position }) => {
-  const { height, width, margin } = useDimension();
+  const { height, width } = useDimension();
 
   return (
     position.x !== 0 &&
     position.y !== 0 && (
-      <g key="crossLine">
-        <line
-          className="vertical_line"
-          x1={position.x}
-          y1="0"
-          x2={position.x}
-          y2={`${height - margin.top}`}
-          key="vertical_line"
-        />
-        <line
-          className="vertical_line"
-          x1="0"
-          y1={position.y}
-          x2={`${width}`}
-          y2={position.y}
-          key="horizontal_line"
-        />
-      </g>
+      <div
+        className="moving-element"
+        key="crossLine"
+        style={{
+          transform: `translate(${-width + position.x}px, ${-height +
+            position.y}px)`,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          pointerEvents: 'none',
+          overflow: 'visible',
+          width: 2 * width,
+          height: 2 * height,
+        }}
+      >
+        <svg width={2 * width} height={2 * height}>
+          <line
+            className="vertical_line"
+            x1={width}
+            y1="0"
+            x2={width}
+            y2={height * 2}
+            key="vertical_line"
+          />
+          <line
+            className="vertical_line"
+            x1="0"
+            y1={height}
+            x2={width * 2}
+            y2={height}
+            key="horizontal_line"
+          />
+        </svg>
+      </div>
     )
   );
 };
