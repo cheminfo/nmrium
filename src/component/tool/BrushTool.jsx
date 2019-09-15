@@ -10,11 +10,17 @@ import {
   SET_ZOOM_FACTOR,
 } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
-import { useDimension } from '../context/DimensionsContext';
 
 const BrushTool = ({ isActive }) => {
-  const { width, height, margin } = useDimension();
-  const { getScale, mode, originDomain, data } = useChartData();
+  const {
+    getScale,
+    mode,
+    originDomain,
+    data,
+    width,
+    height,
+    margin,
+  } = useChartData();
 
   const refBrush = useRef();
   const dispatch = useDispatch();
@@ -140,26 +146,4 @@ const BrushTool = ({ isActive }) => {
   );
 };
 
-// function isEqual(prevProps, nextProps) {
-//   if (JSON.stringify(prevProps).trim() === JSON.stringify(nextProps).trim()) {
-//     return true;
-//   }
-
-//   return false;
-// }
-
 export default BrushTool;
-
-// BrushTool.propTypes = {
-//   width: PropTypes.number.isRequired,
-//   height: PropTypes.number.isRequired,
-//   margin: PropTypes.shape({
-//     top: PropTypes.number.isRequired,
-//     right: PropTypes.number.isRequired,
-//     bottom: PropTypes.number.isRequired,
-//     left: PropTypes.number.isRequired,
-//   }),
-//   // domain: PropTypes.object.isRequired,
-//   // originDomain: PropTypes.object.isRequired,
-//   // getScale: PropTypes.func.isRequired,
-// };

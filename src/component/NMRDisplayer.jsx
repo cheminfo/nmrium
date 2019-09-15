@@ -18,7 +18,6 @@ import DropZone from './DropZone';
 import ToolBar from './toolbar/ToolBar';
 import Panels from './panels/Panels';
 import Tools from './tool/Tools';
-import { DimensionProvider } from './context/DimensionsContext';
 import NMRChart from './NMRChart';
 
 const NMRDisplayer = (props) => {
@@ -90,37 +89,33 @@ const NMRDisplayer = (props) => {
 
   return (
     <DispatchProvider value={dispatch}>
-      <DimensionProvider
-        value={{ margin: margin, width: width, height: height }}
+      <ChartDataProvider
+        value={{
+          ...state,
+          getScale,
+          isResizeEventStart,
+        }}
       >
-        <ChartDataProvider
-          value={{
-            ...state,
-            getScale,
-            isResizeEventStart,
-          }}
-        >
-          <div style={{ backgroundColor: 'white' }}>
-            <DropZone>
-              <ToolBar />
-              <SplitPane
-                paneStyle={{ overflow: 'hidden' }}
-                className="split-container"
-                split="vertical"
-                defaultSize="80%"
-                minSize="80%"
-                onDragFinished={handleSplitPanelDragFinished}
-                onDragStarted={() => {
-                  setResizeEventStart(true);
-                }}
-              >
-                <ChartPanel tools={!isResizeEventStart} />
-                <Panels />
-              </SplitPane>
-            </DropZone>
-          </div>
-        </ChartDataProvider>
-      </DimensionProvider>
+        <div style={{ backgroundColor: 'white' }}>
+          <DropZone>
+            <ToolBar />
+            <SplitPane
+              paneStyle={{ overflow: 'hidden' }}
+              className="split-container"
+              split="vertical"
+              defaultSize="80%"
+              minSize="80%"
+              onDragFinished={handleSplitPanelDragFinished}
+              onDragStarted={() => {
+                setResizeEventStart(true);
+              }}
+            >
+              <ChartPanel tools={!isResizeEventStart} />
+              <Panels />
+            </SplitPane>
+          </DropZone>
+        </div>
+      </ChartDataProvider>
     </DispatchProvider>
   );
 };

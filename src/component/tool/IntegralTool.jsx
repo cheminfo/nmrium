@@ -6,11 +6,18 @@ import { XY } from 'ml-spectra-processing';
 import { useDispatch } from '../context/DispatchContext';
 import { ADD_INTEGRAL } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
-import { useDimension } from '../context/DimensionsContext';
 
 const IntegralTool = () => {
-  const { width, height, margin } = useDimension();
-  const { getScale, mode, data, activeSpectrum, isActive } = useChartData();
+  const {
+    getScale,
+    mode,
+    data,
+    activeSpectrum,
+    isActive,
+    width,
+    height,
+    margin,
+  } = useChartData();
 
   const refBrush = useRef();
   const dispatch = useDispatch();

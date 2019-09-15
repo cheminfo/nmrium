@@ -3,14 +3,10 @@ import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 
 import { useChartData } from './context/ChartContext';
-import { useDimension } from './context/DimensionsContext';
 
 const YAxis = ({ show, label }) => {
   const refAxis = useRef();
-  const { margin } = useDimension();
-  const { yDomain, getScale } = useChartData();
-
-  console.log('render y axis');
+  const { yDomain, getScale, margin } = useChartData();
 
   useEffect(() => {
     if (show) {

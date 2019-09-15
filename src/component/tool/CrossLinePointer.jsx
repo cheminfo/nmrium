@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import '../css/cross-line-tool.css';
-import { useDimension } from '../context/DimensionsContext';
+import { useChartData } from '../context/ChartContext';
 
 const CrossLinePointer = ({ position }) => {
-  const { height, width, margin } = useDimension();
+  const { height, width, margin } = useChartData();
 
   if (
     !position ||

@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useDimension } from './context/DimensionsContext';
 import LinesSeries from './LinesSeries';
 import IntegralsSeries from './IntegralsSeries';
 import XAxis from './XAxis';
@@ -8,8 +7,7 @@ import YAxis from './YAxis';
 import { useChartData } from './context/ChartContext';
 
 function NMRChart() {
-  const { width, height, margin } = useDimension();
-  const { mode } = useChartData();
+  const { mode, width, height, margin } = useChartData();
   return (
     <svg width={width} height={height}>
       <defs>

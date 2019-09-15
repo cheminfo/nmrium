@@ -3,17 +3,12 @@ import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 
 import { useChartData } from './context/ChartContext';
-import { useDimension } from './context/DimensionsContext';
 
 const XAxis = ({ label, show, showGrid, mode }) => {
-  const { height, margin, width } = useDimension();
-  const { xDomain, getScale } = useChartData();
+  const { xDomain, getScale, height, width, margin } = useChartData();
   const refAxis = useRef();
   const refGrid = useRef();
 
-  console.log('render x axis');
-
-  // label = label ? label : isFID ? 'δ [ppm]' : 'time [s]';
   label = label ? label : mode === 'RTL' ? 'δ [ppm]' : 'time [s]';
 
   const xAxis = d3
@@ -26,15 +21,6 @@ const XAxis = ({ label, show, showGrid, mode }) => {
     .ticks(10)
     .tickSize(-(height - margin.top - margin.bottom))
     .tickFormat('');
-
-  // function getScale(data) {
-  //   const scale = d3.scaleLinear(
-  //     [domain[0], domain[1]],
-  //     [width - margin.right,margin.left],
-  //   );
-
-  //   return scale;
-  // }
 
   useEffect(() => {
     if (show) {
@@ -93,7 +79,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
         />
       ),
 
-    [height, showGrid, margin.bottom],
+    [showGrid, height, margin.bottom],
   );
 
   return (

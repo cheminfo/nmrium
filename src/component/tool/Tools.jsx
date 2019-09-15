@@ -4,7 +4,6 @@ import { options } from '../toolbar/FunctionToolBar';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { PEAK_PICKING } from '../reducer/Actions';
-import { useDimension } from '../context/DimensionsContext';
 
 import CrossLinePointer from './CrossLinePointer';
 import PeakNotationTool from './PeakNotationTool';
@@ -13,10 +12,8 @@ import BrushTool from './BrushTool';
 
 const Tools = ({ disabled }) => {
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
-  const { width, height } = useDimension();
   const dispatch = useDispatch();
-  const state = useChartData();
-  const selectedTool = state.selectedTool;
+  const { selectedTool, width, height } = useChartData();
   const mouseMove = useCallback((e) => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
