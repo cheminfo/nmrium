@@ -1,12 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import '../css/cross-line-tool.css';
 import { useChartData } from '../context/ChartContext';
 
-const CrossLinePointer = ({ position }) => {
-  const { height, width, margin } = useChartData();
-
+export default function BrushTool({ position }) {
+  const { width, height, margin } = useChartData();
   if (
     !position ||
     position.y < margin.top ||
@@ -53,13 +50,4 @@ const CrossLinePointer = ({ position }) => {
       </svg>
     </div>
   );
-};
-
-export default CrossLinePointer;
-
-CrossLinePointer.propTypes = {
-  position: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-  }),
-};
+}

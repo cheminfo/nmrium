@@ -260,6 +260,7 @@ const PeakNotationTool = ({ position, showCursorLabel }) => {
     );
   }, [data, activeSpectrum, getScale, verticalAlign]);
 
+  if (!position) return null;
   return (
     <Fragment>
       <g key="peakNotification" />
