@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-import { Datum1D } from '../Datum1D';
-import { Data1DManager } from '../Data1DManager';
+import { Datum1D } from '../data1d/Datum1D';
+import { Data1DManager } from '../data1d/Data1DManager';
 
 describe('test Datum1D', () => {
   let jcamp = readFileSync(
