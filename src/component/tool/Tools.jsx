@@ -54,23 +54,19 @@ const Tools = ({ disabled }) => {
         onClick={mouseClick}
         width={width}
         height={height}
+        style={{
+          pointerEvents: 'none',
+        }}
       >
         <Fragment>
-          {selectedTool === options.zoom.id && (
-            <Fragment>
-              <BrushTool isActive={true} />
-            </Fragment>
-          )}
+          {selectedTool === options.zoom.id && <BrushTool isActive={true} />}
 
           {selectedTool === options.integral.id && (
             <IntegralTool isActive={true} />
           )}
 
           {selectedTool === options.peakPicking.id && (
-            <PeakNotationTool
-              position={mouseCoordinates}
-              showCursorLabel={selectedTool === options.peakPicking.id}
-            />
+            <PeakNotationTool position={mouseCoordinates} />
           )}
         </Fragment>
       </svg>
