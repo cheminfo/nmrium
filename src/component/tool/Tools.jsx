@@ -54,9 +54,6 @@ const Tools = ({ disabled }) => {
         onClick={mouseClick}
         width={width}
         height={height}
-        style={{
-          pointerEvents: 'none',
-        }}
       >
         <Fragment>
           {selectedTool === options.zoom.id && <BrushTool isActive={true} />}
