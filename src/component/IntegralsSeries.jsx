@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
+import * as d3 from 'd3';
 
 import { useChartData } from './context/ChartContext';
 
@@ -11,23 +12,33 @@ const IntegralsSeries = () => {
     verticalAlign,
     activeSpectrum,
     data,
+    height,
+    margin,
   } = useChartData();
 
   const Integrals = useMemo(() => {
     const makePath = (data) => {
-      const { id, x, y } = data;
-      const scale = getScale(id);
+      const { id, x, y, yDomain } = data;
+      const xScale = getScale(id).x;
+
+      console.log(yDomain);
+
+      const yScale = d3.scaleLinear(yDomain, [
+        height - margin.bottom,
+        margin.top,
+      ]);
+
       const pathPoints = XY.reduce(x, y, {
         from: xDomain[0],
         to: xDomain[1],
       });
 
-      let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
+      let path = `M ${xScale(pathPoints.x[0])} ${yScale(pathPoints.y[0])}`;
 
       path += pathPoints.x
         .slice(1)
         .map((point, i) => {
-          return ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
+          return ` L ${xScale(point)} ${yScale(pathPoints.y[i])}`;
         })
         .join('');
 
@@ -55,7 +66,12 @@ const IntegralsSeries = () => {
                 key={`integral-${d.id}-${j}`}
                 stroke="black"
                 style={{ opacity: IsActive(d.id) ? 1 : 0.2 }}
-                d={makePath({ id: d.id, x: integral.x, y: integral.y })}
+                d={makePath({
+                  id: d.id,
+                  x: integral.x,
+                  y: integral.y,
+                  yDomain: d.integralsYDomain,
+                })}
                 transform={`translate(0,${i * verticalAlign})`}
               />
             )),

@@ -64,6 +64,7 @@ body {
 .paths {
   -webkit-clip-path: url('#clip');
   clip-path: url('#clip');
+
 }
 
 .paths path {
@@ -71,6 +72,8 @@ body {
   fill: none;
   stroke-linejoin: round;
   stroke-linecap: round;
+  will-change: transform;
+
 }
 
 .axis path,

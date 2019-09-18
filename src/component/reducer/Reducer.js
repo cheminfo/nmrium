@@ -39,6 +39,7 @@ import {
   DELETE_MOLECULE,
   DELETE_SPECTRA,
   CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
+  SET_INTEGRAL_Y_DOMAIN,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -225,12 +226,22 @@ const addIntegral = (state, integralData) => {
     const index = draft.data.findIndex((d) => d.id === integralID);
     delete integralData.id;
 
+    //Integral default domain
+    // integralData.yDomain = draft.yDomain;
+    // integralData.xDomain = draft.xDomain;
+
     if (index !== -1) {
       if (draft.data[index].integrals) {
         draft.data[index].integrals.push(integralData);
       } else {
         draft.data[index].integrals = [integralData];
       }
+
+      if (!draft.data[index].integralsYDomain) {
+        draft.data[index].integralsYDomain = draft.yDomain;
+      }
+
+      // console.log(draft.data[index])
 
       AnalysisObj.getDatum1D(integralID).setIntegrals(
         draft.data[index].integrals,
@@ -464,6 +475,18 @@ const handleChangeSpectrumDisplayMode = (state) => {
   });
 };
 
+const handleChangeIntegralYDomain = (state, newYDomain) => {
+  return produce(state, (draft) => {
+    const activeSpectrum = draft.activeSpectrum;
+    if (activeSpectrum) {
+      const spectrumIndex = draft.data.findIndex(
+        (s) => s.id === activeSpectrum.id,
+      );
+      draft.data[spectrumIndex].integralsYDomain = newYDomain;
+    }
+  });
+};
+
 //////////////////////////////////////////////////////////////////////
 //////////////// start undo and redo functions ///////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -550,7 +573,7 @@ export const initialState = {
   yDomains: [],
   originDomain: {},
   selectedTool: options.zoom.id,
-  peakNotations: [],
+  // peakNotations: [],
   width: null,
   height: null,
   margin: {
@@ -656,6 +679,9 @@ export const spectrumReducer = (state, action) => {
 
     case DELETE_SPECTRA:
       return handleDeleteSpectra(state);
+
+    case SET_INTEGRAL_Y_DOMAIN:
+      return handleChangeIntegralYDomain(state, action.yDomain);
 
     // undo and redo operation
     case UNDO:

@@ -99,23 +99,23 @@ const BrushTool = ({ isActive }) => {
   }, [dispatch, originDomain]);
 
   useEffect(() => {
-    brush.extent([
-      [margin.left, margin.top],
-      [width - margin.right, height - margin.bottom],
-    ]);
-    zoom
-      .translateExtent([
-        [margin.left, margin.top],
-        [width - margin.right, height - margin.bottom],
-      ])
-      .extent([
-        [margin.left, margin.top],
-        [width - margin.right, height - margin.bottom],
-      ]);
+    // brush.extent([
+    //   [margin.left, margin.top],
+    //   [width - margin.right, height - margin.bottom],
+    // ]);
+    // zoom
+    //   .translateExtent([
+    //     [margin.left, margin.top],
+    //     [width - margin.right, height - margin.bottom],
+    //   ])
+    //   .extent([
+    //     [margin.left, margin.top],
+    //     [width - margin.right, height - margin.bottom],
+    //   ]);
 
-    d3.select(refBrush.current)
-      .selectAll('*')
-      .remove();
+    // d3.select(refBrush.current)
+    //   .selectAll('*')
+    //   .remove();
 
     if (isActive) {
       d3.select(refBrush.current)

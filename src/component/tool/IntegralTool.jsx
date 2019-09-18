@@ -4,7 +4,7 @@ import '../css/integral-tool.css';
 import { XY } from 'ml-spectra-processing';
 
 import { useDispatch } from '../context/DispatchContext';
-import { ADD_INTEGRAL } from '../reducer/Actions';
+import { ADD_INTEGRAL, SET_INTEGRAL_Y_DOMAIN } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 
 const IntegralTool = () => {
@@ -17,6 +17,7 @@ const IntegralTool = () => {
     width,
     height,
     margin,
+    originDomain,
   } = useChartData();
 
   const refBrush = useRef();
@@ -24,6 +25,11 @@ const IntegralTool = () => {
 
   const brush = d3
     .brushX()
+    .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
+  const zoom = d3
+    .zoom()
+    .scaleExtent([-Infinity, Infinity])
+    .translateExtent([[0, 0], [width - margin.right, height - margin.bottom]])
     .extent([[0, 0], [width - margin.right, height - margin.bottom]]);
 
   const brushEnd = useCallback(() => {
@@ -70,19 +76,29 @@ const IntegralTool = () => {
     }
   }, [activeSpectrum, brush.move, data, dispatch, getScale, mode]);
 
-  useEffect(() => {
-    brush.extent([
-      [margin.left, margin.top],
-      [width - margin.right, height - margin.bottom],
+  const zoomed = useCallback(() => {
+    const scale = d3.scaleLinear(originDomain.y, [
+      height - margin.bottom,
+      margin.top,
     ]);
 
-    d3.select(refBrush.current)
-      .selectAll('*')
-      .remove();
+    const t = d3.zoomIdentity
+      .translate(0, height - margin.bottom)
+      .scale(d3.event.transform.k)
+      .translate(0, -(height - margin.bottom));
 
-    d3.select(refBrush.current).call(brush);
+    const yDomain = t.rescaleY(scale).domain();
+    dispatch({ type: SET_INTEGRAL_Y_DOMAIN, yDomain: yDomain });
+  }, [dispatch, height, margin.bottom, margin.top, originDomain]);
+
+  useEffect(() => {
+    d3.select(refBrush.current)
+      .call(brush)
+      .call(zoom, d3.zoomIdentity)
+      .on('dblclick.zoom', null);
     brush.on('end', brushEnd);
-  });
+    zoom.on('zoom', zoomed);
+  }, [brush, brushEnd, zoom, zoomed]);
 
   return (
     <g

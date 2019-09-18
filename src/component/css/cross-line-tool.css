@@ -4,4 +4,6 @@
   shape-rendering: crispEdges;
   /* stroke-dasharray: 4; */
   stroke-width: 1;
+  will-change: transform;
+
 }
