@@ -48,16 +48,27 @@ const IntegralResizable = (props) => {
           ? [getScale(id).x.invert(e.layerX), to]
           : [to, getScale(id).x.invert(e.layerX)];
 
-      const integral = {
-        from: range[0],
-        to: range[1],
-        id: integralID,
-      };
-
-      dispatch({
-        type: RESIZE_INTEGRAL,
-        integral,
-      });
+      if (range[1] > range[0]) {
+        const integral = {
+          from: range[0],
+          to: range[1],
+          id: integralID,
+        };
+        dispatch({
+          type: RESIZE_INTEGRAL,
+          integral,
+        });
+      } else {
+        const integral = {
+          from,
+          to,
+          id: integralID,
+        };
+        dispatch({
+          type: RESIZE_INTEGRAL,
+          integral,
+        });
+      }
     },
     [dispatch, getScale, id, integralID, mode, to],
   );
@@ -73,15 +84,28 @@ const IntegralResizable = (props) => {
           ? [from, getScale(id).x.invert(e.layerX)]
           : [getScale(id).x.invert(e.layerX), from];
 
-      const integral = {
-        from: range[0],
-        to: range[1],
-        id: integralID,
-      };
-      dispatch({
-        type: RESIZE_INTEGRAL,
-        integral,
-      });
+      if (range[1] > range[0]) {
+        const integral = {
+          from: range[0],
+          to: range[1],
+          id: integralID,
+        };
+        dispatch({
+          type: RESIZE_INTEGRAL,
+          integral,
+        });
+      } else {
+        const integral = {
+          from,
+          to,
+          id: integralID,
+        };
+
+        dispatch({
+          type: RESIZE_INTEGRAL,
+          integral,
+        });
+      }
     },
     [dispatch, from, getScale, id, integralID, mode],
   );
