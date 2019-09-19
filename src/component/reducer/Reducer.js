@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 import * as d3 from 'd3';
+import { XY } from 'ml-spectra-processing';
 
 import { SHIFT_X } from '../../data/data1d/filter1d/filter1d-type';
 import { Datum1D } from '../../data/data1d/Datum1D';
@@ -40,6 +41,7 @@ import {
   DELETE_SPECTRA,
   CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
   SET_INTEGRAL_Y_DOMAIN,
+  RESIZE_INTEGRAL,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -222,30 +224,97 @@ const deletePeak = (state, peakData) => {
 
 const addIntegral = (state, integralData) => {
   return produce(state, (draft) => {
-    const integralID = integralData.id;
-    const index = draft.data.findIndex((d) => d.id === integralID);
-    delete integralData.id;
-
-    //Integral default domain
-    // integralData.yDomain = draft.yDomain;
-    // integralData.xDomain = draft.xDomain;
-
-    if (index !== -1) {
-      if (draft.data[index].integrals) {
-        draft.data[index].integrals.push(integralData);
-      } else {
-        draft.data[index].integrals = [integralData];
-      }
-
-      if (!draft.data[index].integralsYDomain) {
-        draft.data[index].integralsYDomain = draft.yDomain;
-      }
-
-      // console.log(draft.data[index])
-
-      AnalysisObj.getDatum1D(integralID).setIntegrals(
-        draft.data[index].integrals,
+    if (draft.activeSpectrum) {
+      const index = state.data.findIndex(
+        (d) => d.id === state.activeSpectrum.id,
       );
+
+      const data = state.data[index];
+
+      const integralResult = XY.integral(data, {
+        from: integralData.from,
+        to: integralData.to,
+        reverse: true,
+      });
+
+      const integralValue = XY.integration(data, {
+        from: integralData.from,
+        to: integralData.to,
+        reverse: true,
+      });
+
+      const integral = {
+        ...integralData,
+        ...integralResult,
+        value: integralValue,
+        id:
+          state.activeSpectrum.id +
+          Math.random()
+            .toString(36)
+            .replace('0.', ''),
+      };
+
+      if (index !== -1) {
+        if (data.integrals) {
+          draft.data[index].integrals.push(integral);
+        } else {
+          draft.data[index].integrals = [integral];
+        }
+
+        if (!data.integralsYDomain) {
+          draft.data[index].integralsYDomain = draft.yDomain;
+        }
+
+        AnalysisObj.getDatum1D(state.activeSpectrum.id).setIntegrals(
+          draft.data[index].integrals,
+        );
+      }
+    }
+  });
+};
+
+const handleResizeIntegral = (state, integralData) => {
+  return produce(state, (draft) => {
+    if (draft.activeSpectrum) {
+      const index = state.data.findIndex(
+        (d) => d.id === state.activeSpectrum.id,
+      );
+
+      const data = state.data[index];
+
+      const integralResult = XY.integral(data, {
+        from: integralData.from,
+        to: integralData.to,
+        reverse: true,
+      });
+
+      const integralValue = XY.integration(data, {
+        from: integralData.from,
+        to: integralData.to,
+        reverse: true,
+      });
+
+      const integral = {
+        ...integralData,
+        ...integralResult,
+        value: integralValue,
+      };
+
+      if (index !== -1) {
+        if (data.integrals) {
+          const integralIndex = data.integrals.findIndex(
+            (i) => i.id === integralData.id,
+          );
+          draft.data[index].integrals[integralIndex] = {
+            ...state.data[index].integrals[integralIndex],
+            ...integral,
+          };
+
+          AnalysisObj.getDatum1D(state.activeSpectrum.id).setIntegrals(
+            draft.data[index].integrals[integralIndex],
+          );
+        }
+      }
     }
   });
 };
@@ -616,6 +685,9 @@ export const spectrumReducer = (state, action) => {
 
     case ADD_INTEGRAL:
       return addIntegral(state, action.integral);
+
+    case RESIZE_INTEGRAL:
+      return handleResizeIntegral(state, action.integral);
 
     case SET_ORIGINAL_DOMAIN:
       return setOriginalDomain(state, action.domain);

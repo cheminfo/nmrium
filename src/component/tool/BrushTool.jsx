@@ -57,7 +57,7 @@ const BrushTool = ({ isActive }) => {
     d3.select(refBrush.current).call(brush.move, null); // This remove the grey brush area as soon as the selection has been done
 
     dispatch({ type: SET_X_DOMAIN, xDomain: range });
-  }, [brush, getScale, mode, dispatch]);
+  }, [getScale, mode, brush.move, dispatch]);
 
   const zoomed = useCallback(() => {
     console.log('zoomed');

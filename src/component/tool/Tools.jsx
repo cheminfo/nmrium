@@ -9,6 +9,8 @@ import CrossLinePointer from './CrossLinePointer';
 import PeakNotationTool from './PeakNotationTool';
 import IntegralTool from './IntegralTool';
 import BrushTool from './BrushTool';
+import PeaksNotations from '../PeaksNotations';
+import IntegralsSeries from '../IntegralsSeries';
 
 const Tools = ({ disabled }) => {
   const [mouseCoordinates, setMouseCoordinates] = useState({ x: 0, y: 0 });
@@ -65,6 +67,9 @@ const Tools = ({ disabled }) => {
           {selectedTool === options.peakPicking.id && (
             <PeakNotationTool position={mouseCoordinates} />
           )}
+
+          <PeaksNotations />
+          <IntegralsSeries />
         </Fragment>
       </svg>
       {selectedTool === options.zoom.id && (
