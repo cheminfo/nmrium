@@ -634,14 +634,15 @@ const handleHistoryReset = (state, action) => {
 };
 
 const handleBrushEnd = (state, action) => {
-  console.log('111111111111111111111')
   const scale = getScale(state).x;
   return produce(state, (draft) => {
-    const xDomainBoundary = [
-      scale.invert(action.startX),
-      scale.invert(action.endX),
-    ].sort();
-    draft.xDomain = xDomainBoundary;
+    const start = scale.invert(action.startX);
+    const end = scale.invert(action.endX);
+    if (start > end) {
+      draft.xDomain = [end, start];
+    } else {
+      draft.xDomain = [start, end];
+    }
   });
 };
 

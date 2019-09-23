@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useEffect,
   useReducer,
+  useState,
 } from 'react';
 
 export const BrushContext = createContext();
@@ -24,6 +25,7 @@ export function BrushTracker({
   noPropagation,
 }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [scale, setScale] = useState(1);
 
   const mouseDownHandler = useCallback(
     (event) => {
@@ -52,6 +54,28 @@ export function BrushTracker({
     [noPropagation, onDoubleClick],
   );
 
+  const isNegative = useCallback((n) => {
+    return ((n = +n) || 1 / n) < 0;
+  }, []);
+
+  const handleMouseWheel = useCallback(
+    (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+
+      const direction =
+        isNegative(event.deltaX) && isNegative(event.deltaY) ? 'up' : 'down';
+      let _scale = scale;
+      if (direction === 'up') {
+        _scale = scale + ZOOM_STEP;
+      } else {
+        _scale = scale - ZOOM_STEP;
+      }
+      setScale(_scale);
+    },
+    [isNegative, scale],
+  );
+
   useEffect(() => {
     if (state.step === 'end') {
       onBrush(state);
@@ -74,6 +98,7 @@ export function BrushTracker({
       });
     document.addEventListener('mousemove', moveCallback);
     document.addEventListener('mouseup', upCallback);
+
     return () => {
       document.removeEventListener('mousemove', moveCallback);
       document.removeEventListener('mouseup', upCallback);
@@ -87,12 +112,14 @@ export function BrushTracker({
         style={style}
         onMouseDown={mouseDownHandler}
         onDoubleClick={mouseDoubleClickHandler}
+        onWheel={handleMouseWheel}
       >
         {children}
       </div>
     </BrushContext.Provider>
   );
 }
+const ZOOM_STEP = 0.03;
 
 function reducer(state, action) {
   switch (action.type) {
@@ -134,6 +161,7 @@ function reducer(state, action) {
         };
       }
       return state;
+
     default:
       return state;
   }
