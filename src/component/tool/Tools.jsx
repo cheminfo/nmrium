@@ -58,7 +58,7 @@ const Tools = ({ disabled }) => {
         height={height}
       >
         <Fragment>
-          {selectedTool === options.zoom.id && <BrushTool isActive={true} />}
+          {/* {selectedTool === options.zoom.id && <BrushTool isActive={true} />}
 
           {selectedTool === options.integral.id && (
             <IntegralTool isActive={true} />
@@ -66,15 +66,15 @@ const Tools = ({ disabled }) => {
 
           {selectedTool === options.peakPicking.id && (
             <PeakNotationTool position={mouseCoordinates} />
-          )}
+          )} */}
 
-          <PeaksNotations />
-          <IntegralsSeries />
+          {/* <PeaksNotations />
+          <IntegralsSeries /> */}
         </Fragment>
       </svg>
-      {selectedTool === options.zoom.id && (
+      {/* {selectedTool === options.zoom.id && (
         <CrossLinePointer position={mouseCoordinates} />
-      )}
+      )} */}
     </div>
   );
 };

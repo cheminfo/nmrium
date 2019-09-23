@@ -12,13 +12,24 @@ import SplitPane from 'react-split-pane';
 import './css/spectrum-chart.css';
 import { ChartDataProvider } from './context/ChartContext';
 import { spectrumReducer, initialState } from './reducer/Reducer';
-import { INITIATE, SET_WIDTH, SET_DIMENSIONS } from './reducer/Actions';
+import {
+  INITIATE,
+  SET_WIDTH,
+  SET_DIMENSIONS,
+  BRUSH_END,
+  RESET_DOMAIN,
+} from './reducer/Actions';
 import { DispatchProvider, useDispatch } from './context/DispatchContext';
 import DropZone from './DropZone';
 import ToolBar from './toolbar/ToolBar';
 import Panels from './panels/Panels';
-import Tools from './tool/Tools';
+// import Tools from './tool/Tools';
 import NMRChart from './NMRChart';
+import { MouseTracker } from './EventsTrackers/MouseTracker';
+import CrossLinePointer from './tool/CrossLinePointer';
+import { BrushTracker } from './EventsTrackers/BrushTracker';
+import BrushX from './tool/BrushX';
+import XLabelPointer from './tool/XLabelPointer';
 
 const NMRDisplayer = (props) => {
   const { data: dataProp } = props;
@@ -120,12 +131,41 @@ const NMRDisplayer = (props) => {
   );
 };
 
-function ChartPanel({ tools = true }) {
+function ChartPanel() {
   const [sizedNMRChart, { width, height }] = useSize(() => {
+    // const { width, height } = useChartData();
+
+    const handelBrushEnd = (brushData) => {
+      console.log(brushData);
+      dispatch({ type: BRUSH_END, ...brushData });
+    };
+
+    const handelOnDoubleClick = (event) => {
+      dispatch({ type: RESET_DOMAIN });
+      console.log(event);
+    };
+
     return (
-      <div style={{ width: '100%', height: '400px' }}>
-        <NMRChart />
-      </div>
+      // <Div style={{ width: '100%', height: '400px' }}>
+      <BrushTracker
+        onBrush={handelBrushEnd}
+        onDoubleClick={handelOnDoubleClick}
+        style={{
+          width: '100%',
+          height: '400px',
+          margin: 'auto',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <MouseTracker style={{ width: '100%', height: '400px' }}>
+          <CrossLinePointer />
+          <BrushX />
+          <XLabelPointer />
+          <NMRChart />
+        </MouseTracker>
+      </BrushTracker>
+      // </div>
     );
   });
   const dispatch = useDispatch();
@@ -142,12 +182,7 @@ function ChartPanel({ tools = true }) {
     }
   }, [dispatch, finalSize]);
 
-  return (
-    <div>
-      {sizedNMRChart}
-      <Tools disabled={!tools} />
-    </div>
-  );
+  return sizedNMRChart;
 }
 
 export default NMRDisplayer;

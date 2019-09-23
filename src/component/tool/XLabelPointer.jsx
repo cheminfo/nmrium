@@ -4,13 +4,29 @@ import { useChartData } from '../context/ChartContext';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import '../css/cross-line-tool.css';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
+import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 
-const CrossLinePointer = () => {
-  const { height, width, margin } = useChartData();
+const XLabelPointer = () => {
+  const {
+    height,
+    width,
+    margin,
+    getScale,
+    data,
+    activeSpectrum,
+  } = useChartData();
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
+  const getXValue = (xVal) => {
+    const spectrumData = data.find((d) => d.id === activeSpectrum.id);
+
+    return getScale()
+      .x.invert(xVal)
+      .toFixed(getPeakLabelNumberDecimals(spectrumData.nucleus));
+  };
 
   if (
+    !activeSpectrum ||
     brushState.step === 'brushing' ||
     !position ||
     position.y < margin.top ||
@@ -22,41 +38,21 @@ const CrossLinePointer = () => {
   }
   return (
     <div
-      // className="moving-element"
-      key="crossLine"
+      key="xLabelPointer"
       style={{
         cursor: 'crosshair',
-        transform: `translate(${-width + position.x}px, ${-height +
-          position.y}px)`,
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        transformOrigin: 'bottom right',
         position: 'absolute',
-        top: 0,
-        left: 0,
+        top: '-14px',
+        left: '-26px',
         pointerEvents: 'none',
         overflow: 'visible',
-        width: 2 * width,
-        height: 2 * height,
       }}
     >
-      <svg width={2 * width} height={2 * height}>
-        <line
-          className="vertical_line"
-          x1={width}
-          y1="0"
-          x2={width}
-          y2={height * 2}
-          key="vertical_line"
-        />
-        <line
-          className="vertical_line"
-          x1="0"
-          y1={height}
-          x2={width * 2}
-          y2={height}
-          key="horizontal_line"
-        />
-      </svg>
+      <span>{getXValue(position.x)}</span>
     </div>
   );
 };
 
-export default CrossLinePointer;
+export default XLabelPointer;

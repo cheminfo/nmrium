@@ -70,7 +70,7 @@ const IntegralResizable = (props) => {
         });
       }
     },
-    [dispatch, getScale, id, integralID, mode, to],
+    [dispatch, from, getScale, id, integralID, mode, to],
   );
   const handleLeftStart = useCallback((e) => {
     setLeftDragVisibility(true);
@@ -107,7 +107,7 @@ const IntegralResizable = (props) => {
         });
       }
     },
-    [dispatch, from, getScale, id, integralID, mode],
+    [dispatch, from, getScale, id, integralID, mode, to],
   );
 
   return (

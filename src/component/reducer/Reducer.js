@@ -42,6 +42,8 @@ import {
   CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
   SET_INTEGRAL_Y_DOMAIN,
   RESIZE_INTEGRAL,
+  BRUSH_END,
+  RESET_DOMAIN,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -631,6 +633,25 @@ const handleHistoryReset = (state, action) => {
   });
 };
 
+const handleBrushEnd = (state, action) => {
+  console.log('111111111111111111111')
+  const scale = getScale(state).x;
+  return produce(state, (draft) => {
+    const xDomainBoundary = [
+      scale.invert(action.startX),
+      scale.invert(action.endX),
+    ].sort();
+    draft.xDomain = xDomainBoundary;
+  });
+};
+
+const handelResetDomain = (state) => {
+  return produce(state, (draft) => {
+    draft.xDomain = state.originDomain.x;
+    draft.yDomain = state.originDomain.y;
+  });
+};
+
 //////////////////////////////////////////////////////////////////////
 //////////////// end undo and redo functions /////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -755,7 +776,11 @@ export const spectrumReducer = (state, action) => {
     case SET_INTEGRAL_Y_DOMAIN:
       return handleChangeIntegralYDomain(state, action.yDomain);
 
-    // undo and redo operation
+    case BRUSH_END:
+      return handleBrushEnd(state, action);
+
+    case RESET_DOMAIN:
+      return handelResetDomain(state);
     case UNDO:
       return handleHistoryUndo(state);
 
