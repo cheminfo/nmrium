@@ -18,7 +18,7 @@ function NMRChart() {
             width={`${width - margin.left - margin.right}`}
             height={`${height}`}
             x={`${margin.left}`}
-            y={`${margin.top}`}
+            y={`${0}`}
           />
         </clipPath>
       </defs>

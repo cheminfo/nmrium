@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 
 import { useChartData } from './context/ChartContext';
 
-export default function LinesSeries() {
+export const LinesSeries = () => {
   const {
     xDomain,
     getScale,
@@ -54,24 +54,37 @@ export default function LinesSeries() {
             key={`line-${d.id}-${i}`}
             stroke={d.color}
             style={{
-              transformOrigin: 'center bottom',
+              // transformOrigin: 'center top',
               opacity: isActive(d.id) ? 1 : 0.2,
             }}
             d={makePath(d)}
+            // transform={
+            //   zoomFactor
+            //     ? `translate(${zoomFactor.x},${
+            //         verticalAlign === 0
+            //           ? zoomFactor.y
+            //           : zoomFactor.y + i * verticalAlign
+            //       }) scale(1,${zoomFactor.k})`
+            //     : `translate(0,${verticalAlign === 0 ? 0 : i * verticalAlign})`
+            // }
+            // shape-rendering="crispEdges"
+            // vectorEffect="non-scaling-stroke"
             transform={`translate(0,${
               verticalAlign === 0 ? 0 : i * verticalAlign
             })`}
           />
         ))
     );
-  }, [activeSpectrum, data, verticalAlign, getScale, xDomain]);
+  }, [activeSpectrum, data, getScale, verticalAlign, xDomain]);
 
   return (
     <g className="paths" clipPath="url(#clip)">
       {paths}
     </g>
   );
-}
+};
+
+export default LinesSeries;
 
 LinesSeries.contextTypes = {
   width: PropTypes.number,

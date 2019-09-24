@@ -10,7 +10,7 @@ import { useSize, useDebounce } from 'react-use';
 import SplitPane from 'react-split-pane';
 
 import './css/spectrum-chart.css';
-import { ChartDataProvider } from './context/ChartContext';
+import { ChartDataProvider, useChartData } from './context/ChartContext';
 import { spectrumReducer, initialState } from './reducer/Reducer';
 import {
   INITIATE,
@@ -18,6 +18,10 @@ import {
   SET_DIMENSIONS,
   BRUSH_END,
   RESET_DOMAIN,
+  SET_ZOOM_FACTOR,
+  ADD_INTEGRAL,
+  PEAK_PICKING,
+  CHNAGE_INTEGRAL_ZOOM,
 } from './reducer/Actions';
 import { DispatchProvider, useDispatch } from './context/DispatchContext';
 import DropZone from './DropZone';
@@ -30,6 +34,7 @@ import CrossLinePointer from './tool/CrossLinePointer';
 import { BrushTracker } from './EventsTrackers/BrushTracker';
 import BrushX from './tool/BrushX';
 import XLabelPointer from './tool/XLabelPointer';
+import { options } from './toolbar/FunctionToolBar';
 
 const NMRDisplayer = (props) => {
   const { data: dataProp } = props;
@@ -132,12 +137,25 @@ const NMRDisplayer = (props) => {
 };
 
 function ChartPanel() {
-  const [sizedNMRChart, { width, height }] = useSize(() => {
-    // const { width, height } = useChartData();
+  const { selectedTool } = useChartData();
 
+  const [sizedNMRChart, { width, height }] = useSize(() => {
     const handelBrushEnd = (brushData) => {
       console.log(brushData);
-      dispatch({ type: BRUSH_END, ...brushData });
+      switch (selectedTool) {
+        case options.zoom.id:
+          dispatch({ type: BRUSH_END, ...brushData });
+          break;
+
+        case options.integral.id:
+          dispatch({
+            type: ADD_INTEGRAL,
+            ...brushData,
+          });
+          break;
+        default:
+          return;
+      }
     };
 
     const handelOnDoubleClick = (event) => {
@@ -145,11 +163,36 @@ function ChartPanel() {
       console.log(event);
     };
 
+    const handleZoom = (event) => {
+      switch (selectedTool) {
+        case options.zoom.id:
+          dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: event });
+          break;
+
+        case options.integral.id:
+          dispatch({ type: CHNAGE_INTEGRAL_ZOOM, zoomFactor: event });
+
+          break;
+        default:
+          return;
+      }
+    };
+
+    const mouseClick = (position) => {
+      if (selectedTool === options.peakPicking.id) {
+        dispatch({
+          type: PEAK_PICKING,
+          mouseCoordinates: position,
+        });
+      }
+    };
+
     return (
-      // <Div style={{ width: '100%', height: '400px' }}>
       <BrushTracker
         onBrush={handelBrushEnd}
         onDoubleClick={handelOnDoubleClick}
+        onClick={mouseClick}
+        onZoom={handleZoom}
         style={{
           width: '100%',
           height: '400px',
@@ -165,7 +208,6 @@ function ChartPanel() {
           <NMRChart />
         </MouseTracker>
       </BrushTracker>
-      // </div>
     );
   });
   const dispatch = useDispatch();

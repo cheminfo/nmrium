@@ -44,6 +44,7 @@ import {
   RESIZE_INTEGRAL,
   BRUSH_END,
   RESET_DOMAIN,
+  CHNAGE_INTEGRAL_ZOOM,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -224,8 +225,19 @@ const deletePeak = (state, peakData) => {
   });
 };
 
-const addIntegral = (state, integralData) => {
+const addIntegral = (state, action) => {
+  const scale = getScale(state).x;
+
   return produce(state, (draft) => {
+    const start = scale.invert(action.startX);
+    const end = scale.invert(action.endX);
+    let integralRange;
+    if (start > end) {
+      integralRange = [end, start];
+    } else {
+      integralRange = [start, end];
+    }
+
     if (draft.activeSpectrum) {
       const index = state.data.findIndex(
         (d) => d.id === state.activeSpectrum.id,
@@ -234,19 +246,20 @@ const addIntegral = (state, integralData) => {
       const data = state.data[index];
 
       const integralResult = XY.integral(data, {
-        from: integralData.from,
-        to: integralData.to,
+        from: integralRange[0],
+        to: integralRange[1],
         reverse: true,
       });
 
       const integralValue = XY.integration(data, {
-        from: integralData.from,
-        to: integralData.to,
+        from: integralRange[0],
+        to: integralRange[1],
         reverse: true,
       });
 
       const integral = {
-        ...integralData,
+        from: integralRange[0],
+        to: integralRange[1],
         ...integralResult,
         value: integralValue,
         id:
@@ -255,6 +268,8 @@ const addIntegral = (state, integralData) => {
             .toString(36)
             .replace('0.', ''),
       };
+
+      console.log(integral);
 
       if (index !== -1) {
         if (data.integrals) {
@@ -489,6 +504,70 @@ const handleToggleRealImaginaryVisibility = (state) => {
   });
 };
 
+const getClosestNumber = (array = [], goal = 0) => {
+  const closest = array.reduce((prev, curr) => {
+    return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
+  });
+  return closest;
+};
+
+const handleZoom = (state, zoomFactor) => {
+  console.log(zoomFactor);
+  return produce(state, (draft) => {
+    const {
+      originDomain,
+      height,
+      margin,
+      data,
+      yDomains,
+      activeSpectrum,
+    } = state;
+
+    const scale = d3.scaleLinear(originDomain.y, [
+      height - margin.bottom,
+      margin.top,
+    ]);
+    let t;
+    if (data.length === 1) {
+      const closest = getClosestNumber(data[0].y);
+      const referencePoint = getScale(state).y(closest);
+      t = d3.zoomIdentity
+        .translate(0, referencePoint)
+        .scale(zoomFactor.scale)
+        .translate(0, -referencePoint);
+    } else {
+      t = d3.zoomIdentity
+        .translate(0, height - margin.bottom)
+        .scale(zoomFactor.scale)
+        .translate(0, -(height - margin.bottom));
+    }
+
+    // draft.zoomFactor = t;
+
+    let yDomain = t.rescaleY(scale).domain();
+
+    if (activeSpectrum === null) {
+      const _yDomains = yDomains.map((y) => {
+        return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
+      });
+
+      draft.yDomains = _yDomains;
+
+      // return { ...state, yDomain, yDomains };
+    } else {
+      const index = data.findIndex((d) => d.id === activeSpectrum.id);
+      const yDomains = [...state.yDomains];
+      yDomains[index] = yDomain;
+
+      draft.yDomains = yDomains;
+
+      // return { ...state, yDomains: yDomains };
+    }
+
+    console.log(yDomains);
+  });
+};
+
 const handleAddMolecule = (state, molfile) => {
   AnalysisObj.addMolfile(molfile);
   return produce(state, (draft) => {
@@ -548,6 +627,30 @@ const handleChangeSpectrumDisplayMode = (state) => {
 
 const handleChangeIntegralYDomain = (state, newYDomain) => {
   return produce(state, (draft) => {
+    const activeSpectrum = draft.activeSpectrum;
+    if (activeSpectrum) {
+      const spectrumIndex = draft.data.findIndex(
+        (s) => s.id === activeSpectrum.id,
+      );
+      draft.data[spectrumIndex].integralsYDomain = newYDomain;
+    }
+  });
+};
+const handleChangeIntegralZoom = (state, zoomFactor) => {
+  return produce(state, (draft) => {
+    const { originDomain, height, margin } = state;
+    const scale = d3.scaleLinear(originDomain.y, [
+      height - margin.bottom,
+      margin.top,
+    ]);
+
+    const t = d3.zoomIdentity
+      .translate(0, height - margin.bottom)
+      .scale(zoomFactor.scale * 10)
+      .translate(0, -(height - margin.bottom));
+
+    const newYDomain = t.rescaleY(scale).domain();
+
     const activeSpectrum = draft.activeSpectrum;
     if (activeSpectrum) {
       const spectrumIndex = draft.data.findIndex(
@@ -675,7 +778,7 @@ export const initialState = {
   },
   activeSpectrum: null,
   mode: 'RTL',
-  zoomFactor: {},
+  zoomFactor: null,
   molecules: [],
   verticalAlign: 0,
   history: {
@@ -706,7 +809,7 @@ export const spectrumReducer = (state, action) => {
       return deletePeak(state, action.data);
 
     case ADD_INTEGRAL:
-      return addIntegral(state, action.integral);
+      return addIntegral(state, action);
 
     case RESIZE_INTEGRAL:
       return handleResizeIntegral(state, action.integral);
@@ -754,10 +857,11 @@ export const spectrumReducer = (state, action) => {
     case TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return handleToggleRealImaginaryVisibility(state);
     case SET_ZOOM_FACTOR:
-      return {
-        ...state,
-        zoomFactor: action.zoomFactor,
-      };
+      return handleZoom(state, action.zoomFactor);
+    // return {
+    //   ...state,
+    //   zoomFactor: action.zoomFactor,
+    // };
 
     case CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE:
       return handleChangeSpectrumDisplayMode(state);
@@ -776,6 +880,9 @@ export const spectrumReducer = (state, action) => {
 
     case SET_INTEGRAL_Y_DOMAIN:
       return handleChangeIntegralYDomain(state, action.yDomain);
+
+    case CHNAGE_INTEGRAL_ZOOM:
+      return handleChangeIntegralZoom(state, action.zoomFactor);
 
     case BRUSH_END:
       return handleBrushEnd(state, action);

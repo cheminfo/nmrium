@@ -21,7 +21,9 @@ export function BrushTracker({
   className,
   style,
   onBrush,
+  onZoom,
   onDoubleClick,
+  onClick,
   noPropagation,
 }) {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -44,6 +46,16 @@ export function BrushTracker({
     [noPropagation],
   );
 
+  const clickHandler = useCallback(
+    (e) => {
+      const boundingRect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - boundingRect.x;
+      const y = e.clientY - boundingRect.y;
+      onClick({ x, y });
+    },
+    [onClick],
+  );
+
   const mouseDoubleClickHandler = useCallback(
     (event) => {
       if (noPropagation) {
@@ -63,17 +75,29 @@ export function BrushTracker({
       event.stopPropagation();
       event.preventDefault();
 
-      const direction =
-        isNegative(event.deltaX) && isNegative(event.deltaY) ? 'up' : 'down';
+      let ZOOM_STEP =
+        event.deltaMode === 1
+          ? 0.1 * Math.abs(event.deltaY)
+          : event.deltaMode
+          ? 1
+          : 0.1 * (Math.abs(event.deltaY) / 100);
+
+      const direction = isNegative(event.deltaY) ? 'up' : 'down';
       let _scale = scale;
       if (direction === 'up') {
         _scale = scale + ZOOM_STEP;
       } else {
         _scale = scale - ZOOM_STEP;
       }
+
+      // if (_scale > 0) {
+      onZoom({ scale: _scale });
       setScale(_scale);
+      // } else {
+      //   setScale(0);
+      // }
     },
-    [isNegative, scale],
+    [isNegative, onZoom, scale],
   );
 
   useEffect(() => {
@@ -112,6 +136,7 @@ export function BrushTracker({
         style={style}
         onMouseDown={mouseDownHandler}
         onDoubleClick={mouseDoubleClickHandler}
+        onClick={clickHandler}
         onWheel={handleMouseWheel}
       >
         {children}
@@ -119,7 +144,6 @@ export function BrushTracker({
     </BrushContext.Provider>
   );
 }
-const ZOOM_STEP = 0.03;
 
 function reducer(state, action) {
   switch (action.type) {
