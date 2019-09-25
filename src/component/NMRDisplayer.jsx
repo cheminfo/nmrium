@@ -35,6 +35,7 @@ import { BrushTracker } from './EventsTrackers/BrushTracker';
 import BrushX from './tool/BrushX';
 import XLabelPointer from './tool/XLabelPointer';
 import { options } from './toolbar/FunctionToolBar';
+import PeakPointer from './tool/PeakPointer';
 
 const NMRDisplayer = (props) => {
   const { data: dataProp } = props;
@@ -62,6 +63,7 @@ const NMRDisplayer = (props) => {
 
   const getScale = useMemo(() => {
     return (spectrumId = null) => {
+      console.log('sssssssssss')
       const range =
         mode === 'RTL'
           ? [width - margin.right, margin.left]
@@ -204,7 +206,8 @@ function ChartPanel() {
         <MouseTracker style={{ width: '100%', height: '400px' }}>
           <CrossLinePointer />
           <BrushX />
-          <XLabelPointer />
+          {/* <XLabelPointer /> */}
+          <PeakPointer />
           <NMRChart />
         </MouseTracker>
       </BrushTracker>

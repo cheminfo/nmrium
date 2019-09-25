@@ -83,6 +83,7 @@ export const LinesSeries = () => {
     </g>
   );
 };
+LinesSeries.whyDidYouRender = true;
 
 export default LinesSeries;
 

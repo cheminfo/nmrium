@@ -231,6 +231,7 @@ const addIntegral = (state, action) => {
   return produce(state, (draft) => {
     const start = scale.invert(action.startX);
     const end = scale.invert(action.endX);
+
     let integralRange;
     if (start > end) {
       integralRange = [end, start];
@@ -542,7 +543,7 @@ const handleZoom = (state, zoomFactor) => {
         .translate(0, -(height - margin.bottom));
     }
 
-    // draft.zoomFactor = t;
+    draft.zoomFactor = t;
 
     let yDomain = t.rescaleY(scale).domain();
 
@@ -656,6 +657,7 @@ const handleChangeIntegralZoom = (state, zoomFactor) => {
       const spectrumIndex = draft.data.findIndex(
         (s) => s.id === activeSpectrum.id,
       );
+      draft.zoomFactor = t;
       draft.data[spectrumIndex].integralsYDomain = newYDomain;
     }
   });

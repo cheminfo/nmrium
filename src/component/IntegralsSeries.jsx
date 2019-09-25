@@ -15,6 +15,7 @@ const IntegralsSeries = () => {
     data,
     height,
     margin,
+    zoomFactor,
   } = useChartData();
 
   const getYScale = useCallback(
@@ -28,8 +29,18 @@ const IntegralsSeries = () => {
     const makePath = (data) => {
       const { id, x, y, yDomain } = data;
       const xScale = getScale(id).x;
-      const yScale = getYScale(yDomain);
+      let yScale = null;
+      console.log(zoomFactor);
+      if (zoomFactor) {
+        yScale = getYScale(yDomain);
+      } else {
+        const t = d3.zoomIdentity
+          .translate(0, height - margin.bottom)
+          .scale(40)
+          .translate(0, -(height - margin.bottom));
 
+        yScale = t.rescaleY(getYScale(yDomain));
+      }
       const pathPoints = XY.reduce(x, y, {
         from: xDomain[0],
         to: xDomain[1],
@@ -77,20 +88,27 @@ const IntegralsSeries = () => {
                 <path
                   className="line"
                   stroke="black"
-                  style={{ opacity: IsActive(d.id) ? 1 : 0.2 }}
+                  style={{
+                    transformOrigin: 'center top',
+                    opacity: IsActive(d.id) ? 1 : 0.2,
+                  }}
                   d={makePath({
                     id: d.id,
                     x: integral.x,
                     y: integral.y,
                     yDomain: d.integralsYDomain,
                   })}
-                  transform={`translate(0,${i * verticalAlign})`}
+                  // transform={`translate(0,${i * verticalAlign})`}
+                  vectorEffect="non-scaling-stroke"
+                  // transform={`translate(0,${
+                  //   verticalAlign === 0 ? 120 : 120 + i * verticalAlign
+                  // }) scale(1,8)`}
                 />
               </g>
             )),
         )
     );
-  }, [data, getScale, getYScale, xDomain, activeSpectrum, verticalAlign]);
+  }, [data, getScale, getYScale, xDomain, activeSpectrum]);
 
   return (
     <g className="paths" clipPath="url(#clip)">

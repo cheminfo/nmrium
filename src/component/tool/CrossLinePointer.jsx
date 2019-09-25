@@ -4,13 +4,15 @@ import { useChartData } from '../context/ChartContext';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import '../css/cross-line-tool.css';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
+import { options } from '../toolbar/FunctionToolBar';
 
 const CrossLinePointer = () => {
-  const { height, width, margin } = useChartData();
+  const { height, width, margin, selectedTool } = useChartData();
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
 
   if (
+    selectedTool !== options.zoom.id ||
     brushState.step === 'brushing' ||
     !position ||
     position.y < margin.top ||
