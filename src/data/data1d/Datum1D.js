@@ -121,13 +121,28 @@ export class Datum1D {
 
   addIntegral(from, to) {}
 
+  // with mouse move
+  lookupPeak(from, to, options = {}) {}
   /**
    *
    * @param {number} chemicalShift Target chemical shift
    * @param {number} window Range of chemical shifts to look for
    * @example  addPeak(5, 0.1)
    */
-  addPeak(chemicalShift, window, options = {}) {}
+  addPeak(from, to, options = {}) {
+    // we look for the highest peak in the zone
+    // return one peak
+    // this.lookupPeak();
+    // add peak in this.peaks
+  }
+
+  // Add all the peaks in a range
+  // click / drag / release
+  addPeaks(from, to, options = {}) {
+    // we look for the highest peak in the zone for now
+    // but it returns an array !
+    // for now you return an array containing the result of addPeak
+  }
 
   autoPeakPicking() {}
 
