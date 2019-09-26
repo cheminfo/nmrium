@@ -20,8 +20,9 @@ import {
   RESET_DOMAIN,
   SET_ZOOM_FACTOR,
   ADD_INTEGRAL,
-  PEAK_PICKING,
+  ADD_PEAK,
   CHNAGE_INTEGRAL_ZOOM,
+  ADD_PEAKS,
 } from './reducer/Actions';
 import { DispatchProvider, useDispatch } from './context/DispatchContext';
 import DropZone from './DropZone';
@@ -63,7 +64,6 @@ const NMRDisplayer = (props) => {
 
   const getScale = useMemo(() => {
     return (spectrumId = null) => {
-      console.log('sssssssssss')
       const range =
         mode === 'RTL'
           ? [width - margin.right, margin.left]
@@ -155,6 +155,14 @@ function ChartPanel() {
             ...brushData,
           });
           break;
+
+        case options.peakPicking.id:
+          dispatch({
+            type: ADD_PEAKS,
+            ...brushData,
+          });
+          break;
+
         default:
           return;
       }
@@ -183,7 +191,7 @@ function ChartPanel() {
     const mouseClick = (position) => {
       if (selectedTool === options.peakPicking.id) {
         dispatch({
-          type: PEAK_PICKING,
+          type: ADD_PEAK,
           mouseCoordinates: position,
         });
       }
@@ -206,7 +214,7 @@ function ChartPanel() {
         <MouseTracker style={{ width: '100%', height: '400px' }}>
           <CrossLinePointer />
           <BrushX />
-          {/* <XLabelPointer /> */}
+          <XLabelPointer />
           <PeakPointer />
           <NMRChart />
         </MouseTracker>

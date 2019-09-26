@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import * as d3 from 'd3';
 
 import { useChartData } from '../context/ChartContext';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { options } from '../toolbar/FunctionToolBar';
-import { SET_ZOOM_FACTOR } from '../reducer/Actions';
+
 const styles = {
   radius: 10,
   borderColor: 'red',
@@ -43,43 +42,31 @@ const PeakPointer = () => {
         ].sort();
 
         //get the active sepectrum data by looking for it by id
-        const selectedSpectrumData = data.find(
-          (d) => d.id === activeSpectrum.id,
-        );
+        const spectrumData = data.find((d) => d.id === activeSpectrum.id);
 
-        console.log(zoon);
         const maxIndex =
-          selectedSpectrumData.x.findIndex((number) => number >= zoon[1]) - 1;
-        const minIndex = selectedSpectrumData.x.findIndex(
+          spectrumData.x.findIndex((number) => number >= zoon[1]) - 1;
+        const minIndex = spectrumData.x.findIndex(
           (number) => number >= zoon[0],
         );
 
-        // const maxIndex =
-        //   selectedSpectrumData.x.findIndex((number) => number >= zoon[1]) - 1;
-        // const minIndex = selectedSpectrumData.x.findIndex(
-        //   (number) => number >= zoon[0],
-        // );
-        // console.log('max');
-        // console.log(maxIndex);
-        // console.log('min');
-        // console.log(minIndex);
+        const yDataRange = spectrumData.y.slice(minIndex, maxIndex);
 
-        const selectedYData = selectedSpectrumData.y.slice(minIndex, maxIndex);
-
-        const peakYValue = d3.max(selectedYData);
-        const xIndex = selectedYData.findIndex((value) => value === peakYValue);
-        const peakXValue = selectedSpectrumData.x[minIndex + xIndex];
+        const yValue = Math.max.apply(null, yDataRange);
+        const xIndex = yDataRange.findIndex((value) => value === yValue);
+        const xValue = spectrumData.x[minIndex + xIndex];
 
         return {
-          x: scale.x(peakXValue),
-          y: scale.y(peakYValue),
+          x: scale.x(xValue),
+          y: scale.y(yValue),
           xIndex: minIndex + xIndex,
         };
       }
       return null;
     };
 
-    setPosition(getClosePeak(5, position));
+    const candidatePeakPosition = getClosePeak(10, position);
+    setPosition(candidatePeakPosition);
   }, [activeSpectrum, data, getScale, mode, position, selectedTool]);
 
   if (

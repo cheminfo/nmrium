@@ -122,18 +122,34 @@ export class Datum1D {
   addIntegral(from, to) {}
 
   // with mouse move
-  lookupPeak(from, to, options = {}) {}
+  lookupPeak(from, to, options = {}) {
+    const minIndex = this.data.x.findIndex((number) => number >= from);
+    const maxIndex = this.data.x.findIndex((number) => number >= to) - 1;
+
+    const dataRange = this.data.re.slice(minIndex, maxIndex);
+
+    const yValue = Math.max.apply(null, dataRange);
+    const xIndex = dataRange.findIndex((value) => value === yValue);
+    const xValue = this.data.x[minIndex + xIndex];
+
+    return { x: xValue, y: yValue, xIndex: minIndex + xIndex };
+  }
   /**
    *
    * @param {number} chemicalShift Target chemical shift
    * @param {number} window Range of chemical shifts to look for
    * @example  addPeak(5, 0.1)
    */
-  addPeak(from, to, options = {}) {
-    // we look for the highest peak in the zone
-    // return one peak
-    // this.lookupPeak();
-    // add peak in this.peaks
+  // addPeak(from, to, options = {}) {
+  //   // we look for the highest peak in the zone
+  //   // return one peak
+  //   // this.lookupPeak();
+  //   // add peak in this.peaks
+  // }
+
+  addPeak(peak) {
+    this.peaks = Object.assign([], this.peaks);
+    this.peaks.push(peak);
   }
 
   // Add all the peaks in a range
@@ -142,6 +158,12 @@ export class Datum1D {
     // we look for the highest peak in the zone for now
     // but it returns an array !
     // for now you return an array containing the result of addPeak
+    this.peaks = Object.assign([], this.peaks);
+
+    const peaks = this.lookupPeak(from, to);
+    this.peaks = this.peaks.concat([peaks]);
+
+    return this.peaks;
   }
 
   autoPeakPicking() {}

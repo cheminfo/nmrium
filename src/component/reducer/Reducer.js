@@ -13,7 +13,8 @@ import { UNDO, REDO, RESET } from './HistoryActions';
 import {
   INITIATE,
   SAVE_DATA_AS_JSON,
-  PEAK_PICKING,
+  ADD_PEAK,
+  ADD_PEAKS,
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
   LOAD_JCAMP_FILE,
@@ -169,46 +170,60 @@ const handleLoadMOLFile = (state, files) => {
 
 const getClosePeak = (xShift, mouseCoordinates, state) => {
   const scale = getScale(state);
-  const { data, activeSpectrum, mode } = state;
+  const { activeSpectrum } = state;
   const zoon = [
     scale.x.invert(mouseCoordinates.x - xShift),
     scale.x.invert(mouseCoordinates.x + xShift),
-  ];
+  ].sort();
 
-  //get the active sepectrum data by looking for it by id
-  const selectedSpectrumData = data.find((d) => d.id === activeSpectrum.id);
-  const maxIndex =
-    selectedSpectrumData.x.findIndex(
-      (number) => number >= zoon[mode === 'RTL' ? 0 : 1],
-    ) - 1;
-  const minIndex = selectedSpectrumData.x.findIndex(
-    (number) => number >= zoon[mode === 'RTL' ? 1 : 0],
+  const closePeak = AnalysisObj.getDatum1D(activeSpectrum.id).lookupPeak(
+    zoon[0],
+    zoon[1],
   );
-
-  const selectedYData = selectedSpectrumData.y.slice(minIndex, maxIndex);
-
-  const peakYValue = d3.max(selectedYData);
-  const xIndex = selectedYData.findIndex((value) => value === peakYValue);
-  const peakXValue = selectedSpectrumData.x[minIndex + xIndex];
-
-  return { x: peakXValue, y: peakYValue, xIndex: minIndex + xIndex };
+  return closePeak;
 };
 
 const addPeak = (state, mouseCoordinates) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const spectrumID = state.activeSpectrum.id;
-      const index = draft.data.findIndex((d) => d.id === spectrumID);
 
-      const peak = getClosePeak(10, mouseCoordinates, state);
+      const index = state.data.findIndex((d) => d.id === spectrumID);
+      const candidatePeak = getClosePeak(10, mouseCoordinates, state);
+
       if (index !== -1) {
-        if (draft.data[index].peaks) {
-          draft.data[index].peaks.push({ xIndex: peak.xIndex });
+        const peak = { xIndex: candidatePeak.xIndex };
+        if (state.data[index].peaks) {
+          draft.data[index].peaks.push(peak);
         } else {
-          draft.data[index].peaks = [{ xIndex: peak.xIndex }];
+          draft.data[index].peaks = [peak];
         }
+        // draft.data[index].peaks
+        AnalysisObj.getDatum1D(spectrumID).addPeak(peak);
+      }
+    }
+  });
+};
 
-        AnalysisObj.getDatum1D(spectrumID).setPeaks(draft.data[index].peaks);
+const addPeaks = (state, action) => {
+  return produce(state, (draft) => {
+    if (state.activeSpectrum) {
+      const spectrumID = state.activeSpectrum.id;
+      const index = state.data.findIndex((d) => d.id === spectrumID);
+
+      const scale = getScale(state);
+
+      const range = [
+        scale.x.invert(action.startX),
+        scale.x.invert(action.endX),
+      ].sort();
+
+      if (index !== -1) {
+        const peaks = AnalysisObj.getDatum1D(spectrumID).addPeaks(
+          range[0],
+          range[1],
+        );
+        draft.data[index].peaks = peaks;
       }
     }
   });
@@ -805,8 +820,11 @@ export const spectrumReducer = (state, action) => {
 
     case SAVE_DATA_AS_JSON:
       return saveDataAsJson(state);
-    case PEAK_PICKING:
+    case ADD_PEAK:
       return addPeak(state, action.mouseCoordinates);
+    case ADD_PEAKS:
+      return addPeaks(state, action);
+
     case DELETE_PEAK_NOTATION:
       return deletePeak(state, action.data);
 

@@ -6,6 +6,7 @@ import { Data1DManager } from './data1d/Data1DManager';
 import { getMetaData } from './data1d/metadata/getMetaData';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
+import { Datum1D } from './data1d/Datum1D';
 
 export class Analysis {
   data1d = [];
@@ -165,7 +166,7 @@ export class Analysis {
     this.data1d.push(object);
   }
 
-  getDatum1D(id) {
+  getDatum1D(id): Datum1D {
     return this.data1d.find((ob) => ob.id === id);
   }
 

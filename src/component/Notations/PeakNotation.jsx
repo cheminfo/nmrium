@@ -10,6 +10,8 @@ import { FaMinus } from 'react-icons/fa';
 import { useDispatch } from '../context/DispatchContext';
 import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
 
+import '../css/peakNotification.css';
+
 const styles = {
   deleteButton: {
     backgroundColor: 'red',
@@ -101,7 +103,6 @@ export const PeakNotation = ({
   }, []);
 
   const handleOnOverNotation = useCallback((id) => {
-    console.log('ssss')
     setIsOver({ id: id, flag: true });
   }, []);
 
