@@ -34,6 +34,7 @@ import { MouseTracker } from './EventsTrackers/MouseTracker';
 import CrossLinePointer from './tool/CrossLinePointer';
 import { BrushTracker } from './EventsTrackers/BrushTracker';
 import BrushX from './tool/BrushX';
+import XLabelPointer from './tool/XLabelPointer';
 import { options } from './toolbar/FunctionToolBar';
 import PeakPointer from './tool/PeakPointer';
 

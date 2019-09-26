@@ -7,9 +7,10 @@ import { options } from '../toolbar/FunctionToolBar';
 
 const styles = {
   radius: 10,
-  borderColor: 'red',
+  borderColor: '#1f1f1f',
   strokeWidth: 1,
   fillOpacity: 0,
+  SVGPadding: 1,
 };
 
 const PeakPointer = () => {
@@ -91,34 +92,37 @@ const PeakPointer = () => {
         transform: `translate(${closePeakPosition.x}px, ${closePeakPosition.y}px)`,
         transformOrigin: 'top left',
         position: 'absolute',
-        top: -styles.radius,
-        left: -styles.radius,
+        top: -(styles.radius + styles.SVGPadding),
+        left: -(styles.radius + styles.SVGPadding),
         pointerEvents: 'none',
         overflow: 'visible',
       }}
     >
-      <svg width={styles.radius * 2} height={styles.radius * 2}>
+      <svg
+        width={styles.radius * 2 + styles.SVGPadding * 2}
+        height={styles.radius * 2 + styles.SVGPadding * 2}
+      >
         <circle
-          cx={styles.radius}
-          cy={styles.radius}
+          cx={styles.radius + styles.SVGPadding}
+          cy={styles.radius + styles.SVGPadding}
           r={styles.radius}
           stroke={styles.borderColor}
           strokeWidth={styles.strokeWidth}
           fillOpacity={styles.fillOpacity}
         />
         <line
-          x1={styles.radius}
-          y1="0"
-          x2={styles.radius}
-          y2={styles.radius * 2}
+          x1={styles.radius + styles.SVGPadding}
+          y1={styles.SVGPadding}
+          x2={styles.radius + styles.SVGPadding}
+          y2={styles.radius * 2 + styles.SVGPadding}
           stroke={styles.borderColor}
           strokeWidth={styles.strokeWidth}
         />
         <line
-          x1="0"
-          y1={styles.radius}
-          x2={styles.radius * 2}
-          y2={styles.radius}
+          x1={styles.SVGPadding}
+          y1={styles.radius + styles.SVGPadding}
+          x2={styles.radius * 2 + styles.SVGPadding}
+          y2={styles.radius + styles.SVGPadding}
           stroke={styles.borderColor}
           strokeWidth={styles.strokeWidth}
         />
