@@ -171,10 +171,20 @@ const handleLoadMOLFile = (state, files) => {
 const getClosePeak = (xShift, mouseCoordinates, state) => {
   const scale = getScale(state);
   const { activeSpectrum } = state;
-  const zoon = [
-    scale.x.invert(mouseCoordinates.x - xShift),
-    scale.x.invert(mouseCoordinates.x + xShift),
-  ].sort();
+  const start = scale.x.invert(mouseCoordinates.x - xShift);
+  const end = scale.x.invert(mouseCoordinates.x + xShift);
+  const zoon = [];
+  if (start > end) {
+    zoon[0] = end;
+    zoon[1] = start;
+  } else {
+    zoon[0] = start;
+    zoon[1] = end;
+  }
+  // const zoon = [
+  //   scale.x.invert(mouseCoordinates.x - xShift),
+  //   scale.x.invert(mouseCoordinates.x + xShift),
+  // ];
 
   const closePeak = AnalysisObj.getDatum1D(activeSpectrum.id).lookupPeak(
     zoon[0],
@@ -213,10 +223,16 @@ const addPeaks = (state, action) => {
 
       const scale = getScale(state);
 
-      const range = [
-        scale.x.invert(action.startX),
-        scale.x.invert(action.endX),
-      ].sort();
+      const start = scale.x.invert(action.startX);
+      const end = scale.x.invert(action.endX);
+      const range = [];
+      if (start > end) {
+        range[0] = end;
+        range[1] = start;
+      } else {
+        range[0] = start;
+        range[1] = end;
+      }
 
       if (index !== -1) {
         const peaks = AnalysisObj.getDatum1D(spectrumID).addPeaks(
@@ -284,8 +300,6 @@ const addIntegral = (state, action) => {
             .toString(36)
             .replace('0.', ''),
       };
-
-      console.log(integral);
 
       if (index !== -1) {
         if (data.integrals) {
@@ -367,6 +381,7 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     filterOption.id = activeSpectrumId;
     //add the filter action at the history
     const history = handleHistorySet(state.history, filterOption);
+    console.log(history);
 
     activeObject.applyShiftXFilter(shiftValue);
     //add to undo history
@@ -739,6 +754,7 @@ const handleHistorySet = (historyDraft, newValue) => {
   historyDraft.future = [];
   historyDraft.hasUndo = true;
   historyDraft.hasRedo = false;
+  return historyDraft;
 };
 
 const handleHistoryReset = (state, action) => {

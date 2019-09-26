@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 
+import max from 'ml-array-max';
+
 import { useChartData } from '../context/ChartContext';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
@@ -40,7 +42,9 @@ const PeakPointer = () => {
         const zoon = [
           scale.x.invert(mouseCoordinates.x - xShift),
           scale.x.invert(mouseCoordinates.x + xShift),
-        ].sort();
+        ].sort(function(a, b) {
+          return a - b;
+        });
 
         //get the active sepectrum data by looking for it by id
         const spectrumData = data.find((d) => d.id === activeSpectrum.id);
@@ -53,7 +57,7 @@ const PeakPointer = () => {
 
         const yDataRange = spectrumData.y.slice(minIndex, maxIndex);
 
-        const yValue = Math.max.apply(null, yDataRange);
+        const yValue = max(yDataRange);
         const xIndex = yDataRange.findIndex((value) => value === yValue);
         const xValue = spectrumData.x[minIndex + xIndex];
 

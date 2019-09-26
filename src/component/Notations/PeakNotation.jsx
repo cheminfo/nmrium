@@ -100,6 +100,7 @@ export const PeakNotation = ({
     e.preventDefault();
     e.stopPropagation();
     setIsSelected(true);
+    return false;
   }, []);
 
   const handleOnOverNotation = useCallback((id) => {

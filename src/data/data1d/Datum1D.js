@@ -2,6 +2,7 @@
 // import autoPeakPicking from './autoPeakPicking';
 import applyFilter from './filter1d/filter';
 import { SHIFT_X } from './filter1d/filter1d-type';
+import max from 'ml-array-max';
 
 export class Datum1D {
   /**
@@ -123,12 +124,15 @@ export class Datum1D {
 
   // with mouse move
   lookupPeak(from, to, options = {}) {
-    const minIndex = this.data.x.findIndex((number) => number >= from);
-    const maxIndex = this.data.x.findIndex((number) => number >= to) - 1;
+    let minIndex = this.data.x.findIndex((number) => number >= from);
+    let maxIndex = this.data.x.findIndex((number) => number >= to) - 1;
 
+    if (minIndex > maxIndex) {
+      minIndex = maxIndex;
+      maxIndex = minIndex;
+    }
     const dataRange = this.data.re.slice(minIndex, maxIndex);
-
-    const yValue = Math.max.apply(null, dataRange);
+    const yValue = max(dataRange);
     const xIndex = dataRange.findIndex((value) => value === yValue);
     const xValue = this.data.x[minIndex + xIndex];
 
@@ -158,17 +162,18 @@ export class Datum1D {
     // we look for the highest peak in the zone for now
     // but it returns an array !
     // for now you return an array containing the result of addPeak
-    this.peaks = Object.assign([], this.peaks);
-
-    const peaks = this.lookupPeak(from, to);
-    this.peaks = this.peaks.concat([peaks]);
-
+    if (from !== to) {
+      this.peaks = Object.assign([], this.peaks);
+      const peaks = this.lookupPeak(from, to);
+      this.peaks = this.peaks.concat([peaks]);
+    }
     return this.peaks;
   }
 
   autoPeakPicking() {}
 
   addFilter(filter) {
+    this.filters = Object.assign([], this.filters);
     this.filters.push(filter);
   }
 
