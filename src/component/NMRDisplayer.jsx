@@ -34,7 +34,6 @@ import { MouseTracker } from './EventsTrackers/MouseTracker';
 import CrossLinePointer from './tool/CrossLinePointer';
 import { BrushTracker } from './EventsTrackers/BrushTracker';
 import BrushX from './tool/BrushX';
-import XLabelPointer from './tool/XLabelPointer';
 import { options } from './toolbar/FunctionToolBar';
 import PeakPointer from './tool/PeakPointer';
 
@@ -143,7 +142,6 @@ function ChartPanel() {
 
   const [sizedNMRChart, { width, height }] = useSize(() => {
     const handelBrushEnd = (brushData) => {
-      console.log(brushData);
       switch (selectedTool) {
         case options.zoom.id:
           dispatch({ type: BRUSH_END, ...brushData });
@@ -170,7 +168,6 @@ function ChartPanel() {
 
     const handelOnDoubleClick = (event) => {
       dispatch({ type: RESET_DOMAIN });
-      console.log(event);
     };
 
     const handleZoom = (event) => {
@@ -212,11 +209,11 @@ function ChartPanel() {
         }}
       >
         <MouseTracker style={{ width: '100%', height: '400px' }}>
+          <NMRChart />
           <CrossLinePointer />
           <BrushX />
           <XLabelPointer />
           <PeakPointer />
-          <NMRChart />
         </MouseTracker>
       </BrushTracker>
     );
