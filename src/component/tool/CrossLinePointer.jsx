@@ -24,7 +24,7 @@ const CrossLinePointer = () => {
   }
   return (
     <div
-      // className="moving-element"
+      className="moving-element"
       key="crossLine"
       style={{
         cursor: 'crosshair',

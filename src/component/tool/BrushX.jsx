@@ -17,7 +17,7 @@ export default function BrushX() {
         transform: `translate(${startX}px, 0px) scaleX(${scale})`,
         transformOrigin: 'top left',
       }}
-      className="overlay"
+      className="overlay moving-element"
     >
       <svg width={width} height={height}>
         <line x1="0" y1="0" x2="0" y2={height} strokeWidth="8" stroke="red" />
