@@ -1,9 +1,18 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import Button from '@material-ui/core/Button';
+
 import { useDispatch } from '../context/DispatchContext';
 import { TOGGLE_REAL_IMAGINARY_VISIBILITY } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
+
+const styles = {
+  button: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    width: '35px',
+    height: '35px',
+  },
+};
 
 const ViewButton = ({ defaultValue = true }) => {
   const [option, setOption] = useState();
@@ -49,13 +58,14 @@ const ViewButton = ({ defaultValue = true }) => {
       title={option ? 'Real Spectrum' : 'Imaginary Spectrum'}
       popupPlacement="right"
     >
-      <Button
+      <button
+        style={styles.button}
+        type="button"
         disabled={isDisabled}
-        className="general-fun-bt"
         onClick={handleChange}
       >
         {option ? 'Re' : 'Im'}
-      </Button>
+      </button>
     </ToolTip>
   ) : null;
 };

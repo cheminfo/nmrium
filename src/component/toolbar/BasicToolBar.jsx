@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useCallback } from 'react';
-import Button from '@material-ui/core/Button';
 import { FaSearchMinus, FaMinus, FaBars, FaDownload } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -10,6 +9,15 @@ import {
 } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
+
+const styles = {
+  button: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    width: '35px',
+    height: '35px',
+  },
+};
 
 const BasicToolBar = ({
   isFullZoomButtonVisible = true,
@@ -64,26 +72,28 @@ const BasicToolBar = ({
     <Fragment>
       {isFullZoomButtonVisible && (
         <ToolTip title="Full Zoom Out ( Press f )" popupPlacement="right">
-          <Button
-            className="general-fun-bt"
+          <button
+            type="button"
+            style={styles.button}
             onClick={handleFullZoomOut}
             disabled={isFullZoomButtonEnabled}
           >
             <FaSearchMinus />
-          </Button>
+          </button>
         </ToolTip>
       )}
 
       {isViewButtonVisible && (
         <ToolTip title="Spectrums  alignment " popupPlacement="right">
           <div>
-            <Button
-              className="general-fun-bt"
+            <button
+              type="button"
+              style={styles.button}
               onClick={handleChangeDisplayViewMode}
               disabled={data && data.length <= 1}
             >
               {verticalAlign !== 0 ? <FaMinus /> : <FaBars />}
-            </Button>
+            </button>
           </div>
         </ToolTip>
       )}
@@ -93,13 +103,14 @@ const BasicToolBar = ({
           title="Save Data as JSON File ( Press Ctrl + S )"
           popupPlacement="right"
         >
-          <Button
-            className="general-fun-bt"
+          <button
+            type="button"
+            style={styles.button}
             onClick={handleSaveDataAsJSON}
             disabled={!isSaveButtonEnabled}
           >
             <FaDownload />
-          </Button>
+          </button>
         </ToolTip>
       )}
     </Fragment>

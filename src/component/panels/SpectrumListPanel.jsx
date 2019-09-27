@@ -16,6 +16,7 @@ import ToolTip from '../elements/ToolTip/ToolTip';
 
 import SpectrumListItem from './SpectrumListItem';
 import ColorPicker from './ColorPicker';
+
 const styles = {
   button: {
     backgroundColor: 'transparent',

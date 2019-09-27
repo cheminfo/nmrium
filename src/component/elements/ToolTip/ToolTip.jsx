@@ -92,7 +92,7 @@ const ToolTip = ({
       <div
         ref={refChild}
         onMouseOver={mouseOverHandler}
-        onMouseLeave={mouseLeaveHandler}
+        onMouseOut={mouseLeaveHandler}
       >
         {children}
       </div>
