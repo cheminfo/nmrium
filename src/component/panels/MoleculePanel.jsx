@@ -12,6 +12,7 @@ import 'react-animated-slider-2/build/horizontal.css';
 import { useDispatch } from '../context/DispatchContext';
 import { DELETE_MOLECULE, ADD_MOLECULE } from '../reducer/Actions';
 import { ChartContext } from '../context/ChartContext';
+import ToolTip from '../elements/ToolTip/ToolTip';
 
 import MoleculeStructureEditorModal from './MoleculeStructureEditorModal';
 
@@ -54,21 +55,21 @@ const MoleculePanel = () => {
   return (
     <div className="molecule-container">
       <div className="molecule-toolbar">
-        <Tooltip title="Past Molecule" placement="left-start">
+        <ToolTip title="Past Molecule" popupPlacement="left">
           <Button onClick={handlePast}>
             <FaPaste />
           </Button>
-        </Tooltip>
-        <Tooltip title="Add Molecule" placement="left-start">
+        </ToolTip>
+        <ToolTip title="Add Molecule" popupPlacement="left">
           <Button onClick={handleOpen}>
             <FaPlus />
           </Button>
-        </Tooltip>
-        <Tooltip title="Delete Molecule" placement="left-start">
+        </ToolTip>
+        <ToolTip title="Delete Molecule" popupPlacement="left">
           <Button onClick={handleDelete}>
             <FaRegTrashAlt />
           </Button>
-        </Tooltip>
+        </ToolTip>
         <p className="molecule-pager-number">
           {' '}
           {molecules &&

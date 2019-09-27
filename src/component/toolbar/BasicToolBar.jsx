@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useCallback } from 'react';
 import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
 import { FaSearchMinus, FaMinus, FaBars, FaDownload } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -10,6 +9,7 @@ import {
   CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
 } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
+import ToolTip from '../elements/ToolTip/ToolTip';
 
 const BasicToolBar = ({
   isFullZoomButtonVisible = true,
@@ -63,7 +63,7 @@ const BasicToolBar = ({
   return (
     <Fragment>
       {isFullZoomButtonVisible && (
-        <Tooltip title="Full Zoom Out ( Press f )" placement="right-start">
+        <ToolTip title="Full Zoom Out ( Press f )" popupPlacement="right">
           <Button
             className="general-fun-bt"
             onClick={handleFullZoomOut}
@@ -71,11 +71,11 @@ const BasicToolBar = ({
           >
             <FaSearchMinus />
           </Button>
-        </Tooltip>
+        </ToolTip>
       )}
 
       {isViewButtonVisible && (
-        <Tooltip title="Spectrums  alignment " placement="right-start">
+        <ToolTip title="Spectrums  alignment " popupPlacement="right">
           <div>
             <Button
               className="general-fun-bt"
@@ -85,13 +85,13 @@ const BasicToolBar = ({
               {verticalAlign !== 0 ? <FaMinus /> : <FaBars />}
             </Button>
           </div>
-        </Tooltip>
+        </ToolTip>
       )}
 
       {isSaveButtonVisible && (
-        <Tooltip
+        <ToolTip
           title="Save Data as JSON File ( Press Ctrl + S )"
-          placement="right-start"
+          popupPlacement="right"
         >
           <Button
             className="general-fun-bt"
@@ -100,7 +100,7 @@ const BasicToolBar = ({
           >
             <FaDownload />
           </Button>
-        </Tooltip>
+        </ToolTip>
       )}
     </Fragment>
   );

@@ -85,10 +85,10 @@ const MoleculeStructureEditorModal = (props) => {
             onChange={cb}
           />
           <div style={styles.footer}>
-            <button className="modal-bt" onClick={handleClose}>
+            <button type="button" className="modal-bt" onClick={handleClose}>
               Close
             </button>
-            <button className="modal-bt" onClick={handleSave}>
+            <button type="button" className="modal-bt" onClick={handleSave}>
               Save
             </button>
           </div>

@@ -23,6 +23,7 @@
     "openchemlib": "^7.2.1",
     "perfect-scrollbar": "^1.4.0",
     "prop-types": "^15.7.2",
+    "rc-trigger": "^2.6.5",
     "react": "^16.9.0",
     "react-animated-slider-2": "^1.1.5",
     "react-color": "^2.17.3",

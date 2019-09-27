@@ -3,12 +3,12 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ZoomIn from '@material-ui/icons/ZoomIn';
 import Timeline from '@material-ui/icons/Timeline';
-import Tooltip from '@material-ui/core/Tooltip';
 import ShowChart from '@material-ui/icons/ShowChart';
 
 import { useDispatch } from '../context/DispatchContext';
 import { SET_SELECTED_TOOL } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
+import ToolTip from '../elements/ToolTip/ToolTip';
 
 export let options = {
   zoom: { id: 'zoom', label: 'Zoom' },
@@ -61,7 +61,7 @@ const FunctionToolBar = ({ defaultValue }) => {
   }, [defaultValue, handleOnKeyPressed]);
 
   return (
-    <div className="option-container" onKeyDown={handleOnKeyPressed}>
+    <div className="option-container">
       <ToggleButtonGroup
         size="small"
         value={option}
@@ -69,12 +69,18 @@ const FunctionToolBar = ({ defaultValue }) => {
         onChange={handleChange}
       >
         <ToggleButton key={1} value={options.zoom.id}>
-          <Tooltip
+          {/* <Tooltip
             title={`${options.zoom.label} ( Press z )`}
             placement="right-start"
+          > */}
+          <ToolTip
+            title={`${options.zoom.label} ( Press z )`}
+            popupPlacement="right"
+            offset={{ x: 10, y: 0 }}
           >
             <ZoomIn />
-          </Tooltip>
+          </ToolTip>
+          {/* </Tooltip> */}
         </ToggleButton>
 
         <ToggleButton
@@ -82,12 +88,13 @@ const FunctionToolBar = ({ defaultValue }) => {
           value={options.peakPicking.id}
           disabled={!activeSpectrum}
         >
-          <Tooltip
+          <ToolTip
             title={`${options.peakPicking.label} ( Press p )`}
-            placement="right-start"
+            popupPlacement="right"
+            offset={{ x: 10, y: 0 }}
           >
             <Timeline />
-          </Tooltip>
+          </ToolTip>
         </ToggleButton>
 
         <ToggleButton
@@ -95,12 +102,13 @@ const FunctionToolBar = ({ defaultValue }) => {
           value={options.integral.id}
           disabled={!activeSpectrum}
         >
-          <Tooltip
+          <ToolTip
             title={`${options.integral.label} ( Press i )`}
-            placement="right-start"
+            popupPlacement="right"
+            offset={{ x: 10, y: 0 }}
           >
             <ShowChart />
-          </Tooltip>
+          </ToolTip>
         </ToggleButton>
       </ToggleButtonGroup>
     </div>

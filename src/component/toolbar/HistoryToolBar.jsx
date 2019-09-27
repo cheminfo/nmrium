@@ -6,6 +6,7 @@ import { FaUndo, FaRedo } from 'react-icons/fa';
 import { useDispatch } from '../context/DispatchContext';
 import { REDO, UNDO } from '../reducer/HistoryActions';
 import { ChartContext, useChartData } from '../context/ChartContext';
+import ToolTip from '../elements/ToolTip/ToolTip';
 
 const HistoryToolBar = ({
   isUndoButtonVisible = true,
@@ -32,7 +33,7 @@ const HistoryToolBar = ({
   return (
     <Fragment>
       {isUndoButtonVisible && (
-        <Tooltip title="Redo" placement="right-start">
+        <ToolTip title="Redo" popupPlacement="right">
           <Button
             className="general-fun-bt"
             onClick={handleRedo}
@@ -40,10 +41,10 @@ const HistoryToolBar = ({
           >
             <FaRedo />
           </Button>
-        </Tooltip>
+        </ToolTip>
       )}
       {isRedoButtonVisible && (
-        <Tooltip title="Undo" placement="right-start">
+        <ToolTip title="Undo" popupPlacement="right">
           <Button
             className="general-fun-bt"
             onClick={handleUndo}
@@ -51,7 +52,7 @@ const HistoryToolBar = ({
           >
             <FaUndo />
           </Button>
-        </Tooltip>
+        </ToolTip>
       )}
     </Fragment>
   );

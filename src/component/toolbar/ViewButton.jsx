@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from '../context/DispatchContext';
 import { TOGGLE_REAL_IMAGINARY_VISIBILITY } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
+import ToolTip from '../elements/ToolTip/ToolTip';
 
 const ViewButton = ({ defaultValue = true }) => {
   const [option, setOption] = useState();
@@ -45,9 +45,9 @@ const ViewButton = ({ defaultValue = true }) => {
   }, [activeSpectrum, data, defaultValue]);
 
   return activeSpectrum ? (
-    <Tooltip
+    <ToolTip
       title={option ? 'Real Spectrum' : 'Imaginary Spectrum'}
-      placement="right-start"
+      popupPlacement="right"
     >
       <Button
         disabled={isDisabled}
@@ -56,7 +56,7 @@ const ViewButton = ({ defaultValue = true }) => {
       >
         {option ? 'Re' : 'Im'}
       </Button>
-    </Tooltip>
+    </ToolTip>
   ) : null;
 };
 
