@@ -18,6 +18,8 @@
   width: 40px !important;
   padding: 5px 0px !important;
   min-width: 10px !important;
+  background-color: transparent;
+  border: none;
 }
 
 .molecule-body {

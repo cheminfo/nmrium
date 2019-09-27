@@ -5,7 +5,6 @@ import { FaPlus, FaPaste, FaRegTrashAlt } from 'react-icons/fa';
 import { MF } from 'react-mf';
 
 import '../css/molecule.css';
-import { Button, Tooltip } from '@material-ui/core';
 import Slider from 'react-animated-slider-2';
 
 import 'react-animated-slider-2/build/horizontal.css';
@@ -56,19 +55,19 @@ const MoleculePanel = () => {
     <div className="molecule-container">
       <div className="molecule-toolbar">
         <ToolTip title="Past Molecule" popupPlacement="left">
-          <Button onClick={handlePast}>
+          <button type="button" onClick={handlePast}>
             <FaPaste />
-          </Button>
+          </button>
         </ToolTip>
         <ToolTip title="Add Molecule" popupPlacement="left">
-          <Button onClick={handleOpen}>
+          <button type="button" onClick={handleOpen}>
             <FaPlus />
-          </Button>
+          </button>
         </ToolTip>
         <ToolTip title="Delete Molecule" popupPlacement="left">
-          <Button onClick={handleDelete}>
+          <button type="button" onClick={handleDelete}>
             <FaRegTrashAlt />
-          </Button>
+          </button>
         </ToolTip>
         <p className="molecule-pager-number">
           {' '}

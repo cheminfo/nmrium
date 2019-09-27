@@ -13,15 +13,7 @@ body {
   /* bottom: 80px; */
 }
 
-.show-option-container .MuiToggleButton-root,
-.show-option-container .MuiToggleButton-root.Mui-selected {
-  /* border-radius: 20px; */
-}
-.show-option-container .MuiToggleButton-root.Mui-selected {
-  /* background-color: transparent;
-  border: 1px solid #ff0000 !important; */
-  background-color: #01b517;
-}
+
 
 .general-fun-bt {
   min-width: 40px !important;

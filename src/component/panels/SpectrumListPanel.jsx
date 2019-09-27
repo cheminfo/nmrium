@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import List from '@material-ui/core/List';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import '../css/spectrum-list.css';
-import { Button } from '@material-ui/core';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useChartData } from '../context/ChartContext';
@@ -17,6 +16,12 @@ import ToolTip from '../elements/ToolTip/ToolTip';
 
 import SpectrumListItem from './SpectrumListItem';
 import ColorPicker from './ColorPicker';
+const styles = {
+  button: {
+    backgroundColor: 'transparent',
+    border: 'none',
+  },
+};
 
 const SpectrumListPanel = () => {
   const [activated, setActivated] = useState(null);
@@ -146,9 +151,9 @@ const SpectrumListPanel = () => {
     <div className="spectrum-list-container">
       <div className="spectrum-list-toolbar">
         <ToolTip title="Delete Spectrum" poupPlacement="left">
-          <Button onClick={handleDelete}>
+          <button style={styles.button} type="button" onClick={handleDelete}>
             <FaRegTrashAlt />
-          </Button>
+          </button>
         </ToolTip>
         <p className="spectrum-list-counter">[ {data && data.length} ]</p>
       </div>
