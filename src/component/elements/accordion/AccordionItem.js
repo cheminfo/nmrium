@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 
 const styles = {
   container: {
@@ -54,13 +54,15 @@ const AccordionItem = ({ title, children, height, index, isOpen, onOpen }) => {
     }
   }
 
-  useEffect(() => {
-    const _height =
-      height.expandableHeight === 0
-        ? refContent.current.scrollHeight
-        : height.expandableHeight;
-    setHeightState(active == null ? 0 : _height);
-  }, [height, active]);
+  useLayoutEffect(() => {
+    // const _height =
+    //   height.expandableHeight === 0
+    //     ? refContent.current.scrollHeight
+    //     : height.expandableHeight;
+    if (height.expandableHeight !== 0) {
+      setHeightState(isOpen ? height.expandableHeight : 0);
+    }
+  }, [height, isOpen]);
 
   useEffect(() => {
     if (isOpen === false) {

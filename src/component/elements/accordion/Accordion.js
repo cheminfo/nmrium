@@ -4,7 +4,7 @@ const styles = {
   container: { height: '100%', width: '100%' },
 };
 
-const Accordion = ({ children }) => {
+const Accordion = ({ children, defaultOpenIndex = 0 }) => {
   const [height, setHeight] = useState({
     parentHeight: 0,
     expandableHeight: 0,
@@ -12,7 +12,7 @@ const Accordion = ({ children }) => {
   const [elements, setElements] = useState(
     Array(children.length)
       .fill(false)
-      .map((e) => e),
+      .map((e, i) => (i === defaultOpenIndex ? true : e)),
   );
   const refContainer = useRef();
   const refContent = useRef();
