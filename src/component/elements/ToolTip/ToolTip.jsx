@@ -34,8 +34,6 @@ const ToolTip = ({
       let y;
       const childBounding = refChild.current.getBoundingClientRect();
       const contentBounding = refContent.current.getBoundingClientRect();
-      console.log(childBounding);
-      console.log(contentBounding);
       switch (popupPlacement) {
         case 'left':
           x = -contentBounding.width;
