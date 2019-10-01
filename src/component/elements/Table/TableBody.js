@@ -2,7 +2,7 @@ import React from 'react';
 
 const styles = {
   width: '100%',
-  overflowY: 'scroll',
+  overflowY: 'auto',
   display: 'flex',
   flexDirection: 'column',
   padding: '5px 0px',
