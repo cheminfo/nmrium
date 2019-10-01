@@ -41,14 +41,7 @@ const styles = {
   },
 };
 
-export const AccordionItem = ({
-  title,
-  children,
-  height,
-  index,
-  isOpen,
-  onOpen,
-}) => {
+const AccordionItem = ({ title, children, height, index, isOpen, onOpen }) => {
   const [active, setActiveState] = useState(null);
   const [Height, setHeightState] = useState(0);
 

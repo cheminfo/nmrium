@@ -4,7 +4,7 @@ const styles = {
   container: { height: '100%', width: '100%' },
 };
 
-export const Accordion = ({ children }) => {
+const Accordion = ({ children }) => {
   const [height, setHeight] = useState({
     parentHeight: 0,
     expandableHeight: 0,
