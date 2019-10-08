@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ZoomIn from '@material-ui/icons/ZoomIn';
 import Timeline from '@material-ui/icons/Timeline';
 import ShowChart from '@material-ui/icons/ShowChart';
@@ -9,6 +7,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { SET_SELECTED_TOOL } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 
 export let options = {
   zoom: { id: 'zoom', label: 'Zoom' },
@@ -27,7 +26,8 @@ const FunctionToolBar = ({ defaultValue }) => {
   const { activeSpectrum } = useChartData();
 
   const handleChange = useCallback(
-    (event, selectedOption) => {
+    (selectedOption) => {
+      console.log(selectedOption);
       if (selectedOption != null) {
         setOption(selectedOption);
         handleChangeOption(selectedOption);
@@ -61,59 +61,107 @@ const FunctionToolBar = ({ defaultValue }) => {
   }, [defaultValue, handleOnKeyPressed]);
 
   return (
-    <div className="option-container">
-      <ToggleButtonGroup
-        size="small"
-        value={option}
-        exclusive
-        onChange={handleChange}
+    <ToggleButtonGroup value={option} onChange={handleChange}>
+      <ToggleButton key={1} value={options.zoom.id}>
+        <ToolTip
+          title={`${options.zoom.label} ( Press z )`}
+          popupPlacement="right"
+          offset={{ x: 10, y: 0 }}
+        >
+          <ZoomIn />
+        </ToolTip>
+      </ToggleButton>
+
+      <ToggleButton
+        key={2}
+        value={options.peakPicking.id}
+        disabled={!activeSpectrum}
       >
-        <ToggleButton key={1} value={options.zoom.id}>
-          {/* <Tooltip
-            title={`${options.zoom.label} ( Press z )`}
-            placement="right-start"
-          > */}
-          <ToolTip
-            title={`${options.zoom.label} ( Press z )`}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          >
-            <ZoomIn />
-          </ToolTip>
-          {/* </Tooltip> */}
-        </ToggleButton>
-
-        <ToggleButton
-          key={2}
-          value={options.peakPicking.id}
-          disabled={!activeSpectrum}
+        <ToolTip
+          title={`${options.peakPicking.label} ( Press p )`}
+          popupPlacement="right"
+          offset={{ x: 10, y: 0 }}
         >
-          <ToolTip
-            title={`${options.peakPicking.label} ( Press p )`}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          >
-            <Timeline />
-          </ToolTip>
-        </ToggleButton>
+          <Timeline />
+        </ToolTip>
+      </ToggleButton>
 
-        <ToggleButton
-          key={3}
-          value={options.integral.id}
-          disabled={!activeSpectrum}
+      <ToggleButton
+        key={3}
+        value={options.integral.id}
+        disabled={!activeSpectrum}
+      >
+        <ToolTip
+          title={`${options.integral.label} ( Press i )`}
+          popupPlacement="right"
+          offset={{ x: 10, y: 0 }}
         >
-          <ToolTip
-            title={`${options.integral.label} ( Press i )`}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          >
-            <ShowChart />
-          </ToolTip>
-        </ToggleButton>
-      </ToggleButtonGroup>
-    </div>
+          <ShowChart />
+        </ToolTip>
+      </ToggleButton>
+    </ToggleButtonGroup>
   );
 };
+//   return (
+//     <div className="option-container">
+//       <ToggleButtonGroup
+//         size="small"
+//         value={option}
+//         exclusive
+//         onChange={handleChange}
+//       >
+//         <ToggleButton key={1} value={options.zoom.id}>
+//           {/* <Tooltip
+//             title={`${options.zoom.label} ( Press z )`}
+//             placement="right-start"
+//           > */}
+//           <ToolTip
+//             title={`${options.zoom.label} ( Press z )`}
+//             popupPlacement="right"
+//             offset={{ x: 10, y: 0 }}
+//           >
+//             <ZoomIn />
+//           </ToolTip>
+//           {/* </Tooltip> */}
+//         </ToggleButton>
+
+//         <ToggleButton
+//           key={2}
+//           value={options.peakPicking.id}
+//           disabled={!activeSpectrum}
+//         >
+//           <ToolTip
+//             title={`${options.peakPicking.label} ( Press p )`}
+//             popupPlacement="right"
+//             offset={{ x: 10, y: 0 }}
+//           >
+//             <Timeline />
+//           </ToolTip>
+//         </ToggleButton>
+
+//         <ToggleButton
+//           key={3}
+//           value={options.integral.id}
+//           disabled={!activeSpectrum}
+//         >
+//           <ToolTip
+//             title={`${options.integral.label} ( Press i )`}
+//             popupPlacement="right"
+//             offset={{ x: 10, y: 0 }}
+//           >
+//             <ShowChart />
+//           </ToolTip>
+//         </ToggleButton>
+//       </ToggleButtonGroup>
+//     </div>
+//   );
+// };
+
+// <ToggleButtonGroup value={1} onChange={(v) => console.log(v)}>
+// <ToggleButton value={1}>sss</ToggleButton>
+// <ToggleButton value={2}>aaa</ToggleButton>
+// <ToggleButton value={3}>bbbb</ToggleButton>
+// </ToggleButtonGroup>
 
 export default memo(FunctionToolBar);
 

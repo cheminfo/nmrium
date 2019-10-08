@@ -2,6 +2,10 @@ body {
   font: 12px Arial;
 }
 
+.MuiSvgIcon-root {
+  font-size: 1rem !important;
+}
+
 ::-webkit-scrollbar {
   width: 6px !important;
   min-width: 5px !important;
