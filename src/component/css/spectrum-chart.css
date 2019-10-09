@@ -14,10 +14,8 @@ body {
 
 ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 20px rgb(245, 245, 245);
-  /* background-color: white!important; */
 }
 ::-webkit-scrollbar-thumb {
-  /* border: 0.55px solid rgb(155, 155, 155); */
   background-color: rgb(214, 214, 214);
   border-radius: 3px;
 }
@@ -29,8 +27,6 @@ body {
 
 .show-option-container {
   padding: 5px 0px;
-  /* position: absolute; */
-  /* bottom: 80px; */
 }
 
 .general-fun-bt {
@@ -44,19 +40,6 @@ body {
   fill: #4e4e4e;
 }
 
-/* .MuiGrid-grid-lg-1,.MuiGrid-grid-xl-1{
-  max-width: 3.333333% !important;
-  flex-basis: 8.333333%!important;
-
-} */
-
-.MuiGrid-grid-xs-1 {
-  /* max-width: 40px !important; */
-}
-
-/* .MuiGrid-grid-xs-11 {
-  flex-grow: 1 !important;
-} */
 
 .MuiToggleButtonGroup-root {
   display: grid !important;
@@ -172,9 +155,6 @@ input[type='number'] {
 
 .Resizer.vertical {
   width: 8px;
-  /* margin: 0 -5px; */
-  /* border-left: 2px solid rgb(119, 115, 115);
-  border-right: 2px solid rgba(119, 115, 155); */
   cursor: col-resize;
 }
 
@@ -185,11 +165,7 @@ input[type='number'] {
 
 .Resizer.horizontal {
   height: 11px;
-  /* margin: -5px 0; */
-  /* border-top: 5px solid rgba(255, 255, 255, 0);
-  border-bottom: 5px solid rgba(255, 255, 255, 0);
-  cursor: row-resize;
-  width: 100%; */
+
 }
 
 .Resizer.horizontal:hover {
@@ -197,18 +173,7 @@ input[type='number'] {
   border-bottom: 5px solid rgba(0, 0, 0, 0.5);
 }
 
-/* .Resizer.vertical {
-  width: 11px;
-  margin: 0 -5px;
-  border-left: 5px solid rgba(255, 255, 255, 0);
-  border-right: 5px solid rgba(255, 255, 255, 0);
-  cursor: col-resize;
-} */
-/* 
-.Resizer.vertical:hover {
-  border-left: 10px solid rgba(0, 0, 0, 0.6);
-  border-right:  10px solid rgba(0, 0, 0, 0.5);
-} */
+
 .Resizer.disabled {
   cursor: not-allowed;
 }

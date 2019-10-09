@@ -2,7 +2,15 @@ import React, { useContext } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
-import '../css/brush.css';
+
+const styles = {
+  container: {
+    transformOrigin: 'top left',
+    position: 'absolute',
+    top: '0px',
+    left: '0px',
+  },
+};
 
 export default function BrushX() {
   const { width, height } = useChartData();
@@ -14,10 +22,10 @@ export default function BrushX() {
   return (
     <div
       style={{
+        ...styles.container,
         transform: `translate(${startX}px, 0px) scaleX(${scale})`,
-        transformOrigin: 'top left',
       }}
-      className="overlay moving-element"
+      className="moving-element"
     >
       <svg width={width} height={height}>
         <line x1="0" y1="0" x2="0" y2={height} strokeWidth="8" stroke="red" />

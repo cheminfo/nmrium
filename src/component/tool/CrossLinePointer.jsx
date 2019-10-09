@@ -2,9 +2,18 @@ import React, { useContext } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
-import '../css/cross-line-tool.css';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { options } from '../toolbar/FunctionToolBar';
+
+const styles = {
+  line: {
+    stroke: 'black',
+    strokeOpacity: '1',
+    shapeRendering: 'crispEdges',
+    strokeWidth: '1',
+    willChange: 'transform',
+  },
+};
 
 const CrossLinePointer = () => {
   const { height, width, margin, selectedTool } = useChartData();
@@ -41,7 +50,7 @@ const CrossLinePointer = () => {
     >
       <svg width={2 * width} height={2 * height}>
         <line
-          className="vertical_line"
+          style={styles.line}
           x1={width}
           y1="0"
           x2={width}
@@ -49,7 +58,7 @@ const CrossLinePointer = () => {
           key="vertical_line"
         />
         <line
-          className="vertical_line"
+          style={styles.line}
           x1="0"
           y1={height}
           x2={width * 2}

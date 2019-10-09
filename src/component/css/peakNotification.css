@@ -1,18 +1,10 @@
-.notification-label:hover {
-  /* background-color: red; */
-  /* display: block; */
-  /* visibility: visible; */
-}
+
 
 .notification-input {
-  /* background-color: rgb(255, 223, 158); */
-  /* border: 0.55px solid rgb(219, 146, 0); */
   width: calc(100% - 10px) !important;
-  /* border: 0.55px solid rgb(219, 146, 0); */
 }
 
-.notification-input-normal{
-  /* border: 0 !important; */
+.notification-input-normal {
   opacity: 1;
   left: 4px;
   position: absolute;
@@ -20,32 +12,19 @@
   outline: none;
   user-select: none;
   background-color: transparent;
-
-
 }
 
 .notification-input-normal input:focus {
-    outline: none;
-    background-color: white;
-
+  outline: none;
+  background-color: white;
 }
 
 .input-over {
   background-color: white;
   outline: none;
-
-  /* border: 0.55px solid rgb(85, 104, 0); */
 }
 
 .notification-label {
-  /* display: none; */
-  /* visibility: hidden; */
-  /* stroke:rgba(255, 223, 158,0.5);
-    stroke-opacity: 1;
-    shape-rendering: crispEdges;
-    stroke-dasharray: 4;
-    stroke-width: 0.55px;
-    fill:rgba(255, 223, 158,0.5); */
   display: none;
 }
 
@@ -66,27 +45,3 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-/* .delete-notation-bt{
-  background-color:"red" !important;
-  color:"white"!important;
-  border:0!important;
-  padding:0!important;
-  width:15!important;
-  height:15!important;
-  border-radius:15!important;
-  position:"absolute"!important;
-  display:"flex"!important;
-  align-items:"center"!important;
-  justify-content:"center"!important;
-} */
-
-/* .notifcate-selected:hover{
-
-     stroke-opacity: 1;
-     shape-rendering: crispEdges;
-     stroke-dasharray: 4;
-     stroke-width: 0.55;
-     opacity: 0.2;
-    
-} */

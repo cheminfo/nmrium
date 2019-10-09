@@ -10,7 +10,6 @@ const IntegralsSeries = () => {
   const {
     xDomain,
     getScale,
-    verticalAlign,
     activeSpectrum,
     data,
     height,
@@ -72,7 +71,7 @@ const IntegralsSeries = () => {
       data
         .filter((d) => d.isVisible === true)
         .map(
-          (d, i) =>
+          (d) =>
             d.integrals &&
             d.integrals.map((integral) => (
               <g key={integral.id}>

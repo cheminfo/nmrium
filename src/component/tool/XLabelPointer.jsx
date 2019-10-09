@@ -2,9 +2,18 @@ import React, { useContext } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
-import '../css/cross-line-tool.css';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
+
+const style = {
+  cursor: 'crosshair',
+  transformOrigin: 'bottom right',
+  position: 'absolute',
+  top: '-14px',
+  left: '-26px',
+  pointerEvents: 'none',
+  overflow: 'visible',
+};
 
 const XLabelPointer = () => {
   const {
@@ -40,14 +49,8 @@ const XLabelPointer = () => {
     <div
       key="xLabelPointer"
       style={{
-        cursor: 'crosshair',
+        ...style,
         transform: `translate(${position.x}px, ${position.y}px)`,
-        transformOrigin: 'bottom right',
-        position: 'absolute',
-        top: '-14px',
-        left: '-26px',
-        pointerEvents: 'none',
-        overflow: 'visible',
       }}
     >
       <span>{getXValue(position.x)}</span>
