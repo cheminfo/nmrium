@@ -1,8 +1,34 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 
 import { useChartData } from './context/ChartContext';
+
+const axisStyles = css`
+  path,
+  line {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+  }
+`;
+
+const gridStyles = css`
+  line {
+    stroke: rgb(104, 104, 104);
+    stroke-opacity: 0.2;
+    shape-rendering: crispEdges;
+    stroke-dasharray: 3;
+    stroke-width: 1;
+  }
+
+  path {
+    stroke-width: 0;
+  }
+`;
 
 const XAxis = ({ label, show, showGrid, mode }) => {
   const { xDomain, getScale, height, width, margin } = useChartData();
@@ -55,7 +81,8 @@ const XAxis = ({ label, show, showGrid, mode }) => {
       show &&
       show === true && (
         <g
-          className="x axis"
+          className="x"
+          css={axisStyles}
           transform={`translate(0,${height - margin.bottom})`}
           ref={refAxis}
         >
@@ -73,7 +100,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
       showGrid &&
       showGrid === true && (
         <g
-          className="grid"
+          css={gridStyles}
           ref={refGrid}
           transform={`translate(0,${height - margin.bottom})`}
         />

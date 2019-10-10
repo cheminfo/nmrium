@@ -2,10 +2,24 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 import * as d3 from 'd3';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 
 import { useChartData } from './context/ChartContext';
 import IntegralResizable from './IntegralResizable';
 
+const pathStyles = css`
+  -webkit-clip-path: url('#clip');
+  clip-path: url('#clip');
+
+  path {
+    stroke-width: 1.5;
+    fill: none;
+    // stroke-linejoin: round;
+    // stroke-linecap: round;
+    // will-change: transform;
+  }
+`;
 const IntegralsSeries = () => {
   const {
     xDomain,
@@ -97,20 +111,25 @@ const IntegralsSeries = () => {
                     y: integral.y,
                     yDomain: d.integralsYDomain,
                   })}
-                  // transform={`translate(0,${i * verticalAlign})`}
                   vectorEffect="non-scaling-stroke"
-                  // transform={`translate(0,${
-                  //   verticalAlign === 0 ? 120 : 120 + i * verticalAlign
-                  // }) scale(1,8)`}
                 />
               </g>
             )),
         )
     );
-  }, [data, getScale, getYScale, xDomain, activeSpectrum]);
+  }, [
+    data,
+    getScale,
+    zoomFactor,
+    xDomain,
+    getYScale,
+    height,
+    margin.bottom,
+    activeSpectrum,
+  ]);
 
   return (
-    <g className="paths" clipPath="url(#clip)">
+    <g css={pathStyles} clipPath="url(#clip)">
       {Integrals}
     </g>
   );

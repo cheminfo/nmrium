@@ -5,9 +5,15 @@ import HistoryToolBar from './HistoryToolBar';
 import BasicToolBar from './BasicToolBar';
 import ViewButton from './ViewButton';
 
+
+const styles = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'start',
+};
 const ToolBar = () => {
   return (
-    <div className="toolbar-container">
+    <div css={styles}>
       <FunctionToolBar defaultValue={options.zoom.id} />
       <HistoryToolBar />
       <BasicToolBar />

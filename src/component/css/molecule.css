@@ -22,8 +22,6 @@
   border: none;
 }
 
-.molecule-body {
-}
 
 .molecule-body .slider {
   height: 180px;
@@ -81,10 +79,7 @@
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff',GradientType=0);
 	background-color:#f6f6f6;
 }
-/* .modal-bt:active {
-	position:relative;
-	top:1px;
-} */
+
 
 
 

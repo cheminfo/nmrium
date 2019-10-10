@@ -10,23 +10,70 @@ import { FaMinus } from 'react-icons/fa';
 import { useDispatch } from '../context/DispatchContext';
 import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
 
-import '../css/peakNotification.css';
+/** @jsx jsx */
+import { jsx, css, Global } from '@emotion/core';
 
-const styles = {
-  deleteButton: {
-    backgroundColor: 'red',
-    color: 'white',
-    border: 0,
-    padding: 0,
-    width: 15,
-    height: 15,
-    borderRadius: 15,
-    position: 'absolute',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-};
+const styles = css`
+  .delete-bt {
+    background-color: red;
+    color: white;
+    border: 0px;
+    border-radius: 15px;
+    padding: 0px;
+    width: 15px;
+    height: 15px;
+    border: 15px;
+    position: absolute;
+    display: 'flex';
+    align-items: center;
+    justify-content: center;
+  }
+  .notification-input {
+    width: calc(100% - 10px) !important;
+  }
+
+  .notification-input-normal {
+    opacity: 1;
+    left: 4px;
+    position: absolute;
+    font-size: 10px;
+    outline: none;
+    user-select: none;
+    background-color: transparent;
+  }
+
+  .notification-input-normal input:focus {
+    outline: none;
+    background-color: white;
+  }
+
+  .input-over {
+    background-color: white;
+    outline: none;
+  }
+
+  .notification-label {
+    display: none;
+  }
+
+  .notification-group-over {
+    z-index: 9999999999;
+  }
+
+  .notification-group {
+    z-index: 1;
+  }
+
+  .notifcate-selected {
+    opacity: 0;
+  }
+
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+`;
 
 export const PeakNotation = ({
   id,
@@ -114,77 +161,83 @@ export const PeakNotation = ({
   }, []);
 
   return (
-    <g
-      id={id}
-      transform={`translate(${x}, ${y})`}
-      onMouseOver={() => {
-        handleOnOverNotation(id);
-      }}
-      onMouseLeave={handleOnMouseLeaveNotation}
-    >
-      <line x1="0" x2="0" y1="-5" y2={-30} stroke={color} strokeWidth="1" />
-      <text
-        ref={refText}
-        x="0"
-        y={-20}
-        dy="0.1em"
-        dx="0.35em"
-        fill="transparent"
+    <>
+      <Global styles={styles} />
+
+      <g
+        id={id}
+        transform={`translate(${x}, ${y})`}
+        onMouseOver={() => {
+          handleOnOverNotation(id);
+        }}
+        onMouseLeave={handleOnMouseLeaveNotation}
       >
-        {isSelected ? value : parseFloat(value).toFixed(decimalFraction)}
-      </text>
-      <foreignObject
-        x="0"
-        y="-30"
-        width={containerSize.width + 20}
-        height={containerSize.height + 30}
-      >
-        <div
-          style={{
-            width: containerSize.width + 20,
-            height: containerSize.height + 30,
-            paddingRight: 5,
-          }}
-          xmlns="http://www.w3.org/1999/xhtml"
+        <line x1="0" x2="0" y1="-5" y2={-30} stroke={color} strokeWidth="1" />
+        <text
+          ref={refText}
+          x="0"
+          y={-20}
+          dy="0.1em"
+          dx="0.35em"
+          fill="transparent"
         >
-          <input
-            onClick={handleSelectPeakNotation}
-            className={
-              isSelected
-                ? 'notification-input input-over'
-                : 'notification-input-normal'
-            }
+          {isSelected ? value : parseFloat(value).toFixed(decimalFraction)}
+        </text>
+        <foreignObject
+          x="0"
+          y="-30"
+          width={containerSize.width + 20}
+          height={containerSize.height + 30}
+        >
+          <div
             style={{
-              width: 'inherit',
-              border: isSelected ? `1px solid ${color}` : `0`,
-              opacity: isActive ? 1 : 0.2,
+              width: containerSize.width + 20,
+              height: containerSize.height + 30,
+              paddingRight: 5,
             }}
-            value={
-              isSelected ? _value : parseFloat(_value).toFixed(decimalFraction)
-            }
-            onKeyDown={handleKeyDown}
-            onChange={handleChange}
-            type="number"
-            disabled={!isActive}
-          />
-          {isOver.id && isOver.flag === true && (
-            <button
-              type="button"
-              onClick={(e) =>
-                handleDeleteNotation(e, { xIndex: id, id: spectrumID })
+            xmlns="http://www.w3.org/1999/xhtml"
+          >
+            <input
+              onClick={handleSelectPeakNotation}
+              className={
+                isSelected
+                  ? 'notification-input input-over'
+                  : 'notification-input-normal'
               }
               style={{
-                ...styles.deleteButton,
-                left: containerSize.width,
-                top: containerSize.height + 7,
+                width: 'inherit',
+                border: isSelected ? `1px solid ${color}` : `0`,
+                opacity: isActive ? 1 : 0.2,
               }}
-            >
-              <FaMinus />
-            </button>
-          )}
-        </div>
-      </foreignObject>
-    </g>
+              value={
+                isSelected
+                  ? _value
+                  : parseFloat(_value).toFixed(decimalFraction)
+              }
+              onKeyDown={handleKeyDown}
+              onChange={handleChange}
+              type="number"
+              disabled={!isActive}
+            />
+            {isOver.id && isOver.flag === true && (
+              <button
+                type="button"
+                onClick={(e) =>
+                  handleDeleteNotation(e, { xIndex: id, id: spectrumID })
+                }
+                className="delete-bt"
+                style={{
+                  left: containerSize.width,
+                  top: containerSize.height + 7,
+                }}
+              >
+                <FaMinus />
+              </button>
+            )}
+          </div>
+        </foreignObject>
+      </g>
+    </>
   );
 };
 

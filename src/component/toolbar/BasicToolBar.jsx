@@ -76,7 +76,7 @@ const BasicToolBar = ({
             type="button"
             style={styles.button}
             onClick={handleFullZoomOut}
-            disabled={isFullZoomButtonEnabled}
+            disabled={!isFullZoomButtonEnabled}
           >
             <FaSearchMinus />
           </button>

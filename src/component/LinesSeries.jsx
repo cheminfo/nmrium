@@ -1,8 +1,24 @@
-import React, { useMemo, memo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 
 import { useChartData } from './context/ChartContext';
+
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
+
+const pathStyles = css`
+  -webkit-clip-path: url('#clip');
+  clip-path: url('#clip');
+
+  path {
+    stroke-width: 1.5;
+    fill: none;
+    // stroke-linejoin: round;
+    // stroke-linecap: round;
+    // will-change: transform;
+  }
+`;
 
 export const LinesSeries = () => {
   const {
@@ -54,21 +70,9 @@ export const LinesSeries = () => {
             key={`line-${d.id}-${i}`}
             stroke={d.color}
             style={{
-              // transformOrigin: 'center top',
               opacity: isActive(d.id) ? 1 : 0.2,
             }}
             d={makePath(d)}
-            // transform={
-            //   zoomFactor
-            //     ? `translate(${zoomFactor.x},${
-            //         verticalAlign === 0
-            //           ? zoomFactor.y
-            //           : zoomFactor.y + i * verticalAlign
-            //       }) scale(1,${zoomFactor.k})`
-            //     : `translate(0,${verticalAlign === 0 ? 0 : i * verticalAlign})`
-            // }
-            // shape-rendering="crispEdges"
-            // vectorEffect="non-scaling-stroke"
             transform={`translate(0,${
               verticalAlign === 0 ? 0 : i * verticalAlign
             })`}
@@ -78,7 +82,7 @@ export const LinesSeries = () => {
   }, [activeSpectrum, data, getScale, verticalAlign, xDomain]);
 
   return (
-    <g className="paths" clipPath="url(#clip)">
+    <g css={pathStyles} clipPath="url(#clip)">
       {paths}
     </g>
   );

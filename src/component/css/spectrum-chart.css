@@ -29,89 +29,6 @@ body {
   padding: 5px 0px;
 }
 
-.general-fun-bt {
-  min-width: 40px !important;
-  width: 40px;
-  margin-top: 5px !important;
-  text-transform: none !important;
-}
-
-.general-fun-bt:not([disabled]) svg path {
-  fill: #4e4e4e;
-}
-
-
-.MuiToggleButtonGroup-root {
-  display: grid !important;
-}
-.MuiToggleButton-root {
-  text-transform: none !important;
-  border: none !important ;
-}
-
-.MuiToggleButton-label svg,
-.MuiToggleButton-label .label {
-  font-size: 1.1em;
-}
-
-.paths {
-  -webkit-clip-path: url('#clip');
-  clip-path: url('#clip');
-}
-
-.paths path {
-  stroke-width: 1.5;
-  fill: none;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  will-change: transform;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: black;
-  stroke-width: 1;
-  shape-rendering: crispEdges;
-}
-
-.grid line {
-  stroke: rgb(104, 104, 104);
-  stroke-opacity: 0.2;
-  shape-rendering: crispEdges;
-  stroke-dasharray: 3;
-  stroke-width: 1;
-}
-
-.grid path {
-  stroke-width: 0;
-}
-
-.zoom-container {
-  fill: none;
-}
-
-.brush-container {
-  cursor: crosshair;
-}
-.zoom {
-  cursor: move;
-  pointer-events: all;
-}
-
-.MuiSvgIcon-root > path:first-child {
-  stroke: gray;
-}
-
-.MuiToggleButton-sizeSmall {
-  height: 30px !important;
-}
-
-.toolbar-container {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-}
 
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button {
@@ -165,14 +82,12 @@ input[type='number'] {
 
 .Resizer.horizontal {
   height: 11px;
-
 }
 
 .Resizer.horizontal:hover {
   border-top: 5px solid rgba(0, 0, 0, 0.5);
   border-bottom: 5px solid rgba(0, 0, 0, 0.5);
 }
-
 
 .Resizer.disabled {
   cursor: not-allowed;

@@ -8,39 +8,20 @@ import { RESIZE_INTEGRAL } from './reducer/Actions';
 
 const IntegralResizable = (props) => {
   const { getScale, height, margin, mode } = useChartData();
-  const { id, x, y, yDomain, from, to, integralID } = props;
+  const { id, x, from, to, integralID } = props;
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
 
-  //   const [pixelRange, setPixelRange] = useState(null);
-
-  // const getYScale = useCallback(
-  //   (yDomain) => {
-  //     return d3.scaleLinear(yDomain, [height - margin.bottom, margin.top]);
-  //   },
-  //   [height, margin.bottom, margin.top],
-  // );
   const xBoundary = d3.extent(x);
-  // const yBoundary = d3.extent(y);
-  // const yScale = getYScale(yDomain);
 
   const dispatch = useDispatch();
-
-  //   useEffect(() => {
-  //     const start = getScale(id).x(from);
-  //     const end = getScale(id).x(to);
-
-  //     setPixelRange({ from: start, to: end });
-
-  //     console.log(to);
-  //   }, [from, getScale, id, to]);
 
   const handleRightStart = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     setRightDragVisibility(true);
   }, []);
-  const handleRightDrag = useCallback((e) => {}, []);
+  const handleRightDrag = useCallback(() => {}, []);
   const handleRightStop = useCallback(
     (e) => {
       e.preventDefault();
@@ -82,7 +63,7 @@ const IntegralResizable = (props) => {
     e.stopPropagation();
     setLeftDragVisibility(true);
   }, []);
-  const handleLeftDrag = useCallback((e) => {}, []);
+  const handleLeftDrag = useCallback(() => {}, []);
   const handleLeftStop = useCallback(
     (e) => {
       e.preventDefault();
@@ -122,26 +103,14 @@ const IntegralResizable = (props) => {
 
   return (
     <g fill="red">
-      {/* {pixelRange && (
-        <rect
-          style={{ fillOpacity: 0.2, pointerEvents: 'none' }}
-          x={pixelRange.to}
-          y={yScale(yBoundary[1])}
-          width={pixelRange.from - pixelRange.to}
-          fill="lightgray"
-          height={yScale(yBoundary[0]) - yScale(yBoundary[1])}
-        />
-      )} */}
       <Draggable
         axis="x"
         defaultPosition={{
           x: getScale(id).x(xBoundary[0]),
-          // y: yScale(yBoundary[1]),
           y: 0,
         }}
         position={{
           x: getScale(id).x(xBoundary[0]),
-          // y: yScale(yBoundary[1]),
           y: 0,
         }}
         scale={1}
@@ -154,7 +123,6 @@ const IntegralResizable = (props) => {
           width={rightDragVisibility ? 1 : 6}
           fill="red"
           height={height + margin.top}
-          // yScale(yBoundary[0]) - yScale(yBoundary[1])
           style={{ fillOpacity: rightDragVisibility ? 1 : 0 }}
         />
       </Draggable>
@@ -164,12 +132,10 @@ const IntegralResizable = (props) => {
         defaultPosition={{
           x: getScale(id).x(xBoundary[1]),
           y: 0,
-          // y: yScale(yBoundary[1]),
         }}
         position={{
           x: getScale(id).x(xBoundary[1]),
           y: 0,
-          // y: yScale(yBoundary[1]),
         }}
         scale={1}
         onStart={handleLeftStart}
@@ -181,7 +147,6 @@ const IntegralResizable = (props) => {
           width={leftDragVisibility ? 1 : 6}
           fill="red"
           height={height + margin.top}
-          // height={yScale(yBoundary[0]) - yScale(yBoundary[1])}
           style={{ fillOpacity: leftDragVisibility ? 1 : 0 }}
         />
       </Draggable>

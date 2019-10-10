@@ -2,6 +2,8 @@ import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import PublishRounded from '@material-ui/icons/PublishRounded';
 import debug from 'debug';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 
 import { Analysis } from '../data/Analysis';
 
@@ -11,7 +13,6 @@ import {
   LOAD_JCAMP_FILE,
 } from './reducer/Actions';
 import { useDispatch } from './context/DispatchContext';
-import './css/drop-zone.css';
 import { useChartData } from './context/ChartContext';
 
 const logger = new debug('development');
@@ -48,6 +49,36 @@ function loadFiles(acceptedFiles) {
     }),
   );
 }
+
+const style = css`
+  height: 100%;
+  background-color: #b5b5b599;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  z-index: 99999;
+
+  p {
+    color: white;
+    background-color: rgb(104, 104, 104);
+    padding: 1.5%;
+    border-radius: 30px;
+    margin: 0px;
+  }
+
+  svg {
+    stroke-width: 0;
+    font-size: 3rem !important;
+    fill: white;
+  }
+`;
+
+const conainerStyle = css`
+  border: 0.55px #e6e6e6 solid;
+  display: flex;
+`;
 
 const DropZone = (props) => {
   const { width, height } = useChartData();
@@ -128,14 +159,11 @@ const DropZone = (props) => {
   });
 
   return (
-    <div
-      {...getRootProps()}
-      className={isDragActive ? 'main-container over' : 'main-container'}
-    >
+    <div {...getRootProps()} css={conainerStyle}>
       <input {...getInputProps()} />
       {isDragActive && (
         <div
-          className="drop-zoon-over"
+          css={style}
           style={{ width: `${width + 41}px`, height: `${height}px` }}
         >
           <PublishRounded />

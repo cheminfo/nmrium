@@ -28,7 +28,6 @@ import { DispatchProvider, useDispatch } from './context/DispatchContext';
 import DropZone from './DropZone';
 import ToolBar from './toolbar/ToolBar';
 import Panels from './panels/Panels';
-// import Tools from './tool/Tools';
 import NMRChart from './NMRChart';
 import { MouseTracker } from './EventsTrackers/MouseTracker';
 import CrossLinePointer from './tool/CrossLinePointer';

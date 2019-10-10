@@ -1,8 +1,20 @@
 import React, { Fragment, useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 
 import { useChartData } from './context/ChartContext';
+
+const axisStyles = css`
+  path,
+  line {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+  }
+`;
 
 const YAxis = ({ show, label }) => {
   const refAxis = useRef();
@@ -10,16 +22,12 @@ const YAxis = ({ show, label }) => {
 
   useEffect(() => {
     if (show) {
-      // const scale = d3.scaleLinear([0,domain[1]], [height - margin.bottom, margin.top]);
       const scale = getScale();
       const axis = d3
         .axisLeft()
         .ticks(5)
         .tickFormat(d3.format('~s'));
 
-      // d3.select(refAxis.current)
-      //   .selectAll('*')
-      //   .remove();
       d3.select(refAxis.current).call(axis.scale([0, scale.y[1]]));
     }
   }, [show, yDomain, getScale]);
@@ -30,7 +38,8 @@ const YAxis = ({ show, label }) => {
       show === true && (
         <Fragment>
           <g
-            className="y axis"
+            className="y"
+            css={axisStyles}
             transform={`translate(${margin.left + 30},0)`}
             ref={refAxis}
           >

@@ -27,7 +27,6 @@ const FunctionToolBar = ({ defaultValue }) => {
 
   const handleChange = useCallback(
     (selectedOption) => {
-      console.log(selectedOption);
       if (selectedOption != null) {
         setOption(selectedOption);
         handleChangeOption(selectedOption);
@@ -102,66 +101,6 @@ const FunctionToolBar = ({ defaultValue }) => {
     </ToggleButtonGroup>
   );
 };
-//   return (
-//     <div className="option-container">
-//       <ToggleButtonGroup
-//         size="small"
-//         value={option}
-//         exclusive
-//         onChange={handleChange}
-//       >
-//         <ToggleButton key={1} value={options.zoom.id}>
-//           {/* <Tooltip
-//             title={`${options.zoom.label} ( Press z )`}
-//             placement="right-start"
-//           > */}
-//           <ToolTip
-//             title={`${options.zoom.label} ( Press z )`}
-//             popupPlacement="right"
-//             offset={{ x: 10, y: 0 }}
-//           >
-//             <ZoomIn />
-//           </ToolTip>
-//           {/* </Tooltip> */}
-//         </ToggleButton>
-
-//         <ToggleButton
-//           key={2}
-//           value={options.peakPicking.id}
-//           disabled={!activeSpectrum}
-//         >
-//           <ToolTip
-//             title={`${options.peakPicking.label} ( Press p )`}
-//             popupPlacement="right"
-//             offset={{ x: 10, y: 0 }}
-//           >
-//             <Timeline />
-//           </ToolTip>
-//         </ToggleButton>
-
-//         <ToggleButton
-//           key={3}
-//           value={options.integral.id}
-//           disabled={!activeSpectrum}
-//         >
-//           <ToolTip
-//             title={`${options.integral.label} ( Press i )`}
-//             popupPlacement="right"
-//             offset={{ x: 10, y: 0 }}
-//           >
-//             <ShowChart />
-//           </ToolTip>
-//         </ToggleButton>
-//       </ToggleButtonGroup>
-//     </div>
-//   );
-// };
-
-// <ToggleButtonGroup value={1} onChange={(v) => console.log(v)}>
-// <ToggleButton value={1}>sss</ToggleButton>
-// <ToggleButton value={2}>aaa</ToggleButton>
-// <ToggleButton value={3}>bbbb</ToggleButton>
-// </ToggleButtonGroup>
 
 export default memo(FunctionToolBar);
 
