@@ -20,16 +20,6 @@ body {
   border-radius: 3px;
 }
 
-.option-container .MuiToggleButton-root.Mui-selected {
-  background-color: #afabab14 !important;
-  border-left: 2px solid rgb(207, 2, 53) !important ;
-}
-
-.show-option-container {
-  padding: 5px 0px;
-}
-
-
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;

@@ -1,9 +1,56 @@
 import React, { useState, useEffect, useCallback } from 'react';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 import { StructureEditor } from 'react-ocl/full';
 
 import { useDispatch } from '../context/DispatchContext';
 import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/Actions';
 import Modal from '../elements/Modal';
+
+const modalButtonStyle = css`
+  -moz-box-shadow: inset 0px 1px 0px 0px #ffffff;
+  -webkit-box-shadow: inset 0px 1px 0px 0px #ffffff;
+  box-shadow: inset 0px 1px 0px 0px #ffffff;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0.05, #ffffff),
+    color-stop(1, #f6f6f6)
+  );
+  background: -moz-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+  background: -webkit-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+  background: -o-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+  background: -ms-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+  background: linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0);
+  background-color: #ffffff;
+  border: 0.55px solid #dcdcdc;
+  display: inline-block;
+  cursor: pointer;
+  color: #666666;
+  font-weight: bold;
+  padding: 6px 24px;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #ffffff;
+
+  :hover {
+    background: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      color-stop(0.05, #f6f6f6),
+      color-stop(1, #ffffff)
+    );
+    background: -moz-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+    background: -webkit-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+    background: -o-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+    background: -ms-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+    background: linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff',GradientType=0);
+    background-color: #f6f6f6;
+  }
+`;
 
 const MoleculeStructureEditorModal = (props) => {
   const { onClose, open, selectedMolFile } = props;
@@ -39,27 +86,6 @@ const MoleculeStructureEditorModal = (props) => {
   }, [dispatch, selectedMolFile, molfile, onClose]);
 
   const styles = {
-    outerContainer: {
-      position: 'fixed',
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      backgroundColor: 'rgba(255,255,255,0.8)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1,
-    },
-    innerContainer: {
-      padding: '10px 10px 0',
-      boxSizing: 'initial',
-      background: '#fff',
-      borderRadius: '4px',
-      boxShadow: '0 0 0 0, 0 8px 16px rgba(0,0,0,.30)',
-      display: 'flex',
-      flexDirection: 'column',
-    },
     footer: {
       display: 'flex',
       alignItems: 'flex-end',
@@ -69,15 +95,6 @@ const MoleculeStructureEditorModal = (props) => {
   };
 
   return (
-    // open && (
-    //   <div style={styles.outerContainer} onClick={handleClose}>
-    //     <div
-    //       style={styles.innerContainer}
-    //       onClick={(e) => {
-    //         e.preventDefault();
-    //         e.stopPropagation();
-    //       }}
-    //     >
     <Modal open={open} onClose={handleClose}>
       <StructureEditor
         molfile={molfile}
@@ -87,17 +104,14 @@ const MoleculeStructureEditorModal = (props) => {
         onChange={cb}
       />
       <div style={styles.footer}>
-        <button type="button" className="modal-bt" onClick={handleClose}>
+        <button type="button" css={modalButtonStyle} onClick={handleClose}>
           Close
         </button>
-        <button type="button" className="modal-bt" onClick={handleSave}>
+        <button type="button" css={modalButtonStyle} onClick={handleSave}>
           Save
         </button>
       </div>
     </Modal>
-    //   </div>
-    // </div>
-    // )
   );
 };
 

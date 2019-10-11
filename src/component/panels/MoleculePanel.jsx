@@ -1,10 +1,12 @@
 /* eslint-disable react/button-has-type */
 import React, { useState, useCallback, useRef, useContext } from 'react';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 import { MolfileSvgRenderer } from 'react-ocl';
 import { FaPlus, FaPaste, FaRegTrashAlt } from 'react-icons/fa';
 import { MF } from 'react-mf';
 
-import '../css/molecule.css';
+// import '../css/molecule.css';
 import Slider from 'react-animated-slider-2';
 
 import 'react-animated-slider-2/build/horizontal.css';
@@ -14,6 +16,55 @@ import { ChartContext } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 
 import MoleculeStructureEditorModal from './MoleculeStructureEditorModal';
+
+const panelContainerStyle = css`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+`;
+
+const toolbarStyle = css`
+  display: flex;
+  flex-direction: row;
+  border-bottom: 0.55px solid rgb(240, 240, 240);
+
+  button svg {
+    fill: #4e4e4e;
+  }
+
+  button {
+    width: 40px !important;
+    padding: 5px 0px !important;
+    min-width: 10px !important;
+    background-color: transparent;
+    border: none;
+  }
+
+  p {
+    margin: 0;
+    text-align: right;
+    width: 100%;
+    line-height: 22px;
+    padding: 0px 10px;
+  }
+`;
+
+const moleculeContainerStyle = css`
+  .slider {
+    height: 180px;
+    padding: 0px;
+  }
+  .slider p {
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+    position: relative;
+  }
+
+  .slider svg polygon {
+    fill: gray !important;
+  }
+`;
 
 const MoleculePanel = () => {
   const refContainer = useRef();
@@ -52,8 +103,8 @@ const MoleculePanel = () => {
   }, [dispatch, molecules, currentIndex]);
 
   return (
-    <div className="molecule-container">
-      <div className="molecule-toolbar">
+    <div css={panelContainerStyle}>
+      <div css={toolbarStyle}>
         <ToolTip title="Past Molecule" popupPlacement="left">
           <button type="button" onClick={handlePast}>
             <FaPaste />
@@ -69,14 +120,13 @@ const MoleculePanel = () => {
             <FaRegTrashAlt />
           </button>
         </ToolTip>
-        <p className="molecule-pager-number">
-          {' '}
+        <p>
           {molecules &&
             molecules.length > 0 &&
             `${+(currentIndex + 1)} / ${molecules.length}`}{' '}
         </p>
       </div>
-      <div className="molecule-body" ref={refContainer}>
+      <div css={moleculeContainerStyle} ref={refContainer}>
         <Slider onSlideChange={(event) => setCurrentIndex(event.slideIndex)}>
           {molecules &&
             molecules.map((mol) => (
