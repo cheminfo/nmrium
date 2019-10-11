@@ -23,6 +23,7 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
 
   const handleOnValueReady = useCallback(
     (val) => {
+      console.log('handleOnValueReady');
       toggleButtons[val.index] = {
         value: val.value,
         isActive: val.value === value ? true : false,

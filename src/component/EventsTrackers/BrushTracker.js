@@ -28,7 +28,7 @@ export function BrushTracker({
 }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [scale, setScale] = useState(1);
-  const [mouseUpTime, setMouseUpTime] = useState();
+  const [mouseDownTime, setMouseDownTime] = useState();
 
   const mouseDownHandler = useCallback(
     (event) => {
@@ -43,6 +43,9 @@ export function BrushTracker({
         clientY: event.clientY,
         boundingRect: event.currentTarget.getBoundingClientRect(),
       });
+
+      setMouseDownTime(event.timeStamp);
+
       return false;
     },
     [noPropagation],
@@ -50,14 +53,14 @@ export function BrushTracker({
 
   const clickHandler = useCallback(
     (e) => {
-      if (mouseUpTime - e.timeStamp !== 0) {
+      if (e.timeStamp - mouseDownTime <= 150) {
         const boundingRect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - boundingRect.x;
         const y = e.clientY - boundingRect.y;
         onClick({ x, y });
       }
     },
-    [onClick],
+    [mouseDownTime, onClick],
   );
 
   const mouseDoubleClickHandler = useCallback(
@@ -111,20 +114,21 @@ export function BrushTracker({
   }, [state]);
 
   useEffect(() => {
-    const moveCallback = (event) =>
+    const moveCallback = (event) => {
       dispatch({
         type: 'MOVE',
         screenX: event.screenX,
         screenY: event.screenY,
       });
+    };
 
     const upCallback = (event) => {
-      setMouseUpTime(event.timeStamp);
       dispatch({
         type: 'UP',
         screenX: event.screenX,
         screenY: event.screenY,
       });
+
       return false;
     };
     document.addEventListener('mousemove', moveCallback);

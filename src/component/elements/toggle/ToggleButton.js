@@ -37,7 +37,7 @@ const ToggleButton = ({
     if (value) {
       onValueReady({ value, index });
     }
-  }, []);
+  }, [index, onValueReady, value]);
 
   useEffect(() => {
     setActive(isActive);

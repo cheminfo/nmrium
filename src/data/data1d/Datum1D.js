@@ -1,8 +1,9 @@
 // import baseline from './baseline';
 // import autoPeakPicking from './autoPeakPicking';
+import max from 'ml-array-max';
+
 import applyFilter from './filter1d/filter';
 import { SHIFT_X } from './filter1d/filter1d-type';
-import max from 'ml-array-max';
 
 export class Datum1D {
   /**

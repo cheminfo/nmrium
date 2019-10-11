@@ -18,7 +18,10 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
   const refContent = useRef();
 
   const handleOpen = useCallback(
+
     (index) => {
+      console.log('sdddd');
+
       let el = [...elements];
       el = el.map((e, i) => (i === index ? true : false));
       setElements(el);
@@ -27,6 +30,8 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
   );
 
   const Children = React.Children.map(children, (child, index) => {
+    console.log('sdddd');
+
     return React.cloneElement(child, {
       height: height,
       onOpen: handleOpen,
