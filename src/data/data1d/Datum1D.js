@@ -132,11 +132,14 @@ export class Datum1D {
       maxIndex = minIndex;
     }
     const dataRange = this.data.re.slice(minIndex, maxIndex);
-    const yValue = max(dataRange);
-    const xIndex = dataRange.findIndex((value) => value === yValue);
-    const xValue = this.data.x[minIndex + xIndex];
+    if (dataRange && dataRange.length > 0) {
+      const yValue = max(dataRange);
+      const xIndex = dataRange.findIndex((value) => value === yValue);
+      const xValue = this.data.x[minIndex + xIndex];
 
-    return { x: xValue, y: yValue, xIndex: minIndex + xIndex };
+      return { x: xValue, y: yValue, xIndex: minIndex + xIndex };
+    }
+    return [];
   }
   /**
    *

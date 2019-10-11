@@ -56,16 +56,17 @@ const PeakPointer = () => {
         );
 
         const yDataRange = spectrumData.y.slice(minIndex, maxIndex);
+        if (yDataRange && yDataRange.length > 0) {
+          const yValue = max(yDataRange);
+          const xIndex = yDataRange.findIndex((value) => value === yValue);
+          const xValue = spectrumData.x[minIndex + xIndex];
 
-        const yValue = max(yDataRange);
-        const xIndex = yDataRange.findIndex((value) => value === yValue);
-        const xValue = spectrumData.x[minIndex + xIndex];
-
-        return {
-          x: scale.x(xValue),
-          y: scale.y(yValue),
-          xIndex: minIndex + xIndex,
-        };
+          return {
+            x: scale.x(xValue),
+            y: scale.y(yValue),
+            xIndex: minIndex + xIndex,
+          };
+        }
       }
       return null;
     };
