@@ -3,6 +3,7 @@ import { StructureEditor } from 'react-ocl/full';
 
 import { useDispatch } from '../context/DispatchContext';
 import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/Actions';
+import Modal from '../elements/Modal';
 
 const MoleculeStructureEditorModal = (props) => {
   const { onClose, open, selectedMolFile } = props;
@@ -68,33 +69,35 @@ const MoleculeStructureEditorModal = (props) => {
   };
 
   return (
-    open && (
-      <div style={styles.outerContainer} onClick={handleClose}>
-        <div
-          style={styles.innerContainer}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-        >
-          <StructureEditor
-            molfile={molfile}
-            initialMolfile={molfile}
-            svgMenu={true}
-            fragment={false}
-            onChange={cb}
-          />
-          <div style={styles.footer}>
-            <button type="button" className="modal-bt" onClick={handleClose}>
-              Close
-            </button>
-            <button type="button" className="modal-bt" onClick={handleSave}>
-              Save
-            </button>
-          </div>
-        </div>
+    // open && (
+    //   <div style={styles.outerContainer} onClick={handleClose}>
+    //     <div
+    //       style={styles.innerContainer}
+    //       onClick={(e) => {
+    //         e.preventDefault();
+    //         e.stopPropagation();
+    //       }}
+    //     >
+    <Modal open={open} onClose={handleClose}>
+      <StructureEditor
+        molfile={molfile}
+        initialMolfile={molfile}
+        svgMenu={true}
+        fragment={false}
+        onChange={cb}
+      />
+      <div style={styles.footer}>
+        <button type="button" className="modal-bt" onClick={handleClose}>
+          Close
+        </button>
+        <button type="button" className="modal-bt" onClick={handleSave}>
+          Save
+        </button>
       </div>
-    )
+    </Modal>
+    //   </div>
+    // </div>
+    // )
   );
 };
 
