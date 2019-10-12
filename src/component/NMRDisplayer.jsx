@@ -140,8 +140,8 @@ const NMRDisplayer = (props) => {
 function ChartPanel() {
   const { selectedTool } = useChartData();
 
-  const [sizedNMRChart, { width, height }] = useSize(() => {
-    const handelBrushEnd = (brushData) => {
+  const handelBrushEnd = useCallback(
+    (brushData) => {
       switch (selectedTool) {
         case options.zoom.id:
           dispatch({ type: BRUSH_END, ...brushData });
@@ -164,13 +164,16 @@ function ChartPanel() {
         default:
           return;
       }
-    };
+    },
+    [selectedTool],
+  );
 
-    const handelOnDoubleClick = (event) => {
-      dispatch({ type: RESET_DOMAIN });
-    };
+  const handelOnDoubleClick = useCallback((event) => {
+    dispatch({ type: RESET_DOMAIN });
+  }, []);
 
-    const handleZoom = (event) => {
+  const handleZoom = useCallback(
+    (event) => {
       switch (selectedTool) {
         case options.zoom.id:
           dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: event });
@@ -183,17 +186,23 @@ function ChartPanel() {
         default:
           return;
       }
-    };
+    },
+    [selectedTool],
+  );
 
-    const mouseClick = (position) => {
+  const mouseClick = useCallback(
+    (position) => {
       if (selectedTool === options.peakPicking.id) {
         dispatch({
           type: ADD_PEAK,
           mouseCoordinates: position,
         });
       }
-    };
+    },
+    [selectedTool],
+  );
 
+  const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
       <BrushTracker
         onBrush={handelBrushEnd}

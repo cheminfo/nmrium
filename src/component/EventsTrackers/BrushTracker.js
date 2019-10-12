@@ -111,7 +111,7 @@ export function BrushTracker({
     if (state.step === 'end') {
       onBrush(state);
     }
-  }, [state]);
+  }, [onBrush, state]);
 
   useEffect(() => {
     const moveCallback = (event) => {
