@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 
 const style = { display: 'flex', flexDirection: 'column' };
 
@@ -32,21 +32,19 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
     [toggleButtons, value],
   );
 
-  useEffect(() => {
-    handleOnChange(value);
-  }, [value]);
-
-  const Children = React.Children.map(children, (child, index) => {
-    return React.cloneElement(child, {
-      onChange: handleOnChange,
-      isActive:
-        toggleButtons[index] &&
-        toggleButtons[index].isActive &&
-        toggleButtons[index].isActive,
-      onValueReady: handleOnValueReady,
-      index,
+  const Children = useMemo(() => {
+    return React.Children.map(children, (child, index) => {
+      return React.cloneElement(child, {
+        onChange: handleOnChange,
+        isActive:
+          toggleButtons[index] &&
+          toggleButtons[index].isActive &&
+          toggleButtons[index].isActive,
+        onValueReady: handleOnValueReady,
+        index,
+      });
     });
-  });
+  }, [children, handleOnChange, handleOnValueReady, toggleButtons]);
   return <div style={style}> {Children} </div>;
 };
 

@@ -139,6 +139,7 @@ const NMRDisplayer = (props) => {
 
 function ChartPanel() {
   const { selectedTool } = useChartData();
+  const dispatch = useDispatch();
 
   const handelBrushEnd = useCallback(
     (brushData) => {
@@ -165,12 +166,15 @@ function ChartPanel() {
           return;
       }
     },
-    [selectedTool],
+    [dispatch, selectedTool],
   );
 
-  const handelOnDoubleClick = useCallback((event) => {
-    dispatch({ type: RESET_DOMAIN });
-  }, []);
+  const handelOnDoubleClick = useCallback(
+    (event) => {
+      dispatch({ type: RESET_DOMAIN });
+    },
+    [dispatch],
+  );
 
   const handleZoom = useCallback(
     (event) => {
@@ -187,7 +191,7 @@ function ChartPanel() {
           return;
       }
     },
-    [selectedTool],
+    [dispatch, selectedTool],
   );
 
   const mouseClick = useCallback(
@@ -199,7 +203,7 @@ function ChartPanel() {
         });
       }
     },
-    [selectedTool],
+    [dispatch, selectedTool],
   );
 
   const [sizedNMRChart, { width, height }] = useSize(() => {
@@ -227,7 +231,6 @@ function ChartPanel() {
       </BrushTracker>
     );
   });
-  const dispatch = useDispatch();
   const [finalSize, setFinalSize] = useState();
 
   useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);

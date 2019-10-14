@@ -1,4 +1,10 @@
-import React, { useState, useRef, useLayoutEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useRef,
+  useLayoutEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 
 const styles = {
   container: { height: '100%', width: '100%' },
@@ -18,10 +24,7 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
   const refContent = useRef();
 
   const handleOpen = useCallback(
-
     (index) => {
-      console.log('sdddd');
-
       let el = [...elements];
       el = el.map((e, i) => (i === index ? true : false));
       setElements(el);
@@ -29,16 +32,16 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
     [elements],
   );
 
-  const Children = React.Children.map(children, (child, index) => {
-    console.log('sdddd');
-
-    return React.cloneElement(child, {
-      height: height,
-      onOpen: handleOpen,
-      index,
-      isOpen: elements[index],
+  const Children = useMemo(() => {
+    return React.Children.map(children, (child, index) => {
+      return React.cloneElement(child, {
+        height: height,
+        onOpen: handleOpen,
+        index,
+        isOpen: elements[index],
+      });
     });
-  });
+  }, [children, elements, handleOpen, height]);
 
   useLayoutEffect(() => {
     const expandableHeight =
