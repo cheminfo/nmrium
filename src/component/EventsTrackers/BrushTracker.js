@@ -110,6 +110,9 @@ export function BrushTracker({
   useEffect(() => {
     if (state.step === 'end') {
       onBrush(state);
+      dispatch({
+        type: 'DONE',
+      });
     }
   }, [onBrush, state]);
 
@@ -196,7 +199,14 @@ function reducer(state, action) {
         };
       }
       return state;
-
+    case 'DONE':
+      if (state.step === 'end') {
+        return {
+          ...state,
+          step: 'initial',
+        };
+      }
+      break;
     default:
       return state;
   }

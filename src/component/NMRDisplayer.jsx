@@ -143,6 +143,7 @@ function ChartPanel() {
 
   const handelBrushEnd = useCallback(
     (brushData) => {
+      console.log('on brush call', brushData);
       switch (selectedTool) {
         case options.zoom.id:
           dispatch({ type: BRUSH_END, ...brushData });
