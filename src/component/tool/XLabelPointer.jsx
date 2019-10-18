@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
@@ -26,13 +26,18 @@ const XLabelPointer = () => {
   } = useChartData();
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
-  const getXValue = (xVal) => {
-    const spectrumData = data.find((d) => d.id === activeSpectrum.id);
+  const getXValue = useCallback(
+    (xVal) => {
+      const spectrumData = data.find((d) => d.id === activeSpectrum.id);
 
-    return getScale()
-      .x.invert(xVal)
-      .toFixed(getPeakLabelNumberDecimals(spectrumData.nucleus));
-  };
+      if (spectrumData) {
+        return getScale()
+          .x.invert(xVal)
+          .toFixed(getPeakLabelNumberDecimals(spectrumData.nucleus));
+      }
+    },
+    [data, getScale, activeSpectrum],
+  );
 
   if (
     !activeSpectrum ||

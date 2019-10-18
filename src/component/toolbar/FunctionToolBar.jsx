@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 import ZoomIn from '@material-ui/icons/ZoomIn';
 import Timeline from '@material-ui/icons/Timeline';
 import ShowChart from '@material-ui/icons/ShowChart';
+// import { FaArrowsAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import { SET_SELECTED_TOOL } from '../reducer/Actions';
@@ -13,6 +14,7 @@ export let options = {
   zoom: { id: 'zoom', label: 'Zoom' },
   peakPicking: { id: 'peakPicking', label: 'Peak Tool' },
   integral: { id: 'integral', label: 'integral Tool' },
+  HMove: { id: 'HMove', label: 'move spectrum horizontal' },
 };
 
 const FunctionToolBar = ({ defaultValue }) => {
@@ -61,7 +63,7 @@ const FunctionToolBar = ({ defaultValue }) => {
 
   return (
     <ToggleButtonGroup value={option} onChange={handleChange}>
-      <ToggleButton key={1} value={options.zoom.id}>
+      <ToggleButton key={options.zoom.id} value={options.zoom.id}>
         <ToolTip
           title={`${options.zoom.label} ( Press z )`}
           popupPlacement="right"
@@ -72,7 +74,7 @@ const FunctionToolBar = ({ defaultValue }) => {
       </ToggleButton>
 
       <ToggleButton
-        key={2}
+        key={options.peakPicking.id}
         value={options.peakPicking.id}
         disabled={!activeSpectrum}
       >
@@ -98,6 +100,15 @@ const FunctionToolBar = ({ defaultValue }) => {
           <ShowChart />
         </ToolTip>
       </ToggleButton>
+      {/* <ToggleButton key={options.HMove.id} value={options.HMove.id}>
+        <ToolTip
+          title={`${options.HMove.label} ( Press m )`}
+          popupPlacement="right"
+          offset={{ x: 10, y: 0 }}
+        >
+          <FaArrowsAlt />
+        </ToolTip>
+      </ToggleButton> */}
     </ToggleButtonGroup>
   );
 };

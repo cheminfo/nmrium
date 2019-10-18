@@ -15,6 +15,9 @@ const Panels = () => {
       <AccordionItem title="information">
         <p>information</p>
       </AccordionItem>
+      <AccordionItem title="Peaks">
+        <p>peaks</p>
+      </AccordionItem>
       <AccordionItem title="Integrals">
         <IntegralTablePanel />
       </AccordionItem>

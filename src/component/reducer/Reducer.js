@@ -77,8 +77,8 @@ const getScale = ({ xDomain, yDomain, width, height, margin, mode }) => {
 };
 
 const initiate = (state, data) => {
-  AnalysisObj = data.AnalysisObj;
   return produce(state, (draft) => {
+    AnalysisObj = data.AnalysisObj;
     const spectraData = AnalysisObj.getData1d();
     const domain = getDomain(spectraData);
     draft.data = AnalysisObj.getData1d();

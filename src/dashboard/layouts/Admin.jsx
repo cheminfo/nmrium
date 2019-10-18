@@ -80,7 +80,7 @@ class Dashboard extends React.Component {
             })}
             <Redirect from="/admin" to="/admin/Spectrum1H" />
           </Switch>
-          <Footer fluid />
+          {/* <Footer fluid /> */}
         </div>
         {/* <FixedPlugin
           bgColor={this.state.backgroundColor}

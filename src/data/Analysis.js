@@ -11,10 +11,10 @@ import { Datum1D } from './data1d/Datum1D';
 export class Analysis {
   data1d = [];
   molecules = [];
-  constructor(data1d, molecules) {
-    this.data1d = data1d;
+  constructor(data1d, molecules = []) {
+    this.data1d = Object.assign([], data1d);
     this.data2d = [];
-    this.molecules = molecules; // chemical structures
+    this.molecules = Object.assign([], molecules); // chemical structures
     this.preferences = {
       display: {},
     };
@@ -83,8 +83,10 @@ export class Analysis {
     // this will throw if the molecule can not be parsed !
     let molecule = Molecule.fromMolfile(molfile);
     let fragments = molecule.getFragments();
-
+    this.molecules = Object.assign([], this.molecules);
     for (let fragment of fragments) {
+      console.log(this.molecules);
+
       this.molecules.push(
         new mol({
           molfile: fragment.toMolfileV3(),
