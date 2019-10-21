@@ -5,10 +5,12 @@ import { Accordion, AccordionItem } from '../elements/accordion';
 import SpectrumListPanel from './SpectrumListPanel';
 import IntegralTablePanel from './IntegralTablePanel';
 import MoleculePanel from './MoleculePanel';
+import { useChartData } from '../context/ChartContext';
 
 const Panels = () => {
+  const { height } = useChartData();
   return (
-    <Accordion>
+    <Accordion height={height}>
       <AccordionItem title="Spectra">
         <SpectrumListPanel />
       </AccordionItem>

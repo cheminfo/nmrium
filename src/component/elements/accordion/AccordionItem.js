@@ -36,14 +36,12 @@ const styles = {
   content: {
     backgroundColor: 'white',
     overflow: 'hidden',
-    transitionProps: 'transition',
-    transition: '0.2s ease',
+    maxHeight: '0',
   },
 };
 
 const AccordionItem = ({ title, children, height, index, isOpen, onOpen }) => {
   const [active, setActiveState] = useState(null);
-  const [Height, setHeightState] = useState(0);
 
   const refContent = useRef();
   const refContainer = useRef();
@@ -51,18 +49,13 @@ const AccordionItem = ({ title, children, height, index, isOpen, onOpen }) => {
     setActiveState(active == null ? { backgroundColor: '#ccc' } : null);
     if (active == null) {
       onOpen(index);
+      console.log(height);
     }
   }
 
-  useLayoutEffect(() => {
-    // const _height =
-    //   height.expandableHeight === 0
-    //     ? refContent.current.scrollHeight
-    //     : height.expandableHeight;
-    if (height.expandableHeight !== 0) {
-      setHeightState(isOpen ? height.expandableHeight : 0);
-    }
-  }, [height, isOpen]);
+  useEffect(() => {
+    setActiveState(isOpen ? { backgroundColor: '#ccc' } : null);
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen === false) {
@@ -73,7 +66,11 @@ const AccordionItem = ({ title, children, height, index, isOpen, onOpen }) => {
   return (
     <div
       ref={refContainer}
-      style={styles.container}
+      style={{
+        ...styles.container,
+        flex: active == null ? 0 : 1,
+        transition: isOpen ? '' : 'flex 0.2s ease',
+      }}
       className="custom-accordion"
     >
       <button type="button" style={styles.button} onClick={toggleAccordion}>
@@ -83,8 +80,7 @@ const AccordionItem = ({ title, children, height, index, isOpen, onOpen }) => {
         ref={refContent}
         style={{
           ...styles.content,
-          maxHeight: `${Height}px`,
-          height: `${Height}px`,
+          maxHeight: active == null ? 0 : '100%',
         }}
       >
         {children}

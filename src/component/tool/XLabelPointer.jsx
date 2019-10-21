@@ -29,7 +29,6 @@ const XLabelPointer = () => {
   const getXValue = useCallback(
     (xVal) => {
       const spectrumData = data.find((d) => d.id === activeSpectrum.id);
-
       if (spectrumData) {
         return getScale()
           .x.invert(xVal)

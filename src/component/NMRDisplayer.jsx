@@ -5,8 +5,9 @@ import React, {
   useReducer,
   useState,
   useMemo,
+  useRef,
 } from 'react';
-import { useSize, useDebounce } from 'react-use';
+import { useSize, useDebounce, useToggle, useFullscreen } from 'react-use';
 import SplitPane from 'react-split-pane';
 
 import './css/spectrum-chart.css';
@@ -36,9 +37,33 @@ import BrushX from './tool/BrushX';
 import XLabelPointer from './tool/XLabelPointer';
 import { options } from './toolbar/FunctionToolBar';
 import PeakPointer from './tool/PeakPointer';
+import Header from './Header';
 
 const NMRDisplayer = (props) => {
-  const { data: dataProp } = props;
+  const { data: dataProp, height: heightProp } = props;
+  const fullScreenRef = useRef();
+
+  const [show, toggle] = useToggle(false);
+  const isFullscreen = useFullscreen(fullScreenRef, show, {
+    onClose: () => {
+      toggle(false);
+    },
+  });
+
+  useEffect(() => {
+    if (isFullscreen) {
+      dispatch({
+        type: SET_DIMENSIONS,
+        height: window.innerHeight,
+      });
+    } else {
+      dispatch({
+        type: SET_DIMENSIONS,
+        height: heightProp,
+      });
+    }
+  }, [heightProp, isFullscreen]);
+
   const [isResizeEventStart, setResizeEventStart] = useState(false);
 
   const [state, dispatch] = useReducer(spectrumReducer, initialState);
@@ -108,12 +133,15 @@ const NMRDisplayer = (props) => {
     <DispatchProvider value={dispatch}>
       <ChartDataProvider
         value={{
+          height: heightProp,
           ...state,
           getScale,
           isResizeEventStart,
         }}
       >
-        <div style={{ backgroundColor: 'white' }}>
+        <Header isFullscreen={isFullscreen} onMaximize={toggle} />
+
+        <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
           <DropZone>
             <ToolBar />
             <SplitPane
@@ -138,7 +166,7 @@ const NMRDisplayer = (props) => {
 };
 
 function ChartPanel() {
-  const { selectedTool } = useChartData();
+  const { selectedTool, height: _height } = useChartData();
   const dispatch = useDispatch();
 
   const handelBrushEnd = useCallback(
@@ -215,13 +243,13 @@ function ChartPanel() {
         onZoom={handleZoom}
         style={{
           width: '100%',
-          height: '400px',
+          height: `${_height}px`,
           margin: 'auto',
           position: 'relative',
           overflow: 'hidden',
         }}
       >
-        <MouseTracker style={{ width: '100%', height: '400px' }}>
+        <MouseTracker style={{ width: '100%', height: `${_height}px` }}>
           <NMRChart />
           <CrossLinePointer />
           <BrushX />
@@ -230,11 +258,10 @@ function ChartPanel() {
         </MouseTracker>
       </BrushTracker>
     );
-  });
+  }, [_height]);
   const [finalSize, setFinalSize] = useState();
 
   useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
-
   useEffect(() => {
     if (finalSize) {
       dispatch({
@@ -246,5 +273,9 @@ function ChartPanel() {
 
   return sizedNMRChart;
 }
+
+NMRDisplayer.defaultProps = {
+  height: '400',
+};
 
 export default NMRDisplayer;

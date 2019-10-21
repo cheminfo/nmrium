@@ -78,7 +78,7 @@ export function BrushTracker({
   }, []);
 
   const handleMouseWheel = useCallback(
-    (event) => {
+    (event:Event) => {
       event.stopPropagation();
       event.preventDefault();
 

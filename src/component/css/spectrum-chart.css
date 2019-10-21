@@ -1,6 +1,9 @@
 body {
   font: 12px Arial;
+  overflow: hidden;
+
 }
+
 
 .MuiSvgIcon-root {
   font-size: 1rem !important;
