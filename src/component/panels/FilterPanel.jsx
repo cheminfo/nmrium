@@ -31,6 +31,7 @@ const FilterPanel = () => {
               name={false}
               iconStyle="circle"
               collapsed={true}
+              displayDataTypes={false}
               src={d}
             />
           </TableCell>
