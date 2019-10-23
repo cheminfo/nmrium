@@ -62,6 +62,8 @@ export class Datum1D {
       },
       options.info,
     );
+
+    console.log(options.data);
     this.data = Object.assign(
       {
         x: [],
@@ -70,12 +72,12 @@ export class Datum1D {
       },
       options.data,
     );
-    this.peaks = options.peaks || []; // array of object {index: xIndex, xShift}
+    this.peaks = Object.assign([], options.peaks); // array of object {index: xIndex, xShift}
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
-    this.integrals = options.integrals || []; // array of object (from: xIndex, to: xIndex)
-    this.signals = options.signals || [];
-    this.filters = options.filters || [];
+    this.integrals = Object.assign([], options.integrals); // array of object (from: xIndex, to: xIndex)
+    this.signals = Object.assign([], options.signals);
+    this.filters = Object.assign([], options.filters);
 
     // [{kind: 'shiftX',value: -5,},{.....}]
   }
@@ -93,7 +95,8 @@ export class Datum1D {
   }
 
   setIntegrals(integrals) {
-    this.integrals = integrals;
+    console.log(integrals);
+    this.integrals = Object.assign([], integrals);
   }
 
   getIntegrals() {

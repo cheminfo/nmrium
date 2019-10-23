@@ -43,7 +43,6 @@ const IntegralsSeries = () => {
       const { id, x, y, yDomain } = data;
       const xScale = getScale(id).x;
       let yScale = null;
-      console.log(zoomFactor);
       if (zoomFactor) {
         yScale = getYScale(yDomain);
       } else {

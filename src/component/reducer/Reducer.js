@@ -1,4 +1,4 @@
-import { produce } from 'immer';
+import { produce, original } from 'immer';
 import * as d3 from 'd3';
 import { XY } from 'ml-spectra-processing';
 
@@ -93,7 +93,6 @@ const initiate = (state, data) => {
 
 const saveDataAsJson = (state) => {
   const data = AnalysisObj.toJSON();
-
   const fileData = JSON.stringify(data, undefined, 2);
   const blob = new Blob([fileData], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
@@ -302,19 +301,20 @@ const addIntegral = (state, action) => {
       };
 
       if (index !== -1) {
+        let integrals = Object.assign(
+          [],
+          original(draft.data[index].integrals),
+        );
         if (data.integrals) {
-          draft.data[index].integrals.push(integral);
+          integrals.push(integral);
         } else {
-          draft.data[index].integrals = [integral];
+          integrals = [integral];
         }
-
+        draft.data[index].integrals = integrals;
         if (!data.integralsYDomain) {
           draft.data[index].integralsYDomain = draft.yDomain;
         }
-
-        AnalysisObj.getDatum1D(state.activeSpectrum.id).setIntegrals(
-          draft.data[index].integrals,
-        );
+        AnalysisObj.getDatum1D(state.activeSpectrum.id).setIntegrals(integrals);
       }
     }
   });
@@ -632,6 +632,9 @@ function setDomain(draft) {
   draft.yDomainh = domain.y;
   draft.originDomain = domain;
   draft.yDomains = domain.yDomains;
+  draft.data = draft.data.map((d) => {
+    return { ...d, integralsYDomain: domain.y };
+  });
 }
 
 const handleDeleteSpectra = (state) => {

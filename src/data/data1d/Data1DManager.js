@@ -21,6 +21,7 @@ export class Data1DManager {
         const datumObject = Data1DManager.fromJcamp(jcamp, datum);
         data1D.push(datumObject);
       } else {
+        console.log(datum.source.original);
         data1D.push(new Datum1D({ ...datum, data: datum.source.original }));
       }
     }

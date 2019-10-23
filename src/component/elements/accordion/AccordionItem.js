@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const styles = {
   container: {
@@ -35,12 +35,13 @@ const styles = {
   },
   content: {
     backgroundColor: 'white',
-    overflow: 'hidden',
     maxHeight: '0',
+    overflow: 'auto',
+    flex: '1 1 1px',
   },
 };
 
-const AccordionItem = ({ title, children, height, index, isOpen, onOpen }) => {
+const AccordionItem = ({ title, children, index, isOpen, onOpen }) => {
   const [active, setActiveState] = useState(null);
 
   const refContent = useRef();
@@ -49,7 +50,6 @@ const AccordionItem = ({ title, children, height, index, isOpen, onOpen }) => {
     setActiveState(active == null ? { backgroundColor: '#ccc' } : null);
     if (active == null) {
       onOpen(index);
-      console.log(height);
     }
   }
 
@@ -68,7 +68,7 @@ const AccordionItem = ({ title, children, height, index, isOpen, onOpen }) => {
       ref={refContainer}
       style={{
         ...styles.container,
-        flex: active == null ? 0 : 1,
+        flex: active == null ? 0 : '1 1 1px',
         transition: isOpen ? '' : 'flex 0.2s ease',
       }}
       className="custom-accordion"

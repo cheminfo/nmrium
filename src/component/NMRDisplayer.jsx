@@ -52,10 +52,12 @@ const NMRDisplayer = (props) => {
 
   useEffect(() => {
     if (isFullscreen) {
-      dispatch({
-        type: SET_DIMENSIONS,
-        height: window.innerHeight,
-      });
+      setTimeout(() => {
+        dispatch({
+          type: SET_DIMENSIONS,
+          height: window.innerHeight,
+        });
+      }, 100);
     } else {
       dispatch({
         type: SET_DIMENSIONS,
