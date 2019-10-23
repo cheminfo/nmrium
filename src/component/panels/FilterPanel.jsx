@@ -9,6 +9,7 @@ import {
   TableRow,
 } from '../elements/Table';
 import { useChartData } from '../context/ChartContext';
+import CheckBox from '../elements/CheckBox';
 
 const FilterPanel = () => {
   const { data, activeSpectrum } = useChartData();
@@ -22,8 +23,8 @@ const FilterPanel = () => {
     return (
       Filters &&
       Filters.map((d, i) => (
-        <TableRow key={d.kind + i}>
-          <TableCell align="center" size="1">
+        <TableRow key={d.id}>
+          <TableCell align="center" size="2">
             {d.kind}
           </TableCell>
           <TableCell align="left" size="3">
@@ -34,6 +35,9 @@ const FilterPanel = () => {
               displayDataTypes={false}
               src={d}
             />
+          </TableCell>
+          <TableCell align="center" size="1">
+            <CheckBox checked={d.flag} onChange={(e) => console.log(e)} />
           </TableCell>
         </TableRow>
       ))

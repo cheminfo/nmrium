@@ -180,8 +180,16 @@ export class Datum1D {
   autoPeakPicking() {}
 
   addFilter(filter) {
+    const id = Math.random()
+      .toString(36)
+      .replace('0.', '');
+
     this.filters = Object.assign([], this.filters);
-    this.filters.push(filter);
+    this.filters.push({
+      ...filter,
+      id: id,
+      flag: true,
+    });
     console.log(filter);
     console.log(this.filters);
   }
