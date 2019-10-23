@@ -182,6 +182,12 @@ export class Datum1D {
   addFilter(filter) {
     this.filters = Object.assign([], this.filters);
     this.filters.push(filter);
+    console.log(filter);
+    console.log(this.filters);
+  }
+
+  getFilters() {
+    return this.filters;
   }
 
   toJSON() {

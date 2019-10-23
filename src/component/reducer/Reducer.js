@@ -394,6 +394,7 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.history = history;
+    draft.data[spectrumIndex].filters = activeObject.getFilters();
     setDomain(draft);
   });
 };

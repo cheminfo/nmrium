@@ -7,7 +7,7 @@ const styles = {
 };
 const TableHeader = ({ children, className, style }) => {
   return (
-    <div className={className} style={{ ...styles, style }}>
+    <div className={className} style={{ ...styles, ...style }}>
       {children}
     </div>
   );
