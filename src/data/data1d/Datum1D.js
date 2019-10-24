@@ -2,8 +2,8 @@
 // import autoPeakPicking from './autoPeakPicking';
 import max from 'ml-array-max';
 
-import applyFilter from './filter1d/filter';
-import { SHIFT_X } from './filter1d/filter1d-type';
+import { Filters } from './filter1d/Filters';
+import { object } from 'prop-types';
 
 export class Datum1D {
   /**
@@ -63,7 +63,6 @@ export class Datum1D {
       options.info,
     );
 
-    console.log(options.data);
     this.data = Object.assign(
       {
         x: [],
@@ -95,7 +94,6 @@ export class Datum1D {
   }
 
   setIntegrals(integrals) {
-    console.log(integrals);
     this.integrals = Object.assign([], integrals);
   }
 
@@ -112,8 +110,25 @@ export class Datum1D {
   }
 
   applyShiftXFilter(shiftValue) {
-    let data = { x: this.data.x, y: this.data.re };
-    this.data.x = applyFilter({ kind: SHIFT_X, value: shiftValue }, data).x;
+    Filters.shiftX(this, shiftValue);
+  }
+  // id filter id
+  enableFilter(id, checked) {
+    this.filters = Object.assign([], this.filters);
+    const index = this.filters.findIndex((filter) => filter.id === id);
+    this.filters[index] = Object.assign(
+      { ...this.filters[index] },
+      { flag: checked },
+    );
+    const enabledFilters = this.filters.filter(
+      (filter) => filter.flag === true,
+    );
+    this.data = Object.assign({ ...this.data }, { ...this.source.original });
+    for (let filter of enabledFilters) {
+      if (filter.flag) {
+        Filters[filter.kind](this, filter.value);
+      }
+    }
   }
 
   getReal() {
@@ -190,8 +205,6 @@ export class Datum1D {
       id: id,
       flag: true,
     });
-    console.log(filter);
-    console.log(this.filters);
   }
 
   getFilters() {

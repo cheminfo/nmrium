@@ -1,7 +1,6 @@
 import { convert } from 'jcampconverter';
 import { Molecule } from 'openchemlib';
 
-import applyFilter from './data1d/filter1d/filter';
 import { Data1DManager } from './data1d/Data1DManager';
 import { getMetaData } from './data1d/metadata/getMetaData';
 import { Molecule as mol } from './molecules/Molecule';
@@ -204,37 +203,37 @@ export class Analysis {
     this.data1d = this.data1d.filter((d) => d.id !== id);
   }
 
-  undoFilter(pastChainFilters = []) {
-    // let data = { x: this.original.x, y: this.original.re };
-    this.data1d.forEach((ob) => {
-      ob.x = ob.source.original.x;
-      ob.re = ob.source.original.re;
-    });
+  // undoFilter(pastChainFilters = []) {
+  //   // let data = { x: this.original.x, y: this.original.re };
+  //   this.data1d.forEach((ob) => {
+  //     ob.x = ob.source.original.x;
+  //     ob.re = ob.source.original.re;
+  //   });
 
-    if (pastChainFilters && pastChainFilters.length !== 0) {
-      pastChainFilters.forEach((filter) => {
-        const ob = this.getDatum1D(filter.id);
-        let data = { x: ob.data.x, y: ob.data.re };
-        data = applyFilter({ kind: filter.kind, value: filter.value }, data);
-        this.getDatum1D(filter.id).data.x = data.x;
-        this.getDatum1D(filter.id).data.re = data.y;
-      });
+  //   if (pastChainFilters && pastChainFilters.length !== 0) {
+  //     pastChainFilters.forEach((filter) => {
+  //       const ob = this.getDatum1D(filter.id);
+  //       let data = { x: ob.data.x, y: ob.data.re };
+  //       data = applyFilter({ kind: filter.kind, value: filter.value }, data);
+  //       this.getDatum1D(filter.id).data.x = data.x;
+  //       this.getDatum1D(filter.id).data.re = data.y;
+  //     });
 
-      // this.x = data.x;
-      // this.re = data.y;
-    }
-  }
+  //     // this.x = data.x;
+  //     // this.re = data.y;
+  //   }
+  // }
 
-  redoFilter(nextFilter) {
-    const ob = this.getDatum1D(nextFilter.id);
-    let data = { x: ob.data.x, y: ob.data.re };
-    data = applyFilter(
-      { kind: nextFilter.kind, value: nextFilter.value },
-      data,
-    );
-    ob.x = data.x;
-    ob.re = data.y;
-  }
+  //   redoFilter(nextFilter) {
+  //     const ob = this.getDatum1D(nextFilter.id);
+  //     let data = { x: ob.data.x, y: ob.data.re };
+  //     data = applyFilter(
+  //       { kind: nextFilter.kind, value: nextFilter.value },
+  //       data,
+  //     );
+  //     ob.x = data.x;
+  //     ob.re = data.y;
+  //   }
 }
 
 Analysis.prototype.fromNMReData = function(zipBuffer) {};

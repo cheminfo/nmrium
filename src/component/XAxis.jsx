@@ -34,8 +34,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
   const { xDomain, getScale, height, width, margin } = useChartData();
   const refAxis = useRef();
   const refGrid = useRef();
-  console.log(height)
-  console.log(margin)
+
   label = label ? label : mode === 'RTL' ? 'δ [ppm]' : 'time [s]';
 
   const xAxis = d3

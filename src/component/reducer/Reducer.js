@@ -2,12 +2,12 @@ import { produce, original } from 'immer';
 import * as d3 from 'd3';
 import { XY } from 'ml-spectra-processing';
 
-import { SHIFT_X } from '../../data/data1d/filter1d/filter1d-type';
 import { Datum1D } from '../../data/data1d/Datum1D';
 import { Data1DManager } from '../../data/data1d/Data1DManager';
 import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';
 import { options } from '../toolbar/FunctionToolBar';
+import { Filters } from '../../data/data1d/filter1d/Filters';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
 import {
@@ -46,6 +46,7 @@ import {
   BRUSH_END,
   RESET_DOMAIN,
   CHNAGE_INTEGRAL_ZOOM,
+  ENABLE_FILTER,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -369,7 +370,7 @@ const handleResizeIntegral = (state, integralData) => {
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   return produce(state, (draft) => {
     const filterOption = {
-      kind: SHIFT_X,
+      kind: Filters.shiftX.name,
       value: shiftValue,
     };
     const activeSpectrumId = state.activeSpectrum.id;
@@ -394,6 +395,27 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.history = history;
+    draft.data[spectrumIndex].filters = activeObject.getFilters();
+    setDomain(draft);
+  });
+};
+
+const enableFilter = (state, filterID, checked) => {
+  return produce(state, (draft) => {
+    const activeSpectrumId = state.activeSpectrum.id;
+    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+
+    //apply filter into the spectrum
+    activeObject.enableFilter(filterID, checked);
+
+    const XYData = activeObject.getReal();
+
+    const spectrumIndex = state.data.findIndex(
+      (spectrum) => spectrum.id === activeSpectrumId,
+    );
+
+    draft.data[spectrumIndex].x = XYData.x;
+    draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
     setDomain(draft);
   });
@@ -883,7 +905,8 @@ export const spectrumReducer = (state, action) => {
 
     case SHIFT_SPECTRUM:
       return shiftSpectrumAlongXAxis(state, action.shiftValue);
-
+    case ENABLE_FILTER:
+      return enableFilter(state, action.id, action.checked);
     case CHANGE_VISIBILITY:
       return handleSpectrumVisibility(state, action.data);
 

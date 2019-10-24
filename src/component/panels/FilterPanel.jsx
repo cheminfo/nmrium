@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import ReactJson from 'react-json-view';
 
 import {
@@ -10,10 +10,21 @@ import {
 } from '../elements/Table';
 import { useChartData } from '../context/ChartContext';
 import CheckBox from '../elements/CheckBox';
+import { useDispatch } from '../context/DispatchContext';
+import { ENABLE_FILTER } from '../reducer/Actions';
 
 const FilterPanel = () => {
   const { data, activeSpectrum } = useChartData();
+  const dispatch = useDispatch();
 
+  const handelFilterCheck = useCallback(
+    (id, checked) => {
+      // console.log(id);
+      console.log(checked);
+      dispatch({ type: ENABLE_FILTER, id, checked });
+    },
+    [dispatch],
+  );
   const filtersTableRow = useMemo(() => {
     const Filters =
       data &&
@@ -22,7 +33,7 @@ const FilterPanel = () => {
 
     return (
       Filters &&
-      Filters.map((d, i) => (
+      Filters.map((d) => (
         <TableRow key={d.id}>
           <TableCell align="center" size="2">
             {d.kind}
@@ -33,16 +44,19 @@ const FilterPanel = () => {
               iconStyle="circle"
               collapsed={true}
               displayDataTypes={false}
-              src={d}
+              src={{ value: d.value }}
             />
           </TableCell>
           <TableCell align="center" size="1">
-            <CheckBox checked={d.flag} onChange={(e) => console.log(e)} />
+            <CheckBox
+              checked={d.flag}
+              onChange={(checked) => handelFilterCheck(d.id, checked)}
+            />
           </TableCell>
         </TableRow>
       ))
     );
-  }, [activeSpectrum, data]);
+  }, [activeSpectrum, data, handelFilterCheck]);
 
   return filtersTableRow && filtersTableRow.length > 0 ? (
     <Table>
