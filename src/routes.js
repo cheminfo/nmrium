@@ -23,6 +23,7 @@ import XTC814d from './dashboard/views/XTC814d';
 import CoupledDecoupled13C from './dashboard/views/CoupledDecoupled13C';
 import Big13CCytisin from './dashboard/views/Big13CCytisin';
 import CoffeView from './dashboard/views/CoffeView';
+import BlankSpectrumDisplayer from './dashboard/views/BlankSpectrumDisplayer';
 
 let dashRoutes = [
   {
@@ -65,6 +66,13 @@ let dashRoutes = [
     name: '13C coupled / decoupled spectra',
     icon: 'design-2_ruler-pencil',
     component: CoupledDecoupled13C,
+    layout: '/admin',
+  },
+  {
+    path: '/BlankSpectrumDisplayer',
+    name: 'Blank Spectrum Displayer',
+    icon: 'design-2_ruler-pencil',
+    component: BlankSpectrumDisplayer,
     layout: '/admin',
   },
 ];

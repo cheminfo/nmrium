@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 
+// import { FaMinusSquare } from 'react-icons/fa';
+
 import { ChartContext } from '../context/ChartContext';
 import {
   Table,
@@ -8,6 +10,15 @@ import {
   TableRow,
   TableCell,
 } from '../elements/Table';
+
+// const styles = {
+//   button: {
+//     backgroundColor: 'transparent',
+//     border: 'none',
+//     width: '14px',
+//     height: '14px',
+//   },
+// };
 
 const IntegralTablePanel = () => {
   const [integrals, setIntegrals] = useState([]);
@@ -28,6 +39,7 @@ const IntegralTablePanel = () => {
           <TableCell align="center">From</TableCell>
           <TableCell align="center">To</TableCell>
           <TableCell align="center">Value</TableCell>
+          {/* <TableCell align="center" size="1" /> */}
         </TableRow>
       </TableHead>
       <TableBody>
@@ -38,6 +50,11 @@ const IntegralTablePanel = () => {
             </TableCell>
             <TableCell align="center">{row.to.toFixed(2)}</TableCell>
             <TableCell align="center">{row.value.toFixed(2)}</TableCell>
+            {/* <TableCell size="1">
+              <button type="button" style={styles.button}>
+                <FaMinusSquare />
+              </button>
+            </TableCell> */}
           </TableRow>
         ))}
       </TableBody>

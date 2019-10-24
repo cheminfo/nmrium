@@ -102,7 +102,7 @@ const IntegralResizable = (props) => {
   );
 
   return (
-    <g fill="red">
+    <g >
       <Draggable
         axis="x"
         defaultPosition={{
