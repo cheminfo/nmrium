@@ -6,8 +6,8 @@ import { ReIm } from 'ml-spectra-processing';
  */
 
 export default function baselineCorrection(datum1D, options = {}) {
-  if (!applicable(datum1D)) {
-    throw new Error('baselineCorrection not applicable on this data');
+  if (!isApplicable(datum1D)) {
+    throw new Error('baselineCorrection not isApplicable on this data');
   }
   const { algorithm = 'airpls' } = options;
 
@@ -19,7 +19,7 @@ export default function baselineCorrection(datum1D, options = {}) {
   }
 }
 
-export function applicable(datum1D) {
+export function isApplicable(datum1D) {
   if (!datum1D.info.isFid) return true;
   return false;
 }

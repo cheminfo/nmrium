@@ -5,13 +5,13 @@
  */
 
 export default function shiftX(datum1D, shiftValue = 0) {
-  if (!applicable(datum1D)) {
-    throw new Error('shiftX not applicable on this data');
+  if (!isApplicable(datum1D)) {
+    throw new Error('shiftX not isApplicable on this data');
   }
 
   datum1D.data.x = datum1D.data.x.map((val) => val + shiftValue);
 }
 
-export function applicable() {
+export function isApplicable() {
   return true;
 }

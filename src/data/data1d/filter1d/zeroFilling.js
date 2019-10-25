@@ -5,8 +5,8 @@
  */
 
 export default function zeroFilling(datum1D, size) {
-  if (!applicable(datum1D)) {
-    throw new Error('zeroFilling not applicable on this data');
+  if (!isApplicable(datum1D)) {
+    throw new Error('zeroFilling not isApplicable on this data');
   }
   const re = datum1D.data.re;
   const im = datum1D.data.im;
@@ -20,7 +20,7 @@ export default function zeroFilling(datum1D, size) {
   datum1D.data = { ...datum1D.data, ...{ re: newRE, newIM } };
 }
 
-export function applicable(datum1D) {
+export function isApplicable(datum1D) {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;
   return false;
 }

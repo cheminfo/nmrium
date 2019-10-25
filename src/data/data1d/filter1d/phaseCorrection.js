@@ -9,14 +9,14 @@ import { ReIm } from 'ml-spectra-processing';
  */
 
 export default function phaseCorrection(datum1D, options = {}) {
-  if (!applicable(datum1D)) {
-    throw new Error('phaseCorrection not applicable on this data');
+  if (!isApplicable(datum1D)) {
+    throw new Error('phaseCorrection not isApplicable on this data');
   }
   const { ph0, ph1 } = options;
   Object.assign(datum1D.data, ReIm.phaseCorrection(datum1D.data, ph0, ph1));
 }
 
-export function applicable(datum1D) {
+export function isApplicable(datum1D) {
   if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
   return false;
 }
