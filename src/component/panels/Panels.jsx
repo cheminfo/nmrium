@@ -13,13 +13,13 @@ const Panels = () => {
       <AccordionItem title="Spectra">
         <SpectrumListPanel />
       </AccordionItem>
-      <AccordionItem title="information">
+      <AccordionItem title="Information">
         <p>information</p>
       </AccordionItem>
       <AccordionItem title="Peaks">
         <p>peaks</p>
       </AccordionItem>
-      <AccordionItem title="Filter">
+      <AccordionItem title="Filters">
         <FilterPanel />
       </AccordionItem>
       <AccordionItem title="Integrals">
