@@ -34,7 +34,7 @@
     "react-draggable": "^3.3.2",
     "react-dropzone": "^10.1.8",
     "react-icons": "^3.7.0",
-    "react-json-view": "^1.19.1",
+    "react-inspector": "^4.0.0",
     "react-mf": "^1.2.0",
     "react-ocl": "^4.0.2",
     "react-router": "5.0.1",

@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import ReactJson from 'react-json-view';
+import { ObjectInspector } from 'react-inspector';
 
 import {
   Table,
@@ -20,7 +20,7 @@ const FilterPanel = () => {
   const handelFilterCheck = useCallback(
     (id, checked) => {
       // console.log(id);
-      console.log(checked);
+
       dispatch({ type: ENABLE_FILTER, id, checked });
     },
     [dispatch],
@@ -39,13 +39,7 @@ const FilterPanel = () => {
             {d.kind}
           </TableCell>
           <TableCell align="left" size="3">
-            <ReactJson
-              name={false}
-              iconStyle="circle"
-              collapsed={true}
-              displayDataTypes={false}
-              src={{ value: d.value }}
-            />
+            <ObjectInspector data={d.value} />
           </TableCell>
           <TableCell align="center" size="1">
             <CheckBox
