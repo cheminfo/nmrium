@@ -112,6 +112,9 @@ const IntegralsSeries = () => {
                   })}
                   vectorEffect="non-scaling-stroke"
                 />
+                <foreignObject x="0" y="30" width={50} height={50}>
+                  <button type="button">ssss</button>
+                </foreignObject>
               </g>
             )),
         )

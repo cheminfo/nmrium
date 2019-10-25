@@ -652,7 +652,7 @@ function setMode(draft) {
 function setDomain(draft) {
   const domain = getDomain(draft.data);
   draft.xDomain = domain.x;
-  draft.yDomainh = domain.y;
+  draft.yDomain = domain.y;
   draft.originDomain = domain;
   draft.yDomains = domain.yDomains;
   draft.data = draft.data.map((d) => {
