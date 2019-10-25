@@ -1,9 +1,17 @@
 /**
  *
  * @param {Object} datum1d
- * @param {number value  shift value
+ * @param {number} [shiftValue=0]
  */
 
-export default function shiftX(datum1D, shiftValue) {
+export default function shiftX(datum1D, shiftValue = 0) {
+  if (!applicable(datum1D)) {
+    throw new Error('shiftX not applicable on this data');
+  }
+
   datum1D.data.x = datum1D.data.x.map((val) => val + shiftValue);
+}
+
+export function applicable() {
+  return true;
 }
