@@ -40,7 +40,7 @@ import PeakPointer from './tool/PeakPointer';
 import Header from './Header';
 
 const NMRDisplayer = (props) => {
-  const { data: dataProp, height: heightProp } = props;
+  const { data: dataProp, height: heightProp, width: widthProps } = props;
   const fullScreenRef = useRef();
 
   const [show, toggle] = useToggle(false);
@@ -136,6 +136,7 @@ const NMRDisplayer = (props) => {
       <ChartDataProvider
         value={{
           height: heightProp,
+          width: widthProps,
           ...state,
           getScale,
           isResizeEventStart,
@@ -278,6 +279,7 @@ function ChartPanel() {
 
 NMRDisplayer.defaultProps = {
   height: '400',
+  width: '800',
 };
 
 export default NMRDisplayer;

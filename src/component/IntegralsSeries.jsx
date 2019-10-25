@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 import * as d3 from 'd3';
@@ -88,15 +88,6 @@ const IntegralsSeries = () => {
             d.integrals &&
             d.integrals.map((integral) => (
               <g key={integral.id}>
-                <IntegralResizable
-                  id={d.id}
-                  integralID={integral.id}
-                  x={integral.x}
-                  y={integral.y}
-                  from={integral.from}
-                  to={integral.to}
-                  yDomain={d.integralsYDomain}
-                />
                 <path
                   className="line"
                   stroke="black"
@@ -110,11 +101,18 @@ const IntegralsSeries = () => {
                     y: integral.y,
                     yDomain: d.integralsYDomain,
                   })}
-                  vectorEffect="non-scaling-stroke"
+                  // vectorEffect="non-scaling-stroke"
                 />
-                <foreignObject x="0" y="30" width={50} height={50}>
-                  <button type="button">ssss</button>
-                </foreignObject>
+
+                <IntegralResizable
+                  id={d.id}
+                  integralID={integral.id}
+                  x={integral.x}
+                  y={integral.y}
+                  from={integral.from}
+                  to={integral.to}
+                  yDomain={d.integralsYDomain}
+                />
               </g>
             )),
         )

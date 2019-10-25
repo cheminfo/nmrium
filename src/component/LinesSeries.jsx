@@ -67,7 +67,7 @@ export const LinesSeries = () => {
         .map((d, i) => (
           <path
             className="line"
-            key={`line-${d.id}-${i}`}
+            key={d.id}
             stroke={d.color}
             style={{
               opacity: isActive(d.id) ? 1 : 0.2,

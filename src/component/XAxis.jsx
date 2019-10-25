@@ -32,6 +32,7 @@ const gridStyles = css`
 
 const XAxis = ({ label, show, showGrid, mode }) => {
   const { xDomain, getScale, height, width, margin } = useChartData();
+
   const refAxis = useRef();
   const refGrid = useRef();
 
@@ -108,6 +109,10 @@ const XAxis = ({ label, show, showGrid, mode }) => {
 
     [showGrid, height, margin.bottom],
   );
+
+  if (!width || !height) {
+    return null;
+  }
 
   return (
     <React.Fragment>

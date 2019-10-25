@@ -4,7 +4,9 @@ import * as d3 from 'd3';
 
 import { useChartData } from './context/ChartContext';
 import { useDispatch } from './context/DispatchContext';
-import { RESIZE_INTEGRAL } from './reducer/Actions';
+import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from './reducer/Actions';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 
 const IntegralResizable = (props) => {
   const { getScale, height, margin, mode } = useChartData();
@@ -15,6 +17,35 @@ const IntegralResizable = (props) => {
   const xBoundary = d3.extent(x);
 
   const dispatch = useDispatch();
+
+  const styles = css`
+    pointer-events: bounding-box;
+    :hover .target {
+      visibility: visible !important;
+      cursor: pointer;
+    }
+
+    .target {
+      visibility: hidden;
+    }
+  `;
+  const deleteIntegral = useCallback(() => {
+    dispatch({ type: DELETE_INTEGRAL, integralID: integralID, spectrumID: id });
+  }, [integralID]);
+
+  function DeleteButton() {
+    return (
+      <svg
+        className="target"
+        x={getScale(id).x(xBoundary[1]) - 20}
+        y={height - margin.bottom - 20}
+        onClick={deleteIntegral}
+      >
+        <rect rx="5" width="16" height="16" fill="#c81121" />
+        <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
+      </svg>
+    );
+  }
 
   const handleRightStart = useCallback((e) => {
     e.preventDefault();
@@ -102,7 +133,7 @@ const IntegralResizable = (props) => {
   );
 
   return (
-    <g >
+    <svg css={styles}>
       <Draggable
         axis="x"
         defaultPosition={{
@@ -150,7 +181,8 @@ const IntegralResizable = (props) => {
           style={{ fillOpacity: leftDragVisibility ? 1 : 0 }}
         />
       </Draggable>
-    </g>
+      <DeleteButton />
+    </svg>
   );
 };
 

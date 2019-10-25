@@ -27,7 +27,9 @@ const CrossLinePointer = () => {
     position.y < margin.top ||
     position.left < margin.left ||
     position.x > width - margin.right ||
-    position.y > height - margin.bottom
+    position.y > height - margin.bottom ||
+    !width ||
+    !height
   ) {
     return null;
   }

@@ -9,7 +9,9 @@ import PeaksNotations from './PeaksNotations';
 
 function NMRChart() {
   const { mode, width, height, margin } = useChartData();
-
+  if (!width || !height) {
+    return null;
+  }
   return (
     <svg width={width} height={height}>
       <defs>

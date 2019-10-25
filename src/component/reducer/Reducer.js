@@ -34,6 +34,7 @@ import {
   CHANGE_ACTIVE_SPECTRUM,
   CHANGE_SPECTRUM_COLOR,
   ADD_INTEGRAL,
+  DELETE_INTEGRAL,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
   SET_ZOOM_FACTOR,
   ADD_MOLECULE,
@@ -321,6 +322,16 @@ const addIntegral = (state, action) => {
   });
 };
 
+const deleteIntegral = (state, action) => {
+  const { integralID, spectrumID } = action;
+  return produce(state, (draft) => {
+    const index = state.data.findIndex((d) => d.id === spectrumID);
+    draft.data[index].integrals = state.data[index].integrals.filter(
+      (integral) => integral.id !== integralID,
+    );
+  });
+};
+
 const handleResizeIntegral = (state, integralData) => {
   return produce(state, (draft) => {
     if (draft.activeSpectrum) {
@@ -381,8 +392,8 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
 
     filterOption.id = activeSpectrumId;
     //add the filter action at the history
-    const history = handleHistorySet(state.history, filterOption);
-    console.log(history);
+    // const history = handleHistorySet(state.history, filterOption);
+    // console.log(history);
 
     activeObject.applyShiftXFilter(shiftValue);
     //add to undo history
@@ -394,7 +405,7 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
 
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
-    draft.history = history;
+    // draft.history = history;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
     setDomain(draft);
   });
@@ -872,6 +883,8 @@ export const spectrumReducer = (state, action) => {
 
     case ADD_INTEGRAL:
       return addIntegral(state, action);
+    case DELETE_INTEGRAL:
+      return deleteIntegral(state, action);
 
     case RESIZE_INTEGRAL:
       return handleResizeIntegral(state, action.integral);
