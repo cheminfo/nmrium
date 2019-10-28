@@ -22,7 +22,7 @@ import {
   SET_ZOOM_FACTOR,
   ADD_INTEGRAL,
   ADD_PEAK,
-  CHNAGE_INTEGRAL_ZOOM,
+  CHANGE_INTEGRAL_ZOOM,
   ADD_PEAKS,
 } from './reducer/Actions';
 import { DispatchProvider, useDispatch } from './context/DispatchContext';
@@ -37,7 +37,7 @@ import BrushX from './tool/BrushX';
 import XLabelPointer from './tool/XLabelPointer';
 import { options } from './toolbar/FunctionToolBar';
 import PeakPointer from './tool/PeakPointer';
-import Header from './Header';
+import Header from './header/Header';
 
 const NMRDisplayer = (props) => {
   const { data: dataProp, height: heightProp, width: widthProps } = props;
@@ -142,9 +142,9 @@ const NMRDisplayer = (props) => {
           isResizeEventStart,
         }}
       >
-        <Header isFullscreen={isFullscreen} onMaximize={toggle} />
-
         <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
+          <Header isFullscreen={isFullscreen} onMaximize={toggle} />
+
           <DropZone>
             <ToolBar />
             <SplitPane
@@ -215,7 +215,7 @@ function ChartPanel() {
           break;
 
         case options.integral.id:
-          dispatch({ type: CHNAGE_INTEGRAL_ZOOM, zoomFactor: event });
+          dispatch({ type: CHANGE_INTEGRAL_ZOOM, zoomFactor: event });
 
           break;
         default:

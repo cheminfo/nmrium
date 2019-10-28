@@ -106,17 +106,17 @@ const MoleculePanel = () => {
     <div css={panelContainerStyle}>
       <div css={toolbarStyle}>
         <ToolTip title="Past Molecule" popupPlacement="left">
-          <button type="button" onClick={handlePast}>
+          <button className="bar-button" type="button" onClick={handlePast}>
             <FaPaste />
           </button>
         </ToolTip>
         <ToolTip title="Add Molecule" popupPlacement="left">
-          <button type="button" onClick={handleOpen}>
+          <button className="bar-button" type="button" onClick={handleOpen}>
             <FaPlus />
           </button>
         </ToolTip>
         <ToolTip title="Delete Molecule" popupPlacement="left">
-          <button type="button" onClick={handleDelete}>
+          <button className="bar-button" type="button" onClick={handleDelete}>
             <FaRegTrashAlt />
           </button>
         </ToolTip>

@@ -46,9 +46,11 @@ import {
   RESIZE_INTEGRAL,
   BRUSH_END,
   RESET_DOMAIN,
-  CHNAGE_INTEGRAL_ZOOM,
+  CHANGE_INTEGRAL_ZOOM,
   ENABLE_FILTER,
   DELETE_FILTER,
+  SET_SELECTED_FILTER,
+  APPLY_ZERO_FILLING_FILTER,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -411,6 +413,35 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     setDomain(draft);
   });
 };
+const applyZeroFillingFilter = (state, size) => {
+  return produce(state, (draft) => {
+    const filterOption = {
+      kind: Filters.zeroFilling.name,
+      value: size,
+    };
+
+    console.log(size)
+    const activeSpectrumId = state.activeSpectrum.id;
+    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+
+    //apply filter into the spectrum
+    activeObject.addFilter(filterOption);
+    activeObject.applyZeroFillingFilter(size);
+
+    const XYData = activeObject.getReal();
+    const spectrumIndex = draft.data.findIndex(
+      (spectrum) => spectrum.id === activeSpectrumId,
+    );
+
+    console.log(XYData.x.length)
+    console.log(XYData.y.length)
+
+    draft.data[spectrumIndex].x = XYData.x;
+    draft.data[spectrumIndex].y = XYData.y;
+    draft.data[spectrumIndex].filters = activeObject.getFilters();
+    setDomain(draft);
+  });
+};
 
 const enableFilter = (state, filterID, checked) => {
   return produce(state, (draft) => {
@@ -495,6 +526,10 @@ const setPointerCoordinates = (state, pointerCoordinates) => {
 
 const setSelectedTool = (state, selectedTool) => {
   return { ...state, selectedTool };
+};
+
+const setSelectedFilter = (state, selectedFilter) => {
+  return { ...state, selectedFilter };
 };
 
 const zoomOut = (state) => {
@@ -859,6 +894,8 @@ export const initialState = {
   yDomains: [],
   originDomain: {},
   selectedTool: options.zoom.id,
+  selectedFilter: null,
+
   // peakNotations: [],
   width: null,
   height: null,
@@ -931,6 +968,8 @@ export const spectrumReducer = (state, action) => {
 
     case SET_SELECTED_TOOL:
       return setSelectedTool(state, action.selectedTool);
+    case SET_SELECTED_FILTER:
+      return setSelectedFilter(state, action.selectedFilter);
 
     case SET_DATA:
       return setData(state, action.data);
@@ -940,7 +979,8 @@ export const spectrumReducer = (state, action) => {
 
     case SHIFT_SPECTRUM:
       return shiftSpectrumAlongXAxis(state, action.shiftValue);
-
+    case APPLY_ZERO_FILLING_FILTER:
+      return applyZeroFillingFilter(state, action.value);
     case ENABLE_FILTER:
       return enableFilter(state, action.id, action.checked);
 
@@ -984,7 +1024,7 @@ export const spectrumReducer = (state, action) => {
     case SET_INTEGRAL_Y_DOMAIN:
       return handleChangeIntegralYDomain(state, action.yDomain);
 
-    case CHNAGE_INTEGRAL_ZOOM:
+    case CHANGE_INTEGRAL_ZOOM:
       return handleChangeIntegralZoom(state, action.zoomFactor);
 
     case BRUSH_END:

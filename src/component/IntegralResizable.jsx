@@ -31,7 +31,7 @@ const IntegralResizable = (props) => {
   `;
   const deleteIntegral = useCallback(() => {
     dispatch({ type: DELETE_INTEGRAL, integralID: integralID, spectrumID: id });
-  }, [integralID]);
+  }, [dispatch, id, integralID]);
 
   function DeleteButton() {
     return (

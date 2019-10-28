@@ -29,14 +29,16 @@ const ToggleButton = ({
     (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const _isActive =
-        isActive === false || isActive === undefined ? !active : active;
+      const _isActive = !active;
+      // isActive === false || isActive === undefined ? !active : active;
       setActive(_isActive);
       if (_isActive) {
         onChange(value);
+      } else {
+        onChange(null);
       }
     },
-    [active, isActive, onChange, value],
+    [active, onChange, value],
   );
 
   useEffect(() => {

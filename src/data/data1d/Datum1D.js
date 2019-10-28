@@ -112,6 +112,10 @@ export class Datum1D {
   applyShiftXFilter(shiftValue) {
     Filters.shiftX(this, shiftValue);
   }
+
+  applyZeroFillingFilter(size) {
+    Filters.zeroFilling(this, size);
+  }
   // id filter id
   enableFilter(id, checked) {
     this.filters = Object.assign([], this.filters);
