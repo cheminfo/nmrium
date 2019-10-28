@@ -130,6 +130,16 @@ export class Datum1D {
       }
     }
   }
+  deleteFilter(id) {
+    this.filters = Object.assign([], this.filters);
+    this.filters = this.filters.filter((filter) => filter.id !== id);
+    this.data = Object.assign({ ...this.data }, { ...this.source.original });
+    for (let filter of this.filters) {
+      if (filter.flag) {
+        Filters[filter.kind](this, filter.value);
+      }
+    }
+  }
 
   getReal() {
     return { x: this.data.x, y: this.data.re };

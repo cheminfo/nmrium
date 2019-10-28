@@ -200,7 +200,8 @@ export class Analysis {
   }
 
   deleteDatum1DByID(id) {
-    this.data1d = this.data1d.filter((d) => d.id !== id);
+    const _data1d = this.data1d.filter((d) => d.id !== id);
+    this.data1d = _data1d.length > 0 ? _data1d : null;
   }
 
   // undoFilter(pastChainFilters = []) {

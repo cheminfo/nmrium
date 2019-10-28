@@ -39,3 +39,4 @@ export const BRUSH_END = 'BRUSH_END';
 export const RESET_DOMAIN = 'RESET_X_DOMAIN';
 export const CHNAGE_INTEGRAL_ZOOM = 'CHNAGE_INTEGRAL_ZOOM';
 export const ENABLE_FILTER = 'ENABLE_FILTER';
+export const DELETE_FILTER = 'DELETE_FILTER';

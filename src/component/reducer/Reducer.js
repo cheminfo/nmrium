@@ -48,6 +48,7 @@ import {
   RESET_DOMAIN,
   CHNAGE_INTEGRAL_ZOOM,
   ENABLE_FILTER,
+  DELETE_FILTER,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -418,6 +419,27 @@ const enableFilter = (state, filterID, checked) => {
 
     //apply filter into the spectrum
     activeObject.enableFilter(filterID, checked);
+
+    const XYData = activeObject.getReal();
+
+    const spectrumIndex = state.data.findIndex(
+      (spectrum) => spectrum.id === activeSpectrumId,
+    );
+
+    draft.data[spectrumIndex].x = XYData.x;
+    draft.data[spectrumIndex].y = XYData.y;
+    draft.data[spectrumIndex].filters = activeObject.getFilters();
+    setDomain(draft);
+  });
+};
+
+const deleteFilter = (state, filterID) => {
+  return produce(state, (draft) => {
+    const activeSpectrumId = state.activeSpectrum.id;
+    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+
+    //apply filter into the spectrum
+    activeObject.deleteFilter(filterID);
 
     const XYData = activeObject.getReal();
 
@@ -918,8 +940,13 @@ export const spectrumReducer = (state, action) => {
 
     case SHIFT_SPECTRUM:
       return shiftSpectrumAlongXAxis(state, action.shiftValue);
+
     case ENABLE_FILTER:
       return enableFilter(state, action.id, action.checked);
+
+    case DELETE_FILTER:
+      return deleteFilter(state, action.id);
+
     case CHANGE_VISIBILITY:
       return handleSpectrumVisibility(state, action.data);
 
