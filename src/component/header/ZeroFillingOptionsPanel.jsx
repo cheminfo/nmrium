@@ -31,7 +31,7 @@ function generateSizes(start = 8, end = 21) {
     const formatedResult = formatNumber(result);
     values.push({
       key: result,
-      label: `${formatedResult} X ${formatedResult}`,
+      label: formatedResult,
       value: result,
     });
   }
@@ -48,15 +48,15 @@ function formatNumber(number) {
   }
 }
 
-function getRealValue(val = '') {
-  const map = {
-    m: '000000',
-    k: '000',
-  };
-  return val.toLowerCase().replace(/k|m/g, (matched) => {
-    return map[matched];
-  });
-}
+// function getRealValue(val = '') {
+//   const map = {
+//     m: '000000',
+//     k: '000',
+//   };
+//   return val.toLowerCase().replace(/k|m/g, (matched) => {
+//     return map[matched];
+//   });
+// }
 
 const Sizes = generateSizes();
 const ZeroFillingOptionsPanel = () => {
@@ -65,10 +65,10 @@ const ZeroFillingOptionsPanel = () => {
 
   const handleApplyFilter = useCallback(() => {
     if (sizeTextInputRef.current.value.trim() !== '') {
-      const value = Number(getRealValue(sizeTextInputRef.current.value));
+      console.log(sizeTextInputRef.current.value)
       dispatch({
         type: APPLY_ZERO_FILLING_FILTER,
-        value: value,
+        value: sizeTextInputRef.current.value,
       });
     }
   }, [dispatch]);
