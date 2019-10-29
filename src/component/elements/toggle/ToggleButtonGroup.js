@@ -32,15 +32,18 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
 
   const Children = useMemo(() => {
     return React.Children.map(children, (child, index) => {
-      return React.cloneElement(child, {
-        onChange: handleOnChange,
-        isActive:
-          toggleButtons[index] &&
-          toggleButtons[index].isActive &&
-          toggleButtons[index].isActive,
-        onValueReady: handleOnValueReady,
-        index,
-      });
+      return (
+        child &&
+        React.cloneElement(child, {
+          onChange: handleOnChange,
+          isActive:
+            toggleButtons[index] &&
+            toggleButtons[index].isActive &&
+            toggleButtons[index].isActive,
+          onValueReady: handleOnValueReady,
+          index,
+        })
+      );
     });
   }, [children, handleOnChange, handleOnValueReady, toggleButtons]);
   return <div style={style}> {Children} </div>;

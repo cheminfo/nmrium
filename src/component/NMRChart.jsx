@@ -29,7 +29,7 @@ function NMRChart() {
       <IntegralsSeries />
       <PeaksNotations />
 
-      <g className="container">
+      <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid={true} mode={mode} />
         <YAxis label="PPM" show={false} />
       </g>
