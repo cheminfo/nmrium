@@ -24,6 +24,10 @@ export default function zeroFilling(datum1D, size) {
     currentX += diff;
     newX[i] = currentX;
   }
+
+  console.log(x.length)
+  console.log(newRE.length)
+  console.log(im.length)
   datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, x: newX } };
 }
 
