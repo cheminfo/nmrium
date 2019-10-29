@@ -38,25 +38,14 @@ function generateSizes(start = 8, end = 21) {
   return values;
 }
 function formatNumber(number) {
-  const val = String(number);
-  if (val.length > 6) {
-    return `${val.substr(0, val.length - 6)}M`;
-  } else if (val.length > 3) {
-    return `${val.substr(0, val.length - 3)}K`;
+  if (number >= 1024 * 1024) {
+    return `${number / (1024 * 1024)}M`;
+  } else if (number >= 1024) {
+    return `${number / 1024}K`;
   } else {
-    return val;
+    return number;
   }
 }
-
-// function getRealValue(val = '') {
-//   const map = {
-//     m: '000000',
-//     k: '000',
-//   };
-//   return val.toLowerCase().replace(/k|m/g, (matched) => {
-//     return map[matched];
-//   });
-// }
 
 const Sizes = generateSizes();
 const ZeroFillingOptionsPanel = () => {
@@ -64,13 +53,10 @@ const ZeroFillingOptionsPanel = () => {
   const sizeTextInputRef = useRef();
 
   const handleApplyFilter = useCallback(() => {
-    if (sizeTextInputRef.current.value.trim() !== '') {
-      console.log(sizeTextInputRef.current.value)
-      dispatch({
-        type: APPLY_ZERO_FILLING_FILTER,
-        value: sizeTextInputRef.current.value,
-      });
-    }
+    dispatch({
+      type: APPLY_ZERO_FILLING_FILTER,
+      value: Number(sizeTextInputRef.current.value),
+    });
   }, [dispatch]);
 
   return (
