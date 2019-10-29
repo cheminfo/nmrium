@@ -8,7 +8,6 @@ export function getSpectrumType(meta = {}, info = {}) {
   if (typeof meta === 'string') {
     meta = { pulse: meta };
   }
-  console.log({ meta, info, test: info.$SPECTYP });
   let spectyp = (Array.isArray(info.$SPECTYP)
     ? info.$SPECTYP[0]
     : info.$SPECTYP || ''
