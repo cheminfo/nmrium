@@ -23,6 +23,7 @@ const pathStyles = css`
 export const LinesSeries = () => {
   const {
     xDomain,
+    yDomain,
     getScale,
     verticalAlign,
     activeSpectrum,
@@ -39,14 +40,20 @@ export const LinesSeries = () => {
         to: xDomain[1],
       });
 
+      console.log(xDomain);
+      console.log(yDomain);
+      console.log(pathPoints.y);
+      let values = '';
       let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
       path += pathPoints.x
         .slice(1)
         .map((point, i) => {
+          values += scale.x(point) + ',' + scale.y(pathPoints.y[i]);
           return ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
         })
         .join('');
-
+      console.log(values);
+      console.log(path);
       return path;
     }
 

@@ -51,6 +51,7 @@ import {
   DELETE_FILTER,
   SET_SELECTED_FILTER,
   APPLY_ZERO_FILLING_FILTER,
+  APPLY_FFT_FILTER,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -420,7 +421,7 @@ const applyZeroFillingFilter = (state, size) => {
       value: size,
     };
 
-    console.log(size)
+    console.log(size);
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
@@ -433,13 +434,40 @@ const applyZeroFillingFilter = (state, size) => {
       (spectrum) => spectrum.id === activeSpectrumId,
     );
 
-    console.log(XYData.x.length)
-    console.log(XYData.y.length)
+    console.log(XYData.x.length);
+    console.log(XYData.y.length);
 
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
     setDomain(draft);
+  });
+};
+const applyFFTFilter = (state) => {
+  return produce(state, (draft) => {
+    const filterOption = {
+      kind: Filters.fft.name,
+      value: '',
+    };
+
+    const activeSpectrumId = state.activeSpectrum.id;
+    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+
+    //apply filter into the spectrum
+    activeObject.addFilter(filterOption);
+    activeObject.applyFFTFilter();
+
+    const XYData = activeObject.getReal();
+    const spectrumIndex = draft.data.findIndex(
+      (spectrum) => spectrum.id === activeSpectrumId,
+    );
+
+    draft.data[spectrumIndex].x = XYData.x;
+    draft.data[spectrumIndex].y = XYData.y;
+    draft.data[spectrumIndex].filters = activeObject.getFilters();
+    draft.data[spectrumIndex].isFid = activeObject.info.isFid;
+    setDomain(draft);
+    setMode(draft);
   });
 };
 
@@ -713,6 +741,7 @@ const handleDeleteMolecule = (state, key) => {
 };
 
 function setMode(draft) {
+  console.log(draft.data[0].isFid);
   draft.mode =
     draft.data && draft.data[0] && draft.data[0].isFid ? 'LTR' : 'RTL';
 }
@@ -981,6 +1010,8 @@ export const spectrumReducer = (state, action) => {
       return shiftSpectrumAlongXAxis(state, action.shiftValue);
     case APPLY_ZERO_FILLING_FILTER:
       return applyZeroFillingFilter(state, action.value);
+    case APPLY_FFT_FILTER:
+      return applyFFTFilter(state);
     case ENABLE_FILTER:
       return enableFilter(state, action.id, action.checked);
 

@@ -30,7 +30,6 @@ const FunctionToolBar = ({ defaultValue }) => {
   const handleChange = useCallback(
     (selectedOption) => {
       // if (selectedOption != null) {
-        console.log(selectedOption)
       setOption(selectedOption);
       handleChangeOption(selectedOption);
       // }

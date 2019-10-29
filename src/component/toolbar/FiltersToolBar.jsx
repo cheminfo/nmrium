@@ -6,6 +6,7 @@ import ToolTip from '../elements/ToolTip/ToolTip';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 import { Filters } from '../../data/data1d/filter1d/Filters';
 import { isApplicable as isZeroFillingApplicable } from '../../data/data1d/filter1d/zeroFilling';
+import { isApplicable as isFFTApplicable } from '../../data/data1d/filter1d/fft';
 import { useChartData } from '../context/ChartContext';
 
 const BasicToolBar = () => {
@@ -47,6 +48,17 @@ const BasicToolBar = () => {
             offset={{ x: 10, y: 0 }}
           >
             Zero
+          </ToolTip>
+        </ToggleButton>
+      )}
+      {selectedSpectrumInfo && isFFTApplicable(selectedSpectrumInfo) && (
+        <ToggleButton key={Filters.fft.name} value={Filters.fft.name}>
+          <ToolTip
+            title={`FFT Filter`}
+            popupPlacement="right"
+            offset={{ x: 10, y: 0 }}
+          >
+            FFT
           </ToolTip>
         </ToggleButton>
       )}

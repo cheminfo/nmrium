@@ -16,7 +16,6 @@ export default function fft(datum1D) {
   FFT.init(re.length);
 
   FFT.fft(re, im);
-
   datum1D.data.re = re;
   datum1D.data.im = im;
   datum1D.info.isFid = false;

@@ -6,6 +6,7 @@ import { useChartData } from '../context/ChartContext';
 import { Filters } from '../../data/data1d/filter1d/Filters';
 
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
+import FFTOptionsPanel from './FFTOptionsPanel';
 
 const headerStyle = css`
   display: flex;
@@ -54,6 +55,8 @@ const Header = ({ isFullscreen, onMaximize }) => {
   const selectedPanel = useMemo(() => {
     if (selectedFilter === Filters.zeroFilling.name) {
       return <ZeroFillingOptionsPanel />;
+    } else if (selectedFilter === Filters.fft.name) {
+      return <FFTOptionsPanel />;
     }
   }, [selectedFilter]);
 

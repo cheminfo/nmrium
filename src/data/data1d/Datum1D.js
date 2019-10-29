@@ -116,6 +116,10 @@ export class Datum1D {
   applyZeroFillingFilter(size) {
     Filters.zeroFilling(this, size);
   }
+  applyFFTFilter() {
+    console.log('sssssssssssss')
+    Filters.fft(this);
+  }
   // id filter id
   enableFilter(id, checked) {
     this.filters = Object.assign([], this.filters);
