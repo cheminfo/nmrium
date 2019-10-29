@@ -28,10 +28,9 @@ function generateSizes(start = 8, end = 21) {
   let values = [];
   for (let i = start; i <= end; i++) {
     const result = 2 ** i;
-    const formatedResult = formatNumber(result);
     values.push({
       key: result,
-      label: formatedResult,
+      label: formatNumber(result),
       value: result,
     });
   }
@@ -48,6 +47,7 @@ function formatNumber(number) {
 }
 
 const Sizes = generateSizes();
+
 const ZeroFillingOptionsPanel = () => {
   const dispatch = useDispatch();
   const sizeTextInputRef = useRef();

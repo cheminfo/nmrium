@@ -488,7 +488,11 @@ const enableFilter = (state, filterID, checked) => {
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
+    draft.data[spectrumIndex].isFid = activeObject.info.isFid;
+
     setDomain(draft);
+    setMode(draft);
+
   });
 };
 
@@ -509,7 +513,10 @@ const deleteFilter = (state, filterID) => {
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
+    draft.data[spectrumIndex].isFid = activeObject.info.isFid;
+
     setDomain(draft);
+    setMode(draft);
   });
 };
 

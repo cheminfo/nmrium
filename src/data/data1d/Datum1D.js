@@ -63,6 +63,15 @@ export class Datum1D {
       options.info,
     );
 
+    this.originalInfo = Object.assign(
+      {
+        nucleus: '1H', // 1H, 13C, 19F, ...
+        isFid: false,
+        isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+      },
+      options.info,
+    );
+
     this.data = Object.assign(
       {
         x: [],
@@ -117,7 +126,7 @@ export class Datum1D {
     Filters.zeroFilling(this, size);
   }
   applyFFTFilter() {
-    console.log('sssssssssssss')
+    console.log('sssssssssssss');
     Filters.fft(this);
   }
   // id filter id
@@ -132,6 +141,8 @@ export class Datum1D {
       (filter) => filter.flag === true,
     );
     this.data = Object.assign({ ...this.data }, { ...this.source.original });
+    this.info = Object.assign({ ...this.info }, { ...this.originalInfo });
+
     for (let filter of enabledFilters) {
       if (filter.flag) {
         Filters[filter.kind](this, filter.value);
@@ -142,6 +153,8 @@ export class Datum1D {
     this.filters = Object.assign([], this.filters);
     this.filters = this.filters.filter((filter) => filter.id !== id);
     this.data = Object.assign({ ...this.data }, { ...this.source.original });
+    this.info = Object.assign({ ...this.info }, { ...this.originalInfo });
+
     for (let filter of this.filters) {
       if (filter.flag) {
         Filters[filter.kind](this, filter.value);
