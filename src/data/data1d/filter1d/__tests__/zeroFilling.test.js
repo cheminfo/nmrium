@@ -14,7 +14,6 @@ describe('zeroFilling', () => {
       },
     };
     zeroFilling(spectrum, 8);
-    expect(true).toBe(true);
     expect(spectrum.data).toStrictEqual({
       re: new Float64Array([1, 2, 3, 4, 0, 0, 0, 0]),
       im: new Float64Array([5, 6, 7, 8, 0, 0, 0, 0]),
@@ -35,7 +34,6 @@ describe('zeroFilling', () => {
       },
     };
     zeroFilling(spectrum, 2);
-    expect(true).toBe(true);
     expect(spectrum.data).toStrictEqual({
       re: new Float64Array([1, 2]),
       im: new Float64Array([5, 6]),
