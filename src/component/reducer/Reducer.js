@@ -805,7 +805,6 @@ const handleDeleteMolecule = (state, key) => {
 };
 
 function setMode(draft) {
-  console.log(draft.data[0].isFid);
   draft.mode =
     draft.data && draft.data[0] && draft.data[0].isFid ? 'LTR' : 'RTL';
 }
