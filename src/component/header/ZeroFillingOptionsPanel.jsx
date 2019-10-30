@@ -3,6 +3,7 @@ import React, { useCallback, useRef } from 'react';
 import { APPLY_ZERO_FILLING_FILTER } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
 import Select from '../elements/Select';
+import { useChartData } from '../context/ChartContext';
 
 const styles = {
   container: {
@@ -50,6 +51,7 @@ const Sizes = generateSizes();
 
 const ZeroFillingOptionsPanel = () => {
   const dispatch = useDispatch();
+  const { data, activeSpectrum } = useChartData();
   const sizeTextInputRef = useRef();
 
   const handleApplyFilter = useCallback(() => {
@@ -59,6 +61,14 @@ const ZeroFillingOptionsPanel = () => {
     });
   }, [dispatch]);
 
+  const getDefaultValue = useCallback(() => {
+    if (data && activeSpectrum) {
+      const spectrum = data.find((d) => d.id === activeSpectrum.id);
+      return 2 ** Math.round(Math.log2(spectrum.x.length)) + 1;
+    }
+    return '';
+  }, [activeSpectrum, data]);
+
   return (
     <div style={styles.container}>
       <span style={styles.label}>Size: </span>
@@ -66,6 +76,7 @@ const ZeroFillingOptionsPanel = () => {
         ref={sizeTextInputRef}
         data={Sizes}
         style={{ marginLeft: 10, marginRight: 10 }}
+        defaultValue={getDefaultValue()}
       />
       <button
         type="button"

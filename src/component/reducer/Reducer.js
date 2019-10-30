@@ -6,8 +6,8 @@ import { Datum1D } from '../../data/data1d/Datum1D';
 import { Data1DManager } from '../../data/data1d/Data1DManager';
 import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';
-import { options } from '../toolbar/FunctionToolBar';
 import { Filters } from '../../data/data1d/filter1d/Filters';
+import { options } from '../toolbar/ToolTypes';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
 import {
@@ -52,6 +52,9 @@ import {
   SET_SELECTED_FILTER,
   APPLY_ZERO_FILLING_FILTER,
   APPLY_FFT_FILTER,
+  SET_VERTICAL_INDICATOR_X_POSITION,
+  APPLY_MANUAL_PHASE_CORRECTION_FILTER,
+  CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -421,7 +424,6 @@ const applyZeroFillingFilter = (state, size) => {
       value: size,
     };
 
-    console.log(size);
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
@@ -434,12 +436,10 @@ const applyZeroFillingFilter = (state, size) => {
       (spectrum) => spectrum.id === activeSpectrumId,
     );
 
-    console.log(XYData.x.length);
-    console.log(XYData.y.length);
-
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
+    draft.tempData = null;
     setDomain(draft);
   });
 };
@@ -466,8 +466,53 @@ const applyFFTFilter = (state) => {
     draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
     draft.data[spectrumIndex].isFid = activeObject.info.isFid;
+    draft.tempData = null;
+
     setDomain(draft);
     setMode(draft);
+  });
+};
+const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
+  return produce(state, (draft) => {
+    const filterOption = {
+      kind: Filters.phaseCorrection.name,
+      value: filterOptions,
+    };
+
+    const activeSpectrumId = state.activeSpectrum.id;
+    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+
+    //apply filter into the spectrum
+    activeObject.addFilter(filterOption);
+
+    const spectrumIndex = state.tempData.findIndex(
+      (spectrum) => spectrum.id === activeSpectrumId,
+    );
+
+    draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
+    draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
+    draft.data[spectrumIndex].filters = activeObject.getFilters();
+    draft.tempData = null;
+    setDomain(draft);
+  });
+};
+
+const calculateManualPhaseCorrection = (state, filterOptions) => {
+  return produce(state, (draft) => {
+    const activeSpectrumId = state.activeSpectrum.id;
+    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+
+    //apply filter into the spectrum
+    activeObject.applyManualPhaseCorrectionFilter(filterOptions);
+
+    const XYData = activeObject.getReal();
+    const spectrumIndex = draft.data.findIndex(
+      (spectrum) => spectrum.id === activeSpectrumId,
+    );
+
+    draft.data[spectrumIndex].x = XYData.x;
+    draft.data[spectrumIndex].y = XYData.y;
+    setDomain(draft);
   });
 };
 
@@ -492,7 +537,6 @@ const enableFilter = (state, filterID, checked) => {
 
     setDomain(draft);
     setMode(draft);
-
   });
 };
 
@@ -564,7 +608,20 @@ const setSelectedTool = (state, selectedTool) => {
 };
 
 const setSelectedFilter = (state, selectedFilter) => {
-  return { ...state, selectedFilter };
+  return produce(state, (draft) => {
+    //initialize position of the vertical line equalizer indicator
+    draft.verticalIndicatorPosition = state.width / 2;
+    draft.tempData = state.data;
+
+    //select the equalizer tool when you enable manual phase correction filter
+    if (selectedFilter === Filters.phaseCorrection.name) {
+      draft.selectedTool = options.equalizerTool.id;
+    } else {
+      draft.selectedTool = null;
+    }
+
+    draft.selectedFilter = selectedFilter;
+  });
 };
 
 const zoomOut = (state) => {
@@ -911,6 +968,11 @@ const handleBrushEnd = (state, action) => {
     }
   });
 };
+const setVerticalIndicatorXPosition = (state, position) => {
+  return produce(state, (draft) => {
+    draft.verticalIndicatorPosition = position;
+  });
+};
 
 const handelResetDomain = (state) => {
   return produce(state, (draft) => {
@@ -925,6 +987,7 @@ const handelResetDomain = (state) => {
 
 export const initialState = {
   data: null,
+  tempData: null,
   xDomain: [],
   yDomain: [],
   yDomains: [],
@@ -953,6 +1016,7 @@ export const initialState = {
     hasUndo: false,
     hasRedo: false,
   },
+  verticalIndicatorPosition: 0,
 };
 
 export const spectrumReducer = (state, action) => {
@@ -1019,6 +1083,10 @@ export const spectrumReducer = (state, action) => {
       return applyZeroFillingFilter(state, action.value);
     case APPLY_FFT_FILTER:
       return applyFFTFilter(state);
+    case APPLY_MANUAL_PHASE_CORRECTION_FILTER:
+      return applyManualPhaseCorrectionFilter(state, action.value);
+    case CALCULATE_MANUAL_PHASE_CORRECTION_FILTER:
+      return calculateManualPhaseCorrection(state, action.value);
     case ENABLE_FILTER:
       return enableFilter(state, action.id, action.checked);
 
@@ -1067,6 +1135,8 @@ export const spectrumReducer = (state, action) => {
 
     case BRUSH_END:
       return handleBrushEnd(state, action);
+    case SET_VERTICAL_INDICATOR_X_POSITION:
+      return setVerticalIndicatorXPosition(state, action.position);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

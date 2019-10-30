@@ -1,10 +1,9 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
 
 const style = { display: 'flex', flexDirection: 'column' };
 
 const ToggleButtonGroup = ({ children, value, onChange }) => {
   const [toggleButtons, setToggleButtons] = useState([]);
-
   const handleOnChange = useCallback(
     (val) => {
       const _toggles = [...toggleButtons];
@@ -20,16 +19,6 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
     [onChange, toggleButtons],
   );
 
-  const handleOnValueReady = useCallback(
-    (val) => {
-      toggleButtons[val.index] = {
-        value: val.value,
-        isActive: val.value === value ? true : false,
-      };
-    },
-    [toggleButtons, value],
-  );
-
   const Children = useMemo(() => {
     return React.Children.map(children, (child, index) => {
       return (
@@ -40,12 +29,24 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
             toggleButtons[index] &&
             toggleButtons[index].isActive &&
             toggleButtons[index].isActive,
-          onValueReady: handleOnValueReady,
           index,
         })
       );
     });
-  }, [children, handleOnChange, handleOnValueReady, toggleButtons]);
+  }, [children, handleOnChange, toggleButtons]);
+
+  useEffect(() => {
+    const val = React.Children.map(children, (child) => {
+      if (child) {
+        return {
+          value: child.props.value,
+          isActive: child.props.value === value ? true : false,
+        };
+      }
+    });
+    setToggleButtons(val);
+  }, [children, value]);
+
   return <div style={style}> {Children} </div>;
 };
 

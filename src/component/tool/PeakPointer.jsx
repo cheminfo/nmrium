@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-
 import max from 'ml-array-max';
 
 import { useChartData } from '../context/ChartContext';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
-import { options } from '../toolbar/FunctionToolBar';
+import { options } from '../toolbar/ToolTypes';
 
 const styles = {
   radius: 10,

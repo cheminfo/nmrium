@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { useChartData } from '../context/ChartContext';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
-import { options } from '../toolbar/FunctionToolBar';
+import { options } from '../toolbar/ToolTypes';
 
 const styles = {
   line: {
@@ -15,13 +15,15 @@ const styles = {
   },
 };
 
+const allowTools = [options.zoom.id, options.equalizerTool.id];
+
 const CrossLinePointer = () => {
   const { height, width, margin, selectedTool } = useChartData();
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
 
   if (
-    selectedTool !== options.zoom.id ||
+    !allowTools.includes(selectedTool) ||
     brushState.step === 'brushing' ||
     !position ||
     position.y < margin.top ||

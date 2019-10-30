@@ -1,6 +1,7 @@
 import React from 'react';
 
-import FunctionToolBar, { options } from './FunctionToolBar';
+import FunctionToolBar from './FunctionToolBar';
+import { options } from './ToolTypes';
 import HistoryToolBar from './HistoryToolBar';
 import BasicToolBar from './BasicToolBar';
 import ViewButton from './ViewButton';

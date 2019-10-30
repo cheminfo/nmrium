@@ -126,8 +126,11 @@ export class Datum1D {
     Filters.zeroFilling(this, size);
   }
   applyFFTFilter() {
-    console.log('sssssssssssss');
     Filters.fft(this);
+  }
+
+  applyManualPhaseCorrectionFilter(filterOptions) {
+    Filters.phaseCorrection(this, filterOptions);
   }
   // id filter id
   enableFilter(id, checked) {

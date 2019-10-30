@@ -24,6 +24,7 @@ import {
   ADD_PEAK,
   CHANGE_INTEGRAL_ZOOM,
   ADD_PEAKS,
+  SET_VERTICAL_INDICATOR_X_POSITION,
 } from './reducer/Actions';
 import { DispatchProvider, useDispatch } from './context/DispatchContext';
 import DropZone from './DropZone';
@@ -35,9 +36,10 @@ import CrossLinePointer from './tool/CrossLinePointer';
 import { BrushTracker } from './EventsTrackers/BrushTracker';
 import BrushX from './tool/BrushX';
 import XLabelPointer from './tool/XLabelPointer';
-import { options } from './toolbar/FunctionToolBar';
+import { options } from './toolbar/ToolTypes';
 import PeakPointer from './tool/PeakPointer';
 import Header from './header/Header';
+import VerticalIndicator from './tool/VerticalIndicator';
 
 const NMRDisplayer = (props) => {
   const { data: dataProp, height: heightProp, width: widthProps } = props;
@@ -232,6 +234,11 @@ function ChartPanel() {
           type: ADD_PEAK,
           mouseCoordinates: position,
         });
+      } else if (selectedTool === options.equalizerTool.id) {
+        dispatch({
+          type: SET_VERTICAL_INDICATOR_X_POSITION,
+          position: position.x,
+        });
       }
     },
     [dispatch, selectedTool],
@@ -258,6 +265,7 @@ function ChartPanel() {
           <BrushX />
           <XLabelPointer />
           <PeakPointer />
+          <VerticalIndicator />
         </MouseTracker>
       </BrushTracker>
     );

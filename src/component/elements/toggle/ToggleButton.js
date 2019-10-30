@@ -15,15 +15,7 @@ const styles = {
   },
 };
 
-const ToggleButton = ({
-  children,
-  value,
-  disabled,
-  isActive,
-  onChange,
-  onValueReady,
-  index,
-}) => {
+const ToggleButton = ({ children, value, disabled, isActive, onChange }) => {
   const [active, setActive] = useState(isActive);
   const toggleButton = useCallback(
     (e) => {
@@ -40,12 +32,6 @@ const ToggleButton = ({
     },
     [active, onChange, value],
   );
-
-  useEffect(() => {
-    if (value) {
-      onValueReady({ value, index });
-    }
-  }, [index, onValueReady, value]);
 
   useEffect(() => {
     setActive(isActive);

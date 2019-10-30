@@ -10,12 +10,7 @@ import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 
-export let options = {
-  zoom: { id: 'zoom', label: 'Zoom' },
-  peakPicking: { id: 'peakPicking', label: 'Peak Tool' },
-  integral: { id: 'integral', label: 'integral Tool' },
-  HMove: { id: 'HMove', label: 'move spectrum horizontal' },
-};
+import { options } from './ToolTypes';
 
 const FunctionToolBar = ({ defaultValue }) => {
   const [option, setOption] = useState();

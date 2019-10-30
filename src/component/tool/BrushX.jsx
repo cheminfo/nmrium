@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
-import { options } from '../toolbar/FunctionToolBar';
+import { options } from '../toolbar/ToolTypes';
 
 const styles = {
   container: {
@@ -13,14 +13,16 @@ const styles = {
   },
 };
 
+const allowTools = [
+  options.zoom.id,
+  options.peakPicking.id,
+  options.integral.id,
+];
+
 export default function BrushX() {
   const { width, height, selectedTool } = useChartData();
   const { startX, endX, step } = useContext(BrushContext);
-  const allowTools = [
-    options.zoom.id,
-    options.peakPicking.id,
-    options.integral.id,
-  ];
+
   if (!allowTools.includes(selectedTool) || step !== 'brushing') return null;
 
   const scale = (endX - startX) / width;
