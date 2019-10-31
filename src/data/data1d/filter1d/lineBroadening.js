@@ -6,7 +6,7 @@
 
 export default function lineBroadening(datum1D, value) {
   if (!isApplicable(datum1D)) {
-    throw new Error('zeroFilling not isApplicable on this data');
+    throw new Error('lineBroadening not isApplicable on this data');
   }
   const re = datum1D.data.re;
   const im = datum1D.data.im;
