@@ -15,17 +15,6 @@ export class Datum1D {
   // by default Math.random().toString(36).replace('0.','')
 
   constructor(options = {}) {
-    /* TODO
-    What are the different categories of information about a Datum1D ?
-    * display: {color, isVisible, ...} // all that is related to display information
-    * data: {re:[], im:[], y:[], meta: {}}
-    * dataSource ????
-    * info: {isFid, isComplex, nucleus, solvent, frequency, temperature, ...}
-    * ranges: [],
-    * signals: [],
-    * annotations: [],
-    *
-*/
     this.id =
       options.id ||
       Math.random()
@@ -87,7 +76,8 @@ export class Datum1D {
     this.signals = Object.assign([], options.signals);
     this.filters = Object.assign([], options.filters);
 
-    // [{kind: 'shiftX',value: -5,},{.....}]
+    //reapply filters after load the original data
+    this.reapplyFilters();
   }
 
   setIsRealSpectrumVisible(isVisible) {
@@ -132,6 +122,13 @@ export class Datum1D {
   applyManualPhaseCorrectionFilter(filterOptions) {
     Filters.phaseCorrection(this, filterOptions);
   }
+
+  reapplyFilters() {
+    for (let i = 0; i < this.filters.length; i++) {
+      this.enableFilter(this.filters[i].id, this.filters[i].flag);
+    }
+  }
+
   // id filter id
   enableFilter(id, checked) {
     this.filters = Object.assign([], this.filters);
@@ -255,7 +252,7 @@ export class Datum1D {
         original: this.source.jcampURL ? [] : this.source.original,
       },
       display: this.display,
-      info: this.info,
+      info: this.originalInfo,
       peaks: this.peaks,
       integrals: this.integrals,
       signals: this.signals,
