@@ -23,6 +23,10 @@ export default function zeroFilling(datum1D, value) {
     curFactor = 1.0;
     // test here if first point if FID is at time zero... if not change cur_factor accordingly.
   // cur_factor=cur_factor*...
+//let alpha = 20 * Math.log10(y[targetIndex - 1]);
+//const beta = Math.sin(delta); //will not be changed....
+ // let cosTheta = Math.cos(phi0);// will be changed....
+
 
   for (let i = 0; i < length; i++) {
       newRE[i] = re[i] * curFactor; // TODO need to make the line broadening
