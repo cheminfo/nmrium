@@ -32,7 +32,8 @@ export default function lineBroadening(datum1D, value) {
       newIM[i] = im[i] * curFactor;
       curFactor = curFactor * coefExp;
     }
-    datum1D.data = { ...datum1D.data, ...{ re: newRE, newIM } }; // is it OK to skip this line if value is zero?
+    datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM } }; // is it OK to skip this line if value is zero?
+  //we should probably also return some comment/info on the window function applied... in a processing parameter file??!
   }
 }
 export function isApplicable(datum1D) {
