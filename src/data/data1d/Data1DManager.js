@@ -78,12 +78,13 @@ export class Data1DManager {
 
     let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
 
-    let meta = getMetaData(result.info);
+    let info = getMetaData(result.info);
 
-    if (Array.isArray(meta.nucleus)) meta.nucleus = meta.nucleus[0];
+    if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
     const ob = new Datum1D({
       ...options,
-      info: meta,
+      info,
+      meta: result.info,
       data,
       source: { jcamp: null, jcampURL: null, original: data },
     });
