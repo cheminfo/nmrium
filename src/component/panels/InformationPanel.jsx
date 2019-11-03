@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 
 import {
   Table,
@@ -10,35 +10,43 @@ import {
 // import { ChartContext } from '../context/ChartContext';
 // import { fromJcamp } from '../../data/data1d/Data1DManager';
 
-const styles = {
-  input: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    width: '',
-    height: '14px',
-  },
+// define styles for the search input field and table cells
+const inputStyle = {
+  width: '100%',
+};
+const tableCellStyle = {
+  'text-align': 'left',
+};
+const tableCellStyleLeft = {
+  ...tableCellStyle,
+  width: '40%',
+};
+const tableCellStyleRight = {
+  ...tableCellStyle,
+  width: '60%',
 };
 
+// the filter function used for string matching in parameter list
 const filter = (input) => {
   let escaped = input.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');
   let regexp = new RegExp(escaped, 'i');
-  let tableContent = document
+  let tableRows = document
     .getElementById('FilterAndInformationContainer')
     .getElementsByClassName('InformationContainer')
     ['0'].getElementsByClassName('Information');
 
-  for (let content of tableContent) {
-    // check the property string only
-    let labelContent = content.children[0].innerHTML;
-    if (labelContent.match(regexp)) {
-      content.style.display = 'flex';
+  for (let row of tableRows) {
+    // check the parameter string only
+    let parameterString = row.children[0].innerHTML;
+    if (parameterString.match(regexp)) {
+      row.style.display = 'flex';
     } else {
-      content.style.display = 'none';
+      row.style.display = 'none';
     }
   }
 };
 
-// dummy
+// dummy object used until the info/meta data of an active spectrum can be received
 const initialStateInformation = () => {
   return {
     date: '01.11.2019',
@@ -46,29 +54,31 @@ const initialStateInformation = () => {
     nuclei: '1H, 13C',
     test1: 'Hello',
     test2: 'Hello2',
-    test3: 'this is a looooooooooooooooooooooooooong text',
-    test4:
+    longText: 'this is a looooooooooooooooooooooooooong text',
+    longerText:
       'this is a looooooooooooooooooooooooooooooooooooooooooooooooooooooonger text',
   };
 };
 
+// information panel
 const InformationPanel = () => {
   //   const { activeSpectrum } = useContext(ChartContext);
   const [information, setInformation] = useState(initialStateInformation);
   const [searchSequence, setSearchSequence] = useState('');
 
   //   useEffect(() => {
-  //     // @TODO update information from belonging active spectrum and its Datum1D object here
+  //     // @TODO update information (info/meta) from belonging active spectrum and its Datum1D object here
   //   }, [activeSpectrum, information]);
 
   return (
     // activeSpectrum &&
     information && (
       <div id="FilterAndInformationContainer">
-        <div />
-        <div style={styles}>
+        <div id="FilterContainer" style={inputStyle}>
           <input
             type="text"
+            style={inputStyle}
+            placeholder="Search for parameter..."
             value={searchSequence}
             onChange={(e) => {
               setSearchSequence(e.target.value);
@@ -80,15 +90,17 @@ const InformationPanel = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="center">label</TableCell>
-                <TableCell align="center">value</TableCell>
+                <TableCell style={tableCellStyleLeft}>Parameter</TableCell>
+                <TableCell style={tableCellStyleRight}>Value</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {Object.keys(information).map((key) => (
                 <TableRow key={key} className="Information">
-                  <TableCell align="left">{key}</TableCell>
-                  <TableCell align="left">{information[key]}</TableCell>
+                  <TableCell style={tableCellStyleLeft}>{key}</TableCell>
+                  <TableCell style={tableCellStyleRight}>
+                    {information[key]}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
