@@ -417,19 +417,12 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     setDomain(draft);
   });
 };
-const applyZeroFillingFilter = (state, size) => {
+const applyZeroFillingFilter = (state, filterOptions) => {
   return produce(state, (draft) => {
-    const filterOption = {
-      kind: Filters.zeroFilling.name,
-      value: size,
-    };
-
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
-    //apply filter into the spectrum
-    activeObject.addFilter(filterOption);
-    activeObject.applyZeroFillingFilter(size);
+    activeObject.applyZeroFillingFilter(filterOptions);
 
     const XYData = activeObject.getReal();
     const spectrumIndex = draft.data.findIndex(
@@ -617,7 +610,9 @@ const setSelectedFilter = (state, selectedFilter) => {
     if (selectedFilter === Filters.phaseCorrection.name) {
       draft.selectedTool = options.equalizerTool.id;
     } else {
-      draft.selectedTool = null;
+      if (draft.selectedTool === options.equalizerTool.id) {
+        draft.selectedTool = null;
+      }
     }
 
     draft.selectedFilter = selectedFilter;

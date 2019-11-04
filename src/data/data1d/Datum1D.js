@@ -112,8 +112,20 @@ export class Datum1D {
     Filters.shiftX(this, shiftValue);
   }
 
-  applyZeroFillingFilter(size) {
-    Filters.zeroFilling(this, size);
+  applyZeroFillingFilter(options) {
+    const zeroFillingFilterOption = {
+      kind: Filters.zeroFilling.name,
+      value: options.zeroFillingSize,
+    };
+    const lineBroadeningFilterOption = {
+      kind: Filters.lineBroadening.name,
+      value: options.lineBroadeningValue,
+    };
+    this.addFilter(zeroFillingFilterOption);
+    this.addFilter(lineBroadeningFilterOption);
+
+    Filters.zeroFilling(this, options.zeroFillingSize);
+    Filters.lineBroadening(this, options.lineBroadeningValue);
   }
   applyFFTFilter() {
     Filters.fft(this);
