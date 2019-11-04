@@ -74,7 +74,7 @@ const ZeroFillingOptionsPanel = () => {
   const getDefaultValue = useCallback(() => {
     if (data && activeSpectrum) {
       const spectrum = data.find((d) => d.id === activeSpectrum.id);
-      return 2 ** Math.round(Math.log2(spectrum.x.length)) + 1;
+      return 2 ** Math.round(Math.log2(spectrum.x.length));
     }
     return '';
   }, [activeSpectrum, data]);
@@ -100,14 +100,15 @@ const ZeroFillingOptionsPanel = () => {
         style={{ marginLeft: 10, marginRight: 10 }}
         defaultValue={getDefaultValue()}
       />
-
+      <span style={styles.label}>Line Broadening: </span>
       <input
         name="line-broadening"
         style={styles.input}
         type="number"
         value={lineBroadeningValue}
         onInput={handleInput}
-        pattern="[0-9]*"
+        pattern="^\d*(\.\d{0,2})?$"
+        step="any"
       />
 
       <button

@@ -76,8 +76,9 @@ const ManualPhaseCorrectionPanel = () => {
         type="number"
         value={value.ph0}
         onInput={handleInput}
-        pattern="[0-9]*"
         onChange={handleInputChanged}
+        pattern="^\d*(\.\d{0,10})?$"
+        step="0.001"
       />
       <span style={styles.label}>PH1: </span>
       <input
@@ -86,8 +87,9 @@ const ManualPhaseCorrectionPanel = () => {
         type="number"
         value={value.ph1}
         onInput={handleInput}
-        pattern="[0-9]*"
         onChange={handleInputChanged}
+        pattern="^\d*(\.\d{0,2})?$"
+        step="0.001"
       />
       <button
         type="button"

@@ -121,6 +121,7 @@ export class Datum1D {
       kind: Filters.lineBroadening.name,
       value: options.lineBroadeningValue,
     };
+    console.log(Filters.lineBroadening.name)
     this.addFilter(zeroFillingFilterOption);
     this.addFilter(lineBroadeningFilterOption);
 
@@ -241,7 +242,7 @@ export class Datum1D {
     const id = Math.random()
       .toString(36)
       .replace('0.', '');
-
+ console.log(filter)
     this.filters = Object.assign([], this.filters);
     this.filters.push({
       ...filter,

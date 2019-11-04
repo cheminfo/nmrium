@@ -4,7 +4,7 @@
  * @param {Object} [value]
  */
 
-export default function zeroFilling(datum1D, value) {
+export default function lineBroadening(datum1D, value) {
   if (!isApplicable(datum1D)) {
     throw new Error('zeroFilling not isApplicable on this data');
   }
