@@ -12,11 +12,11 @@ export default function lineBroadening(datum1D, value) {
   const im = datum1D.data.im;
   const t = datum1D.data.x;
   const length = re.length;
-  const newRE = new Float64Array(length); // I dont think we need a new array... here
+  const newRE = new Float64Array(length); // I don't think we need a new array... here
   const newIM = new Float64Array(length);
   //if (value !== 0) {// is it OK to skip this line if "value" is zero?
   //please check this test of zero is correct !== or != ...
-  const dw = (t[length] - t[0]) / length; //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
+  const dw = (t[length-1] - t[0]) / (length - 1); //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
   // convert line broadening in Hz into exponential coefficient:
   const em = -value * Math.exp(1);
   const coefExp = Math.exp(em * dw);
