@@ -121,7 +121,7 @@ export class Datum1D {
       kind: Filters.lineBroadening.name,
       value: options.lineBroadeningValue,
     };
-    console.log(Filters.lineBroadening.name)
+
     this.addFilter(zeroFillingFilterOption);
     this.addFilter(lineBroadeningFilterOption);
 
