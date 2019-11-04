@@ -27,5 +27,5 @@ export function isApplicable(datum1D) {
 }
 
 export function reduce(previousValue, newValue) {
-  return newValue;
+  return false;
 }
