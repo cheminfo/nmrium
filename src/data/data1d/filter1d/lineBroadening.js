@@ -22,11 +22,12 @@ export default function lineBroadening(datum1D, value) {
     const coefExp = Math.exp(em * dw);
     let curFactor = Math.exp(em * t[0]); // in case does not start at zero
     for (let i = 0; i < length; i++) {
-      newRE[i] = re[i] * curFactor; // TODO need to make the line broadening
+      newRE[i] = re[i] * curFactor;
       newIM[i] = im[i] * curFactor;
       curFactor = curFactor * coefExp;
     }
-    datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, del: em } }; // is it OK to skip this line if value is zero?
+    //datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, del: em } }; // is it OK to skip this line if value is zero?
+    datum1D.data = { ...datum1D.data, ...{ del: em } }; // is it OK to skip this line if value is zero?
   }
 }
 export function isApplicable(datum1D) {
