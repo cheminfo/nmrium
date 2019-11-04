@@ -25,3 +25,10 @@ export function isApplicable(datum1D) {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;
   return false;
 }
+
+export function reduce(previousValue, newValue) {
+  return {
+    once: true,
+    reduce: undefined,
+  };
+}

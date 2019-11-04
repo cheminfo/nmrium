@@ -387,17 +387,12 @@ const handleResizeIntegral = (state, integralData) => {
 
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   return produce(state, (draft) => {
-    const filterOption = {
-      kind: Filters.shiftX.name,
-      value: shiftValue,
-    };
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
     //apply filter into the spectrum
-    activeObject.addFilter(filterOption);
 
-    filterOption.id = activeSpectrumId;
+    // filterOption.id = activeSpectrumId;
     //add the filter action at the history
     // const history = handleHistorySet(state.history, filterOption);
     // console.log(history);
@@ -417,19 +412,12 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     setDomain(draft);
   });
 };
-const applyZeroFillingFilter = (state, size) => {
+const applyZeroFillingFilter = (state, filterOptions) => {
   return produce(state, (draft) => {
-    const filterOption = {
-      kind: Filters.zeroFilling.name,
-      value: size,
-    };
-
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
-    //apply filter into the spectrum
-    activeObject.addFilter(filterOption);
-    activeObject.applyZeroFillingFilter(size);
+    activeObject.applyZeroFillingFilter(filterOptions);
 
     const XYData = activeObject.getReal();
     const spectrumIndex = draft.data.findIndex(
@@ -445,16 +433,10 @@ const applyZeroFillingFilter = (state, size) => {
 };
 const applyFFTFilter = (state) => {
   return produce(state, (draft) => {
-    const filterOption = {
-      kind: Filters.fft.name,
-      value: '',
-    };
-
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
     //apply filter into the spectrum
-    activeObject.addFilter(filterOption);
     activeObject.applyFFTFilter();
 
     const XYData = activeObject.getReal();
@@ -617,7 +599,9 @@ const setSelectedFilter = (state, selectedFilter) => {
     if (selectedFilter === Filters.phaseCorrection.name) {
       draft.selectedTool = options.equalizerTool.id;
     } else {
-      draft.selectedTool = null;
+      if (draft.selectedTool === options.equalizerTool.id) {
+        draft.selectedTool = null;
+      }
     }
 
     draft.selectedFilter = selectedFilter;

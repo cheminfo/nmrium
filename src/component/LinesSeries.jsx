@@ -39,13 +39,11 @@ export const LinesSeries = () => {
         to: xDomain[1],
       });
 
-      let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])}`;
-      path += pathPoints.x
-        .slice(1)
-        .map((point, i) => {
-          return ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
-        })
-        .join('');
+      let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])} `;
+      path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
+        accumulator += ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
+        return accumulator;
+      }, '');
       return path;
     }
 

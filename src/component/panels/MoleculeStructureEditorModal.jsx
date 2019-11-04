@@ -54,10 +54,12 @@ const modalButtonStyle = css`
 
 const MoleculeStructureEditorModal = (props) => {
   const { onClose, open, selectedMolFile } = props;
-  const [molfile, setMolfile] = useState(selectedMolFile);
+  const [molfile, setMolfile] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log(selectedMolFile);
+
     if (selectedMolFile) {
       setMolfile(selectedMolFile.molfile);
     } else {
@@ -93,6 +95,8 @@ const MoleculeStructureEditorModal = (props) => {
       margin: 5,
     },
   };
+
+console.log(molfile);
 
   return (
     <Modal open={open} onClose={handleClose}>

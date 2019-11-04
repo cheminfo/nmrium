@@ -28,15 +28,22 @@ export default function lineBroadening(datum1D, value) {
     // let cosTheta = Math.cos(phi0);// will be changed....
 
     for (let i = 0; i < length; i++) {
-      newRE[i] = re[i] * curFactor;
+
+      newRE[i] = re[i] * curFactor; // TODO need to make the line broadening
       newIM[i] = im[i] * curFactor;
       curFactor = curFactor * coefExp;
     }
-    datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM } }; // is it OK to skip this line if value is zero?
-  //we should probably also return some comment/info on the window function applied... in a processing parameter file??!
+    datum1D.data = { ...datum1D.data, ...{ re: newRE, newIM } }; // is it OK to skip this line if value is zero?
   }
 }
 export function isApplicable(datum1D) {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;
   return false;
+}
+
+export function reduce(previousValue, newValue) {
+  return {
+    once: true,
+    reduce: previousValue + newValue,
+  };
 }
