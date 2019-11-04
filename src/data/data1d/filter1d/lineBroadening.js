@@ -6,7 +6,7 @@
 
 export default function lineBroadening(datum1D, value) {
   if (!isApplicable(datum1D)) {
-    throw new Error('zeroFilling not isApplicable on this data');
+    throw new Error('lineBroadening not isApplicable on this data');
   }
   const re = datum1D.data.re;
   const im = datum1D.data.im;
@@ -28,6 +28,7 @@ export default function lineBroadening(datum1D, value) {
     // let cosTheta = Math.cos(phi0);// will be changed....
 
     for (let i = 0; i < length; i++) {
+
       newRE[i] = re[i] * curFactor; // TODO need to make the line broadening
       newIM[i] = im[i] * curFactor;
       curFactor = curFactor * coefExp;
