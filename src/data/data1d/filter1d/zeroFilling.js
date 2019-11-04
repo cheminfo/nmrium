@@ -24,7 +24,6 @@ export default function zeroFilling(datum1D, size) {
     currentX += diff;
     newX[i] = currentX;
   }
-  console.log(newX, newRE);
   datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, x: newX } };
 }
 
@@ -36,6 +35,6 @@ export function isApplicable(datum1D) {
 export function reduce(previousValue, newValue) {
   return {
     once: true,
-    reduce: undefined,
+    reduce: previousValue + newValue,
   };
 }

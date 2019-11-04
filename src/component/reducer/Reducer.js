@@ -387,17 +387,12 @@ const handleResizeIntegral = (state, integralData) => {
 
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   return produce(state, (draft) => {
-    const filterOption = {
-      kind: Filters.shiftX.name,
-      value: shiftValue,
-    };
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
     //apply filter into the spectrum
-    activeObject.addFilter(filterOption);
 
-    filterOption.id = activeSpectrumId;
+    // filterOption.id = activeSpectrumId;
     //add the filter action at the history
     // const history = handleHistorySet(state.history, filterOption);
     // console.log(history);
@@ -438,16 +433,10 @@ const applyZeroFillingFilter = (state, filterOptions) => {
 };
 const applyFFTFilter = (state) => {
   return produce(state, (draft) => {
-    const filterOption = {
-      kind: Filters.fft.name,
-      value: '',
-    };
-
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
     //apply filter into the spectrum
-    activeObject.addFilter(filterOption);
     activeObject.applyFFTFilter();
 
     const XYData = activeObject.getReal();

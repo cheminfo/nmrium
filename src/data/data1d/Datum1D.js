@@ -4,6 +4,8 @@ import max from 'ml-array-max';
 import { object } from 'prop-types';
 
 import { Filters } from './filter1d/Filters';
+import { reduce as reduceZeroFillingFilter } from './filter1d/zeroFilling';
+import { reduce as reduceLineBroadingFilter } from './filter1d/lineBroadening';
 
 export class Datum1D {
   /**
@@ -109,11 +111,20 @@ export class Datum1D {
   }
 
   applyShiftXFilter(shiftValue) {
+    const filterOption = {
+      kind: Filters.shiftX.name,
+      value: shiftValue,
+    };
+    this.addFilter(filterOption);
     Filters.shiftX(this, shiftValue);
   }
 
+  lookupForFilter(filterKind) {
+    return this.filters.find((f) => f.kind === filterKind);
+  }
+
   applyZeroFillingFilter(options) {
-    const zeroFillingFilterOption = {
+    let zeroFillingFilterOption = {
       kind: Filters.zeroFilling.name,
       value: options.zeroFillingSize,
     };
@@ -121,15 +132,64 @@ export class Datum1D {
       kind: Filters.lineBroadening.name,
       value: options.lineBroadeningValue,
     };
+    const previousZeroFillingFilter = this.lookupForFilter(
+      zeroFillingFilterOption.kind,
+    );
+    const previousLineBroadeningFilter = this.lookupForFilter(
+      lineBroadeningFilterOption.kind,
+    );
 
-    this.addFilter(zeroFillingFilterOption);
-    this.addFilter(lineBroadeningFilterOption);
+    if (previousZeroFillingFilter) {
+      const reduceResult = reduceZeroFillingFilter(
+        previousZeroFillingFilter.value,
+        zeroFillingFilterOption.value,
+      );
+      if (reduceResult.once) {
+        zeroFillingFilterOption.value = reduceResult.reduce;
+        this.replaceFilter(
+          previousZeroFillingFilter.id,
+          zeroFillingFilterOption.value,
+        );
+      }
+    } else {
+      this.addFilter(zeroFillingFilterOption);
+    }
 
-    Filters.zeroFilling(this, options.zeroFillingSize);
-    Filters.lineBroadening(this, options.lineBroadeningValue);
+    if (previousLineBroadeningFilter) {
+      const reduceResult = reduceLineBroadingFilter(
+        previousLineBroadeningFilter.value,
+        lineBroadeningFilterOption.value,
+      );
+      if (reduceResult.once) {
+        lineBroadeningFilterOption.value = reduceResult.reduce;
+        this.replaceFilter(
+          previousLineBroadeningFilter.id,
+          lineBroadeningFilterOption.value,
+        );
+      }
+    } else {
+      this.addFilter(lineBroadeningFilterOption);
+    }
+
+    // this.addFilter(lineBroadeningFilterOption);
+    if (previousLineBroadeningFilter && previousZeroFillingFilter) {
+      this.reapplyFilters();
+    } else {
+      Filters.zeroFilling(this, options.zeroFillingSize);
+      Filters.lineBroadening(this, options.lineBroadeningValue);
+    }
   }
   applyFFTFilter() {
+    const filterOption = {
+      kind: Filters.fft.name,
+      value: '',
+    };
+    // const previousFFTFilter = this.lookupForFilter(filterOption.kind);
+    // console.log(previousFFTFilter)
+    // if (previousFFTFilter === undefined) {
+    this.addFilter(filterOption);
     Filters.fft(this);
+    // }
   }
 
   applyManualPhaseCorrectionFilter(filterOptions) {
@@ -242,13 +302,22 @@ export class Datum1D {
     const id = Math.random()
       .toString(36)
       .replace('0.', '');
- console.log(filter)
+    console.log(filter);
     this.filters = Object.assign([], this.filters);
     this.filters.push({
       ...filter,
       id: id,
       flag: true,
     });
+  }
+
+  replaceFilter(filterID, value) {
+    this.filters = Object.assign([], this.filters);
+    const index = this.filters.findIndex((f) => f.id === filterID);
+    this.filters[index] = {
+      ...this.filters[index],
+      value,
+    };
   }
 
   getFilters() {
