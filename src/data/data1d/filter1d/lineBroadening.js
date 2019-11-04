@@ -10,25 +10,18 @@ export default function lineBroadening(datum1D, value) {
   }
   const re = datum1D.data.re;
   const im = datum1D.data.im;
+  const t = datum1D.data.x;
   const length = re.length;
   const newRE = new Float64Array(length);
   const newIM = new Float64Array(length);
-  let coefExp;
-  let curFactor;
-  let dw;
   if (value !== 0) {
     //please check this test of zero is correct !== or != ...
-    dw = 1e-6; //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
-    coefExp = 0.999 * dw; //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
-    curFactor = 1.0;
-    // test here if first point if FID is at time zero... if not change cur_factor accordingly.
-    // cur_factor=cur_factor*...
-    //let alpha = 20 * Math.log10(y[targetIndex - 1]);
-    //const beta = Math.sin(delta); //will not be changed....
-    // let cosTheta = Math.cos(phi0);// will be changed....
-
+    const dw = (t[length] - t[0]) / length; //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
+    // convert line broadening in Hz into exponential coefficient:
+    const em = -value * Math.exp(1);
+    const coefExp = Math.exp(em * dw);
+    let curFactor = Math.exp(em * t[0]); // in case does not start at zero
     for (let i = 0; i < length; i++) {
-
       newRE[i] = re[i] * curFactor; // TODO need to make the line broadening
       newIM[i] = im[i] * curFactor;
       curFactor = curFactor * coefExp;
