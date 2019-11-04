@@ -26,7 +26,7 @@ export default function lineBroadening(datum1D, value) {
       newIM[i] = im[i] * curFactor;
       curFactor = curFactor * coefExp;
     }
-    datum1D.data = { ...datum1D.data, ...{ re: newRE, newIM } }; // is it OK to skip this line if value is zero?
+    datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, del: em } }; // is it OK to skip this line if value is zero?
   }
 }
 export function isApplicable(datum1D) {
