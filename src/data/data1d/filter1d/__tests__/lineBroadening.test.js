@@ -15,9 +15,8 @@ describe('lineBroadening', () => {
     };
     lineBroadening(spectrum, 1);
     expect(spectrum.data).toStrictEqual({
-      re: new Float64Array([1, 0.06598803584531254, 0.004354420874722253, 0.00028733968076674924]), // not correct... but just testing...
+      re: new Float64Array([1.0 , 0.06598803584531254, 0.004354420874722253, 0.00028733968076674924]), // not correct... but just testing...
       im: new Float64Array([0, 0, 0, 0]),
-      x: new Float64Array([0, 1, 2, 3]),
     });
     // del: [-2.718281828459045],
     //del: -2.718,
