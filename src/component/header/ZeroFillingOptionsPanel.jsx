@@ -74,7 +74,11 @@ const ZeroFillingOptionsPanel = () => {
   const getDefaultValue = useCallback(() => {
     if (data && activeSpectrum) {
       const spectrum = data.find((d) => d.id === activeSpectrum.id);
+<<<<<<< HEAD
       return 2 ** Math.round(Math.log2(spectrum.x.length));
+=======
+      return 2 ** (Math.round(Math.log2(spectrum.x.length)) + 1);
+>>>>>>> 2d94db5543c3a3117d55bdaf6eb240ec55aa69a2
     }
     return '';
   }, [activeSpectrum, data]);
