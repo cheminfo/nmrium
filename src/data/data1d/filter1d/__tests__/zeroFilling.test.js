@@ -33,11 +33,17 @@ describe('zeroFilling', () => {
         isFid: true,
       },
     };
+    let originalX = spectrum.data.x;
+    let originalRe = spectrum.data.re;
+    let originalIm = spectrum.data.im;
     zeroFilling(spectrum, 2);
     expect(spectrum.data).toStrictEqual({
       re: new Float64Array([1, 2]),
       im: new Float64Array([5, 6]),
       x: new Float64Array([10, 20]),
     });
+    expect(spectrum.data.x).not.toBe(originalX);
+    expect(spectrum.data.re).not.toBe(originalRe);
+    expect(spectrum.data.im).not.toBe(originalIm);
   });
 });

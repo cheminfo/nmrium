@@ -1,9 +1,9 @@
 // import baseline from './baseline';
 // import autoPeakPicking from './autoPeakPicking';
 import max from 'ml-array-max';
+import { object } from 'prop-types';
 
 import { Filters } from './filter1d/Filters';
-import { object } from 'prop-types';
 
 export class Datum1D {
   /**
@@ -60,7 +60,7 @@ export class Datum1D {
       },
       options.info,
     );
-
+    this.meta = Object.assign({}, options.meta);
     this.data = Object.assign(
       {
         x: [],
@@ -265,6 +265,7 @@ export class Datum1D {
       },
       display: this.display,
       info: this.originalInfo,
+      meta: this.meta,
       peaks: this.peaks,
       integrals: this.integrals,
       signals: this.signals,

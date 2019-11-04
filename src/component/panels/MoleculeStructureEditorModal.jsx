@@ -96,6 +96,8 @@ const MoleculeStructureEditorModal = (props) => {
     },
   };
 
+console.log(molfile);
+
   return (
     <Modal open={open} onClose={handleClose}>
       <StructureEditor
