@@ -34,5 +34,8 @@ export function isApplicable(datum1D) {
 }
 
 export function reduce(previousValue, newValue) {
-  return false; // recalculat from the begining
+  return {
+    once: true,
+    reduce: undefined,
+  };
 }
