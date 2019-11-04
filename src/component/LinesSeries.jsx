@@ -40,9 +40,10 @@ export const LinesSeries = () => {
       });
 
       let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])} `;
-      pathPoints.x.slice(1).forEach((point, i) => {
-        path += ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
-      });
+      path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
+        accumulator += ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
+        return accumulator;
+      }, '');
       return path;
     }
 
