@@ -18,7 +18,7 @@ describe('lineBroadening', () => {
       expect(spectrum.data).toStrictEqual({
         re: new Float64Array([
         1,
-        0.06598803584531254,
+        0.06598803584531254,// this is ugly... may not work. toBeCloseTo not for objects
         0.004354420874722253,
         0.00028733968076674924
       ]),
