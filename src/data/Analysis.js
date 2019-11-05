@@ -171,7 +171,6 @@ export class Analysis {
     return this.data1d.find((ob) => ob.id === id);
   }
 
-  
   /**
    *
    * @param {boolean} isRealData
