@@ -1,7 +1,7 @@
 import zeroFilling from '../zeroFilling';
 
 describe('zeroFilling', () => {
-  it('simple x, re, im to 8', () => {
+  it('simple x, re, im 4 to 8', () => {
     let spectrum = {
       data: {
         re: [1, 2, 3, 4],
@@ -21,7 +21,7 @@ describe('zeroFilling', () => {
     });
   });
 
-  it('simple x, re, im to 2', () => {
+  it('simple x, re, im 4 to 2', () => {
     let spectrum = {
       data: {
         re: [1, 2, 3, 4],

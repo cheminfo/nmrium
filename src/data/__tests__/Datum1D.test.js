@@ -17,7 +17,6 @@ describe('test Datum1D', () => {
     },
   });
 
-
   it('check x, re, im', () => {
     expect(data.data.x).toHaveLength(16384);
     expect(data.data.re).toHaveLength(16384);
