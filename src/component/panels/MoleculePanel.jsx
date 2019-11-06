@@ -84,7 +84,6 @@ const MoleculePanel = () => {
     if (molfile) {
       setCurrentMolFile({ molfile, key });
     } else {
-      
       setCurrentMolFile(null);
     }
     setOpen(true);

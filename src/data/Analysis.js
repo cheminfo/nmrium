@@ -188,11 +188,8 @@ export class Analysis {
             isVisible: ob.display.isVisible,
             isPeaksMarkersVisible: ob.display.isPeaksMarkersVisible,
             isRealSpectrumVisible: ob.display.isRealSpectrumVisible,
-            /* nucleus: ob.info.nucleus,
-            isFid: ob.info.isFid,
-            isComplex: ob.info.isComplex,
-            */
             info: ob.info,
+            meta: ob.meta,
             peaks: ob.peaks,
             integrals: ob.integrals,
             filters: ob.filters,

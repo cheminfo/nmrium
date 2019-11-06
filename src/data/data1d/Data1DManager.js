@@ -77,7 +77,7 @@ export class Data1DManager {
     // 2 cases. We have real and imaginary part of only real
 
     let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
-
+    console.log(result.info);
     let info = getMetaData(result.info);
 
     if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];

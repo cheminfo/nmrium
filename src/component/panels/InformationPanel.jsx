@@ -30,8 +30,19 @@ const InformationPanel = () => {
     if (data && activeSpectrum) {
       const activeSpectrumData = data.find((d) => d.id === activeSpectrum.id);
       if (activeSpectrumData) {
-        setInformation(activeSpectrumData.info);
-        setMatchesData(Object.keys(activeSpectrumData.info));
+        console.log(activeSpectrumData.meta);
+        console.log(Object.keys(activeSpectrumData.meta));
+        setInformation({
+          ...activeSpectrumData.info,
+          ...activeSpectrumData.meta,
+        });
+        setMatchesData(
+          [
+            ...Object.keys(activeSpectrumData.info),
+            ...Object.keys(activeSpectrumData.meta),
+          ],
+          // ...Object.keys(activeSpectrumData.meta),
+        );
       }
     }
   }, [activeSpectrum, data]);
