@@ -391,14 +391,7 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
     //apply filter into the spectrum
-
-    // filterOption.id = activeSpectrumId;
-    //add the filter action at the history
-    // const history = handleHistorySet(state.history, filterOption);
-    // console.log(history);
-
     activeObject.applyShiftXFilter(shiftValue);
-    //add to undo history
 
     const XYData = activeObject.getReal();
     const spectrumIndex = draft.data.findIndex(

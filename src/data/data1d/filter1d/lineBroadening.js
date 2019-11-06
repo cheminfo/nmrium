@@ -28,7 +28,6 @@ export default function lineBroadening(datum1D, value) {
     // let cosTheta = Math.cos(phi0);// will be changed....
 
     for (let i = 0; i < length; i++) {
-
       newRE[i] = re[i] * curFactor; // TODO need to make the line broadening
       newIM[i] = im[i] * curFactor;
       curFactor = curFactor * coefExp;
