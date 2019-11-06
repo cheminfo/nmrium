@@ -48,7 +48,7 @@ const PeaksNotations = () => {
                     spectrumID={d.id}
                     value={d.x[xIndex]}
                     color={d.color}
-                    decimalFraction={getPeakLabelNumberDecimals(d.nucleus)}
+                    decimalFraction={getPeakLabelNumberDecimals(d.info.nucleus)}
                     isActive={
                       activeSpectrum == null
                         ? false

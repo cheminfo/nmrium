@@ -440,7 +440,7 @@ const applyFFTFilter = (state) => {
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
-    draft.data[spectrumIndex].isFid = activeObject.info.isFid;
+    draft.data[spectrumIndex].info.isFid = activeObject.info.isFid;
     draft.tempData = null;
 
     setDomain(draft);
@@ -508,7 +508,7 @@ const enableFilter = (state, filterID, checked) => {
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
-    draft.data[spectrumIndex].isFid = activeObject.info.isFid;
+    draft.data[spectrumIndex].info.isFid = activeObject.info.isFid;
 
     setDomain(draft);
     setMode(draft);
@@ -532,7 +532,7 @@ const deleteFilter = (state, filterID) => {
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
-    draft.data[spectrumIndex].isFid = activeObject.info.isFid;
+    draft.data[spectrumIndex].info.isFid = activeObject.info.isFid;
 
     setDomain(draft);
     setMode(draft);
@@ -783,7 +783,7 @@ const handleDeleteMolecule = (state, key) => {
 
 function setMode(draft) {
   draft.mode =
-    draft.data && draft.data[0] && draft.data[0].isFid ? 'LTR' : 'RTL';
+    draft.data && draft.data[0] && draft.data[0].info.isFid ? 'LTR' : 'RTL';
 }
 
 function setDomain(draft) {

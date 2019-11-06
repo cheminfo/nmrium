@@ -32,7 +32,7 @@ const XLabelPointer = () => {
       if (spectrumData) {
         return getScale()
           .x.invert(xVal)
-          .toFixed(getPeakLabelNumberDecimals(spectrumData.nucleus));
+          .toFixed(getPeakLabelNumberDecimals(spectrumData.info.nucleus));
       }
     },
     [data, getScale, activeSpectrum],

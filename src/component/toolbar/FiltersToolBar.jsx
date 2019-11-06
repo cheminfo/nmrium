@@ -47,8 +47,8 @@ const BasicToolBar = () => {
 
   useEffect(() => {
     if (data && activeSpectrum) {
-      const { isComplex, isFid } = data.find((d) => d.id === activeSpectrum.id);
-      setSelectedSpectrumInfo({ info: { isComplex, isFid } });
+      const { info } = data.find((d) => d.id === activeSpectrum.id);
+      setSelectedSpectrumInfo({ info });
     } else {
       setSelectedSpectrumInfo({ info: { isComplex: false, isFid: false } });
     }

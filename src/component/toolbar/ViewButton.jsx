@@ -48,7 +48,7 @@ const ViewButton = ({ defaultValue = true }) => {
         setOption(defaultValue);
       } else {
         setOption(sData.isRealSpectrumVisible);
-        setDisabled(!sData.isComplex);
+        setDisabled(!sData.info.isComplex);
       }
     }
   }, [activeSpectrum, data, defaultValue]);
