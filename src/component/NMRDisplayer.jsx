@@ -11,6 +11,8 @@ import { useSize, useDebounce, useToggle, useFullscreen } from 'react-use';
 import SplitPane from 'react-split-pane';
 
 import './css/spectrum-chart.css';
+import './css/icon.css';
+
 import { ChartDataProvider, useChartData } from './context/ChartContext';
 import { spectrumReducer, initialState } from './reducer/Reducer';
 import {

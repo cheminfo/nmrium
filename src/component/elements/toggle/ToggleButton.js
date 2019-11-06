@@ -15,7 +15,15 @@ const styles = {
   },
 };
 
-const ToggleButton = ({ children, value, disabled, isActive, onChange }) => {
+const ToggleButton = ({
+  children,
+  value,
+  disabled,
+  isActive,
+  onChange,
+  className,
+  style,
+}) => {
   const [active, setActive] = useState(isActive);
   const toggleButton = useCallback(
     (e) => {
@@ -41,8 +49,14 @@ const ToggleButton = ({ children, value, disabled, isActive, onChange }) => {
     <button
       type="button"
       onClick={toggleButton}
-      style={active ? { ...styles.button, ...styles.active } : styles.button}
-      className={active ? 'button active' : 'button'}
+      style={
+        active
+          ? { ...styles.button, ...styles.active, ...style }
+          : { ...styles.button, ...style }
+      }
+      className={
+        active ? ` ${className} button active` : ` ${className} button`
+      }
       disabled={disabled}
     >
       {React.cloneElement(children, { style: { fontSize: '10px' } })}

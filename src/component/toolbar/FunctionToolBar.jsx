@@ -12,6 +12,14 @@ import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 
 import { options } from './ToolTypes';
 
+const styles = {
+  icon: {
+    backgroundPosition: 'center center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '18px 18px',
+  },
+};
+
 const FunctionToolBar = ({ defaultValue }) => {
   const [option, setOption] = useState();
   const dispatch = useDispatch();
@@ -72,14 +80,14 @@ const FunctionToolBar = ({ defaultValue }) => {
         key={options.peakPicking.id}
         value={options.peakPicking.id}
         disabled={!activeSpectrum}
+        className="ci-icon-nmr-peak-picking"
+        style={styles.icon}
       >
         <ToolTip
           title={`${options.peakPicking.label} ( Press p )`}
           popupPlacement="right"
           offset={{ x: 10, y: 0 }}
-        >
-          <Timeline />
-        </ToolTip>
+        />
       </ToggleButton>
 
       <ToggleButton

@@ -16,6 +16,9 @@ const styles = {
     border: 'none',
     width: '35px',
     height: '35px',
+    backgroundPosition: 'center center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '20px',
   },
 };
 
@@ -91,8 +94,13 @@ const BasicToolBar = ({
               style={styles.button}
               onClick={handleChangeDisplayViewMode}
               disabled={data && data.length <= 1}
+              className={
+                verticalAlign !== 0
+                  ? 'ci-icon-nmr-impurities'
+                  : 'ci-icon-nmr-overlay3'
+              }
             >
-              {verticalAlign !== 0 ? <FaMinus /> : <FaBars />}
+              {/* {verticalAlign !== 0 ? <FaMinus /> : <FaBars />} */}
             </button>
           </div>
         </ToolTip>

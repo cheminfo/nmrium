@@ -17,6 +17,11 @@ const styles = {
     width: '35px',
     height: '35px',
   },
+  icon: {
+    backgroundPosition: 'center center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '18px 18px',
+  },
 };
 
 const BasicToolBar = () => {
@@ -76,14 +81,14 @@ const BasicToolBar = () => {
             <ToggleButton
               key={Filters.phaseCorrection.name}
               value={Filters.phaseCorrection.name}
+              className="ci-icon-nmr-phase-correction"
+              style={styles.icon}
             >
               <ToolTip
                 title={`Manual Phase Correction`}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
-              >
-                MPC
-              </ToolTip>
+              />
             </ToggleButton>
           )}
       </ToggleButtonGroup>
