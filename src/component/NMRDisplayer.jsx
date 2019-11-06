@@ -57,7 +57,7 @@ const NMRDisplayer = (props) => {
       setTimeout(() => {
         dispatch({
           type: SET_DIMENSIONS,
-          height: window.innerHeight,
+          height: window.innerHeight - 40,
         });
       }, 100);
     } else {

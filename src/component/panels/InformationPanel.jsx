@@ -9,6 +9,16 @@ import {
 } from '../elements/Table';
 import { useChartData } from '../context/ChartContext';
 
+const styles = {
+  searchInput: {
+    width: '100%',
+    borderRadius: '5px',
+    border: '0.55px solid gray',
+    padding: '5px',
+    marginBottom: '2px',
+  },
+};
+
 // information panel
 const InformationPanel = () => {
   const { data, activeSpectrum } = useChartData();
@@ -30,19 +40,14 @@ const InformationPanel = () => {
     if (data && activeSpectrum) {
       const activeSpectrumData = data.find((d) => d.id === activeSpectrum.id);
       if (activeSpectrumData) {
-        console.log(activeSpectrumData.meta);
-        console.log(Object.keys(activeSpectrumData.meta));
         setInformation({
           ...activeSpectrumData.info,
           ...activeSpectrumData.meta,
         });
-        setMatchesData(
-          [
-            ...Object.keys(activeSpectrumData.info),
-            ...Object.keys(activeSpectrumData.meta),
-          ],
-          // ...Object.keys(activeSpectrumData.meta),
-        );
+        setMatchesData([
+          ...Object.keys(activeSpectrumData.info),
+          ...Object.keys(activeSpectrumData.meta),
+        ]);
       }
     }
   }, [activeSpectrum, data]);
@@ -53,7 +58,7 @@ const InformationPanel = () => {
         <div>
           <input
             type="text"
-            style={{ width: '100%' }}
+            style={styles.searchInput}
             placeholder="Search for parameter..."
             onChange={handleSearch}
           />
