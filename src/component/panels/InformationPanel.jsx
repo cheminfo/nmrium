@@ -18,7 +18,7 @@ const InformationPanel = () => {
   const handleSearch = useCallback(
     (input) => {
       const values = Object.keys(information).filter((key) =>
-        key.includes(input.target.value),
+        key.toLowerCase().includes(input.target.value),
       );
 
       setMatchesData(values);
