@@ -18,8 +18,7 @@ export default function fft(datum1D) {
   FFT.fft(re, im);
   datum1D.data.re = re;
   datum1D.data.im = im;
-  datum1D.info = Object.assign({}, datum1D.info);
-  datum1D.info.isFid = false;
+  datum1D.info = { ...datum1D.info, isFid: false };
 }
 
 export function isApplicable(datum1D) {
