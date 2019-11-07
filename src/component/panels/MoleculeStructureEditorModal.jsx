@@ -53,17 +53,17 @@ const modalButtonStyle = css`
 `;
 
 const MoleculeStructureEditorModal = (props) => {
-  const { onClose, open, selectedMolFile } = props;
+  const { onClose, open, selectedMolecule } = props;
   const [molfile, setMolfile] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (selectedMolFile) {
-      setMolfile(selectedMolFile.molfile);
+    if (selectedMolecule) {
+      setMolfile(selectedMolecule.molfile);
     } else {
       setMolfile(null);
     }
-  }, [selectedMolFile, open]);
+  }, [selectedMolecule, open]);
 
   const cb = useCallback(
     (newMolfile) => {
@@ -77,13 +77,13 @@ const MoleculeStructureEditorModal = (props) => {
   }, [onClose]);
 
   const handleSave = useCallback(() => {
-    if (selectedMolFile) {
-      dispatch({ type: SET_MOLECULE, molfile, key: selectedMolFile.key });
+    if (selectedMolecule) {
+      dispatch({ type: SET_MOLECULE, molfile, key: selectedMolecule.key });
     } else {
       dispatch({ type: ADD_MOLECULE, molfile });
     }
     onClose();
-  }, [dispatch, selectedMolFile, molfile, onClose]);
+  }, [dispatch, selectedMolecule, molfile, onClose]);
 
   const styles = {
     footer: {
@@ -97,7 +97,7 @@ const MoleculeStructureEditorModal = (props) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <StructureEditor
-        initialMolfile={selectedMolFile && selectedMolFile.molfile}
+        initialMolfile={selectedMolecule && selectedMolecule.molfile}
         svgMenu={true}
         fragment={false}
         onChange={cb}

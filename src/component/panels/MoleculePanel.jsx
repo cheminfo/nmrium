@@ -154,7 +154,7 @@ const MoleculePanel = () => {
         <MoleculeStructureEditorModal
           open={open}
           onClose={handleClose}
-          selectedMolFile={currentMolFile}
+          selectedMolecule={currentMolFile}
         />
       </div>
     </div>
