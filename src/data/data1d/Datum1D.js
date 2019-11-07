@@ -183,7 +183,7 @@ export class Datum1D {
       kind: Filters.fft.name,
       value: '',
     };
-    this.originalInfo.isFid = false;
+    // this.originalInfo.isFid = false;
     this.addFilter(filterOption);
     Filters.fft(this);
   }
@@ -200,17 +200,14 @@ export class Datum1D {
 
   // id filter id
   enableFilter(id, checked) {
-    this.filters = Object.assign([], this.filters);
+    this.filters = [...this.filters];
     const index = this.filters.findIndex((filter) => filter.id === id);
-    this.filters[index] = Object.assign(
-      { ...this.filters[index] },
-      { flag: checked },
-    );
+    this.filters[index] = { ...this.filters[index], flag: checked };
     const enabledFilters = this.filters.filter(
       (filter) => filter.flag === true,
     );
-    this.data = Object.assign({ ...this.data }, { ...this.source.original });
-    this.info = Object.assign({ ...this.info }, { ...this.originalInfo });
+    this.data = { ...this.data, ...this.source.original };
+    this.info = { ...this.info, ...this.originalInfo };
 
     for (let filter of enabledFilters) {
       if (filter.flag) {
@@ -219,10 +216,10 @@ export class Datum1D {
     }
   }
   deleteFilter(id) {
-    this.filters = Object.assign([], this.filters);
+    this.filters = [...this.filters];
     this.filters = this.filters.filter((filter) => filter.id !== id);
-    this.data = Object.assign({ ...this.data }, { ...this.source.original });
-    this.info = Object.assign({ ...this.info }, { ...this.originalInfo });
+    this.data = { ...this.data, ...this.source.original };
+    this.info = { ...this.info, ...this.originalInfo };
 
     for (let filter of this.filters) {
       if (filter.flag) {
