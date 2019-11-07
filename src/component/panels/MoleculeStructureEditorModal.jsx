@@ -97,8 +97,7 @@ const MoleculeStructureEditorModal = (props) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <StructureEditor
-        molfile={molfile}
-        initialMolfile={molfile}
+        initialMolfile={selectedMolFile && selectedMolFile.molfile}
         svgMenu={true}
         fragment={false}
         onChange={cb}
