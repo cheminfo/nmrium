@@ -105,14 +105,14 @@ const SpectrumListPanel = () => {
   );
 
   useEffect(() => {
-    const visibleSpectrums = data
+    const visibleSpectra = data
       ? data.filter((d) => d.isVisible === true)
       : [];
     const visibleMarkers = data
       ? data.filter((d) => d.isPeaksMarkersVisible === true)
       : [];
 
-    setVisible(visibleSpectrums);
+    setVisible(visibleSpectra);
     setMarkersVisible(visibleMarkers);
 
     if (data && data.length === 1 && activated == null) {

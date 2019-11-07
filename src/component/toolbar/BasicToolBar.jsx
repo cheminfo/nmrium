@@ -87,7 +87,7 @@ const BasicToolBar = ({
       )}
 
       {isViewButtonVisible && (
-        <ToolTip title="Spectrums  alignment " popupPlacement="right">
+        <ToolTip title="Spectra alignment" popupPlacement="right">
           <div>
             <button
               type="button"
