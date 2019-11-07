@@ -14,7 +14,7 @@ const Panels = () => {
       <AccordionItem title="Spectra">
         <SpectrumListPanel />
       </AccordionItem>
-      <AccordionItem title="Information">
+      <AccordionItem title="Information" style={{ overflow: 'hidden' }}>
         <InformationPanel />
       </AccordionItem>
       <AccordionItem title="Peaks">

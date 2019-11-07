@@ -41,7 +41,7 @@ const styles = {
   },
 };
 
-const AccordionItem = ({ title, children, index, isOpen, onOpen }) => {
+const AccordionItem = ({ title, children, index, isOpen, onOpen, style }) => {
   const [active, setActiveState] = useState(null);
 
   const refContent = useRef();
@@ -81,6 +81,7 @@ const AccordionItem = ({ title, children, index, isOpen, onOpen }) => {
         style={{
           ...styles.content,
           maxHeight: active == null ? 0 : '100%',
+          ...style,
         }}
       >
         {children}

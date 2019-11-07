@@ -1,7 +1,6 @@
 // import baseline from './baseline';
 // import autoPeakPicking from './autoPeakPicking';
 import max from 'ml-array-max';
-import { object } from 'prop-types';
 
 import { Filters } from './filter1d/Filters';
 import { reduce as reduceZeroFillingFilter } from './filter1d/zeroFilling';
@@ -184,12 +183,9 @@ export class Datum1D {
       kind: Filters.fft.name,
       value: '',
     };
-    // const previousFFTFilter = this.lookupForFilter(filterOption.kind);
-    // console.log(previousFFTFilter)
-    // if (previousFFTFilter === undefined) {
+    this.originalInfo.isFid = false;
     this.addFilter(filterOption);
     Filters.fft(this);
-    // }
   }
 
   applyManualPhaseCorrectionFilter(filterOptions) {
