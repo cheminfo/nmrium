@@ -94,14 +94,14 @@ const FunctionToolBar = ({ defaultValue }) => {
         key={3}
         value={options.integral.id}
         disabled={!activeSpectrum}
+        className="ci-icon-nmr-integrate"
+        style={styles.icon}
       >
         <ToolTip
           title={`${options.integral.label} ( Press i )`}
           popupPlacement="right"
           offset={{ x: 10, y: 0 }}
-        >
-          <ShowChart />
-        </ToolTip>
+        />
       </ToggleButton>
       {/* <ToggleButton key={options.HMove.id} value={options.HMove.id}>
         <ToolTip
