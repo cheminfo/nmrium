@@ -11,7 +11,8 @@ import { useSize, useDebounce, useToggle, useFullscreen } from 'react-use';
 import SplitPane from 'react-split-pane';
 
 import './css/spectrum-chart.css';
-import './css/icon.css';
+//import './css/icon.css';
+import 'cheminfo-font/dist/style.css';
 
 import { ChartDataProvider, useChartData } from './context/ChartContext';
 import { spectrumReducer, initialState } from './reducer/Reducer';
