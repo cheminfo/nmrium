@@ -461,8 +461,6 @@ const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
 
     //apply filter into the spectrum
     activeObject.addFilter(filterOption);
-    activeObject.applyManualPhaseCorrectionFilter(filterOption);
-    
     
     const spectrumIndex = state.tempData.findIndex(
       (spectrum) => spectrum.id === activeSpectrumId,

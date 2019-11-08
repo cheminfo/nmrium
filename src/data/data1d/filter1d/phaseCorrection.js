@@ -12,8 +12,7 @@ export default function phaseCorrection(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('phaseCorrection not isApplicable on this data');
   }
-  var { ph0, ph1, pivotIndex } = options;
-  console.log(pivotIndex, ph0, ph1)
+  let { ph0, ph1, pivotIndex } = options;
   ph0 *= Math.PI/180;
   ph1 *= Math.PI/180;
   ph0 = ph0 - (ph1*pivotIndex)/datum1D.data.x.length;
