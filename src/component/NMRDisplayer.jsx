@@ -146,7 +146,15 @@ const NMRDisplayer = (props) => {
           isResizeEventStart,
         }}
       >
-        <div ref={fullScreenRef} style={{ backgroundColor: 'white' }}>
+        <div
+          ref={fullScreenRef}
+          style={{
+            backgroundColor: 'white',
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           <Header isFullscreen={isFullscreen} onMaximize={toggle} />
 
           <DropZone>
@@ -285,7 +293,7 @@ function ChartPanel() {
 }
 
 NMRDisplayer.defaultProps = {
-  height: '400',
+  height: '600',
   width: '800',
 };
 
