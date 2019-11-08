@@ -7,7 +7,6 @@
     "bootstrap": "^4.3.1",
     "cheminfo-font": "^0.16.0",
     "d3": "^5.12.0",
-    "history": "^4.10.1",
     "immer": "^5.0.0",
     "jcampconverter": "^3.0.4",
     "ml-array-max": "^1.1.2",
@@ -28,7 +27,6 @@
     "react-inspector": "^4.0.0",
     "react-mf": "^1.2.0",
     "react-ocl": "^4.0.2",
-    "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-spinners": "^0.6.1",
     "react-split-pane": "^0.1.87",
@@ -71,6 +69,7 @@
       "last 1 safari version"
     ]
   },
+  "homepage": "https://cheminfo.github.io/nmr-displayer",
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "eslint": "^6.6.0",

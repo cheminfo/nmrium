@@ -1,38 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import './index.css';
-// import App from './App';
-
-// import {MolfileDemo} from './test'
-
-import { createBrowserHistory } from 'history';
-import { Router, Route, Switch, Redirect } from 'react-router-dom';
+import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 import * as serviceWorker from './serviceWorker';
+import AdminLayout from './dashboard/layouts/Admin.jsx';
+
 import 'bootstrap/dist/css/bootstrap.css';
+import './index.css';
 import './dashboard/assets/css/now-ui-dashboard.min.css';
 import './dashboard/assets/css/demo.css';
 
-import AdminLayout from './dashboard/layouts/Admin.jsx';
-
-const hist = createBrowserHistory();
-
 ReactDOM.render(
-  //   <MolfileDemo
-  //   svgMenu={true}
-  //   fragment={false}
-  // />,
-  <Router history={hist}>
+  <HashRouter>
     <Switch>
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Redirect to="/admin/dashboard" />
     </Switch>
-  </Router>,
+  </HashRouter>,
   document.getElementById('root'),
 );
-
-// ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

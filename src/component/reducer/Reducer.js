@@ -705,7 +705,6 @@ const getClosestNumber = (array = [], goal = 0) => {
 };
 
 const handleZoom = (state, zoomFactor) => {
-  console.log(zoomFactor);
   return produce(state, (draft) => {
     const {
       originDomain,
@@ -745,19 +744,13 @@ const handleZoom = (state, zoomFactor) => {
       });
 
       draft.yDomains = _yDomains;
-
-      // return { ...state, yDomain, yDomains };
     } else {
       const index = data.findIndex((d) => d.id === activeSpectrum.id);
       const yDomains = [...state.yDomains];
       yDomains[index] = yDomain;
 
       draft.yDomains = yDomains;
-
-      // return { ...state, yDomains: yDomains };
     }
-
-    console.log(yDomains);
   });
 };
 
@@ -907,19 +900,6 @@ const handleHistoryRedo = (state) => {
     draft.data = AnalysisObj.getData1d();
     setDomain(draft);
   });
-};
-
-const handleHistorySet = (historyDraft, newValue) => {
-  if (newValue === historyDraft.present) return;
-
-  if (historyDraft.present) {
-    historyDraft.past.push(historyDraft.present);
-  }
-  historyDraft.present = newValue;
-  historyDraft.future = [];
-  historyDraft.hasUndo = true;
-  historyDraft.hasRedo = false;
-  return historyDraft;
 };
 
 const handleHistoryReset = (state, action) => {
