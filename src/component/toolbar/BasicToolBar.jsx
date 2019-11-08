@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useCallback } from 'react';
-import { FaSearchMinus, FaMinus, FaBars, FaDownload } from 'react-icons/fa';
+import { FaSearchMinus, FaDownload } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import {

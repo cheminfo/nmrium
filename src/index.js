@@ -11,7 +11,7 @@ import { Router, Route, Switch, Redirect } from 'react-router-dom';
 
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.css';
-import './dashboard/assets/scss/now-ui-dashboard.scss?v1.2.0';
+import './dashboard/assets/css/now-ui-dashboard.min.css';
 import './dashboard/assets/css/demo.css';
 
 import AdminLayout from './dashboard/layouts/Admin.jsx';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import { FaSearchPlus } from 'react-icons';
+import { FaSearchPlus } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import { SET_SELECTED_TOOL } from '../reducer/Actions';
