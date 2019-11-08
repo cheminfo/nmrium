@@ -23,6 +23,6 @@ jobs:
           git config user.name "Cheminfo Bot"
           git remote set-url origin "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/cheminfo/nmr-displayer.git"
           npm i -g gh-pages
-          gh-pages -d build
+          gh-pages -d build --dotfiles
         env:
           CI: true
