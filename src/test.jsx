@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-
 import StructureEditor from 'openchemlib';
 
 const initialMolfile = `
@@ -27,7 +26,7 @@ export function MolfileDemo({ svgMenu, fragment }) {
       setMolfile(newMolfile);
       setPrevious(molfile);
     },
-    [setMolfile, setPrevious, molfile]
+    [setMolfile, setPrevious, molfile],
   );
   return (
     <div>

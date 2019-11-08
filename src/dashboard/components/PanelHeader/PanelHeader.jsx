@@ -15,23 +15,16 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React from 'react';
 
-class PanelHeader extends React.Component {
-  render() {
-    return (
-      <div
-        className={
-          "panel-header " +
-          (this.props.size !== undefined
-            ? "panel-header-" + this.props.size
-            : "")
-        }
-      >
-        {this.props.content}
-      </div>
-    );
-  }
+export default function PanelHeader(props) {
+  return (
+    <div
+      className={`panel-header ${
+        props.size !== undefined ? `panel-header-${props.size}` : ''
+      }`}
+    >
+      {props.content}
+    </div>
+  );
 }
-
-export default PanelHeader;

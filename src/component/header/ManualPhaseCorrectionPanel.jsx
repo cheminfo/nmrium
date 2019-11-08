@@ -57,15 +57,12 @@ const ManualPhaseCorrectionPanel = () => {
     [value],
   );
 
-  const handleInputChanged = useCallback(
-    (e) => {
-      dispatch({
-        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-        value: value,
-      });
-    },
-    [dispatch, value],
-  );
+  const handleInputChanged = useCallback(() => {
+    dispatch({
+      type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+      value: value,
+    });
+  }, [dispatch, value]);
 
   return (
     <div style={styles.container}>

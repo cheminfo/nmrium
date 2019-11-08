@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useRef } from 'react';
+import { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 import * as d3 from 'd3';
@@ -39,8 +39,8 @@ const IntegralsSeries = () => {
   );
 
   const Integrals = useMemo(() => {
-    const makePath = (data) => {
-      const { id, x, y, yDomain } = data;
+    const makePath = (info) => {
+      const { id, x, y, yDomain } = info;
       const xScale = getScale(id).x;
       let yScale = null;
       if (zoomFactor) {

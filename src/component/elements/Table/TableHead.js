@@ -7,7 +7,7 @@ const styles = {
   color: '#424242',
   backgroundColor: '#d8d8d8',
   borderBottom: '0.55px solid #d8d8d8',
-  fontSize: '11px;',
+  fontSize: 11,
   fontWeight: 'bold',
 };
 const TableHead = ({ children, className, style }) => {

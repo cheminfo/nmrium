@@ -1,12 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import Draggable from 'react-draggable';
 import * as d3 from 'd3';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 
 import { useChartData } from './context/ChartContext';
 import { useDispatch } from './context/DispatchContext';
 import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from './reducer/Actions';
-/** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 
 const IntegralResizable = (props) => {
   const { getScale, height, margin, mode } = useChartData();
@@ -52,7 +52,9 @@ const IntegralResizable = (props) => {
     e.stopPropagation();
     setRightDragVisibility(true);
   }, []);
-  const handleRightDrag = useCallback(() => {}, []);
+  const handleRightDrag = useCallback(() => {
+    // Empty
+  }, []);
   const handleRightStop = useCallback(
     (e) => {
       e.preventDefault();
@@ -94,7 +96,9 @@ const IntegralResizable = (props) => {
     e.stopPropagation();
     setLeftDragVisibility(true);
   }, []);
-  const handleLeftDrag = useCallback(() => {}, []);
+  const handleLeftDrag = useCallback(() => {
+    // Empty
+  }, []);
   const handleLeftStop = useCallback(
     (e) => {
       e.preventDefault();

@@ -15,7 +15,7 @@ const BlankSpectrumDisplayer = () => {
     Analysis.build(data).then((obj) => {
       setData(obj);
     });
-  }, []);
+  }, [data]);
 
   return (
     <>

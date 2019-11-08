@@ -30,19 +30,9 @@ const width = 800;
 const height = 400;
 
 function loadData() {
-  return new Promise((resolve, reject) => {
-    fetch('./json-files/XTC.json')
-      .then((response) => checkStatus(response) && response.json())
-      .then((data) => {
-        Analysis.build(data).then((obj) => {
-          resolve(obj);
-        });
-      })
-      .catch((err) => {
-        reject(err);
-        console.error(err);
-      }); // Never forget the final catch!
-  });
+  return fetch('./json-files/XTC.json')
+    .then((response) => checkStatus(response) && response.json())
+    .then((data) => Analysis.build(data));
 }
 
 function checkStatus(response) {

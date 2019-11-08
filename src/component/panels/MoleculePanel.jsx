@@ -1,12 +1,9 @@
-/* eslint-disable react/button-has-type */
 import React, { useState, useCallback, useRef, useContext } from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { MolfileSvgRenderer } from 'react-ocl';
 import { FaPlus, FaPaste, FaRegTrashAlt } from 'react-icons/fa';
 import { MF } from 'react-mf';
-
-// import '../css/molecule.css';
 import Slider from 'react-animated-slider-2';
 
 import 'react-animated-slider-2/build/horizontal.css';

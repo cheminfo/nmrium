@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useMemo } from 'react';
+import { Fragment, useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 /** @jsx jsx */

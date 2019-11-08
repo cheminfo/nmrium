@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { FaRegWindowMaximize } from 'react-icons/fa';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
+
 import { useChartData } from '../context/ChartContext';
 import { Filters } from '../../data/data1d/filter1d/Filters';
 

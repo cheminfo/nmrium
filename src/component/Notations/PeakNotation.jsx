@@ -1,4 +1,4 @@
-import React, {
+import {
   useRef,
   useState,
   useCallback,
@@ -6,12 +6,12 @@ import React, {
   useEffect,
 } from 'react';
 import { FaMinus } from 'react-icons/fa';
+import { jsx, css, Global } from '@emotion/core';
 
 import { useDispatch } from '../context/DispatchContext';
 import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
 
 /** @jsx jsx */
-import { jsx, css, Global } from '@emotion/core';
 
 const styles = css`
   .delete-bt {
@@ -150,8 +150,8 @@ export const PeakNotation = ({
     return false;
   }, []);
 
-  const handleOnOverNotation = useCallback((id) => {
-    setIsOver({ id: id, flag: true });
+  const handleOnOverNotation = useCallback((notationId) => {
+    setIsOver({ id: notationId, flag: true });
   }, []);
 
   const handleOnMouseLeaveNotation = useCallback(() => {

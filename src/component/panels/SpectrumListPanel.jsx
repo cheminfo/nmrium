@@ -105,9 +105,7 @@ const SpectrumListPanel = () => {
   );
 
   useEffect(() => {
-    const visibleSpectra = data
-      ? data.filter((d) => d.isVisible === true)
-      : [];
+    const visibleSpectra = data ? data.filter((d) => d.isVisible === true) : [];
     const visibleMarkers = data
       ? data.filter((d) => d.isPeaksMarkersVisible === true)
       : [];

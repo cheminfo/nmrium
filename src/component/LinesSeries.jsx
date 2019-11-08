@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
+import { jsx, css } from '@emotion/core';
 
 import { useChartData } from './context/ChartContext';
 
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 
 const pathStyles = css`
   -webkit-clip-path: url('#clip');
@@ -30,8 +30,8 @@ export const LinesSeries = () => {
   } = useChartData();
 
   const paths = useMemo(() => {
-    function makePath(data) {
-      const { id, x, y } = data;
+    function makePath(info) {
+      const { id, x, y } = info;
       const scale = getScale(id);
 
       const pathPoints = XY.reduce(x, y, {

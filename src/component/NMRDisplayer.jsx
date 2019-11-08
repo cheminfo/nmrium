@@ -11,7 +11,6 @@ import { useSize, useDebounce, useToggle, useFullscreen } from 'react-use';
 import SplitPane from 'react-split-pane';
 
 import './css/spectrum-chart.css';
-//import './css/icon.css';
 import 'cheminfo-font/dist/style.css';
 
 import { ChartDataProvider, useChartData } from './context/ChartContext';
@@ -205,12 +204,9 @@ function ChartPanel() {
     [dispatch, selectedTool],
   );
 
-  const handelOnDoubleClick = useCallback(
-    (event) => {
-      dispatch({ type: RESET_DOMAIN });
-    },
-    [dispatch],
-  );
+  const handelOnDoubleClick = useCallback(() => {
+    dispatch({ type: RESET_DOMAIN });
+  }, [dispatch]);
 
   const handleZoom = useCallback(
     (event) => {
