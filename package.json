@@ -64,10 +64,7 @@
     "eject": "react-scripts eject",
     "eslint": "eslint src",
     "eslint-fix": "npm run eslint -- --fix",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
-    "compile-sass": "node-sass src/dashboard/assets/scss/now-ui-dashboard.scss src/dashboard/assets/css/now-ui-dashboard.css",
-    "minify-sass": "node-sass src/dashboard/assets/scss/now-ui-dashboard.scss src/dashboard/assets/css/now-ui-dashboard.min.css --output-style compressed",
-    "map-sass": "node-sass src/dashboard/assets/scss/now-ui-dashboard.scss src/dashboard/assets/css/now-ui-dashboard.css --source-map true"
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
   },
   "eslintConfig": {
     "extends": "cheminfo-react",
@@ -97,7 +94,6 @@
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.0.1",
-    "node-sass": "^4.12.0",
     "prettier": "^1.18.2"
   }
 }
