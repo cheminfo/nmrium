@@ -101,11 +101,11 @@ export class Datum1D {
     return this.integrals;
   }
 
-  baseline(option = {}) {
+  baseline() {
     // let result = baseline(this.data.x, this.data.re, this.data.im);
   }
 
-  applyAutoPeakPicking(option = {}) {
+  applyAutoPeakPicking() {
     // let result = autoPeakPicking(this.data.x, this.data.re);
   }
 

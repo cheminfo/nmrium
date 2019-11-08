@@ -1,5 +1,3 @@
-import { ReIm } from 'ml-spectra-processing';
-
 /**
  *
  * @param {Datum1d} datum1d
