@@ -96,7 +96,7 @@ const BasicToolBar = ({
               disabled={data && data.length <= 1}
               className={
                 verticalAlign !== 0
-                  ? 'ci-icon-nmr-impurities'
+                  ? 'ci-icon-nmr-overlay3-aligned'
                   : 'ci-icon-nmr-overlay3'
               }
             >
