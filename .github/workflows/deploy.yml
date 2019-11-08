@@ -8,18 +8,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js 12
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12
-    - name: npm install and build
-      run: |
-        npm ci
-        npm run build
-    - name: push to gh-pages
-      run: |
-        npm i -g gh-pages
-        gh-pages -d dist
-      env:
-        CI: true
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build
+      - name: push to gh-pages
+        run: |
+          npm i -g gh-pages
+          gh-pages -d build
+        env:
+          CI: true
