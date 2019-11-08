@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import ZoomIn from '@material-ui/icons/ZoomIn';
-import Timeline from '@material-ui/icons/Timeline';
-import ShowChart from '@material-ui/icons/ShowChart';
-// import { FaArrowsAlt } from 'react-icons/fa';
+import { FaSearchPlus } from 'react-icons';
 
 import { useDispatch } from '../context/DispatchContext';
 import { SET_SELECTED_TOOL } from '../reducer/Actions';
@@ -72,7 +69,7 @@ const FunctionToolBar = ({ defaultValue }) => {
           popupPlacement="right"
           offset={{ x: 10, y: 0 }}
         >
-          <ZoomIn />
+          <FaSearchPlus />
         </ToolTip>
       </ToggleButton>
 

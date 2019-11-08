@@ -1,7 +1,6 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import PublishRounded from '@material-ui/icons/PublishRounded';
-import debug from 'debug';
+import { FaUpload } from 'react-icons/fa';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
@@ -14,8 +13,6 @@ import {
 } from './reducer/Actions';
 import { useDispatch } from './context/DispatchContext';
 import { useChartData } from './context/ChartContext';
-
-const logger = new debug('development');
 
 function getFileExtension(file) {
   return file.name
@@ -30,8 +27,6 @@ function getFileName(file) {
 function loadFiles(acceptedFiles) {
   return Promise.all(
     [].map.call(acceptedFiles, (file) => {
-      logger(acceptedFiles);
-
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onabort = (e) => reject(e);
@@ -166,7 +161,7 @@ const DropZone = (props) => {
           css={style}
           style={{ width: `${width + 41}px`, height: `${height}px` }}
         >
-          <PublishRounded />
+          <FaUpload />
           <p>Drop your files here</p>
         </div>
       )}
