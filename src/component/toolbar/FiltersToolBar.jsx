@@ -65,14 +65,14 @@ const BasicToolBar = () => {
           <ToggleButton
             key={Filters.zeroFilling.name}
             value={Filters.zeroFilling.name}
+            className="ci-icon-nmr-zero-filling"
+            style={styles.icon}
           >
             <ToolTip
               title={`Zero Filling Filter`}
               popupPlacement="right"
               offset={{ x: 10, y: 0 }}
-            >
-              Zero
-            </ToolTip>
+            />
           </ToggleButton>
         )}
 
@@ -94,14 +94,17 @@ const BasicToolBar = () => {
       </ToggleButtonGroup>
 
       {selectedSpectrumInfo && isFFTApplicable(selectedSpectrumInfo) && (
-        <button style={styles.button} type="button" onClick={handleOnFFTFilter}>
+        <button
+          className="ci-icon-nmr-fourier-transform"
+          style={styles.icon}
+          type="button"
+          onClick={handleOnFFTFilter}
+        >
           <ToolTip
             title={`FFT Filter`}
             popupPlacement="right"
             offset={{ x: 10, y: 0 }}
-          >
-            FFT
-          </ToolTip>
+          />
         </button>
       )}
     </>
