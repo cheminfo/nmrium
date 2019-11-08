@@ -5,7 +5,6 @@ import { Data1DManager } from './data1d/Data1DManager';
 import { getMetaData } from './data1d/metadata/getMetaData';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
-import { Datum1D } from './data1d/Datum1D';
 
 export class Analysis {
   data1d = [];
@@ -41,8 +40,6 @@ export class Analysis {
     let jcamp = await fetch(jcampURL).then((response) => response.text());
     this.addJcamp(id, jcamp, options);
   }
-
-  addBruker(zipBuffer, options = {}) {}
 
   addJcamp(jcamp, options = {}) {
     // need to parse the jcamp
@@ -84,8 +81,6 @@ export class Analysis {
     let fragments = molecule.getFragments();
     this.molecules = Object.assign([], this.molecules);
     for (let fragment of fragments) {
-      console.log(this.molecules);
-
       this.molecules.push(
         new mol({
           molfile: fragment.toMolfileV3(),
@@ -133,7 +128,7 @@ export class Analysis {
    * @param {boolean} [options.includeData=false]
    */
 
-  toJSON(options = {}) {
+  toJSON() {
     const data1d = this.data1d.map((ob) => {
       return { ...ob.toJSON(), data: {} };
     });
@@ -167,7 +162,7 @@ export class Analysis {
     this.data1d.push(object);
   }
 
-  getDatum1D(id): Datum1D {
+  getDatum1D(id) {
     return this.data1d.find((ob) => ob.id === id);
   }
 
@@ -202,38 +197,4 @@ export class Analysis {
     const _data1d = this.data1d.filter((d) => d.id !== id);
     this.data1d = _data1d.length > 0 ? _data1d : null;
   }
-
-  // undoFilter(pastChainFilters = []) {
-  //   // let data = { x: this.original.x, y: this.original.re };
-  //   this.data1d.forEach((ob) => {
-  //     ob.x = ob.source.original.x;
-  //     ob.re = ob.source.original.re;
-  //   });
-
-  //   if (pastChainFilters && pastChainFilters.length !== 0) {
-  //     pastChainFilters.forEach((filter) => {
-  //       const ob = this.getDatum1D(filter.id);
-  //       let data = { x: ob.data.x, y: ob.data.re };
-  //       data = applyFilter({ kind: filter.kind, value: filter.value }, data);
-  //       this.getDatum1D(filter.id).data.x = data.x;
-  //       this.getDatum1D(filter.id).data.re = data.y;
-  //     });
-
-  //     // this.x = data.x;
-  //     // this.re = data.y;
-  //   }
-  // }
-
-  //   redoFilter(nextFilter) {
-  //     const ob = this.getDatum1D(nextFilter.id);
-  //     let data = { x: ob.data.x, y: ob.data.re };
-  //     data = applyFilter(
-  //       { kind: nextFilter.kind, value: nextFilter.value },
-  //       data,
-  //     );
-  //     ob.x = data.x;
-  //     ob.re = data.y;
-  //   }
 }
-
-Analysis.prototype.fromNMReData = function(zipBuffer) {};

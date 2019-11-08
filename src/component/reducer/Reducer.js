@@ -739,17 +739,14 @@ const handleZoom = (state, zoomFactor) => {
     let yDomain = t.rescaleY(scale).domain();
 
     if (activeSpectrum === null) {
-      const _yDomains = yDomains.map((y) => {
+      draft.yDomains = yDomains.map((y) => {
         return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
       });
-
-      draft.yDomains = _yDomains;
     } else {
       const index = data.findIndex((d) => d.id === activeSpectrum.id);
-      const yDomains = [...state.yDomains];
-      yDomains[index] = yDomain;
-
-      draft.yDomains = yDomains;
+      const newYDomains = [...state.yDomains];
+      newYDomains[index] = yDomain;
+      draft.yDomains = newYDomains;
     }
   });
 };

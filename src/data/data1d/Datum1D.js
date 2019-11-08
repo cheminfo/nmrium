@@ -12,9 +12,6 @@ export class Datum1D {
    * @param {string} id
    * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
    */
-  // TODO id can become optional
-  // by default Math.random().toString(36).replace('0.','')
-
   constructor(options = {}) {
     this.id =
       options.id ||
@@ -236,10 +233,8 @@ export class Datum1D {
     return { x: this.data.x, y: this.data.im };
   }
 
-  addIntegral(from, to) {}
-
   // with mouse move
-  lookupPeak(from, to, options = {}) {
+  lookupPeak(from, to) {
     let minIndex = this.data.x.findIndex((number) => number >= from);
     let maxIndex = this.data.x.findIndex((number) => number >= to) - 1;
 
@@ -277,7 +272,7 @@ export class Datum1D {
 
   // Add all the peaks in a range
   // click / drag / release
-  addPeaks(from, to, options = {}) {
+  addPeaks(from, to) {
     // we look for the highest peak in the zone for now
     // but it returns an array !
     // for now you return an array containing the result of addPeak
@@ -289,13 +284,10 @@ export class Datum1D {
     return this.peaks;
   }
 
-  autoPeakPicking() {}
-
   addFilter(filter) {
     const id = Math.random()
       .toString(36)
       .replace('0.', '');
-    console.log(filter);
     this.filters = Object.assign([], this.filters);
     this.filters.push({
       ...filter,

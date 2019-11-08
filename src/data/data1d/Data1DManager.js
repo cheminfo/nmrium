@@ -15,28 +15,23 @@ export class Data1DManager {
         const datumObject = Data1DManager.fromJcamp(datum.source.jcamp, datum);
         data1D.push(datumObject);
       } else if (datum.source.jcampURL != null) {
-        const jcamp = await Data1DManager.loadFileFromURL(
-          datum.source.jcampURL,
+        data1D.push(
+          Data1DManager.loadFileFromURL(datum.source.jcampURL).then((jcamp) => {
+            return Data1DManager.fromJcamp(jcamp, datum);
+          }),
         );
-        const datumObject = Data1DManager.fromJcamp(jcamp, datum);
-        data1D.push(datumObject);
       } else {
-        console.log(datum.source.original);
         data1D.push(new Datum1D({ ...datum, data: datum.source.original }));
       }
     }
 
-    return data1D;
+    return Promise.all(data1D);
   };
 
   static loadFileFromURL = async function loadFileFromURL(Url) {
-    return fetch(Url)
-      .then(
-        (response) => Data1DManager.checkStatus(response) && response.text(),
-      )
-      .catch((err) => {
-        console.error(err);
-      });
+    return fetch(Url).then(
+      (response) => Data1DManager.checkStatus(response) && response.text(),
+    );
   };
 
   static checkStatus(response) {
@@ -47,10 +42,6 @@ export class Data1DManager {
   }
 
   static fromJcamp = function fromJcamp(text, options = {}) {
-    // name,
-    // color,
-    // isVisible,
-    // isPeaksMarkersVisible
     let result = convert(text, { xy: true, keepRecordsRegExp: /.*/ });
 
     let x =

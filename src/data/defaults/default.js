@@ -1,6 +1,9 @@
+import h1 from './1h.json';
+import c13 from './13c.json';
+
 const defaults = {
-  '1h': require('./1h.json'),
-  '13c': require('./13c.json'),
+  '1h': h1,
+  '13c': c13,
 };
 
 export function getPeakLabelNumberDecimals(nucleus) {

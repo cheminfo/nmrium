@@ -1,10 +1,10 @@
 import { gsd } from 'ml-gsd';
 
-export default function autoPeakPicking(x, y) {
+export default function autoPeakPicking(xs, ys) {
   // we calculate the noise but this could be improved
-  let noise = y.map((y) => Math.abs(y)).sort()[Math.floor(y.length / 2)];
+  let noise = ys.map((y) => Math.abs(y)).sort()[Math.floor(ys.length / 2)];
 
-  const peaks = gsd(x, y, {
+  const peaks = gsd(xs, ys, {
     noiseLevel: noise * 3,
     minMaxRatio: 0.01, // Threshold to determine if a given peak should be considered as a noise
     realTopDetection: true,
@@ -16,7 +16,7 @@ export default function autoPeakPicking(x, y) {
   return peaks.map((peak) => {
     return {
       index: peak.index,
-      xShift: x[peak.index] - peak.xShift,
+      xShift: xs[peak.index] - peak.xShift,
     };
   });
 }

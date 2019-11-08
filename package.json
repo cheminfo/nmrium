@@ -73,7 +73,7 @@
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "eslint": "^6.6.0",
-    "eslint-config-cheminfo-react": "^3.1.1",
+    "eslint-config-cheminfo-react": "^3.1.2",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^23.0.2",
     "eslint-plugin-prettier": "^3.1.1",

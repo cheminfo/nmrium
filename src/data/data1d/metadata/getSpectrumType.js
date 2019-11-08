@@ -12,7 +12,7 @@ export function getSpectrumType(meta = {}, info = {}) {
     ? info.$SPECTYP[0]
     : info.$SPECTYP || ''
   )
-    .replace(/^<(.*)>$/, '$1')
+    .replace(/^<(.*)>$/, '$1') // eslint-disable-line prefer-named-capture-group
     .toLowerCase();
 
   if (spectyp) return spectyp;

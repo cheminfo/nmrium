@@ -2,7 +2,6 @@
  *
  * @param {Datum1d} datum1d
  */
-
 export default function baselineCorrection(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('baselineCorrection not isApplicable on this data');
