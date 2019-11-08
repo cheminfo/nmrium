@@ -73,6 +73,8 @@ const style = css`
 const conainerStyle = css`
   border: 0.55px #e6e6e6 solid;
   display: flex;
+  flex: 1;
+  flexdirection: 'column';
 `;
 
 const DropZone = (props) => {
