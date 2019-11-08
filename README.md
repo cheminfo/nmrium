@@ -15,19 +15,15 @@ npm start
 
 ## General information about the programmation
 
-* Useful vscode plugins:
-  * prettier
-  * eslint
-  * intellicode
-  * gitlens
-  * live share
-  * github pull request
-  * Bracket Pair Colorizer
-* Storybook
-  * Use storybook for on-line demonstration on gh-pages. An example is in the project https://zakodium.github.io/react-ocl/?path=/story/highlighting--fixed-highlight `npm run storybook`
-  * Create a travis script that creates the storybook on gh-pages after each commit. Thjis       will allow to easily test the project
-* When you develop 2 different projects in parallel that depends of each other don't forget to   use `npm link`.
-
+- Useful vscode plugins:
+  - prettier
+  - eslint
+  - intellicode
+  - gitlens
+  - live share
+  - github pull request
+  - Bracket Pair Colorizer
+- When you develop 2 different projects in parallel that depends of each other don't forget to use `npm link`.
 
 ## Commit messages
 
@@ -36,9 +32,8 @@ Please use `semantic commit messages` : https://www.conventionalcommits.org/en/v
 ## Programming with React and D3
 
 The idea is to use the approach described in the bottom of the document:
-"React for element creation, D3 as the visualization kernel" : 
+"React for element creation, D3 as the visualization kernel" :
 https://medium.com/@Elijah_Meeks/interactive-applications-with-react-d3-f76f7b3ebc71
-
 
 ## Immutable javascript
 

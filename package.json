@@ -64,9 +64,6 @@
     "eject": "react-scripts eject",
     "eslint": "eslint src",
     "eslint-fix": "npm run eslint -- --fix",
-    "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -c .storybook",
-    "deploy-storybook": "storybook-to-ghpages",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
     "compile-sass": "node-sass src/dashboard/assets/scss/now-ui-dashboard.scss src/dashboard/assets/css/now-ui-dashboard.css",
     "minify-sass": "node-sass src/dashboard/assets/scss/now-ui-dashboard.scss src/dashboard/assets/css/now-ui-dashboard.min.css --output-style compressed",
@@ -92,12 +89,6 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^5.1.11",
-    "@storybook/addon-links": "^5.1.11",
-    "@storybook/addons": "^5.1.11",
-    "@storybook/react": "^5.1.11",
-    "@storybook/storybook-deployer": "^2.8.1",
-    "@welldone-software/why-did-you-render": "^3.3.5",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.3.0",
     "eslint-config-cheminfo-react": "^3.0.4",
