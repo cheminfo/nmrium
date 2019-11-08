@@ -451,7 +451,10 @@ const applyFFTFilter = (state) => {
 };
 const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
   return produce(state, (draft) => {
-    filterOptions.pivotIndex = pixelToIndex(state, state.verticalIndicatorPosition);
+    filterOptions.pivotIndex = pixelToIndex(
+      state,
+      state.verticalIndicatorPosition,
+    );
     const filterOption = {
       kind: Filters.phaseCorrection.name,
       value: filterOptions,
@@ -461,7 +464,7 @@ const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
 
     //apply filter into the spectrum
     activeObject.addFilter(filterOption);
-    
+
     const spectrumIndex = state.tempData.findIndex(
       (spectrum) => spectrum.id === activeSpectrumId,
     );
@@ -479,7 +482,10 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
     //apply filter into the spectrum
-    filterOptions.pivotIndex = filterOptions.pivotIndex = pixelToIndex(state, state.verticalIndicatorPosition);
+    filterOptions.pivotIndex = filterOptions.pivotIndex = pixelToIndex(
+      state,
+      state.verticalIndicatorPosition,
+    );
     activeObject.applyManualPhaseCorrectionFilter(filterOptions);
 
     const XYData = activeObject.getReal();
@@ -787,8 +793,11 @@ function setDomain(draft) {
 }
 
 function pixelToIndex(state, xPixel) {
-  const { data, width } = state
-  const x = d3.scaleLinear().domain([0, data[0].x.length]).range([width, 0]);
+  const { data, width } = state;
+  const x = d3
+    .scaleLinear()
+    .domain([0, data[0].x.length])
+    .range([width, 0]);
   return Math.round(x.invert(xPixel));
 }
 
