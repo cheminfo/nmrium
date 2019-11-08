@@ -5,7 +5,7 @@
       "id": "rwqz5z8yebh",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1198.jdx"
+        "jcampURL": "./coffee/coffee_1198.jdx"
       },
       "display": {
         "name": "coffee 1",
@@ -29,7 +29,7 @@
       "id": "kpxtkoo33f",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1199.jdx"
+        "jcampURL": "./coffee/coffee_1199.jdx"
       },
       "display": {
         "name": "coffee 2",
@@ -53,7 +53,7 @@
       "id": "q8opnudaw8d",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1208.jdx"
+        "jcampURL": "./coffee/coffee_1208.jdx"
       },
       "display": {
         "name": "coffee 3",
@@ -77,7 +77,7 @@
       "id": "2pjw8olyu6k",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1241.jdx"
+        "jcampURL": "./coffee/coffee_1241.jdx"
       },
       "display": {
         "name": "coffee 4",
@@ -101,7 +101,7 @@
       "id": "veddl783al",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1246.jdx"
+        "jcampURL": "./coffee/coffee_1246.jdx"
       },
       "display": {
         "name": "coffee 5",
@@ -125,7 +125,7 @@
       "id": "if7hw45b3b9",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1307.jdx"
+        "jcampURL": "./coffee/coffee_1307.jdx"
       },
       "display": {
         "name": "coffee 6",
@@ -149,7 +149,7 @@
       "id": "izg1s7e3xg",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1309.jdx"
+        "jcampURL": "./coffee/coffee_1309.jdx"
       },
       "display": {
         "name": "coffee 7",
@@ -173,7 +173,7 @@
       "id": "zz8lhfdklw",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1310.jdx"
+        "jcampURL": "./coffee/coffee_1310.jdx"
       },
       "display": {
         "name": "coffee 8",
@@ -197,7 +197,7 @@
       "id": "pomzxk2wpv",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1316.jdx"
+        "jcampURL": "./coffee/coffee_1316.jdx"
       },
       "display": {
         "name": "coffee 9",
@@ -221,7 +221,7 @@
       "id": "4u5bfuoe95o",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1317.jdx"
+        "jcampURL": "./coffee/coffee_1317.jdx"
       },
       "display": {
         "name": "coffee 10",
@@ -245,7 +245,7 @@
       "id": "4thl4vvvadj",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1318.jdx"
+        "jcampURL": "./coffee/coffee_1318.jdx"
       },
       "display": {
         "name": "coffee 11",
@@ -269,7 +269,7 @@
       "id": "jc1abm02de9",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1319.jdx"
+        "jcampURL": "./coffee/coffee_1319.jdx"
       },
       "display": {
         "name": "coffee 12",
@@ -293,7 +293,7 @@
       "id": "0girvqjgxb8p",
       "source": {
         "jcamp": null,
-        "jcampURL": "/coffee/coffee_1321.jdx"
+        "jcampURL": "./coffee/coffee_1321.jdx"
       },
       "display": {
         "name": "coffee 13",

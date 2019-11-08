@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-814d_zg30.jdx"
+        "jcampURL": "./xtc/XTC-814d_zg30.jdx"
       },
       "display": {
         "name": "XTC 1",
@@ -44,7 +44,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-888_zg30.jdx"
+        "jcampURL": "./xtc/XTC-888_zg30.jdx"
       },
       "display": {
         "name": "XTC 2",
@@ -82,7 +82,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-966_zg30.jdx"
+        "jcampURL": "./xtc/XTC-966_zg30.jdx"
       },
       "display": {
         "name": "XTC 3",
@@ -120,7 +120,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-1111a_zg30.jdx"
+        "jcampURL": "./xtc/XTC-1111a_zg30.jdx"
       },
       "display": {
         "name": "XTC 4",
@@ -158,7 +158,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-1132a_zg30.jdx"
+        "jcampURL": "./xtc/XTC-1132a_zg30.jdx"
       },
       "display": {
         "name": "XTC 5",
@@ -196,7 +196,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-1153_zg30.jdx"
+        "jcampURL": "./xtc/XTC-1153_zg30.jdx"
       },
       "display": {
         "name": "XTC 6",
@@ -234,7 +234,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-1541_zg30.jdx"
+        "jcampURL": "./xtc/XTC-1541_zg30.jdx"
       },
       "display": {
         "name": "XTC 7",
@@ -272,7 +272,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-1675_zg30.jdx"
+        "jcampURL": "./xtc/XTC-1675_zg30.jdx"
       },
       "display": {
         "name": "XTC 8",
@@ -310,7 +310,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-1693_zg30.jdx"
+        "jcampURL": "./xtc/XTC-1693_zg30.jdx"
       },
       "display": {
         "name": "XTC 9",
@@ -348,7 +348,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-1731a_zg30.jdx"
+        "jcampURL": "./xtc/XTC-1731a_zg30.jdx"
       },
       "display": {
         "name": "XTC 10",
@@ -386,7 +386,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/xtc/XTC-z189_zg30.jdx"
+        "jcampURL": "./xtc/XTC-z189_zg30.jdx"
       },
       "display": {
         "name": "XTC 11",

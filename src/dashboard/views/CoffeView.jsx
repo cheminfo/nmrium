@@ -28,7 +28,7 @@ import { Analysis } from '../../data/Analysis';
 
 function loadData() {
   return new Promise((resolve, reject) => {
-    fetch('/json-files/Coffe.json')
+    fetch('./json-files/Coffe.json')
       .then((response) => checkStatus(response) && response.json())
       .then((data) => {
         Analysis.build(data).then((obj) => {

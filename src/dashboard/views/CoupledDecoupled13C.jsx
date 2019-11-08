@@ -28,7 +28,7 @@ import { Analysis } from '../../data/Analysis.js';
 
 function loadData() {
   return new Promise((resolve, reject) => {
-    fetch('/json-files/CoupledDecoupled13C.json')
+    fetch('./json-files/CoupledDecoupled13C.json')
       .then((response) => checkStatus(response) && response.json())
       .then((data) => {
         Analysis.build(data).then((obj) => {

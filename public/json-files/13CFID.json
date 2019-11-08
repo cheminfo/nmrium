@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/cytisine/13C_Cytisin_600_fid.dx"
+        "jcampURL": "./cytisine/13C_Cytisin_600_fid.dx"
       },
       "display": {
         "name": "test",

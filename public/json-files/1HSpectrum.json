@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "/cytisine/1H_Cytisin_600MHz-R+I.dx"
+        "jcampURL": "./cytisine/1H_Cytisin_600MHz-R+I.dx"
       },
       "display": {
         "name": "test",

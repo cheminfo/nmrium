@@ -69,7 +69,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://cheminfo.github.io/nmr-displayer",
+  "homepage": ".",
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "eslint": "^6.6.0",

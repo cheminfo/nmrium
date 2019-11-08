@@ -31,7 +31,7 @@ const height = 400;
 
 function loadData() {
   return new Promise((resolve, reject) => {
-    fetch('/json-files/XTC.json')
+    fetch('./json-files/XTC.json')
       .then((response) => checkStatus(response) && response.json())
       .then((data) => {
         Analysis.build(data).then((obj) => {
