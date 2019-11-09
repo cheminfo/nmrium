@@ -451,11 +451,14 @@ const applyFFTFilter = (state) => {
 };
 const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
   return produce(state, (draft) => {
+    filterOptions.pivotIndex = pixelToIndex(
+      state,
+      state.verticalIndicatorPosition,
+    );
     const filterOption = {
       kind: Filters.phaseCorrection.name,
       value: filterOptions,
     };
-
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
@@ -478,8 +481,11 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
-
     //apply filter into the spectrum
+    filterOptions.pivotIndex = filterOptions.pivotIndex = pixelToIndex(
+      state,
+      state.verticalIndicatorPosition,
+    );
     activeObject.applyManualPhaseCorrectionFilter(filterOptions);
 
     const XYData = activeObject.getReal();
@@ -497,7 +503,6 @@ const enableFilter = (state, filterID, checked) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
-
     //apply filter into the spectrum
     activeObject.enableFilter(filterID, checked);
 
@@ -589,7 +594,6 @@ const setSelectedFilter = (state, selectedFilter) => {
     //initialize position of the vertical line equalizer indicator
     draft.verticalIndicatorPosition = state.width / 2;
     draft.tempData = state.data;
-
     //select the equalizer tool when you enable manual phase correction filter
     if (selectedFilter === Filters.phaseCorrection.name) {
       draft.selectedTool = options.equalizerTool.id;
@@ -598,7 +602,6 @@ const setSelectedFilter = (state, selectedFilter) => {
         draft.selectedTool = null;
       }
     }
-
     draft.selectedFilter = selectedFilter;
   });
 };
@@ -787,6 +790,15 @@ function setDomain(draft) {
   draft.data = draft.data.map((d) => {
     return { ...d, integralsYDomain: domain.y };
   });
+}
+
+function pixelToIndex(state, xPixel) {
+  const { data, width } = state;
+  const x = d3
+    .scaleLinear()
+    .domain([0, data[0].x.length])
+    .range([width, 0]);
+  return Math.round(x.invert(xPixel));
 }
 
 const handleDeleteSpectra = (state) => {

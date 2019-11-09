@@ -33,7 +33,7 @@ const styles = {
 
 const ManualPhaseCorrectionPanel = () => {
   const dispatch = useDispatch();
-  const [value, setValue] = useState({ ph0: 0, ph1: 0 });
+  const [value, setValue] = useState({ ph0: 0, ph1: 0, pivotIndex: 1 });
 
   const handleApplyFilter = useCallback(() => {
     dispatch({
@@ -57,12 +57,21 @@ const ManualPhaseCorrectionPanel = () => {
     [value],
   );
 
-  const handleInputChanged = useCallback(() => {
-    dispatch({
-      type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-      value: value,
-    });
-  }, [dispatch, value]);
+  const handleInputChanged = useCallback(
+    (e) => {
+      const _value = {
+        ...value,
+        [e.target.name]: e.target.validity.valid
+          ? Number(e.target.value)
+          : value[e.target.name],
+      };
+      dispatch({
+        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+        value: _value,
+      });
+    },
+    [dispatch, value],
+  );
 
   return (
     <div style={styles.container}>
@@ -75,7 +84,7 @@ const ManualPhaseCorrectionPanel = () => {
         onInput={handleInput}
         onChange={handleInputChanged}
         pattern="^\d*(\.\d{0,10})?$"
-        step="0.001"
+        step="0.5"
       />
       <span style={styles.label}>PH1: </span>
       <input
@@ -86,7 +95,7 @@ const ManualPhaseCorrectionPanel = () => {
         onInput={handleInput}
         onChange={handleInputChanged}
         pattern="^\d*(\.\d{0,2})?$"
-        step="0.001"
+        step="0.5"
       />
       <button
         type="button"
