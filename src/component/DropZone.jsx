@@ -70,11 +70,11 @@ const style = css`
   }
 `;
 
-const conainerStyle = css`
+const containerStyle = css`
   border: 0.55px #e6e6e6 solid;
   display: flex;
   flex: 1;
-  flexdirection: 'column';
+  flex-direction: 'column';
 `;
 
 const DropZone = (props) => {
@@ -156,7 +156,7 @@ const DropZone = (props) => {
   });
 
   return (
-    <div {...getRootProps()} css={conainerStyle}>
+    <div {...getRootProps()} css={containerStyle}>
       <input {...getInputProps()} />
       {isDragActive && (
         <div

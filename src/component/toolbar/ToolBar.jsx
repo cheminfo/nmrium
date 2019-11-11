@@ -14,7 +14,7 @@ const styles = {
 };
 const ToolBar = () => {
   return (
-    <div css={styles}>
+    <div style={styles}>
       <FunctionToolBar defaultValue={options.zoom.id} />
       <FiltersToolBar />
       <HistoryToolBar />
