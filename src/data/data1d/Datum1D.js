@@ -115,6 +115,10 @@ export class Datum1D {
     Filters[filterName](this, options);
   }
 
+  applyManualPhaseCorrectionFilter(filterOptions) {
+    Filters.phaseCorrection(this, filterOptions);
+  }
+
   lookupForFilter(filterKind) {
     return this.filters.find((f) => f.kind === filterKind);
   }

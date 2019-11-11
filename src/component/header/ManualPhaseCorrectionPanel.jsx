@@ -62,9 +62,14 @@ const ManualPhaseCorrectionPanel = () => {
       const _value = {
         ...value,
         [e.target.name]: e.target.validity.valid
-          ? Number(e.target.value)
+          ? Number(e.target.value) - value[e.target.name]
           : value[e.target.name],
       };
+      for (let key in value) {
+        if (value[key] === _value[key]) {
+          _value[key] -= value[key]
+        }
+      }
       dispatch({
         type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
         value: _value,
