@@ -7,6 +7,7 @@ import IntegralTablePanel from './IntegralTablePanel';
 import MoleculePanel from './MoleculePanel';
 import FilterPanel from './FilterPanel';
 import InformationPanel from './InformationPanel';
+import RangesTablePanel from './RangesTablePanel';
 
 const Panels = () => {
   return (
@@ -25,6 +26,9 @@ const Panels = () => {
       </AccordionItem>
       <AccordionItem title="Integrals">
         <IntegralTablePanel />
+      </AccordionItem>
+      <AccordionItem title="Ranges">
+        <RangesTablePanel />
       </AccordionItem>
       <AccordionItem title="Structures">
         <MoleculePanel />

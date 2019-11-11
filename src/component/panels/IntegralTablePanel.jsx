@@ -11,6 +11,8 @@ import {
   TableCell,
 } from '../elements/Table';
 
+import NoTableData from './placeholder/NoTableData';
+
 // const styles = {
 //   button: {
 //     backgroundColor: 'transparent',
@@ -60,17 +62,7 @@ const IntegralTablePanel = () => {
       </TableBody>
     </Table>
   ) : (
-    <p
-      style={{
-        textAlign: 'center',
-        width: '100%',
-        fontSize: '11px',
-        padding: '5px',
-        color: 'gray',
-      }}
-    >
-      No Data
-    </p>
+    <NoTableData />
   );
 };
 
