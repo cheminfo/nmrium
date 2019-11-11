@@ -469,10 +469,9 @@ const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
       (spectrum) => spectrum.id === activeSpectrumId,
     );
 
-    draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
-    draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
     draft.tempData = null;
+    draft.selectedTool = null;
     setDomain(draft);
   });
 };
@@ -482,12 +481,12 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
     //apply filter into the spectrum
-    filterOptions.pivotIndex = filterOptions.pivotIndex = pixelToIndex(
+    filterOptions.pivotIndex = pixelToIndex(
       state,
       state.verticalIndicatorPosition,
     );
     activeObject.applyManualPhaseCorrectionFilter(filterOptions);
-
+//
     const XYData = activeObject.getReal();
     const spectrumIndex = draft.data.findIndex(
       (spectrum) => spectrum.id === activeSpectrumId,
@@ -593,13 +592,29 @@ const setSelectedFilter = (state, selectedFilter) => {
   return produce(state, (draft) => {
     //initialize position of the vertical line equalizer indicator
     draft.verticalIndicatorPosition = state.width / 2;
+    
     draft.tempData = state.data;
     //select the equalizer tool when you enable manual phase correction filter
     if (selectedFilter === Filters.phaseCorrection.name) {
       draft.selectedTool = options.equalizerTool.id;
     } else {
       if (draft.selectedTool === options.equalizerTool.id) {
+        const activeSpectrumId = state.activeSpectrum.id;
+        
+        const spectrumIndex = draft.data.findIndex(
+          (spectrum) => spectrum.id === activeSpectrumId,
+        );
+        
+        const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+        activeObject.data.x = state.tempData[spectrumIndex].x;
+        activeObject.data.re = state.tempData[spectrumIndex].y;
+        activeObject.data.im = state.tempData[spectrumIndex].im;
+
+        draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
+        draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
+        draft.tempData = null;
         draft.selectedTool = null;
+        setDomain(draft);
       }
     }
     draft.selectedFilter = selectedFilter;

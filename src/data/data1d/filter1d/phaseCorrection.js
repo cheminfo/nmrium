@@ -18,9 +18,10 @@ export default function phaseCorrection(datum1D, options = {}) {
   ph0 = ph0 - (ph1 * pivotIndex) / datum1D.data.x.length;
   Object.assign(
     datum1D.data,
-    ReIm.phaseCorrection(datum1D.source.original, ph0, ph1),
+    ReIm.phaseCorrection(datum1D.data, ph0, ph1),
   );
-}
+}  
+
 
 export function isApplicable(datum1D) {
   if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
