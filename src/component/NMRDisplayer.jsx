@@ -46,7 +46,7 @@ import VerticalIndicator from './tool/VerticalIndicator';
 const NMRDisplayer = (props) => {
   const { data: dataProp, height: heightProp, width: widthProps } = props;
   const fullScreenRef = useRef();
-
+  const containerRef = useRef();
   const [show, toggle] = useToggle(false);
   const isFullscreen = useFullscreen(fullScreenRef, show, {
     onClose: () => {
@@ -135,6 +135,14 @@ const NMRDisplayer = (props) => {
     dispatch({ type: SET_WIDTH, width: size });
   }, []);
 
+  useEffect(() => {
+    console.log(containerRef);
+    dispatch({
+      type: SET_DIMENSIONS,
+      height: containerRef.current.getBoundingClientRect().height,
+    });
+  }, [containerRef]);
+
   return (
     <DispatchProvider value={dispatch}>
       <ChartDataProvider
@@ -156,24 +164,25 @@ const NMRDisplayer = (props) => {
           }}
         >
           <Header isFullscreen={isFullscreen} onMaximize={toggle} />
-
-          <DropZone>
-            <ToolBar />
-            <SplitPane
-              paneStyle={{ overflow: 'hidden' }}
-              className="split-container"
-              split="vertical"
-              defaultSize="80%"
-              minSize="80%"
-              onDragFinished={handleSplitPanelDragFinished}
-              onDragStarted={() => {
-                setResizeEventStart(true);
-              }}
-            >
-              <ChartPanel tools={!isResizeEventStart} />
-              <Panels />
-            </SplitPane>
-          </DropZone>
+          <div style={{ height: '100%' }} ref={containerRef}>
+            <DropZone>
+              <ToolBar />
+              <SplitPane
+                paneStyle={{ overflow: 'hidden' }}
+                className="split-container"
+                split="vertical"
+                defaultSize="80%"
+                minSize="80%"
+                onDragFinished={handleSplitPanelDragFinished}
+                onDragStarted={() => {
+                  setResizeEventStart(true);
+                }}
+              >
+                <ChartPanel tools={!isResizeEventStart} />
+                <Panels />
+              </SplitPane>
+            </DropZone>
+          </div>
         </div>
       </ChartDataProvider>
     </DispatchProvider>

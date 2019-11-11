@@ -13,7 +13,7 @@ const Select = React.forwardRef(
 
     const styles = css`
       position: relative;
-      padding: 5px;
+      padding: 0px 5px;
       border: 0.55px solid #cacaca;
       font-size: 14px;
       width: ${style.width ? style.width - 5 : 115}px;
