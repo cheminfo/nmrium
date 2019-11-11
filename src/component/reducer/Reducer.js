@@ -159,8 +159,6 @@ const loadJcampFile = (state, files) => {
 const handleLoadJsonFile = (state, data) => {
   return produce(state, (draft) => {
     AnalysisObj = data.AnalysisObj;
-    AnalysisObj.getData1d().info.isFid = false;
-
     draft.data = AnalysisObj.getData1d();
     draft.molecules = AnalysisObj.getMolecules();
     setDomain(draft);
