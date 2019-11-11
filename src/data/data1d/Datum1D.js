@@ -106,13 +106,13 @@ export class Datum1D {
     // let result = autoPeakPicking(this.data.x, this.data.re);
   }
 
-  applyShiftXFilter(shiftValue) {
+  applyFilter(filterName, options) {
     const filterOption = {
-      kind: Filters.shiftX.name,
-      value: shiftValue,
+      kind: filterName,
+      value: options,
     };
     this.addFilter(filterOption);
-    Filters.shiftX(this, shiftValue);
+    Filters[filterName](this, options);
   }
 
   lookupForFilter(filterKind) {
@@ -171,22 +171,9 @@ export class Datum1D {
     if (previousLineBroadeningFilter && previousZeroFillingFilter) {
       this.reapplyFilters();
     } else {
-      Filters.zeroFilling(this, options.zeroFillingSize);
-      Filters.lineBroadening(this, options.lineBroadeningValue);
+      this.applyFilter(Filters.zeroFilling.name, options.zeroFillingSize);
+      this.applyFilter(Filters.fft.name, options.lineBroadeningValue);
     }
-  }
-  applyFFTFilter() {
-    const filterOption = {
-      kind: Filters.fft.name,
-      value: '',
-    };
-    // this.originalInfo.isFid = false;
-    this.addFilter(filterOption);
-    Filters.fft(this);
-  }
-
-  applyManualPhaseCorrectionFilter(filterOptions) {
-    Filters.phaseCorrection(this, filterOptions);
   }
 
   reapplyFilters() {
