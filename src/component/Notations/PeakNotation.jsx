@@ -4,6 +4,7 @@ import {
   useCallback,
   useLayoutEffect,
   useEffect,
+  Fragment,
 } from 'react';
 import { FaMinus } from 'react-icons/fa';
 import { jsx, css, Global } from '@emotion/core';
@@ -24,7 +25,7 @@ const styles = css`
     height: 15px;
     border: 15px;
     position: absolute;
-    display: 'flex';
+    display: flex;
     align-items: center;
     justify-content: center;
   }
@@ -161,7 +162,7 @@ export const PeakNotation = ({
   }, []);
 
   return (
-    <>
+    <Fragment>
       <Global styles={styles} />
 
       <g
@@ -237,7 +238,7 @@ export const PeakNotation = ({
           </div>
         </foreignObject>
       </g>
-    </>
+    </Fragment>
   );
 };
 
