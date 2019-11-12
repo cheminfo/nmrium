@@ -65,27 +65,27 @@ const ManualPhaseCorrectionPanel = () => {
     });
   }, [dispatch, value]);
 
-  const handleInputChanged = useCallback(
-    (e) => {
-      const _value = {
-        ...value,
-        [e.target.name]: e.target.validity.valid
-          ? Number(e.target.value) - value[e.target.name]
-          : value[e.target.name],
-      };
-      for (let key in value) {
-        if (value[key] === _value[key]) {
-          _value[key] -= value[key];
-        }
-      }
-      setValue(_value);
-      // dispatch({
-      //   type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-      //   value: _value,
-      // });
-    },
-    [value],
-  );
+  // const handleInputChanged = useCallback(
+  //   (e) => {
+  //     const _value = {
+  //       ...value,
+  //       [e.target.name]: e.target.validity.valid
+  //         ? Number(e.target.value) - value[e.target.name]
+  //         : value[e.target.name],
+  //     };
+  //     for (let key in value) {
+  //       if (value[key] === _value[key]) {
+  //         _value[key] -= value[key];
+  //       }
+  //     }
+  //     setValue(_value);
+  //     // dispatch({
+  //     //   type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+  //     //   value: _value,
+  //     // });
+  //   },
+  //   [value],
+  // );
 
   const handleRangeChange = useCallback(
     (e) => {
