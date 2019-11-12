@@ -1,5 +1,4 @@
 // import baseline from './baseline';
-// import autoPeakPicking from './autoPeakPicking';
 import max from 'ml-array-max';
 
 import { Filters } from './filter1d/Filters';
@@ -72,7 +71,6 @@ export class Datum1D {
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
     this.integrals = Object.assign([], options.integrals); // array of object (from: xIndex, to: xIndex)
-    this.signals = Object.assign([], options.signals);
     this.filters = Object.assign([], options.filters);
     this.ranges = Object.assign([], options.ranges);
 
@@ -110,9 +108,9 @@ export class Datum1D {
 
   applyAutoPeakPicking() {
     const peaks = autoPeakPicking(this);
-    this.peaks = [...peaks, ...this.peaks];
-    // console.log(this.peaks);
-
+    console.log(peaks, this.peaks);
+    // this.peaks = [...peaks, ...this.peaks];
+    debugger;
     return this.peaks;
     // let result = autoPeakPicking(this.data.x, this.data.re);
   }
@@ -325,7 +323,7 @@ export class Datum1D {
       meta: this.meta,
       peaks: this.peaks,
       integrals: this.integrals,
-      signals: this.signals,
+      ranges: this.ranges,
       filters: this.filters,
     };
   }
