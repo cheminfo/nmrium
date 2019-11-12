@@ -4,7 +4,7 @@ import max from 'ml-array-max';
 
 import { Filters } from './filter1d/Filters';
 import { reduce as reduceZeroFillingFilter } from './filter1d/zeroFilling';
-import { reduce as reduceLineBroadingFilter } from './filter1d/lineBroadening';
+import { reduce as reduceLineBroadeningFilter } from './filter1d/lineBroadening';
 
 export class Datum1D {
   /**
@@ -156,7 +156,7 @@ export class Datum1D {
     }
 
     if (previousLineBroadeningFilter) {
-      const reduceResult = reduceLineBroadingFilter(
+      const reduceResult = reduceLineBroadeningFilter(
         previousLineBroadeningFilter.value,
         lineBroadeningFilterOption.value,
       );
