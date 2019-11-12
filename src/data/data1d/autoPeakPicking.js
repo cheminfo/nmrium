@@ -15,10 +15,10 @@ export default function autoPeakPicking(datum1D) {
     sgOptions: { windowSize: 7, polynomial: 3 },
   });
 
-  datum1D.ranges = peaks.map((peak) => {
+  return peaks.map((peak) => {
     return {
-      index: peak.index,
-      xShift: datum1D.data.x[peak.index] - peak.xShift,
+      xIndex: peak.index,
+      // xShift: datum1D.data.x[peak.index] - peak.xShift,
     };
   });
 }

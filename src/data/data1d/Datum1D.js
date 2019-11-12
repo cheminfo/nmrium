@@ -109,8 +109,11 @@ export class Datum1D {
   }
 
   applyAutoPeakPicking() {
-    autoPeakPicking(this);
-    return this.ranges;
+    const peaks = autoPeakPicking(this);
+    this.peaks = [...peaks, ...this.peaks];
+    // console.log(this.peaks);
+
+    return this.peaks;
     // let result = autoPeakPicking(this.data.x, this.data.re);
   }
 

@@ -877,11 +877,10 @@ const handleAutoPeakPicking = (state) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const ob = AnalysisObj.getDatum1D(activeSpectrumId);
-    const ranges = ob.applyAutoPeakPicking();
+    const peaks = ob.applyAutoPeakPicking();
     const index = state.data.findIndex((d) => d.id === activeSpectrumId);
-
     if (index !== -1) {
-      draft.data[index].ranges = ranges;
+      draft.data[index].peaks = peaks;
     }
   });
 };
