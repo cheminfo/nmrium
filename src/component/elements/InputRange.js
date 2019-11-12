@@ -73,7 +73,6 @@ const InputRange = ({
       stateValues = {
         ...stateValues,
         step: 'moving',
-
         endX: stateValues.startX + screenX - stateValues.startScreenX,
         endY: stateValues.startY + screenY - stateValues.startScreenY,
       };

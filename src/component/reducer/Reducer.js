@@ -15,6 +15,7 @@ import {
   SAVE_DATA_AS_JSON,
   ADD_PEAK,
   ADD_PEAKS,
+  AUTO_PEAK_PICKING,
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
   LOAD_JCAMP_FILE,
@@ -872,6 +873,18 @@ const handleChangeIntegralZoom = (state, zoomFactor) => {
     }
   });
 };
+const handleAutoPeakPicking = (state) => {
+  return produce(state, (draft) => {
+    const activeSpectrumId = state.activeSpectrum.id;
+    const ob = AnalysisObj.getDatum1D(activeSpectrumId);
+    const ranges = ob.applyAutoPeakPicking();
+    const index = state.data.findIndex((d) => d.id === activeSpectrumId);
+
+    if (index !== -1) {
+      draft.data[index].ranges = ranges;
+    }
+  });
+};
 
 //////////////////////////////////////////////////////////////////////
 //////////////// start undo and redo functions ///////////////////////
@@ -1115,8 +1128,12 @@ export const spectrumReducer = (state, action) => {
 
     case BRUSH_END:
       return handleBrushEnd(state, action);
+
     case SET_VERTICAL_INDICATOR_X_POSITION:
       return setVerticalIndicatorXPosition(state, action.position);
+
+    case AUTO_PEAK_PICKING:
+      return handleAutoPeakPicking(state);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);
