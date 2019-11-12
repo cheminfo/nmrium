@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
 } from '../reducer/Actions';
+import InputRange from '../elements/InputRange';
 
 const styles = {
   container: {
@@ -57,6 +58,13 @@ const ManualPhaseCorrectionPanel = () => {
     [value],
   );
 
+  useEffect(() => {
+    dispatch({
+      type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+      value: value,
+    });
+  }, [dispatch, value]);
+
   const handleInputChanged = useCallback(
     (e) => {
       const _value = {
@@ -67,15 +75,24 @@ const ManualPhaseCorrectionPanel = () => {
       };
       for (let key in value) {
         if (value[key] === _value[key]) {
-          _value[key] -= value[key]
+          _value[key] -= value[key];
         }
       }
-      dispatch({
-        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-        value: _value,
-      });
+      setValue(_value);
+      // dispatch({
+      //   type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+      //   value: _value,
+      // });
     },
-    [dispatch, value],
+    [value],
+  );
+
+  const handleRangeChange = useCallback(
+    (e) => {
+      const _value = { ...value, [e.name]: e.value };
+      setValue(_value);
+    },
+    [value],
   );
 
   return (
@@ -84,24 +101,37 @@ const ManualPhaseCorrectionPanel = () => {
       <input
         name="ph0"
         style={styles.input}
-        type="number"
+        type="text"
         value={value.ph0}
         onInput={handleInput}
-        onChange={handleInputChanged}
-        pattern="^\d*(\.\d{0,10})?$"
-        step="0.5"
+        // onChange={handleInputChanged}
+        // pattern="^\d*(\.\d{0,10})?$"
       />
       <span style={styles.label}>PH1: </span>
       <input
         name="ph1"
         style={styles.input}
-        type="number"
+        type="text"
         value={value.ph1}
         onInput={handleInput}
-        onChange={handleInputChanged}
-        pattern="^\d*(\.\d{0,2})?$"
-        step="0.5"
+        // onChange={handleInputChanged}
+        // pattern="^\d*(\.\d{0,2})?$"
       />
+      <InputRange
+        name="ph0"
+        value={value.ph0}
+        label="Change Ph0 By mouse click and drag"
+        style={{ width: '20%' }}
+        onChange={handleRangeChange}
+      />
+      <InputRange
+        name="ph1"
+        value={value.ph1}
+        label="Change Ph1 By mouse click and drag"
+        style={{ width: '20%' }}
+        onChange={handleRangeChange}
+      />
+
       <button
         type="button"
         style={styles.applyButton}

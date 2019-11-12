@@ -492,7 +492,7 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
 
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
-    setDomain(draft);
+    // setDomain(draft);
   });
 };
 
@@ -590,7 +590,7 @@ const setSelectedFilter = (state, selectedFilter) => {
   return produce(state, (draft) => {
     //initialize position of the vertical line equalizer indicator
     draft.verticalIndicatorPosition = state.width / 2;
-    
+
     draft.tempData = state.data;
     //select the equalizer tool when you enable manual phase correction filter
     if (selectedFilter === Filters.phaseCorrection.name) {
@@ -598,11 +598,11 @@ const setSelectedFilter = (state, selectedFilter) => {
     } else {
       if (draft.selectedTool === options.equalizerTool.id) {
         const activeSpectrumId = state.activeSpectrum.id;
-        
+
         const spectrumIndex = draft.data.findIndex(
           (spectrum) => spectrum.id === activeSpectrumId,
         );
-        
+
         const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
         activeObject.data.x = state.tempData[spectrumIndex].x;
         activeObject.data.re = state.tempData[spectrumIndex].y;
