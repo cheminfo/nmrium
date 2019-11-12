@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
@@ -58,13 +58,6 @@ const ManualPhaseCorrectionPanel = () => {
     [value],
   );
 
-  useEffect(() => {
-    dispatch({
-      type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-      value: value,
-    });
-  }, [dispatch, value]);
-
   // const handleInputChanged = useCallback(
   //   (e) => {
   //     const _value = {
@@ -90,9 +83,17 @@ const ManualPhaseCorrectionPanel = () => {
   const handleRangeChange = useCallback(
     (e) => {
       const _value = { ...value, [e.name]: e.value };
+      let diff = {};
+      for (let key in value) {
+        diff[key] = _value[key] - value[key];
+      }
+      dispatch({
+        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+        value: diff,
+      });
       setValue(_value);
     },
-    [value],
+    [dispatch, value],
   );
 
   return (
