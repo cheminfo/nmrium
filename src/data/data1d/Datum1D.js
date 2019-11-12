@@ -108,11 +108,9 @@ export class Datum1D {
 
   applyAutoPeakPicking() {
     const peaks = autoPeakPicking(this);
-    console.log(peaks, this.peaks);
-    // this.peaks = [...peaks, ...this.peaks];
-    debugger;
+    // TODO auto peak picking should replace current peaks and not append
+    this.peaks = [...peaks, ...this.peaks];
     return this.peaks;
-    // let result = autoPeakPicking(this.data.x, this.data.re);
   }
 
   applyFilter(filterName, options) {
