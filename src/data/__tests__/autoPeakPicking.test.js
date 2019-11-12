@@ -9,7 +9,7 @@ describe('test peakPicking', () => {
   );
 
   it('check baseline', () => {
-    let peaks = autoPeakPicking(data.x, data.re);
+    let peaks = autoPeakPicking({ data });
     expect(peaks).toHaveLength(106);
   });
 });
