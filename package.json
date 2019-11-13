@@ -2,6 +2,10 @@
   "name": "nmr-displayer",
   "version": "0.1.0",
   "private": true,
+  "module": "lib/component/NMRDisplayer.js",
+  "files": [
+    "lib"
+  ],
   "dependencies": {
     "@emotion/core": "^10.0.22",
     "bootstrap": "^4.3.1",
@@ -42,6 +46,8 @@
     "trailingComma": "all"
   },
   "scripts": {
+    "compile": "babel src --out-dir lib --ignore \"src/**/__tests__/*\",\"src/dashboard/*\" --quiet",
+    "prepublishOnly": "npm run compile",
     "start": "react-scripts start ",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -71,6 +77,10 @@
   },
   "homepage": ".",
   "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/plugin-proposal-class-properties": "^7.7.0",
+    "@babel/preset-react": "^7.7.0",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.6.0",
     "eslint-config-cheminfo-react": "^3.1.2",
