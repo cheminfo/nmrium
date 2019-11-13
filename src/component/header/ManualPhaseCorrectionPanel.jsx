@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
@@ -58,41 +58,41 @@ const ManualPhaseCorrectionPanel = () => {
     [value],
   );
 
-  useEffect(() => {
-    dispatch({
-      type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-      value: value,
-    });
-  }, [dispatch, value]);
-
-  // const handleInputChanged = useCallback(
-  //   (e) => {
-  //     const _value = {
-  //       ...value,
-  //       [e.target.name]: e.target.validity.valid
-  //         ? Number(e.target.value) - value[e.target.name]
-  //         : value[e.target.name],
-  //     };
-  //     for (let key in value) {
-  //       if (value[key] === _value[key]) {
-  //         _value[key] -= value[key];
-  //       }
-  //     }
-  //     setValue(_value);
-  //     // dispatch({
-  //     //   type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-  //     //   value: _value,
-  //     // });
-  //   },
-  //   [value],
-  // );
+  const handleInputChanged = useCallback(
+    (e) => {
+      const _value = {
+        ...value,
+        [e.target.name]: e.target.validity.valid
+          ? Number(e.target.value) - value[e.target.name]
+          : value[e.target.name],
+      };
+      for (let key in value) {
+        if (value[key] === _value[key]) {
+          _value[key] -= value[key];
+        }
+      }
+      dispatch({
+        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+        value: _value,
+      });
+    },
+    [dispatch, value],
+  );
 
   const handleRangeChange = useCallback(
     (e) => {
       const _value = { ...value, [e.name]: e.value };
+      let diff = {};
+      for (let key in value) {
+        diff[key] = _value[key] - value[key];
+      }
+      dispatch({
+        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+        value: diff,
+      });
       setValue(_value);
     },
-    [value],
+    [dispatch, value],
   );
 
   return (
@@ -104,7 +104,7 @@ const ManualPhaseCorrectionPanel = () => {
         type="text"
         value={value.ph0}
         onInput={handleInput}
-        // onChange={handleInputChanged}
+        onChange={handleInputChanged}
         // pattern="^\d*(\.\d{0,10})?$"
       />
       <span style={styles.label}>PH1: </span>
@@ -114,7 +114,7 @@ const ManualPhaseCorrectionPanel = () => {
         type="text"
         value={value.ph1}
         onInput={handleInput}
-        // onChange={handleInputChanged}
+        onChange={handleInputChanged}
         // pattern="^\d*(\.\d{0,2})?$"
       />
       <InputRange
