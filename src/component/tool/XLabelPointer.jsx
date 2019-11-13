@@ -9,10 +9,11 @@ const style = {
   cursor: 'crosshair',
   transformOrigin: 'bottom right',
   position: 'absolute',
-  top: '-14px',
-  left: '-26px',
+  top: '-18px',
+  left: '-30px',
   pointerEvents: 'none',
   overflow: 'visible',
+  userSelect: 'none',
 };
 
 const XLabelPointer = () => {

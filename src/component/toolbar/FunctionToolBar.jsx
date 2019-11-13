@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
-import { SET_SELECTED_TOOL, AUTO_PEAK_PICKING } from '../reducer/Actions';
+import { SET_SELECTED_TOOL } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
@@ -43,9 +43,9 @@ const FunctionToolBar = ({ defaultValue }) => {
     [handleChangeOption],
   );
 
-  const handleAutoPeakPicking = useCallback(() => {
-    dispatch({ type: AUTO_PEAK_PICKING });
-  }, [dispatch]);
+  // const handleAutoPeakPicking = useCallback(() => {
+  //   dispatch({ type: AUTO_PEAK_PICKING });
+  // }, [dispatch]);
 
   const handleOnKeyPressed = useCallback(
     (e) => {
@@ -99,7 +99,7 @@ const FunctionToolBar = ({ defaultValue }) => {
         </ToggleButton>
 
         <ToggleButton
-          key={3}
+          key={options.integral.id}
           value={options.integral.id}
           disabled={!activeSpectrum}
           className="ci-icon-nmr-integrate"
@@ -107,6 +107,19 @@ const FunctionToolBar = ({ defaultValue }) => {
         >
           <ToolTip
             title={`${options.integral.label} ( Press i )`}
+            popupPlacement="right"
+            offset={{ x: 10, y: 0 }}
+          />
+        </ToggleButton>
+
+        <ToggleButton
+          key={options.autoPeaksPicking.id}
+          value={options.autoPeaksPicking.id}
+          className="ci-icon-nmr-range-picking"
+          style={styles.icon}
+        >
+          <ToolTip
+            title={options.autoPeaksPicking.label}
             popupPlacement="right"
             offset={{ x: 10, y: 0 }}
           />
@@ -121,21 +134,6 @@ const FunctionToolBar = ({ defaultValue }) => {
         </ToolTip>
       </ToggleButton> */}
       </ToggleButtonGroup>
-
-      <button
-        className=""
-        style={{ ...styles.icon, ...styles.button }}
-        type="button"
-        onClick={handleAutoPeakPicking}
-      >
-        <ToolTip
-          title={`Auto Peak Picking`}
-          popupPlacement="right"
-          offset={{ x: 10, y: 0 }}
-        >
-          A
-        </ToolTip>
-      </button>
     </>
   );
 };

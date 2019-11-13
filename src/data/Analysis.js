@@ -9,22 +9,14 @@ import { MoleculeManager } from './molecules/MoleculeManager';
 export class Analysis {
   data1d = [];
   molecules = [];
-  constructor(data1d, molecules = []) {
-    this.data1d = Object.assign([], data1d);
+  constructor(data1d = [], molecules = []) {
+    this.data1d = data1d.slice();
     this.data2d = [];
-    this.molecules = Object.assign([], molecules); // chemical structures
+    this.molecules = molecules.slice(); // chemical structures
     this.preferences = {
       display: {},
     };
   }
-  // constructor(json = {}) {
-  //    this.data1d = json.data1d ? Data1DManager.fromJSON(json.data1d) : [];
-  //    this.data2d = [];
-  //    this.molecules = []; // chemical structures
-  //    this.preferences = {
-  //      display: {},
-  //    };
-  // }
 
   static async build(json = {}) {
     const vData1d = await Data1DManager.fromJSON(json.data1d);

@@ -13,6 +13,7 @@ const axisStyles = css`
     stroke: black;
     stroke-width: 1;
     shape-rendering: crispEdges;
+    user-select: none;
   }
 `;
 

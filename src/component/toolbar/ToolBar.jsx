@@ -1,7 +1,8 @@
 import React from 'react';
 
+import { useChartData } from '../context/ChartContext';
+
 import FunctionToolBar from './FunctionToolBar';
-import { options } from './ToolTypes';
 import HistoryToolBar from './HistoryToolBar';
 import BasicToolBar from './BasicToolBar';
 import ViewButton from './ViewButton';
@@ -13,9 +14,10 @@ const styles = {
   alignItems: 'start',
 };
 const ToolBar = () => {
+  const { selectedTool } = useChartData();
   return (
     <div style={styles}>
-      <FunctionToolBar defaultValue={options.zoom.id} />
+      <FunctionToolBar defaultValue={selectedTool} />
       <FiltersToolBar />
       <HistoryToolBar />
       <BasicToolBar />

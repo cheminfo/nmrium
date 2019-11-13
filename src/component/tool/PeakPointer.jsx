@@ -38,7 +38,7 @@ const PeakPointer = () => {
       ) {
         const scale = getScale(activeSpectrum.id);
 
-        const zoon = [
+        const range = [
           scale.x.invert(mouseCoordinates.x - xShift),
           scale.x.invert(mouseCoordinates.x + xShift),
         ].sort(function(a, b) {
@@ -49,9 +49,9 @@ const PeakPointer = () => {
         const spectrumData = data.find((d) => d.id === activeSpectrum.id);
 
         const maxIndex =
-          spectrumData.x.findIndex((number) => number >= zoon[1]) - 1;
+          spectrumData.x.findIndex((number) => number >= range[1]) - 1;
         const minIndex = spectrumData.x.findIndex(
-          (number) => number >= zoon[0],
+          (number) => number >= range[0],
         );
 
         const yDataRange = spectrumData.y.slice(minIndex, maxIndex);
