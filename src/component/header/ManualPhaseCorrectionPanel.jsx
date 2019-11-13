@@ -67,7 +67,7 @@ const ManualPhaseCorrectionPanel = () => {
       };
       for (let key in value) {
         if (value[key] === _value[key]) {
-          _value[key] -= value[key]
+          _value[key] -= value[key];
         }
       }
       dispatch({

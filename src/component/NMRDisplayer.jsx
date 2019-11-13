@@ -136,7 +136,6 @@ const NMRDisplayer = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log(containerRef);
     dispatch({
       type: SET_DIMENSIONS,
       height: containerRef.current.getBoundingClientRect().height,
