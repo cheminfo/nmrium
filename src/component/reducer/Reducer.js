@@ -630,7 +630,6 @@ const setSelectedFilter = (state, selectedFilter) => {
         draft.verticalIndicatorPosition = scaleX(xValue);
         draft.selectedTool = options.equalizerTool.id;
       } else {
-        alert('ssssssssssssssssssssssssss')
         if (draft.selectedTool === options.equalizerTool.id) {
           const activeSpectrumId = state.activeSpectrum.id;
 
