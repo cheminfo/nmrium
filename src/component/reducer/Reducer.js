@@ -1,6 +1,7 @@
 import { produce, original } from 'immer';
 import * as d3 from 'd3';
 import { XY } from 'ml-spectra-processing';
+import max from 'ml-array-max';
 
 import { Datum1D } from '../../data/data1d/Datum1D';
 import { Data1DManager } from '../../data/data1d/Data1DManager';
@@ -603,16 +604,33 @@ const setSelectedOptionPanel = (state, selectedOptionPanel) => {
   return { ...state, selectedOptionPanel };
 };
 
+function getStrongestPeak(state) {
+  const { activeSpectrum, data } = state;
+
+  const activeSpectrumId = activeSpectrum.id;
+  const activeData = data.find((d) => d.id === activeSpectrumId);
+  const strongestPeakValue = max(activeData.y);
+  const index = activeData.y.findIndex((val) => val === strongestPeakValue);
+  return {
+    xValue: activeData.x[index],
+    yValue: strongestPeakValue,
+    index: index,
+  };
+}
+
 const setSelectedFilter = (state, selectedFilter) => {
+  const scaleX = getScale(state).x;
+
   return produce(state, (draft) => {
     if (selectedFilter) {
       draft.tempData = state.data;
       //select the equalizer tool when you enable manual phase correction filter
       if (selectedFilter === Filters.phaseCorrection.name) {
-        //initialize position of the vertical line equalizer indicator
-        draft.verticalIndicatorPosition = state.width / 2;
+        const { xValue } = getStrongestPeak(state);
+        draft.verticalIndicatorPosition = scaleX(xValue);
         draft.selectedTool = options.equalizerTool.id;
       } else {
+        alert('ssssssssssssssssssssssssss')
         if (draft.selectedTool === options.equalizerTool.id) {
           const activeSpectrumId = state.activeSpectrum.id;
 
