@@ -25,18 +25,7 @@ const RangesTablePanel = () => {
             <TableCell align="center">Range</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {/* {matches.map((key) => (
-              <TableRow key={key} className="Information">
-                <TableCell size={3} align="left">
-                  {key}
-                </TableCell>
-                <TableCell size={9} align="left" style={{ paddingLeft: 5 }}>
-                  {`${information[key]}`}
-                </TableCell>
-              </TableRow>
-            ))} */}
-        </TableBody>
+        {/* <TableBody /> */}
       </Table>
     </>
   ) : (
