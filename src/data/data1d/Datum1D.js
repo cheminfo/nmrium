@@ -1,6 +1,5 @@
 // import baseline from './baseline';
 import max from 'ml-array-max';
-import { parseWithoutProcessing } from 'handlebars';
 
 import { Filters } from './filter1d/Filters';
 import { reduce as reduceZeroFillingFilter } from './filter1d/zeroFilling';
@@ -166,8 +165,6 @@ export class Datum1D {
           zeroFillingFilterOption.value,
         );
       }
-    } else {
-      this.addFilter(zeroFillingFilterOption);
     }
 
     if (previousLineBroadeningFilter) {
@@ -182,11 +179,8 @@ export class Datum1D {
           lineBroadeningFilterOption.value,
         );
       }
-    } else {
-      this.addFilter(lineBroadeningFilterOption);
     }
 
-    // this.addFilter(lineBroadeningFilterOption);
     if (previousLineBroadeningFilter && previousZeroFillingFilter) {
       this.reapplyFilters();
     } else {
