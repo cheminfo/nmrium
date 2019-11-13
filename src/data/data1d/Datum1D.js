@@ -1,5 +1,6 @@
 // import baseline from './baseline';
 import max from 'ml-array-max';
+import { parseWithoutProcessing } from 'handlebars';
 
 import { Filters } from './filter1d/Filters';
 import { reduce as reduceZeroFillingFilter } from './filter1d/zeroFilling';
@@ -74,8 +75,16 @@ export class Datum1D {
     this.filters = Object.assign([], options.filters);
     this.ranges = Object.assign([], options.ranges);
 
+    this.preprocessing();
+
     //reapply filters after load the original data
     this.reapplyFilters();
+  }
+
+  preprocessing() {
+    if (this.info.isFid) {
+      // TODO need to check if we have the digital filter and change the data
+    }
   }
 
   setIsRealSpectrumVisible(isVisible) {
