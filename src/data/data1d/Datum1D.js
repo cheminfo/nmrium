@@ -1,5 +1,4 @@
 // import baseline from './baseline';
-// import autoPeakPicking from './autoPeakPicking';
 import max from 'ml-array-max';
 
 import { Filters } from './filter1d/Filters';
@@ -72,12 +71,19 @@ export class Datum1D {
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
     this.integrals = Object.assign([], options.integrals); // array of object (from: xIndex, to: xIndex)
-    this.signals = Object.assign([], options.signals);
     this.filters = Object.assign([], options.filters);
     this.ranges = Object.assign([], options.ranges);
 
+    this.preprocessing();
+
     //reapply filters after load the original data
     this.reapplyFilters();
+  }
+
+  preprocessing() {
+    if (this.info.isFid) {
+      // TODO need to check if we have the digital filter and change the data
+    }
   }
 
   setIsRealSpectrumVisible(isVisible) {
@@ -104,17 +110,18 @@ export class Datum1D {
     return this.integrals;
   }
 
+  getInfo() {
+    return this.info;
+  }
+
   baseline() {
     // let result = baseline(this.data.x, this.data.re, this.data.im);
   }
 
-  applyAutoPeakPicking() {
-    const peaks = autoPeakPicking(this);
-    this.peaks = [...peaks, ...this.peaks];
-    // console.log(this.peaks);
-
+  applyAutoPeakPicking(options) {
+    const peaks = autoPeakPicking(this, options);
+    this.peaks = peaks;
     return this.peaks;
-    // let result = autoPeakPicking(this.data.x, this.data.re);
   }
 
   applyFilter(filterName, options) {
@@ -162,8 +169,6 @@ export class Datum1D {
           zeroFillingFilterOption.value,
         );
       }
-    } else {
-      this.addFilter(zeroFillingFilterOption);
     }
 
     if (previousLineBroadeningFilter) {
@@ -178,15 +183,13 @@ export class Datum1D {
           lineBroadeningFilterOption.value,
         );
       }
-    } else {
-      this.addFilter(lineBroadeningFilterOption);
     }
 
-    // this.addFilter(lineBroadeningFilterOption);
     if (previousLineBroadeningFilter && previousZeroFillingFilter) {
       this.reapplyFilters();
     } else {
       this.applyFilter(Filters.zeroFilling.name, options.zeroFillingSize);
+      this.applyFilter(Filters.digitalFilter.name);
       this.applyFilter(Filters.fft.name, options.lineBroadeningValue);
     }
   }
@@ -325,7 +328,7 @@ export class Datum1D {
       meta: this.meta,
       peaks: this.peaks,
       integrals: this.integrals,
-      signals: this.signals,
+      ranges: this.ranges,
       filters: this.filters,
     };
   }

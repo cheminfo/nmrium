@@ -8,6 +8,8 @@ import { Filters } from '../../data/data1d/filter1d/Filters';
 
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
+import { options } from '../toolbar/ToolTypes';
+import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 
 const headerStyle = css`
   display: flex;
@@ -51,15 +53,17 @@ const headerStyle = css`
 `;
 
 const Header = ({ isFullscreen, onMaximize }) => {
-  const { selectedFilter } = useChartData();
+  const { selectedOptionPanel } = useChartData();
 
   const selectedPanel = useMemo(() => {
-    if (selectedFilter === Filters.zeroFilling.name) {
+    if (selectedOptionPanel === Filters.zeroFilling.name) {
       return <ZeroFillingOptionsPanel />;
-    } else if (selectedFilter === Filters.phaseCorrection.name) {
+    } else if (selectedOptionPanel === Filters.phaseCorrection.name) {
       return <ManualPhaseCorrectionPanel />;
+    } else if (selectedOptionPanel === options.autoPeaksPicking.id) {
+      return <AutoPeakPickingOptionPanel />;
     }
-  }, [selectedFilter]);
+  }, [selectedOptionPanel]);
 
   return (
     <div css={headerStyle}>

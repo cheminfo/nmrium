@@ -1,5 +1,5 @@
-import h1 from './1h.json';
-import c13 from './13c.json';
+import h1 from './1h';
+import c13 from './13c';
 
 const defaults = {
   '1h': h1,

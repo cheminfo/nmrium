@@ -157,13 +157,13 @@ const NMRDisplayer = (props) => {
           ref={fullScreenRef}
           style={{
             backgroundColor: 'white',
-            flex: 1,
+            height: '100%',
             display: 'flex',
             flexDirection: 'column',
           }}
         >
           <Header isFullscreen={isFullscreen} onMaximize={toggle} />
-          <div style={{ height: '100%' }} ref={containerRef}>
+          <div style={{ flex: 1 }} ref={containerRef}>
             <DropZone>
               <ToolBar />
               <SplitPane

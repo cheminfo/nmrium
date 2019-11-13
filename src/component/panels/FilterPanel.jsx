@@ -14,6 +14,8 @@ import CheckBox from '../elements/CheckBox';
 import { useDispatch } from '../context/DispatchContext';
 import { ENABLE_FILTER, DELETE_FILTER } from '../reducer/Actions';
 
+import NoTableData from './placeholder/NoTableData';
+
 const styles = {
   button: {
     backgroundColor: 'transparent',
@@ -86,17 +88,7 @@ const FilterPanel = () => {
       <TableBody>{filtersTableRow}</TableBody>
     </Table>
   ) : (
-    <p
-      style={{
-        textAlign: 'center',
-        width: '100%',
-        fontSize: '11px',
-        padding: '5px',
-        color: 'gray',
-      }}
-    >
-      No Data
-    </p>
+    <NoTableData />
   );
 };
 

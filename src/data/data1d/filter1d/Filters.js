@@ -5,6 +5,7 @@ import lineBroadening from './lineBroadening';
 import phaseCorrection from './phaseCorrection';
 import shiftX from './shiftX';
 import zeroFilling from './zeroFilling';
+import digitalFilter from './digitalFilter';
 
 export const Filters = {
   absolute,
@@ -14,4 +15,5 @@ export const Filters = {
   phaseCorrection,
   shiftX,
   zeroFilling,
+  digitalFilter,
 };

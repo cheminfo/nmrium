@@ -1,6 +1,7 @@
 import { produce, original } from 'immer';
 import * as d3 from 'd3';
 import { XY } from 'ml-spectra-processing';
+import max from 'ml-array-max';
 
 import { Datum1D } from '../../data/data1d/Datum1D';
 import { Data1DManager } from '../../data/data1d/Data1DManager';
@@ -56,6 +57,7 @@ import {
   SET_VERTICAL_INDICATOR_X_POSITION,
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+  SET_SELECTED_OPTIONS_PANEL,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -182,22 +184,18 @@ const getClosePeak = (xShift, mouseCoordinates, state) => {
   const { activeSpectrum } = state;
   const start = scale.x.invert(mouseCoordinates.x - xShift);
   const end = scale.x.invert(mouseCoordinates.x + xShift);
-  const zoon = [];
+  const range = [];
   if (start > end) {
-    zoon[0] = end;
-    zoon[1] = start;
+    range[0] = end;
+    range[1] = start;
   } else {
-    zoon[0] = start;
-    zoon[1] = end;
+    range[0] = start;
+    range[1] = end;
   }
-  // const zoon = [
-  //   scale.x.invert(mouseCoordinates.x - xShift),
-  //   scale.x.invert(mouseCoordinates.x + xShift),
-  // ];
 
   const closePeak = AnalysisObj.getDatum1D(activeSpectrum.id).lookupPeak(
-    zoon[0],
-    zoon[1],
+    range[0],
+    range[1],
   );
   return closePeak;
 };
@@ -386,22 +384,26 @@ const handleResizeIntegral = (state, integralData) => {
   });
 };
 
+function setDataByFilters(draft, activeObject, activeSpectrumId) {
+  const XYData = activeObject.getReal();
+  const spectrumIndex = draft.data.findIndex(
+    (spectrum) => spectrum.id === activeSpectrumId,
+  );
+
+  draft.data[spectrumIndex].x = XYData.x;
+  draft.data[spectrumIndex].y = XYData.y;
+  draft.data[spectrumIndex].filters = activeObject.getFilters();
+  draft.data[spectrumIndex].info = activeObject.getInfo();
+}
+
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   return produce(state, (draft) => {
+    //apply filter into the spectrum
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
-    //apply filter into the spectrum
     activeObject.applyFilter(Filters.shiftX.name, shiftValue);
-
-    const XYData = activeObject.getReal();
-    const spectrumIndex = draft.data.findIndex(
-      (spectrum) => spectrum.id === activeSpectrumId,
-    );
-
-    draft.data[spectrumIndex].x = XYData.x;
-    draft.data[spectrumIndex].y = XYData.y;
-    draft.data[spectrumIndex].filters = activeObject.getFilters();
+    setDataByFilters(draft, activeObject, activeSpectrumId);
     setDomain(draft);
   });
 };
@@ -413,16 +415,9 @@ const applyZeroFillingFilter = (state, filterOptions) => {
 
     activeObject.applyZeroFillingFilter(filterOptions);
 
-    const XYData = activeObject.getReal();
-    const spectrumIndex = draft.data.findIndex(
-      (spectrum) => spectrum.id === activeSpectrumId,
-    );
-
-    draft.data[spectrumIndex].x = XYData.x;
-    draft.data[spectrumIndex].y = XYData.y;
-    draft.data[spectrumIndex].filters = activeObject.getFilters();
-    draft.tempData = null;
+    setDataByFilters(draft, activeObject, activeSpectrumId);
     setDomain(draft);
+    setMode(draft);
   });
 };
 const applyFFTFilter = (state) => {
@@ -433,16 +428,7 @@ const applyFFTFilter = (state) => {
     //apply filter into the spectrum
     activeObject.applyFilter(Filters.fft.name, {});
 
-    const XYData = activeObject.getReal();
-    const spectrumIndex = draft.data.findIndex(
-      (spectrum) => spectrum.id === activeSpectrumId,
-    );
-
-    draft.data[spectrumIndex].x = XYData.x;
-    draft.data[spectrumIndex].y = XYData.y;
-    draft.data[spectrumIndex].filters = activeObject.getFilters();
-    draft.data[spectrumIndex].info.isFid = activeObject.info.isFid;
-    draft.tempData = null;
+    setDataByFilters(draft, activeObject, activeSpectrumId);
 
     setDomain(draft);
     setMode(draft);
@@ -493,7 +479,7 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
 
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
-    // setDomain(draft);
+    setDomain(draft);
   });
 };
 
@@ -584,39 +570,75 @@ const setPointerCoordinates = (state, pointerCoordinates) => {
 };
 
 const setSelectedTool = (state, selectedTool) => {
-  return { ...state, selectedTool };
-};
-
-const setSelectedFilter = (state, selectedFilter) => {
   return produce(state, (draft) => {
-    //initialize position of the vertical line equalizer indicator
-    draft.verticalIndicatorPosition = state.width / 2;
-
-    draft.tempData = state.data;
-    //select the equalizer tool when you enable manual phase correction filter
-    if (selectedFilter === Filters.phaseCorrection.name) {
-      draft.selectedTool = options.equalizerTool.id;
+    if (selectedTool) {
+      draft.selectedTool = selectedTool;
+      if (options[selectedTool].hasOptionPanel) {
+        draft.selectedOptionPanel = selectedTool;
+      }
     } else {
-      if (draft.selectedTool === options.equalizerTool.id) {
-        const activeSpectrumId = state.activeSpectrum.id;
-
-        const spectrumIndex = draft.data.findIndex(
-          (spectrum) => spectrum.id === activeSpectrumId,
-        );
-
-        const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
-        activeObject.data.x = state.tempData[spectrumIndex].x;
-        activeObject.data.re = state.tempData[spectrumIndex].y;
-        activeObject.data.im = state.tempData[spectrumIndex].im;
-
-        draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
-        draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
-        draft.tempData = null;
-        draft.selectedTool = null;
-        setDomain(draft);
+      draft.selectedTool = null;
+      if (options[state.selectedTool].hasOptionPanel) {
+        draft.selectedOptionPanel = null;
       }
     }
-    draft.selectedFilter = selectedFilter;
+  });
+};
+const setSelectedOptionPanel = (state, selectedOptionPanel) => {
+  return { ...state, selectedOptionPanel };
+};
+
+function getStrongestPeak(state) {
+  const { activeSpectrum, data } = state;
+
+  const activeSpectrumId = activeSpectrum.id;
+  const activeData = data.find((d) => d.id === activeSpectrumId);
+  const strongestPeakValue = max(activeData.y);
+  const index = activeData.y.findIndex((val) => val === strongestPeakValue);
+  return {
+    xValue: activeData.x[index],
+    yValue: strongestPeakValue,
+    index: index,
+  };
+}
+
+const setSelectedFilter = (state, selectedFilter) => {
+  const scaleX = getScale(state).x;
+
+  return produce(state, (draft) => {
+    if (selectedFilter) {
+      draft.tempData = state.data;
+      //select the equalizer tool when you enable manual phase correction filter
+      if (selectedFilter === Filters.phaseCorrection.name) {
+        const { xValue } = getStrongestPeak(state);
+        draft.verticalIndicatorPosition = scaleX(xValue);
+        draft.selectedTool = options.equalizerTool.id;
+      } else {
+        if (draft.selectedTool === options.equalizerTool.id) {
+          const activeSpectrumId = state.activeSpectrum.id;
+
+          const spectrumIndex = draft.data.findIndex(
+            (spectrum) => spectrum.id === activeSpectrumId,
+          );
+
+          const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+          activeObject.data.x = state.tempData[spectrumIndex].x;
+          activeObject.data.re = state.tempData[spectrumIndex].y;
+          activeObject.data.im = state.tempData[spectrumIndex].im;
+
+          draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
+          draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
+          draft.tempData = null;
+          draft.selectedTool = null;
+          setDomain(draft);
+        }
+      }
+      draft.selectedFilter = selectedFilter;
+      draft.selectedOptionPanel = selectedFilter;
+    } else {
+      draft.selectedFilter = null;
+      draft.selectedOptionPanel = null;
+    }
   });
 };
 
@@ -873,11 +895,11 @@ const handleChangeIntegralZoom = (state, zoomFactor) => {
     }
   });
 };
-const handleAutoPeakPicking = (state) => {
+const handleAutoPeakPicking = (state, options) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const ob = AnalysisObj.getDatum1D(activeSpectrumId);
-    const peaks = ob.applyAutoPeakPicking();
+    const peaks = ob.applyAutoPeakPicking(options);
     const index = state.data.findIndex((d) => d.id === activeSpectrumId);
     if (index !== -1) {
       draft.data[index].peaks = peaks;
@@ -986,6 +1008,7 @@ export const initialState = {
   originDomain: {},
   selectedTool: options.zoom.id,
   selectedFilter: null,
+  selectedOptionPanel: null,
 
   // peakNotations: [],
   width: null,
@@ -1060,6 +1083,10 @@ export const spectrumReducer = (state, action) => {
 
     case SET_SELECTED_TOOL:
       return setSelectedTool(state, action.selectedTool);
+
+    case SET_SELECTED_OPTIONS_PANEL:
+      return setSelectedOptionPanel(state, action.selectedOptionPanel);
+
     case SET_SELECTED_FILTER:
       return setSelectedFilter(state, action.selectedFilter);
 
@@ -1132,7 +1159,7 @@ export const spectrumReducer = (state, action) => {
       return setVerticalIndicatorXPosition(state, action.position);
 
     case AUTO_PEAK_PICKING:
-      return handleAutoPeakPicking(state);
+      return handleAutoPeakPicking(state, action.options);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);
