@@ -110,6 +110,10 @@ export class Datum1D {
     return this.integrals;
   }
 
+  getInfo() {
+    return this.info;
+  }
+
   baseline() {
     // let result = baseline(this.data.x, this.data.re, this.data.im);
   }

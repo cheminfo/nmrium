@@ -388,22 +388,27 @@ const handleResizeIntegral = (state, integralData) => {
   });
 };
 
+function setDataByFilters(draft, activeObject, activeSpectrumId) {
+  const XYData = activeObject.getReal();
+  const spectrumIndex = draft.data.findIndex(
+    (spectrum) => spectrum.id === activeSpectrumId,
+  );
+
+  draft.data[spectrumIndex].x = XYData.x;
+  draft.data[spectrumIndex].y = XYData.y;
+  draft.data[spectrumIndex].filters = activeObject.getFilters();
+  console.log(activeObject.getInfo());
+  draft.data[spectrumIndex].info = activeObject.getInfo();
+}
+
 const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   return produce(state, (draft) => {
+    //apply filter into the spectrum
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
-    //apply filter into the spectrum
     activeObject.applyFilter(Filters.shiftX.name, shiftValue);
-
-    const XYData = activeObject.getReal();
-    const spectrumIndex = draft.data.findIndex(
-      (spectrum) => spectrum.id === activeSpectrumId,
-    );
-
-    draft.data[spectrumIndex].x = XYData.x;
-    draft.data[spectrumIndex].y = XYData.y;
-    draft.data[spectrumIndex].filters = activeObject.getFilters();
+    setDataByFilters(draft, activeObject, activeSpectrumId);
     setDomain(draft);
   });
 };
@@ -415,16 +420,9 @@ const applyZeroFillingFilter = (state, filterOptions) => {
 
     activeObject.applyZeroFillingFilter(filterOptions);
 
-    const XYData = activeObject.getReal();
-    const spectrumIndex = draft.data.findIndex(
-      (spectrum) => spectrum.id === activeSpectrumId,
-    );
-
-    draft.data[spectrumIndex].x = XYData.x;
-    draft.data[spectrumIndex].y = XYData.y;
-    draft.data[spectrumIndex].filters = activeObject.getFilters();
-    draft.tempData = null;
+    setDataByFilters(draft, activeObject, activeSpectrumId);
     setDomain(draft);
+    setMode(draft);
   });
 };
 const applyFFTFilter = (state) => {
@@ -435,16 +433,7 @@ const applyFFTFilter = (state) => {
     //apply filter into the spectrum
     activeObject.applyFilter(Filters.fft.name, {});
 
-    const XYData = activeObject.getReal();
-    const spectrumIndex = draft.data.findIndex(
-      (spectrum) => spectrum.id === activeSpectrumId,
-    );
-
-    draft.data[spectrumIndex].x = XYData.x;
-    draft.data[spectrumIndex].y = XYData.y;
-    draft.data[spectrumIndex].filters = activeObject.getFilters();
-    draft.data[spectrumIndex].info.isFid = activeObject.info.isFid;
-    draft.tempData = null;
+    setDataByFilters(draft, activeObject, activeSpectrumId);
 
     setDomain(draft);
     setMode(draft);
