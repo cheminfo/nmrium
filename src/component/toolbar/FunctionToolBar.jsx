@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
-import { SET_SELECTED_TOOL } from '../reducer/Actions';
+import { SET_SELECTED_TOOL, AUTO_PEAK_PICKING } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
@@ -10,6 +10,12 @@ import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 import { options } from './ToolTypes';
 
 const styles = {
+  button: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    width: '35px',
+    height: '35px',
+  },
   icon: {
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',
@@ -37,6 +43,10 @@ const FunctionToolBar = ({ defaultValue }) => {
     [handleChangeOption],
   );
 
+  const handleAutoPeakPicking = useCallback(() => {
+    dispatch({ type: AUTO_PEAK_PICKING });
+  }, [dispatch]);
+
   const handleOnKeyPressed = useCallback(
     (e) => {
       if (e.key === 'z') {
@@ -62,45 +72,46 @@ const FunctionToolBar = ({ defaultValue }) => {
   }, [defaultValue, handleOnKeyPressed]);
 
   return (
-    <ToggleButtonGroup value={option} onChange={handleChange}>
-      <ToggleButton key={options.zoom.id} value={options.zoom.id}>
-        <ToolTip
-          title={`${options.zoom.label} ( Press z )`}
-          popupPlacement="right"
-          offset={{ x: 10, y: 0 }}
+    <>
+      <ToggleButtonGroup value={option} onChange={handleChange}>
+        <ToggleButton key={options.zoom.id} value={options.zoom.id}>
+          <ToolTip
+            title={`${options.zoom.label} ( Press z )`}
+            popupPlacement="right"
+            offset={{ x: 10, y: 0 }}
+          >
+            <FaSearchPlus />
+          </ToolTip>
+        </ToggleButton>
+
+        <ToggleButton
+          key={options.peakPicking.id}
+          value={options.peakPicking.id}
+          disabled={!activeSpectrum}
+          className="ci-icon-nmr-peak-picking"
+          style={styles.icon}
         >
-          <FaSearchPlus />
-        </ToolTip>
-      </ToggleButton>
+          <ToolTip
+            title={`${options.peakPicking.label} ( Press p )`}
+            popupPlacement="right"
+            offset={{ x: 10, y: 0 }}
+          />
+        </ToggleButton>
 
-      <ToggleButton
-        key={options.peakPicking.id}
-        value={options.peakPicking.id}
-        disabled={!activeSpectrum}
-        className="ci-icon-nmr-peak-picking"
-        style={styles.icon}
-      >
-        <ToolTip
-          title={`${options.peakPicking.label} ( Press p )`}
-          popupPlacement="right"
-          offset={{ x: 10, y: 0 }}
-        />
-      </ToggleButton>
-
-      <ToggleButton
-        key={3}
-        value={options.integral.id}
-        disabled={!activeSpectrum}
-        className="ci-icon-nmr-integrate"
-        style={styles.icon}
-      >
-        <ToolTip
-          title={`${options.integral.label} ( Press i )`}
-          popupPlacement="right"
-          offset={{ x: 10, y: 0 }}
-        />
-      </ToggleButton>
-      {/* <ToggleButton key={options.HMove.id} value={options.HMove.id}>
+        <ToggleButton
+          key={3}
+          value={options.integral.id}
+          disabled={!activeSpectrum}
+          className="ci-icon-nmr-integrate"
+          style={styles.icon}
+        >
+          <ToolTip
+            title={`${options.integral.label} ( Press i )`}
+            popupPlacement="right"
+            offset={{ x: 10, y: 0 }}
+          />
+        </ToggleButton>
+        {/* <ToggleButton key={options.HMove.id} value={options.HMove.id}>
         <ToolTip
           title={`${options.HMove.label} ( Press m )`}
           popupPlacement="right"
@@ -109,7 +120,23 @@ const FunctionToolBar = ({ defaultValue }) => {
           <FaArrowsAlt />
         </ToolTip>
       </ToggleButton> */}
-    </ToggleButtonGroup>
+      </ToggleButtonGroup>
+
+      <button
+        className=""
+        style={{ ...styles.icon, ...styles.button }}
+        type="button"
+        onClick={handleAutoPeakPicking}
+      >
+        <ToolTip
+          title={`Auto Peak Picking`}
+          popupPlacement="right"
+          offset={{ x: 10, y: 0 }}
+        >
+          A
+        </ToolTip>
+      </button>
+    </>
   );
 };
 

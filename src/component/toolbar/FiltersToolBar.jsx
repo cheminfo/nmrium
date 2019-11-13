@@ -96,7 +96,7 @@ const BasicToolBar = () => {
       {selectedSpectrumInfo && isFFTApplicable(selectedSpectrumInfo) && (
         <button
           className="ci-icon-nmr-fourier-transform"
-          style={styles.icon}
+          style={{ ...styles.icon, ...styles.button }}
           type="button"
           onClick={handleOnFFTFilter}
         >

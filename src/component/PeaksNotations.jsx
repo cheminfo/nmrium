@@ -15,7 +15,6 @@ const PeaksNotations = () => {
 
     const reSortData = () => {
       const _data = [...data];
-
       return activeSpectrum
         ? _data.sort(function(x, y) {
             return x.id === activeSpectrum.id

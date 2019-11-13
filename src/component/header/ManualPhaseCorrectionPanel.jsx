@@ -5,6 +5,7 @@ import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
 } from '../reducer/Actions';
+import InputRange from '../elements/InputRange';
 
 const styles = {
   container: {
@@ -78,30 +79,59 @@ const ManualPhaseCorrectionPanel = () => {
     [dispatch, value],
   );
 
+  const handleRangeChange = useCallback(
+    (e) => {
+      const _value = { ...value, [e.name]: e.value };
+      let diff = {};
+      for (let key in value) {
+        diff[key] = _value[key] - value[key];
+      }
+      dispatch({
+        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+        value: diff,
+      });
+      setValue(_value);
+    },
+    [dispatch, value],
+  );
+
   return (
     <div style={styles.container}>
       <span style={styles.label}>PH0: </span>
       <input
         name="ph0"
         style={styles.input}
-        type="number"
+        type="text"
         value={value.ph0}
         onInput={handleInput}
         onChange={handleInputChanged}
-        pattern="^\d*(\.\d{0,10})?$"
-        step="0.5"
+        // pattern="^\d*(\.\d{0,10})?$"
       />
       <span style={styles.label}>PH1: </span>
       <input
         name="ph1"
         style={styles.input}
-        type="number"
+        type="text"
         value={value.ph1}
         onInput={handleInput}
         onChange={handleInputChanged}
-        pattern="^\d*(\.\d{0,2})?$"
-        step="0.5"
+        // pattern="^\d*(\.\d{0,2})?$"
       />
+      <InputRange
+        name="ph0"
+        value={value.ph0}
+        label="Change Ph0 By mouse click and drag"
+        style={{ width: '20%' }}
+        onChange={handleRangeChange}
+      />
+      <InputRange
+        name="ph1"
+        value={value.ph1}
+        label="Change Ph1 By mouse click and drag"
+        style={{ width: '20%' }}
+        onChange={handleRangeChange}
+      />
+
       <button
         type="button"
         style={styles.applyButton}

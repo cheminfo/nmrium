@@ -4,7 +4,8 @@ import max from 'ml-array-max';
 
 import { Filters } from './filter1d/Filters';
 import { reduce as reduceZeroFillingFilter } from './filter1d/zeroFilling';
-import { reduce as reduceLineBroadingFilter } from './filter1d/lineBroadening';
+import { reduce as reduceLineBroadeningFilter } from './filter1d/lineBroadening';
+import autoPeakPicking from './autoPeakPicking';
 
 export class Datum1D {
   /**
@@ -73,6 +74,7 @@ export class Datum1D {
     this.integrals = Object.assign([], options.integrals); // array of object (from: xIndex, to: xIndex)
     this.signals = Object.assign([], options.signals);
     this.filters = Object.assign([], options.filters);
+    this.ranges = Object.assign([], options.ranges);
 
     //reapply filters after load the original data
     this.reapplyFilters();
@@ -90,6 +92,10 @@ export class Datum1D {
     return this.peaks;
   }
 
+  getRanges() {
+    return this.ranges;
+  }
+
   setIntegrals(integrals) {
     this.integrals = Object.assign([], integrals);
   }
@@ -103,6 +109,11 @@ export class Datum1D {
   }
 
   applyAutoPeakPicking() {
+    const peaks = autoPeakPicking(this);
+    this.peaks = [...peaks, ...this.peaks];
+    // console.log(this.peaks);
+
+    return this.peaks;
     // let result = autoPeakPicking(this.data.x, this.data.re);
   }
 
@@ -156,7 +167,7 @@ export class Datum1D {
     }
 
     if (previousLineBroadeningFilter) {
-      const reduceResult = reduceLineBroadingFilter(
+      const reduceResult = reduceLineBroadeningFilter(
         previousLineBroadeningFilter.value,
         lineBroadeningFilterOption.value,
       );
