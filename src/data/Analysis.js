@@ -9,7 +9,7 @@ import { MoleculeManager } from './molecules/MoleculeManager';
 export class Analysis {
   data1d = [];
   molecules = [];
-  constructor(data1d, molecules = []) {
+  constructor(data1d = [], molecules = []) {
     this.data1d = data1d.slice();
     this.data2d = [];
     this.molecules = molecules.slice(); // chemical structures
