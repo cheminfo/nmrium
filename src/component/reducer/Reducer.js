@@ -397,7 +397,6 @@ function setDataByFilters(draft, activeObject, activeSpectrumId) {
   draft.data[spectrumIndex].x = XYData.x;
   draft.data[spectrumIndex].y = XYData.y;
   draft.data[spectrumIndex].filters = activeObject.getFilters();
-  console.log(activeObject.getInfo());
   draft.data[spectrumIndex].info = activeObject.getInfo();
 }
 
