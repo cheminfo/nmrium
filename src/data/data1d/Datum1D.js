@@ -106,10 +106,9 @@ export class Datum1D {
     // let result = baseline(this.data.x, this.data.re, this.data.im);
   }
 
-  applyAutoPeakPicking() {
-    const peaks = autoPeakPicking(this);
-    // TODO auto peak picking should replace current peaks and not append
-    this.peaks = [...peaks, ...this.peaks];
+  applyAutoPeakPicking(options) {
+    const peaks = autoPeakPicking(this, options);
+    this.peaks = peaks;
     return this.peaks;
   }
 

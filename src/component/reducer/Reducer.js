@@ -56,6 +56,7 @@ import {
   SET_VERTICAL_INDICATOR_X_POSITION,
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+  SET_SELECTED_OPTIONS_PANEL,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -584,39 +585,59 @@ const setPointerCoordinates = (state, pointerCoordinates) => {
 };
 
 const setSelectedTool = (state, selectedTool) => {
-  return { ...state, selectedTool };
+  return produce(state, (draft) => {
+    if (selectedTool) {
+      draft.selectedTool = selectedTool;
+      if (options[selectedTool].hasOptionPanel) {
+        draft.selectedOptionPanel = selectedTool;
+      }
+    } else {
+      draft.selectedTool = null;
+      if (options[state.selectedTool].hasOptionPanel) {
+        draft.selectedOptionPanel = null;
+      }
+    }
+  });
+};
+const setSelectedOptionPanel = (state, selectedOptionPanel) => {
+  return { ...state, selectedOptionPanel };
 };
 
 const setSelectedFilter = (state, selectedFilter) => {
   return produce(state, (draft) => {
-    //initialize position of the vertical line equalizer indicator
-    draft.verticalIndicatorPosition = state.width / 2;
+    if (selectedFilter) {
+      draft.tempData = state.data;
+      //select the equalizer tool when you enable manual phase correction filter
+      if (selectedFilter === Filters.phaseCorrection.name) {
+        //initialize position of the vertical line equalizer indicator
+        draft.verticalIndicatorPosition = state.width / 2;
+        draft.selectedTool = options.equalizerTool.id;
+      } else {
+        if (draft.selectedTool === options.equalizerTool.id) {
+          const activeSpectrumId = state.activeSpectrum.id;
 
-    draft.tempData = state.data;
-    //select the equalizer tool when you enable manual phase correction filter
-    if (selectedFilter === Filters.phaseCorrection.name) {
-      draft.selectedTool = options.equalizerTool.id;
-    } else {
-      if (draft.selectedTool === options.equalizerTool.id) {
-        const activeSpectrumId = state.activeSpectrum.id;
+          const spectrumIndex = draft.data.findIndex(
+            (spectrum) => spectrum.id === activeSpectrumId,
+          );
 
-        const spectrumIndex = draft.data.findIndex(
-          (spectrum) => spectrum.id === activeSpectrumId,
-        );
+          const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+          activeObject.data.x = state.tempData[spectrumIndex].x;
+          activeObject.data.re = state.tempData[spectrumIndex].y;
+          activeObject.data.im = state.tempData[spectrumIndex].im;
 
-        const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
-        activeObject.data.x = state.tempData[spectrumIndex].x;
-        activeObject.data.re = state.tempData[spectrumIndex].y;
-        activeObject.data.im = state.tempData[spectrumIndex].im;
-
-        draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
-        draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
-        draft.tempData = null;
-        draft.selectedTool = null;
-        setDomain(draft);
+          draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
+          draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
+          draft.tempData = null;
+          draft.selectedTool = null;
+          setDomain(draft);
+        }
       }
+      draft.selectedFilter = selectedFilter;
+      draft.selectedOptionPanel = selectedFilter;
+    } else {
+      draft.selectedFilter = null;
+      draft.selectedOptionPanel = null;
     }
-    draft.selectedFilter = selectedFilter;
   });
 };
 
@@ -873,11 +894,11 @@ const handleChangeIntegralZoom = (state, zoomFactor) => {
     }
   });
 };
-const handleAutoPeakPicking = (state) => {
+const handleAutoPeakPicking = (state, options) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const ob = AnalysisObj.getDatum1D(activeSpectrumId);
-    const peaks = ob.applyAutoPeakPicking();
+    const peaks = ob.applyAutoPeakPicking(options);
     const index = state.data.findIndex((d) => d.id === activeSpectrumId);
     if (index !== -1) {
       draft.data[index].peaks = peaks;
@@ -986,6 +1007,7 @@ export const initialState = {
   originDomain: {},
   selectedTool: options.zoom.id,
   selectedFilter: null,
+  selectedOptionPanel: null,
 
   // peakNotations: [],
   width: null,
@@ -1060,6 +1082,10 @@ export const spectrumReducer = (state, action) => {
 
     case SET_SELECTED_TOOL:
       return setSelectedTool(state, action.selectedTool);
+
+    case SET_SELECTED_OPTIONS_PANEL:
+      return setSelectedOptionPanel(state, action.selectedOptionPanel);
+
     case SET_SELECTED_FILTER:
       return setSelectedFilter(state, action.selectedFilter);
 
@@ -1132,7 +1158,7 @@ export const spectrumReducer = (state, action) => {
       return setVerticalIndicatorXPosition(state, action.position);
 
     case AUTO_PEAK_PICKING:
-      return handleAutoPeakPicking(state);
+      return handleAutoPeakPicking(state, action.options);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

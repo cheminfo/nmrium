@@ -13,6 +13,7 @@ const axisStyles = css`
     stroke: black;
     stroke-width: 1;
     shape-rendering: crispEdges;
+    user-select: none;
   }
 `;
 
@@ -23,6 +24,7 @@ const gridStyles = css`
     shape-rendering: crispEdges;
     stroke-dasharray: 3;
     stroke-width: 1;
+    user-select: none;
   }
 
   path {

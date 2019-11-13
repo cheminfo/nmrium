@@ -22,6 +22,8 @@ let stateValues = {
   step: 'initial',
 };
 
+let previousDiffValue = 0;
+
 const InputRange = ({
   name,
   minValue,
@@ -77,12 +79,20 @@ const InputRange = ({
         endY: stateValues.startY + screenY - stateValues.startScreenY,
       };
 
+      // console.log(stateValues.endX - stateValues.startX);
       const valueRange = maxValue - minValue;
       const positionDiff = stateValues.endX - stateValues.startX;
       const value =
         (positionDiff * valueRange) / stateValues.boundingRect.width;
+      onChange({
+        value:
+          positionDiff > previousDiffValue && positionDiff > 0
+            ? valueProps + Math.abs(value)
+            : valueProps - Math.abs(value),
+        name,
+      });
 
-      onChange({ value: valueProps + value, name });
+      previousDiffValue = positionDiff;
     }
   };
 

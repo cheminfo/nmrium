@@ -4,6 +4,7 @@ import { getPeakLabelNumberDecimals } from '../data/defaults/default';
 
 import { useChartData } from './context/ChartContext';
 import PeakNotation from './Notations/PeakNotation';
+// import ModifiedPeakNotation from './Notations/ModifiedPeakNotation';
 
 const PeaksNotations = () => {
   const { getScale, data, activeSpectrum, verticalAlign } = useChartData();
@@ -32,13 +33,13 @@ const PeaksNotations = () => {
         .filter((d) => d.isVisible === true)
         .map((d) => {
           return (
-            <g
-              key={`peak-${d.id}`}
-              transform={`translate(0,${getVerticalAlign(d.id)})`}
-            >
-              {d.peaks &&
-                d.isPeaksMarkersVisible &&
-                d.peaks.map(({ xIndex }, j) => (
+            d.peaks &&
+            d.isPeaksMarkersVisible && (
+              <g
+                key={`peak-${d.id}`}
+                transform={`translate(0,${getVerticalAlign(d.id)})`}
+              >
+                {d.peaks.map(({ xIndex }, j) => (
                   <PeakNotation
                     key={`peak-${d.id}-${j}`}
                     x={getScale(d.id).x(d.x[xIndex])}
@@ -57,7 +58,8 @@ const PeaksNotations = () => {
                     }
                   />
                 ))}
-            </g>
+              </g>
+            )
           );
         })
     );
