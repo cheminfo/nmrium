@@ -12,7 +12,7 @@
     "ml-array-max": "^1.1.2",
     "ml-fft": "^1.3.5",
     "ml-gsd": "^2.0.6",
-    "ml-spectra-processing": "^0.5.0",
+    "ml-spectra-processing": "^0.6.1",
     "openchemlib": "^7.2.1",
     "perfect-scrollbar": "^1.4.0",
     "prop-types": "^15.7.2",
