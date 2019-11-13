@@ -483,7 +483,7 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
 
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
-    // setDomain(draft);
+    setDomain(draft);
   });
 };
 
