@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import {
   Table,
   TableHead,
-  TableBody,
+  //   TableBody,
   TableRow,
   TableCell,
 } from '../elements/Table';
@@ -12,7 +12,8 @@ import { useChartData } from '../context/ChartContext';
 import NoTableData from './placeholder/NoTableData';
 
 const RangesTablePanel = () => {
-  const [ranges, setRanges] = useState([]);
+  //   const [ranges, setRanges] = useState([]);
+  const [ranges] = useState([]); // to replace by line above
   const { activeSpectrum, data } = useChartData();
 
   return activeSpectrum && data && ranges.length > 0 ? (
