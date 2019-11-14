@@ -24,9 +24,11 @@ const styles = {
     borderRadius: '5px',
     border: '0.55px solid #c7c7c7',
     margin: '0px 5px',
+    userSelect: 'none',
   },
   label: {
     lineHeight: 2,
+    userSelect: 'none',
   },
 };
 

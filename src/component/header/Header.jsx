@@ -17,6 +17,7 @@ const headerStyle = css`
   align-items: flex-start;
   justify-content: flex-start;
   height: 36px;
+  min-height: 36px;
   border-width: 1px 1px 0px 1px;
   border-style: solid;
   border-color: rgb(213, 213, 213);

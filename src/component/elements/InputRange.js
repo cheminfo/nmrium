@@ -16,6 +16,12 @@ const styles = {
     margin: '0px 5px',
     cursor: 'ew-resize',
   },
+  label: {
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    maxWidth: '100%',
+  },
 };
 
 let stateValues = {
@@ -114,7 +120,7 @@ const InputRange = ({
       onMouseDown={mouseDownHandler}
       onMouseEnter={mouseEnterHandler}
     >
-      <span>{label}</span>
+      <span style={styles.label}>{label}</span>
     </div>
   );
 };
