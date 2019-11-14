@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Window, TitleBar } from 'react-desktop/windows';
 import Draggable from 'react-draggable';
 import PropTypes from 'prop-types';
-import './css/chart-window.css';
 
 const ChartWindow = ({ width, height, title, children }) => {
   const [_width, setWidth] = useState(width);
