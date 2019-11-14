@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 import * as serviceWorker from './serviceWorker';
-import AdminLayout from './dashboard/layouts/Admin.jsx';
+import AdminLayout from './demo/layouts/Admin.jsx';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
-import './dashboard/assets/css/now-ui-dashboard.min.css';
-import './dashboard/assets/css/demo.css';
+import './demo/assets/css/now-ui-dashboard.min.css';
+import './demo/assets/css/demo.css';
 
 ReactDOM.render(
   <HashRouter>
