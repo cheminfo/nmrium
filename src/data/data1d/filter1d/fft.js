@@ -27,7 +27,7 @@ export default function fft(datum1D) {
 
   datum1D.data.re = newRe;
   datum1D.data.im = newIm;
-  // datum1D.data.x = generateXAxis(datum1D);
+  datum1D.data.x = generateXAxis(datum1D);
   datum1D.info = { ...datum1D.info, isFid: false };
 }
 
