@@ -105,12 +105,10 @@ const NMRDisplayer = (props) => {
   } = state;
 
   useEffect(() => {
-    if (dataProp) {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
-      Analysis.build(dataProp).then((object) => {
-        dispatch({ type: INITIATE, data: { AnalysisObj: object } });
-      });
-    }
+    dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+    Analysis.build(dataProp || {}).then((object) => {
+      dispatch({ type: INITIATE, data: { AnalysisObj: object } });
+    });
   }, [dataProp]);
 
   const getScale = useMemo(() => {
