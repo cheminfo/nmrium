@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './demo/serviceWorker';
 import AdminLayout from './demo/layouts/Admin.jsx';
 
 import 'bootstrap/dist/css/bootstrap.css';
-import './index.css';
+import './demo/index.css';
 import './demo/assets/css/now-ui-dashboard.min.css';
 import './demo/assets/css/demo.css';
 

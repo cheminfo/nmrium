@@ -1,7 +1,6 @@
 {
   "name": "nmr-displayer",
   "version": "0.2.0",
-  "private": true,
   "module": "lib/component/NMRDisplayer.js",
   "files": [
     "lib"
@@ -39,8 +38,9 @@
     "trailingComma": "all"
   },
   "scripts": {
-    "compile": "babel src --out-dir lib --ignore \"src/**/__tests__/*\",\"src/dashboard/*\" --quiet",
-    "prepublishOnly": "npm run compile",
+    "clean-lib": "rimraf lib",
+    "compile": "babel src --out-dir lib --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.js\" --quiet",
+    "prepublishOnly": "npm run clean-lib && npm run compile",
     "start": "react-scripts start ",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -89,6 +89,7 @@
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
-    "reactstrap": "^8.1.1"
+    "reactstrap": "^8.1.1",
+    "rimraf": "^3.0.0"
   }
 }
