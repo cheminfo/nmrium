@@ -20,6 +20,6 @@ export let options = {
   autoRangesPicking: {
     id: 'autoRangesPicking',
     label: 'Auto Ranges Picking',
-    hasOptionPanel: false,
+    hasOptionPanel: true,
   },
 };

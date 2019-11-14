@@ -11,6 +11,9 @@ const styles = {
     border: 'none',
     width: '35px',
     height: '35px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 };
 
@@ -54,19 +57,19 @@ const ViewButton = ({ defaultValue = true }) => {
   }, [activeSpectrum, data, defaultValue]);
 
   return activeSpectrum ? (
-    <ToolTip
-      title={option ? 'Real Spectrum' : 'Imaginary Spectrum'}
-      popupPlacement="right"
+    <button
+      style={styles.button}
+      type="button"
+      disabled={isDisabled}
+      onClick={handleChange}
     >
-      <button
-        style={styles.button}
-        type="button"
-        disabled={isDisabled}
-        onClick={handleChange}
+      <ToolTip
+        title={option ? 'Real Spectrum' : 'Imaginary Spectrum'}
+        popupPlacement="right"
       >
         {option ? 'Re' : 'Im'}
-      </button>
-    </ToolTip>
+      </ToolTip>
+    </button>
   ) : null;
 };
 

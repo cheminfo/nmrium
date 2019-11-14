@@ -16,9 +16,13 @@ const styles = {
     border: 'none',
     width: '35px',
     height: '35px',
+    minHeight: '35px',
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 };
 
@@ -74,52 +78,51 @@ const BasicToolBar = ({
   return (
     <Fragment>
       {isFullZoomButtonVisible && (
-        <ToolTip title="Full Zoom Out ( Press f )" popupPlacement="right">
-          <button
-            type="button"
-            style={styles.button}
-            onClick={handleFullZoomOut}
-            disabled={!isFullZoomButtonEnabled}
-          >
+        <button
+          type="button"
+          style={styles.button}
+          onClick={handleFullZoomOut}
+          disabled={!isFullZoomButtonEnabled}
+        >
+          <ToolTip title="Full Zoom Out ( Press f )" popupPlacement="right">
             <FaSearchMinus />
-          </button>
-        </ToolTip>
+          </ToolTip>
+        </button>
       )}
 
       {isViewButtonVisible && (
-        <ToolTip title="Spectra alignment" popupPlacement="right">
-          <div>
-            <button
-              type="button"
-              style={styles.button}
-              onClick={handleChangeDisplayViewMode}
-              disabled={data && data.length <= 1}
-              className={
-                verticalAlign !== 0
-                  ? 'ci-icon-nmr-overlay3-aligned'
-                  : 'ci-icon-nmr-overlay3'
-              }
-            >
-              {/* {verticalAlign !== 0 ? <FaMinus /> : <FaBars />} */}
-            </button>
-          </div>
-        </ToolTip>
+        <button
+          type="button"
+          style={{ ...styles.button, display: 'block' }}
+          onClick={handleChangeDisplayViewMode}
+          disabled={data && data.length <= 1}
+          className={
+            verticalAlign !== 0
+              ? 'ci-icon-nmr-overlay3-aligned'
+              : 'ci-icon-nmr-overlay3'
+          }
+        >
+          <ToolTip title="Spectra alignment" popupPlacement="right">
+            <div />
+            {/* {verticalAlign !== 0 ? <FaMinus /> : <FaBars />} */}
+          </ToolTip>
+        </button>
       )}
 
       {isSaveButtonVisible && (
-        <ToolTip
-          title="Save Data as JSON File ( Press Ctrl + S )"
-          popupPlacement="right"
+        <button
+          type="button"
+          style={styles.button}
+          onClick={handleSaveDataAsJSON}
+          disabled={!isSaveButtonEnabled}
         >
-          <button
-            type="button"
-            style={styles.button}
-            onClick={handleSaveDataAsJSON}
-            disabled={!isSaveButtonEnabled}
+          <ToolTip
+            title="Save Data as JSON File ( Press Ctrl + S )"
+            popupPlacement="right"
           >
             <FaDownload />
-          </button>
-        </ToolTip>
+          </ToolTip>
+        </button>
       )}
     </Fragment>
   );

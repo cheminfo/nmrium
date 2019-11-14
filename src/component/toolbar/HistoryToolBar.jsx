@@ -12,6 +12,13 @@ const styles = {
     border: 'none',
     width: '35px',
     height: '35px',
+    minHeight: '35px',
+    backgroundPosition: 'center center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 };
 
@@ -40,28 +47,28 @@ const HistoryToolBar = ({
   return (
     <Fragment>
       {isUndoButtonVisible && (
-        <ToolTip title="Redo" popupPlacement="right">
-          <button
-            style={styles.button}
-            type="button"
-            onClick={handleRedo}
-            disabled={!history.hasRedo}
-          >
+        <button
+          style={styles.button}
+          type="button"
+          onClick={handleRedo}
+          disabled={!history.hasRedo}
+        >
+          <ToolTip title="Redo" popupPlacement="right">
             <FaRedo />
-          </button>
-        </ToolTip>
+          </ToolTip>
+        </button>
       )}
       {isRedoButtonVisible && (
-        <ToolTip title="Undo" popupPlacement="right">
-          <button
-            type="button"
-            style={styles.button}
-            onClick={handleUndo}
-            disabled={!history.hasUndo}
-          >
+        <button
+          type="button"
+          style={styles.button}
+          onClick={handleUndo}
+          disabled={!history.hasUndo}
+        >
+          <ToolTip title="Undo" popupPlacement="right">
             <FaUndo />
-          </button>
-        </ToolTip>
+          </ToolTip>
+        </button>
       )}
     </Fragment>
   );

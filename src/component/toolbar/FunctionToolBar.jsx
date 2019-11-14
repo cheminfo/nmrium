@@ -134,6 +134,21 @@ const FunctionToolBar = ({ defaultValue }) => {
             />
           </ToggleButton>
         )}
+
+        {selectedSpectrumInfo && !selectedSpectrumInfo.isFid && (
+          <ToggleButton
+            key={options.autoRangesPicking.id}
+            value={options.autoRangesPicking.id}
+            className="ci-icon-nmr-range-picking"
+            style={styles.icon}
+          >
+            <ToolTip
+              title={options.autoRangesPicking.label}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            />
+          </ToggleButton>
+        )}
       </ToggleButtonGroup>
     </>
   );

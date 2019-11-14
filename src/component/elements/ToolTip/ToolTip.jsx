@@ -86,11 +86,12 @@ const ToolTip = ({
   }, []);
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <div
         ref={refChild}
         onMouseOver={mouseOverHandler}
         onMouseOut={mouseLeaveHandler}
+        style={{ width: 'inherit', height: 'inherit' }}
       >
         {children}
       </div>
