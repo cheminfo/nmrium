@@ -10,14 +10,24 @@ export default function fft(datum1D) {
     throw new Error('fft not isApplicable on this data');
   }
 
-  const re = new Float64Array(datum1D.data.re);
-  const im = new Float64Array(datum1D.data.im);
+  let re = new Float64Array(datum1D.data.re);
+  let im = new Float64Array(datum1D.data.im);
 
-  FFT.init(re.length);
+  const nbPoints = re.length;
+  FFT.init(nbPoints);
 
   FFT.fft(re, im);
-  datum1D.data.re = re;
-  datum1D.data.im = im;
+
+  let newRe = new Float64Array(re);
+  let newIm = new Float64Array(im);
+  newRe.set(re.slice(0, (nbPoints + 1) / 2), (nbPoints + 1) / 2);
+  newRe.set(re.slice((nbPoints + 1) / 2));
+  newIm.set(im.slice(0, (nbPoints + 1) / 2), (nbPoints + 1) / 2);
+  newIm.set(im.slice((nbPoints + 1) / 2));
+
+  datum1D.data.re = newRe;
+  datum1D.data.im = newIm;
+  datum1D.data.x = generateXAxis(datum1D);
   datum1D.info = { ...datum1D.info, isFid: false };
 }
 
@@ -31,4 +41,23 @@ export function reduce() {
     once: true,
     reduce: undefined,
   };
+}
+
+function generateXAxis(datum1D) {
+  const info = datum1D.info;
+  const baseFrequency = parseFloat(info.bf1);
+  const spectralFrequency = parseFloat(info.sfo1);
+  const spectralWidth = parseFloat(info.sw);
+  const xMiddle = ((spectralFrequency - baseFrequency) / baseFrequency) * 1e6;
+  let dx = (0.5 * spectralWidth * spectralFrequency) / baseFrequency;
+
+  let nbPoints = datum1D.data.x.length;
+  let tmp = xMiddle + dx;
+  dx = (-2 * dx) / (nbPoints - 1);
+  const xAxis = new Array(nbPoints);
+  for (let i = 0; i < nbPoints; i++) {
+    xAxis[i] = tmp;
+    tmp += dx;
+  }
+  return xAxis;
 }

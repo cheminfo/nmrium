@@ -2,7 +2,7 @@ import { convert } from 'jcampconverter';
 import { Molecule } from 'openchemlib';
 
 import { Data1DManager } from './data1d/Data1DManager';
-import { getMetaData } from './data1d/metadata/getMetaData';
+import { getInfoFromMetaData } from './data1d/metadata/getInfoFromMetaData';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 
@@ -36,7 +36,7 @@ export class Analysis {
   addJcamp(jcamp, options = {}) {
     // need to parse the jcamp
     let result = convert(jcamp, { withoutXY: true, keepRecordsRegExp: /.*/ });
-    let meta = getMetaData(result.info);
+    let meta = getInfoFromMetaData(result.info);
     if (meta.dimension === 1) {
       this.data1d.push(Data1DManager.fromJcamp(jcamp, options));
     }

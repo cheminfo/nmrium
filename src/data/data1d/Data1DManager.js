@@ -3,7 +3,7 @@ import { convert } from 'jcampconverter';
 import { XY, XReIm } from 'ml-spectra-processing';
 
 import { Datum1D } from './Datum1D';
-import { getMetaData } from './metadata/getMetaData';
+import { getInfoFromMetaData } from './metadata/getInfoFromMetaData';
 
 export class Data1DManager {
   static fromJSON = async function fromJSON(json = []) {
@@ -68,7 +68,7 @@ export class Data1DManager {
     // 2 cases. We have real and imaginary part of only real
 
     let data = im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
-    let info = getMetaData(result.info);
+    let info = getInfoFromMetaData(result.info);
 
     if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
     const ob = new Datum1D({
