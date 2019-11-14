@@ -22,8 +22,8 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 // core components
-import Sidebar from '../components/Sidebar/Sidebar.jsx';
-import routes from '../../routes';
+import Sidebar from '../components/Sidebar/Sidebar';
+import routes from '../routes';
 
 let ps;
 

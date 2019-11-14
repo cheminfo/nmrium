@@ -16,13 +16,13 @@
 
 */
 /*eslint-disable*/
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { Nav } from "reactstrap";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { Nav } from 'reactstrap';
 // javascript plugin used to create scrollbars on windows
-import PerfectScrollbar from "perfect-scrollbar";
+import PerfectScrollbar from 'perfect-scrollbar';
 
-import logo from "../../../logo-white.svg";
+import logo from '../../assets/img/logo-white.svg';
 
 var ps;
 
@@ -33,18 +33,18 @@ class Sidebar extends React.Component {
   }
   // verifies if routeName is the one active (in browser input)
   activeRoute(routeName) {
-    return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
+    return this.props.location.pathname.indexOf(routeName) > -1 ? 'active' : '';
   }
   componentDidMount() {
-    if (navigator.platform.indexOf("Win") > -1) {
+    if (navigator.platform.indexOf('Win') > -1) {
       ps = new PerfectScrollbar(this.refs.sidebar, {
         suppressScrollX: true,
-        suppressScrollY: false
+        suppressScrollY: false,
       });
     }
   }
   componentWillUnmount() {
-    if (navigator.platform.indexOf("Win") > -1) {
+    if (navigator.platform.indexOf('Win') > -1) {
       ps.destroy();
     }
   }
@@ -77,7 +77,7 @@ class Sidebar extends React.Component {
                 <li
                   className={
                     this.activeRoute(prop.layout + prop.path) +
-                    (prop.pro ? " active active-pro" : "")
+                    (prop.pro ? ' active active-pro' : '')
                   }
                   key={key}
                 >
@@ -85,11 +85,12 @@ class Sidebar extends React.Component {
                     to={prop.layout + prop.path}
                     className="nav-link"
                     activeClassName="active"
-                    style={{borderRadius:"10px"}}
-
+                    style={{ borderRadius: '10px' }}
                   >
-                    <i className={"now-ui-icons " + prop.icon} />
-                    <p style={{whiteSpace:"pre-line",paddingLeft:"60px"}}>{prop.name}</p>
+                    <i className={'now-ui-icons ' + prop.icon} />
+                    <p style={{ whiteSpace: 'pre-line', paddingLeft: '60px' }}>
+                      {prop.name}
+                    </p>
                   </NavLink>
                 </li>
               );

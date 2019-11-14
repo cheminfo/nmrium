@@ -17,13 +17,13 @@
 */
 // import Notifications from "./dashboard/views/Notifications.jsx";
 // import Icons from "./dashboard/views/Icons.jsx";
-import Spectrum13C from './demo/views/Fid13C';
-import Spectrum1H from './demo/views/Spectrum1H';
-import XTC814d from './demo/views/XTC814d';
-import CoupledDecoupled13C from './demo/views/CoupledDecoupled13C';
-import Big13CCytisin from './demo/views/Big13CCytisin';
-import CoffeView from './demo/views/CoffeView';
-import BlankSpectrumDisplayer from './demo/views/BlankSpectrumDisplayer';
+import Spectrum13C from './views/Fid13C';
+import Spectrum1H from './views/Spectrum1H';
+import XTC814d from './views/XTC814d';
+import CoupledDecoupled13C from './views/CoupledDecoupled13C';
+import Big13CCytisin from './views/Big13CCytisin';
+import CoffeView from './views/CoffeView';
+import BlankSpectrumDisplayer from './views/BlankSpectrumDisplayer';
 
 let dashRoutes = [
   {
