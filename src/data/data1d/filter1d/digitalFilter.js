@@ -2,14 +2,14 @@ import { ReIm } from 'ml-spectra-processing';
 import { FFT } from 'ml-fft';
 
 /**
- *
+ * Move points from the begining to the end of FID and performe a first order phase correction
  * @param {Datum1d} datum1d
  */
 
 export default function digitalFilter(datum1D) {
-  // if (!isApplicable(datum1D)) {
-  //     throw new Error('fft not isApplicable on this data');
-  // }
+  if (!isApplicable(datum1D)) {
+      throw new Error('fft not isApplicable on this data');
+  }
   const meta = datum1D.meta;
   let grpdly = meta.$GRPDLY;
   if (!grpdly) grpdly = 0;
@@ -40,7 +40,8 @@ export default function digitalFilter(datum1D) {
   //make first order correction;
   FFT.init(re.length);
   FFT.fft(re, im);
-  let ph0 = -ph1 / re.length;
+  
+  let ph0 = -(2 * Math.PI * ph1) / re.length;
   let dataPhased = ReIm.phaseCorrection({ re, im }, ph0, ph1);
   re = dataPhased.re;
   im = dataPhased.im;
@@ -49,11 +50,10 @@ export default function digitalFilter(datum1D) {
   const newRe = new Float64Array(re.length);
   const newIm = new Float64Array(im.length);
 
-  newRe.set(re.slice(-re.length + add));
-  newRe.set(re.slice(skip - add, skip).reverse(), re.length - add);
-
-  newIm.set(im.slice(-im.length + add));
-  newIm.set(im.slice(skip - add, skip).reverse(), im.length - add);
+  newRe.set(re.slice(skip));
+  newRe.set(re.slice(skip - add, skip), re.length - skip);
+  newIm.set(im.slice(skip));
+  newIm.set(im.slice(skip - add, skip), im.length - skip);
 
   datum1D.data.re = newRe;
   datum1D.data.im = newIm;
