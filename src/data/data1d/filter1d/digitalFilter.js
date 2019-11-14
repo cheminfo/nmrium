@@ -8,13 +8,13 @@ import { FFT } from 'ml-fft';
 
 export default function digitalFilter(datum1D) {
   if (!isApplicable(datum1D)) {
-      throw new Error('fft not isApplicable on this data');
+    throw new Error('fft not isApplicable on this data');
   }
-  const meta = datum1D.meta;
-  let grpdly = meta.$GRPDLY;
+  const info = datum1D.info;
+  let grpdly = info.grpdly;
   if (!grpdly) grpdly = 0;
-  const dspfvs = meta.$DSPFVS;
-  const decim = meta.$DECIM;
+  const dspfvs = info.dspfvs;
+  const decim = info.decim;
   let re = new Float64Array(datum1D.data.re);
   let im = new Float64Array(datum1D.data.im);
   let ph1;
@@ -34,22 +34,11 @@ export default function digitalFilter(datum1D) {
     }
   }
 
-  let skip = Math.floor(ph1 + 2.0);
+  const skip = Math.floor(ph1 + 2.0);
   const add = Math.floor(Math.max(skip - 6, 0));
-
-  //make first order correction;
-  FFT.init(re.length);
-  FFT.fft(re, im);
-  
-  let ph0 = -(2 * Math.PI * ph1) / re.length;
-  let dataPhased = ReIm.phaseCorrection({ re, im }, ph0, ph1);
-  re = dataPhased.re;
-  im = dataPhased.im;
-  FFT.ifft(re, im);
 
   const newRe = new Float64Array(re.length);
   const newIm = new Float64Array(im.length);
-
   newRe.set(re.slice(skip));
   newRe.set(re.slice(skip - add, skip), re.length - skip);
   newIm.set(im.slice(skip));
