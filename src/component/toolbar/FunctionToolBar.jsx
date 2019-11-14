@@ -19,13 +19,15 @@ const styles = {
 
 const FunctionToolBar = ({ defaultValue }) => {
   const [option, setOption] = useState();
+  const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
+
   const dispatch = useDispatch();
   const handleChangeOption = useCallback(
     (selectedTool) => dispatch({ type: SET_SELECTED_TOOL, selectedTool }),
     [dispatch],
   );
 
-  const { activeSpectrum } = useChartData();
+  const { activeSpectrum, data } = useChartData();
 
   const handleChange = useCallback(
     (selectedOption) => {
@@ -65,6 +67,15 @@ const FunctionToolBar = ({ defaultValue }) => {
     };
   }, [defaultValue, handleOnKeyPressed]);
 
+  useEffect(() => {
+    if (data && activeSpectrum) {
+      const { info } = data.find((d) => d.id === activeSpectrum.id);
+      setSelectedSpectrumInfo(info);
+    } else {
+      setSelectedSpectrumInfo({ isComplex: false, isFid: false });
+    }
+  }, [activeSpectrum, data]);
+
   return (
     <>
       <ToggleButtonGroup value={option} onChange={handleChange}>
@@ -78,55 +89,51 @@ const FunctionToolBar = ({ defaultValue }) => {
           </ToolTip>
         </ToggleButton>
 
-        <ToggleButton
-          key={options.peakPicking.id}
-          value={options.peakPicking.id}
-          disabled={!activeSpectrum}
-          className="ci-icon-nmr-peak-picking"
-          style={styles.icon}
-        >
-          <ToolTip
-            title={`${options.peakPicking.label} ( Press p )`}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          />
-        </ToggleButton>
+        {selectedSpectrumInfo && !selectedSpectrumInfo.isFid && (
+          <ToggleButton
+            key={options.peakPicking.id}
+            value={options.peakPicking.id}
+            disabled={!activeSpectrum}
+            className="ci-icon-nmr-peak-picking"
+            style={styles.icon}
+          >
+            <ToolTip
+              title={`${options.peakPicking.label} ( Press p )`}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            />
+          </ToggleButton>
+        )}
 
-        <ToggleButton
-          key={options.integral.id}
-          value={options.integral.id}
-          disabled={!activeSpectrum}
-          className="ci-icon-nmr-integrate"
-          style={styles.icon}
-        >
-          <ToolTip
-            title={`${options.integral.label} ( Press i )`}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          />
-        </ToggleButton>
-
-        <ToggleButton
-          key={options.autoPeaksPicking.id}
-          value={options.autoPeaksPicking.id}
-          className="ci-icon-nmr-range-picking"
-          style={styles.icon}
-        >
-          <ToolTip
-            title={options.autoPeaksPicking.label}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          />
-        </ToggleButton>
-        {/* <ToggleButton key={options.HMove.id} value={options.HMove.id}>
-        <ToolTip
-          title={`${options.HMove.label} ( Press m )`}
-          popupPlacement="right"
-          offset={{ x: 10, y: 0 }}
-        >
-          <FaArrowsAlt />
-        </ToolTip>
-      </ToggleButton> */}
+        {selectedSpectrumInfo && !selectedSpectrumInfo.isFid && (
+          <ToggleButton
+            key={options.integral.id}
+            value={options.integral.id}
+            disabled={!activeSpectrum}
+            className="ci-icon-nmr-integrate"
+            style={styles.icon}
+          >
+            <ToolTip
+              title={`${options.integral.label} ( Press i )`}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            />
+          </ToggleButton>
+        )}
+        {selectedSpectrumInfo && !selectedSpectrumInfo.isFid && (
+          <ToggleButton
+            key={options.autoPeaksPicking.id}
+            value={options.autoPeaksPicking.id}
+            className="ci-icon-nmr-range-picking"
+            style={styles.icon}
+          >
+            <ToolTip
+              title={options.autoPeaksPicking.label}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            />
+          </ToggleButton>
+        )}
       </ToggleButtonGroup>
     </>
   );

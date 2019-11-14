@@ -19,7 +19,7 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
 
   const handleOpen = useCallback(
     (index) => {
-      let el = [...elements];
+      let el = elements.slice();
       el = el.map((e, i) => (i === index ? true : false));
       setElements(el);
     },
