@@ -11,6 +11,12 @@ import { isApplicable as isManualPhaseCorrectionApplicable } from '../../data/da
 import { useChartData } from '../context/ChartContext';
 
 const styles = {
+  button: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    width: '35px',
+    height: '35px',
+  },
   icon: {
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',

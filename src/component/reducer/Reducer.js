@@ -58,9 +58,14 @@ import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
   SET_SELECTED_OPTIONS_PANEL,
+  SET_LOADING_FLAG,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
+
+function setIsLoading(state, isLoading) {
+  return { ...state, isLoading };
+}
 
 function getDomain(data) {
   let xArray = data.reduce(
@@ -99,6 +104,7 @@ const initiate = (state, data) => {
     draft.yDomain = domain.y;
     draft.originDomain = domain;
     draft.yDomains = domain.yDomains;
+    draft.isLoading = false;
     setMode(draft);
   });
 };
@@ -130,6 +136,8 @@ const setData = (state, data) => {
     }
     draft.data = AnalysisObj.getData1d();
     draft.molecules = AnalysisObj.getMolecules();
+    draft.isLoading = false;
+
     setDomain(draft);
     setMode(draft);
   });
@@ -156,6 +164,7 @@ const loadJcampFile = (state, files) => {
     draft.data = AnalysisObj.getData1d();
     setDomain(draft);
     setMode(draft);
+    draft.isLoading = false;
   });
 };
 
@@ -166,6 +175,7 @@ const handleLoadJsonFile = (state, data) => {
     draft.molecules = AnalysisObj.getMolecules();
     setDomain(draft);
     setMode(draft);
+    draft.isLoading = false;
   });
 };
 
@@ -176,6 +186,7 @@ const handleLoadMOLFile = (state, files) => {
       AnalysisObj.addMolfile(files[i].binary.toString());
     }
     draft.molecules = AnalysisObj.getMolecules();
+    draft.isLoading = false;
   });
 };
 
@@ -1032,12 +1043,15 @@ export const initialState = {
     hasRedo: false,
   },
   verticalIndicatorPosition: 0,
+  isLoading: false,
 };
 
 export const spectrumReducer = (state, action) => {
   switch (action.type) {
     case INITIATE:
       return initiate(state, action.data);
+    case SET_LOADING_FLAG:
+      return setIsLoading(state, action.isLoading);
     case LOAD_JSON_FILE:
       return handleLoadJsonFile(state, action.data);
     case LOAD_JCAMP_FILE:

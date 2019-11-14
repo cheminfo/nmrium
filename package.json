@@ -76,7 +76,6 @@
     "@babel/preset-react": "^7.7.0",
     "babel-eslint": "^10.0.3",
     "bootstrap": "^4.3.1",
-    "perfect-scrollbar": "^1.4.0",
     "eslint": "^6.6.0",
     "eslint-config-cheminfo-react": "^3.1.2",
     "eslint-plugin-import": "^2.18.2",
@@ -84,12 +83,12 @@
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^2.2.0",
+    "perfect-scrollbar": "^1.4.0",
     "prettier": "^1.19.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
-    "react-spinners": "^0.6.1",
     "reactstrap": "^8.1.1"
   }
 }

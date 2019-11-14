@@ -6,12 +6,15 @@ import React, {
   useState,
   useMemo,
   useRef,
+  Fragment,
 } from 'react';
 import { useSize, useDebounce, useToggle, useFullscreen } from 'react-use';
 import SplitPane from 'react-split-pane';
 
 // import './css/spectrum-chart.css';
 import 'cheminfo-font/dist/style.css';
+
+import { Analysis } from '../data/Analysis';
 
 import { ChartDataProvider, useChartData } from './context/ChartContext';
 import { spectrumReducer, initialState } from './reducer/Reducer';
@@ -27,6 +30,7 @@ import {
   CHANGE_INTEGRAL_ZOOM,
   ADD_PEAKS,
   SET_VERTICAL_INDICATOR_X_POSITION,
+  SET_LOADING_FLAG,
 } from './reducer/Actions';
 import { DispatchProvider, useDispatch } from './context/DispatchContext';
 import DropZone from './DropZone';
@@ -42,6 +46,7 @@ import { options } from './toolbar/ToolTypes';
 import PeakPointer from './tool/PeakPointer';
 import Header from './header/Header';
 import VerticalIndicator from './tool/VerticalIndicator';
+import Loader from './Loader';
 
 const splitPaneStyles = {
   container: {
@@ -101,7 +106,10 @@ const NMRDisplayer = (props) => {
 
   useEffect(() => {
     if (dataProp) {
-      dispatch({ type: INITIATE, data: { AnalysisObj: dataProp } });
+      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+      Analysis.build(dataProp).then((object) => {
+        dispatch({ type: INITIATE, data: { AnalysisObj: object } });
+      });
     }
   }, [dataProp]);
 
@@ -204,7 +212,7 @@ const NMRDisplayer = (props) => {
 };
 
 function ChartPanel() {
-  const { selectedTool, height: _height } = useChartData();
+  const { selectedTool, height: _height, isLoading } = useChartData();
   const dispatch = useDispatch();
 
   const handelBrushEnd = useCallback(
@@ -276,28 +284,31 @@ function ChartPanel() {
 
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
-      <BrushTracker
-        onBrush={handelBrushEnd}
-        onDoubleClick={handelOnDoubleClick}
-        onClick={mouseClick}
-        onZoom={handleZoom}
-        style={{
-          width: '100%',
-          height: `${_height}px`,
-          margin: 'auto',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <MouseTracker style={{ width: '100%', height: `${_height}px` }}>
-          <NMRChart />
-          <CrossLinePointer />
-          <BrushX />
-          <XLabelPointer />
-          <PeakPointer />
-          <VerticalIndicator />
-        </MouseTracker>
-      </BrushTracker>
+      <Fragment>
+        <Loader isLoading={isLoading} />
+        <BrushTracker
+          onBrush={handelBrushEnd}
+          onDoubleClick={handelOnDoubleClick}
+          onClick={mouseClick}
+          onZoom={handleZoom}
+          style={{
+            width: '100%',
+            height: `${_height}px`,
+            margin: 'auto',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
+          <MouseTracker style={{ width: '100%', height: `${_height}px` }}>
+            <NMRChart />
+            <CrossLinePointer />
+            <BrushX />
+            <XLabelPointer />
+            <PeakPointer />
+            <VerticalIndicator />
+          </MouseTracker>
+        </BrushTracker>
+      </Fragment>
     );
   }, [_height]);
   const [finalSize, setFinalSize] = useState();

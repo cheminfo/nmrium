@@ -10,6 +10,7 @@ import {
   LOAD_MOL_FILE,
   LOAD_JSON_FILE,
   LOAD_JCAMP_FILE,
+  SET_LOADING_FLAG,
 } from './reducer/Actions';
 import { useDispatch } from './context/DispatchContext';
 import { useChartData } from './context/ChartContext';
@@ -80,9 +81,10 @@ const containerStyle = css`
 const DropZone = (props) => {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
-
   const onDrop = useCallback(
     (droppedFiles) => {
+      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+
       const uniqueFileExtensions = [
         ...new Set(droppedFiles.map((file) => getFileExtension(file))),
       ];
