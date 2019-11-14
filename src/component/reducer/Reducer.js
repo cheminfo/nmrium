@@ -184,22 +184,18 @@ const getClosePeak = (xShift, mouseCoordinates, state) => {
   const { activeSpectrum } = state;
   const start = scale.x.invert(mouseCoordinates.x - xShift);
   const end = scale.x.invert(mouseCoordinates.x + xShift);
-  const zoon = [];
+  const range = [];
   if (start > end) {
-    zoon[0] = end;
-    zoon[1] = start;
+    range[0] = end;
+    range[1] = start;
   } else {
-    zoon[0] = start;
-    zoon[1] = end;
+    range[0] = start;
+    range[1] = end;
   }
-  // const zoon = [
-  //   scale.x.invert(mouseCoordinates.x - xShift),
-  //   scale.x.invert(mouseCoordinates.x + xShift),
-  // ];
 
   const closePeak = AnalysisObj.getDatum1D(activeSpectrum.id).lookupPeak(
-    zoon[0],
-    zoon[1],
+    range[0],
+    range[1],
   );
   return closePeak;
 };
