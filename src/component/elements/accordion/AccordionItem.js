@@ -5,6 +5,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     margin: '0px',
+    userSelect: 'none',
   },
   button: {
     // backgroundColor: '#eee',

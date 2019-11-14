@@ -5,10 +5,10 @@ import { jsx, css } from '@emotion/core';
 
 import { useChartData } from '../context/ChartContext';
 import { Filters } from '../../data/data1d/filter1d/Filters';
+import { options } from '../toolbar/ToolTypes';
 
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
-import { options } from '../toolbar/ToolTypes';
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 
 const headerStyle = css`
@@ -49,6 +49,9 @@ const headerStyle = css`
     min-width: 40px !important;
     background-color: transparent;
     border: none;
+  }
+  button:focus {
+    outline: 0;
   }
 `;
 

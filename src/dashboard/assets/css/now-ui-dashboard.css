@@ -22,6 +22,11 @@ Licensed under the MIT license - http://opensource.org/licenses/MIT
 
 Copyright (c) 2015 Daniel Eden
 */
+
+body {
+  font: 12px Arial;
+  overflow: hidden;
+}
 .animated {
   -webkit-animation-duration: 1s;
   animation-duration: 1s;

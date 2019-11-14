@@ -201,7 +201,7 @@ export class Datum1D {
 
   // id filter id
   enableFilter(id, checked) {
-    this.filters = [...this.filters];
+    this.filters = this.filters.slice(0);
     const index = this.filters.findIndex((filter) => filter.id === id);
     this.filters[index] = { ...this.filters[index], flag: checked };
     const enabledFilters = this.filters.filter(
@@ -217,7 +217,7 @@ export class Datum1D {
     }
   }
   deleteFilter(id) {
-    this.filters = [...this.filters];
+    this.filters = this.filters.slice(0);
     this.filters = this.filters.filter((filter) => filter.id !== id);
     this.data = { ...this.data, ...this.source.original };
     this.info = { ...this.info, ...this.originalInfo };

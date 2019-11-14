@@ -10,7 +10,7 @@ import React, {
 import { useSize, useDebounce, useToggle, useFullscreen } from 'react-use';
 import SplitPane from 'react-split-pane';
 
-import './css/spectrum-chart.css';
+// import './css/spectrum-chart.css';
 import 'cheminfo-font/dist/style.css';
 
 import { ChartDataProvider, useChartData } from './context/ChartContext';
@@ -42,6 +42,19 @@ import { options } from './toolbar/ToolTypes';
 import PeakPointer from './tool/PeakPointer';
 import Header from './header/Header';
 import VerticalIndicator from './tool/VerticalIndicator';
+
+const splitPaneStyles = {
+  container: {
+    position: 'relative',
+  },
+  pane1: { maxWidth: '80%', minWidth: '50%' },
+  resizer: {
+    width: 10,
+    backgroundColor: '#f7f7f7',
+    cursor: 'ew-resize',
+  },
+  pane: { overflow: 'hidden' },
+};
 
 const NMRDisplayer = (props) => {
   const { data: dataProp, height: heightProp, width: widthProps } = props;
@@ -167,8 +180,10 @@ const NMRDisplayer = (props) => {
             <DropZone>
               <ToolBar />
               <SplitPane
-                paneStyle={{ overflow: 'hidden' }}
-                className="split-container"
+                style={splitPaneStyles.container}
+                paneStyle={splitPaneStyles.pane}
+                resizerStyle={splitPaneStyles.resizer}
+                pane1Style={splitPaneStyles.pane1}
                 split="vertical"
                 defaultSize="80%"
                 minSize="80%"

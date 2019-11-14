@@ -10,12 +10,6 @@ import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 import { options } from './ToolTypes';
 
 const styles = {
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    width: '35px',
-    height: '35px',
-  },
   icon: {
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',

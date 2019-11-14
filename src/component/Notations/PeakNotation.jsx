@@ -15,6 +15,18 @@ import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
 /** @jsx jsx */
 
 const styles = css`
+  user-select: 'none';
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
   .delete-bt {
     background-color: red;
     color: white;
@@ -209,6 +221,7 @@ export const PeakNotation = ({
                 width: 'inherit',
                 border: isSelected ? `1px solid ${color}` : `0`,
                 opacity: isActive ? 1 : 0.2,
+                userSelect: 'none',
               }}
               value={
                 isSelected
