@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useCallback } from 'react';
+import React, { Fragment, useEffect, useCallback, useState } from 'react';
 import { FaSearchMinus, FaDownload } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -6,6 +6,7 @@ import {
   SAVE_DATA_AS_JSON,
   FULL_ZOOM_OUT,
   CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
+  TOGGLE_REAL_IMAGINARY_VISIBILITY,
 } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -34,7 +35,10 @@ const BasicToolBar = ({
   isSaveButtonEnabled = true,
 }) => {
   const dispatch = useDispatch();
-  const { data, verticalAlign } = useChartData();
+  const { data, verticalAlign, activeSpectrum } = useChartData();
+  const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
+  const [spectrumsCount, setSpectrumsCount] = useState(0);
+  const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
 
   const handleSaveDataAsJSON = useCallback(
     () => dispatch({ type: SAVE_DATA_AS_JSON }),
@@ -67,6 +71,14 @@ const BasicToolBar = ({
     [handleFullZoomOut, handleSaveDataAsJSON, handleChangeDisplayViewMode],
   );
 
+  const changeSpectrumViewHandler = useCallback(() => {
+    dispatch({
+      type: TOGGLE_REAL_IMAGINARY_VISIBILITY,
+      isRealSpectrumVisible: !isRealSpectrumShown,
+    });
+    setIsRealSpectrumShown(!isRealSpectrumShown);
+  }, [dispatch, isRealSpectrumShown]);
+
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
 
@@ -74,6 +86,19 @@ const BasicToolBar = ({
       document.removeEventListener('keydown', handleOnKeyPressed, false);
     };
   }, [handleOnKeyPressed]);
+
+  useEffect(() => {
+    if (data) {
+      setSpectrumsCount(data.length);
+
+      if (activeSpectrum) {
+        const { info } = data.find((d) => d.id === activeSpectrum.id);
+        setSelectedSpectrumInfo(info);
+      } else {
+        setSelectedSpectrumInfo({ isComplex: false, isFid: false });
+      }
+    }
+  }, [activeSpectrum, data]);
 
   return (
     <Fragment>
@@ -90,12 +115,11 @@ const BasicToolBar = ({
         </button>
       )}
 
-      {isViewButtonVisible && (
+      {isViewButtonVisible && spectrumsCount > 1 && (
         <button
           type="button"
           style={{ ...styles.button, display: 'block' }}
           onClick={handleChangeDisplayViewMode}
-          disabled={data && data.length <= 1}
           className={
             verticalAlign !== 0
               ? 'ci-icon-nmr-overlay3-aligned'
@@ -121,6 +145,21 @@ const BasicToolBar = ({
             popupPlacement="right"
           >
             <FaDownload />
+          </ToolTip>
+        </button>
+      )}
+
+      {selectedSpectrumInfo && selectedSpectrumInfo.isComplex && (
+        <button
+          style={styles.button}
+          type="button"
+          onClick={changeSpectrumViewHandler}
+        >
+          <ToolTip
+            title={isRealSpectrumShown ? 'Real Spectrum' : 'Imaginary Spectrum'}
+            popupPlacement="right"
+          >
+            {isRealSpectrumShown ? 'Re' : 'Im'}
           </ToolTip>
         </button>
       )}

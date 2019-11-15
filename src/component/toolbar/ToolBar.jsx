@@ -5,7 +5,6 @@ import { useChartData } from '../context/ChartContext';
 import FunctionToolBar from './FunctionToolBar';
 import HistoryToolBar from './HistoryToolBar';
 import BasicToolBar from './BasicToolBar';
-import ViewButton from './ViewButton';
 import FiltersToolBar from './FiltersToolBar';
 
 const styles = {
@@ -21,7 +20,6 @@ const ToolBar = () => {
       <FiltersToolBar />
       <HistoryToolBar />
       <BasicToolBar />
-      <ViewButton defaultValue={true} />
     </div>
   );
 };
