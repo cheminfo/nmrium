@@ -1,0 +1,100 @@
+{
+  "data1d": [
+    {
+      "data": {},
+      "id": "rwqz5z8yeba",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./cytisine/dept/DEPT45_Cytisin.dx"
+      },
+      "display": {
+        "name": "DEPT45_Cytisin",
+        "color": "#FFB300",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "rwqz5z8yebv",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./cytisine/dept/DEPT90_Cytisin.dx"
+      },
+      "display": {
+        "name": "DEPT90_Cytisin",
+        "color": "#803E75",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    }, 
+	{
+      "data": {},
+      "id": "rwqz5z8yebq",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./cytisine/dept/DEPT135_Cytisin.dx"
+      },
+      "display": {
+        "name": "DEPT135_Cytisin",
+        "color": "#A6BDD7",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    }, 
+	{
+      "data": {},
+      "id": "rwqz5z8yebl",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./cytisine/dept/DEPTQ_Cytisin.dx"
+      },
+      "display": {
+        "name": "DEPTQ_Cytisin",
+        "color": "#C10020",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": false
+      },
+      "peaks": [],
+      "integrals": [],
+      "signals": [],
+      "filters": []
+    }
+  ]
+}
