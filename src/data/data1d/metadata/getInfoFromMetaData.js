@@ -1,7 +1,7 @@
 import { getSpectrumType } from './getSpectrumType';
 import { getNucleusFrom2DExperiment } from './getNucleusFrom2DExperiment';
 
-export function getMetaData(info) {
+export function getInfoFromMetaData(info) {
   const metadata = {
     dimension: 1,
     nucleus: [],
@@ -22,6 +22,13 @@ export function getMetaData(info) {
   maybeAdd(metadata, 'frequency', parseFloat(info['.OBSERVEFREQUENCY']));
   maybeAdd(metadata, 'type', info.DATATYPE);
   maybeAdd(metadata, 'probe', info.$PROBHD);
+  maybeAdd(metadata, 'bf1', info.$BF1);
+  maybeAdd(metadata, 'sfo1', info.$SFO1);
+  maybeAdd(metadata, 'sw', info.$SW);
+  maybeAdd(metadata, 'dspfvs', info.$DSPFVS);
+  maybeAdd(metadata, 'decim', info.$DECIM);
+  maybeAdd(metadata, 'grpdly', info.$GRPDLY);
+
   if (info.$FNTYPE !== undefined) {
     maybeAdd(metadata, 'acquisitionMode', parseInt(info.$FNTYPE, 10));
   }

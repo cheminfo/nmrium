@@ -189,6 +189,7 @@ export class Datum1D {
       this.reapplyFilters();
     } else {
       this.applyFilter(Filters.zeroFilling.name, options.zeroFillingSize);
+      this.applyFilter(Filters.digitalFilter.name);
       this.applyFilter(Filters.fft.name, options.lineBroadeningValue);
     }
   }
