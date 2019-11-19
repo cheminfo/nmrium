@@ -1,5 +1,8 @@
 import { ReIm } from 'ml-spectra-processing';
 
+export const id = 'phaseCorrection';
+export const name = 'phase correction';
+
 /**
  *
  * @param {Datum1d} datum1d
@@ -8,7 +11,7 @@ import { ReIm } from 'ml-spectra-processing';
  * @param {number} [options.ph1=0]
  */
 
-export default function phaseCorrection(datum1D, options = {}) {
+export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('phaseCorrection not isApplicable on this data');
   }
@@ -22,4 +25,11 @@ export default function phaseCorrection(datum1D, options = {}) {
 export function isApplicable(datum1D) {
   if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
   return false;
+}
+
+export function reduce() {
+  return {
+    once: false,
+    reduce: null,
+  };
 }

@@ -1,11 +1,14 @@
+export const id = 'digitalFilter';
+export const name = 'Digital Filter';
+
 /**
  * Move points from the begining to the end of FID and performe a first order phase correction
  * @param {Datum1d} datum1d
  */
 
-export default function digitalFilter(datum1D) {
+export function apply(datum1D) {
   if (!isApplicable(datum1D)) {
-    throw new Error('fft not isApplicable on this data');
+    throw new Error('Digital Filter is  not isApplicable on this data');
   }
   const info = datum1D.info;
   let grpdly = info.grpdly;

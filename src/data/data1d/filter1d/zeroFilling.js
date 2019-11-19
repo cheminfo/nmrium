@@ -1,10 +1,11 @@
+export const id = 'zeroFilling';
+export const name = 'Zero Filling';
 /**
  *
  * @param {Datum1d} datum1d
  * @param {Object} [size]
  */
-
-export default function zeroFilling(datum1D, size) {
+export function apply(datum1D, size) {
   if (!isApplicable(datum1D)) {
     throw new Error('zeroFilling not isApplicable on this data');
   }

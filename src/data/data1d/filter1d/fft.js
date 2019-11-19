@@ -1,11 +1,14 @@
 import { FFT } from 'ml-fft';
 
+export const id = 'fft';
+export const name = 'FFT';
+
 /**
  *
  * @param {Datum1d} datum1d
  */
 
-export default function fft(datum1D) {
+export function apply(datum1D) {
   if (!isApplicable(datum1D)) {
     throw new Error('fft not isApplicable on this data');
   }

@@ -1,10 +1,8 @@
 // import baseline from './baseline';
 import max from 'ml-array-max';
 
-import { Filters } from './filter1d/Filters';
-import { reduce as reduceZeroFillingFilter } from './filter1d/zeroFilling';
-import { reduce as reduceLineBroadeningFilter } from './filter1d/lineBroadening';
 import autoPeakPicking from './autoPeakPicking';
+import { FiltersManager } from './FiltersManager';
 
 export class Datum1D {
   /**
@@ -77,7 +75,7 @@ export class Datum1D {
     this.preprocessing();
 
     //reapply filters after load the original data
-    this.reapplyFilters();
+    FiltersManager.reapplyFilters(this);
   }
 
   preprocessing() {
@@ -124,110 +122,20 @@ export class Datum1D {
     return this.peaks;
   }
 
-  applyFilter(filterName, options) {
-    const filterOption = {
-      kind: filterName,
-      value: options,
-    };
-    this.addFilter(filterOption);
-    Filters[filterName](this, options);
-  }
+  /***
+   * @param {object} Filters [{name:'',options:{}},{...}]
+   */
 
-  applyManualPhaseCorrectionFilter(filterOptions) {
-    Filters.phaseCorrection(this, filterOptions);
-  }
-
-  lookupForFilter(filterKind) {
-    return this.filters.find((f) => f.kind === filterKind);
-  }
-
-  applyZeroFillingFilter(options) {
-    let zeroFillingFilterOption = {
-      kind: Filters.zeroFilling.name,
-      value: options.zeroFillingSize,
-    };
-    const lineBroadeningFilterOption = {
-      kind: Filters.lineBroadening.name,
-      value: options.lineBroadeningValue,
-    };
-    const previousZeroFillingFilter = this.lookupForFilter(
-      zeroFillingFilterOption.kind,
-    );
-    const previousLineBroadeningFilter = this.lookupForFilter(
-      lineBroadeningFilterOption.kind,
-    );
-
-    if (previousZeroFillingFilter) {
-      const reduceResult = reduceZeroFillingFilter(
-        previousZeroFillingFilter.value,
-        zeroFillingFilterOption.value,
-      );
-      if (reduceResult.once) {
-        zeroFillingFilterOption.value = reduceResult.reduce;
-        this.replaceFilter(
-          previousZeroFillingFilter.id,
-          zeroFillingFilterOption.value,
-        );
-      }
-    }
-
-    if (previousLineBroadeningFilter) {
-      const reduceResult = reduceLineBroadeningFilter(
-        previousLineBroadeningFilter.value,
-        lineBroadeningFilterOption.value,
-      );
-      if (reduceResult.once) {
-        lineBroadeningFilterOption.value = reduceResult.reduce;
-        this.replaceFilter(
-          previousLineBroadeningFilter.id,
-          lineBroadeningFilterOption.value,
-        );
-      }
-    }
-
-    if (previousLineBroadeningFilter && previousZeroFillingFilter) {
-      this.reapplyFilters();
-    } else {
-      this.applyFilter(Filters.zeroFilling.name, options.zeroFillingSize);
-      this.applyFilter(Filters.digitalFilter.name);
-      this.applyFilter(Filters.fft.name, options.lineBroadeningValue);
-    }
-  }
-
-  reapplyFilters() {
-    for (let i = 0; i < this.filters.length; i++) {
-      this.enableFilter(this.filters[i].id, this.filters[i].flag);
-    }
+  applyFilter(filters = []) {
+    FiltersManager.applyFilter(this, filters);
   }
 
   // id filter id
   enableFilter(id, checked) {
-    this.filters = this.filters.slice(0);
-    const index = this.filters.findIndex((filter) => filter.id === id);
-    this.filters[index] = { ...this.filters[index], flag: checked };
-    const enabledFilters = this.filters.filter(
-      (filter) => filter.flag === true,
-    );
-    this.data = { ...this.data, ...this.source.original };
-    this.info = { ...this.info, ...this.originalInfo };
-
-    for (let filter of enabledFilters) {
-      if (filter.flag) {
-        Filters[filter.kind](this, filter.value);
-      }
-    }
+    FiltersManager.enableFilter(this, id, checked);
   }
   deleteFilter(id) {
-    this.filters = this.filters.slice(0);
-    this.filters = this.filters.filter((filter) => filter.id !== id);
-    this.data = { ...this.data, ...this.source.original };
-    this.info = { ...this.info, ...this.originalInfo };
-
-    for (let filter of this.filters) {
-      if (filter.flag) {
-        Filters[filter.kind](this, filter.value);
-      }
-    }
+    FiltersManager.deleteFilter(this, id);
   }
 
   getReal() {
@@ -282,7 +190,7 @@ export class Datum1D {
     // but it returns an array !
     // for now you return an array containing the result of addPeak
     if (from !== to) {
-      this.peaks = Object.assign([], this.peaks);
+      this.peaks = this.peaks.slice(0);
       const peaks = this.lookupPeak(from, to);
       this.peaks = this.peaks.concat([peaks]);
     }
@@ -290,24 +198,7 @@ export class Datum1D {
   }
 
   addFilter(filter) {
-    const id = Math.random()
-      .toString(36)
-      .replace('0.', '');
-    this.filters = Object.assign([], this.filters);
-    this.filters.push({
-      ...filter,
-      id: id,
-      flag: true,
-    });
-  }
-
-  replaceFilter(filterID, value) {
-    this.filters = Object.assign([], this.filters);
-    const index = this.filters.findIndex((f) => f.id === filterID);
-    this.filters[index] = {
-      ...this.filters[index],
-      value,
-    };
+    FiltersManager.addFilter(this, filter);
   }
 
   getFilters() {

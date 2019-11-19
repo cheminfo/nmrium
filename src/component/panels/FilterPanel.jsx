@@ -50,7 +50,7 @@ const FilterPanel = () => {
       _data.filters.map((d) => (
         <TableRow key={d.id}>
           <TableCell align="center" size="2">
-            {d.kind}
+            {d.label}
           </TableCell>
           <TableCell align="left" size="3">
             <ObjectInspector data={d.value} />

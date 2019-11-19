@@ -412,8 +412,9 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     //apply filter into the spectrum
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
-
-    activeObject.applyFilter(Filters.shiftX.name, shiftValue);
+    activeObject.applyFilter([
+      { name: Filters.shiftX.id, options: shiftValue },
+    ]);
     setDataByFilters(draft, activeObject, activeSpectrumId);
     setDomain(draft);
   });
@@ -424,7 +425,14 @@ const applyZeroFillingFilter = (state, filterOptions) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
-    activeObject.applyZeroFillingFilter(filterOptions);
+    activeObject.applyFilter([
+      { name: Filters.zeroFilling.id, options: filterOptions.zeroFillingSize },
+      { name: Filters.digitalFilter.id, options: {} },
+      {
+        name: Filters.lineBroadening.id,
+        options: filterOptions.lineBroadeningValue,
+      },
+    ]);
 
     setDataByFilters(draft, activeObject, activeSpectrumId);
     setDomain(draft);
@@ -437,7 +445,7 @@ const applyFFTFilter = (state) => {
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
     //apply filter into the spectrum
-    activeObject.applyFilter(Filters.fft.name, {});
+    activeObject.applyFilter([{ name: Filters.fft.id, options: {} }]);
 
     setDataByFilters(draft, activeObject, activeSpectrumId);
 
@@ -458,7 +466,6 @@ const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
-    //add filter into the spectrum
     activeObject.addFilter(filterOption);
 
     const spectrumIndex = state.tempData.findIndex(
@@ -476,12 +483,10 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
-    //apply filter into the spectrum
-    filterOptions.pivotIndex = pixelToIndex(
-      state,
-      state.verticalIndicatorPosition,
-    );
-    activeObject.applyManualPhaseCorrectionFilter(filterOptions);
+
+    activeObject.applyFilter([
+      { name: Filters.phaseCorrection.id, options: filterOptions },
+    ]);
 
     const XYData = activeObject.getReal();
     const spectrumIndex = state.data.findIndex(
@@ -490,7 +495,6 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
 
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
-    setDomain(draft);
   });
 };
 

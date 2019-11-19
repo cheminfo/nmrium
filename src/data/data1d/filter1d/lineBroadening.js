@@ -1,10 +1,13 @@
+export const id = 'lineBroadening';
+export const name = 'line broadening';
+
 /**
  *
  * @param {Datum1d} datum1d
  * @param {Object} [value]
  */
 
-export default function lineBroadening(datum1D, value) {
+export function apply(datum1D, value) {
   if (!isApplicable(datum1D)) {
     throw new Error('lineBroadening not isApplicable on this data');
   }
