@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import { AUTO_RANGES_PICKING } from '../reducer/Actions';
+import { AUTO_RANGES_PICKING, RESET_SELECTED_TOOL } from '../reducer/Actions';
 
 const styles = {
   container: {
@@ -41,8 +41,11 @@ const AutoRangesPickingOptionPanel = () => {
     });
   }, [dispatch]);
 
-  const handleCancelFilter = useCallback(() => {}, []);
-
+  const handleCancelFilter = useCallback(() => {
+    dispatch({
+      type: RESET_SELECTED_TOOL,
+    });
+  }, [dispatch]);
   return (
     <div style={styles.container}>
       <button

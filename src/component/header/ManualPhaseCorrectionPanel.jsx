@@ -4,6 +4,7 @@ import { useDispatch } from '../context/DispatchContext';
 import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+  RESET_SELECTED_TOOL,
 } from '../reducer/Actions';
 import InputRange from '../elements/InputRange';
 
@@ -21,11 +22,12 @@ const styles = {
     margin: '0px 5px 0px 5px',
     textAlign: 'center',
   },
-  applyButton: {
+  actionButton: {
     height: '100%',
-    width: '50px',
+    width: '60px',
     borderRadius: '5px',
     border: '0.55px solid #c7c7c7',
+    margin: '0px 5px',
     userSelect: 'none',
   },
   label: {
@@ -97,6 +99,12 @@ const ManualPhaseCorrectionPanel = () => {
     [dispatch, value],
   );
 
+  const handleCancelFilter = useCallback(() => {
+    dispatch({
+      type: RESET_SELECTED_TOOL,
+    });
+  }, [dispatch]);
+
   return (
     <div style={styles.container}>
       <span style={styles.label}>PH0: </span>
@@ -136,10 +144,17 @@ const ManualPhaseCorrectionPanel = () => {
 
       <button
         type="button"
-        style={styles.applyButton}
+        style={styles.actionButton}
         onClick={handleApplyFilter}
       >
         Apply
+      </button>
+      <button
+        type="button"
+        style={styles.actionButton}
+        onClick={handleCancelFilter}
+      >
+        Cancel
       </button>
     </div>
   );

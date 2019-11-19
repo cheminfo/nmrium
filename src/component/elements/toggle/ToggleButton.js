@@ -23,6 +23,7 @@ const ToggleButton = ({
   onChange,
   className,
   style,
+  isVisible,
 }) => {
   const [active, setActive] = useState(isActive);
   const toggleButton = useCallback(
@@ -45,6 +46,9 @@ const ToggleButton = ({
     setActive(isActive);
   }, [isActive]);
 
+  if (!isVisible) {
+    return null;
+  }
   return (
     <button
       type="button"
@@ -67,6 +71,7 @@ const ToggleButton = ({
 ToggleButton.defaultProps = {
   isActive: false,
   disabled: false,
+  isVisible: true,
   value: null,
   onChange: function() {
     return null;

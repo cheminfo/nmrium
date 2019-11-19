@@ -17,7 +17,7 @@ const styles = {
 const VerticalIndicator = () => {
   const { height, selectedTool, verticalIndicatorPosition } = useChartData();
   //   const { startX } = useContext(BrushContext);
-  if (options.equalizerTool.id !== selectedTool) return null;
+  if (options.phaseCorrection.id !== selectedTool) return null;
 
   return (
     <div

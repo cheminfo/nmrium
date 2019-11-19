@@ -51,7 +51,7 @@ import {
   CHANGE_INTEGRAL_ZOOM,
   ENABLE_FILTER,
   DELETE_FILTER,
-  SET_SELECTED_FILTER,
+  // SET_SELECTED_FILTER,
   APPLY_ZERO_FILLING_FILTER,
   APPLY_FFT_FILTER,
   SET_VERTICAL_INDICATOR_X_POSITION,
@@ -59,12 +59,27 @@ import {
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
   SET_SELECTED_OPTIONS_PANEL,
   SET_LOADING_FLAG,
+  RESET_SELECTED_TOOL,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
 
 function setIsLoading(state, isLoading) {
   return { ...state, isLoading };
+}
+
+function getStrongestPeak(state) {
+  const { activeSpectrum, data } = state;
+
+  const activeSpectrumId = activeSpectrum.id;
+  const activeData = data.find((d) => d.id === activeSpectrumId);
+  const strongestPeakValue = max(activeData.y);
+  const index = activeData.y.findIndex((val) => val === strongestPeakValue);
+  return {
+    xValue: activeData.x[index],
+    yValue: strongestPeakValue,
+    index: index,
+  };
 }
 
 function getDomain(data) {
@@ -400,7 +415,7 @@ function setDataByFilters(draft, activeObject, activeSpectrumId) {
   const spectrumIndex = draft.data.findIndex(
     (spectrum) => spectrum.id === activeSpectrumId,
   );
-
+  draft.selectedTool = options.zoom.id;
   draft.data[spectrumIndex].x = XYData.x;
   draft.data[spectrumIndex].y = XYData.y;
   draft.data[spectrumIndex].filters = activeObject.getFilters();
@@ -584,12 +599,25 @@ const setPointerCoordinates = (state, pointerCoordinates) => {
   return { ...state, pointerCoordinates };
 };
 
+const resetSelectedTool = (state) => {
+  return produce(state, (draft) => {
+    draft.selectedOptionPanel = null;
+    draft.selectedTool = options.zoom.id;
+    draft.tempData = null;
+  });
+};
+
 const setSelectedTool = (state, selectedTool) => {
   return produce(state, (draft) => {
     if (selectedTool) {
       draft.selectedTool = selectedTool;
       if (options[selectedTool].hasOptionPanel) {
         draft.selectedOptionPanel = selectedTool;
+      } else {
+        draft.selectedOptionPanel = null;
+      }
+      if (options[selectedTool].isFilter) {
+        setFilterChanges(draft, state, selectedTool);
       }
     } else {
       draft.selectedTool = null;
@@ -603,59 +631,35 @@ const setSelectedOptionPanel = (state, selectedOptionPanel) => {
   return { ...state, selectedOptionPanel };
 };
 
-function getStrongestPeak(state) {
-  const { activeSpectrum, data } = state;
-
-  const activeSpectrumId = activeSpectrum.id;
-  const activeData = data.find((d) => d.id === activeSpectrumId);
-  const strongestPeakValue = max(activeData.y);
-  const index = activeData.y.findIndex((val) => val === strongestPeakValue);
-  return {
-    xValue: activeData.x[index],
-    yValue: strongestPeakValue,
-    index: index,
-  };
-}
-
-const setSelectedFilter = (state, selectedFilter) => {
+function setFilterChanges(draft, state, selectedFilter) {
   const scaleX = getScale(state).x;
 
-  return produce(state, (draft) => {
-    if (selectedFilter) {
-      draft.tempData = state.data;
-      //select the equalizer tool when you enable manual phase correction filter
-      if (selectedFilter === Filters.phaseCorrection.name) {
-        const { xValue } = getStrongestPeak(state);
-        draft.verticalIndicatorPosition = scaleX(xValue);
-        draft.selectedTool = options.equalizerTool.id;
-      } else {
-        if (draft.selectedTool === options.equalizerTool.id) {
-          const activeSpectrumId = state.activeSpectrum.id;
+  draft.tempData = state.data;
+  //select the equalizer tool when you enable manual phase correction filter
+  if (selectedFilter === Filters.phaseCorrection.id) {
+    const { xValue } = getStrongestPeak(state);
+    draft.verticalIndicatorPosition = scaleX(xValue);
+  } else {
+    if (draft.selectedTool === options.phaseCorrection.id) {
+      const activeSpectrumId = state.activeSpectrum.id;
 
-          const spectrumIndex = draft.data.findIndex(
-            (spectrum) => spectrum.id === activeSpectrumId,
-          );
+      const spectrumIndex = draft.data.findIndex(
+        (spectrum) => spectrum.id === activeSpectrumId,
+      );
 
-          const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
-          activeObject.data.x = state.tempData[spectrumIndex].x;
-          activeObject.data.re = state.tempData[spectrumIndex].y;
-          activeObject.data.im = state.tempData[spectrumIndex].im;
+      const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+      activeObject.data.x = state.tempData[spectrumIndex].x;
+      activeObject.data.re = state.tempData[spectrumIndex].y;
+      activeObject.data.im = state.tempData[spectrumIndex].im;
 
-          draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
-          draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
-          draft.tempData = null;
-          draft.selectedTool = null;
-          setDomain(draft);
-        }
-      }
-      draft.selectedFilter = selectedFilter;
-      draft.selectedOptionPanel = selectedFilter;
-    } else {
-      draft.selectedFilter = null;
-      draft.selectedOptionPanel = null;
+      draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
+      draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
+      draft.tempData = null;
+      draft.selectedTool = null;
+      setDomain(draft);
     }
-  });
-};
+  }
+}
 
 const zoomOut = (state) => {
   return produce(state, (draft) => {
@@ -910,11 +914,12 @@ const handleChangeIntegralZoom = (state, zoomFactor) => {
     }
   });
 };
-const handleAutoPeakPicking = (state, options) => {
+const handleAutoPeakPicking = (state, autOptions) => {
   return produce(state, (draft) => {
+    draft.selectedTool = options.zoom.id;
     const activeSpectrumId = state.activeSpectrum.id;
     const ob = AnalysisObj.getDatum1D(activeSpectrumId);
-    const peaks = ob.applyAutoPeakPicking(options);
+    const peaks = ob.applyAutoPeakPicking(autOptions);
     const index = state.data.findIndex((d) => d.id === activeSpectrumId);
     if (index !== -1) {
       draft.data[index].peaks = peaks;
@@ -1101,12 +1106,14 @@ export const spectrumReducer = (state, action) => {
 
     case SET_SELECTED_TOOL:
       return setSelectedTool(state, action.selectedTool);
+    case RESET_SELECTED_TOOL:
+      return resetSelectedTool(state);
 
     case SET_SELECTED_OPTIONS_PANEL:
       return setSelectedOptionPanel(state, action.selectedOptionPanel);
 
-    case SET_SELECTED_FILTER:
-      return setSelectedFilter(state, action.selectedFilter);
+    // case SET_SELECTED_FILTER:
+    //   return setSelectedFilter(state, action.selectedFilter);
 
     case SET_DATA:
       return setData(state, action.data);

@@ -4,7 +4,6 @@ import { FaRegWindowMaximize } from 'react-icons/fa';
 import { jsx, css } from '@emotion/core';
 
 import { useChartData } from '../context/ChartContext';
-import { Filters } from '../../data/data1d/filter1d/Filters';
 import { options } from '../toolbar/ToolTypes';
 
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
@@ -61,9 +60,9 @@ const Header = ({ isFullscreen, onMaximize }) => {
   const { selectedOptionPanel } = useChartData();
 
   const selectedPanel = useMemo(() => {
-    if (selectedOptionPanel === Filters.zeroFilling.name) {
+    if (selectedOptionPanel === options.zeroFilling.id) {
       return <ZeroFillingOptionsPanel />;
-    } else if (selectedOptionPanel === Filters.phaseCorrection.name) {
+    } else if (selectedOptionPanel === options.phaseCorrection.id) {
       return <ManualPhaseCorrectionPanel />;
     } else if (selectedOptionPanel === options.autoPeaksPicking.id) {
       return <AutoPeakPickingOptionPanel />;

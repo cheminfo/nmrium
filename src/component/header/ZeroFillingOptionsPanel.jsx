@@ -1,6 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
 
-import { APPLY_ZERO_FILLING_FILTER } from '../reducer/Actions';
+import {
+  APPLY_ZERO_FILLING_FILTER,
+  RESET_SELECTED_TOOL,
+} from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
 import Select from '../elements/Select';
 import { useChartData } from '../context/ChartContext';
@@ -20,11 +23,12 @@ const styles = {
     margin: '0px 5px 0px 5px',
     textAlign: 'center',
   },
-  applyButton: {
+  actionButton: {
     height: '100%',
-    width: '50px',
+    width: '60px',
     borderRadius: '5px',
     border: '0.55px solid #c7c7c7',
+    margin: '0px 5px',
     userSelect: 'none',
   },
   label: {
@@ -93,6 +97,12 @@ const ZeroFillingOptionsPanel = () => {
     [lineBroadeningValue],
   );
 
+  const handleCancelFilter = useCallback(() => {
+    dispatch({
+      type: RESET_SELECTED_TOOL,
+    });
+  }, [dispatch]);
+
   return (
     <div style={styles.container}>
       <span style={styles.label}>Size: </span>
@@ -115,10 +125,18 @@ const ZeroFillingOptionsPanel = () => {
 
       <button
         type="button"
-        style={styles.applyButton}
+        style={styles.actionButton}
         onClick={handleApplyFilter}
       >
         Apply
+      </button>
+
+      <button
+        type="button"
+        style={styles.actionButton}
+        onClick={handleCancelFilter}
+      >
+        Cancel
       </button>
     </div>
   );

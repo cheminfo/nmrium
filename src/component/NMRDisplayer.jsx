@@ -216,10 +216,6 @@ function ChartPanel() {
   const handelBrushEnd = useCallback(
     (brushData) => {
       switch (selectedTool) {
-        case options.zoom.id:
-          dispatch({ type: BRUSH_END, ...brushData });
-          break;
-
         case options.integral.id:
           dispatch({
             type: ADD_INTEGRAL,
@@ -235,6 +231,8 @@ function ChartPanel() {
           break;
 
         default:
+          dispatch({ type: BRUSH_END, ...brushData });
+
           return;
       }
     },
@@ -248,15 +246,13 @@ function ChartPanel() {
   const handleZoom = useCallback(
     (event) => {
       switch (selectedTool) {
-        case options.zoom.id:
-          dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: event });
-          break;
-
         case options.integral.id:
           dispatch({ type: CHANGE_INTEGRAL_ZOOM, zoomFactor: event });
-
           break;
+
         default:
+          dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: event });
+
           return;
       }
     },
@@ -270,7 +266,7 @@ function ChartPanel() {
           type: ADD_PEAK,
           mouseCoordinates: position,
         });
-      } else if (selectedTool === options.equalizerTool.id) {
+      } else if (selectedTool === options.phaseCorrection.id) {
         dispatch({
           type: SET_VERTICAL_INDICATOR_X_POSITION,
           position: position.x,

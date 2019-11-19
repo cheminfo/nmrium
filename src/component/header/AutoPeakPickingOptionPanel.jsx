@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import { AUTO_PEAK_PICKING } from '../reducer/Actions';
+import { AUTO_PEAK_PICKING, RESET_SELECTED_TOOL } from '../reducer/Actions';
 
 const styles = {
   container: {
@@ -48,11 +48,10 @@ const AutoPeakPickingOptionPanel = () => {
   }, [dispatch]);
 
   const handleCancelFilter = useCallback(() => {
-    // dispatch({
-    //   type: APPLY_MANUAL_PHASE_CORRECTION_FILTER,
-    //   value: value,
-    // });
-  }, []);
+    dispatch({
+      type: RESET_SELECTED_TOOL,
+    });
+  }, [dispatch]);
 
   return (
     <div style={styles.container}>
