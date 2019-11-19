@@ -1,4 +1,4 @@
-import digitalFilter from '../digitalFilter';
+import { apply } from '../digitalFilter';
 
 describe('digitalFilter', () => {
   it('simple x, re, im 4 to 8', () => {
@@ -20,7 +20,7 @@ describe('digitalFilter', () => {
     }
     spectrum.data.im = spectrum.data.re.slice();
     spectrum.data.x = spectrum.data.re.slice();
-    digitalFilter(spectrum);
+    apply(spectrum);
     expect(spectrum.data.re).toStrictEqual(
       new Float64Array([6, 7, 0, 0, 0, 0, 0, 0]),
     );

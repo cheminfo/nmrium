@@ -1,4 +1,4 @@
-import zeroFilling from '../zeroFilling';
+import { apply } from '../zeroFilling';
 
 describe('zeroFilling', () => {
   it('simple x, re, im 4 to 8', () => {
@@ -13,7 +13,7 @@ describe('zeroFilling', () => {
         isFid: true,
       },
     };
-    zeroFilling(spectrum, 8);
+    apply(spectrum, 8);
     expect(spectrum.data).toStrictEqual({
       re: new Float64Array([1, 2, 3, 4, 0, 0, 0, 0]),
       im: new Float64Array([5, 6, 7, 8, 0, 0, 0, 0]),
@@ -36,7 +36,7 @@ describe('zeroFilling', () => {
     let originalX = spectrum.data.x;
     let originalRe = spectrum.data.re;
     let originalIm = spectrum.data.im;
-    zeroFilling(spectrum, 2);
+    apply(spectrum, 2);
     expect(spectrum.data).toStrictEqual({
       re: new Float64Array([1, 2]),
       im: new Float64Array([5, 6]),

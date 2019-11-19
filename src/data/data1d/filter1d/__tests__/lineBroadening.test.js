@@ -1,4 +1,4 @@
-import lineBroadening from '../lineBroadening';
+import { apply } from '../lineBroadening';
 
 describe('lineBroadening', () => {
   it('simple x, re, im to 1 Hz exp.', () => {
@@ -13,7 +13,7 @@ describe('lineBroadening', () => {
         isFid: true,
       },
     };
-    lineBroadening(spectrum, 1);
+    apply(spectrum, 1);
     //expect(spectrum.data).toBeCloseTo({
     expect(spectrum.data).toStrictEqual(
       {

@@ -21,7 +21,6 @@ export class FiltersManager {
           previousFilter.value,
           filterOption.value,
         );
-        console.log(reduceResult);
 
         if (reduceResult.once) {
           if (!isReduced) {
