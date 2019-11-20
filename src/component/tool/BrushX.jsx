@@ -15,6 +15,7 @@ const styles = {
 
 const allowTools = [
   options.zoom.id,
+  options.zeroFilling.id,
   options.peakPicking.id,
   options.integral.id,
   options.phaseCorrection.id,
