@@ -469,20 +469,10 @@ const applyFFTFilter = (state) => {
     setMode(draft);
   });
 };
-const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
+const applyManualPhaseCorrectionFilter = (state) => {
   return produce(state, (draft) => {
-    filterOptions.pivotIndex = pixelToIndex(
-      state,
-      state.verticalIndicatorPosition,
-    );
-    const filterOption = {
-      kind: Filters.phaseCorrection.name,
-      value: filterOptions,
-    };
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
-
-    activeObject.addFilter(filterOption);
 
     const spectrumIndex = state.tempData.findIndex(
       (spectrum) => spectrum.id === activeSpectrumId,
@@ -500,6 +490,10 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
+    filterOptions.pivotIndex = pixelToIndex(
+      state,
+      state.verticalIndicatorPosition,
+    );
     activeObject.applyFilter([
       { name: Filters.phaseCorrection.id, options: filterOptions },
     ]);
@@ -849,12 +843,10 @@ function setDomain(draft) {
 }
 
 function pixelToIndex(state, xPixel) {
-  const { data, width } = state;
-  const x = d3
-    .scaleLinear()
-    .domain([0, data[0].x.length])
-    .range([width, 0]);
-  return Math.round(x.invert(xPixel));
+  const { data } = state;
+  const xScale = getScale(state).x;
+  const closest = getClosestNumber(data[0].x, xScale.invert(xPixel));
+  return data[0].x.indexOf(closest);
 }
 
 const handleDeleteSpectra = (state) => {
