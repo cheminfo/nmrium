@@ -28,7 +28,7 @@
     "react-ocl": "^4.0.2",
     "react-split-pane": "^0.1.89",
     "react-use": "^13.8.0",
-    "spectra-data": "3.4.8",
+    "spectra-data": "^3.4.10",
     "uuid": "^3.3.3"
   },
   "prettier": {

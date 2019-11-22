@@ -55,8 +55,8 @@ function generateXAxis(datum1D) {
   let dx = (0.5 * spectralWidth * spectralFrequency) / baseFrequency;
 
   let nbPoints = datum1D.data.x.length;
-  let tmp = xMiddle + dx;
-  dx = (-2 * dx) / (nbPoints - 1);
+  let tmp = xMiddle - dx;
+  dx = (2 * dx) / (nbPoints - 1);
   const xAxis = new Array(nbPoints);
   for (let i = 0; i < nbPoints; i++) {
     xAxis[i] = tmp;
