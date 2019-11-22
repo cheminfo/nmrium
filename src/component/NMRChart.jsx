@@ -6,6 +6,7 @@ import XAxis from './XAxis';
 import YAxis from './YAxis';
 import { useChartData } from './context/ChartContext';
 import PeaksNotations from './PeaksNotations';
+import Ranges from './Ranges';
 
 function NMRChart() {
   const { mode, width, height, margin } = useChartData();
@@ -28,6 +29,7 @@ function NMRChart() {
       <LinesSeries />
       <IntegralsSeries />
       <PeaksNotations />
+      <Ranges />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid={true} mode={mode} />

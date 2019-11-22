@@ -2,6 +2,7 @@
 import max from 'ml-array-max';
 
 import autoPeakPicking from './autoPeakPicking';
+import autoRangesDetection from './autoRangesDetection';
 import { FiltersManager } from './FiltersManager';
 
 export class Datum1D {
@@ -120,6 +121,19 @@ export class Datum1D {
     const peaks = autoPeakPicking(this, options);
     this.peaks = peaks;
     return this.peaks;
+  }
+
+  detectRanges(options) {
+    const ranges = autoRangesDetection(this, options);
+    this.ranges = ranges.map((range) => {
+      return {
+        id: Math.random()
+          .toString(36)
+          .replace('0.', ''),
+        ...range,
+      };
+    });
+    return this.ranges;
   }
 
   /***

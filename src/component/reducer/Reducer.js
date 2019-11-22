@@ -60,6 +60,7 @@ import {
   SET_SELECTED_OPTIONS_PANEL,
   SET_LOADING_FLAG,
   RESET_SELECTED_TOOL,
+  AUTO_RANGES_DETECTION,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -926,6 +927,18 @@ const handleAutoPeakPicking = (state, autOptions) => {
     }
   });
 };
+const handleAutoRangesDetection = (state, detectionOptions) => {
+  return produce(state, (draft) => {
+    draft.selectedTool = options.zoom.id;
+    const activeSpectrumId = state.activeSpectrum.id;
+    const ob = AnalysisObj.getDatum1D(activeSpectrumId);
+    const ranges = ob.detectRanges(detectionOptions);
+    const index = state.data.findIndex((d) => d.id === activeSpectrumId);
+    if (index !== -1) {
+      draft.data[index].ranges = ranges;
+    }
+  });
+};
 
 //////////////////////////////////////////////////////////////////////
 //////////////// start undo and redo functions ///////////////////////
@@ -1185,6 +1198,9 @@ export const spectrumReducer = (state, action) => {
 
     case AUTO_PEAK_PICKING:
       return handleAutoPeakPicking(state, action.options);
+
+    case AUTO_RANGES_DETECTION:
+      return handleAutoRangesDetection(state, action.options);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

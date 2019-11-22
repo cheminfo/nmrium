@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import { AUTO_RANGES_PICKING, RESET_SELECTED_TOOL } from '../reducer/Actions';
+import { AUTO_RANGES_DETECTION, RESET_SELECTED_TOOL } from '../reducer/Actions';
 
 const styles = {
   container: {
@@ -37,7 +37,15 @@ const AutoRangesPickingOptionPanel = () => {
 
   const handleApplyFilter = useCallback(() => {
     dispatch({
-      type: AUTO_RANGES_PICKING,
+      type: AUTO_RANGES_DETECTION,
+      options: {
+        minMaxRatio: 0.1,
+        nH: 100,
+        compile: true,
+        frequencyCluster: 16,
+        clean: null,
+        keepPeaks: true,
+      },
     });
   }, [dispatch]);
 
