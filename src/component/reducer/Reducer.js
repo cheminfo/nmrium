@@ -487,14 +487,16 @@ const applyManualPhaseCorrectionFilter = (state) => {
 
 const calculateManualPhaseCorrection = (state, filterOptions) => {
   return produce(state, (draft) => {
-    const { id, index } = state.activeSpectrum;
     const { data } = state;
+    const { id, index } = state.activeSpectrum;
+    let { ph0, ph1 } = filterOptions;
     const activeObject = AnalysisObj.getDatum1D(id);
     const closest = getClosestNumber(data[index].x, state.pivot);
-    filterOptions.pivotIndex = data[index].x.indexOf(closest);
+    const pivotIndex = data[index].x.indexOf(closest);
 
+    ph0 = ph0 - (ph1 * pivotIndex) / activeObject.data.x.length;
     activeObject.applyFilter([
-      { name: Filters.phaseCorrection.id, options: filterOptions },
+      { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
     ]);
 
     const XYData = activeObject.getReal();
