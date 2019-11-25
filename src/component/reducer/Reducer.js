@@ -416,6 +416,7 @@ function setDataByFilters(draft, activeObject, activeSpectrumId) {
   const spectrumIndex = draft.data.findIndex(
     (spectrum) => spectrum.id === activeSpectrumId,
   );
+  draft.selectedOptionPanel = null;
   draft.selectedTool = options.zoom.id;
   draft.data[spectrumIndex].x = XYData.x;
   draft.data[spectrumIndex].y = XYData.y;
