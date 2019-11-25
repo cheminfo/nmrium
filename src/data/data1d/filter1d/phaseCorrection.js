@@ -15,10 +15,9 @@ export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('phaseCorrection not isApplicable on this data');
   }
-  let { ph0, ph1, pivotIndex } = options;
+  let { ph0, ph1 } = options;
   ph0 *= Math.PI / 180;
   ph1 *= Math.PI / 180;
-  ph0 = ph0 - (ph1 * pivotIndex) / datum1D.data.x.length;
   Object.assign(datum1D.data, ReIm.phaseCorrection(datum1D.data, ph0, ph1));
 }
 
@@ -27,9 +26,13 @@ export function isApplicable(datum1D) {
   return false;
 }
 
-export function reduce() {
+export function reduce(previousValue, newValue) {
+  let reduced = Object.assign({}, previousValue);
+  for (const k in reduced) {
+    reduced[k] += newValue[k];
+  }
   return {
-    once: false,
-    reduce: null,
+    once: true,
+    reduce: reduced,
   };
 }
