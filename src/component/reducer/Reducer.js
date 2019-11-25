@@ -487,24 +487,20 @@ const applyManualPhaseCorrectionFilter = (state) => {
 
 const calculateManualPhaseCorrection = (state, filterOptions) => {
   return produce(state, (draft) => {
-    const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+    const { id, index } = state.activeSpectrum;
+    const { data } = state;
+    const activeObject = AnalysisObj.getDatum1D(id);
+    const closest = getClosestNumber(data[index].x, state.pivot);
+    filterOptions.pivotIndex = data[index].x.indexOf(closest);
 
-    filterOptions.pivotIndex = pixelToIndex(
-      state,
-      state.verticalIndicatorPosition,
-    );
     activeObject.applyFilter([
       { name: Filters.phaseCorrection.id, options: filterOptions },
     ]);
 
     const XYData = activeObject.getReal();
-    const spectrumIndex = state.data.findIndex(
-      (spectrum) => spectrum.id === activeSpectrumId,
-    );
 
-    draft.data[spectrumIndex].x = XYData.x;
-    draft.data[spectrumIndex].y = XYData.y;
+    draft.data[index].x = XYData.x;
+    draft.data[index].y = XYData.y;
   });
 };
 
@@ -598,7 +594,11 @@ const resetSelectedTool = (state) => {
   return produce(state, (draft) => {
     draft.selectedOptionPanel = null;
     draft.selectedTool = options.zoom.id;
-    draft.tempData = null;
+    if (state.tempData) {
+      draft.data = state.tempData;
+      draft.tempData = null;
+      setDomain(draft);
+    }
   });
 };
 
@@ -627,13 +627,11 @@ const setSelectedOptionPanel = (state, selectedOptionPanel) => {
 };
 
 function setFilterChanges(draft, state, selectedFilter) {
-  const scaleX = getScale(state).x;
-
   draft.tempData = state.data;
   //select the equalizer tool when you enable manual phase correction filter
   if (selectedFilter === Filters.phaseCorrection.id) {
     const { xValue } = getStrongestPeak(state);
-    draft.verticalIndicatorPosition = scaleX(xValue);
+    draft.pivot = xValue;
   } else {
     if (draft.selectedTool === options.phaseCorrection.id) {
       const activeSpectrumId = state.activeSpectrum.id;
@@ -698,8 +696,10 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
       if (index !== -1) {
         draft.data[index].isVisible = true;
       }
+
+      activeSpectrum.index = index;
+      draft.activeSpectrum = activeSpectrum;
     }
-    draft.activeSpectrum = activeSpectrum;
   });
 };
 
@@ -842,12 +842,12 @@ function setDomain(draft) {
   });
 }
 
-function pixelToIndex(state, xPixel) {
-  const { data } = state;
-  const xScale = getScale(state).x;
-  const closest = getClosestNumber(data[0].x, xScale.invert(xPixel));
-  return data[0].x.indexOf(closest);
-}
+// function pixelToIndex(state, xPixel) {
+//   const { data } = state;
+//   const xScale = getScale(state).x;
+//   const closest = getClosestNumber(data[0].x, xScale.invert(xPixel));
+//   return data[0].x.indexOf(closest);
+// }
 
 const handleDeleteSpectra = (state) => {
   return produce(state, (draft) => {
@@ -1009,7 +1009,8 @@ const handleBrushEnd = (state, action) => {
 };
 const setVerticalIndicatorXPosition = (state, position) => {
   return produce(state, (draft) => {
-    draft.verticalIndicatorPosition = position;
+    const scaleX = getScale(state).x;
+    draft.pivot = scaleX.invert(position);
   });
 };
 
@@ -1056,7 +1057,7 @@ export const initialState = {
     hasUndo: false,
     hasRedo: false,
   },
-  verticalIndicatorPosition: 0,
+  pivot: 0,
   isLoading: false,
 };
 
