@@ -70,7 +70,7 @@ export class Datum1D {
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
     this.integrals = Object.assign([], options.integrals); // array of object (from: xIndex, to: xIndex)
-    this.filters = Object.assign([], options.filters);
+    this.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
     this.ranges = Object.assign([], options.ranges);
 
     this.preprocessing();

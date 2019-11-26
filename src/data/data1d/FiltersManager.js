@@ -21,7 +21,6 @@ export class FiltersManager {
           previousFilter.value,
           filterOption.value,
         );
-
         if (reduceResult.once) {
           if (!isReduced) {
             isReduced = true;
@@ -44,12 +43,27 @@ export class FiltersManager {
       }
     }
     if (isReduced) {
-      FiltersManager.reapplyFilters(datum1d);
+      if (
+        filters.length === 1 &&
+        FiltersManager.isLastFilter(datum1d, filters[0].name)
+      ) {
+        Filters[filters[0].name].apply(datum1d, filters[0].options);
+      } else {
+        FiltersManager.reapplyFilters(datum1d);
+      }
     } else {
       for (let filter of filters) {
         Filters[filter.name].apply(datum1d, filter.options);
       }
     }
+  }
+
+  static isLastFilter(datum1d, id) {
+    const index = datum1d.filters.findIndex((f) => f.name === id);
+    if (datum1d.filters.length === index + 1) {
+      return true;
+    }
+    return false;
   }
 
   static lookupForFilter(datum1d, filterName) {
