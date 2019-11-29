@@ -477,10 +477,10 @@ const applyManualPhaseCorrectionFilter = (state) => {
     const spectrumIndex = state.tempData.findIndex(
       (spectrum) => spectrum.id === activeSpectrumId,
     );
-
-    draft.data[spectrumIndex].filters = activeObject.getFilters();
+    draft.selectedOptionPanel = null;
+    draft.selectedTool = options.zoom.id;
     draft.tempData = null;
-    draft.selectedTool = null;
+    draft.data[spectrumIndex].filters = activeObject.getFilters();
     setDomain(draft);
   });
 };
@@ -912,6 +912,7 @@ const handleChangeIntegralZoom = (state, zoomFactor) => {
 const handleAutoPeakPicking = (state, autOptions) => {
   return produce(state, (draft) => {
     draft.selectedTool = options.zoom.id;
+    draft.selectedOptionPanel = null;
     const activeSpectrumId = state.activeSpectrum.id;
     const ob = AnalysisObj.getDatum1D(activeSpectrumId);
     const peaks = ob.applyAutoPeakPicking(autOptions);
@@ -924,6 +925,7 @@ const handleAutoPeakPicking = (state, autOptions) => {
 const handleAutoRangesDetection = (state, detectionOptions) => {
   return produce(state, (draft) => {
     draft.selectedTool = options.zoom.id;
+    draft.selectedOptionPanel = null;
     const activeSpectrumId = state.activeSpectrum.id;
     const ob = AnalysisObj.getDatum1D(activeSpectrumId);
     const ranges = ob.detectRanges(detectionOptions);
