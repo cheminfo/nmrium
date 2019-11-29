@@ -8,6 +8,7 @@ import MoleculePanel from './MoleculePanel';
 import FilterPanel from './FilterPanel';
 import InformationPanel from './InformationPanel';
 import RangesTablePanel from './RangesTablePanel';
+import PeaksTablePanel from './PeaksTablePanel';
 
 const Panels = () => {
   return (
@@ -19,7 +20,7 @@ const Panels = () => {
         <InformationPanel />
       </AccordionItem>
       <AccordionItem title="Peaks">
-        <p>peaks</p>
+        <PeaksTablePanel />
       </AccordionItem>
       <AccordionItem title="Filters">
         <FilterPanel />

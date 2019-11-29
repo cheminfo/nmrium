@@ -281,12 +281,11 @@ const addPeaks = (state, action) => {
 
 const deletePeak = (state, peakData) => {
   return produce(state, (draft) => {
-    const spectrumID = state.activeSpectrum.id;
-    const index = draft.data.findIndex((d) => d.id === spectrumID);
+    const { index, id } = state.activeSpectrum;
     draft.data[index].peaks = draft.data[index].peaks.filter(
       (p) => p.xIndex !== peakData.xIndex,
     );
-    AnalysisObj.getDatum1D(spectrumID).setPeaks(draft.data[index].peaks);
+    AnalysisObj.getDatum1D(id).setPeaks(draft.data[index].peaks);
   });
 };
 
