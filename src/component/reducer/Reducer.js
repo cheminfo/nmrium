@@ -61,6 +61,7 @@ import {
   SET_LOADING_FLAG,
   RESET_SELECTED_TOOL,
   AUTO_RANGES_DETECTION,
+  DELETE_RANGE,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -792,7 +793,6 @@ const handleZoom = (state, zoomFactor) => {
     draft.zoomFactor = t;
 
     let yDomain = t.rescaleY(scale).domain();
-
     if (activeSpectrum === null) {
       draft.yDomains = yDomains.map((y) => {
         return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
@@ -933,6 +933,14 @@ const handleAutoRangesDetection = (state, detectionOptions) => {
     if (index !== -1) {
       draft.data[index].ranges = ranges;
     }
+  });
+};
+const handleDeleteRange = (state, rangeID) => {
+  return produce(state, (draft) => {
+    const { id, index } = state.activeSpectrum;
+    const ob = AnalysisObj.getDatum1D(id);
+    ob.deleteRange(rangeID);
+    draft.data[index].ranges = ob.getRanges();
   });
 };
 
@@ -1198,6 +1206,8 @@ export const spectrumReducer = (state, action) => {
 
     case AUTO_RANGES_DETECTION:
       return handleAutoRangesDetection(state, action.options);
+    case DELETE_RANGE:
+      return handleDeleteRange(state, action.rangeID);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

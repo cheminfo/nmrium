@@ -136,6 +136,10 @@ export class Datum1D {
     return this.ranges;
   }
 
+  deleteRange(id) {
+    this.ranges = this.ranges.filter((range) => range.id !== id);
+  }
+
   /***
    * @param {object} Filters [{name:'',options:{}},{...}]
    */
