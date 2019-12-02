@@ -5,7 +5,12 @@ import { useChartData } from './context/ChartContext';
 
 const styles = css`
   pointer-events: bounding-box;
-  :hover .target {
+  :hover .range-area {
+    height: 100%;
+    fill: #ff6f0057;
+    cursor: pointer;
+  }
+  :hover .delete-button {
     height: 100%;
     fill: #ff6f0057;
     cursor: pointer;
@@ -35,7 +40,7 @@ const Ranges = () => {
                       width={`${getScale().x(range.from) -
                         getScale().x(range.to)}`}
                       height="6"
-                      className="target"
+                      className="range-area"
                       fill="green"
                     />
                     <text

@@ -58,8 +58,7 @@ const PeakPointer = () => {
         if (yDataRange && yDataRange.length > 0) {
           const yValue = max(yDataRange);
           const xIndex = yDataRange.findIndex((value) => value === yValue);
-          const xValue = spectrumData.x[minIndex + xIndex];
-
+          const xValue = spectrumData.x[minIndex + xIndex + 1];
           return {
             x: scale.x(xValue),
             y: scale.y(yValue),

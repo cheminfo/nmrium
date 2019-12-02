@@ -173,9 +173,9 @@ export class Datum1D {
     if (dataRange && dataRange.length > 0) {
       const yValue = max(dataRange);
       const xIndex = dataRange.findIndex((value) => value === yValue);
-      const xValue = this.data.x[minIndex + xIndex];
+      const xValue = this.data.x[minIndex + xIndex + 1];
 
-      return { x: xValue, y: yValue, xIndex: minIndex + xIndex };
+      return { x: xValue, y: yValue, xIndex: minIndex + xIndex + 1 };
     }
     return [];
   }

@@ -176,7 +176,6 @@ export const PeakNotation = ({
   return (
     <Fragment>
       <Global styles={styles} />
-
       <g
         id={id}
         transform={`translate(${x}, ${y})`}
@@ -185,7 +184,7 @@ export const PeakNotation = ({
         }}
         onMouseLeave={handleOnMouseLeaveNotation}
       >
-        <line x1="0" x2="0" y1="-5" y2={-30} stroke={color} strokeWidth="1" />
+        <line x1="0" x2="0" y1="-5" y2={-30} stroke={color} strokeWidth="1px" />
         <text
           ref={refText}
           x="0"
