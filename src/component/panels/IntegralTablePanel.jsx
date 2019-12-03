@@ -1,68 +1,91 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext, useCallback, useMemo } from 'react';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
-// import { FaMinusSquare } from 'react-icons/fa';
-
+import Table from '../elements/Table';
 import { ChartContext } from '../context/ChartContext';
-import {
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-} from '../elements/Table';
+import { useDispatch } from '../context/DispatchContext';
+import { DELETE_INTEGRAL } from '../reducer/Actions';
 
 import NoTableData from './placeholder/NoTableData';
 
-// const styles = {
-//   button: {
-//     backgroundColor: 'transparent',
-//     border: 'none',
-//     width: '14px',
-//     height: '14px',
-//   },
-// };
-
 const IntegralTablePanel = () => {
-  const [integrals, setIntegrals] = useState([]);
-  const { activeSpectrum, data } = useContext(ChartContext);
+  const { activeSpectrum, data: SpectrumsData } = useContext(ChartContext);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const spectrum = activeSpectrum
-      ? data.find((d) => d.id === activeSpectrum.id)
-      : [];
-    const hasData = spectrum && spectrum.integrals;
-    setIntegrals(hasData ? spectrum.integrals : []);
-  }, [activeSpectrum, data]);
+  let counter = 1;
 
-  return activeSpectrum && data && integrals.length > 0 ? (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell align="center">From</TableCell>
-          <TableCell align="center">To</TableCell>
-          <TableCell align="center">Value</TableCell>
-          {/* <TableCell align="center" size="1" /> */}
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {integrals.map((row) => (
-          <TableRow key={row.to + row.from + row.value}>
-            <TableCell align="center" component="th" scope="row">
-              {row.from.toFixed(2)}
-            </TableCell>
-            <TableCell align="center">{row.to.toFixed(2)}</TableCell>
-            <TableCell align="center">{row.value.toFixed(2)}</TableCell>
-            {/* <TableCell size="1">
-              <button type="button" style={styles.button}>
-                <FaMinusSquare />
-              </button>
-            </TableCell> */}
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  ) : (
-    <NoTableData />
+  const deletePeakHandler = useCallback(
+    (e, row) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const params = row.original;
+      dispatch({
+        type: DELETE_INTEGRAL,
+        integralID: params.id,
+      });
+    },
+    [dispatch],
+  );
+  const columns = [
+    {
+      Header: '#',
+      Cell: () => counter++,
+      width: 10,
+    },
+
+    {
+      Header: 'From',
+      accessor: 'from',
+      resizable: true,
+      Cell: ({ row }) => row.original.from.toFixed(2),
+    },
+    {
+      Header: 'To',
+      accessor: 'to',
+      resizable: true,
+      Cell: ({ row }) => row.original.to.toFixed(2),
+    },
+    {
+      Header: 'Value',
+      accessor: 'value',
+      resizable: true,
+      Cell: ({ row }) => row.original.value.toFixed(2),
+    },
+    {
+      Header: '',
+      id: 'delete-button',
+      Cell: ({ row }) => (
+        <button
+          type="button"
+          className="delete-button"
+          onClick={(e) => deletePeakHandler(e, row)}
+        >
+          <FaRegTrashAlt />
+        </button>
+      ),
+    },
+  ];
+
+  const data = useMemo(() => {
+    const _data =
+      activeSpectrum && SpectrumsData
+        ? SpectrumsData[activeSpectrum.index]
+        : null;
+    if (_data && _data.integrals) {
+      return _data.integrals;
+    } else {
+      return [];
+    }
+  }, [SpectrumsData, activeSpectrum]);
+
+  return (
+    <div>
+      {data && data.length > 0 ? (
+        <Table data={data} columns={columns} />
+      ) : (
+        <NoTableData />
+      )}
+    </div>
   );
 };
 

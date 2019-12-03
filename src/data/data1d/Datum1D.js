@@ -139,6 +139,9 @@ export class Datum1D {
   deleteRange(id) {
     this.ranges = this.ranges.filter((range) => range.id !== id);
   }
+  deleteIntegral(id) {
+    this.integrals = this.integrals.filter((integral) => integral.id !== id);
+  }
 
   /***
    * @param {object} Filters [{name:'',options:{}},{...}]

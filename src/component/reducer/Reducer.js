@@ -356,12 +356,12 @@ const addIntegral = (state, action) => {
 };
 
 const deleteIntegral = (state, action) => {
-  const { integralID, spectrumID } = action;
   return produce(state, (draft) => {
-    const index = state.data.findIndex((d) => d.id === spectrumID);
-    draft.data[index].integrals = state.data[index].integrals.filter(
-      (integral) => integral.id !== integralID,
-    );
+    const { integralID } = action;
+    const { id, index } = state.activeSpectrum;
+    const object = AnalysisObj.getDatum1D(id);
+    object.deleteIntegral(integralID);
+    draft.data[index].integrals = object.getIntegrals();
   });
 };
 
