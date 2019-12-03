@@ -1,7 +1,7 @@
 import React, { useContext, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import Table from '../elements/Table';
+import ReactTable from '../elements/ReactTable';
 import { ChartContext } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { DELETE_INTEGRAL } from '../reducer/Actions';
@@ -81,7 +81,7 @@ const IntegralTablePanel = () => {
   return (
     <div>
       {data && data.length > 0 ? (
-        <Table data={data} columns={columns} />
+        <ReactTable data={data} columns={columns} />
       ) : (
         <NoTableData />
       )}

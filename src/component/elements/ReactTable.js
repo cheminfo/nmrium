@@ -34,7 +34,7 @@ const style = css`
      } 
 `;
 
-const Table = ({ data, columns }) => {
+const ReactTable = ({ data, columns }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -84,4 +84,4 @@ const Table = ({ data, columns }) => {
   );
 };
 
-export default Table;
+export default ReactTable;

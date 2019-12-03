@@ -5,7 +5,7 @@ import { useChartData } from '../context/ChartContext';
 import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { DELETE_PEAK_NOTATION } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
-import Table from '../elements/Table';
+import ReactTable from '../elements/ReactTable';
 
 import NoTableData from './placeholder/NoTableData';
 
@@ -79,7 +79,7 @@ const PeaksTablePanel = () => {
   return (
     <div>
       {data && data.length > 0 ? (
-        <Table data={data} columns={columns} />
+        <ReactTable data={data} columns={columns} />
       ) : (
         <NoTableData />
       )}
