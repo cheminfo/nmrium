@@ -290,16 +290,6 @@ const deletePeak = (state, peakData) => {
   });
 };
 
-const handleDeleteRange = (state, rangeData) => {
-  return produce(state, (draft) => {
-    const { index, id } = state.activeSpectrum;
-    draft.data[index].ranges = draft.data[index].ranges.filter(
-      (r) => r.id !== rangeData.id,
-    );
-    AnalysisObj.getDatum1D(id).setRanges(draft.data[index].ranges);
-  });
-};
-
 const addIntegral = (state, action) => {
   const scale = getScale(state).x;
 
@@ -1113,9 +1103,6 @@ export const spectrumReducer = (state, action) => {
 
     case RESIZE_INTEGRAL:
       return handleResizeIntegral(state, action.integral);
-
-    case DELETE_RANGE:
-      return handleDeleteRange(state, action.data);
 
     case SET_ORIGINAL_DOMAIN:
       return setOriginalDomain(state, action.domain);
