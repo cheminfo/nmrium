@@ -97,6 +97,10 @@ export class Datum1D {
     return this.peaks;
   }
 
+  setRanges(ranges) {
+    this.ranges = ranges;
+  }
+
   getRanges() {
     return this.ranges;
   }
