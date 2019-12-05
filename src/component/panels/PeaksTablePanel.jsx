@@ -5,13 +5,11 @@ import { useChartData } from '../context/ChartContext';
 import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { DELETE_PEAK_NOTATION } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
-import ReactTable from '../elements/ReactTable';
+import ReactTable from '../elements/ReactTable/ReactTable';
 
 import NoTableData from './placeholder/NoTableData';
 
 const PeaksTablePanel = () => {
-  let counter = 1;
-
   const { data: SpectrumsData, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
 
@@ -31,7 +29,7 @@ const PeaksTablePanel = () => {
   const columns = [
     {
       Header: '#',
-      Cell: () => counter++,
+      Cell: ({ row }) => row.index + 1,
     },
 
     {
