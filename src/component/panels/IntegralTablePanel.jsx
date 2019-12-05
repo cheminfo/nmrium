@@ -1,7 +1,7 @@
 import React, { useContext, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import ReactTable from '../elements/ReactTable';
+import ReactTable from '../elements/ReactTable/ReactTable';
 import { ChartContext } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { DELETE_INTEGRAL } from '../reducer/Actions';

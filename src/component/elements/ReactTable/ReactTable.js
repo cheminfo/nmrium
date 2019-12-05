@@ -2,37 +2,7 @@
 import { jsx, css } from '@emotion/core';
 import { useTable, useSortBy } from 'react-table';
 
-const style = css`
-    border-spacing: 0;
-    border: 1px solid #dedede;
-    width: 100%;
-    font-size:12px;
-
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.4rem;
-      border-bottom: 1px solid #dedede;
-      border-right: 1px solid #dedede;
-
-      :last-child {
-        border-right: 0;
-      }
-
-     button{
-        background-color: transparent;
-        border: none;
-    
-     } 
-`;
+import Style from './Style';
 
 const ReactTable = ({ data, columns }) => {
   const {
@@ -49,7 +19,7 @@ const ReactTable = ({ data, columns }) => {
     useSortBy,
   );
   return (
-    <table {...getTableProps()} css={style}>
+    <table {...getTableProps()} css={Style}>
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr
