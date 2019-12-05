@@ -1,5 +1,7 @@
-import React, { Fragment, useEffect, useCallback, useState } from 'react';
-import { FaSearchMinus, FaDownload } from 'react-icons/fa';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
+import { Fragment, useEffect, useCallback, useState } from 'react';
+import { FaDownload, FaExpand } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
@@ -11,22 +13,23 @@ import {
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 
-const styles = {
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    width: '35px',
-    height: '35px',
-    minHeight: '35px',
-    backgroundPosition: 'center center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    outline: 'outline',
-  },
-};
+const styles = css`
+  background-color: transparent;
+  border: none;
+  width: 35px;
+  height: 35px;
+  min-height: 35px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: outline;
+  :focus {
+    outline: none !important;
+  }
+`;
 
 const BasicToolBar = ({
   isFullZoomButtonVisible = true,
@@ -105,12 +108,12 @@ const BasicToolBar = ({
       {isFullZoomButtonVisible && (
         <button
           type="button"
-          style={styles.button}
+          css={styles}
           onClick={handleFullZoomOut}
           disabled={!isFullZoomButtonEnabled}
         >
           <ToolTip title="Full Zoom Out ( Press f )" popupPlacement="right">
-            <FaSearchMinus />
+            <FaExpand />
           </ToolTip>
         </button>
       )}
@@ -118,7 +121,7 @@ const BasicToolBar = ({
       {isViewButtonVisible && spectrumsCount > 1 && (
         <button
           type="button"
-          style={{ ...styles.button, display: 'block' }}
+          css={[styles, { display: 'block' }]}
           onClick={handleChangeDisplayViewMode}
           className={
             verticalAlign !== 0
@@ -136,7 +139,7 @@ const BasicToolBar = ({
       {isSaveButtonVisible && (
         <button
           type="button"
-          style={styles.button}
+          css={styles}
           onClick={handleSaveDataAsJSON}
           disabled={!isSaveButtonEnabled}
         >
@@ -150,11 +153,7 @@ const BasicToolBar = ({
       )}
 
       {selectedSpectrumInfo && selectedSpectrumInfo.isComplex && (
-        <button
-          style={styles.button}
-          type="button"
-          onClick={changeSpectrumViewHandler}
-        >
+        <button css={styles} type="button" onClick={changeSpectrumViewHandler}>
           <ToolTip
             title={isRealSpectrumShown ? 'Real Spectrum' : 'Imaginary Spectrum'}
             popupPlacement="right"
