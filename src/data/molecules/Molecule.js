@@ -1,6 +1,11 @@
+import { Molecule as OCLMolecule } from 'openchemlib';
+import { MF } from 'mf-parser';
+
 export class Molecule {
   /**
-   * @param {object} options {key,molfile,svg,mf,em,mw}
+   * @param {object} [options={}]
+   * @param {object} [options.molfile='']
+   * @param {object} [options.key=Math.random()] Optional unique identifier
    */
   constructor(options = {}) {
     this.key =
@@ -9,10 +14,15 @@ export class Molecule {
         .toString(36)
         .replace('0.', '');
     this.molfile = options.molfile || '';
-    this.svg = options.svg || '';
-    this.mf = options.mf || 0;
-    this.em = options.em || 0;
-    this.mw = options.mw || 0;
+    const molecule = new OCLMolecule.fromMolfile(this.molfile);
+    const mfInfo = molecule.getMolecularFormula();
+    this.mf = mfInfo.formula;
+    this.em = mfInfo.absoluteWeight;
+    this.mw = mfInfo.relativeWeight;
+    this.svg = molecule.toSVG(50, 50);
+
+    const mf = new MF(this.mf);
+    this.atoms = mf.getInfo().atoms;
   }
 
   toJSON() {
