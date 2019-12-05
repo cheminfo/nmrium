@@ -12,8 +12,6 @@ const IntegralTablePanel = () => {
   const { activeSpectrum, data: SpectrumsData } = useContext(ChartContext);
   const dispatch = useDispatch();
 
-  let counter = 1;
-
   const deletePeakHandler = useCallback(
     (e, row) => {
       e.preventDefault();
@@ -29,7 +27,7 @@ const IntegralTablePanel = () => {
   const columns = [
     {
       Header: '#',
-      Cell: () => counter++,
+      Cell: ({ row }) => row.index + 1,
       width: 10,
     },
 

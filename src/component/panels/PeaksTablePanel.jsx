@@ -10,8 +10,6 @@ import ReactTable from '../elements/ReactTable/ReactTable';
 import NoTableData from './placeholder/NoTableData';
 
 const PeaksTablePanel = () => {
-  let counter = 1;
-
   const { data: SpectrumsData, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
 
@@ -31,7 +29,7 @@ const PeaksTablePanel = () => {
   const columns = [
     {
       Header: '#',
-      Cell: () => counter++,
+      Cell: ({ row }) => row.index + 1,
     },
 
     {
