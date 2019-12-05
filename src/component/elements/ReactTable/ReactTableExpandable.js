@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useTable, useExpanded } from 'react-table';
+import { useTable, useExpanded, useSortBy } from 'react-table';
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 
@@ -21,6 +21,7 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
       data,
     },
     useExpanded,
+    useSortBy,
   );
 
   return (
@@ -34,9 +35,12 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
             {headerGroup.headers.map((column) => (
               <th
                 key={column.getHeaderProps().key}
-                {...column.getHeaderProps()}
+                {...column.getHeaderProps(column.getSortByToggleProps())}
               >
                 {column.render('Header')}
+                <span>
+                  {column.isSorted ? (column.isSortedDesc ? ' ▼' : ' ▲') : ''}
+                </span>
               </th>
             ))}
           </tr>
