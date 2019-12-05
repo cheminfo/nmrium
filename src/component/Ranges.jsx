@@ -8,6 +8,10 @@ import { DELETE_RANGE } from './reducer/Actions';
 
 const styles = css`
   pointer-events: bounding-box;
+  user-select: 'none';
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+
   :hover .range-area {
     height: 100%;
     fill: #ff6f0057;

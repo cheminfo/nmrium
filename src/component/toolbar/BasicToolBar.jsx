@@ -24,6 +24,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    outline: 'outline',
   },
 };
 
@@ -90,7 +91,6 @@ const BasicToolBar = ({
   useEffect(() => {
     if (data) {
       setSpectrumsCount(data.length);
-
       if (activeSpectrum) {
         const { info } = data.find((d) => d.id === activeSpectrum.id);
         setSelectedSpectrumInfo(info);

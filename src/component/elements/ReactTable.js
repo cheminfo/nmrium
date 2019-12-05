@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useTable } from 'react-table';
+import { useTable, useSortBy } from 'react-table';
 
 const style = css`
     border-spacing: 0;
@@ -41,10 +41,13 @@ const ReactTable = ({ data, columns }) => {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({
-    columns,
-    data,
-  });
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useSortBy,
+  );
   return (
     <table {...getTableProps()} css={style}>
       <thead>
@@ -56,9 +59,12 @@ const ReactTable = ({ data, columns }) => {
             {headerGroup.headers.map((column) => (
               <th
                 key={column.getHeaderProps().key}
-                {...column.getHeaderProps()}
+                {...column.getHeaderProps(column.getSortByToggleProps())}
               >
                 {column.render('Header')}
+                <span>
+                  {column.isSorted ? (column.isSortedDesc ? ' ▼' : ' ▲') : ''}
+                </span>
               </th>
             ))}
           </tr>

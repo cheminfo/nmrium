@@ -25,6 +25,7 @@ const styles = {
     border: 'none',
     width: '35px',
     height: '35px',
+    outline: 'outline',
   },
 };
 

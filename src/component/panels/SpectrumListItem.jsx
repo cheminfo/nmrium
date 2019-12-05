@@ -56,7 +56,7 @@ const SpectrumListItem = ({
           }
         />
       </button>
-      <div style={styles.name}>
+      <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
         <span>{data.name}</span>
       </div>
 

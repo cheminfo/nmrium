@@ -39,8 +39,12 @@ const PeaksTablePanel = () => {
       accessor: 'xIndex',
     },
     {
-      Header: 'Peak Value',
+      Header: 'δ (ppm)',
       accessor: 'value',
+    },
+    {
+      Header: 'Intensity ',
+      accessor: 'yValue',
     },
     {
       Header: '',
@@ -69,6 +73,7 @@ const PeaksTablePanel = () => {
           xIndex: peak.xIndex,
           value: _data.x[peak.xIndex].toFixed(labelFraction),
           id: _data.id,
+          yValue: _data.y[peak.xIndex],
         };
       });
     } else {

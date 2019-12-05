@@ -7,13 +7,19 @@ import { jsx, css } from '@emotion/core';
 import { useChartData } from './context/ChartContext';
 
 const axisStyles = css`
+  user-select: 'none';
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+
   path,
   line {
     fill: none;
     stroke: black;
     stroke-width: 1;
     shape-rendering: crispEdges;
-    user-select: none;
+    user-select: 'none';
+    -webkit-user-select: none; /* Chrome all / Safari all */
+    -moz-user-select: none; /* Firefox all */
   }
 `;
 

@@ -7,6 +7,8 @@ import { jsx, css } from '@emotion/core';
 import { useChartData } from './context/ChartContext';
 
 const axisStyles = css`
+  user-select: none;
+
   path,
   line {
     fill: none;
@@ -18,6 +20,8 @@ const axisStyles = css`
 `;
 
 const gridStyles = css`
+  user-select: none;
+
   line {
     stroke: rgb(104, 104, 104);
     stroke-opacity: 0.2;

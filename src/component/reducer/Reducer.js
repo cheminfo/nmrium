@@ -857,6 +857,7 @@ const handleDeleteSpectra = (state) => {
 
     if (activeSpectrum && activeSpectrum.id) {
       AnalysisObj.deleteDatum1DByID(activeSpectrum.id);
+      draft.activeSpectrum = null;
       draft.data = AnalysisObj.getData1d();
       setDomain(draft);
       setMode(draft);

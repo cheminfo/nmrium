@@ -16,6 +16,14 @@ import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
 
 const styles = css`
   user-select: 'none';
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+
+  text {
+    user-select: 'none';
+    -webkit-user-select: none; /* Chrome all / Safari all */
+    -moz-user-select: none; /* Firefox all */
+  }
 
   input[type='number']::-webkit-outer-spin-button,
   input[type='number']::-webkit-inner-spin-button {
@@ -43,6 +51,9 @@ const styles = css`
   }
   .notification-input {
     width: calc(100% - 10px) !important;
+    user-select: 'none';
+    -webkit-user-select: none; /* Chrome all / Safari all */
+    -moz-user-select: none; /* Firefox all */
   }
 
   .notification-input-normal {
@@ -51,7 +62,9 @@ const styles = css`
     position: absolute;
     font-size: 10px;
     outline: none;
-    user-select: none;
+    user-select: 'none';
+    -webkit-user-select: none; /* Chrome all / Safari all */
+    -moz-user-select: none; /* Firefox all */
     background-color: transparent;
   }
 

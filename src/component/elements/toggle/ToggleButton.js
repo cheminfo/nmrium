@@ -1,19 +1,24 @@
-import React, { useCallback, useState, useEffect } from 'react';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
+import { useCallback, useState, useEffect, cloneElement } from 'react';
 
-const styles = {
-  button: {
-    width: '35px',
-    height: '35px',
-    backgroundColor: 'white',
-    padding: '5px',
-    margin: '0px',
-    border: 'none',
-  },
-  active: {
-    color: 'black',
-    backgroundColor: '#f3f3f3',
-  },
-};
+const styles = css`
+  width: 35px;
+  height: 35px;
+  background-color: white;
+  padding: 5px;
+  margin: 0px;
+  border: none;
+  outline: none;
+
+  :focus {
+    outline: none !important;
+  }
+`;
+const activeStyles = css`
+  color: black;
+  background-color: #f3f3f3 !important;
+`;
 
 const ToggleButton = ({
   children,
@@ -53,17 +58,15 @@ const ToggleButton = ({
     <button
       type="button"
       onClick={toggleButton}
-      style={
-        active
-          ? { ...styles.button, ...styles.active, ...style }
-          : { ...styles.button, ...style }
-      }
-      className={
-        active ? ` ${className} button active` : ` ${className} button`
-      }
+      css={[styles, active && activeStyles]}
+      // active
+      //     ? { ...styles.button, ...styles.active, ...style }
+      //     : { ...styles.button, ...style }
+      style={style}
+      className={active ? ` ${className}  active` : ` ${className} `}
       disabled={disabled}
     >
-      {React.cloneElement(children, { style: { fontSize: '10px' } })}
+      {cloneElement(children, { style: { fontSize: '10px' } })}
     </button>
   );
 };
@@ -73,6 +76,7 @@ ToggleButton.defaultProps = {
   disabled: false,
   isVisible: true,
   value: null,
+  className: '',
   onChange: function() {
     return null;
   },
