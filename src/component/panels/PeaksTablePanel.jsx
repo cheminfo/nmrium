@@ -5,7 +5,7 @@ import { useChartData } from '../context/ChartContext';
 import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { DELETE_PEAK_NOTATION } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
-import ReactTable from '../elements/ReactTable';
+import ReactTable from '../elements/ReactTable/ReactTable';
 
 import NoTableData from './placeholder/NoTableData';
 
