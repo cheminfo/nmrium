@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
+import { jsx } from '@emotion/core';
 import { useTable, useSortBy } from 'react-table';
 
 import Style from './Style';
