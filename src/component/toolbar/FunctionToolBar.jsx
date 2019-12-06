@@ -139,7 +139,7 @@ const FunctionToolBar = ({ defaultValue }) => {
         <ToggleButton
           key={options.autoPeaksPicking.id}
           value={options.autoPeaksPicking.id}
-          className="ci-icon-nmr-range-picking"
+          className="ci-icon-nmr-peak-picking2"
           style={styles.icon}
           isVisible={selectedSpectrumInfo && !selectedSpectrumInfo.info.isFid}
         >
