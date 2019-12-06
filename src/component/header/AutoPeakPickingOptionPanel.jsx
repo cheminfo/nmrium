@@ -61,7 +61,7 @@ const AutoPeakPickingOptionPanel = () => {
         name="maxNumberOfPeaks"
         style={styles.input}
         type="number"
-        defaultValue={20}
+        defaultValue={50}
         step="any"
       />
       <span style={styles.label}>Min Max Ratio: </span>
