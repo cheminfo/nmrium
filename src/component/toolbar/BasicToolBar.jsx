@@ -153,13 +153,16 @@ const BasicToolBar = ({
       )}
 
       {selectedSpectrumInfo && selectedSpectrumInfo.isComplex && (
-        <button css={styles} type="button" onClick={changeSpectrumViewHandler}>
+        <button
+          css={styles}
+          type="button"
+          onClick={changeSpectrumViewHandler}
+          className={'ci-icon-nmr-real-imag'}
+        >
           <ToolTip
             title={isRealSpectrumShown ? 'Real Spectrum' : 'Imaginary Spectrum'}
             popupPlacement="right"
-          >
-            {isRealSpectrumShown ? 'Re' : 'Im'}
-          </ToolTip>
+          ></ToolTip>
         </button>
       )}
     </Fragment>
