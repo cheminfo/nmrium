@@ -65,16 +65,19 @@ const RangesTablePanel = () => {
     {
       Header: 'From',
       accessor: 'from',
+      sortType: 'basic',
       Cell: ({ row }) => row.original.from.toFixed(2),
     },
     {
       Header: 'To',
       accessor: 'to',
+      sortType: 'basic',
       Cell: ({ row }) => row.original.to.toFixed(2),
     },
     {
       Header: 'Integral',
       accessor: 'integral',
+      sortType: 'basic',
       Cell: ({ row }) => row.original.integral.toFixed(1),
     },
     {
@@ -109,8 +112,9 @@ const RangesTablePanel = () => {
           accessor: 'multiplicity',
         },
         {
-          Header: 'Delta',
+          Header: '\u0394 (ppm)',
           accessor: 'delta',
+          sortType: 'basic',
           Cell: ({ row }) => row.original.delta.toFixed(3),
         },
         {
@@ -147,8 +151,9 @@ const RangesTablePanel = () => {
           accessor: 'multiplicity',
         },
         {
-          Header: 'Coupling',
+          Header: 'J (Hz)',
           accessor: 'coupling',
+          sortType: 'basic',
           Cell: ({ row }) => row.original.coupling.toFixed(3),
         },
       ],

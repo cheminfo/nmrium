@@ -35,14 +35,17 @@ const PeaksTablePanel = () => {
     {
       Header: 'peak index',
       accessor: 'xIndex',
+      sortType: 'basic',
     },
     {
       Header: 'δ (ppm)',
       accessor: 'value',
+      sortType: 'basic',
     },
     {
       Header: 'Intensity ',
       accessor: 'yValue',
+      sortType: 'basic',
     },
     {
       Header: '',
