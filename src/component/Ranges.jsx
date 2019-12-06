@@ -30,7 +30,7 @@ const Ranges = () => {
   const { getScale, data } = useChartData();
   const dispatch = useDispatch();
 
-  const deleteIntegral = useCallback(
+  const deleteRange = useCallback(
     (id) => {
       dispatch({ type: DELETE_RANGE, rangeID: id });
     },
