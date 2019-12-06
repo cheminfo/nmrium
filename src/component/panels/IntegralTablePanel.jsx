@@ -34,18 +34,21 @@ const IntegralTablePanel = () => {
     {
       Header: 'From',
       accessor: 'from',
+      sortType: 'basic',
       resizable: true,
       Cell: ({ row }) => row.original.from.toFixed(2),
     },
     {
       Header: 'To',
       accessor: 'to',
+      sortType: 'basic',
       resizable: true,
       Cell: ({ row }) => row.original.to.toFixed(2),
     },
     {
       Header: 'Integral',
       accessor: 'value',
+      sortType: 'basic',
       resizable: true,
       Cell: ({ row }) => row.original.value.toFixed(2),
     },
