@@ -861,6 +861,11 @@ const handleDeleteSpectra = (state) => {
       draft.data = AnalysisObj.getData1d();
       setDomain(draft);
       setMode(draft);
+    } else {
+      Analysis.build({}).then((obj) => {
+        AnalysisObj = obj;
+      });
+      draft.data = [];
     }
   });
 };

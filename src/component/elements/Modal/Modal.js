@@ -14,17 +14,19 @@ const styles = {
     zIndex: 1,
   },
   innerContainer: {
-    padding: '10px 10px 0',
     boxSizing: 'initial',
-    background: '#fff',
-    borderRadius: '4px',
+    backgroundColor: '#fff',
     boxShadow: '0 0 0 0, 0 8px 16px rgba(0,0,0,.30)',
     display: 'flex',
     flexDirection: 'column',
+    minWidth: '300px',
+    minHeight: '140px',
+    justifyContent: 'space-between',
+    borderRadius: '5px',
   },
 };
 
-const Modal = ({ children, open, onClose }) => {
+const Modal = ({ children, open, onClose, style }) => {
   const handleClose = useCallback(
     (e) => {
       onClose(e);
@@ -42,7 +44,7 @@ const Modal = ({ children, open, onClose }) => {
     open && (
       <div style={styles.outerContainer} onClick={handleClose}>
         <div
-          style={styles.innerContainer}
+          style={{ ...styles.innerContainer, ...style }}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();

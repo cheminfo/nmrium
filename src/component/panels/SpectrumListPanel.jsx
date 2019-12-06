@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -11,6 +17,7 @@ import {
   DELETE_SPECTRA,
 } from '../reducer/Actions';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import { ConfirmationDialog } from '../elements/Modal';
 
 import SpectrumListItem from './SpectrumListItem';
 import ColorPicker from './ColorPicker';
@@ -49,6 +56,7 @@ const SpectrumListPanel = () => {
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [colorPickerPosition, setColorPickerPosition] = useState(null);
   const { data } = useChartData();
+  const confirmRef = useRef();
 
   const dispatch = useDispatch();
   const handleChangeVisibility = useCallback(
@@ -160,31 +168,43 @@ const SpectrumListPanel = () => {
   ]);
 
   const handleDelete = useCallback(() => {
+    if (activated) {
+      setActivated(null);
+      dispatch({ type: DELETE_SPECTRA });
+    } else {
+      confirmRef.current.present();
+    }
+  }, [activated, dispatch]);
+
+  const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_SPECTRA });
   }, [dispatch]);
 
   return (
-    <div style={styles.container}>
-      <div style={styles.toolbar}>
-        <ToolTip title="Delete Spectrum" poupPlacement="left">
-          <button style={styles.button} type="button" onClick={handleDelete}>
-            <FaRegTrashAlt />
-          </button>
-        </ToolTip>
-        <p style={styles.counterLabel}>[ {data && data.length} ]</p>
+    <>
+      <div style={styles.container}>
+        <div style={styles.toolbar}>
+          <ToolTip title="Delete Spectrum" poupPlacement="left">
+            <button style={styles.button} type="button" onClick={handleDelete}>
+              <FaRegTrashAlt />
+            </button>
+          </ToolTip>
+          <p style={styles.counterLabel}>[ {data && data.length} ]</p>
+        </div>
+        <div style={{ overflow: 'auto' }}>
+          {ListItems}
+          {isColorPickerDisplayed ? (
+            <ColorPicker
+              onMouseLeave={handleCloseColorPicker}
+              selectedSpectrumData={selectedSpectrumData}
+              colorPickerPosition={colorPickerPosition}
+              onColorChanged={handleOnColorChanged}
+            />
+          ) : null}
+        </div>
       </div>
-      <div style={{ overflow: 'auto' }}>
-        {ListItems}
-        {isColorPickerDisplayed ? (
-          <ColorPicker
-            onMouseLeave={handleCloseColorPicker}
-            selectedSpectrumData={selectedSpectrumData}
-            colorPickerPosition={colorPickerPosition}
-            onColorChanged={handleOnColorChanged}
-          />
-        ) : null}
-      </div>
-    </div>
+      <ConfirmationDialog onYes={yesHandler} ref={confirmRef} />
+    </>
   );
 };
 

@@ -5,7 +5,7 @@ import { StructureEditor } from 'react-ocl/full';
 
 import { useDispatch } from '../context/DispatchContext';
 import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/Actions';
-import Modal from '../elements/Modal';
+import { Modal } from '../elements/Modal';
 
 const modalButtonStyle = css`
   -moz-box-shadow: inset 0px 1px 0px 0px #ffffff;
