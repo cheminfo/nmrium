@@ -67,7 +67,7 @@ const MoleculePanel = () => {
   const refContainer = useRef();
 
   const [open, setOpen] = React.useState(false);
-  const [currentMolFile, setCurrentMolFile] = useState();
+  const [currentMolfile, setCurrentMolfile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
   const dispatch = useDispatch();
 
@@ -79,9 +79,9 @@ const MoleculePanel = () => {
 
   const handleOpen = useCallback((event, key, molfile) => {
     if (molfile) {
-      setCurrentMolFile({ molfile, key });
+      setCurrentMolfile({ molfile, key });
     } else {
-      setCurrentMolFile(null);
+      setCurrentMolfile(null);
     }
     setOpen(true);
   }, []);
@@ -102,7 +102,7 @@ const MoleculePanel = () => {
   return (
     <div css={panelContainerStyle}>
       <div css={toolbarStyle}>
-        <ToolTip title="Past Molecule" popupPlacement="left">
+        <ToolTip title="Paste Molecule" popupPlacement="left">
           <button className="bar-button" type="button" onClick={handlePast}>
             <FaPaste />
           </button>
@@ -151,7 +151,7 @@ const MoleculePanel = () => {
         <MoleculeStructureEditorModal
           open={open}
           onClose={handleClose}
-          selectedMolecule={currentMolFile}
+          selectedMolecule={currentMolfile}
         />
       </div>
     </div>

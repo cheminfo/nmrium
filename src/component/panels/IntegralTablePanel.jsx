@@ -44,7 +44,7 @@ const IntegralTablePanel = () => {
       Cell: ({ row }) => row.original.to.toFixed(2),
     },
     {
-      Header: 'Value',
+      Header: 'Integral',
       accessor: 'value',
       resizable: true,
       Cell: ({ row }) => row.original.value.toFixed(2),
