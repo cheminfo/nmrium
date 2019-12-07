@@ -22,7 +22,7 @@ import Spectrum1H from './views/Spectrum1H';
 import XTC814d from './views/XTC814d';
 import CoupledDecoupled13C from './views/CoupledDecoupled13C';
 import Big13CCytisin from './views/Big13CCytisin';
-import CoffeView from './views/CoffeView';
+import CoffeeView from './views/CoffeeView';
 import DeptView from './views/DeptView';
 import BlankSpectrumDisplayer from './views/BlankSpectrumDisplayer';
 
@@ -56,10 +56,10 @@ let dashRoutes = [
     layout: '/admin',
   },
   {
-    path: '/CoffeView',
+    path: '/CoffeeView',
     name: 'Coffee',
     icon: 'design-2_ruler-pencil',
-    component: CoffeView,
+    component: CoffeeView,
     layout: '/admin',
   },
   {
