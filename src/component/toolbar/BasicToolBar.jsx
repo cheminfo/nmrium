@@ -162,7 +162,7 @@ const BasicToolBar = ({
           <ToolTip
             title={isRealSpectrumShown ? 'Real Spectrum' : 'Imaginary Spectrum'}
             popupPlacement="right"
-          ></ToolTip>
+          />
         </button>
       )}
     </Fragment>
