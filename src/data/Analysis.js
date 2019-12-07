@@ -14,6 +14,18 @@ export class Analysis {
     this.data2d = [];
     this.molecules = molecules.slice(); // chemical structures
     this.preferences = {
+      panels: {
+        '1H': {
+          integrals: {},
+          peaks: {},
+          ranges: {},
+        },
+        '13C': {
+          integrals: {},
+          peaks: {},
+          ranges: {},
+        },
+      },
       display: {},
     };
   }
