@@ -120,20 +120,23 @@ const NMRDisplayer = (props) => {
 
       const x = d3.scaleLinear(xDomain, range);
       let y;
-      if (spectrumId == null) {
-        y = d3.scaleLinear(yDomain, [height - margin.bottom, margin.top]);
+      if (spectrumId == null && yDomain !== undefined) {
+        y = d3.scaleLinear(
+          [0, yDomain[1]],
+          [height - margin.bottom, margin.top],
+        );
       } else if (activeSpectrum == null || activeSpectrum.id !== spectrumId) {
         const index = data.findIndex((d) => d.id === spectrumId);
-        y = d3.scaleLinear(yDomains[index], [
-          height - margin.bottom,
-          margin.top,
-        ]);
+        y = d3.scaleLinear(
+          [0, yDomains[index][1]],
+          [height - margin.bottom, margin.top],
+        );
       } else {
         const index = data.findIndex((d) => d.id === activeSpectrum.id);
-        y = d3.scaleLinear(yDomains[index], [
-          height - margin.bottom,
-          margin.top,
-        ]);
+        y = d3.scaleLinear(
+          [0, yDomains[index][1]],
+          [height - margin.bottom, margin.top],
+        );
       }
       return { x, y };
     };

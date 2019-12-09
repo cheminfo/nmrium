@@ -110,18 +110,30 @@ const getScale = ({ xDomain, yDomain, width, height, margin, mode }) => {
   return { x, y };
 };
 
-const initiate = (state, data) => {
+function setYAxisShit(data, draft, height) {
+  if (data && data.length > 0) {
+    let YAxisShift = 10;
+    if (data[0].info.isFid) {
+      YAxisShift = height / 2;
+    }
+
+    draft.verticalAlign = YAxisShift;
+  }
+}
+
+const initiate = (state, dataObject) => {
   return produce(state, (draft) => {
-    AnalysisObj = data.AnalysisObj;
+    AnalysisObj = dataObject.AnalysisObj;
     const spectraData = AnalysisObj.getData1d();
     const domain = getDomain(spectraData);
-    draft.data = AnalysisObj.getData1d();
+    draft.data = spectraData;
     draft.molecules = AnalysisObj.getMolecules();
     draft.xDomain = domain.x;
     draft.yDomain = domain.y;
     draft.originDomain = domain;
     draft.yDomains = domain.yDomains;
     draft.isLoading = false;
+    setYAxisShit(spectraData, draft, state.height);
     setMode(draft);
   });
 };
@@ -154,7 +166,6 @@ const setData = (state, data) => {
     draft.data = AnalysisObj.getData1d();
     draft.molecules = AnalysisObj.getMolecules();
     draft.isLoading = false;
-
     setDomain(draft);
     setMode(draft);
   });
@@ -444,7 +455,6 @@ const applyZeroFillingFilter = (state, filterOptions) => {
 
     activeObject.applyFilter([
       { name: Filters.zeroFilling.id, options: filterOptions.zeroFillingSize },
-      { name: Filters.digitalFilter.id, options: {} },
       {
         name: Filters.lineBroadening.id,
         options: filterOptions.lineBroadeningValue,
@@ -465,6 +475,7 @@ const applyFFTFilter = (state) => {
     activeObject.applyFilter([{ name: Filters.fft.id, options: {} }]);
 
     setDataByFilters(draft, activeObject, activeSpectrumId);
+    setYAxisShit([{ info: activeObject.getInfo() }], draft, state.height);
 
     setDomain(draft);
     setMode(draft);
@@ -870,12 +881,19 @@ const handleDeleteSpectra = (state) => {
   });
 };
 
-const handleChangeSpectrumDisplayMode = (state) => {
+const handleChangeSpectrumDisplayMode = (state, { flag }) => {
   return produce(state, (draft) => {
-    draft.verticalAlign =
-      draft.verticalAlign !== 0
-        ? 0
-        : Math.floor(-draft.height / (draft.data.length + 2));
+    const { activeSpectrum, data, height } = state;
+    let YAxisShift = 10;
+    if (activeSpectrum) {
+      const { index } = activeSpectrum;
+      if (data[index].isFid) {
+        YAxisShift = height / 2;
+      }
+    }
+    draft.verticalAlign = !flag
+      ? YAxisShift
+      : Math.floor(state.height / (state.data.length + 2)) + YAxisShift;
   });
 };
 
@@ -1067,7 +1085,7 @@ export const initialState = {
   mode: 'RTL',
   zoomFactor: null,
   molecules: [],
-  verticalAlign: 0,
+  verticalAlign: 10,
   history: {
     past: [],
     present: null,
@@ -1181,7 +1199,7 @@ export const spectrumReducer = (state, action) => {
     // };
 
     case CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE:
-      return handleChangeSpectrumDisplayMode(state);
+      return handleChangeSpectrumDisplayMode(state, action);
 
     case ADD_MOLECULE:
       return handleAddMolecule(state, action.molfile);

@@ -37,7 +37,7 @@ const PeaksNotations = () => {
             d.isPeaksMarkersVisible && (
               <g
                 key={`peak-${d.id}`}
-                transform={`translate(0,${getVerticalAlign(d.id)})`}
+                transform={`translate(0,-${getVerticalAlign(d.id)})`}
               >
                 {d.peaks.map(({ xIndex }, j) => (
                   <PeakNotation

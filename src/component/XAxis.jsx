@@ -74,10 +74,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
       //   [width - margin.right, margin.left],
       // );
       const scale = getScale();
-      d3.select(refAxis.current)
-        // .transition()
-        // .duration(500)
-        .call(xAxis.scale(scale.x.domain(xDomain)));
+      d3.select(refAxis.current).call(xAxis.scale(scale.x.domain(xDomain)));
 
       d3.select(refGrid.current).call(grid.scale(scale.x.domain(xDomain)));
     }

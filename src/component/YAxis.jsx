@@ -25,17 +25,18 @@ const axisStyles = css`
 
 const YAxis = ({ show, label }) => {
   const refAxis = useRef();
-  const { yDomain, getScale, margin } = useChartData();
+  const { yDomain, getScale, margin, verticalAlign } = useChartData();
 
   useEffect(() => {
-    if (show) {
+    if (show && yDomain) {
       const scale = getScale();
+
       const axis = d3
         .axisLeft()
-        .ticks(5)
+        .ticks(10)
         .tickFormat(d3.format('~s'));
 
-      d3.select(refAxis.current).call(axis.scale([0, scale.y[1]]));
+      d3.select(refAxis.current).call(axis.scale(scale.y));
     }
   }, [show, yDomain, getScale]);
 
@@ -47,7 +48,7 @@ const YAxis = ({ show, label }) => {
           <g
             className="y"
             css={axisStyles}
-            transform={`translate(${margin.left + 30},0)`}
+            transform={`translate(${margin.left + 50},-${verticalAlign})`}
             ref={refAxis}
           >
             <text

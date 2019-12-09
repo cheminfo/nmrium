@@ -59,9 +59,6 @@ const ToggleButton = ({
       type="button"
       onClick={toggleButton}
       css={[styles, active && activeStyles]}
-      // active
-      //     ? { ...styles.button, ...styles.active, ...style }
-      //     : { ...styles.button, ...style }
       style={style}
       className={active ? ` ${className}  active` : ` ${className} `}
       disabled={disabled}

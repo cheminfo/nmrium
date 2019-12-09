@@ -39,10 +39,11 @@ const BasicToolBar = ({
   isSaveButtonEnabled = true,
 }) => {
   const dispatch = useDispatch();
-  const { data, verticalAlign, activeSpectrum } = useChartData();
+  const { data, activeSpectrum } = useChartData();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
   const [spectrumsCount, setSpectrumsCount] = useState(0);
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
+  const [isStacked, activateStackView] = useState(false);
 
   const handleSaveDataAsJSON = useCallback(
     () => dispatch({ type: SAVE_DATA_AS_JSON }),
@@ -56,10 +57,13 @@ const BasicToolBar = ({
   }, [dispatch]);
 
   const handleChangeDisplayViewMode = useCallback(() => {
+    const flag = !isStacked;
+    activateStackView(flag);
     dispatch({
       type: CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
+      flag: flag,
     });
-  }, [dispatch]);
+  }, [dispatch, isStacked]);
 
   const handleOnKeyPressed = useCallback(
     (e) => {
@@ -124,9 +128,7 @@ const BasicToolBar = ({
           css={[styles, { display: 'block' }]}
           onClick={handleChangeDisplayViewMode}
           className={
-            verticalAlign !== 0
-              ? 'ci-icon-nmr-overlay3-aligned'
-              : 'ci-icon-nmr-overlay3'
+            !isStacked ? 'ci-icon-nmr-overlay3-aligned' : 'ci-icon-nmr-overlay3'
           }
         >
           <ToolTip title="Spectra alignment" popupPlacement="right">

@@ -3,7 +3,7 @@ import { Molecule } from 'openchemlib';
 
 import { Data1DManager } from './data1d/Data1DManager';
 import { getInfoFromMetaData } from './data1d/metadata/getInfoFromMetaData';
-import { Molecule as OCLMolecule } from './molecules/Molecule';
+import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 
 export class Analysis {
@@ -14,18 +14,6 @@ export class Analysis {
     this.data2d = [];
     this.molecules = molecules.slice(); // chemical structures
     this.preferences = {
-      panels: {
-        '1H': {
-          integrals: {},
-          peaks: {},
-          ranges: {},
-        },
-        '13C': {
-          integrals: {},
-          peaks: {},
-          ranges: {},
-        },
-      },
       display: {},
     };
   }
@@ -36,7 +24,6 @@ export class Analysis {
     const molecules = json.molecules
       ? MoleculeManager.fromJSON(json.molecules)
       : [];
-
     return new Analysis(data1d, molecules);
   }
 
@@ -86,8 +73,12 @@ export class Analysis {
     this.molecules = Object.assign([], this.molecules);
     for (let fragment of fragments) {
       this.molecules.push(
-        new OCLMolecule({
+        new mol({
           molfile: fragment.toMolfileV3(),
+          svg: fragment.toSVG(150, 150),
+          mf: fragment.getMolecularFormula().formula,
+          em: fragment.getMolecularFormula().absoluteWeight,
+          mw: fragment.getMolecularFormula().relativeWeight,
         }),
       );
     }
@@ -108,7 +99,7 @@ export class Analysis {
 
     for (let fragment of fragments) {
       this.molecules.push(
-        new OCLMolecule({
+        new mol({
           molfile: fragment.toMolfileV3(),
           svg: fragment.toSVG(150, 150),
           mf: fragment.getMolecularFormula().formula,

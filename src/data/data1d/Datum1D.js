@@ -4,6 +4,7 @@ import max from 'ml-array-max';
 import autoPeakPicking from './autoPeakPicking';
 import autoRangesDetection from './autoRangesDetection';
 import { FiltersManager } from './FiltersManager';
+import { Filters } from './filter1d/Filters';
 
 export class Datum1D {
   /**
@@ -81,7 +82,7 @@ export class Datum1D {
 
   preprocessing() {
     if (this.info.isFid) {
-      // TODO need to check if we have the digital filter and change the data
+      this.applyFilter([{ name: Filters.digitalFilter.id, options: {} }]);
     }
   }
 

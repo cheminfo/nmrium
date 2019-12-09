@@ -70,8 +70,12 @@ export const LinesSeries = () => {
               opacity: isActive(d.id) ? 1 : 0.2,
             }}
             d={makePath(d)}
-            transform={`translate(0,${
-              verticalAlign === 0 ? 0 : i * verticalAlign
+            transform={`translate(0,-${
+              verticalAlign === 10
+                ? 0
+                : data.length > 1
+                ? i * verticalAlign
+                : verticalAlign
             })`}
           />
         ))

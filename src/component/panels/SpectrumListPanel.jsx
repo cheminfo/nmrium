@@ -185,7 +185,12 @@ const SpectrumListPanel = () => {
       <div style={styles.container}>
         <div style={styles.toolbar}>
           <ToolTip title="Delete Spectrum" poupPlacement="left">
-            <button style={styles.button} type="button" onClick={handleDelete}>
+            <button
+              style={styles.button}
+              type="button"
+              onClick={handleDelete}
+              disabled={data && data.length === 0}
+            >
               <FaRegTrashAlt />
             </button>
           </ToolTip>
