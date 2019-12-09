@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { useChartData } from '../context/ChartContext';
@@ -8,8 +8,19 @@ import { useDispatch } from '../context/DispatchContext';
 import ReactTable from '../elements/ReactTable/ReactTable';
 
 import NoTableData from './placeholder/NoTableData';
+import DefaultPanelHeader from './header/DefaultPanelHeader';
+import { ConfirmationDialog } from '../elements/Modal';
+
+const styles = {
+  toolbar: {
+    display: 'flex',
+    flexDirection: 'row',
+    borderBottom: '0.55px solid rgb(240, 240, 240)',
+  },
+};
 
 const PeaksTablePanel = () => {
+  const confirmRef = useRef();
   const { data: SpectrumsData, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
 
@@ -82,14 +93,30 @@ const PeaksTablePanel = () => {
     }
   }, [SpectrumsData, activeSpectrum]);
 
+  const handleDeleteAll = useCallback(() => {
+    confirmRef.current.present();
+  }, []);
+
+  const yesHandler = useCallback(() => {
+    dispatch({ type: DELETE_PEAK_NOTATION, data: null });
+  }, [dispatch]);
+
   return (
-    <div>
-      {data && data.length > 0 ? (
-        <ReactTable data={data} columns={columns} />
-      ) : (
-        <NoTableData />
-      )}
-    </div>
+    <>
+      <div style={styles.container}>
+        <DefaultPanelHeader
+          onDelete={handleDeleteAll}
+          counter={data && data.length}
+          deleteToolTip="Delete All Peaks"
+        />
+        {data && data.length > 0 ? (
+          <ReactTable data={data} columns={columns} />
+        ) : (
+          <NoTableData />
+        )}
+      </div>
+      <ConfirmationDialog onYes={yesHandler} ref={confirmRef} />
+    </>
   );
 };
 

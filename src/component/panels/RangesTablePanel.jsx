@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { DELETE_RANGE } from '../reducer/Actions';
@@ -6,10 +6,21 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
 import ReactTable from '../elements/ReactTable/ReactTable';
+import { ConfirmationDialog } from '../elements/Modal';
 
 import NoTableData from './placeholder/NoTableData';
+import DefaultPanelHeader from './header/DefaultPanelHeader';
+
+const styles = {
+  toolbar: {
+    display: 'flex',
+    flexDirection: 'row',
+    borderBottom: '0.55px solid rgb(240, 240, 240)',
+  },
+};
 
 const RangesTablePanel = () => {
+  const confirmRef = useRef();
   const { data: SpectrumsData, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
 
@@ -176,16 +187,35 @@ const RangesTablePanel = () => {
     );
   };
 
-  return data && data.length > 0 ? (
-    <div>
-      <ReactTableExpandable
-        columns={columnsRanges}
-        data={data}
-        renderRowSubComponent={renderRowSubComponentSignals}
-      />
-    </div>
-  ) : (
-    <NoTableData />
+  const handleDeleteAll = useCallback(() => {
+    confirmRef.current.present();
+  }, []);
+
+  const yesHandler = useCallback(() => {
+    dispatch({ type: DELETE_RANGE, rangeID: null });
+  }, [dispatch]);
+
+  return (
+    <>
+      <div style={styles.container}>
+        <DefaultPanelHeader
+          onDelete={handleDeleteAll}
+          counter={data && data.length}
+          deleteToolTip="Delete All Ranges"
+        />
+
+        {data && data.length > 0 ? (
+          <ReactTableExpandable
+            columns={columnsRanges}
+            data={data}
+            renderRowSubComponent={renderRowSubComponentSignals}
+          />
+        ) : (
+          <NoTableData />
+        )}
+      </div>
+      <ConfirmationDialog onYes={yesHandler} ref={confirmRef} />
+    </>
   );
 };
 

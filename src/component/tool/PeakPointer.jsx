@@ -24,6 +24,7 @@ const PeakPointer = () => {
     data,
     mode,
     selectedTool,
+    verticalAlign,
   } = useChartData();
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
@@ -61,7 +62,7 @@ const PeakPointer = () => {
           const xValue = spectrumData.x[minIndex + xIndex + 1];
           return {
             x: scale.x(xValue),
-            y: scale.y(yValue),
+            y: scale.y(yValue) - verticalAlign,
             xIndex: minIndex + xIndex,
           };
         }

@@ -141,11 +141,27 @@ export class Datum1D {
     return this.ranges;
   }
 
+  deletePeak(peak) {
+    if (peak == null) {
+      this.peaks = [];
+    } else {
+      this.peaks = this.peaks.filter((p) => p.xIndex !== peak.xIndex);
+    }
+  }
+
   deleteRange(id) {
-    this.ranges = this.ranges.filter((range) => range.id !== id);
+    if (id == null) {
+      this.ranges = [];
+    } else {
+      this.ranges = this.ranges.filter((range) => range.id !== id);
+    }
   }
   deleteIntegral(id) {
-    this.integrals = this.integrals.filter((integral) => integral.id !== id);
+    if (id == null) {
+      this.integrals = [];
+    } else {
+      this.integrals = this.integrals.filter((integral) => integral.id !== id);
+    }
   }
 
   /***

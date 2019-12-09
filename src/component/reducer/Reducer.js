@@ -51,7 +51,6 @@ import {
   CHANGE_INTEGRAL_ZOOM,
   ENABLE_FILTER,
   DELETE_FILTER,
-  // SET_SELECTED_FILTER,
   APPLY_ZERO_FILLING_FILTER,
   APPLY_FFT_FILTER,
   SET_VERTICAL_INDICATOR_X_POSITION,
@@ -65,7 +64,7 @@ import {
 } from './Actions';
 
 let AnalysisObj = new Analysis();
-
+const DEFAULT_YAXIS_SHIFT_VALUE = 20;
 function setIsLoading(state, isLoading) {
   return { ...state, isLoading };
 }
@@ -112,7 +111,7 @@ const getScale = ({ xDomain, yDomain, width, height, margin, mode }) => {
 
 function setYAxisShit(data, draft, height) {
   if (data && data.length > 0) {
-    let YAxisShift = 10;
+    let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
     if (data[0].info.isFid) {
       YAxisShift = height / 2;
     }
@@ -293,11 +292,10 @@ const addPeaks = (state, action) => {
 
 const deletePeak = (state, peakData) => {
   return produce(state, (draft) => {
-    const { index, id } = state.activeSpectrum;
-    draft.data[index].peaks = draft.data[index].peaks.filter(
-      (p) => p.xIndex !== peakData.xIndex,
-    );
-    AnalysisObj.getDatum1D(id).setPeaks(draft.data[index].peaks);
+    const { id, index } = state.activeSpectrum;
+    const object = AnalysisObj.getDatum1D(id);
+    object.deletePeak(peakData);
+    draft.data[index].peaks = object.getPeaks();
   });
 };
 
@@ -884,7 +882,7 @@ const handleDeleteSpectra = (state) => {
 const handleChangeSpectrumDisplayMode = (state, { flag }) => {
   return produce(state, (draft) => {
     const { activeSpectrum, data, height } = state;
-    let YAxisShift = 10;
+    let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
     if (activeSpectrum) {
       const { index } = activeSpectrum;
       if (data[index].isFid) {
@@ -1085,7 +1083,7 @@ export const initialState = {
   mode: 'RTL',
   zoomFactor: null,
   molecules: [],
-  verticalAlign: 10,
+  verticalAlign: DEFAULT_YAXIS_SHIFT_VALUE,
   history: {
     past: [],
     present: null,
