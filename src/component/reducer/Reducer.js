@@ -61,6 +61,7 @@ import {
   RESET_SELECTED_TOOL,
   AUTO_RANGES_DETECTION,
   DELETE_RANGE,
+  SET_SPECTRUMS_VERTICAL_ALIGN,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -117,9 +118,25 @@ function setYAxisShit(data, draft, height) {
       draft.verticalAlign.value = YAxisShift;
     } else {
       draft.verticalAlign.flag = false;
+      draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
     }
   }
 }
+
+const setSpectrumsVerticalAlign = (state, flag) => {
+  return produce(state, (draft) => {
+    const { height } = state;
+
+    if (flag) {
+      const YAxisShift = height / 2;
+      draft.verticalAlign.flag = true;
+      draft.verticalAlign.value = YAxisShift;
+    } else {
+      draft.verticalAlign.flag = false;
+      draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
+    }
+  });
+};
 
 const initiate = (state, dataObject) => {
   return produce(state, (draft) => {
@@ -1228,6 +1245,8 @@ export const spectrumReducer = (state, action) => {
 
     case SET_VERTICAL_INDICATOR_X_POSITION:
       return setVerticalIndicatorXPosition(state, action.position);
+    case SET_SPECTRUMS_VERTICAL_ALIGN:
+      return setSpectrumsVerticalAlign(state, action.flag);
 
     case AUTO_PEAK_PICKING:
       return handleAutoPeakPicking(state, action.options);
