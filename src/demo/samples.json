@@ -1,33 +1,38 @@
 [
-    {
-        "file": "./json-files/1HSpectrum.json",
-        "title": "1H spectrum test"
-    },
-    {
-        "file": "./json-files/13CFID.json",
-        "title": "13C Spectrum"
-    },
-    {
-        "file": "./json-files/Big13C.json",
-        "title": "Big 13C"
-    },
-    {
-        "file": "./json-files/XTC.json",
-        "title": "XTC"
-    },
-    {
-        "file": "./json-files/Coffee.json",
-        "title": "Coffee"
-    },
-    {
-        "file": "./json-files/CoupledDecoupled13C.json",
-        "title": "13C Coupled / Decoupled"
-    },
-    {
-        "file": "./json-files/Dept.json",
-        "title": "DEPT"
-    },
-    {
-        "title": "blank"
-    }
+  {
+    "file": "./json-files/1HSpectrum.json",
+    "title": "1H spectrum test"
+  },
+  {
+    "file": "./json-files/13CFID.json",
+    "title": "13C Spectrum"
+  },
+  {
+    "file": "./json-files/Big13C.json",
+    "title": "Big 13C"
+  },
+  {
+    "file": "./json-files/XTC.json",
+    "title": "XTC"
+  },
+  {
+    "file": "./json-files/Coffee.json",
+    "title": "Coffee"
+  },
+  {
+    "file": "./json-files/CoupledDecoupled13C.json",
+    "title": "13C Coupled / Decoupled"
+  },
+  {
+    "file": "./json-files/Dept.json",
+    "title": "DEPT"
+  },
+  {
+    "file": "./json-files/simulated-d1-2-3-4-5-6-7-8.json",
+    "title": "predicted"
+  },
+
+  {
+    "title": "blank"
+  }
 ]
