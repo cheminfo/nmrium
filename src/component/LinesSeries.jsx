@@ -71,11 +71,11 @@ export const LinesSeries = () => {
             }}
             d={makePath(d)}
             transform={`translate(0,-${
-              verticalAlign === 10
-                ? 0
-                : data.length > 1
-                ? i * verticalAlign
-                : verticalAlign
+              verticalAlign.flag
+                ? data.length > 1
+                  ? i * verticalAlign.value
+                  : verticalAlign.value
+                : verticalAlign.value
             })`}
           />
         ))

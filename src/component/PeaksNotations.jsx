@@ -43,7 +43,7 @@ const PeaksNotations = () => {
                   <PeakNotation
                     key={`peak-${d.id}-${j}`}
                     x={getScale(d.id).x(d.x[xIndex])}
-                    y={getScale(d.id).y(d.y[xIndex]) - verticalAlign}
+                    y={getScale(d.id).y(d.y[xIndex]) - verticalAlign.value}
                     id={xIndex}
                     spectrumID={d.id}
                     value={d.x[xIndex]}

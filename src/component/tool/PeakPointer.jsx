@@ -62,7 +62,7 @@ const PeakPointer = () => {
           const xValue = spectrumData.x[minIndex + xIndex + 1];
           return {
             x: scale.x(xValue),
-            y: scale.y(yValue) - verticalAlign,
+            y: scale.y(yValue) - verticalAlign.value,
             xIndex: minIndex + xIndex,
           };
         }
@@ -72,7 +72,15 @@ const PeakPointer = () => {
 
     const candidatePeakPosition = getClosePeak(10, position);
     setPosition(candidatePeakPosition);
-  }, [activeSpectrum, data, getScale, mode, position, selectedTool]);
+  }, [
+    activeSpectrum,
+    data,
+    getScale,
+    mode,
+    position,
+    selectedTool,
+    verticalAlign.value,
+  ]);
 
   if (
     selectedTool !== options.peakPicking.id ||
