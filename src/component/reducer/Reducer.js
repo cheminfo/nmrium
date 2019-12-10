@@ -112,7 +112,6 @@ const getScale = ({ xDomain, yDomain, width, height, margin, mode }) => {
 function setYAxisShit(data, draft, height) {
   if (data && data.length > 0) {
     if (data[0].info.isFid) {
-      alert(data[0].info.isFid)
       const YAxisShift = height / 2;
       draft.verticalAlign.flag = true;
       draft.verticalAlign.value = YAxisShift;
@@ -892,7 +891,6 @@ const handleChangeSpectrumDisplayMode = (state, { flag }) => {
       }
     }
 
-    console.log(flag);
     draft.verticalAlign.flag = flag;
 
     if (flag) {
@@ -900,10 +898,6 @@ const handleChangeSpectrumDisplayMode = (state, { flag }) => {
     } else {
       draft.verticalAlign.value = YAxisShift;
     }
-    // draft.verticalAlign.flag = !flag;
-    // draft.verticalAlign.value =
-    //   ? YAxisShift
-    //   : Math.floor(state.height / (state.data.length + 2)) + YAxisShift;
   });
 };
 
