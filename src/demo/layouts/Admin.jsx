@@ -79,7 +79,7 @@ class Dashboard extends React.Component {
                 />
               );
             })}
-            <Redirect from="/admin" to="/admin/Spectrum1H" />
+            <Redirect from="/admin" to={`/admin${routes[0].path}`} />
           </Switch>
           {/* <Footer fluid /> */}
         </div>
