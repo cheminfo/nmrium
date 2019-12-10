@@ -18,7 +18,6 @@ function checkStatus(response) {
 
 export default function View({ file, title, ...otherProps }) {
   const [data, setData] = useState();
-
   useEffect(() => {
     if (file) {
       loadData(file).then((d) => {

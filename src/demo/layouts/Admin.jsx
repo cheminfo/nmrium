@@ -72,12 +72,14 @@ class Dashboard extends React.Component {
                 <Route
                   path={prop.layout + prop.path}
                   // component={prop.component}
-                  render={(props) => <prop.component {...props} {...prop} />}
+                  render={(props) =>
+                    React.cloneElement(prop.component, { ...props, ...prop })
+                  }
                   key={key}
                 />
               );
             })}
-            <Redirect from="/admin" to="/admin/Spectrum1H" />
+            <Redirect from="/admin" to={`/admin${routes[0].path}`} />
           </Switch>
           {/* <Footer fluid /> */}
         </div>

@@ -116,9 +116,11 @@ function setYAxisShit(data, draft, height) {
       const YAxisShift = height / 2;
       draft.verticalAlign.flag = true;
       draft.verticalAlign.value = YAxisShift;
+      draft.verticalAlign.stacked = false;
     } else {
       draft.verticalAlign.flag = false;
       draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
+      draft.verticalAlign.stacked = false;
     }
   }
 }
@@ -131,9 +133,11 @@ const setSpectrumsVerticalAlign = (state, flag) => {
       const YAxisShift = height / 2;
       draft.verticalAlign.flag = true;
       draft.verticalAlign.value = YAxisShift;
+      draft.verticalAlign.stacked = false;
     } else {
       draft.verticalAlign.flag = false;
       draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
+      draft.verticalAlign.stacked = false;
     }
   });
 };
@@ -909,6 +913,7 @@ const handleChangeSpectrumDisplayMode = (state, { flag }) => {
     }
 
     draft.verticalAlign.flag = flag;
+    draft.verticalAlign.stacked = flag;
 
     if (flag) {
       draft.verticalAlign.value = Math.floor(height / (state.data.length + 2));
@@ -1106,7 +1111,11 @@ export const initialState = {
   mode: 'RTL',
   zoomFactor: null,
   molecules: [],
-  verticalAlign: { flag: false, value: DEFAULT_YAXIS_SHIFT_VALUE },
+  verticalAlign: {
+    flag: false,
+    stacked: false,
+    value: DEFAULT_YAXIS_SHIFT_VALUE,
+  },
   history: {
     past: [],
     present: null,

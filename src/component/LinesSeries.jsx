@@ -55,6 +55,14 @@ export const LinesSeries = () => {
         : false;
     }
 
+    function getVerticalAlign(i) {
+      return verticalAlign.flag
+        ? verticalAlign.stacked
+          ? i * verticalAlign.value
+          : verticalAlign.value
+        : verticalAlign.value;
+    }
+
     return (
       data &&
       data[0] &&
@@ -70,13 +78,7 @@ export const LinesSeries = () => {
               opacity: isActive(d.id) ? 1 : 0.2,
             }}
             d={makePath(d)}
-            transform={`translate(0,-${
-              verticalAlign.flag
-                ? data.length > 1
-                  ? i * verticalAlign.value
-                  : verticalAlign.value
-                : verticalAlign.value
-            })`}
+            transform={`translate(0,-${getVerticalAlign(i)})`}
           />
         ))
     );
