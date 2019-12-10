@@ -79,10 +79,11 @@ const MoleculeStructureEditorModal = (props) => {
   const handleSave = useCallback(() => {
     if (selectedMolecule) {
       dispatch({ type: SET_MOLECULE, molfile, key: selectedMolecule.key });
+      onClose('replace');
     } else {
       dispatch({ type: ADD_MOLECULE, molfile });
+      onClose('new');
     }
-    onClose();
   }, [dispatch, selectedMolecule, molfile, onClose]);
 
   const styles = {

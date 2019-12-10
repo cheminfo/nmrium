@@ -73,9 +73,15 @@ const MoleculePanel = () => {
 
   const { molecules } = useContext(ChartContext);
 
-  const handleClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const handleClose = useCallback(
+    (e) => {
+      setOpen(false);
+      if (e === 'new') {
+        setCurrentIndex(molecules.length);
+      }
+    },
+    [molecules.length],
+  );
 
   const handleOpen = useCallback((event, key, molfile) => {
     if (molfile) {
@@ -124,7 +130,10 @@ const MoleculePanel = () => {
         </p>
       </div>
       <div css={moleculeContainerStyle} ref={refContainer}>
-        <Slider onSlideChange={(event) => setCurrentIndex(event.slideIndex)}>
+        <Slider
+          onSlideChange={(event) => setCurrentIndex(event.slideIndex)}
+          slideIndex={currentIndex}
+        >
           {molecules &&
             molecules.map((mol) => (
               <div

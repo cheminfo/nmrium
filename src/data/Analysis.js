@@ -61,8 +61,8 @@ export class Analysis {
   //   };
   // });
 
-  removeMolecule(index) {
-    this.molecules.splice(index, 1);
+  removeMolecule(key) {
+    this.molecules = this.molecules.filter((molecule) => molecule.key !== key);
   }
 
   addMolfile(molfile) {

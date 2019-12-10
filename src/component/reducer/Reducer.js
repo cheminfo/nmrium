@@ -852,10 +852,8 @@ const handleSetMolecule = (state, molfile, key) => {
 
 const handleDeleteMolecule = (state, key) => {
   return produce(state, (draft) => {
-    const index = draft.molecules.findIndex((molecule) => molecule.key === key);
-    if (index !== -1) {
-      draft.molecules.splice(index, 1);
-    }
+    AnalysisObj.removeMolecule(key);
+    draft.molecules = AnalysisObj.getMolecules();
   });
 };
 
