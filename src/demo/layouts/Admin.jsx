@@ -72,7 +72,9 @@ class Dashboard extends React.Component {
                 <Route
                   path={prop.layout + prop.path}
                   // component={prop.component}
-                  render={(props) => <prop.component {...props} {...prop} />}
+                  render={(props) =>
+                    React.cloneElement(prop.component, { ...props, ...prop })
+                  }
                   key={key}
                 />
               );

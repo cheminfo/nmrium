@@ -117,6 +117,7 @@ function setYAxisShit(data, draft, height) {
       draft.verticalAlign.value = YAxisShift;
     } else {
       draft.verticalAlign.flag = false;
+      draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
     }
   }
 }

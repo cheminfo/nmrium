@@ -9,6 +9,7 @@ import {
   FULL_ZOOM_OUT,
   CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
+  SET_SPECTRUMS_VERTICAL_ALIGN,
 } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -39,7 +40,7 @@ const BasicToolBar = ({
   isSaveButtonEnabled = true,
 }) => {
   const dispatch = useDispatch();
-  const { data, activeSpectrum } = useChartData();
+  const { data, activeSpectrum, verticalAlign } = useChartData();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
   const [spectrumsCount, setSpectrumsCount] = useState(0);
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
@@ -86,6 +87,13 @@ const BasicToolBar = ({
     });
     setIsRealSpectrumShown(!isRealSpectrumShown);
   }, [dispatch, isRealSpectrumShown]);
+
+  const alignSpectrumsVerticallyHandler = useCallback(() => {
+    dispatch({
+      type: SET_SPECTRUMS_VERTICAL_ALIGN,
+      flag: !verticalAlign.flag,
+    });
+  }, [dispatch, verticalAlign.flag]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
@@ -167,6 +175,19 @@ const BasicToolBar = ({
           />
         </button>
       )}
+
+      <button
+        css={styles}
+        type="button"
+        onClick={alignSpectrumsVerticallyHandler}
+      >
+        <ToolTip
+          title={!verticalAlign.flag ? 'Align Center' : 'Bottom Align'}
+          popupPlacement="right"
+        >
+          {!verticalAlign.flag ? 'CA' : 'BA'}
+        </ToolTip>
+      </button>
     </Fragment>
   );
 };
