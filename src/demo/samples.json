@@ -1,70 +1,70 @@
 [
-    {
-        "file": "empty",
-        "title": "blank"
-    },
-    {
-        "groupName": "General",
-        "hasChild": true,
-        "child": [
-            {
-                "file": "./json-files/1HSpectrum.json",
-                "title": "1H spectrum test"
-            },
-            {
-                "file": "./json-files/13CFID.json",
-                "title": "13C Spectrum"
-            },
-            {
-                "file": "./json-files/Big13C.json",
-                "title": "Big 13C"
-            },
-            {
-                "file": "./json-files/XTC.json",
-                "title": "XTC"
-            },
-            {
-                "file": "./json-files/Coffee.json",
-                "title": "Coffee"
-            },
-            {
-                "file": "./json-files/CoupledDecoupled13C.json",
-                "title": "13C Coupled / Decoupled"
-            },
-            {
-                "file": "./json-files/Dept.json",
-                "title": "DEPT"
-            }
-        ]
-    },
-    {
-        "groupName": "Simulate",
-        "hasChild": true,
-        "child": [
-            {
-                "file": "./simulated/d1-2-3-4-5-6-7-8.json",
-                "title": "d1-2-3-4-5-6-7-8"
-            },
-            {
-                "file": "./simulated/d1-2-3-4-5-6-7-8HR.json",
-                "title": "d1-2-3-4-5-6-7-8HR"
-            },
-            {
-                "file": "./simulated/d1-1.2_j7.json",
-                "title": "d1-1.2_j7"
-            },
-            {
-                "file": "./simulated/d1-2_j7.json",
-                "title": "d1-2_j7"
-            },
-            {
-                "file": "./simulated/d1-2-3_j16-10-2.json",
-                "title": "d1-2-3_j16-10-2"
-            },
-            {
-                "file": "./simulated/d1-7_j7.json",
-                "title": "d1-7_j7"
-            }
-        ]
-    }
+  {
+    "file": "empty",
+    "title": "blank"
+  },
+  {
+    "groupName": "General",
+    "hasChild": true,
+    "child": [
+      {
+        "file": "./json-files/1HSpectrum.json",
+        "title": "1H spectrum test"
+      },
+      {
+        "file": "./json-files/13CFID.json",
+        "title": "13C Spectrum"
+      },
+      {
+        "file": "./json-files/Big13C.json",
+        "title": "Big 13C"
+      },
+      {
+        "file": "./json-files/XTC.json",
+        "title": "XTC"
+      },
+      {
+        "file": "./json-files/Coffee.json",
+        "title": "Coffee"
+      },
+      {
+        "file": "./json-files/CoupledDecoupled13C.json",
+        "title": "13C Coupled / Decoupled"
+      },
+      {
+        "file": "./json-files/Dept.json",
+        "title": "DEPT"
+      }
+    ]
+  },
+  {
+    "groupName": "Simulated",
+    "hasChild": true,
+    "child": [
+      {
+        "file": "./simulated/d1-2-3-4-5-6-7-8.json",
+        "title": "δ=1,2,3,4,5,6,7,8"
+      },
+      {
+        "file": "./simulated/d1-2-3-4-5-6-7-8HR.json",
+        "title": "δ=1,2,3,4,5,6,7,8 HR"
+      },
+      {
+        "file": "./simulated/d1-1.2_j7.json",
+        "title": "δ=1,1.2 J=7"
+      },
+      {
+        "file": "./simulated/d1-2_j7.json",
+        "title": "δ=1,2 J=7"
+      },
+      {
+        "file": "./simulated/d1-2-3_j16-10-2.json",
+        "title": "δ=1,2,3 J=2,10,16"
+      },
+      {
+        "file": "./simulated/d1-7_j7.json",
+        "title": "δ=1,7 J=7"
+      }
+    ]
+  }
 ]
