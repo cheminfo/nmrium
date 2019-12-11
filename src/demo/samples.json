@@ -8,26 +8,23 @@
         "title": "13C Spectrum"
     },
     {
-        "file": "./json-files/Big13C.json",
-        "title": "Big 13C"
+        "file": "./json-files/1HSpectrum.json",
+        "title": "1H spectrum test"
     },
     {
-        "file": "./json-files/XTC.json",
-        "title": "XTC"
+        "file": "./json-files/1HSpectrum.json",
+        "title": "1H spectrum test"
     },
     {
-        "file": "./json-files/Coffee.json",
-        "title": "Coffee"
+        "file": "./json-files/1HSpectrum.json",
+        "title": "1H spectrum test"
     },
     {
-        "file": "./json-files/CoupledDecoupled13C.json",
-        "title": "13C Coupled / Decoupled"
+        "file": "./json-files/1HSpectrum.json",
+        "title": "1H spectrum test"
     },
     {
-        "file": "./json-files/Dept.json",
-        "title": "DEPT"
-    },
-    {
-        "title": "blank"
+        "file": "./json-files/1HSpectrum.json",
+        "title": "1H spectrum test"
     }
 ]
