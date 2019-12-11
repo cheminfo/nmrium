@@ -21,12 +21,15 @@ import { NavLink } from 'react-router-dom';
 import { Nav } from 'reactstrap';
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from 'perfect-scrollbar';
-
+import { buildMenu, getKey } from '../../utility/menu';
+import Menu from 'rc-menu';
 import logo from '../../assets/img/logo-white.svg';
+import 'rc-menu/assets/index.css';
 
 var ps;
 
 class Sidebar extends React.Component {
+  state = { routes: [] };
   constructor(props) {
     super(props);
     this.activeRoute.bind(this);
@@ -42,12 +45,15 @@ class Sidebar extends React.Component {
         suppressScrollY: false,
       });
     }
+    const routes = buildMenu(this.props.routes, []);
+    this.setState({ routes });
   }
   componentWillUnmount() {
     if (navigator.platform.indexOf('Win') > -1) {
       ps.destroy();
     }
   }
+
   render() {
     return (
       <div className="sidebar" data-color={this.props.backgroundColor}>
@@ -70,7 +76,16 @@ class Sidebar extends React.Component {
           </a>
         </div>
         <div className="sidebar-wrapper" ref="sidebar">
-          <Nav>
+          <Menu
+            onClick={(e) => {
+              this.props.history.push(`/admin/${getKey(e.item.props.file)}`);
+            }}
+            mode="inline"
+          >
+            {this.state.routes}
+          </Menu>
+
+          {/* <Nav>
             {this.props.routes.map((prop, key) => {
               if (prop.redirect) return null;
               return (
@@ -95,7 +110,7 @@ class Sidebar extends React.Component {
                 </li>
               );
             })}
-          </Nav>
+          </Nav> */}
         </div>
       </div>
     );

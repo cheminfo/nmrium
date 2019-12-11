@@ -15,3 +15,26 @@ code {
 .moving-element {
   will-change: transform;
 }
+
+.rc-menu {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.rc-menu-item,.rc-menu-submenu {
+  color: white;
+}
+.rc-menu:first-of-type .rc-menu-item.rc-menu-item-selected,.rc-menu-item:hover {
+  color: black;
+}
+
+.rc-menu-submenu.rc-menu-submenu-active,
+.rc-menu-submenu.rc-menu-submenu-selected {
+  color: black;
+}
+
+.rc-menu-submenu > .rc-menu {
+  background-color: #28a4fb;
+  color: #000000;
+  font-size: 12px;
+}

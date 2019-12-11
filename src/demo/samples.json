@@ -1,30 +1,70 @@
 [
     {
-        "file": "./json-files/1HSpectrum.json",
-        "title": "1H spectrum test"
+        "file": "empty",
+        "title": "blank"
     },
     {
-        "file": "./json-files/13CFID.json",
-        "title": "13C Spectrum"
+        "groupName": "General",
+        "hasChild": true,
+        "child": [
+            {
+                "file": "./json-files/1HSpectrum.json",
+                "title": "1H spectrum test"
+            },
+            {
+                "file": "./json-files/13CFID.json",
+                "title": "13C Spectrum"
+            },
+            {
+                "file": "./json-files/Big13C.json",
+                "title": "Big 13C"
+            },
+            {
+                "file": "./json-files/XTC.json",
+                "title": "XTC"
+            },
+            {
+                "file": "./json-files/Coffee.json",
+                "title": "Coffee"
+            },
+            {
+                "file": "./json-files/CoupledDecoupled13C.json",
+                "title": "13C Coupled / Decoupled"
+            },
+            {
+                "file": "./json-files/Dept.json",
+                "title": "DEPT"
+            }
+        ]
     },
     {
-        "file": "./json-files/1HSpectrum.json",
-        "title": "1H spectrum test"
-    },
-    {
-        "file": "./json-files/1HSpectrum.json",
-        "title": "1H spectrum test"
-    },
-    {
-        "file": "./json-files/1HSpectrum.json",
-        "title": "1H spectrum test"
-    },
-    {
-        "file": "./json-files/1HSpectrum.json",
-        "title": "1H spectrum test"
-    },
-    {
-        "file": "./json-files/1HSpectrum.json",
-        "title": "1H spectrum test"
+        "groupName": "Simulate",
+        "hasChild": true,
+        "child": [
+            {
+                "file": "./simulated/d1-2-3-4-5-6-7-8.json",
+                "title": "d1-2-3-4-5-6-7-8"
+            },
+            {
+                "file": "./simulated/d1-2-3-4-5-6-7-8HR.json",
+                "title": "d1-2-3-4-5-6-7-8HR"
+            },
+            {
+                "file": "./simulated/d1-1.2_j7.json",
+                "title": "d1-1.2_j7"
+            },
+            {
+                "file": "./simulated/d1-2_j7.json",
+                "title": "d1-2_j7"
+            },
+            {
+                "file": "./simulated/d1-2-3_j16-10-2.json",
+                "title": "d1-2-3_j16-10-2"
+            },
+            {
+                "file": "./simulated/d1-7_j7.json",
+                "title": "d1-7_j7"
+            }
+        ]
     }
 ]

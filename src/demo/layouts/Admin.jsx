@@ -19,23 +19,29 @@ import React from 'react';
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from 'perfect-scrollbar';
 // reactstrap components
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 // core components
 import Sidebar from '../components/Sidebar/Sidebar';
-import routes from '../routes';
+import routes from '../samples';
+import View from '../views/View';
+import { mapTreeToFlatArray, getKey } from '../utility/menu';
 
 let ps;
 
 class Dashboard extends React.Component {
   state = {
     backgroundColor: 'blue',
+    routesList: [],
   };
   componentDidMount() {
     if (navigator.platform.indexOf('Win') > -1) {
       ps = new PerfectScrollbar(this.mainPanel.current);
       document.body.classList.toggle('perfect-scrollbar-on');
     }
+    this.setState((prevState) => {
+      return { ...prevState, routesList: mapTreeToFlatArray(routes) };
+    });
   }
 
   componentDidUpdate(e) {
@@ -56,6 +62,7 @@ class Dashboard extends React.Component {
   handleColorClick = (color) => {
     this.setState({ backgroundColor: color });
   };
+
   render() {
     return (
       <div className="wrapper">
@@ -65,8 +72,18 @@ class Dashboard extends React.Component {
           backgroundColor={this.state.backgroundColor}
         />
         <div className="main-panel" ref={this.mainPanel}>
-          {/* <DemoNavbar {...this.props} /> */}
           <Switch>
+            {this.state.routesList.map((prop, key) => (
+              <Route
+                path={`/admin/${getKey(prop.file)}`}
+                // component={prop.component}
+                render={() => <View {...prop} />}
+                key={key}
+              />
+            ))}
+          </Switch>
+          {/* <DemoNavbar {...this.props} /> */}
+          {/* <Switch>
             {routes.map((prop, key) => {
               return (
                 <Route
@@ -80,7 +97,8 @@ class Dashboard extends React.Component {
               );
             })}
             <Redirect from="/admin" to={`/admin${routes[0].path}`} />
-          </Switch>
+          </Switch> */}
+
           {/* <Footer fluid /> */}
         </div>
         {/* <FixedPlugin
