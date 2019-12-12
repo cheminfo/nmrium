@@ -64,6 +64,7 @@ import {
   DELETE_RANGE,
   SET_SPECTRUMS_VERTICAL_ALIGN,
   SAVE_AS_SVG,
+  HIGHLIGHT_RANGE,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -1007,6 +1008,14 @@ const handleDeleteRange = (state, rangeID) => {
     draft.data[index].ranges = ob.getRanges();
   });
 };
+const handleHighlightRange = (state, rangeID, _highlight) => {
+  return produce(state, (draft) => {
+    const { id, index } = state.activeSpectrum;
+    const ob = AnalysisObj.getDatum1D(id);
+    ob.highlightRange(rangeID, _highlight);
+    draft.data[index].ranges = ob.getRanges();
+  });
+};
 
 //////////////////////////////////////////////////////////////////////
 //////////////// start undo and redo functions ///////////////////////
@@ -1280,6 +1289,8 @@ export const spectrumReducer = (state, action) => {
       return handleAutoRangesDetection(state, action.options);
     case DELETE_RANGE:
       return handleDeleteRange(state, action.rangeID);
+    case HIGHLIGHT_RANGE:
+      return handleHighlightRange(state, action.id, action._highlight);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);
