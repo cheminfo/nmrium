@@ -1,12 +1,13 @@
 import React, { useCallback, useMemo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { DELETE_RANGE } from '../reducer/Actions';
+import { DELETE_RANGE, HIGHLIGHT_RANGE } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
 import ReactTable from '../elements/ReactTable/ReactTable';
 import { ConfirmationDialog } from '../elements/Modal';
+import { HighlightedRowStyle } from '../elements/ReactTable/Style';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -51,6 +52,7 @@ const RangesTablePanel = () => {
           integral: range.integral,
           id: range.id,
           signals: range.signal,
+          _highlight: range._highlight,
         };
       });
     } else {
@@ -105,6 +107,10 @@ const RangesTablePanel = () => {
         </button>
       ),
     },
+    // {
+    //   Header: 'onHover',
+    //   accessor: '_highlight',
+    // },
   ];
 
   const columnsSignals = [
@@ -169,7 +175,11 @@ const RangesTablePanel = () => {
   // render method for couplings sub-table
   const renderRowSubComponentCouplings = ({ row }) => {
     return row.original.j && row.original.j.length > 0 ? (
-      <ReactTable data={row.original.j} columns={columnsCouplings} />
+      <ReactTable
+        data={row.original.j}
+        columns={columnsCouplings}
+        highlightedRowStyle={HighlightedRowStyle}
+      />
     ) : null;
   };
 
@@ -181,9 +191,14 @@ const RangesTablePanel = () => {
         columns={columnsSignalsExpandable}
         data={row.original.signals}
         renderRowSubComponent={renderRowSubComponentCouplings}
+        highlightedRowStyle={HighlightedRowStyle}
       />
     ) : (
-      <ReactTable columns={columnsSignals} data={row.original.signals} />
+      <ReactTable
+        columns={columnsSignals}
+        data={row.original.signals}
+        highlightedRowStyle={HighlightedRowStyle}
+      />
     );
   };
 
