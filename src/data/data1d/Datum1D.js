@@ -136,6 +136,7 @@ export class Datum1D {
           .toString(36)
           .replace('0.', ''),
         ...range,
+        _highlight: false,
       };
     });
     return this.ranges;
@@ -156,6 +157,19 @@ export class Datum1D {
       this.ranges = this.ranges.filter((range) => range.id !== id);
     }
   }
+
+  highlightRange(id, _highlight) {
+    const ranges = this.ranges.map((range) => {
+      return range.id === id
+        ? {
+            ...range,
+            _highlight: _highlight,
+          }
+        : range;
+    });
+    this.ranges = ranges;
+  }
+
   deleteIntegral(id) {
     if (id == null) {
       this.integrals = [];
