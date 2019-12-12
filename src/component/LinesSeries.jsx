@@ -41,7 +41,7 @@ export const LinesSeries = () => {
 
       let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])} `;
       path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${scale.x(point)} ${scale.y(pathPoints.y[i])}`;
+        accumulator += ` L ${scale.x(point)} ${scale.y(pathPoints.y[i + 1])}`;
         return accumulator;
       }, '');
       return path;

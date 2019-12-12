@@ -117,7 +117,6 @@ const NMRDisplayer = (props) => {
         mode === 'RTL'
           ? [width - margin.right, margin.left]
           : [margin.left, width - margin.right];
-
       const x = d3.scaleLinear(xDomain, range);
       let y;
       if (spectrumId == null && yDomain !== undefined) {
