@@ -233,6 +233,8 @@ const RangesTablePanel = () => {
             columns={columnsRanges}
             data={data}
             renderRowSubComponent={renderRowSubComponentSignals}
+            dispatchType={HIGHLIGHT_RANGE}
+            highlightedRowStyle={HighlightedRowStyle}
           />
         ) : (
           <NoTableData />
