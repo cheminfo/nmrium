@@ -96,8 +96,6 @@ function getDomain(data) {
     return acc.concat(extent);
   }, []);
 
-  
-
   return { x: d3.extent(xArray), y: d3.extent(yArray), yDomains: yDomains };
 }
 
