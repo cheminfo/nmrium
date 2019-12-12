@@ -1,30 +1,58 @@
 import { useCallback, Fragment } from 'react';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
+import { jsx } from '@emotion/core';
 
 import { useChartData } from './context/ChartContext';
 import { useDispatch } from './context/DispatchContext';
-import { DELETE_RANGE } from './reducer/Actions';
+import { DELETE_RANGE, HIGHLIGHT_RANGE } from './reducer/Actions';
 
-const styles = css`
-  pointer-events: bounding-box;
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
+// const styles = css`
+//   pointer-events: bounding-box;
+//   user-select: 'none';
+//   -webkit-user-select: none; /* Chrome all / Safari all */
+//   -moz-user-select: none; /* Firefox all */
 
-  :hover .range-area {
-    height: 100%;
-    fill: #ff6f0057;
-    cursor: pointer;
-  }
-  .delete-button {
-    display: none;
-    cursor: pointer;
-  }
-  :hover .delete-button {
-    display: block;
-  }
-`;
+//   :hover .range-area {
+//     height: 100%;
+//     fill: #ff6f0057;
+//     cursor: pointer;
+//   }
+//   .delete-button {
+//     display: none;
+//     cursor: pointer;
+//   }
+//   :hover .delete-button {
+//     display: block;
+//   }
+// `;
+
+const stylesOnHover = {
+  pointerEvents: 'bounding-box',
+  userSelect: 'none',
+  webkitUserSelect: 'none' /* Chrome all / Safari all */,
+  mozUserSelect: 'none' /* Firefox all */,
+
+  ':hover .range-area': {
+    height: '100%',
+    fill: '#ff6f0057',
+    cursor: 'pointer',
+  },
+  '.delete-button': {
+    display: 'none',
+    cursor: 'pointer',
+  },
+  ':hover .delete-button': {
+    display: 'block',
+  },
+};
+
+const stylesHighlightedExternally = {
+  // ...stylesOnHover,
+  '.range-area': {
+    height: '100%',
+    fill: '#ff6f0057',
+  },
+};
 
 const Ranges = () => {
   const { getScale, data } = useChartData();
@@ -33,6 +61,27 @@ const Ranges = () => {
   const deleteRange = useCallback(
     (id) => {
       dispatch({ type: DELETE_RANGE, rangeID: id });
+    },
+    [dispatch],
+  );
+
+  const onMouseEnterHandler = useCallback(
+    (id) => {
+      dispatch({
+        type: HIGHLIGHT_RANGE,
+        id: id,
+        _highlight: true,
+      });
+    },
+    [dispatch],
+  );
+  const onMouseLeaveHandler = useCallback(
+    (id) => {
+      dispatch({
+        type: HIGHLIGHT_RANGE,
+        id: id,
+        _highlight: false,
+      });
     },
     [dispatch],
   );
@@ -66,9 +115,15 @@ const Ranges = () => {
               {d.ranges &&
                 d.ranges.map((range) => (
                   <g
-                    css={styles}
+                    css={
+                      range._highlight && range._highlight === true
+                        ? stylesHighlightedExternally
+                        : stylesOnHover
+                    }
                     key={range.id}
                     transform={`translate(${getScale().x(range.to)},10)`}
+                    onMouseEnter={() => onMouseEnterHandler(range.id)}
+                    onMouseLeave={() => onMouseLeaveHandler(range.id)}
                   >
                     <DeleteButton id={range.id} />
                     <rect
