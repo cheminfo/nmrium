@@ -8,7 +8,13 @@ import ReactTableHeaderGroup from './Elements/ReactTableHeaderGroup';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 
-const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
+const ReactTableExpandable = ({
+  columns,
+  data,
+  renderRowSubComponent,
+  dispatchType,
+  highlightedRowStyle,
+}) => {
   const {
     getTableProps,
     getTableBodyProps,
