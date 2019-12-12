@@ -73,12 +73,12 @@ class Dashboard extends React.Component {
         />
         <div className="main-panel" ref={this.mainPanel}>
           <Switch>
-            {this.state.routesList.map((prop, key) => (
+            {this.state.routesList.map((prop) => (
               <Route
                 path={`/admin/${getKey(prop.file)}`}
                 // component={prop.component}
                 render={() => <View {...prop} />}
-                key={key}
+                key={getKey(prop.file)}
               />
             ))}
           </Switch>

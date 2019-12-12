@@ -695,7 +695,6 @@ const zoomOut = (state) => {
   });
 };
 
-// TODO: this is really strange
 const handleSpectrumVisibility = (state, data) => {
   return produce(state, (draft) => {
     for (let datum of draft.data) {
@@ -733,6 +732,8 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
 
       activeSpectrum.index = index;
       draft.activeSpectrum = activeSpectrum;
+    } else {
+      draft.activeSpectrum = null;
     }
   });
 };

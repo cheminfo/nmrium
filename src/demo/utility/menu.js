@@ -8,7 +8,7 @@ function buildMenu(array = []) {
       .toString(36)
       .replace('0.', '');
 
-    if (item.hasChild && item.child && item.hasChild === true) {
+    if (item.children && Array.isArray(item.children)) {
       menu.push(getMenu([item], [], key));
     } else {
       menu.push(
@@ -19,7 +19,7 @@ function buildMenu(array = []) {
   return menu;
 }
 
-function getMenu(array = [], nodes = [], key, parentIndex = -1) {
+function getMenu(array = [], nodes = [], key, parentIndex = 0) {
   let _nodes = nodes;
   let children = [];
 
@@ -28,18 +28,13 @@ function getMenu(array = [], nodes = [], key, parentIndex = -1) {
   }
 
   for (const index in array) {
-    if (
-      array[index].hasChild &&
-      array[index].child &&
-      array[index].hasChild === true
-    ) {
+    if (array[index].children && Array.isArray(array[index].children)) {
       const node = React.createElement(SubMenu, {
         key: index + key,
         title: array[index].groupName,
       });
       _nodes.push(node);
-      parentIndex++;
-      return getMenu(array[index].child, _nodes, key, parentIndex);
+      return getMenu(array[index].children, _nodes, key, 0);
     } else {
       children.push(
         React.createElement(
@@ -56,7 +51,7 @@ function getMenu(array = [], nodes = [], key, parentIndex = -1) {
 function mapTreeToFlatArray(array = []) {
   let routes = [];
   for (const item of array) {
-    if (item.hasChild && item.child && item.hasChild === true) {
+    if (item.children && Array.isArray(item.children)) {
       routes = routes.concat(getFlatArray([item], []));
     } else {
       routes.push(item);
@@ -69,8 +64,8 @@ function getFlatArray(inputArray = [], children = []) {
   let _children = children;
 
   for (const item of inputArray) {
-    if (item.hasChild && item.child && item.hasChild === true) {
-      return getFlatArray(item.child, _children);
+    if (item.children && Array.isArray(item.children)) {
+      return getFlatArray(item.children, _children);
     } else {
       children.push(item);
     }

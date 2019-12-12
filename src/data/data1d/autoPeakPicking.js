@@ -21,6 +21,9 @@ export default function autoPeakPicking(datum1D, options) {
 
   return peaks.map((peak) => {
     return {
+      id: Math.random()
+        .toString(36)
+        .replace('0.', ''),
       xIndex: peak.index,
       xShift: datum1D.data.x[peak.index] - peak.xShift,
     };

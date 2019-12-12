@@ -65,7 +65,7 @@ const YAxis = ({ show, label }) => {
         </Fragment>
       ),
 
-    [label, margin, show],
+    [label, margin.left, margin.top, show, verticalAlign],
   );
 
   return Axis;

@@ -6,10 +6,10 @@ import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { DELETE_PEAK_NOTATION } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTable from '../elements/ReactTable/ReactTable';
+import { ConfirmationDialog } from '../elements/Modal';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
-import { ConfirmationDialog } from '../elements/Modal';
 
 const styles = {
   toolbar: {

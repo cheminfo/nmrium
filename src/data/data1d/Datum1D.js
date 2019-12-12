@@ -221,8 +221,13 @@ export class Datum1D {
   // }
 
   addPeak(peak) {
-    this.peaks = Object.assign([], this.peaks);
-    this.peaks.push(peak);
+    this.peaks = this.peaks.slice(0);
+    this.peaks.push({
+      id: Math.random()
+        .toString(36)
+        .replace('0.', ''),
+      ...peak,
+    });
   }
 
   // Add all the peaks in a range
@@ -233,8 +238,15 @@ export class Datum1D {
     // for now you return an array containing the result of addPeak
     if (from !== to) {
       this.peaks = this.peaks.slice(0);
-      const peaks = this.lookupPeak(from, to);
-      this.peaks = this.peaks.concat([peaks]);
+      const peaks = this.lookupPeak(from, to).map((peak) => {
+        return {
+          id: Math.random()
+            .toString(36)
+            .replace('0.', ''),
+          ...peak,
+        };
+      });
+      this.peaks = this.peaks.concat(peaks);
     }
     return this.peaks;
   }

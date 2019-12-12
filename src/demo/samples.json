@@ -5,8 +5,7 @@
     },
     {
         "groupName": "General",
-        "hasChild": true,
-        "child": [
+        "children": [
             {
                 "file": "./json-files/1HSpectrum.json",
                 "title": "1H spectrum test"
@@ -39,8 +38,7 @@
     },
     {
         "groupName": "Simulate",
-        "hasChild": true,
-        "child": [
+        "children": [
             {
                 "file": "./simulated/d1-2-3-4-5-6-7-8.json",
                 "title": "d1-2-3-4-5-6-7-8"
