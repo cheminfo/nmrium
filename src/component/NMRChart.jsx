@@ -14,7 +14,7 @@ function NMRChart() {
     return null;
   }
   return (
-    <svg width={width} height={height}>
+    <svg width={width} height={height} id="svg-container">
       <defs>
         <clipPath id="clip">
           <rect

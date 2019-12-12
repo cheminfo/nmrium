@@ -74,6 +74,7 @@ export const LinesSeries = () => {
             className="line"
             key={d.id}
             stroke={d.color}
+            fill="none"
             style={{
               opacity: isActive(d.id) ? 1 : 0.2,
             }}

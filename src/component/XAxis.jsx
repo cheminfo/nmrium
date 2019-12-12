@@ -105,6 +105,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
       showGrid === true && (
         <g
           css={gridStyles}
+          className="grid"
           ref={refGrid}
           transform={`translate(0,${height - margin.bottom})`}
         />

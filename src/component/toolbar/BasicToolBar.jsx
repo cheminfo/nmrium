@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { Fragment, useEffect, useCallback, useState } from 'react';
-import { FaDownload, FaExpand } from 'react-icons/fa';
+import { FaDownload, FaExpand, FaFileDownload } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
@@ -10,6 +10,7 @@ import {
   CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
   SET_SPECTRUMS_VERTICAL_ALIGN,
+  SAVE_AS_SVG,
 } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -95,6 +96,12 @@ const BasicToolBar = ({
     });
   }, [dispatch, verticalAlign.flag]);
 
+  const saveAsSVGHandler = useCallback(() => {
+    dispatch({
+      type: SAVE_AS_SVG,
+    });
+  }, [dispatch]);
+
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
 
@@ -129,6 +136,12 @@ const BasicToolBar = ({
           </ToolTip>
         </button>
       )}
+
+      <button type="button" css={styles} onClick={saveAsSVGHandler}>
+        <ToolTip title="Export as SVG " popupPlacement="right">
+          <FaFileDownload />
+        </ToolTip>
+      </button>
 
       {isViewButtonVisible && spectrumsCount > 1 && (
         <button

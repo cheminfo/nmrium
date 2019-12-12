@@ -2,6 +2,7 @@ import { produce, original } from 'immer';
 import * as d3 from 'd3';
 import { XY } from 'ml-spectra-processing';
 import max from 'ml-array-max';
+import { saveAs } from 'file-saver';
 
 import { Datum1D } from '../../data/data1d/Datum1D';
 import { Data1DManager } from '../../data/data1d/Data1DManager';
@@ -62,6 +63,7 @@ import {
   AUTO_RANGES_DETECTION,
   DELETE_RANGE,
   SET_SPECTRUMS_VERTICAL_ALIGN,
+  SAVE_AS_SVG,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -174,6 +176,19 @@ const saveDataAsJson = (state) => {
       view: window,
     }),
   );
+
+  return state;
+};
+
+const saveSVG = (state) => {
+  let svgData = document.getElementById('svg-container').innerHTML;
+  const head =
+    '<svg title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg">';
+  const style =
+    '<style>.grid line,.grid path{stroke:none;} .delete-button{display:none} </style>';
+  const svg = `${head + style + svgData}</svg>`;
+  const blob = new Blob([svg], { type: 'image/svg+xml' });
+  saveAs(blob, 'experiments.svg');
 
   return state;
 };
@@ -1141,6 +1156,8 @@ export const spectrumReducer = (state, action) => {
 
     case SAVE_DATA_AS_JSON:
       return saveDataAsJson(state);
+    case SAVE_AS_SVG:
+      return saveSVG(state);
     case ADD_PEAK:
       return addPeak(state, action.mouseCoordinates);
     case ADD_PEAKS:
