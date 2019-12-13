@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, Fragment } from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 
@@ -88,15 +88,19 @@ const Ranges = () => {
 
   const DeleteButton = (props) => {
     return (
-      <svg
-        className="delete-button"
-        x={-20}
-        y={10}
-        onClick={() => deleteRange(props.id)}
-      >
-        <rect rx="5" width="16" height="16" fill="#c81121" />
-        <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
-      </svg>
+      <Fragment>
+        {`<!-- export-remove -->`}
+        <svg
+          className="delete-button"
+          x={-20}
+          y={10}
+          onClick={() => deleteRange(props.id)}
+        >
+          <rect rx="5" width="16" height="16" fill="#c81121" />
+          <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
+        </svg>
+        {`<!-- export-remove -->`}
+      </Fragment>
     );
   };
 

@@ -21,16 +21,29 @@ code {
   box-shadow: none !important;
 }
 
-.rc-menu-item,.rc-menu-submenu {
+.rc-menu-item,
+.rc-menu-submenu {
   color: white;
 }
-.rc-menu:first-of-type .rc-menu-item.rc-menu-item-selected,.rc-menu-item:hover {
-  color: black;
+
+.rc-menu-item:hover {
+  color: #ffffff;
+  background-color: #37adff;
+  font-weight: bold;
+  transform: translate(2px);
+  transition: transform 0.1s ease-in-out;
+}
+
+.rc-menu li{
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .rc-menu-submenu.rc-menu-submenu-active,
-.rc-menu-submenu.rc-menu-submenu-selected {
+.rc-menu-submenu.rc-menu-submenu-selected,
+.rc-menu:first-of-type .rc-menu-item.rc-menu-item-selected {
   color: black;
+  background-color: white;
 }
 
 .rc-menu-submenu > .rc-menu {
