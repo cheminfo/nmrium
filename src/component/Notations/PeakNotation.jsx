@@ -210,6 +210,8 @@ export const PeakNotation = ({
         >
           {isSelected ? value : parseFloat(value).toFixed(decimalFraction)}
         </text>
+        {`<!-- export-remove -->`}
+
         <foreignObject
           x="0"
           y="-30"
@@ -265,6 +267,7 @@ export const PeakNotation = ({
             )}
           </div>
         </foreignObject>
+        {`<!-- export-remove -->`}
       </g>
     </Fragment>
   );

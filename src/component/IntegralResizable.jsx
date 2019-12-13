@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, Fragment } from 'react';
 import Draggable from 'react-draggable';
 import * as d3 from 'd3';
 /** @jsx jsx */
@@ -137,56 +137,60 @@ const IntegralResizable = (props) => {
   );
 
   return (
-    <svg css={styles} data-no-export="true">
-      <Draggable
-        axis="x"
-        defaultPosition={{
-          x: getScale(id).x(xBoundary[0]),
-          y: 0,
-        }}
-        position={{
-          x: getScale(id).x(xBoundary[0]),
-          y: 0,
-        }}
-        scale={1}
-        onStart={handleRightStart}
-        onDrag={handleRightDrag}
-        onStop={handleRightStop}
-      >
-        <rect
-          cursor="ew-resize"
-          width={rightDragVisibility ? 1 : 6}
-          fill="red"
-          height={height + margin.top}
-          style={{ fillOpacity: rightDragVisibility ? 1 : 0 }}
-        />
-      </Draggable>
+    <Fragment>
+      {`<!-- export-remove -->`}
+      <svg css={styles}>
+        <Draggable
+          axis="x"
+          defaultPosition={{
+            x: getScale(id).x(xBoundary[0]),
+            y: 0,
+          }}
+          position={{
+            x: getScale(id).x(xBoundary[0]),
+            y: 0,
+          }}
+          scale={1}
+          onStart={handleRightStart}
+          onDrag={handleRightDrag}
+          onStop={handleRightStop}
+        >
+          <rect
+            cursor="ew-resize"
+            width={rightDragVisibility ? 1 : 6}
+            fill="red"
+            height={height + margin.top}
+            style={{ fillOpacity: rightDragVisibility ? 1 : 0 }}
+          />
+        </Draggable>
 
-      <Draggable
-        axis="x"
-        defaultPosition={{
-          x: getScale(id).x(xBoundary[1]),
-          y: 0,
-        }}
-        position={{
-          x: getScale(id).x(xBoundary[1]),
-          y: 0,
-        }}
-        scale={1}
-        onStart={handleLeftStart}
-        onDrag={handleLeftDrag}
-        onStop={handleLeftStop}
-      >
-        <rect
-          cursor="ew-resize"
-          width={leftDragVisibility ? 1 : 6}
-          fill="red"
-          height={height + margin.top}
-          style={{ fillOpacity: leftDragVisibility ? 1 : 0 }}
-        />
-      </Draggable>
-      <DeleteButton />
-    </svg>
+        <Draggable
+          axis="x"
+          defaultPosition={{
+            x: getScale(id).x(xBoundary[1]),
+            y: 0,
+          }}
+          position={{
+            x: getScale(id).x(xBoundary[1]),
+            y: 0,
+          }}
+          scale={1}
+          onStart={handleLeftStart}
+          onDrag={handleLeftDrag}
+          onStop={handleLeftStop}
+        >
+          <rect
+            cursor="ew-resize"
+            width={leftDragVisibility ? 1 : 6}
+            fill="red"
+            height={height + margin.top}
+            style={{ fillOpacity: leftDragVisibility ? 1 : 0 }}
+          />
+        </Draggable>
+        <DeleteButton />
+      </svg>
+      {`<!-- export-remove -->`}
+    </Fragment>
   );
 };
 
