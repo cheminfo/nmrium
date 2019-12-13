@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import { jsx, css, Global } from '@emotion/core';
 import {
   useRef,
   useState,
@@ -7,12 +9,9 @@ import {
   Fragment,
 } from 'react';
 import { FaMinus } from 'react-icons/fa';
-import { jsx, css, Global } from '@emotion/core';
 
 import { useDispatch } from '../context/DispatchContext';
 import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
-
-/** @jsx jsx */
 
 const styles = css`
   user-select: 'none';
@@ -201,6 +200,7 @@ export const PeakNotation = ({
       >
         <line x1="0" x2="0" y1="-5" y2={-30} stroke={color} strokeWidth="1px" />
         <text
+          className="regular-text"
           ref={refText}
           x="0"
           y={-20}
@@ -210,6 +210,8 @@ export const PeakNotation = ({
         >
           {isSelected ? value : parseFloat(value).toFixed(decimalFraction)}
         </text>
+        {`<!-- export-remove -->`}
+
         <foreignObject
           x="0"
           y="-30"
@@ -264,6 +266,7 @@ export const PeakNotation = ({
             )}
           </div>
         </foreignObject>
+        {`<!-- export-remove -->`}
       </g>
     </Fragment>
   );

@@ -91,6 +91,7 @@ const IntegralsSeries = () => {
                 <path
                   className="line"
                   stroke="black"
+                  fill="none"
                   style={{
                     transformOrigin: 'center top',
                     opacity: IsActive(d.id) ? 1 : 0.2,

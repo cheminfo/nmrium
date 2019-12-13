@@ -2,7 +2,6 @@ import { produce, original } from 'immer';
 import * as d3 from 'd3';
 import { XY } from 'ml-spectra-processing';
 import max from 'ml-array-max';
-import { saveAs } from 'file-saver';
 
 import { Datum1D } from '../../data/data1d/Datum1D';
 import { Data1DManager } from '../../data/data1d/Data1DManager';
@@ -10,6 +9,7 @@ import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';
 import { Filters } from '../../data/data1d/filter1d/Filters';
 import { options } from '../toolbar/ToolTypes';
+import { exportAsSVG, exportAsJSON } from '../utility/Export';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
 import {
@@ -163,33 +163,12 @@ const initiate = (state, dataObject) => {
 
 const saveDataAsJson = (state) => {
   const data = AnalysisObj.toJSON();
-  const fileData = JSON.stringify(data, undefined, 2);
-  const blob = new Blob([fileData], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.download = 'experiment.json';
-  link.href = url;
-  link.dispatchEvent(
-    new MouseEvent(`click`, {
-      bubbles: true,
-      cancelable: true,
-      view: window,
-    }),
-  );
-
+  exportAsJSON(data);
   return state;
 };
 
 const saveSVG = (state) => {
-  let svgData = document.getElementById('svg-container').innerHTML;
-  const head =
-    '<svg title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg">';
-  const style =
-    '<style>.grid line,.grid path{stroke:none;} .delete-button{display:none} </style>';
-  const svg = `${head + style + svgData}</svg>`;
-  const blob = new Blob([svg], { type: 'image/svg+xml' });
-  saveAs(blob, 'experiments.svg');
-
+  exportAsSVG('svg-container');
   return state;
 };
 

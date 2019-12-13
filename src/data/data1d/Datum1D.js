@@ -205,7 +205,7 @@ export class Datum1D {
 
       return { x: xValue, y: yValue, xIndex: minIndex + xIndex + 1 };
     }
-    return [];
+    return null;
   }
   /**
    *
@@ -238,15 +238,15 @@ export class Datum1D {
     // for now you return an array containing the result of addPeak
     if (from !== to) {
       this.peaks = this.peaks.slice(0);
-      const peaks = this.lookupPeak(from, to).map((peak) => {
-        return {
+      const peak = this.lookupPeak(from, to);
+      if (peak) {
+        this.peaks = this.peaks.concat({
           id: Math.random()
             .toString(36)
             .replace('0.', ''),
           ...peak,
-        };
-      });
-      this.peaks = this.peaks.concat(peaks);
+        });
+      }
     }
     return this.peaks;
   }
