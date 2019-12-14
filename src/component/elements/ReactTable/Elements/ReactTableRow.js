@@ -1,45 +1,63 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
+import { useChartData } from '../../../context/ChartContext';
 import { useDispatch } from '../../../context/DispatchContext';
+import { ADD_HIGHLIGHT, DELETE_HIGHLIGHT } from '../../../reducer/Actions';
+import { HighlightedRowStyle } from '../Style';
 
-const ReactTableRow = ({ row, dispatchType, highlightedRowStyle }) => {
+const ReactTableRow = ({ row }) => {
+  const { activeSpectrum, highlights } = useChartData();
   const dispatch = useDispatch();
 
-  const onMouseEnterHandler = useCallback(
-    (id) => {
-      if (dispatchType) {
-        dispatch({
-          type: dispatchType, // dispatch type to be given to know what object should be set as highlighted, e.g. "HIGHLIGHT_RANGES" in Actions.js
-          id: id, // constant property "id" within each object to highlight, e.g. id property for each range
-          _highlight: true,
-        });
-      }
+  const onMouseEnterAndLeaveHandler = useCallback(
+    (dispatchType, type, id) => {
+      dispatch({
+        type: dispatchType,
+        data: {
+          spectrumID: activeSpectrum.id,
+          objectType: type,
+          objectID: id,
+        },
+      });
     },
-    [dispatch, dispatchType],
+    [activeSpectrum.id, dispatch],
   );
-  const onMouseLeaveHandler = useCallback(
-    (id) => {
-      if (dispatchType) {
-        dispatch({
-          type: dispatchType,
-          id: id,
-          _highlight: false,
-        });
-      }
-    },
-    [dispatch, dispatchType],
-  );
+
+  // returning an array because of potential multiple object selection in future
+  const highlighted = useMemo(() => {
+    return activeSpectrum && highlights && highlights[activeSpectrum.id]
+      ? highlights[activeSpectrum.id]
+      : [];
+  }, [activeSpectrum, highlights]);
 
   return (
     <tr
       key={row.getRowProps().key}
-      onMouseEnter={() => onMouseEnterHandler(row.original.id)} // the id property has to be given within a ReactTable component
-      onMouseLeave={() => onMouseLeaveHandler(row.original.id)} // the id property has to be given within a ReactTable component
+      onMouseEnter={
+        () =>
+          onMouseEnterAndLeaveHandler(
+            ADD_HIGHLIGHT,
+            row.original.type,
+            row.original.id,
+          ) // the type and id property has to be given through a ReactTable component
+      }
+      onMouseLeave={
+        () =>
+          onMouseEnterAndLeaveHandler(
+            DELETE_HIGHLIGHT,
+            row.original.type,
+            row.original.id,
+          ) // the type and id property has to be given through a ReactTable component
+      }
       css={
-        row.original._highlight && row.original._highlight === true
-          ? highlightedRowStyle
+        highlighted.find(
+          (highlight) =>
+            highlight.type === row.original.type &&
+            highlight.id === row.original.id,
+        )
+          ? HighlightedRowStyle
           : null
       }
       {...row.getRowProps()}
