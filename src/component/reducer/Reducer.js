@@ -64,7 +64,8 @@ import {
   DELETE_RANGE,
   SET_SPECTRUMS_VERTICAL_ALIGN,
   SAVE_AS_SVG,
-  HIGHLIGHT_RANGE,
+  ADD_HIGHLIGHT,
+  DELETE_HIGHLIGHT,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -184,6 +185,35 @@ const setData = (state, data) => {
     draft.isLoading = false;
     setDomain(draft);
     setMode(draft);
+  });
+};
+
+const getHighlights = (draft, spectrumID) => {
+  if (!draft.highlights) {
+    draft.highlights = {};
+  }
+  return draft.highlights && draft.highlights[spectrumID]
+    ? draft.highlights[spectrumID]
+    : [];
+};
+
+const handleAddHighlight = (state, { spectrumID, objectType, objectID }) => {
+  return produce(state, (draft) => {
+    const highlights = getHighlights(draft, spectrumID);
+    highlights.push({
+      type: objectType,
+      id: objectID,
+    });
+    draft.highlights[spectrumID] = highlights;
+  });
+};
+
+const handleDeleteHighlight = (state, { spectrumID, objectType, objectID }) => {
+  return produce(state, (draft) => {
+    const highlights = getHighlights(draft, spectrumID);
+    draft.highlights[spectrumID] = highlights
+      .filter((highlight) => highlight.type !== objectType)
+      .filter((highlight) => highlight.id !== objectID);
   });
 };
 
@@ -987,14 +1017,6 @@ const handleDeleteRange = (state, rangeID) => {
     draft.data[index].ranges = ob.getRanges();
   });
 };
-const handleHighlightRange = (state, rangeID, _highlight) => {
-  return produce(state, (draft) => {
-    const { id, index } = state.activeSpectrum;
-    const ob = AnalysisObj.getDatum1D(id);
-    ob.highlightRange(rangeID, _highlight);
-    draft.data[index].ranges = ob.getRanges();
-  });
-};
 
 //////////////////////////////////////////////////////////////////////
 //////////////// start undo and redo functions ///////////////////////
@@ -1268,9 +1290,10 @@ export const spectrumReducer = (state, action) => {
       return handleAutoRangesDetection(state, action.options);
     case DELETE_RANGE:
       return handleDeleteRange(state, action.rangeID);
-    case HIGHLIGHT_RANGE:
-      return handleHighlightRange(state, action.id, action._highlight);
-
+    case ADD_HIGHLIGHT:
+      return handleAddHighlight(state, action.data);
+    case DELETE_HIGHLIGHT:
+      return handleDeleteHighlight(state, action.data);
     case RESET_DOMAIN:
       return handelResetDomain(state);
     case UNDO:
