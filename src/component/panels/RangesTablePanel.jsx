@@ -1,13 +1,12 @@
 import React, { useCallback, useMemo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { DELETE_RANGE, HIGHLIGHT_RANGE } from '../reducer/Actions';
+import { DELETE_RANGE } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
 import ReactTable from '../elements/ReactTable/ReactTable';
 import { ConfirmationDialog } from '../elements/Modal';
-import { HighlightedRowStyle } from '../elements/ReactTable/Style';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -22,7 +21,7 @@ const styles = {
 
 const RangesTablePanel = () => {
   const confirmRef = useRef();
-  const { data: SpectrumsData, activeSpectrum } = useChartData();
+  const { data: SpectrumsData, activeSpectrum, highlights } = useChartData();
   const dispatch = useDispatch();
 
   const deleteRangeHandler = useCallback(
@@ -50,9 +49,9 @@ const RangesTablePanel = () => {
           from: range.from,
           to: range.to,
           integral: range.integral,
-          id: range.id,
           signals: range.signal,
-          _highlight: range._highlight,
+          type: 'range', // needed for ReactTableRow component to highlight
+          id: range.id, // needed for ReactTableRow component to highlight
         };
       });
     } else {
@@ -107,10 +106,19 @@ const RangesTablePanel = () => {
         </button>
       ),
     },
-    // {
-    //   Header: 'onHover',
-    //   accessor: '_highlight',
-    // },
+    {
+      Header: 'onHover',
+      Cell: ({ row }) =>
+        highlights &&
+        highlights[activeSpectrum] &&
+        highlights[activeSpectrum].find(
+          (highlight) =>
+            highlight.type === row.original.type &&
+            highlight.id === row.original.id,
+        )
+          ? 'true'
+          : 'false',
+    },
   ];
 
   const columnsSignals = [
@@ -175,11 +183,7 @@ const RangesTablePanel = () => {
   // render method for couplings sub-table
   const renderRowSubComponentCouplings = ({ row }) => {
     return row.original.j && row.original.j.length > 0 ? (
-      <ReactTable
-        data={row.original.j}
-        columns={columnsCouplings}
-        highlightedRowStyle={HighlightedRowStyle}
-      />
+      <ReactTable data={row.original.j} columns={columnsCouplings} />
     ) : null;
   };
 
@@ -191,14 +195,9 @@ const RangesTablePanel = () => {
         columns={columnsSignalsExpandable}
         data={row.original.signals}
         renderRowSubComponent={renderRowSubComponentCouplings}
-        highlightedRowStyle={HighlightedRowStyle}
       />
     ) : (
-      <ReactTable
-        columns={columnsSignals}
-        data={row.original.signals}
-        highlightedRowStyle={HighlightedRowStyle}
-      />
+      <ReactTable columns={columnsSignals} data={row.original.signals} />
     );
   };
 
@@ -224,8 +223,6 @@ const RangesTablePanel = () => {
             columns={columnsRanges}
             data={data}
             renderRowSubComponent={renderRowSubComponentSignals}
-            dispatchType={HIGHLIGHT_RANGE}
-            highlightedRowStyle={HighlightedRowStyle}
           />
         ) : (
           <NoTableData />
