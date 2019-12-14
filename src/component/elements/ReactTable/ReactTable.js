@@ -6,7 +6,7 @@ import ReactTableHeaderGroup from './Elements/ReactTableHeaderGroup';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 
-const ReactTable = ({ data, columns, highlightedRowStyle }) => {
+const ReactTable = ({ data, columns }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -30,13 +30,7 @@ const ReactTable = ({ data, columns, highlightedRowStyle }) => {
       <tbody {...getTableBodyProps()}>
         {rows.map((row) => {
           prepareRow(row);
-          return (
-            <ReactTableRow
-              key={row.key}
-              row={row}
-              highlightedRowStyle={highlightedRowStyle}
-            />
-          );
+          return <ReactTableRow key={row.key} row={row} />;
         })}
       </tbody>
     </table>
