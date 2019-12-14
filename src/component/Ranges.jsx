@@ -69,27 +69,6 @@ const Ranges = () => {
     [dispatch],
   );
 
-  const onMouseEnterHandler = useCallback(
-    (id) => {
-      dispatch({
-        type: HIGHLIGHT_RANGE,
-        id: id,
-        _highlight: true,
-      });
-    },
-    [dispatch],
-  );
-  const onMouseLeaveHandler = useCallback(
-    (id) => {
-      dispatch({
-        type: HIGHLIGHT_RANGE,
-        id: id,
-        _highlight: false,
-      });
-    },
-    [dispatch],
-  );
-
   const DeleteButton = (props) => {
     return (
       <Fragment>
