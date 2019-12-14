@@ -175,7 +175,6 @@ export class Datum1D {
           .toString(36)
           .replace('0.', ''),
         ...range,
-        _highlight: false,
       };
     });
     return this.ranges;
