@@ -1,10 +1,14 @@
-import { useCallback, Fragment } from 'react';
+import { useCallback, useMemo, Fragment } from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 
 import { useChartData } from './context/ChartContext';
 import { useDispatch } from './context/DispatchContext';
-import { DELETE_RANGE, HIGHLIGHT_RANGE } from './reducer/Actions';
+import {
+  DELETE_RANGE,
+  ADD_HIGHLIGHT,
+  DELETE_HIGHLIGHT,
+} from './reducer/Actions';
 
 // const styles = css`
 //   pointer-events: bounding-box;
@@ -55,33 +59,12 @@ const stylesHighlightedExternally = {
 };
 
 const Ranges = () => {
-  const { getScale, data } = useChartData();
+  const { getScale, data, activeSpectrum, highlights } = useChartData();
   const dispatch = useDispatch();
 
   const deleteRange = useCallback(
     (id) => {
       dispatch({ type: DELETE_RANGE, rangeID: id });
-    },
-    [dispatch],
-  );
-
-  const onMouseEnterHandler = useCallback(
-    (id) => {
-      dispatch({
-        type: HIGHLIGHT_RANGE,
-        id: id,
-        _highlight: true,
-      });
-    },
-    [dispatch],
-  );
-  const onMouseLeaveHandler = useCallback(
-    (id) => {
-      dispatch({
-        type: HIGHLIGHT_RANGE,
-        id: id,
-        _highlight: false,
-      });
     },
     [dispatch],
   );
@@ -104,6 +87,27 @@ const Ranges = () => {
     );
   };
 
+  const onMouseEnterAndLeaveHandler = useCallback(
+    (dispatchType, id) => {
+      dispatch({
+        type: dispatchType,
+        data: {
+          spectrumID: activeSpectrum.id,
+          objectType: 'range',
+          objectID: id,
+        },
+      });
+    },
+    [activeSpectrum.id, dispatch],
+  );
+
+  // returning an array because of potential multiple ranges selection in future
+  const highlighted = useMemo(() => {
+    return activeSpectrum && highlights && highlights[activeSpectrum.id]
+      ? highlights[activeSpectrum.id]
+      : [];
+  }, [activeSpectrum, highlights]);
+
   return (
     <g clipPath="url(#clip)">
       {data &&
@@ -116,14 +120,22 @@ const Ranges = () => {
                 d.ranges.map((range) => (
                   <g
                     css={
-                      range._highlight && range._highlight === true
+                      highlighted.find(
+                        (highlight) =>
+                          highlight.type === 'range' &&
+                          highlight.id === range.id,
+                      )
                         ? stylesHighlightedExternally
                         : stylesOnHover
                     }
                     key={range.id}
                     transform={`translate(${getScale().x(range.to)},10)`}
-                    onMouseEnter={() => onMouseEnterHandler(range.id)}
-                    onMouseLeave={() => onMouseLeaveHandler(range.id)}
+                    onMouseEnter={() =>
+                      onMouseEnterAndLeaveHandler(ADD_HIGHLIGHT, range.id)
+                    }
+                    onMouseLeave={() =>
+                      onMouseEnterAndLeaveHandler(DELETE_HIGHLIGHT, range.id)
+                    }
                   >
                     <DeleteButton id={range.id} />
                     <rect
