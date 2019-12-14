@@ -67,7 +67,8 @@ import {
   ADD_HIGHLIGHT,
   DELETE_HIGHLIGHT,
   CHANGE_INTEGRAL_DATA,
-  HIGHLIGHT_RANGE,
+  ADD_HIGHLIGHT,
+  DELETE_HIGHLIGHT,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -986,14 +987,6 @@ const handleDeleteRange = (state, rangeID) => {
     const { id, index } = state.activeSpectrum;
     const ob = AnalysisObj.getDatum1D(id);
     ob.deleteRange(rangeID);
-    draft.data[index].ranges = ob.getRanges();
-  });
-};
-const handleHighlightRange = (state, rangeID, _highlight) => {
-  return produce(state, (draft) => {
-    const { id, index } = state.activeSpectrum;
-    const ob = AnalysisObj.getDatum1D(id);
-    ob.highlightRange(rangeID, _highlight);
     draft.data[index].ranges = ob.getRanges();
   });
 };
