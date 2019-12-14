@@ -6,7 +6,7 @@ import ReactTableHeaderGroup from './Elements/ReactTableHeaderGroup';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 
-const ReactTable = ({ data, columns, highlightedRowStyle }) => {
+const ReactTable = ({ data, columns }) => {
   const {
     getTableProps,
     getTableBodyProps,
