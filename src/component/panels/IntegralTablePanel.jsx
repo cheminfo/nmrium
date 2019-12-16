@@ -66,7 +66,9 @@ const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 const IntegralTablePanel = () => {
   const confirmRef = useRef();
-  const { activeSpectrum, data: SpectrumsData } = useContext(ChartContext);
+  const { activeSpectrum, data: SpectrumsData, molecules } = useContext(
+    ChartContext,
+  );
   const dispatch = useDispatch();
 
   const deletePeakHandler = useCallback(
@@ -154,11 +156,19 @@ const IntegralTablePanel = () => {
         ? SpectrumsData[activeSpectrum.index]
         : null;
     if (_data && _data.integrals) {
+      if (_data.info.nucleus === '1H' && molecules && molecules.length > 0) {
+        columns.splice(columns.length - 2, 0, {
+          Header: 'nbH',
+          sortType: 'basic',
+          resizable: true,
+          Cell: () => molecules[0].atoms.H,
+        });
+      }
       return _data.integrals;
     } else {
       return [];
     }
-  }, [SpectrumsData, activeSpectrum]);
+  }, [SpectrumsData, activeSpectrum, columns, molecules]);
 
   const handleDeleteAll = useCallback(() => {
     confirmRef.current.present();
