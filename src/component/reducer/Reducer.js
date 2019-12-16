@@ -1,4 +1,4 @@
-import { produce, original } from 'immer';
+import { produce } from 'immer';
 import * as d3 from 'd3';
 import { XY } from 'ml-spectra-processing';
 import max from 'ml-array-max';
@@ -64,6 +64,7 @@ import {
   DELETE_RANGE,
   SET_SPECTRUMS_VERTICAL_ALIGN,
   SAVE_AS_SVG,
+  CHANGE_INTEGRAL_DATA,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -322,59 +323,20 @@ const addIntegral = (state, action) => {
     const start = scale.invert(action.startX);
     const end = scale.invert(action.endX);
 
-    let integralRange;
+    let integralRange = [];
     if (start > end) {
       integralRange = [end, start];
     } else {
       integralRange = [start, end];
     }
 
-    if (draft.activeSpectrum) {
-      const index = state.data.findIndex(
-        (d) => d.id === state.activeSpectrum.id,
-      );
-
-      const data = state.data[index];
-
-      const integralResult = XY.integral(data, {
-        from: integralRange[0],
-        to: integralRange[1],
-        reverse: true,
-      });
-
-      const integralValue = XY.integration(data, {
-        from: integralRange[0],
-        to: integralRange[1],
-        reverse: true,
-      });
-
-      const integral = {
-        from: integralRange[0],
-        to: integralRange[1],
-        ...integralResult,
-        value: integralValue,
-        id:
-          state.activeSpectrum.id +
-          Math.random()
-            .toString(36)
-            .replace('0.', ''),
-      };
-
-      if (index !== -1) {
-        let integrals = Object.assign(
-          [],
-          original(draft.data[index].integrals),
-        );
-        if (data.integrals) {
-          integrals.push(integral);
-        } else {
-          integrals = [integral];
-        }
-        draft.data[index].integrals = integrals;
-        if (!data.integralsYDomain) {
-          draft.data[index].integralsYDomain = draft.yDomain;
-        }
-        AnalysisObj.getDatum1D(state.activeSpectrum.id).setIntegrals(integrals);
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      const datumObject = AnalysisObj.getDatum1D(id);
+      datumObject.addIntegral(integralRange);
+      draft.data[index].integrals = datumObject.getIntegrals();
+      if (!state.data.integralsYDomain) {
+        draft.data[index].integralsYDomain = draft.yDomain;
       }
     }
   });
@@ -390,12 +352,21 @@ const deleteIntegral = (state, action) => {
   });
 };
 
+const changeIntegral = (state, action) => {
+  return produce(state, (draft) => {
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      const datumObject = AnalysisObj.getDatum1D(id);
+      datumObject.setIntegral(action.data);
+      draft.data[index].integrals = datumObject.getIntegrals();
+    }
+  });
+};
+
 const handleResizeIntegral = (state, integralData) => {
   return produce(state, (draft) => {
-    if (draft.activeSpectrum) {
-      const index = state.data.findIndex(
-        (d) => d.id === state.activeSpectrum.id,
-      );
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
 
       const data = state.data[index];
 
@@ -427,7 +398,7 @@ const handleResizeIntegral = (state, integralData) => {
             ...integral,
           };
 
-          AnalysisObj.getDatum1D(state.activeSpectrum.id).setIntegrals(
+          AnalysisObj.getDatum1D(id).setIntegrals(
             draft.data[index].integrals[integralIndex],
           );
         }
@@ -1149,6 +1120,8 @@ export const spectrumReducer = (state, action) => {
       return addIntegral(state, action);
     case DELETE_INTEGRAL:
       return deleteIntegral(state, action);
+    case CHANGE_INTEGRAL_DATA:
+      return changeIntegral(state, action);
 
     case RESIZE_INTEGRAL:
       return handleResizeIntegral(state, action.integral);

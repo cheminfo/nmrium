@@ -4,8 +4,9 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import ReactTable from '../elements/ReactTable/ReactTable';
 import { ChartContext } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { DELETE_INTEGRAL } from '../reducer/Actions';
+import { DELETE_INTEGRAL, CHANGE_INTEGRAL_DATA } from '../reducer/Actions';
 import { ConfirmationDialog } from '../elements/Modal';
+import Select from '../elements/Select';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -17,6 +18,51 @@ const styles = {
     borderBottom: '0.55px solid rgb(240, 240, 240)',
   },
 };
+
+const signalKinds = [
+  {
+    key: 'signal',
+    label: 'Signal',
+    value: 'signal',
+  },
+  {
+    key: 'reference',
+    label: 'Reference',
+    value: 'reference',
+  },
+  {
+    key: 'solvent',
+    label: 'Solvent',
+    value: 'solvent',
+  },
+  {
+    key: 'impurity',
+    label: 'Impurity',
+    value: 'impurity',
+  },
+  {
+    key: 'standard',
+    label: 'Standard',
+    value: 'standard',
+  },
+  {
+    key: 'p1',
+    label: 'P1',
+    value: 'p1',
+  },
+  {
+    key: 'p2',
+    label: 'P2',
+    value: 'p2',
+  },
+  {
+    key: 'p3',
+    label: 'P3',
+    value: 'p3',
+  },
+];
+
+const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 const IntegralTablePanel = () => {
   const confirmRef = useRef();
@@ -31,6 +77,16 @@ const IntegralTablePanel = () => {
       dispatch({
         type: DELETE_INTEGRAL,
         integralID: params.id,
+      });
+    },
+    [dispatch],
+  );
+  const changeIntegralDataHandler = useCallback(
+    (value, row) => {
+      const data = { ...row.original, signalKind: value };
+      dispatch({
+        type: CHANGE_INTEGRAL_DATA,
+        data,
       });
     },
     [dispatch],
@@ -62,6 +118,20 @@ const IntegralTablePanel = () => {
       sortType: 'basic',
       resizable: true,
       Cell: ({ row }) => row.original.value.toFixed(2),
+    },
+    {
+      Header: 'signal kind',
+      accessor: 'signalKind',
+      sortType: 'basic',
+      resizable: true,
+      Cell: ({ row }) => (
+        <Select
+          onChange={(value) => changeIntegralDataHandler(value, row)}
+          data={signalKinds}
+          style={selectStyle}
+          defaultValue={row.original.signalKind}
+        />
+      ),
     },
     {
       Header: '',
