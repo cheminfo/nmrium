@@ -1,5 +1,6 @@
 // import baseline from './baseline';
 import max from 'ml-array-max';
+import { XY } from 'ml-spectra-processing';
 
 import autoPeakPicking from './autoPeakPicking';
 import autoRangesDetection from './autoRangesDetection';
@@ -106,8 +107,46 @@ export class Datum1D {
     return this.ranges;
   }
 
+  addIntegral(range = []) {
+    this.integrals = this.integrals.slice(0);
+    const integralResult = XY.integral(
+      { x: this.data.x, y: this.data.re },
+      {
+        from: range[0],
+        to: range[1],
+        reverse: true,
+      },
+    );
+
+    const integralValue = XY.integration(
+      { x: this.data.x, y: this.data.re },
+      {
+        from: range[0],
+        to: range[1],
+        reverse: true,
+      },
+    );
+    this.integrals.push({
+      id: Math.random()
+        .toString(36)
+        .replace('0.', ''),
+      from: range[0],
+      to: range[1],
+      ...integralResult,
+      value: integralValue,
+      signalKind: 'signal',
+    });
+  }
+
   setIntegrals(integrals) {
     this.integrals = Object.assign([], integrals);
+  }
+  setIntegral(integral) {
+    this.integrals = this.integrals.slice(0);
+    const index = this.integrals.findIndex((i) => i.id === integral.id);
+    if (index !== -1) {
+      this.integrals[index] = integral;
+    }
   }
 
   getIntegrals() {

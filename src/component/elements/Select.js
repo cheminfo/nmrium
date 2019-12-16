@@ -33,7 +33,7 @@ const Select = React.forwardRef(
 
     return (
       <select
-        css={styles}
+        css={[styles, style]}
         ref={ref}
         onChange={handleOnChanged}
         defaultValue={defaultValue}
