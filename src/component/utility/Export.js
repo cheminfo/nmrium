@@ -1,11 +1,11 @@
 import { saveAs } from 'file-saver';
 
-function removeContent(content) {
-  return content.replace(
-    /&lt;!--[\s]*export-remove[\s]*--&gt.+?&lt;!--[\s]*export-remove[\s]*--&gt;/gi,
-    '',
-  );
-}
+// function removeContent(content) {
+//   return content.replace(
+//     /&lt;!--[\s]*export-remove[\s]*--&gt.+?&lt;!--[\s]*export-remove[\s]*--&gt;/gi,
+//     '',
+//   );
+// }
 /**
  * export the experiments result in JSON format
  * @param {*} data
@@ -34,8 +34,6 @@ function exportAsJSON(data) {
  * @param {*} headerProps  // svg tag variables in addition to title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg"
  */
 function exportAsSVG(tagID, styles = '', headerProps = '') {
-  // let svgData = removeContent(document.getElementById(tagID).innerHTML, '');
-
   let _svg = document.getElementById(tagID).cloneNode(true);
   _svg
     .querySelectorAll('[data-no-export="true"]')
