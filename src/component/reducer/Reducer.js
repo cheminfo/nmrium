@@ -67,8 +67,6 @@ import {
   ADD_HIGHLIGHT,
   DELETE_HIGHLIGHT,
   CHANGE_INTEGRAL_DATA,
-  ADD_HIGHLIGHT,
-  DELETE_HIGHLIGHT,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
