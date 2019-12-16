@@ -34,10 +34,19 @@ function exportAsJSON(data) {
  * @param {*} headerProps  // svg tag variables in addition to title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg"
  */
 function exportAsSVG(tagID, styles = '', headerProps = '') {
-  let svgData = removeContent(document.getElementById(tagID).innerHTML, '');
-  const head = `<svg title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg" ${headerProps}>`;
+  // let svgData = removeContent(document.getElementById(tagID).innerHTML, '');
+
+  let _svg = document.getElementById(tagID).cloneNode(true);
+  _svg
+    .querySelectorAll('[data-no-export="true"]')
+    .forEach((element) => element.remove());
+  const head = `<svg width="${_svg.getAttribute(
+    'width',
+  )}"  height="${_svg.getAttribute(
+    'height',
+  )}" title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg" ${headerProps}>`;
   const style = `<style>.grid line,.grid path{stroke:none;} .regular-text{fill:black} ${styles}</style>`;
-  const svg = `${head + style + svgData}</svg>`;
+  const svg = `${head + style + _svg.innerHTML}</svg>`;
   const blob = new Blob([svg], { type: 'image/svg+xml' });
   saveAs(blob, 'experiments.svg');
 }
