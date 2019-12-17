@@ -1,19 +1,25 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { Fragment, useEffect, useCallback, useState } from 'react';
-import { FaDownload, FaExpand, FaFileDownload } from 'react-icons/fa';
+import {
+  FaDownload,
+  FaExpand,
+  FaFileDownload,
+  FaFileImage,
+  FaCopy,
+} from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
-  SAVE_DATA_AS_JSON,
   FULL_ZOOM_OUT,
   CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
   SET_SPECTRUMS_VERTICAL_ALIGN,
-  SAVE_AS_SVG,
+  EXPORT_DATA,
 } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import MenuButton from '../elements/MenuButton';
 
 const styles = css`
   background-color: transparent;
@@ -33,12 +39,30 @@ const styles = css`
   }
 `;
 
+const menuButton = css`
+  background-color: transparent;
+  border: none;
+  border-bottom: 0.55px solid whitesmoke;
+  height: 35px;
+  outline: outline;
+  display: flex;
+  justify-content: flex-start;
+
+  :focus {
+    outline: none !important;
+  }
+  span {
+    font-size: 10px;
+    padding: 0px 10px;
+  }
+`;
+
 const BasicToolBar = ({
   isFullZoomButtonVisible = true,
   isFullZoomButtonEnabled = true,
   isViewButtonVisible = true,
-  isSaveButtonVisible = true,
-  isSaveButtonEnabled = true,
+  // isSaveButtonVisible = true,
+  // isSaveButtonEnabled = true,
 }) => {
   const dispatch = useDispatch();
   const { data, activeSpectrum, verticalAlign } = useChartData();
@@ -47,16 +71,31 @@ const BasicToolBar = ({
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
   const [isStacked, activateStackView] = useState(false);
 
-  const handleSaveDataAsJSON = useCallback(
-    () => dispatch({ type: SAVE_DATA_AS_JSON }),
-    [dispatch],
-  );
-
   const handleFullZoomOut = useCallback(() => {
     dispatch({
       type: FULL_ZOOM_OUT,
     });
   }, [dispatch]);
+
+  const saveAsSVGHandler = useCallback(() => {
+    dispatch({
+      type: EXPORT_DATA,
+      exportType: 'svg',
+    });
+  }, [dispatch]);
+
+  const saveAsPNGHandler = useCallback(
+    () => dispatch({ type: EXPORT_DATA, exportType: 'png' }),
+    [dispatch],
+  );
+  const saveToClipboardHandler = useCallback(
+    () => dispatch({ type: EXPORT_DATA, exportType: 'copy' }),
+    [dispatch],
+  );
+  const saveAsJSONHandler = useCallback(
+    () => dispatch({ type: EXPORT_DATA, exportType: 'json' }),
+    [dispatch],
+  );
 
   const handleChangeDisplayViewMode = useCallback(() => {
     const flag = !isStacked;
@@ -74,11 +113,11 @@ const BasicToolBar = ({
       } else if (e.key === 'v') {
         handleChangeDisplayViewMode();
       } else if (e.ctrlKey && e.key === 's') {
-        handleSaveDataAsJSON();
+        saveAsJSONHandler();
         e.preventDefault();
       }
     },
-    [handleFullZoomOut, handleSaveDataAsJSON, handleChangeDisplayViewMode],
+    [handleFullZoomOut, handleChangeDisplayViewMode, saveAsJSONHandler],
   );
 
   const changeSpectrumViewHandler = useCallback(() => {
@@ -95,12 +134,6 @@ const BasicToolBar = ({
       flag: !verticalAlign.flag,
     });
   }, [dispatch, verticalAlign.flag]);
-
-  const saveAsSVGHandler = useCallback(() => {
-    dispatch({
-      type: SAVE_AS_SVG,
-    });
-  }, [dispatch]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
@@ -137,11 +170,25 @@ const BasicToolBar = ({
         </button>
       )}
 
-      <button type="button" css={styles} onClick={saveAsSVGHandler}>
-        <ToolTip title="Export as SVG " popupPlacement="right">
-          <FaFileDownload />
-        </ToolTip>
-      </button>
+      <MenuButton style={styles} defaultButtonIndex={0}>
+        <button type="button" css={styles} onClick={saveAsSVGHandler}>
+          <ToolTip title="Export as SVG " popupPlacement="right">
+            <FaFileDownload />
+          </ToolTip>
+        </button>
+        <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
+          <FaFileImage />
+          <span>Export As PNG</span>
+        </button>
+        <button type="button" css={menuButton} onClick={saveAsJSONHandler}>
+          <FaDownload />
+          <span>Save Data as JSON File ( Press Ctrl + S )</span>
+        </button>
+        <button type="button" css={menuButton} onClick={saveToClipboardHandler}>
+          <FaCopy />
+          <span>Copy PNG To Clipboard</span>
+        </button>
+      </MenuButton>
 
       {isViewButtonVisible && spectrumsCount > 1 && (
         <button
@@ -159,7 +206,7 @@ const BasicToolBar = ({
         </button>
       )}
 
-      {isSaveButtonVisible && (
+      {/* {isSaveButtonVisible && (
         <button
           type="button"
           css={styles}
@@ -173,7 +220,7 @@ const BasicToolBar = ({
             <FaDownload />
           </ToolTip>
         </button>
-      )}
+      )} */}
 
       {selectedSpectrumInfo && selectedSpectrumInfo.isComplex && (
         <button

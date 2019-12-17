@@ -9,12 +9,16 @@ import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';
 import { Filters } from '../../data/data1d/filter1d/Filters';
 import { options } from '../toolbar/ToolTypes';
-import { exportAsSVG, exportAsJSON } from '../utility/Export';
+import {
+  exportAsSVG,
+  exportAsJSON,
+  exportAsPng,
+  copyToClipboard,
+} from '../utility/Export';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
 import {
   INITIATE,
-  SAVE_DATA_AS_JSON,
   ADD_PEAK,
   ADD_PEAKS,
   AUTO_PEAK_PICKING,
@@ -63,8 +67,8 @@ import {
   AUTO_RANGES_DETECTION,
   DELETE_RANGE,
   SET_SPECTRUMS_VERTICAL_ALIGN,
-  SAVE_AS_SVG,
   CHANGE_INTEGRAL_DATA,
+  EXPORT_DATA,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -162,14 +166,28 @@ const initiate = (state, dataObject) => {
   });
 };
 
-const saveDataAsJson = (state) => {
-  const data = AnalysisObj.toJSON();
-  exportAsJSON(data);
-  return state;
-};
-
-const saveSVG = (state) => {
-  exportAsSVG('svg-container');
+const exportData = (state, { exportType }) => {
+  switch (exportType) {
+    case 'json': {
+      const data = AnalysisObj.toJSON();
+      exportAsJSON(data);
+      break;
+    }
+    case 'svg': {
+      exportAsSVG();
+      break;
+    }
+    case 'png': {
+      exportAsPng();
+      break;
+    }
+    case 'copy': {
+      copyToClipboard();
+      break;
+    }
+    default:
+      break;
+  }
   return state;
 };
 
@@ -1104,10 +1122,8 @@ export const spectrumReducer = (state, action) => {
     case LOAD_MOL_FILE:
       return handleLoadMOLFile(state, action.files);
 
-    case SAVE_DATA_AS_JSON:
-      return saveDataAsJson(state);
-    case SAVE_AS_SVG:
-      return saveSVG(state);
+    case EXPORT_DATA:
+      return exportData(state, action);
     case ADD_PEAK:
       return addPeak(state, action.mouseCoordinates);
     case ADD_PEAKS:
@@ -1151,9 +1167,6 @@ export const spectrumReducer = (state, action) => {
 
     case SET_SELECTED_OPTIONS_PANEL:
       return setSelectedOptionPanel(state, action.selectedOptionPanel);
-
-    // case SET_SELECTED_FILTER:
-    //   return setSelectedFilter(state, action.selectedFilter);
 
     case SET_DATA:
       return setData(state, action.data);

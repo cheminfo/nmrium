@@ -14,18 +14,6 @@ function exportAsJSON(data) {
   const fileData = JSON.stringify(data, undefined, 2);
   const blob = new Blob([fileData], { type: 'text/plain' });
   saveAs(blob, 'experiment.json');
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.download = 'experiment.json';
-  link.href = url;
-  link.dispatchEvent(
-    new MouseEvent(`click`, {
-      bubbles: true,
-      cancelable: true,
-      view: window,
-    }),
-  );
 }
 /**
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
@@ -33,20 +21,89 @@ function exportAsJSON(data) {
  * @param {*} styles // add specific style for the exported svg
  * @param {*} headerProps  // svg tag variables in addition to title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg"
  */
-function exportAsSVG(tagID, styles = '', headerProps = '') {
-  let _svg = document.getElementById(tagID).cloneNode(true);
-  _svg
-    .querySelectorAll('[data-no-export="true"]')
-    .forEach((element) => element.remove());
-  const head = `<svg width="${_svg.getAttribute(
-    'width',
-  )}"  height="${_svg.getAttribute(
-    'height',
-  )}" title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg" ${headerProps}>`;
-  const style = `<style>.grid line,.grid path{stroke:none;} .regular-text{fill:black} ${styles}</style>`;
-  const svg = `${head + style + _svg.innerHTML}</svg>`;
-  const blob = new Blob([svg], { type: 'image/svg+xml' });
+function exportAsSVG() {
+  const { blob } = getBlob();
   saveAs(blob, 'experiments.svg');
 }
 
-export { exportAsSVG, exportAsJSON };
+function exportAsPng() {
+  const { blob, width, height } = getBlob();
+  try {
+    let canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    let context = canvas.getContext('2d');
+    context.fillStyle = 'white';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    let img = new Image();
+    let url = URL.createObjectURL(blob);
+    img.onload = async function() {
+      context.drawImage(img, 0, 0);
+      let png = canvas.toDataURL('image/jpeg', 1);
+      saveAs(png, 'experiments.jpeg');
+      URL.revokeObjectURL(png);
+    };
+    img.src = url; //   canvas.appendChild();
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+  }
+}
+function copyToClipboard() {
+  const { blob, width, height } = getBlob();
+  try {
+    let canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    let context = canvas.getContext('2d');
+    context.fillStyle = 'white';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    let img = new Image();
+    let url = URL.createObjectURL(blob);
+    img.onload = async function() {
+      context.drawImage(img, 0, 0);
+      let png = canvas.toDataURL('image/jpeg', 1);
+      canvas.toBlob((b) => {
+        // eslint-disable-next-line no-undef
+        const clip = new ClipboardItem({
+          [b.type]: b,
+        });
+        navigator.clipboard.write([clip]).then(
+          () => {
+            // eslint-disable-next-line no-console
+            console.log('experiment copied.');
+          },
+          (err) => {
+            // eslint-disable-next-line no-console
+            console.log(err);
+          },
+        );
+      });
+
+      URL.revokeObjectURL(png);
+    };
+    img.src = url;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+  }
+}
+
+function getBlob() {
+  let _svg = document.getElementById('svg-container').cloneNode(true);
+  const width = _svg.getAttribute('width');
+  const height = _svg.getAttribute('height');
+  _svg
+    .querySelectorAll('[data-no-export="true"]')
+    .forEach((element) => element.remove());
+  const head = `<svg width="${width}"  height="${height}" title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg">`;
+  const style = `<style>.grid line,.grid path{stroke:none;} .regular-text{fill:black} .x path{stroke-width:1.5px} .x text{
+    font-size: 12px;
+    font-weight: bold;
+  } </style>`;
+  const svg = `${head + style + _svg.innerHTML}</svg>`;
+  const blob = new Blob([svg], { type: 'image/svg+xml' });
+  return { blob, width, height };
+}
+
+export { exportAsSVG, exportAsJSON, exportAsPng, copyToClipboard };
