@@ -1,12 +1,7 @@
-import {
-  useState,
-  useCallback,
-  useEffect,
-  cloneElement,
-  Children,
-} from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
+import { useState, useCallback, useEffect } from 'react';
+
 import ToolTip from './ToolTip/ToolTip';
 
 const menuStyles = css`
@@ -24,13 +19,7 @@ const menuStyles = css`
 `;
 
 // eslint-disable-next-line no-unused-vars
-const MenuButton = ({
-  style,
-  component,
-  toolTip = '',
-  children,
-  defaultButtonIndex = 0,
-}) => {
+const MenuButton = ({ style, component, toolTip = '', children }) => {
   const [isShown, showMenu] = useState(false);
 
   const closeMenu = useCallback(() => {
