@@ -7,6 +7,7 @@ import {
 } from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
+import ToolTip from './ToolTip/ToolTip';
 
 const menuStyles = css`
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
@@ -23,7 +24,13 @@ const menuStyles = css`
 `;
 
 // eslint-disable-next-line no-unused-vars
-const MenuButton = ({ style, className, children, defaultButtonIndex = 0 }) => {
+const MenuButton = ({
+  style,
+  component,
+  toolTip = '',
+  children,
+  defaultButtonIndex = 0,
+}) => {
   const [isShown, showMenu] = useState(false);
 
   const closeMenu = useCallback(() => {
@@ -34,10 +41,8 @@ const MenuButton = ({ style, className, children, defaultButtonIndex = 0 }) => {
     (e) => {
       e.preventDefault();
       e.stopPropagation();
-      if (e.nativeEvent.which === 3) {
-        showMenu(true);
-        document.addEventListener('click', closeMenu);
-      }
+      showMenu(true);
+      document.addEventListener('click', closeMenu);
     },
     [closeMenu],
   );
@@ -57,16 +62,20 @@ const MenuButton = ({ style, className, children, defaultButtonIndex = 0 }) => {
 
   return (
     <div>
-      {cloneElement(Children.toArray(children)[defaultButtonIndex], {
-        onMouseDown: handleClick,
-        onContextMenu: handleConetxt,
-      })}
+      <button
+        type="button"
+        css={style}
+        onClick={handleClick}
+        onContextMenu={handleConetxt}
+      >
+        <ToolTip title={toolTip} popupPlacement="right">
+          {component}
+        </ToolTip>
+      </button>
 
       {isShown ? (
         <div className="menu" css={menuStyles}>
-          {Children.map(children, (child, index) => {
-            return index !== defaultButtonIndex ? child : null;
-          })}
+          {children}
         </div>
       ) : null}
     </div>

@@ -170,18 +170,17 @@ const BasicToolBar = ({
         </button>
       )}
 
-      <MenuButton style={styles} defaultButtonIndex={0}>
-        <button type="button" css={styles} onClick={saveAsSVGHandler}>
-          <ToolTip title="Export as SVG " popupPlacement="right">
-            <FaFileDownload />
-          </ToolTip>
+      <MenuButton style={styles} component={<FaDownload />} toolTip="export">
+        <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
+          <FaDownload />
+          <span>Export As SVG</span>
         </button>
         <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
           <FaFileImage />
           <span>Export As PNG</span>
         </button>
         <button type="button" css={menuButton} onClick={saveAsJSONHandler}>
-          <FaDownload />
+          <FaFileDownload />
           <span>Save Data as JSON File ( Press Ctrl + S )</span>
         </button>
         <button type="button" css={menuButton} onClick={saveToClipboardHandler}>
@@ -205,22 +204,6 @@ const BasicToolBar = ({
           </ToolTip>
         </button>
       )}
-
-      {/* {isSaveButtonVisible && (
-        <button
-          type="button"
-          css={styles}
-          onClick={handleSaveDataAsJSON}
-          disabled={!isSaveButtonEnabled}
-        >
-          <ToolTip
-            title="Save Data as JSON File ( Press Ctrl + S )"
-            popupPlacement="right"
-          >
-            <FaDownload />
-          </ToolTip>
-        </button>
-      )} */}
 
       {selectedSpectrumInfo && selectedSpectrumInfo.isComplex && (
         <button

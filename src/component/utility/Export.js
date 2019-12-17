@@ -39,8 +39,8 @@ function exportAsPng() {
     let url = URL.createObjectURL(blob);
     img.onload = async function() {
       context.drawImage(img, 0, 0);
-      let png = canvas.toDataURL('image/jpeg', 1);
-      saveAs(png, 'experiments.jpeg');
+      let png = canvas.toDataURL('image/png', 1);
+      saveAs(png, 'experiments.png');
       URL.revokeObjectURL(png);
     };
     img.src = url; //   canvas.appendChild();
@@ -62,7 +62,7 @@ function copyToClipboard() {
     let url = URL.createObjectURL(blob);
     img.onload = async function() {
       context.drawImage(img, 0, 0);
-      let png = canvas.toDataURL('image/jpeg', 1);
+      let png = canvas.toDataURL('image/png', 1);
       canvas.toBlob((b) => {
         // eslint-disable-next-line no-undef
         const clip = new ClipboardItem({
@@ -97,7 +97,7 @@ function getBlob() {
     .querySelectorAll('[data-no-export="true"]')
     .forEach((element) => element.remove());
   const head = `<svg width="${width}"  height="${height}" title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg">`;
-  const style = `<style>.grid line,.grid path{stroke:none;} .regular-text{fill:black} .x path{stroke-width:1.5px} .x text{
+  const style = `<style>.grid line,.grid path{stroke:none;} .regular-text{fill:black} .x path{stroke-width:1px} .x text{
     font-size: 12px;
     font-weight: bold;
   } </style>`;
