@@ -7,6 +7,7 @@ import {
   FaFileDownload,
   FaFileImage,
   FaCopy,
+  FaFileExport,
 } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -170,7 +171,11 @@ const BasicToolBar = ({
         </button>
       )}
 
-      <MenuButton style={styles} component={<FaDownload />} toolTip="export">
+      <MenuButton
+        style={styles}
+        component={<FaFileExport />}
+        toolTip="Export As"
+      >
         <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
           <FaDownload />
           <span>Export As SVG</span>

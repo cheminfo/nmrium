@@ -17,9 +17,6 @@ function exportAsJSON(data) {
 }
 /**
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
- * @param {*} tagID  // tag identifier  ex <div id="main"></div>  tagID=main
- * @param {*} styles // add specific style for the exported svg
- * @param {*} headerProps  // svg tag variables in addition to title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg"
  */
 function exportAsSVG() {
   const { blob } = getBlob();
@@ -96,7 +93,7 @@ function getBlob() {
   _svg
     .querySelectorAll('[data-no-export="true"]')
     .forEach((element) => element.remove());
-  const head = `<svg width="${width}"  height="${height}" title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg">`;
+  const head = `<svg  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}" title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg">`;
   const style = `<style>.grid line,.grid path{stroke:none;} .regular-text{fill:black} .x path{stroke-width:1px} .x text{
     font-size: 12px;
     font-weight: bold;
