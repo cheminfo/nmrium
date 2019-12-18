@@ -10,8 +10,6 @@ import React, {
 } from 'react';
 import { useSize, useDebounce, useToggle, useFullscreen } from 'react-use';
 import SplitPane from 'react-split-pane';
-
-// import './css/spectrum-chart.css';
 import 'cheminfo-font/dist/style.css';
 
 import { Analysis } from '../data/Analysis';

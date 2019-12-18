@@ -124,11 +124,11 @@ const BasicToolBar = ({
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (e.key === 'f') {
+      if (!e.ctrlKey && e.key === 'f') {
         handleFullZoomOut();
-      } else if (e.key === 'c') {
+      } else if (!e.ctrlKey && e.key === 'c') {
         alignSpectrumsVerticallyHandler();
-      } else if (e.key === 's') {
+      } else if (!e.ctrlKey && e.key === 's') {
         handleChangeDisplayViewMode();
       } else if (e.ctrlKey && e.key === 's') {
         saveAsJSONHandler();

@@ -28,7 +28,27 @@ let stateValues = {
   step: 'initial',
 };
 
-let previousDiffValue = 0;
+let timerId = null;
+let speedX = 1;
+let oldX = 0;
+let firstCalc = true;
+function calcSpeed(e) {
+  if (!firstCalc) {
+    speedX = e.clientX - oldX;
+    oldX = e.clientX;
+    setToZero();
+  } else {
+    oldX = e.clientX;
+    firstCalc = false;
+  }
+}
+
+function setToZero() {
+  clearTimeout(timerId);
+  timerId = setTimeout(() => {
+    speedX = 0;
+  }, 50);
+}
 
 const InputRange = ({
   name,
@@ -67,6 +87,8 @@ const InputRange = ({
           startScreenY: event.screenY,
           boundingRect: event.currentTarget.getBoundingClientRect(),
           step: 'start',
+          clientX: event.clientX,
+          clientY: event.clientY,
         };
       }
 
@@ -84,21 +106,17 @@ const InputRange = ({
         endX: stateValues.startX + screenX - stateValues.startScreenX,
         endY: stateValues.startY + screenY - stateValues.startScreenY,
       };
-
-      // console.log(stateValues.endX - stateValues.startX);
+      calcSpeed(event);
       const valueRange = maxValue - minValue;
       const positionDiff = stateValues.endX - stateValues.startX;
       const value =
-        (positionDiff * valueRange) / stateValues.boundingRect.width;
+        (Math.abs(positionDiff) * (Math.abs(speedX) > 3 ? valueRange : 5)) /
+        stateValues.boundingRect.width;
+
       onChange({
-        value:
-          positionDiff > previousDiffValue && positionDiff > 0
-            ? valueProps + Math.abs(value)
-            : valueProps - Math.abs(value),
+        value: speedX >= 0 ? valueProps + Math.abs(value) : valueProps - value,
         name,
       });
-
-      previousDiffValue = positionDiff;
     }
   };
 
