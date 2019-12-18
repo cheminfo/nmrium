@@ -107,20 +107,6 @@ const BasicToolBar = ({
     });
   }, [dispatch, isStacked]);
 
-  const handleOnKeyPressed = useCallback(
-    (e) => {
-      if (e.key === 'f') {
-        handleFullZoomOut();
-      } else if (e.key === 'v') {
-        handleChangeDisplayViewMode();
-      } else if (e.ctrlKey && e.key === 's') {
-        saveAsJSONHandler();
-        e.preventDefault();
-      }
-    },
-    [handleFullZoomOut, handleChangeDisplayViewMode, saveAsJSONHandler],
-  );
-
   const changeSpectrumViewHandler = useCallback(() => {
     dispatch({
       type: TOGGLE_REAL_IMAGINARY_VISIBILITY,
@@ -135,6 +121,31 @@ const BasicToolBar = ({
       flag: !verticalAlign.flag,
     });
   }, [dispatch, verticalAlign.flag]);
+
+  const handleOnKeyPressed = useCallback(
+    (e) => {
+      if (e.key === 'f') {
+        handleFullZoomOut();
+      } else if (e.key === 'c') {
+        alignSpectrumsVerticallyHandler();
+      } else if (e.key === 's') {
+        handleChangeDisplayViewMode();
+      } else if (e.ctrlKey && e.key === 's') {
+        saveAsJSONHandler();
+        e.preventDefault();
+      } else if (e.ctrlKey && e.key === 'c') {
+        saveAsPNGHandler();
+        e.preventDefault();
+      }
+    },
+    [
+      handleFullZoomOut,
+      alignSpectrumsVerticallyHandler,
+      handleChangeDisplayViewMode,
+      saveAsJSONHandler,
+      saveAsPNGHandler,
+    ],
+  );
 
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
@@ -182,7 +193,7 @@ const BasicToolBar = ({
         </button>
         <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
           <FaFileImage />
-          <span>Export As PNG</span>
+          <span>Export As PNG ( Press Ctrl + C )</span>
         </button>
         <button type="button" css={menuButton} onClick={saveAsJSONHandler}>
           <FaFileDownload />
