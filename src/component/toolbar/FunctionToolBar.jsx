@@ -57,7 +57,7 @@ const FunctionToolBar = ({ defaultValue }) => {
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (e.key === 'z') {
+      if (e.key === 'z' || e.key === 'Escape') {
         setOption(options.zoom.id);
         handleChangeOption(options.zoom.id);
       } else if (e.key === 'p') {
