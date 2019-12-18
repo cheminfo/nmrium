@@ -28,7 +28,7 @@ const styles = {
     padding: '0px 10px',
   },
 };
-const DefaultPanelHeader = ({ counter, onDelete, deleteToolTip }) => {
+const DefaultPanelHeader = ({ counter, onDelete, deleteToolTip, children }) => {
   return (
     <div style={styles.toolbar}>
       <ToolTip title={deleteToolTip} popupPlacement="left">
@@ -41,6 +41,7 @@ const DefaultPanelHeader = ({ counter, onDelete, deleteToolTip }) => {
           <FaRegTrashAlt />
         </button>
       </ToolTip>
+      {children}
       <p style={styles.counterLabel}>[ {counter} ]</p>
     </div>
   );

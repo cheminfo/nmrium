@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useChartData } from '../context/ChartContext';
@@ -16,6 +17,7 @@ import {
   DELETE_SPECTRA,
 } from '../reducer/Actions';
 import { ConfirmationDialog } from '../elements/Modal';
+import ToolTip from '../elements/ToolTip/ToolTip';
 
 import SpectrumListItem from './SpectrumListItem';
 import ColorPicker from './ColorPicker';
@@ -26,6 +28,10 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
+  },
+  button: {
+    backgroundColor: 'transparent',
+    border: 'none',
   },
 };
 
@@ -160,6 +166,19 @@ const SpectrumListPanel = () => {
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_SPECTRA });
   }, [dispatch]);
+  const showAllSpectrumsHandler = useCallback(() => {
+    const allSpectrums = data.map((spectrum) => {
+      return {
+        id: spectrum.id,
+      };
+    });
+    dispatch({ type: CHANGE_VISIBILITY, data: allSpectrums });
+    setVisible(allSpectrums);
+  }, [data, dispatch]);
+  const hideAllSpectrumsHandler = useCallback(() => {
+    dispatch({ type: CHANGE_VISIBILITY, data: [] });
+    setVisible([]);
+  }, [dispatch]);
 
   return (
     <>
@@ -168,7 +187,26 @@ const SpectrumListPanel = () => {
           onDelete={handleDelete}
           counter={data && data.length}
           deleteToolTip="Delete All Spectrums"
-        />
+        >
+          <ToolTip title="Hide all spectrums" popupPlacement="right">
+            <button
+              style={styles.button}
+              type="button"
+              onClick={hideAllSpectrumsHandler}
+            >
+              <FaEyeSlash />
+            </button>
+          </ToolTip>
+          <ToolTip title="Show all spectrums" popupPlacement="right">
+            <button
+              style={styles.button}
+              type="button"
+              onClick={showAllSpectrumsHandler}
+            >
+              <FaEye />
+            </button>
+          </ToolTip>
+        </DefaultPanelHeader>
         <div style={{ overflow: 'auto' }}>
           {ListItems}
           {isColorPickerDisplayed ? (
