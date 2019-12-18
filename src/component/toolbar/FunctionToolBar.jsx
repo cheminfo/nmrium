@@ -57,15 +57,23 @@ const FunctionToolBar = ({ defaultValue }) => {
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (e.key === 'z' || e.key === 'Escape') {
-        setOption(options.zoom.id);
-        handleChangeOption(options.zoom.id);
-      } else if (e.key === 'p') {
-        setOption(options.peakPicking.id);
-        handleChangeOption(options.peakPicking.id);
-      } else if (e.key === 'i') {
-        setOption(options.integral.id);
-        handleChangeOption(options.integral.id);
+      if (!e.shiftKey && !e.ctrlKey) {
+        switch (e.key) {
+          case 'z':
+          case 'Escape':
+            setOption(options.zoom.id);
+            handleChangeOption(options.zoom.id);
+            break;
+          case 'p':
+            setOption(options.peakPicking.id);
+            handleChangeOption(options.peakPicking.id);
+            break;
+          case 'i':
+            setOption(options.integral.id);
+            handleChangeOption(options.integral.id);
+            break;
+          default:
+        }
       }
     },
     [handleChangeOption],
