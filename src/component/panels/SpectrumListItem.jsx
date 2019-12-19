@@ -5,6 +5,7 @@ const styles = {
   button: {
     backgroundColor: 'transparent',
     border: 'none',
+    width: '24px',
   },
   row: {
     display: 'flex',
@@ -17,6 +18,11 @@ const styles = {
     height: '100%',
     display: 'flex',
     alignItems: 'center',
+  },
+  icon: {
+    backgroundPosition: 'center center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '18px 18px',
   },
 };
 
@@ -61,18 +67,15 @@ const SpectrumListItem = ({
       </div>
 
       <button
-        style={styles.button}
+        style={{
+          ...styles.button,
+          ...styles.icon,
+          opacity: isMarkerVisible(data.id) ? 1 : 0.1,
+        }}
         type="button"
         onClick={() => onChangeMarkersVisibility(data)}
-      >
-        <FaEye
-          style={
-            isMarkerVisible(data.id)
-              ? { width: 12, opacity: 1, fill: 'black' }
-              : { width: 12, opacity: 0.1, fill: 'black' }
-          }
-        />
-      </button>
+        className="ci-icon-nmr-peaks"
+      />
       <button
         style={styles.button}
         type="button"
