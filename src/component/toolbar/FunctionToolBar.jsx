@@ -51,7 +51,7 @@ const FunctionToolBar = ({ defaultValue }) => {
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (!e.shiftKey && !e.ctrlKey) {
+      if (!e.shiftKey && !e.metaKey) {
         switch (e.key) {
           case 'z':
           case 'Escape':
