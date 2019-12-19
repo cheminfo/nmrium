@@ -64,7 +64,7 @@ const Header = ({ isFullscreen, onMaximize }) => {
       return <ZeroFillingOptionsPanel />;
     } else if (selectedOptionPanel === options.phaseCorrection.id) {
       return <ManualPhaseCorrectionPanel />;
-    } else if (selectedOptionPanel === options.autoPeaksPicking.id) {
+    } else if (selectedOptionPanel === options.peakPicking.id) {
       return <AutoPeakPickingOptionPanel />;
     } else if (selectedOptionPanel === options.autoRangesPicking.id) {
       return <AutoRangesPickingOptionPanel />;
