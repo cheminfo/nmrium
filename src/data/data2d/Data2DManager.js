@@ -7,25 +7,25 @@ import { Datum2D } from './Datum2D';
 
 export class Data2DManager {
   static fromJSON = async function fromJSON(json = []) {
-    let data1D = [];
+    let data2D = [];
     for (let i = 0; i < json.length; i++) {
       const datum = json[i];
 
       if (datum.source.jcamp != null) {
         const datumObject = Data2DManager.fromJcamp(datum.source.jcamp, datum);
-        data1D.push(datumObject);
+        data2D.push(datumObject);
       } else if (datum.source.jcampURL != null) {
-        data1D.push(
+        data2D.push(
           Data2DManager.loadFileFromURL(datum.source.jcampURL).then((jcamp) => {
-            return Data1DManager.fromJcamp(jcamp, datum);
+            return Data2DManager.fromJcamp(jcamp, datum);
           }),
         );
       } else {
-        data1D.push(new Datum2D({ ...datum, data: datum.source.original }));
+        data2D.push(new Datum2D({ ...datum, data: datum.source.original }));
       }
     }
 
-    return Promise.all(data1D);
+    return Promise.all(data2D);
   };
 
   static loadFileFromURL = async function loadFileFromURL(Url) {
