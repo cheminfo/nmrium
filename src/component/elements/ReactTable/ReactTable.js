@@ -2,9 +2,11 @@
 import { jsx } from '@emotion/core';
 import { useTable, useSortBy } from 'react-table';
 
-import Style from './Style';
+import ReactTableHeader from './Elements/ReactTableHeader';
+import ReactTableRow from './Elements/ReactTableRow';
+import { ReactTableStyle } from './Style';
 
-const ReactTable = ({ data, columns }) => {
+const ReactTable = ({ data, columns, type }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -19,40 +21,18 @@ const ReactTable = ({ data, columns }) => {
     useSortBy,
   );
   return (
-    <table {...getTableProps()} css={Style}>
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr
-            key={headerGroup.getHeaderGroupProps().key}
-            {...headerGroup.getHeaderGroupProps()}
-          >
-            {headerGroup.headers.map((column) => (
-              <th
-                key={column.getHeaderProps().key}
-                {...column.getHeaderProps(column.getSortByToggleProps())}
-              >
-                {column.render('Header')}
-                <span>
-                  {column.isSorted ? (column.isSortedDesc ? ' ▼' : ' ▲') : ''}
-                </span>
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
+    <table {...getTableProps()} css={ReactTableStyle}>
+      <ReactTableHeader headerGroups={headerGroups} />
       <tbody {...getTableBodyProps()}>
         {rows.map((row) => {
           prepareRow(row);
           return (
-            <tr key={row.getRowProps().key} {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return (
-                  <td key={cell.getCellProps().key} {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </td>
-                );
-              })}
-            </tr>
+            <ReactTableRow
+              key={row.key}
+              row={row}
+              type={type}
+              {...row.getRowProps()}
+            />
           );
         })}
       </tbody>
