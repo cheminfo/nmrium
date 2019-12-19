@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-import autoPeakPicking from '../data1d/autoPeakPicking';
+import autoPeakPicking from '../autoPeakPicking';
 
 describe('test peakPicking', () => {
   let data = JSON.parse(
