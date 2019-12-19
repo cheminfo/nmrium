@@ -2,8 +2,9 @@
 import { convert } from 'jcampconverter';
 import { XY, XReIm } from 'ml-spectra-processing';
 
+import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
+
 import { Datum1D } from './Datum1D';
-import { getInfoFromMetaData } from './metadata/getInfoFromMetaData';
 
 export class Data1DManager {
   static fromJSON = async function fromJSON(json = []) {
