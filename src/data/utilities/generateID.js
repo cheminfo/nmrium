@@ -36,7 +36,6 @@ function Base(ALPHABET) {
   }
   let BASE = ALPHABET.length;
   let LEADER = ALPHABET.charAt(0);
-  let FACTOR = Math.log(BASE) / Math.log(256); // log(BASE) / log(256), rounded up
   let iFACTOR = Math.log(256) / Math.log(BASE); // log(256) / log(BASE), rounded up
 
   function encode(source) {
