@@ -53,7 +53,7 @@ const FilterPanel = () => {
             {d.label}
           </TableCell>
           <TableCell align="left" size="3">
-            <ObjectInspector data={d.value} />
+            <ObjectInspector data={d.error ? d.error : d.value} />
           </TableCell>
           <TableCell align="center" vAlign="center" size="1">
             <CheckBox
