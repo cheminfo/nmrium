@@ -48,7 +48,7 @@ import {
   SET_MOLECULE,
   DELETE_MOLECULE,
   DELETE_SPECTRA,
-  CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
+  CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
   SET_INTEGRAL_Y_DOMAIN,
   RESIZE_INTEGRAL,
   BRUSH_END,
@@ -1236,7 +1236,7 @@ export const spectrumReducer = (state, action) => {
     //   zoomFactor: action.zoomFactor,
     // };
 
-    case CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE:
+    case CHANGE_SPECTRUM_DISPLAY_VIEW_MODE:
       return handleChangeSpectrumDisplayMode(state, action);
 
     case ADD_MOLECULE:

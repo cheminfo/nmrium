@@ -13,7 +13,7 @@ import {
 import { useDispatch } from '../context/DispatchContext';
 import {
   FULL_ZOOM_OUT,
-  CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
+  CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
   SET_SPECTRUMS_VERTICAL_ALIGN,
   EXPORT_DATA,
@@ -102,7 +102,7 @@ const BasicToolBar = ({
     const flag = !isStacked;
     activateStackView(flag);
     dispatch({
-      type: CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
+      type: CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
       flag: flag,
     });
   }, [dispatch, isStacked]);
