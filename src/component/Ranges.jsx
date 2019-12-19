@@ -1,6 +1,6 @@
 import { useCallback, useMemo, Fragment } from 'react';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
+import { jsx } from '@emotion/core';
 
 import { useChartData } from './context/ChartContext';
 import { useDispatch } from './context/DispatchContext';
@@ -10,25 +10,53 @@ import {
   DELETE_HIGHLIGHT,
 } from './reducer/Actions';
 
-const stylesOnHover = css`
-  pointer-events: bounding-box;
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
+// const styles = css`
+//   pointer-events: bounding-box;
+//   user-select: 'none';
+//   -webkit-user-select: none; /* Chrome all / Safari all */
+//   -moz-user-select: none; /* Firefox all */
 
-  :hover .range-area {
-    height: 100%;
-    fill: #ff6f0057;
-    cursor: pointer;
-  }
-  .delete-button {
-    display: none;
-    cursor: pointer;
-  }
-  :hover .delete-button {
-    display: block;
-  }
-`;
+//   :hover .range-area {
+//     height: 100%;
+//     fill: #ff6f0057;
+//     cursor: pointer;
+//   }
+//   .delete-button {
+//     display: none;
+//     cursor: pointer;
+//   }
+//   :hover .delete-button {
+//     display: block;
+//   }
+// `;
+
+const stylesOnHover = {
+  pointerEvents: 'bounding-box',
+  userSelect: 'none',
+  webkitUserSelect: 'none' /* Chrome all / Safari all */,
+  mozUserSelect: 'none' /* Firefox all */,
+
+  ':hover .range-area': {
+    height: '100%',
+    fill: '#ff6f0057',
+    cursor: 'pointer',
+  },
+  '.delete-button': {
+    display: 'none',
+    cursor: 'pointer',
+  },
+  ':hover .delete-button': {
+    display: 'block',
+  },
+};
+
+const stylesHighlightedExternally = {
+  // ...stylesOnHover,
+  '.range-area': {
+    height: '100%',
+    fill: '#ff6f0057',
+  },
+};
 
 const stylesHighlightedExternally = css`
   .range-area {
