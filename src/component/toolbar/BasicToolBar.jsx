@@ -124,7 +124,7 @@ const BasicToolBar = ({
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (!e.shiftKey && !e.ctrlKey) {
+      if (!e.shiftKey && !e.metaKey) {
         switch (e.key) {
           case 'f':
             handleFullZoomOut();
@@ -138,7 +138,7 @@ const BasicToolBar = ({
           default:
         }
       }
-      if (!e.shiftKey && e.ctrlKey) {
+      if (!e.shiftKey && e.metaKey) {
         switch (e.key) {
           case 'c':
             saveToClipboardHandler();
