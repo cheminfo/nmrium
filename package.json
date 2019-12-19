@@ -48,7 +48,7 @@
   "scripts": {
     "clean-lib": "rimraf lib",
     "compile": "babel src --out-dir lib --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.js\" --quiet",
-    "prepublishOnly": "npm run clean-lib && npm run compile",
+    "prepare": "npm run clean-lib && npm run compile",
     "start": "react-scripts start ",
     "build": "react-scripts build",
     "test": "react-scripts test",
