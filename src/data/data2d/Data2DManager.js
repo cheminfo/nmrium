@@ -1,7 +1,7 @@
 // import applyFilter from './filter1d/filter';
 import { convert } from 'jcampconverter';
 
-import { getInfoFromMetaData } from '../data1D/metadata/getInfoFromMetaData';
+import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
 
 import { Datum2D } from './Datum2D';
 
