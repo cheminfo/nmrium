@@ -1,5 +1,7 @@
 import * as SD from 'spectra-data';
 
+import generateID from '../utilities/generateID';
+
 export default function autoPeakPicking(datum1D, options) {
   const { minMaxRatio, maxNumberOfPeaks } = options;
   // we calculate the noise but this could be improved
@@ -21,9 +23,7 @@ export default function autoPeakPicking(datum1D, options) {
 
   return peaks.map((peak) => {
     return {
-      id: Math.random()
-        .toString(36)
-        .replace('0.', ''),
+      id: generateID(),
       xIndex: peak.index,
       xShift: datum1D.data.x[peak.index] - peak.xShift,
     };

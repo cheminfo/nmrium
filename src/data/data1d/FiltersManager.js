@@ -1,3 +1,5 @@
+import generateID from '../utilities/generateID';
+
 import { Filters } from './filter1d/Filters';
 
 /***
@@ -132,9 +134,7 @@ export class FiltersManager {
   }
 
   static addFilter(datum1d, filter) {
-    const id = Math.random()
-      .toString(36)
-      .replace('0.', '');
+    const id = generateID();
     datum1d.filters = datum1d.filters.slice(0);
     datum1d.filters.push({
       ...filter,

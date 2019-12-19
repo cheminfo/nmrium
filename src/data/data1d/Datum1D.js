@@ -2,6 +2,8 @@
 import max from 'ml-array-max';
 import { XY } from 'ml-spectra-processing';
 
+import generateID from '../utilities/generateID';
+
 import autoPeakPicking from './autoPeakPicking';
 import autoRangesDetection from './autoRangesDetection';
 import { FiltersManager } from './FiltersManager';
@@ -14,11 +16,7 @@ export class Datum1D {
    * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
    */
   constructor(options = {}) {
-    this.id =
-      options.id ||
-      Math.random()
-        .toString(36)
-        .replace('0.', '');
+    this.id = options.id || generateID();
     this.source = Object.assign(
       {
         jcamp: null,
@@ -29,11 +27,7 @@ export class Datum1D {
     );
     this.display = Object.assign(
       {
-        name:
-          options.display.name ||
-          Math.random()
-            .toString(36)
-            .replace('0.', ''),
+        name: options.display.name || generateID(),
         color: 'black',
         isVisible: true,
         isPeaksMarkersVisible: true,
@@ -127,9 +121,7 @@ export class Datum1D {
       },
     );
     this.integrals.push({
-      id: Math.random()
-        .toString(36)
-        .replace('0.', ''),
+      id: generateID(),
       from: range[0],
       to: range[1],
       ...integralResult,
@@ -171,9 +163,7 @@ export class Datum1D {
     const ranges = autoRangesDetection(this, options);
     this.ranges = ranges.map((range) => {
       return {
-        id: Math.random()
-          .toString(36)
-          .replace('0.', ''),
+        id: generateID(),
         ...range,
       };
     });
@@ -262,9 +252,7 @@ export class Datum1D {
   addPeak(peak) {
     this.peaks = this.peaks.slice(0);
     this.peaks.push({
-      id: Math.random()
-        .toString(36)
-        .replace('0.', ''),
+      id: generateID(),
       ...peak,
     });
   }
@@ -280,9 +268,7 @@ export class Datum1D {
       const peak = this.lookupPeak(from, to);
       if (peak) {
         this.peaks = this.peaks.concat({
-          id: Math.random()
-            .toString(36)
-            .replace('0.', ''),
+          id: generateID(),
           ...peak,
         });
       }
