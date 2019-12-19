@@ -43,17 +43,11 @@ const FunctionToolBar = ({ defaultValue }) => {
 
   const handleChange = useCallback(
     (selectedOption) => {
-      // if (selectedOption != null) {
       setOption(selectedOption);
       handleChangeOption(selectedOption);
-      // }
     },
     [handleChangeOption],
   );
-
-  // const handleAutoPeakPicking = useCallback(() => {
-  //   dispatch({ type: AUTO_PEAK_PICKING });
-  // }, [dispatch]);
 
   const handleOnKeyPressed = useCallback(
     (e) => {
@@ -63,6 +57,9 @@ const FunctionToolBar = ({ defaultValue }) => {
       } else if (e.key === 'p') {
         setOption(options.peakPicking.id);
         handleChangeOption(options.peakPicking.id);
+      } else if (e.key === 'r') {
+        setOption(options.autoRangesPicking.id);
+        handleChangeOption(options.autoRangesPicking.id);
       } else if (e.key === 'i') {
         setOption(options.integral.id);
         handleChangeOption(options.integral.id);
@@ -132,19 +129,6 @@ const FunctionToolBar = ({ defaultValue }) => {
         >
           <ToolTip
             title={`${options.integral.label} ( Press i )`}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          />
-        </ToggleButton>
-        <ToggleButton
-          key={options.autoPeaksPicking.id}
-          value={options.autoPeaksPicking.id}
-          className="ci-icon-nmr-peak-picking2"
-          style={styles.icon}
-          isVisible={selectedSpectrumInfo && !selectedSpectrumInfo.info.isFid}
-        >
-          <ToolTip
-            title={options.autoPeaksPicking.label}
             popupPlacement="right"
             offset={{ x: 10, y: 0 }}
           />

@@ -10,7 +10,7 @@ export const options = {
   peakPicking: {
     id: 'peakPicking',
     label: 'Peak Tool',
-    hasOptionPanel: false,
+    hasOptionPanel: true,
     isFilter: false,
   },
   integral: {
@@ -31,12 +31,12 @@ export const options = {
     hasOptionPanel: false,
     isFilter: false,
   },
-  autoPeaksPicking: {
-    id: 'autoPeaksPicking',
-    label: 'Auto Peaks Picking',
-    hasOptionPanel: true,
-    isFilter: false,
-  },
+  // autoPeaksPicking: {
+  //   id: 'autoPeaksPicking',
+  //   label: 'Auto Peaks Picking',
+  //   hasOptionPanel: true,
+  //   isFilter: false,
+  // },
   autoRangesPicking: {
     id: 'autoRangesPicking',
     label: 'Auto Ranges Picking',
