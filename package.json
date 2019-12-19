@@ -8,6 +8,7 @@
   "dependencies": {
     "@emotion/core": "^10.0.22",
     "cheminfo-font": "^0.23.0",
+    "conrec": "^1.0.0",
     "d3": "^5.14.2",
     "file-saver": "^2.0.2",
     "immer": "^5.0.2",
