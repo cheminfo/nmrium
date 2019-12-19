@@ -1,6 +1,8 @@
 import { Molecule as OCLMolecule } from 'openchemlib';
 import { MF } from 'mf-parser';
 
+import generateID from '../utilities/generateID';
+
 export class Molecule {
   /**
    * @param {object} [options={}]
@@ -8,11 +10,7 @@ export class Molecule {
    * @param {object} [options.key=Math.random()] Optional unique identifier
    */
   constructor(options = {}) {
-    this.key =
-      options.key ||
-      Math.random()
-        .toString(36)
-        .replace('0.', '');
+    this.key = options.key || generateID();
     this.molfile = options.molfile || '';
     const molecule = new OCLMolecule.fromMolfile(this.molfile);
     const mfInfo = molecule.getMolecularFormula();
