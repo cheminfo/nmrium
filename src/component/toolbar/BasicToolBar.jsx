@@ -124,18 +124,32 @@ const BasicToolBar = ({
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (!e.ctrlKey && e.key === 'f') {
-        handleFullZoomOut();
-      } else if (!e.ctrlKey && e.key === 'c') {
-        alignSpectrumsVerticallyHandler();
-      } else if (!e.ctrlKey && e.key === 's') {
-        handleChangeDisplayViewMode();
-      } else if (e.ctrlKey && e.key === 's') {
-        saveAsJSONHandler();
-        e.preventDefault();
-      } else if (e.ctrlKey && e.key === 'c') {
-        saveAsPNGHandler();
-        e.preventDefault();
+      if (!e.shiftKey && !e.ctrlKey) {
+        switch (e.key) {
+          case 'f':
+            handleFullZoomOut();
+            break;
+          case 'c':
+            alignSpectrumsVerticallyHandler();
+            break;
+          case 's':
+            handleChangeDisplayViewMode();
+            break;
+          default:
+        }
+      }
+      if (!e.shiftKey && e.ctrlKey) {
+        switch (e.key) {
+          case 'c':
+            saveToClipboardHandler();
+            e.preventDefault();
+            break;
+          case 's':
+            saveAsJSONHandler();
+            e.preventDefault();
+            break;
+          default:
+        }
       }
     },
     [
@@ -143,7 +157,7 @@ const BasicToolBar = ({
       alignSpectrumsVerticallyHandler,
       handleChangeDisplayViewMode,
       saveAsJSONHandler,
-      saveAsPNGHandler,
+      saveToClipboardHandler,
     ],
   );
 
