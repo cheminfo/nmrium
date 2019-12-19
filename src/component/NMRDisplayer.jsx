@@ -14,6 +14,7 @@ import 'cheminfo-font/dist/style.css';
 
 import { Analysis } from '../data/Analysis';
 
+import { HighlightProvider } from './highlight';
 import { ChartDataProvider, useChartData } from './context/ChartContext';
 import { spectrumReducer, initialState } from './reducer/Reducer';
 import {
@@ -172,38 +173,40 @@ const NMRDisplayer = (props) => {
           isResizeEventStart,
         }}
       >
-        <div
-          ref={fullScreenRef}
-          style={{
-            backgroundColor: 'white',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Header isFullscreen={isFullscreen} onMaximize={toggle} />
-          <div style={{ flex: 1 }} ref={containerRef}>
-            <DropZone>
-              <ToolBar />
-              <SplitPane
-                style={splitPaneStyles.container}
-                paneStyle={splitPaneStyles.pane}
-                resizerStyle={splitPaneStyles.resizer}
-                pane1Style={splitPaneStyles.pane1}
-                split="vertical"
-                defaultSize="80%"
-                minSize="80%"
-                onDragFinished={handleSplitPanelDragFinished}
-                onDragStarted={() => {
-                  setResizeEventStart(true);
-                }}
-              >
-                <ChartPanel tools={!isResizeEventStart} />
-                <Panels />
-              </SplitPane>
-            </DropZone>
+        <HighlightProvider>
+          <div
+            ref={fullScreenRef}
+            style={{
+              backgroundColor: 'white',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <Header isFullscreen={isFullscreen} onMaximize={toggle} />
+            <div style={{ flex: 1 }} ref={containerRef}>
+              <DropZone>
+                <ToolBar />
+                <SplitPane
+                  style={splitPaneStyles.container}
+                  paneStyle={splitPaneStyles.pane}
+                  resizerStyle={splitPaneStyles.resizer}
+                  pane1Style={splitPaneStyles.pane1}
+                  split="vertical"
+                  defaultSize="80%"
+                  minSize="80%"
+                  onDragFinished={handleSplitPanelDragFinished}
+                  onDragStarted={() => {
+                    setResizeEventStart(true);
+                  }}
+                >
+                  <ChartPanel tools={!isResizeEventStart} />
+                  <Panels />
+                </SplitPane>
+              </DropZone>
+            </div>
           </div>
-        </div>
+        </HighlightProvider>
       </ChartDataProvider>
     </DispatchProvider>
   );
