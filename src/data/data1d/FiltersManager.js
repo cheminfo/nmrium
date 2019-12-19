@@ -82,15 +82,26 @@ export class FiltersManager {
     datum1d.filters = datum1d.filters.slice(0);
     const index = datum1d.filters.findIndex((filter) => filter.id === id);
     datum1d.filters[index] = { ...datum1d.filters[index], flag: checked };
-    const enabledFilters = datum1d.filters.filter(
-      (filter) => filter.flag === true,
-    );
+
     datum1d.data = { ...datum1d.data, ...datum1d.source.original };
     datum1d.info = { ...datum1d.info, ...datum1d.originalInfo };
 
-    for (let filter of enabledFilters) {
+    for (let filterIndex in datum1d.filters) {
+      const filter = datum1d.filters[filterIndex];
+      datum1d.filters[filterIndex] = {
+        ...datum1d.filters[filterIndex],
+        error: null,
+      };
+
       if (filter.flag) {
-        Filters[filter.name].apply(datum1d, filter.value);
+        try {
+          Filters[filter.name].apply(datum1d, filter.value);
+        } catch (error) {
+          datum1d.filters[filterIndex] = {
+            ...datum1d.filters[filterIndex],
+            error: error.message,
+          };
+        }
       }
     }
   }
@@ -100,9 +111,22 @@ export class FiltersManager {
     datum1d.data = { ...datum1d.data, ...datum1d.source.original };
     datum1d.info = { ...datum1d.info, ...datum1d.originalInfo };
 
-    for (let filter of datum1d.filters) {
+    for (let filterIndex in datum1d.filters) {
+      const filter = datum1d.filters[filterIndex];
+      datum1d.filters[filterIndex] = {
+        ...datum1d.filters[filterIndex],
+        error: null,
+      };
+
       if (filter.flag) {
-        Filters[filter.name].apply(datum1d, filter.value);
+        try {
+          Filters[filter.name].apply(datum1d, filter.value);
+        } catch (error) {
+          datum1d.filters[filterIndex] = {
+            ...datum1d.filters[filterIndex],
+            error: error.message,
+          };
+        }
       }
     }
   }

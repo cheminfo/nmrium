@@ -1,4 +1,5 @@
 import { saveAs } from 'file-saver';
+// import { getACS } from 'spectra-data-ranges';
 
 // function removeContent(content) {
 //   return content.replace(
@@ -22,6 +23,8 @@ function exportAsSVG() {
   const { blob } = getBlob();
   saveAs(blob, 'experiments.svg');
 }
+
+// function exportRangesAsHTML(ranges) {}
 
 function exportAsPng() {
   const { blob, width, height } = getBlob();
