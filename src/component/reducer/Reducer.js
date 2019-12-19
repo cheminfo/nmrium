@@ -69,6 +69,8 @@ import {
   SET_SPECTRUMS_VERTICAL_ALIGN,
   CHANGE_INTEGRAL_DATA,
   EXPORT_DATA,
+  ADD_HIGHLIGHT,
+  DELETE_HIGHLIGHT,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -283,13 +285,8 @@ const addPeak = (state, mouseCoordinates) => {
 
       if (index !== -1) {
         const peak = { xIndex: candidatePeak.xIndex };
-        if (state.data[index].peaks) {
-          draft.data[index].peaks.push(peak);
-        } else {
-          draft.data[index].peaks = [peak];
-        }
-        // draft.data[index].peaks
         AnalysisObj.getDatum1D(spectrumID).addPeak(peak);
+        draft.data[index].peaks = AnalysisObj.getDatum1D(spectrumID).getPeaks();
       }
     }
   });
@@ -870,6 +867,9 @@ const handleDeleteSpectra = (state) => {
 
     if (activeSpectrum && activeSpectrum.id) {
       AnalysisObj.deleteDatum1DByID(activeSpectrum.id);
+      if (draft.highlights) {
+        delete draft.highlights[activeSpectrum.id]; // or use draft.highlights[activeSpectrum.id] = null ? (faster but not actually deleting the key)
+      }
       draft.activeSpectrum = null;
       draft.data = AnalysisObj.getData1d();
       setDomain(draft);
@@ -879,6 +879,7 @@ const handleDeleteSpectra = (state) => {
         AnalysisObj = obj;
       });
       draft.data = [];
+      draft.highlights = {};
     }
   });
 };
@@ -973,6 +974,33 @@ const handleDeleteRange = (state, rangeID) => {
     const ob = AnalysisObj.getDatum1D(id);
     ob.deleteRange(rangeID);
     draft.data[index].ranges = ob.getRanges();
+  });
+};
+
+const getHighlights = (draft, spectrumID) => {
+  if (!draft.highlights) {
+    draft.highlights = {};
+  }
+  return draft.highlights[spectrumID] ? draft.highlights[spectrumID] : [];
+};
+
+const handleAddHighlight = (state, { spectrumID, objectType, objectID }) => {
+  return produce(state, (draft) => {
+    const highlights = getHighlights(draft, spectrumID);
+    highlights.push({
+      type: objectType,
+      id: objectID,
+    });
+    draft.highlights[spectrumID] = highlights;
+  });
+};
+
+const handleDeleteHighlight = (state, { spectrumID, objectType, objectID }) => {
+  return produce(state, (draft) => {
+    const highlights = getHighlights(draft, spectrumID);
+    draft.highlights[spectrumID] = highlights
+      .filter((highlight) => highlight.type !== objectType)
+      .filter((highlight) => highlight.id !== objectID);
   });
 };
 
@@ -1245,6 +1273,11 @@ export const spectrumReducer = (state, action) => {
       return handleAutoRangesDetection(state, action.options);
     case DELETE_RANGE:
       return handleDeleteRange(state, action.rangeID);
+
+    case ADD_HIGHLIGHT:
+      return handleAddHighlight(state, action.data);
+    case DELETE_HIGHLIGHT:
+      return handleDeleteHighlight(state, action.data);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

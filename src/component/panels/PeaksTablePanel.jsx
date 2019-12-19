@@ -84,7 +84,7 @@ const PeaksTablePanel = () => {
         return {
           xIndex: peak.xIndex,
           value: _data.x[peak.xIndex].toFixed(labelFraction),
-          id: _data.id,
+          id: peak.id,
           yValue: _data.y[peak.xIndex],
         };
       });
@@ -110,7 +110,7 @@ const PeaksTablePanel = () => {
           deleteToolTip="Delete All Peaks"
         />
         {data && data.length > 0 ? (
-          <ReactTable data={data} columns={columns} />
+          <ReactTable data={data} columns={columns} type={'peak'} />
         ) : (
           <NoTableData />
         )}

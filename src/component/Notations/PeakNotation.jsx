@@ -7,11 +7,18 @@ import {
   useLayoutEffect,
   useEffect,
   Fragment,
+  useMemo,
 } from 'react';
 import { FaMinus } from 'react-icons/fa';
 
+import {
+  SHIFT_SPECTRUM,
+  DELETE_PEAK_NOTATION,
+  ADD_HIGHLIGHT,
+  DELETE_HIGHLIGHT,
+} from '../reducer/Actions';
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
 
 const styles = css`
   user-select: 'none';
@@ -103,6 +110,7 @@ const styles = css`
 `;
 
 export const PeakNotation = ({
+  xIndex,
   id,
   spectrumID,
   x,
@@ -119,6 +127,9 @@ export const PeakNotation = ({
   const [isOver, setIsOver] = useState({ id: null, flag: false });
 
   const dispatch = useDispatch();
+
+  const { highlights } = useChartData();
+
   const handleOnPeakChange = useCallback(
     (e) => dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue }),
     [dispatch],
@@ -149,7 +160,7 @@ export const PeakNotation = ({
         const shiftValue = parseFloat(event.target.value) - parseFloat(value);
 
         handleOnPeakChange({
-          id: id,
+          id: xIndex,
           value: newValue,
           oldValue: oldValue,
           shiftValue: shiftValue,
@@ -163,7 +174,7 @@ export const PeakNotation = ({
         setIsSelected(false);
       }
     },
-    [id, value, handleOnPeakChange],
+    [value, handleOnPeakChange, xIndex],
   );
 
   const handleChange = useCallback((event) => {
@@ -177,7 +188,7 @@ export const PeakNotation = ({
     return false;
   }, []);
 
-  const handleOnOverNotation = useCallback((notationId) => {
+  const handleOnEnterNotation = useCallback((notationId) => {
     setIsOver({ id: notationId, flag: true });
   }, []);
 
@@ -187,18 +198,56 @@ export const PeakNotation = ({
     }, 200);
   }, []);
 
+  const onMouseEnterAndLeaveHandler = useCallback(
+    (dispatchType) => {
+      if (spectrumID) {
+        dispatch({
+          type: dispatchType,
+          data: {
+            spectrumID: spectrumID,
+            objectType: 'peak',
+            objectID: id,
+          },
+        });
+      }
+    },
+    [dispatch, id, spectrumID],
+  );
+
+  const isHighlighted = useMemo(() => {
+    return isOver.flag === false &&
+      spectrumID &&
+      highlights &&
+      highlights[spectrumID].find(
+        (highlight) => highlight.type === 'peak' && highlight.id === id,
+      )
+      ? true
+      : false;
+  }, [highlights, id, isOver.flag, spectrumID]);
+
   return (
     <Fragment>
       <Global styles={styles} />
       <g
-        id={id}
+        id={xIndex}
         transform={`translate(${x}, ${y})`}
-        onMouseOver={() => {
-          handleOnOverNotation(id);
+        onMouseEnter={() => {
+          handleOnEnterNotation(xIndex);
+          onMouseEnterAndLeaveHandler(ADD_HIGHLIGHT);
         }}
-        onMouseLeave={handleOnMouseLeaveNotation}
+        onMouseLeave={() => {
+          handleOnMouseLeaveNotation();
+          onMouseEnterAndLeaveHandler(DELETE_HIGHLIGHT);
+        }}
       >
-        <line x1="0" x2="0" y1="-5" y2={-30} stroke={color} strokeWidth="1px" />
+        <line
+          x1="0"
+          x2="0"
+          y1="-15"
+          y2="-45"
+          stroke={color}
+          strokeWidth={isHighlighted ? '7px' : '1px'}
+        />
         <text
           className="regular-text"
           ref={refText}
@@ -210,9 +259,11 @@ export const PeakNotation = ({
         >
           {isSelected ? value : parseFloat(value).toFixed(decimalFraction)}
         </text>
+        {`<!-- export-remove -->`}
+
         <foreignObject
           x="0"
-          y="-30"
+          y="-40"
           width={containerSize.width + 20}
           height={containerSize.height + 30}
           data-no-export="true"
@@ -252,7 +303,7 @@ export const PeakNotation = ({
               <button
                 type="button"
                 onClick={(e) =>
-                  handleDeleteNotation(e, { xIndex: id, id: spectrumID })
+                  handleDeleteNotation(e, { xIndex: xIndex, id: spectrumID })
                 }
                 className="delete-bt"
                 style={{
@@ -265,6 +316,7 @@ export const PeakNotation = ({
             )}
           </div>
         </foreignObject>
+        {`<!-- export-remove -->`}
       </g>
     </Fragment>
   );

@@ -44,7 +44,8 @@ const PeaksNotations = () => {
                     key={id}
                     x={getScale(d.id).x(d.x[xIndex])}
                     y={getScale(d.id).y(d.y[xIndex]) - verticalAlign.value}
-                    id={xIndex}
+                    xIndex={xIndex}
+                    id={id}
                     spectrumID={d.id}
                     value={d.x[xIndex]}
                     color={d.color}

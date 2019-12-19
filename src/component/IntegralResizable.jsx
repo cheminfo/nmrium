@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo, Fragment } from 'react';
 import Draggable from 'react-draggable';
 import * as d3 from 'd3';
 /** @jsx jsx */
@@ -6,10 +6,22 @@ import { jsx, css } from '@emotion/core';
 
 import { useChartData } from './context/ChartContext';
 import { useDispatch } from './context/DispatchContext';
-import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from './reducer/Actions';
+import {
+  RESIZE_INTEGRAL,
+  DELETE_INTEGRAL,
+  ADD_HIGHLIGHT,
+  DELETE_HIGHLIGHT,
+} from './reducer/Actions';
 
 const IntegralResizable = (props) => {
-  const { getScale, height, margin, mode } = useChartData();
+  const {
+    getScale,
+    height,
+    margin,
+    mode,
+    activeSpectrum,
+    highlights,
+  } = useChartData();
   const { id, x, from, to, integralID } = props;
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
@@ -18,7 +30,7 @@ const IntegralResizable = (props) => {
 
   const dispatch = useDispatch();
 
-  const styles = css`
+  const stylesOnHover = css`
     pointer-events: bounding-box;
     :hover .target {
       visibility: visible !important;
@@ -29,6 +41,15 @@ const IntegralResizable = (props) => {
       visibility: hidden;
     }
   `;
+
+  const stylesHighlightedExternally = css`
+    pointer-events: bounding-box;
+
+    .target {
+      visibility: visible;
+    }
+  `;
+
   const deleteIntegral = useCallback(() => {
     dispatch({ type: DELETE_INTEGRAL, integralID: integralID, spectrumID: id });
   }, [dispatch, id, integralID]);
@@ -136,57 +157,93 @@ const IntegralResizable = (props) => {
     [dispatch, from, getScale, id, integralID, mode, to],
   );
 
-  return (
-    <svg css={styles} data-no-export="true">
-      <Draggable
-        axis="x"
-        defaultPosition={{
-          x: getScale(id).x(xBoundary[0]),
-          y: 0,
-        }}
-        position={{
-          x: getScale(id).x(xBoundary[0]),
-          y: 0,
-        }}
-        scale={1}
-        onStart={handleRightStart}
-        onDrag={handleRightDrag}
-        onStop={handleRightStop}
-      >
-        <rect
-          cursor="ew-resize"
-          width={rightDragVisibility ? 1 : 6}
-          fill="red"
-          height={height + margin.top}
-          style={{ fillOpacity: rightDragVisibility ? 1 : 0 }}
-        />
-      </Draggable>
+  const onMouseEnterAndLeaveHandler = useCallback(
+    (dispatchType) => {
+      if (activeSpectrum && activeSpectrum.id) {
+        dispatch({
+          type: dispatchType,
+          data: {
+            spectrumID: activeSpectrum.id,
+            objectType: 'integral',
+            objectID: integralID,
+          },
+        });
+      }
+    },
+    [activeSpectrum, dispatch, integralID],
+  );
 
-      <Draggable
-        axis="x"
-        defaultPosition={{
-          x: getScale(id).x(xBoundary[1]),
-          y: 0,
-        }}
-        position={{
-          x: getScale(id).x(xBoundary[1]),
-          y: 0,
-        }}
-        scale={1}
-        onStart={handleLeftStart}
-        onDrag={handleLeftDrag}
-        onStop={handleLeftStop}
+  const isHighlighted = useMemo(() => {
+    return activeSpectrum &&
+      activeSpectrum.id &&
+      highlights &&
+      highlights[activeSpectrum.id] &&
+      highlights[activeSpectrum.id].find(
+        (highlight) =>
+          highlight.type === 'integral' && highlight.id === integralID,
+      )
+      ? true
+      : false;
+  }, [activeSpectrum, highlights, integralID]);
+
+  return (
+    <Fragment>
+      <svg
+        css={isHighlighted ? stylesHighlightedExternally : stylesOnHover}
+        data-no-export="true"
+        onMouseEnter={() => onMouseEnterAndLeaveHandler(ADD_HIGHLIGHT)}
+        onMouseLeave={() => onMouseEnterAndLeaveHandler(DELETE_HIGHLIGHT)}
       >
-        <rect
-          cursor="ew-resize"
-          width={leftDragVisibility ? 1 : 6}
-          fill="red"
-          height={height + margin.top}
-          style={{ fillOpacity: leftDragVisibility ? 1 : 0 }}
-        />
-      </Draggable>
-      <DeleteButton />
-    </svg>
+        <Draggable
+          axis="x"
+          defaultPosition={{
+            x: getScale(id).x(xBoundary[0]),
+            y: 0,
+          }}
+          position={{
+            x: getScale(id).x(xBoundary[0]),
+            y: 0,
+          }}
+          scale={1}
+          onStart={handleRightStart}
+          onDrag={handleRightDrag}
+          onStop={handleRightStop}
+        >
+          <rect
+            cursor="ew-resize"
+            width={rightDragVisibility ? 1 : 6}
+            fill="red"
+            height={height + margin.top}
+            style={{ fillOpacity: rightDragVisibility ? 1 : 0 }}
+          />
+        </Draggable>
+
+        <Draggable
+          axis="x"
+          defaultPosition={{
+            x: getScale(id).x(xBoundary[1]),
+            y: 0,
+          }}
+          position={{
+            x: getScale(id).x(xBoundary[1]),
+            y: 0,
+          }}
+          scale={1}
+          onStart={handleLeftStart}
+          onDrag={handleLeftDrag}
+          onStop={handleLeftStop}
+        >
+          <rect
+            cursor="ew-resize"
+            width={leftDragVisibility ? 1 : 6}
+            fill="red"
+            height={height + margin.top}
+            style={{ fillOpacity: leftDragVisibility ? 1 : 0 }}
+          />
+        </Draggable>
+        <DeleteButton />
+      </svg>
+    </Fragment>
   );
 };
 
