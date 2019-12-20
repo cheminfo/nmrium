@@ -12,14 +12,15 @@ const styles = css`
   position: absolute;
   width: 100%;
   height: 100%;
-  outline: 2px dashed #4c4c4c;
+  outline: 10px dashed rgba(0, 0, 0, 0.3);
   outline-offset: -10px;
 
-  p{
+  p {
     padding: 15px 30px;
-    background-color: #4c4c4c;
+    background-color:rgba(0, 0, 0, 0.5);
     border-radius: 39px;
     color: white;
+    font-size: x-large;
     font-weight: bold;
 
 }
