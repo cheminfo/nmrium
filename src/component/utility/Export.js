@@ -11,7 +11,6 @@ import { saveAs } from 'file-saver';
  * @param {*} data
  */
 function exportAsJSON(data) {
-  console.log(data);
   const fileData = JSON.stringify(data, undefined, 2);
   const blob = new Blob([fileData], { type: 'text/plain' });
   saveAs(blob, 'experiment.nmrium');
