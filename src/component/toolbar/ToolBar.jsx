@@ -3,7 +3,7 @@ import React from 'react';
 import { useChartData } from '../context/ChartContext';
 
 import FunctionToolBar from './FunctionToolBar';
-import HistoryToolBar from './HistoryToolBar';
+// import HistoryToolBar from './HistoryToolBar';
 import BasicToolBar from './BasicToolBar';
 
 const styles = {
@@ -16,7 +16,7 @@ const ToolBar = () => {
   return (
     <div style={styles}>
       <FunctionToolBar defaultValue={selectedTool} />
-      <HistoryToolBar />
+      {/* <HistoryToolBar /> */}
       <BasicToolBar />
     </div>
   );
