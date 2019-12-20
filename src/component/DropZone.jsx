@@ -16,9 +16,7 @@ import { useDispatch } from './context/DispatchContext';
 import { useChartData } from './context/ChartContext';
 
 function getFileExtension(file) {
-  return file.name
-    .substr(file.name.lastIndexOf('.'), file.name.length)
-    .toLowerCase();
+  return file.name.replace(/^.*\./, '').toLowerCase();
 }
 
 function getFileName(file) {
@@ -96,7 +94,7 @@ const DropZone = (props) => {
         );
 
         switch (extension) {
-          case '.mol':
+          case 'mol':
             loadFiles(selectedFilesByExtensions).then(
               (files) => {
                 dispatch({ type: LOAD_MOL_FILE, files });
@@ -107,8 +105,8 @@ const DropZone = (props) => {
               },
             );
             break;
-
-          case '.json':
+          case 'nmrium':
+          case 'json':
             if (selectedFilesByExtensions.length === 1) {
               loadFiles(selectedFilesByExtensions).then(
                 // eslint-disable-next-line no-loop-func
@@ -131,8 +129,8 @@ const DropZone = (props) => {
 
             break;
 
-          case '.dx':
-          case '.jdx':
+          case 'dx':
+          case 'jdx':
             loadFiles(selectedFilesByExtensions).then(
               (files) => {
                 dispatch({ type: LOAD_JCAMP_FILE, files });
@@ -145,7 +143,7 @@ const DropZone = (props) => {
             break;
           default:
             // eslint-disable-next-line no-alert
-            alert('The file must be ( .dx,.jdx,.json,.mol ) extension');
+            alert('The file extesion must bedx, jdx, json, mol or nmrium.');
             break;
         }
       }
