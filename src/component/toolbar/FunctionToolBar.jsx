@@ -120,7 +120,11 @@ const FunctionToolBar = ({ defaultValue }) => {
           value={options.peakPicking.id}
           className="ci-icon-nmr-peak-picking"
           style={styles.icon}
-          isVisible={selectedSpectrumInfo && !selectedSpectrumInfo.info.isFid}
+          isVisible={
+            activeSpectrum &&
+            selectedSpectrumInfo &&
+            !selectedSpectrumInfo.info.isFid
+          }
         >
           <ToolTip
             title={`${options.peakPicking.label} ( Press p )`}
@@ -134,7 +138,11 @@ const FunctionToolBar = ({ defaultValue }) => {
           value={options.integral.id}
           className="ci-icon-nmr-integrate"
           style={styles.icon}
-          isVisible={selectedSpectrumInfo && !selectedSpectrumInfo.info.isFid}
+          isVisible={
+            activeSpectrum &&
+            selectedSpectrumInfo &&
+            !selectedSpectrumInfo.info.isFid
+          }
         >
           <ToolTip
             title={`${options.integral.label} ( Press i )`}
@@ -148,7 +156,11 @@ const FunctionToolBar = ({ defaultValue }) => {
           value={options.autoRangesPicking.id}
           className="ci-icon-nmr-range-picking"
           style={styles.icon}
-          isVisible={selectedSpectrumInfo && !selectedSpectrumInfo.info.isFid}
+          isVisible={
+            activeSpectrum &&
+            selectedSpectrumInfo &&
+            !selectedSpectrumInfo.info.isFid
+          }
         >
           <ToolTip
             title={options.autoRangesPicking.label}
@@ -180,6 +192,7 @@ const FunctionToolBar = ({ defaultValue }) => {
           className="ci-icon-nmr-phase-correction"
           style={styles.icon}
           isVisible={
+            activeSpectrum &&
             selectedSpectrumInfo &&
             Filters.phaseCorrection.isApplicable(selectedSpectrumInfo)
           }
