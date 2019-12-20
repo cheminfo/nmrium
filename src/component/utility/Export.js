@@ -11,9 +11,10 @@ import { saveAs } from 'file-saver';
  * @param {*} data
  */
 function exportAsJSON(data) {
+  console.log(data);
   const fileData = JSON.stringify(data, undefined, 2);
   const blob = new Blob([fileData], { type: 'text/plain' });
-  saveAs(blob, 'experiment.json');
+  saveAs(blob, 'experiment.nmrium');
 }
 /**
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
