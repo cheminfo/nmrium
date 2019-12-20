@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
+import { getACS } from 'spectra-data-ranges';
 
 import { DELETE_RANGE } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
@@ -7,6 +8,7 @@ import { useDispatch } from '../context/DispatchContext';
 import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
 import ReactTable from '../elements/ReactTable/ReactTable';
 import { ConfirmationDialog } from '../elements/Modal';
+import ToolTip from '../elements/ToolTip/ToolTip';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -16,6 +18,10 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
+  },
+  button: {
+    backgroundColor: 'transparent',
+    border: 'none',
   },
 };
 
@@ -58,6 +64,12 @@ const RangesTablePanel = () => {
       return [];
     }
   }, [SpectrumsData, activeSpectrum]);
+
+  const saveAsHTMLHandler = useCallback(() => {
+    const result = getACS(data);
+    // eslint-disable-next-line no-console
+    console.log(result);
+  }, [data]);
 
   // define columns for different (sub)tables and expandable ones
   const columnsRanges = [
@@ -203,7 +215,17 @@ const RangesTablePanel = () => {
           onDelete={handleDeleteAll}
           counter={data && data.length}
           deleteToolTip="Delete All Ranges"
-        />
+        >
+          <ToolTip title="Hide all spectrums" popupPlacement="right">
+            <button
+              style={styles.button}
+              type="button"
+              onClick={saveAsHTMLHandler}
+            >
+              <FaFileExport />
+            </button>
+          </ToolTip>
+        </DefaultPanelHeader>
 
         {data && data.length > 0 ? (
           <ReactTableExpandable
