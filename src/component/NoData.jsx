@@ -23,8 +23,8 @@ const styles = css`
     font-size: x-large;
     font-weight: bold;
 
-}
   }
+}
 `;
 const NoData = ({ isEmpty = true }) => {
   if (!isEmpty) {
