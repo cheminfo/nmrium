@@ -7,7 +7,7 @@ export const name = 'Zero Filling';
  */
 export function apply(datum1D, size) {
   if (!isApplicable(datum1D)) {
-    throw new Error('zeroFilling not isApplicable on this data');
+    throw new Error('zeroFilling not applicable on this data');
   }
   const { re, im, x } = datum1D.data;
   let newRE = new Float64Array(size);

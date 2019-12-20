@@ -13,7 +13,7 @@ export const name = 'phase correction';
 
 export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
-    throw new Error('phaseCorrection not isApplicable on this data');
+    throw new Error('phaseCorrection not applicable on this data');
   }
   let { ph0, ph1 } = options;
   ph0 *= Math.PI / 180;

@@ -7,7 +7,7 @@ export const name = 'baseline correction';
  */
 export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
-    throw new Error('baselineCorrection not isApplicable on this data');
+    throw new Error('baselineCorrection not applicable on this data');
   }
   const { algorithm = 'airpls' } = options;
 

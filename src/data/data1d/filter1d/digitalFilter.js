@@ -8,7 +8,7 @@ export const name = 'Digital Filter';
 
 export function apply(datum1D) {
   if (!isApplicable(datum1D)) {
-    throw new Error('Digital Filter is  not isApplicable on this data');
+    throw new Error('Digital Filter is not applicable on this data');
   }
   const info = datum1D.info;
   let grpdly = info.grpdly;
