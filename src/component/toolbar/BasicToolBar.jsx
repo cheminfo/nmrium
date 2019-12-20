@@ -203,19 +203,19 @@ const BasicToolBar = ({
       >
         <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
           <FaDownload />
-          <span>Export As SVG</span>
+          <span>Export as SVG</span>
         </button>
         <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
           <FaFileImage />
-          <span>Export As PNG ( Press Ctrl + C )</span>
+          <span>Export as PNG</span>
         </button>
         <button type="button" css={menuButton} onClick={saveAsJSONHandler}>
           <FaFileDownload />
-          <span>Save Data as JSON File ( Press Ctrl + S )</span>
+          <span>Save data ( Press Ctrl + S )</span>
         </button>
         <button type="button" css={menuButton} onClick={saveToClipboardHandler}>
           <FaCopy />
-          <span>Copy PNG To Clipboard</span>
+          <span>Copy image to Clipboard ( Press Ctrl + C )</span>
         </button>
       </MenuButton>
 
