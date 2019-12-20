@@ -60,7 +60,9 @@ const Loader = ({ isLoading = true }) => {
           <p>Loading ...</p>
         </div>
       )}
-      {checkEmpty && <NoData isEmpty={data && data.length === 0} />}
+      {checkEmpty && !isLoading && (
+        <NoData isEmpty={data && data.length === 0} />
+      )}
     </Fragment>
   );
 };
