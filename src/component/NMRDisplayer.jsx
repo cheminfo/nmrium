@@ -201,6 +201,7 @@ const NMRDisplayer = (props) => {
                   }}
                 >
                   <ChartPanel tools={!isResizeEventStart} />
+
                   <Panels />
                 </SplitPane>
               </DropZone>
@@ -213,7 +214,7 @@ const NMRDisplayer = (props) => {
 };
 
 function ChartPanel() {
-  const { selectedTool, height: _height, isLoading } = useChartData();
+  const { selectedTool, height: _height, isLoading, data } = useChartData();
   const dispatch = useDispatch();
 
   const handelBrushEnd = useCallback(
@@ -283,28 +284,31 @@ function ChartPanel() {
     return (
       <Fragment>
         <Loader isLoading={isLoading} />
-        <BrushTracker
-          onBrush={handelBrushEnd}
-          onDoubleClick={handelOnDoubleClick}
-          onClick={mouseClick}
-          onZoom={handleZoom}
-          style={{
-            width: '100%',
-            height: `${_height}px`,
-            margin: 'auto',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          <MouseTracker style={{ width: '100%', height: `${_height}px` }}>
-            <NMRChart />
-            <CrossLinePointer />
-            <BrushX />
-            <XLabelPointer />
-            <PeakPointer />
-            <VerticalIndicator />
-          </MouseTracker>
-        </BrushTracker>
+
+        {data && data.length > 0 && (
+          <BrushTracker
+            onBrush={handelBrushEnd}
+            onDoubleClick={handelOnDoubleClick}
+            onClick={mouseClick}
+            onZoom={handleZoom}
+            style={{
+              width: '100%',
+              height: `${_height}px`,
+              margin: 'auto',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            <MouseTracker style={{ width: '100%', height: `${_height}px` }}>
+              <NMRChart />
+              <CrossLinePointer />
+              <BrushX />
+              <XLabelPointer />
+              <PeakPointer />
+              <VerticalIndicator />
+            </MouseTracker>
+          </BrushTracker>
+        )}
       </Fragment>
     );
   }, [_height]);

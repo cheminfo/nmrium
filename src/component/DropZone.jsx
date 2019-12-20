@@ -76,6 +76,7 @@ const containerStyle = css`
   display: flex;
   flex: 1;
   flex-direction: 'column';
+  height: 100%;
 `;
 
 const DropZone = (props) => {
