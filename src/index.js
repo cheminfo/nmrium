@@ -4,6 +4,7 @@ import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 import * as serviceWorker from './demo/serviceWorker';
 import AdminLayout from './demo/layouts/Admin.jsx';
+import TestRoutes from './demo/test/TestRoutes.jsx';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import './demo/index.css';
@@ -14,6 +15,7 @@ ReactDOM.render(
   <HashRouter>
     <Switch>
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
+      <Route path="/test" component={TestRoutes} />
       <Redirect to="/admin/dashboard" />
     </Switch>
   </HashRouter>,

@@ -13,7 +13,7 @@ import {
 import { useDispatch } from '../context/DispatchContext';
 import {
   FULL_ZOOM_OUT,
-  CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
+  CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
   SET_SPECTRUMS_VERTICAL_ALIGN,
   EXPORT_DATA,
@@ -102,7 +102,7 @@ const BasicToolBar = ({
     const flag = !isStacked;
     activateStackView(flag);
     dispatch({
-      type: CHANGE_SPECTRUM_DIPSLAY_VIEW_MODE,
+      type: CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
       flag: flag,
     });
   }, [dispatch, isStacked]);
@@ -124,7 +124,7 @@ const BasicToolBar = ({
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (!e.shiftKey && !e.ctrlKey) {
+      if (!e.shiftKey && !e.metaKey) {
         switch (e.key) {
           case 'f':
             handleFullZoomOut();
@@ -138,7 +138,7 @@ const BasicToolBar = ({
           default:
         }
       }
-      if (!e.shiftKey && e.ctrlKey) {
+      if (!e.shiftKey && e.metaKey) {
         switch (e.key) {
           case 'c':
             saveToClipboardHandler();
@@ -203,19 +203,19 @@ const BasicToolBar = ({
       >
         <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
           <FaDownload />
-          <span>Export As SVG</span>
+          <span>Export as SVG</span>
         </button>
         <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
           <FaFileImage />
-          <span>Export As PNG ( Press Ctrl + C )</span>
+          <span>Export as PNG</span>
         </button>
         <button type="button" css={menuButton} onClick={saveAsJSONHandler}>
           <FaFileDownload />
-          <span>Save Data as JSON File ( Press Ctrl + S )</span>
+          <span>Save data ( Press Ctrl + S )</span>
         </button>
         <button type="button" css={menuButton} onClick={saveToClipboardHandler}>
           <FaCopy />
-          <span>Copy PNG To Clipboard</span>
+          <span>Copy image to Clipboard ( Press Ctrl + C )</span>
         </button>
       </MenuButton>
 

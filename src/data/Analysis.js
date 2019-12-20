@@ -1,8 +1,8 @@
 import { convert } from 'jcampconverter';
 import { Molecule } from 'openchemlib';
 
+import { getInfoFromMetaData } from './utilities/getInfoFromMetaData';
 import { Data1DManager } from './data1d/Data1DManager';
-import { getInfoFromMetaData } from './data1d/metadata/getInfoFromMetaData';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 
