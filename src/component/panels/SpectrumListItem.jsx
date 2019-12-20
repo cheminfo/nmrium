@@ -47,6 +47,7 @@ const SpectrumListItem = ({
   const isMarkerVisible = (id) => {
     return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
   };
+
   return (
     <div style={styles.row} key={`slist${data.id}`}>
       <button
@@ -65,16 +66,19 @@ const SpectrumListItem = ({
       <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
         <span>{data.name}</span>
       </div>
-
       <button
         style={{
           ...styles.button,
           ...styles.icon,
-          opacity: isMarkerVisible(data.id) ? 1 : 0.1,
+          opacity:
+            isMarkerVisible(data.id) && data.peaks && data.peaks.length > 0
+              ? 1
+              : 0.1,
         }}
         type="button"
         onClick={() => onChangeMarkersVisibility(data)}
         className="ci-icon-nmr-peaks"
+        disabled={data.peaks && data.peaks.length === 0}
       />
       <button
         style={styles.button}

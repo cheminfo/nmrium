@@ -956,13 +956,12 @@ const handleAutoPeakPicking = (state, autOptions) => {
 };
 const handleAutoRangesDetection = (state, detectionOptions) => {
   return produce(state, (draft) => {
-    draft.selectedTool = options.zoom.id;
-    draft.selectedOptionPanel = null;
-    const activeSpectrumId = state.activeSpectrum.id;
-    const ob = AnalysisObj.getDatum1D(activeSpectrumId);
-    const ranges = ob.detectRanges(detectionOptions);
-    const index = state.data.findIndex((d) => d.id === activeSpectrumId);
-    if (index !== -1) {
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      draft.selectedTool = options.zoom.id;
+      draft.selectedOptionPanel = null;
+      const ob = AnalysisObj.getDatum1D(id);
+      const ranges = ob.detectRanges(detectionOptions);
       draft.data[index].ranges = ranges;
     }
   });
