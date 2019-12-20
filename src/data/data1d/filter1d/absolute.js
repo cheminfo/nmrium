@@ -10,7 +10,7 @@ export const name = 'absolute';
 
 export function apply(datum1D) {
   if (!isApplicable(datum1D)) {
-    throw new Error('absolute not isApplicable on this data');
+    throw new Error('absolute not applicable on this data');
   }
 
   datum1D.data.re = ReIm.absolute(datum1D.data);

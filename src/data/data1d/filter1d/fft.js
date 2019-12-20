@@ -10,7 +10,7 @@ export const name = 'FFT';
 
 export function apply(datum1D) {
   if (!isApplicable(datum1D)) {
-    throw new Error('fft not isApplicable on this data');
+    throw new Error('fft not applicable on this data');
   }
 
   let re = new Float64Array(datum1D.data.re);
