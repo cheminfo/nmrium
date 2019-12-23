@@ -83,27 +83,6 @@ const Panels = () => {
           </AccordionItem>
         );
       })}
-      {/* <AccordionItem title="Spectra">
-        <SpectrumListPanel />
-      </AccordionItem>
-      <AccordionItem title="Information" style={{ overflow: 'hidden' }}>
-        <InformationPanel />
-      </AccordionItem>
-      <AccordionItem title="Peaks">
-        <PeaksTablePanel />
-      </AccordionItem>
-      <AccordionItem title="Filters">
-        <FilterPanel />
-      </AccordionItem>
-      <AccordionItem title="Integrals">
-        <IntegralTablePanel />
-      </AccordionItem>
-      <AccordionItem title="Ranges">
-        <RangesTablePanel />
-      </AccordionItem>
-      <AccordionItem title="Structures">
-        <MoleculePanel />
-      </AccordionItem> */}
     </Accordion>
   );
 };

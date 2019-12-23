@@ -1,4 +1,10 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from 'react';
 
 const styles = {
   container: {
@@ -10,11 +16,13 @@ const styles = {
 };
 
 const Accordion = ({ children, defaultOpenIndex = 0 }) => {
-  const [elements, setElements] = useState(
-    Array(children.length)
+  const selectedElement = useCallback(() => {
+    return Array(children.length)
       .fill(false)
-      .map((e, i) => (i === defaultOpenIndex ? true : e)),
-  );
+      .map((e, i) => (i === defaultOpenIndex ? true : e));
+  }, [children.length, defaultOpenIndex]);
+
+  const [elements, setElements] = useState(selectedElement);
   const refContainer = useRef();
 
   const handleOpen = useCallback(
@@ -35,6 +43,10 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
       });
     });
   }, [children, elements, handleOpen]);
+
+  useEffect(() => {
+    setElements(selectedElement);
+  }, [selectedElement]);
 
   return (
     <div ref={refContainer} style={styles.container}>
