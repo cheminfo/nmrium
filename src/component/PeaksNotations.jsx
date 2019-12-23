@@ -11,7 +11,12 @@ const PeaksNotations = () => {
 
   const Peaks = useMemo(() => {
     const getVerticalAlign = (id) => {
-      return data.findIndex((d) => d.id === id);
+      const i = data.findIndex((d) => d.id === id);
+      return verticalAlign.flag
+        ? verticalAlign.stacked
+          ? (i + 1) * verticalAlign.value
+          : 0
+        : verticalAlign.value;
     };
 
     const reSortData = () => {

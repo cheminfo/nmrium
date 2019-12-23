@@ -31,6 +31,17 @@ const PeakPointer = () => {
   const [closePeakPosition, setPosition] = useState();
 
   useEffect(() => {
+    function getVerticalAlign() {
+      if (activeSpectrum) {
+        return verticalAlign.flag
+          ? verticalAlign.stacked
+            ? (activeSpectrum.index + 1) * verticalAlign.value
+            : 0
+          : verticalAlign.value;
+      }
+      return 0;
+    }
+
     const getClosePeak = (xShift, mouseCoordinates) => {
       if (
         activeSpectrum &&
@@ -62,7 +73,8 @@ const PeakPointer = () => {
           const xValue = spectrumData.x[minIndex + xIndex + 1];
           return {
             x: scale.x(xValue),
-            y: scale.y(yValue) - verticalAlign.value,
+            // y: scale.y(yValue) - verticalAlign.value,
+            y: scale.y(yValue) - getVerticalAlign(),
             xIndex: minIndex + xIndex,
           };
         }
@@ -79,7 +91,7 @@ const PeakPointer = () => {
     mode,
     position,
     selectedTool,
-    verticalAlign.value,
+    verticalAlign,
   ]);
 
   if (
