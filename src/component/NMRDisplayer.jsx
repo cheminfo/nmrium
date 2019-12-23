@@ -1,5 +1,7 @@
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 import * as d3 from 'd3';
-import React, {
+import {
   useEffect,
   useCallback,
   useReducer,
@@ -176,12 +178,20 @@ const NMRDisplayer = (props) => {
         <HighlightProvider>
           <div
             ref={fullScreenRef}
-            style={{
-              backgroundColor: 'white',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
+            css={css`
+              background-color: white;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+
+              button:active,
+              button:hover,
+              button:focus,
+              [type='button']:focus,
+              button {
+                outline: none !important;
+              }
+            `}
           >
             <Header isFullscreen={isFullscreen} onMaximize={toggle} />
             <div style={{ flex: 1 }} ref={containerRef}>
