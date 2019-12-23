@@ -11,7 +11,12 @@ const PeaksNotations = () => {
 
   const Peaks = useMemo(() => {
     const getVerticalAlign = (id) => {
-      return data.findIndex((d) => d.id === id);
+      const i = data.findIndex((d) => d.id === id);
+      return verticalAlign.flag
+        ? verticalAlign.stacked
+          ? (i + 1) * verticalAlign.value
+          : 0
+        : verticalAlign.value;
     };
 
     const reSortData = () => {
@@ -43,7 +48,7 @@ const PeaksNotations = () => {
                   <PeakNotation
                     key={id}
                     x={getScale(d.id).x(d.x[xIndex])}
-                    y={getScale(d.id).y(d.y[xIndex]) - verticalAlign.value}
+                    y={getScale(d.id).y(d.y[xIndex])}
                     id={xIndex}
                     spectrumID={d.id}
                     value={d.x[xIndex]}

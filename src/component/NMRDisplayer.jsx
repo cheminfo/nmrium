@@ -103,6 +103,7 @@ const NMRDisplayer = (props) => {
     yDomains,
     mode,
     margin,
+    verticalAlign,
   } = state;
 
   useEffect(() => {
@@ -114,6 +115,9 @@ const NMRDisplayer = (props) => {
 
   const getScale = useMemo(() => {
     return (spectrumId = null) => {
+      const _height =
+        verticalAlign.flag && !verticalAlign.stacked ? height / 2 : height;
+
       const range =
         mode === 'RTL'
           ? [width - margin.right, margin.left]
@@ -123,33 +127,38 @@ const NMRDisplayer = (props) => {
       if (spectrumId == null && yDomain !== undefined) {
         y = d3.scaleLinear(
           [0, yDomain[1]],
-          [height - margin.bottom, margin.top],
+          [_height - margin.bottom, margin.top],
         );
       } else if (activeSpectrum == null || activeSpectrum.id !== spectrumId) {
         const index = data.findIndex((d) => d.id === spectrumId);
         y = d3.scaleLinear(
           [0, yDomains[index][1]],
-          [height - margin.bottom, margin.top],
+          [_height - margin.bottom, margin.top],
         );
       } else {
         const index = data.findIndex((d) => d.id === activeSpectrum.id);
         y = d3.scaleLinear(
           [0, yDomains[index][1]],
-          [height - margin.bottom, margin.top],
+          [_height - margin.bottom, margin.top],
         );
       }
       return { x, y };
     };
   }, [
-    activeSpectrum,
-    data,
+    verticalAlign.flag,
+    verticalAlign.stacked,
+    height,
     mode,
     width,
+    margin.right,
+    margin.left,
+    margin.bottom,
+    margin.top,
     xDomain,
     yDomain,
+    activeSpectrum,
+    data,
     yDomains,
-    height,
-    margin,
   ]);
 
   const handleSplitPanelDragFinished = useCallback((size) => {
