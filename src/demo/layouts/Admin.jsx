@@ -81,6 +81,15 @@ class Dashboard extends React.Component {
                 key={getKey(prop.file)}
               />
             ))}
+
+            {this.state.routesList.length > 0 && (
+              <Route
+                path="/"
+                // component={prop.component}
+                render={() => <View {...this.state.routesList[0]} />}
+                key={getKey(this.state.routesList[0].file)}
+              />
+            )}
           </Switch>
           {/* <DemoNavbar {...this.props} /> */}
           {/* <Switch>
