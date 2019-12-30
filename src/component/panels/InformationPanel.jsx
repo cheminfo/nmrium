@@ -1,13 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import {
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-} from '../elements/Table';
 import { useChartData } from '../context/ChartContext';
+import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
 
 const styles = {
   searchInput: {
@@ -30,7 +24,6 @@ const InformationPanel = () => {
       const values = Object.keys(information).filter((key) =>
         key.toLowerCase().includes(input.target.value),
       );
-
       setMatchesData(values);
     },
     [information],
@@ -40,51 +33,60 @@ const InformationPanel = () => {
     if (data && activeSpectrum) {
       const activeSpectrumData = data.find((d) => d.id === activeSpectrum.id);
       if (activeSpectrumData) {
+        const keys = Object.keys(activeSpectrumData.info).concat(
+          Object.keys(activeSpectrumData.meta),
+        );
+
+        setMatchesData(keys);
         setInformation({
           ...activeSpectrumData.info,
           ...activeSpectrumData.meta,
         });
-        setMatchesData([
-          ...Object.keys(activeSpectrumData.info),
-          ...Object.keys(activeSpectrumData.meta),
-        ]);
       }
     }
   }, [activeSpectrum, data]);
 
+  const columns = [
+    {
+      Header: 'Parameter',
+      sortType: 'basic',
+      minWidth: 100,
+      width: 20,
+      maxWidth: 20,
+      Cell: ({ row }) => <p style={{ padding: '5px' }}>{row.original}</p>,
+    },
+    {
+      Header: 'Value',
+      sortType: 'basic',
+      resizable: true,
+      Cell: ({ row }) => (
+        <p
+          style={{
+            backgroundColor: '#efefef',
+            width: '100%',
+            height: '100%',
+            padding: '5px',
+          }}
+        >
+          ( ${information[row.original]} )
+        </p>
+      ),
+    },
+  ];
+
   return (
-    information && (
-      <>
-        <div>
-          <input
-            type="text"
-            style={styles.searchInput}
-            placeholder="Search for parameter..."
-            onChange={handleSearch}
-          />
-        </div>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell size={3}>Parameter</TableCell>
-              <TableCell size={9}>Value</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {matches.map((key) => (
-              <TableRow key={key} className="Information">
-                <TableCell size={3} align="left">
-                  {key}
-                </TableCell>
-                <TableCell size={9} align="left" style={{ paddingLeft: 5 }}>
-                  {`${information[key]}`}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </>
-    )
+    <>
+      <div>
+        <input
+          type="text"
+          style={styles.searchInput}
+          placeholder="Search for parameter..."
+          onChange={handleSearch}
+        />
+      </div>
+
+      <ReactTableFlexLayout data={matches} columns={columns} />
+    </>
   );
 };
 
