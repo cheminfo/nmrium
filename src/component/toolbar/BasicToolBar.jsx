@@ -10,6 +10,8 @@ import {
   FaFileExport,
 } from 'react-icons/fa';
 
+import { useAlert } from 'react-alert';
+
 import { useDispatch } from '../context/DispatchContext';
 import {
   FULL_ZOOM_OUT,
@@ -71,7 +73,7 @@ const BasicToolBar = ({
   const [spectrumsCount, setSpectrumsCount] = useState(0);
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
   const [isStacked, activateStackView] = useState(false);
-
+  const alert = useAlert();
   const handleFullZoomOut = useCallback(() => {
     dispatch({
       type: FULL_ZOOM_OUT,
@@ -89,10 +91,10 @@ const BasicToolBar = ({
     () => dispatch({ type: EXPORT_DATA, exportType: 'png' }),
     [dispatch],
   );
-  const saveToClipboardHandler = useCallback(
-    () => dispatch({ type: EXPORT_DATA, exportType: 'copy' }),
-    [dispatch],
-  );
+  const saveToClipboardHandler = useCallback(() => {
+    dispatch({ type: EXPORT_DATA, exportType: 'copy' });
+    alert.show('Spectrum copied to clipboard');
+  }, [alert, dispatch]);
   const saveAsJSONHandler = useCallback(
     () => dispatch({ type: EXPORT_DATA, exportType: 'json' }),
     [dispatch],
@@ -124,7 +126,12 @@ const BasicToolBar = ({
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (e.target.localName !== 'input' && !e.shiftKey && !e.metaKey) {
+      if (
+        e.target.localName !== 'input' &&
+        !e.shiftKey &&
+        !e.metaKey &&
+        !e.ctrlKey
+      ) {
         switch (e.key) {
           case 'f':
             handleFullZoomOut();
@@ -139,7 +146,7 @@ const BasicToolBar = ({
         }
       }
 
-      if (!e.shiftKey && e.metaKey) {
+      if (!e.shiftKey && (e.metaKey || e.ctrlKey)) {
         switch (e.key) {
           case 'c':
             saveToClipboardHandler();
