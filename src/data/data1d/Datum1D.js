@@ -249,12 +249,22 @@ export class Datum1D {
   //   // add peak in this.peaks
   // }
 
+  checkPeakIsExists(peak) {
+    const peaks = this.peaks.map((p) => p.xIndex);
+    if (peaks.includes(peak.xIndex)) {
+      return true;
+    }
+    return false;
+  }
+
   addPeak(peak) {
     this.peaks = this.peaks.slice(0);
-    this.peaks.push({
-      id: generateID(),
-      ...peak,
-    });
+    if (!this.checkPeakIsExists(peak)) {
+      this.peaks.push({
+        id: generateID(),
+        ...peak,
+      });
+    }
   }
 
   // Add all the peaks in a range
@@ -266,7 +276,7 @@ export class Datum1D {
     if (from !== to) {
       this.peaks = this.peaks.slice(0);
       const peak = this.lookupPeak(from, to);
-      if (peak) {
+      if (peak && !this.checkPeakIsExists(peak)) {
         this.peaks = this.peaks.concat({
           id: generateID(),
           ...peak,
