@@ -9,7 +9,6 @@ import {
   FaCopy,
   FaFileExport,
 } from 'react-icons/fa';
-
 import { useAlert } from 'react-alert';
 
 import { useDispatch } from '../context/DispatchContext';
