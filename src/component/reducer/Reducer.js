@@ -167,26 +167,33 @@ const initiate = (state, dataObject) => {
 };
 
 const exportData = (state, { exportType }) => {
-  switch (exportType) {
-    case 'json': {
-      const data = AnalysisObj.toJSON();
-      exportAsJSON(data);
-      break;
+  const { data } = state;
+  //check if there is data to export it
+  if (data.length > 0) {
+    //exported file name by default will be the first spectrum name
+    const fileName = data[0].name;
+
+    switch (exportType) {
+      case 'json': {
+        const exportedData = AnalysisObj.toJSON();
+        exportAsJSON(exportedData, fileName);
+        break;
+      }
+      case 'svg': {
+        exportAsSVG(fileName);
+        break;
+      }
+      case 'png': {
+        exportAsPng(fileName);
+        break;
+      }
+      case 'copy': {
+        copyToClipboard();
+        break;
+      }
+      default:
+        break;
     }
-    case 'svg': {
-      exportAsSVG();
-      break;
-    }
-    case 'png': {
-      exportAsPng();
-      break;
-    }
-    case 'copy': {
-      copyToClipboard();
-      break;
-    }
-    default:
-      break;
   }
   return state;
 };
