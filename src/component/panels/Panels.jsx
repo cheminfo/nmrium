@@ -65,8 +65,8 @@ const Panels = () => {
     const index = accordionItems.findIndex(
       (item) => item.when && item.when.includes(selectedTool),
     );
-    return index === -1 ? 0 : index;
-  }, [selectedTool]);
+    return index === -1 ? panelIndex : index;
+  }, [panelIndex, selectedTool]);
 
   useEffect(() => {
     if (selectedTool) {
