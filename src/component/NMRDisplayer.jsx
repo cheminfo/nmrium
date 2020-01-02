@@ -50,6 +50,7 @@ import PeakPointer from './tool/PeakPointer';
 import Header from './header/Header';
 import VerticalIndicator from './tool/VerticalIndicator';
 import Loader from './Loader';
+import { ModalProvider } from './elements/Modal';
 
 // alert optional cofiguration
 const alertOptions = {
@@ -184,63 +185,65 @@ const NMRDisplayer = (props) => {
   }, [containerRef]);
 
   return (
-    <AlertProvider template={AlertTemplate} {...alertOptions}>
-      <DispatchProvider value={dispatch}>
-        <ChartDataProvider
-          value={{
-            height: heightProp,
-            width: widthProps,
-            ...state,
-            getScale,
-            isResizeEventStart,
-          }}
-        >
-          <HighlightProvider>
-            <div
-              ref={fullScreenRef}
-              css={css`
-                background-color: white;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
+    <ModalProvider>
+      <AlertProvider template={AlertTemplate} {...alertOptions}>
+        <DispatchProvider value={dispatch}>
+          <ChartDataProvider
+            value={{
+              height: heightProp,
+              width: widthProps,
+              ...state,
+              getScale,
+              isResizeEventStart,
+            }}
+          >
+            <HighlightProvider>
+              <div
+                ref={fullScreenRef}
+                css={css`
+                  background-color: white;
+                  height: 100%;
+                  display: flex;
+                  flex-direction: column;
 
-                button:active,
-                button:hover,
-                button:focus,
-                [type='button']:focus,
-                button {
-                  outline: none !important;
-                }
-              `}
-            >
-              <Header isFullscreen={isFullscreen} onMaximize={toggle} />
-              <div style={{ flex: 1 }} ref={containerRef}>
-                <DropZone>
-                  <ToolBar />
-                  <SplitPane
-                    style={splitPaneStyles.container}
-                    paneStyle={splitPaneStyles.pane}
-                    resizerStyle={splitPaneStyles.resizer}
-                    pane1Style={splitPaneStyles.pane1}
-                    split="vertical"
-                    defaultSize="80%"
-                    minSize="80%"
-                    onDragFinished={handleSplitPanelDragFinished}
-                    onDragStarted={() => {
-                      setResizeEventStart(true);
-                    }}
-                  >
-                    <ChartPanel tools={!isResizeEventStart} />
+                  button:active,
+                  button:hover,
+                  button:focus,
+                  [type='button']:focus,
+                  button {
+                    outline: none !important;
+                  }
+                `}
+              >
+                <Header isFullscreen={isFullscreen} onMaximize={toggle} />
+                <div style={{ flex: 1 }} ref={containerRef}>
+                  <DropZone>
+                    <ToolBar />
+                    <SplitPane
+                      style={splitPaneStyles.container}
+                      paneStyle={splitPaneStyles.pane}
+                      resizerStyle={splitPaneStyles.resizer}
+                      pane1Style={splitPaneStyles.pane1}
+                      split="vertical"
+                      defaultSize="80%"
+                      minSize="80%"
+                      onDragFinished={handleSplitPanelDragFinished}
+                      onDragStarted={() => {
+                        setResizeEventStart(true);
+                      }}
+                    >
+                      <ChartPanel tools={!isResizeEventStart} />
 
-                    <Panels />
-                  </SplitPane>
-                </DropZone>
+                      <Panels />
+                    </SplitPane>
+                  </DropZone>
+                </div>
               </div>
-            </div>
-          </HighlightProvider>
-        </ChartDataProvider>
-      </DispatchProvider>
-    </AlertProvider>
+            </HighlightProvider>
+          </ChartDataProvider>
+        </DispatchProvider>
+      </AlertProvider>
+    </ModalProvider>
   );
 };
 
