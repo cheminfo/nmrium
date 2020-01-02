@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
+import { FaRegTrashAlt, FaFileExport, FaCopy } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
+import { useAlert } from 'react-alert';
 
 import { DELETE_RANGE } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
@@ -9,6 +10,7 @@ import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
 import ReactTable from '../elements/ReactTable/ReactTable';
 import { ConfirmationDialog } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import useModal from '../elements/Modal/useModal';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -29,7 +31,8 @@ const RangesTablePanel = () => {
   const confirmRef = useRef();
   const { data: SpectrumsData, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
-
+  const modal = useModal();
+  const alert = useAlert();
   const deleteRangeHandler = useCallback(
     (e, row) => {
       e.preventDefault();
@@ -64,11 +67,69 @@ const RangesTablePanel = () => {
     }
   }, [SpectrumsData, activeSpectrum]);
 
+  const saveToClipboradHandler = useCallback(
+    (value) => {
+      try {
+        navigator.clipboard.writeText(value).then(() => {
+          alert.show('Coped to cliborad');
+        });
+      } catch (err) {
+        alert.error('Coped to cliborad falid');
+      }
+    },
+    [alert],
+  );
+
+  const closeClipBoradHandler = useCallback(() => {
+    modal.close();
+  }, [modal]);
+
+  const CopyClipboard = ({ text }) => {
+    return (
+      <div style={{ overFlow: 'auto' }}>
+        <div
+          style={{ padding: ' 5px 0px', borderBottom: '0.55px solid #ebebeb' }}
+        >
+          <button
+            type="button"
+            style={styles.button}
+            onClick={() => saveToClipboradHandler(text)}
+          >
+            <FaCopy />
+          </button>
+        </div>
+        <textarea
+          style={{
+            padding: '5px',
+            width: '100%',
+            height: '180px',
+            border: 'none',
+          }}
+          readOnly={true}
+        >
+          {text}
+        </textarea>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <button
+            type="button"
+            style={{
+              border: 'none',
+              backgroundColor: '#efefef',
+              padding: '10px',
+            }}
+            onClick={closeClipBoradHandler}
+          >
+            close
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const saveAsHTMLHandler = useCallback(() => {
     const result = getACS(data);
-    // eslint-disable-next-line no-console
-    console.log(result);
-  }, [data]);
+    modal.show(<CopyClipboard text={result} />, {});
+  }, [data, modal]);
 
   // define columns for different (sub)tables and expandable ones
   const columnsRanges = [

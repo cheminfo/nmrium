@@ -21,6 +21,7 @@ import {
 } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import useModal from '../elements/Modal/useModal';
 import MenuButton from '../elements/MenuButton';
 
 const styles = css`
@@ -73,11 +74,13 @@ const BasicToolBar = ({
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
   const [isStacked, activateStackView] = useState(false);
   const alert = useAlert();
+  const moda = useModal();
   const handleFullZoomOut = useCallback(() => {
+    moda.show(<p>s</p>, {});
     dispatch({
       type: FULL_ZOOM_OUT,
     });
-  }, [dispatch]);
+  }, [dispatch, moda]);
 
   const saveAsSVGHandler = useCallback(() => {
     dispatch({
