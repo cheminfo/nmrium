@@ -98,17 +98,16 @@ const RangesTablePanel = () => {
             <FaCopy />
           </button>
         </div>
-        <textarea
+        <div
           style={{
             padding: '5px',
             width: '100%',
             height: '180px',
             border: 'none',
           }}
-          readOnly={true}
-        >
-          {text}
-        </textarea>
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: text }}
+        />
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <button
             type="button"
