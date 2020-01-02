@@ -276,7 +276,7 @@ const RangesTablePanel = () => {
           counter={data && data.length}
           deleteToolTip="Delete All Ranges"
         >
-          <ToolTip title="Hide all spectrums" popupPlacement="right">
+          <ToolTip title="Preview publication string" popupPlacement="right">
             <button
               style={styles.button}
               type="button"
