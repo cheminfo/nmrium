@@ -10,20 +10,20 @@ import { saveAs } from 'file-saver';
  * export the experiments result in JSON format
  * @param {*} data
  */
-function exportAsJSON(data) {
+function exportAsJSON(data, fileName = 'experiment') {
   const fileData = JSON.stringify(data, undefined, 2);
   const blob = new Blob([fileData], { type: 'text/plain' });
-  saveAs(blob, 'experiment.nmrium');
+  saveAs(blob, `${fileName}.nmrium`);
 }
 /**
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
  */
-function exportAsSVG() {
+function exportAsSVG(fileName = 'experiment') {
   const { blob } = getBlob();
-  saveAs(blob, 'experiments.svg');
+  saveAs(blob, `${fileName}.svg`);
 }
 
-function exportAsPng() {
+function exportAsPng(fileName = 'experiment') {
   const { blob, width, height } = getBlob();
   try {
     let canvas = document.createElement('canvas');
@@ -37,7 +37,7 @@ function exportAsPng() {
     img.onload = async function() {
       context.drawImage(img, 0, 0);
       let png = canvas.toDataURL('image/png', 1);
-      saveAs(png, 'experiments.png');
+      saveAs(png, `${fileName}.png`);
       URL.revokeObjectURL(png);
     };
     img.src = url; //   canvas.appendChild();
