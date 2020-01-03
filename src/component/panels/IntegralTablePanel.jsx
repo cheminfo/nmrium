@@ -187,7 +187,7 @@ const IntegralTablePanel = () => {
           deleteToolTip="Delete All Integrals"
         />
         {data && data.length > 0 ? (
-          <ReactTable data={data} columns={columns} type={'integral'} />
+          <ReactTable data={data} columns={columns} />
         ) : (
           <NoTableData />
         )}

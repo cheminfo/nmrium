@@ -7,18 +7,12 @@ import {
   useLayoutEffect,
   useEffect,
   Fragment,
-  useMemo,
 } from 'react';
 import { FaMinus } from 'react-icons/fa';
 
-import {
-  SHIFT_SPECTRUM,
-  DELETE_PEAK_NOTATION,
-  ADD_HIGHLIGHT,
-  DELETE_HIGHLIGHT,
-} from '../reducer/Actions';
-import { useChartData } from '../context/ChartContext';
+import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
+import { useHighlight } from '../highlight';
 
 const styles = css`
   user-select: 'none';
@@ -126,9 +120,9 @@ export const PeakNotation = ({
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [isOver, setIsOver] = useState({ id: null, flag: false });
 
-  const dispatch = useDispatch();
+  const highlight = useHighlight([id]);
 
-  const { highlights } = useChartData();
+  const dispatch = useDispatch();
 
   const handleOnPeakChange = useCallback(
     (e) => dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue }),
@@ -198,47 +192,15 @@ export const PeakNotation = ({
     }, 200);
   }, []);
 
-  const onMouseEnterAndLeaveHandler = useCallback(
-    (dispatchType) => {
-      if (spectrumID) {
-        dispatch({
-          type: dispatchType,
-          data: {
-            spectrumID: spectrumID,
-            objectType: 'peak',
-            objectID: id,
-          },
-        });
-      }
-    },
-    [dispatch, id, spectrumID],
-  );
-
-  const isHighlighted = useMemo(() => {
-    return isOver.flag === false &&
-      spectrumID &&
-      highlights &&
-      highlights[spectrumID].find(
-        (highlight) => highlight.type === 'peak' && highlight.id === id,
-      )
-      ? true
-      : false;
-  }, [highlights, id, isOver.flag, spectrumID]);
-
   return (
     <Fragment>
       <Global styles={styles} />
       <g
         id={xIndex}
         transform={`translate(${x}, ${y})`}
-        onMouseEnter={() => {
-          handleOnEnterNotation(xIndex);
-          onMouseEnterAndLeaveHandler(ADD_HIGHLIGHT);
-        }}
-        onMouseLeave={() => {
-          handleOnMouseLeaveNotation();
-          onMouseEnterAndLeaveHandler(DELETE_HIGHLIGHT);
-        }}
+        onMouseEnter={() => handleOnEnterNotation(xIndex)}
+        onMouseLeave={() => handleOnMouseLeaveNotation()}
+        {...highlight.onHover}
       >
         <line
           x1="0"
@@ -246,7 +208,7 @@ export const PeakNotation = ({
           y1="-15"
           y2="-45"
           stroke={color}
-          strokeWidth={isHighlighted ? '7px' : '1px'}
+          strokeWidth={highlight.isActive ? '7px' : '1px'}
         />
         <text
           className="regular-text"

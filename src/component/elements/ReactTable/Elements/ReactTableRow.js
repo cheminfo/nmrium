@@ -1,60 +1,17 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useCallback, useMemo } from 'react';
 
-import { useChartData } from '../../../context/ChartContext';
-import { useDispatch } from '../../../context/DispatchContext';
-import { ADD_HIGHLIGHT, DELETE_HIGHLIGHT } from '../../../reducer/Actions';
+import { useHighlight } from '../../../highlight/index';
 import { HighlightedRowStyle } from '../Style';
 
-const ReactTableRow = ({ row, type }) => {
-  const { activeSpectrum, highlights } = useChartData();
-  const dispatch = useDispatch();
-
-  const onMouseEnterAndLeaveHandler = useCallback(
-    (dispatchType, id) => {
-      if (activeSpectrum && activeSpectrum.id) {
-        dispatch({
-          type: dispatchType,
-          data: {
-            spectrumID: activeSpectrum.id,
-            objectType: type,
-            objectID: id,
-          },
-        });
-      }
-    },
-    [activeSpectrum, dispatch, type],
-  );
-
-  // returning an array because of potential multiple object selection in future
-  const highlighted = useMemo(() => {
-    return activeSpectrum &&
-      activeSpectrum.id &&
-      highlights &&
-      highlights[activeSpectrum.id]
-      ? highlights[activeSpectrum.id]
-      : [];
-  }, [activeSpectrum, highlights]);
+const ReactTableRow = ({ row }) => {
+  const highlight = useHighlight([row.original.id]);
 
   return (
     <tr
       key={row.getRowProps().key}
-      onMouseEnter={
-        () => onMouseEnterAndLeaveHandler(ADD_HIGHLIGHT, row.original.id) // the id property has to be given through a ReactTable component
-      }
-      onMouseLeave={
-        () => onMouseEnterAndLeaveHandler(DELETE_HIGHLIGHT, row.original.id) // the id property has to be given through a ReactTable component
-      }
-      css={
-        highlighted.find(
-          (highlight) =>
-            highlight.type === type && highlight.id === row.original.id,
-        )
-          ? HighlightedRowStyle
-          : null
-      }
-      {...row.getRowProps()}
+      css={highlight.isActive ? HighlightedRowStyle : null}
+      {...{ ...row.getRowProps(), ...highlight.onHover }}
     >
       {row.cells.map((cell) => {
         return (

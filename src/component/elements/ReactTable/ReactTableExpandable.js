@@ -7,12 +7,7 @@ import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 
-const ReactTableExpandable = ({
-  columns,
-  data,
-  renderRowSubComponent,
-  type,
-}) => {
+const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -37,12 +32,7 @@ const ReactTableExpandable = ({
           prepareRow(row);
           return (
             <Fragment key={row.index}>
-              <ReactTableRow
-                key={row.key}
-                row={row}
-                type={type}
-                {...row.getRowProps()}
-              />
+              <ReactTableRow key={row.key} row={row} {...row.getRowProps()} />
               {row.isExpanded ? (
                 <tr>
                   <td colSpan={flatColumns.length}>

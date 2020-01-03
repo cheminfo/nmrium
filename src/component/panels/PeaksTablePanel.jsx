@@ -110,7 +110,7 @@ const PeaksTablePanel = () => {
           deleteToolTip="Delete All Peaks"
         />
         {data && data.length > 0 ? (
-          <ReactTable data={data} columns={columns} type={'peak'} />
+          <ReactTable data={data} columns={columns} />
         ) : (
           <NoTableData />
         )}

@@ -6,7 +6,7 @@ import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 
-const ReactTable = ({ data, columns, type }) => {
+const ReactTable = ({ data, columns }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -27,12 +27,7 @@ const ReactTable = ({ data, columns, type }) => {
         {rows.map((row) => {
           prepareRow(row);
           return (
-            <ReactTableRow
-              key={row.key}
-              row={row}
-              type={type}
-              {...row.getRowProps()}
-            />
+            <ReactTableRow key={row.key} row={row} {...row.getRowProps()} />
           );
         })}
       </tbody>

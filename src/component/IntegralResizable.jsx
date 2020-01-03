@@ -1,54 +1,45 @@
-import { useCallback, useState, useMemo, Fragment } from 'react';
+import { useCallback, useState, Fragment } from 'react';
 import Draggable from 'react-draggable';
 import * as d3 from 'd3';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
+import { useHighlight } from './highlight/index';
 import { useChartData } from './context/ChartContext';
 import { useDispatch } from './context/DispatchContext';
-import {
-  RESIZE_INTEGRAL,
-  DELETE_INTEGRAL,
-  ADD_HIGHLIGHT,
-  DELETE_HIGHLIGHT,
-} from './reducer/Actions';
+import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from './reducer/Actions';
+
+const stylesOnHover = css`
+  pointer-events: bounding-box;
+
+  :hover .target {
+    visibility: visible !important;
+    cursor: pointer;
+  }
+
+  .target {
+    visibility: hidden;
+  }
+`;
+const stylesHighlighted = css`
+  pointer-events: bounding-box;
+
+  .target {
+    visibility: visible;
+  }
+`;
 
 const IntegralResizable = (props) => {
-  const {
-    getScale,
-    height,
-    margin,
-    mode,
-    activeSpectrum,
-    highlights,
-  } = useChartData();
+  const { getScale, height, margin, mode } = useChartData();
   const { id, x, from, to, integralID } = props;
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
 
+  const highlight = useHighlight([integralID]);
+
   const xBoundary = d3.extent(x);
 
   const dispatch = useDispatch();
-
-  const stylesOnHover = css`
-    pointer-events: bounding-box;
-    :hover .target {
-      visibility: visible !important;
-      cursor: pointer;
-    }
-
-    .target {
-      visibility: hidden;
-    }
-  `;
-
-  const stylesHighlightedExternally = css`
-    pointer-events: bounding-box;
-
-    .target {
-      visibility: visible;
-    }
-  `;
 
   const deleteIntegral = useCallback(() => {
     dispatch({ type: DELETE_INTEGRAL, integralID: integralID, spectrumID: id });
@@ -157,42 +148,12 @@ const IntegralResizable = (props) => {
     [dispatch, from, getScale, id, integralID, mode, to],
   );
 
-  const onMouseEnterAndLeaveHandler = useCallback(
-    (dispatchType) => {
-      if (activeSpectrum && activeSpectrum.id) {
-        dispatch({
-          type: dispatchType,
-          data: {
-            spectrumID: activeSpectrum.id,
-            objectType: 'integral',
-            objectID: integralID,
-          },
-        });
-      }
-    },
-    [activeSpectrum, dispatch, integralID],
-  );
-
-  const isHighlighted = useMemo(() => {
-    return activeSpectrum &&
-      activeSpectrum.id &&
-      highlights &&
-      highlights[activeSpectrum.id] &&
-      highlights[activeSpectrum.id].find(
-        (highlight) =>
-          highlight.type === 'integral' && highlight.id === integralID,
-      )
-      ? true
-      : false;
-  }, [activeSpectrum, highlights, integralID]);
-
   return (
     <Fragment>
       <svg
-        css={isHighlighted ? stylesHighlightedExternally : stylesOnHover}
+        css={highlight.isActive ? stylesHighlighted : stylesOnHover}
         data-no-export="true"
-        onMouseEnter={() => onMouseEnterAndLeaveHandler(ADD_HIGHLIGHT)}
-        onMouseLeave={() => onMouseEnterAndLeaveHandler(DELETE_HIGHLIGHT)}
+        {...highlight.onHover}
       >
         <Draggable
           axis="x"

@@ -59,7 +59,6 @@ const RangesTablePanel = () => {
           to: range.to,
           integral: range.integral,
           signals: range.signal,
-          type: 'range', // needed for ReactTableRow component to highlight
           id: range.id, // needed for ReactTableRow component to highlight
         };
       });
@@ -292,7 +291,6 @@ const RangesTablePanel = () => {
             columns={columnsRanges}
             data={data}
             renderRowSubComponent={renderRowSubComponentSignals}
-            type={'range'}
           />
         ) : (
           <NoTableData />
