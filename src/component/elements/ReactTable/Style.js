@@ -9,6 +9,7 @@ const ReactTableStyle = css`
   border: 1px solid #dedede;
   width: 100%;
   font-size: 12px;
+  height: 100%;
 
   tr {
     :last-child {

@@ -58,6 +58,10 @@ const FunctionToolBar = ({ defaultValue }) => {
             setOption(options.zoom.id);
             handleChangeOption(options.zoom.id);
             break;
+          case 'r':
+            setOption(options.autoRangesPicking.id);
+            handleChangeOption(options.autoRangesPicking.id);
+            break;
           case 'p':
             setOption(options.peakPicking.id);
             handleChangeOption(options.peakPicking.id);
