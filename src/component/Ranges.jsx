@@ -4,13 +4,6 @@ import { jsx } from '@emotion/core';
 import { useChartData } from './context/ChartContext';
 import Range from './Range';
 
-const stylesHighlightedExternally = css`
-  .range-area {
-    height: 100%;
-    fill: #ff6f0057;
-  }
-`;
-
 const Ranges = () => {
   const { data } = useChartData();
 

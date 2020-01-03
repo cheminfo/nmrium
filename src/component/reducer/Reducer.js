@@ -1247,11 +1247,6 @@ export const spectrumReducer = (state, action) => {
     case DELETE_RANGE:
       return handleDeleteRange(state, action.rangeID);
 
-    // case ADD_HIGHLIGHT:
-    //   return handleAddHighlight(state, action.data);
-    // case DELETE_HIGHLIGHT:
-    //   return handleDeleteHighlight(state, action.data);
-
     case RESET_DOMAIN:
       return handelResetDomain(state);
     case UNDO:
