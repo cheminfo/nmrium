@@ -47,8 +47,8 @@
       "integrals": [],
       "signals": [],
       "filters": []
-    }, 
-	{
+    },
+    {
       "data": {},
       "id": "rwqz5z8yebq",
       "source": {
@@ -71,8 +71,8 @@
       "integrals": [],
       "signals": [],
       "filters": []
-    }, 
-	{
+    },
+    {
       "data": {},
       "id": "rwqz5z8yebl",
       "source": {
@@ -96,5 +96,13 @@
       "signals": [],
       "filters": []
     }
-  ]
+  ],
+  "preferences": {
+    "1d": {
+      "display": {
+        "center": true
+      }
+    },
+    "2d": {}
+  }
 }

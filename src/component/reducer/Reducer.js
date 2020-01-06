@@ -165,7 +165,13 @@ const initiate = (state, dataObject) => {
     draft.originDomain = domain;
     draft.yDomains = domain.yDomains;
     draft.isLoading = false;
-    setYAxisShit(spectraData, draft, state.height);
+    const preferences = AnalysisObj.getPreferences('1d');
+    if (preferences.display) {
+      changeSpectrumDisplayPreferences(state, draft, {
+        center: preferences.display.center,
+      });
+    }
+    // setYAxisShit(spectraData, draft, state.height);
     setMode(draft);
   });
 };
@@ -210,6 +216,7 @@ const setData = (state, data) => {
     }
     draft.data = AnalysisObj.getData1d();
     draft.molecules = AnalysisObj.getMolecules();
+
     draft.isLoading = false;
     setDomain(draft);
     setMode(draft);
