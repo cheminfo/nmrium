@@ -1,11 +1,11 @@
-import React, { useContext, useCallback, useMemo, useRef } from 'react';
+import React, { useContext, useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import ReactTable from '../elements/ReactTable/ReactTable';
 import { ChartContext } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { DELETE_INTEGRAL, CHANGE_INTEGRAL_DATA } from '../reducer/Actions';
-import { ConfirmationDialog } from '../elements/Modal';
+import { useModal } from '../elements/Modal';
 import Select from '../elements/Select';
 
 import NoTableData from './placeholder/NoTableData';
@@ -65,11 +65,11 @@ const signalKinds = [
 const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 const IntegralTablePanel = () => {
-  const confirmRef = useRef();
   const { activeSpectrum, data: SpectrumsData, molecules } = useContext(
     ChartContext,
   );
   const dispatch = useDispatch();
+  const modal = useModal();
 
   const deletePeakHandler = useCallback(
     (e, row) => {
@@ -170,13 +170,15 @@ const IntegralTablePanel = () => {
     }
   }, [SpectrumsData, activeSpectrum, columns, molecules]);
 
-  const handleDeleteAll = useCallback(() => {
-    confirmRef.current.present();
-  }, []);
-
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_INTEGRAL, integralID: null });
   }, [dispatch]);
+
+  const handleDeleteAll = useCallback(() => {
+    modal.showConfirmDialog('All records will be deleted,Are You sure?', {
+      onYes: yesHandler,
+    });
+  }, [modal, yesHandler]);
 
   return (
     <>
@@ -192,7 +194,6 @@ const IntegralTablePanel = () => {
           <NoTableData />
         )}
       </div>
-      <ConfirmationDialog onYes={yesHandler} ref={confirmRef} />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FaRegTrashAlt, FaFileExport, FaCopy } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 import { useAlert } from 'react-alert';
@@ -8,9 +8,8 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
 import ReactTable from '../elements/ReactTable/ReactTable';
-import { ConfirmationDialog } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
-import useModal from '../elements/Modal/useModal';
+import { useModal } from '../elements/Modal';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -28,7 +27,6 @@ const styles = {
 };
 
 const RangesTablePanel = () => {
-  const confirmRef = useRef();
   const { data: SpectrumsData, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
   const modal = useModal();
@@ -259,45 +257,44 @@ const RangesTablePanel = () => {
     );
   };
 
-  const handleDeleteAll = useCallback(() => {
-    confirmRef.current.present();
-  }, []);
-
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_RANGE, rangeID: null });
   }, [dispatch]);
 
-  return (
-    <>
-      <div style={styles.container}>
-        <DefaultPanelHeader
-          onDelete={handleDeleteAll}
-          counter={data && data.length}
-          deleteToolTip="Delete All Ranges"
-        >
-          <ToolTip title="Preview publication string" popupPlacement="right">
-            <button
-              style={styles.button}
-              type="button"
-              onClick={saveAsHTMLHandler}
-            >
-              <FaFileExport />
-            </button>
-          </ToolTip>
-        </DefaultPanelHeader>
+  const handleDeleteAll = useCallback(() => {
+    modal.showConfirmDialog('All records will be deleted,Are You sure?', {
+      onYes: yesHandler,
+    });
+  }, [modal, yesHandler]);
 
-        {data && data.length > 0 ? (
-          <ReactTableExpandable
-            columns={columnsRanges}
-            data={data}
-            renderRowSubComponent={renderRowSubComponentSignals}
-          />
-        ) : (
-          <NoTableData />
-        )}
-      </div>
-      <ConfirmationDialog onYes={yesHandler} ref={confirmRef} />
-    </>
+  return (
+    <div style={styles.container}>
+      <DefaultPanelHeader
+        onDelete={handleDeleteAll}
+        counter={data && data.length}
+        deleteToolTip="Delete All Ranges"
+      >
+        <ToolTip title="Preview publication string" popupPlacement="right">
+          <button
+            style={styles.button}
+            type="button"
+            onClick={saveAsHTMLHandler}
+          >
+            <FaFileExport />
+          </button>
+        </ToolTip>
+      </DefaultPanelHeader>
+
+      {data && data.length > 0 ? (
+        <ReactTableExpandable
+          columns={columnsRanges}
+          data={data}
+          renderRowSubComponent={renderRowSubComponentSignals}
+        />
+      ) : (
+        <NoTableData />
+      )}
+    </div>
   );
 };
 

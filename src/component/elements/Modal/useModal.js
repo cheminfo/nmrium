@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 
-import DefaultConetxt from './Context';
+import DefaultContext from './Context';
 
 const useModal = (context) => {
-  const modalConetxt = useContext(context || DefaultConetxt);
-  return modalConetxt.current;
+  const modalContext = useContext(context || DefaultContext);
+  return modalContext.current;
 };
 
 export default useModal;

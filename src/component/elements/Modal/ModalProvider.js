@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 
 import DefaultContext from './Context';
 import Modal from './Modal';
+import ConfirmDialog from './ConfirmDialog';
 
 const ModalProvider = ({ children, context: Context, style }) => {
   const root = useRef();
@@ -48,6 +49,22 @@ const ModalProvider = ({ children, context: Context, style }) => {
     return _modal;
   };
 
+  const showConfirmDialog = (message, options = {}) => {
+    const _modal = {
+      component: <ConfirmDialog />,
+      options,
+      show: true,
+    };
+    options.message = message;
+
+    _modal.close = () => remove();
+
+    setModal(_modal);
+    if (_modal.options.onOpen) _modal.options.onOpen();
+
+    return _modal;
+  };
+
   const close = () => {
     closeHandler();
   };
@@ -56,6 +73,7 @@ const ModalProvider = ({ children, context: Context, style }) => {
     show,
     close,
     modal,
+    showConfirmDialog,
   };
 
   return (
@@ -64,7 +82,11 @@ const ModalProvider = ({ children, context: Context, style }) => {
       {root.current &&
         createPortal(
           <Modal open={modal.show} onClose={closeHandler} style={style}>
-            {modal.component}
+            {modal.options &&
+              React.cloneElement(modal.component, {
+                ...modal.options,
+                onClose: closeHandler,
+              })}
           </Modal>,
           root.current,
         )}

@@ -1,5 +1,5 @@
 import Modal from './Modal';
-import ConfirmationDialog from './ConfirmationDialog';
 import ModalProvider from './ModalProvider';
+import useModal from './useModal';
 
-export { Modal, ConfirmationDialog, ModalProvider };
+export { Modal, ModalProvider, useModal };

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { useChartData } from '../context/ChartContext';
@@ -6,7 +6,7 @@ import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { DELETE_PEAK_NOTATION } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTable from '../elements/ReactTable/ReactTable';
-import { ConfirmationDialog } from '../elements/Modal';
+import { useModal } from '../elements/Modal';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -20,9 +20,9 @@ const styles = {
 };
 
 const PeaksTablePanel = () => {
-  const confirmRef = useRef();
   const { data: SpectrumsData, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
+  const modal = useModal();
 
   const deletePeakHandler = useCallback(
     (e, row) => {
@@ -93,30 +93,29 @@ const PeaksTablePanel = () => {
     }
   }, [SpectrumsData, activeSpectrum]);
 
-  const handleDeleteAll = useCallback(() => {
-    confirmRef.current.present();
-  }, []);
-
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_PEAK_NOTATION, data: null });
   }, [dispatch]);
 
+  const handleDeleteAll = useCallback(() => {
+    modal.showConfirmDialog('All records will be deleted,Are You sure?', {
+      onYes: yesHandler,
+    });
+  }, [modal, yesHandler]);
+
   return (
-    <>
-      <div style={styles.container}>
-        <DefaultPanelHeader
-          onDelete={handleDeleteAll}
-          counter={data && data.length}
-          deleteToolTip="Delete All Peaks"
-        />
-        {data && data.length > 0 ? (
-          <ReactTable data={data} columns={columns} />
-        ) : (
-          <NoTableData />
-        )}
-      </div>
-      <ConfirmationDialog onYes={yesHandler} ref={confirmRef} />
-    </>
+    <div style={styles.container}>
+      <DefaultPanelHeader
+        onDelete={handleDeleteAll}
+        counter={data && data.length}
+        deleteToolTip="Delete All Peaks"
+      />
+      {data && data.length > 0 ? (
+        <ReactTable data={data} columns={columns} />
+      ) : (
+        <NoTableData />
+      )}
+    </div>
   );
 };
 

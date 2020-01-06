@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -16,7 +10,7 @@ import {
   CHANGE_SPECTRUM_COLOR,
   DELETE_SPECTRA,
 } from '../reducer/Actions';
-import { ConfirmationDialog } from '../elements/Modal';
+import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
 
 import SpectrumListItem from './SpectrumListItem';
@@ -43,7 +37,7 @@ const SpectrumListPanel = () => {
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [colorPickerPosition, setColorPickerPosition] = useState(null);
   const { data } = useChartData();
-  const confirmRef = useRef();
+  const modal = useModal();
 
   const dispatch = useDispatch();
   const handleChangeVisibility = useCallback(
@@ -154,18 +148,21 @@ const SpectrumListPanel = () => {
     visible,
   ]);
 
+  const yesHandler = useCallback(() => {
+    dispatch({ type: DELETE_SPECTRA });
+  }, [dispatch]);
+
   const handleDelete = useCallback(() => {
     if (activated) {
       setActivated(null);
       dispatch({ type: DELETE_SPECTRA });
     } else {
-      confirmRef.current.present();
+      modal.showConfirmDialog('All records will be deleted,Are You sure?', {
+        onYes: yesHandler,
+      });
     }
-  }, [activated, dispatch]);
+  }, [activated, dispatch, modal, yesHandler]);
 
-  const yesHandler = useCallback(() => {
-    dispatch({ type: DELETE_SPECTRA });
-  }, [dispatch]);
   const showAllSpectrumsHandler = useCallback(() => {
     const allSpectrums = data.map((spectrum) => {
       return {
@@ -181,46 +178,43 @@ const SpectrumListPanel = () => {
   }, [dispatch]);
 
   return (
-    <>
-      <div style={styles.container}>
-        <DefaultPanelHeader
-          onDelete={handleDelete}
-          counter={data && data.length}
-          deleteToolTip="Delete All Spectrums"
-        >
-          <ToolTip title="Hide all spectrums" popupPlacement="right">
-            <button
-              style={styles.button}
-              type="button"
-              onClick={hideAllSpectrumsHandler}
-            >
-              <FaEyeSlash />
-            </button>
-          </ToolTip>
-          <ToolTip title="Show all spectrums" popupPlacement="right">
-            <button
-              style={styles.button}
-              type="button"
-              onClick={showAllSpectrumsHandler}
-            >
-              <FaEye />
-            </button>
-          </ToolTip>
-        </DefaultPanelHeader>
-        <div style={{ overflow: 'auto' }}>
-          {ListItems}
-          {isColorPickerDisplayed ? (
-            <ColorPicker
-              onMouseLeave={handleCloseColorPicker}
-              selectedSpectrumData={selectedSpectrumData}
-              colorPickerPosition={colorPickerPosition}
-              onColorChanged={handleOnColorChanged}
-            />
-          ) : null}
-        </div>
+    <div style={styles.container}>
+      <DefaultPanelHeader
+        onDelete={handleDelete}
+        counter={data && data.length}
+        deleteToolTip="Delete All Spectrums"
+      >
+        <ToolTip title="Hide all spectrums" popupPlacement="right">
+          <button
+            style={styles.button}
+            type="button"
+            onClick={hideAllSpectrumsHandler}
+          >
+            <FaEyeSlash />
+          </button>
+        </ToolTip>
+        <ToolTip title="Show all spectrums" popupPlacement="right">
+          <button
+            style={styles.button}
+            type="button"
+            onClick={showAllSpectrumsHandler}
+          >
+            <FaEye />
+          </button>
+        </ToolTip>
+      </DefaultPanelHeader>
+      <div style={{ overflow: 'auto' }}>
+        {ListItems}
+        {isColorPickerDisplayed ? (
+          <ColorPicker
+            onMouseLeave={handleCloseColorPicker}
+            selectedSpectrumData={selectedSpectrumData}
+            colorPickerPosition={colorPickerPosition}
+            onColorChanged={handleOnColorChanged}
+          />
+        ) : null}
       </div>
-      <ConfirmationDialog onYes={yesHandler} ref={confirmRef} />
-    </>
+    </div>
   );
 };
 
