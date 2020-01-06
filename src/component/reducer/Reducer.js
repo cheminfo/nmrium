@@ -166,12 +166,16 @@ const initiate = (state, dataObject) => {
     draft.yDomains = domain.yDomains;
     draft.isLoading = false;
     const preferences = AnalysisObj.getPreferences('1d');
-    if (preferences.display) {
+    if (
+      preferences.display &&
+      Object.prototype.hasOwnProperty.call(preferences.display, 'center')
+    ) {
       changeSpectrumDisplayPreferences(state, draft, {
         center: preferences.display.center,
       });
+    } else {
+      setYAxisShit(spectraData, draft, state.height);
     }
-    // setYAxisShit(spectraData, draft, state.height);
     setMode(draft);
   });
 };
@@ -251,13 +255,19 @@ const loadJcampFile = (state, files) => {
 const handleLoadJsonFile = (state, data) => {
   return produce(state, (draft) => {
     AnalysisObj = data.AnalysisObj;
-    draft.data = AnalysisObj.getData1d();
+    const spectraData = AnalysisObj.getData1d();
+    draft.data = spectraData;
     draft.molecules = AnalysisObj.getMolecules();
     const preferences = AnalysisObj.getPreferences('1d');
-    if (preferences.display) {
+    if (
+      preferences.display &&
+      Object.prototype.hasOwnProperty.call(preferences.display, 'center')
+    ) {
       changeSpectrumDisplayPreferences(state, draft, {
         center: preferences.display.center,
       });
+    } else {
+      setYAxisShit(spectraData, draft, state.height);
     }
 
     setDomain(draft);
