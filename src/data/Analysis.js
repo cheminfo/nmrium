@@ -9,12 +9,13 @@ import { MoleculeManager } from './molecules/MoleculeManager';
 export class Analysis {
   data1d = [];
   molecules = [];
-  constructor(data1d = [], molecules = []) {
+  constructor(data1d = [], molecules = [], preferences) {
     this.data1d = data1d.slice();
     this.data2d = [];
     this.molecules = molecules.slice(); // chemical structures
-    this.preferences = {
-      display: {},
+    this.preferences = preferences || {
+      '1d': {},
+      '2d': {},
     };
   }
 
@@ -24,7 +25,7 @@ export class Analysis {
     const molecules = json.molecules
       ? MoleculeManager.fromJSON(json.molecules)
       : [];
-    return new Analysis(data1d, molecules);
+    return new Analysis(data1d, molecules, json.preferences);
   }
 
   async addJcampFromURL(id, jcampURL, options) {
@@ -50,16 +51,9 @@ export class Analysis {
     return this.molecules;
   }
 
-  // .map((molecule) => {
-  //   return {
-  //     key: molecule.key,
-  //     molfile: molecule.molfile,
-  //     svg: molecule.svg,
-  //     mf: molecule.mf,
-  //     em: molecule.em,
-  //     mw: molecule.mw,
-  //   };
-  // });
+  getPreferences(key) {
+    return this.preferences[key];
+  }
 
   removeMolecule(key) {
     this.molecules = this.molecules.filter((molecule) => molecule.key !== key);
@@ -121,32 +115,21 @@ export class Analysis {
 
   toJSON() {
     const data1d = this.data1d.map((ob) => {
-      return { ...ob.toJSON(), data: {} };
+      return {
+        ...ob.toJSON(),
+        data: {},
+      };
     });
 
     const molecules = this.molecules.map((ob) => ob.toJSON());
-    return { data1d, molecules };
-    // return {
-    //   display: {}, // global display information
-    //   spectra1d: [
-    //     {
-    //       source: {
-    //         // either we have the source of we have the data
-    //         jcamp: '',
-    //         jcampURL: '',
-    //       },
-    //       data: {
-    //         re: [],
-    //         im: [],
-    //         y: [],
-    //         meta: {},
-    //       },
-    //       info: {},
-    //       display: {},
-    //     },
-    //   ], // need to ask the Data1DManager
-    //   spectra2d: [],
-    // };
+    return { data1d, molecules, preferences: this.preferences };
+  }
+
+  set1DPreferences(preferences) {
+    this.preferences = {
+      ...this.preferences,
+      '1d': { ...this.preferences['1d'], ...preferences },
+    };
   }
 
   pushDatum1D(object) {

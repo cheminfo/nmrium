@@ -131,21 +131,25 @@ function setYAxisShit(data, draft, height) {
     }
   }
 }
+const changeSpectrumDisplayPreferences = (state, draft, { center }) => {
+  const { height } = state;
+  if (center) {
+    const YAxisShift = height / 2;
+    draft.verticalAlign.flag = true;
+    draft.verticalAlign.value = YAxisShift;
+    draft.verticalAlign.stacked = false;
+    AnalysisObj.set1DPreferences({ display: { center: true } });
+  } else {
+    draft.verticalAlign.flag = false;
+    draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
+    draft.verticalAlign.stacked = false;
+    AnalysisObj.set1DPreferences({ display: { center: false } });
+  }
+};
 
 const setSpectrumsVerticalAlign = (state, flag) => {
   return produce(state, (draft) => {
-    const { height } = state;
-
-    if (flag) {
-      const YAxisShift = height / 2;
-      draft.verticalAlign.flag = true;
-      draft.verticalAlign.value = YAxisShift;
-      draft.verticalAlign.stacked = false;
-    } else {
-      draft.verticalAlign.flag = false;
-      draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
-      draft.verticalAlign.stacked = false;
-    }
+    changeSpectrumDisplayPreferences(state, draft, { center: flag });
   });
 };
 
@@ -242,6 +246,13 @@ const handleLoadJsonFile = (state, data) => {
     AnalysisObj = data.AnalysisObj;
     draft.data = AnalysisObj.getData1d();
     draft.molecules = AnalysisObj.getMolecules();
+    const preferences = AnalysisObj.getPreferences('1d');
+    if (preferences.display) {
+      changeSpectrumDisplayPreferences(state, draft, {
+        center: preferences.display.center,
+      });
+    }
+
     setDomain(draft);
     setMode(draft);
     draft.isLoading = false;
@@ -863,13 +874,6 @@ function setDomain(draft) {
     return { ...d, integralsYDomain: domain.y };
   });
 }
-
-// function pixelToIndex(state, xPixel) {
-//   const { data } = state;
-//   const xScale = getScale(state).x;
-//   const closest = getClosestNumber(data[0].x, xScale.invert(xPixel));
-//   return data[0].x.indexOf(closest);
-// }
 
 const handleDeleteSpectra = (state) => {
   return produce(state, (draft) => {
