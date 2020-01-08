@@ -47,7 +47,6 @@ const Range = ({ id, from, to, integral }) => {
   const DeleteButton = () => {
     return (
       <Fragment>
-        {`<!-- export-remove -->`}
         <svg
           className="delete-button"
           x={-20}
@@ -57,7 +56,6 @@ const Range = ({ id, from, to, integral }) => {
           <rect rx="5" width="16" height="16" fill="#c81121" />
           <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
         </svg>
-        {`<!-- export-remove -->`}
       </Fragment>
     );
   };

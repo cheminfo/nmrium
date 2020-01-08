@@ -65,20 +65,20 @@ const RangesTablePanel = () => {
     }
   }, [SpectrumsData, activeSpectrum]);
 
-  const saveToClipboradHandler = useCallback(
+  const saveToClipboardHandler = useCallback(
     (value) => {
       try {
         navigator.clipboard.writeText(value).then(() => {
-          alert.show('Coped to cliborad');
+          alert.show('Coped to clipboard');
         });
       } catch (err) {
-        alert.error('Coped to cliborad falid');
+        alert.error('Coped to clipboard failed');
       }
     },
     [alert],
   );
 
-  const closeClipBoradHandler = useCallback(() => {
+  const closeClipBoardHandler = useCallback(() => {
     modal.close();
   }, [modal]);
 
@@ -91,7 +91,7 @@ const RangesTablePanel = () => {
           <button
             type="button"
             style={styles.button}
-            onClick={() => saveToClipboradHandler(text)}
+            onClick={() => saveToClipboardHandler(text)}
           >
             <FaCopy />
           </button>
@@ -114,7 +114,7 @@ const RangesTablePanel = () => {
               backgroundColor: '#efefef',
               padding: '10px',
             }}
-            onClick={closeClipBoradHandler}
+            onClick={closeClipBoardHandler}
           >
             close
           </button>
@@ -238,14 +238,19 @@ const RangesTablePanel = () => {
 
   // render method for couplings sub-table
   const renderRowSubComponentCouplings = ({ row }) => {
-    return row.original.j && row.original.j.length > 0 ? (
+    return row &&
+      row.original &&
+      row.original.j &&
+      row.original.j.length > 0 ? (
       <ReactTable data={row.original.j} columns={columnsCouplings} />
     ) : null;
   };
 
   // render method for signals sub-table; either expandable or not
   const renderRowSubComponentSignals = ({ row }) => {
-    return row.original.signals &&
+    return row &&
+      row.original &&
+      row.original.signals &&
       row.original.signals.find((signal) => signal.j && signal.j.length > 0) ? (
       <ReactTableExpandable
         columns={columnsSignalsExpandable}

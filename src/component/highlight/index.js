@@ -67,7 +67,9 @@ export function useHighlight(highlights) {
       if (typeof highlight !== 'string' && typeof highlight !== 'number') {
         throw new Error(`highlight key must be a string or number`);
       }
-      newHighlights.push(String(highlight));
+      if (highlight !== '') {
+        newHighlights.push(String(highlight));
+      }
     }
     return newHighlights;
   }, [highlights]);

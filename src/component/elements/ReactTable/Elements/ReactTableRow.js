@@ -5,7 +5,11 @@ import { useHighlight } from '../../../highlight/index';
 import { HighlightedRowStyle } from '../Style';
 
 const ReactTableRow = ({ row }) => {
-  const highlight = useHighlight([row.original.id]);
+  const highlight = useHighlight([
+    Object.prototype.hasOwnProperty.call(row.original, 'id')
+      ? row.original.id
+      : '',
+  ]);
 
   return (
     <tr

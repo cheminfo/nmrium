@@ -36,7 +36,10 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
               {row.isExpanded ? (
                 <tr>
                   <td colSpan={flatColumns.length}>
-                    {renderRowSubComponent({ row })}
+                    {row &&
+                      row.original &&
+                      row.original.id &&
+                      renderRowSubComponent({ row })}
                   </td>
                 </tr>
               ) : null}
@@ -46,6 +49,12 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
       </tbody>
     </table>
   );
+};
+
+ReactTableExpandable.defaultProps = {
+  renderRowSubComponent: () => {
+    return null;
+  },
 };
 
 export default ReactTableExpandable;
