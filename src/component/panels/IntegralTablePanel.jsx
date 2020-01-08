@@ -115,14 +115,14 @@ const IntegralTablePanel = () => {
       Cell: ({ row }) => row.original.to.toFixed(2),
     },
     {
-      Header: 'Integral',
+      Header: 'Value',
       accessor: 'value',
       sortType: 'basic',
       resizable: true,
       Cell: ({ row }) => row.original.value.toFixed(2),
     },
     {
-      Header: 'signal kind',
+      Header: 'Kind',
       accessor: 'kind',
       sortType: 'basic',
       resizable: true,
