@@ -66,9 +66,11 @@ const InformationPanel = () => {
             width: '100%',
             height: '100%',
             padding: '5px',
+            fontFamily: 'monospace',
+            whiteSpace: 'pre',
           }}
         >
-          ( ${information[row.original]} )
+          {information[row.original]}
         </p>
       ),
     },
