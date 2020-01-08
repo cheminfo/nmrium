@@ -15,7 +15,8 @@ const ReactTableRow = ({ row }) => {
     <tr
       key={row.getRowProps().key}
       css={highlight.isActive ? HighlightedRowStyle : null}
-      {...{ ...row.getRowProps(), ...highlight.onHover }}
+      {...row.getRowProps()}
+      {...highlight.onHover}
     >
       {row.cells.map((cell) => {
         return (

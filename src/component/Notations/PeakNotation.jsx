@@ -198,8 +198,14 @@ export const PeakNotation = ({
       <g
         id={xIndex}
         transform={`translate(${x}, ${y})`}
-        onMouseEnter={() => handleOnEnterNotation(xIndex)}
-        onMouseLeave={() => handleOnMouseLeaveNotation()}
+        onMouseEnter={() => {
+          handleOnEnterNotation(xIndex);
+          highlight.show();
+        }}
+        onMouseLeave={() => {
+          handleOnMouseLeaveNotation();
+          highlight.hide();
+        }}
         {...highlight.onHover}
       >
         <line
@@ -221,8 +227,6 @@ export const PeakNotation = ({
         >
           {isSelected ? value : parseFloat(value).toFixed(decimalFraction)}
         </text>
-        {`<!-- export-remove -->`}
-
         <foreignObject
           x="0"
           y="-40"
@@ -278,7 +282,6 @@ export const PeakNotation = ({
             )}
           </div>
         </foreignObject>
-        {`<!-- export-remove -->`}
       </g>
     </Fragment>
   );
