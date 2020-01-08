@@ -315,7 +315,8 @@ export class Datum1D {
       source: {
         jcamp: this.source.jcamp,
         jcampURL: this.source.jcampURL,
-        original: this.source.jcampURL ? [] : this.source.original,
+        original:
+          this.source.jcampURL || this.source.jcamp ? [] : this.source.original,
       },
       display: this.display,
       info: this.originalInfo,
