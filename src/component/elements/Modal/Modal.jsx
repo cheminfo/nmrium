@@ -20,7 +20,6 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     minWidth: '300px',
-    width: '300px',
     minHeight: '140px',
     justifyContent: 'space-between',
     borderRadius: '5px',

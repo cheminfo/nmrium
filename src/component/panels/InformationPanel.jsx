@@ -53,7 +53,11 @@ const InformationPanel = () => {
       minWidth: 100,
       width: 20,
       maxWidth: 20,
-      Cell: ({ row }) => <p style={{ padding: '5px' }}>{row.original}</p>,
+      Cell: ({ row }) => (
+        <p style={{ padding: '5px', backgroundColor: 'white' }}>
+          {row.original}
+        </p>
+      ),
     },
     {
       Header: 'Value',

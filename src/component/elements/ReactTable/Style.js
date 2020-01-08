@@ -17,9 +17,6 @@ const ReactTableStyle = css`
         border-bottom: 0;
       }
     }
-    :hover {
-      background-color: #ff6f0057;
-    }
   }
   th,
   td {

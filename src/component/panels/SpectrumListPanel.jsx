@@ -12,6 +12,7 @@ import {
 } from '../reducer/Actions';
 import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import { Tabs } from '../elements/Tab';
 
 import SpectrumListItem from './SpectrumListItem';
 import ColorPicker from './ColorPicker';
@@ -29,6 +30,13 @@ const styles = {
   },
 };
 
+const groupBy = (key) => (array) =>
+  array.reduce((objectsByKeyValue, obj) => {
+    const value = obj.info[key];
+    objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
+    return objectsByKeyValue;
+  }, {});
+
 const SpectrumListPanel = () => {
   const [activated, setActivated] = useState(null);
   const [visible, setVisible] = useState([]);
@@ -38,8 +46,9 @@ const SpectrumListPanel = () => {
   const [colorPickerPosition, setColorPickerPosition] = useState(null);
   const { data } = useChartData();
   const modal = useModal();
-
   const dispatch = useDispatch();
+  const [spectrumsGroupByNucleus, setSpectrumsGroupByNucleus] = useState([]);
+
   const handleChangeVisibility = useCallback(
     (d) => {
       const currentIndex = visible.findIndex((v) => v.id === d.id);
@@ -105,6 +114,11 @@ const SpectrumListPanel = () => {
     if (data && data.length === 1 && activated == null) {
       handleChangeActiveSpectrum(data[0]);
     }
+
+    if (data) {
+      const groupByNucleus = groupBy('nucleus');
+      setSpectrumsGroupByNucleus(groupByNucleus(data));
+    }
   }, [data, handleChangeActiveSpectrum, activated]);
 
   const handleOpenColorPicker = useCallback((selectedSpectrum, event) => {
@@ -122,30 +136,37 @@ const SpectrumListPanel = () => {
 
   const ListItems = useMemo(() => {
     return (
-      data &&
-      data.map((d) => (
-        <SpectrumListItem
-          key={d.id}
-          visible={visible}
-          activated={activated}
-          markersVisible={markersVisible}
-          data={d}
-          onChangeVisibility={handleChangeVisibility}
-          onChangeMarkersVisibility={handleChangeMarkersVisibility}
-          onChangeActiveSpectrum={handleChangeActiveSpectrum}
-          onOpenColorPicker={handleOpenColorPicker}
-        />
-      ))
+      <Tabs>
+        {spectrumsGroupByNucleus &&
+          Object.keys(spectrumsGroupByNucleus).map((group) => (
+            <div label={group} key={group}>
+              {spectrumsGroupByNucleus[group] &&
+                spectrumsGroupByNucleus[group].map((d) => (
+                  <SpectrumListItem
+                    key={d.id}
+                    visible={visible}
+                    activated={activated}
+                    markersVisible={markersVisible}
+                    data={d}
+                    onChangeVisibility={handleChangeVisibility}
+                    onChangeMarkersVisibility={handleChangeMarkersVisibility}
+                    onChangeActiveSpectrum={handleChangeActiveSpectrum}
+                    onOpenColorPicker={handleOpenColorPicker}
+                  />
+                ))}
+            </div>
+          ))}
+      </Tabs>
     );
   }, [
-    data,
-    handleChangeActiveSpectrum,
-    handleChangeMarkersVisibility,
-    handleChangeVisibility,
-    handleOpenColorPicker,
+    spectrumsGroupByNucleus,
+    visible,
     activated,
     markersVisible,
-    visible,
+    handleChangeVisibility,
+    handleChangeMarkersVisibility,
+    handleChangeActiveSpectrum,
+    handleOpenColorPicker,
   ]);
 
   const yesHandler = useCallback(() => {
