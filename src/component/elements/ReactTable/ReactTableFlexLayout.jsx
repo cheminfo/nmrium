@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { useTable, useSortBy, useFlexLayout } from 'react-table';
 
-import Style from './Style';
+import { ReactTableStyle } from './Style';
 
 const ReactTableFlexLayout = ({ data, columns }) => {
   const {
@@ -20,7 +20,7 @@ const ReactTableFlexLayout = ({ data, columns }) => {
     useFlexLayout,
   );
   return (
-    <table {...getTableProps()} css={Style}>
+    <table {...getTableProps()} css={ReactTableStyle}>
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr
