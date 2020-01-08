@@ -85,7 +85,7 @@ const IntegralTablePanel = () => {
   );
   const changeIntegralDataHandler = useCallback(
     (value, row) => {
-      const data = { ...row.original, signalKind: value };
+      const data = { ...row.original, kind: value };
       dispatch({
         type: CHANGE_INTEGRAL_DATA,
         data,
@@ -123,7 +123,7 @@ const IntegralTablePanel = () => {
     },
     {
       Header: 'signal kind',
-      accessor: 'signalKind',
+      accessor: 'kind',
       sortType: 'basic',
       resizable: true,
       Cell: ({ row }) => (
