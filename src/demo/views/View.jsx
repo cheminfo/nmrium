@@ -37,7 +37,9 @@ export default function View({ file, title, ...otherProps }) {
         marginLeft: 30,
       }}
     >
-      <h5 className="title">NMR Displayer</h5>
+      <h5 className="title">
+        Display and process 1D NMR spectra from a jcamp-dx file
+      </h5>
       <p className="category">{title}</p>
       <NMRDisplayer data={data} {...otherProps} />
     </div>

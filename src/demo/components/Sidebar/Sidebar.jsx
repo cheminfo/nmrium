@@ -72,7 +72,7 @@ class Sidebar extends React.Component {
             className="simple-text logo-normal"
             // target="_blank"
           >
-            nmr Team
+            NMRium
           </a>
         </div>
         <div className="sidebar-wrapper" ref="sidebar">
