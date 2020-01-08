@@ -32,6 +32,13 @@ const stylesHighlighted = css`
     height: 100%;
     fill: #ff6f0057;
   }
+  .delete-button {
+    display: none;
+    cursor: pointer;
+  }
+  :hover .delete-button {
+    display: block;
+  }
 `;
 
 const Range = ({ id, from, to, integral }) => {
