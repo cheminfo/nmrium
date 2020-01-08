@@ -56,7 +56,7 @@ const RangesTablePanel = () => {
           from: range.from,
           to: range.to,
           integral: range.integral,
-          signals: range.signal,
+          signal: range.signal,
           id: range.id, // needed for ReactTableRow component to highlight
         };
       });
@@ -160,7 +160,7 @@ const RangesTablePanel = () => {
     },
     {
       Header: '#Signals',
-      Cell: ({ row }) => row.original.signals.length,
+      Cell: ({ row }) => row.original.signal.length,
     },
     {
       Header: '',
@@ -250,15 +250,15 @@ const RangesTablePanel = () => {
   const renderRowSubComponentSignals = ({ row }) => {
     return row &&
       row.original &&
-      row.original.signals &&
-      row.original.signals.find((signal) => signal.j && signal.j.length > 0) ? (
+      row.original.signal &&
+      row.original.signal.find((signal) => signal.j && signal.j.length > 0) ? (
       <ReactTableExpandable
         columns={columnsSignalsExpandable}
-        data={row.original.signals}
+        data={row.original.signal}
         renderRowSubComponent={renderRowSubComponentCouplings}
       />
     ) : (
-      <ReactTable columns={columnsSignals} data={row.original.signals} />
+      <ReactTable columns={columnsSignals} data={row.original.signal} />
     );
   };
 
