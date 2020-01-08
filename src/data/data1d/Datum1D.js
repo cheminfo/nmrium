@@ -125,14 +125,28 @@ export class Datum1D {
       from: range[0],
       to: range[1],
       ...integralResult,
-      value: integralValue,
-      signalKind: 'signal',
+      value: integralValue, // the real value
+      relative: integralValue, // relative value
+      kind: 'signal',
     });
   }
 
   setIntegrals(integrals) {
     this.integrals = Object.assign([], integrals);
   }
+
+  updateRelativeIntegrals(number) {
+    this.integrals = this.integrals.slice(0);
+    let total = this.integrals.reduce(
+      (previous, current) => (previous += current.integration),
+      0,
+    );
+    let factor = number / total;
+    this.integrals.forEach(
+      (integral) => (integral.relative = integral.value * factor),
+    );
+  }
+
   setIntegral(integral) {
     this.integrals = this.integrals.slice(0);
     const index = this.integrals.findIndex((i) => i.id === integral.id);
@@ -301,7 +315,8 @@ export class Datum1D {
       source: {
         jcamp: this.source.jcamp,
         jcampURL: this.source.jcampURL,
-        original: this.source.jcampURL ? [] : this.source.original,
+        original:
+          this.source.jcampURL || this.source.jcamp ? [] : this.source.original,
       },
       display: this.display,
       info: this.originalInfo,
