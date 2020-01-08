@@ -10,8 +10,9 @@ import {
 } from 'react';
 import { FaMinus } from 'react-icons/fa';
 
-import { useDispatch } from '../context/DispatchContext';
 import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
+import { useDispatch } from '../context/DispatchContext';
+import { useHighlight } from '../highlight';
 
 const styles = css`
   user-select: 'none';
@@ -103,6 +104,7 @@ const styles = css`
 `;
 
 export const PeakNotation = ({
+  xIndex,
   id,
   spectrumID,
   x,
@@ -118,7 +120,10 @@ export const PeakNotation = ({
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [isOver, setIsOver] = useState({ id: null, flag: false });
 
+  const highlight = useHighlight([id]);
+
   const dispatch = useDispatch();
+
   const handleOnPeakChange = useCallback(
     (e) => dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue }),
     [dispatch],
@@ -149,7 +154,7 @@ export const PeakNotation = ({
         const shiftValue = parseFloat(event.target.value) - parseFloat(value);
 
         handleOnPeakChange({
-          id: id,
+          id: xIndex,
           value: newValue,
           oldValue: oldValue,
           shiftValue: shiftValue,
@@ -163,7 +168,7 @@ export const PeakNotation = ({
         setIsSelected(false);
       }
     },
-    [id, value, handleOnPeakChange],
+    [value, handleOnPeakChange, xIndex],
   );
 
   const handleChange = useCallback((event) => {
@@ -177,7 +182,7 @@ export const PeakNotation = ({
     return false;
   }, []);
 
-  const handleOnOverNotation = useCallback((notationId) => {
+  const handleOnEnterNotation = useCallback((notationId) => {
     setIsOver({ id: notationId, flag: true });
   }, []);
 
@@ -191,14 +196,20 @@ export const PeakNotation = ({
     <Fragment>
       <Global styles={styles} />
       <g
-        id={id}
+        id={xIndex}
         transform={`translate(${x}, ${y})`}
-        onMouseOver={() => {
-          handleOnOverNotation(id);
-        }}
-        onMouseLeave={handleOnMouseLeaveNotation}
+        onMouseEnter={() => handleOnEnterNotation(xIndex)}
+        onMouseLeave={() => handleOnMouseLeaveNotation()}
+        {...highlight.onHover}
       >
-        <line x1="0" x2="0" y1="-5" y2={-30} stroke={color} strokeWidth="1px" />
+        <line
+          x1="0"
+          x2="0"
+          y1="-15"
+          y2="-45"
+          stroke={color}
+          strokeWidth={highlight.isActive ? '7px' : '1px'}
+        />
         <text
           className="regular-text"
           ref={refText}
@@ -210,9 +221,11 @@ export const PeakNotation = ({
         >
           {isSelected ? value : parseFloat(value).toFixed(decimalFraction)}
         </text>
+        {`<!-- export-remove -->`}
+
         <foreignObject
           x="0"
-          y="-30"
+          y="-40"
           width={containerSize.width + 20}
           height={containerSize.height + 30}
           data-no-export="true"
@@ -252,7 +265,7 @@ export const PeakNotation = ({
               <button
                 type="button"
                 onClick={(e) =>
-                  handleDeleteNotation(e, { xIndex: id, id: spectrumID })
+                  handleDeleteNotation(e, { xIndex: xIndex, id: spectrumID })
                 }
                 className="delete-bt"
                 style={{
@@ -265,6 +278,7 @@ export const PeakNotation = ({
             )}
           </div>
         </foreignObject>
+        {`<!-- export-remove -->`}
       </g>
     </Fragment>
   );

@@ -318,13 +318,8 @@ const addPeak = (state, mouseCoordinates) => {
 
       if (index !== -1) {
         const peak = { xIndex: candidatePeak.xIndex };
-        if (state.data[index].peaks) {
-          draft.data[index].peaks.push(peak);
-        } else {
-          draft.data[index].peaks = [peak];
-        }
-        // draft.data[index].peaks
         AnalysisObj.getDatum1D(spectrumID).addPeak(peak);
+        draft.data[index].peaks = AnalysisObj.getDatum1D(spectrumID).getPeaks();
       }
     }
   });

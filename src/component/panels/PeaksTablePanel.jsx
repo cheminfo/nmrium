@@ -84,7 +84,7 @@ const PeaksTablePanel = () => {
         return {
           xIndex: peak.xIndex,
           value: _data.x[peak.xIndex].toFixed(labelFraction),
-          id: _data.id,
+          id: peak.id,
           yValue: _data.y[peak.xIndex],
         };
       });

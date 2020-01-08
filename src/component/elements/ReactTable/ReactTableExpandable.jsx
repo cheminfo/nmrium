@@ -1,10 +1,11 @@
+import { Fragment } from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useTable, useExpanded, useSortBy } from 'react-table';
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
 
-import Style from './Style';
+import ReactTableHeader from './Elements/ReactTableHeader';
+import ReactTableRow from './Elements/ReactTableRow';
+import { ReactTableStyle } from './Style';
 
 const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
   const {
@@ -14,7 +15,6 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
     rows,
     prepareRow,
     flatColumns,
-    // state: { expanded },
   } = useTable(
     {
       columns,
@@ -25,54 +25,36 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
   );
 
   return (
-    <table {...getTableProps()} css={Style}>
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr
-            key={headerGroup.getHeaderGroupProps().key}
-            {...headerGroup.getHeaderGroupProps()}
-          >
-            {headerGroup.headers.map((column) => (
-              <th
-                key={column.getHeaderProps().key}
-                {...column.getHeaderProps(column.getSortByToggleProps())}
-              >
-                {column.render('Header')}
-                <span>
-                  {column.isSorted ? (column.isSortedDesc ? ' ▼' : ' ▲') : ''}
-                </span>
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
+    <table {...getTableProps()} css={ReactTableStyle}>
+      <ReactTableHeader headerGroups={headerGroups} />
       <tbody key={getTableBodyProps().key} {...getTableBodyProps()}>
         {rows.map((row) => {
           prepareRow(row);
           return (
-            <>
-              <tr key={row.getRowProps().key} {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return (
-                    <td key={cell.getCellProps().key} {...cell.getCellProps()}>
-                      {cell.render('Cell')}
-                    </td>
-                  );
-                })}
-              </tr>
+            <Fragment key={row.index}>
+              <ReactTableRow key={row.key} row={row} {...row.getRowProps()} />
               {row.isExpanded ? (
                 <tr>
                   <td colSpan={flatColumns.length}>
-                    {renderRowSubComponent({ row })}
+                    {row &&
+                      row.original &&
+                      row.original.id &&
+                      renderRowSubComponent({ row })}
                   </td>
                 </tr>
               ) : null}
-            </>
+            </Fragment>
           );
         })}
       </tbody>
     </table>
   );
+};
+
+ReactTableExpandable.defaultProps = {
+  renderRowSubComponent: () => {
+    return null;
+  },
 };
 
 export default ReactTableExpandable;
