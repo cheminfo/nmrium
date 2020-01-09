@@ -1,6 +1,5 @@
 import { produce } from 'immer';
 import * as d3 from 'd3';
-import { XY } from 'ml-spectra-processing';
 import max from 'ml-array-max';
 
 import { Datum1D } from '../../data/data1d/Datum1D';
@@ -415,42 +414,9 @@ const handleResizeIntegral = (state, integralData) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
-
-      const data = state.data[index];
-
-      const integralResult = XY.integral(data, {
-        from: integralData.from,
-        to: integralData.to,
-        reverse: true,
-      });
-
-      const integralValue = XY.integration(data, {
-        from: integralData.from,
-        to: integralData.to,
-        reverse: true,
-      });
-
-      const integral = {
-        ...integralData,
-        ...integralResult,
-        value: integralValue,
-      };
-
-      if (index !== -1) {
-        if (data.integrals.values) {
-          const integralIndex = data.integrals.values.findIndex(
-            (i) => i.id === integralData.id,
-          );
-          draft.data[index].integrals.values[integralIndex] = {
-            ...state.data[index].integrals[integralIndex],
-            ...integral,
-          };
-
-          AnalysisObj.getDatum1D(id).setIntegrals(
-            draft.data[index].integrals.values[integralIndex],
-          );
-        }
-      }
+      const datumObject = AnalysisObj.getDatum1D(id);
+      datumObject.changeIntegral(integralData);
+      draft.data[index].integrals = datumObject.getIntegrals();
     }
   });
 };

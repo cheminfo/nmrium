@@ -136,12 +136,36 @@ export class Datum1D {
     });
   }
 
-  setIntegrals(integrals) {
-    this.integrals.values = this.integrals.values.slice();
-    this.integrals.values = integrals;
+  changeIntegral(integral) {
+    const integralResult = XY.integral(
+      { x: this.data.x, y: this.data.re },
+      {
+        from: integral.from,
+        to: integral.to,
+        reverse: true,
+      },
+    );
+
+    const integralValue = XY.integration(
+      { x: this.data.x, y: this.data.re },
+      {
+        from: integral.from,
+        to: integral.to,
+        reverse: true,
+      },
+    );
+
+    const newIntegral = {
+      ...integral,
+      ...integralResult,
+      value: integralValue,
+    };
+
+    this.setIntegral(newIntegral);
   }
 
   updateRelativeIntegrals(number) {
+    this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
     let total = this.integrals.values.reduce(
       (previous, current) => (previous += current.integration),
@@ -155,7 +179,7 @@ export class Datum1D {
 
   setIntegral(integral) {
     this.integrals = Object.assign({}, this.integrals);
-    this.integrals.values = this.integrals.values.slice(0);
+    this.integrals.values = this.integrals.values.slice();
     const index = this.integrals.values.findIndex((i) => i.id === integral.id);
     if (index !== -1) {
       this.integrals.values[index] = integral;
