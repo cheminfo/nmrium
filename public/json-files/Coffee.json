@@ -19,7 +19,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -46,7 +49,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -73,7 +79,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -100,7 +109,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -127,7 +139,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -154,7 +169,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -181,7 +199,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -208,7 +229,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -235,7 +259,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -262,7 +289,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -289,7 +319,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -316,7 +349,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -343,7 +379,10 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}

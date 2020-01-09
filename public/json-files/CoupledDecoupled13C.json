@@ -32,7 +32,10 @@
         "expno": 3,
         "date": "2005-01-25T11:47:21.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -71,7 +74,10 @@
         "expno": 2,
         "date": "2005-01-25T11:22:02.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}

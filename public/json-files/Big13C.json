@@ -33,7 +33,10 @@
         "expno": 13,
         "date": "2010-04-11T13:05:24.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals": {
         "values": [],
         "options": {}

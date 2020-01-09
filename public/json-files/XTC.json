@@ -33,7 +33,10 @@
         "expno": 10,
         "date": "2012-05-19T07:58:55.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -74,7 +77,10 @@
         "expno": 10,
         "date": "2012-05-19T10:18:08.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -115,7 +121,10 @@
         "expno": 10,
         "date": "2012-05-19T14:56:55.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -156,7 +165,10 @@
         "expno": 10,
         "date": "2012-05-19T17:15:55.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -197,7 +209,10 @@
         "expno": 10,
         "date": "2012-05-19T21:53:44.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -238,7 +253,10 @@
         "expno": 10,
         "date": "2012-05-21T05:59:06.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -279,7 +297,10 @@
         "expno": 10,
         "date": "2012-05-20T02:34:10.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -320,7 +341,10 @@
         "expno": 10,
         "date": "2012-05-20T07:11:56.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -361,7 +385,10 @@
         "expno": 10,
         "date": "2012-05-20T10:40:17.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -402,7 +429,10 @@
         "expno": 10,
         "date": "2012-05-20T19:55:35.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
@@ -443,7 +473,10 @@
         "expno": 10,
         "date": "2012-05-21T02:46:40.000Z"
       },
-      "peaks": [],
+      "peaks":{
+        "values": [],
+        "options": {}
+      },
       "integrals":{
         "values": [],
         "options": {}
