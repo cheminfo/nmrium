@@ -55,7 +55,6 @@ const SpectrumListPanel = () => {
       const spectrumsIDs = spectrumsGroupByNucleus[activeTabID].map(
         (sp) => sp.id,
       );
-      console.log(spectrumsIDs);
       return spectrumsIDs;
     }
     return [];
@@ -154,7 +153,7 @@ const SpectrumListPanel = () => {
     setActiveTabID(tab);
   }, []);
 
-  const ListItems = useMemo(() => {
+  const SpectrumsTabs = useMemo(() => {
     return (
       <Tabs
         defaultTabID={
@@ -260,7 +259,7 @@ const SpectrumListPanel = () => {
             </button>
           </ToolTip>
         </DefaultPanelHeader>
-        {ListItems}
+        {SpectrumsTabs}
         {isColorPickerDisplayed ? (
           <ColorPicker
             onMouseLeave={handleCloseColorPicker}
