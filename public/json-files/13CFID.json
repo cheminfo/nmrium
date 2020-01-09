@@ -33,7 +33,10 @@
         "date": "2010-04-11T13:05:24.000Z"
       },
       "peaks": [],
-      "integrals": [],
+      "integrals": {
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     }

@@ -20,7 +20,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -44,7 +47,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -68,7 +74,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -92,7 +101,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -116,7 +128,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -140,7 +155,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -164,7 +182,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -188,7 +209,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -212,7 +236,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -236,7 +263,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -260,7 +290,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -284,7 +317,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -308,7 +344,10 @@
         "isComplex": false
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     }

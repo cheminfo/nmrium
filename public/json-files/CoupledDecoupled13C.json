@@ -33,7 +33,10 @@
         "date": "2005-01-25T11:47:21.000Z"
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     },
@@ -69,7 +72,10 @@
         "date": "2005-01-25T11:22:02.000Z"
       },
       "peaks": [],
-      "integrals": [],
+      "integrals":{
+        "values": [],
+        "options": {}
+      },
       "signals": [],
       "filters": []
     }
