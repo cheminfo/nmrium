@@ -50,8 +50,8 @@ const RangesTablePanel = () => {
         ? SpectrumsData[activeSpectrum.index]
         : null;
 
-    if (_data && _data.ranges) {
-      return _data.ranges.map((range) => {
+    if (_data && _data.ranges && _data.ranges.values) {
+      return _data.ranges.values.map((range) => {
         return {
           from: range.from,
           to: range.to,

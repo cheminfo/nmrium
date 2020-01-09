@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
+import React from 'react';
 
 import { useChartData } from './context/ChartContext';
 import Range from './Range';
@@ -12,10 +11,10 @@ const Ranges = () => {
       {data &&
         data[0] &&
         data
-          .filter((d) => d.isVisible === true && d.ranges)
+          .filter((d) => d.isVisible === true && d.ranges && d.ranges.values)
           .map((d) => (
             <g key={d.id}>
-              {d.ranges.map((range) => (
+              {d.ranges.values.map((range) => (
                 <Range
                   key={range.id}
                   id={range.id}

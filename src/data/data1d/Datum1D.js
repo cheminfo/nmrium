@@ -70,7 +70,7 @@ export class Datum1D {
       options.integrals,
     ); // array of object (from: xIndex, to: xIndex)
     this.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
-    this.ranges = Object.assign([], options.ranges);
+    this.ranges = Object.assign({ values: [], options: {} }, options.ranges);
 
     this.preprocessing();
 
@@ -208,7 +208,7 @@ export class Datum1D {
 
   detectRanges(options) {
     const ranges = autoRangesDetection(this, options);
-    this.ranges = ranges.map((range) => {
+    this.ranges.values = ranges.map((range) => {
       return {
         id: generateID(),
         ...range,
@@ -231,10 +231,14 @@ export class Datum1D {
   }
 
   deleteRange(id) {
+    this.ranges = Object.assign({}, this.ranges);
+    this.ranges.values = this.ranges.values.slice();
     if (id == null) {
-      this.ranges = [];
+      this.ranges.values = [];
     } else {
-      this.ranges = this.ranges.filter((range) => range.id !== id);
+      this.ranges.values = this.ranges.values.filter(
+        (range) => range.id !== id,
+      );
     }
   }
   deleteIntegral(id) {
