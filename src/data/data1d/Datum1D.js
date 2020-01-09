@@ -65,7 +65,10 @@ export class Datum1D {
     this.peaks = Object.assign([], options.peaks); // array of object {index: xIndex, xShift}
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
-    this.integrals = Object.assign([], options.integrals); // array of object (from: xIndex, to: xIndex)
+    this.integrals = Object.assign(
+      { values: [], options: {} },
+      options.integrals,
+    ); // array of object (from: xIndex, to: xIndex)
     this.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
     this.ranges = Object.assign([], options.ranges);
 
@@ -102,7 +105,9 @@ export class Datum1D {
   }
 
   addIntegral(range = []) {
-    this.integrals = this.integrals.slice(0);
+    this.integrals = Object.assign({}, this.integrals);
+    this.integrals.values = this.integrals.values.slice();
+
     const integralResult = XY.integral(
       { x: this.data.x, y: this.data.re },
       {
@@ -120,7 +125,7 @@ export class Datum1D {
         reverse: true,
       },
     );
-    this.integrals.push({
+    this.integrals.values.push({
       id: generateID(),
       from: range[0],
       to: range[1],
@@ -132,26 +137,28 @@ export class Datum1D {
   }
 
   setIntegrals(integrals) {
-    this.integrals = Object.assign([], integrals);
+    this.integrals.values = this.integrals.values.slice();
+    this.integrals.values = integrals;
   }
 
   updateRelativeIntegrals(number) {
-    this.integrals = this.integrals.slice(0);
-    let total = this.integrals.reduce(
+    this.integrals.values = this.integrals.values.slice();
+    let total = this.integrals.values.reduce(
       (previous, current) => (previous += current.integration),
       0,
     );
     let factor = number / total;
-    this.integrals.forEach(
+    this.integrals.values.forEach(
       (integral) => (integral.relative = integral.value * factor),
     );
   }
 
   setIntegral(integral) {
-    this.integrals = this.integrals.slice(0);
-    const index = this.integrals.findIndex((i) => i.id === integral.id);
+    this.integrals = Object.assign({}, this.integrals);
+    this.integrals.values = this.integrals.values.slice(0);
+    const index = this.integrals.values.findIndex((i) => i.id === integral.id);
     if (index !== -1) {
-      this.integrals[index] = integral;
+      this.integrals.values[index] = integral;
     }
   }
 
@@ -200,10 +207,15 @@ export class Datum1D {
     }
   }
   deleteIntegral(id) {
+    this.integrals = Object.assign({}, this.integrals);
+    this.integrals.values = this.integrals.values.slice();
+
     if (id == null) {
-      this.integrals = [];
+      this.integrals.values = [];
     } else {
-      this.integrals = this.integrals.filter((integral) => integral.id !== id);
+      this.integrals.values = this.integrals.values.filter(
+        (integral) => integral.id !== id,
+      );
     }
   }
 

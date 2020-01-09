@@ -437,17 +437,17 @@ const handleResizeIntegral = (state, integralData) => {
       };
 
       if (index !== -1) {
-        if (data.integrals) {
-          const integralIndex = data.integrals.findIndex(
+        if (data.integrals.values) {
+          const integralIndex = data.integrals.values.findIndex(
             (i) => i.id === integralData.id,
           );
-          draft.data[index].integrals[integralIndex] = {
+          draft.data[index].integrals.values[integralIndex] = {
             ...state.data[index].integrals[integralIndex],
             ...integral,
           };
 
           AnalysisObj.getDatum1D(id).setIntegrals(
-            draft.data[index].integrals[integralIndex],
+            draft.data[index].integrals.values[integralIndex],
           );
         }
       }

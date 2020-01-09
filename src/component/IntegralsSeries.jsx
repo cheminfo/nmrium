@@ -86,7 +86,8 @@ const IntegralsSeries = () => {
         .map(
           (d) =>
             d.integrals &&
-            d.integrals.map((integral) => (
+            d.integrals.values &&
+            d.integrals.values.map((integral) => (
               <g key={integral.id}>
                 <path
                   className="line"

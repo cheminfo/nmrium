@@ -155,7 +155,7 @@ const IntegralTablePanel = () => {
       activeSpectrum && SpectrumsData
         ? SpectrumsData[activeSpectrum.index]
         : null;
-    if (_data && _data.integrals) {
+    if (_data && _data.integrals.values) {
       if (_data.info.nucleus === '1H' && molecules && molecules.length > 0) {
         columns.splice(columns.length - 2, 0, {
           Header: 'nbH',
@@ -164,7 +164,7 @@ const IntegralTablePanel = () => {
           Cell: () => molecules[0].atoms.H,
         });
       }
-      return _data.integrals;
+      return _data.integrals.values;
     } else {
       return [];
     }
