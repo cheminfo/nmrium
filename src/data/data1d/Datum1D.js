@@ -62,7 +62,7 @@ export class Datum1D {
       },
       options.data,
     );
-    this.peaks = Object.assign([], options.peaks); // array of object {index: xIndex, xShift}
+    this.peaks = Object.assign({ values: [], options: {} }, options.peaks); // array of object {index: xIndex, xShift}
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
     this.integrals = Object.assign(
@@ -199,8 +199,10 @@ export class Datum1D {
   }
 
   applyAutoPeakPicking(options) {
+    this.peaks = Object.assign({}, this.peaks);
+    this.peaks.values = this.peaks.values.slice();
     const peaks = autoPeakPicking(this, options);
-    this.peaks = peaks;
+    this.peaks.values = peaks;
     return this.peaks;
   }
 
@@ -216,10 +218,15 @@ export class Datum1D {
   }
 
   deletePeak(peak) {
+    this.peaks = Object.assign({}, this.peaks);
+    this.peaks.values = this.peaks.values.slice();
+
     if (peak == null) {
-      this.peaks = [];
+      this.peaks.values = [];
     } else {
-      this.peaks = this.peaks.filter((p) => p.xIndex !== peak.xIndex);
+      this.peaks.values = this.peaks.values.filter(
+        (p) => p.xIndex !== peak.xIndex,
+      );
     }
   }
 
@@ -300,7 +307,7 @@ export class Datum1D {
   // }
 
   checkPeakIsExists(peak) {
-    const peaks = this.peaks.map((p) => p.xIndex);
+    const peaks = this.peaks.values.map((p) => p.xIndex);
     if (peaks.includes(peak.xIndex)) {
       return true;
     }
@@ -308,9 +315,10 @@ export class Datum1D {
   }
 
   addPeak(peak) {
-    this.peaks = this.peaks.slice(0);
+    this.peaks = Object.assign({}, this.peaks);
+    this.peaks.values = this.peaks.values.slice();
     if (!this.checkPeakIsExists(peak)) {
-      this.peaks.push({
+      this.peaks.values.push({
         id: generateID(),
         ...peak,
       });
@@ -324,10 +332,11 @@ export class Datum1D {
     // but it returns an array !
     // for now you return an array containing the result of addPeak
     if (from !== to) {
-      this.peaks = this.peaks.slice(0);
+      this.peaks = Object.assign({}, this.peaks);
+      this.peaks.values = this.peaks.values.slice();
       const peak = this.lookupPeak(from, to);
       if (peak && !this.checkPeakIsExists(peak)) {
-        this.peaks = this.peaks.concat({
+        this.peaks.values = this.peaks.values.concat({
           id: generateID(),
           ...peak,
         });

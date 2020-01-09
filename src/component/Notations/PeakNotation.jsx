@@ -206,7 +206,6 @@ export const PeakNotation = ({
           handleOnMouseLeaveNotation();
           highlight.hide();
         }}
-        {...highlight.onHover}
       >
         <line
           x1="0"

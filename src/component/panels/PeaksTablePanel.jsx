@@ -78,9 +78,9 @@ const PeaksTablePanel = () => {
         ? SpectrumsData[activeSpectrum.index]
         : null;
 
-    if (_data && _data.peaks) {
+    if (_data && _data.peaks.values) {
       const labelFraction = getPeakLabelNumberDecimals(_data.info.nucleus);
-      return _data.peaks.map((peak) => {
+      return _data.peaks.values.map((peak) => {
         return {
           xIndex: peak.xIndex,
           value: _data.x[peak.xIndex].toFixed(labelFraction),
