@@ -2,7 +2,8 @@ name: nmrium gh-pages tag publish
 
 on:
   push:
-    tags: *
+    tags:
+      - '*'
 
 jobs:
   build:
