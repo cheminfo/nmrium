@@ -44,10 +44,22 @@ const SpectrumListPanel = () => {
   const [isColorPickerDisplayed, setIsColorPickerDisplayed] = useState(false);
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [colorPickerPosition, setColorPickerPosition] = useState(null);
+  const [activeTabID, setActiveTabID] = useState(null);
   const { data } = useChartData();
   const modal = useModal();
   const dispatch = useDispatch();
   const [spectrumsGroupByNucleus, setSpectrumsGroupByNucleus] = useState([]);
+
+  const getActiveTabSpectrumsIDs = useCallback(() => {
+    if (Array.isArray(spectrumsGroupByNucleus[activeTabID])) {
+      const spectrumsIDs = spectrumsGroupByNucleus[activeTabID].map(
+        (sp) => sp.id,
+      );
+      console.log(spectrumsIDs);
+      return spectrumsIDs;
+    }
+    return [];
+  }, [activeTabID, spectrumsGroupByNucleus]);
 
   const handleChangeVisibility = useCallback(
     (d) => {
@@ -117,9 +129,13 @@ const SpectrumListPanel = () => {
 
     if (data) {
       const groupByNucleus = groupBy('nucleus');
-      setSpectrumsGroupByNucleus(groupByNucleus(data));
+      const spectrumsGroupsList = groupByNucleus(data);
+      setSpectrumsGroupByNucleus(spectrumsGroupsList);
+      if (!activeTabID) {
+        setActiveTabID(Object.keys(spectrumsGroupsList)[0]);
+      }
     }
-  }, [data, handleChangeActiveSpectrum, activated]);
+  }, [data, handleChangeActiveSpectrum, activated, activeTabID]);
 
   const handleOpenColorPicker = useCallback((selectedSpectrum, event) => {
     setColorPickerPosition({
@@ -134,9 +150,18 @@ const SpectrumListPanel = () => {
     setIsColorPickerDisplayed(false);
   }, []);
 
+  const onTabChangeHandler = useCallback((tab) => {
+    setActiveTabID(tab);
+  }, []);
+
   const ListItems = useMemo(() => {
     return (
-      <Tabs>
+      <Tabs
+        defaultTabID={
+          spectrumsGroupByNucleus && Object.keys(spectrumsGroupByNucleus)[0]
+        }
+        onClick={onTabChangeHandler}
+      >
         {spectrumsGroupByNucleus &&
           Object.keys(spectrumsGroupByNucleus).map((group) => (
             <div label={group} key={group}>
@@ -160,6 +185,7 @@ const SpectrumListPanel = () => {
     );
   }, [
     spectrumsGroupByNucleus,
+    onTabChangeHandler,
     visible,
     activated,
     markersVisible,
@@ -170,8 +196,9 @@ const SpectrumListPanel = () => {
   ]);
 
   const yesHandler = useCallback(() => {
-    dispatch({ type: DELETE_SPECTRA });
-  }, [dispatch]);
+    const spectrumsPerTab = getActiveTabSpectrumsIDs();
+    dispatch({ type: DELETE_SPECTRA, IDs: spectrumsPerTab });
+  }, [dispatch, getActiveTabSpectrumsIDs]);
 
   const handleDelete = useCallback(() => {
     if (activated) {
@@ -185,46 +212,54 @@ const SpectrumListPanel = () => {
   }, [activated, dispatch, modal, yesHandler]);
 
   const showAllSpectrumsHandler = useCallback(() => {
-    const allSpectrums = data.map((spectrum) => {
+    const spectrumsPerTab = getActiveTabSpectrumsIDs().map((id) => {
       return {
-        id: spectrum.id,
+        id,
       };
     });
-    dispatch({ type: CHANGE_VISIBILITY, data: allSpectrums });
-    setVisible(allSpectrums);
-  }, [data, dispatch]);
+    dispatch({ type: CHANGE_VISIBILITY, data: spectrumsPerTab });
+    setVisible(spectrumsPerTab);
+  }, [dispatch, getActiveTabSpectrumsIDs]);
   const hideAllSpectrumsHandler = useCallback(() => {
-    dispatch({ type: CHANGE_VISIBILITY, data: [] });
+    const spectrumsPerTab = getActiveTabSpectrumsIDs().map((id) => {
+      return {
+        id,
+      };
+    });
+    dispatch({ type: CHANGE_VISIBILITY, data: spectrumsPerTab });
     setVisible([]);
-  }, [dispatch]);
+  }, [dispatch, getActiveTabSpectrumsIDs]);
 
   return (
     <div style={styles.container}>
-      <DefaultPanelHeader
-        onDelete={handleDelete}
-        counter={data && data.length}
-        deleteToolTip="Delete All Spectrums"
-      >
-        <ToolTip title="Hide all spectrums" popupPlacement="right">
-          <button
-            style={styles.button}
-            type="button"
-            onClick={hideAllSpectrumsHandler}
-          >
-            <FaEyeSlash />
-          </button>
-        </ToolTip>
-        <ToolTip title="Show all spectrums" popupPlacement="right">
-          <button
-            style={styles.button}
-            type="button"
-            onClick={showAllSpectrumsHandler}
-          >
-            <FaEye />
-          </button>
-        </ToolTip>
-      </DefaultPanelHeader>
       <div style={{ overflow: 'auto' }}>
+        <DefaultPanelHeader
+          onDelete={handleDelete}
+          counter={
+            spectrumsGroupByNucleus[activeTabID] &&
+            spectrumsGroupByNucleus[activeTabID].length
+          }
+          deleteToolTip="Delete All Spectrums"
+        >
+          <ToolTip title="Hide all spectrums" popupPlacement="right">
+            <button
+              style={styles.button}
+              type="button"
+              onClick={hideAllSpectrumsHandler}
+            >
+              <FaEyeSlash />
+            </button>
+          </ToolTip>
+          <ToolTip title="Show all spectrums" popupPlacement="right">
+            <button
+              style={styles.button}
+              type="button"
+              onClick={showAllSpectrumsHandler}
+            >
+              <FaEye />
+            </button>
+          </ToolTip>
+        </DefaultPanelHeader>
         {ListItems}
         {isColorPickerDisplayed ? (
           <ColorPicker

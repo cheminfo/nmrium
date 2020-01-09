@@ -853,21 +853,28 @@ function setDomain(draft) {
   });
 }
 
-const handleDeleteSpectra = (state) => {
+const handleDeleteSpectra = (state, action) => {
   return produce(state, (draft) => {
     const { activeSpectrum } = draft;
 
     if (activeSpectrum && activeSpectrum.id) {
-      AnalysisObj.deleteDatum1DByID(activeSpectrum.id);
+      AnalysisObj.deleteDatum1DByIDs([activeSpectrum.id]);
       draft.activeSpectrum = null;
       draft.data = AnalysisObj.getData1d();
       setDomain(draft);
       setMode(draft);
     } else {
-      Analysis.build({}).then((obj) => {
-        AnalysisObj = obj;
-      });
-      draft.data = [];
+      const { IDs } = action;
+      console.log(IDs)
+      AnalysisObj.deleteDatum1DByIDs(IDs);
+      draft.data = AnalysisObj.getData1d();
+      setDomain(draft);
+      setMode(draft);
+
+      // Analysis.build({}).then((obj) => {
+      //   AnalysisObj = obj;
+      // });
+      // draft.data = [];
     }
   });
 };
@@ -1210,7 +1217,7 @@ export const spectrumReducer = (state, action) => {
       return handleDeleteMolecule(state, action.key);
 
     case DELETE_SPECTRA:
-      return handleDeleteSpectra(state);
+      return handleDeleteSpectra(state, action);
 
     case SET_INTEGRAL_Y_DOMAIN:
       return handleChangeIntegralYDomain(state, action.yDomain);

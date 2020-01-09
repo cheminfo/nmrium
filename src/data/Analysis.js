@@ -167,8 +167,8 @@ export class Analysis {
       : [];
   }
 
-  deleteDatum1DByID(id) {
-    const _data1d = this.data1d.filter((d) => d.id !== id);
+  deleteDatum1DByIDs(IDs) {
+    const _data1d = this.data1d.filter((d) => !IDs.includes(d.id));
     this.data1d = _data1d.length > 0 ? _data1d : null;
   }
 }

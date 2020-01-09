@@ -1,6 +1,13 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useState, useCallback, useEffect, useMemo, Children } from 'react';
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  Children,
+  cloneElement,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import Tab from './Tab';
@@ -33,14 +40,12 @@ const styles = css`
   }
 `;
 
-const Tabs = ({ children, onClick }) => {
+const Tabs = ({ children, onClick, defaultTabID }) => {
   const [activeTab, setActiveTab] = useState();
 
   useEffect(() => {
-    if (children[0]) {
-      setActiveTab(children[0].props.label);
-    }
-  }, [children]);
+    setActiveTab(defaultTabID);
+  }, [defaultTabID]);
 
   const onClickTabHandler = useCallback(
     (tab) => {
@@ -66,8 +71,10 @@ const Tabs = ({ children, onClick }) => {
 
   const tabsContent = useMemo(() => {
     return Children.map(children, (child) => {
-      if (child.props.label !== activeTab) return undefined;
-      return child.props.children;
+      if (child.props.label !== activeTab) {
+        return cloneElement(child, { style: { display: 'none' } });
+      }
+      return cloneElement(child, { style: { display: 'block' } });
     });
   }, [activeTab, children]);
 
