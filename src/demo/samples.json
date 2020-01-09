@@ -7,8 +7,12 @@
     "groupName": "General",
     "children": [
       {
-        "file": "./json-files/1HSpectrum.json",
+        "file": "./cytisine/1H.json",
         "title": "1H spectrum test"
+      },
+      {
+        "file": "./cytisine/1D.json",
+        "title": "1D spectra test"
       },
       {
         "file": "./ethylvinylether/1h.json",
