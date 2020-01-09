@@ -1,0 +1,28 @@
+name: nmrium gh-pages tag publish
+
+on:
+  push:
+    tags: *
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build
+      - name: push to gh-pages
+        run: |
+          git config user.email luc@patiny.com
+          git config user.name "Luc Patiny"
+          git remote set-url origin "https://lpatiny:${{ secrets.ACCESS_NMRIUM }}@github.com/zakodium/nmrium.git"
+          npm i -g gh-pages
+          gh-pages --dest $GITHUB_REF -d build --dotfiles
+        env:
+          CI: true
