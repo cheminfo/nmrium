@@ -38,7 +38,7 @@ const styles = {
     backgroundColor: 'white',
     maxHeight: '0',
     overflow: 'auto',
-    flex: '1',
+    flex: '1 1 1px',
   },
 };
 
