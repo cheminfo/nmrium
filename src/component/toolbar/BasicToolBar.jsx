@@ -3,7 +3,6 @@ import { jsx, css } from '@emotion/core';
 import { Fragment, useEffect, useCallback, useState } from 'react';
 import {
   FaDownload,
-  FaExpand,
   FaFileDownload,
   FaFileImage,
   FaCopy,
@@ -13,7 +12,6 @@ import { useAlert } from 'react-alert';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
-  FULL_ZOOM_OUT,
   CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
   SET_SPECTRUMS_VERTICAL_ALIGN,
@@ -59,13 +57,7 @@ const menuButton = css`
   }
 `;
 
-const BasicToolBar = ({
-  isFullZoomButtonVisible = true,
-  isFullZoomButtonEnabled = true,
-  isViewButtonVisible = true,
-  // isSaveButtonVisible = true,
-  // isSaveButtonEnabled = true,
-}) => {
+const BasicToolBar = ({ isViewButtonVisible = true }) => {
   const dispatch = useDispatch();
   const { data, activeSpectrum, verticalAlign } = useChartData();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
@@ -73,11 +65,6 @@ const BasicToolBar = ({
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
   const [isStacked, activateStackView] = useState(false);
   const alert = useAlert();
-  const handleFullZoomOut = useCallback(() => {
-    dispatch({
-      type: FULL_ZOOM_OUT,
-    });
-  }, [dispatch]);
 
   const saveAsSVGHandler = useCallback(() => {
     dispatch({
@@ -132,9 +119,6 @@ const BasicToolBar = ({
         !e.ctrlKey
       ) {
         switch (e.key) {
-          case 'f':
-            handleFullZoomOut();
-            break;
           case 'c':
             alignSpectrumsVerticallyHandler();
             break;
@@ -160,7 +144,6 @@ const BasicToolBar = ({
       }
     },
     [
-      handleFullZoomOut,
       alignSpectrumsVerticallyHandler,
       handleChangeDisplayViewMode,
       saveAsJSONHandler,
@@ -190,19 +173,6 @@ const BasicToolBar = ({
 
   return (
     <Fragment>
-      {isFullZoomButtonVisible && (
-        <button
-          type="button"
-          css={styles}
-          onClick={handleFullZoomOut}
-          disabled={!isFullZoomButtonEnabled}
-        >
-          <ToolTip title="Full Zoom Out ( Press f )" popupPlacement="right">
-            <FaExpand />
-          </ToolTip>
-        </button>
-      )}
-
       <MenuButton
         style={styles}
         component={<FaFileExport />}
