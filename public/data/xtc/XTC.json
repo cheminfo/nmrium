@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-814d_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-814d_zg30.jdx"
       },
       "display": {
         "name": "XTC 1",
@@ -33,11 +33,11 @@
         "expno": 10,
         "date": "2012-05-19T07:58:55.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -50,7 +50,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-888_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-888_zg30.jdx"
       },
       "display": {
         "name": "XTC 2",
@@ -77,11 +77,11 @@
         "expno": 10,
         "date": "2012-05-19T10:18:08.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -94,7 +94,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-966_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-966_zg30.jdx"
       },
       "display": {
         "name": "XTC 3",
@@ -121,11 +121,11 @@
         "expno": 10,
         "date": "2012-05-19T14:56:55.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -138,7 +138,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-1111a_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-1111a_zg30.jdx"
       },
       "display": {
         "name": "XTC 4",
@@ -165,11 +165,11 @@
         "expno": 10,
         "date": "2012-05-19T17:15:55.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -182,7 +182,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-1132a_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-1132a_zg30.jdx"
       },
       "display": {
         "name": "XTC 5",
@@ -209,11 +209,11 @@
         "expno": 10,
         "date": "2012-05-19T21:53:44.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -226,7 +226,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-1153_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-1153_zg30.jdx"
       },
       "display": {
         "name": "XTC 6",
@@ -253,11 +253,11 @@
         "expno": 10,
         "date": "2012-05-21T05:59:06.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -270,7 +270,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-1541_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-1541_zg30.jdx"
       },
       "display": {
         "name": "XTC 7",
@@ -297,11 +297,11 @@
         "expno": 10,
         "date": "2012-05-20T02:34:10.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -314,7 +314,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-1675_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-1675_zg30.jdx"
       },
       "display": {
         "name": "XTC 8",
@@ -341,11 +341,11 @@
         "expno": 10,
         "date": "2012-05-20T07:11:56.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -358,7 +358,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-1693_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-1693_zg30.jdx"
       },
       "display": {
         "name": "XTC 9",
@@ -385,11 +385,11 @@
         "expno": 10,
         "date": "2012-05-20T10:40:17.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -402,7 +402,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-1731a_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-1731a_zg30.jdx"
       },
       "display": {
         "name": "XTC 10",
@@ -429,11 +429,11 @@
         "expno": 10,
         "date": "2012-05-20T19:55:35.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -446,7 +446,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./xtc/XTC-z189_zg30.jdx"
+        "jcampURL": "./data/xtc/XTC-z189_zg30.jdx"
       },
       "display": {
         "name": "XTC 11",
@@ -473,11 +473,11 @@
         "expno": 10,
         "date": "2012-05-21T02:46:40.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },

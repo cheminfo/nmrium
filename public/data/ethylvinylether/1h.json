@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./ethylvinylether/1h.jdx"
+        "jcampURL": "./data/ethylvinylether/1h.jdx"
       },
       "display": {
         "name": "test",
@@ -33,11 +33,11 @@
         "expno": 4,
         "date": "2010-04-10T05:47:20.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },

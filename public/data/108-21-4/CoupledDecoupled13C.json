@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./108-21-4.13c-coupled.jdx"
+        "jcampURL": "./data/108-21-4/13c-coupled.jdx"
       },
       "display": {
         "name": "13C coupled",
@@ -32,11 +32,11 @@
         "expno": 3,
         "date": "2005-01-25T11:47:21.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -49,7 +49,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./108-21-4.13c-decoupled.jdx"
+        "jcampURL": "./data/108-21-4/13c-decoupled.jdx"
       },
       "display": {
         "name": "13C decoupled",
@@ -74,11 +74,11 @@
         "expno": 2,
         "date": "2005-01-25T11:22:02.000Z"
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },

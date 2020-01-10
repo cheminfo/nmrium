@@ -7,39 +7,39 @@
     "groupName": "General",
     "children": [
       {
-        "file": "./cytisine/1H.json",
+        "file": "./data/cytisine/1H.json",
         "title": "1H spectrum test"
       },
       {
-        "file": "./cytisine/1D.json",
+        "file": "./data/cytisine/1D.json",
         "title": "1D spectra test"
       },
       {
-        "file": "./ethylvinylether/1h.json",
+        "file": "./data/ethylvinylether/1h.json",
         "title": "1H ethylvinylether"
       },
       {
-        "file": "./json-files/13CFID.json",
+        "file": "./data/cytisine/13CFID.json",
         "title": "13C Spectrum"
       },
       {
-        "file": "./json-files/Big13C.json",
+        "file": "./data/cytisine/Big13C.json",
         "title": "Big 13C"
       },
       {
-        "file": "./json-files/XTC.json",
+        "file": "./data/xtc/XTC.json",
         "title": "XTC"
       },
       {
-        "file": "./json-files/Coffee.json",
+        "file": "./data/coffee/Coffee.json",
         "title": "Coffee"
       },
       {
-        "file": "./json-files/CoupledDecoupled13C.json",
+        "file": "./data/108-21-4/CoupledDecoupled13C.json",
         "title": "13C Coupled / Decoupled"
       },
       {
-        "file": "./json-files/Dept.json",
+        "file": "./data/cytisine/Dept.json",
         "title": "DEPT"
       }
     ]
@@ -48,35 +48,35 @@
     "groupName": "Simulate",
     "children": [
       {
-        "file": "./tests/simulated/d1-2-3-4-5-6-7-8.json",
+        "file": "./data/tests/simulated/d1-2-3-4-5-6-7-8.json",
         "title": "δ=1,2,3,4,5,6,7,8"
       },
       {
-        "file": "./tests/simulated/d1-2-3-4-5-6-7-8HR.json",
+        "file": "./data/tests/simulated/d1-2-3-4-5-6-7-8HR.json",
         "title": "δ=1,2,3,4,5,6,7,8 HR"
       },
       {
-        "file": "./tests/simulated/d1-1.2_j7.json",
+        "file": "./data/tests/simulated/d1-1.2_j7.json",
         "title": "δ=1,1.2 J=7"
       },
       {
-        "file": "./tests/simulated/d1-2_j7.json",
+        "file": "./data/tests/simulated/d1-2_j7.json",
         "title": "δ=1,2 J=7"
       },
       {
-        "file": "./tests/simulated/d1-2-3_j16-10-2.json",
+        "file": "./data/tests/simulated/d1-2-3_j16-10-2.json",
         "title": "δ=1,2,3 J=2,10,16"
       },
       {
-        "file": "./tests/simulated/d1-7_j7.json",
+        "file": "./data/tests/simulated/d1-7_j7.json",
         "title": "δ=1,7 J=7"
       },
       {
-        "file": "./tests/triangle/low-res.json",
+        "file": "./data/tests/triangle/low-res.json",
         "title": "Test low resolution"
       },
       {
-        "file": "./tests/triangle/high-res.json",
+        "file": "./data/tests/triangle/high-res.json",
         "title": "Test high resolution"
       }
     ]

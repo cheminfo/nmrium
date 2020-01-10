@@ -5,7 +5,7 @@
       "id": "rwqz5z8yebh",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1198.jdx"
+        "jcampURL": "./data/coffee/coffee_1198.jdx"
       },
       "display": {
         "name": "coffee 1",
@@ -19,11 +19,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -35,7 +35,7 @@
       "id": "kpxtkoo33f",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1199.jdx"
+        "jcampURL": "./data/coffee/coffee_1199.jdx"
       },
       "display": {
         "name": "coffee 2",
@@ -49,11 +49,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -65,7 +65,7 @@
       "id": "q8opnudaw8d",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1208.jdx"
+        "jcampURL": "./data/coffee/coffee_1208.jdx"
       },
       "display": {
         "name": "coffee 3",
@@ -79,11 +79,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -95,7 +95,7 @@
       "id": "2pjw8olyu6k",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1241.jdx"
+        "jcampURL": "./data/coffee/coffee_1241.jdx"
       },
       "display": {
         "name": "coffee 4",
@@ -109,11 +109,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -125,7 +125,7 @@
       "id": "veddl783al",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1246.jdx"
+        "jcampURL": "./data/coffee/coffee_1246.jdx"
       },
       "display": {
         "name": "coffee 5",
@@ -139,11 +139,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -155,7 +155,7 @@
       "id": "if7hw45b3b9",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1307.jdx"
+        "jcampURL": "./data/coffee/coffee_1307.jdx"
       },
       "display": {
         "name": "coffee 6",
@@ -169,11 +169,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -185,7 +185,7 @@
       "id": "izg1s7e3xg",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1309.jdx"
+        "jcampURL": "./data/coffee/coffee_1309.jdx"
       },
       "display": {
         "name": "coffee 7",
@@ -199,11 +199,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -215,7 +215,7 @@
       "id": "zz8lhfdklw",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1310.jdx"
+        "jcampURL": "./data/coffee/coffee_1310.jdx"
       },
       "display": {
         "name": "coffee 8",
@@ -229,11 +229,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -245,7 +245,7 @@
       "id": "pomzxk2wpv",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1316.jdx"
+        "jcampURL": "./data/coffee/coffee_1316.jdx"
       },
       "display": {
         "name": "coffee 9",
@@ -259,11 +259,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -275,7 +275,7 @@
       "id": "4u5bfuoe95o",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1317.jdx"
+        "jcampURL": "./data/coffee/coffee_1317.jdx"
       },
       "display": {
         "name": "coffee 10",
@@ -289,11 +289,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -305,7 +305,7 @@
       "id": "4thl4vvvadj",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1318.jdx"
+        "jcampURL": "./data/coffee/coffee_1318.jdx"
       },
       "display": {
         "name": "coffee 11",
@@ -319,11 +319,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -335,7 +335,7 @@
       "id": "jc1abm02de9",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1319.jdx"
+        "jcampURL": "./data/coffee/coffee_1319.jdx"
       },
       "display": {
         "name": "coffee 12",
@@ -349,11 +349,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
@@ -365,7 +365,7 @@
       "id": "0girvqjgxb8p",
       "source": {
         "jcamp": null,
-        "jcampURL": "./coffee/coffee_1321.jdx"
+        "jcampURL": "./data/coffee/coffee_1321.jdx"
       },
       "display": {
         "name": "coffee 13",
@@ -379,11 +379,11 @@
         "isFid": false,
         "isComplex": false
       },
-      "peaks":{
+      "peaks": {
         "values": [],
         "options": {}
       },
-      "integrals":{
+      "integrals": {
         "values": [],
         "options": {}
       },
