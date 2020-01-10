@@ -113,28 +113,62 @@ const SpectrumListPanel = () => {
     [dispatch, selectedSpectrumData],
   );
 
+  const showSpectrumsByGroup = useCallback(
+    (activeTab, spectrumsGroupsList) => {
+      if (activeTab) {
+        setActiveTabID(activeTab);
+        const visibleSpectrums = spectrumsGroupsList[activeTab].map((d) => {
+          return {
+            id: d.id,
+          };
+        });
+        dispatch({
+          type: CHANGE_VISIBILITY,
+          data: visibleSpectrums,
+        });
+        setVisible(visibleSpectrums);
+      }
+    },
+    [dispatch],
+  );
+
   useEffect(() => {
-    const visibleSpectra = data ? data.filter((d) => d.isVisible === true) : [];
-    const visibleMarkers = data
-      ? data.filter((d) => d.isPeaksMarkersVisible === true)
-      : [];
+    if (data) {
+      const visibleSpectra = data
+        ? data.filter((d) => d.isVisible === true)
+        : [];
+      const visibleMarkers = data
+        ? data.filter((d) => d.isPeaksMarkersVisible === true)
+        : [];
 
-    setVisible(visibleSpectra);
-    setMarkersVisible(visibleMarkers);
+      setVisible(visibleSpectra);
+      setMarkersVisible(visibleMarkers);
 
-    if (data && data.length === 1 && activated == null) {
-      handleChangeActiveSpectrum(data[0]);
+      if (data && data.length === 1 && activated == null) {
+        handleChangeActiveSpectrum(data[0]);
+      }
     }
+  }, [data, handleChangeActiveSpectrum, activated, activeTabID, dispatch]);
 
+  useEffect(() => {
     if (data) {
       const groupByNucleus = groupBy('nucleus');
       const spectrumsGroupsList = groupByNucleus(data);
+
       setSpectrumsGroupByNucleus(spectrumsGroupsList);
       if (!activeTabID) {
-        setActiveTabID(Object.keys(spectrumsGroupsList)[0]);
+        const activeTab = Object.keys(spectrumsGroupsList)[0];
+        showSpectrumsByGroup(activeTab, spectrumsGroupsList);
       }
     }
-  }, [data, handleChangeActiveSpectrum, activated, activeTabID]);
+  }, [
+    data,
+    handleChangeActiveSpectrum,
+    activated,
+    activeTabID,
+    dispatch,
+    showSpectrumsByGroup,
+  ]);
 
   const handleOpenColorPicker = useCallback((selectedSpectrum, event) => {
     setColorPickerPosition({
@@ -149,9 +183,13 @@ const SpectrumListPanel = () => {
     setIsColorPickerDisplayed(false);
   }, []);
 
-  const onTabChangeHandler = useCallback((tab) => {
-    setActiveTabID(tab);
-  }, []);
+  const onTabChangeHandler = useCallback(
+    (tab) => {
+      setActiveTabID(tab);
+      showSpectrumsByGroup(tab, spectrumsGroupByNucleus);
+    },
+    [showSpectrumsByGroup, spectrumsGroupByNucleus],
+  );
 
   const SpectrumsTabs = useMemo(() => {
     return (
@@ -219,15 +257,11 @@ const SpectrumListPanel = () => {
     dispatch({ type: CHANGE_VISIBILITY, data: spectrumsPerTab });
     setVisible(spectrumsPerTab);
   }, [dispatch, getActiveTabSpectrumsIDs]);
+
   const hideAllSpectrumsHandler = useCallback(() => {
-    const spectrumsPerTab = getActiveTabSpectrumsIDs().map((id) => {
-      return {
-        id,
-      };
-    });
-    dispatch({ type: CHANGE_VISIBILITY, data: spectrumsPerTab });
+    dispatch({ type: CHANGE_VISIBILITY, data: [] });
     setVisible([]);
-  }, [dispatch, getActiveTabSpectrumsIDs]);
+  }, [dispatch]);
 
   return (
     <div style={styles.container}>

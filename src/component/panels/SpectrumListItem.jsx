@@ -17,7 +17,16 @@ const styles = {
     flex: 1,
     height: '100%',
     display: 'flex',
+    // alignItems: 'center',
+  },
+  info: {
+    flex: '1 1 1px',
+    height: '100%',
+    display: 'block',
     alignItems: 'center',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   icon: {
     backgroundPosition: 'center center',
@@ -64,7 +73,9 @@ const SpectrumListItem = ({
         />
       </button>
       <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
-        <span>{data.name}</span>
+        <span style={styles.info}>{data.name}</span>
+        <span style={styles.info}>{data.info && data.info.solvent}</span>
+        <span style={styles.info}>{data.info && data.info.pulse}</span>
       </div>
       <button
         style={{
