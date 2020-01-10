@@ -1073,6 +1073,7 @@ export const initialState = {
   selectedTool: options.zoom.id,
   selectedFilter: null,
   selectedOptionPanel: null,
+  selectedTab: null,
 
   // peakNotations: [],
   width: null,

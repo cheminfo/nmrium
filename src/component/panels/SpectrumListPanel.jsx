@@ -13,6 +13,7 @@ import {
 import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { Tabs } from '../elements/Tab';
+import groupByInfoKey from '../utility/GroupByInfoKey';
 
 import SpectrumListItem from './SpectrumListItem';
 import ColorPicker from './ColorPicker';
@@ -29,13 +30,6 @@ const styles = {
     border: 'none',
   },
 };
-
-const groupBy = (key) => (array) =>
-  array.reduce((objectsByKeyValue, obj) => {
-    const value = obj.info[key];
-    objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-    return objectsByKeyValue;
-  }, {});
 
 const SpectrumListPanel = () => {
   const [activated, setActivated] = useState(null);
@@ -152,7 +146,7 @@ const SpectrumListPanel = () => {
 
   useEffect(() => {
     if (data) {
-      const groupByNucleus = groupBy('nucleus');
+      const groupByNucleus = groupByInfoKey('nucleus');
       const spectrumsGroupsList = groupByNucleus(data);
 
       setSpectrumsGroupByNucleus(spectrumsGroupsList);
