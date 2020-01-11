@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import { FaSearchPlus } from 'react-icons/fa';
+import { FaSearchPlus, FaExpand } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
   SET_SELECTED_TOOL,
   APPLY_FFT_FILTER,
   SET_SELECTED_FILTER,
+  FULL_ZOOM_OUT,
 } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -26,6 +27,10 @@ const styles = {
     width: '35px',
     height: '35px',
     outline: 'outline',
+  },
+  faIcon: {
+    display: 'flex',
+    justifyContent: 'center',
   },
 };
 
@@ -49,10 +54,19 @@ const FunctionToolBar = ({ defaultValue }) => {
     [handleChangeOption],
   );
 
+  const handleFullZoomOut = useCallback(() => {
+    dispatch({
+      type: FULL_ZOOM_OUT,
+    });
+  }, [dispatch]);
+
   const handleOnKeyPressed = useCallback(
     (e) => {
       if (e.target.localName !== 'input' && !e.shiftKey && !e.metaKey) {
         switch (e.key) {
+          case 'f':
+            handleFullZoomOut();
+            break;
           case 'z':
           case 'Escape':
             setOption(options.zoom.id);
@@ -74,7 +88,7 @@ const FunctionToolBar = ({ defaultValue }) => {
         }
       }
     },
-    [handleChangeOption],
+    [handleChangeOption, handleFullZoomOut],
   );
 
   useEffect(() => {
@@ -114,6 +128,16 @@ const FunctionToolBar = ({ defaultValue }) => {
             <FaSearchPlus />
           </ToolTip>
         </ToggleButton>
+
+        <button
+          type="button"
+          style={{ ...styles.button, ...styles.faIcon }}
+          onClick={handleFullZoomOut}
+        >
+          <ToolTip title="Full Zoom Out ( Press f )" popupPlacement="right">
+            <FaExpand />
+          </ToolTip>
+        </button>
 
         <ToggleButton
           key={options.peakPicking.id}
