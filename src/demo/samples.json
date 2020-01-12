@@ -23,6 +23,10 @@
         "title": "13C Spectrum"
       },
       {
+        "file": "./data/cytisine/processed13C.json",
+        "title": "Processed 13C Spectrum"
+      },
+      {
         "file": "./data/cytisine/Big13C.json",
         "title": "Big 13C"
       },
