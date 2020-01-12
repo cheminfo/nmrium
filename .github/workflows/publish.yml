@@ -17,13 +17,18 @@ jobs:
       - name: npm install and build
         run: |
           npm ci
+          rm src/demo/samples.json
+          mv src/demo/empty.json src/demo/samples.json
           npm run build
+      - name: remove spectra
+        run: |
+          cd build
+          rm -rf data
       - name: push to gh-pages
         run: |
           git config user.email luc@patiny.com
           git config user.name "Luc Patiny"
           git remote set-url origin "https://lpatiny:${{ secrets.ACCESS_NMRIUM }}@github.com/zakodium/nmrium.org.git"
-
           npm i -g gh-pages
           VERSION=${GITHUB_REF//*\/}
           gh-pages --dest $VERSION -d build --dotfiles
