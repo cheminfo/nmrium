@@ -52,6 +52,7 @@ const IntegralResizable = (props) => {
         x={getScale(id).x(xBoundary[1]) - 20}
         y={height - margin.bottom - 20}
         onClick={deleteIntegral}
+        data-no-export="true"
       >
         <rect rx="5" width="16" height="16" fill="#c81121" />
         <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
