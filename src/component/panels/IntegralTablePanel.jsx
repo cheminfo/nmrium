@@ -1,8 +1,8 @@
-import React, { useContext, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import ReactTable from '../elements/ReactTable/ReactTable';
-import { ChartContext } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { DELETE_INTEGRAL, CHANGE_INTEGRAL_DATA } from '../reducer/Actions';
 import { useModal } from '../elements/Modal';
@@ -65,9 +65,7 @@ const signalKinds = [
 const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 const IntegralTablePanel = () => {
-  const { activeSpectrum, data: SpectrumsData, molecules } = useContext(
-    ChartContext,
-  );
+  const { activeSpectrum, data: SpectrumsData, molecules } = useChartData();
   const dispatch = useDispatch();
   const modal = useModal();
 

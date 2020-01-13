@@ -84,7 +84,7 @@ const RangesTablePanel = () => {
 
   const CopyClipboard = ({ text }) => {
     return (
-      <div style={{ overFlow: 'auto' }}>
+      <div style={{ overFlow: 'auto', width: '400px' }}>
         <div
           style={{ padding: ' 5px 0px', borderBottom: '0.55px solid #ebebeb' }}
         >
