@@ -1064,7 +1064,14 @@ const handelResetDomain = (state) => {
 const handelSetPreferences = (state, action) => {
   const { type, values } = action;
   return produce(state, (draft) => {
-    AnalysisObj.set1DPreferences({ [type]: values });
+    const preferences = AnalysisObj.getPreferences('1d');
+    const panelsPreferences =
+      preferences && Object.prototype.hasOwnProperty.call(preferences, 'panels')
+        ? preferences.panels
+        : {};
+    AnalysisObj.set1DPreferences({
+      panels: { ...panelsPreferences, [type]: values },
+    });
     draft.preferences = AnalysisObj.getPreferences('1d');
   });
 };
