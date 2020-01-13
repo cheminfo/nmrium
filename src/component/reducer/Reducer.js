@@ -68,6 +68,7 @@ import {
   SET_SPECTRUMS_VERTICAL_ALIGN,
   CHANGE_INTEGRAL_DATA,
   EXPORT_DATA,
+  SET_PREFERENCES,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -258,6 +259,7 @@ const handleLoadJsonFile = (state, data) => {
     draft.data = spectraData;
     draft.molecules = AnalysisObj.getMolecules();
     const preferences = AnalysisObj.getPreferences('1d');
+    draft.preferences = preferences;
     if (
       preferences.display &&
       Object.prototype.hasOwnProperty.call(preferences.display, 'center')
@@ -1059,6 +1061,14 @@ const handelResetDomain = (state) => {
   });
 };
 
+const handelSetPreferences = (state, action) => {
+  const { type, values } = action;
+  return produce(state, (draft) => {
+    AnalysisObj.set1DPreferences({ [type]: values });
+    draft.preferences = AnalysisObj.getPreferences('1d');
+  });
+};
+
 //////////////////////////////////////////////////////////////////////
 //////////////// end undo and redo functions /////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -1102,6 +1112,7 @@ export const initialState = {
   },
   pivot: 0,
   isLoading: false,
+  preferences: {},
 };
 
 export const spectrumReducer = (state, action) => {
@@ -1240,6 +1251,8 @@ export const spectrumReducer = (state, action) => {
       return handleAutoRangesDetection(state, action.options);
     case DELETE_RANGE:
       return handleDeleteRange(state, action.rangeID);
+    case SET_PREFERENCES:
+      return handelSetPreferences(state, action.data);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);
