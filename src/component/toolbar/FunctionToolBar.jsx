@@ -133,6 +133,7 @@ const FunctionToolBar = ({ defaultValue }) => {
           type="button"
           style={{ ...styles.button, ...styles.faIcon }}
           onClick={handleFullZoomOut}
+          notToggleButton
         >
           <ToolTip title="Full Zoom Out ( Press f )" popupPlacement="right">
             <FaExpand />

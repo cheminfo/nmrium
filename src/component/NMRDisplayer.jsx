@@ -205,7 +205,9 @@ const NMRDisplayer = (props) => {
                   height: 100%;
                   display: flex;
                   flex-direction: column;
-
+                  div:focus {
+                    outline: none !important;
+                  }
                   button:active,
                   button:hover,
                   button:focus,

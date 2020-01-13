@@ -23,7 +23,7 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
     let index = 0;
     return React.Children.map(children, (child) => {
       if (child) {
-        if (child.type.name === 'ToggleButton') {
+        if (child.type.displayName === 'ToggleButton') {
           const _child = React.cloneElement(child, {
             onChange: handleOnChange,
             isActive:
@@ -43,7 +43,7 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
 
   useEffect(() => {
     const val = React.Children.map(children, (child) => {
-      if (child && child.type.name === 'ToggleButton') {
+      if (child && child.type.displayName === 'ToggleButton') {
         return {
           value: child.props.value,
           isActive: child.props.value === value ? true : false,

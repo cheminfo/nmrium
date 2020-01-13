@@ -67,6 +67,7 @@ const ToggleButton = ({
     </button>
   );
 };
+ToggleButton.displayName = 'ToggleButton';
 
 ToggleButton.defaultProps = {
   isActive: false,
