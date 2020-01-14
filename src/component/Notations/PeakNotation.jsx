@@ -232,7 +232,7 @@ export const PeakNotation = ({
           dy="0.1em"
           dx="0.35em"
           width={containerSize.width + 20}
-          height={containerSize.height}
+          height={containerSize.height + 30}
           data-no-export="true"
         >
           <div
