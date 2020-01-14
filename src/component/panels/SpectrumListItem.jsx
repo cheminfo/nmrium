@@ -57,6 +57,14 @@ const SpectrumListItem = ({
     return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
   };
 
+  const formatValueAsHTML = (value) => {
+    if (value) {
+      // eslint-disable-next-line prefer-named-capture-group
+      value = value.replace(/([0-9]+)/g, '<sub>$1</sub>');
+    }
+    return value;
+  };
+
   return (
     <div style={styles.row} key={`slist${data.id}`}>
       <button
@@ -74,7 +82,15 @@ const SpectrumListItem = ({
       </button>
       <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
         <span style={styles.info}>{data.name}</span>
-        <span style={styles.info}>{data.info && data.info.solvent}</span>
+        <div
+          style={styles.info}
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: data.info && formatValueAsHTML(data.info.solvent),
+          }}
+        />
+        {/* {data.info && data.info.solvent} */}
+        {/* </div> */}
         <span style={styles.info}>{data.info && data.info.pulse}</span>
       </div>
       <button
