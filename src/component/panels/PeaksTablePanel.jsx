@@ -106,7 +106,7 @@ const PeaksTablePanel = () => {
     if (peaksPreferences) {
       let cols = [...defaultColumns];
       if (peaksPreferences.PPMShow) {
-        setCustomColumn(cols, 2, 'Value', (row) =>
+        setCustomColumn(cols, 2, 'δ (ppm)', (row) =>
           formatNumber(row.original.value, peaksPreferences.PPMFormat),
         );
       }
