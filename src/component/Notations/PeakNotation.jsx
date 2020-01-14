@@ -210,8 +210,8 @@ export const PeakNotation = ({
         <line
           x1="0"
           x2="0"
-          y1="-15"
-          y2="-45"
+          y1="0"
+          y2="-18"
           stroke={color}
           strokeWidth={highlight.isActive ? '7px' : '1px'}
         />
@@ -219,7 +219,7 @@ export const PeakNotation = ({
           className="regular-text"
           ref={refText}
           x="0"
-          y={-20}
+          y={-10}
           dy="0.1em"
           dx="0.35em"
           fill="transparent"
@@ -228,15 +228,17 @@ export const PeakNotation = ({
         </text>
         <foreignObject
           x="0"
-          y="-40"
+          y={-20}
+          dy="0.1em"
+          dx="0.35em"
           width={containerSize.width + 20}
-          height={containerSize.height + 30}
+          height={containerSize.height}
           data-no-export="true"
         >
           <div
             style={{
               width: containerSize.width + 20,
-              height: containerSize.height + 30,
+              height: containerSize.height,
               paddingRight: 5,
             }}
             xmlns="http://www.w3.org/1999/xhtml"
@@ -253,6 +255,7 @@ export const PeakNotation = ({
                 border: isSelected ? `1px solid ${color}` : `0`,
                 opacity: isActive ? 1 : 0.2,
                 userSelect: 'none',
+                color: color,
               }}
               value={
                 isSelected

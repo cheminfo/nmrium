@@ -49,12 +49,14 @@ const PeaksNotations = () => {
                   <PeakNotation
                     key={id}
                     x={getScale(d.id).x(d.x[xIndex])}
-                    y={getScale(d.id).y(d.y[xIndex]) - verticalAlign.value}
+                    y={getScale(d.id).y(d.y[xIndex]) - 5}
+                    // verticalAlign.value
                     xIndex={xIndex}
                     id={id}
                     spectrumID={d.id}
                     value={d.x[xIndex]}
-                    color={d.color}
+                    // {d.color}
+                    color="#730000"
                     decimalFraction={getPeakLabelNumberDecimals(d.info.nucleus)}
                     isActive={
                       activeSpectrum == null
