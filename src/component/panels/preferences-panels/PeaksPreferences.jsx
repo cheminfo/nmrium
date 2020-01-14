@@ -5,6 +5,8 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
+import { useAlert } from 'react-alert';
+import lodash from 'lodash';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { useDispatch } from '../../context/DispatchContext';
@@ -43,17 +45,18 @@ const styles = {
 
 const defaultValues = {
   showPanel: true,
-  ppmShow: true,
-  ppmDecimalsNumber: 2,
-  HzShow: true,
-  HzDecimalsNumber: 2,
+  PPMShow: true,
+  PPMFormat: '0.00',
+  HZShow: true,
+  HZFormat: '0.00',
   peakWidthShow: true,
-  peakDecimalsNumber: 2,
+  peakFormat: '0.00',
 };
 
 const PeaksPreferences = forwardRef((props, ref) => {
   const { data, preferences } = useChartData();
   const dispatch = useDispatch();
+  const alert = useAlert();
 
   const [nucleus, setNucleus] = useState([]);
   const [settings, setSetting] = useState(null);
@@ -71,26 +74,20 @@ const PeaksPreferences = forwardRef((props, ref) => {
       const groupByNucleus = GroupByInfoKey('nucleus');
       const nucleusList = Object.keys(groupByNucleus(data));
       setNucleus(nucleusList);
-      //   if (!settings && Array.isArray(nucleusList) && nucleusList.length > 0) {
-      //     setSetting(getDefaultValues(nucleusList));
-      //   }
     }
   }, [data, getDefaultValues, settings]);
 
   useEffect(() => {
-    if (Object.prototype.hasOwnProperty.call(preferences, 'peaks')) {
-      setSetting(preferences.peaks);
+    const peaksPreferences = lodash.get(preferences, 'panels.peaks');
+    if (peaksPreferences) {
+      setSetting(peaksPreferences);
     }
   }, [preferences]);
 
   const inputChangeHandler = useCallback((event, nucleusKey) => {
     const target = event.target;
-    const value =
-      target.type === 'checkbox'
-        ? target.checked
-        : Number.isNaN(target.value)
-        ? target.value
-        : Number(target.value);
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+
     const name = target.name;
 
     setSetting((prevState) => {
@@ -110,22 +107,17 @@ const PeaksPreferences = forwardRef((props, ref) => {
 
   const saveHandler = useCallback(() => {
     // eslint-disable-next-line no-console
-    console.log(settings);
     dispatch({
       type: SET_PREFERENCES,
       data: { type: 'peaks', values: settings },
     });
-  }, [dispatch, settings]);
+    alert.success('Peaks preferences saved successfully');
+  }, [alert, dispatch, settings]);
 
   const getValue = useCallback(
     (nucleusLabel, key) => {
-      const value =
-        settings &&
-        Object.prototype.hasOwnProperty.call(settings, nucleusLabel) &&
-        Object.prototype.hasOwnProperty.call(settings[nucleusLabel], key)
-          ? settings[nucleusLabel][key]
-          : null;
-      return value;
+      const value = lodash.get(settings, `${nucleusLabel}.${key}`);
+      return value ? value : null;
     },
     [settings],
   );
@@ -154,6 +146,7 @@ const PeaksPreferences = forwardRef((props, ref) => {
                       ? getValue(nucleusLabel, 'showPanel')
                       : false
                   }
+                  defaultChecked={true}
                 />
               </div>
             </div>
@@ -161,18 +154,18 @@ const PeaksPreferences = forwardRef((props, ref) => {
               <span style={styles.inputLabel}>δ (ppm) : </span>
               <div style={{ flex: 4 }}>
                 <input
-                  name="ppmShow"
+                  name="PPMShow"
                   type="checkbox"
                   onChange={(e) => inputChangeHandler(e, nucleusLabel)}
                   style={{ margin: '0px 5px' }}
-                  checked={getValue(nucleusLabel, 'ppmShow')}
+                  checked={getValue(nucleusLabel, 'PPMShow')}
                 />
                 <input
                   style={styles.input}
-                  name="ppmDecimalsNumber"
-                  type="number"
+                  name="PPMFormat"
+                  type="text"
                   onChange={(e) => inputChangeHandler(e, nucleusLabel)}
-                  value={getValue(nucleusLabel, 'ppmDecimalsNumber')}
+                  value={getValue(nucleusLabel, 'ppmFormat')}
                 />
               </div>
             </div>
@@ -180,18 +173,18 @@ const PeaksPreferences = forwardRef((props, ref) => {
               <span style={styles.inputLabel}>𝜈 (Hz): </span>
               <div style={{ flex: 4 }}>
                 <input
-                  name="HzShow"
+                  name="HZShow"
                   type="checkbox"
                   onChange={(e) => inputChangeHandler(e, nucleusLabel)}
                   style={{ margin: '0px 5px' }}
-                  checked={getValue(nucleusLabel, 'HzShow')}
+                  checked={getValue(nucleusLabel, 'HZShow')}
                 />
                 <input
                   style={styles.input}
-                  name="HzDecimalsNumber"
-                  type="number"
+                  name="HZFormat"
+                  type="text"
                   onChange={(e) => inputChangeHandler(e, nucleusLabel)}
-                  value={getValue(nucleusLabel, 'HzDecimalsNumber')}
+                  value={getValue(nucleusLabel, 'HZFormat')}
                 />
               </div>
             </div>
@@ -207,10 +200,10 @@ const PeaksPreferences = forwardRef((props, ref) => {
                 />
                 <input
                   style={styles.input}
-                  name="peakWidthDecimalsNumber"
-                  type="number"
+                  name="peakWidthFormat"
+                  type="text"
                   onChange={(e) => inputChangeHandler(e, nucleusLabel)}
-                  value={getValue(nucleusLabel, 'peakWidthDecimalsNumber')}
+                  value={getValue(nucleusLabel, 'peakWidthFormat')}
                 />
               </div>
             </div>

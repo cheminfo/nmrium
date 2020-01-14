@@ -9,6 +9,7 @@ import {
   CHANGE_ACTIVE_SPECTRUM,
   CHANGE_SPECTRUM_COLOR,
   DELETE_SPECTRA,
+  SET_ACTIVE_TAB,
 } from '../reducer/Actions';
 import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -153,6 +154,7 @@ const SpectrumListPanel = () => {
       if (!activeTabID) {
         const activeTab = Object.keys(spectrumsGroupsList)[0];
         showSpectrumsByGroup(activeTab, spectrumsGroupsList);
+        dispatch({ type: SET_ACTIVE_TAB, tab: activeTab });
       }
     }
   }, [
@@ -181,8 +183,9 @@ const SpectrumListPanel = () => {
     (tab) => {
       setActiveTabID(tab);
       showSpectrumsByGroup(tab, spectrumsGroupByNucleus);
+      dispatch({ type: SET_ACTIVE_TAB, tab: tab });
     },
-    [showSpectrumsByGroup, spectrumsGroupByNucleus],
+    [dispatch, showSpectrumsByGroup, spectrumsGroupByNucleus],
   );
 
   const SpectrumsTabs = useMemo(() => {

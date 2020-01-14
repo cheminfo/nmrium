@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaRegTrashAlt, FaCog } from 'react-icons/fa';
 
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
@@ -19,6 +19,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
+    padding: '0px 5px',
   },
   counterLabel: {
     margin: 0,
@@ -28,10 +29,17 @@ const styles = {
     padding: '0px 10px',
   },
 };
-const DefaultPanelHeader = ({ counter, onDelete, deleteToolTip, children }) => {
+const DefaultPanelHeader = ({
+  counter,
+  onDelete,
+  deleteToolTip,
+  children,
+  showSettingButton = false,
+  onSettingClick,
+}) => {
   return (
     <div style={styles.toolbar}>
-      <ToolTip title={deleteToolTip} popupPlacement="left">
+      <ToolTip title={deleteToolTip} popupPlacement="right">
         <button
           style={styles.button}
           type="button"
@@ -41,8 +49,16 @@ const DefaultPanelHeader = ({ counter, onDelete, deleteToolTip, children }) => {
           <FaRegTrashAlt />
         </button>
       </ToolTip>
+
       {children}
       <p style={styles.counterLabel}>[ {counter} ]</p>
+      {showSettingButton && (
+        <ToolTip title="preferences" popupPlacement="left">
+          <button style={styles.button} type="button" onClick={onSettingClick}>
+            <FaCog />
+          </button>
+        </ToolTip>
+      )}
     </div>
   );
 };

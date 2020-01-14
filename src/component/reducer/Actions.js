@@ -60,3 +60,4 @@ export const SAVE_AS_SVG = 'SAVE_AS_SVG';
 export const CHANGE_INTEGRAL_DATA = 'CHANGE_INTEGRAL_DATA';
 export const EXPORT_DATA = 'EXPORT_DATA';
 export const SET_PREFERENCES = 'SET_PREFERENCES';
+export const SET_ACTIVE_TAB = 'SET_ACTIVE_TAB';

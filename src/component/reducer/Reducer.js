@@ -69,6 +69,7 @@ import {
   CHANGE_INTEGRAL_DATA,
   EXPORT_DATA,
   SET_PREFERENCES,
+  SET_ACTIVE_TAB,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -1075,6 +1076,11 @@ const handelSetPreferences = (state, action) => {
     draft.preferences = AnalysisObj.getPreferences('1d');
   });
 };
+const handelSetActiveTab = (state, tab) => {
+  return produce(state, (draft) => {
+    draft.activeTab = tab;
+  });
+};
 
 //////////////////////////////////////////////////////////////////////
 //////////////// end undo and redo functions /////////////////////////
@@ -1090,7 +1096,7 @@ export const initialState = {
   selectedTool: options.zoom.id,
   selectedFilter: null,
   selectedOptionPanel: null,
-  selectedTab: null,
+  activeTab: null,
 
   // peakNotations: [],
   width: null,
@@ -1260,6 +1266,8 @@ export const spectrumReducer = (state, action) => {
       return handleDeleteRange(state, action.rangeID);
     case SET_PREFERENCES:
       return handelSetPreferences(state, action.data);
+    case SET_ACTIVE_TAB:
+      return handelSetActiveTab(state, action.tab);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

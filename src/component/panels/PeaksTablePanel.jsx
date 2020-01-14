@@ -1,11 +1,7 @@
 import React, { useCallback, useMemo, useState, useRef } from 'react';
-import {
-  FaRegTrashAlt,
-  FaCog,
-  FaArrowLeft,
-  FaCheckCircle,
-} from 'react-icons/fa';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import ReactCardFlip from 'react-card-flip';
+import lodash from 'lodash';
 
 import { useChartData } from '../context/ChartContext';
 import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
@@ -13,10 +9,11 @@ import { DELETE_PEAK_NOTATION } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTable from '../elements/ReactTable/ReactTable';
 import { useModal } from '../elements/Modal';
-import ToolTip from '../elements/ToolTip/ToolTip';
+import formatNumber from '../utility/FormatNumber';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
+import PreferencesHeader from './header/PreferencesHeader';
 import PeaksPreferences from './preferences-panels/PeaksPreferences';
 
 const styles = {
@@ -37,26 +34,18 @@ const styles = {
 };
 
 const PeaksTablePanel = () => {
-  const { data: SpectrumsData, activeSpectrum } = useChartData();
+  const {
+    data: SpectrumsData,
+    activeSpectrum,
+    preferences,
+    activeTab,
+  } = useChartData();
   const dispatch = useDispatch();
   const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef();
 
-  const deletePeakHandler = useCallback(
-    (e, row) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const params = row.original;
-      dispatch({
-        type: DELETE_PEAK_NOTATION,
-        data: { id: params.id, xIndex: params.xIndex },
-      });
-    },
-    [dispatch],
-  );
-
-  const columns = [
+  const defaultColumns = [
     {
       Header: '#',
       Cell: ({ row }) => row.index + 1,
@@ -67,11 +56,7 @@ const PeaksTablePanel = () => {
       accessor: 'xIndex',
       sortType: 'basic',
     },
-    {
-      Header: 'δ (ppm)',
-      accessor: 'value',
-      sortType: 'basic',
-    },
+
     {
       Header: 'Intensity ',
       accessor: 'yValue',
@@ -91,6 +76,45 @@ const PeaksTablePanel = () => {
       ),
     },
   ];
+
+  const deletePeakHandler = useCallback(
+    (e, row) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const params = row.original;
+      dispatch({
+        type: DELETE_PEAK_NOTATION,
+        data: { id: params.id, xIndex: params.xIndex },
+      });
+    },
+    [dispatch],
+  );
+
+  const setCustomColumn = (array, index, columnLabel, cellHandler) => {
+    array.splice(index, 0, {
+      Header: columnLabel,
+      sortType: 'basic',
+      Cell: ({ row }) => cellHandler(row),
+    });
+  };
+
+  const tableColumns = useMemo(() => {
+    const peaksPreferences = lodash.get(
+      preferences,
+      `panels.peaks.[${activeTab}]`,
+    );
+    if (peaksPreferences) {
+      let cols = [...defaultColumns];
+      if (peaksPreferences.PPMShow) {
+        setCustomColumn(cols, 2, 'Value', (row) =>
+          formatNumber(row.original.value, peaksPreferences.PPMFormat),
+        );
+      }
+      return cols;
+    }
+    return defaultColumns;
+  }, [activeTab, defaultColumns, preferences]);
+
   const data = useMemo(() => {
     const _data =
       activeSpectrum && SpectrumsData
@@ -122,45 +146,33 @@ const PeaksTablePanel = () => {
     });
   }, [modal, yesHandler]);
 
-  const showSettingsPanelHandler = useCallback(() => {
+  const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(() => {
     settingRef.current.saveSetting();
+    setFlipStatus(false);
   }, []);
 
   return (
     <div style={styles.container}>
-      <DefaultPanelHeader
-        onDelete={handleDeleteAll}
-        counter={data && data.length}
-        deleteToolTip="Delete All Peaks"
-      >
-        <ToolTip
-          title={isFlipped ? 'back to peaks List Panel' : 'peaks preferences'}
-          popupPlacement="right"
-        >
-          <button
-            style={styles.button}
-            type="button"
-            onClick={showSettingsPanelHandler}
-          >
-            {isFlipped ? <FaArrowLeft /> : <FaCog />}
-          </button>
-        </ToolTip>
-        {isFlipped && (
-          <ToolTip title="Save Setting" popupPlacement="right">
-            <button
-              style={styles.button}
-              type="button"
-              onClick={saveSettingHandler}
-            >
-              <FaCheckCircle />
-            </button>
-          </ToolTip>
-        )}
-      </DefaultPanelHeader>
+      {!isFlipped && (
+        <DefaultPanelHeader
+          onDelete={handleDeleteAll}
+          counter={data && data.length}
+          deleteToolTip="Delete All Peaks"
+          showSettingButton="true"
+          onSettingClick={settingsPanelHandler}
+        />
+      )}
+      {isFlipped && (
+        <PreferencesHeader
+          onSave={saveSettingHandler}
+          onClose={settingsPanelHandler}
+        />
+      )}
+
       <ReactCardFlip
         isFlipped={isFlipped}
         infinite={true}
@@ -168,7 +180,7 @@ const PeaksTablePanel = () => {
       >
         <div style={isFlipped ? { display: 'none' } : {}}>
           {data && data.length > 0 ? (
-            <ReactTable data={data} columns={columns} />
+            <ReactTable data={data} columns={tableColumns} />
           ) : (
             <NoTableData />
           )}
