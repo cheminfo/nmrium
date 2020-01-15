@@ -817,10 +817,20 @@ const handleZoom = (state, zoomFactor) => {
   });
 };
 
-const zoomOut = (state) => {
+const zoomOut = (state, zoomType) => {
   return produce(state, (draft) => {
-    draft.xDomain = state.originDomain.x;
-    setZoom(state, draft, { scale: 0.8 });
+    switch (zoomType) {
+      case 'H':
+        draft.xDomain = state.originDomain.x;
+        break;
+      case 'V':
+        setZoom(state, draft, { scale: 0.8 });
+        break;
+      default:
+        draft.xDomain = state.originDomain.x;
+        setZoom(state, draft, { scale: 0.8 });
+        break;
+    }
   });
 };
 
@@ -1195,7 +1205,7 @@ export const spectrumReducer = (state, action) => {
       return setData(state, action.data);
 
     case FULL_ZOOM_OUT:
-      return zoomOut(state);
+      return zoomOut(state, action.zoomType);
 
     case SHIFT_SPECTRUM:
       return shiftSpectrumAlongXAxis(state, action.shiftValue);

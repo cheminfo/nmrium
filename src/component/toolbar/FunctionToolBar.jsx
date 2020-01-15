@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand } from 'react-icons/fa';
+import lodash from 'lodash';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
@@ -34,6 +35,8 @@ const styles = {
   },
 };
 
+let debounceClickEvents = [];
+
 const FunctionToolBar = ({ defaultValue }) => {
   const [option, setOption] = useState();
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
@@ -43,7 +46,6 @@ const FunctionToolBar = ({ defaultValue }) => {
     (selectedTool) => dispatch({ type: SET_SELECTED_TOOL, selectedTool }),
     [dispatch],
   );
-
   const { activeSpectrum, data } = useChartData();
 
   const handleChange = useCallback(
@@ -55,9 +57,25 @@ const FunctionToolBar = ({ defaultValue }) => {
   );
 
   const handleFullZoomOut = useCallback(() => {
-    dispatch({
-      type: FULL_ZOOM_OUT,
-    });
+    const callback = lodash.debounce(() => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      debounceClickEvents = [];
+      dispatch({
+        type: FULL_ZOOM_OUT,
+        zoomType: 'H',
+      });
+    }, 500);
+    debounceClickEvents.push(callback);
+
+    callback();
+
+    if (debounceClickEvents.length > 1) {
+      lodash.map(debounceClickEvents, (debounce) => debounce.cancel());
+      debounceClickEvents = [];
+      dispatch({
+        type: FULL_ZOOM_OUT,
+      });
+    }
   }, [dispatch]);
 
   const handleOnKeyPressed = useCallback(
