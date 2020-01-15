@@ -26,7 +26,6 @@ import {
   SET_WIDTH,
   SET_DIMENSIONS,
   BRUSH_END,
-  RESET_DOMAIN,
   SET_ZOOM_FACTOR,
   ADD_INTEGRAL,
   ADD_PEAK,
@@ -34,6 +33,7 @@ import {
   ADD_PEAKS,
   SET_VERTICAL_INDICATOR_X_POSITION,
   SET_LOADING_FLAG,
+  FULL_ZOOM_OUT,
 } from './reducer/Actions';
 import { DispatchProvider, useDispatch } from './context/DispatchContext';
 import DropZone from './DropZone';
@@ -280,7 +280,7 @@ function ChartPanel() {
   );
 
   const handelOnDoubleClick = useCallback(() => {
-    dispatch({ type: RESET_DOMAIN });
+    dispatch({ type: FULL_ZOOM_OUT });
   }, [dispatch]);
 
   const handleZoom = useCallback(

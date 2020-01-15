@@ -670,13 +670,6 @@ function setFilterChanges(draft, state, selectedFilter) {
   }
 }
 
-const zoomOut = (state) => {
-  return produce(state, (draft) => {
-    draft.xDomain = state.originDomain.x;
-    draft.yDomain = state.originDomain.y;
-  });
-};
-
 const handleSpectrumVisibility = (state, data) => {
   return produce(state, (draft) => {
     for (let datum of draft.data) {
@@ -774,49 +767,60 @@ const getClosestNumber = (array = [], goal = 0) => {
   return closest;
 };
 
+const setZoom = (state, draft, zoomFactor) => {
+  const {
+    originDomain,
+    height,
+    margin,
+    data,
+    yDomains,
+    activeSpectrum,
+  } = state;
+
+  const scale = d3.scaleLinear(originDomain.y, [
+    height - margin.bottom,
+    margin.top,
+  ]);
+  let t;
+  if (data.length === 1) {
+    const closest = getClosestNumber(data[0].y);
+    const referencePoint = getScale(state).y(closest);
+    t = d3.zoomIdentity
+      .translate(0, referencePoint)
+      .scale(zoomFactor.scale)
+      .translate(0, -referencePoint);
+  } else {
+    t = d3.zoomIdentity
+      .translate(0, height - margin.bottom)
+      .scale(zoomFactor.scale)
+      .translate(0, -(height - margin.bottom));
+  }
+
+  draft.zoomFactor = t;
+
+  let yDomain = t.rescaleY(scale).domain();
+  if (activeSpectrum === null) {
+    draft.yDomains = yDomains.map((y) => {
+      return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
+    });
+  } else {
+    const index = data.findIndex((d) => d.id === activeSpectrum.id);
+    const newYDomains = [...state.yDomains];
+    newYDomains[index] = yDomain;
+    draft.yDomains = newYDomains;
+  }
+};
+
 const handleZoom = (state, zoomFactor) => {
   return produce(state, (draft) => {
-    const {
-      originDomain,
-      height,
-      margin,
-      data,
-      yDomains,
-      activeSpectrum,
-    } = state;
+    setZoom(state, draft, zoomFactor);
+  });
+};
 
-    const scale = d3.scaleLinear(originDomain.y, [
-      height - margin.bottom,
-      margin.top,
-    ]);
-    let t;
-    if (data.length === 1) {
-      const closest = getClosestNumber(data[0].y);
-      const referencePoint = getScale(state).y(closest);
-      t = d3.zoomIdentity
-        .translate(0, referencePoint)
-        .scale(zoomFactor.scale)
-        .translate(0, -referencePoint);
-    } else {
-      t = d3.zoomIdentity
-        .translate(0, height - margin.bottom)
-        .scale(zoomFactor.scale)
-        .translate(0, -(height - margin.bottom));
-    }
-
-    draft.zoomFactor = t;
-
-    let yDomain = t.rescaleY(scale).domain();
-    if (activeSpectrum === null) {
-      draft.yDomains = yDomains.map((y) => {
-        return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
-      });
-    } else {
-      const index = data.findIndex((d) => d.id === activeSpectrum.id);
-      const newYDomains = [...state.yDomains];
-      newYDomains[index] = yDomain;
-      draft.yDomains = newYDomains;
-    }
+const zoomOut = (state) => {
+  return produce(state, (draft) => {
+    draft.xDomain = state.originDomain.x;
+    setZoom(state, draft, { scale: 0.8 });
   });
 };
 
