@@ -23,6 +23,7 @@
     "numeral": "^2.0.6",
     "openchemlib": "^7.2.3",
     "prop-types": "^15.7.2",
+    "query-string": "^6.9.0",
     "rc-menu": "^8.0.0-alpha.7",
     "react-alert": "^6.0.0",
     "react-alert-template-basic": "^1.0.0",

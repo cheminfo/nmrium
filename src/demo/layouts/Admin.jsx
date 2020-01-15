@@ -23,25 +23,31 @@ import { Route, Switch } from 'react-router-dom';
 
 // core components
 import Sidebar from '../components/Sidebar/Sidebar';
-import routes from '../samples';
 import View from '../views/View';
 import { mapTreeToFlatArray, getKey } from '../utility/menu';
 
 let ps;
-
+let localRoutes;
 class Dashboard extends React.Component {
-  state = {
-    backgroundColor: 'blue',
-    routesList: [],
-  };
+  state = { backgroundColor: 'blue', routesList: [], routes: [] };
+
+  // eslint-disable-next-line react/no-deprecated
+  componentWillMount() {
+    localRoutes = this.props.routes ? this.props.routes : localRoutes;
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        routesList: mapTreeToFlatArray(localRoutes),
+        routes: localRoutes,
+      };
+    });
+  }
+
   componentDidMount() {
     if (navigator.platform.indexOf('Win') > -1) {
       ps = new PerfectScrollbar(this.mainPanel.current);
       document.body.classList.toggle('perfect-scrollbar-on');
     }
-    this.setState((prevState) => {
-      return { ...prevState, routesList: mapTreeToFlatArray(routes) };
-    });
   }
 
   componentDidUpdate(e) {
@@ -68,14 +74,15 @@ class Dashboard extends React.Component {
       <div className="wrapper">
         <Sidebar
           {...this.props}
-          routes={routes}
+          routes={this.state.routes}
           backgroundColor={this.state.backgroundColor}
         />
         <div className="main-panel" ref={this.mainPanel}>
+          {/* <Router {...this.props}> */}
           <Switch>
             {this.state.routesList.map((prop) => (
               <Route
-                path={`/admin/${getKey(prop.file)}`}
+                path={`/SamplesDashboard/${getKey(prop.file)}`}
                 // component={prop.component}
                 render={() => <View {...prop} />}
                 key={getKey(prop.file)}
@@ -91,6 +98,7 @@ class Dashboard extends React.Component {
               />
             )}
           </Switch>
+          {/* </Router> */}
           {/* <DemoNavbar {...this.props} /> */}
           {/* <Switch>
             {routes.map((prop, key) => {

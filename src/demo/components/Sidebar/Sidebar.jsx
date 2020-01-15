@@ -78,7 +78,7 @@ class Sidebar extends React.Component {
         <div className="sidebar-wrapper" ref="sidebar">
           <Menu
             onClick={(e) => {
-              this.props.history.push(`/admin/${getKey(e.item.props.file)}`);
+              this.props.history.push(`/SamplesDashboard/${getKey(e.item.props.file)}`);
             }}
             mode="inline"
           >
