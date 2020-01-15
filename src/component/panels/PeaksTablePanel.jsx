@@ -43,6 +43,7 @@ const PeaksTablePanel = () => {
   const dispatch = useDispatch();
   const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
+  const [isTableVisible, setTableVisibility] = useState(true);
   const settingRef = useRef();
 
   const defaultColumns = [
@@ -148,6 +149,17 @@ const PeaksTablePanel = () => {
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
+    if (!isFlipped) {
+      setTimeout(
+        () => {
+          setTableVisibility(false);
+        },
+        400,
+        isFlipped,
+      );
+    } else {
+      setTableVisibility(true);
+    }
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(() => {
@@ -178,7 +190,7 @@ const PeaksTablePanel = () => {
         infinite={true}
         containerStyle={{ height: '100%' }}
       >
-        <div style={isFlipped ? { display: 'none' } : {}}>
+        <div style={!isTableVisible ? { display: 'none' } : {}}>
           {data && data.length > 0 ? (
             <ReactTable data={data} columns={tableColumns} />
           ) : (
