@@ -179,10 +179,12 @@ const NMRDisplayer = (props) => {
 
   useEffect(() => {
     window.addEventListener('resize', () => {
-      dispatch({
-        type: SET_DIMENSIONS,
-        height: containerRef.current.getBoundingClientRect().height,
-      });
+      if (containerRef.current) {
+        dispatch({
+          type: SET_DIMENSIONS,
+          height: containerRef.current.getBoundingClientRect().height,
+        });
+      }
     });
   }, []);
 
