@@ -45,10 +45,10 @@ const PeaksNotations = () => {
                 key={d.id}
                 transform={`translate(0,-${getVerticalAlign(d.id)})`}
               >
-                {d.peaks.values.map(({ xIndex, id }) => (
+                {d.peaks.values.map(({ xIndex, xShift, id }) => (
                   <PeakNotation
                     key={id}
-                    x={getScale(d.id).x(d.x[xIndex])}
+                    x={getScale(d.id).x(d.x[xIndex] - xShift)}
                     y={getScale(d.id).y(d.y[xIndex]) - 5}
                     // verticalAlign.value
                     xIndex={xIndex}
