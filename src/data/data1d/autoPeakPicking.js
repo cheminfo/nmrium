@@ -22,10 +22,13 @@ export default function autoPeakPicking(datum1D, options) {
   if (maxNumberOfPeaks) peaks = peaks.slice(0, maxNumberOfPeaks);
 
   return peaks.map((peak) => {
+    console.log(peak);
     return {
       id: generateID(),
       xIndex: peak.index,
-      xShift: datum1D.data.x[peak.index] - peak.xShift,
+      intensity: peak.y,
+      width: peak.width,
+      xShift: datum1D.data.x[peak.index] - peak.x,
     };
   });
 }
