@@ -167,11 +167,11 @@ const MoleculePanel = () => {
         >
           <button type="button" css={menuButton} onClick={saveAsMolHandler}>
             <FaCopy />
-            <span>copy as molfile</span>
+            <span>Copy as molfile</span>
           </button>
           <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
             <FaFileImage />
-            <span>copy as PNG</span>
+            <span>Copy as PNG</span>
           </button>
           <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
             <FaDownload />
