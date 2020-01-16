@@ -178,6 +178,15 @@ const NMRDisplayer = (props) => {
   }, []);
 
   useEffect(() => {
+    window.addEventListener('resize', () => {
+      dispatch({
+        type: SET_DIMENSIONS,
+        height: containerRef.current.getBoundingClientRect().height,
+      });
+    });
+  }, []);
+
+  useEffect(() => {
     dispatch({
       type: SET_DIMENSIONS,
       height: containerRef.current.getBoundingClientRect().height,
@@ -250,7 +259,7 @@ const NMRDisplayer = (props) => {
 };
 
 function ChartPanel() {
-  const { selectedTool, height: _height, isLoading, data } = useChartData();
+  const { selectedTool, isLoading, data } = useChartData();
   const dispatch = useDispatch();
 
   const handelBrushEnd = useCallback(
@@ -329,13 +338,13 @@ function ChartPanel() {
             onZoom={handleZoom}
             style={{
               width: '100%',
-              height: `${_height}px`,
+              height: `100%`,
               margin: 'auto',
               position: 'relative',
               overflow: 'hidden',
             }}
           >
-            <MouseTracker style={{ width: '100%', height: `${_height}px` }}>
+            <MouseTracker style={{ width: '100%', height: `100%` }}>
               <NMRChart />
               <CrossLinePointer />
               <BrushX />
@@ -347,7 +356,7 @@ function ChartPanel() {
         )}
       </Fragment>
     );
-  }, [_height]);
+  }, []);
   const [finalSize, setFinalSize] = useState();
 
   useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
