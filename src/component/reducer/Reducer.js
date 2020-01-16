@@ -12,7 +12,7 @@ import {
   exportAsSVG,
   exportAsJSON,
   exportAsPng,
-  copyToClipboard,
+  copyPNGToClipboard,
 } from '../utility/Export';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
@@ -195,15 +195,15 @@ const exportData = (state, { exportType }) => {
         break;
       }
       case 'svg': {
-        exportAsSVG(fileName);
+        exportAsSVG(fileName, 'nmrSVG');
         break;
       }
       case 'png': {
-        exportAsPng(fileName);
+        exportAsPng(fileName, 'nmrSVG');
         break;
       }
       case 'copy': {
-        copyToClipboard();
+        copyPNGToClipboard('nmrSVG');
         break;
       }
       default:

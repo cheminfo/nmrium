@@ -19,7 +19,13 @@ const menuStyles = css`
 `;
 
 // eslint-disable-next-line no-unused-vars
-const MenuButton = ({ style, component, toolTip = '', children }) => {
+const MenuButton = ({
+  style,
+  component,
+  toolTip = '',
+  children,
+  className,
+}) => {
   const [isShown, showMenu] = useState(false);
 
   const closeMenu = useCallback(() => {
@@ -56,6 +62,7 @@ const MenuButton = ({ style, component, toolTip = '', children }) => {
         css={style}
         onClick={handleClick}
         onContextMenu={handleConetxt}
+        className={className}
       >
         <ToolTip title={toolTip} popupPlacement="right">
           {component}

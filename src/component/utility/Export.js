@@ -6,6 +6,15 @@ import { saveAs } from 'file-saver';
 //     '',
 //   );
 // }
+
+async function copyTextToClipboard(data) {
+  try {
+    await navigator.clipboard.writeText(data);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
 /**
  * export the experiments result in JSON format
  * @param {*} data
@@ -15,16 +24,21 @@ function exportAsJSON(data, fileName = 'experiment') {
   const blob = new Blob([fileData], { type: 'text/plain' });
   saveAs(blob, `${fileName}.nmrium`);
 }
+
+function exportAsMol(data, fileName = 'mol') {
+  const blob = new Blob([data], { type: 'text/plain' });
+  saveAs(blob, `${fileName}.mol`);
+}
 /**
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
  */
-function exportAsSVG(fileName = 'experiment') {
-  const { blob } = getBlob();
+function exportAsSVG(fileName = 'experiment', elementID) {
+  const { blob } = getBlob(elementID);
   saveAs(blob, `${fileName}.svg`);
 }
 
-function exportAsPng(fileName = 'experiment') {
-  const { blob, width, height } = getBlob();
+function exportAsPng(fileName = 'experiment', elementID) {
+  const { blob, width, height } = getBlob(elementID);
   try {
     let canvas = document.createElement('canvas');
     canvas.width = width;
@@ -46,8 +60,8 @@ function exportAsPng(fileName = 'experiment') {
     console.log(e);
   }
 }
-function copyToClipboard() {
-  const { blob, width, height } = getBlob();
+function copyPNGToClipboard(elementID) {
+  const { blob, width, height } = getBlob(elementID);
   try {
     let canvas = document.createElement('canvas');
     canvas.width = width;
@@ -86,14 +100,15 @@ function copyToClipboard() {
   }
 }
 
-function getBlob() {
-  let _svg = document.getElementById('svg-container').cloneNode(true);
-  const width = _svg.getAttribute('width');
-  const height = _svg.getAttribute('height');
+function getBlob(elementID) {
+  // nmrSVG
+  let _svg = document.getElementById(elementID).cloneNode(true);
+  const width = _svg.getAttribute('width').replace('px', '');
+  const height = _svg.getAttribute('height').replace('px', '');
   _svg
     .querySelectorAll('[data-no-export="true"]')
     .forEach((element) => element.remove());
-  const head = `<svg  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}" title="experiments" version="1.1" xmlns="http://www.w3.org/2000/svg">`;
+  const head = `<svg  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
   const style = `<style>.grid line,.grid path{stroke:none;} .regular-text{fill:black} .x path{stroke-width:1px} .x text{
     font-size: 12px;
     font-weight: bold;
@@ -103,4 +118,11 @@ function getBlob() {
   return { blob, width, height };
 }
 
-export { exportAsSVG, exportAsJSON, exportAsPng, copyToClipboard };
+export {
+  exportAsSVG,
+  exportAsJSON,
+  exportAsPng,
+  copyPNGToClipboard,
+  copyTextToClipboard,
+  exportAsMol,
+};

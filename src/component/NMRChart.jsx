@@ -18,7 +18,7 @@ function NMRChart() {
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}
-      id="svg-container"
+      id="nmrSVG"
     >
       <defs>
         <clipPath id="clip">

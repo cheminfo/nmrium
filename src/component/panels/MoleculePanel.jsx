@@ -2,15 +2,31 @@ import React, { useState, useCallback, useRef, useContext } from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { MolfileSvgRenderer } from 'react-ocl';
-import { FaPlus, FaPaste, FaRegTrashAlt } from 'react-icons/fa';
+import {
+  FaPlus,
+  FaPaste,
+  FaRegTrashAlt,
+  FaFileExport,
+  FaDownload,
+  FaFileImage,
+  FaCopy,
+} from 'react-icons/fa';
 import { MF } from 'react-mf';
 import Slider from 'react-animated-slider-2';
 
 import 'react-animated-slider-2/build/horizontal.css';
+import { useAlert } from 'react-alert';
+
 import { useDispatch } from '../context/DispatchContext';
 import { DELETE_MOLECULE, ADD_MOLECULE } from '../reducer/Actions';
 import { ChartContext } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import MenuButton from '../elements/MenuButton';
+import {
+  copyTextToClipboard,
+  copyPNGToClipboard,
+  exportAsSVG,
+} from '../utility/Export';
 
 import MoleculeStructureEditorModal from './MoleculeStructureEditorModal';
 
@@ -29,7 +45,7 @@ const toolbarStyle = css`
     fill: #4e4e4e;
   }
 
-  button {
+  .bar-button {
     width: 40px !important;
     padding: 5px 0px !important;
     min-width: 10px !important;
@@ -63,6 +79,24 @@ const moleculeContainerStyle = css`
   }
 `;
 
+const menuButton = css`
+  background-color: transparent;
+  border: none;
+  border-bottom: 0.55px solid whitesmoke;
+  height: 35px;
+  outline: outline;
+  display: flex;
+  justify-content: flex-start;
+
+  :focus {
+    outline: none !important;
+  }
+  span {
+    font-size: 10px;
+    padding: 0px 10px;
+  }
+`;
+
 const MoleculePanel = () => {
   const refContainer = useRef();
 
@@ -70,6 +104,7 @@ const MoleculePanel = () => {
   const [currentMolfile, setCurrentMolfile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
   const dispatch = useDispatch();
+  const alert = useAlert();
 
   const { molecules } = useContext(ChartContext);
 
@@ -105,9 +140,48 @@ const MoleculePanel = () => {
     }
   }, [dispatch, molecules, currentIndex]);
 
+  const saveAsSVGHandler = useCallback(() => {
+    exportAsSVG('molFile', `molSVG${currentIndex}`);
+  }, [currentIndex]);
+
+  const saveAsPNGHandler = useCallback(() => {
+    copyPNGToClipboard(`molSVG${currentIndex}`);
+    alert.success('MOL copied as PNG to clipboard');
+  }, [alert, currentIndex]);
+
+  const saveAsMolHandler = useCallback(() => {
+    if (molecules[currentIndex]) {
+      const flag = copyTextToClipboard(molecules[currentIndex].molfile);
+      if (flag) {
+        alert.success('MOLFile copied to clipboard');
+      } else {
+        alert.error('copied not completed');
+      }
+    }
+  }, [alert, currentIndex, molecules]);
+
   return (
     <div css={panelContainerStyle}>
       <div css={toolbarStyle}>
+        <MenuButton
+          className="bar-button"
+          component={<FaFileExport />}
+          toolTip="Export As"
+        >
+          <button type="button" css={menuButton} onClick={saveAsMolHandler}>
+            <FaCopy />
+            <span>copy as molfile</span>
+          </button>
+          <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
+            <FaFileImage />
+            <span>copy as PNG</span>
+          </button>
+          <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
+            <FaDownload />
+            <span>Export as SVG</span>
+          </button>
+        </MenuButton>
+
         <ToolTip title="Paste Molecule" popupPlacement="left">
           <button className="bar-button" type="button" onClick={handlePast}>
             <FaPaste />
@@ -135,7 +209,7 @@ const MoleculePanel = () => {
           slideIndex={currentIndex}
         >
           {molecules &&
-            molecules.map((mol) => (
+            molecules.map((mol, index) => (
               <div
                 key={mol.key}
                 onDoubleClick={(event) =>
@@ -144,6 +218,7 @@ const MoleculePanel = () => {
               >
                 <div>
                   <MolfileSvgRenderer
+                    id={`molSVG${index}`}
                     width={
                       refContainer && refContainer.current.clientWidth - 70
                     }
