@@ -39,7 +39,7 @@ const AutoRangesPickingOptionPanel = () => {
     dispatch({
       type: AUTO_RANGES_DETECTION,
       options: {
-        minMaxRatio: 0.1,
+        minMaxRatio: 0.05,
         nH: 100,
         compile: true,
         frequencyCluster: 16,
