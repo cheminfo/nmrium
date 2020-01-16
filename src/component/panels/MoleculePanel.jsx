@@ -13,7 +13,6 @@ import {
 } from 'react-icons/fa';
 import { MF } from 'react-mf';
 import Slider from 'react-animated-slider-2';
-
 import 'react-animated-slider-2/build/horizontal.css';
 import { useAlert } from 'react-alert';
 

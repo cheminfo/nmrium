@@ -123,7 +123,6 @@ const PeaksTablePanel = () => {
         : null;
 
     if (_data && _data.peaks.values) {
-      console.log(_data.peaks);
       const labelFraction = getPeakLabelNumberDecimals(_data.info.nucleus);
       return _data.peaks.values.map((peak) => {
         return {
