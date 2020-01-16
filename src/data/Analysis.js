@@ -3,6 +3,7 @@ import { Molecule } from 'openchemlib';
 
 import { getInfoFromMetaData } from './utilities/getInfoFromMetaData';
 import { Data1DManager } from './data1d/Data1DManager';
+import { Data2DManager } from './data2d/Data2DManager';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 
@@ -39,6 +40,9 @@ export class Analysis {
     let meta = getInfoFromMetaData(result.info);
     if (meta.dimension === 1) {
       this.data1d.push(Data1DManager.fromJcamp(jcamp, options));
+    }
+    if (meta.dimension === 2) {
+      this.data2d.push(Data2DManager.fromJcamp(jcamp, options));
     }
   }
 

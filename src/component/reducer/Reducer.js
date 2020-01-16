@@ -3,7 +3,6 @@ import * as d3 from 'd3';
 import max from 'ml-array-max';
 
 import { Datum1D } from '../../data/data1d/Datum1D';
-import { Data1DManager } from '../../data/data1d/Data1DManager';
 import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';
 import { Filters } from '../../data/data1d/filter1d/Filters';

@@ -59,7 +59,6 @@ export class Data2DManager {
       data,
       source: { jcamp: null, jcampURL: null, original: data },
     });
-
     return ob;
   };
 }
