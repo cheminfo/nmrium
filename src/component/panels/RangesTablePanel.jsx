@@ -10,6 +10,7 @@ import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
 import ReactTable from '../elements/ReactTable/ReactTable';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { useModal } from '../elements/Modal';
+import { copyTextToClipboard } from '../utility/Export';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -67,11 +68,10 @@ const RangesTablePanel = () => {
 
   const saveToClipboardHandler = useCallback(
     (value) => {
-      try {
-        navigator.clipboard.writeText(value).then(() => {
-          alert.show('Coped to clipboard');
-        });
-      } catch (err) {
+      const success = copyTextToClipboard(value);
+      if (success) {
+        alert.show('Coped to clipboard');
+      } else {
         alert.error('Coped to clipboard failed');
       }
     },

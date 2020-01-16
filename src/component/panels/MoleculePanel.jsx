@@ -39,15 +39,13 @@ const toolbarStyle = css`
   display: flex;
   flex-direction: row;
   border-bottom: 0.55px solid rgb(240, 240, 240);
+  padding: 0px 5px;
 
   button svg {
     fill: #4e4e4e;
   }
 
   .bar-button {
-    width: 40px !important;
-    padding: 5px 0px !important;
-    min-width: 10px !important;
     background-color: transparent;
     border: none;
   }
