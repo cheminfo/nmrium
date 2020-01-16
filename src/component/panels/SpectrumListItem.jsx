@@ -27,6 +27,7 @@ const styles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
+    lineHeight: '24px',
   },
   icon: {
     backgroundPosition: 'center center',
