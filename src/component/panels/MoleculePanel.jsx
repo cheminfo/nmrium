@@ -157,6 +157,8 @@ const MoleculePanel = () => {
     }
   }, [alert, currentIndex, molecules]);
 
+  const [currentAtom, setCurrentAtom] = useState(null);
+
   return (
     <div css={panelContainerStyle}>
       <div css={toolbarStyle}>
@@ -220,6 +222,11 @@ const MoleculePanel = () => {
                       refContainer && refContainer.current.clientWidth - 70
                     }
                     molfile={mol.molfile}
+                    atomHighlight={currentAtom && [currentAtom]}
+                    atomHighlightColor="yellow"
+                    atomHighlightOpacity="0.5"
+                    onAtomEnter={(atomID) => setCurrentAtom(atomID)}
+                    onAtomLeave={() => setCurrentAtom(null)}
                   />
                 </div>
                 <p>
