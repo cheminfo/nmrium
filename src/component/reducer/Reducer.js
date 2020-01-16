@@ -234,7 +234,7 @@ const loadJcampFile = (state, files) => {
     const filesLength = files.length;
     for (let i = 0; i < filesLength; i++) {
       const color = getColor(usedColors);
-      let datumObject = Data1DManager.fromJcamp(files[i].binary.toString(), {
+      AnalysisObj.addJcamp(files[i].binary.toString(), {
         display: {
           name: files[i].name,
           color: color,
@@ -243,7 +243,6 @@ const loadJcampFile = (state, files) => {
         },
       });
       usedColors.push(color);
-      AnalysisObj.pushDatum1D(datumObject);
     }
 
     draft.data = AnalysisObj.getData1d();

@@ -22,7 +22,6 @@ export default function autoPeakPicking(datum1D, options) {
   if (maxNumberOfPeaks) peaks = peaks.slice(0, maxNumberOfPeaks);
 
   return peaks.map((peak) => {
-    console.log(peak);
     return {
       id: generateID(),
       xIndex: peak.index,
