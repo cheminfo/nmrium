@@ -57,13 +57,15 @@ const FunctionToolBar = ({ defaultValue }) => {
   );
 
   const handleFullZoomOut = useCallback(() => {
-    const callback = lodash.debounce(() => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      debounceClickEvents = [];
+    if (debounceClickEvents.length === 0) {
       dispatch({
         type: FULL_ZOOM_OUT,
         zoomType: 'H',
       });
+    }
+    const callback = lodash.debounce(() => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      debounceClickEvents = [];
     }, 500);
     debounceClickEvents.push(callback);
 
