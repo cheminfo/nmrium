@@ -3,7 +3,6 @@ import * as d3 from 'd3';
 import max from 'ml-array-max';
 
 import { Datum1D } from '../../data/data1d/Datum1D';
-import { Data1DManager } from '../../data/data1d/Data1DManager';
 import getColor from '../utility/ColorGenerator';
 import { Analysis } from '../../data/Analysis';
 import { Filters } from '../../data/data1d/filter1d/Filters';
@@ -234,7 +233,7 @@ const loadJcampFile = (state, files) => {
     const filesLength = files.length;
     for (let i = 0; i < filesLength; i++) {
       const color = getColor(usedColors);
-      let datumObject = Data1DManager.fromJcamp(files[i].binary.toString(), {
+      AnalysisObj.addJcamp(files[i].binary.toString(), {
         display: {
           name: files[i].name,
           color: color,
@@ -243,7 +242,6 @@ const loadJcampFile = (state, files) => {
         },
       });
       usedColors.push(color);
-      AnalysisObj.pushDatum1D(datumObject);
     }
 
     draft.data = AnalysisObj.getData1d();

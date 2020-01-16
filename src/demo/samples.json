@@ -11,6 +11,10 @@
         "title": "1H spectrum test"
       },
       {
+        "file": "./data/cytisine/1Honly.json",
+        "title": "1H only jcamp"
+      },
+      {
         "file": "./data/cytisine/1D.json",
         "title": "1D spectra test"
       },
