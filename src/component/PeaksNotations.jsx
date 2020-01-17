@@ -48,7 +48,7 @@ const PeaksNotations = () => {
                 {d.peaks.values.map(({ xIndex, xShift, id }) => (
                   <PeakNotation
                     key={id}
-                    x={getScale(d.id).x(d.x[xIndex] - xShift)}
+                    x={getScale(d.id).x(d.x[xIndex] - (xShift ? xShift : 0))}
                     y={getScale(d.id).y(d.y[xIndex]) - 5}
                     // verticalAlign.value
                     xIndex={xIndex}
