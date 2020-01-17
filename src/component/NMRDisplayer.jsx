@@ -115,6 +115,7 @@ const NMRDisplayer = (props) => {
     mode,
     margin,
     verticalAlign,
+    activeTab,
   } = state;
 
   useEffect(() => {
@@ -123,6 +124,13 @@ const NMRDisplayer = (props) => {
       dispatch({ type: INITIATE, data: { AnalysisObj: object } });
     });
   }, [dataProp]);
+
+  const filterSpectrumsByNucleus = useCallback(() => {
+    if (activeTab) {
+      return data.filter((d) => d.info.nucleus === activeTab);
+    }
+    return data;
+  }, [activeTab, data]);
 
   const getScale = useMemo(() => {
     return (spectrumId = null) => {
@@ -141,13 +149,17 @@ const NMRDisplayer = (props) => {
           [_height - margin.bottom, margin.top],
         );
       } else if (activeSpectrum == null || activeSpectrum.id !== spectrumId) {
-        const index = data.findIndex((d) => d.id === spectrumId);
+        const index = filterSpectrumsByNucleus().findIndex(
+          (d) => d.id === spectrumId,
+        );
         y = d3.scaleLinear(
           [0, yDomains[index][1]],
           [_height - margin.bottom, margin.top],
         );
       } else {
-        const index = data.findIndex((d) => d.id === activeSpectrum.id);
+        const index = filterSpectrumsByNucleus().findIndex(
+          (d) => d.id === activeSpectrum.id,
+        );
         y = d3.scaleLinear(
           [0, yDomains[index][1]],
           [_height - margin.bottom, margin.top],
@@ -168,7 +180,7 @@ const NMRDisplayer = (props) => {
     xDomain,
     yDomain,
     activeSpectrum,
-    data,
+    filterSpectrumsByNucleus,
     yDomains,
   ]);
 

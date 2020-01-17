@@ -10,6 +10,7 @@ import {
   CHANGE_SPECTRUM_COLOR,
   DELETE_SPECTRA,
   SET_ACTIVE_TAB,
+  SET_LOADING_FLAG,
 } from '../reducer/Actions';
 import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -40,7 +41,7 @@ const SpectrumListPanel = () => {
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [colorPickerPosition, setColorPickerPosition] = useState(null);
   const [activeTabID, setActiveTabID] = useState(null);
-  const { data } = useChartData();
+  const { data, activeSpectrum } = useChartData();
   const modal = useModal();
   const dispatch = useDispatch();
   const [spectrumsGroupByNucleus, setSpectrumsGroupByNucleus] = useState([]);
@@ -88,10 +89,10 @@ const SpectrumListPanel = () => {
     (d) => {
       if (activated && activated.id === d.id) {
         dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: null });
-        setActivated(null);
+        // setActivated(null);
       } else {
         dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: { id: d.id } });
-        setActivated({ id: d.id });
+        // setActivated({ id: d.id });
       }
     },
     [activated, dispatch],
@@ -146,6 +147,9 @@ const SpectrumListPanel = () => {
   }, [data, handleChangeActiveSpectrum, activated, activeTabID, dispatch]);
 
   useEffect(() => {
+    setActivated(activeSpectrum);
+  }, [activeSpectrum]);
+  useEffect(() => {
     if (data) {
       const groupByNucleus = groupByInfoKey('nucleus');
       const spectrumsGroupsList = groupByNucleus(data);
@@ -181,11 +185,12 @@ const SpectrumListPanel = () => {
 
   const onTabChangeHandler = useCallback(
     (tab) => {
+      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
       setActiveTabID(tab);
-      showSpectrumsByGroup(tab, spectrumsGroupByNucleus);
+      // showSpectrumsByGroup(tab, spectrumsGroupByNucleus);
       dispatch({ type: SET_ACTIVE_TAB, tab: tab });
     },
-    [dispatch, showSpectrumsByGroup, spectrumsGroupByNucleus],
+    [dispatch],
   );
 
   const SpectrumsTabs = useMemo(() => {

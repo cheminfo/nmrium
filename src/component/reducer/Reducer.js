@@ -13,6 +13,7 @@ import {
   exportAsPng,
   copyPNGToClipboard,
 } from '../utility/Export';
+import GroupByInfoKey from '../utility/GroupByInfoKey';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
 import {
@@ -773,6 +774,7 @@ const setZoom = (state, draft, zoomFactor) => {
     data,
     yDomains,
     activeSpectrum,
+    activeTab,
   } = state;
 
   const scale = d3.scaleLinear(originDomain.y, [
@@ -802,7 +804,9 @@ const setZoom = (state, draft, zoomFactor) => {
       return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
     });
   } else {
-    const index = data.findIndex((d) => d.id === activeSpectrum.id);
+    const index = data
+      .filter((d) => d.info.nucleus === activeTab)
+      .findIndex((d) => d.id === activeSpectrum.id);
     const newYDomains = [...state.yDomains];
     newYDomains[index] = yDomain;
     draft.yDomains = newYDomains;
@@ -858,14 +862,19 @@ function setMode(draft) {
 }
 
 function setDomain(draft) {
-  const domain = getDomain(draft.data);
-  draft.xDomain = domain.x;
-  draft.yDomain = domain.y;
-  draft.originDomain = domain;
-  draft.yDomains = domain.yDomains;
-  draft.data = draft.data.map((d) => {
-    return { ...d, integralsYDomain: domain.y };
-  });
+  let domain;
+  if (draft.activeTab) {
+    const groupByNucleus = GroupByInfoKey('nucleus');
+    const data = groupByNucleus(draft.data)[draft.activeTab];
+    domain = getDomain(data);
+    draft.xDomain = domain.x;
+    draft.yDomain = domain.y;
+    draft.originDomain = domain;
+    draft.yDomains = domain.yDomains;
+    draft.data = draft.data.map((d) => {
+      return { ...d, integralsYDomain: domain.y };
+    });
+  }
 }
 
 const handleDeleteSpectra = (state, action) => {
@@ -1088,9 +1097,30 @@ const handelSetPreferences = (state, action) => {
     draft.preferences = AnalysisObj.getPreferences('1d');
   });
 };
+
 const handelSetActiveTab = (state, tab) => {
   return produce(state, (draft) => {
+    const { data } = state;
+    const groupByNucleus = GroupByInfoKey('nucleus');
+    const spectrumsGroupsList = groupByNucleus(data);
+
     draft.activeTab = tab;
+    for (let datum of draft.data) {
+      if (datum.info && datum.info.nucleus && datum.info.nucleus === tab) {
+        datum.isVisible = true;
+      } else {
+        datum.isVisible = false;
+      }
+    }
+    if (spectrumsGroupsList[tab] && spectrumsGroupsList[tab].length > 0) {
+      const index = data.findIndex(
+        (d) => d.id === spectrumsGroupsList[tab][0].id,
+      );
+      draft.activeSpectrum = { id: spectrumsGroupsList[tab][0].id, index };
+    } else {
+      draft.activeSpectrum = null;
+    }
+    setDomain(draft);
   });
 };
 
