@@ -27,7 +27,10 @@ export class Datum1D {
     );
     this.display = Object.assign(
       {
-        name: options.display.name || generateID(),
+        name:
+          options.display && options.display.name
+            ? options.display.name
+            : generateID(),
         color: 'black',
         isVisible: true,
         isPeaksMarkersVisible: true,
