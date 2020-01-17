@@ -124,7 +124,7 @@ const MoleculePanel = () => {
     setOpen(true);
   }, []);
 
-  const handlePast = useCallback(() => {
+  const handlePaste = useCallback(() => {
     navigator.clipboard.readText().then((molfile) => {
       dispatch({ type: ADD_MOLECULE, molfile });
     });
@@ -181,8 +181,8 @@ const MoleculePanel = () => {
           </button>
         </MenuButton>
 
-        <ToolTip title="Paste Molecule" popupPlacement="left">
-          <button className="bar-button" type="button" onClick={handlePast}>
+        <ToolTip title="Paste molfile" popupPlacement="left">
+          <button className="bar-button" type="button" onClick={handlePaste}>
             <FaPaste />
           </button>
         </ToolTip>
