@@ -10,7 +10,6 @@ import {
   CHANGE_SPECTRUM_COLOR,
   DELETE_SPECTRA,
   SET_ACTIVE_TAB,
-  SET_LOADING_FLAG,
 } from '../reducer/Actions';
 import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -185,7 +184,6 @@ const SpectrumListPanel = () => {
 
   const onTabChangeHandler = useCallback(
     (tab) => {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
       setActiveTabID(tab);
       // showSpectrumsByGroup(tab, spectrumsGroupByNucleus);
       dispatch({ type: SET_ACTIVE_TAB, tab: tab });
