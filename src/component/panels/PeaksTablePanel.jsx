@@ -78,6 +78,23 @@ const PeaksTablePanel = () => {
     },
   ];
 
+  const initialColumns = [
+    {
+      index: 20,
+      Header: '',
+      id: 'delete-button',
+      Cell: ({ row }) => (
+        <button
+          type="button"
+          className="delete-button"
+          onClick={(e) => deletePeakHandler(e, row)}
+        >
+          <FaRegTrashAlt />
+        </button>
+      ),
+    },
+  ];
+
   const deletePeakHandler = useCallback(
     (e, row) => {
       e.preventDefault();
@@ -91,30 +108,60 @@ const PeaksTablePanel = () => {
     [dispatch],
   );
 
-  const setCustomColumn = (array, index, columnLabel, cellHandler) => {
-    array.splice(index, 0, {
-      Header: columnLabel,
-      sortType: 'basic',
-      Cell: ({ row }) => cellHandler(row),
-    });
-  };
-
   const tableColumns = useMemo(() => {
+    const setCustomColumn = (array, index, columnLabel, cellHandler) => {
+      array.push({
+        index: index,
+        Header: columnLabel,
+        sortType: 'basic',
+        Cell: ({ row }) => cellHandler(row),
+      });
+    };
+
     const peaksPreferences = lodash.get(
       preferences,
       `panels.peaks.[${activeTab}]`,
     );
     if (peaksPreferences) {
-      let cols = [...defaultColumns];
-      if (peaksPreferences.PPMShow) {
-        setCustomColumn(cols, 2, 'δ (ppm)', (row) =>
-          formatNumber(row.original.value, peaksPreferences.PPMFormat),
+      let cols = [...initialColumns];
+      if (peaksPreferences.showPeakNumber) {
+        setCustomColumn(cols, 1, '#', (row) =>
+          formatNumber(row.index + 1, peaksPreferences.peakNumberFormat),
         );
       }
-      return cols;
+      if (peaksPreferences.showPeakIndex) {
+        setCustomColumn(cols, 2, 'index', (row) =>
+          formatNumber(row.original.xIndex, peaksPreferences.peakIndexFormat),
+        );
+      }
+      if (peaksPreferences.showDeltaPPM) {
+        setCustomColumn(cols, 3, 'δ (ppm)', (row) =>
+          formatNumber(row.original.value, peaksPreferences.deltaPPMFormat),
+        );
+      }
+      if (peaksPreferences.showDeltaHz) {
+        setCustomColumn(cols, 4, 'δ (Hz)', (row) =>
+          formatNumber(row.original.value, peaksPreferences.deltaHzFormat),
+        );
+      }
+      if (peaksPreferences.showIntensity) {
+        setCustomColumn(cols, 5, 'Intensity', (row) =>
+          formatNumber(row.original.yValue, peaksPreferences.intensityFormat),
+        );
+      }
+      if (peaksPreferences.showPeakWidth) {
+        setCustomColumn(cols, 5, 'Peak Width', (row) =>
+          formatNumber(
+            row.original.peakWidth,
+            peaksPreferences.peakWidthFormat,
+          ),
+        );
+      }
+      return cols.sort((object1, object2) => object1.index - object2.index);
+    } else {
+      return defaultColumns;
     }
-    return defaultColumns;
-  }, [activeTab, defaultColumns, preferences]);
+  }, [activeTab, defaultColumns, initialColumns, preferences]);
 
   const data = useMemo(() => {
     const _data =
@@ -130,6 +177,7 @@ const PeaksTablePanel = () => {
           value: _data.x[peak.xIndex].toFixed(labelFraction),
           id: peak.id,
           yValue: _data.y[peak.xIndex],
+          peakWidth: peak.width ? peak.width : '',
         };
       });
     } else {
@@ -165,6 +213,7 @@ const PeaksTablePanel = () => {
   const saveSettingHandler = useCallback(() => {
     settingRef.current.saveSetting();
     setFlipStatus(false);
+    setTableVisibility(true);
   }, []);
 
   return (

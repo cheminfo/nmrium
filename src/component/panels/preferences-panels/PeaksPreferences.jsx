@@ -4,6 +4,7 @@ import React, {
   useCallback,
   forwardRef,
   useImperativeHandle,
+  useRef,
 } from 'react';
 import { useAlert } from 'react-alert';
 import lodash from 'lodash';
@@ -12,6 +13,8 @@ import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { useDispatch } from '../../context/DispatchContext';
 import { useChartData } from '../../context/ChartContext';
 import { SET_PREFERENCES } from '../../reducer/Actions';
+
+import ColumnFormatField from './ColumnFormatField';
 
 const styles = {
   container: { padding: 10, backgroundColor: '#f1f1f1', height: '100%' },
@@ -60,6 +63,7 @@ const PeaksPreferences = forwardRef((props, ref) => {
 
   const [nucleus, setNucleus] = useState([]);
   const [settings, setSetting] = useState(null);
+  const formRef = useRef();
 
   const getDefaultValues = useCallback((nucleusList) => {
     const _values = nucleusList.reduce((accumulator, key) => {
@@ -84,131 +88,128 @@ const PeaksPreferences = forwardRef((props, ref) => {
     }
   }, [preferences]);
 
-  const inputChangeHandler = useCallback((event, nucleusKey) => {
+  const inputChangeHandler = useCallback((event) => {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
 
-    const name = target.name;
+    const keys = target.name.split('-');
 
     setSetting((prevState) => {
       const preGroupValues =
-        prevState && Object.prototype.hasOwnProperty.call(prevState, nucleusKey)
-          ? prevState[nucleusKey]
+        prevState && Object.prototype.hasOwnProperty.call(prevState, keys[0])
+          ? prevState[keys[0]]
           : {};
       return {
         ...prevState,
-        [nucleusKey]: {
+        [keys[0]]: {
           ...preGroupValues,
-          [name]: value,
+          [keys[1]]: value,
         },
       };
     });
   }, []);
 
-  const saveHandler = useCallback(() => {
-    // eslint-disable-next-line no-console
-    dispatch({
-      type: SET_PREFERENCES,
-      data: { type: 'peaks', values: settings },
-    });
-    alert.success('Peaks preferences saved successfully');
-  }, [alert, dispatch, settings]);
-
-  const getValue = useCallback(
-    (nucleusLabel, key) => {
-      const value = lodash.get(settings, `${nucleusLabel}.${key}`);
-      return value ? value : null;
+  const saveHandler = useCallback(
+    (values, showMessage = false) => {
+      dispatch({
+        type: SET_PREFERENCES,
+        data: { type: 'peaks', values },
+      });
+      if (showMessage) alert.success('Peaks preferences saved successfully');
     },
-    [settings],
+    [alert, dispatch],
   );
 
   useImperativeHandle(ref, () => ({
     saveSetting() {
-      saveHandler();
+      formRef.current.dispatchEvent(new Event('submit', { cancelable: true }));
     },
   }));
 
+  const formatFields = [
+    {
+      id: 1,
+      label: 'Peak Number :',
+      checkController: 'showPeakNumber',
+      formatController: 'peakNumberFormat',
+      defaultFormat: '',
+    },
+    {
+      id: 2,
+      label: 'Peak Index : ',
+      checkController: 'showPeakIndex',
+      formatController: 'peakIndexFormat',
+      defaultFormat: '',
+    },
+    {
+      id: 3,
+      label: 'δ (ppm) :',
+      checkController: 'showDeltaPPM',
+      formatController: 'deltaPPMFormat',
+      defaultFormat: '00.00',
+    },
+    {
+      id: 4,
+      label: 'δ (Hz) :',
+      checkController: 'showDeltaHz',
+      formatController: 'deltaHzFormat',
+      defaultFormat: '00.00',
+    },
+    {
+      id: 5,
+      label: 'Peak Width',
+      checkController: 'showPeakWidth',
+      formatController: 'peakWidthFormat',
+      defaultFormat: '00.0000',
+    },
+    {
+      id: 6,
+      label: 'Intensity :',
+      checkController: 'showIntensity',
+      formatController: 'intensityFormat',
+      defaultFormat: '00.00',
+    },
+  ];
+
+  const handleSubmit = async (event) => {
+    const form = event.target;
+    const formData = new FormData(form);
+    let values = {};
+    for (let field of formData.entries()) {
+      const keys = field[0].split('-');
+      const val = form.elements[field[0]].checked ? !!field[1] : field[1];
+      values = {
+        ...values,
+        [keys[0]]: { ...values[keys[0]], [keys[1]]: val },
+      };
+    }
+    saveHandler(values, true);
+  };
+
   return (
     <div style={styles.container}>
-      {nucleus &&
-        nucleus.map((nucleusLabel) => (
-          <div key={nucleusLabel} style={styles.groupContainer}>
-            <p style={styles.header}>{nucleusLabel}</p>
-            <div style={styles.row}>
-              <span style={styles.inputLabel}>Show: </span>
-              <div style={{ flex: 4 }}>
-                <input
-                  name="showPanel"
-                  type="checkbox"
-                  onChange={(e) => inputChangeHandler(e, nucleusLabel)}
-                  checked={
-                    getValue(nucleusLabel, 'showPanel')
-                      ? getValue(nucleusLabel, 'showPanel')
-                      : false
+      <form onSubmit={handleSubmit} ref={formRef}>
+        {nucleus &&
+          nucleus.map((nucleusLabel) => (
+            <div key={nucleusLabel} style={styles.groupContainer}>
+              <p style={styles.header}>{nucleusLabel}</p>
+              {formatFields.map((field) => (
+                <ColumnFormatField
+                  key={field.id}
+                  label={field.label}
+                  data={settings}
+                  checkControllerName={field.checkController}
+                  formatControllerName={field.formatController}
+                  groupID={nucleusLabel}
+                  defaultFormat={field.defaultFormat}
+                  inputChangeHandler={(e, controllerName) =>
+                    inputChangeHandler(e, controllerName)
                   }
-                  defaultChecked={true}
                 />
-              </div>
+              ))}
             </div>
-            <div style={styles.row}>
-              <span style={styles.inputLabel}>δ (ppm) : </span>
-              <div style={{ flex: 4 }}>
-                <input
-                  name="PPMShow"
-                  type="checkbox"
-                  onChange={(e) => inputChangeHandler(e, nucleusLabel)}
-                  style={{ margin: '0px 5px' }}
-                  checked={getValue(nucleusLabel, 'PPMShow')}
-                />
-                <input
-                  style={styles.input}
-                  name="PPMFormat"
-                  type="text"
-                  onChange={(e) => inputChangeHandler(e, nucleusLabel)}
-                  value={getValue(nucleusLabel, 'ppmFormat')}
-                />
-              </div>
-            </div>
-            <div style={styles.row}>
-              <span style={styles.inputLabel}>𝜈 (Hz): </span>
-              <div style={{ flex: 4 }}>
-                <input
-                  name="HZShow"
-                  type="checkbox"
-                  onChange={(e) => inputChangeHandler(e, nucleusLabel)}
-                  style={{ margin: '0px 5px' }}
-                  checked={getValue(nucleusLabel, 'HZShow')}
-                />
-                <input
-                  style={styles.input}
-                  name="HZFormat"
-                  type="text"
-                  onChange={(e) => inputChangeHandler(e, nucleusLabel)}
-                  value={getValue(nucleusLabel, 'HZFormat')}
-                />
-              </div>
-            </div>
-            <div style={styles.row}>
-              <span style={styles.inputLabel}>peak width: </span>
-              <div style={{ flex: 4 }}>
-                <input
-                  name="peakWidthShow"
-                  type="checkbox"
-                  onChange={(e) => inputChangeHandler(e, nucleusLabel)}
-                  style={{ margin: '0px 5px' }}
-                  checked={getValue(nucleusLabel, 'peakWidthShow')}
-                />
-                <input
-                  style={styles.input}
-                  name="peakWidthFormat"
-                  type="text"
-                  onChange={(e) => inputChangeHandler(e, nucleusLabel)}
-                  value={getValue(nucleusLabel, 'peakWidthFormat')}
-                />
-              </div>
-            </div>
-          </div>
-        ))}
+          ))}
+      </form>
     </div>
   );
 });
