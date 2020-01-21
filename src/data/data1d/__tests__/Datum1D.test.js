@@ -15,6 +15,11 @@ describe('test Datum1D', () => {
       isVisible: true,
       isPeaksMarkersVisible: true,
     },
+    source: {
+      jcamp: null,
+      jcampURL: null,
+      original: null,
+    },
   });
 
   it('check x, re, im', () => {
