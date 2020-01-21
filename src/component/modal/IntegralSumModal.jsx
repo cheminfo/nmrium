@@ -61,7 +61,7 @@ const IntegralSumModal = ({ onSave, onClose }) => {
   return (
     <div css={styles}>
       <div className="header">
-        <span>Change Integral sum Dialog</span>
+        <span>Set new integral sum</span>
         <button onClick={onClose} type="button">
           <FaTimes />
         </button>
@@ -73,7 +73,7 @@ const IntegralSumModal = ({ onSave, onClose }) => {
           placeholder="Enter the integral sum"
         />
         <button type="button" onClick={saveHandler}>
-          save
+          Set
         </button>
       </div>
     </div>
