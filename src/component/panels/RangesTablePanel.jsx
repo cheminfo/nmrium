@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { FaRegTrashAlt, FaFileExport, FaCopy } from 'react-icons/fa';
+import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 import { useAlert } from 'react-alert';
 
@@ -11,6 +11,7 @@ import ReactTable from '../elements/ReactTable/ReactTable';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { useModal } from '../elements/Modal';
 import { copyTextToClipboard } from '../utility/Export';
+import CopyClipboardModal from '../modal/CopyClipboardModal';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -82,51 +83,58 @@ const RangesTablePanel = () => {
     modal.close();
   }, [modal]);
 
-  const CopyClipboard = ({ text }) => {
-    return (
-      <div style={{ overFlow: 'auto', width: '400px' }}>
-        <div
-          style={{ padding: ' 5px 0px', borderBottom: '0.55px solid #ebebeb' }}
-        >
-          <button
-            type="button"
-            style={styles.button}
-            onClick={() => saveToClipboardHandler(text)}
-          >
-            <FaCopy />
-          </button>
-        </div>
-        <div
-          style={{
-            padding: '5px',
-            width: '100%',
-            height: '180px',
-            border: 'none',
-          }}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: text }}
-        />
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <button
-            type="button"
-            style={{
-              border: 'none',
-              backgroundColor: '#efefef',
-              padding: '10px',
-            }}
-            onClick={closeClipBoardHandler}
-          >
-            close
-          </button>
-        </div>
-      </div>
-    );
-  };
+  // const CopyClipboard = ({ text }) => {
+  //   return (
+  //     <div style={{ overFlow: 'auto', width: '400px' }}>
+  //       <div
+  //         style={{ padding: ' 5px 0px', borderBottom: '0.55px solid #ebebeb' }}
+  //       >
+  //         <button
+  //           type="button"
+  //           style={styles.button}
+  //           onClick={() => saveToClipboardHandler(text)}
+  //         >
+  //           <FaCopy />
+  //         </button>
+  //       </div>
+  //       <div
+  //         style={{
+  //           padding: '5px',
+  //           width: '100%',
+  //           height: '180px',
+  //           border: 'none',
+  //         }}
+  //         // eslint-disable-next-line react/no-danger
+  //         dangerouslySetInnerHTML={{ __html: text }}
+  //       />
+  //       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+  //         <button
+  //           type="button"
+  //           style={{
+  //             border: 'none',
+  //             backgroundColor: '#efefef',
+  //             padding: '10px',
+  //           }}
+  //           onClick={closeClipBoardHandler}
+  //         >
+  //           close
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   const saveAsHTMLHandler = useCallback(() => {
     const result = getACS(data);
-    modal.show(<CopyClipboard text={result} />, {});
-  }, [data, modal]);
+    modal.show(
+      <CopyClipboardModal
+        text={result}
+        onCopyClick={saveToClipboardHandler}
+        onClose={closeClipBoardHandler}
+      />,
+      {},
+    );
+  }, [closeClipBoardHandler, data, modal, saveToClipboardHandler]);
 
   // define columns for different (sub)tables and expandable ones
   const columnsRanges = [

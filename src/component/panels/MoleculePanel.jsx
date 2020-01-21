@@ -26,8 +26,7 @@ import {
   copyPNGToClipboard,
   exportAsSVG,
 } from '../utility/Export';
-
-import MoleculeStructureEditorModal from './MoleculeStructureEditorModal';
+import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
 
 const panelContainerStyle = css`
   display: flex;
