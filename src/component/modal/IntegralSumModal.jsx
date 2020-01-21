@@ -3,8 +3,6 @@ import { useRef, useCallback } from 'react';
 import { jsx, css } from '@emotion/core';
 import { FaTimes } from 'react-icons/fa';
 
-import { loadFile, extractFileMetaFromPath } from '../utility/FileUtility';
-
 const styles = css`
   display: flex;
   flex-direction: column;
@@ -52,60 +50,42 @@ const styles = css`
     }
   }
 `;
-const allowedExtensions = ['dx', 'jdx'];
 
-const LoadJACMPModal = ({ onLoadClick, onClose, startLoading }) => {
-  const pathReft = useRef();
+const IntegralSumModal = ({ onSave, onClose }) => {
+  const valueReft = useRef();
 
-  const loadJACMPHandler = useCallback(() => {
-    // ./data/xtc/XTC-814d_zg30.jdx
-    const path = pathReft.current.value;
-    const meta = extractFileMetaFromPath(path);
-    if (allowedExtensions.includes(meta.extension)) {
-      startLoading();
-      loadFile(path).then((data) => {
-        const file = {
-          binary: data,
-          name: meta.name,
-          jcampURL: path,
-        };
-        onLoadClick(file);
-      });
-    } else {
-      onLoadClick(null);
-    }
-  }, [onLoadClick, startLoading]);
+  const saveHandler = useCallback(() => {
+    onSave(valueReft.current.value);
+  }, [onSave]);
+
   return (
     <div css={styles}>
       <div className="header">
-        <span>Load JCAMP Dialog</span>
+        <span>Change Integral sum Dialog</span>
         <button onClick={onClose} type="button">
           <FaTimes />
         </button>
       </div>
       <div className="container">
         <input
-          ref={pathReft}
-          type="text"
-          placeholder="Enter JCAMP file relative path ex: ./path/file.dx"
+          ref={valueReft}
+          type="number"
+          placeholder="Enter the integral sum"
         />
-        <button type="button" onClick={loadJACMPHandler}>
-          Load
+        <button type="button" onClick={saveHandler}>
+          save
         </button>
       </div>
     </div>
   );
 };
 
-LoadJACMPModal.defaultProps = {
-  onLoadButtonClick: () => {
+IntegralSumModal.defaultProps = {
+  onSave: () => {
     return null;
   },
   onClose: () => {
     return null;
   },
-  startLoading: () => {
-    return null;
-  },
 };
-export default LoadJACMPModal;
+export default IntegralSumModal;

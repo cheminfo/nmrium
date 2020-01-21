@@ -176,10 +176,9 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
   }, [dispatch, modal]);
 
   const importJCAMPFile = useCallback(() => {
-    // alert.show('import jcamp');
     modal.show(
       <LoadJACMPModal
-        onLoadButtonClick={LoadJacmpHandler}
+        onLoadClick={LoadJacmpHandler}
         onClose={() => modal.close()}
         startLoading={startLoadingHandler}
       />,

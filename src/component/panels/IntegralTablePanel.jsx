@@ -7,6 +7,8 @@ import { useDispatch } from '../context/DispatchContext';
 import { DELETE_INTEGRAL, CHANGE_INTEGRAL_DATA } from '../reducer/Actions';
 import { useModal } from '../elements/Modal';
 import Select from '../elements/Select';
+import IntegralSumModal from '../modal/IntegralSumModal';
+import ToolTip from '../elements/ToolTip/ToolTip';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -16,6 +18,18 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
+  },
+
+  sumButton: {
+    borderRadius: '5px',
+    marginTop: '3px',
+    color: 'white',
+    backgroundColor: '#6d6d6d',
+    border: 'none',
+    height: '16px',
+    width: '18px',
+    fontSize: '12px',
+    padding: 0,
   },
 };
 
@@ -178,6 +192,32 @@ const IntegralTablePanel = () => {
     });
   }, [modal, yesHandler]);
 
+  const changeIntegralSumHandler = useCallback(
+    (value) => {
+      const integrals =
+        activeSpectrum && SpectrumsData
+          ? SpectrumsData[activeSpectrum.index].integrals.values
+          : [];
+      if (value) {
+        // eslint-disable-next-line no-console
+        console.log(integrals);
+        // eslint-disable-next-line no-console
+        console.log(value);
+      }
+      modal.close();
+    },
+    [SpectrumsData, activeSpectrum, modal],
+  );
+
+  const showChangeIntegralSumModal = useCallback(() => {
+    modal.show(
+      <IntegralSumModal
+        onClose={() => modal.close()}
+        onSave={changeIntegralSumHandler}
+      />,
+    );
+  }, [changeIntegralSumHandler, modal]);
+
   return (
     <>
       <div style={styles.container}>
@@ -185,7 +225,17 @@ const IntegralTablePanel = () => {
           onDelete={handleDeleteAll}
           counter={data && data.length}
           deleteToolTip="Delete All Integrals"
-        />
+        >
+          <ToolTip title="Change Integrals sum" popupPlacement="right">
+            <button
+              style={styles.sumButton}
+              type="button"
+              onClick={showChangeIntegralSumModal}
+            >
+              Σ
+            </button>
+          </ToolTip>
+        </DefaultPanelHeader>
         {data && data.length > 0 ? (
           <ReactTable data={data} columns={columns} />
         ) : (
