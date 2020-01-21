@@ -241,6 +241,9 @@ const loadJcampFile = (state, files) => {
           isVisible: true,
           isPeaksMarkersVisible: true,
         },
+        source: {
+          jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
+        },
       });
       usedColors.push(color);
     }
@@ -874,6 +877,12 @@ function setDomain(draft) {
     draft.data = draft.data.map((d) => {
       return { ...d, integralsYDomain: domain.y };
     });
+  } else {
+    domain = getDomain(draft.data);
+    draft.xDomain = domain.x;
+    draft.yDomain = domain.y;
+    draft.originDomain = domain;
+    draft.yDomains = domain.yDomains;
   }
 }
 

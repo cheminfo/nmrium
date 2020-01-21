@@ -14,35 +14,7 @@ import {
 } from './reducer/Actions';
 import { useDispatch } from './context/DispatchContext';
 import { useChartData } from './context/ChartContext';
-
-function getFileExtension(file) {
-  return file.name.replace(/^.*\./, '').toLowerCase();
-}
-
-function getFileName(file) {
-  return file.name.substr(0, file.name.lastIndexOf('.'));
-}
-
-function loadFiles(acceptedFiles) {
-  return Promise.all(
-    [].map.call(acceptedFiles, (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onabort = (e) => reject(e);
-        reader.onerror = (e) => reject(e);
-        reader.onload = () => {
-          if (reader.result) {
-            const binary = reader.result;
-            const name = getFileName(file);
-            const extension = getFileExtension(file);
-            resolve({ binary, name, extension });
-          }
-        };
-        reader.readAsBinaryString(file);
-      });
-    }),
-  );
-}
+import { getFileExtension, loadFiles } from './utility/FileUtility';
 
 const style = css`
   height: 100%;
@@ -85,12 +57,12 @@ const DropZone = (props) => {
       dispatch({ type: SET_LOADING_FLAG, isLoading: true });
 
       const uniqueFileExtensions = [
-        ...new Set(droppedFiles.map((file) => getFileExtension(file))),
+        ...new Set(droppedFiles.map((file) => getFileExtension(file.name))),
       ];
 
       for (let extension of uniqueFileExtensions) {
         const selectedFilesByExtensions = droppedFiles.filter(
-          (file) => getFileExtension(file) === extension,
+          (file) => getFileExtension(file.name) === extension,
         );
 
         switch (extension) {

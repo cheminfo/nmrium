@@ -7,6 +7,8 @@ import {
   FaFileImage,
   FaCopy,
   FaFileExport,
+  FaFile,
+  FaFileImport,
 } from 'react-icons/fa';
 import { useAlert } from 'react-alert';
 
@@ -16,10 +18,14 @@ import {
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
   SET_SPECTRUMS_VERTICAL_ALIGN,
   EXPORT_DATA,
+  LOAD_JCAMP_FILE,
+  SET_LOADING_FLAG,
 } from '../reducer/Actions';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import MenuButton from '../elements/MenuButton';
+import { useModal } from '../elements/Modal';
+import LoadJACMPModal from '../modal/LoadJACMPModal';
 
 const styles = css`
   background-color: transparent;
@@ -65,6 +71,7 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
   const [isStacked, activateStackView] = useState(false);
   const alert = useAlert();
+  const modal = useModal();
 
   const saveAsSVGHandler = useCallback(() => {
     dispatch({
@@ -151,6 +158,35 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
     ],
   );
 
+  const LoadJacmpHandler = useCallback(
+    (file) => {
+      if (file) {
+        dispatch({ type: LOAD_JCAMP_FILE, files: [file] });
+        modal.close();
+      } else {
+        alert.error('you file must be one of those extensions [ .jdx, dx ] ');
+      }
+    },
+    [alert, dispatch, modal],
+  );
+
+  const startLoadingHandler = useCallback(() => {
+    modal.close();
+    dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+  }, [dispatch, modal]);
+
+  const importJCAMPFile = useCallback(() => {
+    // alert.show('import jcamp');
+    modal.show(
+      <LoadJACMPModal
+        onLoadButtonClick={LoadJacmpHandler}
+        onClose={() => modal.close()}
+        startLoading={startLoadingHandler}
+      />,
+      {},
+    );
+  }, [LoadJacmpHandler, modal, startLoadingHandler]);
+
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyPressed, false);
 
@@ -173,6 +209,13 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
 
   return (
     <Fragment>
+      <MenuButton style={styles} component={<FaFileImport />} toolTip="Import">
+        <button type="button" css={menuButton} onClick={importJCAMPFile}>
+          <FaFile />
+          <span>Add jcamp from URL</span>
+        </button>
+      </MenuButton>
+
       <MenuButton
         style={styles}
         component={<FaFileExport />}

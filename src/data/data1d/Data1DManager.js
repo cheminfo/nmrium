@@ -72,12 +72,17 @@ export class Data1DManager {
     let info = getInfoFromMetaData(result.info);
 
     if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
+
     const ob = new Datum1D({
       ...options,
       info,
       meta: result.info,
       data,
-      source: { jcamp: null, jcampURL: null, original: data },
+      source: {
+        jcamp: null,
+        jcampURL: options.source.jcampURL ? options.source.jcampURL : null,
+        original: data,
+      },
     });
 
     return ob;
