@@ -194,16 +194,26 @@ const IntegralTablePanel = () => {
 
   const changeIntegralSumHandler = useCallback(
     (value) => {
-      const integrals =
-        activeSpectrum && SpectrumsData
-          ? SpectrumsData[activeSpectrum.index].integrals.values
-          : [];
       if (value) {
-        // eslint-disable-next-line no-console
-        console.log(integrals);
-        // eslint-disable-next-line no-console
-        console.log(value);
+        const integrals =
+          activeSpectrum && SpectrumsData
+            ? SpectrumsData[activeSpectrum.index].integrals.values
+            : [];
+        if (value) {
+          let sum = integrals.reduce(
+            (currentSum, integral) => (currentSum += integral.value),
+            0,
+          );
+          integrals.forEach(
+            (integral) => (integral.relative = (integral.value / sum) * value),
+          );
+          // eslint-disable-next-line no-console
+          console.log(integrals);
+          // eslint-disable-next-line no-console
+          console.log(value);
+        }
       }
+
       modal.close();
     },
     [SpectrumsData, activeSpectrum, modal],
