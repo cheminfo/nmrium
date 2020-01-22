@@ -1,5 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
+import ReactCardFlip from 'react-card-flip';
+import lodash from 'lodash';
 
 import ReactTable from '../elements/ReactTable/ReactTable';
 import { useChartData } from '../context/ChartContext';
@@ -13,9 +15,12 @@ import { useModal } from '../elements/Modal';
 import Select from '../elements/Select';
 import IntegralSumModal from '../modal/IntegralSumModal';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import formatNumber from '../utility/FormatNumber';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
+import PreferencesHeader from './header/PreferencesHeader';
+import IntegralsPreferences from './preferences-panels/IntegralsPreferences';
 
 const styles = {
   toolbar: {
@@ -34,6 +39,11 @@ const styles = {
     width: '18px',
     fontSize: '12px',
     padding: 0,
+  },
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
   },
 };
 
@@ -83,9 +93,18 @@ const signalKinds = [
 const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 const IntegralTablePanel = () => {
-  const { activeSpectrum, data: SpectrumsData, molecules } = useChartData();
+  const {
+    activeSpectrum,
+    data: SpectrumsData,
+    molecules,
+    preferences,
+    activeTab,
+  } = useChartData();
   const dispatch = useDispatch();
   const modal = useModal();
+  const [isFlipped, setFlipStatus] = useState(false);
+  const [isTableVisible, setTableVisibility] = useState(true);
+  const settingRef = useRef();
 
   const deletePeakHandler = useCallback(
     (e, row) => {
@@ -109,14 +128,16 @@ const IntegralTablePanel = () => {
     },
     [dispatch],
   );
-  const columns = [
+  const defaultColumns = [
     {
+      orderIndex: 1,
       Header: '#',
       Cell: ({ row }) => row.index + 1,
       width: 10,
     },
 
     {
+      orderIndex: 2,
       Header: 'From',
       accessor: 'from',
       sortType: 'basic',
@@ -124,20 +145,22 @@ const IntegralTablePanel = () => {
       Cell: ({ row }) => row.original.from.toFixed(2),
     },
     {
+      orderIndex: 5,
       Header: 'To',
       accessor: 'to',
       sortType: 'basic',
       resizable: true,
       Cell: ({ row }) => row.original.to.toFixed(2),
     },
+    // {
+    //   Header: 'Value',
+    //   accessor: 'value',
+    //   sortType: 'basic',
+    //   resizable: true,
+    //   Cell: ({ row }) => row.original.value.toFixed(2),
+    // },
     {
-      Header: 'Value',
-      accessor: 'value',
-      sortType: 'basic',
-      resizable: true,
-      Cell: ({ row }) => row.original.value.toFixed(2),
-    },
-    {
+      orderIndex: 6,
       Header: 'Kind',
       accessor: 'kind',
       sortType: 'basic',
@@ -152,6 +175,7 @@ const IntegralTablePanel = () => {
       ),
     },
     {
+      orderIndex: 7,
       Header: '',
       id: 'delete-button',
       Cell: ({ row }) => (
@@ -166,25 +190,55 @@ const IntegralTablePanel = () => {
     },
   ];
 
+  const tableColumns = useMemo(() => {
+    const setCustomColumn = (array, index, columnLabel, cellHandler) => {
+      array.push({
+        orderIndex: index,
+        Header: columnLabel,
+        sortType: 'basic',
+        Cell: ({ row }) => cellHandler(row),
+      });
+    };
+
+    const integralsPreferences = lodash.get(
+      preferences,
+      `panels.integrals.[${activeTab}]`,
+    );
+    if (integralsPreferences) {
+      let cols = [...defaultColumns];
+      if (integralsPreferences.showValue) {
+        setCustomColumn(cols, 3, 'Value', (row) =>
+          formatNumber(row.original.value, integralsPreferences.valueFormat),
+        );
+      }
+      if (integralsPreferences.showNB) {
+        const n = activeTab && activeTab.replace(/[0-9]/g, '');
+        setCustomColumn(cols, 4, `nb ${n}`, () =>
+          formatNumber(molecules[0].atoms.H, integralsPreferences.NBFormat),
+        );
+      }
+
+      return cols.sort(
+        (object1, object2) => object1.orderIndex - object2.orderIndex,
+      );
+    } else {
+      return defaultColumns;
+    }
+  }, [activeTab, defaultColumns, molecules, preferences]);
+
   const data = useMemo(() => {
     const _data =
       activeSpectrum && SpectrumsData
         ? SpectrumsData[activeSpectrum.index]
         : null;
     if (_data && _data.integrals.values) {
-      if (_data.info.nucleus === '1H' && molecules && molecules.length > 0) {
-        columns.splice(columns.length - 2, 0, {
-          Header: 'nbH',
-          sortType: 'basic',
-          resizable: true,
-          Cell: () => molecules[0].atoms.H,
-        });
-      }
+      // if (_data.info.nucleus === '1H' && molecules && molecules.length > 0) {
+      // }
       return _data.integrals.values;
     } else {
       return [];
     }
-  }, [SpectrumsData, activeSpectrum, columns, molecules]);
+  }, [SpectrumsData, activeSpectrum]);
 
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_INTEGRAL, integralID: null });
@@ -231,29 +285,70 @@ const IntegralTablePanel = () => {
     );
   }, [changeIntegralSumHandler, modal]);
 
+  const settingsPanelHandler = useCallback(() => {
+    setFlipStatus(!isFlipped);
+    if (!isFlipped) {
+      setTimeout(
+        () => {
+          setTableVisibility(false);
+        },
+        400,
+        isFlipped,
+      );
+    } else {
+      setTableVisibility(true);
+    }
+  }, [isFlipped]);
+
+  const saveSettingHandler = useCallback(() => {
+    settingRef.current.saveSetting();
+    setFlipStatus(false);
+    setTableVisibility(true);
+  }, []);
+
   return (
     <>
       <div style={styles.container}>
-        <DefaultPanelHeader
-          onDelete={handleDeleteAll}
-          counter={data && data.length}
-          deleteToolTip="Delete All Integrals"
-        >
-          <ToolTip title="Change Integrals sum" popupPlacement="right">
-            <button
-              style={styles.sumButton}
-              type="button"
-              onClick={showChangeIntegralSumModal}
-            >
-              Σ
-            </button>
-          </ToolTip>
-        </DefaultPanelHeader>
-        {data && data.length > 0 ? (
-          <ReactTable data={data} columns={columns} />
-        ) : (
-          <NoTableData />
+        {!isFlipped && (
+          <DefaultPanelHeader
+            onDelete={handleDeleteAll}
+            counter={data && data.length}
+            deleteToolTip="Delete All Integrals"
+            showSettingButton="true"
+            onSettingClick={settingsPanelHandler}
+          >
+            <ToolTip title="Change Integrals sum" popupPlacement="right">
+              <button
+                style={styles.sumButton}
+                type="button"
+                onClick={showChangeIntegralSumModal}
+              >
+                Σ
+              </button>
+            </ToolTip>
+          </DefaultPanelHeader>
         )}
+        {isFlipped && (
+          <PreferencesHeader
+            onSave={saveSettingHandler}
+            onClose={settingsPanelHandler}
+          />
+        )}
+
+        <ReactCardFlip
+          isFlipped={isFlipped}
+          infinite={true}
+          containerStyle={{ height: '100%' }}
+        >
+          <div style={!isTableVisible ? { display: 'none' } : {}}>
+            {data && data.length > 0 ? (
+              <ReactTable data={data} columns={tableColumns} />
+            ) : (
+              <NoTableData />
+            )}
+          </div>
+          <IntegralsPreferences data={SpectrumsData} ref={settingRef} />
+        </ReactCardFlip>
       </div>
     </>
   );
