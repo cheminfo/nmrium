@@ -4,7 +4,11 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import ReactTable from '../elements/ReactTable/ReactTable';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { DELETE_INTEGRAL, CHANGE_INTEGRAL_DATA } from '../reducer/Actions';
+import {
+  DELETE_INTEGRAL,
+  CHANGE_INTEGRAL_DATA,
+  CHANGE_INTEGRAL_SUM,
+} from '../reducer/Actions';
 import { useModal } from '../elements/Modal';
 import Select from '../elements/Select';
 import IntegralSumModal from '../modal/IntegralSumModal';
@@ -200,13 +204,12 @@ const IntegralTablePanel = () => {
             ? SpectrumsData[activeSpectrum.index].integrals.values
             : [];
         if (value) {
-          let sum = integrals.reduce(
-            (currentSum, integral) => (currentSum += integral.value),
-            0,
-          );
-          integrals.forEach(
-            (integral) => (integral.relative = (integral.value / sum) * value),
-          );
+          dispatch({ type: CHANGE_INTEGRAL_SUM, value });
+
+          // console.log(integrals);
+          // integrals.forEach(
+          //   (integral) => (integral.relative = (integral.value / sum) * value),
+          // );
           // eslint-disable-next-line no-console
           console.log(integrals);
           // eslint-disable-next-line no-console
@@ -216,7 +219,7 @@ const IntegralTablePanel = () => {
 
       modal.close();
     },
-    [SpectrumsData, activeSpectrum, modal],
+    [SpectrumsData, activeSpectrum, dispatch, modal],
   );
 
   const showChangeIntegralSumModal = useCallback(() => {

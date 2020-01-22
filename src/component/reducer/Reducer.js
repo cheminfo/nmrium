@@ -70,6 +70,7 @@ import {
   EXPORT_DATA,
   SET_PREFERENCES,
   SET_ACTIVE_TAB,
+  CHANGE_INTEGRAL_SUM,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -969,6 +970,20 @@ const handleChangeIntegralZoom = (state, zoomFactor) => {
     }
   });
 };
+
+const handleChangeIntegralSum = (state, value) => {
+  return produce(state, (draft) => {
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      const datumObject = AnalysisObj.getDatum1D(id);
+      datumObject.changeIntegralSum(value);
+      draft.data[index].integrals = datumObject.getIntegrals();
+      if (!state.data.integralsYDomain) {
+        draft.data[index].integralsYDomain = draft.yDomain;
+      }
+    }
+  });
+};
 const handleAutoPeakPicking = (state, autOptions) => {
   return produce(state, (draft) => {
     draft.selectedTool = options.zoom.id;
@@ -1299,6 +1314,9 @@ export const spectrumReducer = (state, action) => {
 
     case CHANGE_INTEGRAL_ZOOM:
       return handleChangeIntegralZoom(state, action.zoomFactor);
+
+    case CHANGE_INTEGRAL_SUM:
+      return handleChangeIntegralSum(state, action.value);
 
     case BRUSH_END:
       return handleBrushEnd(state, action);

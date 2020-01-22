@@ -31,13 +31,13 @@ const stylesHighlighted = css`
 
 const IntegralResizable = (props) => {
   const { getScale, height, margin, mode } = useChartData();
-  const { id, x, from, to, integralID } = props;
+  const { id, integralData, from, to, integralID } = props;
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
 
   const highlight = useHighlight([integralID]);
 
-  const xBoundary = d3.extent(x);
+  const xBoundary = d3.extent(integralData.x);
 
   const dispatch = useDispatch();
 

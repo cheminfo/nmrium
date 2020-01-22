@@ -111,15 +111,6 @@ export class Datum1D {
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
 
-    const integralResult = XY.integral(
-      { x: this.data.x, y: this.data.re },
-      {
-        from: range[0],
-        to: range[1],
-        reverse: true,
-      },
-    );
-
     const integralValue = XY.integration(
       { x: this.data.x, y: this.data.re },
       {
@@ -132,39 +123,22 @@ export class Datum1D {
       id: generateID(),
       from: range[0],
       to: range[1],
-      ...integralResult,
       value: integralValue, // the real value
       relative: integralValue, // relative value
       kind: 'signal',
     });
   }
 
-  changeIntegral(integral) {
-    const integralResult = XY.integral(
-      { x: this.data.x, y: this.data.re },
-      {
-        from: integral.from,
-        to: integral.to,
-        reverse: true,
-      },
+  changeIntegralSum(value) {
+    this.integrals = Object.assign({}, this.integrals);
+    this.integrals.values = this.integrals.values.slice();
+    let sum = this.integrals.values.reduce(
+      (currentSum, integral) => (currentSum += integral.value),
+      0,
     );
-
-    const integralValue = XY.integration(
-      { x: this.data.x, y: this.data.re },
-      {
-        from: integral.from,
-        to: integral.to,
-        reverse: true,
-      },
-    );
-
-    const newIntegral = {
-      ...integral,
-      ...integralResult,
-      value: integralValue,
-    };
-
-    this.setIntegral(newIntegral);
+    this.integrals.values = this.integrals.values.map((integral) => {
+      return { ...integral, relative: (integral.value / sum) * value };
+    });
   }
 
   updateRelativeIntegrals(number) {
@@ -180,12 +154,15 @@ export class Datum1D {
     );
   }
 
-  setIntegral(integral) {
+  changeIntegral(integral) {
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
     const index = this.integrals.values.findIndex((i) => i.id === integral.id);
     if (index !== -1) {
-      this.integrals.values[index] = integral;
+      this.integrals.values[index] = {
+        ...this.integrals.values[index],
+        ...integral,
+      };
     }
   }
 

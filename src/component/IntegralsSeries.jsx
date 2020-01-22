@@ -38,9 +38,21 @@ const IntegralsSeries = () => {
     [height, margin.bottom, margin.top],
   );
 
+  const calculateIntegral = useCallback((x, y, from, to) => {
+    const integralResult = XY.integral(
+      { x: x, y: y },
+      {
+        from: from,
+        to: to,
+        reverse: true,
+      },
+    );
+    return integralResult;
+  }, []);
+
   const Integrals = useMemo(() => {
     const makePath = (info) => {
-      const { id, x, y, yDomain } = info;
+      const { id, x, y, yDomain, from, to } = info;
       const xScale = getScale(id).x;
       let yScale = null;
       if (zoomFactor) {
@@ -53,7 +65,9 @@ const IntegralsSeries = () => {
 
         yScale = t.rescaleY(getYScale(yDomain));
       }
-      const pathPoints = XY.reduce(x, y, {
+      const integralResult = calculateIntegral(x, y, from, to);
+
+      const pathPoints = XY.reduce(integralResult.x, integralResult.y, {
         from: xDomain[0],
         to: xDomain[1],
       });
@@ -84,10 +98,10 @@ const IntegralsSeries = () => {
       data
         .filter((d) => d.isVisible === true)
         .map(
-          (d) =>
-            d.integrals &&
-            d.integrals.values &&
-            d.integrals.values.map((integral) => (
+          (spectrum) =>
+            spectrum.integrals &&
+            spectrum.integrals.values &&
+            spectrum.integrals.values.map((integral) => (
               <g key={integral.id}>
                 <path
                   className="line"
@@ -95,25 +109,31 @@ const IntegralsSeries = () => {
                   fill="none"
                   style={{
                     transformOrigin: 'center top',
-                    opacity: IsActive(d.id) ? 1 : 0.2,
+                    opacity: IsActive(spectrum.id) ? 1 : 0.2,
                   }}
                   d={makePath({
-                    id: d.id,
-                    x: integral.x,
-                    y: integral.y,
-                    yDomain: d.integralsYDomain,
+                    id: spectrum.id,
+                    x: spectrum.x,
+                    y: spectrum.y,
+                    yDomain: spectrum.integralsYDomain,
+                    from: integral.from,
+                    to: integral.to,
                   })}
                   // vectorEffect="non-scaling-stroke"
                 />
 
                 <IntegralResizable
-                  id={d.id}
+                  id={spectrum.id}
                   integralID={integral.id}
-                  x={integral.x}
-                  y={integral.y}
+                  integralData={calculateIntegral(
+                    spectrum.x,
+                    spectrum.y,
+                    integral.from,
+                    integral.to,
+                  )}
                   from={integral.from}
                   to={integral.to}
-                  yDomain={d.integralsYDomain}
+                  yDomain={spectrum.integralsYDomain}
                 />
               </g>
             )),
@@ -123,6 +143,7 @@ const IntegralsSeries = () => {
     data,
     getScale,
     zoomFactor,
+    calculateIntegral,
     xDomain,
     getYScale,
     height,
