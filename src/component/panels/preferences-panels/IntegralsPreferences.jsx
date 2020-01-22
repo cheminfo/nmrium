@@ -53,7 +53,7 @@ const styles = {
 
 const defaultValues = {
   showValue: true,
-  valueFormat: '',
+  valueFormat: '0.00',
   showNB: true,
   NBFormat: '0.00',
 };
