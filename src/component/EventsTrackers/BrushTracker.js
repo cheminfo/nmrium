@@ -112,12 +112,12 @@ export function BrushTracker({
         event.deltaMode === 1
           ? deltaYValue <= 3
             ? 0.01
-            : 0.1 * event.deltaMode
+            : 0.05 * event.deltaMode
           : event.deltaMode
           ? 1
           : deltaYValue <= 3
           ? 0.01
-          : 0.1 * deltaYValue;
+          : 0.05 * deltaYValue;
 
       const direction = isNegative(event.deltaY) ? 'up' : 'down';
       let _scale = scale;
