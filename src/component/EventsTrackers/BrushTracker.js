@@ -103,27 +103,37 @@ export function BrushTracker({
       event.stopPropagation();
       event.preventDefault();
 
+      const deltaYValue =
+        Math.abs(event.deltaY) === 1
+          ? Math.abs(event.deltaY)
+          : Math.abs(event.deltaY) / 100;
+
       let ZOOM_STEP =
         event.deltaMode === 1
-          ? 0.1 * Math.abs(event.deltaY)
+          ? deltaYValue <= 3
+            ? 0.01
+            : 0.1 * event.deltaMode
           : event.deltaMode
           ? 1
-          : 0.1 * (Math.abs(event.deltaY) / 100);
+          : deltaYValue <= 3
+          ? 0.01
+          : 0.1 * deltaYValue;
 
       const direction = isNegative(event.deltaY) ? 'up' : 'down';
       let _scale = scale;
+
       if (direction === 'up') {
         _scale = scale + ZOOM_STEP;
       } else {
         _scale = scale - ZOOM_STEP;
       }
-
-      // if (_scale > 0) {
-      onZoom({ scale: _scale });
-      setScale(_scale);
-      // } else {
-      //   setScale(0);
-      // }
+      if (_scale >= 0 || _scale === 0) {
+        onZoom({ scale: _scale });
+        setScale(_scale);
+      } else {
+        onZoom({ scale: 0 });
+        setScale(0);
+      }
     },
     [isNegative, onZoom, scale],
   );
