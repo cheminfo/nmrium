@@ -1,5 +1,5 @@
 // import applyFilter from './filter1d/filter';
-import { convert, createTree } from 'jcampconverter';
+import { convert } from 'jcampconverter';
 import { XY, XReIm } from 'ml-spectra-processing';
 
 import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
