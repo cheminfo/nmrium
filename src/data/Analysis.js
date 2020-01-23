@@ -1,4 +1,4 @@
-import { convert } from 'jcampconverter';
+import { convert, createTree } from 'jcampconverter';
 import { Molecule } from 'openchemlib';
 
 import { getInfoFromMetaData } from './utilities/getInfoFromMetaData';
@@ -36,6 +36,24 @@ export class Analysis {
 
   addJcamp(jcamp, options = {}) {
     // need to parse the jcamp
+
+    let tree = createTree(jcamp);
+    if (tree.length === 0) return;
+    // Should be improved when we have a more complex case
+    let current = tree[0];
+    if (current.jcamp) {
+      this.addJcampSS(current.jcamp, options);
+    }
+    if (current.children) {
+      for (let child of current.children) {
+        if (child.jcamp) {
+          this.addJcampSS(child.jcamp, options);
+        }
+      }
+    }
+  }
+
+  addJcampSS(jcamp, options) {
     let result = convert(jcamp, { withoutXY: true, keepRecordsRegExp: /.*/ });
     let meta = getInfoFromMetaData(result.info);
     if (meta.dimension === 1) {
