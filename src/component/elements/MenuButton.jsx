@@ -16,6 +16,10 @@ const menuStyles = css`
   padding: 2px;
   transform: translate(40px, -26px);
   background-color: white;
+
+  button:hover {
+    background-color: #fafafa;
+  }
 `;
 
 // eslint-disable-next-line no-unused-vars
