@@ -7,6 +7,9 @@ import React, {
 } from 'react';
 import lodash from 'lodash';
 
+import { useChartData } from '../context/ChartContext';
+import { options } from '../toolbar/ToolTypes';
+
 export const BrushContext = createContext();
 
 const initialState = {
@@ -18,6 +21,7 @@ const initialState = {
 };
 
 let debounceClickEvents = [];
+let scale = 1;
 
 export function BrushTracker({
   children,
@@ -29,9 +33,17 @@ export function BrushTracker({
   onClick,
   noPropagation,
 }) {
+  const { zoomFactor, integralZoomFactor, selectedTool } = useChartData();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [scale, setScale] = useState(1);
   const [mouseDownTime, setMouseDownTime] = useState();
+
+  useEffect(() => {
+    scale =
+      selectedTool === options.integral.id
+        ? integralZoomFactor.scale
+        : zoomFactor.scale;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTool]);
 
   const mouseDownHandler = useCallback(
     (event) => {
@@ -129,13 +141,13 @@ export function BrushTracker({
       }
       if (_scale >= 0 || _scale === 0) {
         onZoom({ scale: _scale });
-        setScale(_scale);
+        scale = _scale;
       } else {
         onZoom({ scale: 0 });
-        setScale(0);
+        scale = _scale;
       }
     },
-    [isNegative, onZoom, scale],
+    [isNegative, onZoom],
   );
 
   useEffect(() => {

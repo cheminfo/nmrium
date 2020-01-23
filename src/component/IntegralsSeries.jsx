@@ -28,7 +28,6 @@ const IntegralsSeries = () => {
     data,
     height,
     margin,
-    zoomFactor,
   } = useChartData();
 
   const getYScale = useCallback(
@@ -54,17 +53,8 @@ const IntegralsSeries = () => {
     const makePath = (info) => {
       const { id, x, y, yDomain, from, to } = info;
       const xScale = getScale(id).x;
-      let yScale = null;
-      if (zoomFactor) {
-        yScale = getYScale(yDomain);
-      } else {
-        const t = d3.zoomIdentity
-          .translate(0, height - margin.bottom)
-          .scale(40)
-          .translate(0, -(height - margin.bottom));
+      const yScale = getYScale(yDomain);
 
-        yScale = t.rescaleY(getYScale(yDomain));
-      }
       const integralResult = calculateIntegral(x, y, from, to);
 
       const pathPoints = XY.reduce(integralResult.x, integralResult.y, {
@@ -139,17 +129,7 @@ const IntegralsSeries = () => {
             )),
         )
     );
-  }, [
-    data,
-    getScale,
-    zoomFactor,
-    calculateIntegral,
-    xDomain,
-    getYScale,
-    height,
-    margin.bottom,
-    activeSpectrum,
-  ]);
+  }, [data, getScale, getYScale, calculateIntegral, xDomain, activeSpectrum]);
 
   return (
     <g css={pathStyles} clipPath="url(#clip)">

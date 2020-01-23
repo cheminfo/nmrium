@@ -369,6 +369,36 @@ const deletePeak = (state, peakData) => {
   });
 };
 
+const setIntegralZoom = (state, zoomFactor, draft) => {
+  const { originDomain, height, margin } = state;
+  const scale = d3.scaleLinear(originDomain.y, [
+    height - margin.bottom,
+    margin.top,
+  ]);
+  const t = d3.zoomIdentity
+    .translate(0, height - margin.bottom)
+    .scale(zoomFactor.scale * 10)
+    .translate(0, -(height - margin.bottom));
+
+  const newYDomain = t.rescaleY(scale).domain();
+
+  draft.integralZoomFactor = zoomFactor;
+  const activeSpectrum = draft.activeSpectrum;
+  if (activeSpectrum) {
+    const spectrumIndex = draft.data.findIndex(
+      (s) => s.id === activeSpectrum.id,
+    );
+    // draft.zoomFactor = t;
+    draft.data[spectrumIndex].integralsYDomain = newYDomain;
+  }
+};
+
+const handleChangeIntegralZoom = (state, zoomFactor) => {
+  return produce(state, (draft) => {
+    setIntegralZoom(state, zoomFactor, draft);
+  });
+};
+
 const addIntegral = (state, action) => {
   const scale = getScale(state).x;
 
@@ -388,9 +418,11 @@ const addIntegral = (state, action) => {
       const datumObject = AnalysisObj.getDatum1D(id);
       datumObject.addIntegral(integralRange);
       draft.data[index].integrals = datumObject.getIntegrals();
-      if (!state.data.integralsYDomain) {
-        draft.data[index].integralsYDomain = draft.yDomain;
-      }
+
+      setIntegralZoom(state, state.integralZoomFactor, draft);
+      // if (!state.data.integralsYDomain) {
+      //   draft.data[index].integralsYDomain = draft.yDomain;
+      // }
     }
   });
 };
@@ -800,7 +832,7 @@ const setZoom = (state, draft, zoomFactor) => {
       .translate(0, -(height - margin.bottom));
   }
 
-  draft.zoomFactor = t;
+  draft.zoomFactor = zoomFactor;
 
   let yDomain = t.rescaleY(scale).domain();
   if (activeSpectrum === null) {
@@ -941,31 +973,6 @@ const handleChangeIntegralYDomain = (state, newYDomain) => {
       const spectrumIndex = draft.data.findIndex(
         (s) => s.id === activeSpectrum.id,
       );
-      draft.data[spectrumIndex].integralsYDomain = newYDomain;
-    }
-  });
-};
-const handleChangeIntegralZoom = (state, zoomFactor) => {
-  return produce(state, (draft) => {
-    const { originDomain, height, margin } = state;
-    const scale = d3.scaleLinear(originDomain.y, [
-      height - margin.bottom,
-      margin.top,
-    ]);
-
-    const t = d3.zoomIdentity
-      .translate(0, height - margin.bottom)
-      .scale(zoomFactor.scale * 10)
-      .translate(0, -(height - margin.bottom));
-
-    const newYDomain = t.rescaleY(scale).domain();
-
-    const activeSpectrum = draft.activeSpectrum;
-    if (activeSpectrum) {
-      const spectrumIndex = draft.data.findIndex(
-        (s) => s.id === activeSpectrum.id,
-      );
-      draft.zoomFactor = t;
       draft.data[spectrumIndex].integralsYDomain = newYDomain;
     }
   });
@@ -1175,7 +1182,8 @@ export const initialState = {
   },
   activeSpectrum: null,
   mode: 'RTL',
-  zoomFactor: null,
+  zoomFactor: { scale: 1 },
+  integralZoomFactor: { scale: 4 },
   molecules: [],
   verticalAlign: {
     flag: false,
