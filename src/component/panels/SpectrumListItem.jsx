@@ -34,6 +34,14 @@ const styles = {
     backgroundRepeat: 'no-repeat',
     backgroundSize: '18px 18px',
   },
+  spectrumClassIcon: {
+    backgroundPosition: 'center center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '16px 16px',
+    width: '16px',
+    height: '100%',
+    margin: '0px 2px',
+  },
 };
 
 const SpectrumListItem = ({
@@ -67,7 +75,7 @@ const SpectrumListItem = ({
   };
 
   return (
-    <div style={styles.row} key={`slist${data.id}`}>
+    <div style={styles.row} key={data.id}>
       <button
         style={styles.button}
         type="button"
@@ -82,6 +90,10 @@ const SpectrumListItem = ({
         />
       </button>
       <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
+        <div
+          style={styles.spectrumClassIcon}
+          className={data.info.isFid ? 'ci-icon-nmr-fid' : 'ci-icon-nmr-ft'}
+        />
         <span style={styles.info}>{data.name}</span>
         <div
           style={styles.info}
