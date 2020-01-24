@@ -82,9 +82,16 @@ class Dashboard extends React.Component {
           <Switch>
             {this.state.routesList.map((prop) => (
               <Route
-                path={`/SamplesDashboard/${getKey(prop.file)}`}
+                path={`/SamplesDashboard/${getKey(prop.file)}/:id`}
                 // component={prop.component}
-                render={() => <View {...prop} />}
+                render={(props) => {
+                  const {
+                    match: {
+                      params: { id },
+                    },
+                  } = props;
+                  return <View key={id} {...prop} />;
+                }}
                 key={getKey(prop.file)}
               />
             ))}
