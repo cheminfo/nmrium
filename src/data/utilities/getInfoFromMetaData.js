@@ -33,6 +33,7 @@ export function getInfoFromMetaData(info) {
     maybeAdd(metadata, 'acquisitionMode', parseInt(info.$FNTYPE, 10));
   }
   maybeAdd(metadata, 'expno', parseInt(info.$EXPNO, 10));
+  console.log(metadata.type);
   if (metadata.type) {
     if (metadata.type.toUpperCase().indexOf('FID') >= 0) {
       metadata.isFid = true;

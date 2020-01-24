@@ -1,0 +1,20 @@
+{
+  "data1d": [
+    {
+      "data": {},
+      "id": "2x1trt1trwd",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "./data/50-78-2/1h.dx"
+      },
+      "display": {
+        "name": "1H",
+        "color": "#FFB300",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      }
+    }
+  ]
+}
