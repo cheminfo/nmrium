@@ -16,7 +16,7 @@ const styles = {
   },
   input: {
     height: '100%',
-    width: '50px',
+    width: '100px',
     borderRadius: '5px',
     border: '0.55px solid #c7c7c7',
     margin: '0px 5px 0px 5px',
@@ -49,36 +49,37 @@ const ManualPhaseCorrectionPanel = () => {
 
   const handleInput = useCallback(
     (e) => {
+      const fieldName = e.target.name;
       if (e.target) {
-        const _value = {
-          ...value,
-          [e.target.name]: e.target.validity.valid
-            ? Number(e.target.value)
-            : value[e.target.name],
-        };
-        setValue(_value);
-      }
-    },
-    [value],
-  );
+        const inputValue =
+          parseFloat(e.target.value) || e.target.value.trim() === '-'
+            ? e.target.value
+            : 0;
 
-  const handleInputChanged = useCallback(
-    (e) => {
-      const _value = {
-        ...value,
-        [e.target.name]: e.target.validity.valid
-          ? Number(e.target.value) - value[e.target.name]
-          : value[e.target.name],
-      };
-      for (let key in value) {
-        if (value[key] === _value[key]) {
-          _value[key] -= value[key];
-        }
+        setValue((prevValue) => {
+          const _value = {
+            ...prevValue,
+            [fieldName]: inputValue,
+          };
+          if (inputValue !== '-') {
+            const newValue = {
+              ...value,
+              [fieldName]: inputValue - prevValue[fieldName],
+            };
+            for (let key in prevValue) {
+              if (prevValue[key] === newValue[key]) {
+                newValue[key] -= prevValue[key];
+              }
+            }
+            dispatch({
+              type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+              value: newValue,
+            });
+          }
+
+          return _value;
+        });
       }
-      dispatch({
-        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-        value: _value,
-      });
     },
     [dispatch, value],
   );
@@ -113,9 +114,7 @@ const ManualPhaseCorrectionPanel = () => {
         style={styles.input}
         type="text"
         value={value.ph0}
-        onInput={handleInput}
-        onChange={handleInputChanged}
-        // pattern="^\d*(\.\d{0,10})?$"
+        onChange={handleInput}
       />
       <span style={styles.label}>PH1: </span>
       <input
@@ -123,8 +122,7 @@ const ManualPhaseCorrectionPanel = () => {
         style={styles.input}
         type="text"
         value={value.ph1}
-        onInput={handleInput}
-        onChange={handleInputChanged}
+        onChange={handleInput}
         // pattern="^\d*(\.\d{0,2})?$"
       />
       <InputRange
