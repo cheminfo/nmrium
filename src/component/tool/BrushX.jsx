@@ -19,6 +19,7 @@ const allowTools = [
   options.peakPicking.id,
   options.integral.id,
   options.phaseCorrection.id,
+  options.baseLineCorrection.id,
 ];
 
 export default function BrushX() {

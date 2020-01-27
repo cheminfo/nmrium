@@ -8,6 +8,7 @@ import XAxis from './XAxis';
 import YAxis from './YAxis';
 import PeaksNotations from './PeaksNotations';
 import Ranges from './Ranges';
+import BaseLineZones from './BaseLineZones';
 
 function NMRChart() {
   const { mode, width, height, margin } = useChartData();
@@ -36,6 +37,7 @@ function NMRChart() {
       <IntegralsSeries />
       <PeaksNotations />
       <Ranges />
+      <BaseLineZones />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid={true} mode={mode} />

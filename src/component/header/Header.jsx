@@ -10,6 +10,7 @@ import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
 import AutoRangesPickingOptionPanel from './AutoRangesPickingOptionPanel';
+import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 
 const headerStyle = css`
   display: flex;
@@ -68,6 +69,8 @@ const Header = ({ isFullscreen, onMaximize }) => {
       return <AutoPeakPickingOptionPanel />;
     } else if (selectedOptionPanel === options.autoRangesPicking.id) {
       return <AutoRangesPickingOptionPanel />;
+    } else if (selectedOptionPanel === options.baseLineCorrection.id) {
+      return <BaseLineCorrectionPanel />;
     }
   }, [selectedOptionPanel]);
 

@@ -34,6 +34,7 @@ import {
   SET_VERTICAL_INDICATOR_X_POSITION,
   SET_LOADING_FLAG,
   FULL_ZOOM_OUT,
+  ADD_BASE_LINE_ZONE,
 } from './reducer/Actions';
 import { DispatchProvider, useDispatch } from './context/DispatchContext';
 import DropZone from './loader/DropZone';
@@ -290,6 +291,13 @@ function ChartPanel() {
           dispatch({
             type: ADD_PEAKS,
             ...brushData,
+          });
+          break;
+        case options.baseLineCorrection.id:
+          // console.log(brushData);
+          dispatch({
+            type: ADD_BASE_LINE_ZONE,
+            zone: { from: brushData.startX, to: brushData.endX },
           });
           break;
 

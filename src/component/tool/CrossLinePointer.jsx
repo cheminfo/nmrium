@@ -15,7 +15,11 @@ const styles = {
   },
 };
 
-const allowTools = [options.zoom.id, options.equalizerTool.id];
+const allowTools = [
+  options.zoom.id,
+  options.equalizerTool.id,
+  options.baseLineCorrection.id,
+];
 
 const CrossLinePointer = () => {
   const { height, width, margin, selectedTool } = useChartData();

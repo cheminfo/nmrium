@@ -71,7 +71,11 @@ import {
   SET_PREFERENCES,
   SET_ACTIVE_TAB,
   CHANGE_INTEGRAL_SUM,
+  ADD_BASE_LINE_ZONE,
+  DELETE_BASE_LINE_ZONE,
+  APPLY_BASE_LINE_CORRECTION_FILTER,
 } from './Actions';
+import generateID from '../../data/utilities/generateID';
 
 let AnalysisObj = new Analysis();
 const DEFAULT_YAXIS_SHIFT_VALUE = 20;
@@ -645,6 +649,7 @@ const resetSelectedTool = (state) => {
   return produce(state, (draft) => {
     draft.selectedOptionPanel = null;
     draft.selectedTool = options.zoom.id;
+    draft.baseLineZones = [];
     if (state.tempData) {
       draft.data = state.tempData;
       draft.tempData = null;
@@ -1155,6 +1160,51 @@ const handelSetActiveTab = (state, tab) => {
   });
 };
 
+const handleAddBaseLineZone = (state, { from, to }) => {
+  const scale = getScale(state).x;
+
+  return produce(state, (draft) => {
+    let start = scale.invert(from);
+    const end = scale.invert(to);
+
+    let zone = [];
+    if (start > end) {
+      zone = [end, start];
+    } else {
+      zone = [start, end];
+    }
+
+    const zones = state.baseLineZones.slice();
+    zones.push({
+      id: generateID(),
+      from: zone[0],
+      to: zone[1],
+    });
+    draft.baseLineZones = zones;
+  });
+};
+
+const handleDeleteBaseLineZone = (state, id) => {
+  return produce(state, (draft) => {
+    draft.baseLineZones = state.baseLineZones.filter((zone) => zone.id !== id);
+  });
+};
+
+const handleBaseLineCorrectionFilter = (state) => {
+  return produce(state, (draft) => {
+    const activeSpectrumId = state.activeSpectrum.id;
+    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+
+    activeObject.applyFilter([
+      { name: Filters.baselineCorrection.id, options: state.baseLineZones },
+    ]);
+    draft.baseLineZones = [];
+    setDataByFilters(draft, activeObject, activeSpectrumId);
+    setDomain(draft);
+    setMode(draft);
+  });
+};
+
 //////////////////////////////////////////////////////////////////////
 //////////////// end undo and redo functions /////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -1200,6 +1250,7 @@ export const initialState = {
   pivot: 0,
   isLoading: false,
   preferences: {},
+  baseLineZones: [],
 };
 
 export const spectrumReducer = (state, action) => {
@@ -1345,6 +1396,12 @@ export const spectrumReducer = (state, action) => {
       return handelSetPreferences(state, action.data);
     case SET_ACTIVE_TAB:
       return handelSetActiveTab(state, action.tab);
+    case ADD_BASE_LINE_ZONE:
+      return handleAddBaseLineZone(state, action.zone);
+    case DELETE_BASE_LINE_ZONE:
+      return handleDeleteBaseLineZone(state, action.id);
+    case APPLY_BASE_LINE_CORRECTION_FILTER:
+      return handleBaseLineCorrectionFilter(state);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

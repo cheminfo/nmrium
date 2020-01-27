@@ -55,4 +55,10 @@ export const options = {
     hasOptionPanel: true,
     isFilter: true,
   },
+  baseLineCorrection: {
+    id: 'baseLineCorrection',
+    label: 'baseline correction',
+    hasOptionPanel: true,
+    isFilter: true,
+  },
 };
