@@ -79,9 +79,9 @@ class Sidebar extends React.Component {
           <Menu
             onClick={(e) => {
               this.props.history.push(
-                `/SamplesDashboard/${getKey(e.item.props.file)}/${Math.random()
+                `/SamplesDashboard/${Math.random()
                   .toString(36)
-                  .replace('0.', '')}`,
+                  .replace('0.', '')}/${getKey(e.item.props.file)}`,
               );
             }}
             mode="inline"

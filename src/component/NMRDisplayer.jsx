@@ -36,10 +36,10 @@ import {
   FULL_ZOOM_OUT,
 } from './reducer/Actions';
 import { DispatchProvider, useDispatch } from './context/DispatchContext';
-import DropZone from './DropZone';
+import DropZone from './loader/DropZone';
 import ToolBar from './toolbar/ToolBar';
 import Panels from './panels/Panels';
-import NMRChart from './NMRChart';
+import NMRChart from './1d/NMRChart';
 import { MouseTracker } from './EventsTrackers/MouseTracker';
 import CrossLinePointer from './tool/CrossLinePointer';
 import { BrushTracker } from './EventsTrackers/BrushTracker';
@@ -49,7 +49,7 @@ import { options } from './toolbar/ToolTypes';
 import PeakPointer from './tool/PeakPointer';
 import Header from './header/Header';
 import VerticalIndicator from './tool/VerticalIndicator';
-import Loader from './Loader';
+import Spinner from './loader/Spinner';
 import { ModalProvider } from './elements/Modal';
 
 // alert optional cofiguration
@@ -342,7 +342,7 @@ function ChartPanel() {
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
       <Fragment>
-        <Loader isLoading={isLoading} />
+        <Spinner isLoading={isLoading} />
 
         {data && data.length > 0 && (
           <BrushTracker

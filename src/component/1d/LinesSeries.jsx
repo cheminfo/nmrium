@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { XY } from 'ml-spectra-processing';
 import { jsx, css } from '@emotion/core';
 
-import { useChartData } from './context/ChartContext';
+import { useChartData } from '../context/ChartContext';
 
 /** @jsx jsx */
 

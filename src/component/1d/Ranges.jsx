@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { useChartData } from './context/ChartContext';
+import { useChartData } from '../context/ChartContext';
+
 import Range from './Range';
 
 const Ranges = () => {

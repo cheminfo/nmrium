@@ -4,10 +4,10 @@ import * as d3 from 'd3';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
-import { useHighlight } from './highlight/index';
-import { useChartData } from './context/ChartContext';
-import { useDispatch } from './context/DispatchContext';
-import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from './reducer/Actions';
+import { useHighlight } from '../highlight/index';
+import { useChartData } from '../context/ChartContext';
+import { useDispatch } from '../context/DispatchContext';
+import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from '../reducer/Actions';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;

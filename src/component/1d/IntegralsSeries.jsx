@@ -5,7 +5,8 @@ import * as d3 from 'd3';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
-import { useChartData } from './context/ChartContext';
+import { useChartData } from '../context/ChartContext';
+
 import IntegralResizable from './IntegralResizable';
 
 const pathStyles = css`

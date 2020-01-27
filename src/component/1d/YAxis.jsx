@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
-import { useChartData } from './context/ChartContext';
+import { useChartData } from '../context/ChartContext';
 
 const axisStyles = css`
   user-select: 'none';

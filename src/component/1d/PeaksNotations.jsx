@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 
-import { getPeakLabelNumberDecimals } from '../data/defaults/default';
-
-import { useChartData } from './context/ChartContext';
-import PeakNotation from './Notations/PeakNotation';
+import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
+import { useChartData } from '../context/ChartContext';
+import PeakNotation from '../Notations/PeakNotation';
 // import ModifiedPeakNotation from './Notations/ModifiedPeakNotation';
 
 const PeaksNotations = () => {

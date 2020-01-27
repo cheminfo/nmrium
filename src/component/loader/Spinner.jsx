@@ -2,7 +2,8 @@
 import { jsx, css } from '@emotion/core';
 import { useState, Fragment } from 'react';
 
-import { useChartData } from './context/ChartContext';
+import { useChartData } from '../context/ChartContext';
+
 import NoData from './NoData';
 
 const styles = css`
@@ -38,7 +39,7 @@ const styles = css`
     }
   }
 `;
-const Loader = ({ isLoading = true }) => {
+const Spinner = ({ isLoading = true }) => {
   const { data } = useChartData();
   const [checkEmpty, startCheckEmpty] = useState(false);
 
@@ -68,4 +69,4 @@ const Loader = ({ isLoading = true }) => {
   );
 };
 
-export default Loader;
+export default Spinner;

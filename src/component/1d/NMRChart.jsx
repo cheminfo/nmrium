@@ -1,10 +1,11 @@
 import React from 'react';
 
+import { useChartData } from '../context/ChartContext';
+
 import LinesSeries from './LinesSeries';
 import IntegralsSeries from './IntegralsSeries';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
-import { useChartData } from './context/ChartContext';
 import PeaksNotations from './PeaksNotations';
 import Ranges from './Ranges';
 
