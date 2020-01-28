@@ -52,6 +52,7 @@ import Header from './header/Header';
 import VerticalIndicator from './tool/VerticalIndicator';
 import Spinner from './loader/Spinner';
 import { ModalProvider } from './elements/Modal';
+import KeyListener from './EventsTrackers/keysListener';
 
 // alert optional cofiguration
 const alertOptions = {
@@ -221,6 +222,7 @@ const NMRDisplayer = (props) => {
               isResizeEventStart,
             }}
           >
+            <KeyListener />
             <HighlightProvider>
               <div
                 ref={fullScreenRef}

@@ -14,6 +14,7 @@ import {
   copyPNGToClipboard,
 } from '../utility/Export';
 import GroupByInfoKey from '../utility/GroupByInfoKey';
+import generateID from '../../data/utilities/generateID';
 
 import { UNDO, REDO, RESET } from './HistoryActions';
 import {
@@ -74,8 +75,9 @@ import {
   ADD_BASE_LINE_ZONE,
   DELETE_BASE_LINE_ZONE,
   APPLY_BASE_LINE_CORRECTION_FILTER,
+  SET_KEY_PREFERENCES,
+  APPLY_KEY_PREFERENCES,
 } from './Actions';
-import generateID from '../../data/utilities/generateID';
 
 let AnalysisObj = new Analysis();
 const DEFAULT_YAXIS_SHIFT_VALUE = 20;
@@ -808,15 +810,7 @@ const getClosestNumber = (array = [], goal = 0) => {
 };
 
 const setZoom = (state, draft, zoomFactor) => {
-  const {
-    originDomain,
-    height,
-    margin,
-    data,
-    yDomains,
-    activeSpectrum,
-    activeTab,
-  } = state;
+  const { originDomain, height, margin, data } = state;
 
   const scale = d3.scaleLinear(originDomain.y, [
     height - margin.bottom,
@@ -840,15 +834,15 @@ const setZoom = (state, draft, zoomFactor) => {
   draft.zoomFactor = zoomFactor;
 
   let yDomain = t.rescaleY(scale).domain();
-  if (activeSpectrum === null) {
-    draft.yDomains = yDomains.map((y) => {
+  if (draft.activeSpectrum === null) {
+    draft.yDomains = draft.yDomains.map((y) => {
       return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
     });
   } else {
     const index = data
-      .filter((d) => d.info.nucleus === activeTab)
-      .findIndex((d) => d.id === activeSpectrum.id);
-    const newYDomains = [...state.yDomains];
+      .filter((d) => d.info.nucleus === draft.activeTab)
+      .findIndex((d) => d.id === draft.activeSpectrum.id);
+    const newYDomains = [...draft.yDomains];
     newYDomains[index] = yDomain;
     draft.yDomains = newYDomains;
   }
@@ -1141,6 +1135,7 @@ const handelSetActiveTab = (state, tab) => {
     const spectrumsGroupsList = groupByNucleus(data);
 
     draft.activeTab = tab;
+
     for (let datum of draft.data) {
       if (datum.info && datum.info.nucleus && datum.info.nucleus === tab) {
         datum.isVisible = true;
@@ -1204,6 +1199,47 @@ const handleBaseLineCorrectionFilter = (state) => {
     setMode(draft);
   });
 };
+const setKeyPreferencesHandler = (state, keyCode) => {
+  return produce(state, (draft) => {
+    const { activeTab, data, activeSpectrum, zoomFactor, xDomain } = state;
+    const groupByNucleus = GroupByInfoKey('nucleus');
+    const spectrumsGroupsList = groupByNucleus(data);
+    draft.keysPreferences[keyCode] = {
+      activeTab,
+      activeSpectrum,
+      zoomFactor,
+      xDomain,
+      data: spectrumsGroupsList[activeTab].reduce((acc, datum) => {
+        acc[datum.id] = {
+          color: datum.color,
+          isVisible: datum.isVisible,
+          isPeaksMarkersVisible: datum.isPeaksMarkersVisible,
+        };
+        return acc;
+      }, {}),
+    };
+  });
+};
+const applyKeyPreferencesHandler = (state, keyCode) => {
+  return produce(state, (draft) => {
+    const preferences = state.keysPreferences[keyCode];
+    if (preferences) {
+      draft.activeTab = preferences.activeTab;
+      draft.data = state.data.map((datum) => {
+        return {
+          ...datum,
+          ...(datum.info.nucleus === preferences.activeTab
+            ? preferences.data[datum.id]
+            : { isVisible: false }),
+        };
+      });
+      draft.activeSpectrum = preferences.activeSpectrum;
+      setDomain(draft);
+      draft.xDomain = preferences.xDomain;
+      setZoom(state, draft, preferences.zoomFactor);
+    }
+  });
+};
 
 //////////////////////////////////////////////////////////////////////
 //////////////// end undo and redo functions /////////////////////////
@@ -1251,6 +1287,7 @@ export const initialState = {
   isLoading: false,
   preferences: {},
   baseLineZones: [],
+  keysPreferences: {},
 };
 
 export const spectrumReducer = (state, action) => {
@@ -1402,6 +1439,10 @@ export const spectrumReducer = (state, action) => {
       return handleDeleteBaseLineZone(state, action.id);
     case APPLY_BASE_LINE_CORRECTION_FILTER:
       return handleBaseLineCorrectionFilter(state);
+    case SET_KEY_PREFERENCES:
+      return setKeyPreferencesHandler(state, action.keyCode);
+    case APPLY_KEY_PREFERENCES:
+      return applyKeyPreferencesHandler(state, action.keyCode);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

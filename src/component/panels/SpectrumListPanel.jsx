@@ -40,7 +40,7 @@ const SpectrumListPanel = () => {
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [colorPickerPosition, setColorPickerPosition] = useState(null);
   const [activeTabID, setActiveTabID] = useState(null);
-  const { data, activeSpectrum } = useChartData();
+  const { data, activeSpectrum, activeTab: activeTabState } = useChartData();
   const modal = useModal();
   const dispatch = useDispatch();
   const [spectrumsGroupByNucleus, setSpectrumsGroupByNucleus] = useState([]);
@@ -184,7 +184,7 @@ const SpectrumListPanel = () => {
 
   const onTabChangeHandler = useCallback(
     (tab) => {
-      setActiveTabID(tab);
+      // setActiveTabID(tab);
       // showSpectrumsByGroup(tab, spectrumsGroupByNucleus);
       dispatch({ type: SET_ACTIVE_TAB, tab: tab });
     },
@@ -195,7 +195,9 @@ const SpectrumListPanel = () => {
     return (
       <Tabs
         defaultTabID={
-          spectrumsGroupByNucleus && Object.keys(spectrumsGroupByNucleus)[0]
+          activeTabState
+            ? activeTabState
+            : spectrumsGroupByNucleus && Object.keys(spectrumsGroupByNucleus)[0]
         }
         onClick={onTabChangeHandler}
       >
@@ -221,6 +223,7 @@ const SpectrumListPanel = () => {
       </Tabs>
     );
   }, [
+    activeTabState,
     spectrumsGroupByNucleus,
     onTabChangeHandler,
     visible,

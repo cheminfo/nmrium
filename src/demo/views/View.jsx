@@ -16,8 +16,10 @@ function checkStatus(response) {
   return response;
 }
 
-export default function View({ file, title, ...otherProps }) {
+export default function View(props) {
   const [data, setData] = useState();
+  const { file, title } = props;
+
   useEffect(() => {
     if (file) {
       loadData(file).then((d) => {
@@ -26,7 +28,7 @@ export default function View({ file, title, ...otherProps }) {
     } else {
       setData({});
     }
-  }, [file]);
+  }, [file, props]);
 
   return (
     <div
@@ -41,7 +43,7 @@ export default function View({ file, title, ...otherProps }) {
         Display and process 1D NMR spectra from a jcamp-dx file
       </h5>
       <p className="category">{title}</p>
-      <NMRDisplayer data={data} {...otherProps} />
+      <NMRDisplayer data={data} />
     </div>
   );
 }

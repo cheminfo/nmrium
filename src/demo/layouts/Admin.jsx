@@ -90,7 +90,7 @@ class Dashboard extends React.Component {
                       params: { id },
                     },
                   } = props;
-                  return <View key={id} {...prop} />;
+                  return <View key={id} {...prop} id={getKey(prop.file)} />;
                 }}
                 key={getKey(prop.file)}
               />
