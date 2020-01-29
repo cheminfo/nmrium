@@ -61,6 +61,7 @@ const ManualPhaseCorrectionPanel = () => {
             ...prevValue,
             [fieldName]: inputValue,
           };
+
           if (inputValue !== '-') {
             const newValue = {
               ...value,

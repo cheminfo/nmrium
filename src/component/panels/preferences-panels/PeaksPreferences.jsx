@@ -15,6 +15,7 @@ import { useChartData } from '../../context/ChartContext';
 import { SET_PREFERENCES } from '../../reducer/Actions';
 
 import ColumnFormatField from './ColumnFormatField';
+import { peaksDefaultValues } from './defaultValues';
 
 const styles = {
   container: { padding: 10, backgroundColor: '#f1f1f1', height: '100%' },
@@ -46,16 +47,6 @@ const styles = {
   },
 };
 
-const defaultValues = {
-  showPanel: true,
-  PPMShow: true,
-  PPMFormat: '0.00',
-  HZShow: true,
-  HZFormat: '0.00',
-  peakWidthShow: true,
-  peakFormat: '0.00',
-};
-
 const PeaksPreferences = forwardRef((props, ref) => {
   const { data, preferences } = useChartData();
   const dispatch = useDispatch();
@@ -67,7 +58,7 @@ const PeaksPreferences = forwardRef((props, ref) => {
 
   const getDefaultValues = useCallback((nucleusList) => {
     const _values = nucleusList.reduce((accumulator, key) => {
-      accumulator = { ...accumulator, [key]: defaultValues };
+      accumulator = { ...accumulator, [key]: peaksDefaultValues };
       return accumulator;
     }, {});
     return _values;

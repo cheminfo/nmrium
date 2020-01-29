@@ -21,6 +21,7 @@ import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
 import PreferencesHeader from './header/PreferencesHeader';
 import IntegralsPreferences from './preferences-panels/IntegralsPreferences';
+import { integralDefaultValues } from './preferences-panels/defaultValues';
 
 const styles = {
   toolbar: {
@@ -152,13 +153,6 @@ const IntegralTablePanel = () => {
       resizable: true,
       Cell: ({ row }) => row.original.to.toFixed(2),
     },
-    // {
-    //   Header: 'Value',
-    //   accessor: 'value',
-    //   sortType: 'basic',
-    //   resizable: true,
-    //   Cell: ({ row }) => row.original.value.toFixed(2),
-    // },
     {
       orderIndex: 6,
       Header: 'Kind',
@@ -190,6 +184,16 @@ const IntegralTablePanel = () => {
     },
   ];
 
+  const checkPreferences = (integralsPreferences, key) => {
+    const val =
+      integralsPreferences === undefined ||
+      Object.keys(integralsPreferences).length === 0 ||
+      (integralsPreferences && integralsPreferences[key] === true)
+        ? true
+        : false;
+    return val;
+  };
+
   const tableColumns = useMemo(() => {
     const setCustomColumn = (array, index, columnLabel, cellHandler) => {
       array.push({
@@ -204,26 +208,41 @@ const IntegralTablePanel = () => {
       preferences,
       `panels.integrals.[${activeTab}]`,
     );
-    if (integralsPreferences) {
-      let cols = [...defaultColumns];
-      if (integralsPreferences.showValue) {
-        setCustomColumn(cols, 3, 'Value', (row) =>
-          formatNumber(row.original.value, integralsPreferences.valueFormat),
-        );
-      }
-      if (integralsPreferences.showNB) {
-        const n = activeTab && activeTab.replace(/[0-9]/g, '');
-        setCustomColumn(cols, 4, `nb ${n}`, () =>
-          formatNumber(molecules[0].atoms.H, integralsPreferences.NBFormat),
-        );
-      }
-
-      return cols.sort(
-        (object1, object2) => object1.orderIndex - object2.orderIndex,
+    // if (integralsPreferences) {
+    let cols = [...defaultColumns];
+    if (checkPreferences(integralsPreferences, 'showValue')) {
+      setCustomColumn(cols, 3, 'Value', (row) =>
+        formatNumber(
+          row.original.value,
+          integralsPreferences &&
+            Object.prototype.hasOwnProperty.call(
+              integralsPreferences,
+              'valueFormat',
+            )
+            ? integralsPreferences.valueFormat
+            : integralDefaultValues.valueFormat,
+        ),
       );
-    } else {
-      return defaultColumns;
     }
+    if (checkPreferences(integralsPreferences, 'showNB')) {
+      const n = activeTab && activeTab.replace(/[0-9]/g, '');
+      setCustomColumn(cols, 4, `nb ${n}`, () =>
+        formatNumber(
+          molecules[0].atoms.H,
+          integralsPreferences &&
+            Object.prototype.hasOwnProperty.call(
+              integralsPreferences,
+              'NBFormat',
+            )
+            ? integralsPreferences.NBFormat
+            : integralDefaultValues.NBFormat,
+        ),
+      );
+    }
+
+    return cols.sort(
+      (object1, object2) => object1.orderIndex - object2.orderIndex,
+    );
   }, [activeTab, defaultColumns, molecules, preferences]);
 
   const data = useMemo(() => {
@@ -232,8 +251,6 @@ const IntegralTablePanel = () => {
         ? SpectrumsData[activeSpectrum.index]
         : null;
     if (_data && _data.integrals.values) {
-      // if (_data.info.nucleus === '1H' && molecules && molecules.length > 0) {
-      // }
       return _data.integrals.values;
     } else {
       return [];
@@ -253,27 +270,12 @@ const IntegralTablePanel = () => {
   const changeIntegralSumHandler = useCallback(
     (value) => {
       if (value) {
-        const integrals =
-          activeSpectrum && SpectrumsData
-            ? SpectrumsData[activeSpectrum.index].integrals.values
-            : [];
-        if (value) {
-          dispatch({ type: CHANGE_INTEGRAL_SUM, value });
-
-          // console.log(integrals);
-          // integrals.forEach(
-          //   (integral) => (integral.relative = (integral.value / sum) * value),
-          // );
-          // eslint-disable-next-line no-console
-          console.log(integrals);
-          // eslint-disable-next-line no-console
-          console.log(value);
-        }
+        dispatch({ type: CHANGE_INTEGRAL_SUM, value });
       }
 
       modal.close();
     },
-    [SpectrumsData, activeSpectrum, dispatch, modal],
+    [dispatch, modal],
   );
 
   const showChangeIntegralSumModal = useCallback(() => {
