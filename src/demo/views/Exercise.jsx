@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import NMRDisplayer from '../../component/NMRDisplayer.jsx';
 import { StructureEditor } from 'react-ocl/full';
+import { Molecule } from 'openchemlib';
 
 async function loadData(file) {
   const response = await fetch(file);
@@ -20,6 +21,26 @@ function checkStatus(response) {
 export default function Exercise(props) {
   const [data, setData] = useState();
   const { file, title } = props;
+
+  function checkAnswer(response) {
+    if (
+      data &&
+      data.molecules &&
+      data.molecules[0] &&
+      data.molecules[0].molfile
+    ) {
+      const MolResult = Molecule.fromMolfile(data.molecules[0].molfile);
+      const MolResponse = Molecule.fromMolfile(response);
+      const idCodeResult = MolResult.getIDCode();
+      const idCodeResponse = MolResponse.getIDCode();
+      console.log({ idCodeResponse, idCodeResult });
+      if (idCodeResult === idCodeResponse) {
+        // correct answer
+      } else {
+        // wrong answer
+      }
+    }
+  }
 
   useEffect(() => {
     if (file) {
@@ -73,7 +94,11 @@ export default function Exercise(props) {
             // alignItems: 'center',
           }}
         >
-          <StructureEditor svgMenu={true} fragment={false} />
+          <StructureEditor
+            svgMenu={true}
+            fragment={false}
+            onChange={checkAnswer}
+          />
         </div>
       </div>
     </div>
