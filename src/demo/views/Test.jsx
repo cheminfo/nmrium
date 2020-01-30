@@ -61,9 +61,9 @@ export default function Test(props) {
         }}
       >
         <p>
-          You can add you component here or any you can design your custom
-          layout. be sure to add view prop inside sample.json and value must
-          match view name under demo/components/views
+          You can add you component here or you can design your custom layout.
+          be sure to add view prop inside sample.json and value must match view
+          name under demo/components/views
         </p>
       </div>
     </div>
