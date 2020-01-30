@@ -413,6 +413,7 @@ NMRDisplayer.propTypes = {
       hideIntegralsPanel: PropTypes.bool,
       hideRangesPanel: PropTypes.bool,
       hideStructuresPanel: PropTypes.bool,
+      hideFiltersPanel: PropTypes.bool,
     }),
   }),
 };

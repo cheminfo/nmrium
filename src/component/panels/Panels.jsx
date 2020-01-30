@@ -40,6 +40,7 @@ const accordionItems = [
     component: <FilterPanel />,
     openWhen: null,
     style: '',
+    hidePreferenceKey: 'hideFiltersPanel',
   },
   {
     title: 'Integrals',
