@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { MF } from 'react-mf';
 
 import NMRDisplayer from '../../component/NMRDisplayer.jsx';
 import { StructureEditor } from 'react-ocl/full';
@@ -82,6 +83,20 @@ export default function Exercise(props) {
     }
   }
 
+  function getMF(data) {
+    let mf = '';
+    if (
+      data &&
+      data.molecules &&
+      data.molecules[0] &&
+      data.molecules[0].molfile
+    ) {
+      const molecule = Molecule.fromMolfile(data.molecules[0].molfile);
+      mf = molecule.getMolecularFormula().formula;
+    }
+    // need to display the MF somehow
+  }
+
   useEffect(() => {
     if (file) {
       loadData(file).then((d) => {
@@ -151,6 +166,9 @@ export default function Exercise(props) {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <MF style={{ color: 'navy', fontSize: 30 }} mf="Al2(SO4)3" />
       </div>
     </div>
   );
