@@ -1,3 +1,5 @@
+import airPLS from 'ml-airpls';
+
 export const id = 'baselineCorrection';
 export const name = 'baseline correction';
 
@@ -11,8 +13,10 @@ export function apply(datum1D, options = {}) {
   }
   const { algorithm = 'airpls' } = options;
 
-  switch (algorithm.toLowerCase()) {
+  switch (algorithm.toLowerCase()) {  
     case 'airpls':
+      let result = airPLS(datum1D.data.re, options);
+      Object.assign(datum1D.data, {re: result.corrected})
       break;
     default:
       throw new Error(`baselineCorrection: algorithm unknown: ${algorithm}`);

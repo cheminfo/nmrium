@@ -809,6 +809,10 @@ const getClosestNumber = (array = [], goal = 0) => {
   return closest;
 };
 
+const getCloseIndex = (array = [], goal = 0) => {
+  const closest = getClosestNumber(array, goal);
+  return array.indexOf(closest);
+};
 const setZoom = (state, draft, zoomFactor) => {
   const { originDomain, height, margin, data } = state;
 
@@ -1187,14 +1191,31 @@ const handleDeleteBaseLineZone = (state, id) => {
 
 const handleBaseLineCorrectionFilter = (state) => {
   return produce(state, (draft) => {
-    const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
-
+    const { data } = state;
+    const { id, index } = state.activeSpectrum;
+    const activeObject = AnalysisObj.getDatum1D(id);
+    let controlPoints = [];
+    state.baseLineZones.forEach((range) => {
+      let indexFrom = getCloseIndex(data[index].x, range.from);
+      let indexTo = getCloseIndex(data[index].x, range.to);
+      if (indexFrom > indexTo) [indexFrom, indexTo] = [indexTo, indexFrom];
+      for (let i = indexFrom; i < indexTo; i++) {
+        controlPoints.push(i);
+      }
+    });
     activeObject.applyFilter([
-      { name: Filters.baselineCorrection.id, options: state.baseLineZones },
+      {
+        name: Filters.baselineCorrection.id,
+        options: {
+          maxIterations: 100,
+          lambda: 1500,
+          factorCriterion: 0.01,
+          controlPoints,
+        },
+      },
     ]);
     draft.baseLineZones = [];
-    setDataByFilters(draft, activeObject, activeSpectrumId);
+    setDataByFilters(draft, activeObject, id);
     setDomain(draft);
     setMode(draft);
   });
