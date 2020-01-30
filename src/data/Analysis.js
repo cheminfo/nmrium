@@ -8,25 +8,25 @@ import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 
 export class Analysis {
-  data1d = [];
-  molecules = [];
-  constructor(data1d = [], molecules = [], preferences) {
-    this.data1d = data1d.slice();
+  constructor() {
+    this.data1d = [];
     this.data2d = [];
-    this.molecules = molecules.slice(); // chemical structures
-    this.preferences = preferences || {
+    this.molecules = [];
+    this.preferences = {
       '1d': {},
       '2d': {},
     };
   }
 
-  static async build(json = {}) {
-    const vData1d = await Data1DManager.fromJSON(json.data1d);
-    const data1d = json.data1d ? vData1d : [];
-    const molecules = json.molecules
-      ? MoleculeManager.fromJSON(json.molecules)
-      : [];
-    return new Analysis(data1d, molecules, json.preferences);
+  static async fromJSON(json = {}) {
+    const analysis = new Analysis();
+    analysis.data1d = await Data1DManager.fromJSON(json.data1d);
+    analysis.data2d = await Data2DManager.fromJSON(json.data2d);
+    if (json.molecules)
+      analysis.molecules = MoleculeManager.fromJSON(json.molecules);
+
+    if (json.preference) analysis.preferences = json.preferences;
+    return analysis;
   }
 
   async addJcampFromURL(id, jcampURL, options) {
