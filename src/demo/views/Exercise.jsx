@@ -32,12 +32,25 @@ const styles = {
   bottomContainer: {
     display: 'flex',
   },
-  resultContainer: {
-    border: '1px solid gray',
+  bottomRightContainer: {
+    width: '50%',
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'column',
+  },
+  MF: {
+    height: '20%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '50%',
+    backgroundColor: 'white',
+    border: '1px dashed gray',
+  },
+  resultContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '80%',
   },
 
   result: {
@@ -81,9 +94,10 @@ export default function Exercise(props) {
         // wrong answer
       }
     }
+    getMF();
   }
 
-  function getMF(data) {
+  function getMF() {
     let mf = '';
     if (
       data &&
@@ -93,7 +107,10 @@ export default function Exercise(props) {
     ) {
       const molecule = Molecule.fromMolfile(data.molecules[0].molfile);
       mf = molecule.getMolecularFormula().formula;
+      return mf;
     }
+
+    return '';
     // need to display the MF somehow
   }
 
@@ -143,32 +160,34 @@ export default function Exercise(props) {
               onChange={checkAnswer}
             />
           </div>
-          <div
-            style={{
-              ...styles.resultContainer,
-            }}
-          >
+          <div style={styles.bottomRightContainer}>
+            <div style={styles.MF}>
+              <MF style={{ color: 'navy', fontSize: 30 }} mf={getMF()} />
+            </div>
             <div
               style={{
-                ...styles.result,
-                backgroundColor:
-                  resultFlag == null ? 'white' : resultFlag ? 'green' : 'red',
-                color: resultFlag == null ? 'black' : 'white',
+                ...styles.resultContainer,
               }}
             >
-              {resultFlag == null ? (
-                <p>Result</p>
-              ) : resultFlag === true ? (
-                <p>Right Molecule</p>
-              ) : (
-                <p>Wrong Molecule !!</p>
-              )}
+              <div
+                style={{
+                  ...styles.result,
+                  backgroundColor:
+                    resultFlag == null ? 'white' : resultFlag ? 'green' : 'red',
+                  color: resultFlag == null ? 'black' : 'white',
+                }}
+              >
+                {resultFlag == null ? (
+                  <p>Result</p>
+                ) : resultFlag === true ? (
+                  <p>Right Molecule</p>
+                ) : (
+                  <p>Wrong Molecule !!</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div>
-        <MF style={{ color: 'navy', fontSize: 30 }} mf="Al2(SO4)3" />
       </div>
     </div>
   );
