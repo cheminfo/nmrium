@@ -8,8 +8,7 @@
     "children": [
       {
         "file": "./data/cytisine/1H.json",
-        "title": "1H spectrum test",
-        "view": "Exercise"
+        "title": "1H spectrum test"
       },
       {
         "file": "./data/50-78-2/linked-jcamp.json",
@@ -91,6 +90,21 @@
       {
         "file": "./data/tests/triangle/high-res.json",
         "title": "Test high resolution"
+      }
+    ]
+  },
+  {
+    "groupName": "Exercises",
+    "children": [
+      {
+        "file": "./data/ethylvinylether/1h.json",
+        "title": "Exercise 1",
+        "view": "Exercise"
+      },
+      {
+        "file": "./data/ethylbenzene/1h.json",
+        "title": "Exercise 2",
+        "view": "Exercise"
       }
     ]
   }
