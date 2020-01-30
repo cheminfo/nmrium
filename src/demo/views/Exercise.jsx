@@ -18,8 +18,46 @@ function checkStatus(response) {
   return response;
 }
 
+const styles = {
+  mainContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+  },
+  nmrContainer: {
+    height: '60%',
+  },
+
+  bottomContainer: {
+    display: 'flex',
+  },
+  resultContainer: {
+    border: '1px solid gray',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
+  },
+
+  result: {
+    width: '50%',
+    height: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '16px',
+    fontWeight: 'bold',
+  },
+
+  StructureEditor: {
+    backgroundColor: 'white',
+    flex: '1',
+  },
+};
+
 export default function Exercise(props) {
   const [data, setData] = useState();
+  const [resultFlag, setResultFlag] = useState(null);
   const { file, title } = props;
 
   function checkAnswer(response) {
@@ -33,10 +71,12 @@ export default function Exercise(props) {
       const MolResponse = Molecule.fromMolfile(response);
       const idCodeResult = MolResult.getIDCode();
       const idCodeResponse = MolResponse.getIDCode();
-      console.log({ idCodeResponse, idCodeResult });
+      // console.log({ idCodeResponse, idCodeResult });
       if (idCodeResult === idCodeResponse) {
         // correct answer
+        setResultFlag(true);
       } else {
+        setResultFlag(false);
         // wrong answer
       }
     }
@@ -65,8 +105,8 @@ export default function Exercise(props) {
         Display and process 1D NMR spectra from a jcamp-dx file
       </h5>
       <p className="category">{title}</p>
-      <div style={{ display: 'flex', height: '60%' }}>
-        <div style={{ width: '70%' }}>
+      <div style={styles.mainContainer}>
+        <div style={styles.nmrContainer}>
           <NMRDisplayer
             data={data}
             preferences={{
@@ -80,25 +120,36 @@ export default function Exercise(props) {
             }}
           />
         </div>
-
-        <div
-          style={{
-            height: '100%',
-            // border: '1px dashed black',
-            width: '30%',
-            backgroundColor: '#e9f6ff',
-
-            // flex: '1',
-            // display: 'flex',
-            // justifyContent: 'center',
-            // alignItems: 'center',
-          }}
-        >
-          <StructureEditor
-            svgMenu={true}
-            fragment={false}
-            onChange={checkAnswer}
-          />
+        <div style={styles.bottomContainer}>
+          <div style={styles.StructureEditor}>
+            <StructureEditor
+              svgMenu={true}
+              fragment={false}
+              onChange={checkAnswer}
+            />
+          </div>
+          <div
+            style={{
+              ...styles.resultContainer,
+            }}
+          >
+            <div
+              style={{
+                ...styles.result,
+                backgroundColor:
+                  resultFlag == null ? 'white' : resultFlag ? 'green' : 'red',
+                color: resultFlag == null ? 'black' : 'white',
+              }}
+            >
+              {resultFlag == null ? (
+                <p>Result</p>
+              ) : resultFlag === true ? (
+                <p>Right Molecule</p>
+              ) : (
+                <p>Wrong Molecule !!</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
