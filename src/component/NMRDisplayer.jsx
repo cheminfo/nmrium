@@ -15,6 +15,7 @@ import { useSize, useDebounce, useToggle, useFullscreen } from 'react-use';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 import 'cheminfo-font/dist/style.css';
+import PropTypes from 'prop-types';
 
 import { Analysis } from '../data/Analysis';
 
@@ -76,7 +77,12 @@ const splitPaneStyles = {
 };
 
 const NMRDisplayer = (props) => {
-  const { data: dataProp, height: heightProp, width: widthProps } = props;
+  const {
+    data: dataProp,
+    height: heightProp,
+    width: widthProps,
+    preferences,
+  } = props;
   const fullScreenRef = useRef();
   const containerRef = useRef();
   const [show, toggle] = useToggle(false);
@@ -262,7 +268,7 @@ const NMRDisplayer = (props) => {
                     >
                       <ChartPanel tools={!isResizeEventStart} />
 
-                      <Panels />
+                      <Panels preferences={preferences} />
                     </SplitPane>
                   </DropZone>
                 </div>
@@ -396,9 +402,25 @@ function ChartPanel() {
   return sizedNMRChart;
 }
 
+NMRDisplayer.propTypes = {
+  height: PropTypes.number,
+  width: PropTypes.number,
+  preferences: PropTypes.shape({
+    panels: PropTypes.shape({
+      hideSpectraPanel: PropTypes.bool,
+      hideInformationPanel: PropTypes.bool,
+      hidePeaksPanel: PropTypes.bool,
+      hideIntegralsPanel: PropTypes.bool,
+      hideRangesPanel: PropTypes.bool,
+      hideStructuresPanel: PropTypes.bool,
+    }),
+  }),
+};
+
 NMRDisplayer.defaultProps = {
-  height: '600',
-  width: '800',
+  height: 600,
+  width: 800,
+  preferences: {},
 };
 
 export default NMRDisplayer;

@@ -8,7 +8,8 @@
     "children": [
       {
         "file": "./data/cytisine/1H.json",
-        "title": "1H spectrum test"
+        "title": "1H spectrum test",
+        "view": "Test"
       },
       {
         "file": "./data/50-78-2/linked-jcamp.json",

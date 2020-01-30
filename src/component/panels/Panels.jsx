@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
+import lodash from 'lodash';
 
 import { Accordion, AccordionItem } from '../elements/accordion';
 import { options } from '../toolbar/ToolTypes';
@@ -16,54 +17,60 @@ const accordionItems = [
   {
     title: 'Spectra',
     component: <SpectrumListPanel />,
-    when: null,
+    openWhen: null,
     style: '',
+    hidePreferenceKey: 'hideSpectraPanel',
   },
   {
     title: 'Information',
     component: <InformationPanel />,
-    when: null,
+    openWhen: null,
     style: { overflow: 'hidden' },
+    hidePreferenceKey: 'hideInformationPanel',
   },
   {
     title: 'Peaks',
     component: <PeaksTablePanel />,
-    when: [options.peakPicking.id],
+    openWhen: [options.peakPicking.id],
     style: '',
+    hidePreferenceKey: 'hidePeaksPanel',
   },
   {
     title: 'Filters',
     component: <FilterPanel />,
-    when: null,
+    openWhen: null,
     style: '',
   },
   {
     title: 'Integrals',
     component: <IntegralTablePanel />,
-    when: [options.integral.id],
+    openWhen: [options.integral.id],
     style: '',
+    hidePreferenceKey: 'hideIntegralsPanel',
   },
   {
     title: 'Ranges',
     component: <RangesTablePanel />,
-    when: [options.autoRangesPicking.id],
+    openWhen: [options.autoRangesPicking.id],
     style: '',
+    hidePreferenceKey: 'hideRangesPanel',
   },
   {
     title: 'Structures',
     component: <MoleculePanel />,
-    when: [options.autoRangesPicking.id],
+    openWhen: [options.autoRangesPicking.id],
     style: '',
+    hidePreferenceKey: 'hideStructuresPanel',
   },
 ];
 
-const Panels = () => {
+const Panels = ({ preferences }) => {
   const { selectedTool } = useChartData();
   const [panelIndex, setSelectedPanelIndex] = useState(0);
 
   const getDefaultIndex = useCallback(() => {
     const index = accordionItems.findIndex(
-      (item) => item.when && item.when.includes(selectedTool),
+      (item) => item.openWhen && item.openWhen.includes(selectedTool),
     );
     return index === -1 ? panelIndex : index;
   }, [panelIndex, selectedTool]);
@@ -77,10 +84,12 @@ const Panels = () => {
   return (
     <Accordion defaultOpenIndex={panelIndex}>
       {accordionItems.map((item) => {
-        return (
+        return !lodash.get(preferences, `panels.${item.hidePreferenceKey}`) ? (
           <AccordionItem key={item.title} title={item.title} style={item.style}>
             {item.component}
           </AccordionItem>
+        ) : (
+          <span />
         );
       })}
     </Accordion>

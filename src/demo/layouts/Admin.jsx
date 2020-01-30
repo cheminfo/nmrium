@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from 'react';
+import React, { Suspense } from 'react';
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from 'perfect-scrollbar';
 // reactstrap components
@@ -23,7 +23,7 @@ import { Route, Switch } from 'react-router-dom';
 
 // core components
 import Sidebar from '../components/Sidebar/Sidebar';
-import View from '../views/View';
+// import View from '../views/View';
 import { mapTreeToFlatArray, getKey } from '../utility/menu';
 
 let ps;
@@ -79,32 +79,50 @@ class Dashboard extends React.Component {
         />
         <div className="main-panel" ref={this.mainPanel}>
           {/* <Router {...this.props}> */}
-          <Switch>
-            {this.state.routesList.map((prop) => (
-              <Route
-                path={`/SamplesDashboard/:id/${getKey(prop.file)}`}
-                // component={prop.component}
-                render={(props) => {
-                  const {
-                    match: {
-                      params: { id },
-                    },
-                  } = props;
-                  return <View key={id} {...prop} id={getKey(prop.file)} />;
-                }}
-                key={getKey(prop.file)}
-              />
-            ))}
+          <Suspense fallback={<div>Loading...</div>}>
+            <Switch>
+              {this.state.routesList.map((prop) => (
+                <Route
+                  path={`/SamplesDashboard/:id/${getKey(prop.file)}`}
+                  // component={prop.component}
+                  render={(props) => {
+                    const {
+                      match: {
+                        params: { id },
+                      },
+                    } = props;
+                    const viewName = prop.view ? prop.view : 'View';
+                    const RenderedView = React.lazy(() =>
+                      import(`../views/${viewName}`),
+                    );
 
-            {this.state.routesList.length > 0 && (
-              <Route
-                path="/"
-                // component={prop.component}
-                render={() => <View {...this.state.routesList[0]} />}
-                key={getKey(this.state.routesList[0].file)}
-              />
-            )}
-          </Switch>
+                    return (
+                      <RenderedView key={id} {...prop} id={getKey(prop.file)} />
+                    );
+                  }}
+                  key={getKey(prop.file)}
+                />
+              ))}
+
+              {this.state.routesList.length > 0 && (
+                <Route
+                  path="/"
+                  // component={prop.component}
+
+                  render={() => {
+                    const routeProp = this.state.routesList[0];
+                    const viewName = routeProp.view ? routeProp.view : 'View';
+                    const RenderedView = React.lazy(() =>
+                      import(`../views/${viewName}`),
+                    );
+
+                    return <RenderedView {...routeProp[0]} />;
+                  }}
+                  key={getKey(this.state.routesList[0].file)}
+                />
+              )}
+            </Switch>
+          </Suspense>
           {/* </Router> */}
           {/* <DemoNavbar {...this.props} /> */}
           {/* <Switch>
