@@ -29,8 +29,8 @@ export class Data1DManager {
     return Promise.all(data1D);
   };
 
-  static loadFileFromURL = async function loadFileFromURL(url) {
-    return fetch(url).then(
+  static loadFileFromURL = async function loadFileFromURL(Url) {
+    return fetch(Url).then(
       (response) => Data1DManager.checkStatus(response) && response.text(),
     );
   };

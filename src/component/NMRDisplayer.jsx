@@ -128,7 +128,7 @@ const NMRDisplayer = (props) => {
 
   useEffect(() => {
     dispatch({ type: SET_LOADING_FLAG, isLoading: true });
-    Analysis.fromJSON(dataProp || {}).then((object) => {
+    Analysis.build(dataProp || {}).then((object) => {
       dispatch({ type: INITIATE, data: { AnalysisObj: object } });
     });
   }, [dataProp]);

@@ -82,11 +82,11 @@ const DropZone = (props) => {
               loadFiles(selectedFilesByExtensions).then(
                 // eslint-disable-next-line no-loop-func
                 (files) => {
-                  Analysis.fromJSON(
-                    JSON.parse(files[0].binary.toString()),
-                  ).then((AnalysisObj) => {
-                    dispatch({ type: LOAD_JSON_FILE, data: { AnalysisObj } });
-                  });
+                  Analysis.build(JSON.parse(files[0].binary.toString())).then(
+                    (AnalysisObj) => {
+                      dispatch({ type: LOAD_JSON_FILE, data: { AnalysisObj } });
+                    },
+                  );
                 },
                 (err) => {
                   // eslint-disable-next-line no-alert
