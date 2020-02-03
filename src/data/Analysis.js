@@ -21,8 +21,8 @@ export class Analysis {
   }
 
   static async build(json = {}) {
-    const vData1d = await Data1DManager.fromJSON(json.data1d);
-    const data1d = json.data1d ? vData1d : [];
+    const vData1d = await Data1DManager.fromJSON(json.spectra);
+    const data1d = json.spectra ? vData1d : [];
     const molecules = json.molecules
       ? MoleculeManager.fromJSON(json.molecules)
       : [];
@@ -144,7 +144,7 @@ export class Analysis {
     });
 
     const molecules = this.molecules.map((ob) => ob.toJSON());
-    return { data1d, molecules, preferences: this.preferences };
+    return { spectra: data1d, molecules, preferences: this.preferences };
   }
 
   set1DPreferences(preferences) {
