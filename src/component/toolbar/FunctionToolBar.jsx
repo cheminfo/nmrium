@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand } from 'react-icons/fa';
 import lodash from 'lodash';
+import { useAlert } from 'react-alert';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
@@ -40,11 +41,21 @@ let debounceClickEvents = [];
 const FunctionToolBar = ({ defaultValue }) => {
   const [option, setOption] = useState();
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
+  const alert = useAlert();
 
   const dispatch = useDispatch();
   const handleChangeOption = useCallback(
-    (selectedTool) => dispatch({ type: SET_SELECTED_TOOL, selectedTool }),
-    [dispatch],
+    (selectedTool) => {
+      if (
+        [options.peakPicking.id, options.integral.id].includes(selectedTool)
+      ) {
+        alert.show(
+          'Press Shift + Left Mouse button to select zone for integral and peak picking',
+        );
+      }
+      dispatch({ type: SET_SELECTED_TOOL, selectedTool });
+    },
+    [alert, dispatch],
   );
   const { activeSpectrum, data } = useChartData();
 

@@ -287,32 +287,38 @@ function ChartPanel() {
 
   const handelBrushEnd = useCallback(
     (brushData) => {
-      switch (selectedTool) {
-        case options.integral.id:
-          dispatch({
-            type: ADD_INTEGRAL,
-            ...brushData,
-          });
-          break;
+      if (brushData.shiftKey) {
+        switch (selectedTool) {
+          case options.integral.id:
+            dispatch({
+              type: ADD_INTEGRAL,
+              ...brushData,
+            });
+            break;
 
-        case options.peakPicking.id:
-          dispatch({
-            type: ADD_PEAKS,
-            ...brushData,
-          });
-          break;
-        case options.baseLineCorrection.id:
-          // console.log(brushData);
-          dispatch({
-            type: ADD_BASE_LINE_ZONE,
-            zone: { from: brushData.startX, to: brushData.endX },
-          });
-          break;
+          case options.peakPicking.id:
+            dispatch({
+              type: ADD_PEAKS,
+              ...brushData,
+            });
+            break;
+          default:
+            break;
+        }
+      } else {
+        switch (selectedTool) {
+          case options.baseLineCorrection.id:
+            dispatch({
+              type: ADD_BASE_LINE_ZONE,
+              zone: { from: brushData.startX, to: brushData.endX },
+            });
+            break;
 
-        default:
-          dispatch({ type: BRUSH_END, ...brushData });
+          default:
+            dispatch({ type: BRUSH_END, ...brushData });
 
-          return;
+            return;
+        }
       }
     },
     [dispatch, selectedTool],

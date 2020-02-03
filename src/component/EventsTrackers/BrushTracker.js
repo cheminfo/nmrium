@@ -52,6 +52,7 @@ export function BrushTracker({
       }
       dispatch({
         type: 'DOWN',
+        shiftKey: event.shiftKey,
         screenX: event.screenX,
         screenY: event.screenY,
         clientX: event.clientX,
@@ -217,12 +218,20 @@ function reducer(state, action) {
       return state;
     case 'DOWN':
       if (state.step === 'initial' || state.step === 'end') {
-        const { screenX, screenY, clientX, clientY, boundingRect } = action;
+        const {
+          screenX,
+          screenY,
+          clientX,
+          clientY,
+          boundingRect,
+          shiftKey,
+        } = action;
         const x = clientX - boundingRect.x;
         const y = clientY - boundingRect.y;
 
         return {
           ...state,
+          shiftKey,
           startX: x,
           startY: y,
           startScreenX: screenX,
