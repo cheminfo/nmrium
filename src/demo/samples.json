@@ -97,12 +97,12 @@
     "groupName": "Exercises",
     "children": [
       {
-        "file": "./data/ethylvinylether/1h.json",
+        "file": "./exercises/ethylvinylether/1h.json",
         "title": "Exercise 1",
         "view": "Exercise"
       },
       {
-        "file": "./data/ethylbenzene/1h.json",
+        "file": "./exercises/ethylbenzene/1h.json",
         "title": "Exercise 2",
         "view": "Exercise"
       }

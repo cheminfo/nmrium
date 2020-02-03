@@ -74,7 +74,16 @@ function getFlatArray(inputArray = [], children = []) {
 }
 
 function getKey(filePath = '') {
-  return filePath.replace(/\.|\s|\//g, '');
+  const match = new RegExp(/^(?<path>.*)\/(?<file>[^/]*)$/g).exec(filePath);
+  let parentFolderName = '';
+  if (match) {
+    const parentPath = match[1].split('/');
+    parentFolderName =
+      parentPath.length > 2
+        ? parentPath[parentPath.length - 2] + parentPath[parentPath.length - 1]
+        : parentPath[parentPath.length - 1];
+  }
+  return parentFolderName + filePath.replace(/\.|\s|\//g, '');
 }
 
 export { buildMenu, getKey, mapTreeToFlatArray };

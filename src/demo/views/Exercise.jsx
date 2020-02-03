@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { MF } from 'react-mf';
-
-import NMRDisplayer from '../../component/NMRDisplayer.jsx';
 import { StructureEditor } from 'react-ocl/full';
 import { Molecule } from 'openchemlib';
+
+import NMRDisplayer from '../../component/NMRDisplayer.jsx';
 
 async function loadData(file) {
   const response = await fetch(file);
@@ -74,30 +74,32 @@ export default function Exercise(props) {
   const [resultFlag, setResultFlag] = useState(null);
   const { file, title } = props;
 
-  function checkAnswer(response) {
-    if (
-      data &&
-      data.molecules &&
-      data.molecules[0] &&
-      data.molecules[0].molfile
-    ) {
-      const MolResult = Molecule.fromMolfile(data.molecules[0].molfile);
-      const MolResponse = Molecule.fromMolfile(response);
-      const idCodeResult = MolResult.getIDCode();
-      const idCodeResponse = MolResponse.getIDCode();
-      // console.log({ idCodeResponse, idCodeResult });
-      if (idCodeResult === idCodeResponse) {
-        // correct answer
-        setResultFlag(true);
-      } else {
-        setResultFlag(false);
-        // wrong answer
+  const checkAnswer = useCallback(
+    (response) => {
+      if (
+        data &&
+        data.molecules &&
+        data.molecules[0] &&
+        data.molecules[0].molfile
+      ) {
+        const MolResult = Molecule.fromMolfile(data.molecules[0].molfile);
+        const MolResponse = Molecule.fromMolfile(response);
+        const idCodeResult = MolResult.getIDCode();
+        const idCodeResponse = MolResponse.getIDCode();
+        // console.log({ idCodeResponse, idCodeResult });
+        if (idCodeResult === idCodeResponse) {
+          // correct answer
+          setResultFlag(true);
+        } else {
+          setResultFlag(false);
+          // wrong answer
+        }
       }
-    }
-    getMF();
-  }
+    },
+    [data],
+  );
 
-  function getMF() {
+  const MFResult = useMemo(() => {
     let mf = '';
     if (
       data &&
@@ -112,7 +114,7 @@ export default function Exercise(props) {
 
     return '';
     // need to display the MF somehow
-  }
+  }, [data]);
 
   useEffect(() => {
     if (file) {
@@ -162,7 +164,7 @@ export default function Exercise(props) {
           </div>
           <div style={styles.bottomRightContainer}>
             <div style={styles.MF}>
-              <MF style={{ color: 'navy', fontSize: 30 }} mf={getMF()} />
+              <MF style={{ color: 'navy', fontSize: 30 }} mf={MFResult} />
             </div>
             <div
               style={{
