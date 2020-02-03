@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useAlert } from 'react-alert';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -7,6 +8,7 @@ import { SET_KEY_PREFERENCES, APPLY_KEY_PREFERENCES } from '../reducer/Actions';
 const KeyListener = () => {
   const { keysPreferences } = useChartData();
   const dispatch = useDispatch();
+  const alert = useAlert();
 
   const handleOnKeyPressed = useCallback(
     (e) => {
@@ -20,6 +22,7 @@ const KeyListener = () => {
             type: SET_KEY_PREFERENCES,
             keyCode: e.keyCode,
           });
+          alert.show('Configuration Reset');
         } else {
           if (keysPreferences && keysPreferences[e.keyCode]) {
             dispatch({
@@ -31,11 +34,12 @@ const KeyListener = () => {
               type: SET_KEY_PREFERENCES,
               keyCode: e.keyCode,
             });
+            alert.show('Configuration saved');
           }
         }
       }
     },
-    [keysPreferences, dispatch],
+    [dispatch, keysPreferences, alert],
   );
 
   useEffect(() => {

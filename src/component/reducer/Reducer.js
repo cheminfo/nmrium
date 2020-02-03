@@ -1202,22 +1202,24 @@ const handleBaseLineCorrectionFilter = (state) => {
 const setKeyPreferencesHandler = (state, keyCode) => {
   return produce(state, (draft) => {
     const { activeTab, data, activeSpectrum, zoomFactor, xDomain } = state;
-    const groupByNucleus = GroupByInfoKey('nucleus');
-    const spectrumsGroupsList = groupByNucleus(data);
-    draft.keysPreferences[keyCode] = {
-      activeTab,
-      activeSpectrum,
-      zoomFactor,
-      xDomain,
-      data: spectrumsGroupsList[activeTab].reduce((acc, datum) => {
-        acc[datum.id] = {
-          color: datum.color,
-          isVisible: datum.isVisible,
-          isPeaksMarkersVisible: datum.isPeaksMarkersVisible,
-        };
-        return acc;
-      }, {}),
-    };
+    if (activeTab) {
+      const groupByNucleus = GroupByInfoKey('nucleus');
+      const spectrumsGroupsList = groupByNucleus(data);
+      draft.keysPreferences[keyCode] = {
+        activeTab,
+        activeSpectrum,
+        zoomFactor,
+        xDomain,
+        data: spectrumsGroupsList[activeTab].reduce((acc, datum) => {
+          acc[datum.id] = {
+            color: datum.color,
+            isVisible: datum.isVisible,
+            isPeaksMarkersVisible: datum.isPeaksMarkersVisible,
+          };
+          return acc;
+        }, {}),
+      };
+    }
   });
 };
 const applyKeyPreferencesHandler = (state, keyCode) => {
