@@ -146,7 +146,7 @@ const IntegralTablePanel = () => {
       Cell: ({ row }) => row.original.from.toFixed(2),
     },
     {
-      orderIndex: 5,
+      orderIndex: 3,
       Header: 'To',
       accessor: 'to',
       sortType: 'basic',
@@ -211,7 +211,7 @@ const IntegralTablePanel = () => {
     // if (integralsPreferences) {
     let cols = [...defaultColumns];
     if (checkPreferences(integralsPreferences, 'showValue')) {
-      setCustomColumn(cols, 3, 'Value', (row) =>
+      setCustomColumn(cols, 4, 'Value', (row) =>
         formatNumber(
           row.original.value,
           integralsPreferences &&
@@ -226,7 +226,7 @@ const IntegralTablePanel = () => {
     }
     if (checkPreferences(integralsPreferences, 'showNB')) {
       const n = activeTab && activeTab.replace(/[0-9]/g, '');
-      setCustomColumn(cols, 4, `nb ${n}`, () =>
+      setCustomColumn(cols, 5, `nb ${n}`, () =>
         formatNumber(
           molecules[0].atoms.H,
           integralsPreferences &&
