@@ -1,5 +1,5 @@
 import airPLS from 'ml-airpls';
-import baselineCorrection from 'ml-baseline-correction-regression';
+import baselineRegression from 'ml-baseline-correction-regression';
 
 export const id = 'baselineCorrection';
 export const name = 'baseline correction';
@@ -10,28 +10,30 @@ export const name = 'baseline correction';
  */
 
 export const baselineAlgorithms = {
-  airpls: airPLS,
-  regression: baselineCorrection,
+  airpls: 'airPLS',
+  polynomial: 'Polynomial',
 };
-
-export const baseLineFunctions = ['polynomial', 'sine', 'exponential'];
 
 export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('baselineCorrection not applicable on this data');
   }
-  const { algorithm, functionName = 'polynomial' } = options;
-
-  if (!baselineAlgorithms[algorithm][functionName]) {
-    throw new Error(`baselineCorrection: algorithm unknown: ${functionName}`);
-  }
+  const { algorithm } = options;
 
   let { x, re } = datum1D.data;
-  let { corrected } = baselineAlgorithms[algorithm][functionName](
-    x,
-    re,
-    options,
-  );
+  let corrected;
+  switch (algorithm) {
+    case 'airpls':
+      corrected = airPLS(re, options).corrected;
+      break;
+    case 'regression':
+      corrected = baselineRegression(x, re, options).corrected;
+      baselineRegression(options);
+      break;
+    default:
+      throw new Error(`baselineCorrection: algorithm unknown: ${algorithm}`);
+  }
+
   Object.assign(datum1D.data, { re: corrected });
 }
 
