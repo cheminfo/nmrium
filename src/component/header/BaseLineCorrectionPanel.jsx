@@ -1,14 +1,11 @@
-import React, { useCallback, useRef, Fragment, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import {
   RESET_SELECTED_TOOL,
   APPLY_BASE_LINE_CORRECTION_FILTER,
 } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
-import {
-  baselineAlgorithms,
-  baseLineFunctions,
-} from '../../data/data1d/filter1d/baselineCorrection';
+import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
 import Select from '../elements/Select';
 
 const styles = {
@@ -43,18 +40,14 @@ const styles = {
 const BaseLineCorrectionPanel = () => {
   const dispatch = useDispatch();
   const algorithmRef = useRef();
-  const functionRef = useRef();
   const maxIterationsRef = useRef();
   const toleranceRef = useRef();
-
-  const [algorithm, setSelectedAlgorithm] = useState();
 
   const handleApplyFilter = useCallback(() => {
     dispatch({
       type: APPLY_BASE_LINE_CORRECTION_FILTER,
       options: {
         algorithm: algorithmRef.current.value,
-        functionName: functionRef.current.value,
         maxIterations: maxIterationsRef.current.value,
         tolerance: toleranceRef.current.value,
       },
@@ -72,15 +65,6 @@ const BaseLineCorrectionPanel = () => {
       return { key: val, label: val, value: val };
     });
   }, []);
-  const getBaseCorrectionFunctionsList = useCallback(() => {
-    return baseLineFunctions.map((val) => {
-      return { key: val, label: val, value: val };
-    });
-  }, []);
-
-  const algorithmChangeHandler = useCallback((val) => {
-    setSelectedAlgorithm(val);
-  }, []);
 
   return (
     <div style={styles.container}>
@@ -89,21 +73,7 @@ const BaseLineCorrectionPanel = () => {
         ref={algorithmRef}
         data={getAlgorithmsList()}
         style={{ marginLeft: 10, marginRight: 10 }}
-        onChange={algorithmChangeHandler}
-        // defaultValue={getDefaultValue()}
       />
-      {algorithm === 'regression' && (
-        <Fragment>
-          <span style={styles.label}>Function: </span>
-          <Select
-            ref={functionRef}
-            data={getBaseCorrectionFunctionsList()}
-            style={{ marginLeft: 10, marginRight: 10 }}
-            // onChange={(d) => console.log(d)}
-            defaultValue="polynomial"
-          />
-        </Fragment>
-      )}
 
       <span style={styles.label}>maxIterations: </span>
       <input
