@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 import { Molecule } from 'openchemlib';
@@ -82,7 +82,6 @@ export default function Exercise(props) {
         const MolResponse = Molecule.fromMolfile(response);
         const idCodeResponse = MolResponse.getIDCode();
         answers[data.answer.idCode] = idCodeResponse;
-        console.log(answers);
         localStorage.setItem('nmrium-exercises', JSON.stringify(answers));
         // console.log({ idCodeResponse, idCodeResult });
         if (data.answer.idCode === idCodeResponse) {
@@ -109,7 +108,6 @@ export default function Exercise(props) {
           if (currentAnswer) {
             currentAnswer = Molecule.fromIDCode(currentAnswer).toMolfile();
           }
-          console.log(currentAnswer);
           _d.answer = {
             idCode,
             currentAnswer,

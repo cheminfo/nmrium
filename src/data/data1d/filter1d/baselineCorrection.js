@@ -10,11 +10,11 @@ export const name = 'baseline correction';
  */
 
 export const baselineAlgorithms = {
-  regression: {
-    airpls: airPLS,
-    polynomial: baselineCorrection,
-  },
+  airpls: airPLS,
+  regression: baselineCorrection,
 };
+
+export const baseLineFunctions = ['polynomial', 'sine', 'exponential'];
 
 export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
