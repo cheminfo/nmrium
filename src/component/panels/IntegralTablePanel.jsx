@@ -97,7 +97,6 @@ const IntegralTablePanel = () => {
   const {
     activeSpectrum,
     data: SpectrumsData,
-    molecules,
     preferences,
     activeTab,
   } = useChartData();
@@ -256,7 +255,6 @@ const IntegralTablePanel = () => {
       return [];
     }
   }, [SpectrumsData, activeSpectrum]);
-
 
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_INTEGRAL, integralID: null });
