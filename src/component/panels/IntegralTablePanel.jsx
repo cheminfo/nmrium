@@ -243,7 +243,7 @@ const IntegralTablePanel = () => {
     return cols.sort(
       (object1, object2) => object1.orderIndex - object2.orderIndex,
     );
-  }, [activeTab, defaultColumns, molecules, preferences]);
+  }, [activeTab, defaultColumns, preferences]);
 
   const data = useMemo(() => {
     const _data =
@@ -257,7 +257,6 @@ const IntegralTablePanel = () => {
     }
   }, [SpectrumsData, activeSpectrum]);
 
-  console.log(data);
 
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_INTEGRAL, integralID: null });

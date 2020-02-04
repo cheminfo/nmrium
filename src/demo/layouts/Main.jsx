@@ -83,24 +83,28 @@ const Main = (props) => {
     if (values && values.sampleURL) {
       loadData(values.sampleURL).then((remoteRoutes) => {
         if (remoteRoutes) {
-          const _remoteRoutes = JSON.parse(
-            JSON.stringify(remoteRoutes).replace(
-              /\.\/+?/g,
-              values.sampleURL.replace(
-                // eslint-disable-next-line no-useless-escape
-                /^(?<url>.*[\\\/])?(?<filename>.*?\.[^.]*?|)$/g,
-                '$1',
-              ),
-            ),
+          const baseURL = values.sampleURL.replace(
+            // eslint-disable-next-line no-useless-escape
+            /^(?<url>.*[\\\/])?(?<filename>.*?\.[^.]*?|)$/g,
+            '$1',
           );
-          setRoutes({ isLoaded: true, status: 200, routes: _remoteRoutes });
+
+          const _remoteRoutes = JSON.parse(
+            JSON.stringify(remoteRoutes).replace(/\.\/+?/g, baseURL),
+          );
+          setRoutes({
+            isLoaded: true,
+            status: 200,
+            routes: _remoteRoutes,
+            baseURL,
+          });
         } else {
           setRoutes({ isLoaded: false, status: 404, routes: [] });
         }
       });
       //   console.log(remoteRoutes);
     } else {
-      setRoutes({ isLoaded: true, status: 200, routes: routes });
+      setRoutes({ isLoaded: true, status: 200, routes: routes, baseURL: './' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -134,7 +138,7 @@ const Main = (props) => {
       </div>
     </div>
   ) : (
-    <AdminLayout {...props} routes={data.routes} />
+    <AdminLayout {...props} routes={data.routes} baseURL={data.baseURL} />
   );
 };
 

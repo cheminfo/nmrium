@@ -148,9 +148,10 @@ export class Datum1D {
       0,
     );
     let factor = sum / currentSum;
-    this.integrals.values.forEach(
-      (integral) => (integral.relative = integral.value * factor),
-    );
+    this.integrals.values = this.integrals.values.map((integral) => {
+      const relative = integral.value * factor;
+      return { ...integral, relative };
+    });
   }
 
   changeIntegral(integral) {

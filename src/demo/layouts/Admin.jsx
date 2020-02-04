@@ -97,7 +97,12 @@ class Dashboard extends React.Component {
                     );
 
                     return (
-                      <RenderedView key={id} {...prop} id={getKey(prop.file)} />
+                      <RenderedView
+                        key={id}
+                        {...prop}
+                        id={getKey(prop.file)}
+                        baseURL={this.props.baseURL}
+                      />
                     );
                   }}
                   key={getKey(prop.file)}

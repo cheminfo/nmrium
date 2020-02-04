@@ -72,7 +72,7 @@ const styles = {
 export default function Exercise(props) {
   const [data, setData] = useState();
   const [resultFlag, setResultFlag] = useState(null);
-  const { file, title } = props;
+  const { file, title, baseURL } = props;
 
   const checkAnswer = useCallback(
     (response) => {
@@ -119,22 +119,13 @@ export default function Exercise(props) {
   useEffect(() => {
     if (file) {
       loadData(file).then((d) => {
-        const _d = JSON.parse(
-          JSON.stringify(d).replace(
-            /\.\/+?/g,
-            file.replace(
-              // eslint-disable-next-line no-useless-escape
-              /^(?<url>.*[\\\/])?(?<filename>.*?\.[^.]*?|)$/g,
-              '$1',
-            ),
-          ),
-        );
+        const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
         setData(_d);
       });
     } else {
       setData({});
     }
-  }, [file, props]);
+  }, [baseURL, file, props]);
 
   return (
     <div

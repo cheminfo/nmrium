@@ -18,17 +18,18 @@ function checkStatus(response) {
 
 export default function View(props) {
   const [data, setData] = useState();
-  const { file, title } = props;
+  const { file, title, baseURL } = props;
 
   useEffect(() => {
     if (file) {
       loadData(file).then((d) => {
-        setData(d);
+        const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
+        setData(_d);
       });
     } else {
       setData({});
     }
-  }, [file, props]);
+  }, [baseURL, file, props]);
 
   return (
     <div
