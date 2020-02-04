@@ -1,3 +1,5 @@
+##TITLE=13C zgdc30 TBI
+##JCAMPDX= 6.0         $$ Bruker NMR JCAMP-DX V2.0
 ##DATA TYPE= NMR FID
 ##DATA CLASS= NTUPLES
 ##ORIGIN= Bruker BioSpin GmbH
