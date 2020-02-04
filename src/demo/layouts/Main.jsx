@@ -55,7 +55,8 @@ async function loadData(url) {
     const data = await response.json();
     return data;
   } catch (e) {
-    console.log(e)
+    // eslint-disable-next-line no-console
+    console.log(e);
     return null;
   }
 }
@@ -80,7 +81,6 @@ const Main = (props) => {
 
   useEffect(() => {
     const values = queryString.parse(props.location.search);
-   console.log(values)
     if (values && values.sampleURL) {
       loadData(values.sampleURL).then((remoteRoutes) => {
         if (remoteRoutes) {
@@ -93,7 +93,6 @@ const Main = (props) => {
           const _remoteRoutes = JSON.parse(
             JSON.stringify(remoteRoutes).replace(/\.\/+?/g, baseURL),
           );
-          console.log(_remoteRoutes)
           setRoutes({
             isLoaded: true,
             status: 200,
