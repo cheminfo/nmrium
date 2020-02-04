@@ -9,22 +9,26 @@ export const name = 'baseline correction';
  * @param {Datum1d} datum1d
  */
 
-const baseline = {
+export const baselineAlgorithms = {
   airpls: airPLS,
   polynomial: baselineCorrection,
 };
+export const baselineCorrectionFunctions = ['sin', 'polynomials'];
+
 export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('baselineCorrection not applicable on this data');
   }
+
+  console.log(options);
   const { algorithm = 'polynomial' } = options;
 
-  if (!baseline[algorithm]) {
+  if (!baselineAlgorithms[algorithm]) {
     throw new Error(`baselineCorrection: algorithm unknown: ${algorithm}`);
   }
 
   let { x, re } = datum1D.data;
-  let { corrected } = baseline[algorithm](x, re, options);
+  let { corrected } = baselineAlgorithms[algorithm](x, re, options);
   Object.assign(datum1D.data, { re: corrected });
 }
 

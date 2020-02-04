@@ -1185,13 +1185,16 @@ const handleDeleteBaseLineZone = (state, id) => {
   });
 };
 
-const handleBaseLineCorrectionFilter = (state) => {
+const handleBaseLineCorrectionFilter = (state, action) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
 
     activeObject.applyFilter([
-      { name: Filters.baselineCorrection.id, options: state.baseLineZones },
+      {
+        name: Filters.baselineCorrection.id,
+        options: { zones: state.baseLineZones, ...action.options },
+      },
     ]);
     draft.baseLineZones = [];
     setDataByFilters(draft, activeObject, activeSpectrumId);
@@ -1440,7 +1443,7 @@ export const spectrumReducer = (state, action) => {
     case DELETE_BASE_LINE_ZONE:
       return handleDeleteBaseLineZone(state, action.id);
     case APPLY_BASE_LINE_CORRECTION_FILTER:
-      return handleBaseLineCorrectionFilter(state);
+      return handleBaseLineCorrectionFilter(state, action);
     case SET_KEY_PREFERENCES:
       return setKeyPreferencesHandler(state, action.keyCode);
     case APPLY_KEY_PREFERENCES:
