@@ -422,12 +422,14 @@ NMRDisplayer.propTypes = {
       hideFiltersPanel: PropTypes.bool,
     }),
   }),
+  baseURL: PropTypes.string,
 };
 
 NMRDisplayer.defaultProps = {
   height: 600,
   width: 800,
   preferences: {},
+  baseURL: './',
 };
 
 export default NMRDisplayer;

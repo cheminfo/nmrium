@@ -79,10 +79,21 @@ const Main = (props) => {
 
   useEffect(() => {
     const values = queryString.parse(props.location.search);
+
     if (values && values.sampleURL) {
       loadData(values.sampleURL).then((remoteRoutes) => {
         if (remoteRoutes) {
-          setRoutes({ isLoaded: true, status: 200, routes: remoteRoutes });
+          const _remoteRoutes = JSON.parse(
+            JSON.stringify(remoteRoutes).replace(
+              /\.\/+?/g,
+              values.sampleURL.replace(
+                // eslint-disable-next-line no-useless-escape
+                /^(?<url>.*[\\\/])?(?<filename>.*?\.[^.]*?|)$/g,
+                '$1',
+              ),
+            ),
+          );
+          setRoutes({ isLoaded: true, status: 200, routes: _remoteRoutes });
         } else {
           setRoutes({ isLoaded: false, status: 404, routes: [] });
         }

@@ -119,7 +119,17 @@ export default function Exercise(props) {
   useEffect(() => {
     if (file) {
       loadData(file).then((d) => {
-        setData(d);
+        const _d = JSON.parse(
+          JSON.stringify(d).replace(
+            /\.\/+?/g,
+            file.replace(
+              // eslint-disable-next-line no-useless-escape
+              /^(?<url>.*[\\\/])?(?<filename>.*?\.[^.]*?|)$/g,
+              '$1',
+            ),
+          ),
+        );
+        setData(_d);
       });
     } else {
       setData({});
