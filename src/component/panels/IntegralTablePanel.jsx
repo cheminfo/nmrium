@@ -226,9 +226,9 @@ const IntegralTablePanel = () => {
     }
     if (checkPreferences(integralsPreferences, 'showNB')) {
       const n = activeTab && activeTab.replace(/[0-9]/g, '');
-      setCustomColumn(cols, 5, `nb ${n}`, () =>
+      setCustomColumn(cols, 5, `nb ${n}`, (row) =>
         formatNumber(
-          molecules[0].atoms.H,
+          row.original.relative,
           integralsPreferences &&
             Object.prototype.hasOwnProperty.call(
               integralsPreferences,
@@ -256,6 +256,8 @@ const IntegralTablePanel = () => {
       return [];
     }
   }, [SpectrumsData, activeSpectrum]);
+
+  console.log(data);
 
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_INTEGRAL, integralID: null });

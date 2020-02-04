@@ -107,48 +107,47 @@ export class Datum1D {
     return this.ranges;
   }
 
+  /**
+   * Calculates the integral for a range
+   * @param {*} range
+   */
   addIntegral(range = []) {
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
-
-    const integralValue = XY.integration(
-      { x: this.data.x, y: this.data.re },
-      {
-        from: range[0],
-        to: range[1],
-        reverse: true,
-      },
-    );
     this.integrals.values.push({
       id: generateID(),
       from: range[0],
       to: range[1],
-      value: integralValue, // the real value
-      relative: integralValue, // relative value
+      value: this.getIntegration(range[0], range[1]), // the real value
+      relative: 0, // relative value
       kind: 'signal',
     });
+    this.updateRelativeIntegrals();
   }
 
-  changeIntegralSum(value) {
-    this.integrals = Object.assign({}, this.integrals);
-    this.integrals.values = this.integrals.values.slice();
-    let sum = this.integrals.values.reduce(
-      (currentSum, integral) => (currentSum += integral.value),
-      0,
+  getIntegration(from, to) {
+    return XY.integration(
+      { x: this.data.x, y: this.data.re },
+      { from, to, reverse: true },
     );
-    this.integrals.values = this.integrals.values.map((integral) => {
-      return { ...integral, relative: (integral.value / sum) * value };
-    });
   }
 
-  updateRelativeIntegrals(number) {
+  /**
+   * Set the new integral
+   */
+  changeIntegralSum() {
+    this.updateRelativeIntegrals();
+  }
+
+  updateRelativeIntegrals() {
+    const sum = this.integrals.options.sum || 100;
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
-    let total = this.integrals.values.reduce(
+    let currentSum = this.integrals.values.reduce(
       (previous, current) => (previous += current.integration),
       0,
     );
-    let factor = number / total;
+    let factor = sum / currentSum;
     this.integrals.values.forEach(
       (integral) => (integral.relative = integral.value * factor),
     );
@@ -162,7 +161,9 @@ export class Datum1D {
       this.integrals.values[index] = {
         ...this.integrals.values[index],
         ...integral,
+        ...{ value: this.getIntegration(integral.from, integral.to) },
       };
+      this.updateRelativeIntegrals();
     }
   }
 
