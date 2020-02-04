@@ -114,16 +114,15 @@ export class Datum1D {
   addIntegral(range = []) {
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
-    const integration = this.getIntegration(range[0], range[1]);
-
     this.integrals.values.push({
       id: generateID(),
       from: range[0],
       to: range[1],
-      value: integration, // the real value
-      relative: integration, // relative value
+      value: this.getIntegration(range[0], range[1]), // the real value
+      relative: 0, // relative value
       kind: 'signal',
     });
+    this.updateRelativeIntegrals();
   }
 
   getIntegration(from, to) {
@@ -135,28 +134,20 @@ export class Datum1D {
 
   /**
    * Set the new integral
-   * @param {*} value
    */
-  changeIntegralSum(value) {
-    this.integrals = Object.assign({}, this.integrals);
-    this.integrals.values = this.integrals.values.slice();
-    let sum = this.integrals.values.reduce(
-      (currentSum, integral) => (currentSum += integral.value),
-      0,
-    );
-    this.integrals.values = this.integrals.values.map((integral) => {
-      return { ...integral, relative: (integral.value / sum) * value };
-    });
+  changeIntegralSum() {
+    this.updateRelativeIntegrals();
   }
 
-  updateRelativeIntegrals(number) {
+  updateRelativeIntegrals() {
+    const sum = this.integrals.options.sum || 100;
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
-    let total = this.integrals.values.reduce(
+    let currentSum = this.integrals.values.reduce(
       (previous, current) => (previous += current.integration),
       0,
     );
-    let factor = number / total;
+    let factor = sum / currentSum;
     this.integrals.values.forEach(
       (integral) => (integral.relative = integral.value * factor),
     );
@@ -172,6 +163,7 @@ export class Datum1D {
         ...integral,
         ...{ value: this.getIntegration(integral.from, integral.to) },
       };
+      this.updateRelativeIntegrals();
     }
   }
 
