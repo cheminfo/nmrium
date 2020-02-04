@@ -28,7 +28,6 @@ export function apply(datum1D, options = {}) {
       break;
     case 'polynomial':
       corrected = baselineRegression(x, re, options).corrected;
-      baselineRegression(options);
       break;
     default:
       throw new Error(`baselineCorrection: algorithm unknown: ${algorithm}`);
