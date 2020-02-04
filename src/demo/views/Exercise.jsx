@@ -5,6 +5,8 @@ import { Molecule } from 'openchemlib';
 
 import NMRDisplayer from '../../component/NMRDisplayer.jsx';
 
+let answers = JSON.parse(localStorage.getItem('nmrium-exercises') || '{}');
+
 async function loadData(file) {
   const response = await fetch(file);
   checkStatus(response);
@@ -76,18 +78,14 @@ export default function Exercise(props) {
 
   const checkAnswer = useCallback(
     (response) => {
-      if (
-        data &&
-        data.molecules &&
-        data.molecules[0] &&
-        data.molecules[0].molfile
-      ) {
-        const MolResult = Molecule.fromMolfile(data.molecules[0].molfile);
+      if (data.answer) {
         const MolResponse = Molecule.fromMolfile(response);
-        const idCodeResult = MolResult.getIDCode();
         const idCodeResponse = MolResponse.getIDCode();
+        answers[data.answer.idCode] = idCodeResponse;
+        console.log(answers);
+        localStorage.setItem('nmrium-exercises', JSON.stringify(answers));
         // console.log({ idCodeResponse, idCodeResult });
-        if (idCodeResult === idCodeResponse) {
+        if (data.answer.idCode === idCodeResponse) {
           // correct answer
           setResultFlag(true);
         } else {
@@ -99,28 +97,26 @@ export default function Exercise(props) {
     [data],
   );
 
-  const MFResult = useMemo(() => {
-    let mf = '';
-    if (
-      data &&
-      data.molecules &&
-      data.molecules[0] &&
-      data.molecules[0].molfile
-    ) {
-      const molecule = Molecule.fromMolfile(data.molecules[0].molfile);
-      mf = molecule.getMolecularFormula().formula;
-      return mf;
-    }
-
-    return '';
-    // need to display the MF somehow
-  }, [data]);
-
   useEffect(() => {
     if (file) {
       loadData(file).then((d) => {
         const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
-        setData(_d);
+        if (_d && _d.molecules && _d.molecules[0] && _d.molecules[0].molfile) {
+          const molecule = Molecule.fromMolfile(_d.molecules[0].molfile);
+          const idCode = molecule.getIDCode();
+          let currentAnswer = answers[idCode];
+
+          if (currentAnswer) {
+            currentAnswer = Molecule.fromIDCode(currentAnswer).toMolfile();
+          }
+          console.log(currentAnswer);
+          _d.answer = {
+            idCode,
+            currentAnswer,
+            mf: molecule.getMolecularFormula().formula,
+          };
+          setData(_d);
+        }
       });
     } else {
       setData({});
@@ -161,11 +157,15 @@ export default function Exercise(props) {
               svgMenu={true}
               fragment={false}
               onChange={checkAnswer}
+              initialMolfile={data && data.answer && data.answer.currentAnswer}
             />
           </div>
           <div style={styles.bottomRightContainer}>
             <div style={styles.MF}>
-              <MF style={{ color: 'navy', fontSize: 30 }} mf={MFResult} />
+              <MF
+                style={{ color: 'navy', fontSize: 30 }}
+                mf={data && data.answer && data.answer.mf}
+              />
             </div>
             <div
               style={{
