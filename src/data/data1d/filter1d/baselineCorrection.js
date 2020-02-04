@@ -20,7 +20,6 @@ export function apply(datum1D, options = {}) {
     throw new Error('baselineCorrection not applicable on this data');
   }
 
-  console.log(options);
   const { algorithm = 'polynomial' } = options;
 
   if (!baselineAlgorithms[algorithm]) {
