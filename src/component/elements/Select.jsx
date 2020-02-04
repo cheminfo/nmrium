@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
+import PropTypes from 'prop-types';
 
 const Select = React.forwardRef(
   ({ data, style, onChange, defaultValue }, ref) => {
@@ -51,6 +52,13 @@ const Select = React.forwardRef(
     );
   },
 );
+
+Select.propTypes = {
+  onChange: PropTypes.func,
+  data: PropTypes.array.isRequired,
+  style: PropTypes.any,
+  defaultValue: PropTypes.any,
+};
 
 Select.defaultProps = {
   onChange: function() {
