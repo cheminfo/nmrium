@@ -107,28 +107,36 @@ export class Datum1D {
     return this.ranges;
   }
 
+  /**
+   * Calculates the integral for a range
+   * @param {*} range
+   */
   addIntegral(range = []) {
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
+    const integration = this.getIntegration(range[0], range[1]);
 
-    const integralValue = XY.integration(
-      { x: this.data.x, y: this.data.re },
-      {
-        from: range[0],
-        to: range[1],
-        reverse: true,
-      },
-    );
     this.integrals.values.push({
       id: generateID(),
       from: range[0],
       to: range[1],
-      value: integralValue, // the real value
-      relative: integralValue, // relative value
+      value: integration, // the real value
+      relative: integration, // relative value
       kind: 'signal',
     });
   }
 
+  getIntegration(from, to) {
+    return XY.integration(
+      { x: this.data.x, y: this.data.re },
+      { from, to, reverse: true },
+    );
+  }
+
+  /**
+   * Set the new integral
+   * @param {*} value
+   */
   changeIntegralSum(value) {
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
@@ -162,6 +170,7 @@ export class Datum1D {
       this.integrals.values[index] = {
         ...this.integrals.values[index],
         ...integral,
+        ...{ value: this.getIntegration(integral.from, integral.to) },
       };
     }
   }
