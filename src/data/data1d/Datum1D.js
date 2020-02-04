@@ -144,7 +144,7 @@ export class Datum1D {
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
     let currentSum = this.integrals.values.reduce(
-      (previous, current) => (previous += current.integration),
+      (previous, current) => (previous += current.value),
       0,
     );
     let factor = sum / currentSum;
