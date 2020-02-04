@@ -5,10 +5,7 @@ import {
   APPLY_BASE_LINE_CORRECTION_FILTER,
 } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
-import {
-  baselineAlgorithms,
-  baselineCorrectionFunctions,
-} from '../../data/data1d/filter1d/baselineCorrection';
+import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
 import Select from '../elements/Select';
 
 const styles = {
@@ -54,7 +51,7 @@ const BaseLineCorrectionPanel = () => {
       type: APPLY_BASE_LINE_CORRECTION_FILTER,
       options: {
         algorithm: algorithmRef.current.value,
-        function: functionRef.current.value,
+        functionName: functionRef.current.value,
         maxIterations: maxIterationsRef.current.value,
         tolerance: toleranceRef.current.value,
       },
@@ -73,7 +70,7 @@ const BaseLineCorrectionPanel = () => {
     });
   }, []);
   const getBaseCorrectionFunctionsList = useCallback(() => {
-    return baselineCorrectionFunctions.map((val) => {
+    return Object.keys(baselineAlgorithms.regression).map((val) => {
       return { key: val, label: val, value: val };
     });
   }, []);
