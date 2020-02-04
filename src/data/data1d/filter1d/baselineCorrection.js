@@ -26,7 +26,7 @@ export function apply(datum1D, options = {}) {
     case 'airpls':
       corrected = airPLS(re, options).corrected;
       break;
-    case 'regression':
+    case 'polynomial':
       corrected = baselineRegression(x, re, options).corrected;
       baselineRegression(options);
       break;
