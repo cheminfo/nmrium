@@ -135,7 +135,9 @@ export class Datum1D {
   /**
    * Set the new integral
    */
-  changeIntegralSum() {
+  changeIntegralSum(sumValue) {
+    this.integrals = Object.assign({}, this.integrals);
+    this.integrals.options = { ...this.integrals.options, sum: sumValue };
     this.updateRelativeIntegrals();
   }
 
