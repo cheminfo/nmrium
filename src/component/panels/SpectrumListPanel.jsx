@@ -86,6 +86,7 @@ const SpectrumListPanel = () => {
   );
   const handleChangeActiveSpectrum = useCallback(
     (d) => {
+      console.log('ssswwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
       if (activated && activated.id === d.id) {
         dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: null });
         // setActivated(null);
@@ -139,11 +140,11 @@ const SpectrumListPanel = () => {
       setVisible(visibleSpectra);
       setMarkersVisible(visibleMarkers);
 
-      if (data && data.length === 1 && activated == null) {
-        handleChangeActiveSpectrum(data[0]);
-      }
+      // if (data && data.length === 1 && activated == null) {
+      //   handleChangeActiveSpectrum(data[0]);
+      // }
     }
-  }, [data, handleChangeActiveSpectrum, activated, activeTabID, dispatch]);
+  }, [data, activated, activeTabID, dispatch]);
 
   useEffect(() => {
     setActivated(activeSpectrum);

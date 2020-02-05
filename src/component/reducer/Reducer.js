@@ -1,4 +1,4 @@
-import { produce } from 'immer';
+import { produce, original } from 'immer';
 import * as d3 from 'd3';
 import max from 'ml-array-max';
 
@@ -236,6 +236,7 @@ const setData = (state, data) => {
 };
 
 const loadJcampFile = (state, files) => {
+  console.log(files);
   return produce(state, (draft) => {
     let usedColors = draft.data.map((d) => d.color);
     const filesLength = files.length;
@@ -254,7 +255,7 @@ const loadJcampFile = (state, files) => {
       });
       usedColors.push(color);
     }
-
+    console.log(AnalysisObj.getSpectraData());
     draft.data = AnalysisObj.getSpectraData();
     setDomain(draft);
     setMode(draft);
@@ -747,11 +748,13 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
         draft.data[index].isVisible = true;
       }
 
-      activeSpectrum.index = index;
+      activeSpectrum = { ...activeSpectrum, index };
       draft.activeSpectrum = activeSpectrum;
     } else {
       draft.activeSpectrum = null;
     }
+    setDomain(draft);
+    setMode(draft);
   });
 };
 
@@ -839,9 +842,11 @@ const setZoom = (state, draft, zoomFactor) => {
       return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
     });
   } else {
-    const index = data
-      .filter((d) => d.info.nucleus === draft.activeTab)
-      .findIndex((d) => d.id === draft.activeSpectrum.id);
+    const index = getActiveData(draft).findIndex(
+      (d) => d.id === draft.activeSpectrum.id,
+    );
+    // .filter((d) => d.info.nucleus === draft.activeTab)
+    // .findIndex((d) => d.id === draft.activeSpectrum.id);
     const newYDomains = [...draft.yDomains];
     newYDomains[index] = yDomain;
     draft.yDomains = newYDomains;
@@ -891,16 +896,32 @@ const handleDeleteMolecule = (state, key) => {
   });
 };
 
+function getActiveData(draft) {
+  if (draft.activeTab) {
+    const groupByNucleus = GroupByInfoKey('nucleus');
+    let data = groupByNucleus(draft.data)[draft.activeTab];
+    if (draft.activeSpectrum) {
+      const activeSpectrumIndex = draft.activeSpectrum.index;
+      const isFid = data[activeSpectrumIndex].info.isFid;
+      data = data.filter((datum) => datum.info.isFid === isFid);
+    }
+
+    return data;
+  } else {
+    return draft.data;
+  }
+}
+
 function setMode(draft) {
-  draft.mode =
-    draft.data && draft.data[0] && draft.data[0].info.isFid ? 'LTR' : 'RTL';
+  const data = getActiveData(draft);
+  draft.mode = data && data[0] && data[0].info.isFid ? 'LTR' : 'RTL';
 }
 
 function setDomain(draft) {
   let domain;
+  const data = getActiveData(draft);
+
   if (draft.activeTab) {
-    const groupByNucleus = GroupByInfoKey('nucleus');
-    const data = groupByNucleus(draft.data)[draft.activeTab];
     domain = getDomain(data);
     draft.xDomain = domain.x;
     draft.yDomain = domain.y;
@@ -910,7 +931,8 @@ function setDomain(draft) {
       return { ...d, integralsYDomain: domain.y };
     });
   } else {
-    domain = getDomain(draft.data);
+    domain = getDomain(data);
+    // console.log(domain);
     draft.xDomain = domain.x;
     draft.yDomain = domain.y;
     draft.originDomain = domain;
@@ -1143,14 +1165,14 @@ const handelSetActiveTab = (state, tab) => {
         datum.isVisible = false;
       }
     }
-    if (spectrumsGroupsList[tab] && spectrumsGroupsList[tab].length > 0) {
-      const index = data.findIndex(
-        (d) => d.id === spectrumsGroupsList[tab][0].id,
-      );
-      draft.activeSpectrum = { id: spectrumsGroupsList[tab][0].id, index };
-    } else {
-      draft.activeSpectrum = null;
-    }
+    // if (spectrumsGroupsList[tab] && spectrumsGroupsList[tab].length > 0) {
+    //   const index = data.findIndex(
+    //     (d) => d.id === spectrumsGroupsList[tab][0].id,
+    //   );
+    //   draft.activeSpectrum = { id: spectrumsGroupsList[tab][0].id, index };
+    // } else {
+    //   draft.activeSpectrum = null;
+    // }
     setDomain(draft);
   });
 };

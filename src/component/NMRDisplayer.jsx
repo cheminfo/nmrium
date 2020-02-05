@@ -135,10 +135,21 @@ const NMRDisplayer = (props) => {
 
   const filterSpectrumsByNucleus = useCallback(() => {
     if (activeTab) {
-      return data.filter((d) => d.info.nucleus === activeTab);
+      console.log(activeSpectrum);
+      if (activeSpectrum) {
+        const activeSpectrumIndex = activeSpectrum.index;
+        const isFid = data[activeSpectrumIndex].info.isFid;
+        const _data = data.filter(
+          (d) => d.info.nucleus === activeTab && d.info.isFid === isFid,
+        );
+        console.log(_data);
+        return _data;
+      } else {
+        return data.filter((d) => d.info.nucleus === activeTab);
+      }
     }
     return data;
-  }, [activeTab, data]);
+  }, [activeTab, data, activeSpectrum]);
 
   const getScale = useMemo(() => {
     return (spectrumId = null) => {
@@ -156,7 +167,8 @@ const NMRDisplayer = (props) => {
           [0, yDomain[1]],
           [_height - margin.bottom, margin.top],
         );
-      } else if (activeSpectrum == null || activeSpectrum.id !== spectrumId) {
+        // || activeSpectrum.id !== spectrumId
+      } else if (activeSpectrum == null) {
         const index = filterSpectrumsByNucleus().findIndex(
           (d) => d.id === spectrumId,
         );
