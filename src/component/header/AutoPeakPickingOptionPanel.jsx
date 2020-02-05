@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import { AUTO_PEAK_PICKING, RESET_SELECTED_TOOL } from '../reducer/Actions';
+import NumberInput from '../elements/NumberInput';
 
 const styles = {
   container: {
@@ -11,12 +12,7 @@ const styles = {
     fontSize: '12px',
   },
   input: {
-    height: '100%',
     width: '50px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px 0px 5px',
-    textAlign: 'center',
   },
   actionButton: {
     height: '100%',
@@ -24,10 +20,6 @@ const styles = {
     borderRadius: '5px',
     border: '0.55px solid #c7c7c7',
     margin: '0px 5px',
-    userSelect: 'none',
-  },
-  label: {
-    lineHeight: 2,
     userSelect: 'none',
   },
 };
@@ -55,21 +47,18 @@ const AutoPeakPickingOptionPanel = () => {
 
   return (
     <div style={styles.container}>
-      <span style={styles.label}>Max Number Of Peaks: </span>
-      <input
+      <NumberInput
         ref={maxNumberOfPeaksRef}
+        label="Max Number Of Peaks:"
         name="maxNumberOfPeaks"
-        style={styles.input}
-        type="number"
+        style={{ input: styles.input }}
         defaultValue={50}
-        step="any"
       />
-      <span style={styles.label}>Min Max Ratio: </span>
-      <input
+      <NumberInput
         ref={minMaxRatioRef}
+        label="Min Max Ratio:"
         name="minMaxRatio"
-        style={styles.input}
-        type="number"
+        style={{ input: styles.input }}
         defaultValue={0.1}
         step="0.1"
       />

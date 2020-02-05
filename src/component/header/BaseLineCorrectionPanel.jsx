@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState, Fragment } from 'react';
 
 import {
   RESET_SELECTED_TOOL,
@@ -7,6 +7,7 @@ import {
 import { useDispatch } from '../context/DispatchContext';
 import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
 import Select from '../elements/Select';
+import NumberInput from '../elements/NumberInput';
 
 const styles = {
   container: {
@@ -15,24 +16,12 @@ const styles = {
     display: 'flex',
   },
 
-  input: {
-    height: '100%',
-    width: '80px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px 0px 5px',
-    textAlign: 'center',
-  },
   actionButton: {
     height: '100%',
     width: '60px',
     borderRadius: '5px',
     border: '0.55px solid #c7c7c7',
     margin: '0px 5px',
-    userSelect: 'none',
-  },
-  label: {
-    lineHeight: 2,
     userSelect: 'none',
   },
 };
@@ -42,17 +31,33 @@ const BaseLineCorrectionPanel = () => {
   const algorithmRef = useRef();
   const maxIterationsRef = useRef();
   const toleranceRef = useRef();
+  const degreeRef = useRef();
+  const [algorithm, setAlgorithm] = useState('airpls');
 
   const handleApplyFilter = useCallback(() => {
+    let options = {};
+    switch (algorithm) {
+      case 'airpls':
+        options = {
+          algorithm: algorithmRef.current.value,
+          maxIterations: maxIterationsRef.current.value,
+          tolerance: toleranceRef.current.value,
+        };
+        break;
+      case 'polynomial':
+        options = {
+          algorithm: algorithmRef.current.value,
+          degree: degreeRef.current.value,
+        };
+        break;
+      default:
+        break;
+    }
     dispatch({
       type: APPLY_BASE_LINE_CORRECTION_FILTER,
-      options: {
-        algorithm: algorithmRef.current.value,
-        maxIterations: maxIterationsRef.current.value,
-        tolerance: toleranceRef.current.value,
-      },
+      options,
     });
-  }, [dispatch]);
+  }, [algorithm, dispatch]);
 
   const handleCancelFilter = useCallback(() => {
     dispatch({
@@ -66,6 +71,10 @@ const BaseLineCorrectionPanel = () => {
     });
   }, []);
 
+  const changeAlgorithmHandler = useCallback((val) => {
+    setAlgorithm(val);
+  }, []);
+
   return (
     <div style={styles.container}>
       <span style={styles.label}>Algorithm: </span>
@@ -73,28 +82,33 @@ const BaseLineCorrectionPanel = () => {
         ref={algorithmRef}
         data={getAlgorithmsList()}
         style={{ marginLeft: 10, marginRight: 10 }}
+        onChange={changeAlgorithmHandler}
       />
+      {algorithm && algorithm === 'airpls' && (
+        <Fragment>
+          <NumberInput
+            label="maxIterations:"
+            ref={maxIterationsRef}
+            name="maxIterations"
+            defaultValue={100}
+          />
+          <NumberInput
+            label="tolerance:"
+            ref={toleranceRef}
+            name="tolerance"
+            defaultValue={0.001}
+          />
+        </Fragment>
+      )}
 
-      <span style={styles.label}>maxIterations: </span>
-      <input
-        ref={maxIterationsRef}
-        name="maxIterations"
-        style={styles.input}
-        type="number"
-        pattern="^\d*(\.\d{0,2})?$"
-        step="any"
-        defaultValue={100}
-      />
-      <span style={styles.label}>tolerance: </span>
-      <input
-        ref={toleranceRef}
-        name="tolerance"
-        style={styles.input}
-        type="number"
-        pattern="^\d*(\.\d{0,2})?$"
-        step="any"
-        defaultValue={0.001}
-      />
+      {algorithm && algorithm === 'polynomial' && (
+        <NumberInput
+          label="degree:"
+          ref={degreeRef}
+          name="degree"
+          defaultValue={3}
+        />
+      )}
 
       <button
         type="button"

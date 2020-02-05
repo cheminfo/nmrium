@@ -1,7 +1,8 @@
+import { MolfileSvgRenderer } from 'react-ocl';
+
 import React, { useState, useCallback, useRef, useContext } from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { MolfileSvgRenderer } from 'react-ocl';
 import {
   FaPlus,
   FaPaste,

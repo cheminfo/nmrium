@@ -7,6 +7,7 @@ import {
   RESET_SELECTED_TOOL,
 } from '../reducer/Actions';
 import InputRange from '../elements/InputRange';
+import TextInput from '../elements/TextInput';
 
 const styles = {
   container: {
@@ -15,12 +16,7 @@ const styles = {
     display: 'flex',
   },
   input: {
-    height: '100%',
     width: '100px',
-    borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
-    margin: '0px 5px 0px 5px',
-    textAlign: 'center',
   },
   actionButton: {
     height: '100%',
@@ -28,10 +24,6 @@ const styles = {
     borderRadius: '5px',
     border: '0.55px solid #c7c7c7',
     margin: '0px 5px',
-    userSelect: 'none',
-  },
-  label: {
-    lineHeight: 2,
     userSelect: 'none',
   },
 };
@@ -109,23 +101,21 @@ const ManualPhaseCorrectionPanel = () => {
 
   return (
     <div style={styles.container}>
-      <span style={styles.label}>PH0: </span>
-      <input
+      <TextInput
+        label="PH0:"
         name="ph0"
-        style={styles.input}
-        type="text"
+        style={{ input: styles.input }}
+        onChange={handleInput}
         value={value.ph0}
-        onChange={handleInput}
       />
-      <span style={styles.label}>PH1: </span>
-      <input
+      <TextInput
+        label="PH1:"
         name="ph1"
-        style={styles.input}
-        type="text"
-        value={value.ph1}
+        style={{ input: styles.input }}
         onChange={handleInput}
-        // pattern="^\d*(\.\d{0,2})?$"
+        value={value.ph1}
       />
+
       <InputRange
         name="ph0"
         value={value.ph0}
