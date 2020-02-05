@@ -146,12 +146,12 @@ const changeSpectrumDisplayPreferences = (state, draft, { center }) => {
     draft.verticalAlign.flag = true;
     draft.verticalAlign.value = YAxisShift;
     draft.verticalAlign.stacked = false;
-    AnalysisObj.set1DPreferences({ display: { center: true } });
+    AnalysisObj.setPreferences({ display: { center: true } });
   } else {
     draft.verticalAlign.flag = false;
     draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
     draft.verticalAlign.stacked = false;
-    AnalysisObj.set1DPreferences({ display: { center: false } });
+    AnalysisObj.setPreferences({ display: { center: false } });
   }
 };
 
@@ -164,7 +164,7 @@ const setSpectrumsVerticalAlign = (state, flag) => {
 const initiate = (state, dataObject) => {
   return produce(state, (draft) => {
     AnalysisObj = dataObject.AnalysisObj;
-    const spectraData = AnalysisObj.getData1d();
+    const spectraData = AnalysisObj.getSpectraData();
     const domain = getDomain(spectraData);
     draft.data = spectraData;
     draft.molecules = AnalysisObj.getMolecules();
@@ -224,9 +224,9 @@ const setData = (state, data) => {
   // AnalysisObj= new Analysis()
   return produce(state, (draft) => {
     for (let d of data) {
-      AnalysisObj.pushDatum1D(new Datum1D(d));
+      AnalysisObj.pushDatum(new Datum1D(d));
     }
-    draft.data = AnalysisObj.getData1d();
+    draft.data = AnalysisObj.getSpectraData();
     draft.molecules = AnalysisObj.getMolecules();
 
     draft.isLoading = false;
@@ -255,7 +255,7 @@ const loadJcampFile = (state, files) => {
       usedColors.push(color);
     }
 
-    draft.data = AnalysisObj.getData1d();
+    draft.data = AnalysisObj.getSpectraData();
     setDomain(draft);
     setMode(draft);
     draft.isLoading = false;
@@ -265,7 +265,7 @@ const loadJcampFile = (state, files) => {
 const handleLoadJsonFile = (state, data) => {
   return produce(state, (draft) => {
     AnalysisObj = data.AnalysisObj;
-    const spectraData = AnalysisObj.getData1d();
+    const spectraData = AnalysisObj.getSpectraData();
     draft.data = spectraData;
     draft.molecules = AnalysisObj.getMolecules();
     const preferences = AnalysisObj.getPreferences('1d');
@@ -312,7 +312,7 @@ const getClosePeak = (xShift, mouseCoordinates, state) => {
     range[1] = end;
   }
 
-  const closePeak = AnalysisObj.getDatum1D(activeSpectrum.id).lookupPeak(
+  const closePeak = AnalysisObj.getDatum(activeSpectrum.id).lookupPeak(
     range[0],
     range[1],
   );
@@ -329,8 +329,8 @@ const addPeak = (state, mouseCoordinates) => {
 
       if (index !== -1) {
         const peak = { xIndex: candidatePeak.xIndex };
-        AnalysisObj.getDatum1D(spectrumID).addPeak(peak);
-        draft.data[index].peaks = AnalysisObj.getDatum1D(spectrumID).getPeaks();
+        AnalysisObj.getDatum(spectrumID).addPeak(peak);
+        draft.data[index].peaks = AnalysisObj.getDatum(spectrumID).getPeaks();
       }
     }
   });
@@ -356,7 +356,7 @@ const addPeaks = (state, action) => {
       }
 
       if (index !== -1) {
-        const peaks = AnalysisObj.getDatum1D(spectrumID).addPeaks(
+        const peaks = AnalysisObj.getDatum(spectrumID).addPeaks(
           range[0],
           range[1],
         );
@@ -369,7 +369,7 @@ const addPeaks = (state, action) => {
 const deletePeak = (state, peakData) => {
   return produce(state, (draft) => {
     const { id, index } = state.activeSpectrum;
-    const object = AnalysisObj.getDatum1D(id);
+    const object = AnalysisObj.getDatum(id);
     object.deletePeak(peakData);
     draft.data[index].peaks = object.getPeaks();
   });
@@ -421,7 +421,7 @@ const addIntegral = (state, action) => {
 
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
-      const datumObject = AnalysisObj.getDatum1D(id);
+      const datumObject = AnalysisObj.getDatum(id);
       datumObject.addIntegral(integralRange);
       draft.data[index].integrals = datumObject.getIntegrals();
 
@@ -437,7 +437,7 @@ const deleteIntegral = (state, action) => {
   return produce(state, (draft) => {
     const { integralID } = action;
     const { id, index } = state.activeSpectrum;
-    const object = AnalysisObj.getDatum1D(id);
+    const object = AnalysisObj.getDatum(id);
     object.deleteIntegral(integralID);
     draft.data[index].integrals = object.getIntegrals();
   });
@@ -447,7 +447,7 @@ const changeIntegral = (state, action) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
-      const datumObject = AnalysisObj.getDatum1D(id);
+      const datumObject = AnalysisObj.getDatum(id);
       datumObject.setIntegral(action.data);
       draft.data[index].integrals = datumObject.getIntegrals();
     }
@@ -458,7 +458,7 @@ const handleResizeIntegral = (state, integralData) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
-      const datumObject = AnalysisObj.getDatum1D(id);
+      const datumObject = AnalysisObj.getDatum(id);
       datumObject.changeIntegral(integralData);
       draft.data[index].integrals = datumObject.getIntegrals();
     }
@@ -482,7 +482,7 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
   return produce(state, (draft) => {
     //apply filter into the spectrum
     const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+    const activeObject = AnalysisObj.getDatum(activeSpectrumId);
     activeObject.applyFilter([
       { name: Filters.shiftX.id, options: shiftValue },
     ]);
@@ -494,7 +494,7 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
 const applyZeroFillingFilter = (state, filterOptions) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+    const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
     activeObject.applyFilter([
       { name: Filters.zeroFilling.id, options: filterOptions.zeroFillingSize },
@@ -512,7 +512,7 @@ const applyZeroFillingFilter = (state, filterOptions) => {
 const applyFFTFilter = (state) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+    const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
     //apply filter into the spectrum
     activeObject.applyFilter([{ name: Filters.fft.id, options: {} }]);
@@ -527,7 +527,7 @@ const applyFFTFilter = (state) => {
 const applyManualPhaseCorrectionFilter = (state) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+    const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
     const spectrumIndex = state.tempData.findIndex(
       (spectrum) => spectrum.id === activeSpectrumId,
@@ -545,7 +545,7 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
     const { data } = state;
     const { id, index } = state.activeSpectrum;
     let { ph0, ph1 } = filterOptions;
-    const activeObject = AnalysisObj.getDatum1D(id);
+    const activeObject = AnalysisObj.getDatum(id);
     const closest = getClosestNumber(data[index].x, state.pivot);
     const pivotIndex = data[index].x.indexOf(closest);
 
@@ -564,7 +564,7 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
 const enableFilter = (state, filterID, checked) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+    const activeObject = AnalysisObj.getDatum(activeSpectrumId);
     //apply filter into the spectrum
     activeObject.enableFilter(filterID, checked);
 
@@ -587,7 +587,7 @@ const enableFilter = (state, filterID, checked) => {
 const deleteFilter = (state, filterID) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+    const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
     //apply filter into the spectrum
     activeObject.deleteFilter(filterID);
@@ -698,7 +698,7 @@ function setFilterChanges(draft, state, selectedFilter) {
         (spectrum) => spectrum.id === activeSpectrumId,
       );
 
-      const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+      const activeObject = AnalysisObj.getDatum(activeSpectrumId);
       activeObject.data.x = state.tempData[spectrumIndex].x;
       activeObject.data.re = state.tempData[spectrumIndex].y;
       activeObject.data.im = state.tempData[spectrumIndex].im;
@@ -728,10 +728,10 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
   return produce(state, (draft) => {
     for (let datum of draft.data) {
       if (data.some((activeData) => activeData.id === datum.id)) {
-        AnalysisObj.getDatum1D(datum.id).isPeaksMarkersVisible = true;
+        AnalysisObj.getDatum(datum.id).isPeaksMarkersVisible = true;
         datum.isPeaksMarkersVisible = true;
       } else {
-        AnalysisObj.getDatum1D(datum.id).isPeaksMarkersVisible = false;
+        AnalysisObj.getDatum(datum.id).isPeaksMarkersVisible = false;
         datum.isPeaksMarkersVisible = false;
       }
     }
@@ -741,7 +741,7 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
 const handleChangeActiveSpectrum = (state, activeSpectrum) => {
   return produce(state, (draft) => {
     if (activeSpectrum) {
-      AnalysisObj.getDatum1D(activeSpectrum.id).isVisible = true;
+      AnalysisObj.getDatum(activeSpectrum.id).isVisible = true;
       const index = draft.data.findIndex((d) => d.id === activeSpectrum.id);
       if (index !== -1) {
         draft.data[index].isVisible = true;
@@ -760,7 +760,7 @@ const handleChangeSpectrumColor = (state, { id, color }) => {
     const index = draft.data.findIndex((d) => d.id === id);
     if (index !== -1) {
       draft.data[index].color = color;
-      AnalysisObj.getDatum1D(id).display.color = color;
+      AnalysisObj.getDatum(id).display.color = color;
     }
   });
 };
@@ -769,7 +769,7 @@ const handleToggleRealImaginaryVisibility = (state) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum === null) return;
     const activeSpectrumId = state.activeSpectrum.id;
-    const ob = AnalysisObj.getDatum1D(activeSpectrumId);
+    const ob = AnalysisObj.getDatum(activeSpectrumId);
 
     if (ob) {
       const reY = ob.getReal().y;
@@ -923,15 +923,15 @@ const handleDeleteSpectra = (state, action) => {
     const { activeSpectrum } = draft;
 
     if (activeSpectrum && activeSpectrum.id) {
-      AnalysisObj.deleteDatum1DByIDs([activeSpectrum.id]);
+      AnalysisObj.deleteDatumByIDs([activeSpectrum.id]);
       draft.activeSpectrum = null;
-      draft.data = AnalysisObj.getData1d();
+      draft.data = AnalysisObj.getSpectraData();
       setDomain(draft);
       setMode(draft);
     } else {
       const { IDs } = action;
-      AnalysisObj.deleteDatum1DByIDs(IDs);
-      draft.data = AnalysisObj.getData1d();
+      AnalysisObj.deleteDatumByIDs(IDs);
+      draft.data = AnalysisObj.getSpectraData();
       setDomain(draft);
       setMode(draft);
 
@@ -981,7 +981,7 @@ const handleChangeIntegralSum = (state, value) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
-      const datumObject = AnalysisObj.getDatum1D(id);
+      const datumObject = AnalysisObj.getDatum(id);
       datumObject.changeIntegralSum(value);
       draft.data[index].integrals = datumObject.getIntegrals();
       if (!state.data.integralsYDomain) {
@@ -995,7 +995,7 @@ const handleAutoPeakPicking = (state, autOptions) => {
     draft.selectedTool = options.zoom.id;
     draft.selectedOptionPanel = null;
     const activeSpectrumId = state.activeSpectrum.id;
-    const ob = AnalysisObj.getDatum1D(activeSpectrumId);
+    const ob = AnalysisObj.getDatum(activeSpectrumId);
     const peaks = ob.applyAutoPeakPicking(autOptions);
     const index = state.data.findIndex((d) => d.id === activeSpectrumId);
     if (index !== -1) {
@@ -1009,7 +1009,7 @@ const handleAutoRangesDetection = (state, detectionOptions) => {
       const { id, index } = state.activeSpectrum;
       draft.selectedTool = options.zoom.id;
       draft.selectedOptionPanel = null;
-      const ob = AnalysisObj.getDatum1D(id);
+      const ob = AnalysisObj.getDatum(id);
       const ranges = ob.detectRanges(detectionOptions);
       draft.data[index].ranges = ranges;
     }
@@ -1018,7 +1018,7 @@ const handleAutoRangesDetection = (state, detectionOptions) => {
 const handleDeleteRange = (state, rangeID) => {
   return produce(state, (draft) => {
     const { id, index } = state.activeSpectrum;
-    const ob = AnalysisObj.getDatum1D(id);
+    const ob = AnalysisObj.getDatum(id);
     ob.deleteRange(rangeID);
     draft.data[index].ranges = ob.getRanges();
   });
@@ -1038,7 +1038,7 @@ const handleHistoryUndo = (state) => {
   const hasUndo = past.length !== 0;
 
   AnalysisObj.undoFilter(past);
-  let resultData = AnalysisObj.getData1d();
+  let resultData = AnalysisObj.getSpectraData();
 
   const domain = getDomain(resultData);
   const history = {
@@ -1070,7 +1070,7 @@ const handleHistoryRedo = (state) => {
     history.hasRedo = history.future.length > 0;
 
     AnalysisObj.redoFilter(next);
-    draft.data = AnalysisObj.getData1d();
+    draft.data = AnalysisObj.getSpectraData();
     setDomain(draft);
   });
 };
@@ -1116,15 +1116,15 @@ const handelResetDomain = (state) => {
 const handelSetPreferences = (state, action) => {
   const { type, values } = action;
   return produce(state, (draft) => {
-    const preferences = AnalysisObj.getPreferences('1d');
+    const preferences = AnalysisObj.getPreferences();
     const panelsPreferences =
       preferences && Object.prototype.hasOwnProperty.call(preferences, 'panels')
         ? preferences.panels
         : {};
-    AnalysisObj.set1DPreferences({
+    AnalysisObj.setPreferences({
       panels: { ...panelsPreferences, [type]: values },
     });
-    draft.preferences = AnalysisObj.getPreferences('1d');
+    draft.preferences = AnalysisObj.getPreferences();
   });
 };
 
@@ -1188,7 +1188,7 @@ const handleDeleteBaseLineZone = (state, id) => {
 const handleBaseLineCorrectionFilter = (state, action) => {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum1D(activeSpectrumId);
+    const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
     activeObject.applyFilter([
       {

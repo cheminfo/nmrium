@@ -8,25 +8,21 @@ import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 
 export class Analysis {
-  data1d = [];
+  spectra = [];
   molecules = [];
-  constructor(data1d = [], molecules = [], preferences) {
-    this.data1d = data1d.slice();
-    this.data2d = [];
+  constructor(spectra = [], molecules = [], preferences) {
+    this.spectra = spectra.slice();
     this.molecules = molecules.slice(); // chemical structures
-    this.preferences = preferences || {
-      '1d': {},
-      '2d': {},
-    };
+    this.preferences = preferences || {};
   }
 
   static async build(json = {}) {
-    const vData1d = await Data1DManager.fromJSON(json.spectra);
-    const data1d = json.spectra ? vData1d : [];
+    const spectraData = await Data1DManager.fromJSON(json.spectra);
+    const spectra = json.spectra ? spectraData : [];
     const molecules = json.molecules
       ? MoleculeManager.fromJSON(json.molecules)
       : [];
-    return new Analysis(data1d, molecules, json.preferences);
+    return new Analysis(spectra, molecules, json.preferences);
   }
 
   async addJcampFromURL(id, jcampURL, options) {
@@ -57,10 +53,10 @@ export class Analysis {
     let result = convert(jcamp, { withoutXY: true, keepRecordsRegExp: /.*/ });
     let meta = getInfoFromMetaData(result.info);
     if (meta.dimension === 1) {
-      this.data1d.push(Data1DManager.fromJcamp(jcamp, options));
+      this.spectra.push(Data1DManager.fromJcamp(jcamp, options));
     }
     if (meta.dimension === 2) {
-      this.data2d.push(Data2DManager.fromJcamp(jcamp, options));
+      this.spectra.push(Data2DManager.fromJcamp(jcamp, options));
     }
   }
 
@@ -73,8 +69,8 @@ export class Analysis {
     return this.molecules;
   }
 
-  getPreferences(key) {
-    return this.preferences[key];
+  getPreferences() {
+    return this.preferences;
   }
 
   removeMolecule(key) {
@@ -136,7 +132,7 @@ export class Analysis {
    */
 
   toJSON() {
-    const data1d = this.data1d.map((ob) => {
+    const spectra = this.spectra.map((ob) => {
       return {
         ...ob.toJSON(),
         data: {},
@@ -144,31 +140,28 @@ export class Analysis {
     });
 
     const molecules = this.molecules.map((ob) => ob.toJSON());
-    return { spectra: data1d, molecules, preferences: this.preferences };
+    return { spectra: spectra, molecules, preferences: this.preferences };
   }
 
   set1DPreferences(preferences) {
-    this.preferences = {
-      ...this.preferences,
-      '1d': { ...this.preferences['1d'], ...preferences },
-    };
+    this.preferences = { ...this.preferences, ...preferences };
   }
 
-  pushDatum1D(object) {
-    this.data1d.push(object);
+  pushDatum(object) {
+    this.spectra.push(object);
   }
 
-  getDatum1D(id) {
-    return this.data1d.find((ob) => ob.id === id);
+  getDatum(id) {
+    return this.spectra.find((ob) => ob.id === id);
   }
 
   /**
    *
    * @param {boolean} isRealData
    */
-  getData1d(isRealData = true) {
-    return this.data1d
-      ? this.data1d.map((ob) => {
+  getSpectraData(isRealData = true) {
+    return this.spectra
+      ? this.spectra.map((ob) => {
           return {
             id: ob.id,
             x: ob.data.x,
@@ -189,8 +182,8 @@ export class Analysis {
       : [];
   }
 
-  deleteDatum1DByIDs(IDs) {
-    const _data1d = this.data1d.filter((d) => !IDs.includes(d.id));
-    this.data1d = _data1d.length > 0 ? _data1d : null;
+  deleteDatumByIDs(IDs) {
+    const _spectra = this.spectra.filter((d) => !IDs.includes(d.id));
+    this.spectra = _spectra.length > 0 ? _spectra : null;
   }
 }
