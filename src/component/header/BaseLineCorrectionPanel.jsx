@@ -44,6 +44,12 @@ const BaseLineCorrectionPanel = () => {
           tolerance: toleranceRef.current.value,
         };
         break;
+      case 'autoPolynomial':
+        options = {
+          algorithm: algorithmRef.current.value,
+          degree: degreeRef.current.value,
+        };
+        break;
       case 'polynomial':
         options = {
           algorithm: algorithmRef.current.value,
@@ -99,6 +105,15 @@ const BaseLineCorrectionPanel = () => {
             defaultValue={0.001}
           />
         </Fragment>
+      )}
+
+      {algorithm && algorithm === 'autoPolynomial' && (
+        <NumberInput
+          label="degree:"
+          ref={degreeRef}
+          name="degree"
+          defaultValue={3}
+        />
       )}
 
       {algorithm && algorithm === 'polynomial' && (
