@@ -21,7 +21,7 @@ const XLabelPointer = () => {
     height,
     width,
     margin,
-    getScale,
+    scaleX,
     data,
     activeSpectrum,
   } = useChartData();
@@ -31,12 +31,12 @@ const XLabelPointer = () => {
     (xVal) => {
       const spectrumData = data.find((d) => d.id === activeSpectrum.id);
       if (spectrumData) {
-        return getScale()
-          .x.invert(xVal)
+        return scaleX
+          .invert(xVal)
           .toFixed(getPeakLabelNumberDecimals(spectrumData.info.nucleus));
       }
     },
-    [data, getScale, activeSpectrum],
+    [data, activeSpectrum, scaleX],
   );
 
   if (

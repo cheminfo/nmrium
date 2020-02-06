@@ -37,7 +37,7 @@ const gridStyles = css`
 `;
 
 const XAxis = ({ label, show, showGrid, mode }) => {
-  const { xDomain, getScale, height, width, margin } = useChartData();
+  const { xDomain, scaleX, height, width, margin } = useChartData();
 
   const refAxis = useRef();
   const refGrid = useRef();
@@ -73,12 +73,11 @@ const XAxis = ({ label, show, showGrid, mode }) => {
       //   [domain[0], domain[1]],
       //   [width - margin.right, margin.left],
       // );
-      const scale = getScale();
-      d3.select(refAxis.current).call(xAxis.scale(scale.x.domain(xDomain)));
+      d3.select(refAxis.current).call(xAxis.scale(scaleX.domain(xDomain)));
 
-      d3.select(refGrid.current).call(grid.scale(scale.x.domain(xDomain)));
+      d3.select(refGrid.current).call(grid.scale(scaleX.domain(xDomain)));
     }
-  }, [getScale, grid, show, xAxis, xDomain]);
+  }, [grid, scaleX, show, xAxis, xDomain]);
 
   const Axis = useMemo(
     () =>

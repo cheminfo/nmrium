@@ -151,58 +151,95 @@ const NMRDisplayer = (props) => {
     return data;
   }, [activeTab, data, activeSpectrum]);
 
-  const getScale = useMemo(() => {
+  const scaleX = useMemo(() => {
+    const range =
+      mode === 'RTL'
+        ? [width - margin.right, margin.left]
+        : [margin.left, width - margin.right];
+    return d3.scaleLinear(xDomain, range);
+  }, [margin.left, margin.right, mode, width, xDomain]);
+
+  const scaleY = useMemo(() => {
     return (spectrumId = null) => {
       const _height =
         verticalAlign.flag && !verticalAlign.stacked ? height / 2 : height;
 
-      const range =
-        mode === 'RTL'
-          ? [width - margin.right, margin.left]
-          : [margin.left, width - margin.right];
-      const x = d3.scaleLinear(xDomain, range);
-      let y;
-      if (spectrumId == null && yDomain !== undefined) {
-        y = d3.scaleLinear(
-          [0, yDomain[1]],
-          [_height - margin.bottom, margin.top],
-        );
-        // || activeSpectrum.id !== spectrumId
-      } else if (activeSpectrum == null) {
+      let domainY = [];
+
+      if (spectrumId === null) {
+        domainY = [0, yDomain[1]];
+      } else {
         const index = filterSpectrumsByNucleus().findIndex(
           (d) => d.id === spectrumId,
         );
-        y = d3.scaleLinear(
-          [0, yDomains[index][1]],
-          [_height - margin.bottom, margin.top],
-        );
-      } else {
-        const index = filterSpectrumsByNucleus().findIndex(
-          (d) => d.id === activeSpectrum.id,
-        );
-        y = d3.scaleLinear(
-          [0, yDomains[index][1]],
-          [_height - margin.bottom, margin.top],
-        );
+        domainY = [0, yDomains[index][1]];
       }
-      return { x, y };
+
+      return d3.scaleLinear(domainY, [_height - margin.bottom, margin.top]);
     };
   }, [
-    verticalAlign.flag,
-    verticalAlign.stacked,
+    filterSpectrumsByNucleus,
     height,
-    mode,
-    width,
-    margin.right,
-    margin.left,
     margin.bottom,
     margin.top,
-    xDomain,
+    verticalAlign.flag,
+    verticalAlign.stacked,
     yDomain,
-    activeSpectrum,
-    filterSpectrumsByNucleus,
     yDomains,
   ]);
+
+  // const getScale = useMemo(() => {
+  //   return (spectrumId = null) => {
+  //     const _height =
+  //       verticalAlign.flag && !verticalAlign.stacked ? height / 2 : height;
+
+  //     const range =
+  //       mode === 'RTL'
+  //         ? [width - margin.right, margin.left]
+  //         : [margin.left, width - margin.right];
+  //     const x = d3.scaleLinear(xDomain, range);
+  //     let y;
+  //     // if (spectrumId == null && yDomain !== undefined) {
+  //     //   y = d3.scaleLinear(
+  //     //     [0, yDomain[1]],
+  //     //     [_height - margin.bottom, margin.top],
+  //     //   );
+  //     //   // || activeSpectrum.id !== spectrumId
+  //     // }
+  //     // else if (activeSpectrum == null) {
+  //     //   const index = filterSpectrumsByNucleus().findIndex(
+  //     //     (d) => d.id === spectrumId,
+  //     //   );
+  //     //   y = d3.scaleLinear(
+  //     //     [0, yDomains[index][1]],
+  //     //     [_height - margin.bottom, margin.top],
+  //     //   );
+  //     // }
+  //     // else {
+  //     const index = filterSpectrumsByNucleus().findIndex(
+  //       (d) => d.id === spectrumId,
+  //     );
+  //     y = d3.scaleLinear(
+  //       [0, yDomains[index][1]],
+  //       [_height - margin.bottom, margin.top],
+  //     );
+  //     // }
+  //     return { x, y };
+  //   };
+  // }, [
+  //   verticalAlign.flag,
+  //   verticalAlign.stacked,
+  //   height,
+  //   mode,
+  //   width,
+  //   margin.right,
+  //   margin.left,
+  //   margin.bottom,
+  //   margin.top,
+  //   xDomain,
+  //   filterSpectrumsByNucleus,
+  //   yDomains,
+  // ]);
 
   const handleSplitPanelDragFinished = useCallback((size) => {
     setResizeEventStart(false);
@@ -236,7 +273,8 @@ const NMRDisplayer = (props) => {
               height: heightProp,
               width: widthProps,
               ...state,
-              getScale,
+              scaleX,
+              scaleY,
               isResizeEventStart,
             }}
           >

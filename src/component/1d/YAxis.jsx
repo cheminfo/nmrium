@@ -25,20 +25,18 @@ const axisStyles = css`
 
 const YAxis = ({ show, label }) => {
   const refAxis = useRef();
-  const { yDomain, getScale, margin, verticalAlign } = useChartData();
+  const { yDomain, scaleY, getScale, margin, verticalAlign } = useChartData();
 
   useEffect(() => {
     if (show && yDomain) {
-      const scale = getScale();
-
       const axis = d3
         .axisLeft()
         .ticks(10)
         .tickFormat(d3.format('~s'));
 
-      d3.select(refAxis.current).call(axis.scale(scale.y));
+      d3.select(refAxis.current).call(axis.scale(scaleY));
     }
-  }, [show, yDomain, getScale]);
+  }, [show, yDomain, getScale, scaleY]);
 
   const Axis = useMemo(
     () =>

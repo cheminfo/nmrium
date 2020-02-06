@@ -23,7 +23,8 @@ const pathStyles = css`
 export const LinesSeries = () => {
   const {
     xDomain,
-    getScale,
+    scaleX,
+    scaleY,
     verticalAlign,
     activeSpectrum,
     data,
@@ -32,16 +33,15 @@ export const LinesSeries = () => {
   const paths = useMemo(() => {
     function makePath(info) {
       const { id, x, y } = info;
-      const scale = getScale(id);
 
       const pathPoints = XY.reduce(x, y, {
         from: xDomain[0],
         to: xDomain[1],
       });
-
-      let path = `M ${scale.x(pathPoints.x[0])} ${scale.y(pathPoints.y[0])} `;
+      const _scaleY = scaleY(id);
+      let path = `M ${scaleX(pathPoints.x[0])} ${_scaleY(pathPoints.y[0])} `;
       path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${scale.x(point)} ${scale.y(pathPoints.y[i + 1])}`;
+        accumulator += ` L ${scaleX(point)} ${_scaleY(pathPoints.y[i + 1])}`;
         return accumulator;
       }, '');
       return path;
@@ -68,7 +68,7 @@ export const LinesSeries = () => {
       data[0] &&
       data[0].x &&
       data
-        .filter((d) => d.isVisible === true)
+        .filter((d) => d.isVisible === true && d.isVisibleInDomain === true)
         .map((d, i) => (
           <path
             className="line"
@@ -83,7 +83,16 @@ export const LinesSeries = () => {
           />
         ))
     );
-  }, [activeSpectrum, data, getScale, verticalAlign, xDomain]);
+  }, [
+    activeSpectrum,
+    data,
+    scaleX,
+    scaleY,
+    verticalAlign.flag,
+    verticalAlign.stacked,
+    verticalAlign.value,
+    xDomain,
+  ]);
 
   return (
     <g css={pathStyles} clipPath="url(#clip)">

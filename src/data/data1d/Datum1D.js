@@ -35,6 +35,7 @@ export class Datum1D {
         isVisible: true,
         isPeaksMarkersVisible: true,
         isRealSpectrumVisible: true,
+        isVisibleInDomain: true,
       },
       options.display,
     );

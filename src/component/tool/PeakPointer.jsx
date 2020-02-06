@@ -20,7 +20,8 @@ const PeakPointer = () => {
     width,
     margin,
     activeSpectrum,
-    getScale,
+    scaleX,
+    scaleY,
     data,
     mode,
     selectedTool,
@@ -48,11 +49,9 @@ const PeakPointer = () => {
         position &&
         selectedTool === options.peakPicking.id
       ) {
-        const scale = getScale(activeSpectrum.id);
-
         const range = [
-          scale.x.invert(mouseCoordinates.x - xShift),
-          scale.x.invert(mouseCoordinates.x + xShift),
+          scaleX.invert(mouseCoordinates.x - xShift),
+          scaleX.invert(mouseCoordinates.x + xShift),
         ].sort(function(a, b) {
           return a - b;
         });
@@ -72,9 +71,9 @@ const PeakPointer = () => {
           const xIndex = yDataRange.findIndex((value) => value === yValue);
           const xValue = spectrumData.x[minIndex + xIndex];
           return {
-            x: scale.x(xValue),
+            x: scaleX(xValue),
             // y: scale.y(yValue) - verticalAlign.value,
-            y: scale.y(yValue) - getVerticalAlign(),
+            y: scaleY(activeSpectrum.id)(yValue) - getVerticalAlign(),
             xIndex: minIndex + xIndex,
           };
         }
@@ -87,9 +86,10 @@ const PeakPointer = () => {
   }, [
     activeSpectrum,
     data,
-    getScale,
     mode,
     position,
+    scaleX,
+    scaleY,
     selectedTool,
     verticalAlign,
   ]);

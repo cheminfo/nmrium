@@ -1,4 +1,4 @@
-import { produce, original } from 'immer';
+import { produce } from 'immer';
 import * as d3 from 'd3';
 import max from 'ml-array-max';
 
@@ -904,6 +904,16 @@ function getActiveData(draft) {
       const activeSpectrumIndex = draft.activeSpectrum.index;
       const isFid = data[activeSpectrumIndex].info.isFid;
       data = data.filter((datum) => datum.info.isFid === isFid);
+    }
+
+    for (let datum of draft.data) {
+      if (data.some((activeData) => activeData.id === datum.id)) {
+        AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
+        datum.isVisibleInDomain = true;
+      } else {
+        AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
+        datum.isVisibleInDomain = false;
+      }
     }
 
     return data;

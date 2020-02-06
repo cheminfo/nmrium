@@ -44,7 +44,7 @@ const stylesHighlighted = css`
 const Range = ({ id, from, to, integral }) => {
   const highlight = useHighlight([id]);
 
-  const { getScale } = useChartData();
+  const { scaleX } = useChartData();
   const dispatch = useDispatch();
 
   const deleteRange = useCallback(() => {
@@ -72,20 +72,20 @@ const Range = ({ id, from, to, integral }) => {
     <g
       css={highlight.isActive ? stylesHighlighted : stylesOnHover}
       key={id}
-      transform={`translate(${getScale().x(to)},10)`}
+      transform={`translate(${scaleX(to)},10)`}
       {...highlight.onHover}
     >
       <DeleteButton />
       <rect
         x="0"
-        width={`${getScale().x(from) - getScale().x(to)}`}
+        width={`${scaleX(from) - scaleX(to)}`}
         height="6"
         className="range-area"
         fill="green"
       />
       <text
         textAnchor="middle"
-        x={(getScale().x(from) - getScale().x(to)) / 2}
+        x={(scaleX(from) - scaleX(to)) / 2}
         y="20"
         fontSize="10"
         fill="red"

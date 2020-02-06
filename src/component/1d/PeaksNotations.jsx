@@ -6,7 +6,13 @@ import PeakNotation from '../Notations/PeakNotation';
 // import ModifiedPeakNotation from './Notations/ModifiedPeakNotation';
 
 const PeaksNotations = () => {
-  const { getScale, data, activeSpectrum, verticalAlign } = useChartData();
+  const {
+    scaleX,
+    scaleY,
+    data,
+    activeSpectrum,
+    verticalAlign,
+  } = useChartData();
 
   const Peaks = useMemo(() => {
     const getVerticalAlign = (id) => {
@@ -47,8 +53,8 @@ const PeaksNotations = () => {
                 {d.peaks.values.map(({ xIndex, xShift, id }) => (
                   <PeakNotation
                     key={id}
-                    x={getScale(d.id).x(d.x[xIndex] - (xShift ? xShift : 0))}
-                    y={getScale(d.id).y(d.y[xIndex]) - 5}
+                    x={scaleX(d.x[xIndex] - (xShift ? xShift : 0))}
+                    y={scaleY(d.id)(d.y[xIndex]) - 5}
                     // verticalAlign.value
                     xIndex={xIndex}
                     id={id}
@@ -71,7 +77,7 @@ const PeaksNotations = () => {
           );
         })
     );
-  }, [data, activeSpectrum, getScale, verticalAlign]);
+  }, [data, verticalAlign, activeSpectrum, scaleX, scaleY]);
 
   return (
     <g className="peaks" clipPath="url(#clip)">

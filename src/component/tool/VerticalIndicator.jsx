@@ -15,13 +15,13 @@ const styles = {
 };
 
 const VerticalIndicator = () => {
-  const { height, selectedTool, pivot, getScale } = useChartData();
+  const { height, selectedTool, pivot, scaleX } = useChartData();
   if (options.phaseCorrection.id !== selectedTool) return null;
   return (
     <div
       style={{
         ...styles.container,
-        transform: `translate(${getScale().x(pivot)}px, 0px)`,
+        transform: `translate(${scaleX(pivot)}px, 0px)`,
         height: height,
       }}
     />

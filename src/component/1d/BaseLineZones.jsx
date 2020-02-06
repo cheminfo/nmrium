@@ -29,7 +29,7 @@ const styles = css`
 const BaseLineZones = () => {
   const { baseLineZones } = useChartData();
 
-  const { getScale } = useChartData();
+  const { scaleX } = useChartData();
   const dispatch = useDispatch();
 
   const deleteRange = useCallback(
@@ -64,13 +64,13 @@ const BaseLineZones = () => {
         {baseLineZones.map((zone) => (
           <g
             key={zone.id}
-            transform={`translate(${getScale().x(zone.to)},0)`}
+            transform={`translate(${scaleX(zone.to)},0)`}
             css={styles}
           >
             <DeleteButton id={zone.id} />
             <rect
               x="0"
-              width={`${getScale().x(zone.from) - getScale().x(zone.to)}`}
+              width={`${scaleX(zone.from) - scaleX(zone.to)}`}
               className="zone-area"
             />
           </g>

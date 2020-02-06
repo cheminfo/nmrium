@@ -24,7 +24,7 @@ const pathStyles = css`
 const IntegralsSeries = () => {
   const {
     xDomain,
-    getScale,
+    scaleX,
     activeSpectrum,
     data,
     height,
@@ -52,8 +52,7 @@ const IntegralsSeries = () => {
 
   const Integrals = useMemo(() => {
     const makePath = (info) => {
-      const { id, x, y, yDomain, from, to } = info;
-      const xScale = getScale(id).x;
+      const { x, y, yDomain, from, to } = info;
       const yScale = getYScale(yDomain);
 
       const integralResult = calculateIntegral(x, y, from, to);
@@ -63,12 +62,12 @@ const IntegralsSeries = () => {
         to: xDomain[1],
       });
 
-      let path = `M ${xScale(pathPoints.x[0])} ${yScale(pathPoints.y[0])}`;
+      let path = `M ${scaleX(pathPoints.x[0])} ${yScale(pathPoints.y[0])}`;
 
       path += pathPoints.x
         .slice(1)
         .map((point, i) => {
-          return ` L ${xScale(point)} ${yScale(pathPoints.y[i])}`;
+          return ` L ${scaleX(point)} ${yScale(pathPoints.y[i])}`;
         })
         .join('');
 
@@ -87,7 +86,7 @@ const IntegralsSeries = () => {
       data &&
       data[0] &&
       data
-        .filter((d) => d.isVisible === true)
+        .filter((d) => d.isVisible === true && d.isVisibleInDomain === true)
         .map(
           (spectrum) =>
             spectrum.integrals &&
@@ -130,7 +129,7 @@ const IntegralsSeries = () => {
             )),
         )
     );
-  }, [data, getScale, getYScale, calculateIntegral, xDomain, activeSpectrum]);
+  }, [data, getYScale, calculateIntegral, xDomain, scaleX, activeSpectrum]);
 
   return (
     <g css={pathStyles} clipPath="url(#clip)">
