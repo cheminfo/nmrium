@@ -3,7 +3,7 @@ import { Molecule } from 'openchemlib';
 
 import { getInfoFromMetaData } from './utilities/getInfoFromMetaData';
 import { Data1DManager } from './data1d/Data1DManager';
-import { Data2DManager } from './data2d/Data2DManager';
+// import { Data2DManager } from './data2d/Data2DManager';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 
@@ -36,7 +36,6 @@ export class Analysis {
     let tree = createTree(jcamp);
     if (tree.length === 0) return;
     // Should be improved when we have a more complex case
-    console.log(tree.length);
     let current = tree[0];
     if (current.jcamp) {
       this.addJcampSS(current.jcamp, options);
@@ -53,7 +52,6 @@ export class Analysis {
   addJcampSS(jcamp, options) {
     let result = convert(jcamp, { withoutXY: true, keepRecordsRegExp: /.*/ });
     let meta = getInfoFromMetaData(result.info);
-    console.log(meta);
     if (meta.dimension === 1) {
       this.spectra.push(Data1DManager.fromJcamp(jcamp, options));
     }

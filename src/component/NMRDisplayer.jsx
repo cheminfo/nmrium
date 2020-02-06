@@ -135,14 +135,12 @@ const NMRDisplayer = (props) => {
 
   const filterSpectrumsByNucleus = useCallback(() => {
     if (activeTab) {
-      console.log(activeSpectrum);
       if (activeSpectrum) {
         const activeSpectrumIndex = activeSpectrum.index;
         const isFid = data[activeSpectrumIndex].info.isFid;
         const _data = data.filter(
           (d) => d.info.nucleus === activeTab && d.info.isFid === isFid,
         );
-        console.log(_data);
         return _data;
       } else {
         return data.filter((d) => d.info.nucleus === activeTab);
@@ -187,59 +185,6 @@ const NMRDisplayer = (props) => {
     yDomain,
     yDomains,
   ]);
-
-  // const getScale = useMemo(() => {
-  //   return (spectrumId = null) => {
-  //     const _height =
-  //       verticalAlign.flag && !verticalAlign.stacked ? height / 2 : height;
-
-  //     const range =
-  //       mode === 'RTL'
-  //         ? [width - margin.right, margin.left]
-  //         : [margin.left, width - margin.right];
-  //     const x = d3.scaleLinear(xDomain, range);
-  //     let y;
-  //     // if (spectrumId == null && yDomain !== undefined) {
-  //     //   y = d3.scaleLinear(
-  //     //     [0, yDomain[1]],
-  //     //     [_height - margin.bottom, margin.top],
-  //     //   );
-  //     //   // || activeSpectrum.id !== spectrumId
-  //     // }
-  //     // else if (activeSpectrum == null) {
-  //     //   const index = filterSpectrumsByNucleus().findIndex(
-  //     //     (d) => d.id === spectrumId,
-  //     //   );
-  //     //   y = d3.scaleLinear(
-  //     //     [0, yDomains[index][1]],
-  //     //     [_height - margin.bottom, margin.top],
-  //     //   );
-  //     // }
-  //     // else {
-  //     const index = filterSpectrumsByNucleus().findIndex(
-  //       (d) => d.id === spectrumId,
-  //     );
-  //     y = d3.scaleLinear(
-  //       [0, yDomains[index][1]],
-  //       [_height - margin.bottom, margin.top],
-  //     );
-  //     // }
-  //     return { x, y };
-  //   };
-  // }, [
-  //   verticalAlign.flag,
-  //   verticalAlign.stacked,
-  //   height,
-  //   mode,
-  //   width,
-  //   margin.right,
-  //   margin.left,
-  //   margin.bottom,
-  //   margin.top,
-  //   xDomain,
-  //   filterSpectrumsByNucleus,
-  //   yDomains,
-  // ]);
 
   const handleSplitPanelDragFinished = useCallback((size) => {
     setResizeEventStart(false);

@@ -86,7 +86,6 @@ const SpectrumListPanel = () => {
   );
   const handleChangeActiveSpectrum = useCallback(
     (d) => {
-      console.log('ssswwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
       if (activated && activated.id === d.id) {
         dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: null });
         // setActivated(null);

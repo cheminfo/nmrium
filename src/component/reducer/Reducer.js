@@ -236,7 +236,6 @@ const setData = (state, data) => {
 };
 
 const loadJcampFile = (state, files) => {
-  console.log(files);
   return produce(state, (draft) => {
     let usedColors = draft.data.map((d) => d.color);
     const filesLength = files.length;
@@ -255,7 +254,6 @@ const loadJcampFile = (state, files) => {
       });
       usedColors.push(color);
     }
-    console.log(AnalysisObj.getSpectraData());
     draft.data = AnalysisObj.getSpectraData();
     setDomain(draft);
     setMode(draft);
@@ -753,7 +751,7 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
     } else {
       draft.activeSpectrum = null;
     }
-    setDomain(draft);
+    setDomain(draft, false);
     setMode(draft);
   });
 };
@@ -814,11 +812,6 @@ const getClosestNumber = (array = [], goal = 0) => {
 
 const setZoom = (state, draft, zoomFactor) => {
   const { originDomain, height, margin, data } = state;
-
-  const scale = d3.scaleLinear(originDomain.y, [
-    height - margin.bottom,
-    margin.top,
-  ]);
   let t;
   if (data.length === 1) {
     const closest = getClosestNumber(data[0].y);
@@ -836,10 +829,16 @@ const setZoom = (state, draft, zoomFactor) => {
 
   draft.zoomFactor = zoomFactor;
 
-  let yDomain = t.rescaleY(scale).domain();
   if (draft.activeSpectrum === null) {
-    draft.yDomains = draft.yDomains.map((y) => {
-      return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
+    draft.yDomains = draft.yDomains.map((y, i) => {
+      const scale = d3.scaleLinear(originDomain.yDomains[i], [
+        height - margin.bottom,
+        margin.top,
+      ]);
+      let yDomain = t.rescaleY(scale).domain();
+
+      return yDomain;
+      // return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
     });
   } else {
     const index = getActiveData(draft).findIndex(
@@ -847,6 +846,12 @@ const setZoom = (state, draft, zoomFactor) => {
     );
     // .filter((d) => d.info.nucleus === draft.activeTab)
     // .findIndex((d) => d.id === draft.activeSpectrum.id);
+    const scale = d3.scaleLinear(originDomain.y, [
+      height - margin.bottom,
+      margin.top,
+    ]);
+    let yDomain = t.rescaleY(scale).domain();
+
     const newYDomains = [...draft.yDomains];
     newYDomains[index] = yDomain;
     draft.yDomains = newYDomains;
@@ -927,16 +932,28 @@ function setMode(draft) {
   draft.mode = data && data[0] && data[0].info.isFid ? 'LTR' : 'RTL';
 }
 
-function setDomain(draft) {
+function setDomain(draft, isYDomainChanged = true) {
   let domain;
   const data = getActiveData(draft);
 
   if (draft.activeTab) {
     domain = getDomain(data);
     draft.xDomain = domain.x;
-    draft.yDomain = domain.y;
-    draft.originDomain = domain;
-    draft.yDomains = domain.yDomains;
+    if (isYDomainChanged) {
+      draft.yDomain = domain.y;
+      draft.yDomains = domain.yDomains;
+      draft.originDomain = {
+        x: domain.x,
+        y: domain.y,
+        yDomains: domain.yDomains,
+      };
+    } else {
+      draft.originDomain = {
+        ...draft.originDomain,
+        x: domain.x,
+      };
+    }
+
     draft.data = draft.data.map((d) => {
       return { ...d, integralsYDomain: domain.y };
     });
@@ -1162,19 +1179,21 @@ const handelSetPreferences = (state, action) => {
 
 const handelSetActiveTab = (state, tab) => {
   return produce(state, (draft) => {
-    const { data } = state;
-    const groupByNucleus = GroupByInfoKey('nucleus');
-    const spectrumsGroupsList = groupByNucleus(data);
-
+    // const { data } = state;
+    // const groupByNucleus = GroupByInfoKey('nucleus');
+    // const spectrumsGroupsList = groupByNucleus(data);
+    // console.log('ssssssssssssss')
     draft.activeTab = tab;
 
-    for (let datum of draft.data) {
-      if (datum.info && datum.info.nucleus && datum.info.nucleus === tab) {
-        datum.isVisible = true;
-      } else {
-        datum.isVisible = false;
-      }
-    }
+    // for (let datum of draft.data) {
+    //   if (datum.info && datum.info.nucleus && datum.info.nucleus === tab) {
+    //     datum.isVisibleInDomain = true;
+    //     AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
+    //   } else {
+    //     datum.isVisibleInDomain = false;
+    //     AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
+    //   }
+    // }
     // if (spectrumsGroupsList[tab] && spectrumsGroupsList[tab].length > 0) {
     //   const index = data.findIndex(
     //     (d) => d.id === spectrumsGroupsList[tab][0].id,
@@ -1184,6 +1203,7 @@ const handelSetActiveTab = (state, tab) => {
     //   draft.activeSpectrum = null;
     // }
     setDomain(draft);
+    setMode(draft);
   });
 };
 
