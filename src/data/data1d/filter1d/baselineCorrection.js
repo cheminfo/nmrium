@@ -1,6 +1,6 @@
 import airPLS from 'ml-airpls';
 import baselineRegression from 'ml-baseline-correction-regression';
-import PolynomialRegression from 'ml-regression-polynomial';
+// import PolynomialRegression from 'ml-regression-polynomial';
 
 export const id = 'baselineCorrection';
 export const name = 'baseline correction';
@@ -34,12 +34,11 @@ export function apply(datum1D, options = {}) {
       baselineRegression(options);
       break;
     case 'polynomial':
-      console.log(options);
-      const polynomialRegression = new PolynomialRegression(
-        x,
-        re,
-        options.degree,
-      );
+      // const polynomialRegression = new PolynomialRegression(
+      //   x,
+      //   re,
+      //   options.degree,
+      // );
       corrected = re.slice();
       break;
     default:
@@ -67,4 +66,5 @@ export function reduce() {
  * @param {*} re
  * @param {*} zones
  */
+// eslint-disable-next-line no-unused-vars
 function getZones(x, re, zones = []) {}
