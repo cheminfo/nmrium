@@ -113,17 +113,14 @@ const NMRDisplayer = (props) => {
   const [state, dispatch] = useReducer(spectrumReducer, initialState);
 
   const {
-    data,
     xDomain,
     yDomain,
     width,
     height,
-    activeSpectrum,
     yDomains,
     mode,
     margin,
     verticalAlign,
-    activeTab,
   } = state;
 
   useEffect(() => {
@@ -132,22 +129,6 @@ const NMRDisplayer = (props) => {
       dispatch({ type: INITIATE, data: { AnalysisObj: object } });
     });
   }, [dataProp]);
-
-  const filterSpectrumsByNucleus = useCallback(() => {
-    if (activeTab) {
-      if (activeSpectrum) {
-        const activeSpectrumIndex = activeSpectrum.index;
-        const isFid = data[activeSpectrumIndex].info.isFid;
-        const _data = data.filter(
-          (d) => d.info.nucleus === activeTab && d.info.isFid === isFid,
-        );
-        return _data;
-      } else {
-        return data.filter((d) => d.info.nucleus === activeTab);
-      }
-    }
-    return data;
-  }, [activeTab, data, activeSpectrum]);
 
   const scaleX = useMemo(() => {
     const range =
@@ -167,24 +148,15 @@ const NMRDisplayer = (props) => {
       if (spectrumId === null) {
         domainY = [0, yDomain[1]];
       } else {
-        const index = filterSpectrumsByNucleus().findIndex(
-          (d) => d.id === spectrumId,
-        );
-        domainY = [0, yDomains[index][1]];
+        // const index = filterSpectrumsByNucleus().findIndex(
+        //   (d) => d.id === spectrumId,
+        // );
+        domainY = [0, yDomains[spectrumId][1]];
       }
 
       return d3.scaleLinear(domainY, [_height - margin.bottom, margin.top]);
     };
-  }, [
-    filterSpectrumsByNucleus,
-    height,
-    margin.bottom,
-    margin.top,
-    verticalAlign.flag,
-    verticalAlign.stacked,
-    yDomain,
-    yDomains,
-  ]);
+  }, [height, margin, verticalAlign, yDomain, yDomains]);
 
   const handleSplitPanelDragFinished = useCallback((size) => {
     setResizeEventStart(false);

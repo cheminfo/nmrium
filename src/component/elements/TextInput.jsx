@@ -17,7 +17,7 @@ const styles = {
 };
 
 const TextInput = forwardRef(
-  ({ label, name, defaultValue, style, onChange }, ref) => {
+  ({ label, value, name, defaultValue, style, onChange }, ref) => {
     return (
       <Fragment>
         <span style={{ ...styles.label, ...style.label }}>{label}</span>
@@ -26,6 +26,7 @@ const TextInput = forwardRef(
           name={name}
           style={{ ...styles.input, ...style.input }}
           type="text"
+          value={value}
           defaultValue={defaultValue}
           onChange={onChange}
         />
@@ -37,7 +38,8 @@ const TextInput = forwardRef(
 TextInput.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
-  defaultValue: PropTypes.number,
+  value: PropTypes.string,
+  defaultValue: PropTypes.string,
   style: PropTypes.shape({
     label: PropTypes.object,
     input: PropTypes.object,
@@ -51,6 +53,7 @@ TextInput.defaultProps = {
     input: {},
   },
   defaultValue: 0,
+  value: '',
   onChange: () => {
     return null;
   },

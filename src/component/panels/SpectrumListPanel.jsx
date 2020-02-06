@@ -108,24 +108,11 @@ const SpectrumListPanel = () => {
     [dispatch, selectedSpectrumData],
   );
 
-  const showSpectrumsByGroup = useCallback(
-    (activeTab, spectrumsGroupsList) => {
-      if (activeTab) {
-        setActiveTabID(activeTab);
-        const visibleSpectrums = spectrumsGroupsList[activeTab].map((d) => {
-          return {
-            id: d.id,
-          };
-        });
-        dispatch({
-          type: CHANGE_VISIBILITY,
-          data: visibleSpectrums,
-        });
-        setVisible(visibleSpectrums);
-      }
-    },
-    [dispatch],
-  );
+  const showSpectrumsByGroup = useCallback((activeTab) => {
+    if (activeTab) {
+      setActiveTabID(activeTab);
+    }
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -156,7 +143,7 @@ const SpectrumListPanel = () => {
       setSpectrumsGroupByNucleus(spectrumsGroupsList);
       if (!activeTabID) {
         const activeTab = Object.keys(spectrumsGroupsList)[0];
-        showSpectrumsByGroup(activeTab, spectrumsGroupsList);
+        showSpectrumsByGroup(activeTab);
         dispatch({ type: SET_ACTIVE_TAB, tab: activeTab });
       }
     }

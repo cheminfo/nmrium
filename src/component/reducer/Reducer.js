@@ -30,7 +30,6 @@ import {
   SET_DATA,
   SET_ORIGINAL_DOMAIN,
   SET_X_DOMAIN,
-  SET_Y_DOMAIN,
   SET_WIDTH,
   SET_DIMENSIONS,
   SET_POINTER_COORDINATES,
@@ -100,14 +99,15 @@ function getStrongestPeak(state) {
 }
 
 function getDomain(data) {
-  let xArray = data.reduce(
-    (acc, d) => acc.concat([d.x[0], d.x[d.x.length - 1]]),
-    [],
-  );
-  let yDomains = [];
-  let yArray = data.reduce((acc, d, i) => {
+  let xArray = data.reduce((acc, d) => {
+    return d.isVisibleInDomain
+      ? acc.concat([d.x[0], d.x[d.x.length - 1]])
+      : acc.concat([]);
+  }, []);
+  let yDomains = {};
+  let yArray = data.reduce((acc, d) => {
     const extent = d3.extent(d.y);
-    yDomains[i] = extent;
+    yDomains[d.id] = extent;
     return acc.concat(extent);
   }, []);
 
@@ -619,21 +619,6 @@ const setXDomain = (state, xDomain) => {
   });
 };
 
-const setYDomain = (state, yDomain) => {
-  if (state.activeSpectrum === null) {
-    const yDomains = state.yDomains.map((y) => {
-      return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
-    });
-
-    return { ...state, yDomain, yDomains };
-  } else {
-    const index = state.data.findIndex((d) => d.id === state.activeSpectrum.id);
-    const yDomains = [...state.yDomains];
-    yDomains[index] = yDomain;
-    return { ...state, yDomains: yDomains };
-  }
-};
-
 const setWidth = (state, width) => {
   return { ...state, width };
 };
@@ -830,31 +815,23 @@ const setZoom = (state, draft, zoomFactor) => {
   draft.zoomFactor = zoomFactor;
 
   if (draft.activeSpectrum === null) {
-    draft.yDomains = draft.yDomains.map((y, i) => {
-      const scale = d3.scaleLinear(originDomain.yDomains[i], [
+    draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
+      const scale = d3.scaleLinear(originDomain.yDomains[id], [
         height - margin.bottom,
         margin.top,
       ]);
       let yDomain = t.rescaleY(scale).domain();
-
-      return yDomain;
+      acc[id] = yDomain;
+      return acc;
       // return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
-    });
+    }, {});
   } else {
-    const index = getActiveData(draft).findIndex(
-      (d) => d.id === draft.activeSpectrum.id,
+    const scale = d3.scaleLinear(
+      originDomain.yDomains[draft.activeSpectrum.id],
+      [height - margin.bottom, margin.top],
     );
-    // .filter((d) => d.info.nucleus === draft.activeTab)
-    // .findIndex((d) => d.id === draft.activeSpectrum.id);
-    const scale = d3.scaleLinear(originDomain.y, [
-      height - margin.bottom,
-      margin.top,
-    ]);
     let yDomain = t.rescaleY(scale).domain();
-
-    const newYDomains = [...draft.yDomains];
-    newYDomains[index] = yDomain;
-    draft.yDomains = newYDomains;
+    draft.yDomains[draft.activeSpectrum.id] = yDomain;
   }
 };
 
@@ -905,10 +882,23 @@ function getActiveData(draft) {
   if (draft.activeTab) {
     const groupByNucleus = GroupByInfoKey('nucleus');
     let data = groupByNucleus(draft.data)[draft.activeTab];
+    // draft.activeSpectrum = null;
     if (draft.activeSpectrum) {
-      const activeSpectrumIndex = draft.activeSpectrum.index;
-      const isFid = data[activeSpectrumIndex].info.isFid;
-      data = data.filter((datum) => datum.info.isFid === isFid);
+      const activeSpectrumIndex = data.findIndex(
+        (datum) => datum.id === draft.activeSpectrum.id,
+      );
+      if (activeSpectrumIndex !== -1) {
+        const isFid = data[activeSpectrumIndex].info.isFid || false;
+        data = data.filter((datum) => datum.info.isFid === isFid);
+      }
+    } else {
+      if (data.length === 1) {
+        const index = data.findIndex((datum) => datum.id === data[0].id);
+
+        draft.activeSpectrum = { id: data[0].id, index };
+      } else {
+        data = data.filter((datum) => datum.info.isFid === false);
+      }
     }
 
     for (let datum of draft.data) {
@@ -920,22 +910,23 @@ function getActiveData(draft) {
         datum.isVisibleInDomain = false;
       }
     }
-
-    return data;
+    return draft.data;
   } else {
     return draft.data;
   }
 }
 
 function setMode(draft) {
-  const data = getActiveData(draft);
+  const data = getActiveData(draft).filter(
+    (datum) => datum.isVisibleInDomain === true,
+  );
   draft.mode = data && data[0] && data[0].info.isFid ? 'LTR' : 'RTL';
 }
 
 function setDomain(draft, isYDomainChanged = true) {
   let domain;
   const data = getActiveData(draft);
-
+  // console.log('www', Object.({ '11': 222, '555': 211 }));
   if (draft.activeTab) {
     domain = getDomain(data);
     draft.xDomain = domain.x;
@@ -1385,9 +1376,6 @@ export const spectrumReducer = (state, action) => {
 
     case SET_X_DOMAIN:
       return setXDomain(state, action.xDomain);
-
-    case SET_Y_DOMAIN:
-      return setYDomain(state, action.yDomain);
 
     case SET_WIDTH:
       return setWidth(state, action.width);
