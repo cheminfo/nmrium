@@ -84,7 +84,16 @@ export class Datum1D {
 
   preprocessing() {
     if (this.info.isFid) {
-      this.applyFilter([{ name: Filters.digitalFilter.id, options: {} }]);
+      this.applyFilter([
+        {
+          name: Filters.digitalFilter.id,
+          options: {
+            dspfvs: this.info.dspfvs,
+            decim: this.info.decim,
+            grpdly: this.info.grpdly,
+          },
+        },
+      ]);
     }
   }
 

@@ -6,15 +6,13 @@ export const name = 'Digital Filter';
  * @param {Datum1d} datum1d
  */
 
-export function apply(datum1D) {
+export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('Digital Filter is not applicable on this data');
   }
-  const info = datum1D.info;
-  let grpdly = info.grpdly;
-  if (!grpdly) grpdly = 0;
-  const dspfvs = info.dspfvs;
-  const decim = info.decim;
+
+  let { grpdly = 0, dspfvs, decim } = options;
+
   let re = new Float64Array(datum1D.data.re);
   let im = new Float64Array(datum1D.data.im);
   let ph1;
