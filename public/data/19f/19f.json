@@ -1,0 +1,20 @@
+{
+  "spectra": [
+    {
+      "data": {},
+      "id": "2x1trt1trwd",
+      "source": {
+        "original": [],
+        "jcamp": null,
+        "jcampURL": "./data/19f/19F_baseline_Re.dx"
+      },
+      "display": {
+        "name": "19F",
+        "color": "#FFB300",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true
+      }
+    }
+  ]
+}
