@@ -1171,9 +1171,7 @@ const handelSetPreferences = (state, action) => {
 const handelSetActiveTab = (state, tab) => {
   return produce(state, (draft) => {
     const { data } = state;
-    // const groupByNucleus = GroupByInfoKey('nucleus');
-    // const spectrumsGroupsList = groupByNucleus(data);
-    // console.log('ssssssssssssss')
+
     draft.activeTab = tab;
     const groupByNucleus = GroupByInfoKey('nucleus');
     const _data = groupByNucleus(data)[tab];
@@ -1183,23 +1181,6 @@ const handelSetActiveTab = (state, tab) => {
       draft.activeSpectrum = { id: _data[0].id, index };
     }
 
-    // for (let datum of draft.data) {
-    //   if (datum.info && datum.info.nucleus && datum.info.nucleus === tab) {
-    //     datum.isVisibleInDomain = true;
-    //     AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
-    //   } else {
-    //     datum.isVisibleInDomain = false;
-    //     AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
-    //   }
-    // }
-    // if (spectrumsGroupsList[tab] && spectrumsGroupsList[tab].length > 0) {
-    //   const index = data.findIndex(
-    //     (d) => d.id === spectrumsGroupsList[tab][0].id,
-    //   );
-    //   draft.activeSpectrum = { id: spectrumsGroupsList[tab][0].id, index };
-    // } else {
-    //   draft.activeSpectrum = null;
-    // }
     setDomain(draft);
     setMode(draft);
   });
