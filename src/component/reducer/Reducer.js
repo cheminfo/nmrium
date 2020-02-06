@@ -892,13 +892,13 @@ function getActiveData(draft) {
         data = data.filter((datum) => datum.info.isFid === isFid);
       }
     } else {
-      if (data.length === 1) {
-        const index = data.findIndex((datum) => datum.id === data[0].id);
+      // if (data.length === 1) {
+      //   const index = data.findIndex((datum) => datum.id === data[0].id);
 
-        draft.activeSpectrum = { id: data[0].id, index };
-      } else {
-        data = data.filter((datum) => datum.info.isFid === false);
-      }
+      //   draft.activeSpectrum = { id: data[0].id, index };
+      // } else {
+      data = data.filter((datum) => datum.info.isFid === false);
+      // }
     }
 
     for (let datum of draft.data) {
@@ -926,7 +926,7 @@ function setMode(draft) {
 function setDomain(draft, isYDomainChanged = true) {
   let domain;
   const data = getActiveData(draft);
-  // console.log('www', Object.({ '11': 222, '555': 211 }));
+
   if (draft.activeTab) {
     domain = getDomain(data);
     draft.xDomain = domain.x;
@@ -1170,11 +1170,18 @@ const handelSetPreferences = (state, action) => {
 
 const handelSetActiveTab = (state, tab) => {
   return produce(state, (draft) => {
-    // const { data } = state;
+    const { data } = state;
     // const groupByNucleus = GroupByInfoKey('nucleus');
     // const spectrumsGroupsList = groupByNucleus(data);
     // console.log('ssssssssssssss')
     draft.activeTab = tab;
+    const groupByNucleus = GroupByInfoKey('nucleus');
+    const _data = groupByNucleus(data)[tab];
+
+    if (_data && _data.length === 1) {
+      const index = data.findIndex((datum) => datum.id === _data[0].id);
+      draft.activeSpectrum = { id: _data[0].id, index };
+    }
 
     // for (let datum of draft.data) {
     //   if (datum.info && datum.info.nucleus && datum.info.nucleus === tab) {
