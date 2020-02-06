@@ -53,6 +53,10 @@
       {
         "file": "./data/cytisine/Dept.json",
         "title": "DEPT"
+      },
+      {
+        "file": "./data/19f/19f.json",
+        "title": "19F with baseline problems"
       }
     ]
   },
