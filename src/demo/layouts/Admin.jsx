@@ -97,7 +97,7 @@ class Dashboard extends React.Component {
         <div
           className={
             this.state.isMenuClosed
-              ? ' main-panel-when-menu-closed'
+              ? 'main-panel main-panel-when-menu-closed'
               : 'main-panel'
           }
           ref={this.mainPanel}

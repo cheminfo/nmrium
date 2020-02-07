@@ -117,7 +117,7 @@
 }
 
 .main-panel-when-menu-closed {
-  width: 100% !important;
-  margin-left: 30px;
+  width: 98% !important;
+  margin-left: 20px !important;
   height: 100%;
 }
