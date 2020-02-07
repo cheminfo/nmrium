@@ -38,10 +38,22 @@ export class FiltersManager {
             );
           }
         } else {
-          FiltersManager.addFilter(datum1d, filterOption);
+          FiltersManager.addFilter(
+            datum1d,
+            filterOption,
+            Object.prototype.hasOwnProperty.call(filter, 'isDeleteAllow')
+              ? filter.isDeleteAllow
+              : true,
+          );
         }
       } else {
-        FiltersManager.addFilter(datum1d, filterOption);
+        FiltersManager.addFilter(
+          datum1d,
+          filterOption,
+          Object.prototype.hasOwnProperty.call(filter, 'isDeleteAllow')
+            ? filter.isDeleteAllow
+            : true,
+        );
       }
     }
     if (isReduced) {
@@ -133,13 +145,14 @@ export class FiltersManager {
     }
   }
 
-  static addFilter(datum1d, filter) {
+  static addFilter(datum1d, filter, isDeleteAllow = true) {
     const id = generateID();
     datum1d.filters = datum1d.filters.slice(0);
     datum1d.filters.push({
       ...filter,
       id: id,
       flag: true,
+      isDeleteAllow,
     });
   }
 

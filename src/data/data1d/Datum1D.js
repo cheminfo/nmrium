@@ -92,6 +92,7 @@ export class Datum1D {
             decim: this.info.decim,
             grpdly: this.info.grpdly,
           },
+          isDeleteAllow: false,
         },
       ]);
     }
