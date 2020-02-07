@@ -66,6 +66,7 @@ const alertOptions = {
 const splitPaneStyles = {
   container: {
     position: 'relative',
+    height: 'none',
   },
   pane1: { maxWidth: '80%', minWidth: '50%' },
   resizer: {
