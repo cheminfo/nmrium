@@ -25,14 +25,16 @@ import { buildMenu, getKey } from '../../utility/menu';
 import Menu from 'rc-menu';
 import logo from '../../assets/img/logo-white.svg';
 import 'rc-menu/assets/index.css';
+import { FaBars } from 'react-icons/fa';
 
 var ps;
 
 class Sidebar extends React.Component {
-  state = { routes: [] };
+  state = { routes: [], isMenuOpen: true };
   constructor(props) {
     super(props);
     this.activeRoute.bind(this);
+    this.menuHandler = this.menuHandler.bind(this);
   }
   // verifies if routeName is the one active (in browser input)
   activeRoute(routeName) {
@@ -46,7 +48,9 @@ class Sidebar extends React.Component {
       });
     }
     const routes = buildMenu(this.props.routes, []);
-    this.setState({ routes });
+    this.setState((prev) => {
+      return { ...prev, routes };
+    });
   }
   componentWillUnmount() {
     if (navigator.platform.indexOf('Win') > -1) {
@@ -54,9 +58,26 @@ class Sidebar extends React.Component {
     }
   }
 
+  menuHandler(e) {
+    console.log(this.state);
+    const menuStatus = !this.state.isMenuOpen;
+    this.setState((prev) => {
+      return { ...prev, isMenuOpen: menuStatus };
+    });
+    this.props.onMenuClose(!menuStatus);
+  }
+
   render() {
     return (
-      <div className="sidebar" data-color={this.props.backgroundColor}>
+      <div
+        className={
+          this.state.isMenuOpen ? 'sidebar menu-open' : 'sidebar menu-close'
+        }
+        data-color={this.props.backgroundColor}
+      >
+        <button type="button" className="menu-bt" onClick={this.menuHandler}>
+          <FaBars />
+        </button>
         <div className="logo">
           <a
             // href="https://www.creative-tim.com?ref=nudr-sidebar"

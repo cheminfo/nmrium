@@ -29,7 +29,17 @@ import { mapTreeToFlatArray, getKey } from '../utility/menu';
 let ps;
 let localRoutes;
 class Dashboard extends React.Component {
-  state = { backgroundColor: 'blue', routesList: [], routes: [] };
+  constructor(props) {
+    super(props);
+    this.menuCloseHandler = this.menuCloseHandler.bind(this);
+  }
+
+  state = {
+    backgroundColor: 'blue',
+    routesList: [],
+    routes: [],
+    isMenuClosed: false,
+  };
 
   // eslint-disable-next-line react/no-deprecated
   componentWillMount() {
@@ -65,8 +75,14 @@ class Dashboard extends React.Component {
   }
   mainPanel = React.createRef();
 
-  handleColorClick = (color) => {
-    this.setState({ backgroundColor: color });
+  // handleColorClick = (color) => {
+  //   this.setState({ backgroundColor: color });
+  // };
+
+  menuCloseHandler = (flag) => {
+    this.setState((prev) => {
+      return { ...prev, isMenuClosed: flag };
+    });
   };
 
   render() {
@@ -76,8 +92,16 @@ class Dashboard extends React.Component {
           {...this.props}
           routes={this.state.routes}
           backgroundColor={this.state.backgroundColor}
+          onMenuClose={this.menuCloseHandler}
         />
-        <div className="main-panel" ref={this.mainPanel}>
+        <div
+          className={
+            this.state.isMenuClosed
+              ? ' main-panel-when-menu-closed'
+              : 'main-panel'
+          }
+          ref={this.mainPanel}
+        >
           {/* <Router {...this.props}> */}
           <Suspense fallback={<div>Loading...</div>}>
             <Switch>
