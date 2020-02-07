@@ -12,7 +12,6 @@ describe('digitalFilter', () => {
       info: {
         isComplex: true,
         isFid: true,
-        grpdly: 6,
       },
     };
     for (let i = 0; i < nbPoints; i++) {
@@ -20,7 +19,7 @@ describe('digitalFilter', () => {
     }
     spectrum.data.im = spectrum.data.re.slice();
     spectrum.data.x = spectrum.data.re.slice();
-    apply(spectrum);
+    apply(spectrum, { grpdly: 6 });
     expect(spectrum.data.re).toStrictEqual(
       new Float64Array([6, 7, 0, 0, 0, 0, 0, 0]),
     );
