@@ -16,13 +16,16 @@ const stylesOnHover = css`
     visibility: visible !important;
     cursor: pointer;
   }
-
+  .highlight {
+    fill: transparent;
+  }
   .target {
     visibility: hidden;
   }
 `;
 const stylesHighlighted = css`
   pointer-events: bounding-box;
+  fill: #ff6f0057;
 
   .target {
     visibility: visible;
@@ -156,6 +159,13 @@ const IntegralResizable = (props) => {
         data-no-export="true"
         {...highlight.onHover}
       >
+        <rect
+          x={scaleX(xBoundary[1])}
+          y="0"
+          width={scaleX(xBoundary[0]) - scaleX(xBoundary[1])}
+          height="100%"
+          className="highlight"
+        />
         <Draggable
           axis="x"
           defaultPosition={{
