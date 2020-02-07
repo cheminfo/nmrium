@@ -185,6 +185,6 @@ export class Analysis {
 
   deleteDatumByIDs(IDs) {
     const _spectra = this.spectra.filter((d) => !IDs.includes(d.id));
-    this.spectra = _spectra.length > 0 ? _spectra : null;
+    this.spectra = _spectra.length > 0 ? _spectra : [];
   }
 }

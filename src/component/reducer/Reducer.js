@@ -892,13 +892,7 @@ function getActiveData(draft) {
         data = data.filter((datum) => datum.info.isFid === isFid);
       }
     } else {
-      // if (data.length === 1) {
-      //   const index = data.findIndex((datum) => datum.id === data[0].id);
-
-      //   draft.activeSpectrum = { id: data[0].id, index };
-      // } else {
-      data = data.filter((datum) => datum.info.isFid === false);
-      // }
+      data = data ? data.filter((datum) => datum.info.isFid === false) : [];
     }
 
     for (let datum of draft.data) {
@@ -961,7 +955,6 @@ function setDomain(draft, isYDomainChanged = true) {
 const handleDeleteSpectra = (state, action) => {
   return produce(state, (draft) => {
     const { activeSpectrum } = draft;
-
     if (activeSpectrum && activeSpectrum.id) {
       AnalysisObj.deleteDatumByIDs([activeSpectrum.id]);
       draft.activeSpectrum = null;
@@ -972,13 +965,6 @@ const handleDeleteSpectra = (state, action) => {
       const { IDs } = action;
       AnalysisObj.deleteDatumByIDs(IDs);
       draft.data = AnalysisObj.getSpectraData();
-      setDomain(draft);
-      setMode(draft);
-
-      // Analysis.build({}).then((obj) => {
-      //   AnalysisObj = obj;
-      // });
-      // draft.data = [];
     }
   });
 };
