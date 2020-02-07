@@ -60,13 +60,15 @@ const FilterPanel = () => {
               checked={d.flag}
               onChange={(checked) => handelFilterCheck(d.id, checked)}
             />
-            <button
-              style={styles.button}
-              type="button"
-              onClick={() => handelDeleteFilter(d.id)}
-            >
-              <FaRegTrashAlt />
-            </button>
+            {d.isDeleteAllow && (
+              <button
+                style={styles.button}
+                type="button"
+                onClick={() => handelDeleteFilter(d.id)}
+              >
+                <FaRegTrashAlt />
+              </button>
+            )}
           </TableCell>
         </TableRow>
       ))
