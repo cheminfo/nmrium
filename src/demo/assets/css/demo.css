@@ -103,15 +103,21 @@
   width: 2% !important;
 }
 
+.sidebar .sidebar-wrapper,
+.sidebar .logo,
+.off-canvas-sidebar .sidebar-wrapper {
+  transition: width 0.2s;
+  transition-delay: 0.2s;
+}
 .menu-close .sidebar-wrapper,
-.menu-close .logo {
-  width: 20px;
-  transition: all;
-  transition-delay: 0.5s;
+.menu-close .logo,
+.menu-close .rc-menu {
+  width: 20px !important;
   display: none;
 }
 
 .main-panel-when-menu-closed {
-    width: 100% !important;
-    margin-left: 30px;
+  width: 100% !important;
+  margin-left: 30px;
+  height: 100%;
 }
