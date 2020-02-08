@@ -34,7 +34,7 @@ export const LinesSeries = () => {
     function makePath(info) {
       const { id, x, y } = info;
 
-      const pathPoints = XY.reduce(x, y, {
+      const pathPoints = XY.reduce(info, {
         from: xDomain[0],
         to: xDomain[1],
       });
