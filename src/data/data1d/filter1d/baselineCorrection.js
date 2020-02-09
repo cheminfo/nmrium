@@ -1,5 +1,7 @@
 import airPLS from 'ml-airpls';
 import baselineRegression from 'ml-baseline-correction-regression';
+import PolynomialRegression from 'ml-regression-polynomial';
+import equallySpaced from 'ml-array-xy-equally-spaced';
 // import PolynomialRegression from 'ml-regression-polynomial';
 
 export const id = 'baselineCorrection';
@@ -13,15 +15,14 @@ export const name = 'baseline correction';
 export const baselineAlgorithms = {
   airpls: 'airPLS',
   polynomial: 'Polynomial',
-  autoPolynomial: 'Auto polynomial',
 };
 
 export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('baselineCorrection not applicable on this data');
   }
-  const { algorithm } = options;
-
+  const { algorithm, zones } = options;
+  console.log(options);
   let { x, re } = datum1D.data;
 
   let corrected;
@@ -29,17 +30,34 @@ export function apply(datum1D, options = {}) {
     case 'airpls':
       corrected = airPLS(x, re, options).corrected;
       break;
-    case 'autoPolynomial':
-      corrected = baselineRegression(x, re, options).corrected;
-      baselineRegression(options);
-      break;
     case 'polynomial':
-      // const polynomialRegression = new PolynomialRegression(
-      //   x,
-      //   re,
-      //   options.degree,
-      // );
-      corrected = re.slice();
+      {
+        let reduced = equallySpaced(
+          { x, y: re },
+          { numberOfPoints: 4096, zones },
+        );
+        let predict;
+        if (zones.length === 0) {
+          let { regression } = baselineRegression(
+            reduced.x,
+            reduced.y,
+            options,
+          );
+          predict = regression.predict;
+        } else {
+          let polynomialRegression = new PolynomialRegression(
+            x,
+            re,
+            options.degree,
+          );
+          predict = polynomialRegression.predict;
+        }
+        corrected = new Float64Array(x.length);
+        for (let i = 0; i < re.length; i++) {
+          corrected[i] = predict(x[i]);
+        }
+      }
+
       break;
     default:
       throw new Error(`baselineCorrection: algorithm unknown: ${algorithm}`);
