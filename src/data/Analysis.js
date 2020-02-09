@@ -1,7 +1,7 @@
-import { convert, createTree } from 'jcampconverter';
 import { Molecule } from 'openchemlib';
 
-import { getInfoFromMetaData } from './utilities/getInfoFromMetaData';
+import * as SpectraManager from './SpectraManager';
+
 import { Data1DManager } from './data1d/Data1DManager';
 // import { Data2DManager } from './data2d/Data2DManager';
 import { Molecule as mol } from './molecules/Molecule';
@@ -26,38 +26,11 @@ export class Analysis {
   }
 
   async addJcampFromURL(id, jcampURL, options) {
-    let jcamp = await fetch(jcampURL).then((response) => response.text());
-    this.addJcamp(id, jcamp, options);
+    SpectraManager.addJcampFromURL(this.spectra, id, jcampURL, options);
   }
 
   addJcamp(jcamp, options = {}) {
-    // need to parse the jcamp
-
-    let tree = createTree(jcamp);
-    if (tree.length === 0) return;
-    // Should be improved when we have a more complex case
-    let current = tree[0];
-    if (current.jcamp) {
-      this.addJcampSS(current.jcamp, options);
-    }
-    if (current.children) {
-      for (let child of current.children) {
-        if (child.jcamp) {
-          this.addJcampSS(child.jcamp, options);
-        }
-      }
-    }
-  }
-
-  addJcampSS(jcamp, options) {
-    let result = convert(jcamp, { withoutXY: true, keepRecordsRegExp: /.*/ });
-    let meta = getInfoFromMetaData(result.info);
-    if (meta.dimension === 1) {
-      this.spectra.push(Data1DManager.fromJcamp(jcamp, options));
-    }
-    // if (meta.dimension === 2) {
-    //   this.spectra.push(Data2DManager.fromJcamp(jcamp, options));
-    // }
+    SpectraManager.addJcampFromURL(this.spectra, jcamp, options);
   }
 
   async addMolfileFromURL(molfileURL) {
