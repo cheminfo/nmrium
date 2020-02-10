@@ -17,16 +17,16 @@ export class Analysis {
   }
 
   static async build(json = {}) {
-    const spectraData = await Data1DManager.fromJSON(json.spectra);
-    const spectra = json.spectra ? spectraData : [];
     const molecules = json.molecules
       ? MoleculeManager.fromJSON(json.molecules)
       : [];
-    return new Analysis(spectra, molecules, json.preferences);
+    const analysis = new Analysis([], molecules, json.preferences);
+    await SpectraManager.fromJSON(analysis.spectra, json.spectra);
+    return analysis;
   }
 
-  async addJcampFromURL(id, jcampURL, options) {
-    SpectraManager.addJcampFromURL(this.spectra, id, jcampURL, options);
+  async addJcampFromURL(jcampURL, options) {
+    SpectraManager.addJcampFromURL(this.spectra, jcampURL, options);
   }
 
   addJcamp(jcamp, options = {}) {

@@ -1,10 +1,15 @@
 import { convert, createTree } from 'jcampconverter';
 import { Data1DManager } from './data1d/Data1DManager';
+import { Datum1D } from './data1d/Datum1D';
+import { Data2DManager } from './data2d/Data2DManager';
 import { getInfoFromMetaData } from './utilities/getInfoFromMetaData';
 
-export async function addJcampFromURL(spectra, id, jcampURL, options) {
-  let jcamp = await fetch(jcampURL).then((response) => response.text());
-  addJcamp(spectra, id, jcamp, options);
+export function addJcampFromURL(spectra, jcampURL, options) {
+  return fetch(jcampURL)
+    .then((response) => response.text())
+    .then((jcamp) => {
+      addJcamp(spectra, jcamp, options);
+    });
 }
 
 export function addJcamp(spectra, jcamp, options = {}) {
@@ -26,13 +31,27 @@ export function addJcamp(spectra, jcamp, options = {}) {
   }
 }
 
+export async function fromJSON(spectra, data = []) {
+  let promises = [];
+  for (let datum of data) {
+    if (datum.source.jcamp != null) {
+      addJcamp(spectra, datum.source.jcamp, datum);
+    } else if (datum.source.jcampURL != null) {
+      promises.push(addJcampFromURL(spectra, datum.source.jcampURL, datum));
+    } else {
+      spectra.push(new Datum1D({ ...datum, data: datum.source.original }));
+    }
+  }
+  await Promise.all(promises);
+}
+
 function addJcampSS(spectra, jcamp, options) {
   let result = convert(jcamp, { withoutXY: true, keepRecordsRegExp: /.*/ });
-  let meta = getInfoFromMetaData(result.info);
-  if (meta.dimension === 1) {
+  let info = getInfoFromMetaData(result.info);
+  if (info.dimension === 1) {
     spectra.push(Data1DManager.fromJcamp(jcamp, options));
   }
-  // if (meta.dimension === 2) {
-  //   this.spectra.push(Data2DManager.fromJcamp(jcamp, options));
-  // }
+  if (info.dimension === 2) {
+    spectra.push(Data2DManager.fromJcamp(jcamp, options));
+  }
 }
