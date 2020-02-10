@@ -25,7 +25,7 @@ import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import MenuButton from '../elements/MenuButton';
 import { useModal } from '../elements/Modal';
-import LoadJACMPModal from '../modal/LoadJACMPModal';
+import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 
 const styles = css`
   background-color: transparent;
@@ -177,7 +177,7 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
 
   const importJCAMPFile = useCallback(() => {
     modal.show(
-      <LoadJACMPModal
+      <LoadJCAMPModal
         onLoadClick={LoadJacmpHandler}
         onClose={() => modal.close()}
         startLoading={startLoadingHandler}

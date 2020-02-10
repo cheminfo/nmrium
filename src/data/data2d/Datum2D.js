@@ -56,6 +56,7 @@ export class Datum2D {
       },
       options.data,
     );
+    console.log(this.data);
   }
 
   getContourLines() {
