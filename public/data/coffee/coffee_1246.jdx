@@ -8,6 +8,7 @@ $$ 1.72 TOPSPIN		Version 2.1
 $$ 2016-02-23 12:18:22.527 -0800  Administrator@X
 $$ Compression mode = diff/dup
 ##.OBSERVE FREQUENCY= 90.275459
+##.OBSERVE NUCLEUS= ^1H
 ##.ACQUISITION MODE= SIMULTANEOUS (DQD)
 ##.ACQUISITION SCHEME= undefined
 ##.AVERAGES= 16
