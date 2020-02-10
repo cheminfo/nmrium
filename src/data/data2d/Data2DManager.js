@@ -16,13 +16,19 @@ export class Data2DManager {
     let data = result.minMax;
     let info = getInfoFromMetaData(result.info);
 
-    if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
     const ob = new Datum2D({
       ...options,
       info,
       meta: result.info,
       data,
-      source: { jcamp: null, jcampURL: null, original: data },
+      source: {
+        jcamp: null,
+        jcampURL:
+          options.source && options.source.jcampURL
+            ? options.source.jcampURL
+            : null,
+        original: data,
+      },
     });
     return ob;
   };

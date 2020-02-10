@@ -2,8 +2,6 @@ import { Molecule } from 'openchemlib';
 
 import * as SpectraManager from './SpectraManager';
 
-import { Data1DManager } from './data1d/Data1DManager';
-// import { Data2DManager } from './data2d/Data2DManager';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 

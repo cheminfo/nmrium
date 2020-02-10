@@ -7,8 +7,8 @@ import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
 import { Datum1D } from './Datum1D';
 
 export class Data1DManager {
-  static fromJcamp = function fromJcamp(text, options = {}) {
-    let result = convert(text, { xy: true, keepRecordsRegExp: /.*/ });
+  static fromJcamp = function fromJcamp(jcamp, options = {}) {
+    let result = convert(jcamp, { xy: true, keepRecordsRegExp: /.*/ });
 
     let x =
       result.spectra[0] &&
