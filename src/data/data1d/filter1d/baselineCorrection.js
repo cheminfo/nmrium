@@ -44,7 +44,7 @@ export function apply(datum1D, options = {}) {
           );
           corrected = new Float64Array(x.length);
           for (let i = 0; i < re.length; i++) {
-            corrected[i] = re[i] + regression.predict(x[i]);
+            corrected[i] = re[i] - regression.predict(x[i]);
           }
         } else {
           let polynomialRegression = new PolynomialRegression(
@@ -54,7 +54,7 @@ export function apply(datum1D, options = {}) {
           );
           corrected = new Float64Array(x.length);
           for (let i = 0; i < re.length; i++) {
-            corrected[i] = re[i] + polynomialRegression.predict(x[i]);
+            corrected[i] = re[i] - polynomialRegression.predict(x[i]);
           }
         }
       }
