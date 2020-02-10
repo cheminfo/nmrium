@@ -36,25 +36,26 @@ export function apply(datum1D, options = {}) {
           { x, y: re },
           { numberOfPoints: 4096, zones },
         );
-        let predict;
         if (zones.length === 0) {
           let { regression } = baselineRegression(
             reduced.x,
             reduced.y,
             options,
           );
-          predict = regression.predict;
+          corrected = new Float64Array(x.length);
+          for (let i = 0; i < re.length; i++) {
+            corrected[i] = re[i] + regression.predict(x[i]);
+          }
         } else {
           let polynomialRegression = new PolynomialRegression(
             x,
             re,
             options.degree,
           );
-          predict = polynomialRegression.predict;
-        }
-        corrected = new Float64Array(x.length);
-        for (let i = 0; i < re.length; i++) {
-          corrected[i] = predict(x[i]);
+          corrected = new Float64Array(x.length);
+          for (let i = 0; i < re.length; i++) {
+            corrected[i] = re[i] + polynomialRegression.predict(x[i]);
+          }
         }
       }
 
