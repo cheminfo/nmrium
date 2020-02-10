@@ -30,7 +30,7 @@ export class Analysis {
   }
 
   addJcamp(jcamp, options = {}) {
-    SpectraManager.addJcampFromURL(this.spectra, jcamp, options);
+    SpectraManager.addJcamp(this.spectra, jcamp, options);
   }
 
   async addMolfileFromURL(molfileURL) {
