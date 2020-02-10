@@ -19,6 +19,10 @@
         "title": "1H only jcamp"
       },
       {
+        "file": "./data/cytisine/2d/cosy.json",
+        "title": "2D cosy"
+      },
+      {
         "file": "./data/cytisine/1D.json",
         "title": "1D spectra test"
       },
