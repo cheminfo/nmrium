@@ -3,7 +3,6 @@ import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { loadAsync } from 'jszip';
 
 import { Analysis } from '../../data/Analysis';
 import {
@@ -11,6 +10,7 @@ import {
   LOAD_JSON_FILE,
   LOAD_JCAMP_FILE,
   SET_LOADING_FLAG,
+  LOAD_ZIP_FILE,
 } from '../reducer/Actions';
 import { useDispatch } from '../context/DispatchContext';
 import { useChartData } from '../context/ChartContext';
@@ -59,8 +59,6 @@ const DropZone = (props) => {
       const uniqueFileExtensions = [
         ...new Set(droppedFiles.map((file) => getFileExtension(file.name))),
       ];
-
-      console.log(uniqueFileExtensions);
 
       for (let extension of uniqueFileExtensions) {
         const selectedFilesByExtensions = droppedFiles.filter(
@@ -119,18 +117,7 @@ const DropZone = (props) => {
             // eslint-disable-next-line no-console
             loadFiles(selectedFilesByExtensions).then(
               (files) => {
-                // eslint-disable-next-line no-alert
-                console.log('zip file reader');
-                // eslint-disable-next-line no-alert
-                console.log(files);
-                loadAsync(files[0].binary, { base64: false }).then(
-                  (d) => {
-                    console.log(d);
-                  },
-                  (err) => {
-                    console.log(err);
-                  },
-                );
+                dispatch({ type: LOAD_ZIP_FILE, files });
               },
               (err) => {
                 // eslint-disable-next-line no-alert
