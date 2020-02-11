@@ -1,4 +1,4 @@
-import { useCallback, useState, Fragment } from 'react';
+import { useCallback, useState, Fragment, useMemo } from 'react';
 import Draggable from 'react-draggable';
 import * as d3 from 'd3';
 /** @jsx jsx */
@@ -34,19 +34,29 @@ const stylesHighlighted = css`
 
 const IntegralResizable = (props) => {
   const { scaleX, height, margin, mode } = useChartData();
-  const { id, integralData, from, to, integralID } = props;
+  const { spectrumID, integralData, from, to, integralID } = props;
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
 
   const highlight = useHighlight([integralID]);
 
-  const xBoundary = d3.extent(integralData.x);
+  const xBoundary = useMemo(() => {
+    if (integralData) {
+      return d3.extent(integralData.x);
+    } else {
+      return [];
+    }
+  }, [integralData]);
 
   const dispatch = useDispatch();
 
   const deleteIntegral = useCallback(() => {
-    dispatch({ type: DELETE_INTEGRAL, integralID: integralID, spectrumID: id });
-  }, [dispatch, id, integralID]);
+    dispatch({
+      type: DELETE_INTEGRAL,
+      integralID: integralID,
+      spectrumID: spectrumID,
+    });
+  }, [dispatch, integralID, spectrumID]);
 
   function DeleteButton() {
     return (

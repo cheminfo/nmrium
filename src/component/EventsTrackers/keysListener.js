@@ -56,14 +56,14 @@ const KeyListener = ({ parentRef }) => {
     isMouseOver = false;
   }, []);
   useEffect(() => {
+    const element = parentRef ? parentRef.current : null;
+
     if (parentRef) {
-      const element = parentRef.current;
       element.addEventListener('mouseenter', handleMouseEnter);
       element.addEventListener('mouseleave', handleMouseLeave);
     }
 
     return () => {
-      const element = parentRef.current;
       element.removeEventListener('mouseenter', handleMouseEnter);
       element.removeEventListener('mouseleave', handleMouseLeave);
     };

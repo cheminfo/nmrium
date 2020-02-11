@@ -1,13 +1,12 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { XY } from 'ml-spectra-processing';
 import * as d3 from 'd3';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
 import { useChartData } from '../context/ChartContext';
 
-import IntegralResizable from './IntegralResizable';
+import Integral from './Integral';
 
 const pathStyles = css`
   -webkit-clip-path: url('#clip');
@@ -32,51 +31,19 @@ const IntegralsSeries = () => {
     integralsYDomains,
   } = useChartData();
 
-  const getYScale = useCallback(
-    (yDomain) => {
-      return d3.scaleLinear(yDomain, [height - margin.bottom, margin.top]);
-    },
-    [height, margin.bottom, margin.top],
-  );
-
-  const calculateIntegral = useCallback((x, y, from, to) => {
-    const integralResult = XY.integral(
-      { x: x, y: y },
-      {
-        from: from,
-        to: to,
-        reverse: true,
-      },
-    );
-    return integralResult;
-  }, []);
+  const scaleY = useMemo(() => {
+    if (activeSpectrum && integralsYDomains[activeSpectrum.id]) {
+      const scale = d3.scaleLinear(integralsYDomains[activeSpectrum.id], [
+        height - (margin.bottom + height * 0.3),
+        margin.top,
+      ]);
+      return scale;
+    } else {
+      return null;
+    }
+  }, [activeSpectrum, height, integralsYDomains, margin]);
 
   const Integrals = useMemo(() => {
-    const makePath = (info) => {
-      const { id, x, y, from, to } = info;
-      const yScale = getYScale(integralsYDomains[id]);
-
-      const integralResult = calculateIntegral(x, y, from, to);
-
-      const pathPoints = XY.reduce(integralResult, {
-        from: xDomain[0],
-        to: xDomain[1],
-        nbPoints: 200,
-        optimize: true,
-      });
-
-      let path = `M ${scaleX(pathPoints.x[0])} ${yScale(pathPoints.y[0])}`;
-
-      path += pathPoints.x
-        .slice(1)
-        .map((point, i) => {
-          return ` L ${scaleX(point)} ${yScale(pathPoints.y[i])}`;
-        })
-        .join('');
-
-      return path;
-    };
-
     const IsActive = (id) => {
       return activeSpectrum === null
         ? true
@@ -96,50 +63,23 @@ const IntegralsSeries = () => {
             spectrum.integrals.values &&
             spectrum.integrals.values.map((integral) => (
               <g key={integral.id}>
-                <path
-                  className="line"
-                  stroke="black"
-                  fill="none"
-                  style={{
-                    transformOrigin: 'center top',
-                    opacity: IsActive(spectrum.id) ? 1 : 0.2,
-                  }}
-                  d={makePath({
-                    id: spectrum.id,
-                    x: spectrum.x,
-                    y: spectrum.y,
-                    from: integral.from,
-                    to: integral.to,
-                  })}
-                  // vectorEffect="non-scaling-stroke"
-                />
-
-                <IntegralResizable
-                  id={spectrum.id}
+                <Integral
+                  spectrumID={spectrum.id}
                   integralID={integral.id}
-                  integralData={calculateIntegral(
-                    spectrum.x,
-                    spectrum.y,
-                    integral.from,
-                    integral.to,
-                  )}
                   from={integral.from}
                   to={integral.to}
-                  yDomain={spectrum.integralsYDomain}
+                  x={spectrum.x}
+                  y={spectrum.y}
+                  isActive={IsActive(spectrum.id)}
+                  xDomain={xDomain}
+                  scaleY={scaleY}
+                  scaleX={scaleX}
                 />
               </g>
             )),
         )
     );
-  }, [
-    data,
-    integralsYDomains,
-    getYScale,
-    calculateIntegral,
-    xDomain,
-    scaleX,
-    activeSpectrum,
-  ]);
+  }, [activeSpectrum, data, scaleX, scaleY, xDomain]);
 
   return (
     <g css={pathStyles} clipPath="url(#clip)">

@@ -1,6 +1,7 @@
 import { produce } from 'immer';
 import * as d3 from 'd3';
 import max from 'ml-array-max';
+import { XY } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../data/data1d/Datum1D';
 import getColor from '../utility/ColorGenerator';
@@ -106,11 +107,9 @@ function getDomain(data) {
       : acc.concat([]);
   }, []);
   let yDomains = {};
-  let integralsYDomains = {};
   let yArray = data.reduce((acc, d) => {
     const extent = d3.extent(d.y);
     yDomains[d.id] = extent;
-    integralsYDomains[d.id] = extent;
     return acc.concat(extent);
   }, []);
 
@@ -118,7 +117,6 @@ function getDomain(data) {
     x: d3.extent(xArray),
     y: d3.extent(yArray),
     yDomains,
-    integralsYDomains,
   };
 }
 
@@ -388,22 +386,24 @@ const deletePeak = (state, peakData) => {
 
 const setIntegralZoom = (state, zoomFactor, draft) => {
   if (draft.activeSpectrum) {
-    const { originDomain, height, margin } = state;
-    const scale = d3.scaleLinear(
-      originDomain.yDomains[draft.activeSpectrum.id],
-      [height - margin.bottom, margin.top],
-    );
-    const t = d3.zoomIdentity
-      .translate(0, height - margin.bottom)
-      .scale(zoomFactor.scale * 5)
-      .translate(0, -(height - margin.bottom));
+    const { height, margin } = state;
+    if (draft.originIntegralYDomain) {
+      const scale = d3.scaleLinear(draft.originIntegralYDomain, [
+        height - margin.bottom,
+        margin.top,
+      ]);
+      const t = d3.zoomIdentity
+        .translate(0, height - margin.bottom)
+        .scale(zoomFactor.scale)
+        .translate(0, -(height - margin.bottom));
 
-    const newYDomain = t.rescaleY(scale).domain();
+      const newYDomain = t.rescaleY(scale).domain();
 
-    draft.integralZoomFactor = zoomFactor;
-    const activeSpectrum = draft.activeSpectrum;
-    // draft.zoomFactor = t;
-    draft.integralsYDomains[activeSpectrum.id] = newYDomain;
+      draft.integralZoomFactor = zoomFactor;
+      const activeSpectrum = draft.activeSpectrum;
+      // draft.zoomFactor = t;
+      draft.integralsYDomains[activeSpectrum.id] = newYDomain;
+    }
   }
 };
 
@@ -432,11 +432,23 @@ const addIntegral = (state, action) => {
       const datumObject = AnalysisObj.getDatum(id);
       datumObject.addIntegral(integralRange);
       draft.data[index].integrals = datumObject.getIntegrals();
-
-      setIntegralZoom(state, state.integralZoomFactor, draft);
-      // if (!state.data.integralsYDomain) {
-      //   draft.data[index].integralsYDomain = draft.yDomain;
-      // }
+      const values = draft.data[index].integrals.values;
+      if (values.length === 1) {
+        const { from, to } = values[0];
+        const { x, y } = draft.data[index];
+        const integralResult = XY.integral(
+          { x: x, y: y },
+          {
+            from: from,
+            to: to,
+            reverse: true,
+          },
+        );
+        const integralYDomain = d3.extent(integralResult.y);
+        draft.integralsYDomains[id] = integralYDomain;
+        draft.originIntegralYDomain = integralYDomain;
+        setIntegralZoom(state, draft.integralZoomFactor, draft);
+      }
     }
   });
 };
@@ -947,7 +959,7 @@ function setDomain(draft, isYDomainChanged = true) {
         x: domain.x,
       };
     }
-    draft.integralsYDomains = domain.integralsYDomains;
+    // draft.integralsYDomains = domain.integralsYDomains;
     // draft.data = draft.data.map((d) => {
     //   return { ...d, integralsYDomain: domain.y };
     // });
@@ -1281,6 +1293,7 @@ export const initialState = {
   yDomains: {},
   originDomain: {},
   integralsYDomains: {},
+  originIntegralYDomain: {},
   selectedTool: options.zoom.id,
   selectedFilter: null,
   selectedOptionPanel: null,
@@ -1298,7 +1311,7 @@ export const initialState = {
   activeSpectrum: null,
   mode: 'RTL',
   zoomFactor: { scale: 1 },
-  integralZoomFactor: { scale: 4 },
+  integralZoomFactor: { scale: 0.5 },
   molecules: [],
   verticalAlign: {
     flag: false,
