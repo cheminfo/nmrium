@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
+import { loadAsync } from 'jszip';
 
 import { Analysis } from '../../data/Analysis';
 import {
@@ -59,6 +60,8 @@ const DropZone = (props) => {
         ...new Set(droppedFiles.map((file) => getFileExtension(file.name))),
       ];
 
+      console.log(uniqueFileExtensions);
+
       for (let extension of uniqueFileExtensions) {
         const selectedFilesByExtensions = droppedFiles.filter(
           (file) => getFileExtension(file.name) === extension,
@@ -112,9 +115,34 @@ const DropZone = (props) => {
               },
             );
             break;
+          case 'zip':
+            // eslint-disable-next-line no-console
+            loadFiles(selectedFilesByExtensions).then(
+              (files) => {
+                // eslint-disable-next-line no-alert
+                console.log('zip file reader');
+                // eslint-disable-next-line no-alert
+                console.log(files);
+                loadAsync(files[0].binary, { base64: false }).then(
+                  (d) => {
+                    console.log(d);
+                  },
+                  (err) => {
+                    console.log(err);
+                  },
+                );
+              },
+              (err) => {
+                // eslint-disable-next-line no-alert
+                alert(err);
+              },
+            );
+            break;
           default:
             // eslint-disable-next-line no-alert
-            alert('The file extesion must bedx, jdx, json, mol or nmrium.');
+            alert(
+              'The file extesion must be zip, dx, jdx, json, mol or nmrium.',
+            );
             break;
         }
       }

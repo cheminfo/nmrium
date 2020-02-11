@@ -76,6 +76,7 @@ import {
   APPLY_BASE_LINE_CORRECTION_FILTER,
   SET_KEY_PREFERENCES,
   APPLY_KEY_PREFERENCES,
+  LOAD_ZIP_FILE,
 } from './Actions';
 
 let AnalysisObj = new Analysis();
@@ -295,6 +296,9 @@ const handleLoadMOLFile = (state, files) => {
     draft.molecules = AnalysisObj.getMolecules();
     draft.isLoading = false;
   });
+};
+const handleLoadZIPFile = (state, files) => {
+  return state;
 };
 
 const getClosePeak = (xShift, mouseCoordinates, state) => {
@@ -1324,6 +1328,8 @@ export const spectrumReducer = (state, action) => {
       return loadJcampFile(state, action.files);
     case LOAD_MOL_FILE:
       return handleLoadMOLFile(state, action.files);
+    case LOAD_ZIP_FILE:
+      return handleLoadZIPFile(state, action.files);
 
     case EXPORT_DATA:
       return exportData(state, action);
