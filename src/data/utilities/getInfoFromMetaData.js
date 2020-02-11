@@ -3,7 +3,7 @@ import { getNucleusFrom2DExperiment } from './getNucleusFrom2DExperiment';
 
 export function getInfoFromMetaData(info) {
   const metadata = {
-    dimension: 1,
+    dimension: 0,
     nucleus: [],
     isFid: false,
     isFt: false,

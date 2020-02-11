@@ -11,10 +11,13 @@ export function getNucleusFrom2DExperiment(experiment) {
   }
   experiment = experiment.toLowerCase();
   if (experiment.includes('jres')) {
-    return ['1H'];
+    return ['1H', 'Hz'];
   }
   if (experiment.includes('hmbc') || experiment.includes('hsqc')) {
     return ['1H', '13C'];
   }
-  return ['1H', '1H'];
+  if (experiment.includes('cosy') || experiment.includes('tocsy')) {
+    return ['1H', '1H'];
+  }
+  return [];
 }

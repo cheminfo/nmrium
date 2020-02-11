@@ -54,10 +54,10 @@ const styles = css`
 `;
 const allowedExtensions = ['dx', 'jdx'];
 
-const LoadJACMPModal = ({ onLoadClick, onClose, startLoading }) => {
+const LoadJCAMPModal = ({ onLoadClick, onClose, startLoading }) => {
   const pathReft = useRef();
 
-  const loadJACMPHandler = useCallback(() => {
+  const loadJCAMPHandler = useCallback(() => {
     // ./data/xtc/XTC-814d_zg30.jdx
     const path = pathReft.current.value;
     const meta = extractFileMetaFromPath(path);
@@ -89,7 +89,7 @@ const LoadJACMPModal = ({ onLoadClick, onClose, startLoading }) => {
           type="text"
           placeholder="Enter JCAMP file relative path ex: ./path/file.dx"
         />
-        <button type="button" onClick={loadJACMPHandler}>
+        <button type="button" onClick={loadJCAMPHandler}>
           Load
         </button>
       </div>
@@ -97,7 +97,7 @@ const LoadJACMPModal = ({ onLoadClick, onClose, startLoading }) => {
   );
 };
 
-LoadJACMPModal.defaultProps = {
+LoadJCAMPModal.defaultProps = {
   onLoadButtonClick: () => {
     return null;
   },
@@ -108,4 +108,4 @@ LoadJACMPModal.defaultProps = {
     return null;
   },
 };
-export default LoadJACMPModal;
+export default LoadJCAMPModal;

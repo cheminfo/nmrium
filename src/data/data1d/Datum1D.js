@@ -12,7 +12,6 @@ import { Filters } from './filter1d/Filters';
 export class Datum1D {
   /**
    *
-   * @param {string} id
    * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
    */
   constructor(options = {}) {

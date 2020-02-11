@@ -57,9 +57,11 @@ const IntegralsSeries = () => {
 
       const integralResult = calculateIntegral(x, y, from, to);
 
-      const pathPoints = XY.reduce(integralResult.x, integralResult.y, {
+      const pathPoints = XY.reduce(integralResult, {
         from: xDomain[0],
         to: xDomain[1],
+        nbPoints: 200,
+        optimize: true,
       });
 
       let path = `M ${scaleX(pathPoints.x[0])} ${yScale(pathPoints.y[0])}`;

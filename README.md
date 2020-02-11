@@ -4,6 +4,11 @@ There is an automatic build on each commit. You can test the application at:
 
 https://cheminfo.github.io/nmr-displayer/
 
+Want to play ? You can do some 1D NMR exercises ;)
+
+https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/toc.json
+
+
 ## Install and test locally
 
 ```

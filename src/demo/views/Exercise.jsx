@@ -131,7 +131,8 @@ export default function Exercise(props) {
       }}
     >
       <h5 className="title">
-        Display and process 1D NMR spectra from a jcamp-dx file
+        Exercises: Determine the unknown structure for the compound having the
+        following NMR spectrum
       </h5>
       <p className="category">{title}</p>
       <div style={styles.mainContainer}>

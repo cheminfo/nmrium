@@ -9,6 +9,7 @@
 ##LASTX=1.9999847412109375
 ##FIRSTY=0
 ##LASTY=1142894934282.543
+##.OBSERVE NUCLEUS= ^1H
 ##$reference=Andrés M. Castillo, Luc Patiny and Julien Wist Journal of Magnetic Resonance 2011.
 ##$doi=10.1016/j.jmr.2010.12.008
 ##NPOINTS=131072

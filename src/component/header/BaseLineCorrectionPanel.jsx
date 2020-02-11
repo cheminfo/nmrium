@@ -32,7 +32,7 @@ const BaseLineCorrectionPanel = () => {
   const maxIterationsRef = useRef();
   const toleranceRef = useRef();
   const degreeRef = useRef();
-  const [algorithm, setAlgorithm] = useState('airpls');
+  const [algorithm, setAlgorithm] = useState('polynomial');
 
   const handleApplyFilter = useCallback(() => {
     let options = {};
@@ -42,12 +42,6 @@ const BaseLineCorrectionPanel = () => {
           algorithm: algorithmRef.current.value,
           maxIterations: maxIterationsRef.current.value,
           tolerance: toleranceRef.current.value,
-        };
-        break;
-      case 'autoPolynomial':
-        options = {
-          algorithm: algorithmRef.current.value,
-          degree: degreeRef.current.value,
         };
         break;
       case 'polynomial':
@@ -73,7 +67,7 @@ const BaseLineCorrectionPanel = () => {
 
   const getAlgorithmsList = useCallback(() => {
     return Object.keys(baselineAlgorithms).map((val) => {
-      return { key: val, label: val, value: val };
+      return { key: val, label: baselineAlgorithms[val], value: val };
     });
   }, []);
 
