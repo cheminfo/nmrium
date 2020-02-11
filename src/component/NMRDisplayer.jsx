@@ -196,7 +196,7 @@ const NMRDisplayer = (props) => {
               isResizeEventStart,
             }}
           >
-            <KeyListener />
+            <KeyListener parentRef={fullScreenRef} />
             <HighlightProvider>
               <div
                 ref={fullScreenRef}
