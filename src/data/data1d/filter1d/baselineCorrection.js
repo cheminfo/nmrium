@@ -22,7 +22,6 @@ export function apply(datum1D, options = {}) {
     throw new Error('baselineCorrection not applicable on this data');
   }
   const { algorithm, zones } = options;
-  console.log(options);
   let { x, re } = datum1D.data;
 
   let corrected;

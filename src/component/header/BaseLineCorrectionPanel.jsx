@@ -15,7 +15,10 @@ const styles = {
     height: '100%',
     display: 'flex',
   },
-
+  label: {
+    lineHeight: 2,
+    userSelect: 'none',
+  },
   actionButton: {
     height: '100%',
     width: '60px',
@@ -83,6 +86,7 @@ const BaseLineCorrectionPanel = () => {
         data={getAlgorithmsList()}
         style={{ marginLeft: 10, marginRight: 10 }}
         onChange={changeAlgorithmHandler}
+        defaultValue="polynomial"
       />
       {algorithm && algorithm === 'airpls' && (
         <Fragment>
