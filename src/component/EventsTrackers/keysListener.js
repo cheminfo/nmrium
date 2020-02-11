@@ -49,24 +49,25 @@ const KeyListener = ({ parentRef }) => {
     },
     [dispatch, keysPreferences, alert],
   );
+  const handleMouseEnter = useCallback(() => {
+    isMouseOver = true;
+  }, []);
+  const handleMouseLeave = useCallback(() => {
+    isMouseOver = false;
+  }, []);
   useEffect(() => {
     if (parentRef) {
       const element = parentRef.current;
-
-      element.addEventListener('mouseenter', () => {
-        isMouseOver = true;
-      });
-      element.addEventListener('mouseleave', () => {
-        isMouseOver = false;
-      });
+      element.addEventListener('mouseenter', handleMouseEnter);
+      element.addEventListener('mouseleave', handleMouseLeave);
     }
 
     return () => {
       const element = parentRef.current;
-      element.removeEventListener('mouseenter');
-      element.removeEventListener('mouseleave');
+      element.removeEventListener('mouseenter', handleMouseEnter);
+      element.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [parentRef]);
+  }, [handleMouseEnter, handleMouseLeave, parentRef]);
 
   useEffect(() => {
     // ReactDOM.findDOMNode(parentRef.current)
