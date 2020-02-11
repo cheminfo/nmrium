@@ -135,7 +135,7 @@ const getScale = ({ xDomain, yDomain, width, height, margin, mode }) => {
 
 function setYAxisShit(data, draft, height) {
   if (data && data.length > 0) {
-    if (data[0].info.isFid) {
+    if (data[0].info.isFid && !data.some((d) => d.info.isFid === false)) {
       const YAxisShift = height / 2;
       draft.verticalAlign.flag = true;
       draft.verticalAlign.value = YAxisShift;
