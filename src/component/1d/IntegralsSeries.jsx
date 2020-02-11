@@ -29,6 +29,7 @@ const IntegralsSeries = () => {
     data,
     height,
     margin,
+    integralsYDomains,
   } = useChartData();
 
   const getYScale = useCallback(
@@ -52,8 +53,8 @@ const IntegralsSeries = () => {
 
   const Integrals = useMemo(() => {
     const makePath = (info) => {
-      const { x, y, yDomain, from, to } = info;
-      const yScale = getYScale(yDomain);
+      const { id, x, y, from, to } = info;
+      const yScale = getYScale(integralsYDomains[id]);
 
       const integralResult = calculateIntegral(x, y, from, to);
 
@@ -107,7 +108,6 @@ const IntegralsSeries = () => {
                     id: spectrum.id,
                     x: spectrum.x,
                     y: spectrum.y,
-                    yDomain: spectrum.integralsYDomain,
                     from: integral.from,
                     to: integral.to,
                   })}
@@ -131,7 +131,15 @@ const IntegralsSeries = () => {
             )),
         )
     );
-  }, [data, getYScale, calculateIntegral, xDomain, scaleX, activeSpectrum]);
+  }, [
+    data,
+    integralsYDomains,
+    getYScale,
+    calculateIntegral,
+    xDomain,
+    scaleX,
+    activeSpectrum,
+  ]);
 
   return (
     <g css={pathStyles} clipPath="url(#clip)">

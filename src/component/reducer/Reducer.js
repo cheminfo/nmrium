@@ -106,13 +106,20 @@ function getDomain(data) {
       : acc.concat([]);
   }, []);
   let yDomains = {};
+  let integralsYDomains = {};
   let yArray = data.reduce((acc, d) => {
     const extent = d3.extent(d.y);
     yDomains[d.id] = extent;
+    integralsYDomains[d.id] = extent;
     return acc.concat(extent);
   }, []);
 
-  return { x: d3.extent(xArray), y: d3.extent(yArray), yDomains: yDomains };
+  return {
+    x: d3.extent(xArray),
+    y: d3.extent(yArray),
+    yDomains,
+    integralsYDomains,
+  };
 }
 
 const getScale = ({ xDomain, yDomain, width, height, margin, mode }) => {
@@ -380,26 +387,23 @@ const deletePeak = (state, peakData) => {
 };
 
 const setIntegralZoom = (state, zoomFactor, draft) => {
-  const { originDomain, height, margin } = state;
-  const scale = d3.scaleLinear(originDomain.y, [
-    height - margin.bottom,
-    margin.top,
-  ]);
-  const t = d3.zoomIdentity
-    .translate(0, height - margin.bottom)
-    .scale(zoomFactor.scale * 10)
-    .translate(0, -(height - margin.bottom));
-
-  const newYDomain = t.rescaleY(scale).domain();
-
-  draft.integralZoomFactor = zoomFactor;
-  const activeSpectrum = draft.activeSpectrum;
-  if (activeSpectrum) {
-    const spectrumIndex = draft.data.findIndex(
-      (s) => s.id === activeSpectrum.id,
+  if (draft.activeSpectrum) {
+    const { originDomain, height, margin } = state;
+    const scale = d3.scaleLinear(
+      originDomain.yDomains[draft.activeSpectrum.id],
+      [height - margin.bottom, margin.top],
     );
+    const t = d3.zoomIdentity
+      .translate(0, height - margin.bottom)
+      .scale(zoomFactor.scale * 5)
+      .translate(0, -(height - margin.bottom));
+
+    const newYDomain = t.rescaleY(scale).domain();
+
+    draft.integralZoomFactor = zoomFactor;
+    const activeSpectrum = draft.activeSpectrum;
     // draft.zoomFactor = t;
-    draft.data[spectrumIndex].integralsYDomain = newYDomain;
+    draft.integralsYDomains[activeSpectrum.id] = newYDomain;
   }
 };
 
@@ -943,10 +947,10 @@ function setDomain(draft, isYDomainChanged = true) {
         x: domain.x,
       };
     }
-
-    draft.data = draft.data.map((d) => {
-      return { ...d, integralsYDomain: domain.y };
-    });
+    draft.integralsYDomains = domain.integralsYDomains;
+    // draft.data = draft.data.map((d) => {
+    //   return { ...d, integralsYDomain: domain.y };
+    // });
   } else {
     domain = getDomain(data);
     // console.log(domain);
@@ -1000,10 +1004,7 @@ const handleChangeIntegralYDomain = (state, newYDomain) => {
   return produce(state, (draft) => {
     const activeSpectrum = draft.activeSpectrum;
     if (activeSpectrum) {
-      const spectrumIndex = draft.data.findIndex(
-        (s) => s.id === activeSpectrum.id,
-      );
-      draft.data[spectrumIndex].integralsYDomain = newYDomain;
+      draft.integralsYDomains[activeSpectrum.id] = newYDomain;
     }
   });
 };
@@ -1016,7 +1017,7 @@ const handleChangeIntegralSum = (state, value) => {
       datumObject.changeIntegralSum(value);
       draft.data[index].integrals = datumObject.getIntegrals();
       if (!state.data.integralsYDomain) {
-        draft.data[index].integralsYDomain = draft.yDomain;
+        draft.integralsYDomains[id] = draft.yDomains[id];
       }
     }
   });
@@ -1277,8 +1278,9 @@ export const initialState = {
   tempData: null,
   xDomain: [],
   yDomain: [],
-  yDomains: [],
+  yDomains: {},
   originDomain: {},
+  integralsYDomains: {},
   selectedTool: options.zoom.id,
   selectedFilter: null,
   selectedOptionPanel: null,
