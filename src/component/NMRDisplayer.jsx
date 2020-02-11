@@ -58,9 +58,10 @@ import KeyListener from './EventsTrackers/keysListener';
 // alert optional cofiguration
 const alertOptions = {
   position: positions.BOTTOM_CENTER,
-  timeout: 3000,
+  timeout: 5000,
   offset: '30px',
   transition: transitions.SCALE,
+  containerStyle: { fontSize: '18px' },
 };
 
 const splitPaneStyles = {
