@@ -22,6 +22,11 @@ export class Analysis {
     await SpectraManager.fromJSON(analysis.spectra, json.spectra);
     return analysis;
   }
+  // handle zip files
+  fromZip(files) {
+    // eslint-disable-next-line no-console
+    console.log(files);
+  }
 
   async addJcampFromURL(jcampURL, options) {
     SpectraManager.addJcampFromURL(this.spectra, jcampURL, options);

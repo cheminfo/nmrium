@@ -298,6 +298,7 @@ const handleLoadMOLFile = (state, files) => {
   });
 };
 const handleLoadZIPFile = (state, files) => {
+  AnalysisObj.fromZip(files);
   return state;
 };
 
