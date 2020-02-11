@@ -32,7 +32,7 @@ export const LinesSeries = () => {
 
   const paths = useMemo(() => {
     function makePath(info) {
-      const { id, x, y } = info;
+      const { id } = info;
 
       const pathPoints = XY.reduce(info, {
         from: xDomain[0],
