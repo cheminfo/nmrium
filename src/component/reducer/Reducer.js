@@ -101,17 +101,25 @@ function getStrongestPeak(state) {
 }
 
 function getDomain(data) {
-  let xArray = data.reduce((acc, d) => {
-    return d.isVisibleInDomain
-      ? acc.concat([d.x[0], d.x[d.x.length - 1]])
-      : acc.concat([]);
-  }, []);
+  let xArray = [];
+  let yArray = [];
   let yDomains = {};
-  let yArray = data.reduce((acc, d) => {
-    const extent = d3.extent(d.y);
-    yDomains[d.id] = extent;
-    return acc.concat(extent);
-  }, []);
+  try {
+    xArray = data.reduce((acc, d) => {
+      return d.isVisibleInDomain
+        ? acc.concat([d.x[0], d.x[d.x.length - 1]])
+        : acc.concat([]);
+    }, []);
+    yDomains = {};
+    yArray = data.reduce((acc, d) => {
+      const extent = d3.extent(d.y);
+      yDomains[d.id] = extent;
+      return acc.concat(extent);
+    }, []);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+  }
 
   return {
     x: d3.extent(xArray),

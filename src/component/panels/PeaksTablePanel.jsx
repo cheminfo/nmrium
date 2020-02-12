@@ -172,7 +172,7 @@ const PeaksTablePanel = memo(
           ? SpectrumsData[activeSpectrum.index]
           : null;
 
-      if (_data && _data.peaks.values) {
+      if (_data && _data.peaks && _data.peaks.values) {
         const labelFraction = getPeakLabelNumberDecimals(_data.info.nucleus);
         return _data.peaks.values.map((peak) => {
           return {

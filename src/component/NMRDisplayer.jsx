@@ -54,6 +54,7 @@ import VerticalIndicator from './tool/VerticalIndicator';
 import Spinner from './loader/Spinner';
 import { ModalProvider } from './elements/Modal';
 import KeyListener from './EventsTrackers/keysListener';
+import ErrorBoundary from './ErrorBoundary';
 
 // alert optional cofiguration
 const alertOptions = {
@@ -184,69 +185,71 @@ const NMRDisplayer = (props) => {
   }, [containerRef]);
 
   return (
-    <ModalProvider>
-      <AlertProvider template={AlertTemplate} {...alertOptions}>
-        <DispatchProvider value={dispatch}>
-          <ChartDataProvider
-            value={{
-              height: heightProp,
-              width: widthProps,
-              ...state,
-              scaleX,
-              scaleY,
-              isResizeEventStart,
-            }}
-          >
-            <KeyListener parentRef={fullScreenRef} />
-            <HighlightProvider>
-              <div
-                ref={fullScreenRef}
-                css={css`
-                  background-color: white;
-                  height: 100%;
-                  display: flex;
-                  flex-direction: column;
-                  div:focus {
-                    outline: none !important;
-                  }
-                  button:active,
-                  button:hover,
-                  button:focus,
-                  [type='button']:focus,
-                  button {
-                    outline: none !important;
-                  }
-                `}
-              >
-                <Header isFullscreen={isFullscreen} onMaximize={toggle} />
-                <div style={{ flex: 1 }} ref={containerRef}>
-                  <DropZone>
-                    <ToolBar />
-                    <SplitPane
-                      style={splitPaneStyles.container}
-                      paneStyle={splitPaneStyles.pane}
-                      resizerStyle={splitPaneStyles.resizer}
-                      pane1Style={splitPaneStyles.pane1}
-                      split="vertical"
-                      defaultSize="80%"
-                      minSize="80%"
-                      onDragFinished={handleSplitPanelDragFinished}
-                      onDragStarted={() => {
-                        setResizeEventStart(true);
-                      }}
-                    >
-                      <ChartPanel tools={!isResizeEventStart} />
+    <ErrorBoundary>
+      <ModalProvider>
+        <AlertProvider template={AlertTemplate} {...alertOptions}>
+          <DispatchProvider value={dispatch}>
+            <ChartDataProvider
+              value={{
+                height: heightProp,
+                width: widthProps,
+                ...state,
+                scaleX,
+                scaleY,
+                isResizeEventStart,
+              }}
+            >
+              <KeyListener parentRef={fullScreenRef} />
+              <HighlightProvider>
+                <div
+                  ref={fullScreenRef}
+                  css={css`
+                    background-color: white;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    div:focus {
+                      outline: none !important;
+                    }
+                    button:active,
+                    button:hover,
+                    button:focus,
+                    [type='button']:focus,
+                    button {
+                      outline: none !important;
+                    }
+                  `}
+                >
+                  <Header isFullscreen={isFullscreen} onMaximize={toggle} />
+                  <div style={{ flex: 1 }} ref={containerRef}>
+                    <DropZone>
+                      <ToolBar />
+                      <SplitPane
+                        style={splitPaneStyles.container}
+                        paneStyle={splitPaneStyles.pane}
+                        resizerStyle={splitPaneStyles.resizer}
+                        pane1Style={splitPaneStyles.pane1}
+                        split="vertical"
+                        defaultSize="80%"
+                        minSize="80%"
+                        onDragFinished={handleSplitPanelDragFinished}
+                        onDragStarted={() => {
+                          setResizeEventStart(true);
+                        }}
+                      >
+                        <ChartPanel tools={!isResizeEventStart} />
 
-                      <Panels preferences={preferences} />
-                    </SplitPane>
-                  </DropZone>
+                        <Panels preferences={preferences} />
+                      </SplitPane>
+                    </DropZone>
+                  </div>
                 </div>
-              </div>
-            </HighlightProvider>
-          </ChartDataProvider>
-        </DispatchProvider>
-      </AlertProvider>
-    </ModalProvider>
+              </HighlightProvider>
+            </ChartDataProvider>
+          </DispatchProvider>
+        </AlertProvider>
+      </ModalProvider>
+    </ErrorBoundary>
   );
 };
 

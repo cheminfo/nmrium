@@ -251,7 +251,7 @@ const IntegralTablePanel = memo(
         activeSpectrum && SpectrumsData
           ? SpectrumsData[activeSpectrum.index]
           : null;
-      if (_data && _data.integrals.values) {
+      if (_data && _data.integrals && _data.integrals.values) {
         return _data.integrals.values;
       } else {
         return [];
