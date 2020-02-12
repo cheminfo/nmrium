@@ -223,7 +223,7 @@ const NMRDisplayer = (props) => {
                   <Header isFullscreen={isFullscreen} onMaximize={toggle} />
                   <div style={{ flex: 1 }} ref={containerRef}>
                     <DropZone>
-                      <ToolBar />
+                      <ToolBar preferences={preferences} />
                       <SplitPane
                         style={splitPaneStyles.container}
                         paneStyle={splitPaneStyles.pane}
@@ -392,6 +392,22 @@ NMRDisplayer.propTypes = {
       hideRangesPanel: PropTypes.bool,
       hideStructuresPanel: PropTypes.bool,
       hideFiltersPanel: PropTypes.bool,
+    }),
+    toolsBarButtons: PropTypes.shape({
+      hideZoomTool: PropTypes.bool,
+      hideZoomOutTool: PropTypes.bool,
+      hideImport: PropTypes.bool,
+      hideExportAs: PropTypes.bool,
+      hideSpectraStackAlignments: PropTypes.bool,
+      hideSpectraCenterAlignments: PropTypes.bool,
+      hideRealImaginary: PropTypes.bool,
+      hidePeakTool: PropTypes.bool,
+      hideIntegralTool: PropTypes.bool,
+      hideAutoRangesTool: PropTypes.bool,
+      hideZeroFillingTool: PropTypes.bool,
+      hidePhaseCorrectionTool: PropTypes.bool,
+      hideBaseLineCorrectionTool: PropTypes.bool,
+      hideFFTTool: PropTypes.bool,
     }),
   }),
 };

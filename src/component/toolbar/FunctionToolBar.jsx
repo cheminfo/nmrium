@@ -38,7 +38,7 @@ const styles = {
 
 let debounceClickEvents = [];
 
-const FunctionToolBar = ({ defaultValue }) => {
+const FunctionToolBar = ({ defaultValue, preferences }) => {
   const [option, setOption] = useState();
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
   const alert = useAlert();
@@ -147,155 +147,177 @@ const FunctionToolBar = ({ defaultValue }) => {
     dispatch({ type: SET_SELECTED_FILTER, selectedFilter: null });
   }, [dispatch]);
 
+  const isButtonVisible = useCallback(
+    (key) => {
+      return !lodash.get(preferences, `toolsBarButtons.${key}`);
+    },
+    [preferences],
+  );
+
   return (
     <>
       <ToggleButtonGroup value={option} onChange={handleChange}>
-        <ToggleButton key={options.zoom.id} value={options.zoom.id}>
-          <ToolTip
-            title={`${options.zoom.label} ( Press z )`}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
+        {isButtonVisible('hideZoomTool') && (
+          <ToggleButton key={options.zoom.id} value={options.zoom.id}>
+            <ToolTip
+              title={`${options.zoom.label} ( Press z )`}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            >
+              <FaSearchPlus />
+            </ToolTip>
+          </ToggleButton>
+        )}
+
+        {isButtonVisible('hideZoomOutTool') && (
+          <button
+            type="button"
+            style={{ ...styles.button, ...styles.faIcon }}
+            onClick={handleFullZoomOut}
           >
-            <FaSearchPlus />
-          </ToolTip>
-        </ToggleButton>
+            <ToolTip
+              title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
+              popupPlacement="right"
+            >
+              <FaExpand />
+            </ToolTip>
+          </button>
+        )}
 
-        <button
-          type="button"
-          style={{ ...styles.button, ...styles.faIcon }}
-          onClick={handleFullZoomOut}
-        >
-          <ToolTip
-            title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
-            popupPlacement="right"
+        {isButtonVisible('hidePeakTool') && (
+          <ToggleButton
+            key={options.peakPicking.id}
+            value={options.peakPicking.id}
+            className="ci-icon-nmr-peak-picking"
+            style={styles.icon}
+            isVisible={
+              activeSpectrum &&
+              selectedSpectrumInfo &&
+              !selectedSpectrumInfo.info.isFid
+            }
           >
-            <FaExpand />
-          </ToolTip>
-        </button>
-
-        <ToggleButton
-          key={options.peakPicking.id}
-          value={options.peakPicking.id}
-          className="ci-icon-nmr-peak-picking"
-          style={styles.icon}
-          isVisible={
-            activeSpectrum &&
-            selectedSpectrumInfo &&
-            !selectedSpectrumInfo.info.isFid
-          }
-        >
-          <ToolTip
-            title={`${options.peakPicking.label} ( Press p )`}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          />
-        </ToggleButton>
-
-        <ToggleButton
-          key={options.integral.id}
-          value={options.integral.id}
-          className="ci-icon-nmr-integrate"
-          style={styles.icon}
-          isVisible={
-            activeSpectrum &&
-            selectedSpectrumInfo &&
-            !selectedSpectrumInfo.info.isFid
-          }
-        >
-          <ToolTip
-            title={`${options.integral.label} ( Press i )`}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          />
-        </ToggleButton>
-
-        <ToggleButton
-          key={options.autoRangesPicking.id}
-          value={options.autoRangesPicking.id}
-          className="ci-icon-nmr-range-picking"
-          style={styles.icon}
-          isVisible={
-            activeSpectrum &&
-            selectedSpectrumInfo &&
-            !selectedSpectrumInfo.info.isFid
-          }
-        >
-          <ToolTip
-            title={options.autoRangesPicking.label}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          />
-        </ToggleButton>
-
-        <ToggleButton
-          key={options.zeroFilling.id}
-          value={options.zeroFilling.id}
-          className="ci-icon-nmr-zero-filling"
-          style={styles.icon}
-          isVisible={
-            selectedSpectrumInfo &&
-            Filters.zeroFilling.isApplicable(selectedSpectrumInfo)
-          }
-        >
-          <ToolTip
-            title={options.zeroFilling.label}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          />
-        </ToggleButton>
-
-        <ToggleButton
-          key={options.phaseCorrection.id}
-          value={options.phaseCorrection.id}
-          className="ci-icon-nmr-phase-correction"
-          style={styles.icon}
-          isVisible={
-            activeSpectrum &&
-            selectedSpectrumInfo &&
-            Filters.phaseCorrection.isApplicable(selectedSpectrumInfo)
-          }
-        >
-          <ToolTip
-            title={options.phaseCorrection.label}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          />
-        </ToggleButton>
-        <ToggleButton
-          key={options.baseLineCorrection.id}
-          value={options.baseLineCorrection.id}
-          className="ci-icon-nmr-base-line-correction"
-          style={styles.icon}
-          isVisible={
-            activeSpectrum &&
-            selectedSpectrumInfo &&
-            Filters.baselineCorrection.isApplicable(selectedSpectrumInfo)
-          }
-        >
-          <ToolTip
-            title={options.baseLineCorrection.label}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
+            <ToolTip
+              title={`${options.peakPicking.label} ( Press p )`}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            />
+          </ToggleButton>
+        )}
+        {isButtonVisible('hideIntegralTool') && (
+          <ToggleButton
+            key={options.integral.id}
+            value={options.integral.id}
+            className="ci-icon-nmr-integrate"
+            style={styles.icon}
+            isVisible={
+              activeSpectrum &&
+              selectedSpectrumInfo &&
+              !selectedSpectrumInfo.info.isFid
+            }
           >
-            BLC
-          </ToolTip>
-        </ToggleButton>
+            <ToolTip
+              title={`${options.integral.label} ( Press i )`}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            />
+          </ToggleButton>
+        )}
+        {isButtonVisible('hideAutoRangesTool') && (
+          <ToggleButton
+            key={options.autoRangesPicking.id}
+            value={options.autoRangesPicking.id}
+            className="ci-icon-nmr-range-picking"
+            style={styles.icon}
+            isVisible={
+              activeSpectrum &&
+              selectedSpectrumInfo &&
+              !selectedSpectrumInfo.info.isFid
+            }
+          >
+            <ToolTip
+              title={options.autoRangesPicking.label}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            />
+          </ToggleButton>
+        )}
+        {isButtonVisible('hideZeroFillingTool') && (
+          <ToggleButton
+            key={options.zeroFilling.id}
+            value={options.zeroFilling.id}
+            className="ci-icon-nmr-zero-filling"
+            style={styles.icon}
+            isVisible={
+              selectedSpectrumInfo &&
+              Filters.zeroFilling.isApplicable(selectedSpectrumInfo)
+            }
+          >
+            <ToolTip
+              title={options.zeroFilling.label}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            />
+          </ToggleButton>
+        )}
+        {isButtonVisible('hidePhaseCorrectionTool') && (
+          <ToggleButton
+            key={options.phaseCorrection.id}
+            value={options.phaseCorrection.id}
+            className="ci-icon-nmr-phase-correction"
+            style={styles.icon}
+            isVisible={
+              activeSpectrum &&
+              selectedSpectrumInfo &&
+              Filters.phaseCorrection.isApplicable(selectedSpectrumInfo)
+            }
+          >
+            <ToolTip
+              title={options.phaseCorrection.label}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            />
+          </ToggleButton>
+        )}
+
+        {isButtonVisible('hideBaseLineCorrectionTool') && (
+          <ToggleButton
+            key={options.baseLineCorrection.id}
+            value={options.baseLineCorrection.id}
+            className="ci-icon-nmr-base-line-correction"
+            style={styles.icon}
+            isVisible={
+              activeSpectrum &&
+              selectedSpectrumInfo &&
+              Filters.baselineCorrection.isApplicable(selectedSpectrumInfo)
+            }
+          >
+            <ToolTip
+              title={options.baseLineCorrection.label}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            >
+              BLC
+            </ToolTip>
+          </ToggleButton>
+        )}
       </ToggleButtonGroup>
 
-      {selectedSpectrumInfo && Filters.fft.isApplicable(selectedSpectrumInfo) && (
-        <button
-          className="ci-icon-nmr-fourier-transform"
-          style={{ ...styles.icon, ...styles.button }}
-          type="button"
-          onClick={handleOnFFTFilter}
-        >
-          <ToolTip
-            title={`FFT Filter`}
-            popupPlacement="right"
-            offset={{ x: 10, y: 0 }}
-          />
-        </button>
-      )}
+      {isButtonVisible('hideFFTTool') &&
+        selectedSpectrumInfo &&
+        Filters.fft.isApplicable(selectedSpectrumInfo) && (
+          <button
+            className="ci-icon-nmr-fourier-transform"
+            style={{ ...styles.icon, ...styles.button }}
+            type="button"
+            onClick={handleOnFFTFilter}
+          >
+            <ToolTip
+              title={`FFT Filter`}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            />
+          </button>
+        )}
     </>
   );
 };

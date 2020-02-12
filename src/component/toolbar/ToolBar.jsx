@@ -11,13 +11,13 @@ const styles = {
   flexDirection: 'column',
   alignItems: 'start',
 };
-const ToolBar = () => {
+const ToolBar = ({ preferences }) => {
   const { selectedTool } = useChartData();
   return (
     <div style={styles}>
-      <FunctionToolBar defaultValue={selectedTool} />
+      <FunctionToolBar defaultValue={selectedTool} preferences={preferences} />
       {/* <HistoryToolBar /> */}
-      <BasicToolBar />
+      <BasicToolBar preferences={preferences} />
     </div>
   );
 };

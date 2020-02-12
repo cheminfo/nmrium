@@ -11,6 +11,7 @@ import {
   FaFileImport,
 } from 'react-icons/fa';
 import { useAlert } from 'react-alert';
+import lodash from 'lodash';
 
 import { useDispatch } from '../context/DispatchContext';
 import {
@@ -63,7 +64,7 @@ const menuButton = css`
   }
 `;
 
-const BasicToolBar = ({ isViewButtonVisible = true }) => {
+const BasicToolBar = ({ isViewButtonVisible = true, preferences }) => {
   const dispatch = useDispatch();
   const { data, activeSpectrum, verticalAlign } = useChartData();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
@@ -206,80 +207,106 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
     }
   }, [activeSpectrum, data]);
 
+  const isButtonVisible = useCallback(
+    (key) => {
+      return !lodash.get(preferences, `toolsBarButtons.${key}`);
+    },
+    [preferences],
+  );
+
   return (
     <Fragment>
-      <MenuButton style={styles} component={<FaFileImport />} toolTip="Import">
-        <button type="button" css={menuButton} onClick={importJCAMPFile}>
-          <FaFile />
-          <span>Add jcamp from URL</span>
-        </button>
-      </MenuButton>
-
-      <MenuButton
-        style={styles}
-        component={<FaFileExport />}
-        toolTip="Export As"
-      >
-        <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
-          <FaDownload />
-          <span>Export as SVG</span>
-        </button>
-        <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
-          <FaFileImage />
-          <span>Export as PNG</span>
-        </button>
-        <button type="button" css={menuButton} onClick={saveAsJSONHandler}>
-          <FaFileDownload />
-          <span>Save data ( Press Ctrl + S )</span>
-        </button>
-        <button type="button" css={menuButton} onClick={saveToClipboardHandler}>
-          <FaCopy />
-          <span>Copy image to Clipboard ( Press Ctrl + C )</span>
-        </button>
-      </MenuButton>
-
-      {isViewButtonVisible && spectrumsCount > 1 && (
-        <button
-          type="button"
-          css={[styles, { display: 'block' }]}
-          onClick={handleChangeDisplayViewMode}
-          className={
-            !isStacked ? 'ci-icon-nmr-overlay3-aligned' : 'ci-icon-nmr-overlay3'
-          }
+      {isButtonVisible('hideImport') && (
+        <MenuButton
+          style={styles}
+          component={<FaFileImport />}
+          toolTip="Import"
         >
-          <ToolTip title="Spectra alignment" popupPlacement="right">
-            <div />
-            {/* {verticalAlign !== 0 ? <FaMinus /> : <FaBars />} */}
-          </ToolTip>
-        </button>
+          <button type="button" css={menuButton} onClick={importJCAMPFile}>
+            <FaFile />
+            <span>Add jcamp from URL</span>
+          </button>
+        </MenuButton>
+      )}
+      {isButtonVisible('hideExportAs') && (
+        <MenuButton
+          style={styles}
+          component={<FaFileExport />}
+          toolTip="Export As"
+        >
+          <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
+            <FaDownload />
+            <span>Export as SVG</span>
+          </button>
+          <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
+            <FaFileImage />
+            <span>Export as PNG</span>
+          </button>
+          <button type="button" css={menuButton} onClick={saveAsJSONHandler}>
+            <FaFileDownload />
+            <span>Save data ( Press Ctrl + S )</span>
+          </button>
+          <button
+            type="button"
+            css={menuButton}
+            onClick={saveToClipboardHandler}
+          >
+            <FaCopy />
+            <span>Copy image to Clipboard ( Press Ctrl + C )</span>
+          </button>
+        </MenuButton>
       )}
 
-      {selectedSpectrumInfo && selectedSpectrumInfo.isComplex && (
+      {isButtonVisible('hideSpectraStackAlignments') &&
+        isViewButtonVisible &&
+        spectrumsCount > 1 && (
+          <button
+            type="button"
+            css={[styles, { display: 'block' }]}
+            onClick={handleChangeDisplayViewMode}
+            className={
+              !isStacked
+                ? 'ci-icon-nmr-overlay3-aligned'
+                : 'ci-icon-nmr-overlay3'
+            }
+          >
+            <ToolTip title="Spectra alignment" popupPlacement="right">
+              <div />
+              {/* {verticalAlign !== 0 ? <FaMinus /> : <FaBars />} */}
+            </ToolTip>
+          </button>
+        )}
+      {isButtonVisible('hideRealImaginary') &&
+        selectedSpectrumInfo &&
+        selectedSpectrumInfo.isComplex && (
+          <button
+            css={styles}
+            type="button"
+            onClick={changeSpectrumViewHandler}
+            className={'ci-icon-nmr-real-imag'}
+          >
+            <ToolTip
+              title={
+                isRealSpectrumShown ? 'Real Spectrum' : 'Imaginary Spectrum'
+              }
+              popupPlacement="right"
+            />
+          </button>
+        )}
+      {isButtonVisible('hideSpectraCenterAlignments') && (
         <button
           css={styles}
           type="button"
-          onClick={changeSpectrumViewHandler}
-          className={'ci-icon-nmr-real-imag'}
+          onClick={alignSpectrumsVerticallyHandler}
         >
           <ToolTip
-            title={isRealSpectrumShown ? 'Real Spectrum' : 'Imaginary Spectrum'}
+            title={!verticalAlign.flag ? 'Align Center' : 'Bottom Align'}
             popupPlacement="right"
-          />
+          >
+            {!verticalAlign.flag ? 'CA' : 'BA'}
+          </ToolTip>
         </button>
       )}
-
-      <button
-        css={styles}
-        type="button"
-        onClick={alignSpectrumsVerticallyHandler}
-      >
-        <ToolTip
-          title={!verticalAlign.flag ? 'Align Center' : 'Bottom Align'}
-          popupPlacement="right"
-        >
-          {!verticalAlign.flag ? 'CA' : 'BA'}
-        </ToolTip>
-      </button>
     </Fragment>
   );
 };
