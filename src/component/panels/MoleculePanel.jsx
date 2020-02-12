@@ -100,6 +100,8 @@ const MoleculePanel = () => {
   const [open, setOpen] = React.useState(false);
   const [currentMolfile, setCurrentMolfile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentAtom, setCurrentAtom] = useState(null);
+
   const dispatch = useDispatch();
   const alert = useAlert();
 
@@ -156,8 +158,6 @@ const MoleculePanel = () => {
       }
     }
   }, [alert, currentIndex, molecules]);
-
-  const [currentAtom, setCurrentAtom] = useState(null);
 
   return (
     <div css={panelContainerStyle}>

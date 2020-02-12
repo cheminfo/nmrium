@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
+import { memo } from 'react';
 
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
@@ -24,7 +25,7 @@ const styles = css`
     font-size: 20px;
   }
 `;
-const PreferencesHeader = ({ onClose, onSave }) => {
+const PreferencesHeader = memo(({ onClose, onSave }) => {
   return (
     <div css={styles}>
       <ToolTip title="close Preferences" popupPlacement="left">
@@ -39,6 +40,6 @@ const PreferencesHeader = ({ onClose, onSave }) => {
       </ToolTip>
     </div>
   );
-};
+});
 
 export default PreferencesHeader;

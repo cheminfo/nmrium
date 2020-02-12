@@ -1,7 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
+import ConnectToContext from '../hoc/ConnectToContext';
 
 const styles = {
   searchInput: {
@@ -14,8 +15,8 @@ const styles = {
 };
 
 // information panel
-const InformationPanel = () => {
-  const { data, activeSpectrum } = useChartData();
+const InformationPanel = memo(({ data, activeSpectrum }) => {
+  // const { data, activeSpectrum } = useChartData();
   const [information, setInformation] = useState([]);
   const [matches, setMatchesData] = useState([]);
 
@@ -94,6 +95,6 @@ const InformationPanel = () => {
       <ReactTableFlexLayout data={matches} columns={columns} />
     </>
   );
-};
+});
 
-export default InformationPanel;
+export default ConnectToContext(InformationPanel, useChartData);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { FaRegTrashAlt, FaCog } from 'react-icons/fa';
 
 import ToolTip from '../../elements/ToolTip/ToolTip';
@@ -29,38 +29,44 @@ const styles = {
     padding: '0px 10px',
   },
 };
-const DefaultPanelHeader = ({
-  counter,
-  onDelete,
-  deleteToolTip,
-  children,
-  showSettingButton = false,
-  onSettingClick,
-}) => {
-  return (
-    <div style={styles.toolbar}>
-      <ToolTip title={deleteToolTip} popupPlacement="right">
-        <button
-          style={styles.button}
-          type="button"
-          onClick={onDelete}
-          disabled={counter === 0}
-        >
-          <FaRegTrashAlt />
-        </button>
-      </ToolTip>
-
-      {children}
-      <p style={styles.counterLabel}>[ {counter} ]</p>
-      {showSettingButton && (
-        <ToolTip title="preferences" popupPlacement="left">
-          <button style={styles.button} type="button" onClick={onSettingClick}>
-            <FaCog />
+const DefaultPanelHeader = memo(
+  ({
+    counter,
+    onDelete,
+    deleteToolTip,
+    children,
+    showSettingButton = false,
+    onSettingClick,
+  }) => {
+    return (
+      <div style={styles.toolbar}>
+        <ToolTip title={deleteToolTip} popupPlacement="right">
+          <button
+            style={styles.button}
+            type="button"
+            onClick={onDelete}
+            disabled={counter === 0}
+          >
+            <FaRegTrashAlt />
           </button>
         </ToolTip>
-      )}
-    </div>
-  );
-};
+
+        {children}
+        <p style={styles.counterLabel}>[ {counter} ]</p>
+        {showSettingButton && (
+          <ToolTip title="preferences" popupPlacement="left">
+            <button
+              style={styles.button}
+              type="button"
+              onClick={onSettingClick}
+            >
+              <FaCog />
+            </button>
+          </ToolTip>
+        )}
+      </div>
+    );
+  },
+);
 
 export default DefaultPanelHeader;

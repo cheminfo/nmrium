@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { FaEye, FaMinus, FaPaintBrush } from 'react-icons/fa';
 
 const styles = {
@@ -44,105 +44,107 @@ const styles = {
   },
 };
 
-const SpectrumListItem = ({
-  visible,
-  activated,
-  markersVisible,
-  data,
-  onChangeVisibility,
-  onChangeMarkersVisibility,
-  onChangeActiveSpectrum,
-  onOpenColorPicker,
-}) => {
-  const isVisible = (id) => {
-    return visible.findIndex((v) => v.id === id) !== -1 ? true : false;
-  };
+const SpectrumListItem = memo(
+  ({
+    visible,
+    activated,
+    markersVisible,
+    data,
+    onChangeVisibility,
+    onChangeMarkersVisibility,
+    onChangeActiveSpectrum,
+    onOpenColorPicker,
+  }) => {
+    const isVisible = (id) => {
+      return visible.findIndex((v) => v.id === id) !== -1 ? true : false;
+    };
 
-  const isActivated = (id) => {
-    return activated && activated.id === id;
-  };
+    const isActivated = (id) => {
+      return activated && activated.id === id;
+    };
 
-  const isMarkerVisible = (id) => {
-    return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
-  };
+    const isMarkerVisible = (id) => {
+      return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
+    };
 
-  const formatValueAsHTML = (value) => {
-    if (value) {
-      // eslint-disable-next-line prefer-named-capture-group
-      value = value.replace(/([0-9]+)/g, '<sub>$1</sub>');
-    }
-    return value;
-  };
+    const formatValueAsHTML = (value) => {
+      if (value) {
+        // eslint-disable-next-line prefer-named-capture-group
+        value = value.replace(/([0-9]+)/g, '<sub>$1</sub>');
+      }
+      return value;
+    };
 
-  return (
-    <div style={styles.row} key={data.id}>
-      <button
-        style={styles.button}
-        type="button"
-        onClick={() => onChangeVisibility(data)}
-      >
-        <FaEye
-          style={
-            isVisible(data.id)
-              ? { opacity: 1, strokeWidth: '1px', fill: data.color }
-              : { opacity: 0.1, fill: data.color }
-          }
-        />
-      </button>
-      <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
-        <div
-          style={styles.spectrumClassIcon}
-          className={data.info.isFid ? 'ci-icon-nmr-fid' : 'ci-icon-nmr-ft'}
-        />
-        <span style={styles.info}>{data.name}</span>
-        <div
-          style={styles.info}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{
-            __html: data.info && formatValueAsHTML(data.info.solvent),
+    return (
+      <div style={styles.row} key={data.id}>
+        <button
+          style={styles.button}
+          type="button"
+          onClick={() => onChangeVisibility(data)}
+        >
+          <FaEye
+            style={
+              isVisible(data.id)
+                ? { opacity: 1, strokeWidth: '1px', fill: data.color }
+                : { opacity: 0.1, fill: data.color }
+            }
+          />
+        </button>
+        <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
+          <div
+            style={styles.spectrumClassIcon}
+            className={data.info.isFid ? 'ci-icon-nmr-fid' : 'ci-icon-nmr-ft'}
+          />
+          <span style={styles.info}>{data.name}</span>
+          <div
+            style={styles.info}
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              __html: data.info && formatValueAsHTML(data.info.solvent),
+            }}
+          />
+          {/* {data.info && data.info.solvent} */}
+          {/* </div> */}
+          <span style={styles.info}>{data.info && data.info.pulse}</span>
+        </div>
+        <button
+          style={{
+            ...styles.button,
+            ...styles.icon,
+            opacity:
+              isMarkerVisible(data.id) && data.peaks && data.peaks.length > 0
+                ? 1
+                : 0.1,
           }}
+          type="button"
+          onClick={() => onChangeMarkersVisibility(data)}
+          className="ci-icon-nmr-peaks"
+          disabled={data.peaks && data.peaks.length === 0}
         />
-        {/* {data.info && data.info.solvent} */}
-        {/* </div> */}
-        <span style={styles.info}>{data.info && data.info.pulse}</span>
+        <button
+          style={styles.button}
+          type="button"
+          onClick={() => onChangeActiveSpectrum(data)}
+        >
+          <FaMinus
+            style={
+              isActivated(data.id)
+                ? { fill: data.color, height: '15px' }
+                : { fill: data.color, opacity: 0.1 }
+            }
+          />
+        </button>
+        <button
+          style={styles.button}
+          type="button"
+          className="color-change-bt"
+          onClick={(event) => onOpenColorPicker(data, event)}
+        >
+          <FaPaintBrush />
+        </button>
       </div>
-      <button
-        style={{
-          ...styles.button,
-          ...styles.icon,
-          opacity:
-            isMarkerVisible(data.id) && data.peaks && data.peaks.length > 0
-              ? 1
-              : 0.1,
-        }}
-        type="button"
-        onClick={() => onChangeMarkersVisibility(data)}
-        className="ci-icon-nmr-peaks"
-        disabled={data.peaks && data.peaks.length === 0}
-      />
-      <button
-        style={styles.button}
-        type="button"
-        onClick={() => onChangeActiveSpectrum(data)}
-      >
-        <FaMinus
-          style={
-            isActivated(data.id)
-              ? { fill: data.color, height: '15px' }
-              : { fill: data.color, opacity: 0.1 }
-          }
-        />
-      </button>
-      <button
-        style={styles.button}
-        type="button"
-        className="color-change-bt"
-        onClick={(event) => onOpenColorPicker(data, event)}
-      >
-        <FaPaintBrush />
-      </button>
-    </div>
-  );
-};
+    );
+  },
+);
 
 export default SpectrumListItem;

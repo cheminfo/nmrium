@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, memo } from 'react';
 import { ObjectInspector } from 'react-inspector';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
@@ -13,6 +13,7 @@ import { useChartData } from '../context/ChartContext';
 import CheckBox from '../elements/CheckBox';
 import { useDispatch } from '../context/DispatchContext';
 import { ENABLE_FILTER, DELETE_FILTER } from '../reducer/Actions';
+import ConnectToContext from '../hoc/ConnectToContext';
 
 import NoTableData from './placeholder/NoTableData';
 
@@ -24,8 +25,8 @@ const styles = {
     width: 25,
   },
 };
-const FilterPanel = () => {
-  const { data, activeSpectrum } = useChartData();
+const FilterPanel = memo(({ data, activeSpectrum }) => {
+  // const { data, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
 
   const handelFilterCheck = useCallback(
@@ -92,6 +93,6 @@ const FilterPanel = () => {
   ) : (
     <NoTableData />
   );
-};
+});
 
-export default FilterPanel;
+export default ConnectToContext(FilterPanel, useChartData);

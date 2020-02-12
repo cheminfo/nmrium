@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 import { useAlert } from 'react-alert';
@@ -12,6 +12,7 @@ import ToolTip from '../elements/ToolTip/ToolTip';
 import { useModal } from '../elements/Modal';
 import { copyTextToClipboard } from '../utility/Export';
 import CopyClipboardModal from '../modal/CopyClipboardModal';
+import ConnectToContext from '../hoc/ConnectToContext';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -28,8 +29,8 @@ const styles = {
   },
 };
 
-const RangesTablePanel = () => {
-  const { data: SpectrumsData, activeSpectrum } = useChartData();
+const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
+  // const { data: SpectrumsData, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
@@ -268,6 +269,6 @@ const RangesTablePanel = () => {
       )}
     </div>
   );
-};
+});
 
-export default RangesTablePanel;
+export default ConnectToContext(RangesTablePanel, useChartData);

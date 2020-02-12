@@ -1,9 +1,10 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, memo } from 'react';
 import lodash from 'lodash';
 
 import { Accordion, AccordionItem } from '../elements/accordion';
 import { options } from '../toolbar/ToolTypes';
 import { useChartData } from '../context/ChartContext';
+import ConnectToContext from '../hoc/ConnectToContext';
 
 import SpectrumListPanel from './SpectrumListPanel';
 import IntegralTablePanel from './IntegralTablePanel';
@@ -65,8 +66,8 @@ const accordionItems = [
   },
 ];
 
-const Panels = ({ preferences }) => {
-  const { selectedTool } = useChartData();
+const Panels = memo(({ preferences, selectedTool }) => {
+  // const { selectedTool } = useChartData();
   const [panelIndex, setSelectedPanelIndex] = useState(0);
 
   const getDefaultIndex = useCallback(() => {
@@ -95,6 +96,6 @@ const Panels = ({ preferences }) => {
       })}
     </Accordion>
   );
-};
+});
 
-export default Panels;
+export default ConnectToContext(Panels, useChartData);
