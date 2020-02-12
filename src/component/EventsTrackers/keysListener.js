@@ -14,12 +14,12 @@ const KeyListener = ({ parentRef }) => {
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (isMouseOver) {
-        if (
-          e.target.localName !== 'input' &&
-          e.keyCode >= 49 &&
-          e.keyCode <= 57
-        ) {
+      if (
+        e.target.localName !== 'input' &&
+        e.keyCode >= 49 &&
+        e.keyCode <= 57
+      ) {
+        if (isMouseOver) {
           if (e.shiftKey) {
             dispatch({
               type: SET_KEY_PREFERENCES,
@@ -40,11 +40,11 @@ const KeyListener = ({ parentRef }) => {
               alert.show('Configuration saved');
             }
           }
+        } else {
+          alert.show(
+            'The mouse cursor must be over the NMR displayer to use save configuration shortcuts  ',
+          );
         }
-      } else {
-        alert.show(
-          'The mouse cursor must be over the NMR displayer to use save configuration shortcuts  ',
-        );
       }
     },
     [dispatch, keysPreferences, alert],
