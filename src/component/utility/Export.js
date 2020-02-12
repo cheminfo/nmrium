@@ -95,6 +95,12 @@ function copyPNGToClipboard(elementID) {
     };
     img.src = url;
   } catch (e) {
+    if (e instanceof ReferenceError) {
+      // eslint-disable-next-line no-alert
+      alert(
+        'Your browser does not support this feature, please use Google Chrome',
+      );
+    }
     // eslint-disable-next-line no-console
     console.log(e);
   }

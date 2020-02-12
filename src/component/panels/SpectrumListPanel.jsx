@@ -15,11 +15,11 @@ import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { Tabs } from '../elements/Tab';
 import groupByInfoKey from '../utility/GroupByInfoKey';
+import ConnectToContext from '../hoc/ConnectToContext';
 
 import SpectrumListItem from './SpectrumListItem';
 import ColorPicker from './ColorPicker';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
-import ConnectToContext from '../hoc/ConnectToContext';
 
 const styles = {
   toolbar: {
