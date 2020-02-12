@@ -100,6 +100,7 @@ export default function Exercise(props) {
     if (file) {
       loadData(file).then((d) => {
         const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
+
         if (_d && _d.molecules && _d.molecules[0] && _d.molecules[0].molfile) {
           const molecule = Molecule.fromMolfile(_d.molecules[0].molfile);
           const idCode = molecule.getIDCode();

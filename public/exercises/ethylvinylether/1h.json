@@ -6,7 +6,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./data/ethylvinylether/1h.jdx"
+        "jcampURL": "./exercises/ethylvinylether/1h.jdx"
       },
       "display": {
         "name": "test",
