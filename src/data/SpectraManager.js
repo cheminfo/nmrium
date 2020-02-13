@@ -62,11 +62,6 @@ export function addBruker(spectra, data) {
   let result = convertBruker({ acqus, procs, '1r': content }, { xy: true });
 
   let info = getInfoFromMetaData(result.info);
-  // todo fix this
-  if (true || info.dimension === 1) {
-    spectra.push(Data1DManager.fromBruker(result, info));
-  }
-  if (info.dimension === 2) {
-    spectra.push(Data2DManager.fromBruker());
-  }
+
+  spectra.push(Data1DManager.fromBruker(result, info));
 }

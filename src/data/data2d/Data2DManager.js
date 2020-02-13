@@ -6,8 +6,6 @@ import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
 import { Datum2D } from './Datum2D';
 
 export class Data2DManager {
-  static fromBruker = function fromBruker() {};
-
   static fromJcamp = function fromJcamp(jcamp, options = {}) {
     let result = convert(jcamp, {
       noContour: true,
