@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useContext } from 'react';
+import lodash from 'lodash';
 
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
@@ -45,6 +46,7 @@ const FooterBanner = () => {
     width,
     height,
     activeSpectrum,
+    data,
   } = useChartData();
   if (
     !activeSpectrum ||
@@ -57,7 +59,7 @@ const FooterBanner = () => {
     return <div css={styles} />;
   }
 
-  const frequency = 400; // should be spectrum.info.frequency
+  const frequency = lodash.get(data[activeSpectrum.index], 'info.frequency'); // should be spectrum.info.frequency
 
   return (
     <div css={styles}>
