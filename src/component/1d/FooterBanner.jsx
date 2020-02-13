@@ -57,6 +57,8 @@ const FooterBanner = () => {
     return <div css={styles} />;
   }
 
+  const frequency = 400; // should be spectrum.info.frequency
+
   return (
     <div css={styles}>
       <div>
@@ -64,11 +66,15 @@ const FooterBanner = () => {
         <span className="value">{scaleX.invert(position.x).toFixed(2)}</span>
         <span className="unit">ppm</span>
       </div>
-      <div>
-        <span className="label"> X :</span>
-        <span className="value">{scaleX.invert(position.x).toFixed(2)}</span>
-        <span className="unit">Hz</span>
-      </div>
+      {frequency && (
+        <div>
+          <span className="label"> X :</span>
+          <span className="value">
+            {(scaleX.invert(position.x) * frequency).toFixed(2)}
+          </span>
+          <span className="unit">Hz</span>
+        </div>
+      )}
       <div>
         <span className="label"> Y :</span>
         <span className="value">
@@ -76,7 +82,6 @@ const FooterBanner = () => {
             .invert(position.y)
             .toFixed(2)}
         </span>
-        <span className="unit">ppm</span>
       </div>
     </div>
   );
