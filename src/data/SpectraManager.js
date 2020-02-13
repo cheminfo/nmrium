@@ -1,5 +1,5 @@
 import { convert, createTree } from 'jcampconverter';
-
+import { convertFolder as convertBruker } from 'brukerconverter';
 import { Data1DManager } from './data1d/Data1DManager';
 import { Datum1D } from './data1d/Datum1D';
 import { Data2DManager } from './data2d/Data2DManager';
@@ -54,5 +54,19 @@ function addJcampSS(spectra, jcamp, options) {
   }
   if (info.dimension === 2) {
     spectra.push(Data2DManager.fromJcamp(jcamp, options));
+  }
+}
+
+export function addBruker(spectra, data) {
+  const { acqus, procs, content } = data;
+  let result = convertBruker({ acqus, procs, '1r': content }, { xy: true });
+
+  let info = getInfoFromMetaData(result.info);
+  // todo fix this
+  if (true || info.dimension === 1) {
+    spectra.push(Data1DManager.fromBruker(result, info));
+  }
+  if (info.dimension === 2) {
+    spectra.push(Data2DManager.fromBruker());
   }
 }
