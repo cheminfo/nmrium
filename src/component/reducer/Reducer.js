@@ -112,9 +112,14 @@ function getDomain(data) {
     }, []);
     yDomains = {};
     yArray = data.reduce((acc, d) => {
-      const extent = d3.extent(d.y);
-      yDomains[d.id] = extent;
-      return acc.concat(extent);
+      if (d.isVisibleInDomain) {
+        const extent = d3.extent(d.y);
+        yDomains[d.id] = extent;
+
+        return acc.concat(extent);
+      } else {
+        return acc.concat([]);
+      }
     }, []);
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -139,7 +144,7 @@ const getScale = ({ xDomain, yDomain, width, height, margin, mode }) => {
   return { x, y };
 };
 
-function setYAxisShit(data, draft, height) {
+function setYAxisShift(data, draft, height) {
   if (data && data.length > 0) {
     if (data[0].info.isFid && !data.some((d) => d.info.isFid === false)) {
       const YAxisShift = height / 2;
@@ -196,7 +201,7 @@ const initiate = (state, dataObject) => {
         center: preferences.display.center,
       });
     } else {
-      setYAxisShit(spectraData, draft, state.height);
+      setYAxisShift(spectraData, draft, state.height);
     }
     setMode(draft);
   });
@@ -291,7 +296,7 @@ const handleLoadJsonFile = (state, data) => {
         center: preferences.display.center,
       });
     } else {
-      setYAxisShit(spectraData, draft, state.height);
+      setYAxisShift(spectraData, draft, state.height);
     }
 
     setDomain(draft);
@@ -546,7 +551,7 @@ const applyFFTFilter = (state) => {
     activeObject.applyFilter([{ name: Filters.fft.id, options: {} }]);
 
     setDataByFilters(draft, activeObject, activeSpectrumId);
-    setYAxisShit([{ info: activeObject.getInfo() }], draft, state.height);
+    setYAxisShift([{ info: activeObject.getInfo() }], draft, state.height);
 
     setDomain(draft);
     setMode(draft);

@@ -40,7 +40,7 @@ const PeaksNotations = () => {
     return (
       data &&
       reSortData()
-        .filter((d) => d.isVisible === true)
+        .filter((d) => d.isVisible === true && d.isVisibleInDomain === true)
         .map((d) => {
           return (
             d.peaks &&

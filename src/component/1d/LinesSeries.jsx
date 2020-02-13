@@ -32,19 +32,22 @@ export const LinesSeries = () => {
 
   const paths = useMemo(() => {
     function makePath(info) {
-      const { id } = info;
-
-      const pathPoints = XY.reduce(info, {
-        from: xDomain[0],
-        to: xDomain[1],
-      });
-      const _scaleY = scaleY(id);
-      let path = `M ${scaleX(pathPoints.x[0])} ${_scaleY(pathPoints.y[0])} `;
-      path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${scaleX(point)} ${_scaleY(pathPoints.y[i + 1])}`;
-        return accumulator;
-      }, '');
-      return path;
+      const { id, x, y } = info;
+      if (x && y) {
+        const pathPoints = XY.reduce(info, {
+          from: xDomain[0],
+          to: xDomain[1],
+        });
+        const _scaleY = scaleY(id);
+        let path = `M ${scaleX(pathPoints.x[0])} ${_scaleY(pathPoints.y[0])} `;
+        path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
+          accumulator += ` L ${scaleX(point)} ${_scaleY(pathPoints.y[i + 1])}`;
+          return accumulator;
+        }, '');
+        return path;
+      } else {
+        return null;
+      }
     }
 
     function isActive(id) {
@@ -65,8 +68,6 @@ export const LinesSeries = () => {
 
     return (
       data &&
-      data[0] &&
-      data[0].x &&
       data
         .filter((d) => d.isVisible === true && d.isVisibleInDomain === true)
         .map((d, i) => (
