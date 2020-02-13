@@ -7,11 +7,13 @@
   ],
   "dependencies": {
     "@emotion/core": "^10.0.27",
+    "brukerconverter": "^1.1.2",
     "cheminfo-font": "^0.24.0",
     "d3": "^5.15.0",
     "file-saver": "^2.0.2",
     "immer": "^5.3.4",
     "jcampconverter": "^4.1.0",
+    "jszip": "^3.2.2",
     "lodash": "^4.17.15",
     "mf-parser": "^0.13.1",
     "ml-airpls": "^0.2.0",
