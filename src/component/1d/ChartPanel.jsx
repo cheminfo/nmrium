@@ -1,5 +1,13 @@
-import React, { useCallback, Fragment, useEffect, useState, memo } from 'react';
+import React, {
+  useCallback,
+  Fragment,
+  useEffect,
+  useState,
+  memo,
+  useMemo,
+} from 'react';
 import { useSize, useDebounce } from 'react-use';
+import lodash from 'lodash';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useChartData } from '../context/ChartContext';
@@ -38,6 +46,9 @@ const ChartPanel = memo(() => {
     width: widthProp,
     height: heightProp,
     margin,
+    scaleX,
+    scaleY,
+    activeSpectrum,
   } = useChartData();
   const dispatch = useDispatch();
 
@@ -117,6 +128,12 @@ const ChartPanel = memo(() => {
     [dispatch, selectedTool],
   );
 
+  const frequency = useMemo(() => {
+    return activeSpectrum
+      ? lodash.get(data[activeSpectrum.index], 'info.frequency')
+      : 0;
+  }, [activeSpectrum, data]);
+
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
       <Fragment>
@@ -144,7 +161,7 @@ const ChartPanel = memo(() => {
               <XLabelPointer />
               <PeakPointer />
               <VerticalIndicator />
-              <FooterBanner />
+              <FooterBanner frequency={frequency} />
               <NMRChart
                 width={widthProp}
                 height={heightProp}
