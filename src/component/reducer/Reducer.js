@@ -1313,7 +1313,7 @@ export const initialState = {
   margin: {
     top: 10,
     right: 20,
-    bottom: 30,
+    bottom: 70,
     left: 0,
   },
   activeSpectrum: null,

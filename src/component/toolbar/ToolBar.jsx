@@ -10,6 +10,8 @@ const styles = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'start',
+  borderRight: '0.55px solid #f7f7f7',
+  paddingRight: '1px',
 };
 const ToolBar = ({ preferences }) => {
   const { selectedTool } = useChartData();

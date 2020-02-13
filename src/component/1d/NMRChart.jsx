@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { useChartData } from '../context/ChartContext';
-
 import LinesSeries from './LinesSeries';
 import IntegralsSeries from './IntegralsSeries';
 import XAxis from './XAxis';
@@ -10,8 +8,7 @@ import PeaksNotations from './PeaksNotations';
 import Ranges from './Ranges';
 import BaseLineZones from './BaseLineZones';
 
-function NMRChart() {
-  const { mode, width, height, margin } = useChartData();
+function NMRChart({ mode, width, height, margin }) {
   if (!width || !height) {
     return null;
   }

@@ -8,10 +8,9 @@ import {
   useState,
   useMemo,
   useRef,
-  Fragment,
 } from 'react';
 import SplitPane from 'react-split-pane';
-import { useSize, useDebounce, useToggle, useFullscreen } from 'react-use';
+import { useToggle, useFullscreen } from 'react-use';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 import 'cheminfo-font/dist/style.css';
@@ -20,41 +19,23 @@ import PropTypes from 'prop-types';
 import { Analysis } from '../data/Analysis';
 
 import { HighlightProvider } from './highlight';
-import { ChartDataProvider, useChartData } from './context/ChartContext';
+import { ChartDataProvider } from './context/ChartContext';
 import { spectrumReducer, initialState } from './reducer/Reducer';
 import {
   INITIATE,
   SET_WIDTH,
-  SET_DIMENSIONS,
-  BRUSH_END,
-  SET_ZOOM_FACTOR,
-  ADD_INTEGRAL,
-  ADD_PEAK,
-  CHANGE_INTEGRAL_ZOOM,
-  ADD_PEAKS,
-  SET_VERTICAL_INDICATOR_X_POSITION,
+  // SET_DIMENSIONS,
   SET_LOADING_FLAG,
-  FULL_ZOOM_OUT,
-  ADD_BASE_LINE_ZONE,
 } from './reducer/Actions';
-import { DispatchProvider, useDispatch } from './context/DispatchContext';
+import { DispatchProvider } from './context/DispatchContext';
 import DropZone from './loader/DropZone';
 import ToolBar from './toolbar/ToolBar';
 import Panels from './panels/Panels';
-import NMRChart from './1d/NMRChart';
-import { MouseTracker } from './EventsTrackers/MouseTracker';
-import CrossLinePointer from './tool/CrossLinePointer';
-import { BrushTracker } from './EventsTrackers/BrushTracker';
-import BrushX from './tool/BrushX';
-import XLabelPointer from './tool/XLabelPointer';
-import { options } from './toolbar/ToolTypes';
-import PeakPointer from './tool/PeakPointer';
 import Header from './header/Header';
-import VerticalIndicator from './tool/VerticalIndicator';
-import Spinner from './loader/Spinner';
 import { ModalProvider } from './elements/Modal';
 import KeyListener from './EventsTrackers/keysListener';
 import ErrorBoundary from './ErrorBoundary';
+import ChartPanel from './1d/ChartPanel';
 
 // alert optional cofiguration
 const alertOptions = {
@@ -87,29 +68,12 @@ const NMRDisplayer = (props) => {
     preferences,
   } = props;
   const fullScreenRef = useRef();
-  const containerRef = useRef();
   const [show, toggle] = useToggle(false);
   const isFullscreen = useFullscreen(fullScreenRef, show, {
     onClose: () => {
       toggle(false);
     },
   });
-
-  useEffect(() => {
-    if (isFullscreen) {
-      setTimeout(() => {
-        dispatch({
-          type: SET_DIMENSIONS,
-          height: window.innerHeight - 40,
-        });
-      }, 100);
-    } else {
-      dispatch({
-        type: SET_DIMENSIONS,
-        height: heightProp,
-      });
-    }
-  }, [heightProp, isFullscreen]);
 
   const [isResizeEventStart, setResizeEventStart] = useState(false);
 
@@ -166,24 +130,6 @@ const NMRDisplayer = (props) => {
     dispatch({ type: SET_WIDTH, width: size });
   }, []);
 
-  useEffect(() => {
-    window.addEventListener('resize', () => {
-      if (containerRef.current) {
-        dispatch({
-          type: SET_DIMENSIONS,
-          height: containerRef.current.getBoundingClientRect().height,
-        });
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    dispatch({
-      type: SET_DIMENSIONS,
-      height: containerRef.current.getBoundingClientRect().height,
-    });
-  }, [containerRef]);
-
   return (
     <ErrorBoundary>
       <ModalProvider>
@@ -221,7 +167,8 @@ const NMRDisplayer = (props) => {
                   `}
                 >
                   <Header isFullscreen={isFullscreen} onMaximize={toggle} />
-                  <div style={{ flex: 1 }} ref={containerRef}>
+                  {/* ref={containerRef} */}
+                  <div style={{ flex: 1 }}>
                     <DropZone>
                       <ToolBar preferences={preferences} />
                       <SplitPane
@@ -252,133 +199,6 @@ const NMRDisplayer = (props) => {
     </ErrorBoundary>
   );
 };
-
-function ChartPanel() {
-  const { selectedTool, isLoading, data } = useChartData();
-  const dispatch = useDispatch();
-
-  const handelBrushEnd = useCallback(
-    (brushData) => {
-      if (brushData.shiftKey) {
-        switch (selectedTool) {
-          case options.integral.id:
-            dispatch({
-              type: ADD_INTEGRAL,
-              ...brushData,
-            });
-            break;
-
-          case options.peakPicking.id:
-            dispatch({
-              type: ADD_PEAKS,
-              ...brushData,
-            });
-            break;
-          default:
-            break;
-        }
-      } else {
-        switch (selectedTool) {
-          case options.baseLineCorrection.id:
-            dispatch({
-              type: ADD_BASE_LINE_ZONE,
-              zone: { from: brushData.startX, to: brushData.endX },
-            });
-            break;
-
-          default:
-            dispatch({ type: BRUSH_END, ...brushData });
-
-            return;
-        }
-      }
-    },
-    [dispatch, selectedTool],
-  );
-
-  const handelOnDoubleClick = useCallback(() => {
-    dispatch({ type: FULL_ZOOM_OUT });
-  }, [dispatch]);
-
-  const handleZoom = useCallback(
-    (event) => {
-      switch (selectedTool) {
-        case options.integral.id:
-          dispatch({ type: CHANGE_INTEGRAL_ZOOM, zoomFactor: event });
-          break;
-
-        default:
-          dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: event });
-
-          return;
-      }
-    },
-    [dispatch, selectedTool],
-  );
-
-  const mouseClick = useCallback(
-    (position) => {
-      if (selectedTool === options.peakPicking.id) {
-        dispatch({
-          type: ADD_PEAK,
-          mouseCoordinates: position,
-        });
-      } else if (selectedTool === options.phaseCorrection.id) {
-        dispatch({
-          type: SET_VERTICAL_INDICATOR_X_POSITION,
-          position: position.x,
-        });
-      }
-    },
-    [dispatch, selectedTool],
-  );
-
-  const [sizedNMRChart, { width, height }] = useSize(() => {
-    return (
-      <Fragment>
-        <Spinner isLoading={isLoading} />
-
-        {data && data.length > 0 && (
-          <BrushTracker
-            onBrush={handelBrushEnd}
-            onDoubleClick={handelOnDoubleClick}
-            onClick={mouseClick}
-            onZoom={handleZoom}
-            style={{
-              width: '100%',
-              height: `100%`,
-              margin: 'auto',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
-            <MouseTracker style={{ width: '100%', height: `100%` }}>
-              <NMRChart />
-              <CrossLinePointer />
-              <BrushX />
-              <XLabelPointer />
-              <PeakPointer />
-              <VerticalIndicator />
-            </MouseTracker>
-          </BrushTracker>
-        )}
-      </Fragment>
-    );
-  }, []);
-  const [finalSize, setFinalSize] = useState();
-
-  useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
-  useEffect(() => {
-    if (finalSize) {
-      dispatch({
-        type: SET_DIMENSIONS,
-        ...finalSize,
-      });
-    }
-  }, [dispatch, finalSize]);
-
-  return sizedNMRChart;
-}
 
 NMRDisplayer.propTypes = {
   height: PropTypes.number,
