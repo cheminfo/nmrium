@@ -46,8 +46,6 @@ const ChartPanel = memo(() => {
     width: widthProp,
     height: heightProp,
     margin,
-    scaleX,
-    scaleY,
     activeSpectrum,
   } = useChartData();
   const dispatch = useDispatch();
