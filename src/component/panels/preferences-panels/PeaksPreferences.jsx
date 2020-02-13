@@ -189,6 +189,7 @@ const PeaksPreferences = forwardRef((props, ref) => {
                   key={field.id}
                   label={field.label}
                   data={settings}
+                  defaultData={peaksDefaultValues}
                   checkControllerName={field.checkController}
                   formatControllerName={field.formatController}
                   groupID={nucleusLabel}

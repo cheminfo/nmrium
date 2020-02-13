@@ -23,27 +23,21 @@ const ColumnFormatField = memo(
     label,
     checkControllerName,
     formatControllerName,
-    defaultFormat,
+    defaultData,
     inputChangeHandler,
     groupID,
     data,
   }) => {
-    // const {
-    //   label,
-    //   checkControllerName,
-    //   formatControllerName,
-    //   defaultFormat,
-    //   inputChangeHandler,
-    //   groupID,
-    //   data,
-    // } = props;
-
     const getValue = useCallback(
       (nucleusLabel, key) => {
-        const value = lodash.get(data, `${nucleusLabel}.${key}`);
-        return value ? value : null;
+        if (data) {
+          const value = lodash.get(data, `${nucleusLabel}.${key}`);
+          return value ? value : null;
+        } else {
+          return defaultData[key];
+        }
       },
-      [data],
+      [data, defaultData],
     );
 
     return (
@@ -58,7 +52,7 @@ const ColumnFormatField = memo(
             }
             style={{ margin: '0px 5px' }}
             checked={getValue(groupID, checkControllerName)}
-            defaultChecked={true}
+            // defaultChecked={true}
           />
           <input
             style={styles.input}
@@ -68,7 +62,7 @@ const ColumnFormatField = memo(
               inputChangeHandler(e, groupID - formatControllerName)
             }
             value={getValue(groupID, formatControllerName)}
-            defaultValue={defaultFormat}
+            // defaultValue={defaultFormat}
           />
         </div>
       </div>

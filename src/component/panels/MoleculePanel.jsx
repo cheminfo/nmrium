@@ -224,7 +224,7 @@ const MoleculePanel = () => {
                     molfile={mol.molfile}
                     atomHighlight={currentAtom && [currentAtom]}
                     atomHighlightColor="yellow"
-                    atomHighlightOpacity="0.5"
+                    atomHighlightOpacity={0.5}
                     onAtomEnter={(atomID) => setCurrentAtom(atomID)}
                     onAtomLeave={() => setCurrentAtom(null)}
                   />

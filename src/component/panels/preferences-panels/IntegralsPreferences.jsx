@@ -15,6 +15,7 @@ import { useChartData } from '../../context/ChartContext';
 import { SET_PREFERENCES } from '../../reducer/Actions';
 
 import ColumnFormatField from './ColumnFormatField';
+import { integralDefaultValues } from './defaultValues';
 
 const styles = {
   container: {
@@ -174,6 +175,7 @@ const IntegralsPreferences = forwardRef((props, ref) => {
                   key={field.id}
                   label={field.label}
                   data={settings}
+                  defaultData={integralDefaultValues}
                   checkControllerName={field.checkController}
                   formatControllerName={field.formatController}
                   groupID={nucleusLabel}

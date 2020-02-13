@@ -6,13 +6,18 @@ const integralDefaultValues = {
 };
 
 const peaksDefaultValues = {
-  showPanel: true,
-  PPMShow: true,
-  PPMFormat: '0.00',
-  HZShow: true,
-  HZFormat: '0.00',
-  peakWidthShow: true,
-  peakFormat: '0.00',
+  showPeakNumber: true,
+  peakNumberFormat: '0.00',
+  showPeakIndex: true,
+  peakIndexFormat: '0.00',
+  showDeltaPPM: false,
+  deltaPPMFormat: '0.00',
+  showDeltaHz: false,
+  deltaHzFormat: '0.00',
+  showPeakWidth: false,
+  peakWidthFormat: '00.0000',
+  showIntensity: true,
+  intensityFormat: '0.00',
 };
 
 export { peaksDefaultValues, integralDefaultValues };

@@ -16,30 +16,27 @@ const styles = {
   },
 };
 
-const TextInput = forwardRef(
-  ({ label, value, name, defaultValue, style, onChange }, ref) => {
-    return (
-      <Fragment>
-        <span style={{ ...styles.label, ...style.label }}>{label}</span>
-        <input
-          ref={ref}
-          name={name}
-          style={{ ...styles.input, ...style.input }}
-          type="text"
-          value={value}
-          defaultValue={defaultValue}
-          onChange={onChange}
-        />
-      </Fragment>
-    );
-  },
-);
+const TextInput = forwardRef(({ label, value, name, style, onChange }, ref) => {
+  return (
+    <Fragment>
+      <span style={{ ...styles.label, ...style.label }}>{label}</span>
+      <input
+        ref={ref}
+        name={name}
+        style={{ ...styles.input, ...style.input }}
+        type="text"
+        value={value}
+        onChange={onChange}
+      />
+    </Fragment>
+  );
+});
 
 TextInput.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
   value: PropTypes.string,
-  defaultValue: PropTypes.string,
+  // defaultValue: PropTypes.string,
   style: PropTypes.shape({
     label: PropTypes.object,
     input: PropTypes.object,
@@ -52,7 +49,7 @@ TextInput.defaultProps = {
     label: {},
     input: {},
   },
-  defaultValue: 0,
+  // defaultValue: 0,
   value: '',
   onChange: () => {
     return null;
