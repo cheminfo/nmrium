@@ -9,7 +9,7 @@ import { options } from '../toolbar/ToolTypes';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
-import AutoRangesPickingOptionPanel from './AutoRangesPickingOptionPanel';
+import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 
 const headerStyle = css`
@@ -67,8 +67,8 @@ const Header = ({ isFullscreen, onMaximize }) => {
       return <ManualPhaseCorrectionPanel />;
     } else if (selectedOptionPanel === options.peakPicking.id) {
       return <AutoPeakPickingOptionPanel />;
-    } else if (selectedOptionPanel === options.autoRangesPicking.id) {
-      return <AutoRangesPickingOptionPanel />;
+    } else if (selectedOptionPanel === options.rangesPicking.id) {
+      return <RangesPickingOptionPanel />;
     } else if (selectedOptionPanel === options.baseLineCorrection.id) {
       return <BaseLineCorrectionPanel />;
     }

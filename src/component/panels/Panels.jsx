@@ -53,14 +53,14 @@ const accordionItems = [
   {
     title: 'Ranges',
     component: <RangesTablePanel />,
-    openWhen: [options.autoRangesPicking.id],
+    openWhen: [options.rangesPicking.id],
     style: '',
     hidePreferenceKey: 'hideRangesPanel',
   },
   {
     title: 'Structures',
     component: <MoleculePanel />,
-    openWhen: [options.autoRangesPicking.id],
+    openWhen: [options.rangesPicking.id],
     style: '',
     hidePreferenceKey: 'hideStructuresPanel',
   },

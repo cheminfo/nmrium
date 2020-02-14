@@ -35,7 +35,7 @@ const styles = {
   },
 };
 
-const AutoRangesPickingOptionPanel = () => {
+const RangesPickingOptionPanel = () => {
   const dispatch = useDispatch();
 
   const handleApplyFilter = useCallback(() => {
@@ -77,4 +77,4 @@ const AutoRangesPickingOptionPanel = () => {
   );
 };
 
-export default AutoRangesPickingOptionPanel;
+export default RangesPickingOptionPanel;

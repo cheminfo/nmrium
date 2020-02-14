@@ -9,7 +9,7 @@ export const options = {
   },
   peakPicking: {
     id: 'peakPicking',
-    label: 'Peak Tool',
+    label: 'Peaks Picking',
     hasOptionPanel: true,
     isFilter: false,
   },
@@ -21,7 +21,7 @@ export const options = {
   },
   HMove: {
     id: 'HMove',
-    label: 'move spectrum horizontal',
+    label: 'Move spectrum horizontally',
     hasOptionPanel: false,
     isFilter: false,
   },
@@ -31,15 +31,9 @@ export const options = {
     hasOptionPanel: false,
     isFilter: false,
   },
-  // autoPeaksPicking: {
-  //   id: 'autoPeaksPicking',
-  //   label: 'Auto Peaks Picking',
-  //   hasOptionPanel: true,
-  //   isFilter: false,
-  // },
-  autoRangesPicking: {
-    id: 'autoRangesPicking',
-    label: 'Auto Ranges Picking',
+  rangesPicking: {
+    id: 'rangesPicking',
+    label: 'Ranges Picking',
     hasOptionPanel: true,
     isFilter: false,
   },

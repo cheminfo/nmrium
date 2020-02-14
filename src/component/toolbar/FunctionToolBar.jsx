@@ -104,8 +104,8 @@ const FunctionToolBar = ({ defaultValue, preferences }) => {
             handleChangeOption(options.zoom.id);
             break;
           case 'r':
-            setOption(options.autoRangesPicking.id);
-            handleChangeOption(options.autoRangesPicking.id);
+            setOption(options.rangesPicking.id);
+            handleChangeOption(options.rangesPicking.id);
             break;
           case 'p':
             setOption(options.peakPicking.id);
@@ -224,8 +224,8 @@ const FunctionToolBar = ({ defaultValue, preferences }) => {
         )}
         {isButtonVisible('hideAutoRangesTool') && (
           <ToggleButton
-            key={options.autoRangesPicking.id}
-            value={options.autoRangesPicking.id}
+            key={options.rangesPicking.id}
+            value={options.rangesPicking.id}
             className="ci-icon-nmr-range-picking"
             style={styles.icon}
             isVisible={
@@ -235,7 +235,7 @@ const FunctionToolBar = ({ defaultValue, preferences }) => {
             }
           >
             <ToolTip
-              title={options.autoRangesPicking.label}
+              title={options.rangesPicking.label}
               popupPlacement="right"
               offset={{ x: 10, y: 0 }}
             />
