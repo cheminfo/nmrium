@@ -116,8 +116,13 @@ const handleLoadMOLFile = (state, files) => {
   });
 };
 const handleLoadZIPFile = (state, files) => {
-  AnalysisObj.fromZip(files);
-  return state;
+  return produce(state, (draft) => {
+    AnalysisObj.fromZip(files);
+    draft.data = AnalysisObj.getSpectraData();
+    setDomain(draft);
+    setMode(draft);
+    draft.isLoading = false;
+  });
 };
 
 export {
