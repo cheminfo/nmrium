@@ -12,7 +12,7 @@ import lodash from 'lodash';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { useDispatch } from '../../context/DispatchContext';
 import { useChartData } from '../../context/ChartContext';
-import { SET_PREFERENCES } from '../../reducer/Actions';
+import { SET_PREFERENCES } from '../../reducer/types/Types';
 
 import ColumnFormatField from './ColumnFormatField';
 import { peaksDefaultValues } from './defaultValues';

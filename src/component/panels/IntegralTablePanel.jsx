@@ -10,7 +10,7 @@ import {
   DELETE_INTEGRAL,
   CHANGE_INTEGRAL_DATA,
   CHANGE_INTEGRAL_SUM,
-} from '../reducer/Actions';
+} from '../reducer/types/Types';
 import { useModal } from '../elements/Modal';
 import Select from '../elements/Select';
 import IntegralSumModal from '../modal/IntegralSumModal';

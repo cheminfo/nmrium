@@ -12,7 +12,7 @@ import {
 import { useChartData } from '../context/ChartContext';
 import CheckBox from '../elements/CheckBox';
 import { useDispatch } from '../context/DispatchContext';
-import { ENABLE_FILTER, DELETE_FILTER } from '../reducer/Actions';
+import { ENABLE_FILTER, DELETE_FILTER } from '../reducer/types/Types';
 import ConnectToContext from '../hoc/ConnectToContext';
 
 import NoTableData from './placeholder/NoTableData';

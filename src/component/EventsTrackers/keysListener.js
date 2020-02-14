@@ -3,7 +3,10 @@ import { useAlert } from 'react-alert';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { SET_KEY_PREFERENCES, APPLY_KEY_PREFERENCES } from '../reducer/Actions';
+import {
+  SET_KEY_PREFERENCES,
+  APPLY_KEY_PREFERENCES,
+} from '../reducer/types/Types';
 
 let isMouseOver = false;
 

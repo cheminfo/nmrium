@@ -18,7 +18,7 @@ import 'react-animated-slider-2/build/horizontal.css';
 import { useAlert } from 'react-alert';
 
 import { useDispatch } from '../context/DispatchContext';
-import { DELETE_MOLECULE, ADD_MOLECULE } from '../reducer/Actions';
+import { DELETE_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 import { ChartContext } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import MenuButton from '../elements/MenuButton';

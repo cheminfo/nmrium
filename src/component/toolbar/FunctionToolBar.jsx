@@ -9,7 +9,7 @@ import {
   APPLY_FFT_FILTER,
   SET_SELECTED_FILTER,
   FULL_ZOOM_OUT,
-} from '../reducer/Actions';
+} from '../reducer/types/Types';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';

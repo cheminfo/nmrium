@@ -4,7 +4,7 @@ import { jsx, css } from '@emotion/core';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { DELETE_BASE_LINE_ZONE } from '../reducer/Actions';
+import { DELETE_BASE_LINE_ZONE } from '../reducer/types/Types';
 
 const styles = css`
   pointer-events: bounding-box;

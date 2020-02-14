@@ -23,7 +23,7 @@ import {
   ADD_PEAK,
   SET_VERTICAL_INDICATOR_X_POSITION,
   SET_DIMENSIONS,
-} from '../reducer/Actions';
+} from '../reducer/types/Types';
 import CrossLinePointer from '../tool/CrossLinePointer';
 import BrushX from '../tool/BrushX';
 import XLabelPointer from '../tool/XLabelPointer';

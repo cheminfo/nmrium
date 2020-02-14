@@ -4,7 +4,7 @@ import { jsx, css } from '@emotion/core';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useChartData } from '../context/ChartContext';
-import { DELETE_RANGE } from '../reducer/Actions';
+import { DELETE_RANGE } from '../reducer/types/Types';
 import { useHighlight } from '../highlight';
 
 const stylesOnHover = css`

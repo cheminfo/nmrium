@@ -5,7 +5,7 @@ import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
   RESET_SELECTED_TOOL,
-} from '../reducer/Actions';
+} from '../reducer/types/Types';
 import InputRange from '../elements/InputRange';
 import TextInput from '../elements/TextInput';
 

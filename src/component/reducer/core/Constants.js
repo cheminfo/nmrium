@@ -1,0 +1,1 @@
+export const DEFAULT_YAXIS_SHIFT_VALUE = 20;

@@ -3,7 +3,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import {
   APPLY_ZERO_FILLING_FILTER,
   RESET_SELECTED_TOOL,
-} from '../reducer/Actions';
+} from '../reducer/types/Types';
 import { useDispatch } from '../context/DispatchContext';
 import Select from '../elements/Select';
 import { useChartData } from '../context/ChartContext';

@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { FaMinus } from 'react-icons/fa';
 
-import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/Actions';
+import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/types/Types';
 import { useDispatch } from '../context/DispatchContext';
 import { useHighlight } from '../highlight';
 

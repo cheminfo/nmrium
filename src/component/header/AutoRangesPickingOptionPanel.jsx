@@ -1,7 +1,10 @@
 import React, { useCallback } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import { AUTO_RANGES_DETECTION, RESET_SELECTED_TOOL } from '../reducer/Actions';
+import {
+  AUTO_RANGES_DETECTION,
+  RESET_SELECTED_TOOL,
+} from '../reducer/types/Types';
 
 const styles = {
   container: {

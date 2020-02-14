@@ -3,7 +3,7 @@ import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 import { useAlert } from 'react-alert';
 
-import { DELETE_RANGE } from '../reducer/Actions';
+import { DELETE_RANGE } from '../reducer/types/Types';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';

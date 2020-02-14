@@ -18,15 +18,10 @@ import PropTypes from 'prop-types';
 
 import { Analysis } from '../data/Analysis';
 
+import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import { HighlightProvider } from './highlight';
 import { ChartDataProvider } from './context/ChartContext';
 import { spectrumReducer, initialState } from './reducer/Reducer';
-import {
-  INITIATE,
-  SET_WIDTH,
-  // SET_DIMENSIONS,
-  SET_LOADING_FLAG,
-} from './reducer/Actions';
 import { DispatchProvider } from './context/DispatchContext';
 import DropZone from './loader/DropZone';
 import ToolBar from './toolbar/ToolBar';

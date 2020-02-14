@@ -5,7 +5,7 @@ import lodash from 'lodash';
 
 import { useChartData } from '../context/ChartContext';
 import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
-import { DELETE_PEAK_NOTATION } from '../reducer/Actions';
+import { DELETE_PEAK_NOTATION } from '../reducer/types/Types';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTable from '../elements/ReactTable/ReactTable';
 import { useModal } from '../elements/Modal';

@@ -4,7 +4,7 @@ import { jsx, css } from '@emotion/core';
 import { StructureEditor } from 'react-ocl/full';
 
 import { useDispatch } from '../context/DispatchContext';
-import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/Actions';
+import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 import { Modal } from '../elements/Modal';
 
 const modalButtonStyle = css`

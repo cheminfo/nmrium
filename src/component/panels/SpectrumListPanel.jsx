@@ -10,7 +10,7 @@ import {
   CHANGE_SPECTRUM_COLOR,
   DELETE_SPECTRA,
   SET_ACTIVE_TAB,
-} from '../reducer/Actions';
+} from '../reducer/types/Types';
 import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { Tabs } from '../elements/Tab';

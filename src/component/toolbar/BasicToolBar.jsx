@@ -21,7 +21,7 @@ import {
   EXPORT_DATA,
   LOAD_JCAMP_FILE,
   SET_LOADING_FLAG,
-} from '../reducer/Actions';
+} from '../reducer/types/Types';
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import MenuButton from '../elements/MenuButton';

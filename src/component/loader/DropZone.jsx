@@ -11,7 +11,7 @@ import {
   LOAD_JCAMP_FILE,
   SET_LOADING_FLAG,
   LOAD_ZIP_FILE,
-} from '../reducer/Actions';
+} from '../reducer/types/Types';
 import { useDispatch } from '../context/DispatchContext';
 import { useChartData } from '../context/ChartContext';
 import { getFileExtension, loadFiles } from '../utility/FileUtility';
