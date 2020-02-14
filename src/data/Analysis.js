@@ -2,6 +2,7 @@ import { Molecule } from 'openchemlib';
 
 import * as SpectraManager from './SpectraManager';
 
+import * as JSZip from 'jszip';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 
@@ -23,9 +24,29 @@ export class Analysis {
     return analysis;
   }
   // handle zip files
-  fromZip(files) {
+  async fromZip(zipFiles) {
     // eslint-disable-next-line no-console
-    console.log(files);
+    const jsZip = new JSZip();
+
+    for (let zipFile of zipFiles) {
+      const zip = await jsZip.loadAsync(zipFile.binary);
+
+      let files = Object.keys(zip.files).filter((name) =>
+        name.endsWith('1/1r'),
+      );
+
+      files = await Promise.all(
+        files.map(async (file) => {
+          const nameProcs = file.replace(/1r$/, 'procs');
+          const nameAcqus = file.replace(/pdata\/1\/1r$/, 'acqus');
+          const procs = await zip.file(nameProcs).async('text');
+          const acqus = await zip.file(nameAcqus).async('text');
+          const content = await zip.file(file).async('arraybuffer');
+
+          SpectraManager.addBruker(this.spectra, { procs, acqus, content });
+        }),
+      );
+    }
   }
 
   async addJcampFromURL(jcampURL, options) {
