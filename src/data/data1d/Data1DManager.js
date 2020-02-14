@@ -15,7 +15,7 @@ export class Data1DManager {
       meta: result.info,
       data,
     });
-    console.log(datum1D);
+    // console.log(datum1D);
     return datum1D;
   };
 
@@ -40,7 +40,7 @@ export class Data1DManager {
         original: data,
       },
     });
-    console.log(datum1D);
+    // console.log(datum1D);
     return datum1D;
   };
 }
