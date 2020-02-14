@@ -26,6 +26,7 @@
     "ml-regression-polynomial": "^2.1.0",
     "ml-spectra-processing": "^2.0.0",
     "mouse-speed": "^2.0.1",
+    "multiplet-analysis": "0.0.0",
     "numeral": "^2.0.6",
     "openchemlib": "^7.2.3",
     "prop-types": "^15.7.2",

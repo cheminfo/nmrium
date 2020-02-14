@@ -8,6 +8,7 @@ import autoPeakPicking from './autoPeakPicking';
 import autoRangesDetection from './autoRangesDetection';
 import { FiltersManager } from './FiltersManager';
 import { Filters } from './filter1d/Filters';
+import { analyseMultiplet } from 'multiplet-analysis';
 
 export class Datum1D {
   /**
@@ -310,6 +311,11 @@ export class Datum1D {
       return true;
     }
     return false;
+  }
+
+  addRange(from, to) {
+    // need to extract the x and re
+    analyseMultiplet();
   }
 
   addPeak(peak) {
