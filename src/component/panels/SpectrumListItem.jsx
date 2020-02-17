@@ -93,7 +93,13 @@ const SpectrumListItem = memo(
         <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
           <div
             style={styles.spectrumClassIcon}
-            className={data.info.isFid ? 'ci-icon-nmr-fid' : 'ci-icon-nmr-ft'}
+            className={
+              data.info.isFid
+                ? 'ci-icon-nmr-fid'
+                : data.info.dimension === 2
+                ? 'ci-icon-nmr-2d'
+                : 'ci-icon-nmr-ft'
+            }
           />
           <span style={styles.info}>{data.name}</span>
           <div
