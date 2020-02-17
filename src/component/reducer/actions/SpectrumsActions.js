@@ -44,7 +44,7 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
     } else {
       draft.activeSpectrum = null;
     }
-    setDomain(draft, false);
+    setDomain(draft);
     setMode(draft);
   });
 };
