@@ -3,7 +3,11 @@ import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 import { useAlert } from 'react-alert';
 
-import { DELETE_RANGE, CHANGE_RANGE_DATA } from '../reducer/types/Types';
+import {
+  DELETE_RANGE,
+  CHANGE_RANGE_DATA,
+  CHANGE_RANGE_SUM,
+} from '../reducer/types/Types';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
@@ -14,6 +18,7 @@ import { copyTextToClipboard } from '../utility/Export';
 import CopyClipboardModal from '../modal/CopyClipboardModal';
 import ConnectToContext from '../hoc/ConnectToContext';
 import Select from '../elements/Select';
+import NumberInputModal from '../modal/NumberInputModal';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -24,6 +29,17 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
+  },
+  sumButton: {
+    borderRadius: '5px',
+    marginTop: '3px',
+    color: 'white',
+    backgroundColor: '#6d6d6d',
+    border: 'none',
+    height: '16px',
+    width: '18px',
+    fontSize: '12px',
+    padding: 0,
   },
   button: {
     backgroundColor: 'transparent',
@@ -66,6 +82,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
           signal: range.signal,
           id: range.id, // needed for ReactTableRow component to highlight
           kind: range.kind,
+          relative: range.relative,
         };
       });
     } else {
@@ -143,11 +160,15 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
       Cell: ({ row }) => row.original.integral.toFixed(1),
     },
     {
+      Header: 'Relative',
+      accessor: 'relative',
+      Cell: ({ row }) => row.original.relative.toFixed(1),
+    },
+    {
       Header: '#Signals',
       Cell: ({ row }) => row.original.signal.length,
     },
     {
-      orderIndex: 6,
       Header: 'Kind',
       accessor: 'kind',
       sortType: 'basic',
@@ -271,6 +292,27 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
     });
   }, [modal, yesHandler]);
 
+  const changeRangelSumHandler = useCallback(
+    (value) => {
+      if (value) {
+        dispatch({ type: CHANGE_RANGE_SUM, value });
+      }
+
+      modal.close();
+    },
+    [dispatch, modal],
+  );
+
+  const showChangeRangesSumModal = useCallback(() => {
+    modal.show(
+      <NumberInputModal
+        header="Set new range sum"
+        onClose={() => modal.close()}
+        onSave={changeRangelSumHandler}
+      />,
+    );
+  }, [changeRangelSumHandler, modal]);
+
   return (
     <div style={styles.container}>
       <DefaultPanelHeader
@@ -285,6 +327,15 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
             onClick={saveAsHTMLHandler}
           >
             <FaFileExport />
+          </button>
+        </ToolTip>
+        <ToolTip title="Change Ranges sum" popupPlacement="right">
+          <button
+            style={styles.sumButton}
+            type="button"
+            onClick={showChangeRangesSumModal}
+          >
+            Σ
           </button>
         </ToolTip>
       </DefaultPanelHeader>

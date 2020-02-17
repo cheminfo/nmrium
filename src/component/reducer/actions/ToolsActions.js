@@ -11,6 +11,7 @@ import GroupByInfoKey from '../../utility/GroupByInfoKey';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
+
 import { getScale } from './ScaleActions';
 
 function getStrongestPeak(state) {

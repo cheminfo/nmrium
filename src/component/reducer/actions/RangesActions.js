@@ -35,4 +35,20 @@ const handelChangeRange = (state, action) => {
   });
 };
 
-export { handleAutoRangesDetection, handleDeleteRange, handelChangeRange };
+const handleChangeRangeSum = (state, value) => {
+  return produce(state, (draft) => {
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      const datumObject = AnalysisObj.getDatum(id);
+      datumObject.changeRangesSum(value);
+      draft.data[index].ranges = datumObject.getRanges();
+    }
+  });
+};
+
+export {
+  handleAutoRangesDetection,
+  handleDeleteRange,
+  handelChangeRange,
+  handleChangeRangeSum,
+};

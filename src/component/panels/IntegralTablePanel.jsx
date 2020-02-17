@@ -13,10 +13,10 @@ import {
 } from '../reducer/types/Types';
 import { useModal } from '../elements/Modal';
 import Select from '../elements/Select';
-import IntegralSumModal from '../modal/IntegralSumModal';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import formatNumber from '../utility/FormatNumber';
 import ConnectToContext from '../hoc/ConnectToContext';
+import NumberInputModal from '../modal/NumberInputModal';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -239,7 +239,8 @@ const IntegralTablePanel = memo(
 
     const showChangeIntegralSumModal = useCallback(() => {
       modal.show(
-        <IntegralSumModal
+        <NumberInputModal
+          header="Set new integral sum"
           onClose={() => modal.close()}
           onSave={changeIntegralSumHandler}
         />,

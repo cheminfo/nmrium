@@ -51,7 +51,7 @@ const styles = css`
   }
 `;
 
-const IntegralSumModal = ({ onSave, onClose }) => {
+const NumberInputModal = ({ onSave, onClose, header }) => {
   const valueReft = useRef();
 
   const saveHandler = useCallback(() => {
@@ -61,17 +61,13 @@ const IntegralSumModal = ({ onSave, onClose }) => {
   return (
     <div css={styles}>
       <div className="header">
-        <span>Set new integral sum</span>
+        <span>{header}</span>
         <button onClick={onClose} type="button">
           <FaTimes />
         </button>
       </div>
       <div className="container">
-        <input
-          ref={valueReft}
-          type="number"
-          placeholder="Enter the integral sum"
-        />
+        <input ref={valueReft} type="number" placeholder="Enter the new sum" />
         <button type="button" onClick={saveHandler}>
           Set
         </button>
@@ -80,7 +76,7 @@ const IntegralSumModal = ({ onSave, onClose }) => {
   );
 };
 
-IntegralSumModal.defaultProps = {
+NumberInputModal.defaultProps = {
   onSave: () => {
     return null;
   },
@@ -88,4 +84,4 @@ IntegralSumModal.defaultProps = {
     return null;
   },
 };
-export default IntegralSumModal;
+export default NumberInputModal;

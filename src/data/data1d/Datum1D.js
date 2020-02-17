@@ -161,6 +161,21 @@ export class Datum1D {
     this.updateRelativeIntegrals();
   }
 
+  changeRangesSum(sumValue) {
+    this.ranges = Object.assign({}, this.ranges);
+    this.ranges.values = this.ranges.values.slice();
+    this.ranges.options = { ...this.ranges.options, sum: sumValue };
+    let currentSum = this.ranges.values.reduce(
+      (previous, current) => (previous += current.integral),
+      0,
+    );
+    let factor = sumValue / currentSum;
+    this.ranges.values = this.ranges.values.map((range) => {
+      const relative = range.integral * factor;
+      return { ...range, relative };
+    });
+  }
+
   updateRelativeIntegrals() {
     const sum = this.integrals.options.sum || 100;
     this.integrals = Object.assign({}, this.integrals);
@@ -217,6 +232,7 @@ export class Datum1D {
         id: generateID(),
         ...range,
         kind: 'signal',
+        relative: 0,
       };
     });
     return this.ranges;
