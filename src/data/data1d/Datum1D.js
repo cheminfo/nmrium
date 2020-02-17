@@ -313,6 +313,7 @@ export class Datum1D {
     return false;
   }
 
+  // eslint-disable-next-line no-unused-vars
   addRange(from, to) {
     // need to extract the x and re
     analyseMultiplet();
