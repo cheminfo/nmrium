@@ -60,6 +60,7 @@ import {
   SET_KEY_PREFERENCES,
   APPLY_KEY_PREFERENCES,
   LOAD_ZIP_FILE,
+  CHANGE_RANGE_DATA,
 } from './types/Types';
 import {
   handelResetDomain,
@@ -138,6 +139,7 @@ import {
 import {
   handleAutoRangesDetection,
   handleDeleteRange,
+  handelChangeRange,
 } from './actions/RangesActions';
 import {
   handleHistoryUndo,
@@ -325,6 +327,9 @@ export const spectrumReducer = (state, action) => {
       return handleAutoRangesDetection(state, action.options);
     case DELETE_RANGE:
       return handleDeleteRange(state, action.rangeID);
+    case CHANGE_RANGE_DATA:
+      return handelChangeRange(state, action);
+
     case SET_PREFERENCES:
       return handelSetPreferences(state, action.data);
     case SET_ACTIVE_TAB:

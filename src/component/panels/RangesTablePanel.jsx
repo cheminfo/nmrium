@@ -3,7 +3,7 @@ import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 import { useAlert } from 'react-alert';
 
-import { DELETE_RANGE } from '../reducer/types/Types';
+import { DELETE_RANGE, CHANGE_RANGE_DATA } from '../reducer/types/Types';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
@@ -13,9 +13,11 @@ import { useModal } from '../elements/Modal';
 import { copyTextToClipboard } from '../utility/Export';
 import CopyClipboardModal from '../modal/CopyClipboardModal';
 import ConnectToContext from '../hoc/ConnectToContext';
+import Select from '../elements/Select';
 
 import NoTableData from './placeholder/NoTableData';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
+import { SignalKinds } from './constants/SignalsKinds';
 
 const styles = {
   toolbar: {
@@ -28,6 +30,8 @@ const styles = {
     border: 'none',
   },
 };
+
+const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
   // const { data: SpectrumsData, activeSpectrum } = useChartData();
@@ -61,6 +65,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
           integral: range.integral,
           signal: range.signal,
           id: range.id, // needed for ReactTableRow component to highlight
+          kind: range.kind,
         };
       });
     } else {
@@ -83,6 +88,17 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
   const closeClipBoardHandler = useCallback(() => {
     modal.close();
   }, [modal]);
+
+  const changeRangeSingnalKindHandler = useCallback(
+    (value, row) => {
+      const _data = { ...row.original, kind: value };
+      dispatch({
+        type: CHANGE_RANGE_DATA,
+        data: _data,
+      });
+    },
+    [dispatch],
+  );
 
   const saveAsHTMLHandler = useCallback(() => {
     const result = getACS(data);
@@ -129,6 +145,21 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
     {
       Header: '#Signals',
       Cell: ({ row }) => row.original.signal.length,
+    },
+    {
+      orderIndex: 6,
+      Header: 'Kind',
+      accessor: 'kind',
+      sortType: 'basic',
+      resizable: true,
+      Cell: ({ row }) => (
+        <Select
+          onChange={(value) => changeRangeSingnalKindHandler(value, row)}
+          data={SignalKinds}
+          style={selectStyle}
+          defaultValue={row.original.kind}
+        />
+      ),
     },
     {
       Header: '',

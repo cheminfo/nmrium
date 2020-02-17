@@ -24,4 +24,15 @@ const handleDeleteRange = (state, rangeID) => {
   });
 };
 
-export { handleAutoRangesDetection, handleDeleteRange };
+const handelChangeRange = (state, action) => {
+  return produce(state, (draft) => {
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      const datumObject = AnalysisObj.getDatum(id);
+      datumObject.setRange(action.data);
+      draft.data[index].ranges = datumObject.getRanges();
+    }
+  });
+};
+
+export { handleAutoRangesDetection, handleDeleteRange, handelChangeRange };

@@ -1,6 +1,7 @@
 // import baseline from './baseline';
 import max from 'ml-array-max';
 import { XY } from 'ml-spectra-processing';
+import { analyseMultiplet } from 'multiplet-analysis';
 
 import generateID from '../utilities/generateID';
 
@@ -8,7 +9,6 @@ import autoPeakPicking from './autoPeakPicking';
 import autoRangesDetection from './autoRangesDetection';
 import { FiltersManager } from './FiltersManager';
 import { Filters } from './filter1d/Filters';
-import { analyseMultiplet } from 'multiplet-analysis';
 
 export class Datum1D {
   /**
@@ -114,6 +114,15 @@ export class Datum1D {
     this.ranges = ranges;
   }
 
+  setRange(data) {
+    this.ranges = Object.assign({}, this.ranges);
+    this.ranges.values = this.ranges.values.slice();
+    const RangeIndex = this.ranges.values.findIndex(
+      (range) => range.id === data.id,
+    );
+    this.ranges.values[RangeIndex] = data;
+  }
+
   getRanges() {
     return this.ranges;
   }
@@ -207,6 +216,7 @@ export class Datum1D {
       return {
         id: generateID(),
         ...range,
+        kind: 'signal',
       };
     });
     return this.ranges;
@@ -247,6 +257,15 @@ export class Datum1D {
         (integral) => integral.id !== id,
       );
     }
+  }
+
+  setIntegral(data) {
+    this.integrals = Object.assign({}, this.integrals);
+    this.integrals.values = this.integrals.values.slice();
+    const integralIndex = this.integrals.values.findIndex(
+      (integral) => integral.id === data.id,
+    );
+    this.integrals.values[integralIndex] = data;
   }
 
   /***
