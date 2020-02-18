@@ -28,9 +28,11 @@ const setIntegralZoom = (state, zoomFactor, draft) => {
         height - margin.bottom,
         margin.top,
       ]);
+
+      const scaleValue = zoomFactor.scale < 0.1 ? 0.05 : zoomFactor.scale;
       const t = zoomIdentity
         .translate(0, height - margin.bottom)
-        .scale(zoomFactor.scale)
+        .scale(scaleValue)
         .translate(0, -(height - margin.bottom));
 
       const newYDomain = t.rescaleY(scale).domain();
