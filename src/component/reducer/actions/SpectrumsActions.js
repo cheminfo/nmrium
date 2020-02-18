@@ -32,7 +32,7 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
 
 const handleChangeActiveSpectrum = (state, activeSpectrum) => {
   return produce(state, (draft) => {
-    let isSameFid = false;
+    let refreshDomain = false;
     if (activeSpectrum) {
       AnalysisObj.getDatum(activeSpectrum.id).isVisible = true;
       const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
@@ -43,24 +43,26 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
         draft.data[newIndex].isVisible = true;
       }
       if (oldIndex !== -1) {
-        isSameFid =
+        refreshDomain =
           draft.data[oldIndex].info.isFid === draft.data[newIndex].info.isFid
-            ? true
-            : false;
+            ? false
+            : true;
       } else {
-        isSameFid = !draft.data[newIndex].info.isFid;
+        refreshDomain = draft.data[newIndex].info.isFid;
       }
       activeSpectrum = { ...activeSpectrum, newIndex };
       draft.activeSpectrum = activeSpectrum;
     } else {
       draft.activeSpectrum = null;
+      refreshDomain = false;
     }
     /**
      * if the active spectrum not is FID then dont refresh the domain and the mode when the first time you activate soectrum
      * if the new active spectrum different than the previous active spectrum fid then refresh the domain andf the mode.
      */
     //
-    if (!isSameFid) {
+    if (refreshDomain) {
+      alert('sss');
       setDomain(draft);
       setMode(draft);
     }
