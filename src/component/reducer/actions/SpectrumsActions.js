@@ -62,7 +62,6 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
      */
     //
     if (refreshDomain) {
-      alert('sss');
       setDomain(draft);
       setMode(draft);
     }
