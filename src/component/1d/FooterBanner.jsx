@@ -4,6 +4,7 @@ import { useContext, memo } from 'react';
 
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
+import { BrushContext } from '../EventsTrackers/BrushTracker';
 
 const styles = css`
   pointer-events: bounding-box;
@@ -38,6 +39,7 @@ const styles = css`
 `;
 const FooterBanner = memo(({ frequency: frequencyProps }) => {
   let position = useContext(MouseContext);
+  const { startX, endX, step } = useContext(BrushContext);
   const {
     scaleX,
     scaleY,
@@ -83,6 +85,25 @@ const FooterBanner = memo(({ frequency: frequencyProps }) => {
             .toFixed(2)}
         </span>
       </div>
+      {step === 'brushing' && (
+        <div>
+          <span className="label"> Δppm :</span>
+          <span className="value">
+            {(scaleX.invert(startX) - scaleX.invert(endX)).toFixed(2)}
+          </span>
+        </div>
+      )}
+      {frequency && step === 'brushing' && (
+        <div>
+          <span className="label"> ΔHz :</span>
+          <span className="value">
+            {(
+              scaleX.invert(startX) * frequency -
+              scaleX.invert(endX) * frequency
+            ).toFixed(2)}
+          </span>
+        </div>
+      )}
     </div>
   );
 });
