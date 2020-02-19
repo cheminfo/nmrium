@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // import baseline from './baseline';
 import max from 'ml-array-max';
 import { XY } from 'ml-spectra-processing';
@@ -350,8 +351,14 @@ export class Datum1D {
 
   // eslint-disable-next-line no-unused-vars
   addRange(from, to) {
+    const fromIndex = this.data.x.findIndex((number) => number >= from);
+    const toIndex = this.data.x.findIndex((number) => number >= to) - 1;
+    const data = {
+      x: this.data.x.slice(fromIndex, toIndex),
+      re: this.data.re.slice(fromIndex, toIndex),
+    };
     // need to extract the x and re
-    analyseMultiplet();
+    const range = analyseMultiplet(data);
   }
 
   addPeak(peak) {

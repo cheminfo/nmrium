@@ -20,6 +20,7 @@ const allowTools = [
   options.integral.id,
   options.phaseCorrection.id,
   options.baseLineCorrection.id,
+  options.rangesPicking.id,
 ];
 
 export default function BrushX() {

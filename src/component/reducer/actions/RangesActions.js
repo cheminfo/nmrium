@@ -2,6 +2,7 @@ import { produce } from 'immer';
 
 import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/initiate';
+import { getScale } from './ScaleActions';
 
 const handleAutoRangesDetection = (state, detectionOptions) => {
   return produce(state, (draft) => {
@@ -45,10 +46,33 @@ const handleChangeRangeSum = (state, value) => {
     }
   });
 };
+const handleAddRange = (state, action) => {
+  return produce(state, (draft) => {
+    const scale = getScale(state).x;
+
+    const start = scale.invert(action.startX);
+    const end = scale.invert(action.endX);
+
+    let range = [];
+    if (start > end) {
+      range = [end, start];
+    } else {
+      range = [start, end];
+    }
+
+    if (draft.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      const datumObject = AnalysisObj.getDatum(id);
+      datumObject.addRange(range[0], range[1]);
+      draft.data[index].ranges = datumObject.getRanges();
+    }
+  });
+};
 
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
   handelChangeRange,
   handleChangeRangeSum,
+  handleAddRange,
 };

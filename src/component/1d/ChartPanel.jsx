@@ -23,6 +23,7 @@ import {
   ADD_PEAK,
   SET_VERTICAL_INDICATOR_X_POSITION,
   SET_DIMENSIONS,
+  ADD_RANGE,
 } from '../reducer/types/Types';
 import CrossLinePointer from '../tool/CrossLinePointer';
 import BrushX from '../tool/BrushX';
@@ -57,6 +58,12 @@ const ChartPanel = memo(() => {
           case options.integral.id:
             dispatch({
               type: ADD_INTEGRAL,
+              ...brushData,
+            });
+            break;
+          case options.rangesPicking.id:
+            dispatch({
+              type: ADD_RANGE,
               ...brushData,
             });
             break;

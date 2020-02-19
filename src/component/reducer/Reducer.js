@@ -62,6 +62,7 @@ import {
   LOAD_ZIP_FILE,
   CHANGE_RANGE_DATA,
   CHANGE_RANGE_SUM,
+  ADD_RANGE,
 } from './types/Types';
 import {
   handelResetDomain,
@@ -143,6 +144,7 @@ import {
   handleDeleteRange,
   handelChangeRange,
   handleChangeRangeSum,
+  handleAddRange,
 } from './actions/RangesActions';
 import {
   handleHistoryUndo,
@@ -343,6 +345,8 @@ export const spectrumReducer = (state, action) => {
 
     case AUTO_RANGES_DETECTION:
       return handleAutoRangesDetection(state, action.options);
+    case ADD_RANGE:
+      return handleAddRange(state, action);
     case DELETE_RANGE:
       return handleDeleteRange(state, action.rangeID);
     case CHANGE_RANGE_DATA:
