@@ -1,8 +1,9 @@
 import { Molecule } from 'openchemlib';
+import * as JSZip from 'jszip';
+
+import getColor from '../component/utility/ColorGenerator';
 
 import * as SpectraManager from './SpectraManager';
-
-import * as JSZip from 'jszip';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 
@@ -24,6 +25,8 @@ export class Analysis {
     return analysis;
   }
   // handle zip files
+  static usedColors = [];
+
   async fromZip(zipFiles) {
     // eslint-disable-next-line no-console
     const jsZip = new JSZip();
@@ -34,16 +37,22 @@ export class Analysis {
       let files = Object.keys(zip.files).filter((name) =>
         name.endsWith('1/1r'),
       );
-
+      // console.log(this.spectra);
+      // eslint-disable-next-line no-await-in-loop
       files = await Promise.all(
         files.map(async (file) => {
+          const color = getColor(true);
           const nameProcs = file.replace(/1r$/, 'procs');
           const nameAcqus = file.replace(/pdata\/1\/1r$/, 'acqus');
           const procs = await zip.file(nameProcs).async('text');
           const acqus = await zip.file(nameAcqus).async('text');
           const content = await zip.file(file).async('arraybuffer');
 
-          SpectraManager.addBruker(this.spectra, { procs, acqus, content });
+          SpectraManager.addBruker(this.spectra, color, {
+            procs,
+            acqus,
+            content,
+          });
         }),
       );
     }

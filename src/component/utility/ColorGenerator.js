@@ -21,9 +21,9 @@ export const COLORS = [
   '#232C16',
 ];
 
-const getColor = (usedColors) => {
+const getColor = (isRandom = false, usedColors = []) => {
   const resetColors = COLORS.filter((c) => !usedColors.includes(c));
-  if (resetColors.length > 0) {
+  if (resetColors.length > 0 && !isRandom) {
     return resetColors[0];
   } else {
     const lum = -0.25;

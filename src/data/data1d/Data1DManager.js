@@ -7,10 +7,16 @@ import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
 import { Datum1D } from './Datum1D';
 
 export class Data1DManager {
-  static fromBruker = function fromBruker(result, info, options = {}) {
+  static fromBruker = function fromBruker(result, color, info, options = {}) {
     let data = getData(result.spectra);
+    // let usedColors = data.map((d) => d.color);
+    // const color = getColor(usedColors);
+
     const datum1D = new Datum1D({
       ...options,
+      display: {
+        color,
+      },
       info,
       meta: result.info,
       data,
