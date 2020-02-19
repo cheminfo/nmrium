@@ -351,10 +351,10 @@ export class Datum1D {
 
   // eslint-disable-next-line no-unused-vars
   addRange(from, to) {
-    const { fromIndex, toIndex } = X.getFromToIndex(this.data.x, { from, to });
+    const indexes = X.getFromToIndex(this.data.x, { from, to });
     const data = {
-      x: this.data.x.slice(fromIndex, toIndex),
-      re: this.data.re.slice(fromIndex, toIndex),
+      x: this.data.x.slice(indexes.fromIndex, indexes.toIndex),
+      y: this.data.re.slice(indexes.fromIndex, indexes.toIndex),
     };
 
     // need to extract the x and re
