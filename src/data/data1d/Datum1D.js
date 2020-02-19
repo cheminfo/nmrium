@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 // import baseline from './baseline';
 import max from 'ml-array-max';
-import { XY } from 'ml-spectra-processing';
+import { XY, X } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 
 import generateID from '../utilities/generateID';
@@ -351,12 +351,12 @@ export class Datum1D {
 
   // eslint-disable-next-line no-unused-vars
   addRange(from, to) {
-    const fromIndex = this.data.x.findIndex((number) => number >= from);
-    const toIndex = this.data.x.findIndex((number) => number >= to) - 1;
+    const indexes = X.getFromToIndex(this.data.x, { from, to });
     const data = {
-      x: this.data.x.slice(fromIndex, toIndex),
-      y: this.data.re.slice(fromIndex, toIndex),
+      x: this.data.x.slice(indexes.fromIndex, indexes.toIndex),
+      y: this.data.re.slice(indexes.fromIndex, indexes.toIndex),
     };
+
     // need to extract the x and re
     const range = analyseMultiplet(data);
   }
