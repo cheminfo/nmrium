@@ -21,7 +21,11 @@ import { Analysis } from '../data/Analysis';
 import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import { HighlightProvider } from './highlight';
 import { ChartDataProvider } from './context/ChartContext';
-import { spectrumReducer, initialState } from './reducer/Reducer';
+import {
+  spectrumReducer,
+  initialState,
+  dispatchMiddleware,
+} from './reducer/Reducer';
 import { DispatchProvider } from './context/DispatchContext';
 import DropZone from './loader/DropZone';
 import ToolBar from './toolbar/ToolBar';
@@ -124,12 +128,14 @@ const NMRDisplayer = (props) => {
     setResizeEventStart(false);
     dispatch({ type: SET_WIDTH, width: size });
   }, []);
-
+  const dispatchMiddleWare = useMemo(() => dispatchMiddleware(dispatch), [
+    dispatch,
+  ]);
   return (
     <ErrorBoundary>
       <ModalProvider>
         <AlertProvider template={AlertTemplate} {...alertOptions}>
-          <DispatchProvider value={dispatch}>
+          <DispatchProvider value={dispatchMiddleWare}>
             <ChartDataProvider
               value={{
                 height: heightProp,

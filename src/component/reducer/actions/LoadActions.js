@@ -1,4 +1,4 @@
-import { produce, createDraft, finishDraft } from 'immer';
+import { produce } from 'immer';
 
 import { Datum1D } from '../../../data/data1d/Datum1D';
 import getColor from '../../utility/ColorGenerator';
@@ -115,14 +115,17 @@ const handleLoadMOLFile = (state, files) => {
     draft.isLoading = false;
   });
 };
-async function handleLoadZIPFile(state, files) {
-  const draft = createDraft(state);
+async function loadZipFile(files) {
   await AnalysisObj.fromZip(files);
-  draft.data = AnalysisObj.getSpectraData();
-  setDomain(draft);
-  setMode(draft);
-  draft.isLoading = false;
-  return finishDraft(draft);
+}
+
+function handleLoadZIPFile(state) {
+  return produce(state, (draft) => {
+    draft.data = AnalysisObj.getSpectraData();
+    setDomain(draft);
+    setMode(draft);
+    draft.isLoading = false;
+  });
 }
 
 export {
@@ -133,4 +136,5 @@ export {
   handleLoadJsonFile,
   handleLoadMOLFile,
   handleLoadZIPFile,
+  loadZipFile,
 };

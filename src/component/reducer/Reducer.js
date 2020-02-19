@@ -92,6 +92,7 @@ import {
   handleLoadZIPFile,
   setData,
   setIsLoading,
+  loadZipFile,
 } from './actions/LoadActions';
 import {
   handelSetPreferences,
@@ -193,6 +194,21 @@ export const initialState = {
   baseLineZones: [],
   keysPreferences: {},
 };
+
+export function dispatchMiddleware(dispatch) {
+  return (action) => {
+    switch (action.type) {
+      case LOAD_ZIP_FILE:
+        loadZipFile(action.files).then(() => {
+          dispatch(action);
+        });
+        break;
+
+      default:
+        return dispatch(action);
+    }
+  };
+}
 
 export const spectrumReducer = (state, action) => {
   switch (action.type) {
