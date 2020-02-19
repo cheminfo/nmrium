@@ -355,7 +355,7 @@ export class Datum1D {
     const toIndex = this.data.x.findIndex((number) => number >= to) - 1;
     const data = {
       x: this.data.x.slice(fromIndex, toIndex),
-      re: this.data.re.slice(fromIndex, toIndex),
+      y: this.data.re.slice(fromIndex, toIndex),
     };
     // need to extract the x and re
     const range = analyseMultiplet(data);
