@@ -227,6 +227,9 @@ export class Datum1D {
   }
 
   detectRanges(options) {
+    this.ranges = Object.assign({}, this.ranges);
+    this.ranges.values = this.ranges.values.slice();
+
     const ranges = autoRangesDetection(this, options);
     this.ranges.values = ranges.map((range) => {
       return {
@@ -351,6 +354,9 @@ export class Datum1D {
 
   // eslint-disable-next-line no-unused-vars
   addRange(from, to) {
+    this.ranges = Object.assign({}, this.ranges);
+    this.ranges.values = this.ranges.values.slice();
+
     const { fromIndex, toIndex } = X.getFromToIndex(this.data.x, { from, to });
     const data = {
       x: this.data.x.slice(fromIndex, toIndex),
@@ -363,6 +369,8 @@ export class Datum1D {
       });
 
       let range = {
+        id: generateID(),
+
         from,
         to,
         integral: this.getIntegration(from, to), // the real value,
@@ -370,7 +378,10 @@ export class Datum1D {
           delta: (from + to) / 2,
           j: signal.j,
         },
+        kind: 'signal',
+        relative: 0,
       };
+      this.ranges.values.push(range);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(data); // we want to be able to copy the data from the console for debug
