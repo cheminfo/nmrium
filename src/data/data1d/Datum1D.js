@@ -383,8 +383,7 @@ export class Datum1D {
       };
       this.ranges.values.push(range);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(data); // we want to be able to copy the data from the console for debug
+      navigator.clipboard.writeText(JSON.stringify(data, undefined, 2));
       throw new Error('Could not calculate the multiplicity');
     }
   }
