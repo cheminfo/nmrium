@@ -361,16 +361,21 @@ export class Datum1D {
       frequency: this.info.frequency,
       takeBestPartMultiplet: true,
     });
-
-    let range = {
-      from,
-      to,
-      integral: this.getIntegration(from, to), // the real value,
-      signal: {
-        delta: (from + to) / 2,
-        j: signal.j,
-      },
-    };
+    try {
+      let range = {
+        from,
+        to,
+        integral: this.getIntegration(from, to), // the real value,
+        signal: {
+          delta: (from + to) / 2,
+          j: signal.j,
+        },
+      };
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(data); // we want to be able to copy the data from the console for debug
+      throw new Error('Could not calculate the multiplicity');
+    }
   }
 
   addPeak(peak) {
