@@ -357,8 +357,20 @@ export class Datum1D {
       y: this.data.re.slice(indexes.fromIndex, indexes.toIndex),
     };
 
-    // need to extract the x and re
-    const range = analyseMultiplet(data);
+    const signal = analyseMultiplet(data, {
+      frequency: this.info.frequency,
+      takeBestPartMultiplet: true,
+    });
+
+    let range = {
+      from,
+      to,
+      integral: this.getIntegration(from, to), // the real value,
+      signal: {
+        delta: (from + to) / 2,
+        j: signal.j,
+      },
+    };
   }
 
   addPeak(peak) {
