@@ -2,7 +2,7 @@ import { produce } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import { options } from '../../toolbar/ToolTypes';
-import { AnalysisObj } from '../core/Middleware';
+import { AnalysisObj } from '../core/Analysis';
 import getClosestNumber from '../helper/GetClosestNumber';
 
 import { setDomain, setMode } from './DomainActions';

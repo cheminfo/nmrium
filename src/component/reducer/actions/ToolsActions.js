@@ -4,7 +4,7 @@ import { max, zoomIdentity, scaleLinear } from 'd3';
 import { options } from '../../toolbar/ToolTypes';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import generateID from '../../../data/utilities/generateID';
-import { AnalysisObj } from '../core/Middleware';
+import { AnalysisObj } from '../core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE } from '../core/Constants';
 import getClosestNumber from '../helper/GetClosestNumber';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';

@@ -2,7 +2,7 @@ import { produce } from 'immer';
 import { extent } from 'd3';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import { AnalysisObj } from '../core/Middleware';
+import { AnalysisObj } from '../core/Analysis';
 
 function getActiveData(draft) {
   if (draft.activeTab) {
