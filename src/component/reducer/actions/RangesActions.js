@@ -52,7 +52,6 @@ const handleAddRange = (state, action) => {
 
     const start = scale.invert(action.startX);
     const end = scale.invert(action.endX);
-
     let range = [];
     if (start > end) {
       range = [end, start];

@@ -351,10 +351,10 @@ export class Datum1D {
 
   // eslint-disable-next-line no-unused-vars
   addRange(from, to) {
-    const indexes = X.getFromToIndex(this.data.x, { from, to });
+    const { fromIndex, toIndex } = X.getFromToIndex(this.data.x, { from, to });
     const data = {
-      x: this.data.x.slice(indexes.fromIndex, indexes.toIndex),
-      y: this.data.re.slice(indexes.fromIndex, indexes.toIndex),
+      x: this.data.x.slice(fromIndex, toIndex),
+      y: this.data.re.slice(fromIndex, toIndex),
     };
 
     const signal = analyseMultiplet(data, {

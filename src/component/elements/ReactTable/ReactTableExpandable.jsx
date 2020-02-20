@@ -20,8 +20,8 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
       columns,
       data,
     },
-    useExpanded,
     useSortBy,
+    useExpanded,
   );
 
   return (
