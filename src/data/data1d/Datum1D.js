@@ -356,12 +356,12 @@ export class Datum1D {
       x: this.data.x.slice(fromIndex, toIndex),
       y: this.data.re.slice(fromIndex, toIndex),
     };
-
-    const signal = analyseMultiplet(data, {
-      frequency: this.info.frequency,
-      takeBestPartMultiplet: true,
-    });
     try {
+      const signal = analyseMultiplet(data, {
+        frequency: this.info.frequency,
+        takeBestPartMultiplet: true,
+      });
+
       let range = {
         from,
         to,
