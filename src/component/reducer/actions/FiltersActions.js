@@ -163,9 +163,11 @@ const handleBaseLineCorrectionFilter = (state, action) => {
       },
     ]);
     draft.baseLineZones = [];
+    const xDomainSnapshot = draft.xDomain.slice();
+
     setDataByFilters(draft, activeObject, activeSpectrumId);
     setDomain(draft);
-    setMode(draft);
+    draft.xDomain = xDomainSnapshot;
   });
 };
 
