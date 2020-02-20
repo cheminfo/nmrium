@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { AnalysisObj } from '../core/initiate';
+import { AnalysisObj } from '../core/Middleware';
 import { DEFAULT_YAXIS_SHIFT_VALUE } from '../core/Constants';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 

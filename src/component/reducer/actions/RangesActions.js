@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 
 import { options } from '../../toolbar/ToolTypes';
-import { AnalysisObj } from '../core/initiate';
+import { AnalysisObj } from '../core/Middleware';
 import { getScale } from './ScaleActions';
 
 const handleAutoRangesDetection = (state, detectionOptions) => {

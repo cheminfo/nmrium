@@ -4,7 +4,7 @@ import {
   exportAsPng,
   copyPNGToClipboard,
 } from '../../utility/Export';
-import { AnalysisObj } from '../core/initiate';
+import { AnalysisObj } from '../core/Middleware';
 
 const exportData = (state, { exportType }) => {
   const { data } = state;

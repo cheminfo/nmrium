@@ -148,6 +148,7 @@ export class FiltersManager {
   static addFilter(datum1d, filter, isDeleteAllow = true) {
     const id = generateID();
     datum1d.filters = datum1d.filters.slice(0);
+    delete filter.isSnapshot;
     datum1d.filters.push({
       ...filter,
       id: id,
@@ -159,6 +160,7 @@ export class FiltersManager {
   static replaceFilter(datum1d, filterID, value) {
     datum1d.filters = datum1d.filters.slice(0);
     const index = datum1d.filters.findIndex((f) => f.id === filterID);
+    delete datum1d.filters[index].isSnapshot;
     datum1d.filters[index] = {
       ...datum1d.filters[index],
       value,

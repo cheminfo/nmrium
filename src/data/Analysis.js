@@ -165,14 +165,14 @@ export class Analysis {
    *
    * @param {boolean} isRealData
    */
-  getSpectraData(isRealData = true) {
+  getSpectraData(isSnapshot = false) {
     return this.spectra
       ? this.spectra.map((ob) => {
           return {
             id: ob.id,
-            x: ob.data.x,
-            y: isRealData ? ob.data.re : ob.data.im,
-            im: ob.data.im,
+            x: !isSnapshot ? ob.data.x : ob.dataSnapshot.x,
+            y: !isSnapshot ? ob.data.re : ob.dataSnapshot.re,
+            im: !isSnapshot ? ob.data.im : ob.dataSnapshot.im,
             name: ob.display.name,
             color: ob.display.color,
             isVisible: ob.display.isVisible,
@@ -192,5 +192,17 @@ export class Analysis {
   deleteDatumByIDs(IDs) {
     const _spectra = this.spectra.filter((d) => !IDs.includes(d.id));
     this.spectra = _spectra.length > 0 ? _spectra : [];
+  }
+
+  createDataSnapshot(isReduced = true) {
+    this.spectra.forEach((ob) => {
+      ob.saveReducedDataSnapshot(isReduced);
+    });
+  }
+
+  clearDataSnapshot() {
+    this.spectra.forEach((ob) => {
+      ob.clearDataSnapshot();
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { AnalysisObj } from '../core/initiate';
+import { AnalysisObj } from '../core/Middleware';
 
 const handleAddMolecule = (state, molfile) => {
   AnalysisObj.addMolfile(molfile);

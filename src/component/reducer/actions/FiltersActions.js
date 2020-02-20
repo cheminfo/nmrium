@@ -2,7 +2,7 @@ import { produce } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import { options } from '../../toolbar/ToolTypes';
-import { AnalysisObj } from '../core/initiate';
+import { AnalysisObj } from '../core/Middleware';
 import getClosestNumber from '../helper/GetClosestNumber';
 
 import { setDomain, setMode } from './DomainActions';
@@ -69,16 +69,21 @@ const applyFFTFilter = (state) => {
 };
 const applyManualPhaseCorrectionFilter = (state) => {
   return produce(state, (draft) => {
-    const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum(activeSpectrumId);
+    const { id, index } = draft.activeSpectrum;
+    AnalysisObj.clearDataSnapshot();
+    draft.data = AnalysisObj.getSpectraData();
 
-    const spectrumIndex = state.tempData.findIndex(
-      (spectrum) => spectrum.id === activeSpectrumId,
-    );
+    const activeObject = AnalysisObj.getDatum(id);
+
+    activeObject.reapplyFilters();
+    const XYData = activeObject.getReal();
+
+    draft.data[index].x = XYData.x;
+    draft.data[index].y = XYData.y;
     draft.selectedOptionPanel = null;
     draft.selectedTool = options.zoom.id;
-    draft.tempData = null;
-    draft.data[spectrumIndex].filters = activeObject.getFilters();
+    draft.dataSnapshot = null;
+    draft.data[index].filters = activeObject.getFilters();
     setDomain(draft);
   });
 };
@@ -94,10 +99,13 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
 
     ph0 = ph0 - (ph1 * pivotIndex) / activeObject.data.x.length;
     activeObject.applyFilter([
-      { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
+      {
+        name: Filters.phaseCorrection.id,
+        options: { ph0, ph1 },
+      },
     ]);
 
-    const XYData = activeObject.getReal();
+    const XYData = activeObject.getReal(true);
 
     draft.data[index].x = XYData.x;
     draft.data[index].y = XYData.y;

@@ -2,7 +2,7 @@ import { produce } from 'immer';
 import { extent, scaleLinear, zoomIdentity } from 'd3';
 import { XY } from 'ml-spectra-processing';
 
-import { AnalysisObj } from '../core/initiate';
+import { AnalysisObj } from '../core/Middleware';
 
 import { getScale } from './ScaleActions';
 

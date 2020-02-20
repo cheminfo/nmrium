@@ -2,7 +2,7 @@ import { produce } from 'immer';
 
 import { Datum1D } from '../../../data/data1d/Datum1D';
 import getColor from '../../utility/ColorGenerator';
-import { AnalysisObj, initiateObject } from '../core/initiate';
+import { AnalysisObj, initiateObject } from '../core/Middleware';
 
 import { setMode, getDomain, setDomain } from './DomainActions';
 import { setYAxisShift } from './ToolsActions';

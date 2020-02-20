@@ -4,7 +4,7 @@ import { max, zoomIdentity, scaleLinear } from 'd3';
 import { options } from '../../toolbar/ToolTypes';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import generateID from '../../../data/utilities/generateID';
-import { AnalysisObj } from '../core/initiate';
+import { AnalysisObj } from '../core/Middleware';
 import { DEFAULT_YAXIS_SHIFT_VALUE } from '../core/Constants';
 import getClosestNumber from '../helper/GetClosestNumber';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
@@ -29,20 +29,25 @@ function getStrongestPeak(state) {
 }
 
 function setFilterChanges(draft, state, selectedFilter) {
+  const activeSpectrumId = state.activeSpectrum.id;
+  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
+
   draft.tempData = state.data;
+
+  //save reduced snapshot
+  // console.log(dd);
   //select the equalizer tool when you enable manual phase correction filter
   if (selectedFilter === Filters.phaseCorrection.id) {
+    AnalysisObj.createDataSnapshot();
+    draft.data = AnalysisObj.getSpectraData(true);
     const { xValue } = getStrongestPeak(state);
     draft.pivot = xValue;
   } else {
     if (draft.selectedTool === options.phaseCorrection.id) {
-      const activeSpectrumId = state.activeSpectrum.id;
-
       const spectrumIndex = draft.data.findIndex(
         (spectrum) => spectrum.id === activeSpectrumId,
       );
 
-      const activeObject = AnalysisObj.getDatum(activeSpectrumId);
       activeObject.data.x = state.tempData[spectrumIndex].x;
       activeObject.data.re = state.tempData[spectrumIndex].y;
       activeObject.data.im = state.tempData[spectrumIndex].im;
@@ -51,6 +56,8 @@ function setFilterChanges(draft, state, selectedFilter) {
       draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
       draft.tempData = null;
       draft.selectedTool = null;
+
+      AnalysisObj.clearDataSnapshot();
       setDomain(draft);
     }
   }

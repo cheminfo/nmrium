@@ -3,6 +3,7 @@
 import max from 'ml-array-max';
 import { XY, X } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
+import equallySpaced from 'ml-array-xy-equally-spaced';
 
 import generateID from '../utilities/generateID';
 
@@ -67,6 +68,8 @@ export class Datum1D {
       },
       options.data,
     );
+    this.dataSnapshot = null;
+    this.isSnapshotStart = false;
     this.peaks = Object.assign({ values: [], options: {} }, options.peaks); // array of object {index: xIndex, xShift}
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
@@ -80,6 +83,10 @@ export class Datum1D {
     this.preprocessing();
 
     //reapply filters after load the original data
+    FiltersManager.reapplyFilters(this);
+  }
+
+  reapplyFilters() {
     FiltersManager.reapplyFilters(this);
   }
 
@@ -292,8 +299,8 @@ export class Datum1D {
    * @param {object} Filters [{name:'',options:{}},{...}]
    */
 
-  applyFilter(filters = []) {
-    FiltersManager.applyFilter(this, filters);
+  applyFilter(filters = [], isSnapshot = false) {
+    FiltersManager.applyFilter(this, filters, isSnapshot);
   }
 
   // id filter id
@@ -304,12 +311,18 @@ export class Datum1D {
     FiltersManager.deleteFilter(this, id);
   }
 
-  getReal() {
-    return { x: this.data.x, y: this.data.re };
+  getReal(isSnapshot = false) {
+    return {
+      x: isSnapshot ? this.dataSnapshot.x : this.data.x,
+      y: isSnapshot ? this.dataSnapshot.re : this.data.re,
+    };
   }
 
-  getImaginary() {
-    return { x: this.data.x, y: this.data.im };
+  getImaginary(isSnapshot = false) {
+    return {
+      x: isSnapshot ? this.dataSnapshot.x : this.data.x,
+      y: isSnapshot ? this.dataSnapshot.im : this.data.im,
+    };
   }
 
   // with mouse move
@@ -445,5 +458,26 @@ export class Datum1D {
       ranges: this.ranges,
       filters: this.filters,
     };
+  }
+
+  reduceData(x, re) {
+    return equallySpaced({ x, y: re }, { numberOfPoints: 4096 });
+  }
+
+  saveReducedDataSnapshot(isReduced = true) {
+    this.isSnapshotStart = true;
+    if (isReduced) {
+      const { x, re, im } = this.data;
+      const reData = equallySpaced({ x, y: re }, { numberOfPoints: 4096 });
+      const imData = equallySpaced({ x, y: im }, { numberOfPoints: 4096 });
+      this.dataSnapshot = { x: reData.x, re: reData.y, im: imData.y };
+    } else {
+      this.dataSnapshot = this.data;
+    }
+  }
+
+  clearDataSnapshot() {
+    this.dataSnapshot = null;
+    this.isSnapshotStart = false;
   }
 }

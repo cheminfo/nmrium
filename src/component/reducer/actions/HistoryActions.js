@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { AnalysisObj } from '../core/initiate';
+import { AnalysisObj } from '../core/Middleware';
 
 import { setDomain, getDomain } from './DomainActions';
 
