@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useContext, memo, useCallback } from 'react';
+import { useContext, useCallback } from 'react';
 import { X } from 'ml-spectra-processing';
 
 import { MouseContext } from '../EventsTrackers/MouseTracker';
@@ -38,7 +38,7 @@ const styles = css`
     }
   }
 `;
-const FooterBanner = memo(() => {
+const FooterBanner = () => {
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
   const {
@@ -50,6 +50,21 @@ const FooterBanner = memo(() => {
     activeSpectrum,
     data,
   } = useChartData();
+
+  const getYValue = useCallback(
+    (xPosition) => {
+      if (activeSpectrum) {
+        const xIndex = X.findClosestIndex(
+          data[activeSpectrum.index].x,
+          scaleX.invert(xPosition),
+        );
+        return data[activeSpectrum.index].y[xIndex];
+      }
+      return 1;
+    },
+    [activeSpectrum, data, scaleX],
+  );
+
   if (
     !activeSpectrum ||
     !position ||
@@ -60,24 +75,8 @@ const FooterBanner = memo(() => {
   ) {
     return <div css={styles} />;
   }
-  // const [YIntensity, setIntensity] = useState({ start: 1, end: 1 });
 
   const frequency = data[activeSpectrum.index].info.frequency; // should be spectrum.info.frequency;
-
-  const getYValue = useCallback(
-    (xPosition) => {
-      // console.log(spectrum);
-
-      // console.log(spectrum);
-      // return 1;
-      const xIndex = X.findClosestIndex(
-        data[activeSpectrum.index].x,
-        scaleX.invert(xPosition),
-      );
-      return data[activeSpectrum.index].y[xIndex];
-    },
-    [activeSpectrum.index, data, scaleX],
-  );
 
   return (
     <div css={styles}>
@@ -138,6 +137,6 @@ const FooterBanner = memo(() => {
       )}
     </div>
   );
-});
+};
 
 export default FooterBanner;
