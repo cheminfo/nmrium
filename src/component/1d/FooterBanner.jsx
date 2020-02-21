@@ -110,7 +110,13 @@ const FooterBanner = memo(({ frequency: frequencyProps }) => {
         <div>
           <span className="label"> ratio :</span>
           <span className="value">
-            {((endY / (startY || Number.MIN_VALUE)) * 100).toFixed(2)}%
+            {(
+              (scaleY(activeSpectrum.id).invert(endY) /
+                (scaleY(activeSpectrum.id).invert(startY) ||
+                  Number.MIN_VALUE)) *
+              100
+            ).toFixed(2)}
+            %
           </span>
         </div>
       )}
