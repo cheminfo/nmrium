@@ -50,7 +50,7 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
       } else {
         refreshDomain = draft.data[newIndex].info.isFid;
       }
-      activeSpectrum = { ...activeSpectrum, newIndex };
+      activeSpectrum = { ...activeSpectrum, index: newIndex };
       draft.activeSpectrum = activeSpectrum;
     } else {
       draft.activeSpectrum = null;

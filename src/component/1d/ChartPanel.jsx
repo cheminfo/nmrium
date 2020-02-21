@@ -1,13 +1,5 @@
-import React, {
-  useCallback,
-  Fragment,
-  useEffect,
-  useState,
-  memo,
-  useMemo,
-} from 'react';
+import React, { useCallback, Fragment, useEffect, useState } from 'react';
 import { useSize, useDebounce } from 'react-use';
-import lodash from 'lodash';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useChartData } from '../context/ChartContext';
@@ -37,7 +29,7 @@ import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import FooterBanner from './FooterBanner';
 import NMRChart from './NMRChart';
 
-const ChartPanel = memo(() => {
+const ChartPanel = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
   const {
     selectedTool,
@@ -47,7 +39,6 @@ const ChartPanel = memo(() => {
     width: widthProp,
     height: heightProp,
     margin,
-    activeSpectrum,
   } = useChartData();
   const dispatch = useDispatch();
 
@@ -133,11 +124,15 @@ const ChartPanel = memo(() => {
     [dispatch, selectedTool],
   );
 
-  const frequency = useMemo(() => {
-    return activeSpectrum
-      ? lodash.get(data[activeSpectrum.index], 'info.frequency')
-      : 0;
-  }, [activeSpectrum, data]);
+  // const frequency = useMemo(() => {
+  //   return activeSpectrum
+  //     ? lodash.get(data[activeSpectrum.index], 'info.frequency')
+  //     : 0;
+  // }, [activeSpectrum, data]);
+  // const currentSpectrum = useMemo(() => {
+  //   console.log(activeSpectrum)
+  //   return activeSpectrum ? data[activeSpectrum.index] : null;
+  // }, [activeSpectrum, data]);
 
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
@@ -166,7 +161,7 @@ const ChartPanel = memo(() => {
               <XLabelPointer />
               <PeakPointer />
               <VerticalIndicator />
-              <FooterBanner frequency={frequency} />
+              <FooterBanner />
               <NMRChart
                 width={widthProp}
                 height={heightProp}
@@ -192,6 +187,6 @@ const ChartPanel = memo(() => {
   }, [dispatch, finalSize]);
 
   return sizedNMRChart;
-});
+};
 
 export default ChartPanel;
