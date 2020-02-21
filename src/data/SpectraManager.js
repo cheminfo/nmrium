@@ -1,5 +1,6 @@
 import { convert, createTree } from 'jcampconverter';
 import { convertFolder as convertBruker } from 'brukerconverter';
+
 import { Data1DManager } from './data1d/Data1DManager';
 import { Datum1D } from './data1d/Datum1D';
 import { Data2DManager } from './data2d/Data2DManager';
