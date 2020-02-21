@@ -39,7 +39,7 @@ const styles = css`
 `;
 const FooterBanner = memo(({ frequency: frequencyProps }) => {
   let position = useContext(MouseContext);
-  const { startX, endX, step } = useContext(BrushContext);
+  const { startX, endX, startY, endY, step } = useContext(BrushContext);
   const {
     scaleX,
     scaleY,
@@ -65,14 +65,16 @@ const FooterBanner = memo(({ frequency: frequencyProps }) => {
     <div css={styles}>
       <div>
         <span className="label"> X :</span>
-        <span className="value">{scaleX.invert(position.x).toFixed(2)}</span>
+        <span className="value">
+          {scaleX.invert(position.x).toPrecision(6)}
+        </span>
         <span className="unit">ppm</span>
       </div>
       {frequency && (
         <div>
           <span className="label"> X :</span>
           <span className="value">
-            {(scaleX.invert(position.x) * frequency).toFixed(2)}
+            {(scaleX.invert(position.x) * frequency).toPrecision(6)}
           </span>
           <span className="unit">Hz</span>
         </div>
@@ -89,7 +91,7 @@ const FooterBanner = memo(({ frequency: frequencyProps }) => {
         <div>
           <span className="label"> Δppm :</span>
           <span className="value">
-            {(scaleX.invert(startX) - scaleX.invert(endX)).toFixed(2)}
+            {(scaleX.invert(startX) - scaleX.invert(endX)).toPrecision(6)}
           </span>
         </div>
       )}
@@ -98,9 +100,17 @@ const FooterBanner = memo(({ frequency: frequencyProps }) => {
           <span className="label"> ΔHz :</span>
           <span className="value">
             {(
-              scaleX.invert(startX) * frequency -
-              scaleX.invert(endX) * frequency
-            ).toFixed(2)}
+              (scaleX.invert(startX) - scaleX.invert(endX)) *
+              frequency
+            ).toPrecision(5)}
+          </span>
+        </div>
+      )}
+      {step === 'brushing' && (
+        <div>
+          <span className="label"> ratio :</span>
+          <span className="value">
+            {((endY / (startY || Number.MIN_VALUE)) * 100).toFixed(2)}%
           </span>
         </div>
       )}
