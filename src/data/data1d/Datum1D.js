@@ -376,11 +376,10 @@ export class Datum1D {
       y: this.data.re.slice(fromIndex, toIndex),
     };
     try {
-      const signal = analyseMultiplet(data, {
+      const result = analyseMultiplet(data, {
         frequency: this.info.frequency,
         takeBestPartMultiplet: true,
       });
-
       let range = {
         id: generateID(),
 
@@ -388,8 +387,8 @@ export class Datum1D {
         to,
         integral: this.getIntegration(from, to), // the real value,
         signal: {
-          delta: (from + to) / 2,
-          j: signal.j,
+          delta: result.chemShift,
+          j: result.j,
         },
         kind: 'signal',
         relative: 0,
