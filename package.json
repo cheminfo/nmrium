@@ -46,7 +46,7 @@
     "react-mf": "^1.2.0",
     "react-ocl": "^4.0.3",
     "react-split-pane": "^0.1.89",
-    "react-table": "7.0.0-rc.16",
+    "react-table": "7.0.0-rc.15",
     "react-use": "^13.26.1",
     "spectra-data": "^3.4.11",
     "spectra-data-ranges": "^1.1.8",

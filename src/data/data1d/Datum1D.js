@@ -386,10 +386,14 @@ export class Datum1D {
         from,
         to,
         integral: this.getIntegration(from, to), // the real value,
-        signal: {
-          delta: result.chemShift,
-          j: result.j,
-        },
+        signal: [
+          {
+            delta: result.chemShift,
+            multiplicity: result.j.map((j) => j.multiplicity).join(''),
+            j: result.j,
+            peak: [],
+          },
+        ],
         kind: 'signal',
         relative: 0,
       };
