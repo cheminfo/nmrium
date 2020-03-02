@@ -215,8 +215,13 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
           Cell: ({ row }) => row.original.delta.toFixed(3),
         },
         {
-          Header: '#Peaks',
-          Cell: ({ row }) => row.original.peak.length,
+          Header: 'J',
+          Cell: ({ row }) =>
+            row.original.j
+              ? row.original.j
+                  .map((j) => `${j.multiplicity} (${j.coupling.toFixed(2)}Hz)`)
+                  .join(', ')
+              : '',
         },
       ],
     },
