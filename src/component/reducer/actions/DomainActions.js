@@ -23,11 +23,15 @@ function getActiveData(draft) {
 
     for (let datum of draft.data) {
       if (data.some((activeData) => activeData.id === datum.id)) {
-        AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
-        datum.isVisibleInDomain = true;
+        AnalysisObj.getDatum(datum.id).changeDisplayProps({
+          isVisibleInDomain: true,
+        });
+        datum = { datum, isVisibleInDomain: true };
       } else {
-        AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
-        datum.isVisibleInDomain = false;
+        AnalysisObj.getDatum(datum.id).changeDisplayProps({
+          isVisibleInDomain: false,
+        });
+        datum = { datum, isVisibleInDomain: false };
       }
     }
     return draft.data;

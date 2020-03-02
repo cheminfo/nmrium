@@ -4,6 +4,7 @@ import { Filters } from '../../../data/data1d/filter1d/Filters';
 import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/Analysis';
 import getClosestNumber from '../helper/GetClosestNumber';
+import { apply, reduce } from '../../../data/data1d/filter1d/phaseCorrection';
 
 import { setDomain, setMode } from './DomainActions';
 import { setYAxisShift } from './ToolsActions';
@@ -87,7 +88,7 @@ const applyManualPhaseCorrectionFilter = (state) => {
     setDomain(draft);
   });
 };
-
+let previousPhaseCorrectionOptions = { ph0: 0, ph1: 0 };
 const calculateManualPhaseCorrection = (state, filterOptions) => {
   return produce(state, (draft) => {
     const { data } = state;
@@ -98,17 +99,16 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
     const pivotIndex = data[index].x.indexOf(closest);
 
     ph0 = ph0 - (ph1 * pivotIndex) / activeObject.data.x.length;
-    activeObject.applyFilter([
-      {
-        name: Filters.phaseCorrection.id,
-        options: { ph0, ph1 },
-      },
-    ]);
-
-    const XYData = activeObject.getReal(true);
-
-    draft.data[index].x = XYData.x;
-    draft.data[index].y = XYData.y;
+    const { x, y, im, info } = draft.data[index];
+    let _data = { data: { x, re: y, im }, info };
+    const phaseCorrectionOptions = reduce(previousPhaseCorrectionOptions, {
+      ph0,
+      ph1,
+    }).reduce;
+    apply(_data, phaseCorrectionOptions);
+    const { x: newX, re: newRe } = _data.data;
+    draft.data[index].x = newX;
+    draft.data[index].y = newRe;
   });
 };
 

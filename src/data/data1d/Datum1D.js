@@ -109,6 +109,9 @@ export class Datum1D {
   setIsRealSpectrumVisible(isVisible) {
     this.isRealSpectrumVisible = isVisible;
   }
+  changeDisplayProps(newDisplayProps) {
+    this.display = Object.assign(this.display, newDisplayProps);
+  }
 
   setPeaks(peaks) {
     this.peaks = peaks;

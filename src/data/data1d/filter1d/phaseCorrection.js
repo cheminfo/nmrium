@@ -18,14 +18,7 @@ export function apply(datum1D, options = {}) {
   let { ph0, ph1 } = options;
   ph0 *= Math.PI / 180;
   ph1 *= Math.PI / 180;
-  Object.assign(
-    datum1D.isSnapshotStart ? datum1D.dataSnapshot : datum1D.data,
-    ReIm.phaseCorrection(
-      datum1D.isSnapshotStart ? datum1D.dataSnapshot : datum1D.data,
-      ph0,
-      ph1,
-    ),
-  );
+  Object.assign(datum1D.data, ReIm.phaseCorrection(datum1D.data, ph0, ph1));
 }
 
 export function isApplicable(datum1D) {

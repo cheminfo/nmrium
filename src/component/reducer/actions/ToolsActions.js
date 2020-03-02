@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 import { max, zoomIdentity, scaleLinear } from 'd3';
+import equallySpaced from 'ml-array-xy-equally-spaced';
 
 import { options } from '../../toolbar/ToolTypes';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
@@ -13,15 +14,24 @@ import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { getScale } from './ScaleActions';
 
-function getStrongestPeak(state) {
-  const { activeSpectrum, data } = state;
+function reducedData(data) {
+  return data.map((datum) => {
+    const { x, y, im } = datum;
+    const reData = equallySpaced({ x, y: y }, { numberOfPoints: 4096 });
+    const imData = equallySpaced({ x, y: im }, { numberOfPoints: 4096 });
+    return { ...datum, x: reData.x, y: reData.y, im: imData.y };
+  });
+}
 
-  const activeSpectrumId = activeSpectrum.id;
-  const activeData = data.find((d) => d.id === activeSpectrumId);
-  const strongestPeakValue = max(activeData.y);
-  const index = activeData.y.findIndex((val) => val === strongestPeakValue);
+function getStrongestPeak({ activeSpectrum, data }) {
+  const { index: spectrumIndex } = activeSpectrum;
+  // const activeData = data.find((d) => d.id === activeSpectrumId);
+  const strongestPeakValue = max(data[spectrumIndex].y);
+  const index = data[spectrumIndex].y.findIndex(
+    (val) => val === strongestPeakValue,
+  );
   return {
-    xValue: activeData.x[index],
+    xValue: data[spectrumIndex].x[index],
     yValue: strongestPeakValue,
     index: index,
   };
@@ -37,9 +47,11 @@ function setFilterChanges(draft, state, selectedFilter) {
   // console.log(dd);
   //select the equalizer tool when you enable manual phase correction filter
   if (selectedFilter === Filters.phaseCorrection.id) {
-    AnalysisObj.createDataSnapshot();
-    draft.data = AnalysisObj.getSpectraData(true);
-    const { xValue } = getStrongestPeak(state);
+    // AnalysisObj.createDataSnapshot();
+
+    draft.data = reducedData(draft.data);
+    // draft.data = AnalysisObj.getSpectraData(true);
+    const { xValue } = getStrongestPeak(draft);
     draft.pivot = xValue;
   } else {
     if (draft.selectedTool === options.phaseCorrection.id) {
@@ -56,7 +68,7 @@ function setFilterChanges(draft, state, selectedFilter) {
       draft.tempData = null;
       draft.selectedTool = null;
 
-      AnalysisObj.clearDataSnapshot();
+      // AnalysisObj.clearDataSnapshot();
       setDomain(draft);
     }
   }

@@ -33,6 +33,7 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
 const handleChangeActiveSpectrum = (state, activeSpectrum) => {
   return produce(state, (draft) => {
     let refreshDomain = false;
+
     if (activeSpectrum) {
       AnalysisObj.getDatum(activeSpectrum.id).isVisible = true;
       const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
