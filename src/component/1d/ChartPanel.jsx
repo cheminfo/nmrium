@@ -25,6 +25,8 @@ import VerticalIndicator from '../tool/VerticalIndicator';
 import Spinner from '../loader/Spinner';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
+import { useModal } from '../elements/Modal';
+import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
 
 import FooterBanner from './FooterBanner';
 import NMRChart from './NMRChart';
@@ -39,12 +41,35 @@ const ChartPanel = () => {
     width: widthProp,
     height: heightProp,
     margin,
+    activeSpectrum,
+    scaleX,
   } = useChartData();
   const dispatch = useDispatch();
+  const modal = useModal();
 
   const handelBrushEnd = useCallback(
     (brushData) => {
-      if (brushData.shiftKey) {
+      if (brushData.altKey) {
+        switch (selectedTool) {
+          case options.rangesPicking.id:
+            modal.show(
+              <MultipletAnalysisModal
+                data={data}
+                activeSpectrum={activeSpectrum}
+                scaleX={scaleX}
+                {...brushData}
+              />,
+              {
+                onClose: () => {
+                  modal.close();
+                },
+              },
+            );
+            break;
+          default:
+            break;
+        }
+      } else if (brushData.shiftKey) {
         switch (selectedTool) {
           case options.integral.id:
             dispatch({
@@ -84,7 +109,7 @@ const ChartPanel = () => {
         }
       }
     },
-    [dispatch, selectedTool],
+    [dispatch, selectedTool, data, modal, activeSpectrum, scaleX],
   );
 
   const handelOnDoubleClick = useCallback(() => {
