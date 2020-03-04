@@ -68,8 +68,7 @@ const applyFFTFilter = (state) => {
     setMode(draft);
   });
 };
-const applyManualPhaseCorrectionFilter = (state) => {
-  console.log('apply')
+const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
   return produce(state, (draft) => {
     const { id, index } = draft.activeSpectrum;
     AnalysisObj.clearDataSnapshot();
@@ -77,6 +76,9 @@ const applyManualPhaseCorrectionFilter = (state) => {
 
     const activeObject = AnalysisObj.getDatum(id);
 
+    activeObject.applyFilter([
+      { name: Filters.phaseCorrection.id, options: filterOptions },
+    ]);
     activeObject.reapplyFilters();
     const XYData = activeObject.getReal();
 
@@ -91,7 +93,6 @@ const applyManualPhaseCorrectionFilter = (state) => {
 };
 let previousPhaseCorrectionOptions = { ph0: 0, ph1: 0 };
 const calculateManualPhaseCorrection = (state, filterOptions) => {
-  console.log('hola')
   return produce(state, (draft) => {
     const { data } = state;
     const { id, index } = state.activeSpectrum;
@@ -112,9 +113,7 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
     //   ph1,
     // }).reduce;
     let _data = { data: { x, re: y, im }, info };
-    console.log(filterOptions)
     apply(_data, {ph0, ph1});
-    // console.log(phaseCorrectionOptions)
     const { x: newX, re: newRe } = _data.data;
     draft.data[index].x = newX;
     draft.data[index].y = newRe;
