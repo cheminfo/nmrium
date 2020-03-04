@@ -68,7 +68,7 @@ const applyFFTFilter = (state) => {
     setMode(draft);
   });
 };
-const applyManualPhaseCorrectionFilter = (state) => {
+const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
   return produce(state, (draft) => {
     const { id, index } = draft.activeSpectrum;
     AnalysisObj.clearDataSnapshot();
@@ -76,6 +76,9 @@ const applyManualPhaseCorrectionFilter = (state) => {
 
     const activeObject = AnalysisObj.getDatum(id);
 
+    activeObject.applyFilter([
+      { name: Filters.phaseCorrection.id, options: filterOptions },
+    ]);
     activeObject.reapplyFilters();
     const XYData = activeObject.getReal();
 
@@ -93,19 +96,24 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
   return produce(state, (draft) => {
     const { data } = state;
     const { id, index } = state.activeSpectrum;
+    const { x, y, im, info } = draft.data[index];
+
     let { ph0, ph1 } = filterOptions;
     const activeObject = AnalysisObj.getDatum(id);
     const closest = getClosestNumber(data[index].x, state.pivot);
     const pivotIndex = data[index].x.indexOf(closest);
 
-    ph0 = ph0 - (ph1 * pivotIndex) / activeObject.data.x.length;
-    const { x, y, im, info } = draft.data[index];
+    
+    
+    ph0 = ph0 - (ph1 * pivotIndex) / y.length;
+    
+    // if you use previous values you need to apply the filter on original data
+    // const phaseCorrectionOptions = reduce(previousPhaseCorrectionOptions, {
+    //   ph0,
+    //   ph1,
+    // }).reduce;
     let _data = { data: { x, re: y, im }, info };
-    const phaseCorrectionOptions = reduce(previousPhaseCorrectionOptions, {
-      ph0,
-      ph1,
-    }).reduce;
-    apply(_data, phaseCorrectionOptions);
+    apply(_data, {ph0, ph1});
     const { x: newX, re: newRe } = _data.data;
     draft.data[index].x = newX;
     draft.data[index].y = newRe;
