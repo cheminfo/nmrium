@@ -4,7 +4,7 @@ import { jsx } from '@emotion/core';
 import { useHighlight } from '../../../highlight/index';
 import { HighlightedRowStyle } from '../Style';
 
-const ReactTableRow = ({ row, onMouseDown }) => {
+const ReactTableRow = ({ row, onContextMenu }) => {
   const highlight = useHighlight([
     Object.prototype.hasOwnProperty.call(row.original, 'id')
       ? row.original.id
@@ -13,12 +13,7 @@ const ReactTableRow = ({ row, onMouseDown }) => {
 
   return (
     <tr
-      onMouseDown={onMouseDown}
-      onContextMenu={(e) => {
-        e.preventDefault();
-
-        return false;
-      }}
+      onContextMenu={onContextMenu}
       key={row.getRowProps().key}
       css={highlight.isActive ? HighlightedRowStyle : null}
       {...row.getRowProps()}

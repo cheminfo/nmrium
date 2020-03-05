@@ -1,10 +1,9 @@
 import { jsx, css } from '@emotion/core';
+import { useState, useEffect } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
 import Line from './Line';
-import { useState } from 'react';
-import { useEffect } from 'react';
 
 /** @jsx jsx */
 
@@ -26,7 +25,6 @@ export const LinesSeries = () => {
   const [_data, setData] = useState();
 
   useEffect(() => {
-    console.log(tempData);
     const Vdata = tempData ? tempData : data;
     setData(Vdata);
   }, [data, tempData]);

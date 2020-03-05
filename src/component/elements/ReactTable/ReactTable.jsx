@@ -44,7 +44,7 @@ const ReactTable = ({ data, columns, context }) => {
                 key={row.key}
                 row={row}
                 {...row.getRowProps()}
-                onMouseDown={(e) => contextMenuHandler(e, row)}
+                onContextMenu={(e) => contextMenuHandler(e, row)}
               />
             );
           })}

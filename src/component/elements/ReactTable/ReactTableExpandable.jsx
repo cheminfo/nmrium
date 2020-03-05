@@ -53,7 +53,7 @@ const ReactTableExpandable = ({
                 key={row.key}
                 row={row}
                 {...row.getRowProps()}
-                onMouseDown={(e) => contextMenuHandler(e, row)}
+                onContextMenu={(e) => contextMenuHandler(e, row)}
               />
               {row.isExpanded ? (
                 <tr>
