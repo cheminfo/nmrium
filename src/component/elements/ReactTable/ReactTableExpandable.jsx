@@ -1,13 +1,22 @@
-import { Fragment } from 'react';
+import { Fragment, useRef, useCallback } from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useTable, useExpanded, useSortBy } from 'react-table';
+import PropTypes from 'prop-types';
 
 import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
+import ContextMenu from './ContextMenu';
 
-const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
+const ReactTableExpandable = ({
+  columns,
+  data,
+  renderRowSubComponent,
+  context,
+}) => {
+  const contextRef = useRef();
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -24,6 +33,14 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
     useExpanded,
   );
 
+  const contextMenuHandler = useCallback(
+    (e, row) => {
+      e.preventDefault();
+      contextRef.current.handleContextMenu(e, row.original);
+    },
+    [contextRef],
+  );
+
   return (
     <table {...getTableProps()} css={ReactTableStyle}>
       <ReactTableHeader headerGroups={headerGroups} />
@@ -32,7 +49,12 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
           prepareRow(row);
           return (
             <Fragment key={row.index}>
-              <ReactTableRow key={row.key} row={row} {...row.getRowProps()} />
+              <ReactTableRow
+                key={row.key}
+                row={row}
+                {...row.getRowProps()}
+                onMouseDown={(e) => contextMenuHandler(e, row)}
+              />
               {row.isExpanded ? (
                 <tr>
                   <td colSpan={flatColumns.length}>
@@ -43,6 +65,7 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
                   </td>
                 </tr>
               ) : null}
+              <ContextMenu ref={contextRef} context={context} />
             </Fragment>
           );
         })}
@@ -52,9 +75,20 @@ const ReactTableExpandable = ({ columns, data, renderRowSubComponent }) => {
 };
 
 ReactTableExpandable.defaultProps = {
+  context: null,
   renderRowSubComponent: () => {
     return null;
   },
+};
+
+ReactTableExpandable.propTypes = {
+  context: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string,
+      onClick: PropTypes.func,
+    }),
+  ),
+  renderRowSubComponent: PropTypes.func,
 };
 
 export default ReactTableExpandable;

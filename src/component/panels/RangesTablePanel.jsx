@@ -101,6 +101,17 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
     },
     [alert],
   );
+  const saveJSONToClipboardHandler = useCallback(
+    (value) => {
+      const success = copyTextToClipboard(JSON.stringify(value, undefined, 2));
+      if (success) {
+        alert.show('Coped to clipboard');
+      } else {
+        alert.error('Coped to clipboard failed');
+      }
+    },
+    [alert],
+  );
 
   const closeClipBoardHandler = useCallback(() => {
     modal.close();
@@ -271,6 +282,13 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
     ) : null;
   };
 
+  const contextMenu = [
+    {
+      label: 'Save to Clipboard',
+      onClick: saveJSONToClipboardHandler,
+    },
+  ];
+
   // render method for signals sub-table; either expandable or not
   const renderRowSubComponentSignals = ({ row }) => {
     return row &&
@@ -281,6 +299,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
         columns={columnsSignalsExpandable}
         data={row.original.signal}
         renderRowSubComponent={renderRowSubComponentCouplings}
+        context={contextMenu}
       />
     ) : (
       <ReactTable columns={columnsSignals} data={row.original.signal} />
@@ -350,6 +369,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
           columns={columnsRanges}
           data={data}
           renderRowSubComponent={renderRowSubComponentSignals}
+          context={contextMenu}
         />
       ) : (
         <NoTableData />

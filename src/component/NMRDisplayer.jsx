@@ -87,6 +87,7 @@ const NMRDisplayer = (props) => {
     mode,
     margin,
     verticalAlign,
+    selectedTool,
   } = state;
 
   useEffect(() => {
@@ -187,7 +188,10 @@ const NMRDisplayer = (props) => {
                       >
                         <ChartPanel tools={!isResizeEventStart} />
 
-                        <Panels preferences={preferences} />
+                        <Panels
+                          preferences={preferences}
+                          selectedTool={selectedTool}
+                        />
                       </SplitPane>
                     </DropZone>
                   </div>
@@ -236,7 +240,17 @@ NMRDisplayer.propTypes = {
 NMRDisplayer.defaultProps = {
   height: 600,
   width: 800,
-  preferences: {},
+  preferences: {
+    panels: {
+      hideSpectraPanel: false,
+      hideInformationPanel: false,
+      hidePeaksPanel: false,
+      hideIntegralsPanel: false,
+      hideRangesPanel: false,
+      hideStructuresPanel: false,
+      hideFiltersPanel: false,
+    },
+  },
 };
 
 export default NMRDisplayer;
