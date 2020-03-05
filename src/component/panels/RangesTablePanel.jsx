@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 import { useAlert } from 'react-alert';
+import { X } from 'ml-spectra-processing';
 
 import {
   DELETE_RANGE,
@@ -103,14 +104,36 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
   );
   const saveJSONToClipboardHandler = useCallback(
     (value) => {
-      const success = copyTextToClipboard(JSON.stringify(value, undefined, 2));
-      if (success) {
-        alert.show('Coped to clipboard');
-      } else {
-        alert.error('Coped to clipboard failed');
+      const _data =
+        activeSpectrum && SpectrumsData
+          ? SpectrumsData[activeSpectrum.index]
+          : null;
+
+      if (_data) {
+        const { from, to } = value;
+        const { fromIndex, toIndex } = X.getFromToIndex(_data.x, {
+          from,
+          to,
+        });
+
+        const dataToClipboard = {
+          x: _data.x.slice(fromIndex, toIndex),
+          y: _data.y.slice(fromIndex, toIndex),
+          ...value,
+        };
+
+        const success = copyTextToClipboard(
+          JSON.stringify(dataToClipboard, undefined, 2),
+        );
+
+        if (success) {
+          alert.show('Coped to clipboard');
+        } else {
+          alert.error('Coped to clipboard failed');
+        }
       }
     },
-    [alert],
+    [SpectrumsData, activeSpectrum, alert],
   );
 
   const closeClipBoardHandler = useCallback(() => {
