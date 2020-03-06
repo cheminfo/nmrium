@@ -31,14 +31,14 @@ function setFilterChanges(draft, state, selectedFilter) {
   const activeSpectrumId = state.activeSpectrum.id;
   const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
-  draft.tempData = state.data;
-
   //save reduced snapshot
   // console.log(dd);
   //select the equalizer tool when you enable manual phase correction filter
   if (selectedFilter === Filters.phaseCorrection.id) {
-    AnalysisObj.createDataSnapshot();
-    draft.data = AnalysisObj.getSpectraData(true);
+    draft.tempData = state.data;
+
+    // AnalysisObj.createDataSnapshot();
+    // draft.data = AnalysisObj.getSpectraData(true);
     const { xValue } = getStrongestPeak(state);
     draft.pivot = xValue;
   } else {
@@ -56,7 +56,6 @@ function setFilterChanges(draft, state, selectedFilter) {
       draft.tempData = null;
       draft.selectedTool = null;
 
-      AnalysisObj.clearDataSnapshot();
       setDomain(draft);
     }
   }
@@ -83,7 +82,6 @@ const resetSelectedTool = (state) => {
     draft.selectedTool = options.zoom.id;
     draft.baseLineZones = [];
     if (state.tempData) {
-      draft.data = state.tempData;
       draft.tempData = null;
       setDomain(draft);
     }
