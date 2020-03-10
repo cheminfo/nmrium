@@ -112,12 +112,9 @@ const NMRDisplayer = (props) => {
 
       let domainY = [];
 
-      if (spectrumId === null) {
+      if (spectrumId === null || yDomains[spectrumId] === undefined) {
         domainY = [0, yDomain[1]];
       } else {
-        // const index = filterSpectrumsByNucleus().findIndex(
-        //   (d) => d.id === spectrumId,
-        // );
         domainY = [0, yDomains[spectrumId][1]];
       }
 
