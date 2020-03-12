@@ -11,7 +11,9 @@ import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from '../reducer/types/Types';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
-
+  @-moz-document url-prefix() {
+    pointer-events: fill;
+  }
   :hover .target {
     visibility: visible !important;
     cursor: pointer;
@@ -25,6 +27,10 @@ const stylesOnHover = css`
 `;
 const stylesHighlighted = css`
   pointer-events: bounding-box;
+
+  @-moz-document url-prefix() {
+    pointer-events: fill;
+  }
   fill: #ff6f0057;
 
   .target {
@@ -62,10 +68,15 @@ const IntegralResizable = (props) => {
     return (
       <svg
         className="target"
-        x={scaleX(xBoundary[1]) - 20}
-        y={height - margin.bottom - 20}
+        // x={scaleX(xBoundary[1]) - 20}
+        // y={height - margin.bottom - 20}
+        transform={`translate(${scaleX(xBoundary[1]) - 20},${height -
+          margin.bottom -
+          20})`}
         onClick={deleteIntegral}
         data-no-export="true"
+        width="16"
+        height="16"
       >
         <rect rx="5" width="16" height="16" fill="#c81121" />
         <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
@@ -164,7 +175,7 @@ const IntegralResizable = (props) => {
 
   return (
     <Fragment>
-      <svg
+      <g
         css={highlight.isActive ? stylesHighlighted : stylesOnHover}
         data-no-export="true"
         {...highlight.onHover}
@@ -224,7 +235,7 @@ const IntegralResizable = (props) => {
           />
         </Draggable>
         <DeleteButton />
-      </svg>
+      </g>
     </Fragment>
   );
 };

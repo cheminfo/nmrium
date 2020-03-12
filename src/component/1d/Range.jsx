@@ -1,4 +1,4 @@
-import { useCallback, Fragment } from 'react';
+import { useCallback } from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
@@ -9,6 +9,9 @@ import { useHighlight } from '../highlight';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
+  @-moz-document url-prefix() {
+    pointer-events: fill;
+  }
   user-select: 'none';
   -webkit-user-select: none; /* Chrome all / Safari all */
   -moz-user-select: none; /* Firefox all */
@@ -19,25 +22,23 @@ const stylesOnHover = css`
     cursor: pointer;
   }
   .delete-button {
-    display: none;
-    cursor: pointer;
-  }
-  :hover .delete-button {
-    display: block;
+    visibility: hidden;
   }
 `;
 
 const stylesHighlighted = css`
+  pointer-events: bounding-box;
+
+  @-moz-document url-prefix() {
+    pointer-events: fill;
+  }
   .range-area {
     height: 100%;
     fill: #ff6f0057;
   }
   .delete-button {
-    display: none;
+    visibility: visible;
     cursor: pointer;
-  }
-  :hover .delete-button {
-    display: block;
   }
 `;
 
@@ -53,18 +54,17 @@ const Range = ({ id, from, to, integral }) => {
 
   const DeleteButton = () => {
     return (
-      <Fragment>
-        <svg
-          className="delete-button"
-          x={-20}
-          y={10}
-          onClick={() => deleteRange()}
-          data-no-export="true"
-        >
-          <rect rx="5" width="16" height="16" fill="#c81121" />
-          <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
-        </svg>
-      </Fragment>
+      <svg
+        className="delete-button"
+        transform={`translate(${scaleX(to) - 20},10)`}
+        onClick={() => deleteRange()}
+        data-no-export="true"
+        width="16"
+        height="16"
+      >
+        <rect rx="5" width="16" height="16" fill="#c81121" />
+        <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
+      </svg>
     );
   };
 
@@ -72,26 +72,27 @@ const Range = ({ id, from, to, integral }) => {
     <g
       css={highlight.isActive ? stylesHighlighted : stylesOnHover}
       key={id}
-      transform={`translate(${scaleX(to)},10)`}
       {...highlight.onHover}
     >
+      <g transform={`translate(${scaleX(to)},10)`}>
+        <rect
+          x="0"
+          width={`${scaleX(from) - scaleX(to)}`}
+          height="6"
+          className="range-area"
+          fill="green"
+        />
+        <text
+          textAnchor="middle"
+          x={(scaleX(from) - scaleX(to)) / 2}
+          y="20"
+          fontSize="10"
+          fill="red"
+        >
+          {integral.toFixed(1)}
+        </text>
+      </g>
       <DeleteButton />
-      <rect
-        x="0"
-        width={`${scaleX(from) - scaleX(to)}`}
-        height="6"
-        className="range-area"
-        fill="green"
-      />
-      <text
-        textAnchor="middle"
-        x={(scaleX(from) - scaleX(to)) / 2}
-        y="20"
-        fontSize="10"
-        fill="red"
-      >
-        {integral.toFixed(1)}
-      </text>
     </g>
   );
 };
