@@ -323,6 +323,10 @@ export class Datum1D {
     };
   }
 
+  getData() {
+    return this.data;
+  }
+
   // with mouse move
   lookupPeak(from, to) {
     let minIndex = this.data.x.findIndex((number) => number >= from);

@@ -10,14 +10,15 @@ import { setDomain, setMode } from './DomainActions';
 import { setYAxisShift } from './ToolsActions';
 
 function setDataByFilters(draft, activeObject, activeSpectrumId) {
-  const XYData = activeObject.getReal();
+  const { x, re, im } = activeObject.getData();
   const spectrumIndex = draft.data.findIndex(
     (spectrum) => spectrum.id === activeSpectrumId,
   );
   draft.selectedOptionPanel = null;
   draft.selectedTool = options.zoom.id;
-  draft.data[spectrumIndex].x = XYData.x;
-  draft.data[spectrumIndex].y = XYData.y;
+  draft.data[spectrumIndex].x = x;
+  draft.data[spectrumIndex].y = re;
+  draft.data[spectrumIndex].im = im;
   draft.data[spectrumIndex].filters = activeObject.getFilters();
   draft.data[spectrumIndex].info = activeObject.getInfo();
 }
