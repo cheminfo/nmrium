@@ -3,7 +3,7 @@ import { extent } from 'd3';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
-import { DISPLAYER_MODE } from '../Reducer';
+import { DISPLAYER_MODE } from '../core/Constants';
 
 function getActiveData(draft) {
   if (draft.activeTab) {

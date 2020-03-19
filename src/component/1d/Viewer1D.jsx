@@ -27,10 +27,10 @@ import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useModal } from '../elements/Modal';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
+import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 
 import FooterBanner from './FooterBanner';
 import Chart1D from './Chart1D';
-import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();

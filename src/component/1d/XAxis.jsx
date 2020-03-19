@@ -57,7 +57,6 @@ const XAxis = ({ label, show, showGrid, mode, height: heightProp }) => {
 
   useEffect(() => {
     if (show) {
-      console.log(xDomain)
       const range =
         mode === 'RTL'
           ? [width - margin.right, margin.left]

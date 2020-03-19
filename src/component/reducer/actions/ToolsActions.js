@@ -5,14 +5,13 @@ import { options } from '../../toolbar/ToolTypes';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import generateID from '../../../data/utilities/generateID';
 import { AnalysisObj } from '../core/Analysis';
-import { DEFAULT_YAXIS_SHIFT_VALUE } from '../core/Constants';
+import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 import getClosestNumber from '../helper/GetClosestNumber';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { getScale } from './ScaleActions';
-import { DISPLAYER_MODE } from '../Reducer';
 
 function getStrongestPeak(state) {
   const { activeSpectrum, data } = state;
@@ -292,7 +291,6 @@ const zoomOut = (state, zoomType) => {
 };
 
 const handelSetActiveTab = (state, tab) => {
-  console.log(state.data)
   return produce(state, (draft) => {
     const { data } = state;
     if (tab) {

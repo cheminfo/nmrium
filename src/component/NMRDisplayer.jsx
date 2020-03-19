@@ -25,7 +25,6 @@ import {
   spectrumReducer,
   initialState,
   dispatchMiddleware,
-  DISPLAYER_MODE,
 } from './reducer/Reducer';
 import { DispatchProvider } from './context/DispatchContext';
 import DropZone from './loader/DropZone';
@@ -37,6 +36,7 @@ import KeyListener from './EventsTrackers/keysListener';
 import ErrorBoundary from './ErrorBoundary';
 import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
+import { DISPLAYER_MODE } from './reducer/core/Constants';
 
 // alert optional cofiguration
 const alertOptions = {

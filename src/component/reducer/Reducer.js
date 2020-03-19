@@ -100,7 +100,7 @@ import {
   setKeyPreferencesHandler,
   applyKeyPreferencesHandler,
 } from './actions/PreferencesActions';
-import { DEFAULT_YAXIS_SHIFT_VALUE } from './core/Constants';
+import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import {
   handleAddMolecule,
   handleSetMolecule,
@@ -151,11 +151,6 @@ import {
   handleHistoryRedo,
   handleHistoryReset,
 } from './actions/HistoryActions';
-
-export const DISPLAYER_MODE = {
-  DM_1D: '1D',
-  DM_2D: '2D',
-};
 
 export const initialState = {
   data: null,

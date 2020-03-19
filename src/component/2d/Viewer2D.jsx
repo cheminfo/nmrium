@@ -25,8 +25,8 @@ import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useModal } from '../elements/Modal';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
-
 import FooterBanner from '../1d/FooterBanner';
+
 import Chart2D from './Chart2D';
 
 const Viewer2D = () => {
