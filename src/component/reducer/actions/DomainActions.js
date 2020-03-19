@@ -3,6 +3,7 @@ import { extent } from 'd3';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
+import { DISPLAYER_MODE } from '../core/Constants';
 
 function getActiveData(draft) {
   if (draft.activeTab) {
@@ -68,13 +69,46 @@ function getDomain(data) {
     yDomains,
   };
 }
+function get2DDomain(data) {
+  let xArray = [];
+  let yDomains = {};
+  try {
+    xArray = data.reduce((acc, d) => {
+      return d.info.dimension === 1
+        ? acc.concat([d.x[0], d.x[d.x.length - 1]])
+        : acc.concat([]);
+    }, []);
+    yDomains = data
+      .filter((d) => d.info.dimension === 1)
+      .reduce((acc, d) => {
+        return (acc[d.id] = xArray);
+      }, {});
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+  }
+
+  return {
+    x: extent(xArray),
+    y: extent(xArray),
+    yDomains,
+  };
+}
 
 function setDomain(draft, isYDomainChanged = true) {
   let domain;
   const data = getActiveData(draft);
+  if (
+    draft.activeTab &&
+    [DISPLAYER_MODE.MODE_1D, DISPLAYER_MODE.MODE_2D].includes(
+      draft.displayerMode,
+    )
+  ) {
+    domain =
+      draft.displayerMode === DISPLAYER_MODE.MODE_1D
+        ? getDomain(data)
+        : get2DDomain(data);
 
-  if (draft.activeTab) {
-    domain = getDomain(data);
     draft.xDomain = domain.x;
     if (isYDomainChanged) {
       draft.yDomain = domain.y;

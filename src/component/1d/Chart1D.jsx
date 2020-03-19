@@ -8,7 +8,7 @@ import PeaksNotations from './PeaksNotations';
 import Ranges from './Ranges';
 import BaseLineZones from './BaseLineZones';
 
-function NMRChart({ mode, width, height, margin }) {
+function Chart1D({ mode, width, height, margin }) {
   if (!width || !height) {
     return null;
   }
@@ -44,4 +44,4 @@ function NMRChart({ mode, width, height, margin }) {
   );
 }
 
-export default React.forwardRef(NMRChart);
+export default React.forwardRef(Chart1D);

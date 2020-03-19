@@ -1,7 +1,7 @@
 {
   "reject": [
     "react-color",
-    "react_table",
-    "rc_menu"
+    "react-table",
+    "rc-menu"
   ]
 }

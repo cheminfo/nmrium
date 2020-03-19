@@ -5,7 +5,7 @@ import { options } from '../../toolbar/ToolTypes';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import generateID from '../../../data/utilities/generateID';
 import { AnalysisObj } from '../core/Analysis';
-import { DEFAULT_YAXIS_SHIFT_VALUE } from '../core/Constants';
+import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 import getClosestNumber from '../helper/GetClosestNumber';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 
@@ -293,18 +293,26 @@ const zoomOut = (state, zoomType) => {
 const handelSetActiveTab = (state, tab) => {
   return produce(state, (draft) => {
     const { data } = state;
+    if (tab) {
+      // console.log(tab);
+      // console.log(tab.split(','));
+      //check displayer mode 1d or 2d
+      draft.displayerMode = draft.data.some((d) => d.info.dimension === 2)
+        ? DISPLAYER_MODE.DM_2D
+        : DISPLAYER_MODE.DM_1D;
 
-    draft.activeTab = tab;
-    const groupByNucleus = GroupByInfoKey('nucleus');
-    const _data = groupByNucleus(data)[tab];
+      draft.activeTab = tab;
+      const groupByNucleus = GroupByInfoKey('nucleus');
+      const _data = groupByNucleus(data)[tab];
 
-    if (_data && _data.length === 1) {
-      const index = data.findIndex((datum) => datum.id === _data[0].id);
-      draft.activeSpectrum = { id: _data[0].id, index };
+      if (_data && _data.length === 1) {
+        const index = data.findIndex((datum) => datum.id === _data[0].id);
+        draft.activeSpectrum = { id: _data[0].id, index };
+      }
+
+      setDomain(draft);
+      setMode(draft);
     }
-
-    setDomain(draft);
-    setMode(draft);
   });
 };
 

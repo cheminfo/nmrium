@@ -100,7 +100,7 @@ import {
   setKeyPreferencesHandler,
   applyKeyPreferencesHandler,
 } from './actions/PreferencesActions';
-import { DEFAULT_YAXIS_SHIFT_VALUE } from './core/Constants';
+import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import {
   handleAddMolecule,
   handleSetMolecule,
@@ -195,6 +195,7 @@ export const initialState = {
   preferences: {},
   baseLineZones: [],
   keysPreferences: {},
+  displayerMode: DISPLAYER_MODE.DM_1D,
 };
 
 export function dispatchMiddleware(dispatch) {

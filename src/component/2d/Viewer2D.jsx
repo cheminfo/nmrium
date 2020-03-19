@@ -18,20 +18,18 @@ import {
   ADD_RANGE,
 } from '../reducer/types/Types';
 import CrossLinePointer from '../tool/CrossLinePointer';
-import BrushX from '../tool/BrushX';
 import XLabelPointer from '../tool/XLabelPointer';
-import PeakPointer from '../tool/PeakPointer';
-import VerticalIndicator from '../tool/VerticalIndicator';
 import Spinner from '../loader/Spinner';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useModal } from '../elements/Modal';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
+import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
+import FooterBanner from '../1d/FooterBanner';
 
-import FooterBanner from './FooterBanner';
-import NMRChart from './NMRChart';
+import Chart2D from './Chart2D';
 
-const ChartPanel = () => {
+const Viewer2D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
   const {
     selectedTool,
@@ -182,12 +180,10 @@ const ChartPanel = () => {
               style={{ width: '100%', height: `100%`, position: 'absolute' }}
             >
               <CrossLinePointer />
-              <BrushX />
+              <BrushXY brushType={BRUSH_TYPE.XY} />
               <XLabelPointer />
-              <PeakPointer />
-              <VerticalIndicator />
               <FooterBanner />
-              <NMRChart
+              <Chart2D
                 width={widthProp}
                 height={heightProp}
                 margin={margin}
@@ -214,4 +210,4 @@ const ChartPanel = () => {
   return sizedNMRChart;
 };
 
-export default ChartPanel;
+export default Viewer2D;

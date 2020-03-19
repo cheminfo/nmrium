@@ -36,14 +36,14 @@ const gridStyles = css`
   }
 `;
 
-const XAxis = ({ label, show, showGrid, mode }) => {
+const XAxis = ({ label, show, showGrid, mode, height: heightProp }) => {
   const { xDomain, scaleX, height, width, margin } = useChartData();
 
   const refAxis = useRef();
   const refGrid = useRef();
 
   label = label ? label : mode === 'RTL' ? 'δ [ppm]' : 'time [s]';
-
+  heightProp = heightProp === 0 ? height : heightProp;
   const xAxis = d3
     .axisBottom()
     .ticks(8)
@@ -52,7 +52,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
   const grid = d3
     .axisBottom()
     .ticks(10)
-    .tickSize(-(height - margin.top - margin.bottom))
+    .tickSize(-(heightProp - margin.top - margin.bottom))
     .tickFormat('');
 
   useEffect(() => {
@@ -86,7 +86,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
         <g
           className="x"
           css={axisStyles}
-          transform={`translate(0,${height - margin.bottom})`}
+          transform={`translate(0,${heightProp - margin.bottom})`}
           ref={refAxis}
         >
           <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
@@ -95,7 +95,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
         </g>
       ),
 
-    [height, label, margin.bottom, show, width],
+    [heightProp, label, margin.bottom, show, width],
   );
 
   const Grid = useMemo(
@@ -106,14 +106,14 @@ const XAxis = ({ label, show, showGrid, mode }) => {
           css={gridStyles}
           className="grid"
           ref={refGrid}
-          transform={`translate(0,${height - margin.bottom})`}
+          transform={`translate(0,${heightProp - margin.bottom})`}
         />
       ),
 
-    [showGrid, height, margin.bottom],
+    [showGrid, heightProp, margin.bottom],
   );
 
-  if (!width || !height) {
+  if (!width || !heightProp) {
     return null;
   }
 
@@ -147,4 +147,5 @@ XAxis.defaultProps = {
   show: true,
   label: '',
   isFID: true,
+  height: 0,
 };
