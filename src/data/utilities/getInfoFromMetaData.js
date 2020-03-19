@@ -42,12 +42,25 @@ export function getInfoFromMetaData(info) {
     }
   }
 
-  if (info['.NUCLEUS']) {
-    metadata.nucleus = info['.NUCLEUS'].split(',').map((nuc) => nuc.trim());
-  } else if (info['.OBSERVENUCLEUS']) {
-    metadata.nucleus = [info['.OBSERVENUCLEUS'].replace(/[^A-Za-z0-9]/g, '')];
-  } else {
-    metadata.nucleus = getNucleusFrom2DExperiment(metadata.experiment);
+  if (info['$NUC1']) {
+    let nucleus = info['$NUC1'];
+    if (!Array.isArray(nucleus)) nucleus = [nucleus];
+    nucleus = nucleus.map((value) => value.replace(/[^A-Za-z0-9]/g, ''));
+    let beforeLength = nucleus.length;
+    nucleus = nucleus.filter((value) => value);
+    if (nucleus.length === beforeLength) {
+      metadata.nucleus = nucleus;
+    }
+  }
+
+  if (!metadata.nucleus) {
+    if (info['.NUCLEUS']) {
+      metadata.nucleus = info['.NUCLEUS'].split(',').map((nuc) => nuc.trim());
+    } else if (info['.OBSERVENUCLEUS']) {
+      metadata.nucleus = [info['.OBSERVENUCLEUS'].replace(/[^A-Za-z0-9]/g, '')];
+    } else {
+      metadata.nucleus = getNucleusFrom2DExperiment(metadata.experiment);
+    }
   }
 
   metadata.dimension = metadata.nucleus.length;
