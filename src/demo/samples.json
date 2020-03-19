@@ -11,6 +11,10 @@
         "title": "1H spectrum test"
       },
       {
+        "file": "./data/ethylbenzene/cosy.json",
+        "title": "COSY ethylbenzene"
+      },
+      {
         "file": "./data/50-78-2/linked-jcamp.json",
         "title": "Linked jcamp"
       },
