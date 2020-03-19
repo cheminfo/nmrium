@@ -25,6 +25,7 @@ import {
   spectrumReducer,
   initialState,
   dispatchMiddleware,
+  DISPLAYER_MODE,
 } from './reducer/Reducer';
 import { DispatchProvider } from './context/DispatchContext';
 import DropZone from './loader/DropZone';
@@ -34,7 +35,8 @@ import Header from './header/Header';
 import { ModalProvider } from './elements/Modal';
 import KeyListener from './EventsTrackers/keysListener';
 import ErrorBoundary from './ErrorBoundary';
-import ChartPanel from './1d/ChartPanel';
+import Viewer1D from './1d/Viewer1D';
+import Viewer2D from './2d/Viewer2D';
 
 // alert optional cofiguration
 const alertOptions = {
@@ -88,6 +90,7 @@ const NMRDisplayer = (props) => {
     margin,
     verticalAlign,
     selectedTool,
+    displayerMode,
   } = state;
 
   useEffect(() => {
@@ -129,6 +132,7 @@ const NMRDisplayer = (props) => {
   const dispatchMiddleWare = useMemo(() => dispatchMiddleware(dispatch), [
     dispatch,
   ]);
+
   return (
     <ErrorBoundary>
       <ModalProvider>
@@ -183,7 +187,11 @@ const NMRDisplayer = (props) => {
                           setResizeEventStart(true);
                         }}
                       >
-                        <ChartPanel tools={!isResizeEventStart} />
+                        {displayerMode === DISPLAYER_MODE.DM_1D ? (
+                          <Viewer1D />
+                        ) : (
+                          <Viewer2D />
+                        )}
 
                         <Panels
                           preferences={preferences}

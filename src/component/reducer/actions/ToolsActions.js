@@ -12,6 +12,7 @@ import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { getScale } from './ScaleActions';
+import { DISPLAYER_MODE } from '../Reducer';
 
 function getStrongestPeak(state) {
   const { activeSpectrum, data } = state;
@@ -291,20 +292,29 @@ const zoomOut = (state, zoomType) => {
 };
 
 const handelSetActiveTab = (state, tab) => {
+  console.log(state.data)
   return produce(state, (draft) => {
     const { data } = state;
+    if (tab) {
+      // console.log(tab);
+      // console.log(tab.split(','));
+      //check displayer mode 1d or 2d
+      draft.displayerMode = draft.data.some((d) => d.info.dimension === 2)
+        ? DISPLAYER_MODE.DM_2D
+        : DISPLAYER_MODE.DM_1D;
 
-    draft.activeTab = tab;
-    const groupByNucleus = GroupByInfoKey('nucleus');
-    const _data = groupByNucleus(data)[tab];
+      draft.activeTab = tab;
+      const groupByNucleus = GroupByInfoKey('nucleus');
+      const _data = groupByNucleus(data)[tab];
 
-    if (_data && _data.length === 1) {
-      const index = data.findIndex((datum) => datum.id === _data[0].id);
-      draft.activeSpectrum = { id: _data[0].id, index };
+      if (_data && _data.length === 1) {
+        const index = data.findIndex((datum) => datum.id === _data[0].id);
+        draft.activeSpectrum = { id: _data[0].id, index };
+      }
+
+      setDomain(draft);
+      setMode(draft);
     }
-
-    setDomain(draft);
-    setMode(draft);
   });
 };
 

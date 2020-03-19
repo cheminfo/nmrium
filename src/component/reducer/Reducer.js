@@ -152,6 +152,11 @@ import {
   handleHistoryReset,
 } from './actions/HistoryActions';
 
+export const DISPLAYER_MODE = {
+  DM_1D: '1D',
+  DM_2D: '2D',
+};
+
 export const initialState = {
   data: null,
   tempData: null,
@@ -195,6 +200,7 @@ export const initialState = {
   preferences: {},
   baseLineZones: [],
   keysPreferences: {},
+  displayerMode: DISPLAYER_MODE.DM_1D,
 };
 
 export function dispatchMiddleware(dispatch) {
