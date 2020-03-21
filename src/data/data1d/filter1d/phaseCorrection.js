@@ -16,8 +16,8 @@ export function apply(datum1D, options = {}) {
     throw new Error('phaseCorrection not applicable on this data');
   }
   let { ph0, ph1 } = options;
-  ph0 *= Math.PI / 180;
-  ph1 *= Math.PI / 180;
+  ph0 *= Math.PI / 180.0;
+  ph1 *= Math.PI / 180.0;
   Object.assign(datum1D.data, ReIm.phaseCorrection(datum1D.data, ph0, ph1));
 }
 
