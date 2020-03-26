@@ -42,7 +42,9 @@ export function getInfoFromMetaData(info) {
     }
   }
 
+  // eslint-disable-next-line dot-notation
   if (info['$NUC1']) {
+    // eslint-disable-next-line dot-notation
     let nucleus = info['$NUC1'];
     if (!Array.isArray(nucleus)) nucleus = [nucleus];
     nucleus = nucleus.map((value) => value.replace(/[^A-Za-z0-9]/g, ''));
