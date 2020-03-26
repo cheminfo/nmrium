@@ -4,7 +4,7 @@ import { Datum1D } from '../../../data/data1d/Datum1D';
 import getColor from '../../utility/ColorGenerator';
 import { AnalysisObj, initiateObject } from '../core/Analysis';
 
-import { setMode, getDomain, setDomain } from './DomainActions';
+import { setMode, setDomain } from './DomainActions';
 import { setYAxisShift } from './ToolsActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 
@@ -16,13 +16,14 @@ const initiate = (state, dataObject) => {
   return produce(state, (draft) => {
     initiateObject(dataObject.AnalysisObj);
     const spectraData = AnalysisObj.getSpectraData();
-    const domain = getDomain(spectraData);
+    // const domain = getDomain(spectraData);
     draft.data = spectraData;
     draft.molecules = AnalysisObj.getMolecules();
-    draft.xDomain = domain.x;
-    draft.yDomain = domain.y;
-    draft.originDomain = domain;
-    draft.yDomains = domain.yDomains;
+    // draft.xDomain = domain.xDomain;
+    // draft.yDomain = domain.yDomain;
+    // draft.originDomain = domain;
+    // draft.yDomains = domain.yDomains;
+    // draft.xDomains = domain.xDomains;
     draft.isLoading = false;
     const preferences = AnalysisObj.getPreferences('1d');
     if (
@@ -35,6 +36,7 @@ const initiate = (state, dataObject) => {
     } else {
       setYAxisShift(spectraData, draft, state.height);
     }
+    setDomain(draft);
     setMode(draft);
   });
 };

@@ -204,7 +204,11 @@ const Viewer1D = () => {
   const [finalSize, setFinalSize] = useState();
   useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
   useEffect(() => {
-    if (finalSize) {
+    if (
+      finalSize &&
+      finalSize.width !== Infinity &&
+      finalSize.height !== Infinity
+    ) {
       dispatch({
         type: SET_DIMENSIONS,
         ...finalSize,

@@ -1,4 +1,10 @@
-import React, { useCallback, Fragment, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  Fragment,
+  useEffect,
+  useState,
+  // useMemo,
+} from 'react';
 import { useSize, useDebounce } from 'react-use';
 
 import { useDispatch } from '../context/DispatchContext';
@@ -10,22 +16,21 @@ import {
   ADD_BASE_LINE_ZONE,
   BRUSH_END,
   FULL_ZOOM_OUT,
-  CHANGE_INTEGRAL_ZOOM,
-  SET_ZOOM_FACTOR,
   ADD_PEAK,
   SET_VERTICAL_INDICATOR_X_POSITION,
   SET_DIMENSIONS,
   ADD_RANGE,
+  SET_2D_LEVEL,
 } from '../reducer/types/Types';
 import CrossLinePointer from '../tool/CrossLinePointer';
-import XLabelPointer from '../tool/XLabelPointer';
+// import XLabelPointer from '../tool/XLabelPointer';
 import Spinner from '../loader/Spinner';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useModal } from '../elements/Modal';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
-import FooterBanner from '../1d/FooterBanner';
+// import FooterBanner from '../1d/FooterBanner';
 
 import Chart2D from './Chart2D';
 
@@ -42,6 +47,7 @@ const Viewer2D = () => {
     activeSpectrum,
     scaleX,
   } = useChartData();
+
   const dispatch = useDispatch();
   const modal = useModal();
 
@@ -114,21 +120,9 @@ const Viewer2D = () => {
     dispatch({ type: FULL_ZOOM_OUT });
   }, [dispatch]);
 
-  const handleZoom = useCallback(
-    (event) => {
-      switch (selectedTool) {
-        case options.integral.id:
-          dispatch({ type: CHANGE_INTEGRAL_ZOOM, zoomFactor: event });
-          break;
-
-        default:
-          dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: event });
-
-          return;
-      }
-    },
-    [dispatch, selectedTool],
-  );
+  const handleZoom = (wheelData) => {
+    dispatch({ type: SET_2D_LEVEL, ...wheelData });
+  };
 
   const mouseClick = useCallback(
     (position) => {
@@ -146,16 +140,6 @@ const Viewer2D = () => {
     },
     [dispatch, selectedTool],
   );
-
-  // const frequency = useMemo(() => {
-  //   return activeSpectrum
-  //     ? lodash.get(data[activeSpectrum.index], 'info.frequency')
-  //     : 0;
-  // }, [activeSpectrum, data]);
-  // const currentSpectrum = useMemo(() => {
-  //   console.log(activeSpectrum)
-  //   return activeSpectrum ? data[activeSpectrum.index] : null;
-  // }, [activeSpectrum, data]);
 
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
@@ -181,8 +165,8 @@ const Viewer2D = () => {
             >
               <CrossLinePointer />
               <BrushXY brushType={BRUSH_TYPE.XY} />
-              <XLabelPointer />
-              <FooterBanner />
+              {/* <XLabelPointer /> */}
+              {/* <FooterBanner /> */}
               <Chart2D
                 width={widthProp}
                 height={heightProp}
@@ -199,7 +183,11 @@ const Viewer2D = () => {
   const [finalSize, setFinalSize] = useState();
   useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
   useEffect(() => {
-    if (finalSize) {
+    if (
+      finalSize &&
+      finalSize.width !== Infinity &&
+      finalSize.height !== Infinity
+    ) {
       dispatch({
         type: SET_DIMENSIONS,
         ...finalSize,

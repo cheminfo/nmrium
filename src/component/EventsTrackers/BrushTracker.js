@@ -9,6 +9,7 @@ import lodash from 'lodash';
 
 import { useChartData } from '../context/ChartContext';
 import { options } from '../toolbar/ToolTypes';
+import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
 export const BrushContext = createContext();
 
@@ -33,7 +34,12 @@ export function BrushTracker({
   onClick,
   noPropagation,
 }) {
-  const { zoomFactor, integralZoomFactor, selectedTool } = useChartData();
+  const {
+    zoomFactor,
+    integralZoomFactor,
+    selectedTool,
+    displayerMode,
+  } = useChartData();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [mouseDownTime, setMouseDownTime] = useState();
 
@@ -111,6 +117,17 @@ export function BrushTracker({
   const isNegative = useCallback((n) => {
     return ((n = +n) || 1 / n) < 0;
   }, []);
+
+  const handle2DMouseWheel = useCallback(
+    (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+
+      const { deltaY, deltaX, shiftKey } = event;
+      onZoom({ deltaY: deltaY || deltaX, shiftKey });
+    },
+    [onZoom],
+  );
 
   const handleMouseWheel = useCallback(
     (event) => {
@@ -196,13 +213,26 @@ export function BrushTracker({
         onMouseDown={mouseDownHandler}
         // onDoubleClick={mouseDoubleClickHandler}
         onClick={clickHandler}
-        onWheel={handleMouseWheel}
+        onWheel={
+          displayerMode === DISPLAYER_MODE.DM_1D
+            ? handleMouseWheel
+            : displayerMode === DISPLAYER_MODE.DM_2D
+            ? handle2DMouseWheel
+            : null
+        }
       >
         {children}
       </div>
     </BrushContext.Provider>
   );
 }
+
+BrushTracker.defaultProps = {
+  onBrush: () => null,
+  onZoom: () => null,
+  onDoubleClick: () => null,
+  onClick: () => null,
+};
 
 function reducer(state, action) {
   switch (action.type) {

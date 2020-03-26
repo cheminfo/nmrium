@@ -44,8 +44,15 @@ const XAxis = ({
   height: heightProp,
   margin: marginProps,
 }) => {
-  const { xDomain, scaleX, height, width, margin } = useChartData();
-
+  const {
+    xDomain,
+    scaleX,
+    height,
+    width,
+    margin,
+    tabActiveSpectrum,
+    activeTab,
+  } = useChartData();
   const refAxis = useRef();
   const refGrid = useRef();
 
@@ -64,10 +71,18 @@ const XAxis = ({
 
   useEffect(() => {
     if (show) {
-      d3.select(refAxis.current).call(xAxis.scale(scaleX().domain(xDomain)));
-      d3.select(refGrid.current).call(grid.scale(scaleX().domain(xDomain)));
+      let scale;
+      const nucleus = activeTab.split(',')[0];
+      scale =
+        nucleus && tabActiveSpectrum[nucleus]
+          ? scaleX(tabActiveSpectrum[nucleus].id)
+          : scaleX();
+
+      d3.select(refAxis.current).call(xAxis.scale(scale));
+
+      d3.select(refGrid.current).call(grid.scale(scale));
     }
-  }, [grid, scaleX, show, xAxis, xDomain]);
+  }, [activeTab, grid, scaleX, show, tabActiveSpectrum, xAxis, xDomain]);
 
   const Axis = useMemo(
     () =>

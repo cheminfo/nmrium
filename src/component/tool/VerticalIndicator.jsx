@@ -21,7 +21,7 @@ const VerticalIndicator = () => {
     <div
       style={{
         ...styles.container,
-        transform: `translate(${scaleX(pivot)}px, 0px)`,
+        transform: `translate(${scaleX()(pivot)}px, 0px)`,
         height: height,
       }}
     />

@@ -114,8 +114,8 @@ const MultipletAnalysisModal = ({
     if (activeSpectrum && startX && endX && calcStart) {
       const { x, info, y } = data[activeSpectrum.index];
 
-      const from = scaleX.invert(startX);
-      const to = scaleX.invert(endX);
+      const from = scaleX().invert(startX);
+      const to = scaleX().invert(endX);
 
       const { fromIndex, toIndex } = X.getFromToIndex(x, {
         from,

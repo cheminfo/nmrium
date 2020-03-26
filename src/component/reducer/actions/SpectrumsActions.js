@@ -34,6 +34,7 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
   return produce(state, (draft) => {
     let refreshDomain = false;
     if (activeSpectrum) {
+      draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
       AnalysisObj.getDatum(activeSpectrum.id).isVisible = true;
       const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
       const oldIndex = draft.data.findIndex(
@@ -63,6 +64,7 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
     //
     if (refreshDomain) {
       setDomain(draft);
+      delete draft.tabActiveSpectrum[draft.activeTab];
       setMode(draft);
     }
   });

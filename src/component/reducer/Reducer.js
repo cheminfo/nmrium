@@ -63,6 +63,7 @@ import {
   CHANGE_RANGE_DATA,
   CHANGE_RANGE_SUM,
   ADD_RANGE,
+  SET_2D_LEVEL,
 } from './types/Types';
 import {
   handelResetDomain,
@@ -84,6 +85,7 @@ import {
   zoomOut,
   handleZoom,
   handelSetActiveTab,
+  levelChangeHandler,
 } from './actions/ToolsActions';
 import {
   initiate,
@@ -154,10 +156,12 @@ import {
 
 export const initialState = {
   data: null,
+  contours: null,
   tempData: null,
   xDomain: [],
   yDomain: [],
   yDomains: {},
+  xDomains: {},
   originDomain: {},
   integralsYDomains: {},
   originIntegralYDomain: {},
@@ -196,6 +200,7 @@ export const initialState = {
   baseLineZones: [],
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
+  tabActiveSpectrum: {},
 };
 
 export function dispatchMiddleware(dispatch) {
@@ -368,6 +373,8 @@ export const spectrumReducer = (state, action) => {
       return setKeyPreferencesHandler(state, action.keyCode);
     case APPLY_KEY_PREFERENCES:
       return applyKeyPreferencesHandler(state, action.keyCode);
+    case SET_2D_LEVEL:
+      return levelChangeHandler(state, action);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

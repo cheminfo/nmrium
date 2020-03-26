@@ -3,7 +3,7 @@ import React from 'react';
 import LinesSeries from './LinesSeries';
 import IntegralsSeries from './IntegralsSeries';
 import XAxis from './XAxis';
-import YAxis from './YAxis';
+// import YAxis from './YAxis';
 import PeaksNotations from './PeaksNotations';
 import Ranges from './Ranges';
 import BaseLineZones from './BaseLineZones';
@@ -38,7 +38,7 @@ function Chart1D({ mode, width, height, margin }) {
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid={true} mode={mode} />
-        <YAxis label="PPM" show={false} />
+        {/* <YAxis label="PPM" show={false} /> */}
       </g>
     </svg>
   );

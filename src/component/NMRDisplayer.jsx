@@ -83,9 +83,10 @@ const NMRDisplayer = (props) => {
   const {
     xDomain,
     yDomain,
+    yDomains,
+    xDomains,
     width,
     height,
-    yDomains,
     mode,
     margin,
     verticalAlign,
@@ -100,28 +101,51 @@ const NMRDisplayer = (props) => {
     });
   }, [dataProp]);
 
-  const scaleX = useMemo(() => {
-    const range =
-      mode === 'RTL'
-        ? [width - margin.right, margin.left]
-        : [margin.left, width - margin.right];
-    return d3.scaleLinear(xDomain, range);
-  }, [margin.left, margin.right, mode, width, xDomain]);
+  const scaleX = useCallback(
+    (spectrumId = null, direction = 'H') => {
+      let range;
+      if (direction.toUpperCase() === 'H') {
+        range =
+          mode === 'RTL'
+            ? [width - margin.right, margin.left]
+            : [margin.left, width - margin.right];
+      } else if (direction.toUpperCase() === 'V') {
+        range = [margin.top, height - margin.bottom];
+      }
+      return d3.scaleLinear(spectrumId ? xDomains[spectrumId] : xDomain, range);
+    },
+    [
+      xDomains,
+      xDomain,
+      mode,
+      width,
+      margin.right,
+      margin.left,
+      margin.bottom,
+      margin.top,
+      height,
+    ],
+  );
 
   const scaleY = useMemo(() => {
-    return (spectrumId = null) => {
-      const _height =
-        verticalAlign.flag && !verticalAlign.stacked ? height / 2 : height;
+    return (spectrumId = null, heightProps = null) => {
+      if (height && margin && verticalAlign && yDomain && yDomains) {
+        const _height = heightProps
+          ? heightProps
+          : verticalAlign.flag && !verticalAlign.stacked
+          ? height / 2
+          : height;
 
-      let domainY = [];
-
-      if (spectrumId === null || yDomains[spectrumId] === undefined) {
-        domainY = [0, yDomain[1]];
+        let domainY = [];
+        if (spectrumId === null || yDomains[spectrumId] === undefined) {
+          domainY = [0, yDomain[1]];
+        } else {
+          domainY = [0, yDomains[spectrumId][1]];
+        }
+        return d3.scaleLinear(domainY, [_height - margin.bottom, margin.top]);
       } else {
-        domainY = [0, yDomains[spectrumId][1]];
+        return null;
       }
-
-      return d3.scaleLinear(domainY, [_height - margin.bottom, margin.top]);
     };
   }, [height, margin, verticalAlign, yDomain, yDomains]);
 

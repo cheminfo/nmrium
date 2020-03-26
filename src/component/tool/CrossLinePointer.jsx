@@ -31,7 +31,7 @@ const CrossLinePointer = () => {
     brushState.step === 'brushing' ||
     !position ||
     position.y < margin.top ||
-    position.left < margin.left ||
+    position.x < margin.left ||
     position.x > width - margin.right ||
     position.y > height - margin.bottom ||
     !width ||

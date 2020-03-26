@@ -56,7 +56,7 @@ const FooterBanner = () => {
       if (activeSpectrum) {
         const xIndex = X.findClosestIndex(
           data[activeSpectrum.index].x,
-          scaleX.invert(xPosition),
+          scaleX().invert(xPosition),
         );
         return data[activeSpectrum.index].y[xIndex];
       }
@@ -69,7 +69,7 @@ const FooterBanner = () => {
     !activeSpectrum ||
     !position ||
     position.y < margin.top ||
-    position.left < margin.left ||
+    position.x < margin.left ||
     position.x > width - margin.right ||
     position.y > height - margin.bottom
   ) {
@@ -83,7 +83,9 @@ const FooterBanner = () => {
       <div>
         <span className="label"> X :</span>
         <span className="value">
-          {scaleX.invert(position.x).toPrecision(6)}
+          {scaleX()
+            .invert(position.x)
+            .toPrecision(6)}
         </span>
         <span className="unit">ppm</span>
       </div>
@@ -91,7 +93,7 @@ const FooterBanner = () => {
         <div>
           <span className="label"> X :</span>
           <span className="value">
-            {(scaleX.invert(position.x) * frequency).toPrecision(6)}
+            {(scaleX().invert(position.x) * frequency).toPrecision(6)}
           </span>
           <span className="unit">Hz</span>
         </div>
@@ -108,7 +110,7 @@ const FooterBanner = () => {
         <div>
           <span className="label"> Δppm :</span>
           <span className="value">
-            {(scaleX.invert(startX) - scaleX.invert(endX)).toPrecision(6)}
+            {(scaleX().invert(startX) - scaleX().invert(endX)).toPrecision(6)}
           </span>
         </div>
       )}
@@ -117,7 +119,7 @@ const FooterBanner = () => {
           <span className="label"> ΔHz :</span>
           <span className="value">
             {(
-              (scaleX.invert(startX) - scaleX.invert(endX)) *
+              (scaleX().invert(startX) - scaleX().invert(endX)) *
               frequency
             ).toPrecision(5)}
           </span>

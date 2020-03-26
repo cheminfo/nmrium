@@ -6,6 +6,7 @@ import getColor from '../component/utility/ColorGenerator';
 import * as SpectraManager from './SpectraManager';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
+import { Datum1D } from './data1d/Datum1D';
 
 export class Analysis {
   spectra = [];
@@ -168,11 +169,14 @@ export class Analysis {
   getSpectraData() {
     return this.spectra
       ? this.spectra.map((ob) => {
+          const data =
+            ob instanceof Datum1D ? { ...ob.data, y: ob.data.re } : ob.data;
           return {
             id: ob.id,
-            x: ob.data.x,
-            y: ob.data.re,
-            im: ob.data.im,
+            // x: ob.data.x,
+            // y: ob.data.re,
+            // im: ob.data.im,
+            ...data,
             name: ob.display.name,
             color: ob.display.color,
             isVisible: ob.display.isVisible,

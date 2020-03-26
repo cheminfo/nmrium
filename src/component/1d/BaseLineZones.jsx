@@ -64,13 +64,13 @@ const BaseLineZones = () => {
         {baseLineZones.map((zone) => (
           <g
             key={zone.id}
-            transform={`translate(${scaleX(zone.to)},0)`}
+            transform={`translate(${scaleX()(zone.to)},0)`}
             css={styles}
           >
             <DeleteButton id={zone.id} />
             <rect
               x="0"
-              width={`${scaleX(zone.from) - scaleX(zone.to)}`}
+              width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
               className="zone-area"
             />
           </g>

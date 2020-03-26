@@ -50,8 +50,8 @@ const PeakPointer = () => {
         selectedTool === options.peakPicking.id
       ) {
         const range = [
-          scaleX.invert(mouseCoordinates.x - xShift),
-          scaleX.invert(mouseCoordinates.x + xShift),
+          scaleX().invert(mouseCoordinates.x - xShift),
+          scaleX().invert(mouseCoordinates.x + xShift),
         ].sort(function(a, b) {
           return a - b;
         });
@@ -71,7 +71,7 @@ const PeakPointer = () => {
           const xIndex = yDataRange.findIndex((value) => value === yValue);
           const xValue = spectrumData.x[minIndex + xIndex];
           return {
-            x: scaleX(xValue),
+            x: scaleX()(xValue),
             // y: scale.y(yValue) - verticalAlign.value,
             y: scaleY(activeSpectrum.id)(yValue) - getVerticalAlign(),
             xIndex: minIndex + xIndex,
