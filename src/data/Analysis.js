@@ -38,6 +38,7 @@ export class Analysis {
       let files = Object.keys(zip.files).filter((name) =>
         name.endsWith('1/1r'),
       );
+
       // console.log(this.spectra);
       // eslint-disable-next-line no-await-in-loop
       files = await Promise.all(

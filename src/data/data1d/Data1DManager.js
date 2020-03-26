@@ -12,6 +12,8 @@ export class Data1DManager {
     // let usedColors = data.map((d) => d.color);
     // const color = getColor(usedColors);
 
+    if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
+
     const datum1D = new Datum1D({
       ...options,
       display: {
