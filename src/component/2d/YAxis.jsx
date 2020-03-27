@@ -23,20 +23,33 @@ const axisStyles = css`
   }
 `;
 
-const YAxis = ({ show, label, margin }) => {
+const YAxis = ({ show, label, margin, data }) => {
   const refAxis = useRef();
-  const { yDomain, scaleY, getScale, width, height } = useChartData();
+  const {
+    yDomain,
+    scaleX,
+    width,
+    height,
+    activeTab,
+    tabActiveSpectrum,
+  } = useChartData();
+  const axis = d3
+    .axisRight()
+    .ticks(8)
+    .tickFormat(d3.format('0'));
 
   useEffect(() => {
-    if (show && yDomain && scaleY()) {
-      const axis = d3
-        .axisRight()
-        .ticks(10)
-        .tickFormat(d3.format('~s'));
+    if (show && yDomain && scaleX()) {
+      let scale;
+      const nucleus = activeTab.split(',')[1];
+      scale =
+        nucleus && tabActiveSpectrum[nucleus]
+          ? scaleX(tabActiveSpectrum[nucleus].id, 'V')
+          : scaleX(null, 'V');
 
-      d3.select(refAxis.current).call(axis.scale(scaleY()));
+      d3.select(refAxis.current).call(axis.scale(scale));
     }
-  }, [show, yDomain, getScale, scaleY]);
+  }, [show, yDomain, scaleX, data, activeTab, tabActiveSpectrum, axis]);
 
   const Axis = useMemo(
     () =>

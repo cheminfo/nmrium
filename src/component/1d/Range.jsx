@@ -56,7 +56,8 @@ const Range = ({ id, from, to, integral }) => {
     return (
       <svg
         className="delete-button"
-        transform={`translate(${scaleX(to) - 20},10)`}
+        // transform={`translate(${scaleX()(to) - 20},10)`}
+        x={`translate(${scaleX()(to) - 20},10)`}
         onClick={() => deleteRange()}
         data-no-export="true"
         width="16"
@@ -74,17 +75,17 @@ const Range = ({ id, from, to, integral }) => {
       key={id}
       {...highlight.onHover}
     >
-      <g transform={`translate(${scaleX(to)},10)`}>
+      <g transform={`translate(${scaleX()(to)},10)`}>
         <rect
           x="0"
-          width={`${scaleX(from) - scaleX(to)}`}
+          width={`${scaleX()(from) - scaleX()(to)}`}
           height="6"
           className="range-area"
           fill="green"
         />
         <text
           textAnchor="middle"
-          x={(scaleX(from) - scaleX(to)) / 2}
+          x={(scaleX()(from) - scaleX()(to)) / 2}
           y="20"
           fontSize="10"
           fill="red"

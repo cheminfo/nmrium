@@ -38,12 +38,12 @@ const Integral = ({
         optimize: true,
       });
 
-      let path = `M ${scaleX(pathPoints.x[0])} ${scaleY(pathPoints.y[0])}`;
+      let path = `M ${scaleX()(pathPoints.x[0])} ${scaleY(pathPoints.y[0])}`;
 
       path += pathPoints.x
         .slice(1)
         .map((point, i) => {
-          return ` L ${scaleX(point)} ${scaleY(pathPoints.y[i])}`;
+          return ` L ${scaleX()(point)} ${scaleY(pathPoints.y[i])}`;
         })
         .join('');
       //   console.log(path);

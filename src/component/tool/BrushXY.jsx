@@ -10,6 +10,7 @@ const styles = {
     position: 'absolute',
     top: '0px',
     left: '0px',
+    zoom: '100%',
   },
 };
 
@@ -53,7 +54,8 @@ const BrushXY = ({ brushType }) => {
     <div
       style={{
         ...styles.container,
-        transform: `translate(${startX}px, ${startY}px) scale(${scaleX},${scaleY})`,
+        transform: `translate(${startX}px, ${startY}px) scale(${scaleX /
+          window.devicePixelRatio},${scaleY / window.devicePixelRatio})`,
       }}
       className="moving-element"
     >

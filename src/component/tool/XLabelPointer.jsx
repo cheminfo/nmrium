@@ -31,7 +31,7 @@ const XLabelPointer = () => {
     (xVal) => {
       const spectrumData = data.find((d) => d.id === activeSpectrum.id);
       if (spectrumData) {
-        return scaleX
+        return scaleX()
           .invert(xVal)
           .toFixed(getPeakLabelNumberDecimals(spectrumData.info.nucleus));
       }
@@ -44,7 +44,7 @@ const XLabelPointer = () => {
     brushState.step === 'brushing' ||
     !position ||
     position.y < margin.top ||
-    position.left < margin.left ||
+    position.x < margin.left ||
     position.x > width - margin.right ||
     position.y > height - margin.bottom
   ) {

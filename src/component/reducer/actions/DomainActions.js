@@ -10,28 +10,32 @@ function getActiveData(draft) {
     const groupByNucleus = GroupByInfoKey('nucleus');
     let data = groupByNucleus(draft.data)[draft.activeTab];
     // draft.activeSpectrum = null;
-    if (draft.activeSpectrum) {
-      const activeSpectrumIndex = data.findIndex(
-        (datum) => datum.id === draft.activeSpectrum.id,
-      );
-      if (activeSpectrumIndex !== -1) {
-        const isFid = data[activeSpectrumIndex].info.isFid || false;
-        data = data.filter((datum) => datum.info.isFid === isFid);
-      }
+    if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+      return data;
     } else {
-      data = data ? data.filter((datum) => datum.info.isFid === false) : [];
-    }
-
-    for (let datum of draft.data) {
-      if (data.some((activeData) => activeData.id === datum.id)) {
-        AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
-        datum.isVisibleInDomain = true;
+      if (draft.activeSpectrum) {
+        const activeSpectrumIndex = data.findIndex(
+          (datum) => datum.id === draft.activeSpectrum.id,
+        );
+        if (activeSpectrumIndex !== -1) {
+          const isFid = data[activeSpectrumIndex].info.isFid || false;
+          data = data.filter((datum) => datum.info.isFid === isFid);
+        }
       } else {
-        AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
-        datum.isVisibleInDomain = false;
+        data = data ? data.filter((datum) => datum.info.isFid === false) : [];
       }
+
+      for (let datum of draft.data) {
+        if (data.some((activeData) => activeData.id === datum.id)) {
+          AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
+          datum.isVisibleInDomain = true;
+        } else {
+          AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
+          datum.isVisibleInDomain = false;
+        }
+      }
+      return draft.data;
     }
-    return draft.data;
   } else {
     return draft.data;
   }
@@ -41,13 +45,19 @@ function getDomain(data) {
   let xArray = [];
   let yArray = [];
   let yDomains = {};
+  let xDomains = {};
   try {
     xArray = data.reduce((acc, d) => {
-      return d.isVisibleInDomain
-        ? acc.concat([d.x[0], d.x[d.x.length - 1]])
-        : acc.concat([]);
+      if (d.isVisibleInDomain) {
+        const domain = [d.x[0], d.x[d.x.length - 1]];
+        xDomains[d.id] = domain;
+
+        return acc.concat(domain);
+      } else {
+        return acc.concat([]);
+      }
     }, []);
-    yDomains = {};
+
     yArray = data.reduce((acc, d) => {
       if (d.isVisibleInDomain) {
         const _extent = extent(d.y);
@@ -64,78 +74,103 @@ function getDomain(data) {
   }
 
   return {
-    x: extent(xArray),
-    y: extent(yArray),
+    xDomain: extent(xArray),
+    yDomain: extent(yArray),
     yDomains,
+    xDomains,
   };
 }
-function get2DDomain(data) {
+function get2DDomain(state, data2D) {
   let xArray = [];
+  let yArray = [];
   let yDomains = {};
-  try {
-    xArray = data.reduce((acc, d) => {
-      return d.info.dimension === 1
-        ? acc.concat([d.x[0], d.x[d.x.length - 1]])
+  let xDomains = {};
+
+  const nucleus = state.activeTab.split(',');
+  if (
+    Array.isArray(nucleus) &&
+    nucleus.length === 2 &&
+    Object.keys(state.tabActiveSpectrum).length !== 0
+  ) {
+    const spectrumsIDs = nucleus.map((n) => state.tabActiveSpectrum[n].id);
+    const filteredData = state.data.reduce((acc, datum) => {
+      return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
+        ? acc.concat(datum)
         : acc.concat([]);
     }, []);
-    yDomains = data
-      .filter((d) => d.info.dimension === 1)
-      .reduce((acc, d) => {
-        return (acc[d.id] = xArray);
-      }, {});
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
+    try {
+      xArray = filteredData.reduce((acc, d) => {
+        const domain = [d.x[0], d.x[d.x.length - 1]];
+        xDomains[d.id] = domain;
+        return acc.concat(domain);
+      }, []);
+
+      yArray = filteredData.reduce((acc, d) => {
+        const _extent = extent(d.y);
+        yDomains[d.id] = _extent;
+        return acc.concat(_extent);
+      }, []);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+
+    return {
+      xDomain: extent(xArray),
+      yDomain: extent(yArray),
+      yDomains,
+      xDomains,
+    };
   }
 
   return {
-    x: extent(xArray),
-    y: extent(xArray),
-    yDomains,
+    xDomain: [data2D[0].minX, data2D[0].maxX],
+    yDomain: [data2D[0].minY, data2D[0].maxY],
+    xDomains: { [data2D[0].id]: [data2D[0].minX, data2D[0].maxX] },
+    yDomains: { [data2D[0].id]: [data2D[0].minY, data2D[0].maxY] },
   };
 }
 
 function setDomain(draft, isYDomainChanged = true) {
   let domain;
   const data = getActiveData(draft);
+
   if (
     draft.activeTab &&
-    [DISPLAYER_MODE.MODE_1D, DISPLAYER_MODE.MODE_2D].includes(
-      draft.displayerMode,
-    )
+    [DISPLAYER_MODE.DM_1D, DISPLAYER_MODE.DM_2D].includes(draft.displayerMode)
   ) {
     domain =
-      draft.displayerMode === DISPLAYER_MODE.MODE_1D
+      draft.displayerMode === DISPLAYER_MODE.DM_1D
         ? getDomain(data)
-        : get2DDomain(data);
-
-    draft.xDomain = domain.x;
+        : get2DDomain(draft, data);
+    draft.xDomain = domain.xDomain;
+    draft.xDomains = domain.xDomains;
     if (isYDomainChanged) {
-      draft.yDomain = domain.y;
+      draft.yDomain = domain.yDomain;
       draft.yDomains = domain.yDomains;
-      draft.originDomain = {
-        x: domain.x,
-        y: domain.y,
-        yDomains: domain.yDomains,
-      };
+      draft.originDomain = domain;
     } else {
       draft.originDomain = {
         ...draft.originDomain,
-        x: domain.x,
+        xDomain: domain.xDomain,
+        xDomains: domain.xDomains,
       };
     }
     // draft.integralsYDomains = domain.integralsYDomains;
     // draft.data = draft.data.map((d) => {
     //   return { ...d, integralsYDomain: domain.y };
     // });
-  } else {
-    domain = getDomain(data);
-    // console.log(domain);
-    draft.xDomain = domain.x;
-    draft.yDomain = domain.y;
-    draft.originDomain = domain;
-    draft.yDomains = domain.yDomains;
   }
+  // else {
+  //   domain = getDomain(data);
+  //   console.log(domain)
+
+  //   // console.log(domain);
+  //   draft.xDomain = domain.x;
+  //   draft.yDomain = domain.y;
+  //   draft.originDomain = domain;
+  //   draft.yDomains = domain.yDomains;
+  // }
 }
 
 const setOriginalDomain = (state, originDomain) => {
@@ -152,8 +187,11 @@ const setXDomain = (state, xDomain) => {
 
 const handelResetDomain = (state) => {
   return produce(state, (draft) => {
-    draft.xDomain = state.originDomain.x;
-    draft.yDomain = state.originDomain.y;
+    const { xDomain, yDomain, xDomains, yDomains } = state.originDomain;
+    draft.xDomain = xDomain;
+    draft.yDomain = yDomain;
+    draft.xDomains = xDomains;
+    draft.yDomains = yDomains;
   });
 };
 

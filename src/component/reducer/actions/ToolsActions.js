@@ -5,9 +5,15 @@ import { options } from '../../toolbar/ToolTypes';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import generateID from '../../../data/utilities/generateID';
 import { AnalysisObj } from '../core/Analysis';
-import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
+import {
+  DEFAULT_YAXIS_SHIFT_VALUE,
+  DISPLAYER_MODE,
+  MARGIN,
+} from '../core/Constants';
 import getClosestNumber from '../helper/GetClosestNumber';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import Spectrum2D from '../core/Spectrum2D';
+import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
@@ -191,16 +197,18 @@ const handleToggleRealImaginaryVisibility = (state) => {
         if (reY !== null && reY !== undefined) {
           draft.data[index].y = reY;
           const domain = getDomain(draft.data);
-          draft.xDomain = domain.x;
-          draft.yDomain = domain.y;
+          draft.xDomain = domain.xDomain;
+          draft.yDomain = domain.yDomain;
+          draft.xDomains = domain.xDomains;
           draft.yDomains = domain.yDomains;
         }
       } else {
         if (imY !== null && imY !== undefined) {
           draft.data[index].y = imY;
           const domain = getDomain(draft.data);
-          draft.xDomain = domain.x;
-          draft.yDomain = domain.y;
+          draft.xDomain = domain.xDomain;
+          draft.yDomain = domain.yDomain;
+          draft.xDomains = domain.xDomains;
           draft.yDomains = domain.yDomains;
         }
       }
@@ -213,11 +221,16 @@ const handleBrushEnd = (state, action) => {
   return produce(state, (draft) => {
     const start = scale.invert(action.startX);
     const end = scale.invert(action.endX);
+    let domainX;
     if (start > end) {
-      draft.xDomain = [end, start];
+      domainX = [end, start];
     } else {
-      draft.xDomain = [start, end];
+      domainX = [start, end];
     }
+    draft.xDomain = domainX;
+    draft.xDomains = Object.keys(draft.xDomains).reduce((acc, id) => {
+      return { ...acc, [id]: domainX };
+    }, {});
   });
 };
 const setVerticalIndicatorXPosition = (state, position) => {
@@ -227,7 +240,7 @@ const setVerticalIndicatorXPosition = (state, position) => {
   });
 };
 
-const setZoom = (state, draft, zoomFactor) => {
+const setZoom = (state, draft, scale) => {
   const { originDomain, height, margin, data } = state;
   let t;
   if (data.length === 1) {
@@ -235,85 +248,142 @@ const setZoom = (state, draft, zoomFactor) => {
     const referencePoint = getScale(state).y(closest);
     t = zoomIdentity
       .translate(0, referencePoint)
-      .scale(zoomFactor.scale)
+      .scale(scale)
       .translate(0, -referencePoint);
   } else {
     t = zoomIdentity
       .translate(0, height - margin.bottom)
-      .scale(zoomFactor.scale)
+      .scale(scale)
       .translate(0, -(height - margin.bottom));
   }
 
-  draft.zoomFactor = zoomFactor;
+  draft.zoomFactor = { scale };
 
   if (draft.activeSpectrum === null) {
     draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
-      const scale = scaleLinear(originDomain.yDomains[id], [
+      const _scale = scaleLinear(originDomain.yDomains[id], [
         height - margin.bottom,
         margin.top,
       ]);
-      let yDomain = t.rescaleY(scale).domain();
+      let yDomain = t.rescaleY(_scale).domain();
       acc[id] = yDomain;
       return acc;
       // return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
     }, {});
   } else {
-    const scale = scaleLinear(originDomain.yDomains[draft.activeSpectrum.id], [
+    const _scale = scaleLinear(originDomain.yDomains[draft.activeSpectrum.id], [
       height - margin.bottom,
       margin.top,
     ]);
-    let yDomain = t.rescaleY(scale).domain();
+    let yDomain = t.rescaleY(_scale).domain();
     draft.yDomains[draft.activeSpectrum.id] = yDomain;
   }
 };
 
-const handleZoom = (state, zoomFactor) => {
+const spectrumZoomHanlder = new Spectrum1DZoomHelper();
+
+const handleZoom = (state, action) => {
   return produce(state, (draft) => {
-    setZoom(state, draft, zoomFactor);
+    const { deltaY, deltaMode } = action;
+    spectrumZoomHanlder.wheel(deltaY, deltaMode);
+    setZoom(state, draft, spectrumZoomHanlder.getScale());
   });
 };
 
 const zoomOut = (state, zoomType) => {
   return produce(state, (draft) => {
-    switch (zoomType) {
-      case 'H':
-        draft.xDomain = state.originDomain.x;
-        break;
-      case 'V':
-        setZoom(state, draft, { scale: 0.8 });
-        break;
-      default:
-        draft.xDomain = state.originDomain.x;
-        setZoom(state, draft, { scale: 0.8 });
-        break;
+    if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+      switch (zoomType) {
+        case 'H':
+          draft.xDomain = state.originDomain.xDomain;
+          break;
+        case 'V':
+          setZoom(state, draft, { scale: 0.8 });
+          break;
+        default:
+          draft.xDomain = state.originDomain.xDomain;
+          setZoom(state, draft, { scale: 0.8 });
+          break;
+      }
+    } else {
+      const { xDomain, yDomain, xDomains, yDomains } = state.originDomain;
+      draft.xDomain = xDomain;
+      draft.yDomain = yDomain;
+      draft.xDomains = xDomains;
+      draft.yDomains = yDomains;
     }
   });
+};
+
+const setMargin = (draft) => {
+  if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+    const nucleuses = draft.activeTab.split(',');
+    const top = draft.tabActiveSpectrum[nucleuses[0]]
+      ? MARGIN['2D'].top
+      : MARGIN['1D'].top;
+    const left = draft.tabActiveSpectrum[nucleuses[1]]
+      ? MARGIN['2D'].left
+      : MARGIN['1D'].left;
+    draft.margin = { ...MARGIN['2D'], top, left };
+  } else {
+    draft.margin = MARGIN['1D'];
+  }
+};
+
+function initiate2D(draft, data) {
+  if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+    if (draft.activeSpectrum) {
+      const data2D = data[draft.activeSpectrum.index];
+      const spectrum2D = new Spectrum2D(data2D);
+      draft.contours = spectrum2D.drawContours();
+    }
+  }
+}
+
+const setDisplayerMode = (draft, data) => {
+  draft.displayerMode = data.some((d) => d.info.dimension === 2)
+    ? DISPLAYER_MODE.DM_2D
+    : DISPLAYER_MODE.DM_1D;
 };
 
 const handelSetActiveTab = (state, tab) => {
   return produce(state, (draft) => {
     const { data } = state;
     if (tab) {
-      // console.log(tab);
-      // console.log(tab.split(','));
-      //check displayer mode 1d or 2d
-      draft.displayerMode = draft.data.some((d) => d.info.dimension === 2)
-        ? DISPLAYER_MODE.DM_2D
-        : DISPLAYER_MODE.DM_1D;
-
       draft.activeTab = tab;
       const groupByNucleus = GroupByInfoKey('nucleus');
       const _data = groupByNucleus(data)[tab];
+      setDisplayerMode(draft, _data);
+      setMargin(draft);
 
       if (_data && _data.length === 1) {
         const index = data.findIndex((datum) => datum.id === _data[0].id);
         draft.activeSpectrum = { id: _data[0].id, index };
+        draft.tabActiveSpectrum[draft.activeTab] = { id: _data[0].id, index };
       }
+
+      initiate2D(draft, data);
 
       setDomain(draft);
       setMode(draft);
     }
   });
+};
+
+const levelChangeHandler = (state, { deltaY, shiftKey }) => {
+  try {
+    const spectrum2D = Spectrum2D.getInstance();
+    if (shiftKey) {
+      spectrum2D.shiftWheel(deltaY);
+    } else {
+      spectrum2D.wheel(deltaY);
+    }
+
+    const contours = spectrum2D.drawContours();
+    return { ...state, contours };
+  } catch (e) {
+    return state;
+  }
 };
 
 export {
@@ -332,4 +402,5 @@ export {
   handleZoom,
   zoomOut,
   handelSetActiveTab,
+  levelChangeHandler,
 };

@@ -68,11 +68,11 @@ const IntegralResizable = (props) => {
     return (
       <svg
         className="target"
-        // x={scaleX(xBoundary[1]) - 20}
-        // y={height - margin.bottom - 20}
-        transform={`translate(${scaleX(xBoundary[1]) - 20},${height -
-          margin.bottom -
-          20})`}
+        x={scaleX()(xBoundary[1]) - 20}
+        y={height - margin.bottom - 20}
+        // transform={`translate(${scaleX()(xBoundary[1]) - 20}px,${height -
+        //   margin.bottom -
+        //   20}px)`}
         onClick={deleteIntegral}
         data-no-export="true"
         width="16"
@@ -101,8 +101,8 @@ const IntegralResizable = (props) => {
 
       const range =
         mode === 'RTL'
-          ? [scaleX.invert(e.layerX), to]
-          : [to, scaleX.invert(e.layerX)];
+          ? [scaleX().invert(e.layerX), to]
+          : [to, scaleX().invert(e.layerX)];
 
       if (range[1] > range[0]) {
         const integral = {
@@ -144,8 +144,8 @@ const IntegralResizable = (props) => {
       setLeftDragVisibility(false);
       const range =
         mode === 'RTL'
-          ? [from, scaleX.invert(e.layerX)]
-          : [scaleX.invert(e.layerX), from];
+          ? [from, scaleX().invert(e.layerX)]
+          : [scaleX().invert(e.layerX), from];
 
       if (range[1] > range[0]) {
         const integral = {
@@ -181,20 +181,20 @@ const IntegralResizable = (props) => {
         {...highlight.onHover}
       >
         <rect
-          x={scaleX(xBoundary[1])}
+          x={scaleX()(xBoundary[1])}
           y="0"
-          width={scaleX(xBoundary[0]) - scaleX(xBoundary[1])}
+          width={scaleX()(xBoundary[0]) - scaleX()(xBoundary[1])}
           height="100%"
           className="highlight"
         />
         <Draggable
           axis="x"
           defaultPosition={{
-            x: scaleX(xBoundary[0]),
+            x: scaleX()(xBoundary[0]),
             y: 0,
           }}
           position={{
-            x: scaleX(xBoundary[0]),
+            x: scaleX()(xBoundary[0]),
             y: 0,
           }}
           scale={1}
@@ -214,11 +214,11 @@ const IntegralResizable = (props) => {
         <Draggable
           axis="x"
           defaultPosition={{
-            x: scaleX(xBoundary[1]),
+            x: scaleX()(xBoundary[1]),
             y: 0,
           }}
           position={{
-            x: scaleX(xBoundary[1]),
+            x: scaleX()(xBoundary[1]),
             y: 0,
           }}
           scale={1}

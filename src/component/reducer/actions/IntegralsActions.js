@@ -3,6 +3,7 @@ import { extent, scaleLinear, zoomIdentity } from 'd3';
 import { XY } from 'ml-spectra-processing';
 
 import { AnalysisObj } from '../core/Analysis';
+import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
 
 import { getScale } from './ScaleActions';
 
@@ -20,34 +21,37 @@ const handleChangeIntegralSum = (state, value) => {
   });
 };
 
-const setIntegralZoom = (state, zoomFactor, draft) => {
+const setIntegralZoom = (state, scale, draft) => {
   if (draft.activeSpectrum) {
     const { height, margin } = state;
     if (draft.originIntegralYDomain) {
-      const scale = scaleLinear(draft.originIntegralYDomain, [
+      const _scale = scaleLinear(draft.originIntegralYDomain, [
         height - margin.bottom,
         margin.top,
       ]);
 
-      const scaleValue = zoomFactor.scale < 0.1 ? 0.05 : zoomFactor.scale;
+      const scaleValue = scale < 0.1 ? 0.05 : scale;
       const t = zoomIdentity
         .translate(0, height - margin.bottom)
         .scale(scaleValue)
         .translate(0, -(height - margin.bottom));
 
-      const newYDomain = t.rescaleY(scale).domain();
+      const newYDomain = t.rescaleY(_scale).domain();
 
-      draft.integralZoomFactor = zoomFactor;
+      draft.integralZoomFactor = { scale };
       const activeSpectrum = draft.activeSpectrum;
       // draft.zoomFactor = t;
       draft.integralsYDomains[activeSpectrum.id] = newYDomain;
     }
   }
 };
+const integralZoomHanlder = new Spectrum1DZoomHelper();
 
-const handleChangeIntegralZoom = (state, zoomFactor) => {
+const handleChangeIntegralZoom = (state, action) => {
   return produce(state, (draft) => {
-    setIntegralZoom(state, zoomFactor, draft);
+    const { deltaY, deltaMode } = action;
+    integralZoomHanlder.wheel(deltaY, deltaMode);
+    setIntegralZoom(state, integralZoomHanlder.getScale(draft.scale), draft);
   });
 };
 

@@ -38,9 +38,10 @@ export const Line = ({ x, y, id, color, index }) => {
         },
       );
       const _scaleY = scaleY(id);
-      let path = `M ${scaleX(pathPoints.x[0])} ${_scaleY(pathPoints.y[0])} `;
+      const _scaleX = scaleX();
+      let path = `M ${_scaleX(pathPoints.x[0])} ${_scaleY(pathPoints.y[0])} `;
       path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${scaleX(point)} ${_scaleY(pathPoints.y[i + 1])}`;
+        accumulator += ` L ${_scaleX(point)} ${_scaleY(pathPoints.y[i + 1])}`;
         return accumulator;
       }, '');
       return path;

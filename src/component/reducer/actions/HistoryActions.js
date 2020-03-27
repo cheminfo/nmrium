@@ -28,8 +28,8 @@ const handleHistoryUndo = (state) => {
   return {
     ...state,
     data: resultData,
-    xDomain: domain.x,
-    yDomain: domain.y,
+    xDomain: domain.xDomain,
+    yDomain: domain.yDomain,
     originDomain: domain,
     history,
   };
