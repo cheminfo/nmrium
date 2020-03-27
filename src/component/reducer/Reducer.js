@@ -308,7 +308,7 @@ export const spectrumReducer = (state, action) => {
     case TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return handleToggleRealImaginaryVisibility(state);
     case SET_ZOOM_FACTOR:
-      return handleZoom(state, action.zoomFactor);
+      return handleZoom(state, action);
     // return {
     //   ...state,
     //   zoomFactor: action.zoomFactor,
@@ -333,7 +333,7 @@ export const spectrumReducer = (state, action) => {
       return handleChangeIntegralYDomain(state, action.yDomain);
 
     case CHANGE_INTEGRAL_ZOOM:
-      return handleChangeIntegralZoom(state, action.zoomFactor);
+      return handleChangeIntegralZoom(state, action);
 
     case CHANGE_INTEGRAL_SUM:
       return handleChangeIntegralSum(state, action.value);

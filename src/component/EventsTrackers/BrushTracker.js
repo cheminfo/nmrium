@@ -7,10 +7,6 @@ import React, {
 } from 'react';
 import lodash from 'lodash';
 
-import { useChartData } from '../context/ChartContext';
-import { options } from '../toolbar/ToolTypes';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
-
 export const BrushContext = createContext();
 
 const initialState = {
@@ -22,7 +18,6 @@ const initialState = {
 };
 
 let debounceClickEvents = [];
-let scale = 1;
 
 export function BrushTracker({
   children,
@@ -34,22 +29,8 @@ export function BrushTracker({
   onClick,
   noPropagation,
 }) {
-  const {
-    zoomFactor,
-    integralZoomFactor,
-    selectedTool,
-    displayerMode,
-  } = useChartData();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [mouseDownTime, setMouseDownTime] = useState();
-
-  useEffect(() => {
-    scale =
-      selectedTool === options.integral.id
-        ? integralZoomFactor.scale
-        : zoomFactor.scale;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTool]);
 
   const mouseDownHandler = useCallback(
     (event) => {
@@ -104,69 +85,14 @@ export function BrushTracker({
     [mouseDownTime, onClick, onDoubleClick],
   );
 
-  // const mouseDoubleClickHandler = useCallback(
-  //   (event) => {
-  //     if (noPropagation) {
-  //       event.stopPropagation();
-  //     }
-  //     onDoubleClick(event);
-  //   },
-  //   [noPropagation, onDoubleClick],
-  // );
-
-  const isNegative = useCallback((n) => {
-    return ((n = +n) || 1 / n) < 0;
-  }, []);
-
-  const handle2DMouseWheel = useCallback(
-    (event) => {
-      event.stopPropagation();
-      event.preventDefault();
-
-      const { deltaY, deltaX, shiftKey } = event;
-      onZoom({ deltaY: deltaY || deltaX, shiftKey });
-    },
-    [onZoom],
-  );
-
   const handleMouseWheel = useCallback(
     (event) => {
       event.stopPropagation();
       event.preventDefault();
-
-      const deltaYValue =
-        Math.abs(event.deltaY) === 1
-          ? Math.abs(event.deltaY)
-          : Math.abs(event.deltaY) / 100;
-
-      let ZOOM_STEP =
-        event.deltaMode === 1
-          ? deltaYValue <= 3
-            ? 0.01
-            : 0.05 * event.deltaMode
-          : event.deltaMode
-          ? 1
-          : deltaYValue <= 3
-          ? 0.01
-          : 0.05 * deltaYValue;
-
-      const direction = isNegative(event.deltaY) ? 'up' : 'down';
-      let _scale = scale;
-
-      if (direction === 'up') {
-        _scale = scale + ZOOM_STEP;
-      } else {
-        _scale = scale - ZOOM_STEP;
-      }
-      if (_scale >= 0 || _scale === 0) {
-        onZoom({ scale: _scale });
-        scale = _scale;
-      } else {
-        onZoom({ scale: 0 });
-        scale = _scale;
-      }
+      const { deltaY, deltaX, shiftKey, deltaMode } = event;
+      onZoom({ deltaY: deltaY || deltaX, shiftKey, deltaMode });
     },
-    [isNegative, onZoom],
+    [onZoom],
   );
 
   useEffect(() => {
@@ -213,13 +139,7 @@ export function BrushTracker({
         onMouseDown={mouseDownHandler}
         // onDoubleClick={mouseDoubleClickHandler}
         onClick={clickHandler}
-        onWheel={
-          displayerMode === DISPLAYER_MODE.DM_1D
-            ? handleMouseWheel
-            : displayerMode === DISPLAYER_MODE.DM_2D
-            ? handle2DMouseWheel
-            : null
-        }
+        onWheel={handleMouseWheel}
       >
         {children}
       </div>

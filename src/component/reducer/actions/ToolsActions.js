@@ -17,6 +17,7 @@ import Spectrum2D from '../core/Spectrum2D';
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { getScale } from './ScaleActions';
+import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
 
 function getStrongestPeak(state) {
   const { activeSpectrum, data } = state;
@@ -239,7 +240,8 @@ const setVerticalIndicatorXPosition = (state, position) => {
   });
 };
 
-const setZoom = (state, draft, zoomFactor) => {
+const setZoom = (state, draft, scale) => {
+  console.log(scale)
   const { originDomain, height, margin, data } = state;
   let t;
   if (data.length === 1) {
@@ -247,41 +249,45 @@ const setZoom = (state, draft, zoomFactor) => {
     const referencePoint = getScale(state).y(closest);
     t = zoomIdentity
       .translate(0, referencePoint)
-      .scale(zoomFactor.scale)
+      .scale(scale)
       .translate(0, -referencePoint);
   } else {
     t = zoomIdentity
       .translate(0, height - margin.bottom)
-      .scale(zoomFactor.scale)
+      .scale(scale)
       .translate(0, -(height - margin.bottom));
   }
 
-  draft.zoomFactor = zoomFactor;
+  draft.zoomFactor = { scale };
 
   if (draft.activeSpectrum === null) {
     draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
-      const scale = scaleLinear(originDomain.yDomains[id], [
+      const _scale = scaleLinear(originDomain.yDomains[id], [
         height - margin.bottom,
         margin.top,
       ]);
-      let yDomain = t.rescaleY(scale).domain();
+      let yDomain = t.rescaleY(_scale).domain();
       acc[id] = yDomain;
       return acc;
       // return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
     }, {});
   } else {
-    const scale = scaleLinear(originDomain.yDomains[draft.activeSpectrum.id], [
+    const _scale = scaleLinear(originDomain.yDomains[draft.activeSpectrum.id], [
       height - margin.bottom,
       margin.top,
     ]);
-    let yDomain = t.rescaleY(scale).domain();
+    let yDomain = t.rescaleY(_scale).domain();
     draft.yDomains[draft.activeSpectrum.id] = yDomain;
   }
 };
 
-const handleZoom = (state, zoomFactor) => {
+const spectrumZoomHanlder = new Spectrum1DZoomHelper();
+
+const handleZoom = (state, action) => {
   return produce(state, (draft) => {
-    setZoom(state, draft, zoomFactor);
+    const { deltaY, deltaMode } = action;
+    spectrumZoomHanlder.wheel(deltaY, deltaMode);
+    setZoom(state, draft, spectrumZoomHanlder.getScale());
   });
 };
 

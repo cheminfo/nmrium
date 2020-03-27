@@ -121,11 +121,11 @@ const Viewer1D = () => {
     (event) => {
       switch (selectedTool) {
         case options.integral.id:
-          dispatch({ type: CHANGE_INTEGRAL_ZOOM, zoomFactor: event });
+          dispatch({ type: CHANGE_INTEGRAL_ZOOM, ...event });
           break;
 
         default:
-          dispatch({ type: SET_ZOOM_FACTOR, zoomFactor: event });
+          dispatch({ type: SET_ZOOM_FACTOR, ...event });
 
           return;
       }
