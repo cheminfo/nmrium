@@ -15,6 +15,10 @@
         "title": "COSY ethylbenzene"
       },
       {
+        "file": "./data/cytisine/2d/hsqc.json",
+        "title": "HSQC cytisine"
+      },
+      {
         "file": "./data/50-78-2/linked-jcamp.json",
         "title": "Linked jcamp"
       },
