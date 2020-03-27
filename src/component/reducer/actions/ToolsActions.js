@@ -13,11 +13,11 @@ import {
 import getClosestNumber from '../helper/GetClosestNumber';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import Spectrum2D from '../core/Spectrum2D';
+import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { getScale } from './ScaleActions';
-import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
 
 function getStrongestPeak(state) {
   const { activeSpectrum, data } = state;
@@ -241,7 +241,6 @@ const setVerticalIndicatorXPosition = (state, position) => {
 };
 
 const setZoom = (state, draft, scale) => {
-  console.log(scale)
   const { originDomain, height, margin, data } = state;
   let t;
   if (data.length === 1) {
