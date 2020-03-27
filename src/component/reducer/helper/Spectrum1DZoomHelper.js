@@ -1,10 +1,4 @@
 export default class Spectrum1DZoomHelper {
-  static instance;
-
-  static getInstance() {
-    return Spectrum1DZoomHelper.instance;
-  }
-
   constructor(
     scale = 1,
     options = {
@@ -13,11 +7,6 @@ export default class Spectrum1DZoomHelper {
       speedThreshold: 3,
     },
   ) {
-    if (Spectrum1DZoomHelper.instance) {
-      return Spectrum1DZoomHelper.instance;
-    }
-
-    Spectrum1DZoomHelper.instance = this;
     this.scale = scale;
     this.slowZoomStep = options.slowZoomStep;
     this.fastZoomStep = options.fastZoomStep;
@@ -51,5 +40,9 @@ export default class Spectrum1DZoomHelper {
 
   getScale() {
     return this.scale;
+  }
+
+  setScale(scale) {
+    this.scale = scale;
   }
 }

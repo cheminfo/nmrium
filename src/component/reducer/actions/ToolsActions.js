@@ -298,11 +298,11 @@ const zoomOut = (state, zoomType) => {
           draft.xDomain = state.originDomain.xDomain;
           break;
         case 'V':
-          setZoom(state, draft, { scale: 0.8 });
+          setZoom(state, draft, 0.8);
           break;
         default:
           draft.xDomain = state.originDomain.xDomain;
-          setZoom(state, draft, { scale: 0.8 });
+          setZoom(state, draft, 0.8);
           break;
       }
     } else {

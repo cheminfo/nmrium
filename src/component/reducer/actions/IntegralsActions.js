@@ -45,7 +45,7 @@ const setIntegralZoom = (state, scale, draft) => {
     }
   }
 };
-const integralZoomHanlder = new Spectrum1DZoomHelper();
+const integralZoomHanlder = new Spectrum1DZoomHelper(0.5);
 
 const handleChangeIntegralZoom = (state, action) => {
   return produce(state, (draft) => {
@@ -89,7 +89,7 @@ const addIntegral = (state, action) => {
         const integralYDomain = extent(integralResult.y);
         draft.integralsYDomains[id] = integralYDomain;
         draft.originIntegralYDomain = integralYDomain;
-        setIntegralZoom(state, draft.integralZoomFactor, draft);
+        setIntegralZoom(state, draft.integralZoomFactor.scale, draft);
       }
     }
   });
