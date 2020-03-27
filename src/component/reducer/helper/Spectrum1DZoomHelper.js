@@ -24,10 +24,6 @@ export default class Spectrum1DZoomHelper {
     this.speedThreshold = options.speedThreshold;
   }
 
-  isNegative(n) {
-    return ((n = +n) || 1 / n) < 0;
-  }
-
   wheel(deltaY, deltaMode) {
     const deltaYValue =
       Math.abs(deltaY) === 1 ? Math.abs(deltaY) : Math.abs(deltaY) / 100;
@@ -43,18 +39,13 @@ export default class Spectrum1DZoomHelper {
         ? this.slowZoomStep
         : this.fastZoomStep * deltaYValue;
 
-    const direction = this.isNegative(deltaY) ? 'up' : 'down';
-    let _scale = this.scale;
-
-    if (direction === 'up') {
-      _scale = this.scale + ZOOM_STEP;
-    } else {
-      _scale = this.scale - ZOOM_STEP;
-    }
+    const direction = Math.sign(deltaY);
+    const _scale =
+      direction === -1 ? this.scale + ZOOM_STEP : this.scale - ZOOM_STEP;
     if (_scale >= 0 || _scale === 0) {
       this.scale = _scale;
     } else {
-      this.scale = _scale;
+      this.scale = 0;
     }
   }
 
