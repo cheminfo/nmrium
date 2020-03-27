@@ -1,15 +1,15 @@
 /* eslint-disable no-unused-vars */
 // import baseline from './baseline';
 import max from 'ml-array-max';
+import equallySpaced from 'ml-array-xy-equally-spaced';
 import { XY, X } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
-import equallySpaced from 'ml-array-xy-equally-spaced';
 
 import generateID from '../utilities/generateID';
 
+import { FiltersManager } from './FiltersManager';
 import autoPeakPicking from './autoPeakPicking';
 import autoRangesDetection from './autoRangesDetection';
-import { FiltersManager } from './FiltersManager';
 import { Filters } from './filter1d/Filters';
 
 export class Datum1D {

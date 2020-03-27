@@ -9,33 +9,33 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import SplitPane from 'react-split-pane';
-import { useToggle, useFullscreen } from 'react-use';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
+import SplitPane from 'react-split-pane';
+import { useToggle, useFullscreen } from 'react-use';
 import 'cheminfo-font/dist/style.css';
 import PropTypes from 'prop-types';
 
 import { Analysis } from '../data/Analysis';
 
-import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
-import { HighlightProvider } from './highlight';
+import Viewer1D from './1d/Viewer1D';
+import Viewer2D from './2d/Viewer2D';
+import ErrorBoundary from './ErrorBoundary';
+import KeyListener from './EventsTrackers/keysListener';
 import { ChartDataProvider } from './context/ChartContext';
+import { DispatchProvider } from './context/DispatchContext';
+import { ModalProvider } from './elements/Modal';
+import Header from './header/Header';
+import { HighlightProvider } from './highlight';
 import {
   spectrumReducer,
   initialState,
   dispatchMiddleware,
 } from './reducer/Reducer';
-import { DispatchProvider } from './context/DispatchContext';
+import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import DropZone from './loader/DropZone';
 import ToolBar from './toolbar/ToolBar';
 import Panels from './panels/Panels';
-import Header from './header/Header';
-import { ModalProvider } from './elements/Modal';
-import KeyListener from './EventsTrackers/keysListener';
-import ErrorBoundary from './ErrorBoundary';
-import Viewer1D from './1d/Viewer1D';
-import Viewer2D from './2d/Viewer2D';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 
 // alert optional cofiguration

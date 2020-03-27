@@ -10,9 +10,9 @@ import {
 } from 'react';
 import { FaMinus } from 'react-icons/fa';
 
-import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/types/Types';
 import { useDispatch } from '../context/DispatchContext';
 import { useHighlight } from '../highlight';
+import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/types/Types';
 
 const styles = css`
   user-select: 'none';

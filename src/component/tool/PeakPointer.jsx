@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
 import max from 'ml-array-max';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
+import { MouseContext } from '../EventsTrackers/MouseTracker';
+import { useChartData } from '../context/ChartContext';
 import { options } from '../toolbar/ToolTypes';
 
 const styles = {
@@ -52,7 +52,7 @@ const PeakPointer = () => {
         const range = [
           scaleX().invert(mouseCoordinates.x - xShift),
           scaleX().invert(mouseCoordinates.x + xShift),
-        ].sort(function(a, b) {
+        ].sort(function (a, b) {
           return a - b;
         });
 

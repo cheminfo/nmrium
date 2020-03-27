@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 import { memo } from 'react';
+import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 
 import ToolTip from '../../elements/ToolTip/ToolTip';
 

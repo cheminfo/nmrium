@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
 
 const Select = React.forwardRef(
   ({ data, style, onChange, defaultValue }, ref) => {
@@ -61,7 +61,7 @@ Select.propTypes = {
 };
 
 Select.defaultProps = {
-  onChange: function() {
+  onChange: function () {
     return null;
   },
   ref: null,

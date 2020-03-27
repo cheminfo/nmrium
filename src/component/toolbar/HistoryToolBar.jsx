@@ -1,10 +1,10 @@
 import React, { Fragment, useCallback, memo } from 'react';
 import { FaUndo, FaRedo } from 'react-icons/fa';
 
-import { useDispatch } from '../context/DispatchContext';
-import { REDO, UNDO } from '../reducer/HistoryActions';
 import { ChartContext, useChartData } from '../context/ChartContext';
+import { useDispatch } from '../context/DispatchContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import { REDO, UNDO } from '../reducer/HistoryActions';
 
 const styles = {
   button: {

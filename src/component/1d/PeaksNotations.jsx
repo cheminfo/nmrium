@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 
 import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
-import { useChartData } from '../context/ChartContext';
 import PeakNotation from '../Notations/PeakNotation';
+import { useChartData } from '../context/ChartContext';
 // import ModifiedPeakNotation from './Notations/ModifiedPeakNotation';
 
 const PeaksNotations = () => {
@@ -27,7 +27,7 @@ const PeaksNotations = () => {
     const reSortData = () => {
       const _data = [...data];
       return activeSpectrum
-        ? _data.sort(function(x, y) {
+        ? _data.sort(function (x, y) {
             return x.id === activeSpectrum.id
               ? 1
               : y.id === activeSpectrum.id

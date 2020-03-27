@@ -1,5 +1,5 @@
-import { getSpectrumType } from './getSpectrumType';
 import { getNucleusFrom2DExperiment } from './getNucleusFrom2DExperiment';
+import { getSpectrumType } from './getSpectrumType';
 
 export function getInfoFromMetaData(info) {
   const metadata = {

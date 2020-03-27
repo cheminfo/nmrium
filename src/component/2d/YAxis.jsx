@@ -1,8 +1,8 @@
-import { Fragment, useEffect, useRef, useMemo } from 'react';
+import { jsx, css } from '@emotion/core';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
+import { Fragment, useEffect, useRef, useMemo } from 'react';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -33,10 +33,7 @@ const YAxis = ({ show, label, margin, data }) => {
     activeTab,
     tabActiveSpectrum,
   } = useChartData();
-  const axis = d3
-    .axisRight()
-    .ticks(8)
-    .tickFormat(d3.format('0'));
+  const axis = d3.axisRight().ticks(8).tickFormat(d3.format('0'));
 
   useEffect(() => {
     if (show && yDomain && scaleX()) {

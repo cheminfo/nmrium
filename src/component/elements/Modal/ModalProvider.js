@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
+import ConfirmDialog from './ConfirmDialog';
 import DefaultContext from './Context';
 import Modal from './Modal';
-import ConfirmDialog from './ConfirmDialog';
 
 const ModalProvider = ({ children, context: Context, style }) => {
   const root = useRef();

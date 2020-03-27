@@ -1,13 +1,13 @@
 import React, { useCallback, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
+import InputRange from '../elements/InputRange';
+import TextInput from '../elements/TextInput';
 import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
-import InputRange from '../elements/InputRange';
-import TextInput from '../elements/TextInput';
 
 const styles = {
   container: {

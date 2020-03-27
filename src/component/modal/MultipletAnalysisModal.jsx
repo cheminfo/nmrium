@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { X } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
-import { Chart } from 'react-jsgraph';
+import { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
+import { Chart } from 'react-jsgraph';
 
 const styles = css`
   display: flex;

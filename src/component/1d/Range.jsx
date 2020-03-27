@@ -1,11 +1,11 @@
+import { jsx, css } from '@emotion/core';
 import { useCallback } from 'react';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 
-import { useDispatch } from '../context/DispatchContext';
 import { useChartData } from '../context/ChartContext';
-import { DELETE_RANGE } from '../reducer/types/Types';
+import { useDispatch } from '../context/DispatchContext';
 import { useHighlight } from '../highlight';
+import { DELETE_RANGE } from '../reducer/types/Types';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;

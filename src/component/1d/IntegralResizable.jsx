@@ -1,12 +1,12 @@
+import { jsx, css } from '@emotion/core';
+import * as d3 from 'd3';
 import { useCallback, useState, Fragment, useMemo } from 'react';
 import Draggable from 'react-draggable';
-import * as d3 from 'd3';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 
-import { useHighlight } from '../highlight/index';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useHighlight } from '../highlight/index';
 import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from '../reducer/types/Types';
 
 const stylesOnHover = css`

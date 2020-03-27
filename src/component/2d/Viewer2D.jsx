@@ -7,9 +7,14 @@ import React, {
 } from 'react';
 import { useSize, useDebounce } from 'react-use';
 
-import { useDispatch } from '../context/DispatchContext';
+// import XLabelPointer from '../tool/XLabelPointer';
+import { BrushTracker } from '../EventsTrackers/BrushTracker';
+import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
-import { options } from '../toolbar/ToolTypes';
+import { useDispatch } from '../context/DispatchContext';
+import { useModal } from '../elements/Modal';
+import Spinner from '../loader/Spinner';
+import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
 import {
   ADD_INTEGRAL,
   ADD_PEAKS,
@@ -22,14 +27,9 @@ import {
   ADD_RANGE,
   SET_2D_LEVEL,
 } from '../reducer/types/Types';
-import CrossLinePointer from '../tool/CrossLinePointer';
-// import XLabelPointer from '../tool/XLabelPointer';
-import Spinner from '../loader/Spinner';
-import { BrushTracker } from '../EventsTrackers/BrushTracker';
-import { MouseTracker } from '../EventsTrackers/MouseTracker';
-import { useModal } from '../elements/Modal';
-import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
+import CrossLinePointer from '../tool/CrossLinePointer';
+import { options } from '../toolbar/ToolTypes';
 // import FooterBanner from '../1d/FooterBanner';
 
 import Chart2D from './Chart2D';

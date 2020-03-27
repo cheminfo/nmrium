@@ -5,8 +5,8 @@ import getColor from '../../utility/ColorGenerator';
 import { AnalysisObj, initiateObject } from '../core/Analysis';
 
 import { setMode, setDomain } from './DomainActions';
-import { setYAxisShift } from './ToolsActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
+import { setYAxisShift } from './ToolsActions';
 
 const setIsLoading = (state, isLoading) => {
   return { ...state, isLoading };

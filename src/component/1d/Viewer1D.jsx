@@ -1,9 +1,14 @@
 import React, { useCallback, Fragment, useEffect, useState } from 'react';
 import { useSize, useDebounce } from 'react-use';
 
-import { useDispatch } from '../context/DispatchContext';
+// import BrushX from '../tool/BrushX';
+import { BrushTracker } from '../EventsTrackers/BrushTracker';
+import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
-import { options } from '../toolbar/ToolTypes';
+import { useDispatch } from '../context/DispatchContext';
+import { useModal } from '../elements/Modal';
+import Spinner from '../loader/Spinner';
+import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
 import {
   ADD_INTEGRAL,
   ADD_PEAKS,
@@ -17,20 +22,15 @@ import {
   SET_DIMENSIONS,
   ADD_RANGE,
 } from '../reducer/types/Types';
+import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
-// import BrushX from '../tool/BrushX';
-import XLabelPointer from '../tool/XLabelPointer';
 import PeakPointer from '../tool/PeakPointer';
 import VerticalIndicator from '../tool/VerticalIndicator';
-import Spinner from '../loader/Spinner';
-import { BrushTracker } from '../EventsTrackers/BrushTracker';
-import { MouseTracker } from '../EventsTrackers/MouseTracker';
-import { useModal } from '../elements/Modal';
-import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
-import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
+import XLabelPointer from '../tool/XLabelPointer';
+import { options } from '../toolbar/ToolTypes';
 
-import FooterBanner from './FooterBanner';
 import Chart1D from './Chart1D';
+import FooterBanner from './FooterBanner';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
-import { useChartData } from '../context/ChartContext';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
+import { useChartData } from '../context/ChartContext';
 import { options } from '../toolbar/ToolTypes';
 
 const styles = {

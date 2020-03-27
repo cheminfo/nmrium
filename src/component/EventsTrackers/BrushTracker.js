@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import React, {
   createContext,
   useCallback,
@@ -5,7 +6,6 @@ import React, {
   useReducer,
   useState,
 } from 'react';
-import lodash from 'lodash';
 
 export const BrushContext = createContext();
 

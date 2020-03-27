@@ -1,29 +1,29 @@
+import { X } from 'ml-spectra-processing';
 import React, { useCallback, useMemo, memo } from 'react';
+import { useAlert } from 'react-alert';
 import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
-import { useAlert } from 'react-alert';
-import { X } from 'ml-spectra-processing';
 
+import { useChartData } from '../context/ChartContext';
+import { useDispatch } from '../context/DispatchContext';
+import { useModal } from '../elements/Modal';
+import ReactTable from '../elements/ReactTable/ReactTable';
+import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
+import Select from '../elements/Select';
+import ToolTip from '../elements/ToolTip/ToolTip';
+import ConnectToContext from '../hoc/ConnectToContext';
+import CopyClipboardModal from '../modal/CopyClipboardModal';
+import NumberInputModal from '../modal/NumberInputModal';
 import {
   DELETE_RANGE,
   CHANGE_RANGE_DATA,
   CHANGE_RANGE_SUM,
 } from '../reducer/types/Types';
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
-import ReactTable from '../elements/ReactTable/ReactTable';
-import ToolTip from '../elements/ToolTip/ToolTip';
-import { useModal } from '../elements/Modal';
 import { copyTextToClipboard } from '../utility/Export';
-import CopyClipboardModal from '../modal/CopyClipboardModal';
-import ConnectToContext from '../hoc/ConnectToContext';
-import Select from '../elements/Select';
-import NumberInputModal from '../modal/NumberInputModal';
 
-import NoTableData from './placeholder/NoTableData';
-import DefaultPanelHeader from './header/DefaultPanelHeader';
 import { SignalKinds } from './constants/SignalsKinds';
+import DefaultPanelHeader from './header/DefaultPanelHeader';
+import NoTableData from './placeholder/NoTableData';
 
 const styles = {
   toolbar: {

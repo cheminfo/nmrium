@@ -15,9 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+import PerfectScrollbar from 'perfect-scrollbar';
 import React, { Suspense } from 'react';
 // javascript plugin used to create scrollbars on windows
-import PerfectScrollbar from 'perfect-scrollbar';
 // reactstrap components
 import { Route, Switch } from 'react-router-dom';
 

@@ -1,5 +1,5 @@
-import React, { Fragment, forwardRef } from 'react';
 import PropTypes from 'prop-types';
+import React, { Fragment, forwardRef } from 'react';
 
 const styles = {
   label: {

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
+import { MouseContext } from '../EventsTrackers/MouseTracker';
+import { useChartData } from '../context/ChartContext';
 import { options } from '../toolbar/ToolTypes';
 
 const styles = {
@@ -45,8 +45,9 @@ const CrossLinePointer = () => {
       key="crossLine"
       style={{
         cursor: 'crosshair',
-        transform: `translate(${-width + position.x}px, ${-height +
-          position.y}px)`,
+        transform: `translate(${-width + position.x}px, ${
+          -height + position.y
+        }px)`,
         position: 'absolute',
         top: 0,
         left: 0,

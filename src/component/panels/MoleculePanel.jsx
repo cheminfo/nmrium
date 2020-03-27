@@ -1,8 +1,7 @@
 import { MolfileSvgRenderer } from 'react-ocl';
-
-import React, { useState, useCallback, useRef, useContext } from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
+import React, { useState, useCallback, useRef, useContext } from 'react';
 import {
   FaPlus,
   FaPaste,
@@ -17,17 +16,17 @@ import Slider from 'react-animated-slider-2';
 import 'react-animated-slider-2/build/horizontal.css';
 import { useAlert } from 'react-alert';
 
-import { useDispatch } from '../context/DispatchContext';
-import { DELETE_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 import { ChartContext } from '../context/ChartContext';
-import ToolTip from '../elements/ToolTip/ToolTip';
+import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
+import ToolTip from '../elements/ToolTip/ToolTip';
+import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
+import { DELETE_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 import {
   copyTextToClipboard,
   copyPNGToClipboard,
   exportAsSVG,
 } from '../utility/Export';
-import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
 
 const panelContainerStyle = css`
   display: flex;

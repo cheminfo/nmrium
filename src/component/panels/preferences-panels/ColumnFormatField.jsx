@@ -1,5 +1,5 @@
-import React, { useCallback, memo } from 'react';
 import lodash from 'lodash';
+import React, { useCallback, memo } from 'react';
 
 const styles = {
   row: {

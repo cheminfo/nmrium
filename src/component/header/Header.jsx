@@ -1,16 +1,16 @@
+import { jsx, css } from '@emotion/core';
 import { useMemo } from 'react';
 import { FaRegWindowMaximize } from 'react-icons/fa';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 
 import { useChartData } from '../context/ChartContext';
 import { options } from '../toolbar/ToolTypes';
 
-import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
-import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
-import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
+import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
+import RangesPickingOptionPanel from './RangesPickingOptionPanel';
+import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 
 const headerStyle = css`
   display: flex;
@@ -91,7 +91,7 @@ const Header = ({ isFullscreen, onMaximize }) => {
 };
 
 Header.defaultProps = {
-  onMaximize: function() {
+  onMaximize: function () {
     return null;
   },
 };

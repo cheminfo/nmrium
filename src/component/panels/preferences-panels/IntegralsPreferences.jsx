@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import React, {
   useEffect,
   useState,
@@ -7,12 +8,11 @@ import React, {
   useRef,
 } from 'react';
 import { useAlert } from 'react-alert';
-import lodash from 'lodash';
 
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import { useDispatch } from '../../context/DispatchContext';
 import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
+import GroupByInfoKey from '../../utility/GroupByInfoKey';
 
 import ColumnFormatField from './ColumnFormatField';
 import { integralDefaultValues } from './defaultValues';

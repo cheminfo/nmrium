@@ -1,8 +1,8 @@
 import { produce } from 'immer';
 
+import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE } from '../core/Constants';
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
 
 import { setDomain } from './DomainActions';
 import { setZoom } from './ToolsActions';

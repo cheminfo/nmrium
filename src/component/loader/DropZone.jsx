@@ -1,10 +1,12 @@
+import { jsx, css } from '@emotion/core';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 
 import { Analysis } from '../../data/Analysis';
+import { useChartData } from '../context/ChartContext';
+import { useDispatch } from '../context/DispatchContext';
 import {
   LOAD_MOL_FILE,
   LOAD_JSON_FILE,
@@ -12,8 +14,6 @@ import {
   SET_LOADING_FLAG,
   LOAD_ZIP_FILE,
 } from '../reducer/types/Types';
-import { useDispatch } from '../context/DispatchContext';
-import { useChartData } from '../context/ChartContext';
 import { getFileExtension, loadFiles } from '../utility/FileUtility';
 
 const style = css`

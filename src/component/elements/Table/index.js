@@ -1,7 +1,7 @@
 import Table from './Table';
-import TableHead from './TableHead';
 import TableBody from './TableBody';
-import TableRow from './TableRow';
 import TableCell from './TableCell';
+import TableHead from './TableHead';
+import TableRow from './TableRow';
 
 export { Table, TableHead, TableBody, TableRow, TableCell };

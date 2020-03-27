@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback, Fragment } from 'react';
 import { XY } from 'ml-spectra-processing';
+import React, { useEffect, useState, useCallback, Fragment } from 'react';
 
 import IntegralResizable from './IntegralResizable';
 

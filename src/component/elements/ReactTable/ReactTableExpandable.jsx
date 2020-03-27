@@ -1,13 +1,13 @@
+import { jsx } from '@emotion/core';
+import PropTypes from 'prop-types';
 import { Fragment, useRef, useCallback } from 'react';
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
 import { useTable, useExpanded, useSortBy } from 'react-table';
-import PropTypes from 'prop-types';
 
+import ContextMenu from './ContextMenu';
 import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
-import ContextMenu from './ContextMenu';
 
 const ReactTableExpandable = ({
   columns,

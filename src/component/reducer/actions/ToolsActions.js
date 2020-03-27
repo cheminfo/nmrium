@@ -1,18 +1,18 @@
-import { produce } from 'immer';
 import { max, zoomIdentity, scaleLinear } from 'd3';
+import { produce } from 'immer';
 
-import { options } from '../../toolbar/ToolTypes';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import generateID from '../../../data/utilities/generateID';
+import { options } from '../../toolbar/ToolTypes';
+import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
 import {
   DEFAULT_YAXIS_SHIFT_VALUE,
   DISPLAYER_MODE,
   MARGIN,
 } from '../core/Constants';
-import getClosestNumber from '../helper/GetClosestNumber';
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import Spectrum2D from '../core/Spectrum2D';
+import getClosestNumber from '../helper/GetClosestNumber';
 import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
 
 import { setDomain, getDomain, setMode } from './DomainActions';

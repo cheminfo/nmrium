@@ -1,5 +1,72 @@
 import { options } from '../toolbar/ToolTypes';
 
+import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
+import {
+  handelResetDomain,
+  setOriginalDomain,
+  setXDomain,
+  handleChangeIntegralYDomain,
+} from './actions/DomainActions';
+import { exportData } from './actions/ExportActions';
+import {
+  shiftSpectrumAlongXAxis,
+  applyZeroFillingFilter,
+  applyFFTFilter,
+  applyManualPhaseCorrectionFilter,
+  calculateManualPhaseCorrection,
+  enableFilter,
+  deleteFilter,
+  handleBaseLineCorrectionFilter,
+} from './actions/FiltersActions';
+import {
+  handleHistoryUndo,
+  handleHistoryRedo,
+  handleHistoryReset,
+} from './actions/HistoryActions';
+import {
+  addIntegral,
+  deleteIntegral,
+  changeIntegral,
+  handleResizeIntegral,
+  handleChangeIntegralZoom,
+  handleChangeIntegralSum,
+} from './actions/IntegralsActions';
+import {
+  initiate,
+  handleLoadJsonFile,
+  loadJcampFile,
+  handleLoadMOLFile,
+  handleLoadZIPFile,
+  setData,
+  setIsLoading,
+  loadZipFile,
+} from './actions/LoadActions';
+import {
+  handleAddMolecule,
+  handleSetMolecule,
+  handleDeleteMolecule,
+} from './actions/MoleculeActions';
+import {
+  handelSetPreferences,
+  setKeyPreferencesHandler,
+  applyKeyPreferencesHandler,
+} from './actions/PreferencesActions';
+import {
+  setSelectedTool,
+  resetSelectedTool,
+  setSelectedOptionPanel,
+  setSpectrumsVerticalAlign,
+  handleChangeSpectrumDisplayMode,
+  handleAddBaseLineZone,
+  handleDeleteBaseLineZone,
+  handleToggleRealImaginaryVisibility,
+  handleBrushEnd,
+  setVerticalIndicatorXPosition,
+  zoomOut,
+  handleZoom,
+  handelSetActiveTab,
+  levelChangeHandler,
+} from './actions/ToolsActions';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import {
   INITIATE,
@@ -65,75 +132,13 @@ import {
   ADD_RANGE,
   SET_2D_LEVEL,
 } from './types/Types';
-import {
-  handelResetDomain,
-  setOriginalDomain,
-  setXDomain,
-  handleChangeIntegralYDomain,
-} from './actions/DomainActions';
-import {
-  setSelectedTool,
-  resetSelectedTool,
-  setSelectedOptionPanel,
-  setSpectrumsVerticalAlign,
-  handleChangeSpectrumDisplayMode,
-  handleAddBaseLineZone,
-  handleDeleteBaseLineZone,
-  handleToggleRealImaginaryVisibility,
-  handleBrushEnd,
-  setVerticalIndicatorXPosition,
-  zoomOut,
-  handleZoom,
-  handelSetActiveTab,
-  levelChangeHandler,
-} from './actions/ToolsActions';
-import {
-  initiate,
-  handleLoadJsonFile,
-  loadJcampFile,
-  handleLoadMOLFile,
-  handleLoadZIPFile,
-  setData,
-  setIsLoading,
-  loadZipFile,
-} from './actions/LoadActions';
-import {
-  handelSetPreferences,
-  setKeyPreferencesHandler,
-  applyKeyPreferencesHandler,
-} from './actions/PreferencesActions';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
-import {
-  handleAddMolecule,
-  handleSetMolecule,
-  handleDeleteMolecule,
-} from './actions/MoleculeActions';
-import {
-  shiftSpectrumAlongXAxis,
-  applyZeroFillingFilter,
-  applyFFTFilter,
-  applyManualPhaseCorrectionFilter,
-  calculateManualPhaseCorrection,
-  enableFilter,
-  deleteFilter,
-  handleBaseLineCorrectionFilter,
-} from './actions/FiltersActions';
-import { exportData } from './actions/ExportActions';
 import {
   addPeak,
   addPeaks,
   deletePeak,
   handleAutoPeakPicking,
 } from './actions/PeaksActions';
-import {
-  addIntegral,
-  deleteIntegral,
-  changeIntegral,
-  handleResizeIntegral,
-  handleChangeIntegralZoom,
-  handleChangeIntegralSum,
-} from './actions/IntegralsActions';
-import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
 import {
   handleSpectrumVisibility,
   handleChangePeaksMarkersVisibility,
@@ -148,11 +153,6 @@ import {
   handleChangeRangeSum,
   handleAddRange,
 } from './actions/RangesActions';
-import {
-  handleHistoryUndo,
-  handleHistoryRedo,
-  handleHistoryReset,
-} from './actions/HistoryActions';
 
 export const initialState = {
   data: null,

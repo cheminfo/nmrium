@@ -1,18 +1,18 @@
-import React, { useCallback, useState, useEffect, memo } from 'react';
 import lodash from 'lodash';
+import React, { useCallback, useState, useEffect, memo } from 'react';
 
-import { Accordion, AccordionItem } from '../elements/accordion';
-import { options } from '../toolbar/ToolTypes';
 import { useChartData } from '../context/ChartContext';
+import { Accordion, AccordionItem } from '../elements/accordion';
 import ConnectToContext from '../hoc/ConnectToContext';
+import { options } from '../toolbar/ToolTypes';
 
-import SpectrumListPanel from './SpectrumListPanel';
-import IntegralTablePanel from './IntegralTablePanel';
-import MoleculePanel from './MoleculePanel';
 import FilterPanel from './FilterPanel';
 import InformationPanel from './InformationPanel';
-import RangesTablePanel from './RangesTablePanel';
+import IntegralTablePanel from './IntegralTablePanel';
+import MoleculePanel from './MoleculePanel';
 import PeaksTablePanel from './PeaksTablePanel';
+import RangesTablePanel from './RangesTablePanel';
+import SpectrumListPanel from './SpectrumListPanel';
 
 const accordionItems = [
   {

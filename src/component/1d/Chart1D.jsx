@@ -1,12 +1,12 @@
 import React from 'react';
 
-import LinesSeries from './LinesSeries';
+import BaseLineZones from './BaseLineZones';
 import IntegralsSeries from './IntegralsSeries';
-import XAxis from './XAxis';
+import LinesSeries from './LinesSeries';
 // import YAxis from './YAxis';
 import PeaksNotations from './PeaksNotations';
 import Ranges from './Ranges';
-import BaseLineZones from './BaseLineZones';
+import XAxis from './XAxis';
 
 function Chart1D({ mode, width, height, margin }) {
   if (!width || !height) {

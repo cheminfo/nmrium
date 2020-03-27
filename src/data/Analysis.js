@@ -1,12 +1,12 @@
-import { Molecule } from 'openchemlib';
 import * as JSZip from 'jszip';
+import { Molecule } from 'openchemlib';
 
 import getColor from '../component/utility/ColorGenerator';
 
 import * as SpectraManager from './SpectraManager';
+import { Datum1D } from './data1d/Datum1D';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
-import { Datum1D } from './data1d/Datum1D';
 
 export class Analysis {
   spectra = [];

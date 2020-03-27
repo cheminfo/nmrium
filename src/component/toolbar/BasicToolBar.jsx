@@ -1,6 +1,8 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
+import lodash from 'lodash';
 import { Fragment, useEffect, useCallback, useState } from 'react';
+import { useAlert } from 'react-alert';
 import {
   FaDownload,
   FaFileDownload,
@@ -10,10 +12,13 @@ import {
   FaFile,
   FaFileImport,
 } from 'react-icons/fa';
-import { useAlert } from 'react-alert';
-import lodash from 'lodash';
 
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import MenuButton from '../elements/MenuButton';
+import { useModal } from '../elements/Modal';
+import ToolTip from '../elements/ToolTip/ToolTip';
+import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import {
   CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
@@ -22,11 +27,6 @@ import {
   LOAD_JCAMP_FILE,
   SET_LOADING_FLAG,
 } from '../reducer/types/Types';
-import { useChartData } from '../context/ChartContext';
-import ToolTip from '../elements/ToolTip/ToolTip';
-import MenuButton from '../elements/MenuButton';
-import { useModal } from '../elements/Modal';
-import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 
 const styles = css`
   background-color: transparent;

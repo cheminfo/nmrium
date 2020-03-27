@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
 import { scaleLinear } from 'd3';
 import { XY } from 'ml-spectra-processing';
+import React, { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -67,8 +67,9 @@ const Left1DChart = ({ height, margin, data }) => {
       <g
         clipPath="url(#clip-left)"
         style={{
-          transform: `rotate(-90deg) translate(-${height}px,-${mainHeight +
-            height}px)`,
+          transform: `rotate(-90deg) translate(-${height}px,-${
+            mainHeight + height
+          }px)`,
           transformOrigin: `${mainHeight + height}px 0px`,
         }}
       >

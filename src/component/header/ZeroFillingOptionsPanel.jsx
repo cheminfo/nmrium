@@ -1,12 +1,12 @@
 import React, { useCallback, useRef, useState } from 'react';
 
+import { useChartData } from '../context/ChartContext';
+import { useDispatch } from '../context/DispatchContext';
+import Select from '../elements/Select';
 import {
   APPLY_ZERO_FILLING_FILTER,
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
-import { useDispatch } from '../context/DispatchContext';
-import Select from '../elements/Select';
-import { useChartData } from '../context/ChartContext';
 
 const styles = {
   container: {

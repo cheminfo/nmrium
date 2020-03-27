@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
 
 const Tab = ({ label, activeTab, onClick }) => {
   let className = 'tab-list-item';

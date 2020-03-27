@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useCallback, memo } from 'react';
-import { FaSearchPlus, FaExpand } from 'react-icons/fa';
 import lodash from 'lodash';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { useAlert } from 'react-alert';
+import { FaSearchPlus, FaExpand } from 'react-icons/fa';
 
+import { Filters } from '../../data/data1d/filter1d/Filters';
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import ToolTip from '../elements/ToolTip/ToolTip';
+import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 import {
   SET_SELECTED_TOOL,
   APPLY_FFT_FILTER,
   SET_SELECTED_FILTER,
   FULL_ZOOM_OUT,
 } from '../reducer/types/Types';
-import { useChartData } from '../context/ChartContext';
-import ToolTip from '../elements/ToolTip/ToolTip';
-import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
-import { Filters } from '../../data/data1d/filter1d/Filters';
 
 import { options } from './ToolTypes';
 

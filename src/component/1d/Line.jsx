@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
 import { XY } from 'ml-spectra-processing';
+import React, { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 

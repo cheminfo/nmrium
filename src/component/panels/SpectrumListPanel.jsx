@@ -1,8 +1,12 @@
 import React, { useEffect, useState, useCallback, useMemo, memo } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-import { useDispatch } from '../context/DispatchContext';
 import { useChartData } from '../context/ChartContext';
+import { useDispatch } from '../context/DispatchContext';
+import { useModal } from '../elements/Modal';
+import { Tabs } from '../elements/Tab';
+import ToolTip from '../elements/ToolTip/ToolTip';
+import ConnectToContext from '../hoc/ConnectToContext';
 import {
   CHANGE_VISIBILITY,
   CHANGE_PEAKS_MARKERS_VISIBILITY,
@@ -11,14 +15,10 @@ import {
   DELETE_SPECTRA,
   SET_ACTIVE_TAB,
 } from '../reducer/types/Types';
-import { useModal } from '../elements/Modal';
-import ToolTip from '../elements/ToolTip/ToolTip';
-import { Tabs } from '../elements/Tab';
 import groupByInfoKey from '../utility/GroupByInfoKey';
-import ConnectToContext from '../hoc/ConnectToContext';
 
-import SpectrumListItem from './SpectrumListItem';
 import ColorPicker from './ColorPicker';
+import SpectrumListItem from './SpectrumListItem';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
 
 const styles = {

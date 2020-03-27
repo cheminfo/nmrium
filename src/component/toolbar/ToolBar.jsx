@@ -2,9 +2,9 @@ import React from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
+import BasicToolBar from './BasicToolBar';
 import FunctionToolBar from './FunctionToolBar';
 // import HistoryToolBar from './HistoryToolBar';
-import BasicToolBar from './BasicToolBar';
 
 const styles = {
   display: 'flex',

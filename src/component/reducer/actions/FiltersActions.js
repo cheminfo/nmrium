@@ -1,10 +1,10 @@
 import { produce } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
+import { apply } from '../../../data/data1d/filter1d/phaseCorrection';
 import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/Analysis';
 import getClosestNumber from '../helper/GetClosestNumber';
-import { apply } from '../../../data/data1d/filter1d/phaseCorrection';
 
 import { setDomain, setMode } from './DomainActions';
 import { setYAxisShift } from './ToolsActions';

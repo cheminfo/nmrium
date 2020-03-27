@@ -1,11 +1,11 @@
+import { jsx, css } from '@emotion/core';
 import { useState, useEffect, useCallback } from 'react';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 import { StructureEditor } from 'react-ocl/full';
 
 import { useDispatch } from '../context/DispatchContext';
-import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 import { Modal } from '../elements/Modal';
+import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 
 const modalButtonStyle = css`
   -moz-box-shadow: inset 0px 1px 0px 0px #ffffff;

@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useTable, useSortBy } from 'react-table';
-import { Fragment, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { Fragment, useRef, useCallback } from 'react';
+import { useTable, useSortBy } from 'react-table';
 
 import ContextMenu from './ContextMenu';
 import ReactTableHeader from './Elements/ReactTableHeader';

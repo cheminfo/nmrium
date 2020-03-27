@@ -1,6 +1,6 @@
+import { jsx, css } from '@emotion/core';
 import { useRef, useCallback } from 'react';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 import { FaTimes } from 'react-icons/fa';
 
 import { loadFile, extractFileMetaFromPath } from '../utility/FileUtility';

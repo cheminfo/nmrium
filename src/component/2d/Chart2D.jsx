@@ -2,11 +2,11 @@ import React, { useMemo, Fragment } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
+import Contours from './Contours';
+import Left1DChart from './Left1DChart';
+import Top1DChart from './Top1DChart';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
-import Top1DChart from './Top1DChart';
-import Left1DChart from './Left1DChart';
-import Contours from './Contours';
 
 function Chart2D() {
   const {

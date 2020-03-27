@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useContext, useCallback } from 'react';
 import { X } from 'ml-spectra-processing';
+import { useContext, useCallback } from 'react';
 
+import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
-import { BrushContext } from '../EventsTrackers/BrushTracker';
 
 const styles = css`
   pointer-events: bounding-box;
@@ -83,9 +83,7 @@ const FooterBanner = () => {
       <div>
         <span className="label"> X :</span>
         <span className="value">
-          {scaleX()
-            .invert(position.x)
-            .toPrecision(6)}
+          {scaleX().invert(position.x).toPrecision(6)}
         </span>
         <span className="unit">ppm</span>
       </div>
@@ -101,9 +99,7 @@ const FooterBanner = () => {
       <div>
         <span className="label"> Y :</span>
         <span className="value">
-          {scaleY(activeSpectrum.id)
-            .invert(position.y)
-            .toFixed(2)}
+          {scaleY(activeSpectrum.id).invert(position.y).toFixed(2)}
         </span>
       </div>
       {step === 'brushing' && (

@@ -1,29 +1,29 @@
-import React, { useCallback, useMemo, useState, useRef, memo } from 'react';
-import { FaRegTrashAlt } from 'react-icons/fa';
-import ReactCardFlip from 'react-card-flip';
 import lodash from 'lodash';
+import React, { useCallback, useMemo, useState, useRef, memo } from 'react';
+import ReactCardFlip from 'react-card-flip';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
-import ReactTable from '../elements/ReactTable/ReactTable';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useModal } from '../elements/Modal';
+import ReactTable from '../elements/ReactTable/ReactTable';
+import Select from '../elements/Select';
+import ToolTip from '../elements/ToolTip/ToolTip';
+import ConnectToContext from '../hoc/ConnectToContext';
+import NumberInputModal from '../modal/NumberInputModal';
 import {
   DELETE_INTEGRAL,
   CHANGE_INTEGRAL_DATA,
   CHANGE_INTEGRAL_SUM,
 } from '../reducer/types/Types';
-import { useModal } from '../elements/Modal';
-import Select from '../elements/Select';
-import ToolTip from '../elements/ToolTip/ToolTip';
 import formatNumber from '../utility/FormatNumber';
-import ConnectToContext from '../hoc/ConnectToContext';
-import NumberInputModal from '../modal/NumberInputModal';
 
-import NoTableData from './placeholder/NoTableData';
+import { SignalKinds } from './constants/SignalsKinds';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
 import PreferencesHeader from './header/PreferencesHeader';
+import NoTableData from './placeholder/NoTableData';
 import IntegralsPreferences from './preferences-panels/IntegralsPreferences';
 import { integralDefaultValues } from './preferences-panels/defaultValues';
-import { SignalKinds } from './constants/SignalsKinds';
 
 const styles = {
   toolbar: {

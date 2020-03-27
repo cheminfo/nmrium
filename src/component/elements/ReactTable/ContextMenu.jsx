@@ -1,3 +1,4 @@
+import { jsx, css } from '@emotion/core';
 import {
   forwardRef,
   useState,
@@ -7,7 +8,6 @@ import {
   useEffect,
 } from 'react';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 import { createPortal } from 'react-dom';
 
 const styles = css`

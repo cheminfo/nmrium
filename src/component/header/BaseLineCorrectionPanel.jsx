@@ -1,13 +1,13 @@
 import React, { useCallback, useRef, useState, Fragment } from 'react';
 
+import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
+import { useDispatch } from '../context/DispatchContext';
+import NumberInput from '../elements/NumberInput';
+import Select from '../elements/Select';
 import {
   RESET_SELECTED_TOOL,
   APPLY_BASE_LINE_CORRECTION_FILTER,
 } from '../reducer/types/Types';
-import { useDispatch } from '../context/DispatchContext';
-import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
-import Select from '../elements/Select';
-import NumberInput from '../elements/NumberInput';
 
 const styles = {
   container: {

@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 
-import { AnalysisObj } from '../core/Analysis';
 import { options } from '../../toolbar/ToolTypes';
+import { AnalysisObj } from '../core/Analysis';
 
 import { getScale } from './ScaleActions';
 

@@ -1,7 +1,7 @@
 import airPLS from 'ml-airpls';
+import equallySpaced from 'ml-array-xy-equally-spaced';
 import baselineRegression from 'ml-baseline-correction-regression';
 import PolynomialRegression from 'ml-regression-polynomial';
-import equallySpaced from 'ml-array-xy-equally-spaced';
 // import PolynomialRegression from 'ml-regression-polynomial';
 
 export const id = 'baselineCorrection';

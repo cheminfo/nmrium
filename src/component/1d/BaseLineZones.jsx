@@ -1,6 +1,6 @@
+import { jsx, css } from '@emotion/core';
 import { useCallback, Fragment } from 'react';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';

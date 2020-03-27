@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
 import { scaleLinear } from 'd3';
 import { XY } from 'ml-spectra-processing';
+import React, { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 // import YAxis from '../1d/YAxis';

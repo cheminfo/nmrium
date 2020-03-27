@@ -1,5 +1,5 @@
-import { produce } from 'immer';
 import { extent } from 'd3';
+import { produce } from 'immer';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';

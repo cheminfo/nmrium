@@ -1,7 +1,7 @@
+import { Molecule } from 'openchemlib';
 import React, { useState, useEffect, useCallback } from 'react';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
-import { Molecule } from 'openchemlib';
 
 import NMRDisplayer from '../../component/NMRDisplayer.jsx';
 

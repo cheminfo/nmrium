@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
+import PropTypes from 'prop-types';
 import {
   useState,
   useCallback,
@@ -8,7 +9,6 @@ import {
   Children,
   cloneElement,
 } from 'react';
-import PropTypes from 'prop-types';
 
 import Tab from './Tab';
 

@@ -1,8 +1,8 @@
 import React, { useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import { AUTO_PEAK_PICKING, RESET_SELECTED_TOOL } from '../reducer/types/Types';
 import NumberInput from '../elements/NumberInput';
+import { AUTO_PEAK_PICKING, RESET_SELECTED_TOOL } from '../reducer/types/Types';
 
 const styles = {
   container: {

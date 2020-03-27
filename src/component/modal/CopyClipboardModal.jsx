@@ -1,6 +1,6 @@
+import { jsx, css } from '@emotion/core';
 import { FaCopy, FaTimes } from 'react-icons/fa';
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
 
 const styles = css`
   overflow: auto;
