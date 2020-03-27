@@ -108,8 +108,8 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
 
     let _data = { data: { x, re: y, im }, info };
     apply(_data, { ph0, ph1 });
-    const { x: newX, re: newRe } = _data.data;
-    draft.tempData[index].x = newX;
+    const { im: newIm, re: newRe } = _data.data;
+    draft.tempData[index].im = newIm;
     draft.tempData[index].y = newRe;
   });
 };
