@@ -19,6 +19,10 @@
         "title": "HSQC cytisine"
       },
       {
+        "file": "./data/cytisine/2d/hsqc_hmbc.json",
+        "title": "HSQC / HMBC cytisine"
+      },
+      {
         "file": "./data/50-78-2/linked-jcamp.json",
         "title": "Linked jcamp"
       },
