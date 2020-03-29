@@ -47,10 +47,30 @@ import {
   handleDeleteMolecule,
 } from './actions/MoleculeActions';
 import {
+  addPeak,
+  addPeaks,
+  deletePeak,
+  handleAutoPeakPicking,
+} from './actions/PeaksActions';
+import {
   handelSetPreferences,
   setKeyPreferencesHandler,
   applyKeyPreferencesHandler,
 } from './actions/PreferencesActions';
+import {
+  handleAutoRangesDetection,
+  handleDeleteRange,
+  handelChangeRange,
+  handleChangeRangeSum,
+  handleAddRange,
+} from './actions/RangesActions';
+import {
+  handleSpectrumVisibility,
+  handleChangePeaksMarkersVisibility,
+  handleChangeActiveSpectrum,
+  handleChangeSpectrumColor,
+  handleDeleteSpectra,
+} from './actions/SpectrumsActions';
 import {
   setSelectedTool,
   resetSelectedTool,
@@ -67,6 +87,7 @@ import {
   handelSetActiveTab,
   levelChangeHandler,
 } from './actions/ToolsActions';
+import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import {
   INITIATE,
@@ -132,27 +153,6 @@ import {
   ADD_RANGE,
   SET_2D_LEVEL,
 } from './types/Types';
-import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
-import {
-  addPeak,
-  addPeaks,
-  deletePeak,
-  handleAutoPeakPicking,
-} from './actions/PeaksActions';
-import {
-  handleSpectrumVisibility,
-  handleChangePeaksMarkersVisibility,
-  handleChangeActiveSpectrum,
-  handleChangeSpectrumColor,
-  handleDeleteSpectra,
-} from './actions/SpectrumsActions';
-import {
-  handleAutoRangesDetection,
-  handleDeleteRange,
-  handelChangeRange,
-  handleChangeRangeSum,
-  handleAddRange,
-} from './actions/RangesActions';
 
 export const initialState = {
   data: null,

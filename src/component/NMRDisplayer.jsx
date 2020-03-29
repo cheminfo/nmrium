@@ -27,16 +27,16 @@ import { DispatchProvider } from './context/DispatchContext';
 import { ModalProvider } from './elements/Modal';
 import Header from './header/Header';
 import { HighlightProvider } from './highlight';
+import DropZone from './loader/DropZone';
+import Panels from './panels/Panels';
 import {
   spectrumReducer,
   initialState,
   dispatchMiddleware,
 } from './reducer/Reducer';
-import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
-import DropZone from './loader/DropZone';
-import ToolBar from './toolbar/ToolBar';
-import Panels from './panels/Panels';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
+import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
+import ToolBar from './toolbar/ToolBar';
 
 // alert optional cofiguration
 const alertOptions = {
