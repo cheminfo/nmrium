@@ -92,7 +92,7 @@ const AccordionItem = ({ title, children, index, isOpen, onOpen, style }) => {
 };
 
 AccordionItem.defaultProps = {
-  onOpen: function() {
+  onOpen: function () {
     return null;
   },
 };

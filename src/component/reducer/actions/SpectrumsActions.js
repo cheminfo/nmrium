@@ -1,8 +1,8 @@
 import { produce } from 'immer';
 
 import { AnalysisObj } from '../core/Analysis';
-import Spectrum2D from '../core/Spectrum2D';
 import { DISPLAYER_MODE } from '../core/Constants';
+import Spectrum2D from '../core/Spectrum2D';
 
 import { setDomain, setMode } from './DomainActions';
 

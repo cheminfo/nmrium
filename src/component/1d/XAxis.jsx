@@ -51,10 +51,7 @@ const XAxis = ({
 
   label = label ? label : mode === 'RTL' ? 'δ [ppm]' : 'time [s]';
   heightProp = heightProp === 0 ? height : heightProp;
-  const xAxis = d3
-    .axisBottom()
-    .ticks(8)
-    .tickFormat(d3.format('0'));
+  const xAxis = d3.axisBottom().ticks(8).tickFormat(d3.format('0'));
 
   const grid = d3
     .axisBottom()
@@ -76,8 +73,9 @@ const XAxis = ({
         <g
           className="x"
           css={axisStyles}
-          transform={`translate(0,${heightProp -
-            (margin.bottom + marginProps.bottom)})`}
+          transform={`translate(0,${
+            heightProp - (margin.bottom + marginProps.bottom)
+          })`}
           ref={refAxis}
         >
           <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
@@ -97,8 +95,9 @@ const XAxis = ({
           css={gridStyles}
           className="grid"
           ref={refGrid}
-          transform={`translate(0,${heightProp -
-            (margin.bottom + marginProps.bottom)})`}
+          transform={`translate(0,${
+            heightProp - (margin.bottom + marginProps.bottom)
+          })`}
         />
       ),
 

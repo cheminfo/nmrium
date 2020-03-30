@@ -61,7 +61,7 @@ Select.propTypes = {
 };
 
 Select.defaultProps = {
-  onChange: function() {
+  onChange: function () {
     return null;
   },
   ref: null,

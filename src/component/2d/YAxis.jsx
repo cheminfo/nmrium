@@ -33,10 +33,7 @@ const YAxis = ({ show, label, margin, data }) => {
     activeTab,
     tabActiveSpectrum,
   } = useChartData();
-  const axis = d3
-    .axisRight()
-    .ticks(8)
-    .tickFormat(d3.format('0'));
+  const axis = d3.axisRight().ticks(8).tickFormat(d3.format('0'));
 
   useEffect(() => {
     if (show && yDomain) {

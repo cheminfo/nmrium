@@ -28,10 +28,7 @@ const getColor = (isRandom = false, usedColors = []) => {
   } else {
     const lum = -0.25;
     let hex = String(
-      `#${Math.random()
-        .toString(16)
-        .slice(2, 8)
-        .toUpperCase()}`,
+      `#${Math.random().toString(16).slice(2, 8).toUpperCase()}`,
     ).replace(/[^0-9a-f]/gi, '');
     if (hex.length < 6) {
       hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];

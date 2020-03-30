@@ -15,7 +15,7 @@ const CheckBox = ({ checked: checkProps, onChange }) => {
 };
 
 CheckBox.defaultProps = {
-  onChange: function() {
+  onChange: function () {
     return null;
   },
 };

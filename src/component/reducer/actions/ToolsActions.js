@@ -12,9 +12,9 @@ import {
   MARGIN,
 } from '../core/Constants';
 import Spectrum2D from '../core/Spectrum2D';
+import { getYScale, getXScale } from '../core/scale';
 import getClosestNumber from '../helper/GetClosestNumber';
 import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
-import { getYScale, getXScale } from '../core/scale';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';

@@ -68,9 +68,9 @@ const Left1DChart = ({ margin, data }) => {
       <g
         clipPath="url(#clip-left)"
         style={{
-          transform: `rotate(-90deg) translate(-${
-            originMargin.top
-          }px,-${mainHeight + originMargin.top}px)`,
+          transform: `rotate(-90deg) translate(-${originMargin.top}px,-${
+            mainHeight + originMargin.top
+          }px)`,
           transformOrigin: `${mainHeight + originMargin.top}px 0px`,
         }}
       >

@@ -45,8 +45,9 @@ const CrossLinePointer = () => {
       key="crossLine"
       style={{
         cursor: 'crosshair',
-        transform: `translate(${-width + position.x}px, ${-height +
-          position.y}px)`,
+        transform: `translate(${-width + position.x}px, ${
+          -height + position.y
+        }px)`,
         position: 'absolute',
         top: 0,
         left: 0,
