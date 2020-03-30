@@ -75,10 +75,10 @@ ToggleButton.defaultProps = {
   isVisible: true,
   value: null,
   className: '',
-  onChange: function () {
+  onChange: function() {
     return null;
   },
-  onValueReady: function () {
+  onValueReady: function() {
     return null;
   },
 };

@@ -5,27 +5,33 @@ import React, { useMemo } from 'react';
 import { useChartData } from '../context/ChartContext';
 // import YAxis from '../1d/YAxis';
 
-const Top1DChart = ({ height, margin: marginProps, data }) => {
-  const { width, margin } = useChartData();
+const Top1DChart = ({ margin: marginProps, data }) => {
+  const { width, margin: originMargin, xDomain, yDomains } = useChartData();
+
+  const height = originMargin.top;
+
   const scaleX = useMemo(() => {
-    return scaleLinear(data.xDomain, [width - margin.right, margin.left]);
-  }, [data.xDomain, margin.left, margin.right, width]);
+    return scaleLinear(xDomain, [
+      width - originMargin.right,
+      originMargin.left,
+    ]);
+  }, [xDomain, originMargin.left, originMargin.right, width]);
 
   const scaleY = useMemo(() => {
-    return scaleLinear(data.yDomain, [
+    return scaleLinear(yDomains[data.id], [
       height - marginProps.bottom,
       marginProps.top,
     ]);
-  }, [data.yDomain, height, marginProps.bottom, marginProps.top]);
+  }, [data.id, height, marginProps.bottom, marginProps.top, yDomains]);
 
   const paths = useMemo(() => {
     if (data) {
-      const { x, y } = data.spectrum;
+      const { x, y } = data;
       const pathPoints = XY.reduce(
         { x, y },
         {
-          from: data.xDomain[0],
-          to: data.xDomain[1],
+          from: xDomain[0],
+          to: xDomain[1],
         },
       );
       let path = `M ${scaleX(pathPoints.x[0])} ${scaleY(pathPoints.y[0])} `;
@@ -37,7 +43,7 @@ const Top1DChart = ({ height, margin: marginProps, data }) => {
     } else {
       return null;
     }
-  }, [data, scaleX, scaleY]);
+  }, [data, scaleX, scaleY, xDomain]);
 
   if (!width || !height) {
     return null;
@@ -48,35 +54,21 @@ const Top1DChart = ({ height, margin: marginProps, data }) => {
       <defs>
         <clipPath id="clip-top">
           <rect
-            width={`${width - margin.left - margin.right}`}
-            height={`${height}`}
-            x={`${margin.left}`}
+            width={width - originMargin.left - originMargin.right}
+            height={height}
+            x={originMargin.left}
             y={`${0}`}
           />
         </clipPath>
       </defs>
       <g clipPath="url(#clip-top)">
-        <path
-          className="line"
-          stroke="red"
-          fill="none"
-          d={paths}
-          //   transform={`translate(0,-${vAlign})`}
-        />
-        {/* <line
-          x1={margin.left}
-          y1={height}
-          x2={width - margin.right}
-          y2={height}
-          stroke="black"
-        /> */}
+        <path className="line" stroke="red" fill="none" d={paths} />
       </g>
     </svg>
   );
 };
 
 Top1DChart.defaultProps = {
-  height: 100,
   margin: {
     top: 10,
     bottom: 10,

@@ -83,7 +83,9 @@ const FooterBanner = () => {
       <div>
         <span className="label"> X :</span>
         <span className="value">
-          {scaleX().invert(position.x).toPrecision(6)}
+          {scaleX()
+            .invert(position.x)
+            .toPrecision(6)}
         </span>
         <span className="unit">ppm</span>
       </div>
@@ -99,7 +101,9 @@ const FooterBanner = () => {
       <div>
         <span className="label"> Y :</span>
         <span className="value">
-          {scaleY(activeSpectrum.id).invert(position.y).toFixed(2)}
+          {scaleY(activeSpectrum.id)
+            .invert(position.y)
+            .toFixed(2)}
         </span>
       </div>
       {step === 'brushing' && (

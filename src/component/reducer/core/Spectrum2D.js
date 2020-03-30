@@ -8,10 +8,6 @@ export default class Spectrum2D {
   }
 
   constructor(minMax) {
-    if (Spectrum2D.instance) {
-      return Spectrum2D.instance;
-    }
-
     Spectrum2D.instance = this;
 
     this.currentLevelPositive = 10;
@@ -71,7 +67,7 @@ export default class Spectrum2D {
   }
 
   getContours(zoomLevel, options = {}) {
-    const { negative = false, timeout = 1000, nbLevels = 10 } = options;
+    const { negative = false, timeout = 2000, nbLevels = 10 } = options;
 
     const max = Math.max(
       Math.abs(this.minMax.maxZ),

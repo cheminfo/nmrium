@@ -14,6 +14,7 @@ import {
 import Spectrum2D from '../core/Spectrum2D';
 import getClosestNumber from '../helper/GetClosestNumber';
 import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
+import { getYScale, getXScale } from '../core/scale';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
@@ -217,20 +218,21 @@ const handleToggleRealImaginaryVisibility = (state) => {
 };
 
 const handleBrushEnd = (state, action) => {
-  const scale = getScale(state).x;
+  // const scale = getScale(state).x;
   return produce(state, (draft) => {
-    const start = scale.invert(action.startX);
-    const end = scale.invert(action.endX);
-    let domainX;
-    if (start > end) {
-      domainX = [end, start];
-    } else {
-      domainX = [start, end];
-    }
+    const isReverse = draft.displayerMode === DISPLAYER_MODE.DM_2D;
+    const xScale = getXScale(null, state);
+    const yScale = getYScale(null, null, isReverse, state);
+
+    const startX = xScale.invert(action.startX);
+    const endX = xScale.invert(action.endX);
+    const startY = yScale.invert(action.startY);
+    const endY = yScale.invert(action.endY);
+    const domainX = startX > endX ? [endX, startX] : [startX, endX];
+    const domainY = startY > endY ? [endY, startY] : [startY, endY];
+
     draft.xDomain = domainX;
-    draft.xDomains = Object.keys(draft.xDomains).reduce((acc, id) => {
-      return { ...acc, [id]: domainX };
-    }, {});
+    draft.yDomain = domainY;
   });
 };
 const setVerticalIndicatorXPosition = (state, position) => {
@@ -332,8 +334,8 @@ const setMargin = (draft) => {
 
 function initiate2D(draft, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-    if (draft.activeSpectrum) {
-      const data2D = data[draft.activeSpectrum.index];
+    if (draft.tabActiveSpectrum[draft.activeTab]) {
+      const data2D = data[draft.tabActiveSpectrum[draft.activeTab].index];
       const spectrum2D = new Spectrum2D(data2D);
       draft.contours = spectrum2D.drawContours();
     }
@@ -356,7 +358,7 @@ const handelSetActiveTab = (state, tab) => {
       setDisplayerMode(draft, _data);
       setMargin(draft);
 
-      if (_data && _data.length === 1) {
+      if (_data && !draft.tabActiveSpectrum[draft.activeTab]) {
         const index = data.findIndex((datum) => datum.id === _data[0].id);
         draft.activeSpectrum = { id: _data[0].id, index };
         draft.tabActiveSpectrum[draft.activeTab] = { id: _data[0].id, index };

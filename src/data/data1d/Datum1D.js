@@ -241,7 +241,7 @@ export class Datum1D {
         id: generateID(),
         ...range,
         kind: 'signal',
-        relative: 0,
+        absolute: 0,
       };
     });
     return this.ranges;
@@ -397,7 +397,7 @@ export class Datum1D {
           },
         ],
         kind: 'signal',
-        relative: 0,
+        absolute: 0,
       };
       this.ranges.values.push(range);
     } catch (e) {

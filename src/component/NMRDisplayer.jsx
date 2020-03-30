@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import * as d3 from 'd3';
 import {
   useEffect,
   useCallback,
@@ -37,6 +36,7 @@ import {
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
+import { getXScale, getYScale } from './reducer/core/scale';
 
 // alert optional cofiguration
 const alertOptions = {
@@ -80,19 +80,7 @@ const NMRDisplayer = (props) => {
 
   const [state, dispatch] = useReducer(spectrumReducer, initialState);
 
-  const {
-    xDomain,
-    yDomain,
-    yDomains,
-    xDomains,
-    width,
-    height,
-    mode,
-    margin,
-    verticalAlign,
-    selectedTool,
-    displayerMode,
-  } = state;
+  const { selectedTool, displayerMode } = state;
 
   useEffect(() => {
     dispatch({ type: SET_LOADING_FLAG, isLoading: true });
@@ -102,52 +90,14 @@ const NMRDisplayer = (props) => {
   }, [dataProp]);
 
   const scaleX = useCallback(
-    (spectrumId = null, direction = 'H') => {
-      let range;
-      if (direction.toUpperCase() === 'H') {
-        range =
-          mode === 'RTL'
-            ? [width - margin.right, margin.left]
-            : [margin.left, width - margin.right];
-      } else if (direction.toUpperCase() === 'V') {
-        range = [margin.top, height - margin.bottom];
-      }
-      return d3.scaleLinear(spectrumId ? xDomains[spectrumId] : xDomain, range);
-    },
-    [
-      xDomains,
-      xDomain,
-      mode,
-      width,
-      margin.right,
-      margin.left,
-      margin.bottom,
-      margin.top,
-      height,
-    ],
+    (spectrumId = null) => getXScale(spectrumId, state),
+    [state],
   );
 
   const scaleY = useMemo(() => {
-    return (spectrumId = null, heightProps = null) => {
-      if (height && margin && verticalAlign && yDomain && yDomains) {
-        const _height = heightProps
-          ? heightProps
-          : verticalAlign.flag && !verticalAlign.stacked
-          ? height / 2
-          : height;
-
-        let domainY = [];
-        if (spectrumId === null || yDomains[spectrumId] === undefined) {
-          domainY = [0, yDomain[1]];
-        } else {
-          domainY = [0, yDomains[spectrumId][1]];
-        }
-        return d3.scaleLinear(domainY, [_height - margin.bottom, margin.top]);
-      } else {
-        return null;
-      }
-    };
-  }, [height, margin, verticalAlign, yDomain, yDomains]);
+    return (spectrumId = null, heightProps = null, isReverse = false) =>
+      getYScale(spectrumId, heightProps, isReverse, state);
+  }, [state]);
 
   const handleSplitPanelDragFinished = useCallback((size) => {
     setResizeEventStart(false);

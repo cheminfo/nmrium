@@ -48,7 +48,7 @@ function exportAsPng(fileName = 'experiment', elementID) {
     context.fillRect(0, 0, canvas.width, canvas.height);
     let img = new Image();
     let url = URL.createObjectURL(blob);
-    img.onload = async function () {
+    img.onload = async function() {
       context.drawImage(img, 0, 0);
       let png = canvas.toDataURL('image/png', 1);
       saveAs(png, `${fileName}.png`);
@@ -71,7 +71,7 @@ function copyPNGToClipboard(elementID) {
     context.fillRect(0, 0, canvas.width, canvas.height);
     let img = new Image();
     let url = URL.createObjectURL(blob);
-    img.onload = async function () {
+    img.onload = async function() {
       context.drawImage(img, 0, 0);
       let png = canvas.toDataURL('image/png', 1);
       canvas.toBlob((b) => {

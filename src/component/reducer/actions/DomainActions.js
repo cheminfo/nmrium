@@ -80,54 +80,48 @@ function getDomain(data) {
     xDomains,
   };
 }
-function get2DDomain(state, data2D) {
-  let xArray = [];
-  let yArray = [];
+function get2DDomain(state) {
   let yDomains = {};
   let xDomains = {};
 
-  const nucleus = state.activeTab.split(',');
-  if (
-    Array.isArray(nucleus) &&
-    nucleus.length === 2 &&
-    Object.keys(state.tabActiveSpectrum).length !== 0
-  ) {
-    const spectrumsIDs = nucleus.map((n) => state.tabActiveSpectrum[n].id);
-    const filteredData = state.data.reduce((acc, datum) => {
-      return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
-        ? acc.concat(datum)
-        : acc.concat([]);
-    }, []);
-    try {
-      xArray = filteredData.reduce((acc, d) => {
-        const domain = [d.x[0], d.x[d.x.length - 1]];
-        xDomains[d.id] = domain;
-        return acc.concat(domain);
-      }, []);
+  const { activeTab, tabActiveSpectrum, data } = state;
 
-      yArray = filteredData.reduce((acc, d) => {
-        const _extent = extent(d.y);
-        yDomains[d.id] = _extent;
-        return acc.concat(_extent);
-      }, []);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-    }
+  const nucleus = activeTab.split(',');
 
-    return {
-      xDomain: extent(xArray),
-      yDomain: extent(yArray),
-      yDomains,
-      xDomains,
-    };
+  const { minX, maxX, minY, maxY } = data.find(
+    (datum) => datum.id === tabActiveSpectrum[activeTab].id,
+  );
+
+  const spectrumsIDs = nucleus.map(
+    (n) => tabActiveSpectrum[n] && tabActiveSpectrum[n].id,
+  );
+  const filteredData = data.reduce((acc, datum) => {
+    return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
+      ? acc.concat(datum)
+      : acc.concat([]);
+  }, []);
+  try {
+    xDomains = filteredData.reduce((acc, d) => {
+      const domain = [d.x[0], d.x[d.x.length - 1]];
+      acc[d.id] = domain;
+      return acc;
+    }, {});
+
+    yDomains = filteredData.reduce((acc, d) => {
+      const _extent = extent(d.y);
+      acc[d.id] = _extent;
+      return acc;
+    }, {});
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
   }
 
   return {
-    xDomain: [data2D[0].minX, data2D[0].maxX],
-    yDomain: [data2D[0].minY, data2D[0].maxY],
-    xDomains: { [data2D[0].id]: [data2D[0].minX, data2D[0].maxX] },
-    yDomains: { [data2D[0].id]: [data2D[0].minY, data2D[0].maxY] },
+    xDomain: [minX, maxX],
+    yDomain: [minY, maxY],
+    yDomains,
+    xDomains,
   };
 }
 
@@ -142,7 +136,7 @@ function setDomain(draft, isYDomainChanged = true) {
     domain =
       draft.displayerMode === DISPLAYER_MODE.DM_1D
         ? getDomain(data)
-        : get2DDomain(draft, data);
+        : get2DDomain(draft);
     draft.xDomain = domain.xDomain;
     draft.xDomains = domain.xDomains;
     if (isYDomainChanged) {

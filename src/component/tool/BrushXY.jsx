@@ -54,9 +54,8 @@ const BrushXY = ({ brushType }) => {
     <div
       style={{
         ...styles.container,
-        transform: `translate(${startX}px, ${startY}px) scale(${
-          scaleX / window.devicePixelRatio
-        },${scaleY / window.devicePixelRatio})`,
+        transform: `translate(${startX}px, ${startY}px) scale(${scaleX /
+          window.devicePixelRatio},${scaleY / window.devicePixelRatio})`,
       }}
       className="moving-element"
     >

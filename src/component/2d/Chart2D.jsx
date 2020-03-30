@@ -1,4 +1,4 @@
-import React, { useMemo, Fragment } from 'react';
+import React, { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -14,8 +14,6 @@ function Chart2D() {
     height,
     margin,
     mode,
-    xDomains,
-    yDomains,
     tabActiveSpectrum,
     activeTab,
     data,
@@ -23,25 +21,18 @@ function Chart2D() {
 
   const spectrumData = useMemo(() => {
     const nucleuses = activeTab.split(',');
-    if (
-      nucleuses.length === 2 &&
-      Object.keys(tabActiveSpectrum).length !== 0 &&
-      xDomains &&
-      Object.keys(xDomains).length !== 0 &&
-      yDomains &&
-      Object.keys(yDomains).length !== 0
-    ) {
-      return nucleuses.map((n) => {
+    return nucleuses.map((n) => {
+      if (tabActiveSpectrum[n] && tabActiveSpectrum[n].id) {
         const id = tabActiveSpectrum[n].id;
         const spectrum = data.find((datum) => datum.id === id);
-        return spectrum
-          ? { spectrum, xDomain: xDomains[id], yDomain: yDomains[id] }
-          : null;
-      });
-    }
+        return spectrum ? spectrum : [];
+      } else {
+        return null;
+      }
+    });
 
-    return null;
-  }, [activeTab, data, tabActiveSpectrum, xDomains, yDomains]);
+    // }
+  }, [activeTab, data, tabActiveSpectrum]);
 
   if (!width || !height || !margin) {
     return null;
@@ -73,14 +64,11 @@ function Chart2D() {
         strokeWidth="1"
         fill="transparent"
       />
-      {spectrumData && (
-        <Fragment>
-          <Top1DChart data={spectrumData[0]} />
-          <Left1DChart data={spectrumData[1]} />
-        </Fragment>
+      {spectrumData && spectrumData[0] && <Top1DChart data={spectrumData[0]} />}
+      {spectrumData && spectrumData[1] && (
+        <Left1DChart data={spectrumData[1]} />
       )}
-      <Contours data={spectrumData} />
-
+      <Contours />
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis
           showGrid={true}

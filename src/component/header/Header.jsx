@@ -91,7 +91,7 @@ const Header = ({ isFullscreen, onMaximize }) => {
 };
 
 Header.defaultProps = {
-  onMaximize: function () {
+  onMaximize: function() {
     return null;
   },
 };

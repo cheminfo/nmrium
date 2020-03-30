@@ -58,7 +58,7 @@ const Modal = ({ children, open, onClose, style }) => {
 };
 
 Modal.defaultProps = {
-  onClose: function () {
+  onClose: function() {
     return null;
   },
   open: false,

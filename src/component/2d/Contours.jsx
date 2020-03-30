@@ -2,12 +2,15 @@ import React from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-const Contours = ({ data }) => {
-  const { contours, scaleX } = useChartData();
+const Contours = () => {
+  const { contours, scaleX, scaleY } = useChartData();
 
   const buildContourPath = (contour) => {
-    const _scaleX = scaleX(data && data[0] ? data[0].id : null);
-    const _scaleY = scaleX(data && data[1] ? data[1].id : null, 'V');
+    const _scaleX = scaleX();
+    const _scaleY = scaleY(null, null, true);
+    // console.log(_scaleX(100));
+    // console.log(_scaleY(100));
+    // console.log(contour);
     let path = ` M ${_scaleX(contour[0].x)} ${_scaleY(contour[0].y)} `;
     path += contour.slice(1).reduce((acc, co) => {
       acc += ` L ${_scaleX(co.x)} ${_scaleY(co.y)} `;

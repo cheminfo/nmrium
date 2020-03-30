@@ -57,7 +57,7 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
 };
 
 ToggleButtonGroup.defaultProps = {
-  onChange: function () {
+  onChange: function() {
     return null;
   },
 };

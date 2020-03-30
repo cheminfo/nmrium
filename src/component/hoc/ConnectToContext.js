@@ -1,7 +1,7 @@
 import React from 'react';
 
 function ConnectToContext(WrappedComponent, contextData, additionalProps = {}) {
-  return function (props) {
+  return function(props) {
     const {
       data,
       activeSpectrum,

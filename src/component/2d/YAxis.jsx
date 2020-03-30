@@ -27,26 +27,24 @@ const YAxis = ({ show, label, margin, data }) => {
   const refAxis = useRef();
   const {
     yDomain,
-    scaleX,
+    scaleY,
     width,
     height,
     activeTab,
     tabActiveSpectrum,
   } = useChartData();
-  const axis = d3.axisRight().ticks(8).tickFormat(d3.format('0'));
+  const axis = d3
+    .axisRight()
+    .ticks(8)
+    .tickFormat(d3.format('0'));
 
   useEffect(() => {
-    if (show && yDomain && scaleX()) {
-      let scale;
-      const nucleus = activeTab.split(',')[1];
-      scale =
-        nucleus && tabActiveSpectrum[nucleus]
-          ? scaleX(tabActiveSpectrum[nucleus].id, 'V')
-          : scaleX(null, 'V');
+    if (show && yDomain) {
+      const scale = scaleY(null, null, true);
 
       d3.select(refAxis.current).call(axis.scale(scale));
     }
-  }, [show, yDomain, scaleX, data, activeTab, tabActiveSpectrum, axis]);
+  }, [show, yDomain, data, activeTab, tabActiveSpectrum, axis, scaleY]);
 
   const Axis = useMemo(
     () =>
