@@ -47,7 +47,9 @@ export function getInfoFromMetaData(info) {
     // eslint-disable-next-line dot-notation
     let nucleus = info['$NUC1'];
     if (!Array.isArray(nucleus)) nucleus = [nucleus];
-    nucleus = nucleus.map((value) => value.replace(/[^A-Za-z0-9]/g, ''));
+    nucleus = nucleus.map((value) =>
+      value.replace(/[^A-Za-z0-9]/g, '').replace('NA', ''),
+    );
     let beforeLength = nucleus.length;
     nucleus = nucleus.filter((value) => value);
     if (nucleus.length === beforeLength) {
@@ -55,7 +57,7 @@ export function getInfoFromMetaData(info) {
     }
   }
 
-  if (!metadata.nucleus) {
+  if (!metadata.nucleus || metadata.nucleus.length === 0) {
     if (info['.NUCLEUS']) {
       metadata.nucleus = info['.NUCLEUS'].split(',').map((nuc) => nuc.trim());
     } else if (info['.OBSERVENUCLEUS']) {
