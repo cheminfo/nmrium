@@ -348,24 +348,46 @@ const setDisplayerMode = (draft, data) => {
     : DISPLAYER_MODE.DM_1D;
 };
 
+const setActiveTab = (draft, dataGroupByTab, tab) => {
+  if (
+    JSON.stringify(Object.keys(dataGroupByTab)) !==
+    JSON.stringify(Object.keys(draft.tabActiveSpectrum))
+  ) {
+    let tabs2D = [];
+    for (let tabKey of Object.keys(dataGroupByTab)) {
+      if (tabKey.split(',').length === 2) {
+        tabs2D.push(tabKey);
+      }
+      const data = dataGroupByTab[tabKey];
+      const index = draft.data.findIndex((datum) => datum.id === data[0].id);
+      draft.tabActiveSpectrum[tabKey] = { id: data[0].id, index };
+    }
+
+    if (tabs2D.length > 0) {
+      draft.activeSpectrum = draft.tabActiveSpectrum[tabs2D[0]];
+      draft.activeTab = tabs2D[0];
+    } else {
+      draft.activeSpectrum = draft.tabActiveSpectrum[tab];
+      draft.activeTab = tab;
+    }
+  } else {
+    draft.activeTab = tab;
+    draft.activeSpectrum = draft.tabActiveSpectrum[tab];
+  }
+
+  setDisplayerMode(draft, dataGroupByTab[draft.activeTab]);
+  setMargin(draft);
+};
+
 const handelSetActiveTab = (state, tab) => {
   return produce(state, (draft) => {
     const { data } = state;
     if (tab) {
-      draft.activeTab = tab;
       const groupByNucleus = GroupByInfoKey('nucleus');
-      const _data = groupByNucleus(data)[tab];
-      setDisplayerMode(draft, _data);
-      setMargin(draft);
-
-      if (_data && !draft.tabActiveSpectrum[draft.activeTab]) {
-        const index = data.findIndex((datum) => datum.id === _data[0].id);
-        draft.activeSpectrum = { id: _data[0].id, index };
-        draft.tabActiveSpectrum[draft.activeTab] = { id: _data[0].id, index };
-      }
+      const dataGroupByNucleus = groupByNucleus(data);
+      setActiveTab(draft, dataGroupByNucleus, tab);
 
       initiate2D(draft, data);
-
       setDomain(draft);
       setMode(draft);
     }

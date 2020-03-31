@@ -172,13 +172,13 @@ export class Datum1D {
     this.ranges.values = this.ranges.values.slice();
     this.ranges.options = { ...this.ranges.options, sum: sumValue };
     let currentSum = this.ranges.values.reduce(
-      (previous, current) => (previous += current.integral),
+      (previous, current) => (previous += current.absolute),
       0,
     );
     let factor = sumValue / currentSum;
     this.ranges.values = this.ranges.values.map((range) => {
-      const relative = range.integral * factor;
-      return { ...range, relative };
+      const integral = range.absolute * factor;
+      return { ...range, integral };
     });
   }
 
@@ -237,11 +237,12 @@ export class Datum1D {
 
     const ranges = autoRangesDetection(this, options);
     this.ranges.values = ranges.map((range) => {
+      range.absolute = range.integral;
       return {
         id: generateID(),
         ...range,
         kind: 'signal',
-        absolute: 0,
+        integral: 0,
       };
     });
     return this.ranges;
@@ -387,7 +388,7 @@ export class Datum1D {
 
         from,
         to,
-        integral: this.getIntegration(from, to), // the real value,
+        absolute: this.getIntegration(from, to), // the real value,
         signal: [
           {
             delta: result.chemShift,
@@ -397,7 +398,7 @@ export class Datum1D {
           },
         ],
         kind: 'signal',
-        absolute: 0,
+        integral: 0,
       };
       this.ranges.values.push(range);
     } catch (e) {

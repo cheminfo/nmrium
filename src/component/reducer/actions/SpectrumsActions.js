@@ -55,7 +55,7 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
           }
         }
       } else {
-        draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
+        // draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
         AnalysisObj.getDatum(activeSpectrum.id).isVisible = true;
         const newIndex = draft.data.findIndex(
           (d) => d.id === activeSpectrum.id,
@@ -77,10 +77,11 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
 
         activeSpectrum = { ...activeSpectrum, index: newIndex };
         draft.activeSpectrum = activeSpectrum;
+        draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
       }
     } else {
       draft.activeSpectrum = null;
-      delete draft.tabActiveSpectrum[draft.activeTab];
+      draft.tabActiveSpectrum[draft.activeTab] = null;
       refreshDomain = false;
     }
 

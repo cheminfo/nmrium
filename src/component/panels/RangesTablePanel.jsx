@@ -83,7 +83,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
           signal: range.signal,
           id: range.id, // needed for ReactTableRow component to highlight
           kind: range.kind,
-          relative: range.relative,
+          absolute: range.absolute,
         };
       });
     } else {
@@ -188,15 +188,16 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
       accessor: 'to',
       Cell: ({ row }) => row.original.to.toFixed(2),
     },
+
+    {
+      Header: 'Absolute',
+      accessor: 'absolute',
+      Cell: ({ row }) => row.original.absolute.toFixed(1),
+    },
     {
       Header: 'Integral',
       accessor: 'integral',
       Cell: ({ row }) => row.original.integral.toFixed(1),
-    },
-    {
-      Header: 'Relative',
-      accessor: 'relative',
-      Cell: ({ row }) => row.original.relative.toFixed(1),
     },
     {
       Header: '#Signals',
@@ -233,45 +234,27 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
 
   const columnsSignals = [
     {
-      Header: 'Signals',
-      columns: [
-        {
-          Header: '#',
-          Cell: ({ row }) => row.index + 1,
-        },
-        {
-          Header: 'Multiplicity',
-          accessor: 'multiplicity',
-        },
-        {
-          Header: 'Delta',
-          accessor: 'delta',
-          Cell: ({ row }) => row.original.delta.toFixed(3),
-        },
-        {
-          Header: 'J',
-          Cell: ({ row }) =>
-            row.original.j
-              ? row.original.j
-                  .map((j) => `${j.multiplicity} (${j.coupling.toFixed(2)}Hz)`)
-                  .join(', ')
-              : '',
-        },
-      ],
+      Header: '#',
+      Cell: ({ row }) => row.index + 1,
     },
-  ];
-
-  const columnsSignalsExpandable = [
     {
-      Header: () => null,
-      id: 'expanderSignals',
-      Cell: ({ row }) => (
-        <span {...row.getExpandedToggleProps()}>
-          {row.isExpanded ? '\u25BC' : '\u25B6'}
-        </span>
-      ),
+      Header: 'Multiplicity',
+      accessor: 'multiplicity',
     },
-    ...columnsSignals,
+    {
+      Header: 'Delta',
+      accessor: 'delta',
+      Cell: ({ row }) => row.original.delta.toFixed(3),
+    },
+    {
+      Header: 'J',
+      Cell: ({ row }) =>
+        row.original.j
+          ? row.original.j
+              .map((j) => `${j.multiplicity} (${j.coupling.toFixed(2)}Hz)`)
+              .join(', ')
+          : '',
+    },
   ];
 
   const columnsCouplings = [
@@ -319,7 +302,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
       row.original.signal &&
       row.original.signal.find((signal) => signal.j && signal.j.length > 0) ? (
       <ReactTableExpandable
-        columns={columnsSignalsExpandable}
+        columns={columnsSignals}
         data={row.original.signal}
         renderRowSubComponent={renderRowSubComponentCouplings}
         context={contextMenu}
