@@ -42,7 +42,7 @@ const stylesHighlighted = css`
   }
 `;
 
-const Range = ({ id, from, to, integral }) => {
+const Range = ({ id, from, to, absolute }) => {
   const highlight = useHighlight([id]);
 
   const { scaleX } = useChartData();
@@ -57,7 +57,8 @@ const Range = ({ id, from, to, integral }) => {
       <svg
         className="delete-button"
         // transform={`translate(${scaleX()(to) - 20},10)`}
-        x={`translate(${scaleX()(to) - 20},10)`}
+        x={scaleX()(to) - 20}
+        y={10}
         onClick={() => deleteRange()}
         data-no-export="true"
         width="16"
@@ -90,7 +91,7 @@ const Range = ({ id, from, to, integral }) => {
           fontSize="10"
           fill="red"
         >
-          {integral.toFixed(1)}
+          {absolute.toFixed(1)}
         </text>
       </g>
       <DeleteButton />

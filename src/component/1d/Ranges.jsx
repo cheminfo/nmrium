@@ -21,7 +21,7 @@ const Ranges = () => {
                   id={range.id}
                   from={range.from}
                   to={range.to}
-                  integral={range.integral}
+                  absolute={range.absolute}
                 />
               ))}
             </g>
