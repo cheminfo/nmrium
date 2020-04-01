@@ -69,14 +69,14 @@ const BrushXY = ({
 
   const scaleX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY
-      ? (endX - startX) / width
+      ? (endX - startX) / width / window.devicePixelRatio
       : 1;
   startX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY ? startX : 0;
 
   const scaleY =
     brushType === BRUSH_TYPE.Y || brushType === BRUSH_TYPE.XY
-      ? (endY - startY) / height
+      ? (endY - startY) / height / window.devicePixelRatio
       : 1;
   startY =
     brushType === BRUSH_TYPE.Y || brushType === BRUSH_TYPE.XY ? startY : 0;
@@ -85,9 +85,7 @@ const BrushXY = ({
     <div
       style={{
         ...styles.container,
-        transform: `translate(${startX}px, ${startY}px) scale(${
-          scaleX / window.devicePixelRatio
-        },${scaleY / window.devicePixelRatio})`,
+        transform: `translate(${startX}px, ${startY}px) scale(${scaleX},${scaleY})`,
       }}
       className="moving-element"
     >
