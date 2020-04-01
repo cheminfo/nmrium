@@ -201,7 +201,10 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
     },
     {
       Header: '#Signals',
-      Cell: ({ row }) => row.original.signal.length,
+      Cell: ({ row }) =>
+        `${row.original.signal.length}: ${row.original.signal
+          .map((s) => s.multiplicity)
+          .join(',')}`,
     },
     {
       Header: 'Kind',
