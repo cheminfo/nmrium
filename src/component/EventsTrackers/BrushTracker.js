@@ -68,7 +68,7 @@ export function BrushTracker({
           timeStamp - mouseDownTime <= 150 &&
           debounceClickEvents.length === 1
         ) {
-          onClick({ x, y });
+          onClick({ ...e, x, y });
         }
         debounceClickEvents = [];
       }, 200);
@@ -79,7 +79,7 @@ export function BrushTracker({
       if (debounceClickEvents.length > 1) {
         lodash.map(debounceClickEvents, (debounce) => debounce.cancel());
         debounceClickEvents = [];
-        onDoubleClick(e);
+        onDoubleClick({ ...e, x, y });
       }
     },
     [mouseDownTime, onClick, onDoubleClick],

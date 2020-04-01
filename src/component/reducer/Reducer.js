@@ -269,16 +269,12 @@ export const spectrumReducer = (state, action) => {
       return setSelectedTool(state, action.selectedTool);
     case RESET_SELECTED_TOOL:
       return resetSelectedTool(state);
-
     case SET_SELECTED_OPTIONS_PANEL:
       return setSelectedOptionPanel(state, action.selectedOptionPanel);
-
     case SET_DATA:
       return setData(state, action.data);
-
     case FULL_ZOOM_OUT:
-      return zoomOut(state, action.zoomType);
-
+      return zoomOut(state, action);
     case SHIFT_SPECTRUM:
       return shiftSpectrumAlongXAxis(state, action.shiftValue);
     case APPLY_ZERO_FILLING_FILTER:

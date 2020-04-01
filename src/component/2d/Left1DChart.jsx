@@ -1,10 +1,10 @@
 import { scaleLinear } from 'd3';
 import { XY } from 'ml-spectra-processing';
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-const Left1DChart = ({ margin, data }) => {
+const Left1DChart = forwardRef(({ margin, data }, ref) => {
   const {
     height: originHeight,
     margin: originMargin,
@@ -54,6 +54,7 @@ const Left1DChart = ({ margin, data }) => {
       viewBox={`0 0 ${height} ${mainHeight + originMargin.top}`}
       width={height}
       height={mainHeight + originMargin.top}
+      ref={ref}
     >
       <defs>
         <clipPath id="clip-left">
@@ -78,7 +79,7 @@ const Left1DChart = ({ margin, data }) => {
       </g>
     </svg>
   );
-};
+});
 
 Left1DChart.defaultProps = {
   margin: {

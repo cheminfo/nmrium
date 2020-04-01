@@ -233,8 +233,20 @@ const handleBrushEnd = (state, action) => {
     const domainX = startX > endX ? [endX, startX] : [startX, endX];
     const domainY = startY > endY ? [endY, startY] : [startY, endY];
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-      draft.xDomain = domainX;
-      draft.yDomain = domainY;
+      switch (action.trackID) {
+        case 'CENTER_2D':
+          draft.xDomain = domainX;
+          draft.yDomain = domainY;
+          break;
+        case 'TOP_1D':
+          draft.xDomain = domainX;
+          break;
+        case 'LEFT_1D':
+          draft.yDomain = domainY;
+          break;
+        default:
+          break;
+      }
     } else {
       draft.xDomain = domainX;
     }
@@ -295,7 +307,8 @@ const handleZoom = (state, action) => {
   });
 };
 
-const zoomOut = (state, zoomType) => {
+const zoomOut = (state, action) => {
+  const { zoomType, trackID } = action;
   return produce(state, (draft) => {
     if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
       switch (zoomType) {
@@ -313,11 +326,25 @@ const zoomOut = (state, zoomType) => {
           break;
       }
     } else {
-      const { xDomain, yDomain, xDomains, yDomains } = state.originDomain;
-      draft.xDomain = xDomain;
-      draft.yDomain = yDomain;
-      draft.xDomains = xDomains;
-      draft.yDomains = yDomains;
+      // , xDomains, yDomains
+      const { xDomain, yDomain } = state.originDomain;
+      switch (trackID) {
+        case 'TOP_1D':
+          draft.xDomain = xDomain;
+          break;
+        case 'LEFT_1D':
+          draft.yDomain = yDomain;
+          break;
+        case 'CENTER_2D':
+          draft.xDomain = xDomain;
+          draft.yDomain = yDomain;
+          break;
+        default:
+          break;
+      }
+      // draft.yDomain = yDomain;
+      // draft.xDomains = xDomains;
+      // draft.yDomains = yDomains;
     }
   });
 };

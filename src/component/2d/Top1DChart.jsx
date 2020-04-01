@@ -1,11 +1,11 @@
 import { scaleLinear } from 'd3';
 import { XY } from 'ml-spectra-processing';
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 // import YAxis from '../1d/YAxis';
 
-const Top1DChart = ({ margin: marginProps, data }) => {
+const Top1DChart = forwardRef(({ margin: marginProps, data }, ref) => {
   const { width, margin: originMargin, xDomain, yDomains } = useChartData();
 
   const height = originMargin.top;
@@ -50,7 +50,12 @@ const Top1DChart = ({ margin: marginProps, data }) => {
   }
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}>
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      width={width}
+      height={height}
+      ref={ref}
+    >
       <defs>
         <clipPath id="clip-top">
           <rect
@@ -66,7 +71,7 @@ const Top1DChart = ({ margin: marginProps, data }) => {
       </g>
     </svg>
   );
-};
+});
 
 Top1DChart.defaultProps = {
   margin: {

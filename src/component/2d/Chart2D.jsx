@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import PropsTypes from 'prop-types';
+import React, { useMemo, useRef, useEffect } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -8,7 +9,7 @@ import Top1DChart from './Top1DChart';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
 
-function Chart2D() {
+function Chart2D({ onDimensionChange }) {
   const {
     width,
     height,
@@ -19,6 +20,9 @@ function Chart2D() {
     data,
   } = useChartData();
 
+  const topRef = useRef();
+  const leftRef = useRef();
+  const centerRef = useRef();
   const spectrumData = useMemo(() => {
     const nucleuses = activeTab.split(',');
     return nucleuses.map((n) => {
@@ -34,6 +38,51 @@ function Chart2D() {
     // }
   }, [activeTab, data, tabActiveSpectrum]);
 
+  const getBoundingClientRect = (element) => {
+    const {
+      top,
+      right,
+      bottom,
+      left,
+      width,
+      height,
+      x,
+      y,
+    } = element.getBoundingClientRect();
+    return { top, right, bottom, left, width, height, x, y };
+  };
+
+  useEffect(() => {
+    if (topRef.current && leftRef.current && centerRef.current) {
+      const top = getBoundingClientRect(topRef.current);
+      const left = getBoundingClientRect(leftRef.current);
+      const center = getBoundingClientRect(centerRef.current);
+
+      const dimension = {
+        top: { ...top, x: top.x - center.x, y: top.y - center.y },
+        left: { ...left, x: left.x - center.x, y: left.y - center.y },
+        center: {
+          ...center,
+          startX: margin.left,
+          startY: margin.top,
+          endX: center.width - margin.left - margin.right,
+          endY: center.height - margin.top - margin.bottom,
+        },
+      };
+
+      onDimensionChange(dimension);
+    }
+  }, [
+    width,
+    height,
+    margin.left,
+    margin.y,
+    margin.right,
+    margin.top,
+    margin.bottom,
+    onDimensionChange,
+  ]);
+
   if (!width || !height || !margin) {
     return null;
   }
@@ -44,6 +93,7 @@ function Chart2D() {
       width={width}
       height={height}
       id="nmrSVG"
+      ref={centerRef}
     >
       <defs>
         <clipPath id="clip">
@@ -64,9 +114,11 @@ function Chart2D() {
         strokeWidth="1"
         fill="transparent"
       />
-      {spectrumData && spectrumData[0] && <Top1DChart data={spectrumData[0]} />}
+      {spectrumData && spectrumData[0] && (
+        <Top1DChart ref={topRef} data={spectrumData[0]} />
+      )}
       {spectrumData && spectrumData[1] && (
-        <Left1DChart data={spectrumData[1]} />
+        <Left1DChart ref={leftRef} data={spectrumData[1]} />
       )}
       <Contours />
       <g className="container" style={{ pointerEvents: 'none' }}>
@@ -80,5 +132,12 @@ function Chart2D() {
     </svg>
   );
 }
+Chart2D.defaultProps = {
+  onDimensionChange: () => null,
+};
 
-export default React.forwardRef(Chart2D);
+Chart2D.propsTypes = {
+  onDimensionChange: PropsTypes.func.isRequired,
+};
+
+export default Chart2D;

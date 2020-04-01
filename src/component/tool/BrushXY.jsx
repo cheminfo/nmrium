@@ -30,11 +30,42 @@ export const BRUSH_TYPE = {
   XY: 3,
 };
 
-const BrushXY = ({ brushType }) => {
-  const { width, height, selectedTool } = useChartData();
+const BrushXY = ({
+  brushType,
+  dimensionBorder,
+  width: widthProps,
+  height: heightProps,
+}) => {
+  let { width, height, selectedTool } = useChartData();
   let { startX, endX, startY, endY, step } = useContext(BrushContext);
 
-  if (!allowTools.includes(selectedTool) || step !== 'brushing') return null;
+  if (
+    !allowTools.includes(selectedTool) ||
+    step !== 'brushing' ||
+    !dimensionBorder ||
+    (dimensionBorder.startX && startX < dimensionBorder.startX) ||
+    (dimensionBorder.startY && startY < dimensionBorder.startY) ||
+    (dimensionBorder.endX && endX > dimensionBorder.endX) ||
+    (dimensionBorder.endY && endY > dimensionBorder.endY)
+  ) {
+    return null;
+  }
+  width = widthProps ? widthProps : width;
+
+  height = heightProps ? heightProps : height;
+
+  endX =
+    dimensionBorder.endX && endX > dimensionBorder.endX
+      ? dimensionBorder.endX
+      : dimensionBorder.startX && endX < dimensionBorder.startX
+      ? startX
+      : endX;
+  endY =
+    dimensionBorder.endY && endY > dimensionBorder.endY
+      ? dimensionBorder.endY
+      : dimensionBorder.startY && endY < dimensionBorder.startY
+      ? startY
+      : endY;
 
   const scaleX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY
@@ -74,8 +105,14 @@ const BrushXY = ({ brushType }) => {
   );
 };
 
-BrushXY.deafultProps = {
+BrushXY.defaultProps = {
   brushType: BRUSH_TYPE.XY,
+  dimensionBorder: {
+    startX: 0,
+    startY: 0,
+  },
+  width: null,
+  height: null,
 };
 
 export default BrushXY;
