@@ -20,6 +20,8 @@ import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { getScale } from './ScaleActions';
 
+const spectrumZoomHanlder = new Spectrum1DZoomHelper();
+
 function getStrongestPeak(state) {
   const { activeSpectrum, data } = state;
 
@@ -230,9 +232,12 @@ const handleBrushEnd = (state, action) => {
     const endY = yScale.invert(action.endY);
     const domainX = startX > endX ? [endX, startX] : [startX, endX];
     const domainY = startY > endY ? [endY, startY] : [startY, endY];
-
-    draft.xDomain = domainX;
-    draft.yDomain = domainY;
+    if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+      draft.xDomain = domainX;
+      draft.yDomain = domainY;
+    } else {
+      draft.xDomain = domainX;
+    }
   });
 };
 const setVerticalIndicatorXPosition = (state, position) => {
@@ -282,8 +287,6 @@ const setZoom = (state, draft, scale) => {
   }
 };
 
-const spectrumZoomHanlder = new Spectrum1DZoomHelper();
-
 const handleZoom = (state, action) => {
   return produce(state, (draft) => {
     const { deltaY, deltaMode } = action;
@@ -300,9 +303,11 @@ const zoomOut = (state, zoomType) => {
           draft.xDomain = state.originDomain.xDomain;
           break;
         case 'V':
+          spectrumZoomHanlder.setScale(0.8);
           setZoom(state, draft, 0.8);
           break;
         default:
+          spectrumZoomHanlder.setScale(0.8);
           draft.xDomain = state.originDomain.xDomain;
           setZoom(state, draft, 0.8);
           break;
