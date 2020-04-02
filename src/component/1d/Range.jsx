@@ -2,8 +2,8 @@ import { jsx, css } from '@emotion/core';
 import { useCallback } from 'react';
 /** @jsx jsx */
 
-import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
 import { DELETE_RANGE } from '../reducer/types/Types';
 
@@ -45,7 +45,7 @@ const stylesHighlighted = css`
 const Range = ({ id, from, to, absolute }) => {
   const highlight = useHighlight([id]);
 
-  const { scaleX } = useChartData();
+  const { scaleX } = useScale();
   const dispatch = useDispatch();
 
   const deleteRange = useCallback(() => {

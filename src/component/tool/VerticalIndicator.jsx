@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 import { options } from '../toolbar/ToolTypes';
 
 const styles = {
@@ -15,7 +16,9 @@ const styles = {
 };
 
 const VerticalIndicator = () => {
-  const { height, selectedTool, pivot, scaleX } = useChartData();
+  const { height, selectedTool, pivot } = useChartData();
+  const { scaleX } = useScale();
+
   if (options.phaseCorrection.id !== selectedTool) return null;
   return (
     <div

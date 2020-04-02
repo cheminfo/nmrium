@@ -298,12 +298,61 @@ const setZoom = (state, draft, scale) => {
     draft.yDomains[draft.activeSpectrum.id] = yDomain;
   }
 };
+const setZoom1D = (draft, scale, height, margin, index) => {
+  const { originDomain, data, tabActiveSpectrum, activeTab } = draft;
+  const { id, index: spectrumIndex } = tabActiveSpectrum[
+    activeTab.split(',')[index]
+  ];
+  const scaleY = scaleLinear(draft.yDomains[id], [height - margin, margin]);
+
+  let t;
+  const closest = getClosestNumber(data[spectrumIndex].y);
+  const referencePoint = scaleY(closest);
+  t = zoomIdentity
+    .translate(0, referencePoint)
+    .scale(scale)
+    .translate(0, -referencePoint);
+
+  draft.zoomFactor = { scale };
+
+  const _scale = scaleLinear(originDomain.yDomains[id], [
+    height - margin,
+    margin,
+  ]);
+  let yDomain = t.rescaleY(_scale).domain();
+  draft.yDomains[id] = yDomain;
+};
 
 const handleZoom = (state, action) => {
   return produce(state, (draft) => {
-    const { deltaY, deltaMode } = action;
+    const { deltaY, deltaMode, trackID } = action;
     spectrumZoomHanlder.wheel(deltaY, deltaMode);
-    setZoom(state, draft, spectrumZoomHanlder.getScale());
+    if (trackID) {
+      switch (trackID) {
+        case 'TOP_1D':
+          setZoom1D(
+            draft,
+            spectrumZoomHanlder.getScale(),
+            state.margin.top,
+            10,
+            0,
+          );
+          break;
+        case 'LEFT_1D':
+          setZoom1D(
+            draft,
+            spectrumZoomHanlder.getScale(),
+            state.margin.left,
+            10,
+            1,
+          );
+          break;
+        default:
+          return state;
+      }
+    } else {
+      setZoom(state, draft, spectrumZoomHanlder.getScale());
+    }
   });
 };
 
@@ -327,14 +376,21 @@ const zoomOut = (state, action) => {
       }
     } else {
       // , xDomains, yDomains
-      const { xDomain, yDomain } = state.originDomain;
+      const { xDomain, yDomain, yDomains } = state.originDomain;
       switch (trackID) {
-        case 'TOP_1D':
+        case 'TOP_1D': {
+          const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[0]];
           draft.xDomain = xDomain;
+          draft.yDomains[id] = yDomains[id];
           break;
-        case 'LEFT_1D':
+        }
+        case 'LEFT_1D': {
+          const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[1]];
           draft.yDomain = yDomain;
+          draft.yDomains[id] = yDomains[id];
+
           break;
+        }
         case 'CENTER_2D':
           draft.xDomain = xDomain;
           draft.yDomain = yDomain;

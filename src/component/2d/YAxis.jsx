@@ -5,6 +5,7 @@ import { Fragment, useEffect, useRef, useMemo } from 'react';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 
 const axisStyles = css`
   user-select: 'none';
@@ -27,12 +28,14 @@ const YAxis = ({ show, label, margin, data }) => {
   const refAxis = useRef();
   const {
     yDomain,
-    scaleY,
     width,
     height,
     activeTab,
     tabActiveSpectrum,
   } = useChartData();
+
+  const { scaleY } = useScale();
+
   const axis = d3.axisRight().ticks(8).tickFormat(d3.format('0'));
 
   useEffect(() => {

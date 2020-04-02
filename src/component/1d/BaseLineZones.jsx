@@ -4,6 +4,7 @@ import { useCallback, Fragment } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useScale } from '../context/ScaleContext';
 import { DELETE_BASE_LINE_ZONE } from '../reducer/types/Types';
 
 const styles = css`
@@ -29,7 +30,7 @@ const styles = css`
 const BaseLineZones = () => {
   const { baseLineZones } = useChartData();
 
-  const { scaleX } = useChartData();
+  const { scaleX } = useScale();
   const dispatch = useDispatch();
 
   const deleteRange = useCallback(

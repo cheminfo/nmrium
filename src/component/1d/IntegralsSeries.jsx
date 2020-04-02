@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 
 import Integral from './Integral';
 
@@ -23,13 +24,13 @@ const pathStyles = css`
 const IntegralsSeries = () => {
   const {
     xDomain,
-    scaleX,
     activeSpectrum,
     data,
     height,
     margin,
     integralsYDomains,
   } = useChartData();
+  const { scaleX } = useScale();
 
   const scaleY = useMemo(() => {
     if (activeSpectrum && integralsYDomains[activeSpectrum.id]) {

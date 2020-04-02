@@ -1,6 +1,8 @@
 import { XY } from 'ml-spectra-processing';
 import React, { useEffect, useState, useCallback, Fragment } from 'react';
 
+import { useScale } from '../context/ScaleContext';
+
 import IntegralResizable from './IntegralResizable';
 
 const Integral = ({
@@ -9,12 +11,11 @@ const Integral = ({
   from,
   to,
   xDomain,
-  scaleY,
-  scaleX,
   isActive,
   integralID,
   spectrumID,
 }) => {
+  const { scaleX, scaleY } = useScale();
   const [integral, setIntegral] = useState();
 
   useEffect(() => {

@@ -1,4 +1,10 @@
-import React, { useCallback, Fragment, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  Fragment,
+  useEffect,
+  useState,
+  useMemo,
+} from 'react';
 import { useSize, useDebounce } from 'react-use';
 
 // import BrushX from '../tool/BrushX';
@@ -9,6 +15,7 @@ import { useDispatch } from '../context/DispatchContext';
 import { useModal } from '../elements/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
+import { getXScale, getYScale } from '../reducer/core/scale';
 import {
   ADD_INTEGRAL,
   ADD_PEAKS,
@@ -31,9 +38,11 @@ import { options } from '../toolbar/ToolTypes';
 
 import Chart1D from './Chart1D';
 import FooterBanner from './FooterBanner';
+import { ScaleProvider } from '../context/ScaleContext';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
+  const state = useChartData();
   const {
     selectedTool,
     isLoading,
@@ -43,10 +52,20 @@ const Viewer1D = () => {
     height: heightProp,
     margin,
     activeSpectrum,
-    scaleX,
-  } = useChartData();
+  } = state;
+
   const dispatch = useDispatch();
   const modal = useModal();
+
+  const scaleX = useCallback(
+    (spectrumId = null) => getXScale(spectrumId, state),
+    [state],
+  );
+
+  const scaleY = useMemo(() => {
+    return (spectrumId = null, heightProps = null, isReverse = false) =>
+      getYScale(spectrumId, heightProps, isReverse, state);
+  }, [state]);
 
   const handelBrushEnd = useCallback(
     (brushData) => {
@@ -216,7 +235,9 @@ const Viewer1D = () => {
     }
   }, [dispatch, finalSize]);
 
-  return sizedNMRChart;
+  return (
+    <ScaleProvider value={{ scaleX, scaleY }}>{sizedNMRChart}</ScaleProvider>
+  );
 };
 
 export default Viewer1D;

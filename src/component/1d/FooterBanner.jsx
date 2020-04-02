@@ -6,6 +6,7 @@ import { useContext, useCallback } from 'react';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 
 const styles = css`
   pointer-events: bounding-box;
@@ -41,15 +42,8 @@ const styles = css`
 const FooterBanner = () => {
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
-  const {
-    scaleX,
-    scaleY,
-    margin,
-    width,
-    height,
-    activeSpectrum,
-    data,
-  } = useChartData();
+  const { margin, width, height, activeSpectrum, data } = useChartData();
+  const { scaleX, scaleY } = useScale();
 
   const getYValue = useCallback(
     (xPosition) => {

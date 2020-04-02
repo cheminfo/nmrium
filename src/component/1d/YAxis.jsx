@@ -5,6 +5,7 @@ import { Fragment, useEffect, useRef, useMemo } from 'react';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 
 const axisStyles = css`
   user-select: 'none';
@@ -25,7 +26,8 @@ const axisStyles = css`
 
 const YAxis = ({ show, label, margin }) => {
   const refAxis = useRef();
-  const { yDomain, scaleY, getScale, width, height } = useChartData();
+  const { yDomain, width, height } = useChartData();
+  const { scaleY } = useScale();
 
   useEffect(() => {
     if (show && yDomain && scaleY()) {
@@ -33,7 +35,7 @@ const YAxis = ({ show, label, margin }) => {
 
       d3.select(refAxis.current).call(axis.scale(scaleY()));
     }
-  }, [show, yDomain, getScale, scaleY]);
+  }, [show, yDomain, scaleY]);
 
   const Axis = useMemo(
     () =>

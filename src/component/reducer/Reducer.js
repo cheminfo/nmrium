@@ -218,7 +218,7 @@ export function dispatchMiddleware(dispatch) {
   };
 }
 
-export const spectrumReducer = (state, action) => {
+export function spectrumReducer(state, action) {
   switch (action.type) {
     case INITIATE:
       return initiate(state, action.data);
@@ -386,4 +386,4 @@ export const spectrumReducer = (state, action) => {
     default:
       return state;
   }
-};
+}

@@ -6,6 +6,7 @@ import Draggable from 'react-draggable';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight/index';
 import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from '../reducer/types/Types';
 
@@ -39,7 +40,9 @@ const stylesHighlighted = css`
 `;
 
 const IntegralResizable = (props) => {
-  const { scaleX, height, margin, mode } = useChartData();
+  const { height, margin, mode } = useChartData();
+  const { scaleX } = useScale();
+
   const { spectrumID, integralData, from, to, integralID } = props;
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);

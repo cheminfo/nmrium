@@ -4,6 +4,7 @@ import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 
 const style = {
   cursor: 'crosshair',
@@ -17,14 +18,9 @@ const style = {
 };
 
 const XLabelPointer = () => {
-  const {
-    height,
-    width,
-    margin,
-    scaleX,
-    data,
-    activeSpectrum,
-  } = useChartData();
+  const { height, width, margin, data, activeSpectrum } = useChartData();
+  const { scaleX } = useScale();
+
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
   const getXValue = useCallback(

@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useMemo } from 'react';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 
 const axisStyles = css`
   user-select: none;
@@ -44,7 +45,8 @@ const XAxis = ({
   height: heightProp,
   margin: marginProps,
 }) => {
-  const { xDomain, scaleX, height, width, margin } = useChartData();
+  const { xDomain, height, width, margin } = useChartData();
+  const { scaleX } = useScale();
 
   const refAxis = useRef();
   const refGrid = useRef();

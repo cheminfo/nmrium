@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 import { options } from '../toolbar/ToolTypes';
 
 const styles = {
@@ -20,13 +21,13 @@ const PeakPointer = () => {
     width,
     margin,
     activeSpectrum,
-    scaleX,
-    scaleY,
     data,
     mode,
     selectedTool,
     verticalAlign,
   } = useChartData();
+  const { scaleX, scaleY } = useScale();
+
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
   const [closePeakPosition, setPosition] = useState();

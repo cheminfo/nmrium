@@ -3,16 +3,12 @@ import React, { useMemo } from 'react';
 import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import PeakNotation from '../Notations/PeakNotation';
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 // import ModifiedPeakNotation from './Notations/ModifiedPeakNotation';
 
 const PeaksNotations = () => {
-  const {
-    scaleX,
-    scaleY,
-    data,
-    activeSpectrum,
-    verticalAlign,
-  } = useChartData();
+  const { data, activeSpectrum, verticalAlign } = useChartData();
+  const { scaleX, scaleY } = useScale();
 
   const Peaks = useMemo(() => {
     const getVerticalAlign = (id) => {

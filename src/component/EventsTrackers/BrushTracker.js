@@ -89,8 +89,13 @@ export function BrushTracker({
     (event) => {
       event.stopPropagation();
       event.preventDefault();
+
+      const boundingRect = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - boundingRect.x;
+      const y = event.clientY - boundingRect.y;
+
       const { deltaY, deltaX, shiftKey, deltaMode } = event;
-      onZoom({ deltaY: deltaY || deltaX, shiftKey, deltaMode });
+      onZoom({ deltaY: deltaY || deltaX, shiftKey, deltaMode, x, y });
     },
     [onZoom],
   );

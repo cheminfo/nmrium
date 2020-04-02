@@ -13,6 +13,7 @@ import AlertTemplate from 'react-alert-template-basic';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 import 'cheminfo-font/dist/style.css';
+
 import PropTypes from 'prop-types';
 
 import { Analysis } from '../data/Analysis';
@@ -34,9 +35,10 @@ import {
   dispatchMiddleware,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
-import { getXScale, getYScale } from './reducer/core/scale';
+// import { getXScale, getYScale } from './reducer/core/scale';
 import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
+// import { ScaleProvider } from './context/ScaleContext';
 
 // alert optional cofiguration
 const alertOptions = {
@@ -64,8 +66,8 @@ const splitPaneStyles = {
 const NMRDisplayer = (props) => {
   const {
     data: dataProp,
-    height: heightProp,
-    width: widthProps,
+    // height: heightProp,
+    // width: widthProps,
     preferences,
   } = props;
   const fullScreenRef = useRef();
@@ -89,39 +91,27 @@ const NMRDisplayer = (props) => {
     });
   }, [dataProp]);
 
-  const scaleX = useCallback(
-    (spectrumId = null) => getXScale(spectrumId, state),
-    [state],
-  );
-
-  const scaleY = useMemo(() => {
-    return (spectrumId = null, heightProps = null, isReverse = false) =>
-      getYScale(spectrumId, heightProps, isReverse, state);
-  }, [state]);
-
   const handleSplitPanelDragFinished = useCallback((size) => {
     setResizeEventStart(false);
     dispatch({ type: SET_WIDTH, width: size });
   }, []);
+
   const dispatchMiddleWare = useMemo(() => dispatchMiddleware(dispatch), [
     dispatch,
   ]);
 
+  //  // {
+  //               // height: heightProp,
+  //               // width: widthProps,
+  //               state
+  //               // isResizeEventStart,
+  //             // }
   return (
     <ErrorBoundary>
       <ModalProvider>
         <AlertProvider template={AlertTemplate} {...alertOptions}>
           <DispatchProvider value={dispatchMiddleWare}>
-            <ChartDataProvider
-              value={{
-                height: heightProp,
-                width: widthProps,
-                ...state,
-                scaleX,
-                scaleY,
-                isResizeEventStart,
-              }}
-            >
+            <ChartDataProvider value={{ ...state, isResizeEventStart }}>
               <KeyListener parentRef={fullScreenRef} />
               <HighlightProvider>
                 <div
@@ -166,7 +156,6 @@ const NMRDisplayer = (props) => {
                         ) : (
                           <Viewer2D />
                         )}
-
                         <Panels
                           preferences={preferences}
                           selectedTool={selectedTool}

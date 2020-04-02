@@ -2,15 +2,11 @@ import { XY } from 'ml-spectra-processing';
 import React, { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import { useScale } from '../context/ScaleContext';
 
 export const Line = ({ x, y, id, color, index }) => {
-  const {
-    xDomain,
-    scaleX,
-    scaleY,
-    activeSpectrum,
-    verticalAlign,
-  } = useChartData();
+  const { xDomain, activeSpectrum, verticalAlign } = useChartData();
+  const { scaleX, scaleY } = useScale();
 
   const isActive = useMemo(() => {
     return activeSpectrum === null

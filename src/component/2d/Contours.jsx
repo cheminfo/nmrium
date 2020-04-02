@@ -1,9 +1,11 @@
 import React from 'react';
 
-import { useChartData } from '../context/ChartContext';
+import { useChart2DData } from '../context/Chart2DContext';
+import { useScale } from '../context/ScaleContext';
 
 const Contours = () => {
-  const { contours, scaleX, scaleY } = useChartData();
+  const { contours } = useChart2DData();
+  const { scaleX, scaleY } = useScale();
 
   const buildContourPath = (contour) => {
     const _scaleX = scaleX();

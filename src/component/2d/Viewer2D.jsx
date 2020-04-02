@@ -3,6 +3,8 @@ import React, {
   Fragment,
   useEffect,
   useState,
+  useMemo,
+  useReducer,
   // useMemo,
 } from 'react';
 import { useSize, useDebounce } from 'react-use';
@@ -10,11 +12,19 @@ import { useSize, useDebounce } from 'react-use';
 // import XLabelPointer from '../tool/XLabelPointer';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
+import { Chart2DProvider } from '../context/Chart2DContext';
 import { useChartData } from '../context/ChartContext';
+import { Dispatch2DProvider } from '../context/Dispatch2DContext';
 import { useDispatch } from '../context/DispatchContext';
+import { ScaleProvider } from '../context/ScaleContext';
 import { useModal } from '../elements/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
+import {
+  contoursReducer,
+  contoursInitialState,
+} from '../reducer/ContoursReducer';
+import { getXScale, getYScale } from '../reducer/core/scale';
 import {
   BRUSH_END,
   FULL_ZOOM_OUT,
@@ -22,6 +32,7 @@ import {
   SET_VERTICAL_INDICATOR_X_POSITION,
   SET_DIMENSIONS,
   SET_2D_LEVEL,
+  SET_ZOOM_FACTOR,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -46,6 +57,7 @@ function getTrackID(dimension, brushData) {
 
 const Viewer2D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
+  const state = useChartData();
   const {
     selectedTool,
     isLoading,
@@ -55,11 +67,31 @@ const Viewer2D = () => {
     height: heightProps,
     margin,
     activeSpectrum,
-    scaleX,
-  } = useChartData();
+    activeTab,
+    tabActiveSpectrum,
+  } = state;
+
+  const scaleX = useCallback(
+    (spectrumId = null) => getXScale(spectrumId, state),
+    [state],
+  );
+
+  const scaleY = useMemo(() => {
+    return (spectrumId = null, heightProps = null, isReverse = false) =>
+      getYScale(spectrumId, heightProps, isReverse, state);
+  }, [state]);
 
   const dispatch = useDispatch();
   const modal = useModal();
+  const [state2D, dispatch2D] = useReducer(
+    contoursReducer,
+    contoursInitialState,
+  );
+
+  useEffect(() => {
+    dispatch2D({ type: 'initiate', data, tabActiveSpectrum, activeTab });
+  }, [activeTab, data, tabActiveSpectrum]);
+
   // const [dimension, setDimension] = useState();
 
   const DIMENSION = {
@@ -144,7 +176,16 @@ const Viewer2D = () => {
   );
 
   const handleZoom = (wheelData) => {
-    dispatch({ type: SET_2D_LEVEL, ...wheelData });
+    const { x: startX, y: startY } = wheelData;
+    const trackID = getTrackID(DIMENSION, { startX, startY });
+
+    if (trackID) {
+      if (trackID === 'CENTER_2D') {
+        dispatch2D({ type: SET_2D_LEVEL, ...wheelData });
+      } else {
+        dispatch({ type: SET_ZOOM_FACTOR, ...wheelData, trackID });
+      }
+    }
   };
 
   const mouseClick = useCallback(
@@ -226,7 +267,12 @@ const Viewer2D = () => {
     }
   }, [dispatch, finalSize]);
 
-  return sizedNMRChart;
+  return (
+    <ScaleProvider value={{ scaleX, scaleY }}>
+      <Chart2DProvider value={state2D}>{sizedNMRChart}</Chart2DProvider>
+    </ScaleProvider>
+    // </Dispatch2DProvider>
+  );
 };
 
 export default Viewer2D;
