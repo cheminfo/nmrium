@@ -21,7 +21,6 @@ export function addJcamp(spectra, jcamp, options = {}) {
   if (entries.length === 0) return;
   // Should be improved when we have a more complex case
   for (let entry of entries) {
-    console.log({ entry });
     if (entry.jcamp) {
       addJcampSS(spectra, entry.jcamp, options);
     }

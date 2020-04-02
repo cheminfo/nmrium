@@ -12,6 +12,7 @@ import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { ScaleProvider } from '../context/ScaleContext';
 import { useModal } from '../elements/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
@@ -38,7 +39,6 @@ import { options } from '../toolbar/ToolTypes';
 
 import Chart1D from './Chart1D';
 import FooterBanner from './FooterBanner';
-import { ScaleProvider } from '../context/ScaleContext';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
