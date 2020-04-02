@@ -382,6 +382,7 @@ export class Datum1D {
       const result = analyseMultiplet(data, {
         frequency: this.info.frequency,
         takeBestPartMultiplet: true,
+        symmetrizeEachStep: true,
       });
       let range = {
         id: generateID(),

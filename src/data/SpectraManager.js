@@ -17,18 +17,13 @@ export function addJcampFromURL(spectra, jcampURL, options) {
 export function addJcamp(spectra, jcamp, options = {}) {
   // need to parse the jcamp
 
-  let tree = createTree(jcamp);
-  if (tree.length === 0) return;
+  let entries = createTree(jcamp, { flatten: true });
+  if (entries.length === 0) return;
   // Should be improved when we have a more complex case
-  let current = tree[0];
-  if (current.jcamp) {
-    addJcampSS(spectra, current.jcamp, options);
-  }
-  if (current.children) {
-    for (let child of current.children) {
-      if (child.jcamp) {
-        addJcampSS(spectra, child.jcamp, options);
-      }
+  for (let entry of entries) {
+    console.log({ entry });
+    if (entry.jcamp) {
+      addJcampSS(spectra, entry.jcamp, options);
     }
   }
 }
@@ -48,13 +43,18 @@ export async function fromJSON(spectra, data = []) {
 }
 
 function addJcampSS(spectra, jcamp, options) {
-  let result = convert(jcamp, { withoutXY: true, keepRecordsRegExp: /.*/ });
+  let result = convert(jcamp, {
+    noContour: true,
+    xy: true,
+    keepRecordsRegExp: /.*/,
+  });
   let info = getInfoFromMetaData(result.info);
+
   if (info.dimension === 1) {
-    spectra.push(Data1DManager.fromJcamp(jcamp, options));
+    spectra.push(Data1DManager.fromJcamp(result, options));
   }
   if (info.dimension === 2) {
-    spectra.push(Data2DManager.fromJcamp(jcamp, options));
+    spectra.push(Data2DManager.fromJcamp(result, options));
   }
 }
 

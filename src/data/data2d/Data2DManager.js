@@ -7,11 +7,10 @@ import { Datum2D } from './Datum2D';
 
 export class Data2DManager {
   static fromJcamp = function fromJcamp(jcamp, options = {}) {
-    let result = convert(jcamp, {
-      noContour: true,
-      xy: true,
-      keepRecordsRegExp: /.*/,
-    });
+    let result =
+      typeof jcamp === 'string'
+        ? convert(jcamp, { noContour: true, xy: true, keepRecordsRegExp: /.*/ })
+        : jcamp;
 
     let data = result.minMax;
     let info = getInfoFromMetaData(result.info);

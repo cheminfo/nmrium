@@ -28,7 +28,10 @@ export class Data1DManager {
   };
 
   static fromJcamp = function fromJcamp(jcamp, options = {}) {
-    let result = convert(jcamp, { xy: true, keepRecordsRegExp: /.*/ });
+    let result =
+      typeof jcamp === 'string'
+        ? convert(jcamp, { xy: true, keepRecordsRegExp: /.*/ })
+        : jcamp;
     let data = getData(result.spectra);
     let info = getInfoFromMetaData(result.info);
 

@@ -9,13 +9,13 @@
     "@emotion/core": "^10.0.28",
     "brukerconverter": "^1.1.2",
     "cheminfo-font": "^0.25.0",
-    "d3": "^5.15.0",
+    "d3": "^5.15.1",
     "file-saver": "^2.0.2",
-    "immer": "^6.0.2",
-    "jcampconverter": "^4.1.0",
-    "jszip": "^3.2.2",
+    "immer": "^6.0.3",
+    "jcampconverter": "^4.1.1",
+    "jszip": "^3.3.0",
     "lodash": "^4.17.15",
-    "mf-parser": "^1.1.1",
+    "mf-parser": "^1.1.3",
     "ml-airpls": "^0.2.0",
     "ml-array-max": "^1.1.2",
     "ml-array-xy-equally-spaced": "^1.1.1",
@@ -50,7 +50,7 @@
     "react-use": "^13.27.1",
     "spectra-data": "^3.4.11",
     "spectra-data-ranges": "^1.1.8",
-    "uuid": "^7.0.2"
+    "uuid": "^7.0.3"
   },
   "prettier": {
     "arrowParens": "always",
