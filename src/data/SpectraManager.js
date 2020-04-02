@@ -48,13 +48,17 @@ export async function fromJSON(spectra, data = []) {
 }
 
 function addJcampSS(spectra, jcamp, options) {
-  let result = convert(jcamp, { withoutXY: true, keepRecordsRegExp: /.*/ });
+  let result = convert(jcamp, {
+    noContour: true,
+    xy: true,
+    keepRecordsRegExp: /.*/,
+  });
   let info = getInfoFromMetaData(result.info);
   if (info.dimension === 1) {
-    spectra.push(Data1DManager.fromJcamp(jcamp, options));
+    spectra.push(Data1DManager.fromJcamp(result, options));
   }
   if (info.dimension === 2) {
-    spectra.push(Data2DManager.fromJcamp(jcamp, options));
+    spectra.push(Data2DManager.fromJcamp(result, options));
   }
 }
 
