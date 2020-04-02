@@ -14,7 +14,6 @@ import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { Chart2DProvider } from '../context/Chart2DContext';
 import { useChartData } from '../context/ChartContext';
-import { Dispatch2DProvider } from '../context/Dispatch2DContext';
 import { useDispatch } from '../context/DispatchContext';
 import { ScaleProvider } from '../context/ScaleContext';
 import { useModal } from '../elements/Modal';
@@ -242,8 +241,6 @@ const Viewer2D = () => {
                 brushType={BRUSH_TYPE.XY}
                 dimensionBorder={DIMENSION.CENTER_2D}
               />
-              {/* <XLabelPointer /> */}
-              {/* <FooterBanner /> */}
               <Chart2D />
             </MouseTracker>
           </BrushTracker>
@@ -271,7 +268,6 @@ const Viewer2D = () => {
     <ScaleProvider value={{ scaleX, scaleY }}>
       <Chart2DProvider value={state2D}>{sizedNMRChart}</Chart2DProvider>
     </ScaleProvider>
-    // </Dispatch2DProvider>
   );
 };
 
