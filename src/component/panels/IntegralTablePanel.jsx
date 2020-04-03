@@ -60,6 +60,8 @@ const IntegralTablePanel = memo(
     //   preferences,
     //   activeTab,
     // } = useChartData();
+    const { xDomain } = useChartData();
+
     const dispatch = useDispatch();
     const modal = useModal();
     const [isFlipped, setFlipStatus] = useState(false);
@@ -209,12 +211,15 @@ const IntegralTablePanel = memo(
         activeSpectrum && SpectrumsData
           ? SpectrumsData[activeSpectrum.index]
           : null;
-      if (_data && _data.integrals && _data.integrals.values) {
-        return _data.integrals.values;
-      } else {
-        return [];
-      }
-    }, [SpectrumsData, activeSpectrum]);
+
+      return _data && _data.integrals && _data.integrals.values
+        ? _data.integrals.values.filter(
+            (integral) =>
+              (integral.to >= xDomain[0] && integral.from <= xDomain[1]) ||
+              (integral.from <= xDomain[0] && integral.to >= xDomain[1]),
+          )
+        : [];
+    }, [SpectrumsData, activeSpectrum, xDomain]);
 
     const yesHandler = useCallback(() => {
       dispatch({ type: DELETE_INTEGRAL, integralID: null });

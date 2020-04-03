@@ -52,6 +52,7 @@ const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
   // const { data: SpectrumsData, activeSpectrum } = useChartData();
+  const { xDomain } = useChartData();
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
@@ -74,22 +75,14 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
         ? SpectrumsData[activeSpectrum.index]
         : null;
 
-    if (_data && _data.ranges && _data.ranges.values) {
-      return _data.ranges.values.map((range) => {
-        return {
-          from: range.from,
-          to: range.to,
-          integral: range.integral,
-          signal: range.signal,
-          id: range.id, // needed for ReactTableRow component to highlight
-          kind: range.kind,
-          absolute: range.absolute,
-        };
-      });
-    } else {
-      return [];
-    }
-  }, [SpectrumsData, activeSpectrum]);
+    return _data && _data.ranges && _data.ranges.values
+      ? _data.ranges.values.filter(
+          (range) =>
+            (range.to >= xDomain[0] && range.from <= xDomain[1]) ||
+            (range.from <= xDomain[0] && range.to >= xDomain[1]),
+        )
+      : [];
+  }, [SpectrumsData, activeSpectrum, xDomain]);
 
   const saveToClipboardHandler = useCallback(
     (value) => {

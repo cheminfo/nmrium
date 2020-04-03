@@ -42,6 +42,7 @@ const PeaksTablePanel = memo(
     // preferences,
     // activeTab,
     // } = useChartData();
+    const { xDomain } = useChartData();
 
     const dispatch = useDispatch();
     const modal = useModal();
@@ -174,19 +175,13 @@ const PeaksTablePanel = memo(
 
       if (_data && _data.peaks && _data.peaks.values) {
         const labelFraction = getPeakLabelNumberDecimals(_data.info.nucleus);
-        return _data.peaks.values.map((peak) => {
-          return {
-            xIndex: peak.xIndex,
-            value: _data.x[peak.xIndex].toFixed(labelFraction),
-            id: peak.id,
-            yValue: _data.y[peak.xIndex],
-            peakWidth: peak.width ? peak.width : '',
-          };
+        return _data.peaks.values.filter((peak) => {
+          const value = _data.x[peak.xIndex].toFixed(labelFraction);
+          return value >= xDomain[0] && value <= xDomain[1];
         });
-      } else {
-        return [];
       }
-    }, [SpectrumsData, activeSpectrum]);
+      return [];
+    }, [SpectrumsData, activeSpectrum, xDomain]);
 
     const yesHandler = useCallback(() => {
       dispatch({ type: DELETE_PEAK_NOTATION, data: null });
