@@ -1,28 +1,23 @@
 import { scaleLinear } from 'd3';
 import { XY } from 'ml-spectra-processing';
-import React, { useMemo, forwardRef } from 'react';
+import React, { useMemo, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-const Left1DChart = forwardRef(({ margin, data }, ref) => {
-  const {
-    height: originHeight,
-    margin: originMargin,
-    yDomain,
-    yDomains,
-  } = useChartData();
-  const height = originMargin.left;
+const Left1DChart = memo(({ margin: marginProps, data }) => {
+  const { height: originHeight, margin, yDomain, yDomains } = useChartData();
+  const height = margin.left;
 
   const scaleX = useMemo(() => {
-    return scaleLinear(yDomain, [
-      originHeight - originMargin.bottom,
-      originMargin.top,
-    ]);
-  }, [yDomain, originHeight, originMargin.bottom, originMargin.top]);
+    return scaleLinear(yDomain, [originHeight - margin.bottom, margin.top]);
+  }, [yDomain, originHeight, margin.bottom, margin.top]);
 
   const scaleY = useMemo(() => {
-    return scaleLinear(yDomains[data.id], [height - margin.bottom, margin.top]);
-  }, [data.id, height, margin.bottom, margin.top, yDomains]);
+    return scaleLinear(yDomains[data.id], [
+      height - marginProps.bottom,
+      marginProps.top,
+    ]);
+  }, [data.id, height, marginProps.bottom, marginProps.top, yDomains]);
 
   const paths = useMemo(() => {
     if (data) {
@@ -45,34 +40,28 @@ const Left1DChart = forwardRef(({ margin, data }, ref) => {
     }
   }, [data, scaleX, scaleY, yDomain]);
 
-  const mainHeight = originHeight - originMargin.bottom - originMargin.top;
+  const mainHeight = originHeight - margin.bottom - margin.top;
 
-  if (!mainHeight || !height || !paths || !margin) return null;
+  if (!mainHeight || !height || !paths || !marginProps) return null;
 
   return (
     <svg
-      viewBox={`0 0 ${height} ${mainHeight + originMargin.top}`}
+      viewBox={`0 0 ${height} ${mainHeight + margin.top}`}
       width={height}
-      height={mainHeight + originMargin.top}
-      ref={ref}
+      height={mainHeight + margin.top}
     >
       <defs>
         <clipPath id="clip-left">
-          <rect
-            width={mainHeight}
-            height={height}
-            x={originMargin.top}
-            y={`${0}`}
-          />
+          <rect width={mainHeight} height={height} x={margin.top} y={`${0}`} />
         </clipPath>
       </defs>
       <g
         clipPath="url(#clip-left)"
         style={{
-          transform: `rotate(-90deg) translate(-${originMargin.top}px,-${
-            mainHeight + originMargin.top
+          transform: `rotate(-90deg) translate(-${margin.top}px,-${
+            mainHeight + margin.top
           }px)`,
-          transformOrigin: `${mainHeight + originMargin.top}px 0px`,
+          transformOrigin: `${mainHeight + margin.top}px 0px`,
         }}
       >
         <path className="line" stroke="black" fill="none" d={paths} />

@@ -1,11 +1,11 @@
 import { scaleLinear } from 'd3';
 import { XY } from 'ml-spectra-processing';
-import React, { useMemo, forwardRef } from 'react';
+import React, { useMemo, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 // import YAxis from '../1d/YAxis';
 
-const Top1DChart = forwardRef(({ margin: marginProps, data }, ref) => {
+const Top1DChart = memo(({ margin: marginProps, data }) => {
   const { width, margin: originMargin, xDomain, yDomains } = useChartData();
 
   const height = originMargin.top;
@@ -54,7 +54,7 @@ const Top1DChart = forwardRef(({ margin: marginProps, data }, ref) => {
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}
-      ref={ref}
+      // ref={ref}
     >
       <defs>
         <clipPath id="clip-top">

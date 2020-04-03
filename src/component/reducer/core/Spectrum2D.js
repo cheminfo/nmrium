@@ -87,12 +87,17 @@ export default class Spectrum2D {
     if (negative) {
       range = range.map((value) => -value);
     }
-
-    const contours = this.conrec.drawContour({
-      contourDrawer: 'shape',
-      levels: range,
-      timeout: timeout,
-    });
+    let contours = [];
+    try {
+      contours = this.conrec.drawContour({
+        contourDrawer: 'shape',
+        levels: range,
+        timeout: timeout,
+      });
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
 
     return contours;
   }

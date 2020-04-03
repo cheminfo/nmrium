@@ -3,27 +3,15 @@ import React, {
   Fragment,
   useEffect,
   useState,
-  useMemo,
-  useReducer,
-  // useMemo,
+  useRef,
 } from 'react';
 import { useSize, useDebounce } from 'react-use';
 
-// import XLabelPointer from '../tool/XLabelPointer';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
-import { Chart2DProvider } from '../context/Chart2DContext';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { ScaleProvider } from '../context/ScaleContext';
-import { useModal } from '../elements/Modal';
 import Spinner from '../loader/Spinner';
-import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
-import {
-  contoursReducer,
-  contoursInitialState,
-} from '../reducer/ContoursReducer';
-import { getXScale, getYScale } from '../reducer/core/scale';
 import {
   BRUSH_END,
   FULL_ZOOM_OUT,
@@ -55,7 +43,6 @@ function getTrackID(dimension, brushData) {
 }
 
 const Viewer2D = () => {
-  //   const { selectedTool, isLoading, data } = useChartData();
   const state = useChartData();
   const {
     selectedTool,
@@ -65,33 +52,10 @@ const Viewer2D = () => {
     width: widthProps,
     height: heightProps,
     margin,
-    activeSpectrum,
-    activeTab,
-    tabActiveSpectrum,
   } = state;
 
-  const scaleX = useCallback(
-    (spectrumId = null) => getXScale(spectrumId, state),
-    [state],
-  );
-
-  const scaleY = useMemo(() => {
-    return (spectrumId = null, heightProps = null, isReverse = false) =>
-      getYScale(spectrumId, heightProps, isReverse, state);
-  }, [state]);
-
   const dispatch = useDispatch();
-  const modal = useModal();
-  const [state2D, dispatch2D] = useReducer(
-    contoursReducer,
-    contoursInitialState,
-  );
-
-  useEffect(() => {
-    dispatch2D({ type: 'initiate', data, tabActiveSpectrum, activeTab });
-  }, [activeTab, data, tabActiveSpectrum]);
-
-  // const [dimension, setDimension] = useState();
+  let chart2DRef = useRef();
 
   const DIMENSION = {
     TOP_1D: {
@@ -120,21 +84,6 @@ const Viewer2D = () => {
       if (trackID) {
         if (brushData.altKey) {
           switch (selectedTool) {
-            case options.rangesPicking.id:
-              modal.show(
-                <MultipletAnalysisModal
-                  data={data}
-                  activeSpectrum={activeSpectrum}
-                  scaleX={scaleX}
-                  {...brushData}
-                />,
-                {
-                  onClose: () => {
-                    modal.close();
-                  },
-                },
-              );
-              break;
             default:
               break;
           }
@@ -160,7 +109,7 @@ const Viewer2D = () => {
         }
       }
     },
-    [selectedTool, modal, data, activeSpectrum, scaleX, dispatch, DIMENSION],
+    [selectedTool, dispatch, DIMENSION],
   );
 
   const handelOnDoubleClick = useCallback(
@@ -180,7 +129,7 @@ const Viewer2D = () => {
 
     if (trackID) {
       if (trackID === 'CENTER_2D') {
-        dispatch2D({ type: SET_2D_LEVEL, ...wheelData });
+        dispatch({ type: SET_2D_LEVEL, ...wheelData });
       } else {
         dispatch({ type: SET_ZOOM_FACTOR, ...wheelData, trackID });
       }
@@ -241,7 +190,7 @@ const Viewer2D = () => {
                 brushType={BRUSH_TYPE.XY}
                 dimensionBorder={DIMENSION.CENTER_2D}
               />
-              <Chart2D />
+              <Chart2D ref={chart2DRef} />
             </MouseTracker>
           </BrushTracker>
         )}
@@ -264,11 +213,7 @@ const Viewer2D = () => {
     }
   }, [dispatch, finalSize]);
 
-  return (
-    <ScaleProvider value={{ scaleX, scaleY }}>
-      <Chart2DProvider value={state2D}>{sizedNMRChart}</Chart2DProvider>
-    </ScaleProvider>
-  );
+  return sizedNMRChart;
 };
 
 export default Viewer2D;

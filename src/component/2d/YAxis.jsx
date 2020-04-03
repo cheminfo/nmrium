@@ -1,11 +1,11 @@
 import { jsx, css } from '@emotion/core';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import { Fragment, useEffect, useRef, useMemo } from 'react';
+import { Fragment, useEffect, useRef, useMemo, memo } from 'react';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
-import { useScale } from '../context/ScaleContext';
+import { get2DYScale } from '../reducer/core/scale';
 
 const axisStyles = css`
   user-select: 'none';
@@ -24,27 +24,34 @@ const axisStyles = css`
   }
 `;
 
-const YAxis = ({ show, label, margin, data }) => {
+const YAxis = memo(({ show, label, margin: marginProps }) => {
   const refAxis = useRef();
+  const state = useChartData();
   const {
     yDomain,
     width,
     height,
     activeTab,
     tabActiveSpectrum,
-  } = useChartData();
+    margin,
+  } = state;
 
-  const { scaleY } = useScale();
-
-  const axis = d3.axisRight().ticks(8).tickFormat(d3.format('0'));
+  // const scaleY = useMemo(() => {
+  //   console.log('scaleY');
+  //   return (spectrumId = null, heightProps = null, isReverse = false) =>
+  //     getYScale(spectrumId, heightProps, isReverse, state);
+  // }, [state]);
 
   useEffect(() => {
-    if (show && yDomain) {
-      const scale = scaleY(null, null, true);
+    const axis = d3.axisRight().ticks(8).tickFormat(d3.format('0'));
 
-      d3.select(refAxis.current).call(axis.scale(scale));
+    if (show && yDomain) {
+      const scaleY = get2DYScale({ height, yDomain, margin });
+      // const scale = scaleY(null, null, true);
+
+      d3.select(refAxis.current).call(axis.scale(scaleY));
     }
-  }, [show, yDomain, data, activeTab, tabActiveSpectrum, axis, scaleY]);
+  }, [show, yDomain, activeTab, tabActiveSpectrum, height, margin]);
 
   const Axis = useMemo(
     () =>
@@ -54,13 +61,13 @@ const YAxis = ({ show, label, margin, data }) => {
           <g
             className="y"
             css={axisStyles}
-            transform={`translate(${width - margin.right})`}
+            transform={`translate(${width - marginProps.right})`}
             ref={refAxis}
           >
             <text
               fill="#000"
-              x={-margin.top}
-              y={-(margin.right - 5)}
+              x={-marginProps.top}
+              y={-(marginProps.right - 5)}
               dy="0.71em"
               transform="rotate(-90)"
               textAnchor="end"
@@ -71,7 +78,7 @@ const YAxis = ({ show, label, margin, data }) => {
         </Fragment>
       ),
 
-    [label, margin.right, margin.top, show, width],
+    [label, marginProps.right, marginProps.top, show, width],
   );
 
   if (!width || !height) {
@@ -79,7 +86,7 @@ const YAxis = ({ show, label, margin, data }) => {
   }
 
   return Axis;
-};
+});
 
 export default YAxis;
 
@@ -96,7 +103,7 @@ YAxis.contextTypes = {
 };
 
 YAxis.defaultProps = {
-  showGrid: false,
   show: true,
   label: '',
+  margin: { right: 50, top: 0, bottom: 0, left: 0 },
 };

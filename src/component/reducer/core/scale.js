@@ -11,6 +11,14 @@ function getXScale(spectrumId = null, state) {
   return scaleLinear(spectrumId ? xDomains[spectrumId] : xDomain, range);
 }
 
+/***
+ * props {width,margin,xDomain}
+ */
+function get2DXScale(props) {
+  const { width, margin, xDomain } = props;
+  return scaleLinear(xDomain, [width - margin.right, margin.left]);
+}
+
 function getYScale(
   spectrumId = null,
   heightProps = null,
@@ -53,5 +61,12 @@ function getYScale(
     return null;
   }
 }
+/***
+ * props {height,margin,yDomain}
+ */
+function get2DYScale(props) {
+  const { height, margin, yDomain } = props;
+  return scaleLinear(yDomain, [margin.top, height - margin.bottom]);
+}
 
-export { getXScale, getYScale };
+export { getXScale, getYScale, get2DXScale, get2DYScale };

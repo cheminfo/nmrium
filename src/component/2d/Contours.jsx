@@ -1,18 +1,15 @@
 import React from 'react';
 
-import { useChart2DData } from '../context/Chart2DContext';
-import { useScale } from '../context/ScaleContext';
+import { useChartData } from '../context/ChartContext';
+import { get2DXScale, get2DYScale } from '../reducer/core/scale';
 
 const Contours = () => {
-  const { contours } = useChart2DData();
-  const { scaleX, scaleY } = useScale();
+  const { margin, width, height, xDomain, yDomain, contours } = useChartData();
 
   const buildContourPath = (contour) => {
-    const _scaleX = scaleX();
-    const _scaleY = scaleY(null, null, true);
-    // console.log(_scaleX(100));
-    // console.log(_scaleY(100));
-    // console.log(contour);
+    const _scaleX = get2DXScale({ margin, width, xDomain });
+    const _scaleY = get2DYScale({ margin, height, yDomain });
+
     let path = ` M ${_scaleX(contour[0].x)} ${_scaleY(contour[0].y)} `;
     path += contour.slice(1).reduce((acc, co) => {
       acc += ` L ${_scaleX(co.x)} ${_scaleY(co.y)} `;
