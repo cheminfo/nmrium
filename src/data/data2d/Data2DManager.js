@@ -1,5 +1,4 @@
 // import applyFilter from './filter1d/filter';
-import { convert } from 'jcampconverter';
 
 import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
 
