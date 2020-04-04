@@ -6,19 +6,13 @@ import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
 import { Datum2D } from './Datum2D';
 
 export class Data2DManager {
-  static fromJcamp = function fromJcamp(jcamp, options = {}) {
-    let result =
-      typeof jcamp === 'string'
-        ? convert(jcamp, { noContour: true, xy: true, keepRecordsRegExp: /.*/ })
-        : jcamp;
-
-    let data = result.minMax;
-    let info = getInfoFromMetaData(result.info);
-
+  static fromParsedJcamp = function fromParsedJcamp(parsedJcamp, options = {}) {
+    let data = parsedJcamp.minMax;
+    let info = getInfoFromMetaData(parsedJcamp.info);
     const ob = new Datum2D({
       ...options,
       info,
-      meta: result.info,
+      meta: parsedJcamp.info,
       data,
       source: {
         jcamp: null,

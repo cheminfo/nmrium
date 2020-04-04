@@ -1,5 +1,5 @@
 import { convertFolder as convertBruker } from 'brukerconverter';
-import { convert, createTree } from 'jcampconverter';
+import { convert } from 'jcampconverter';
 
 import { Data1DManager } from './data1d/Data1DManager';
 import { Datum1D } from './data1d/Datum1D';
@@ -17,12 +17,16 @@ export function addJcampFromURL(spectra, jcampURL, options) {
 export function addJcamp(spectra, jcamp, options = {}) {
   // need to parse the jcamp
 
-  let entries = createTree(jcamp, { flatten: true });
+  let entries = convert(jcamp, {
+    noContour: true,
+    xy: true,
+    keepRecordsRegExp: /.*/,
+  }).flatten;
   if (entries.length === 0) return;
   // Should be improved when we have a more complex case
   for (let entry of entries) {
-    if (entry.jcamp) {
-      addJcampSS(spectra, entry.jcamp, options);
+    if ((entry.spectra && entry.spectra.length > 0) || entry.minMax) {
+      addJcampSS(spectra, entry, options);
     }
   }
 }
@@ -41,19 +45,13 @@ export async function fromJSON(spectra, data = []) {
   await Promise.all(promises);
 }
 
-function addJcampSS(spectra, jcamp, options) {
-  let result = convert(jcamp, {
-    noContour: true,
-    xy: true,
-    keepRecordsRegExp: /.*/,
-  });
-  let info = getInfoFromMetaData(result.info);
-
+function addJcampSS(spectra, entry, options) {
+  let info = getInfoFromMetaData(entry.info);
   if (info.dimension === 1) {
-    spectra.push(Data1DManager.fromJcamp(result, options));
+    spectra.push(Data1DManager.fromParsedJcamp(entry, options));
   }
   if (info.dimension === 2) {
-    spectra.push(Data2DManager.fromJcamp(result, options));
+    spectra.push(Data2DManager.fromParsedJcamp(entry, options));
   }
 }
 
