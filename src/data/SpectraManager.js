@@ -16,12 +16,14 @@ export function addJcampFromURL(spectra, jcampURL, options) {
 
 export function addJcamp(spectra, jcamp, options = {}) {
   // need to parse the jcamp
-
-  let entries = convert(jcamp, {
+  let converted = convert(jcamp, {
     noContour: true,
     xy: true,
     keepRecordsRegExp: /.*/,
-  }).flatten;
+    profiling: true,
+  });
+  console.log(converted.profiling);
+  let entries = converted.flatten;
   if (entries.length === 0) return;
   // Should be improved when we have a more complex case
   for (let entry of entries) {

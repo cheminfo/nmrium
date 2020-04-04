@@ -5,7 +5,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./data/cytisine/2d/HSQC_Cytisin.dx"
+        "jcampURL": "./data/cytisine/2d/HMBC_Cytisin.dx"
       },
       "display": {
         "name": "test",
