@@ -5,37 +5,7 @@
       "source": {
         "original": [],
         "jcamp": null,
-        "jcampURL": "./data/cytisine/2d/HSQC_Cytisin.dx"
-      },
-      "display": {
-        "name": "test",
-        "color": "#C10020",
-        "isVisible": true,
-        "isPeaksMarkersVisible": true,
-        "isRealSpectrumVisible": true
-      }
-    },
-    {
-      "data": {},
-      "source": {
-        "original": [],
-        "jcamp": null,
-        "jcampURL": "./data/cytisine/13C_Cytisin_600.dx"
-      },
-      "display": {
-        "name": "test",
-        "color": "#C10020",
-        "isVisible": true,
-        "isPeaksMarkersVisible": true,
-        "isRealSpectrumVisible": true
-      }
-    },
-    {
-      "data": {},
-      "source": {
-        "original": [],
-        "jcamp": null,
-        "jcampURL": "./data/cytisine/1H_Cytisin_600MHz-R+I.dx"
+        "jcampURL": "./data/cytisine/2d/HMBC_Cytisin.dx"
       },
       "display": {
         "name": "test",
