@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { FaRegTrashAlt, FaCog } from 'react-icons/fa';
+import { MdViewHeadline } from 'react-icons/md';
 
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
@@ -28,12 +29,26 @@ const styles = {
     lineHeight: '22px',
     padding: '0px 10px',
   },
+  filterButton: {
+    borderRadius: '5px',
+    marginTop: '3px',
+    color: 'black',
+    backgroundColor: 'transparent',
+    border: 'none',
+    height: '16px',
+    width: '18px',
+    fontSize: '12px',
+    padding: 0,
+  },
 };
 const DefaultPanelHeader = memo(
   ({
     counter,
     onDelete,
     deleteToolTip,
+    onFilter,
+    filterToolTip,
+    filterIsActive,
     children,
     showSettingButton = false,
     onSettingClick,
@@ -52,6 +67,25 @@ const DefaultPanelHeader = memo(
         </ToolTip>
 
         {children}
+
+        {/* Optional if there is no filter needed, e.g. in spectra panel */}
+        {onFilter && filterToolTip ? (
+          <ToolTip title={filterToolTip} popupPlacement="right">
+            <button
+              style={
+                filterIsActive && filterIsActive === true
+                  ? { ...styles.filterButton, backgroundColor: '#00BFFF' }
+                  : styles.filterButton
+              }
+              type="button"
+              onClick={onFilter}
+              disabled={counter === 0}
+            >
+              <MdViewHeadline />
+            </button>
+          </ToolTip>
+        ) : null}
+
         <p style={styles.counterLabel}>[ {counter} ]</p>
         {showSettingButton && (
           <ToolTip title="preferences" popupPlacement="left">
