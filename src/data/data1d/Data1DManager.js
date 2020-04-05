@@ -1,5 +1,3 @@
-// import applyFilter from './filter1d/filter';
-import { convert } from 'jcampconverter';
 import { XY, XReIm } from 'ml-spectra-processing';
 
 import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
@@ -27,20 +25,15 @@ export class Data1DManager {
     return datum1D;
   };
 
-  static fromJcamp = function fromJcamp(jcamp, options = {}) {
-    let result =
-      typeof jcamp === 'string'
-        ? convert(jcamp, { xy: true, keepRecordsRegExp: /.*/ })
-        : jcamp;
-    let data = getData(result.spectra);
-    let info = getInfoFromMetaData(result.info);
-
+  static fromParsedJcamp = function fromParsedJcamp(parsedJcamp, options = {}) {
+    let data = getData(parsedJcamp.spectra);
+    let info = getInfoFromMetaData(parsedJcamp.info);
     if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
 
     const datum1D = new Datum1D({
       ...options,
       info,
-      meta: result.info,
+      meta: parsedJcamp.info,
       data,
       source: {
         jcamp: null,
@@ -58,16 +51,16 @@ export class Data1DManager {
 
 function getData(spectra) {
   let x =
-    spectra[0] && spectra[0].data && spectra[0].data[0] && spectra[0].data[0].x
-      ? spectra[0].data[0].x
+    spectra[0] && spectra[0].data && spectra[0].data && spectra[0].data.x
+      ? spectra[0].data.x
       : [];
   let re =
-    spectra[0] && spectra[0].data && spectra[0].data[0] && spectra[0].data[0].y
-      ? spectra[0].data[0].y
+    spectra[0] && spectra[0].data && spectra[0].data && spectra[0].data.y
+      ? spectra[0].data.y
       : [];
   let im =
-    spectra[1] && spectra[1].data && spectra[1].data[0] && spectra[1].data[0].y
-      ? spectra[1].data[0].y
+    spectra[1] && spectra[1].data && spectra[1].data && spectra[1].data.y
+      ? spectra[1].data.y
       : new Array(re.length);
   // 2 cases. We have real and imaginary part of only real
 
