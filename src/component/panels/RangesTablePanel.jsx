@@ -76,10 +76,11 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
         : null;
 
     return _data && _data.ranges && _data.ranges.values
-      ? _data.ranges.values.filter(
-          (range) =>
-            (range.to >= xDomain[0] && range.from <= xDomain[1]) ||
-            (range.from <= xDomain[0] && range.to >= xDomain[1]),
+      ? _data.ranges.values.map((range) =>
+          (range.to >= xDomain[0] && range.from <= xDomain[1]) ||
+          (range.from <= xDomain[0] && range.to >= xDomain[1])
+            ? { ...range, isConstantlyHighlighted: true }
+            : range,
         )
       : [];
   }, [SpectrumsData, activeSpectrum, xDomain]);
@@ -133,7 +134,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
     modal.close();
   }, [modal]);
 
-  const changeRangeSingnalKindHandler = useCallback(
+  const changeRangeSignalKindHandler = useCallback(
     (value, row) => {
       const _data = { ...row.original, kind: value };
       dispatch({
@@ -206,7 +207,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
       resizable: true,
       Cell: ({ row }) => (
         <Select
-          onChange={(value) => changeRangeSingnalKindHandler(value, row)}
+          onChange={(value) => changeRangeSignalKindHandler(value, row)}
           data={SignalKinds}
           style={selectStyle}
           defaultValue={row.original.kind}

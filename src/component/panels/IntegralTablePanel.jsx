@@ -213,11 +213,25 @@ const IntegralTablePanel = memo(
           : null;
 
       return _data && _data.integrals && _data.integrals.values
-        ? _data.integrals.values.filter(
-            (integral) =>
-              (integral.to >= xDomain[0] && integral.from <= xDomain[1]) ||
-              (integral.from <= xDomain[0] && integral.to >= xDomain[1]),
-          )
+        ? _data.integrals.values.map((integral) => {
+            return (integral.to >= xDomain[0] && integral.from <= xDomain[1]) ||
+              (integral.from <= xDomain[0] && integral.to >= xDomain[1])
+              ? {
+                  ...integral,
+                  isConstantlyHighlighted: true,
+                }
+              : integral;
+            // if (
+            //   (integral.to >= xDomain[0] && integral.from <= xDomain[1]) ||
+            //   (integral.from <= xDomain[0] && integral.to >= xDomain[1])
+            // ) {
+            //   return {
+            //     ...integral,
+            //     isConstantlyHighlighted: true,
+            //   };
+            // }
+            // return integral;
+          })
         : [];
     }, [SpectrumsData, activeSpectrum, xDomain]);
 

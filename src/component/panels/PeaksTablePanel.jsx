@@ -175,9 +175,21 @@ const PeaksTablePanel = memo(
 
       if (_data && _data.peaks && _data.peaks.values) {
         const labelFraction = getPeakLabelNumberDecimals(_data.info.nucleus);
-        return _data.peaks.values.filter((peak) => {
+        return _data.peaks.values.map((peak) => {
           const value = _data.x[peak.xIndex].toFixed(labelFraction);
-          return value >= xDomain[0] && value <= xDomain[1];
+          const _peak = {
+            xIndex: peak.xIndex,
+            value: value,
+            id: peak.id,
+            yValue: _data.y[peak.xIndex],
+            peakWidth: peak.width ? peak.width : '',
+          };
+          return value >= xDomain[0] && value <= xDomain[1]
+            ? {
+                ..._peak,
+                isConstantlyHighlighted: true,
+              }
+            : _peak;
         });
       }
       return [];
