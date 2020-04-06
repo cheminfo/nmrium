@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useState,
   useRef,
+  useMemo,
 } from 'react';
 import { useSize, useDebounce } from 'react-use';
 
@@ -52,12 +53,34 @@ const Viewer2D = () => {
     width: widthProps,
     height: heightProps,
     margin,
+    tabActiveSpectrum,
+    activeTab,
   } = state;
 
   const dispatch = useDispatch();
   let chart2DRef = useRef();
 
+  const spectrumData = useMemo(() => {
+    const nucleuses = activeTab.split(',');
+    return nucleuses.reduce((acc, n) => {
+      if (tabActiveSpectrum[n] && tabActiveSpectrum[n].id) {
+        const id = tabActiveSpectrum[n].id;
+        const spectrum = data.find((datum) => datum.id === id);
+        if (spectrum) {
+          acc.push(spectrum);
+        }
+      }
+      return acc;
+    }, []);
+  }, [activeTab, data, tabActiveSpectrum]);
+
   const DIMENSION = {
+    CENTER_2D: {
+      startX: margin.left,
+      startY: margin.top,
+      endX: widthProps - margin.right,
+      endY: heightProps - margin.bottom,
+    },
     TOP_1D: {
       startX: margin.left,
       startY: 0,
@@ -68,12 +91,6 @@ const Viewer2D = () => {
       startX: 0,
       startY: margin.top,
       endX: margin.left,
-      endY: heightProps - margin.bottom,
-    },
-    CENTER_2D: {
-      startX: margin.left,
-      startY: margin.top,
-      endX: widthProps - margin.right,
       endY: heightProps - margin.bottom,
     },
   };
@@ -176,21 +193,28 @@ const Viewer2D = () => {
               style={{ width: '100%', height: `100%`, position: 'absolute' }}
             >
               <CrossLinePointer />
-              <BrushXY
-                brushType={BRUSH_TYPE.X}
-                dimensionBorder={DIMENSION.TOP_1D}
-                height={margin.top}
-              />
-              <BrushXY
-                brushType={BRUSH_TYPE.Y}
-                dimensionBorder={DIMENSION.LEFT_1D}
-                width={margin.left}
-              />
+
               <BrushXY
                 brushType={BRUSH_TYPE.XY}
                 dimensionBorder={DIMENSION.CENTER_2D}
               />
-              <Chart2D ref={chart2DRef} />
+
+              {spectrumData && spectrumData.length > 1 && (
+                <>
+                  <BrushXY
+                    brushType={BRUSH_TYPE.X}
+                    dimensionBorder={DIMENSION.TOP_1D}
+                    height={margin.top}
+                  />
+                  <BrushXY
+                    brushType={BRUSH_TYPE.Y}
+                    dimensionBorder={DIMENSION.LEFT_1D}
+                    width={margin.left}
+                  />
+                </>
+              )}
+
+              <Chart2D ref={chart2DRef} data={spectrumData} />
             </MouseTracker>
           </BrushTracker>
         )}
