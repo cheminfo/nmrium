@@ -45,11 +45,16 @@ const BrushXY = ({
     !dimensionBorder ||
     (dimensionBorder.startX && startX < dimensionBorder.startX) ||
     (dimensionBorder.startY && startY < dimensionBorder.startY) ||
-    (dimensionBorder.endX && endX > dimensionBorder.endX) ||
-    (dimensionBorder.endY && endY > dimensionBorder.endY)
+    ((dimensionBorder.endX && Math.sign(endX - startX) === 1
+      ? endX > dimensionBorder.endX
+      : endX < dimensionBorder.startX) &&
+      (dimensionBorder.endX && Math.sign(endY - startY) === 1
+        ? endY > dimensionBorder.endY
+        : endY < dimensionBorder.startY))
   ) {
     return null;
   }
+
   width = widthProps ? widthProps : width;
 
   height = heightProps ? heightProps : height;
@@ -58,29 +63,29 @@ const BrushXY = ({
     dimensionBorder.endX && endX > dimensionBorder.endX
       ? dimensionBorder.endX
       : dimensionBorder.startX && endX < dimensionBorder.startX
-      ? startX
+      ? dimensionBorder.startX
       : endX;
   endY =
     dimensionBorder.endY && endY > dimensionBorder.endY
       ? dimensionBorder.endY
       : dimensionBorder.startY && endY < dimensionBorder.startY
-      ? startY
+      ? dimensionBorder.startY
       : endY;
 
   const scaleX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY
-      ? (endX - startX) / width / window.devicePixelRatio
+      ? (endX - startX) / width
       : 1;
   startX =
     brushType === BRUSH_TYPE.X || brushType === BRUSH_TYPE.XY ? startX : 0;
 
   const scaleY =
     brushType === BRUSH_TYPE.Y || brushType === BRUSH_TYPE.XY
-      ? (endY - startY) / height / window.devicePixelRatio
+      ? (endY - startY) / height
       : 1;
   startY =
     brushType === BRUSH_TYPE.Y || brushType === BRUSH_TYPE.XY ? startY : 0;
-
+  // / window.devicePixelRatio
   return (
     <div
       style={{

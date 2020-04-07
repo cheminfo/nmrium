@@ -115,14 +115,16 @@ export function BrushTracker({
         type: 'MOVE',
         screenX: event.screenX,
         screenY: event.screenY,
+        clientX: event.clientX,
+        clientY: event.clientY,
       });
     };
 
     const upCallback = (event) => {
       dispatch({
         type: 'UP',
-        screenX: event.screenX,
-        screenY: event.screenY,
+        clientX: event.clientX,
+        clientY: event.clientY,
       });
 
       return false;
@@ -163,11 +165,15 @@ function reducer(state, action) {
   switch (action.type) {
     case 'UP':
       if (state.step === 'brushing' || state.step === 'start') {
-        const { screenX, screenY } = action;
+        const { clientX, clientY } = action;
+
         return {
           ...state,
-          endX: state.startX + screenX - state.startScreenX,
-          endY: state.startY + screenY - state.startScreenY,
+          endX: clientX - state.boundingRect.x,
+          endY: clientY - state.boundingRect.y,
+
+          // endX: state.startX + screenX - state.startScreenX,
+          // endY: state.startY + screenY - state.startScreenY,
           step: state.step === 'start' ? 'initial' : 'end',
         };
       }
@@ -194,18 +200,25 @@ function reducer(state, action) {
           startY: y,
           startScreenX: screenX,
           startScreenY: screenY,
+          startClientX: clientX,
+          startClientY: clientY,
+          boundingRect,
           step: 'start',
         };
       }
       return state;
     case 'MOVE':
       if (state.step === 'start' || state.step === 'brushing') {
-        const { screenX, screenY } = action;
+        // eslint-disable-next-line no-unused-vars
+        const { screenX, screenY, clientX, clientY } = action;
+
         return {
           ...state,
           step: 'brushing',
-          endX: state.startX + screenX - state.startScreenX,
-          endY: state.startY + screenY - state.startScreenY,
+          // endX: state.startX + screenX - state.startScreenX,
+          // endY: state.startY + screenY - state.startScreenY,
+          endX: clientX - state.boundingRect.x,
+          endY: clientY - state.boundingRect.y,
         };
       }
       return state;

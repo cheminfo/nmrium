@@ -1,11 +1,12 @@
-import React, { memo } from 'react';
-import { FaEye, FaMinus, FaPaintBrush } from 'react-icons/fa';
+import React, { memo, Fragment } from 'react';
+import { FaEye, FaPaintBrush } from 'react-icons/fa';
 
 const styles = {
   button: {
     backgroundColor: 'transparent',
     border: 'none',
-    width: '24px',
+    width: '26px',
+    minWidth: '26px',
   },
   row: {
     display: 'flex',
@@ -59,10 +60,6 @@ const SpectrumListItem = memo(
       return visible.findIndex((v) => v.id === id) !== -1 ? true : false;
     };
 
-    const isActivated = (id) => {
-      return activated && activated.id === id;
-    };
-
     const isMarkerVisible = (id) => {
       return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
     };
@@ -75,6 +72,22 @@ const SpectrumListItem = memo(
       return value;
     };
 
+    const ColorIndicator = ({ id, color, width = '14px' }) => {
+      return (
+        <div
+          style={{
+            backgroundColor: color,
+            height: '4px',
+            width: width,
+            opacity: activated && activated.id !== id ? 0.1 : 1,
+            display: 'inline-block',
+          }}
+        />
+      );
+    };
+
+    const { color, name, positiveColor, negativeColor } = data.display;
+
     return (
       <div style={styles.row} key={data.id}>
         <button
@@ -83,11 +96,12 @@ const SpectrumListItem = memo(
           onClick={() => onChangeVisibility(data)}
         >
           <FaEye
-            style={
-              isVisible(data.id)
-                ? { opacity: 1, strokeWidth: '1px', fill: data.color }
-                : { opacity: 0.1, fill: data.color }
-            }
+            style={{
+              fill: data.info.dimension === 2 ? positiveColor : color,
+              ...(isVisible(data.id)
+                ? { opacity: 1, strokeWidth: '1px', fill: color }
+                : { opacity: 0.1, fill: color }),
+            }}
           />
         </button>
         <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
@@ -101,7 +115,7 @@ const SpectrumListItem = memo(
                 : 'ci-icon-nmr-ft'
             }
           />
-          <span style={styles.info}>{data.name}</span>
+          <span style={styles.info}>{name}</span>
           <div
             style={styles.info}
             // eslint-disable-next-line react/no-danger
@@ -132,13 +146,22 @@ const SpectrumListItem = memo(
           type="button"
           onClick={() => onChangeActiveSpectrum(data)}
         >
-          <FaMinus
+          {data.info.dimension === 2 ? (
+            <Fragment>
+              <ColorIndicator id={data.id} color={positiveColor} width="7px" />
+              <ColorIndicator id={data.id} color={negativeColor} width="7px" />
+            </Fragment>
+          ) : (
+            <ColorIndicator id={data.id} color={color} />
+          )}
+
+          {/* <FaMinus
             style={
               isActivated(data.id)
-                ? { fill: data.color, height: '15px' }
-                : { fill: data.color, opacity: 0.1 }
+                ? { fill: color, height: '15px', width: '12px' }
+                : { fill: color, opacity: 0.1, width: '12px' }
             }
-          />
+          /> */}
         </button>
         <button
           style={styles.button}

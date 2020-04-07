@@ -99,11 +99,17 @@ const SpectrumListPanel = memo(
       [activated, dispatch],
     );
     const handleOnColorChanged = useCallback(
-      (color) => {
+      (color, key) => {
         if (selectedSpectrumData !== null) {
           dispatch({
             type: CHANGE_SPECTRUM_COLOR,
-            data: { id: selectedSpectrumData.id, color: color.hex },
+            data: {
+              id: selectedSpectrumData.id,
+              color: `${color.hex}${Math.round(color.rgb.a * 255).toString(
+                16,
+              )}`,
+              key,
+            },
           });
         }
       },
@@ -119,10 +125,10 @@ const SpectrumListPanel = memo(
     useEffect(() => {
       if (data) {
         const visibleSpectra = data
-          ? data.filter((d) => d.isVisible === true)
+          ? data.filter((d) => d.display.isVisible === true)
           : [];
         const visibleMarkers = data
-          ? data.filter((d) => d.isPeaksMarkersVisible === true)
+          ? data.filter((d) => d.display.isPeaksMarkersVisible === true)
           : [];
 
         setVisible(visibleSpectra);

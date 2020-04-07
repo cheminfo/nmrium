@@ -19,6 +19,10 @@
         "title": "HSQC cytisine"
       },
       {
+        "file": "./data/cytisine/2d/hmbc-only.json",
+        "title": "HMBC only cytisine"
+      },
+      {
         "file": "./data/cytisine/2d/hsqc_hmbc.json",
         "title": "HSQC / HMBC cytisine"
       },

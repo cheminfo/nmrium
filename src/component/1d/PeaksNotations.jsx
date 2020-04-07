@@ -36,12 +36,14 @@ const PeaksNotations = () => {
     return (
       data &&
       reSortData()
-        .filter((d) => d.isVisible === true && d.isVisibleInDomain === true)
+        .filter(
+          (d) => d.display.isVisible === true && d.isVisibleInDomain === true,
+        )
         .map((d) => {
           return (
             d.peaks &&
             d.peaks.values &&
-            d.isPeaksMarkersVisible && (
+            d.display.isPeaksMarkersVisible && (
               <g
                 key={d.id}
                 transform={`translate(0,-${getVerticalAlign(d.id)})`}

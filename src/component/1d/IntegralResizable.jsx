@@ -44,6 +44,7 @@ const IntegralResizable = (props) => {
   const { scaleX } = useScale();
 
   const { spectrumID, integralData, from, to, integralID } = props;
+
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
 

@@ -9,30 +9,8 @@ import Top1DChart from './Top1DChart';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
 
-const Chart2D = () => {
-  const {
-    width,
-    height,
-    margin,
-    tabActiveSpectrum,
-    activeTab,
-    data,
-  } = useChartData();
-
-  const spectrumData = useMemo(() => {
-    const nucleuses = activeTab.split(',');
-    return nucleuses.map((n) => {
-      if (tabActiveSpectrum[n] && tabActiveSpectrum[n].id) {
-        const id = tabActiveSpectrum[n].id;
-        const spectrum = data.find((datum) => datum.id === id);
-        return spectrum ? spectrum : [];
-      } else {
-        return null;
-      }
-    });
-
-    //   // }
-  }, [activeTab, data, tabActiveSpectrum]);
+const Chart2D = ({ data, colors }) => {
+  const { width, height, margin } = useChartData();
 
   const chart2d = useMemo(() => {
     return (
@@ -62,20 +40,25 @@ const Chart2D = () => {
           strokeWidth="1"
           fill="transparent"
         />
-        {spectrumData && spectrumData[0] && (
-          <Top1DChart data={spectrumData[0]} />
-        )}
-        {spectrumData && spectrumData[1] && (
-          <Left1DChart data={spectrumData[1]} />
-        )}
-        <Contours />
+        {data && data[0] && <Top1DChart data={data[0]} />}
+        {data && data[1] && <Left1DChart data={data[1]} />}
+        <Contours colors={colors} />
         <g className="container" style={{ pointerEvents: 'none' }}>
           <XAxis />
           <YAxis />
         </g>
       </svg>
     );
-  }, [height, margin, spectrumData, width]);
+  }, [
+    width,
+    height,
+    margin.left,
+    margin.right,
+    margin.top,
+    margin.bottom,
+    data,
+    colors,
+  ]);
 
   return chart2d;
 };

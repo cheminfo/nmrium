@@ -447,6 +447,11 @@ export class Datum1D {
     return this.filters;
   }
 
+  setDisplay(displayOptions) {
+    this.display = Object.assign({}, this.display);
+    this.display = { ...this.display, ...displayOptions };
+  }
+
   toJSON() {
     return {
       data: this.data,

@@ -3,7 +3,7 @@ import React from 'react';
 import { useChartData } from '../context/ChartContext';
 import { get2DXScale, get2DYScale } from '../reducer/core/scale';
 
-const Contours = () => {
+const Contours = ({ colors }) => {
   const { margin, width, height, xDomain, yDomain, contours } = useChartData();
 
   const buildContourPath = (contour) => {
@@ -18,7 +18,7 @@ const Contours = () => {
     path += ' z';
     return path;
   };
-  const colors = ['DarkRed', 'DarkBlue'];
+  // const colors = ['DarkRed', 'DarkBlue'];
 
   return contours && contours.length > 0 ? (
     <g clipPath="url(#clip)">

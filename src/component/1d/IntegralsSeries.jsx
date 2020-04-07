@@ -57,7 +57,9 @@ const IntegralsSeries = () => {
       data &&
       data[0] &&
       data
-        .filter((d) => d.isVisible === true && d.isVisibleInDomain === true)
+        .filter(
+          (d) => d.display.isVisible === true && d.isVisibleInDomain === true,
+        )
         .map(
           (spectrum) =>
             spectrum.integrals &&
