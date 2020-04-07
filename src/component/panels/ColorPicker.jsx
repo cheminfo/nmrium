@@ -9,7 +9,7 @@ const style = css`
   position: fixed;
   z-index: 999999999;
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   border-radius: 4px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px,
     rgba(0, 0, 0, 0.15) 0px 8px 16px;
@@ -29,28 +29,37 @@ const ColorPicker = ({
   onColorChanged,
   onMouseLeave,
 }) => {
-  console.log(selectedSpectrumData);
+  const { info, display } = selectedSpectrumData;
+  const colors =
+    info.dimension === 2
+      ? [
+          { color: display.positiveColor, key: 'positiveColor' },
+          { color: display.negativeColor, key: 'negativeColor' },
+        ]
+      : [{ color: display.color, key: 'color' }];
+
   return (
     <div
       css={[
         style,
         {
-          left: colorPickerPosition.x - 450,
+          left:
+            info.dimension === 2
+              ? colorPickerPosition.x - 450
+              : colorPickerPosition.x - 220,
           top: colorPickerPosition.y,
         },
       ]}
       onMouseLeave={onMouseLeave}
     >
-      <SketchPicker
-        color={selectedSpectrumData.color}
-        presetColors={COLORS}
-        onChangeComplete={onColorChanged}
-      />
-      <SketchPicker
-        color={selectedSpectrumData.color}
-        presetColors={COLORS}
-        onChangeComplete={onColorChanged}
-      />
+      {colors.map((colorData) => (
+        <SketchPicker
+          key={colorData.key}
+          color={{ hex: colorData.color }}
+          presetColors={COLORS}
+          onChangeComplete={(e) => onColorChanged(e, colorData.key)}
+        />
+      ))}
     </div>
   );
 };

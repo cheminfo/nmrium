@@ -21,11 +21,12 @@ const handleSpectrumVisibility = (state, data) => {
 const handleChangePeaksMarkersVisibility = (state, data) => {
   return produce(state, (draft) => {
     for (let datum of draft.data) {
+      const datusmObject = AnalysisObj.getDatum(datum.id);
       if (data.some((activeData) => activeData.id === datum.id)) {
-        AnalysisObj.getDatum(datum.id).display.isPeaksMarkersVisible = true;
+        datusmObject.setDisplay({ isPeaksMarkersVisible: true });
         datum.display.isPeaksMarkersVisible = true;
       } else {
-        AnalysisObj.getDatum(datum.id).display.isPeaksMarkersVisible = false;
+        datusmObject.setDisplay({ isPeaksMarkersVisible: false });
         datum.display.isPeaksMarkersVisible = false;
       }
     }
@@ -55,7 +56,7 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
         }
       } else {
         // draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
-        AnalysisObj.getDatum(activeSpectrum.id).display.isVisible = true;
+        AnalysisObj.getDatum(activeSpectrum.id).setDisplay({ isVisible: true });
         const newIndex = draft.data.findIndex(
           (d) => d.id === activeSpectrum.id,
         );
@@ -97,12 +98,12 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
   });
 };
 
-const handleChangeSpectrumColor = (state, { id, color }) => {
+const handleChangeSpectrumColor = (state, { id, color, key }) => {
   return produce(state, (draft) => {
     const index = draft.data.findIndex((d) => d.id === id);
     if (index !== -1) {
-      draft.data[index].display.color = color;
-      AnalysisObj.getDatum(id).display.color = color;
+      draft.data[index].display[key] = color;
+      AnalysisObj.getDatum(id).setDisplay({ [key]: color });
     }
   });
 };

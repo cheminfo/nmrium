@@ -74,6 +74,14 @@ const Viewer2D = () => {
     }, []);
   }, [activeTab, data, tabActiveSpectrum]);
 
+  const colors = useMemo(() => {
+    const id = tabActiveSpectrum[activeTab].id;
+    const spectrum = data.find((datum) => datum.id === id);
+    return [spectrum.display.positiveColor, spectrum.display.negativeColor];
+  }, [activeTab, data, tabActiveSpectrum]);
+
+  // console.log(colors);
+
   const DIMENSION = {
     CENTER_2D: {
       startX: margin.left,
@@ -214,7 +222,7 @@ const Viewer2D = () => {
                 </>
               )}
 
-              <Chart2D ref={chart2DRef} data={spectrumData} />
+              <Chart2D ref={chart2DRef} data={spectrumData} colors={colors} />
             </MouseTracker>
           </BrushTracker>
         )}
