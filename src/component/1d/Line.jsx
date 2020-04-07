@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 
-export const Line = ({ x, y, id, color, index }) => {
+export const Line = ({ x, y, id, display, index }) => {
   const { xDomain, activeSpectrum, verticalAlign } = useChartData();
   const { scaleX, scaleY } = useScale();
 
@@ -50,7 +50,7 @@ export const Line = ({ x, y, id, color, index }) => {
     <path
       className="line"
       key={id}
-      stroke={color}
+      stroke={display.color}
       fill="none"
       style={{
         opacity: isActive ? 1 : 0.2,

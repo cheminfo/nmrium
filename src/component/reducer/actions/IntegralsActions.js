@@ -51,7 +51,8 @@ const handleChangeIntegralZoom = (state, action) => {
   return produce(state, (draft) => {
     const { deltaY, deltaMode } = action;
     integralZoomHanlder.wheel(deltaY, deltaMode);
-    setIntegralZoom(state, integralZoomHanlder.getScale(draft.scale), draft);
+    console.log(integralZoomHanlder.getScale());
+    setIntegralZoom(state, integralZoomHanlder.getScale(), draft);
   });
 };
 

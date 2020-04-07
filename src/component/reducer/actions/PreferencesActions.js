@@ -51,9 +51,9 @@ const setKeyPreferencesHandler = (state, keyCode) => {
         xDomain,
         data: spectrumsGroupsList[activeTab].reduce((acc, datum) => {
           acc[datum.id] = {
-            color: datum.color,
-            isVisible: datum.isVisible,
-            isPeaksMarkersVisible: datum.isPeaksMarkersVisible,
+            color: datum.display.color,
+            isVisible: datum.display.isVisible,
+            isPeaksMarkersVisible: datum.display.isPeaksMarkersVisible,
           };
           return acc;
         }, {}),
@@ -71,7 +71,7 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
           ...datum,
           ...(datum.info.nucleus === preferences.activeTab
             ? preferences.data[datum.id]
-            : { isVisible: false }),
+            : { display: { ...datum.display, isVisible: false } }),
         };
       });
       draft.activeSpectrum = preferences.activeSpectrum;

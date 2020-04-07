@@ -123,8 +123,8 @@ export function BrushTracker({
     const upCallback = (event) => {
       dispatch({
         type: 'UP',
-        screenX: event.screenX,
-        screenY: event.screenY,
+        clientX: event.clientX,
+        clientY: event.clientY,
       });
 
       return false;
@@ -165,11 +165,15 @@ function reducer(state, action) {
   switch (action.type) {
     case 'UP':
       if (state.step === 'brushing' || state.step === 'start') {
-        const { screenX, screenY } = action;
+        const { clientX, clientY } = action;
+
         return {
           ...state,
-          endX: state.startX + screenX - state.startScreenX,
-          endY: state.startY + screenY - state.startScreenY,
+          endX: clientX - state.boundingRect.x,
+          endY: clientY - state.boundingRect.y,
+
+          // endX: state.startX + screenX - state.startScreenX,
+          // endY: state.startY + screenY - state.startScreenY,
           step: state.step === 'start' ? 'initial' : 'end',
         };
       }

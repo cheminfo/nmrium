@@ -75,6 +75,8 @@ const SpectrumListItem = memo(
       return value;
     };
 
+    const { color, name } = data.display;
+
     return (
       <div style={styles.row} key={data.id}>
         <button
@@ -85,8 +87,8 @@ const SpectrumListItem = memo(
           <FaEye
             style={
               isVisible(data.id)
-                ? { opacity: 1, strokeWidth: '1px', fill: data.color }
-                : { opacity: 0.1, fill: data.color }
+                ? { opacity: 1, strokeWidth: '1px', fill: color }
+                : { opacity: 0.1, fill: color }
             }
           />
         </button>
@@ -101,7 +103,7 @@ const SpectrumListItem = memo(
                 : 'ci-icon-nmr-ft'
             }
           />
-          <span style={styles.info}>{data.name}</span>
+          <span style={styles.info}>{name}</span>
           <div
             style={styles.info}
             // eslint-disable-next-line react/no-danger
@@ -135,8 +137,8 @@ const SpectrumListItem = memo(
           <FaMinus
             style={
               isActivated(data.id)
-                ? { fill: data.color, height: '15px' }
-                : { fill: data.color, opacity: 0.1 }
+                ? { fill: color, height: '15px' }
+                : { fill: color, opacity: 0.1 }
             }
           />
         </button>

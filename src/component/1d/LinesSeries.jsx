@@ -33,7 +33,9 @@ export const LinesSeries = () => {
     <g css={pathStyles} clipPath="url(#clip)">
       {_data &&
         _data
-          .filter((d) => d.isVisible === true && d.isVisibleInDomain === true)
+          .filter(
+            (d) => d.display.isVisible === true && d.isVisibleInDomain === true,
+          )
           .map((d, i) => <Line key={d.id} {...d} index={i} />)}
     </g>
   );

@@ -10,9 +10,9 @@ const handleSpectrumVisibility = (state, data) => {
   return produce(state, (draft) => {
     for (let datum of draft.data) {
       if (data.some((sData) => sData.id === datum.id)) {
-        datum.isVisible = true;
+        datum.display.isVisible = true;
       } else {
-        datum.isVisible = false;
+        datum.display.isVisible = false;
       }
     }
   });
@@ -22,11 +22,11 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
   return produce(state, (draft) => {
     for (let datum of draft.data) {
       if (data.some((activeData) => activeData.id === datum.id)) {
-        AnalysisObj.getDatum(datum.id).isPeaksMarkersVisible = true;
-        datum.isPeaksMarkersVisible = true;
+        AnalysisObj.getDatum(datum.id).display.isPeaksMarkersVisible = true;
+        datum.display.isPeaksMarkersVisible = true;
       } else {
-        AnalysisObj.getDatum(datum.id).isPeaksMarkersVisible = false;
-        datum.isPeaksMarkersVisible = false;
+        AnalysisObj.getDatum(datum.id).display.isPeaksMarkersVisible = false;
+        datum.display.isPeaksMarkersVisible = false;
       }
     }
   });
@@ -41,7 +41,6 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
           const index = state.data.findIndex(
             (datum) => datum.id === activeSpectrum.id,
           );
-
           try {
             const spectrum2D = new Spectrum2D(state.data[index]);
             draft.contours = spectrum2D.drawContours();
@@ -56,7 +55,7 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
         }
       } else {
         // draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
-        AnalysisObj.getDatum(activeSpectrum.id).isVisible = true;
+        AnalysisObj.getDatum(activeSpectrum.id).display.isVisible = true;
         const newIndex = draft.data.findIndex(
           (d) => d.id === activeSpectrum.id,
         );
@@ -64,7 +63,7 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
           (d) => d.id === draft.activeSpectrum?.id,
         );
         if (newIndex !== -1) {
-          draft.data[newIndex].isVisible = true;
+          draft.data[newIndex].display.isVisible = true;
         }
         if (oldIndex !== -1) {
           refreshDomain =
@@ -102,7 +101,7 @@ const handleChangeSpectrumColor = (state, { id, color }) => {
   return produce(state, (draft) => {
     const index = draft.data.findIndex((d) => d.id === id);
     if (index !== -1) {
-      draft.data[index].color = color;
+      draft.data[index].display.color = color;
       AnalysisObj.getDatum(id).display.color = color;
     }
   });

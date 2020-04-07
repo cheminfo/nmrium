@@ -192,11 +192,11 @@ const handleToggleRealImaginaryVisibility = (state) => {
       const index = state.data.findIndex((d) => d.id === activeSpectrumId);
       ob.setIsRealSpectrumVisible(!draft.data[index]);
 
-      draft.data[index].isRealSpectrumVisible = !draft.data[index]
-        .isRealSpectrumVisible;
+      draft.data[index].display.isRealSpectrumVisible = !draft.data[index]
+        .display.isRealSpectrumVisible;
       ob.setIsRealSpectrumVisible();
       // isRealSpectrumVisible
-      if (draft.data[index].isRealSpectrumVisible) {
+      if (draft.data[index].display.isRealSpectrumVisible) {
         if (reY !== null && reY !== undefined) {
           draft.data[index].y = reY;
           const domain = getDomain(draft.data);
