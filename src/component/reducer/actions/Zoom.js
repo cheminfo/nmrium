@@ -1,29 +1,17 @@
 import { zoomIdentity, scaleLinear } from 'd3';
 
-import getClosestNumber from '../helper/GetClosestNumber';
 import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
-
-import { getScale } from './ScaleActions';
 
 export const spectrumZoomHanlder = new Spectrum1DZoomHelper();
 export const integralZoomHanlder = new Spectrum1DZoomHelper(0.5);
 
 const setZoom = (state, draft, scale) => {
-  const { height, margin, data } = state;
-  let t;
-  if (data.length === 1) {
-    const closest = getClosestNumber(data[0].y);
-    const referencePoint = getScale(state).y(closest);
-    t = zoomIdentity
-      .translate(0, referencePoint)
-      .scale(scale)
-      .translate(0, -referencePoint);
-  } else {
-    t = zoomIdentity
-      .translate(0, height - margin.bottom)
-      .scale(scale)
-      .translate(0, -(height - margin.bottom));
-  }
+  const { height, margin } = state;
+
+  const t = zoomIdentity
+    .translate(0, height - margin.bottom)
+    .scale(scale)
+    .translate(0, -(height - margin.bottom));
 
   draft.zoomFactor = { scale };
 
@@ -48,19 +36,14 @@ const setZoom = (state, draft, scale) => {
   }
 };
 const setZoom1D = (draft, scale, height, margin, index) => {
-  const { originDomain, data, tabActiveSpectrum, activeTab } = draft;
-  const { id, index: spectrumIndex } = tabActiveSpectrum[
-    activeTab.split(',')[index]
-  ];
-  const scaleY = scaleLinear(draft.yDomains[id], [height - margin, margin]);
+  const { originDomain, tabActiveSpectrum, activeTab } = draft;
 
-  let t;
-  const closest = getClosestNumber(data[spectrumIndex].y);
-  const referencePoint = scaleY(closest);
-  t = zoomIdentity
-    .translate(0, referencePoint)
+  const { id } = tabActiveSpectrum[activeTab.split(',')[index]];
+
+  const t = zoomIdentity
+    .translate(0, height - margin)
     .scale(scale)
-    .translate(0, -referencePoint);
+    .translate(0, -(height - margin));
 
   draft.zoomFactor = { scale };
 

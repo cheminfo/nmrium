@@ -79,7 +79,7 @@ const SpectrumListItem = memo(
             backgroundColor: color,
             height: '4px',
             width: width,
-            opacity: activated && activated.id !== id ? 0.1 : 1,
+            opacity: activated && activated.id === id ? 1 : 0.1,
             display: 'inline-block',
           }}
         />
