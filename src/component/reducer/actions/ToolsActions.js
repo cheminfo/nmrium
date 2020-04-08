@@ -1,4 +1,4 @@
-import { max, zoomIdentity, scaleLinear } from 'd3';
+import { max } from 'd3';
 import { produce } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
@@ -13,14 +13,11 @@ import {
 } from '../core/Constants';
 import Spectrum2D from '../core/Spectrum2D';
 import { getYScale, getXScale } from '../core/scale';
-import getClosestNumber from '../helper/GetClosestNumber';
-import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { getScale } from './ScaleActions';
-
-const spectrumZoomHanlder = new Spectrum1DZoomHelper();
+import { setZoom1D, setZoom, spectrumZoomHanlder } from './Zoom';
 
 function getStrongestPeak(state) {
   const { activeSpectrum, data } = state;
@@ -259,70 +256,6 @@ const setVerticalIndicatorXPosition = (state, position) => {
   });
 };
 
-const setZoom = (state, draft, scale) => {
-  const { originDomain, height, margin, data } = state;
-  let t;
-  if (data.length === 1) {
-    const closest = getClosestNumber(data[0].y);
-    const referencePoint = getScale(state).y(closest);
-    t = zoomIdentity
-      .translate(0, referencePoint)
-      .scale(scale)
-      .translate(0, -referencePoint);
-  } else {
-    t = zoomIdentity
-      .translate(0, height - margin.bottom)
-      .scale(scale)
-      .translate(0, -(height - margin.bottom));
-  }
-
-  draft.zoomFactor = { scale };
-
-  if (draft.activeSpectrum === null) {
-    draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
-      const _scale = scaleLinear(originDomain.yDomains[id], [
-        height - margin.bottom,
-        margin.top,
-      ]);
-      let yDomain = t.rescaleY(_scale).domain();
-      acc[id] = yDomain;
-      return acc;
-      // return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
-    }, {});
-  } else {
-    const _scale = scaleLinear(originDomain.yDomains[draft.activeSpectrum.id], [
-      height - margin.bottom,
-      margin.top,
-    ]);
-    let yDomain = t.rescaleY(_scale).domain();
-    draft.yDomains[draft.activeSpectrum.id] = yDomain;
-  }
-};
-const setZoom1D = (draft, scale, height, margin, index) => {
-  const { originDomain, data, tabActiveSpectrum, activeTab } = draft;
-  const { id, index: spectrumIndex } = tabActiveSpectrum[
-    activeTab.split(',')[index]
-  ];
-  const scaleY = scaleLinear(draft.yDomains[id], [height - margin, margin]);
-
-  let t;
-  const closest = getClosestNumber(data[spectrumIndex].y);
-  const referencePoint = scaleY(closest);
-  t = zoomIdentity
-    .translate(0, referencePoint)
-    .scale(scale)
-    .translate(0, -referencePoint);
-
-  draft.zoomFactor = { scale };
-
-  const _scale = scaleLinear(originDomain.yDomains[id], [
-    height - margin,
-    margin,
-  ]);
-  let yDomain = t.rescaleY(_scale).domain();
-  draft.yDomains[id] = yDomain;
-};
-
 const handleZoom = (state, action) => {
   return produce(state, (draft) => {
     const { deltaY, deltaMode, trackID } = action;
@@ -510,7 +443,6 @@ export {
   handleToggleRealImaginaryVisibility,
   handleBrushEnd,
   setVerticalIndicatorXPosition,
-  setZoom,
   handleZoom,
   zoomOut,
   handelSetActiveTab,
