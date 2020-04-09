@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { FaRegTrashAlt, FaCog } from 'react-icons/fa';
-import { MdViewHeadline } from 'react-icons/md';
+import { FiFilter } from 'react-icons/fi';
 
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
@@ -31,13 +31,13 @@ const styles = {
   },
   filterButton: {
     borderRadius: '5px',
-    marginTop: '3px',
+    marginTop: '2px',
     color: 'black',
     backgroundColor: 'transparent',
     border: 'none',
-    height: '16px',
-    width: '18px',
-    fontSize: '12px',
+    height: '18px',
+    width: '20px',
+    fontSize: '14px',
     padding: 0,
   },
 };
@@ -49,6 +49,7 @@ const DefaultPanelHeader = memo(
     onFilter,
     filterToolTip,
     filterIsActive,
+    counterFiltered,
     children,
     showSettingButton = false,
     onSettingClick,
@@ -81,12 +82,18 @@ const DefaultPanelHeader = memo(
               onClick={onFilter}
               disabled={counter === 0}
             >
-              <MdViewHeadline />
+              <FiFilter />
             </button>
           </ToolTip>
         ) : null}
 
-        <p style={styles.counterLabel}>[ {counter} ]</p>
+        <p style={styles.counterLabel}>
+          [{' '}
+          {filterIsActive && filterIsActive === true && counterFiltered
+            ? `${counterFiltered}/${counter}`
+            : counter}{' '}
+          ]
+        </p>
         {showSettingButton && (
           <ToolTip title="preferences" popupPlacement="left">
             <button

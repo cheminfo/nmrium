@@ -54,6 +54,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
   // const { data: SpectrumsData, activeSpectrum } = useChartData();
   const { xDomain } = useChartData();
   const [filterIsActive, setFilterIsActive] = useState(false);
+  const [rangesCounter, setRangesCounter] = useState(0);
 
   const dispatch = useDispatch();
   const modal = useModal();
@@ -76,6 +77,10 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
       activeSpectrum && SpectrumsData
         ? SpectrumsData[activeSpectrum.index]
         : null;
+
+    if (_data && _data.ranges && _data.ranges.values) {
+      setRangesCounter(_data.ranges.values.length);
+    }
 
     return _data && _data.ranges && _data.ranges.values
       ? filterIsActive
@@ -355,14 +360,15 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
   return (
     <div style={styles.container}>
       <DefaultPanelHeader
+        counter={rangesCounter}
         onDelete={handleDeleteAll}
-        counter={data && data.length}
         deleteToolTip="Delete All Ranges"
         onFilter={handleOnFilter}
         filterToolTip={
           filterIsActive ? 'Show all ranges' : 'Hide ranges out of view'
         }
         filterIsActive={filterIsActive}
+        counterFiltered={data && data.length}
       >
         <ToolTip title="Preview publication string" popupPlacement="right">
           <button

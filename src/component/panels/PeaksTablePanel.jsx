@@ -44,6 +44,7 @@ const PeaksTablePanel = memo(
     // } = useChartData();
     const { xDomain } = useChartData();
     const [filterIsActive, setFilterIsActive] = useState(false);
+    const [peaksCounter, setPeaksCounter] = useState(0);
 
     const dispatch = useDispatch();
     const modal = useModal();
@@ -175,6 +176,8 @@ const PeaksTablePanel = memo(
           : null;
 
       if (_data && _data.peaks && _data.peaks.values) {
+        setPeaksCounter(_data.peaks.values.length);
+
         const labelFraction = getPeakLabelNumberDecimals(_data.info.nucleus);
         return filterIsActive
           ? _data.peaks.values
@@ -251,14 +254,15 @@ const PeaksTablePanel = memo(
       <div style={styles.container}>
         {!isFlipped && (
           <DefaultPanelHeader
+            counter={peaksCounter}
             onDelete={handleDeleteAll}
-            counter={data && data.length}
             deleteToolTip="Delete All Peaks"
             onFilter={handleOnFilter}
             filterToolTip={
               filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
             }
             filterIsActive={filterIsActive}
+            counterFiltered={data && data.length}
             showSettingButton="true"
             onSettingClick={settingsPanelHandler}
           />

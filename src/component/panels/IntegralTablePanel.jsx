@@ -62,6 +62,7 @@ const IntegralTablePanel = memo(
     // } = useChartData();
     const { xDomain } = useChartData();
     const [filterIsActive, setFilterIsActive] = useState(false);
+    const [integralsCounter, setIntegralsCounter] = useState(0);
 
     const dispatch = useDispatch();
     const modal = useModal();
@@ -213,6 +214,10 @@ const IntegralTablePanel = memo(
           ? SpectrumsData[activeSpectrum.index]
           : null;
 
+      if (_data && _data.integrals && _data.integrals.values) {
+        setIntegralsCounter(_data.integrals.values.length);
+      }
+
       return _data && _data.integrals && _data.integrals.values
         ? filterIsActive
           ? _data.integrals.values.filter(
@@ -294,8 +299,8 @@ const IntegralTablePanel = memo(
         <div style={styles.container}>
           {!isFlipped && (
             <DefaultPanelHeader
+              counter={integralsCounter}
               onDelete={handleDeleteAll}
-              counter={data && data.length}
               deleteToolTip="Delete All Integrals"
               onFilter={handleOnFilter}
               filterToolTip={
@@ -304,6 +309,7 @@ const IntegralTablePanel = memo(
                   : 'Hide integrals out of view'
               }
               filterIsActive={filterIsActive}
+              counterFiltered={data && data.length}
               showSettingButton="true"
               onSettingClick={settingsPanelHandler}
             >
