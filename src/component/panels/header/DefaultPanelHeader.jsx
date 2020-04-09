@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { FaRegTrashAlt, FaCog } from 'react-icons/fa';
+import { FiFilter } from 'react-icons/fi';
 
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
@@ -28,12 +29,27 @@ const styles = {
     lineHeight: '22px',
     padding: '0px 10px',
   },
+  filterButton: {
+    borderRadius: '5px',
+    marginTop: '2px',
+    color: 'black',
+    backgroundColor: 'transparent',
+    border: 'none',
+    height: '18px',
+    width: '20px',
+    fontSize: '14px',
+    padding: 0,
+  },
 };
 const DefaultPanelHeader = memo(
   ({
     counter,
     onDelete,
     deleteToolTip,
+    onFilter,
+    filterToolTip,
+    filterIsActive,
+    counterFiltered,
     children,
     showSettingButton = false,
     onSettingClick,
@@ -52,7 +68,32 @@ const DefaultPanelHeader = memo(
         </ToolTip>
 
         {children}
-        <p style={styles.counterLabel}>[ {counter} ]</p>
+
+        {/* Optional if there is no filter needed, e.g. in spectra panel */}
+        {onFilter && filterToolTip ? (
+          <ToolTip title={filterToolTip} popupPlacement="right">
+            <button
+              style={
+                filterIsActive && filterIsActive === true
+                  ? { ...styles.filterButton, backgroundColor: '#00BFFF' }
+                  : styles.filterButton
+              }
+              type="button"
+              onClick={onFilter}
+              disabled={counter === 0}
+            >
+              <FiFilter />
+            </button>
+          </ToolTip>
+        ) : null}
+
+        <p style={styles.counterLabel}>
+          [{' '}
+          {filterIsActive && filterIsActive === true && counterFiltered
+            ? `${counterFiltered}/${counter}`
+            : counter}{' '}
+          ]
+        </p>
         {showSettingButton && (
           <ToolTip title="preferences" popupPlacement="left">
             <button

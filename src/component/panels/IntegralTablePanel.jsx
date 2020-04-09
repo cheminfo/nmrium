@@ -60,6 +60,10 @@ const IntegralTablePanel = memo(
     //   preferences,
     //   activeTab,
     // } = useChartData();
+    const { xDomain } = useChartData();
+    const [filterIsActive, setFilterIsActive] = useState(false);
+    const [integralsCounter, setIntegralsCounter] = useState(0);
+
     const dispatch = useDispatch();
     const modal = useModal();
     const [isFlipped, setFlipStatus] = useState(false);
@@ -209,12 +213,30 @@ const IntegralTablePanel = memo(
         activeSpectrum && SpectrumsData
           ? SpectrumsData[activeSpectrum.index]
           : null;
+
       if (_data && _data.integrals && _data.integrals.values) {
-        return _data.integrals.values;
-      } else {
-        return [];
+        setIntegralsCounter(_data.integrals.values.length);
       }
-    }, [SpectrumsData, activeSpectrum]);
+
+      return _data && _data.integrals && _data.integrals.values
+        ? filterIsActive
+          ? _data.integrals.values.filter(
+              (integral) =>
+                (integral.to >= xDomain[0] && integral.from <= xDomain[1]) ||
+                (integral.from <= xDomain[0] && integral.to >= xDomain[1]),
+            )
+          : _data.integrals.values.map((integral) => {
+              return (integral.to >= xDomain[0] &&
+                integral.from <= xDomain[1]) ||
+                (integral.from <= xDomain[0] && integral.to >= xDomain[1])
+                ? {
+                    ...integral,
+                    isConstantlyHighlighted: true,
+                  }
+                : integral;
+            })
+        : [];
+    }, [SpectrumsData, activeSpectrum, filterIsActive, xDomain]);
 
     const yesHandler = useCallback(() => {
       dispatch({ type: DELETE_INTEGRAL, integralID: null });
@@ -268,14 +290,26 @@ const IntegralTablePanel = memo(
       setTableVisibility(true);
     }, []);
 
+    const handleOnFilter = useCallback(() => {
+      setFilterIsActive(!filterIsActive);
+    }, [filterIsActive]);
+
     return (
       <>
         <div style={styles.container}>
           {!isFlipped && (
             <DefaultPanelHeader
+              counter={integralsCounter}
               onDelete={handleDeleteAll}
-              counter={data && data.length}
               deleteToolTip="Delete All Integrals"
+              onFilter={handleOnFilter}
+              filterToolTip={
+                filterIsActive
+                  ? 'Show all integrals'
+                  : 'Hide integrals out of view'
+              }
+              filterIsActive={filterIsActive}
+              counterFiltered={data && data.length}
               showSettingButton="true"
               onSettingClick={settingsPanelHandler}
             >

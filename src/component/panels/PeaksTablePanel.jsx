@@ -42,6 +42,9 @@ const PeaksTablePanel = memo(
     // preferences,
     // activeTab,
     // } = useChartData();
+    const { xDomain } = useChartData();
+    const [filterIsActive, setFilterIsActive] = useState(false);
+    const [peaksCounter, setPeaksCounter] = useState(0);
 
     const dispatch = useDispatch();
     const modal = useModal();
@@ -173,20 +176,44 @@ const PeaksTablePanel = memo(
           : null;
 
       if (_data && _data.peaks && _data.peaks.values) {
+        setPeaksCounter(_data.peaks.values.length);
+
         const labelFraction = getPeakLabelNumberDecimals(_data.info.nucleus);
-        return _data.peaks.values.map((peak) => {
-          return {
-            xIndex: peak.xIndex,
-            value: _data.x[peak.xIndex].toFixed(labelFraction),
-            id: peak.id,
-            yValue: _data.y[peak.xIndex],
-            peakWidth: peak.width ? peak.width : '',
-          };
-        });
-      } else {
-        return [];
+        return filterIsActive
+          ? _data.peaks.values
+              .filter((peak) => {
+                const value = _data.x[peak.xIndex].toFixed(labelFraction);
+                return value >= xDomain[0] && value <= xDomain[1];
+              })
+              .map((peak) => {
+                return {
+                  xIndex: peak.xIndex,
+                  value: _data.x[peak.xIndex].toFixed(labelFraction),
+                  id: peak.id,
+                  yValue: _data.y[peak.xIndex],
+                  peakWidth: peak.width ? peak.width : '',
+                };
+              })
+          : _data.peaks.values.map((peak) => {
+              const value = _data.x[peak.xIndex].toFixed(labelFraction);
+              const _peak = {
+                xIndex: peak.xIndex,
+                value: value,
+                id: peak.id,
+                yValue: _data.y[peak.xIndex],
+                peakWidth: peak.width ? peak.width : '',
+              };
+
+              return value >= xDomain[0] && value <= xDomain[1]
+                ? {
+                    ..._peak,
+                    isConstantlyHighlighted: true,
+                  }
+                : _peak;
+            });
       }
-    }, [SpectrumsData, activeSpectrum]);
+      return [];
+    }, [SpectrumsData, activeSpectrum, filterIsActive, xDomain]);
 
     const yesHandler = useCallback(() => {
       dispatch({ type: DELETE_PEAK_NOTATION, data: null });
@@ -219,13 +246,23 @@ const PeaksTablePanel = memo(
       setTableVisibility(true);
     }, []);
 
+    const handleOnFilter = useCallback(() => {
+      setFilterIsActive(!filterIsActive);
+    }, [filterIsActive]);
+
     return (
       <div style={styles.container}>
         {!isFlipped && (
           <DefaultPanelHeader
+            counter={peaksCounter}
             onDelete={handleDeleteAll}
-            counter={data && data.length}
             deleteToolTip="Delete All Peaks"
+            onFilter={handleOnFilter}
+            filterToolTip={
+              filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
+            }
+            filterIsActive={filterIsActive}
+            counterFiltered={data && data.length}
             showSettingButton="true"
             onSettingClick={settingsPanelHandler}
           />
