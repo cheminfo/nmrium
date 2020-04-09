@@ -1,8 +1,8 @@
 import { produce } from 'immer';
 
+import { getXScale } from '../../1d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/Analysis';
-import { getXScale } from '../../1d/utilities/scale';
 
 const handleAutoRangesDetection = (state, detectionOptions) => {
   return produce(state, (draft) => {

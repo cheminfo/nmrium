@@ -4,6 +4,7 @@ import { produce } from 'immer';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
+import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
@@ -18,7 +19,6 @@ import Spectrum2D from '../core/Spectrum2D';
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setZoom1D, setZoom, spectrumZoomHanlder } from './Zoom';
-import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 
 function getStrongestPeak(state) {
   const { activeSpectrum, data } = state;

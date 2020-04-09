@@ -36,7 +36,7 @@ const Left1DChart = memo(({ margin: marignValue, data }) => {
     } else {
       return null;
     }
-  }, [data, height, margin, marignValue, yDomain, yDomains]);
+  }, [data, height, margin, marignValue, originHeight, yDomain, yDomains]);
 
   const mainHeight = originHeight - margin.bottom - margin.top;
 
