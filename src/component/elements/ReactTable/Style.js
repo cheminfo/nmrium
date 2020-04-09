@@ -5,7 +5,7 @@ const HighlightedRowStyle = css`
 `;
 
 const ConstantlyHighlightedRowStyle = css`
-  background-color: #fffacd;
+  background-color: #f5f5dc;
 `;
 
 const ReactTableStyle = css`
