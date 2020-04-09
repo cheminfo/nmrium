@@ -1,15 +1,14 @@
 import { produce } from 'immer';
 
+import { getXScale } from '../../1d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/Analysis';
 
-import { getScale } from './ScaleActions';
-
 function getClosePeak(xShift, mouseCoordinates, state) {
-  const scale = getScale(state);
+  const scaleX = getXScale(null, state);
   const { activeSpectrum } = state;
-  const start = scale.x.invert(mouseCoordinates.x - xShift);
-  const end = scale.x.invert(mouseCoordinates.x + xShift);
+  const start = scaleX.invert(mouseCoordinates.x - xShift);
+  const end = scaleX.invert(mouseCoordinates.x + xShift);
   const range = [];
   if (start > end) {
     range[0] = end;
@@ -49,10 +48,10 @@ const addPeaks = (state, action) => {
       const spectrumID = state.activeSpectrum.id;
       const index = state.data.findIndex((d) => d.id === spectrumID);
 
-      const scale = getScale(state);
+      const scaleX = getXScale(null, state);
 
-      const start = scale.x.invert(action.startX);
-      const end = scale.x.invert(action.endX);
+      const start = scaleX.invert(action.startX);
+      const end = scaleX.invert(action.endX);
       const range = [];
       if (start > end) {
         range[0] = end;

@@ -1,0 +1,242 @@
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
+import { X } from 'ml-spectra-processing';
+import { useContext, useMemo } from 'react';
+
+import { BrushContext } from '../EventsTrackers/BrushTracker';
+import { MouseContext } from '../EventsTrackers/MouseTracker';
+import { useChartData } from '../context/ChartContext';
+
+// import { useScale } from '../context/ScaleContext';
+import {
+  getLayoutID,
+  // get2DDimensionLayout,
+  LAYOUT,
+} from './utilities/DimensionLayout';
+import {
+  get2DXScale,
+  // get1DXScale,
+  get1DYScale,
+  get2DYScale,
+} from './utilities/scale';
+
+const styles = css`
+  pointer-events: bounding-box;
+  user-select: 'none';
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+  background-color: #f7f7f7;
+  height: 30px;
+  padding: 6px;
+  color: #8d0018;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  div {
+    margin: 0px 10px;
+    display: inline-block;
+
+    .label {
+      font-size: 12px;
+      color: #4d4d4d;
+      font-weight: bold;
+    }
+    .value {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .unit {
+      font-weight: bold;
+      font-size: 10px;
+    }
+  }
+`;
+const FooterBanner = ({ layout, data1D }) => {
+  const position = useContext(MouseContext);
+  const { startX, endX, startY, endY, step } = useContext(BrushContext);
+  const {
+    margin,
+    width,
+    height,
+    activeSpectrum,
+    xDomain,
+    yDomain,
+    yDomains,
+  } = useChartData();
+
+  const trackID =
+    position &&
+    getLayoutID(layout, {
+      startX: position.x,
+      startY: position.y,
+    });
+
+  const scaleX = useMemo(() => {
+    switch (trackID) {
+      case LAYOUT.TOP_1D:
+      case LAYOUT.CENTER_2D: {
+        return get2DXScale({ width, margin, xDomain });
+      }
+      case LAYOUT.LEFT_1D: {
+        return get2DYScale({ height, margin, yDomain });
+      }
+      default:
+        return null;
+    }
+  }, [height, margin, trackID, width, xDomain, yDomain]);
+
+  const scaleY = useMemo(() => {
+    switch (trackID) {
+      case LAYOUT.CENTER_2D: {
+        return get2DYScale({ height, margin, yDomain });
+      }
+      case LAYOUT.TOP_1D: {
+        return get1DYScale(yDomains[data1D[0].id], margin.top);
+      }
+      case LAYOUT.LEFT_1D: {
+        return get1DYScale(yDomains[data1D[1].id], margin.left);
+      }
+      default:
+        return null;
+    }
+  }, [data1D, height, margin, trackID, yDomain, yDomains]);
+
+  const getRealYValue = (cordinate) => {
+    let index = null;
+    if (trackID === LAYOUT.TOP_1D) {
+      index = 0;
+    } else if (trackID === LAYOUT.LEFT_1D) {
+      index = 1;
+    }
+
+    if (index != null) {
+      const xIndex = X.findClosestIndex(
+        data1D[index].x,
+        scaleX.invert(cordinate),
+      );
+      return data1D[index].y[xIndex];
+    }
+    return 1;
+  };
+
+  const getXValue = (x = null) => {
+    switch (trackID) {
+      case LAYOUT.CENTER_2D:
+      case LAYOUT.TOP_1D: {
+        return scaleX.invert(x ? x : position.x);
+      }
+      case LAYOUT.LEFT_1D: {
+        return scaleX.invert(x ? x : position.y);
+      }
+      default:
+        return 0;
+    }
+  };
+
+  const getYValue = () => {
+    switch (trackID) {
+      case LAYOUT.CENTER_2D:
+      case LAYOUT.TOP_1D: {
+        return scaleY.invert(position.x);
+      }
+      case LAYOUT.LEFT_1D: {
+        return scaleY.invert(position.y);
+      }
+      default:
+        return 0;
+    }
+  };
+
+  const getRation = () => {
+    switch (trackID) {
+      case LAYOUT.TOP_1D: {
+        return (
+          (getRealYValue(startX) / (getRealYValue(endX) || Number.MIN_VALUE)) *
+          100
+        ).toFixed(2);
+      }
+      case LAYOUT.LEFT_1D: {
+        return (
+          (getRealYValue(startY) / (getRealYValue(endY) || Number.MIN_VALUE)) *
+          100
+        ).toFixed(2);
+      }
+      default:
+        return 0;
+    }
+  };
+
+  const getDeltaX = () => {
+    switch (trackID) {
+      case LAYOUT.TOP_1D: {
+        return (getXValue(startX) - getXValue(endX)).toPrecision(6);
+      }
+      case LAYOUT.LEFT_1D: {
+        return (getXValue(startY) - getXValue(endY)).toPrecision(6);
+      }
+      default:
+        return 0;
+    }
+  };
+
+  if (
+    !activeSpectrum ||
+    !position ||
+    position.y < 10 ||
+    position.x < 10 ||
+    position.x > width - margin.right ||
+    position.y > height - margin.bottom
+  ) {
+    return <div css={styles} />;
+  }
+
+  // const frequency = data[activeSpectrum.index].info.frequency; // should be spectrum.info.frequency;
+
+  return (
+    <div css={styles}>
+      <div>
+        <span className="label"> X :</span>
+        <span className="value">{getXValue().toPrecision(6)}</span>
+        <span className="unit">ppm</span>
+      </div>
+      {/* {frequency && (
+        <div>
+          <span className="label"> X :</span>
+          <span className="value">
+            {(scaleX().invert(position.x) * frequency).toPrecision(6)}
+          </span>
+          <span className="unit">Hz</span>
+        </div>
+      )} */}
+      <div>
+        <span className="label"> Y :</span>
+        <span className="value">{getYValue().toFixed(2)}</span>
+      </div>
+      {step === 'brushing' && (
+        <div>
+          <span className="label"> Δppm :</span>
+          <span className="value">{getDeltaX()}</span>
+        </div>
+      )}
+      {/* {frequency && step === 'brushing' && (
+        <div>
+          <span className="label"> ΔHz :</span>
+          <span className="value">
+            {(
+              (scaleX().invert(startX) - scaleX().invert(endX)) *
+              frequency
+            ).toPrecision(5)}
+          </span>
+        </div>
+      )} */}
+      {step === 'brushing' && (
+        <div>
+          <span className="label"> ratio :</span>
+          <span className="value">{getRation()}%</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default FooterBanner;

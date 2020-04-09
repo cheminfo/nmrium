@@ -12,7 +12,9 @@ const Ranges = () => {
       {data &&
         data[0] &&
         data
-          .filter((d) => d.isVisible === true && d.ranges && d.ranges.values)
+          .filter(
+            (d) => d.display.isVisible === true && d.ranges && d.ranges.values,
+          )
           .map((d) => (
             <g key={d.id}>
               {d.ranges.values.map((range) => (

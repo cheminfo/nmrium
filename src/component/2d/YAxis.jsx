@@ -5,7 +5,8 @@ import { Fragment, useEffect, useRef, useMemo, memo } from 'react';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
-import { get2DYScale } from '../reducer/core/scale';
+
+import { get2DYScale } from './utilities/scale';
 
 const axisStyles = css`
   user-select: 'none';
@@ -35,12 +36,6 @@ const YAxis = memo(({ show, label, margin: marginProps }) => {
     tabActiveSpectrum,
     margin,
   } = state;
-
-  // const scaleY = useMemo(() => {
-  //   console.log('scaleY');
-  //   return (spectrumId = null, heightProps = null, isReverse = false) =>
-  //     getYScale(spectrumId, heightProps, isReverse, state);
-  // }, [state]);
 
   useEffect(() => {
     const axis = d3.axisRight().ticks(8).tickFormat(d3.format('0'));

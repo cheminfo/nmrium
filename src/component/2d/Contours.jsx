@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { useChartData } from '../context/ChartContext';
-import { get2DXScale, get2DYScale } from '../reducer/core/scale';
+
+import { get2DXScale, get2DYScale } from './utilities/scale';
 
 const Contours = ({ colors }) => {
   const { margin, width, height, xDomain, yDomain, contours } = useChartData();

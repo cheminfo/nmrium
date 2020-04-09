@@ -1,31 +1,25 @@
-import { scaleLinear } from 'd3';
 import { XY } from 'ml-spectra-processing';
 import React, { useMemo, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
-// import YAxis from '../1d/YAxis';
+
+import { LAYOUT } from './utilities/DimensionLayout';
+import { get1DYScale, get1DXScale } from './utilities/scale';
 
 const Top1DChart = memo(({ margin: marginProps, data }) => {
   const { width, margin: originMargin, xDomain, yDomains } = useChartData();
 
   const height = originMargin.top;
 
-  const scaleX = useMemo(() => {
-    return scaleLinear(xDomain, [
-      width - originMargin.right,
-      originMargin.left,
-    ]);
-  }, [xDomain, originMargin.left, originMargin.right, width]);
-
-  const scaleY = useMemo(() => {
-    return scaleLinear(yDomains[data.id], [
-      height - marginProps.bottom,
-      marginProps.top,
-    ]);
-  }, [data.id, height, marginProps.bottom, marginProps.top, yDomains]);
-
   const paths = useMemo(() => {
     if (data) {
+      const scaleX = get1DXScale(
+        { width, xDomain, margin: originMargin },
+        LAYOUT.TOP_1D,
+      );
+
+      const scaleY = get1DYScale(yDomains[data.id], height, marginProps);
+
       const { x, y } = data;
       const pathPoints = XY.reduce(
         { x, y },
@@ -34,6 +28,7 @@ const Top1DChart = memo(({ margin: marginProps, data }) => {
           to: xDomain[1],
         },
       );
+
       let path = `M ${scaleX(pathPoints.x[0])} ${scaleY(pathPoints.y[0])} `;
       path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
         accumulator += ` L ${scaleX(point)} ${scaleY(pathPoints.y[i + 1])}`;
@@ -43,7 +38,7 @@ const Top1DChart = memo(({ margin: marginProps, data }) => {
     } else {
       return null;
     }
-  }, [data, scaleX, scaleY, xDomain]);
+  }, [data, height, marginProps, originMargin, width, xDomain, yDomains]);
 
   if (!width || !height) {
     return null;
@@ -74,10 +69,7 @@ const Top1DChart = memo(({ margin: marginProps, data }) => {
 });
 
 Top1DChart.defaultProps = {
-  margin: {
-    top: 10,
-    bottom: 10,
-  },
+  margin: 10,
 };
 
 export default Top1DChart;

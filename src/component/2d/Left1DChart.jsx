@@ -1,26 +1,24 @@
-import { scaleLinear } from 'd3';
 import { XY } from 'ml-spectra-processing';
 import React, { useMemo, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-const Left1DChart = memo(({ margin: marginProps, data }) => {
+import { LAYOUT } from './utilities/DimensionLayout';
+import { get1DXScale, get1DYScale } from './utilities/scale';
+
+const Left1DChart = memo(({ margin: marignValue, data }) => {
   const { height: originHeight, margin, yDomain, yDomains } = useChartData();
+
   const height = margin.left;
-
-  const scaleX = useMemo(() => {
-    return scaleLinear(yDomain, [originHeight - margin.bottom, margin.top]);
-  }, [yDomain, originHeight, margin.bottom, margin.top]);
-
-  const scaleY = useMemo(() => {
-    return scaleLinear(yDomains[data.id], [
-      height - marginProps.bottom,
-      marginProps.top,
-    ]);
-  }, [data.id, height, marginProps.bottom, marginProps.top, yDomains]);
 
   const paths = useMemo(() => {
     if (data) {
+      const scaleX = get1DXScale(
+        { height: originHeight, yDomain, margin },
+        LAYOUT.LEFT_1D,
+      );
+      const scaleY = get1DYScale(yDomains[data.id], height, marignValue);
+
       const { x, y } = data;
       const pathPoints = XY.reduce(
         { x, y },
@@ -38,11 +36,11 @@ const Left1DChart = memo(({ margin: marginProps, data }) => {
     } else {
       return null;
     }
-  }, [data, scaleX, scaleY, yDomain]);
+  }, [data, height, margin, marignValue, yDomain, yDomains]);
 
   const mainHeight = originHeight - margin.bottom - margin.top;
 
-  if (!mainHeight || !height || !paths || !marginProps) return null;
+  if (!mainHeight || !height) return null;
 
   return (
     <svg
@@ -71,10 +69,7 @@ const Left1DChart = memo(({ margin: marginProps, data }) => {
 });
 
 Left1DChart.defaultProps = {
-  margin: {
-    top: 10,
-    bottom: 10,
-  },
+  margin: 10,
 };
 
 export default Left1DChart;

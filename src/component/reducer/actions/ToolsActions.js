@@ -3,6 +3,8 @@ import { produce } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import generateID from '../../../data/utilities/generateID';
+import { getYScale, getXScale } from '../../1d/utilities/scale';
+import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
@@ -12,12 +14,11 @@ import {
   MARGIN,
 } from '../core/Constants';
 import Spectrum2D from '../core/Spectrum2D';
-import { getYScale, getXScale } from '../core/scale';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
-import { getScale } from './ScaleActions';
 import { setZoom1D, setZoom, spectrumZoomHanlder } from './Zoom';
+import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 
 function getStrongestPeak(state) {
   const { activeSpectrum, data } = state;
@@ -148,11 +149,11 @@ const handleChangeSpectrumDisplayMode = (state, { flag }) => {
 };
 
 const handleAddBaseLineZone = (state, { from, to }) => {
-  const scale = getScale(state).x;
+  const scaleX = getXScale(null, state);
 
   return produce(state, (draft) => {
-    let start = scale.invert(from);
-    const end = scale.invert(to);
+    let start = scaleX.invert(from);
+    const end = scaleX.invert(to);
 
     let zone = [];
     if (start > end) {
@@ -219,9 +220,10 @@ const handleToggleRealImaginaryVisibility = (state) => {
 const handleBrushEnd = (state, action) => {
   // const scale = getScale(state).x;
   return produce(state, (draft) => {
-    const isReverse = draft.displayerMode === DISPLAYER_MODE.DM_2D;
+    const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
     const xScale = getXScale(null, state);
-    const yScale = getYScale(null, null, isReverse, state);
+
+    const yScale = is2D ? get2DYScale(state) : getYScale(null, state);
 
     const startX = xScale.invert(action.startX);
     const endX = xScale.invert(action.endX);
@@ -231,14 +233,14 @@ const handleBrushEnd = (state, action) => {
     const domainY = startY > endY ? [endY, startY] : [startY, endY];
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
       switch (action.trackID) {
-        case 'CENTER_2D':
+        case LAYOUT.CENTER_2D:
           draft.xDomain = domainX;
           draft.yDomain = domainY;
           break;
-        case 'TOP_1D':
+        case LAYOUT.TOP_1D:
           draft.xDomain = domainX;
           break;
-        case 'LEFT_1D':
+        case LAYOUT.LEFT_1D:
           draft.yDomain = domainY;
           break;
         default:
@@ -251,7 +253,7 @@ const handleBrushEnd = (state, action) => {
 };
 const setVerticalIndicatorXPosition = (state, position) => {
   return produce(state, (draft) => {
-    const scaleX = getScale(state).x;
+    const scaleX = getXScale(null, state);
     draft.pivot = scaleX.invert(position);
   });
 };
@@ -262,7 +264,7 @@ const handleZoom = (state, action) => {
     spectrumZoomHanlder.wheel(deltaY, deltaMode);
     if (trackID) {
       switch (trackID) {
-        case 'TOP_1D':
+        case LAYOUT.TOP_1D:
           setZoom1D(
             draft,
             spectrumZoomHanlder.getScale(),
@@ -271,7 +273,7 @@ const handleZoom = (state, action) => {
             0,
           );
           break;
-        case 'LEFT_1D':
+        case LAYOUT.LEFT_1D:
           setZoom1D(
             draft,
             spectrumZoomHanlder.getScale(),
@@ -311,20 +313,20 @@ const zoomOut = (state, action) => {
       // , xDomains, yDomains
       const { xDomain, yDomain, yDomains } = state.originDomain;
       switch (trackID) {
-        case 'TOP_1D': {
+        case LAYOUT.TOP_1D: {
           const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[0]];
           draft.xDomain = xDomain;
           draft.yDomains[id] = yDomains[id];
           break;
         }
-        case 'LEFT_1D': {
+        case LAYOUT.LEFT_1D: {
           const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[1]];
           draft.yDomain = yDomain;
           draft.yDomains[id] = yDomains[id];
 
           break;
         }
-        case 'CENTER_2D':
+        case LAYOUT.CENTER_2D:
           draft.xDomain = xDomain;
           draft.yDomain = yDomain;
           break;

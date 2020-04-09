@@ -5,7 +5,8 @@ import { useEffect, useRef, useMemo, memo } from 'react';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
-import { get2DXScale } from '../reducer/core/scale';
+
+import { get2DXScale } from './utilities/scale';
 
 const axisStyles = css`
   user-select: none;

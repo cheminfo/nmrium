@@ -2,9 +2,10 @@ import { extent } from 'd3';
 import { produce } from 'immer';
 import { XY } from 'ml-spectra-processing';
 
+import { getXScale } from '../../1d/utilities/scale';
 import { AnalysisObj } from '../core/Analysis';
 
-import { getScale } from './ScaleActions';
+// import { getScale } from './ScaleActions';
 import { setIntegralZoom, integralZoomHanlder } from './Zoom';
 
 const handleChangeIntegralSum = (state, value) => {
@@ -30,11 +31,11 @@ const handleChangeIntegralZoom = (state, action) => {
 };
 
 const addIntegral = (state, action) => {
-  const scale = getScale(state).x;
+  const scaleX = getXScale(null, state);
 
   return produce(state, (draft) => {
-    const start = scale.invert(action.startX);
-    const end = scale.invert(action.endX);
+    const start = scaleX.invert(action.startX);
+    const end = scaleX.invert(action.endX);
 
     let integralRange = [];
     if (start > end) {

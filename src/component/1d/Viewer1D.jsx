@@ -16,7 +16,6 @@ import { ScaleProvider } from '../context/ScaleContext';
 import { useModal } from '../elements/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
-import { getXScale, getYScale } from '../reducer/core/scale';
 import {
   ADD_INTEGRAL,
   ADD_PEAKS,
@@ -39,6 +38,7 @@ import { options } from '../toolbar/ToolTypes';
 
 import Chart1D from './Chart1D';
 import FooterBanner from './FooterBanner';
+import { getXScale, getYScale } from './utilities/scale';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
@@ -63,8 +63,7 @@ const Viewer1D = () => {
   );
 
   const scaleY = useMemo(() => {
-    return (spectrumId = null, heightProps = null, isReverse = false) =>
-      getYScale(spectrumId, heightProps, isReverse, state);
+    return (spectrumId = null) => getYScale(spectrumId, state);
   }, [state]);
 
   const handelBrushEnd = useCallback(

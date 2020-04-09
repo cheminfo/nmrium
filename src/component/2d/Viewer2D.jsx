@@ -28,20 +28,8 @@ import { options } from '../toolbar/ToolTypes';
 // import FooterBanner from '../1d/FooterBanner';
 
 import Chart2D from './Chart2D';
-
-function getTrackID(dimension, brushData) {
-  for (const key of Object.keys(dimension)) {
-    if (
-      brushData.startX >= dimension[key].startX &&
-      brushData.startX <= dimension[key].endX &&
-      brushData.startY >= dimension[key].startY &&
-      brushData.startY <= dimension[key].endY
-    ) {
-      return key;
-    }
-  }
-  return null;
-}
+import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
+import FooterBanner from './FooterBanner';
 
 const Viewer2D = () => {
   const state = useChartData();
@@ -49,9 +37,6 @@ const Viewer2D = () => {
     selectedTool,
     isLoading,
     data,
-    // mode,
-    width: widthProps,
-    height: heightProps,
     margin,
     tabActiveSpectrum,
     activeTab,
@@ -82,30 +67,11 @@ const Viewer2D = () => {
 
   // console.log(colors);
 
-  const DIMENSION = {
-    CENTER_2D: {
-      startX: margin.left,
-      startY: margin.top,
-      endX: widthProps - margin.right,
-      endY: heightProps - margin.bottom,
-    },
-    TOP_1D: {
-      startX: margin.left,
-      startY: 0,
-      endX: widthProps - margin.right,
-      endY: margin.top,
-    },
-    LEFT_1D: {
-      startX: 0,
-      startY: margin.top,
-      endX: margin.left,
-      endY: heightProps - margin.bottom,
-    },
-  };
+  const DIMENSION = get2DDimensionLayout(state);
 
   const handelBrushEnd = useCallback(
     (brushData) => {
-      const trackID = getTrackID(DIMENSION, brushData);
+      const trackID = getLayoutID(DIMENSION, brushData);
       if (trackID) {
         if (brushData.altKey) {
           switch (selectedTool) {
@@ -123,7 +89,7 @@ const Viewer2D = () => {
               dispatch({
                 type: BRUSH_END,
                 ...brushData,
-                trackID: getTrackID(DIMENSION, brushData),
+                trackID: getLayoutID(DIMENSION, brushData),
               });
 
               // console.log(getTrackID(DIMENSION, brushData));
@@ -140,7 +106,7 @@ const Viewer2D = () => {
   const handelOnDoubleClick = useCallback(
     (e) => {
       const { x: startX, y: startY } = e;
-      const trackID = getTrackID(DIMENSION, { startX, startY });
+      const trackID = getLayoutID(DIMENSION, { startX, startY });
       if (trackID) {
         dispatch({ type: FULL_ZOOM_OUT, trackID });
       }
@@ -150,7 +116,7 @@ const Viewer2D = () => {
 
   const handleZoom = (wheelData) => {
     const { x: startX, y: startY } = wheelData;
-    const trackID = getTrackID(DIMENSION, { startX, startY });
+    const trackID = getLayoutID(DIMENSION, { startX, startY });
 
     if (trackID) {
       if (trackID === 'CENTER_2D') {
@@ -220,6 +186,9 @@ const Viewer2D = () => {
                     width={margin.left}
                   />
                 </>
+              )}
+              {spectrumData && (
+                <FooterBanner data1D={spectrumData} layout={DIMENSION} />
               )}
 
               <Chart2D ref={chart2DRef} data={spectrumData} colors={colors} />

@@ -2,8 +2,7 @@ import { produce } from 'immer';
 
 import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/Analysis';
-
-import { getScale } from './ScaleActions';
+import { getXScale } from '../../1d/utilities/scale';
 
 const handleAutoRangesDetection = (state, detectionOptions) => {
   return produce(state, (draft) => {
@@ -49,10 +48,10 @@ const handleChangeRangeSum = (state, value) => {
 };
 const handleAddRange = (state, action) => {
   return produce(state, (draft) => {
-    const scale = getScale(state).x;
+    const scaleX = getXScale(null, state);
 
-    const start = scale.invert(action.startX);
-    const end = scale.invert(action.endX);
+    const start = scaleX.invert(action.startX);
+    const end = scaleX.invert(action.endX);
     let range = [];
     if (start > end) {
       range = [end, start];

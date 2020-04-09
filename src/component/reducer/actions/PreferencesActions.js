@@ -3,10 +3,10 @@ import { produce } from 'immer';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
+import Spectrum2D from '../core/Spectrum2D';
 
 import { setDomain } from './DomainActions';
 import { setZoom, spectrumZoomHanlder } from './Zoom';
-import Spectrum2D from '../core/Spectrum2D';
 
 const handelSetPreferences = (state, action) => {
   const { type, values } = action;
