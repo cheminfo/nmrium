@@ -5,7 +5,7 @@ import { AnalysisObj } from '../core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE } from '../core/Constants';
 
 import { setDomain } from './DomainActions';
-import { setZoom } from './ToolsActions';
+import { setZoom, spectrumZoomHanlder } from './Zoom';
 
 const handelSetPreferences = (state, action) => {
   const { type, values } = action;
@@ -40,13 +40,23 @@ const changeSpectrumDisplayPreferences = (state, draft, { center }) => {
 
 const setKeyPreferencesHandler = (state, keyCode) => {
   return produce(state, (draft) => {
-    const { activeTab, data, activeSpectrum, zoomFactor, xDomain } = state;
+    const {
+      activeTab,
+      data,
+      activeSpectrum,
+      zoomFactor,
+      xDomain,
+      displayerMode,
+      tabActiveSpectrum,
+    } = state;
     if (activeTab) {
       const groupByNucleus = GroupByInfoKey('nucleus');
       const spectrumsGroupsList = groupByNucleus(data);
       draft.keysPreferences[keyCode] = {
         activeTab,
         activeSpectrum,
+        displayerMode,
+        tabActiveSpectrum,
         zoomFactor,
         xDomain,
         data: spectrumsGroupsList[activeTab].reduce((acc, datum) => {
@@ -71,13 +81,17 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
           ...datum,
           ...(datum.info.nucleus === preferences.activeTab
             ? preferences.data[datum.id]
-            : { display: { ...datum.display, isVisible: false } }),
+            : { display: datum.display }),
         };
       });
+      draft.displayerMode = preferences.displayerMode;
+      draft.tabActiveSpectrum = preferences.tabActiveSpectrum;
       draft.activeSpectrum = preferences.activeSpectrum;
+      // console.log()
       setDomain(draft);
       draft.xDomain = preferences.xDomain;
-      setZoom(state, draft, preferences.zoomFactor);
+      spectrumZoomHanlder.setScale(preferences.zoomFactor.scale);
+      setZoom(state, draft, preferences.zoomFactor.scale);
     }
   });
 };
