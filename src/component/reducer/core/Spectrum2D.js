@@ -7,12 +7,12 @@ export default class Spectrum2D {
     return Spectrum2D.instance;
   }
 
-  constructor(minMax) {
+  constructor(minMax, levelPositive = 10, levelNegative = 10) {
     Spectrum2D.instance = this;
 
-    this.currentLevelPositive = 10;
+    this.currentLevelPositive = levelPositive;
 
-    this.currentLevelNegative = 10;
+    this.currentLevelNegative = levelNegative;
 
     const xs = getRange(minMax.minX, minMax.maxX, minMax.z[0].length);
 
@@ -23,6 +23,18 @@ export default class Spectrum2D {
     this.median = minMax.noise;
 
     this.minMax = minMax;
+  }
+
+  getLevel() {
+    return {
+      levelPositive: this.currentLevelPositive,
+      levelNegative: this.currentLevelNegative,
+    };
+  }
+
+  setLevel(levelPositive, levelNegative) {
+    this.currentLevelPositive = levelPositive;
+    this.currentLevelNegative = levelNegative;
   }
 
   wheel(value) {

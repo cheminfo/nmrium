@@ -2,10 +2,11 @@ import { produce } from 'immer';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
-import { DEFAULT_YAXIS_SHIFT_VALUE } from '../core/Constants';
+import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 
 import { setDomain } from './DomainActions';
 import { setZoom, spectrumZoomHanlder } from './Zoom';
+import Spectrum2D from '../core/Spectrum2D';
 
 const handelSetPreferences = (state, action) => {
   const { type, values } = action;
@@ -46,12 +47,21 @@ const setKeyPreferencesHandler = (state, keyCode) => {
       activeSpectrum,
       zoomFactor,
       xDomain,
+      xDomains,
+      yDomain,
+      yDomains,
+      margin,
       displayerMode,
       tabActiveSpectrum,
     } = state;
     if (activeTab) {
       const groupByNucleus = GroupByInfoKey('nucleus');
+      const level =
+        displayerMode === DISPLAYER_MODE.DM_2D
+          ? Spectrum2D.getInstance().getLevel()
+          : null;
       const spectrumsGroupsList = groupByNucleus(data);
+
       draft.keysPreferences[keyCode] = {
         activeTab,
         activeSpectrum,
@@ -59,6 +69,11 @@ const setKeyPreferencesHandler = (state, keyCode) => {
         tabActiveSpectrum,
         zoomFactor,
         xDomain,
+        xDomains,
+        yDomain,
+        yDomains,
+        level,
+        margin,
         data: spectrumsGroupsList[activeTab].reduce((acc, datum) => {
           acc[datum.id] = {
             color: datum.display.color,
@@ -88,10 +103,25 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
       draft.tabActiveSpectrum = preferences.tabActiveSpectrum;
       draft.activeSpectrum = preferences.activeSpectrum;
       // console.log()
+
+      draft.margin = preferences.margin;
+
       setDomain(draft);
+
       draft.xDomain = preferences.xDomain;
-      spectrumZoomHanlder.setScale(preferences.zoomFactor.scale);
-      setZoom(state, draft, preferences.zoomFactor.scale);
+      draft.xDomains = preferences.xDomains;
+      draft.yDomain = preferences.yDomain;
+      draft.yDomains = preferences.yDomains;
+
+      if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+        const { levelPositive, levelNegative } = preferences.level;
+        const spectrum2D = Spectrum2D.getInstance();
+        spectrum2D.setLevel(levelPositive, levelNegative);
+        draft.contours = spectrum2D.drawContours();
+      } else {
+        spectrumZoomHanlder.setScale(preferences.zoomFactor.scale);
+        setZoom(state, draft, preferences.zoomFactor.scale);
+      }
     }
   });
 };
