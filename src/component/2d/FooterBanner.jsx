@@ -72,6 +72,9 @@ const FooterBanner = ({ layout, data1D }) => {
     });
 
   const scaleX = useMemo(() => {
+    if (!data1D || data1D.length === 0) {
+      return get2DXScale({ width, margin, xDomain });
+    }
     switch (trackID) {
       case LAYOUT.TOP_1D:
       case LAYOUT.CENTER_2D: {
@@ -83,9 +86,13 @@ const FooterBanner = ({ layout, data1D }) => {
       default:
         return null;
     }
-  }, [height, margin, trackID, width, xDomain, yDomain]);
+  }, [data1D, height, margin, trackID, width, xDomain, yDomain]);
 
   const scaleY = useMemo(() => {
+    if (!data1D || data1D.length === 0) {
+      return get2DYScale({ height, margin, yDomain });
+    }
+
     switch (trackID) {
       case LAYOUT.CENTER_2D: {
         return get2DYScale({ height, margin, yDomain });
@@ -100,6 +107,17 @@ const FooterBanner = ({ layout, data1D }) => {
         return null;
     }
   }, [data1D, height, margin, trackID, yDomain, yDomains]);
+
+  if (
+    !activeSpectrum ||
+    !position ||
+    position.y < 10 ||
+    position.x < 10 ||
+    position.x > width - margin.right ||
+    position.y > height - margin.bottom
+  ) {
+    return <div css={styles} />;
+  }
 
   const getRealYValue = (cordinate) => {
     let index = null;
@@ -137,10 +155,10 @@ const FooterBanner = ({ layout, data1D }) => {
     switch (trackID) {
       case LAYOUT.CENTER_2D:
       case LAYOUT.TOP_1D: {
-        return scaleY.invert(position.x);
+        return scaleY.invert(position.y);
       }
       case LAYOUT.LEFT_1D: {
-        return scaleY.invert(position.y);
+        return scaleY.invert(position.x);
       }
       default:
         return 0;
@@ -178,17 +196,6 @@ const FooterBanner = ({ layout, data1D }) => {
         return 0;
     }
   };
-
-  if (
-    !activeSpectrum ||
-    !position ||
-    position.y < 10 ||
-    position.x < 10 ||
-    position.x > width - margin.right ||
-    position.y > height - margin.bottom
-  ) {
-    return <div css={styles} />;
-  }
 
   // const frequency = data[activeSpectrum.index].info.frequency; // should be spectrum.info.frequency;
 

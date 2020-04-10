@@ -28,8 +28,8 @@ import { options } from '../toolbar/ToolTypes';
 // import FooterBanner from '../1d/FooterBanner';
 
 import Chart2D from './Chart2D';
-import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 import FooterBanner from './FooterBanner';
+import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 
 const Viewer2D = () => {
   const state = useChartData();
