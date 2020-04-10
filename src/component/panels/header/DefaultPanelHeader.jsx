@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
-import { FaRegTrashAlt, FaCog } from 'react-icons/fa';
-import { FiFilter } from 'react-icons/fi';
+import { FaRegTrashAlt, FaCog, FaFilter } from 'react-icons/fa';
 
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
@@ -31,13 +30,14 @@ const styles = {
   },
   filterButton: {
     borderRadius: '5px',
-    marginTop: '2px',
+    marginTop: '3px',
+    marginLeft: '1px',
     color: 'black',
     backgroundColor: 'transparent',
     border: 'none',
-    height: '18px',
-    width: '20px',
-    fontSize: '14px',
+    height: '16px',
+    width: '18px',
+    fontSize: '12px',
     padding: 0,
   },
 };
@@ -82,7 +82,7 @@ const DefaultPanelHeader = memo(
               onClick={onFilter}
               disabled={counter === 0}
             >
-              <FiFilter />
+              <FaFilter />
             </button>
           </ToolTip>
         ) : null}
