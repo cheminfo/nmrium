@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 
 import { useHighlight } from '../../../highlight/index';
-import { HighlightedRowStyle } from '../Style';
+import { HighlightedRowStyle, ConstantlyHighlightedRowStyle } from '../Style';
 
 const ReactTableRow = ({ row, onContextMenu }) => {
   const highlight = useHighlight([
@@ -15,7 +15,14 @@ const ReactTableRow = ({ row, onContextMenu }) => {
     <tr
       onContextMenu={onContextMenu}
       key={row.getRowProps().key}
-      css={highlight.isActive ? HighlightedRowStyle : null}
+      css={
+        highlight.isActive
+          ? HighlightedRowStyle
+          : row.original.isConstantlyHighlighted &&
+            row.original.isConstantlyHighlighted === true
+          ? ConstantlyHighlightedRowStyle
+          : null
+      }
       {...row.getRowProps()}
       {...highlight.onHover}
     >

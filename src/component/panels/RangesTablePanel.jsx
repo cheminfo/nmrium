@@ -1,5 +1,5 @@
 import { X } from 'ml-spectra-processing';
-import React, { useCallback, useMemo, memo } from 'react';
+import React, { useCallback, useMemo, memo, useState } from 'react';
 import { useAlert } from 'react-alert';
 import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
@@ -52,6 +52,10 @@ const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
   // const { data: SpectrumsData, activeSpectrum } = useChartData();
+  const { xDomain } = useChartData();
+  const [filterIsActive, setFilterIsActive] = useState(false);
+  const [rangesCounter, setRangesCounter] = useState(0);
+
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
@@ -75,21 +79,24 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
         : null;
 
     if (_data && _data.ranges && _data.ranges.values) {
-      return _data.ranges.values.map((range) => {
-        return {
-          from: range.from,
-          to: range.to,
-          integral: range.integral,
-          signal: range.signal,
-          id: range.id, // needed for ReactTableRow component to highlight
-          kind: range.kind,
-          absolute: range.absolute,
-        };
-      });
-    } else {
-      return [];
+      setRangesCounter(_data.ranges.values.length);
     }
-  }, [SpectrumsData, activeSpectrum]);
+
+    return _data && _data.ranges && _data.ranges.values
+      ? filterIsActive
+        ? _data.ranges.values.filter(
+            (range) =>
+              (range.to >= xDomain[0] && range.from <= xDomain[1]) ||
+              (range.from <= xDomain[0] && range.to >= xDomain[1]),
+          )
+        : _data.ranges.values.map((range) =>
+            (range.to >= xDomain[0] && range.from <= xDomain[1]) ||
+            (range.from <= xDomain[0] && range.to >= xDomain[1])
+              ? { ...range, isConstantlyHighlighted: true }
+              : range,
+          )
+      : [];
+  }, [SpectrumsData, activeSpectrum, filterIsActive, xDomain]);
 
   const saveToClipboardHandler = useCallback(
     (value) => {
@@ -140,7 +147,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
     modal.close();
   }, [modal]);
 
-  const changeRangeSingnalKindHandler = useCallback(
+  const changeRangeSignalKindHandler = useCallback(
     (value, row) => {
       const _data = { ...row.original, kind: value };
       dispatch({
@@ -213,7 +220,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
       resizable: true,
       Cell: ({ row }) => (
         <Select
-          onChange={(value) => changeRangeSingnalKindHandler(value, row)}
+          onChange={(value) => changeRangeSignalKindHandler(value, row)}
           data={SignalKinds}
           style={selectStyle}
           defaultValue={row.original.kind}
@@ -325,7 +332,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
     });
   }, [modal, yesHandler]);
 
-  const changeRangelSumHandler = useCallback(
+  const changeRangesSumHandler = useCallback(
     (value) => {
       if (value) {
         dispatch({ type: CHANGE_RANGE_SUM, value });
@@ -341,17 +348,27 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
       <NumberInputModal
         header="Set new range sum"
         onClose={() => modal.close()}
-        onSave={changeRangelSumHandler}
+        onSave={changeRangesSumHandler}
       />,
     );
-  }, [changeRangelSumHandler, modal]);
+  }, [changeRangesSumHandler, modal]);
+
+  const handleOnFilter = useCallback(() => {
+    setFilterIsActive(!filterIsActive);
+  }, [filterIsActive]);
 
   return (
     <div style={styles.container}>
       <DefaultPanelHeader
+        counter={rangesCounter}
         onDelete={handleDeleteAll}
-        counter={data && data.length}
         deleteToolTip="Delete All Ranges"
+        onFilter={handleOnFilter}
+        filterToolTip={
+          filterIsActive ? 'Show all ranges' : 'Hide ranges out of view'
+        }
+        filterIsActive={filterIsActive}
+        counterFiltered={data && data.length}
       >
         <ToolTip title="Preview publication string" popupPlacement="right">
           <button

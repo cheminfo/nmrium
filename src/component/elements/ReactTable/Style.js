@@ -4,6 +4,10 @@ const HighlightedRowStyle = css`
   background-color: #ff6f0057;
 `;
 
+const ConstantlyHighlightedRowStyle = css`
+  background-color: #f5f5dc;
+`;
+
 const ReactTableStyle = css`
   border-spacing: 0;
   border: 1px solid #dedede;
@@ -37,4 +41,4 @@ const ReactTableStyle = css`
   }
 `;
 
-export { ReactTableStyle, HighlightedRowStyle };
+export { ReactTableStyle, HighlightedRowStyle, ConstantlyHighlightedRowStyle };
