@@ -1,8 +1,10 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { X } from 'ml-spectra-processing';
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, Fragment } from 'react';
+import { MF } from 'react-mf';
 
+import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
@@ -62,6 +64,7 @@ const FooterBanner = ({ layout, data1D }) => {
     xDomain,
     yDomain,
     yDomains,
+    activeTab,
   } = useChartData();
 
   const trackID =
@@ -70,6 +73,8 @@ const FooterBanner = ({ layout, data1D }) => {
       startX: position.x,
       startY: position.y,
     });
+
+  const nucleuses = activeTab.split(',');
 
   const scaleX = useMemo(() => {
     if (!data1D || data1D.length === 0) {
@@ -197,13 +202,27 @@ const FooterBanner = ({ layout, data1D }) => {
     }
   };
 
+  const getLabel = (label2d, labelld, nuclus) => {
+    return trackID === LAYOUT.CENTER_2D ? (
+      <Fragment>
+        {label2d} ( <MF mf={nuclus} /> )
+      </Fragment>
+    ) : (
+      labelld
+    );
+  };
+
   // const frequency = data[activeSpectrum.index].info.frequency; // should be spectrum.info.frequency;
 
   return (
     <div css={styles}>
       <div>
-        <span className="label"> X :</span>
-        <span className="value">{getXValue().toPrecision(6)}</span>
+        <span className="label">
+          {getLabel('F2', 'X', data1D[0].info.nucleus)} :
+        </span>
+        <span className="value">
+          {getXValue().toFixed(getPeakLabelNumberDecimals(nucleuses[0]))}
+        </span>
         <span className="unit">ppm</span>
       </div>
       {/* {frequency && (
@@ -216,8 +235,13 @@ const FooterBanner = ({ layout, data1D }) => {
         </div>
       )} */}
       <div>
-        <span className="label"> Y :</span>
-        <span className="value">{getYValue().toFixed(2)}</span>
+        <span className="label">
+          {getLabel('F1', 'Y', data1D[1].info.nucleus)} :
+        </span>
+        <span className="value">
+          {getYValue().toFixed(getPeakLabelNumberDecimals(nucleuses[1]))}
+        </span>
+        <span className="unit">ppm</span>
       </div>
       {step === 'brushing' && (
         <div>
