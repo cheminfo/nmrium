@@ -202,10 +202,10 @@ const FooterBanner = ({ layout, data1D }) => {
     }
   };
 
-  const getLabel = (label2d, labelld, nuclus) => {
+  const getLabel = (label2d, labelld, nucleus) => {
     return trackID === LAYOUT.CENTER_2D ? (
       <Fragment>
-        {label2d} ( <MF mf={nuclus} /> )
+        {label2d} ( <MF mf={nucleus} /> )
       </Fragment>
     ) : (
       labelld
@@ -217,9 +217,7 @@ const FooterBanner = ({ layout, data1D }) => {
   return (
     <div css={styles}>
       <div>
-        <span className="label">
-          {getLabel('F2', 'X', data1D[0].info.nucleus)} :
-        </span>
+        <span className="label">{getLabel('F2', 'X', nucleuses[0])} :</span>
         <span className="value">
           {getXValue().toFixed(getPeakLabelNumberDecimals(nucleuses[0]))}
         </span>
@@ -235,9 +233,7 @@ const FooterBanner = ({ layout, data1D }) => {
         </div>
       )} */}
       <div>
-        <span className="label">
-          {getLabel('F1', 'Y', data1D[1].info.nucleus)} :
-        </span>
+        <span className="label">{getLabel('F1', 'Y', nucleuses[1])} :</span>
         <span className="value">
           {getYValue().toFixed(getPeakLabelNumberDecimals(nucleuses[1]))}
         </span>
