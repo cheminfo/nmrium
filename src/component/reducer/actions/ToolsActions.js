@@ -310,7 +310,6 @@ const zoomOut = (state, action) => {
           break;
       }
     } else {
-      // , xDomains, yDomains
       const { xDomain, yDomain, yDomains } = state.originDomain;
       switch (trackID) {
         case LAYOUT.TOP_1D: {
@@ -331,6 +330,9 @@ const zoomOut = (state, action) => {
           draft.yDomain = yDomain;
           break;
         default:
+          draft.xDomain = xDomain;
+          draft.yDomain = yDomain;
+          draft.yDomains = yDomains;
           break;
       }
       // draft.yDomain = yDomain;
