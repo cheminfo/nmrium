@@ -31,7 +31,7 @@ const styles = {
   filterButton: {
     borderRadius: '5px',
     marginTop: '3px',
-    marginLeft: '1px',
+    marginLeft: '5px',
     color: 'black',
     backgroundColor: 'transparent',
     border: 'none',
@@ -75,7 +75,12 @@ const DefaultPanelHeader = memo(
             <button
               style={
                 filterIsActive && filterIsActive === true
-                  ? { ...styles.filterButton, backgroundColor: '#00BFFF' }
+                  ? {
+                      ...styles.filterButton,
+                      backgroundColor: '#6d6d6d',
+                      color: 'white',
+                      fontSize: '10px',
+                    }
                   : styles.filterButton
               }
               type="button"
