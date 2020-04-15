@@ -4,6 +4,7 @@ import { FaRegWindowMaximize } from 'react-icons/fa';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
+import ToolTip from '../elements/ToolTip/ToolTip';
 import { options } from '../toolbar/ToolTypes';
 
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
@@ -79,9 +80,11 @@ const Header = ({ isFullscreen, onMaximize }) => {
       <div className="toolOptionsPanel">{selectedPanel}</div>
       <div className="windowButtonsContainer">
         {!isFullscreen ? (
-          <button type="button" onClick={onMaximize} className="windowButton">
-            <FaRegWindowMaximize />
-          </button>
+          <ToolTip title="Full Screen" popupPlacement="left">
+            <button type="button" onClick={onMaximize} className="windowButton">
+              <FaRegWindowMaximize />
+            </button>
+          </ToolTip>
         ) : (
           ''
         )}
