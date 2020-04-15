@@ -1,7 +1,8 @@
-import { MolfileSvgRenderer } from 'react-ocl';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import React, { useState, useCallback, useRef, useContext } from 'react';
+import { useAlert } from 'react-alert';
+import Slider from 'react-animated-slider-2';
 import {
   FaPlus,
   FaPaste,
@@ -12,9 +13,8 @@ import {
   FaCopy,
 } from 'react-icons/fa';
 import { MF } from 'react-mf';
-import Slider from 'react-animated-slider-2';
+import { MolfileSvgRenderer } from 'react-ocl';
 import 'react-animated-slider-2/build/horizontal.css';
-import { useAlert } from 'react-alert';
 
 import { ChartContext } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';

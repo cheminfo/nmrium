@@ -59,11 +59,11 @@ const Viewer2D = () => {
     }, []);
   }, [activeTab, data, tabActiveSpectrum]);
 
-  const colors = useMemo(() => {
-    const id = tabActiveSpectrum[activeTab].id;
-    const spectrum = data.find((datum) => datum.id === id);
-    return [spectrum.display.positiveColor, spectrum.display.negativeColor];
-  }, [activeTab, data, tabActiveSpectrum]);
+  // const colors = useMemo(() => {
+  //   const id = tabActiveSpectrum[activeTab].id;
+  //   const spectrum = data.find((datum) => datum.id === id);
+  //   return [spectrum.display.positiveColor, spectrum.display.negativeColor];
+  // }, [activeTab, data, tabActiveSpectrum]);
 
   // console.log(colors);
 
@@ -191,7 +191,7 @@ const Viewer2D = () => {
                 <FooterBanner data1D={spectrumData} layout={DIMENSION} />
               )}
 
-              <Chart2D ref={chart2DRef} data={spectrumData} colors={colors} />
+              <Chart2D ref={chart2DRef} data={spectrumData} />
             </MouseTracker>
           </BrushTracker>
         )}

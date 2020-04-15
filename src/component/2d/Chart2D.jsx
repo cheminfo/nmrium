@@ -9,7 +9,7 @@ import Top1DChart from './Top1DChart';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
 
-const Chart2D = ({ data, colors }) => {
+const Chart2D = ({ data }) => {
   const { width, height, margin } = useChartData();
 
   const chart2d = useMemo(() => {
@@ -42,7 +42,7 @@ const Chart2D = ({ data, colors }) => {
         />
         {data && data[0] && <Top1DChart data={data[0]} />}
         {data && data[1] && <Left1DChart data={data[1]} />}
-        <Contours colors={colors} />
+        <Contours />
         <g className="container" style={{ pointerEvents: 'none' }}>
           <XAxis />
           <YAxis />
@@ -57,7 +57,6 @@ const Chart2D = ({ data, colors }) => {
     margin.top,
     margin.bottom,
     data,
-    colors,
   ]);
 
   return chart2d;

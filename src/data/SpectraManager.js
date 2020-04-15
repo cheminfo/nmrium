@@ -22,8 +22,6 @@ export function addJcamp(spectra, jcamp, options = {}) {
     keepRecordsRegExp: /.*/,
     profiling: true,
   });
-  // eslint-disable-next-line no-console
-  console.log(converted.profiling);
   let entries = converted.flatten;
   if (entries.length === 0) return;
   // Should be improved when we have a more complex case

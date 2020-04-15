@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
-import Spectrum2D from '../core/Spectrum2D';
+// import Spectrum2DProcessing from '../core/Spectrum2DProcessing';
 
 import { setDomain } from './DomainActions';
 import { setZoom, spectrumZoomHanlder } from './Zoom';
@@ -56,11 +56,18 @@ const setKeyPreferencesHandler = (state, keyCode) => {
     } = state;
     if (activeTab) {
       const groupByNucleus = GroupByInfoKey('nucleus');
+
+      const spectrumsGroupsList = groupByNucleus(data);
+
       const level =
         displayerMode === DISPLAYER_MODE.DM_2D
-          ? Spectrum2D.getInstance().getLevel()
+          ? spectrumsGroupsList[activeTab].reduce((acc, datum) => {
+              acc[datum.id] = AnalysisObj.getDatum(datum.id)
+                .getProcessingController()
+                .getLevel();
+              return acc;
+            }, {})
           : null;
-      const spectrumsGroupsList = groupByNucleus(data);
 
       draft.keysPreferences[keyCode] = {
         activeTab,
@@ -114,10 +121,19 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
       draft.yDomains = preferences.yDomains;
 
       if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-        const { levelPositive, levelNegative } = preferences.level;
-        const spectrum2D = Spectrum2D.getInstance();
-        spectrum2D.setLevel(levelPositive, levelNegative);
-        draft.contours = spectrum2D.drawContours();
+        for (const datumID of Object.keys(preferences.level)) {
+          const { levelPositive, levelNegative } = preferences.level[datumID];
+          const processController = AnalysisObj.getDatum(
+            datumID,
+          ).getProcessingController();
+          processController.setLevel(levelPositive, levelNegative);
+          draft.contours[datumID] = processController.drawContours();
+        }
+
+        // const { levelPositive, levelNegative } = preferences.level;
+        // const spectrum2D = Spectrum2DProcessing.getInstance();
+        // spectrum2D.setLevel(levelPositive, levelNegative);
+        // draft.contours = spectrum2D.drawContours();
       } else {
         spectrumZoomHanlder.setScale(preferences.zoomFactor.scale);
         setZoom(state, draft, preferences.zoomFactor.scale);

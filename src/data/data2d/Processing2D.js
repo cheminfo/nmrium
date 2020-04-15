@@ -1,14 +1,14 @@
 import { Conrec } from 'ml-conrec';
 
-export default class Spectrum2D {
-  static instance;
+export default class Processing2D {
+  // static instance;
 
-  static getInstance() {
-    return Spectrum2D.instance;
-  }
+  // static getInstance() {
+  //   return Processing2D.instance;
+  // }
 
   constructor(minMax, levelPositive = 10, levelNegative = 10) {
-    Spectrum2D.instance = this;
+    // Processing2D.instance = this;
 
     this.currentLevelPositive = levelPositive;
 
@@ -79,7 +79,7 @@ export default class Spectrum2D {
   }
 
   getContours(zoomLevel, options = {}) {
-    const { negative = false, timeout = 2000, nbLevels = 10 } = options;
+    const { negative = false, timeout = 4000, nbLevels = 10 } = options;
 
     const max = Math.max(
       Math.abs(this.minMax.maxZ),

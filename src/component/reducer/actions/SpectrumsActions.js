@@ -1,8 +1,8 @@
 import { produce } from 'immer';
 
 import { AnalysisObj } from '../core/Analysis';
-import { DISPLAYER_MODE } from '../core/Constants';
-import Spectrum2D from '../core/Spectrum2D';
+// import { DISPLAYER_MODE } from '../core/Constants';
+// import Spectrum2DProcessing from '../core/Spectrum2DProcessing';
 
 import { setDomain, setMode } from './DomainActions';
 
@@ -37,48 +37,46 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
   return produce(state, (draft) => {
     let refreshDomain = false;
     if (activeSpectrum) {
-      if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-        if (draft.activeSpectrum) {
-          const index = state.data.findIndex(
-            (datum) => datum.id === activeSpectrum.id,
-          );
-          try {
-            const spectrum2D = new Spectrum2D(state.data[index]);
-            draft.contours = spectrum2D.drawContours();
-            activeSpectrum = { ...activeSpectrum, index };
-            draft.activeSpectrum = activeSpectrum;
-            draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
-            refreshDomain = true;
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.log(e);
-          }
-        }
-      } else {
-        // draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
-        AnalysisObj.getDatum(activeSpectrum.id).setDisplay({ isVisible: true });
-        const newIndex = draft.data.findIndex(
-          (d) => d.id === activeSpectrum.id,
-        );
-        const oldIndex = draft.data.findIndex(
-          (d) => d.id === draft.activeSpectrum?.id,
-        );
-        if (newIndex !== -1) {
-          draft.data[newIndex].display.isVisible = true;
-        }
-        if (oldIndex !== -1) {
-          refreshDomain =
-            draft.data[oldIndex].info.isFid === draft.data[newIndex].info.isFid
-              ? false
-              : true;
-        } else {
-          refreshDomain = draft.data[newIndex].info.isFid;
-        }
-
-        activeSpectrum = { ...activeSpectrum, index: newIndex };
-        draft.activeSpectrum = activeSpectrum;
-        draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
+      // if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+      //   if (draft.activeSpectrum) {
+      //     const index = state.data.findIndex(
+      //       (datum) => datum.id === activeSpectrum.id,
+      //     );
+      //     try {
+      //       const spectrum2D = new Spectrum2DProcessing(state.data[index]);
+      //       draft.contours = spectrum2D.drawContours();
+      //       activeSpectrum = { ...activeSpectrum, index };
+      //       draft.activeSpectrum = activeSpectrum;
+      //       draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
+      //       refreshDomain = true;
+      //     } catch (e) {
+      //       // eslint-disable-next-line no-console
+      //       console.log(e);
+      //     }
+      //   }
+      // } else {
+      // draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
+      AnalysisObj.getDatum(activeSpectrum.id).setDisplay({ isVisible: true });
+      const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
+      const oldIndex = draft.data.findIndex(
+        (d) => d.id === draft.activeSpectrum?.id,
+      );
+      if (newIndex !== -1) {
+        draft.data[newIndex].display.isVisible = true;
       }
+      if (oldIndex !== -1) {
+        refreshDomain =
+          draft.data[oldIndex].info.isFid === draft.data[newIndex].info.isFid
+            ? false
+            : true;
+      } else {
+        refreshDomain = draft.data[newIndex].info.isFid;
+      }
+
+      activeSpectrum = { ...activeSpectrum, index: newIndex };
+      draft.activeSpectrum = activeSpectrum;
+      draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
+      // }
     } else {
       draft.activeSpectrum = null;
       draft.tabActiveSpectrum[draft.activeTab] = null;

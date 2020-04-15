@@ -2,6 +2,7 @@ import { max } from 'd3';
 import { produce } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
+import { Datum2D } from '../../../data/data2d/Datum2D';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
@@ -14,7 +15,7 @@ import {
   DISPLAYER_MODE,
   MARGIN,
 } from '../core/Constants';
-import Spectrum2D from '../core/Spectrum2D';
+// import Spectrum2DProcessing from '../core/Spectrum2DProcessing';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
@@ -357,13 +358,14 @@ const setMargin = (draft) => {
   }
 };
 
-function initiate2D(draft, data) {
+function get2DProcessedData(draft, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-    if (draft.tabActiveSpectrum[draft.activeTab]) {
-      const data2D = data[draft.tabActiveSpectrum[draft.activeTab].index];
-      const spectrum2D = new Spectrum2D(data2D);
-      draft.contours = spectrum2D.drawContours();
+    let _data = {};
+    for (const datum of data[draft.activeTab]) {
+      const data2dObject = AnalysisObj.getDatum(datum.id);
+      _data[datum.id] = data2dObject.getContourLines();
     }
+    draft.contours = _data;
   }
 }
 
@@ -412,7 +414,7 @@ const handelSetActiveTab = (state, tab) => {
       const dataGroupByNucleus = groupByNucleus(data);
       setActiveTab(draft, dataGroupByNucleus, tab);
 
-      initiate2D(draft, data);
+      get2DProcessedData(draft, dataGroupByNucleus);
       setDomain(draft);
       setMode(draft);
     }
@@ -421,15 +423,26 @@ const handelSetActiveTab = (state, tab) => {
 
 const levelChangeHandler = (state, { deltaY, shiftKey }) => {
   try {
-    const spectrum2D = Spectrum2D.getInstance();
-    if (shiftKey) {
-      spectrum2D.shiftWheel(deltaY);
-    } else {
-      spectrum2D.wheel(deltaY);
-    }
+    if (state.activeSpectrum) {
+      const { id } = state.activeSpectrum;
+      const datum2dObject = AnalysisObj.getDatum(id);
+      if (datum2dObject instanceof Datum2D) {
+        const processing2dController = datum2dObject.getProcessingController();
+        if (shiftKey) {
+          processing2dController.shiftWheel(deltaY);
+        } else {
+          processing2dController.wheel(deltaY);
+        }
 
-    const contours = spectrum2D.drawContours();
-    return { ...state, contours };
+        return produce(state, (draft) => {
+          const contours = processing2dController.drawContours();
+          draft.contours[id] = contours;
+        });
+      }
+      return state;
+    } else {
+      return state;
+    }
   } catch (e) {
     return state;
   }

@@ -1,6 +1,6 @@
-import { Conrec } from 'ml-conrec';
-
 import generateID from '../utilities/generateID';
+
+import Processing2D from './Processing2D';
 
 export class Datum2D {
   /**
@@ -56,16 +56,16 @@ export class Datum2D {
       },
       options.data,
     );
+    this.processingController = new Processing2D(this.data);
+    // this.data.contours = this.processingController.drawContours();
+  }
+
+  getProcessingController() {
+    return this.processingController;
   }
 
   getContourLines() {
-    const conrec = new Conrec(this.data.z);
-    const basic = conrec.drawContour({
-      contourDrawer: 'basic',
-      nbLevels: 10,
-      timeout: 10000,
-    });
-    return basic;
+    return this.processingController.drawContours();
   }
 
   setDisplay(displayOptions) {

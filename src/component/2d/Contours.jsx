@@ -4,8 +4,16 @@ import { useChartData } from '../context/ChartContext';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
-const Contours = ({ colors }) => {
-  const { margin, width, height, xDomain, yDomain, contours } = useChartData();
+const Contours = () => {
+  const {
+    margin,
+    width,
+    height,
+    xDomain,
+    yDomain,
+    data,
+    contours,
+  } = useChartData();
 
   const buildContourPath = (contour) => {
     const _scaleX = get2DXScale({ margin, width, xDomain });
@@ -19,23 +27,33 @@ const Contours = ({ colors }) => {
     path += ' z';
     return path;
   };
-  // const colors = ['DarkRed', 'DarkBlue'];
 
-  return contours && contours.length > 0 ? (
+  return (
     <g clipPath="url(#clip)">
-      {contours.map((contour, index) => {
-        return contour.map((cont, innerIndex) => (
-          <path
-            key={innerIndex}
-            fill="none"
-            stroke={colors[index]}
-            strokeWidth="1"
-            d={buildContourPath(cont)}
-          />
-        ));
-      })}
+      {data
+        .filter(
+          (datum) =>
+            datum.info.dimension === 2 && datum.display.isVisible === true,
+        )
+        .map((datum) => {
+          const colors = [
+            datum.display.positiveColor,
+            datum.display.negativeColor,
+          ];
+          return contours[datum.id].map((contoursData, index) => {
+            return contoursData.map((contour, innerIndex) => (
+              <path
+                key={innerIndex}
+                fill="none"
+                stroke={colors[index]}
+                strokeWidth="1"
+                d={buildContourPath(contour)}
+              />
+            ));
+          });
+        })}
     </g>
-  ) : null;
+  );
 };
 
 export default Contours;
