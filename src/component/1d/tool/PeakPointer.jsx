@@ -1,11 +1,11 @@
 import max from 'ml-array-max';
 import React, { useContext, useEffect, useState } from 'react';
 
-import { BrushContext } from '../EventsTrackers/BrushTracker';
-import { MouseContext } from '../EventsTrackers/MouseTracker';
-import { useChartData } from '../context/ChartContext';
-import { useScale } from '../context/ScaleContext';
-import { options } from '../toolbar/ToolTypes';
+import { BrushContext } from '../../EventsTrackers/BrushTracker';
+import { MouseContext } from '../../EventsTrackers/MouseTracker';
+import { useChartData } from '../../context/ChartContext';
+import { useScale } from '../../context/ScaleContext';
+import { options } from '../../toolbar/ToolTypes';
 
 const styles = {
   radius: 10,

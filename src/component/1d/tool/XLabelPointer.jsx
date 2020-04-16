@@ -1,10 +1,10 @@
 import React, { useContext, useCallback } from 'react';
 
-import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
-import { BrushContext } from '../EventsTrackers/BrushTracker';
-import { MouseContext } from '../EventsTrackers/MouseTracker';
-import { useChartData } from '../context/ChartContext';
-import { useScale } from '../context/ScaleContext';
+import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
+import { BrushContext } from '../../EventsTrackers/BrushTracker';
+import { MouseContext } from '../../EventsTrackers/MouseTracker';
+import { useChartData } from '../../context/ChartContext';
+import { useScale } from '../../context/ScaleContext';
 
 const style = {
   cursor: 'crosshair',

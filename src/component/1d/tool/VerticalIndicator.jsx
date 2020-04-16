@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import { useScale } from '../context/ScaleContext';
-import { options } from '../toolbar/ToolTypes';
+import { useChartData } from '../../context/ChartContext';
+import { useScale } from '../../context/ScaleContext';
+import { options } from '../../toolbar/ToolTypes';
 
 const styles = {
   container: {

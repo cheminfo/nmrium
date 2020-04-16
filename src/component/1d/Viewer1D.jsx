@@ -3,7 +3,7 @@ import React, {
   Fragment,
   useEffect,
   useState,
-  useMemo,
+  useReducer,
 } from 'react';
 import { useSize, useDebounce } from 'react-use';
 
@@ -16,6 +16,12 @@ import { ScaleProvider } from '../context/ScaleContext';
 import { useModal } from '../elements/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
+import {
+  scaleInitialState,
+  scaleReducer,
+  SET_X_SCALE,
+  SET_Y_SCALE,
+} from '../reducer/scaleReducer';
 import {
   ADD_INTEGRAL,
   ADD_PEAKS,
@@ -31,14 +37,13 @@ import {
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
-import PeakPointer from '../tool/PeakPointer';
-import VerticalIndicator from '../tool/VerticalIndicator';
-import XLabelPointer from '../tool/XLabelPointer';
 import { options } from '../toolbar/ToolTypes';
 
 import Chart1D from './Chart1D';
 import FooterBanner from './FooterBanner';
-import { getXScale, getYScale } from './utilities/scale';
+import PeakPointer from './tool/PeakPointer';
+import VerticalIndicator from './tool/VerticalIndicator';
+import XLabelPointer from './tool/XLabelPointer';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
@@ -52,19 +57,40 @@ const Viewer1D = () => {
     height: heightProp,
     margin,
     activeSpectrum,
+    xDomain,
+    xDomains,
+    yDomain,
+    yDomains,
+    verticalAlign,
   } = state;
 
   const dispatch = useDispatch();
   const modal = useModal();
-
-  const scaleX = useCallback(
-    (spectrumId = null) => getXScale(spectrumId, state),
-    [state],
+  const [scaleState, dispatchScale] = useReducer(
+    scaleReducer,
+    scaleInitialState,
   );
 
-  const scaleY = useMemo(() => {
-    return (spectrumId = null) => getYScale(spectrumId, state);
-  }, [state]);
+  useEffect(() => {
+    dispatchScale({
+      type: SET_X_SCALE,
+      xDomain,
+      xDomains,
+      width: widthProp,
+      margin,
+      mode,
+    });
+  }, [margin, widthProp, xDomain, xDomains, mode]);
+  useEffect(() => {
+    dispatchScale({
+      type: SET_Y_SCALE,
+      yDomain,
+      yDomains,
+      margin,
+      height: heightProp,
+      verticalAlign,
+    });
+  }, [heightProp, margin, verticalAlign, yDomain, yDomains]);
 
   const handelBrushEnd = useCallback(
     (brushData) => {
@@ -75,7 +101,7 @@ const Viewer1D = () => {
               <MultipletAnalysisModal
                 data={data}
                 activeSpectrum={activeSpectrum}
-                scaleX={scaleX}
+                scaleX={scaleState.scaleX}
                 {...brushData}
               />,
               {
@@ -128,7 +154,7 @@ const Viewer1D = () => {
         }
       }
     },
-    [dispatch, selectedTool, data, modal, activeSpectrum, scaleX],
+    [selectedTool, modal, data, activeSpectrum, scaleState.scaleX, dispatch],
   );
 
   const handelOnDoubleClick = useCallback(() => {
@@ -167,16 +193,6 @@ const Viewer1D = () => {
     },
     [dispatch, selectedTool],
   );
-
-  // const frequency = useMemo(() => {
-  //   return activeSpectrum
-  //     ? lodash.get(data[activeSpectrum.index], 'info.frequency')
-  //     : 0;
-  // }, [activeSpectrum, data]);
-  // const currentSpectrum = useMemo(() => {
-  //   console.log(activeSpectrum)
-  //   return activeSpectrum ? data[activeSpectrum.index] : null;
-  // }, [activeSpectrum, data]);
 
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
@@ -234,9 +250,7 @@ const Viewer1D = () => {
     }
   }, [dispatch, finalSize]);
 
-  return (
-    <ScaleProvider value={{ scaleX, scaleY }}>{sizedNMRChart}</ScaleProvider>
-  );
+  return <ScaleProvider value={scaleState}>{sizedNMRChart}</ScaleProvider>;
 };
 
 export default Viewer1D;
