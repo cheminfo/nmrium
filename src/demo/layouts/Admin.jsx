@@ -32,13 +32,14 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.menuCloseHandler = this.menuCloseHandler.bind(this);
+    this.mainPanel = React.createRef();
   }
 
   state = {
     backgroundColor: 'blue',
     routesList: [],
     routes: [],
-    isMenuClosed: false,
+    // isMenuClosed: false,
   };
 
   // eslint-disable-next-line react/no-deprecated
@@ -73,16 +74,21 @@ class Dashboard extends React.Component {
       document.body.classList.toggle('perfect-scrollbar-on');
     }
   }
-  mainPanel = React.createRef();
 
   // handleColorClick = (color) => {
   //   this.setState({ backgroundColor: color });
   // };
 
   menuCloseHandler = (flag) => {
-    this.setState((prev) => {
-      return { ...prev, isMenuClosed: flag };
-    });
+    setTimeout(() => {
+      this.mainPanel.current.className = flag
+        ? 'main-panel main-panel-when-menu-closed'
+        : 'main-panel';
+    }, 200);
+
+    // this.setState((prev) => {
+    //   return { ...prev, isMenuClosed: flag };
+    // });
   };
 
   render() {
@@ -94,14 +100,7 @@ class Dashboard extends React.Component {
           backgroundColor={this.state.backgroundColor}
           onMenuClose={this.menuCloseHandler}
         />
-        <div
-          className={
-            this.state.isMenuClosed
-              ? 'main-panel main-panel-when-menu-closed'
-              : 'main-panel'
-          }
-          ref={this.mainPanel}
-        >
+        <div className="main-panel" ref={this.mainPanel}>
           {/* <Router {...this.props}> */}
           <Suspense fallback={<div>Loading...</div>}>
             <Switch>

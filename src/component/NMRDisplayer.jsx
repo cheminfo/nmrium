@@ -8,6 +8,7 @@ import {
   useState,
   useMemo,
   useRef,
+  memo,
 } from 'react';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
@@ -61,7 +62,7 @@ const splitPaneStyles = {
   pane: { overflow: 'hidden' },
 };
 
-const NMRDisplayer = (props) => {
+const NMRDisplayer = memo((props) => {
   const {
     data: dataProp,
     // height: heightProp,
@@ -169,7 +170,7 @@ const NMRDisplayer = (props) => {
       </ModalProvider>
     </ErrorBoundary>
   );
-};
+});
 
 NMRDisplayer.propTypes = {
   height: PropTypes.number,

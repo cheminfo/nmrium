@@ -26,6 +26,7 @@ Copyright (c) 2015 Daniel Eden
 body {
   font: 12px Arial;
   overflow: hidden;
+
 }
 .animated {
   -webkit-animation-duration: 1s;
@@ -1357,6 +1358,7 @@ a.text-gray:focus, a.text-gray:hover {
 
 body {
   color: #2c2c2c;
+  background-color: #ebecf1 !important;
   font-size: 14px;
   font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
   -moz-osx-font-smoothing: grayscale;

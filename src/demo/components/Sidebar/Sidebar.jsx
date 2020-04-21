@@ -29,12 +29,14 @@ import { FaBars } from 'react-icons/fa';
 
 var ps;
 
-class Sidebar extends React.Component {
-  state = { routes: [], isMenuOpen: true };
+class Sidebar extends React.PureComponent {
+  state = { routes: [] };
   constructor(props) {
     super(props);
+    this.sidebar = React.createRef();
     this.activeRoute.bind(this);
     this.menuHandler = this.menuHandler.bind(this);
+    this.isMenuOpen = true;
   }
   // verifies if routeName is the one active (in browser input)
   activeRoute(routeName) {
@@ -51,6 +53,7 @@ class Sidebar extends React.Component {
     this.setState((prev) => {
       return { ...prev, routes };
     });
+    // this.sidebar.current.class = 'sidebar menu-open';
   }
   componentWillUnmount() {
     if (navigator.platform.indexOf('Win') > -1) {
@@ -59,21 +62,20 @@ class Sidebar extends React.Component {
   }
 
   menuHandler(e) {
-    console.log(this.state);
-    const menuStatus = !this.state.isMenuOpen;
-    this.setState((prev) => {
-      return { ...prev, isMenuOpen: menuStatus };
-    });
-    this.props.onMenuClose(!menuStatus);
+    this.isMenuOpen = !this.isMenuOpen;
+    this.sidebar.current.className = this.isMenuOpen
+      ? 'sidebar menu-open'
+      : 'sidebar menu-close';
+
+    this.props.onMenuClose(!this.isMenuOpen);
   }
 
   render() {
     return (
       <div
-        className={
-          this.state.isMenuOpen ? 'sidebar menu-open' : 'sidebar menu-close'
-        }
+        ref={this.sidebar}
         data-color={this.props.backgroundColor}
+        className="sidebar menu-open"
       >
         <button type="button" className="menu-bt" onClick={this.menuHandler}>
           <FaBars />
