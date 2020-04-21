@@ -15,7 +15,7 @@ import {
   DISPLAYER_MODE,
   MARGIN,
 } from '../core/Constants';
-// import Spectrum2DProcessing from '../core/Spectrum2DProcessing';
+import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
@@ -248,6 +248,8 @@ const handleBrushEnd = (state, action) => {
           break;
       }
     } else {
+      const brushHistory = HorizontalZoomHistory.getInstance();
+      brushHistory.push(state.xDomain);
       draft.xDomain = domainX;
     }
   });
@@ -296,19 +298,24 @@ const zoomOut = (state, action) => {
   const { zoomType, trackID } = action;
   return produce(state, (draft) => {
     if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+      const zoomHistory = HorizontalZoomHistory.getInstance();
       switch (zoomType) {
-        case 'H':
-          draft.xDomain = state.originDomain.xDomain;
+        case 'H': {
+          const zoomValue = zoomHistory.pop();
+          draft.xDomain = zoomValue ? zoomValue : state.originDomain.xDomain;
           break;
+        }
         case 'V':
           spectrumZoomHanlder.setScale(0.8);
           setZoom(state, draft, 0.8);
           break;
-        default:
+        default: {
           spectrumZoomHanlder.setScale(0.8);
-          draft.xDomain = state.originDomain.xDomain;
+          const zoomValue = zoomHistory.pop();
+          draft.xDomain = zoomValue ? zoomValue : state.originDomain.xDomain;
           setZoom(state, draft, 0.8);
           break;
+        }
       }
     } else {
       const { xDomain, yDomain, yDomains } = state.originDomain;
