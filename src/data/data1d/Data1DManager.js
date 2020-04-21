@@ -9,7 +9,6 @@ export class Data1DManager {
     let data = getData(result.spectra);
     // let usedColors = data.map((d) => d.color);
     // const color = getColor(usedColors);
-
     if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
 
     const datum1D = new Datum1D({
@@ -21,7 +20,7 @@ export class Data1DManager {
       meta: result.info,
       data,
     });
-    // console.log(datum1D);
+
     return datum1D;
   };
 
@@ -44,23 +43,23 @@ export class Data1DManager {
         original: data,
       },
     });
-    // console.log(datum1D);
+
     return datum1D;
   };
 }
 
 function getData(spectra) {
   let x =
-    spectra[0] && spectra[0].data && spectra[0].data && spectra[0].data.x
-      ? spectra[0].data.x
+    spectra[0] && spectra[0].data && spectra[0].data[0].x
+      ? spectra[0].data[0].x
       : [];
   let re =
-    spectra[0] && spectra[0].data && spectra[0].data && spectra[0].data.y
-      ? spectra[0].data.y
+    spectra[0] && spectra[0].data && spectra[0].data[0].y
+      ? spectra[0].data[0].y
       : [];
   let im =
-    spectra[1] && spectra[1].data && spectra[1].data && spectra[1].data.y
-      ? spectra[1].data.y
+    spectra[1] && spectra[1].data && spectra[1].data[0].y
+      ? spectra[1].data[0].y
       : new Array(re.length);
   // 2 cases. We have real and imaginary part of only real
 
