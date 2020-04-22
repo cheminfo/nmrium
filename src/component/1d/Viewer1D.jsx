@@ -73,16 +73,6 @@ const Viewer1D = () => {
 
   useEffect(() => {
     dispatchScale({
-      type: SET_X_SCALE,
-      xDomain,
-      xDomains,
-      width: widthProp,
-      margin,
-      mode,
-    });
-  }, [margin, widthProp, xDomain, xDomains, mode]);
-  useEffect(() => {
-    dispatchScale({
       type: SET_Y_SCALE,
       yDomain,
       yDomains,
@@ -91,6 +81,17 @@ const Viewer1D = () => {
       verticalAlign,
     });
   }, [heightProp, margin, verticalAlign, yDomain, yDomains]);
+
+  useEffect(() => {
+    dispatchScale({
+      type: SET_X_SCALE,
+      xDomain,
+      xDomains,
+      width: widthProp,
+      margin,
+      mode,
+    });
+  }, [margin, widthProp, xDomain, xDomains, mode]);
 
   const handelBrushEnd = useCallback(
     (brushData) => {
@@ -238,11 +239,7 @@ const Viewer1D = () => {
   const [finalSize, setFinalSize] = useState();
   useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
   useEffect(() => {
-    if (
-      finalSize &&
-      finalSize.width !== Infinity &&
-      finalSize.height !== Infinity
-    ) {
+    if (finalSize) {
       dispatch({
         type: SET_DIMENSIONS,
         ...finalSize,

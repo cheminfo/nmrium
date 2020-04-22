@@ -169,8 +169,8 @@ export const initialState = {
   selectedFilter: null,
   selectedOptionPanel: null,
   activeTab: null,
-  width: null,
-  height: null,
+  width: 0,
+  height: 0,
   margin: {
     top: 10,
     right: 20,

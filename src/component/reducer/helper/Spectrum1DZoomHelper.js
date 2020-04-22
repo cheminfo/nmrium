@@ -1,32 +1,47 @@
+import { getLocalStorage, getValue } from '../../utility/LocalStorage';
+
 export default class Spectrum1DZoomHelper {
   constructor(
     scale = 1,
     options = {
-      slowZoomStep: 0.01,
-      fastZoomStep: 0.05,
-      speedThreshold: 3,
+      slowZoomStep: 2,
+      fastZoomStep: 8,
+      speedThreshold: 4,
     },
   ) {
     this.scale = scale;
+    this.speedThreshold = options.speedThreshold;
     this.slowZoomStep = options.slowZoomStep;
     this.fastZoomStep = options.fastZoomStep;
-    this.speedThreshold = options.speedThreshold;
   }
 
+  // eslint-disable-next-line no-unused-vars
   wheel(deltaY, deltaMode) {
     const deltaYValue =
       Math.abs(deltaY) === 1 ? Math.abs(deltaY) : Math.abs(deltaY) / 100;
 
-    let ZOOM_STEP =
-      deltaMode === 1
-        ? deltaYValue <= this.speedThreshold
-          ? this.slowZoomStep
-          : this.fastZoomStep * deltaMode
-        : deltaMode
-        ? 1
-        : deltaYValue <= this.speedThreshold
-        ? this.slowZoomStep
-        : this.fastZoomStep * deltaYValue;
+    const settings = getLocalStorage('settings');
+
+    const _slowZoomStep = getValue(settings, 'conrtollers.mws.low');
+    const _fastZoomStep = getValue(settings, 'conrtollers.mws.high');
+
+    const LOW_STEP = _slowZoomStep
+      ? 0.01 * _slowZoomStep
+      : 0.01 * this.slowZoomStep;
+    const FAST_STEP = _fastZoomStep
+      ? 0.05 * _fastZoomStep
+      : 0.05 * this.fastZoomStep;
+    let ZOOM_STEP = deltaYValue <= this.speedThreshold ? LOW_STEP : FAST_STEP;
+    // let ZOOM_STEP =
+    //   deltaMode === 1
+    //     ? deltaYValue <= this.speedThreshold
+    //       ?  this.slowZoomStep * deltaMode
+    //       : this.fastZoomStep * deltaMode
+    //     : deltaMode
+    //     ? 1
+    //     : deltaYValue <= this.speedThreshold
+    //     ? this.slowZoomStep
+    //     : this.fastZoomStep * deltaYValue;
 
     const direction = Math.sign(deltaY);
     const _scale =

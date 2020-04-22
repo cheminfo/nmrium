@@ -34,7 +34,11 @@ const ModalProvider = ({ children, context: Context, style }) => {
   const closeHandler = useCallback(() => {
     remove();
   }, []);
-
+  /**
+   *
+   * @param {*} component  <component />
+   * @param {*} options    {onYest:()=>{}, prop1, .... etc}
+   */
   const show = (component, options = {}) => {
     const _modal = {
       component,

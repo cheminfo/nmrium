@@ -45,7 +45,7 @@ const alertOptions = {
   timeout: 5000,
   offset: '30px',
   transition: transitions.SCALE,
-  containerStyle: { fontSize: '18px' },
+  containerStyle: { fontSize: '18px', zIndex: 999999 },
 };
 
 const splitPaneStyles = {

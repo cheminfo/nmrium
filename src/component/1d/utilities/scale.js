@@ -11,21 +11,20 @@ function getXScale(spectrumId = null, state) {
 
 function getYScale(spectrumId = null, state) {
   const { height, margin, verticalAlign, yDomain, yDomains } = state;
+  // if (height && margin && verticalAlign && yDomain && yDomains) {
+  const _height =
+    verticalAlign.flag && !verticalAlign.stacked ? height / 2 : height;
 
-  if (height && margin && verticalAlign && yDomain && yDomains) {
-    const _height =
-      verticalAlign.flag && !verticalAlign.stacked ? height / 2 : height;
-
-    let domainY = [];
-    if (spectrumId === null || yDomains[spectrumId] === undefined) {
-      domainY = [0, yDomain[1]];
-    } else {
-      domainY = [0, yDomains[spectrumId][1]];
-    }
-    return scaleLinear(domainY, [_height - margin.bottom, margin.top]);
+  let domainY = [];
+  if (spectrumId === null || yDomains[spectrumId] === undefined) {
+    domainY = [0, yDomain[1]];
   } else {
-    return null;
+    domainY = [0, yDomains[spectrumId][1]];
   }
+  return scaleLinear(domainY, [_height - margin.bottom, margin.top]);
+  // } else {
+  //   return null;
+  // }
 }
 
 export { getXScale, getYScale };

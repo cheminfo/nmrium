@@ -16,6 +16,7 @@ const styles = css`
   .tab-list {
     border-bottom: 1px solid #ccc;
     padding-left: 0;
+    margin: 0;
   }
 
   .tab-list li:first-of-type {
@@ -93,7 +94,7 @@ Tabs.defaultProps = {
 };
 
 Tabs.propTypes = {
-  children: PropTypes.instanceOf(Array).isRequired,
+  children: PropTypes.array.isRequired,
   onClick: PropTypes.func,
 };
 

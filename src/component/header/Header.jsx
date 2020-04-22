@@ -1,10 +1,13 @@
 import { jsx, css } from '@emotion/core';
-import { useMemo } from 'react';
-import { FaRegWindowMaximize } from 'react-icons/fa';
+import { useMemo, useCallback } from 'react';
+import { useAlert } from 'react-alert';
+import { FaRegWindowMaximize, FaWrench } from 'react-icons/fa';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
+import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import GeneralSettings from '../modal/GeneralSettings';
 import { options } from '../toolbar/ToolTypes';
 
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
@@ -43,8 +46,9 @@ const headerStyle = css`
   .windowButtonsContainer {
     flex: 0.5;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: flex-end;
+    height: 100%;
   }
 
   .windowButton {
@@ -60,6 +64,8 @@ const headerStyle = css`
 
 const Header = ({ isFullscreen, onMaximize }) => {
   const { selectedOptionPanel } = useChartData();
+  const modal = useModal();
+  const alert = useAlert();
 
   const selectedPanel = useMemo(() => {
     if (selectedOptionPanel === options.zeroFilling.id) {
@@ -75,10 +81,31 @@ const Header = ({ isFullscreen, onMaximize }) => {
     }
   }, [selectedOptionPanel]);
 
+  const openGeneralSettingsHandler = useCallback(() => {
+    modal.show(
+      <GeneralSettings
+        onSave={() => {
+          alert.success('Settings saved successfully');
+        }}
+      />,
+      {},
+    );
+  }, [alert, modal]);
+
   return (
     <div css={headerStyle}>
       <div className="toolOptionsPanel">{selectedPanel}</div>
       <div className="windowButtonsContainer">
+        <ToolTip title="General Settings" popupPlacement="left">
+          <button
+            type="button"
+            onClick={openGeneralSettingsHandler}
+            className="windowButton"
+          >
+            <FaWrench />
+          </button>
+        </ToolTip>
+
         {!isFullscreen ? (
           <ToolTip title="Full Screen" popupPlacement="left">
             <button type="button" onClick={onMaximize} className="windowButton">
