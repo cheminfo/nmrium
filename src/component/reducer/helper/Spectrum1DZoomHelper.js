@@ -6,7 +6,7 @@ export default class Spectrum1DZoomHelper {
     options = {
       slowZoomStep: 2,
       fastZoomStep: 8,
-      speedThreshold: 4,
+      speedThreshold: 3,
     },
   ) {
     this.scale = scale;
@@ -18,8 +18,9 @@ export default class Spectrum1DZoomHelper {
   // eslint-disable-next-line no-unused-vars
   wheel(deltaY, deltaMode) {
     const deltaYValue =
-      Math.abs(deltaY) === 1 ? Math.abs(deltaY) : Math.abs(deltaY) / 100;
-
+      Math.abs(deltaY).toString().length === 1
+        ? Math.abs(deltaY)
+        : Math.abs(deltaY) / 100;
     const settings = getLocalStorage('settings');
 
     const _slowZoomStep = getValue(settings, 'conrtollers.mws.low');
@@ -31,6 +32,7 @@ export default class Spectrum1DZoomHelper {
     const FAST_STEP = _fastZoomStep
       ? 0.05 * _fastZoomStep
       : 0.05 * this.fastZoomStep;
+
     let ZOOM_STEP = deltaYValue <= this.speedThreshold ? LOW_STEP : FAST_STEP;
     // let ZOOM_STEP =
     //   deltaMode === 1
