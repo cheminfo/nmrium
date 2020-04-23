@@ -39,34 +39,33 @@ const stylesHighlighted = css`
   }
 `;
 
-const IntegralResizable = (props) => {
+const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
   const { height, margin, mode } = useChartData();
   const { scaleX } = useScale();
 
-  const { spectrumID, integralData, from, to, integralID } = props;
-
+  const { from, to, id, value } = integralData;
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
 
-  const highlight = useHighlight([integralID]);
+  const highlight = useHighlight([id]);
 
   const xBoundary = useMemo(() => {
-    if (integralData) {
-      return d3.extent(integralData.x);
+    if (integralSeries) {
+      return d3.extent(integralSeries.x);
     } else {
       return [];
     }
-  }, [integralData]);
+  }, [integralSeries]);
 
   const dispatch = useDispatch();
 
   const deleteIntegral = useCallback(() => {
     dispatch({
       type: DELETE_INTEGRAL,
-      integralID: integralID,
+      integralID: id,
       spectrumID: spectrumID,
     });
-  }, [dispatch, integralID, spectrumID]);
+  }, [dispatch, id, spectrumID]);
 
   function DeleteButton() {
     return (
@@ -112,7 +111,7 @@ const IntegralResizable = (props) => {
         const integral = {
           from: range[0],
           to: range[1],
-          id: integralID,
+          id,
         };
         dispatch({
           type: RESIZE_INTEGRAL,
@@ -122,7 +121,7 @@ const IntegralResizable = (props) => {
         const integral = {
           from,
           to,
-          id: integralID,
+          id,
         };
         dispatch({
           type: RESIZE_INTEGRAL,
@@ -130,7 +129,7 @@ const IntegralResizable = (props) => {
         });
       }
     },
-    [dispatch, from, scaleX, integralID, mode, to],
+    [dispatch, from, scaleX, id, mode, to],
   );
   const handleLeftStart = useCallback((e) => {
     e.preventDefault();
@@ -155,7 +154,7 @@ const IntegralResizable = (props) => {
         const integral = {
           from: range[0],
           to: range[1],
-          id: integralID,
+          id,
         };
         dispatch({
           type: RESIZE_INTEGRAL,
@@ -165,7 +164,7 @@ const IntegralResizable = (props) => {
         const integral = {
           from,
           to,
-          id: integralID,
+          id,
         };
 
         dispatch({
@@ -174,7 +173,7 @@ const IntegralResizable = (props) => {
         });
       }
     },
-    [dispatch, from, scaleX, integralID, mode, to],
+    [dispatch, from, scaleX, id, mode, to],
   );
 
   return (
@@ -188,9 +187,19 @@ const IntegralResizable = (props) => {
           x={scaleX()(xBoundary[1])}
           y="0"
           width={scaleX()(xBoundary[0]) - scaleX()(xBoundary[1])}
-          height="100%"
+          height={height - margin.bottom}
           className="highlight"
         />
+        {highlight.isActive && (
+          <text
+            x={scaleX()(xBoundary[1])}
+            y={height - margin.bottom + 30}
+            fill="black"
+            style={{ fontSize: '12px', fontWeight: 'bold' }}
+          >
+            {value.toFixed(2)}
+          </text>
+        )}
         <Draggable
           axis="x"
           defaultPosition={{

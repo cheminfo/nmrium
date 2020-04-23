@@ -4,17 +4,17 @@ import React, { useEffect, useState, useCallback, Fragment } from 'react';
 import IntegralResizable from './IntegralResizable';
 
 const Integral = ({
+  integralData,
   x,
   y,
-  from,
-  to,
   xDomain,
   isActive,
-  integralID,
   spectrumID,
   scaleY,
   scaleX,
 }) => {
+  const { from, to } = integralData;
+
   const [integral, setIntegral] = useState();
 
   useEffect(() => {
@@ -69,10 +69,8 @@ const Integral = ({
 
       <IntegralResizable
         spectrumID={spectrumID}
-        integralID={integralID}
-        integralData={integral}
-        from={from}
-        to={to}
+        integralSeries={integral}
+        integralData={integralData}
         scaleY={scaleY}
       />
     </Fragment>

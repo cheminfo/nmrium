@@ -68,9 +68,7 @@ const IntegralsSeries = () => {
               <g key={integral.id}>
                 <Integral
                   spectrumID={spectrum.id}
-                  integralID={integral.id}
-                  from={integral.from}
-                  to={integral.to}
+                  integralData={integral}
                   x={spectrum.x}
                   y={spectrum.y}
                   isActive={IsActive(spectrum.id)}
