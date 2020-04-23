@@ -7,6 +7,7 @@ import { Datum1D } from './Datum1D';
 export class Data1DManager {
   static fromBruker = function fromBruker(result, color, info, options = {}) {
     let data = getData(result.spectra);
+    if (data.im) info.isComplex = true;
     // let usedColors = data.map((d) => d.color);
     // const color = getColor(usedColors);
     if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
@@ -50,17 +51,17 @@ export class Data1DManager {
 
 function getData(spectra) {
   let x =
-    spectra[0] && spectra[0].data && spectra[0].data[0].x
-      ? spectra[0].data[0].x
+    spectra[0] && spectra[0].data && spectra[0].data.x
+      ? spectra[0].data.x
       : [];
   let re =
-    spectra[0] && spectra[0].data && spectra[0].data[0].y
-      ? spectra[0].data[0].y
+    spectra[0] && spectra[0].data && spectra[0].data.y
+      ? spectra[0].data.y
       : [];
   let im =
-    spectra[1] && spectra[1].data && spectra[1].data[0].y
-      ? spectra[1].data[0].y
-      : new Array(re.length);
+    spectra[1] && spectra[1].data && spectra[1].data.y
+      ? spectra[1].data.y
+      : null;
   // 2 cases. We have real and imaginary part of only real
 
   return im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });

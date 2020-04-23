@@ -50,20 +50,9 @@ export class Analysis {
 
       const zip = await jsZip.loadAsync(zipFile.binary);
 
-      let folders = zip.filter(function(relativePath) {
-        if (relativePath.match('__MACOSX')) return false;
-        if (
-          relativePath.endsWith('ser') ||
-          relativePath.endsWith('fid') ||
-          relativePath.endsWith('1r') ||
-          relativePath.endsWith('2rr')
-        ) {
-          return true;
-        }
-        return false;
-      });
+      let folders = zip.filter( (path) => path.match( /(ser|fid|1r|2rr|__MACOSX)$/ ));
+      
       let spectra = new Array(folders.length);
-  
       for (let i = 0; i < folders.length; ++i) {
         let promises = [];
         let name = folders[i].name;
@@ -95,7 +84,6 @@ export class Analysis {
             name = result[k];
             brukerFiles[name] = result[k + 1];
           }
-          console.log('brukerFiles', brukerFiles)
           const color = getColor(true);
           SpectraManager.addBruker(this.spectra, color, brukerFiles);
         });

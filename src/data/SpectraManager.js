@@ -57,10 +57,8 @@ function addJcampSS(spectra, entry, options) {
 }
 
 export function addBruker(spectra, color, data) {
-  const { acqus, procs, content } = data;
-  let result = convertBruker({ acqus, procs, '1r': content }, { xy: true });
-
+  let result = convertBruker(data, { xy: true });
   let info = getInfoFromMetaData(result.info);
-
   spectra.push(Data1DManager.fromBruker(result, color, info));
 }
+console.log(result)
