@@ -1,4 +1,3 @@
-import * as JSZip from 'jszip';
 import { Molecule } from 'openchemlib';
 
 import getColor from '../component/utility/ColorGenerator';
@@ -29,65 +28,9 @@ export class Analysis {
   static usedColors = [];
 
   async fromZip(zipFiles) {
-    // eslint-disable-next-line no-console
-    const jsZip = new JSZip();
-      const BINARY = 1;
-      const TEXT = 2;
-
     for (let zipFile of zipFiles) {
-
-      let files = {
-        ser: BINARY,
-        fid: BINARY,
-        acqus: TEXT,
-        acqu2s: TEXT,
-        procs: TEXT,
-        proc2s: TEXT,
-        '1r': BINARY,
-        '1i': BINARY,
-        '2rr': BINARY,
-      };
-
-      const zip = await jsZip.loadAsync(zipFile.binary);
-
-      let folders = zip.filter( (path) => path.match( /(ser|fid|1r|2rr|__MACOSX)$/ ));
-      
-      let spectra = new Array(folders.length);
-      for (let i = 0; i < folders.length; ++i) {
-        let promises = [];
-        let name = folders[i].name;
-        name = name.substr(0, name.lastIndexOf('/') + 1);
-        promises.push(name);
-        let currFolder = zip.folder(name);
-        let currFiles = currFolder.filter(function(relativePath) {
-          return files[relativePath] ? true : false;
-        });
-        if (name.indexOf('pdata') >= 0) {
-          promises.push('acqus');
-          promises.push(
-            zip.file(name.replace(/pdata\/[0-9]+\//, 'acqus')).async('string'),
-          );
-        }
-        for (let j = 0; j < currFiles.length; ++j) {
-          let idx = currFiles[j].name.lastIndexOf('/');
-          name = currFiles[j].name.substr(idx + 1);
-          promises.push(name);
-          if (files[name] === BINARY) {
-            promises.push(currFiles[j].async('arraybuffer'));
-          } else {
-            promises.push(currFiles[j].async('string'));
-          }
-        }
-        spectra[i] = Promise.all(promises).then((result) => {
-          let brukerFiles = {};
-          for (let k = 1; k < result.length; k += 2) {
-            name = result[k];
-            brukerFiles[name] = result[k + 1];
-          }
-          const color = getColor(true);
-          SpectraManager.addBruker(this.spectra, color, brukerFiles);
-        });
-      }
+      const color = getColor(true);
+      await SpectraManager.addBruker(this.spectra, color, zipFile.binary);
     }
   }
 

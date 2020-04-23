@@ -1,4 +1,4 @@
-import { convertFolder as convertBruker } from 'brukerconverter';
+import { convertZip as convertBruker } from 'brukerconverter';
 import { convert } from 'jcampconverter';
 
 import { Data1DManager } from './data1d/Data1DManager';
@@ -56,9 +56,13 @@ function addJcampSS(spectra, entry, options) {
   }
 }
 
-export function addBruker(spectra, color, data) {
-  let result = convertBruker(data, { xy: true });
-  let info = getInfoFromMetaData(result.info);
-  spectra.push(Data1DManager.fromBruker(result, color, info));
+export async function addBruker(spectra, color, data) {
+  let result = await convertBruker(data, { xy: true });
+  let entries = result.map(r => r.value);
+  for (let entry of entries) {
+    if (entry.spectra && entry.spectra.length > 0) {
+      let info = getInfoFromMetaData(entry.info);
+      spectra.push(Data1DManager.fromBruker(entry, color, info));
+    }
+  }
 }
-console.log(result)
