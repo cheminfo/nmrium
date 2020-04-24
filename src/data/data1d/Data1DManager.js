@@ -20,6 +20,14 @@ export class Data1DManager {
       info,
       meta: result.info,
       data,
+      source: {
+        jcamp: null,
+        jcampURL:
+          options.source && options.source.jcampURL
+            ? options.source.jcampURL
+            : null,
+        original: data,
+      },
     });
 
     return datum1D;
