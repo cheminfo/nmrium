@@ -91,12 +91,12 @@ const changeIntegral = (state, action) => {
   });
 };
 
-const handleResizeIntegral = (state, integralData) => {
+const handleResizeIntegral = (state, action) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
       const datumObject = AnalysisObj.getDatum(id);
-      datumObject.changeIntegral(integralData);
+      datumObject.changeIntegral(action.data);
       draft.data[index].integrals = datumObject.getIntegrals();
     }
   });

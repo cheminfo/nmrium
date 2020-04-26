@@ -1,14 +1,15 @@
 import { jsx, css } from '@emotion/core';
-import * as d3 from 'd3';
-import { useCallback, useState, Fragment, useMemo } from 'react';
-import Draggable from 'react-draggable';
 /** @jsx jsx */
+import * as d3 from 'd3';
+import { useCallback, Fragment, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight/index';
 import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from '../reducer/types/Types';
+
+import Resizable from './Resizable';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -40,15 +41,14 @@ const stylesHighlighted = css`
 `;
 
 const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
-  const { height, margin, mode } = useChartData();
+  const { height, margin } = useChartData();
   const { scaleX } = useScale();
 
-  const { from, to, id, value } = integralData;
-  const [rightDragVisibility, setRightDragVisibility] = useState(false);
-  const [leftDragVisibility, setLeftDragVisibility] = useState(false);
+  const { id, value } = integralData;
 
   const highlight = useHighlight([id]);
 
+  // isn't it actually the from/to range? -> return [from, to]
   const xBoundary = useMemo(() => {
     if (integralSeries) {
       return d3.extent(integralSeries.x);
@@ -87,95 +87,6 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
     );
   }
 
-  const handleRightStart = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setRightDragVisibility(true);
-  }, []);
-  const handleRightDrag = useCallback(() => {
-    // Empty
-  }, []);
-  const handleRightStop = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      setRightDragVisibility(false);
-
-      const range =
-        mode === 'RTL'
-          ? [scaleX().invert(e.layerX), to]
-          : [to, scaleX().invert(e.layerX)];
-
-      if (range[1] > range[0]) {
-        const integral = {
-          from: range[0],
-          to: range[1],
-          id,
-        };
-        dispatch({
-          type: RESIZE_INTEGRAL,
-          integral,
-        });
-      } else {
-        const integral = {
-          from,
-          to,
-          id,
-        };
-        dispatch({
-          type: RESIZE_INTEGRAL,
-          integral,
-        });
-      }
-    },
-    [dispatch, from, scaleX, id, mode, to],
-  );
-  const handleLeftStart = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setLeftDragVisibility(true);
-  }, []);
-  const handleLeftDrag = useCallback(() => {
-    // Empty
-  }, []);
-  const handleLeftStop = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      setLeftDragVisibility(false);
-      const range =
-        mode === 'RTL'
-          ? [from, scaleX().invert(e.layerX)]
-          : [scaleX().invert(e.layerX), from];
-
-      if (range[1] > range[0]) {
-        const integral = {
-          from: range[0],
-          to: range[1],
-          id,
-        };
-        dispatch({
-          type: RESIZE_INTEGRAL,
-          integral,
-        });
-      } else {
-        const integral = {
-          from,
-          to,
-          id,
-        };
-
-        dispatch({
-          type: RESIZE_INTEGRAL,
-          integral,
-        });
-      }
-    },
-    [dispatch, from, scaleX, id, mode, to],
-  );
-
   return (
     <Fragment>
       <g
@@ -200,53 +111,7 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
             {value.toFixed(2)}
           </text>
         )}
-        <Draggable
-          axis="x"
-          defaultPosition={{
-            x: scaleX()(xBoundary[0]),
-            y: 0,
-          }}
-          position={{
-            x: scaleX()(xBoundary[0]),
-            y: 0,
-          }}
-          scale={1}
-          onStart={handleRightStart}
-          onDrag={handleRightDrag}
-          onStop={handleRightStop}
-        >
-          <rect
-            cursor="ew-resize"
-            width={rightDragVisibility ? 1 : 6}
-            fill="red"
-            height={height + margin.top}
-            style={{ fillOpacity: rightDragVisibility ? 1 : 0 }}
-          />
-        </Draggable>
-
-        <Draggable
-          axis="x"
-          defaultPosition={{
-            x: scaleX()(xBoundary[1]),
-            y: 0,
-          }}
-          position={{
-            x: scaleX()(xBoundary[1]),
-            y: 0,
-          }}
-          scale={1}
-          onStart={handleLeftStart}
-          onDrag={handleLeftDrag}
-          onStop={handleLeftStop}
-        >
-          <rect
-            cursor="ew-resize"
-            width={leftDragVisibility ? 1 : 6}
-            fill="red"
-            height={height + margin.top}
-            style={{ fillOpacity: leftDragVisibility ? 1 : 0 }}
-          />
-        </Draggable>
+        <Resizable data={integralData} dispatchType={RESIZE_INTEGRAL} />
         <DeleteButton />
       </g>
     </Fragment>

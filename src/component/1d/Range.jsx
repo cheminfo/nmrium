@@ -1,11 +1,13 @@
 import { jsx, css } from '@emotion/core';
-import { useCallback } from 'react';
 /** @jsx jsx */
+import { useCallback } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
-import { DELETE_RANGE } from '../reducer/types/Types';
+import { DELETE_RANGE, CHANGE_RANGE_DATA } from '../reducer/types/Types';
+
+import Resizable from './Resizable';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -42,7 +44,8 @@ const stylesHighlighted = css`
   }
 `;
 
-const Range = ({ id, from, to, absolute }) => {
+const Range = ({ rangeData }) => {
+  const { id, from, to, absolute } = rangeData;
   const highlight = useHighlight([id]);
 
   const { scaleX } = useScale();
@@ -79,7 +82,7 @@ const Range = ({ id, from, to, absolute }) => {
       <g transform={`translate(${scaleX()(to)},10)`}>
         <rect
           x="0"
-          width={`${scaleX()(from) - scaleX()(to)}`}
+          width={scaleX()(from) - scaleX()(to)}
           height="6"
           className="range-area"
           fill="green"
@@ -94,6 +97,7 @@ const Range = ({ id, from, to, absolute }) => {
           {absolute.toFixed(1)}
         </text>
       </g>
+      <Resizable data={rangeData} dispatchType={CHANGE_RANGE_DATA} />
       <DeleteButton />
     </g>
   );
