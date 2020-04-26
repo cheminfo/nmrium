@@ -1,8 +1,10 @@
+import { ReIm } from 'ml-spectra-processing';
+
 export const id = 'digitalFilter';
 export const name = 'Digital Filter';
 
 /**
- * Move points from the begining to the end of FID and performe a first order phase correction
+ * Move points from the beginning to the end of FID and performs a first order phase correction
  * @param {Datum1d} datum1d
  */
 
@@ -16,34 +18,40 @@ export function apply(datum1D, options = {}) {
   let re = new Float64Array(datum1D.data.re);
   let im = new Float64Array(datum1D.data.im);
   let ph1;
+  let pointsToShift;
   if (grpdly > 0) {
-    ph1 = grpdly;
+    pointsToShift = Math.floor(Number(grpdly));
   } else {
     if (dspfvs > 14) {
-      ph1 = 0;
+      pointsToShift = 0;
     } else {
       if (!brukerDspTable[dspfvs]) {
         throw new Error('dspfvs not in lookup table');
       } else {
         const dspfvsList = brukerDspTable[dspfvs];
         if (!dspfvsList[decim]) throw new Error('decim not in lookup table');
-        ph1 = dspfvsList[decim];
+        pointsToShift = dspfvsList[decim];
       }
     }
   }
 
-  const skip = Math.floor(ph1 + 2.0);
-  const add = Math.floor(Math.max(skip - 6, 0));
+  const skip = 0;
+  pointsToShift += 0;
 
   const newRe = new Float64Array(re.length);
   const newIm = new Float64Array(im.length);
-  newRe.set(re.slice(skip));
-  newRe.set(re.slice(skip - add, skip), re.length - skip);
-  newIm.set(im.slice(skip));
-  newIm.set(im.slice(skip - add, skip), im.length - skip);
+  newRe.set(re.slice(pointsToShift));
+  newRe.set(re.slice(skip, pointsToShift), re.length - pointsToShift);
+  newIm.set(im.slice(pointsToShift));
+  newIm.set(im.slice(skip, pointsToShift), im.length - pointsToShift);
 
   datum1D.data.re = newRe;
   datum1D.data.im = newIm;
+
+  ph1 = grpdly - pointsToShift;
+
+  ph1 *= Math.PI * 2;
+  Object.assign(datum1D.data, ReIm.phaseCorrection(datum1D.data, 0, ph1));
 }
 
 export function isApplicable(datum1D) {
