@@ -48,13 +48,12 @@ const XAxis = ({ label, show, showGrid, mode }) => {
 
   useEffect(() => {
     const xAxis = d3.axisBottom().ticks(8).tickFormat(d3.format('0'));
-
     const grid = d3
       .axisBottom()
       .ticks(50)
       .tickSize(-(height - margin.top - margin.bottom))
       .tickFormat('');
-    if (show) {
+    if (show && scaleX) {
       d3.select(refAxis.current).call(xAxis.scale(scaleX().domain(xDomain)));
       d3.select(refGrid.current).call(grid.scale(scaleX().domain(xDomain)));
     }
@@ -93,7 +92,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
 
     [showGrid, height, margin.bottom],
   );
-  if (!width || !height) {
+  if (!width || !height || !scaleX) {
     return null;
   }
 
