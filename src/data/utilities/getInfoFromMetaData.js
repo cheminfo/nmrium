@@ -25,6 +25,7 @@ export function getInfoFromMetaData(info) {
   maybeAdd(metadata, 'bf1', info.$BF1);
   maybeAdd(metadata, 'sfo1', info.$SFO1);
   maybeAdd(metadata, 'sw', info.$SW);
+  maybeAdd(metadata, 'numberOfPoints', info.$TD);
   maybeAdd(metadata, 'dspfvs', info.$DSPFVS);
   maybeAdd(metadata, 'decim', info.$DECIM);
   maybeAdd(metadata, 'grpdly', info.$GRPDLY);

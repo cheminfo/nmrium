@@ -9,22 +9,45 @@ export function apply(datum1D, size) {
   if (!isApplicable(datum1D)) {
     throw new Error('zeroFilling not applicable on this data');
   }
+
+  let pointsToShift;
+  if (datum1D.info.grpdly > 0) {
+    pointsToShift = Math.floor(datum1D.info.grpdly);
+  } else {
+    pointsToShift = 0;
+  }
+
   const { re, im, x } = datum1D.data;
   let newRE = new Float64Array(size);
   let newIM = new Float64Array(size);
   let newX = new Float64Array(size);
+
   const length = Math.min(size, re.length);
-  for (let i = 0; i < length; i++) {
+
+  for (let i = 0; i < length - pointsToShift; i++) {
     newRE[i] = re[i];
     newIM[i] = im[i];
     newX[i] = x[i];
   }
+
   let diff = x[1] - x[0];
-  let currentX = x[length - 1];
-  for (let i = length; i < newX.length; i++) {
+  let currentX = x[length - pointsToShift - 1];
+  for (let i = length - pointsToShift; i < size; i++) {
     currentX += diff;
     newX[i] = currentX;
   }
+
+  if (pointsToShift > 0 && pointsToShift < size) {
+    newRE.set(
+      re.slice(re.length - pointsToShift, re.length),
+      size - pointsToShift,
+    );
+    newIM.set(
+      im.slice(re.length - pointsToShift, re.length),
+      size - pointsToShift,
+    );
+  }
+
   datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, x: newX } };
 }
 
