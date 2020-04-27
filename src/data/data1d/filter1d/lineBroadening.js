@@ -12,19 +12,12 @@ export function apply(datum1D, value) {
     throw new Error('lineBroadening not applicable on this data');
   }
 
-  const digitalFilterInfo = datum1D.filters.find(
-    (f) => f.name === 'digitalFilter',
-  );
-  const grpdly = Math.floor(digitalFilterInfo.value.grpdly);
   let pointsToShift;
-  if (!grpdly) {
-    pointsToShift = 0;
+  if (datum1D.info.grpdly > 0) {
+    pointsToShift = Math.floor(datum1D.info.grpdly);
   } else {
-    pointsToShift = grpdly;
+    pointsToShift = 0;
   }
-  //const zeroFillingInfo = datum1D.filters.find((f) => f.name === 'zeroFilling');
-  // const zf = zeroFillingInfo.value;
-  // const originalLength = datum1D.info.numberOfPoints;
 
   const re = datum1D.data.re;
   const im = datum1D.data.im;
