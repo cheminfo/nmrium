@@ -1,8 +1,18 @@
-import React, { useEffect, useState, useCallback, useMemo, memo } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  memo,
+  Fragment,
+  useRef,
+} from 'react';
+import { useAlert } from 'react-alert';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import ContextMenu from '../elements/ContextMenu';
 import { useModal } from '../elements/Modal';
 import { Tabs } from '../elements/Tab';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -15,6 +25,7 @@ import {
   DELETE_SPECTRA,
   SET_ACTIVE_TAB,
 } from '../reducer/types/Types';
+import { copyTextToClipboard } from '../utility/Export';
 import groupByInfoKey from '../utility/GroupByInfoKey';
 
 import ColorPicker from './ColorPicker';
@@ -35,6 +46,8 @@ const styles = {
 
 const SpectrumListPanel = memo(
   ({ data, activeSpectrum, activeTab: activeTabState }) => {
+    const contextRef = useRef();
+
     const [activated, setActivated] = useState(null);
     const [visible, setVisible] = useState([]);
     const [markersVisible, setMarkersVisible] = useState([]);
@@ -44,6 +57,7 @@ const SpectrumListPanel = memo(
     const [activeTabID, setActiveTabID] = useState(null);
     // const { data, activeSpectrum, activeTab: activeTabState } = useChartData();
     const modal = useModal();
+    const alert = useAlert();
     const dispatch = useDispatch();
     const [spectrumsGroupByNucleus, setSpectrumsGroupByNucleus] = useState([]);
 
@@ -187,42 +201,79 @@ const SpectrumListPanel = memo(
       [dispatch],
     );
 
+    const contextMenu = [
+      {
+        label: 'Save to Clipboard',
+        onClick: (data) => {
+          const { x, y } = data;
+          const success = copyTextToClipboard(
+            JSON.stringify({ x, y }, undefined, 2),
+          );
+
+          if (success) {
+            alert.show('Coped to clipboard');
+          } else {
+            alert.error('Coped to clipboard failed');
+          }
+        },
+      },
+    ];
+
+    const contextMenuHandler = useCallback(
+      (e, rowData) => {
+        e.preventDefault();
+        contextRef.current.handleContextMenu(e, rowData);
+      },
+      [contextRef],
+    );
+
     const SpectrumsTabs = useMemo(() => {
       return (
-        <Tabs
-          defaultTabID={
-            activeTabState
-              ? activeTabState
-              : spectrumsGroupByNucleus &&
-                Object.keys(spectrumsGroupByNucleus)[0]
-          }
-          onClick={onTabChangeHandler}
-        >
-          {spectrumsGroupByNucleus &&
-            Object.keys(spectrumsGroupByNucleus).map((group) => (
-              <div label={group} key={group}>
-                {spectrumsGroupByNucleus[group] &&
-                  spectrumsGroupByNucleus[group].map((d) => (
-                    <SpectrumListItem
-                      key={d.id}
-                      visible={visible}
-                      activated={activated}
-                      markersVisible={markersVisible}
-                      data={d}
-                      onChangeVisibility={handleChangeVisibility}
-                      onChangeMarkersVisibility={handleChangeMarkersVisibility}
-                      onChangeActiveSpectrum={handleChangeActiveSpectrum}
-                      onOpenColorPicker={handleOpenColorPicker}
-                    />
-                  ))}
-              </div>
-            ))}
-        </Tabs>
+        <Fragment>
+          <Tabs
+            defaultTabID={
+              activeTabState
+                ? activeTabState
+                : spectrumsGroupByNucleus &&
+                  Object.keys(spectrumsGroupByNucleus)[0]
+            }
+            onClick={onTabChangeHandler}
+          >
+            {spectrumsGroupByNucleus &&
+              Object.keys(spectrumsGroupByNucleus).map((group) => (
+                <div label={group} key={group}>
+                  {spectrumsGroupByNucleus[group] &&
+                    spectrumsGroupByNucleus[group].map((d) => (
+                      <SpectrumListItem
+                        key={d.id}
+                        visible={visible}
+                        activated={activated}
+                        markersVisible={markersVisible}
+                        data={d}
+                        onChangeVisibility={handleChangeVisibility}
+                        onChangeMarkersVisibility={
+                          handleChangeMarkersVisibility
+                        }
+                        onChangeActiveSpectrum={handleChangeActiveSpectrum}
+                        onOpenColorPicker={handleOpenColorPicker}
+                        onContextMenu={(e) =>
+                          d.info.dimension === 1
+                            ? contextMenuHandler(e, d)
+                            : null
+                        }
+                      />
+                    ))}
+                </div>
+              ))}
+          </Tabs>
+          <ContextMenu ref={contextRef} context={contextMenu} />
+        </Fragment>
       );
     }, [
       activeTabState,
       spectrumsGroupByNucleus,
       onTabChangeHandler,
+      contextMenu,
       visible,
       activated,
       markersVisible,
@@ -230,6 +281,7 @@ const SpectrumListPanel = memo(
       handleChangeMarkersVisibility,
       handleChangeActiveSpectrum,
       handleOpenColorPicker,
+      contextMenuHandler,
     ]);
 
     const yesHandler = useCallback(() => {

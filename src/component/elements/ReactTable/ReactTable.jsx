@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { Fragment, useRef, useCallback } from 'react';
 import { useTable, useSortBy } from 'react-table';
 
-import ContextMenu from './ContextMenu';
+import ContextMenu from '../ContextMenu';
+
 import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';

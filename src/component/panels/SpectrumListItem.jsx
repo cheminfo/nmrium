@@ -55,6 +55,7 @@ const SpectrumListItem = memo(
     onChangeMarkersVisibility,
     onChangeActiveSpectrum,
     onOpenColorPicker,
+    onContextMenu,
   }) => {
     const isVisible = (id) => {
       return visible.findIndex((v) => v.id === id) !== -1 ? true : false;
@@ -89,7 +90,7 @@ const SpectrumListItem = memo(
     const { color, name, positiveColor, negativeColor } = data.display;
 
     return (
-      <div style={styles.row} key={data.id}>
+      <div style={styles.row} key={data.id} onContextMenu={onContextMenu}>
         <button
           style={styles.button}
           type="button"
@@ -175,5 +176,9 @@ const SpectrumListItem = memo(
     );
   },
 );
+
+SpectrumListItem.defaultProps = {
+  onContextMenu: () => null,
+};
 
 export default SpectrumListItem;
