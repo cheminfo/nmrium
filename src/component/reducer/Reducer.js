@@ -251,7 +251,7 @@ export function spectrumReducer(state, action) {
       return changeIntegral(state, action);
 
     case RESIZE_INTEGRAL:
-      return handleResizeIntegral(state, action.integral);
+      return handleResizeIntegral(state, action);
 
     case SET_ORIGINAL_DOMAIN:
       return setOriginalDomain(state, action.domain);
