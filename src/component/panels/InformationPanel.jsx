@@ -23,7 +23,7 @@ const InformationPanel = memo(({ data, activeSpectrum }) => {
   const handleSearch = useCallback(
     (input) => {
       const values = Object.keys(information).filter((key) =>
-        key.toLowerCase().includes(input.target.value),
+        key.toLowerCase().includes(input.target.value.toLowerCase()),
       );
       setMatchesData(values);
     },
