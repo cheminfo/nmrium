@@ -50,7 +50,7 @@ function generateXAxis(datum1D) {
   const info = datum1D.info;
   const baseFrequency = parseFloat(info.bf1);
   const spectralFrequency = parseFloat(info.sfo1);
-  const spectralWidth = parseFloat(info.sw) / baseFrequency;
+  const spectralWidth = parseFloat(info.sw);
   const offset = ((spectralFrequency - baseFrequency) / baseFrequency) * 1e6;
   let spectralHalfWidth = 0.5 * spectralWidth;
 
