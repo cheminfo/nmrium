@@ -1,8 +1,8 @@
 import { getNucleusFrom2DExperiment } from './getNucleusFrom2DExperiment';
 import { getSpectrumType } from './getSpectrumType';
 
-export function getInfoFromMetaData(info) {
-  const metadata = {
+export function getInfoFromMetaData(metaData) {
+  const info = {
     dimension: 0,
     nucleus: [],
     isFid: false,
@@ -10,43 +10,43 @@ export function getInfoFromMetaData(info) {
     isComplex: false,
   };
 
-  maybeAdd(metadata, 'title', info.TITLE);
-  maybeAdd(metadata, 'solvent', info['.SOLVENTNAME']);
+  maybeAdd(info, 'title', metaData.TITLE);
+  maybeAdd(info, 'solvent', metaData['.SOLVENTNAME']);
   maybeAdd(
-    metadata,
+    info,
     'pulse',
-    info['.PULSESEQUENCE'] || info['.PULPROG'] || info.$PULPROG,
+    metaData['.PULSESEQUENCE'] || metaData['.PULPROG'] || metaData.$PULPROG,
   );
-  maybeAdd(metadata, 'experiment', getSpectrumType(metadata, info));
-  maybeAdd(metadata, 'temperature', parseFloat(info.$TE || info['.TE']));
-  maybeAdd(metadata, 'frequency', parseFloat(info['.OBSERVEFREQUENCY']));
-  maybeAdd(metadata, 'type', info.DATATYPE);
-  maybeAdd(metadata, 'probe', info.$PROBHD);
-  maybeAdd(metadata, 'bf1', info.$BF1);
-  maybeAdd(metadata, 'sfo1', info.$SFO1);
-  maybeAdd(metadata, 'sw', info.$SW);
-  maybeAdd(metadata, 'numberOfPoints', info.$TD);
-  maybeAdd(metadata, 'dspfvs', info.$DSPFVS);
-  maybeAdd(metadata, 'decim', info.$DECIM);
-  maybeAdd(metadata, 'grpdly', info.$GRPDLY);
+  maybeAdd(info, 'experiment', getSpectrumType(info, metaData));
+  maybeAdd(info, 'temperature', parseFloat(metaData.$TE || metaData['.TE']));
+  maybeAdd(info, 'frequency', parseFloat(metaData['.OBSERVEFREQUENCY']));
+  maybeAdd(info, 'type', metaData.DATATYPE);
+  maybeAdd(info, 'probe', metaData.$PROBHD);
+  maybeAdd(info, 'bf1', metaData.$BF1);
+  maybeAdd(info, 'sfo1', metaData.$SFO1);
+  maybeAdd(info, 'sw', metaData.$SW);
+  maybeAdd(info, 'numberOfPoints', metaData.$TD);
+  maybeAdd(info, 'dspfvs', metaData.$DSPFVS);
+  maybeAdd(info, 'decim', metaData.$DECIM);
+  maybeAdd(info, 'grpdly', metaData.$GRPDLY);
 
-  if (info.$FNTYPE !== undefined) {
-    maybeAdd(metadata, 'acquisitionMode', parseInt(info.$FNTYPE, 10));
+  if (metaData.$FNTYPE !== undefined) {
+    maybeAdd(info, 'acquisitionMode', parseInt(metaData.$FNTYPE, 10));
   }
-  maybeAdd(metadata, 'expno', parseInt(info.$EXPNO, 10));
+  maybeAdd(info, 'expno', parseInt(metaData.$EXPNO, 10));
   // console.log(metadata.type);
-  if (metadata.type) {
-    if (metadata.type.toUpperCase().indexOf('FID') >= 0) {
-      metadata.isFid = true;
-    } else if (metadata.type.toUpperCase().indexOf('SPECTRUM') >= 0) {
-      metadata.isFt = true;
+  if (info.type) {
+    if (info.type.toUpperCase().indexOf('FID') >= 0) {
+      info.isFid = true;
+    } else if (info.type.toUpperCase().indexOf('SPECTRUM') >= 0) {
+      info.isFt = true;
     }
   }
 
   // eslint-disable-next-line dot-notation
-  if (info['$NUC1']) {
+  if (metaData['$NUC1']) {
     // eslint-disable-next-line dot-notation
-    let nucleus = info['$NUC1'];
+    let nucleus = metaData['$NUC1'];
     if (!Array.isArray(nucleus)) nucleus = [nucleus];
     nucleus = nucleus.map((value) =>
       value.replace(/[^A-Za-z0-9]/g, '').replace('NA', ''),
@@ -54,33 +54,33 @@ export function getInfoFromMetaData(info) {
     let beforeLength = nucleus.length;
     nucleus = nucleus.filter((value) => value);
     if (nucleus.length === beforeLength) {
-      metadata.nucleus = nucleus;
+      info.nucleus = nucleus;
     }
   }
 
-  if (!metadata.nucleus || metadata.nucleus.length === 0) {
-    if (info['.NUCLEUS']) {
-      metadata.nucleus = info['.NUCLEUS'].split(',').map((nuc) => nuc.trim());
-    } else if (info['.OBSERVENUCLEUS']) {
-      metadata.nucleus = [info['.OBSERVENUCLEUS'].replace(/[^A-Za-z0-9]/g, '')];
+  if (!info.nucleus || info.nucleus.length === 0) {
+    if (metaData['.NUCLEUS']) {
+      info.nucleus = metaData['.NUCLEUS'].split(',').map((nuc) => nuc.trim());
+    } else if (metaData['.OBSERVENUCLEUS']) {
+      info.nucleus = [metaData['.OBSERVENUCLEUS'].replace(/[^A-Za-z0-9]/g, '')];
     } else {
-      metadata.nucleus = getNucleusFrom2DExperiment(metadata.experiment);
+      info.nucleus = getNucleusFrom2DExperiment(info.experiment);
     }
   }
 
-  metadata.dimension = metadata.nucleus.length;
+  info.dimension = info.nucleus.length;
 
-  if (info.SYMBOL) {
-    let symbols = info.SYMBOL.split(/[, ]+/);
+  if (metaData.SYMBOL) {
+    let symbols = metaData.SYMBOL.split(/[, ]+/);
     if (symbols.includes('R') && symbols.includes('I')) {
-      metadata.isComplex = true;
+      info.isComplex = true;
     }
   }
 
-  if (info.$DATE) {
-    metadata.date = new Date(info.$DATE * 1000).toISOString();
+  if (metaData.$DATE) {
+    info.date = new Date(metaData.$DATE * 1000).toISOString();
   }
-  return metadata;
+  return info;
 }
 
 function maybeAdd(obj, name, value) {
