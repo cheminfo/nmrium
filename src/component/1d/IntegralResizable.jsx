@@ -16,10 +16,11 @@ const stylesOnHover = css`
   @-moz-document url-prefix() {
     pointer-events: fill;
   }
-  :hover .target {
-    visibility: visible !important;
-    cursor: pointer;
-  }
+  // // disabled because Resizable component appears now when hovering over it
+  // :hover .target {
+  //   visibility: visible !important;
+  //   cursor: pointer;
+  // }
   .highlight {
     fill: transparent;
   }
@@ -71,7 +72,7 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
     return (
       <svg
         className="target"
-        x={scaleX()(xBoundary[1]) - 20}
+        x={`${scaleX()(xBoundary[1]) - 20}`}
         y={height - margin.bottom - 20}
         // transform={`translate(${scaleX()(xBoundary[1]) - 20}px,${height -
         //   margin.bottom -
@@ -97,7 +98,7 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
         <rect
           x={scaleX()(xBoundary[1])}
           y="0"
-          width={scaleX()(xBoundary[0]) - scaleX()(xBoundary[1])}
+          width={`${scaleX()(xBoundary[0]) - scaleX()(xBoundary[1])}`}
           height={height - margin.bottom}
           className="highlight"
         />
