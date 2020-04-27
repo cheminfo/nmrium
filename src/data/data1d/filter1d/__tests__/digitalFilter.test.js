@@ -21,7 +21,7 @@ describe('digitalFilter', () => {
     spectrum.data.x = spectrum.data.re.slice();
     apply(spectrum, { grpdly: 6 });
     expect(spectrum.data.re).toStrictEqual(
-      new Float64Array([6, 7, 0, 0, 0, 0, 0, 0]),
+      new Float64Array([6, 7, 0, 1, 2, 3, 4, 5]),
     );
   });
 });
