@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -7,27 +7,25 @@ import Range from './Range';
 const Ranges = () => {
   const { data } = useChartData();
 
+  const _data = useMemo(() => {
+    return (
+      data &&
+      data[0] &&
+      data.filter(
+        (d) => d.display.isVisible === true && d.ranges && d.ranges.values,
+      )
+    );
+  }, [data]);
+
   return (
     <g clipPath="url(#clip)">
-      {data &&
-        data[0] &&
-        data
-          .filter(
-            (d) => d.display.isVisible === true && d.ranges && d.ranges.values,
-          )
-          .map((d) => (
-            <g key={d.id}>
-              {d.ranges.values.map((range) => (
-                <Range
-                  key={range.id}
-                  id={range.id}
-                  from={range.from}
-                  to={range.to}
-                  absolute={range.absolute}
-                />
-              ))}
-            </g>
+      {_data.map((d) => (
+        <g key={d.id}>
+          {d.ranges.values.map((range) => (
+            <Range key={range.id} rangeData={range} />
           ))}
+        </g>
+      ))}
     </g>
   );
 };
