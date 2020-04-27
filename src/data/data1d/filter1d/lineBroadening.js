@@ -11,10 +11,27 @@ export function apply(datum1D, value) {
   if (!isApplicable(datum1D)) {
     throw new Error('lineBroadening not applicable on this data');
   }
+
+  const digitalFilterInfo = datum1D.filters.find(
+    (f) => f.name === 'digitalFilter',
+  );
+  const grpdly = Math.floor(digitalFilterInfo.value.grpdly);
+  let pointsToShift;
+  if (!grpdly) {
+    pointsToShift = 0;
+  } else {
+    pointsToShift = grpdly;
+  }
+  //const zeroFillingInfo = datum1D.filters.find((f) => f.name === 'zeroFilling');
+  // const zf = zeroFillingInfo.value;
+  // const originalLength = datum1D.info.numberOfPoints;
+
   const re = datum1D.data.re;
   const im = datum1D.data.im;
   const t = datum1D.data.x;
+
   const length = re.length;
+
   const newRE = new Float64Array(length); // I don't think we need a new array... here
   const newIM = new Float64Array(length);
   //if (value !== 0) {// is it OK to skip this line if "value" is zero?
@@ -22,9 +39,16 @@ export function apply(datum1D, value) {
   const dw = (t[length - 1] - t[0]) / (length - 1); //REPLACE CONSTANT with calculated value... : for this we need AQ or DW to set it right...
   // convert line broadening in Hz into exponential coefficient:
   const em = -value * Math.exp(1);
+
   const coefExp = Math.exp(em * dw);
   let curFactor = Math.exp(em * t[0]); // in case does not start at zero
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i < length - pointsToShift; i++) {
+    newRE[i] = re[i] * curFactor;
+    newIM[i] = im[i] * curFactor;
+    curFactor = curFactor * coefExp;
+  }
+  curFactor = Math.exp(em * t[0]);
+  for (let i = length; i > length - pointsToShift; i--) {
     newRE[i] = re[i] * curFactor;
     newIM[i] = im[i] * curFactor;
     curFactor = curFactor * coefExp;
