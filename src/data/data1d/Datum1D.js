@@ -133,6 +133,27 @@ export class Datum1D {
     return this.ranges;
   }
 
+  getRangeAbsolute(from, to) {
+    return this.getIntegration(from, to);
+  }
+  getRangeIntegral(from, to) {
+    return 0;
+  }
+
+  resizeRange(range) {
+    this.ranges = Object.assign({}, this.ranges);
+    this.ranges.values = this.ranges.values.slice();
+    const index = this.ranges.values.findIndex((i) => i.id === range.id);
+    if (index !== -1) {
+      this.ranges.values[index] = {
+        ...this.ranges.values[index],
+        ...range,
+        ...{ absolute: this.getRangeAbsolute(range.from, range.to) },
+        ...{ integral: this.getRangeIntegral(range.from, range.to) },
+      };
+    }
+  }
+
   /**
    * Calculates the integral for a range
    * @param {*} range
@@ -389,7 +410,7 @@ export class Datum1D {
 
         from,
         to,
-        absolute: this.getIntegration(from, to), // the real value,
+        absolute: this.getRangeAbsolute(from, to), // the real value,
         signal: [
           {
             delta: result.chemShift,
@@ -399,7 +420,7 @@ export class Datum1D {
           },
         ],
         kind: 'signal',
-        integral: 0,
+        integral: this.getRangeIntegral(from, to),
       };
       this.ranges.values.push(range);
     } catch (e) {
