@@ -56,13 +56,13 @@ function addJcampSS(spectra, entry, options) {
   }
 }
 
-export async function addBruker(spectra, color, data) {
+export async function addBruker(spectra, options, data) {
   let result = await convertBruker(data, { xy: true });
   let entries = result.map((r) => r.value);
   for (let entry of entries) {
     if (entry.spectra && entry.spectra.length > 0) {
       let info = getInfoFromMetaData(entry.info);
-      spectra.push(Data1DManager.fromBruker(entry, color, info));
+      spectra.push(Data1DManager.fromBruker(entry, { ...options, info }));
     }
   }
 }

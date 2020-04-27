@@ -5,19 +5,16 @@ import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
 import { Datum1D } from './Datum1D';
 
 export class Data1DManager {
-  static fromBruker = function fromBruker(result, color, info, options = {}) {
+  static fromBruker = function fromBruker(result, options = {}) {
+    const { info } = options;
     let data = getData(result.spectra);
     if (data.im) info.isComplex = true;
     // let usedColors = data.map((d) => d.color);
     // const color = getColor(usedColors);
-    if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
+    if (Array.isArray(info.nucleus)) options.info.nucleus = info.nucleus[0];
 
     const datum1D = new Datum1D({
       ...options,
-      display: {
-        color,
-      },
-      info,
       meta: result.info,
       data,
       source: {

@@ -30,7 +30,11 @@ export class Analysis {
   async fromZip(zipFiles) {
     for (let zipFile of zipFiles) {
       const color = getColor(true);
-      await SpectraManager.addBruker(this.spectra, color, zipFile.binary);
+      await SpectraManager.addBruker(
+        this.spectra,
+        { display: { color, name: zipFile.name } },
+        zipFile.binary,
+      );
     }
   }
 
