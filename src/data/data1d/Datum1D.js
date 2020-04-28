@@ -78,10 +78,10 @@ export class Datum1D {
     this.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
     this.ranges = Object.assign({ values: [], options: {} }, options.ranges);
 
-    this.preprocessing();
-
     //reapply filters after load the original data
     FiltersManager.reapplyFilters(this);
+
+    this.preprocessing();
   }
 
   reapplyFilters() {
@@ -89,7 +89,10 @@ export class Datum1D {
   }
 
   preprocessing() {
-    if (this.info.isFid) {
+    if (
+      this.info.isFid &&
+      this.filters.findIndex((f) => f.name === Filters.digitalFilter.id) === -1
+    ) {
       this.applyFilter([
         {
           name: Filters.digitalFilter.id,
