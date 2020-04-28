@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import { X } from 'ml-spectra-processing';
 import React, { useCallback, useMemo, memo, useState } from 'react';
 import { useAlert } from 'react-alert';
@@ -11,7 +12,6 @@ import ReactTable from '../elements/ReactTable/ReactTable';
 import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
 import Select from '../elements/Select';
 import ToolTip from '../elements/ToolTip/ToolTip';
-import ConnectToContext from '../hoc/ConnectToContext';
 import CopyClipboardModal from '../modal/CopyClipboardModal';
 import NumberInputModal from '../modal/NumberInputModal';
 import {
@@ -20,10 +20,12 @@ import {
   CHANGE_RANGE_SUM,
 } from '../reducer/types/Types';
 import { copyTextToClipboard } from '../utility/Export';
+import formatNumber from '../utility/FormatNumber';
 
 import { SignalKinds } from './constants/SignalsKinds';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
 import NoTableData from './placeholder/NoTableData';
+import { rangeDefaultValues } from './preferences-panels/defaultValues';
 
 const styles = {
   toolbar: {
@@ -50,9 +52,14 @@ const styles = {
 
 const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
-const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
-  // const { data: SpectrumsData, activeSpectrum } = useChartData();
-  const { xDomain } = useChartData();
+const RangesTablePanel = memo(() => {
+  const {
+    data: SpectrumsData,
+    activeSpectrum,
+    xDomain,
+    preferences,
+    activeTab,
+  } = useChartData();
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [rangesCounter, setRangesCounter] = useState(0);
 
@@ -171,8 +178,9 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
   }, [closeClipBoardHandler, data, modal, saveToClipboardHandler]);
 
   // define columns for different (sub)tables and expandable ones
-  const columnsRanges = [
+  const columnsRangesDefault = [
     {
+      orderIndex: 1,
       Header: () => null,
       id: 'expander',
       Cell: ({ row }) => (
@@ -182,31 +190,24 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
       ),
     },
     {
+      orderIndex: 2,
       Header: '#',
       Cell: ({ row }) => row.index + 1,
     },
     {
+      orderIndex: 3,
       Header: 'From',
       accessor: 'from',
       Cell: ({ row }) => row.original.from.toFixed(2),
     },
     {
+      orderIndex: 4,
       Header: 'To',
       accessor: 'to',
       Cell: ({ row }) => row.original.to.toFixed(2),
     },
-
     {
-      Header: 'Absolute',
-      accessor: 'absolute',
-      Cell: ({ row }) => row.original.absolute.toFixed(1),
-    },
-    {
-      Header: 'Integral',
-      accessor: 'integral',
-      Cell: ({ row }) => row.original.integral.toFixed(1),
-    },
-    {
+      orderIndex: 7,
       Header: '#Signals',
       Cell: ({ row }) =>
         `${row.original.signal.length}: ${row.original.signal
@@ -214,6 +215,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
           .join(',')}`,
     },
     {
+      orderIndex: 7,
       Header: 'Kind',
       accessor: 'kind',
       sortType: 'basic',
@@ -228,6 +230,7 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
       ),
     },
     {
+      orderIndex: 8,
       Header: '',
       id: 'delete-button',
       Cell: ({ row }) => (
@@ -241,6 +244,63 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
       ),
     },
   ];
+
+  const checkPreferences = (rangesPreferences, key) => {
+    const val =
+      rangesPreferences === undefined ||
+      Object.keys(rangesPreferences).length === 0 ||
+      (rangesPreferences && rangesPreferences[key] === true)
+        ? true
+        : false;
+    return val;
+  };
+
+  const columnsRanges = useMemo(() => {
+    const setCustomColumn = (array, index, columnLabel, cellHandler) => {
+      array.push({
+        orderIndex: index,
+        Header: columnLabel,
+        sortType: 'basic',
+        Cell: ({ row }) => cellHandler(row),
+      });
+    };
+
+    const rangesPreferences = lodash.get(
+      preferences,
+      `panels.ranges.[${activeTab}]`,
+    );
+    let cols = [...columnsRangesDefault];
+    if (checkPreferences(rangesPreferences, 'showIntegral')) {
+      setCustomColumn(cols, 5, 'Integral', (row) =>
+        formatNumber(
+          row.original.integral,
+          rangesPreferences &&
+            Object.prototype.hasOwnProperty.call(
+              rangesPreferences,
+              'integralFormat',
+            )
+            ? rangesPreferences.integralFormat
+            : rangeDefaultValues.integralFormat,
+        ),
+      );
+    }
+    if (checkPreferences(rangesPreferences, 'showNB')) {
+      const n = activeTab && activeTab.replace(/[0-9]/g, '');
+      setCustomColumn(cols, 6, `nb ${n}`, (row) =>
+        formatNumber(
+          row.original.relative,
+          rangesPreferences &&
+            Object.prototype.hasOwnProperty.call(rangesPreferences, 'NBFormat')
+            ? rangesPreferences.NBFormat
+            : rangeDefaultValues.NBFormat,
+        ),
+      );
+    }
+
+    return cols.sort(
+      (object1, object2) => object1.orderIndex - object2.orderIndex,
+    );
+  }, [activeTab, columnsRangesDefault, preferences]);
 
   const columnsSignals = [
     {
@@ -404,4 +464,4 @@ const RangesTablePanel = memo(({ data: SpectrumsData, activeSpectrum }) => {
   );
 });
 
-export default ConnectToContext(RangesTablePanel, useChartData);
+export default RangesTablePanel;
