@@ -51,16 +51,16 @@ function generateXAxis(datum1D) {
   const baseFrequency = parseFloat(info.bf1);
   const spectralFrequency = parseFloat(info.sfo1);
   const spectralWidth = parseFloat(info.sw);
-  const xMiddle = ((spectralFrequency - baseFrequency) / baseFrequency) * 1e6;
-  let dx = (0.5 * spectralWidth * spectralFrequency) / baseFrequency;
+  const offset = ((spectralFrequency - baseFrequency) / baseFrequency) * 1e6;
+  let spectralHalfWidth = 0.5 * spectralWidth;
 
   let nbPoints = datum1D.data.x.length;
-  let tmp = xMiddle - dx;
-  dx = (2 * dx) / (nbPoints - 1);
+  let firstPoint = offset - spectralHalfWidth;
+  let dx = spectralWidth / (nbPoints - 1);
   const xAxis = new Array(nbPoints);
   for (let i = 0; i < nbPoints; i++) {
-    xAxis[i] = tmp;
-    tmp += dx;
+    xAxis[i] = firstPoint;
+    firstPoint += dx;
   }
   return xAxis;
 }

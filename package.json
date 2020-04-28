@@ -7,7 +7,7 @@
   ],
   "dependencies": {
     "@emotion/core": "^10.0.28",
-    "brukerconverter": "^2.0.0",
+    "brukerconverter": "^2.1.0",
     "cheminfo-font": "^0.25.0",
     "d3": "^5.15.1",
     "file-saver": "^2.0.2",
