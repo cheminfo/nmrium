@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
-import { DELETE_RANGE, CHANGE_RANGE_DATA } from '../reducer/types/Types';
+import { DELETE_RANGE, RESIZE_RANGE } from '../reducer/types/Types';
 
 import Resizable from './Resizable';
 
@@ -57,6 +57,18 @@ const Range = ({ rangeData }) => {
     dispatch({ type: DELETE_RANGE, rangeID: id });
   }, [dispatch, id]);
 
+  // const handleOnStartResizing = useCallback(() => {}, []);
+
+  const handleOnStopResizing = useCallback(
+    (resized) => {
+      dispatch({
+        type: RESIZE_RANGE,
+        data: { ...rangeData, ...resized },
+      });
+    },
+    [dispatch, rangeData],
+  );
+
   const DeleteButton = () => {
     return (
       <svg
@@ -99,7 +111,12 @@ const Range = ({ rangeData }) => {
           {absolute.toFixed(1)}
         </text>
       </g>
-      <Resizable data={rangeData} dispatchType={CHANGE_RANGE_DATA} />
+      <Resizable
+        from={rangeData.from}
+        to={rangeData.to}
+        // onDrag={handleOnStartResizing}
+        onDrop={handleOnStopResizing}
+      />
       <DeleteButton />
     </g>
   );

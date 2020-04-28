@@ -60,9 +60,10 @@ import {
 import {
   handleAutoRangesDetection,
   handleDeleteRange,
-  handelChangeRange,
+  handleChangeRange,
   handleChangeRangeSum,
   handleAddRange,
+  handleResizeRange,
 } from './actions/RangesActions';
 import {
   handleSpectrumVisibility,
@@ -152,6 +153,7 @@ import {
   CHANGE_RANGE_SUM,
   ADD_RANGE,
   SET_2D_LEVEL,
+  RESIZE_RANGE,
 } from './types/Types';
 
 export const initialState = {
@@ -352,7 +354,9 @@ export function spectrumReducer(state, action) {
     case DELETE_RANGE:
       return handleDeleteRange(state, action.rangeID);
     case CHANGE_RANGE_DATA:
-      return handelChangeRange(state, action);
+      return handleChangeRange(state, action);
+    case RESIZE_RANGE:
+      return handleResizeRange(state, action);
     case CHANGE_RANGE_SUM:
       return handleChangeRangeSum(state, action.value);
     case SET_PREFERENCES:

@@ -4,46 +4,27 @@ import { Fragment, useCallback, useState } from 'react';
 import Draggable from 'react-draggable';
 
 import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 
-const Resizable = ({ data, dispatchType }) => {
+const Resizable = ({ from, to, onDrag, onDrop }) => {
   const { height, margin, mode } = useChartData();
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
 
-  const { from, to } = data;
-
   const { scaleX } = useScale();
-  const dispatch = useDispatch();
 
-  const handleRangeChanged = useCallback(
-    (range) => {
-      let _data;
-      if (range[1] > range[0]) {
-        _data = {
-          from: range[0],
-          to: range[1],
-        };
-      } else {
-        _data = {
-          from,
-          to,
-        };
+  const handleRightStart = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setRightDragVisibility(true);
+
+      if (onDrag) {
+        onDrag();
       }
-      dispatch({
-        type: dispatchType,
-        data: { ...data, ..._data },
-      });
     },
-    [data, dispatch, dispatchType, from, to],
+    [onDrag],
   );
-
-  const handleRightStart = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setRightDragVisibility(true);
-  }, []);
   const handleRightDrag = useCallback(() => {
     // Empty
   }, []);
@@ -59,16 +40,36 @@ const Resizable = ({ data, dispatchType }) => {
           ? [scaleX().invert(e.layerX), to]
           : [to, scaleX().invert(e.layerX)];
 
-      handleRangeChanged(_range);
+      let resized;
+      if (_range[1] > _range[0]) {
+        resized = {
+          from: _range[0],
+          to: _range[1],
+        };
+      } else {
+        resized = {
+          from,
+          to,
+        };
+      }
+
+      onDrop(resized);
     },
-    [handleRangeChanged, mode, scaleX, to],
+    [from, mode, onDrop, scaleX, to],
   );
 
-  const handleLeftStart = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setLeftDragVisibility(true);
-  }, []);
+  const handleLeftStart = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setLeftDragVisibility(true);
+
+      if (onDrag) {
+        onDrag();
+      }
+    },
+    [onDrag],
+  );
   const handleLeftDrag = useCallback(() => {
     // Empty
   }, []);
@@ -83,9 +84,22 @@ const Resizable = ({ data, dispatchType }) => {
           ? [from, scaleX().invert(e.layerX)]
           : [scaleX().invert(e.layerX), from];
 
-      handleRangeChanged(_range);
+      let resized;
+      if (_range[1] > _range[0]) {
+        resized = {
+          from: _range[0],
+          to: _range[1],
+        };
+      } else {
+        resized = {
+          from,
+          to,
+        };
+      }
+
+      onDrop(resized);
     },
-    [from, handleRangeChanged, mode, scaleX],
+    [from, mode, onDrop, scaleX, to],
   );
 
   return (

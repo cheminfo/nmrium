@@ -28,6 +28,7 @@ const stylesOnHover = css`
     visibility: hidden;
   }
 `;
+
 const stylesHighlighted = css`
   pointer-events: bounding-box;
 
@@ -88,6 +89,18 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
     );
   }
 
+  // const handleOnStartResizing = useCallback(() => {}, []);
+
+  const handleOnStopResizing = useCallback(
+    (resized) => {
+      dispatch({
+        type: RESIZE_INTEGRAL,
+        data: { ...integralData, ...resized },
+      });
+    },
+    [dispatch, integralData],
+  );
+
   return (
     <Fragment>
       <g
@@ -112,7 +125,12 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
             {value.toFixed(2)}
           </text>
         )}
-        <Resizable data={integralData} dispatchType={RESIZE_INTEGRAL} />
+        <Resizable
+          from={integralData.from}
+          to={integralData.to}
+          // onDrag={handleOnStartResizing}
+          onDrop={handleOnStopResizing}
+        />
         <DeleteButton />
       </g>
     </Fragment>

@@ -25,12 +25,23 @@ const handleDeleteRange = (state, rangeID) => {
   });
 };
 
-const handelChangeRange = (state, action) => {
+const handleChangeRange = (state, action) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
       const datumObject = AnalysisObj.getDatum(id);
       datumObject.setRange(action.data);
+      draft.data[index].ranges = datumObject.getRanges();
+    }
+  });
+};
+
+const handleResizeRange = (state, action) => {
+  return produce(state, (draft) => {
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      const datumObject = AnalysisObj.getDatum(id);
+      datumObject.resizeRange(action.data);
       draft.data[index].ranges = datumObject.getRanges();
     }
   });
@@ -71,7 +82,8 @@ const handleAddRange = (state, action) => {
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
-  handelChangeRange,
+  handleChangeRange,
   handleChangeRangeSum,
   handleAddRange,
+  handleResizeRange,
 };
