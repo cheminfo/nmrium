@@ -173,34 +173,36 @@ const IntegralTablePanel = memo(
       );
       // if (integralsPreferences) {
       let cols = [...defaultColumns];
-      if (checkPreferences(integralsPreferences, 'showValue')) {
-        setCustomColumn(cols, 4, 'Value', (row) =>
+      if (checkPreferences(integralsPreferences, 'showAbsolute')) {
+        setCustomColumn(cols, 4, 'Absolute', (row) =>
           formatNumber(
-            row.original.value,
+            row.original.absolute,
             integralsPreferences &&
               Object.prototype.hasOwnProperty.call(
                 integralsPreferences,
-                'valueFormat',
+                'absoluteFormat',
               )
-              ? integralsPreferences.valueFormat
-              : integralDefaultValues.valueFormat,
+              ? integralsPreferences.absoluteFormat
+              : integralDefaultValues.absoluteFormat,
           ),
         );
       }
       if (checkPreferences(integralsPreferences, 'showNB')) {
         const n = activeTab && activeTab.replace(/[0-9]/g, '');
-        setCustomColumn(cols, 5, `nb ${n}`, (row) =>
-          formatNumber(
-            row.original.relative,
-            integralsPreferences &&
-              Object.prototype.hasOwnProperty.call(
-                integralsPreferences,
-                'NBFormat',
+        setCustomColumn(cols, 5, `nb ${n}`, (row) => {
+          return row.original.integral
+            ? formatNumber(
+                row.original.integral,
+                integralsPreferences &&
+                  Object.prototype.hasOwnProperty.call(
+                    integralsPreferences,
+                    'NBFormat',
+                  )
+                  ? integralsPreferences.NBFormat
+                  : integralDefaultValues.NBFormat,
               )
-              ? integralsPreferences.NBFormat
-              : integralDefaultValues.NBFormat,
-          ),
-        );
+            : null;
+        });
       }
 
       return cols.sort(

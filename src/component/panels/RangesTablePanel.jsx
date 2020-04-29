@@ -270,31 +270,36 @@ const RangesTablePanel = memo(() => {
       `panels.ranges.[${activeTab}]`,
     );
     let cols = [...columnsRangesDefault];
-    if (checkPreferences(rangesPreferences, 'showIntegral')) {
-      setCustomColumn(cols, 5, 'Integral', (row) =>
+    if (checkPreferences(rangesPreferences, 'showAbsolute')) {
+      setCustomColumn(cols, 5, 'Absolute', (row) =>
         formatNumber(
-          row.original.integral,
+          row.original.absolute,
           rangesPreferences &&
             Object.prototype.hasOwnProperty.call(
               rangesPreferences,
-              'integralFormat',
+              'absoluteFormat',
             )
-            ? rangesPreferences.integralFormat
-            : rangeDefaultValues.integralFormat,
+            ? rangesPreferences.absoluteFormat
+            : rangeDefaultValues.absoluteFormat,
         ),
       );
     }
     if (checkPreferences(rangesPreferences, 'showNB')) {
       const n = activeTab && activeTab.replace(/[0-9]/g, '');
-      setCustomColumn(cols, 6, `nb ${n}`, (row) =>
-        formatNumber(
-          row.original.relative,
-          rangesPreferences &&
-            Object.prototype.hasOwnProperty.call(rangesPreferences, 'NBFormat')
-            ? rangesPreferences.NBFormat
-            : rangeDefaultValues.NBFormat,
-        ),
-      );
+      setCustomColumn(cols, 6, `nb ${n}`, (row) => {
+        return row.original.integral
+          ? formatNumber(
+              row.original.integral,
+              rangesPreferences &&
+                Object.prototype.hasOwnProperty.call(
+                  rangesPreferences,
+                  'NBFormat',
+                )
+                ? rangesPreferences.NBFormat
+                : rangeDefaultValues.NBFormat,
+            )
+          : null;
+      });
     }
 
     return cols.sort(

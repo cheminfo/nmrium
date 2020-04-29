@@ -1,13 +1,13 @@
 const integralDefaultValues = {
-  showValue: true,
-  valueFormat: '0.00',
+  showAbsolute: true,
+  absoluteFormat: '0.0',
   showNB: true,
   NBFormat: '0.00',
 };
 
 const rangeDefaultValues = {
-  showIntegral: true,
-  integralFormat: '0.00',
+  showAbsolute: true,
+  absoluteFormat: '0.0',
   showNB: true,
   NBFormat: '0.00',
 };

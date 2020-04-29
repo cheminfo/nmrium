@@ -47,7 +47,7 @@ const stylesHighlighted = css`
 `;
 
 const Range = ({ rangeData }) => {
-  const { id, from, to, integral } = rangeData;
+  const { id, from, to, absolute } = rangeData;
   const highlight = useHighlight([id]);
 
   const { scaleX } = useScale();
@@ -108,7 +108,7 @@ const Range = ({ rangeData }) => {
           fontSize="10"
           fill="red"
         >
-          {integral.toFixed(1)}
+          {absolute.toFixed(1)}
         </text>
       </g>
       <Resizable

@@ -122,7 +122,7 @@ export class Datum1D {
 
   setRanges(ranges) {
     this.ranges = ranges;
-    this.updateRelativeRanges();
+    this.updateIntegralRanges();
   }
 
   setRange(data) {
@@ -132,7 +132,7 @@ export class Datum1D {
       (range) => range.id === data.id,
     );
     this.ranges.values[RangeIndex] = data;
-    this.updateRelativeRanges();
+    this.updateIntegralRanges();
   }
 
   getRanges() {
@@ -150,11 +150,10 @@ export class Datum1D {
       id: generateID(),
       from: range[0],
       to: range[1],
-      value: this.getIntegration(range[0], range[1]), // the real value
-      relative: 0, // relative value
+      absolute: this.getIntegration(range[0], range[1]), // the real value
       kind: 'signal',
     });
-    this.updateRelativeIntegrals();
+    this.updateIntegralIntegrals();
   }
 
   getIntegration(from, to) {
@@ -170,42 +169,42 @@ export class Datum1D {
   changeIntegralSum(sumValue) {
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.options = { ...this.integrals.options, sum: sumValue };
-    this.updateRelativeIntegrals();
+    this.updateIntegralIntegrals();
   }
 
   changeRangesSum(sumValue) {
     this.ranges = Object.assign({}, this.ranges);
     this.ranges.options = { ...this.ranges.options, sum: sumValue };
-    this.updateRelativeRanges();
+    this.updateIntegralRanges();
   }
 
-  updateRelativeIntegrals() {
+  updateIntegralIntegrals() {
     const sum = this.integrals.options.sum || 100;
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
-    let currentSum = this.integrals.values.reduce(
-      (previous, current) => (previous += current.value),
-      0,
-    );
-    let factor = sum / currentSum;
-    this.integrals.values = this.integrals.values.map((integral) => {
-      const relative = integral.value * factor;
-      return { ...integral, relative };
-    });
+
+    this.integrals.values = this._updateIntegral(this.integrals.values, sum);
   }
 
-  updateRelativeRanges() {
+  updateIntegralRanges() {
     const sum = this.ranges.options.sum || 100;
     this.ranges = Object.assign({}, this.ranges);
     this.ranges.values = this.ranges.values.slice();
-    let currentSum = this.ranges.values.reduce(
-      (previous, current) => (previous += current.integral),
-      0,
-    );
+
+    this.ranges.values = this._updateIntegral(this.ranges.values, sum);
+  }
+
+  _updateIntegral(values, sum, kind = 'signal') {
+    let currentSum = values.reduce((previous, current) => {
+      return current.kind && current.kind === kind
+        ? (previous += current.absolute)
+        : previous;
+    }, 0);
     let factor = sum / currentSum;
-    this.ranges.values = this.ranges.values.map((range) => {
-      const relative = range.integral * factor;
-      return { ...range, relative };
+    return values.map((value) => {
+      return value.kind && value.kind === kind
+        ? { ...value, integral: value.absolute * factor }
+        : { ...value, integral: null };
     });
   }
 
@@ -217,9 +216,9 @@ export class Datum1D {
       this.integrals.values[index] = {
         ...this.integrals.values[index],
         ...integral,
-        ...{ value: this.getIntegration(integral.from, integral.to) },
+        ...{ absolute: this.getIntegration(integral.from, integral.to) },
       };
-      this.updateRelativeIntegrals();
+      this.updateIntegralIntegrals();
     }
   }
 
@@ -252,11 +251,12 @@ export class Datum1D {
       return {
         id: generateID(),
         ...range,
-        integral: this.getIntegration(range.from, range.to),
+        absolute: this.getIntegration(range.from, range.to),
         kind: 'signal',
+        signal: [{ ...range.signal[0], from: range.from, to: range.to }],
       };
     });
-    this.updateRelativeRanges();
+    this.updateIntegralRanges();
 
     return this.ranges;
   }
@@ -284,7 +284,7 @@ export class Datum1D {
         (range) => range.id !== id,
       );
     }
-    this.updateRelativeRanges();
+    this.updateIntegralRanges();
   }
   deleteIntegral(id) {
     this.integrals = Object.assign({}, this.integrals);
@@ -297,7 +297,7 @@ export class Datum1D {
         (integral) => integral.id !== id,
       );
     }
-    this.updateRelativeIntegrals();
+    this.updateIntegralIntegrals();
   }
 
   setIntegral(data) {
@@ -307,7 +307,7 @@ export class Datum1D {
       (integral) => integral.id === data.id,
     );
     this.integrals.values[integralIndex] = data;
-    this.updateRelativeIntegrals();
+    this.updateIntegralIntegrals();
   }
 
   /***
@@ -405,20 +405,20 @@ export class Datum1D {
 
         from,
         to,
-        integral: this.getIntegration(from, to), // the real value,
+        absolute: this.getIntegration(from, to), // the real value,
         signal: [this.detectSignal(from, to)],
 
         kind: 'signal',
       };
       this.ranges.values.push(range);
-      this.updateRelativeRanges();
+      this.updateIntegralRanges();
     } catch (e) {
       // navigator.clipboard.writeText(JSON.stringify(data, undefined, 2));
       throw new Error('Could not calculate the multiplicity');
     }
   }
 
-  resizeRange(range) {
+  changeRange(range) {
     this.ranges = Object.assign({}, this.ranges);
     this.ranges.values = this.ranges.values.slice();
     const index = this.ranges.values.findIndex((i) => i.id === range.id);
@@ -426,10 +426,10 @@ export class Datum1D {
       this.ranges.values[index] = {
         ...this.ranges.values[index],
         ...range,
-        ...{ integral: this.getIntegration(range.from, range.to) },
+        ...{ absolute: this.getIntegration(range.from, range.to) },
       };
+      this.updateIntegralRanges();
     }
-    this.updateRelativeRanges();
   }
 
   addPeak(peak) {
