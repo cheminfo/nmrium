@@ -97,7 +97,7 @@ export class Datum1D {
         {
           name: Filters.digitalFilter.id,
           options: {
-            digitalFilterValue: this.info['digital filter'],
+            digitalFilterValue: this.info.digitalFilter,
           },
           isDeleteAllow: false,
         },

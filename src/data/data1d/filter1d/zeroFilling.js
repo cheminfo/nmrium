@@ -9,7 +9,7 @@ export function apply(datum1D, size) {
   if (!isApplicable(datum1D)) {
     throw new Error('zeroFilling not applicable on this data');
   }
-  let grpdly = datum1D.info['digital filter'];
+  let grpdly = datum1D.info.digitalFilter;
   let pointsToShift;
   if (grpdly > 0) {
     pointsToShift = Math.floor(grpdly);

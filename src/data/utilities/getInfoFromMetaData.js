@@ -33,7 +33,7 @@ export function getInfoFromMetaData(metaData) {
     metaData.$DSPFVS,
     metaData.$DECIM,
   );
-  maybeAdd(info, 'digital filter', digitalFilterParameters);
+  maybeAdd(info, 'digitalFilter', digitalFilterParameters);
 
   if (metaData.$FNTYPE !== undefined) {
     maybeAdd(info, 'acquisitionMode', parseInt(metaData.$FNTYPE, 10));
