@@ -72,23 +72,22 @@ const applyFFTFilter = (state) => {
 const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
   return produce(state, (draft) => {
     const { id, index } = draft.activeSpectrum;
-    draft.data = AnalysisObj.getSpectraData();
+    // draft.data = AnalysisObj.getSpectraData();
+    let { ph0, ph1 } = filterOptions;
 
     const activeObject = AnalysisObj.getDatum(id);
+    const closest = getClosestNumber(draft.data[index].x, state.pivot);
+    const pivotIndex = draft.data[index].x.indexOf(closest);
+
+    ph0 = ph0 - (ph1 * pivotIndex) / draft.data[index].y.length;
 
     activeObject.applyFilter([
-      { name: Filters.phaseCorrection.id, options: filterOptions },
+      { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
     ]);
 
-    activeObject.reapplyFilters();
-    const XYData = activeObject.getReal();
-
-    draft.data[index].x = XYData.x;
-    draft.data[index].y = XYData.y;
-    draft.selectedOptionPanel = null;
-    draft.selectedTool = options.zoom.id;
+    setDataByFilters(draft, activeObject, id);
     draft.dataSnapshot = null;
-    draft.data[index].filters = activeObject.getFilters();
+    draft.tempData = null;
     setDomain(draft);
   });
 };

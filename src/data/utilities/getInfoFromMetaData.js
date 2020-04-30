@@ -1,3 +1,4 @@
+import { getDigitalFilterParameters } from './getDigitalFilterParameters';
 import { getNucleusFrom2DExperiment } from './getNucleusFrom2DExperiment';
 import { getSpectrumType } from './getSpectrumType';
 
@@ -24,17 +25,20 @@ export function getInfoFromMetaData(metaData) {
   maybeAdd(info, 'probe', metaData.$PROBHD);
   maybeAdd(info, 'bf1', metaData.$BF1);
   maybeAdd(info, 'sfo1', metaData.$SFO1);
-  maybeAdd(info, 'sw', metaData.$SW);
-  maybeAdd(info, 'numberOfPoints', metaData.$TD);
-  maybeAdd(info, 'dspfvs', metaData.$DSPFVS);
-  maybeAdd(info, 'decim', metaData.$DECIM);
-  maybeAdd(info, 'grpdly', metaData.$GRPDLY);
+  maybeAdd(info, 'spectralWidth', metaData.$SW);
+  maybeAdd(info, 'number of points', metaData.$TD);
+
+  let digitalFilterParameters = getDigitalFilterParameters(
+    metaData.$GRPDLY,
+    metaData.$DSPFVS,
+    metaData.$DECIM,
+  );
+  maybeAdd(info, 'digitalFilter', digitalFilterParameters);
 
   if (metaData.$FNTYPE !== undefined) {
     maybeAdd(info, 'acquisitionMode', parseInt(metaData.$FNTYPE, 10));
   }
   maybeAdd(info, 'expno', parseInt(metaData.$EXPNO, 10));
-  // console.log(metadata.type);
   if (info.type) {
     if (info.type.toUpperCase().indexOf('FID') >= 0) {
       info.isFid = true;

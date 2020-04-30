@@ -98,9 +98,7 @@ export class Datum1D {
         {
           name: Filters.digitalFilter.id,
           options: {
-            dspfvs: this.info.dspfvs,
-            decim: this.info.decim,
-            grpdly: this.info.grpdly,
+            digitalFilterValue: this.info.digitalFilter,
           },
           isDeleteAllow: false,
         },
