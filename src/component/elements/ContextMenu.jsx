@@ -117,7 +117,10 @@ const ContextMenu = forwardRef(({ context }, ref) => {
   useEffect(() => {
     // console.log(ref.current);
     const _handleGlobalClick = (event) => {
-      const wasOutside = !event.target.parentElement.isSameNode(sourceElement);
+      const wasOutside =
+        sourceElement &&
+        event.target.parentElement &&
+        !event.target.parentElement.isSameNode(sourceElement);
       if (wasOutside && isVisible) show(false);
     };
 
