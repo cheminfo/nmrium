@@ -16,6 +16,7 @@ import {
 } from '../reducer/types/Types';
 
 import { options } from './ToolTypes';
+import { ZoomType } from '../reducer/actions/Zoom';
 
 const styles = {
   icon: {
@@ -71,7 +72,7 @@ const FunctionToolBar = ({ defaultValue, preferences }) => {
     if (debounceClickEvents.length === 0) {
       dispatch({
         type: FULL_ZOOM_OUT,
-        zoomType: 'H',
+        zoomType: ZoomType.HORIZONTAL,
       });
     }
     const callback = lodash.debounce(() => {
