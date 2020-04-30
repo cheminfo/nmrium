@@ -1,5 +1,4 @@
 import { jsx, css } from '@emotion/core';
-import { useState, useEffect } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -22,12 +21,8 @@ const pathStyles = css`
 
 export const LinesSeries = () => {
   const { data, tempData } = useChartData();
-  const [_data, setData] = useState();
 
-  useEffect(() => {
-    const Vdata = tempData ? tempData : data;
-    setData(Vdata);
-  }, [data, tempData]);
+  const _data = tempData ? tempData : data;
 
   return (
     <g css={pathStyles} clipPath="url(#clip)">
