@@ -181,7 +181,12 @@ export class Datum1D {
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
 
-    this.integrals.values = this._updateIntegral(this.integrals.values, sum);
+    this.integrals.values = this.updateRelatives(
+      this.integrals.values,
+      sum,
+      'integral',
+      ['signal'],
+    );
   }
 
   updateIntegralRanges() {
@@ -189,20 +194,26 @@ export class Datum1D {
     this.ranges = Object.assign({}, this.ranges);
     this.ranges.values = this.ranges.values.slice();
 
-    this.ranges.values = this._updateIntegral(this.ranges.values, sum);
+    this.ranges.values = this.updateRelatives(
+      this.ranges.values,
+      sum,
+      'integral',
+      ['signal'],
+    );
   }
 
-  _updateIntegral(values, sum, kind = 'signal') {
+  // this method is a helper method and can be moved and imported from somewhere else if wished
+  updateRelatives(values, sum, storageKey, kinds) {
     let currentSum = values.reduce((previous, current) => {
-      return current.kind && current.kind === kind
+      return current.kind && kinds.includes(current.kind)
         ? (previous += current.absolute)
         : previous;
     }, 0);
     let factor = sum / currentSum;
     return values.map((value) => {
-      return value.kind && value.kind === kind
-        ? { ...value, integral: value.absolute * factor }
-        : { ...value, integral: null };
+      return value.kind && kinds.includes(value.kind)
+        ? { ...value, [storageKey]: value.absolute * factor }
+        : { ...value, [storageKey]: null };
     });
   }
 
