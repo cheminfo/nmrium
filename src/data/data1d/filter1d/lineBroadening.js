@@ -12,9 +12,10 @@ export function apply(datum1D, value) {
     throw new Error('lineBroadening not applicable on this data');
   }
 
+  let grpdly = datum1D.info.digitalFilter;
   let pointsToShift;
-  if (datum1D.info.grpdly > 0) {
-    pointsToShift = Math.floor(datum1D.info.grpdly);
+  if (grpdly > 0) {
+    pointsToShift = Math.floor(grpdly);
   } else {
     pointsToShift = 0;
   }
