@@ -19,7 +19,13 @@ export function getInfoFromMetaData(metaData) {
   );
   maybeAdd(info, 'experiment', getSpectrumType(info, metaData));
   maybeAdd(info, 'temperature', parseFloat(metaData.$TE || metaData['.TE']));
-  maybeAdd(info, 'frequency', parseFloat(metaData['.OBSERVEFREQUENCY']));
+  maybeAdd(
+    info,
+    'frequency',
+    metaData['.OBSERVEFREQUENCY']
+      ? parseFloat(metaData['.OBSERVEFREQUENCY'])
+      : parseFloat(metaData.$SFO1),
+  );
   maybeAdd(info, 'type', metaData.DATATYPE);
   maybeAdd(info, 'probe', metaData.$PROBHD);
   maybeAdd(info, 'bf1', metaData.$BF1);
@@ -34,7 +40,7 @@ export function getInfoFromMetaData(metaData) {
     maybeAdd(info, 'acquisitionMode', parseInt(metaData.$FNTYPE, 10));
   }
   maybeAdd(info, 'expno', parseInt(metaData.$EXPNO, 10));
-  // console.log(metadata.type);
+
   if (info.type) {
     if (info.type.toUpperCase().indexOf('FID') >= 0) {
       info.isFid = true;
@@ -66,6 +72,12 @@ export function getInfoFromMetaData(metaData) {
     } else {
       info.nucleus = getNucleusFrom2DExperiment(info.experiment);
     }
+  }
+  if (metaData['2D_X_NUCLEUS'] && metaData['2D_Y_NUCLEUS']) {
+    info.nucleus = [
+      metaData['2D_X_NUCLEUS'].replace(/[^A-Za-z0-9]/g, ''),
+      metaData['2D_Y_NUCLEUS'].replace(/[^A-Za-z0-9]/g, ''),
+    ];
   }
 
   info.dimension = info.nucleus.length;

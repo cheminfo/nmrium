@@ -24,4 +24,24 @@ export class Data2DManager {
     });
     return ob;
   };
+
+  static fromBruker = function fromBruker(result, options = {}) {
+    let data = result.minMax;
+
+    const datum2D = new Datum2D({
+      ...options,
+      meta: result.info,
+      data,
+      source: {
+        jcamp: null,
+        jcampURL:
+          options.source && options.source.jcampURL
+            ? options.source.jcampURL
+            : null,
+        original: data,
+      },
+    });
+
+    return datum2D;
+  };
 }

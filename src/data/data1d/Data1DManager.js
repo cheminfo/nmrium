@@ -8,7 +8,7 @@ export class Data1DManager {
   static fromBruker = function fromBruker(result, options = {}) {
     const { info } = options;
     let data = getData(result.spectra);
-    if (data.im) info.isComplex = true;
+    if (!!data.im) info.isComplex = true;
     // let usedColors = data.map((d) => d.color);
     // const color = getColor(usedColors);
     if (Array.isArray(info.nucleus)) options.info.nucleus = info.nucleus[0];
@@ -63,7 +63,11 @@ function getData(spectra) {
     spectra[1] && spectra[1].data && spectra[1].data.y
       ? spectra[1].data.y
       : null;
-  // 2 cases. We have real and imaginary part of only real
 
-  return im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
+  if (x[0] > x[1]) {
+    x.reverse();
+    re.reverse();
+    if (im) im.reverse();
+  }
+  return { x, re, im };
 }
