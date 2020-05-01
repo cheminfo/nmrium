@@ -1,6 +1,12 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import React, { useState, useCallback, useRef, useContext } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useContext,
+  useEffect,
+} from 'react';
 import { useAlert } from 'react-alert';
 import Slider from 'react-animated-slider-2';
 import {
@@ -21,7 +27,12 @@ import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
-import { DELETE_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
+import {
+  DELETE_MOLECULE,
+  ADD_MOLECULE,
+  CHANGE_RANGE_SUM,
+  CHANGE_INTEGRAL_SUM,
+} from '../reducer/types/Types';
 import {
   copyTextToClipboard,
   copyPNGToClipboard,
@@ -104,13 +115,39 @@ const MoleculePanel = () => {
   const dispatch = useDispatch();
   const alert = useAlert();
 
-  const { molecules } = useContext(ChartContext);
+  const { molecules, activeTab } = useContext(ChartContext);
+
+  useEffect(() => {
+    if (activeTab && molecules.length > 0 && molecules[currentIndex]) {
+      const element = activeTab.replace(/[0-9]/g, '');
+      const elementsCount = molecules[currentIndex].atoms[element]
+        ? molecules[currentIndex].atoms[element]
+        : 0;
+      dispatch({ type: CHANGE_INTEGRAL_SUM, value: elementsCount });
+      dispatch({ type: CHANGE_RANGE_SUM, value: elementsCount });
+    } else {
+      dispatch({ type: CHANGE_INTEGRAL_SUM, value: 100 });
+      dispatch({ type: CHANGE_RANGE_SUM, value: 100 });
+    }
+  }, [activeTab, currentIndex, dispatch, molecules]);
 
   const handleClose = useCallback(
     (e) => {
       setOpen(false);
       if (e === 'new') {
-        setCurrentIndex(molecules.length);
+        // has no effect regarding slide changing because updating the slideIndex parameter for Slides component has no effect
+        // it could have negative effects somewhere else with a wrong set current index
+        // setCurrentIndex(molecules.length);
+
+        // handle current molecule index manually, following the observed behavior in Slider:
+        // - if adding when no slides (empty): first slide
+        // - if adding a slide: the next slide comes, but no index changing
+        // - if deleting a slide: the next slide comes, but no index changing
+        // - if deleting the last slide: return to begin (first slide)
+        // handle the first molecule index only
+        if (molecules.length === 0) {
+          setCurrentIndex(0);
+        }
       }
     },
     [molecules.length],
@@ -133,8 +170,13 @@ const MoleculePanel = () => {
 
   const handleDelete = useCallback(() => {
     if (molecules[currentIndex] && molecules[currentIndex].key) {
-      setCurrentIndex(0);
       dispatch({ type: DELETE_MOLECULE, key: molecules[currentIndex].key });
+      // setCurrentIndex(0);
+
+      // handling current index manually (see handleClose)
+      if (currentIndex === molecules.length - 1) {
+        setCurrentIndex(0);
+      }
     }
   }, [dispatch, molecules, currentIndex]);
 

@@ -408,15 +408,26 @@ const RangesTablePanel = memo(() => {
     [dispatch, modal],
   );
 
+  const elementsCount = useMemo(() => {
+    return activeSpectrum &&
+      SpectrumsData &&
+      SpectrumsData[activeSpectrum.index] &&
+      SpectrumsData[activeSpectrum.index].ranges &&
+      SpectrumsData[activeSpectrum.index].ranges.options &&
+      SpectrumsData[activeSpectrum.index].ranges.options.sum !== undefined
+      ? SpectrumsData[activeSpectrum.index].ranges.options.sum
+      : null;
+  }, [SpectrumsData, activeSpectrum]);
+
   const showChangeRangesSumModal = useCallback(() => {
     modal.show(
       <NumberInputModal
-        header="Set new range sum"
+        header={`Set new range sum (current: ${elementsCount})`}
         onClose={() => modal.close()}
         onSave={changeRangesSumHandler}
       />,
     );
-  }, [changeRangesSumHandler, modal]);
+  }, [changeRangesSumHandler, elementsCount, modal]);
 
   const handleOnFilter = useCallback(() => {
     setFilterIsActive(!filterIsActive);
@@ -444,7 +455,10 @@ const RangesTablePanel = memo(() => {
             <FaFileExport />
           </button>
         </ToolTip>
-        <ToolTip title="Change Ranges sum" popupPlacement="right">
+        <ToolTip
+          title={`Change Ranges sum (${elementsCount})`}
+          popupPlacement="right"
+        >
           <button
             style={styles.sumButton}
             type="button"

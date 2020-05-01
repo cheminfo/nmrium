@@ -67,7 +67,11 @@ const NumberInputModal = ({ onSave, onClose, header }) => {
         </button>
       </div>
       <div className="container">
-        <input ref={valueReft} type="number" placeholder="Enter the new sum" />
+        <input
+          ref={valueReft}
+          type="number"
+          placeholder="Enter the new value"
+        />
         <button type="button" onClick={saveHandler}>
           Set
         </button>

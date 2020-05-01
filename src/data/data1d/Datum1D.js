@@ -177,7 +177,10 @@ export class Datum1D {
   }
 
   updateIntegralIntegrals() {
-    const sum = this.integrals.options.sum || 100;
+    const sum =
+      this.integrals.options.sum !== undefined
+        ? this.integrals.options.sum
+        : 100;
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.values = this.integrals.values.slice();
 
@@ -190,7 +193,8 @@ export class Datum1D {
   }
 
   updateIntegralRanges() {
-    const sum = this.ranges.options.sum || 100;
+    const sum =
+      this.ranges.options.sum !== undefined ? this.ranges.options.sum : 100;
     this.ranges = Object.assign({}, this.ranges);
     this.ranges.values = this.ranges.values.slice();
 
@@ -209,7 +213,7 @@ export class Datum1D {
         ? (previous += current.absolute)
         : previous;
     }, 0);
-    let factor = sum / currentSum;
+    let factor = currentSum > 0 ? sum / currentSum : 0;
     return values.map((value) => {
       return value.kind && kinds.includes(value.kind)
         ? { ...value, [storageKey]: value.absolute * factor }
