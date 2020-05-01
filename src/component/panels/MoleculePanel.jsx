@@ -118,22 +118,23 @@ const MoleculePanel = () => {
   const { molecules, activeTab } = useContext(ChartContext);
 
   useEffect(() => {
-    if (
-      activeTab &&
-      molecules.length > 0 &&
-      molecules[currentIndex] &&
-      // to consider only the first molecule as reference
-      // remove this to take every current molecule as new reference
-      currentIndex === 0
-    ) {
-      const element = activeTab.replace(/[0-9]/g, '');
-      const elementsCount = molecules[currentIndex].atoms[element]
-        ? molecules[currentIndex].atoms[element]
-        : 0;
-      dispatch({ type: CHANGE_INTEGRAL_SUM, value: elementsCount });
-      dispatch({ type: CHANGE_RANGE_SUM, value: elementsCount });
-    } else if (molecules.length === 0) {
-      // set to default value of 100
+    if (molecules.length > 0) {
+      if (
+        activeTab &&
+        molecules[currentIndex] &&
+        // to consider only the first molecule as reference sum
+        // disable the following condition to use every current molecule as new reference
+        currentIndex === 0
+      ) {
+        const element = activeTab.replace(/[0-9]/g, '');
+        const elementsCount = molecules[currentIndex].atoms[element]
+          ? molecules[currentIndex].atoms[element]
+          : 0;
+        dispatch({ type: CHANGE_INTEGRAL_SUM, value: elementsCount });
+        dispatch({ type: CHANGE_RANGE_SUM, value: elementsCount });
+      }
+    } else {
+      // set to default reference value of 100
       dispatch({ type: CHANGE_INTEGRAL_SUM, value: 100 });
       dispatch({ type: CHANGE_RANGE_SUM, value: 100 });
     }
@@ -143,16 +144,17 @@ const MoleculePanel = () => {
     (e) => {
       setOpen(false);
       if (e === 'new') {
-        // has no effect regarding slide changing because updating the slideIndex parameter for Slides component has somehow no effect
-        // it will have negative effects with a wrong set current index
+        // might cause problems
         // setCurrentIndex(molecules.length);
 
-        // handle current molecule index manually, following the observed behavior in Slider:
-        // - if adding when no slides (empty): first slide
-        // - if adding a slide: the next slide comes, but no index changing
-        // - if deleting a slide: the next slide comes, but no index changing
-        // - if deleting the last slide: return to begin (first slide)
-        // handle the first molecule index only
+        // above line has no effect regarding the slide changing in Slider component
+        // a wrong current index could cause negative effects in other contexts
+        // handle current molecule index manually, following the observed behavior in Slider to avoid misbehavior:
+        // - if adding when no slides (empty): first slide (index 0)
+        // - if adding a slide: the new slide is added, but no slide/index changes
+        // - if deleting a slide: the next slide appears, but no index changing
+        // - if deleting the last slide: return to begin (first slide, index 0)
+        // --> handle the first molecule index only here
         if (molecules.length === 0) {
           setCurrentIndex(0);
         }
@@ -174,14 +176,21 @@ const MoleculePanel = () => {
     navigator.clipboard.readText().then((molfile) => {
       dispatch({ type: ADD_MOLECULE, molfile });
     });
-  }, [dispatch]);
+    // handle current index manually (see handleClose for more)
+    // --> handle the first molecule index only here
+    if (molecules.length === 0) {
+      setCurrentIndex(0);
+    }
+  }, [dispatch, molecules.length]);
 
   const handleDelete = useCallback(() => {
     if (molecules[currentIndex] && molecules[currentIndex].key) {
       dispatch({ type: DELETE_MOLECULE, key: molecules[currentIndex].key });
+      // might cause problems
       // setCurrentIndex(0);
 
-      // handling current index manually (see handleClose)
+      // handle current index manually (see handleClose for more)
+      // --> set from the last molecule index to the first
       if (currentIndex === molecules.length - 1) {
         setCurrentIndex(0);
       }
@@ -254,7 +263,9 @@ const MoleculePanel = () => {
       <div css={moleculeContainerStyle} ref={refContainer}>
         <Slider
           onSlideChange={(event) => setCurrentIndex(event.slideIndex)}
-          slideIndex={currentIndex}
+          // this has no effect on setting the slide to show, i.e. if adding a molecule and to switch to its slide automatically
+          // so the default slide index (0) just as initial value is used
+          // slideIndex={currentIndex}
         >
           {molecules &&
             molecules.map((mol, index) => (
