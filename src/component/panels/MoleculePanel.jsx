@@ -118,14 +118,22 @@ const MoleculePanel = () => {
   const { molecules, activeTab } = useContext(ChartContext);
 
   useEffect(() => {
-    if (activeTab && molecules.length > 0 && molecules[currentIndex]) {
+    if (
+      activeTab &&
+      molecules.length > 0 &&
+      molecules[currentIndex] &&
+      // to consider only the first molecule as reference
+      // remove this to take every current molecule as new reference
+      currentIndex === 0
+    ) {
       const element = activeTab.replace(/[0-9]/g, '');
       const elementsCount = molecules[currentIndex].atoms[element]
         ? molecules[currentIndex].atoms[element]
         : 0;
       dispatch({ type: CHANGE_INTEGRAL_SUM, value: elementsCount });
       dispatch({ type: CHANGE_RANGE_SUM, value: elementsCount });
-    } else {
+    } else if (molecules.length === 0) {
+      // set to default value of 100
       dispatch({ type: CHANGE_INTEGRAL_SUM, value: 100 });
       dispatch({ type: CHANGE_RANGE_SUM, value: 100 });
     }
@@ -135,8 +143,8 @@ const MoleculePanel = () => {
     (e) => {
       setOpen(false);
       if (e === 'new') {
-        // has no effect regarding slide changing because updating the slideIndex parameter for Slides component has no effect
-        // it could have negative effects somewhere else with a wrong set current index
+        // has no effect regarding slide changing because updating the slideIndex parameter for Slides component has somehow no effect
+        // it will have negative effects with a wrong set current index
         // setCurrentIndex(molecules.length);
 
         // handle current molecule index manually, following the observed behavior in Slider:
