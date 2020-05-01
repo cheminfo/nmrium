@@ -214,28 +214,32 @@ const IntegralTablePanel = memo(
           ? SpectrumsData[activeSpectrum.index]
           : null;
 
-      if (_data && _data.integrals && _data.integrals.values) {
-        setIntegralsCounter(_data.integrals.values.length);
+      function isInRange(from, to) {
+        const factor = 10000;
+        to = to * factor;
+        from = from * factor;
+        return (
+          (to >= xDomain[0] * factor && from <= xDomain[1] * factor) ||
+          (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
+        );
       }
 
-      return _data && _data.integrals && _data.integrals.values
-        ? filterIsActive
-          ? _data.integrals.values.filter(
-              (integral) =>
-                (integral.to >= xDomain[0] && integral.from <= xDomain[1]) ||
-                (integral.from <= xDomain[0] && integral.to >= xDomain[1]),
+      if (_data && _data.integrals && _data.integrals.values) {
+        setIntegralsCounter(_data.integrals.values.length);
+
+        const integrals = filterIsActive
+          ? _data.integrals.values.filter((integral) =>
+              isInRange(integral.from, integral.to),
             )
-          : _data.integrals.values.map((integral) => {
-              return (integral.to >= xDomain[0] &&
-                integral.from <= xDomain[1]) ||
-                (integral.from <= xDomain[0] && integral.to >= xDomain[1])
-                ? {
-                    ...integral,
-                    isConstantlyHighlighted: true,
-                  }
-                : integral;
-            })
-        : [];
+          : _data.integrals.values;
+
+        return integrals.map((integral) => {
+          return {
+            ...integral,
+            isConstantlyHighlighted: isInRange(integral.from, integral.to),
+          };
+        });
+      }
     }, [SpectrumsData, activeSpectrum, filterIsActive, xDomain]);
 
     const yesHandler = useCallback(() => {
