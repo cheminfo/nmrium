@@ -53,8 +53,8 @@ const styles = {
 };
 
 const defaultValues = {
-  showValue: true,
-  valueFormat: '0.00',
+  showAbsolute: true,
+  absoluteFormat: '0.00',
   showNB: true,
   NBFormat: '0.00',
 };
@@ -134,9 +134,9 @@ const IntegralsPreferences = forwardRef((props, ref) => {
   const formatFields = [
     {
       id: 1,
-      label: 'Value :',
-      checkController: 'showValue',
-      formatController: 'valueFormat',
+      label: 'Absolute :',
+      checkController: 'showAbsolute',
+      formatController: 'absoluteFormat',
       defaultFormat: '0.00',
     },
     {
