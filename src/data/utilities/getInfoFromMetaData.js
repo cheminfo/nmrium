@@ -34,13 +34,6 @@ export function getInfoFromMetaData(metaData) {
   maybeAdd(info, 'spectralWidth', metaData.$SW);
   maybeAdd(info, 'number of points', metaData.$TD);
 
-  let digitalFilterParameters = getDigitalFilterParameters(
-    metaData.$GRPDLY,
-    metaData.$DSPFVS,
-    metaData.$DECIM,
-  );
-  maybeAdd(info, 'digitalFilter', digitalFilterParameters);
-
   if (metaData.$FNTYPE !== undefined) {
     maybeAdd(info, 'acquisitionMode', parseInt(metaData.$FNTYPE, 10));
   }
@@ -52,6 +45,15 @@ export function getInfoFromMetaData(metaData) {
     } else if (info.type.toUpperCase().indexOf('SPECTRUM') >= 0) {
       info.isFt = true;
     }
+  }
+
+  if (info.isFid) {
+    let digitalFilterParameters = getDigitalFilterParameters(
+      metaData.$GRPDLY,
+      metaData.$DSPFVS,
+      metaData.$DECIM,
+    );
+    maybeAdd(info, 'digitalFilter', digitalFilterParameters);
   }
 
   // eslint-disable-next-line dot-notation
