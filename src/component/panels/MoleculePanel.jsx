@@ -119,17 +119,16 @@ const MoleculePanel = () => {
 
   useEffect(() => {
     if (molecules.length > 0) {
-      if (
-        activeTab &&
-        molecules[currentIndex] &&
-        // to consider only the first molecule as reference sum
-        // disable the following condition to use every current molecule as new reference
-        currentIndex === 0
-      ) {
+      if (activeTab) {
         const element = activeTab.replace(/[0-9]/g, '');
-        const elementsCount = molecules[currentIndex].atoms[element]
-          ? molecules[currentIndex].atoms[element]
-          : 0;
+        // use the next line instead of the second next line to use every current molecule as new reference and not only the first one
+        // and then update the dependencies of this useEffect() method
+        // const _currentIndex = currentIndex;
+        const _currentIndex = 0;
+        const elementsCount =
+          molecules[_currentIndex] && molecules[_currentIndex].atoms[element]
+            ? molecules[_currentIndex].atoms[element]
+            : 0;
         dispatch({ type: CHANGE_INTEGRAL_SUM, value: elementsCount });
         dispatch({ type: CHANGE_RANGE_SUM, value: elementsCount });
       }
@@ -138,7 +137,8 @@ const MoleculePanel = () => {
       dispatch({ type: CHANGE_INTEGRAL_SUM, value: 100 });
       dispatch({ type: CHANGE_RANGE_SUM, value: 100 });
     }
-  }, [activeTab, currentIndex, dispatch, molecules]);
+  }, [activeTab, dispatch, molecules]);
+  // }, [activeTab, currentIndex, dispatch, molecules]);#
 
   const handleClose = useCallback(
     (e) => {
