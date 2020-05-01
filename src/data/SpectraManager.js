@@ -57,9 +57,8 @@ function addJcampSS(spectra, entry, options) {
 }
 
 export async function addBruker(spectra, options, data) {
-
   let result = await convertBruker(data, { xy: true, noContours: true });
-  
+
   let entries = result.map((r) => r.value);
   for (let entry of entries) {
     let info = getInfoFromMetaData(entry.info);

@@ -16,6 +16,7 @@ import { ScaleProvider } from '../context/ScaleContext';
 import { useModal } from '../elements/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
+import { ZoomType } from '../reducer/actions/Zoom';
 import {
   scaleInitialState,
   scaleReducer,
@@ -44,7 +45,6 @@ import FooterBanner from './FooterBanner';
 import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
-import { ZoomType } from '../reducer/actions/Zoom';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();

@@ -8,6 +8,7 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
+import { ZoomType } from '../reducer/actions/Zoom';
 import {
   SET_SELECTED_TOOL,
   APPLY_FFT_FILTER,
@@ -16,7 +17,6 @@ import {
 } from '../reducer/types/Types';
 
 import { options } from './ToolTypes';
-import { ZoomType } from '../reducer/actions/Zoom';
 
 const styles = {
   icon: {
