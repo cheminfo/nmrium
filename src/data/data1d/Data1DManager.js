@@ -1,5 +1,3 @@
-import { XY, XReIm } from 'ml-spectra-processing';
-
 import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
 
 import { Datum1D } from './Datum1D';
@@ -9,8 +7,7 @@ export class Data1DManager {
     const { info } = options;
     let data = getData(result.spectra);
     if (data.im) info.isComplex = true;
-    // let usedColors = data.map((d) => d.color);
-    // const color = getColor(usedColors);
+
     if (Array.isArray(info.nucleus)) options.info.nucleus = info.nucleus[0];
 
     const datum1D = new Datum1D({
@@ -19,10 +16,7 @@ export class Data1DManager {
       data,
       source: {
         jcamp: null,
-        jcampURL:
-          options.source && options.source.jcampURL
-            ? options.source.jcampURL
-            : null,
+        jcampURL: null,
         original: data,
       },
     });
@@ -63,7 +57,11 @@ function getData(spectra) {
     spectra[1] && spectra[1].data && spectra[1].data.y
       ? spectra[1].data.y
       : null;
-  // 2 cases. We have real and imaginary part of only real
 
-  return im ? XReIm.sortX({ x, re, im }) : XY.sortX({ x, re });
+  if (x[0] > x[1]) {
+    x.reverse();
+    re.reverse();
+    if (im) im.reverse();
+  }
+  return { x, re, im };
 }
