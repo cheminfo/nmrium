@@ -1,5 +1,3 @@
-// import applyFilter from './filter1d/filter';
-
 import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
 
 import { Datum2D } from './Datum2D';
@@ -34,10 +32,7 @@ export class Data2DManager {
       data,
       source: {
         jcamp: null,
-        jcampURL:
-          options.source && options.source.jcampURL
-            ? options.source.jcampURL
-            : null,
+        jcampURL: null,
         original: data,
       },
     });
