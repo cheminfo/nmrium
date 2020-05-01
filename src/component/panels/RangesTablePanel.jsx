@@ -85,24 +85,32 @@ const RangesTablePanel = memo(() => {
         ? SpectrumsData[activeSpectrum.index]
         : null;
 
-    if (_data && _data.ranges && _data.ranges.values) {
-      setRangesCounter(_data.ranges.values.length);
+    function isInRange(from, to) {
+      const factor = 10000;
+      to = to * factor;
+      from = from * factor;
+      return (
+        (to >= xDomain[0] * factor && from <= xDomain[1] * factor) ||
+        (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
+      );
     }
 
-    return _data && _data.ranges && _data.ranges.values
-      ? filterIsActive
-        ? _data.ranges.values.filter(
-            (range) =>
-              (range.to >= xDomain[0] && range.from <= xDomain[1]) ||
-              (range.from <= xDomain[0] && range.to >= xDomain[1]),
-          )
-        : _data.ranges.values.map((range) =>
-            (range.to >= xDomain[0] && range.from <= xDomain[1]) ||
-            (range.from <= xDomain[0] && range.to >= xDomain[1])
-              ? { ...range, isConstantlyHighlighted: true }
-              : range,
-          )
-      : [];
+    if (_data && _data.ranges && _data.ranges.values) {
+      setRangesCounter(_data.ranges.values.length);
+
+      const getFilteredRanges = (ranges = _data.ranges.values) => {
+        return ranges.filter((range) => isInRange(range.from, range.to));
+      };
+
+      const ranges = filterIsActive ? getFilteredRanges() : _data.ranges.values;
+
+      return ranges.map((range) => {
+        return {
+          ...range,
+          isConstantlyHighlighted: isInRange(range.from, range.to),
+        };
+      });
+    }
   }, [SpectrumsData, activeSpectrum, filterIsActive, xDomain]);
 
   const saveToClipboardHandler = useCallback(

@@ -44,6 +44,7 @@ import FooterBanner from './FooterBanner';
 import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
+import { ZoomType } from '../reducer/actions/Zoom';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
@@ -159,7 +160,7 @@ const Viewer1D = () => {
   );
 
   const handelOnDoubleClick = useCallback(() => {
-    dispatch({ type: FULL_ZOOM_OUT });
+    dispatch({ type: FULL_ZOOM_OUT, zoomType: ZoomType.STEP_HROZENTAL });
   }, [dispatch]);
 
   const handleZoom = useCallback(

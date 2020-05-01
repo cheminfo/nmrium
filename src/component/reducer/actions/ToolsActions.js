@@ -19,7 +19,7 @@ import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
-import { setZoom1D, setZoom, spectrumZoomHanlder } from './Zoom';
+import { setZoom1D, setZoom, spectrumZoomHanlder, ZoomType } from './Zoom';
 
 function getStrongestPeak(state) {
   const { activeSpectrum, data } = state;
@@ -300,19 +300,24 @@ const zoomOut = (state, action) => {
     if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
       const zoomHistory = HorizontalZoomHistory.getInstance();
       switch (zoomType) {
-        case 'H': {
-          const zoomValue = zoomHistory.pop();
-          draft.xDomain = zoomValue ? zoomValue : state.originDomain.xDomain;
+        case ZoomType.HORIZONTAL: {
+          draft.xDomain = state.originDomain.xDomain;
           break;
         }
-        case 'V':
+        case ZoomType.VERTICAL:
           spectrumZoomHanlder.setScale(0.8);
           setZoom(state, draft, 0.8);
           break;
-        default: {
+        case ZoomType.STEP_HROZENTAL: {
           spectrumZoomHanlder.setScale(0.8);
           const zoomValue = zoomHistory.pop();
           draft.xDomain = zoomValue ? zoomValue : state.originDomain.xDomain;
+          setZoom(state, draft, 0.8);
+          break;
+        }
+        default: {
+          spectrumZoomHanlder.setScale(0.8);
+          draft.xDomain = state.originDomain.xDomain;
           setZoom(state, draft, 0.8);
           break;
         }

@@ -5,6 +5,13 @@ import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
 export const spectrumZoomHanlder = new Spectrum1DZoomHelper();
 export const integralZoomHanlder = new Spectrum1DZoomHelper(0.5);
 
+export const ZoomType = {
+  HORIZONTAL: 'HORIZONTAL',
+  VERTICAL: 'VERTICAL',
+  STEP_HROZENTAL: 'STEP_HROZENTAL',
+  FULL: 'FULL',
+};
+
 const setZoom = (state, draft, scale) => {
   const { height, margin } = state;
 

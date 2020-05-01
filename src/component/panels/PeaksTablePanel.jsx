@@ -175,44 +175,36 @@ const PeaksTablePanel = memo(
           ? SpectrumsData[activeSpectrum.index]
           : null;
 
+      function isInRange(value) {
+        const factor = 100000;
+        return (
+          value * factor >= xDomain[0] * factor &&
+          value * factor <= xDomain[1] * factor
+        );
+      }
+
       if (_data && _data.peaks && _data.peaks.values) {
         setPeaksCounter(_data.peaks.values.length);
 
         const labelFraction = getPeakLabelNumberDecimals(_data.info.nucleus);
-        return filterIsActive
-          ? _data.peaks.values
-              .filter((peak) => {
-                const value = _data.x[peak.xIndex].toFixed(labelFraction);
-                return value >= xDomain[0] && value <= xDomain[1];
-              })
-              .map((peak) => {
-                return {
-                  xIndex: peak.xIndex,
-                  value: _data.x[peak.xIndex].toFixed(labelFraction),
-                  id: peak.id,
-                  yValue: _data.y[peak.xIndex],
-                  peakWidth: peak.width ? peak.width : '',
-                };
-              })
-          : _data.peaks.values.map((peak) => {
-              const value = _data.x[peak.xIndex].toFixed(labelFraction);
-              const _peak = {
-                xIndex: peak.xIndex,
-                value: value,
-                id: peak.id,
-                yValue: _data.y[peak.xIndex],
-                peakWidth: peak.width ? peak.width : '',
-              };
 
-              return value >= xDomain[0] && value <= xDomain[1]
-                ? {
-                    ..._peak,
-                    isConstantlyHighlighted: true,
-                  }
-                : _peak;
-            });
+        const peaks = filterIsActive
+          ? _data.peaks.values.filter((peak) => isInRange(_data.x[peak.xIndex]))
+          : _data.peaks.values;
+
+        return peaks.map((peak) => {
+          const value = _data.x[peak.xIndex].toFixed(labelFraction);
+          return {
+            xIndex: peak.xIndex,
+            value: value,
+            id: peak.id,
+            yValue: _data.y[peak.xIndex],
+            peakWidth: peak.width ? peak.width : '',
+            isConstantlyHighlighted: isInRange(value),
+          };
+        });
       }
-      return [];
+      // return [];
     }, [SpectrumsData, activeSpectrum, filterIsActive, xDomain]);
 
     const yesHandler = useCallback(() => {
