@@ -138,7 +138,7 @@ const MoleculePanel = () => {
       dispatch({ type: CHANGE_RANGE_SUM, value: 100 });
     }
   }, [activeTab, dispatch, molecules]);
-  // }, [activeTab, currentIndex, dispatch, molecules]);#
+  // }, [activeTab, currentIndex, dispatch, molecules]);
 
   const handleClose = useCallback(
     (e) => {
