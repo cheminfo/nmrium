@@ -46,7 +46,7 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
   const { height, margin } = useChartData();
   const { scaleX } = useScale();
 
-  const { id, value } = integralData;
+  const { id, absolute } = integralData;
 
   const highlight = useHighlight([id]);
 
@@ -122,7 +122,7 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
             fill="black"
             style={{ fontSize: '12px', fontWeight: 'bold' }}
           >
-            {value.toFixed(2)}
+            {absolute.toFixed(2)}
           </text>
         )}
         <Resizable
