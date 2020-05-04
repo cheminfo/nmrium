@@ -33,8 +33,9 @@ export const Line = ({ x, y, id, display, index }) => {
           to: xDomain[1],
         },
       );
-      const _scaleY = scaleY(id);
+
       const _scaleX = scaleX();
+      const _scaleY = scaleY(id);
       let path = `M ${_scaleX(pathPoints.x[0])} ${_scaleY(pathPoints.y[0])} `;
       path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
         accumulator += ` L ${_scaleX(point)} ${_scaleY(pathPoints.y[i + 1])}`;

@@ -37,25 +37,6 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
   return produce(state, (draft) => {
     let refreshDomain = false;
     if (activeSpectrum) {
-      // if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-      //   if (draft.activeSpectrum) {
-      //     const index = state.data.findIndex(
-      //       (datum) => datum.id === activeSpectrum.id,
-      //     );
-      //     try {
-      //       const spectrum2D = new Spectrum2DProcessing(state.data[index]);
-      //       draft.contours = spectrum2D.drawContours();
-      //       activeSpectrum = { ...activeSpectrum, index };
-      //       draft.activeSpectrum = activeSpectrum;
-      //       draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
-      //       refreshDomain = true;
-      //     } catch (e) {
-      //       // eslint-disable-next-line no-console
-      //       console.log(e);
-      //     }
-      //   }
-      // } else {
-      // draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
       AnalysisObj.getDatum(activeSpectrum.id).setDisplay({ isVisible: true });
       const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
       const oldIndex = draft.data.findIndex(
