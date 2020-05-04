@@ -41,7 +41,7 @@ const handleResizeRange = (state, action) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
       const datumObject = AnalysisObj.getDatum(id);
-      datumObject.resizeRange(action.data);
+      datumObject.changeRange(action.data);
       draft.data[index].ranges = datumObject.getRanges();
     }
   });
