@@ -168,7 +168,6 @@ export class Analysis {
             peaks: ob.peaks,
             integrals: ob.integrals,
             filters: ob.filters,
-            ranges: ob.ranges,
           };
         })
       : [];

@@ -1,13 +1,6 @@
 const integralDefaultValues = {
-  showAbsolute: true,
-  absoluteFormat: '0.0',
-  showNB: true,
-  NBFormat: '0.00',
-};
-
-const rangeDefaultValues = {
-  showAbsolute: true,
-  absoluteFormat: '0.0',
+  showValue: true,
+  valueFormat: '0.00',
   showNB: true,
   NBFormat: '0.00',
 };
@@ -27,4 +20,4 @@ const peaksDefaultValues = {
   intensityFormat: '0.00',
 };
 
-export { peaksDefaultValues, integralDefaultValues, rangeDefaultValues };
+export { peaksDefaultValues, integralDefaultValues };
