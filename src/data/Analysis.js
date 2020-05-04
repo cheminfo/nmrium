@@ -93,34 +93,18 @@ export class Analysis {
     let molecule = Molecule.fromMolfile(molfile);
     let fragments = molecule.getFragments();
 
-    if (fragments.length > 1) {
-      this.molecules = this.molecules.filter((m) => m.key !== key);
+    this.molecules = this.molecules.filter((m) => m.key !== key);
 
-      for (let fragment of fragments) {
-        this.molecules.push(
-          new mol({
-            molfile: fragment.toMolfileV3(),
-            svg: fragment.toSVG(150, 150),
-            mf: fragment.getMolecularFormula().formula,
-            em: fragment.getMolecularFormula().absoluteWeight,
-            mw: fragment.getMolecularFormula().relativeWeight,
-          }),
-        );
-      }
-    } else if (fragments.length === 1) {
-      const fragment = fragments[0];
-      const _mol = new mol({
-        molfile: fragment.toMolfileV3(),
-        svg: fragment.toSVG(150, 150),
-        mf: fragment.getMolecularFormula().formula,
-        em: fragment.getMolecularFormula().absoluteWeight,
-        mw: fragment.getMolecularFormula().relativeWeight,
-        key: key,
-      });
-      let molIndex = this.molecules.findIndex((m) => m.key === key);
-      const _molecules = this.molecules.slice();
-      _molecules.splice(molIndex, 1, _mol);
-      this.molecules = _molecules;
+    for (let fragment of fragments) {
+      this.molecules.push(
+        new mol({
+          molfile: fragment.toMolfileV3(),
+          svg: fragment.toSVG(150, 150),
+          mf: fragment.getMolecularFormula().formula,
+          em: fragment.getMolecularFormula().absoluteWeight,
+          mw: fragment.getMolecularFormula().relativeWeight,
+        }),
+      );
     }
 
     return this.molecules;
