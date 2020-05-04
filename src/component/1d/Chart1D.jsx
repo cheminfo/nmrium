@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useScale } from '../context/ScaleContext';
+
 import BaseLineZones from './BaseLineZones';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
@@ -9,9 +11,10 @@ import Ranges from './Ranges';
 import XAxis from './XAxis';
 
 function Chart1D({ mode, width, height, margin }) {
-  if (!width || !height) {
-    return null;
-  }
+  const { scaleX, scaleY } = useScale();
+  // console.log(scaleState);
+  if (!scaleX || !scaleY || !width || !height) return null;
+
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}

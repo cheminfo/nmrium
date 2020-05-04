@@ -50,7 +50,9 @@ const Viewer2D = () => {
     return nucleuses.reduce((acc, n) => {
       if (tabActiveSpectrum[n] && tabActiveSpectrum[n].id) {
         const id = tabActiveSpectrum[n].id;
-        const spectrum = data.find((datum) => datum.id === id);
+        const spectrum = data.find(
+          (datum) => datum.id === id && !datum.info.isFid,
+        );
         if (spectrum) {
           acc.push(spectrum);
         }

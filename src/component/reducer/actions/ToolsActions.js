@@ -355,13 +355,20 @@ const zoomOut = (state, action) => {
   });
 };
 
+function hasAcceptedSpectrum(draft, index) {
+  const nucleuses = draft.activeTab.split(',');
+  return (
+    draft.tabActiveSpectrum[nucleuses[index]] &&
+    !draft.data[draft.tabActiveSpectrum[nucleuses[index]].index].info.isFid
+  );
+}
+
 const setMargin = (draft) => {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-    const nucleuses = draft.activeTab.split(',');
-    const top = draft.tabActiveSpectrum[nucleuses[0]]
+    const top = hasAcceptedSpectrum(draft, 0)
       ? MARGIN['2D'].top
       : MARGIN['1D'].top;
-    const left = draft.tabActiveSpectrum[nucleuses[1]]
+    const left = hasAcceptedSpectrum(draft, 1)
       ? MARGIN['2D'].left
       : MARGIN['1D'].left;
     draft.margin = { ...MARGIN['2D'], top, left };
@@ -370,7 +377,7 @@ const setMargin = (draft) => {
   }
 };
 
-function get2DProcessedData(draft, data) {
+function Processing2DData(draft, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     let _data = {};
     for (const datum of data[draft.activeTab]) {
@@ -388,18 +395,32 @@ const setDisplayerMode = (draft, data) => {
 };
 
 const setActiveTab = (draft, dataGroupByTab, tab) => {
+  const groupByTab = Object.keys(dataGroupByTab).sort((a, b) =>
+    a.split(',').length > b.split(',').length ? -1 : 1,
+  );
+
   if (
-    JSON.stringify(Object.keys(dataGroupByTab)) !==
+    JSON.stringify(groupByTab) !==
     JSON.stringify(Object.keys(draft.tabActiveSpectrum))
   ) {
     let tabs2D = [];
-    for (let tabKey of Object.keys(dataGroupByTab)) {
+
+    const tabkeys = Object.keys(dataGroupByTab).sort((a, b) =>
+      a.split(',').length > b.split(',').length ? -1 : 1,
+    );
+    for (let tabKey of tabkeys) {
+      const data = dataGroupByTab[tabKey];
+      const index = draft.data.findIndex((datum) => datum.id === data[0].id);
+
       if (tabKey.split(',').length === 2) {
         tabs2D.push(tabKey);
       }
-      const data = dataGroupByTab[tabKey];
-      const index = draft.data.findIndex((datum) => datum.id === data[0].id);
-      draft.tabActiveSpectrum[tabKey] = { id: data[0].id, index };
+
+      if (tabs2D.length > 0 || data.length === 1) {
+        draft.tabActiveSpectrum[tabKey] = { id: data[0].id, index };
+      } else {
+        draft.tabActiveSpectrum[tabKey] = null;
+      }
     }
 
     if (tabs2D.length > 0) {
@@ -426,7 +447,7 @@ const handelSetActiveTab = (state, tab) => {
       const dataGroupByNucleus = groupByNucleus(data);
       setActiveTab(draft, dataGroupByNucleus, tab);
 
-      get2DProcessedData(draft, dataGroupByNucleus);
+      Processing2DData(draft, dataGroupByNucleus);
       setDomain(draft);
       setMode(draft);
     }
