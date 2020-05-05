@@ -1,108 +1,46 @@
 import { jsx, css } from '@emotion/core';
-import { useRef, useCallback, useState, useEffect, useMemo } from 'react';
+import { useCallback, useState, useEffect, useMemo } from 'react';
 /** @jsx jsx */
 import Slider from 'react-animated-slider-2';
-import { FaTimes } from 'react-icons/fa';
 import MF from 'react-mf/lib/components/MF';
 import { MolfileSvgRenderer } from 'react-ocl';
 
-const styles = css`
+import NumberInputModal from './NumberInputModal';
+
+const modalContainer = css`
   display: flex;
   flex-direction: column;
-  width: 450px;
   padding: 5px;
-  button:focus {
-    outline: none;
-  }
-  .header {
-    height: 24px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    span {
-      color: #464646;
-      font-size: 15px;
-      flex: 1;
-    }
-
-    button {
-      background-color: transparent;
-      border: none;
-      svg {
-        height: 16px;
-      }
-    }
-  }
-  .container {
-    display: flex;
-    margin: 30px 5px;
-    input,
-    button {
-      padding: 5px;
-      border: 1px solid gray;
-      border-radius: 5px;
-      height: 36px;
-      margin: 2px;
-    }
-    input {
-      flex: 10;
-    }
-    button {
-      flex: 2;
-      color: white;
-      background-color: gray;
-    }
-  }
-
-  .or {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    text-align: center;
-    width: 100%;
-    // padding: 0px 10px;
-  }
-  .or2 {
-    margin-top: 5px;
-    margin-bottom: 25px;
-    text-align: center;
-    width: 100%;
-    // padding: 0px 10px;
-  }
 `;
 
-const moleculeContainerStyle = css`
-  .slider {
-    height: 180px;
-    padding: 0px;
-  }
-  .slider p {
-    width: 100%;
-    margin: 0 auto;
-    display: block;
-    position: relative;
-  }
-
-  .slider svg polygon {
-    fill: gray !important;
-  }
-  button {
-    flex: 2;
-    color: white;
-    background-color: gray;
-    margin: auto;
-    width: 50%;
-    padding: 5px;
-    border: 1px solid gray;
-    border-radius: 5px;
-    height: 36px;
-    margin: 0 auto;
-    display: block;
-  }
-`;
-
-const panelContainerStyle = css`
+const selectMoleculeContainerStyle = css`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+`;
+
+const optionalTextStyle = css`
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+
+  .optional {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 0px 10px;
+
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .optional2 {
+    margin-top: 5px;
+    margin-bottom: 25px;
+    padding: 0px 10px;
+    width: 100%;
+
+    text-align: center;
+  }
 `;
 
 const toolbarStyle = css`
@@ -121,21 +59,51 @@ const toolbarStyle = css`
   }
 `;
 
-const ChangeSumModal = ({
-  onSave,
-  onClose,
-  currentSum,
-  molecules,
-  element,
-}) => {
-  const valueRef = useRef();
+const moleculeContainerStyle = css`
+  .slider {
+    height: 180px;
+    padding: 0px;
+  }
+  .slider p {
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+    position: relative;
+  }
+  .slider svg polygon {
+    fill: gray !important;
+  }
+  button {
+    flex: 2;
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    height: 36px;
+    margin: 0 auto;
+    margin-top: 15px;
+    display: block;
+    width: 20%;
 
+    color: white;
+    background-color: gray;
+  }
+
+  .newSumText {
+    margin-top: 15px;
+    // margin-bottom: 25px;
+    padding: 0px 10px;
+    width: 100%;
+
+    text-align: center;
+  }
+`;
+
+const ChangeSumModal = ({ onSave, onClose, header, molecules, element }) => {
   const [currentIndex, setCurrentIndex] = useState();
 
   const saveInputValueHandler = useCallback(
-    (e) => {
-      e.preventDefault();
-      onSave(valueRef.current.value);
+    (inputValue) => {
+      onSave(inputValue);
     },
     [onSave],
   );
@@ -165,24 +133,19 @@ const ChangeSumModal = ({
   );
 
   return (
-    <div css={styles}>
-      <div className="header">
-        <span>{`Set new range sum (current: ${currentSum})`}</span>
-        <button onClick={onClose} type="button">
-          <FaTimes />
-        </button>
-      </div>
-      <div className="container">
-        <input ref={valueRef} type="number" placeholder="Enter the new value" />
-        <button type="button" onClick={saveInputValueHandler}>
-          Set
-        </button>
-      </div>
-      <p className="or">OR</p>
-      <p className="or2">Select a molecule as reference:</p>
+    <div css={modalContainer}>
+      <NumberInputModal
+        onSave={saveInputValueHandler}
+        onClose={onClose}
+        header={header}
+      />
 
       {element && molecules && molecules.length > 0 ? (
-        <div css={panelContainerStyle}>
+        <div css={selectMoleculeContainerStyle}>
+          <div css={optionalTextStyle}>
+            <p className="optional">OR</p>
+            <p className="optional2">Select a molecule as reference!</p>
+          </div>
           <div css={toolbarStyle}>
             <p>
               {molecules &&
@@ -211,8 +174,11 @@ const ChangeSumModal = ({
                 ))}
             </Slider>
             <button type="button" onClick={saveSelectMoleculeHandler}>
-              Select as Reference ({element}: {newSum})
+              Set
             </button>
+            <p className="newSumText">
+              New sum for {element} will be {newSum}!
+            </p>
           </div>
         </div>
       ) : null}

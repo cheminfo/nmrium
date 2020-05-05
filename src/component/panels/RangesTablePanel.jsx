@@ -433,7 +433,7 @@ const RangesTablePanel = memo(() => {
       <ChangeSumModal
         onClose={() => modal.close()}
         onSave={changeRangesSumHandler}
-        currentSum={currentSum}
+        header={`Set new Ranges Sum (Current: ${currentSum})`}
         molecules={molecules}
         element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
       />,
@@ -467,7 +467,7 @@ const RangesTablePanel = memo(() => {
           </button>
         </ToolTip>
         <ToolTip
-          title={`Change Ranges sum (${currentSum})`}
+          title={`Change Ranges Sum (${currentSum})`}
           popupPlacement="right"
         >
           <button

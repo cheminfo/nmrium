@@ -278,7 +278,7 @@ const IntegralTablePanel = memo(() => {
       <ChangeSumModal
         onClose={() => modal.close()}
         onSave={changeIntegralSumHandler}
-        currentSum={currentSum}
+        header={`Set new Integrals Sum (Current: ${currentSum})`}
         molecules={molecules}
         element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
       />,
@@ -330,7 +330,7 @@ const IntegralTablePanel = memo(() => {
             onSettingClick={settingsPanelHandler}
           >
             <ToolTip
-              title={`Change Integrals sum (${currentSum})`}
+              title={`Change Integrals Sum (${currentSum})`}
               popupPlacement="right"
             >
               <button
