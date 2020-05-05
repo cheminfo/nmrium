@@ -8,6 +8,7 @@ import React, {
   useRef,
 } from 'react';
 import { useAlert } from 'react-alert';
+import { MF } from 'react-mf';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -55,8 +56,8 @@ const styles = {
 const defaultValues = {
   showAbsolute: true,
   absoluteFormat: '0.00',
-  showNB: true,
-  NBFormat: '0.00',
+  showRelative: true,
+  relativeFormat: '0.00',
 };
 
 const IntegralsPreferences = forwardRef((props, ref) => {
@@ -141,9 +142,9 @@ const IntegralsPreferences = forwardRef((props, ref) => {
     },
     {
       id: 2,
-      label: 'nb :',
-      checkController: 'showNB',
-      formatController: 'NBFormat',
+      label: 'Relative :',
+      checkController: 'showRelative',
+      formatController: 'relativeFormat',
       defaultFormat: '00.00',
     },
   ];
@@ -169,7 +170,9 @@ const IntegralsPreferences = forwardRef((props, ref) => {
         {nucleus &&
           nucleus.map((nucleusLabel) => (
             <div key={nucleusLabel} style={styles.groupContainer}>
-              <p style={styles.header}>{nucleusLabel}</p>
+              <p style={styles.header}>
+                <MF mf={nucleusLabel} />
+              </p>
               {formatFields.map((field) => (
                 <ColumnFormatField
                   key={field.id}
