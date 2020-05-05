@@ -9,7 +9,7 @@ import { useModal } from '../elements/Modal';
 import ReactTable from '../elements/ReactTable/ReactTable';
 import Select from '../elements/Select';
 import ToolTip from '../elements/ToolTip/ToolTip';
-import NumberInputModal from '../modal/NumberInputModal';
+import ChangeSumModal from '../modal/ChangeSumModal';
 import {
   DELETE_INTEGRAL,
   CHANGE_INTEGRAL_DATA,
@@ -58,6 +58,7 @@ const IntegralTablePanel = memo(() => {
     preferences,
     activeTab,
     xDomain,
+    molecules,
   } = useChartData();
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [integralsCounter, setIntegralsCounter] = useState(0);
@@ -252,7 +253,7 @@ const IntegralTablePanel = memo(() => {
 
   const changeIntegralSumHandler = useCallback(
     (value) => {
-      if (value) {
+      if (value !== undefined) {
         dispatch({ type: CHANGE_INTEGRAL_SUM, value });
       }
 
@@ -261,7 +262,7 @@ const IntegralTablePanel = memo(() => {
     [dispatch, modal],
   );
 
-  const elementsCount = useMemo(() => {
+  const currentSum = useMemo(() => {
     return activeSpectrum &&
       SpectrumsData &&
       SpectrumsData[activeSpectrum.index] &&
@@ -274,13 +275,15 @@ const IntegralTablePanel = memo(() => {
 
   const showChangeIntegralSumModal = useCallback(() => {
     modal.show(
-      <NumberInputModal
-        header={`Set new integral sum (current: ${elementsCount})`}
+      <ChangeSumModal
         onClose={() => modal.close()}
         onSave={changeIntegralSumHandler}
+        header={`Set new Integrals Sum (Current: ${currentSum})`}
+        molecules={molecules}
+        element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
       />,
     );
-  }, [changeIntegralSumHandler, elementsCount, modal]);
+  }, [activeTab, changeIntegralSumHandler, currentSum, modal, molecules]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -327,7 +330,7 @@ const IntegralTablePanel = memo(() => {
             onSettingClick={settingsPanelHandler}
           >
             <ToolTip
-              title={`Change Integrals sum (${elementsCount})`}
+              title={`Change Integrals Sum (${currentSum})`}
               popupPlacement="right"
             >
               <button
