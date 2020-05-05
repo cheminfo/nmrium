@@ -293,19 +293,19 @@ const RangesTablePanel = memo(() => {
         ),
       );
     }
-    if (checkPreferences(rangesPreferences, 'showNB')) {
+    if (checkPreferences(rangesPreferences, 'showRelative')) {
       const n = activeTab && activeTab.replace(/[0-9]/g, '');
-      setCustomColumn(cols, 6, `nb ${n}`, (row) => {
+      setCustomColumn(cols, 6, `Relative ${n}`, (row) => {
         return row.original.integral
           ? formatNumber(
               row.original.integral,
               rangesPreferences &&
                 Object.prototype.hasOwnProperty.call(
                   rangesPreferences,
-                  'NBFormat',
+                  'relativeFormat',
                 )
-                ? rangesPreferences.NBFormat
-                : rangeDefaultValues.NBFormat,
+                ? rangesPreferences.relativeFormat
+                : rangeDefaultValues.relativeFormat,
             )
           : null;
       });
