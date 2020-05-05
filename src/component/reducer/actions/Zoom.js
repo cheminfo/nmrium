@@ -13,7 +13,7 @@ export const ZoomType = {
 };
 
 const setZoom = (state, draft, scale) => {
-  const { height, margin } = state;
+  const { height, margin, activeSpectrum } = state;
 
   const t = zoomIdentity
     .translate(0, height - margin.bottom)
@@ -22,24 +22,24 @@ const setZoom = (state, draft, scale) => {
 
   draft.zoomFactor = { scale };
 
-  if (draft.activeSpectrum === null) {
+  if (activeSpectrum === null) {
     draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
       const _scale = scaleLinear(draft.originDomain.yDomains[id], [
         height - margin.bottom,
         margin.top,
       ]);
-      let yDomain = t.rescaleY(_scale).domain();
+      const yDomain = t.rescaleY(_scale).domain();
       acc[id] = yDomain;
       return acc;
       // return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
     }, {});
   } else {
-    const _scale = scaleLinear(
-      draft.originDomain.yDomains[draft.activeSpectrum.id],
-      [height - margin.bottom, margin.top],
-    );
-    let yDomain = t.rescaleY(_scale).domain();
-    draft.yDomains[draft.activeSpectrum.id] = yDomain;
+    const _scale = scaleLinear(draft.originDomain.yDomains[activeSpectrum.id], [
+      height - margin.bottom,
+      margin.top,
+    ]);
+    const yDomain = t.rescaleY(_scale).domain();
+    draft.yDomains[activeSpectrum.id] = yDomain;
   }
 };
 const setZoom1D = (draft, scale, height, margin, index) => {

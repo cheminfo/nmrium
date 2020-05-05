@@ -118,9 +118,10 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
       draft.xDomain = preferences.xDomain;
       draft.xDomains = preferences.xDomains;
       draft.yDomain = preferences.yDomain;
-      draft.yDomains = preferences.yDomains;
 
       if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+        draft.yDomains = preferences.yDomains;
+
         for (const datumID of Object.keys(preferences.level)) {
           const { levelPositive, levelNegative } = preferences.level[datumID];
           const processController = AnalysisObj.getDatum(
