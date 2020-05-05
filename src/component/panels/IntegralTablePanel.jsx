@@ -186,18 +186,18 @@ const IntegralTablePanel = memo(() => {
         ),
       );
     }
-    if (checkPreferences(integralsPreferences, 'showNB')) {
+    if (checkPreferences(integralsPreferences, 'showRelative')) {
       const n = activeTab && activeTab.replace(/[0-9]/g, '');
-      setCustomColumn(cols, 5, `nb ${n}`, (row) =>
+      setCustomColumn(cols, 5, `Relative ${n}`, (row) =>
         formatNumber(
           row.original.integral,
           integralsPreferences &&
             Object.prototype.hasOwnProperty.call(
               integralsPreferences,
-              'NBFormat',
+              'relativeFormat',
             )
-            ? integralsPreferences.NBFormat
-            : integralDefaultValues.NBFormat,
+            ? integralsPreferences.relativeFormat
+            : integralDefaultValues.relativeFormat,
         ),
       );
     }

@@ -1,8 +1,8 @@
 const integralDefaultValues = {
   showAbsolute: true,
   absoluteFormat: '0.00',
-  showNB: true,
-  NBFormat: '0.00',
+  showRelative: true,
+  relativeFormat: '0.00',
 };
 
 const rangeDefaultValues = {
