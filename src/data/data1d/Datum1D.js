@@ -10,6 +10,7 @@ import generateID from '../utilities/generateID';
 import { FiltersManager } from './FiltersManager';
 import autoPeakPicking from './autoPeakPicking';
 import autoRangesDetection from './autoRangesDetection';
+import detectSignal from './detectSignal';
 import { Filters } from './filter1d/Filters';
 
 export class Datum1D {
@@ -72,11 +73,14 @@ export class Datum1D {
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
     this.integrals = Object.assign(
-      { values: [], options: {} },
+      { values: [], options: { sum: 100 } },
       options.integrals,
     ); // array of object (from: xIndex, to: xIndex)
     this.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
-    this.ranges = Object.assign({ values: [], options: {} }, options.ranges);
+    this.ranges = Object.assign(
+      { values: [], options: { sum: 100 } },
+      options.ranges,
+    );
 
     //reapply filters after load the original data
     FiltersManager.reapplyFilters(this);
@@ -119,6 +123,7 @@ export class Datum1D {
 
   setRanges(ranges) {
     this.ranges = ranges;
+    this.updateIntegralRanges();
   }
 
   setRange(data) {
@@ -128,31 +133,11 @@ export class Datum1D {
       (range) => range.id === data.id,
     );
     this.ranges.values[RangeIndex] = data;
+    this.updateIntegralRanges();
   }
 
   getRanges() {
     return this.ranges;
-  }
-
-  getRangeAbsolute(from, to) {
-    return this.getIntegration(from, to);
-  }
-  getRangeIntegral(from, to) {
-    return 0;
-  }
-
-  resizeRange(range) {
-    this.ranges = Object.assign({}, this.ranges);
-    this.ranges.values = this.ranges.values.slice();
-    const index = this.ranges.values.findIndex((i) => i.id === range.id);
-    if (index !== -1) {
-      this.ranges.values[index] = {
-        ...this.ranges.values[index],
-        ...range,
-        ...{ absolute: this.getRangeAbsolute(range.from, range.to) },
-        ...{ integral: this.getRangeIntegral(range.from, range.to) },
-      };
-    }
   }
 
   /**
@@ -166,11 +151,10 @@ export class Datum1D {
       id: generateID(),
       from: range[0],
       to: range[1],
-      value: this.getIntegration(range[0], range[1]), // the real value
-      relative: 0, // relative value
+      absolute: this.getIntegration(range[0], range[1]), // the real value
       kind: 'signal',
     });
-    this.updateRelativeIntegrals();
+    this.updateIntegralIntegrals();
   }
 
   getIntegration(from, to) {
@@ -186,36 +170,56 @@ export class Datum1D {
   changeIntegralSum(sumValue) {
     this.integrals = Object.assign({}, this.integrals);
     this.integrals.options = { ...this.integrals.options, sum: sumValue };
-    this.updateRelativeIntegrals();
+    this.updateIntegralIntegrals();
   }
 
   changeRangesSum(sumValue) {
     this.ranges = Object.assign({}, this.ranges);
-    this.ranges.values = this.ranges.values.slice();
     this.ranges.options = { ...this.ranges.options, sum: sumValue };
-    let currentSum = this.ranges.values.reduce(
-      (previous, current) => (previous += current.absolute),
-      0,
-    );
-    let factor = sumValue / currentSum;
-    this.ranges.values = this.ranges.values.map((range) => {
-      const integral = range.absolute * factor;
-      return { ...range, integral };
-    });
+
+    this.updateIntegralRanges();
   }
 
-  updateRelativeIntegrals() {
-    const sum = this.integrals.options.sum || 100;
+  updateIntegralIntegrals() {
     this.integrals = Object.assign({}, this.integrals);
-    this.integrals.values = this.integrals.values.slice();
-    let currentSum = this.integrals.values.reduce(
-      (previous, current) => (previous += current.value),
-      0,
+    if (this.integrals.options.sum === undefined) {
+      this.integrals.options = { ...this.integrals.options, sum: 100 };
+    }
+
+    this.integrals.values = this.updateRelatives(
+      this.integrals.values.slice(),
+      this.integrals.options.sum,
+      'integral',
+      ['signal'],
     );
-    let factor = sum / currentSum;
-    this.integrals.values = this.integrals.values.map((integral) => {
-      const relative = integral.value * factor;
-      return { ...integral, relative };
+  }
+
+  updateIntegralRanges() {
+    this.ranges = Object.assign({}, this.ranges);
+    if (this.ranges.options.sum === undefined) {
+      this.ranges.options = { ...this.ranges.options, sum: 100 };
+    }
+
+    this.ranges.values = this.updateRelatives(
+      this.ranges.values.slice(),
+      this.ranges.options.sum,
+      'integral',
+      ['signal'],
+    );
+  }
+
+  // this method is a helper method and can be moved and imported from somewhere else if wished
+  updateRelatives(values, sum, storageKey, kinds) {
+    let currentSum = values.reduce((previous, current) => {
+      return current.kind && kinds.includes(current.kind)
+        ? (previous += current.absolute)
+        : previous;
+    }, 0);
+    let factor = currentSum > 0 ? sum / currentSum : 0;
+    return values.map((value) => {
+      return value.kind && kinds.includes(value.kind)
+        ? { ...value, [storageKey]: value.absolute * factor }
+        : { ...value, [storageKey]: null };
     });
   }
 
@@ -227,9 +231,9 @@ export class Datum1D {
       this.integrals.values[index] = {
         ...this.integrals.values[index],
         ...integral,
-        ...{ value: this.getIntegration(integral.from, integral.to) },
+        ...{ absolute: this.getIntegration(integral.from, integral.to) },
       };
-      this.updateRelativeIntegrals();
+      this.updateIntegralIntegrals();
     }
   }
 
@@ -259,14 +263,16 @@ export class Datum1D {
 
     const ranges = autoRangesDetection(this, options);
     this.ranges.values = ranges.map((range) => {
-      range.absolute = range.integral;
       return {
         id: generateID(),
         ...range,
+        absolute: this.getIntegration(range.from, range.to),
         kind: 'signal',
-        integral: 0,
+        signal: [{ ...range.signal[0], from: range.from, to: range.to }],
       };
     });
+    this.updateIntegralRanges();
+
     return this.ranges;
   }
 
@@ -293,6 +299,7 @@ export class Datum1D {
         (range) => range.id !== id,
       );
     }
+    this.updateIntegralRanges();
   }
   deleteIntegral(id) {
     this.integrals = Object.assign({}, this.integrals);
@@ -305,6 +312,7 @@ export class Datum1D {
         (integral) => integral.id !== id,
       );
     }
+    this.updateIntegralIntegrals();
   }
 
   setIntegral(data) {
@@ -314,6 +322,7 @@ export class Datum1D {
       (integral) => integral.id === data.id,
     );
     this.integrals.values[integralIndex] = data;
+    this.updateIntegralIntegrals();
   }
 
   /***
@@ -390,43 +399,49 @@ export class Datum1D {
     return false;
   }
 
+  detectSignal(from, to) {
+    return detectSignal(
+      this.data.x,
+      this.data.re,
+      from,
+      to,
+      this.info.frequency,
+    );
+  }
+
   // eslint-disable-next-line no-unused-vars
   addRange(from, to) {
     this.ranges = Object.assign({}, this.ranges);
     this.ranges.values = this.ranges.values.slice();
 
-    const { fromIndex, toIndex } = X.getFromToIndex(this.data.x, { from, to });
-    const data = {
-      x: this.data.x.slice(fromIndex, toIndex),
-      y: this.data.re.slice(fromIndex, toIndex),
-    };
     try {
-      const result = analyseMultiplet(data, {
-        frequency: this.info.frequency,
-        takeBestPartMultiplet: true,
-        symmetrizeEachStep: true,
-      });
       let range = {
         id: generateID(),
-
         from,
         to,
-        absolute: this.getRangeAbsolute(from, to), // the real value,
-        signal: [
-          {
-            delta: result.chemShift,
-            multiplicity: result.j.map((j) => j.multiplicity).join(''),
-            j: result.j,
-            peak: [],
-          },
-        ],
+        absolute: this.getIntegration(from, to), // the real value,
+        signal: [this.detectSignal(from, to)],
         kind: 'signal',
-        integral: this.getRangeIntegral(from, to),
       };
       this.ranges.values.push(range);
+      this.updateIntegralRanges();
     } catch (e) {
-      navigator.clipboard.writeText(JSON.stringify(data, undefined, 2));
+      // navigator.clipboard.writeText(JSON.stringify(data, undefined, 2));
       throw new Error('Could not calculate the multiplicity');
+    }
+  }
+
+  changeRange(range) {
+    this.ranges = Object.assign({}, this.ranges);
+    this.ranges.values = this.ranges.values.slice();
+    const index = this.ranges.values.findIndex((i) => i.id === range.id);
+    if (index !== -1) {
+      this.ranges.values[index] = {
+        ...this.ranges.values[index],
+        ...range,
+        ...{ absolute: this.getIntegration(range.from, range.to) },
+      };
+      this.updateIntegralRanges();
     }
   }
 
