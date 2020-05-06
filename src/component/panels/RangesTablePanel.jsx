@@ -12,8 +12,8 @@ import ReactTable from '../elements/ReactTable/ReactTable';
 import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
 import Select from '../elements/Select';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import ChangeSumModal from '../modal/ChangeSumModal';
 import CopyClipboardModal from '../modal/CopyClipboardModal';
-import NumberInputModal from '../modal/NumberInputModal';
 import {
   DELETE_RANGE,
   CHANGE_RANGE_DATA,
@@ -59,6 +59,7 @@ const RangesTablePanel = memo(() => {
     xDomain,
     preferences,
     activeTab,
+    molecules,
   } = useChartData();
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [rangesCounter, setRangesCounter] = useState(0);
@@ -292,19 +293,19 @@ const RangesTablePanel = memo(() => {
         ),
       );
     }
-    if (checkPreferences(rangesPreferences, 'showNB')) {
+    if (checkPreferences(rangesPreferences, 'showRelative')) {
       const n = activeTab && activeTab.replace(/[0-9]/g, '');
-      setCustomColumn(cols, 6, `nb ${n}`, (row) => {
+      setCustomColumn(cols, 6, `Relative ${n}`, (row) => {
         return row.original.integral
           ? formatNumber(
               row.original.integral,
               rangesPreferences &&
                 Object.prototype.hasOwnProperty.call(
                   rangesPreferences,
-                  'NBFormat',
+                  'relativeFormat',
                 )
-                ? rangesPreferences.NBFormat
-                : rangeDefaultValues.NBFormat,
+                ? rangesPreferences.relativeFormat
+                : rangeDefaultValues.relativeFormat,
             )
           : null;
       });
@@ -407,7 +408,7 @@ const RangesTablePanel = memo(() => {
 
   const changeRangesSumHandler = useCallback(
     (value) => {
-      if (value) {
+      if (value !== undefined) {
         dispatch({ type: CHANGE_RANGE_SUM, value });
       }
 
@@ -416,7 +417,7 @@ const RangesTablePanel = memo(() => {
     [dispatch, modal],
   );
 
-  const elementsCount = useMemo(() => {
+  const currentSum = useMemo(() => {
     return activeSpectrum &&
       SpectrumsData &&
       SpectrumsData[activeSpectrum.index] &&
@@ -429,13 +430,15 @@ const RangesTablePanel = memo(() => {
 
   const showChangeRangesSumModal = useCallback(() => {
     modal.show(
-      <NumberInputModal
-        header={`Set new range sum (current: ${elementsCount})`}
+      <ChangeSumModal
         onClose={() => modal.close()}
         onSave={changeRangesSumHandler}
+        header={`Set new Ranges Sum (Current: ${currentSum})`}
+        molecules={molecules}
+        element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
       />,
     );
-  }, [changeRangesSumHandler, elementsCount, modal]);
+  }, [activeTab, changeRangesSumHandler, currentSum, modal, molecules]);
 
   const handleOnFilter = useCallback(() => {
     setFilterIsActive(!filterIsActive);
@@ -464,7 +467,7 @@ const RangesTablePanel = memo(() => {
           </button>
         </ToolTip>
         <ToolTip
-          title={`Change Ranges sum (${elementsCount})`}
+          title={`Change Ranges Sum (${currentSum})`}
           popupPlacement="right"
         >
           <button
