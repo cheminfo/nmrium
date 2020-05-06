@@ -3,6 +3,8 @@ const integralDefaultValues = {
   absoluteFormat: '0.00',
   showRelative: true,
   relativeFormat: '0.00',
+  color: '#000000',
+  strokeWidth: 1,
 };
 
 const rangeDefaultValues = {

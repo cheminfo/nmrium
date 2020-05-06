@@ -12,8 +12,11 @@ import { MF } from 'react-mf';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import ColorInput from '../../elements/ColorInput';
+import NumberInput from '../../elements/NumberInput';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { GetPreference } from '../../utility/PreferencesHelper';
 
 import ColumnFormatField from './ColumnFormatField';
 import { integralDefaultValues } from './defaultValues';
@@ -86,32 +89,11 @@ const IntegralsPreferences = forwardRef((props, ref) => {
   }, [data, getDefaultValues, settings]);
 
   useEffect(() => {
-    const integralsPreferences = lodash.get(preferences, 'panels.integrals');
+    const integralsPreferences = GetPreference(preferences, 'integrals');
     if (integralsPreferences) {
       setSetting(integralsPreferences);
     }
   }, [preferences]);
-
-  const inputChangeHandler = useCallback((event) => {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-
-    const keys = target.name.split('-');
-
-    setSetting((prevState) => {
-      const preGroupValues =
-        prevState && Object.prototype.hasOwnProperty.call(prevState, keys[0])
-          ? prevState[keys[0]]
-          : {};
-      return {
-        ...prevState,
-        [keys[0]]: {
-          ...preGroupValues,
-          [keys[1]]: value,
-        },
-      };
-    });
-  }, []);
 
   const saveHandler = useCallback(
     (values, showMessage = false) => {
@@ -153,20 +135,54 @@ const IntegralsPreferences = forwardRef((props, ref) => {
     const form = event.target;
     const formData = new FormData(form);
     let values = {};
-    for (let field of formData.entries()) {
-      const keys = field[0].split('-');
-      const val = form.elements[field[0]].checked ? !!field[1] : field[1];
-      values = {
-        ...values,
-        [keys[0]]: { ...values[keys[0]], [keys[1]]: val },
-      };
+    for (const field of formData.entries()) {
+      const keys = field[0].split('-').join('.');
+      const val = ['true', 'false'].includes(field[1])
+        ? field[1] === 'true'
+        : field[1];
+      values = lodash.set(values, keys, val);
     }
     saveHandler(values, true);
   };
 
+  const getValue = useCallback(
+    (...params) => {
+      const keys = params.join('.');
+      if (settings) {
+        const value = lodash.get(settings, keys);
+        return value ? value : null;
+      } else {
+        const keyIndex = params.length - 1;
+        return integralDefaultValues[params[keyIndex]];
+      }
+    },
+    [settings],
+  );
+
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} ref={formRef}>
+        <div style={styles.groupContainer}>
+          <p style={styles.header}>General</p>
+          <ColorInput name="color" value={getValue('color')} />
+          <NumberInput
+            name="strokeWidth"
+            label="stroke width :"
+            style={{
+              label: { fontSize: '11px', fontWeight: 'bold', color: '#232323' },
+              input: {
+                width: '60%',
+                textAlign: 'center',
+                borderRadius: '0',
+              },
+            }}
+            defaultValue={1}
+            value={getValue('strokeWidth')}
+            min={1}
+            pattern="[1-9]*"
+          />
+        </div>
+
         {nucleus &&
           nucleus.map((nucleusLabel) => (
             <div key={nucleusLabel} style={styles.groupContainer}>
@@ -177,15 +193,11 @@ const IntegralsPreferences = forwardRef((props, ref) => {
                 <ColumnFormatField
                   key={field.id}
                   label={field.label}
-                  data={settings}
-                  defaultData={integralDefaultValues}
+                  checked={getValue(nucleusLabel, field.checkController)}
+                  format={getValue(nucleusLabel, field.formatController)}
                   checkControllerName={field.checkController}
                   formatControllerName={field.formatController}
                   groupID={nucleusLabel}
-                  defaultFormat={field.defaultFormat}
-                  inputChangeHandler={(e, controllerName) =>
-                    inputChangeHandler(e, controllerName)
-                  }
                 />
               ))}
             </div>

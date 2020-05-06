@@ -1,5 +1,4 @@
-import lodash from 'lodash';
-import React, { useCallback, memo } from 'react';
+import React, { memo, useState } from 'react';
 
 const styles = {
   row: {
@@ -22,47 +21,35 @@ const ColumnFormatField = memo(
   ({
     label,
     checkControllerName,
+    checked,
+    format,
     formatControllerName,
-    defaultData,
     inputChangeHandler,
     groupID,
-    data,
   }) => {
-    const getValue = useCallback(
-      (nucleusLabel, key) => {
-        if (data) {
-          const value = lodash.get(data, `${nucleusLabel}.${key}`);
-          return value ? value : null;
-        } else {
-          return defaultData[key];
-        }
-      },
-      [data, defaultData],
-    );
+    const [_checked, setChecked] = useState(Boolean(checked));
 
     return (
       <div style={styles.row}>
         <span style={styles.inputLabel}>{label}</span>
         <div style={{ flex: 4 }}>
           <input
-            name={`${groupID}-${checkControllerName}`}
             type="checkbox"
-            onChange={(e) =>
-              inputChangeHandler(e, groupID - checkControllerName)
-            }
+            onChange={(e) => setChecked(e.target.checked)}
             style={{ margin: '0px 5px' }}
-            checked={getValue(groupID, checkControllerName)}
-            // defaultChecked={true}
+            defaultChecked={_checked}
+          />
+          <input
+            name={`${groupID}-${checkControllerName}`}
+            type="hidden"
+            value={_checked}
           />
           <input
             style={styles.input}
             name={`${groupID}-${formatControllerName}`}
             type="text"
-            onChange={(e) =>
-              inputChangeHandler(e, groupID - formatControllerName)
-            }
-            value={getValue(groupID, formatControllerName)}
-            // defaultValue={defaultFormat}
+            onChange={inputChangeHandler}
+            defaultValue={format}
           />
         </div>
       </div>

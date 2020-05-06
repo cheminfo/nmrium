@@ -28,7 +28,11 @@ const KeyListener = ({ parentRef }) => {
               type: SET_KEY_PREFERENCES,
               keyCode: e.keyCode,
             });
-            alert.show('Configuration Reset');
+            alert.show(
+              `Configuration Reset, press '${String.fromCharCode(
+                e.keyCode,
+              )}' again to reload it.`,
+            );
           } else {
             if (keysPreferences && keysPreferences[e.keyCode]) {
               dispatch({
@@ -40,7 +44,9 @@ const KeyListener = ({ parentRef }) => {
                 type: SET_KEY_PREFERENCES,
                 keyCode: e.keyCode,
               });
-              alert.show('Configuration saved');
+              alert.show(
+                `Configuration saved, press '${e.key}' again to reload it.`,
+              );
             }
           }
         } else {

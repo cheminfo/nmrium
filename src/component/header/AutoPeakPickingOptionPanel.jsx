@@ -14,6 +14,12 @@ const styles = {
   input: {
     width: '50px',
   },
+  inputContainer: {
+    flex: '2',
+  },
+  label: {
+    flex: '3',
+  },
   actionButton: {
     height: '100%',
     width: '60px',
@@ -51,14 +57,22 @@ const AutoPeakPickingOptionPanel = () => {
         ref={maxNumberOfPeaksRef}
         label="Max Number Of Peaks:"
         name="maxNumberOfPeaks"
-        style={{ input: styles.input }}
+        style={{
+          input: styles.input,
+          inputContainer: styles.inputContainer,
+          label: styles.label,
+        }}
         defaultValue={50}
       />
       <NumberInput
         ref={minMaxRatioRef}
         label="Min Max Ratio:"
         name="minMaxRatio"
-        style={{ input: styles.input }}
+        style={{
+          input: styles.input,
+          inputContainer: styles.inputContainer,
+          label: styles.label,
+        }}
         defaultValue={0.1}
         step="0.1"
       />

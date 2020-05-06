@@ -1,4 +1,3 @@
-import lodash from 'lodash';
 import React, { useCallback, useMemo, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -16,6 +15,7 @@ import {
   CHANGE_INTEGRAL_SUM,
 } from '../reducer/types/Types';
 import formatNumber from '../utility/FormatNumber';
+import { GetPreference } from '../utility/PreferencesHelper';
 
 import { SignalKinds } from './constants/SignalsKinds';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
@@ -147,6 +147,7 @@ const IntegralTablePanel = memo(() => {
 
   const checkPreferences = (integralsPreferences, key) => {
     const val =
+      !integralsPreferences ||
       integralsPreferences === undefined ||
       Object.keys(integralsPreferences).length === 0 ||
       (integralsPreferences && integralsPreferences[key] === true)
@@ -165,9 +166,9 @@ const IntegralTablePanel = memo(() => {
       });
     };
 
-    const integralsPreferences = lodash.get(
+    const integralsPreferences = GetPreference(
       preferences,
-      `panels.integrals.[${activeTab}]`,
+      `integrals.[${activeTab}]`,
     );
     // if (integralsPreferences) {
     let cols = [...defaultColumns];

@@ -1,5 +1,15 @@
 import { XY } from 'ml-spectra-processing';
-import React, { useEffect, useState, useCallback, Fragment } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  Fragment,
+  useMemo,
+} from 'react';
+
+import { useChartData } from '../context/ChartContext';
+import { integralDefaultValues } from '../panels/preferences-panels/defaultValues';
+import { GetPreference } from '../utility/PreferencesHelper';
 
 import IntegralResizable from './IntegralResizable';
 
@@ -14,8 +24,16 @@ const Integral = ({
   scaleX,
 }) => {
   const { from, to } = integralData;
-
   const [integral, setIntegral] = useState();
+  const { preferences } = useChartData();
+
+  const integralSettings = useMemo(() => {
+    let {
+      color = integralDefaultValues.color,
+      strokeWidth = integralDefaultValues.strokeWidth,
+    } = GetPreference(preferences, 'integrals') || {};
+    return { color, strokeWidth };
+  }, [preferences]);
 
   useEffect(() => {
     const integralResult = XY.integral(
@@ -57,7 +75,8 @@ const Integral = ({
     <Fragment>
       <path
         className="line"
-        stroke="black"
+        stroke={integralSettings.color}
+        strokeWidth={integralSettings.strokeWidth}
         fill="none"
         style={{
           transformOrigin: 'center top',

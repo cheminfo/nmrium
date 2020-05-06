@@ -80,7 +80,7 @@ const styles = css`
 let tempData = {};
 
 const GeneralSettings = ({ onClose, onSave }) => {
-  const [activeTab, setActiveTab] = useState('Conrtollers');
+  const [activeTab, setActiveTab] = useState('controllers');
   const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
 
   const handleSave = useCallback(() => {
@@ -124,7 +124,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
       <h6 className="header">General Settings</h6>
       <div className="content">
         <Tabs defaultTabID={activeTab} onClick={tabChangeHandler}>
-          <div className="inner-content" label="Conrtollers" key="conrtollers">
+          <div className="inner-content" label="controllers" key="controllers">
             <p className="section-header">Mouse Scroll Wheel Sensitivity</p>
             <span className="input-label">Low</span>
             <input
@@ -132,7 +132,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
               className="number-input"
               type="number"
               onChange={onInputChange}
-              defaultValue={getValueFromStorage('conrtollers.mws.low', 2)}
+              defaultValue={getValueFromStorage('controllers.mws.low', 2)}
             />
             <span className="input-label">High</span>
             <input
@@ -140,7 +140,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
               className="number-input"
               type="number"
               onChange={onInputChange}
-              defaultValue={getValueFromStorage('conrtollers.mws.high', 8)}
+              defaultValue={getValueFromStorage('controllers.mws.high', 8)}
             />
           </div>
         </Tabs>

@@ -203,17 +203,17 @@ const SpectrumListPanel = memo(
 
     const contextMenu = [
       {
-        label: 'Save to Clipboard',
+        label: 'Copy to Clipboard',
         onClick: (data) => {
-          const { x, y } = data;
+          const { x, y, info } = data;
           const success = copyTextToClipboard(
-            JSON.stringify({ x, y }, undefined, 2),
+            JSON.stringify({ x, y, info }, undefined, 2),
           );
 
           if (success) {
-            alert.show('Coped to clipboard');
+            alert.success('Data copied to clipboard');
           } else {
-            alert.error('Coped to clipboard failed');
+            alert.error('Copy to clipboard failed');
           }
         },
       },

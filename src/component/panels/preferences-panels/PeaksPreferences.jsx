@@ -13,6 +13,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { GetPreference } from '../../utility/PreferencesHelper';
 
 import ColumnFormatField from './ColumnFormatField';
 import { peaksDefaultValues } from './defaultValues';
@@ -73,32 +74,11 @@ const PeaksPreferences = forwardRef((props, ref) => {
   }, [data, getDefaultValues, settings]);
 
   useEffect(() => {
-    const peaksPreferences = lodash.get(preferences, 'panels.peaks');
+    const peaksPreferences = GetPreference(preferences, 'peaks');
     if (peaksPreferences) {
       setSetting(peaksPreferences);
     }
   }, [preferences]);
-
-  const inputChangeHandler = useCallback((event) => {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-
-    const keys = target.name.split('-');
-
-    setSetting((prevState) => {
-      const preGroupValues =
-        prevState && Object.prototype.hasOwnProperty.call(prevState, keys[0])
-          ? prevState[keys[0]]
-          : {};
-      return {
-        ...prevState,
-        [keys[0]]: {
-          ...preGroupValues,
-          [keys[1]]: value,
-        },
-      };
-    });
-  }, []);
 
   const saveHandler = useCallback(
     (values, showMessage = false) => {
@@ -167,15 +147,28 @@ const PeaksPreferences = forwardRef((props, ref) => {
     const formData = new FormData(form);
     let values = {};
     for (let field of formData.entries()) {
-      const keys = field[0].split('-');
-      const val = form.elements[field[0]].checked ? !!field[1] : field[1];
-      values = {
-        ...values,
-        [keys[0]]: { ...values[keys[0]], [keys[1]]: val },
-      };
+      const keys = field[0].split('-').join('.');
+      const val = ['true', 'false'].includes(field[1])
+        ? field[1] === 'true'
+        : field[1];
+      values = lodash.set(values, keys, val);
     }
     saveHandler(values, true);
   };
+
+  const getValue = useCallback(
+    (...params) => {
+      const keys = params.join('.');
+      if (settings) {
+        const value = lodash.get(settings, keys);
+        return value ? value : null;
+      } else {
+        const keyIndex = params.length - 1;
+        return peaksDefaultValues[params[keyIndex]];
+      }
+    },
+    [settings],
+  );
 
   return (
     <div style={styles.container}>
@@ -188,15 +181,11 @@ const PeaksPreferences = forwardRef((props, ref) => {
                 <ColumnFormatField
                   key={field.id}
                   label={field.label}
-                  data={settings}
-                  defaultData={peaksDefaultValues}
+                  checked={getValue(nucleusLabel, field.checkController)}
+                  format={getValue(nucleusLabel, field.formatController)}
                   checkControllerName={field.checkController}
                   formatControllerName={field.formatController}
                   groupID={nucleusLabel}
-                  defaultFormat={field.defaultFormat}
-                  inputChangeHandler={(e, controllerName) =>
-                    inputChangeHandler(e, controllerName)
-                  }
                 />
               ))}
             </div>

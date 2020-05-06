@@ -1,4 +1,3 @@
-import lodash from 'lodash';
 import React, { useCallback, useMemo, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -11,6 +10,7 @@ import ReactTable from '../elements/ReactTable/ReactTable';
 import ConnectToContext from '../hoc/ConnectToContext';
 import { DELETE_PEAK_NOTATION } from '../reducer/types/Types';
 import formatNumber from '../utility/FormatNumber';
+import { GetPreference } from '../utility/PreferencesHelper';
 
 import DefaultPanelHeader from './header/DefaultPanelHeader';
 import PreferencesHeader from './header/PreferencesHeader';
@@ -124,9 +124,9 @@ const PeaksTablePanel = memo(
         });
       };
 
-      const peaksPreferences = lodash.get(
+      const peaksPreferences = GetPreference(
         preferences,
-        `panels.peaks.[${activeTab}]`,
+        `peaks.[${activeTab}]`,
       );
       if (peaksPreferences) {
         let cols = [...initialColumns];

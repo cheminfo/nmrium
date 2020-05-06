@@ -117,9 +117,9 @@ const RangesTablePanel = memo(() => {
     (value) => {
       const success = copyTextToClipboard(value);
       if (success) {
-        alert.show('Coped to clipboard');
+        alert.success('Data copied to clipboard');
       } else {
-        alert.error('Coped to clipboard failed');
+        alert.error('copy to clipboard failed');
       }
     },
     [alert],
@@ -149,9 +149,9 @@ const RangesTablePanel = memo(() => {
         );
 
         if (success) {
-          alert.show('Coped to clipboard');
+          alert.show('Data copied to clipboard');
         } else {
-          alert.error('Coped to clipboard failed');
+          alert.error('copy to clipboard failed');
         }
       }
     },
@@ -373,7 +373,7 @@ const RangesTablePanel = memo(() => {
 
   const contextMenu = [
     {
-      label: 'Save to Clipboard',
+      label: 'Copy to clipboard',
       onClick: saveJSONToClipboardHandler,
     },
   ];

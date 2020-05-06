@@ -14,7 +14,6 @@ const pathStyles = css`
   clip-path: url('#clip');
 
   path {
-    stroke-width: 1.5;
     fill: none;
     // stroke-linejoin: round;
     // stroke-linecap: round;
