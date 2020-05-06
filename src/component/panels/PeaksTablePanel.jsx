@@ -147,7 +147,7 @@ const PeaksTablePanel = memo(
         }
         if (peaksPreferences.showDeltaHz) {
           setCustomColumn(cols, 4, 'δ (Hz)', (row) =>
-            formatNumber(row.original.value, peaksPreferences.deltaHzFormat),
+            formatNumber(row.original.valueHz, peaksPreferences.deltaHzFormat),
           );
         }
         if (peaksPreferences.showIntensity) {
@@ -197,6 +197,7 @@ const PeaksTablePanel = memo(
           return {
             xIndex: peak.xIndex,
             value: value,
+            valueHz: value * _data.info.frequency,
             id: peak.id,
             yValue: _data.y[peak.xIndex],
             peakWidth: peak.width ? peak.width : '',
