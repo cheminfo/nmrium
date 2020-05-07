@@ -88,7 +88,7 @@ const SpectrumListItem = memo(
     };
 
     const { color, name, positiveColor, negativeColor } = data.display;
-
+    const eyeIconColor = data.info.dimension === 2 ? positiveColor : color;
     return (
       <div style={styles.row} key={data.id} onContextMenu={onContextMenu}>
         <button
@@ -98,10 +98,17 @@ const SpectrumListItem = memo(
         >
           <FaEye
             style={{
-              fill: data.info.dimension === 2 ? positiveColor : color,
+              fill: eyeIconColor,
               ...(isVisible(data.id)
-                ? { opacity: 1, strokeWidth: '1px', fill: color }
-                : { opacity: 0.1, fill: color }),
+                ? {
+                    opacity: 1,
+                    strokeWidth: '1px',
+                    fill: eyeIconColor,
+                  }
+                : {
+                    opacity: 0.1,
+                    fill: eyeIconColor,
+                  }),
             }}
           />
         </button>
