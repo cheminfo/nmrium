@@ -219,7 +219,7 @@ export class Datum1D {
     return values.map((value) => {
       return value.kind && kinds.includes(value.kind)
         ? { ...value, [storageKey]: value.absolute * factor }
-        : { ...value, [storageKey]: null };
+        : { ...value, [storageKey]: 0.0 };
     });
   }
 

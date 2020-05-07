@@ -189,8 +189,8 @@ const IntegralTablePanel = memo(() => {
     }
     if (checkPreferences(integralsPreferences, 'showRelative')) {
       const n = activeTab && activeTab.replace(/[0-9]/g, '');
-      setCustomColumn(cols, 5, `Relative ${n}`, (row) =>
-        formatNumber(
+      setCustomColumn(cols, 5, `Relative ${n}`, (row) => {
+        const formattedNumber = formatNumber(
           row.original.integral,
           integralsPreferences &&
             Object.prototype.hasOwnProperty.call(
@@ -199,8 +199,12 @@ const IntegralTablePanel = memo(() => {
             )
             ? integralsPreferences.relativeFormat
             : integralDefaultValues.relativeFormat,
-        ),
-      );
+        );
+
+        return row.original.integral > 0
+          ? formattedNumber
+          : `[${formattedNumber}]`;
+      });
     }
 
     return cols.sort(

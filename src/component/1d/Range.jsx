@@ -100,6 +100,11 @@ const Range = ({ rangeData }) => {
           height="6"
           className="range-area"
           fill="green"
+          fillOpacity={
+            (integral !== undefined && integral > 0) || highlight.isActive
+              ? 1
+              : 0.4
+          }
         />
         <text
           textAnchor="middle"
@@ -107,8 +112,13 @@ const Range = ({ rangeData }) => {
           y="20"
           fontSize="10"
           fill="red"
+          fillOpacity={
+            (integral !== undefined && integral > 0) || highlight.isActive
+              ? 1
+              : 0.4
+          }
         >
-          {integral.toFixed(2)}
+          {integral !== undefined ? integral.toFixed(2) : ''}
         </text>
       </g>
       <Resizable
