@@ -5,6 +5,7 @@ import { Data1DManager } from './data1d/Data1DManager';
 import { Datum1D } from './data1d/Datum1D';
 import { Data2DManager } from './data2d/Data2DManager';
 import { getInfoFromMetaData } from './utilities/getInfoFromMetaData';
+import getColor from '../component/utility/ColorGenerator';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
   return fetch(jcampURL)
@@ -58,13 +59,21 @@ function addJcampSS(spectra, entry, options) {
 
 export async function addBruker(spectra, options, data) {
   let result = await convertBruker(data, { xy: true, noContours: true });
-
+  const usedcolors = [];
   let entries = result.map((r) => r.value);
   for (let entry of entries) {
     let info = getInfoFromMetaData(entry.info);
     if (info.dimension === 1) {
       if (entry.spectra && entry.spectra.length > 0) {
-        spectra.push(Data1DManager.fromBruker(entry, { ...options, info }));
+        const color = getColor(usedcolors);
+        spectra.push(
+          Data1DManager.fromBruker(entry, {
+            ...options,
+            display: { ...options.display, color },
+            info,
+          }),
+        );
+        usedcolors.push(color);
       }
     }
     if (info.dimension === 2 && info.isFt) {
