@@ -3,7 +3,6 @@ import React, {
   Fragment,
   useEffect,
   useState,
-  useRef,
   useMemo,
 } from 'react';
 import { useSize, useDebounce } from 'react-use';
@@ -43,7 +42,6 @@ const Viewer2D = () => {
   } = state;
 
   const dispatch = useDispatch();
-  let chart2DRef = useRef();
 
   const spectrumData = useMemo(() => {
     const nucleuses = activeTab.split(',');
@@ -193,7 +191,7 @@ const Viewer2D = () => {
                 <FooterBanner data1D={spectrumData} layout={DIMENSION} />
               )}
 
-              <Chart2D ref={chart2DRef} data={spectrumData} />
+              <Chart2D data={spectrumData} />
             </MouseTracker>
           </BrushTracker>
         )}

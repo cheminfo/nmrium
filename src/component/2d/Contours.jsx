@@ -40,17 +40,21 @@ const Contours = () => {
             datum.display.positiveColor,
             datum.display.negativeColor,
           ];
-          return contours[datum.id].map((contoursData, index) => {
-            return contoursData.map((contour, innerIndex) => (
-              <path
-                key={innerIndex}
-                fill="none"
-                stroke={colors[index]}
-                strokeWidth="1"
-                d={buildContourPath(contour)}
-              />
-            ));
-          });
+          return (
+            contours[datum.id] &&
+            contours[datum.id].length > 0 &&
+            contours[datum.id].map((contoursData, index) => {
+              return contoursData.map((contour, innerIndex) => (
+                <path
+                  key={innerIndex}
+                  fill="none"
+                  stroke={colors[index]}
+                  strokeWidth="1"
+                  d={buildContourPath(contour)}
+                />
+              ));
+            })
+          );
         })}
     </g>
   );

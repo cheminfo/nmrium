@@ -25,7 +25,6 @@ export class Data2DManager {
 
   static fromBruker = function fromBruker(result, options = {}) {
     let data = result.minMax;
-
     const datum2D = new Datum2D({
       ...options,
       meta: result.info,
