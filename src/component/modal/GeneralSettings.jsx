@@ -4,6 +4,7 @@ import lodash from 'lodash';
 import { useCallback, useState } from 'react';
 
 import { Tabs } from '../elements/Tab';
+import { zoomDefaultValues } from '../reducer/helper/Spectrum1DZoomHelper';
 import { useStateWithLocalStorage, getValue } from '../utility/LocalStorage';
 
 const styles = css`
@@ -132,7 +133,10 @@ const GeneralSettings = ({ onClose, onSave }) => {
               className="number-input"
               type="number"
               onChange={onInputChange}
-              defaultValue={getValueFromStorage('controllers.mws.low', 2)}
+              defaultValue={getValueFromStorage(
+                'controllers.mws.low',
+                zoomDefaultValues.lowStep,
+              )}
             />
             <span className="input-label">High</span>
             <input
@@ -140,7 +144,10 @@ const GeneralSettings = ({ onClose, onSave }) => {
               className="number-input"
               type="number"
               onChange={onInputChange}
-              defaultValue={getValueFromStorage('controllers.mws.high', 8)}
+              defaultValue={getValueFromStorage(
+                'controllers.mws.high',
+                zoomDefaultValues.highStep,
+              )}
             />
           </div>
         </Tabs>

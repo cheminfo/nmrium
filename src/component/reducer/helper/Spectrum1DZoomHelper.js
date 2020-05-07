@@ -1,18 +1,18 @@
 import { getLocalStorage, getValue } from '../../utility/LocalStorage';
 
+export const zoomDefaultValues = {
+  lowStep: 2,
+  highStep: 20,
+  speedThreshold: 3,
+};
+
 export default class Spectrum1DZoomHelper {
-  constructor(
-    scale = 1,
-    options = {
-      slowZoomStep: 2,
-      fastZoomStep: 8,
-      speedThreshold: 3,
-    },
-  ) {
+  constructor(scale = 1, options = {}) {
     this.scale = scale;
-    this.speedThreshold = options.speedThreshold;
-    this.slowZoomStep = options.slowZoomStep;
-    this.fastZoomStep = options.fastZoomStep;
+    this.speedThreshold =
+      options.speedThreshold || zoomDefaultValues.speedThreshold;
+    this.slowZoomStep = options.slowZoomStep || zoomDefaultValues.lowStep;
+    this.fastZoomStep = options.fastZoomStep || zoomDefaultValues.highStep;
   }
 
   // eslint-disable-next-line no-unused-vars
