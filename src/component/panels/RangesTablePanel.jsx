@@ -296,18 +296,19 @@ const RangesTablePanel = memo(() => {
     if (checkPreferences(rangesPreferences, 'showRelative')) {
       const n = activeTab && activeTab.replace(/[0-9]/g, '');
       setCustomColumn(cols, 6, `Relative ${n}`, (row) => {
-        return row.original.integral
-          ? formatNumber(
-              row.original.integral,
-              rangesPreferences &&
-                Object.prototype.hasOwnProperty.call(
-                  rangesPreferences,
-                  'relativeFormat',
-                )
-                ? rangesPreferences.relativeFormat
-                : rangeDefaultValues.relativeFormat,
+        const formattedNumber = formatNumber(
+          row.original.integral,
+          rangesPreferences &&
+            Object.prototype.hasOwnProperty.call(
+              rangesPreferences,
+              'relativeFormat',
             )
-          : null;
+            ? rangesPreferences.relativeFormat
+            : rangeDefaultValues.relativeFormat,
+        );
+        return row.original.integral > 0
+          ? formattedNumber
+          : `[${formattedNumber}]`;
       });
     }
 

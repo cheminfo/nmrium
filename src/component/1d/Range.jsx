@@ -47,7 +47,7 @@ const stylesHighlighted = css`
 `;
 
 const Range = ({ rangeData }) => {
-  const { id, from, to, absolute } = rangeData;
+  const { id, from, to, integral } = rangeData;
   const highlight = useHighlight([id]);
 
   const { scaleX } = useScale();
@@ -100,6 +100,11 @@ const Range = ({ rangeData }) => {
           height="6"
           className="range-area"
           fill="green"
+          fillOpacity={
+            (integral !== undefined && integral > 0) || highlight.isActive
+              ? 1
+              : 0.4
+          }
         />
         <text
           textAnchor="middle"
@@ -107,8 +112,13 @@ const Range = ({ rangeData }) => {
           y="20"
           fontSize="10"
           fill="red"
+          fillOpacity={
+            (integral !== undefined && integral > 0) || highlight.isActive
+              ? 1
+              : 0.4
+          }
         >
-          {absolute.toFixed(1)}
+          {integral !== undefined ? integral.toFixed(2) : ''}
         </text>
       </g>
       <Resizable
