@@ -1,7 +1,8 @@
 import lodash from 'lodash';
 import { X } from 'ml-spectra-processing';
-import React, { useCallback, useMemo, memo, useState } from 'react';
+import React, { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { useAlert } from 'react-alert';
+import ReactCardFlip from 'react-card-flip';
 import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 
@@ -20,11 +21,13 @@ import {
   CHANGE_RANGE_SUM,
 } from '../reducer/types/Types';
 import { copyTextToClipboard } from '../utility/Export';
-import formatNumber from '../utility/FormatNumber';
 
 import { SignalKinds } from './constants/SignalsKinds';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
+import PreferencesHeader from './header/PreferencesHeader';
 import NoTableData from './placeholder/NoTableData';
+import { ColumnsHelper } from './preferences-panels/ColumnsHelper';
+import RangesPreferences from './preferences-panels/RangesPreferences';
 import { rangeDefaultValues } from './preferences-panels/defaultValues';
 
 const styles = {
@@ -67,6 +70,10 @@ const RangesTablePanel = memo(() => {
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
+  const [isFlipped, setFlipStatus] = useState(false);
+  const [isTableVisible, setTableVisibility] = useState(true);
+  const settingRef = useRef();
+
   const deleteRangeHandler = useCallback(
     (e, row) => {
       e.preventDefault();
@@ -204,18 +211,6 @@ const RangesTablePanel = memo(() => {
       Cell: ({ row }) => row.index + 1,
     },
     {
-      orderIndex: 3,
-      Header: 'From',
-      accessor: 'from',
-      Cell: ({ row }) => row.original.from.toFixed(2),
-    },
-    {
-      orderIndex: 4,
-      Header: 'To',
-      accessor: 'to',
-      Cell: ({ row }) => row.original.to.toFixed(2),
-    },
-    {
       orderIndex: 7,
       Header: '#Signals',
       Cell: ({ row }) =>
@@ -254,63 +249,37 @@ const RangesTablePanel = memo(() => {
     },
   ];
 
-  const checkPreferences = (rangesPreferences, key) => {
-    const val =
-      rangesPreferences === undefined ||
-      Object.keys(rangesPreferences).length === 0 ||
-      (rangesPreferences && rangesPreferences[key] === true)
-        ? true
-        : false;
-    return val;
-  };
-
   const columnsRanges = useMemo(() => {
-    const setCustomColumn = (array, index, columnLabel, cellHandler) => {
-      array.push({
-        orderIndex: index,
-        Header: columnLabel,
-        sortType: 'basic',
-        Cell: ({ row }) => cellHandler(row),
-      });
-    };
-
     const rangesPreferences = lodash.get(
       preferences,
       `panels.ranges.[${activeTab}]`,
     );
+    const columnHelper = new ColumnsHelper(
+      rangesPreferences,
+      rangeDefaultValues,
+    );
     let cols = [...columnsRangesDefault];
-    if (checkPreferences(rangesPreferences, 'showAbsolute')) {
-      setCustomColumn(cols, 5, 'Absolute', (row) =>
-        formatNumber(
-          row.original.absolute,
-          rangesPreferences &&
-            Object.prototype.hasOwnProperty.call(
-              rangesPreferences,
-              'absoluteFormat',
-            )
-            ? rangesPreferences.absoluteFormat
-            : rangeDefaultValues.absoluteFormat,
-        ),
-      );
-    }
-    if (checkPreferences(rangesPreferences, 'showRelative')) {
-      const n = activeTab && activeTab.replace(/[0-9]/g, '');
-      setCustomColumn(cols, 6, `Relative ${n}`, (row) => {
-        const formattedNumber = formatNumber(
-          row.original.integral,
-          rangesPreferences &&
-            Object.prototype.hasOwnProperty.call(
-              rangesPreferences,
-              'relativeFormat',
-            )
-            ? rangesPreferences.relativeFormat
-            : rangeDefaultValues.relativeFormat,
-        );
-        return row.original.integral > 0
-          ? formattedNumber
-          : `[${formattedNumber}]`;
-      });
-    }
+    columnHelper.addColumn(cols, 'showFrom', 'fromFormat', 'from', 'From', 3);
+    columnHelper.addColumn(cols, 'showTo', 'toFormat', 'to', 'To', 4);
+    columnHelper.addColumn(
+      cols,
+      'showAbsolute',
+      'absoluteFormat',
+      'absolute',
+      'Absolute',
+      5,
+    );
+    const n = activeTab && activeTab.replace(/[0-9]/g, '');
+    columnHelper.addColumn(
+      cols,
+      'showRelative',
+      'relativeFormat',
+      'integral',
+      `Relative ${n}`,
+      6,
+      '[',
+      ']',
+    );
 
     return cols.sort(
       (object1, object2) => object1.orderIndex - object2.orderIndex,
@@ -445,53 +414,94 @@ const RangesTablePanel = memo(() => {
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
 
-  return (
-    <div style={styles.container}>
-      <DefaultPanelHeader
-        counter={rangesCounter}
-        onDelete={handleDeleteAll}
-        deleteToolTip="Delete All Ranges"
-        onFilter={handleOnFilter}
-        filterToolTip={
-          filterIsActive ? 'Show all ranges' : 'Hide ranges out of view'
-        }
-        filterIsActive={filterIsActive}
-        counterFiltered={data && data.length}
-      >
-        <ToolTip title="Preview publication string" popupPlacement="right">
-          <button
-            style={styles.button}
-            type="button"
-            onClick={saveAsHTMLHandler}
-          >
-            <FaFileExport />
-          </button>
-        </ToolTip>
-        <ToolTip
-          title={`Change Ranges Sum (${currentSum})`}
-          popupPlacement="right"
-        >
-          <button
-            style={styles.sumButton}
-            type="button"
-            onClick={showChangeRangesSumModal}
-          >
-            Σ
-          </button>
-        </ToolTip>
-      </DefaultPanelHeader>
+  const settingsPanelHandler = useCallback(() => {
+    setFlipStatus(!isFlipped);
+    if (!isFlipped) {
+      setTimeout(
+        () => {
+          setTableVisibility(false);
+        },
+        400,
+        isFlipped,
+      );
+    } else {
+      setTableVisibility(true);
+    }
+  }, [isFlipped]);
 
-      {data && data.length > 0 ? (
-        <ReactTableExpandable
-          columns={columnsRanges}
-          data={data}
-          renderRowSubComponent={renderRowSubComponentSignals}
-          context={contextMenu}
-        />
-      ) : (
-        <NoTableData />
-      )}
-    </div>
+  const saveSettingHandler = useCallback(() => {
+    settingRef.current.saveSetting();
+    setFlipStatus(false);
+    setTableVisibility(true);
+  }, []);
+
+  return (
+    <>
+      <div style={styles.container}>
+        {!isFlipped && (
+          <DefaultPanelHeader
+            counter={rangesCounter}
+            onDelete={handleDeleteAll}
+            deleteToolTip="Delete All Ranges"
+            onFilter={handleOnFilter}
+            filterToolTip={
+              filterIsActive ? 'Show all ranges' : 'Hide ranges out of view'
+            }
+            filterIsActive={filterIsActive}
+            counterFiltered={data && data.length}
+            showSettingButton="true"
+            onSettingClick={settingsPanelHandler}
+          >
+            <ToolTip title="Preview publication string" popupPlacement="right">
+              <button
+                style={styles.button}
+                type="button"
+                onClick={saveAsHTMLHandler}
+              >
+                <FaFileExport />
+              </button>
+            </ToolTip>
+            <ToolTip
+              title={`Change Ranges Sum (${currentSum})`}
+              popupPlacement="right"
+            >
+              <button
+                style={styles.sumButton}
+                type="button"
+                onClick={showChangeRangesSumModal}
+              >
+                Σ
+              </button>
+            </ToolTip>
+          </DefaultPanelHeader>
+        )}
+        {isFlipped && (
+          <PreferencesHeader
+            onSave={saveSettingHandler}
+            onClose={settingsPanelHandler}
+          />
+        )}
+        <ReactCardFlip
+          isFlipped={isFlipped}
+          infinite={true}
+          containerStyle={{ height: '100%' }}
+        >
+          <div style={!isTableVisible ? { display: 'none' } : {}}>
+            {data && data.length > 0 ? (
+              <ReactTableExpandable
+                columns={columnsRanges}
+                data={data}
+                renderRowSubComponent={renderRowSubComponentSignals}
+                context={contextMenu}
+              />
+            ) : (
+              <NoTableData />
+            )}
+          </div>
+          <RangesPreferences data={SpectrumsData} ref={settingRef} />
+        </ReactCardFlip>
+      </div>
+    </>
   );
 });
 

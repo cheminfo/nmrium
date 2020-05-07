@@ -8,7 +8,11 @@ const integralDefaultValues = {
 };
 
 const rangeDefaultValues = {
-  showAbsolute: true,
+  showFrom: true,
+  fromFormat: '0.00',
+  showTo: true,
+  toFormat: '0.00',
+  showAbsolute: false,
   absoluteFormat: '0.00',
   showRelative: true,
   relativeFormat: '0.00',
