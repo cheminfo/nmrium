@@ -122,7 +122,7 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
             fill="black"
             style={{ fontSize: '12px', fontWeight: 'bold' }}
           >
-            {integral.toFixed(2)}
+            {integral !== undefined ? integral.toFixed(2) : ''}
           </text>
         )}
         <Resizable
