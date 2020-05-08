@@ -16,10 +16,8 @@ export function apply(datum1D, options = {}) {
     throw new Error('phaseCorrection not applicable on this data');
   }
   let { minRegSize = 256 } = options;
-  
-  let phasedData = ReIm.autoPhaseCorrection(datum1D.data, { minRegSize });
 
-  return phasedData;
+  return ReIm.autoPhaseCorrection(datum1D.data, { minRegSize });
 }
 
 export function isApplicable(datum1D) {

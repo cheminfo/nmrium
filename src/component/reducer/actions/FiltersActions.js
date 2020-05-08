@@ -1,7 +1,8 @@
 import { produce } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
-import { apply } from '../../../data/data1d/filter1d/phaseCorrection';
+import { apply as phaseCorrection} from '../../../data/data1d/filter1d/phaseCorrection';
+import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
 import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/Analysis';
 import getClosestNumber from '../helper/GetClosestNumber';
@@ -92,6 +93,33 @@ const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
   });
 };
 
+const applyAutoPhaseCorrectionFilter = (state) => {
+  return produce(state, (draft) => {
+    const { tempData } = state;
+    const { index } = state.activeSpectrum;
+    const { x, y, im, info } = tempData[index];
+    const { id } = draft.activeSpectrum;
+
+    const activeObject = AnalysisObj.getDatum(id);
+
+    let _data = { data: { x, re: y, im }, info };
+    const { data, ph0, ph1 } = autoPhaseCorrection(_data);
+    
+    const { im: newIm, re: newRe } = data;
+    draft.tempData[index].im = newIm;
+    draft.tempData[index].y = newRe;
+
+    activeObject.applyFilter([
+      { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
+    ]);
+
+    setDataByFilters(draft, activeObject, id);
+    draft.dataSnapshot = null;
+    draft.tempData = null;
+    setDomain(draft);
+  });
+};
+
 const calculateManualPhaseCorrection = (state, filterOptions) => {
   return produce(state, (draft) => {
     const { tempData } = state;
@@ -106,7 +134,7 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
     ph0 = ph0 - (ph1 * pivotIndex) / y.length;
 
     let _data = { data: { x, re: y, im }, info };
-    apply(_data, { ph0, ph1 });
+    phaseCorrection(_data, { ph0, ph1 });
     const { im: newIm, re: newRe } = _data.data;
     draft.tempData[index].im = newIm;
     draft.tempData[index].y = newRe;
@@ -185,6 +213,7 @@ export {
   applyZeroFillingFilter,
   applyFFTFilter,
   applyManualPhaseCorrectionFilter,
+  applyAutoPhaseCorrectionFilter,
   calculateManualPhaseCorrection,
   enableFilter,
   deleteFilter,
