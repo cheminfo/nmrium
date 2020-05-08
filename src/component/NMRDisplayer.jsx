@@ -53,17 +53,13 @@ const splitPaneStyles = {
     position: 'relative',
     height: 'none',
   },
-<<<<<<< HEAD
-  pane1: { minWidth: '50%', width: 'calc(100% - 450px)' },
-=======
-  pane1: { maxWidth: '80%', minWidth: '50%' },
->>>>>>> d4d8349262bae0a1dd029fcd12c96ef75deb51cb
+  pane1: { maxWidth: '80%' },
   resizer: {
     width: 10,
     backgroundColor: '#f7f7f7',
     cursor: 'ew-resize',
   },
-  pane: { overflow: 'hidden', width: '450px', maxWidth: '100%' },
+  pane: { overflow: 'hidden' },
 };
 
 const NMRDisplayer = memo((props) => {
@@ -147,7 +143,7 @@ const NMRDisplayer = memo((props) => {
                         resizerStyle={splitPaneStyles.resizer}
                         pane1Style={splitPaneStyles.pane1}
                         split="vertical"
-                        defaultSize="80%"
+                        defaultSize="calc(100% - 450px)"
                         minSize="80%"
                         onDragFinished={handleSplitPanelDragFinished}
                         onDragStarted={() => {
