@@ -1,11 +1,12 @@
 import { convertZip as convertBruker } from 'brukerconverter';
 import { convert } from 'jcampconverter';
 
+import getColor from '../component/utility/ColorGenerator';
+
 import { Data1DManager } from './data1d/Data1DManager';
 import { Datum1D } from './data1d/Datum1D';
 import { Data2DManager } from './data2d/Data2DManager';
 import { getInfoFromMetaData } from './utilities/getInfoFromMetaData';
-import getColor from '../component/utility/ColorGenerator';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
   return fetch(jcampURL)
