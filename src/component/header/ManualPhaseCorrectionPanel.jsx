@@ -5,6 +5,7 @@ import InputRange from '../elements/InputRange';
 import TextInput from '../elements/TextInput';
 import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
+  APPLY_AUTO_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
@@ -99,6 +100,12 @@ const ManualPhaseCorrectionPanel = () => {
     });
   }, [dispatch]);
 
+  const handleAutoFilter = useCallback(() => {
+    dispatch({
+      type: APPLY_AUTO_PHASE_CORRECTION_FILTER,
+    });
+  }, [dispatch]);
+
   return (
     <div style={styles.container}>
       <TextInput
@@ -144,6 +151,13 @@ const ManualPhaseCorrectionPanel = () => {
         onClick={handleCancelFilter}
       >
         Cancel
+      </button>
+      <button
+        type="button"
+        style={styles.actionButton}
+        onClick={handleAutoFilter}
+      >
+        Auto
       </button>
     </div>
   );

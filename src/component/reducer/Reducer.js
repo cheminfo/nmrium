@@ -13,6 +13,7 @@ import {
   applyZeroFillingFilter,
   applyFFTFilter,
   applyManualPhaseCorrectionFilter,
+  applyAutoPhaseCorrectionFilter,
   calculateManualPhaseCorrection,
   enableFilter,
   deleteFilter,
@@ -131,6 +132,7 @@ import {
   APPLY_FFT_FILTER,
   SET_VERTICAL_INDICATOR_X_POSITION,
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
+  APPLY_AUTO_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
   SET_SELECTED_OPTIONS_PANEL,
   SET_LOADING_FLAG,
@@ -285,6 +287,8 @@ export function spectrumReducer(state, action) {
       return applyFFTFilter(state);
     case APPLY_MANUAL_PHASE_CORRECTION_FILTER:
       return applyManualPhaseCorrectionFilter(state, action.value);
+    case APPLY_AUTO_PHASE_CORRECTION_FILTER:
+      return applyAutoPhaseCorrectionFilter(state, action.value);
     case CALCULATE_MANUAL_PHASE_CORRECTION_FILTER:
       return calculateManualPhaseCorrection(state, action.value);
     case ENABLE_FILTER:
