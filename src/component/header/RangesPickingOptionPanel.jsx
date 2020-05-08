@@ -61,6 +61,9 @@ const RangesPickingOptionPanel = () => {
 
   return (
     <div style={styles.container}>
+      <span style={styles.label}>
+        Manual selection using SHIFT + select zone or click on Auto peak picking
+      </span>
       <button
         type="button"
         style={styles.actionButton}
@@ -75,11 +78,6 @@ const RangesPickingOptionPanel = () => {
       >
         Cancel
       </button>
-
-      <span style={styles.label}>
-        &apos;Manual selection using SHIFT + select zone or &apos; + button
-        &apos;Auto peak picking&apos;
-      </span>
     </div>
   );
 };
