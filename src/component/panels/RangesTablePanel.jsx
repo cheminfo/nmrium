@@ -277,8 +277,6 @@ const RangesTablePanel = memo(() => {
       'integral',
       `Rel. ${n}`,
       6,
-      '[',
-      ']',
     );
 
     return cols.sort(
