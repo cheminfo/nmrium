@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useEffect, memo } from 'react';
+import React, { useState, useCallback, useEffect, memo, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
-import ConnectToContext from '../hoc/ConnectToContext';
 
 const styles = {
   searchInput: {
@@ -15,10 +14,11 @@ const styles = {
 };
 
 // information panel
-const InformationPanel = memo(({ data, activeSpectrum }) => {
-  // const { data, activeSpectrum } = useChartData();
+const InformationPanel = memo(() => {
+  const { data, activeSpectrum } = useChartData();
   const [information, setInformation] = useState([]);
   const [matches, setMatchesData] = useState([]);
+  const [currentActiveSpectrumID, setCurrentActiveSpectrumID] = useState(null);
 
   const handleSearch = useCallback(
     (input) => {
@@ -33,7 +33,11 @@ const InformationPanel = memo(({ data, activeSpectrum }) => {
   useEffect(() => {
     if (data && activeSpectrum) {
       const activeSpectrumData = data.find((d) => d.id === activeSpectrum.id);
-      if (activeSpectrumData) {
+      if (
+        activeSpectrumData &&
+        (!currentActiveSpectrumID ||
+          currentActiveSpectrumID !== activeSpectrumData.id)
+      ) {
         const keys = Object.keys(activeSpectrumData.info).concat(
           Object.keys(activeSpectrumData.meta),
         );
@@ -43,43 +47,47 @@ const InformationPanel = memo(({ data, activeSpectrum }) => {
           ...activeSpectrumData.info,
           ...activeSpectrumData.meta,
         });
+        setCurrentActiveSpectrumID(activeSpectrumData.id);
       }
     }
-  }, [activeSpectrum, data]);
+  }, [activeSpectrum, currentActiveSpectrumID, data]);
 
-  const columns = [
-    {
-      Header: 'Parameter',
-      sortType: 'basic',
-      minWidth: 100,
-      width: 20,
-      maxWidth: 20,
-      Cell: ({ row }) => (
-        <p style={{ padding: '5px', backgroundColor: 'white' }}>
-          {row.original}
-        </p>
-      ),
-    },
-    {
-      Header: 'Value',
-      sortType: 'basic',
-      resizable: true,
-      Cell: ({ row }) => (
-        <p
-          style={{
-            backgroundColor: '#efefef',
-            width: '100%',
-            height: '100%',
-            padding: '5px',
-            fontFamily: 'monospace',
-            whiteSpace: 'pre',
-          }}
-        >
-          {information[row.original]}
-        </p>
-      ),
-    },
-  ];
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Parameter',
+        sortType: 'basic',
+        minWidth: 100,
+        width: 20,
+        maxWidth: 20,
+        Cell: ({ row }) => (
+          <p style={{ padding: '5px', backgroundColor: 'white' }}>
+            {row.original}
+          </p>
+        ),
+      },
+      {
+        Header: 'Value',
+        sortType: 'basic',
+        resizable: true,
+        Cell: ({ row }) => (
+          <p
+            style={{
+              backgroundColor: '#efefef',
+              width: '100%',
+              height: '100%',
+              padding: '5px',
+              fontFamily: 'monospace',
+              whiteSpace: 'pre',
+            }}
+          >
+            {information[row.original]}
+          </p>
+        ),
+      },
+    ],
+    [information],
+  );
 
   return (
     <>
@@ -97,4 +105,4 @@ const InformationPanel = memo(({ data, activeSpectrum }) => {
   );
 });
 
-export default ConnectToContext(InformationPanel, useChartData);
+export default InformationPanel;
