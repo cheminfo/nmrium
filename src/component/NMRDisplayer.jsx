@@ -53,13 +53,13 @@ const splitPaneStyles = {
     position: 'relative',
     height: 'none',
   },
-  pane1: { maxWidth: '55%', minWidth: '50%' },
+  pane1: { minWidth: '50%', width: 'calc(100% - 450px)' },
   resizer: {
     width: 10,
     backgroundColor: '#f7f7f7',
     cursor: 'ew-resize',
   },
-  pane: { overflow: 'hidden' },
+  pane: { overflow: 'hidden', width: '450px', maxWidth: '100%' },
 };
 
 const NMRDisplayer = memo((props) => {
