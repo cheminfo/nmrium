@@ -10,6 +10,26 @@ import {
 
 let isMouseOver = false;
 
+function isModifierKeyActivated(event) {
+  const modifiersKeys = [
+    'Alt',
+    'AltGraph',
+    'CapsLock',
+    'Control',
+    'Meta',
+    'NumLocK',
+    'ScrollLock',
+    'Shift',
+    'OS',
+  ];
+  for (const key of modifiersKeys) {
+    if (event.getModifierState(key)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const KeyListener = ({ parentRef }) => {
   const { keysPreferences } = useChartData();
   const dispatch = useDispatch();
@@ -34,19 +54,21 @@ const KeyListener = ({ parentRef }) => {
               )}' again to reload it.`,
             );
           } else {
-            if (keysPreferences && keysPreferences[e.keyCode]) {
-              dispatch({
-                type: APPLY_KEY_PREFERENCES,
-                keyCode: e.keyCode,
-              });
-            } else {
-              dispatch({
-                type: SET_KEY_PREFERENCES,
-                keyCode: e.keyCode,
-              });
-              alert.show(
-                `Configuration saved, press '${e.key}' again to reload it.`,
-              );
+            if (!isModifierKeyActivated(e)) {
+              if (keysPreferences && keysPreferences[e.keyCode]) {
+                dispatch({
+                  type: APPLY_KEY_PREFERENCES,
+                  keyCode: e.keyCode,
+                });
+              } else {
+                dispatch({
+                  type: SET_KEY_PREFERENCES,
+                  keyCode: e.keyCode,
+                });
+                alert.show(
+                  `Configuration saved, press '${e.key}' again to reload it.`,
+                );
+              }
             }
           }
         } else {
