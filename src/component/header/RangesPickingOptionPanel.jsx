@@ -12,6 +12,7 @@ const styles = {
     height: '100%',
     display: 'flex',
     fontSize: '12px',
+    alignItems: 'baseline',
   },
   input: {
     height: '100%',
@@ -23,7 +24,7 @@ const styles = {
   },
   actionButton: {
     height: '100%',
-    width: '60px',
+    minWidth: '60px',
     borderRadius: '5px',
     border: '0.55px solid #c7c7c7',
     margin: '0px 5px',
@@ -57,6 +58,7 @@ const RangesPickingOptionPanel = () => {
       type: RESET_SELECTED_TOOL,
     });
   }, [dispatch]);
+
   return (
     <div style={styles.container}>
       <button
@@ -64,7 +66,7 @@ const RangesPickingOptionPanel = () => {
         style={styles.actionButton}
         onClick={handleApplyFilter}
       >
-        Apply
+        Auto peak picking
       </button>
       <button
         type="button"
@@ -73,6 +75,11 @@ const RangesPickingOptionPanel = () => {
       >
         Cancel
       </button>
+
+      <span style={styles.label}>
+        &apos;Manual selection using SHIFT + select zone or &apos; + button
+        &apos;Auto peak picking&apos;
+      </span>
     </div>
   );
 };

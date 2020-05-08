@@ -1,15 +1,12 @@
 import { produce } from 'immer';
 
 import { getXScale } from '../../1d/utilities/scale';
-import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/Analysis';
 
 const handleAutoRangesDetection = (state, detectionOptions) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
-      draft.selectedTool = options.zoom.id;
-      draft.selectedOptionPanel = null;
       const ob = AnalysisObj.getDatum(id);
       const ranges = ob.detectRanges(detectionOptions);
       draft.data[index].ranges = ranges;
