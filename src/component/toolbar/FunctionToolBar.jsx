@@ -108,6 +108,10 @@ const FunctionToolBar = ({ defaultValue, preferences }) => {
             setOption(options.rangesPicking.id);
             handleChangeOption(options.rangesPicking.id);
             break;
+          case 'b':
+            setOption(options.baseLineCorrection.id);
+            handleChangeOption(options.baseLineCorrection.id);
+            break;
           case 'p':
             setOption(options.peakPicking.id);
             handleChangeOption(options.peakPicking.id);

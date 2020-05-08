@@ -33,7 +33,7 @@ export const options = {
   },
   rangesPicking: {
     id: 'rangesPicking',
-    label: 'Ranges Picking',
+    label: 'Ranges Picking ( Press r )',
     hasOptionPanel: true,
     isFilter: false,
   },
@@ -51,7 +51,7 @@ export const options = {
   },
   baseLineCorrection: {
     id: 'baseLineCorrection',
-    label: 'baseline correction',
+    label: 'baseline correction ( Press b )',
     hasOptionPanel: true,
     isFilter: true,
   },

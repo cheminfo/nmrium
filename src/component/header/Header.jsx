@@ -96,7 +96,11 @@ const Header = ({ isFullscreen, onMaximize }) => {
     <div css={headerStyle}>
       <div className="toolOptionsPanel">{selectedPanel}</div>
       <div className="windowButtonsContainer">
-        <ToolTip title="General Settings" popupPlacement="left">
+        <ToolTip
+          title="General Settings"
+          popupPlacement="left"
+          style={{ mainContainer: { height: 'auto' } }}
+        >
           <button
             type="button"
             onClick={openGeneralSettingsHandler}
@@ -107,7 +111,11 @@ const Header = ({ isFullscreen, onMaximize }) => {
         </ToolTip>
 
         {!isFullscreen ? (
-          <ToolTip title="Full Screen" popupPlacement="left">
+          <ToolTip
+            title="Full Screen"
+            popupPlacement="left"
+            style={{ mainContainer: { height: 'auto' } }}
+          >
             <button type="button" onClick={onMaximize} className="windowButton">
               <FaRegWindowMaximize />
             </button>

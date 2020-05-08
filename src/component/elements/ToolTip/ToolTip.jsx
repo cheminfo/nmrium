@@ -12,6 +12,8 @@ const styles = {
     color: 'white',
     whiteSpace: 'nowrap',
     fontSize: '10px',
+    fontFamily: 'tahoma',
+    textShadow: 'none',
   },
 };
 
@@ -86,7 +88,9 @@ const ToolTip = ({
   }, []);
 
   return (
-    <div style={{ position: 'relative', height: '100%' }}>
+    <div
+      style={{ position: 'relative', height: '100%', ...style.mainContainer }}
+    >
       <div
         ref={refChild}
         onMouseOver={mouseOverHandler}
@@ -104,7 +108,7 @@ const ToolTip = ({
           left: offset.x,
           top: offset.y,
           display: show ? 'block' : 'none',
-          ...style,
+          ...style.popup,
         }}
         className={className}
       >
@@ -112,6 +116,13 @@ const ToolTip = ({
       </div>
     </div>
   );
+};
+
+ToolTip.defaultProps = {
+  style: {
+    popup: {},
+    mainContainer: {},
+  },
 };
 
 export default ToolTip;

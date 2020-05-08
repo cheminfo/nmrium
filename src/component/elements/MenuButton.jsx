@@ -60,7 +60,7 @@ const MenuButton = ({
   }, [closeMenu, isShown]);
 
   return (
-    <div>
+    <div style={{ height: 'auto' }}>
       <button
         type="button"
         css={style}

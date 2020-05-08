@@ -1,8 +1,8 @@
 import { produce } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
-import { apply as phaseCorrection} from '../../../data/data1d/filter1d/phaseCorrection';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
+import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
 import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/Analysis';
 import getClosestNumber from '../helper/GetClosestNumber';
@@ -104,7 +104,7 @@ const applyAutoPhaseCorrectionFilter = (state) => {
 
     let _data = { data: { x, re: y, im }, info };
     const { data, ph0, ph1 } = autoPhaseCorrection(_data);
-    
+
     const { im: newIm, re: newRe } = data;
     draft.tempData[index].im = newIm;
     draft.tempData[index].y = newRe;
