@@ -53,7 +53,7 @@ const styles = {
   },
 };
 
-const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
+const selectStyle = { marginLeft: 2, marginRight: 2, border: 'none' };
 
 const RangesTablePanel = memo(() => {
   const {
@@ -212,7 +212,7 @@ const RangesTablePanel = memo(() => {
     },
     {
       orderIndex: 7,
-      Header: '#Signals',
+      Header: 'Signals',
       Cell: ({ row }) =>
         `${row.original.signal.length}: ${row.original.signal
           .map((s) => s.multiplicity)
@@ -275,7 +275,7 @@ const RangesTablePanel = memo(() => {
       'showRelative',
       'relativeFormat',
       'integral',
-      `Relative ${n}`,
+      `Rel. ${n}`,
       6,
       '[',
       ']',
