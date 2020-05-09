@@ -11,13 +11,16 @@ export const name = 'automatic phase correction';
  * @param {number} [options.ph1=0]
  */
 
-export function apply(datum1D, options = {}) {
+export function apply(datum1D) {
   if (!isApplicable(datum1D)) {
     throw new Error('phaseCorrection not applicable on this data');
   }
-  let { minRegSize = 256 } = options;
+  let { nucleus } = datum1D.info;
 
-  return ReIm.autoPhaseCorrection(datum1D.data, { minRegSize });
+  let factorStd = nucleus === '1H' ? 3 : 4.5;
+  let options = { minRegSize: 30, factorStd };
+
+  return ReIm.autoPhaseCorrection(datum1D.data, options);
 }
 
 export function isApplicable(datum1D) {
