@@ -6,11 +6,11 @@ export class ColumnsHelper {
     this.defaultPreference = defaultPreference;
   }
 
-  checkPreferences(rangesPreferences, key) {
+  checkPreferences(preferencesToCheck, key) {
     const val =
-      rangesPreferences === undefined ||
-      Object.keys(rangesPreferences).length === 0 ||
-      (rangesPreferences && rangesPreferences[key] === true)
+      preferencesToCheck === undefined ||
+      Object.keys(preferencesToCheck).length === 0 ||
+      (preferencesToCheck && preferencesToCheck[key] === true)
         ? true
         : false;
     return val;
@@ -34,6 +34,7 @@ export class ColumnsHelper {
     columnIndex,
     formatPrefix = '',
     formatSuffix = '',
+    showPrefixSuffixCallback = () => true,
   ) {
     const preferences = this.preferences || this.defaultPreference;
 
@@ -45,12 +46,16 @@ export class ColumnsHelper {
             ? preferences[formatKey]
             : this.defaultPreference[formatKey];
 
-        return FormatNumber(
-          row.original[columnKey],
-          format,
-          formatPrefix,
-          formatSuffix,
-        );
+        if (showPrefixSuffixCallback(row)) {
+          return FormatNumber(
+            row.original[columnKey],
+            format,
+            formatPrefix,
+            formatSuffix,
+          );
+        } else {
+          return FormatNumber(row.original[columnKey], format, '', '');
+        }
       });
     }
   }

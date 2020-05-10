@@ -201,9 +201,9 @@ const IntegralTablePanel = memo(() => {
             : integralDefaultValues.relativeFormat,
         );
 
-        return row.original.integral > 0
-          ? formattedNumber
-          : `[${formattedNumber}]`;
+        return row.original.kind !== 'signal'
+          ? `[${formattedNumber}]`
+          : formattedNumber;
       });
     }
 
