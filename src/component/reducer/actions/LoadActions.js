@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 
 import { Datum1D } from '../../../data/data1d/Datum1D';
-import getColor from '../../utility/ColorGenerator';
+import getColor from '../../../data/utilities/getColor';
 import { AnalysisObj, initiateObject } from '../core/Analysis';
 
 import { setMode, setDomain } from './DomainActions';
@@ -61,7 +61,7 @@ const loadJcampFile = (state, files) => {
     let usedColors = draft.data.map((d) => d.color);
     const filesLength = files.length;
     for (let i = 0; i < filesLength; i++) {
-      const color = getColor(usedColors);
+      const color = getColor(false, usedColors);
       AnalysisObj.addJcamp(files[i].binary.toString(), {
         display: {
           name: files[i].name,

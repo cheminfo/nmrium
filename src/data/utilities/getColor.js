@@ -21,10 +21,21 @@ export const COLORS = [
   '#232C16',
 ];
 
-const getColor = (isRandom = false, usedColors = []) => {
+const percentToHex = (p) => {
+  const percent = Math.max(0, Math.min(100, p));
+  const intValue = Math.round((percent / 100) * 255);
+  const hexValue = intValue.toString(16);
+  return percent === 100 ? '' : hexValue.padStart(2, '0');
+};
+
+const adjustAlpha = (color, factor) => {
+  return color + percentToHex(factor);
+};
+
+const getColor = (isRandom = false, usedColors = [], opacity = 100) => {
   const resetColors = COLORS.filter((c) => !usedColors.includes(c));
   if (resetColors.length > 0 && !isRandom) {
-    return resetColors[0];
+    return resetColors[0] + percentToHex(opacity);
   } else {
     const lum = -0.25;
     let hex = String(
@@ -42,8 +53,8 @@ const getColor = (isRandom = false, usedColors = []) => {
       rgb += `00${c}`.substr(c.length);
     }
 
-    return rgb;
+    return rgb + percentToHex(opacity);
   }
 };
-
+export { percentToHex, adjustAlpha };
 export default getColor;
