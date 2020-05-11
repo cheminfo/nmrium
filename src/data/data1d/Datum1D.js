@@ -210,16 +210,14 @@ export class Datum1D {
 
   // this method is a helper method and can be moved and imported from somewhere else if wished
   updateRelatives(values, sum, storageKey, kinds) {
-    let currentSum = values.reduce((previous, current) => {
+    const currentSum = values.reduce((previous, current) => {
       return current.kind && kinds.includes(current.kind)
         ? (previous += current.absolute)
         : previous;
     }, 0);
-    let factor = currentSum > 0 ? sum / currentSum : 0;
+    const factor = currentSum > 0 ? sum / currentSum : 0.0;
     return values.map((value) => {
-      return value.kind && kinds.includes(value.kind)
-        ? { ...value, [storageKey]: value.absolute * factor }
-        : { ...value, [storageKey]: 0.0 };
+      return { ...value, [storageKey]: value.absolute * factor };
     });
   }
 

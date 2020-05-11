@@ -47,7 +47,7 @@ const stylesHighlighted = css`
 `;
 
 const Range = ({ rangeData }) => {
-  const { id, from, to, integral } = rangeData;
+  const { id, from, to, integral, kind } = rangeData;
   const highlight = useHighlight([id]);
 
   const { scaleX } = useScale();
@@ -101,9 +101,7 @@ const Range = ({ rangeData }) => {
           className="range-area"
           fill="green"
           fillOpacity={
-            (integral !== undefined && integral > 0) || highlight.isActive
-              ? 1
-              : 0.4
+            (kind && kind === 'signal') || highlight.isActive ? 1 : 0.4
           }
         />
         <text
@@ -113,9 +111,7 @@ const Range = ({ rangeData }) => {
           fontSize="10"
           fill="red"
           fillOpacity={
-            (integral !== undefined && integral > 0) || highlight.isActive
-              ? 1
-              : 0.4
+            (kind && kind === 'signal') || highlight.isActive ? 1 : 0.6
           }
         >
           {integral !== undefined ? integral.toFixed(2) : ''}
