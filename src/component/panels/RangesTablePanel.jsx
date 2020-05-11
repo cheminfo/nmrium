@@ -277,15 +277,17 @@ const RangesTablePanel = memo(() => {
       'integral',
       `Rel. ${n}`,
       6,
-      '[',
-      ']',
-      (row) =>
-        row &&
-        row.original &&
-        row.original.kind &&
-        row.original.kind === 'signal'
-          ? false
-          : true,
+      {
+        formatPrefix: '[',
+        formatSuffix: ']',
+        showPrefixSuffixCallback: (row) =>
+          row &&
+          row.original &&
+          row.original.kind &&
+          row.original.kind === 'signal'
+            ? false
+            : true,
+      },
     );
 
     return cols.sort(

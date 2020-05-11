@@ -24,7 +24,25 @@ export class ColumnsHelper {
       Cell: ({ row }) => cellHandler(row),
     });
   }
+  /**
+   * @callback hasPrefix
+   * @param {...any}
+   * @returns {boolean}
+   */
 
+  /**
+   *
+   * @param {string} columns
+   * @param {string} flagKey
+   * @param {string} formatKey
+   * @param {string} columnKey
+   * @param {string} columnLabel
+   * @param {string} columnIndex
+   * @param {Object=} [option = {}]
+   * @param {string} [option.formatPrefix = '']
+   * @param {string} [option.formatSuffix = '']
+   * @param {hasPrefix}   [option.showPrefixSuffixCallback = ()=>true]
+   */
   addColumn(
     columns,
     flagKey,
@@ -32,9 +50,7 @@ export class ColumnsHelper {
     columnKey,
     columnLabel,
     columnIndex,
-    formatPrefix = '',
-    formatSuffix = '',
-    showPrefixSuffixCallback = () => true,
+    options = {},
   ) {
     const preferences = this.preferences || this.defaultPreference;
 
@@ -45,6 +61,12 @@ export class ColumnsHelper {
           Object.prototype.hasOwnProperty.call(preferences, formatKey)
             ? preferences[formatKey]
             : this.defaultPreference[formatKey];
+
+        const {
+          formatPrefix = '',
+          formatSuffix = '',
+          showPrefixSuffixCallback = () => true,
+        } = options;
 
         if (showPrefixSuffixCallback(row)) {
           return FormatNumber(
