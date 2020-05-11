@@ -13,7 +13,7 @@ import {
   FaCopy,
 } from 'react-icons/fa';
 import { MF } from 'react-mf';
-import { MolfileSvgRenderer } from 'react-ocl';
+import OCLnmr from 'react-ocl-nmr';
 import 'react-animated-slider-2/build/horizontal.css';
 
 import { ChartContext } from '../context/ChartContext';
@@ -158,6 +158,13 @@ const MoleculePanel = () => {
     }
   }, [alert, currentIndex, molecules]);
 
+  const replaceMolFile = useCallback(
+    (index, molfile) => {
+      molecules[index].molfile = molfile;
+    },
+    [molecules],
+  );
+
   return (
     <div css={panelContainerStyle}>
       <div css={toolbarStyle}>
@@ -215,17 +222,15 @@ const MoleculePanel = () => {
                 }
               >
                 <div>
-                  <MolfileSvgRenderer
+                  <OCLnmr
                     id={`molSVG${index}`}
                     width={
                       refContainer && refContainer.current.clientWidth - 70
                     }
                     molfile={mol.molfile}
-                    atomHighlight={currentAtom && [currentAtom]}
-                    atomHighlightColor="yellow"
-                    atomHighlightOpacity={0.5}
-                    onAtomEnter={(atomID) => setCurrentAtom(atomID)}
-                    onAtomLeave={() => setCurrentAtom(null)}
+                    setMolfile={(molfile) => replaceMolFile(index, molfile)}
+                    setSelectedAtom={(atom) => setCurrentAtom(atom)}
+                    highlights={[]}
                   />
                 </div>
                 <p>
