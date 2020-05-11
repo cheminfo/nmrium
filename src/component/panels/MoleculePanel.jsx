@@ -99,6 +99,7 @@ const MoleculePanel = () => {
   const [open, setOpen] = React.useState(false);
   const [currentMolfile, setCurrentMolfile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [currentAtom, setCurrentAtom] = useState(null);
 
   const dispatch = useDispatch();
