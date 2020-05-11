@@ -120,6 +120,10 @@ const FunctionToolBar = ({ defaultValue, preferences }) => {
             setOption(options.integral.id);
             handleChangeOption(options.integral.id);
             break;
+          case 'a':
+            setOption(options.phaseCorrection.id);
+            handleChangeOption(options.phaseCorrection.id);
+            break;
           default:
         }
       }

@@ -45,7 +45,7 @@ export const options = {
   },
   phaseCorrection: {
     id: Filters.phaseCorrection.id,
-    label: Filters.phaseCorrection.name,
+    label: `${Filters.phaseCorrection.name} ( Press a )`,
     hasOptionPanel: true,
     isFilter: true,
   },
