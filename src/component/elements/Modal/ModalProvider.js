@@ -73,6 +73,16 @@ const ModalProvider = ({ children, context: Context, style }) => {
     closeHandler();
   };
 
+  useEffect(() => {
+    const keyHandler = (e) => {
+      if (['Escape', 'Esc'].includes(e.key)) {
+        closeHandler();
+      }
+    };
+    document.addEventListener('keydown', keyHandler);
+    return () => document.removeEventListener('keydown', keyHandler);
+  }, [closeHandler]);
+
   modalContext.current = {
     show,
     close,
