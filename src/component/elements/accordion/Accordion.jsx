@@ -30,7 +30,7 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
     (index, trigger) => {
       let el = elements.slice();
       if (trigger === triggerSource.click) {
-        el = el.map((e, i) => (i === index ? true : e));
+        el = el.map((e, i) => (i === index ? !e : e));
       } else {
         el = el.map((e, i) => (i === index ? true : false));
       }

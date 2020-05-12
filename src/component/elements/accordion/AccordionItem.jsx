@@ -90,7 +90,7 @@ const AccordionItem = ({ title, children, index, isOpen, onOpen, style }) => {
       style={{
         ...styles.container,
         flex: active == null ? 0 : '1 1 1px',
-        transition: isOpen ? '' : 'flex 0.2s ease',
+        transition: isOpen ? 'flex 0.2s ease' : '',
       }}
       className="custom-accordion"
     >
