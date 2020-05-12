@@ -18,7 +18,7 @@ const styles = {
     flex: '2',
   },
   label: {
-    flex: '3',
+    flex: '5',
   },
   actionButton: {
     height: '100%',

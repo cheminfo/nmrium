@@ -3,7 +3,10 @@ import { scaleLinear } from 'd3';
 import { LAYOUT } from './DimensionLayout';
 
 /***
- * props {width,margin,xDomain}
+ * @param {object} props
+ * @param {number}  props.width
+ * @param {number}  props.margin
+ * @param {number}  props.xDomain
  */
 
 function get2DXScale(props) {
@@ -13,6 +16,12 @@ function get2DXScale(props) {
 
 /***
  * props {height,margin,yDomain}
+ */
+/***
+ * @param {object} props
+ * @param {number}  props.height
+ * @param {number}  props.margin
+ * @param {number}  props.yDomain
  */
 function get2DYScale(props) {
   const { height, margin, yDomain } = props;

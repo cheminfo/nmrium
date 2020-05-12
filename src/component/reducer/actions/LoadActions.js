@@ -13,8 +13,9 @@ const setIsLoading = (state, isLoading) => {
 };
 
 const initiate = (state, dataObject) => {
+  initiateObject(dataObject.AnalysisObj);
+
   return produce(state, (draft) => {
-    initiateObject(dataObject.AnalysisObj);
     const spectraData = AnalysisObj.getSpectraData();
     // const domain = getDomain(spectraData);
     draft.data = spectraData;
@@ -83,8 +84,9 @@ const loadJcampFile = (state, files) => {
 };
 
 const handleLoadJsonFile = (state, data) => {
+  initiateObject(data.AnalysisObj);
+
   return produce(state, (draft) => {
-    initiateObject(data.AnalysisObj);
     const spectraData = AnalysisObj.getSpectraData();
     draft.data = spectraData;
     draft.molecules = AnalysisObj.getMolecules();

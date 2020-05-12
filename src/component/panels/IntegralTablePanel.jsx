@@ -228,7 +228,12 @@ const IntegralTablePanel = memo(() => {
       );
     }
 
-    if (_data && _data.integrals && _data.integrals.values) {
+    if (
+      _data &&
+      _data.info.dimension === 1 &&
+      _data.integrals &&
+      _data.integrals.values
+    ) {
       setIntegralsCounter(_data.integrals.values.length);
 
       const integrals = filterIsActive

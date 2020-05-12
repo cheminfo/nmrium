@@ -1,6 +1,6 @@
+import median from 'ml-array-median';
 import * as SD from 'spectra-data';
 
-import median from 'ml-array-median';
 import generateID from '../utilities/generateID';
 
 export default function autoPeakPicking(datum1D, options) {

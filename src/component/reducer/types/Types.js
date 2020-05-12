@@ -75,3 +75,5 @@ export const RESIZE_RANGE = 'RESIZE_RANGE';
 export const CHANGE_RANGE_SUM = 'CHANGE_RANGE_SUM';
 export const ADD_RANGE = 'ADD_RANGE';
 export const SET_2D_LEVEL = 'SET_2D_LEVEL';
+export const ADD_2D_INTEGRAL = 'ADD_2D_INTEGRAL';
+export const DELETE_2D_INTEGRAL = 'DELETE_2D_INTEGRAL';

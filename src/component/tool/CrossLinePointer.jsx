@@ -19,6 +19,7 @@ const allowTools = [
   options.zoom.id,
   options.equalizerTool.id,
   options.baseLineCorrection.id,
+  options.integral2D.id,
 ];
 
 const CrossLinePointer = () => {

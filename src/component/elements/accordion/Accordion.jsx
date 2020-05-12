@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
+
 import { triggerSource } from './AccordionItem';
 
 const styles = {

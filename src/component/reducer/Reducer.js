@@ -1,3 +1,5 @@
+import { setAutoFreeze } from 'immer';
+
 import { options } from '../toolbar/ToolTypes';
 
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
@@ -31,6 +33,8 @@ import {
   handleResizeIntegral,
   handleChangeIntegralZoom,
   handleChangeIntegralSum,
+  add2dIntegralHandler,
+  delete2dIntegralHandler,
 } from './actions/IntegralsActions';
 import {
   initiate,
@@ -156,7 +160,11 @@ import {
   ADD_RANGE,
   SET_2D_LEVEL,
   RESIZE_RANGE,
+  ADD_2D_INTEGRAL,
+  DELETE_2D_INTEGRAL,
 } from './types/Types';
+
+setAutoFreeze(false);
 
 export const initialState = {
   data: null,
@@ -379,6 +387,10 @@ export function spectrumReducer(state, action) {
       return applyKeyPreferencesHandler(state, action.keyCode);
     case SET_2D_LEVEL:
       return levelChangeHandler(state, action);
+    case ADD_2D_INTEGRAL:
+      return add2dIntegralHandler(state, action);
+    case DELETE_2D_INTEGRAL:
+      return delete2dIntegralHandler(state, action);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

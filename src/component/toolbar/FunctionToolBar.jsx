@@ -9,6 +9,7 @@ import { useDispatch } from '../context/DispatchContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 import { ZoomType } from '../reducer/actions/Zoom';
+import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import {
   SET_SELECTED_TOOL,
   APPLY_FFT_FILTER,
@@ -58,7 +59,7 @@ const FunctionToolBar = ({ defaultValue, preferences }) => {
     },
     [alert, dispatch],
   );
-  const { activeSpectrum, data } = useChartData();
+  const { activeSpectrum, data, displayerMode } = useChartData();
 
   const handleChange = useCallback(
     (selectedOption) => {
@@ -116,10 +117,17 @@ const FunctionToolBar = ({ defaultValue, preferences }) => {
             setOption(options.peakPicking.id);
             handleChangeOption(options.peakPicking.id);
             break;
-          case 'i':
-            setOption(options.integral.id);
-            handleChangeOption(options.integral.id);
+          case 'i': {
+            const toolID =
+              displayerMode === DISPLAYER_MODE.DM_2D
+                ? options.integral2D.id
+                : displayerMode === DISPLAYER_MODE.DM_1D
+                ? options.integral.id
+                : '';
+            setOption(toolID);
+            handleChangeOption(toolID);
             break;
+          }
           case 'a':
             setOption(options.phaseCorrection.id);
             handleChangeOption(options.phaseCorrection.id);
@@ -128,7 +136,7 @@ const FunctionToolBar = ({ defaultValue, preferences }) => {
         }
       }
     },
-    [handleChangeOption, handleFullZoomOut],
+    [displayerMode, handleChangeOption, handleFullZoomOut],
   );
 
   useEffect(() => {
@@ -212,25 +220,41 @@ const FunctionToolBar = ({ defaultValue, preferences }) => {
             />
           </ToggleButton>
         )}
-        {isButtonVisible('hideIntegralTool') && (
-          <ToggleButton
-            key={options.integral.id}
-            value={options.integral.id}
-            className="ci-icon-nmr-integrate"
-            style={styles.icon}
-            isVisible={
-              activeSpectrum &&
-              selectedSpectrumInfo &&
-              !selectedSpectrumInfo.info.isFid
-            }
-          >
-            <ToolTip
-              title={`${options.integral.label} ( Press i )`}
-              popupPlacement="right"
-              offset={{ x: 10, y: 0 }}
-            />
-          </ToggleButton>
-        )}
+        {displayerMode === DISPLAYER_MODE.DM_1D &&
+          isButtonVisible('hideIntegralTool') && (
+            <ToggleButton
+              key={options.integral.id}
+              value={options.integral.id}
+              className="ci-icon-nmr-integrate"
+              style={styles.icon}
+              isVisible={
+                activeSpectrum &&
+                selectedSpectrumInfo &&
+                !selectedSpectrumInfo.info.isFid
+              }
+            >
+              <ToolTip
+                title={`${options.integral.label} ( Press i )`}
+                popupPlacement="right"
+                offset={{ x: 10, y: 0 }}
+              />
+            </ToggleButton>
+          )}
+        {displayerMode === DISPLAYER_MODE.DM_2D &&
+          isButtonVisible('hideIntegralTool') && (
+            <ToggleButton
+              key={options.integral2D.id}
+              value={options.integral2D.id}
+              className="ci-icon-nmr-integrate"
+              style={styles.icon}
+            >
+              <ToolTip
+                title={`${options.integral2D.label} ( Press i  )`}
+                popupPlacement="right"
+                offset={{ x: 10, y: 0 }}
+              />
+            </ToggleButton>
+          )}
         {isButtonVisible('hideAutoRangesTool') && (
           <ToggleButton
             key={options.rangesPicking.id}

@@ -19,6 +19,12 @@ export const options = {
     hasOptionPanel: false,
     isFilter: false,
   },
+  integral2D: {
+    id: 'integral2D',
+    label: 'integral Tool',
+    hasOptionPanel: false,
+    isFilter: false,
+  },
   HMove: {
     id: 'HMove',
     label: 'Move spectrum horizontally',

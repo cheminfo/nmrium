@@ -20,6 +20,7 @@ import {
   SET_DIMENSIONS,
   SET_2D_LEVEL,
   SET_ZOOM_FACTOR,
+  ADD_2D_INTEGRAL,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -85,6 +86,9 @@ const Viewer2D = () => {
           }
         } else {
           switch (selectedTool) {
+            case options.integral2D.id:
+              dispatch({ type: ADD_2D_INTEGRAL, ...brushData });
+              break;
             default:
               dispatch({
                 type: BRUSH_END,

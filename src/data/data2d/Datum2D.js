@@ -56,6 +56,14 @@ export class Datum2D {
       },
       options.data,
     );
+    this.integrals = Object.assign(
+      { values: [], options: {} },
+      options.integrals,
+    );
+    // this.integrals = Object.assign(
+    //   { values: [], options: {} },
+    //   options.integrals,
+    // );
     this.processingController = new Processing2D(this.data);
     // this.data.contours = this.processingController.drawContours();
   }
@@ -71,6 +79,20 @@ export class Datum2D {
   setDisplay(displayOptions) {
     this.display = Object.assign({}, this.display);
     this.display = { ...this.display, ...displayOptions };
+  }
+
+  getIntegrals() {
+    return (this.integrals = Object.assign({}, this.integrals));
+  }
+
+  addIntegral(inetgral) {
+    this.integrals.values.push({
+      id: generateID(),
+      ...inetgral,
+    });
+  }
+  deleteIntegral(id) {
+    this.integrals.values = this.integrals.values.filter((i) => i.id !== id);
   }
 
   toJSON() {
