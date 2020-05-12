@@ -21,7 +21,11 @@ import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
-import { DELETE_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
+import {
+  ADD_MOLECULE,
+  DELETE_MOLECULE,
+  SET_MOLECULE,
+} from '../reducer/types/Types';
 import {
   copyTextToClipboard,
   copyPNGToClipboard,
@@ -159,11 +163,11 @@ const MoleculePanel = () => {
     }
   }, [alert, currentIndex, molecules]);
 
-  const replaceMolFile = useCallback(
-    (index, molfile) => {
-      molecules[index].molfile = molfile;
+  const handleReplaceMolecule = useCallback(
+    (key, molfile) => {
+      dispatch({ type: SET_MOLECULE, molfile, key });
     },
-    [molecules],
+    [dispatch],
   );
 
   return (
@@ -229,7 +233,9 @@ const MoleculePanel = () => {
                       refContainer && refContainer.current.clientWidth - 70
                     }
                     molfile={mol.molfile}
-                    setMolfile={(molfile) => replaceMolFile(index, molfile)}
+                    setMolfile={(molfile) =>
+                      handleReplaceMolecule(mol.key, molfile)
+                    }
                     setSelectedAtom={(atom) => setCurrentAtom(atom)}
                     highlights={[]}
                   />
