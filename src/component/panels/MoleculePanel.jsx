@@ -13,7 +13,7 @@ import {
   FaCopy,
 } from 'react-icons/fa';
 import { MF } from 'react-mf';
-import { MolfileSvgRenderer } from 'react-ocl';
+import OCLnmr from 'react-ocl-nmr';
 import 'react-animated-slider-2/build/horizontal.css';
 
 import { ChartContext } from '../context/ChartContext';
@@ -21,7 +21,11 @@ import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
-import { DELETE_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
+import {
+  ADD_MOLECULE,
+  DELETE_MOLECULE,
+  SET_MOLECULE,
+} from '../reducer/types/Types';
 import {
   copyTextToClipboard,
   copyPNGToClipboard,
@@ -99,6 +103,7 @@ const MoleculePanel = () => {
   const [open, setOpen] = React.useState(false);
   const [currentMolfile, setCurrentMolfile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [currentAtom, setCurrentAtom] = useState(null);
 
   const dispatch = useDispatch();
@@ -158,6 +163,13 @@ const MoleculePanel = () => {
     }
   }, [alert, currentIndex, molecules]);
 
+  const handleReplaceMolecule = useCallback(
+    (key, molfile) => {
+      dispatch({ type: SET_MOLECULE, molfile, key });
+    },
+    [dispatch],
+  );
+
   return (
     <div css={panelContainerStyle}>
       <div css={toolbarStyle}>
@@ -215,17 +227,17 @@ const MoleculePanel = () => {
                 }
               >
                 <div>
-                  <MolfileSvgRenderer
+                  <OCLnmr
                     id={`molSVG${index}`}
                     width={
                       refContainer && refContainer.current.clientWidth - 70
                     }
                     molfile={mol.molfile}
-                    atomHighlight={currentAtom && [currentAtom]}
-                    atomHighlightColor="yellow"
-                    atomHighlightOpacity={0.5}
-                    onAtomEnter={(atomID) => setCurrentAtom(atomID)}
-                    onAtomLeave={() => setCurrentAtom(null)}
+                    setMolfile={(molfile) =>
+                      handleReplaceMolecule(mol.key, molfile)
+                    }
+                    setSelectedAtom={(atom) => setCurrentAtom(atom)}
+                    highlights={[]}
                   />
                 </div>
                 <p>
