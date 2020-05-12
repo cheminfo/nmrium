@@ -1,4 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+
+let timer = 0;
+let delay = 200;
+let prevent = false;
 
 const styles = {
   container: {
@@ -11,7 +15,7 @@ const styles = {
     // backgroundColor: '#eee',
     // color: '#444',
     cursor: 'pointer',
-    padding: '12px',
+    padding: '6px 12px',
     display: 'flex',
     alignItems: 'center',
     border: 'none',
@@ -42,17 +46,33 @@ const styles = {
   },
 };
 
+export const triggerSource = {
+  click: 1,
+  dbClick: 2,
+};
+
 const AccordionItem = ({ title, children, index, isOpen, onOpen, style }) => {
   const [active, setActiveState] = useState(null);
 
   const refContent = useRef();
   const refContainer = useRef();
   function toggleAccordion() {
+    timer = setTimeout(function () {
+      if (!prevent) {
+        onOpen(index, triggerSource.click);
+      }
+      prevent = false;
+    }, delay);
+  }
+
+  const dbClickHandler = useCallback(() => {
+    clearTimeout(timer);
+    prevent = true;
     setActiveState(active == null ? { backgroundColor: '#ccc' } : null);
     if (active == null) {
-      onOpen(index);
+      onOpen(index, triggerSource.dbClick);
     }
-  }
+  }, [active, index, onOpen]);
 
   useEffect(() => {
     setActiveState(isOpen ? { backgroundColor: '#ccc' } : null);
@@ -74,7 +94,12 @@ const AccordionItem = ({ title, children, index, isOpen, onOpen, style }) => {
       }}
       className="custom-accordion"
     >
-      <button type="button" style={styles.button} onClick={toggleAccordion}>
+      <button
+        type="button"
+        style={styles.button}
+        onClick={toggleAccordion}
+        onDoubleClick={dbClickHandler}
+      >
         <p style={styles.buttonTitle}>{title}</p>
       </button>
       <div

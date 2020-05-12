@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
+import { triggerSource } from './AccordionItem';
 
 const styles = {
   container: {
@@ -26,9 +27,14 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
   const refContainer = useRef();
 
   const handleOpen = useCallback(
-    (index) => {
+    (index, trigger) => {
       let el = elements.slice();
-      el = el.map((e, i) => (i === index ? true : false));
+      if (trigger === triggerSource.click) {
+        el = el.map((e, i) => (i === index ? true : e));
+      } else {
+        el = el.map((e, i) => (i === index ? true : false));
+      }
+
       setElements(el);
     },
     [elements],
