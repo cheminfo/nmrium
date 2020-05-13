@@ -257,6 +257,21 @@ const FunctionToolBar = ({ defaultValue }) => {
               />
             </ToggleButton>
           )}
+        {displayerMode === DISPLAYER_MODE.DM_2D && (
+          <ToggleButton
+            key={options.projection.id}
+            value={options.projection.id}
+            style={styles.icon}
+          >
+            <ToolTip
+              title={`${options.projection.label}`}
+              popupPlacement="right"
+              offset={{ x: 10, y: 0 }}
+            >
+              Pro
+            </ToolTip>
+          </ToggleButton>
+        )}
         {isButtonVisible('hideAutoRangesTool') && (
           <ToggleButton
             key={options.rangesPicking.id}

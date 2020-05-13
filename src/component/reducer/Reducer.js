@@ -92,6 +92,7 @@ import {
   handleZoom,
   handelSetActiveTab,
   levelChangeHandler,
+  projection2dHandler,
 } from './actions/ToolsActions';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
@@ -162,6 +163,7 @@ import {
   RESIZE_RANGE,
   ADD_2D_INTEGRAL,
   DELETE_2D_INTEGRAL,
+  SET_2D_PROJECTION,
 } from './types/Types';
 
 setAutoFreeze(false);
@@ -391,6 +393,8 @@ export function spectrumReducer(state, action) {
       return add2dIntegralHandler(state, action);
     case DELETE_2D_INTEGRAL:
       return delete2dIntegralHandler(state, action);
+    case SET_2D_PROJECTION:
+      return projection2dHandler(state, action);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

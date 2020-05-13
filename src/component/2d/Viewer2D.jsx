@@ -15,12 +15,11 @@ import Spinner from '../loader/Spinner';
 import {
   BRUSH_END,
   FULL_ZOOM_OUT,
-  ADD_PEAK,
-  SET_VERTICAL_INDICATOR_X_POSITION,
   SET_DIMENSIONS,
   SET_2D_LEVEL,
   SET_ZOOM_FACTOR,
   ADD_2D_INTEGRAL,
+  SET_2D_PROJECTION,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -89,6 +88,7 @@ const Viewer2D = () => {
             case options.integral2D.id:
               dispatch({ type: ADD_2D_INTEGRAL, ...brushData });
               break;
+
             default:
               dispatch({
                 type: BRUSH_END,
@@ -133,16 +133,13 @@ const Viewer2D = () => {
 
   const mouseClick = useCallback(
     (position) => {
-      if (selectedTool === options.peakPicking.id) {
-        dispatch({
-          type: ADD_PEAK,
-          mouseCoordinates: position,
-        });
-      } else if (selectedTool === options.phaseCorrection.id) {
-        dispatch({
-          type: SET_VERTICAL_INDICATOR_X_POSITION,
-          position: position.x,
-        });
+      const { x, y } = position;
+      switch (selectedTool) {
+        case options.projection.id:
+          dispatch({ type: SET_2D_PROJECTION, x, y });
+          break;
+        default:
+          break;
       }
     },
     [dispatch, selectedTool],

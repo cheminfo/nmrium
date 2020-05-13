@@ -94,6 +94,14 @@ export class Datum2D {
   deleteIntegral(id) {
     this.integrals.values = this.integrals.values.filter((i) => i.id !== id);
   }
+  /** get 2d projection
+   * @param {number} x in ppm
+   * @param {number} y in ppm
+   */
+  // eslint-disable-next-line no-unused-vars
+  getProjection(x, y) {
+    // return [{x,y},{x,y}]; or {top:{x,y}left:{x,y}}
+  }
 
   toJSON() {
     return {

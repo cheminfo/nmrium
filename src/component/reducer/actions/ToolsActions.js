@@ -6,7 +6,7 @@ import { Datum2D } from '../../../data/data2d/Datum2D';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
-import { get2DYScale } from '../../2d/utilities/scale';
+import { get2DYScale, get2DXScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
@@ -481,6 +481,28 @@ const levelChangeHandler = (state, { deltaY, shiftKey }) => {
   }
 };
 
+const projection2dHandler = (state, position) => {
+  // eslint-disable-next-line no-unused-vars
+  return produce(state, (draft) => {
+    const scaleX = get2DXScale(state);
+    const scaleY = get2DYScale(state);
+
+    const datumObject =
+      state.activeSpectrum && state.activeSpectrum.id
+        ? AnalysisObj.getDatum(state.activeSpectrum.id)
+        : null;
+    if (datumObject && datumObject instanceof Datum2D) {
+      const x = scaleX.invert(position.x);
+      const y = scaleY.invert(position.y);
+
+      const projection = datumObject.getProjection(x, y);
+      // eslint-disable-next-line no-console
+      console.log(projection);
+      // draft.projection = projection;
+    }
+  });
+};
+
 export {
   resetSelectedTool,
   setSelectedTool,
@@ -497,4 +519,5 @@ export {
   zoomOut,
   handelSetActiveTab,
   levelChangeHandler,
+  projection2dHandler,
 };

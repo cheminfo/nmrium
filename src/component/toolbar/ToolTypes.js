@@ -25,6 +25,12 @@ export const options = {
     hasOptionPanel: false,
     isFilter: false,
   },
+  projection: {
+    id: 'projection',
+    label: 'projection Tool',
+    hasOptionPanel: false,
+    isFilter: false,
+  },
   HMove: {
     id: 'HMove',
     label: 'Move spectrum horizontally',
