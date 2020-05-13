@@ -178,6 +178,7 @@ NMRDisplayer.propTypes = {
   preferences: PropTypes.shape({
     general: PropTypes.shape({
       disableMultipletAnalysis: PropTypes.bool,
+      hideSetSumFromMolecule: PropTypes.bool,
     }),
     panels: PropTypes.shape({
       hideSpectraPanel: PropTypes.bool,
@@ -213,6 +214,7 @@ NMRDisplayer.defaultProps = {
   preferences: {
     general: {
       disableMultipletAnalysis: false,
+      hideSetSumFromMolecule: false,
     },
 
     panels: {
@@ -223,6 +225,23 @@ NMRDisplayer.defaultProps = {
       hideRangesPanel: false,
       hideStructuresPanel: false,
       hideFiltersPanel: false,
+    },
+
+    toolsBarButtons: {
+      hideZoomTool: false,
+      hideZoomOutTool: false,
+      hideImport: false,
+      hideExportAs: false,
+      hideSpectraStackAlignments: false,
+      hideSpectraCenterAlignments: false,
+      hideRealImaginary: false,
+      hidePeakTool: false,
+      hideIntegralTool: false,
+      hideAutoRangesTool: false,
+      hideZeroFillingTool: false,
+      hidePhaseCorrectionTool: false,
+      hideBaseLineCorrectionTool: false,
+      hideFFTTool: false,
     },
   },
 };

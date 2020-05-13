@@ -12,6 +12,7 @@ import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
 import { useModal } from '../elements/Modal';
 import Spinner from '../loader/Spinner';
@@ -45,7 +46,6 @@ import FooterBanner from './FooterBanner';
 import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
-import { usePreferences } from '../context/PreferencesContext';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
@@ -161,7 +161,15 @@ const Viewer1D = () => {
         }
       }
     },
-    [selectedTool, modal, data, activeSpectrum, scaleState.scaleX, dispatch],
+    [
+      selectedTool,
+      general.disableMultipletAnalysis,
+      modal,
+      data,
+      activeSpectrum,
+      scaleState.scaleX,
+      dispatch,
+    ],
   );
 
   const handelOnDoubleClick = useCallback(() => {

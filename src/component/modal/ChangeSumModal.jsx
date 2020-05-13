@@ -5,6 +5,8 @@ import Slider from 'react-animated-slider-2';
 import MF from 'react-mf/lib/components/MF';
 import { MolfileSvgRenderer } from 'react-ocl';
 
+import { usePreferences } from '../context/PreferencesContext';
+
 import NumberInputModal from './NumberInputModal';
 
 const modalContainer = css`
@@ -100,7 +102,7 @@ const moleculeContainerStyle = css`
 
 const ChangeSumModal = ({ onSave, onClose, header, molecules, element }) => {
   const [currentIndex, setCurrentIndex] = useState();
-
+  const { general, panels } = usePreferences();
   const saveInputValueHandler = useCallback(
     (inputValue) => {
       onSave(inputValue);
@@ -140,7 +142,11 @@ const ChangeSumModal = ({ onSave, onClose, header, molecules, element }) => {
         header={header}
       />
 
-      {element && molecules && molecules.length > 0 ? (
+      {!general.hideSetSumFromMolecule &&
+      !panels.hideStructuresPanel &&
+      element &&
+      molecules &&
+      molecules.length > 0 ? (
         <div css={selectMoleculeContainerStyle}>
           <div css={optionalTextStyle}>
             <p className="optional">OR</p>
