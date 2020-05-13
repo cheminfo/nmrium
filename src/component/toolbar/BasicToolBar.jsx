@@ -15,6 +15,7 @@ import {
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { usePreferences } from '../context/PreferencesContext';
 import MenuButton from '../elements/MenuButton';
 import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -64,8 +65,9 @@ const menuButton = css`
   }
 `;
 
-const BasicToolBar = ({ isViewButtonVisible = true, preferences }) => {
+const BasicToolBar = ({ isViewButtonVisible = true }) => {
   const dispatch = useDispatch();
+  const preferences = usePreferences();
   const { data, activeSpectrum, verticalAlign } = useChartData();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
   const [spectrumsCount, setSpectrumsCount] = useState(0);

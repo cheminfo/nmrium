@@ -13,13 +13,13 @@ const styles = {
   borderRight: '0.55px solid #f7f7f7',
   paddingRight: '1px',
 };
-const ToolBar = ({ preferences }) => {
+const ToolBar = () => {
   const { selectedTool } = useChartData();
   return (
     <div style={styles}>
-      <FunctionToolBar defaultValue={selectedTool} preferences={preferences} />
+      <FunctionToolBar defaultValue={selectedTool} />
       {/* <HistoryToolBar /> */}
-      <BasicToolBar preferences={preferences} />
+      <BasicToolBar />
     </div>
   );
 };

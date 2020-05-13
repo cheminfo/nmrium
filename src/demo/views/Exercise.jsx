@@ -141,6 +141,7 @@ export default function Exercise(props) {
           <NMRDisplayer
             data={data}
             preferences={{
+              general: { disableMultipletAnalysis: true },
               panels: {
                 hidePeaksPanel: true,
                 hideInformationPanel: true,

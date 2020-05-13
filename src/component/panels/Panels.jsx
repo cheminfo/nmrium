@@ -2,6 +2,7 @@ import lodash from 'lodash';
 import React, { useCallback, useState, useEffect, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { Accordion, AccordionItem } from '../elements/accordion';
 import ConnectToContext from '../hoc/ConnectToContext';
 import { options } from '../toolbar/ToolTypes';
@@ -66,9 +67,10 @@ const accordionItems = [
   },
 ];
 
-const Panels = memo(({ preferences, selectedTool }) => {
+const Panels = memo(({ selectedTool }) => {
   // const { selectedTool } = useChartData();
   const [panelIndex, setSelectedPanelIndex] = useState(0);
+  const preferences = usePreferences();
 
   const getDefaultIndex = useCallback(() => {
     const index = accordionItems.findIndex(

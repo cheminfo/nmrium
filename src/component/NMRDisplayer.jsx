@@ -25,6 +25,7 @@ import ErrorBoundary from './ErrorBoundary';
 import KeyListener from './EventsTrackers/keysListener';
 import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
+import { PreferencesProvider } from './context/PreferencesContext';
 import { ModalProvider } from './elements/Modal';
 import Header from './header/Header';
 import { HighlightProvider } from './highlight';
@@ -107,67 +108,66 @@ const NMRDisplayer = memo((props) => {
   //             // }
   return (
     <ErrorBoundary>
-      <ModalProvider>
-        <AlertProvider template={AlertTemplate} {...alertOptions}>
-          <DispatchProvider value={dispatchMiddleWare}>
-            <ChartDataProvider value={{ ...state, isResizeEventStart }}>
-              <KeyListener parentRef={fullScreenRef} />
-              <HighlightProvider>
-                <div
-                  ref={fullScreenRef}
-                  css={css`
-                    background-color: white;
-                    height: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    div:focus {
-                      outline: none !important;
-                    }
-                    button:active,
-                    button:hover,
-                    button:focus,
-                    [type='button']:focus,
-                    button {
-                      outline: none !important;
-                    }
-                  `}
-                >
-                  <Header isFullscreen={isFullscreen} onMaximize={toggle} />
-                  {/* ref={containerRef} */}
-                  <div style={{ flex: 1 }}>
-                    <DropZone>
-                      <ToolBar preferences={preferences} />
-                      <SplitPane
-                        style={splitPaneStyles.container}
-                        paneStyle={splitPaneStyles.pane}
-                        resizerStyle={splitPaneStyles.resizer}
-                        pane1Style={splitPaneStyles.pane1}
-                        split="vertical"
-                        defaultSize="calc(100% - 450px)"
-                        minSize="80%"
-                        onDragFinished={handleSplitPanelDragFinished}
-                        onDragStarted={() => {
-                          setResizeEventStart(true);
-                        }}
-                      >
-                        {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                          <Viewer1D />
-                        ) : (
-                          <Viewer2D />
-                        )}
-                        <Panels
-                          preferences={preferences}
-                          selectedTool={selectedTool}
-                        />
-                      </SplitPane>
-                    </DropZone>
+      <PreferencesProvider value={preferences}>
+        <ModalProvider>
+          <AlertProvider template={AlertTemplate} {...alertOptions}>
+            <DispatchProvider value={dispatchMiddleWare}>
+              <ChartDataProvider value={{ ...state, isResizeEventStart }}>
+                <KeyListener parentRef={fullScreenRef} />
+                <HighlightProvider>
+                  <div
+                    ref={fullScreenRef}
+                    css={css`
+                      background-color: white;
+                      height: 100%;
+                      display: flex;
+                      flex-direction: column;
+                      div:focus {
+                        outline: none !important;
+                      }
+                      button:active,
+                      button:hover,
+                      button:focus,
+                      [type='button']:focus,
+                      button {
+                        outline: none !important;
+                      }
+                    `}
+                  >
+                    <Header isFullscreen={isFullscreen} onMaximize={toggle} />
+                    {/* ref={containerRef} */}
+                    <div style={{ flex: 1 }}>
+                      <DropZone>
+                        <ToolBar />
+                        <SplitPane
+                          style={splitPaneStyles.container}
+                          paneStyle={splitPaneStyles.pane}
+                          resizerStyle={splitPaneStyles.resizer}
+                          pane1Style={splitPaneStyles.pane1}
+                          split="vertical"
+                          defaultSize="calc(100% - 450px)"
+                          minSize="80%"
+                          onDragFinished={handleSplitPanelDragFinished}
+                          onDragStarted={() => {
+                            setResizeEventStart(true);
+                          }}
+                        >
+                          {displayerMode === DISPLAYER_MODE.DM_1D ? (
+                            <Viewer1D />
+                          ) : (
+                            <Viewer2D />
+                          )}
+                          <Panels selectedTool={selectedTool} />
+                        </SplitPane>
+                      </DropZone>
+                    </div>
                   </div>
-                </div>
-              </HighlightProvider>
-            </ChartDataProvider>
-          </DispatchProvider>
-        </AlertProvider>
-      </ModalProvider>
+                </HighlightProvider>
+              </ChartDataProvider>
+            </DispatchProvider>
+          </AlertProvider>
+        </ModalProvider>
+      </PreferencesProvider>
     </ErrorBoundary>
   );
 });
@@ -176,6 +176,9 @@ NMRDisplayer.propTypes = {
   height: PropTypes.number,
   width: PropTypes.number,
   preferences: PropTypes.shape({
+    general: PropTypes.shape({
+      disableMultipletAnalysis: PropTypes.bool,
+    }),
     panels: PropTypes.shape({
       hideSpectraPanel: PropTypes.bool,
       hideInformationPanel: PropTypes.bool,
@@ -208,6 +211,10 @@ NMRDisplayer.defaultProps = {
   height: 600,
   width: 800,
   preferences: {
+    general: {
+      disableMultipletAnalysis: false,
+    },
+
     panels: {
       hideSpectraPanel: false,
       hideInformationPanel: false,

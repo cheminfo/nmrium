@@ -45,9 +45,11 @@ import FooterBanner from './FooterBanner';
 import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
+import { usePreferences } from '../context/PreferencesContext';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
+  const { general } = usePreferences();
   const state = useChartData();
   const {
     selectedTool,
@@ -98,21 +100,24 @@ const Viewer1D = () => {
     (brushData) => {
       if (brushData.altKey) {
         switch (selectedTool) {
-          case options.rangesPicking.id:
-            modal.show(
-              <MultipletAnalysisModal
-                data={data}
-                activeSpectrum={activeSpectrum}
-                scaleX={scaleState.scaleX}
-                {...brushData}
-              />,
-              {
-                onClose: () => {
-                  modal.close();
+          case options.rangesPicking.id: {
+            if (!general.disableMultipletAnalysis) {
+              modal.show(
+                <MultipletAnalysisModal
+                  data={data}
+                  activeSpectrum={activeSpectrum}
+                  scaleX={scaleState.scaleX}
+                  {...brushData}
+                />,
+                {
+                  onClose: () => {
+                    modal.close();
+                  },
                 },
-              },
-            );
+              );
+            }
             break;
+          }
           default:
             break;
         }

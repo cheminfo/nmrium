@@ -6,6 +6,7 @@ import { FaSearchPlus, FaExpand } from 'react-icons/fa';
 import { Filters } from '../../data/data1d/filter1d/Filters';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { usePreferences } from '../context/PreferencesContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 import { ZoomType } from '../reducer/actions/Zoom';
@@ -40,10 +41,11 @@ const styles = {
 
 let debounceClickEvents = [];
 
-const FunctionToolBar = ({ defaultValue, preferences }) => {
+const FunctionToolBar = ({ defaultValue }) => {
   const [option, setOption] = useState();
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
   const alert = useAlert();
+  const preferences = usePreferences();
 
   const dispatch = useDispatch();
   const handleChangeOption = useCallback(
