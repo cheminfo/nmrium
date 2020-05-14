@@ -6,14 +6,35 @@ import { AnalysisObj } from '../core/Analysis';
 
 import { setDomain, setMode } from './DomainActions';
 
-const handleSpectrumVisibility = (state, data) => {
+function setVisible(datum, flag) {
+  if (datum.info.dimension === 2) {
+    datum.display.isPositiveVisible = flag;
+    datum.display.isNegativeVisible = flag;
+  } else {
+    datum.display.isVisible = flag;
+  }
+}
+
+const handleSpectrumVisibility = (state, action) => {
   return produce(state, (draft) => {
-    for (let datum of draft.data) {
-      if (data.some((sData) => sData.id === datum.id)) {
-        datum.display.isVisible = true;
+    if (Array.isArray(action.id)) {
+      const IDs = action.id;
+      if (IDs.length === 0) {
+        for (const datum of draft.data) {
+          setVisible(datum, false);
+        }
       } else {
-        datum.display.isVisible = false;
+        for (const datum of draft.data) {
+          if (IDs.includes(datum.id)) {
+            setVisible(datum, true);
+          } else {
+            setVisible(datum, false);
+          }
+        }
       }
+    } else {
+      const index = draft.data.findIndex((d) => d.id === action.id);
+      draft.data[index].display[action.key] = action.value;
     }
   });
 };

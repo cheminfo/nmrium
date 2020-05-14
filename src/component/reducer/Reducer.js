@@ -308,7 +308,7 @@ export function spectrumReducer(state, action) {
       return deleteFilter(state, action.id);
 
     case CHANGE_VISIBILITY:
-      return handleSpectrumVisibility(state, action.data);
+      return handleSpectrumVisibility(state, action);
 
     case CHANGE_PEAKS_MARKERS_VISIBILITY:
       return handleChangePeaksMarkersVisibility(state, action.data);

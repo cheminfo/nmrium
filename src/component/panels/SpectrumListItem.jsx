@@ -1,4 +1,4 @@
-import React, { memo, Fragment } from 'react';
+import React, { memo } from 'react';
 import { FaEye, FaPaintBrush } from 'react-icons/fa';
 
 const styles = {
@@ -47,7 +47,6 @@ const styles = {
 
 const SpectrumListItem = memo(
   ({
-    visible,
     activated,
     markersVisible,
     data,
@@ -57,8 +56,8 @@ const SpectrumListItem = memo(
     onOpenColorPicker,
     onContextMenu,
   }) => {
-    const isVisible = (id) => {
-      return visible.findIndex((v) => v.id === id) !== -1 ? true : false;
+    const isVisible = (id, key) => {
+      return data ? data.display[key] : true;
     };
 
     const isMarkerVisible = (id) => {
@@ -88,30 +87,79 @@ const SpectrumListItem = memo(
     };
 
     const { color, name, positiveColor, negativeColor } = data.display;
-    const eyeIconColor = data.info.dimension === 2 ? positiveColor : color;
+    // const eyeIconColor = data.info.dimension === 2 ? positiveColor : color;
     return (
       <div style={styles.row} key={data.id} onContextMenu={onContextMenu}>
-        <button
-          style={styles.button}
-          type="button"
-          onClick={() => onChangeVisibility(data)}
-        >
-          <FaEye
-            style={{
-              fill: eyeIconColor,
-              ...(isVisible(data.id)
-                ? {
-                    opacity: 1,
-                    strokeWidth: '1px',
-                    fill: eyeIconColor,
-                  }
-                : {
-                    opacity: 0.1,
-                    fill: eyeIconColor,
-                  }),
-            }}
-          />
-        </button>
+        {data.info.dimension === 1 && (
+          <button
+            style={styles.button}
+            type="button"
+            onClick={() => onChangeVisibility(data, 'isVisible')}
+          >
+            <FaEye
+              style={{
+                fill: color,
+                ...(isVisible(data.id, 'isVisible')
+                  ? {
+                      opacity: 1,
+                      strokeWidth: '1px',
+                      fill: color,
+                    }
+                  : {
+                      opacity: 0.1,
+                      fill: color,
+                    }),
+              }}
+            />
+          </button>
+        )}
+        {data.info.dimension === 2 && (
+          <div style={{ minWidth: '40px' }}>
+            <button
+              style={{ ...styles.button, width: '20px', minWidth: '20px' }}
+              type="button"
+              onClick={() => onChangeVisibility(data, 'isPositiveVisible')}
+            >
+              <FaEye
+                style={{
+                  fill: positiveColor,
+                  ...(isVisible(data.id, 'isPositiveVisible')
+                    ? {
+                        opacity: 1,
+                        strokeWidth: '1px',
+                        fill: positiveColor,
+                      }
+                    : {
+                        opacity: 0.1,
+                        fill: positiveColor,
+                      }),
+                }}
+              />
+            </button>
+            <button
+              style={{ ...styles.button, width: '20px', minWidth: '20px' }}
+              type="button"
+              onClick={() => onChangeVisibility(data, 'isNegativeVisible')}
+            >
+              <FaEye
+                style={{
+                  fill: negativeColor,
+                  ...(isVisible(data.id, 'isNegativeVisible')
+                    ? {
+                        opacity: 1,
+                        strokeWidth: '1px',
+                        fill: negativeColor,
+                      }
+                    : {
+                        opacity: 0.1,
+                        fill: negativeColor,
+                      }),
+                }}
+              />
+            </button>
+          </div>
+        )}
+
         <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
           <div
             style={styles.spectrumClassIcon}
@@ -155,21 +203,10 @@ const SpectrumListItem = memo(
           onClick={() => onChangeActiveSpectrum(data)}
         >
           {data.info.dimension === 2 ? (
-            <Fragment>
-              <ColorIndicator id={data.id} color={positiveColor} width="7px" />
-              <ColorIndicator id={data.id} color={negativeColor} width="7px" />
-            </Fragment>
+            <ColorIndicator id={data.id} color={positiveColor} />
           ) : (
             <ColorIndicator id={data.id} color={color} />
           )}
-
-          {/* <FaMinus
-            style={
-              isActivated(data.id)
-                ? { fill: color, height: '15px', width: '12px' }
-                : { fill: color, opacity: 0.1, width: '12px' }
-            }
-          /> */}
         </button>
         <button
           style={styles.button}
