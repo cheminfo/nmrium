@@ -57,6 +57,32 @@ const setData = (state, data) => {
   });
 };
 
+const loadJDFFile = (state, files) => {
+  return produce(state, (draft) => {
+    let usedColors = draft.data.map((d) => d.color);
+    const filesLength = files.length;
+    for (let i = 0; i < filesLength; i++) {
+      const color = getColor(false, usedColors);
+      AnalysisObj.addJDF(files[i].binary.toString(), {
+        display: {
+          name: files[i].name,
+          color: color,
+          isVisible: true,
+          isPeaksMarkersVisible: true,
+        },
+        source: {
+          jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
+        },
+      });
+      usedColors.push(color);
+    }
+    draft.data = AnalysisObj.getSpectraData();
+    setDomain(draft);
+    setMode(draft);
+    draft.isLoading = false;
+  });
+};
+
 const loadJcampFile = (state, files) => {
   return produce(state, (draft) => {
     let usedColors = draft.data.map((d) => d.color);
@@ -137,6 +163,7 @@ export {
   initiate,
   setData,
   loadJcampFile,
+  loadJDFFile,
   handleLoadJsonFile,
   handleLoadMOLFile,
   handleLoadZIPFile,

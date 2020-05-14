@@ -45,6 +45,16 @@ export class Analysis {
     SpectraManager.addJcamp(this.spectra, jcamp, options);
   }
 
+  addJDF(jdf, options = {}) {
+    console.log('ddd');
+    console.log(options);
+    for (let jeolFile of jdf) {
+      console.log('jeolFile');
+      const color = getColor(true);
+      SpectraManager.addJDF(this.spectra, jeolFile, { display: { color } });
+    }
+  }
+
   async addMolfileFromURL(molfileURL) {
     let molfile = await fetch(molfileURL).then((response) => response.text());
     this.addMolfile(molfile);

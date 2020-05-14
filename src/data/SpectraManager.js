@@ -1,5 +1,6 @@
 import { convertZip as convertBruker } from 'brukerconverter';
 import { convert } from 'jcampconverter';
+import { fromJEOL } from 'nmr-parser';
 
 import { Data1DManager } from './data1d/Data1DManager';
 import { Datum1D } from './data1d/Datum1D';
@@ -23,6 +24,22 @@ export function addJcamp(spectra, jcamp, options = {}) {
     keepRecordsRegExp: /.*/,
     profiling: true,
   });
+  let entries = converted.flatten;
+  if (entries.length === 0) return;
+  // Should be improved when we have a more complex case
+  for (let entry of entries) {
+    if ((entry.spectra && entry.spectra.length > 0) || entry.minMax) {
+      addJcampSS(spectra, entry, options);
+    }
+  }
+}
+
+export function addJDF(spectra, jdf, options = {}) {
+  // need to parse the jcamp
+  console.log(jdf);
+  let converted = fromJEOL(jdf);
+  console.log(converted);
+
   let entries = converted.flatten;
   if (entries.length === 0) return;
   // Should be improved when we have a more complex case
