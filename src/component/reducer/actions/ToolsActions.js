@@ -419,7 +419,19 @@ const setActiveTab = (draft, dataGroupByTab, tab) => {
       if (tabs2D.length > 0 || data.length === 1) {
         draft.tabActiveSpectrum[tabKey] = { id: data[0].id, index };
       } else {
-        draft.tabActiveSpectrum[tabKey] = null;
+        if (dataGroupByTab[tab].length === 2) {
+          const FIDSpectrums = dataGroupByTab[tab].filter((d) => d.info.isFid);
+          if (FIDSpectrums) {
+            const index = draft.data.findIndex(
+              (datum) => datum.id === FIDSpectrums[0].id,
+            );
+            draft.tabActiveSpectrum[tabKey] = { id: FIDSpectrums[0].id, index };
+          } else {
+            draft.tabActiveSpectrum[tabKey] = null;
+          }
+        } else {
+          draft.tabActiveSpectrum[tabKey] = null;
+        }
       }
     }
 
