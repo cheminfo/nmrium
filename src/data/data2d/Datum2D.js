@@ -23,7 +23,8 @@ export class Datum2D {
         name: options.display.name || generateID(),
         positiveColor: 'red',
         negativeColor: 'blue',
-        isVisible: true,
+        isPositiveVisible: true,
+        isNegativeVisible: true,
       },
       options.display,
     );

@@ -49,7 +49,6 @@ const SpectrumListPanel = memo(
     const contextRef = useRef();
 
     const [activated, setActivated] = useState(null);
-    const [visible, setVisible] = useState([]);
     const [markersVisible, setMarkersVisible] = useState([]);
     const [isColorPickerDisplayed, setIsColorPickerDisplayed] = useState(false);
     const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
@@ -72,18 +71,27 @@ const SpectrumListPanel = memo(
     }, [activeTabID, spectrumsGroupByNucleus]);
 
     const handleChangeVisibility = useCallback(
-      (d) => {
-        const currentIndex = visible.findIndex((v) => v.id === d.id);
-        const newChecked = [...visible];
-        if (currentIndex === -1) {
-          newChecked.push({ id: d.id });
-        } else {
-          newChecked.splice(currentIndex, 1);
-        }
-        dispatch({ type: CHANGE_VISIBILITY, data: newChecked });
-        setVisible(newChecked);
+      (d, key) => {
+        // if (d.info.dimension === 2) {
+        dispatch({
+          type: CHANGE_VISIBILITY,
+          id: d.id,
+          key,
+          value: !d.display[key],
+        });
+        // } else {
+        // }
+        // const currentIndex = visible.findIndex((v) => v.id === d.id);
+        // const newChecked = [...visible];
+        // if (currentIndex === -1) {
+        //   newChecked.push({ id: d.id });
+        // } else {
+        //   newChecked.splice(currentIndex, 1);
+        // }
+        // dispatch({ type: CHANGE_VISIBILITY, data: newChecked });
+        // setVisible(newChecked);
       },
-      [dispatch, visible],
+      [dispatch],
     );
 
     const handleChangeMarkersVisibility = useCallback(
@@ -138,14 +146,10 @@ const SpectrumListPanel = memo(
 
     useEffect(() => {
       if (data) {
-        const visibleSpectra = data
-          ? data.filter((d) => d.display.isVisible === true)
-          : [];
         const visibleMarkers = data
           ? data.filter((d) => d.display.isPeaksMarkersVisible === true)
           : [];
 
-        setVisible(visibleSpectra);
         setMarkersVisible(visibleMarkers);
 
         // if (data && data.length === 1 && activated == null) {
@@ -246,7 +250,6 @@ const SpectrumListPanel = memo(
                     spectrumsGroupByNucleus[group].map((d) => (
                       <SpectrumListItem
                         key={d.id}
-                        visible={visible}
                         activated={activated}
                         markersVisible={markersVisible}
                         data={d}
@@ -274,7 +277,6 @@ const SpectrumListPanel = memo(
       spectrumsGroupByNucleus,
       onTabChangeHandler,
       contextMenu,
-      visible,
       activated,
       markersVisible,
       handleChangeVisibility,
@@ -302,17 +304,15 @@ const SpectrumListPanel = memo(
 
     const showAllSpectrumsHandler = useCallback(() => {
       const spectrumsPerTab = getActiveTabSpectrumsIDs().map((id) => {
-        return {
-          id,
-        };
+        return id;
       });
-      dispatch({ type: CHANGE_VISIBILITY, data: spectrumsPerTab });
-      setVisible(spectrumsPerTab);
+      dispatch({ type: CHANGE_VISIBILITY, id: spectrumsPerTab });
+      // setVisible(spectrumsPerTab);
     }, [dispatch, getActiveTabSpectrumsIDs]);
 
     const hideAllSpectrumsHandler = useCallback(() => {
-      dispatch({ type: CHANGE_VISIBILITY, data: [] });
-      setVisible([]);
+      dispatch({ type: CHANGE_VISIBILITY, id: [] });
+      // setVisible([]);
     }, [dispatch]);
 
     return (

@@ -72,10 +72,10 @@ export default class Processing2D {
   drawContours() {
     const zoomPositive = this.currentLevelPositive / 2 + 1;
     const zoomNegative = this.currentLevelNegative / 2 + 1;
-    return [
-      this.getContours(zoomPositive),
-      this.getContours(zoomNegative, { negative: true }),
-    ];
+    return {
+      positive: this.getContours(zoomPositive),
+      negative: this.getContours(zoomNegative, { negative: true }),
+    };
   }
 
   getContours(zoomLevel, options = {}) {
