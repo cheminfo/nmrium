@@ -18,8 +18,10 @@ const ReactTableRow = ({ row, onContextMenu }) => {
       css={
         highlight.isActive
           ? HighlightedRowStyle
-          : row.original.isConstantlyHighlighted &&
-            row.original.isConstantlyHighlighted === true
+          : Object.prototype.hasOwnProperty.call(
+              row.original,
+              'isConstantlyHighlighted',
+            ) && row.original.isConstantlyHighlighted === true
           ? ConstantlyHighlightedRowStyle
           : null
       }

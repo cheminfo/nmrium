@@ -10,7 +10,6 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useModal } from '../elements/Modal';
 import ReactTable from '../elements/ReactTable/ReactTable';
-import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
 import Select from '../elements/Select';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import ChangeSumModal from '../modal/ChangeSumModal';
@@ -22,6 +21,7 @@ import {
 } from '../reducer/types/Types';
 import { copyTextToClipboard } from '../utility/Export';
 
+import RangesTable from './RangesTable';
 import { SignalKinds } from './constants/SignalsKinds';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
 import PreferencesHeader from './header/PreferencesHeader';
@@ -53,7 +53,7 @@ const styles = {
   },
 };
 
-const selectStyle = { marginLeft: 2, marginRight: 2, border: 'none' };
+// const selectStyle = { marginLeft: 2, marginRight: 2, border: 'none' };
 
 const RangesTablePanel = memo(() => {
   const {
@@ -74,18 +74,18 @@ const RangesTablePanel = memo(() => {
   const [isTableVisible, setTableVisibility] = useState(true);
   const settingRef = useRef();
 
-  const deleteRangeHandler = useCallback(
-    (e, row) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const params = row.original;
-      dispatch({
-        type: DELETE_RANGE,
-        rangeID: params.id,
-      });
-    },
-    [dispatch],
-  );
+  // const deleteRangeHandler = useCallback(
+  //   (e, row) => {
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     const params = row.original;
+  //     dispatch({
+  //       type: DELETE_RANGE,
+  //       rangeID: params.id,
+  //     });
+  //   },
+  //   [dispatch],
+  // );
 
   const data = useMemo(() => {
     const _data =
@@ -170,16 +170,16 @@ const RangesTablePanel = memo(() => {
     modal.close();
   }, [modal]);
 
-  const changeRangeSignalKindHandler = useCallback(
-    (value, row) => {
-      const _data = { ...row.original, kind: value };
-      dispatch({
-        type: CHANGE_RANGE_DATA,
-        data: _data,
-      });
-    },
-    [dispatch],
-  );
+  // const changeRangeSignalKindHandler = useCallback(
+  //   (value, row) => {
+  //     const _data = { ...row.original, kind: value };
+  //     dispatch({
+  //       type: CHANGE_RANGE_DATA,
+  //       data: _data,
+  //     });
+  //   },
+  //   [dispatch],
+  // );
 
   const saveAsHTMLHandler = useCallback(() => {
     const result = getACS(data);
@@ -193,163 +193,93 @@ const RangesTablePanel = memo(() => {
     );
   }, [closeClipBoardHandler, data, modal, saveToClipboardHandler]);
 
-  // define columns for different (sub)tables and expandable ones
-  const columnsRangesDefault = [
-    {
-      orderIndex: 1,
-      Header: () => null,
-      id: 'expander',
-      Cell: ({ row }) => (
-        <span {...row.getExpandedToggleProps()}>
-          {row.isExpanded ? '\u25BC' : '\u25B6'}
-        </span>
-      ),
-    },
-    {
-      orderIndex: 2,
-      Header: '#',
-      Cell: ({ row }) => row.index + 1,
-    },
-    {
-      orderIndex: 7,
-      Header: 'Signals',
-      Cell: ({ row }) =>
-        `${row.original.signal.length}: ${row.original.signal
-          .map((s) => s.multiplicity)
-          .join(',')}`,
-    },
-    {
-      orderIndex: 8,
-      Header: 'Kind',
-      accessor: 'kind',
-      sortType: 'basic',
-      resizable: true,
-      Cell: ({ row }) => (
-        <Select
-          onChange={(value) => changeRangeSignalKindHandler(value, row)}
-          data={SignalKinds}
-          style={selectStyle}
-          defaultValue={row.original.kind}
-        />
-      ),
-    },
-    {
-      orderIndex: 9,
-      Header: '',
-      id: 'delete-button',
-      Cell: ({ row }) => (
-        <button
-          type="button"
-          className="delete-button"
-          onClick={(e) => deleteRangeHandler(e, row)}
-        >
-          <FaRegTrashAlt />
-        </button>
-      ),
-    },
-  ];
+  // // define columns for different (sub)tables and expandable ones
+  // const columnsRangesDefault = [
+  //   {
+  //     orderIndex: 1,
+  //     Header: `δ (ppm)`,
+  //     Cell: ({ row }) =>
+  //       Object.prototype.hasOwnProperty.call(row.original, 'signal') &&
+  //       row.original.signal.length > 0
+  //         ? row.original.signal[0].delta.toFixed(3)
+  //         : null,
+  //   },
+  //   {
+  //     orderIndex: 4,
+  //     Header: 'Kind',
+  //     accessor: 'kind',
+  //     sortType: 'basic',
+  //     resizable: true,
+  //     Cell: ({ row }) => (
+  //       <Select
+  //         onChange={(value) => changeRangeSignalKindHandler(value, row)}
+  //         data={SignalKinds}
+  //         style={selectStyle}
+  //         defaultValue={row.original.kind}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     orderIndex: 5,
+  //     Header: '',
+  //     id: 'delete-button',
+  //     Cell: ({ row }) => (
+  //       <button
+  //         type="button"
+  //         className="delete-button"
+  //         onClick={(e) => deleteRangeHandler(e, row)}
+  //       >
+  //         <FaRegTrashAlt />
+  //       </button>
+  //     ),
+  //   },
+  // ];
 
-  const columnsRanges = useMemo(() => {
-    const rangesPreferences = lodash.get(
-      preferences,
-      `panels.ranges.[${activeTab}]`,
-    );
-    const columnHelper = new ColumnsHelper(
-      rangesPreferences,
-      rangeDefaultValues,
-    );
-    let cols = [...columnsRangesDefault];
-    columnHelper.addColumn(cols, 'showFrom', 'fromFormat', 'from', 'From', 3);
-    columnHelper.addColumn(cols, 'showTo', 'toFormat', 'to', 'To', 4);
-    columnHelper.addColumn(
-      cols,
-      'showAbsolute',
-      'absoluteFormat',
-      'absolute',
-      'Absolute',
-      5,
-    );
-    const n = activeTab && activeTab.replace(/[0-9]/g, '');
-    columnHelper.addColumn(
-      cols,
-      'showRelative',
-      'relativeFormat',
-      'integral',
-      `Rel. ${n}`,
-      6,
-      {
-        formatPrefix: '[',
-        formatSuffix: ']',
-        showPrefixSuffixCallback: (row) =>
-          row &&
-          row.original &&
-          row.original.kind &&
-          row.original.kind === 'signal'
-            ? false
-            : true,
-      },
-    );
+  // const columnsRanges = useMemo(() => {
+  //   const rangesPreferences = lodash.get(
+  //     preferences,
+  //     `panels.ranges.[${activeTab}]`,
+  //   );
+  //   const columnHelper = new ColumnsHelper(
+  //     rangesPreferences,
+  //     rangeDefaultValues,
+  //   );
+  //   let cols = [...columnsRangesDefault];
+  //   // columnHelper.addColumn(cols, 'showFrom', 'fromFormat', 'from', 'From', 3);
+  //   // columnHelper.addColumn(cols, 'showTo', 'toFormat', 'to', 'To', 4);
+  //   columnHelper.addColumn(
+  //     cols,
+  //     'showAbsolute',
+  //     'absoluteFormat',
+  //     'absolute',
+  //     'Absolute',
+  //     2,
+  //   );
+  //   const n = activeTab && activeTab.replace(/[0-9]/g, '');
+  //   columnHelper.addColumn(
+  //     cols,
+  //     'showRelative',
+  //     'relativeFormat',
+  //     'integral',
+  //     `Rel. ${n}`,
+  //     3,
+  //     {
+  //       formatPrefix: '[',
+  //       formatSuffix: ']',
+  //       showPrefixSuffixCallback: (row) =>
+  //         row &&
+  //         row.original &&
+  //         row.original.kind &&
+  //         row.original.kind === 'signal'
+  //           ? false
+  //           : true,
+  //     },
+  //   );
 
-    return cols.sort(
-      (object1, object2) => object1.orderIndex - object2.orderIndex,
-    );
-  }, [activeTab, columnsRangesDefault, preferences]);
-
-  const columnsSignals = [
-    {
-      Header: '#',
-      Cell: ({ row }) => row.index + 1,
-    },
-    {
-      Header: 'Multiplicity',
-      accessor: 'multiplicity',
-    },
-    {
-      Header: 'Delta',
-      accessor: 'delta',
-      Cell: ({ row }) => row.original.delta.toFixed(3),
-    },
-    {
-      Header: 'J',
-      Cell: ({ row }) =>
-        row.original.j
-          ? row.original.j
-              .map((j) => `${j.multiplicity} (${j.coupling.toFixed(2)}Hz)`)
-              .join(', ')
-          : '',
-    },
-  ];
-
-  const columnsCouplings = [
-    {
-      Header: 'Couplings',
-      columns: [
-        {
-          Header: '#',
-          Cell: ({ row }) => row.index + 1,
-        },
-        {
-          Header: 'Multiplicity',
-          accessor: 'multiplicity',
-        },
-        {
-          Header: 'Coupling',
-          accessor: 'coupling',
-          Cell: ({ row }) => row.original.coupling.toFixed(3),
-        },
-      ],
-    },
-  ];
-
-  // render method for couplings sub-table
-  const renderRowSubComponentCouplings = ({ row }) => {
-    return row &&
-      row.original &&
-      row.original.j &&
-      row.original.j.length > 0 ? (
-      <ReactTable data={row.original.j} columns={columnsCouplings} />
-    ) : null;
-  };
+  //   return cols.sort(
+  //     (object1, object2) => object1.orderIndex - object2.orderIndex,
+  //   );
+  // }, [activeTab, columnsRangesDefault, preferences]);
 
   const contextMenu = [
     {
@@ -357,23 +287,6 @@ const RangesTablePanel = memo(() => {
       onClick: saveJSONToClipboardHandler,
     },
   ];
-
-  // render method for signals sub-table; either expandable or not
-  const renderRowSubComponentSignals = ({ row }) => {
-    return row &&
-      row.original &&
-      row.original.signal &&
-      row.original.signal.find((signal) => signal.j && signal.j.length > 0) ? (
-      <ReactTableExpandable
-        columns={columnsSignals}
-        data={row.original.signal}
-        renderRowSubComponent={renderRowSubComponentCouplings}
-        context={contextMenu}
-      />
-    ) : (
-      <ReactTable columns={columnsSignals} data={row.original.signal} />
-    );
-  };
 
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_RANGE, rangeID: null });
@@ -497,11 +410,14 @@ const RangesTablePanel = memo(() => {
         >
           <div style={!isTableVisible ? { display: 'none' } : {}}>
             {data && data.length > 0 ? (
-              <ReactTableExpandable
-                columns={columnsRanges}
-                data={data}
-                renderRowSubComponent={renderRowSubComponentSignals}
-                context={contextMenu}
+              // <ReactTable
+              //   columns={columnsRanges}
+              //   data={data}
+              //   context={contextMenu}
+              // />
+              <RangesTable
+                rangesData={data}
+                element={activeTab && activeTab.replace(/[0-9]/g, '')}
               />
             ) : (
               <NoTableData />
