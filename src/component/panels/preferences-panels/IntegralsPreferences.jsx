@@ -16,6 +16,7 @@ import ColorInput from '../../elements/ColorInput';
 import NumberInput from '../../elements/NumberInput';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
 
 import ColumnFormatField from './ColumnFormatField';
@@ -67,6 +68,7 @@ const IntegralsPreferences = forwardRef((props, ref) => {
   const { data, preferences } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
 
   const [nucleus, setNucleus] = useState([]);
   const [settings, setSetting] = useState(null);
@@ -94,6 +96,12 @@ const IntegralsPreferences = forwardRef((props, ref) => {
       setSetting(integralsPreferences);
     }
   }, [preferences]);
+
+  const saveToLocalStorgate = (values) => {
+    let globalSettings = { ...settingData };
+    globalSettings = lodash.set(globalSettings, 'panels.integrals', values);
+    setSettingsData(JSON.stringify(globalSettings));
+  };
 
   const saveHandler = useCallback(
     (values, showMessage = false) => {
@@ -143,6 +151,7 @@ const IntegralsPreferences = forwardRef((props, ref) => {
       values = lodash.set(values, keys, val);
     }
     saveHandler(values, true);
+    saveToLocalStorgate(values);
   };
 
   const getValue = useCallback(

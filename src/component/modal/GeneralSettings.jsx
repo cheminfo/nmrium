@@ -85,10 +85,10 @@ const GeneralSettings = ({ onClose, onSave }) => {
   const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
 
   const handleSave = useCallback(() => {
-    setSettingsData(JSON.stringify(tempData));
+    setSettingsData(JSON.stringify({ ...settingData, ...tempData }));
     onSave();
     tempData = {};
-  }, [onSave, setSettingsData]);
+  }, [onSave, setSettingsData, settingData]);
 
   const tabChangeHandler = useCallback((tab) => {
     setActiveTab(tab);
