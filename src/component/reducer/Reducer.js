@@ -76,6 +76,7 @@ import {
   handleChangeActiveSpectrum,
   handleChangeSpectrumColor,
   handleDeleteSpectra,
+  addMissingProjectionHander,
 } from './actions/SpectrumsActions';
 import {
   setSelectedTool,
@@ -164,6 +165,7 @@ import {
   ADD_2D_INTEGRAL,
   DELETE_2D_INTEGRAL,
   SET_2D_PROJECTION,
+  ADD_MISSING_PROJECTION,
 } from './types/Types';
 
 setAutoFreeze(false);
@@ -395,6 +397,8 @@ export function spectrumReducer(state, action) {
       return delete2dIntegralHandler(state, action);
     case SET_2D_PROJECTION:
       return projection2dHandler(state, action);
+    case ADD_MISSING_PROJECTION:
+      return addMissingProjectionHander(state, action);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

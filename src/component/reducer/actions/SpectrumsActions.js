@@ -5,6 +5,7 @@ import { AnalysisObj } from '../core/Analysis';
 // import Spectrum2DProcessing from '../core/Spectrum2DProcessing';
 
 import { setDomain, setMode } from './DomainActions';
+import { Datum2D } from '../../../data/data2d/Datum2D';
 
 function setVisible(datum, flag) {
   if (datum.info.dimension === 2) {
@@ -124,6 +125,22 @@ const handleDeleteSpectra = (state, action) => {
     }
   });
 };
+const addMissingProjectionHander = (state, action) => {
+  // eslint-disable-next-line no-unused-vars
+  return produce(state, (draft) => {
+    const nucleus = action.nucleus;
+    const datumObject =
+      state.activeSpectrum && state.activeSpectrum.id
+        ? AnalysisObj.getDatum(state.activeSpectrum.id)
+        : null;
+    if (datumObject && datumObject instanceof Datum2D) {
+      const missingProjection = datumObject.getMissingProjection(nucleus);
+      // eslint-disable-next-line no-console
+      console.log(missingProjection);
+      // draft.projection = projection;
+    }
+  });
+};
 
 export {
   handleSpectrumVisibility,
@@ -131,4 +148,5 @@ export {
   handleChangeActiveSpectrum,
   handleChangeSpectrumColor,
   handleDeleteSpectra,
+  addMissingProjectionHander,
 };
