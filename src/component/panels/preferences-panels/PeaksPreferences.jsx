@@ -13,6 +13,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
 
 import ColumnFormatField from './ColumnFormatField';
@@ -52,6 +53,7 @@ const PeaksPreferences = forwardRef((props, ref) => {
   const { data, preferences } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
 
   const [nucleus, setNucleus] = useState([]);
   const [settings, setSetting] = useState(null);
@@ -141,6 +143,11 @@ const PeaksPreferences = forwardRef((props, ref) => {
       defaultFormat: '00.00',
     },
   ];
+  const saveToLocalStorgate = (values) => {
+    let globalSettings = { ...settingData };
+    globalSettings = lodash.set(globalSettings, 'panels.peaks', values);
+    setSettingsData(JSON.stringify(globalSettings));
+  };
 
   const handleSubmit = async (event) => {
     const form = event.target;
@@ -154,6 +161,7 @@ const PeaksPreferences = forwardRef((props, ref) => {
       values = lodash.set(values, keys, val);
     }
     saveHandler(values, true);
+    saveToLocalStorgate(values);
   };
 
   const getValue = useCallback(

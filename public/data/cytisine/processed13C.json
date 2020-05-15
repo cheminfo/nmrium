@@ -582,9 +582,7 @@
           "name": "digitalFilter",
           "label": "Digital Filter",
           "value": {
-            "dspfvs": "20",
-            "decim": "554.666666666667",
-            "grpdly": "67.9918823242188"
+            "digitalFilterValue": 67.9918823242188
           },
           "id": "lvmfQAur",
           "flag": true,

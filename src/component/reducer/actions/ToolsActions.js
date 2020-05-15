@@ -420,12 +420,12 @@ const setActiveTab = (draft, dataGroupByTab, tab) => {
         draft.tabActiveSpectrum[tabKey] = { id: data[0].id, index };
       } else {
         if (dataGroupByTab[tab].length === 2) {
-          const FIDSpectrums = dataGroupByTab[tab].filter((d) => d.info.isFid);
-          if (FIDSpectrums) {
+          const FTSpectrums = dataGroupByTab[tab].filter((d) => !d.info.isFid);
+          if (FTSpectrums && FTSpectrums.length > 0) {
             const index = draft.data.findIndex(
-              (datum) => datum.id === FIDSpectrums[0].id,
+              (datum) => datum.id === FTSpectrums[0].id,
             );
-            draft.tabActiveSpectrum[tabKey] = { id: FIDSpectrums[0].id, index };
+            draft.tabActiveSpectrum[tabKey] = { id: FTSpectrums[0].id, index };
           } else {
             draft.tabActiveSpectrum[tabKey] = null;
           }

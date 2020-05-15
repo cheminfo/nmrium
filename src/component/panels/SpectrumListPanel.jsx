@@ -8,7 +8,11 @@ import React, {
   useRef,
 } from 'react';
 import { useAlert } from 'react-alert';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import {
+  FaEye,
+  FaEyeSlash,
+  FaCreativeCommonsSamplingPlus,
+} from 'react-icons/fa';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -24,6 +28,7 @@ import {
   CHANGE_SPECTRUM_COLOR,
   DELETE_SPECTRA,
   SET_ACTIVE_TAB,
+  ADD_MISSING_PROJECTION,
 } from '../reducer/types/Types';
 import { copyTextToClipboard } from '../utility/Export';
 import groupByInfoKey from '../utility/GroupByInfoKey';
@@ -315,6 +320,27 @@ const SpectrumListPanel = memo(
       // setVisible([]);
     }, [dispatch]);
 
+    const addMissingProjectionHandler = useCallback(() => {
+      function getMissingProjection(data) {
+        let nucleus = activeTabState.split(',');
+        nucleus = nucleus[0] === nucleus[1] ? [nucleus[0]] : nucleus;
+        const missingNucleus = [];
+        for (const n of nucleus) {
+          const hasSpectrums = data.some((d) => d.info.nucleus === n);
+          if (!hasSpectrums) {
+            missingNucleus.push(n);
+          }
+        }
+        return missingNucleus;
+      }
+      const missingNucleus = getMissingProjection(data);
+      if (missingNucleus.length > 0) {
+        dispatch({ type: ADD_MISSING_PROJECTION, nucleus: missingNucleus });
+      } else {
+        alert.error('Nothing to calculate');
+      }
+    }, [activeTabState, alert, data, dispatch]);
+
     return (
       <div style={styles.container}>
         <div style={{ overflow: 'auto' }}>
@@ -344,6 +370,19 @@ const SpectrumListPanel = memo(
                 <FaEye />
               </button>
             </ToolTip>
+            {activeSpectrum &&
+              activeTabState &&
+              activeTabState.split(',').length > 1 && (
+                <ToolTip title="Add missing projection" popupPlacement="right">
+                  <button
+                    style={styles.button}
+                    type="button"
+                    onClick={addMissingProjectionHandler}
+                  >
+                    <FaCreativeCommonsSamplingPlus />
+                  </button>
+                </ToolTip>
+              )}
           </DefaultPanelHeader>
           {SpectrumsTabs}
           {isColorPickerDisplayed ? (

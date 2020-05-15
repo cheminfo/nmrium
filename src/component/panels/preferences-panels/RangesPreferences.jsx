@@ -14,6 +14,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
 
 import ColumnFormatField from './ColumnFormatField';
@@ -58,6 +59,7 @@ const RangesPreferences = forwardRef((props, ref) => {
   const { data, preferences } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
 
   const [nucleus, setNucleus] = useState([]);
   const [settings, setSetting] = useState(null);
@@ -85,6 +87,12 @@ const RangesPreferences = forwardRef((props, ref) => {
       setSetting(integralsPreferences);
     }
   }, [preferences]);
+
+  const saveToLocalStorgate = (values) => {
+    let globalSettings = { ...settingData };
+    globalSettings = lodash.set(globalSettings, 'panels.ranges', values);
+    setSettingsData(JSON.stringify(globalSettings));
+  };
 
   const saveHandler = useCallback(
     (values, showMessage = false) => {
@@ -147,7 +155,9 @@ const RangesPreferences = forwardRef((props, ref) => {
         : field[1];
       values = lodash.set(values, keys, val);
     }
+
     saveHandler(values, true);
+    saveToLocalStorgate(values);
   };
 
   const getValue = useCallback(

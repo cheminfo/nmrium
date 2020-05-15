@@ -103,6 +103,13 @@ export class Datum2D {
   getProjection(x, y) {
     // return [{x,y},{x,y}]; or {top:{x,y}left:{x,y}}
   }
+  /** calculate the missing projection
+   * @param {string[]} nucleus
+   */
+  // eslint-disable-next-line no-unused-vars
+  getMissingProjection(nucleus) {
+    // return {[nucleus]:datum1d}
+  }
 
   toJSON() {
     return {
