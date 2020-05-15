@@ -1,18 +1,10 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useEffect, useMemo, useCallback } from 'react';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { useMemo, useCallback, useRef, useEffect } from 'react';
 
-import { useDispatch } from '../context/DispatchContext';
-import {
-  HighlightedRowStyle,
-  ConstantlyHighlightedRowStyle,
-} from '../elements/ReactTable/Style';
-import Select from '../elements/Select';
-import { useHighlight } from '../highlight';
-import { DELETE_RANGE, CHANGE_RANGE_DATA } from '../reducer/types/Types';
+import ContextMenu from '../elements/ContextMenu';
 
-import { SignalKinds } from './constants/SignalsKinds';
+import RangesTableRow from './RangesTableRow';
 
 const tableStyle = css`
   border-spacing: 0;
@@ -48,136 +40,40 @@ const tableStyle = css`
   }
 `;
 
-const selectStyle = {
-  marginLeft: 2,
-  marginRight: 2,
-  border: 'none',
-  height: '20px',
-};
+const RangesTable = ({
+  rangesData,
+  onChangeKind,
+  onDelete,
+  onAssign,
+  context,
+  preferences,
+  element,
+}) => {
+  const contextRef = useRef();
 
-const RangesTableRow = ({ rowData }) => {
-  const dispatch = useDispatch();
-
-  const highlight = useHighlight([
-    Object.prototype.hasOwnProperty.call(rowData, 'id') ? rowData.id : '',
-  ]);
-
-  const changeRangeSignalKindHandler = useCallback(
-    (value) => {
-      const _data = { ...rowData.original, kind: value };
-      dispatch({
-        type: CHANGE_RANGE_DATA,
-        data: _data,
-      });
-    },
-    [rowData, dispatch],
-  );
-
-  const deleteRangeHandler = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dispatch({
-        type: DELETE_RANGE,
-        rangeID: rowData.id,
-      });
-    },
-    [rowData, dispatch],
-  );
-
-  return (
-    <tr
-      css={
-        highlight.isActive
-          ? HighlightedRowStyle
-          : Object.prototype.hasOwnProperty.call(
-              rowData,
-              'isConstantlyHighlighted',
-            ) && rowData.isConstantlyHighlighted === true
-          ? ConstantlyHighlightedRowStyle
-          : null
-      }
-      {...highlight.onHover}
-    >
-      <td
-        rowSpan={rowData.rowSpan}
-        style={rowData.hide === true ? { display: 'none' } : null}
-      >
-        {rowData.index}
-      </td>
-      <td>
-        {rowData.signal.multiplicity === 's' || rowData.signal.j
-          ? rowData.signal.delta.toFixed(3)
-          : `${rowData.from.toFixed(2)} - ${rowData.to.toFixed(2)}`}
-      </td>
-      <td
-        rowSpan={rowData.rowSpan}
-        style={rowData.hide === true ? { display: 'none' } : null}
-      >
-        {rowData.kind === 'signal'
-          ? rowData.integral.toFixed(2)
-          : `[${rowData.integral.toFixed(2)}]`}
-      </td>
-      <td
-        rowSpan={rowData.rowSpan}
-        style={rowData.hide === true ? { display: 'none' } : null}
-      >
-        {rowData.absolute.toFixed(1)}
-      </td>
-      <td>{rowData.signal.multiplicity}</td>
-      <td>
-        {rowData.signal.j
-          ? rowData.signal.j
-              .map((coupling) => coupling.coupling.toFixed(1))
-              .join(', ')
-          : ''}
-      </td>
-      <td
-        rowSpan={rowData.rowSpan}
-        style={rowData.hide === true ? { display: 'none' } : null}
-      >
-        <Select
-          onChange={(value) => changeRangeSignalKindHandler(value)}
-          data={SignalKinds}
-          defaultValue={rowData.kind}
-          style={selectStyle}
-        />
-      </td>
-      <td
-        rowSpan={rowData.rowSpan}
-        style={rowData.hide === true ? { display: 'none' } : null}
-      >
-        <button
-          type="button"
-          className="delete-button"
-          onClick={(e) => deleteRangeHandler(e)}
-        >
-          <FaRegTrashAlt />
-        </button>
-      </td>
-    </tr>
-  );
-};
-
-const RangesTable = ({ rangesData, element }) => {
   const data = useMemo(() => {
-    const temp = JSON.parse(JSON.stringify(rangesData));
-    if (temp.length > 0) {
-      if (temp[1].signal.length === 1) {
-        temp[1].signal.push(temp[2].signal[0]);
-        // temp[1].signal.push(temp[1].signal[0]);
-      }
-    }
+    // const temp = JSON.parse(JSON.stringify(rangesData));
+    // if (temp.length > 0) {
+    //   if (temp[1].signal.length === 1) {
+    //     temp[1].signal.push(temp[2].signal[0]);
+    //   }
+    //   if (temp[3].signal.length === 1) {
+    //     temp[3].signal.push(temp[4].signal[0]);
+    //     temp[3].signal.push(temp[4].signal[0]);
+    //   }
+    // }
 
     const _rangesData = [];
-    // rangesData.forEach((range, i) => {
-    temp.forEach((range, i) => {
+    rangesData.forEach((range, i) => {
+      // temp.forEach((range, i) => {
       if (range.signal.length <= 1) {
         _rangesData.push({
           ...range,
-          signal: range.signal[0],
-          index: i + 1,
-          original: range,
+          tableMetaInfo: {
+            ...range.tableMetaInfo,
+            signal: range.signal[0],
+            index: i + 1,
+          },
         });
       } else {
         range.signal.forEach((signal, j) => {
@@ -199,12 +95,14 @@ const RangesTable = ({ rangesData, element }) => {
 
           _rangesData.push({
             ...range,
-            signal,
-            rowSpan,
-            // position,
-            hide,
-            index: i + 1,
-            original: range,
+            tableMetaInfo: {
+              ...range.tableMetaInfo,
+              signal,
+              rowSpan,
+              // position,
+              hide,
+              index: i + 1,
+            },
           });
         });
       }
@@ -213,9 +111,24 @@ const RangesTable = ({ rangesData, element }) => {
     return _rangesData;
   }, [rangesData]);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  const getShowPreference = (showPreference) => {
+    return preferences
+      ? Object.prototype.hasOwnProperty.call(preferences, showPreference) &&
+          preferences[showPreference] === true
+      : false;
+  };
+
+  const contextMenuHandler = useCallback(
+    (e, rowData) => {
+      e.preventDefault();
+      contextRef.current.handleContextMenu(e, rowData.original);
+    },
+    [contextRef],
+  );
+
+  //   useEffect(() => {
+  //     console.log(data);
+  //   }, [data]);
 
   return (
     <div>
@@ -223,11 +136,14 @@ const RangesTable = ({ rangesData, element }) => {
         <tbody>
           <tr>
             <th>#</th>
+            {getShowPreference('showFrom') ? <th>From</th> : null}
+            {getShowPreference('showTo') ? <th>To</th> : null}
             <th>δ (ppm)</th>
-            <th>Rel. {element}</th>
-            <th>Absolute</th>
+            {getShowPreference('showRelative') ? <th>Rel. {element}</th> : null}
+            {getShowPreference('showAbsolute') ? <th>Absolute</th> : null}
             <th>Mult</th>
             <th>J (Hz)</th>
+            <th>Linked</th>
             <th>Kind</th>
             <th>{''}</th>
           </tr>
@@ -235,14 +151,20 @@ const RangesTable = ({ rangesData, element }) => {
             data.map((range, i) => {
               return (
                 <RangesTableRow
-                  rowData={data[i]}
                   // eslint-disable-next-line react/no-array-index-key
                   key={`rangesTableRow${i}`}
+                  rowData={data[i]}
+                  onChangeKind={onChangeKind}
+                  onDelete={onDelete}
+                  onAssign={onAssign}
+                  onContextMenu={(e) => contextMenuHandler(e, data[i])}
+                  preferences={preferences}
                 />
               );
             })}
         </tbody>
       </table>
+      <ContextMenu ref={contextRef} context={context} />
     </div>
   );
 };

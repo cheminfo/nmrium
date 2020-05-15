@@ -8,9 +8,9 @@ const integralDefaultValues = {
 };
 
 const rangeDefaultValues = {
-  showFrom: true,
+  showFrom: false,
   fromFormat: '0.00',
-  showTo: true,
+  showTo: false,
   toFormat: '0.00',
   showAbsolute: false,
   absoluteFormat: '0.00',
