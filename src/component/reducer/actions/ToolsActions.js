@@ -421,7 +421,7 @@ const setActiveTab = (draft, dataGroupByTab, tab) => {
       } else {
         if (dataGroupByTab[tab].length === 2) {
           const FTSpectrums = dataGroupByTab[tab].filter((d) => !d.info.isFid);
-          if (FTSpectrums) {
+          if (FTSpectrums && FTSpectrums.length > 0) {
             const index = draft.data.findIndex(
               (datum) => datum.id === FTSpectrums[0].id,
             );
