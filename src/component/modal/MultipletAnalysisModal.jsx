@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { X } from 'ml-spectra-processing';
+import { xGetFromToIndex } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 import { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
@@ -117,7 +117,7 @@ const MultipletAnalysisModal = ({
       const from = scaleX().invert(startX);
       const to = scaleX().invert(endX);
 
-      const { fromIndex, toIndex } = X.getFromToIndex(x, {
+      const { fromIndex, toIndex } = xGetFromToIndex(x, {
         from,
         to,
       });

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { X } from 'ml-spectra-processing';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useContext, useCallback } from 'react';
 
 import { BrushContext } from '../EventsTrackers/BrushTracker';
@@ -48,7 +48,7 @@ const FooterBanner = () => {
   const getYValue = useCallback(
     (xPosition) => {
       if (activeSpectrum) {
-        const xIndex = X.findClosestIndex(
+        const xIndex = xFindClosestIndex(
           data[activeSpectrum.index].x,
           scaleX().invert(xPosition),
         );

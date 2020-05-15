@@ -1,6 +1,6 @@
 import { extent } from 'd3';
 import { produce } from 'immer';
-import { XY } from 'ml-spectra-processing';
+import { xyIntegral } from 'ml-spectra-processing';
 
 import { Datum2D } from '../../../data/data2d/Datum2D';
 import { getXScale } from '../../1d/utilities/scale';
@@ -55,7 +55,7 @@ const addIntegral = (state, action) => {
       if (values.length === 1) {
         const { from, to } = values[0];
         const { x, y } = draft.data[index];
-        const integralResult = XY.integral(
+        const integralResult = xyIntegral(
           { x: x, y: y },
           {
             from: from,
