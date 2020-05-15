@@ -1,4 +1,4 @@
-import { XY } from 'ml-spectra-processing';
+import { xyReduce } from 'ml-spectra-processing';
 import React, { useMemo, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
@@ -20,7 +20,7 @@ const Left1DChart = memo(({ margin: marignValue, data }) => {
       const scaleY = get1DYScale(yDomains[data.id], height, marignValue);
 
       const { x, y } = data;
-      const pathPoints = XY.reduce(
+      const pathPoints = xyReduce(
         { x, y },
         {
           from: yDomain[0],

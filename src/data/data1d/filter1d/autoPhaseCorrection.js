@@ -1,4 +1,4 @@
-import { ReIm } from 'ml-spectra-processing';
+import { reimAutoPhaseCorrection } from 'ml-spectra-processing';
 
 export const id = 'autoPhaseCorrection';
 export const name = 'automatic phase correction';
@@ -17,7 +17,7 @@ export function apply(datum1D, options = {}) {
   }
   let { minRegSize = 256 } = options;
 
-  return ReIm.autoPhaseCorrection(datum1D.data, { minRegSize });
+  return reimAutoPhaseCorrection(datum1D.data, { minRegSize });
 }
 
 export function isApplicable(datum1D) {

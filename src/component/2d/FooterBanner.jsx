@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { X } from 'ml-spectra-processing';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useContext, useMemo, Fragment } from 'react';
 import { MF } from 'react-mf';
 
@@ -133,7 +133,7 @@ const FooterBanner = ({ layout, data1D }) => {
     }
 
     if (index != null) {
-      const xIndex = X.findClosestIndex(
+      const xIndex = xFindClosestIndex(
         data1D[index].x,
         scaleX.invert(cordinate),
       );

@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import { X } from 'ml-spectra-processing';
+import { xGetFromToIndex } from 'ml-spectra-processing';
 import React, { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
@@ -136,7 +136,7 @@ const RangesTablePanel = memo(() => {
 
       if (_data) {
         const { from, to } = value;
-        const { fromIndex, toIndex } = X.getFromToIndex(_data.x, {
+        const { fromIndex, toIndex } = xGetFromToIndex(_data.x, {
           from,
           to,
         });

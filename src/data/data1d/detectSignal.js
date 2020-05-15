@@ -1,8 +1,8 @@
-import { X } from 'ml-spectra-processing';
+import { xGetFromToIndex } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 
 const detectSignal = (x, re, from, to, frequency) => {
-  const { fromIndex, toIndex } = X.getFromToIndex(x, {
+  const { fromIndex, toIndex } = xGetFromToIndex(x, {
     from: from,
     to: to,
   });

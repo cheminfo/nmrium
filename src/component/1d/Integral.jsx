@@ -1,4 +1,4 @@
-import { XY } from 'ml-spectra-processing';
+import { xyReduce, xyIntegral } from 'ml-spectra-processing';
 import React, {
   useEffect,
   useState,
@@ -36,7 +36,7 @@ const Integral = ({
   }, [preferences]);
 
   useEffect(() => {
-    const integralResult = XY.integral(
+    const integralResult = xyIntegral(
       { x: x, y: y },
       {
         from: from,
@@ -49,7 +49,7 @@ const Integral = ({
 
   const makePath = useCallback(() => {
     if (integral && scaleY) {
-      const pathPoints = XY.reduce(integral, {
+      const pathPoints = xyReduce(integral, {
         from: xDomain[0],
         to: xDomain[1],
         nbPoints: 200,

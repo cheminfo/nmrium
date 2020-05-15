@@ -1,4 +1,4 @@
-import { XY } from 'ml-spectra-processing';
+import { xyReduce } from 'ml-spectra-processing';
 import React, { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
@@ -26,7 +26,7 @@ export const Line = ({ x, y, id, display, index }) => {
 
   const paths = useMemo(() => {
     if (x && y) {
-      const pathPoints = XY.reduce(
+      const pathPoints = xyReduce(
         { x, y },
         {
           from: xDomain[0],
