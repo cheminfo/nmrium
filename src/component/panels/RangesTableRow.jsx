@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { FaRegTrashAlt, FaLink } from 'react-icons/fa';
 
 import {
@@ -24,13 +24,15 @@ const RangesTableRow = ({
   rowData,
   onChangeKind,
   onDelete,
-  onAssign,
+  onUnlink,
   onContextMenu,
   preferences,
 }) => {
   const highlight = useHighlight([
     Object.prototype.hasOwnProperty.call(rowData, 'id') ? rowData.id : '',
   ]);
+
+  const [showUnlinkButton, setShowUnlinkButton] = useState(false);
 
   const rowSpanTags = useMemo(() => {
     return {
@@ -42,6 +44,13 @@ const RangesTableRow = ({
           : null,
     };
   }, [rowData.tableMetaInfo]);
+
+  const stopPropagationOnClickTag = {
+    onClick: (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    },
+  };
 
   const getOriginal = useCallback(() => {
     const _rowData = Object.assign({}, rowData);
@@ -75,7 +84,7 @@ const RangesTableRow = ({
     <tr
       onContextMenu={onContextMenu}
       css={
-        highlight.isActive
+        highlight.isActive || highlight.isActivePermanently
           ? HighlightedRowStyle
           : Object.prototype.hasOwnProperty.call(
               rowData.tableMetaInfo,
@@ -85,6 +94,7 @@ const RangesTableRow = ({
           : null
       }
       {...highlight.onHover}
+      {...highlight.onClick}
     >
       <td {...rowSpanTags}>{rowData.tableMetaInfo.index}</td>
       {getShowPreference('showFrom') ? (
@@ -128,16 +138,24 @@ const RangesTableRow = ({
               .join(', ')
           : ''}
       </td>
-      <td {...rowSpanTags}>
-        <button
-          type="button"
-          className="unlink-button"
-          onClick={() => onAssign(getOriginal())}
-        >
-          <FaLink />
-        </button>
+      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
+        {showUnlinkButton || highlight.isActivePermanently ? (
+          <button
+            type="button"
+            className="unlink-button"
+            onClick={() => {
+              setShowUnlinkButton(false);
+              if (highlight.isActivePermanently) {
+                highlight.click();
+              }
+              onUnlink(getOriginal());
+            }}
+          >
+            <FaLink color={highlight.isActivePermanently ? 'grey' : 'black'} />
+          </button>
+        ) : null}
       </td>
-      <td {...rowSpanTags}>
+      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
         <SelectUncontrolled
           onChange={(value) => {
             onChangeKind(value, getOriginal());
@@ -147,11 +165,11 @@ const RangesTableRow = ({
           style={selectStyle}
         />
       </td>
-      <td {...rowSpanTags}>
+      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
         <button
           type="button"
           className="delete-button"
-          onClick={(e) => onDelete(e, getOriginal())}
+          onClick={() => onDelete(getOriginal())}
         >
           <FaRegTrashAlt />
         </button>

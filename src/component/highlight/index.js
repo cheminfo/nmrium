@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useContext,
   useCallback,
+  useEffect,
 } from 'react';
 
 const highlightContext = createContext();
@@ -11,28 +12,71 @@ const highlightContext = createContext();
 function highlightReducer(state, action) {
   switch (action.type) {
     case 'SHOW': {
-      const newState = { ...state, highlights: { ...state.highlights } };
+      const newState = {
+        ...state,
+        highlights: { ...state.highlights },
+      };
       for (const value of action.payload) {
-        if (value in newState.highlights) {
-          newState.highlights[value]++;
-        } else {
+        if (!(value in newState.highlights)) {
+          //   newState.highlights[value]++;
+          // } else {
           newState.highlights[value] = 1;
+          // }
         }
       }
       newState.highlighted = Object.keys(newState.highlights);
       return newState;
     }
     case 'HIDE': {
-      const newState = { ...state, highlights: { ...state.highlights } };
+      const newState = {
+        ...state,
+        highlights: { ...state.highlights },
+      };
       for (const value of action.payload) {
         if (value in newState.highlights) {
-          newState.highlights[value]--;
-          if (newState.highlights[value] === 0) {
-            delete newState.highlights[value];
-          }
+          // newState.highlights[value]--;
+          // if (newState.highlights[value] === 0) {
+          delete newState.highlights[value];
+          // }
         }
       }
       newState.highlighted = Object.keys(newState.highlights);
+      return newState;
+    }
+    case 'ADD_PERMANENT': {
+      const newState = {
+        ...state,
+        highlightsPermanently: { ...state.highlightsPermanently },
+      };
+      for (const value of action.payload) {
+        if (!(value in newState.highlightsPermanently)) {
+          //   newState.highlights[value]++;
+          // } else {
+          newState.highlightsPermanently[value] = 1;
+          // }
+        }
+      }
+      newState.highlightedPermanently = Object.keys(
+        newState.highlightsPermanently,
+      );
+      return newState;
+    }
+    case 'DELETE_PERMANENT': {
+      const newState = {
+        ...state,
+        highlightsPermanently: { ...state.highlightsPermanently },
+      };
+      for (const value of action.payload) {
+        if (value in newState.highlightsPermanently) {
+          // newState.highlights[value]--;
+          // if (newState.highlights[value] === 0) {
+          delete newState.highlightsPermanently[value];
+          // }
+        }
+      }
+      newState.highlightedPermanently = Object.keys(
+        newState.highlightsPermanently,
+      );
       return newState;
     }
     default: {
@@ -44,6 +88,7 @@ function highlightReducer(state, action) {
 const emptyState = {
   highlights: {},
   highlighted: [],
+  highlightedPermanently: [],
 };
 
 export function HighlightProvider(props) {
@@ -61,6 +106,8 @@ export function useHighlight(highlights) {
     throw new Error('highlights must be an array');
   }
 
+  const context = useContext(highlightContext);
+
   const convertedHighlights = useMemo(() => {
     const newHighlights = [];
     for (const highlight of highlights) {
@@ -74,13 +121,32 @@ export function useHighlight(highlights) {
     return newHighlights;
   }, [highlights]);
 
-  const context = useContext(highlightContext);
+  useEffect(() => {
+    // if range deletion then also delete its highlight information -> componentWillUnmount
+    return () => {
+      context.dispatch({
+        type: 'HIDE',
+        payload: convertedHighlights,
+      });
+      context.dispatch({
+        type: 'DELETE_PERMANENT',
+        payload: convertedHighlights,
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isActive = useMemo(() => {
     return context.highlight.highlighted.some((key) =>
       convertedHighlights.includes(key),
     );
   }, [context.highlight.highlighted, convertedHighlights]);
+
+  const isActivePermanently = useMemo(() => {
+    return context.highlight.highlightedPermanently.some((key) =>
+      convertedHighlights.includes(key),
+    );
+  }, [context.highlight.highlightedPermanently, convertedHighlights]);
 
   const show = useCallback(() => {
     context.dispatch({ type: 'SHOW', payload: convertedHighlights });
@@ -90,10 +156,33 @@ export function useHighlight(highlights) {
     context.dispatch({ type: 'HIDE', payload: convertedHighlights });
   }, [context, convertedHighlights]);
 
+  const click = useCallback(() => {
+    if (!isActivePermanently) {
+      context.dispatch({ type: 'ADD_PERMANENT', payload: convertedHighlights });
+    } else {
+      context.dispatch({
+        type: 'DELETE_PERMANENT',
+        payload: convertedHighlights,
+      });
+    }
+  }, [context, convertedHighlights, isActivePermanently]);
+
   const onHover = {
     onMouseEnter: show,
     onMouseLeave: hide,
   };
 
-  return { isActive, show, hide, onHover };
+  const onClick = {
+    onClick: click,
+  };
+
+  return {
+    isActive,
+    show,
+    hide,
+    onHover,
+    onClick,
+    isActivePermanently,
+    click,
+  };
 }

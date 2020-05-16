@@ -89,9 +89,14 @@ const Range = ({ rangeData }) => {
 
   return (
     <g
-      css={highlight.isActive ? stylesHighlighted : stylesOnHover}
+      css={
+        highlight.isActive || highlight.isActivePermanently
+          ? stylesHighlighted
+          : stylesOnHover
+      }
       key={id}
       {...highlight.onHover}
+      {...highlight.onClick}
     >
       <g transform={`translate(${scaleX()(to)},10)`}>
         <rect
@@ -101,7 +106,11 @@ const Range = ({ rangeData }) => {
           className="range-area"
           fill="green"
           fillOpacity={
-            (kind && kind === 'signal') || highlight.isActive ? 1 : 0.4
+            (kind && kind === 'signal') ||
+            highlight.isActive ||
+            highlight.isActivePermanently
+              ? 1
+              : 0.4
           }
         />
         <text
@@ -111,7 +120,11 @@ const Range = ({ rangeData }) => {
           fontSize="10"
           fill="red"
           fillOpacity={
-            (kind && kind === 'signal') || highlight.isActive ? 1 : 0.6
+            (kind && kind === 'signal') ||
+            highlight.isActive ||
+            highlight.isActivePermanently
+              ? 1
+              : 0.6
           }
         >
           {integral !== undefined ? integral.toFixed(2) : ''}

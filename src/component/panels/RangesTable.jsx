@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useMemo, useCallback, useRef, useEffect } from 'react';
+import { useMemo, useCallback, useRef } from 'react';
 
 import ContextMenu from '../elements/ContextMenu';
 
@@ -44,7 +44,7 @@ const RangesTable = ({
   rangesData,
   onChangeKind,
   onDelete,
-  onAssign,
+  onUnlink,
   context,
   preferences,
   element,
@@ -156,7 +156,7 @@ const RangesTable = ({
                   rowData={data[i]}
                   onChangeKind={onChangeKind}
                   onDelete={onDelete}
-                  onAssign={onAssign}
+                  onUnlink={onUnlink}
                   onContextMenu={(e) => contextMenuHandler(e, data[i])}
                   preferences={preferences}
                 />

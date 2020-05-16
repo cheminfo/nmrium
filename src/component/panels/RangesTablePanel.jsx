@@ -69,9 +69,7 @@ const RangesTablePanel = memo(() => {
   const settingRef = useRef();
 
   const deleteRangeHandler = useCallback(
-    (e, rowData) => {
-      e.preventDefault();
-      e.stopPropagation();
+    (rowData) => {
       dispatch({
         type: DELETE_RANGE,
         rangeID: rowData.id,
@@ -176,8 +174,9 @@ const RangesTablePanel = memo(() => {
     [dispatch],
   );
 
-  // eslint-disable-next-line no-empty-function
-  const assignRangeHandler = useCallback(() => {}, []);
+  const unlinkRangeHandler = useCallback(() => {
+    // console.log('UNLINK');
+  }, []);
 
   const saveAsHTMLHandler = useCallback(() => {
     const result = getACS(data);
@@ -332,7 +331,7 @@ const RangesTablePanel = memo(() => {
                 rangesData={data}
                 onChangeKind={changeRangeSignalKindHandler}
                 onDelete={deleteRangeHandler}
-                onAssign={assignRangeHandler}
+                onUnlink={unlinkRangeHandler}
                 context={contextMenu}
                 preferences={rangesPreferences}
                 element={activeTab && activeTab.replace(/[0-9]/g, '')}
