@@ -121,7 +121,7 @@ const RangesTable = ({
   const contextMenuHandler = useCallback(
     (e, rowData) => {
       e.preventDefault();
-      contextRef.current.handleContextMenu(e, rowData.original);
+      contextRef.current.handleContextMenu(e, rowData);
     },
     [contextRef],
   );
@@ -157,7 +157,7 @@ const RangesTable = ({
                   onChangeKind={onChangeKind}
                   onDelete={onDelete}
                   onUnlink={onUnlink}
-                  onContextMenu={(e) => contextMenuHandler(e, data[i])}
+                  onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                   preferences={preferences}
                 />
               );

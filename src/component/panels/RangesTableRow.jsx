@@ -82,7 +82,7 @@ const RangesTableRow = ({
 
   return (
     <tr
-      onContextMenu={onContextMenu}
+      onContextMenu={(e) => onContextMenu(e, getOriginal())}
       css={
         highlight.isActive || highlight.isActivePermanently
           ? HighlightedRowStyle
