@@ -41,7 +41,7 @@ const tableStyle = css`
 `;
 
 const RangesTable = ({
-  rangesData,
+  tableData,
   onChangeKind,
   onDelete,
   onUnlink,
@@ -52,7 +52,7 @@ const RangesTable = ({
   const contextRef = useRef();
 
   const data = useMemo(() => {
-    // const temp = JSON.parse(JSON.stringify(rangesData));
+    // const temp = JSON.parse(JSON.stringify(tableData));
     // if (temp.length > 0) {
     //   if (temp[1].signal.length === 1) {
     //     temp[1].signal.push(temp[2].signal[0]);
@@ -64,7 +64,7 @@ const RangesTable = ({
     // }
 
     const _rangesData = [];
-    rangesData.forEach((range, i) => {
+    tableData.forEach((range, i) => {
       // temp.forEach((range, i) => {
       if (range.signal.length <= 1) {
         _rangesData.push({
@@ -109,7 +109,7 @@ const RangesTable = ({
     });
 
     return _rangesData;
-  }, [rangesData]);
+  }, [tableData]);
 
   const getShowPreference = (showPreference) => {
     return preferences

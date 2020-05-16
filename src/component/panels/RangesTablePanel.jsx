@@ -84,7 +84,16 @@ const RangesTablePanel = memo(() => {
         ? SpectrumsData[activeSpectrum.index]
         : null;
 
-    function isInRange(from, to) {
+    if (_data && _data.ranges && _data.ranges.values) {
+      setRangesCounter(_data.ranges.values.length);
+      return _data.ranges.values;
+    }
+    setRangesCounter(0);
+    return [];
+  }, [SpectrumsData, activeSpectrum]);
+
+  const tableData = useMemo(() => {
+    const isInRange = (from, to) => {
       const factor = 10000;
       to = to * factor;
       from = from * factor;
@@ -92,27 +101,23 @@ const RangesTablePanel = memo(() => {
         (to >= xDomain[0] * factor && from <= xDomain[1] * factor) ||
         (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
       );
-    }
+    };
 
-    if (_data && _data.ranges && _data.ranges.values) {
-      setRangesCounter(_data.ranges.values.length);
+    const getFilteredRanges = (ranges) => {
+      return ranges.filter((range) => isInRange(range.from, range.to));
+    };
 
-      const getFilteredRanges = (ranges = _data.ranges.values) => {
-        return ranges.filter((range) => isInRange(range.from, range.to));
+    const ranges = filterIsActive ? getFilteredRanges(data) : data;
+
+    return ranges.map((range) => {
+      return {
+        ...range,
+        tableMetaInfo: {
+          isConstantlyHighlighted: isInRange(range.from, range.to),
+        },
       };
-
-      const ranges = filterIsActive ? getFilteredRanges() : _data.ranges.values;
-
-      return ranges.map((range) => {
-        return {
-          ...range,
-          tableMetaInfo: {
-            isConstantlyHighlighted: isInRange(range.from, range.to),
-          },
-        };
-      });
-    }
-  }, [SpectrumsData, activeSpectrum, filterIsActive, xDomain]);
+    });
+  }, [data, filterIsActive, xDomain]);
 
   const saveToClipboardHandler = useCallback(
     (value) => {
@@ -287,7 +292,7 @@ const RangesTablePanel = memo(() => {
               filterIsActive ? 'Show all ranges' : 'Hide ranges out of view'
             }
             filterIsActive={filterIsActive}
-            counterFiltered={data && data.length}
+            counterFiltered={tableData && tableData.length}
             showSettingButton="true"
             onSettingClick={settingsPanelHandler}
           >
@@ -326,9 +331,9 @@ const RangesTablePanel = memo(() => {
           containerStyle={{ height: '100%' }}
         >
           <div style={!isTableVisible ? { display: 'none' } : {}}>
-            {data && data.length > 0 ? (
+            {tableData && tableData.length > 0 ? (
               <RangesTable
-                rangesData={data}
+                tableData={tableData}
                 onChangeKind={changeRangeSignalKindHandler}
                 onDelete={deleteRangeHandler}
                 onUnlink={unlinkRangeHandler}
