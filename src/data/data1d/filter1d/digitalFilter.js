@@ -1,5 +1,3 @@
-import { reimPhaseCorrection } from 'ml-spectra-processing';
-
 export const id = 'digitalFilter';
 export const name = 'Digital Filter';
 
@@ -32,11 +30,6 @@ export function apply(datum1D, options = {}) {
 
   datum1D.data.re = newRe;
   datum1D.data.im = newIm;
-
-  if (ph1 !== 0) {
-    ph1 *= Math.PI * 2;
-    Object.assign(datum1D.data, reimPhaseCorrection(datum1D.data, 0, ph1));
-  }
 }
 
 export function isApplicable(datum1D) {
