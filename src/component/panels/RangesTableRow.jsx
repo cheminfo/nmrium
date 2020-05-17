@@ -46,13 +46,10 @@ const RangesTableRow = ({
 
   useEffect(() => {
     const isLinked =
-      rowData.diaID &&
-      (rowData.diaID.length > 0 ||
-        (rowData.signal &&
-          rowData.signal.map((signal) => signal.diaID).flat().length > 0));
-    if (isLinked) {
-      setShowUnlinkButton(true);
-    }
+      (rowData.diaID && rowData.diaID.length > 0) ||
+      (rowData.signal &&
+        rowData.signal.map((signal) => signal.diaID).flat().length > 0);
+    setShowUnlinkButton(isLinked);
   }, [rowData.diaID, rowData.signal]);
 
   const rowSpanTags = useMemo(() => {
@@ -80,16 +77,26 @@ const RangesTableRow = ({
     return _rowData;
   }, [rowData]);
 
-  const handleOnUnlink = useCallback(() => {
-    setShowUnlinkButton(false);
-    if (highlight.isActivePermanently) {
-      highlight.click();
-    }
-    highlight.hide();
-    onUnlink(getOriginal());
-  }, [getOriginal, highlight, onUnlink]);
+  const handleOnUnlink = useCallback(
+    (e) => {
+      // event handling here in case of unlink button clicked
+      // because it should still be able to activate the linkage mode
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      setShowUnlinkButton(false);
+      if (highlight.isActivePermanently) {
+        highlight.click();
+      }
+      highlight.remove(highlightIDs.filter((id) => id !== rowData.id));
+      onUnlink(getOriginal());
+    },
+    [getOriginal, highlight, highlightIDs, onUnlink, rowData.id],
+  );
 
   const handleOnDelete = useCallback(() => {
+    // no manual event handling because it's already handled by stopPropagationOnClickTag
     handleOnUnlink();
     onDelete(getOriginal());
   }, [getOriginal, handleOnUnlink, onDelete]);
@@ -143,10 +150,9 @@ const RangesTableRow = ({
         </td>
       ) : null}
       <td>
-        {rowData.tableMetaInfo.signal.multiplicity === 's' ||
-        rowData.tableMetaInfo.signal.j
-          ? rowData.tableMetaInfo.signal.delta.toFixed(3)
-          : `${rowData.from.toFixed(2)} - ${rowData.to.toFixed(2)}`}
+        {rowData.tableMetaInfo.signal.multiplicity === 'm'
+          ? `${rowData.from.toFixed(2)} - ${rowData.to.toFixed(2)}`
+          : rowData.tableMetaInfo.signal.delta.toFixed(3)}
       </td>
       {getShowPreference('showRelative') ? (
         <td {...rowSpanTags}>
@@ -173,7 +179,7 @@ const RangesTableRow = ({
               .join(', ')
           : ''}
       </td>
-      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
+      <td {...rowSpanTags}>
         {showUnlinkButton || highlight.isActivePermanently ? (
           <button
             type="button"

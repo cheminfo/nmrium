@@ -140,6 +140,20 @@ export function useHighlight(highlights) {
     context.dispatch({ type: 'HIDE', payload: convertedHighlights });
   }, [context, convertedHighlights]);
 
+  const add = useCallback(
+    (id) => {
+      context.dispatch({ type: 'SHOW', payload: id });
+    },
+    [context],
+  );
+
+  const remove = useCallback(
+    (id) => {
+      context.dispatch({ type: 'HIDE', payload: id });
+    },
+    [context],
+  );
+
   const click = useCallback(() => {
     if (!isActivePermanently) {
       context.dispatch({ type: 'SET_PERMANENT', payload: convertedHighlights });
@@ -167,5 +181,7 @@ export function useHighlight(highlights) {
     onClick,
     isActivePermanently,
     click,
+    add,
+    remove,
   };
 }

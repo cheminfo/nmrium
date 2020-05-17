@@ -63,8 +63,12 @@ const Range = ({ rangeData }) => {
   const dispatch = useDispatch();
 
   const deleteRange = useCallback(() => {
+    if (highlight.isActivePermanently) {
+      highlight.click();
+    }
+    highlight.remove(highlightIDs.filter((_id) => _id !== id));
     dispatch({ type: DELETE_RANGE, rangeID: id });
-  }, [dispatch, id]);
+  }, [dispatch, highlight, highlightIDs, id]);
 
   // const handleOnStartResizing = useCallback(() => {}, []);
 
