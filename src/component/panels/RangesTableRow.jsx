@@ -1,17 +1,21 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useState } from 'react';
 import { FaRegTrashAlt, FaLink } from 'react-icons/fa';
 
-import {
-  HighlightedRowStyle,
-  ConstantlyHighlightedRowStyle,
-} from '../elements/ReactTable/Style';
 import SelectUncontrolled from '../elements/SelectUncontrolled';
 import { useHighlight } from '../highlight';
 import FormatNumber from '../utility/FormatNumber';
 
 import { SignalKinds } from './constants/SignalsKinds';
+
+const HighlightedRowStyle = css`
+  background-color: #ff6f0057;
+`;
+
+const ConstantlyHighlightedRowStyle = css`
+  background-color: #f5f5dc;
+`;
 
 const selectStyle = {
   marginLeft: 2,
@@ -151,7 +155,7 @@ const RangesTableRow = ({
               onUnlink(getOriginal());
             }}
           >
-            <FaLink color={highlight.isActivePermanently ? 'grey' : 'black'} />
+            <FaLink color={highlight.isActivePermanently ? 'blue' : 'black'} />
           </button>
         ) : null}
       </td>
