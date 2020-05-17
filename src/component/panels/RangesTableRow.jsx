@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useMemo, useCallback, useState } from 'react';
+import { useMemo, useCallback, useState, useEffect } from 'react';
 import { FaRegTrashAlt, FaLink } from 'react-icons/fa';
 
 import SelectUncontrolled from '../elements/SelectUncontrolled';
@@ -32,11 +32,28 @@ const RangesTableRow = ({
   onContextMenu,
   preferences,
 }) => {
-  const highlight = useHighlight([
-    Object.prototype.hasOwnProperty.call(rowData, 'id') ? rowData.id : '',
-  ]);
+  const highlightIDs = useMemo(() => {
+    return [].concat(
+      [rowData.id],
+      rowData.diaID ? rowData.diaID : [],
+      rowData.signal ? rowData.signal.map((signal) => signal.diaID).flat() : [],
+    );
+  }, [rowData.diaID, rowData.id, rowData.signal]);
+
+  const highlight = useHighlight(highlightIDs);
 
   const [showUnlinkButton, setShowUnlinkButton] = useState(false);
+
+  useEffect(() => {
+    const isLinked =
+      rowData.diaID &&
+      (rowData.diaID.length > 0 ||
+        (rowData.signal &&
+          rowData.signal.map((signal) => signal.diaID).flat().length > 0));
+    if (isLinked) {
+      setShowUnlinkButton(true);
+    }
+  }, [rowData.diaID, rowData.signal]);
 
   const rowSpanTags = useMemo(() => {
     return {
@@ -62,6 +79,20 @@ const RangesTableRow = ({
 
     return _rowData;
   }, [rowData]);
+
+  const handleOnUnlink = useCallback(() => {
+    setShowUnlinkButton(false);
+    if (highlight.isActivePermanently) {
+      highlight.click();
+    }
+    highlight.hide();
+    onUnlink(getOriginal());
+  }, [getOriginal, highlight, onUnlink]);
+
+  const handleOnDelete = useCallback(() => {
+    handleOnUnlink();
+    onDelete(getOriginal());
+  }, [getOriginal, handleOnUnlink, onDelete]);
 
   const getShowPreference = (showKey) => {
     return preferences
@@ -147,15 +178,9 @@ const RangesTableRow = ({
           <button
             type="button"
             className="unlink-button"
-            onClick={() => {
-              setShowUnlinkButton(false);
-              if (highlight.isActivePermanently) {
-                highlight.click();
-              }
-              onUnlink(getOriginal());
-            }}
+            onClick={handleOnUnlink}
           >
-            <FaLink color={highlight.isActivePermanently ? 'blue' : 'black'} />
+            <FaLink color={highlight.isActivePermanently ? 'grey' : 'black'} />
           </button>
         ) : null}
       </td>
@@ -173,7 +198,7 @@ const RangesTableRow = ({
         <button
           type="button"
           className="delete-button"
-          onClick={() => onDelete(getOriginal())}
+          onClick={handleOnDelete}
         >
           <FaRegTrashAlt />
         </button>

@@ -179,9 +179,19 @@ const RangesTablePanel = memo(() => {
     [dispatch],
   );
 
-  const unlinkRangeHandler = useCallback(() => {
-    // console.log('UNLINK');
-  }, []);
+  const unlinkRangeHandler = useCallback(
+    (rowData) => {
+      const _rowData = {
+        ...rowData,
+        diaID: [],
+        signal: rowData.signal.map((signal) => {
+          return { ...signal, diaID: [] };
+        }),
+      };
+      dispatch({ type: 'CHANGE_RANGE_DATA', data: _rowData });
+    },
+    [dispatch],
+  );
 
   const saveAsHTMLHandler = useCallback(() => {
     const result = getACS(data);

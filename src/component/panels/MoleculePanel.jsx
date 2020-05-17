@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import React, { useState, useCallback, useRef, useContext } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { useAlert } from 'react-alert';
 import Slider from 'react-animated-slider-2';
 import {
@@ -16,15 +16,17 @@ import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
 import 'react-animated-slider-2/build/horizontal.css';
 
-import { ChartContext } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import { useHighlightData } from '../highlight';
 import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
 import {
   ADD_MOLECULE,
   DELETE_MOLECULE,
   SET_MOLECULE,
+  CHANGE_RANGE_DATA,
 } from '../reducer/types/Types';
 import {
   copyTextToClipboard,
@@ -109,7 +111,60 @@ const MoleculePanel = () => {
   const dispatch = useDispatch();
   const alert = useAlert();
 
-  const { molecules } = useContext(ChartContext);
+  const { data: spectrumData, activeSpectrum, molecules } = useChartData();
+
+  const highlightData = useHighlightData();
+
+  const rangesData = useMemo(() => {
+    const _data =
+      activeSpectrum && spectrumData
+        ? spectrumData[activeSpectrum.index]
+        : null;
+
+    if (_data && _data.ranges && _data.ranges.values) {
+      return _data.ranges.values;
+    }
+    return [];
+  }, [activeSpectrum, spectrumData]);
+
+  const handleOnClickAtom = useCallback(
+    (atom) => {
+      if (atom && atom.oclID) {
+        if (
+          highlightData.highlight.highlightedPermanently &&
+          highlightData.highlight.highlightedPermanently.length > 0
+        ) {
+          const range = rangesData.filter((_range) =>
+            highlightData.highlight.highlightedPermanently.includes(_range.id),
+          )[0];
+
+          // determine the level of setting the diaID array: range vs. signal level
+          const _range =
+            range.signal &&
+            range.signal.length > 0 &&
+            range.signal[0].multiplicity === 'm'
+              ? {
+                  ...range,
+                  diaID: [atom.oclID],
+                  signal: [{ ...range.signal[0], diaID: [] }],
+                }
+              : {
+                  ...range,
+                  diaID: [],
+                  signal: range.signal.map((signal) => {
+                    return { ...signal, diaID: [atom.oclID] };
+                  }),
+                };
+
+          dispatch({ type: CHANGE_RANGE_DATA, data: _range });
+
+          setCurrentAtom(atom);
+          highlightData.dispatch({ type: 'UNSET_PERMANENT' });
+        }
+      }
+    },
+    [dispatch, highlightData, rangesData],
+  );
 
   const handleClose = useCallback(
     (e) => {
@@ -236,8 +291,14 @@ const MoleculePanel = () => {
                     setMolfile={(molfile) =>
                       handleReplaceMolecule(mol.key, molfile)
                     }
-                    setSelectedAtom={(atom) => setCurrentAtom(atom)}
-                    highlights={[]}
+                    setSelectedAtom={(atom) => handleOnClickAtom(atom)}
+                    highlights={
+                      highlightData &&
+                      highlightData.highlight &&
+                      highlightData.highlight.highlighted
+                        ? highlightData.highlight.highlighted
+                        : []
+                    }
                   />
                 </div>
                 <p>

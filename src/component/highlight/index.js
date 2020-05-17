@@ -82,12 +82,16 @@ export function HighlightProvider(props) {
   );
 }
 
+export function useHighlightData() {
+  return useContext(highlightContext);
+}
+
 export function useHighlight(highlights) {
   if (!Array.isArray(highlights)) {
     throw new Error('highlights must be an array');
   }
 
-  const context = useContext(highlightContext);
+  const context = useHighlightData();
 
   const convertedHighlights = useMemo(() => {
     const newHighlights = [];

@@ -1,6 +1,6 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
@@ -47,8 +47,17 @@ const stylesHighlighted = css`
 `;
 
 const Range = ({ rangeData }) => {
-  const { id, from, to, integral, kind } = rangeData;
-  const highlight = useHighlight([id]);
+  const { id, from, to, integral, kind, diaID, signal } = rangeData;
+
+  const highlightIDs = useMemo(() => {
+    return [].concat(
+      [id],
+      diaID ? diaID : [],
+      signal ? signal.map((_signal) => _signal.diaID).flat() : [],
+    );
+  }, [diaID, id, signal]);
+
+  const highlight = useHighlight(highlightIDs);
 
   const { scaleX } = useScale();
   const dispatch = useDispatch();
