@@ -52,20 +52,8 @@ const RangesTable = ({
   const contextRef = useRef();
 
   const data = useMemo(() => {
-    // const temp = JSON.parse(JSON.stringify(tableData));
-    // if (temp.length > 0) {
-    //   if (temp[1].signal.length === 1) {
-    //     temp[1].signal.push(temp[2].signal[0]);
-    //   }
-    //   if (temp[3].signal.length === 1) {
-    //     temp[3].signal.push(temp[4].signal[0]);
-    //     temp[3].signal.push(temp[4].signal[0]);
-    //   }
-    // }
-
     const _rangesData = [];
     tableData.forEach((range, i) => {
-      // temp.forEach((range, i) => {
       if (range.signal.length <= 1) {
         _rangesData.push({
           ...range,
@@ -77,19 +65,15 @@ const RangesTable = ({
         });
       } else {
         range.signal.forEach((signal, j) => {
-          //   let position = null;
           let hide = false;
           let rowSpan = null;
           if (j < range.signal.length - 1) {
             if (j === 0) {
-              //   position = 'top';
               rowSpan = range.signal.length;
             } else {
-              //   position = 'middle';
               hide = true;
             }
           } else {
-            //   position = 'bottom';
             hide = true;
           }
 
@@ -99,7 +83,6 @@ const RangesTable = ({
               ...range.tableMetaInfo,
               signal,
               rowSpan,
-              // position,
               hide,
               index: i + 1,
             },
@@ -125,10 +108,6 @@ const RangesTable = ({
     },
     [contextRef],
   );
-
-  //   useEffect(() => {
-  //     console.log(data);
-  //   }, [data]);
 
   return (
     <div>
