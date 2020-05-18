@@ -90,6 +90,17 @@ export class Datum1D {
     FiltersManager.reapplyFilters(this);
   }
 
+  applyFilterSnapshot(id) {
+    if (id) {
+      const index = this.filters.findIndex((f) => f.id === id);
+      const filters = this.filters.slice(0, index + 1);
+      FiltersManager.reapplyFilters(this, filters);
+    } else {
+      //close filter snapshot mode and replay all enabled filters
+      FiltersManager.reapplyFilters(this);
+    }
+  }
+
   preprocessing() {
     if (
       this.info.isFid &&

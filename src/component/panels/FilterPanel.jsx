@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, memo } from 'react';
+import React, { useMemo, useCallback, memo, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 
@@ -13,7 +13,11 @@ import {
   TableRow,
 } from '../elements/Table';
 import ConnectToContext from '../hoc/ConnectToContext';
-import { ENABLE_FILTER, DELETE_FILTER } from '../reducer/types/Types';
+import {
+  ENABLE_FILTER,
+  DELETE_FILTER,
+  SET_FILTER_SNAPSHOT,
+} from '../reducer/types/Types';
 
 import NoTableData from './placeholder/NoTableData';
 
@@ -24,10 +28,16 @@ const styles = {
     height: 25,
     width: 25,
   },
+  active: {
+    backgroundColor: '#fbfbfb',
+    borderTop: '1px solid #817066',
+    borderBottom: '1px solid #817066',
+  },
 };
 const FilterPanel = memo(({ data, activeSpectrum }) => {
   // const { data, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
+  const [selectedFilterID, setSelectedFilter] = useState();
 
   const handelFilterCheck = useCallback(
     (id, checked) => {
@@ -41,6 +51,16 @@ const FilterPanel = memo(({ data, activeSpectrum }) => {
     },
     [dispatch],
   );
+  const filterSnapShotHandler = useCallback(
+    (newID) => {
+      setSelectedFilter((prevId) => {
+        const id = prevId === newID ? null : newID;
+        dispatch({ type: SET_FILTER_SNAPSHOT, id });
+        return id;
+      });
+    },
+    [dispatch],
+  );
   const filtersTableRow = useMemo(() => {
     const _data =
       data && activeSpectrum && data.find((d) => d.id === activeSpectrum.id);
@@ -49,12 +69,18 @@ const FilterPanel = memo(({ data, activeSpectrum }) => {
       _data &&
       _data.filters &&
       _data.filters.map((d) => (
-        <TableRow key={d.id}>
+        <TableRow
+          key={d.id}
+          onClick={() => filterSnapShotHandler(d.id)}
+          style={d.id === selectedFilterID ? { ...styles.active } : {}}
+        >
           <TableCell align="center" size="2">
             {d.label}
           </TableCell>
           <TableCell align="left" size="3">
-            <ObjectInspector data={d.error ? d.error : d.value} />
+            <div onClick={(e) => e.stopPropagation()}>
+              <ObjectInspector data={d.error ? d.error : d.value} />
+            </div>
           </TableCell>
           <TableCell align="center" vAlign="center" size="1">
             <CheckBox
@@ -74,7 +100,14 @@ const FilterPanel = memo(({ data, activeSpectrum }) => {
         </TableRow>
       ))
     );
-  }, [activeSpectrum, data, handelDeleteFilter, handelFilterCheck]);
+  }, [
+    activeSpectrum,
+    data,
+    filterSnapShotHandler,
+    handelDeleteFilter,
+    handelFilterCheck,
+    selectedFilterID,
+  ]);
 
   return filtersTableRow && filtersTableRow.length > 0 ? (
     <Table>

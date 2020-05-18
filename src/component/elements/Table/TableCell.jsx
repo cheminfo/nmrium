@@ -21,6 +21,7 @@ const TableHeader = ({
   align = 'center',
   vAlign = 'center',
   size = 1,
+  onClick,
 }) => {
   return (
     <div
@@ -32,10 +33,15 @@ const TableHeader = ({
         flex: size,
         ...style,
       }}
+      onClick={onClick}
     >
       {children}
     </div>
   );
+};
+
+TableHeader.defaultProps = {
+  onClick: () => null,
 };
 
 export default TableHeader;

@@ -1,11 +1,11 @@
 import { produce } from 'immer';
 
+import { Datum2D } from '../../../data/data2d/Datum2D';
 import { AnalysisObj } from '../core/Analysis';
 // import { DISPLAYER_MODE } from '../core/Constants';
 // import Spectrum2DProcessing from '../core/Spectrum2DProcessing';
 
 import { setDomain, setMode } from './DomainActions';
-import { Datum2D } from '../../../data/data2d/Datum2D';
 
 function setVisible(datum, flag) {
   if (datum.info.dimension === 2) {
