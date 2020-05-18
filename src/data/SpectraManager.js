@@ -39,6 +39,8 @@ export function addJDF(spectra, jdf, options = {}) {
   let converted = fromJEOL(jdf, {});
   let dimensions = converted.dimensions;
   let info = converted.description;
+  let metadata = info.metadata;
+  console.log(metadata);
 
   let newInfo = {
     acquisitionMode: 0,
@@ -48,7 +50,7 @@ export function addJDF(spectra, jdf, options = {}) {
     experiment: dimensions.length === 1 ? '1d' : '2d',
     expno: 'NA',
     frequency: info.frequency[0].magnitude / 1000000,
-    isComplex: true,
+    isComplex: converted.dependentVariables[0].numericType === 'complex128',
     isFid: info.dataUnits[0] === 'Second',
     isFt: info.dataUnits[0] === 'Ppm',
     nucleus: info.nucleus[0],
@@ -74,7 +76,6 @@ export function addJDF(spectra, jdf, options = {}) {
           ...options,
           display: { ...options.display, color },
           info: newInfo,
-          meta: info.metadata,
         }),
       );
       usedcolors1D.push(color);
