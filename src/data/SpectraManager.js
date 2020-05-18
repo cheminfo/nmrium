@@ -76,6 +76,7 @@ export function addJDF(spectra, jdf, options = {}) {
           ...options,
           display: { ...options.display, color },
           info: newInfo,
+          meta: metadata,
         }),
       );
       usedcolors1D.push(color);

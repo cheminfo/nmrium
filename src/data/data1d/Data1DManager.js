@@ -37,7 +37,7 @@ export class Data1DManager {
 
     const datum1D = new Datum1D({
       ...options,
-      meta: result.meta,
+      meta: options.meta,
       data,
       source: {
         jcamp: null,
