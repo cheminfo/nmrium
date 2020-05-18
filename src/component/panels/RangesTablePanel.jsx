@@ -3,7 +3,7 @@ import { xGetFromToIndex } from 'ml-spectra-processing';
 import React, { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
-import { FaFileExport } from 'react-icons/fa';
+import { FaFileExport, FaUnlink } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 
 import { useChartData } from '../context/ChartContext';
@@ -37,6 +37,16 @@ const styles = {
     marginTop: '3px',
     color: 'white',
     backgroundColor: '#6d6d6d',
+    border: 'none',
+    height: '16px',
+    width: '18px',
+    fontSize: '12px',
+    padding: 0,
+  },
+  removeAssignmentsButton: {
+    borderRadius: '5px',
+    marginTop: '3px',
+    marginLeft: '2px',
     border: 'none',
     height: '16px',
     width: '18px',
@@ -169,26 +179,26 @@ const RangesTablePanel = memo(() => {
   }, [modal]);
 
   const changeRangeSignalKindHandler = useCallback(
-    (value, rowData) => {
-      const _data = { ...rowData, kind: value };
+    (value, range) => {
+      const _range = { ...range, kind: value };
       dispatch({
         type: CHANGE_RANGE_DATA,
-        data: _data,
+        data: _range,
       });
     },
     [dispatch],
   );
 
   const unlinkRangeHandler = useCallback(
-    (rowData) => {
-      const _rowData = {
-        ...rowData,
+    (range) => {
+      const _range = {
+        ...range,
         diaID: [],
-        signal: rowData.signal.map((signal) => {
+        signal: range.signal.map((signal) => {
           return { ...signal, diaID: [] };
         }),
       };
-      dispatch({ type: 'CHANGE_RANGE_DATA', data: _rowData });
+      dispatch({ type: 'CHANGE_RANGE_DATA', data: _range });
     },
     [dispatch],
   );
@@ -225,7 +235,7 @@ const RangesTablePanel = memo(() => {
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted,Are You sure?', {
+    modal.showConfirmDialog('All records will be deleted. Are You sure?', {
       onYes: yesHandler,
     });
   }, [modal, yesHandler]);
@@ -263,6 +273,16 @@ const RangesTablePanel = memo(() => {
       />,
     );
   }, [activeTab, changeRangesSumHandler, currentSum, modal, molecules]);
+
+  const removeAssignments = useCallback(() => {
+    data.forEach((range) => unlinkRangeHandler(range));
+  }, [data, unlinkRangeHandler]);
+
+  const handleOnRemoveAssignments = useCallback(() => {
+    modal.showConfirmDialog('All assignments will be removed. Are you sure?', {
+      onYes: removeAssignments,
+    });
+  }, [removeAssignments, modal]);
 
   const handleOnFilter = useCallback(() => {
     setFilterIsActive(!filterIsActive);
@@ -325,6 +345,16 @@ const RangesTablePanel = memo(() => {
                 onClick={showChangeRangesSumModal}
               >
                 Σ
+              </button>
+            </ToolTip>
+            <ToolTip title={`Remove all Assignments`} popupPlacement="right">
+              <button
+                style={styles.removeAssignmentsButton}
+                type="button"
+                onClick={handleOnRemoveAssignments}
+                disabled={!data || data.length === 0}
+              >
+                <FaUnlink />
               </button>
             </ToolTip>
           </DefaultPanelHeader>

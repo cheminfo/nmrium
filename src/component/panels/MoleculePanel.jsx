@@ -105,13 +105,17 @@ const MoleculePanel = () => {
   const [open, setOpen] = React.useState(false);
   const [currentMolfile, setCurrentMolfile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
-  // eslint-disable-next-line no-unused-vars
-  const [currentAtom, setCurrentAtom] = useState(null);
+  const [currentAtomOnHover, setCurrentAtomOnHover] = useState(null);
 
   const dispatch = useDispatch();
   const alert = useAlert();
 
-  const { data: spectrumData, activeSpectrum, molecules } = useChartData();
+  const {
+    data: spectrumData,
+    activeSpectrum,
+    molecules,
+    activeTab,
+  } = useChartData();
 
   const highlightData = useHighlightData();
 
@@ -127,17 +131,35 @@ const MoleculePanel = () => {
     return [];
   }, [activeSpectrum, spectrumData]);
 
+  const element = useMemo(() => activeTab && activeTab.replace(/[0-9]/g, ''), [
+    activeTab,
+  ]);
+
+  const getOclIDs = useCallback(
+    (atom) => {
+      return element && Object.keys(atom).length > 0
+        ? element === atom.atomLabel // take always oclID if atom type is same as element of activeTab
+          ? [atom.oclID]
+          : element === 'H' // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
+          ? atom.hydrogenOCLIDs
+          : []
+        : [];
+    },
+    [element],
+  );
+
   const handleOnClickAtom = useCallback(
     (atom) => {
-      if (atom && atom.oclID) {
-        if (
-          highlightData.highlight.highlightedPermanently &&
-          highlightData.highlight.highlightedPermanently.length > 0
-        ) {
-          const range = rangesData.filter((_range) =>
-            highlightData.highlight.highlightedPermanently.includes(_range.id),
-          )[0];
+      if (
+        highlightData.highlight.highlightedPermanently &&
+        highlightData.highlight.highlightedPermanently.length > 0
+      ) {
+        const range = rangesData.find((_range) =>
+          highlightData.highlight.highlightedPermanently.includes(_range.id),
+        );
+        const _oclIDs = getOclIDs(atom);
 
+        if (_oclIDs.length > 0) {
           // determine the level of setting the diaID array: range vs. signal level
           const _range =
             range.signal &&
@@ -145,25 +167,75 @@ const MoleculePanel = () => {
             range.signal[0].multiplicity === 'm'
               ? {
                   ...range,
-                  diaID: [atom.oclID],
+                  diaID: _oclIDs,
                   signal: [{ ...range.signal[0], diaID: [] }],
                 }
               : {
                   ...range,
                   diaID: [],
                   signal: range.signal.map((signal) => {
-                    return { ...signal, diaID: [atom.oclID] };
+                    return { ...signal, diaID: _oclIDs };
                   }),
                 };
 
           dispatch({ type: CHANGE_RANGE_DATA, data: _range });
 
-          setCurrentAtom(atom);
           highlightData.dispatch({ type: 'UNSET_PERMANENT' });
+        } else {
+          alert.info(
+            'Not assigned! Different atom type or no attached hydrogens found!',
+          );
         }
       }
     },
-    [dispatch, highlightData, rangesData],
+    [alert, dispatch, getOclIDs, highlightData, rangesData],
+  );
+
+  const diaIDs = useMemo(() => {
+    return rangesData.map((_range) => {
+      return {
+        rangeID: _range.id,
+        diaID: [].concat(
+          _range.diaID ? _range.diaID.flat() : [],
+          _range.signal
+            ? _range.signal.map((_signal) => _signal.diaID).flat()
+            : [],
+        ),
+      };
+    });
+  }, [rangesData]);
+
+  const handleOnHoverAtom = useCallback(
+    (atom) => {
+      const _oclIDs = getOclIDs(atom);
+      const filtered =
+        Object.keys(atom).length > 0
+          ? diaIDs.find((_range) =>
+              _range.diaID.some((id) => _oclIDs.includes(id)),
+            )
+          : null;
+      const rangeID = filtered
+        ? filtered.rangeID
+        : currentAtomOnHover
+        ? currentAtomOnHover.rangeID
+        : null;
+      if (rangeID) {
+        if (Object.keys(atom).length > 0) {
+          highlightData.dispatch({
+            type: 'SHOW',
+            payload: [rangeID],
+          });
+          setCurrentAtomOnHover({ ...atom, rangeID: rangeID });
+        } else {
+          highlightData.dispatch({
+            type: 'HIDE',
+            payload: [rangeID],
+          });
+          setCurrentAtomOnHover(null);
+        }
+      }
+    },
+    [currentAtomOnHover, diaIDs, getOclIDs, highlightData],
   );
 
   const handleClose = useCallback(
@@ -291,14 +363,16 @@ const MoleculePanel = () => {
                     setMolfile={(molfile) =>
                       handleReplaceMolecule(mol.key, molfile)
                     }
-                    setSelectedAtom={(atom) => handleOnClickAtom(atom)}
+                    setSelectedAtom={handleOnClickAtom}
                     highlights={
+                      !currentAtomOnHover &&
                       highlightData &&
                       highlightData.highlight &&
                       highlightData.highlight.highlighted
                         ? highlightData.highlight.highlighted
                         : []
                     }
+                    setHoverAtom={handleOnHoverAtom}
                   />
                 </div>
                 <p>
