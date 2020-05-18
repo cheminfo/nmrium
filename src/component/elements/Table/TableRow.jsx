@@ -5,12 +5,20 @@ const styles = {
   display: 'flex',
   padding: '5px 0px',
 };
-const TableHeader = ({ children, className, style }) => {
+const TableHeader = ({ children, className, style, onClick }) => {
   return (
-    <div className={className} style={{ ...styles, ...style }}>
+    <div
+      className={className}
+      style={{ ...styles, ...style }}
+      onClick={onClick}
+    >
       {children}
     </div>
   );
+};
+
+TableHeader.defaultProps = {
+  onClick: () => null,
 };
 
 export default TableHeader;

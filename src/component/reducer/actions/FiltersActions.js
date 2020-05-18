@@ -208,6 +208,21 @@ const handleBaseLineCorrectionFilter = (state, action) => {
   });
 };
 
+const filterSnapshotHandler = (state, action) => {
+  return produce(state, (draft) => {
+    if (state.activeSpectrum && state.activeSpectrum.id) {
+      const { id } = state.activeSpectrum;
+      const activeObject = AnalysisObj.getDatum(id);
+
+      activeObject.applyFilterSnapshot(action.id);
+
+      setDataByFilters(draft, activeObject, id);
+      setDomain(draft);
+      setMode(draft);
+    }
+  });
+};
+
 export {
   shiftSpectrumAlongXAxis,
   applyZeroFillingFilter,
@@ -218,4 +233,5 @@ export {
   enableFilter,
   deleteFilter,
   handleBaseLineCorrectionFilter,
+  filterSnapshotHandler,
 };

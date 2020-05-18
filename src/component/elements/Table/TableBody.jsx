@@ -13,7 +13,7 @@ const TableBody = ({ children, className, style }) => {
     <div className={className} style={{ ...styles, style }}>
       {React.Children.map(children, (child) =>
         React.cloneElement(child, {
-          style: { borderBottom: '0.55px solid #d8d8d8' },
+          style: { borderBottom: '0.55px solid #d8d8d8', ...child.props.style },
         }),
       )}
     </div>

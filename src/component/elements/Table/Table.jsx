@@ -9,7 +9,7 @@ const styles = {
 };
 const Table = ({ children, className, style }) => {
   return (
-    <div className={className} style={{ ...styles, style }}>
+    <div className={className} style={{ ...styles, ...style }}>
       {children}
     </div>
   );
