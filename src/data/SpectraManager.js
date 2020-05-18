@@ -36,17 +36,63 @@ export function addJcamp(spectra, jcamp, options = {}) {
 
 export function addJDF(spectra, jdf, options = {}) {
   // need to parse the jcamp
-  console.log(jdf);
-  let converted = fromJEOL(jdf);
-  console.log(converted);
+  let converted = fromJEOL(jdf, {});
+  let dimensions = converted.dimensions;
+  let info = converted.description;
 
-  let entries = converted.flatten;
-  if (entries.length === 0) return;
-  // Should be improved when we have a more complex case
-  for (let entry of entries) {
-    if ((entry.spectra && entry.spectra.length > 0) || entry.minMax) {
-      addJcampSS(spectra, entry, options);
+  let newInfo = {
+    acquisitionMode: 0,
+    bf1: info.field.magnitude,
+    date: converted.timeStamp,
+    dimension: dimensions.length, //info.dataDimension
+    experiment: dimensions.length === 1 ? '1d' : '2d',
+    expno: 'NA',
+    frequency: info.frequency[0].magnitude / 1000000,
+    isComplex: true,
+    isFid: info.dataUnits[0] === 'Second',
+    isFt: info.dataUnits[0] === 'Ppm',
+    nucleus: info.nucleus[0],
+    numberOfPoints: info.dataPoints[0],
+    probe: info.probeId,
+    pulse: info.experiment,
+    sfo1: info.frequency[0].magnitude / 1000000,
+    solvent: info.solvent,
+    spectralWidth: info.spectralWidth[0].magnitude / info.field.magnitude,
+    temperature: info.temperature.magnitude,
+    title: info.title,
+    type: 'NMR SPECTRUM',
+    digitalFilter: info.digitalFilter,
+  };
+
+  console.log(newInfo);
+  if (info.dataDimension === 1) {
+    let usedcolors1D = [];
+    if (converted.dependentVariables) {
+      const color = getColor(usedcolors1D);
+      spectra.push(
+        Data1DManager.fromCSD(converted, {
+          ...options,
+          display: { ...options.display, color },
+          info: newInfo,
+          meta: info.metadata,
+        }),
+      );
+      usedcolors1D.push(color);
     }
+  }
+  if (info.dimension === 2 && info.isFt) {
+    let usedcolors2d = [];
+    const positiveColor = getColor(false, usedcolors2d);
+    const negativeColor = adjustAlpha(positiveColor, 50);
+    usedcolors2d.push(positiveColor);
+
+    spectra.push(
+      Data2DManager.fromCSD(converted, {
+        ...options,
+        display: { ...options.display, positiveColor, negativeColor },
+        info,
+      }),
+    );
   }
 }
 

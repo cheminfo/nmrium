@@ -24,6 +24,31 @@ export class Data1DManager {
     return datum1D;
   };
 
+  static fromCSD = function fromCSD(result, options = {}) {
+    //const { info } = options;
+    //info.isComplex = true;
+    let data;
+    //if (info.isComplex === true) {
+    data = getComplexData(result.dependentVariables[0].components[0]);
+    //}
+    let scale = getScale(result.dimensions[0]);
+
+    data.x = scale;
+
+    const datum1D = new Datum1D({
+      ...options,
+      meta: result.meta,
+      data,
+      source: {
+        jcamp: null,
+        jcampURL: null,
+        original: data,
+      },
+    });
+    console.log(datum1D);
+    return datum1D;
+  };
+
   static fromParsedJcamp = function fromParsedJcamp(parsedJcamp, options = {}) {
     let data = getData(parsedJcamp.spectra);
     let info = getInfoFromMetaData(parsedJcamp.info);
@@ -64,4 +89,29 @@ function getData(spectra) {
     if (im) im.reverse();
   }
   return { x, re, im };
+}
+
+function getComplexData(buffer) {
+  let x = [];
+  let re = [];
+  let im = [];
+  for (let i = buffer.length - 1; i > 0; i -= 2) {
+    re.push(buffer[i - 1]);
+    im.push(buffer[i]);
+    x.push(i);
+  }
+  return { re, im };
+}
+
+function getScale(dimension) {
+  let n = dimension.count;
+  let origin = dimension.originOffset.magnitude;
+  let offset = dimension.coordinatesOffset.magnitude;
+  let x0 = 0 + (offset / origin) * 1000000;
+  let i = (dimension.increment.magnitude / origin) * 1000000;
+  let scale = [];
+  for (let x = 0; x < n; x++) {
+    scale.push(x0 + x * i);
+  }
+  return scale;
 }

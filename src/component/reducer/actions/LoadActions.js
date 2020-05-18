@@ -63,7 +63,7 @@ const loadJDFFile = (state, files) => {
     const filesLength = files.length;
     for (let i = 0; i < filesLength; i++) {
       const color = getColor(false, usedColors);
-      AnalysisObj.addJDF(files[i].binary.toString(), {
+      AnalysisObj.addJDF(files[i].binary, {
         display: {
           name: files[i].name,
           color: color,

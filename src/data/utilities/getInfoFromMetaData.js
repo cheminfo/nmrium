@@ -99,6 +99,7 @@ export function getInfoFromMetaData(metaData) {
   if (metaData.$DATE) {
     info.date = new Date(metaData.$DATE * 1000).toISOString();
   }
+  console.log(info);
   return info;
 }
 
