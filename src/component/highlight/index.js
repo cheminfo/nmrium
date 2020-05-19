@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useContext,
   useCallback,
+  useEffect,
 } from 'react';
 
 const highlightContext = createContext();
@@ -11,28 +12,52 @@ const highlightContext = createContext();
 function highlightReducer(state, action) {
   switch (action.type) {
     case 'SHOW': {
-      const newState = { ...state, highlights: { ...state.highlights } };
+      const newState = {
+        ...state,
+        highlights: { ...state.highlights },
+      };
       for (const value of action.payload) {
-        if (value in newState.highlights) {
-          newState.highlights[value]++;
-        } else {
+        if (!(value in newState.highlights)) {
+          //   newState.highlights[value]++;
+          // } else {
           newState.highlights[value] = 1;
+          // }
         }
       }
       newState.highlighted = Object.keys(newState.highlights);
       return newState;
     }
     case 'HIDE': {
-      const newState = { ...state, highlights: { ...state.highlights } };
+      const newState = {
+        ...state,
+        highlights: { ...state.highlights },
+      };
       for (const value of action.payload) {
         if (value in newState.highlights) {
-          newState.highlights[value]--;
-          if (newState.highlights[value] === 0) {
-            delete newState.highlights[value];
-          }
+          // newState.highlights[value]--;
+          // if (newState.highlights[value] === 0) {
+          delete newState.highlights[value];
+          // }
         }
       }
       newState.highlighted = Object.keys(newState.highlights);
+      return newState;
+    }
+    case 'SET_PERMANENT': {
+      const newState = {
+        ...state,
+        // allow just one permanent highlights group at same time
+        highlightedPermanently: action.payload,
+      };
+
+      return newState;
+    }
+    case 'UNSET_PERMANENT': {
+      const newState = {
+        ...state,
+        highlightedPermanently: [],
+      };
+
       return newState;
     }
     default: {
@@ -44,6 +69,7 @@ function highlightReducer(state, action) {
 const emptyState = {
   highlights: {},
   highlighted: [],
+  highlightedPermanently: [],
 };
 
 export function HighlightProvider(props) {
@@ -56,10 +82,16 @@ export function HighlightProvider(props) {
   );
 }
 
+export function useHighlightData() {
+  return useContext(highlightContext);
+}
+
 export function useHighlight(highlights) {
   if (!Array.isArray(highlights)) {
     throw new Error('highlights must be an array');
   }
+
+  const context = useHighlightData();
 
   const convertedHighlights = useMemo(() => {
     const newHighlights = [];
@@ -74,13 +106,31 @@ export function useHighlight(highlights) {
     return newHighlights;
   }, [highlights]);
 
-  const context = useContext(highlightContext);
+  useEffect(() => {
+    // if range deletion then also delete its highlight information -> componentWillUnmount
+    return () => {
+      context.dispatch({
+        type: 'HIDE',
+        payload: convertedHighlights,
+      });
+      context.dispatch({
+        type: 'UNSET_PERMANENT',
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isActive = useMemo(() => {
     return context.highlight.highlighted.some((key) =>
       convertedHighlights.includes(key),
     );
   }, [context.highlight.highlighted, convertedHighlights]);
+
+  const isActivePermanently = useMemo(() => {
+    return context.highlight.highlightedPermanently.some((key) =>
+      convertedHighlights.includes(key),
+    );
+  }, [context.highlight.highlightedPermanently, convertedHighlights]);
 
   const show = useCallback(() => {
     context.dispatch({ type: 'SHOW', payload: convertedHighlights });
@@ -90,10 +140,48 @@ export function useHighlight(highlights) {
     context.dispatch({ type: 'HIDE', payload: convertedHighlights });
   }, [context, convertedHighlights]);
 
+  const add = useCallback(
+    (id) => {
+      context.dispatch({ type: 'SHOW', payload: id });
+    },
+    [context],
+  );
+
+  const remove = useCallback(
+    (id) => {
+      context.dispatch({ type: 'HIDE', payload: id });
+    },
+    [context],
+  );
+
+  const click = useCallback(() => {
+    if (!isActivePermanently) {
+      context.dispatch({ type: 'SET_PERMANENT', payload: convertedHighlights });
+    } else {
+      context.dispatch({
+        type: 'UNSET_PERMANENT',
+      });
+    }
+  }, [context, convertedHighlights, isActivePermanently]);
+
   const onHover = {
     onMouseEnter: show,
     onMouseLeave: hide,
   };
 
-  return { isActive, show, hide, onHover };
+  const onClick = {
+    onClick: click,
+  };
+
+  return {
+    isActive,
+    show,
+    hide,
+    onHover,
+    onClick,
+    isActivePermanently,
+    click,
+    add,
+    remove,
+  };
 }

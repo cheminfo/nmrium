@@ -218,6 +218,20 @@ const IntegralTablePanel = memo(() => {
         ? SpectrumsData[activeSpectrum.index]
         : null;
 
+    if (
+      _data &&
+      _data.info.dimension === 1 &&
+      _data.integrals &&
+      _data.integrals.values
+    ) {
+      setIntegralsCounter(_data.integrals.values.length);
+      return _data.integrals.values;
+    }
+    setIntegralsCounter(0);
+    return [];
+  }, [SpectrumsData, activeSpectrum]);
+
+  const tableData = useMemo(() => {
     function isInRange(from, to) {
       const factor = 10000;
       to = to * factor;
@@ -228,28 +242,17 @@ const IntegralTablePanel = memo(() => {
       );
     }
 
-    if (
-      _data &&
-      _data.info.dimension === 1 &&
-      _data.integrals &&
-      _data.integrals.values
-    ) {
-      setIntegralsCounter(_data.integrals.values.length);
+    const integrals = filterIsActive
+      ? data.filter((integral) => isInRange(integral.from, integral.to))
+      : data;
 
-      const integrals = filterIsActive
-        ? _data.integrals.values.filter((integral) =>
-            isInRange(integral.from, integral.to),
-          )
-        : _data.integrals.values;
-
-      return integrals.map((integral) => {
-        return {
-          ...integral,
-          isConstantlyHighlighted: isInRange(integral.from, integral.to),
-        };
-      });
-    }
-  }, [SpectrumsData, activeSpectrum, filterIsActive, xDomain]);
+    return integrals.map((integral) => {
+      return {
+        ...integral,
+        isConstantlyHighlighted: isInRange(integral.from, integral.to),
+      };
+    });
+  }, [data, filterIsActive, xDomain]);
 
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_INTEGRAL, integralID: null });
@@ -335,7 +338,7 @@ const IntegralTablePanel = memo(() => {
                 : 'Hide integrals out of view'
             }
             filterIsActive={filterIsActive}
-            counterFiltered={data && data.length}
+            counterFiltered={tableData && tableData.length}
             showSettingButton="true"
             onSettingClick={settingsPanelHandler}
           >
@@ -366,8 +369,8 @@ const IntegralTablePanel = memo(() => {
           containerStyle={{ height: '100%' }}
         >
           <div style={!isTableVisible ? { display: 'none' } : {}}>
-            {data && data.length > 0 ? (
-              <ReactTable data={data} columns={tableColumns} />
+            {tableData && tableData.length > 0 ? (
+              <ReactTable data={tableData} columns={tableColumns} />
             ) : (
               <NoTableData />
             )}

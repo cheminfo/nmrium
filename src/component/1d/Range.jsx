@@ -1,6 +1,6 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
@@ -47,15 +47,28 @@ const stylesHighlighted = css`
 `;
 
 const Range = ({ rangeData }) => {
-  const { id, from, to, integral, kind } = rangeData;
-  const highlight = useHighlight([id]);
+  const { id, from, to, integral, kind, diaID, signal } = rangeData;
+
+  const highlightIDs = useMemo(() => {
+    return [].concat(
+      [id],
+      diaID ? diaID : [],
+      signal ? signal.map((_signal) => _signal.diaID).flat() : [],
+    );
+  }, [diaID, id, signal]);
+
+  const highlight = useHighlight(highlightIDs);
 
   const { scaleX } = useScale();
   const dispatch = useDispatch();
 
   const deleteRange = useCallback(() => {
+    if (highlight.isActivePermanently) {
+      highlight.click();
+    }
+    highlight.remove(highlightIDs.filter((_id) => _id !== id));
     dispatch({ type: DELETE_RANGE, rangeID: id });
-  }, [dispatch, id]);
+  }, [dispatch, highlight, highlightIDs, id]);
 
   // const handleOnStartResizing = useCallback(() => {}, []);
 
@@ -89,9 +102,14 @@ const Range = ({ rangeData }) => {
 
   return (
     <g
-      css={highlight.isActive ? stylesHighlighted : stylesOnHover}
+      css={
+        highlight.isActive || highlight.isActivePermanently
+          ? stylesHighlighted
+          : stylesOnHover
+      }
       key={id}
       {...highlight.onHover}
+      {...highlight.onClick}
     >
       <g transform={`translate(${scaleX()(to)},10)`}>
         <rect
@@ -101,7 +119,11 @@ const Range = ({ rangeData }) => {
           className="range-area"
           fill="green"
           fillOpacity={
-            (kind && kind === 'signal') || highlight.isActive ? 1 : 0.4
+            (kind && kind === 'signal') ||
+            highlight.isActive ||
+            highlight.isActivePermanently
+              ? 1
+              : 0.4
           }
         />
         <text
@@ -111,7 +133,11 @@ const Range = ({ rangeData }) => {
           fontSize="10"
           fill="red"
           fillOpacity={
-            (kind && kind === 'signal') || highlight.isActive ? 1 : 0.6
+            (kind && kind === 'signal') ||
+            highlight.isActive ||
+            highlight.isActivePermanently
+              ? 1
+              : 0.6
           }
         >
           {integral !== undefined ? integral.toFixed(2) : ''}

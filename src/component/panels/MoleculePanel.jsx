@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import React, { useState, useCallback, useRef, useContext } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { useAlert } from 'react-alert';
 import Slider from 'react-animated-slider-2';
 import {
@@ -16,15 +16,17 @@ import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
 import 'react-animated-slider-2/build/horizontal.css';
 
-import { ChartContext } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import { useHighlightData } from '../highlight';
 import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
 import {
   ADD_MOLECULE,
   DELETE_MOLECULE,
   SET_MOLECULE,
+  CHANGE_RANGE_DATA,
 } from '../reducer/types/Types';
 import {
   copyTextToClipboard,
@@ -103,13 +105,159 @@ const MoleculePanel = () => {
   const [open, setOpen] = React.useState(false);
   const [currentMolfile, setCurrentMolfile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
-  // eslint-disable-next-line no-unused-vars
-  const [currentAtom, setCurrentAtom] = useState(null);
+  const [currentAtomOnHover, setCurrentAtomOnHover] = useState(null);
 
   const dispatch = useDispatch();
   const alert = useAlert();
 
-  const { molecules } = useContext(ChartContext);
+  const {
+    data: spectrumData,
+    activeSpectrum,
+    molecules,
+    activeTab,
+  } = useChartData();
+
+  const highlightData = useHighlightData();
+
+  const rangesData = useMemo(() => {
+    const _data =
+      activeSpectrum && spectrumData
+        ? spectrumData[activeSpectrum.index]
+        : null;
+
+    if (_data && _data.ranges && _data.ranges.values) {
+      return _data.ranges.values;
+    }
+    return [];
+  }, [activeSpectrum, spectrumData]);
+
+  const element = useMemo(() => activeTab && activeTab.replace(/[0-9]/g, ''), [
+    activeTab,
+  ]);
+
+  const getOclIDs = useCallback(
+    (atom) => {
+      return element && Object.keys(atom).length > 0
+        ? element === atom.atomLabel // take always oclID if atom type is same as element of activeTab
+          ? [atom.oclID]
+          : element === 'H' // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
+          ? atom.hydrogenOCLIDs
+          : []
+        : [];
+    },
+    [element],
+  );
+
+  const handleOnClickAtom = useCallback(
+    (atom) => {
+      if (
+        highlightData.highlight.highlightedPermanently &&
+        highlightData.highlight.highlightedPermanently.length > 0
+      ) {
+        const range = rangesData.find((_range) =>
+          highlightData.highlight.highlightedPermanently.includes(_range.id),
+        );
+        const _oclIDs = getOclIDs(atom);
+
+        if (_oclIDs.length > 0) {
+          // determine the level of setting the diaID array (range vs. signal level) and save there
+          let _range = { ...range };
+          if (range.signal && range.signal.length > 0) {
+            range.signal.forEach((signal, i) => {
+              if (signal.multiplicity === 'm') {
+                _range.diaID = _range.diaID.concat(_oclIDs);
+              } else {
+                _range.signal[i] = {
+                  ..._range.signal[i],
+                  diaID: _range.signal[i].diaID.concat(_oclIDs),
+                };
+              }
+            });
+          }
+
+          dispatch({ type: CHANGE_RANGE_DATA, data: _range });
+        } else {
+          alert.info(
+            'Not assigned! Different atom type or no attached hydrogens found!',
+          );
+        }
+      }
+    },
+    [alert, dispatch, getOclIDs, highlightData, rangesData],
+  );
+
+  const diaIDs = useMemo(() => {
+    return rangesData.map((_range) => {
+      return {
+        rangeID: _range.id,
+        diaID: [].concat(
+          _range.diaID ? _range.diaID.flat() : [],
+          _range.signal
+            ? _range.signal.map((_signal) => _signal.diaID).flat()
+            : [],
+        ),
+      };
+    });
+  }, [rangesData]);
+
+  const assignedAtomHighlights = useMemo(() => {
+    return diaIDs.map((diaID) => diaID.diaID).flat();
+  }, [diaIDs]);
+
+  const currentRangeOnHover = useMemo(() => {
+    return diaIDs.find((_range) =>
+      _range.diaID.some((id) =>
+        highlightData.highlight.highlighted.includes(id),
+      ),
+    );
+  }, [diaIDs, highlightData.highlight.highlighted]);
+
+  const handleOnHoverAtom = useCallback(
+    (atom) => {
+      const _oclIDs = getOclIDs(atom);
+      const filtered =
+        Object.keys(atom).length > 0
+          ? diaIDs.find((_range) =>
+              _range.diaID.some((id) => _oclIDs.includes(id)),
+            )
+          : null;
+      const rangeID = filtered
+        ? filtered.rangeID
+        : currentAtomOnHover
+        ? currentAtomOnHover.rangeID
+        : null;
+
+      if (rangeID) {
+        if (Object.keys(atom).length > 0) {
+          highlightData.dispatch({
+            type: 'SHOW',
+            payload: [rangeID],
+          });
+          setCurrentAtomOnHover({ ...atom, rangeID: rangeID });
+        } else {
+          highlightData.dispatch({
+            type: 'HIDE',
+            payload: [rangeID],
+          });
+          setCurrentAtomOnHover(null);
+        }
+      }
+    },
+    [currentAtomOnHover, diaIDs, getOclIDs, highlightData],
+  );
+
+  const handleOnUnlinkAll = useCallback(() => {
+    rangesData.forEach((range) => {
+      const _range = {
+        ...range,
+        diaID: [],
+        signal: range.signal.map((signal) => {
+          return { ...signal, diaID: [] };
+        }),
+      };
+      dispatch({ type: 'CHANGE_RANGE_DATA', data: _range });
+    });
+  }, [dispatch, rangesData]);
 
   const handleClose = useCallback(
     (e) => {
@@ -140,8 +288,10 @@ const MoleculePanel = () => {
     if (molecules[currentIndex] && molecules[currentIndex].key) {
       setCurrentIndex(0);
       dispatch({ type: DELETE_MOLECULE, key: molecules[currentIndex].key });
+
+      handleOnUnlinkAll();
     }
-  }, [dispatch, molecules, currentIndex]);
+  }, [molecules, currentIndex, dispatch, handleOnUnlinkAll]);
 
   const saveAsSVGHandler = useCallback(() => {
     exportAsSVG('molFile', `molSVG${currentIndex}`);
@@ -166,8 +316,10 @@ const MoleculePanel = () => {
   const handleReplaceMolecule = useCallback(
     (key, molfile) => {
       dispatch({ type: SET_MOLECULE, molfile, key });
+
+      handleOnUnlinkAll();
     },
-    [dispatch],
+    [dispatch, handleOnUnlinkAll],
   );
 
   return (
@@ -236,8 +388,31 @@ const MoleculePanel = () => {
                     setMolfile={(molfile) =>
                       handleReplaceMolecule(mol.key, molfile)
                     }
-                    setSelectedAtom={(atom) => setCurrentAtom(atom)}
-                    highlights={[]}
+                    setSelectedAtom={handleOnClickAtom}
+                    atomHighlightColor={
+                      highlightData.highlight &&
+                      highlightData.highlight.highlighted &&
+                      highlightData.highlight.highlighted.length > 0 &&
+                      currentRangeOnHover &&
+                      highlightData.highlight.highlighted.includes(
+                        currentRangeOnHover.rangeID,
+                      )
+                        ? 'red'
+                        : '#FFD700'
+                    }
+                    atomHighlightOpacity={0.35}
+                    highlights={
+                      currentRangeOnHover
+                        ? currentRangeOnHover.diaID
+                        : highlightData &&
+                          highlightData.highlight &&
+                          highlightData.highlight.highlighted
+                        ? assignedAtomHighlights.concat(
+                            highlightData.highlight.highlighted,
+                          )
+                        : assignedAtomHighlights
+                    }
+                    setHoverAtom={handleOnHoverAtom}
                   />
                 </div>
                 <p>

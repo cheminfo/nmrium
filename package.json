@@ -45,7 +45,7 @@
     "react-jsgraph": "^2.0.0",
     "react-mf": "^1.2.1",
     "react-ocl": "^4.2.0",
-    "react-ocl-nmr": "^0.1.1",
+    "react-ocl-nmr": "^0.1.5",
     "react-split-pane": "^0.1.91",
     "react-table": "7.0.0-rc.15",
     "react-use": "^14.2.0",

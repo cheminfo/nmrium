@@ -94,7 +94,9 @@ const DefaultPanelHeader = memo(
 
         <p style={styles.counterLabel}>
           [{' '}
-          {filterIsActive && filterIsActive === true && counterFiltered
+          {filterIsActive &&
+          filterIsActive === true &&
+          counterFiltered !== undefined
             ? `${counterFiltered}/${counter}`
             : counter}{' '}
           ]
