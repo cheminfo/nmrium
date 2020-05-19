@@ -44,7 +44,8 @@ export function addJDF(spectra, jdf, options = {}) {
 
   let newInfo = {
     acquisitionMode: 0,
-    bf1: info.field.magnitude,
+    bf1: info.frequency[0].magnitude / 1e6,
+    field: metadata.baseFreq,
     date: converted.timeStamp,
     dimension: dimensions.length, //info.dataDimension
     experiment: dimensions.length === 1 ? '1d' : '2d',
@@ -57,9 +58,16 @@ export function addJDF(spectra, jdf, options = {}) {
     numberOfPoints: info.dataPoints[0],
     probe: info.probeId,
     pulse: info.experiment,
-    sfo1: info.frequency[0].magnitude / 1000000,
+    offset:
+      (info.frequencyOffset[0].magnitude / 1e6) * info.frequency[0].magnitude,
+    sfo1:
+      (info.frequency[0].magnitude +
+        (info.frequencyOffset[0].magnitude * info.frequency[0].magnitude) /
+          1e6) /
+      1e6,
     solvent: info.solvent,
-    spectralWidth: info.spectralWidth[0].magnitude / info.field.magnitude,
+    spectralWidth:
+      (info.spectralWidth[0].magnitude / info.frequency[0].magnitude) * 1e6,
     temperature: info.temperature.magnitude,
     title: info.title,
     type: 'NMR SPECTRUM',
