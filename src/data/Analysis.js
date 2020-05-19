@@ -152,6 +152,17 @@ export class Analysis {
     this.spectra.push(object);
   }
 
+  createProjection(id2d, options = {}) {
+    const { horizontal = true, vertical = true } = options;
+    let spectrum2d = this.getDatum(id2d);
+    if (!spectrum2d) return;
+
+    let result = {};
+    if (horizontal) result.horizontal = new Datum1D();
+    if (vertical) result.horizontal = new Datum1D();
+    return result;
+  }
+
   getDatum(id) {
     return this.spectra.find((ob) => ob.id === id);
   }
