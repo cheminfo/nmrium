@@ -38,7 +38,7 @@ const RangesTableRow = ({
       rowData.diaID ? rowData.diaID : [],
       rowData.signal ? rowData.signal.map((signal) => signal.diaID).flat() : [],
     );
-  }, [rowData.diaID, rowData.id, rowData.signal]);
+  }, [rowData]);
 
   const highlight = useHighlight(highlightIDs);
 
@@ -50,7 +50,7 @@ const RangesTableRow = ({
       (rowData.signal &&
         rowData.signal.map((signal) => signal.diaID).flat().length > 0);
     setShowUnlinkButton(isLinked);
-  }, [rowData.diaID, rowData.signal]);
+  }, [rowData]);
 
   const rowSpanTags = useMemo(() => {
     return {

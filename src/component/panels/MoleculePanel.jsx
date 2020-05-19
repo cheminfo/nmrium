@@ -160,27 +160,22 @@ const MoleculePanel = () => {
         const _oclIDs = getOclIDs(atom);
 
         if (_oclIDs.length > 0) {
-          // determine the level of setting the diaID array: range vs. signal level
-          const _range =
-            range.signal &&
-            range.signal.length > 0 &&
-            range.signal[0].multiplicity === 'm'
-              ? {
-                  ...range,
-                  diaID: _oclIDs,
-                  signal: [{ ...range.signal[0], diaID: [] }],
-                }
-              : {
-                  ...range,
-                  diaID: [],
-                  signal: range.signal.map((signal) => {
-                    return { ...signal, diaID: _oclIDs };
-                  }),
+          // determine the level of setting the diaID array (range vs. signal level) and save there
+          let _range = { ...range };
+          if (range.signal && range.signal.length > 0) {
+            range.signal.forEach((signal, i) => {
+              if (signal.multiplicity === 'm') {
+                _range.diaID = _range.diaID.concat(_oclIDs);
+              } else {
+                _range.signal[i] = {
+                  ..._range.signal[i],
+                  diaID: _range.signal[i].diaID.concat(_oclIDs),
                 };
+              }
+            });
+          }
 
           dispatch({ type: CHANGE_RANGE_DATA, data: _range });
-
-          highlightData.dispatch({ type: 'UNSET_PERMANENT' });
         } else {
           alert.info(
             'Not assigned! Different atom type or no attached hydrogens found!',
@@ -205,6 +200,18 @@ const MoleculePanel = () => {
     });
   }, [rangesData]);
 
+  const assignedAtomHighlights = useMemo(() => {
+    return diaIDs.map((diaID) => diaID.diaID).flat();
+  }, [diaIDs]);
+
+  const currentRangeOnHover = useMemo(() => {
+    return diaIDs.find((_range) =>
+      _range.diaID.some((id) =>
+        highlightData.highlight.highlighted.includes(id),
+      ),
+    );
+  }, [diaIDs, highlightData.highlight.highlighted]);
+
   const handleOnHoverAtom = useCallback(
     (atom) => {
       const _oclIDs = getOclIDs(atom);
@@ -219,6 +226,7 @@ const MoleculePanel = () => {
         : currentAtomOnHover
         ? currentAtomOnHover.rangeID
         : null;
+
       if (rangeID) {
         if (Object.keys(atom).length > 0) {
           highlightData.dispatch({
@@ -237,6 +245,19 @@ const MoleculePanel = () => {
     },
     [currentAtomOnHover, diaIDs, getOclIDs, highlightData],
   );
+
+  const handleOnUnlinkAll = useCallback(() => {
+    rangesData.forEach((range) => {
+      const _range = {
+        ...range,
+        diaID: [],
+        signal: range.signal.map((signal) => {
+          return { ...signal, diaID: [] };
+        }),
+      };
+      dispatch({ type: 'CHANGE_RANGE_DATA', data: _range });
+    });
+  }, [dispatch, rangesData]);
 
   const handleClose = useCallback(
     (e) => {
@@ -267,8 +288,10 @@ const MoleculePanel = () => {
     if (molecules[currentIndex] && molecules[currentIndex].key) {
       setCurrentIndex(0);
       dispatch({ type: DELETE_MOLECULE, key: molecules[currentIndex].key });
+
+      handleOnUnlinkAll();
     }
-  }, [dispatch, molecules, currentIndex]);
+  }, [molecules, currentIndex, dispatch, handleOnUnlinkAll]);
 
   const saveAsSVGHandler = useCallback(() => {
     exportAsSVG('molFile', `molSVG${currentIndex}`);
@@ -293,8 +316,10 @@ const MoleculePanel = () => {
   const handleReplaceMolecule = useCallback(
     (key, molfile) => {
       dispatch({ type: SET_MOLECULE, molfile, key });
+
+      handleOnUnlinkAll();
     },
-    [dispatch],
+    [dispatch, handleOnUnlinkAll],
   );
 
   return (
@@ -364,13 +389,28 @@ const MoleculePanel = () => {
                       handleReplaceMolecule(mol.key, molfile)
                     }
                     setSelectedAtom={handleOnClickAtom}
-                    highlights={
-                      !currentAtomOnHover &&
-                      highlightData &&
+                    atomHighlightColor={
                       highlightData.highlight &&
-                      highlightData.highlight.highlighted
-                        ? highlightData.highlight.highlighted
-                        : []
+                      highlightData.highlight.highlighted &&
+                      highlightData.highlight.highlighted.length > 0 &&
+                      currentRangeOnHover &&
+                      highlightData.highlight.highlighted.includes(
+                        currentRangeOnHover.rangeID,
+                      )
+                        ? 'red'
+                        : '#FFD700'
+                    }
+                    atomHighlightOpacity={0.35}
+                    highlights={
+                      currentRangeOnHover
+                        ? currentRangeOnHover.diaID
+                        : highlightData &&
+                          highlightData.highlight &&
+                          highlightData.highlight.highlighted
+                        ? assignedAtomHighlights.concat(
+                            highlightData.highlight.highlighted,
+                          )
+                        : assignedAtomHighlights
                     }
                     setHoverAtom={handleOnHoverAtom}
                   />
