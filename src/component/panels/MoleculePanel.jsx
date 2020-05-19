@@ -316,10 +316,8 @@ const MoleculePanel = () => {
   const handleReplaceMolecule = useCallback(
     (key, molfile) => {
       dispatch({ type: SET_MOLECULE, molfile, key });
-
-      handleOnUnlinkAll();
     },
-    [dispatch, handleOnUnlinkAll],
+    [dispatch],
   );
 
   return (
