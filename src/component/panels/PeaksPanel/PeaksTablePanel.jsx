@@ -2,20 +2,20 @@ import React, { useCallback, useMemo, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useModal } from '../elements/Modal';
-import ReactTable from '../elements/ReactTable/ReactTable';
-import ConnectToContext from '../hoc/ConnectToContext';
-import { DELETE_PEAK_NOTATION } from '../reducer/types/Types';
-import formatNumber from '../utility/FormatNumber';
-import { GetPreference } from '../utility/PreferencesHelper';
+import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import { useModal } from '../../elements/Modal';
+import ReactTable from '../../elements/ReactTable/ReactTable';
+import ConnectToContext from '../../hoc/ConnectToContext';
+import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
+import formatNumber from '../../utility/FormatNumber';
+import { GetPreference } from '../../utility/PreferencesHelper';
+import NoTableData from '../extra/placeholder/NoTableData';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import PreferencesHeader from '../header/PreferencesHeader';
 
-import DefaultPanelHeader from './header/DefaultPanelHeader';
-import PreferencesHeader from './header/PreferencesHeader';
-import NoTableData from './placeholder/NoTableData';
-import PeaksPreferences from './preferences-panels/PeaksPreferences';
+import PeaksPreferences from './PeaksPreferences';
 
 const styles = {
   container: {

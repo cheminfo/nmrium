@@ -2,27 +2,29 @@ import React, { useCallback, useMemo, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useModal } from '../elements/Modal';
-import ReactTable from '../elements/ReactTable/ReactTable';
-import Select from '../elements/Select';
-import ToolTip from '../elements/ToolTip/ToolTip';
-import ChangeSumModal from '../modal/ChangeSumModal';
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import { useModal } from '../../elements/Modal';
+import ReactTable from '../../elements/ReactTable/ReactTable';
+import Select from '../../elements/Select';
+import ToolTip from '../../elements/ToolTip/ToolTip';
+import ChangeSumModal from '../../modal/ChangeSumModal';
 import {
   DELETE_INTEGRAL,
   CHANGE_INTEGRAL_DATA,
   CHANGE_INTEGRAL_SUM,
-} from '../reducer/types/Types';
-import formatNumber from '../utility/FormatNumber';
-import { GetPreference } from '../utility/PreferencesHelper';
+} from '../../reducer/types/Types';
+import formatNumber from '../../utility/FormatNumber';
+import { GetPreference } from '../../utility/PreferencesHelper';
+import { SignalKinds } from '../extra/constants/SignalsKinds';
+import NoTableData from '../extra/placeholder/NoTableData';
+import { integralDefaultValues } from '../extra/preferences/defaultValues';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import PreferencesHeader from '../header/PreferencesHeader';
 
-import { SignalKinds } from './constants/SignalsKinds';
-import DefaultPanelHeader from './header/DefaultPanelHeader';
-import PreferencesHeader from './header/PreferencesHeader';
-import NoTableData from './placeholder/NoTableData';
-import IntegralsPreferences from './preferences-panels/IntegralsPreferences';
-import { integralDefaultValues } from './preferences-panels/defaultValues';
+import IntegralsPreferences from './IntegralsPreferences';
+
+// import ReactCardFlip from './node_modules/react-card-flip';
 
 const styles = {
   toolbar: {

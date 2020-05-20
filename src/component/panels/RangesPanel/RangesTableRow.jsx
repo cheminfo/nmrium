@@ -3,11 +3,10 @@ import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useState, useEffect } from 'react';
 import { FaRegTrashAlt, FaLink } from 'react-icons/fa';
 
-import SelectUncontrolled from '../elements/SelectUncontrolled';
-import { useHighlight } from '../highlight';
-import FormatNumber from '../utility/FormatNumber';
-
-import { SignalKinds } from './constants/SignalsKinds';
+import SelectUncontrolled from '../../elements/SelectUncontrolled';
+import { useHighlight } from '../../highlight';
+import FormatNumber from '../../utility/FormatNumber';
+import { SignalKinds } from '../extra/constants/SignalsKinds';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;

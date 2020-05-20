@@ -15,9 +15,8 @@ import { SET_PREFERENCES } from '../../reducer/types/Types';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
-
-import ColumnFormatField from './ColumnFormatField';
-import { peaksDefaultValues } from './defaultValues';
+import ColumnFormatField from '../extra/preferences/ColumnFormatField';
+import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles = {
   container: { padding: 10, backgroundColor: '#f1f1f1', height: '100%' },

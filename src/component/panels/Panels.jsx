@@ -9,11 +9,11 @@ import { options } from '../toolbar/ToolTypes';
 
 import FilterPanel from './FilterPanel';
 import InformationPanel from './InformationPanel';
-import IntegralTablePanel from './IntegralTablePanel';
+import IntegralTablePanel from './IntegralsPanel/IntegralTablePanel';
 import MoleculePanel from './MoleculePanel';
-import PeaksTablePanel from './PeaksTablePanel';
-import RangesTablePanel from './RangesTablePanel';
-import SpectrumListPanel from './SpectrumListPanel';
+import PeaksTablePanel from './PeaksPanel/PeaksTablePanel';
+import RangesTablePanel from './RangesPanel/RangesTablePanel';
+import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
 
 const accordionItems = [
   {

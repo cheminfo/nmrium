@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 
 import { useChartData } from '../context/ChartContext';
-import { integralDefaultValues } from '../panels/preferences-panels/defaultValues';
+import { integralDefaultValues } from '../panels/extra/preferences/defaultValues';
 import { GetPreference } from '../utility/PreferencesHelper';
 
 import IntegralResizable from './IntegralResizable';

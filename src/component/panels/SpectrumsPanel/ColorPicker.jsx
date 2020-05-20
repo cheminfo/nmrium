@@ -3,7 +3,7 @@ import { jsx, css } from '@emotion/core';
 import { memo } from 'react';
 import { SketchPicker } from 'react-color';
 
-import { COLORS } from '../../data/utilities/getColor';
+import { COLORS } from '../../../data/utilities/getColor';
 
 const style = css`
   position: fixed;

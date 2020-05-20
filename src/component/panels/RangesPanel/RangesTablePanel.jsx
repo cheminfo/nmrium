@@ -6,25 +6,25 @@ import ReactCardFlip from 'react-card-flip';
 import { FaFileExport, FaUnlink } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useModal } from '../elements/Modal';
-import ToolTip from '../elements/ToolTip/ToolTip';
-import ChangeSumModal from '../modal/ChangeSumModal';
-import CopyClipboardModal from '../modal/CopyClipboardModal';
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import { useModal } from '../../elements/Modal';
+import ToolTip from '../../elements/ToolTip/ToolTip';
+import ChangeSumModal from '../../modal/ChangeSumModal';
+import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import {
   DELETE_RANGE,
   CHANGE_RANGE_DATA,
   CHANGE_RANGE_SUM,
-} from '../reducer/types/Types';
-import { copyTextToClipboard } from '../utility/Export';
+} from '../../reducer/types/Types';
+import { copyTextToClipboard } from '../../utility/Export';
+import NoTableData from '../extra/placeholder/NoTableData';
+import { rangeDefaultValues } from '../extra/preferences/defaultValues';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
+import PreferencesHeader from '../header/PreferencesHeader';
 
+import RangesPreferences from './RangesPreferences';
 import RangesTable from './RangesTable';
-import DefaultPanelHeader from './header/DefaultPanelHeader';
-import PreferencesHeader from './header/PreferencesHeader';
-import NoTableData from './placeholder/NoTableData';
-import RangesPreferences from './preferences-panels/RangesPreferences';
-import { rangeDefaultValues } from './preferences-panels/defaultValues';
 
 const styles = {
   toolbar: {

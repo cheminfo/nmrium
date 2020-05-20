@@ -14,13 +14,13 @@ import {
   FaCreativeCommonsSamplingPlus,
 } from 'react-icons/fa';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import ContextMenu from '../elements/ContextMenu';
-import { useModal } from '../elements/Modal';
-import { Tabs } from '../elements/Tab';
-import ToolTip from '../elements/ToolTip/ToolTip';
-import ConnectToContext from '../hoc/ConnectToContext';
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import ContextMenu from '../../elements/ContextMenu';
+import { useModal } from '../../elements/Modal';
+import { Tabs } from '../../elements/Tab';
+import ToolTip from '../../elements/ToolTip/ToolTip';
+import ConnectToContext from '../../hoc/ConnectToContext';
 import {
   CHANGE_VISIBILITY,
   CHANGE_PEAKS_MARKERS_VISIBILITY,
@@ -29,13 +29,13 @@ import {
   DELETE_SPECTRA,
   SET_ACTIVE_TAB,
   ADD_MISSING_PROJECTION,
-} from '../reducer/types/Types';
-import { copyTextToClipboard } from '../utility/Export';
-import groupByInfoKey from '../utility/GroupByInfoKey';
+} from '../../reducer/types/Types';
+import { copyTextToClipboard } from '../../utility/Export';
+import groupByInfoKey from '../../utility/GroupByInfoKey';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import ColorPicker from './ColorPicker';
 import SpectrumListItem from './SpectrumListItem';
-import DefaultPanelHeader from './header/DefaultPanelHeader';
 
 const styles = {
   toolbar: {
@@ -213,8 +213,8 @@ const SpectrumListPanel = memo(
     const contextMenu = [
       {
         label: 'Copy to Clipboard',
-        onClick: (data) => {
-          const { x, y, info } = data;
+        onClick: (spectrumData) => {
+          const { x, y, info } = spectrumData;
           const success = copyTextToClipboard(
             JSON.stringify({ x, y, info }, undefined, 2),
           );
@@ -321,12 +321,12 @@ const SpectrumListPanel = memo(
     }, [dispatch]);
 
     const addMissingProjectionHandler = useCallback(() => {
-      function getMissingProjection(data) {
+      function getMissingProjection(SpectrumsData) {
         let nucleus = activeTabState.split(',');
         nucleus = nucleus[0] === nucleus[1] ? [nucleus[0]] : nucleus;
         const missingNucleus = [];
         for (const n of nucleus) {
-          const hasSpectrums = data.some((d) => d.info.nucleus === n);
+          const hasSpectrums = SpectrumsData.some((d) => d.info.nucleus === n);
           if (!hasSpectrums) {
             missingNucleus.push(n);
           }

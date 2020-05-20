@@ -2,7 +2,7 @@
 import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useRef } from 'react';
 
-import ContextMenu from '../elements/ContextMenu';
+import ContextMenu from '../../elements/ContextMenu';
 
 import RangesTableRow from './RangesTableRow';
 

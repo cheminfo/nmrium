@@ -18,9 +18,8 @@ import { SET_PREFERENCES } from '../../reducer/types/Types';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
-
-import ColumnFormatField from './ColumnFormatField';
-import { integralDefaultValues } from './defaultValues';
+import ColumnFormatField from '../extra/preferences/ColumnFormatField';
+import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles = {
   container: {
