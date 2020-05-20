@@ -1,6 +1,7 @@
 import {
   reimFFT,
   reimFFTShift,
+  xRotate,
   reimPhaseCorrection,
 } from 'ml-spectra-processing';
 
@@ -21,7 +22,7 @@ export function apply(datum1D) {
     (e) => e.name === 'digitalFilter' && e.flag,
   );
 
-  Object.assign(datum1D.data, reimFFTShift(reimFFT(datum1D.data)));
+  Object.assign(datum1D.data, reimFFT(datum1D.data, { applyZeroShift: true }));
 
   if (digitalFilterApplied) {
     let { digitalFilter } = datum1D.info;

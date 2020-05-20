@@ -14,8 +14,8 @@ export const name = 'automatic phase correction';
 const defaultOptions = {
   magnitudeMode: false,
   minRegSize: 30,
-  maxDistanceToJoin: 256
-}
+  maxDistanceToJoin: 256,
+};
 
 export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {

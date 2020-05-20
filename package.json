@@ -24,7 +24,7 @@
     "ml-fft": "^1.3.5",
     "ml-gsd": "^4.0.0",
     "ml-regression-polynomial": "^2.1.0",
-    "ml-spectra-processing": "^3.0.2",
+    "ml-spectra-processing": "^4.0.0",
     "mouse-speed": "^2.0.1",
     "multiplet-analysis": "0.1.0",
     "numeral": "^2.0.6",
