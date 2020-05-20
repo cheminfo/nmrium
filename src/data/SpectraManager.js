@@ -37,45 +37,21 @@ export function addJcamp(spectra, jcamp, options = {}) {
 export function addJDF(spectra, jdf, options = {}) {
   // need to parse the jcamp
   let converted = fromJEOL(jdf, {});
-  let dimensions = converted.dimensions;
   let info = converted.description;
   let metadata = info.metadata;
-  console.log(metadata);
+  delete info.metadata;
+  info.nucleus = info.nucleus[0];
+  info.experiment = '1d';
+  info.numberOfPoints = info.numberOfPoints[0];
+  info.acquisitionTime = info.acquisitionTime[0];
+  info.acquisitionMode = 0;
+  info.bf1 = info.baseFrequency[0];
+  info.sfo1 = info.baseFrequency[0] + info.offset[0] / 1e6;
+  info.frequency = info.baseFrequency[0];
+  info.type = 'NMR SPECTRUM';
+  info.spectralWidthClipped = converted.application.spectralWidthClipped;
 
-  let newInfo = {
-    acquisitionMode: 0,
-    bf1: info.frequency[0].magnitude / 1e6,
-    field: metadata.baseFreq,
-    date: converted.timeStamp,
-    dimension: dimensions.length, //info.dataDimension
-    experiment: dimensions.length === 1 ? '1d' : '2d',
-    expno: 'NA',
-    frequency: info.frequency[0].magnitude / 1000000,
-    isComplex: converted.dependentVariables[0].numericType === 'complex128',
-    isFid: info.dataUnits[0] === 'Second',
-    isFt: info.dataUnits[0] === 'Ppm',
-    nucleus: info.nucleus[0],
-    numberOfPoints: info.dataPoints[0],
-    probe: info.probeId,
-    pulse: info.experiment,
-    offset:
-      (info.frequencyOffset[0].magnitude / 1e6) * info.frequency[0].magnitude,
-    sfo1:
-      (info.frequency[0].magnitude +
-        (info.frequencyOffset[0].magnitude * info.frequency[0].magnitude) /
-          1e6) /
-      1e6,
-    solvent: info.solvent,
-    spectralWidth:
-      (info.spectralWidth[0].magnitude / info.frequency[0].magnitude) * 1e6,
-    temperature: info.temperature.magnitude,
-    title: info.title,
-    type: 'NMR SPECTRUM',
-    digitalFilter: info.digitalFilter,
-  };
-
-  console.log(newInfo);
-  if (info.dataDimension === 1) {
+  if (info.dimension === 1) {
     let usedcolors1D = [];
     if (converted.dependentVariables) {
       const color = getColor(usedcolors1D);
@@ -83,7 +59,7 @@ export function addJDF(spectra, jdf, options = {}) {
         Data1DManager.fromCSD(converted, {
           ...options,
           display: { ...options.display, color },
-          info: newInfo,
+          info: info,
           meta: metadata,
         }),
       );
