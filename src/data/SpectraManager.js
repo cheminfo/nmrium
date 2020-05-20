@@ -41,7 +41,7 @@ export function addJDF(spectra, jdf, options = {}) {
   let metadata = info.metadata;
   delete info.metadata;
   info.acquisitionMode = 0;
-  info.experiment = '1d';
+  info.experiment = info.dimension === 1 ? '1d' : '2d';
   info.type = 'NMR SPECTRUM';
   info.nucleus = info.nucleus[0];
   info.numberOfPoints = info.numberOfPoints[0];
