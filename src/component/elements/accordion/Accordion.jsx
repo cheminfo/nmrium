@@ -16,15 +16,9 @@ const styles = {
     flexDirection: 'column',
   },
 };
-
+let forcedOpenedElements = [];
 const Accordion = ({ children, defaultOpenIndex = 0 }) => {
-  const selectedElement = useCallback(() => {
-    return Array(children.length)
-      .fill(false)
-      .map((e, i) => (i === defaultOpenIndex ? true : e));
-  }, [children.length, defaultOpenIndex]);
-
-  const [elements, setElements] = useState(selectedElement);
+  const [elements, setElements] = useState([]);
   const refContainer = useRef();
 
   const handleOpen = useCallback(
@@ -35,7 +29,7 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
       } else {
         el = el.map((e, i) => (i === index ? true : false));
       }
-
+      forcedOpenedElements = el;
       setElements(el);
     },
     [elements],
@@ -46,14 +40,31 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
       return React.cloneElement(child, {
         onOpen: handleOpen,
         index,
-        isOpen: elements[index],
+        isOpen: elements && elements[index],
       });
     });
   }, [children, elements, handleOpen]);
 
   useEffect(() => {
-    setElements(selectedElement);
-  }, [selectedElement]);
+    setElements((prevState) => {
+      if (prevState.length > 0) {
+        return prevState.map((e, i) =>
+          !forcedOpenedElements[i]
+            ? i === defaultOpenIndex
+              ? true
+              : false
+            : e,
+        );
+      }
+      forcedOpenedElements = Array(children.length)
+        .fill(false)
+        .map((e) => e);
+
+      return Array(children.length)
+        .fill(false)
+        .map((e, i) => (i === defaultOpenIndex ? true : e));
+    });
+  }, [children.length, defaultOpenIndex]);
 
   return (
     <div ref={refContainer} style={styles.container}>
