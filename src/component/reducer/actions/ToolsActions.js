@@ -410,13 +410,13 @@ const setActiveTab = (draft, dataGroupByTab, tab) => {
     );
     for (let tabKey of tabkeys) {
       const data = dataGroupByTab[tabKey];
-      const index = draft.data.findIndex((datum) => datum.id === data[0].id);
 
       if (tabKey.split(',').length === 2) {
         tabs2D.push(tabKey);
       }
 
-      if (tabs2D.length > 0 || data.length === 1) {
+      if (data.length === 1) {
+        const index = draft.data.findIndex((datum) => datum.id === data[0].id);
         draft.tabActiveSpectrum[tabKey] = { id: data[0].id, index };
       } else {
         if (dataGroupByTab[tab].length === 2) {

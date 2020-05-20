@@ -53,7 +53,19 @@ function addJcampSS(spectra, entry, options) {
     spectra.push(Data1DManager.fromParsedJcamp(entry, options));
   }
   if (info.dimension === 2) {
-    spectra.push(Data2DManager.fromParsedJcamp(entry, options));
+    let { display, ...remainOptions } = options;
+    if (!display.positiveColor) {
+      display.positiveColor = display.color;
+    }
+    if (!display.negativeColor) {
+      display.negativeColor = adjustAlpha(display.color, 50);
+    }
+
+    delete options.color;
+
+    spectra.push(
+      Data2DManager.fromParsedJcamp(entry, { ...remainOptions, display }),
+    );
   }
 }
 

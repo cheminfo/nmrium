@@ -67,8 +67,8 @@ const loadJcampFile = (state, files) => {
         display: {
           name: files[i].name,
           color: color,
-          isVisible: true,
-          isPeaksMarkersVisible: true,
+          // isVisible: true,
+          // isPeaksMarkersVisible: true,
         },
         source: {
           jcampURL: files[i].jcampURL ? files[i].jcampURL : null,

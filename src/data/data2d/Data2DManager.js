@@ -1,20 +1,13 @@
-import { adjustAlpha } from '../utilities/getColor';
 import { getInfoFromMetaData } from '../utilities/getInfoFromMetaData';
 
 import { Datum2D } from './Datum2D';
 
 export class Data2DManager {
   static fromParsedJcamp = function fromParsedJcamp(parsedJcamp, options = {}) {
-    let { display, ...remainOption } = options;
-    display.positiveColor = display.color;
-    display.negativeColor = adjustAlpha(display.color, 50);
-    delete display.color;
-
     let data = parsedJcamp.minMax;
     let info = getInfoFromMetaData(parsedJcamp.info);
     const ob = new Datum2D({
-      ...remainOption,
-      display,
+      ...options,
       info,
       meta: parsedJcamp.info,
       data,
