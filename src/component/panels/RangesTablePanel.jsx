@@ -3,15 +3,12 @@ import { xGetFromToIndex } from 'ml-spectra-processing';
 import React, { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
-import { FaRegTrashAlt, FaFileExport } from 'react-icons/fa';
+import { FaFileExport, FaUnlink } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useModal } from '../elements/Modal';
-import ReactTable from '../elements/ReactTable/ReactTable';
-import ReactTableExpandable from '../elements/ReactTable/ReactTableExpandable';
-import Select from '../elements/Select';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import ChangeSumModal from '../modal/ChangeSumModal';
 import CopyClipboardModal from '../modal/CopyClipboardModal';
@@ -22,11 +19,10 @@ import {
 } from '../reducer/types/Types';
 import { copyTextToClipboard } from '../utility/Export';
 
-import { SignalKinds } from './constants/SignalsKinds';
+import RangesTable from './RangesTable';
 import DefaultPanelHeader from './header/DefaultPanelHeader';
 import PreferencesHeader from './header/PreferencesHeader';
 import NoTableData from './placeholder/NoTableData';
-import { ColumnsHelper } from './preferences-panels/ColumnsHelper';
 import RangesPreferences from './preferences-panels/RangesPreferences';
 import { rangeDefaultValues } from './preferences-panels/defaultValues';
 
@@ -47,13 +43,21 @@ const styles = {
     fontSize: '12px',
     padding: 0,
   },
+  removeAssignmentsButton: {
+    borderRadius: '5px',
+    marginTop: '3px',
+    marginLeft: '2px',
+    border: 'none',
+    height: '16px',
+    width: '18px',
+    fontSize: '12px',
+    padding: 0,
+  },
   button: {
     backgroundColor: 'transparent',
     border: 'none',
   },
 };
-
-const selectStyle = { marginLeft: 2, marginRight: 2, border: 'none' };
 
 const RangesTablePanel = memo(() => {
   const {
@@ -75,13 +79,10 @@ const RangesTablePanel = memo(() => {
   const settingRef = useRef();
 
   const deleteRangeHandler = useCallback(
-    (e, row) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const params = row.original;
+    (rowData) => {
       dispatch({
         type: DELETE_RANGE,
-        rangeID: params.id,
+        rangeID: rowData.id,
       });
     },
     [dispatch],
@@ -93,7 +94,16 @@ const RangesTablePanel = memo(() => {
         ? SpectrumsData[activeSpectrum.index]
         : null;
 
-    function isInRange(from, to) {
+    if (_data && _data.ranges && _data.ranges.values) {
+      setRangesCounter(_data.ranges.values.length);
+      return _data.ranges.values;
+    }
+    setRangesCounter(0);
+    return [];
+  }, [SpectrumsData, activeSpectrum]);
+
+  const tableData = useMemo(() => {
+    const isInRange = (from, to) => {
       const factor = 10000;
       to = to * factor;
       from = from * factor;
@@ -101,25 +111,23 @@ const RangesTablePanel = memo(() => {
         (to >= xDomain[0] * factor && from <= xDomain[1] * factor) ||
         (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
       );
-    }
+    };
 
-    if (_data && _data.ranges && _data.ranges.values) {
-      setRangesCounter(_data.ranges.values.length);
+    const getFilteredRanges = (ranges) => {
+      return ranges.filter((range) => isInRange(range.from, range.to));
+    };
 
-      const getFilteredRanges = (ranges = _data.ranges.values) => {
-        return ranges.filter((range) => isInRange(range.from, range.to));
-      };
+    const ranges = filterIsActive ? getFilteredRanges(data) : data;
 
-      const ranges = filterIsActive ? getFilteredRanges() : _data.ranges.values;
-
-      return ranges.map((range) => {
-        return {
-          ...range,
+    return ranges.map((range) => {
+      return {
+        ...range,
+        tableMetaInfo: {
           isConstantlyHighlighted: isInRange(range.from, range.to),
-        };
-      });
-    }
-  }, [SpectrumsData, activeSpectrum, filterIsActive, xDomain]);
+        },
+      };
+    });
+  }, [data, filterIsActive, xDomain]);
 
   const saveToClipboardHandler = useCallback(
     (value) => {
@@ -171,12 +179,26 @@ const RangesTablePanel = memo(() => {
   }, [modal]);
 
   const changeRangeSignalKindHandler = useCallback(
-    (value, row) => {
-      const _data = { ...row.original, kind: value };
+    (value, range) => {
+      const _range = { ...range, kind: value };
       dispatch({
         type: CHANGE_RANGE_DATA,
-        data: _data,
+        data: _range,
       });
+    },
+    [dispatch],
+  );
+
+  const unlinkRangeHandler = useCallback(
+    (range) => {
+      const _range = {
+        ...range,
+        diaID: [],
+        signal: range.signal.map((signal) => {
+          return { ...signal, diaID: [] };
+        }),
+      };
+      dispatch({ type: 'CHANGE_RANGE_DATA', data: _range });
     },
     [dispatch],
   );
@@ -193,163 +215,13 @@ const RangesTablePanel = memo(() => {
     );
   }, [closeClipBoardHandler, data, modal, saveToClipboardHandler]);
 
-  // define columns for different (sub)tables and expandable ones
-  const columnsRangesDefault = [
-    {
-      orderIndex: 1,
-      Header: () => null,
-      id: 'expander',
-      Cell: ({ row }) => (
-        <span {...row.getExpandedToggleProps()}>
-          {row.isExpanded ? '\u25BC' : '\u25B6'}
-        </span>
-      ),
-    },
-    {
-      orderIndex: 2,
-      Header: '#',
-      Cell: ({ row }) => row.index + 1,
-    },
-    {
-      orderIndex: 7,
-      Header: 'Signals',
-      Cell: ({ row }) =>
-        `${row.original.signal.length}: ${row.original.signal
-          .map((s) => s.multiplicity)
-          .join(',')}`,
-    },
-    {
-      orderIndex: 8,
-      Header: 'Kind',
-      accessor: 'kind',
-      sortType: 'basic',
-      resizable: true,
-      Cell: ({ row }) => (
-        <Select
-          onChange={(value) => changeRangeSignalKindHandler(value, row)}
-          data={SignalKinds}
-          style={selectStyle}
-          defaultValue={row.original.kind}
-        />
-      ),
-    },
-    {
-      orderIndex: 9,
-      Header: '',
-      id: 'delete-button',
-      Cell: ({ row }) => (
-        <button
-          type="button"
-          className="delete-button"
-          onClick={(e) => deleteRangeHandler(e, row)}
-        >
-          <FaRegTrashAlt />
-        </button>
-      ),
-    },
-  ];
+  const rangesPreferences = useMemo(() => {
+    const _preferences =
+      lodash.get(preferences, `panels.ranges.[${activeTab}]`) ||
+      rangeDefaultValues;
 
-  const columnsRanges = useMemo(() => {
-    const rangesPreferences = lodash.get(
-      preferences,
-      `panels.ranges.[${activeTab}]`,
-    );
-    const columnHelper = new ColumnsHelper(
-      rangesPreferences,
-      rangeDefaultValues,
-    );
-    let cols = [...columnsRangesDefault];
-    columnHelper.addColumn(cols, 'showFrom', 'fromFormat', 'from', 'From', 3);
-    columnHelper.addColumn(cols, 'showTo', 'toFormat', 'to', 'To', 4);
-    columnHelper.addColumn(
-      cols,
-      'showAbsolute',
-      'absoluteFormat',
-      'absolute',
-      'Absolute',
-      5,
-    );
-    const n = activeTab && activeTab.replace(/[0-9]/g, '');
-    columnHelper.addColumn(
-      cols,
-      'showRelative',
-      'relativeFormat',
-      'integral',
-      `Rel. ${n}`,
-      6,
-      {
-        formatPrefix: '[',
-        formatSuffix: ']',
-        showPrefixSuffixCallback: (row) =>
-          row &&
-          row.original &&
-          row.original.kind &&
-          row.original.kind === 'signal'
-            ? false
-            : true,
-      },
-    );
-
-    return cols.sort(
-      (object1, object2) => object1.orderIndex - object2.orderIndex,
-    );
-  }, [activeTab, columnsRangesDefault, preferences]);
-
-  const columnsSignals = [
-    {
-      Header: '#',
-      Cell: ({ row }) => row.index + 1,
-    },
-    {
-      Header: 'Multiplicity',
-      accessor: 'multiplicity',
-    },
-    {
-      Header: 'Delta',
-      accessor: 'delta',
-      Cell: ({ row }) => row.original.delta.toFixed(3),
-    },
-    {
-      Header: 'J',
-      Cell: ({ row }) =>
-        row.original.j
-          ? row.original.j
-              .map((j) => `${j.multiplicity} (${j.coupling.toFixed(2)}Hz)`)
-              .join(', ')
-          : '',
-    },
-  ];
-
-  const columnsCouplings = [
-    {
-      Header: 'Couplings',
-      columns: [
-        {
-          Header: '#',
-          Cell: ({ row }) => row.index + 1,
-        },
-        {
-          Header: 'Multiplicity',
-          accessor: 'multiplicity',
-        },
-        {
-          Header: 'Coupling',
-          accessor: 'coupling',
-          Cell: ({ row }) => row.original.coupling.toFixed(3),
-        },
-      ],
-    },
-  ];
-
-  // render method for couplings sub-table
-  const renderRowSubComponentCouplings = ({ row }) => {
-    return row &&
-      row.original &&
-      row.original.j &&
-      row.original.j.length > 0 ? (
-      <ReactTable data={row.original.j} columns={columnsCouplings} />
-    ) : null;
-  };
+    return _preferences;
+  }, [activeTab, preferences]);
 
   const contextMenu = [
     {
@@ -358,29 +230,12 @@ const RangesTablePanel = memo(() => {
     },
   ];
 
-  // render method for signals sub-table; either expandable or not
-  const renderRowSubComponentSignals = ({ row }) => {
-    return row &&
-      row.original &&
-      row.original.signal &&
-      row.original.signal.find((signal) => signal.j && signal.j.length > 0) ? (
-      <ReactTableExpandable
-        columns={columnsSignals}
-        data={row.original.signal}
-        renderRowSubComponent={renderRowSubComponentCouplings}
-        context={contextMenu}
-      />
-    ) : (
-      <ReactTable columns={columnsSignals} data={row.original.signal} />
-    );
-  };
-
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_RANGE, rangeID: null });
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted,Are You sure?', {
+    modal.showConfirmDialog('All records will be deleted. Are You sure?', {
       onYes: yesHandler,
     });
   }, [modal, yesHandler]);
@@ -418,6 +273,16 @@ const RangesTablePanel = memo(() => {
       />,
     );
   }, [activeTab, changeRangesSumHandler, currentSum, modal, molecules]);
+
+  const removeAssignments = useCallback(() => {
+    data.forEach((range) => unlinkRangeHandler(range));
+  }, [data, unlinkRangeHandler]);
+
+  const handleOnRemoveAssignments = useCallback(() => {
+    modal.showConfirmDialog('All assignments will be removed. Are you sure?', {
+      onYes: removeAssignments,
+    });
+  }, [removeAssignments, modal]);
 
   const handleOnFilter = useCallback(() => {
     setFilterIsActive(!filterIsActive);
@@ -457,7 +322,7 @@ const RangesTablePanel = memo(() => {
               filterIsActive ? 'Show all ranges' : 'Hide ranges out of view'
             }
             filterIsActive={filterIsActive}
-            counterFiltered={data && data.length}
+            counterFiltered={tableData && tableData.length}
             showSettingButton="true"
             onSettingClick={settingsPanelHandler}
           >
@@ -482,6 +347,16 @@ const RangesTablePanel = memo(() => {
                 Σ
               </button>
             </ToolTip>
+            <ToolTip title={`Remove all Assignments`} popupPlacement="right">
+              <button
+                style={styles.removeAssignmentsButton}
+                type="button"
+                onClick={handleOnRemoveAssignments}
+                disabled={!data || data.length === 0}
+              >
+                <FaUnlink />
+              </button>
+            </ToolTip>
           </DefaultPanelHeader>
         )}
         {isFlipped && (
@@ -496,12 +371,15 @@ const RangesTablePanel = memo(() => {
           containerStyle={{ height: '100%' }}
         >
           <div style={!isTableVisible ? { display: 'none' } : {}}>
-            {data && data.length > 0 ? (
-              <ReactTableExpandable
-                columns={columnsRanges}
-                data={data}
-                renderRowSubComponent={renderRowSubComponentSignals}
+            {tableData && tableData.length > 0 ? (
+              <RangesTable
+                tableData={tableData}
+                onChangeKind={changeRangeSignalKindHandler}
+                onDelete={deleteRangeHandler}
+                onUnlink={unlinkRangeHandler}
                 context={contextMenu}
+                preferences={rangesPreferences}
+                element={activeTab && activeTab.replace(/[0-9]/g, '')}
               />
             ) : (
               <NoTableData />

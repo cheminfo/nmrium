@@ -19,7 +19,7 @@ const detectSignal = (x, re, from, to, frequency) => {
 
   return {
     nbAtoms: 0,
-    diaD: [],
+    diaID: [],
     multiplicity: result.j.map((j) => j.multiplicity).join(''),
     kind: '',
     remark: '',
