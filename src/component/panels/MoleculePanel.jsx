@@ -368,7 +368,7 @@ const MoleculePanel = () => {
           onSlideChange={(event) => setCurrentIndex(event.slideIndex)}
           slideIndex={currentIndex}
         >
-          {molecules &&
+          {molecules && molecules.length > 0 ? (
             molecules.map((mol, index) => (
               <div
                 key={mol.key}
@@ -417,7 +417,13 @@ const MoleculePanel = () => {
                   <MF mf={mol.mf} /> - {mol.mw.toFixed(2)}
                 </p>
               </div>
-            ))}
+            ))
+          ) : (
+            <div
+              style={{ width: '100%', height: '100%' }}
+              onClick={handleOpen}
+            />
+          )}
         </Slider>
 
         <MoleculeStructureEditorModal
