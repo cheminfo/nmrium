@@ -19,7 +19,7 @@ import {
   SET_FILTER_SNAPSHOT,
 } from '../reducer/types/Types';
 
-import NoTableData from './placeholder/NoTableData';
+import NoTableData from './extra/placeholder/NoTableData';
 
 const styles = {
   button: {
