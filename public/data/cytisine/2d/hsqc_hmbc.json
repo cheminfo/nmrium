@@ -9,10 +9,10 @@
       },
       "display": {
         "name": "test",
-        "color": "#C10020",
-        "isVisible": true,
-        "isPeaksMarkersVisible": true,
-        "isRealSpectrumVisible": true
+        "positiveColor": "red",
+        "negativeColor": "blue",
+        "isPositiveVisible": true,
+        "isNegativeVisible": true
       }
     },
     {
@@ -24,10 +24,10 @@
       },
       "display": {
         "name": "test",
-        "color": "#C10020",
-        "isVisible": true,
-        "isPeaksMarkersVisible": true,
-        "isRealSpectrumVisible": true
+        "positiveColor": "green",
+        "negativeColor": "blue",
+        "isPositiveVisible": true,
+        "isNegativeVisible": true
       }
     },
     {
