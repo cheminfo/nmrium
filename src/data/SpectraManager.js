@@ -40,15 +40,16 @@ export function addJDF(spectra, jdf, options = {}) {
   let info = converted.description;
   let metadata = info.metadata;
   delete info.metadata;
-  info.nucleus = info.nucleus[0];
+  info.acquisitionMode = 0;
   info.experiment = '1d';
+  info.type = 'NMR SPECTRUM';
+  info.nucleus = info.nucleus[0];
   info.numberOfPoints = info.numberOfPoints[0];
   info.acquisitionTime = info.acquisitionTime[0];
-  info.acquisitionMode = 0;
-  info.bf1 = info.baseFrequency[0];
-  info.sfo1 = info.baseFrequency[0] + info.offset[0] / 1e6;
-  info.frequency = info.baseFrequency[0];
-  info.type = 'NMR SPECTRUM';
+
+  info.baseFrequency = info.baseFrequency[0];
+  info.frequencyOffset = info.offset[0];
+
   info.spectralWidthClipped = converted.application.spectralWidthClipped;
 
   if (info.dimension === 1) {

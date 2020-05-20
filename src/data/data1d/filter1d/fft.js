@@ -43,12 +43,11 @@ export function reduce() {
 
 function generateXAxis(datum1D) {
   const info = datum1D.info;
-  const baseFrequency = parseFloat(info.bf1);
-  const spectralFrequency = parseFloat(info.sfo1);
+  const baseFrequency = parseFloat(info.baseFrequency);
+  const frequencyOffset = parseFloat(info.frequencyOffset);
   const spectralWidth = parseFloat(info.spectralWidth);
-  const offset = ((spectralFrequency - baseFrequency) / baseFrequency) * 1e6;
+  const offset = frequencyOffset / baseFrequency;
   let spectralHalfWidth = 0.5 * spectralWidth;
-
   let nbPoints = datum1D.data.x.length;
   let firstPoint = offset - spectralHalfWidth;
   let dx = spectralWidth / (nbPoints - 1);

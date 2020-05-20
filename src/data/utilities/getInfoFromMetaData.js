@@ -29,8 +29,8 @@ export function getInfoFromMetaData(metaData) {
   );
   maybeAdd(info, 'type', metaData.DATATYPE);
   maybeAdd(info, 'probe', metaData.$PROBHD);
-  maybeAdd(info, 'bf1', metaData.$BF1);
-  maybeAdd(info, 'sfo1', metaData.$SFO1);
+  maybeAdd(info, 'baseFrequency', metaData.$BF1);
+  maybeAdd(info, 'frequencyOffset', (metaData.$SFO1 - metaData.$BF1) * 1e6);
   maybeAdd(info, 'spectralWidth', metaData.$SW);
   maybeAdd(info, 'number of points', metaData.$TD);
 
