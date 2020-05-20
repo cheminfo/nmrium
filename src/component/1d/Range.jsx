@@ -47,15 +47,17 @@ const stylesHighlighted = css`
 `;
 
 const Range = ({ rangeData }) => {
-  const { id, from, to, integral, kind, diaID, signal } = rangeData;
+  const { id, from, to, integral, kind } = rangeData;
 
   const highlightIDs = useMemo(() => {
     return [].concat(
-      [id],
-      diaID ? diaID : [],
-      signal ? signal.map((_signal) => _signal.diaID).flat() : [],
+      [rangeData.id],
+      rangeData.diaID ? rangeData.diaID : [],
+      rangeData.signal
+        ? rangeData.signal.map((_signal) => _signal.diaID).flat()
+        : [],
     );
-  }, [diaID, id, signal]);
+  }, [rangeData]);
 
   const highlight = useHighlight(highlightIDs);
 
