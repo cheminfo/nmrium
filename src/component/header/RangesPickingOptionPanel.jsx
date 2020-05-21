@@ -46,8 +46,8 @@ const RangesPickingOptionPanel = () => {
         minMaxRatio: 0.05,
         nH: 100,
         compile: true,
-        frequencyCluster: 16,
-        clean: null,
+        frequencyCluster: 3,
+        clean: true,
         keepPeaks: true,
       },
     });
