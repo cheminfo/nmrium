@@ -16,7 +16,6 @@ export function apply(datum1D, options = {}) {
   let im = new Float64Array(datum1D.data.im);
 
   let pointsToShift = Math.floor(digitalFilterValue);
-  let ph1 = pointsToShift - digitalFilterValue;
 
   const skip = 0;
   pointsToShift += 0;
