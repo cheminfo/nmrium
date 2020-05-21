@@ -1,5 +1,5 @@
 import median from 'ml-array-median';
-import * as SD from 'spectra-data';
+import { autoPeaksPicking } from 'nmr-processing';
 
 import generateID from '../utilities/generateID';
 
@@ -8,15 +8,18 @@ export default function autoPeakPicking(datum1D, options) {
   // we calculate the noise but this could be improved
   let noise = median(datum1D.data.re.map((y) => Math.abs(y)));
 
-  const spectrum = SD.NMR.fromXY(datum1D.data.x, datum1D.data.re);
-  let peaks = spectrum.createPeaks({
-    noiseLevel: noise * 5,
-    minMaxRatio: minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
-    realTopDetection: true,
-    maxCriteria: true,
-    smoothY: false,
-    sgOptions: { windowSize: 7, polynomial: 3 },
-  });
+  let { re, x } = datum1D.data;
+  let peaks = autoPeaksPicking(
+    { x, y: re },
+    {
+      // noiseLevel: noise * 2,
+      minMaxRatio: minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
+      realTopDetection: true,
+      maxCriteria: true,
+      smoothY: false,
+      sgOptions: { windowSize: 15, polynomial: 3 },
+    },
+  );
 
   peaks.sort((a, b) => b.y - a.y);
   if (maxNumberOfPeaks) peaks = peaks.slice(0, maxNumberOfPeaks);
