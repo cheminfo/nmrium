@@ -57,14 +57,8 @@ export class Datum2D {
       },
       options.data,
     );
-    this.integrals = Object.assign(
-      { values: [], options: {} },
-      options.integrals,
-    );
-    // this.integrals = Object.assign(
-    //   { values: [], options: {} },
-    //   options.integrals,
-    // );
+    this.zones = Object.assign({ values: [], options: {} }, options.zones);
+
     this.processingController = new Processing2D(this.data);
     // this.data.contours = this.processingController.drawContours();
   }
@@ -82,18 +76,18 @@ export class Datum2D {
     this.display = { ...this.display, ...displayOptions };
   }
 
-  getIntegrals() {
-    return (this.integrals = Object.assign({}, this.integrals));
+  getZones() {
+    return (this.zones = Object.assign({}, this.zones));
   }
 
-  addIntegral(inetgral) {
-    this.integrals.values.push({
+  addZone(inetgral) {
+    this.zones.values.push({
       id: generateID(),
       ...inetgral,
     });
   }
-  deleteIntegral(id) {
-    this.integrals.values = this.integrals.values.filter((i) => i.id !== id);
+  deleteZone(id) {
+    this.zones.values = this.zones.values.filter((i) => i.id !== id);
   }
   /** get 2d projection
    * @param {number} x in ppm

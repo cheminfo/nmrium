@@ -22,7 +22,7 @@ const allowTools = [
   options.phaseCorrection.id,
   options.baseLineCorrection.id,
   options.rangesPicking.id,
-  options.integral2D.id,
+  options.zone2D.id,
 ];
 
 export const BRUSH_TYPE = {

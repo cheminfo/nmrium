@@ -2,11 +2,11 @@ import React, { useMemo, useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { DELETE_2D_INTEGRAL } from '../reducer/types/Types';
+import { DELETE_2D_ZONE } from '../reducer/types/Types';
 
 import Zone from './Zone';
 
-const Integrals = () => {
+const Zones = () => {
   const { data } = useChartData();
   const dispatch = useDispatch();
   const _data = useMemo(() => {
@@ -19,17 +19,17 @@ const Integrals = () => {
 
   const deleteHandler = useCallback(
     (id) => {
-      dispatch({ type: DELETE_2D_INTEGRAL, id });
+      dispatch({ type: DELETE_2D_ZONE, id });
     },
     [dispatch],
   );
 
   return (
-    <g clipPath="url(#clip)" className="2D-Integrals">
+    <g clipPath="url(#clip)" className="2D-Zones">
       {_data.map((d) => (
         <g key={d.id}>
-          {d.integrals.values.map((integral) => (
-            <Zone key={integral.id} {...integral} onDelete={deleteHandler} />
+          {d.zones.values.map((zone) => (
+            <Zone key={zone.id} {...zone} onDelete={deleteHandler} />
           ))}
         </g>
       ))}
@@ -37,4 +37,4 @@ const Integrals = () => {
   );
 };
 
-export default Integrals;
+export default Zones;

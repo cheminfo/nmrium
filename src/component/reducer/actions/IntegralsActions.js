@@ -2,9 +2,7 @@ import { extent } from 'd3';
 import { produce } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
-import { Datum2D } from '../../../data/data2d/Datum2D';
 import { getXScale } from '../../1d/utilities/scale';
-import { get2DXScale, get2DYScale } from '../../2d/utilities/scale';
 import { AnalysisObj } from '../core/Analysis';
 
 // import { getScale } from './ScaleActions';
@@ -104,46 +102,6 @@ const handleResizeIntegral = (state, action) => {
   });
 };
 
-const add2dIntegralHandler = (state, action) => {
-  return produce(state, (draft) => {
-    const { startX, startY, endX, endY } = action;
-    // const { width, height, margin, xDomain, yDomain } = state;
-    const scaleX = get2DXScale(state);
-    const scaleY = get2DYScale(state);
-    const x1 = startX * 1000000 > endX * 1000000 ? endX : startX;
-    const x2 = startX * 1000000 > endX * 1000000 ? startX : endX;
-    const y1 = startY * 1000000 > endY * 1000000 ? endY : startY;
-    const y2 = startY * 1000000 > endY * 1000000 ? startY : endY;
-
-    const datumObject =
-      state.activeSpectrum && state.activeSpectrum.id
-        ? AnalysisObj.getDatum(state.activeSpectrum.id)
-        : null;
-    if (datumObject && datumObject instanceof Datum2D) {
-      datumObject.addIntegral({
-        x1: scaleX.invert(x1),
-        x2: scaleX.invert(x2),
-        y1: scaleY.invert(y1),
-        y2: scaleY.invert(y2),
-      });
-
-      const integrals = datumObject.getIntegrals();
-      draft.data[state.activeSpectrum.index].integrals = integrals;
-    }
-  });
-};
-// eslint-disable-next-line no-unused-vars
-const delete2dIntegralHandler = (state, action) => {
-  return produce(state, (draft) => {
-    if (state.activeSpectrum && state.activeSpectrum.id) {
-      const datumObject = AnalysisObj.getDatum(state.activeSpectrum.id);
-      datumObject.deleteIntegral(action.id);
-      const integrals = datumObject.getIntegrals();
-      draft.data[state.activeSpectrum.index].integrals = integrals;
-    }
-  });
-};
-
 export {
   handleChangeIntegralSum,
   handleChangeIntegralZoom,
@@ -151,6 +109,4 @@ export {
   deleteIntegral,
   changeIntegral,
   handleResizeIntegral,
-  add2dIntegralHandler,
-  delete2dIntegralHandler,
 };

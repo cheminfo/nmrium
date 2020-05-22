@@ -18,7 +18,7 @@ import {
   SET_DIMENSIONS,
   SET_2D_LEVEL,
   SET_ZOOM_FACTOR,
-  ADD_2D_INTEGRAL,
+  ADD_2D_ZONE,
   SET_2D_PROJECTION,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
@@ -80,8 +80,8 @@ const Viewer2D = () => {
           }
         } else if (brushData.shiftKey) {
           switch (selectedTool) {
-            case options.integral2D.id:
-              dispatch({ type: ADD_2D_INTEGRAL, ...brushData });
+            case options.zone2D.id:
+              dispatch({ type: ADD_2D_ZONE, ...brushData });
               break;
             default:
               break;

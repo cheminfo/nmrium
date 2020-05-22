@@ -14,6 +14,7 @@ import MoleculePanel from './MoleculePanel';
 import PeaksTablePanel from './PeaksPanel/PeaksTablePanel';
 import RangesTablePanel from './RangesPanel/RangesTablePanel';
 import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
+import ZonesPanel from './ZonesPanel';
 
 const accordionItems = [
   {
@@ -57,6 +58,13 @@ const accordionItems = [
     openWhen: [options.rangesPicking.id],
     style: '',
     hidePreferenceKey: 'hideRangesPanel',
+  },
+  {
+    title: 'Zones',
+    component: <ZonesPanel />,
+    openWhen: [options.zone2D.id],
+    style: '',
+    hidePreferenceKey: '',
   },
   {
     title: 'Structures',

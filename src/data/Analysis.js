@@ -175,27 +175,30 @@ export class Analysis {
   getSpectraData() {
     return this.spectra
       ? this.spectra.map((ob) => {
-          const data =
+          const _data =
             ob instanceof Datum1D ? { ...ob.data, y: ob.data.re } : ob.data;
+          // eslint-disable-next-line no-unused-vars
+          const { data, ...rest } = ob;
           return {
-            id: ob.id,
+            ...rest,
+            // id: ob.id,
             // x: ob.data.x,
             // y: ob.data.re,
             // im: ob.data.im,
-            ...data,
-            display: ob.display,
+            ..._data,
+            // display: ob.display,
             //  name: ob.display.name,
             // color: ob.display.color,
             // isVisible: ob.display.isVisible,
             // isPeaksMarkersVisible: ob.display.isPeaksMarkersVisible,
             // isRealSpectrumVisible: ob.display.isRealSpectrumVisible,
             isVisibleInDomain: ob.display.isVisibleInDomain,
-            info: ob.info,
-            meta: ob.meta,
-            peaks: ob.peaks,
-            integrals: ob.integrals,
-            filters: ob.filters,
-            ranges: ob.ranges,
+            // info: ob.info,
+            // meta: ob.meta,
+            // peaks: ob.peaks,
+            // integrals: ob.integrals,
+            // filters: ob.filters,
+            // ranges: ob.ranges,
           };
         })
       : [];

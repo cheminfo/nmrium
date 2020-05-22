@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { useAlert } from 'react-alert';
-import { FaSearchPlus, FaExpand } from 'react-icons/fa';
+import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
 import { Filters } from '../../data/data1d/filter1d/Filters';
 import { useChartData } from '../context/ChartContext';
@@ -54,7 +54,7 @@ const FunctionToolBar = ({ defaultValue }) => {
         [
           options.peakPicking.id,
           options.integral.id,
-          options.integral2D.id,
+          options.zone2D.id,
         ].includes(selectedTool)
       ) {
         alert.show(
@@ -126,7 +126,7 @@ const FunctionToolBar = ({ defaultValue }) => {
           case 'i': {
             const toolID =
               displayerMode === DISPLAYER_MODE.DM_2D
-                ? options.integral2D.id
+                ? options.zone2D.id
                 : displayerMode === DISPLAYER_MODE.DM_1D
                 ? options.integral.id
                 : '';
@@ -248,17 +248,14 @@ const FunctionToolBar = ({ defaultValue }) => {
           )}
         {displayerMode === DISPLAYER_MODE.DM_2D &&
           isButtonVisible('hideIntegralTool') && (
-            <ToggleButton
-              key={options.integral2D.id}
-              value={options.integral2D.id}
-              className="ci-icon-nmr-integrate"
-              style={styles.icon}
-            >
+            <ToggleButton key={options.zone2D.id} value={options.zone2D.id}>
               <ToolTip
-                title={`${options.integral2D.label} ( Press i  )`}
+                title={`${options.zone2D.label} ( Press i  )`}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
-              />
+              >
+                <FaDiceFour />
+              </ToolTip>
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_2D && (

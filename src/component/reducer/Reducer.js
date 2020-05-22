@@ -34,8 +34,6 @@ import {
   handleResizeIntegral,
   handleChangeIntegralZoom,
   handleChangeIntegralSum,
-  add2dIntegralHandler,
-  delete2dIntegralHandler,
 } from './actions/IntegralsActions';
 import {
   initiate,
@@ -96,6 +94,7 @@ import {
   levelChangeHandler,
   projection2dHandler,
 } from './actions/ToolsActions';
+import { add2dZoneHandler, delete2ZoneHandler } from './actions/ZonesActions';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import {
@@ -163,8 +162,8 @@ import {
   ADD_RANGE,
   SET_2D_LEVEL,
   RESIZE_RANGE,
-  ADD_2D_INTEGRAL,
-  DELETE_2D_INTEGRAL,
+  ADD_2D_ZONE,
+  DELETE_2D_ZONE,
   SET_2D_PROJECTION,
   ADD_MISSING_PROJECTION,
   SET_FILTER_SNAPSHOT,
@@ -394,10 +393,10 @@ export function spectrumReducer(state, action) {
       return applyKeyPreferencesHandler(state, action.keyCode);
     case SET_2D_LEVEL:
       return levelChangeHandler(state, action);
-    case ADD_2D_INTEGRAL:
-      return add2dIntegralHandler(state, action);
-    case DELETE_2D_INTEGRAL:
-      return delete2dIntegralHandler(state, action);
+    case ADD_2D_ZONE:
+      return add2dZoneHandler(state, action);
+    case DELETE_2D_ZONE:
+      return delete2ZoneHandler(state, action);
     case SET_2D_PROJECTION:
       return projection2dHandler(state, action);
     case ADD_MISSING_PROJECTION:

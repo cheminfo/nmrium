@@ -4,11 +4,11 @@ import React, { useMemo } from 'react';
 import { useChartData } from '../context/ChartContext';
 
 import Contours from './Contours';
-import Integrals from './Integrals';
 import Left1DChart from './Left1DChart';
 import Top1DChart from './Top1DChart';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
+import Zones from './Zones';
 
 const Chart2D = ({ data }) => {
   const { width, height, margin } = useChartData();
@@ -44,7 +44,7 @@ const Chart2D = ({ data }) => {
         {data && data[0] && <Top1DChart data={data[0]} />}
         {data && data[1] && <Left1DChart data={data[1]} />}
         <Contours />
-        <Integrals />
+        <Zones />
 
         <g className="container" style={{ pointerEvents: 'none' }}>
           <XAxis />

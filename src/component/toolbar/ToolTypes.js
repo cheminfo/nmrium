@@ -19,9 +19,9 @@ export const options = {
     hasOptionPanel: false,
     isFilter: false,
   },
-  integral2D: {
-    id: 'integral2D',
-    label: 'integral Tool',
+  zone2D: {
+    id: 'zone2D',
+    label: 'Zone Tool',
     hasOptionPanel: false,
     isFilter: false,
   },
