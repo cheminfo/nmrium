@@ -80,15 +80,14 @@ const Viewer2D = () => {
           }
         } else if (brushData.shiftKey) {
           switch (selectedTool) {
+            case options.integral2D.id:
+              dispatch({ type: ADD_2D_INTEGRAL, ...brushData });
+              break;
             default:
               break;
           }
         } else {
           switch (selectedTool) {
-            case options.integral2D.id:
-              dispatch({ type: ADD_2D_INTEGRAL, ...brushData });
-              break;
-
             default:
               dispatch({
                 type: BRUSH_END,

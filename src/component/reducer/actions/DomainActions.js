@@ -87,7 +87,6 @@ function get2DDomain(state) {
   const { activeTab, tabActiveSpectrum, data } = state;
 
   const nucleus = activeTab.split(',');
-
   const { minX, maxX, minY, maxY } = data.find(
     (datum) => datum.id === tabActiveSpectrum[activeTab].id,
   );

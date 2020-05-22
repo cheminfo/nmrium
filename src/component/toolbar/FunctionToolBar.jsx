@@ -51,7 +51,11 @@ const FunctionToolBar = ({ defaultValue }) => {
   const handleChangeOption = useCallback(
     (selectedTool) => {
       if (
-        [options.peakPicking.id, options.integral.id].includes(selectedTool)
+        [
+          options.peakPicking.id,
+          options.integral.id,
+          options.integral2D.id,
+        ].includes(selectedTool)
       ) {
         alert.show(
           'Press Shift + Left Mouse button to select zone for integral and peak picking',
