@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useAlert } from 'react-alert';
 import Slider from 'react-animated-slider-2';
 import {
@@ -15,6 +15,8 @@ import {
 import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
 import 'react-animated-slider-2/build/horizontal.css';
+
+import { useMeasure } from 'react-use';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -38,6 +40,8 @@ const panelContainerStyle = css`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  width: 100%;
+  height: 100%;
 `;
 
 const toolbarStyle = css`
@@ -65,19 +69,32 @@ const toolbarStyle = css`
 `;
 
 const moleculeContainerStyle = css`
-  .slider {
-    height: 180px;
-    padding: 0px;
-  }
-  .slider p {
-    width: 100%;
-    margin: 0 auto;
-    display: block;
-    position: relative;
-  }
+  width: 100%;
+  height: 100%;
 
-  .slider svg polygon {
-    fill: gray !important;
+  .slider {
+    width: inherit;
+    height: inherit;
+    padding: 0px;
+
+    .mol-svg-container {
+      height: calc(100% - 25px);
+      div {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    p {
+      width: 100%;
+      margin: 0 auto;
+      display: block;
+      position: relative;
+    }
+
+    svg polygon {
+      fill: gray !important;
+    }
   }
 `;
 
@@ -100,8 +117,7 @@ const menuButton = css`
 `;
 
 const MoleculePanel = () => {
-  const refContainer = useRef();
-
+  const [refContainer, { width, height }] = useMeasure();
   const [open, setOpen] = React.useState(false);
   const [currentMolfile, setCurrentMolfile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -363,7 +379,7 @@ const MoleculePanel = () => {
             `${+(currentIndex + 1)} / ${molecules.length}`}{' '}
         </p>
       </div>
-      <div css={moleculeContainerStyle} ref={refContainer}>
+      <div css={moleculeContainerStyle}>
         <Slider
           onSlideChange={(event) => setCurrentIndex(event.slideIndex)}
           slideIndex={currentIndex}
@@ -376,12 +392,11 @@ const MoleculePanel = () => {
                   handleOpen(event, mol.key, mol.molfile)
                 }
               >
-                <div>
+                <div className="mol-svg-container" ref={refContainer}>
                   <OCLnmr
                     id={`molSVG${index}`}
-                    width={
-                      refContainer && refContainer.current.clientWidth - 70
-                    }
+                    width={width > 0 ? width : 100}
+                    height={height > 0 ? height : 100}
                     molfile={mol.molfile}
                     setMolfile={(molfile) =>
                       handleReplaceMolecule(mol.key, molfile)
