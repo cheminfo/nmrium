@@ -499,15 +499,15 @@ const projection2dHandler = (state, position) => {
     const scaleX = get2DXScale(state);
     const scaleY = get2DYScale(state);
 
-    const datumObject =
-      state.activeSpectrum && state.activeSpectrum.id
-        ? AnalysisObj.getDatum(state.activeSpectrum.id)
-        : null;
-    if (datumObject && datumObject instanceof Datum2D) {
+    if (state.activeSpectrum.id) {
       const x = scaleX.invert(position.x);
       const y = scaleY.invert(position.y);
 
-      const projection = datumObject.getProjection(x, y);
+      const projection = AnalysisObj.createProjection(
+        state.activeSpectrum.id,
+        x,
+        y,
+      );
       // eslint-disable-next-line no-console
       console.log(projection);
       // draft.projection = projection;

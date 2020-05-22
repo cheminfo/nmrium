@@ -152,7 +152,8 @@ export class Analysis {
     this.spectra.push(object);
   }
 
-  createProjection(id2d, options = {}) {
+  // eslint-disable-next-line no-unused-vars
+  createProjection(id2d, position = { x: 0, y: 0 }, options = {}) {
     const { horizontal = true, vertical = true } = options;
     let spectrum2d = this.getDatum(id2d);
     if (!spectrum2d) return;
