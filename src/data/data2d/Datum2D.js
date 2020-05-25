@@ -1,6 +1,10 @@
 import generateID from '../utilities/generateID';
 
 import Processing2D from './Processing2D';
+import { Datum1D } from '../data1d/Datum1D';
+
+// TODO import { zoneToX } from 'ml-spectra-processing';
+const zoneToX = () => {};
 
 export class Datum2D {
   /**
@@ -102,7 +106,41 @@ export class Datum2D {
    */
   // eslint-disable-next-line no-unused-vars
   getMissingProjection(nucleus) {
-    // return {[nucleus]:datum1d}
+    let index = this.info.nucleus.indexOf(nucleus);
+    // temporary because nuclus was undefined;
+    if (index === -1) index = 0;
+
+    let info = {
+      nucleus: [this.info.nucleus[index]], // 1H, 13C, 19F, ...
+      isFid: false,
+      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+    };
+
+    let from = index === 0 ? this.data.minX : this.data.minY;
+    let to = index === 0 ? this.data.maxX : this.data.maxY;
+    let nbPoints = index === 0 ? this.data.z.length : this.data.z[0].length;
+
+    let projection = new Float64Array(nbPoints);
+    if (index === 0) {
+      for (let i = 0; i < this.data.z.length; i++) {
+        for (let j = 0; j < this.data.z[0].length; j++) {
+          projection[i] += this.data.z[i][j];
+        }
+      }
+    } else {
+      for (let i = 0; i < this.data.z[0].length; i++) {
+        for (let j = 0; j < this.data.z.length; j++) {
+          projection[i] += this.data.z[j][i];
+        }
+      }
+    }
+
+    let data = {
+      x: zoneToX({ from, to }, nbPoints),
+      re: projection,
+    };
+    const datum1D = new Datum1D({ info, data });
+    return datum1D;
   }
 
   toJSON() {
