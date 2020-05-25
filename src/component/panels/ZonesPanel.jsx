@@ -46,7 +46,7 @@ const ZonesPanel = () => {
   useEffect(() => {
     const _data = activeSpectrum && data[activeSpectrum.index];
     if (_data) {
-      setZones(_data.zones.values.slice());
+      setZones(_data.zones && _data.zones.values.slice());
     }
   }, [activeSpectrum, data]);
   return (

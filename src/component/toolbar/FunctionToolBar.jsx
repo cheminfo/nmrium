@@ -7,6 +7,7 @@ import { Filters } from '../../data/data1d/filter1d/Filters';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
+import { useHelp } from '../elements/Help/Context';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 import { ZoomType } from '../reducer/actions/Zoom';
@@ -43,6 +44,7 @@ let debounceClickEvents = [];
 
 const FunctionToolBar = ({ defaultValue }) => {
   const [option, setOption] = useState();
+  const help = useHelp();
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
   const alert = useAlert();
   const preferences = usePreferences();
@@ -181,7 +183,12 @@ const FunctionToolBar = ({ defaultValue }) => {
     <>
       <ToggleButtonGroup value={option} onChange={handleChange}>
         {isButtonVisible('hideZoomTool') && (
-          <ToggleButton key={options.zoom.id} value={options.zoom.id}>
+          <ToggleButton
+            key={options.zoom.id}
+            value={options.zoom.id}
+            {...help.onHover}
+            helpID="zoom"
+          >
             <ToolTip
               title={`${options.zoom.label} ( Press z )`}
               popupPlacement="right"

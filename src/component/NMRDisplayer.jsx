@@ -26,6 +26,7 @@ import KeyListener from './EventsTrackers/keysListener';
 import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { PreferencesProvider } from './context/PreferencesContext';
+import { HelpProvider } from './elements/Help';
 import { ModalProvider } from './elements/Modal';
 import Header from './header/Header';
 import { HighlightProvider } from './highlight';
@@ -106,67 +107,78 @@ const NMRDisplayer = memo((props) => {
   //               state
   //               // isResizeEventStart,
   //             // }
+
+  const data = {
+    zoom: {
+      text:
+        'On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now sussex merely you. It possible no husbands jennings ye offended packages pleasant he. Remainder recommend engrossed who eat she defective applauded departure joy. Get dissimilar not introduced day her apartments. Fully as taste he mr do smile abode every. Luckily offered article led lasting country minutes nor old. Happen people things oh is oppose up parish effect. Law handsome old outweigh humoured far appetite. ',
+      imageURL: '',
+    },
+  };
+
   return (
     <ErrorBoundary>
       <PreferencesProvider value={preferences}>
-        <ModalProvider>
-          <AlertProvider template={AlertTemplate} {...alertOptions}>
-            <DispatchProvider value={dispatchMiddleWare}>
-              <ChartDataProvider value={{ ...state, isResizeEventStart }}>
-                <KeyListener parentRef={fullScreenRef} />
-                <HighlightProvider>
-                  <div
-                    ref={fullScreenRef}
-                    css={css`
-                      background-color: white;
-                      height: 100%;
-                      display: flex;
-                      flex-direction: column;
-                      div:focus {
-                        outline: none !important;
-                      }
-                      button:active,
-                      button:hover,
-                      button:focus,
-                      [type='button']:focus,
-                      button {
-                        outline: none !important;
-                      }
-                    `}
-                  >
-                    <Header isFullscreen={isFullscreen} onMaximize={toggle} />
-                    {/* ref={containerRef} */}
-                    <div style={{ flex: 1 }}>
-                      <DropZone>
-                        <ToolBar />
-                        <SplitPane
-                          style={splitPaneStyles.container}
-                          paneStyle={splitPaneStyles.pane}
-                          resizerStyle={splitPaneStyles.resizer}
-                          pane1Style={splitPaneStyles.pane1}
-                          split="vertical"
-                          defaultSize="calc(100% - 450px)"
-                          minSize="80%"
-                          onDragFinished={handleSplitPanelDragFinished}
-                          onDragStarted={() => {
-                            setResizeEventStart(true);
-                          }}
-                        >
-                          {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                            <Viewer1D />
-                          ) : (
-                            <Viewer2D />
-                          )}
-                          <Panels selectedTool={selectedTool} />
-                        </SplitPane>
-                      </DropZone>
+        <HelpProvider data={data}>
+          <ModalProvider>
+            <AlertProvider template={AlertTemplate} {...alertOptions}>
+              <DispatchProvider value={dispatchMiddleWare}>
+                <ChartDataProvider value={{ ...state, isResizeEventStart }}>
+                  <KeyListener parentRef={fullScreenRef} />
+                  <HighlightProvider>
+                    <div
+                      ref={fullScreenRef}
+                      css={css`
+                        background-color: white;
+                        height: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        div:focus {
+                          outline: none !important;
+                        }
+                        button:active,
+                        button:hover,
+                        button:focus,
+                        [type='button']:focus,
+                        button {
+                          outline: none !important;
+                        }
+                      `}
+                    >
+                      <Header isFullscreen={isFullscreen} onMaximize={toggle} />
+                      {/* ref={containerRef} */}
+                      <div style={{ flex: 1 }}>
+                        <DropZone>
+                          <ToolBar />
+                          <SplitPane
+                            style={splitPaneStyles.container}
+                            paneStyle={splitPaneStyles.pane}
+                            resizerStyle={splitPaneStyles.resizer}
+                            pane1Style={splitPaneStyles.pane1}
+                            split="vertical"
+                            defaultSize="calc(100% - 450px)"
+                            minSize="80%"
+                            onDragFinished={handleSplitPanelDragFinished}
+                            onDragStarted={() => {
+                              setResizeEventStart(true);
+                            }}
+                          >
+                            {displayerMode === DISPLAYER_MODE.DM_1D ? (
+                              <Viewer1D />
+                            ) : (
+                              <Viewer2D />
+                            )}
+                            <Panels selectedTool={selectedTool} />
+                          </SplitPane>
+                        </DropZone>
+                      </div>
                     </div>
-                  </div>
-                </HighlightProvider>
-              </ChartDataProvider>
-            </DispatchProvider>
-          </AlertProvider>
-        </ModalProvider>
+                  </HighlightProvider>
+                </ChartDataProvider>
+              </DispatchProvider>
+            </AlertProvider>
+          </ModalProvider>
+        </HelpProvider>
       </PreferencesProvider>
     </ErrorBoundary>
   );

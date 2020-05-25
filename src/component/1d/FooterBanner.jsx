@@ -7,6 +7,7 @@ import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
+import { useHelptData } from '../elements/Help';
 
 const styles = css`
   pointer-events: bounding-box;
@@ -20,6 +21,12 @@ const styles = css`
   position: absolute;
   width: 100%;
   bottom: 0;
+
+  .help {
+    font-size: 6px;
+    color: black;
+  }
+
   div {
     margin: 0px 10px;
     display: inline-block;
@@ -39,11 +46,31 @@ const styles = css`
     }
   }
 `;
+
+const helpStyles = css`
+  pointer-events: bounding-box;
+  user-select: 'none';
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+  background-color: rgba(0, 0, 0, 0.8);
+  // height: 60px;
+  padding: 10px;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+
+  span {
+    font-size: 6px;
+    color: white;
+  }
+`;
+
 const FooterBanner = () => {
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
   const { margin, width, height, activeSpectrum, data } = useChartData();
   const { scaleX, scaleY } = useScale();
+  const { helpText } = useHelptData();
 
   const getYValue = useCallback(
     (xPosition) => {
@@ -58,6 +85,14 @@ const FooterBanner = () => {
     },
     [activeSpectrum, data, scaleX],
   );
+
+  if (helpText) {
+    return (
+      <div css={helpStyles}>
+        <span className="help">{helpText}</span>
+      </div>
+    );
+  }
 
   if (
     !activeSpectrum ||

@@ -29,6 +29,9 @@ const ToggleButton = ({
   className,
   style,
   isVisible,
+  onMouseEnter,
+  onMouseLeave,
+  helpID,
 }) => {
   const [active, setActive] = useState(isActive);
   const toggleButton = useCallback(
@@ -62,6 +65,9 @@ const ToggleButton = ({
       style={style}
       className={active ? ` ${className}  active` : ` ${className} `}
       disabled={disabled}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      data-helpID={helpID}
     >
       {cloneElement(children, { style: { fontSize: '10px' } })}
     </button>
