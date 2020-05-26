@@ -301,7 +301,7 @@ const MoleculePanel = () => {
           return { ...signal, diaID: [] };
         }),
       };
-      dispatch({ type: 'CHANGE_RANGE_DATA', data: _range });
+      dispatch({ type: CHANGE_RANGE_DATA, data: _range });
     });
   }, [dispatch, rangesData]);
 

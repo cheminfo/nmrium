@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useState, useEffect } from 'react';
-import { FaRegTrashAlt, FaLink } from 'react-icons/fa';
+import { FaRegTrashAlt, FaLink, FaSearchPlus } from 'react-icons/fa';
 
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import { useHighlight } from '../../highlight';
@@ -28,6 +28,7 @@ const RangesTableRow = ({
   onChangeKind,
   onDelete,
   onUnlink,
+  onZoom,
   onContextMenu,
   preferences,
 }) => {
@@ -99,6 +100,10 @@ const RangesTableRow = ({
     handleOnUnlink();
     onDelete(getOriginal());
   }, [getOriginal, handleOnUnlink, onDelete]);
+
+  const handleOnZoom = useCallback(() => {
+    onZoom(getOriginal());
+  }, [getOriginal, onZoom]);
 
   const getShowPreference = (showKey) => {
     return preferences
@@ -206,6 +211,11 @@ const RangesTableRow = ({
           onClick={handleOnDelete}
         >
           <FaRegTrashAlt />
+        </button>
+      </td>
+      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
+        <button type="button" className="zoom-button" onClick={handleOnZoom}>
+          <FaSearchPlus />
         </button>
       </td>
     </tr>

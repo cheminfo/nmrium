@@ -16,6 +16,7 @@ import {
   DELETE_RANGE,
   CHANGE_RANGE_DATA,
   CHANGE_RANGE_SUM,
+  SET_X_DOMAIN,
 } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -198,7 +199,18 @@ const RangesTablePanel = memo(() => {
           return { ...signal, diaID: [] };
         }),
       };
-      dispatch({ type: 'CHANGE_RANGE_DATA', data: _range });
+      dispatch({ type: CHANGE_RANGE_DATA, data: _range });
+    },
+    [dispatch],
+  );
+
+  const zoomRangeHandler = useCallback(
+    (range) => {
+      const margin = Math.abs(range.from - range.to) / 2;
+      dispatch({
+        type: SET_X_DOMAIN,
+        xDomain: [range.from - margin, range.to + margin],
+      });
     },
     [dispatch],
   );
@@ -376,6 +388,7 @@ const RangesTablePanel = memo(() => {
                 tableData={tableData}
                 onChangeKind={changeRangeSignalKindHandler}
                 onDelete={deleteRangeHandler}
+                onZoom={zoomRangeHandler}
                 onUnlink={unlinkRangeHandler}
                 context={contextMenu}
                 preferences={rangesPreferences}
