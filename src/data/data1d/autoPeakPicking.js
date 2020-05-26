@@ -1,15 +1,15 @@
 import median from 'ml-array-median';
-import { autoPeaksPicking } from 'nmr-processing';
+import { xyAutoPeaksPicking } from 'nmr-processing';
 
 import generateID from '../utilities/generateID';
 
 export default function autoPeakPicking(datum1D, options) {
   const { minMaxRatio, maxNumberOfPeaks, noiseFactor } = options;
   // we calculate the noise but this could be improved
-  let noise = median(datum1D.data.re.map((y) => Math.abs(y)));
+  const noise = median(datum1D.data.re.map((y) => Math.abs(y)));
 
-  let { re, x } = datum1D.data;
-  let peaks = autoPeaksPicking(
+  const { re, x } = datum1D.data;
+  let peaks = xyAutoPeaksPicking(
     { x, y: re },
     {
       noiseLevel: noise * noiseFactor,
@@ -20,10 +20,7 @@ export default function autoPeakPicking(datum1D, options) {
       sgOptions: { windowSize: 15, polynomial: 3 },
     },
   );
-    console.log('data', peaks.slice());
   peaks.sort((a, b) => b.y - a.y);
-  console.log(maxNumberOfPeaks, peaks.length);
-  console.log(peaks)
   if (maxNumberOfPeaks < peaks.length) peaks = peaks.slice(0, maxNumberOfPeaks);
 
   return peaks.map((peak) => {

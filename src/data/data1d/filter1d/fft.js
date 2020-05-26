@@ -1,7 +1,4 @@
-import {
-  reimFFT,
-  reimPhaseCorrection,
-} from 'ml-spectra-processing';
+import { reimFFT, reimPhaseCorrection } from 'ml-spectra-processing';
 
 export const id = 'fft';
 export const name = 'FFT';

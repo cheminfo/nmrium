@@ -9,7 +9,7 @@
     "@emotion/core": "^10.0.28",
     "brukerconverter": "^2.1.2",
     "cheminfo-font": "^0.25.0",
-    "nmr-processing": "^0.0.1",
+    "nmr-processing": "^0.1.1",
     "d3": "^5.16.0",
     "file-saver": "^2.0.2",
     "immer": "^6.0.5",
