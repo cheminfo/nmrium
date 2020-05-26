@@ -39,6 +39,8 @@ const styles = {
   },
 };
 
+let dealyTimeOut = null;
+
 const HelpProvider = ({
   children,
   data,
@@ -98,7 +100,7 @@ const HelpProvider = ({
 
       modal.close = () => remove(modal);
 
-      setTimeout(() => {
+      dealyTimeOut = setTimeout(() => {
         if (modal.options.timeout) {
           const timerId = setTimeout(() => {
             remove(modal);
@@ -117,8 +119,13 @@ const HelpProvider = ({
     [data, delay, position, remove, timeout, type],
   );
 
+  const clear = useCallback(() => {
+    clearTimeout(dealyTimeOut);
+  }, []);
+
   const [helpState, dispatch] = useReducer(helpReducer, { ...initState, data });
-  const contextValue = useMemo(() => ({ helpState, dispatch, show }), [
+  const contextValue = useMemo(() => ({ helpState, dispatch, show, clear }), [
+    clear,
     helpState,
     show,
   ]);

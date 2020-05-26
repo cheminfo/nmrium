@@ -23,6 +23,7 @@ export function useHelp() {
 
   const hide = useCallback(() => {
     context.dispatch({ type: 'HIDE' });
+    context.clear();
   }, [context]);
 
   const onHover = {
