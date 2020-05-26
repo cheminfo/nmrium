@@ -48,6 +48,7 @@
     "react-ocl-nmr": "^0.1.5",
     "react-split-pane": "^0.1.91",
     "react-table": "7.0.0-rc.15",
+    "react-transition-group": "^4.4.1",
     "react-use": "^14.2.0",
     "spectra-data": "^3.4.11",
     "spectra-data-ranges": "^1.1.8",

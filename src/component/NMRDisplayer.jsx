@@ -112,7 +112,7 @@ const NMRDisplayer = memo((props) => {
     zoom: {
       text:
         'On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now sussex merely you. It possible no husbands jennings ye offended packages pleasant he. Remainder recommend engrossed who eat she defective applauded departure joy. Get dissimilar not introduced day her apartments. Fully as taste he mr do smile abode every. Luckily offered article led lasting country minutes nor old. Happen people things oh is oppose up parish effect. Law handsome old outweigh humoured far appetite. ',
-      imageURL: '',
+      imageURL: './help_images/test.gif',
     },
   };
 

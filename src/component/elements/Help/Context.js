@@ -15,6 +15,7 @@ export function useHelp() {
       const id = e.target.getAttribute('data-helpID');
       if (id) {
         context.dispatch({ type: 'SHOW', id });
+        context.show(id);
       }
     },
     [context],
