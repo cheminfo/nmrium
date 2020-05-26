@@ -15,7 +15,6 @@ import {
 import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
 import 'react-animated-slider-2/build/horizontal.css';
-
 import { useMeasure } from 'react-use';
 
 import { useChartData } from '../context/ChartContext';
@@ -164,44 +163,6 @@ const MoleculePanel = () => {
     [element],
   );
 
-  const handleOnClickAtom = useCallback(
-    (atom) => {
-      if (
-        highlightData.highlight.highlightedPermanently &&
-        highlightData.highlight.highlightedPermanently.length > 0
-      ) {
-        const range = rangesData.find((_range) =>
-          highlightData.highlight.highlightedPermanently.includes(_range.id),
-        );
-        const _oclIDs = getOclIDs(atom);
-
-        if (_oclIDs.length > 0) {
-          // determine the level of setting the diaID array (range vs. signal level) and save there
-          let _range = { ...range };
-          if (range.signal && range.signal.length > 0) {
-            range.signal.forEach((signal, i) => {
-              if (signal.multiplicity === 'm') {
-                _range.diaID = _range.diaID.concat(_oclIDs);
-              } else {
-                _range.signal[i] = {
-                  ..._range.signal[i],
-                  diaID: _range.signal[i].diaID.concat(_oclIDs),
-                };
-              }
-            });
-          }
-
-          dispatch({ type: CHANGE_RANGE_DATA, data: _range });
-        } else {
-          alert.info(
-            'Not assigned! Different atom type or no attached hydrogens found!',
-          );
-        }
-      }
-    },
-    [alert, dispatch, getOclIDs, highlightData, rangesData],
-  );
-
   const diaIDs = useMemo(() => {
     return rangesData.map((_range) => {
       return {
@@ -219,6 +180,75 @@ const MoleculePanel = () => {
   const assignedAtomHighlights = useMemo(() => {
     return diaIDs.map((diaID) => diaID.diaID).flat();
   }, [diaIDs]);
+
+  const toggleAssignment = useCallback(
+    (diaID, oclIDs) => {
+      // 1. one atom can only be assigned to one range
+      // 2. check whether an atom is already assigned to a range to allow toggling the assignment
+      if (
+        assignedAtomHighlights.some((_oclID) => oclIDs.includes(_oclID)) &&
+        !diaID.some((_oclID) => oclIDs.includes(_oclID))
+      ) {
+        alert.info('Atom is already assigned to another range!');
+        return diaID;
+      }
+      oclIDs.forEach((_oclID) => {
+        if (diaID.includes(_oclID)) {
+          diaID.splice(diaID.indexOf(_oclID), 1);
+        } else {
+          diaID.push(_oclID);
+        }
+      });
+
+      return diaID;
+    },
+    [alert, assignedAtomHighlights],
+  );
+
+  const handleOnClickAtom = useCallback(
+    (atom) => {
+      if (
+        highlightData.highlight.highlightedPermanently &&
+        highlightData.highlight.highlightedPermanently.length > 0
+      ) {
+        const range = rangesData.find((_range) =>
+          highlightData.highlight.highlightedPermanently.includes(_range.id),
+        );
+        const _oclIDs = getOclIDs(atom);
+
+        if (_oclIDs.length > 0) {
+          // determine the level of setting the diaID array (range vs. signal level) and save there
+          let _range = { ...range };
+          if (range.signal && range.signal.length > 0) {
+            range.signal.forEach((signal, i) => {
+              if (signal.multiplicity === 'm') {
+                toggleAssignment(_range.diaID, _oclIDs);
+              } else {
+                _range.signal[i] = {
+                  ..._range.signal[i],
+                  diaID: toggleAssignment(_range.signal[i].diaID, _oclIDs),
+                };
+              }
+            });
+          }
+
+          dispatch({ type: CHANGE_RANGE_DATA, data: _range });
+        } else {
+          alert.info(
+            'Not assigned! Different atom type or no attached hydrogens found!',
+          );
+        }
+      }
+    },
+    [
+      alert,
+      dispatch,
+      getOclIDs,
+      highlightData.highlight.highlightedPermanently,
+      rangesData,
+      toggleAssignment,
+    ],
+  );
 
   const currentRangeOnHover = useMemo(() => {
     return diaIDs.find((_range) =>
