@@ -36,7 +36,7 @@ const RangesTableRow = ({
     return [].concat(
       [rowData.id],
       rowData.diaID ? rowData.diaID : [],
-      rowData.signal ? rowData.signal.map((signal) => signal.diaID).flat() : [],
+      rowData.signal ? rowData.signal.map((signal) => signal.diaID || []).flat() : [],
     );
   }, [rowData]);
 

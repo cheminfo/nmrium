@@ -48,17 +48,16 @@ const stylesHighlighted = css`
 
 const Range = ({ rangeData }) => {
   const { id, from, to, integral, kind } = rangeData;
-
   const highlightIDs = useMemo(() => {
     return [].concat(
       [rangeData.id],
       rangeData.diaID ? rangeData.diaID : [],
       rangeData.signal
-        ? rangeData.signal.map((_signal) => _signal.diaID).flat()
+        ? rangeData.signal.map((_signal) => _signal.diaID || []).flat()
         : [],
     );
   }, [rangeData]);
-
+  
   const highlight = useHighlight(highlightIDs);
 
   const { scaleX } = useScale();
