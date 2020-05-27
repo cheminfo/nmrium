@@ -83,40 +83,42 @@ const HelpProvider = ({
 
   const show = useCallback(
     (helpID, options = {}) => {
-      const id = Math.random().toString(36).substr(2, 9);
+      if (!modals.some((m) => m.helpID === helpID)) {
+        const id = Math.random().toString(36).substr(2, 9);
 
-      const modalOptions = {
-        position: options.position || position,
-        timeout,
-        type,
-        ...options,
-      };
+        const modalOptions = {
+          position: options.position || position,
+          timeout,
+          type,
+          ...options,
+        };
 
-      const modal = {
-        id,
-        ...data[helpID],
-        options: modalOptions,
-      };
+        const modal = {
+          helpID,
+          id,
+          ...data[helpID],
+          options: modalOptions,
+        };
 
-      modal.close = () => remove(modal);
+        modal.close = () => remove(modal);
 
-      dealyTimeOut = setTimeout(() => {
-        if (modal.options.timeout) {
-          const timerId = setTimeout(() => {
-            remove(modal);
-            timersId.current.splice(timersId.current.indexOf(timerId), 1);
-          }, modal.options.timeout);
+        dealyTimeOut = setTimeout(() => {
+          if (modal.options.timeout) {
+            const timerId = setTimeout(() => {
+              remove(modal);
+              timersId.current.splice(timersId.current.indexOf(timerId), 1);
+            }, modal.options.timeout);
 
-          timersId.current.push(timerId);
-        }
+            timersId.current.push(timerId);
+          }
 
-        setModals((state) => state.concat(modal));
-        if (modal.options.onOpen) modal.options.onOpen();
-      }, delay);
-
-      return modal;
+          setModals((state) => state.concat(modal));
+          if (modal.options.onOpen) modal.options.onOpen();
+        }, delay);
+        return modal;
+      }
     },
-    [data, delay, position, remove, timeout, type],
+    [data, delay, modals, position, remove, timeout, type],
   );
 
   const clear = useCallback(() => {
