@@ -1,7 +1,7 @@
+import { Datum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
 
 import Processing2D from './Processing2D';
-import { Datum1D } from '../data1d/Datum1D';
 
 // TODO import { zoneToX } from 'ml-spectra-processing';
 const zoneToX = () => {};

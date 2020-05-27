@@ -66,7 +66,7 @@ const AutoPeakPickingOptionPanel = () => {
         }}
         defaultValue={50}
       />
-       <NumberInput
+      <NumberInput
         ref={noiseFactor}
         label="Noise factor"
         name="noiseFactor"
