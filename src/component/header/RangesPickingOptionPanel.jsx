@@ -43,12 +43,14 @@ const RangesPickingOptionPanel = () => {
     dispatch({
       type: AUTO_RANGES_DETECTION,
       options: {
-        minMaxRatio: 0.05,
-        nH: 100,
-        compile: true,
-        frequencyCluster: 16,
-        clean: null,
-        keepPeaks: true,
+        peakPicking: {
+          minMaxRatio: 0.05,
+          nH: 100,
+          compile: false,
+          frequencyCluster: 16,
+          clean: true,
+          keepPeaks: true,
+        },
       },
     });
   }, [dispatch]);

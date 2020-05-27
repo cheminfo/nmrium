@@ -1,32 +1,40 @@
-import * as SD from 'spectra-data';
+import { xyAutoRangesPicking } from 'nmr-processing';
 
-export default function autoRangesDetection(datum1D, options) {
-  const {
-    minMaxRatio = 0.1,
-    nH = 100,
-    compile = true,
-    frequencyCluster = 16,
-    clean = null,
-    keepPeaks = true,
-  } = options;
+let defaultOptions = {
+  peakPicking: {
+    minMaxRatio: 0.05,
+    realTopDetection: true,
+    maxCriteria: true,
+    smoothY: false,
+    nH: 100,
+    compile: true,
+    frequencyCluster: 16,
+    clean: true,
+    keepPeaks: true,
+    sgOptions: { windowSize: 7, polynomial: 3 },
+  },
+};
+
+export default function autoRangesDetection(datum1D, options = {}) {
   // we calculate the noise but this could be improved
   let noise = datum1D.data.re.map((y) => Math.abs(y)).sort()[
     Math.floor(datum1D.data.re.length / 2)
   ];
-  const spectrum = SD.NMR.fromXY(datum1D.data.x, datum1D.data.re);
-  const ranges = spectrum.createRanges({
-    noiseLevel: noise * 3,
-    minMaxRatio: minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
-    realTopDetection: true,
-    maxCriteria: true,
-    smoothY: false,
-    nH,
-    compile,
-    frequencyCluster,
-    clean,
-    keepPeaks,
-    sgOptions: { windowSize: 7, polynomial: 3 },
-  });
 
+  const { re, x } = datum1D.data;
+  const { frequency, nucleus } = datum1D.info;
+
+  options.peakPicking = Object.assign(
+    {},
+    defaultOptions.peakPicking,
+    options.peakPicking,
+    {
+      frequency,
+      nucleus,
+      noiseLevel: 3 * noise,
+    },
+  );
+
+  const ranges = xyAutoRangesPicking({ x, y: re }, options);
   return ranges;
 }

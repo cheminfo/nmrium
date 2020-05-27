@@ -34,6 +34,7 @@ const AutoPeakPickingOptionPanel = () => {
   const dispatch = useDispatch();
   const minMaxRatioRef = useRef();
   const maxNumberOfPeaksRef = useRef();
+  const noiseFactor = useRef();
 
   const handleApplyFilter = useCallback(() => {
     dispatch({
@@ -41,6 +42,7 @@ const AutoPeakPickingOptionPanel = () => {
       options: {
         maxNumberOfPeaks: maxNumberOfPeaksRef.current.value,
         minMaxRatio: minMaxRatioRef.current.value,
+        noiseFactor: noiseFactor.current.value,
       },
     });
   }, [dispatch]);
@@ -64,6 +66,17 @@ const AutoPeakPickingOptionPanel = () => {
         }}
         defaultValue={50}
       />
+       <NumberInput
+        ref={noiseFactor}
+        label="Noise factor"
+        name="noiseFactor"
+        style={{
+          input: styles.input,
+          inputContainer: styles.inputContainer,
+          label: styles.label,
+        }}
+        defaultValue={3}
+      />
       <NumberInput
         ref={minMaxRatioRef}
         label="Min Max Ratio:"
@@ -74,7 +87,7 @@ const AutoPeakPickingOptionPanel = () => {
           label: styles.label,
         }}
         defaultValue={0.1}
-        step="0.1"
+        step="0.01"
       />
 
       <button
