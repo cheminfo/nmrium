@@ -195,6 +195,7 @@ const RangesTablePanel = memo(() => {
       const _range = {
         ...range,
         diaID: [],
+        pubIntegral: 0,
         signal: range.signal.map((signal) => {
           return { ...signal, diaID: [] };
         }),

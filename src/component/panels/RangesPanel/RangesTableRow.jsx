@@ -185,13 +185,18 @@ const RangesTableRow = ({
       </td>
       <td {...rowSpanTags}>
         {showUnlinkButton || highlight.isActivePermanently ? (
-          <button
-            type="button"
-            className="unlink-button"
-            onClick={handleOnUnlink}
-          >
-            <FaLink color={highlight.isActivePermanently ? 'grey' : 'black'} />
-          </button>
+          <span>
+            <button
+              type="button"
+              className="unlink-button"
+              onClick={handleOnUnlink}
+            >
+              <FaLink
+                color={highlight.isActivePermanently ? 'grey' : 'black'}
+              />
+            </button>
+            <sup>[{rowData.pubIntegral}]</sup>
+          </span>
         ) : null}
       </td>
       <td {...rowSpanTags} {...stopPropagationOnClickTag}>
