@@ -46,7 +46,7 @@ const RangesPickingOptionPanel = () => {
         peakPicking: {
           minMaxRatio: 0.05,
           nH: 100,
-          compile: false,
+          compile: true,
           frequencyCluster: 16,
           clean: true,
           keepPeaks: true,
