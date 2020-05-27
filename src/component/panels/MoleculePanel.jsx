@@ -150,15 +150,15 @@ const MoleculePanel = () => {
     activeTab,
   ]);
 
-  const getOclIDs = useCallback(
+  const extractFromAtom = useCallback(
     (atom) => {
       return element && Object.keys(atom).length > 0
         ? element === atom.atomLabel // take always oclID if atom type is same as element of activeTab
-          ? [atom.oclID]
+          ? { oclIDs: [atom.oclID], nbAtoms: atom.nbAtoms }
           : element === 'H' // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
-          ? atom.hydrogenOCLIDs
-          : []
-        : [];
+          ? { oclIDs: atom.hydrogenOCLIDs, nbAtoms: atom.nbHydrogens }
+          : { oclIDs: [], nbAtoms: 0 }
+        : { oclIDs: [], nbAtoms: 0 };
     },
     [element],
   );
@@ -182,7 +182,7 @@ const MoleculePanel = () => {
   }, [diaIDs]);
 
   const toggleAssignment = useCallback(
-    (diaID, oclIDs) => {
+    (diaID, oclIDs, pubIntegral) => {
       // 1. one atom can only be assigned to one range
       // 2. check whether an atom is already assigned to a range to allow toggling the assignment
       if (
@@ -190,17 +190,21 @@ const MoleculePanel = () => {
         !diaID.some((_oclID) => oclIDs.includes(_oclID))
       ) {
         alert.info('Atom is already assigned to another range!');
-        return diaID;
+        return { diaID, pubIntegral };
       }
+      const _diaID = diaID.slice();
+      let _pubIntegral = pubIntegral;
       oclIDs.forEach((_oclID) => {
-        if (diaID.includes(_oclID)) {
-          diaID.splice(diaID.indexOf(_oclID), 1);
+        if (_diaID.includes(_oclID)) {
+          _diaID.splice(_diaID.indexOf(_oclID), 1);
+          _pubIntegral--;
         } else {
-          diaID.push(_oclID);
+          _diaID.push(_oclID);
+          _pubIntegral++;
         }
       });
 
-      return diaID;
+      return { diaID: _diaID, pubIntegral: _pubIntegral };
     },
     [alert, assignedAtomHighlights],
   );
@@ -214,20 +218,32 @@ const MoleculePanel = () => {
         const range = rangesData.find((_range) =>
           highlightData.highlight.highlightedPermanently.includes(_range.id),
         );
-        const _oclIDs = getOclIDs(atom);
+        const oclIDs = extractFromAtom(atom).oclIDs;
 
-        if (_oclIDs.length > 0) {
+        if (oclIDs.length > 0) {
           // determine the level of setting the diaID array (range vs. signal level) and save there
           let _range = { ...range };
           if (range.signal && range.signal.length > 0) {
             range.signal.forEach((signal, i) => {
               if (signal.multiplicity === 'm') {
-                toggleAssignment(_range.diaID, _oclIDs);
+                const assignment = toggleAssignment(
+                  _range.diaID,
+                  oclIDs,
+                  _range.pubIntegral,
+                );
+                _range.diaID = assignment.diaID;
+                _range.pubIntegral = assignment.pubIntegral;
               } else {
+                const assignment = toggleAssignment(
+                  _range.signal[i].diaID,
+                  oclIDs,
+                  _range.pubIntegral,
+                );
                 _range.signal[i] = {
                   ..._range.signal[i],
-                  diaID: toggleAssignment(_range.signal[i].diaID, _oclIDs),
+                  diaID: assignment.diaID,
                 };
+                _range.pubIntegral = assignment.pubIntegral;
               }
             });
           }
@@ -243,7 +259,7 @@ const MoleculePanel = () => {
     [
       alert,
       dispatch,
-      getOclIDs,
+      extractFromAtom,
       highlightData.highlight.highlightedPermanently,
       rangesData,
       toggleAssignment,
@@ -260,11 +276,11 @@ const MoleculePanel = () => {
 
   const handleOnHoverAtom = useCallback(
     (atom) => {
-      const _oclIDs = getOclIDs(atom);
+      const oclIDs = extractFromAtom(atom).oclIDs;
       const filtered =
         Object.keys(atom).length > 0
           ? diaIDs.find((_range) =>
-              _range.diaID.some((id) => _oclIDs.includes(id)),
+              _range.diaID.some((id) => oclIDs.includes(id)),
             )
           : null;
       const rangeID = filtered
@@ -289,7 +305,7 @@ const MoleculePanel = () => {
         }
       }
     },
-    [currentAtomOnHover, diaIDs, getOclIDs, highlightData],
+    [currentAtomOnHover, diaIDs, extractFromAtom, highlightData],
   );
 
   const handleOnUnlinkAll = useCallback(() => {
@@ -297,11 +313,12 @@ const MoleculePanel = () => {
       const _range = {
         ...range,
         diaID: [],
+        pubIntegral: 0,
         signal: range.signal.map((signal) => {
           return { ...signal, diaID: [] };
         }),
       };
-      dispatch({ type: 'CHANGE_RANGE_DATA', data: _range });
+      dispatch({ type: CHANGE_RANGE_DATA, data: _range });
     });
   }, [dispatch, rangesData]);
 
