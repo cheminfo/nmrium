@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { Datum2D } from '../../../data/data2d/Datum2D';
+// import { Datum2D } from '../../../data/data2d/Datum2D';
 import { AnalysisObj } from '../core/Analysis';
 // import { DISPLAYER_MODE } from '../core/Constants';
 // import Spectrum2DProcessing from '../core/Spectrum2DProcessing';
@@ -129,15 +129,10 @@ const addMissingProjectionHander = (state, action) => {
   // eslint-disable-next-line no-unused-vars
   return produce(state, (draft) => {
     const nucleus = action.nucleus;
-    const datumObject =
-      state.activeSpectrum && state.activeSpectrum.id
-        ? AnalysisObj.getDatum(state.activeSpectrum.id)
-        : null;
-    if (datumObject && datumObject instanceof Datum2D) {
-      const missingProjection = datumObject.getMissingProjection(nucleus);
-      // eslint-disable-next-line no-console
-      console.log(missingProjection);
-      // draft.projection = projection;
+    if (state.activeSpectrum && state.activeSpectrum.id) {
+      AnalysisObj.addMissingProjection(state.activeSpectrum.id, nucleus);
+      draft.data = AnalysisObj.getSpectraData();
+      setDomain(draft);
     }
   });
 };

@@ -164,6 +164,15 @@ export class Analysis {
     return result;
   }
 
+  addMissingProjection(id2d, nuclues = []) {
+    const spectrum2d = this.getDatum(id2d);
+
+    for (let n of nuclues) {
+      const datum1D = spectrum2d.getMissingProjection(n);
+      this.spectra.push(datum1D);
+    }
+  }
+
   getDatum(id) {
     return this.spectra.find((ob) => ob.id === id);
   }
