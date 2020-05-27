@@ -277,7 +277,9 @@ export class Datum1D {
         pubIntegral: 0,
         absolute: this.getIntegration(range.from, range.to),
         kind: 'signal',
-        signal: [{ ...range.signal[0], from: range.from, to: range.to }],
+        signal: range.signal.map((_signal) => {
+          return { ..._signal, diaID: [] };
+        }),
       };
     });
     this.updateIntegralRanges();
