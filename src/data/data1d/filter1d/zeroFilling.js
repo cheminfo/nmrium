@@ -9,26 +9,30 @@ export function apply(datum1D, size) {
   if (!isApplicable(datum1D)) {
     throw new Error('zeroFilling not applicable on this data');
   }
+
+  let digitalFilterApplied = datum1D.filters.some(
+    (e) => e.name === 'digitalFilter' && e.flag,
+  );
+
   let grpdly = datum1D.info.digitalFilter;
   let pointsToShift;
-  if (grpdly > 0) {
+  if (grpdly > 0 && digitalFilterApplied) {
     pointsToShift = Math.floor(grpdly);
   } else {
     pointsToShift = 0;
   }
 
   const { re, im, x } = datum1D.data;
+
   let newRE = new Float64Array(size);
   let newIM = new Float64Array(size);
   let newX = new Float64Array(size);
 
   const length = Math.min(size, re.length);
 
-  for (let i = 0; i < length - pointsToShift; i++) {
-    newRE[i] = re[i];
-    newIM[i] = im[i];
-    newX[i] = x[i];
-  }
+  newRE.set(re.slice(0, length - pointsToShift));
+  newIM.set(im.slice(0, length - pointsToShift));
+  newX.set(x.slice(0, length - pointsToShift));
 
   let diff = x[1] - x[0];
   let currentX = x[length - pointsToShift - 1];
@@ -38,14 +42,8 @@ export function apply(datum1D, size) {
   }
 
   if (pointsToShift > 0 && pointsToShift < size) {
-    newRE.set(
-      re.slice(re.length - pointsToShift, re.length),
-      size - pointsToShift,
-    );
-    newIM.set(
-      im.slice(re.length - pointsToShift, re.length),
-      size - pointsToShift,
-    );
+    newRE.set(re.slice(re.length - pointsToShift), size - pointsToShift);
+    newIM.set(im.slice(re.length - pointsToShift), size - pointsToShift);
   }
 
   datum1D.data = { ...datum1D.data, ...{ re: newRE, im: newIM, x: newX } };
@@ -56,9 +54,9 @@ export function isApplicable(datum1D) {
   return false;
 }
 
-export function reduce(previousValue, newValue) {
+export function reduce(_previousValue, newValue) {
   return {
     once: true,
-    reduce: previousValue + newValue,
+    reduce: newValue,
   };
 }
