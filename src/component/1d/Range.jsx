@@ -57,7 +57,7 @@ const Range = ({ rangeData }) => {
         : [],
     );
   }, [rangeData]);
-  
+
   const highlight = useHighlight(highlightIDs);
 
   const { scaleX } = useScale();

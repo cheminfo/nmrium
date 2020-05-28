@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useState, useEffect } from 'react';
-import { FaRegTrashAlt, FaLink, FaSearchPlus } from 'react-icons/fa';
+import { FaRegTrashAlt, FaLink, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import { useHighlight } from '../../highlight';
@@ -29,6 +29,7 @@ const RangesTableRow = ({
   onDelete,
   onUnlink,
   onZoom,
+  onEdit,
   onContextMenu,
   preferences,
 }) => {
@@ -36,7 +37,9 @@ const RangesTableRow = ({
     return [].concat(
       [rowData.id],
       rowData.diaID ? rowData.diaID : [],
-      rowData.signal ? rowData.signal.map((signal) => signal.diaID || []).flat() : [],
+      rowData.signal
+        ? rowData.signal.map((signal) => signal.diaID || []).flat()
+        : [],
     );
   }, [rowData]);
 
@@ -104,6 +107,10 @@ const RangesTableRow = ({
   const handleOnZoom = useCallback(() => {
     onZoom(getOriginal());
   }, [getOriginal, onZoom]);
+
+  const handleOnEdit = useCallback(() => {
+    onEdit(getOriginal());
+  }, [getOriginal, onEdit]);
 
   const getShowPreference = (showKey) => {
     return preferences
@@ -221,6 +228,11 @@ const RangesTableRow = ({
       <td {...rowSpanTags} {...stopPropagationOnClickTag}>
         <button type="button" className="zoom-button" onClick={handleOnZoom}>
           <FaSearchPlus />
+        </button>
+      </td>
+      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
+        <button type="button" className="edit-button" onClick={handleOnEdit}>
+          <FaEdit color="blue" />
         </button>
       </td>
     </tr>

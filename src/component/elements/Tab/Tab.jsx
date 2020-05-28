@@ -1,18 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
-const Tab = ({ label, activeTab, onClick }) => {
+const Tab = ({ id, label, activeTab, onClick }) => {
   let className = 'tab-list-item';
 
-  if (activeTab === label) {
+  // use tab identifier if given (higher priority)
+  if (id !== undefined) {
+    if (activeTab === id) {
+      className += ' tab-list-active';
+    }
+  } else if (activeTab === label) {
     className += ' tab-list-active';
   }
 
   const onClickHandler = useCallback(
     (e) => {
-      onClick({ ...e, label });
+      onClick({ ...e, label, id });
     },
-    [label, onClick],
+    [label, onClick, id],
   );
   return (
     <li className={className} onClick={onClickHandler}>
@@ -22,9 +27,11 @@ const Tab = ({ label, activeTab, onClick }) => {
 };
 
 Tab.propTypes = {
-  activeTab: PropTypes.string,
+  activeTab: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  // tab identifier, if given, can be a string or number
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default Tab;
