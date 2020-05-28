@@ -394,17 +394,17 @@ const setDisplayerMode = (draft, data) => {
     : DISPLAYER_MODE.DM_1D;
 };
 
-const setActiveTab = (draft, dataGroupByTab, tab) => {
+const setActiveTab = (draft, dataGroupByTab, tab, refresh = false) => {
   const groupByTab = Object.keys(dataGroupByTab).sort((a, b) =>
     a.split(',').length > b.split(',').length ? -1 : 1,
   );
 
   if (
     JSON.stringify(groupByTab) !==
-    JSON.stringify(Object.keys(draft.tabActiveSpectrum))
+      JSON.stringify(Object.keys(draft.tabActiveSpectrum)) ||
+    refresh
   ) {
     let tabs2D = [];
-
     const tabkeys = Object.keys(dataGroupByTab).sort((a, b) =>
       a.split(',').length > b.split(',').length ? -1 : 1,
     );
@@ -532,4 +532,5 @@ export {
   handelSetActiveTab,
   levelChangeHandler,
   projection2dHandler,
+  setActiveTab,
 };
