@@ -205,7 +205,7 @@ const SpectrumListPanel = memo(
         // setActiveTabID(tab);
         // showSpectrumsByGroup(tab, spectrumsGroupByNucleus);
 
-        dispatch({ type: SET_ACTIVE_TAB, tab: tab });
+        dispatch({ type: SET_ACTIVE_TAB, tab: tab.label });
       },
       [dispatch],
     );

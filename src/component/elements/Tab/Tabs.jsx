@@ -50,21 +50,24 @@ const Tabs = ({ children, onClick, defaultTabID }) => {
 
   const onClickTabHandler = useCallback(
     (tab) => {
-      onClick(tab.label);
-      setActiveTab(tab.label);
+      const { label, id: identifier } = tab;
+      onClick({ label, identifier });
+      // use tab identifier if given (higher priority)
+      setActiveTab(identifier !== undefined ? identifier : label);
     },
     [onClick],
   );
 
   const tabs = useMemo(() => {
     return Children.map(children, (child) => {
-      const { label } = child.props;
+      const { label, identifier } = child.props;
       return (
         <Tab
           activeTab={activeTab}
           key={label}
           label={label}
           onClick={onClickTabHandler}
+          id={identifier}
         />
       );
     });
@@ -72,7 +75,13 @@ const Tabs = ({ children, onClick, defaultTabID }) => {
 
   const tabsContent = useMemo(() => {
     return Children.map(children, (child) => {
-      if (child.props.label !== activeTab) {
+      const { label, identifier } = child.props;
+      // use tab identifier if given (higher priority)
+      if (identifier !== undefined) {
+        if (identifier !== activeTab) {
+          return cloneElement(child, { style: { display: 'none' } });
+        }
+      } else if (label !== activeTab) {
         return cloneElement(child, { style: { display: 'none' } });
       }
       return cloneElement(child, { style: { display: 'block' } });
