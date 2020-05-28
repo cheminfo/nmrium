@@ -12,6 +12,7 @@ describe('zeroFilling', () => {
         isComplex: true,
         isFid: true,
       },
+      filters: [],
     };
     apply(spectrum, 8);
     expect(spectrum.data).toStrictEqual({
@@ -32,6 +33,7 @@ describe('zeroFilling', () => {
         isComplex: true,
         isFid: true,
       },
+      filters: [],
     };
     let originalX = spectrum.data.x;
     let originalRe = spectrum.data.re;
