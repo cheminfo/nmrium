@@ -28,8 +28,8 @@ const SignalsForm = memo(() => {
       values.newSignalTo,
       values.spectrumData.info.frequency,
     );
-    const _signals = values.signals.concat(newSignal);
-    setFieldValue('signals', _signals);
+    const _signals = values.signals.slice();
+    setFieldValue('signals', _signals.concat(newSignal));
     setFieldValue('selectedSignalIndex', _signals.length - 1);
   }, [
     setFieldValue,

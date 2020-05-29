@@ -66,10 +66,9 @@ const EditRangeModal = ({
     (formValues) => {
       const editedRange = {
         ...rangeData,
-        from: formValues.from,
-        to: formValues.to,
         signal: formValues.signals,
       };
+      console.log(editedRange);
       onSave(editedRange);
     },
     [onSave, rangeData],

@@ -1,8 +1,8 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx, css } from '@emotion/core';
 import { Formik, Form } from 'formik';
 
-import MultiplicitiesForm from './MultiplicitiesForm';
+// import MultiplicitiesForm from './MultiplicitiesForm';
 import SignalsForm from './SignalsForm';
 import {
   SaveButton,
@@ -10,6 +10,14 @@ import {
   CloseButton,
 } from './elements/DefaultButtons';
 import RangeValidationSchema from './validation/RangeValidationScheme';
+
+const ButtonContainerStyle = css`
+  text-align: center;
+  button {
+    background-color: transparent;
+    border: 1px solid #dedede;
+  }
+`;
 
 const RangeForm = ({
   rangeData,
@@ -22,11 +30,14 @@ const RangeForm = ({
       initialValues={{
         from: rangeData.from,
         to: rangeData.to,
-        selectedSignalIndex: 0,
-        selectedMultiplicityIndex: 0,
+        // selectedMultiplicityIndex: 0,
         signals: rangeData.signal.slice(),
         newSignalFrom: rangeData.from,
         newSignalTo: rangeData.to,
+        selectedSignalIndex: 0,
+        selectedSignalCouplings: [],
+        newCouplingMultiplicity: '',
+        newCouplingCoupling: '',
         spectrumData: spectrumData,
       }}
       validationSchema={RangeValidationSchema(spectrumData)}
@@ -35,29 +46,19 @@ const RangeForm = ({
         setSubmitting(false);
       }}
     >
-      {({ values }) => (
-        <Form>
-          <p>from (ppm): {values.from.toFixed(5)} </p>
-          <p>to (ppm): {values.to.toFixed(5)} </p>
-          <p>size (ppm) : {(values.to - values.from).toFixed(5)}</p>
-
-          <p>
-            signal count: {values.signals.length} ({values.selectedSignalIndex})
-          </p>
-
-          <div>
+      {() => {
+        return (
+          <Form>
             <SignalsForm spectrumData={spectrumData} />
-          </div>
 
-          <div>
-            <MultiplicitiesForm />
-          </div>
-
-          <SaveButton />
-          <ResetButton />
-          <CloseButton onClose={handleOnClose} />
-        </Form>
-      )}
+            <div css={ButtonContainerStyle}>
+              <SaveButton />
+              <ResetButton />
+              <CloseButton onClose={handleOnClose} />
+            </div>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };

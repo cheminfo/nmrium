@@ -161,9 +161,14 @@ const RangesTableRow = ({
         </td>
       ) : null}
       <td>
-        {rowData.tableMetaInfo.signal.multiplicity === 'm'
-          ? `${rowData.from.toFixed(2)} - ${rowData.to.toFixed(2)}`
-          : rowData.tableMetaInfo.signal.delta.toFixed(3)}
+        {rowData.tableMetaInfo.signal
+          ? rowData.tableMetaInfo.signal.multiplicity === 'm'
+            ? `${applyFormatPreference(
+                'fromFormat',
+                rowData.from,
+              )} - ${applyFormatPreference('toFormat', rowData.to)}`
+            : rowData.tableMetaInfo.signal.delta.toFixed(3)
+          : ''}
       </td>
       {getShowPreference('showRelative') ? (
         <td {...rowSpanTags}>
@@ -182,9 +187,13 @@ const RangesTableRow = ({
           {applyFormatPreference('absoluteFormat', rowData.absolute)}
         </td>
       ) : null}
-      <td>{rowData.tableMetaInfo.signal.multiplicity}</td>
       <td>
-        {rowData.tableMetaInfo.signal.j
+        {rowData.tableMetaInfo.signal
+          ? rowData.tableMetaInfo.signal.multiplicity
+          : ''}
+      </td>
+      <td>
+        {rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.j
           ? rowData.tableMetaInfo.signal.j
               .map((coupling) => coupling.coupling.toFixed(1))
               .join(', ')
