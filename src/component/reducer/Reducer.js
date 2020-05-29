@@ -21,6 +21,7 @@ import {
   deleteFilter,
   handleBaseLineCorrectionFilter,
   filterSnapshotHandler,
+  applyAbsoluteFilter,
 } from './actions/FiltersActions';
 import {
   handleHistoryUndo,
@@ -167,6 +168,7 @@ import {
   SET_2D_PROJECTION,
   ADD_MISSING_PROJECTION,
   SET_FILTER_SNAPSHOT,
+  APPLY_ABSOLUTE_FILTER,
 } from './types/Types';
 
 setAutoFreeze(false);
@@ -302,6 +304,8 @@ export function spectrumReducer(state, action) {
       return applyManualPhaseCorrectionFilter(state, action.value);
     case APPLY_AUTO_PHASE_CORRECTION_FILTER:
       return applyAutoPhaseCorrectionFilter(state, action.value);
+    case APPLY_ABSOLUTE_FILTER:
+      return applyAbsoluteFilter(state);
     case CALCULATE_MANUAL_PHASE_CORRECTION_FILTER:
       return calculateManualPhaseCorrection(state, action.value);
     case ENABLE_FILTER:
