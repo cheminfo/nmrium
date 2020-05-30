@@ -24,8 +24,34 @@ const SignalFormTabStyle = css`
   }
 `;
 
+const multiplets = [
+  'm',
+  's',
+  'd',
+  't',
+  'q',
+  //   'quint',
+  //   'hex',
+  //   'hept',
+  //   'oct',
+  //   'non',
+];
+
 const SignalFormTab = memo(({ onDeleteSignal }) => {
   const { values, setFieldValue } = useFormikContext();
+
+  const checkMultiplicity = (multiplicity) => {
+    if (
+      multiplicity === undefined ||
+      multiplicity.length === 0 ||
+      multiplicity === 'm' ||
+      multiplicity === 's'
+    ) {
+      return false;
+    }
+
+    return true;
+  };
 
   useEffect(() => {
     const signal = values.signals[values.selectedSignalIndex];
@@ -33,13 +59,15 @@ const SignalFormTab = memo(({ onDeleteSignal }) => {
       // counter within j array to access to right j values
       let counterJ = 0;
       const couplings = [];
+      let coupling;
       signal.multiplicity.split('').forEach((_multiplicity) => {
-        if (_multiplicity !== 's' && _multiplicity !== 'm') {
-          couplings.push(signal.j[counterJ]);
+        if (checkMultiplicity(_multiplicity)) {
+          coupling = { ...signal.j[counterJ] };
           counterJ++;
         } else {
-          couplings.push({ multiplicity: _multiplicity, coupling: '' });
+          coupling = { multiplicity: _multiplicity, coupling: '' };
         }
+        couplings.push(coupling);
       });
       setFieldValue('selectedSignalCouplings', couplings);
     }
@@ -47,19 +75,15 @@ const SignalFormTab = memo(({ onDeleteSignal }) => {
 
   const onAddCoupling = useCallback(
     (newCoupling) => {
+      if (!checkMultiplicity(newCoupling.multiplicity)) {
+        newCoupling.coupling = '';
+      }
       const _signals = values.signals.slice();
       const _signal = { ..._signals[values.selectedSignalIndex] };
-      if (
-        !_signal.j &&
-        newCoupling.multiplicity !== 's' &&
-        newCoupling.multiplicity !== 'm'
-      ) {
+      if (!_signal.j && checkMultiplicity(newCoupling.multiplicity)) {
         _signal.j = [];
       }
-      if (
-        newCoupling.multiplicity !== 's' &&
-        newCoupling.multiplicity !== 'm'
-      ) {
+      if (checkMultiplicity(newCoupling.multiplicity)) {
         _signal.j.push(newCoupling);
       }
       _signal.multiplicity = _signal.multiplicity.concat(
@@ -74,14 +98,13 @@ const SignalFormTab = memo(({ onDeleteSignal }) => {
 
   const onEditCoupling = useCallback(
     (index, editedCoupling) => {
+      if (!checkMultiplicity(editedCoupling.multiplicity)) {
+        editedCoupling.coupling = '';
+      }
       const _signals = values.signals.slice();
       const _signal = { ..._signals[values.selectedSignalIndex] };
 
-      if (
-        !_signal.j &&
-        editedCoupling.multiplicity !== 's' &&
-        editedCoupling.multiplicity !== 'm'
-      ) {
+      if (!_signal.j && checkMultiplicity(editedCoupling.multiplicity)) {
         _signal.j = [];
       }
 
@@ -89,23 +112,22 @@ const SignalFormTab = memo(({ onDeleteSignal }) => {
       const multSplit = _signal.multiplicity.split('');
       for (let k = 0; k < multSplit.length; k++) {
         if (k === index) {
-          if (
-            editedCoupling.multiplicity !== 's' &&
-            editedCoupling.multiplicity !== 'm'
-          ) {
+          if (checkMultiplicity(editedCoupling.multiplicity)) {
             // in case of "d", "t" etc. set the value in j array
             _signal.j[counterJ] = editedCoupling;
           } else {
             // in case of "s" or "m" remove the entry in j array
-            _signal.j.splice(counterJ, 1);
+            if (_signal.j) {
+              _signal.j.splice(counterJ, 1);
+            }
           }
           // delete unnecessary empty j array
-          if (_signal.j.length === 0) {
+          if (_signal.j && _signal.j.length === 0) {
             delete _signal.j;
           }
           break;
         }
-        if (multSplit[k] !== 's' && multSplit[k] !== 'm') {
+        if (checkMultiplicity(multSplit[k])) {
           counterJ++;
         }
       }
@@ -130,10 +152,7 @@ const SignalFormTab = memo(({ onDeleteSignal }) => {
       const multSplit = _signal.multiplicity.split('');
       for (let k = 0; k < multSplit.length; k++) {
         if (k === index) {
-          if (
-            oldCoupling.multiplicity !== 's' &&
-            oldCoupling.multiplicity !== 'm'
-          ) {
+          if (checkMultiplicity(oldCoupling.multiplicity)) {
             // in case of "d", "t" etc. remove the entry in j array
             _signal.j.splice(counterJ, 1);
             // delete unnecessary empty j array
@@ -144,7 +163,7 @@ const SignalFormTab = memo(({ onDeleteSignal }) => {
 
           break;
         }
-        if (multSplit[k] !== 's' && multSplit[k] !== 'm') {
+        if (checkMultiplicity(multSplit[k])) {
           counterJ++;
         }
       }
@@ -171,6 +190,8 @@ const SignalFormTab = memo(({ onDeleteSignal }) => {
               onAddCoupling={onAddCoupling}
               onDeleteCoupling={onDeleteCoupling}
               onEditCoupling={onEditCoupling}
+              multiplets={multiplets}
+              checkMultiplicity={checkMultiplicity}
             />
           </div>
         )}

@@ -1,7 +1,7 @@
 import { jsx } from '@emotion/core';
 /** @jsx jsx */
 import { useFormikContext } from 'formik';
-import { useCallback, useMemo, memo } from 'react';
+import { useCallback, useMemo, memo, useEffect } from 'react';
 
 import detectSignal from '../../../data/data1d/detectSignal';
 import { Tabs } from '../Tab';

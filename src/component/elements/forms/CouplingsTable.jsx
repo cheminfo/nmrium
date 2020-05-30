@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useFormikContext } from 'formik';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { FaMinus, FaCheck, FaPlus } from 'react-icons/fa';
 
 import Button from './elements/Button';
@@ -50,22 +50,61 @@ const CouplingsTableStyle = css`
   }
 `;
 
-const multiplets = [
-  'm',
-  's',
-  'd',
-  't',
-  'q',
-  //   'quint',
-  //   'hex',
-  //   'hept',
-  //   'oct',
-  //   'non',
-];
-
 const CouplingsTable = memo(
-  ({ push, remove, onAddCoupling, onDeleteCoupling, onEditCoupling }) => {
-    const { values, setFieldValue } = useFormikContext();
+  ({
+    push,
+    remove,
+    onAddCoupling,
+    onDeleteCoupling,
+    onEditCoupling,
+    multiplets,
+    checkMultiplicity,
+  }) => {
+    const {
+      values,
+      setFieldValue,
+      getFieldMeta,
+      setFieldTouched,
+    } = useFormikContext();
+
+    const metaDataNewCouplingCoupling = getFieldMeta('newCouplingCoupling');
+
+    const checkDisableCouplingConfirmationButton = useCallback(
+      (i) => {
+        const metaDataSelectedSignalCouplingMultiplicity = getFieldMeta(
+          `selectedSignalCouplings.${i}.multiplicity`,
+        );
+        console.log(metaDataSelectedSignalCouplingMultiplicity);
+        const metaDataSelectedSignalCouplingCoupling = getFieldMeta(
+          `selectedSignalCouplings.${i}.coupling`,
+        );
+        console.log(metaDataSelectedSignalCouplingCoupling);
+
+        // true if input field was not touched, an error occurred, or current field state is same as initial state
+        // return (
+        //   (metaDataSelectedSignalCouplings !== undefined &&
+        //     metaDataSelectedSignalCouplings.touched !== undefined &&
+        //     metaDataSelectedSignalCouplings.touched[i] !== undefined &&
+        //     metaDataSelectedSignalCouplings.touched[i] === false) ||
+        //   (metaDataSelectedSignalCouplings !== undefined &&
+        //     metaDataSelectedSignalCouplings.error !== undefined &&
+        //     metaDataSelectedSignalCouplings.error[i] !== undefined &&
+        //     metaDataSelectedSignalCouplings.error[i].coupling !== undefined) ||
+        //   (metaDataSelectedSignalCouplings !== undefined &&
+        //     metaDataSelectedSignalCouplings.initialValue !== undefined &&
+        //     metaDataSelectedSignalCouplings.initialValue[i] !== undefined &&
+        //     metaDataSelectedSignalCouplings.initialValue[i].coupling !==
+        //       undefined &&
+        //     values.selectedSignalCouplings !== undefined &&
+        //     values.selectedSignalCouplings[i] !== undefined &&
+        //     values.selectedSignalCouplings[i].coupling !== undefined &&
+        //     values.selectedSignalCouplings[i].coupling ===
+        //       metaDataSelectedSignalCouplings.initialValue[i].coupling)
+        // );
+        return false;
+      },
+      [getFieldMeta],
+    );
 
     return (
       <table css={CouplingsTableStyle}>
@@ -80,8 +119,10 @@ const CouplingsTable = memo(
           {values.selectedSignalCouplings &&
           values.selectedSignalCouplings.length > 0
             ? values.selectedSignalCouplings.map((_coupling, i) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <tr key={`editCouplings${i}`}>
+                <tr
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`editCouplings${i}`}
+                >
                   <td>{i + 1}</td>
                   <td>
                     <SelectBox
@@ -91,27 +132,30 @@ const CouplingsTable = memo(
                     />
                   </td>
                   <td>
-                    {!values.selectedSignalCouplings[i].multiplicity ||
-                    values.selectedSignalCouplings[i].multiplicity.length ===
-                      0 ||
-                    values.selectedSignalCouplings[i].multiplicity === 'm' ||
-                    values.selectedSignalCouplings[i].multiplicity ===
-                      's' ? null : (
+                    {checkMultiplicity(
+                      values.selectedSignalCouplings[i].multiplicity,
+                    ) ? (
                       <Input
                         name={`selectedSignalCouplings.${i}.coupling`}
                         type="number"
                       />
-                    )}
+                    ) : null}
                   </td>
                   <td>
                     <Button
-                      onClick={() =>
+                      onClick={() => {
                         onEditCoupling(i, {
                           multiplicity:
                             values.selectedSignalCouplings[i].multiplicity,
                           coupling: values.selectedSignalCouplings[i].coupling,
-                        })
-                      }
+                        });
+                        setFieldTouched(
+                          `selectedSignalCouplings.{i}.multiplicity`,
+                          false,
+                        );
+                        j;
+                      }}
+                      disabled={checkDisableCouplingConfirmationButton(i)}
                     >
                       <FaCheck title="Confirm Coupling Edition" />
                     </Button>
@@ -153,16 +197,13 @@ const CouplingsTable = memo(
               />
             </td>
             <td>
-              {!values.newCouplingMultiplicity ||
-              values.newCouplingMultiplicity.length === 0 ||
-              values.newCouplingMultiplicity === 'm' ||
-              values.newCouplingMultiplicity === 's' ? null : (
+              {checkMultiplicity(values.newCouplingMultiplicity) ? (
                 <Input
                   name="newCouplingCoupling"
                   type="number"
                   placeholder="J (Hz)"
                 />
-              )}
+              ) : null}
             </td>
             <td colSpan={2}>
               <Button
@@ -175,6 +216,12 @@ const CouplingsTable = memo(
                   onAddCoupling(newCoupling);
                   setFieldValue('newCouplingCoupling', '');
                 }}
+                disabled={
+                  metaDataNewCouplingCoupling &&
+                  metaDataNewCouplingCoupling.error
+                    ? true
+                    : false
+                }
               >
                 <FaPlus title="Add New Coupling" />
               </Button>
