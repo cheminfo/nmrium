@@ -1,19 +1,16 @@
 import { jsx } from '@emotion/core';
 /** @jsx jsx */
 import { useField } from 'formik';
-import { Fragment } from 'react';
 
-const ErrorMessage = ({ style = { color: 'red' }, ...props }) => {
+const ErrorMessage = ({ style, ...props }) => {
   const meta = useField(props)[1];
 
   return (
-    <Fragment>
-      {meta.touched && meta.error ? (
-        <div className="error" style={style}>
-          {meta.error}
-        </div>
+    <div>
+      {meta.error ? (
+        <p style={{ color: 'red', margin: '0.5px', ...style }}>{meta.error}</p>
       ) : null}
-    </Fragment>
+    </div>
   );
 };
 

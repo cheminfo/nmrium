@@ -7,7 +7,7 @@ import SignalsForm from './SignalsForm';
 import {
   SaveButton,
   ResetButton,
-  CloseButton,
+  CancelButton,
 } from './elements/DefaultButtons';
 import RangeValidationSchema from './validation/RangeValidationScheme';
 
@@ -16,6 +16,7 @@ const ButtonContainerStyle = css`
   button {
     background-color: transparent;
     border: 1px solid #dedede;
+    margin-top: 20px;
   }
 `;
 
@@ -24,6 +25,9 @@ const RangeForm = ({
   spectrumData,
   handleOnClose,
   handleOnSave,
+  multiplets,
+  checkMultiplicity,
+  translateMultiplicity,
 }) => {
   const initialStateSignalCouplings = useMemo(() => {
     const signal = rangeData.signal[0];
@@ -33,7 +37,7 @@ const RangeForm = ({
       const couplings = [];
       let coupling;
       signal.multiplicity.split('').forEach((_multiplicity) => {
-        if (_multiplicity !== 's' && _multiplicity !== 'm') {
+        if (checkMultiplicity(_multiplicity)) {
           coupling = { ...signal.j[counterJ] };
           counterJ++;
         } else {
@@ -43,7 +47,7 @@ const RangeForm = ({
       });
       return couplings;
     }
-  }, [rangeData.signal]);
+  }, [checkMultiplicity, rangeData.signal]);
 
   return (
     <Formik
@@ -58,8 +62,9 @@ const RangeForm = ({
         newCouplingMultiplicity: '',
         newCouplingCoupling: '',
         spectrumData: spectrumData,
+        multiplets: multiplets.slice(),
       }}
-      validationSchema={RangeValidationSchema(spectrumData)}
+      validationSchema={RangeValidationSchema(spectrumData, multiplets)}
       onSubmit={(values, { setSubmitting }) => {
         handleOnSave(values);
         setSubmitting(false);
@@ -68,12 +73,16 @@ const RangeForm = ({
       {() => {
         return (
           <Form>
-            <SignalsForm spectrumData={spectrumData} />
+            <SignalsForm
+              spectrumData={spectrumData}
+              checkMultiplicity={checkMultiplicity}
+              translateMultiplicity={translateMultiplicity}
+            />
 
             <div css={ButtonContainerStyle}>
               <SaveButton />
               <ResetButton />
-              <CloseButton onClose={handleOnClose} />
+              <CancelButton onCancel={handleOnClose} />
             </div>
           </Form>
         );

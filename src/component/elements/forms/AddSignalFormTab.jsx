@@ -1,40 +1,182 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useFormikContext } from 'formik';
-import { memo } from 'react';
-import { FaPlus } from 'react-icons/fa';
+import { memo, useState, useCallback, useEffect } from 'react';
+
+import detectSignal from '../../../data/data1d/detectSignal';
 
 import Button from './elements/Button';
 import Input from './elements/Input';
 
 const AddSignalFormTabStyle = css`
   text-align: center;
-  button {
-    background-color: transparent;
-    border: none;
+  width: 100%;
+
+  .inputComponent {
+    height: 35px;
+    margin-top: 5px;
+    .label1 {
+      float: left;
+      width: 25%;
+      text-align: left;
+    }
+    .InputDiv {
+      float: left;
+      width: 50%;
+      .Input {
+        background-color: transparent;
+        border: 0.5px solid #dedede;
+        width: 100%;
+        text-align: center;
+      }
+    }
+    .label2 {
+      float: left;
+      width: 25%;
+      text-align: left;
+    }
   }
-  input {
+  .controlComponent {
+    height: 35px;
+    margin-top: 5px;
+    label {
+      width: 25%;
+      text-align: left;
+    }
+    input {
+      background-color: transparent;
+      border: 0.5px solid #dedede;
+      width: 50%;
+      text-align: center;
+    }
+  }
+  .errorComponent {
+    margin-top: 5px;
+    p {
+      color: red;
+    }
+  }
+  .addSignalButton {
     background-color: transparent;
     border: 0.5px solid #dedede;
-    height: 50%;
-    width: 50%;
-    text-align: center;
+    // color: blue;
   }
 `;
 
-const AddSignalFormTab = memo(({ onAddSignal }) => {
-  const { values } = useFormikContext();
+const AddSignalFormTab = memo(() => {
+  const { values, setFieldValue, errors } = useFormikContext();
+
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [isInvalidSignalSize, setIsInvalidSignalSize] = useState(false);
+  const [noSignalDetection, setNoSignalDetection] = useState(false);
+
+  const onAddSignal = useCallback(() => {
+    const newSignal = detectSignal(
+      values.spectrumData.x,
+      values.spectrumData.re,
+      values.newSignalFrom,
+      values.newSignalTo,
+      values.spectrumData.info.frequency,
+    );
+    if (newSignal.multiplicity.length > 0) {
+      const _signals = values.signals.slice().concat(newSignal);
+      setFieldValue('signals', _signals);
+      setFieldValue('selectedSignalIndex', _signals.length - 1);
+      setNoSignalDetection(false);
+    } else {
+      setNoSignalDetection(true);
+    }
+  }, [
+    setFieldValue,
+    values.newSignalFrom,
+    values.newSignalTo,
+    values.signals,
+    values.spectrumData.info.frequency,
+    values.spectrumData.re,
+    values.spectrumData.x,
+  ]);
+
+  useEffect(() => {
+    if (isCalculating) {
+      onAddSignal();
+      setIsCalculating(false);
+    }
+  }, [isCalculating, onAddSignal]);
+
+  useEffect(() => {
+    if (values.newSignalTo <= values.newSignalFrom) {
+      setIsInvalidSignalSize(true);
+    } else {
+      setIsInvalidSignalSize(false);
+    }
+  }, [values.newSignalFrom, values.newSignalTo]);
 
   return (
     <div css={AddSignalFormTabStyle}>
-      <Input name="newSignalFrom" type="number" />
-      <Input name="newSignalTo" type="number" />
-      <p>
-        New signal size (ppm) :{' '}
-        {(values.newSignalTo - values.newSignalFrom).toFixed(5)}
-      </p>
-      <Button name="addSignalButton" onClick={onAddSignal}>
-        <FaPlus color="green" />
+      <div className="inputComponent">
+        <p className="label1">From: </p>
+        <div className="InputDiv">
+          <Input className="Input" name="newSignalFrom" type="number" />
+        </div>
+        <p className="label2">&nbsp;ppm</p>
+      </div>
+      <div className="inputComponent">
+        <p className="label1">To: </p>
+        <div className="InputDiv">
+          <Input className="Input" name="newSignalTo" type="number" />
+        </div>
+        <p className="label2">&nbsp;ppm</p>
+      </div>
+      <div className="controlComponent">
+        <label>Delta: </label>
+        <input
+          type="number"
+          value={((values.newSignalTo + values.newSignalFrom) / 2).toFixed(5)}
+          disabled={true}
+        />
+
+        <label>&nbsp;ppm</label>
+      </div>
+      <div className="controlComponent">
+        <label>Size: </label>
+        <input
+          type="number"
+          value={(values.newSignalTo - values.newSignalFrom).toFixed(5)}
+          disabled={true}
+        />
+        <label>&nbsp;ppm</label>
+      </div>
+      <div className="errorComponent">
+        {isInvalidSignalSize ? (
+          <p>Signal size must be greater than 0 ppm!</p>
+        ) : null}
+      </div>
+      <div className="errorComponent">
+        {noSignalDetection ? <p>Could not detect a signal!</p> : null}
+      </div>
+      <Button
+        className="addSignalButton"
+        // name="addSignalButton"
+        onClick={async () => {
+          setIsCalculating(true);
+        }}
+        disabled={
+          isCalculating ||
+          isInvalidSignalSize ||
+          errors.newSignalFrom ||
+          errors.newSignalTo
+        }
+        style={{
+          color:
+            isCalculating ||
+            isInvalidSignalSize ||
+            errors.newSignalFrom ||
+            errors.newSignalTo
+              ? 'grey'
+              : 'blue',
+        }}
+      >
+        {!isCalculating ? 'Add Signal' : 'Calculating...'}
       </Button>
     </div>
   );

@@ -55,6 +55,42 @@ const styles = css`
   }
 `;
 
+const multiplets = [
+  { index: 0, value: 's', description: 'singlet (s)' },
+  { index: 1, value: 'd', description: 'doublet (d)' },
+  { index: 2, value: 't', description: 'triplet (t)' },
+  { index: 3, value: 'q', description: 'quartet (q)' },
+  { index: 4, value: 'i', description: 'quintet (i)' },
+  { index: 5, value: 'x', description: 'sextet (x)' },
+  { index: 6, value: 'p', description: 'septet (p)' },
+  { index: 7, value: 'o', description: 'octet (o)' },
+  { index: 8, value: 'n', description: 'nonet (n)' },
+  { index: 9, value: 'm', description: 'massive (m)' },
+];
+
+const checkMultiplicity = (multiplicity) => {
+  if (
+    multiplicity === undefined ||
+    multiplicity.length === 0 ||
+    multiplicity === multiplets[0].value ||
+    multiplicity === multiplets[0].description ||
+    multiplicity === multiplets[9].value ||
+    multiplicity === multiplets[9].description
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+const translateMultiplicity = (multiplicity) => {
+  return multiplicity.length === 1
+    ? multiplets.find((_multiplet) => _multiplet.value === multiplicity)
+        .description
+    : multiplets.find((_multiplet) => _multiplet.description === multiplicity)
+        .value;
+};
+
 const EditRangeModal = ({
   isOpen,
   onSave,
@@ -70,8 +106,9 @@ const EditRangeModal = ({
       };
       console.log(editedRange);
       onSave(editedRange);
+      onClose();
     },
-    [onSave, rangeData],
+    [onClose, onSave, rangeData],
   );
 
   return (
@@ -90,6 +127,9 @@ const EditRangeModal = ({
             spectrumData={spectrumData}
             handleOnClose={onClose}
             handleOnSave={handleOnSave}
+            multiplets={multiplets}
+            checkMultiplicity={checkMultiplicity}
+            translateMultiplicity={translateMultiplicity}
           />
         ) : null}
       </div>
