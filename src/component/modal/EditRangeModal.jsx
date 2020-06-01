@@ -55,18 +55,26 @@ const styles = css`
   }
 `;
 
-const multiplets = [
-  { index: 0, value: 's', description: 'singlet (s)' },
-  { index: 1, value: 'd', description: 'doublet (d)' },
-  { index: 2, value: 't', description: 'triplet (t)' },
-  { index: 3, value: 'q', description: 'quartet (q)' },
-  { index: 4, value: 'i', description: 'quintet (i)' },
-  { index: 5, value: 'x', description: 'sextet (x)' },
-  { index: 6, value: 'p', description: 'septet (p)' },
-  { index: 7, value: 'o', description: 'octet (o)' },
-  { index: 8, value: 'n', description: 'nonet (n)' },
-  { index: 9, value: 'm', description: 'massive (m)' },
+const basicMultiplets = [
+  'singlet (s)',
+  'doublet (d)',
+  'triplet (t)',
+  'quartet (q)',
+  'quintet (i)',
+  'sextet (x)',
+  'septet (p)',
+  'octet (o)',
+  'nonet (n)',
+  'massive (m)',
 ];
+
+const multiplets = basicMultiplets.map((_multiplet, i) => {
+  return {
+    index: i,
+    description: _multiplet,
+    value: _multiplet.split('(')[1].charAt(0),
+  };
+});
 
 const checkMultiplicity = (multiplicity) => {
   if (

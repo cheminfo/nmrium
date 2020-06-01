@@ -51,6 +51,7 @@ const SignalFormTab = memo(
     }, [
       checkMultiplicity,
       setFieldValue,
+      translateMultiplicity,
       values.selectedSignalIndex,
       values.signals,
     ]);
@@ -163,7 +164,6 @@ const SignalFormTab = memo(
                 delete _signal.j;
               }
             }
-
             break;
           }
           if (checkMultiplicity(multSplit[k])) {
@@ -210,7 +210,6 @@ const SignalFormTab = memo(
           onClick={onDeleteSignal}
           title="Delete Signal"
         >
-          {/* <FaMinus color="red" title="Delete Signal" /> */}
           Delete Signal
         </Button>
       </div>
