@@ -158,7 +158,6 @@ const EditRangeModal = ({
         signal: formValues.signals,
       };
       editedRange = resetDiaIDs(editedRange);
-      console.log(editedRange);
       onSave(editedRange);
       onClose();
     },
