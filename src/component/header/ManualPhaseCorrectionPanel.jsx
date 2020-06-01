@@ -2,12 +2,14 @@ import React, { useCallback, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import InputRange from '../elements/InputRange';
+import Select from '../elements/Select';
 import TextInput from '../elements/TextInput';
 import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   APPLY_AUTO_PHASE_CORRECTION_FILTER,
   CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
   RESET_SELECTED_TOOL,
+  APPLY_ABSOLUTE_FILTER,
 } from '../reducer/types/Types';
 
 const styles = {
@@ -27,18 +29,71 @@ const styles = {
     margin: '0px 5px',
     userSelect: 'none',
   },
+  select: {
+    marginLeft: '5px',
+    marginRight: '10px',
+    border: 'none',
+    height: '20px',
+  },
 };
+
+const phaseCorrectionTypes = {
+  manual: 'manual',
+  automatic: 'automatic',
+  absolute: 'absolute',
+};
+
+const algorithms = [
+  {
+    key: phaseCorrectionTypes.manual,
+    label: 'Manual',
+    value: phaseCorrectionTypes.manual,
+  },
+  {
+    key: phaseCorrectionTypes.automatic,
+    label: 'Automatic',
+    value: phaseCorrectionTypes.automatic,
+  },
+  {
+    key: phaseCorrectionTypes.absolute,
+    label: 'Absolute',
+    value: phaseCorrectionTypes.absolute,
+  },
+];
 
 const ManualPhaseCorrectionPanel = () => {
   const dispatch = useDispatch();
   const [value, setValue] = useState({ ph0: 0, ph1: 0, pivotIndex: 1 });
+  const [phaseCorrectionType, setPhaseCorrectionType] = useState(
+    phaseCorrectionTypes.manual,
+  );
 
   const handleApplyFilter = useCallback(() => {
-    dispatch({
-      type: APPLY_MANUAL_PHASE_CORRECTION_FILTER,
-      value: value,
-    });
-  }, [dispatch, value]);
+    switch (phaseCorrectionType) {
+      case phaseCorrectionTypes.automatic: {
+        dispatch({
+          type: APPLY_AUTO_PHASE_CORRECTION_FILTER,
+        });
+        break;
+      }
+
+      case phaseCorrectionTypes.manual: {
+        dispatch({
+          type: APPLY_MANUAL_PHASE_CORRECTION_FILTER,
+          value: value,
+        });
+        break;
+      }
+      case phaseCorrectionTypes.absolute: {
+        dispatch({
+          type: APPLY_ABSOLUTE_FILTER,
+        });
+        break;
+      }
+      default:
+        break;
+    }
+  }, [dispatch, phaseCorrectionType, value]);
 
   const handleInput = useCallback(
     (e) => {
@@ -100,43 +155,58 @@ const ManualPhaseCorrectionPanel = () => {
     });
   }, [dispatch]);
 
-  const handleAutoFilter = useCallback(() => {
-    dispatch({
-      type: APPLY_AUTO_PHASE_CORRECTION_FILTER,
-    });
-  }, [dispatch]);
+  // const handleAutoFilter = useCallback(() => {
+  //   dispatch({
+  //     type: APPLY_AUTO_PHASE_CORRECTION_FILTER,
+  //   });
+  // }, [dispatch]);
+
+  const onChangeHandler = useCallback((val) => {
+    setPhaseCorrectionType(val);
+  }, []);
 
   return (
     <div style={styles.container}>
-      <TextInput
-        label="PH0:"
-        name="ph0"
-        style={{ input: styles.input }}
-        onChange={handleInput}
-        value={value.ph0}
-      />
-      <TextInput
-        label="PH1:"
-        name="ph1"
-        style={{ input: styles.input }}
-        onChange={handleInput}
-        value={value.ph1}
+      <Select
+        onChange={onChangeHandler}
+        data={algorithms}
+        value={phaseCorrectionTypes.manual}
+        style={styles.select}
       />
 
-      <InputRange
-        name="ph0"
-        value={value.ph0}
-        label="Change Ph0 By mouse click and drag"
-        style={{ width: '20%' }}
-        onChange={handleRangeChange}
-      />
-      <InputRange
-        name="ph1"
-        value={value.ph1}
-        label="Change Ph1 By mouse click and drag"
-        style={{ width: '20%' }}
-        onChange={handleRangeChange}
-      />
+      {phaseCorrectionType === phaseCorrectionTypes.manual && (
+        <>
+          <TextInput
+            label="PH0:"
+            name="ph0"
+            style={{ input: styles.input }}
+            onChange={handleInput}
+            value={value.ph0}
+          />
+          <TextInput
+            label="PH1:"
+            name="ph1"
+            style={{ input: styles.input }}
+            onChange={handleInput}
+            value={value.ph1}
+          />
+
+          <InputRange
+            name="ph0"
+            value={value.ph0}
+            label="Change Ph0 By mouse click and drag"
+            style={{ width: '20%' }}
+            onChange={handleRangeChange}
+          />
+          <InputRange
+            name="ph1"
+            value={value.ph1}
+            label="Change Ph1 By mouse click and drag"
+            style={{ width: '20%' }}
+            onChange={handleRangeChange}
+          />
+        </>
+      )}
 
       <button
         type="button"
@@ -152,13 +222,13 @@ const ManualPhaseCorrectionPanel = () => {
       >
         Cancel
       </button>
-      <button
+      {/* <button
         type="button"
         style={styles.actionButton}
         onClick={handleAutoFilter}
       >
         Auto
-      </button>
+      </button> */}
     </div>
   );
 };

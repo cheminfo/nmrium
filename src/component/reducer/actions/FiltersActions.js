@@ -10,12 +10,19 @@ import getClosestNumber from '../helper/GetClosestNumber';
 import { setDomain, setMode } from './DomainActions';
 import { setYAxisShift } from './ToolsActions';
 
-function setDataByFilters(draft, activeObject, activeSpectrumId) {
+function setDataByFilters(
+  draft,
+  activeObject,
+  activeSpectrumId,
+  hideOptionPanel = true,
+) {
   const { x, re, im } = activeObject.getData();
   const spectrumIndex = draft.data.findIndex(
     (spectrum) => spectrum.id === activeSpectrumId,
   );
-  draft.selectedOptionPanel = null;
+  if (hideOptionPanel) {
+    draft.selectedOptionPanel = null;
+  }
   draft.selectedTool = options.zoom.id;
   draft.data[spectrumIndex].x = x;
   draft.data[spectrumIndex].y = re;
@@ -92,6 +99,17 @@ const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
     setDomain(draft);
   });
 };
+const applyAbsoluteFilter = (state) => {
+  return produce(state, (draft) => {
+    const { id } = draft.activeSpectrum;
+
+    const activeObject = AnalysisObj.getDatum(id);
+    activeObject.applyFilter([{ name: Filters.absolute.id, options: {} }]);
+
+    setDataByFilters(draft, activeObject, id);
+    setDomain(draft);
+  });
+};
 
 const applyAutoPhaseCorrectionFilter = (state) => {
   return produce(state, (draft) => {
@@ -113,9 +131,9 @@ const applyAutoPhaseCorrectionFilter = (state) => {
       { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
     ]);
 
-    setDataByFilters(draft, activeObject, id);
-    draft.dataSnapshot = null;
-    draft.tempData = null;
+    setDataByFilters(draft, activeObject, id, false);
+    // draft.dataSnapshot = null;
+    // draft.tempData = null;
     setDomain(draft);
   });
 };
@@ -229,6 +247,7 @@ export {
   applyFFTFilter,
   applyManualPhaseCorrectionFilter,
   applyAutoPhaseCorrectionFilter,
+  applyAbsoluteFilter,
   calculateManualPhaseCorrection,
   enableFilter,
   deleteFilter,

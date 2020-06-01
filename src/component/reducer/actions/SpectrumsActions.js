@@ -1,11 +1,13 @@
 import { produce } from 'immer';
 
 // import { Datum2D } from '../../../data/data2d/Datum2D';
+import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
 // import { DISPLAYER_MODE } from '../core/Constants';
 // import Spectrum2DProcessing from '../core/Spectrum2DProcessing';
 
 import { setDomain, setMode } from './DomainActions';
+import { setActiveTab } from './ToolsActions';
 
 function setVisible(datum, flag) {
   if (datum.info.dimension === 2) {
@@ -132,7 +134,12 @@ const addMissingProjectionHander = (state, action) => {
     if (state.activeSpectrum && state.activeSpectrum.id) {
       AnalysisObj.addMissingProjection(state.activeSpectrum.id, nucleus);
       draft.data = AnalysisObj.getSpectraData();
+      const groupByNucleus = GroupByInfoKey('nucleus');
+      const dataGroupByNucleus = groupByNucleus(draft.data);
+      setActiveTab(draft, dataGroupByNucleus, draft.activeTab, true);
+      // setMargin(draft);
       setDomain(draft);
+      setMode(draft);
     }
   });
 };

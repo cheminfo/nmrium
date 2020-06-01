@@ -1,10 +1,9 @@
+import { zoneToX } from 'ml-spectra-processing';
+
 import { Datum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
 
 import Processing2D from './Processing2D';
-
-// TODO import { zoneToX } from 'ml-spectra-processing';
-const zoneToX = () => {};
 
 export class Datum2D {
   /**
@@ -111,9 +110,10 @@ export class Datum2D {
     if (index === -1) index = 0;
 
     let info = {
-      nucleus: [this.info.nucleus[index]], // 1H, 13C, 19F, ...
+      nucleus: this.info.nucleus[index], // 1H, 13C, 19F, ...
       isFid: false,
       isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+      dimension: 1,
     };
 
     let from = index === 0 ? this.data.minX : this.data.minY;
