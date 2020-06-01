@@ -66,6 +66,7 @@ const SignalFormTab = memo(
         );
         const _signals = values.signals.slice();
         const _signal = { ..._signals[values.selectedSignalIndex] };
+
         if (!_signal.j && checkMultiplicity(newCoupling.multiplicity)) {
           _signal.j = [];
         }

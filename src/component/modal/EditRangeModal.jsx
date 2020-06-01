@@ -1,6 +1,6 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
 import { Modal } from '../elements/Modal';
@@ -56,6 +56,7 @@ const styles = css`
 `;
 
 const basicMultiplets = [
+  'massive (m)',
   'singlet (s)',
   'doublet (d)',
   'triplet (t)',
@@ -65,7 +66,6 @@ const basicMultiplets = [
   'septet (p)',
   'octet (o)',
   'nonet (n)',
-  'massive (m)',
 ];
 
 const multiplets = basicMultiplets.map((_multiplet, i) => {
@@ -76,14 +76,17 @@ const multiplets = basicMultiplets.map((_multiplet, i) => {
   };
 });
 
-const checkMultiplicity = (multiplicity) => {
+const checkMultiplicity = (multiplicity, options = {}) => {
+  const checkOptions = { ...{ massive: true, singlet: true }, ...options };
   if (
     multiplicity === undefined ||
     multiplicity.length === 0 ||
-    multiplicity === multiplets[0].value ||
-    multiplicity === multiplets[0].description ||
-    multiplicity === multiplets[9].value ||
-    multiplicity === multiplets[9].description
+    (checkOptions.massive &&
+      (multiplicity === multiplets[0].value ||
+        multiplicity === multiplets[0].description)) ||
+    (checkOptions.singlet &&
+      (multiplicity === multiplets[1].value ||
+        multiplicity === multiplets[1].description))
   ) {
     return false;
   }
@@ -106,17 +109,60 @@ const EditRangeModal = ({
   rangeData,
   spectrumData,
 }) => {
+  const diaIDs = useMemo(() => {
+    return []
+      .concat(
+        rangeData.diaID ? rangeData.diaID.flat() : [],
+        rangeData.signal
+          ? rangeData.signal.map((_signal) => _signal.diaID).flat()
+          : [],
+      )
+      .filter((_diaID, i, _diaIDs) => _diaIDs.indexOf(_diaID) === i);
+  }, [rangeData.diaID, rangeData.signal]);
+
+  const resetDiaIDs = useCallback(
+    (range) => {
+      const _range = { ...range };
+
+      _range.diaID = _range.signal.find((_signal) =>
+        _signal.multiplicity
+          .split('')
+          .find((mult) => !checkMultiplicity(mult, { singlet: false })),
+      )
+        ? diaIDs
+        : [];
+      _range.signal = _range.signal.map((signal) => {
+        const _signal = { ...signal };
+        if (
+          // in case of no "m" but at least one of the others in signal's multiplicity string save the diaID on signal level
+          signal.multiplicity
+            .split('')
+            .find((mult) => checkMultiplicity(mult, { singlet: false }))
+        ) {
+          _signal.diaID = diaIDs;
+        } else {
+          _signal.diaID = [];
+        }
+        return _signal;
+      });
+
+      return _range;
+    },
+    [diaIDs],
+  );
+
   const handleOnSave = useCallback(
     (formValues) => {
-      const editedRange = {
+      let editedRange = {
         ...rangeData,
         signal: formValues.signals,
       };
+      editedRange = resetDiaIDs(editedRange);
       console.log(editedRange);
       onSave(editedRange);
       onClose();
     },
-    [onClose, onSave, rangeData],
+    [onClose, onSave, rangeData, resetDiaIDs],
   );
 
   return (
