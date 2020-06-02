@@ -63,14 +63,12 @@ const AddSignalFormTabStyle = css`
   }
 `;
 
-// const AddSignalFormTab = memo(({ checkMultiplicity }) => {
 const AddSignalFormTab = memo(() => {
   const { values, setFieldValue, errors } = useFormikContext();
 
   const [isCalculating, setIsCalculating] = useState(false);
   const [isInvalidSignalSize, setIsInvalidSignalSize] = useState(false);
   const [noSignalDetection, setNoSignalDetection] = useState(false);
-  // const [isBlockedByM, setIsBlockedByM] = useState(false);
   const [disableAddButton, setDisableAddButton] = useState(false);
 
   const onAddSignal = useCallback(() => {
@@ -118,26 +116,12 @@ const AddSignalFormTab = memo(() => {
     }
   }, [values.newSignalFrom, values.newSignalTo]);
 
-  // useEffect(() => {
-  //   if (
-  //     values.signals.length === 1 &&
-  //     !checkMultiplicity(values.signals[0].multiplicity, { singlet: false })
-  //   ) {
-  //     setIsBlockedByM(true);
-  //   } else {
-  //     setIsBlockedByM(false);
-  //   }
-  // }, [checkMultiplicity, values.multiplets, values.signals]);
-
   useEffect(() => {
     if (
       isCalculating ||
       isInvalidSignalSize ||
       errors.newSignalFrom ||
       errors.newSignalTo
-      // ||
-      // // if multiplicity of signal is "m" then block signal addition
-      // isBlockedByM
     ) {
       setDisableAddButton(true);
     } else {
@@ -195,14 +179,6 @@ const AddSignalFormTab = memo(() => {
       <div className="errorComponent">
         {noSignalDetection ? <p>Could not detect a signal!</p> : null}
       </div>
-      {/* <div className="errorComponent">
-        {isBlockedByM ? (
-          <p>
-            A new signal after signal with multiplicity {`"`}m{`"`} is not
-            allowed!
-          </p>
-        ) : null}
-      </div> */}
       <Button
         className="addSignalButton"
         onClick={async () => {

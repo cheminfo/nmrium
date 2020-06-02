@@ -48,7 +48,6 @@ const SignalsForm = memo(({ checkMultiplicity, translateMultiplicity }) => {
       ))
       .concat(
         <div label={'\u002B'} key="addSignalTab">
-          {/* <AddSignalFormTab checkMultiplicity={checkMultiplicity} /> */}
           <AddSignalFormTab />
         </div>,
       );
