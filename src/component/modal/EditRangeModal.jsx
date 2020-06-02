@@ -102,23 +102,19 @@ const translateMultiplicity = (multiplicity) => {
         .value;
 };
 
-const EditRangeModal = ({
-  isOpen,
-  onSave,
-  onClose,
-  rangeData,
-  spectrumData,
-}) => {
+const EditRangeModal = ({ onSave, onClose, rangeData, spectrumData }) => {
   const diaIDs = useMemo(() => {
-    return []
-      .concat(
-        rangeData.diaID ? rangeData.diaID.flat() : [],
-        rangeData.signal
-          ? rangeData.signal.map((_signal) => _signal.diaID).flat()
-          : [],
-      )
-      .filter((_diaID, i, _diaIDs) => _diaIDs.indexOf(_diaID) === i);
-  }, [rangeData.diaID, rangeData.signal]);
+    return rangeData
+      ? []
+          .concat(
+            rangeData.diaID ? rangeData.diaID.flat() : [],
+            rangeData.signal
+              ? rangeData.signal.map((_signal) => _signal.diaID).flat()
+              : [],
+          )
+          .filter((_diaID, i, _diaIDs) => _diaIDs.indexOf(_diaID) === i)
+      : [];
+  }, [rangeData]);
 
   const resetDiaIDs = useCallback(
     (range) => {
@@ -152,17 +148,21 @@ const EditRangeModal = ({
   );
 
   const handleOnSave = useCallback(
-    (formValues) => {
+    async (formValues) => {
       let editedRange = {
         ...rangeData,
         signal: formValues.signals,
       };
       editedRange = resetDiaIDs(editedRange);
-      onSave(editedRange);
+      await onSave(editedRange);
       onClose();
     },
     [onClose, onSave, rangeData, resetDiaIDs],
   );
+
+  const isOpen = useMemo(() => {
+    return rangeData ? true : false;
+  }, [rangeData]);
 
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -174,17 +174,15 @@ const EditRangeModal = ({
           </button>
         </div>
 
-        {rangeData ? (
-          <RangeForm
-            rangeData={rangeData}
-            spectrumData={spectrumData}
-            handleOnClose={onClose}
-            handleOnSave={handleOnSave}
-            multiplets={multiplets}
-            checkMultiplicity={checkMultiplicity}
-            translateMultiplicity={translateMultiplicity}
-          />
-        ) : null}
+        <RangeForm
+          rangeData={rangeData}
+          spectrumData={spectrumData}
+          handleOnClose={onClose}
+          handleOnSave={handleOnSave}
+          multiplets={multiplets}
+          checkMultiplicity={checkMultiplicity}
+          translateMultiplicity={translateMultiplicity}
+        />
       </div>
     </Modal>
   );

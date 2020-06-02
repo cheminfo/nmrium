@@ -417,15 +417,12 @@ const RangesTablePanel = memo(() => {
             ) : (
               <NoTableData />
             )}
-            {selectedRangeToEdit ? (
-              <EditRangeModal
-                isOpen={selectedRangeToEdit ? true : false}
-                onClose={closeEditRangeHandler}
-                onSave={saveEditRangeHandler}
-                rangeData={selectedRangeToEdit}
-                spectrumData={spectrumData}
-              />
-            ) : null}
+            <EditRangeModal
+              onClose={closeEditRangeHandler}
+              onSave={saveEditRangeHandler}
+              rangeData={selectedRangeToEdit}
+              spectrumData={spectrumData}
+            />
           </div>
           <RangesPreferences data={spectraData} ref={settingRef} />
         </ReactCardFlip>
