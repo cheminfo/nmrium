@@ -23,6 +23,7 @@ const allowTools = [
   options.baseLineCorrection.id,
   options.rangesPicking.id,
   options.zone2D.id,
+  options.slicingTool.id,
 ];
 
 export const BRUSH_TYPE = {

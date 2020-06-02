@@ -267,16 +267,16 @@ const FunctionToolBar = ({ defaultValue }) => {
           )}
         {displayerMode === DISPLAYER_MODE.DM_2D && (
           <ToggleButton
-            key={options.projection.id}
-            value={options.projection.id}
+            key={options.slicingTool.id}
+            value={options.slicingTool.id}
             style={styles.icon}
           >
             <ToolTip
-              title={`${options.projection.label}`}
+              title={`${options.slicingTool.label}`}
               popupPlacement="right"
               offset={{ x: 10, y: 0 }}
             >
-              Pro
+              Slic
             </ToolTip>
           </ToggleButton>
         )}

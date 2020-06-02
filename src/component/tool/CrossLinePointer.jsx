@@ -20,7 +20,7 @@ const allowTools = [
   options.equalizerTool.id,
   options.baseLineCorrection.id,
   options.zone2D.id,
-  options.projection.id,
+  options.slicingTool.id,
 ];
 
 const CrossLinePointer = () => {

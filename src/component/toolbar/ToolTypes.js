@@ -25,9 +25,9 @@ export const options = {
     hasOptionPanel: false,
     isFilter: false,
   },
-  projection: {
-    id: 'projection',
-    label: 'projection Tool',
+  slicingTool: {
+    id: 'slicingTool',
+    label: 'Slicing Tool',
     hasOptionPanel: false,
     isFilter: false,
   },
