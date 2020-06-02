@@ -91,7 +91,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
   }, [onSave, setSettingsData, settingData]);
 
   const tabChangeHandler = useCallback((tab) => {
-    setActiveTab(tab);
+    setActiveTab(tab.label);
   }, []);
 
   const getValueFromStorage = (keyPath, defaultValue = null) => {
