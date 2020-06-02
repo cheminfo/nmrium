@@ -19,7 +19,6 @@ import {
   SET_2D_LEVEL,
   SET_ZOOM_FACTOR,
   ADD_2D_ZONE,
-  SET_2D_PROJECTION,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -28,6 +27,7 @@ import { options } from '../toolbar/ToolTypes';
 
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
+import SlicingView from './tools/slicing/SlicingView';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 
 const Viewer2D = () => {
@@ -132,16 +132,17 @@ const Viewer2D = () => {
 
   const mouseClick = useCallback(
     (position) => {
+      // eslint-disable-next-line no-unused-vars
       const { x, y } = position;
       switch (selectedTool) {
-        case options.projection.id:
-          dispatch({ type: SET_2D_PROJECTION, x, y });
-          break;
+        // case options.projection.id:
+        //   dispatch({ type: SET_2D_PROJECTION, x, y });
+        //   break;
         default:
           break;
       }
     },
-    [dispatch, selectedTool],
+    [selectedTool],
   );
 
   const [sizedNMRChart, { width, height }] = useSize(() => {
@@ -166,13 +167,15 @@ const Viewer2D = () => {
             <MouseTracker
               style={{ width: '100%', height: `100%`, position: 'absolute' }}
             >
-              <CrossLinePointer />
+              {selectedTool && selectedTool === options.slicingTool.id && (
+                <SlicingView />
+              )}
 
+              <CrossLinePointer />
               <BrushXY
                 brushType={BRUSH_TYPE.XY}
                 dimensionBorder={DIMENSION.CENTER_2D}
               />
-
               {spectrumData && spectrumData.length > 1 && (
                 <>
                   <BrushXY

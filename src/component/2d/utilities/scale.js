@@ -23,9 +23,14 @@ function get2DXScale(props) {
  * @param {number}  props.margin
  * @param {number}  props.yDomain
  */
-function get2DYScale(props) {
+function get2DYScale(props, reverse = false) {
   const { height, margin, yDomain } = props;
-  return scaleLinear(yDomain, [margin.top, height - margin.bottom]);
+  return scaleLinear(
+    yDomain,
+    reverse
+      ? [height - margin.bottom, margin.top]
+      : [margin.top, height - margin.bottom],
+  );
 }
 
 function get1DXScale(props, layout) {
