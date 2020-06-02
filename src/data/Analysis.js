@@ -165,10 +165,10 @@ export class Analysis {
     return result;
   }
 
-  addMissingProjection(id2d, nuclues = []) {
+  addMissingProjection(id2d, nucleus = []) {
     const spectrum2d = this.getDatum(id2d);
 
-    for (let n of nuclues) {
+    for (let n of nucleus) {
       const datum1D = spectrum2d.getMissingProjection(n);
       this.spectra.push(datum1D);
     }

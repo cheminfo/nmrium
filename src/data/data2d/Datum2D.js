@@ -121,7 +121,7 @@ export class Datum2D {
     let nbPoints = index === 0 ? this.data.z.length : this.data.z[0].length;
 
     let projection = new Float64Array(nbPoints);
-    if (index === 0) {
+    if (index === 1) {
       for (let i = 0; i < this.data.z.length; i++) {
         for (let j = 0; j < this.data.z[0].length; j++) {
           projection[i] += this.data.z[i][j];
