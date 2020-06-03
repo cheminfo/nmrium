@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useState, useEffect } from 'react';
-import { FaRegTrashAlt, FaLink, FaSearchPlus } from 'react-icons/fa';
+import { FaRegTrashAlt, FaLink, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import { useHighlight } from '../../highlight';
@@ -29,6 +29,7 @@ const RangesTableRow = ({
   onDelete,
   onUnlink,
   onZoom,
+  onEdit,
   onContextMenu,
   preferences,
 }) => {
@@ -107,6 +108,10 @@ const RangesTableRow = ({
     onZoom(getOriginal());
   }, [getOriginal, onZoom]);
 
+  const handleOnEdit = useCallback(() => {
+    onEdit(getOriginal());
+  }, [getOriginal, onEdit]);
+
   const getShowPreference = (showKey) => {
     return preferences
       ? Object.prototype.hasOwnProperty.call(preferences, showKey) &&
@@ -156,9 +161,14 @@ const RangesTableRow = ({
         </td>
       ) : null}
       <td>
-        {rowData.tableMetaInfo.signal.multiplicity === 'm'
-          ? `${rowData.from.toFixed(2)} - ${rowData.to.toFixed(2)}`
-          : rowData.tableMetaInfo.signal.delta.toFixed(3)}
+        {rowData.tableMetaInfo.signal
+          ? rowData.tableMetaInfo.signal.multiplicity === 'm'
+            ? `${applyFormatPreference(
+                'fromFormat',
+                rowData.from,
+              )} - ${applyFormatPreference('toFormat', rowData.to)}`
+            : rowData.tableMetaInfo.signal.delta.toFixed(3)
+          : ''}
       </td>
       {getShowPreference('showRelative') ? (
         <td {...rowSpanTags}>
@@ -177,9 +187,13 @@ const RangesTableRow = ({
           {applyFormatPreference('absoluteFormat', rowData.absolute)}
         </td>
       ) : null}
-      <td>{rowData.tableMetaInfo.signal.multiplicity}</td>
       <td>
-        {rowData.tableMetaInfo.signal.j
+        {rowData.tableMetaInfo.signal
+          ? rowData.tableMetaInfo.signal.multiplicity
+          : ''}
+      </td>
+      <td>
+        {rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.j
           ? rowData.tableMetaInfo.signal.j
               .map((coupling) => coupling.coupling.toFixed(1))
               .join(', ')
@@ -223,6 +237,11 @@ const RangesTableRow = ({
       <td {...rowSpanTags} {...stopPropagationOnClickTag}>
         <button type="button" className="zoom-button" onClick={handleOnZoom}>
           <FaSearchPlus />
+        </button>
+      </td>
+      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
+        <button type="button" className="edit-button" onClick={handleOnEdit}>
+          <FaEdit color="blue" />
         </button>
       </td>
     </tr>

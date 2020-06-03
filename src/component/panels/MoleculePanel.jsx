@@ -163,16 +163,20 @@ const MoleculePanel = () => {
     [element],
   );
 
+  const getDiaIDsInRange = (range) => {
+    return []
+      .concat(
+        range.diaID ? range.diaID.flat() : [],
+        range.signal ? range.signal.map((_signal) => _signal.diaID).flat() : [],
+      )
+      .filter((_diaID, i, _diaIDs) => _diaIDs.indexOf(_diaID) === i);
+  };
+
   const diaIDs = useMemo(() => {
     return rangesData.map((_range) => {
       return {
         rangeID: _range.id,
-        diaID: [].concat(
-          _range.diaID ? _range.diaID.flat() : [],
-          _range.signal
-            ? _range.signal.map((_signal) => _signal.diaID).flat()
-            : [],
-        ),
+        diaID: getDiaIDsInRange(_range),
       };
     });
   }, [rangesData]);
@@ -182,7 +186,7 @@ const MoleculePanel = () => {
   }, [diaIDs]);
 
   const toggleAssignment = useCallback(
-    (diaID, oclIDs, pubIntegral) => {
+    (diaID, oclIDs) => {
       // 1. one atom can only be assigned to one range
       // 2. check whether an atom is already assigned to a range to allow toggling the assignment
       if (
@@ -190,24 +194,25 @@ const MoleculePanel = () => {
         !diaID.some((_oclID) => oclIDs.includes(_oclID))
       ) {
         alert.info('Atom is already assigned to another range!');
-        return { diaID, pubIntegral };
+        return diaID;
       }
       const _diaID = diaID.slice();
-      let _pubIntegral = pubIntegral;
       oclIDs.forEach((_oclID) => {
         if (_diaID.includes(_oclID)) {
           _diaID.splice(_diaID.indexOf(_oclID), 1);
-          _pubIntegral--;
         } else {
           _diaID.push(_oclID);
-          _pubIntegral++;
         }
       });
 
-      return { diaID: _diaID, pubIntegral: _pubIntegral };
+      return _diaID;
     },
     [alert, assignedAtomHighlights],
   );
+
+  const getPubIntegral = useCallback((range) => {
+    return getDiaIDsInRange(range).length;
+  }, []);
 
   const handleOnClickAtom = useCallback(
     (atom) => {
@@ -226,28 +231,16 @@ const MoleculePanel = () => {
           if (range.signal && range.signal.length > 0) {
             range.signal.forEach((signal, i) => {
               if (signal.multiplicity === 'm') {
-                const assignment = toggleAssignment(
-                  _range.diaID,
-                  oclIDs,
-                  _range.pubIntegral,
-                );
-                _range.diaID = assignment.diaID;
-                _range.pubIntegral = assignment.pubIntegral;
+                _range.diaID = toggleAssignment(_range.diaID, oclIDs);
               } else {
-                const assignment = toggleAssignment(
-                  _range.signal[i].diaID,
-                  oclIDs,
-                  _range.pubIntegral,
-                );
                 _range.signal[i] = {
                   ..._range.signal[i],
-                  diaID: assignment.diaID,
+                  diaID: toggleAssignment(_range.signal[i].diaID, oclIDs),
                 };
-                _range.pubIntegral = assignment.pubIntegral;
               }
             });
           }
-
+          _range.pubIntegral = getPubIntegral(_range);
           dispatch({ type: CHANGE_RANGE_DATA, data: _range });
         } else {
           alert.info(
@@ -260,6 +253,7 @@ const MoleculePanel = () => {
       alert,
       dispatch,
       extractFromAtom,
+      getPubIntegral,
       highlightData.highlight.highlightedPermanently,
       rangesData,
       toggleAssignment,

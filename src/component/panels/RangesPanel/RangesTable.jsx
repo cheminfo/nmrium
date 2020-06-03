@@ -46,6 +46,7 @@ const RangesTable = ({
   onDelete,
   onUnlink,
   onZoom,
+  onEdit,
   context,
   preferences,
   element,
@@ -127,6 +128,7 @@ const RangesTable = ({
             <th>Kind</th>
             <th>{''}</th>
             <th>{''}</th>
+            <th>{''}</th>
           </tr>
           {data &&
             data.map((range, i) => {
@@ -139,6 +141,7 @@ const RangesTable = ({
                   onDelete={onDelete}
                   onUnlink={onUnlink}
                   onZoom={onZoom}
+                  onEdit={onEdit}
                   onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                   preferences={preferences}
                 />

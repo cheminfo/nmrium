@@ -9,9 +9,9 @@
     "@emotion/core": "^10.0.28",
     "brukerconverter": "^2.1.2",
     "cheminfo-font": "^0.25.0",
-    "nmr-processing": "^0.1.1",
     "d3": "^5.16.0",
     "file-saver": "^2.0.2",
+    "formik": "^2.1.4",
     "immer": "^6.0.5",
     "jcampconverter": "^5.0.2",
     "lodash": "^4.17.15",
@@ -28,6 +28,7 @@
     "ml-spectra-processing": "^4.0.0",
     "mouse-speed": "^2.0.1",
     "multiplet-analysis": "0.1.0",
+    "nmr-processing": "^0.1.1",
     "numeral": "^2.0.6",
     "openchemlib": "^7.2.3",
     "prop-types": "^15.7.2",
@@ -53,7 +54,8 @@
     "react-use": "^14.2.0",
     "spectra-data": "^3.4.11",
     "spectra-data-ranges": "^1.1.8",
-    "uuid": "^8.0.0"
+    "uuid": "^8.0.0",
+    "yup": "^0.29.1"
   },
   "prettier": {
     "arrowParens": "always",

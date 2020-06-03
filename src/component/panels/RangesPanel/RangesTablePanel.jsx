@@ -12,6 +12,7 @@ import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import ChangeSumModal from '../../modal/ChangeSumModal';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
+import EditRangeModal from '../../modal/EditRangeModal';
 import {
   DELETE_RANGE,
   CHANGE_RANGE_DATA,
@@ -62,7 +63,7 @@ const styles = {
 
 const RangesTablePanel = memo(() => {
   const {
-    data: SpectrumsData,
+    data: spectraData,
     activeSpectrum,
     xDomain,
     preferences,
@@ -79,29 +80,22 @@ const RangesTablePanel = memo(() => {
   const [isTableVisible, setTableVisibility] = useState(true);
   const settingRef = useRef();
 
-  const deleteRangeHandler = useCallback(
-    (rowData) => {
-      dispatch({
-        type: DELETE_RANGE,
-        rangeID: rowData.id,
-      });
-    },
-    [dispatch],
-  );
+  const [selectedRangeToEdit, setSelectedRangeToEdit] = useState(null);
+
+  const spectrumData = useMemo(() => {
+    return activeSpectrum && spectraData
+      ? spectraData[activeSpectrum.index]
+      : null;
+  }, [spectraData, activeSpectrum]);
 
   const data = useMemo(() => {
-    const _data =
-      activeSpectrum && SpectrumsData
-        ? SpectrumsData[activeSpectrum.index]
-        : null;
-
-    if (_data && _data.ranges && _data.ranges.values) {
-      setRangesCounter(_data.ranges.values.length);
-      return _data.ranges.values;
+    if (spectrumData && spectrumData.ranges && spectrumData.ranges.values) {
+      setRangesCounter(spectrumData.ranges.values.length);
+      return spectrumData.ranges.values;
     }
     setRangesCounter(0);
     return [];
-  }, [SpectrumsData, activeSpectrum]);
+  }, [spectrumData]);
 
   const tableData = useMemo(() => {
     const isInRange = (from, to) => {
@@ -130,6 +124,37 @@ const RangesTablePanel = memo(() => {
     });
   }, [data, filterIsActive, xDomain]);
 
+  const openEditRangeHandler = useCallback((range) => {
+    setSelectedRangeToEdit(range);
+  }, []);
+
+  const closeEditRangeHandler = useCallback(() => {
+    setSelectedRangeToEdit(null);
+  }, []);
+
+  const saveEditRangeHandler = useCallback(
+    (editedRange) => {
+      if (selectedRangeToEdit) {
+        const _data = { ...selectedRangeToEdit, ...editedRange };
+        dispatch({
+          type: CHANGE_RANGE_DATA,
+          data: _data,
+        });
+      }
+    },
+    [dispatch, selectedRangeToEdit],
+  );
+
+  const deleteRangeHandler = useCallback(
+    (rowData) => {
+      dispatch({
+        type: DELETE_RANGE,
+        rangeID: rowData.id,
+      });
+    },
+    [dispatch],
+  );
+
   const saveToClipboardHandler = useCallback(
     (value) => {
       const success = copyTextToClipboard(value);
@@ -143,21 +168,16 @@ const RangesTablePanel = memo(() => {
   );
   const saveJSONToClipboardHandler = useCallback(
     (value) => {
-      const _data =
-        activeSpectrum && SpectrumsData
-          ? SpectrumsData[activeSpectrum.index]
-          : null;
-
-      if (_data) {
+      if (spectrumData) {
         const { from, to } = value;
-        const { fromIndex, toIndex } = xGetFromToIndex(_data.x, {
+        const { fromIndex, toIndex } = xGetFromToIndex(spectrumData.x, {
           from,
           to,
         });
 
         const dataToClipboard = {
-          x: _data.x.slice(fromIndex, toIndex),
-          y: _data.y.slice(fromIndex, toIndex),
+          x: spectrumData.x.slice(fromIndex, toIndex),
+          y: spectrumData.y.slice(fromIndex, toIndex),
           ...value,
         };
 
@@ -172,7 +192,7 @@ const RangesTablePanel = memo(() => {
         }
       }
     },
-    [SpectrumsData, activeSpectrum, alert],
+    [spectrumData, alert],
   );
 
   const closeClipBoardHandler = useCallback(() => {
@@ -265,15 +285,13 @@ const RangesTablePanel = memo(() => {
   );
 
   const currentSum = useMemo(() => {
-    return activeSpectrum &&
-      SpectrumsData &&
-      SpectrumsData[activeSpectrum.index] &&
-      SpectrumsData[activeSpectrum.index].ranges &&
-      SpectrumsData[activeSpectrum.index].ranges.options &&
-      SpectrumsData[activeSpectrum.index].ranges.options.sum !== undefined
-      ? SpectrumsData[activeSpectrum.index].ranges.options.sum
+    return spectrumData &&
+      spectrumData.ranges &&
+      spectrumData.ranges.options &&
+      spectrumData.ranges.options.sum !== undefined
+      ? spectrumData.ranges.options.sum
       : null;
-  }, [SpectrumsData, activeSpectrum]);
+  }, [spectrumData]);
 
   const showChangeRangesSumModal = useCallback(() => {
     modal.show(
@@ -390,6 +408,7 @@ const RangesTablePanel = memo(() => {
                 onChangeKind={changeRangeSignalKindHandler}
                 onDelete={deleteRangeHandler}
                 onZoom={zoomRangeHandler}
+                onEdit={openEditRangeHandler}
                 onUnlink={unlinkRangeHandler}
                 context={contextMenu}
                 preferences={rangesPreferences}
@@ -398,8 +417,14 @@ const RangesTablePanel = memo(() => {
             ) : (
               <NoTableData />
             )}
+            <EditRangeModal
+              onClose={closeEditRangeHandler}
+              onSave={saveEditRangeHandler}
+              rangeData={selectedRangeToEdit}
+              spectrumData={spectrumData}
+            />
           </div>
-          <RangesPreferences data={SpectrumsData} ref={settingRef} />
+          <RangesPreferences data={spectraData} ref={settingRef} />
         </ReactCardFlip>
       </div>
     </>
