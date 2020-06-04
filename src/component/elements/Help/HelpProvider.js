@@ -18,15 +18,18 @@ import Transition from './Transition';
 import Wrapper from './Wrapper';
 import { groupBy } from './helpers';
 import { positions, transitions } from './options';
+import { load } from './utility';
 
 const styles = {
   innerContainer: {
     boxSizing: 'initial',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
     boxShadow: '0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 3px 5px',
     display: 'flex',
     flexDirection: 'column',
     minWidth: '300px',
+    width: '400px',
+    height: '400px',
     minHeight: '140px',
     borderRadius: '5px',
     padding: '5px',
@@ -82,40 +85,47 @@ const HelpProvider = ({
   }, []);
 
   const show = useCallback(
-    (helpID, options = {}) => {
+    async (helpID, options = {}) => {
       if (!modals.some((m) => m.helpID === helpID)) {
-        const id = Math.random().toString(36).substr(2, 9);
+        try {
+          const mdText = await load(data[helpID].filePath);
 
-        const modalOptions = {
-          position: options.position || position,
-          timeout,
-          type,
-          ...options,
-        };
+          const id = Math.random().toString(36).substr(2, 9);
 
-        const modal = {
-          helpID,
-          id,
-          ...data[helpID],
-          options: modalOptions,
-        };
+          const modalOptions = {
+            position: options.position || position,
+            timeout,
+            type,
+            ...options,
+          };
 
-        modal.close = () => remove(modal);
+          const modal = {
+            helpID,
+            id,
+            mdText,
+            options: modalOptions,
+          };
 
-        dealyTimeOut = setTimeout(() => {
-          if (modal.options.timeout) {
-            const timerId = setTimeout(() => {
-              remove(modal);
-              timersId.current.splice(timersId.current.indexOf(timerId), 1);
-            }, modal.options.timeout);
+          modal.close = () => remove(modal);
 
-            timersId.current.push(timerId);
-          }
+          dealyTimeOut = setTimeout(() => {
+            if (modal.options.timeout) {
+              const timerId = setTimeout(() => {
+                remove(modal);
+                timersId.current.splice(timersId.current.indexOf(timerId), 1);
+              }, modal.options.timeout);
 
-          setModals((state) => state.concat(modal));
-          if (modal.options.onOpen) modal.options.onOpen();
-        }, delay);
-        return modal;
+              timersId.current.push(timerId);
+            }
+
+            setModals((state) => state.concat(modal));
+            if (modal.options.onOpen) modal.options.onOpen();
+          }, delay);
+          return modal;
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.log(e);
+        }
       }
     },
     [data, delay, modals, position, remove, timeout, type],
@@ -170,11 +180,15 @@ const HelpProvider = ({
                                   <FaTimes />
                                 </button>
                               </div>
-                              <div>
-                                {modal.imageURL && (
-                                  <img src={modal.imageURL} alt={modal.text} />
-                                )}
-                              </div>
+                              {modal.mdText && (
+                                <div
+                                  style={{ overflow: 'auto' }}
+                                  // eslint-disable-next-line react/no-danger
+                                  dangerouslySetInnerHTML={{
+                                    __html: modal.mdText,
+                                  }}
+                                />
+                              )}
                             </div>
                           </div>
                         </Transition>

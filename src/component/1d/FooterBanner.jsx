@@ -52,16 +52,21 @@ const helpStyles = css`
   user-select: 'none';
   -webkit-user-select: none; /* Chrome all / Safari all */
   -moz-user-select: none; /* Firefox all */
-  background-color: rgba(0, 0, 0, 0.8);
-  // height: 60px;
-  padding: 10px;
+  background-color: #f7f7f7;
+  height: 30px;
+  padding: 6px;
+  color: #8d0018;
   position: absolute;
   width: 100%;
   bottom: 0;
-
   span {
-    font-size: 6px;
-    color: white;
+    font-size: 10px;
+    color: black;
+    display: inline-block;
+    text-overflow: ellipsis;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
   }
 `;
 
