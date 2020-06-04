@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
+import ReactMarkdown from 'react-markdown';
 import { TransitionGroup } from 'react-transition-group';
 
 import { HelpProvider as HProvider } from './Context';
@@ -184,10 +185,9 @@ const HelpProvider = ({
                                 <div
                                   style={{ overflow: 'auto' }}
                                   // eslint-disable-next-line react/no-danger
-                                  dangerouslySetInnerHTML={{
-                                    __html: modal.mdText,
-                                  }}
-                                />
+                                >
+                                  <ReactMarkdown source={modal.mdText} />
+                                </div>
                               )}
                             </div>
                           </div>

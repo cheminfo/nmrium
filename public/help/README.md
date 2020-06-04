@@ -10,7 +10,8 @@ In order to facilitate the process, this tool allow to draw a molecule and selec
 
 In order to observe a mass spectrum the molecule has to be charged and this ionization has an impact on the mass. You may enter a list of ionizations that was applied to the molecule in the following box:
 
-<img src="./help/images/ionizations.png"/>
+![image](./help/images/ionizations.png) 
+
 
 For instance for electronic impact you would enter a simple ‘+’. Meaning that we have removed an electron to charge the molecule.
 
@@ -20,13 +21,14 @@ You may either draw a molecule directly in the editor or paste a molfile coming 
 
 If you would like to draw efficiently the molecules directly in the editor click on the little question mark and try to learn all the shortcuts.
 
-<img src="./help/images/jsme-help.png"/>
+![image](./help/images/jsme-help.png) 
+
 
 #### Define the cleavable bonds
 
 In the drawing applet you should select the blue bullet icon and click on the bonds that are breakable.
 
-<img src="./help/images/break.png"/>
+![image](./help/images/break.png) 
 
 The fragments with their corresponding mass will calculated on the fly as well all the possible recombinations of those fragments. This may be useful to determine unknown side products of a reaction.
 
@@ -34,7 +36,8 @@ The fragments with their corresponding mass will calculated on the fly as well a
 
 A virtual spectrum will all the possibility is generated and a mouse over the annotation over the peak will highlight the required parts of the molecules to reach the mass.
 
-<img src="./help/images/analyze.png"/>
+![image](./help/images/analyze.png) 
+
 
 If you have a XY text file or jcamp containing an experimental spectrum you may directly drag and drop or paste on the drop zone.
 
