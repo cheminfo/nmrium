@@ -14,8 +14,10 @@ export function useHelp() {
     (e) => {
       const id = e.target.getAttribute('data-helpID');
       if (id) {
+        e.target.style.cursor = 'help';
         context.dispatch({ type: 'SHOW', id });
-        context.show(id);
+
+        context.show(id, { delay: e.ctrlKey ? 0 : null });
       }
     },
     [context],

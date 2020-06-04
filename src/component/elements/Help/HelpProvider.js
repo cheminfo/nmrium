@@ -1,4 +1,6 @@
 /* eslint-disable no-unused-vars */
+// import { Resizable } from 're-resizable';
+import { Resizable } from 're-resizable';
 import React, {
   useReducer,
   useMemo,
@@ -28,10 +30,10 @@ const styles = {
     boxShadow: '0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 3px 5px',
     display: 'flex',
     flexDirection: 'column',
-    minWidth: '300px',
-    width: '400px',
-    height: '400px',
-    minHeight: '140px',
+    // minWidth: '300px',
+    // width: '400px',
+    // height: '400px',
+    // minHeight: '140px',
     borderRadius: '5px',
     padding: '5px',
   },
@@ -86,7 +88,7 @@ const HelpProvider = ({
   }, []);
 
   const show = useCallback(
-    async (helpID, options = {}) => {
+    async (helpID, options = { delay: null }) => {
       if (!modals.some((m) => m.helpID === helpID)) {
         try {
           const mdText = await load(data[helpID].filePath);
@@ -109,7 +111,7 @@ const HelpProvider = ({
 
           modal.close = () => remove(modal);
 
-          dealyTimeOut = setTimeout(() => {
+          const startModal = () => {
             if (modal.options.timeout) {
               const timerId = setTimeout(() => {
                 remove(modal);
@@ -121,7 +123,18 @@ const HelpProvider = ({
 
             setModals((state) => state.concat(modal));
             if (modal.options.onOpen) modal.options.onOpen();
-          }, delay);
+          };
+
+          if (options.delay === 0) {
+            startModal();
+          } else {
+            dealyTimeOut = setTimeout(
+              () => {
+                startModal();
+              },
+              options.delay > 0 ? options.delay : delay,
+            );
+          }
           return modal;
         } catch (e) {
           // eslint-disable-next-line no-console
@@ -182,12 +195,19 @@ const HelpProvider = ({
                                 </button>
                               </div>
                               {modal.mdText && (
-                                <div
-                                  style={{ overflow: 'auto' }}
-                                  // eslint-disable-next-line react/no-danger
+                                <Resizable
+                                  defaultSize={{
+                                    width: 400,
+                                    height: 400,
+                                  }}
                                 >
-                                  <ReactMarkdown source={modal.mdText} />
-                                </div>
+                                  <div
+                                    style={{ overflow: 'auto', height: '100%' }}
+                                    // eslint-disable-next-line react/no-danger
+                                  >
+                                    <ReactMarkdown source={modal.mdText} />
+                                  </div>
+                                </Resizable>
                               )}
                             </div>
                           </div>

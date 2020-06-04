@@ -34,6 +34,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^6.12.1",
     "rc-menu": "^7.5.5",
+    "re-resizable": "^6.4.0",
     "react-alert": "^7.0.1",
     "react-alert-template-basic": "^1.0.0",
     "react-animated-slider-2": "^1.1.5",
