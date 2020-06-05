@@ -420,7 +420,9 @@ const setActiveTab = (draft, dataGroupByTab, tab, refresh = false) => {
         draft.tabActiveSpectrum[tabKey] = { id: data[0].id, index };
       } else {
         if (dataGroupByTab[tab].length === 2) {
-          const FTSpectrums = dataGroupByTab[tab].filter((d) => !d.info.isFid);
+          const FTSpectrums = dataGroupByTab[tabKey].filter(
+            (d) => !d.info.isFid,
+          );
           if (FTSpectrums && FTSpectrums.length > 0) {
             const index = draft.data.findIndex(
               (datum) => datum.id === FTSpectrums[0].id,
