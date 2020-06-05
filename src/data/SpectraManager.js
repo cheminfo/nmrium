@@ -1,12 +1,9 @@
-import { convertZip as convertBruker } from 'brukerconverter';
-import { convert } from 'jcampconverter';
-import { fromJEOL } from 'nmr-parser';
+import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 
 import { Data1DManager } from './data1d/Data1DManager';
 import { Datum1D } from './data1d/Datum1D';
 import { Data2DManager } from './data2d/Data2DManager';
 import getColor, { adjustAlpha } from './utilities/getColor';
-import { getInfoFromMetaData } from './utilities/getInfoFromMetaData';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
   return fetch(jcampURL)
@@ -18,19 +15,33 @@ export function addJcampFromURL(spectra, jcampURL, options) {
 
 export function addJcamp(spectra, jcamp, options = {}) {
   // need to parse the jcamp
-  let converted = convert(jcamp, {
+  let entries = fromJCAMP(jcamp, {
     noContour: true,
     xy: true,
     keepRecordsRegExp: /.*/,
     profiling: true,
   });
-  let entries = converted.flatten;
   if (entries.length === 0) return;
   // Should be improved when we have a more complex case
   for (let entry of entries) {
-    if ((entry.spectra && entry.spectra.length > 0) || entry.minMax) {
+    let { dependentVariables } = entry;
+    if (
+      dependentVariables[0].components &&
+      (dependentVariables[0].components.length > 0 ||
+        dependentVariables[0].components.z.length)
+    ) {
       addJcampSS(spectra, entry, options);
     }
+  }
+}
+
+function addJcampSS(spectra, entry, options) {
+  let info = entry.info;
+  if (info.dimension === 1) {
+    spectra.push(Data1DManager.fromParsedJcamp(entry, options));
+  }
+  if (info.dimension === 2) {
+    spectra.push(Data2DManager.fromParsedJcamp(entry, options));
   }
 }
 
@@ -97,37 +108,15 @@ export async function fromJSON(spectra, data = []) {
   await Promise.all(promises);
 }
 
-function addJcampSS(spectra, entry, options) {
-  let info = getInfoFromMetaData(entry.info);
-  if (info.dimension === 1) {
-    spectra.push(Data1DManager.fromParsedJcamp(entry, options));
-  }
-  if (info.dimension === 2) {
-    let { display, ...remainOptions } = options;
-    if (!display.positiveColor) {
-      display.positiveColor = display.color;
-    }
-    if (!display.negativeColor) {
-      display.negativeColor = adjustAlpha(display.color, 50);
-    }
-
-    delete options.color;
-
-    spectra.push(
-      Data2DManager.fromParsedJcamp(entry, { ...remainOptions, display }),
-    );
-  }
-}
-
 export async function addBruker(spectra, options, data) {
-  let result = await convertBruker(data, { xy: true, noContours: true });
+  let result = await fromBruker(data, { xy: true, noContours: true });
   const usedcolors1D = [];
   const usedcolors2d = [];
-  let entries = result.map((r) => r.value);
+  let entries = result;
   for (let entry of entries) {
-    let info = getInfoFromMetaData(entry.info);
+    let { info, dependentVariables } = entry; //getInfoFromMetaData(entry.info);
     if (info.dimension === 1) {
-      if (entry.spectra && entry.spectra.length > 0) {
+      if (dependentVariables[0].components) {
         const color = getColor(usedcolors1D);
         spectra.push(
           Data1DManager.fromBruker(entry, {
@@ -147,8 +136,8 @@ export async function addBruker(spectra, options, data) {
       spectra.push(
         Data2DManager.fromBruker(entry, {
           ...options,
-          display: { ...options.display, positiveColor, negativeColor },
           info,
+          display: { ...options.display, positiveColor, negativeColor },
         }),
       );
     }
