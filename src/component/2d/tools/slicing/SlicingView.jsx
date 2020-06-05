@@ -63,10 +63,12 @@ const SlicingView = () => {
           strokeWidth="1"
           fill="transparent"
         /> */}
-          {data.horizontal && (
+          {data && data.horizontal && (
             <HorizontalSliceChart data={data.horizontal.data} />
           )}
-          {data.vertical && <VerticalSliceChart data={data.vertical.data} />}
+          {data && data.vertical && (
+            <VerticalSliceChart data={data.vertical.data} />
+          )}
         </svg>
       );
     }
