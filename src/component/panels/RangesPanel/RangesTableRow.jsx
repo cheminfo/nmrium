@@ -4,7 +4,7 @@ import { useMemo, useCallback, useState, useEffect } from 'react';
 import { FaRegTrashAlt, FaLink, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
-import { useHighlight } from '../../highlight';
+import { useHighlight, useHighlightData } from '../../highlight';
 import FormatNumber from '../../utility/FormatNumber';
 import { SignalKinds } from '../extra/constants/SignalsKinds';
 
@@ -36,16 +36,22 @@ const RangesTableRow = ({
   const highlightIDs = useMemo(() => {
     return [].concat(
       [rowData.id],
-      rowData.diaID ? rowData.diaID : [],
-      rowData.signal
-        ? rowData.signal.map((signal) => signal.diaID || []).flat()
+      rowData.tableMetaInfo.id !== undefined ? [rowData.tableMetaInfo.id] : [],
+      rowData.tableMetaInfo.signal &&
+        rowData.tableMetaInfo.signal.multiplicity.split('').includes('m') &&
+        rowData.diaID
+        ? rowData.diaID
+        : rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.diaID
+        ? rowData.tableMetaInfo.signal.diaID
         : [],
     );
   }, [rowData]);
 
   const highlight = useHighlight(highlightIDs);
+  const highlightData = useHighlightData();
 
   const [showUnlinkButton, setShowUnlinkButton] = useState(false);
+  const [highlightAtomCountLabel, setHighlightAtomCountLabel] = useState(false);
 
   useEffect(() => {
     const isLinked =
@@ -54,6 +60,32 @@ const RangesTableRow = ({
         rowData.signal.map((signal) => signal.diaID).flat().length > 0);
     setShowUnlinkButton(isLinked);
   }, [rowData]);
+
+  useEffect(() => {
+    if (
+      (highlightData.highlight.highlightedPermanently &&
+        highlightData.highlight.highlightedPermanently.includes(
+          rowData.tableMetaInfo.id !== undefined
+            ? rowData.tableMetaInfo.id
+            : rowData.id,
+        )) ||
+      (highlightData.highlight.highlighted &&
+        highlightData.highlight.highlighted.includes(
+          rowData.tableMetaInfo.id !== undefined
+            ? `${rowData.tableMetaInfo.id}_row`
+            : rowData.id,
+        ))
+    ) {
+      setHighlightAtomCountLabel(true);
+    } else {
+      setHighlightAtomCountLabel(false);
+    }
+  }, [
+    highlightData.highlight.highlighted,
+    highlightData.highlight.highlightedPermanently,
+    rowData.id,
+    rowData.tableMetaInfo.id,
+  ]);
 
   const rowSpanTags = useMemo(() => {
     return {
@@ -92,10 +124,25 @@ const RangesTableRow = ({
       if (highlight.isActivePermanently) {
         highlight.click();
       }
-      highlight.remove(highlightIDs.filter((id) => id !== rowData.id));
+      highlight.remove(
+        highlightIDs.filter(
+          (id) =>
+            id !==
+            (rowData.tableMetaInfo.id !== undefined
+              ? rowData.tableMetaInfo.id
+              : rowData.id),
+        ),
+      );
       onUnlink(getOriginal());
     },
-    [getOriginal, highlight, highlightIDs, onUnlink, rowData.id],
+    [
+      getOriginal,
+      highlight,
+      highlightIDs,
+      onUnlink,
+      rowData.id,
+      rowData.tableMetaInfo.id,
+    ],
   );
 
   const handleOnDelete = useCallback(() => {
@@ -199,6 +246,27 @@ const RangesTableRow = ({
               .join(', ')
           : ''}
       </td>
+      <td
+        style={{
+          color: highlightAtomCountLabel ? 'red' : 'black',
+        }}
+      >
+        {rowData.tableMetaInfo.signal &&
+        rowData.tableMetaInfo.signal.multiplicity &&
+        rowData.tableMetaInfo.signal.multiplicity.split('').includes('m')
+          ? rowData.diaID && rowData.diaID.length > 0
+            ? rowData.diaID.length
+            : highlightAtomCountLabel
+            ? '0'
+            : ''
+          : rowData.tableMetaInfo.signal &&
+            rowData.tableMetaInfo.signal.diaID &&
+            rowData.tableMetaInfo.signal.diaID.length > 0
+          ? rowData.tableMetaInfo.signal.diaID.length
+          : highlightAtomCountLabel
+          ? '0'
+          : ''}
+      </td>
       <td {...rowSpanTags}>
         {showUnlinkButton || highlight.isActivePermanently ? (
           <span>
@@ -207,9 +275,7 @@ const RangesTableRow = ({
               className="unlink-button"
               onClick={handleOnUnlink}
             >
-              <FaLink
-                color={highlight.isActivePermanently ? 'grey' : 'black'}
-              />
+              <FaLink color={highlight.isActivePermanently ? 'red' : 'black'} />
             </button>
             <sup>[{rowData.pubIntegral}]</sup>
           </span>

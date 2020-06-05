@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useRef } from 'react';
+import { FaLink } from 'react-icons/fa';
 
 import ContextMenu from '../../elements/ContextMenu';
 
@@ -24,6 +25,7 @@ const tableStyle = css`
   }
   th,
   td {
+    white-space: nowrap;
     text-align: center;
     margin: 0;
     padding: 0.4rem;
@@ -56,16 +58,17 @@ const RangesTable = ({
   const data = useMemo(() => {
     const _rangesData = [];
     tableData.forEach((range, i) => {
-      if (range.signal.length <= 1) {
+      if (range.signal.length === 1) {
         _rangesData.push({
           ...range,
           tableMetaInfo: {
             ...range.tableMetaInfo,
             signal: range.signal[0],
             index: i + 1,
+            id: `${range.id}_${0}`,
           },
         });
-      } else {
+      } else if (range.signal.length > 1) {
         range.signal.forEach((signal, j) => {
           let hide = false;
           let rowSpan = null;
@@ -87,6 +90,7 @@ const RangesTable = ({
               rowSpan,
               hide,
               index: i + 1,
+              id: `${range.id}_${j}`,
             },
           });
         });
@@ -124,7 +128,9 @@ const RangesTable = ({
             {getShowPreference('showAbsolute') ? <th>Absolute</th> : null}
             <th>Mult</th>
             <th>J (Hz)</th>
-            <th>Linked</th>
+            <th colSpan={2}>
+              <FaLink title="Assignments" />
+            </th>
             <th>Kind</th>
             <th>{''}</th>
             <th>{''}</th>
