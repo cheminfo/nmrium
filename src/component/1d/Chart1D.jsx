@@ -47,4 +47,4 @@ function Chart1D({ mode, width, height, margin }) {
   );
 }
 
-export default React.forwardRef(Chart1D);
+export default Chart1D;

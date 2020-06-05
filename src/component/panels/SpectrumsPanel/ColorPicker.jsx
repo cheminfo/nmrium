@@ -20,7 +20,7 @@ const style = css`
     box-shadow: none !important;
   }
 
-  .sketch-picker > div:first-child {
+  .sketch-picker > div:first-of-type {
     // padding-bottom: 40% !important;
   }
 `;

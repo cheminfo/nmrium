@@ -53,11 +53,11 @@ const style = css`
 
 
   }
-  .chrome-picker > div:first-child {
+  .chrome-picker > div:first-of-type {
     padding: 0px !important;
 
   }
-  .chrome-picker > div:last-child >  div:first-child {
+  .chrome-picker > div:last-child >  div:first-of-type {
     width: 120px;
 
   }
