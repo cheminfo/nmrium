@@ -505,11 +505,7 @@ const projection2dHandler = (state, position) => {
       const x = scaleX.invert(position.x);
       const y = scaleY.invert(position.y);
 
-      const projection = AnalysisObj.createProjection(
-        state.activeSpectrum.id,
-        x,
-        y,
-      );
+      const projection = AnalysisObj.createSlice(state.activeSpectrum.id, x, y);
       // eslint-disable-next-line no-console
       console.log(projection);
       // draft.projection = projection;

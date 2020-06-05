@@ -27,7 +27,7 @@ const SlicingView = () => {
       const scale2dX = get2DXScale({ margin, width, xDomain });
       const scale2dY = get2DYScale({ margin, height, yDomain });
 
-      const data = AnalysisObj.createProjection(activeSpectrum.id, {
+      const data = AnalysisObj.createSlice(activeSpectrum.id, {
         x: scale2dX.invert(x),
         y: scale2dY.invert(y),
       });

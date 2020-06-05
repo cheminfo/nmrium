@@ -97,9 +97,59 @@ export class Datum2D {
    * @param {number} y in ppm
    */
   // eslint-disable-next-line no-unused-vars
-  getProjection(x, y) {
-    // return [{x,y},{x,y}]; or {top:{x,y}left:{x,y}}
+  getSlice(position) {
+    const data = this.data;
+    const xStep = (data.maxX - data.minX) / data.z.length;
+    const yStep = (data.maxY - data.minY) / data.z[0].length;
+    const xIndex = Math.floor((position.x - data.minX) / xStep);
+    const yIndex = Math.floor((position.y - data.minY) / yStep);
+
+    if (xIndex < 0 || xIndex >= data.z.length) return;
+    if (yIndex < 0 || yIndex >= data.z[0].length) return;
+
+    let infoX = {
+      nucleus: this.info.nucleus[0], // 1H, 13C, 19F, ...
+      isFid: false,
+      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+      dimension: 1,
+    };
+
+    let dataX = {
+      x: zoneToX(
+        { from: this.data.minX, to: this.data.maxX },
+        this.data.z.length,
+      ),
+      re: new Float64Array(this.data.z.length),
+    };
+
+    for (let i = 0; i < this.data.z.length; i++) {
+      dataX.re[i] += this.data.z[i][yIndex];
+    }
+
+    let infoY = {
+      nucleus: this.info.nucleus[1], // 1H, 13C, 19F, ...
+      isFid: false,
+      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+      dimension: 1,
+    };
+
+    let dataY = {
+      x: zoneToX(
+        { from: this.data.minY, to: this.data.maxY },
+        this.data.z.length,
+      ),
+      re: new Float64Array(this.data.z[0].length),
+    };
+
+    for (let i = 0; i < this.data.z[0].length; i++) {
+      dataY.re[i] += this.data.z[xIndex][i];
+    }
+
+    const horizontal = new Datum1D({ info: infoX, data: dataX });
+    const vertical = new Datum1D({ info: infoY, data: dataY });
+    return { horizontal, vertical };
   }
+
   /** calculate the missing projection
    * @param {string[]} nucleus
    */
