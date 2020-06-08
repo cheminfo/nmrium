@@ -57,6 +57,7 @@ const HelpProvider = ({
   type,
   transition,
   containerStyle,
+  imagesPathPrefix,
 }) => {
   const root = useRef();
   const timersId = useRef([]);
@@ -88,10 +89,10 @@ const HelpProvider = ({
   }, []);
 
   const show = useCallback(
-    async (helpID, options = { delay: null }) => {
-      if (!modals.some((m) => m.helpID === helpID)) {
+    async (helpid, options = { delay: null }) => {
+      if (!modals.some((m) => m.helpid === helpid)) {
         try {
-          const mdText = await load(data[helpID].filePath);
+          const mdtext = await load(data[helpid].filePath);
 
           const id = Math.random().toString(36).substr(2, 9);
 
@@ -103,9 +104,9 @@ const HelpProvider = ({
           };
 
           const modal = {
-            helpID,
+            helpid,
             id,
-            mdText,
+            mdtext,
             options: modalOptions,
           };
 
@@ -161,6 +162,8 @@ const HelpProvider = ({
     (modal) => modal.options && modal.options.position,
   );
 
+  const transformImageUri = (uri) => `${imagesPathPrefix}${uri}`;
+
   return (
     <HProvider value={contextValue}>
       {children}
@@ -182,7 +185,7 @@ const HelpProvider = ({
                         <Transition type={transition} key={modal.id}>
                           <div
                             style={{ margin: offset, pointerEvents: 'all' }}
-                            {...modal}
+                            // {...modal}
                           >
                             <div style={styles.innerContainer}>
                               <div>
@@ -194,7 +197,7 @@ const HelpProvider = ({
                                   <FaTimes />
                                 </button>
                               </div>
-                              {modal.mdText && (
+                              {modal.mdtext && (
                                 <Resizable
                                   defaultSize={{
                                     width: 400,
@@ -205,7 +208,10 @@ const HelpProvider = ({
                                     style={{ overflow: 'auto', height: '100%' }}
                                     // eslint-disable-next-line react/no-danger
                                   >
-                                    <ReactMarkdown source={modal.mdText} />
+                                    <ReactMarkdown
+                                      source={modal.mdtext}
+                                      transformImageUri={transformImageUri}
+                                    />
                                   </div>
                                 </Resizable>
                               )}
@@ -233,6 +239,7 @@ HelpProvider.defaultProps = {
   containerStyle: {
     zIndex: 100,
   },
+  imagesPathPrefix: './help/',
 };
 
 export default HelpProvider;
