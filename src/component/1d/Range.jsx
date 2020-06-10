@@ -50,13 +50,10 @@ const Range = ({ rangeData }) => {
   const { id, from, to, integral, kind } = rangeData;
   const highlightIDs = useMemo(() => {
     return [].concat(
-      [rangeData.id],
-      rangeData.diaID ? rangeData.diaID : [],
-      rangeData.signal
-        ? rangeData.signal.map((_signal) => _signal.diaID || []).flat()
-        : [],
+      [id],
+      rangeData.signal.map((_signal, i) => `${id}_${i}`),
     );
-  }, [rangeData]);
+  }, [id, rangeData.signal]);
 
   const highlight = useHighlight(highlightIDs);
 
@@ -64,12 +61,8 @@ const Range = ({ rangeData }) => {
   const dispatch = useDispatch();
 
   const deleteRange = useCallback(() => {
-    if (highlight.isActivePermanently) {
-      highlight.click();
-    }
-    highlight.remove(highlightIDs.filter((_id) => _id !== id));
     dispatch({ type: DELETE_RANGE, rangeID: id });
-  }, [dispatch, highlight, highlightIDs, id]);
+  }, [dispatch, id]);
 
   // const handleOnStartResizing = useCallback(() => {}, []);
 
@@ -110,7 +103,6 @@ const Range = ({ rangeData }) => {
       }
       key={id}
       {...highlight.onHover}
-      {...highlight.onClick}
     >
       <g transform={`translate(${scaleX()(to)},10)`}>
         <rect

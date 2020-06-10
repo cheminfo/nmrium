@@ -103,49 +103,16 @@ const translateMultiplicity = (multiplicity) => {
 };
 
 const EditRangeModal = ({ onSave, onClose, rangeData, spectrumData }) => {
-  const diaIDs = useMemo(() => {
-    return rangeData
-      ? []
-          .concat(
-            rangeData.diaID ? rangeData.diaID.flat() : [],
-            rangeData.signal
-              ? rangeData.signal.map((_signal) => _signal.diaID).flat()
-              : [],
-          )
-          .filter((_diaID, i, _diaIDs) => _diaIDs.indexOf(_diaID) === i)
-      : [];
-  }, [rangeData]);
-
-  const resetDiaIDs = useCallback(
-    (range) => {
-      const _range = { ...range };
-
-      _range.diaID = _range.signal.find((_signal) =>
-        _signal.multiplicity
-          .split('')
-          .find((mult) => !checkMultiplicity(mult, { singlet: false })),
-      )
-        ? diaIDs
-        : [];
-      _range.signal = _range.signal.map((signal) => {
-        const _signal = { ...signal };
-        if (
-          // in case of no "m" but at least one of the others in signal's multiplicity string save the diaID on signal level
-          signal.multiplicity
-            .split('')
-            .find((mult) => checkMultiplicity(mult, { singlet: false }))
-        ) {
-          _signal.diaID = diaIDs;
-        } else {
-          _signal.diaID = [];
-        }
-        return _signal;
-      });
-
-      return _range;
-    },
-    [diaIDs],
-  );
+  const resetDiaIDs = useCallback((range) => {
+    const _range = { ...range };
+    if (_range.diaID) {
+      _range.diaID = [];
+    }
+    _range.signal = _range.signal.map((_signal) =>
+      _signal.diaID ? { ..._signal, diaID: [] } : _signal,
+    );
+    return _range;
+  }, []);
 
   const handleOnSave = useCallback(
     async (formValues) => {
