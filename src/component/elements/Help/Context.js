@@ -12,10 +12,12 @@ export function useHelp() {
 
   const show = useCallback(
     (e) => {
-      const id = e.target.getAttribute('data-helpID');
+      const id = e.target.getAttribute('data-helpid');
       if (id) {
+        e.target.style.cursor = 'help';
         context.dispatch({ type: 'SHOW', id });
-        context.show(id);
+
+        context.show(id, { delay: e.ctrlKey ? 0 : null });
       }
     },
     [context],

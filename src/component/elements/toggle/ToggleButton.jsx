@@ -67,7 +67,7 @@ const ToggleButton = ({
       disabled={disabled}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      data-helpID={helpID}
+      data-helpid={helpID}
     >
       {cloneElement(children, { style: { fontSize: '10px' } })}
     </button>

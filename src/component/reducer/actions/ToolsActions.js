@@ -419,8 +419,10 @@ const setActiveTab = (draft, dataGroupByTab, tab, refresh = false) => {
         const index = draft.data.findIndex((datum) => datum.id === data[0].id);
         draft.tabActiveSpectrum[tabKey] = { id: data[0].id, index };
       } else {
-        if (dataGroupByTab[tab].length === 2) {
-          const FTSpectrums = dataGroupByTab[tab].filter((d) => !d.info.isFid);
+        if (dataGroupByTab[tabKey].length === 2) {
+          const FTSpectrums = dataGroupByTab[tabKey].filter(
+            (d) => !d.info.isFid,
+          );
           if (FTSpectrums && FTSpectrums.length > 0) {
             const index = draft.data.findIndex(
               (datum) => datum.id === FTSpectrums[0].id,
@@ -503,11 +505,7 @@ const projection2dHandler = (state, position) => {
       const x = scaleX.invert(position.x);
       const y = scaleY.invert(position.y);
 
-      const projection = AnalysisObj.createProjection(
-        state.activeSpectrum.id,
-        x,
-        y,
-      );
+      const projection = AnalysisObj.createSlice(state.activeSpectrum.id, x, y);
       // eslint-disable-next-line no-console
       console.log(projection);
       // draft.projection = projection;

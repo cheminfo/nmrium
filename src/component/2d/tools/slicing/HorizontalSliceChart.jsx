@@ -2,18 +2,21 @@ import { xyReduce } from 'ml-spectra-processing';
 import React, { useMemo, memo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
+import { get2DXScale } from '../../utilities/scale';
 
-import { getYScale, getTopXScale } from './SliceScale';
+import { getYScale } from './SliceScale';
 
 const HorizontalSliceChart = memo(({ margin: marginProps, data }) => {
-  const { width, margin: originMargin } = useChartData();
+  const { width, margin: originMargin, xDomain } = useChartData();
 
   const height = originMargin.top;
 
   const paths = useMemo(() => {
     if (data) {
       const { x, re: y } = data;
-      const { scaleX, xDomain } = getTopXScale(width, originMargin, x);
+      const scaleX = get2DXScale({ originMargin, width, xDomain });
+
+      // const { scaleX, xDomain } = getTopXScale(width, originMargin, x);
       const scaleY = getYScale(height, y, marginProps);
       const pathPoints = xyReduce(
         { x, y },
@@ -32,7 +35,7 @@ const HorizontalSliceChart = memo(({ margin: marginProps, data }) => {
     } else {
       return null;
     }
-  }, [data, height, marginProps, originMargin, width]);
+  }, [data, height, marginProps, originMargin, width, xDomain]);
 
   if (!width || !height) {
     return null;

@@ -1,4 +1,6 @@
 /* eslint-disable no-unused-vars */
+// import { Resizable } from 're-resizable';
+import { Resizable } from 're-resizable';
 import React, {
   useReducer,
   useMemo,
@@ -10,6 +12,7 @@ import React, {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
+import ReactMarkdown from 'react-markdown';
 import { TransitionGroup } from 'react-transition-group';
 
 import { HelpProvider as HProvider } from './Context';
@@ -18,16 +21,19 @@ import Transition from './Transition';
 import Wrapper from './Wrapper';
 import { groupBy } from './helpers';
 import { positions, transitions } from './options';
+import { load } from './utility';
 
 const styles = {
   innerContainer: {
     boxSizing: 'initial',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
     boxShadow: '0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 3px 5px',
     display: 'flex',
     flexDirection: 'column',
-    minWidth: '300px',
-    minHeight: '140px',
+    // minWidth: '300px',
+    // width: '400px',
+    // height: '400px',
+    // minHeight: '140px',
     borderRadius: '5px',
     padding: '5px',
   },
@@ -51,6 +57,7 @@ const HelpProvider = ({
   type,
   transition,
   containerStyle,
+  imagesPathPrefix,
 }) => {
   const root = useRef();
   const timersId = useRef([]);
@@ -82,40 +89,58 @@ const HelpProvider = ({
   }, []);
 
   const show = useCallback(
-    (helpID, options = {}) => {
-      if (!modals.some((m) => m.helpID === helpID)) {
-        const id = Math.random().toString(36).substr(2, 9);
+    async (helpid, options = { delay: null }) => {
+      if (!modals.some((m) => m.helpid === helpid)) {
+        try {
+          const mdtext = await load(data[helpid].filePath);
 
-        const modalOptions = {
-          position: options.position || position,
-          timeout,
-          type,
-          ...options,
-        };
+          const id = Math.random().toString(36).substr(2, 9);
 
-        const modal = {
-          helpID,
-          id,
-          ...data[helpID],
-          options: modalOptions,
-        };
+          const modalOptions = {
+            position: options.position || position,
+            timeout,
+            type,
+            ...options,
+          };
 
-        modal.close = () => remove(modal);
+          const modal = {
+            helpid,
+            id,
+            mdtext,
+            options: modalOptions,
+          };
 
-        dealyTimeOut = setTimeout(() => {
-          if (modal.options.timeout) {
-            const timerId = setTimeout(() => {
-              remove(modal);
-              timersId.current.splice(timersId.current.indexOf(timerId), 1);
-            }, modal.options.timeout);
+          modal.close = () => remove(modal);
 
-            timersId.current.push(timerId);
+          const startModal = () => {
+            if (modal.options.timeout) {
+              const timerId = setTimeout(() => {
+                remove(modal);
+                timersId.current.splice(timersId.current.indexOf(timerId), 1);
+              }, modal.options.timeout);
+
+              timersId.current.push(timerId);
+            }
+
+            setModals((state) => state.concat(modal));
+            if (modal.options.onOpen) modal.options.onOpen();
+          };
+
+          if (options.delay === 0) {
+            startModal();
+          } else {
+            dealyTimeOut = setTimeout(
+              () => {
+                startModal();
+              },
+              options.delay > 0 ? options.delay : delay,
+            );
           }
-
-          setModals((state) => state.concat(modal));
-          if (modal.options.onOpen) modal.options.onOpen();
-        }, delay);
-        return modal;
+          return modal;
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.log(e);
+        }
       }
     },
     [data, delay, modals, position, remove, timeout, type],
@@ -136,6 +161,8 @@ const HelpProvider = ({
     modals,
     (modal) => modal.options && modal.options.position,
   );
+
+  const transformImageUri = (uri) => `${imagesPathPrefix}${uri}`;
 
   return (
     <HProvider value={contextValue}>
@@ -158,7 +185,7 @@ const HelpProvider = ({
                         <Transition type={transition} key={modal.id}>
                           <div
                             style={{ margin: offset, pointerEvents: 'all' }}
-                            {...modal}
+                            // {...modal}
                           >
                             <div style={styles.innerContainer}>
                               <div>
@@ -170,11 +197,24 @@ const HelpProvider = ({
                                   <FaTimes />
                                 </button>
                               </div>
-                              <div>
-                                {modal.imageURL && (
-                                  <img src={modal.imageURL} alt={modal.text} />
-                                )}
-                              </div>
+                              {modal.mdtext && (
+                                <Resizable
+                                  defaultSize={{
+                                    width: 400,
+                                    height: 400,
+                                  }}
+                                >
+                                  <div
+                                    style={{ overflow: 'auto', height: '100%' }}
+                                    // eslint-disable-next-line react/no-danger
+                                  >
+                                    <ReactMarkdown
+                                      source={modal.mdtext}
+                                      transformImageUri={transformImageUri}
+                                    />
+                                  </div>
+                                </Resizable>
+                              )}
                             </div>
                           </div>
                         </Transition>
@@ -199,6 +239,7 @@ HelpProvider.defaultProps = {
   containerStyle: {
     zIndex: 100,
   },
+  imagesPathPrefix: './help/',
 };
 
 export default HelpProvider;

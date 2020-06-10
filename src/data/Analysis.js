@@ -153,16 +153,11 @@ export class Analysis {
   }
 
   // eslint-disable-next-line no-unused-vars
-  createProjection(id2d, position = { x: 0, y: 0 }, options = {}) {
-    const { horizontal = true, vertical = false } = options;
-    let spectrum2d = this.getDatum(id2d);
+  createSlice(id2d, position = { x: 0, y: 0 }) {
+    const spectrum2d = this.getDatum(id2d);
     if (!spectrum2d) return;
 
-    let result = {};
-    if (horizontal) result.horizontal = new Datum1D();
-    if (vertical) result.vertical = new Datum1D();
-
-    return result;
+    return spectrum2d.getSlice(position);
   }
 
   addMissingProjection(id2d, nucleus = []) {

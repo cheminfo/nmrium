@@ -18,7 +18,7 @@ const buttonsStyle = css`
   padding: 5px;
   background-color: #ffffff52;
 
-  button:first-child {
+  button:first-of-type {
     border-radius: 5px 0 0 5px;
     border-weight: 0 1px 0 0;
   }
