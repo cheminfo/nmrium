@@ -199,30 +199,59 @@ const RangesTablePanel = memo(() => {
     modal.close();
   }, [modal]);
 
+  const checkOnRangeLevel = useCallback((multiplicity) => {
+    return multiplicity.split('').includes('m');
+  }, []);
+
+  const getPubIntegral = useCallback((range) => {
+    return []
+      .concat(
+        range.diaID || [],
+        range.signal
+          ? range.signal.map((_signal) => _signal.diaID || []).flat()
+          : [],
+      )
+      .filter((_diaID, i, _diaIDs) => _diaIDs.indexOf(_diaID) === i).length;
+  }, []);
+
   const changeRangeSignalKindHandler = useCallback(
-    (value, range) => {
-      const _range = { ...range, kind: value };
+    (value, range, signalIndex) => {
+      const _range = { ...range };
+      if (checkOnRangeLevel(range.signal[signalIndex].multiplicity)) {
+        _range.kind = value;
+      } else {
+        _range.signal[signalIndex].kind = value;
+      }
       dispatch({
         type: CHANGE_RANGE_DATA,
         data: _range,
       });
     },
-    [dispatch],
+    [dispatch, checkOnRangeLevel],
   );
 
   const unlinkRangeHandler = useCallback(
-    (range) => {
-      const _range = {
-        ...range,
-        diaID: [],
-        pubIntegral: 0,
-        signal: range.signal.map((signal) => {
-          return { ...signal, diaID: [] };
-        }),
-      };
+    (range, signalIndex) => {
+      const _range = Object.assign({}, range);
+      if (signalIndex !== undefined) {
+        if (checkOnRangeLevel(range.signal[signalIndex].multiplicity)) {
+          delete _range.diaID;
+        } else {
+          delete _range.signal[signalIndex].diaID;
+        }
+      } else {
+        delete _range.diaID;
+        _range.signal.forEach((_signal) => delete _signal.diaID);
+      }
+      const pubIntegral = getPubIntegral(_range);
+      if (pubIntegral === 0) {
+        delete _range.pubIntegral;
+      } else {
+        _range.pubIntegral = pubIntegral;
+      }
       dispatch({ type: CHANGE_RANGE_DATA, data: _range });
     },
-    [dispatch],
+    [dispatch, getPubIntegral, checkOnRangeLevel],
   );
 
   const zoomRangeHandler = useCallback(
@@ -413,6 +442,7 @@ const RangesTablePanel = memo(() => {
                 context={contextMenu}
                 preferences={rangesPreferences}
                 element={activeTab && activeTab.replace(/[0-9]/g, '')}
+                checkOnRangeLevel={checkOnRangeLevel}
               />
             ) : (
               <NoTableData />
