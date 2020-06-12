@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import routes from '../samples';
 
 import AdminLayout from './Admin.jsx';
+import SingleDisplayerLayout from './SingleDisplayerLayout.jsx';
 
 const styles = {
   bodyContainer: {
@@ -74,37 +75,65 @@ const Main = (props) => {
     status: 200,
     routes: [],
   });
+  const [dashBoardType, setDashBoardType] = useState('');
 
   const loadHandler = useCallback(() => {
     setRoutes({ isLoaded: true, status: 200, routes: routes });
   }, []);
 
+  const getFileExtension = (url = '') => {
+    return url.substring(url.lastIndexOf('.') + 1);
+  };
+
   useEffect(() => {
     const values = queryString.parse(props.location.search);
     if (values && values.sampleURL) {
-      loadData(values.sampleURL).then((remoteRoutes) => {
-        if (remoteRoutes) {
-          const baseURL = values.sampleURL.replace(
-            // eslint-disable-next-line no-useless-escape
-            /^(?<url>.*[\\\/])?(?<filename>.*?\.[^.]*?|)$/g,
-            '$1',
-          );
+      const extention = getFileExtension(values.sampleURL).toLowerCase();
+      switch (extention) {
+        case 'json': {
+          setDashBoardType('multi');
+          loadData(values.sampleURL).then((remoteRoutes) => {
+            if (remoteRoutes) {
+              const baseURL = values.sampleURL.replace(
+                // eslint-disable-next-line no-useless-escape
+                /^(?<url>.*[\\\/])?(?<filename>.*?\.[^.]*?|)$/g,
+                '$1',
+              );
 
-          const _remoteRoutes = JSON.parse(
-            JSON.stringify(remoteRoutes).replace(/\.\/+?/g, baseURL),
-          );
+              const _remoteRoutes = JSON.parse(
+                JSON.stringify(remoteRoutes).replace(/\.\/+?/g, baseURL),
+              );
+              setRoutes({
+                isLoaded: true,
+                status: 200,
+                routes: _remoteRoutes,
+                baseURL,
+              });
+            } else {
+              setRoutes({ isLoaded: false, status: 404, routes: [] });
+            }
+          });
+          break;
+        }
+        case 'dx':
+        case 'jdx': {
+          setDashBoardType('single');
           setRoutes({
             isLoaded: true,
             status: 200,
-            routes: _remoteRoutes,
-            baseURL,
+            path: values.sampleURL,
           });
-        } else {
-          setRoutes({ isLoaded: false, status: 404, routes: [] });
+
+          break;
         }
-      });
+
+        default:
+          break;
+      }
+
       //   console.log(remoteRoutes);
     } else {
+      setDashBoardType('multi');
       setRoutes({ isLoaded: true, status: 200, routes: routes, baseURL: './' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -138,6 +167,8 @@ const Main = (props) => {
         )}
       </div>
     </div>
+  ) : dashBoardType && dashBoardType === 'single' ? (
+    <SingleDisplayerLayout {...props} path={data.path} />
   ) : (
     <AdminLayout {...props} routes={data.routes} baseURL={data.baseURL} />
   );
