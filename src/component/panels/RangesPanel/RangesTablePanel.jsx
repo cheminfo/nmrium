@@ -135,10 +135,16 @@ const RangesTablePanel = memo(() => {
   const saveEditRangeHandler = useCallback(
     (editedRange) => {
       if (selectedRangeToEdit) {
-        const _data = { ...selectedRangeToEdit, ...editedRange };
+        // for now: clear all assignments for this range because levels to store might have changed
+        delete editedRange.diaID;
+        editedRange.signal.forEach((_signal) => {
+          delete _signal.diaID;
+        });
+        delete editedRange.pubIntegral;
+
         dispatch({
           type: CHANGE_RANGE_DATA,
-          data: _data,
+          data: editedRange,
         });
       }
     },
@@ -451,7 +457,6 @@ const RangesTablePanel = memo(() => {
               onClose={closeEditRangeHandler}
               onSave={saveEditRangeHandler}
               rangeData={selectedRangeToEdit}
-              spectrumData={spectrumData}
             />
           </div>
           <RangesPreferences data={spectraData} ref={settingRef} />

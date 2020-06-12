@@ -4,11 +4,7 @@ import { Formik, Form } from 'formik';
 import { useMemo } from 'react';
 
 import SignalsForm from './SignalsForm';
-import {
-  SaveButton,
-  ResetButton,
-  CancelButton,
-} from './elements/DefaultButtons';
+import { SaveButton, CancelButton } from './elements/DefaultButtons';
 import RangeValidationSchema from './validation/RangeValidationScheme';
 
 const ButtonContainerStyle = css`
@@ -22,7 +18,6 @@ const ButtonContainerStyle = css`
 
 const RangeForm = ({
   rangeData,
-  spectrumData,
   handleOnClose,
   handleOnSave,
   multiplets,
@@ -52,19 +47,17 @@ const RangeForm = ({
   return (
     <Formik
       initialValues={{
-        from: rangeData.from,
-        to: rangeData.to,
+        // from: rangeData.from,
+        // to: rangeData.to,
         signals: rangeData.signal.slice(),
-        newSignalFrom: rangeData.from,
-        newSignalTo: rangeData.to,
+        newSignalDelta: (rangeData.from + rangeData.to) / 2,
         selectedSignalIndex: 0,
         selectedSignalCouplings: initialStateSignalCouplings,
         newCouplingMultiplicity: '',
         newCouplingCoupling: '',
-        spectrumData: spectrumData,
         multiplets: multiplets.slice(),
       }}
-      validationSchema={RangeValidationSchema(spectrumData, multiplets)}
+      validationSchema={RangeValidationSchema(rangeData)}
       onSubmit={(values, { setSubmitting }) => {
         handleOnSave(values);
         setSubmitting(false);
@@ -74,14 +67,12 @@ const RangeForm = ({
         return (
           <Form>
             <SignalsForm
-              spectrumData={spectrumData}
               checkMultiplicity={checkMultiplicity}
               translateMultiplicity={translateMultiplicity}
             />
 
             <div css={ButtonContainerStyle}>
               <SaveButton />
-              <ResetButton />
               <CancelButton onCancel={handleOnClose} />
             </div>
           </Form>

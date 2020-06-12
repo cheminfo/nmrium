@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useFormikContext } from 'formik';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { FaMinus, FaCheck, FaPlus } from 'react-icons/fa';
 
 import Button from './elements/Button';
@@ -92,6 +92,14 @@ const CouplingsTable = memo(
       },
       [setFieldTouched],
     );
+
+    useEffect(() => {
+      setFieldValue(
+        'newCouplingMultiplicity',
+        values.multiplets[0].description,
+      );
+      setFieldTouched('newCouplingMultiplicity', true);
+    }, [setFieldTouched, setFieldValue, values.multiplets]);
 
     return (
       <table css={CouplingsTableStyle}>
@@ -215,10 +223,6 @@ const CouplingsTable = memo(
                     values.multiplets[0].description,
                   );
                   setFieldValue('newCouplingCoupling', '');
-                  setFieldsUntouched(
-                    'newCouplingMultiplicity',
-                    'newCouplingCoupling',
-                  );
                 }}
                 disabled={checkDisableButton(
                   metaDataNewCouplingMultiplicity,

@@ -1,6 +1,7 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback, useMemo } from 'react';
+import { useAlert } from 'react-alert';
 import { FaTimes } from 'react-icons/fa';
 
 import { Modal } from '../elements/Modal';
@@ -102,29 +103,26 @@ const translateMultiplicity = (multiplicity) => {
         .value;
 };
 
-const EditRangeModal = ({ onSave, onClose, rangeData, spectrumData }) => {
-  const resetDiaIDs = useCallback((range) => {
-    const _range = { ...range };
-    if (_range.diaID) {
-      _range.diaID = [];
-    }
-    _range.signal = _range.signal.map((_signal) =>
-      _signal.diaID ? { ..._signal, diaID: [] } : _signal,
-    );
-    return _range;
-  }, []);
+const EditRangeModal = ({ onSave, onClose, rangeData }) => {
+  const alert = useAlert();
 
   const handleOnSave = useCallback(
     async (formValues) => {
-      let editedRange = {
-        ...rangeData,
-        signal: formValues.signals,
-      };
-      editedRange = resetDiaIDs(editedRange);
-      await onSave(editedRange);
+      rangeData.signal = formValues.signals.slice();
+      if (rangeData.signal.length === 0) {
+        rangeData.signal.push({
+          multiplicity: 'm',
+          kind: 'signal',
+          delta: (rangeData.to + rangeData.from) / 2,
+        });
+        alert.info(
+          `There must be at least one signal within a range. Default signal with "${basicMultiplets[0]}" was therefore added!`,
+        );
+      }
+      await onSave(rangeData);
       onClose();
     },
-    [onClose, onSave, rangeData, resetDiaIDs],
+    [alert, onClose, onSave, rangeData],
   );
 
   const isOpen = useMemo(() => {
@@ -143,7 +141,6 @@ const EditRangeModal = ({ onSave, onClose, rangeData, spectrumData }) => {
 
         <RangeForm
           rangeData={rangeData}
-          spectrumData={spectrumData}
           handleOnClose={onClose}
           handleOnSave={handleOnSave}
           multiplets={multiplets}
