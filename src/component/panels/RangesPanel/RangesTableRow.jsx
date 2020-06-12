@@ -1,7 +1,13 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useState, useEffect } from 'react';
-import { FaRegTrashAlt, FaLink, FaSearchPlus, FaEdit } from 'react-icons/fa';
+import {
+  FaRegTrashAlt,
+  FaLink,
+  FaSearchPlus,
+  FaEdit,
+  FaUnlink,
+} from 'react-icons/fa';
 
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import { useHighlight } from '../../highlight';
@@ -32,28 +38,45 @@ const RangesTableRow = ({
   onEdit,
   onContextMenu,
   preferences,
+  checkOnRangeLevel,
 }) => {
-  const highlightIDs = useMemo(() => {
+  const highlightIDsSignal = useMemo(() => {
     return [].concat(
-      [rowData.id],
-      rowData.diaID ? rowData.diaID : [],
-      rowData.signal
-        ? rowData.signal.map((signal) => signal.diaID || []).flat()
+      rowData.tableMetaInfo.id !== undefined
+        ? [`${rowData.tableMetaInfo.id}`]
+        : [rowData.id],
+      rowData.tableMetaInfo.signal &&
+        checkOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity) &&
+        rowData.diaID
+        ? rowData.diaID
+        : rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.diaID
+        ? rowData.tableMetaInfo.signal.diaID
         : [],
     );
-  }, [rowData]);
+  }, [
+    checkOnRangeLevel,
+    rowData.diaID,
+    rowData.id,
+    rowData.tableMetaInfo.id,
+    rowData.tableMetaInfo.signal,
+  ]);
 
-  const highlight = useHighlight(highlightIDs);
+  const highlightRange = useHighlight([rowData.id]);
+  const highlightSignal = useHighlight(highlightIDsSignal);
 
   const [showUnlinkButton, setShowUnlinkButton] = useState(false);
 
   useEffect(() => {
-    const isLinked =
-      (rowData.diaID && rowData.diaID.length > 0) ||
-      (rowData.signal &&
-        rowData.signal.map((signal) => signal.diaID).flat().length > 0);
+    const isLinked = checkOnRangeLevel(
+      rowData.tableMetaInfo.signal.multiplicity,
+    )
+      ? rowData.diaID && rowData.diaID.length > 0
+      : rowData.tableMetaInfo.signal &&
+        rowData.tableMetaInfo.signal.diaID &&
+        rowData.tableMetaInfo.signal.diaID.length > 0;
+
     setShowUnlinkButton(isLinked);
-  }, [rowData]);
+  }, [checkOnRangeLevel, rowData]);
 
   const rowSpanTags = useMemo(() => {
     return {
@@ -66,13 +89,6 @@ const RangesTableRow = ({
     };
   }, [rowData.tableMetaInfo]);
 
-  const stopPropagationOnClickTag = {
-    onClick: (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    },
-  };
-
   const getOriginal = useCallback(() => {
     const _rowData = Object.assign({}, rowData);
     delete _rowData.tableMetaInfo;
@@ -83,23 +99,21 @@ const RangesTableRow = ({
   const handleOnUnlink = useCallback(
     (e) => {
       // event handling here in case of unlink button clicked
-      // because it should still be able to activate the linkage mode
+      // to also exit the assignment mode then
       if (e) {
         e.preventDefault();
         e.stopPropagation();
       }
       setShowUnlinkButton(false);
-      if (highlight.isActivePermanently) {
-        highlight.click();
+      if (highlightSignal.isActivePermanently) {
+        highlightSignal.click();
       }
-      highlight.remove(highlightIDs.filter((id) => id !== rowData.id));
-      onUnlink(getOriginal());
+      onUnlink(getOriginal(), rowData.tableMetaInfo.signalIndex);
     },
-    [getOriginal, highlight, highlightIDs, onUnlink, rowData.id],
+    [getOriginal, highlightSignal, onUnlink, rowData.tableMetaInfo.signalIndex],
   );
 
   const handleOnDelete = useCallback(() => {
-    // no manual event handling because it's already handled by stopPropagationOnClickTag
     handleOnUnlink();
     onDelete(getOriginal());
   }, [getOriginal, handleOnUnlink, onDelete]);
@@ -137,7 +151,7 @@ const RangesTableRow = ({
     <tr
       onContextMenu={(e) => onContextMenu(e, getOriginal())}
       css={
-        highlight.isActive || highlight.isActivePermanently
+        highlightRange.isActive || highlightRange.isActivePermanently
           ? HighlightedRowStyle
           : Object.prototype.hasOwnProperty.call(
               rowData.tableMetaInfo,
@@ -146,10 +160,9 @@ const RangesTableRow = ({
           ? ConstantlyHighlightedRowStyle
           : null
       }
-      {...highlight.onHover}
-      {...highlight.onClick}
+      {...highlightRange.onHover}
     >
-      <td {...rowSpanTags}>{rowData.tableMetaInfo.index}</td>
+      <td {...rowSpanTags}>{rowData.tableMetaInfo.rowIndex + 1}</td>
       {getShowPreference('showFrom') ? (
         <td {...rowSpanTags}>
           {applyFormatPreference('fromFormat', rowData.from)}
@@ -160,9 +173,9 @@ const RangesTableRow = ({
           {applyFormatPreference('toFormat', rowData.to)}
         </td>
       ) : null}
-      <td>
+      <td {...highlightSignal.onHover} {...highlightSignal.onClick}>
         {rowData.tableMetaInfo.signal
-          ? rowData.tableMetaInfo.signal.multiplicity === 'm'
+          ? checkOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity)
             ? `${applyFormatPreference(
                 'fromFormat',
                 rowData.from,
@@ -187,45 +200,85 @@ const RangesTableRow = ({
           {applyFormatPreference('absoluteFormat', rowData.absolute)}
         </td>
       ) : null}
-      <td>
+      <td {...highlightSignal.onHover} {...highlightSignal.onClick}>
         {rowData.tableMetaInfo.signal
           ? rowData.tableMetaInfo.signal.multiplicity
           : ''}
       </td>
-      <td>
+      <td {...highlightSignal.onHover} {...highlightSignal.onClick}>
         {rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.j
           ? rowData.tableMetaInfo.signal.j
               .map((coupling) => coupling.coupling.toFixed(1))
               .join(', ')
           : ''}
       </td>
-      <td {...rowSpanTags}>
-        {showUnlinkButton || highlight.isActivePermanently ? (
-          <span>
-            <button
-              type="button"
-              className="unlink-button"
-              onClick={handleOnUnlink}
-            >
-              <FaLink
-                color={highlight.isActivePermanently ? 'grey' : 'black'}
-              />
-            </button>
-            <sup>[{rowData.pubIntegral}]</sup>
-          </span>
+      <td
+        {...highlightSignal.onHover}
+        {...highlightSignal.onClick}
+        style={
+          highlightSignal.isActivePermanently || highlightSignal.isActive
+            ? {
+                color: 'red',
+                fontWeight: 'bold',
+              }
+            : null
+        }
+      >
+        {rowData.tableMetaInfo.signal &&
+        rowData.tableMetaInfo.signal.multiplicity &&
+        checkOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity)
+          ? rowData.diaID && rowData.diaID.length > 0
+            ? rowData.diaID.length
+            : highlightSignal.isActivePermanently
+            ? '0'
+            : ''
+          : rowData.tableMetaInfo.signal &&
+            rowData.tableMetaInfo.signal.diaID &&
+            rowData.tableMetaInfo.signal.diaID.length > 0
+          ? rowData.tableMetaInfo.signal.diaID.length
+          : highlightSignal.isActivePermanently
+          ? '0'
+          : ''}
+      </td>
+      <td {...highlightSignal.onHover} {...highlightSignal.onClick}>
+        {showUnlinkButton || highlightSignal.isActivePermanently ? (
+          <button
+            type="button"
+            className="unlink-button"
+            onClick={handleOnUnlink}
+          >
+            {highlightSignal.isActivePermanently ? (
+              <FaLink color="red" />
+            ) : (
+              <FaUnlink />
+            )}
+          </button>
         ) : null}
       </td>
-      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
+      <td {...rowSpanTags}>
+        {rowData.pubIntegral !== undefined && rowData.pubIntegral > 0
+          ? rowData.pubIntegral
+          : null}
+      </td>
+      <td {...highlightSignal.onHover}>
         <SelectUncontrolled
           onChange={(value) => {
-            onChangeKind(value, getOriginal());
+            onChangeKind(
+              value,
+              getOriginal(),
+              rowData.tableMetaInfo.signalIndex,
+            );
           }}
           data={SignalKinds}
-          value={rowData.kind}
+          value={
+            checkOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity)
+              ? rowData.kind
+              : rowData.tableMetaInfo.signal.kind
+          }
           style={selectStyle}
         />
       </td>
-      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
+      <td {...rowSpanTags}>
         <button
           type="button"
           className="delete-button"
@@ -234,12 +287,12 @@ const RangesTableRow = ({
           <FaRegTrashAlt />
         </button>
       </td>
-      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
+      <td {...rowSpanTags}>
         <button type="button" className="zoom-button" onClick={handleOnZoom}>
           <FaSearchPlus />
         </button>
       </td>
-      <td {...rowSpanTags} {...stopPropagationOnClickTag}>
+      <td {...rowSpanTags}>
         <button type="button" className="edit-button" onClick={handleOnEdit}>
           <FaEdit color="blue" />
         </button>

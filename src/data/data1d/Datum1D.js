@@ -271,14 +271,12 @@ export class Datum1D {
     const ranges = autoRangesDetection(this, options);
     this.ranges.values = ranges.map((range) => {
       return {
-        diaID: [],
         ...range,
         id: generateID(),
-        pubIntegral: 0,
         absolute: this.getIntegration(range.from, range.to),
         kind: 'signal',
         signal: range.signal.map((_signal) => {
-          return { diaID: [], ..._signal };
+          return { kind: 'signal', ..._signal };
         }),
       };
     });
@@ -430,8 +428,6 @@ export class Datum1D {
         id: generateID(),
         from,
         to,
-        diaID: [],
-        pubIntegral: 0,
         absolute: this.getIntegration(from, to), // the real value,
         signal: [this.detectSignal(from, to)],
         kind: 'signal',

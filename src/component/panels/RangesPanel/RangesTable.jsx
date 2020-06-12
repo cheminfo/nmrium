@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useRef } from 'react';
+import { FaLink, FaUnlink } from 'react-icons/fa';
 
 import ContextMenu from '../../elements/ContextMenu';
 
@@ -24,6 +25,7 @@ const tableStyle = css`
   }
   th,
   td {
+    white-space: nowrap;
     text-align: center;
     margin: 0;
     padding: 0.4rem;
@@ -36,6 +38,10 @@ const tableStyle = css`
     button {
       background-color: transparent;
       border: none;
+    }
+    .unlink-button {
+      padding: 0;
+      font-size: 10px;
     }
   }
 `;
@@ -50,22 +56,25 @@ const RangesTable = ({
   context,
   preferences,
   element,
+  checkOnRangeLevel,
 }) => {
   const contextRef = useRef();
 
   const data = useMemo(() => {
     const _rangesData = [];
     tableData.forEach((range, i) => {
-      if (range.signal.length <= 1) {
+      if (range.signal.length === 1) {
         _rangesData.push({
           ...range,
           tableMetaInfo: {
             ...range.tableMetaInfo,
             signal: range.signal[0],
-            index: i + 1,
+            rowIndex: i,
+            signalIndex: 0,
+            id: `${range.id}_${0}`,
           },
         });
-      } else {
+      } else if (range.signal.length > 1) {
         range.signal.forEach((signal, j) => {
           let hide = false;
           let rowSpan = null;
@@ -86,7 +95,9 @@ const RangesTable = ({
               signal,
               rowSpan,
               hide,
-              index: i + 1,
+              rowIndex: i,
+              signalIndex: j,
+              id: `${range.id}_${j}`,
             },
           });
         });
@@ -116,19 +127,35 @@ const RangesTable = ({
       <table css={tableStyle}>
         <tbody>
           <tr>
-            <th>#</th>
-            {getShowPreference('showFrom') ? <th>From</th> : null}
-            {getShowPreference('showTo') ? <th>To</th> : null}
-            <th>δ (ppm)</th>
-            {getShowPreference('showRelative') ? <th>Rel. {element}</th> : null}
-            {getShowPreference('showAbsolute') ? <th>Absolute</th> : null}
-            <th>Mult</th>
-            <th>J (Hz)</th>
-            <th>Linked</th>
-            <th>Kind</th>
-            <th>{''}</th>
-            <th>{''}</th>
-            <th>{''}</th>
+            <th rowSpan={2}>#</th>
+            {getShowPreference('showFrom') ? <th rowSpan={2}>From</th> : null}
+            {getShowPreference('showTo') ? <th rowSpan={2}>To</th> : null}
+            <th rowSpan={2}>δ (ppm)</th>
+            {getShowPreference('showRelative') ? (
+              <th rowSpan={2}>Rel. {element}</th>
+            ) : null}
+            {getShowPreference('showAbsolute') ? (
+              <th rowSpan={2}>Absolute</th>
+            ) : null}
+            <th rowSpan={2}>Mult.</th>
+            <th rowSpan={2}>J (Hz)</th>
+            <th colSpan={3}>
+              <FaLink title="Assignments" style={{ fontSize: '10px' }} />
+            </th>
+            <th rowSpan={2}>Kind</th>
+            <th rowSpan={2}>{''}</th>
+            <th rowSpan={2}>{''}</th>
+            <th rowSpan={2}>{''}</th>
+          </tr>
+          <tr>
+            <th title="Number of assigned atoms to a signal.">n</th>
+            <th>
+              <FaUnlink
+                title="Enable (un)assignment of signals to atoms."
+                style={{ fontSize: '10px' }}
+              />
+            </th>
+            <th title="Sum of assigned atoms to signals within a range.">Σ</th>
           </tr>
           {data &&
             data.map((range, i) => {
@@ -144,6 +171,7 @@ const RangesTable = ({
                   onEdit={onEdit}
                   onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                   preferences={preferences}
+                  checkOnRangeLevel={checkOnRangeLevel}
                 />
               );
             })}
