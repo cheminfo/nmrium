@@ -8,6 +8,8 @@ Want to play ? You can do some 1D NMR exercises ;)
 
 https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/toc.json
 
+https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/100-86-7/1h.dx
+
 
 ## Install and test locally
 
