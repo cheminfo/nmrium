@@ -15,6 +15,7 @@ import BaseLineCorrectionPanel from './BaseLineCorrectionPanel';
 import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
+import Zones2DOptionPanel from './Zones2DOptionPanel';
 
 const headerStyle = css`
   display: flex;
@@ -68,16 +69,21 @@ const Header = ({ isFullscreen, onMaximize }) => {
   const alert = useAlert();
 
   const selectedPanel = useMemo(() => {
-    if (selectedOptionPanel === options.zeroFilling.id) {
-      return <ZeroFillingOptionsPanel />;
-    } else if (selectedOptionPanel === options.phaseCorrection.id) {
-      return <ManualPhaseCorrectionPanel />;
-    } else if (selectedOptionPanel === options.peakPicking.id) {
-      return <AutoPeakPickingOptionPanel />;
-    } else if (selectedOptionPanel === options.rangesPicking.id) {
-      return <RangesPickingOptionPanel />;
-    } else if (selectedOptionPanel === options.baseLineCorrection.id) {
-      return <BaseLineCorrectionPanel />;
+    switch (selectedOptionPanel) {
+      case options.zeroFilling.id:
+        return <ZeroFillingOptionsPanel />;
+      case options.phaseCorrection.id:
+        return <ManualPhaseCorrectionPanel />;
+      case options.peakPicking.id:
+        return <AutoPeakPickingOptionPanel />;
+      case options.rangesPicking.id:
+        return <RangesPickingOptionPanel />;
+      case options.baseLineCorrection.id:
+        return <BaseLineCorrectionPanel />;
+      case options.zone2D.id:
+        return <Zones2DOptionPanel />;
+      default:
+        break;
     }
   }, [selectedOptionPanel]);
 
