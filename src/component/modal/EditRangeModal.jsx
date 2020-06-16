@@ -1,11 +1,18 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useEffect } from 'react';
 import { useAlert } from 'react-alert';
 import { FaTimes } from 'react-icons/fa';
 
+import { useDispatch } from '../context/DispatchContext';
 import { Modal } from '../elements/Modal';
-import RangeForm from '../elements/forms/RangeForm';
+import RangeForm from '../elements/forms/editRange/RangeForm';
+import {
+  SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+  UNSET_SELECTED_NEW_SIGNAL_DELTA,
+  SET_RANGE_IN_EDITION,
+  UNSET_RANGE_IN_EDITION,
+} from '../reducer/types/Types';
 
 const styles = css`
   display: flex;
@@ -103,8 +110,9 @@ const translateMultiplicity = (multiplicity) => {
         .value;
 };
 
-const EditRangeModal = ({ onSave, onClose, rangeData }) => {
+const EditRangeModal = ({ onSave, onClose, onZoom, rangeData }) => {
   const alert = useAlert();
+  const dispatch = useDispatch();
 
   const handleOnSave = useCallback(
     async (formValues) => {
@@ -125,9 +133,27 @@ const EditRangeModal = ({ onSave, onClose, rangeData }) => {
     [alert, onClose, onSave, rangeData],
   );
 
+  const handleOnZoom = useCallback(async () => {
+    onZoom(rangeData);
+  }, [onZoom, rangeData]);
+
   const isOpen = useMemo(() => {
     return rangeData ? true : false;
   }, [rangeData]);
+
+  useEffect(() => {
+    if (isOpen) {
+      handleOnZoom();
+      dispatch({ type: SET_RANGE_IN_EDITION, rangeID: rangeData.id });
+    } else {
+      dispatch({ type: UNSET_RANGE_IN_EDITION });
+      dispatch({
+        type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+        isEnabled: false,
+      });
+      dispatch({ type: UNSET_SELECTED_NEW_SIGNAL_DELTA });
+    }
+  }, [dispatch, handleOnZoom, isOpen, rangeData]);
 
   return (
     <Modal open={isOpen} onClose={onClose}>

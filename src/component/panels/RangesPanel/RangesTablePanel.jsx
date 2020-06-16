@@ -135,7 +135,7 @@ const RangesTablePanel = memo(() => {
   const saveEditRangeHandler = useCallback(
     (editedRange) => {
       if (selectedRangeToEdit) {
-        // for now: clear all assignments for this range because levels to store might have changed
+        // for now: clear all assignments for this range because signals or levels to store might have changed
         delete editedRange.diaID;
         editedRange.signal.forEach((_signal) => {
           delete _signal.diaID;
@@ -456,6 +456,7 @@ const RangesTablePanel = memo(() => {
             <EditRangeModal
               onClose={closeEditRangeHandler}
               onSave={saveEditRangeHandler}
+              onZoom={zoomRangeHandler}
               rangeData={selectedRangeToEdit}
             />
           </div>

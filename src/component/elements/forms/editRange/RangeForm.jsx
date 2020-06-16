@@ -3,11 +3,12 @@ import { jsx, css } from '@emotion/core';
 import { Formik, Form } from 'formik';
 import { useMemo } from 'react';
 
-import SignalsForm from './SignalsForm';
-import { SaveButton, CancelButton } from './elements/DefaultButtons';
-import RangeValidationSchema from './validation/RangeValidationScheme';
+import { SaveButton, CancelButton } from '../elements/DefaultButtons';
+import RangeValidationSchema from '../validation/RangeValidationScheme';
 
-const ButtonContainerStyle = css`
+import SignalsForm from './SignalsForm';
+
+const ButtonStyles = css`
   text-align: center;
   button {
     background-color: transparent;
@@ -47,8 +48,8 @@ const RangeForm = ({
   return (
     <Formik
       initialValues={{
-        // from: rangeData.from,
-        // to: rangeData.to,
+        from: rangeData.from,
+        to: rangeData.to,
         signals: rangeData.signal.slice(),
         newSignalDelta: (rangeData.from + rangeData.to) / 2,
         selectedSignalIndex: 0,
@@ -70,8 +71,7 @@ const RangeForm = ({
               checkMultiplicity={checkMultiplicity}
               translateMultiplicity={translateMultiplicity}
             />
-
-            <div css={ButtonContainerStyle}>
+            <div css={ButtonStyles}>
               <SaveButton />
               <CancelButton onCancel={handleOnClose} />
             </div>

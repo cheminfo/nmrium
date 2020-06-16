@@ -3,8 +3,9 @@ import { jsx, css } from '@emotion/core';
 import { useFormikContext, FieldArray } from 'formik';
 import { memo, useEffect, useCallback } from 'react';
 
+import Button from '../elements/Button';
+
 import CouplingsTable from './CouplingsTable';
-import Button from './elements/Button';
 
 const SignalFormTabStyle = css`
   border-spacing: 0;

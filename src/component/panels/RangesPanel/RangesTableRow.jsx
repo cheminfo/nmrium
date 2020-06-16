@@ -289,7 +289,7 @@ const RangesTableRow = ({
       </td>
       <td {...rowSpanTags}>
         <button type="button" className="zoom-button" onClick={handleOnZoom}>
-          <FaSearchPlus />
+          <FaSearchPlus title="Zoom to range in spectrum view" />
         </button>
       </td>
       <td {...rowSpanTags}>

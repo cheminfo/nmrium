@@ -3,15 +3,27 @@ import { jsx, css } from '@emotion/core';
 import { useFormikContext } from 'formik';
 import { memo, useState, useCallback, useEffect } from 'react';
 
-import Button from './elements/Button';
-import Input from './elements/Input';
+import { useChartData } from '../../../context/ChartContext';
+import { useDispatch } from '../../../context/DispatchContext';
+import {
+  UNSET_SELECTED_NEW_SIGNAL_DELTA,
+  SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+} from '../../../reducer/types/Types';
+import Button from '../elements/Button';
+import Input from '../elements/Input';
 
 const AddSignalFormTabStyle = css`
   text-align: center;
 
   p {
     margin-top: 5px;
+    // margin-bottom: 10px;
+  }
+
+  .infoText {
+    margin-top: 3px;
     margin-bottom: 10px;
+    font-size: 11px;
   }
 
   input {
@@ -23,6 +35,7 @@ const AddSignalFormTabStyle = css`
 
   .addSignalButton {
     margin-top: 15px;
+    margin-top: 20px;
     background-color: transparent;
     border: 0.5px solid #dedede;
   }
@@ -30,6 +43,8 @@ const AddSignalFormTabStyle = css`
 
 const AddSignalFormTab = memo(() => {
   const { values, setFieldValue, errors } = useFormikContext();
+  const { editRangeModalMeta } = useChartData();
+  const dispatch = useDispatch();
 
   const [disableAddButton, setDisableAddButton] = useState(false);
 
@@ -37,12 +52,18 @@ const AddSignalFormTab = memo(() => {
     const newSignal = {
       multiplicity: 'm',
       kind: 'signal',
-      delta: values.newSignalDelta,
+      delta: Number(values.newSignalDelta),
     };
     const _signals = values.signals.slice().concat(newSignal);
     setFieldValue('signals', _signals);
     setFieldValue('selectedSignalIndex', _signals.length - 1);
-  }, [setFieldValue, values.newSignalDelta, values.signals]);
+
+    dispatch({
+      type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+      isEnabled: false,
+    });
+    dispatch({ type: UNSET_SELECTED_NEW_SIGNAL_DELTA });
+  }, [dispatch, setFieldValue, values.newSignalDelta, values.signals]);
 
   useEffect(() => {
     if (errors.newSignalDelta) {
@@ -52,10 +73,27 @@ const AddSignalFormTab = memo(() => {
     }
   }, [errors.newSignalDelta, values.signals]);
 
+  useEffect(() => {
+    if (editRangeModalMeta && editRangeModalMeta.newSignalDelta) {
+      setFieldValue(
+        'newSignalDelta',
+        editRangeModalMeta.newSignalDelta.toFixed(5),
+      );
+    } else {
+      setFieldValue(
+        'newSignalDelta',
+        ((values.from + values.to) / 2).toFixed(5),
+      );
+    }
+  }, [editRangeModalMeta, setFieldValue, values.from, values.to]);
+
   return (
     <div css={AddSignalFormTabStyle}>
       <div>
-        <p>Delta value of new signal (ppm): </p>
+        <p>Add delta value of new signal (ppm): </p>
+        <p className="infoText">
+          (You can click within the range in spectrum or type it in manually)
+        </p>
         <Input
           name="newSignalDelta"
           type="number"

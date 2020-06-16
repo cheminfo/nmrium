@@ -2,6 +2,8 @@ import * as Yup from 'yup';
 
 const RangeValidationSchema = (rangeData) => {
   return Yup.object({
+    from: Yup.number().required('from value is required'),
+    to: Yup.number().required('to value is required'),
     newSignalDelta: Yup.number()
       .min(rangeData.from, `Must be ${rangeData.from.toFixed(5)} ppm or more`)
       .max(rangeData.to, `Must be ${rangeData.to.toFixed(5)} ppm or less`)

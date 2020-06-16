@@ -4,9 +4,9 @@ import { useFormikContext } from 'formik';
 import { memo, useCallback, useEffect } from 'react';
 import { FaMinus, FaCheck, FaPlus } from 'react-icons/fa';
 
-import Button from './elements/Button';
-import Input from './elements/Input';
-import SelectBox from './elements/SelectBox';
+import Button from '../elements/Button';
+import Input from '../elements/Input';
+import SelectBox from '../elements/SelectBox';
 
 const CouplingsTableStyle = css`
   border-spacing: 0;

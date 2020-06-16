@@ -3,13 +3,16 @@ import { jsx } from '@emotion/core';
 import { useFormikContext } from 'formik';
 import { useCallback, useMemo, memo } from 'react';
 
-import { Tabs } from '../Tab';
+import { useDispatch } from '../../../context/DispatchContext';
+import { SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED } from '../../../reducer/types/Types';
+import { Tabs } from '../../Tab';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import SignalFormTab from './SignalFormTab';
 
 const SignalsForm = memo(({ checkMultiplicity, translateMultiplicity }) => {
   const { values, setFieldValue, getFieldMeta } = useFormikContext();
+  const dispatch = useDispatch();
 
   const deleteSignal = useCallback(() => {
     const _signals = values.signals.filter(
@@ -21,11 +24,25 @@ const SignalsForm = memo(({ checkMultiplicity, translateMultiplicity }) => {
 
   const onTapClickHandler = useCallback(
     ({ identifier }) => {
-      if (identifier !== undefined && typeof identifier === 'number') {
-        setFieldValue('selectedSignalIndex', identifier);
+      if (identifier !== undefined) {
+        if (typeof identifier === 'number') {
+          setFieldValue('selectedSignalIndex', identifier);
+          dispatch({
+            type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+            isEnabled: false,
+          });
+        } else if (
+          typeof identifier === 'string' &&
+          identifier === 'addSignalTab'
+        ) {
+          dispatch({
+            type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+            isEnabled: true,
+          });
+        }
       }
     },
-    [setFieldValue],
+    [dispatch, setFieldValue],
   );
 
   const signalFormTabs = useMemo(() => {
@@ -35,7 +52,7 @@ const SignalsForm = memo(({ checkMultiplicity, translateMultiplicity }) => {
           // eslint-disable-next-line react/no-array-index-key
           key={`signalForm${i}`}
           identifier={i}
-          label={`${'\u0394'}: ${signal.delta.toFixed(3)} (${
+          label={`${'\u0394'}: ${signal.delta.toFixed(5)} (${
             signal.multiplicity
           })`}
         >
@@ -47,7 +64,7 @@ const SignalsForm = memo(({ checkMultiplicity, translateMultiplicity }) => {
         </div>
       ))
       .concat(
-        <div label={'\u002B'} key="addSignalTab">
+        <div label={'\u002B'} identifier="addSignalTab" key="addSignalTab">
           <AddSignalFormTab />
         </div>,
       );
