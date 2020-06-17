@@ -49,12 +49,12 @@ const ModalProvider = ({
    * @param {object} options    {onYest:()=>{}, prop1, .... etc}
    * @param {transitions} options.transition
    * @param {positions} options.position
-   * @param {boolean} options.isBackgroundBlure
+   * @param {boolean} options.isBackgroundBlur
    */
   const show = (component, options = {}) => {
     const _modal = {
       component,
-      options: { isBackgroundBlure: true, ...options },
+      options: { isBackgroundBlur: true, ...options },
     };
 
     _modal.close = () => remove();
@@ -67,7 +67,7 @@ const ModalProvider = ({
   const showConfirmDialog = (message, options = {}) => {
     const _modal = {
       component: <ConfirmDialog message={message} />,
-      options: { isBackgroundBlure: true, ...options },
+      options: { isBackgroundBlur: true, ...options },
     };
 
     _modal.close = () => remove();
@@ -100,7 +100,7 @@ const ModalProvider = ({
   };
 
   const outerStyle =
-    modal && modal.options.isBackgroundBlure
+    modal && modal.options.isBackgroundBlur
       ? { backgroundColor: 'rgba(255,255,255,0.8)' }
       : { pointerEvents: 'none' };
 
