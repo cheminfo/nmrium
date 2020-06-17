@@ -120,10 +120,10 @@ const NMRDisplayer = memo((props) => {
     <ErrorBoundary>
       <PreferencesProvider value={preferences}>
         <HelpProvider data={data}>
-          <ModalProvider>
-            <AlertProvider template={AlertTemplate} {...alertOptions}>
-              <DispatchProvider value={dispatchMiddleWare}>
-                <ChartDataProvider value={{ ...state, isResizeEventStart }}>
+          <AlertProvider template={AlertTemplate} {...alertOptions}>
+            <DispatchProvider value={dispatchMiddleWare}>
+              <ChartDataProvider value={{ ...state, isResizeEventStart }}>
+                <ModalProvider>
                   <KeyListener parentRef={fullScreenRef} />
                   <HighlightProvider>
                     <div
@@ -174,10 +174,10 @@ const NMRDisplayer = memo((props) => {
                       </div>
                     </div>
                   </HighlightProvider>
-                </ChartDataProvider>
-              </DispatchProvider>
-            </AlertProvider>
-          </ModalProvider>
+                </ModalProvider>
+              </ChartDataProvider>
+            </DispatchProvider>
+          </AlertProvider>
         </HelpProvider>
       </PreferencesProvider>
     </ErrorBoundary>

@@ -4,6 +4,8 @@ import { useFormikContext } from 'formik';
 import { memo, useCallback, useEffect } from 'react';
 import { FaMinus, FaCheck, FaPlus } from 'react-icons/fa';
 
+import { Multiplets } from '../../../panels/extra/constants/Multiplets';
+import { checkMultiplicity } from '../../../panels/extra/utilities/MultiplicityUtilities';
 import Button from '../elements/Button';
 import Input from '../elements/Input';
 import SelectBox from '../elements/SelectBox';
@@ -51,14 +53,7 @@ const CouplingsTableStyle = css`
 `;
 
 const CouplingsTable = memo(
-  ({
-    push,
-    remove,
-    onAddCoupling,
-    onDeleteCoupling,
-    onEditCoupling,
-    checkMultiplicity,
-  }) => {
+  ({ push, remove, onAddCoupling, onDeleteCoupling, onEditCoupling }) => {
     const {
       values,
       setFieldValue,
@@ -82,7 +77,7 @@ const CouplingsTable = memo(
             metaDataCoupling.value.length === 0)
         );
       },
-      [checkMultiplicity],
+      [],
     );
 
     const setFieldsUntouched = useCallback(
@@ -94,12 +89,9 @@ const CouplingsTable = memo(
     );
 
     useEffect(() => {
-      setFieldValue(
-        'newCouplingMultiplicity',
-        values.multiplets[0].description,
-      );
+      setFieldValue('newCouplingMultiplicity', Multiplets[0].label);
       setFieldTouched('newCouplingMultiplicity', true);
-    }, [setFieldTouched, setFieldValue, values.multiplets]);
+    }, [setFieldTouched, setFieldValue]);
 
     return (
       <table css={CouplingsTableStyle}>
@@ -123,9 +115,7 @@ const CouplingsTable = memo(
                     <SelectBox
                       className="selectBox"
                       name={`selectedSignalCouplings.${i}.multiplicity`}
-                      values={values.multiplets.map(
-                        (_multiplet) => _multiplet.description,
-                      )}
+                      values={Multiplets.map((_multiplet) => _multiplet.label)}
                     />
                   </td>
                   <td>
@@ -135,9 +125,17 @@ const CouplingsTable = memo(
                       <Input
                         name={`selectedSignalCouplings.${i}.coupling`}
                         type="number"
-                        placeholder="J (Hz)"
+                        placeholder={'J (Hz)'}
+                        disabled={false}
                       />
-                    ) : null}
+                    ) : (
+                      <Input
+                        name={`selectedSignalCouplings.${i}.coupling`}
+                        type="number"
+                        placeholder={'none'}
+                        disabled={true}
+                      />
+                    )}
                   </td>
                   <td>
                     <Button
@@ -195,9 +193,7 @@ const CouplingsTable = memo(
               <SelectBox
                 className="selectBox"
                 name="newCouplingMultiplicity"
-                values={values.multiplets.map(
-                  (_multiplet) => _multiplet.description,
-                )}
+                values={Multiplets.map((_multiplet) => _multiplet.label)}
               />
             </td>
             <td>
@@ -205,9 +201,17 @@ const CouplingsTable = memo(
                 <Input
                   name="newCouplingCoupling"
                   type="number"
-                  placeholder="J (Hz)"
+                  placeholder={'J (Hz)'}
+                  disabled={false}
                 />
-              ) : null}
+              ) : (
+                <Input
+                  name="newCouplingCoupling"
+                  type="number"
+                  placeholder={'none'}
+                  disabled={true}
+                />
+              )}
             </td>
             <td colSpan={2}>
               <Button
@@ -218,10 +222,7 @@ const CouplingsTable = memo(
                   };
                   push(newCoupling);
                   onAddCoupling(newCoupling);
-                  setFieldValue(
-                    'newCouplingMultiplicity',
-                    values.multiplets[0].description,
-                  );
+                  setFieldValue('newCouplingMultiplicity', Multiplets[0].label);
                   setFieldValue('newCouplingCoupling', '');
                 }}
                 disabled={checkDisableButton(

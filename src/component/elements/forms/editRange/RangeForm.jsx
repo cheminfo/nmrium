@@ -3,28 +3,22 @@ import { jsx, css } from '@emotion/core';
 import { Formik, Form } from 'formik';
 import { useMemo } from 'react';
 
+import { checkMultiplicity } from '../../../panels/extra/utilities/MultiplicityUtilities';
 import { SaveButton, CancelButton } from '../elements/DefaultButtons';
 import RangeValidationSchema from '../validation/RangeValidationScheme';
 
 import SignalsForm from './SignalsForm';
 
-const ButtonStyles = css`
+const FormButtonStyle = css`
   text-align: center;
   button {
     background-color: transparent;
     border: 1px solid #dedede;
-    margin-top: 20px;
+    margin-top: 40px;
   }
 `;
 
-const RangeForm = ({
-  rangeData,
-  handleOnClose,
-  handleOnSave,
-  multiplets,
-  checkMultiplicity,
-  translateMultiplicity,
-}) => {
+const RangeForm = ({ rangeData, handleOnClose, handleOnSave }) => {
   const initialStateSignalCouplings = useMemo(() => {
     const signal = rangeData.signal[0];
     if (signal && signal.multiplicity) {
@@ -43,7 +37,7 @@ const RangeForm = ({
       });
       return couplings;
     }
-  }, [checkMultiplicity, rangeData.signal]);
+  }, [rangeData.signal]);
 
   return (
     <Formik
@@ -56,7 +50,6 @@ const RangeForm = ({
         selectedSignalCouplings: initialStateSignalCouplings,
         newCouplingMultiplicity: '',
         newCouplingCoupling: '',
-        multiplets: multiplets.slice(),
       }}
       validationSchema={RangeValidationSchema(rangeData)}
       onSubmit={(values, { setSubmitting }) => {
@@ -67,11 +60,8 @@ const RangeForm = ({
       {() => {
         return (
           <Form>
-            <SignalsForm
-              checkMultiplicity={checkMultiplicity}
-              translateMultiplicity={translateMultiplicity}
-            />
-            <div css={ButtonStyles}>
+            <SignalsForm />
+            <div css={FormButtonStyle}>
               <SaveButton />
               <CancelButton onCancel={handleOnClose} />
             </div>

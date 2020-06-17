@@ -107,7 +107,7 @@ export function useHighlight(highlights) {
   }, [highlights]);
 
   useEffect(() => {
-    // if range deletion then also delete its highlight information -> componentWillUnmount
+    // if deletion of component then also delete its highlight information -> componentWillUnmount
     return () => {
       context.dispatch({
         type: 'HIDE',

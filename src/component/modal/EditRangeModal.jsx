@@ -1,24 +1,22 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback, useMemo, useEffect } from 'react';
-import { useAlert } from 'react-alert';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaSearchPlus } from 'react-icons/fa';
 
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { Modal } from '../elements/Modal';
 import RangeForm from '../elements/forms/editRange/RangeForm';
 import {
+  UNSET_RANGE_IN_EDITION,
   SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
   UNSET_SELECTED_NEW_SIGNAL_DELTA,
   SET_RANGE_IN_EDITION,
-  UNSET_RANGE_IN_EDITION,
 } from '../reducer/types/Types';
 
 const styles = css`
-  display: flex;
-  flex-direction: column;
+  overflow: auto;
   width: 600px;
-  height: 450px;
+  height: 500px;
   padding: 5px;
   button:focus {
     outline: none;
@@ -39,6 +37,14 @@ const styles = css`
       svg {
         height: 16px;
       }
+    }
+    .zoom-button {
+      background-color: transparent;
+      border: none;
+      svg {
+        height: 16px;
+      }
+      margin-right: 10px;
     }
   }
   .container {
@@ -63,118 +69,66 @@ const styles = css`
   }
 `;
 
-const basicMultiplets = [
-  'massive (m)',
-  'singlet (s)',
-  'doublet (d)',
-  'triplet (t)',
-  'quartet (q)',
-  'quintet (i)',
-  'sextet (x)',
-  'septet (p)',
-  'octet (o)',
-  'nonet (n)',
-];
-
-const multiplets = basicMultiplets.map((_multiplet, i) => {
-  return {
-    index: i,
-    description: _multiplet,
-    value: _multiplet.split('(')[1].charAt(0),
-  };
-});
-
-const checkMultiplicity = (multiplicity, options = {}) => {
-  const checkOptions = { ...{ massive: true, singlet: true }, ...options };
-  if (
-    multiplicity === undefined ||
-    multiplicity.length === 0 ||
-    (checkOptions.massive &&
-      (multiplicity === multiplets[0].value ||
-        multiplicity === multiplets[0].description)) ||
-    (checkOptions.singlet &&
-      (multiplicity === multiplets[1].value ||
-        multiplicity === multiplets[1].description))
-  ) {
-    return false;
-  }
-
-  return true;
-};
-
-const translateMultiplicity = (multiplicity) => {
-  return multiplicity.length === 1
-    ? multiplets.find((_multiplet) => _multiplet.value === multiplicity)
-        .description
-    : multiplets.find((_multiplet) => _multiplet.description === multiplicity)
-        .value;
-};
-
-const EditRangeModal = ({ onSave, onClose, onZoom, rangeData }) => {
-  const alert = useAlert();
+const EditRangeModal = ({ onSave, onClose, onZoom, rangeID }) => {
+  const { data: spectraData, activeSpectrum } = useChartData();
   const dispatch = useDispatch();
+
+  const rangeData = useMemo(() => {
+    return activeSpectrum && spectraData
+      ? spectraData[activeSpectrum.index].ranges.values.find(
+          (_range) => _range.id === rangeID,
+        )
+      : null;
+  }, [activeSpectrum, spectraData, rangeID]);
+
+  const handleOnZoom = useCallback(() => {
+    onZoom(rangeData);
+  }, [onZoom, rangeData]);
+
+  useEffect(() => {
+    handleOnZoom();
+    dispatch({ type: SET_RANGE_IN_EDITION, rangeID: rangeData.id });
+  }, [dispatch, handleOnZoom, rangeData]);
+
+  const handleOnClose = useCallback(() => {
+    dispatch({ type: UNSET_RANGE_IN_EDITION });
+    dispatch({
+      type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+      isEnabled: false,
+    });
+    dispatch({ type: UNSET_SELECTED_NEW_SIGNAL_DELTA });
+
+    onClose();
+  }, [dispatch, onClose]);
 
   const handleOnSave = useCallback(
     async (formValues) => {
       rangeData.signal = formValues.signals.slice();
-      if (rangeData.signal.length === 0) {
-        rangeData.signal.push({
-          multiplicity: 'm',
-          kind: 'signal',
-          delta: (rangeData.to + rangeData.from) / 2,
-        });
-        alert.info(
-          `There must be at least one signal within a range. Default signal with "${basicMultiplets[0]}" was therefore added!`,
-        );
-      }
+
       await onSave(rangeData);
-      onClose();
+      handleOnClose();
     },
-    [alert, onClose, onSave, rangeData],
+    [handleOnClose, onSave, rangeData],
   );
 
-  const handleOnZoom = useCallback(async () => {
-    onZoom(rangeData);
-  }, [onZoom, rangeData]);
-
-  const isOpen = useMemo(() => {
-    return rangeData ? true : false;
-  }, [rangeData]);
-
-  useEffect(() => {
-    if (isOpen) {
-      handleOnZoom();
-      dispatch({ type: SET_RANGE_IN_EDITION, rangeID: rangeData.id });
-    } else {
-      dispatch({ type: UNSET_RANGE_IN_EDITION });
-      dispatch({
-        type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
-        isEnabled: false,
-      });
-      dispatch({ type: UNSET_SELECTED_NEW_SIGNAL_DELTA });
-    }
-  }, [dispatch, handleOnZoom, isOpen, rangeData]);
-
   return (
-    <Modal open={isOpen} onClose={onClose}>
-      <div css={styles}>
-        <div className="header">
-          <span>Range Information and Editing</span>
-          <button onClick={onClose} type="button">
-            <FaTimes />
-          </button>
-        </div>
-
-        <RangeForm
-          rangeData={rangeData}
-          handleOnClose={onClose}
-          handleOnSave={handleOnSave}
-          multiplets={multiplets}
-          checkMultiplicity={checkMultiplicity}
-          translateMultiplicity={translateMultiplicity}
-        />
+    <div css={styles}>
+      <div className="header">
+        <span>Range Information and Editing</span>
+        <button type="button" onClick={handleOnZoom} className="zoom-button">
+          <FaSearchPlus title="Set to default view on range in spectrum" />
+        </button>
+        <button type="button" onClick={handleOnClose} title="Close">
+          <FaTimes />
+        </button>
       </div>
-    </Modal>
+
+      <RangeForm
+        rangeData={rangeData}
+        handleOnClose={handleOnClose}
+        handleOnSave={handleOnSave}
+      />
+    </div>
   );
 };
 
@@ -183,6 +137,9 @@ EditRangeModal.defaultProps = {
     return null;
   },
   onClose: () => {
+    return null;
+  },
+  onZoom: () => {
     return null;
   },
 };

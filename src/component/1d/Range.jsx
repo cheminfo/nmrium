@@ -47,19 +47,6 @@ const stylesHighlighted = css`
   }
 `;
 
-const stylesIsNotEditableInSpectrum = css`
-  pointer-events: bounding-box;
-
-  @-moz-document url-prefix() {
-    pointer-events: fill;
-  }
-
-  .range-area {
-    height: 100%;
-    fill: #ffd70057;
-  }
-`;
-
 const Range = ({ rangeData }) => {
   const { id, from, to, integral, kind } = rangeData;
   const highlightIDs = useMemo(() => {
@@ -112,11 +99,11 @@ const Range = ({ rangeData }) => {
   return (
     <g
       css={
-        editRangeModalMeta &&
-        editRangeModalMeta.rangeInEdition &&
-        editRangeModalMeta.rangeInEdition === id
-          ? stylesIsNotEditableInSpectrum
-          : highlight.isActive || highlight.isActivePermanently
+        (editRangeModalMeta &&
+          editRangeModalMeta.rangeInEdition &&
+          editRangeModalMeta.rangeInEdition === id) ||
+        highlight.isActive ||
+        highlight.isActivePermanently
           ? stylesHighlighted
           : stylesOnHover
       }
@@ -155,17 +142,18 @@ const Range = ({ rangeData }) => {
           {integral !== undefined ? integral.toFixed(2) : ''}
         </text>
       </g>
-      {!editRangeModalMeta || !editRangeModalMeta.rangeInEdition ? (
-        <g>
-          <Resizable
-            from={rangeData.from}
-            to={rangeData.to}
-            // onDrag={handleOnStartResizing}
-            onDrop={handleOnStopResizing}
-          />
+
+      <g>
+        <Resizable
+          from={rangeData.from}
+          to={rangeData.to}
+          // onDrag={handleOnStartResizing}
+          onDrop={handleOnStopResizing}
+        />
+        {!editRangeModalMeta || !editRangeModalMeta.rangeInEdition ? (
           <DeleteButton />
-        </g>
-      ) : null}
+        ) : null}
+      </g>
     </g>
   );
 };

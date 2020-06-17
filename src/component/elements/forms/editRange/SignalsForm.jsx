@@ -4,23 +4,18 @@ import { useFormikContext } from 'formik';
 import { useCallback, useMemo, memo } from 'react';
 
 import { useDispatch } from '../../../context/DispatchContext';
-import { SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED } from '../../../reducer/types/Types';
+import {
+  SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+  UNSET_SELECTED_NEW_SIGNAL_DELTA,
+} from '../../../reducer/types/Types';
 import { Tabs } from '../../Tab';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import SignalFormTab from './SignalFormTab';
 
-const SignalsForm = memo(({ checkMultiplicity, translateMultiplicity }) => {
+const SignalsForm = memo(() => {
   const { values, setFieldValue, getFieldMeta } = useFormikContext();
   const dispatch = useDispatch();
-
-  const deleteSignal = useCallback(() => {
-    const _signals = values.signals.filter(
-      (signal, i) => i !== values.selectedSignalIndex,
-    );
-    setFieldValue('signals', _signals);
-    setFieldValue('selectedSignalIndex', _signals.length - 1);
-  }, [setFieldValue, values.selectedSignalIndex, values.signals]);
 
   const onTapClickHandler = useCallback(
     ({ identifier }) => {
@@ -30,6 +25,9 @@ const SignalsForm = memo(({ checkMultiplicity, translateMultiplicity }) => {
           dispatch({
             type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
             isEnabled: false,
+          });
+          dispatch({
+            type: UNSET_SELECTED_NEW_SIGNAL_DELTA,
           });
         } else if (
           typeof identifier === 'string' &&
@@ -56,11 +54,7 @@ const SignalsForm = memo(({ checkMultiplicity, translateMultiplicity }) => {
             signal.multiplicity
           })`}
         >
-          <SignalFormTab
-            onDeleteSignal={deleteSignal}
-            checkMultiplicity={checkMultiplicity}
-            translateMultiplicity={translateMultiplicity}
-          />
+          <SignalFormTab />
         </div>
       ))
       .concat(
@@ -68,7 +62,7 @@ const SignalsForm = memo(({ checkMultiplicity, translateMultiplicity }) => {
           <AddSignalFormTab />
         </div>,
       );
-  }, [checkMultiplicity, deleteSignal, translateMultiplicity, values.signals]);
+  }, [values.signals]);
 
   const metaDataSignals = getFieldMeta('signals');
 

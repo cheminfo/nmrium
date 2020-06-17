@@ -13,6 +13,7 @@ import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import { useHighlight } from '../../highlight';
 import FormatNumber from '../../utility/FormatNumber';
 import { SignalKinds } from '../extra/constants/SignalsKinds';
+import { isOnRangeLevel } from '../extra/utilities/MultiplicityUtilities';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;
@@ -38,7 +39,6 @@ const RangesTableRow = ({
   onEdit,
   onContextMenu,
   preferences,
-  checkOnRangeLevel,
 }) => {
   const highlightIDsSignal = useMemo(() => {
     return [].concat(
@@ -46,7 +46,7 @@ const RangesTableRow = ({
         ? [`${rowData.tableMetaInfo.id}`]
         : [rowData.id],
       rowData.tableMetaInfo.signal &&
-        checkOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity) &&
+        isOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity) &&
         rowData.diaID
         ? rowData.diaID
         : rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.diaID
@@ -54,7 +54,6 @@ const RangesTableRow = ({
         : [],
     );
   }, [
-    checkOnRangeLevel,
     rowData.diaID,
     rowData.id,
     rowData.tableMetaInfo.id,
@@ -67,16 +66,14 @@ const RangesTableRow = ({
   const [showUnlinkButton, setShowUnlinkButton] = useState(false);
 
   useEffect(() => {
-    const isLinked = checkOnRangeLevel(
-      rowData.tableMetaInfo.signal.multiplicity,
-    )
+    const isLinked = isOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity)
       ? rowData.diaID && rowData.diaID.length > 0
       : rowData.tableMetaInfo.signal &&
         rowData.tableMetaInfo.signal.diaID &&
         rowData.tableMetaInfo.signal.diaID.length > 0;
 
     setShowUnlinkButton(isLinked);
-  }, [checkOnRangeLevel, rowData]);
+  }, [rowData]);
 
   const rowSpanTags = useMemo(() => {
     return {
@@ -175,7 +172,7 @@ const RangesTableRow = ({
       ) : null}
       <td {...highlightSignal.onHover} {...highlightSignal.onClick}>
         {rowData.tableMetaInfo.signal
-          ? checkOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity)
+          ? isOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity)
             ? `${applyFormatPreference(
                 'fromFormat',
                 rowData.from,
@@ -226,7 +223,7 @@ const RangesTableRow = ({
       >
         {rowData.tableMetaInfo.signal &&
         rowData.tableMetaInfo.signal.multiplicity &&
-        checkOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity)
+        isOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity)
           ? rowData.diaID && rowData.diaID.length > 0
             ? rowData.diaID.length
             : highlightSignal.isActivePermanently
@@ -271,7 +268,7 @@ const RangesTableRow = ({
           }}
           data={SignalKinds}
           value={
-            checkOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity)
+            isOnRangeLevel(rowData.tableMetaInfo.signal.multiplicity)
               ? rowData.kind
               : rowData.tableMetaInfo.signal.kind
           }
@@ -289,7 +286,7 @@ const RangesTableRow = ({
       </td>
       <td {...rowSpanTags}>
         <button type="button" className="zoom-button" onClick={handleOnZoom}>
-          <FaSearchPlus title="Zoom to range in spectrum view" />
+          <FaSearchPlus title="Zoom to range in spectrum" />
         </button>
       </td>
       <td {...rowSpanTags}>
