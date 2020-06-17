@@ -22,7 +22,7 @@ export const options = {
   zone2D: {
     id: 'zone2D',
     label: 'Zone Tool',
-    hasOptionPanel: false,
+    hasOptionPanel: true,
     isFilter: false,
   },
   slicingTool: {
