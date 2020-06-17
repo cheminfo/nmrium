@@ -124,15 +124,25 @@ const ModalProvider = ({
                 <TransitionGroup
                   appear
                   key={
-                    positions[modal.transition ? modal.transition : transition]
+                    positions[
+                      modal.options.transition
+                        ? modal.options.transition
+                        : transition
+                    ]
                   }
                   options={{
-                    position: modal.position ? modal.position : position,
+                    position: modal.options.position
+                      ? modal.options.position
+                      : position,
                   }}
                   component={Wrapper}
                 >
                   <Transition
-                    type={modal.transition ? modal.transition : transition}
+                    type={
+                      modal.options.transition
+                        ? modal.options.transition
+                        : transition
+                    }
                     key={modal.id}
                   >
                     <div
