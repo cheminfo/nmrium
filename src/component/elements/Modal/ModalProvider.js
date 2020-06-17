@@ -1,14 +1,32 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  Fragment,
+} from 'react';
 import { createPortal } from 'react-dom';
+import { TransitionGroup } from 'react-transition-group';
 
 import ConfirmDialog from './ConfirmDialog';
 import DefaultContext from './Context';
-import Modal from './Modal';
+// import Modal from './Modal';
+import Transition from './Transition';
+import Wrapper from './Wrapper';
+// import { groupBy } from './helpers';
+import { positions, transitions } from './options';
 
-const ModalProvider = ({ children, context: Context, style }) => {
+const ModalProvider = ({
+  children,
+  context: Context,
+  style,
+  offset,
+  position,
+  transition,
+}) => {
   const root = useRef();
   const modalContext = useRef(null);
-  const [modal, setModal] = useState({ show: false });
+  const [modal, setModal] = useState();
   useEffect(() => {
     root.current = document.createElement('div');
     document.body.appendChild(root.current);
@@ -19,16 +37,7 @@ const ModalProvider = ({ children, context: Context, style }) => {
   }, []);
 
   const remove = () => {
-    setModal((currentModal) => {
-      if (
-        currentModal &&
-        currentModal.options &&
-        currentModal.options.onClose
-      ) {
-        currentModal.options.onClose();
-      }
-      return { show: false };
-    });
+    setModal(null);
   };
 
   const closeHandler = useCallback(() => {
@@ -37,13 +46,15 @@ const ModalProvider = ({ children, context: Context, style }) => {
   /**
    *
    * @param {*} component  <component />
-   * @param {*} options    {onYest:()=>{}, prop1, .... etc}
+   * @param {object} options    {onYest:()=>{}, prop1, .... etc}
+   * @param {transitions} options.transition
+   * @param {positions} options.position
+   * @param {boolean} options.isBackgroundBlure
    */
   const show = (component, options = {}) => {
     const _modal = {
       component,
-      options,
-      show: true,
+      options: { isBackgroundBlure: true, ...options },
     };
 
     _modal.close = () => remove();
@@ -55,11 +66,9 @@ const ModalProvider = ({ children, context: Context, style }) => {
 
   const showConfirmDialog = (message, options = {}) => {
     const _modal = {
-      component: <ConfirmDialog />,
-      options,
-      show: true,
+      component: <ConfirmDialog message={message} />,
+      options: { isBackgroundBlure: true, ...options },
     };
-    options.message = message;
 
     _modal.close = () => remove();
 
@@ -90,18 +99,64 @@ const ModalProvider = ({ children, context: Context, style }) => {
     showConfirmDialog,
   };
 
+  const outerStyle =
+    modal && modal.options.isBackgroundBlure
+      ? { backgroundColor: 'rgba(255,255,255,0.8)' }
+      : { pointerEvents: 'none' };
+
   return (
     <Context.Provider value={modalContext}>
       {children}
       {root.current &&
         createPortal(
-          <Modal open={modal.show} onClose={closeHandler} style={style}>
-            {modal.options &&
-              React.cloneElement(modal.component, {
-                ...modal.options,
-                onClose: closeHandler,
-              })}
-          </Modal>,
+          <Fragment>
+            {modal && (
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                  ...outerStyle,
+                }}
+              >
+                <TransitionGroup
+                  appear
+                  key={
+                    positions[modal.transition ? modal.transition : transition]
+                  }
+                  options={{
+                    position: modal.position ? modal.position : position,
+                  }}
+                  component={Wrapper}
+                >
+                  <Transition
+                    type={modal.transition ? modal.transition : transition}
+                    key={modal.id}
+                  >
+                    <div
+                      style={{
+                        boxSizing: 'initial',
+                        backgroundColor: '#fff',
+                        boxShadow: '0 0 0 0, 0 8px 16px rgba(0,0,0,.30)',
+                        borderRadius: '5px',
+                        ...style,
+                        margin: offset,
+                        pointerEvents: 'all',
+                      }}
+                    >
+                      {modal.options &&
+                        React.cloneElement(modal.component, {
+                          ...modal.options,
+                          onClose: closeHandler,
+                        })}
+                    </div>
+                  </Transition>
+                </TransitionGroup>
+              </div>
+            )}
+          </Fragment>,
           root.current,
         )}
     </Context.Provider>
@@ -111,6 +166,12 @@ const ModalProvider = ({ children, context: Context, style }) => {
 export default ModalProvider;
 
 ModalProvider.defaultProps = {
+  offset: '10px',
+  position: positions.CENTER,
+  transition: transitions.SCALE,
+  // containerStyle: {
+  //   zIndex: 100,
+  // },
   context: DefaultContext,
   style: {},
 };
