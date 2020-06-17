@@ -142,18 +142,15 @@ const Range = ({ rangeData }) => {
           {integral !== undefined ? integral.toFixed(2) : ''}
         </text>
       </g>
-
-      <g>
-        <Resizable
-          from={rangeData.from}
-          to={rangeData.to}
-          // onDrag={handleOnStartResizing}
-          onDrop={handleOnStopResizing}
-        />
-        {!editRangeModalMeta || !editRangeModalMeta.rangeInEdition ? (
-          <DeleteButton />
-        ) : null}
-      </g>
+      <Resizable
+        from={rangeData.from}
+        to={rangeData.to}
+        // onDrag={handleOnStartResizing}
+        onDrop={handleOnStopResizing}
+      />
+      {!editRangeModalMeta || !editRangeModalMeta.rangeInEdition ? (
+        <DeleteButton />
+      ) : null}
     </g>
   );
 };

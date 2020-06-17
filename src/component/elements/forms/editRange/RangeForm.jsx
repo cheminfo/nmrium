@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 
 import { checkMultiplicity } from '../../../panels/extra/utilities/MultiplicityUtilities';
 import { SaveButton, CancelButton } from '../elements/DefaultButtons';
-import RangeValidationSchema from '../validation/RangeValidationScheme';
+import EditRangeValidation from '../validation/EditRangeValidation';
 
 import SignalsForm from './SignalsForm';
 
@@ -51,7 +51,7 @@ const RangeForm = ({ rangeData, handleOnClose, handleOnSave }) => {
         newCouplingMultiplicity: '',
         newCouplingCoupling: '',
       }}
-      validationSchema={RangeValidationSchema(rangeData)}
+      validate={(values) => EditRangeValidation(values, rangeData)}
       onSubmit={(values, { setSubmitting }) => {
         handleOnSave(values);
         setSubmitting(false);
