@@ -15,6 +15,8 @@ import Tab from './Tab';
 import { positions } from './options';
 
 const topStyles = css`
+  height: 100%;
+  width: 100%;
   .tab-list {
     border-bottom: 1px solid #ccc;
     padding-left: 0;
@@ -45,6 +47,8 @@ const topStyles = css`
 
 const leftStyles = css`
   display: flex;
+  height: 100%;
+  width: 100%;
   .tab-list {
     border-right: 1px solid #ccc;
     padding-left: 0;
@@ -53,6 +57,10 @@ const leftStyles = css`
 
   .tab-list li:hover {
     background-color: #f7f7f7;
+  }
+
+  .tab-list li:first-of-type {
+    margin-top: 10px;
   }
 
   .tab-list-item {
