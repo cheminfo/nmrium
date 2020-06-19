@@ -1,13 +1,18 @@
 import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback } from 'react';
 import { useAlert } from 'react-alert';
-import { FaRegWindowMaximize, FaWrench } from 'react-icons/fa';
+import {
+  FaRegWindowMaximize,
+  FaWrench,
+  FaQuestionCircle,
+} from 'react-icons/fa';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
-import { useModal } from '../elements/Modal';
+import { useModal, positions } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import GeneralSettings from '../modal/GeneralSettings';
+import UserManualModal from '../modal/UserManualModal';
 import { options } from '../toolbar/ToolTypes';
 
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
@@ -63,6 +68,23 @@ const headerStyle = css`
   }
 `;
 
+export const Button = ({
+  title,
+  popupPlacement,
+  style,
+  className,
+  onClick,
+  children,
+}) => {
+  return (
+    <ToolTip title={title} popupPlacement={popupPlacement} style={style}>
+      <button type="button" onClick={onClick} className={className}>
+        {children}
+      </button>
+    </ToolTip>
+  );
+};
+
 const Header = ({ isFullscreen, onMaximize }) => {
   const { selectedOptionPanel } = useChartData();
   const modal = useModal();
@@ -97,12 +119,50 @@ const Header = ({ isFullscreen, onMaximize }) => {
       {},
     );
   }, [alert, modal]);
+  const openUserManual = useCallback(() => {
+    modal.show(<UserManualModal />, {
+      isBackgroundBlur: false,
+      position: positions.TOP_CENTER,
+    });
+  }, [modal]);
 
   return (
     <div css={headerStyle}>
       <div className="toolOptionsPanel">{selectedPanel}</div>
       <div className="windowButtonsContainer">
-        <ToolTip
+        <Button
+          title="User Manual"
+          popupPlacement="left"
+          style={{ mainContainer: { height: 'auto' } }}
+          onClick={openUserManual}
+          className="windowButton"
+        >
+          <FaQuestionCircle />
+        </Button>
+        <Button
+          title="General Settings"
+          popupPlacement="left"
+          style={{ mainContainer: { height: 'auto' } }}
+          onClick={openGeneralSettingsHandler}
+          className="windowButton"
+        >
+          <FaWrench />
+        </Button>
+        {!isFullscreen ? (
+          <Button
+            title="Full Screen"
+            popupPlacement="left"
+            style={{ mainContainer: { height: 'auto' } }}
+            onClick={onMaximize}
+            className="windowButton"
+          >
+            <FaRegWindowMaximize />
+          </Button>
+        ) : (
+          ''
+        )}
+
+        {/* <ToolTip
           title="General Settings"
           popupPlacement="left"
           style={{ mainContainer: { height: 'auto' } }}
@@ -128,7 +188,7 @@ const Header = ({ isFullscreen, onMaximize }) => {
           </ToolTip>
         ) : (
           ''
-        )}
+        )} */}
       </div>
     </div>
   );

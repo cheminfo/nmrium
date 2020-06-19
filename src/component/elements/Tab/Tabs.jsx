@@ -12,7 +12,11 @@ import {
 
 import Tab from './Tab';
 
-const styles = css`
+import { positions } from './options';
+
+const topStyles = css`
+  height: 100%;
+  width: 100%;
   .tab-list {
     border-bottom: 1px solid #ccc;
     padding-left: 0;
@@ -41,7 +45,39 @@ const styles = css`
   }
 `;
 
-const Tabs = ({ children, onClick, defaultTabID }) => {
+const leftStyles = css`
+  display: flex;
+  height: 100%;
+  width: 100%;
+  .tab-list {
+    border-right: 1px solid #ccc;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .tab-list li:hover {
+    background-color: #f7f7f7;
+  }
+
+  .tab-list li:first-of-type {
+    margin-top: 10px;
+  }
+
+  .tab-list-item {
+    display: block;
+    list-style: none;
+    margin-right: -1px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .tab-list-active {
+    background-color: white;
+    border: solid #ccc;
+    border-width: 1px 0px 1px 1px;
+  }
+`;
+
+const Tabs = ({ children, onClick, defaultTabID, position }) => {
   const [activeTab, setActiveTab] = useState();
 
   useEffect(() => {
@@ -88,6 +124,17 @@ const Tabs = ({ children, onClick, defaultTabID }) => {
     });
   }, [activeTab, children]);
 
+  const styles = useMemo(() => {
+    switch (position) {
+      case positions.TOP:
+        return topStyles;
+      case positions.LEFT:
+        return leftStyles;
+      default:
+        return topStyles;
+    }
+  }, [position]);
+
   return (
     <div className="tabs" css={styles}>
       <ol className="tab-list">{tabs}</ol>
@@ -100,11 +147,13 @@ Tabs.defaultProps = {
   onClick: () => {
     return null;
   },
+  position: 'TOP',
 };
 
 Tabs.propTypes = {
   children: PropTypes.array.isRequired,
   onClick: PropTypes.func,
+  position: PropTypes.oneOf(['TOP', 'LEFT']),
 };
 
 export default Tabs;
