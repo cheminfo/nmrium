@@ -1,5 +1,33 @@
 import { Multiplets } from '../constants/Multiplets';
 
+const getMultiplicity = (string) => {
+  const multiplet = Multiplets.find(
+    (_multiplet) => string === _multiplet.label || string === _multiplet.value,
+  );
+
+  return multiplet ? multiplet.multiplicity : null;
+};
+
+const getPascal = (n, spin = 1 / 2) => {
+  if (n === undefined || n === 0) return [1];
+  let mult = 2 * spin + 1;
+  let previousLine = [];
+  for (let j = 0; j < mult - 1; j++) previousLine.push(1);
+  // complete with "1 1" or "1 1 1" for spin 1/2 and 1 respectively
+  for (let i = 0; i < n - 1; i++) {
+    // copy the line
+    let _line = previousLine.slice();
+    for (let j = 1; j < mult; j++) {
+      for (let k = 0; k < previousLine.length - 1; k++) {
+        _line[k + j] += previousLine[k];
+      } // add the previous line
+      _line.push(1); // complete the line
+    }
+    previousLine = _line.slice();
+  }
+  return previousLine;
+};
+
 const isOnRangeLevel = (multiplicity) => {
   return multiplicity.split('').includes('m');
 };
@@ -22,4 +50,10 @@ const translateMultiplicity = (multiplicity) => {
     : Multiplets.find((_multiplet) => _multiplet.label === multiplicity).value;
 };
 
-export { checkMultiplicity, isOnRangeLevel, translateMultiplicity };
+export {
+  checkMultiplicity,
+  getMultiplicity,
+  getPascal,
+  isOnRangeLevel,
+  translateMultiplicity,
+};

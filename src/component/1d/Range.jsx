@@ -8,6 +8,7 @@ import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
 import { DELETE_RANGE, RESIZE_RANGE } from '../reducer/types/Types';
 
+import MultiplicityTree from './MultiplicityTree';
 import Resizable from './Resizable';
 
 const stylesOnHover = css`
@@ -48,7 +49,7 @@ const stylesHighlighted = css`
 `;
 
 const Range = ({ rangeData }) => {
-  const { id, from, to, integral, kind } = rangeData;
+  const { id, from, to, integral, kind, signal } = rangeData;
   const highlightIDs = useMemo(() => {
     return [].concat(
       [id],
@@ -151,6 +152,18 @@ const Range = ({ rangeData }) => {
       {!editRangeModalMeta || !editRangeModalMeta.rangeInEdition ? (
         <DeleteButton />
       ) : null}
+      {signal && signal.length > 0
+        ? signal.map((_signal, i) => (
+            <MultiplicityTree
+              rangeFrom={from}
+              rangeTo={to}
+              signal={_signal}
+              highlightID={highlightIDs[i + 1]}
+              // eslint-disable-next-line react/no-array-index-key
+              key={highlightIDs[i + 1]}
+            />
+          ))
+        : null}
     </g>
   );
 };
