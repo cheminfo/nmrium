@@ -8,7 +8,7 @@ import { getACS } from 'spectra-data-ranges';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/Modal';
+import { useModal, positions, transitions } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import ChangeSumModal from '../../modal/ChangeSumModal';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
@@ -22,6 +22,12 @@ import {
 import { copyTextToClipboard } from '../../utility/Export';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
+import { isOnRangeLevel } from '../extra/utilities/MultiplicityUtilities';
+import {
+  resetDiaIDs,
+  addDefaultSignal,
+  unlink,
+} from '../extra/utilities/RangeUtilities';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -80,8 +86,6 @@ const RangesTablePanel = memo(() => {
   const [isTableVisible, setTableVisibility] = useState(true);
   const settingRef = useRef();
 
-  const [selectedRangeToEdit, setSelectedRangeToEdit] = useState(null);
-
   const spectrumData = useMemo(() => {
     return activeSpectrum && spectraData
       ? spectraData[activeSpectrum.index]
@@ -124,25 +128,82 @@ const RangesTablePanel = memo(() => {
     });
   }, [data, filterIsActive, xDomain]);
 
-  const openEditRangeHandler = useCallback((range) => {
-    setSelectedRangeToEdit(range);
-  }, []);
+  const changeRangeSignalKindHandler = useCallback(
+    (value, range, signalIndex) => {
+      const _range = { ...range };
+      if (isOnRangeLevel(range.signal[signalIndex].multiplicity)) {
+        _range.kind = value;
+      } else {
+        _range.signal[signalIndex].kind = value;
+      }
+      dispatch({
+        type: CHANGE_RANGE_DATA,
+        data: _range,
+      });
+    },
+    [dispatch],
+  );
 
-  const closeEditRangeHandler = useCallback(() => {
-    setSelectedRangeToEdit(null);
-  }, []);
+  const unlinkRangeHandler = useCallback(
+    (range, signalIndex) => {
+      const _range = Object.assign({}, range);
+      unlink(_range, signalIndex);
+      dispatch({ type: CHANGE_RANGE_DATA, data: _range });
+    },
+    [dispatch],
+  );
+
+  const zoomRangeHandler = useCallback(
+    (range) => {
+      const margin = Math.abs(range.from - range.to) / 2;
+      dispatch({
+        type: SET_X_DOMAIN,
+        xDomain: [range.from - margin, range.to + margin],
+      });
+    },
+    [dispatch],
+  );
 
   const saveEditRangeHandler = useCallback(
     (editedRange) => {
-      if (selectedRangeToEdit) {
-        const _data = { ...selectedRangeToEdit, ...editedRange };
-        dispatch({
-          type: CHANGE_RANGE_DATA,
-          data: _data,
-        });
+      // for now: clear all assignments for this range because signals or levels to store might have changed
+      resetDiaIDs(editedRange);
+      // if all signals were deleted then insert a default signal with "m" as multiplicity
+      if (editedRange.signal.length === 0) {
+        addDefaultSignal(editedRange);
+        alert.info(
+          `There must be at least one signal within a range. Default signal with "m" was therefore added!`,
+        );
       }
+      dispatch({
+        type: CHANGE_RANGE_DATA,
+        data: editedRange,
+      });
     },
-    [dispatch, selectedRangeToEdit],
+    [alert, dispatch],
+  );
+
+  const closeEditRangeHandler = useCallback(() => {
+    modal.close();
+  }, [modal]);
+
+  const openEditRangeHandler = useCallback(
+    (rangeData) => {
+      modal.show(
+        <EditRangeModal
+          onClose={closeEditRangeHandler}
+          onSave={saveEditRangeHandler}
+          onZoom={zoomRangeHandler}
+          rangeID={rangeData.id}
+        />,
+        {
+          position: positions.CENTER_RIGHT,
+          transition: transitions.SCALE,
+          isBackgroundBlur: false,
+        },
+      );
+    },
+    [closeEditRangeHandler, modal, saveEditRangeHandler, zoomRangeHandler],
   );
 
   const deleteRangeHandler = useCallback(
@@ -198,72 +259,6 @@ const RangesTablePanel = memo(() => {
   const closeClipBoardHandler = useCallback(() => {
     modal.close();
   }, [modal]);
-
-  const checkOnRangeLevel = useCallback((multiplicity) => {
-    return multiplicity.split('').includes('m');
-  }, []);
-
-  const getPubIntegral = useCallback((range) => {
-    return []
-      .concat(
-        range.diaID || [],
-        range.signal
-          ? range.signal.map((_signal) => _signal.diaID || []).flat()
-          : [],
-      )
-      .filter((_diaID, i, _diaIDs) => _diaIDs.indexOf(_diaID) === i).length;
-  }, []);
-
-  const changeRangeSignalKindHandler = useCallback(
-    (value, range, signalIndex) => {
-      const _range = { ...range };
-      if (checkOnRangeLevel(range.signal[signalIndex].multiplicity)) {
-        _range.kind = value;
-      } else {
-        _range.signal[signalIndex].kind = value;
-      }
-      dispatch({
-        type: CHANGE_RANGE_DATA,
-        data: _range,
-      });
-    },
-    [dispatch, checkOnRangeLevel],
-  );
-
-  const unlinkRangeHandler = useCallback(
-    (range, signalIndex) => {
-      const _range = Object.assign({}, range);
-      if (signalIndex !== undefined) {
-        if (checkOnRangeLevel(range.signal[signalIndex].multiplicity)) {
-          delete _range.diaID;
-        } else {
-          delete _range.signal[signalIndex].diaID;
-        }
-      } else {
-        delete _range.diaID;
-        _range.signal.forEach((_signal) => delete _signal.diaID);
-      }
-      const pubIntegral = getPubIntegral(_range);
-      if (pubIntegral === 0) {
-        delete _range.pubIntegral;
-      } else {
-        _range.pubIntegral = pubIntegral;
-      }
-      dispatch({ type: CHANGE_RANGE_DATA, data: _range });
-    },
-    [dispatch, getPubIntegral, checkOnRangeLevel],
-  );
-
-  const zoomRangeHandler = useCallback(
-    (range) => {
-      const margin = Math.abs(range.from - range.to) / 2;
-      dispatch({
-        type: SET_X_DOMAIN,
-        xDomain: [range.from - margin, range.to + margin],
-      });
-    },
-    [dispatch],
-  );
 
   const saveAsHTMLHandler = useCallback(() => {
     const result = getACS(data);
@@ -442,17 +437,10 @@ const RangesTablePanel = memo(() => {
                 context={contextMenu}
                 preferences={rangesPreferences}
                 element={activeTab && activeTab.replace(/[0-9]/g, '')}
-                checkOnRangeLevel={checkOnRangeLevel}
               />
             ) : (
               <NoTableData />
             )}
-            <EditRangeModal
-              onClose={closeEditRangeHandler}
-              onSave={saveEditRangeHandler}
-              rangeData={selectedRangeToEdit}
-              spectrumData={spectrumData}
-            />
           </div>
           <RangesPreferences data={spectraData} ref={settingRef} />
         </ReactCardFlip>

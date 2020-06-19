@@ -56,7 +56,6 @@ const RangesTable = ({
   context,
   preferences,
   element,
-  checkOnRangeLevel,
 }) => {
   const contextRef = useRef();
 
@@ -171,7 +170,6 @@ const RangesTable = ({
                   onEdit={onEdit}
                   onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                   preferences={preferences}
-                  checkOnRangeLevel={checkOnRangeLevel}
                 />
               );
             })}

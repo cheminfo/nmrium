@@ -36,6 +36,7 @@ import {
   SET_VERTICAL_INDICATOR_X_POSITION,
   SET_DIMENSIONS,
   ADD_RANGE,
+  SET_SELECTED_NEW_SIGNAL_DELTA,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -65,6 +66,7 @@ const Viewer1D = () => {
     yDomain,
     yDomains,
     verticalAlign,
+    editRangeModalMeta,
   } = state;
 
   const dispatch = useDispatch();
@@ -204,9 +206,18 @@ const Viewer1D = () => {
           type: SET_VERTICAL_INDICATOR_X_POSITION,
           position: position.x,
         });
+      } else if (
+        editRangeModalMeta &&
+        editRangeModalMeta.newSignalDeltaSelectionIsEnabled &&
+        editRangeModalMeta.newSignalDeltaSelectionIsEnabled === true
+      ) {
+        dispatch({
+          type: SET_SELECTED_NEW_SIGNAL_DELTA,
+          position: position.x,
+        });
       }
     },
-    [dispatch, selectedTool],
+    [dispatch, editRangeModalMeta, selectedTool],
   );
 
   const [sizedNMRChart, { width, height }] = useSize(() => {

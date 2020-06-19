@@ -1,16 +1,22 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
-import { useCallback, useMemo } from 'react';
-import { FaTimes } from 'react-icons/fa';
+import { useCallback, useMemo, useEffect } from 'react';
+import { FaTimes, FaSearchPlus } from 'react-icons/fa';
 
-import { Modal } from '../elements/Modal';
-import RangeForm from '../elements/forms/RangeForm';
+import { useChartData } from '../context/ChartContext';
+import { useDispatch } from '../context/DispatchContext';
+import RangeForm from '../elements/forms/editRange/RangeForm';
+import {
+  UNSET_RANGE_IN_EDITION,
+  SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+  UNSET_SELECTED_NEW_SIGNAL_DELTA,
+  SET_RANGE_IN_EDITION,
+} from '../reducer/types/Types';
 
 const styles = css`
-  display: flex;
-  flex-direction: column;
+  overflow: auto;
   width: 600px;
-  height: 450px;
+  height: 500px;
   padding: 5px;
   button:focus {
     outline: none;
@@ -31,6 +37,14 @@ const styles = css`
       svg {
         height: 16px;
       }
+    }
+    .zoom-button {
+      background-color: transparent;
+      border: none;
+      svg {
+        height: 16px;
+      }
+      margin-right: 10px;
     }
   }
   .container {
@@ -55,103 +69,66 @@ const styles = css`
   }
 `;
 
-const basicMultiplets = [
-  'massive (m)',
-  'singlet (s)',
-  'doublet (d)',
-  'triplet (t)',
-  'quartet (q)',
-  'quintet (i)',
-  'sextet (x)',
-  'septet (p)',
-  'octet (o)',
-  'nonet (n)',
-];
+const EditRangeModal = ({ onSave, onClose, onZoom, rangeID }) => {
+  const { data: spectraData, activeSpectrum } = useChartData();
+  const dispatch = useDispatch();
 
-const multiplets = basicMultiplets.map((_multiplet, i) => {
-  return {
-    index: i,
-    description: _multiplet,
-    value: _multiplet.split('(')[1].charAt(0),
-  };
-});
+  const rangeData = useMemo(() => {
+    return activeSpectrum && spectraData
+      ? spectraData[activeSpectrum.index].ranges.values.find(
+          (_range) => _range.id === rangeID,
+        )
+      : null;
+  }, [activeSpectrum, spectraData, rangeID]);
 
-const checkMultiplicity = (multiplicity, options = {}) => {
-  const checkOptions = { ...{ massive: true, singlet: true }, ...options };
-  if (
-    multiplicity === undefined ||
-    multiplicity.length === 0 ||
-    (checkOptions.massive &&
-      (multiplicity === multiplets[0].value ||
-        multiplicity === multiplets[0].description)) ||
-    (checkOptions.singlet &&
-      (multiplicity === multiplets[1].value ||
-        multiplicity === multiplets[1].description))
-  ) {
-    return false;
-  }
+  const handleOnZoom = useCallback(() => {
+    onZoom(rangeData);
+  }, [onZoom, rangeData]);
 
-  return true;
-};
+  useEffect(() => {
+    handleOnZoom();
+    dispatch({ type: SET_RANGE_IN_EDITION, rangeID: rangeData.id });
+  }, [dispatch, handleOnZoom, rangeData]);
 
-const translateMultiplicity = (multiplicity) => {
-  return multiplicity.length === 1
-    ? multiplets.find((_multiplet) => _multiplet.value === multiplicity)
-        .description
-    : multiplets.find((_multiplet) => _multiplet.description === multiplicity)
-        .value;
-};
+  const handleOnClose = useCallback(() => {
+    dispatch({ type: UNSET_RANGE_IN_EDITION });
+    dispatch({
+      type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+      isEnabled: false,
+    });
+    dispatch({ type: UNSET_SELECTED_NEW_SIGNAL_DELTA });
 
-const EditRangeModal = ({ onSave, onClose, rangeData, spectrumData }) => {
-  const resetDiaIDs = useCallback((range) => {
-    const _range = { ...range };
-    if (_range.diaID) {
-      _range.diaID = [];
-    }
-    _range.signal = _range.signal.map((_signal) =>
-      _signal.diaID ? { ..._signal, diaID: [] } : _signal,
-    );
-    return _range;
-  }, []);
+    onClose();
+  }, [dispatch, onClose]);
 
   const handleOnSave = useCallback(
     async (formValues) => {
-      let editedRange = {
-        ...rangeData,
-        signal: formValues.signals,
-      };
-      editedRange = resetDiaIDs(editedRange);
-      await onSave(editedRange);
-      onClose();
+      rangeData.signal = formValues.signals.slice();
+
+      await onSave(rangeData);
+      handleOnClose();
     },
-    [onClose, onSave, rangeData, resetDiaIDs],
+    [handleOnClose, onSave, rangeData],
   );
 
-  const isOpen = useMemo(() => {
-    return rangeData ? true : false;
-  }, [rangeData]);
-
   return (
-    <Modal open={isOpen} onClose={onClose}>
-      <div css={styles}>
-        <div className="header">
-          <span>Range Information and Editing</span>
-          <button onClick={onClose} type="button">
-            <FaTimes />
-          </button>
-        </div>
-
-        <RangeForm
-          rangeData={rangeData}
-          spectrumData={spectrumData}
-          handleOnClose={onClose}
-          handleOnSave={handleOnSave}
-          multiplets={multiplets}
-          checkMultiplicity={checkMultiplicity}
-          translateMultiplicity={translateMultiplicity}
-        />
+    <div css={styles}>
+      <div className="header">
+        <span>Range Information and Editing</span>
+        <button type="button" onClick={handleOnZoom} className="zoom-button">
+          <FaSearchPlus title="Set to default view on range in spectrum" />
+        </button>
+        <button type="button" onClick={handleOnClose} title="Close">
+          <FaTimes />
+        </button>
       </div>
-    </Modal>
+
+      <RangeForm
+        rangeData={rangeData}
+        handleOnClose={handleOnClose}
+        handleOnSave={handleOnSave}
+      />
+    </div>
   );
 };
 
@@ -160,6 +137,9 @@ EditRangeModal.defaultProps = {
     return null;
   },
   onClose: () => {
+    return null;
+  },
+  onZoom: () => {
     return null;
   },
 };
