@@ -6,6 +6,7 @@ import React, {
   Fragment,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { Rnd } from 'react-rnd';
 import { TransitionGroup } from 'react-transition-group';
 
 import ConfirmDialog from './ConfirmDialog';
@@ -25,6 +26,7 @@ const ModalProvider = ({
   transition,
 }) => {
   const root = useRef();
+  const rndRef = useRef();
   const modalContext = useRef(null);
   const [modal, setModal] = useState();
   useEffect(() => {
@@ -50,11 +52,12 @@ const ModalProvider = ({
    * @param {transitions} options.transition
    * @param {positions} options.position
    * @param {boolean} options.isBackgroundBlur
+   * @param {boolean} options.enableResizing
    */
   const show = (component, options = {}) => {
     const _modal = {
       component,
-      options: { isBackgroundBlur: true, ...options },
+      options: { isBackgroundBlur: true, enableResizing: false, ...options },
     };
 
     _modal.close = () => remove();
@@ -104,6 +107,19 @@ const ModalProvider = ({
       ? { backgroundColor: 'rgba(255,255,255,0.8)' }
       : { pointerEvents: 'none' };
 
+  const isEnableResizing = (flag) => {
+    return {
+      bottom: flag,
+      bottomLeft: flag,
+      bottomRight: flag,
+      left: flag,
+      right: flag,
+      top: flag,
+      topLeft: flag,
+      topRight: flag,
+    };
+  };
+
   return (
     <Context.Provider value={modalContext}>
       {children}
@@ -145,7 +161,8 @@ const ModalProvider = ({
                     }
                     key={modal.id}
                   >
-                    <div
+                    <Rnd
+                      ref={rndRef}
                       style={{
                         boxSizing: 'initial',
                         backgroundColor: '#fff',
@@ -154,14 +171,23 @@ const ModalProvider = ({
                         ...style,
                         margin: offset,
                         pointerEvents: 'all',
+                        position: 'none',
                       }}
+                      enableResizing={
+                        modal.enableResizing
+                          ? isEnableResizing(true)
+                          : isEnableResizing(false)
+                      }
                     >
-                      {modal.options &&
-                        React.cloneElement(modal.component, {
-                          ...modal.options,
-                          onClose: closeHandler,
-                        })}
-                    </div>
+                      <div style={{ cursor: 'default' }}>
+                        {modal.options &&
+                          React.cloneElement(modal.component, {
+                            ...modal.options,
+                            onClose: closeHandler,
+                            style: { cursor: 'default' },
+                          })}
+                      </div>
+                    </Rnd>
                   </Transition>
                 </TransitionGroup>
               </div>
