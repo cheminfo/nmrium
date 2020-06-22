@@ -1,9 +1,16 @@
 import lodash from 'lodash';
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import React, { useCallback, useMemo, memo, useState, useRef } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  memo,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
-import { FaFileExport, FaUnlink } from 'react-icons/fa';
+import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 
 import { useChartData } from '../../context/ChartContext';
@@ -18,6 +25,7 @@ import {
   CHANGE_RANGE_DATA,
   CHANGE_RANGE_SUM,
   SET_X_DOMAIN,
+  SET_SHOW_MULTIPLICITY_TREES,
 } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -61,6 +69,18 @@ const styles = {
     fontSize: '12px',
     padding: 0,
   },
+  setShowMultiplicityTreesButton: {
+    borderRadius: '5px',
+    marginTop: '3px',
+    marginLeft: '5px',
+    color: 'black',
+    backgroundColor: 'transparent',
+    border: 'none',
+    height: '16px',
+    width: '18px',
+    fontSize: '12px',
+    padding: 0,
+  },
   button: {
     backgroundColor: 'transparent',
     border: 'none',
@@ -75,6 +95,7 @@ const RangesTablePanel = memo(() => {
     preferences,
     activeTab,
     molecules,
+    showMultiplicityTrees,
   } = useChartData();
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [rangesCounter, setRangesCounter] = useState(0);
@@ -339,6 +360,20 @@ const RangesTablePanel = memo(() => {
     });
   }, [removeAssignments, modal]);
 
+  const handleSetShowMultiplicityTrees = useCallback(() => {
+    dispatch({
+      type: SET_SHOW_MULTIPLICITY_TREES,
+      show:
+        showMultiplicityTrees !== undefined ? !showMultiplicityTrees : false,
+    });
+  }, [dispatch, showMultiplicityTrees]);
+
+  useEffect(() => {
+    if (showMultiplicityTrees === undefined) {
+      handleSetShowMultiplicityTrees();
+    }
+  }, [handleSetShowMultiplicityTrees, showMultiplicityTrees]);
+
   const handleOnFilter = useCallback(() => {
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
@@ -410,6 +445,32 @@ const RangesTablePanel = memo(() => {
                 disabled={!data || data.length === 0}
               >
                 <FaUnlink />
+              </button>
+            </ToolTip>
+            <ToolTip
+              title={
+                showMultiplicityTrees
+                  ? 'Hide Multiplicity Trees in Spectrum'
+                  : 'Show Multiplicity Trees in Spectrum'
+              }
+              popupPlacement="right"
+            >
+              <button
+                style={
+                  showMultiplicityTrees && showMultiplicityTrees === true
+                    ? {
+                        ...styles.setShowMultiplicityTreesButton,
+                        backgroundColor: '#6d6d6d',
+                        color: 'white',
+                        fontSize: '10px',
+                      }
+                    : styles.setShowMultiplicityTreesButton
+                }
+                type="button"
+                onClick={handleSetShowMultiplicityTrees}
+                disabled={!data || data.length === 0}
+              >
+                <FaSitemap />
               </button>
             </ToolTip>
           </DefaultPanelHeader>

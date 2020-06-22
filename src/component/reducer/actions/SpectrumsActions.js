@@ -144,6 +144,12 @@ const addMissingProjectionHander = (state, action) => {
   });
 };
 
+const handleSetShowMultiplicityTrees = (state, action) => {
+  return produce(state, (draft) => {
+    draft.showMultiplicityTrees = action.show;
+  });
+};
+
 export {
   handleSpectrumVisibility,
   handleChangePeaksMarkersVisibility,
@@ -151,4 +157,5 @@ export {
   handleChangeSpectrumColor,
   handleDeleteSpectra,
   addMissingProjectionHander,
+  handleSetShowMultiplicityTrees,
 };

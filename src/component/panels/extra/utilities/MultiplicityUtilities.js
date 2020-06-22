@@ -8,8 +8,36 @@ const getMultiplicity = (string) => {
   return multiplet ? multiplet.multiplicity : null;
 };
 
-const getPascal = (n, spin = 1 / 2) => {
-  if (n === undefined || n === 0) return [1];
+const checkMultiplicity = (multiplicity, rejected = []) => {
+  // options to determine whether a massive (m), for example, should be considered as rejected multiplicity
+  if (multiplicity === undefined || multiplicity.length === 0) {
+    return false;
+  }
+  const multiplet = Multiplets.find(
+    (m) => m.value === multiplicity || m.label === multiplicity,
+  );
+  return multiplet !== undefined && !rejected.includes(multiplet.value);
+};
+
+const translateMultiplicity = (multiplicity) => {
+  return multiplicity.length === 1
+    ? Multiplets.find((_multiplet) => _multiplet.value === multiplicity).label
+    : Multiplets.find((_multiplet) => _multiplet.label === multiplicity).value;
+};
+
+const hasCouplingConstant = (multiplicity) => {
+  // with the pre-set rejected ones, we check the given multiplicity for the need of having a coupling constant (massive and singlet do not)
+  return checkMultiplicity(multiplicity, ['m', 's']);
+};
+
+const isOnRangeLevel = (multiplicity) => {
+  return multiplicity
+    .split('')
+    .some((_multiplicity) => !checkMultiplicity(_multiplicity, ['m']));
+};
+
+const getPascal = (n, spin) => {
+  if (n === undefined || n === 0 || spin === undefined) return [1];
   let mult = 2 * spin + 1;
   let previousLine = [];
   for (let j = 0; j < mult - 1; j++) previousLine.push(1);
@@ -28,32 +56,11 @@ const getPascal = (n, spin = 1 / 2) => {
   return previousLine;
 };
 
-const isOnRangeLevel = (multiplicity) => {
-  return multiplicity.split('').includes('m');
-};
-
-const checkMultiplicity = (multiplicity, rejected = ['m', 's']) => {
-  // options to determine whether a singlet, for example, should be considered as rejected multiplicity
-  // e.g. with the pre-set rejected ones, we check the given multiplicity for the need of having a coupling constant (massive and singlet do not)
-  if (multiplicity === undefined || multiplicity.length === 0) {
-    return false;
-  }
-  const multiplet = Multiplets.find(
-    (m) => m.value === multiplicity || m.label === multiplicity,
-  );
-  return multiplet !== undefined && !rejected.includes(multiplet.value);
-};
-
-const translateMultiplicity = (multiplicity) => {
-  return multiplicity.length === 1
-    ? Multiplets.find((_multiplet) => _multiplet.value === multiplicity).label
-    : Multiplets.find((_multiplet) => _multiplet.label === multiplicity).value;
-};
-
 export {
   checkMultiplicity,
   getMultiplicity,
   getPascal,
+  hasCouplingConstant,
   isOnRangeLevel,
   translateMultiplicity,
 };

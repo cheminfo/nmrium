@@ -5,7 +5,7 @@ import { memo, useCallback, useEffect } from 'react';
 import { FaMinus, FaCheck, FaPlus } from 'react-icons/fa';
 
 import { Multiplets } from '../../../panels/extra/constants/Multiplets';
-import { checkMultiplicity } from '../../../panels/extra/utilities/MultiplicityUtilities';
+import { hasCouplingConstant } from '../../../panels/extra/utilities/MultiplicityUtilities';
 import Button from '../elements/Button';
 import Input from '../elements/Input';
 import SelectBox from '../elements/SelectBox';
@@ -73,7 +73,7 @@ const CouplingsTable = memo(
           metaDataMultiplicity.error ||
           metaDataCoupling.error ||
           (!metaDataMultiplicity.touched && !metaDataCoupling.touched) ||
-          (checkMultiplicity(metaDataMultiplicity.value) &&
+          (hasCouplingConstant(metaDataMultiplicity.value) &&
             metaDataCoupling.value.length === 0)
         );
       },
@@ -119,7 +119,7 @@ const CouplingsTable = memo(
                     />
                   </td>
                   <td>
-                    {checkMultiplicity(
+                    {hasCouplingConstant(
                       values.selectedSignalCouplings[i].multiplicity,
                     ) ? (
                       <Input
@@ -197,7 +197,7 @@ const CouplingsTable = memo(
               />
             </td>
             <td>
-              {checkMultiplicity(values.newCouplingMultiplicity) ? (
+              {hasCouplingConstant(values.newCouplingMultiplicity) ? (
                 <Input
                   name="newCouplingCoupling"
                   type="number"
