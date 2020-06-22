@@ -3,32 +3,22 @@ import { jsx, css } from '@emotion/core';
 import { Formik, Form } from 'formik';
 import { useMemo } from 'react';
 
-import SignalsForm from './SignalsForm';
-import {
-  SaveButton,
-  ResetButton,
-  CancelButton,
-} from './elements/DefaultButtons';
-import RangeValidationSchema from './validation/RangeValidationScheme';
+import { checkMultiplicity } from '../../../panels/extra/utilities/MultiplicityUtilities';
+import { SaveButton, CancelButton } from '../elements/DefaultButtons';
+import EditRangeValidation from '../validation/EditRangeValidation';
 
-const ButtonContainerStyle = css`
+import SignalsForm from './SignalsForm';
+
+const FormButtonStyle = css`
   text-align: center;
   button {
     background-color: transparent;
     border: 1px solid #dedede;
-    margin-top: 20px;
+    margin-top: 40px;
   }
 `;
 
-const RangeForm = ({
-  rangeData,
-  spectrumData,
-  handleOnClose,
-  handleOnSave,
-  multiplets,
-  checkMultiplicity,
-  translateMultiplicity,
-}) => {
+const RangeForm = ({ rangeData, handleOnClose, handleOnSave }) => {
   const initialStateSignalCouplings = useMemo(() => {
     const signal = rangeData.signal[0];
     if (signal && signal.multiplicity) {
@@ -47,7 +37,7 @@ const RangeForm = ({
       });
       return couplings;
     }
-  }, [checkMultiplicity, rangeData.signal]);
+  }, [rangeData.signal]);
 
   return (
     <Formik
@@ -55,16 +45,13 @@ const RangeForm = ({
         from: rangeData.from,
         to: rangeData.to,
         signals: rangeData.signal.slice(),
-        newSignalFrom: rangeData.from,
-        newSignalTo: rangeData.to,
+        newSignalDelta: (rangeData.from + rangeData.to) / 2,
         selectedSignalIndex: 0,
         selectedSignalCouplings: initialStateSignalCouplings,
         newCouplingMultiplicity: '',
         newCouplingCoupling: '',
-        spectrumData: spectrumData,
-        multiplets: multiplets.slice(),
       }}
-      validationSchema={RangeValidationSchema(spectrumData, multiplets)}
+      validate={(values) => EditRangeValidation(values, rangeData)}
       onSubmit={(values, { setSubmitting }) => {
         handleOnSave(values);
         setSubmitting(false);
@@ -73,15 +60,9 @@ const RangeForm = ({
       {() => {
         return (
           <Form>
-            <SignalsForm
-              spectrumData={spectrumData}
-              checkMultiplicity={checkMultiplicity}
-              translateMultiplicity={translateMultiplicity}
-            />
-
-            <div css={ButtonContainerStyle}>
+            <SignalsForm />
+            <div css={FormButtonStyle}>
               <SaveButton />
-              <ResetButton />
               <CancelButton onCancel={handleOnClose} />
             </div>
           </Form>

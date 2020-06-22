@@ -2,6 +2,7 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback, useMemo } from 'react';
 
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
@@ -58,6 +59,7 @@ const Range = ({ rangeData }) => {
   const highlight = useHighlight(highlightIDs);
 
   const { scaleX } = useScale();
+  const { editRangeModalMeta } = useChartData();
   const dispatch = useDispatch();
 
   const deleteRange = useCallback(() => {
@@ -97,7 +99,11 @@ const Range = ({ rangeData }) => {
   return (
     <g
       css={
-        highlight.isActive || highlight.isActivePermanently
+        (editRangeModalMeta &&
+          editRangeModalMeta.rangeInEdition &&
+          editRangeModalMeta.rangeInEdition === id) ||
+        highlight.isActive ||
+        highlight.isActivePermanently
           ? stylesHighlighted
           : stylesOnHover
       }
@@ -142,7 +148,9 @@ const Range = ({ rangeData }) => {
         // onDrag={handleOnStartResizing}
         onDrop={handleOnStopResizing}
       />
-      <DeleteButton />
+      {!editRangeModalMeta || !editRangeModalMeta.rangeInEdition ? (
+        <DeleteButton />
+      ) : null}
     </g>
   );
 };

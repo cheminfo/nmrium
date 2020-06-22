@@ -35,6 +35,12 @@ import {
   exportAsSVG,
 } from '../utility/Export';
 
+import { isOnRangeLevel } from './extra/utilities/MultiplicityUtilities';
+import {
+  getPubIntegral,
+  getDiaIDsWithLevels,
+} from './extra/utilities/RangeUtilities';
+
 const panelContainerStyle = css`
   display: flex;
   flex-direction: column;
@@ -151,21 +157,6 @@ const MoleculePanel = memo(() => {
     activeTab,
   ]);
 
-  const checkOnRangeLevel = useCallback((multiplicity) => {
-    return multiplicity.split('').includes('m');
-  }, []);
-
-  const getPubIntegral = useCallback((range) => {
-    return []
-      .concat(
-        range.diaID || [],
-        range.signal
-          ? range.signal.map((_signal) => _signal.diaID || []).flat()
-          : [],
-      )
-      .filter((_diaID, i, _diaIDs) => _diaIDs.indexOf(_diaID) === i).length;
-  }, []);
-
   const extractFromAtom = useCallback(
     (atom) => {
       return element && Object.keys(atom).length > 0
@@ -179,25 +170,6 @@ const MoleculePanel = memo(() => {
     [element],
   );
 
-  const getDiaIDsWithLevels = useCallback(
-    (range) => {
-      return range.signal
-        ? range.signal
-            .map((_signal, i) => {
-              return range.diaID &&
-                range.diaID.length > 0 &&
-                checkOnRangeLevel(_signal.multiplicity)
-                ? [{ level: 'range', diaID: range.diaID, signalIndex: i }]
-                : _signal.diaID && _signal.diaID.length > 0
-                ? [{ level: 'signal', diaID: _signal.diaID, signalIndex: i }]
-                : [];
-            })
-            .flat()
-        : [];
-    },
-    [checkOnRangeLevel],
-  );
-
   const assignments = useMemo(() => {
     return rangesData.map((_range) => {
       return {
@@ -205,7 +177,7 @@ const MoleculePanel = memo(() => {
         diaIDs: getDiaIDsWithLevels(_range),
       };
     });
-  }, [getDiaIDsWithLevels, rangesData]);
+  }, [rangesData]);
 
   const assignedDiaIDs = useMemo(() => {
     return assignments
@@ -286,7 +258,7 @@ const MoleculePanel = memo(() => {
             // determine the level of setting the diaID array (range vs. signal level) and save there
             const _range = { ...range };
             const signal = _range.signal[signalIndex];
-            if (checkOnRangeLevel(signal.multiplicity)) {
+            if (isOnRangeLevel(signal.multiplicity)) {
               _range.diaID = toggleAssignment(_range.diaID, oclIDs);
             } else {
               _range.signal[signalIndex] = {
@@ -309,10 +281,8 @@ const MoleculePanel = memo(() => {
     },
     [
       alert,
-      checkOnRangeLevel,
       dispatch,
       extractFromAtom,
-      getPubIntegral,
       highlightData.highlight.highlightedPermanently,
       rangesData,
       toggleAssignment,
