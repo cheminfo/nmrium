@@ -22,7 +22,7 @@ const stylesOnHover = css`
   -moz-user-select: none; /* Firefox all */
 
   cursor: default;
-  .rectangle {
+  .highlighting-background {
     fill: #80808057;
   }
 `;
@@ -36,7 +36,7 @@ const styles = css`
   -moz-user-select: none; /* Firefox all */
 
   cursor: default;
-  .rectangle {
+  .highlighting-background {
     fill: #80808020;
   }
 `;
@@ -49,9 +49,8 @@ const MultiplicityTree = ({
   signal,
   highlightID,
   options = {
-    level: { distance: 20 },
-    node: { height: 10, width: 3 },
-    label: { distance: 5 },
+    node: { width: 3 },
+    label: { distance: 10, fontSize: 11, textLength: 6 },
   },
 }) => {
   const { scaleX, scaleY } = useScale();
@@ -73,6 +72,38 @@ const MultiplicityTree = ({
     spectrumData.id,
   ]);
 
+  const [rectX, setRectX] = useState({ x1: signal.delta, x2: signal.delta });
+
+  const rectangleWidth = useMemo(() => {
+    return isOnRangeLevel(signal.multiplicity)
+      ? Math.abs(scaleX()(rectX.x1) - scaleX()(rectX.x2)) +
+          options.node.width / 2
+      : Math.abs(scaleX()(rectX.x1) - scaleX()(rectX.x2)) +
+          options.node.width / 2 +
+          options.label.distance;
+  }, [
+    options.label.distance,
+    options.node.width,
+    rectX.x1,
+    rectX.x2,
+    scaleX,
+    signal.multiplicity,
+  ]);
+
+  const rectangleHeight = useMemo(() => {
+    return isOnRangeLevel(signal.multiplicity)
+      ? rectangleWidth / 3
+      : rectangleWidth / 2;
+  }, [rectangleWidth, signal.multiplicity]);
+
+  const levelHeightInTree = useMemo(() => {
+    // 2* for levels between nodes (edges)
+    // +2 because of multiplicity text and start level node before the actual tree start
+    return isOnRangeLevel(signal.multiplicity)
+      ? rectangleHeight / (signal.multiplicity.length + 2)
+      : rectangleHeight / (2 * signal.multiplicity.length + 2);
+  }, [signal.multiplicity, rectangleHeight]);
+
   const startY = useMemo(() => {
     let yMax;
     spectrumData.x.forEach((_x, i) => {
@@ -85,23 +116,19 @@ const MultiplicityTree = ({
       }
     });
 
-    return (
-      _scaleY(yMax) - (signal.multiplicity.length + 1) * options.level.distance
-    );
+    return _scaleY(yMax) - rectangleHeight - 30;
   }, [
     _scaleY,
-    options.level.distance,
     rangeFrom,
     rangeTo,
-    signal.multiplicity.length,
+    rectangleHeight,
     spectrumData.x,
     spectrumData.y,
   ]);
 
-  const [rectX, setRectX] = useState({ x1: signal.delta, x2: signal.delta });
-
+  // recursive function
   const addTreeNodes = useCallback(
-    (multiplicityIndex, jIndices, treeNodes, startX) => {
+    (multiplicityIndex, jIndices, treeNodes, startX, _startY) => {
       if (startX < rectX.x1) {
         setRectX({ x1: startX, x2: rectX.x2 });
       }
@@ -121,31 +148,25 @@ const MultiplicityTree = ({
             <text
               textAnchor="middle"
               x={scaleX()(_startX) + options.label.distance}
-              y={
-                startY +
-                multiplicityIndex * options.level.distance +
-                options.node.height
-              }
-              fontSize="10"
+              y={_startY + levelHeightInTree / 2}
+              fontSize={options.label.fontSize}
+              textLength={options.label.textLength}
+              fill={levelColor}
             >
               {ratio}
             </text>
             <line
               x1={scaleX()(startX)}
-              y1={
-                startY +
-                (multiplicityIndex - 1) * options.level.distance +
-                options.node.height
-              }
+              y1={_startY - levelHeightInTree}
               x2={scaleX()(_startX)}
-              y2={startY + multiplicityIndex * options.level.distance}
+              y2={_startY}
               stroke={levelColor}
               strokeWidth={1}
             />
             <rect
               x={scaleX()(_startX) - options.node.width / 2}
-              y={startY + multiplicityIndex * options.level.distance}
-              height={options.node.height}
+              y={_startY}
+              height={levelHeightInTree}
               width={options.node.width}
               fill={levelColor}
             />
@@ -164,7 +185,13 @@ const MultiplicityTree = ({
       // in case of "s": no coupling constant and build one tree node only
       if (!coupling) {
         treeNodes.push(buildNode(startX, 1));
-        addTreeNodes(multiplicityIndex + 1, jIndices, treeNodes, startX);
+        addTreeNodes(
+          multiplicityIndex + 1,
+          jIndices,
+          treeNodes,
+          startX,
+          _startY + 2 * levelHeightInTree,
+        );
       } else {
         // in case of other multiplets
         const pascal = getPascal(
@@ -182,46 +209,55 @@ const MultiplicityTree = ({
             _startX += coupling;
           }
           treeNodes.push(buildNode(_startX, ratio));
-          addTreeNodes(multiplicityIndex + 1, jIndices, treeNodes, _startX);
+          addTreeNodes(
+            multiplicityIndex + 1,
+            jIndices,
+            treeNodes,
+            _startX,
+            _startY + 2 * levelHeightInTree,
+          );
         });
       }
     },
     [
-      highlightID,
-      options.label.distance,
-      options.level.distance,
-      options.node.height,
-      options.node.width,
       rectX.x1,
       rectX.x2,
-      scaleX,
-      signal.j,
       signal.multiplicity,
+      signal.j,
       spectrumData.info,
-      startY,
+      highlightID,
+      scaleX,
+      options.label.distance,
+      options.label.fontSize,
+      options.label.textLength,
+      options.node.width,
+      levelHeightInTree,
     ],
   );
 
   const multiplicityTree = useMemo(() => {
+    let _startY = startY + levelHeightInTree;
     const startLevelNode = (
       <rect
         x={scaleX()(signal.delta) - options.node.width / 2}
-        y={startY - options.level.distance}
-        height={options.node.height}
+        y={_startY}
+        height={levelHeightInTree}
         width={options.node.width}
         fill={colors[0]}
       />
     );
+    _startY += levelHeightInTree;
 
     if (isOnRangeLevel(signal.multiplicity)) {
       const _rangeFrom = scaleX()(rangeFrom);
       const _rangeTo = scaleX()(rangeTo);
+
       const pathData = `M ${_rangeFrom} ${
-        startY + options.level.distance
-      } ${_rangeFrom} ${startY} ${scaleX()(
+        _startY + levelHeightInTree
+      } ${_rangeFrom} ${_startY} ${scaleX()(
         signal.delta,
-      )} ${startY} ${_rangeTo} ${startY} ${_rangeTo} ${
-        startY + options.level.distance
+      )} ${_startY} ${_rangeTo} ${_startY} ${_rangeTo} ${
+        _startY + levelHeightInTree
       }`;
       setRectX({ x1: rangeFrom, x2: rangeTo });
 
@@ -239,7 +275,7 @@ const MultiplicityTree = ({
       .filter((_i) => _i !== undefined);
 
     const tree = [startLevelNode];
-    addTreeNodes(0, jIndices, tree, signal.delta);
+    addTreeNodes(0, jIndices, tree, signal.delta, _startY + levelHeightInTree);
 
     return (
       <g>
@@ -252,8 +288,7 @@ const MultiplicityTree = ({
     signal.delta,
     signal.multiplicity,
     options.node.width,
-    options.node.height,
-    options.level.distance,
+    levelHeightInTree,
     startY,
     addTreeNodes,
     rangeFrom,
@@ -270,29 +305,20 @@ const MultiplicityTree = ({
       {...highlight.onHover}
     >
       <rect
-        className="rectangle"
+        className="highlighting-background"
         x={scaleX()(rectX.x2) - options.node.width / 2}
-        y={startY - 3 * options.level.distance}
-        width={
-          isOnRangeLevel(signal.multiplicity)
-            ? Math.abs(scaleX()(rectX.x1) - scaleX()(rectX.x2)) +
-              options.node.width / 2
-            : Math.abs(scaleX()(rectX.x1) - scaleX()(rectX.x2)) +
-              options.node.width / 2 +
-              options.label.distance
-        }
-        height={
-          startY +
-          signal.multiplicity.length * options.level.distance -
-          (startY - 3 * options.level.distance)
-        }
+        y={startY}
+        width={rectangleWidth}
+        height={rectangleHeight}
       />
       <text
         textAnchor="middle"
         x={scaleX()(signal.delta)}
-        y={startY - 2 * options.level.distance}
-        fontSize="12"
-        fill="blue"
+        y={startY + levelHeightInTree / 2}
+        fontSize={options.label.fontSize}
+        textLength={signal.multiplicity.length * options.label.textLength}
+        lengthAdjust="spacing"
+        fill="black"
       >
         {signal.multiplicity}
       </text>

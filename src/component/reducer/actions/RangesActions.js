@@ -76,6 +76,12 @@ const handleAddRange = (state, action) => {
   });
 };
 
+const handleSetShowMultiplicityTrees = (state, action) => {
+  return produce(state, (draft) => {
+    draft.showMultiplicityTrees = action.show;
+  });
+};
+
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
@@ -83,4 +89,5 @@ export {
   handleChangeRangeSum,
   handleAddRange,
   handleResizeRange,
+  handleSetShowMultiplicityTrees,
 };

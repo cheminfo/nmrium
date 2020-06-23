@@ -76,6 +76,7 @@ import {
   handleChangeRangeSum,
   handleAddRange,
   handleResizeRange,
+  handleSetShowMultiplicityTrees,
 } from './actions/RangesActions';
 import {
   handleSpectrumVisibility,
@@ -84,7 +85,6 @@ import {
   handleChangeSpectrumColor,
   handleDeleteSpectra,
   addMissingProjectionHander,
-  handleSetShowMultiplicityTrees,
 } from './actions/SpectrumsActions';
 import {
   setSelectedTool,
