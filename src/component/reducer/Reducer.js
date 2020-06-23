@@ -76,6 +76,7 @@ import {
   handleChangeRangeSum,
   handleAddRange,
   handleResizeRange,
+  handleSetShowMultiplicityTrees,
 } from './actions/RangesActions';
 import {
   handleSpectrumVisibility,
@@ -181,6 +182,7 @@ import {
   SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
   SET_SELECTED_NEW_SIGNAL_DELTA,
   UNSET_SELECTED_NEW_SIGNAL_DELTA,
+  SET_SHOW_MULTIPLICITY_TREES,
 } from './types/Types';
 
 setAutoFreeze(false);
@@ -417,6 +419,8 @@ export function spectrumReducer(state, action) {
       return projection2dHandler(state, action);
     case ADD_MISSING_PROJECTION:
       return addMissingProjectionHander(state, action);
+    case SET_SHOW_MULTIPLICITY_TREES:
+      return handleSetShowMultiplicityTrees(state, action);
 
     case RESET_DOMAIN:
       return handelResetDomain(state);

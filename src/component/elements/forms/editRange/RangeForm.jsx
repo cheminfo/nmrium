@@ -3,7 +3,7 @@ import { jsx, css } from '@emotion/core';
 import { Formik, Form } from 'formik';
 import { useMemo } from 'react';
 
-import { checkMultiplicity } from '../../../panels/extra/utilities/MultiplicityUtilities';
+import { hasCouplingConstant } from '../../../panels/extra/utilities/MultiplicityUtilities';
 import { SaveButton, CancelButton } from '../elements/DefaultButtons';
 import EditRangeValidation from '../validation/EditRangeValidation';
 
@@ -27,7 +27,7 @@ const RangeForm = ({ rangeData, handleOnClose, handleOnSave }) => {
       const couplings = [];
       let coupling;
       signal.multiplicity.split('').forEach((_multiplicity) => {
-        if (checkMultiplicity(_multiplicity)) {
+        if (hasCouplingConstant(_multiplicity)) {
           coupling = { ...signal.j[counterJ] };
           counterJ++;
         } else {

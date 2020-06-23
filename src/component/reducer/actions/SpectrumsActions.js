@@ -143,7 +143,6 @@ const addMissingProjectionHander = (state, action) => {
     }
   });
 };
-
 export {
   handleSpectrumVisibility,
   handleChangePeaksMarkersVisibility,

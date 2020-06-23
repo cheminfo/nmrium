@@ -4,7 +4,7 @@ import { useFormikContext, FieldArray } from 'formik';
 import { memo, useEffect, useCallback } from 'react';
 
 import {
-  checkMultiplicity,
+  hasCouplingConstant,
   translateMultiplicity,
 } from '../../../panels/extra/utilities/MultiplicityUtilities';
 import Button from '../elements/Button';
@@ -49,7 +49,7 @@ const SignalFormTab = memo(() => {
       const couplings = [];
       let coupling;
       signal.multiplicity.split('').forEach((_multiplicity) => {
-        if (checkMultiplicity(_multiplicity)) {
+        if (hasCouplingConstant(_multiplicity)) {
           coupling = { ...signal.j[counterJ] };
           counterJ++;
         } else {
@@ -64,7 +64,7 @@ const SignalFormTab = memo(() => {
 
   const onAddCoupling = useCallback(
     (newCoupling) => {
-      if (!checkMultiplicity(newCoupling.multiplicity)) {
+      if (!hasCouplingConstant(newCoupling.multiplicity)) {
         newCoupling.coupling = '';
       }
       newCoupling.multiplicity = translateMultiplicity(
@@ -73,10 +73,10 @@ const SignalFormTab = memo(() => {
       const _signals = values.signals.slice();
       const _signal = { ..._signals[values.selectedSignalIndex] };
 
-      if (!_signal.j && checkMultiplicity(newCoupling.multiplicity)) {
+      if (!_signal.j && hasCouplingConstant(newCoupling.multiplicity)) {
         _signal.j = [];
       }
-      if (checkMultiplicity(newCoupling.multiplicity)) {
+      if (hasCouplingConstant(newCoupling.multiplicity)) {
         _signal.j.push(newCoupling);
       }
       _signal.multiplicity = _signal.multiplicity.concat(
@@ -91,7 +91,7 @@ const SignalFormTab = memo(() => {
 
   const onEditCoupling = useCallback(
     (index, editedCoupling) => {
-      if (!checkMultiplicity(editedCoupling.multiplicity)) {
+      if (!hasCouplingConstant(editedCoupling.multiplicity)) {
         editedCoupling.coupling = '';
       }
       editedCoupling.multiplicity = translateMultiplicity(
@@ -100,7 +100,7 @@ const SignalFormTab = memo(() => {
       const _signals = values.signals.slice();
       const _signal = { ..._signals[values.selectedSignalIndex] };
 
-      if (!_signal.j && checkMultiplicity(editedCoupling.multiplicity)) {
+      if (!_signal.j && hasCouplingConstant(editedCoupling.multiplicity)) {
         _signal.j = [];
       }
 
@@ -108,7 +108,7 @@ const SignalFormTab = memo(() => {
       const multSplit = _signal.multiplicity.split('');
       for (let k = 0; k < multSplit.length; k++) {
         if (k === index) {
-          if (checkMultiplicity(editedCoupling.multiplicity)) {
+          if (hasCouplingConstant(editedCoupling.multiplicity)) {
             // in case of "d", "t" etc. set the value in j array
             _signal.j[counterJ] = editedCoupling;
           } else {
@@ -123,7 +123,7 @@ const SignalFormTab = memo(() => {
           }
           break;
         }
-        if (checkMultiplicity(multSplit[k])) {
+        if (hasCouplingConstant(multSplit[k])) {
           counterJ++;
         }
       }
@@ -151,7 +151,7 @@ const SignalFormTab = memo(() => {
       const multSplit = _signal.multiplicity.split('');
       for (let k = 0; k < multSplit.length; k++) {
         if (k === index) {
-          if (checkMultiplicity(oldCoupling.multiplicity)) {
+          if (hasCouplingConstant(oldCoupling.multiplicity)) {
             // in case of "d", "t" etc. remove the entry in j array
             _signal.j.splice(counterJ, 1);
             // delete unnecessary empty j array
@@ -161,7 +161,7 @@ const SignalFormTab = memo(() => {
           }
           break;
         }
-        if (checkMultiplicity(multSplit[k])) {
+        if (hasCouplingConstant(multSplit[k])) {
           counterJ++;
         }
       }
