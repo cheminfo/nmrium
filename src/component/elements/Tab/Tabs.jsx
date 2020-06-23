@@ -11,7 +11,6 @@ import {
 } from 'react';
 
 import Tab from './Tab';
-
 import { positions } from './options';
 
 const topStyles = css`

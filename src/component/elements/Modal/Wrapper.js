@@ -87,7 +87,13 @@ const Wrapper = ({
 
   return (
     children.length > 0 && (
-      <div style={{ ...styles, ...containerStyle }} {...props}>
+      <div
+        style={{
+          ...styles,
+          ...containerStyle,
+        }}
+        {...props}
+      >
         {children}
       </div>
     )
