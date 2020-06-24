@@ -22,8 +22,8 @@ function setDataByFilters(
   );
   if (hideOptionPanel) {
     draft.selectedOptionPanel = null;
+    draft.selectedTool = options.zoom.id;
   }
-  draft.selectedTool = options.zoom.id;
   draft.data[spectrumIndex].x = x;
   draft.data[spectrumIndex].y = re;
   draft.data[spectrumIndex].im = im;
