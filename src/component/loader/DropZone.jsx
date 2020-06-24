@@ -13,6 +13,7 @@ import {
   LOAD_JCAMP_FILE,
   SET_LOADING_FLAG,
   LOAD_ZIP_FILE,
+  LOAD_JDF_FILE,
 } from '../reducer/types/Types';
 import { getFileExtension, loadFiles } from '../utility/FileUtility';
 
@@ -113,6 +114,17 @@ const DropZone = (props) => {
               },
             );
             break;
+          case 'jdf':
+            loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
+              (files) => {
+                dispatch({ type: LOAD_JDF_FILE, files });
+              },
+              (err) => {
+                // eslint-disable-next-line no-alert
+                alert(err);
+              },
+            );
+            break;
           case 'zip':
             // eslint-disable-next-line no-console
             loadFiles(selectedFilesByExtensions).then(
@@ -128,7 +140,7 @@ const DropZone = (props) => {
           default:
             // eslint-disable-next-line no-alert
             alert(
-              'The file extesion must be zip, dx, jdx, json, mol or nmrium.',
+              'The file extension must be zip, dx, jdx, json, mol or nmrium.',
             );
             break;
         }

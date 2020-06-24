@@ -29,7 +29,7 @@ function extractFileMetaFromPath(path) {
   return { name: meta[0].toLowerCase(), extension: meta[1].toLowerCase() };
 }
 
-function loadFiles(acceptedFiles) {
+function loadFiles(acceptedFiles, options = {}) {
   return Promise.all(
     [].map.call(acceptedFiles, (file) => {
       return new Promise((resolve, reject) => {
@@ -44,7 +44,11 @@ function loadFiles(acceptedFiles) {
             resolve({ binary, name, extension });
           }
         };
-        reader.readAsBinaryString(file);
+        if (options.asBuffer) {
+          reader.readAsArrayBuffer(file);
+        } else {
+          reader.readAsBinaryString(file);
+        }
       });
     }),
   );
