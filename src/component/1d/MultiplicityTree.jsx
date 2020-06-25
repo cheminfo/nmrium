@@ -112,8 +112,8 @@ const MultiplicityTree = ({
         (_jIndex) => _jIndex === multiplicityIndex,
       );
       const coupling =
-        jIndex >= 0 && spectrumData.info && spectrumData.info.frequency
-          ? signal.j[jIndex].coupling / spectrumData.info.frequency // convert to ppm
+        jIndex >= 0 && spectrumData.info && spectrumData.info.originFrequency
+          ? signal.j[jIndex].coupling / spectrumData.info.originFrequency // convert to ppm
           : null;
 
       // in case of "s": no coupling constant and build one tree node only
