@@ -1,6 +1,6 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
-import { useMemo, useCallback, useState } from 'react';
+import { jsx } from '@emotion/core';
+import { useMemo, useCallback, useState, useEffect } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
@@ -12,34 +12,11 @@ import {
   hasCouplingConstant,
 } from '../panels/extra/utilities/MultiplicityUtilities';
 
-const stylesOnHover = css`
-  pointer-events: bounding-box;
-  @-moz-document url-prefix() {
-    pointer-events: fill;
-  }
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
-
-  cursor: default;
-  .highlighting-background {
-    fill: #80808057;
-  }
-`;
-const styles = css`
-  pointer-events: bounding-box;
-  @-moz-document url-prefix() {
-    pointer-events: fill;
-  }
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
-
-  cursor: default;
-  .highlighting-background {
-    fill: #80808020;
-  }
-`;
+const styles = {
+  cursor: 'default',
+  opacity: 0.6,
+  strokeWidth: 1,
+};
 
 const colors = ['red', 'green', 'blue', 'magenta'];
 
@@ -49,7 +26,6 @@ const MultiplicityTree = ({
   signal,
   highlightID,
   options = {
-    node: { width: 3 },
     label: { distance: 10, fontSize: 11, textLength: 6 },
   },
 }) => {
@@ -67,42 +43,38 @@ const MultiplicityTree = ({
       : null;
   }, [activeSpectrum, spectraData]);
 
-  const _scaleY = useMemo(() => scaleY(spectrumData.id), [
-    scaleY,
-    spectrumData.id,
-  ]);
+  const [xRange, setXRange] = useState({ x1: signal.delta, x2: signal.delta });
+  const [treeProps, setTreeProps] = useState({
+    width: 0,
+    height: 0,
+    levelHeight: 0,
+  });
 
-  const [rectX, setRectX] = useState({ x1: signal.delta, x2: signal.delta });
+  useEffect(() => {
+    const _isOnRangeLevel = isOnRangeLevel(signal.multiplicity);
+    const _treeWidth = _isOnRangeLevel
+      ? Math.abs(scaleX()(xRange.x1) - scaleX()(xRange.x2))
+      : Math.abs(scaleX()(xRange.x1) - scaleX()(xRange.x2)) +
+        options.label.distance;
+    const _treeHeight = _isOnRangeLevel ? _treeWidth / 3 : _treeWidth / 2;
+    // +2 because of multiplicity text and start level node before the actual tree starts
+    // 2* for levels between nodes (edges)
+    const _treeLevelHeight = _isOnRangeLevel
+      ? _treeHeight / (signal.multiplicity.length + 2)
+      : _treeHeight / (2 * signal.multiplicity.length + 2);
 
-  const rectangleWidth = useMemo(() => {
-    return isOnRangeLevel(signal.multiplicity)
-      ? Math.abs(scaleX()(rectX.x1) - scaleX()(rectX.x2)) +
-          options.node.width / 2
-      : Math.abs(scaleX()(rectX.x1) - scaleX()(rectX.x2)) +
-          options.node.width / 2 +
-          options.label.distance;
+    setTreeProps({
+      width: _treeWidth,
+      height: _treeHeight,
+      levelHeight: _treeLevelHeight,
+    });
   }, [
     options.label.distance,
-    options.node.width,
-    rectX.x1,
-    rectX.x2,
     scaleX,
     signal.multiplicity,
+    xRange.x1,
+    xRange.x2,
   ]);
-
-  const rectangleHeight = useMemo(() => {
-    return isOnRangeLevel(signal.multiplicity)
-      ? rectangleWidth / 3
-      : rectangleWidth / 2;
-  }, [rectangleWidth, signal.multiplicity]);
-
-  const levelHeightInTree = useMemo(() => {
-    // 2* for levels between nodes (edges)
-    // +2 because of multiplicity text and start level node before the actual tree start
-    return isOnRangeLevel(signal.multiplicity)
-      ? rectangleHeight / (signal.multiplicity.length + 2)
-      : rectangleHeight / (2 * signal.multiplicity.length + 2);
-  }, [signal.multiplicity, rectangleHeight]);
 
   const startY = useMemo(() => {
     let yMax;
@@ -116,81 +88,49 @@ const MultiplicityTree = ({
       }
     });
 
-    return _scaleY(yMax) - rectangleHeight - 30;
+    return scaleY(spectrumData.id)(yMax) - treeProps.height - 30;
   }, [
-    _scaleY,
+    spectrumData.x,
+    spectrumData.id,
+    spectrumData.y,
+    scaleY,
+    treeProps.height,
     rangeFrom,
     rangeTo,
-    rectangleHeight,
-    spectrumData.x,
-    spectrumData.y,
   ]);
 
   // recursive function
-  const addTreeNodes = useCallback(
-    (multiplicityIndex, jIndices, treeNodes, startX, _startY) => {
-      if (startX < rectX.x1) {
-        setRectX({ x1: startX, x2: rectX.x2 });
-      }
-      if (startX > rectX.x2) {
-        setRectX({ x1: rectX.x1, x2: startX });
-      }
-
+  const buildTreeNodesData = useCallback(
+    (multiplicityIndex, jIndices, treeNodesData, startX) => {
       if (multiplicityIndex >= signal.multiplicity.length) {
-        return;
+        return treeNodesData;
       }
       // re-use colors if needed
-      const levelColor = colors[multiplicityIndex % colors.length];
-
-      const buildNode = (_startX, ratio) => {
-        return (
-          <g key={`treeNode_${highlightID}_${startX}_${_startX}_${ratio}`}>
-            <text
-              textAnchor="middle"
-              x={scaleX()(_startX) + options.label.distance}
-              y={_startY + levelHeightInTree / 2}
-              fontSize={options.label.fontSize}
-              textLength={options.label.textLength}
-              fill={levelColor}
-            >
-              {ratio}
-            </text>
-            <line
-              x1={scaleX()(startX)}
-              y1={_startY - levelHeightInTree}
-              x2={scaleX()(_startX)}
-              y2={_startY}
-              stroke={levelColor}
-              strokeWidth={1}
-            />
-            <rect
-              x={scaleX()(_startX) - options.node.width / 2}
-              y={_startY}
-              height={levelHeightInTree}
-              width={options.node.width}
-              fill={levelColor}
-            />
-          </g>
-        );
-      };
+      const color = colors[multiplicityIndex % colors.length];
 
       const jIndex = jIndices.findIndex(
         (_jIndex) => _jIndex === multiplicityIndex,
       );
       const coupling =
-        jIndex >= 0 && spectrumData.info && spectrumData.info.frequency
-          ? signal.j[jIndex].coupling / spectrumData.info.frequency // convert to ppm
+        jIndex >= 0 && spectrumData.info && spectrumData.info.originFrequency
+          ? signal.j[jIndex].coupling / spectrumData.info.originFrequency // convert to ppm
           : null;
 
       // in case of "s": no coupling constant and build one tree node only
       if (!coupling) {
-        treeNodes.push(buildNode(startX, 1));
-        addTreeNodes(
+        treeNodesData.push({
+          startX,
+          _startX: startX,
+          ratio: 1,
+          multiplicityIndex,
+          color,
+        });
+        // go to next multiplet in multiplicity string
+        buildTreeNodesData(
           multiplicityIndex + 1,
           jIndices,
-          treeNodes,
+          treeNodesData,
           startX,
-          _startY + 2 * levelHeightInTree,
         );
       } else {
         // in case of other multiplets
@@ -208,113 +148,118 @@ const MultiplicityTree = ({
           if (k > 0) {
             _startX += coupling;
           }
-          treeNodes.push(buildNode(_startX, ratio));
-          addTreeNodes(
+          treeNodesData.push({
+            startX,
+            _startX,
+            ratio,
+            multiplicityIndex,
+            color,
+          });
+          // go to next multiplet in multiplicity string
+          buildTreeNodesData(
             multiplicityIndex + 1,
             jIndices,
-            treeNodes,
+            treeNodesData,
             _startX,
-            _startY + 2 * levelHeightInTree,
           );
         });
       }
+
+      return treeNodesData;
     },
-    [
-      rectX.x1,
-      rectX.x2,
-      signal.multiplicity,
-      signal.j,
-      spectrumData.info,
-      highlightID,
-      scaleX,
-      options.label.distance,
-      options.label.fontSize,
-      options.label.textLength,
-      options.node.width,
-      levelHeightInTree,
-    ],
+    [signal.multiplicity, signal.j, spectrumData.info],
   );
 
-  const multiplicityTree = useMemo(() => {
-    let _startY = startY + levelHeightInTree;
-    const startLevelNode = (
-      <rect
-        x={scaleX()(signal.delta) - options.node.width / 2}
-        y={_startY}
-        height={levelHeightInTree}
-        width={options.node.width}
-        fill={colors[0]}
-      />
-    );
-    _startY += levelHeightInTree;
-
-    if (isOnRangeLevel(signal.multiplicity)) {
-      const _rangeFrom = scaleX()(rangeFrom);
-      const _rangeTo = scaleX()(rangeTo);
-
-      const pathData = `M ${_rangeFrom} ${
-        _startY + levelHeightInTree
-      } ${_rangeFrom} ${_startY} ${scaleX()(
-        signal.delta,
-      )} ${_startY} ${_rangeTo} ${_startY} ${_rangeTo} ${
-        _startY + levelHeightInTree
-      }`;
-      setRectX({ x1: rangeFrom, x2: rangeTo });
-
-      return (
-        <g>
-          {startLevelNode}
-          <path d={pathData} stroke="blue" strokeWidth={2} fill="none" />
-        </g>
-      );
-    }
-
+  const treeNodesData = useMemo(() => {
     const jIndices = signal.multiplicity
       .split('')
       .map((_mult, i) => (hasCouplingConstant(_mult) ? i : undefined))
       .filter((_i) => _i !== undefined);
 
-    const tree = [startLevelNode];
-    addTreeNodes(0, jIndices, tree, signal.delta, _startY + levelHeightInTree);
+    return buildTreeNodesData(0, jIndices, [], signal.delta);
+  }, [buildTreeNodesData, signal.delta, signal.multiplicity]);
 
-    return (
-      <g>
-        {startLevelNode}
-        {tree}
-      </g>
-    );
-  }, [
-    scaleX,
-    signal.delta,
-    signal.multiplicity,
-    options.node.width,
-    levelHeightInTree,
-    startY,
-    addTreeNodes,
-    rangeFrom,
-    rangeTo,
-  ]);
+  const buildTreeNodeAndEdge = useCallback(
+    ({ startX, _startX, ratio, multiplicityIndex, color }) => {
+      const edgeLevel = 2 * multiplicityIndex + 2;
+      const _startYEdge = startY + edgeLevel * treeProps.levelHeight;
+      const _startYNode = startY + (edgeLevel + 1) * treeProps.levelHeight;
 
-  return showMultiplicityTrees && showMultiplicityTrees === true ? (
-    <g
-      css={
-        highlight.isActive || highlight.isActivePermanently
-          ? stylesOnHover
-          : styles
-      }
-      {...highlight.onHover}
-    >
-      <rect
-        className="highlighting-background"
-        x={scaleX()(rectX.x2) - options.node.width / 2}
-        y={startY}
-        width={rectangleWidth}
-        height={rectangleHeight}
-      />
+      return (
+        <g key={`treeNode_${highlightID}_${startX}_${_startX}_${ratio}`}>
+          {/* ratio text */}
+          <text
+            textAnchor="middle"
+            x={scaleX()(_startX) + options.label.distance}
+            y={_startYNode + treeProps.levelHeight / 2}
+            fontSize={options.label.fontSize}
+            textLength={options.label.textLength}
+            fill={color}
+          >
+            {ratio}
+          </text>
+          {/* edge line */}
+          <line
+            x1={scaleX()(startX)}
+            y1={_startYEdge}
+            x2={scaleX()(_startX)}
+            y2={_startYNode}
+            stroke={color}
+          />
+          {/* node line */}
+          <line
+            x1={scaleX()(_startX)}
+            y1={_startYNode}
+            x2={scaleX()(_startX)}
+            y2={_startYNode + treeProps.levelHeight}
+            stroke={color}
+          />
+        </g>
+      );
+    },
+    [
+      highlightID,
+      options.label.distance,
+      options.label.fontSize,
+      options.label.textLength,
+      scaleX,
+      startY,
+      treeProps.levelHeight,
+    ],
+  );
+
+  useEffect(() => {
+    if (isOnRangeLevel(signal.multiplicity)) {
+      setXRange({ x1: rangeFrom, x2: rangeTo });
+    } else {
+      const _xRange = { x1: signal.delta, x2: signal.delta };
+      treeNodesData.forEach((_treeNodeData) => {
+        if (_treeNodeData.startX < _xRange.x1) {
+          _xRange.x1 = _treeNodeData.startX;
+        }
+        if (_treeNodeData.startX > _xRange.x2) {
+          _xRange.x2 = _treeNodeData.startX;
+        }
+        if (_treeNodeData._startX < _xRange.x1) {
+          _xRange.x1 = _treeNodeData._startX;
+        }
+        if (_treeNodeData._startX > _xRange.x2) {
+          _xRange.x2 = _treeNodeData._startX;
+        }
+      });
+      setXRange(_xRange);
+    }
+  }, [rangeFrom, rangeTo, signal.multiplicity, treeNodesData, signal.delta]);
+
+  const multiplicityTree = useMemo(() => {
+    // first tree level
+    let _startY = startY;
+    const multiplicityString = (
       <text
+        key={`multiplicityString_${highlightID}`}
         textAnchor="middle"
         x={scaleX()(signal.delta)}
-        y={startY + levelHeightInTree / 2}
+        y={_startY + treeProps.levelHeight / 2}
         fontSize={options.label.fontSize}
         textLength={signal.multiplicity.length * options.label.textLength}
         lengthAdjust="spacing"
@@ -322,6 +267,76 @@ const MultiplicityTree = ({
       >
         {signal.multiplicity}
       </text>
+    );
+
+    // second tree level
+    _startY = startY + treeProps.levelHeight;
+    const startLevelNode = (
+      <line
+        key={`startLevelNode_${highlightID}`}
+        x1={scaleX()(signal.delta)}
+        y1={_startY}
+        x2={scaleX()(signal.delta)}
+        y2={_startY + treeProps.levelHeight}
+        stroke={colors[0]}
+      />
+    );
+    // third tree level
+    _startY += treeProps.levelHeight;
+
+    if (isOnRangeLevel(signal.multiplicity)) {
+      const _rangeFrom = scaleX()(rangeFrom);
+      const _rangeTo = scaleX()(rangeTo);
+
+      const pathData = `M ${_rangeFrom} ${
+        _startY + treeProps.levelHeight
+      } ${_rangeFrom} ${_startY} ${scaleX()(
+        signal.delta,
+      )} ${_startY} ${_rangeTo} ${_startY} ${_rangeTo} ${
+        _startY + treeProps.levelHeight
+      }`;
+
+      return (
+        <g>
+          {multiplicityString}
+          {startLevelNode}
+          <path d={pathData} stroke="blue" fill="none" />
+        </g>
+      );
+    }
+
+    const tree = [].concat(
+      [multiplicityString],
+      [startLevelNode],
+      treeNodesData.map((_treeNodeData) => buildTreeNodeAndEdge(_treeNodeData)),
+    );
+
+    return <g>{tree}</g>;
+  }, [
+    startY,
+    highlightID,
+    scaleX,
+    signal.delta,
+    signal.multiplicity,
+    treeProps,
+    options.label.fontSize,
+    options.label.textLength,
+    treeNodesData,
+    rangeFrom,
+    rangeTo,
+    buildTreeNodeAndEdge,
+  ]);
+
+  return showMultiplicityTrees && showMultiplicityTrees === true ? (
+    <g
+      css={
+        highlight.isActive || highlight.isActivePermanently
+          ? { ...styles, opacity: 1, strokeWidth: 1.5 }
+          : styles
+      }
+      {...highlight.onHover}
+      {...highlight.onClick}
+    >
       {multiplicityTree}
     </g>
   ) : null;
