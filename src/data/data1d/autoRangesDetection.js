@@ -22,14 +22,14 @@ export default function autoRangesDetection(datum1D, options = {}) {
   ];
 
   const { re, x } = datum1D.data;
-  const { frequency, nucleus } = datum1D.info;
+  const { originFrequency, nucleus } = datum1D.info;
 
   options.peakPicking = Object.assign(
     {},
     defaultOptions.peakPicking,
     options.peakPicking,
     {
-      frequency,
+      frequency: originFrequency,
       nucleus,
       noiseLevel: 3 * noise,
     },
