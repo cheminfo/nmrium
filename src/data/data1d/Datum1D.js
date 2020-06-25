@@ -414,7 +414,7 @@ export class Datum1D {
       this.data.re,
       from,
       to,
-      this.info.frequency,
+      this.info.originFrequency,
     );
   }
 

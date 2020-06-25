@@ -198,8 +198,8 @@ const PeaksTablePanel = memo(
             xIndex: peak.xIndex,
             value: value,
             valueHz:
-              _data.info && _data.info.frequency
-                ? value * _data.info.frequency
+              _data.info && _data.info.originFrequency
+                ? value * _data.info.originFrequency
                 : '',
             id: peak.id,
             yValue: _data.y[peak.xIndex],

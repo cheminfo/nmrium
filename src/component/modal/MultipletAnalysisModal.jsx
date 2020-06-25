@@ -127,7 +127,7 @@ const MultipletAnalysisModal = ({
       };
       try {
         const result = analyseMultiplet(analysesProps, {
-          frequency: info.frequency,
+          frequency: info.originFrequency,
           takeBestPartMultiplet: true,
           symmetrizeEachStep: true,
           debug: true,
