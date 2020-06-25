@@ -177,7 +177,7 @@ const MultiplicityTree = ({
       .filter((_i) => _i !== undefined);
 
     return buildTreeNodesData(0, jIndices, [], signal.delta);
-  }, [buildTreeNodesData, signal.delta, signal.multiplicity]);
+  }, [buildTreeNodesData, signal]);
 
   const buildTreeNodeAndEdge = useCallback(
     ({ startX, _startX, ratio, multiplicityIndex, color }) => {
@@ -249,7 +249,7 @@ const MultiplicityTree = ({
       });
       setXRange(_xRange);
     }
-  }, [rangeFrom, rangeTo, signal.multiplicity, treeNodesData, signal.delta]);
+  }, [rangeFrom, rangeTo, signal.delta, signal.multiplicity, treeNodesData]);
 
   const multiplicityTree = useMemo(() => {
     // first tree level

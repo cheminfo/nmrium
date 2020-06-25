@@ -110,7 +110,7 @@ const FooterBanner = () => {
     return <div css={styles} />;
   }
 
-  const frequency = data[activeSpectrum.index].info.frequency; // should be spectrum.info.frequency;
+  const frequency = data[activeSpectrum.index].info.originFrequency; // should be spectrum.info.originFrequency;
 
   return (
     <div css={styles}>
