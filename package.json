@@ -81,7 +81,8 @@
     "extends": "cheminfo-react",
     "parser": "babel-eslint",
     "rules": {
-      "import/no-unresolved": "off"
+      "import/no-unresolved": "off",
+      "eofline": "off"
     }
   },
   "browserslist": {
