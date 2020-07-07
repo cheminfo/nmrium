@@ -26,7 +26,7 @@ const MultiplicityTree = ({
   signal,
   highlightID,
   options = {
-    label: { distance: 10, fontSize: 11, textLength: 6 },
+    label: { distance: 10, fontSize: 11 },
   },
 }) => {
   const { scaleX, scaleY } = useScale();
@@ -193,7 +193,6 @@ const MultiplicityTree = ({
             x={scaleX()(_startX) + options.label.distance}
             y={_startYNode + treeProps.levelHeight / 2}
             fontSize={options.label.fontSize}
-            textLength={options.label.textLength}
             fill={color}
           >
             {ratio}
@@ -221,7 +220,6 @@ const MultiplicityTree = ({
       highlightID,
       options.label.distance,
       options.label.fontSize,
-      options.label.textLength,
       scaleX,
       startY,
       treeProps.levelHeight,
@@ -261,7 +259,6 @@ const MultiplicityTree = ({
         x={scaleX()(signal.delta)}
         y={_startY + treeProps.levelHeight / 2}
         fontSize={options.label.fontSize}
-        textLength={signal.multiplicity.length * options.label.textLength}
         lengthAdjust="spacing"
         fill="black"
       >
@@ -320,7 +317,6 @@ const MultiplicityTree = ({
     signal.multiplicity,
     treeProps,
     options.label.fontSize,
-    options.label.textLength,
     treeNodesData,
     rangeFrom,
     rangeTo,
