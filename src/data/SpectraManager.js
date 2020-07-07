@@ -36,11 +36,11 @@ export function addJcamp(spectra, jcamp, options = {}) {
 }
 
 function addJcampSS(spectra, entry, options) {
-  let info = entry.info;
-  if (info.dimension === 1) {
+  let dimension = entry.info.dimension;
+  if (dimension === 1) {
     spectra.push(Data1DManager.fromParsedJcamp(entry, options));
   }
-  if (info.dimension === 2) {
+  if (dimension === 2) {
     spectra.push(Data2DManager.fromParsedJcamp(entry, options));
   }
 }
@@ -114,7 +114,7 @@ export async function addBruker(spectra, options, data) {
   const usedcolors2d = [];
   let entries = result;
   for (let entry of entries) {
-    let { info, dependentVariables } = entry; //getInfoFromMetaData(entry.info);
+    let { info, dependentVariables } = entry;
     if (info.dimension === 1) {
       if (dependentVariables[0].components) {
         const color = getColor(usedcolors1D);
@@ -122,7 +122,6 @@ export async function addBruker(spectra, options, data) {
           Data1DManager.fromBruker(entry, {
             ...options,
             display: { ...options.display, color },
-            info,
           }),
         );
         usedcolors1D.push(color);

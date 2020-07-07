@@ -2,8 +2,7 @@ import { Datum1D } from './Datum1D';
 
 export class Data1DManager {
   static fromBruker = function fromBruker(result, options = {}) {
-    const { info } = options;
-    const { dependentVariables } = result;
+    const { dependentVariables, info, meta } = result;
     let data = getData(dependentVariables[0].components);
     if (data.im) info.isComplex = true;
 
@@ -11,7 +10,8 @@ export class Data1DManager {
 
     const datum1D = new Datum1D({
       ...options,
-      meta: result.info,
+      info,
+      meta,
       data,
       source: {
         jcamp: null,
@@ -81,14 +81,13 @@ export class Data1DManager {
   };
 
   static fromParsedJcamp = function fromParsedJcamp(parsedJcamp, options = {}) {
-    const { dependentVariables } = parsedJcamp;
-    // console.log(parsedJcamp);
+    const { dependentVariables, info, meta } = parsedJcamp;
     let data = getData(dependentVariables[0].components);
-    let info = parsedJcamp.info;
     if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
     const datum1D = new Datum1D({
       ...options,
       info,
+      meta,
       data,
       source: {
         jcamp: null,

@@ -507,7 +507,6 @@ const projection2dHandler = (state, position) => {
 
       const projection = AnalysisObj.createSlice(state.activeSpectrum.id, x, y);
       // eslint-disable-next-line no-console
-      console.log(projection);
       // draft.projection = projection;
     }
   });

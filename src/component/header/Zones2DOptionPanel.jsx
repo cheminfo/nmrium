@@ -1,7 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import { RESET_SELECTED_TOOL } from '../reducer/types/Types';
+import NumberInput from '../elements/NumberInput';
+import {
+  RESET_SELECTED_TOOL,
+  AUTO_ZONES_DETECTION,
+} from '../reducer/types/Types';
 
 const styles = {
   container: {
@@ -30,10 +34,16 @@ const styles = {
 
 const Zones2DOptionPanel = () => {
   const dispatch = useDispatch();
+  const thresholdFactor = useRef();
 
   const handleApplyFilter = useCallback(() => {
     // eslint-disable-next-line no-console
-    console.log('auto');
+    dispatch({
+      type: AUTO_ZONES_DETECTION,
+      options: {
+        thresholdFactor: thresholdFactor.current.value,
+      },
+    });
   }, []);
 
   const handleCancelFilter = useCallback(() => {
@@ -44,6 +54,17 @@ const Zones2DOptionPanel = () => {
 
   return (
     <div style={styles.container}>
+      <NumberInput
+        ref={thresholdFactor}
+        label="NoiseFactor"
+        name="noiseFactor"
+        style={{
+          input: styles.input,
+          inputContainer: styles.inputContainer,
+          label: styles.label,
+        }}
+        defaultValue={1}
+      />
       <button
         type="button"
         style={styles.actionButton}

@@ -4,6 +4,7 @@ import { Datum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
 
 import Processing2D from './Processing2D';
+import autoZonesDetection from './autoZonesDetection';
 
 export class Datum2D {
   /**
@@ -31,7 +32,7 @@ export class Datum2D {
       },
       options.display,
     );
-    // this.original = options.data; //{ x, re, im }
+
     this.info = Object.assign(
       {
         nucleus: ['1H', '1H'],
@@ -191,6 +192,35 @@ export class Datum2D {
     };
     const datum1D = new Datum1D({ info, data });
     return datum1D;
+  }
+
+  detectZones(options) {
+    this.zones = Object.assign({}, this.zones);
+    this.zones.values = this.zones.values.slice();
+
+    const zones = autoZonesDetection(this, options);
+    this.zones.values = zones.map((zone) => {
+      return {
+        id: generateID(),
+        x: { from: zone.fromTo[0].from, to: zone.fromTo[0].to },
+        y: { from: zone.fromTo[1].from, to: zone.fromTo[1].to },
+        signal: [
+          {
+            peak: zone.peaks,
+            x: {
+              delta: (zone.fromTo[0].from + zone.fromTo[0].to) / 2,
+              diaID: [],
+            },
+            y: {
+              delta: (zone.fromTo[1].from + zone.fromTo[1].to) / 2,
+              diaID: [],
+            },
+          },
+        ],
+      };
+    });
+
+    return this.zones;
   }
 
   toJSON() {
