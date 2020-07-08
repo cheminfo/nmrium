@@ -6,10 +6,10 @@ import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
 import {
-  isOnRangeLevel,
   getPascal,
-  getMultiplicity,
+  getMultiplicityNumber,
   hasCouplingConstant,
+  checkMultiplicity,
 } from '../panels/extra/utilities/MultiplicityUtilities';
 
 const styles = {
@@ -49,17 +49,18 @@ const MultiplicityTree = ({
     height: 0,
     levelHeight: 0,
   });
+  const [drawInFullRange, setDrawInFullRange] = useState(false);
 
   useEffect(() => {
-    const _isOnRangeLevel = isOnRangeLevel(signal.multiplicity);
-    const _treeWidth = _isOnRangeLevel
+    const _drawInFullRange = !checkMultiplicity(signal.multiplicity, ['m']);
+    const _treeWidth = _drawInFullRange
       ? Math.abs(scaleX()(xRange.x1) - scaleX()(xRange.x2))
       : Math.abs(scaleX()(xRange.x1) - scaleX()(xRange.x2)) +
         options.label.distance;
-    const _treeHeight = _isOnRangeLevel ? _treeWidth / 3 : _treeWidth / 2;
+    const _treeHeight = _drawInFullRange ? _treeWidth / 3 : _treeWidth / 2;
     // +2 because of multiplicity text and start level node before the actual tree starts
     // 2* for levels between nodes (edges)
-    const _treeLevelHeight = _isOnRangeLevel
+    const _treeLevelHeight = _drawInFullRange
       ? _treeHeight / (signal.multiplicity.length + 2)
       : _treeHeight / (2 * signal.multiplicity.length + 2);
 
@@ -68,6 +69,7 @@ const MultiplicityTree = ({
       height: _treeHeight,
       levelHeight: _treeLevelHeight,
     });
+    setDrawInFullRange(_drawInFullRange);
   }, [
     options.label.distance,
     scaleX,
@@ -135,7 +137,7 @@ const MultiplicityTree = ({
       } else {
         // in case of other multiplets
         const pascal = getPascal(
-          getMultiplicity(signal.multiplicity.charAt(multiplicityIndex)),
+          getMultiplicityNumber(signal.multiplicity.charAt(multiplicityIndex)),
           0.5,
         ); // @TODO for now we use the default spin of 1 / 2 only
 
@@ -227,7 +229,7 @@ const MultiplicityTree = ({
   );
 
   useEffect(() => {
-    if (isOnRangeLevel(signal.multiplicity)) {
+    if (drawInFullRange) {
       setXRange({ x1: rangeFrom, x2: rangeTo });
     } else {
       const _xRange = { x1: signal.delta, x2: signal.delta };
@@ -247,7 +249,14 @@ const MultiplicityTree = ({
       });
       setXRange(_xRange);
     }
-  }, [rangeFrom, rangeTo, signal.delta, signal.multiplicity, treeNodesData]);
+  }, [
+    drawInFullRange,
+    rangeFrom,
+    rangeTo,
+    signal.delta,
+    signal.multiplicity,
+    treeNodesData,
+  ]);
 
   const multiplicityTree = useMemo(() => {
     // first tree level
@@ -281,7 +290,7 @@ const MultiplicityTree = ({
     // third tree level
     _startY += treeProps.levelHeight;
 
-    if (isOnRangeLevel(signal.multiplicity)) {
+    if (drawInFullRange) {
       const _rangeFrom = scaleX()(rangeFrom);
       const _rangeTo = scaleX()(rangeTo);
 
@@ -317,6 +326,7 @@ const MultiplicityTree = ({
     signal.multiplicity,
     treeProps,
     options.label.fontSize,
+    drawInFullRange,
     treeNodesData,
     rangeFrom,
     rangeTo,

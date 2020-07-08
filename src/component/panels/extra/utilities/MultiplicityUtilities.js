@@ -1,6 +1,6 @@
 import { Multiplets } from '../constants/Multiplets';
 
-const getMultiplicity = (string) => {
+const getMultiplicityNumber = (string) => {
   const multiplet = Multiplets.find(
     (_multiplet) => string === _multiplet.label || string === _multiplet.value,
   );
@@ -8,15 +8,29 @@ const getMultiplicity = (string) => {
   return multiplet ? multiplet.multiplicity : null;
 };
 
+const checkMultiplet = (multiplet, rejected = []) => {
+  // options to determine whether a massive (m), for example, should be considered as rejected multiplet
+  if (multiplet === undefined || multiplet.length === 0) {
+    return false;
+  }
+  const _multiplet = Multiplets.find(
+    (m) => m.value === multiplet || m.label === multiplet,
+  );
+  return (
+    _multiplet &&
+    !rejected.includes(_multiplet.value) &&
+    !rejected.includes(_multiplet.label)
+  );
+};
+
 const checkMultiplicity = (multiplicity, rejected = []) => {
   // options to determine whether a massive (m), for example, should be considered as rejected multiplicity
   if (multiplicity === undefined || multiplicity.length === 0) {
     return false;
   }
-  const multiplet = Multiplets.find(
-    (m) => m.value === multiplicity || m.label === multiplicity,
-  );
-  return multiplet !== undefined && !rejected.includes(multiplet.value);
+  return !multiplicity
+    .split('')
+    .find((_multiplet) => !checkMultiplet(_multiplet, rejected));
 };
 
 const translateMultiplicity = (multiplicity) => {
@@ -28,12 +42,6 @@ const translateMultiplicity = (multiplicity) => {
 const hasCouplingConstant = (multiplicity) => {
   // with the pre-set rejected ones, we check the given multiplicity for the need of having a coupling constant (massive and singlet do not)
   return checkMultiplicity(multiplicity, ['m', 's']);
-};
-
-const isOnRangeLevel = (multiplicity) => {
-  return multiplicity
-    .split('')
-    .some((_multiplicity) => !checkMultiplicity(_multiplicity, ['m']));
 };
 
 const getPascal = (n, spin) => {
@@ -57,10 +65,10 @@ const getPascal = (n, spin) => {
 };
 
 export {
+  checkMultiplet,
   checkMultiplicity,
-  getMultiplicity,
+  getMultiplicityNumber,
   getPascal,
   hasCouplingConstant,
-  isOnRangeLevel,
   translateMultiplicity,
 };

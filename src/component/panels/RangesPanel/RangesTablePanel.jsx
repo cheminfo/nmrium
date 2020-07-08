@@ -30,7 +30,6 @@ import {
 import { copyTextToClipboard } from '../../utility/Export';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
-import { isOnRangeLevel } from '../extra/utilities/MultiplicityUtilities';
 import {
   resetDiaIDs,
   addDefaultSignal,
@@ -152,10 +151,10 @@ const RangesTablePanel = memo(() => {
   const changeRangeSignalKindHandler = useCallback(
     (value, range, signalIndex) => {
       const _range = { ...range };
-      if (isOnRangeLevel(range.signal[signalIndex].multiplicity)) {
-        _range.kind = value;
-      } else {
+      if (signalIndex !== undefined) {
         _range.signal[signalIndex].kind = value;
+      } else {
+        _range.kind = value;
       }
       dispatch({
         type: CHANGE_RANGE_DATA,
@@ -166,9 +165,9 @@ const RangesTablePanel = memo(() => {
   );
 
   const unlinkRangeHandler = useCallback(
-    (range, signalIndex) => {
+    (range, isOnRangeLevel, signalIndex) => {
       const _range = Object.assign({}, range);
-      unlink(_range, signalIndex);
+      unlink(_range, isOnRangeLevel, signalIndex);
       dispatch({ type: CHANGE_RANGE_DATA, data: _range });
     },
     [dispatch],

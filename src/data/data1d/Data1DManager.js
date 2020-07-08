@@ -82,6 +82,7 @@ export class Data1DManager {
 
   static fromParsedJcamp = function fromParsedJcamp(parsedJcamp, options = {}) {
     const { dependentVariables } = parsedJcamp;
+    // console.log(parsedJcamp);
     let data = getData(dependentVariables[0].components);
     let info = parsedJcamp.info;
     if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];

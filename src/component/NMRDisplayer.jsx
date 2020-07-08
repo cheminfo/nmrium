@@ -123,7 +123,7 @@ const NMRDisplayer = memo((props) => {
           <AlertProvider template={AlertTemplate} {...alertOptions}>
             <DispatchProvider value={dispatchMiddleWare}>
               <ChartDataProvider value={{ ...state, isResizeEventStart }}>
-                <ModalProvider>
+                <ModalProvider wrapperID="main-wrapper">
                   <KeyListener parentRef={fullScreenRef} />
                   <HighlightProvider>
                     <div
@@ -172,6 +172,7 @@ const NMRDisplayer = memo((props) => {
                           </SplitPane>
                         </DropZone>
                       </div>
+                      <div id="main-wrapper" />
                     </div>
                   </HighlightProvider>
                 </ModalProvider>
