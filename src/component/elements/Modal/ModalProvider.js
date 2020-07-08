@@ -39,7 +39,6 @@ const ModalProvider = ({
     }
 
     return () => {
-      // if (root.current) document.body.removeChild(root.current);
       if (root.current) {
         if (wrapperID) {
           document.getElementById(wrapperID).removeChild(root.current);
@@ -48,7 +47,7 @@ const ModalProvider = ({
         }
       }
     };
-  }, []);
+  }, [wrapperID]);
 
   const remove = () => {
     setModal(null);

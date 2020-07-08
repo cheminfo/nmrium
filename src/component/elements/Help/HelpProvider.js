@@ -83,7 +83,7 @@ const HelpProvider = ({
         }
       }
     };
-  }, []);
+  }, [wrapperID]);
 
   const remove = useCallback((modal) => {
     setModals((currentModals) => {
