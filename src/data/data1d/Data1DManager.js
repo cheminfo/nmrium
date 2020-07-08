@@ -6,7 +6,7 @@ export class Data1DManager {
     let data = getData(dependentVariables[0].components);
     if (data.im) info.isComplex = true;
 
-    if (Array.isArray(info.nucleus)) options.info.nucleus = info.nucleus[0];
+    if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
 
     const datum1D = new Datum1D({
       ...options,
