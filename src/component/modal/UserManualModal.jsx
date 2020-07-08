@@ -21,7 +21,7 @@ const styles = css`
     // border-bottom: 4px solid #2ca8ff;
     background-color: #fafafa;
   }
-  .content {
+  .main-content {
     width: 100%;
     height: 100%;
     border: none;
@@ -51,7 +51,7 @@ const UserManualModal = ({ onClose }) => {
       <button onClick={onClose} type="button" className="close-bt">
         <FaTimes />
       </button>
-      <div className="content">
+      <div className="main-content">
         <Tabs
           onClick={onTabChangeHandler}
           position={positions.LEFT}

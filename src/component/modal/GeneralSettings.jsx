@@ -19,7 +19,7 @@ const styles = css`
     place-items: normal;
     text-transform: none;
   }
-  .content {
+  .main-content {
     width: 100%;
     height: 250px;
     border: none;
@@ -123,7 +123,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
   return (
     <div css={styles}>
       <h6 className="header">General Settings</h6>
-      <div className="content">
+      <div className="main-content">
         <Tabs defaultTabID={activeTab} onClick={tabChangeHandler}>
           <div className="inner-content" label="controllers" key="controllers">
             <p className="section-header">Mouse Scroll Wheel Sensitivity</p>
