@@ -58,6 +58,7 @@ const HelpProvider = ({
   transition,
   containerStyle,
   imagesPathPrefix,
+  wrapperID,
 }) => {
   const root = useRef();
   const timersId = useRef([]);
@@ -65,13 +66,22 @@ const HelpProvider = ({
 
   useEffect(() => {
     root.current = document.createElement('div');
-    document.body.appendChild(root.current);
-
+    if (wrapperID) {
+      document.getElementById(wrapperID).appendChild(root.current);
+    } else {
+      document.body.appendChild(root.current);
+    }
     const timersIdRef = timersId.current;
 
     return () => {
       timersIdRef.forEach(clearTimeout);
-      if (root.current) document.body.removeChild(root.current);
+      if (root.current) {
+        if (wrapperID) {
+          document.getElementById(wrapperID).removeChild(root.current);
+        } else {
+          document.body.removeChild(root.current);
+        }
+      }
     };
   }, []);
 
@@ -240,6 +250,7 @@ HelpProvider.defaultProps = {
     zIndex: 100,
   },
   imagesPathPrefix: './help/',
+  wrapperID: null,
 };
 
 export default HelpProvider;

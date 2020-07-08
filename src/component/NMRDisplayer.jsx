@@ -119,7 +119,7 @@ const NMRDisplayer = memo((props) => {
   return (
     <ErrorBoundary>
       <PreferencesProvider value={preferences}>
-        <HelpProvider data={data}>
+        <HelpProvider data={data} wrapperID="main-wrapper">
           <AlertProvider template={AlertTemplate} {...alertOptions}>
             <DispatchProvider value={dispatchMiddleWare}>
               <ChartDataProvider value={{ ...state, isResizeEventStart }}>
