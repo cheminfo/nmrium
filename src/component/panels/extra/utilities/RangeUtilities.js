@@ -1,5 +1,3 @@
-import { isOnRangeLevel } from './MultiplicityUtilities';
-
 const getPubIntegral = (range) => {
   return []
     .concat(
@@ -11,22 +9,6 @@ const getPubIntegral = (range) => {
     .filter((_diaID, i, _diaIDs) => _diaIDs.indexOf(_diaID) === i).length;
 };
 
-const getDiaIDsWithLevels = (range) => {
-  return range.signal
-    ? range.signal
-        .map((_signal, i) => {
-          return range.diaID &&
-            range.diaID.length > 0 &&
-            isOnRangeLevel(_signal.multiplicity)
-            ? [{ level: 'range', diaID: range.diaID, signalIndex: i }]
-            : _signal.diaID && _signal.diaID.length > 0
-            ? [{ level: 'signal', diaID: _signal.diaID, signalIndex: i }]
-            : [];
-        })
-        .flat()
-    : [];
-};
-
 const resetDiaIDs = (range) => {
   delete range.diaID;
   range.signal.forEach((_signal) => {
@@ -35,11 +17,11 @@ const resetDiaIDs = (range) => {
   delete range.pubIntegral;
 };
 
-const unlink = (range, signalIndex) => {
-  if (signalIndex !== undefined) {
-    if (isOnRangeLevel(range.signal[signalIndex].multiplicity)) {
+const unlink = (range, isOnRangeLevel, signalIndex) => {
+  if (isOnRangeLevel !== undefined) {
+    if (isOnRangeLevel === true) {
       delete range.diaID;
-    } else {
+    } else if (signalIndex !== undefined) {
       delete range.signal[signalIndex].diaID;
     }
     range.pubIntegral = getPubIntegral(range);
@@ -59,10 +41,4 @@ const addDefaultSignal = (range) => {
   });
 };
 
-export {
-  addDefaultSignal,
-  getDiaIDsWithLevels,
-  getPubIntegral,
-  resetDiaIDs,
-  unlink,
-};
+export { addDefaultSignal, getPubIntegral, resetDiaIDs, unlink };
