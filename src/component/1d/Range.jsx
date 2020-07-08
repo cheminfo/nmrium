@@ -1,6 +1,6 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -50,14 +50,7 @@ const stylesHighlighted = css`
 
 const Range = ({ rangeData }) => {
   const { id, from, to, integral, kind, signal } = rangeData;
-  const highlightIDs = useMemo(() => {
-    return [].concat(
-      [id],
-      rangeData.signal.map((_signal, i) => `${id}_${i}`),
-    );
-  }, [id, rangeData.signal]);
-
-  const highlight = useHighlight(highlightIDs);
+  const highlightRange = useHighlight([id]);
 
   const { scaleX } = useScale();
   const { editRangeModalMeta } = useChartData();
@@ -103,13 +96,14 @@ const Range = ({ rangeData }) => {
         (editRangeModalMeta &&
           editRangeModalMeta.rangeInEdition &&
           editRangeModalMeta.rangeInEdition === id) ||
-        highlight.isActive ||
-        highlight.isActivePermanently
+        highlightRange.isActive ||
+        highlightRange.isActivePermanently
           ? stylesHighlighted
           : stylesOnHover
       }
       key={id}
-      {...highlight.onHover}
+      {...highlightRange.onHover}
+      {...highlightRange.onClick}
     >
       <g transform={`translate(${scaleX()(to)},10)`}>
         <rect
@@ -120,8 +114,8 @@ const Range = ({ rangeData }) => {
           fill="green"
           fillOpacity={
             (kind && kind === 'signal') ||
-            highlight.isActive ||
-            highlight.isActivePermanently
+            highlightRange.isActive ||
+            highlightRange.isActivePermanently
               ? 1
               : 0.4
           }
@@ -134,8 +128,8 @@ const Range = ({ rangeData }) => {
           fill="red"
           fillOpacity={
             (kind && kind === 'signal') ||
-            highlight.isActive ||
-            highlight.isActivePermanently
+            highlightRange.isActive ||
+            highlightRange.isActivePermanently
               ? 1
               : 0.6
           }
@@ -158,9 +152,9 @@ const Range = ({ rangeData }) => {
               rangeFrom={from}
               rangeTo={to}
               signal={_signal}
-              highlightID={highlightIDs[i + 1]}
+              highlightID={`${id}_${i}`}
               // eslint-disable-next-line react/no-array-index-key
-              key={highlightIDs[i + 1]}
+              key={`${id}_${i}`}
             />
           ))
         : null}

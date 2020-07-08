@@ -154,15 +154,25 @@ export function useHighlight(highlights) {
     [context],
   );
 
-  const click = useCallback(() => {
-    if (!isActivePermanently) {
-      context.dispatch({ type: 'SET_PERMANENT', payload: convertedHighlights });
-    } else {
-      context.dispatch({
-        type: 'UNSET_PERMANENT',
-      });
-    }
-  }, [context, convertedHighlights, isActivePermanently]);
+  const click = useCallback(
+    (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (!isActivePermanently) {
+        context.dispatch({
+          type: 'SET_PERMANENT',
+          payload: convertedHighlights,
+        });
+      } else {
+        context.dispatch({
+          type: 'UNSET_PERMANENT',
+        });
+      }
+    },
+    [context, convertedHighlights, isActivePermanently],
+  );
 
   const onHover = {
     onMouseEnter: show,
