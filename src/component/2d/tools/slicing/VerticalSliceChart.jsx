@@ -16,7 +16,7 @@ const VerticalSliceChart = memo(({ margin: marignValue, data }) => {
   const paths = useMemo(() => {
     if (data) {
       const { x, re: y } = data;
-      const scaleX = get2DYScale({ originHeight, margin, yDomain });
+      const scaleX = get2DYScale({ height: originHeight, margin, yDomain });
 
       // const { scaleX, xDomain } = getLeftXScale(originHeight, margin, x);
       const scaleY = getYScale(height, y, marignValue);

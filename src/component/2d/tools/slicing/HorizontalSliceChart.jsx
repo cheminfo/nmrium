@@ -14,7 +14,7 @@ const HorizontalSliceChart = memo(({ margin: marginProps, data }) => {
   const paths = useMemo(() => {
     if (data) {
       const { x, re: y } = data;
-      const scaleX = get2DXScale({ originMargin, width, xDomain });
+      const scaleX = get2DXScale({ margin: originMargin, width, xDomain });
 
       // const { scaleX, xDomain } = getTopXScale(width, originMargin, x);
       const scaleY = getYScale(height, y, marginProps);
