@@ -342,13 +342,9 @@ const RangesTableRow = ({
         >
           <FaRegTrashAlt />
         </button>
-      </td>
-      <td {...rowSpanTags}>
         <button type="button" className="zoom-button" onClick={handleOnZoom}>
           <FaSearchPlus title="Zoom to range in spectrum" />
         </button>
-      </td>
-      <td {...rowSpanTags}>
         <button type="button" className="edit-button" onClick={handleOnEdit}>
           <FaEdit color="blue" />
         </button>

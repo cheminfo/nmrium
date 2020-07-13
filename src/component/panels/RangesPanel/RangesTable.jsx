@@ -141,8 +141,6 @@ const RangesTable = ({
             <th>Kind (S)</th>
             <th>Kind (R)</th>
             <th>{''}</th>
-            <th>{''}</th>
-            <th>{''}</th>
           </tr>
           {data &&
             data.map((range, i) => {
