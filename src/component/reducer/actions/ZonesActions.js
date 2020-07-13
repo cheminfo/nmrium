@@ -20,13 +20,25 @@ const add2dZoneHandler = (state, action) => {
         ? AnalysisObj.getDatum(state.activeSpectrum.id)
         : null;
     if (datumObject && datumObject instanceof Datum2D) {
+      const fromY = scaleX.invert(y1);
+      const fromX = scaleX.invert(x1);
+      const toY = scaleX.invert(y2);
+      const toX = scaleX.invert(x2);
       datumObject.addZone({
-        x1: scaleX.invert(x1),
-        x2: scaleX.invert(x2),
-        y1: scaleY.invert(y1),
-        y2: scaleY.invert(y2),
+        x: { from: fromX, to: toX },
+        y: { from: fromY, to: toY },
+        signal: {
+          peak: [],
+          x: {
+            delta: (fromX + toX) / 2,
+            diaID: [],
+          },
+          y: {
+            delta: (fromY + toY) / 2,
+            diaID: [],
+          },
+        },
       });
-
       const zones = datumObject.getZones();
       draft.data[state.activeSpectrum.index].zones = zones;
     }
@@ -44,4 +56,15 @@ const delete2ZoneHandler = (state, action) => {
   });
 };
 
-export { add2dZoneHandler, delete2ZoneHandler };
+const handleAutoZonesDetection = (state, detectionOptions) => {
+  return produce(state, (draft) => {
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      const ob = AnalysisObj.getDatum(id);
+      const zones = ob.detectZones(detectionOptions);
+      draft.data[index].zones = zones;
+    }
+  });
+};
+
+export { add2dZoneHandler, delete2ZoneHandler, handleAutoZonesDetection };

@@ -104,7 +104,11 @@ import {
   levelChangeHandler,
   projection2dHandler,
 } from './actions/ToolsActions';
-import { add2dZoneHandler, delete2ZoneHandler } from './actions/ZonesActions';
+import {
+  add2dZoneHandler,
+  delete2ZoneHandler,
+  handleAutoZonesDetection,
+} from './actions/ZonesActions';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import {
@@ -112,6 +116,7 @@ import {
   ADD_PEAK,
   ADD_PEAKS,
   AUTO_PEAK_PICKING,
+  AUTO_ZONES_DETECTION,
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
   LOAD_JCAMP_FILE,
@@ -389,6 +394,10 @@ export function spectrumReducer(state, action) {
 
     case AUTO_RANGES_DETECTION:
       return handleAutoRangesDetection(state, action.options);
+
+    case AUTO_ZONES_DETECTION:
+      return handleAutoZonesDetection(state, action.options);
+
     case ADD_RANGE:
       return handleAddRange(state, action);
     case DELETE_RANGE:

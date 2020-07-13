@@ -2,11 +2,12 @@ import { Datum2D } from './Datum2D';
 
 export class Data2DManager {
   static fromParsedJcamp = function fromParsedJcamp(parsedJcamp, options = {}) {
-    const { dependentVariables, info } = parsedJcamp;
+    const { dependentVariables, info, meta } = parsedJcamp;
     let data = dependentVariables[0].components;
     const ob = new Datum2D({
       ...options,
       info,
+      meta,
       data,
       source: {
         jcamp: null,
@@ -21,11 +22,11 @@ export class Data2DManager {
   };
 
   static fromBruker = function fromBruker(result, options = {}) {
-    const { dependentVariables, info } = result;
+    const { dependentVariables, meta } = result;
     let data = dependentVariables[0].components;
     const datum2D = new Datum2D({
       ...options,
-      info,
+      meta,
       data,
       source: {
         jcamp: null,
