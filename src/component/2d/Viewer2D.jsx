@@ -135,9 +135,6 @@ const Viewer2D = () => {
       // eslint-disable-next-line no-unused-vars
       const { x, y } = position;
       switch (selectedTool) {
-        // case options.projection.id:
-        //   dispatch({ type: SET_2D_PROJECTION, x, y });
-        //   break;
         default:
           break;
       }

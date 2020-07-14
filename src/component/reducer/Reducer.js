@@ -102,7 +102,6 @@ import {
   handleZoom,
   handelSetActiveTab,
   levelChangeHandler,
-  projection2dHandler,
 } from './actions/ToolsActions';
 import {
   add2dZoneHandler,
@@ -180,7 +179,6 @@ import {
   RESIZE_RANGE,
   ADD_2D_ZONE,
   DELETE_2D_ZONE,
-  SET_2D_PROJECTION,
   ADD_MISSING_PROJECTION,
   SET_FILTER_SNAPSHOT,
   APPLY_ABSOLUTE_FILTER,
@@ -428,8 +426,6 @@ export function spectrumReducer(state, action) {
       return add2dZoneHandler(state, action);
     case DELETE_2D_ZONE:
       return delete2ZoneHandler(state, action);
-    case SET_2D_PROJECTION:
-      return projection2dHandler(state, action);
     case ADD_MISSING_PROJECTION:
       return addMissingProjectionHander(state, action);
     case SET_SHOW_MULTIPLICITY_TREES:

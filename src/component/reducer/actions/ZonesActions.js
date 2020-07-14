@@ -20,9 +20,9 @@ const add2dZoneHandler = (state, action) => {
         ? AnalysisObj.getDatum(state.activeSpectrum.id)
         : null;
     if (datumObject && datumObject instanceof Datum2D) {
-      const fromY = scaleX.invert(y1);
+      const fromY = scaleY.invert(y1);
       const fromX = scaleX.invert(x1);
-      const toY = scaleX.invert(y2);
+      const toY = scaleY.invert(y2);
       const toX = scaleX.invert(x2);
       datumObject.addZone({
         x: { from: fromX, to: toX },
