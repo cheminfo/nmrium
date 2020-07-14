@@ -83,11 +83,35 @@ export class Datum2D {
   getZones() {
     return (this.zones = Object.assign({}, this.zones));
   }
+  /**
+   *
+   * @param {object} ZoneBoundary
+   * @param {number} ZoneBoundary.fromX
+   * @param {number} ZoneBoundary.toX
+   * @param {number} ZoneBoundary.fromY
+   * @param {number} ZoneBoundary.toY
+   */
+  addZone(ZoneBoundary) {
+    const { fromX, toX, fromY, toY } = ZoneBoundary;
+    const zone = {
+      x: { from: fromX, to: toX },
+      y: { from: fromY, to: toY },
+      signal: {
+        peak: [],
+        x: {
+          delta: (fromX + toX) / 2,
+          diaID: [],
+        },
+        y: {
+          delta: (fromY + toY) / 2,
+          diaID: [],
+        },
+      },
+    };
 
-  addZone(inetgral) {
     this.zones.values.push({
       id: generateID(),
-      ...inetgral,
+      ...zone,
     });
   }
   deleteZone(id) {

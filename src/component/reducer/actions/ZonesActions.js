@@ -24,21 +24,7 @@ const add2dZoneHandler = (state, action) => {
       const fromX = scaleX.invert(x1);
       const toY = scaleY.invert(y2);
       const toX = scaleX.invert(x2);
-      datumObject.addZone({
-        x: { from: fromX, to: toX },
-        y: { from: fromY, to: toY },
-        signal: {
-          peak: [],
-          x: {
-            delta: (fromX + toX) / 2,
-            diaID: [],
-          },
-          y: {
-            delta: (fromY + toY) / 2,
-            diaID: [],
-          },
-        },
-      });
+      datumObject.addZone({ fromX, toX, fromY, toY });
       const zones = datumObject.getZones();
       draft.data[state.activeSpectrum.index].zones = zones;
     }

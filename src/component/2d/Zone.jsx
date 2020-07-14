@@ -44,12 +44,13 @@ const stylesHighlighted = css`
   }
 `;
 
-const Zone = ({ x1, x2, y1, y2, id, onDelete }) => {
+const Zone = ({ x, y, id, onDelete }) => {
   const highlight = useHighlight([id]);
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
-
+  const { from: x1, to: x2 } = x;
+  const { from: y1, to: y2 } = y;
   const deleteHandler = useCallback(() => {
     onDelete(id);
   }, [id, onDelete]);
