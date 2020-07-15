@@ -63,7 +63,7 @@ const addIntegral = (state, action) => {
         );
         const integralYDomain = extent(integralResult.y);
         draft.integralsYDomains[id] = integralYDomain;
-        draft.originIntegralYDomain = integralYDomain;
+        draft.originIntegralYDomain[id] = integralYDomain;
         setIntegralZoom(state, draft.integralZoomFactor.scale, draft);
       }
     }

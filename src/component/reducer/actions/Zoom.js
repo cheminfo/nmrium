@@ -65,11 +65,11 @@ const setZoom1D = (draft, scale, height, margin, index) => {
 const setIntegralZoom = (state, scale, draft) => {
   if (draft.activeSpectrum) {
     const { height, margin } = state;
-    if (draft.originIntegralYDomain) {
-      const _scale = scaleLinear(draft.originIntegralYDomain, [
-        height - margin.bottom,
-        margin.top,
-      ]);
+    if (draft.originIntegralYDomain[draft.activeSpectrum.id]) {
+      const _scale = scaleLinear(
+        draft.originIntegralYDomain[draft.activeSpectrum.id],
+        [height - margin.bottom, margin.top],
+      );
 
       const scaleValue = scale < 0.1 ? 0.05 : scale;
 
