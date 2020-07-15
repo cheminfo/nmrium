@@ -15,6 +15,7 @@ const handleChangeIntegralSum = (state, value) => {
       const datumObject = AnalysisObj.getDatum(id);
       datumObject.changeIntegralSum(value);
       draft.data[index].integrals = datumObject.getIntegrals();
+      console.log(draft.yDomains[id]);
       if (!state.data.integralsYDomain) {
         draft.integralsYDomains[id] = draft.yDomains[id];
       }
@@ -63,7 +64,7 @@ const addIntegral = (state, action) => {
         );
         const integralYDomain = extent(integralResult.y);
         draft.integralsYDomains[id] = integralYDomain;
-        draft.originIntegralYDomain = integralYDomain;
+        draft.originIntegralYDomain[id] = integralYDomain;
         setIntegralZoom(state, draft.integralZoomFactor.scale, draft);
       }
     }

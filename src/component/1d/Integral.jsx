@@ -48,6 +48,9 @@ const Integral = ({
   }, [from, to, x, y]);
 
   const makePath = useCallback(() => {
+    console.log(integral)
+    console.log(scaleY)
+    console.log(xDomain)
     if (integral && scaleY) {
       const pathPoints = xyReduce(integral, {
         from: xDomain[0],
@@ -55,6 +58,8 @@ const Integral = ({
         nbPoints: 200,
         optimize: true,
       });
+
+      console.log(pathPoints)
 
       let path = `M ${scaleX()(pathPoints.x[0])} ${scaleY(pathPoints.y[0])}`;
 

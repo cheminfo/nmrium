@@ -4,6 +4,8 @@ import { produce } from 'immer';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
 import { DISPLAYER_MODE } from '../core/Constants';
+import { xyIntegral } from 'ml-spectra-processing';
+import { object } from 'prop-types';
 
 function getActiveData(draft) {
   if (draft.activeTab) {
@@ -46,6 +48,7 @@ function getDomain(data) {
   let yArray = [];
   let yDomains = {};
   let xDomains = {};
+  let integralYDomain = {};
   try {
     xArray = data.reduce((acc, d) => {
       if (d.isVisibleInDomain) {
@@ -62,7 +65,20 @@ function getDomain(data) {
       if (d.isVisibleInDomain) {
         const _extent = extent(d.y);
         yDomains[d.id] = _extent;
-
+        if (d.integrals) {
+          const values = d.integrals.values;
+          const { from, to } = values[0];
+          const { x, y } = d;
+          const integralResult = xyIntegral(
+            { x: x, y: y },
+            {
+              from: from,
+              to: to,
+              reverse: true,
+            },
+          );
+          integralYDomain[d.id] = extent(integralResult.y);
+        }
         return acc.concat(_extent);
       } else {
         return acc.concat([]);
@@ -78,6 +94,7 @@ function getDomain(data) {
     yDomain: extent(yArray),
     yDomains,
     xDomains,
+    integralYDomain,
   };
 }
 function get2DDomain(state) {
@@ -142,6 +159,10 @@ function setDomain(draft, isYDomainChanged = true) {
       draft.yDomain = domain.yDomain;
       draft.yDomains = domain.yDomains;
       draft.originDomain = domain;
+      draft.integralsYDomains =
+        domain.integralYDomain && domain.integralYDomain;
+      draft.originIntegralYDomain =
+        domain.integralYDomain && domain.integralYDomain;
     } else {
       draft.originDomain = {
         ...draft.originDomain,
