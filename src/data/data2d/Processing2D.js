@@ -86,7 +86,7 @@ export default class Processing2D {
       Math.abs(this.minMax.minZ),
     );
 
-    let range = getRange(
+    let _range = getRange(
       this.median * 3 * Math.pow(2, zoomLevel),
 
       max,
@@ -97,13 +97,13 @@ export default class Processing2D {
     );
 
     if (negative) {
-      range = range.map((value) => -value);
+      _range = _range.map((value) => -value);
     }
     let contours = [];
     try {
       contours = this.conrec.drawContour({
         contourDrawer: 'shape',
-        levels: range,
+        levels: _range,
         timeout: timeout,
       });
     } catch (e) {

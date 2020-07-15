@@ -32,7 +32,6 @@ const IntegralsSeries = () => {
   const { scaleX } = useScale();
 
   const scaleY = useMemo(() => {
-    console.log(activeSpectrum, integralsYDomains);
     if (activeSpectrum && integralsYDomains[activeSpectrum.id]) {
       const scale = d3.scaleLinear(integralsYDomains[activeSpectrum.id], [
         height - (margin.bottom + height * 0.3),

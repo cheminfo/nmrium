@@ -44,7 +44,7 @@ const Zones2DOptionPanel = () => {
         thresholdFactor: thresholdFactor.current.value,
       },
     });
-  }, []);
+  }, [dispatch]);
 
   const handleCancelFilter = useCallback(() => {
     dispatch({

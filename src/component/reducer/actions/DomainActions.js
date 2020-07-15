@@ -1,11 +1,10 @@
 import { extent } from 'd3';
 import { produce } from 'immer';
+import { xyIntegral } from 'ml-spectra-processing';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
 import { DISPLAYER_MODE } from '../core/Constants';
-import { xyIntegral } from 'ml-spectra-processing';
-import { object } from 'prop-types';
 
 function getActiveData(draft) {
   if (draft.activeTab) {
