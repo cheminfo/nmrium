@@ -35,6 +35,7 @@ const MultiplicityTree = ({
     activeSpectrum,
     showMultiplicityTrees,
     editRangeModalMeta,
+    width,
   } = useChartData();
   const highlight = useHighlight([highlightID]);
 
@@ -51,6 +52,7 @@ const MultiplicityTree = ({
     levelHeight: 0,
   });
   const [drawInFullRange, setDrawInFullRange] = useState(false);
+  const [showLabels, setShowLabels] = useState(false);
 
   useEffect(() => {
     const _drawInFullRange = !checkMultiplicity(signal.multiplicity, ['m']);
@@ -78,6 +80,14 @@ const MultiplicityTree = ({
     xRange.x1,
     xRange.x2,
   ]);
+
+  useEffect(() => {
+    if (treeProps.width / width >= 0.1) {
+      setShowLabels(true);
+    } else {
+      setShowLabels(false);
+    }
+  }, [treeProps.width, width]);
 
   const startY = useMemo(() => {
     let yMax;
@@ -194,9 +204,10 @@ const MultiplicityTree = ({
           <text
             textAnchor="middle"
             x={scaleX()(_startX) + options.label.distance}
-            y={_startYNode + treeProps.levelHeight / 2}
+            y={_startYNode + 2 * (treeProps.levelHeight / 3)}
             fontSize={options.label.fontSize}
             fill={color}
+            visibility={showLabels ? 'visible' : 'hidden'}
           >
             {ratio}
           </text>
@@ -224,6 +235,7 @@ const MultiplicityTree = ({
       options.label.distance,
       options.label.fontSize,
       scaleX,
+      showLabels,
       startY,
       treeProps.levelHeight,
     ],
@@ -271,6 +283,7 @@ const MultiplicityTree = ({
         fontSize={options.label.fontSize}
         lengthAdjust="spacing"
         fill="black"
+        visibility={showLabels ? 'visible' : 'hidden'}
       >
         {signal.multiplicity}
       </text>
@@ -327,6 +340,7 @@ const MultiplicityTree = ({
     signal.multiplicity,
     treeProps,
     options.label.fontSize,
+    showLabels,
     drawInFullRange,
     treeNodesData,
     rangeFrom,
