@@ -41,4 +41,16 @@ const addDefaultSignal = (range) => {
   });
 };
 
-export { addDefaultSignal, getPubIntegral, resetDiaIDs, unlink };
+const checkSignalKinds = (range, kinds) => {
+  return !range.signal.some(
+    (_signal) => _signal.kind === undefined || !kinds.includes(_signal.kind),
+  );
+};
+
+export {
+  addDefaultSignal,
+  checkSignalKinds,
+  getPubIntegral,
+  resetDiaIDs,
+  unlink,
+};

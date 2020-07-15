@@ -153,13 +153,11 @@ const RangesTablePanel = memo(() => {
       const _range = { ...range };
       if (signalIndex !== undefined) {
         _range.signal[signalIndex].kind = value;
-      } else {
-        _range.kind = value;
+        dispatch({
+          type: CHANGE_RANGE_DATA,
+          data: _range,
+        });
       }
-      dispatch({
-        type: CHANGE_RANGE_DATA,
-        data: _range,
-      });
     },
     [dispatch],
   );

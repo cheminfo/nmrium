@@ -209,7 +209,8 @@ const Viewer1D = () => {
       } else if (
         editRangeModalMeta &&
         editRangeModalMeta.newSignalDeltaSelectionIsEnabled &&
-        editRangeModalMeta.newSignalDeltaSelectionIsEnabled === true
+        editRangeModalMeta.newSignalDeltaSelectionIsEnabled === true &&
+        position.shiftKey
       ) {
         dispatch({
           type: SET_SELECTED_NEW_SIGNAL_DELTA,

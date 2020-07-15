@@ -39,10 +39,6 @@ const tableStyle = css`
       background-color: transparent;
       border: none;
     }
-    .unlink-button {
-      padding: 0;
-      font-size: 10px;
-    }
   }
 `;
 
@@ -138,8 +134,7 @@ const RangesTable = ({
               <FaLink style={{ fontSize: 10 }} />
             </th>
             <th>Σ</th>
-            <th>Kind (S)</th>
-            <th>Kind (R)</th>
+            <th>Kind</th>
             <th>{''}</th>
           </tr>
           {data &&

@@ -156,10 +156,9 @@ export function useHighlight(highlights) {
 
   const click = useCallback(
     (e) => {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+      e.preventDefault();
+      e.stopPropagation();
+
       if (!isActivePermanently) {
         context.dispatch({
           type: 'SET_PERMANENT',

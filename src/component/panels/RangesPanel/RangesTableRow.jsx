@@ -11,8 +11,12 @@ import {
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import { useHighlight, useHighlightData } from '../../highlight';
 import FormatNumber from '../../utility/FormatNumber';
-import { SignalKinds } from '../extra/constants/SignalsKinds';
+import {
+  SignalKinds,
+  SignalKindsToConsiderInIntegralsSum,
+} from '../extra/constants/SignalsKinds';
 import { checkMultiplicity } from '../extra/utilities/MultiplicityUtilities';
+import { checkSignalKinds } from '../extra/utilities/RangeUtilities';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;
@@ -84,9 +88,6 @@ const RangesTableRow = ({
         e.preventDefault();
         e.stopPropagation();
       }
-      // if (highlightSignal.isActivePermanently) {
-      //   highlightSignal.click();
-      // }
       onUnlink(
         getOriginal(),
         isOnRangeLevel,
@@ -183,7 +184,7 @@ const RangesTableRow = ({
       </td>
       {getShowPreference('showRelative') ? (
         <td {...rowSpanTags} {...highlightRange.onClick}>
-          {rowData.kind === 'signal'
+          {checkSignalKinds(rowData, SignalKindsToConsiderInIntegralsSum)
             ? applyFormatPreference('relativeFormat', rowData.integral)
             : applyFormatPreference(
                 'relativeFormat',
@@ -321,16 +322,6 @@ const RangesTableRow = ({
           }}
           data={SignalKinds}
           value={rowData.tableMetaInfo.signal.kind}
-          style={selectBoxStyle}
-        />
-      </td>
-      <td {...rowSpanTags}>
-        <SelectUncontrolled
-          onChange={(value) => {
-            onChangeKind(value, getOriginal());
-          }}
-          data={SignalKinds}
-          value={rowData.kind}
           style={selectBoxStyle}
         />
       </td>

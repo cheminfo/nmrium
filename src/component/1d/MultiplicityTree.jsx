@@ -34,6 +34,7 @@ const MultiplicityTree = ({
     data: spectraData,
     activeSpectrum,
     showMultiplicityTrees,
+    editRangeModalMeta,
   } = useChartData();
   const highlight = useHighlight([highlightID]);
 
@@ -341,7 +342,16 @@ const MultiplicityTree = ({
           : styles
       }
       {...highlight.onHover}
-      {...highlight.onClick}
+      {...{
+        onClick:
+          editRangeModalMeta && editRangeModalMeta.rangeInEdition
+            ? null
+            : (e) => {
+                if (e.shiftKey) {
+                  highlight.click(e);
+                }
+              },
+      }}
     >
       {multiplicityTree}
     </g>

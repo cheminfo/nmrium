@@ -1,11 +1,13 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
-import { useCallback } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
+import { SignalKindsToConsiderInIntegralsSum } from '../panels/extra/constants/SignalsKinds';
+import { checkSignalKinds } from '../panels/extra/utilities/RangeUtilities';
 import { DELETE_RANGE, RESIZE_RANGE } from '../reducer/types/Types';
 
 import MultiplicityTree from './MultiplicityTree';
@@ -49,12 +51,20 @@ const stylesHighlighted = css`
 `;
 
 const Range = ({ rangeData }) => {
-  const { id, from, to, integral, kind, signal } = rangeData;
+  const { id, from, to, integral, signal } = rangeData;
   const highlightRange = useHighlight([id]);
 
   const { scaleX } = useScale();
   const { editRangeModalMeta } = useChartData();
   const dispatch = useDispatch();
+
+  const [reduceOpacity, setReduceOpacity] = useState(false);
+
+  useEffect(() => {
+    setReduceOpacity(
+      !checkSignalKinds(rangeData, SignalKindsToConsiderInIntegralsSum),
+    );
+  }, [rangeData]);
 
   const deleteRange = useCallback(() => {
     dispatch({ type: DELETE_RANGE, rangeID: id });
@@ -103,7 +113,16 @@ const Range = ({ rangeData }) => {
       }
       key={id}
       {...highlightRange.onHover}
-      {...highlightRange.onClick}
+      {...{
+        onClick:
+          editRangeModalMeta && editRangeModalMeta.rangeInEdition
+            ? null
+            : (e) => {
+                if (e.shiftKey) {
+                  highlightRange.click(e);
+                }
+              },
+      }}
     >
       <g transform={`translate(${scaleX()(to)},10)`}>
         <rect
@@ -113,7 +132,7 @@ const Range = ({ rangeData }) => {
           className="range-area"
           fill="green"
           fillOpacity={
-            (kind && kind === 'signal') ||
+            !reduceOpacity ||
             highlightRange.isActive ||
             highlightRange.isActivePermanently
               ? 1
@@ -127,7 +146,7 @@ const Range = ({ rangeData }) => {
           fontSize="10"
           fill="red"
           fillOpacity={
-            (kind && kind === 'signal') ||
+            !reduceOpacity ||
             highlightRange.isActive ||
             highlightRange.isActivePermanently
               ? 1
