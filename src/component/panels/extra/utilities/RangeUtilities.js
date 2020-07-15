@@ -1,12 +1,14 @@
+const getDiaIDs = (range) => {
+  return [].concat(
+    range.diaID || [],
+    range.signal
+      ? range.signal.map((_signal) => _signal.diaID || []).flat()
+      : [],
+  );
+};
+
 const getPubIntegral = (range) => {
-  return []
-    .concat(
-      range.diaID || [],
-      range.signal
-        ? range.signal.map((_signal) => _signal.diaID || []).flat()
-        : [],
-    )
-    .filter((_diaID, i, _diaIDs) => _diaIDs.indexOf(_diaID) === i).length;
+  return getDiaIDs(range).length;
 };
 
 const resetDiaIDs = (range) => {
@@ -50,6 +52,7 @@ const checkSignalKinds = (range, kinds) => {
 export {
   addDefaultSignal,
   checkSignalKinds,
+  getDiaIDs,
   getPubIntegral,
   resetDiaIDs,
   unlink,
