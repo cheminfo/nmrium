@@ -57,6 +57,7 @@ export function BrushTracker({
 
   const clickHandler = useCallback(
     (e) => {
+      e.persist();
       const timeStamp = e.timeStamp;
       const boundingRect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - boundingRect.x;
