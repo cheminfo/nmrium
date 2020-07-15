@@ -5,7 +5,7 @@ import { memo, useEffect, useCallback } from 'react';
 
 import {
   hasCouplingConstant,
-  translateMultiplicity,
+  translateMultiplet,
 } from '../../../panels/extra/utilities/MultiplicityUtilities';
 import Button from '../elements/Button';
 
@@ -55,7 +55,7 @@ const SignalFormTab = memo(() => {
         } else {
           coupling = { multiplicity: _multiplicity, coupling: '' };
         }
-        coupling.multiplicity = translateMultiplicity(coupling.multiplicity);
+        coupling.multiplicity = translateMultiplet(coupling.multiplicity);
         couplings.push(coupling);
       });
       setFieldValue('selectedSignalCouplings', couplings);
@@ -67,9 +67,7 @@ const SignalFormTab = memo(() => {
       if (!hasCouplingConstant(newCoupling.multiplicity)) {
         newCoupling.coupling = '';
       }
-      newCoupling.multiplicity = translateMultiplicity(
-        newCoupling.multiplicity,
-      );
+      newCoupling.multiplicity = translateMultiplet(newCoupling.multiplicity);
       const _signals = values.signals.slice();
       const _signal = { ..._signals[values.selectedSignalIndex] };
 
@@ -94,7 +92,7 @@ const SignalFormTab = memo(() => {
       if (!hasCouplingConstant(editedCoupling.multiplicity)) {
         editedCoupling.coupling = '';
       }
-      editedCoupling.multiplicity = translateMultiplicity(
+      editedCoupling.multiplicity = translateMultiplet(
         editedCoupling.multiplicity,
       );
       const _signals = values.signals.slice();
@@ -141,9 +139,7 @@ const SignalFormTab = memo(() => {
 
   const onDeleteCoupling = useCallback(
     (index, oldCoupling) => {
-      oldCoupling.multiplicity = translateMultiplicity(
-        oldCoupling.multiplicity,
-      );
+      oldCoupling.multiplicity = translateMultiplet(oldCoupling.multiplicity);
       const _signals = values.signals.slice();
       const _signal = { ..._signals[values.selectedSignalIndex] };
 
