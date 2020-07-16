@@ -81,7 +81,7 @@ const InformationPanel = memo(() => {
               whiteSpace: 'pre',
             }}
           >
-            {information[row.original]}
+            {information[row.original].toString()}
           </p>
         ),
       },

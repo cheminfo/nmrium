@@ -64,7 +64,7 @@ function getDomain(data) {
       if (d.isVisibleInDomain) {
         const _extent = extent(d.y);
         yDomains[d.id] = _extent;
-        if (d.integrals) {
+        if (d.integrals.values && d.integrals.values.length > 0) {
           const values = d.integrals.values;
           const { from, to } = values[0];
           const { x, y } = d;

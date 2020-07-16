@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -43,11 +43,17 @@ const Spinner = ({ isLoading = true }) => {
   const { data } = useChartData();
   const [checkEmpty, startCheckEmpty] = useState(false);
 
-  if (!isLoading) {
-    setTimeout(() => {
-      startCheckEmpty(true);
-    }, 500);
-  }
+  useEffect(() => {
+    let timeour = null;
+    if (!isLoading) {
+      timeour = setTimeout(() => {
+        startCheckEmpty(true);
+      }, 500);
+    }
+    return () => {
+      clearTimeout(timeour);
+    };
+  }, [isLoading]);
 
   return (
     <Fragment>
