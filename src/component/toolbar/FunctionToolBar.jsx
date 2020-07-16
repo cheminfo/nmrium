@@ -214,25 +214,26 @@ const FunctionToolBar = ({ defaultValue }) => {
           </button>
         )}
 
-        {isButtonVisible('hidePeakTool') && (
-          <ToggleButton
-            key={options.peakPicking.id}
-            value={options.peakPicking.id}
-            className="ci-icon-nmr-peak-picking"
-            style={styles.icon}
-            isVisible={
-              activeSpectrum &&
-              selectedSpectrumInfo &&
-              !selectedSpectrumInfo.info.isFid
-            }
-          >
-            <ToolTip
-              title={`${options.peakPicking.label} ( Press p )`}
-              popupPlacement="right"
-              offset={{ x: 10, y: 0 }}
-            />
-          </ToggleButton>
-        )}
+        {displayerMode === DISPLAYER_MODE.DM_1D &&
+          isButtonVisible('hidePeakTool') && (
+            <ToggleButton
+              key={options.peakPicking.id}
+              value={options.peakPicking.id}
+              className="ci-icon-nmr-peak-picking"
+              style={styles.icon}
+              isVisible={
+                activeSpectrum &&
+                selectedSpectrumInfo &&
+                !selectedSpectrumInfo.info.isFid
+              }
+            >
+              <ToolTip
+                title={`${options.peakPicking.label} ( Press p )`}
+                popupPlacement="right"
+                offset={{ x: 10, y: 0 }}
+              />
+            </ToggleButton>
+          )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideIntegralTool') && (
             <ToggleButton
@@ -280,87 +281,92 @@ const FunctionToolBar = ({ defaultValue }) => {
             </ToolTip>
           </ToggleButton>
         )}
-        {isButtonVisible('hideAutoRangesTool') && (
-          <ToggleButton
-            key={options.rangesPicking.id}
-            value={options.rangesPicking.id}
-            className="ci-icon-nmr-range-picking"
-            style={styles.icon}
-            isVisible={
-              activeSpectrum &&
-              selectedSpectrumInfo &&
-              !selectedSpectrumInfo.info.isFid
-            }
-          >
-            <ToolTip
-              title={options.rangesPicking.label}
-              popupPlacement="right"
-              offset={{ x: 10, y: 0 }}
-            />
-          </ToggleButton>
-        )}
-        {isButtonVisible('hideZeroFillingTool') && (
-          <ToggleButton
-            key={options.zeroFilling.id}
-            value={options.zeroFilling.id}
-            className="ci-icon-nmr-zero-filling"
-            style={styles.icon}
-            isVisible={
-              selectedSpectrumInfo &&
-              Filters.zeroFilling.isApplicable(selectedSpectrumInfo)
-            }
-          >
-            <ToolTip
-              title={options.zeroFilling.label}
-              popupPlacement="right"
-              offset={{ x: 10, y: 0 }}
-            />
-          </ToggleButton>
-        )}
-        {isButtonVisible('hidePhaseCorrectionTool') && (
-          <ToggleButton
-            key={options.phaseCorrection.id}
-            value={options.phaseCorrection.id}
-            className="ci-icon-nmr-phase-correction"
-            style={styles.icon}
-            isVisible={
-              activeSpectrum &&
-              selectedSpectrumInfo &&
-              Filters.phaseCorrection.isApplicable(selectedSpectrumInfo)
-            }
-          >
-            <ToolTip
-              title={options.phaseCorrection.label}
-              popupPlacement="right"
-              offset={{ x: 10, y: 0 }}
-            />
-          </ToggleButton>
-        )}
-
-        {isButtonVisible('hideBaseLineCorrectionTool') && (
-          <ToggleButton
-            key={options.baseLineCorrection.id}
-            value={options.baseLineCorrection.id}
-            className="ci-icon-nmr-base-line-correction"
-            style={styles.icon}
-            isVisible={
-              activeSpectrum &&
-              selectedSpectrumInfo &&
-              Filters.baselineCorrection.isApplicable(selectedSpectrumInfo)
-            }
-          >
-            <ToolTip
-              title={options.baseLineCorrection.label}
-              popupPlacement="right"
-              offset={{ x: 10, y: 0 }}
+        {displayerMode === DISPLAYER_MODE.DM_1D &&
+          isButtonVisible('hideAutoRangesTool') && (
+            <ToggleButton
+              key={options.rangesPicking.id}
+              value={options.rangesPicking.id}
+              className="ci-icon-nmr-range-picking"
+              style={styles.icon}
+              isVisible={
+                activeSpectrum &&
+                selectedSpectrumInfo &&
+                !selectedSpectrumInfo.info.isFid
+              }
             >
-              BLC
-            </ToolTip>
-          </ToggleButton>
-        )}
+              <ToolTip
+                title={options.rangesPicking.label}
+                popupPlacement="right"
+                offset={{ x: 10, y: 0 }}
+              />
+            </ToggleButton>
+          )}
+        {displayerMode === DISPLAYER_MODE.DM_1D &&
+          isButtonVisible('hideZeroFillingTool') && (
+            <ToggleButton
+              key={options.zeroFilling.id}
+              value={options.zeroFilling.id}
+              className="ci-icon-nmr-zero-filling"
+              style={styles.icon}
+              isVisible={
+                selectedSpectrumInfo &&
+                Filters.zeroFilling.isApplicable(selectedSpectrumInfo)
+              }
+            >
+              <ToolTip
+                title={options.zeroFilling.label}
+                popupPlacement="right"
+                offset={{ x: 10, y: 0 }}
+              />
+            </ToggleButton>
+          )}
+        {displayerMode === DISPLAYER_MODE.DM_1D &&
+          isButtonVisible('hidePhaseCorrectionTool') && (
+            <ToggleButton
+              key={options.phaseCorrection.id}
+              value={options.phaseCorrection.id}
+              className="ci-icon-nmr-phase-correction"
+              style={styles.icon}
+              isVisible={
+                activeSpectrum &&
+                selectedSpectrumInfo &&
+                Filters.phaseCorrection.isApplicable(selectedSpectrumInfo)
+              }
+            >
+              <ToolTip
+                title={options.phaseCorrection.label}
+                popupPlacement="right"
+                offset={{ x: 10, y: 0 }}
+              />
+            </ToggleButton>
+          )}
+
+        {displayerMode === DISPLAYER_MODE.DM_1D &&
+          isButtonVisible('hideBaseLineCorrectionTool') && (
+            <ToggleButton
+              key={options.baseLineCorrection.id}
+              value={options.baseLineCorrection.id}
+              className="ci-icon-nmr-base-line-correction"
+              style={styles.icon}
+              isVisible={
+                activeSpectrum &&
+                selectedSpectrumInfo &&
+                Filters.baselineCorrection.isApplicable(selectedSpectrumInfo)
+              }
+            >
+              <ToolTip
+                title={options.baseLineCorrection.label}
+                popupPlacement="right"
+                offset={{ x: 10, y: 0 }}
+              >
+                BLC
+              </ToolTip>
+            </ToggleButton>
+          )}
       </ToggleButtonGroup>
 
-      {isButtonVisible('hideFFTTool') &&
+      {displayerMode === DISPLAYER_MODE.DM_1D &&
+        isButtonVisible('hideFFTTool') &&
         selectedSpectrumInfo &&
         Filters.fft.isApplicable(selectedSpectrumInfo) && (
           <button

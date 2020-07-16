@@ -109,7 +109,7 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
         {...highlight.onHover}
       >
         <rect
-          x={scaleX()(xBoundary[1])}
+          x={`${scaleX()(xBoundary[1])}`}
           y="0"
           width={`${scaleX()(xBoundary[0]) - scaleX()(xBoundary[1])}`}
           height={height - margin.bottom}
