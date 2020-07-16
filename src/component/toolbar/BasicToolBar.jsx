@@ -20,6 +20,7 @@ import MenuButton from '../elements/MenuButton';
 import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
+import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import {
   CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
@@ -68,7 +69,7 @@ const menuButton = css`
 const BasicToolBar = ({ isViewButtonVisible = true }) => {
   const dispatch = useDispatch();
   const preferences = usePreferences();
-  const { data, activeSpectrum, verticalAlign } = useChartData();
+  const { data, activeSpectrum, verticalAlign, displayerMode } = useChartData();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
   const [spectrumsCount, setSpectrumsCount] = useState(0);
   const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
@@ -259,7 +260,8 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
         </MenuButton>
       )}
 
-      {isButtonVisible('hideSpectraStackAlignments') &&
+      {displayerMode === DISPLAYER_MODE.DM_1D &&
+        isButtonVisible('hideSpectraStackAlignments') &&
         isViewButtonVisible &&
         spectrumsCount > 1 && (
           <button
@@ -278,7 +280,8 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
             </ToolTip>
           </button>
         )}
-      {isButtonVisible('hideRealImaginary') &&
+      {displayerMode === DISPLAYER_MODE.DM_1D &&
+        isButtonVisible('hideRealImaginary') &&
         selectedSpectrumInfo &&
         selectedSpectrumInfo.isComplex && (
           <button
@@ -295,20 +298,21 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
             />
           </button>
         )}
-      {isButtonVisible('hideSpectraCenterAlignments') && (
-        <button
-          css={styles}
-          type="button"
-          onClick={alignSpectrumsVerticallyHandler}
-        >
-          <ToolTip
-            title={!verticalAlign.flag ? 'Align Center' : 'Bottom Align'}
-            popupPlacement="right"
+      {displayerMode === DISPLAYER_MODE.DM_1D &&
+        isButtonVisible('hideSpectraCenterAlignments') && (
+          <button
+            css={styles}
+            type="button"
+            onClick={alignSpectrumsVerticallyHandler}
           >
-            {!verticalAlign.flag ? 'CA' : 'BA'}
-          </ToolTip>
-        </button>
-      )}
+            <ToolTip
+              title={!verticalAlign.flag ? 'Align Center' : 'Bottom Align'}
+              popupPlacement="right"
+            >
+              {!verticalAlign.flag ? 'CA' : 'BA'}
+            </ToolTip>
+          </button>
+        )}
     </Fragment>
   );
 };
