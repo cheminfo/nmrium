@@ -159,7 +159,10 @@ const MoleculePanel = memo(() => {
         ? element === atom.atomLabel // take always oclID if atom type is same as element of activeTab
           ? { oclIDs: [atom.oclID], nbAtoms: atom.nbAtoms }
           : element === 'H' // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
-          ? { oclIDs: atom.hydrogenOCLIDs, nbAtoms: atom.nbHydrogens }
+          ? {
+              oclIDs: atom.hydrogenOCLIDs,
+              nbAtoms: atom.nbAtoms * atom.nbHydrogens,
+            }
           : { oclIDs: [], nbAtoms: 0 }
         : { oclIDs: [], nbAtoms: 0 };
     },
