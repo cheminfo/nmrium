@@ -92,7 +92,8 @@ const AddSignalFormTab = memo(() => {
       <div>
         <p>Add delta value of new signal (ppm): </p>
         <p className="infoText">
-          (You can click within the range in spectrum or type it in manually)
+          (You can do mouse click (left) + shift key within the range in
+          spectrum or type it in manually)
         </p>
         <Input
           name="newSignalDelta"

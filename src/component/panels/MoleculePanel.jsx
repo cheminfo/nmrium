@@ -159,7 +159,10 @@ const MoleculePanel = memo(() => {
         ? element === atom.atomLabel // take always oclID if atom type is same as element of activeTab
           ? { oclIDs: [atom.oclID], nbAtoms: atom.nbAtoms }
           : element === 'H' // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
-          ? { oclIDs: atom.hydrogenOCLIDs, nbAtoms: atom.nbHydrogens }
+          ? {
+              oclIDs: atom.hydrogenOCLIDs,
+              nbAtoms: atom.nbAtoms * atom.nbHydrogens,
+            }
           : { oclIDs: [], nbAtoms: 0 }
         : { oclIDs: [], nbAtoms: 0 };
     },
@@ -199,24 +202,36 @@ const MoleculePanel = memo(() => {
   }, [assignments]);
 
   const toggleAssignment = useCallback(
-    (diaID, oclIDs) => {
+    (diaID, atomInformation) => {
       // 1. one atom can only be assigned to one range/signal
       // 2. check whether an atom is already assigned to a range to allow toggling the assignment
       if (
-        assignedDiaIDs.some((_oclID) => oclIDs.includes(_oclID)) &&
-        !diaID.some((_oclID) => oclIDs.includes(_oclID))
+        assignedDiaIDs.some((_oclID) =>
+          atomInformation.oclIDs.includes(_oclID),
+        ) &&
+        !diaID.some((_oclID) => atomInformation.oclIDs.includes(_oclID))
       ) {
         alert.info('Atom is already assigned to another signal!');
         return diaID;
       }
-      const _diaID = diaID ? diaID.slice() : [];
-      oclIDs.forEach((_oclID) => {
-        if (_diaID.includes(_oclID)) {
-          _diaID.splice(_diaID.indexOf(_oclID), 1);
+      let _diaID = diaID ? diaID.slice() : [];
+      if (atomInformation.oclIDs.length === 1) {
+        if (_diaID.includes(atomInformation.oclIDs[0])) {
+          _diaID = _diaID.filter((_id) => _id !== atomInformation.oclIDs[0]);
         } else {
-          _diaID.push(_oclID);
+          for (let i = 0; i < atomInformation.nbAtoms; i++) {
+            _diaID.push(atomInformation.oclIDs[0]);
+          }
         }
-      });
+      } else if (atomInformation.oclIDs.length > 1) {
+        atomInformation.oclIDs.forEach((_oclID) => {
+          if (_diaID.includes(_oclID)) {
+            _diaID = _diaID.filter((_id) => _id !== _oclID);
+          } else {
+            _diaID.push(_oclID);
+          }
+        });
+      }
 
       return _diaID;
     },
@@ -229,8 +244,8 @@ const MoleculePanel = memo(() => {
         highlightData.highlight.highlightedPermanently &&
         highlightData.highlight.highlightedPermanently.length > 0
       ) {
-        const oclIDs = extractFromAtom(atom).oclIDs;
-        if (oclIDs.length > 0) {
+        const atomInformation = extractFromAtom(atom);
+        if (atomInformation.nbAtoms > 0) {
           // Detect range and signal index within permanent highlights (assignment mode)
           // via searching for the format "range.id" + "_" + "signalIndex".
           // Also, here, we expect that the permanent highlights contain only one signal,
@@ -260,13 +275,16 @@ const MoleculePanel = memo(() => {
           // determine the level of setting the diaID array (range vs. signal level) and save there
           const _range = { ...range };
           if (signalIndex === undefined) {
-            _range.diaID = toggleAssignment(_range.diaID, oclIDs);
+            _range.diaID = toggleAssignment(
+              _range.diaID || [],
+              atomInformation,
+            );
           } else if (range.signal && range.signal[signalIndex]) {
             _range.signal[signalIndex] = {
               ..._range.signal[signalIndex],
               diaID: toggleAssignment(
                 _range.signal[signalIndex].diaID || [],
-                oclIDs,
+                atomInformation,
               ),
             };
           }

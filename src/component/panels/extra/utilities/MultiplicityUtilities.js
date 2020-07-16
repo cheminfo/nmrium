@@ -33,15 +33,18 @@ const checkMultiplicity = (multiplicity, rejected = []) => {
     .find((_multiplet) => !checkMultiplet(_multiplet, rejected));
 };
 
-const translateMultiplicity = (multiplicity) => {
-  return multiplicity.length === 1
-    ? Multiplets.find((_multiplet) => _multiplet.value === multiplicity).label
-    : Multiplets.find((_multiplet) => _multiplet.label === multiplicity).value;
+const translateMultiplet = (multiplet) => {
+  return multiplet.length === 1
+    ? Multiplets.find((_multiplet) => _multiplet.value === multiplet).label
+    : Multiplets.find((_multiplet) => _multiplet.label === multiplet).value;
 };
 
-const hasCouplingConstant = (multiplicity) => {
+const hasCouplingConstant = (multiplet) => {
+  if (multiplet.length > 1) {
+    multiplet = translateMultiplet(multiplet);
+  }
   // with the pre-set rejected ones, we check the given multiplicity for the need of having a coupling constant (massive and singlet do not)
-  return checkMultiplicity(multiplicity, ['m', 's']);
+  return checkMultiplicity(multiplet, ['m', 's']);
 };
 
 const getPascal = (n, spin) => {
@@ -70,5 +73,5 @@ export {
   getMultiplicityNumber,
   getPascal,
   hasCouplingConstant,
-  translateMultiplicity,
+  translateMultiplet,
 };

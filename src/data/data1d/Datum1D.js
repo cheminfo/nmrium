@@ -3,6 +3,8 @@
 import max from 'ml-array-max';
 import { xyIntegration } from 'ml-spectra-processing';
 
+import { SignalKindsToConsiderInIntegralsSum } from '../../component/panels/extra/constants/SignalsKinds';
+import { checkSignalKinds } from '../../component/panels/extra/utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 
 import { FiltersManager } from './FiltersManager';
@@ -194,12 +196,17 @@ export class Datum1D {
     if (this.integrals.options.sum === undefined) {
       this.integrals.options = { ...this.integrals.options, sum: 100 };
     }
-
+    const countingCondition = (integral) => {
+      return (
+        integral.kind &&
+        SignalKindsToConsiderInIntegralsSum.includes(integral.kind)
+      );
+    };
     this.integrals.values = this.updateRelatives(
       this.integrals.values.slice(),
       this.integrals.options.sum,
       'integral',
-      ['signal'],
+      countingCondition,
     );
   }
 
@@ -208,19 +215,25 @@ export class Datum1D {
     if (this.ranges.options.sum === undefined) {
       this.ranges.options = { ...this.ranges.options, sum: 100 };
     }
-
+    const countingCondition = (range) => {
+      return (
+        range.signal &&
+        checkSignalKinds(range, SignalKindsToConsiderInIntegralsSum)
+      );
+    };
     this.ranges.values = this.updateRelatives(
       this.ranges.values.slice(),
       this.ranges.options.sum,
       'integral',
-      ['signal'],
+      countingCondition,
     );
   }
 
   // this method is a helper method and can be moved and imported from somewhere else if wished
-  updateRelatives(values, sum, storageKey, kinds) {
+  updateRelatives(values, sum, storageKey, countingCondition) {
     const currentSum = values.reduce((previous, current) => {
-      return current.kind && kinds.includes(current.kind)
+      return countingCondition !== undefined &&
+        countingCondition(current) === true
         ? (previous += current.absolute)
         : previous;
     }, 0);
@@ -274,7 +287,7 @@ export class Datum1D {
         ...range,
         id: generateID(),
         absolute: this.getIntegration(range.from, range.to),
-        kind: 'signal',
+        // kind: 'signal',
         signal: range.signal.map((_signal) => {
           return { kind: 'signal', ..._signal };
         }),
@@ -418,7 +431,6 @@ export class Datum1D {
     );
   }
 
-  // eslint-disable-next-line no-unused-vars
   addRange(from, to) {
     this.ranges = Object.assign({}, this.ranges);
     this.ranges.values = this.ranges.values.slice();
@@ -430,12 +442,11 @@ export class Datum1D {
         to,
         absolute: this.getIntegration(from, to), // the real value,
         signal: [this.detectSignal(from, to)],
-        kind: 'signal',
+        // kind: 'signal',
       };
       this.ranges.values.push(range);
       this.updateIntegralRanges();
     } catch (e) {
-      // navigator.clipboard.writeText(JSON.stringify(data, undefined, 2));
       throw new Error('Could not calculate the multiplicity');
     }
   }

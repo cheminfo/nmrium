@@ -1,4 +1,4 @@
-export const SignalKinds = [
+const SignalKinds = [
   {
     key: 'signal',
     label: 'Signal',
@@ -40,3 +40,7 @@ export const SignalKinds = [
     value: 'p3',
   },
 ];
+
+const SignalKindsToConsiderInIntegralsSum = ['signal'];
+
+export { SignalKinds, SignalKindsToConsiderInIntegralsSum };
