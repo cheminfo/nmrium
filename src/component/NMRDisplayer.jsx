@@ -23,6 +23,7 @@ import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
 import ErrorBoundary from './ErrorBoundary';
 import KeyListener from './EventsTrackers/keysListener';
+import helpData from './config/help.json';
 import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { PreferencesProvider } from './context/PreferencesContext';
@@ -108,18 +109,10 @@ const NMRDisplayer = memo((props) => {
   //               // isResizeEventStart,
   //             // }
 
-  const data = {
-    zoom: {
-      text:
-        'On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now sussex merely you. It possible no husbands jennings ye offended packages pleasant he. Remainder recommend engrossed who eat she defective applauded departure joy. Get dissimilar not introduced day her apartments. Fully as taste he mr do smile abode every. Luckily offered article led lasting country minutes nor old. Happen people things oh is oppose up parish effect. Law handsome old outweigh humoured far appetite. ',
-      filePath: './help/README.md',
-    },
-  };
-
   return (
     <ErrorBoundary>
       <PreferencesProvider value={preferences}>
-        <HelpProvider data={data} wrapperID="main-wrapper">
+        <HelpProvider data={helpData} wrapperID="main-wrapper">
           <AlertProvider template={AlertTemplate} {...alertOptions}>
             <DispatchProvider value={dispatchMiddleWare}>
               <ChartDataProvider value={{ ...state, isResizeEventStart }}>
