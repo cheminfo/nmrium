@@ -187,7 +187,7 @@ const FunctionToolBar = ({ defaultValue }) => {
             key={options.zoom.id}
             value={options.zoom.id}
             {...help.onHover}
-            helpID="zoom"
+            helpID="zoomIn"
           >
             <ToolTip
               title={`${options.zoom.label} ( Press z )`}
@@ -226,6 +226,8 @@ const FunctionToolBar = ({ defaultValue }) => {
                 selectedSpectrumInfo &&
                 !selectedSpectrumInfo.info.isFid
               }
+              {...help.onHover}
+              helpID="peakPicking"
             >
               <ToolTip
                 title={`${options.peakPicking.label} ( Press p )`}
