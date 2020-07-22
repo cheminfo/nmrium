@@ -9,6 +9,7 @@ import {
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
+import { useHelp } from '../elements/Help';
 import { useModal, positions } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import GeneralSettings from '../modal/GeneralSettings';
@@ -75,10 +76,19 @@ export const Button = ({
   className,
   onClick,
   children,
+  helpID = '',
 }) => {
+  const help = useHelp();
+
   return (
     <ToolTip title={title} popupPlacement={popupPlacement} style={style}>
-      <button type="button" onClick={onClick} className={className}>
+      <button
+        type="button"
+        onClick={onClick}
+        className={className}
+        {...help.onHover}
+        data-helpid={helpID}
+      >
         {children}
       </button>
     </ToolTip>
@@ -155,6 +165,7 @@ const Header = ({ isFullscreen, onMaximize }) => {
             style={{ mainContainer: { height: 'auto' } }}
             onClick={onMaximize}
             className="windowButton"
+            helpID="fullScreen"
           >
             <FaRegWindowMaximize />
           </Button>

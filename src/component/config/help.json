@@ -6,5 +6,9 @@
     "peakPicking": {
         "text": "peak picking tool",
         "filePath": "./help/peakPicking.md"
+    },
+    "fullScreen": {
+        "text": "Full Screen mode",
+        "filePath": "./help/fullScreen.md"
     }
 }
