@@ -35,6 +35,7 @@ import {
   exportAsSVG,
 } from '../utility/Export';
 
+import { HighlightSignalConcatenation } from './extra/constants/ConcatenationStrings';
 import { getPubIntegral, unlink } from './extra/utilities/RangeUtilities';
 
 const panelContainerStyle = css`
@@ -133,9 +134,52 @@ const MoleculePanel = memo(() => {
     activeSpectrum,
     molecules,
     activeTab,
+    assignmentMeta, // override onClick methods in each case
   } = useChartData();
 
   const highlightData = useHighlightData();
+  const [elements, setElements] = useState([]);
+
+  useEffect(() => {
+    if (activeTab) {
+      const split = activeTab.split(',');
+      if (split.length === 1) {
+        setElements([activeTab.replace(/[0-9]/g, '')]);
+      } else if (split.length === 2) {
+        setElements(split.map((nucleus) => nucleus.replace(/[0-9]/g, '')));
+      }
+    } else {
+      setElements([]);
+    }
+  }, [activeTab]);
+
+  const extractFromAtom = useCallback(
+    (atom) => {
+      if (
+        assignmentMeta.activeAssignmentAxis !== undefined &&
+        elements &&
+        Object.keys(atom).length > 0
+      ) {
+        console.log(assignmentMeta.activeAssignmentAxis);
+        const dim = assignmentMeta.activeAssignmentAxis === 'X' ? 0 : 1;
+        console.log(dim);
+        if (elements[dim] === atom.atomLabel) {
+          // take always oclID if atom type is same as element of activeTab)
+          return { oclIDs: [atom.oclID], nbAtoms: atom.nbAtoms };
+        }
+        if (elements[dim] === 'H') {
+          // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
+          return {
+            oclIDs: atom.hydrogenOCLIDs,
+            nbAtoms: atom.nbAtoms * atom.nbHydrogens,
+          };
+        }
+      }
+
+      return { oclIDs: [], nbAtoms: 0 };
+    },
+    [assignmentMeta, elements],
+  );
 
   const rangesData = useMemo(() => {
     const _data =
@@ -148,26 +192,6 @@ const MoleculePanel = memo(() => {
     }
     return [];
   }, [activeSpectrum, spectrumData]);
-
-  const element = useMemo(() => activeTab && activeTab.replace(/[0-9]/g, ''), [
-    activeTab,
-  ]);
-
-  const extractFromAtom = useCallback(
-    (atom) => {
-      return element && Object.keys(atom).length > 0
-        ? element === atom.atomLabel // take always oclID if atom type is same as element of activeTab
-          ? { oclIDs: [atom.oclID], nbAtoms: atom.nbAtoms }
-          : element === 'H' // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
-          ? {
-              oclIDs: atom.hydrogenOCLIDs,
-              nbAtoms: atom.nbAtoms * atom.nbHydrogens,
-            }
-          : { oclIDs: [], nbAtoms: 0 }
-        : { oclIDs: [], nbAtoms: 0 };
-    },
-    [element],
-  );
 
   const assignments = useMemo(() => {
     return rangesData.map((_range) => {
@@ -245,9 +269,12 @@ const MoleculePanel = memo(() => {
         highlightData.highlight.highlightedPermanently.length > 0
       ) {
         const atomInformation = extractFromAtom(atom);
+        console.log('---clickOnAtom---');
+        console.log(atom);
+        console.log(atomInformation);
         if (atomInformation.nbAtoms > 0) {
           // Detect range and signal index within permanent highlights (assignment mode)
-          // via searching for the format "range.id" + "_" + "signalIndex".
+          // via searching for the format "range.id" + ${HighlightSignalConcatenation} + "signalIndex".
           // Also, here, we expect that the permanent highlights contain only one signal,
           // if not the first is taken in this search.
           let range, split, signalIndex, id;
@@ -260,7 +287,7 @@ const MoleculePanel = memo(() => {
               j++
             ) {
               split = highlightData.highlight.highlightedPermanently[j].split(
-                '_',
+                HighlightSignalConcatenation,
               );
               id = split[0];
               signalIndex = split[1];
@@ -310,17 +337,22 @@ const MoleculePanel = memo(() => {
   const currentDiaIDsToHighlight = useMemo(() => {
     // don't highlight assigned atoms on range level when hovering over signals
     const rangeIDs = highlightData.highlight.highlighted.filter(
-      (_highlighted) => _highlighted.split('_').length === 1,
+      (_highlighted) =>
+        _highlighted.split(HighlightSignalConcatenation).length === 1,
     );
     const signalIDs = highlightData.highlight.highlighted.filter(
-      (_highlighted) => _highlighted.split('_').length === 2,
+      (_highlighted) =>
+        _highlighted.split(HighlightSignalConcatenation).length === 2,
     );
     const ignoredRangeDiaIDs = rangeIDs.filter((_rangeID) =>
-      signalIDs.some((_signalID) => _signalID.split('_')[0] === _rangeID),
+      signalIDs.some(
+        (_signalID) =>
+          _signalID.split(HighlightSignalConcatenation)[0] === _rangeID,
+      ),
     );
     return highlightData.highlight.highlighted
       .map((_highlighted) => {
-        let splitHighlight = _highlighted.split('_');
+        let splitHighlight = _highlighted.split(HighlightSignalConcatenation);
         if (splitHighlight.length < 1 || splitHighlight.length > 2) {
           return null;
         }
@@ -335,7 +367,8 @@ const MoleculePanel = memo(() => {
               } else if (splitHighlight.length === 2) {
                 return _range.diaID.signal.find(
                   (_signal) =>
-                    `${_range.rangeID}_${_signal.signalIndex}` === _highlighted,
+                    `${_range.rangeID}${HighlightSignalConcatenation}${_signal.signalIndex}` ===
+                    _highlighted,
                 ).diaID;
               }
             }
@@ -394,7 +427,7 @@ const MoleculePanel = memo(() => {
                   oclIDs.some((_oclID) => _signal.diaID.includes(_oclID)),
               ).signalIndex;
               highlights.push(
-                `${filteredRange.rangeID}_${filteredSignalIndex}`,
+                `${filteredRange.rangeID}${HighlightSignalConcatenation}${filteredSignalIndex}`,
               );
             }
           }

@@ -122,7 +122,7 @@ const RangesTablePanel = memo(() => {
   }, [spectrumData]);
 
   const tableData = useMemo(() => {
-    const isInRange = (from, to) => {
+    const isInView = (from, to) => {
       const factor = 10000;
       to = to * factor;
       from = from * factor;
@@ -133,7 +133,7 @@ const RangesTablePanel = memo(() => {
     };
 
     const getFilteredRanges = (ranges) => {
-      return ranges.filter((range) => isInRange(range.from, range.to));
+      return ranges.filter((range) => isInView(range.from, range.to));
     };
 
     const ranges = filterIsActive ? getFilteredRanges(data) : data;
@@ -142,7 +142,7 @@ const RangesTablePanel = memo(() => {
       return {
         ...range,
         tableMetaInfo: {
-          isConstantlyHighlighted: isInRange(range.from, range.to),
+          isConstantlyHighlighted: isInView(range.from, range.to),
         },
       };
     });
@@ -225,10 +225,10 @@ const RangesTablePanel = memo(() => {
   );
 
   const deleteRangeHandler = useCallback(
-    (rowData) => {
+    (range) => {
       dispatch({
         type: DELETE_RANGE,
-        rangeID: rowData.id,
+        rangeID: range.id,
       });
     },
     [dispatch],
@@ -305,15 +305,11 @@ const RangesTablePanel = memo(() => {
     },
   ];
 
-  const yesHandler = useCallback(() => {
-    dispatch({ type: DELETE_RANGE, rangeID: null });
-  }, [dispatch]);
-
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted. Are You sure?', {
-      onYes: yesHandler,
+    modal.showConfirmDialog('All ranges will be deleted. Are You sure?', {
+      onYes: () => dispatch({ type: DELETE_RANGE }),
     });
-  }, [modal, yesHandler]);
+  }, [dispatch, modal]);
 
   const changeRangesSumHandler = useCallback(
     (value) => {

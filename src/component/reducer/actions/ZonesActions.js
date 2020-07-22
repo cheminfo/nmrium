@@ -31,11 +31,11 @@ const add2dZoneHandler = (state, action) => {
   });
 };
 // eslint-disable-next-line no-unused-vars
-const delete2ZoneHandler = (state, action) => {
+const delete2dZoneHandler = (state, zoneID) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum && state.activeSpectrum.id) {
       const datumObject = AnalysisObj.getDatum(state.activeSpectrum.id);
-      datumObject.deleteZone(action.id);
+      datumObject.deleteZone(zoneID);
       const zones = datumObject.getZones();
       draft.data[state.activeSpectrum.index].zones = zones;
     }
@@ -46,11 +46,11 @@ const handleAutoZonesDetection = (state, detectionOptions) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
-      const ob = AnalysisObj.getDatum(id);
-      const zones = ob.detectZones(detectionOptions);
+      const datumObject = AnalysisObj.getDatum(id);
+      const zones = datumObject.detectZones(detectionOptions);
       draft.data[index].zones = zones;
     }
   });
 };
 
-export { add2dZoneHandler, delete2ZoneHandler, handleAutoZonesDetection };
+export { add2dZoneHandler, delete2dZoneHandler, handleAutoZonesDetection };

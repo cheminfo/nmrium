@@ -198,6 +198,12 @@ const setXDomain = (state, xDomain) => {
   });
 };
 
+const setYDomain = (state, yDomain) => {
+  return produce(state, (draft) => {
+    draft.yDomain = yDomain;
+  });
+};
+
 const handelResetDomain = (state) => {
   return produce(state, (draft) => {
     const { xDomain, yDomain, xDomains, yDomains } = state.originDomain;
@@ -228,6 +234,7 @@ export {
   getDomain,
   setOriginalDomain,
   setXDomain,
+  setYDomain,
   handelResetDomain,
   setDomain,
   setMode,

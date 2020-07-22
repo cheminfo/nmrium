@@ -6,9 +6,15 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
+import { HighlightSignalConcatenation } from '../panels/extra/constants/ConcatenationStrings';
 import { SignalKindsToConsiderInIntegralsSum } from '../panels/extra/constants/SignalsKinds';
 import { checkSignalKinds } from '../panels/extra/utilities/RangeUtilities';
-import { DELETE_RANGE, RESIZE_RANGE } from '../reducer/types/Types';
+import {
+  DELETE_RANGE,
+  RESIZE_RANGE,
+  UNSET_ACTIVE_ASSIGNMENT_AXIS,
+  SET_ACTIVE_ASSIGNMENT_AXIS,
+} from '../reducer/types/Types';
 
 import MultiplicityTree from './MultiplicityTree';
 import Resizable from './Resizable';
@@ -119,6 +125,11 @@ const Range = ({ rangeData }) => {
             ? null
             : (e) => {
                 if (e.shiftKey) {
+                  if (highlightRange.isActivePermanently) {
+                    dispatch({ type: UNSET_ACTIVE_ASSIGNMENT_AXIS });
+                  } else {
+                    dispatch({ type: SET_ACTIVE_ASSIGNMENT_AXIS, axis: 'X' });
+                  }
                   highlightRange.click(e);
                 }
               },
@@ -171,9 +182,9 @@ const Range = ({ rangeData }) => {
               rangeFrom={from}
               rangeTo={to}
               signal={_signal}
-              highlightID={`${id}_${i}`}
+              highlightID={`${id}${HighlightSignalConcatenation}${i}`}
               // eslint-disable-next-line react/no-array-index-key
-              key={`${id}_${i}`}
+              key={`${id}${HighlightSignalConcatenation}${i}`}
             />
           ))
         : null}

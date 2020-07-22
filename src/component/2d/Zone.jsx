@@ -74,7 +74,11 @@ const Zone = ({ x, y, id, onDelete }) => {
 
   return (
     <g
-      css={highlight.isActive ? stylesHighlighted : stylesOnHover}
+      css={
+        highlight.isActive || highlight.isActivePermanently
+          ? stylesHighlighted
+          : stylesOnHover
+      }
       key={id}
       {...highlight.onHover}
     >

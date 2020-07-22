@@ -8,9 +8,15 @@ import {
   FaMinusCircle,
 } from 'react-icons/fa';
 
+import { useDispatch } from '../../context/DispatchContext';
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import { useHighlight, useHighlightData } from '../../highlight';
+import {
+  UNSET_ACTIVE_ASSIGNMENT_AXIS,
+  SET_ACTIVE_ASSIGNMENT_AXIS,
+} from '../../reducer/types/Types';
 import FormatNumber from '../../utility/FormatNumber';
+import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 import {
   SignalKinds,
   SignalKindsToConsiderInIntegralsSum,
@@ -43,6 +49,8 @@ const RangesTableRow = ({
   onContextMenu,
   preferences,
 }) => {
+  const dispatch = useDispatch();
+
   const highlightIDsRange = useMemo(() => {
     return [].concat([rowData.id], rowData.diaID ? rowData.diaID : []);
   }, [rowData.diaID, rowData.id]);
@@ -144,6 +152,18 @@ const RangesTableRow = ({
     return format ? FormatNumber(value, format, prefix, suffix) : value;
   };
 
+  const handleOnClick = useCallback(
+    (e, highlight) => {
+      if (highlight.isActivePermanently) {
+        dispatch({ type: UNSET_ACTIVE_ASSIGNMENT_AXIS });
+      } else {
+        dispatch({ type: SET_ACTIVE_ASSIGNMENT_AXIS, axis: 'X' });
+      }
+      highlight.click(e);
+    },
+    [dispatch],
+  );
+
   return (
     <tr
       onContextMenu={(e) => onContextMenu(e, getOriginal())}
@@ -159,20 +179,18 @@ const RangesTableRow = ({
       }
       {...highlightRange.onHover}
     >
-      <td {...rowSpanTags} {...highlightRange.onClick}>
-        {rowData.tableMetaInfo.rowIndex + 1}
-      </td>
+      <td {...rowSpanTags}>{rowData.tableMetaInfo.rowIndex + 1}</td>
       {getShowPreference('showFrom') ? (
-        <td {...rowSpanTags} {...highlightRange.onClick}>
+        <td {...rowSpanTags}>
           {applyFormatPreference('fromFormat', rowData.from)}
         </td>
       ) : null}
       {getShowPreference('showTo') ? (
-        <td {...rowSpanTags} {...highlightRange.onClick}>
+        <td {...rowSpanTags}>
           {applyFormatPreference('toFormat', rowData.to)}
         </td>
       ) : null}
-      <td {...highlightSignal.onHover} {...highlightSignal.onClick}>
+      <td {...highlightSignal.onHover}>
         {rowData.tableMetaInfo.signal
           ? !checkMultiplicity(rowData.tableMetaInfo.signal.multiplicity, ['m'])
             ? `${applyFormatPreference(
@@ -183,7 +201,7 @@ const RangesTableRow = ({
           : ''}
       </td>
       {getShowPreference('showRelative') ? (
-        <td {...rowSpanTags} {...highlightRange.onClick}>
+        <td {...rowSpanTags}>
           {checkSignalKinds(rowData, SignalKindsToConsiderInIntegralsSum)
             ? applyFormatPreference('relativeFormat', rowData.integral)
             : applyFormatPreference(
@@ -195,16 +213,16 @@ const RangesTableRow = ({
         </td>
       ) : null}
       {getShowPreference('showAbsolute') ? (
-        <td {...rowSpanTags} {...highlightRange.onClick}>
+        <td {...rowSpanTags}>
           {applyFormatPreference('absoluteFormat', rowData.absolute)}
         </td>
       ) : null}
-      <td {...highlightSignal.onHover} {...highlightSignal.onClick}>
+      <td {...highlightSignal.onHover}>
         {rowData.tableMetaInfo.signal
           ? rowData.tableMetaInfo.signal.multiplicity
           : ''}
       </td>
-      <td {...highlightSignal.onHover} {...highlightSignal.onClick}>
+      <td {...highlightSignal.onHover}>
         {rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.j
           ? rowData.tableMetaInfo.signal.j
               .map((coupling) => coupling.coupling.toFixed(1))
@@ -213,7 +231,7 @@ const RangesTableRow = ({
       </td>
       <td
         {...highlightSignal.onHover}
-        {...highlightSignal.onClick}
+        {...{ onClick: (e) => handleOnClick(e, highlightSignal) }}
         css={
           highlightSignal.isActivePermanently || highlightSignal.isActive
             ? {
@@ -260,7 +278,7 @@ const RangesTableRow = ({
             fontWeight: highlightRange.isActivePermanently ? 'bold' : 'normal',
           },
         }}
-        {...highlightRange.onClick}
+        {...{ onClick: (e) => handleOnClick(e, highlightRange) }}
       >
         {rowData.pubIntegral !== undefined && rowData.pubIntegral > 0 ? (
           rowData.diaID && rowData.diaID.length > 0 ? (
@@ -275,8 +293,10 @@ const RangesTableRow = ({
                   highlightData.highlight.highlighted.includes(rowData.id) &&
                   !highlightData.highlight.highlighted.find(
                     (_highlight) =>
-                      _highlight.split('_').length > 1 &&
-                      _highlight.split('_')[0] === rowData.id,
+                      _highlight.split(HighlightSignalConcatenation).length >
+                        1 &&
+                      _highlight.split(HighlightSignalConcatenation)[0] ===
+                        rowData.id,
                   )
                     ? {
                         color: 'red',
