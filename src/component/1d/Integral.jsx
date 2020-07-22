@@ -49,21 +49,28 @@ const Integral = ({
 
   const makePath = useCallback(() => {
     if (integral && scaleY) {
+      console.log(xDomain);
       const pathPoints = xyReduce(integral, {
         from: xDomain[0],
         to: xDomain[1],
-        nbPoints: 200,
+        nbPoints: 100,
         optimize: true,
       });
+      console.log(pathPoints, integral);
 
       let path = `M ${scaleX()(pathPoints.x[0])} ${scaleY(pathPoints.y[0])}`;
+      path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
+        accumulator += ` L ${scaleX()(point)} ${scaleY(pathPoints.y[i + 1])}`;
+        return accumulator;
+      }, '');
 
-      path += pathPoints.x
-        .slice(1)
-        .map((point, i) => {
-          return ` L ${scaleX()(point)} ${scaleY(pathPoints.y[i])}`;
-        })
-        .join('');
+      // path += pathPoints.x
+      //   .slice(1)
+      //   .map((point, i) => {
+      //     console.log(point, scaleX()(point), scaleY(pathPoints.y[i + 1]));
+      //     return ` L ${scaleX()(point)} ${scaleY(pathPoints.y[i + 1])}`;
+      //   }, '')
+      //   .join('');
       //   console.log(path);
       return path;
     } else {
