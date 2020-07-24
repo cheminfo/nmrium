@@ -110,7 +110,7 @@ const Tabs = ({ children, onClick, defaultTabID, position }) => {
 
   const tabsContent = useMemo(() => {
     return Children.map(children, (child) => {
-      const { label, identifier } = child.props;
+      const { label, identifier, style } = child.props;
       // use tab identifier if given (higher priority)
       if (identifier !== undefined) {
         if (identifier !== activeTab) {
@@ -119,7 +119,9 @@ const Tabs = ({ children, onClick, defaultTabID, position }) => {
       } else if (label !== activeTab) {
         return cloneElement(child, { style: { display: 'none' } });
       }
-      return cloneElement(child, { style: { display: 'block' } });
+      return cloneElement(child, {
+        style: { display: 'block', ...(style && style) },
+      });
     });
   }, [activeTab, children]);
 

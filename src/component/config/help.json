@@ -1,14 +1,30 @@
 {
     "zoomIn": {
+        "tabTitle": "",
+        "ShowInGneralUserManual": false,
         "text": "Zoom Tool",
-        "filePath": "./help/zoom.md"
+        "filePath": "./help/zoom.md",
+        "index": 3
     },
     "peakPicking": {
+        "tabTitle": "",
+        "ShowInGneralUserManual": false,
         "text": "peak picking tool",
-        "filePath": "./help/peakPicking.md"
+        "filePath": "./help/peakPicking.md",
+        "index": 2
     },
     "fullScreen": {
+        "tabTitle": "",
+        "ShowInGneralUserManual": false,
         "text": "Full Screen mode",
-        "filePath": "./help/fullScreen.md"
+        "filePath": "./help/fullScreen.md",
+        "index": 1
+    },
+    "loadSpectrum": {
+        "tabTitle": "How To Import Spectrums",
+        "ShowInGneralUserManual": true,
+        "text": "load spectrums",
+        "filePath": "./help/loadSpectrum.md",
+        "index": 0
     }
 }
