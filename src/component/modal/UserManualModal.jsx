@@ -46,7 +46,8 @@ const styles = css`
     padding: 5px;
   }
 `;
-const transformImageUri = (uri) => `./help/${uri}`;
+const transformImageUri = (uri, path) =>
+  `${path.substr(0, path.lastIndexOf('/') + 1)}${uri}`;
 
 const ManualView = ({ filePath }) => {
   const [md, setMD] = useState('');
@@ -55,9 +56,13 @@ const ManualView = ({ filePath }) => {
       setMD(mdResult);
     });
   });
+
   return (
     <div style={{ overflow: 'auto' }}>
-      <ReactMarkdown source={md} transformImageUri={transformImageUri} />
+      <ReactMarkdown
+        source={md}
+        transformImageUri={(uri) => transformImageUri(uri, filePath)}
+      />
     </div>
   );
 };

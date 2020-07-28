@@ -248,6 +248,8 @@ const FunctionToolBar = ({ defaultValue }) => {
                 selectedSpectrumInfo &&
                 !selectedSpectrumInfo.info.isFid
               }
+              {...help.onHover}
+              helpID="integralPicking"
             >
               <ToolTip
                 title={`${options.integral.label} ( Press i )`}

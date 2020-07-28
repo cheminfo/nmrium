@@ -57,7 +57,6 @@ const HelpProvider = ({
   type,
   transition,
   containerStyle,
-  imagesPathPrefix,
   wrapperID,
 }) => {
   const root = useRef();
@@ -171,8 +170,8 @@ const HelpProvider = ({
     modals,
     (modal) => modal.options && modal.options.position,
   );
-
-  const transformImageUri = (uri) => `${imagesPathPrefix}${uri}`;
+  const transformImageUri = (uri, path) =>
+    `${path.substr(0, path.lastIndexOf('/') + 1)}${uri}`;
 
   return (
     <HProvider value={contextValue}>
@@ -220,7 +219,12 @@ const HelpProvider = ({
                                   >
                                     <ReactMarkdown
                                       source={modal.mdtext}
-                                      transformImageUri={transformImageUri}
+                                      transformImageUri={(uri) =>
+                                        transformImageUri(
+                                          uri,
+                                          data[modal.helpid].filePath,
+                                        )
+                                      }
                                     />
                                   </div>
                                 </Resizable>
@@ -249,7 +253,6 @@ HelpProvider.defaultProps = {
   containerStyle: {
     zIndex: 100,
   },
-  imagesPathPrefix: './help/',
   wrapperID: null,
 };
 
