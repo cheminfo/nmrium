@@ -18,3 +18,10 @@ An alternativ way to delete a single integral is to move the mouse over a integr
 
 ![image](images/delete-single-integral.gif)
 
+
+#### Change integral sum
+
+The default sum of all integrated protons is 100. To change this sum, click on the sum symbol. A grey box appears. Enter the total number of integrated protons and click "Set".  In the list on the right side, the relative number of protons for the respective integral is indicated.
+
+![image](images/change-integral-sum.gif)
+
