@@ -2,6 +2,7 @@
 import { jsx } from '@emotion/core';
 import { useMemo, useCallback, useState, useEffect } from 'react';
 
+import { useAssignment } from '../assignment';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
@@ -24,7 +25,7 @@ const MultiplicityTree = ({
   rangeFrom,
   rangeTo,
   signal,
-  highlightID,
+  signalID,
   options = {
     label: { distance: 10, fontSize: 11 },
   },
@@ -37,7 +38,10 @@ const MultiplicityTree = ({
     editRangeModalMeta,
     width,
   } = useChartData();
-  const highlight = useHighlight([highlightID]);
+  const assignment = useAssignment(signalID);
+  const highlight = useHighlight(
+    [assignment.id].concat(assignment.assigned.x || []),
+  );
 
   const spectrumData = useMemo(() => {
     return spectraData && activeSpectrum && spectraData[activeSpectrum.index]
@@ -199,7 +203,7 @@ const MultiplicityTree = ({
       const _startYNode = startY + (edgeLevel + 1) * treeProps.levelHeight;
 
       return (
-        <g key={`treeNode_${highlightID}_${startX}_${_startX}_${ratio}`}>
+        <g key={`treeNode_${signalID}_${startX}_${_startX}_${ratio}`}>
           {/* ratio text */}
           <text
             textAnchor="middle"
@@ -231,7 +235,7 @@ const MultiplicityTree = ({
       );
     },
     [
-      highlightID,
+      signalID,
       options.label.distance,
       options.label.fontSize,
       scaleX,
@@ -276,7 +280,7 @@ const MultiplicityTree = ({
     let _startY = startY;
     const multiplicityString = (
       <text
-        key={`multiplicityString_${highlightID}`}
+        key={`multiplicityString_${signalID}`}
         textAnchor="middle"
         x={scaleX()(signal.delta)}
         y={_startY + treeProps.levelHeight / 2}
@@ -293,7 +297,7 @@ const MultiplicityTree = ({
     _startY = startY + treeProps.levelHeight;
     const startLevelNode = (
       <line
-        key={`startLevelNode_${highlightID}`}
+        key={`startLevelNode_${signalID}`}
         x1={scaleX()(signal.delta)}
         y1={_startY}
         x2={scaleX()(signal.delta)}
@@ -334,7 +338,7 @@ const MultiplicityTree = ({
     return <g>{tree}</g>;
   }, [
     startY,
-    highlightID,
+    signalID,
     scaleX,
     signal.delta,
     signal.multiplicity,
@@ -351,18 +355,27 @@ const MultiplicityTree = ({
   return showMultiplicityTrees && showMultiplicityTrees === true ? (
     <g
       css={
-        highlight.isActive || highlight.isActivePermanently
+        highlight.isActive || assignment.isActive
           ? { ...styles, opacity: 1, strokeWidth: 1.5 }
           : styles
       }
-      {...highlight.onHover}
+      {...{
+        onMouseEnter: () => {
+          assignment.onMouseEnter('x');
+          highlight.show();
+        },
+        onMouseLeave: () => {
+          assignment.onMouseLeave('x');
+          highlight.hide();
+        },
+      }}
       {...{
         onClick:
           editRangeModalMeta && editRangeModalMeta.rangeInEdition
             ? null
             : (e) => {
                 if (e.shiftKey) {
-                  highlight.click(e);
+                  assignment.onClick(e, 'x');
                 }
               },
       }}

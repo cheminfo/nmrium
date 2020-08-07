@@ -96,17 +96,19 @@ export class Datum2D {
     const zone = {
       x: { from: fromX, to: toX },
       y: { from: fromY, to: toY },
-      signal: {
-        peak: [],
-        x: {
-          delta: (fromX + toX) / 2,
-          diaID: [],
+      signal: [
+        {
+          peak: [],
+          x: {
+            delta: (fromX + toX) / 2,
+            diaID: [],
+          },
+          y: {
+            delta: (fromY + toY) / 2,
+            diaID: [],
+          },
         },
-        y: {
-          delta: (fromY + toY) / 2,
-          diaID: [],
-        },
-      },
+      ],
     };
 
     this.zones.values.push({
@@ -114,9 +116,26 @@ export class Datum2D {
       ...zone,
     });
   }
+
   deleteZone(id) {
-    this.zones.values = this.zones.values.filter((i) => i.id !== id);
+    this.zones = Object.assign({}, this.zones);
+    this.zones.values = this.zones.values.slice();
+    if (id === undefined) {
+      this.zones.values = [];
+    } else {
+      this.zones.values = this.zones.values.filter((zone) => zone.id !== id);
+    }
   }
+
+  setZone(data) {
+    this.zones = Object.assign({}, this.zones);
+    this.zones.values = this.zones.values.slice();
+    const zoneIndex = this.zones.values.findIndex(
+      (zone) => zone.id === data.id,
+    );
+    this.zones.values[zoneIndex] = data;
+  }
+
   /** get 2d projection
    * @param {number} x in ppm
    * @param {number} y in ppm
@@ -226,8 +245,14 @@ export class Datum2D {
     this.zones.values = zones.map((zone) => {
       return {
         id: generateID(),
-        x: { from: zone.fromTo[0].from, to: zone.fromTo[0].to },
-        y: { from: zone.fromTo[1].from, to: zone.fromTo[1].to },
+        x:
+          zone.fromTo[0].from < zone.fromTo[0].to
+            ? { from: zone.fromTo[0].to, to: zone.fromTo[0].from }
+            : { from: zone.fromTo[0].from, to: zone.fromTo[0].to },
+        y:
+          zone.fromTo[1].from < zone.fromTo[1].to
+            ? { from: zone.fromTo[1].from, to: zone.fromTo[1].to }
+            : { from: zone.fromTo[1].to, to: zone.fromTo[1].from },
         signal: [
           {
             peak: zone.peaks,

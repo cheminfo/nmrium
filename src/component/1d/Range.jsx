@@ -2,10 +2,12 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback, useState, useEffect } from 'react';
 
+import { useAssignment } from '../assignment';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
+import { HighlightSignalConcatenation } from '../panels/extra/constants/ConcatenationStrings';
 import { SignalKindsToConsiderInIntegralsSum } from '../panels/extra/constants/SignalsKinds';
 import { checkSignalKinds } from '../panels/extra/utilities/RangeUtilities';
 import { DELETE_RANGE, RESIZE_RANGE } from '../reducer/types/Types';
@@ -52,7 +54,10 @@ const stylesHighlighted = css`
 
 const Range = ({ rangeData }) => {
   const { id, from, to, integral, signal } = rangeData;
-  const highlightRange = useHighlight([id]);
+  const assignmentRange = useAssignment(id);
+  const highlightRange = useHighlight(
+    [assignmentRange.id].concat(assignmentRange.assigned.x || []),
+  );
 
   const { scaleX } = useScale();
   const { editRangeModalMeta } = useChartData();
@@ -107,19 +112,28 @@ const Range = ({ rangeData }) => {
           editRangeModalMeta.rangeInEdition &&
           editRangeModalMeta.rangeInEdition === id) ||
         highlightRange.isActive ||
-        highlightRange.isActivePermanently
+        assignmentRange.isActive
           ? stylesHighlighted
           : stylesOnHover
       }
       key={id}
-      {...highlightRange.onHover}
+      {...{
+        onMouseEnter: () => {
+          assignmentRange.onMouseEnter('x');
+          highlightRange.show();
+        },
+        onMouseLeave: () => {
+          assignmentRange.onMouseLeave('x');
+          highlightRange.hide();
+        },
+      }}
       {...{
         onClick:
           editRangeModalMeta && editRangeModalMeta.rangeInEdition
             ? null
             : (e) => {
                 if (e.shiftKey) {
-                  highlightRange.click(e);
+                  assignmentRange.onClick(e, 'x');
                 }
               },
       }}
@@ -134,7 +148,7 @@ const Range = ({ rangeData }) => {
           fillOpacity={
             !reduceOpacity ||
             highlightRange.isActive ||
-            highlightRange.isActivePermanently
+            assignmentRange.isActive
               ? 1
               : 0.4
           }
@@ -148,7 +162,7 @@ const Range = ({ rangeData }) => {
           fillOpacity={
             !reduceOpacity ||
             highlightRange.isActive ||
-            highlightRange.isActivePermanently
+            assignmentRange.isActive
               ? 1
               : 0.6
           }
@@ -171,9 +185,9 @@ const Range = ({ rangeData }) => {
               rangeFrom={from}
               rangeTo={to}
               signal={_signal}
-              highlightID={`${id}_${i}`}
+              signalID={`${id}${HighlightSignalConcatenation}${i}`}
               // eslint-disable-next-line react/no-array-index-key
-              key={`${id}_${i}`}
+              key={`${id}${HighlightSignalConcatenation}${i}`}
             />
           ))
         : null}

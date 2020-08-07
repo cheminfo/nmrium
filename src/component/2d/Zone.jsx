@@ -2,6 +2,7 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback } from 'react';
 
+import { useAssignment } from '../assignment';
 import { useChartData } from '../context/ChartContext';
 import { useHighlight } from '../highlight';
 
@@ -45,7 +46,14 @@ const stylesHighlighted = css`
 `;
 
 const Zone = ({ x, y, id, onDelete }) => {
-  const highlight = useHighlight([id]);
+  const assignmentZone = useAssignment(id);
+  const highlightZone = useHighlight(
+    [assignmentZone.id],
+    // .concat(
+    //   assignmentZone.assigned.x || [],
+    //   assignmentZone.assigned.y || [],
+    // ),
+  );
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
@@ -74,9 +82,13 @@ const Zone = ({ x, y, id, onDelete }) => {
 
   return (
     <g
-      css={highlight.isActive ? stylesHighlighted : stylesOnHover}
+      css={
+        highlightZone.isActive || assignmentZone.isActive
+          ? stylesHighlighted
+          : stylesOnHover
+      }
       key={id}
-      {...highlight.onHover}
+      {...highlightZone.onHover}
     >
       <g transform={`translate(${scaleX(x1)},${scaleY(y1)})`}>
         <rect

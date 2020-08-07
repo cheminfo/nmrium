@@ -19,7 +19,7 @@ const Zones = () => {
 
   const deleteHandler = useCallback(
     (id) => {
-      dispatch({ type: DELETE_2D_ZONE, id });
+      dispatch({ type: DELETE_2D_ZONE, zoneID: id });
     },
     [dispatch],
   );

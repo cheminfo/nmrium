@@ -8,6 +8,7 @@ import {
   setOriginalDomain,
   setXDomain,
   handleChangeIntegralYDomain,
+  setYDomain,
 } from './actions/DomainActions';
 import {
   handleSetRangeInEdition,
@@ -105,8 +106,9 @@ import {
 } from './actions/ToolsActions';
 import {
   add2dZoneHandler,
-  delete2ZoneHandler,
+  delete2dZoneHandler,
   handleAutoZonesDetection,
+  handleChangeZone,
 } from './actions/ZonesActions';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
@@ -188,6 +190,8 @@ import {
   SET_SELECTED_NEW_SIGNAL_DELTA,
   UNSET_SELECTED_NEW_SIGNAL_DELTA,
   SET_SHOW_MULTIPLICITY_TREES,
+  SET_Y_DOMAIN,
+  CHANGE_ZONE_DATA,
 } from './types/Types';
 
 setAutoFreeze(false);
@@ -298,6 +302,9 @@ export function spectrumReducer(state, action) {
 
     case SET_X_DOMAIN:
       return setXDomain(state, action.xDomain);
+
+    case SET_Y_DOMAIN:
+      return setYDomain(state, action.yDomain);
 
     case SET_WIDTH:
       return setWidth(state, action.width);
@@ -425,7 +432,7 @@ export function spectrumReducer(state, action) {
     case ADD_2D_ZONE:
       return add2dZoneHandler(state, action);
     case DELETE_2D_ZONE:
-      return delete2ZoneHandler(state, action);
+      return delete2dZoneHandler(state, action.zoneID);
     case ADD_MISSING_PROJECTION:
       return addMissingProjectionHander(state, action);
     case SET_SHOW_MULTIPLICITY_TREES:
@@ -456,6 +463,9 @@ export function spectrumReducer(state, action) {
 
     case UNSET_SELECTED_NEW_SIGNAL_DELTA:
       return handleUnsetSelectedNewSignalDelta(state);
+
+    case CHANGE_ZONE_DATA:
+      return handleChangeZone(state, action);
 
     default:
       return state;

@@ -314,7 +314,7 @@ export class Datum1D {
   deleteRange(id) {
     this.ranges = Object.assign({}, this.ranges);
     this.ranges.values = this.ranges.values.slice();
-    if (id == null) {
+    if (id === undefined) {
       this.ranges.values = [];
     } else {
       this.ranges.values = this.ranges.values.filter(

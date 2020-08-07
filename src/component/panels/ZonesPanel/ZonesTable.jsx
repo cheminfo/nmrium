@@ -6,7 +6,7 @@ import { FaLink } from 'react-icons/fa';
 import ContextMenu from '../../elements/ContextMenu';
 import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 
-import RangesTableRow from './RangesTableRow';
+import ZonesTableRow from './ZonesTableRow';
 
 const tableStyle = css`
   border-spacing: 0;
@@ -43,40 +43,37 @@ const tableStyle = css`
   }
 `;
 
-const RangesTable = ({
+const ZonesTable = ({
   tableData,
-  onChangeKind,
   onDelete,
   onUnlink,
   onZoom,
-  onEdit,
   context,
   preferences,
-  element,
+  nuclei,
 }) => {
   const contextRef = useRef();
-
   const data = useMemo(() => {
-    const _rangesData = [];
-    tableData.forEach((range, i) => {
-      if (range.signal.length === 1) {
-        _rangesData.push({
-          ...range,
+    const _zonesData = [];
+    tableData.forEach((zone, i) => {
+      if (zone.signal.length === 1) {
+        _zonesData.push({
+          ...zone,
           tableMetaInfo: {
-            ...range.tableMetaInfo,
-            signal: range.signal[0],
+            ...zone.tableMetaInfo,
+            signal: zone.signal[0],
             rowIndex: i,
             signalIndex: 0,
-            id: `${range.id}${HighlightSignalConcatenation}${0}`,
+            id: `${zone.id}${HighlightSignalConcatenation}${0}`,
           },
         });
-      } else if (range.signal.length > 1) {
-        range.signal.forEach((signal, j) => {
+      } else if (zone.signal.length > 1) {
+        zone.signal.forEach((signal, j) => {
           let hide = false;
           let rowSpan = null;
-          if (j < range.signal.length - 1) {
+          if (j < zone.signal.length - 1) {
             if (j === 0) {
-              rowSpan = range.signal.length;
+              rowSpan = zone.signal.length;
             } else {
               hide = true;
             }
@@ -84,31 +81,24 @@ const RangesTable = ({
             hide = true;
           }
 
-          _rangesData.push({
-            ...range,
+          _zonesData.push({
+            ...zone,
             tableMetaInfo: {
-              ...range.tableMetaInfo,
+              ...zone.tableMetaInfo,
               signal,
               rowSpan,
               hide,
               rowIndex: i,
               signalIndex: j,
-              id: `${range.id}${HighlightSignalConcatenation}${j}`,
+              id: `${zone.id}${HighlightSignalConcatenation}${j}`,
             },
           });
         });
       }
     });
 
-    return _rangesData;
+    return _zonesData;
   }, [tableData]);
-
-  const getShowPreference = (showPreference) => {
-    return preferences
-      ? Object.prototype.hasOwnProperty.call(preferences, showPreference) &&
-          preferences[showPreference] === true
-      : false;
-  };
 
   const contextMenuHandler = useCallback(
     (e, rowData) => {
@@ -123,33 +113,33 @@ const RangesTable = ({
       <table css={tableStyle}>
         <tbody>
           <tr>
-            <th>#</th>
-            {getShowPreference('showFrom') ? <th>From</th> : null}
-            {getShowPreference('showTo') ? <th>To</th> : null}
-            <th>δ (ppm)</th>
-            {getShowPreference('showRelative') ? <th>Rel. {element}</th> : null}
-            {getShowPreference('showAbsolute') ? <th>Absolute</th> : null}
-            <th>Mult.</th>
-            <th>J (Hz)</th>
-            <th>
-              <FaLink style={{ fontSize: 10 }} />
+            <th rowSpan={2}>#</th>
+            <th colSpan={2}>δ (ppm)</th>
+            <th colSpan={2}>
+              <FaLink />
             </th>
-            <th>Σ</th>
-            <th>Kind</th>
-            <th>{''}</th>
+            <th colSpan={2}>Σ</th>
+            {/* <th rowSpan={2}>Kind</th> */}
+            <th rowSpan={2}>{''}</th>
+          </tr>
+          <tr>
+            <th>{nuclei[0]}</th>
+            <th>{nuclei[1]}</th>
+            <th>{nuclei[0]}</th>
+            <th>{nuclei[1]}</th>
+            <th>{nuclei[0]}</th>
+            <th>{nuclei[1]}</th>
           </tr>
           {data &&
             data.map((range, i) => {
               return (
-                <RangesTableRow
+                <ZonesTableRow
                   // eslint-disable-next-line react/no-array-index-key
-                  key={`rangesTableRow${i}`}
+                  key={`zonesTableRow${i}`}
                   rowData={data[i]}
-                  onChangeKind={onChangeKind}
                   onDelete={onDelete}
                   onUnlink={onUnlink}
                   onZoom={onZoom}
-                  onEdit={onEdit}
                   onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                   preferences={preferences}
                 />
@@ -162,4 +152,4 @@ const RangesTable = ({
   );
 };
 
-export default RangesTable;
+export default ZonesTable;

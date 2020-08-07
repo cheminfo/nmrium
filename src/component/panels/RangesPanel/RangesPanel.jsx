@@ -13,6 +13,7 @@ import ReactCardFlip from 'react-card-flip';
 import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 
+import { useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal, positions, transitions } from '../../elements/Modal';
@@ -28,13 +29,10 @@ import {
   SET_SHOW_MULTIPLICITY_TREES,
 } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
+import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
-import {
-  resetDiaIDs,
-  addDefaultSignal,
-  unlink,
-} from '../extra/utilities/RangeUtilities';
+import { addDefaultSignal, unlink } from '../extra/utilities/RangeUtilities';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -99,6 +97,8 @@ const RangesTablePanel = memo(() => {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [rangesCounter, setRangesCounter] = useState(0);
 
+  const assignmentData = useAssignmentData();
+
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
@@ -122,7 +122,7 @@ const RangesTablePanel = memo(() => {
   }, [spectrumData]);
 
   const tableData = useMemo(() => {
-    const isInRange = (from, to) => {
+    const isInView = (from, to) => {
       const factor = 10000;
       to = to * factor;
       from = from * factor;
@@ -133,7 +133,7 @@ const RangesTablePanel = memo(() => {
     };
 
     const getFilteredRanges = (ranges) => {
-      return ranges.filter((range) => isInRange(range.from, range.to));
+      return ranges.filter((range) => isInView(range.from, range.to));
     };
 
     const ranges = filterIsActive ? getFilteredRanges(data) : data;
@@ -142,7 +142,7 @@ const RangesTablePanel = memo(() => {
       return {
         ...range,
         tableMetaInfo: {
-          isConstantlyHighlighted: isInRange(range.from, range.to),
+          isConstantlyHighlighted: isInView(range.from, range.to),
         },
       };
     });
@@ -164,11 +164,41 @@ const RangesTablePanel = memo(() => {
 
   const unlinkRangeHandler = useCallback(
     (range, isOnRangeLevel, signalIndex) => {
-      const _range = Object.assign({}, range);
-      unlink(_range, isOnRangeLevel, signalIndex);
-      dispatch({ type: CHANGE_RANGE_DATA, data: _range });
+      // remove assignments in assignment hook data
+      if (isOnRangeLevel === true) {
+        assignmentData.dispatch({
+          type: 'REMOVE_ALL',
+          payload: { id: range.id, axis: 'x' },
+        });
+      } else if (signalIndex !== undefined) {
+        assignmentData.dispatch({
+          type: 'REMOVE_ALL',
+          payload: {
+            id: `${range.id}${HighlightSignalConcatenation}${signalIndex}`,
+            axis: 'x',
+          },
+        });
+      } else if (isOnRangeLevel === undefined && signalIndex === undefined) {
+        assignmentData.dispatch({
+          type: 'REMOVE_ALL',
+          payload: { id: range.id, axis: 'x' },
+        });
+        range.signal.forEach((_signal, i) =>
+          assignmentData.dispatch({
+            type: 'REMOVE_ALL',
+            payload: {
+              id: `${range.id}${HighlightSignalConcatenation}${i}`,
+              axis: 'x',
+            },
+          }),
+        );
+      }
+
+      // remove assignments in global state
+      unlink(range, isOnRangeLevel, signalIndex);
+      dispatch({ type: CHANGE_RANGE_DATA, data: range });
     },
-    [dispatch],
+    [assignmentData, dispatch],
   );
 
   const zoomRangeHandler = useCallback(
@@ -185,7 +215,7 @@ const RangesTablePanel = memo(() => {
   const saveEditRangeHandler = useCallback(
     (editedRange) => {
       // for now: clear all assignments for this range because signals or levels to store might have changed
-      resetDiaIDs(editedRange);
+      unlinkRangeHandler(editedRange);
       // if all signals were deleted then insert a default signal with "m" as multiplicity
       if (editedRange.signal.length === 0) {
         addDefaultSignal(editedRange);
@@ -198,7 +228,7 @@ const RangesTablePanel = memo(() => {
         data: editedRange,
       });
     },
-    [alert, dispatch],
+    [alert, dispatch, unlinkRangeHandler],
   );
 
   const closeEditRangeHandler = useCallback(() => {
@@ -225,13 +255,14 @@ const RangesTablePanel = memo(() => {
   );
 
   const deleteRangeHandler = useCallback(
-    (rowData) => {
+    (range) => {
+      unlinkRangeHandler(range);
       dispatch({
         type: DELETE_RANGE,
-        rangeID: rowData.id,
+        rangeID: range.id,
       });
     },
-    [dispatch],
+    [dispatch, unlinkRangeHandler],
   );
 
   const saveToClipboardHandler = useCallback(
@@ -305,16 +336,6 @@ const RangesTablePanel = memo(() => {
     },
   ];
 
-  const yesHandler = useCallback(() => {
-    dispatch({ type: DELETE_RANGE, rangeID: null });
-  }, [dispatch]);
-
-  const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted. Are You sure?', {
-      onYes: yesHandler,
-    });
-  }, [modal, yesHandler]);
-
   const changeRangesSumHandler = useCallback(
     (value) => {
       if (value !== undefined) {
@@ -356,6 +377,15 @@ const RangesTablePanel = memo(() => {
       onYes: removeAssignments,
     });
   }, [removeAssignments, modal]);
+
+  const handleDeleteAll = useCallback(() => {
+    modal.showConfirmDialog('All ranges will be deleted. Are You sure?', {
+      onYes: () => {
+        removeAssignments();
+        dispatch({ type: DELETE_RANGE });
+      },
+    });
+  }, [dispatch, modal, removeAssignments]);
 
   const handleSetShowMultiplicityTrees = useCallback(() => {
     dispatch({

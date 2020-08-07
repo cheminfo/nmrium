@@ -12,9 +12,9 @@ import InformationPanel from './InformationPanel';
 import IntegralTablePanel from './IntegralsPanel/IntegralTablePanel';
 import MoleculePanel from './MoleculePanel';
 import PeaksTablePanel from './PeaksPanel/PeaksTablePanel';
-import RangesTablePanel from './RangesPanel/RangesTablePanel';
+import RangesPanel from './RangesPanel/RangesPanel';
 import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
-import ZonesPanel from './ZonesPanel';
+import ZonesPanel from './ZonesPanel/ZonesPanel';
 
 const accordionItems = [
   {
@@ -54,7 +54,7 @@ const accordionItems = [
   },
   {
     title: 'Ranges',
-    component: <RangesTablePanel />,
+    component: <RangesPanel />,
     openWhen: [options.rangesPicking.id],
     style: '',
     hidePreferenceKey: 'hideRangesPanel',
