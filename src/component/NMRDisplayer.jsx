@@ -23,6 +23,7 @@ import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
 import ErrorBoundary from './ErrorBoundary';
 import KeyListener from './EventsTrackers/keysListener';
+import { AssignmentProvider } from './assignment';
 import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { PreferencesProvider } from './context/PreferencesContext';
@@ -126,54 +127,59 @@ const NMRDisplayer = memo((props) => {
                 <ModalProvider wrapperID="main-wrapper">
                   <KeyListener parentRef={fullScreenRef} />
                   <HighlightProvider>
-                    <div
-                      ref={fullScreenRef}
-                      css={css`
-                        background-color: white;
-                        height: 100%;
-                        display: flex;
-                        flex-direction: column;
-                        div:focus {
-                          outline: none !important;
-                        }
-                        button:active,
-                        button:hover,
-                        button:focus,
-                        [type='button']:focus,
-                        button {
-                          outline: none !important;
-                        }
-                      `}
-                    >
-                      <Header isFullscreen={isFullscreen} onMaximize={toggle} />
-                      {/* ref={containerRef} */}
-                      <div style={{ flex: 1 }}>
-                        <DropZone>
-                          <ToolBar />
-                          <SplitPane
-                            style={splitPaneStyles.container}
-                            paneStyle={splitPaneStyles.pane}
-                            resizerStyle={splitPaneStyles.resizer}
-                            pane1Style={splitPaneStyles.pane1}
-                            split="vertical"
-                            defaultSize="calc(100% - 450px)"
-                            minSize="80%"
-                            onDragFinished={handleSplitPanelDragFinished}
-                            onDragStarted={() => {
-                              setResizeEventStart(true);
-                            }}
-                          >
-                            {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                              <Viewer1D />
-                            ) : (
-                              <Viewer2D />
-                            )}
-                            <Panels selectedTool={selectedTool} />
-                          </SplitPane>
-                        </DropZone>
+                    <AssignmentProvider>
+                      <div
+                        ref={fullScreenRef}
+                        css={css`
+                          background-color: white;
+                          height: 100%;
+                          display: flex;
+                          flex-direction: column;
+                          div:focus {
+                            outline: none !important;
+                          }
+                          button:active,
+                          button:hover,
+                          button:focus,
+                          [type='button']:focus,
+                          button {
+                            outline: none !important;
+                          }
+                        `}
+                      >
+                        <Header
+                          isFullscreen={isFullscreen}
+                          onMaximize={toggle}
+                        />
+                        {/* ref={containerRef} */}
+                        <div style={{ flex: 1 }}>
+                          <DropZone>
+                            <ToolBar />
+                            <SplitPane
+                              style={splitPaneStyles.container}
+                              paneStyle={splitPaneStyles.pane}
+                              resizerStyle={splitPaneStyles.resizer}
+                              pane1Style={splitPaneStyles.pane1}
+                              split="vertical"
+                              defaultSize="calc(100% - 450px)"
+                              minSize="80%"
+                              onDragFinished={handleSplitPanelDragFinished}
+                              onDragStarted={() => {
+                                setResizeEventStart(true);
+                              }}
+                            >
+                              {displayerMode === DISPLAYER_MODE.DM_1D ? (
+                                <Viewer1D />
+                              ) : (
+                                <Viewer2D />
+                              )}
+                              <Panels selectedTool={selectedTool} />
+                            </SplitPane>
+                          </DropZone>
+                        </div>
+                        <div id="main-wrapper" />
                       </div>
-                      <div id="main-wrapper" />
-                    </div>
+                    </AssignmentProvider>
                   </HighlightProvider>
                 </ModalProvider>
               </ChartDataProvider>

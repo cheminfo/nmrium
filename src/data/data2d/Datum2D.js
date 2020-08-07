@@ -126,6 +126,16 @@ export class Datum2D {
       this.zones.values = this.zones.values.filter((zone) => zone.id !== id);
     }
   }
+
+  setZone(data) {
+    this.zones = Object.assign({}, this.zones);
+    this.zones.values = this.zones.values.slice();
+    const zoneIndex = this.zones.values.findIndex(
+      (zone) => zone.id === data.id,
+    );
+    this.zones.values[zoneIndex] = data;
+  }
+
   /** get 2d projection
    * @param {number} x in ppm
    * @param {number} y in ppm

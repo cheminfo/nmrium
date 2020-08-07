@@ -11,6 +11,13 @@ const getPubIntegral = (range) => {
   return getDiaIDs(range).length;
 };
 
+const setPubIntegral = (range) => {
+  range.pubIntegral = getPubIntegral(range);
+  if (range.pubIntegral === 0) {
+    delete range.pubIntegral;
+  }
+};
+
 const resetDiaIDs = (range) => {
   delete range.diaID;
   range.signal.forEach((_signal) => {
@@ -26,13 +33,10 @@ const unlink = (range, isOnRangeLevel, signalIndex) => {
     } else if (signalIndex !== undefined) {
       delete range.signal[signalIndex].diaID;
     }
-    range.pubIntegral = getPubIntegral(range);
-    if (range.pubIntegral === 0) {
-      delete range.pubIntegral;
-    }
   } else {
     resetDiaIDs(range);
   }
+  setPubIntegral(range);
 };
 
 const addDefaultSignal = (range) => {

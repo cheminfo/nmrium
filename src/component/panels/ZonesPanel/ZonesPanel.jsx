@@ -3,9 +3,10 @@ import { xGetFromToIndex } from 'ml-spectra-processing';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
-import { FaFileExport } from 'react-icons/fa';
+import { FaFileExport, FaUnlink } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 
+import { useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
@@ -15,9 +16,12 @@ import {
   DELETE_2D_ZONE,
   SET_Y_DOMAIN,
   SET_X_DOMAIN,
+  CHANGE_ZONE_DATA,
 } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
+import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 import NoTableData from '../extra/placeholder/NoTableData';
+import { unlink } from '../extra/utilities/ZoneUtilities';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -69,6 +73,8 @@ const ZonesPanel = () => {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [zonesCounter, setZonesCounter] = useState(0);
 
+  const assignmentData = useAssignmentData();
+
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
@@ -117,19 +123,6 @@ const ZonesPanel = () => {
     return zones.map((zone) => {
       return {
         ...zone,
-        signal: [].concat(zone.signal, [
-          {
-            ...zone.signal[0],
-            x: {
-              delta: zone.signal[0].x.delta - 1.5,
-              diaID: zone.signal[0].x.diaID,
-            },
-            y: {
-              delta: zone.signal[0].y.delta + 1.5,
-              diaID: zone.signal[0].y.diaID,
-            },
-          },
-        ]),
         tableMetaInfo: {
           isConstantlyHighlighted: isInView(
             zone.x.from,
@@ -147,16 +140,104 @@ const ZonesPanel = () => {
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
 
-  const changeZoneSignalKindHandler = useCallback(() => {}, []);
-
   const unlinkZoneHandler = useCallback(
     (zone, isOnZoneLevel, signalIndex, axis) => {
-      // const _zone = Object.assign({}, zone);
-      // unlink(_zone, isOnZoneLevel, signalIndex);
-      // dispatch({ type: CHANGE_RANGE_DATA, data: _zone });
+      // unlink in assignment hook data
+      if (isOnZoneLevel !== undefined && axis !== undefined) {
+        if (isOnZoneLevel === true) {
+          assignmentData.dispatch({
+            type: 'REMOVE_ALL',
+            payload: {
+              id: zone.id,
+              axis: axis,
+            },
+          });
+        } else if (signalIndex !== undefined) {
+          assignmentData.dispatch({
+            type: 'REMOVE_ALL',
+            payload: {
+              id: `${zone.id}${HighlightSignalConcatenation}${signalIndex}`,
+              axis: axis,
+            },
+          });
+        }
+      } else if (axis !== undefined) {
+        assignmentData.dispatch({
+          type: 'REMOVE_ALL',
+          payload: {
+            id: zone.id,
+            axis: axis,
+          },
+        });
+        zone.signal.forEach((_signal, i) => {
+          assignmentData.dispatch({
+            type: 'REMOVE_ALL',
+            payload: {
+              id: `${zone.id}${HighlightSignalConcatenation}${i}`,
+              axis: axis,
+            },
+          });
+        });
+      } else {
+        assignmentData.dispatch({
+          type: 'REMOVE_ALL',
+          payload: {
+            id: zone.id,
+            axis: 'x',
+          },
+        });
+        zone.signal.forEach((_signal, i) => {
+          assignmentData.dispatch({
+            type: 'REMOVE_ALL',
+            payload: {
+              id: `${zone.id}${HighlightSignalConcatenation}${i}`,
+              axis: 'x',
+            },
+          });
+        });
+        assignmentData.dispatch({
+          type: 'REMOVE_ALL',
+          payload: {
+            id: zone.id,
+            axis: 'y',
+          },
+        });
+        zone.signal.forEach((_signal, i) => {
+          assignmentData.dispatch({
+            type: 'REMOVE_ALL',
+            payload: {
+              id: `${zone.id}${HighlightSignalConcatenation}${i}`,
+              axis: 'y',
+            },
+          });
+        });
+      }
+
+      // unlink in global state
+      unlink(zone, isOnZoneLevel, signalIndex, axis);
+      dispatch({ type: CHANGE_ZONE_DATA, data: zone });
     },
-    [],
+    [assignmentData, dispatch],
   );
+
+  const removeAssignments = useCallback(() => {
+    data.forEach((zone) => unlinkZoneHandler(zone));
+  }, [data, unlinkZoneHandler]);
+
+  const handleOnRemoveAssignments = useCallback(() => {
+    modal.showConfirmDialog('All assignments will be removed. Are you sure?', {
+      onYes: removeAssignments,
+    });
+  }, [removeAssignments, modal]);
+
+  const handleDeleteAll = useCallback(() => {
+    modal.showConfirmDialog('All zones will be deleted. Are You sure?', {
+      onYes: () => {
+        removeAssignments();
+        dispatch({ type: DELETE_2D_ZONE });
+      },
+    });
+  }, [dispatch, modal, removeAssignments]);
 
   const zoomZoneHandler = useCallback(
     (zone) => {
@@ -182,19 +263,14 @@ const ZonesPanel = () => {
 
   const deleteZoneHandler = useCallback(
     (zone) => {
+      unlinkZoneHandler(zone);
       dispatch({
         type: DELETE_2D_ZONE,
         zoneID: zone.id,
       });
     },
-    [dispatch],
+    [dispatch, unlinkZoneHandler],
   );
-
-  const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All zones will be deleted. Are You sure?', {
-      onYes: () => dispatch({ type: DELETE_2D_ZONE }),
-    });
-  }, [dispatch, modal]);
 
   const saveToClipboardHandler = useCallback(
     (value) => {
@@ -314,6 +390,16 @@ const ZonesPanel = () => {
                 <FaFileExport />
               </button>
             </ToolTip>
+            <ToolTip title={`Remove all Assignments`} popupPlacement="right">
+              <button
+                style={styles.removeAssignmentsButton}
+                type="button"
+                onClick={handleOnRemoveAssignments}
+                disabled={!data || data.length === 0}
+              >
+                <FaUnlink />
+              </button>
+            </ToolTip>
           </DefaultPanelHeader>
         )}
         {isFlipped && (
@@ -331,7 +417,6 @@ const ZonesPanel = () => {
             {tableData && tableData.length > 0 ? (
               <ZonesTable
                 tableData={tableData}
-                onChangeKind={changeZoneSignalKindHandler}
                 onDelete={deleteZoneHandler}
                 onZoom={zoomZoneHandler}
                 onUnlink={unlinkZoneHandler}

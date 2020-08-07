@@ -8,13 +8,9 @@ import {
   FaMinusCircle,
 } from 'react-icons/fa';
 
-import { useDispatch } from '../../context/DispatchContext';
+import { useAssignment } from '../../assignment';
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import { useHighlight, useHighlightData } from '../../highlight';
-import {
-  UNSET_ACTIVE_ASSIGNMENT_AXIS,
-  SET_ACTIVE_ASSIGNMENT_AXIS,
-} from '../../reducer/types/Types';
 import FormatNumber from '../../utility/FormatNumber';
 import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 import {
@@ -49,22 +45,14 @@ const RangesTableRow = ({
   onContextMenu,
   preferences,
 }) => {
-  const dispatch = useDispatch();
-
-  const highlightIDsRange = useMemo(() => {
-    return [].concat([rowData.id], rowData.diaID ? rowData.diaID : []);
-  }, [rowData.diaID, rowData.id]);
-  const highlightIDsSignal = useMemo(() => {
-    return [].concat(
-      [`${rowData.tableMetaInfo.id}`],
-      rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.diaID
-        ? rowData.tableMetaInfo.signal.diaID
-        : [],
-    );
-  }, [rowData.tableMetaInfo.id, rowData.tableMetaInfo.signal]);
-
-  const highlightRange = useHighlight(highlightIDsRange);
-  const highlightSignal = useHighlight(highlightIDsSignal);
+  const assignmentRange = useAssignment(rowData.id);
+  const highlightRange = useHighlight(
+    [assignmentRange.id].concat(assignmentRange.assigned.x || []),
+  );
+  const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
+  const highlightSignal = useHighlight(
+    [assignmentSignal.id].concat(assignmentSignal.assigned.x || []),
+  );
   const highlightData = useHighlightData();
 
   const [showUnlinkButtonRange, setShowUnlinkButtonRange] = useState(false);
@@ -104,24 +92,28 @@ const RangesTableRow = ({
       if (isOnRangeLevel !== undefined) {
         if (isOnRangeLevel) {
           setShowUnlinkButtonRange(false);
+          assignmentRange.removeAll('x');
         } else {
           setShowUnlinkButtonSignal(false);
+          assignmentSignal.removeAll('x');
         }
       } else {
         setShowUnlinkButtonRange(false);
         setShowUnlinkButtonSignal(false);
       }
     },
-    [getOriginal, onUnlink, rowData.tableMetaInfo.signalIndex],
+    [
+      assignmentRange,
+      assignmentSignal,
+      getOriginal,
+      onUnlink,
+      rowData.tableMetaInfo.signalIndex,
+    ],
   );
 
-  const handleOnDelete = useCallback(
-    (e) => {
-      handleOnUnlink(e);
-      onDelete(getOriginal());
-    },
-    [getOriginal, handleOnUnlink, onDelete],
-  );
+  const handleOnDelete = useCallback(() => {
+    onDelete(getOriginal());
+  }, [getOriginal, onDelete]);
 
   const handleOnZoom = useCallback(() => {
     onZoom(getOriginal());
@@ -152,23 +144,41 @@ const RangesTableRow = ({
     return format ? FormatNumber(value, format, prefix, suffix) : value;
   };
 
-  const handleOnClick = useCallback(
-    (e, highlight) => {
-      if (highlight.isActivePermanently) {
-        dispatch({ type: UNSET_ACTIVE_ASSIGNMENT_AXIS });
-      } else {
-        dispatch({ type: SET_ACTIVE_ASSIGNMENT_AXIS, axis: 'X' });
-      }
-      highlight.click(e);
-    },
-    [dispatch],
-  );
+  const handleOnClick = useCallback((e, assignment) => {
+    assignment.onClick(e, 'x');
+  }, []);
+
+  const onHoverRange = useMemo(() => {
+    return {
+      onMouseEnter: () => {
+        assignmentRange.onMouseEnter('x');
+        highlightRange.show();
+      },
+      onMouseLeave: () => {
+        assignmentRange.onMouseLeave('x');
+        highlightRange.hide();
+      },
+    };
+  }, [assignmentRange, highlightRange]);
+
+  const onHoverSignal = useMemo(() => {
+    return {
+      onMouseEnter: () => {
+        assignmentSignal.onMouseEnter('x');
+        highlightSignal.show();
+      },
+      onMouseLeave: () => {
+        assignmentSignal.onMouseLeave('x');
+        highlightSignal.hide();
+      },
+    };
+  }, [assignmentSignal, highlightSignal]);
 
   return (
     <tr
       onContextMenu={(e) => onContextMenu(e, getOriginal())}
       css={
-        highlightRange.isActive || highlightRange.isActivePermanently
+        highlightRange.isActive || assignmentRange.isActive
           ? HighlightedRowStyle
           : Object.prototype.hasOwnProperty.call(
               rowData.tableMetaInfo,
@@ -179,18 +189,20 @@ const RangesTableRow = ({
       }
       {...highlightRange.onHover}
     >
-      <td {...rowSpanTags}>{rowData.tableMetaInfo.rowIndex + 1}</td>
+      <td {...rowSpanTags} {...onHoverRange}>
+        {rowData.tableMetaInfo.rowIndex + 1}
+      </td>
       {getShowPreference('showFrom') ? (
-        <td {...rowSpanTags}>
+        <td {...rowSpanTags} {...onHoverRange}>
           {applyFormatPreference('fromFormat', rowData.from)}
         </td>
       ) : null}
       {getShowPreference('showTo') ? (
-        <td {...rowSpanTags}>
+        <td {...rowSpanTags} {...onHoverRange}>
           {applyFormatPreference('toFormat', rowData.to)}
         </td>
       ) : null}
-      <td {...highlightSignal.onHover}>
+      <td {...onHoverSignal}>
         {rowData.tableMetaInfo.signal
           ? !checkMultiplicity(rowData.tableMetaInfo.signal.multiplicity, ['m'])
             ? `${applyFormatPreference(
@@ -201,7 +213,7 @@ const RangesTableRow = ({
           : ''}
       </td>
       {getShowPreference('showRelative') ? (
-        <td {...rowSpanTags}>
+        <td {...rowSpanTags} {...onHoverRange}>
           {checkSignalKinds(rowData, SignalKindsToConsiderInIntegralsSum)
             ? applyFormatPreference('relativeFormat', rowData.integral)
             : applyFormatPreference(
@@ -213,16 +225,16 @@ const RangesTableRow = ({
         </td>
       ) : null}
       {getShowPreference('showAbsolute') ? (
-        <td {...rowSpanTags}>
+        <td {...rowSpanTags} {...onHoverRange}>
           {applyFormatPreference('absoluteFormat', rowData.absolute)}
         </td>
       ) : null}
-      <td {...highlightSignal.onHover}>
+      <td {...onHoverSignal}>
         {rowData.tableMetaInfo.signal
           ? rowData.tableMetaInfo.signal.multiplicity
           : ''}
       </td>
-      <td {...highlightSignal.onHover}>
+      <td {...onHoverSignal}>
         {rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.j
           ? rowData.tableMetaInfo.signal.j
               .map((coupling) => coupling.coupling.toFixed(1))
@@ -230,10 +242,10 @@ const RangesTableRow = ({
           : ''}
       </td>
       <td
-        {...highlightSignal.onHover}
-        {...{ onClick: (e) => handleOnClick(e, highlightSignal) }}
+        {...onHoverSignal}
+        {...{ onClick: (e) => handleOnClick(e, assignmentSignal) }}
         css={
-          highlightSignal.isActivePermanently || highlightSignal.isActive
+          assignmentSignal.isActive || highlightSignal.isActive
             ? {
                 color: 'red',
                 fontWeight: 'bold',
@@ -263,22 +275,16 @@ const RangesTableRow = ({
               </button>
             </sup>
           </div>
-        ) : highlightSignal.isActivePermanently ? (
+        ) : assignmentSignal.isActive ? (
           '0'
         ) : (
           ''
         )}
       </td>
       <td
-        {...{
-          ...rowSpanTags,
-          css: {
-            ...rowSpanTags.css,
-            color: highlightRange.isActivePermanently ? 'red' : 'black',
-            fontWeight: highlightRange.isActivePermanently ? 'bold' : 'normal',
-          },
-        }}
-        {...{ onClick: (e) => handleOnClick(e, highlightRange) }}
+        {...rowSpanTags}
+        {...onHoverRange}
+        {...{ onClick: (e) => handleOnClick(e, assignmentRange) }}
       >
         {rowData.pubIntegral !== undefined && rowData.pubIntegral > 0 ? (
           rowData.diaID && rowData.diaID.length > 0 ? (
@@ -289,15 +295,19 @@ const RangesTableRow = ({
               {`${rowData.pubIntegral}`} {`(`}
               <span
                 css={
-                  highlightData.highlight.highlighted.length > 0 &&
-                  highlightData.highlight.highlighted.includes(rowData.id) &&
-                  !highlightData.highlight.highlighted.find(
-                    (_highlight) =>
-                      _highlight.split(HighlightSignalConcatenation).length >
-                        1 &&
-                      _highlight.split(HighlightSignalConcatenation)[0] ===
-                        rowData.id,
-                  )
+                  assignmentRange.isActive ||
+                  assignmentRange.isOnHover ||
+                  (highlightRange.isActive &&
+                    !highlightData.highlight.highlighted.find(
+                      (_highlighted) => {
+                        const split = _highlighted.split(
+                          HighlightSignalConcatenation,
+                        );
+                        return (
+                          split[0] === assignmentRange.id && split.length > 1
+                        );
+                      },
+                    ))
                     ? {
                         color: 'red',
                         fontWeight: 'bold',
@@ -322,16 +332,33 @@ const RangesTableRow = ({
                 </button>
               </sup>
             </div>
+          ) : assignmentRange.isActive ? (
+            <div>
+              {`${rowData.pubIntegral} (`}
+              <span
+                css={{
+                  color: 'red',
+                  fontWeight: 'bold',
+                }}
+              >
+                0
+              </span>
+              {')'}
+            </div>
           ) : (
             rowData.pubIntegral
           )
-        ) : highlightRange.isActivePermanently ? (
-          '0'
+        ) : assignmentRange.isActive ? (
+          <div>
+            {'0 ('}
+            <span css={{ color: 'red', fontWeight: 'bold' }}>0</span>
+            {')'}
+          </div>
         ) : (
           ''
         )}
       </td>
-      <td {...highlightSignal.onHover}>
+      <td {...onHoverSignal}>
         <SelectUncontrolled
           onChange={(value) => {
             onChangeKind(

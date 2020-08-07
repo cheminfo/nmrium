@@ -53,4 +53,20 @@ const handleAutoZonesDetection = (state, detectionOptions) => {
   });
 };
 
-export { add2dZoneHandler, delete2dZoneHandler, handleAutoZonesDetection };
+const handleChangeZone = (state, action) => {
+  return produce(state, (draft) => {
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      const datumObject = AnalysisObj.getDatum(id);
+      datumObject.setZone(action.data);
+      draft.data[index].zones = datumObject.getZones();
+    }
+  });
+};
+
+export {
+  add2dZoneHandler,
+  delete2dZoneHandler,
+  handleAutoZonesDetection,
+  handleChangeZone,
+};

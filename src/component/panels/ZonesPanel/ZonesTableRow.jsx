@@ -3,15 +3,11 @@ import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useState } from 'react';
 import { FaRegTrashAlt, FaSearchPlus, FaMinusCircle } from 'react-icons/fa';
 
-import { useDispatch } from '../../context/DispatchContext';
-import SelectUncontrolled from '../../elements/SelectUncontrolled';
-import { useHighlight, useHighlightData } from '../../highlight';
-import {
-  UNSET_ACTIVE_ASSIGNMENT_AXIS,
-  SET_ACTIVE_ASSIGNMENT_AXIS,
-} from '../../reducer/types/Types';
+import { useAssignment } from '../../assignment';
+// import SelectUncontrolled from '../../elements/SelectUncontrolled';
+import { useHighlight } from '../../highlight';
 import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
-import { SignalKinds } from '../extra/constants/SignalsKinds';
+// import { SignalKinds } from '../extra/constants/SignalsKinds';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;
@@ -21,58 +17,51 @@ const ConstantlyHighlightedRowStyle = css`
   background-color: #f5f5dc;
 `;
 
-const selectBoxStyle = {
-  marginLeft: 2,
-  marginRight: 2,
-  border: 'none',
-  height: '20px',
-};
+// const selectBoxStyle = {
+//   marginLeft: 2,
+//   marginRight: 2,
+//   border: 'none',
+//   height: '20px',
+// };
 
 const ZonesTableRow = ({
   rowData,
-  onChangeKind,
+  //   onChangeKind,
   onDelete,
   onUnlink,
   onZoom,
   onContextMenu,
 }) => {
-  const dispatch = useDispatch();
+  const assignmentZone = useAssignment(rowData.id);
+  const highlightZone = useHighlight(
+    [assignmentZone.id],
+    // .concat(
+    //   assignmentZone.assigned.x || [],
+    //   assignmentZone.assigned.y || [],
+    // ),
+  );
+  const highlightZoneX = useHighlight(
+    [`${assignmentZone.id}${HighlightSignalConcatenation}X`].concat(
+      assignmentZone.assigned.x || [],
+    ),
+  );
+  const highlightZoneY = useHighlight(
+    [`${assignmentZone.id}${HighlightSignalConcatenation}Y`].concat(
+      assignmentZone.assigned.y || [],
+    ),
+  );
 
-  const highlightIDsZoneX = useMemo(() => {
-    return [].concat(
-      [`${rowData.id}${HighlightSignalConcatenation}X`],
-      rowData.x.diaID ? rowData.x.diaID : [],
-    );
-  }, [rowData.id, rowData.x.diaID]);
-  const highlightIDsZoneY = useMemo(() => {
-    return [].concat(
-      [`${rowData.id}${HighlightSignalConcatenation}Y`],
-      rowData.y.diaID ? rowData.y.diaID : [],
-    );
-  }, [rowData.y.diaID, rowData.id]);
-  const highlightIDsSignalX = useMemo(() => {
-    return [].concat(
-      [`${rowData.tableMetaInfo.id}${HighlightSignalConcatenation}X`],
-      rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.x.diaID
-        ? rowData.tableMetaInfo.signal.x.diaID
-        : [],
-    );
-  }, [rowData.tableMetaInfo.id, rowData.tableMetaInfo.signal]);
-  const highlightIDsSignalY = useMemo(() => {
-    return [].concat(
-      [`${rowData.tableMetaInfo.id}${HighlightSignalConcatenation}Y`],
-      rowData.tableMetaInfo.signal && rowData.tableMetaInfo.signal.y.diaID
-        ? rowData.tableMetaInfo.signal.y.diaID
-        : [],
-    );
-  }, [rowData.tableMetaInfo.id, rowData.tableMetaInfo.signal]);
-
-  const highlightZone = useHighlight([rowData.id]);
-  const highlightZoneX = useHighlight(highlightIDsZoneX);
-  const highlightZoneY = useHighlight(highlightIDsZoneY);
-  const highlightSignalX = useHighlight(highlightIDsSignalX);
-  const highlightSignalY = useHighlight(highlightIDsSignalY);
-  const highlightData = useHighlightData();
+  const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
+  const highlightSignalX = useHighlight(
+    [`${assignmentSignal.id}${HighlightSignalConcatenation}X`].concat(
+      assignmentSignal.assigned.x || [],
+    ),
+  );
+  const highlightSignalY = useHighlight(
+    [`${assignmentSignal.id}${HighlightSignalConcatenation}Y`].concat(
+      assignmentSignal.assigned.y || [],
+    ),
+  );
 
   const [showUnlinkButtonZoneX, setShowUnlinkButtonZoneX] = useState(false);
   const [showUnlinkButtonZoneY, setShowUnlinkButtonZoneY] = useState(false);
@@ -100,7 +89,6 @@ const ZonesTableRow = ({
   const handleOnUnlink = useCallback(
     (e, isOnZoneLevel, axis) => {
       // event handling here in case of unlink button clicked
-      // to also exit the assignment mode then
       if (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -111,62 +99,121 @@ const ZonesTableRow = ({
         rowData.tableMetaInfo.signalIndex,
         axis,
       );
-      if (axis === 'X') {
+      if (axis === 'x') {
         if (isOnZoneLevel !== undefined) {
           if (isOnZoneLevel) {
             setShowUnlinkButtonZoneX(false);
+            assignmentZone.removeAll('x');
           } else {
             setShowUnlinkButtonSignalX(false);
+            assignmentSignal.removeAll('x');
           }
         } else {
           setShowUnlinkButtonZoneX(false);
           setShowUnlinkButtonSignalX(false);
         }
-      } else if (axis === 'Y') {
+      } else if (axis === 'y') {
         if (isOnZoneLevel !== undefined) {
           if (isOnZoneLevel) {
             setShowUnlinkButtonZoneY(false);
+            assignmentZone.removeAll('y');
           } else {
             setShowUnlinkButtonSignalY(false);
+            assignmentSignal.removeAll('y');
           }
         } else {
           setShowUnlinkButtonZoneY(false);
           setShowUnlinkButtonSignalY(false);
         }
+      } else {
+        setShowUnlinkButtonZoneX(false);
+        assignmentZone.removeAll('x');
+        setShowUnlinkButtonSignalX(false);
+        assignmentSignal.removeAll('x');
+        setShowUnlinkButtonZoneY(false);
+        assignmentZone.removeAll('y');
+        setShowUnlinkButtonSignalY(false);
+        assignmentSignal.removeAll('y');
       }
     },
-    [getOriginal, onUnlink, rowData.tableMetaInfo.signalIndex],
+    [
+      assignmentSignal,
+      assignmentZone,
+      getOriginal,
+      onUnlink,
+      rowData.tableMetaInfo.signalIndex,
+    ],
   );
 
-  const handleOnDelete = useCallback(
-    (e) => {
-      handleOnUnlink(e);
-      onDelete(getOriginal());
-    },
-    [getOriginal, handleOnUnlink, onDelete],
-  );
+  const handleOnDelete = useCallback(() => {
+    onDelete(getOriginal());
+  }, [getOriginal, onDelete]);
 
   const handleOnZoom = useCallback(() => {
     onZoom(getOriginal());
   }, [getOriginal, onZoom]);
 
-  const handleOnClick = useCallback(
-    (e, highlight, axis) => {
-      if (highlight.isActivePermanently) {
-        dispatch({ type: UNSET_ACTIVE_ASSIGNMENT_AXIS });
-      } else {
-        dispatch({ type: SET_ACTIVE_ASSIGNMENT_AXIS, axis: axis });
-      }
-      highlight.click(e);
-    },
-    [dispatch],
-  );
+  const handleOnClick = useCallback((e, assignment, axis) => {
+    assignment.onClick(e, axis);
+  }, []);
+
+  const onHoverZoneX = useMemo(() => {
+    return {
+      onMouseEnter: () => {
+        assignmentZone.onMouseEnter('x');
+        highlightZoneX.show();
+      },
+      onMouseLeave: () => {
+        assignmentZone.onMouseLeave('x');
+        highlightZoneX.hide();
+      },
+    };
+  }, [assignmentZone, highlightZoneX]);
+
+  const onHoverZoneY = useMemo(() => {
+    return {
+      onMouseEnter: () => {
+        assignmentZone.onMouseEnter('y');
+        highlightZoneY.show();
+      },
+      onMouseLeave: () => {
+        assignmentZone.onMouseLeave('y');
+        highlightZoneY.hide();
+      },
+    };
+  }, [assignmentZone, highlightZoneY]);
+
+  const onHoverSignalX = useMemo(() => {
+    return {
+      onMouseEnter: () => {
+        assignmentSignal.onMouseEnter('x');
+        highlightSignalX.show();
+      },
+      onMouseLeave: () => {
+        assignmentSignal.onMouseLeave('x');
+        highlightSignalX.hide();
+      },
+    };
+  }, [assignmentSignal, highlightSignalX]);
+
+  const onHoverSignalY = useMemo(() => {
+    return {
+      onMouseEnter: () => {
+        assignmentSignal.onMouseEnter('y');
+        highlightSignalY.show();
+      },
+      onMouseLeave: () => {
+        assignmentSignal.onMouseLeave('y');
+        highlightSignalY.hide();
+      },
+    };
+  }, [assignmentSignal, highlightSignalY]);
 
   return (
     <tr
       onContextMenu={(e) => onContextMenu(e, getOriginal())}
       css={
-        highlightZone.isActive || highlightZone.isActivePermanently
+        highlightZone.isActive || assignmentZone.isActive
           ? HighlightedRowStyle
           : Object.prototype.hasOwnProperty.call(
               rowData.tableMetaInfo,
@@ -178,17 +225,18 @@ const ZonesTableRow = ({
       {...highlightZone.onHover}
     >
       <td {...rowSpanTags}>{rowData.tableMetaInfo.rowIndex + 1}</td>
-      <td {...highlightSignalX.onHover} {...highlightSignalX.onClick}>
+      <td {...onHoverSignalX}>
         {rowData.tableMetaInfo.signal.x.delta.toFixed(2)}
       </td>
-      <td {...highlightSignalY.onHover} {...highlightSignalY.onClick}>
+      <td {...onHoverSignalY}>
         {rowData.tableMetaInfo.signal.y.delta.toFixed(2)}
       </td>
       <td
-        {...highlightSignalX.onHover}
-        {...{ onClick: (e) => handleOnClick(e, highlightSignalX, 'X') }}
+        {...onHoverSignalX}
+        {...{ onClick: (e) => handleOnClick(e, assignmentSignal, 'x') }}
         css={
-          highlightSignalX.isActivePermanently || highlightSignalX.isActive
+          highlightSignalX.isActive ||
+          (assignmentSignal.isActive && assignmentSignal.activeAxis === 'x')
             ? {
                 color: 'red',
                 fontWeight: 'bold',
@@ -212,23 +260,24 @@ const ZonesTableRow = ({
                   padding: 0,
                   margin: 0,
                 }}
-                onClick={(e) => handleOnUnlink(e, false, 'X')}
+                onClick={(e) => handleOnUnlink(e, false, 'x')}
               >
                 <FaMinusCircle color="red" />
               </button>
             </sup>
           </div>
-        ) : highlightSignalX.isActivePermanently ? (
+        ) : assignmentSignal.isActive && assignmentSignal.activeAxis === 'x' ? (
           '0'
         ) : (
           ''
         )}
       </td>
       <td
-        {...highlightSignalY.onHover}
-        {...{ onClick: (e) => handleOnClick(e, highlightSignalY, 'Y') }}
+        {...onHoverSignalY}
+        {...{ onClick: (e) => handleOnClick(e, assignmentSignal, 'y') }}
         css={
-          highlightSignalY.isActivePermanently || highlightSignalY.isActive
+          highlightSignalY.isActive ||
+          (assignmentSignal.isActive && assignmentSignal.activeAxis === 'y')
             ? {
                 color: 'red',
                 fontWeight: 'bold',
@@ -252,28 +301,22 @@ const ZonesTableRow = ({
                   padding: 0,
                   margin: 0,
                 }}
-                onClick={(e) => handleOnUnlink(e, false, 'Y')}
+                onClick={(e) => handleOnUnlink(e, false, 'y')}
               >
                 <FaMinusCircle color="red" />
               </button>
             </sup>
           </div>
-        ) : highlightSignalY.isActivePermanently ? (
+        ) : assignmentSignal.isActive && assignmentSignal.activeAxis === 'y' ? (
           '0'
         ) : (
           ''
         )}
       </td>
       <td
-        {...{
-          ...rowSpanTags,
-          css: {
-            ...rowSpanTags.css,
-            color: highlightZoneX.isActivePermanently ? 'red' : 'black',
-            fontWeight: highlightZoneX.isActivePermanently ? 'bold' : 'normal',
-          },
-        }}
-        {...{ onClick: (e) => handleOnClick(e, highlightZoneX, 'X') }}
+        {...rowSpanTags}
+        {...onHoverZoneX}
+        {...{ onClick: (e) => handleOnClick(e, assignmentZone, 'x') }}
       >
         {rowData.x.pubIntegral !== undefined && rowData.x.pubIntegral > 0 ? (
           rowData.x.diaID && rowData.x.diaID.length > 0 ? (
@@ -284,17 +327,11 @@ const ZonesTableRow = ({
               {`${rowData.x.pubIntegral}`} {`(`}
               <span
                 css={
-                  highlightData.highlight.highlighted.length > 0 &&
-                  highlightData.highlight.highlighted.includes(
-                    `${rowData.id}${HighlightSignalConcatenation}X`,
-                  ) &&
-                  !highlightData.highlight.highlighted.find(
-                    (_highlight) =>
-                      _highlight.split(HighlightSignalConcatenation).length >
-                        1 &&
-                      _highlight.split(HighlightSignalConcatenation)[0] ===
-                        rowData.id,
-                  )
+                  (assignmentZone.isActive &&
+                    assignmentZone.activeAxis === 'x') ||
+                  (assignmentZone.isOnHover &&
+                    assignmentZone.onHoverAxis === 'x') ||
+                  highlightZoneX.isActive
                     ? {
                         color: 'red',
                         fontWeight: 'bold',
@@ -313,31 +350,42 @@ const ZonesTableRow = ({
                     padding: 0,
                     margin: 0,
                   }}
-                  onClick={(e) => handleOnUnlink(e, true, 'X')}
+                  onClick={(e) => handleOnUnlink(e, true, 'x')}
                 >
                   <FaMinusCircle color="red" />
                 </button>
               </sup>
             </div>
+          ) : assignmentZone.isActive && assignmentZone.activeAxis === 'x' ? (
+            <div>
+              {`${rowData.x.pubIntegral} (`}
+              <span
+                css={{
+                  color: 'red',
+                  fontWeight: 'bold',
+                }}
+              >
+                0
+              </span>
+              {')'}
+            </div>
           ) : (
             rowData.x.pubIntegral
           )
-        ) : highlightZoneX.isActivePermanently ? (
-          '0'
+        ) : assignmentZone.isActive && assignmentZone.activeAxis === 'x' ? (
+          <div>
+            {'0 ('}
+            <span css={{ color: 'red', fontWeight: 'bold' }}>0</span>
+            {')'}
+          </div>
         ) : (
           ''
         )}
       </td>
       <td
-        {...{
-          ...rowSpanTags,
-          css: {
-            ...rowSpanTags.css,
-            color: highlightZoneY.isActivePermanently ? 'red' : 'black',
-            fontWeight: highlightZoneY.isActivePermanently ? 'bold' : 'normal',
-          },
-        }}
-        {...{ onClick: (e) => handleOnClick(e, highlightZoneY, 'Y') }}
+        {...rowSpanTags}
+        {...onHoverZoneY}
+        {...{ onClick: (e) => handleOnClick(e, assignmentZone, 'y') }}
       >
         {rowData.y.pubIntegral !== undefined && rowData.y.pubIntegral > 0 ? (
           rowData.y.diaID && rowData.y.diaID.length > 0 ? (
@@ -348,17 +396,11 @@ const ZonesTableRow = ({
               {`${rowData.y.pubIntegral}`} {`(`}
               <span
                 css={
-                  highlightData.highlight.highlighted.length > 0 &&
-                  highlightData.highlight.highlighted.includes(
-                    `${rowData.id}${HighlightSignalConcatenation}Y`,
-                  ) &&
-                  !highlightData.highlight.highlighted.find(
-                    (_highlight) =>
-                      _highlight.split(HighlightSignalConcatenation).length >
-                        1 &&
-                      _highlight.split(HighlightSignalConcatenation)[0] ===
-                        rowData.id,
-                  )
+                  (assignmentZone.isActive &&
+                    assignmentZone.activeAxis === 'y') ||
+                  (assignmentZone.isOnHover &&
+                    assignmentZone.onHoverAxis === 'y') ||
+                  highlightZoneY.isActive
                     ? {
                         color: 'red',
                         fontWeight: 'bold',
@@ -377,22 +419,39 @@ const ZonesTableRow = ({
                     padding: 0,
                     margin: 0,
                   }}
-                  onClick={(e) => handleOnUnlink(e, true, 'Y')}
+                  onClick={(e) => handleOnUnlink(e, true, 'y')}
                 >
                   <FaMinusCircle color="red" />
                 </button>
               </sup>
             </div>
+          ) : assignmentZone.isActive && assignmentZone.activeAxis === 'y' ? (
+            <div>
+              {`${rowData.y.pubIntegral} (`}
+              <span
+                css={{
+                  color: 'red',
+                  fontWeight: 'bold',
+                }}
+              >
+                0
+              </span>
+              {')'}
+            </div>
           ) : (
             rowData.y.pubIntegral
           )
-        ) : highlightZoneY.isActivePermanently ? (
-          '0'
+        ) : assignmentZone.isActive && assignmentZone.activeAxis === 'y' ? (
+          <div>
+            {'0 ('}
+            <span css={{ color: 'red', fontWeight: 'bold' }}>0</span>
+            {')'}
+          </div>
         ) : (
           ''
         )}
       </td>
-      <td>
+      {/* <td>
         <SelectUncontrolled
           onChange={(value) => {
             onChangeKind(
@@ -405,7 +464,7 @@ const ZonesTableRow = ({
           value={rowData.tableMetaInfo.signal.kind}
           style={selectBoxStyle}
         />
-      </td>
+      </td> */}
       <td {...rowSpanTags}>
         <button
           type="button"

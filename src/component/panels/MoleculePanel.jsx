@@ -17,6 +17,7 @@ import OCLnmr from 'react-ocl-nmr';
 import 'react-animated-slider-2/build/horizontal.css';
 import { useMeasure } from 'react-use';
 
+import { useAssignmentData, useAssignment } from '../assignment';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
@@ -28,6 +29,7 @@ import {
   DELETE_MOLECULE,
   SET_MOLECULE,
   CHANGE_RANGE_DATA,
+  CHANGE_ZONE_DATA,
 } from '../reducer/types/Types';
 import {
   copyTextToClipboard,
@@ -36,7 +38,8 @@ import {
 } from '../utility/Export';
 
 import { HighlightSignalConcatenation } from './extra/constants/ConcatenationStrings';
-import { getPubIntegral, unlink } from './extra/utilities/RangeUtilities';
+import * as RangeUtilities from './extra/utilities/RangeUtilities';
+import * as ZoneUtilities from './extra/utilities/ZoneUtilities';
 
 const panelContainerStyle = css`
   display: flex;
@@ -134,11 +137,12 @@ const MoleculePanel = memo(() => {
     activeSpectrum,
     molecules,
     activeTab,
-    assignmentMeta, // override onClick methods in each case
   } = useChartData();
 
   const highlightData = useHighlightData();
+  const assignmentData = useAssignmentData();
   const [elements, setElements] = useState([]);
+  const [mode, setMode] = useState(null);
 
   useEffect(() => {
     if (activeTab) {
@@ -153,84 +157,98 @@ const MoleculePanel = memo(() => {
     }
   }, [activeTab]);
 
+  useEffect(() => {
+    if (elements.length === 1) {
+      setMode('1D');
+    } else if (elements.length === 2) {
+      setMode('2D');
+    } else {
+      setMode(null);
+    }
+  }, [elements]);
+
+  const activeAssignment = useAssignment(
+    assignmentData.assignment.activeID !== undefined
+      ? assignmentData.assignment.activeID
+      : HighlightSignalConcatenation, // dummy value
+  );
+
   const extractFromAtom = useCallback(
     (atom) => {
-      if (
-        assignmentMeta.activeAssignmentAxis !== undefined &&
-        elements &&
-        Object.keys(atom).length > 0
-      ) {
-        console.log(assignmentMeta.activeAssignmentAxis);
-        const dim = assignmentMeta.activeAssignmentAxis === 'X' ? 0 : 1;
-        console.log(dim);
-        if (elements[dim] === atom.atomLabel) {
-          // take always oclID if atom type is same as element of activeTab)
-          return { oclIDs: [atom.oclID], nbAtoms: atom.nbAtoms };
-        }
-        if (elements[dim] === 'H') {
-          // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
+      if (elements.length > 0 && Object.keys(atom).length > 0) {
+        const dim =
+          activeAssignment.activeAxis === 'x'
+            ? 0
+            : activeAssignment.activeAxis === 'y'
+            ? 1
+            : undefined;
+        if (dim !== undefined) {
+          if (elements[dim] === atom.atomLabel) {
+            // take always oclID if atom type is same as element of activeTab)
+            return { oclIDs: [atom.oclID], nbAtoms: atom.nbAtoms };
+          }
+          if (elements[dim] === 'H') {
+            // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
+            return {
+              oclIDs: atom.hydrogenOCLIDs,
+              nbAtoms: atom.nbAtoms * atom.nbHydrogens,
+            };
+          }
+        } else {
           return {
-            oclIDs: atom.hydrogenOCLIDs,
-            nbAtoms: atom.nbAtoms * atom.nbHydrogens,
+            oclIDs: [atom.oclID].concat(atom.hydrogenOCLIDs),
+            nbAtoms: atom.nbAtoms + atom.nbAtoms * atom.nbHydrogens,
           };
         }
       }
 
       return { oclIDs: [], nbAtoms: 0 };
     },
-    [assignmentMeta, elements],
+    [activeAssignment.activeAxis, elements],
   );
 
-  const rangesData = useMemo(() => {
+  const data = useMemo(() => {
     const _data =
       activeSpectrum && spectrumData
         ? spectrumData[activeSpectrum.index]
         : null;
 
-    if (_data && _data.ranges && _data.ranges.values) {
-      return _data.ranges.values;
+    if (_data) {
+      if (mode === '1D' && _data.ranges && _data.ranges.values) {
+        return _data.ranges.values;
+      } else if (mode === '2D' && _data.zones && _data.zones.values) {
+        return _data.zones.values;
+      }
     }
     return [];
-  }, [activeSpectrum, spectrumData]);
-
-  const assignments = useMemo(() => {
-    return rangesData.map((_range) => {
-      return {
-        rangeID: _range.id,
-        diaID: {
-          range: _range.diaID ? _range.diaID : [],
-          signal: _range.signal
-            ? _range.signal
-                .map((_signal, i) => {
-                  return {
-                    diaID: _signal.diaID ? _signal.diaID : [],
-                    signalIndex: i,
-                  };
-                })
-                .flat()
-            : [],
-        },
-      };
-    });
-  }, [rangesData]);
+  }, [activeSpectrum, mode, spectrumData]);
 
   const assignedDiaIDs = useMemo(() => {
-    return assignments
-      .map((_range) =>
-        [].concat(
-          _range.diaID.range,
-          _range.diaID.signal.map((_signal) => _signal.diaID).flat(),
-        ),
-      )
-      .flat();
-  }, [assignments]);
+    const assignedDiaID = { x: [], y: [] };
+    for (let id in assignmentData.assignment.assignment) {
+      if (assignmentData.assignment.assignment[id].x) {
+        assignedDiaID.x.push(...assignmentData.assignment.assignment[id].x);
+      }
+      if (assignmentData.assignment.assignment[id].y) {
+        assignedDiaID.y.push(...assignmentData.assignment.assignment[id].y);
+      }
+    }
+    // with its structure it's prepared for showing assigned IDs per axis
+    return assignedDiaID;
+  }, [assignmentData.assignment]);
+
+  // used for atom highlighting for now, until we would like to highlight atoms per axis separately
+  const assignedDiaIDsMerged = useMemo(
+    () => assignedDiaIDs.x.concat(assignedDiaIDs.y),
+    [assignedDiaIDs.x, assignedDiaIDs.y],
+  );
 
   const toggleAssignment = useCallback(
     (diaID, atomInformation) => {
       // 1. one atom can only be assigned to one range/signal
       // 2. check whether an atom is already assigned to a range to allow toggling the assignment
       if (
-        assignedDiaIDs.some((_oclID) =>
+        assignedDiaIDsMerged.some((_oclID) =>
           atomInformation.oclIDs.includes(_oclID),
         ) &&
         !diaID.some((_oclID) => atomInformation.oclIDs.includes(_oclID))
@@ -259,64 +277,71 @@ const MoleculePanel = memo(() => {
 
       return _diaID;
     },
-    [alert, assignedDiaIDs],
+    [alert, assignedDiaIDsMerged],
   );
 
   const handleOnClickAtom = useCallback(
     (atom) => {
-      if (
-        highlightData.highlight.highlightedPermanently &&
-        highlightData.highlight.highlightedPermanently.length > 0
-      ) {
+      if (activeAssignment.isActive) {
         const atomInformation = extractFromAtom(atom);
-        console.log('---clickOnAtom---');
-        console.log(atom);
-        console.log(atomInformation);
         if (atomInformation.nbAtoms > 0) {
-          // Detect range and signal index within permanent highlights (assignment mode)
-          // via searching for the format "range.id" + ${HighlightSignalConcatenation} + "signalIndex".
-          // Also, here, we expect that the permanent highlights contain only one signal,
-          // if not the first is taken in this search.
-          let range, split, signalIndex, id;
-          let stop = false;
-          for (let i = 0; i < rangesData.length; i++) {
-            range = rangesData[i];
-            for (
-              let j = 0;
-              j < highlightData.highlight.highlightedPermanently.length;
-              j++
-            ) {
-              split = highlightData.highlight.highlightedPermanently[j].split(
-                HighlightSignalConcatenation,
-              );
-              id = split[0];
-              signalIndex = split[1];
-              if (id === range.id) {
-                stop = true;
-                break;
-              }
-            }
-            if (stop) break;
-          }
+          // save assignment in assignment hook
+          atomInformation.oclIDs.forEach((_oclID) => {
+            activeAssignment.toggle(_oclID);
+          });
 
+          // save assignment (diaIDs) in range/zone data
+          const split = activeAssignment.id.split(HighlightSignalConcatenation);
+          const datum = data.find((_datum) => _datum.id === split[0]);
+          const signalIndex = !isNaN(Number(split[1]))
+            ? Number(split[1])
+            : undefined;
           // determine the level of setting the diaID array (range vs. signal level) and save there
-          const _range = { ...range };
+          const _datum = Object.assign({}, datum);
           if (signalIndex === undefined) {
-            _range.diaID = toggleAssignment(
-              _range.diaID || [],
-              atomInformation,
-            );
-          } else if (range.signal && range.signal[signalIndex]) {
-            _range.signal[signalIndex] = {
-              ..._range.signal[signalIndex],
-              diaID: toggleAssignment(
-                _range.signal[signalIndex].diaID || [],
+            if (mode === '1D') {
+              _datum.diaID = toggleAssignment(
+                _datum.diaID || [],
                 atomInformation,
-              ),
-            };
+              );
+            } else if (mode === '2D') {
+              _datum[activeAssignment.activeAxis].diaID = toggleAssignment(
+                _datum[activeAssignment.activeAxis].diaID || [],
+                atomInformation,
+              );
+            }
+          } else if (datum.signal && datum.signal[signalIndex]) {
+            if (mode === '1D') {
+              _datum.signal[signalIndex] = {
+                ..._datum.signal[signalIndex],
+                diaID: toggleAssignment(
+                  _datum.signal[signalIndex].diaID || [],
+                  atomInformation,
+                ),
+              };
+            } else if (mode === '2D') {
+              _datum.signal[signalIndex][activeAssignment.activeAxis] = {
+                ..._datum.signal[signalIndex][activeAssignment.activeAxis],
+                diaID: toggleAssignment(
+                  _datum.signal[signalIndex][activeAssignment.activeAxis]
+                    .diaID || [],
+                  atomInformation,
+                ),
+              };
+            }
           }
-          _range.pubIntegral = getPubIntegral(_range);
-          dispatch({ type: CHANGE_RANGE_DATA, data: _range });
+          if (mode === '1D') {
+            _datum.pubIntegral = RangeUtilities.getPubIntegral(_datum);
+            dispatch({ type: CHANGE_RANGE_DATA, data: _datum });
+          } else if (mode === '2D') {
+            _datum[
+              activeAssignment.activeAxis
+            ].pubIntegral = ZoneUtilities.getPubIntegral(
+              _datum,
+              activeAssignment.activeAxis,
+            );
+            dispatch({ type: CHANGE_ZONE_DATA, data: _datum });
+          }
         } else {
           alert.info(
             'Not assigned! Different atom type or no attached hydrogens found!',
@@ -325,60 +350,47 @@ const MoleculePanel = memo(() => {
       }
     },
     [
-      alert,
-      dispatch,
+      activeAssignment,
       extractFromAtom,
-      highlightData.highlight.highlightedPermanently,
-      rangesData,
+      data,
+      mode,
       toggleAssignment,
+      dispatch,
+      alert,
     ],
   );
 
   const currentDiaIDsToHighlight = useMemo(() => {
-    // don't highlight assigned atoms on range level when hovering over signals
-    const rangeIDs = highlightData.highlight.highlighted.filter(
-      (_highlighted) =>
-        _highlighted.split(HighlightSignalConcatenation).length === 1,
-    );
-    const signalIDs = highlightData.highlight.highlighted.filter(
-      (_highlighted) =>
-        _highlighted.split(HighlightSignalConcatenation).length === 2,
-    );
-    const ignoredRangeDiaIDs = rangeIDs.filter((_rangeID) =>
-      signalIDs.some(
-        (_signalID) =>
-          _signalID.split(HighlightSignalConcatenation)[0] === _rangeID,
-      ),
-    );
-    return highlightData.highlight.highlighted
-      .map((_highlighted) => {
-        let splitHighlight = _highlighted.split(HighlightSignalConcatenation);
-        if (splitHighlight.length < 1 || splitHighlight.length > 2) {
-          return null;
-        }
-        return assignments
-          .map((_range) => {
-            if (_range.rangeID === splitHighlight[0]) {
-              if (
-                splitHighlight.length === 1 &&
-                !ignoredRangeDiaIDs.includes(splitHighlight[0])
-              ) {
-                return _range.diaID.range;
-              } else if (splitHighlight.length === 2) {
-                return _range.diaID.signal.find(
-                  (_signal) =>
-                    `${_range.rangeID}${HighlightSignalConcatenation}${_signal.signalIndex}` ===
-                    _highlighted,
-                ).diaID;
-              }
-            }
-            return null;
-          })
-          .flat();
-      })
-      .flat()
-      .filter((_highlighted) => _highlighted !== null);
-  }, [assignments, highlightData.highlight.highlighted]);
+    const assignmentOnHover = assignmentData.assignment.isOnHover
+      ? assignmentData.assignment.assignment[
+          assignmentData.assignment.onHoverID
+        ]
+      : null;
+
+    const axisOnHover = assignmentData.assignment.isOnHover
+      ? assignmentData.assignment.onHoverAxis
+      : null;
+
+    return assignmentOnHover
+      ? mode === '1D'
+        ? assignmentOnHover.x || []
+        : mode === '2D'
+        ? axisOnHover
+          ? axisOnHover === 'x'
+            ? assignmentOnHover.x || []
+            : axisOnHover === 'y'
+            ? assignmentOnHover.y || []
+            : (assignmentOnHover.x || []).concat(assignmentOnHover.y || [])
+          : (assignmentOnHover.x || []).concat(assignmentOnHover.y || [])
+        : []
+      : [];
+  }, [
+    assignmentData.assignment.assignment,
+    assignmentData.assignment.isOnHover,
+    assignmentData.assignment.onHoverAxis,
+    assignmentData.assignment.onHoverID,
+    mode,
+  ]);
 
   useEffect(() => {
     if (onAtomHoverAction) {
@@ -403,52 +415,100 @@ const MoleculePanel = memo(() => {
       const oclIDs = extractFromAtom(atom).oclIDs;
       // on enter the atom
       if (oclIDs.length > 0) {
-        const filteredRange = assignments.find(
-          (_range) =>
-            _range.diaID.range.some((_id) => oclIDs.includes(_id)) ||
-            _range.diaID.signal.some((_signal) =>
-              oclIDs.some((_oclID) => _signal.diaID.includes(_oclID)),
-            ),
-        );
-        const highlights = filteredRange
-          ? [filteredRange.rangeID]
-          : onAtomHoverHighlights.slice();
-
-        if (highlights.length > 0) {
-          if (filteredRange) {
-            // The following is done to add a distinguishable highlight id
-            // that a RangesTableRow knows to highlight the assigned atom
-            // count label for a signal while hovering over an atom.
-            if (filteredRange.diaID.range.some((_id) => oclIDs.includes(_id))) {
-              highlights.push(filteredRange.rangeID);
-            } else {
-              const filteredSignalIndex = filteredRange.diaID.signal.find(
-                (_signal) =>
-                  oclIDs.some((_oclID) => _signal.diaID.includes(_oclID)),
-              ).signalIndex;
-              highlights.push(
-                `${filteredRange.rangeID}${HighlightSignalConcatenation}${filteredSignalIndex}`,
-              );
-            }
+        let highlights = [];
+        for (let key in assignmentData.assignment.assignment) {
+          const split = key.split(HighlightSignalConcatenation);
+          if (
+            assignmentData.assignment.assignment[key].x &&
+            assignmentData.assignment.assignment[key].x.some((_assigned) =>
+              oclIDs.includes(_assigned),
+            )
+          ) {
+            highlights = highlights.concat(
+              [key],
+              split[0] !== key ? [split[0]] : [],
+              assignmentData.assignment.assignment[key].x,
+            );
           }
-          setOnAtomHoverHighlights(highlights);
-          setOnAtomHoverAction('show');
+          if (
+            assignmentData.assignment.assignment[key].y &&
+            assignmentData.assignment.assignment[key].y.some((_assigned) =>
+              oclIDs.includes(_assigned),
+            )
+          ) {
+            highlights = highlights.concat(
+              [key],
+              split[0] !== key ? [split[0]] : [],
+              assignmentData.assignment.assignment[key].y,
+            );
+          }
         }
+        setOnAtomHoverHighlights(highlights);
+        setOnAtomHoverAction('show');
       } else {
         // on leave the atom
         setOnAtomHoverAction('hide');
       }
     },
-    [onAtomHoverHighlights, assignments, extractFromAtom],
+    [assignmentData.assignment.assignment, extractFromAtom],
   );
 
   const handleOnUnlinkAll = useCallback(() => {
-    rangesData.forEach((range) => {
-      const _range = Object.assign({}, range);
-      unlink(_range);
-      dispatch({ type: CHANGE_RANGE_DATA, data: _range });
+    data.forEach((datum) => {
+      // unlink in assignment hook state
+      if (mode === '1D') {
+        assignmentData.dispatch({
+          type: 'REMOVE_ALL',
+          payload: { id: datum.id, axis: 'x' },
+        });
+        datum.signal.forEach((_signal, i) =>
+          assignmentData.dispatch({
+            type: 'REMOVE_ALL',
+            payload: {
+              id: `${datum.id}${HighlightSignalConcatenation}${i}`,
+              axis: 'x',
+            },
+          }),
+        );
+        RangeUtilities.unlink(datum);
+        dispatch({ type: CHANGE_RANGE_DATA, data: datum });
+      } else if (mode === '2D') {
+        assignmentData.dispatch({
+          type: 'REMOVE_ALL',
+          payload: {
+            id: datum.id,
+            axis: 'x',
+          },
+        });
+        assignmentData.dispatch({
+          type: 'REMOVE_ALL',
+          payload: {
+            id: datum.id,
+            axis: 'y',
+          },
+        });
+        datum.signal.forEach((_signal, i) => {
+          assignmentData.dispatch({
+            type: 'REMOVE_ALL',
+            payload: {
+              id: `${datum.id}${HighlightSignalConcatenation}${i}`,
+              axis: 'x',
+            },
+          });
+          assignmentData.dispatch({
+            type: 'REMOVE_ALL',
+            payload: {
+              id: `${datum.id}${HighlightSignalConcatenation}${i}`,
+              axis: 'y',
+            },
+          });
+        });
+        // unlink in global state
+        ZoneUtilities.unlink(datum);
+        dispatch({ type: CHANGE_ZONE_DATA, data: datum });
+      }
     });
-  }, [dispatch, rangesData]);
+  }, [data, mode, assignmentData, dispatch]);
 
   const handleClose = useCallback(
     (e) => {
@@ -588,7 +648,7 @@ const MoleculePanel = memo(() => {
                       currentDiaIDsToHighlight &&
                       currentDiaIDsToHighlight.length > 0
                         ? currentDiaIDsToHighlight
-                        : assignedDiaIDs
+                        : assignedDiaIDsMerged
                     }
                     setHoverAtom={handleOnAtomHover}
                   />

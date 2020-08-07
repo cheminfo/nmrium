@@ -2,10 +2,6 @@ import { setAutoFreeze } from 'immer';
 
 import { options } from '../toolbar/ToolTypes';
 
-import {
-  handleSetActiveAssignmentAxis,
-  handleUnsetActiveAssignmentAxis,
-} from './actions/AssignmentActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
 import {
   handelResetDomain,
@@ -112,6 +108,7 @@ import {
   add2dZoneHandler,
   delete2dZoneHandler,
   handleAutoZonesDetection,
+  handleChangeZone,
 } from './actions/ZonesActions';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
@@ -194,8 +191,7 @@ import {
   UNSET_SELECTED_NEW_SIGNAL_DELTA,
   SET_SHOW_MULTIPLICITY_TREES,
   SET_Y_DOMAIN,
-  SET_ACTIVE_ASSIGNMENT_AXIS,
-  UNSET_ACTIVE_ASSIGNMENT_AXIS,
+  CHANGE_ZONE_DATA,
 } from './types/Types';
 
 setAutoFreeze(false);
@@ -468,11 +464,8 @@ export function spectrumReducer(state, action) {
     case UNSET_SELECTED_NEW_SIGNAL_DELTA:
       return handleUnsetSelectedNewSignalDelta(state);
 
-    case SET_ACTIVE_ASSIGNMENT_AXIS:
-      return handleSetActiveAssignmentAxis(state, action);
-
-    case UNSET_ACTIVE_ASSIGNMENT_AXIS:
-      return handleUnsetActiveAssignmentAxis(state);
+    case CHANGE_ZONE_DATA:
+      return handleChangeZone(state, action);
 
     default:
       return state;
