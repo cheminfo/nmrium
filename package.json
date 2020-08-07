@@ -25,7 +25,7 @@
     "ml-regression-polynomial": "^2.1.0",
     "ml-spectra-processing": "^4.1.0",
     "mouse-speed": "^2.0.1",
-    "multiplet-analysis": "0.1.0",
+    "multiplet-analysis": "0.2.0",
     "nmr-parser": "0.2.4",
     "nmr-processing": "^0.2.3",
     "numeral": "^2.0.6",
