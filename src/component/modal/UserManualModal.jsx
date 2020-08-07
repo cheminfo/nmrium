@@ -1,9 +1,12 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
+import ReactMarkdown from 'react-markdown';
 
+import helpData from '../config/help.json';
 import { Tabs, positions } from '../elements/Tab';
+import { loadFile } from '../utility/FileUtility';
 
 const styles = css`
   width: 600px;
@@ -43,8 +46,43 @@ const styles = css`
     padding: 5px;
   }
 `;
+const transformImageUri = (uri, path) =>
+  `${path.substr(0, path.lastIndexOf('/') + 1)}${uri}`;
+
+const ManualView = ({ filePath }) => {
+  const [md, setMD] = useState('');
+  useEffect(() => {
+    loadFile(filePath).then((mdResult) => {
+      setMD(mdResult);
+    });
+  });
+
+  return (
+    <div style={{ overflow: 'auto' }}>
+      <ReactMarkdown
+        source={md}
+        transformImageUri={(uri) => transformImageUri(uri, filePath)}
+      />
+    </div>
+  );
+};
+
 const UserManualModal = ({ onClose }) => {
+  const [manuals, setManualsData] = useState([]);
   const onTabChangeHandler = useCallback(() => {}, []);
+
+  useEffect(() => {
+    const manualsData = Object.keys(helpData)
+      .reduce((accumulator, key) => {
+        if (helpData[key].ShowInGneralUserManual) {
+          const datum = { key, ...helpData[key] };
+          accumulator.push(datum);
+        }
+        return accumulator;
+      }, [])
+      .sort((prev, next) => prev.index - next.index);
+    setManualsData(manualsData);
+  }, []);
   return (
     <div css={styles}>
       <h6 className="header">User Manual</h6>
@@ -55,14 +93,19 @@ const UserManualModal = ({ onClose }) => {
         <Tabs
           onClick={onTabChangeHandler}
           position={positions.LEFT}
-          defaultTabID="zoom"
+          defaultTabID="loadSpectrum"
         >
-          <div label="zoom" key="zoom" className="inner-container">
-            <p>manual 1</p>
-          </div>
-          <div label="manual 2" key="user1" className="inner-container">
-            <p>manual 2</p>
-          </div>
+          {manuals.map((manualItem) => (
+            <div
+              label={manualItem.tabTitle}
+              key={manualItem.key}
+              identifier={manualItem.key}
+              className="inner-container"
+              style={{ overflow: 'auto', height: '100%' }}
+            >
+              <ManualView filePath={manualItem.filePath} />
+            </div>
+          ))}
         </Tabs>
       </div>
     </div>

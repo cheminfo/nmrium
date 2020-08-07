@@ -57,14 +57,11 @@ const Integral = ({
       });
 
       let path = `M ${scaleX()(pathPoints.x[0])} ${scaleY(pathPoints.y[0])}`;
+      path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
+        accumulator += ` L ${scaleX()(point)} ${scaleY(pathPoints.y[i + 1])}`;
+        return accumulator;
+      }, '');
 
-      path += pathPoints.x
-        .slice(1)
-        .map((point, i) => {
-          return ` L ${scaleX()(point)} ${scaleY(pathPoints.y[i])}`;
-        })
-        .join('');
-      //   console.log(path);
       return path;
     } else {
       return '';

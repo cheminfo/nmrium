@@ -13,6 +13,7 @@ import React, {
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
+import { Rnd } from 'react-rnd';
 import { TransitionGroup } from 'react-transition-group';
 
 import { HelpProvider as HProvider } from './Context';
@@ -25,17 +26,18 @@ import { load } from './utility';
 
 const styles = {
   innerContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    height: '100%',
+    borderRadius: '5px',
+    padding: '10px',
+  },
+  outerContainer: {
     boxSizing: 'initial',
     backgroundColor: 'rgba(255, 255, 255, 1)',
     boxShadow: '0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 3px 5px',
-    display: 'flex',
-    flexDirection: 'column',
-    // minWidth: '300px',
-    // width: '400px',
-    // height: '400px',
-    // minHeight: '140px',
-    borderRadius: '5px',
-    padding: '5px',
+    pointerEvents: 'all',
   },
   closeButton: {
     border: 'none',
@@ -57,8 +59,8 @@ const HelpProvider = ({
   type,
   transition,
   containerStyle,
-  imagesPathPrefix,
   wrapperID,
+  multiple,
 }) => {
   const root = useRef();
   const timersId = useRef([]);
@@ -132,7 +134,8 @@ const HelpProvider = ({
               timersId.current.push(timerId);
             }
 
-            setModals((state) => state.concat(modal));
+            setModals((state) => (multiple ? state.concat(modal) : [modal]));
+
             if (modal.options.onOpen) modal.options.onOpen();
           };
 
@@ -153,7 +156,7 @@ const HelpProvider = ({
         }
       }
     },
-    [data, delay, modals, position, remove, timeout, type],
+    [data, delay, modals, multiple, position, remove, timeout, type],
   );
 
   const clear = useCallback(() => {
@@ -171,8 +174,8 @@ const HelpProvider = ({
     modals,
     (modal) => modal.options && modal.options.position,
   );
-
-  const transformImageUri = (uri) => `${imagesPathPrefix}${uri}`;
+  const transformImageUri = (uri, path) =>
+    `${path.substr(0, path.lastIndexOf('/') + 1)}${uri}`;
 
   return (
     <HProvider value={contextValue}>
@@ -193,9 +196,20 @@ const HelpProvider = ({
                   {modalsByPosition[_position]
                     ? modalsByPosition[_position].map((modal) => (
                         <Transition type={transition} key={modal.id}>
-                          <div
-                            style={{ margin: offset, pointerEvents: 'all' }}
-                            // {...modal}
+                          {/* <div */}
+                          {/* // {...modal} */}
+                          {/* // > */}
+                          <Rnd
+                            style={{
+                              margin: offset,
+                              ...styles.outerContainer,
+                            }}
+                            default={{
+                              x: -200,
+                              y: 0,
+                              width: 400,
+                              height: 400,
+                            }}
                           >
                             <div style={styles.innerContainer}>
                               <div>
@@ -208,25 +222,27 @@ const HelpProvider = ({
                                 </button>
                               </div>
                               {modal.mdtext && (
-                                <Resizable
-                                  defaultSize={{
-                                    width: 400,
-                                    height: 400,
+                                <div
+                                  style={{
+                                    overflow: 'auto',
+                                    cursor: 'default',
                                   }}
+                                  // eslint-disable-next-line react/no-danger
                                 >
-                                  <div
-                                    style={{ overflow: 'auto', height: '100%' }}
-                                    // eslint-disable-next-line react/no-danger
-                                  >
-                                    <ReactMarkdown
-                                      source={modal.mdtext}
-                                      transformImageUri={transformImageUri}
-                                    />
-                                  </div>
-                                </Resizable>
+                                  <ReactMarkdown
+                                    source={modal.mdtext}
+                                    transformImageUri={(uri) =>
+                                      transformImageUri(
+                                        uri,
+                                        data[modal.helpid].filePath,
+                                      )
+                                    }
+                                  />
+                                </div>
                               )}
                             </div>
-                          </div>
+                          </Rnd>
+                          {/* </div> */}
                         </Transition>
                       ))
                     : null}
@@ -249,8 +265,8 @@ HelpProvider.defaultProps = {
   containerStyle: {
     zIndex: 100,
   },
-  imagesPathPrefix: './help/',
   wrapperID: null,
+  multiple: false,
 };
 
 export default HelpProvider;
