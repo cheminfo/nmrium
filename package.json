@@ -67,7 +67,7 @@
   },
   "scripts": {
     "clean-lib": "rimraf lib",
-    "compile": "babel src --out-dir lib --copy-files --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.js\" --quiet",
+    "compile": "babel src --out-dir  lib --copy-files --no-copy-ignored --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.js\"  --quiet",
     "prepare": "npm run clean-lib && npm run compile",
     "start": "react-scripts start ",
     "build": "react-scripts --max_old_space_size=4096 build",
@@ -102,6 +102,7 @@
     "@babel/cli": "^7.10.3",
     "@babel/core": "^7.10.3",
     "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "@babel/preset-react": "^7.10.1",
     "babel-eslint": "^10.1.0",
     "bootstrap": "^4.5.0",
