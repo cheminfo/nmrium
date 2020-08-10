@@ -137,12 +137,12 @@ const MoleculePanel = memo(() => {
     activeSpectrum,
     molecules,
     activeTab,
+    displayerMode,
   } = useChartData();
 
   const highlightData = useHighlightData();
   const assignmentData = useAssignmentData();
   const [elements, setElements] = useState([]);
-  const [mode, setMode] = useState(null);
 
   useEffect(() => {
     if (activeTab) {
@@ -156,16 +156,6 @@ const MoleculePanel = memo(() => {
       setElements([]);
     }
   }, [activeTab]);
-
-  useEffect(() => {
-    if (elements.length === 1) {
-      setMode('1D');
-    } else if (elements.length === 2) {
-      setMode('2D');
-    } else {
-      setMode(null);
-    }
-  }, [elements]);
 
   const activeAssignment = useAssignment(
     assignmentData.assignment.activeID !== undefined
@@ -214,14 +204,14 @@ const MoleculePanel = memo(() => {
         : null;
 
     if (_data) {
-      if (mode === '1D' && _data.ranges && _data.ranges.values) {
+      if (displayerMode === '1D' && _data.ranges && _data.ranges.values) {
         return _data.ranges.values;
-      } else if (mode === '2D' && _data.zones && _data.zones.values) {
+      } else if (displayerMode === '2D' && _data.zones && _data.zones.values) {
         return _data.zones.values;
       }
     }
     return [];
-  }, [activeSpectrum, mode, spectrumData]);
+  }, [activeSpectrum, displayerMode, spectrumData]);
 
   const assignedDiaIDs = useMemo(() => {
     const assignedDiaID = { x: [], y: [] };
@@ -299,19 +289,19 @@ const MoleculePanel = memo(() => {
           // determine the level of setting the diaID array (range vs. signal level) and save there
           const _datum = Object.assign({}, datum);
           if (signalIndex === undefined) {
-            if (mode === '1D') {
+            if (displayerMode === '1D') {
               _datum.diaID = toggleAssignment(
                 _datum.diaID || [],
                 atomInformation,
               );
-            } else if (mode === '2D') {
+            } else if (displayerMode === '2D') {
               _datum[activeAssignment.activeAxis].diaID = toggleAssignment(
                 _datum[activeAssignment.activeAxis].diaID || [],
                 atomInformation,
               );
             }
           } else if (datum.signal && datum.signal[signalIndex]) {
-            if (mode === '1D') {
+            if (displayerMode === '1D') {
               _datum.signal[signalIndex] = {
                 ..._datum.signal[signalIndex],
                 diaID: toggleAssignment(
@@ -319,7 +309,7 @@ const MoleculePanel = memo(() => {
                   atomInformation,
                 ),
               };
-            } else if (mode === '2D') {
+            } else if (displayerMode === '2D') {
               _datum.signal[signalIndex][activeAssignment.activeAxis] = {
                 ..._datum.signal[signalIndex][activeAssignment.activeAxis],
                 diaID: toggleAssignment(
@@ -330,10 +320,10 @@ const MoleculePanel = memo(() => {
               };
             }
           }
-          if (mode === '1D') {
+          if (displayerMode === '1D') {
             _datum.pubIntegral = RangeUtilities.getPubIntegral(_datum);
             dispatch({ type: CHANGE_RANGE_DATA, data: _datum });
-          } else if (mode === '2D') {
+          } else if (displayerMode === '2D') {
             _datum[
               activeAssignment.activeAxis
             ].pubIntegral = ZoneUtilities.getPubIntegral(
@@ -353,7 +343,7 @@ const MoleculePanel = memo(() => {
       activeAssignment,
       extractFromAtom,
       data,
-      mode,
+      displayerMode,
       toggleAssignment,
       dispatch,
       alert,
@@ -372,9 +362,9 @@ const MoleculePanel = memo(() => {
       : null;
 
     return assignmentOnHover
-      ? mode === '1D'
+      ? displayerMode === '1D'
         ? assignmentOnHover.x || []
-        : mode === '2D'
+        : displayerMode === '2D'
         ? axisOnHover
           ? axisOnHover === 'x'
             ? assignmentOnHover.x || []
@@ -389,7 +379,7 @@ const MoleculePanel = memo(() => {
     assignmentData.assignment.isOnHover,
     assignmentData.assignment.onHoverAxis,
     assignmentData.assignment.onHoverID,
-    mode,
+    displayerMode,
   ]);
 
   useEffect(() => {
@@ -456,7 +446,7 @@ const MoleculePanel = memo(() => {
   const handleOnUnlinkAll = useCallback(() => {
     data.forEach((datum) => {
       // unlink in assignment hook state
-      if (mode === '1D') {
+      if (displayerMode === '1D') {
         assignmentData.dispatch({
           type: 'REMOVE_ALL',
           payload: { id: datum.id, axis: 'x' },
@@ -472,7 +462,7 @@ const MoleculePanel = memo(() => {
         );
         RangeUtilities.unlink(datum);
         dispatch({ type: CHANGE_RANGE_DATA, data: datum });
-      } else if (mode === '2D') {
+      } else if (displayerMode === '2D') {
         assignmentData.dispatch({
           type: 'REMOVE_ALL',
           payload: {
@@ -508,7 +498,7 @@ const MoleculePanel = memo(() => {
         dispatch({ type: CHANGE_ZONE_DATA, data: datum });
       }
     });
-  }, [data, mode, assignmentData, dispatch]);
+  }, [data, displayerMode, assignmentData, dispatch]);
 
   const handleClose = useCallback(
     (e) => {
