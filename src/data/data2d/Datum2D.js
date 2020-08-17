@@ -245,14 +245,8 @@ export class Datum2D {
     this.zones.values = zones.map((zone) => {
       return {
         id: generateID(),
-        x:
-          zone.fromTo[0].from < zone.fromTo[0].to
-            ? { from: zone.fromTo[0].to, to: zone.fromTo[0].from }
-            : { from: zone.fromTo[0].from, to: zone.fromTo[0].to },
-        y:
-          zone.fromTo[1].from < zone.fromTo[1].to
-            ? { from: zone.fromTo[1].from, to: zone.fromTo[1].to }
-            : { from: zone.fromTo[1].to, to: zone.fromTo[1].from },
+        x: { from: zone.fromTo[0].from, to: zone.fromTo[0].to },
+        y: { from: zone.fromTo[1].from, to: zone.fromTo[1].to },
         signal: [
           {
             peak: zone.peaks,
