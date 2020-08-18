@@ -154,7 +154,7 @@ const NMRDisplayer = memo((props) => {
                               resizerStyle={splitPaneStyles.resizer}
                               pane1Style={splitPaneStyles.pane1}
                               split="vertical"
-                              defaultSize="calc(100% - 450px)"
+                              defaultSize="calc(100% - 600px)"
                               minSize="80%"
                               onDragFinished={handleSplitPanelDragFinished}
                               onDragStarted={() => {
