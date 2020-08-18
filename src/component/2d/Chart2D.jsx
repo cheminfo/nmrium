@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { useChartData } from '../context/ChartContext';
 
 import Contours from './Contours';
+import IndicationLines from './IndicationLines';
 import Left1DChart from './Left1DChart';
 import Top1DChart from './Top1DChart';
 import XAxis from './XAxis';
@@ -45,6 +46,8 @@ const Chart2D = ({ data }) => {
         {data && data[1] && <Left1DChart data={data[1]} />}
         <Contours />
         <Zones />
+        <IndicationLines axis="X" show={true} />
+        <IndicationLines axis="Y" show={true} />
 
         <g className="container" style={{ pointerEvents: 'none' }}>
           <XAxis />

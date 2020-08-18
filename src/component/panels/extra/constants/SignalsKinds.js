@@ -42,5 +42,10 @@ const SignalKinds = [
 ];
 
 const SignalKindsToConsiderInIntegralsSum = ['signal'];
+const SignalKindsToConsiderAsIndicationLine = ['signal'];
 
-export { SignalKinds, SignalKindsToConsiderInIntegralsSum };
+export {
+  SignalKinds,
+  SignalKindsToConsiderInIntegralsSum,
+  SignalKindsToConsiderAsIndicationLine,
+};

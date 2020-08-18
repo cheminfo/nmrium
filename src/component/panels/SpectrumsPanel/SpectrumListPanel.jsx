@@ -350,9 +350,9 @@ const SpectrumListPanel = memo(
               spectrumsGroupByNucleus[activeTabID] &&
               spectrumsGroupByNucleus[activeTabID].length
             }
-            deleteToolTip="Delete All Spectrums"
+            deleteToolTip="Delete all spectra"
           >
-            <ToolTip title="Hide all spectrums" popupPlacement="right">
+            <ToolTip title="Hide all spectra" popupPlacement="right">
               <button
                 style={styles.button}
                 type="button"
@@ -361,7 +361,7 @@ const SpectrumListPanel = memo(
                 <FaEyeSlash />
               </button>
             </ToolTip>
-            <ToolTip title="Show all spectrums" popupPlacement="right">
+            <ToolTip title="Show all spectra" popupPlacement="right">
               <button
                 style={styles.button}
                 type="button"
