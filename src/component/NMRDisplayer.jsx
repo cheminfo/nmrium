@@ -237,6 +237,8 @@ NMRDisplayer.defaultProps = {
       hideRangesPanel: false,
       hideStructuresPanel: false,
       hideFiltersPanel: false,
+      hideZonesPanel: false,
+      hideSummaryPanel: false,
     },
 
     toolsBarButtons: {
