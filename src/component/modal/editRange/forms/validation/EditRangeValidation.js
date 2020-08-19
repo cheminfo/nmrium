@@ -3,10 +3,13 @@ const EditRangeValidation = (values, rangeData) => {
 
   if (!values.newSignalDelta) {
     errors.newSignalDelta = 'required';
-  } else if (values.newSignalDelta < rangeData.from) {
-    errors.newSignalDelta = `Must be ${rangeData.from.toFixed(5)} ppm or more`;
-  } else if (values.newSignalDelta > rangeData.to) {
-    errors.newSignalDelta = `Must be ${rangeData.to.toFixed(5)} ppm or less`;
+  } else if (
+    values.newSignalDelta < rangeData.from ||
+    values.newSignalDelta > rangeData.to
+  ) {
+    errors.newSignalDelta = ` ${rangeData.from.toFixed(
+      5,
+    )} ppm out of the range`;
   }
 
   if (

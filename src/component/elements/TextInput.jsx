@@ -35,7 +35,7 @@ const TextInput = forwardRef(({ label, value, name, style, onChange }, ref) => {
 TextInput.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.any,
   // defaultValue: PropTypes.string,
   style: PropTypes.shape({
     label: PropTypes.object,

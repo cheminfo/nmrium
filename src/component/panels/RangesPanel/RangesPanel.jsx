@@ -20,13 +20,14 @@ import { useModal, positions, transitions } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import ChangeSumModal from '../../modal/ChangeSumModal';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
-import EditRangeModal from '../../modal/EditRangeModal';
+import EditRangeModal from '../../modal/editRange/EditRangeModal';
 import {
   DELETE_RANGE,
   CHANGE_RANGE_DATA,
   CHANGE_RANGE_SUM,
   SET_X_DOMAIN,
   SET_SHOW_MULTIPLICITY_TREES,
+  RESET_SELECTED_TOOL,
 } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
@@ -237,6 +238,7 @@ const RangesTablePanel = memo(() => {
 
   const openEditRangeHandler = useCallback(
     (rangeData) => {
+      dispatch({ type: RESET_SELECTED_TOOL });
       modal.show(
         <EditRangeModal
           onClose={closeEditRangeHandler}
@@ -251,7 +253,13 @@ const RangesTablePanel = memo(() => {
         },
       );
     },
-    [closeEditRangeHandler, modal, saveEditRangeHandler, zoomRangeHandler],
+    [
+      closeEditRangeHandler,
+      dispatch,
+      modal,
+      saveEditRangeHandler,
+      zoomRangeHandler,
+    ],
   );
 
   const deleteRangeHandler = useCallback(

@@ -3,15 +3,16 @@ import { jsx, css } from '@emotion/core';
 import { useCallback, useMemo, useEffect } from 'react';
 import { FaTimes, FaSearchPlus } from 'react-icons/fa';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import RangeForm from '../elements/forms/editRange/RangeForm';
-import {
-  UNSET_RANGE_IN_EDITION,
-  SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
-  UNSET_SELECTED_NEW_SIGNAL_DELTA,
-  SET_RANGE_IN_EDITION,
-} from '../reducer/types/Types';
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+
+import RangeForm from './forms/editRange/RangeForm';
+// import {
+//   UNSET_RANGE_IN_EDITION,
+//   SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+//   UNSET_SELECTED_NEW_SIGNAL_DELTA,
+//   SET_RANGE_IN_EDITION,
+// } from '../reducer/types/Types';
 
 const styles = css`
   overflow: auto;
@@ -87,28 +88,28 @@ const EditRangeModal = ({ onSave, onClose, onZoom, rangeID }) => {
 
   useEffect(() => {
     handleOnZoom();
-    dispatch({ type: SET_RANGE_IN_EDITION, rangeID: rangeData.id });
+    // dispatch({ type: SET_RANGE_IN_EDITION, rangeID: rangeData.id });
   }, [dispatch, handleOnZoom, rangeData]);
 
   const handleOnClose = useCallback(() => {
-    dispatch({ type: UNSET_RANGE_IN_EDITION });
-    dispatch({
-      type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
-      isEnabled: false,
-    });
-    dispatch({ type: UNSET_SELECTED_NEW_SIGNAL_DELTA });
+    // dispatch({ type: UNSET_RANGE_IN_EDITION });
+    // dispatch({
+    //   type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+    //   isEnabled: false,
+    // });
+    // dispatch({ type: UNSET_SELECTED_NEW_SIGNAL_DELTA });
 
     onClose();
-  }, [dispatch, onClose]);
+  }, [onClose]);
 
   const handleOnSave = useCallback(
     async (formValues) => {
       rangeData.signal = formValues.signals.slice();
 
       await onSave(rangeData);
-      handleOnClose();
+      // handleOnClose();
     },
-    [handleOnClose, onSave, rangeData],
+    [onSave, rangeData],
   );
 
   return (

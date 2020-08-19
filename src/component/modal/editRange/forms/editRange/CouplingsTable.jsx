@@ -1,11 +1,13 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useFormikContext } from 'formik';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { FaMinus, FaCheck, FaPlus } from 'react-icons/fa';
 
-import { Multiplets } from '../../../panels/extra/constants/Multiplets';
-import { hasCouplingConstant } from '../../../panels/extra/utilities/MultiplicityUtilities';
+import { useChartData } from '../../../../context/ChartContext';
+import { Multiplets } from '../../../../panels/extra/constants/Multiplets';
+import { hasCouplingConstant } from '../../../../panels/extra/utilities/MultiplicityUtilities';
+import Events from '../../../../utility/Events';
 import Button from '../elements/Button';
 import Input from '../elements/Input';
 import SelectBox from '../elements/SelectBox';
@@ -60,6 +62,23 @@ const CouplingsTable = memo(
       getFieldMeta,
       setFieldTouched,
     } = useFormikContext();
+    const [activeField, setActiveField] = useState(null);
+    const { data, activeSpectrum } = useChartData();
+
+    useEffect(() => {
+      const unsubscribe = Events.subscribe('brushEnd', (event) => {
+        const frequency = data[activeSpectrum.index].info.frequencyOffset;
+        if (activeField && frequency) {
+          const val =
+            (Math.abs(event.range[0] - event.range[1]) * frequency) / 10 ** 6;
+          setFieldValue(activeField, val);
+        }
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    }, [activeField, activeSpectrum.index, data, setFieldValue]);
 
     const metaDataNewCouplingMultiplicity = getFieldMeta(
       'newCouplingMultiplicity',
@@ -127,6 +146,8 @@ const CouplingsTable = memo(
                         type="number"
                         placeholder={'J (Hz)'}
                         disabled={false}
+                        onFocus={(name) => setActiveField(name)}
+                        // onBlur={() => setActiveField(null)}
                       />
                     ) : (
                       <Input
@@ -134,6 +155,8 @@ const CouplingsTable = memo(
                         type="number"
                         placeholder={'none'}
                         disabled={true}
+                        // onFocus={(name) => setActiveField(name)}
+                        // onBlur={() => setActiveField(null)}
                       />
                     )}
                   </td>
@@ -203,6 +226,7 @@ const CouplingsTable = memo(
                   type="number"
                   placeholder={'J (Hz)'}
                   disabled={false}
+                  onFocus={(name) => setActiveField(name)}
                 />
               ) : (
                 <Input
@@ -210,6 +234,7 @@ const CouplingsTable = memo(
                   type="number"
                   placeholder={'none'}
                   disabled={true}
+                  // onFocus={(name) => setActiveField(name)}
                 />
               )}
             </td>

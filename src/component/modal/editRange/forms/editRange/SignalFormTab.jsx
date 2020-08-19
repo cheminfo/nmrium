@@ -6,7 +6,7 @@ import { memo, useEffect, useCallback } from 'react';
 import {
   hasCouplingConstant,
   translateMultiplet,
-} from '../../../panels/extra/utilities/MultiplicityUtilities';
+} from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import Button from '../elements/Button';
 
 import CouplingsTable from './CouplingsTable';

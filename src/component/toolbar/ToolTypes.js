@@ -67,4 +67,10 @@ export const options = {
     hasOptionPanel: true,
     isFilter: true,
   },
+  generalSelector: {
+    id: 'generalSelector',
+    label: 'range general selecttor',
+    hasOptionPanel: false,
+    isFilter: false,
+  },
 };

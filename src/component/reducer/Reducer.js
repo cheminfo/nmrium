@@ -10,13 +10,6 @@ import {
   handleChangeIntegralYDomain,
   setYDomain,
 } from './actions/DomainActions';
-import {
-  handleSetRangeInEdition,
-  handleUnsetRangeInEdition,
-  handleSetNewSignalDeltaSelectionIsEnabled,
-  handleSetSelectedNewSignalDelta,
-  handleUnsetSelectedNewSignalDelta,
-} from './actions/EditRangeModalActions';
 import { exportData } from './actions/ExportActions';
 import {
   shiftSpectrumAlongXAxis,
@@ -184,11 +177,6 @@ import {
   ADD_MISSING_PROJECTION,
   SET_FILTER_SNAPSHOT,
   APPLY_ABSOLUTE_FILTER,
-  SET_RANGE_IN_EDITION,
-  UNSET_RANGE_IN_EDITION,
-  SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
-  SET_SELECTED_NEW_SIGNAL_DELTA,
-  UNSET_SELECTED_NEW_SIGNAL_DELTA,
   SET_SHOW_MULTIPLICITY_TREES,
   SET_Y_DOMAIN,
   CHANGE_ZONE_DATA,
@@ -448,21 +436,6 @@ export function spectrumReducer(state, action) {
 
     case RESET:
       return handleHistoryReset(state, action);
-
-    case SET_RANGE_IN_EDITION:
-      return handleSetRangeInEdition(state, action);
-
-    case UNSET_RANGE_IN_EDITION:
-      return handleUnsetRangeInEdition(state);
-
-    case SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED:
-      return handleSetNewSignalDeltaSelectionIsEnabled(state, action);
-
-    case SET_SELECTED_NEW_SIGNAL_DELTA:
-      return handleSetSelectedNewSignalDelta(state, action);
-
-    case UNSET_SELECTED_NEW_SIGNAL_DELTA:
-      return handleUnsetSelectedNewSignalDelta(state);
 
     case CHANGE_ZONE_DATA:
       return handleChangeZone(state, action);

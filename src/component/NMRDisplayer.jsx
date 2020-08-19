@@ -119,34 +119,31 @@ const NMRDisplayer = memo((props) => {
               <ChartDataProvider value={{ ...state, isResizeEventStart }}>
                 <ModalProvider wrapperID="main-wrapper">
                   <KeyListener parentRef={fullScreenRef} />
-                  <HighlightProvider>
-                    <AssignmentProvider>
-                      <div
-                        ref={fullScreenRef}
-                        css={css`
-                          background-color: white;
-                          height: 100%;
-                          display: flex;
-                          flex-direction: column;
-                          div:focus {
-                            outline: none !important;
-                          }
-                          button:active,
-                          button:hover,
-                          button:focus,
-                          [type='button']:focus,
-                          button {
-                            outline: none !important;
-                          }
-                        `}
-                      >
-                        <Header
-                          isFullscreen={isFullscreen}
-                          onMaximize={toggle}
-                        />
-                        {/* ref={containerRef} */}
-                        <div style={{ flex: 1 }}>
-                          <DropZone>
+                  <div
+                    ref={fullScreenRef}
+                    css={css`
+                      background-color: white;
+                      height: 100%;
+                      display: flex;
+                      flex-direction: column;
+                      div:focus {
+                        outline: none !important;
+                      }
+                      button:active,
+                      button:hover,
+                      button:focus,
+                      [type='button']:focus,
+                      button {
+                        outline: none !important;
+                      }
+                    `}
+                  >
+                    <Header isFullscreen={isFullscreen} onMaximize={toggle} />
+                    {/* ref={containerRef} */}
+                    <div style={{ flex: 1 }}>
+                      <DropZone>
+                        <HighlightProvider>
+                          <AssignmentProvider>
                             <ToolBar />
                             <SplitPane
                               style={splitPaneStyles.container}
@@ -168,12 +165,12 @@ const NMRDisplayer = memo((props) => {
                               )}
                               <Panels selectedTool={selectedTool} />
                             </SplitPane>
-                          </DropZone>
-                        </div>
-                        <div id="main-wrapper" />
-                      </div>
-                    </AssignmentProvider>
-                  </HighlightProvider>
+                          </AssignmentProvider>
+                        </HighlightProvider>
+                      </DropZone>
+                    </div>
+                    <div id="main-wrapper" />
+                  </div>
                 </ModalProvider>
               </ChartDataProvider>
             </DispatchProvider>

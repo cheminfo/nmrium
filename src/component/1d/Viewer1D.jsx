@@ -36,11 +36,11 @@ import {
   SET_VERTICAL_INDICATOR_X_POSITION,
   SET_DIMENSIONS,
   ADD_RANGE,
-  SET_SELECTED_NEW_SIGNAL_DELTA,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
 import { options } from '../toolbar/ToolTypes';
+import Events from '../utility/Events';
 
 import Chart1D from './Chart1D';
 import FooterBanner from './FooterBanner';
@@ -66,7 +66,6 @@ const Viewer1D = () => {
     yDomain,
     yDomains,
     verticalAlign,
-    editRangeModalMeta,
   } = state;
 
   const dispatch = useDispatch();
@@ -100,6 +99,16 @@ const Viewer1D = () => {
 
   const handelBrushEnd = useCallback(
     (brushData) => {
+      const propagateEvent = () => {
+        const { startX, endX } = brushData;
+        const startXPPM = scaleState.scaleX().invert(startX);
+        const endXPPM = scaleState.scaleX().invert(endX);
+        Events.publish('brushEnd', {
+          ...brushData,
+          range: [startXPPM, endXPPM],
+        });
+      };
+
       if (brushData.altKey) {
         switch (selectedTool) {
           case options.rangesPicking.id: {
@@ -145,6 +154,8 @@ const Viewer1D = () => {
             });
             break;
           default:
+            propagateEvent(brushData);
+
             break;
         }
       } else {
@@ -164,12 +175,12 @@ const Viewer1D = () => {
       }
     },
     [
+      scaleState,
       selectedTool,
       general.disableMultipletAnalysis,
       modal,
       data,
       activeSpectrum,
-      scaleState.scaleX,
       dispatch,
     ],
   );
@@ -206,19 +217,9 @@ const Viewer1D = () => {
           type: SET_VERTICAL_INDICATOR_X_POSITION,
           position: position.x,
         });
-      } else if (
-        editRangeModalMeta &&
-        editRangeModalMeta.newSignalDeltaSelectionIsEnabled &&
-        editRangeModalMeta.newSignalDeltaSelectionIsEnabled === true &&
-        position.shiftKey
-      ) {
-        dispatch({
-          type: SET_SELECTED_NEW_SIGNAL_DELTA,
-          position: position.x,
-        });
       }
     },
-    [dispatch, editRangeModalMeta, selectedTool],
+    [dispatch, selectedTool],
   );
 
   const [sizedNMRChart, { width, height }] = useSize(() => {

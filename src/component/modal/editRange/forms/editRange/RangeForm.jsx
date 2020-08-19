@@ -3,7 +3,7 @@ import { jsx, css } from '@emotion/core';
 import { Formik, Form } from 'formik';
 import { useMemo } from 'react';
 
-import { hasCouplingConstant } from '../../../panels/extra/utilities/MultiplicityUtilities';
+import { hasCouplingConstant } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import { SaveButton, CancelButton } from '../elements/DefaultButtons';
 import EditRangeValidation from '../validation/EditRangeValidation';
 
