@@ -2,7 +2,14 @@ import { produce } from 'immer';
 
 import { Datum2D } from '../../../data/data2d/Datum2D';
 import { get2DYScale, get2DXScale } from '../../2d/utilities/scale';
+import Events from '../../utility/Events';
 import { AnalysisObj } from '../core/Analysis';
+
+let noiseFactor = 1;
+
+Events.subscribe('noiseFactorChanged', (val) => {
+  noiseFactor = val;
+});
 
 const add2dZoneHandler = (state, action) => {
   return produce(state, (draft) => {
@@ -24,7 +31,7 @@ const add2dZoneHandler = (state, action) => {
       const fromX = scaleX.invert(x1);
       const toY = scaleY.invert(y2);
       const toX = scaleX.invert(x2);
-      datumObject.addZone({ fromX, toX, fromY, toY });
+      datumObject.addZone({ fromX, toX, fromY, toY, noiseFactor });
       const zones = datumObject.getZones();
       draft.data[state.activeSpectrum.index].zones = zones;
     }
