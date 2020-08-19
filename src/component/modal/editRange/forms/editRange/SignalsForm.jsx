@@ -3,13 +3,7 @@ import { jsx } from '@emotion/core';
 import { useFormikContext } from 'formik';
 import { useCallback, useMemo, memo } from 'react';
 
-// import { useDispatch } from '../../../../context/DispatchContext';
 import { Tabs } from '../../../../elements/Tab';
-
-// import {
-//   SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
-//   UNSET_SELECTED_NEW_SIGNAL_DELTA,
-// } from '../../../reducer/types/Types';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import SignalFormTab from './SignalFormTab';
@@ -30,15 +24,16 @@ const SignalsForm = memo(() => {
           // dispatch({
           //   type: UNSET_SELECTED_NEW_SIGNAL_DELTA,
           // });
-        } else if (
-          typeof identifier === 'string' &&
-          identifier === 'addSignalTab'
-        ) {
-          // dispatch({
-          //   type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
-          //   isEnabled: true,
-          // });
         }
+        //  else if (
+        //   typeof identifier === 'string' &&
+        //   identifier === 'addSignalTab'
+        // ) {
+        // dispatch({
+        //   type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
+        //   isEnabled: true,
+        // });
+        // }
       }
     },
     [setFieldValue],
