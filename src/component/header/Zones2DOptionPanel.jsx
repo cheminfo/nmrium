@@ -6,6 +6,7 @@ import {
   RESET_SELECTED_TOOL,
   AUTO_ZONES_DETECTION,
 } from '../reducer/types/Types';
+import Events from '../utility/Events';
 
 const styles = {
   container: {
@@ -52,6 +53,14 @@ const Zones2DOptionPanel = () => {
     });
   }, [dispatch]);
 
+  const handleInput = useCallback((e) => {
+    // const fieldName = e.target.name;
+    if (e.target) {
+      const val = e.target.value;
+      Events.publish('noiseFactorChanged', val);
+    }
+  }, []);
+
   return (
     <div style={styles.container}>
       <NumberInput
@@ -64,6 +73,7 @@ const Zones2DOptionPanel = () => {
           label: styles.label,
         }}
         defaultValue={1}
+        onChange={handleInput}
       />
       <button
         type="button"

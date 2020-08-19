@@ -2,7 +2,15 @@ import { produce } from 'immer';
 
 import { Datum2D } from '../../../data/data2d/Datum2D';
 import { get2DYScale, get2DXScale } from '../../2d/utilities/scale';
+import Events from '../../utility/Events';
 import { AnalysisObj } from '../core/Analysis';
+
+let noiseFactor = 1;
+
+Events.subscribe('noiseFactorChanged', (val) => {
+  // eslint-disable-next-line no-unused-vars
+  noiseFactor = val;
+});
 
 const add2dZoneHandler = (state, action) => {
   return produce(state, (draft) => {
