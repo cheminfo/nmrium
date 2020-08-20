@@ -240,8 +240,16 @@ export class Datum2D {
     this.zones = Object.assign({}, this.zones);
     this.zones.values = this.zones.values.slice();
 
-    const zones = autoZonesDetection(this, options);
-    this.zones.values = zones.map((zone) => {
+    let dataMatrix = {};
+    if (options.selectedZone) {
+      dataMatrix = this.getSubMatrix(options.selectedZone);
+    } else {
+      dataMatrix = this.data;
+    }
+
+    options.info = this.info;
+    const zones = autoZonesDetection(dataMatrix, options);
+    let formatedZones = zones.map((zone) => {
       return {
         id: generateID(),
         x: { from: zone.fromTo[0].from, to: zone.fromTo[0].to },
@@ -261,7 +269,7 @@ export class Datum2D {
         ],
       };
     });
-
+    this.zones.values = this.zones.values.concat(formatedZones);
     return this.zones;
   }
 
@@ -278,5 +286,37 @@ export class Datum2D {
       info: this.originalInfo,
       meta: this.meta,
     };
+  }
+
+  getSubMatrix(selectedZone) {
+    const { fromX, toX, fromY, toY } = selectedZone;
+    const data = this.data;
+    const xStep = (data.maxX - data.minX) / data.z[0].length;
+    const yStep = (data.maxY - data.minY) / data.z.length;
+    let xIndexFrom = Math.floor((fromX - data.minX) / xStep);
+    let yIndexFrom = Math.floor((fromY - data.minY) / yStep);
+    let xIndexTo = Math.floor((toX - data.minX) / xStep);
+    let yIndexTo = Math.floor((toY - data.minY) / yStep);
+    let dataMatrix = { z: [], maxX: toX, minX: fromX, maxY: toY, minY: fromY };
+    let maxZ = Number.MIN_SAFE_INTEGER;
+    let minZ = Number.MAX_SAFE_INTEGER;
+
+    let nbXPoints = xIndexFrom - xIndexTo + 1;
+    for (let j = yIndexFrom; j < yIndexTo; j++) {
+      let row = new Float32Array(nbXPoints);
+      let xIndex = xIndexFrom;
+      for (let i = 0; i < nbXPoints; i++) {
+        row[i] = data.z[j][xIndex--];
+      }
+      for (let i = 0; i < row.length; i++) {
+        if (maxZ < row[i]) maxZ = row[i];
+        if (minZ > row[i]) minZ = row[i];
+      }
+      dataMatrix.z.push(Array.from(row));
+    }
+    dataMatrix.minZ = minZ;
+    dataMatrix.maxZ = maxZ;
+
+    return dataMatrix;
   }
 }
