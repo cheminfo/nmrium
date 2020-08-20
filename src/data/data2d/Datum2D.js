@@ -142,13 +142,13 @@ export class Datum2D {
    */
   getSlice(position) {
     const data = this.data;
-    const xStep = (data.maxX - data.minX) / data.z.length;
-    const yStep = (data.maxY - data.minY) / data.z[0].length;
+    const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
+    const yStep = (data.maxY - data.minY) / (data.z.length - 1);
     const xIndex = Math.floor((position.x - data.minX) / xStep);
     const yIndex = Math.floor((position.y - data.minY) / yStep);
 
-    if (xIndex < 0 || xIndex >= data.z.length) return;
-    if (yIndex < 0 || yIndex >= data.z[0].length) return;
+    if (xIndex < 0 || xIndex >= data.z[0].length) return;
+    if (yIndex < 0 || yIndex >= data.z.length) return;
 
     let infoX = {
       nucleus: this.info.nucleus[0], // 1H, 13C, 19F, ...
@@ -160,13 +160,13 @@ export class Datum2D {
     let dataX = {
       x: zoneToX(
         { from: this.data.minX, to: this.data.maxX },
-        this.data.z.length,
+        this.data.z[0].length,
       ),
-      re: new Float64Array(this.data.z.length),
+      re: new Float64Array(this.data.z[0].length),
     };
 
-    for (let i = 0; i < this.data.z.length; i++) {
-      dataX.re[i] += this.data.z[i][yIndex];
+    for (let i = 0; i < this.data.z[0].length; i++) {
+      dataX.re[i] += this.data.z[yIndex][i];
     }
 
     let infoY = {
@@ -181,11 +181,12 @@ export class Datum2D {
         { from: this.data.minY, to: this.data.maxY },
         this.data.z.length,
       ),
-      re: new Float64Array(this.data.z[0].length),
+      re: new Float64Array(this.data.z.length),
     };
 
-    for (let i = 0; i < this.data.z[0].length; i++) {
-      dataY.re[i] += this.data.z[xIndex][i];
+    let index = this.data.z.length - 1;
+    for (let i = 0; i < this.data.z.length; i++) {
+      dataY.re[i] += this.data.z[index--][xIndex];
     }
 
     const horizontal = new Datum1D({ info: infoX, data: dataX });
