@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 const styles = {
   width: '100%',
@@ -14,31 +14,33 @@ function getVAlign(align) {
   }
   return 'center';
 }
-const TableHeader = ({
-  children,
-  className,
-  style,
-  align = 'center',
-  vAlign = 'center',
-  size = 1,
-  onClick,
-}) => {
-  return (
-    <div
-      className={className}
-      style={{
-        ...styles,
-        alignItems: getVAlign(vAlign),
-        textAlign: align,
-        flex: size,
-        ...style,
-      }}
-      onClick={onClick}
-    >
-      {children}
-    </div>
-  );
-};
+const TableHeader = memo(
+  ({
+    children,
+    className,
+    style,
+    align = 'center',
+    vAlign = 'center',
+    size = 1,
+    onClick,
+  }) => {
+    return (
+      <div
+        className={className}
+        style={{
+          ...styles,
+          alignItems: getVAlign(vAlign),
+          textAlign: align,
+          flex: size,
+          ...style,
+        }}
+        onClick={onClick}
+      >
+        {children}
+      </div>
+    );
+  },
+);
 
 TableHeader.defaultProps = {
   onClick: () => null,

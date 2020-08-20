@@ -2,24 +2,14 @@ import React, { useMemo, useCallback, memo, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import CheckBox from '../elements/CheckBox';
-import {
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-  TableRow,
-} from '../elements/Table';
-import ConnectToContext from '../hoc/ConnectToContext';
+import { useDispatch } from '../../context/DispatchContext';
+import CheckBox from '../../elements/CheckBox';
+import { TableCell, TableRow } from '../../elements/Table';
 import {
   ENABLE_FILTER,
   DELETE_FILTER,
   SET_FILTER_SNAPSHOT,
-} from '../reducer/types/Types';
-
-import NoTableData from './extra/placeholder/NoTableData';
+} from '../../reducer/types/Types';
 
 const styles = {
   button: {
@@ -34,8 +24,7 @@ const styles = {
     borderBottom: '1px solid #817066',
   },
 };
-const FilterPanel = memo(({ data, activeSpectrum }) => {
-  // const { data, activeSpectrum } = useChartData();
+const FiltersTableRow = memo(({ filters }) => {
   const dispatch = useDispatch();
   const [selectedFilterID, setSelectedFilter] = useState();
 
@@ -62,13 +51,9 @@ const FilterPanel = memo(({ data, activeSpectrum }) => {
     [dispatch],
   );
   const filtersTableRow = useMemo(() => {
-    const _data =
-      data && activeSpectrum && data.find((d) => d.id === activeSpectrum.id);
-
     return (
-      _data &&
-      _data.filters &&
-      _data.filters.map((d) => (
+      filters &&
+      filters.map((d) => (
         <TableRow
           key={d.id}
           onClick={() => filterSnapShotHandler(d.id)}
@@ -101,31 +86,13 @@ const FilterPanel = memo(({ data, activeSpectrum }) => {
       ))
     );
   }, [
-    activeSpectrum,
-    data,
     filterSnapShotHandler,
+    filters,
     handelDeleteFilter,
     handelFilterCheck,
     selectedFilterID,
   ]);
-
-  return filtersTableRow && filtersTableRow.length > 0 ? (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell align="center" size="1">
-            Label
-          </TableCell>
-          <TableCell align="center" size="2">
-            Properties
-          </TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>{filtersTableRow}</TableBody>
-    </Table>
-  ) : (
-    <NoTableData />
-  );
+  return filtersTableRow;
 });
 
-export default ConnectToContext(FilterPanel, useChartData);
+export default FiltersTableRow;

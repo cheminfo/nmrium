@@ -299,9 +299,6 @@ export class Datum1D {
   }
 
   deletePeak(peak) {
-    this.peaks = Object.assign({}, this.peaks);
-    this.peaks.values = this.peaks.values.slice();
-
     if (peak == null) {
       this.peaks.values = [];
     } else {
@@ -309,6 +306,7 @@ export class Datum1D {
         (p) => p.xIndex !== peak.xIndex,
       );
     }
+    return this.peaks.values;
   }
 
   deleteRange(id) {
@@ -469,11 +467,15 @@ export class Datum1D {
     this.peaks = Object.assign({}, this.peaks);
     this.peaks.values = this.peaks.values.slice();
     if (!this.checkPeakIsExists(peak)) {
-      this.peaks.values.push({
+      const newPeak = {
         id: generateID(),
         ...peak,
-      });
+      };
+      this.peaks.values.push(newPeak);
+      return newPeak;
     }
+
+    return null;
   }
 
   // Add all the peaks in a range
@@ -487,13 +489,12 @@ export class Datum1D {
       this.peaks.values = this.peaks.values.slice();
       const peak = this.lookupPeak(from, to);
       if (peak && !this.checkPeakIsExists(peak)) {
-        this.peaks.values = this.peaks.values.concat({
-          id: generateID(),
-          ...peak,
-        });
+        const newPeak = { id: generateID(), ...peak };
+        this.peaks.values.push(newPeak);
+        return newPeak;
       }
     }
-    return this.peaks;
+    return null;
   }
 
   addFilter(filter) {

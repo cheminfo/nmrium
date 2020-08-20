@@ -35,8 +35,8 @@ const addPeak = (state, mouseCoordinates) => {
 
       if (index !== -1) {
         const peak = { xIndex: candidatePeak.xIndex };
-        AnalysisObj.getDatum(spectrumID).addPeak(peak);
-        draft.data[index].peaks = AnalysisObj.getDatum(spectrumID).getPeaks();
+        const newPeak = AnalysisObj.getDatum(spectrumID).addPeak(peak);
+        if (newPeak) draft.data[index].peaks.values.push(newPeak);
       }
     }
   });
@@ -62,11 +62,11 @@ const addPeaks = (state, action) => {
       }
 
       if (index !== -1) {
-        const peaks = AnalysisObj.getDatum(spectrumID).addPeaks(
+        const newPeak = AnalysisObj.getDatum(spectrumID).addPeaks(
           range[0],
           range[1],
         );
-        draft.data[index].peaks = peaks;
+        if (newPeak) draft.data[index].peaks.values.push(newPeak);
       }
     }
   });
@@ -76,8 +76,8 @@ const deletePeak = (state, peakData) => {
   return produce(state, (draft) => {
     const { id, index } = state.activeSpectrum;
     const object = AnalysisObj.getDatum(id);
-    object.deletePeak(peakData);
-    draft.data[index].peaks = object.getPeaks();
+    const peaks = object.deletePeak(peakData);
+    draft.data[index].peaks.values = peaks;
   });
 };
 

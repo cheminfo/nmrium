@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 const styles = {
   width: '100%',
@@ -7,12 +7,12 @@ const styles = {
   display: 'flex',
   flexDirection: 'column',
 };
-const Table = ({ children, className, style }) => {
+const Table = memo(({ children, className, style }) => {
   return (
     <div className={className} style={{ ...styles, ...style }}>
       {children}
     </div>
   );
-};
+});
 
 export default Table;

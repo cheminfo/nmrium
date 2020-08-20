@@ -1,4 +1,4 @@
-import { setAutoFreeze } from 'immer';
+// import { setAutoFreeze } from 'immer';
 
 import { options } from '../toolbar/ToolTypes';
 
@@ -182,7 +182,7 @@ import {
   CHANGE_ZONE_DATA,
 } from './types/Types';
 
-setAutoFreeze(false);
+// setAutoFreeze(false);
 
 export const initialState = {
   data: null,

@@ -7,15 +7,15 @@ import { Accordion, AccordionItem } from '../elements/accordion';
 import ConnectToContext from '../hoc/ConnectToContext';
 import { options } from '../toolbar/ToolTypes';
 
-import FilterPanel from './FilterPanel';
 import InformationPanel from './InformationPanel';
 import IntegralTablePanel from './IntegralsPanel/IntegralTablePanel';
 import MoleculePanel from './MoleculePanel';
-import PeaksTablePanel from './PeaksPanel/PeaksTablePanel';
+import PeaksPanel from './PeaksPanel/PeaksPanel';
 import RangesPanel from './RangesPanel/RangesPanel';
 import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
 import Summary from './Summary';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
+import FilterPanel from './filters/FilterPanel';
 
 const accordionItems = [
   {
@@ -34,7 +34,7 @@ const accordionItems = [
   },
   {
     title: 'Peaks',
-    component: <PeaksTablePanel />,
+    component: <PeaksPanel />,
     openWhen: [options.peakPicking.id],
     style: '',
     hidePreferenceKey: 'hidePeaksPanel',

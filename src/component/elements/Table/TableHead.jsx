@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 const styles = {
   width: '100%',
@@ -10,12 +10,12 @@ const styles = {
   fontSize: 11,
   fontWeight: 'bold',
 };
-const TableHead = ({ children, className, style }) => {
+const TableHead = memo(({ children, className, style }) => {
   return (
     <div className={className} style={{ ...styles, ...style }}>
       {children}
     </div>
   );
-};
+});
 
 export default TableHead;

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 const styles = {
   width: '100%',
   display: 'flex',
   padding: '5px 0px',
 };
-const TableHeader = ({ children, className, style, onClick }) => {
+const TableHeader = memo(({ children, className, style, onClick }) => {
   return (
     <div
       className={className}
@@ -15,7 +15,7 @@ const TableHeader = ({ children, className, style, onClick }) => {
       {children}
     </div>
   );
-};
+});
 
 TableHeader.defaultProps = {
   onClick: () => null,
