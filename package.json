@@ -73,7 +73,7 @@
     "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "eslint": "eslint src --ext js,jsx",
+    "eslint": "eslint src --ext js,jsx --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
   },
@@ -81,6 +81,7 @@
     "extends": "cheminfo-react",
     "parser": "babel-eslint",
     "rules": {
+      "import/no-anonymous-default-export": "warn",
       "import/no-unresolved": "off",
       "eofline": "off"
     }

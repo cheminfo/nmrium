@@ -157,7 +157,6 @@ export class Analysis {
     this.spectra.push(object);
   }
 
-  // eslint-disable-next-line no-unused-vars
   createSlice(id2d, position = { x: 0, y: 0 }) {
     const spectrum2d = this.getDatum(id2d);
     if (!spectrum2d) return;

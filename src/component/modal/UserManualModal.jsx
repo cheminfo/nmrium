@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 
@@ -69,7 +69,6 @@ const ManualView = ({ filePath }) => {
 
 const UserManualModal = ({ onClose }) => {
   const [manuals, setManualsData] = useState([]);
-  const onTabChangeHandler = useCallback(() => {}, []);
 
   useEffect(() => {
     const manualsData = Object.keys(helpData)
@@ -90,11 +89,7 @@ const UserManualModal = ({ onClose }) => {
         <FaTimes />
       </button>
       <div className="main-content">
-        <Tabs
-          onClick={onTabChangeHandler}
-          position={positions.LEFT}
-          defaultTabID="loadSpectrum"
-        >
+        <Tabs position={positions.LEFT} defaultTabID="loadSpectrum">
           {manuals.map((manualItem) => (
             <div
               label={manualItem.tabTitle}

@@ -38,7 +38,6 @@ const Zones2DOptionPanel = () => {
   const thresholdFactor = useRef();
 
   const handleApplyFilter = useCallback(() => {
-    // eslint-disable-next-line no-console
     dispatch({
       type: AUTO_ZONES_DETECTION,
       options: {

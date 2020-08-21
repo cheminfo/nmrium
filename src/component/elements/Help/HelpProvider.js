@@ -227,7 +227,6 @@ const HelpProvider = ({
                                     overflow: 'auto',
                                     cursor: 'default',
                                   }}
-                                  // eslint-disable-next-line react/no-danger
                                 >
                                   <ReactMarkdown
                                     source={modal.mdtext}

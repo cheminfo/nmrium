@@ -22,7 +22,6 @@ const menuStyles = css`
   }
 `;
 
-// eslint-disable-next-line no-unused-vars
 const MenuButton = ({
   style,
   component,

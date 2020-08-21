@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import PropsTypes from 'prop-types';
 import React, { useMemo } from 'react';
 

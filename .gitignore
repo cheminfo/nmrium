@@ -26,3 +26,5 @@ storybook-static
 lib
 
 pnpm-lock.yaml
+
+.eslintcache

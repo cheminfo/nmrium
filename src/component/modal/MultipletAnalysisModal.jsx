@@ -167,6 +167,7 @@ const MultipletAnalysisModal = ({
         {analysisData &&
           analysisData.debug &&
           analysisData.debug.steps.map((d, index) => (
+            // eslint-disable-next-line react/no-array-index-key
             <div key={index} className="row">
               <Chart
                 chart={{
