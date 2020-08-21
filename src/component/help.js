@@ -1,4 +1,4 @@
-export default {
+const help = {
   zoomIn: {
     tabTitle: '',
     ShowInGneralUserManual: false,
@@ -35,3 +35,5 @@ export default {
     index: 0,
   },
 };
+
+export default help;

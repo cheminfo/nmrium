@@ -93,60 +93,63 @@ const IntegralTablePanel = memo(() => {
     },
     [dispatch],
   );
-  const defaultColumns = [
-    {
-      orderIndex: 1,
-      Header: '#',
-      Cell: ({ row }) => row.index + 1,
-      width: 10,
-    },
+  const defaultColumns = useMemo(
+    () => [
+      {
+        orderIndex: 1,
+        Header: '#',
+        Cell: ({ row }) => row.index + 1,
+        width: 10,
+      },
 
-    {
-      orderIndex: 2,
-      Header: 'From',
-      accessor: 'from',
-      sortType: 'basic',
-      resizable: true,
-      Cell: ({ row }) => row.original.from.toFixed(2),
-    },
-    {
-      orderIndex: 3,
-      Header: 'To',
-      accessor: 'to',
-      sortType: 'basic',
-      resizable: true,
-      Cell: ({ row }) => row.original.to.toFixed(2),
-    },
-    {
-      orderIndex: 6,
-      Header: 'Kind',
-      accessor: 'kind',
-      sortType: 'basic',
-      resizable: true,
-      Cell: ({ row }) => (
-        <Select
-          onChange={(value) => changeIntegralDataHandler(value, row)}
-          data={SignalKinds}
-          style={selectStyle}
-          defaultValue={row.original.kind}
-        />
-      ),
-    },
-    {
-      orderIndex: 7,
-      Header: '',
-      id: 'delete-button',
-      Cell: ({ row }) => (
-        <button
-          type="button"
-          className="delete-button"
-          onClick={(e) => deleteIntegralHandler(e, row)}
-        >
-          <FaRegTrashAlt />
-        </button>
-      ),
-    },
-  ];
+      {
+        orderIndex: 2,
+        Header: 'From',
+        accessor: 'from',
+        sortType: 'basic',
+        resizable: true,
+        Cell: ({ row }) => row.original.from.toFixed(2),
+      },
+      {
+        orderIndex: 3,
+        Header: 'To',
+        accessor: 'to',
+        sortType: 'basic',
+        resizable: true,
+        Cell: ({ row }) => row.original.to.toFixed(2),
+      },
+      {
+        orderIndex: 6,
+        Header: 'Kind',
+        accessor: 'kind',
+        sortType: 'basic',
+        resizable: true,
+        Cell: ({ row }) => (
+          <Select
+            onChange={(value) => changeIntegralDataHandler(value, row)}
+            data={SignalKinds}
+            style={selectStyle}
+            defaultValue={row.original.kind}
+          />
+        ),
+      },
+      {
+        orderIndex: 7,
+        Header: '',
+        id: 'delete-button',
+        Cell: ({ row }) => (
+          <button
+            type="button"
+            className="delete-button"
+            onClick={(e) => deleteIntegralHandler(e, row)}
+          >
+            <FaRegTrashAlt />
+          </button>
+        ),
+      },
+    ],
+    [changeIntegralDataHandler, deleteIntegralHandler],
+  );
 
   const checkPreferences = (integralsPreferences, key) => {
     const val =

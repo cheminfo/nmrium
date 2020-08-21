@@ -210,23 +210,26 @@ const SpectrumListPanel = memo(
       [dispatch],
     );
 
-    const contextMenu = [
-      {
-        label: 'Copy to Clipboard',
-        onClick: (spectrumData) => {
-          const { x, y, info } = spectrumData;
-          const success = copyTextToClipboard(
-            JSON.stringify({ x, y, info }, undefined, 2),
-          );
+    const contextMenu = useMemo(
+      () => [
+        {
+          label: 'Copy to Clipboard',
+          onClick: (spectrumData) => {
+            const { x, y, info } = spectrumData;
+            const success = copyTextToClipboard(
+              JSON.stringify({ x, y, info }, undefined, 2),
+            );
 
-          if (success) {
-            alert.success('Data copied to clipboard');
-          } else {
-            alert.error('Copy to clipboard failed');
-          }
+            if (success) {
+              alert.success('Data copied to clipboard');
+            } else {
+              alert.error('Copy to clipboard failed');
+            }
+          },
         },
-      },
-    ];
+      ],
+      [alert],
+    );
 
     const contextMenuHandler = useCallback(
       (e, rowData) => {
