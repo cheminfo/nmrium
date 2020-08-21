@@ -5,7 +5,7 @@ import { FaTimes } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 
 import { Tabs, positions } from '../elements/Tab';
-import helpData from '../help.json';
+import helpData from '../help';
 import { loadFile } from '../utility/FileUtility';
 
 const styles = css`
