@@ -239,14 +239,12 @@ export class Datum2D {
   detectZones(options) {
     this.zones = Object.assign({}, this.zones);
     this.zones.values = this.zones.values.slice();
-
     let dataMatrix = {};
     if (options.selectedZone) {
       dataMatrix = this.getSubMatrix(options.selectedZone);
     } else {
       dataMatrix = this.data;
     }
-
     options.info = this.info;
     const zones = autoZonesDetection(dataMatrix, options);
     let formatedZones = zones.map((zone) => {

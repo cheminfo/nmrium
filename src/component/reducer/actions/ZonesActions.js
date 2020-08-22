@@ -33,7 +33,7 @@ const add2dZoneHandler = (state, action) => {
       const toX = scaleX.invert(x2);
       const zones = datumObject.detectZones({
         selectedZone: { fromX, fromY, toX, toY },
-        thresholdFactor: 2,
+        thresholdFactor: noiseFactor,
         convolutionByFFT: false,
       });
       draft.data[state.activeSpectrum.index].zones = zones;
