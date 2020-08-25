@@ -14,108 +14,6 @@ const PeaksTable = memo(
   ({ xDomain, preferences, activeTab, data, enableFilter, onPeaksChange }) => {
     const dispatch = useDispatch();
 
-    const defaultColumns = [
-      {
-        Header: '#',
-        Cell: ({ row }) => row.index + 1,
-      },
-
-      {
-        Header: 'peak index',
-        accessor: 'xIndex',
-<<<<<<< HEAD
-=======
-        sortType: 'basic',
-      },
-
-      {
-        Header: 'Intensity ',
-        accessor: 'yValue',
-        sortType: 'basic',
-      },
-      {
-        Header: '',
-        id: 'delete-button',
-        Cell: ({ row }) => (
-          <button
-            type="button"
-            className="delete-button"
-            onClick={(e) => deletePeakHandler(e, row)}
-          >
-            <FaRegTrashAlt />
-          </button>
-        ),
-      },
-    ],
-    [deletePeakHandler],
-  );
-
-  const initialColumns = useMemo(
-    () => [
-      {
-        index: 20,
-        Header: '',
-        id: 'delete-button',
-        Cell: ({ row }) => (
-          <button
-            type="button"
-            className="delete-button"
-            onClick={(e) => deletePeakHandler(e, row)}
-          >
-            <FaRegTrashAlt />
-          </button>
-        ),
-      },
-    ],
-    [deletePeakHandler],
-  );
-
-  const tableColumns = useMemo(() => {
-    const setCustomColumn = (array, index, columnLabel, cellHandler) => {
-      array.push({
-        index: index,
-        Header: columnLabel,
->>>>>>> 430cbde38a656f85defd3debb08c24e624f6bbe1
-        sortType: 'basic',
-      },
-
-      {
-        Header: 'Intensity ',
-        accessor: 'yValue',
-        sortType: 'basic',
-      },
-      {
-        Header: '',
-        id: 'delete-button',
-        Cell: ({ row }) => (
-          <button
-            type="button"
-            className="delete-button"
-            onClick={(e) => deletePeakHandler(e, row)}
-          >
-            <FaRegTrashAlt />
-          </button>
-        ),
-      },
-    ];
-
-    const initialColumns = [
-      {
-        index: 20,
-        Header: '',
-        id: 'delete-button',
-        Cell: ({ row }) => (
-          <button
-            type="button"
-            className="delete-button"
-            onClick={(e) => deletePeakHandler(e, row)}
-          >
-            <FaRegTrashAlt />
-          </button>
-        ),
-      },
-    ];
-
     const deletePeakHandler = useCallback(
       (e, row) => {
         e.preventDefault();
@@ -127,6 +25,61 @@ const PeaksTable = memo(
         });
       },
       [dispatch],
+    );
+
+    const defaultColumns = useMemo(
+      () => [
+        {
+          Header: '#',
+          Cell: ({ row }) => row.index + 1,
+        },
+
+        {
+          Header: 'peak index',
+          accessor: 'xIndex',
+          sortType: 'basic',
+        },
+
+        {
+          Header: 'Intensity ',
+          accessor: 'yValue',
+          sortType: 'basic',
+        },
+        {
+          Header: '',
+          id: 'delete-button',
+          Cell: ({ row }) => (
+            <button
+              type="button"
+              className="delete-button"
+              onClick={(e) => deletePeakHandler(e, row)}
+            >
+              <FaRegTrashAlt />
+            </button>
+          ),
+        },
+      ],
+      [deletePeakHandler],
+    );
+
+    const initialColumns = useMemo(
+      () => [
+        {
+          index: 20,
+          Header: '',
+          id: 'delete-button',
+          Cell: ({ row }) => (
+            <button
+              type="button"
+              className="delete-button"
+              onClick={(e) => deletePeakHandler(e, row)}
+            >
+              <FaRegTrashAlt />
+            </button>
+          ),
+        },
+      ],
+      [deletePeakHandler],
     );
 
     const tableColumns = useMemo(() => {
