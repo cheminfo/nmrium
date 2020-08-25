@@ -1,12 +1,18 @@
 import { xyzAutoPeaksPicking } from 'nmr-processing';
 
-export default function autoZonesDetection(datum2D, options) {
-  const { thresholdFactor, clean, maxPercentCutOff, enhanceSymmetry } = options;
+export default function autoZonesDetection(data, options) {
+  const {
+    thresholdFactor,
+    clean,
+    maxPercentCutOff,
+    enhanceSymmetry,
+    convolutionByFFT,
+  } = options;
 
-  const { nucleus, originFrequency } = datum2D.info;
+  const { nucleus, originFrequency } = options.info;
   const isHomoNuclear = nucleus[0] === nucleus[1];
 
-  let zones = xyzAutoPeaksPicking(datum2D.data, {
+  let zones = xyzAutoPeaksPicking(data, {
     isHomoNuclear,
     nucleus,
     observeFrequencies: originFrequency,
@@ -14,6 +20,7 @@ export default function autoZonesDetection(datum2D, options) {
     clean,
     maxPercentCutOff,
     enhanceSymmetry,
+    convolutionByFFT,
   });
 
   return zones;

@@ -27,7 +27,7 @@
     "mouse-speed": "^2.0.1",
     "multiplet-analysis": "0.2.0",
     "nmr-parser": "0.2.4",
-    "nmr-processing": "^0.2.3",
+    "nmr-processing": "^0.2.5",
     "numeral": "^2.0.6",
     "openchemlib": "^7.2.3",
     "prop-types": "^15.7.2",
