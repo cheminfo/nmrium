@@ -6,13 +6,14 @@ import React, {
   forwardRef,
   useImperativeHandle,
   useRef,
+  memo,
 } from 'react';
 import { useAlert } from 'react-alert';
 
-import { useChartData } from '../../context/ChartContext';
+// import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import ContextWrapper from '../../hoc/ContextWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
 import ColumnFormatField from '../extra/preferences/ColumnFormatField';
@@ -48,31 +49,59 @@ const styles = {
   },
 };
 
-const PeaksPreferences = forwardRef((props, ref) => {
-  const { data, preferences } = useChartData();
+const formatFields = [
+  {
+    id: 1,
+    label: 'Peak Number :',
+    checkController: 'showPeakNumber',
+    formatController: 'peakNumberFormat',
+    defaultFormat: '',
+  },
+  {
+    id: 2,
+    label: 'Peak Index : ',
+    checkController: 'showPeakIndex',
+    formatController: 'peakIndexFormat',
+    defaultFormat: '',
+  },
+  {
+    id: 3,
+    label: 'δ (ppm) :',
+    checkController: 'showDeltaPPM',
+    formatController: 'deltaPPMFormat',
+    defaultFormat: '00.00',
+  },
+  {
+    id: 4,
+    label: 'δ (Hz) :',
+    checkController: 'showDeltaHz',
+    formatController: 'deltaHzFormat',
+    defaultFormat: '00.00',
+  },
+  {
+    id: 5,
+    label: 'Peak Width',
+    checkController: 'showPeakWidth',
+    formatController: 'peakWidthFormat',
+    defaultFormat: '00.0000',
+  },
+  {
+    id: 6,
+    label: 'Intensity :',
+    checkController: 'showIntensity',
+    formatController: 'intensityFormat',
+    defaultFormat: '00.00',
+  },
+];
+
+const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
+  // const { data, preferences } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
   const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
 
-  const [nucleus, setNucleus] = useState([]);
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
-
-  const getDefaultValues = useCallback((nucleusList) => {
-    const _values = nucleusList.reduce((accumulator, key) => {
-      accumulator = { ...accumulator, [key]: peaksDefaultValues };
-      return accumulator;
-    }, {});
-    return _values;
-  }, []);
-
-  useEffect(() => {
-    if (data && Array.isArray(data)) {
-      const groupByNucleus = GroupByInfoKey('nucleus');
-      const nucleusList = Object.keys(groupByNucleus(data));
-      setNucleus(nucleusList);
-    }
-  }, [data, getDefaultValues, settings]);
 
   useEffect(() => {
     const peaksPreferences = GetPreference(preferences, 'peaks');
@@ -98,50 +127,6 @@ const PeaksPreferences = forwardRef((props, ref) => {
     },
   }));
 
-  const formatFields = [
-    {
-      id: 1,
-      label: 'Peak Number :',
-      checkController: 'showPeakNumber',
-      formatController: 'peakNumberFormat',
-      defaultFormat: '',
-    },
-    {
-      id: 2,
-      label: 'Peak Index : ',
-      checkController: 'showPeakIndex',
-      formatController: 'peakIndexFormat',
-      defaultFormat: '',
-    },
-    {
-      id: 3,
-      label: 'δ (ppm) :',
-      checkController: 'showDeltaPPM',
-      formatController: 'deltaPPMFormat',
-      defaultFormat: '00.00',
-    },
-    {
-      id: 4,
-      label: 'δ (Hz) :',
-      checkController: 'showDeltaHz',
-      formatController: 'deltaHzFormat',
-      defaultFormat: '00.00',
-    },
-    {
-      id: 5,
-      label: 'Peak Width',
-      checkController: 'showPeakWidth',
-      formatController: 'peakWidthFormat',
-      defaultFormat: '00.0000',
-    },
-    {
-      id: 6,
-      label: 'Intensity :',
-      checkController: 'showIntensity',
-      formatController: 'intensityFormat',
-      defaultFormat: '00.00',
-    },
-  ];
   const saveToLocalStorgate = (values) => {
     let globalSettings = { ...settingData };
     globalSettings = lodash.set(globalSettings, 'panels.peaks', values);
@@ -202,4 +187,4 @@ const PeaksPreferences = forwardRef((props, ref) => {
   );
 });
 
-export default PeaksPreferences;
+export default ContextWrapper(memo(PeaksPreferences));

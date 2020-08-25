@@ -1,6 +1,5 @@
 import React, { useMemo, memo } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
 import {
   Table,
   TableHead,
@@ -8,20 +7,12 @@ import {
   TableBody,
   TableRow,
 } from '../../elements/Table';
+import ContextWrapper from '../../hoc/ContextWrapper';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import FiltersTableRow from './FiltersTableRow';
 
-const FilterPanel = memo(() => {
-  const { data, activeSpectrum } = useChartData();
-
-  const spectrumData =
-    data &&
-    activeSpectrum &&
-    activeSpectrum.id &&
-    data.find((d) => d.id === activeSpectrum.id);
-  const filters = spectrumData && spectrumData.filters;
-
+const FilterPanel = memo(({ data: filters }) => {
   const filtersTable = useMemo(() => {
     return filters ? (
       <Table>
@@ -47,4 +38,4 @@ const FilterPanel = memo(() => {
   return filtersTable;
 });
 
-export default FilterPanel;
+export default ContextWrapper(FilterPanel, 'filters');

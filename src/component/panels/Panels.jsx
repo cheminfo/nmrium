@@ -8,14 +8,14 @@ import ConnectToContext from '../hoc/ConnectToContext';
 import { options } from '../toolbar/ToolTypes';
 
 import InformationPanel from './InformationPanel';
-import IntegralTablePanel from './IntegralsPanel/IntegralTablePanel';
+import IntegralPanel from './IntegralsPanel/IntegralPanel';
 import MoleculePanel from './MoleculePanel';
 import PeaksPanel from './PeaksPanel/PeaksPanel';
 import RangesPanel from './RangesPanel/RangesPanel';
 import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
 import Summary from './Summary';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
-import FilterPanel from './filters/FilterPanel';
+import FilterPanel from './filtersPanel/FilterPanel';
 
 const accordionItems = [
   {
@@ -48,7 +48,7 @@ const accordionItems = [
   },
   {
     title: 'Integrals',
-    component: <IntegralTablePanel />,
+    component: <IntegralPanel />,
     openWhen: [options.integral.id],
     style: '',
     hidePreferenceKey: 'hideIntegralsPanel',

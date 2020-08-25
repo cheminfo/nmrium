@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
-import { useChartData } from '../../context/ChartContext';
+// import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
@@ -29,7 +29,6 @@ const styles = {
 };
 
 const PeaksPanel = memo(() => {
-  const { data: SpectrumsData } = useChartData();
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [peaksCounter, setPeaksCounter] = useState(0);
 
@@ -112,7 +111,7 @@ const PeaksPanel = memo(() => {
             onPeaksChange={peaksChangedHandler}
           />
         </div>
-        <PeaksPreferences data={SpectrumsData} ref={settingRef} />
+        <PeaksPreferences ref={settingRef} />
       </ReactCardFlip>
     </div>
   );

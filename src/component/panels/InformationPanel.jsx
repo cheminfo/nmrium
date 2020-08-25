@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, memo, useMemo } from 'react';
 
-import { useChartData } from '../context/ChartContext';
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
+import ContextWrapper from '../hoc/ContextWrapper';
 
 const styles = {
   searchInput: {
@@ -14,11 +14,9 @@ const styles = {
 };
 
 // information panel
-const InformationPanel = memo(() => {
-  const { data, activeSpectrum } = useChartData();
+const InformationPanel = memo(({ data: spectraData }) => {
   const [information, setInformation] = useState([]);
   const [matches, setMatchesData] = useState([]);
-  const [currentActiveSpectrumID, setCurrentActiveSpectrumID] = useState(null);
 
   const handleSearch = useCallback(
     (input) => {
@@ -31,26 +29,18 @@ const InformationPanel = memo(() => {
   );
 
   useEffect(() => {
-    if (data && activeSpectrum) {
-      const activeSpectrumData = data.find((d) => d.id === activeSpectrum.id);
-      if (
-        activeSpectrumData &&
-        (!currentActiveSpectrumID ||
-          currentActiveSpectrumID !== activeSpectrumData.id)
-      ) {
-        const keys = Object.keys(activeSpectrumData.info).concat(
-          Object.keys(activeSpectrumData.meta),
-        );
+    if (spectraData) {
+      const keys = Object.keys(spectraData.info).concat(
+        Object.keys(spectraData.meta),
+      );
 
-        setMatchesData(keys);
-        setInformation({
-          ...activeSpectrumData.info,
-          ...activeSpectrumData.meta,
-        });
-        setCurrentActiveSpectrumID(activeSpectrumData.id);
-      }
+      setMatchesData(keys);
+      setInformation({
+        ...spectraData.info,
+        ...spectraData.meta,
+      });
     }
-  }, [activeSpectrum, currentActiveSpectrumID, data]);
+  }, [spectraData]);
 
   const columns = useMemo(
     () => [
@@ -105,4 +95,4 @@ const InformationPanel = memo(() => {
   );
 });
 
-export default InformationPanel;
+export default ContextWrapper(InformationPanel, 'info', 'meta');

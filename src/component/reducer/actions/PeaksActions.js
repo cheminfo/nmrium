@@ -33,7 +33,7 @@ const addPeak = (state, mouseCoordinates) => {
       const index = state.data.findIndex((d) => d.id === spectrumID);
       const candidatePeak = getClosePeak(10, mouseCoordinates, state);
 
-      if (index !== -1) {
+      if (index !== -1 && candidatePeak) {
         const peak = { xIndex: candidatePeak.xIndex };
         const newPeak = AnalysisObj.getDatum(spectrumID).addPeak(peak);
         if (newPeak) draft.data[index].peaks.values.push(newPeak);

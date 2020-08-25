@@ -59,11 +59,12 @@ const SpectrumListPanel = memo(
     const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
     const [colorPickerPosition, setColorPickerPosition] = useState(null);
     const [activeTabID, setActiveTabID] = useState(null);
+    const [spectrumsGroupByNucleus, setSpectrumsGroupByNucleus] = useState([]);
+
     // const { data, activeSpectrum, activeTab: activeTabState } = useChartData();
     const modal = useModal();
     const alert = useAlert();
     const dispatch = useDispatch();
-    const [spectrumsGroupByNucleus, setSpectrumsGroupByNucleus] = useState([]);
 
     const getActiveTabSpectrumsIDs = useCallback(() => {
       if (Array.isArray(spectrumsGroupByNucleus[activeTabID])) {
@@ -77,24 +78,12 @@ const SpectrumListPanel = memo(
 
     const handleChangeVisibility = useCallback(
       (d, key) => {
-        // if (d.info.dimension === 2) {
         dispatch({
           type: CHANGE_VISIBILITY,
           id: d.id,
           key,
           value: !d.display[key],
         });
-        // } else {
-        // }
-        // const currentIndex = visible.findIndex((v) => v.id === d.id);
-        // const newChecked = [...visible];
-        // if (currentIndex === -1) {
-        //   newChecked.push({ id: d.id });
-        // } else {
-        //   newChecked.splice(currentIndex, 1);
-        // }
-        // dispatch({ type: CHANGE_VISIBILITY, data: newChecked });
-        // setVisible(newChecked);
       },
       [dispatch],
     );
@@ -117,10 +106,8 @@ const SpectrumListPanel = memo(
       (d) => {
         if (activated && activated.id === d.id) {
           dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: null });
-          // setActivated(null);
         } else {
           dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: { id: d.id } });
-          // setActivated({ id: d.id });
         }
       },
       [activated, dispatch],

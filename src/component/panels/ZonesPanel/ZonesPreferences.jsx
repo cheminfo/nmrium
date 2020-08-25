@@ -6,14 +6,14 @@ import React, {
   forwardRef,
   useImperativeHandle,
   useRef,
+  memo,
 } from 'react';
 import { useAlert } from 'react-alert';
 import { MF } from 'react-mf';
 
-import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import ContextWrapper from '../../hoc/ContextWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
 import ColumnFormatField from '../extra/preferences/ColumnFormatField';
@@ -54,31 +54,44 @@ const styles = {
   },
 };
 
-const ZonesPreferences = forwardRef((props, ref) => {
-  const { data, preferences } = useChartData();
+const formatFields = [
+  {
+    id: 1,
+    label: 'From :',
+    checkController: 'showFrom',
+    formatController: 'fromFormat',
+    defaultFormat: '0.00',
+  },
+  {
+    id: 2,
+    label: 'To :',
+    checkController: 'showTo',
+    formatController: 'toFormat',
+    defaultFormat: '0.00',
+  },
+  {
+    id: 3,
+    label: 'Absolute :',
+    checkController: 'showAbsolute',
+    formatController: 'absoluteFormat',
+    defaultFormat: '0.00',
+  },
+  {
+    id: 4,
+    label: 'Relative :',
+    checkController: 'showRelative',
+    formatController: 'relativeFormat',
+    defaultFormat: '00.00',
+  },
+];
+
+const ZonesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   const dispatch = useDispatch();
   const alert = useAlert();
   const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
 
-  const [nucleus, setNucleus] = useState([]);
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
-
-  const getDefaultValues = useCallback((nucleusList) => {
-    const _values = nucleusList.reduce((accumulator, key) => {
-      accumulator = { ...accumulator, [key]: rangeDefaultValues };
-      return accumulator;
-    }, {});
-    return _values;
-  }, []);
-
-  useEffect(() => {
-    if (data && Array.isArray(data)) {
-      const groupByNucleus = GroupByInfoKey('nucleus');
-      const nucleusList = Object.keys(groupByNucleus(data));
-      setNucleus(nucleusList);
-    }
-  }, [data, getDefaultValues, settings]);
 
   useEffect(() => {
     const integralsPreferences = GetPreference(preferences, 'ranges');
@@ -111,37 +124,6 @@ const ZonesPreferences = forwardRef((props, ref) => {
       formRef.current.dispatchEvent(new Event('submit', { cancelable: true }));
     },
   }));
-
-  const formatFields = [
-    {
-      id: 1,
-      label: 'From :',
-      checkController: 'showFrom',
-      formatController: 'fromFormat',
-      defaultFormat: '0.00',
-    },
-    {
-      id: 2,
-      label: 'To :',
-      checkController: 'showTo',
-      formatController: 'toFormat',
-      defaultFormat: '0.00',
-    },
-    {
-      id: 3,
-      label: 'Absolute :',
-      checkController: 'showAbsolute',
-      formatController: 'absoluteFormat',
-      defaultFormat: '0.00',
-    },
-    {
-      id: 4,
-      label: 'Relative :',
-      checkController: 'showRelative',
-      formatController: 'relativeFormat',
-      defaultFormat: '00.00',
-    },
-  ];
 
   const handleSubmit = async (event) => {
     const form = event.target;
@@ -200,4 +182,4 @@ const ZonesPreferences = forwardRef((props, ref) => {
   );
 });
 
-export default ZonesPreferences;
+export default ContextWrapper(memo(ZonesPreferences));

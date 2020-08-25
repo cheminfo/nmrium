@@ -6,14 +6,14 @@ import React, {
   forwardRef,
   useImperativeHandle,
   useRef,
+  memo,
 } from 'react';
 import { useAlert } from 'react-alert';
 import { MF } from 'react-mf';
 
-import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import ContextWrapper from '../../hoc/ContextWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
 import ColumnFormatField from '../extra/preferences/ColumnFormatField';
@@ -54,31 +54,13 @@ const styles = {
   },
 };
 
-const RangesPreferences = forwardRef((props, ref) => {
-  const { data, preferences } = useChartData();
+const RangesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   const dispatch = useDispatch();
   const alert = useAlert();
   const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
 
-  const [nucleus, setNucleus] = useState([]);
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
-
-  const getDefaultValues = useCallback((nucleusList) => {
-    const _values = nucleusList.reduce((accumulator, key) => {
-      accumulator = { ...accumulator, [key]: rangeDefaultValues };
-      return accumulator;
-    }, {});
-    return _values;
-  }, []);
-
-  useEffect(() => {
-    if (data && Array.isArray(data)) {
-      const groupByNucleus = GroupByInfoKey('nucleus');
-      const nucleusList = Object.keys(groupByNucleus(data));
-      setNucleus(nucleusList);
-    }
-  }, [data, getDefaultValues, settings]);
 
   useEffect(() => {
     const integralsPreferences = GetPreference(preferences, 'ranges');
@@ -200,4 +182,4 @@ const RangesPreferences = forwardRef((props, ref) => {
   );
 });
 
-export default RangesPreferences;
+export default ContextWrapper(memo(RangesPreferences));
