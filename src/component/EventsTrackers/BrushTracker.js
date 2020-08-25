@@ -64,7 +64,6 @@ export function BrushTracker({
       const y = e.clientY - boundingRect.y;
 
       const callback = lodash.debounce(() => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         if (
           timeStamp - mouseDownTime <= 150 &&
           debounceClickEvents.length === 1

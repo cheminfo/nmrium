@@ -37,7 +37,6 @@ const add2dZoneHandler = (state, action) => {
     }
   });
 };
-// eslint-disable-next-line no-unused-vars
 const delete2dZoneHandler = (state, zoneID) => {
   return produce(state, (draft) => {
     if (state.activeSpectrum && state.activeSpectrum.id) {

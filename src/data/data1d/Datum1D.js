@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-// import baseline from './baseline';
 import max from 'ml-array-max';
 import { xyIntegration } from 'ml-spectra-processing';
 

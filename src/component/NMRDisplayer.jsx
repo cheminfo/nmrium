@@ -30,7 +30,7 @@ import { PreferencesProvider } from './context/PreferencesContext';
 import { HelpProvider } from './elements/Help';
 import { ModalProvider } from './elements/Modal';
 import Header from './header/Header';
-import helpData from './help.json';
+import helpData from './help';
 import { HighlightProvider } from './highlight';
 import DropZone from './loader/DropZone';
 import Panels from './panels/Panels';

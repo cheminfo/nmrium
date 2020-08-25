@@ -140,7 +140,6 @@ export class Datum2D {
    * @param {number} x in ppm
    * @param {number} y in ppm
    */
-  // eslint-disable-next-line no-unused-vars
   getSlice(position) {
     const data = this.data;
     const xStep = (data.maxX - data.minX) / data.z.length;
@@ -197,7 +196,6 @@ export class Datum2D {
   /** calculate the missing projection
    * @param {string[]} nucleus
    */
-  // eslint-disable-next-line no-unused-vars
   getMissingProjection(nucleus) {
     let index = this.info.nucleus.indexOf(nucleus);
     // temporary because nuclus was undefined;

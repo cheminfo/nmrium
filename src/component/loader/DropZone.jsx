@@ -1,8 +1,8 @@
+/** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
-/** @jsx jsx */
 
 import { Analysis } from '../../data/Analysis';
 import { useChartData } from '../context/ChartContext';
@@ -82,7 +82,6 @@ const DropZone = (props) => {
           case 'json':
             if (selectedFilesByExtensions.length === 1) {
               loadFiles(selectedFilesByExtensions).then(
-                // eslint-disable-next-line no-loop-func
                 (files) => {
                   Analysis.build(JSON.parse(files[0].binary.toString())).then(
                     (AnalysisObj) => {
@@ -126,7 +125,6 @@ const DropZone = (props) => {
             );
             break;
           case 'zip':
-            // eslint-disable-next-line no-console
             loadFiles(selectedFilesByExtensions).then(
               (files) => {
                 dispatch({ type: LOAD_ZIP_FILE, files });

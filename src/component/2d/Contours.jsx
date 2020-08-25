@@ -36,6 +36,7 @@ const Contours = () => {
       contours[spectrumID][sign].length > 0 &&
       contours[spectrumID][sign].map((contoursData, innerIndex) => (
         <path
+          // eslint-disable-next-line react/no-array-index-key
           key={innerIndex}
           fill="none"
           stroke={color}
@@ -51,7 +52,8 @@ const Contours = () => {
       {data
         .filter((datum) => datum.info.dimension === 2)
         .map((datum, index) => (
-          <g key={`${index}`}>
+          // eslint-disable-next-line react/no-array-index-key
+          <g key={index}>
             {datum.display.isPositiveVisible && (
               <ContoursPaths
                 id={datum.id}

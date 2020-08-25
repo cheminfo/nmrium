@@ -85,7 +85,6 @@ const FunctionToolBar = ({ defaultValue }) => {
       });
     }
     const callback = lodash.debounce(() => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       debounceClickEvents = [];
     }, 500);
     debounceClickEvents.push(callback);
