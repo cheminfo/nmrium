@@ -4,7 +4,7 @@ import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
 
 import { setDomain, setMode } from './DomainActions';
-import { setActiveTab } from './ToolsActions';
+import { setTab } from './ToolsActions';
 
 function setVisible(datum, flag) {
   if (datum.info.dimension === 2) {
@@ -132,7 +132,7 @@ const addMissingProjectionHander = (state, action) => {
       draft.data = AnalysisObj.getSpectraData();
       const groupByNucleus = GroupByInfoKey('nucleus');
       const dataGroupByNucleus = groupByNucleus(draft.data);
-      setActiveTab(draft, dataGroupByNucleus, draft.activeTab, true);
+      setTab(draft, dataGroupByNucleus, draft.activeTab, true);
       // setMargin(draft);
       setDomain(draft);
       setMode(draft);

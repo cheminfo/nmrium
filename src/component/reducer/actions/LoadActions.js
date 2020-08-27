@@ -6,7 +6,7 @@ import { AnalysisObj, initiateObject } from '../core/Analysis';
 
 import { setMode, setDomain } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
-import { setYAxisShift } from './ToolsActions';
+import { setYAxisShift, setActiveTab } from './ToolsActions';
 
 const setIsLoading = (state, isLoading) => {
   return { ...state, isLoading };
@@ -37,8 +37,10 @@ const initiate = (state, dataObject) => {
     } else {
       setYAxisShift(spectraData, draft, state.height);
     }
-    setDomain(draft);
-    setMode(draft);
+    setActiveTab(draft);
+
+    // setDomain(draft);
+    // setMode(draft);
   });
 };
 
@@ -52,8 +54,10 @@ const setData = (state, data) => {
     draft.molecules = AnalysisObj.getMolecules();
 
     draft.isLoading = false;
-    setDomain(draft);
-    setMode(draft);
+    setActiveTab(draft);
+
+    // setDomain(draft);
+    // setMode(draft);
   });
 };
 
@@ -129,8 +133,10 @@ const handleLoadJsonFile = (state, data) => {
       setYAxisShift(spectraData, draft, state.height);
     }
 
-    setDomain(draft);
-    setMode(draft);
+    setActiveTab(draft);
+
+    // setDomain(draft);
+    // setMode(draft);
     draft.isLoading = false;
   });
 };
@@ -145,6 +151,7 @@ const handleLoadMOLFile = (state, files) => {
     draft.isLoading = false;
   });
 };
+
 async function loadZipFile(files) {
   await AnalysisObj.fromZip(files);
 }

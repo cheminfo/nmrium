@@ -394,7 +394,7 @@ const setDisplayerMode = (draft, data) => {
     : DISPLAYER_MODE.DM_1D;
 };
 
-const setActiveTab = (draft, dataGroupByTab, tab, refresh = false) => {
+const setTab = (draft, dataGroupByTab, tab, refresh = false) => {
   const groupByTab = Object.keys(dataGroupByTab).sort((a, b) =>
     a.split(',').length > b.split(',').length ? -1 : 1,
   );
@@ -453,17 +453,22 @@ const setActiveTab = (draft, dataGroupByTab, tab, refresh = false) => {
   setMargin(draft);
 };
 
+const setActiveTab = (draft, tab = null) => {
+  const groupByNucleus = GroupByInfoKey('nucleus');
+  const dataGroupByNucleus = groupByNucleus(draft.data);
+  const firstTab = Object.keys(dataGroupByNucleus)[0];
+  if (firstTab) {
+    setTab(draft, dataGroupByNucleus, !tab ? firstTab : tab);
+    Processing2DData(draft, dataGroupByNucleus);
+    setDomain(draft);
+    setMode(draft);
+  }
+};
+
 const handelSetActiveTab = (state, tab) => {
   return produce(state, (draft) => {
-    const { data } = state;
     if (tab) {
-      const groupByNucleus = GroupByInfoKey('nucleus');
-      const dataGroupByNucleus = groupByNucleus(data);
-      setActiveTab(draft, dataGroupByNucleus, tab);
-
-      Processing2DData(draft, dataGroupByNucleus);
-      setDomain(draft);
-      setMode(draft);
+      setActiveTab(draft, tab);
     }
   });
 };
@@ -512,4 +517,5 @@ export {
   handelSetActiveTab,
   levelChangeHandler,
   setActiveTab,
+  setTab,
 };

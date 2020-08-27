@@ -187,37 +187,40 @@ const NMRDisplayer = memo((props) => {
 NMRDisplayer.propTypes = {
   height: PropTypes.number,
   width: PropTypes.number,
-  preferences: PropTypes.shape({
-    general: PropTypes.shape({
-      disableMultipletAnalysis: PropTypes.bool,
-      hideSetSumFromMolecule: PropTypes.bool,
-    }),
-    panels: PropTypes.shape({
-      hideSpectraPanel: PropTypes.bool,
-      hideInformationPanel: PropTypes.bool,
-      hidePeaksPanel: PropTypes.bool,
-      hideIntegralsPanel: PropTypes.bool,
-      hideRangesPanel: PropTypes.bool,
-      hideStructuresPanel: PropTypes.bool,
-      hideFiltersPanel: PropTypes.bool,
-    }),
-    toolsBarButtons: PropTypes.shape({
-      hideZoomTool: PropTypes.bool,
-      hideZoomOutTool: PropTypes.bool,
-      hideImport: PropTypes.bool,
-      hideExportAs: PropTypes.bool,
-      hideSpectraStackAlignments: PropTypes.bool,
-      hideSpectraCenterAlignments: PropTypes.bool,
-      hideRealImaginary: PropTypes.bool,
-      hidePeakTool: PropTypes.bool,
-      hideIntegralTool: PropTypes.bool,
-      hideAutoRangesTool: PropTypes.bool,
-      hideZeroFillingTool: PropTypes.bool,
-      hidePhaseCorrectionTool: PropTypes.bool,
-      hideBaseLineCorrectionTool: PropTypes.bool,
-      hideFFTTool: PropTypes.bool,
-    }),
-  }),
+  preferences: PropTypes.shape(
+    {
+      general: PropTypes.shape({
+        disableMultipletAnalysis: PropTypes.bool,
+        hideSetSumFromMolecule: PropTypes.bool,
+      }),
+      panels: PropTypes.shape({
+        hideSpectraPanel: PropTypes.bool,
+        hideInformationPanel: PropTypes.bool,
+        hidePeaksPanel: PropTypes.bool,
+        hideIntegralsPanel: PropTypes.bool,
+        hideRangesPanel: PropTypes.bool,
+        hideStructuresPanel: PropTypes.bool,
+        hideFiltersPanel: PropTypes.bool,
+      }),
+      toolsBarButtons: PropTypes.shape({
+        hideZoomTool: PropTypes.bool,
+        hideZoomOutTool: PropTypes.bool,
+        hideImport: PropTypes.bool,
+        hideExportAs: PropTypes.bool,
+        hideSpectraStackAlignments: PropTypes.bool,
+        hideSpectraCenterAlignments: PropTypes.bool,
+        hideRealImaginary: PropTypes.bool,
+        hidePeakTool: PropTypes.bool,
+        hideIntegralTool: PropTypes.bool,
+        hideAutoRangesTool: PropTypes.bool,
+        hideZeroFillingTool: PropTypes.bool,
+        hidePhaseCorrectionTool: PropTypes.bool,
+        hideBaseLineCorrectionTool: PropTypes.bool,
+        hideFFTTool: PropTypes.bool,
+      }),
+    },
+    true,
+  ),
 };
 
 NMRDisplayer.defaultProps = {

@@ -1,12 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  memo,
-  Fragment,
-  useRef,
-} from 'react';
+import React, { useCallback, memo, useState } from 'react';
 import { useAlert } from 'react-alert';
 import {
   FaEye,
@@ -16,26 +8,17 @@ import {
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ContextMenu from '../../elements/ContextMenu';
 import { useModal } from '../../elements/Modal';
-import { Tabs } from '../../elements/Tab';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import ConnectToContext from '../../hoc/ConnectToContext';
 import {
   CHANGE_VISIBILITY,
-  CHANGE_PEAKS_MARKERS_VISIBILITY,
-  CHANGE_ACTIVE_SPECTRUM,
-  CHANGE_SPECTRUM_COLOR,
   DELETE_SPECTRA,
-  SET_ACTIVE_TAB,
   ADD_MISSING_PROJECTION,
 } from '../../reducer/types/Types';
-import { copyTextToClipboard } from '../../utility/Export';
-import groupByInfoKey from '../../utility/GroupByInfoKey';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
-import ColorPicker from './ColorPicker';
-import SpectrumListItem from './SpectrumListItem';
+import SpectrumsTabs from './SpectrumsTabs';
 
 const styles = {
   toolbar: {
@@ -51,259 +34,36 @@ const styles = {
 
 const SpectrumListPanel = memo(
   ({ data, activeSpectrum, activeTab: activeTabState }) => {
-    const contextRef = useRef();
+    const [spectrums, setSpectrums] = useState([]);
 
-    const [activated, setActivated] = useState(null);
-    const [markersVisible, setMarkersVisible] = useState([]);
-    const [isColorPickerDisplayed, setIsColorPickerDisplayed] = useState(false);
-    const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
-    const [colorPickerPosition, setColorPickerPosition] = useState(null);
-    const [activeTabID, setActiveTabID] = useState(null);
-    const [spectrumsGroupByNucleus, setSpectrumsGroupByNucleus] = useState([]);
-
-    // const { data, activeSpectrum, activeTab: activeTabState } = useChartData();
     const modal = useModal();
     const alert = useAlert();
     const dispatch = useDispatch();
 
-    const getActiveTabSpectrumsIDs = useCallback(() => {
-      if (Array.isArray(spectrumsGroupByNucleus[activeTabID])) {
-        const spectrumsIDs = spectrumsGroupByNucleus[activeTabID].map(
-          (sp) => sp.id,
-        );
-        return spectrumsIDs;
-      }
-      return [];
-    }, [activeTabID, spectrumsGroupByNucleus]);
-
-    const handleChangeVisibility = useCallback(
-      (d, key) => {
-        dispatch({
-          type: CHANGE_VISIBILITY,
-          id: d.id,
-          key,
-          value: !d.display[key],
-        });
-      },
-      [dispatch],
-    );
-
-    const handleChangeMarkersVisibility = useCallback(
-      (d) => {
-        const currentIndex = markersVisible.findIndex((v) => v.id === d.id);
-        const newChecked = [...markersVisible];
-        if (currentIndex === -1) {
-          newChecked.push({ id: d.id });
-        } else {
-          newChecked.splice(currentIndex, 1);
-        }
-        dispatch({ type: CHANGE_PEAKS_MARKERS_VISIBILITY, data: newChecked });
-        setMarkersVisible(newChecked);
-      },
-      [dispatch, markersVisible],
-    );
-    const handleChangeActiveSpectrum = useCallback(
-      (d) => {
-        if (activated && activated.id === d.id) {
-          dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: null });
-        } else {
-          dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: { id: d.id } });
-        }
-      },
-      [activated, dispatch],
-    );
-    const handleOnColorChanged = useCallback(
-      (color, key) => {
-        if (selectedSpectrumData !== null) {
-          dispatch({
-            type: CHANGE_SPECTRUM_COLOR,
-            data: {
-              id: selectedSpectrumData.id,
-              color: `${color.hex}${Math.round(color.rgb.a * 255).toString(
-                16,
-              )}`,
-              key,
-            },
-          });
-        }
-      },
-      [dispatch, selectedSpectrumData],
-    );
-
-    const showSpectrumsByGroup = useCallback((activeTab) => {
-      if (activeTab) {
-        setActiveTabID(activeTab);
-      }
+    const tabChangeHandler = useCallback((e) => {
+      setSpectrums(e.data ? e.data : []);
     }, []);
-
-    useEffect(() => {
-      if (data) {
-        const visibleMarkers = data
-          ? data.filter((d) => d.display.isPeaksMarkersVisible === true)
-          : [];
-
-        setMarkersVisible(visibleMarkers);
-
-        // if (data && data.length === 1 && activated == null) {
-        //   handleChangeActiveSpectrum(data[0]);
-        // }
-      }
-    }, [data, activated, activeTabID, dispatch]);
-
-    useEffect(() => {
-      setActivated(activeSpectrum);
-    }, [activeSpectrum]);
-    useEffect(() => {
-      if (data) {
-        const groupByNucleus = groupByInfoKey('nucleus');
-        const spectrumsGroupsList = groupByNucleus(data);
-
-        setSpectrumsGroupByNucleus(spectrumsGroupsList);
-        if (!activeTabID) {
-          const activeTab = Object.keys(spectrumsGroupsList)[0];
-          showSpectrumsByGroup(activeTab);
-          dispatch({ type: SET_ACTIVE_TAB, tab: activeTab });
-        }
-      }
-    }, [
-      data,
-      handleChangeActiveSpectrum,
-      activated,
-      activeTabID,
-      dispatch,
-      showSpectrumsByGroup,
-    ]);
-
-    const handleOpenColorPicker = useCallback((selectedSpectrum, event) => {
-      setColorPickerPosition({
-        x: event.nativeEvent.clientX,
-        y: event.nativeEvent.clientY,
-      });
-      setSelectedSpectrum(selectedSpectrum);
-      setIsColorPickerDisplayed(true);
-    }, []);
-
-    const handleCloseColorPicker = useCallback(() => {
-      setIsColorPickerDisplayed(false);
-    }, []);
-
-    const onTabChangeHandler = useCallback(
-      (tab) => {
-        // setActiveTabID(tab);
-        // showSpectrumsByGroup(tab, spectrumsGroupByNucleus);
-
-        dispatch({ type: SET_ACTIVE_TAB, tab: tab.label });
-      },
-      [dispatch],
-    );
-
-    const contextMenu = useMemo(
-      () => [
-        {
-          label: 'Copy to Clipboard',
-          onClick: (spectrumData) => {
-            const { x, y, info } = spectrumData;
-            const success = copyTextToClipboard(
-              JSON.stringify({ x, y, info }, undefined, 2),
-            );
-
-            if (success) {
-              alert.success('Data copied to clipboard');
-            } else {
-              alert.error('Copy to clipboard failed');
-            }
-          },
-        },
-      ],
-      [alert],
-    );
-
-    const contextMenuHandler = useCallback(
-      (e, rowData) => {
-        e.preventDefault();
-        contextRef.current.handleContextMenu(e, rowData);
-      },
-      [contextRef],
-    );
-
-    const SpectrumsTabs = useMemo(() => {
-      return (
-        <Fragment>
-          <Tabs
-            defaultTabID={
-              activeTabState
-                ? activeTabState
-                : spectrumsGroupByNucleus &&
-                  Object.keys(spectrumsGroupByNucleus)[0]
-            }
-            onClick={onTabChangeHandler}
-          >
-            {spectrumsGroupByNucleus &&
-              Object.keys(spectrumsGroupByNucleus).map((group) => (
-                <div label={group} key={group}>
-                  {spectrumsGroupByNucleus[group] &&
-                    spectrumsGroupByNucleus[group].map((d) => (
-                      <SpectrumListItem
-                        key={d.id}
-                        activated={activated}
-                        markersVisible={markersVisible}
-                        data={d}
-                        onChangeVisibility={handleChangeVisibility}
-                        onChangeMarkersVisibility={
-                          handleChangeMarkersVisibility
-                        }
-                        onChangeActiveSpectrum={handleChangeActiveSpectrum}
-                        onOpenColorPicker={handleOpenColorPicker}
-                        onContextMenu={(e) =>
-                          d.info.dimension === 1
-                            ? contextMenuHandler(e, d)
-                            : null
-                        }
-                      />
-                    ))}
-                </div>
-              ))}
-          </Tabs>
-          <ContextMenu ref={contextRef} context={contextMenu} />
-        </Fragment>
-      );
-    }, [
-      activeTabState,
-      spectrumsGroupByNucleus,
-      onTabChangeHandler,
-      contextMenu,
-      activated,
-      markersVisible,
-      handleChangeVisibility,
-      handleChangeMarkersVisibility,
-      handleChangeActiveSpectrum,
-      handleOpenColorPicker,
-      contextMenuHandler,
-    ]);
-
-    const yesHandler = useCallback(() => {
-      const spectrumsPerTab = getActiveTabSpectrumsIDs();
-      dispatch({ type: DELETE_SPECTRA, IDs: spectrumsPerTab });
-    }, [dispatch, getActiveTabSpectrumsIDs]);
 
     const handleDelete = useCallback(() => {
-      if (activated) {
-        setActivated(null);
+      if (activeSpectrum) {
+        // setActivated(null);
         dispatch({ type: DELETE_SPECTRA });
       } else {
         modal.showConfirmDialog('All records will be deleted,Are You sure?', {
-          onYes: yesHandler,
+          onYes: () => {
+            dispatch({ type: DELETE_SPECTRA });
+          },
         });
       }
-    }, [activated, dispatch, modal, yesHandler]);
+    }, [activeSpectrum, dispatch, modal]);
 
     const showAllSpectrumsHandler = useCallback(() => {
-      const spectrumsPerTab = getActiveTabSpectrumsIDs().map((id) => {
-        return id;
+      const spectrumsPerTab = spectrums.map((datum) => {
+        return datum.id;
       });
       dispatch({ type: CHANGE_VISIBILITY, id: spectrumsPerTab });
       // setVisible(spectrumsPerTab);
-    }, [dispatch, getActiveTabSpectrumsIDs]);
+    }, [dispatch, spectrums]);
 
     const hideAllSpectrumsHandler = useCallback(() => {
       dispatch({ type: CHANGE_VISIBILITY, id: [] });
@@ -336,10 +96,7 @@ const SpectrumListPanel = memo(
         <div style={{ overflow: 'auto' }}>
           <DefaultPanelHeader
             onDelete={handleDelete}
-            counter={
-              spectrumsGroupByNucleus[activeTabID] &&
-              spectrumsGroupByNucleus[activeTabID].length
-            }
+            counter={spectrums && spectrums.length}
             deleteToolTip="Delete all spectra"
           >
             <ToolTip title="Hide all spectra" popupPlacement="right">
@@ -374,15 +131,7 @@ const SpectrumListPanel = memo(
                 </ToolTip>
               )}
           </DefaultPanelHeader>
-          {SpectrumsTabs}
-          {isColorPickerDisplayed ? (
-            <ColorPicker
-              onMouseLeave={handleCloseColorPicker}
-              selectedSpectrumData={selectedSpectrumData}
-              colorPickerPosition={colorPickerPosition}
-              onColorChanged={handleOnColorChanged}
-            />
-          ) : null}
+          <SpectrumsTabs onTabChange={tabChangeHandler} />
         </div>
       </div>
     );

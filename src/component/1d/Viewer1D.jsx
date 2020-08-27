@@ -174,15 +174,7 @@ const Viewer1D = () => {
         }
       }
     },
-    [
-      scaleState,
-      selectedTool,
-      general.disableMultipletAnalysis,
-      modal,
-      data,
-      activeSpectrum,
-      dispatch,
-    ],
+    [scaleState, selectedTool, general, modal, data, activeSpectrum, dispatch],
   );
 
   const handelOnDoubleClick = useCallback(() => {
