@@ -10,6 +10,7 @@ import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
+import ContextWrapper from '../../hoc/ContextWrapper';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import {
   DELETE_2D_ZONE,
@@ -26,7 +27,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 
 import ZonesPreferences from './ZonesPreferences';
 import ZonesTable from './ZonesTable';
-import ContextWrapper from '../../hoc/ContextWrapper';
 
 const styles = {
   toolbar: {
@@ -62,7 +62,7 @@ const styles = {
 };
 
 const ZonesPanel = memo(
-  ({ data: spectrumData, activeTab, preferences, xDomain, yDomain }) => {
+  ({ spectrum, activeTab, preferences, xDomain, yDomain }) => {
     // const {
     //   activeSpectrum,
     //   data: spectraData,
@@ -90,13 +90,13 @@ const ZonesPanel = memo(
     // }, [spectraData, activeSpectrum]);
 
     const data = useMemo(() => {
-      if (spectrumData && spectrumData.zones && spectrumData.zones.values) {
-        setZonesCounter(spectrumData.zones.values.length);
-        return spectrumData.zones.values;
+      if (spectrum && spectrum.zones && spectrum.zones.values) {
+        setZonesCounter(spectrum.zones.values.length);
+        return spectrum.zones.values;
       }
       setZonesCounter(0);
       return [];
-    }, [spectrumData]);
+    }, [spectrum]);
 
     const tableData = useMemo(() => {
       const isInView = (xFrom, xTo, yFrom, yTo) => {
@@ -290,16 +290,17 @@ const ZonesPanel = memo(
 
     const saveJSONToClipboardHandler = useCallback(
       (value) => {
-        if (spectrumData) {
+        if (spectrum) {
           const { from, to } = value;
-          const { fromIndex, toIndex } = xGetFromToIndex(spectrumData.x, {
+          const { x, y } = spectrum;
+          const { fromIndex, toIndex } = xGetFromToIndex(x, {
             from,
             to,
           });
 
           const dataToClipboard = {
-            x: spectrumData.x.slice(fromIndex, toIndex),
-            y: spectrumData.y.slice(fromIndex, toIndex),
+            x: x.slice(fromIndex, toIndex),
+            y: y.slice(fromIndex, toIndex),
             ...value,
           };
 
@@ -314,7 +315,7 @@ const ZonesPanel = memo(
           }
         }
       },
-      [spectrumData, alert],
+      [spectrum, alert],
     );
 
     const closeClipBoardHandler = useCallback(() => {
@@ -450,4 +451,8 @@ const ZonesPanel = memo(
   },
 );
 
-export default ContextWrapper(ZonesPanel, 'zones', 'x', 'y');
+export default ContextWrapper(
+  ZonesPanel,
+  ['spectrum', 'activeTab', 'preferences', 'xDomain', 'yDomain'],
+  { spectrum: ['zones', 'x', 'y'] },
+);

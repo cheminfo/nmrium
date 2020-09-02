@@ -22,7 +22,7 @@ import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { useHighlightData } from '../highlight';
-import ContextWrapper from '../hoc/ContextWrapper';
+import MoleculeWrapper from '../hoc/MoleculeWrapper';
 import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
 import {
   ADD_MOLECULE,
@@ -122,7 +122,7 @@ const menuButton = css`
 `;
 
 const MoleculePanel = memo(
-  ({ data: spectraData, molecules, activeTab, displayerMode }) => {
+  ({ zones, ranges, molecules, activeTab, displayerMode }) => {
     const [refContainer, { width, height }] = useMeasure();
     const [open, setOpen] = React.useState(false);
     const [currentMolfile, setCurrentMolfile] = useState();
@@ -191,23 +191,15 @@ const MoleculePanel = memo(
     );
 
     const data = useMemo(() => {
-      if (spectraData) {
-        if (
-          displayerMode === '1D' &&
-          spectraData.ranges &&
-          spectraData.ranges.values
-        ) {
-          return spectraData.ranges.values;
-        } else if (
-          displayerMode === '2D' &&
-          spectraData.zones &&
-          spectraData.zones.values
-        ) {
-          return spectraData.zones.values;
+      if (zones || ranges) {
+        if (displayerMode === '1D' && ranges && ranges.values) {
+          return ranges.values;
+        } else if (displayerMode === '2D' && zones && zones.values) {
+          return ranges.values;
         }
       }
       return [];
-    }, [displayerMode, spectraData]);
+    }, [displayerMode, ranges, zones]);
 
     const assignedDiaIDs = useMemo(() => {
       const assignedDiaID = { x: [], y: [] };
@@ -665,4 +657,4 @@ const MoleculePanel = memo(
   },
 );
 
-export default ContextWrapper(MoleculePanel, 'ranges', 'zones');
+export default MoleculeWrapper(MoleculePanel);

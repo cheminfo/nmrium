@@ -231,6 +231,7 @@ export const initialState = {
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
+  showMultiplicityTrees: false,
 };
 
 export function dispatchMiddleware(dispatch) {

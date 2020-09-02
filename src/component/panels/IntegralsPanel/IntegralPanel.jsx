@@ -1,10 +1,11 @@
+import lodash from 'lodash';
 import React, { useCallback, useMemo, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
-import ContextWrapper from '../../hoc/ContextWrapper';
+import IntegralsWrapper from '../../hoc/IntegralsWrapper';
 import ChangeSumModal from '../../modal/ChangeSumModal';
 import {
   DELETE_INTEGRAL,
@@ -41,7 +42,7 @@ const styles = {
   },
 };
 
-const IntegralPanel = memo(({ data: SpectraData, activeTab, molecules }) => {
+const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [integralsCounter, setIntegralsCounter] = useState(0);
 
@@ -73,13 +74,8 @@ const IntegralPanel = memo(({ data: SpectraData, activeTab, molecules }) => {
   );
 
   const currentSum = useMemo(() => {
-    return SpectraData &&
-      SpectraData.integrals &&
-      SpectraData.integrals.options &&
-      SpectraData.integrals.options.sum !== undefined
-      ? SpectraData.integrals.options.sum
-      : null;
-  }, [SpectraData]);
+    return lodash.get(integrals, 'options.sum', null);
+  }, [integrals]);
 
   const showChangeIntegralSumModal = useCallback(() => {
     modal.show(
@@ -180,4 +176,4 @@ const IntegralPanel = memo(({ data: SpectraData, activeTab, molecules }) => {
   );
 });
 
-export default ContextWrapper(IntegralPanel, 'integrals', 'info');
+export default IntegralsWrapper(IntegralPanel);

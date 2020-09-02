@@ -1,10 +1,8 @@
 import lodash from 'lodash';
 import React, { useCallback, useState, useEffect, memo } from 'react';
 
-import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { Accordion, AccordionItem } from '../elements/accordion';
-import ConnectToContext from '../hoc/ConnectToContext';
 import { options } from '../toolbar/ToolTypes';
 
 import InformationPanel from './InformationPanel';
@@ -116,4 +114,4 @@ const Panels = memo(({ selectedTool }) => {
   );
 });
 
-export default ConnectToContext(Panels, useChartData);
+export default Panels;

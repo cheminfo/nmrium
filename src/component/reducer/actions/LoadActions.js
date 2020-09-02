@@ -14,19 +14,19 @@ const setIsLoading = (state, isLoading) => {
 
 const initiate = (state, dataObject) => {
   initiateObject(dataObject.AnalysisObj);
-
+  const spectraData = AnalysisObj.getSpectraData();
+  const molecules = AnalysisObj.getMolecules();
+  const preferences = AnalysisObj.getPreferences('1d');
   return produce(state, (draft) => {
-    const spectraData = AnalysisObj.getSpectraData();
     // const domain = getDomain(spectraData);
     draft.data = spectraData;
-    draft.molecules = AnalysisObj.getMolecules();
+    draft.molecules = molecules;
     // draft.xDomain = domain.xDomain;
     // draft.yDomain = domain.yDomain;
     // draft.originDomain = domain;
     // draft.yDomains = domain.yDomains;
     // draft.xDomains = domain.xDomains;
     draft.isLoading = false;
-    const preferences = AnalysisObj.getPreferences('1d');
     if (
       preferences.display &&
       Object.prototype.hasOwnProperty.call(preferences.display, 'center')
@@ -46,12 +46,15 @@ const initiate = (state, dataObject) => {
 
 const setData = (state, data) => {
   // AnalysisObj= new Analysis()
+  for (let d of data) {
+    AnalysisObj.pushDatum(new Datum1D(d));
+  }
+  const spectraData = AnalysisObj.getSpectraData();
+  const molecules = AnalysisObj.getMolecules();
+
   return produce(state, (draft) => {
-    for (let d of data) {
-      AnalysisObj.pushDatum(new Datum1D(d));
-    }
-    draft.data = AnalysisObj.getSpectraData();
-    draft.molecules = AnalysisObj.getMolecules();
+    draft.data = spectraData;
+    draft.molecules = molecules;
 
     draft.isLoading = false;
     setActiveTab(draft);
@@ -115,12 +118,13 @@ const loadJcampFile = (state, files) => {
 
 const handleLoadJsonFile = (state, data) => {
   initiateObject(data.AnalysisObj);
+  const spectraData = AnalysisObj.getSpectraData();
+  const molecules = AnalysisObj.getMolecules();
+  const preferences = AnalysisObj.getPreferences('1d');
 
   return produce(state, (draft) => {
-    const spectraData = AnalysisObj.getSpectraData();
     draft.data = spectraData;
-    draft.molecules = AnalysisObj.getMolecules();
-    const preferences = AnalysisObj.getPreferences('1d');
+    draft.molecules = molecules;
     draft.preferences = preferences;
     if (
       preferences.display &&
@@ -142,12 +146,14 @@ const handleLoadJsonFile = (state, data) => {
 };
 
 const handleLoadMOLFile = (state, files) => {
+  const filesLength = files.length;
+  for (let i = 0; i < filesLength; i++) {
+    AnalysisObj.addMolfile(files[i].binary.toString());
+  }
+  const molecules = AnalysisObj.getMolecules();
+
   return produce(state, (draft) => {
-    const filesLength = files.length;
-    for (let i = 0; i < filesLength; i++) {
-      AnalysisObj.addMolfile(files[i].binary.toString());
-    }
-    draft.molecules = AnalysisObj.getMolecules();
+    draft.molecules = molecules;
     draft.isLoading = false;
   });
 };

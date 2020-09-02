@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, memo, useMemo } from 'react';
 
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
-import ContextWrapper from '../hoc/ContextWrapper';
+import InfoWrapper from '../hoc/InfoWrapper';
 
 const styles = {
   searchInput: {
@@ -14,7 +14,7 @@ const styles = {
 };
 
 // information panel
-const InformationPanel = memo(({ data: spectraData }) => {
+const InformationPanel = memo(({ info, meta }) => {
   const [information, setInformation] = useState([]);
   const [matches, setMatchesData] = useState([]);
 
@@ -29,18 +29,16 @@ const InformationPanel = memo(({ data: spectraData }) => {
   );
 
   useEffect(() => {
-    if (spectraData) {
-      const keys = Object.keys(spectraData.info).concat(
-        Object.keys(spectraData.meta),
-      );
+    if (info && meta) {
+      const keys = Object.keys(info).concat(Object.keys(meta));
 
       setMatchesData(keys);
       setInformation({
-        ...spectraData.info,
-        ...spectraData.meta,
+        ...info,
+        ...meta,
       });
     }
-  }, [spectraData]);
+  }, [info, meta]);
 
   const columns = useMemo(
     () => [
@@ -95,4 +93,4 @@ const InformationPanel = memo(({ data: spectraData }) => {
   );
 });
 
-export default ContextWrapper(InformationPanel, 'info', 'meta');
+export default InfoWrapper(InformationPanel);

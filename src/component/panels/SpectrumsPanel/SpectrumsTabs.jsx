@@ -8,10 +8,10 @@ import React, {
 } from 'react';
 import { useAlert } from 'react-alert';
 
-import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ContextMenu from '../../elements/ContextMenu';
 import { Tabs } from '../../elements/Tab';
+import ContextWrapper from '../../hoc/ContextWrapper';
 import {
   CHANGE_PEAKS_MARKERS_VISIBILITY,
   SET_ACTIVE_TAB,
@@ -25,8 +25,7 @@ import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import ColorPicker from './ColorPicker';
 import SpectrumListItem from './SpectrumListItem';
 
-const SpectrumsTabs = ({ onTabChange }) => {
-  const { data, activeSpectrum, activeTab } = useChartData();
+const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
   const contextRef = useRef();
 
   const [activated, setActivated] = useState(null);
@@ -209,4 +208,8 @@ const SpectrumsTabs = ({ onTabChange }) => {
   );
 };
 
-export default SpectrumsTabs;
+export default ContextWrapper(SpectrumsTabs, [
+  'data',
+  'activeSpectrum',
+  'activeTab',
+]);

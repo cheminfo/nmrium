@@ -1,12 +1,13 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useMemo, useCallback, useRef } from 'react';
+import lodash from 'lodash';
+import { useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import ContextMenu from '../../elements/ContextMenu';
-import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 
 import RangesTableRow from './RangesTableRow';
+import useMapRanges from './useMapRanges';
 
 const tableStyle = css`
   border-spacing: 0;
@@ -56,58 +57,10 @@ const RangesTable = ({
 }) => {
   const contextRef = useRef();
 
-  const data = useMemo(() => {
-    const _rangesData = [];
-    tableData.forEach((range, i) => {
-      if (range.signal.length === 1) {
-        _rangesData.push({
-          ...range,
-          tableMetaInfo: {
-            ...range.tableMetaInfo,
-            signal: range.signal[0],
-            rowIndex: i,
-            signalIndex: 0,
-            id: `${range.id}${HighlightSignalConcatenation}${0}`,
-          },
-        });
-      } else if (range.signal.length > 1) {
-        range.signal.forEach((signal, j) => {
-          let hide = false;
-          let rowSpan = null;
-          if (j < range.signal.length - 1) {
-            if (j === 0) {
-              rowSpan = range.signal.length;
-            } else {
-              hide = true;
-            }
-          } else {
-            hide = true;
-          }
+  const data = useMapRanges(tableData);
 
-          _rangesData.push({
-            ...range,
-            tableMetaInfo: {
-              ...range.tableMetaInfo,
-              signal,
-              rowSpan,
-              hide,
-              rowIndex: i,
-              signalIndex: j,
-              id: `${range.id}${HighlightSignalConcatenation}${j}`,
-            },
-          });
-        });
-      }
-    });
-
-    return _rangesData;
-  }, [tableData]);
-
-  const getShowPreference = (showPreference) => {
-    return preferences
-      ? Object.prototype.hasOwnProperty.call(preferences, showPreference) &&
-          preferences[showPreference] === true
-      : false;
+  const isVisible = (key) => {
+    return lodash.get(preferences, key, false);
   };
 
   const contextMenuHandler = useCallback(
@@ -124,11 +77,11 @@ const RangesTable = ({
         <tbody>
           <tr>
             <th>#</th>
-            {getShowPreference('showFrom') ? <th>From</th> : null}
-            {getShowPreference('showTo') ? <th>To</th> : null}
+            {isVisible('showFrom') ? <th>From</th> : null}
+            {isVisible('showTo') ? <th>To</th> : null}
             <th>δ (ppm)</th>
-            {getShowPreference('showRelative') ? <th>Rel. {element}</th> : null}
-            {getShowPreference('showAbsolute') ? <th>Absolute</th> : null}
+            {isVisible('showRelative') ? <th>Rel. {element}</th> : null}
+            {isVisible('showAbsolute') ? <th>Absolute</th> : null}
             <th>Mult.</th>
             <th>J (Hz)</th>
             <th>

@@ -4,7 +4,7 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import Select from '../../elements/Select';
-import ContextWrapper from '../../hoc/ContextWrapper';
+import IntegralsWrapper from '../../hoc/IntegralsWrapper';
 import {
   DELETE_INTEGRAL,
   CHANGE_INTEGRAL_DATA,
@@ -21,7 +21,8 @@ const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 const IntegralTable = memo(
   ({
-    data: SpectraData,
+    integrals,
+    info,
     preferences,
     activeTab,
     xDomain,
@@ -177,16 +178,11 @@ const IntegralTable = memo(
     }, [activeTab, defaultColumns, preferences]);
 
     const data = useMemo(() => {
-      if (
-        SpectraData &&
-        SpectraData.info.dimension === 1 &&
-        SpectraData.integrals &&
-        SpectraData.integrals.values
-      ) {
-        return SpectraData.integrals.values;
+      if (info.dimension === 1 && integrals && integrals.values) {
+        return integrals.values;
       }
       return [];
-    }, [SpectraData]);
+    }, [info.dimension, integrals]);
 
     const tableData = useMemo(() => {
       function isInRange(from, to) {
@@ -221,4 +217,9 @@ const IntegralTable = memo(
   },
 );
 
-export default ContextWrapper(IntegralTable, 'integrals', 'info');
+export default IntegralsWrapper(IntegralTable);
+// export default ContextWrapper(
+//   IntegralTable,
+//   ['spectrum', 'preferences', 'activeTab', 'xDomain'],
+//   { spectrum: ['integrals', 'info'] },
+// );

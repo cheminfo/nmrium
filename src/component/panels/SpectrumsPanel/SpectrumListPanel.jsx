@@ -6,11 +6,10 @@ import {
   FaCreativeCommonsSamplingPlus,
 } from 'react-icons/fa';
 
-import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
-import ConnectToContext from '../../hoc/ConnectToContext';
+import ContextWrapper from '../../hoc/ContextWrapper';
 import {
   CHANGE_VISIBILITY,
   DELETE_SPECTRA,
@@ -138,4 +137,8 @@ const SpectrumListPanel = memo(
   },
 );
 
-export default ConnectToContext(SpectrumListPanel, useChartData);
+export default ContextWrapper(SpectrumListPanel, [
+  'data',
+  'activeSpectrum',
+  'activeTab',
+]);

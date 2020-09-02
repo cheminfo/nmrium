@@ -73,10 +73,11 @@ const addPeaks = (state, action) => {
 };
 
 const deletePeak = (state, peakData) => {
+  const { id, index } = state.activeSpectrum;
+  const object = AnalysisObj.getDatum(id);
+  const peaks = object.deletePeak(peakData);
+
   return produce(state, (draft) => {
-    const { id, index } = state.activeSpectrum;
-    const object = AnalysisObj.getDatum(id);
-    const peaks = object.deletePeak(peakData);
     draft.data[index].peaks.values = peaks;
   });
 };

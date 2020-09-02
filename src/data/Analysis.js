@@ -5,6 +5,7 @@ import { Datum1D } from './data1d/Datum1D';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 import getColor from './utilities/getColor';
+import lodash from 'lodash';
 
 export class Analysis {
   spectra = [];
@@ -183,33 +184,35 @@ export class Analysis {
    */
   getSpectraData() {
     return this.spectra
-      ? this.spectra.map((ob) => {
-          const _data =
-            ob instanceof Datum1D ? { ...ob.data, y: ob.data.re } : ob.data;
-          // eslint-disable-next-line no-unused-vars
-          const { data, ...rest } = ob;
-          return {
-            ...rest,
-            // id: ob.id,
-            // x: ob.data.x,
-            // y: ob.data.re,
-            // im: ob.data.im,
-            ..._data,
-            // display: ob.display,
-            //  name: ob.display.name,
-            // color: ob.display.color,
-            // isVisible: ob.display.isVisible,
-            // isPeaksMarkersVisible: ob.display.isPeaksMarkersVisible,
-            // isRealSpectrumVisible: ob.display.isRealSpectrumVisible,
-            isVisibleInDomain: ob.display.isVisibleInDomain,
-            // info: ob.info,
-            // meta: ob.meta,
-            // peaks: ob.peaks,
-            // integrals: ob.integrals,
-            // filters: ob.filters,
-            // ranges: ob.ranges,
-          };
-        })
+      ? lodash.cloneDeep(
+          this.spectra.map((ob) => {
+            const _data =
+              ob instanceof Datum1D ? { ...ob.data, y: ob.data.re } : ob.data;
+            // eslint-disable-next-line no-unused-vars
+            const { data, ...rest } = ob;
+            return {
+              ...rest,
+              // id: ob.id,
+              // x: ob.data.x,
+              // y: ob.data.re,
+              // im: ob.data.im,
+              ..._data,
+              // display: ob.display,
+              //  name: ob.display.name,
+              // color: ob.display.color,
+              // isVisible: ob.display.isVisible,
+              // isPeaksMarkersVisible: ob.display.isPeaksMarkersVisible,
+              // isRealSpectrumVisible: ob.display.isRealSpectrumVisible,
+              isVisibleInDomain: ob.display.isVisibleInDomain,
+              // info: ob.info,
+              // meta: ob.meta,
+              // peaks: ob.peaks,
+              // integrals: ob.integrals,
+              // filters: ob.filters,
+              // ranges: ob.ranges,
+            };
+          }),
+        )
       : [];
   }
 

@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import max from 'ml-array-max';
 import { xyIntegration } from 'ml-spectra-processing';
 
@@ -67,7 +68,8 @@ export class Datum1D {
       },
       options.data,
     );
-    this.peaks = Object.assign({ values: [], options: {} }, options.peaks); // array of object {index: xIndex, xShift}
+    this.peaks = Object.assign({ values: [], options: {} }, options.peaks);
+    // array of object {index: xIndex, xShift}
     // in case the peak does not exactly correspond to the point value
     // we can think about a second attributed `xShift`
     this.integrals = Object.assign(
@@ -154,15 +156,14 @@ export class Datum1D {
    * @param {*} range
    */
   addIntegral(range = []) {
-    this.integrals = Object.assign({}, this.integrals);
-    this.integrals.values = this.integrals.values.slice();
-    this.integrals.values.push({
+    const integral = {
       id: generateID(),
       from: range[0],
       to: range[1],
       absolute: this.getIntegration(range[0], range[1]), // the real value
       kind: 'signal',
-    });
+    };
+    this.integrals.values.push(integral);
     this.updateIntegralIntegrals();
   }
 
@@ -190,7 +191,7 @@ export class Datum1D {
   }
 
   updateIntegralIntegrals() {
-    this.integrals = Object.assign({}, this.integrals);
+    // this.integrals = Object.assign({}, this.integrals);
     if (this.integrals.options.sum === undefined) {
       this.integrals.options = { ...this.integrals.options, sum: 100 };
     }
@@ -209,7 +210,7 @@ export class Datum1D {
   }
 
   updateIntegralRanges() {
-    this.ranges = Object.assign({}, this.ranges);
+    // this.ranges = Object.assign({}, this.ranges);
     if (this.ranges.options.sum === undefined) {
       this.ranges.options = { ...this.ranges.options, sum: 100 };
     }
@@ -242,8 +243,8 @@ export class Datum1D {
   }
 
   changeIntegral(integral) {
-    this.integrals = Object.assign({}, this.integrals);
-    this.integrals.values = this.integrals.values.slice();
+    // this.integrals = Object.assign({}, this.integrals);
+    // this.integrals.values = this.integrals.values.slice();
     const index = this.integrals.values.findIndex((i) => i.id === integral.id);
     if (index !== -1) {
       this.integrals.values[index] = {
@@ -256,7 +257,7 @@ export class Datum1D {
   }
 
   getIntegrals() {
-    return this.integrals;
+    return lodash.cloneDeep(this.integrals);
   }
 
   getInfo() {
@@ -304,7 +305,7 @@ export class Datum1D {
         (p) => p.xIndex !== peak.xIndex,
       );
     }
-    return this.peaks.values;
+    return this.peaks.values.slice();
   }
 
   deleteRange(id) {
@@ -320,8 +321,8 @@ export class Datum1D {
     this.updateIntegralRanges();
   }
   deleteIntegral(id) {
-    this.integrals = Object.assign({}, this.integrals);
-    this.integrals.values = this.integrals.values.slice();
+    // this.integrals = Object.assign({}, this.integrals);
+    // this.integrals.values = this.integrals.values.slice();
 
     if (id == null) {
       this.integrals.values = [];
@@ -331,11 +332,10 @@ export class Datum1D {
       );
     }
     this.updateIntegralIntegrals();
+    return this.integrals.values.slice();
   }
 
   setIntegral(data) {
-    this.integrals = Object.assign({}, this.integrals);
-    this.integrals.values = this.integrals.values.slice();
     const integralIndex = this.integrals.values.findIndex(
       (integral) => integral.id === data.id,
     );
@@ -462,8 +462,6 @@ export class Datum1D {
   }
 
   addPeak(peak) {
-    this.peaks = Object.assign({}, this.peaks);
-    this.peaks.values = this.peaks.values.slice();
     if (!this.checkPeakIsExists(peak)) {
       const newPeak = {
         id: generateID(),
@@ -483,8 +481,6 @@ export class Datum1D {
     // but it returns an array !
     // for now you return an array containing the result of addPeak
     if (from !== to) {
-      this.peaks = Object.assign({}, this.peaks);
-      this.peaks.values = this.peaks.values.slice();
       const peak = this.lookupPeak(from, to);
       if (peak && !this.checkPeakIsExists(peak)) {
         const newPeak = { id: generateID(), ...peak };

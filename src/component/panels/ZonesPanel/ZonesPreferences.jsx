@@ -182,4 +182,7 @@ const ZonesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   );
 });
 
-export default ContextWrapper(memo(ZonesPreferences));
+export default ContextWrapper(memo(ZonesPreferences), [
+  'nucleus',
+  'preferences',
+]);

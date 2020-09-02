@@ -12,7 +12,7 @@ import { useAlert } from 'react-alert';
 
 // import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import ContextWrapper from '../../hoc/ContextWrapper';
+import PeaksWrapper from '../../hoc/PeaksWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
@@ -187,4 +187,4 @@ const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   );
 });
 
-export default ContextWrapper(memo(PeaksPreferences));
+export default PeaksWrapper(memo(PeaksPreferences));

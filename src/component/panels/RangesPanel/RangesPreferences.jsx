@@ -12,7 +12,6 @@ import { useAlert } from 'react-alert';
 import { MF } from 'react-mf';
 
 import { useDispatch } from '../../context/DispatchContext';
-import ContextWrapper from '../../hoc/ContextWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
@@ -182,4 +181,4 @@ const RangesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   );
 });
 
-export default ContextWrapper(memo(RangesPreferences));
+export default memo(RangesPreferences);

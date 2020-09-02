@@ -76,9 +76,10 @@ const handleAddRange = (state, action) => {
   });
 };
 
+// eslint-disable-next-line no-unused-vars
 const handleSetShowMultiplicityTrees = (state, action) => {
   return produce(state, (draft) => {
-    draft.showMultiplicityTrees = action.show;
+    draft.showMultiplicityTrees = !draft.showMultiplicityTrees;
   });
 };
 

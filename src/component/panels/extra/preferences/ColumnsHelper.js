@@ -1,6 +1,8 @@
-import FormatNumber from '../../utility/FormatNumber';
+import lodash from 'lodash';
 
-export class ColumnsHelper {
+import FormatNumber from '../../../utility/FormatNumber';
+
+export default class ColumnsHelper {
   constructor(preferences, defaultPreference) {
     this.preferences = preferences;
     this.defaultPreference = defaultPreference;
@@ -81,4 +83,8 @@ export class ColumnsHelper {
       });
     }
   }
+}
+
+export function isCloumnVisible(preferences, key) {
+  return lodash.get(preferences, key, false);
 }

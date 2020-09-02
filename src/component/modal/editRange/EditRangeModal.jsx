@@ -1,9 +1,8 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { FaTimes, FaSearchPlus } from 'react-icons/fa';
 
-import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 
 import RangeForm from './forms/editRange/RangeForm';
@@ -70,46 +69,27 @@ const styles = css`
   }
 `;
 
-const EditRangeModal = ({ onSave, onClose, onZoom, rangeID }) => {
-  const { data: spectraData, activeSpectrum } = useChartData();
+const EditRangeModal = ({ onSave, onClose, onZoom, range }) => {
   const dispatch = useDispatch();
 
-  const rangeData = useMemo(() => {
-    return activeSpectrum && spectraData
-      ? spectraData[activeSpectrum.index].ranges.values.find(
-          (_range) => _range.id === rangeID,
-        )
-      : null;
-  }, [activeSpectrum, spectraData, rangeID]);
-
   const handleOnZoom = useCallback(() => {
-    onZoom(rangeData);
-  }, [onZoom, rangeData]);
+    onZoom(range);
+  }, [onZoom, range]);
 
   useEffect(() => {
     handleOnZoom();
-    // dispatch({ type: SET_RANGE_IN_EDITION, rangeID: rangeData.id });
-  }, [dispatch, handleOnZoom, rangeData]);
+  }, [dispatch, handleOnZoom, range]);
 
   const handleOnClose = useCallback(() => {
-    // dispatch({ type: UNSET_RANGE_IN_EDITION });
-    // dispatch({
-    //   type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
-    //   isEnabled: false,
-    // });
-    // dispatch({ type: UNSET_SELECTED_NEW_SIGNAL_DELTA });
-
     onClose();
   }, [onClose]);
 
   const handleOnSave = useCallback(
     async (formValues) => {
-      rangeData.signal = formValues.signals.slice();
-
-      await onSave(rangeData);
-      // handleOnClose();
+      range.signal = formValues.signals.slice();
+      await onSave(range);
     },
-    [onSave, rangeData],
+    [onSave, range],
   );
 
   return (
@@ -124,11 +104,13 @@ const EditRangeModal = ({ onSave, onClose, onZoom, rangeID }) => {
         </button>
       </div>
 
-      <RangeForm
-        rangeData={rangeData}
-        handleOnClose={handleOnClose}
-        handleOnSave={handleOnSave}
-      />
+      {range && (
+        <RangeForm
+          rangeData={range}
+          handleOnClose={handleOnClose}
+          handleOnSave={handleOnSave}
+        />
+      )}
     </div>
   );
 };

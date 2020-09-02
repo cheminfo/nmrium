@@ -7,12 +7,12 @@ import {
   TableBody,
   TableRow,
 } from '../../elements/Table';
-import ContextWrapper from '../../hoc/ContextWrapper';
+import FiltersWrapper from '../../hoc/FiltersWrapper';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import FiltersTableRow from './FiltersTableRow';
 
-const FilterPanel = memo(({ data: filters }) => {
+const FilterPanel = memo(({ filters }) => {
   const filtersTable = useMemo(() => {
     return filters ? (
       <Table>
@@ -38,4 +38,8 @@ const FilterPanel = memo(({ data: filters }) => {
   return filtersTable;
 });
 
-export default ContextWrapper(FilterPanel, 'filters');
+export default FiltersWrapper(FilterPanel);
+
+// export default ContextWrapper(FilterPanel, ['spectrum'], {
+//   spectrum: ['filters'],
+// });

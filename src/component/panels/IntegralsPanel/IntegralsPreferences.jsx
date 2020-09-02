@@ -13,7 +13,7 @@ import { MF } from 'react-mf';
 import { useDispatch } from '../../context/DispatchContext';
 import ColorInput from '../../elements/ColorInput';
 import NumberInput from '../../elements/NumberInput';
-import ContextWrapper from '../../hoc/ContextWrapper';
+import IntegralsWrapper from '../../hoc/IntegralsWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 import { GetPreference } from '../../utility/PreferencesHelper';
@@ -189,4 +189,4 @@ const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   );
 });
 
-export default ContextWrapper(IntegralsPreferences);
+export default IntegralsWrapper(IntegralsPreferences);

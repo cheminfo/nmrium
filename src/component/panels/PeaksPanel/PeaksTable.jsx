@@ -4,14 +4,24 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
-import ContextWrapper from '../../hoc/ContextWrapper';
+import PeaksWrapper from '../../hoc/PeaksWrapper';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
 import formatNumber from '../../utility/FormatNumber';
 import { GetPreference } from '../../utility/PreferencesHelper';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 const PeaksTable = memo(
-  ({ xDomain, preferences, activeTab, data, enableFilter, onPeaksChange }) => {
+  ({
+    peaks,
+    info,
+    x,
+    y,
+    xDomain,
+    preferences,
+    activeTab,
+    enableFilter,
+    onPeaksChange,
+  }) => {
     const dispatch = useDispatch();
 
     const deletePeakHandler = useCallback(
@@ -145,33 +155,30 @@ const PeaksTable = memo(
           value * factor <= xDomain[1] * factor
         );
       }
+      if (peaks && peaks.values) {
+        const labelFraction = getPeakLabelNumberDecimals(info.nucleus);
 
-      if (data && data.peaks && data.peaks.values) {
-        const labelFraction = getPeakLabelNumberDecimals(data.info.nucleus);
+        const _peaks = enableFilter
+          ? peaks.values.filter((peak) => isInRange(x[peak.xIndex]))
+          : peaks.values;
 
-        const peaks = enableFilter
-          ? data.peaks.values.filter((peak) => isInRange(data.x[peak.xIndex]))
-          : data.peaks.values;
+        onPeaksChange(_peaks);
 
-        onPeaksChange(peaks);
-
-        return peaks.map((peak) => {
-          const value = data.x[peak.xIndex].toFixed(labelFraction);
+        return _peaks.map((peak) => {
+          const value = x[peak.xIndex].toFixed(labelFraction);
           return {
             xIndex: peak.xIndex,
             value: value,
             valueHz:
-              data.info && data.info.originFrequency
-                ? value * data.info.originFrequency
-                : '',
+              info && info.originFrequency ? value * info.originFrequency : '',
             id: peak.id,
-            yValue: data.y[peak.xIndex],
+            yValue: y[peak.xIndex],
             peakWidth: peak.width ? peak.width : '',
             isConstantlyHighlighted: isInRange(value),
           };
         });
       }
-    }, [data, enableFilter, onPeaksChange, xDomain]);
+    }, [enableFilter, info, onPeaksChange, peaks, x, xDomain, y]);
 
     return _data && _data.length > 0 ? (
       <ReactTable data={_data} columns={tableColumns} />
@@ -181,4 +188,9 @@ const PeaksTable = memo(
   },
 );
 
-export default ContextWrapper(PeaksTable, 'peaks', 'info', 'x', 'y');
+export default PeaksWrapper(PeaksTable);
+// export default ContextWrapper(
+//   PeaksTable,
+//   ['spectrum', 'xDomain', 'preferences', 'activeTab'],
+//   { spectrum: ['peaks', 'info', 'x', 'y'] },
+// );

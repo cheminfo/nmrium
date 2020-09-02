@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-function ContextWrapper(WrappedComponent, ...keys) {
+function ContextWrapper(WrappedComponent, subKeys) {
   const Wrapper = (props) => {
     const {
       data,
@@ -18,21 +18,21 @@ function ContextWrapper(WrappedComponent, ...keys) {
       displayerMode,
     } = useChartData();
 
-    const spectrumData = useMemo(() => {
+    const spectrum = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
         const spectrum = data.find((datum) => datum.id === activeSpectrum.id);
-        if (!keys) {
+        if (subKeys === undefined || !subKeys.spectrum) {
           return spectrum;
-        } else if (keys.length === 1) {
-          return spectrum[keys[0]];
+        } else if (subKeys.spectrum.length === 1) {
+          return spectrum[subKeys.spectrum[0]];
         } else {
-          return keys.reduce(
+          return subKeys.spectrum.reduce(
             (acc, key) => ({ ...acc, [key]: spectrum[key] }),
             {},
           );
         }
       }
-      return null;
+      return undefined;
     }, [activeSpectrum, data]);
 
     const nucleus = useMemo(() => {
@@ -44,26 +44,74 @@ function ContextWrapper(WrappedComponent, ...keys) {
 
     const { forwardedRef, ...rest } = props;
 
+    // const data = useMemo(() => {
+    //   function getProp(key) {
+    //     if (key === 'nucleus') {
+    //       return { [key]: nucleus };
+    //     } else if (key === 'spectrum') {
+    //       return { [key]: spectrum };
+    //     }
+    //     return { [key]: chartData[key] };
+    //   }
+    //   return keysProps && Array.isArray(keysProps)
+    //     ? keysProps.reduce((acc, key) => ({ ...acc, ...getProp(key) }), {})
+    //     : {};
+    // }, [chartData, nucleus, spectrum]);
+
+    // const generalProps = useMemo(() => {
+    //   console.log({ ...data });
+    //   return data;
+    // }, [data]);
+
+    // const generalProps = useMemo(
+    //   () => {
+    //     function getProp(key) {
+    //       if (key === 'nucleus') {
+    //         return { [key]: nucleus };
+    //       } else if (key === 'spectrum') {
+    //         return { [key]: spectrum };
+    //       }
+    //       return { [key]:  eval('chartData.' + key) };
+    //     }
+    //     console.log(getProp());
+    //     return keysProps && Array.isArray(keysProps)
+    //       ? keysProps.reduce(
+    //           (acc, key) => ({ ...acc, [key]: getProp(key) }),
+    //           {},
+    //         )
+    //       : {};
+    //   },
+    //   () =>
+    //     keysProps &&
+    //     Array.isArray(keysProps) &&
+    //     keysProps.map((key) => eval('chartData.' + key)),
+    // );
+
     return (
       <WrappedComponent
-        data={spectrumData}
+        {...rest}
+        data={data}
+        spectrum={spectrum}
+        nucleus={nucleus}
+        activeSpectrum={activeSpectrum}
         preferences={preferences}
         activeTab={activeTab}
         selectedTool={selectedTool}
         xDomain={xDomain}
         yDomain={yDomain}
-        nucleus={nucleus}
-        {...rest}
-        ref={forwardedRef}
+        tabActiveSpectrum={tabActiveSpectrum}
         molecules={molecules}
         showMultiplicityTrees={showMultiplicityTrees}
         displayerMode={displayerMode}
+        ref={forwardedRef}
       />
     );
   };
 
-  return React.forwardRef((props, ref) => {
-    return <Wrapper {...props} forwardedRef={ref} />;
-  });
+  return memo(
+    React.forwardRef((props, ref) => {
+      return <Wrapper {...props} forwardedRef={ref} />;
+    }),
+  );
 }
 export default ContextWrapper;
