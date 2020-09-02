@@ -1,9 +1,6 @@
 import React, { memo } from 'react';
 
 import FormatNumber from '../../../utility/FormatNumber';
-import { isCloumnVisible } from '../../extra/preferences/ColumnsHelper';
-
-import { initFormat } from './format';
 
 const RangeColumn = memo(({ value, rowSpanTags, onHoverRange, format }) => {
   return (

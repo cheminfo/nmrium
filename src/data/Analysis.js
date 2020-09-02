@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import { Molecule } from 'openchemlib';
 
 import * as SpectraManager from './SpectraManager';
@@ -5,7 +6,6 @@ import { Datum1D } from './data1d/Datum1D';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 import getColor from './utilities/getColor';
-import lodash from 'lodash';
 
 export class Analysis {
   spectra = [];
