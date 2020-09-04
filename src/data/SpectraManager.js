@@ -6,7 +6,7 @@ import { Data2DManager } from './data2d/Data2DManager';
 import getColor, { adjustAlpha } from './utilities/getColor';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
-  return fetch(jcampURL)
+  return fetch(jcampURL, { credentials: 'include' })
     .then((response) => response.text())
     .then((jcamp) => {
       addJcamp(spectra, jcamp, options);
