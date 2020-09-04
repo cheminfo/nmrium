@@ -39,29 +39,25 @@ const styles = css`
   }
 `;
 
-const Tab = ({ id, label, activeTab, onClick, canDelete, onDelete }) => {
+const Tab = ({ tabid, tablabel, activeTab, onClick, canDelete, onDelete }) => {
   let className = 'tab-list-item';
 
   // use tab identifier if given (higher priority)
-  if (id !== undefined) {
-    if (activeTab === id) {
-      className += ' tab-list-active';
-    }
-  } else if (activeTab === label) {
+  if (activeTab === tabid) {
     className += ' tab-list-active';
   }
 
   const clickHandler = useCallback(
     (e) => {
-      onClick({ ...e, label, id });
+      onClick({ ...e, tablabel, tabid });
     },
-    [label, onClick, id],
+    [onClick, tablabel, tabid],
   );
   const deleteHandler = useCallback(
     (e) => {
-      onDelete({ ...e, label, id });
+      onDelete({ ...e, tablabel, tabid });
     },
-    [onDelete, label, id],
+    [onDelete, tablabel, tabid],
   );
   return (
     <li className={className} onClick={clickHandler} css={styles}>
@@ -70,17 +66,16 @@ const Tab = ({ id, label, activeTab, onClick, canDelete, onDelete }) => {
           <FaTimes className="icon" />
         </button>
       )}
-      {label}
+      {tablabel}
     </li>
   );
 };
 
 Tab.propTypes = {
   activeTab: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  label: PropTypes.string.isRequired,
+  tablabel: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
-  // tab identifier, if given, can be a string or number
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  tabid: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default Tab;

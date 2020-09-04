@@ -92,24 +92,24 @@ const Tabs = ({
 
   const onClickTabHandler = useCallback(
     (tab) => {
-      const { label, id: identifier } = tab;
-      onClick({ label, identifier });
+      const { tablabel, tabid } = tab;
+      onClick({ tablabel, tabid });
       // use tab identifier if given (higher priority)
-      setActiveTab(identifier !== undefined ? identifier : label);
+      setActiveTab(tabid);
     },
     [onClick],
   );
 
   const tabs = useMemo(() => {
     return Children.map(children, (child) => {
-      const { label, identifier } = child.props;
+      const { tablabel, tabid } = child.props;
       return (
         <Tab
           activeTab={activeTab}
-          key={label}
-          label={label}
+          key={tabid}
+          tablabel={tablabel}
           onClick={onClickTabHandler}
-          id={identifier}
+          tabid={tabid}
           canDelete={canDelete}
           onDelete={onDelete}
         />
@@ -119,17 +119,12 @@ const Tabs = ({
 
   const tabsContent = useMemo(() => {
     return Children.map(children, (child) => {
-      const { label, identifier, style } = child.props;
-      // use tab identifier if given (higher priority)
-      if (identifier !== undefined) {
-        if (identifier !== activeTab) {
-          return cloneElement(child, { style: { display: 'none' } });
-        }
-      } else if (label !== activeTab) {
+      const { tabid, style } = child.props;
+      if (tabid !== activeTab) {
         return cloneElement(child, { style: { display: 'none' } });
       }
       return cloneElement(child, {
-        style: { display: 'block', ...(style && style) },
+        style: { display: 'block', ...style },
       });
     });
   }, [activeTab, children]);

@@ -92,9 +92,9 @@ const UserManualModal = ({ onClose }) => {
         <Tabs position={positions.LEFT} defaultTabID="loadSpectrum">
           {manuals.map((manualItem) => (
             <div
-              label={manualItem.tabTitle}
+              tablabel={manualItem.tabTitle}
               key={manualItem.key}
-              identifier={manualItem.key}
+              tabid={manualItem.key}
               className="inner-container"
               style={{ overflow: 'auto', height: '100%' }}
             >

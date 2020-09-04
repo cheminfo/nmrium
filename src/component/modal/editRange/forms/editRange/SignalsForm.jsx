@@ -13,17 +13,10 @@ const SignalsForm = memo(() => {
   // const dispatch = useDispatch();
 
   const onTapClickHandler = useCallback(
-    ({ identifier }) => {
-      if (identifier !== undefined) {
-        if (typeof identifier === 'number') {
-          setFieldValue('selectedSignalIndex', identifier);
-          // dispatch({
-          //   type: SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
-          //   isEnabled: false,
-          // });
-          // dispatch({
-          //   type: UNSET_SELECTED_NEW_SIGNAL_DELTA,
-          // });
+    ({ tabid }) => {
+      if (tabid !== undefined) {
+        if (typeof tabid === 'number') {
+          setFieldValue('selectedSignalIndex', tabid);
         }
         //  else if (
         //   typeof identifier === 'string' &&
@@ -45,8 +38,8 @@ const SignalsForm = memo(() => {
         <div
           // eslint-disable-next-line react/no-array-index-key
           key={`signalForm${i}`}
-          identifier={i}
-          label={`${'\u0394'}: ${signal.delta.toFixed(5)} (${
+          tabid={i}
+          tablabel={`${'\u0394'}: ${signal.delta.toFixed(5)} (${
             signal.multiplicity
           })`}
         >
@@ -54,7 +47,7 @@ const SignalsForm = memo(() => {
         </div>
       ))
       .concat(
-        <div label={'\u002B'} identifier="addSignalTab" key="addSignalTab">
+        <div tabLabel={'\u002B'} tabid="addSignalTab" key="addSignalTab">
           <AddSignalFormTab />
         </div>,
       );
@@ -72,6 +65,8 @@ const SignalsForm = memo(() => {
       <Tabs
         defaultTabID={values.selectedSignalIndex}
         onClick={onTapClickHandler}
+        canDelete={true}
+        onDelete=""
       >
         {signalFormTabs}
       </Tabs>

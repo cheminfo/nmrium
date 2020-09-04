@@ -91,7 +91,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
   }, [onSave, setSettingsData, settingData]);
 
   const tabChangeHandler = useCallback((tab) => {
-    setActiveTab(tab.label);
+    setActiveTab(tab.tabid);
   }, []);
 
   const getValueFromStorage = (keyPath, defaultValue = null) => {
@@ -125,7 +125,11 @@ const GeneralSettings = ({ onClose, onSave }) => {
       <h6 className="header">General Settings</h6>
       <div className="main-content">
         <Tabs defaultTabID={activeTab} onClick={tabChangeHandler}>
-          <div className="inner-content" label="controllers" key="controllers">
+          <div
+            className="inner-content"
+            tablabel="controllers"
+            tabid="controllers"
+          >
             <p className="section-header">Mouse Scroll Wheel Sensitivity</p>
             <span className="input-label">Low</span>
             <input

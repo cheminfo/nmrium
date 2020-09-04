@@ -2,14 +2,7 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useFormikContext } from 'formik';
 import { memo, useState, useCallback, useEffect } from 'react';
-// import { FaVectorSquare } from 'react-icons/fa';
 
-// import { useChartData } from '../../../../context/ChartContext';
-// import { useDispatch } from '../../../context/DispatchContext';
-// import {
-//   UNSET_SELECTED_NEW_SIGNAL_DELTA,
-//   SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
-// } from '../../../reducer/types/Types';
 import Events from '../../../../utility/Events';
 import Button from '../elements/Button';
 import Input from '../elements/Input';
