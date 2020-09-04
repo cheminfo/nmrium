@@ -15,7 +15,6 @@ import {
 } from 'react-icons/fa';
 import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
-import 'react-animated-slider-2/build/horizontal.css';
 import { useMeasure } from 'react-use';
 
 import { useAssignmentData, useAssignment } from '../assignment';

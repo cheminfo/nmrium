@@ -12,7 +12,6 @@ If you have jcamps accessible from an URL and that your server allow cross-origi
 
 https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/100-86-7/1h.dx
 
-
 ## Install and test locally
 
 ```
@@ -51,3 +50,28 @@ Please read the following blog post:
 https://dev.to/glebec/four-ways-to-immutability-in-javascript-3b3l
 
 And in particular we want to use immer: https://github.com/immerjs/immer
+
+## Use as a library in a React project
+
+### Install the package
+
+```console
+npm install nmr-displayer
+```
+
+### Import the required CSS
+
+```js
+import 'cheminfo-font/dist/style.css';
+import 'react-animated-slider-2/build/horizontal.css';
+```
+
+### Use the component
+
+```jsx
+import NMRDisplayer from 'nmr-displayer';
+
+function MyComponent() {
+  return <NMRDisplayer />;
+}
+```

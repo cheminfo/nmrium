@@ -7,6 +7,8 @@ import * as serviceWorker from './demo/serviceWorker';
 // import AdminLayout from './demo/layouts/Admin.jsx';
 import TestRoutes from './demo/test/TestRoutes.jsx';
 
+import 'cheminfo-font/dist/style.css';
+import 'react-animated-slider-2/build/horizontal.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import './demo/index.css';
 import './demo/assets/css/now-ui-dashboard.min.css';

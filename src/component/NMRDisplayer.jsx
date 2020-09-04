@@ -15,8 +15,6 @@ import AlertTemplate from 'react-alert-template-basic';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
-import 'cheminfo-font/dist/style.css';
-
 import { Analysis } from '../data/Analysis';
 
 import Viewer1D from './1d/Viewer1D';

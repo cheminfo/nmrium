@@ -3,8 +3,10 @@
   "version": "0.2.4",
   "module": "lib/component/NMRDisplayer.js",
   "files": [
-    "lib"
+    "lib",
+    "nmr-displayer.d.ts"
   ],
+  "types": "nmr-displayer.d.ts",
   "dependencies": {
     "@emotion/core": "^10.0.35",
     "cheminfo-font": "^0.25.0",
