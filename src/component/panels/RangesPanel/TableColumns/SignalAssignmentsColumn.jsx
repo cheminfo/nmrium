@@ -27,8 +27,8 @@ const SignalAssignmentsColumn = memo(
     }, [assignment.isActive, highlight.isActive]);
 
     const visibilityChangeHandler = useCallback(
-      (flage) => {
-        onUnlinkVisibilityChange(flage);
+      (flag) => {
+        onUnlinkVisibilityChange(flag);
       },
       [onUnlinkVisibilityChange],
     );

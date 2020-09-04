@@ -27,8 +27,8 @@ const RangeAssignmentsColumn = memo(
     }, [rowData]);
 
     const visibilityChangeHandler = useCallback(
-      (flage) => {
-        onUnlinkVisibilityChange(flage);
+      (flag) => {
+        onUnlinkVisibilityChange(flag);
       },
       [onUnlinkVisibilityChange],
     );

@@ -1,4 +1,4 @@
-import loadsh from 'lodash';
+import lodash from 'lodash';
 import React, { Fragment, useCallback } from 'react';
 import { positions, transitions } from 'react-alert';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
@@ -35,21 +35,24 @@ const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
     });
   }, [dispatch, rowData.from, rowData.to]);
 
-  const deleteRangeHandler = useCallback(() => {
-    onUnlink(rowData);
-    dispatch({
-      type: DELETE_RANGE,
-      rangeID: rowData.id,
-    });
-  }, [dispatch, onUnlink, rowData]);
+  const deleteRangeHandler = useCallback(
+    (e) => {
+      onUnlink(e, rowData);
+      dispatch({
+        type: DELETE_RANGE,
+        rangeID: rowData.id,
+      });
+    },
+    [dispatch, onUnlink, rowData],
+  );
 
   const changeRangeSignalKindHandler = useCallback(
     (value) => {
-      const _rowData = loadsh.cloneDeep(rowData);
-      _rowData.signal.kind = value;
+      const _rowData = lodash.cloneDeep(rowData);
+      _rowData.signal[_rowData.tableMetaInfo.signalIndex].kind = value;
       dispatch({
         type: CHANGE_RANGE_DATA,
-        data: { id: rowData.id, value },
+        data: _rowData,
       });
     },
     [dispatch, rowData],
