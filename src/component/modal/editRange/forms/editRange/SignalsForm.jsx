@@ -12,7 +12,7 @@ const SignalsForm = memo(() => {
   const { values, setFieldValue, getFieldMeta } = useFormikContext();
   // const dispatch = useDispatch();
 
-  const onTapClickHandler = useCallback(
+  const tapClickHandler = useCallback(
     ({ tabid }) => {
       if (tabid !== undefined) {
         if (typeof tabid === 'number') {
@@ -32,6 +32,14 @@ const SignalsForm = memo(() => {
     [setFieldValue],
   );
 
+  const onDeleteSignal = useCallback(() => {
+    const _signals = values.signals.filter(
+      (signal, i) => i !== values.selectedSignalIndex,
+    );
+    setFieldValue('signals', _signals);
+    setFieldValue('selectedSignalIndex', _signals.length - 1);
+  }, [setFieldValue, values.selectedSignalIndex, values.signals]);
+
   const signalFormTabs = useMemo(() => {
     return values.signals
       .map((signal, i) => (
@@ -47,7 +55,12 @@ const SignalsForm = memo(() => {
         </div>
       ))
       .concat(
-        <div tabLabel={'\u002B'} tabid="addSignalTab" key="addSignalTab">
+        <div
+          tablabel={'\u002B'}
+          tabid="addSignalTab"
+          candelete={false}
+          key="addSignalTab"
+        >
           <AddSignalFormTab />
         </div>,
       );
@@ -64,9 +77,9 @@ const SignalsForm = memo(() => {
       ) : null}
       <Tabs
         defaultTabID={values.selectedSignalIndex}
-        onClick={onTapClickHandler}
+        onClick={tapClickHandler}
         canDelete={true}
-        onDelete=""
+        onDelete={onDeleteSignal}
       >
         {signalFormTabs}
       </Tabs>

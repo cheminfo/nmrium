@@ -12,7 +12,7 @@ const styles = css`
     border-radius: 50%;
     width: 17px;
     height: 17px;
-    background-color: white;
+    background-color: transparent;
     border: none;
     top: 2px;
     padding: 0;
@@ -76,6 +76,7 @@ Tab.propTypes = {
   tablabel: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   tabid: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  canDelete: PropTypes.bool,
 };
 
 export default Tab;
