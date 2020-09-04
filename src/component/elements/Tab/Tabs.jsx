@@ -34,7 +34,7 @@ const topStyles = css`
     display: inline-block;
     list-style: none;
     margin-bottom: -1px;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 2rem;
   }
 
   .tab-list-active {
@@ -76,7 +76,14 @@ const leftStyles = css`
   }
 `;
 
-const Tabs = ({ children, onClick, defaultTabID, position }) => {
+const Tabs = ({
+  children,
+  onClick,
+  defaultTabID,
+  position,
+  canDelete,
+  onDelete,
+}) => {
   const [activeTab, setActiveTab] = useState();
 
   useEffect(() => {
@@ -85,42 +92,42 @@ const Tabs = ({ children, onClick, defaultTabID, position }) => {
 
   const onClickTabHandler = useCallback(
     (tab) => {
-      const { label, id: identifier } = tab;
-      onClick({ label, identifier });
+      const { tablabel, tabid } = tab;
+      onClick({ tablabel, tabid });
       // use tab identifier if given (higher priority)
-      setActiveTab(identifier !== undefined ? identifier : label);
+      setActiveTab(tabid);
     },
     [onClick],
   );
 
   const tabs = useMemo(() => {
     return Children.map(children, (child) => {
-      const { label, identifier } = child.props;
+      const { tablabel, tabid, candelete } = child.props;
+      const deleteFlag = candelete
+        ? candelete.toLowerCase() === 'true'
+        : canDelete;
       return (
         <Tab
           activeTab={activeTab}
-          key={label}
-          label={label}
+          key={tabid}
+          tablabel={tablabel}
           onClick={onClickTabHandler}
-          id={identifier}
+          tabid={tabid}
+          canDelete={deleteFlag}
+          onDelete={onDelete}
         />
       );
     });
-  }, [activeTab, children, onClickTabHandler]);
+  }, [activeTab, canDelete, children, onClickTabHandler, onDelete]);
 
   const tabsContent = useMemo(() => {
     return Children.map(children, (child) => {
-      const { label, identifier, style } = child.props;
-      // use tab identifier if given (higher priority)
-      if (identifier !== undefined) {
-        if (identifier !== activeTab) {
-          return cloneElement(child, { style: { display: 'none' } });
-        }
-      } else if (label !== activeTab) {
+      const { tabid, style } = child.props;
+      if (tabid !== activeTab) {
         return cloneElement(child, { style: { display: 'none' } });
       }
       return cloneElement(child, {
-        style: { display: 'block', ...(style && style) },
+        style: { display: 'block', ...style },
       });
     });
   }, [activeTab, children]);
@@ -145,16 +152,18 @@ const Tabs = ({ children, onClick, defaultTabID, position }) => {
 };
 
 Tabs.defaultProps = {
-  onClick: () => {
-    return null;
-  },
+  onClick: () => null,
+  onDelete: () => null,
   position: 'TOP',
+  canDelete: false,
 };
 
 Tabs.propTypes = {
   children: PropTypes.array.isRequired,
   onClick: PropTypes.func,
   position: PropTypes.oneOf(['TOP', 'LEFT']),
+  canDelete: PropTypes.bool,
+  onDelete: PropTypes.func,
 };
 
 export default Tabs;

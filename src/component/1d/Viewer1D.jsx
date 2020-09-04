@@ -168,9 +168,9 @@ const Viewer1D = () => {
             break;
 
           default:
-            dispatch({ type: BRUSH_END, ...brushData });
-
-            return;
+            if (selectedTool != null) {
+              return dispatch({ type: BRUSH_END, ...brushData });
+            }
         }
       }
     },

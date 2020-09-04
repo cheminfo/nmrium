@@ -82,8 +82,8 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
 
   const onTabChangeHandler = useCallback(
     (tab) => {
-      onTabChange({ tab: tab.label, data: spectrumsGroupByNucleus[tab.label] });
-      dispatch({ type: SET_ACTIVE_TAB, tab: tab.label });
+      onTabChange({ tab: tab.tabid, data: spectrumsGroupByNucleus[tab.tabid] });
+      dispatch({ type: SET_ACTIVE_TAB, tab: tab.tabid });
     },
     [dispatch, onTabChange, spectrumsGroupByNucleus],
   );
@@ -174,7 +174,7 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
       <Tabs defaultTabID={activeTab} onClick={onTabChangeHandler}>
         {spectrumsGroupByNucleus &&
           Object.keys(spectrumsGroupByNucleus).map((group) => (
-            <div label={group} key={group}>
+            <div tablabel={group} tabid={group} key={group}>
               {spectrumsGroupByNucleus[group] &&
                 spectrumsGroupByNucleus[group].map((d) => (
                   <SpectrumListItem

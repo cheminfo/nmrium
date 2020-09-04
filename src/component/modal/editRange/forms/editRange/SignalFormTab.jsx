@@ -7,7 +7,6 @@ import {
   hasCouplingConstant,
   translateMultiplet,
 } from '../../../../panels/extra/utilities/MultiplicityUtilities';
-import Button from '../elements/Button';
 
 import CouplingsTable from './CouplingsTable';
 
@@ -32,14 +31,6 @@ const SignalFormTabStyle = css`
 
 const SignalFormTab = memo(() => {
   const { values, setFieldValue } = useFormikContext();
-
-  const onDeleteSignal = useCallback(() => {
-    const _signals = values.signals.filter(
-      (signal, i) => i !== values.selectedSignalIndex,
-    );
-    setFieldValue('signals', _signals);
-    setFieldValue('selectedSignalIndex', _signals.length - 1);
-  }, [setFieldValue, values.selectedSignalIndex, values.signals]);
 
   useEffect(() => {
     const signal = values.signals[values.selectedSignalIndex];
@@ -188,14 +179,6 @@ const SignalFormTab = memo(() => {
           </div>
         )}
       />
-      <Button
-        className="deleteSignalButton"
-        name="deleteSignalButton"
-        onClick={onDeleteSignal}
-        title="Delete Signal"
-      >
-        Delete Signal
-      </Button>
     </div>
   );
 });
