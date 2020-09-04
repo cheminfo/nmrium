@@ -58,7 +58,7 @@ const SignalsForm = memo(() => {
         <div
           tablabel={'\u002B'}
           tabid="addSignalTab"
-          candelete={false}
+          candelete="false"
           key="addSignalTab"
         >
           <AddSignalFormTab />

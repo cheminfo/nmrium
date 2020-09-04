@@ -103,6 +103,9 @@ const Tabs = ({
   const tabs = useMemo(() => {
     return Children.map(children, (child) => {
       const { tablabel, tabid, candelete } = child.props;
+      const deleteFlag = candelete
+        ? candelete.toLowerCase() === 'true'
+        : canDelete;
       return (
         <Tab
           activeTab={activeTab}
@@ -110,7 +113,7 @@ const Tabs = ({
           tablabel={tablabel}
           onClick={onClickTabHandler}
           tabid={tabid}
-          canDelete={candelete !== undefined ? candelete : canDelete}
+          canDelete={deleteFlag}
           onDelete={onDelete}
         />
       );
