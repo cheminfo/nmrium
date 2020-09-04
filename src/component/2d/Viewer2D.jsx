@@ -89,16 +89,13 @@ const Viewer2D = () => {
         } else {
           switch (selectedTool) {
             default:
-              dispatch({
-                type: BRUSH_END,
-                ...brushData,
-                trackID: getLayoutID(DIMENSION, brushData),
-              });
-
-              // console.log(getTrackID(DIMENSION, brushData));
-              // console.log(DIMENSION);
-              // console.log(brushData);
-              return;
+              if (selectedTool != null) {
+                return dispatch({
+                  type: BRUSH_END,
+                  ...brushData,
+                  trackID: getLayoutID(DIMENSION, brushData),
+                });
+              }
           }
         }
       }
