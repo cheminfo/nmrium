@@ -34,7 +34,7 @@ const topStyles = css`
     display: inline-block;
     list-style: none;
     margin-bottom: -1px;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 2rem;
   }
 
   .tab-list-active {
@@ -76,7 +76,14 @@ const leftStyles = css`
   }
 `;
 
-const Tabs = ({ children, onClick, defaultTabID, position }) => {
+const Tabs = ({
+  children,
+  onClick,
+  defaultTabID,
+  position,
+  canDelete,
+  onDelete,
+}) => {
   const [activeTab, setActiveTab] = useState();
 
   useEffect(() => {
@@ -103,10 +110,12 @@ const Tabs = ({ children, onClick, defaultTabID, position }) => {
           label={label}
           onClick={onClickTabHandler}
           id={identifier}
+          canDelete={canDelete}
+          onDelete={onDelete}
         />
       );
     });
-  }, [activeTab, children, onClickTabHandler]);
+  }, [activeTab, canDelete, children, onClickTabHandler, onDelete]);
 
   const tabsContent = useMemo(() => {
     return Children.map(children, (child) => {
@@ -145,16 +154,18 @@ const Tabs = ({ children, onClick, defaultTabID, position }) => {
 };
 
 Tabs.defaultProps = {
-  onClick: () => {
-    return null;
-  },
+  onClick: () => null,
+  onDelete: () => null,
   position: 'TOP',
+  canDelete: false,
 };
 
 Tabs.propTypes = {
   children: PropTypes.array.isRequired,
   onClick: PropTypes.func,
   position: PropTypes.oneOf(['TOP', 'LEFT']),
+  canDelete: PropTypes.bool,
+  onDelete: PropTypes.func,
 };
 
 export default Tabs;
