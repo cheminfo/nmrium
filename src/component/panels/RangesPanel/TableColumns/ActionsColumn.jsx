@@ -1,6 +1,6 @@
 import lodash from 'lodash';
 import React, { Fragment, useCallback } from 'react';
-import { positions, transitions } from 'react-alert';
+import { positions, transitions, useAlert } from 'react-alert';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
 import { useDispatch } from '../../../context/DispatchContext';
@@ -26,6 +26,7 @@ const selectBoxStyle = {
 const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
   const dispatch = useDispatch();
   const modal = useModal();
+  const alert = useAlert();
 
   const zoomRangeHandler = useCallback(() => {
     const margin = Math.abs(rowData.from - rowData.to) / 2;
@@ -37,7 +38,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
 
   const deleteRangeHandler = useCallback(
     (e) => {
-      onUnlink(e, rowData);
+      onUnlink(e);
       dispatch({
         type: DELETE_RANGE,
         rangeID: rowData.id,
@@ -61,7 +62,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
   const saveEditRangeHandler = useCallback(
     (editedRange) => {
       // for now: clear all assignments for this range because signals or levels to store might have changed
-      onUnlink(editedRange);
+      onUnlink();
       // if all signals were deleted then insert a default signal with "m" as multiplicity
       if (editedRange.signal.length === 0) {
         addDefaultSignal(editedRange);

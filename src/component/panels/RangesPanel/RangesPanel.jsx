@@ -118,27 +118,24 @@ const RangesTablePanel = memo(
     }, [isFilterActive, ranges.values, xDomain]);
 
     const unlinkRangeHandler = useCallback(
-      (range, isOnRangeLevel) => {
-        const signalIndex = lodash.get(
-          range,
-          'tableMetaInfo.signalIndex',
-          false,
-        );
+      (range, isOnRangeLevel, signalIndex) => {
         // remove assignments in assignment hook data
-        if (isOnRangeLevel === true) {
-          assignmentData.dispatch({
-            type: 'REMOVE_ALL',
-            payload: { id: range.id, axis: 'x' },
-          });
-        } else if (signalIndex) {
-          assignmentData.dispatch({
-            type: 'REMOVE_ALL',
-            payload: {
-              id: `${range.id}${HighlightSignalConcatenation}${signalIndex}`,
-              axis: 'x',
-            },
-          });
-        } else if (isOnRangeLevel === undefined && signalIndex === false) {
+        if (isOnRangeLevel !== undefined) {
+          if (isOnRangeLevel === true) {
+            assignmentData.dispatch({
+              type: 'REMOVE_ALL',
+              payload: { id: range.id, axis: 'x' },
+            });
+          } else if (signalIndex !== undefined) {
+            assignmentData.dispatch({
+              type: 'REMOVE_ALL',
+              payload: {
+                id: `${range.id}${HighlightSignalConcatenation}${signalIndex}`,
+                axis: 'x',
+              },
+            });
+          }
+        } else {
           assignmentData.dispatch({
             type: 'REMOVE_ALL',
             payload: { id: range.id, axis: 'x' },

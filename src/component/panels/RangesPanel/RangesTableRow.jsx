@@ -57,9 +57,15 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
   const unlinkHandler = useCallback(
     (e, isOnRangeLevel) => {
       // stop propagation here to prevent enabling/disabling the assignment mode at the same time
-      e.stopPropagation();
+      if (e) {
+        e.stopPropagation();
+      }
 
-      onUnlink(rowData, isOnRangeLevel);
+      onUnlink(
+        rowData,
+        isOnRangeLevel,
+        lodash.get(rowData, 'tableMetaInfo.signalIndex', undefined),
+      );
       if (isOnRangeLevel !== undefined) {
         if (isOnRangeLevel) {
           showUnlinkRangeButton(false);
