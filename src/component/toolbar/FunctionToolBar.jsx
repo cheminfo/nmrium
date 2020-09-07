@@ -4,12 +4,12 @@ import { useAlert } from 'react-alert';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
 import { Filters } from '../../data/data1d/filter1d/Filters';
-import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useHelp } from '../elements/Help/Context';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
+import ToolBarWrapper from '../hoc/ToolBarWrapper';
 import { ZoomType } from '../reducer/actions/Zoom';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import {
@@ -42,14 +42,22 @@ const styles = {
 
 let debounceClickEvents = [];
 
-const FunctionToolBar = ({ defaultValue }) => {
+const FunctionToolBar = ({
+  defaultValue,
+  activeSpectrum,
+  info,
+  displayerMode,
+}) => {
   const [option, setOption] = useState();
   const help = useHelp();
-  const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
   const alert = useAlert();
   const preferences = usePreferences();
 
   const dispatch = useDispatch();
+
+  const selectedSpectrumInfo = {
+    info: { isComplex: false, isFid: false, ...info },
+  };
   const handleChangeOption = useCallback(
     (selectedTool) => {
       if (
@@ -67,7 +75,6 @@ const FunctionToolBar = ({ defaultValue }) => {
     },
     [alert, dispatch],
   );
-  const { activeSpectrum, data, displayerMode } = useChartData();
 
   const handleChange = useCallback(
     (selectedOption) => {
@@ -153,15 +160,6 @@ const FunctionToolBar = ({ defaultValue }) => {
       document.removeEventListener('keydown', handleOnKeyPressed, false);
     };
   }, [defaultValue, handleOnKeyPressed]);
-
-  useEffect(() => {
-    if (data && activeSpectrum) {
-      const { info } = data.find((d) => d.id === activeSpectrum.id);
-      setSelectedSpectrumInfo({ info });
-    } else {
-      setSelectedSpectrumInfo({ info: { isComplex: false, isFid: false } });
-    }
-  }, [activeSpectrum, data]);
 
   const handleOnFFTFilter = useCallback(() => {
     dispatch({
@@ -389,7 +387,7 @@ const FunctionToolBar = ({ defaultValue }) => {
   );
 };
 
-export default memo(FunctionToolBar);
+export default ToolBarWrapper(memo(FunctionToolBar));
 
 FunctionToolBar.defaultProps = {
   defaultValue: options.zoom.id,

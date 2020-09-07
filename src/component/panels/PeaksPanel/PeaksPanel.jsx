@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
-// import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
@@ -35,7 +34,6 @@ const PeaksPanel = memo(() => {
   const dispatch = useDispatch();
   const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
-  const [isTableVisible, setTableVisibility] = useState(true);
   const settingRef = useRef();
 
   const yesHandler = useCallback(() => {
@@ -50,23 +48,11 @@ const PeaksPanel = memo(() => {
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
-    if (!isFlipped) {
-      setTimeout(
-        () => {
-          setTableVisibility(false);
-        },
-        400,
-        isFlipped,
-      );
-    } else {
-      setTableVisibility(true);
-    }
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(() => {
     settingRef.current.saveSetting();
     setFlipStatus(false);
-    setTableVisibility(true);
   }, []);
 
   const handleOnFilter = useCallback(() => {
@@ -105,7 +91,7 @@ const PeaksPanel = memo(() => {
         infinite={true}
         containerStyle={{ height: '100%' }}
       >
-        <div style={!isTableVisible ? { display: 'none' } : {}}>
+        <div>
           <PeaksTable
             enableFilter={filterIsActive}
             onPeaksChange={peaksChangedHandler}

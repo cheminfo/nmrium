@@ -10,6 +10,7 @@ function IntegralsWrapper(WrappedComponent) {
       xDomain,
       preferences,
       activeTab,
+      tabActiveSpectrum,
     } = useChartData();
 
     const { integrals = {}, info = {} } = useMemo(() => {
@@ -22,6 +23,13 @@ function IntegralsWrapper(WrappedComponent) {
       return {};
     }, [activeSpectrum, data]);
 
+    const nucleus = useMemo(() => {
+      if (tabActiveSpectrum && Object.keys(tabActiveSpectrum).length > 0) {
+        return Object.keys(tabActiveSpectrum);
+      }
+      return null;
+    }, [tabActiveSpectrum]);
+
     const { forwardedRef, ...rest } = props;
     return (
       <WrappedComponent
@@ -31,6 +39,7 @@ function IntegralsWrapper(WrappedComponent) {
         xDomain={xDomain}
         preferences={preferences}
         activeTab={activeTab}
+        nucleus={nucleus}
         ref={forwardedRef}
       />
     );

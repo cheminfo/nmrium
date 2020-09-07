@@ -49,7 +49,6 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
   const dispatch = useDispatch();
   const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
-  const [isTableVisible, setTableVisibility] = useState(true);
   const settingRef = useRef();
 
   const yesHandler = useCallback(() => {
@@ -91,23 +90,11 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
-    if (!isFlipped) {
-      setTimeout(
-        () => {
-          setTableVisibility(false);
-        },
-        400,
-        isFlipped,
-      );
-    } else {
-      setTableVisibility(true);
-    }
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(() => {
     settingRef.current.saveSetting();
     setFlipStatus(false);
-    setTableVisibility(true);
   }, []);
 
   const handleOnFilter = useCallback(() => {
@@ -163,7 +150,7 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
           infinite={true}
           containerStyle={{ height: '100%' }}
         >
-          <div style={!isTableVisible ? { display: 'none' } : {}}>
+          <div>
             <IntegralTable
               enableFilter={filterIsActive}
               onIntegralsChange={integralsChangedHandler}

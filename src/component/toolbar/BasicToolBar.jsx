@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import lodash from 'lodash';
-import { Fragment, useEffect, useCallback, useState } from 'react';
+import { Fragment, useEffect, useCallback, useState, memo } from 'react';
 import { useAlert } from 'react-alert';
 import {
   FaDownload,
@@ -13,12 +13,12 @@ import {
   FaFileImport,
 } from 'react-icons/fa';
 
-import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
 import MenuButton from '../elements/MenuButton';
 import { useModal } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import ToolBarWrapper from '../hoc/ToolBarWrapper';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import {
@@ -66,16 +66,21 @@ const menuButton = css`
   }
 `;
 
-const BasicToolBar = ({ isViewButtonVisible = true }) => {
+const BasicToolBar = ({
+  isViewButtonVisible = true,
+  info,
+  verticalAlign,
+  displayerMode,
+  spectrumsCount,
+}) => {
   const dispatch = useDispatch();
   const preferences = usePreferences();
-  const { data, activeSpectrum, verticalAlign, displayerMode } = useChartData();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
-  const [spectrumsCount, setSpectrumsCount] = useState(0);
-  const [selectedSpectrumInfo, setSelectedSpectrumInfo] = useState();
   const [isStacked, activateStackView] = useState(false);
   const alert = useAlert();
   const modal = useModal();
+
+  const selectedSpectrumInfo = { isComplex: false, isFid: false, ...info };
 
   const saveAsSVGHandler = useCallback(() => {
     dispatch({
@@ -198,18 +203,6 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
     };
   }, [handleOnKeyPressed]);
 
-  useEffect(() => {
-    if (data) {
-      setSpectrumsCount(data.length);
-      if (activeSpectrum) {
-        const { info } = data.find((d) => d.id === activeSpectrum.id);
-        setSelectedSpectrumInfo(info);
-      } else {
-        setSelectedSpectrumInfo({ isComplex: false, isFid: false });
-      }
-    }
-  }, [activeSpectrum, data]);
-
   const isButtonVisible = useCallback(
     (key) => {
       return !lodash.get(preferences, `toolsBarButtons.${key}`);
@@ -317,4 +310,4 @@ const BasicToolBar = ({ isViewButtonVisible = true }) => {
   );
 };
 
-export default BasicToolBar;
+export default ToolBarWrapper(memo(BasicToolBar));

@@ -63,14 +63,6 @@ const styles = {
 
 const ZonesPanel = memo(
   ({ spectrum, activeTab, preferences, xDomain, yDomain }) => {
-    // const {
-    //   activeSpectrum,
-    //   data: spectraData,
-    //   activeTab,
-    //   preferences,
-    //   xDomain,
-    //   yDomain,
-    // } = useChartData();
     const [filterIsActive, setFilterIsActive] = useState(false);
     const [zonesCounter, setZonesCounter] = useState(0);
 
@@ -80,14 +72,7 @@ const ZonesPanel = memo(
     const modal = useModal();
     const alert = useAlert();
     const [isFlipped, setFlipStatus] = useState(false);
-    const [isTableVisible, setTableVisibility] = useState(true);
     const settingRef = useRef();
-
-    // const spectrumData = useMemo(() => {
-    //   return activeSpectrum && spectraData
-    //     ? spectraData[activeSpectrum.index]
-    //     : null;
-    // }, [spectraData, activeSpectrum]);
 
     const data = useMemo(() => {
       if (spectrum && spectrum.zones && spectrum.zones.values) {
@@ -353,23 +338,11 @@ const ZonesPanel = memo(
 
     const settingsPanelHandler = useCallback(() => {
       setFlipStatus(!isFlipped);
-      if (!isFlipped) {
-        setTimeout(
-          () => {
-            setTableVisibility(false);
-          },
-          400,
-          isFlipped,
-        );
-      } else {
-        setTableVisibility(true);
-      }
     }, [isFlipped]);
 
     const saveSettingHandler = useCallback(() => {
       settingRef.current.saveSetting();
       setFlipStatus(false);
-      setTableVisibility(true);
     }, []);
 
     return (
@@ -424,7 +397,7 @@ const ZonesPanel = memo(
             infinite={true}
             containerStyle={{ height: '100%' }}
           >
-            <div style={!isTableVisible ? { display: 'none' } : {}}>
+            <div>
               {tableData && tableData.length > 0 ? (
                 <ZonesTable
                   tableData={tableData}

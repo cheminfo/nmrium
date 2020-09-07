@@ -82,7 +82,6 @@ const RangesTablePanel = memo(
     const dispatch = useDispatch();
     const alert = useAlert();
     const [isFlipped, setFlipStatus] = useState(false);
-    const [isTableVisible, setTableVisibility] = useState(true);
     const settingRef = useRef();
 
     const rangesData = useMemo(() => {
@@ -212,23 +211,11 @@ const RangesTablePanel = memo(
 
     const settingsPanelHandler = useCallback(() => {
       setFlipStatus(!isFlipped);
-      if (!isFlipped) {
-        setTimeout(
-          () => {
-            setTableVisibility(false);
-          },
-          400,
-          isFlipped,
-        );
-      } else {
-        setTableVisibility(true);
-      }
     }, [isFlipped]);
 
     const saveSettingHandler = useCallback(() => {
       settingRef.current.saveSetting();
       setFlipStatus(false);
-      setTableVisibility(true);
     }, []);
 
     return (
@@ -258,7 +245,7 @@ const RangesTablePanel = memo(
             infinite={true}
             containerStyle={{ height: '100%' }}
           >
-            <div style={!isTableVisible ? { display: 'none' } : {}}>
+            <div>
               {rangesData && rangesData.length > 0 ? (
                 <RangesTable
                   tableData={rangesData}

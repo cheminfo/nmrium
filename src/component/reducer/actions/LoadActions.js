@@ -110,8 +110,11 @@ const loadJcampFile = (state, files) => {
       usedColors.push(color);
     }
     draft.data = AnalysisObj.getSpectraData();
-    setDomain(draft);
-    setMode(draft);
+
+    setActiveTab(draft);
+
+    // setDomain(draft);
+    // setMode(draft);
     draft.isLoading = false;
   });
 };

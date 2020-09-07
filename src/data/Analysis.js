@@ -197,12 +197,7 @@ export class Analysis {
               // y: ob.data.re,
               // im: ob.data.im,
               ..._data,
-              // display: ob.display,
-              //  name: ob.display.name,
-              // color: ob.display.color,
-              // isVisible: ob.display.isVisible,
-              // isPeaksMarkersVisible: ob.display.isPeaksMarkersVisible,
-              // isRealSpectrumVisible: ob.display.isRealSpectrumVisible,
+
               isVisibleInDomain: ob.display.isVisibleInDomain,
               // info: ob.info,
               // meta: ob.meta,

@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react';
+import React, { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -10,6 +10,7 @@ function PeaksWrapper(WrappedComponent) {
       xDomain,
       preferences,
       activeTab,
+      tabActiveSpectrum,
     } = useChartData();
 
     const { peaks = {}, info = {}, x = [], y = [] } = useMemo(() => {
@@ -22,7 +23,15 @@ function PeaksWrapper(WrappedComponent) {
       return {};
     }, [activeSpectrum, data]);
 
+    const nucleus = useMemo(() => {
+      if (tabActiveSpectrum && Object.keys(tabActiveSpectrum).length > 0) {
+        return Object.keys(tabActiveSpectrum);
+      }
+      return null;
+    }, [tabActiveSpectrum]);
+
     const { forwardedRef, ...rest } = props;
+
     return (
       <WrappedComponent
         {...rest}
@@ -33,15 +42,13 @@ function PeaksWrapper(WrappedComponent) {
         xDomain={xDomain}
         preferences={preferences}
         activeTab={activeTab}
+        nucleus={nucleus}
         ref={forwardedRef}
       />
     );
   };
-
-  return memo(
-    React.forwardRef((props, ref) => {
-      return <Wrapper {...props} forwardedRef={ref} />;
-    }),
-  );
+  return React.forwardRef((props, ref) => {
+    return <Wrapper {...props} forwardedRef={ref} />;
+  });
 }
 export default PeaksWrapper;
