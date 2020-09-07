@@ -88,8 +88,9 @@ const EditRangeModal = ({ onSave, onClose, onZoom, range }) => {
     async (formValues) => {
       range.signal = formValues.signals.slice();
       await onSave(range);
+      handleOnClose();
     },
-    [onSave, range],
+    [handleOnClose, onSave, range],
   );
 
   return (

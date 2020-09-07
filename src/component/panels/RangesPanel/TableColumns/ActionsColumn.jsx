@@ -1,6 +1,6 @@
-import loadsh from 'lodash';
+import lodash from 'lodash';
 import React, { Fragment, useCallback } from 'react';
-import { positions, transitions } from 'react-alert';
+import { positions, transitions, useAlert } from 'react-alert';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
 import { useDispatch } from '../../../context/DispatchContext';
@@ -26,6 +26,7 @@ const selectBoxStyle = {
 const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
   const dispatch = useDispatch();
   const modal = useModal();
+  const alert = useAlert();
 
   const zoomRangeHandler = useCallback(() => {
     const margin = Math.abs(rowData.from - rowData.to) / 2;
@@ -35,21 +36,24 @@ const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
     });
   }, [dispatch, rowData.from, rowData.to]);
 
-  const deleteRangeHandler = useCallback(() => {
-    onUnlink(rowData);
-    dispatch({
-      type: DELETE_RANGE,
-      rangeID: rowData.id,
-    });
-  }, [dispatch, onUnlink, rowData]);
+  const deleteRangeHandler = useCallback(
+    (e) => {
+      onUnlink(e);
+      dispatch({
+        type: DELETE_RANGE,
+        rangeID: rowData.id,
+      });
+    },
+    [dispatch, onUnlink, rowData],
+  );
 
   const changeRangeSignalKindHandler = useCallback(
     (value) => {
-      const _rowData = loadsh.cloneDeep(rowData);
-      _rowData.signal.kind = value;
+      const _rowData = lodash.cloneDeep(rowData);
+      _rowData.signal[_rowData.tableMetaInfo.signalIndex].kind = value;
       dispatch({
         type: CHANGE_RANGE_DATA,
-        data: { id: rowData.id, value },
+        data: _rowData,
       });
     },
     [dispatch, rowData],
@@ -58,7 +62,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
   const saveEditRangeHandler = useCallback(
     (editedRange) => {
       // for now: clear all assignments for this range because signals or levels to store might have changed
-      onUnlink(editedRange);
+      onUnlink();
       // if all signals were deleted then insert a default signal with "m" as multiplicity
       if (editedRange.signal.length === 0) {
         addDefaultSignal(editedRange);

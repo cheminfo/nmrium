@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
+import lodash from 'lodash';
 import React, { useState, useCallback, useMemo, useEffect, memo } from 'react';
 import { useAlert } from 'react-alert';
 import Slider from 'react-animated-slider-2';
@@ -277,7 +278,7 @@ const MoleculePanel = memo(
               ? Number(split[1])
               : undefined;
             // determine the level of setting the diaID array (range vs. signal level) and save there
-            const _datum = Object.assign({}, datum);
+            const _datum = lodash.cloneDeep(datum);
             if (signalIndex === undefined) {
               if (displayerMode === '1D') {
                 _datum.diaID = toggleAssignment(

@@ -7,7 +7,7 @@ import { useAssignment } from '../../assignment';
 import { useHighlight, useHighlightData } from '../../highlight';
 import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 import { SignalKindsToConsiderInIntegralsSum } from '../extra/constants/SignalsKinds';
-import { isCloumnVisible } from '../extra/preferences/ColumnsHelper';
+import { isColumnVisible } from '../extra/preferences/ColumnsHelper';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn';
 import ActionsColumn from './TableColumns/ActionsColumn';
@@ -56,9 +56,16 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
 
   const unlinkHandler = useCallback(
     (e, isOnRangeLevel) => {
-      // event handling here in case of unlink button clicked
-      // to also exit the assignment mode then
-      onUnlink(rowData, isOnRangeLevel);
+      // stop propagation here to prevent enabling/disabling the assignment mode at the same time
+      if (e) {
+        e.stopPropagation();
+      }
+
+      onUnlink(
+        rowData,
+        isOnRangeLevel,
+        lodash.get(rowData, 'tableMetaInfo.signalIndex', undefined),
+      );
       if (isOnRangeLevel !== undefined) {
         if (isOnRangeLevel) {
           showUnlinkRangeButton(false);
@@ -75,7 +82,7 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
     [assignmentRange, assignmentSignal, onUnlink, rowData],
   );
 
-  const linkHander = useCallback((e, assignment) => {
+  const linkHandler = useCallback((e, assignment) => {
     assignment.onClick(e, 'x');
   }, []);
 
@@ -108,11 +115,7 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
   const trCss = useMemo(() => {
     return highlightRange.isActive || assignmentRange.isActive
       ? HighlightedRowStyle
-      : lodash.get(
-          rowData,
-          'rowData.tableMetaInfo.isConstantlyHighlighted',
-          false,
-        )
+      : lodash.get(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
       ? ConstantlyHighlightedRowStyle
       : null;
   }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
@@ -127,7 +130,7 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
         {rowData.tableMetaInfo.rowIndex + 1}
       </td>
 
-      {isCloumnVisible(preferences, 'showFrom') && (
+      {isColumnVisible(preferences, 'showFrom') && (
         <RangeColumn
           value={rowData.from}
           rowSpanTags={rowSpanTags}
@@ -135,9 +138,9 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
           format={getFormat('showFrom')}
         />
       )}
-      {isCloumnVisible(preferences, 'showTo') && (
+      {isColumnVisible(preferences, 'showTo') && (
         <RangeColumn
-          value={rowData.showTo}
+          value={rowData.to}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
           format={getFormat('toFormat')}
@@ -150,7 +153,7 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
         preferences={preferences}
       />
 
-      {isCloumnVisible(preferences, 'showRelative') && (
+      {isColumnVisible(preferences, 'showRelative') && (
         <RelativeColumn
           rowData={rowData}
           rowSpanTags={rowSpanTags}
@@ -162,7 +165,7 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
         />
       )}
 
-      {isCloumnVisible(preferences, 'showAbsolute') && (
+      {isColumnVisible(preferences, 'showAbsolute') && (
         <AbsoluteColumn
           value={rowData.absolute}
           rowSpanTags={rowSpanTags}
@@ -184,7 +187,7 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
         onHover={onHoverSignal}
         unlinkVisibility={unlinkSignalButtonVisibility}
         onUnlinkVisibilityChange={(flag) => showUnlinkSignalButton(flag)}
-        onLink={linkHander}
+        onLink={linkHandler}
         onUnlink={unlinkHandler}
       />
 
@@ -194,8 +197,8 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
         highlight={highlightRange}
         onHover={onHoverRange}
         unlinkVisibility={unlinkRangeButtonVisibility}
-        onUnlinkVisibilityChange={(flag) => showUnlinkSignalButton(flag)}
-        onLink={linkHander}
+        onUnlinkVisibilityChange={(flag) => showUnlinkRangeButton(flag)}
+        onLink={linkHandler}
         onUnlink={unlinkHandler}
         rowSpanTags={rowSpanTags}
         highlightData={highlightData}

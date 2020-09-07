@@ -85,6 +85,6 @@ export default class ColumnsHelper {
   }
 }
 
-export function isCloumnVisible(preferences, key) {
+export function isColumnVisible(preferences, key) {
   return lodash.get(preferences, key, false);
 }
