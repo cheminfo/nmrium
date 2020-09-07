@@ -75,7 +75,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
         data: editedRange,
       });
     },
-    [dispatch, onUnlink],
+    [alert, dispatch, onUnlink],
   );
 
   const closeEditRangeHandler = useCallback(() => {
