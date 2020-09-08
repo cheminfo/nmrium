@@ -27,6 +27,7 @@ import { options } from '../toolbar/ToolTypes';
 
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
+import XYLabelPointer from './tools/XYLabelPointer';
 import SlicingView from './tools/slicing/SlicingView';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 
@@ -166,6 +167,10 @@ const Viewer2D = () => {
               )}
 
               <CrossLinePointer />
+              {spectrumData && (
+                <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
+              )}
+
               <BrushXY
                 brushType={BRUSH_TYPE.XY}
                 dimensionBorder={DIMENSION.CENTER_2D}
