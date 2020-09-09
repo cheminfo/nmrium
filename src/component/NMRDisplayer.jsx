@@ -13,7 +13,7 @@ import {
 } from 'react';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
-import { initOCL as initOCLNmr } from 'react-ocl-nmr';
+import { initOCL } from 'react-ocl-nmr';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
@@ -42,6 +42,8 @@ import {
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
+
+initOCL(OCL);
 
 // alert optional cofiguration
 const alertOptions = {
@@ -264,7 +266,3 @@ NMRDisplayer.defaultProps = {
 };
 
 export default NMRDisplayer;
-
-export function initOCL() {
-  initOCLNmr(OCL);
-}

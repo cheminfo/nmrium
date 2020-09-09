@@ -57,5 +57,3 @@ export type NMRDisplayerPreferences = Partial<{
 }>;
 
 export default function NMRDisplayer(props: NMRDisplayerProps): JSX.Element;
-
-export function initOCL(): void;
