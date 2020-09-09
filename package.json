@@ -1,6 +1,6 @@
 {
   "name": "nmr-displayer",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "module": "lib/component/NMRDisplayer.js",
   "files": [
     "lib",
