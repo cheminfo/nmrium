@@ -57,7 +57,6 @@
     "react-transition-group": "^4.4.1",
     "react-use": "^15.3.4",
     "rxjs": "^6.6.3",
-    "spectra-data": "^3.4.11",
     "spectra-data-ranges": "^1.1.8"
   },
   "prettier": {
