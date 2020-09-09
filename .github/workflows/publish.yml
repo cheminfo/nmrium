@@ -32,5 +32,3 @@ jobs:
           npm i -g gh-pages
           VERSION=${GITHUB_REF//*\/}
           gh-pages --dest $VERSION -d build --dotfiles
-        env:
-          CI: true
