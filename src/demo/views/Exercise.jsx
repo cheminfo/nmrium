@@ -1,4 +1,4 @@
-import { Molecule } from 'openchemlib';
+import { Molecule } from 'openchemlib/full';
 import React, { useState, useEffect, useCallback } from 'react';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';

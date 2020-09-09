@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
+import OCL from 'openchemlib/full';
 import PropTypes from 'prop-types';
 import {
   useEffect,
@@ -12,6 +13,7 @@ import {
 } from 'react';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
+import { initOCL as initOCLNmr } from 'react-ocl-nmr';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
@@ -262,3 +264,7 @@ NMRDisplayer.defaultProps = {
 };
 
 export default NMRDisplayer;
+
+export function initOCL() {
+  initOCLNmr(OCL);
+}

@@ -66,6 +66,14 @@ import 'cheminfo-font/dist/style.css';
 import 'react-animated-slider-2/build/horizontal.css';
 ```
 
+### Initialize OCL
+
+```js
+import { initOCL } from 'nmr-displayer';
+
+initOCL();
+```
+
 ### Use the component
 
 ```jsx

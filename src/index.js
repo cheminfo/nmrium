@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Route, Switch /*Redirect*/ } from 'react-router-dom';
 
+import { initOCL } from './component/NMRDisplayer';
 import Main from './demo/layouts/Main';
 import * as serviceWorker from './demo/serviceWorker';
-// import AdminLayout from './demo/layouts/Admin.jsx';
 import TestRoutes from './demo/test/TestRoutes.jsx';
 
 import 'cheminfo-font/dist/style.css';
@@ -13,6 +13,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './demo/index.css';
 import './demo/assets/css/now-ui-dashboard.min.css';
 import './demo/assets/css/demo.css';
+
+initOCL();
 
 ReactDOM.render(
   <HashRouter>
