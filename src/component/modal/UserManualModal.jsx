@@ -2,11 +2,9 @@
 import { jsx, css } from '@emotion/core';
 import { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
-import ReactMarkdown from 'react-markdown';
 
 import { Tabs, positions } from '../elements/Tab';
 import helpData from '../help';
-import { loadFile } from '../utility/FileUtility';
 
 const styles = css`
   width: 600px;
@@ -28,7 +26,7 @@ const styles = css`
     width: 100%;
     height: 100%;
     border: none;
-    overflow: auto;
+    // overflow: auto;
     padding-left: 5px;
   }
 
@@ -44,28 +42,14 @@ const styles = css`
 
   .inner-container {
     padding: 5px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .tab-content {
+    width: 100%;
   }
 `;
-const transformImageUri = (uri, path) =>
-  `${path.substr(0, path.lastIndexOf('/') + 1)}${uri}`;
-
-const ManualView = ({ filePath }) => {
-  const [md, setMD] = useState('');
-  useEffect(() => {
-    loadFile(filePath).then((mdResult) => {
-      setMD(mdResult);
-    });
-  });
-
-  return (
-    <div style={{ overflow: 'auto' }}>
-      <ReactMarkdown
-        source={md}
-        transformImageUri={(uri) => transformImageUri(uri, filePath)}
-      />
-    </div>
-  );
-};
 
 const UserManualModal = ({ onClose }) => {
   const [manuals, setManualsData] = useState([]);
@@ -96,9 +80,13 @@ const UserManualModal = ({ onClose }) => {
               key={manualItem.key}
               tabid={manualItem.key}
               className="inner-container"
-              style={{ overflow: 'auto', height: '100%' }}
             >
-              <ManualView filePath={manualItem.filePath} />
+              <iframe
+                src={manualItem.filePath}
+                frameBorder="0"
+                scrolling="auto"
+                style={{ width: '100%', height: '100%' }}
+              />
             </div>
           ))}
         </Tabs>

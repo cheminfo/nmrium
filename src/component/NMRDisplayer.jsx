@@ -30,7 +30,7 @@ import { PreferencesProvider } from './context/PreferencesContext';
 import { HelpProvider } from './elements/Help';
 import { ModalProvider } from './elements/Modal';
 import Header from './header/Header';
-import helpData from './help';
+import helpData, { setBaseUrl } from './help';
 import { HighlightProvider } from './highlight';
 import DropZone from './loader/DropZone';
 import Panels from './panels/Panels';
@@ -73,6 +73,7 @@ const NMRDisplayer = memo((props) => {
     data: dataProp,
     // height: heightProp,
     // width: widthProps,
+    docsBaseUrl,
     preferences,
   } = props;
   const fullScreenRef = useRef();
@@ -95,6 +96,10 @@ const NMRDisplayer = memo((props) => {
       dispatch({ type: INITIATE, data: { AnalysisObj: object } });
     });
   }, [dataProp]);
+
+  useEffect(() => {
+    setBaseUrl(docsBaseUrl);
+  }, [docsBaseUrl]);
 
   const handleSplitPanelDragFinished = useCallback((size) => {
     setResizeEventStart(false);
@@ -189,6 +194,7 @@ const NMRDisplayer = memo((props) => {
 NMRDisplayer.propTypes = {
   height: PropTypes.number,
   width: PropTypes.number,
+  docsBaseUrl: PropTypes.string,
   preferences: PropTypes.shape(
     {
       general: PropTypes.shape({
@@ -228,6 +234,7 @@ NMRDisplayer.propTypes = {
 NMRDisplayer.defaultProps = {
   height: 600,
   width: 800,
+  docsBaseUrl: 'https://cheminfo.github.io/nmr-displayer/docs/v0',
   preferences: {
     general: {
       disableMultipletAnalysis: false,

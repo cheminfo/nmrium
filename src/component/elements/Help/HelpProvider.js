@@ -1,6 +1,4 @@
 /* eslint-disable no-unused-vars */
-// import { Resizable } from 're-resizable';
-import { Resizable } from 're-resizable';
 import React, {
   useReducer,
   useMemo,
@@ -12,7 +10,6 @@ import React, {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
-import ReactMarkdown from 'react-markdown';
 import { Rnd } from 'react-rnd';
 import { TransitionGroup } from 'react-transition-group';
 
@@ -174,8 +171,6 @@ const HelpProvider = ({
     modals,
     (modal) => modal.options && modal.options.position,
   );
-  const transformImageUri = (uri, path) =>
-    `${path.substr(0, path.lastIndexOf('/') + 1)}${uri}`;
 
   return (
     <HProvider value={contextValue}>
@@ -224,18 +219,17 @@ const HelpProvider = ({
                               {modal.mdtext && (
                                 <div
                                   style={{
-                                    overflow: 'auto',
+                                    // overflow: 'auto',
                                     cursor: 'default',
+                                    width: '100%',
+                                    height: '100%',
                                   }}
                                 >
-                                  <ReactMarkdown
-                                    source={modal.mdtext}
-                                    transformImageUri={(uri) =>
-                                      transformImageUri(
-                                        uri,
-                                        data[modal.helpid].filePath,
-                                      )
-                                    }
+                                  <iframe
+                                    src={data[modal.helpid].filePath}
+                                    frameBorder="0"
+                                    scrolling="auto"
+                                    style={{ width: '100%', height: '100%' }}
                                   />
                                 </div>
                               )}

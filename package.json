@@ -68,7 +68,7 @@
   },
   "scripts": {
     "clean-lib": "rimraf lib",
-    "compile": "babel src --out-dir lib --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.js\" --quiet",
+    "compile": "babel src public/_help --out-dir lib --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.js\" --quiet && babel public/_help/* --out-dir lib/doc --copy-files",
     "prepare": "npm run clean-lib && npm run compile",
     "start": "react-scripts start ",
     "build": "react-scripts --max_old_space_size=4096 build",
@@ -76,7 +76,8 @@
     "eject": "react-scripts eject",
     "eslint": "eslint src --ext js,jsx --cache",
     "eslint-fix": "npm run eslint -- --fix",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
+    "docs": "markdown-folder-to-html docs"
   },
   "eslintConfig": {
     "extends": "cheminfo-react",
@@ -116,6 +117,7 @@
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.1.0",
     "esm": "^3.2.25",
+    "markdown-folder-to-html": "^2.4.0",
     "perfect-scrollbar": "^1.5.0",
     "prettier": "^2.1.1",
     "react": "^16.13.1",
