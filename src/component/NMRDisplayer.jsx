@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import OCL from 'openchemlib/full';
+// import OCL from 'openchemlib/full';
 import PropTypes from 'prop-types';
 import {
   useEffect,
@@ -13,7 +13,7 @@ import {
 } from 'react';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
-import { initOCL } from 'react-ocl-nmr';
+// import { initOCL } from 'react-ocl-nmr';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
@@ -30,7 +30,7 @@ import { PreferencesProvider } from './context/PreferencesContext';
 import { HelpProvider } from './elements/Help';
 import { ModalProvider } from './elements/Modal';
 import Header from './header/Header';
-import helpData, { setBaseUrl } from './help';
+import helpList, { setBaseUrl } from './help';
 import { HighlightProvider } from './highlight';
 import DropZone from './loader/DropZone';
 import Panels from './panels/Panels';
@@ -43,7 +43,7 @@ import { DISPLAYER_MODE } from './reducer/core/Constants';
 import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 
-initOCL(OCL);
+// initOCL(OCL);
 
 // alert optional cofiguration
 const alertOptions = {
@@ -85,6 +85,7 @@ const NMRDisplayer = memo((props) => {
   });
 
   const [isResizeEventStart, setResizeEventStart] = useState(false);
+  const [helpData, setHelpData] = useState(helpList());
 
   const [state, dispatch] = useReducer(spectrumReducer, initialState);
 
@@ -99,6 +100,7 @@ const NMRDisplayer = memo((props) => {
 
   useEffect(() => {
     setBaseUrl(docsBaseUrl);
+    setHelpData(helpList());
   }, [docsBaseUrl]);
 
   const handleSplitPanelDragFinished = useCallback((size) => {

@@ -47,7 +47,6 @@
     "react-icons": "^3.11.0",
     "react-inspector": "^5.0.1",
     "react-jsgraph": "^2.0.0",
-    "react-markdown": "^4.3.1",
     "react-mf": "^2.0.1",
     "react-ocl": "^4.3.0",
     "react-ocl-nmr": "^0.2.2",
@@ -68,7 +67,7 @@
   },
   "scripts": {
     "clean-lib": "rimraf lib",
-    "compile": "babel src public/_help --out-dir lib --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.js\" --quiet && babel public/_help/* --out-dir lib/doc --copy-files",
+    "compile": "babel src  --out-dir lib --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.js\" --quiet",
     "prepare": "npm run clean-lib && npm run compile",
     "start": "react-scripts start ",
     "build": "react-scripts --max_old_space_size=4096 build",

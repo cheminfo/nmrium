@@ -1,10 +1,8 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-import { Tabs, positions } from '../elements/Tab';
-import helpData from '../help';
+import getHelpData from '../help';
 
 const styles = css`
   width: 600px;
@@ -52,20 +50,8 @@ const styles = css`
 `;
 
 const UserManualModal = ({ onClose }) => {
-  const [manuals, setManualsData] = useState([]);
+  const filePath = getHelpData().loadSpectrum.filePath;
 
-  useEffect(() => {
-    const manualsData = Object.keys(helpData)
-      .reduce((accumulator, key) => {
-        if (helpData[key].ShowInGneralUserManual) {
-          const datum = { key, ...helpData[key] };
-          accumulator.push(datum);
-        }
-        return accumulator;
-      }, [])
-      .sort((prev, next) => prev.index - next.index);
-    setManualsData(manualsData);
-  }, []);
   return (
     <div css={styles}>
       <h6 className="header">User Manual</h6>
@@ -73,23 +59,14 @@ const UserManualModal = ({ onClose }) => {
         <FaTimes />
       </button>
       <div className="main-content">
-        <Tabs position={positions.LEFT} defaultTabID="loadSpectrum">
-          {manuals.map((manualItem) => (
-            <div
-              tablabel={manualItem.tabTitle}
-              key={manualItem.key}
-              tabid={manualItem.key}
-              className="inner-container"
-            >
-              <iframe
-                src={manualItem.filePath}
-                frameBorder="0"
-                scrolling="auto"
-                style={{ width: '100%', height: '100%' }}
-              />
-            </div>
-          ))}
-        </Tabs>
+        <div className="inner-container">
+          <iframe
+            src={filePath}
+            frameBorder="0"
+            scrolling="auto"
+            style={{ width: '100%', height: '100%' }}
+          />
+        </div>
       </div>
     </div>
   );
