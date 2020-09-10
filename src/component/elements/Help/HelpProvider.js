@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, {
   useReducer,
   useMemo,
@@ -226,6 +225,7 @@ const HelpProvider = ({
                                   }}
                                 >
                                   <iframe
+                                    title="Tool User Manual"
                                     src={data[modal.helpid].filePath}
                                     frameBorder="0"
                                     scrolling="auto"

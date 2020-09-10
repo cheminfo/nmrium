@@ -61,6 +61,7 @@ const UserManualModal = ({ onClose }) => {
       <div className="main-content">
         <div className="inner-container">
           <iframe
+            title="General User Manual "
             src={filePath}
             frameBorder="0"
             scrolling="auto"
