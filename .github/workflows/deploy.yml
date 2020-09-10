@@ -1,5 +1,5 @@
 name: gh-pages deployment
- 
+
 on:
   push:
     branches: master
@@ -24,5 +24,3 @@ jobs:
           git remote set-url origin "https://cheminfo-bot:${{ secrets.ACCESS_TOKEN }}@github.com/cheminfo/nmr-displayer.git"
           npm i -g gh-pages
           gh-pages -d build --dotfiles
-        env:
-          CI: true

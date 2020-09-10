@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import { Molecule } from 'openchemlib';
+import { Molecule } from 'openchemlib/full';
 
 import * as SpectraManager from './SpectraManager';
 import { Datum1D } from './data1d/Datum1D';

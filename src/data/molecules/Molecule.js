@@ -1,5 +1,5 @@
 import { MF } from 'mf-parser';
-import { Molecule as OCLMolecule } from 'openchemlib';
+import { Molecule as OCLMolecule } from 'openchemlib/full';
 
 import generateID from '../utilities/generateID';
 

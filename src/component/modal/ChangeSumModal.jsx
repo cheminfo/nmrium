@@ -3,7 +3,7 @@ import { useCallback, useState, useEffect, useMemo } from 'react';
 /** @jsx jsx */
 import Slider from 'react-animated-slider-2';
 import MF from 'react-mf/lib/components/MF';
-import { MolfileSvgRenderer } from 'react-ocl';
+import { MolfileSvgRenderer } from 'react-ocl/full';
 
 import { usePreferences } from '../context/PreferencesContext';
 
