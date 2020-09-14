@@ -1,17 +1,18 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
-import { useCallback, useEffect } from 'react';
-import { FaTimes, FaSearchPlus } from 'react-icons/fa';
+import { Form, Formik } from 'formik';
+import lodash from 'lodash';
+import { useCallback, useEffect, useMemo } from 'react';
+import { FaTimes, FaSearchPlus, FaRegSave } from 'react-icons/fa';
 
-import { useDispatch } from '../../context/DispatchContext';
+import Button from '../../elements/Button';
+import {
+  hasCouplingConstant,
+  translateMultiplet,
+} from '../../panels/extra/utilities/MultiplicityUtilities';
 
-import RangeForm from './forms/editRange/RangeForm';
-// import {
-//   UNSET_RANGE_IN_EDITION,
-//   SET_NEW_SIGNAL_DELTA_SELECTION_IS_ENABLED,
-//   UNSET_SELECTED_NEW_SIGNAL_DELTA,
-//   SET_RANGE_IN_EDITION,
-// } from '../reducer/types/Types';
+import SignalsForm from './forms/components/SignalsForm';
+import EditRangeValidation from './forms/validation/EditRangeValidation';
 
 const styles = css`
   overflow: auto;
@@ -38,14 +39,6 @@ const styles = css`
         height: 16px;
       }
     }
-    .zoom-button {
-      background-color: transparent;
-      border: none;
-      svg {
-        height: 16px;
-      }
-      margin-right: 10px;
-    }
   }
   .container {
     display: flex;
@@ -69,48 +62,135 @@ const styles = css`
   }
 `;
 
-const EditRangeModal = ({ onSave, onClose, onZoom, range }) => {
-  const dispatch = useDispatch();
-
+const EditRangeModal = ({
+  onSaveHandler,
+  onCloseHandler,
+  onZoomHandler,
+  range,
+}) => {
   const handleOnZoom = useCallback(() => {
-    onZoom(range);
-  }, [onZoom, range]);
+    onZoomHandler(range);
+  }, [onZoomHandler, range]);
 
   useEffect(() => {
     handleOnZoom();
-  }, [dispatch, handleOnZoom, range]);
+  }, [handleOnZoom]);
 
   const handleOnClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
+    onCloseHandler();
+  }, [onCloseHandler]);
+
+  const getCouplings = useCallback(
+    (couplings) =>
+      couplings
+        .filter((coupling) => coupling.coupling !== '')
+        .map((coupling) => {
+          return {
+            ...coupling,
+            multiplicity: translateMultiplet(coupling.multiplicity),
+          };
+        }),
+    [],
+  );
+
+  const getSignals = useCallback(
+    (signals) => {
+      return signals.map((_signal) => {
+        return {
+          ..._signal,
+          multiplicity: _signal.j
+            .map((_coupling) => translateMultiplet(_coupling.multiplicity))
+            .join(''),
+          j: getCouplings(_signal.j),
+        };
+      });
+    },
+    [getCouplings],
+  );
 
   const handleOnSave = useCallback(
     async (formValues) => {
-      range.signal = formValues.signals.slice();
-      await onSave(range);
+      const _range = lodash.cloneDeep(range);
+      _range.signal = getSignals(formValues.signals);
+      await onSaveHandler(_range);
       handleOnClose();
     },
-    [handleOnClose, onSave, range],
+    [getSignals, handleOnClose, onSaveHandler, range],
   );
+
+  const initialStateSignals = useMemo(() => {
+    return range.signal.map((_signal) => {
+      // counter within j array to access to right j values
+      let counterJ = 0;
+      const couplings = [];
+      let coupling;
+      _signal.multiplicity.split('').forEach((_multiplicity) => {
+        if (hasCouplingConstant(_multiplicity)) {
+          coupling = { ..._signal.j[counterJ] };
+          counterJ++;
+        } else {
+          coupling = { multiplicity: _multiplicity, coupling: '' };
+        }
+        coupling.multiplicity = translateMultiplet(coupling.multiplicity);
+        couplings.push(coupling);
+      });
+      return { ..._signal, j: couplings };
+    });
+  }, [range.signal]);
+
+  const isSaveButtonDisabled = useCallback((errors) => {
+    if (Object.keys(errors).length > 0) {
+      if (
+        // ignore non-relevant newSignalDelta field
+        Object.keys(errors).length === 1 &&
+        Object.keys(errors)[0] === 'newSignalDelta'
+      ) {
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }, []);
 
   return (
     <div css={styles}>
-      <div className="header">
-        <span>Range Information and Editing</span>
-        <button type="button" onClick={handleOnZoom} className="zoom-button">
-          <FaSearchPlus title="Set to default view on range in spectrum" />
-        </button>
-        <button type="button" onClick={handleOnClose} title="Close">
-          <FaTimes />
-        </button>
-      </div>
-
       {range && (
-        <RangeForm
-          rangeData={range}
-          handleOnClose={handleOnClose}
-          handleOnSave={handleOnSave}
-        />
+        <Formik
+          initialValues={{
+            signals: initialStateSignals,
+            newSignalDelta: (range.from + range.to) / 2,
+            activeTab: '0',
+          }}
+          validate={(values) => EditRangeValidation(values, range)}
+          onSubmit={(values, { setSubmitting }) => {
+            handleOnSave(values);
+            setSubmitting(false);
+          }}
+        >
+          {({ values, errors }) => {
+            return (
+              <Form>
+                <div className="header">
+                  <span>Range Information and Editing</span>
+                  <Button
+                    onClick={() => handleOnSave(values)}
+                    className="save-button"
+                    disabled={isSaveButtonDisabled(errors)}
+                  >
+                    <FaRegSave title="Save and exit" />
+                  </Button>
+                  <Button onClick={handleOnZoom} className="zoom-button">
+                    <FaSearchPlus title="Set to default view on range in spectrum" />
+                  </Button>
+                  <Button onClick={handleOnClose} title="Close">
+                    <FaTimes />
+                  </Button>
+                </div>
+                <SignalsForm />
+              </Form>
+            );
+          }}
+        </Formik>
       )}
     </div>
   );

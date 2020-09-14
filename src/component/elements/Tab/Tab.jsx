@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useCallback } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-const styles = css`
+const styles = (styles) => css`
   position: relative;
 
   .delete {
@@ -37,9 +37,19 @@ const styles = css`
     color: #252525;
     width: 8px;
   }
+
+  ${styles}
 `;
 
-const Tab = ({ tabid, tablabel, activeTab, onClick, canDelete, onDelete }) => {
+const Tab = ({
+  tabid,
+  tablabel,
+  activeTab,
+  onClick,
+  canDelete,
+  onDelete,
+  tabstyles,
+}) => {
   let className = 'tab-list-item';
 
   // use tab identifier if given (higher priority)
@@ -55,12 +65,15 @@ const Tab = ({ tabid, tablabel, activeTab, onClick, canDelete, onDelete }) => {
   );
   const deleteHandler = useCallback(
     (e) => {
+      // stop propagation here to not have set it
+      // as active tab too (via tab click event triggering)
+      e.stopPropagation();
       onDelete({ ...e, tablabel, tabid });
     },
     [onDelete, tablabel, tabid],
   );
   return (
-    <li className={className} onClick={clickHandler} css={styles}>
+    <li className={className} onClick={clickHandler} css={styles(tabstyles)}>
       {canDelete && (
         <button className="delete" type="button" onClick={deleteHandler}>
           <FaTimes className="icon" />

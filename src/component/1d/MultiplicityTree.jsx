@@ -12,6 +12,7 @@ import {
   hasCouplingConstant,
   checkMultiplicity,
 } from '../panels/extra/utilities/MultiplicityUtilities';
+import { options } from '../toolbar/ToolTypes';
 
 const styles = {
   cursor: 'default',
@@ -26,8 +27,9 @@ const MultiplicityTree = ({
   rangeTo,
   signal,
   signalID,
-  options = {
-    label: { distance: 10, fontSize: 11 },
+  labelOptions = {
+    distance: 10,
+    fontSize: 11,
   },
 }) => {
   const { scaleX, scaleY } = useScale();
@@ -35,7 +37,7 @@ const MultiplicityTree = ({
     data: spectraData,
     activeSpectrum,
     showMultiplicityTrees,
-    editRangeModalMeta,
+    selectedTool,
     width,
   } = useChartData();
   const assignment = useAssignment(signalID);
@@ -63,7 +65,7 @@ const MultiplicityTree = ({
     const _treeWidth = _drawInFullRange
       ? Math.abs(scaleX()(xRange.x1) - scaleX()(xRange.x2))
       : Math.abs(scaleX()(xRange.x1) - scaleX()(xRange.x2)) +
-        options.label.distance;
+        labelOptions.distance;
     const _treeHeight = _drawInFullRange ? _treeWidth / 3 : _treeWidth / 2;
     // +2 because of multiplicity text and start level node before the actual tree starts
     // 2* for levels between nodes (edges)
@@ -78,7 +80,7 @@ const MultiplicityTree = ({
     });
     setDrawInFullRange(_drawInFullRange);
   }, [
-    options.label.distance,
+    labelOptions.distance,
     scaleX,
     signal.multiplicity,
     xRange.x1,
@@ -207,9 +209,9 @@ const MultiplicityTree = ({
           {/* ratio text */}
           <text
             textAnchor="middle"
-            x={scaleX()(_startX) + options.label.distance}
+            x={scaleX()(_startX) + labelOptions.distance}
             y={_startYNode + 2 * (treeProps.levelHeight / 3)}
-            fontSize={options.label.fontSize}
+            fontSize={labelOptions.fontSize}
             fill={color}
             visibility={showLabels ? 'visible' : 'hidden'}
           >
@@ -236,8 +238,8 @@ const MultiplicityTree = ({
     },
     [
       signalID,
-      options.label.distance,
-      options.label.fontSize,
+      labelOptions.distance,
+      labelOptions.fontSize,
       scaleX,
       showLabels,
       startY,
@@ -284,7 +286,7 @@ const MultiplicityTree = ({
         textAnchor="middle"
         x={scaleX()(signal.delta)}
         y={_startY + treeProps.levelHeight / 2}
-        fontSize={options.label.fontSize}
+        fontSize={labelOptions.fontSize}
         lengthAdjust="spacing"
         fill="black"
         visibility={showLabels ? 'visible' : 'hidden'}
@@ -343,7 +345,7 @@ const MultiplicityTree = ({
     signal.delta,
     signal.multiplicity,
     treeProps,
-    options.label.fontSize,
+    labelOptions.fontSize,
     showLabels,
     drawInFullRange,
     treeNodesData,
@@ -371,7 +373,7 @@ const MultiplicityTree = ({
       }}
       {...{
         onClick:
-          editRangeModalMeta && editRangeModalMeta.rangeInEdition
+          selectedTool && selectedTool === options.editRange.id
             ? null
             : (e) => {
                 if (e.shiftKey) {

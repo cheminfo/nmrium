@@ -199,19 +199,37 @@ const Viewer1D = () => {
 
   const mouseClick = useCallback(
     (position) => {
-      if (selectedTool === options.peakPicking.id) {
-        dispatch({
-          type: ADD_PEAK,
-          mouseCoordinates: position,
+      const propagateEvent = () => {
+        const xPPM = scaleState.scaleX().invert(position.x);
+        Events.publish('mouseClick', {
+          ...position,
+          xPPM,
         });
-      } else if (selectedTool === options.phaseCorrection.id) {
-        dispatch({
-          type: SET_VERTICAL_INDICATOR_X_POSITION,
-          position: position.x,
-        });
+      };
+
+      switch (selectedTool) {
+        case options.peakPicking.id:
+          dispatch({
+            type: ADD_PEAK,
+            mouseCoordinates: position,
+          });
+          break;
+        case options.phaseCorrection.id:
+          dispatch({
+            type: SET_VERTICAL_INDICATOR_X_POSITION,
+            position: position.x,
+          });
+          break;
+        case 'editRange':
+          if (position.shiftKey) {
+            propagateEvent();
+          }
+          break;
+
+        default:
       }
     },
-    [dispatch, selectedTool],
+    [dispatch, scaleState, selectedTool],
   );
 
   const [sizedNMRChart, { width, height }] = useSize(() => {

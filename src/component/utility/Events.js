@@ -23,11 +23,11 @@ class Events {
   }
 
   publish(event, data) {
-    this.initBeahviorSubject(event);
+    this.initBehaviorSubject(event);
     this.myObservable[event].next(data);
   }
 
-  initBeahviorSubject(event) {
+  initBehaviorSubject(event) {
     if (!this.myObservable[event]) {
       this.myObservable[event] = new BehaviorSubject();
     }
@@ -35,7 +35,7 @@ class Events {
 
   subscribe(event, getData) {
     try {
-      this.initBeahviorSubject(event);
+      this.initBehaviorSubject(event);
       this.subscribes[event] = this.myObservable[event]
         // .asObservable()
         .subscribe((data) => {
