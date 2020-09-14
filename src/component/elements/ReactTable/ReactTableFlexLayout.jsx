@@ -1,10 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import { memo } from 'react';
 import { useTable, useSortBy, useFlexLayout } from 'react-table';
 
 import { ReactTableStyle } from './Style';
 
-const ReactTableFlexLayout = ({ data, columns, onMouseDown }) => {
+const ReactTableFlexLayout = memo(({ data, columns, onMouseDown }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -70,7 +71,7 @@ const ReactTableFlexLayout = ({ data, columns, onMouseDown }) => {
       </tbody>
     </table>
   );
-};
+});
 ReactTableFlexLayout.defaultProps = {
   onMouseDown: () => {
     return null;

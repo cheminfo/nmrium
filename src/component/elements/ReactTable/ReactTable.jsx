@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
-import { Fragment, useRef, useCallback } from 'react';
+import { Fragment, useRef, useCallback, memo } from 'react';
 import { useTable, useSortBy } from 'react-table';
 
 import ContextMenu from '../ContextMenu';
@@ -10,7 +10,7 @@ import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 
-const ReactTable = ({ data, columns, context }) => {
+const ReactTable = memo(({ data, columns, context }) => {
   const contextRef = useRef();
   const {
     getTableProps,
@@ -54,7 +54,7 @@ const ReactTable = ({ data, columns, context }) => {
       <ContextMenu ref={contextRef} context={context} />
     </Fragment>
   );
-};
+});
 ReactTable.propTypes = {
   context: PropTypes.arrayOf(
     PropTypes.shape({

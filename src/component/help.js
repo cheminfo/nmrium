@@ -1,39 +1,29 @@
-const help = {
+let baseURL = '';
+
+export function setBaseUrl(newBaseUrl) {
+  baseURL = newBaseUrl;
+}
+
+const getHelpList = () => ({
   zoomIn: {
-    tabTitle: '',
-    ShowInGneralUserManual: false,
     text: 'Zoom Tool',
-    filePath: './help/1d/zoom/zoomIn.md',
-    index: 3,
+    filePath: `${baseURL}/1d/zoom/zoomIn.html`,
   },
   peakPicking: {
-    tabTitle: '',
-    ShowInGneralUserManual: false,
     text: 'peak picking tool',
-    filePath: './help/1d/peak/peakPicking.md',
-    index: 2,
+    filePath: `${baseURL}/1d/peak/peakPicking.html`,
   },
   integralPicking: {
-    tabTitle: '',
-    ShowInGneralUserManual: false,
     text: 'integral tool',
-    filePath: './help/1d/integral/integration.md',
-    index: 3,
+    filePath: `${baseURL}/1d/integral/integration.html`,
   },
   fullScreen: {
-    tabTitle: '',
-    ShowInGneralUserManual: false,
     text: 'Full Screen mode',
-    filePath: './help/1d/general/fullScreen.md',
-    index: 1,
+    filePath: `${baseURL}/1d/general/fullScreen.html`,
   },
   loadSpectrum: {
-    tabTitle: 'How To Import Spectrums',
-    ShowInGneralUserManual: true,
     text: 'load spectrums',
-    filePath: './help/1d/load/loadSpectrum.md',
-    index: 0,
+    filePath: `${baseURL}/1d/load/loadSpectrum.html`,
   },
-};
-
-export default help;
+});
+export default getHelpList;

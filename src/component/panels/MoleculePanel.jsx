@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import lodash from 'lodash';
+import OCL from 'openchemlib/full';
 import React, { useState, useCallback, useMemo, useEffect, memo } from 'react';
 import { useAlert } from 'react-alert';
 import Slider from 'react-animated-slider-2';
@@ -609,6 +610,7 @@ const MoleculePanel = memo(
                 >
                   <div className="mol-svg-container" ref={refContainer}>
                     <OCLnmr
+                      OCL={OCL}
                       id={`molSVG${index}`}
                       width={width > 0 ? width : 100}
                       height={height > 0 ? height : 100}

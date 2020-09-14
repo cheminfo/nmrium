@@ -66,6 +66,12 @@ import 'cheminfo-font/dist/style.css';
 import 'react-animated-slider-2/build/horizontal.css';
 ```
 
+### OpenChemLib version
+
+This module makes use of `openchemlib/full` and registers it with `openchemlib-utlis`.  
+If you use OpenChemLib somewhere else in your project, make sure to also import
+from `openchemlib/full` to avoid having multiple OCL versions in your bundle.
+
 ### Use the component
 
 ```jsx

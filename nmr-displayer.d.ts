@@ -1,5 +1,6 @@
 export interface NMRDisplayerProps {
   data?: NMRDisplayerData;
+  docsBaseUrl: string;
   preferences?: NMRDisplayerPreferences;
 }
 

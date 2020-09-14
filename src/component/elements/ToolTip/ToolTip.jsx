@@ -1,4 +1,10 @@
-import React, { useRef, useLayoutEffect, useCallback, useState } from 'react';
+import React, {
+  useRef,
+  useLayoutEffect,
+  useCallback,
+  useState,
+  memo,
+} from 'react';
 
 const styles = {
   popup: {
@@ -17,106 +23,108 @@ const styles = {
   },
 };
 
-const ToolTip = ({
-  style,
-  className,
-  popupPlacement = 'right',
-  children,
-  title,
-  offset = { x: 0, y: 0 },
-}) => {
-  const refChild = useRef();
-  const refContent = useRef();
-  const [placement, setPlacement] = useState({ x: 0, y: 0 });
-  const [show, showToolTip] = useState(false);
+const ToolTip = memo(
+  ({
+    style,
+    className,
+    popupPlacement = 'right',
+    children,
+    title,
+    offset = { x: 0, y: 0 },
+  }) => {
+    const refChild = useRef();
+    const refContent = useRef();
+    const [placement, setPlacement] = useState({ x: 0, y: 0 });
+    const [show, showToolTip] = useState(false);
 
-  useLayoutEffect(() => {
-    const getPopupPlacement = () => {
-      let x;
-      let y;
-      const childBounding = refChild.current.getBoundingClientRect();
-      const contentBounding = refContent.current.getBoundingClientRect();
-      switch (popupPlacement) {
-        case 'left':
-          x = -contentBounding.width;
-          y =
-            childBounding.height / 2 -
-            ((childBounding.height / 2) * contentBounding.height) /
-              childBounding.height;
-          break;
-        case 'right':
-          x = childBounding.width;
-          y =
-            childBounding.height / 2 -
-            ((childBounding.height / 2) * contentBounding.height) /
-              childBounding.height;
-          break;
-        case 'top':
-          x =
-            childBounding.width / 2 -
-            ((childBounding.width / 2) * contentBounding.width) /
-              childBounding.width;
-          y = -childBounding.height;
-          break;
-        case 'bottom':
-          x =
-            childBounding.width / 2 -
-            ((childBounding.width / 2) * contentBounding.width) /
-              childBounding.width;
-          y = childBounding.height;
-          break;
-        default:
-          x = 0;
-          y = 0;
-          break;
+    useLayoutEffect(() => {
+      const getPopupPlacement = () => {
+        let x;
+        let y;
+        const childBounding = refChild.current.getBoundingClientRect();
+        const contentBounding = refContent.current.getBoundingClientRect();
+        switch (popupPlacement) {
+          case 'left':
+            x = -contentBounding.width;
+            y =
+              childBounding.height / 2 -
+              ((childBounding.height / 2) * contentBounding.height) /
+                childBounding.height;
+            break;
+          case 'right':
+            x = childBounding.width;
+            y =
+              childBounding.height / 2 -
+              ((childBounding.height / 2) * contentBounding.height) /
+                childBounding.height;
+            break;
+          case 'top':
+            x =
+              childBounding.width / 2 -
+              ((childBounding.width / 2) * contentBounding.width) /
+                childBounding.width;
+            y = -childBounding.height;
+            break;
+          case 'bottom':
+            x =
+              childBounding.width / 2 -
+              ((childBounding.width / 2) * contentBounding.width) /
+                childBounding.width;
+            y = childBounding.height;
+            break;
+          default:
+            x = 0;
+            y = 0;
+            break;
+        }
+        return { x: x + childBounding.x, y: y + childBounding.y };
+      };
+      if (show) {
+        const pl = getPopupPlacement();
+        setPlacement(pl);
       }
-      return { x: x + childBounding.x, y: y + childBounding.y };
-    };
-    if (show) {
-      const pl = getPopupPlacement();
-      setPlacement(pl);
-    }
-  }, [popupPlacement, show]);
+    }, [popupPlacement, show]);
 
-  const mouseOverHandler = useCallback(() => {
-    showToolTip(true);
-  }, []);
+    const mouseOverHandler = useCallback(() => {
+      showToolTip(true);
+    }, []);
 
-  const mouseLeaveHandler = useCallback(() => {
-    // const boundingRect = e.currentTarget.getBoundingClientRect();
-    showToolTip(false);
-  }, []);
+    const mouseLeaveHandler = useCallback(() => {
+      // const boundingRect = e.currentTarget.getBoundingClientRect();
+      showToolTip(false);
+    }, []);
 
-  return (
-    <div
-      style={{ position: 'relative', height: '100%', ...style.mainContainer }}
-    >
+    return (
       <div
-        ref={refChild}
-        onMouseOver={mouseOverHandler}
-        onMouseOut={mouseLeaveHandler}
-        style={{ width: 'inherit', height: 'inherit' }}
+        style={{ position: 'relative', height: '100%', ...style.mainContainer }}
       >
-        {children}
+        <div
+          ref={refChild}
+          onMouseOver={mouseOverHandler}
+          onMouseOut={mouseLeaveHandler}
+          style={{ width: 'inherit', height: 'inherit' }}
+        >
+          {children}
+        </div>
+        <div
+          ref={refContent}
+          style={{
+            ...styles.popup,
+            transform: `translate(${placement.x}px,${placement.y}px)`,
+            zIndex: 999999999,
+            left: offset.x,
+            top: offset.y,
+            display: show ? 'block' : 'none',
+            ...style.popup,
+          }}
+          className={className}
+        >
+          <span style={{ pointerEvents: 'none' }}>{title}</span>
+        </div>
       </div>
-      <div
-        ref={refContent}
-        style={{
-          ...styles.popup,
-          transform: `translate(${placement.x}px,${placement.y}px)`,
-          zIndex: 999999999,
-          left: offset.x,
-          top: offset.y,
-          display: show ? 'block' : 'none',
-          ...style.popup,
-        }}
-        className={className}
-      >
-        <span style={{ pointerEvents: 'none' }}>{title}</span>
-      </div>
-    </div>
-  );
-};
+    );
+  },
+);
 
 ToolTip.defaultProps = {
   style: {
