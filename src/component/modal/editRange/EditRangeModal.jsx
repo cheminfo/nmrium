@@ -63,22 +63,22 @@ const styles = css`
 `;
 
 const EditRangeModal = ({
-  onSaveHandler,
-  onCloseHandler,
-  onZoomHandler,
-  range,
+  onSaveEditRangeModal,
+  onCloseEditRangeModal,
+  onZoomEditRangeModal,
+  rangeData,
 }) => {
   const handleOnZoom = useCallback(() => {
-    onZoomHandler(range);
-  }, [onZoomHandler, range]);
+    onZoomEditRangeModal(rangeData);
+  }, [onZoomEditRangeModal, rangeData]);
 
   useEffect(() => {
     handleOnZoom();
   }, [handleOnZoom]);
 
   const handleOnClose = useCallback(() => {
-    onCloseHandler();
-  }, [onCloseHandler]);
+    onCloseEditRangeModal();
+  }, [onCloseEditRangeModal]);
 
   const getCouplings = useCallback(
     (couplings) =>
@@ -110,16 +110,16 @@ const EditRangeModal = ({
 
   const handleOnSave = useCallback(
     async (formValues) => {
-      const _range = lodash.cloneDeep(range);
+      const _range = lodash.cloneDeep(rangeData);
       _range.signal = getSignals(formValues.signals);
-      await onSaveHandler(_range);
+      await onSaveEditRangeModal(_range);
       handleOnClose();
     },
-    [getSignals, handleOnClose, onSaveHandler, range],
+    [getSignals, handleOnClose, onSaveEditRangeModal, rangeData],
   );
 
   const initialStateSignals = useMemo(() => {
-    return range.signal.map((_signal) => {
+    return rangeData.signal.map((_signal) => {
       // counter within j array to access to right j values
       let counterJ = 0;
       const couplings = [];
@@ -136,14 +136,15 @@ const EditRangeModal = ({
       });
       return { ..._signal, j: couplings };
     });
-  }, [range.signal]);
+  }, [rangeData.signal]);
 
   const isSaveButtonDisabled = useCallback((errors) => {
-    if (Object.keys(errors).length > 0) {
+    const errorKeys = Object.keys(errors);
+    if (errorKeys.length > 0) {
       if (
         // ignore non-relevant newSignalDelta field
-        Object.keys(errors).length === 1 &&
-        Object.keys(errors)[0] === 'newSignalDelta'
+        errorKeys.length === 1 &&
+        errorKeys[0] === 'newSignalDelta'
       ) {
         return false;
       }
@@ -154,14 +155,14 @@ const EditRangeModal = ({
 
   return (
     <div css={styles}>
-      {range && (
+      {rangeData && (
         <Formik
           initialValues={{
             signals: initialStateSignals,
-            newSignalDelta: (range.from + range.to) / 2,
+            newSignalDelta: (rangeData.from + rangeData.to) / 2,
             activeTab: '0',
           }}
-          validate={(values) => EditRangeValidation(values, range)}
+          validate={(values) => EditRangeValidation(values, rangeData)}
           onSubmit={(values, { setSubmitting }) => {
             handleOnSave(values);
             setSubmitting(false);

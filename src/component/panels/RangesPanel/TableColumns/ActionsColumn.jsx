@@ -104,10 +104,10 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
     dispatch({ type: SET_SELECTED_TOOL, selectedTool: 'editRange' });
     modal.show(
       <EditRangeModal
-        onCloseHandler={closeEditRangeHandler}
-        onSaveHandler={saveEditRangeHandler}
-        onZoomHandler={zoomRangeHandler}
-        range={rowData}
+        onCloseEditRangeModal={closeEditRangeHandler}
+        onSaveEditRangeModal={saveEditRangeHandler}
+        onZoomEditRangeModal={zoomRangeHandler}
+        rangeData={rowData}
       />,
       {
         position: positions.CENTER_RIGHT,

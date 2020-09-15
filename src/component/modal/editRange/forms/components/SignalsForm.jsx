@@ -98,7 +98,7 @@ const SignalsForm = memo(() => {
     [setFieldValue],
   );
 
-  const onDeleteSignal = useCallback(
+  const handleDeleteSignal = useCallback(
     ({ tabid }) => {
       const _signals = values.signals.filter(
         (_signal, i) => i !== Number(tabid),
@@ -200,7 +200,7 @@ const SignalsForm = memo(() => {
         defaultTabID={values.activeTab}
         onClick={tapClickHandler}
         canDelete={true}
-        onDelete={onDeleteSignal}
+        onDelete={handleDeleteSignal}
       >
         {signalFormTabs}
       </Tabs>
