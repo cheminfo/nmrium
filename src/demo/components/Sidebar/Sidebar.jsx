@@ -104,7 +104,7 @@ class Sidebar extends React.PureComponent {
               this.props.history.push(
                 `/SamplesDashboard/${Math.random()
                   .toString(36)
-                  .replace('0.', '')}/${getKey(e.item.props.file)}`,
+                  .replace('0.', '')}/${e.item.props.view+getKey(e.item.props.file)}`,
               );
             }}
             mode="inline"

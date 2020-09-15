@@ -135,5 +135,15 @@
         "view": "Exercise"
       }
     ]
+  },
+  {
+    "groupName": "ُExam",
+    "children": [
+      {
+        "file": "./exercises/ethylvinylether/1h.json",
+        "title": "Exam 1",
+        "view": "Exam"
+      }
+    ]
   }
 ]
