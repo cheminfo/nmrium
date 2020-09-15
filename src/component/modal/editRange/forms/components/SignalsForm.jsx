@@ -1,6 +1,7 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useFormikContext } from 'formik';
+import lodash from 'lodash';
 import { useCallback, useMemo, memo, useEffect, useState } from 'react';
 
 import { useChartData } from '../../../../context/ChartContext';
@@ -40,9 +41,11 @@ const SignalsForm = memo(() => {
     if (
       spectraData &&
       activeSpectrum &&
-      spectraData[activeSpectrum.index] &&
-      spectraData[activeSpectrum.index].info &&
-      spectraData[activeSpectrum.index].info.originFrequency
+      lodash.get(
+        spectraData,
+        `[${activeSpectrum.index}].info.originFrequency`,
+        undefined,
+      )
     ) {
       setFrequency(spectraData[activeSpectrum.index].info.originFrequency);
     } else {
@@ -101,26 +104,30 @@ const SignalsForm = memo(() => {
         (_signal, i) => i !== Number(tabid),
       );
       setFieldValue('signals', _signals);
-      setFieldValue(
-        'activeTab',
-        _signals.length > 0 ? (_signals.length - 1).toString() : 'addSignalTab',
-      );
     },
     [setFieldValue, values.signals],
   );
+
+  useEffect(() => {
+    setFieldValue(
+      'activeTab',
+      values.signals.length > 0
+        ? (values.signals.length - 1).toString()
+        : 'addSignalTab',
+    );
+  }, [setFieldValue, values.signals.length]);
 
   const tabContainsErrors = useCallback(
     (i) => {
       return (
         errors.signals &&
-        ((errors.signals.noCouplings &&
-          errors.signals.noCouplings.some((_error) => _error.index === i)) ||
-          (errors.signals[`${i}`] &&
-            errors.signals[`${i}`].missingCouplings &&
-            errors.signals[`${i}`].missingCouplings.length > 0))
+        (lodash
+          .get(errors, 'signals.noCouplings', [])
+          .some((_error) => _error.index === i) ||
+          lodash.get(errors, `signals[${i}].missingCouplings`, []).length > 0)
       );
     },
-    [errors.signals],
+    [errors],
   );
 
   const signalFormTabs = useMemo(() => {
@@ -157,30 +164,6 @@ const SignalsForm = memo(() => {
     return signalTabs.concat(addSignalTab);
   }, [handleOnBlur, handleOnFocus, tabContainsErrors, values.signals]);
 
-  const [tabs, setTabs] = useState(
-    <Tabs
-      defaultTabID={values.activeTab}
-      onClick={tapClickHandler}
-      canDelete={true}
-      onDelete={onDeleteSignal}
-    >
-      {signalFormTabs}
-    </Tabs>,
-  );
-
-  useEffect(() => {
-    setTabs(
-      <Tabs
-        defaultTabID={values.activeTab}
-        onClick={tapClickHandler}
-        canDelete={true}
-        onDelete={onDeleteSignal}
-      >
-        {signalFormTabs}
-      </Tabs>,
-    );
-  }, [onDeleteSignal, signalFormTabs, tapClickHandler, values.activeTab]);
-
   const editSignalInfoText = (
     <p className="infoText">
       Focus on an input field and press Shift + Drag &#38; Drop to draw a
@@ -213,7 +196,14 @@ const SignalsForm = memo(() => {
           editSignalInfoText
         )}
       </div>
-      {tabs}
+      <Tabs
+        defaultTabID={values.activeTab}
+        onClick={tapClickHandler}
+        canDelete={true}
+        onDelete={onDeleteSignal}
+      >
+        {signalFormTabs}
+      </Tabs>
     </div>
   );
 });

@@ -31,7 +31,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
   const modal = useModal();
   const assignmentData = useAssignmentData();
 
-  const unlinkInAssignmentData = useCallback(
+  const onUnlinkInAssignmentData = useCallback(
     (range) => {
       assignmentData.dispatch({
         type: 'REMOVE_ALL',
@@ -59,12 +59,12 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
   }, [dispatch, rowData.from, rowData.to]);
 
   const deleteRangeHandler = useCallback(() => {
-    unlinkInAssignmentData(rowData);
+    onUnlinkInAssignmentData(rowData);
     dispatch({
       type: DELETE_RANGE,
       rangeID: rowData.id,
     });
-  }, [dispatch, rowData, unlinkInAssignmentData]);
+  }, [dispatch, rowData, onUnlinkInAssignmentData]);
 
   const changeRangeSignalKindHandler = useCallback(
     (value) => {
@@ -82,7 +82,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
     (editedRange) => {
       const _range = lodash.cloneDeep(editedRange);
       // for now: clear all assignments for this range because signals or levels to store might have changed
-      unlinkInAssignmentData(_range);
+      onUnlinkInAssignmentData(_range);
       unlink(_range);
 
       delete _range.tableMetaInfo;
@@ -92,7 +92,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
         data: _range,
       });
     },
-    [dispatch, unlinkInAssignmentData],
+    [dispatch, onUnlinkInAssignmentData],
   );
 
   const closeEditRangeHandler = useCallback(() => {

@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useFormikContext } from 'formik';
+import lodash from 'lodash';
 import { memo, useEffect, useCallback } from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 
@@ -92,12 +93,10 @@ const CouplingsTable = memo(({ push, remove, onFocus, onBlur }) => {
 
   const hasMissingCouplingValue = useCallback(
     (i) =>
-      errors.signals &&
-      errors.signals[`${values.activeTab}`] &&
-      errors.signals[`${values.activeTab}`].missingCouplings.some(
-        (_error) => _error.index === i,
-      ),
-    [errors.signals, values.activeTab],
+      lodash
+        .get(errors, `signals[${values.activeTab}].missingCouplings`, [])
+        .some((_error) => _error.index === i),
+    [errors, values.activeTab],
   );
 
   return (
@@ -109,45 +108,44 @@ const CouplingsTable = memo(({ push, remove, onFocus, onBlur }) => {
           <th>J (Hz)</th>
           <th>{''}</th>
         </tr>
-        {values.signals[values.activeTab] &&
-        values.signals[values.activeTab].j.length > 0
-          ? values.signals[values.activeTab].j.map((_coupling, i) => (
-              <tr
-                // eslint-disable-next-line react/no-array-index-key
-                key={`editCouplings${values.activeTab}${i}`}
-              >
-                <td>{i + 1}</td>
-                <td>
-                  <SelectBox
-                    className="selectBox"
-                    name={`signals.${values.activeTab}.j.${i}.multiplicity`}
-                    values={Multiplets.map((_multiplet) => _multiplet.label)}
-                  />
-                </td>
-                <td>
-                  <Input
-                    name={`signals.${values.activeTab}.j.${i}.coupling`}
-                    type="number"
-                    placeholder={'J (Hz)'}
-                    disabled={!hasCouplingConstant(_coupling.multiplicity)}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                    style={hasMissingCouplingValue(i) ? errorStyle : null}
-                  />
-                </td>
-                <td>
-                  <Button
-                    className="delete-button"
-                    onClick={() => {
-                      remove(i);
-                    }}
-                  >
-                    <FaMinus className="icon" title="Delete coupling" />
-                  </Button>
-                </td>
-              </tr>
-            ))
-          : null}
+        {lodash
+          .get(values, `signals[${values.activeTab}].j`, [])
+          .map((_coupling, i) => (
+            <tr
+              // eslint-disable-next-line react/no-array-index-key
+              key={`editCouplings${values.activeTab}${i}`}
+            >
+              <td>{i + 1}</td>
+              <td>
+                <SelectBox
+                  className="selectBox"
+                  name={`signals.${values.activeTab}.j.${i}.multiplicity`}
+                  values={Multiplets.map((_multiplet) => _multiplet.label)}
+                />
+              </td>
+              <td>
+                <Input
+                  name={`signals.${values.activeTab}.j.${i}.coupling`}
+                  type="number"
+                  placeholder={'J (Hz)'}
+                  disabled={!hasCouplingConstant(_coupling.multiplicity)}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                  style={hasMissingCouplingValue(i) ? errorStyle : null}
+                />
+              </td>
+              <td>
+                <Button
+                  className="delete-button"
+                  onClick={() => {
+                    remove(i);
+                  }}
+                >
+                  <FaMinus className="icon" title="Delete coupling" />
+                </Button>
+              </td>
+            </tr>
+          ))}
         <tr />
         <tr>
           <td colSpan={4}>
