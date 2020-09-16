@@ -412,7 +412,6 @@ export class Datum1D {
   }
 
   addRange(from, to) {
-
     try {
       let range = {
         id: generateID(),
