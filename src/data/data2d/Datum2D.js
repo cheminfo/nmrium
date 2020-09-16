@@ -242,7 +242,7 @@ export class Datum2D {
     }
     options.info = this.info;
     const zones = autoZonesDetection(dataMatrix, options);
-    console.log(zones)
+    console.log(zones);
     let formatedZones = zones.map((zone) => {
       return {
         id: generateID(),
