@@ -1,9 +1,10 @@
 import React, { useMemo, useCallback } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { DELETE_2D_ZONE } from '../reducer/types/Types';
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import { DELETE_2D_ZONE } from '../../reducer/types/Types';
 
+import Peaks from './Peaks';
 import Zone from './Zone';
 
 const Zones = () => {
@@ -29,7 +30,10 @@ const Zones = () => {
       {_data.map((d) => (
         <g key={d.id}>
           {d.zones.values.map((zone) => (
-            <Zone key={zone.id} {...zone} onDelete={deleteHandler} />
+            <>
+              <Peaks signal={zone.signal} />
+              <Zone key={zone.id} {...zone} onDelete={deleteHandler} />
+            </>
           ))}
         </g>
       ))}

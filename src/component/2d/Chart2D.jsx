@@ -9,7 +9,7 @@ import Left1DChart from './Left1DChart';
 import Top1DChart from './Top1DChart';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
-import Zones from './Zones';
+import Zones from './zones/Zones';
 
 const Chart2D = ({ data }) => {
   const { width, height, margin } = useChartData();

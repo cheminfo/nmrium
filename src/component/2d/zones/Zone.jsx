@@ -2,11 +2,10 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback } from 'react';
 
-import { useAssignment } from '../assignment';
-import { useChartData } from '../context/ChartContext';
-import { useHighlight } from '../highlight';
-
-import { get2DXScale, get2DYScale } from './utilities/scale';
+import { useAssignment } from '../../assignment';
+import { useChartData } from '../../context/ChartContext';
+import { useHighlight } from '../../highlight';
+import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
