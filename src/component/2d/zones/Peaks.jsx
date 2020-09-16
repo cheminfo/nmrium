@@ -12,15 +12,14 @@ const Peaks = memo(({ signal }) => {
 
   if (!signal) return null;
 
-  const peaks = signal.reduce((acc, item) => (acc = acc.concat(item.peak)), []);
   return (
     <g className="zone-peaks">
-      {peaks.map((peak) => {
-        const x = scaleX(peak.x);
-        const y = scaleY(peak.y);
+      {signal.map((signalItem) => {
+        const x = scaleX(signalItem.x.delta);
+        const y = scaleY(signalItem.y.delta);
         return (
           <circle
-            key={`${peak.x}${peak.y}${peak.z}`}
+            key={`${signalItem.x.delta}${signalItem.y.delta}`}
             cx={x}
             cy={y}
             r={3}
