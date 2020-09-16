@@ -1,3 +1,5 @@
+import loadsh from 'lodash';
+
 const getDiaIDs = (range) => {
   return [].concat(
     range.diaID || [],
@@ -27,16 +29,19 @@ const resetDiaIDs = (range) => {
 };
 
 const unlink = (range, isOnRangeLevel, signalIndex) => {
+  const rangeObject = loadsh.cloneDeep(range);
+
   if (isOnRangeLevel !== undefined) {
     if (isOnRangeLevel === true) {
-      delete range.diaID;
+      delete rangeObject.diaID;
     } else if (signalIndex !== undefined) {
-      delete range.signal[signalIndex].diaID;
+      delete rangeObject.signal[signalIndex].diaID;
     }
   } else {
-    resetDiaIDs(range);
+    resetDiaIDs(rangeObject);
   }
-  setPubIntegral(range);
+  setPubIntegral(rangeObject);
+  return rangeObject;
 };
 
 const addDefaultSignal = (range) => {

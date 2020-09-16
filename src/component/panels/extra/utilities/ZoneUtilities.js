@@ -1,3 +1,5 @@
+import lodash from 'lodash';
+
 const getDiaIDs = (zone, axis) => {
   return [].concat(
     zone[axis].diaID || [],
@@ -20,29 +22,33 @@ const setPubIntegral = (zone, axis) => {
 
 const resetDiaIDs = (zone, axis) => {
   delete zone[axis].diaID;
+  delete zone.pubIntegral;
   zone.signal.forEach((_signal) => {
     delete _signal[axis].diaID;
   });
-  delete zone.pubIntegral;
+  return zone;
 };
 
 const unlink = (zone, isOnZoneLevel, signalIndex, axis) => {
+  const zoneObject = lodash.cloneDeep(zone);
+
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {
-      delete zone[axis].diaID;
+      delete zoneObject[axis].diaID;
     } else if (signalIndex !== undefined) {
-      delete zone.signal[signalIndex][axis].diaID;
+      delete zoneObject.signal[signalIndex][axis].diaID;
     }
-    setPubIntegral(zone, axis);
+    setPubIntegral(zoneObject, axis);
   } else if (axis !== undefined) {
-    resetDiaIDs(zone, axis);
-    setPubIntegral(zone, axis);
+    resetDiaIDs(zoneObject, axis);
+    setPubIntegral(zoneObject, axis);
   } else {
-    resetDiaIDs(zone, 'x');
-    setPubIntegral(zone, 'x');
-    resetDiaIDs(zone, 'y');
-    setPubIntegral(zone, 'y');
+    ['x', 'y'].forEach((key) => {
+      resetDiaIDs(zoneObject, key);
+      setPubIntegral(zoneObject, key);
+    });
   }
+  return zoneObject;
 };
 
 export { getDiaIDs, getPubIntegral, resetDiaIDs, unlink };

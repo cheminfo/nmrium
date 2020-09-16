@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import { zoneToX } from 'ml-spectra-processing';
 
 import { Datum1D } from '../data1d/Datum1D';
@@ -81,7 +82,7 @@ export class Datum2D {
   }
 
   getZones() {
-    return (this.zones = Object.assign({}, this.zones));
+    return lodash.cloneDeep(this.zones);
   }
   /**
    *
@@ -118,8 +119,6 @@ export class Datum2D {
   }
 
   deleteZone(id) {
-    this.zones = Object.assign({}, this.zones);
-    this.zones.values = this.zones.values.slice();
     if (id === undefined) {
       this.zones.values = [];
     } else {
@@ -128,8 +127,6 @@ export class Datum2D {
   }
 
   setZone(data) {
-    this.zones = Object.assign({}, this.zones);
-    this.zones.values = this.zones.values.slice();
     const zoneIndex = this.zones.values.findIndex(
       (zone) => zone.id === data.id,
     );
@@ -237,8 +234,6 @@ export class Datum2D {
   }
 
   detectZones(options) {
-    this.zones = Object.assign({}, this.zones);
-    this.zones.values = this.zones.values.slice();
     let dataMatrix = {};
     if (options.selectedZone) {
       dataMatrix = this.getSubMatrix(options.selectedZone);
@@ -268,7 +263,7 @@ export class Datum2D {
       };
     });
     this.zones.values = this.zones.values.concat(formatedZones);
-    return this.zones;
+    return this.getZones();
   }
 
   toJSON() {

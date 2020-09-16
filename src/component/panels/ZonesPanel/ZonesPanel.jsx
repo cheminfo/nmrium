@@ -200,8 +200,8 @@ const ZonesPanel = memo(
         }
 
         // unlink in global state
-        unlink(zone, isOnZoneLevel, signalIndex, axis);
-        dispatch({ type: CHANGE_ZONE_DATA, data: zone });
+        const _zone = unlink(zone, isOnZoneLevel, signalIndex, axis);
+        dispatch({ type: CHANGE_ZONE_DATA, data: _zone });
       },
       [assignmentData, dispatch],
     );

@@ -80,11 +80,10 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
 
   const saveEditRangeHandler = useCallback(
     (editedRange) => {
-      const _range = lodash.cloneDeep(editedRange);
+      let _range = lodash.cloneDeep(editedRange);
       // for now: clear all assignments for this range because signals or levels to store might have changed
       onUnlinkInAssignmentData(_range);
-      unlink(_range);
-
+      _range = unlink(_range);
       delete _range.tableMetaInfo;
 
       dispatch({

@@ -451,8 +451,8 @@ const MoleculePanel = memo(
               },
             }),
           );
-          RangeUtilities.unlink(datum);
-          dispatch({ type: CHANGE_RANGE_DATA, data: datum });
+          const _datum = RangeUtilities.unlink(datum);
+          dispatch({ type: CHANGE_RANGE_DATA, data: _datum });
         } else if (displayerMode === '2D') {
           assignmentData.dispatch({
             type: 'REMOVE_ALL',
@@ -485,8 +485,8 @@ const MoleculePanel = memo(
             });
           });
           // unlink in global state
-          ZoneUtilities.unlink(datum);
-          dispatch({ type: CHANGE_ZONE_DATA, data: datum });
+          const _datum = ZoneUtilities.unlink(datum);
+          dispatch({ type: CHANGE_ZONE_DATA, data: _datum });
         }
       });
     }, [data, displayerMode, assignmentData, dispatch]);
