@@ -138,8 +138,6 @@ export class Datum1D {
   }
 
   setRange(data) {
-    this.ranges = Object.assign({}, this.ranges);
-    this.ranges.values = this.ranges.values.slice();
     const RangeIndex = this.ranges.values.findIndex(
       (range) => range.id === data.id,
     );
@@ -148,7 +146,7 @@ export class Datum1D {
   }
 
   getRanges() {
-    return this.ranges;
+    return lodash.cloneDeep(this.ranges);
   }
 
   /**
@@ -178,20 +176,17 @@ export class Datum1D {
    * Set the new integral
    */
   changeIntegralSum(sumValue) {
-    this.integrals = Object.assign({}, this.integrals);
     this.integrals.options = { ...this.integrals.options, sum: sumValue };
     this.updateIntegralIntegrals();
   }
 
   changeRangesSum(sumValue) {
-    this.ranges = Object.assign({}, this.ranges);
     this.ranges.options = { ...this.ranges.options, sum: sumValue };
 
     this.updateIntegralRanges();
   }
 
   updateIntegralIntegrals() {
-    // this.integrals = Object.assign({}, this.integrals);
     if (this.integrals.options.sum === undefined) {
       this.integrals.options = { ...this.integrals.options, sum: 100 };
     }
@@ -210,7 +205,6 @@ export class Datum1D {
   }
 
   updateIntegralRanges() {
-    // this.ranges = Object.assign({}, this.ranges);
     if (this.ranges.options.sum === undefined) {
       this.ranges.options = { ...this.ranges.options, sum: 100 };
     }
@@ -243,8 +237,6 @@ export class Datum1D {
   }
 
   changeIntegral(integral) {
-    // this.integrals = Object.assign({}, this.integrals);
-    // this.integrals.values = this.integrals.values.slice();
     const index = this.integrals.values.findIndex((i) => i.id === integral.id);
     if (index !== -1) {
       this.integrals.values[index] = {
@@ -269,17 +261,12 @@ export class Datum1D {
   }
 
   applyAutoPeakPicking(options) {
-    this.peaks = Object.assign({}, this.peaks);
-    this.peaks.values = this.peaks.values.slice();
     const peaks = autoPeakPicking(this, options);
     this.peaks.values = peaks;
     return this.peaks;
   }
 
   detectRanges(options) {
-    this.ranges = Object.assign({}, this.ranges);
-    this.ranges.values = this.ranges.values.slice();
-
     const ranges = autoRangesDetection(this, options);
     this.ranges.values = ranges.map((range) => {
       return {
@@ -321,9 +308,6 @@ export class Datum1D {
     this.updateIntegralRanges();
   }
   deleteIntegral(id) {
-    // this.integrals = Object.assign({}, this.integrals);
-    // this.integrals.values = this.integrals.values.slice();
-
     if (id == null) {
       this.integrals.values = [];
     } else {
@@ -428,8 +412,6 @@ export class Datum1D {
   }
 
   addRange(from, to) {
-    this.ranges = Object.assign({}, this.ranges);
-    this.ranges.values = this.ranges.values.slice();
 
     try {
       let range = {
@@ -448,8 +430,6 @@ export class Datum1D {
   }
 
   changeRange(range) {
-    this.ranges = Object.assign({}, this.ranges);
-    this.ranges.values = this.ranges.values.slice();
     const index = this.ranges.values.findIndex((i) => i.id === range.id);
     if (index !== -1) {
       this.ranges.values[index] = {
