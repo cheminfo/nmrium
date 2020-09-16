@@ -11,6 +11,7 @@ import { HighlightSignalConcatenation } from '../panels/extra/constants/Concaten
 import { SignalKindsToConsiderInIntegralsSum } from '../panels/extra/constants/SignalsKinds';
 import { checkSignalKinds } from '../panels/extra/utilities/RangeUtilities';
 import { DELETE_RANGE, RESIZE_RANGE } from '../reducer/types/Types';
+import { options } from '../toolbar/ToolTypes';
 
 import MultiplicityTree from './MultiplicityTree';
 import Resizable from './Resizable';
@@ -60,10 +61,19 @@ const Range = ({ rangeData }) => {
   );
 
   const { scaleX } = useScale();
-  const { editRangeModalMeta } = useChartData();
+  const { selectedTool } = useChartData();
   const dispatch = useDispatch();
 
   const [reduceOpacity, setReduceOpacity] = useState(false);
+  const [isBlockedByEditing, setIsBlockedByEditing] = useState(false);
+
+  useEffect(() => {
+    if (selectedTool && selectedTool === options.editRange.id) {
+      setIsBlockedByEditing(true);
+    } else {
+      setIsBlockedByEditing(false);
+    }
+  }, [selectedTool]);
 
   useEffect(() => {
     setReduceOpacity(
@@ -108,9 +118,7 @@ const Range = ({ rangeData }) => {
   return (
     <g
       css={
-        (editRangeModalMeta &&
-          editRangeModalMeta.rangeInEdition &&
-          editRangeModalMeta.rangeInEdition === id) ||
+        isBlockedByEditing ||
         highlightRange.isActive ||
         assignmentRange.isActive
           ? stylesHighlighted
@@ -128,14 +136,13 @@ const Range = ({ rangeData }) => {
         },
       }}
       {...{
-        onClick:
-          editRangeModalMeta && editRangeModalMeta.rangeInEdition
-            ? null
-            : (e) => {
-                if (e.shiftKey) {
-                  assignmentRange.onClick(e, 'x');
-                }
-              },
+        onClick: !isBlockedByEditing
+          ? (e) => {
+              if (e.shiftKey) {
+                assignmentRange.onClick(e, 'x');
+              }
+            }
+          : null,
       }}
     >
       <g transform={`translate(${scaleX()(to)},10)`}>
@@ -176,9 +183,7 @@ const Range = ({ rangeData }) => {
         // onDrag={handleOnStartResizing}
         onDrop={handleOnStopResizing}
       />
-      {!editRangeModalMeta || !editRangeModalMeta.rangeInEdition ? (
-        <DeleteButton />
-      ) : null}
+      {!isBlockedByEditing ? <DeleteButton /> : null}
       {signal && signal.length > 0
         ? signal.map((_signal, i) => (
             <MultiplicityTree

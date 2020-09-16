@@ -1,10 +1,9 @@
-import { jsx } from '@emotion/core';
-/** @jsx jsx */
 import { useField } from 'formik';
+import React from 'react';
 
 import ErrorMessage from './ErrorMessage';
 
-const Input = ({ onFocus, onBlur, ...props }) => {
+const Input = ({ onFocus, onBlur, enableErrorMessage, ...props }) => {
   const [field] = useField(props);
   return (
     <div>
@@ -14,7 +13,9 @@ const Input = ({ onFocus, onBlur, ...props }) => {
         onFocus={() => onFocus(field.name)}
         onBlur={() => onBlur(field.name)}
       />
-      <ErrorMessage {...props} />
+      {enableErrorMessage && enableErrorMessage === true ? (
+        <ErrorMessage {...props} />
+      ) : null}
     </div>
   );
 };

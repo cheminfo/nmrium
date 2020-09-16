@@ -1,8 +1,9 @@
 import lodash from 'lodash';
 import React, { Fragment, useCallback } from 'react';
-import { positions, transitions, useAlert } from 'react-alert';
+import { positions, transitions } from 'react-alert';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
+import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
 import { useModal } from '../../../elements/Modal';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
@@ -12,9 +13,11 @@ import {
   DELETE_RANGE,
   CHANGE_RANGE_DATA,
   RESET_SELECTED_TOOL,
+  SET_SELECTED_TOOL,
 } from '../../../reducer/types/Types';
+import { HighlightSignalConcatenation } from '../../extra/constants/ConcatenationStrings';
 import { SignalKinds } from '../../extra/constants/SignalsKinds';
-import { addDefaultSignal } from '../../extra/utilities/RangeUtilities';
+import { unlink } from '../../extra/utilities/RangeUtilities';
 
 const selectBoxStyle = {
   marginLeft: 2,
@@ -23,10 +26,29 @@ const selectBoxStyle = {
   height: '20px',
 };
 
-const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
+const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
   const dispatch = useDispatch();
   const modal = useModal();
-  const alert = useAlert();
+  const assignmentData = useAssignmentData();
+
+  const onUnlinkInAssignmentData = useCallback(
+    (range) => {
+      assignmentData.dispatch({
+        type: 'REMOVE_ALL',
+        payload: { id: range.id, axis: 'x' },
+      });
+      range.signal.forEach((_signal, i) =>
+        assignmentData.dispatch({
+          type: 'REMOVE_ALL',
+          payload: {
+            id: `${range.id}${HighlightSignalConcatenation}${i}`,
+            axis: 'x',
+          },
+        }),
+      );
+    },
+    [assignmentData],
+  );
 
   const zoomRangeHandler = useCallback(() => {
     const margin = Math.abs(rowData.from - rowData.to) / 2;
@@ -36,16 +58,13 @@ const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
     });
   }, [dispatch, rowData.from, rowData.to]);
 
-  const deleteRangeHandler = useCallback(
-    (e) => {
-      onUnlink(e);
-      dispatch({
-        type: DELETE_RANGE,
-        rangeID: rowData.id,
-      });
-    },
-    [dispatch, onUnlink, rowData],
-  );
+  const deleteRangeHandler = useCallback(() => {
+    onUnlinkInAssignmentData(rowData);
+    dispatch({
+      type: DELETE_RANGE,
+      rangeID: rowData.id,
+    });
+  }, [dispatch, rowData, onUnlinkInAssignmentData]);
 
   const changeRangeSignalKindHandler = useCallback(
     (value) => {
@@ -61,35 +80,34 @@ const ActionsColumn = ({ rowData, onHoverSignal, onUnlink, rowSpanTags }) => {
 
   const saveEditRangeHandler = useCallback(
     (editedRange) => {
+      const _range = lodash.cloneDeep(editedRange);
       // for now: clear all assignments for this range because signals or levels to store might have changed
-      onUnlink();
-      // if all signals were deleted then insert a default signal with "m" as multiplicity
-      if (editedRange.signal.length === 0) {
-        addDefaultSignal(editedRange);
-        alert.info(
-          `There must be at least one signal within a range. Default signal with "m" was therefore added!`,
-        );
-      }
+      onUnlinkInAssignmentData(_range);
+      unlink(_range);
+
+      delete _range.tableMetaInfo;
+
       dispatch({
         type: CHANGE_RANGE_DATA,
-        data: editedRange,
+        data: _range,
       });
     },
-    [alert, dispatch, onUnlink],
+    [dispatch, onUnlinkInAssignmentData],
   );
 
   const closeEditRangeHandler = useCallback(() => {
+    dispatch({ type: RESET_SELECTED_TOOL });
     modal.close();
-  }, [modal]);
+  }, [dispatch, modal]);
 
   const openEditRangeHandler = useCallback(() => {
-    dispatch({ type: RESET_SELECTED_TOOL });
+    dispatch({ type: SET_SELECTED_TOOL, selectedTool: 'editRange' });
     modal.show(
       <EditRangeModal
-        onClose={closeEditRangeHandler}
-        onSave={saveEditRangeHandler}
-        onZoom={zoomRangeHandler}
-        range={rowData}
+        onCloseEditRangeModal={closeEditRangeHandler}
+        onSaveEditRangeModal={saveEditRangeHandler}
+        onZoomEditRangeModal={zoomRangeHandler}
+        rangeData={rowData}
       />,
       {
         position: positions.CENTER_RIGHT,

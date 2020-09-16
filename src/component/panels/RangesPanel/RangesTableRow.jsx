@@ -210,7 +210,6 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
         onHoverSignal={onHoverSignal}
         onHoverRange={onHoverRange}
         rowSpanTags={rowSpanTags}
-        onUnlink={unlinkHandler}
       />
     </tr>
   );

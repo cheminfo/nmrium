@@ -151,9 +151,9 @@ const RangesTablePanel = memo(
         }
 
         // remove assignments in global state
-        range = lodash.cloneDeep(range);
-        unlink(range, isOnRangeLevel, signalIndex);
-        dispatch({ type: CHANGE_RANGE_DATA, data: range });
+        const _range = lodash.cloneDeep(range);
+        unlink(_range, isOnRangeLevel, signalIndex);
+        dispatch({ type: CHANGE_RANGE_DATA, data: _range });
       },
       [assignmentData, dispatch],
     );

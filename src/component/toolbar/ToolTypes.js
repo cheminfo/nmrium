@@ -73,4 +73,11 @@ export const options = {
     hasOptionPanel: false,
     isFilter: false,
   },
+
+  editRange: {
+    id: 'editRange',
+    label: 'edit range',
+    hasOptionPanel: false,
+    isFilter: false,
+  },
 };

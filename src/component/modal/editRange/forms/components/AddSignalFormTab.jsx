@@ -2,23 +2,20 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useFormikContext } from 'formik';
 import { memo, useState, useCallback, useEffect } from 'react';
+import { FaPlus } from 'react-icons/fa';
 
-import Events from '../../../../utility/Events';
-import Button from '../elements/Button';
-import Input from '../elements/Input';
+import Button from '../../../../elements/Button';
+import Input from '../../../../elements/formik/Input';
+import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 
 const AddSignalFormTabStyle = css`
   text-align: center;
-
-  p {
-    margin-top: 5px;
-    // margin-bottom: 10px;
-  }
+  width: 100%;
+  height: 100%;
 
   .infoText {
-    margin-top: 3px;
-    margin-bottom: 10px;
-    font-size: 11px;
+    margin-top: 20px;
+    font-size: 12px;
   }
 
   input {
@@ -28,53 +25,32 @@ const AddSignalFormTabStyle = css`
     text-align: center;
   }
 
-  .bt {
-    width: 20px;
-    height: 20px;
-    padding: 2px;
-    background-color: white;
-  }
-
-  .bt.active {
-    background-color: gray;
-    color: white;
-  }
-
   .addSignalButton {
     margin-top: 15px;
     margin-top: 20px;
     background-color: transparent;
-    border: 0.5px solid #dedede;
+    border: none;
+    padding: 0.3rem;
+    border-radius: 25%;
   }
 `;
 
-const AddSignalFormTab = memo(() => {
+const AddSignalFormTab = memo(({ onFocus, onBlur }) => {
   const { values, setFieldValue, errors } = useFormikContext();
 
   const [disableAddButton, setDisableAddButton] = useState(false);
-  const [activeField, setActiveField] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = Events.subscribe('brushEnd', (event) => {
-      if (activeField) {
-        setFieldValue(activeField, event.range[0] + event.range[1] / 2);
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [activeField, setFieldValue]);
 
   const onAddSignal = useCallback(() => {
     const newSignal = {
       multiplicity: 'm',
       kind: 'signal',
       delta: Number(values.newSignalDelta),
+      j: [{ multiplicity: translateMultiplet('m'), coupling: '' }],
     };
     const _signals = values.signals.slice().concat(newSignal);
+
     setFieldValue('signals', _signals);
-    setFieldValue('selectedSignalIndex', _signals.length - 1);
+    setFieldValue('activeTab', String(_signals.length - 1));
   }, [setFieldValue, values.newSignalDelta, values.signals]);
 
   useEffect(() => {
@@ -88,19 +64,15 @@ const AddSignalFormTab = memo(() => {
   return (
     <div css={AddSignalFormTabStyle}>
       <div>
-        <p>Add delta value of new signal (ppm): </p>
         <p className="infoText">
-          {/* (You can do mouse click (left) + shift key within the range in
-          spectrum or type it in manually)  */}
-          Focus on the input field and then Press Shift + Left mouse button to
-          to select new range.
+          Edit or select a delta value of new signal (ppm):
         </p>
         <Input
           name="newSignalDelta"
           type="number"
           placeholder={`${'\u0394'} (ppm)`}
-          onFocus={(name) => setActiveField(name)}
-          // onBlur={() => setActiveField(null)}
+          onFocus={onFocus}
+          onBlur={onBlur}
         />
       </div>
 
@@ -109,11 +81,11 @@ const AddSignalFormTab = memo(() => {
           className="addSignalButton"
           onClick={onAddSignal}
           disabled={disableAddButton}
-          style={{
+          css={{
             color: disableAddButton ? 'grey' : 'blue',
           }}
         >
-          Add Signal
+          <FaPlus title="Add new signal" />
         </Button>
       </div>
     </div>
