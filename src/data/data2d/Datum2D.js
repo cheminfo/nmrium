@@ -86,36 +86,42 @@ export class Datum2D {
   }
   /**
    *
-   * @param {object} ZoneBoundary
-   * @param {number} ZoneBoundary.fromX
-   * @param {number} ZoneBoundary.toX
-   * @param {number} ZoneBoundary.fromY
-   * @param {number} ZoneBoundary.toY
+   * @param {object} options
+   * @param {object} options.selectedZone
+   * @param {number} options.selectedZone.fromX
+   * @param {number} options.selectedZone.fromY
+   * @param {number} options.selectedZone.toX
+   * @param {number} options.selectedZone.toY
+   * @param {number} options.thresholdFactor
+   * @param {boolean} options.convolutionByFFT
    */
-  addZone(ZoneBoundary) {
-    const { fromX, toX, fromY, toY } = ZoneBoundary;
+  detectZonesManual(options) {
+    const { fromX, toX, fromY, toY } = options.selectedZone;
+    const zones = this.getDetectionZones(options);
+    const signals = zones.map((zone) => {
+      return {
+        id: generateID(),
+        peak: zone.peaks,
+        x: {
+          delta: (zone.fromTo[0].from + zone.fromTo[0].to) / 2,
+          diaID: [],
+        },
+        y: {
+          delta: (zone.fromTo[1].from + zone.fromTo[1].to) / 2,
+          diaID: [],
+        },
+      };
+    });
+
     const zone = {
+      id: generateID(),
       x: { from: fromX, to: toX },
       y: { from: fromY, to: toY },
-      signal: [
-        {
-          peak: [],
-          x: {
-            delta: (fromX + toX) / 2,
-            diaID: [],
-          },
-          y: {
-            delta: (fromY + toY) / 2,
-            diaID: [],
-          },
-        },
-      ],
+      signal: signals,
     };
 
-    this.zones.values.push({
-      id: generateID(),
-      ...zone,
-    });
+    this.zones.values.push(zone);
+    return zone;
   }
 
   deleteZone(id) {
@@ -232,8 +238,18 @@ export class Datum2D {
     const datum1D = new Datum1D({ info, data });
     return datum1D;
   }
-
-  detectZones(options) {
+  /**
+   *
+   * @param {object} options
+   * @param {object} options.selectedZone
+   * @param {number} options.selectedZone.fromX
+   * @param {number} options.selectedZone.fromY
+   * @param {number} options.selectedZone.toX
+   * @param {number} options.selectedZone.toY
+   * @param {number} options.thresholdFactor
+   * @param {boolean} options.convolutionByFFT
+   */
+  getDetectionZones(options) {
     let dataMatrix = {};
     if (options.selectedZone) {
       dataMatrix = this.getSubMatrix(options.selectedZone);
@@ -241,14 +257,29 @@ export class Datum2D {
       dataMatrix = this.data;
     }
     options.info = this.info;
-    const zones = autoZonesDetection(dataMatrix, options);
-    let formatedZones = zones.map((zone) => {
+    return autoZonesDetection(dataMatrix, options);
+  }
+  /**
+   *
+   * @param {object} options
+   * @param {object} options.selectedZone
+   * @param {number} options.selectedZone.fromX
+   * @param {number} options.selectedZone.fromY
+   * @param {number} options.selectedZone.toX
+   * @param {number} options.selectedZone.toY
+   * @param {number} options.thresholdFactor
+   * @param {boolean} options.convolutionByFFT
+   */
+  detectZones(options) {
+    const zones = this.getDetectionZones(options);
+    const formatedZones = zones.map((zone) => {
       return {
         id: generateID(),
         x: { from: zone.fromTo[0].from, to: zone.fromTo[0].to },
         y: { from: zone.fromTo[1].from, to: zone.fromTo[1].to },
         signal: [
           {
+            id: generateID(),
             peak: zone.peaks,
             x: {
               delta: (zone.fromTo[0].from + zone.fromTo[0].to) / 2,

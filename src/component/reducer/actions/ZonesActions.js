@@ -31,12 +31,12 @@ const add2dZoneHandler = (state, action) => {
       const fromX = scaleX.invert(x1);
       const toY = scaleY.invert(y2);
       const toX = scaleX.invert(x2);
-      const zones = datumObject.detectZones({
+      const zone = datumObject.detectZonesManual({
         selectedZone: { fromX, fromY, toX, toY },
         thresholdFactor: noiseFactor,
         convolutionByFFT: false,
       });
-      draft.data[state.activeSpectrum.index].zones = zones;
+      draft.data[state.activeSpectrum.index].zones.values.push(zone);
     }
   });
 };
