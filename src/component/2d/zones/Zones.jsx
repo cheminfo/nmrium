@@ -4,7 +4,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { DELETE_2D_ZONE } from '../../reducer/types/Types';
 
-import Peaks from './Peaks';
+import Signals from './Signals';
 import Zone from './Zone';
 
 const Zones = () => {
@@ -30,10 +30,10 @@ const Zones = () => {
       {_data.map((d) => (
         <g key={d.id}>
           {d.zones.values.map((zone) => (
-            <>
-              <Peaks signal={zone.signal} />
-              <Zone key={zone.id} {...zone} onDelete={deleteHandler} />
-            </>
+            <g className="zone" key={zone.id}>
+              <Signals signal={zone.signal} />
+              <Zone {...zone} onDelete={deleteHandler} />
+            </g>
           ))}
         </g>
       ))}
