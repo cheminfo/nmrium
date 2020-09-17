@@ -4,10 +4,10 @@ import { useMemo, useCallback, useState } from 'react';
 import { FaRegTrashAlt, FaSearchPlus, FaMinusCircle } from 'react-icons/fa';
 
 import { useAssignment } from '../../assignment';
-// import SelectUncontrolled from '../../elements/SelectUncontrolled';
+import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import { useHighlight } from '../../highlight';
 import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
-// import { SignalKinds } from '../extra/constants/SignalsKinds';
+import { SignalKinds } from '../extra/constants/SignalsKinds';
 
 const HighlightedRowStyle = css`
   background-color: #ff6f0057;
@@ -17,16 +17,16 @@ const ConstantlyHighlightedRowStyle = css`
   background-color: #f5f5dc;
 `;
 
-// const selectBoxStyle = {
-//   marginLeft: 2,
-//   marginRight: 2,
-//   border: 'none',
-//   height: '20px',
-// };
+const selectBoxStyle = {
+  marginLeft: 2,
+  marginRight: 2,
+  border: 'none',
+  height: '20px',
+};
 
 const ZonesTableRow = ({
   rowData,
-  //   onChangeKind,
+  onChangeKind,
   onDelete,
   onUnlink,
   onZoom,
@@ -451,20 +451,16 @@ const ZonesTableRow = ({
           ''
         )}
       </td>
-      {/* <td>
+      <td>
         <SelectUncontrolled
           onChange={(value) => {
-            onChangeKind(
-              value,
-              getOriginal(),
-              rowData.tableMetaInfo.signalIndex,
-            );
+            onChangeKind(rowData, value);
           }}
           data={SignalKinds}
           value={rowData.tableMetaInfo.signal.kind}
           style={selectBoxStyle}
         />
-      </td> */}
+      </td>
       <td {...rowSpanTags}>
         <button
           type="button"

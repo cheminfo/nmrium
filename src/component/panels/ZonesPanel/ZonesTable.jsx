@@ -45,6 +45,7 @@ const tableStyle = css`
 
 const ZonesTable = ({
   tableData,
+  onChangeKind,
   onDelete,
   onUnlink,
   onZoom,
@@ -119,7 +120,7 @@ const ZonesTable = ({
               <FaLink />
             </th>
             <th colSpan={2}>Σ</th>
-            {/* <th rowSpan={2}>Kind</th> */}
+            <th rowSpan={2}>Kind</th>
             <th rowSpan={2}>{''}</th>
           </tr>
           <tr>
@@ -137,6 +138,7 @@ const ZonesTable = ({
                   // eslint-disable-next-line react/no-array-index-key
                   key={`zonesTableRow${i}`}
                   rowData={data[i]}
+                  onChangeKind={onChangeKind}
                   onDelete={onDelete}
                   onUnlink={onUnlink}
                   onZoom={onZoom}

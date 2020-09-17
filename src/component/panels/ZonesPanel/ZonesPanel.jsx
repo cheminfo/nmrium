@@ -261,6 +261,18 @@ const ZonesPanel = memo(
       [dispatch, unlinkZoneHandler],
     );
 
+    const changeSignalKindHandler = useCallback(
+      (zone, value) => {
+        const _zone = lodash.cloneDeep(zone);
+        _zone.signal[_zone.tableMetaInfo.signalIndex].kind = value;
+        dispatch({
+          type: CHANGE_ZONE_DATA,
+          data: _zone,
+        });
+      },
+      [dispatch],
+    );
+
     const saveToClipboardHandler = useCallback(
       (value) => {
         const success = copyTextToClipboard(value);
@@ -401,6 +413,7 @@ const ZonesPanel = memo(
               {tableData && tableData.length > 0 ? (
                 <ZonesTable
                   tableData={tableData}
+                  onChangeKind={changeSignalKindHandler}
                   onDelete={deleteZoneHandler}
                   onZoom={zoomZoneHandler}
                   onUnlink={unlinkZoneHandler}
