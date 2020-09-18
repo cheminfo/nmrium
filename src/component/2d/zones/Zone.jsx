@@ -54,10 +54,8 @@ const Zone = ({ zoneData, onDelete }) => {
   const assignmentZone = useAssignment(id);
   const highlightZone = useHighlight(
     [assignmentZone.id],
-    // .concat(
-    //   assignmentZone.assigned.x || [],
-    //   assignmentZone.assigned.y || [],
-    // ),
+    // assignmentZone.assigned.x || [],
+    // assignmentZone.assigned.y || [],
   );
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
@@ -113,7 +111,16 @@ const Zone = ({ zoneData, onDelete }) => {
           : stylesOnHover
       }
       key={id}
-      {...highlightZone.onHover}
+      {...{
+        onMouseEnter: () => {
+          assignmentZone.onMouseEnter();
+          highlightZone.show();
+        },
+        onMouseLeave: () => {
+          assignmentZone.onMouseLeave();
+          highlightZone.hide();
+        },
+      }}
     >
       <g transform={`translate(${scaleX(x1)},${scaleY(y1)})`}>
         <rect
