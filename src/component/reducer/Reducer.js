@@ -3,184 +3,32 @@
 import { options } from '../toolbar/ToolTypes';
 
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
-import {
-  handelResetDomain,
-  setOriginalDomain,
-  setXDomain,
-  handleChangeIntegralYDomain,
-  setYDomain,
-} from './actions/DomainActions';
+import * as DomainActions from './actions/DomainActions';
 import { exportData } from './actions/ExportActions';
-import {
-  shiftSpectrumAlongXAxis,
-  applyZeroFillingFilter,
-  applyFFTFilter,
-  applyManualPhaseCorrectionFilter,
-  applyAutoPhaseCorrectionFilter,
-  calculateManualPhaseCorrection,
-  enableFilter,
-  deleteFilter,
-  handleBaseLineCorrectionFilter,
-  filterSnapshotHandler,
-  applyAbsoluteFilter,
-} from './actions/FiltersActions';
+import * as FiltersActions from './actions/FiltersActions';
 import {
   handleHistoryUndo,
   handleHistoryRedo,
   handleHistoryReset,
 } from './actions/HistoryActions';
-import {
-  addIntegral,
-  deleteIntegral,
-  changeIntegral,
-  handleResizeIntegral,
-  handleChangeIntegralZoom,
-  handleChangeIntegralSum,
-} from './actions/IntegralsActions';
-import {
-  initiate,
-  handleLoadJsonFile,
-  loadJcampFile,
-  loadJDFFile,
-  handleLoadMOLFile,
-  handleLoadZIPFile,
-  setData,
-  setIsLoading,
-  loadZipFile,
-} from './actions/LoadActions';
-import {
-  handleAddMolecule,
-  handleSetMolecule,
-  handleDeleteMolecule,
-} from './actions/MoleculeActions';
-import {
-  addPeak,
-  addPeaks,
-  deletePeak,
-  handleAutoPeakPicking,
-} from './actions/PeaksActions';
+import * as IntegralsActions from './actions/IntegralsActions';
+import * as LoadActions from './actions/LoadActions';
+import * as MoleculeActions from './actions/MoleculeActions';
+import * as PeaksActions from './actions/PeaksActions';
 import {
   handelSetPreferences,
   setKeyPreferencesHandler,
   applyKeyPreferencesHandler,
 } from './actions/PreferencesActions';
-import {
-  handleAutoRangesDetection,
-  handleDeleteRange,
-  handleChangeRange,
-  handleChangeRangeSum,
-  handleAddRange,
-  handleResizeRange,
-  handleSetShowMultiplicityTrees,
-} from './actions/RangesActions';
-import {
-  handleSpectrumVisibility,
-  handleChangePeaksMarkersVisibility,
-  handleChangeActiveSpectrum,
-  handleChangeSpectrumColor,
-  handleDeleteSpectra,
-  addMissingProjectionHander,
-} from './actions/SpectrumsActions';
-import {
-  setSelectedTool,
-  resetSelectedTool,
-  setSelectedOptionPanel,
-  setSpectrumsVerticalAlign,
-  handleChangeSpectrumDisplayMode,
-  handleAddBaseLineZone,
-  handleDeleteBaseLineZone,
-  handleToggleRealImaginaryVisibility,
-  handleBrushEnd,
-  setVerticalIndicatorXPosition,
-  zoomOut,
-  handleZoom,
-  handelSetActiveTab,
-  levelChangeHandler,
-} from './actions/ToolsActions';
-import {
-  add2dZoneHandler,
-  delete2dZoneHandler,
-  handleAutoZonesDetection,
-  handleChangeZone,
-} from './actions/ZonesActions';
+import * as RangesActions from './actions/RangesActions';
+import * as SpectrumsActions from './actions/SpectrumsActions';
+import * as ToolsActions from './actions/ToolsActions';
+import * as ZonesActions from './actions/ZonesActions';
+import { AnalysisObj } from './core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
+import checkActionType from './IgnoreActions';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
-import {
-  INITIATE,
-  ADD_PEAK,
-  ADD_PEAKS,
-  AUTO_PEAK_PICKING,
-  AUTO_ZONES_DETECTION,
-  DELETE_PEAK_NOTATION,
-  SHIFT_SPECTRUM,
-  LOAD_JCAMP_FILE,
-  LOAD_JSON_FILE,
-  LOAD_MOL_FILE,
-  SET_DATA,
-  SET_ORIGINAL_DOMAIN,
-  SET_X_DOMAIN,
-  SET_WIDTH,
-  SET_DIMENSIONS,
-  SET_SELECTED_TOOL,
-  FULL_ZOOM_OUT,
-  CHANGE_VISIBILITY,
-  CHANGE_PEAKS_MARKERS_VISIBILITY,
-  CHANGE_ACTIVE_SPECTRUM,
-  CHANGE_SPECTRUM_COLOR,
-  ADD_INTEGRAL,
-  DELETE_INTEGRAL,
-  TOGGLE_REAL_IMAGINARY_VISIBILITY,
-  SET_ZOOM_FACTOR,
-  ADD_MOLECULE,
-  SET_MOLECULE,
-  DELETE_MOLECULE,
-  DELETE_SPECTRA,
-  CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
-  SET_INTEGRAL_Y_DOMAIN,
-  RESIZE_INTEGRAL,
-  BRUSH_END,
-  RESET_DOMAIN,
-  CHANGE_INTEGRAL_ZOOM,
-  ENABLE_FILTER,
-  DELETE_FILTER,
-  APPLY_ZERO_FILLING_FILTER,
-  APPLY_FFT_FILTER,
-  SET_VERTICAL_INDICATOR_X_POSITION,
-  APPLY_MANUAL_PHASE_CORRECTION_FILTER,
-  APPLY_AUTO_PHASE_CORRECTION_FILTER,
-  CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-  SET_SELECTED_OPTIONS_PANEL,
-  SET_LOADING_FLAG,
-  RESET_SELECTED_TOOL,
-  AUTO_RANGES_DETECTION,
-  DELETE_RANGE,
-  SET_SPECTRUMS_VERTICAL_ALIGN,
-  CHANGE_INTEGRAL_DATA,
-  EXPORT_DATA,
-  SET_PREFERENCES,
-  SET_ACTIVE_TAB,
-  CHANGE_INTEGRAL_SUM,
-  ADD_BASE_LINE_ZONE,
-  DELETE_BASE_LINE_ZONE,
-  APPLY_BASE_LINE_CORRECTION_FILTER,
-  SET_KEY_PREFERENCES,
-  APPLY_KEY_PREFERENCES,
-  LOAD_ZIP_FILE,
-  LOAD_JDF_FILE,
-  CHANGE_RANGE_DATA,
-  CHANGE_RANGE_SUM,
-  ADD_RANGE,
-  SET_2D_LEVEL,
-  RESIZE_RANGE,
-  ADD_2D_ZONE,
-  DELETE_2D_ZONE,
-  ADD_MISSING_PROJECTION,
-  SET_FILTER_SNAPSHOT,
-  APPLY_ABSOLUTE_FILTER,
-  SET_SHOW_MULTIPLICITY_TREES,
-  SET_Y_DOMAIN,
-  CHANGE_ZONE_DATA,
-} from './types/Types';
+import * as types from './types/Types';
 
 // setAutoFreeze(false);
 
@@ -234,201 +82,218 @@ export const initialState = {
   showMultiplicityTrees: false,
 };
 
-export function dispatchMiddleware(dispatch) {
+export function dispatchMiddleware(dispatch, onDataChange = null) {
   return (action) => {
     switch (action.type) {
-      case LOAD_ZIP_FILE:
-        loadZipFile(action.files).then(() => {
+      case types.LOAD_ZIP_FILE:
+        LoadActions.loadZipFile(action.files).then(() => {
           dispatch(action);
+          if (onDataChange && checkActionType(action.type)) {
+            onDataChange(AnalysisObj.toJSON());
+          }
         });
         break;
 
       default:
-        return dispatch(action);
+        dispatch(action);
+        if (onDataChange && checkActionType(action.type)) {
+          onDataChange(AnalysisObj.toJSON());
+        }
+        break;
     }
   };
 }
 
 export function spectrumReducer(state, action) {
   switch (action.type) {
-    case INITIATE:
-      return initiate(state, action.data);
-    case SET_LOADING_FLAG:
-      return setIsLoading(state, action.isLoading);
-    case LOAD_JSON_FILE:
-      return handleLoadJsonFile(state, action.data);
-    case LOAD_JCAMP_FILE:
-      return loadJcampFile(state, action.files);
-    case LOAD_JDF_FILE:
-      return loadJDFFile(state, action.files);
-    case LOAD_MOL_FILE:
-      return handleLoadMOLFile(state, action.files);
-    case LOAD_ZIP_FILE:
-      return handleLoadZIPFile(state, action.files);
-
-    case EXPORT_DATA:
+    case types.INITIATE:
+      return LoadActions.initiate(state, action.data);
+    case types.SET_LOADING_FLAG:
+      return LoadActions.setIsLoading(state, action.isLoading);
+    case types.LOAD_JSON_FILE:
+      return LoadActions.handleLoadJsonFile(state, action.data);
+    case types.LOAD_JCAMP_FILE:
+      return LoadActions.loadJcampFile(state, action.files);
+    case types.LOAD_JDF_FILE:
+      return LoadActions.loadJDFFile(state, action.files);
+    case types.LOAD_MOL_FILE:
+      return LoadActions.handleLoadMOLFile(state, action.files);
+    case types.LOAD_ZIP_FILE:
+      return LoadActions.handleLoadZIPFile(state, action.files);
+    case types.SET_DATA:
+      return LoadActions.setData(state, action.data);
+    case types.EXPORT_DATA:
       return exportData(state, action);
-    case ADD_PEAK:
-      return addPeak(state, action.mouseCoordinates);
-    case ADD_PEAKS:
-      return addPeaks(state, action);
+    case types.ADD_PEAK:
+      return PeaksActions.addPeak(state, action.mouseCoordinates);
+    case types.ADD_PEAKS:
+      return PeaksActions.addPeaks(state, action);
 
-    case DELETE_PEAK_NOTATION:
-      return deletePeak(state, action.data);
+    case types.DELETE_PEAK_NOTATION:
+      return PeaksActions.deletePeak(state, action.data);
 
-    case ADD_INTEGRAL:
-      return addIntegral(state, action);
-    case DELETE_INTEGRAL:
-      return deleteIntegral(state, action);
-    case CHANGE_INTEGRAL_DATA:
-      return changeIntegral(state, action);
+    case types.ADD_INTEGRAL:
+      return IntegralsActions.addIntegral(state, action);
+    case types.DELETE_INTEGRAL:
+      return IntegralsActions.deleteIntegral(state, action);
+    case types.CHANGE_INTEGRAL_DATA:
+      return IntegralsActions.changeIntegral(state, action);
+    case types.RESIZE_INTEGRAL:
+      return IntegralsActions.handleResizeIntegral(state, action);
+    case types.CHANGE_INTEGRAL_ZOOM:
+      return IntegralsActions.handleChangeIntegralZoom(state, action);
+    case types.CHANGE_INTEGRAL_SUM:
+      return IntegralsActions.handleChangeIntegralSum(state, action.value);
 
-    case RESIZE_INTEGRAL:
-      return handleResizeIntegral(state, action);
+    case types.SET_ORIGINAL_DOMAIN:
+      return DomainActions.setOriginalDomain(state, action.domain);
 
-    case SET_ORIGINAL_DOMAIN:
-      return setOriginalDomain(state, action.domain);
+    case types.SET_X_DOMAIN:
+      return DomainActions.setXDomain(state, action.xDomain);
 
-    case SET_X_DOMAIN:
-      return setXDomain(state, action.xDomain);
+    case types.SET_Y_DOMAIN:
+      return DomainActions.setYDomain(state, action.yDomain);
 
-    case SET_Y_DOMAIN:
-      return setYDomain(state, action.yDomain);
-
-    case SET_WIDTH:
+    case types.SET_WIDTH:
       return setWidth(state, action.width);
 
-    case SET_DIMENSIONS:
+    case types.SET_DIMENSIONS:
       return handleSetDimensions(state, action.width, action.height);
 
-    case SET_SELECTED_TOOL:
-      return setSelectedTool(state, action.selectedTool);
-    case RESET_SELECTED_TOOL:
-      return resetSelectedTool(state);
-    case SET_SELECTED_OPTIONS_PANEL:
-      return setSelectedOptionPanel(state, action.selectedOptionPanel);
-    case SET_DATA:
-      return setData(state, action.data);
-    case FULL_ZOOM_OUT:
-      return zoomOut(state, action);
-    case SHIFT_SPECTRUM:
-      return shiftSpectrumAlongXAxis(state, action.shiftValue);
-    case APPLY_ZERO_FILLING_FILTER:
-      return applyZeroFillingFilter(state, action.value);
-    case APPLY_FFT_FILTER:
-      return applyFFTFilter(state);
-    case APPLY_MANUAL_PHASE_CORRECTION_FILTER:
-      return applyManualPhaseCorrectionFilter(state, action.value);
-    case APPLY_AUTO_PHASE_CORRECTION_FILTER:
-      return applyAutoPhaseCorrectionFilter(state, action.value);
-    case APPLY_ABSOLUTE_FILTER:
-      return applyAbsoluteFilter(state);
-    case CALCULATE_MANUAL_PHASE_CORRECTION_FILTER:
-      return calculateManualPhaseCorrection(state, action.value);
-    case ENABLE_FILTER:
-      return enableFilter(state, action.id, action.checked);
-    case DELETE_FILTER:
-      return deleteFilter(state, action.id);
-    case SET_FILTER_SNAPSHOT:
-      return filterSnapshotHandler(state, action);
+    case types.SET_SELECTED_TOOL:
+      return ToolsActions.setSelectedTool(state, action.selectedTool);
+    case types.RESET_SELECTED_TOOL:
+      return ToolsActions.resetSelectedTool(state);
+    case types.SET_SELECTED_OPTIONS_PANEL:
+      return ToolsActions.setSelectedOptionPanel(
+        state,
+        action.selectedOptionPanel,
+      );
+    case types.FULL_ZOOM_OUT:
+      return ToolsActions.zoomOut(state, action);
+    case types.SHIFT_SPECTRUM:
+      return FiltersActions.shiftSpectrumAlongXAxis(state, action.shiftValue);
+    case types.APPLY_ZERO_FILLING_FILTER:
+      return FiltersActions.applyZeroFillingFilter(state, action.value);
+    case types.APPLY_FFT_FILTER:
+      return FiltersActions.applyFFTFilter(state);
+    case types.APPLY_MANUAL_PHASE_CORRECTION_FILTER:
+      return FiltersActions.applyManualPhaseCorrectionFilter(
+        state,
+        action.value,
+      );
+    case types.APPLY_AUTO_PHASE_CORRECTION_FILTER:
+      return FiltersActions.applyAutoPhaseCorrectionFilter(state, action.value);
+    case types.APPLY_ABSOLUTE_FILTER:
+      return FiltersActions.applyAbsoluteFilter(state);
+    case types.CALCULATE_MANUAL_PHASE_CORRECTION_FILTER:
+      return FiltersActions.calculateManualPhaseCorrection(state, action.value);
+    case types.ENABLE_FILTER:
+      return FiltersActions.enableFilter(state, action.id, action.checked);
+    case types.DELETE_FILTER:
+      return FiltersActions.deleteFilter(state, action.id);
+    case types.SET_FILTER_SNAPSHOT:
+      return FiltersActions.filterSnapshotHandler(state, action);
 
-    case CHANGE_VISIBILITY:
-      return handleSpectrumVisibility(state, action);
+    case types.CHANGE_VISIBILITY:
+      return SpectrumsActions.handleSpectrumVisibility(state, action);
 
-    case CHANGE_PEAKS_MARKERS_VISIBILITY:
-      return handleChangePeaksMarkersVisibility(state, action.data);
-    case CHANGE_ACTIVE_SPECTRUM:
-      return handleChangeActiveSpectrum(state, action.data);
+    case types.CHANGE_PEAKS_MARKERS_VISIBILITY:
+      return SpectrumsActions.handleChangePeaksMarkersVisibility(
+        state,
+        action.data,
+      );
+    case types.CHANGE_ACTIVE_SPECTRUM:
+      return SpectrumsActions.handleChangeActiveSpectrum(state, action.data);
 
-    case CHANGE_SPECTRUM_COLOR:
-      return handleChangeSpectrumColor(state, action.data);
-    case TOGGLE_REAL_IMAGINARY_VISIBILITY:
-      return handleToggleRealImaginaryVisibility(state);
-    case SET_ZOOM_FACTOR:
-      return handleZoom(state, action);
+    case types.CHANGE_SPECTRUM_COLOR:
+      return SpectrumsActions.handleChangeSpectrumColor(state, action.data);
+    case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
+      return ToolsActions.handleToggleRealImaginaryVisibility(state);
+    case types.SET_ZOOM_FACTOR:
+      return ToolsActions.handleZoom(state, action);
     // return {
     //   ...state,
     //   zoomFactor: action.zoomFactor,
     // };
 
-    case CHANGE_SPECTRUM_DISPLAY_VIEW_MODE:
-      return handleChangeSpectrumDisplayMode(state, action);
+    case types.CHANGE_SPECTRUM_DISPLAY_VIEW_MODE:
+      return ToolsActions.handleChangeSpectrumDisplayMode(state, action);
 
-    case ADD_MOLECULE:
-      return handleAddMolecule(state, action.molfile);
+    case types.ADD_MOLECULE:
+      return MoleculeActions.handleAddMolecule(state, action.molfile);
 
-    case SET_MOLECULE:
-      return handleSetMolecule(state, action.molfile, action.key);
+    case types.SET_MOLECULE:
+      return MoleculeActions.handleSetMolecule(
+        state,
+        action.molfile,
+        action.key,
+      );
 
-    case DELETE_MOLECULE:
-      return handleDeleteMolecule(state, action.key);
+    case types.DELETE_MOLECULE:
+      return MoleculeActions.handleDeleteMolecule(state, action.key);
 
-    case DELETE_SPECTRA:
-      return handleDeleteSpectra(state, action);
+    case types.DELETE_SPECTRA:
+      return SpectrumsActions.handleDeleteSpectra(state, action);
 
-    case SET_INTEGRAL_Y_DOMAIN:
-      return handleChangeIntegralYDomain(state, action.yDomain);
+    case types.SET_INTEGRAL_Y_DOMAIN:
+      return DomainActions.handleChangeIntegralYDomain(state, action.yDomain);
 
-    case CHANGE_INTEGRAL_ZOOM:
-      return handleChangeIntegralZoom(state, action);
+    case types.BRUSH_END:
+      return ToolsActions.handleBrushEnd(state, action);
 
-    case CHANGE_INTEGRAL_SUM:
-      return handleChangeIntegralSum(state, action.value);
+    case types.SET_VERTICAL_INDICATOR_X_POSITION:
+      return ToolsActions.setVerticalIndicatorXPosition(state, action.position);
+    case types.SET_SPECTRUMS_VERTICAL_ALIGN:
+      return ToolsActions.setSpectrumsVerticalAlign(state, action.flag);
 
-    case BRUSH_END:
-      return handleBrushEnd(state, action);
+    case types.AUTO_PEAK_PICKING:
+      return PeaksActions.handleAutoPeakPicking(state, action.options);
 
-    case SET_VERTICAL_INDICATOR_X_POSITION:
-      return setVerticalIndicatorXPosition(state, action.position);
-    case SET_SPECTRUMS_VERTICAL_ALIGN:
-      return setSpectrumsVerticalAlign(state, action.flag);
+    case types.AUTO_ZONES_DETECTION:
+      return ZonesActions.handleAutoZonesDetection(state, action.options);
+    case types.AUTO_RANGES_DETECTION:
+      return RangesActions.handleAutoRangesDetection(state, action.options);
+    case types.ADD_RANGE:
+      return RangesActions.handleAddRange(state, action);
+    case types.DELETE_RANGE:
+      return RangesActions.handleDeleteRange(state, action.rangeID);
+    case types.CHANGE_RANGE_DATA:
+      return RangesActions.handleChangeRange(state, action);
+    case types.RESIZE_RANGE:
+      return RangesActions.handleResizeRange(state, action);
+    case types.CHANGE_RANGE_SUM:
+      return RangesActions.handleChangeRangeSum(state, action.value);
+    case types.SET_SHOW_MULTIPLICITY_TREES:
+      return RangesActions.handleSetShowMultiplicityTrees(state, action);
 
-    case AUTO_PEAK_PICKING:
-      return handleAutoPeakPicking(state, action.options);
-
-    case AUTO_RANGES_DETECTION:
-      return handleAutoRangesDetection(state, action.options);
-
-    case AUTO_ZONES_DETECTION:
-      return handleAutoZonesDetection(state, action.options);
-
-    case ADD_RANGE:
-      return handleAddRange(state, action);
-    case DELETE_RANGE:
-      return handleDeleteRange(state, action.rangeID);
-    case CHANGE_RANGE_DATA:
-      return handleChangeRange(state, action);
-    case RESIZE_RANGE:
-      return handleResizeRange(state, action);
-    case CHANGE_RANGE_SUM:
-      return handleChangeRangeSum(state, action.value);
-    case SET_PREFERENCES:
+    case types.SET_PREFERENCES:
       return handelSetPreferences(state, action.data);
-    case SET_ACTIVE_TAB:
-      return handelSetActiveTab(state, action.tab);
-    case ADD_BASE_LINE_ZONE:
-      return handleAddBaseLineZone(state, action.zone);
-    case DELETE_BASE_LINE_ZONE:
-      return handleDeleteBaseLineZone(state, action.id);
-    case APPLY_BASE_LINE_CORRECTION_FILTER:
-      return handleBaseLineCorrectionFilter(state, action);
-    case SET_KEY_PREFERENCES:
+    case types.SET_ACTIVE_TAB:
+      return ToolsActions.handelSetActiveTab(state, action.tab);
+    case types.ADD_BASE_LINE_ZONE:
+      return ToolsActions.handleAddBaseLineZone(state, action.zone);
+    case types.DELETE_BASE_LINE_ZONE:
+      return ToolsActions.handleDeleteBaseLineZone(state, action.id);
+    case types.APPLY_BASE_LINE_CORRECTION_FILTER:
+      return FiltersActions.handleBaseLineCorrectionFilter(state, action);
+    case types.SET_KEY_PREFERENCES:
       return setKeyPreferencesHandler(state, action.keyCode);
-    case APPLY_KEY_PREFERENCES:
+    case types.APPLY_KEY_PREFERENCES:
       return applyKeyPreferencesHandler(state, action.keyCode);
-    case SET_2D_LEVEL:
-      return levelChangeHandler(state, action);
-    case ADD_2D_ZONE:
-      return add2dZoneHandler(state, action);
-    case DELETE_2D_ZONE:
-      return delete2dZoneHandler(state, action.zoneID);
-    case ADD_MISSING_PROJECTION:
-      return addMissingProjectionHander(state, action);
-    case SET_SHOW_MULTIPLICITY_TREES:
-      return handleSetShowMultiplicityTrees(state, action);
+    case types.SET_2D_LEVEL:
+      return ToolsActions.levelChangeHandler(state, action);
+    case types.ADD_2D_ZONE:
+      return ZonesActions.add2dZoneHandler(state, action);
+    case types.DELETE_2D_ZONE:
+      return ZonesActions.delete2dZoneHandler(state, action.zoneID);
+    case types.ADD_MISSING_PROJECTION:
+      return SpectrumsActions.addMissingProjectionHander(state, action);
+    case types.RESET_DOMAIN:
+      return DomainActions.handelResetDomain(state);
+    case types.CHANGE_ZONE_DATA:
+      return ZonesActions.handleChangeZone(state, action);
 
-    case RESET_DOMAIN:
-      return handelResetDomain(state);
     case UNDO:
       return handleHistoryUndo(state);
 
@@ -437,9 +302,6 @@ export function spectrumReducer(state, action) {
 
     case RESET:
       return handleHistoryReset(state, action);
-
-    case CHANGE_ZONE_DATA:
-      return handleChangeZone(state, action);
 
     default:
       return state;

@@ -68,135 +68,141 @@ const splitPaneStyles = {
   pane: { overflow: 'hidden' },
 };
 
-const NMRDisplayer = memo((props) => {
-  const {
+const NMRDisplayer = memo(
+  ({
     data: dataProp,
     // height: heightProp,
     // width: widthProps,
+    onDataChange,
     docsBaseUrl,
     preferences,
-  } = props;
-  const fullScreenRef = useRef();
-  const [show, toggle] = useToggle(false);
-  const isFullscreen = useFullscreen(fullScreenRef, show, {
-    onClose: () => {
-      toggle(false);
-    },
-  });
-
-  const [isResizeEventStart, setResizeEventStart] = useState(false);
-  const [helpData, setHelpData] = useState(helpList());
-
-  const [state, dispatch] = useReducer(spectrumReducer, initialState);
-
-  const { selectedTool, displayerMode } = state;
-
-  useEffect(() => {
-    dispatch({ type: SET_LOADING_FLAG, isLoading: true });
-    Analysis.build(dataProp || {}).then((object) => {
-      dispatch({ type: INITIATE, data: { AnalysisObj: object } });
+  }) => {
+    const fullScreenRef = useRef();
+    const [show, toggle] = useToggle(false);
+    const isFullscreen = useFullscreen(fullScreenRef, show, {
+      onClose: () => {
+        toggle(false);
+      },
     });
-  }, [dataProp]);
 
-  useEffect(() => {
-    setBaseUrl(docsBaseUrl);
-    setHelpData(helpList());
-  }, [docsBaseUrl]);
+    const [isResizeEventStart, setResizeEventStart] = useState(false);
+    const [helpData, setHelpData] = useState(helpList());
 
-  const handleSplitPanelDragFinished = useCallback((size) => {
-    setResizeEventStart(false);
-    dispatch({ type: SET_WIDTH, width: size });
-  }, []);
+    const [state, dispatch] = useReducer(spectrumReducer, initialState);
 
-  const dispatchMiddleWare = useMemo(() => dispatchMiddleware(dispatch), [
-    dispatch,
-  ]);
+    const { selectedTool, displayerMode } = state;
 
-  //  // {
-  //               // height: heightProp,
-  //               // width: widthProps,
-  //               state
-  //               // isResizeEventStart,
-  //             // }
+    useEffect(() => {
+      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+      Analysis.build(dataProp || {}).then((object) => {
+        dispatch({ type: INITIATE, data: { AnalysisObj: object } });
+      });
+    }, [dataProp]);
 
-  return (
-    <ErrorBoundary>
-      <PreferencesProvider value={preferences}>
-        <HelpProvider data={helpData} wrapperID="main-wrapper">
-          <AlertProvider template={AlertTemplate} {...alertOptions}>
-            <DispatchProvider value={dispatchMiddleWare}>
-              <ChartDataProvider value={{ ...state, isResizeEventStart }}>
-                <ModalProvider wrapperID="main-wrapper">
-                  <KeyListener parentRef={fullScreenRef} />
-                  <HighlightProvider>
-                    <AssignmentProvider>
-                      <div
-                        ref={fullScreenRef}
-                        css={css`
-                          background-color: white;
-                          height: 100%;
-                          display: flex;
-                          flex-direction: column;
-                          div:focus {
-                            outline: none !important;
-                          }
-                          button:active,
-                          button:hover,
-                          button:focus,
-                          [type='button']:focus,
-                          button {
-                            outline: none !important;
-                          }
-                        `}
-                      >
-                        <Header
-                          isFullscreen={isFullscreen}
-                          onMaximize={toggle}
-                        />
-                        {/* ref={containerRef} */}
-                        <div style={{ flex: 1 }}>
-                          <DropZone>
-                            <ToolBar />
-                            <SplitPane
-                              style={splitPaneStyles.container}
-                              paneStyle={splitPaneStyles.pane}
-                              resizerStyle={splitPaneStyles.resizer}
-                              pane1Style={splitPaneStyles.pane1}
-                              split="vertical"
-                              defaultSize="calc(100% - 600px)"
-                              minSize="80%"
-                              onDragFinished={handleSplitPanelDragFinished}
-                              onDragStarted={() => {
-                                setResizeEventStart(true);
-                              }}
-                            >
-                              {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                                <Viewer1D />
-                              ) : (
-                                <Viewer2D />
-                              )}
-                              <Panels selectedTool={selectedTool} />
-                            </SplitPane>
-                          </DropZone>
+    useEffect(() => {
+      setBaseUrl(docsBaseUrl);
+      setHelpData(helpList());
+    }, [docsBaseUrl]);
+
+    const handleSplitPanelDragFinished = useCallback((size) => {
+      setResizeEventStart(false);
+      dispatch({ type: SET_WIDTH, width: size });
+    }, []);
+
+    const dispatchMiddleWare = useMemo(() => {
+      function dataChangeHandler(data) {
+        onDataChange(data);
+      }
+      return dispatchMiddleware(dispatch, dataChangeHandler);
+    }, [onDataChange]);
+
+    //  // {
+    //               // height: heightProp,
+    //               // width: widthProps,
+    //               state
+    //               // isResizeEventStart,
+    //             // }
+
+    return (
+      <ErrorBoundary>
+        <PreferencesProvider value={preferences}>
+          <HelpProvider data={helpData} wrapperID="main-wrapper">
+            <AlertProvider template={AlertTemplate} {...alertOptions}>
+              <DispatchProvider value={dispatchMiddleWare}>
+                <ChartDataProvider value={{ ...state, isResizeEventStart }}>
+                  <ModalProvider wrapperID="main-wrapper">
+                    <KeyListener parentRef={fullScreenRef} />
+                    <HighlightProvider>
+                      <AssignmentProvider>
+                        <div
+                          ref={fullScreenRef}
+                          css={css`
+                            background-color: white;
+                            height: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            div:focus {
+                              outline: none !important;
+                            }
+                            button:active,
+                            button:hover,
+                            button:focus,
+                            [type='button']:focus,
+                            button {
+                              outline: none !important;
+                            }
+                          `}
+                        >
+                          <Header
+                            isFullscreen={isFullscreen}
+                            onMaximize={toggle}
+                          />
+                          {/* ref={containerRef} */}
+                          <div style={{ flex: 1 }}>
+                            <DropZone>
+                              <ToolBar />
+                              <SplitPane
+                                style={splitPaneStyles.container}
+                                paneStyle={splitPaneStyles.pane}
+                                resizerStyle={splitPaneStyles.resizer}
+                                pane1Style={splitPaneStyles.pane1}
+                                split="vertical"
+                                defaultSize="calc(100% - 600px)"
+                                minSize="80%"
+                                onDragFinished={handleSplitPanelDragFinished}
+                                onDragStarted={() => {
+                                  setResizeEventStart(true);
+                                }}
+                              >
+                                {displayerMode === DISPLAYER_MODE.DM_1D ? (
+                                  <Viewer1D />
+                                ) : (
+                                  <Viewer2D />
+                                )}
+                                <Panels selectedTool={selectedTool} />
+                              </SplitPane>
+                            </DropZone>
+                          </div>
+                          <div id="main-wrapper" />
                         </div>
-                        <div id="main-wrapper" />
-                      </div>
-                    </AssignmentProvider>
-                  </HighlightProvider>
-                </ModalProvider>
-              </ChartDataProvider>
-            </DispatchProvider>
-          </AlertProvider>
-        </HelpProvider>
-      </PreferencesProvider>
-    </ErrorBoundary>
-  );
-});
+                      </AssignmentProvider>
+                    </HighlightProvider>
+                  </ModalProvider>
+                </ChartDataProvider>
+              </DispatchProvider>
+            </AlertProvider>
+          </HelpProvider>
+        </PreferencesProvider>
+      </ErrorBoundary>
+    );
+  },
+);
 
 NMRDisplayer.propTypes = {
   height: PropTypes.number,
   width: PropTypes.number,
   docsBaseUrl: PropTypes.string,
+  onDataChange: PropTypes.func,
   preferences: PropTypes.shape(
     {
       general: PropTypes.shape({
@@ -237,6 +243,7 @@ NMRDisplayer.defaultProps = {
   height: 600,
   width: 800,
   docsBaseUrl: 'https://cheminfo.github.io/nmr-displayer/docs/v0',
+  onDataChange: () => null,
   preferences: {
     general: {
       disableMultipletAnalysis: false,
