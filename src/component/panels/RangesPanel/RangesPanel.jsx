@@ -9,10 +9,12 @@ import { useDispatch } from '../../context/DispatchContext';
 import RangesWrapper from '../../hoc/RangesWrapper';
 import { CHANGE_RANGE_DATA } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
-import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
-import { unlink } from '../extra/utilities/RangeUtilities';
+import {
+  unlink,
+  unlinkInAssignmentData,
+} from '../extra/utilities/RangeUtilities';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import RangesHeader from './RangesHeader';
@@ -119,36 +121,12 @@ const RangesTablePanel = memo(
     const unlinkRangeHandler = useCallback(
       (range, isOnRangeLevel, signalIndex) => {
         // remove assignments in assignment hook data
-        if (isOnRangeLevel !== undefined) {
-          if (isOnRangeLevel === true) {
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: { id: range.id, axis: 'x' },
-            });
-          } else if (signalIndex !== undefined) {
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: {
-                id: `${range.id}${HighlightSignalConcatenation}${signalIndex}`,
-                axis: 'x',
-              },
-            });
-          }
-        } else {
-          assignmentData.dispatch({
-            type: 'REMOVE_ALL',
-            payload: { id: range.id, axis: 'x' },
-          });
-          range.signal.forEach((_signal, i) =>
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: {
-                id: `${range.id}${HighlightSignalConcatenation}${i}`,
-                axis: 'x',
-              },
-            }),
-          );
-        }
+        unlinkInAssignmentData(
+          assignmentData,
+          range,
+          isOnRangeLevel,
+          signalIndex,
+        );
 
         // remove assignments in global state
         const _range = unlink(range, isOnRangeLevel, signalIndex);

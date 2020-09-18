@@ -16,7 +16,7 @@ import RangeAssignmentsColumn from './TableColumns/RangeAssignmentsColumn';
 import RangeColumn from './TableColumns/RangeColumn';
 import RelativeColumn from './TableColumns/RelativeColumn';
 import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn';
-import SignalColumn from './TableColumns/SignalColumn';
+import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import useFormat from './TableColumns/format';
 
 const HighlightedRowStyle = css`
@@ -147,7 +147,7 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
         />
       )}
 
-      <SignalColumn
+      <SignalDeltaColumn
         rowData={rowData}
         onHoverSignal={onHoverSignal}
         preferences={preferences}

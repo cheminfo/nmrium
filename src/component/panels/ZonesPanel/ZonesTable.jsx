@@ -43,16 +43,7 @@ const tableStyle = css`
   }
 `;
 
-const ZonesTable = ({
-  tableData,
-  onChangeKind,
-  onDelete,
-  onUnlink,
-  onZoom,
-  context,
-  preferences,
-  nuclei,
-}) => {
+const ZonesTable = ({ tableData, onUnlink, context, preferences, nuclei }) => {
   const contextRef = useRef();
   const data = useMemo(() => {
     const _zonesData = [];
@@ -138,10 +129,7 @@ const ZonesTable = ({
                   // eslint-disable-next-line react/no-array-index-key
                   key={`zonesTableRow${i}`}
                   rowData={data[i]}
-                  onChangeKind={onChangeKind}
-                  onDelete={onDelete}
                   onUnlink={onUnlink}
-                  onZoom={onZoom}
                   onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                   preferences={preferences}
                 />

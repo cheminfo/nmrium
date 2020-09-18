@@ -110,6 +110,7 @@ export class Datum2D {
           delta: (zone.fromTo[1].from + zone.fromTo[1].to) / 2,
           diaID: [],
         },
+        kind: 'signal',
       };
     });
 
@@ -292,7 +293,6 @@ export class Datum2D {
             kind: 'signal',
           },
         ],
-        // kind: zone.kind || 'signal',
       };
     });
     this.zones.values = this.zones.values.concat(formatedZones);

@@ -1,5 +1,7 @@
 import loadsh from 'lodash';
 
+import { HighlightSignalConcatenation } from '../constants/ConcatenationStrings';
+
 const getDiaIDs = (range) => {
   return [].concat(
     range.diaID || [],
@@ -58,6 +60,44 @@ const checkSignalKinds = (range, kinds) => {
   );
 };
 
+const unlinkInAssignmentData = (
+  assignmentData,
+  range,
+  isOnRangeLevel,
+  signalIndex,
+) => {
+  if (isOnRangeLevel !== undefined) {
+    if (isOnRangeLevel === true) {
+      assignmentData.dispatch({
+        type: 'REMOVE_ALL',
+        payload: { id: range.id, axis: 'x' },
+      });
+    } else if (signalIndex !== undefined) {
+      assignmentData.dispatch({
+        type: 'REMOVE_ALL',
+        payload: {
+          id: `${range.id}${HighlightSignalConcatenation}${signalIndex}`,
+          axis: 'x',
+        },
+      });
+    }
+  } else {
+    assignmentData.dispatch({
+      type: 'REMOVE_ALL',
+      payload: { id: range.id, axis: 'x' },
+    });
+    range.signal.forEach((_signal, i) =>
+      assignmentData.dispatch({
+        type: 'REMOVE_ALL',
+        payload: {
+          id: `${range.id}${HighlightSignalConcatenation}${i}`,
+          axis: 'x',
+        },
+      }),
+    );
+  }
+};
+
 export {
   addDefaultSignal,
   checkSignalKinds,
@@ -65,4 +105,5 @@ export {
   getPubIntegral,
   resetDiaIDs,
   unlink,
+  unlinkInAssignmentData,
 };

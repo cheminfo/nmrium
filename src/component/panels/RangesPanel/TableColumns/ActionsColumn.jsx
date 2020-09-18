@@ -15,9 +15,11 @@ import {
   RESET_SELECTED_TOOL,
   SET_SELECTED_TOOL,
 } from '../../../reducer/types/Types';
-import { HighlightSignalConcatenation } from '../../extra/constants/ConcatenationStrings';
 import { SignalKinds } from '../../extra/constants/SignalsKinds';
-import { unlink } from '../../extra/utilities/RangeUtilities';
+import {
+  unlink,
+  unlinkInAssignmentData,
+} from '../../extra/utilities/RangeUtilities';
 
 const selectBoxStyle = {
   marginLeft: 2,
@@ -33,19 +35,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
 
   const onUnlinkInAssignmentData = useCallback(
     (range) => {
-      assignmentData.dispatch({
-        type: 'REMOVE_ALL',
-        payload: { id: range.id, axis: 'x' },
-      });
-      range.signal.forEach((_signal, i) =>
-        assignmentData.dispatch({
-          type: 'REMOVE_ALL',
-          payload: {
-            id: `${range.id}${HighlightSignalConcatenation}${i}`,
-            axis: 'x',
-          },
-        }),
-      );
+      unlinkInAssignmentData(assignmentData, range);
     },
     [assignmentData],
   );
