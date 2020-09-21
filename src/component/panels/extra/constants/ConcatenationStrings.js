@@ -1,3 +1,3 @@
-const HighlightSignalConcatenation = '___';
+const SignalConcatenationString = '___';
 
-export { HighlightSignalConcatenation };
+export { SignalConcatenationString };

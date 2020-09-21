@@ -12,16 +12,13 @@ import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import ContextWrapper from '../../hoc/ContextWrapper';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
-import {
-  DELETE_2D_ZONE,
-  SET_Y_DOMAIN,
-  SET_X_DOMAIN,
-  CHANGE_ZONE_DATA,
-} from '../../reducer/types/Types';
+import { DELETE_2D_ZONE, CHANGE_ZONE_DATA } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
-import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 import NoTableData from '../extra/placeholder/NoTableData';
-import { unlink } from '../extra/utilities/ZoneUtilities';
+import {
+  unlink,
+  unlinkInAssignmentData,
+} from '../extra/utilities/ZoneUtilities';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -129,76 +126,13 @@ const ZonesPanel = memo(
     const unlinkZoneHandler = useCallback(
       (zone, isOnZoneLevel, signalIndex, axis) => {
         // unlink in assignment hook data
-        if (isOnZoneLevel !== undefined && axis !== undefined) {
-          if (isOnZoneLevel === true) {
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: {
-                id: zone.id,
-                axis: axis,
-              },
-            });
-          } else if (signalIndex !== undefined) {
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: {
-                id: `${zone.id}${HighlightSignalConcatenation}${signalIndex}`,
-                axis: axis,
-              },
-            });
-          }
-        } else if (axis !== undefined) {
-          assignmentData.dispatch({
-            type: 'REMOVE_ALL',
-            payload: {
-              id: zone.id,
-              axis: axis,
-            },
-          });
-          zone.signal.forEach((_signal, i) => {
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: {
-                id: `${zone.id}${HighlightSignalConcatenation}${i}`,
-                axis: axis,
-              },
-            });
-          });
-        } else {
-          assignmentData.dispatch({
-            type: 'REMOVE_ALL',
-            payload: {
-              id: zone.id,
-              axis: 'x',
-            },
-          });
-          zone.signal.forEach((_signal, i) => {
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: {
-                id: `${zone.id}${HighlightSignalConcatenation}${i}`,
-                axis: 'x',
-              },
-            });
-          });
-          assignmentData.dispatch({
-            type: 'REMOVE_ALL',
-            payload: {
-              id: zone.id,
-              axis: 'y',
-            },
-          });
-          zone.signal.forEach((_signal, i) => {
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: {
-                id: `${zone.id}${HighlightSignalConcatenation}${i}`,
-                axis: 'y',
-              },
-            });
-          });
-        }
-
+        unlinkInAssignmentData(
+          assignmentData,
+          zone,
+          isOnZoneLevel,
+          signalIndex,
+          axis,
+        );
         // unlink in global state
         const _zone = unlink(zone, isOnZoneLevel, signalIndex, axis);
         dispatch({ type: CHANGE_ZONE_DATA, data: _zone });
@@ -227,39 +161,6 @@ const ZonesPanel = memo(
         },
       });
     }, [dispatch, modal, removeAssignments]);
-
-    const zoomZoneHandler = useCallback(
-      (zone) => {
-        const xMargin = Math.abs(zone.x.from - zone.x.to) * 10;
-        dispatch({
-          type: SET_X_DOMAIN,
-          xDomain:
-            zone.x.from <= zone.x.to
-              ? [zone.x.from - xMargin, zone.x.to + xMargin]
-              : [zone.x.to - xMargin, zone.x.from + xMargin],
-        });
-        const yMargin = Math.abs(zone.y.from - zone.y.to) * 10;
-        dispatch({
-          type: SET_Y_DOMAIN,
-          yDomain:
-            zone.y.from <= zone.y.to
-              ? [zone.y.from - yMargin, zone.y.to + yMargin]
-              : [zone.y.to - yMargin, zone.y.from + yMargin],
-        });
-      },
-      [dispatch],
-    );
-
-    const deleteZoneHandler = useCallback(
-      (zone) => {
-        unlinkZoneHandler(zone);
-        dispatch({
-          type: DELETE_2D_ZONE,
-          zoneID: zone.id,
-        });
-      },
-      [dispatch, unlinkZoneHandler],
-    );
 
     const saveToClipboardHandler = useCallback(
       (value) => {
@@ -401,8 +302,6 @@ const ZonesPanel = memo(
               {tableData && tableData.length > 0 ? (
                 <ZonesTable
                   tableData={tableData}
-                  onDelete={deleteZoneHandler}
-                  onZoom={zoomZoneHandler}
                   onUnlink={unlinkZoneHandler}
                   context={contextMenu}
                   preferences={zonesPreferences}

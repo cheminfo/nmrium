@@ -5,7 +5,6 @@ import { useMemo, useCallback, useState } from 'react';
 
 import { useAssignment } from '../../assignment';
 import { useHighlight, useHighlightData } from '../../highlight';
-import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 import { SignalKindsToConsiderInIntegralsSum } from '../extra/constants/SignalsKinds';
 import { isColumnVisible } from '../extra/preferences/ColumnsHelper';
 
@@ -16,7 +15,7 @@ import RangeAssignmentsColumn from './TableColumns/RangeAssignmentsColumn';
 import RangeColumn from './TableColumns/RangeColumn';
 import RelativeColumn from './TableColumns/RelativeColumn';
 import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn';
-import SignalColumn from './TableColumns/SignalColumn';
+import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import useFormat from './TableColumns/format';
 
 const HighlightedRowStyle = css`
@@ -147,7 +146,7 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
         />
       )}
 
-      <SignalColumn
+      <SignalDeltaColumn
         rowData={rowData}
         onHoverSignal={onHoverSignal}
         preferences={preferences}
@@ -202,7 +201,6 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
         onUnlink={unlinkHandler}
         rowSpanTags={rowSpanTags}
         highlightData={highlightData}
-        HighlightSignalConcatenation={HighlightSignalConcatenation}
       />
 
       <ActionsColumn

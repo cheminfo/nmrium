@@ -11,7 +11,7 @@ import MoleculePanel from './MoleculePanel';
 import PeaksPanel from './PeaksPanel/PeaksPanel';
 import RangesPanel from './RangesPanel/RangesPanel';
 import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
-import Summary from './Summary';
+import SummaryPanel from './SummaryPanel/SummaryPanel';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
 import FilterPanel from './filtersPanel/FilterPanel';
 
@@ -67,7 +67,7 @@ const accordionItems = [
   },
   {
     title: 'Summary',
-    component: <Summary />,
+    component: <SummaryPanel />,
     openWhen: [],
     style: '',
     hidePreferenceKey: 'hideSummaryPanel',

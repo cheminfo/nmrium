@@ -10,14 +10,16 @@ import SelectUncontrolled from '../../../elements/SelectUncontrolled';
 import EditRangeModal from '../../../modal/editRange/EditRangeModal';
 import {
   SET_X_DOMAIN,
-  DELETE_RANGE,
   CHANGE_RANGE_DATA,
   RESET_SELECTED_TOOL,
   SET_SELECTED_TOOL,
 } from '../../../reducer/types/Types';
-import { HighlightSignalConcatenation } from '../../extra/constants/ConcatenationStrings';
 import { SignalKinds } from '../../extra/constants/SignalsKinds';
-import { unlink } from '../../extra/utilities/RangeUtilities';
+import {
+  unlink,
+  unlinkInAssignmentData,
+  deleteRange,
+} from '../../extra/utilities/RangeUtilities';
 
 const selectBoxStyle = {
   marginLeft: 2,
@@ -31,25 +33,6 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
   const modal = useModal();
   const assignmentData = useAssignmentData();
 
-  const onUnlinkInAssignmentData = useCallback(
-    (range) => {
-      assignmentData.dispatch({
-        type: 'REMOVE_ALL',
-        payload: { id: range.id, axis: 'x' },
-      });
-      range.signal.forEach((_signal, i) =>
-        assignmentData.dispatch({
-          type: 'REMOVE_ALL',
-          payload: {
-            id: `${range.id}${HighlightSignalConcatenation}${i}`,
-            axis: 'x',
-          },
-        }),
-      );
-    },
-    [assignmentData],
-  );
-
   const zoomRangeHandler = useCallback(() => {
     const margin = Math.abs(rowData.from - rowData.to) / 2;
     dispatch({
@@ -59,12 +42,8 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
   }, [dispatch, rowData.from, rowData.to]);
 
   const deleteRangeHandler = useCallback(() => {
-    onUnlinkInAssignmentData(rowData);
-    dispatch({
-      type: DELETE_RANGE,
-      rangeID: rowData.id,
-    });
-  }, [dispatch, rowData, onUnlinkInAssignmentData]);
+    deleteRange(assignmentData, dispatch, rowData);
+  }, [assignmentData, dispatch, rowData]);
 
   const changeRangeSignalKindHandler = useCallback(
     (value) => {
@@ -82,7 +61,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
     (editedRange) => {
       let _range = lodash.cloneDeep(editedRange);
       // for now: clear all assignments for this range because signals or levels to store might have changed
-      onUnlinkInAssignmentData(_range);
+      unlinkInAssignmentData(assignmentData, _range);
       _range = unlink(_range);
       delete _range.tableMetaInfo;
 
@@ -91,7 +70,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
         data: _range,
       });
     },
-    [dispatch, onUnlinkInAssignmentData],
+    [assignmentData, dispatch],
   );
 
   const closeEditRangeHandler = useCallback(() => {

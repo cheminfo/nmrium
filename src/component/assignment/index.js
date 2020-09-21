@@ -54,13 +54,15 @@ function assignmentReducer(state, action) {
         ...state,
         assignment: { ...state.assignment },
       };
-      if (
-        newState.assignment[action.payload.id] !== undefined &&
-        newState.assignment[action.payload.id][action.payload.axis] !==
-          undefined
-      ) {
-        delete newState.assignment[action.payload.id][action.payload.axis];
-      }
+      // takes an array now to delete multiple identifiers
+      action.payload.id.forEach((_id) => {
+        if (
+          newState.assignment[_id] !== undefined &&
+          newState.assignment[_id][action.payload.axis] !== undefined
+        ) {
+          delete newState.assignment[_id][action.payload.axis];
+        }
+      });
 
       return newState;
     }
@@ -185,7 +187,7 @@ export function useAssignment(key) {
     (axis) => {
       context.dispatch({
         type: 'REMOVE_ALL',
-        payload: { id, axis },
+        payload: { id: [id], axis },
       });
     },
     [context, id],

@@ -4,7 +4,7 @@ import { useMemo, useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import ContextMenu from '../../elements/ContextMenu';
-import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
+import { buildID } from '../extra/utilities/Concatenation';
 
 import ZonesTableRow from './ZonesTableRow';
 
@@ -43,15 +43,7 @@ const tableStyle = css`
   }
 `;
 
-const ZonesTable = ({
-  tableData,
-  onDelete,
-  onUnlink,
-  onZoom,
-  context,
-  preferences,
-  nuclei,
-}) => {
+const ZonesTable = ({ tableData, onUnlink, context, preferences, nuclei }) => {
   const contextRef = useRef();
   const data = useMemo(() => {
     const _zonesData = [];
@@ -64,7 +56,7 @@ const ZonesTable = ({
             signal: zone.signal[0],
             rowIndex: i,
             signalIndex: 0,
-            id: `${zone.id}${HighlightSignalConcatenation}${0}`,
+            id: buildID(zone.id, 0),
           },
         });
       } else if (zone.signal.length > 1) {
@@ -90,7 +82,7 @@ const ZonesTable = ({
               hide,
               rowIndex: i,
               signalIndex: j,
-              id: `${zone.id}${HighlightSignalConcatenation}${j}`,
+              id: buildID(zone.id, j),
             },
           });
         });
@@ -119,7 +111,7 @@ const ZonesTable = ({
               <FaLink />
             </th>
             <th colSpan={2}>Σ</th>
-            {/* <th rowSpan={2}>Kind</th> */}
+            <th rowSpan={2}>Kind</th>
             <th rowSpan={2}>{''}</th>
           </tr>
           <tr>
@@ -137,9 +129,7 @@ const ZonesTable = ({
                   // eslint-disable-next-line react/no-array-index-key
                   key={`zonesTableRow${i}`}
                   rowData={data[i]}
-                  onDelete={onDelete}
                   onUnlink={onUnlink}
-                  onZoom={onZoom}
                   onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                   preferences={preferences}
                 />

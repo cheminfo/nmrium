@@ -38,7 +38,7 @@ import {
   exportAsSVG,
 } from '../utility/Export';
 
-import { HighlightSignalConcatenation } from './extra/constants/ConcatenationStrings';
+import { SignalConcatenationString } from './extra/constants/ConcatenationStrings';
 import * as RangeUtilities from './extra/utilities/RangeUtilities';
 import * as ZoneUtilities from './extra/utilities/ZoneUtilities';
 
@@ -154,7 +154,7 @@ const MoleculePanel = memo(
     const activeAssignment = useAssignment(
       assignmentData.assignment.activeID !== undefined
         ? assignmentData.assignment.activeID
-        : HighlightSignalConcatenation, // dummy value
+        : SignalConcatenationString, // dummy value
     );
 
     const extractFromAtom = useCallback(
@@ -196,7 +196,7 @@ const MoleculePanel = memo(
         if (displayerMode === '1D' && ranges && ranges.values) {
           return ranges.values;
         } else if (displayerMode === '2D' && zones && zones.values) {
-          return ranges.values;
+          return zones.values;
         }
       }
       return [];
@@ -270,9 +270,7 @@ const MoleculePanel = memo(
             });
 
             // save assignment (diaIDs) in range/zone data
-            const split = activeAssignment.id.split(
-              HighlightSignalConcatenation,
-            );
+            const split = activeAssignment.id.split(SignalConcatenationString);
             const datum = data.find((_datum) => _datum.id === split[0]);
             const signalIndex = !isNaN(Number(split[1]))
               ? Number(split[1])
@@ -398,7 +396,7 @@ const MoleculePanel = memo(
         if (oclIDs.length > 0) {
           let highlights = [];
           for (let key in assignmentData.assignment.assignment) {
-            const split = key.split(HighlightSignalConcatenation);
+            const split = key.split(SignalConcatenationString);
             if (
               assignmentData.assignment.assignment[key].x &&
               assignmentData.assignment.assignment[key].x.some((_assigned) =>
@@ -436,54 +434,15 @@ const MoleculePanel = memo(
 
     const handleOnUnlinkAll = useCallback(() => {
       data.forEach((datum) => {
-        // unlink in assignment hook state
         if (displayerMode === '1D') {
-          assignmentData.dispatch({
-            type: 'REMOVE_ALL',
-            payload: { id: datum.id, axis: 'x' },
-          });
-          datum.signal.forEach((_signal, i) =>
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: {
-                id: `${datum.id}${HighlightSignalConcatenation}${i}`,
-                axis: 'x',
-              },
-            }),
-          );
+          // unlink in assignment hook state
+          RangeUtilities.unlinkInAssignmentData(assignmentData, datum);
+          // unlink in global state
           const _datum = RangeUtilities.unlink(datum);
           dispatch({ type: CHANGE_RANGE_DATA, data: _datum });
         } else if (displayerMode === '2D') {
-          assignmentData.dispatch({
-            type: 'REMOVE_ALL',
-            payload: {
-              id: datum.id,
-              axis: 'x',
-            },
-          });
-          assignmentData.dispatch({
-            type: 'REMOVE_ALL',
-            payload: {
-              id: datum.id,
-              axis: 'y',
-            },
-          });
-          datum.signal.forEach((_signal, i) => {
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: {
-                id: `${datum.id}${HighlightSignalConcatenation}${i}`,
-                axis: 'x',
-              },
-            });
-            assignmentData.dispatch({
-              type: 'REMOVE_ALL',
-              payload: {
-                id: `${datum.id}${HighlightSignalConcatenation}${i}`,
-                axis: 'y',
-              },
-            });
-          });
+          // unlink in assignment hook state
+          ZoneUtilities.unlinkInAssignmentData(assignmentData, datum);
           // unlink in global state
           const _datum = ZoneUtilities.unlink(datum);
           dispatch({ type: CHANGE_ZONE_DATA, data: _datum });
