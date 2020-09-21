@@ -1,4 +1,8 @@
-import loadsh from 'lodash';
+import lodash from 'lodash';
+
+import { DELETE_RANGE } from '../../../reducer/types/Types';
+
+import { buildID } from './Concatenation';
 
 const getDiaIDs = (range) => {
   return [].concat(
@@ -29,7 +33,7 @@ const resetDiaIDs = (range) => {
 };
 
 const unlink = (range, isOnRangeLevel, signalIndex) => {
-  const rangeObject = loadsh.cloneDeep(range);
+  const rangeObject = lodash.cloneDeep(range);
 
   if (isOnRangeLevel !== undefined) {
     if (isOnRangeLevel === true) {
@@ -58,11 +62,47 @@ const checkSignalKinds = (range, kinds) => {
   );
 };
 
+const deleteRange = (assignmentData, dispatch, range) => {
+  unlinkInAssignmentData(assignmentData, range);
+  dispatch({ type: DELETE_RANGE, rangeID: range.id });
+};
+
+const _unlinkInAssignmentData = (assignmentData, id) => {
+  assignmentData.dispatch({
+    type: 'REMOVE_ALL',
+    payload: { id, axis: 'x' },
+  });
+};
+
+const unlinkInAssignmentData = (
+  assignmentData,
+  range,
+  isOnRangeLevel,
+  signalIndex,
+) => {
+  let id = [];
+  if (isOnRangeLevel !== undefined) {
+    id =
+      isOnRangeLevel === true
+        ? [range.id]
+        : signalIndex !== undefined
+        ? [buildID(range.id, signalIndex)]
+        : [];
+  } else {
+    id = [range.id].concat(
+      range.signal.map((_signal, i) => buildID(range.id, i)),
+    );
+  }
+  _unlinkInAssignmentData(assignmentData, id);
+};
+
 export {
   addDefaultSignal,
   checkSignalKinds,
+  deleteRange,
   getDiaIDs,
   getPubIntegral,
   resetDiaIDs,
   unlink,
+  unlinkInAssignmentData,
 };

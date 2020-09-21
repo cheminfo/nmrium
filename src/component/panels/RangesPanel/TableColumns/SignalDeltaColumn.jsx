@@ -4,7 +4,7 @@ import { checkMultiplicity } from '../../extra/utilities/MultiplicityUtilities';
 
 import useFormat from './format';
 
-const SignalColumn = ({ rowData, onHoverSignal, preferences }) => {
+const SignalDeltaColumn = ({ rowData, onHoverSignal, preferences }) => {
   const signal = rowData.tableMetaInfo.signal;
   const format = useFormat(preferences);
 
@@ -22,4 +22,4 @@ const SignalColumn = ({ rowData, onHoverSignal, preferences }) => {
   );
 };
 
-export default SignalColumn;
+export default SignalDeltaColumn;

@@ -2,7 +2,7 @@ import lodash from 'lodash';
 import React, { useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
-import { HighlightSignalConcatenation } from '../../extra/constants/ConcatenationStrings';
+import { SignalConcatenationString } from '../../extra/constants/ConcatenationStrings';
 
 const spanStyle = {
   color: 'red',
@@ -39,7 +39,7 @@ const RangeAssignmentsColumn = memo(
         assignment.isOnHover ||
         (highlight.isActive &&
           !highlightData.highlight.highlighted.find((_highlighted) => {
-            const split = _highlighted.split(HighlightSignalConcatenation);
+            const split = _highlighted.split(SignalConcatenationString);
             return split[0] === assignment.id && split.length > 1;
           }));
 

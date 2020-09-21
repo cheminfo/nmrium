@@ -1,11 +1,20 @@
 import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
-import { useCallback } from 'react';
+import { useCallback, useState, useEffect, useMemo } from 'react';
 
-import { useAssignment } from '../../assignment';
+import { useAssignment, useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
 import { useHighlight } from '../../highlight';
+import { SignalKindsToConsiderInIntegralsSum } from '../../panels/extra/constants/SignalsKinds';
+import { buildID } from '../../panels/extra/utilities/Concatenation';
+import {
+  checkSignalKinds,
+  deleteZone,
+} from '../../panels/extra/utilities/ZoneUtilities';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
+
+import Signal from './Signal';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -44,23 +53,33 @@ const stylesHighlighted = css`
   }
 `;
 
-const Zone = ({ x, y, id, onDelete }) => {
+const Zone = ({ zoneData }) => {
+  const { x, y, id, signal } = zoneData;
   const assignmentZone = useAssignment(id);
   const highlightZone = useHighlight(
     [assignmentZone.id],
-    // .concat(
-    //   assignmentZone.assigned.x || [],
-    //   assignmentZone.assigned.y || [],
-    // ),
+    // assignmentZone.assigned.x || [],
+    // assignmentZone.assigned.y || [],
   );
+  const assignmentData = useAssignmentData();
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
   const { from: x1, to: x2 } = x;
   const { from: y1, to: y2 } = y;
+  const dispatch = useDispatch();
+
+  const [reduceOpacity, setReduceOpacity] = useState(false);
+
+  useEffect(() => {
+    setReduceOpacity(
+      !checkSignalKinds(zoneData, SignalKindsToConsiderInIntegralsSum),
+    );
+  }, [zoneData]);
+
   const deleteHandler = useCallback(() => {
-    onDelete(id);
-  }, [id, onDelete]);
+    deleteZone(assignmentData, dispatch, zoneData);
+  }, [assignmentData, dispatch, zoneData]);
 
   const DeleteButton = () => {
     return (
@@ -79,6 +98,17 @@ const Zone = ({ x, y, id, onDelete }) => {
     );
   };
 
+  const signals = useMemo(() => {
+    return signal.map((_signal, i) => (
+      <Signal
+        // eslint-disable-next-line react/no-array-index-key
+        key={`zone_${id}_signal${i}`}
+        signal={_signal}
+        signalID={buildID(id, i)}
+      />
+    ));
+  }, [id, signal]);
+
   return (
     <g
       css={
@@ -87,7 +117,14 @@ const Zone = ({ x, y, id, onDelete }) => {
           : stylesOnHover
       }
       key={id}
-      {...highlightZone.onHover}
+      onMouseEnter={() => {
+        assignmentZone.onMouseEnter();
+        highlightZone.show();
+      }}
+      onMouseLeave={() => {
+        assignmentZone.onMouseLeave();
+        highlightZone.hide();
+      }}
     >
       <g transform={`translate(${scaleX(x1)},${scaleY(y1)})`}>
         <rect
@@ -96,10 +133,11 @@ const Zone = ({ x, y, id, onDelete }) => {
           height={scaleY(y2) - scaleY(y1)}
           className="Integral-area"
           fill="#0000000f"
-          stroke=" #343a40"
-          strokeWidth="0.1"
+          stroke={reduceOpacity ? '#343a40' : 'darkgreen'}
+          strokeWidth={reduceOpacity ? '0' : '1'}
         />
       </g>
+      {signals}
 
       <DeleteButton />
     </g>
