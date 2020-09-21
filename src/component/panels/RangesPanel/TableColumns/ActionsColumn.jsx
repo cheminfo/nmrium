@@ -10,7 +10,6 @@ import SelectUncontrolled from '../../../elements/SelectUncontrolled';
 import EditRangeModal from '../../../modal/editRange/EditRangeModal';
 import {
   SET_X_DOMAIN,
-  DELETE_RANGE,
   CHANGE_RANGE_DATA,
   RESET_SELECTED_TOOL,
   SET_SELECTED_TOOL,
@@ -19,6 +18,7 @@ import { SignalKinds } from '../../extra/constants/SignalsKinds';
 import {
   unlink,
   unlinkInAssignmentData,
+  deleteRange,
 } from '../../extra/utilities/RangeUtilities';
 
 const selectBoxStyle = {
@@ -33,13 +33,6 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
   const modal = useModal();
   const assignmentData = useAssignmentData();
 
-  const onUnlinkInAssignmentData = useCallback(
-    (range) => {
-      unlinkInAssignmentData(assignmentData, range);
-    },
-    [assignmentData],
-  );
-
   const zoomRangeHandler = useCallback(() => {
     const margin = Math.abs(rowData.from - rowData.to) / 2;
     dispatch({
@@ -49,12 +42,8 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
   }, [dispatch, rowData.from, rowData.to]);
 
   const deleteRangeHandler = useCallback(() => {
-    onUnlinkInAssignmentData(rowData);
-    dispatch({
-      type: DELETE_RANGE,
-      rangeID: rowData.id,
-    });
-  }, [dispatch, rowData, onUnlinkInAssignmentData]);
+    deleteRange(assignmentData, dispatch, rowData);
+  }, [assignmentData, dispatch, rowData]);
 
   const changeRangeSignalKindHandler = useCallback(
     (value) => {
@@ -72,7 +61,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
     (editedRange) => {
       let _range = lodash.cloneDeep(editedRange);
       // for now: clear all assignments for this range because signals or levels to store might have changed
-      onUnlinkInAssignmentData(_range);
+      unlinkInAssignmentData(assignmentData, _range);
       _range = unlink(_range);
       delete _range.tableMetaInfo;
 
@@ -81,7 +70,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
         data: _range,
       });
     },
-    [dispatch, onUnlinkInAssignmentData],
+    [assignmentData, dispatch],
   );
 
   const closeEditRangeHandler = useCallback(() => {

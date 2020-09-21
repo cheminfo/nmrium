@@ -1,164 +1,88 @@
 import lodash from 'lodash';
-import React, { Fragment } from 'react';
+import React from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
-const ZoneAssignmentsColumn = ({
+const ZoneAssignmentColumn = ({
   rowData,
-  assignmentZone,
-  onHoverZoneX,
-  onHoverZoneY,
-  showUnlinkButtonZoneX,
-  showUnlinkButtonZoneY,
-  setShowUnlinkButtonZoneX,
-  setShowUnlinkButtonZoneY,
-  rowSpanTags,
+  assignment,
+  highlight,
+  onHover,
   onClick,
   onUnlink,
-  highlightZoneX,
-  highlightZoneY,
+  axis,
+  showUnlinkButton,
+  setShowUnlinkButton,
+  rowSpanTags,
 }) => {
   return (
-    <Fragment>
-      <td
-        {...rowSpanTags}
-        {...onHoverZoneX}
-        {...{ onClick: (e) => onClick(e, assignmentZone, 'x') }}
-      >
-        {lodash.get(rowData, 'x.pubIntegral', 0) > 0 ? (
-          lodash.get(rowData, 'x.diaID', []).length > 0 ? (
-            <div
-              onMouseEnter={() => setShowUnlinkButtonZoneX(true)}
-              onMouseLeave={() => setShowUnlinkButtonZoneX(false)}
+    <td
+      {...rowSpanTags}
+      {...onHover}
+      {...{ onClick: (e) => onClick(e, assignment, axis) }}
+    >
+      {lodash.get(rowData, `${axis}.pubIntegral`, 0) > 0 ? (
+        lodash.get(rowData, `${axis}.diaID`, []).length > 0 ? (
+          <div
+            onMouseEnter={() => setShowUnlinkButton(true)}
+            onMouseLeave={() => setShowUnlinkButton(false)}
+          >
+            {rowData[axis].pubIntegral} {`(`}
+            <span
+              style={
+                assignment.isActive & (assignment.activeAxis === axis) ||
+                assignment.isOnHover & (assignment.onHoverAxis === axis) ||
+                highlight.isActive
+                  ? {
+                      color: 'red',
+                      fontWeight: 'bold',
+                    }
+                  : { color: 'black', fontWeight: 'normal' }
+              }
             >
-              {`${rowData.x.pubIntegral}`} {`(`}
-              <span
-                style={
-                  (assignmentZone.isActive &&
-                    assignmentZone.activeAxis === 'x') ||
-                  (assignmentZone.isOnHover &&
-                    assignmentZone.onHoverAxis === 'x') ||
-                  highlightZoneX.isActive
-                    ? {
-                        color: 'red',
-                        fontWeight: 'bold',
-                      }
-                    : { color: 'black', fontWeight: 'normal' }
-                }
-              >
-                {rowData.x.diaID ? rowData.x.diaID.length : 0}
-              </span>
-              {`)`}{' '}
-              <sup>
-                <button
-                  type="button"
-                  style={{
-                    visibility: showUnlinkButtonZoneX ? 'visible' : 'hidden',
-                    padding: 0,
-                    margin: 0,
-                  }}
-                  onClick={(e) => onUnlink(e, true, 'x')}
-                >
-                  <FaMinusCircle color="red" />
-                </button>
-              </sup>
-            </div>
-          ) : assignmentZone.isActive && assignmentZone.activeAxis === 'x' ? (
-            <div>
-              {`${rowData.x.pubIntegral} (`}
-              <span
+              {lodash.get(rowData, `${axis}.diaID`, []).length}
+            </span>
+            {`)`}{' '}
+            <sup>
+              <button
+                type="button"
                 style={{
-                  color: 'red',
-                  fontWeight: 'bold',
+                  visibility: showUnlinkButton ? 'visible' : 'hidden',
+                  padding: 0,
+                  margin: 0,
                 }}
+                onClick={(e) => onUnlink(e, true, axis)}
               >
-                0
-              </span>
-              {')'}
-            </div>
-          ) : (
-            rowData.x.pubIntegral
-          )
-        ) : assignmentZone.isActive && assignmentZone.activeAxis === 'x' ? (
+                <FaMinusCircle color="red" />
+              </button>
+            </sup>
+          </div>
+        ) : assignment.isActive && assignment.activeAxis === axis ? (
           <div>
-            {'0 ('}
-            <span style={{ color: 'red', fontWeight: 'bold' }}>0</span>
+            {`${lodash.get(rowData, `${axis}.pubIntegral`, '')} (`}
+            <span
+              style={{
+                color: 'red',
+                fontWeight: 'bold',
+              }}
+            >
+              0
+            </span>
             {')'}
           </div>
         ) : (
-          ''
-        )}
-      </td>
-      <td
-        {...rowSpanTags}
-        {...onHoverZoneY}
-        {...{ onClick: (e) => onClick(e, assignmentZone, 'y') }}
-      >
-        {lodash.get(rowData, 'y.pubIntegral', 0) > 0 ? (
-          lodash.get(rowData, 'y.diaID', []).length > 0 ? (
-            <div
-              onMouseEnter={() => setShowUnlinkButtonZoneY(true)}
-              onMouseLeave={() => setShowUnlinkButtonZoneY(false)}
-            >
-              {`${rowData.y.pubIntegral}`} {`(`}
-              <span
-                style={
-                  (assignmentZone.isActive &&
-                    assignmentZone.activeAxis === 'y') ||
-                  (assignmentZone.isOnHover &&
-                    assignmentZone.onHoverAxis === 'y') ||
-                  highlightZoneY.isActive
-                    ? {
-                        color: 'red',
-                        fontWeight: 'bold',
-                      }
-                    : { color: 'black', fontWeight: 'normal' }
-                }
-              >
-                {rowData.y.diaID ? rowData.y.diaID.length : 0}
-              </span>
-              {`)`}{' '}
-              <sup>
-                <button
-                  type="button"
-                  style={{
-                    visibility: showUnlinkButtonZoneY ? 'visible' : 'hidden',
-                    padding: 0,
-                    margin: 0,
-                  }}
-                  onClick={(e) => onUnlink(e, true, 'y')}
-                >
-                  <FaMinusCircle color="red" />
-                </button>
-              </sup>
-            </div>
-          ) : assignmentZone.isActive && assignmentZone.activeAxis === 'y' ? (
-            <div>
-              {`${rowData.y.pubIntegral} (`}
-              <span
-                style={{
-                  color: 'red',
-                  fontWeight: 'bold',
-                }}
-              >
-                0
-              </span>
-              {')'}
-            </div>
-          ) : (
-            rowData.y.pubIntegral
-          )
-        ) : assignmentZone.isActive && assignmentZone.activeAxis === 'y' ? (
-          <div>
-            {'0 ('}
-            <span style={{ color: 'red', fontWeight: 'bold' }}>0</span>
-            {')'}
-          </div>
-        ) : (
-          ''
-        )}
-      </td>
-    </Fragment>
+          rowData.x.pubIntegral
+        )
+      ) : assignment.isActive && assignment.activeAxis === axis ? (
+        <div>
+          {'0 ('}
+          <span style={{ color: 'red', fontWeight: 'bold' }}>0</span>
+          {')'}
+        </div>
+      ) : (
+        ''
+      )}
+    </td>
   );
 };
 
-export default ZoneAssignmentsColumn;
+export default ZoneAssignmentColumn;

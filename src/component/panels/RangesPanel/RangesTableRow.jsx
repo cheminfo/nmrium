@@ -5,7 +5,6 @@ import { useMemo, useCallback, useState } from 'react';
 
 import { useAssignment } from '../../assignment';
 import { useHighlight, useHighlightData } from '../../highlight';
-import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
 import { SignalKindsToConsiderInIntegralsSum } from '../extra/constants/SignalsKinds';
 import { isColumnVisible } from '../extra/preferences/ColumnsHelper';
 
@@ -202,7 +201,6 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
         onUnlink={unlinkHandler}
         rowSpanTags={rowSpanTags}
         highlightData={highlightData}
-        HighlightSignalConcatenation={HighlightSignalConcatenation}
       />
 
       <ActionsColumn

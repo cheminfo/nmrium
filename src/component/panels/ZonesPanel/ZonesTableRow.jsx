@@ -5,12 +5,12 @@ import { useMemo, useCallback, useState } from 'react';
 
 import { useAssignment } from '../../assignment';
 import { useHighlight } from '../../highlight';
-import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
+import { buildID } from '../extra/utilities/Concatenation';
 
 import ActionsColumn from './TableColumns/ActionsColumn';
-import SignalAssignmentsColumn from './TableColumns/SignalAssignmentsColumn';
+import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
-import ZoneAssignmentsColumn from './TableColumns/ZoneAssignmentsColumn';
+import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns';
 
 const HighlightedRowStyle = { backgroundColor: '#ff6f0057' };
 
@@ -31,24 +31,20 @@ const ZonesTableRow = ({
     // ),
   );
   const highlightZoneX = useHighlight(
-    [`${assignmentZone.id}${HighlightSignalConcatenation}X`].concat(
-      assignmentZone.assigned.x || [],
-    ),
+    [buildID(assignmentZone.id, 'X')].concat(assignmentZone.assigned.x || []),
   );
   const highlightZoneY = useHighlight(
-    [`${assignmentZone.id}${HighlightSignalConcatenation}Y`].concat(
-      assignmentZone.assigned.y || [],
-    ),
+    [buildID(assignmentZone.id, 'Y')].concat(assignmentZone.assigned.y || []),
   );
 
   const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
   const highlightSignalX = useHighlight(
-    [`${assignmentSignal.id}${HighlightSignalConcatenation}X`].concat(
+    [buildID(assignmentSignal.id, 'X')].concat(
       assignmentSignal.assigned.x || [],
     ),
   );
   const highlightSignalY = useHighlight(
-    [`${assignmentSignal.id}${HighlightSignalConcatenation}Y`].concat(
+    [buildID(assignmentSignal.id, 'Y')].concat(
       assignmentSignal.assigned.y || [],
     ),
   );
@@ -193,7 +189,7 @@ const ZonesTableRow = ({
         onHoverSignalX={onHoverSignalX}
         onHoverSignalY={onHoverSignalY}
       />
-      <SignalAssignmentsColumn
+      <SignalAssignmentsColumns
         rowData={rowData}
         assignmentSignal={assignmentSignal}
         onHoverSignalX={onHoverSignalX}
@@ -207,7 +203,7 @@ const ZonesTableRow = ({
         highlightSignalX={highlightSignalX}
         highlightSignalY={highlightSignalY}
       />
-      <ZoneAssignmentsColumn
+      <ZoneAssignmentsColumns
         rowData={rowData}
         assignmentZone={assignmentZone}
         onHoverZoneX={onHoverZoneX}

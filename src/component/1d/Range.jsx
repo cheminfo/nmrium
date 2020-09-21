@@ -2,15 +2,18 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback, useState, useEffect } from 'react';
 
-import { useAssignment } from '../assignment';
+import { useAssignment, useAssignmentData } from '../assignment';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
-import { HighlightSignalConcatenation } from '../panels/extra/constants/ConcatenationStrings';
 import { SignalKindsToConsiderInIntegralsSum } from '../panels/extra/constants/SignalsKinds';
-import { checkSignalKinds } from '../panels/extra/utilities/RangeUtilities';
-import { DELETE_RANGE, RESIZE_RANGE } from '../reducer/types/Types';
+import { buildID } from '../panels/extra/utilities/Concatenation';
+import {
+  checkSignalKinds,
+  deleteRange,
+} from '../panels/extra/utilities/RangeUtilities';
+import { RESIZE_RANGE } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
 import MultiplicityTree from './MultiplicityTree';
@@ -59,6 +62,7 @@ const Range = ({ rangeData }) => {
   const highlightRange = useHighlight(
     [assignmentRange.id].concat(assignmentRange.assigned.x || []),
   );
+  const assignmentData = useAssignmentData();
 
   const { scaleX } = useScale();
   const { selectedTool } = useChartData();
@@ -81,9 +85,9 @@ const Range = ({ rangeData }) => {
     );
   }, [rangeData]);
 
-  const deleteRange = useCallback(() => {
-    dispatch({ type: DELETE_RANGE, rangeID: id });
-  }, [dispatch, id]);
+  const deleteHandler = useCallback(() => {
+    deleteRange(assignmentData, dispatch, rangeData);
+  }, [assignmentData, dispatch, rangeData]);
 
   // const handleOnStartResizing = useCallback(() => {}, []);
 
@@ -104,7 +108,7 @@ const Range = ({ rangeData }) => {
         // transform={`translate(${scaleX()(to) - 20},10)`}
         x={scaleX()(to) - 20}
         y={10}
-        onClick={() => deleteRange()}
+        onClick={() => deleteHandler()}
         data-no-export="true"
         width="16"
         height="16"
@@ -190,9 +194,8 @@ const Range = ({ rangeData }) => {
               rangeFrom={from}
               rangeTo={to}
               signal={_signal}
-              signalID={`${id}${HighlightSignalConcatenation}${i}`}
-              // eslint-disable-next-line react/no-array-index-key
-              key={`${id}${HighlightSignalConcatenation}${i}`}
+              signalID={buildID(id, i)}
+              key={buildID(id, i)}
             />
           ))
         : null}

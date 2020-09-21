@@ -4,7 +4,7 @@ import { useMemo, useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import ContextMenu from '../../elements/ContextMenu';
-import { HighlightSignalConcatenation } from '../extra/constants/ConcatenationStrings';
+import { buildID } from '../extra/utilities/Concatenation';
 
 import ZonesTableRow from './ZonesTableRow';
 
@@ -56,7 +56,7 @@ const ZonesTable = ({ tableData, onUnlink, context, preferences, nuclei }) => {
             signal: zone.signal[0],
             rowIndex: i,
             signalIndex: 0,
-            id: `${zone.id}${HighlightSignalConcatenation}${0}`,
+            id: buildID(zone.id, 0),
           },
         });
       } else if (zone.signal.length > 1) {
@@ -82,7 +82,7 @@ const ZonesTable = ({ tableData, onUnlink, context, preferences, nuclei }) => {
               hide,
               rowIndex: i,
               signalIndex: j,
-              id: `${zone.id}${HighlightSignalConcatenation}${j}`,
+              id: buildID(zone.id, j),
             },
           });
         });

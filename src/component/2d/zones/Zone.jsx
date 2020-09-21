@@ -2,12 +2,16 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback, useState, useEffect, useMemo } from 'react';
 
-import { useAssignment } from '../../assignment';
+import { useAssignment, useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
 import { useHighlight } from '../../highlight';
-import { HighlightSignalConcatenation } from '../../panels/extra/constants/ConcatenationStrings';
 import { SignalKindsToConsiderInIntegralsSum } from '../../panels/extra/constants/SignalsKinds';
-import { checkSignalKinds } from '../../panels/extra/utilities/ZoneUtilities';
+import { buildID } from '../../panels/extra/utilities/Concatenation';
+import {
+  checkSignalKinds,
+  deleteZone,
+} from '../../panels/extra/utilities/ZoneUtilities';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import Signal from './Signal';
@@ -49,7 +53,7 @@ const stylesHighlighted = css`
   }
 `;
 
-const Zone = ({ zoneData, onDelete }) => {
+const Zone = ({ zoneData }) => {
   const { x, y, id, signal } = zoneData;
   const assignmentZone = useAssignment(id);
   const highlightZone = useHighlight(
@@ -57,11 +61,13 @@ const Zone = ({ zoneData, onDelete }) => {
     // assignmentZone.assigned.x || [],
     // assignmentZone.assigned.y || [],
   );
+  const assignmentData = useAssignmentData();
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
   const { from: x1, to: x2 } = x;
   const { from: y1, to: y2 } = y;
+  const dispatch = useDispatch();
 
   const [reduceOpacity, setReduceOpacity] = useState(false);
 
@@ -72,8 +78,8 @@ const Zone = ({ zoneData, onDelete }) => {
   }, [zoneData]);
 
   const deleteHandler = useCallback(() => {
-    onDelete(id);
-  }, [id, onDelete]);
+    deleteZone(assignmentData, dispatch, zoneData);
+  }, [assignmentData, dispatch, zoneData]);
 
   const DeleteButton = () => {
     return (
@@ -98,7 +104,7 @@ const Zone = ({ zoneData, onDelete }) => {
         // eslint-disable-next-line react/no-array-index-key
         key={`zone_${id}_signal${i}`}
         signal={_signal}
-        signalID={`${id}${HighlightSignalConcatenation}${i}`}
+        signalID={buildID(id, i)}
       />
     ));
   }, [id, signal]);
@@ -111,15 +117,13 @@ const Zone = ({ zoneData, onDelete }) => {
           : stylesOnHover
       }
       key={id}
-      {...{
-        onMouseEnter: () => {
-          assignmentZone.onMouseEnter();
-          highlightZone.show();
-        },
-        onMouseLeave: () => {
-          assignmentZone.onMouseLeave();
-          highlightZone.hide();
-        },
+      onMouseEnter={() => {
+        assignmentZone.onMouseEnter();
+        highlightZone.show();
+      }}
+      onMouseLeave={() => {
+        assignmentZone.onMouseLeave();
+        highlightZone.hide();
       }}
     >
       <g transform={`translate(${scaleX(x1)},${scaleY(y1)})`}>

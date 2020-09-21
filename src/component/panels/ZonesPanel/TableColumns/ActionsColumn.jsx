@@ -9,10 +9,9 @@ import {
   CHANGE_ZONE_DATA,
   SET_X_DOMAIN,
   SET_Y_DOMAIN,
-  DELETE_2D_ZONE,
 } from '../../../reducer/types/Types';
 import { SignalKinds } from '../../extra/constants/SignalsKinds';
-import { unlinkInAssignmentData } from '../../extra/utilities/ZoneUtilities';
+import { deleteZone } from '../../extra/utilities/ZoneUtilities';
 
 const selectBoxStyle = {
   marginLeft: 2,
@@ -38,11 +37,7 @@ const ActionsColumn = ({ rowData, rowSpanTags }) => {
   );
 
   const deleteZoneHandler = useCallback(() => {
-    unlinkInAssignmentData(assignmentData, rowData);
-    dispatch({
-      type: DELETE_2D_ZONE,
-      zoneID: rowData.id,
-    });
+    deleteZone(assignmentData, dispatch, rowData);
   }, [assignmentData, dispatch, rowData]);
 
   const zoomZoneHandler = useCallback(() => {

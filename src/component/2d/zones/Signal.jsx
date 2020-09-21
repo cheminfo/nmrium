@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { memo, useState, useEffect } from 'react';
+import { memo, useState, useEffect, useCallback } from 'react';
 
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useHighlightData, useHighlight } from '../../highlight';
-import { HighlightSignalConcatenation } from '../../panels/extra/constants/ConcatenationStrings';
+import { buildID } from '../../panels/extra/utilities/Concatenation';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 const Signal = memo(({ signal, signalID }) => {
@@ -16,23 +16,20 @@ const Signal = memo(({ signal, signalID }) => {
   const x = scaleX(signal.x.delta);
   const y = scaleY(signal.y.delta);
 
+  const buildIDs = useCallback((id) => {
+    return [id].concat(buildID(id, 'X'), buildID(id, 'Y'));
+  }, []);
+
   const assignment = useAssignment(signalID);
-  const highlight = useHighlight([
-    assignment.id,
-    `${assignment.id}${HighlightSignalConcatenation}X`,
-    `${assignment.id}${HighlightSignalConcatenation}Y`,
-  ]);
+  const highlight = useHighlight(buildIDs(assignment.id));
   const highlightData = useHighlightData();
 
   const [isHighlighted, setIsHighlighted] = useState(false);
 
   useEffect(() => {
     if (
-      highlightData.highlight.highlighted.some(
-        (_highlighted) =>
-          _highlighted === signalID ||
-          _highlighted === `${signalID}${HighlightSignalConcatenation}X` ||
-          _highlighted === `${signalID}${HighlightSignalConcatenation}Y`,
+      highlightData.highlight.highlighted.some((_highlighted) =>
+        buildIDs(signalID).includes(_highlighted),
       ) ||
       assignment.isActive
     ) {
@@ -40,22 +37,25 @@ const Signal = memo(({ signal, signalID }) => {
     } else {
       setIsHighlighted(false);
     }
-  }, [assignment.isActive, highlightData.highlight.highlighted, signalID]);
+  }, [
+    assignment.isActive,
+    buildIDs,
+    highlightData.highlight.highlighted,
+    signalID,
+  ]);
 
   if (!signal) return null;
 
   return (
     <g
       className="zone-signal"
-      {...{
-        onMouseEnter: () => {
-          assignment.onMouseEnter();
-          highlight.show();
-        },
-        onMouseLeave: () => {
-          assignment.onMouseLeave();
-          highlight.hide();
-        },
+      onMouseEnter={() => {
+        assignment.onMouseEnter();
+        highlight.show();
+      }}
+      onMouseLeave={() => {
+        assignment.onMouseLeave();
+        highlight.hide();
       }}
     >
       <circle

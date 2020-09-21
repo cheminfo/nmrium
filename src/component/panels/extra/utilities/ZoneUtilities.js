@@ -1,6 +1,8 @@
 import lodash from 'lodash';
 
-import { HighlightSignalConcatenation } from '../constants/ConcatenationStrings';
+import { DELETE_2D_ZONE } from '../../../reducer/types/Types';
+
+import { buildID } from './Concatenation';
 
 const getDiaIDs = (zone, axis) => {
   return [].concat(
@@ -59,6 +61,18 @@ const unlink = (zone, isOnZoneLevel, signalIndex, axis) => {
   return zoneObject;
 };
 
+const deleteZone = (assignmentData, dispatch, zone) => {
+  unlinkInAssignmentData(assignmentData, zone);
+  dispatch({ type: DELETE_2D_ZONE, zoneID: zone.id });
+};
+
+const _unlinkInAssignmentData = (assignmentData, id, axis) => {
+  assignmentData.dispatch({
+    type: 'REMOVE_ALL',
+    payload: { id, axis },
+  });
+};
+
 const unlinkInAssignmentData = (
   assignmentData,
   zone,
@@ -67,78 +81,33 @@ const unlinkInAssignmentData = (
   axis,
 ) => {
   if (isOnZoneLevel !== undefined && axis !== undefined) {
-    if (isOnZoneLevel === true) {
-      assignmentData.dispatch({
-        type: 'REMOVE_ALL',
-        payload: {
-          id: zone.id,
-          axis: axis,
-        },
-      });
-    } else if (signalIndex !== undefined) {
-      assignmentData.dispatch({
-        type: 'REMOVE_ALL',
-        payload: {
-          id: `${zone.id}${HighlightSignalConcatenation}${signalIndex}`,
-          axis: axis,
-        },
-      });
-    }
+    _unlinkInAssignmentData(
+      assignmentData,
+      isOnZoneLevel === true
+        ? [zone.id]
+        : signalIndex !== undefined
+        ? [buildID(zone.id, signalIndex)]
+        : [],
+      axis,
+    );
   } else if (axis !== undefined) {
-    assignmentData.dispatch({
-      type: 'REMOVE_ALL',
-      payload: {
-        id: zone.id,
-        axis: axis,
-      },
-    });
-    zone.signal.forEach((_signal, i) => {
-      assignmentData.dispatch({
-        type: 'REMOVE_ALL',
-        payload: {
-          id: `${zone.id}${HighlightSignalConcatenation}${i}`,
-          axis: axis,
-        },
-      });
-    });
+    _unlinkInAssignmentData(
+      assignmentData,
+      [zone.id].concat(zone.signal.map((_signal, i) => buildID(zone.id, i))),
+      axis,
+    );
   } else {
-    assignmentData.dispatch({
-      type: 'REMOVE_ALL',
-      payload: {
-        id: zone.id,
-        axis: 'x',
-      },
-    });
-    zone.signal.forEach((_signal, i) => {
-      assignmentData.dispatch({
-        type: 'REMOVE_ALL',
-        payload: {
-          id: `${zone.id}${HighlightSignalConcatenation}${i}`,
-          axis: 'x',
-        },
-      });
-    });
-    assignmentData.dispatch({
-      type: 'REMOVE_ALL',
-      payload: {
-        id: zone.id,
-        axis: 'y',
-      },
-    });
-    zone.signal.forEach((_signal, i) => {
-      assignmentData.dispatch({
-        type: 'REMOVE_ALL',
-        payload: {
-          id: `${zone.id}${HighlightSignalConcatenation}${i}`,
-          axis: 'y',
-        },
-      });
-    });
+    const id = [zone.id].concat(
+      zone.signal.map((_signal, i) => buildID(zone.id, i)),
+    );
+    _unlinkInAssignmentData(assignmentData, id, 'x');
+    _unlinkInAssignmentData(assignmentData, id, 'y');
   }
 };
 
 export {
   checkSignalKinds,
+  deleteZone,
   getDiaIDs,
   getPubIntegral,
   resetDiaIDs,

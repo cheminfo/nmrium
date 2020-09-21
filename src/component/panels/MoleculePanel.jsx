@@ -38,7 +38,7 @@ import {
   exportAsSVG,
 } from '../utility/Export';
 
-import { HighlightSignalConcatenation } from './extra/constants/ConcatenationStrings';
+import { SignalConcatenationString } from './extra/constants/ConcatenationStrings';
 import * as RangeUtilities from './extra/utilities/RangeUtilities';
 import * as ZoneUtilities from './extra/utilities/ZoneUtilities';
 
@@ -154,7 +154,7 @@ const MoleculePanel = memo(
     const activeAssignment = useAssignment(
       assignmentData.assignment.activeID !== undefined
         ? assignmentData.assignment.activeID
-        : HighlightSignalConcatenation, // dummy value
+        : SignalConcatenationString, // dummy value
     );
 
     const extractFromAtom = useCallback(
@@ -270,9 +270,7 @@ const MoleculePanel = memo(
             });
 
             // save assignment (diaIDs) in range/zone data
-            const split = activeAssignment.id.split(
-              HighlightSignalConcatenation,
-            );
+            const split = activeAssignment.id.split(SignalConcatenationString);
             const datum = data.find((_datum) => _datum.id === split[0]);
             const signalIndex = !isNaN(Number(split[1]))
               ? Number(split[1])
@@ -398,7 +396,7 @@ const MoleculePanel = memo(
         if (oclIDs.length > 0) {
           let highlights = [];
           for (let key in assignmentData.assignment.assignment) {
-            const split = key.split(HighlightSignalConcatenation);
+            const split = key.split(SignalConcatenationString);
             if (
               assignmentData.assignment.assignment[key].x &&
               assignmentData.assignment.assignment[key].x.some((_assigned) =>
