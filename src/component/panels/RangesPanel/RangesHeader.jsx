@@ -1,5 +1,7 @@
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 import lodash from 'lodash';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useAlert } from 'react-alert';
 import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
@@ -17,22 +19,29 @@ import {
 import { copyTextToClipboard } from '../../utility/Export';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
+const sumButton = css`
+  background-color: transparent;
+  border: none;
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: outline;
+  :focus {
+    outline: none !important;
+  }
+`;
+
 const styles = {
   toolbar: {
     display: 'flex',
     flexDirection: 'row',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
-  },
-  sumButton: {
-    borderRadius: '5px',
-    marginTop: '3px',
-    color: 'white',
-    backgroundColor: '#6d6d6d',
-    border: 'none',
-    height: '16px',
-    width: '18px',
-    fontSize: '12px',
-    padding: 0,
   },
   removeAssignmentsButton: {
     borderRadius: '5px',
@@ -46,14 +55,14 @@ const styles = {
   },
   setShowMultiplicityTreesButton: {
     borderRadius: '5px',
-    marginTop: '3px',
+    // marginTop: '3px',
     marginLeft: '5px',
     color: 'black',
     backgroundColor: 'transparent',
     border: 'none',
-    height: '16px',
-    width: '18px',
-    fontSize: '12px',
+    width: '22px',
+    height: '20px',
+    fontSize: '15px',
     padding: 0,
   },
   button: {
@@ -174,12 +183,11 @@ const RangesHeader = ({
         popupPlacement="right"
       >
         <button
-          style={styles.sumButton}
+          className="ci-icon-nmr-sum"
+          css={sumButton}
           type="button"
           onClick={showChangeRangesSumModal}
-        >
-          Σ
-        </button>
+        />
       </ToolTip>
       <ToolTip title={`Remove all Assignments`} popupPlacement="right">
         <button
@@ -206,7 +214,6 @@ const RangesHeader = ({
                   ...styles.setShowMultiplicityTreesButton,
                   backgroundColor: '#6d6d6d',
                   color: 'white',
-                  fontSize: '10px',
                 }
               : styles.setShowMultiplicityTreesButton
           }
