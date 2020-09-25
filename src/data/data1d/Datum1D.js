@@ -281,7 +281,7 @@ export class Datum1D {
     });
     this.updateIntegralRanges();
 
-    return this.ranges;
+    return this.ranges.values;
   }
 
   deletePeak(peak) {

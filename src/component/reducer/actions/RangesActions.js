@@ -9,7 +9,7 @@ const handleAutoRangesDetection = (state, detectionOptions) => {
       const { id, index } = state.activeSpectrum;
       const ob = AnalysisObj.getDatum(id);
       const ranges = ob.detectRanges(detectionOptions);
-      draft.data[index].ranges = ranges;
+      draft.data[index].ranges.values = ranges;
     }
   });
 };
