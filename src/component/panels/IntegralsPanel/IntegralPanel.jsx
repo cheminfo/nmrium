@@ -1,5 +1,7 @@
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 import lodash from 'lodash';
-import React, { useCallback, useMemo, useState, useRef, memo } from 'react';
+import { useCallback, useMemo, useState, useRef, memo, Fragment } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import { useDispatch } from '../../context/DispatchContext';
@@ -17,30 +19,29 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import IntegralTable from './IntegralTable';
 import IntegralsPreferences from './IntegralsPreferences';
 
-const styles = {
-  toolbar: {
-    display: 'flex',
-    flexDirection: 'row',
-    borderBottom: '0.55px solid rgb(240, 240, 240)',
-  },
+const styles = css`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
-  sumButton: {
-    borderRadius: '5px',
-    marginTop: '3px',
-    color: 'white',
-    backgroundColor: '#6d6d6d',
-    border: 'none',
-    height: '16px',
-    width: '18px',
-    fontSize: '12px',
-    padding: 0,
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-  },
-};
+  .sum-button {
+    background-color: transparent;
+    border: none;
+    width: 22px;
+    height: 22px;
+    min-height: 22px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: outline;
+    :focus {
+      outline: none !important;
+    }
+  }
+`;
 
 const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
   const [filterIsActive, setFilterIsActive] = useState(false);
@@ -106,8 +107,8 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
   }, []);
 
   return (
-    <>
-      <div style={styles.container}>
+    <Fragment>
+      <div css={styles}>
         {!isFlipped && (
           <DefaultPanelHeader
             counter={integralsCounter}
@@ -129,12 +130,10 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
               popupPlacement="right"
             >
               <button
-                style={styles.sumButton}
+                className="ci-icon-nmr-sum sum-button"
                 type="button"
                 onClick={showChangeIntegralSumModal}
-              >
-                Σ
-              </button>
+              />
             </ToolTip>
           </DefaultPanelHeader>
         )}
@@ -159,7 +158,7 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
           <IntegralsPreferences ref={settingRef} />
         </ReactCardFlip>
       </div>
-    </>
+    </Fragment>
   );
 });
 

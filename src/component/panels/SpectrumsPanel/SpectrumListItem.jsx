@@ -89,7 +89,16 @@ const SpectrumListItem = memo(
     const { color, name, positiveColor, negativeColor } = data.display;
     // const eyeIconColor = data.info.dimension === 2 ? positiveColor : color;
     return (
-      <div style={styles.row} key={data.id} onContextMenu={onContextMenu}>
+      <div
+        style={{
+          ...styles.row,
+          ...(activated && activated.id === data.id
+            ? { backgroundColor: '#fafafa' }
+            : {}),
+        }}
+        key={data.id}
+        onContextMenu={onContextMenu}
+      >
         {data.info.dimension === 1 && (
           <button
             style={styles.button}

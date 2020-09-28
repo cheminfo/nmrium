@@ -7,7 +7,7 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
-import { SignalKindsToConsiderInIntegralsSum } from '../panels/extra/constants/SignalsKinds';
+import { SignalKindsToInclude } from '../panels/extra/constants/SignalsKinds';
 import { buildID } from '../panels/extra/utilities/Concatenation';
 import {
   checkSignalKinds,
@@ -80,9 +80,7 @@ const Range = ({ rangeData }) => {
   }, [selectedTool]);
 
   useEffect(() => {
-    setReduceOpacity(
-      !checkSignalKinds(rangeData, SignalKindsToConsiderInIntegralsSum),
-    );
+    setReduceOpacity(!checkSignalKinds(rangeData, SignalKindsToInclude));
   }, [rangeData]);
 
   const deleteHandler = useCallback(() => {

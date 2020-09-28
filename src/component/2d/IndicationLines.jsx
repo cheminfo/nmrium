@@ -3,7 +3,7 @@ import { jsx, css } from '@emotion/core';
 import { useState, useEffect, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
-import { SignalKindsToConsiderAsIndicationLine } from '../panels/extra/constants/SignalsKinds';
+import { SignalKindsToInclude } from '../panels/extra/constants/SignalsKinds';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
@@ -47,9 +47,7 @@ const IndicationLines = ({ axis, show }) => {
           .map((_range) =>
             _range.signal
               .map((_signal) =>
-                SignalKindsToConsiderAsIndicationLine.some(
-                  (_kind) => _signal.kind === _kind,
-                )
+                SignalKindsToInclude.some((_kind) => _signal.kind === _kind)
                   ? _signal.delta
                   : null,
               )

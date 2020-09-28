@@ -2,7 +2,7 @@ import lodash from 'lodash';
 import max from 'ml-array-max';
 import { xyIntegration } from 'ml-spectra-processing';
 
-import { SignalKindsToConsiderInIntegralsSum } from '../../component/panels/extra/constants/SignalsKinds';
+import { SignalKindsToInclude } from '../../component/panels/extra/constants/SignalsKinds';
 import { checkSignalKinds } from '../../component/panels/extra/utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 
@@ -191,10 +191,7 @@ export class Datum1D {
       this.integrals.options = { ...this.integrals.options, sum: 100 };
     }
     const countingCondition = (integral) => {
-      return (
-        integral.kind &&
-        SignalKindsToConsiderInIntegralsSum.includes(integral.kind)
-      );
+      return integral.kind && SignalKindsToInclude.includes(integral.kind);
     };
     this.integrals.values = this.updateRelatives(
       this.integrals.values.slice(),
@@ -209,10 +206,7 @@ export class Datum1D {
       this.ranges.options = { ...this.ranges.options, sum: 100 };
     }
     const countingCondition = (range) => {
-      return (
-        range.signal &&
-        checkSignalKinds(range, SignalKindsToConsiderInIntegralsSum)
-      );
+      return range.signal && checkSignalKinds(range, SignalKindsToInclude);
     };
     this.ranges.values = this.updateRelatives(
       this.ranges.values.slice(),
@@ -263,7 +257,7 @@ export class Datum1D {
   applyAutoPeakPicking(options) {
     const peaks = autoPeakPicking(this, options);
     this.peaks.values = peaks;
-    return this.peaks;
+    return this.peaks.values;
   }
 
   detectRanges(options) {
@@ -281,7 +275,7 @@ export class Datum1D {
     });
     this.updateIntegralRanges();
 
-    return this.ranges;
+    return lodash.cloneDeep(this.ranges);
   }
 
   deletePeak(peak) {

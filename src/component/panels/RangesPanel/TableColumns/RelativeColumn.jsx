@@ -1,20 +1,15 @@
 import React, { useMemo } from 'react';
 
 import FormatNumber from '../../../utility/FormatNumber';
+import { SignalKindsToInclude } from '../../extra/constants/SignalsKinds';
 import { checkSignalKinds } from '../../extra/utilities/RangeUtilities';
 
-const RelativeColumn = ({
-  rowData,
-  rowSpanTags,
-  onHoverRange,
-  SignalKindsToConsiderInIntegralsSum,
-  format,
-}) => {
+const RelativeColumn = ({ rowData, rowSpanTags, onHoverRange, format }) => {
   const integralVal = useMemo(() => {
-    const flag = checkSignalKinds(rowData, SignalKindsToConsiderInIntegralsSum);
-    const formatedValue = FormatNumber(rowData.integral, format);
-    return flag ? formatedValue : `[ ${formatedValue} ]`;
-  }, [SignalKindsToConsiderInIntegralsSum, format, rowData]);
+    const flag = checkSignalKinds(rowData, SignalKindsToInclude);
+    const formattedValue = FormatNumber(rowData.integral, format);
+    return flag ? formattedValue : `[ ${formattedValue} ]`;
+  }, [format, rowData]);
 
   return (
     <td {...rowSpanTags} {...onHoverRange}>

@@ -6,7 +6,7 @@ import { useAssignment, useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useHighlight } from '../../highlight';
-import { SignalKindsToConsiderInIntegralsSum } from '../../panels/extra/constants/SignalsKinds';
+import { SignalKindsToInclude } from '../../panels/extra/constants/SignalsKinds';
 import { buildID } from '../../panels/extra/utilities/Concatenation';
 import {
   checkSignalKinds,
@@ -72,9 +72,7 @@ const Zone = ({ zoneData }) => {
   const [reduceOpacity, setReduceOpacity] = useState(false);
 
   useEffect(() => {
-    setReduceOpacity(
-      !checkSignalKinds(zoneData, SignalKindsToConsiderInIntegralsSum),
-    );
+    setReduceOpacity(!checkSignalKinds(zoneData, SignalKindsToInclude));
   }, [zoneData]);
 
   const deleteHandler = useCallback(() => {
