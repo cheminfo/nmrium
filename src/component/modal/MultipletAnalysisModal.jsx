@@ -3,8 +3,9 @@ import { jsx, css } from '@emotion/core';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 import { useState, useEffect } from 'react';
-import { FaTimes } from 'react-icons/fa';
 import { Chart } from 'react-jsgraph';
+
+import CloseButton from '../elements/CloseButton';
 
 const styles = css`
   display: flex;
@@ -159,9 +160,8 @@ const MultipletAnalysisModal = ({
     <div css={styles}>
       <div className="header">
         <span>Analyse Multiplet</span>
-        <button onClick={onClose} type="button">
-          <FaTimes />
-        </button>
+
+        <CloseButton onClick={onClose} />
       </div>
       <div className="container">
         {analysisData &&

@@ -16,6 +16,7 @@ import Transition from './Transition';
 import Wrapper from './Wrapper';
 // import { groupBy } from './helpers';
 import { positions, transitions } from './options';
+import { Rnd } from 'react-rnd';
 
 const ModalProvider = ({
   children,
@@ -131,6 +132,11 @@ const ModalProvider = ({
   //   };
   // };
 
+  const stopPropagation = useCallback((e) => {
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+  }, []);
+
   return (
     <Context.Provider value={modalContext}>
       {children}
@@ -172,8 +178,8 @@ const ModalProvider = ({
                     }
                     key={modal.id}
                   >
-                    {/* <Rnd
-                      ref={rndRef}
+                    <Rnd
+                      // ref={rndRef}
                       style={{
                         boxSizing: 'initial',
                         backgroundColor: '#fff',
@@ -181,17 +187,19 @@ const ModalProvider = ({
                         borderRadius: '5px',
                         ...style,
                         margin: offset,
-                        // pointerEvents: 'none',
+                        pointerEvents: 'all',
                         position: 'none',
+                        userSelect: 'none',
+                        cursor: 'default',
                       }}
                       enableResizing={
-                        modal.enableResizing
-                          ? isEnableResizing(true)
-                          : isEnableResizing(false)
+                        false
+                        // modal.enableResizing
+                        //   ? isEnableResizing(true)
+                        //   : isEnableResizing(false)
                       }
-                    > */}
-
-                    <div
+                    >
+                      {/* <div
                       style={{
                         boxSizing: 'initial',
                         backgroundColor: '#fff',
@@ -202,15 +210,20 @@ const ModalProvider = ({
                         pointerEvents: 'all',
                         position: 'none',
                       }}
-                    >
+                    > */}
                       {modal.options &&
                         React.cloneElement(modal.component, {
                           ...modal.options,
                           onClose: closeHandler,
                           style: { cursor: 'default' },
+                          onDrag: stopPropagation,
+                          onMouseDown: stopPropagation,
+                          onMouseUp: stopPropagation,
+                          onStart: stopPropagation,
+                          onStop: stopPropagation,
                         })}
-                    </div>
-                    {/* </Rnd> */}
+                      {/* </div> */}
+                    </Rnd>
                   </Transition>
                 </TransitionGroup>
               </div>

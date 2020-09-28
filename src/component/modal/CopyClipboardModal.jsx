@@ -1,5 +1,7 @@
 import { jsx, css } from '@emotion/core';
-import { FaCopy, FaTimes } from 'react-icons/fa';
+import { FaCopy } from 'react-icons/fa';
+
+import CloseButton from '../elements/CloseButton';
 /** @jsx jsx */
 
 const styles = css`
@@ -36,9 +38,8 @@ const CopyClipboardModal = ({ text, onClose, onCopyClick }) => {
         <button type="button" onClick={() => onCopyClick(text)}>
           <FaCopy />
         </button>
-        <button type="button" onClick={onClose}>
-          <FaTimes />
-        </button>
+
+        <CloseButton onClick={onClose} />
       </div>
       <div
         className="innerContainer"

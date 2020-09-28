@@ -3,9 +3,11 @@ import { jsx, css } from '@emotion/core';
 import { Form, Formik } from 'formik';
 import lodash from 'lodash';
 import { useCallback, useEffect, useMemo } from 'react';
-import { FaTimes, FaSearchPlus, FaRegSave } from 'react-icons/fa';
+import { FaSearchPlus } from 'react-icons/fa';
 
 import Button from '../../elements/Button';
+import CloseButton from '../../elements/CloseButton';
+import SaveButton from '../../elements/SaveButton';
 import {
   hasCouplingConstant,
   translateMultiplet,
@@ -173,19 +175,16 @@ const EditRangeModal = ({
               <Form>
                 <div className="header">
                   <span>Range Information and Editing</span>
-                  <Button
+                  <SaveButton
                     onClick={() => handleOnSave(values)}
-                    className="save-button"
                     disabled={isSaveButtonDisabled(errors)}
-                  >
-                    <FaRegSave title="Save and exit" />
-                  </Button>
+                    popupTitle="Save and exit"
+                  />
+
                   <Button onClick={handleOnZoom} className="zoom-button">
                     <FaSearchPlus title="Set to default view on range in spectrum" />
                   </Button>
-                  <Button onClick={handleOnClose} title="Close">
-                    <FaTimes />
-                  </Button>
+                  <CloseButton onClick={handleOnClose} />
                 </div>
                 <SignalsForm />
               </Form>

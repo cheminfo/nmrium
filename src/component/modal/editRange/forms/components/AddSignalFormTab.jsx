@@ -83,6 +83,7 @@ const AddSignalFormTab = memo(({ onFocus, onBlur }) => {
           disabled={disableAddButton}
           css={{
             color: disableAddButton ? 'grey' : 'blue',
+            width: '100%',
           }}
         >
           <FaPlus title="Add new signal" />

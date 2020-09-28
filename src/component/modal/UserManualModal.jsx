@@ -58,6 +58,7 @@ const UserManualModal = ({ onClose }) => {
       <button onClick={onClose} type="button" className="close-bt">
         <FaTimes />
       </button>
+
       <div className="main-content">
         <div className="inner-container">
           <iframe

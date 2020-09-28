@@ -31,6 +31,11 @@ const styles = {
     flexDirection: 'row',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
   },
+  container: {
+    flexDirection: 'column',
+    height: '100%',
+    display: 'flex',
+  },
   sumButton: {
     borderRadius: '5px',
     marginTop: '3px',
@@ -248,7 +253,7 @@ const ZonesPanel = memo(
 
     return (
       <>
-        <div style={styles}>
+        <div style={styles.container}>
           {!isFlipped && (
             <DefaultPanelHeader
               counter={zonesCounter}
