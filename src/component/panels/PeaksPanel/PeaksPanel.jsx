@@ -16,15 +16,6 @@ const styles = {
     flexDirection: 'column',
     height: '100%',
   },
-  toolbar: {
-    display: 'flex',
-    flexDirection: 'row',
-    borderBottom: '0.55px solid rgb(240, 240, 240)',
-  },
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-  },
 };
 
 const PeaksPanel = memo(() => {

@@ -2,6 +2,7 @@ import { produce } from 'immer';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
+import { DISPLAYER_MODE } from '../core/Constants';
 
 import { setDomain, setMode } from './DomainActions';
 import { setTab } from './ToolsActions';
@@ -80,9 +81,11 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
       draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
       // }
     } else {
-      draft.activeSpectrum = null;
-      draft.tabActiveSpectrum[draft.activeTab] = null;
-      refreshDomain = false;
+      if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+        draft.activeSpectrum = null;
+        draft.tabActiveSpectrum[draft.activeTab] = null;
+        refreshDomain = false;
+      }
     }
 
     /**

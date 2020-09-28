@@ -91,7 +91,7 @@ const handleAutoPeakPicking = (state, autOptions) => {
     const peaks = ob.applyAutoPeakPicking(autOptions);
     const index = state.data.findIndex((d) => d.id === activeSpectrumId);
     if (index !== -1) {
-      draft.data[index].peaks = peaks;
+      draft.data[index].peaks.values = peaks;
     }
   });
 };

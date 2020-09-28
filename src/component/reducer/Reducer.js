@@ -2,6 +2,7 @@
 
 import { options } from '../toolbar/ToolTypes';
 
+import checkActionType from './IgnoreActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
 import { exportData } from './actions/ExportActions';
@@ -26,7 +27,6 @@ import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
 import { AnalysisObj } from './core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
-import checkActionType from './IgnoreActions';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
 

@@ -263,7 +263,7 @@ export class Datum1D {
   applyAutoPeakPicking(options) {
     const peaks = autoPeakPicking(this, options);
     this.peaks.values = peaks;
-    return this.peaks;
+    return this.peaks.values;
   }
 
   detectRanges(options) {
@@ -281,7 +281,7 @@ export class Datum1D {
     });
     this.updateIntegralRanges();
 
-    return this.ranges;
+    return lodash.cloneDeep(this.ranges);
   }
 
   deletePeak(peak) {

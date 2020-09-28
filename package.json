@@ -9,7 +9,7 @@
   "types": "nmr-displayer.d.ts",
   "dependencies": {
     "@emotion/core": "^10.0.35",
-    "cheminfo-font": "^0.25.0",
+    "cheminfo-font": "^0.28.0",
     "d3": "^6.1.1",
     "file-saver": "^2.0.2",
     "formik": "^2.1.5",
