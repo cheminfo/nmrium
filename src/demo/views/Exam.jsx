@@ -188,6 +188,8 @@ export default function Exam(props) {
                 hideRangesPanel: true,
                 hideStructuresPanel: true,
                 hideFiltersPanel: true,
+                hideZonesPanel: true,
+                hideSummaryPanel: true,
               },
             }}
           />
