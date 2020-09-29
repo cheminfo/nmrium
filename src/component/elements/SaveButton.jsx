@@ -15,20 +15,31 @@ const styles = css`
     font-size: 16px;
   }
 `;
-const SaveButton = memo(({ onClick, popupTitle, popupPlacement, disabled }) => {
-  return (
-    <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
-      <button css={styles} type="button" onClick={onClick} disabled={disabled}>
-        <FaCheck />
-      </button>
-    </ToolTip>
-  );
-});
+const SaveButton = memo(
+  ({ onClick, popupTitle, popupPlacement, disabled, className }) => {
+    return (
+      <div className={className}>
+        <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
+          <button
+            css={styles}
+            type="button"
+            onClick={onClick}
+            disabled={disabled}
+            className={className}
+          >
+            <FaCheck />
+          </button>
+        </ToolTip>
+      </div>
+    );
+  },
+);
 SaveButton.defaultProps = {
   onClick: () => null,
   popupTitle: 'Save',
   popupPlacement: 'left',
   disabled: false,
+  className: '',
 };
 SaveButton.propTypes = {
   onClick: PropTypes.func,
