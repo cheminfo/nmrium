@@ -28,10 +28,13 @@ const styles = css`
     height: 24px;
     border-bottom: 1px solid #f0f0f0;
     display: flex;
+    align-items: center;
     span {
       color: #464646;
       font-size: 15px;
       flex: 1;
+      border-left: 1px solid #ececec;
+      padding-left: 6px;
     }
 
     button {
@@ -174,6 +177,9 @@ const EditRangeModal = ({
             return (
               <Form>
                 <div className="header">
+                  <Button onClick={handleOnZoom} className="zoom-button">
+                    <FaSearchPlus title="Set to default view on range in spectrum" />
+                  </Button>
                   <span>Range Information and Editing</span>
                   <SaveButton
                     onClick={() => handleOnSave(values)}
@@ -181,9 +187,6 @@ const EditRangeModal = ({
                     popupTitle="Save and exit"
                   />
 
-                  <Button onClick={handleOnZoom} className="zoom-button">
-                    <FaSearchPlus title="Set to default view on range in spectrum" />
-                  </Button>
                   <CloseButton onClick={handleOnClose} />
                 </div>
                 <SignalsForm />
