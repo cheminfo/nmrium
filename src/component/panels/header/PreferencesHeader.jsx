@@ -7,9 +7,9 @@ import SaveButton from '../../elements/SaveButton';
 
 const styles = css`
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   border-bottom: 0.55px solid rgb(240, 240, 240);
-  padding: 0px 5px;
+  padding: 1px 5px;
 `;
 const PreferencesHeader = memo(({ onClose, onSave }) => {
   return (

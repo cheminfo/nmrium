@@ -2,7 +2,7 @@
 import { jsx, css } from '@emotion/core';
 import PropTypes from 'prop-types';
 import { memo } from 'react';
-import { FaCheckCircle } from 'react-icons/fa';
+import { FaCheck } from 'react-icons/fa';
 
 import ToolTip from './ToolTip/ToolTip';
 
@@ -19,7 +19,7 @@ const SaveButton = memo(({ onClick, popupTitle, popupPlacement, disabled }) => {
   return (
     <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
       <button css={styles} type="button" onClick={onClick} disabled={disabled}>
-        <FaCheckCircle />
+        <FaCheck />
       </button>
     </ToolTip>
   );

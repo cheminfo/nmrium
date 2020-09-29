@@ -16,7 +16,7 @@ const styles = css`
 
   svg {
     fill: #ca0000;
-    font-size: 20px;
+    font-size: 16px;
   }
 `;
 const CloseButton = memo(
