@@ -52,6 +52,7 @@ const styles = {
     width: '18px',
     fontSize: '12px',
     padding: 0,
+    backgroundColor: 'transparent',
   },
   setShowMultiplicityTreesButton: {
     borderRadius: '5px',
