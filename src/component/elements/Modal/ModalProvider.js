@@ -179,6 +179,14 @@ const ModalProvider = ({
                     key={modal.id}
                   >
                     <Rnd
+                      size={{
+                        width: modal.options.width
+                          ? modal.options.width
+                          : 'initial',
+                        height: modal.options.height
+                          ? modal.options.height
+                          : 'initial',
+                      }}
                       // ref={rndRef}
                       style={{
                         boxSizing: 'initial',
@@ -193,8 +201,7 @@ const ModalProvider = ({
                         cursor: 'default',
                       }}
                       enableResizing={
-                        false
-                        // modal.enableResizing
+                        modal.options.enableResizing
                         //   ? isEnableResizing(true)
                         //   : isEnableResizing(false)
                       }

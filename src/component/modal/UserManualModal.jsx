@@ -5,8 +5,8 @@ import CloseButton from '../elements/CloseButton';
 import getHelpData from '../help';
 
 const styles = css`
-  width: 600px;
-  height: 400px;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   .manual-header {

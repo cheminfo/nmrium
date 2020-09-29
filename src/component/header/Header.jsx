@@ -133,6 +133,9 @@ const Header = ({ isFullscreen, onMaximize }) => {
     modal.show(<UserManualModal />, {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,
+      enableResizing: true,
+      width: 800,
+      height: 600,
     });
   }, [modal]);
 
