@@ -1,19 +1,11 @@
+/** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useCallback, useState, useEffect, useMemo } from 'react';
-/** @jsx jsx */
 import Slider from 'react-animated-slider-2';
 import MF from 'react-mf/lib/components/MF';
 import { MolfileSvgRenderer } from 'react-ocl/full';
 
-import { usePreferences } from '../context/PreferencesContext';
-
-import NumberInputModal from './NumberInputModal';
-
-const modalContainer = css`
-  display: flex;
-  flex-direction: column;
-  padding: 5px;
-`;
+import { usePreferences } from '../../context/PreferencesContext';
 
 const selectMoleculeContainerStyle = css`
   display: flex;
@@ -100,15 +92,9 @@ const moleculeContainerStyle = css`
   }
 `;
 
-const ChangeSumModal = ({ onSave, onClose, header, molecules, element }) => {
+const SelectMolecule = ({ onSave, molecules, element }) => {
   const [currentIndex, setCurrentIndex] = useState();
   const { general, panels } = usePreferences();
-  const saveInputValueHandler = useCallback(
-    (inputValue) => {
-      onSave(inputValue);
-    },
-    [onSave],
-  );
 
   const newSum = useMemo(() => {
     return element &&
@@ -134,70 +120,55 @@ const ChangeSumModal = ({ onSave, onClose, header, molecules, element }) => {
     [newSum, onSave],
   );
 
-  return (
-    <div css={modalContainer}>
-      <NumberInputModal
-        onSave={saveInputValueHandler}
-        onClose={onClose}
-        header={header}
-      />
-
-      {!general.hideSetSumFromMolecule &&
-      !panels.hideStructuresPanel &&
-      element &&
-      molecules &&
-      molecules.length > 0 ? (
-        <div css={selectMoleculeContainerStyle}>
-          <div css={optionalTextStyle}>
-            <p className="optional">OR</p>
-            <p className="optional2">Select a molecule as reference!</p>
-          </div>
-          <div css={toolbarStyle}>
-            <p>
-              {molecules &&
-                molecules.length > 0 &&
-                `${+(currentIndex + 1)} / ${molecules.length}`}{' '}
-            </p>
-          </div>
-          <div css={moleculeContainerStyle}>
-            <Slider
-              onSlideChange={(event) => setCurrentIndex(event.slideIndex)}
-            >
-              {molecules &&
-                molecules.map((mol, index) => (
-                  <div key={mol.key}>
-                    <div>
-                      <MolfileSvgRenderer
-                        id={`molSVG${index}`}
-                        width={120}
-                        molfile={mol.molfile}
-                      />
-                    </div>
-                    <p>
-                      <MF mf={mol.mf} /> - {mol.mw.toFixed(2)}
-                    </p>
-                  </div>
-                ))}
-            </Slider>
-            <button type="button" onClick={saveSelectMoleculeHandler}>
-              Set
-            </button>
-            <p className="newSumText">
-              New sum for {element} will be {newSum}!
-            </p>
-          </div>
-        </div>
-      ) : null}
+  return !general.hideSetSumFromMolecule &&
+    !panels.hideStructuresPanel &&
+    element &&
+    molecules &&
+    molecules.length > 0 ? (
+    <div css={selectMoleculeContainerStyle}>
+      <div css={optionalTextStyle}>
+        <p className="optional">OR</p>
+        <p className="optional2">Select a molecule as reference!</p>
+      </div>
+      <div css={toolbarStyle}>
+        <p>
+          {molecules &&
+            molecules.length > 0 &&
+            `${+(currentIndex + 1)} / ${molecules.length}`}{' '}
+        </p>
+      </div>
+      <div css={moleculeContainerStyle}>
+        <Slider onSlideChange={(event) => setCurrentIndex(event.slideIndex)}>
+          {molecules &&
+            molecules.map((mol, index) => (
+              <div key={mol.key}>
+                <div>
+                  <MolfileSvgRenderer
+                    id={`molSVG${index}`}
+                    width={120}
+                    molfile={mol.molfile}
+                  />
+                </div>
+                <p>
+                  <MF mf={mol.mf} /> - {mol.mw.toFixed(2)}
+                </p>
+              </div>
+            ))}
+        </Slider>
+        <button type="button" onClick={saveSelectMoleculeHandler}>
+          Set
+        </button>
+        <p className="newSumText">
+          New sum for {element} will be {newSum}!
+        </p>
+      </div>
     </div>
-  );
+  ) : null;
 };
 
-ChangeSumModal.defaultProps = {
+SelectMolecule.defaultProps = {
   onSave: () => {
     return null;
   },
-  onClose: () => {
-    return null;
-  },
 };
-export default ChangeSumModal;
+export default SelectMolecule;

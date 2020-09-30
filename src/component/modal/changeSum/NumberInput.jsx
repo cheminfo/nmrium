@@ -2,7 +2,7 @@
 import { jsx, css } from '@emotion/core';
 import { useRef, useCallback } from 'react';
 
-import CloseButton from '../elements/CloseButton';
+import CloseButton from '../../elements/CloseButton';
 
 const styles = css`
   display: flex;
@@ -52,12 +52,21 @@ const styles = css`
   }
 `;
 
-const NumberInputModal = ({ onSave, onClose, header }) => {
+const NumberInput = ({ onSave, onClose, header }) => {
   const valueReft = useRef();
 
   const saveHandler = useCallback(() => {
     onSave(valueReft.current.value);
   }, [onSave]);
+
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === 'Enter') {
+        onSave(valueReft.current.value);
+      }
+    },
+    [onSave],
+  );
 
   return (
     <div css={styles}>
@@ -71,6 +80,7 @@ const NumberInputModal = ({ onSave, onClose, header }) => {
           ref={valueReft}
           type="number"
           placeholder="Enter the new value"
+          onKeyDown={handleKeyDown}
         />
         <button type="button" onClick={saveHandler}>
           Set
@@ -80,7 +90,7 @@ const NumberInputModal = ({ onSave, onClose, header }) => {
   );
 };
 
-NumberInputModal.defaultProps = {
+NumberInput.defaultProps = {
   onSave: () => {
     return null;
   },
@@ -88,4 +98,4 @@ NumberInputModal.defaultProps = {
     return null;
   },
 };
-export default NumberInputModal;
+export default NumberInput;

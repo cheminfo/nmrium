@@ -8,7 +8,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import IntegralsWrapper from '../../hoc/IntegralsWrapper';
-import ChangeSumModal from '../../modal/ChangeSumModal';
+import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import {
   DELETE_INTEGRAL,
   CHANGE_INTEGRAL_SUM,

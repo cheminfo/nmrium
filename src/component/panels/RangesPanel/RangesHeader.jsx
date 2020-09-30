@@ -9,8 +9,8 @@ import { getACS } from 'spectra-data-ranges';
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
-import ChangeSumModal from '../../modal/ChangeSumModal';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
+import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import {
   CHANGE_RANGE_SUM,
   DELETE_RANGE,
