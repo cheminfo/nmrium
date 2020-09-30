@@ -152,7 +152,7 @@ const ZonesPanel = memo(
 
     const handleOnRemoveAssignments = useCallback(() => {
       modal.showConfirmDialog(
-        'All assignments will be removed. Are you sure?',
+        'All assignments will be removed, Are you sure?',
         {
           onYes: removeAssignments,
         },
@@ -160,7 +160,7 @@ const ZonesPanel = memo(
     }, [removeAssignments, modal]);
 
     const handleDeleteAll = useCallback(() => {
-      modal.showConfirmDialog('All zones will be deleted. Are You sure?', {
+      modal.showConfirmDialog('All zones will be deleted, Are You sure?', {
         onYes: () => {
           removeAssignments();
           dispatch({ type: DELETE_2D_ZONE });

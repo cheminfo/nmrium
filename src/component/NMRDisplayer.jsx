@@ -143,13 +143,6 @@ const NMRDisplayer = memo(
       return dispatchMiddleware(dispatch, dataChangeHandler);
     }, [onDataChange]);
 
-    //  // {
-    //               // height: heightProp,
-    //               // width: widthProps,
-    //               state
-    //               // isResizeEventStart,
-    //             // }
-
     return (
       <ErrorBoundary>
         <PreferencesProvider value={preferences}>

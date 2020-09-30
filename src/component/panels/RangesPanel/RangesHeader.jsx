@@ -116,7 +116,7 @@ const RangesHeader = ({
   }, [activeTab, changeRangesSumHandler, currentSum, modal, molecules]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All ranges will be deleted. Are You sure?', {
+    modal.showConfirmDialog('All ranges will be deleted, Are You sure?', {
       onYes: () => {
         removeAssignments();
         dispatch({ type: DELETE_RANGE });
@@ -149,7 +149,7 @@ const RangesHeader = ({
   }, [modal, ranges.values, saveToClipboardHandler]);
 
   const handleOnRemoveAssignments = useCallback(() => {
-    modal.showConfirmDialog('All assignments will be removed. Are you sure?', {
+    modal.showConfirmDialog('All assignments will be removed, Are you sure?', {
       onYes: removeAssignments,
     });
   }, [removeAssignments, modal]);

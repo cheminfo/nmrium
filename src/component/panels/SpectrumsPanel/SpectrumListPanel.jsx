@@ -48,7 +48,7 @@ const SpectrumListPanel = memo(
         // setActivated(null);
         dispatch({ type: DELETE_SPECTRA });
       } else {
-        modal.showConfirmDialog('All records will be deleted,Are You sure?', {
+        modal.showConfirmDialog('All records will be deleted, Are You sure?', {
           onYes: () => {
             dispatch({ type: DELETE_SPECTRA });
           },
