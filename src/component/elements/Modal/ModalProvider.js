@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { createPortal } from 'react-dom';
 // import { Rnd } from 'react-rnd';
+import { Rnd } from 'react-rnd';
 import { TransitionGroup } from 'react-transition-group';
 
 import ConfirmDialog from './ConfirmDialog';
@@ -16,7 +17,6 @@ import Transition from './Transition';
 import Wrapper from './Wrapper';
 // import { groupBy } from './helpers';
 import { positions, transitions } from './options';
-import { Rnd } from 'react-rnd';
 
 const ModalProvider = ({
   children,
@@ -151,6 +151,7 @@ const ModalProvider = ({
                   right: 0,
                   bottom: 0,
                   left: 0,
+                  zIndex: 1,
                   ...outerStyle,
                 }}
               >
@@ -179,13 +180,15 @@ const ModalProvider = ({
                     key={modal.id}
                   >
                     <Rnd
-                      size={{
+                      default={{
                         width: modal.options.width
                           ? modal.options.width
-                          : 'initial',
+                          : 'auto',
                         height: modal.options.height
                           ? modal.options.height
-                          : 'initial',
+                          : 'auto',
+                        x: 0,
+                        y: 0,
                       }}
                       // ref={rndRef}
                       style={{
