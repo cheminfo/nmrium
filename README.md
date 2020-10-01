@@ -10,7 +10,7 @@ https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.
 
 Also you can do some 2D  NMR exercises ;)
 
-https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset1/2d.json
+https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset1/data/2d.json
 
 You can do some 1D NMR tests/ exams ;)
 
