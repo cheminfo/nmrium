@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import lodash from 'lodash';
 import { useMemo, useCallback, useState, useEffect } from 'react';
 
 import { useAssignment } from '../assignment';
@@ -46,9 +47,11 @@ const MultiplicityTree = ({
   );
 
   const spectrumData = useMemo(() => {
-    return spectraData && activeSpectrum && spectraData[activeSpectrum.index]
-      ? spectraData[activeSpectrum.index]
-      : null;
+    if (lodash.get(activeSpectrum, 'index', -1) < 0) {
+      return null;
+    }
+
+    return spectraData[activeSpectrum.index];
   }, [activeSpectrum, spectraData]);
 
   const [xRange, setXRange] = useState({ x1: signal.delta, x2: signal.delta });
@@ -131,7 +134,7 @@ const MultiplicityTree = ({
         (_jIndex) => _jIndex === multiplicityIndex,
       );
       const coupling =
-        jIndex >= 0 && spectrumData.info && spectrumData.info.originFrequency
+        jIndex >= 0 && lodash.get(spectrumData, 'info.originFrequency', false)
           ? signal.j[jIndex].coupling / spectrumData.info.originFrequency // convert to ppm
           : null;
 
@@ -186,7 +189,7 @@ const MultiplicityTree = ({
 
       return treeNodesData;
     },
-    [signal.multiplicity, signal.j, spectrumData.info],
+    [signal.multiplicity, signal.j, spectrumData],
   );
 
   const treeNodesData = useMemo(() => {

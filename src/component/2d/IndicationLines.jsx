@@ -3,7 +3,7 @@ import { jsx, css } from '@emotion/core';
 import { useState, useEffect, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
-import { SignalKindsToInclude } from '../panels/extra/constants/SignalsKinds';
+import { DatumKind } from '../panels/extra/constants/SignalsKinds';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
@@ -45,16 +45,19 @@ const IndicationLines = ({ axis, show }) => {
           .flat();
         const deltas = ranges
           .map((_range) =>
-            _range.signal
-              .map((_signal) =>
-                SignalKindsToInclude.some((_kind) => _signal.kind === _kind)
-                  ? _signal.delta
-                  : null,
-              )
-              .flat(),
+            // _range.signal
+            //   .map((_signal) =>
+            //     SignalKindsToInclude.some((_kind) => _signal.kind === _kind)
+            //       ? _signal.delta
+            //       : null,
+            //   )
+            //   .flat(),
+            _range.kind === DatumKind.signal
+              ? _range.signal.map((_signal) => _signal.delta)
+              : undefined,
           )
-          .flat()
-          .filter((_delta) => _delta);
+          .filter((_delta) => _delta)
+          .flat();
         setDeltas1D(deltas);
       } else {
         setDeltas1D([]);

@@ -5,6 +5,7 @@ import { MF } from 'mf-parser';
 import { useMemo, useEffect, useState } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
+import { checkRangeKind } from '../extra/utilities/RangeUtilities';
 
 const tableStyle = css`
   border-spacing: 0;
@@ -50,7 +51,7 @@ const getExperiment = (data) => {
   }
 
   pulse = pulse.toLowerCase();
-  if (pulse.includes('zg')) {
+  if (pulse.includes('zg') || pulse.includes('udeft')) {
     // + udeft ?
     return '1d';
   }
@@ -110,9 +111,16 @@ const getExperiment = (data) => {
 
 const CorrelationTable = () => {
   const mf = 'C11H14N2O';
-  const { data } = useChartData();
-  const [isComplete, setIsComplete] = useState(false);
 
+  const { data } = useChartData();
+  const [completeness, setCompleteness] = useState({
+    complete: false,
+    atomType: [],
+  });
+
+  const atoms = useMemo(() => new MF(mf).getInfo().atoms, [mf]);
+
+  // all experiments
   const experiments = useMemo(() => {
     const _experiments = {};
     if (data) {
@@ -144,72 +152,191 @@ const CorrelationTable = () => {
     return _experiments;
   }, [data]);
 
-  useEffect(() => {
-    console.log(experiments);
+  // "plain" 1D experiments containing ranges, e.g. without DEPT
+  const experiments1D = useMemo(() => {
+    const _experiments1D = {};
+    // list of experiments, because one could have more than
+    // one spectrum in spectra list for one atom type
+    Object.keys(atoms).forEach((atomType) => {
+      const _experiments = lodash
+        .get(experiments, `1D.1d`, []) // don't consider DEPT etc. here
+        .map((_experiment) => {
+          return _experiment.info.nucleus.split(/\d+/)[1] === atomType &&
+            lodash.get(_experiment, 'ranges.values', []).length > 0
+            ? _experiment
+            : undefined;
+        })
+        .filter((_experiment) => _experiment);
+      if (_experiments.length > 0) {
+        _experiments1D[atomType] = _experiments;
+      }
+    });
+
+    return _experiments1D;
+  }, [atoms, experiments]);
+
+  // "extra" 1D experiments containing ranges, e.g. DEPT
+  const experiments1DExtra = useMemo(() => {
+    const _experiments1DExtra = {};
+    Object.keys(lodash.get(experiments, `1D`, {}))
+      .filter((_experimentType) => _experimentType !== '1d') // don't consider "plain" 1D experiments here
+      .forEach((_experimentType) => {
+        // list of experiments, because one could have more than
+        // one spectrum in spectra list for the current experiment type
+        const _experimentsExtra = experiments['1D'][_experimentType]
+          .map((_experiment) =>
+            lodash.get(_experiment, 'ranges.values', []).length > 0
+              ? _experiment
+              : undefined,
+          )
+          .filter((_experiment) => _experiment);
+        if (_experimentsExtra.length > 0) {
+          _experiments1DExtra[`${_experimentType}`] = _experimentsExtra;
+        }
+      });
+
+    return _experiments1DExtra;
   }, [experiments]);
 
+  // 2D experiments containing zones
+  const experiments2D = useMemo(() => {
+    const _experiments2D = {};
+    // list of experiments, because one could have more than
+    // one spectrum in spectra list for one atom type
+    Object.keys(lodash.get(experiments, '2D', {})).forEach(
+      (_experimentType) => {
+        const _experiments = lodash
+          .get(experiments, `2D.${_experimentType}`, [])
+          .map((_experiment) =>
+            lodash.get(_experiment, 'zones.values', []).length > 0
+              ? _experiment
+              : undefined,
+          )
+          .filter((_experiment) => _experiment);
+        if (_experiments.length > 0) {
+          _experiments2D[_experimentType] = _experiments;
+        }
+      },
+    );
+
+    return _experiments2D;
+  }, [experiments]);
+
+  useEffect(() => {
+    console.log(experiments);
+    console.log(experiments1D);
+    console.log(experiments1DExtra);
+    console.log(experiments2D);
+  }, [experiments, experiments1D, experiments1DExtra, experiments2D]);
+
   const additionalColumns = useMemo(
-    () =>
-      Object.keys(lodash.get(experiments, '2D', [])).filter(
-        (_experiment) => !_experiment.toUpperCase().includes('HSQC'),
-      ),
+    () => Object.keys(lodash.get(experiments, '2D', [])),
     [experiments],
   );
 
-  const rows = useMemo(() => {
-    const _MF = new MF(mf);
-    const atoms = _MF.getInfo().atoms;
-    let count = 0;
-    // let _isComplete = false;
-    return Object.keys(atoms).map((atomType, i) => {
-      if (atomType !== 'H') {
-        const _rows = [];
-        // const atomCount = atoms[atomType];
+  const correlations = useMemo(() => {
+    const _completeness = { complete: false, atomType: {} };
+    const _correlations = {};
+    Object.keys(atoms).forEach((atomType) => {
+      const atomCount = atoms[atomType];
 
-        // list of experiments, because one could have more than
-        // one spectrum in spectra list for one atom type
-        // const experimentsAtomType = lodash
-        //   .get(experiments, `1D.1d`, [])
-        //   .map((_experiment) =>
-        //     _experiment.info.nucleus.split(/\d+/)[1] === atomType &&
-        //     lodash.get(_experiment, 'ranges.values', []).length > 0
-        //       ? _experiment
-        //       : undefined,
-        //   )
-        //   .filter((_experiment) => _experiment);
+      let correlation = [];
+      if (lodash.get(experiments1D, `${atomType}`, []).length > 0) {
+        // @TODO for now we will use the first occurring matched spectrum only
+        const signals = experiments1D[`${atomType}`][0].ranges.values
+          .filter((_range) => checkRangeKind(_range))
+          .map((_range) => _range.signal)
+          .flat();
+        signals.forEach((_signal, i) => {
+          const _correlation = {
+            dimension: 1,
+            signal: _signal,
+            correlation: [], // incl. equivalences (?)
+          };
 
-        // for now we will use the first occurring matched spectrum only
-        // const signals =
-        //   experimentsAtomType.length > 0
-        //     ? experimentsAtomType[0].ranges.values.filter((_range) =>
-        //         _range.signal.some((_signal) => _signal.kind),
-        //       )
-        //     : [];
-        // console.log(signals);
+          if (i < atomCount) {
+            correlation.push(_correlation);
+          }
+        });
 
-        for (let j = 0; j < atoms[atomType]; j++) {
-          _rows.push(
-            // eslint-disable-next-line react/no-array-index-key
-            <tr key={`atom${i}${j}`}>
-              <td>{`${atomType}${count + j + 1}`}</td>
-              <td>{''}</td>
-              <td>{''}</td>
-              <td>{0}</td>
-            </tr>,
-          );
-        }
+        _completeness.atomType[`${atomType}`] = {
+          current: signals.length,
+          total: atomCount,
+          complete: signals.length === atomCount ? true : false,
+        };
 
-        count += atoms[atomType];
-        return _rows;
-      } else {
-        return null;
+        _correlations[atomType] = correlation;
       }
     });
-  }, []);
+
+    setCompleteness({
+      atomType: _completeness.atomType,
+      complete: !Object.keys(_completeness.atomType).some(
+        (_atomType) => !_completeness.atomType[`${_atomType}`].complete,
+      ),
+    });
+
+    return _correlations;
+  }, [atoms, experiments1D]);
+
+  useEffect(() => {
+    console.log(correlations);
+  }, [correlations]);
+
+  const rows = useMemo(() => {
+    const _rows = [];
+    Object.keys(atoms).forEach((atomType, i) => {
+      const _correlation = lodash.get(correlations, `${atomType}`, []);
+      if (atomType !== 'H') {
+        for (let j = 0; j < atoms[atomType]; j++) {
+          if (_correlation.length > 0 && j < _correlation.length) {
+            _rows.push(
+              // eslint-disable-next-line react/no-array-index-key
+              <tr key={`correlation${i}${j}`}>
+                <td>{`${atomType}${_rows.length + 1}`}</td>
+                <td>{_correlation[j].signal.delta.toFixed(3)}</td>
+                <td>{''}</td>
+                <td>{''}</td>
+              </tr>,
+            );
+          } else {
+            _rows.push(
+              // eslint-disable-next-line react/no-array-index-key
+              <tr key={`correlation${i}${j}`}>
+                <td>{`${atomType}${_rows.length + 1}`}</td>
+                <td>{''}</td>
+                <td>{''}</td>
+                <td>{''}</td>
+              </tr>,
+            );
+          }
+        }
+      }
+
+      return _rows;
+    });
+
+    return _rows;
+  }, [atoms, correlations]);
+
+  const molFormulaView = useMemo(() => {
+    const line = Object.keys(atoms).map((_atom, i) => (
+      <span
+        // eslint-disable-next-line react/no-array-index-key
+        key={`molFormulaView_${i}`}
+        style={{
+          color: completeness.complete ? 'green' : 'red',
+        }}
+      >
+        {`${_atom}: ${'-'}/${atoms[_atom]}   `}
+      </span>
+    ));
+    return line;
+  }, [atoms, completeness]);
 
   return (
     <div>
-      <p css={{ color: isComplete ? 'green' : 'red' }}>{mf}</p>
+      {molFormulaView}
       <table css={tableStyle}>
         <tbody>
           <tr>
