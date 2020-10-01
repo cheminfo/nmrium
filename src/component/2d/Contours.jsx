@@ -1,4 +1,5 @@
-import React from 'react';
+import lodash from 'lodash';
+import React, { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -29,22 +30,19 @@ const Contours = () => {
       path += ' z';
       return path;
     };
-
-    return (
-      contours &&
-      contours[spectrumID][sign] &&
-      contours[spectrumID][sign].length > 0 &&
-      contours[spectrumID][sign].map((contoursData, innerIndex) => (
-        <path
-          // eslint-disable-next-line react/no-array-index-key
-          key={innerIndex}
-          fill="none"
-          stroke={color}
-          strokeWidth="1"
-          d={buildContourPath(contoursData)}
-        />
-      ))
-    );
+    const data = useMemo(() => {
+      return lodash.get(contours, `${spectrumID}.${sign}`, []);
+    }, [contours, sign, spectrumID]);
+    return data.map((contoursData, innerIndex) => (
+      <path
+        // eslint-disable-next-line react/no-array-index-key
+        key={innerIndex}
+        fill="none"
+        stroke={color}
+        strokeWidth="1"
+        d={buildContourPath(contoursData)}
+      />
+    ));
   };
 
   return (
