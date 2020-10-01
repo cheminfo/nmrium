@@ -10,7 +10,11 @@ import {
   SET_X_DOMAIN,
   SET_Y_DOMAIN,
 } from '../../../reducer/types/Types';
-import { SignalKinds } from '../../extra/constants/SignalsKinds';
+import {
+  SignalKinds,
+  SignalKindsToInclude,
+  DatumKind,
+} from '../../extra/constants/SignalsKinds';
 import { deleteZone } from '../../extra/utilities/ZoneUtilities';
 
 const selectBoxStyle = {
@@ -28,6 +32,9 @@ const ActionsColumn = ({ rowData, rowSpanTags }) => {
     (value) => {
       const _zone = lodash.cloneDeep(rowData);
       _zone.signal[_zone.tableMetaInfo.signalIndex].kind = value;
+      _zone.kind = SignalKindsToInclude.includes(value)
+        ? DatumKind.signal
+        : DatumKind.noSignal;
       dispatch({
         type: CHANGE_ZONE_DATA,
         data: _zone,

@@ -2,7 +2,10 @@ import lodash from 'lodash';
 import max from 'ml-array-max';
 import { xyIntegration } from 'ml-spectra-processing';
 
-import { SignalKindsToInclude } from '../../component/panels/extra/constants/SignalsKinds';
+import {
+  SignalKindsToInclude,
+  DatumKind,
+} from '../../component/panels/extra/constants/SignalsKinds';
 import { checkSignalKinds } from '../../component/panels/extra/utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 
@@ -264,10 +267,10 @@ export class Datum1D {
     const ranges = autoRangesDetection(this, options);
     this.ranges.values = ranges.map((range) => {
       return {
+        kind: DatumKind.signal,
         ...range,
         id: generateID(),
         absolute: this.getIntegration(range.from, range.to),
-        // kind: 'signal',
         signal: range.signal.map((_signal) => {
           return { kind: 'signal', ..._signal };
         }),
@@ -413,7 +416,7 @@ export class Datum1D {
         to,
         absolute: this.getIntegration(from, to), // the real value,
         signal: [this.detectSignal(from, to)],
-        // kind: 'signal',
+        kind: DatumKind.signal,
       };
       this.ranges.values.push(range);
       this.updateIntegralRanges();

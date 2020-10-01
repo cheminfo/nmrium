@@ -6,11 +6,10 @@ import { useAssignment, useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useHighlight } from '../../highlight';
-import { SignalKindsToInclude } from '../../panels/extra/constants/SignalsKinds';
 import { buildID } from '../../panels/extra/utilities/Concatenation';
 import {
-  checkSignalKinds,
   deleteZone,
+  checkZoneKind,
 } from '../../panels/extra/utilities/ZoneUtilities';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
@@ -72,7 +71,7 @@ const Zone = ({ zoneData }) => {
   const [reduceOpacity, setReduceOpacity] = useState(false);
 
   useEffect(() => {
-    setReduceOpacity(!checkSignalKinds(zoneData, SignalKindsToInclude));
+    setReduceOpacity(!checkZoneKind(zoneData));
   }, [zoneData]);
 
   const deleteHandler = useCallback(() => {

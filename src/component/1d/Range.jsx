@@ -7,11 +7,10 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
 import { useHighlight } from '../highlight';
-import { SignalKindsToInclude } from '../panels/extra/constants/SignalsKinds';
 import { buildID } from '../panels/extra/utilities/Concatenation';
 import {
-  checkSignalKinds,
   deleteRange,
+  checkRangeKind,
 } from '../panels/extra/utilities/RangeUtilities';
 import { RESIZE_RANGE } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
@@ -80,7 +79,7 @@ const Range = ({ rangeData }) => {
   }, [selectedTool]);
 
   useEffect(() => {
-    setReduceOpacity(!checkSignalKinds(rangeData, SignalKindsToInclude));
+    setReduceOpacity(!checkRangeKind(rangeData));
   }, [rangeData]);
 
   const deleteHandler = useCallback(() => {

@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 
 import { DELETE_2D_ZONE } from '../../../reducer/types/Types';
+import { DatumKind } from '../constants/SignalsKinds';
 
 import { buildID } from './Concatenation';
 
@@ -31,6 +32,10 @@ const resetDiaIDs = (zone, axis) => {
     delete _signal[axis].diaID;
   });
   return zone;
+};
+
+const checkZoneKind = (zone) => {
+  return zone.kind === DatumKind.signal;
 };
 
 const checkSignalKinds = (zone, kinds) => {
@@ -107,6 +112,7 @@ const unlinkInAssignmentData = (
 
 export {
   checkSignalKinds,
+  checkZoneKind,
   deleteZone,
   getDiaIDs,
   getPubIntegral,

@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 import { zoneToX } from 'ml-spectra-processing';
 
+import { DatumKind } from '../../component/panels/extra/constants/SignalsKinds';
 import { Datum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
 
@@ -119,6 +120,7 @@ export class Datum2D {
       x: { from: fromX, to: toX },
       y: { from: fromY, to: toY },
       signal: signals,
+      kind: DatumKind.signal,
     };
 
     this.zones.values.push(zone);
@@ -273,7 +275,7 @@ export class Datum2D {
    */
   detectZones(options) {
     const zones = this.getDetectionZones(options);
-    const formatedZones = zones.map((zone) => {
+    const formattedZones = zones.map((zone) => {
       return {
         id: generateID(),
         x: { from: zone.fromTo[0].from, to: zone.fromTo[0].to },
@@ -293,9 +295,10 @@ export class Datum2D {
             kind: 'signal',
           },
         ],
+        kind: DatumKind.signal,
       };
     });
-    this.zones.values = this.zones.values.concat(formatedZones);
+    this.zones.values = this.zones.values.concat(formattedZones);
     return this.getZones();
   }
 

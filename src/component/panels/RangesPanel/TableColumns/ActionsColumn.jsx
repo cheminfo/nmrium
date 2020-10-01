@@ -14,7 +14,11 @@ import {
   RESET_SELECTED_TOOL,
   SET_SELECTED_TOOL,
 } from '../../../reducer/types/Types';
-import { SignalKinds } from '../../extra/constants/SignalsKinds';
+import {
+  SignalKinds,
+  SignalKindsToInclude,
+  DatumKind,
+} from '../../extra/constants/SignalsKinds';
 import {
   unlink,
   unlinkInAssignmentData,
@@ -49,6 +53,9 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
     (value) => {
       const _rowData = lodash.cloneDeep(rowData);
       _rowData.signal[_rowData.tableMetaInfo.signalIndex].kind = value;
+      _rowData.kind = SignalKindsToInclude.includes(value)
+        ? DatumKind.signal
+        : DatumKind.noSignal;
       dispatch({
         type: CHANGE_RANGE_DATA,
         data: _rowData,
