@@ -3,9 +3,11 @@ import { jsx, css } from '@emotion/core';
 import { Form, Formik } from 'formik';
 import lodash from 'lodash';
 import { useCallback, useEffect, useMemo } from 'react';
-import { FaTimes, FaSearchPlus, FaRegSave } from 'react-icons/fa';
+import { FaSearchPlus } from 'react-icons/fa';
 
 import Button from '../../elements/Button';
+import CloseButton from '../../elements/CloseButton';
+import SaveButton from '../../elements/SaveButton';
 import {
   hasCouplingConstant,
   translateMultiplet,
@@ -26,10 +28,13 @@ const styles = css`
     height: 24px;
     border-bottom: 1px solid #f0f0f0;
     display: flex;
+    align-items: center;
     span {
       color: #464646;
       font-size: 15px;
       flex: 1;
+      border-left: 1px solid #ececec;
+      padding-left: 6px;
     }
 
     button {
@@ -172,20 +177,17 @@ const EditRangeModal = ({
             return (
               <Form>
                 <div className="header">
-                  <span>Range Information and Editing</span>
-                  <Button
-                    onClick={() => handleOnSave(values)}
-                    className="save-button"
-                    disabled={isSaveButtonDisabled(errors)}
-                  >
-                    <FaRegSave title="Save and exit" />
-                  </Button>
                   <Button onClick={handleOnZoom} className="zoom-button">
                     <FaSearchPlus title="Set to default view on range in spectrum" />
                   </Button>
-                  <Button onClick={handleOnClose} title="Close">
-                    <FaTimes />
-                  </Button>
+                  <span>Range Information and Editing</span>
+                  <SaveButton
+                    onClick={() => handleOnSave(values)}
+                    disabled={isSaveButtonDisabled(errors)}
+                    popupTitle="Save and exit"
+                  />
+
+                  <CloseButton onClick={handleOnClose} />
                 </div>
                 <SignalsForm />
               </Form>

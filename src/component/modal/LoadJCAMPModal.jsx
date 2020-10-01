@@ -1,8 +1,8 @@
 import { jsx, css } from '@emotion/core';
 import { useRef, useCallback } from 'react';
-/** @jsx jsx */
-import { FaTimes } from 'react-icons/fa';
 
+/** @jsx jsx */
+import CloseButton from '../elements/CloseButton';
 import { loadFile, extractFileMetaFromPath } from '../utility/FileUtility';
 
 const styles = css`
@@ -79,9 +79,8 @@ const LoadJCAMPModal = ({ onLoadClick, onClose, startLoading }) => {
     <div css={styles}>
       <div className="header">
         <span>Load JCAMP Dialog</span>
-        <button onClick={onClose} type="button">
-          <FaTimes />
-        </button>
+
+        <CloseButton onClick={onClose} />
       </div>
       <div className="container">
         <input

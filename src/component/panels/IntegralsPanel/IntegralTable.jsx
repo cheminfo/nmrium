@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import React, { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
@@ -111,17 +112,6 @@ const IntegralTable = memo(
       [changeIntegralDataHandler, deleteIntegralHandler],
     );
 
-    const checkPreferences = (integralsPreferences, key) => {
-      const val =
-        !integralsPreferences ||
-        integralsPreferences === undefined ||
-        Object.keys(integralsPreferences).length === 0 ||
-        (integralsPreferences && integralsPreferences[key] === true)
-          ? true
-          : false;
-      return val;
-    };
-
     const tableColumns = useMemo(() => {
       const setCustomColumn = (array, index, columnLabel, cellHandler) => {
         array.push({
@@ -138,32 +128,40 @@ const IntegralTable = memo(
       );
       // if (integralsPreferences) {
       let cols = [...defaultColumns];
-      if (checkPreferences(integralsPreferences, 'showAbsolute')) {
+      if (
+        lodash.get(
+          integralsPreferences,
+          'showAbsolute',
+          integralDefaultValues.showAbsolute,
+        )
+      ) {
         setCustomColumn(cols, 4, 'Absolute', (row) =>
           formatNumber(
             row.original.absolute,
-            integralsPreferences &&
-              Object.prototype.hasOwnProperty.call(
-                integralsPreferences,
-                'absoluteFormat',
-              )
-              ? integralsPreferences.absoluteFormat
-              : integralDefaultValues.absoluteFormat,
+            lodash.get(
+              integralsPreferences,
+              'absoluteFormat',
+              integralDefaultValues.absoluteFormat,
+            ),
           ),
         );
       }
-      if (checkPreferences(integralsPreferences, 'showRelative')) {
+      if (
+        lodash.get(
+          integralsPreferences,
+          'showRelative',
+          integralDefaultValues.showRelative,
+        )
+      ) {
         const n = activeTab && activeTab.replace(/[0-9]/g, '');
         setCustomColumn(cols, 5, `Relative ${n}`, (row) => {
           const formattedNumber = formatNumber(
             row.original.integral,
-            integralsPreferences &&
-              Object.prototype.hasOwnProperty.call(
-                integralsPreferences,
-                'relativeFormat',
-              )
-              ? integralsPreferences.relativeFormat
-              : integralDefaultValues.relativeFormat,
+            lodash.get(
+              integralsPreferences,
+              'relativeFormat',
+              integralDefaultValues.relativeFormat,
+            ),
           );
 
           return row.original.kind !== 'signal'

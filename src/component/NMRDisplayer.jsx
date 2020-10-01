@@ -68,6 +68,33 @@ const splitPaneStyles = {
   pane: { overflow: 'hidden' },
 };
 
+const containerStyles = css`
+  background-color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  div:focus {
+    outline: none !important;
+  }
+  button:active,
+  button:hover,
+  button:focus,
+  [type='button']:focus,
+  button {
+    outline: none !important;
+  }
+  * {
+    -webkit-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+`;
+
 const NMRDisplayer = memo(
   ({
     data: dataProp,
@@ -116,13 +143,6 @@ const NMRDisplayer = memo(
       return dispatchMiddleware(dispatch, dataChangeHandler);
     }, [onDataChange]);
 
-    //  // {
-    //               // height: heightProp,
-    //               // width: widthProps,
-    //               state
-    //               // isResizeEventStart,
-    //             // }
-
     return (
       <ErrorBoundary>
         <PreferencesProvider value={preferences}>
@@ -134,25 +154,7 @@ const NMRDisplayer = memo(
                     <KeyListener parentRef={fullScreenRef} />
                     <HighlightProvider>
                       <AssignmentProvider>
-                        <div
-                          ref={fullScreenRef}
-                          css={css`
-                            background-color: white;
-                            height: 100%;
-                            display: flex;
-                            flex-direction: column;
-                            div:focus {
-                              outline: none !important;
-                            }
-                            button:active,
-                            button:hover,
-                            button:focus,
-                            [type='button']:focus,
-                            button {
-                              outline: none !important;
-                            }
-                          `}
-                        >
+                        <div ref={fullScreenRef} css={containerStyles}>
                           <Header
                             isFullscreen={isFullscreen}
                             onMaximize={toggle}
@@ -179,7 +181,10 @@ const NMRDisplayer = memo(
                                 ) : (
                                   <Viewer2D />
                                 )}
-                                <Panels selectedTool={selectedTool} />
+                                <Panels
+                                  selectedTool={selectedTool}
+                                  displayerMode={displayerMode}
+                                />
                               </SplitPane>
                             </DropZone>
                           </div>

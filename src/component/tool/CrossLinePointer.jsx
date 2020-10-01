@@ -21,6 +21,9 @@ const allowTools = [
   options.baseLineCorrection.id,
   options.zone2D.id,
   options.slicingTool.id,
+  options.integral.id,
+  options.rangesPicking.id,
+  options.editRange.id,
 ];
 
 const CrossLinePointer = () => {

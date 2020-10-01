@@ -32,7 +32,7 @@ const PeaksPanel = memo(() => {
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted,Are You sure?', {
+    modal.showConfirmDialog('All records will be deleted, Are You sure?', {
       onYes: yesHandler,
     });
   }, [modal, yesHandler]);

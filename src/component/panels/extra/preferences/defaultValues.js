@@ -1,5 +1,5 @@
 const integralDefaultValues = {
-  showAbsolute: true,
+  showAbsolute: false,
   absoluteFormat: '0.00',
   showRelative: true,
   relativeFormat: '0.00',

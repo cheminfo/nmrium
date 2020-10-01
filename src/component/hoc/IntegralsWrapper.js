@@ -11,6 +11,7 @@ function IntegralsWrapper(WrappedComponent) {
       preferences,
       activeTab,
       tabActiveSpectrum,
+      molecules,
     } = useChartData();
 
     const { integrals = {}, info = {} } = useMemo(() => {
@@ -40,6 +41,7 @@ function IntegralsWrapper(WrappedComponent) {
         preferences={preferences}
         activeTab={activeTab}
         nucleus={nucleus}
+        molecules={molecules}
         ref={forwardedRef}
       />
     );

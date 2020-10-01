@@ -31,6 +31,11 @@ const styles = {
     flexDirection: 'row',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
   },
+  container: {
+    flexDirection: 'column',
+    height: '100%',
+    display: 'flex',
+  },
   sumButton: {
     borderRadius: '5px',
     marginTop: '3px',
@@ -51,6 +56,7 @@ const styles = {
     width: '18px',
     fontSize: '12px',
     padding: 0,
+    backgroundColor: 'transparent',
   },
   button: {
     backgroundColor: 'transparent',
@@ -146,7 +152,7 @@ const ZonesPanel = memo(
 
     const handleOnRemoveAssignments = useCallback(() => {
       modal.showConfirmDialog(
-        'All assignments will be removed. Are you sure?',
+        'All assignments will be removed, Are you sure?',
         {
           onYes: removeAssignments,
         },
@@ -154,7 +160,7 @@ const ZonesPanel = memo(
     }, [removeAssignments, modal]);
 
     const handleDeleteAll = useCallback(() => {
-      modal.showConfirmDialog('All zones will be deleted. Are You sure?', {
+      modal.showConfirmDialog('All zones will be deleted, Are You sure?', {
         onYes: () => {
           removeAssignments();
           dispatch({ type: DELETE_2D_ZONE });
@@ -248,7 +254,7 @@ const ZonesPanel = memo(
 
     return (
       <>
-        <div style={styles}>
+        <div style={styles.container}>
           {!isFlipped && (
             <DefaultPanelHeader
               counter={zonesCounter}

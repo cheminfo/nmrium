@@ -24,6 +24,7 @@ const allowTools = [
   options.rangesPicking.id,
   options.zone2D.id,
   options.slicingTool.id,
+  options.editRange.id,
 ];
 
 export const BRUSH_TYPE = {

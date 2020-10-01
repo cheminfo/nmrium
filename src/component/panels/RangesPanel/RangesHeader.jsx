@@ -9,8 +9,8 @@ import { getACS } from 'spectra-data-ranges';
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
-import ChangeSumModal from '../../modal/ChangeSumModal';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
+import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import {
   CHANGE_RANGE_SUM,
   DELETE_RANGE,
@@ -52,6 +52,7 @@ const styles = {
     width: '18px',
     fontSize: '12px',
     padding: 0,
+    backgroundColor: 'transparent',
   },
   setShowMultiplicityTreesButton: {
     borderRadius: '5px',
@@ -115,7 +116,7 @@ const RangesHeader = ({
   }, [activeTab, changeRangesSumHandler, currentSum, modal, molecules]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All ranges will be deleted. Are You sure?', {
+    modal.showConfirmDialog('All ranges will be deleted, Are You sure?', {
       onYes: () => {
         removeAssignments();
         dispatch({ type: DELETE_RANGE });
@@ -148,7 +149,7 @@ const RangesHeader = ({
   }, [modal, ranges.values, saveToClipboardHandler]);
 
   const handleOnRemoveAssignments = useCallback(() => {
-    modal.showConfirmDialog('All assignments will be removed. Are you sure?', {
+    modal.showConfirmDialog('All assignments will be removed, Are you sure?', {
       onYes: removeAssignments,
     });
   }, [removeAssignments, modal]);

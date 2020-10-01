@@ -151,6 +151,8 @@ export default function Exercise(props) {
                 hideRangesPanel: true,
                 hideStructuresPanel: true,
                 hideFiltersPanel: true,
+                hideZonesPanel: true,
+                hideSummaryPanel: true,
               },
             }}
           />

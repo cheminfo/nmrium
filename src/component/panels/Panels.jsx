@@ -3,6 +3,7 @@ import React, { useCallback, useState, useEffect, memo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
 import { Accordion, AccordionItem } from '../elements/accordion';
+import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { options } from '../toolbar/ToolTypes';
 
 import InformationPanel from './InformationPanel';
@@ -22,6 +23,7 @@ const accordionItems = [
     openWhen: null,
     style: '',
     hidePreferenceKey: 'hideSpectraPanel',
+    mode: null,
   },
   {
     title: 'Information',
@@ -29,6 +31,7 @@ const accordionItems = [
     openWhen: null,
     style: { overflow: 'hidden' },
     hidePreferenceKey: 'hideInformationPanel',
+    mode: null,
   },
   {
     title: 'Peaks',
@@ -36,6 +39,7 @@ const accordionItems = [
     openWhen: [options.peakPicking.id],
     style: '',
     hidePreferenceKey: 'hidePeaksPanel',
+    mode: null,
   },
   {
     title: 'Filters',
@@ -43,6 +47,7 @@ const accordionItems = [
     openWhen: null,
     style: '',
     hidePreferenceKey: 'hideFiltersPanel',
+    mode: null,
   },
   {
     title: 'Integrals',
@@ -50,6 +55,7 @@ const accordionItems = [
     openWhen: [options.integral.id],
     style: '',
     hidePreferenceKey: 'hideIntegralsPanel',
+    mode: null,
   },
   {
     title: 'Ranges',
@@ -57,6 +63,7 @@ const accordionItems = [
     openWhen: [options.rangesPicking.id],
     style: '',
     hidePreferenceKey: 'hideRangesPanel',
+    mode: null,
   },
   {
     title: 'Zones',
@@ -64,6 +71,7 @@ const accordionItems = [
     openWhen: [options.zone2D.id],
     style: '',
     hidePreferenceKey: 'hideZonesPanel',
+    mode: DISPLAYER_MODE.DM_2D,
   },
   {
     title: 'Summary',
@@ -71,6 +79,7 @@ const accordionItems = [
     openWhen: [],
     style: '',
     hidePreferenceKey: 'hideSummaryPanel',
+    mode: null,
   },
   {
     title: 'Structures',
@@ -78,10 +87,11 @@ const accordionItems = [
     openWhen: [options.rangesPicking.id],
     style: '',
     hidePreferenceKey: 'hideStructuresPanel',
+    mode: null,
   },
 ];
 
-const Panels = memo(({ selectedTool }) => {
+const Panels = memo(({ selectedTool, displayerMode }) => {
   // const { selectedTool } = useChartData();
   const [panelIndex, setSelectedPanelIndex] = useState(0);
   const preferences = usePreferences();
@@ -99,10 +109,20 @@ const Panels = memo(({ selectedTool }) => {
     }
   }, [getDefaultIndex, selectedTool]);
 
+  const check = useCallback(
+    (item) => {
+      return (
+        !lodash.get(preferences, `panels.${item.hidePreferenceKey}`) &&
+        (item.mode == null || item.mode === displayerMode)
+      );
+    },
+    [displayerMode, preferences],
+  );
+
   return (
     <Accordion defaultOpenIndex={panelIndex}>
       {accordionItems.map((item) => {
-        return !lodash.get(preferences, `panels.${item.hidePreferenceKey}`) ? (
+        return check(item) ? (
           <AccordionItem key={item.title} title={item.title} style={item.style}>
             {item.component}
           </AccordionItem>
