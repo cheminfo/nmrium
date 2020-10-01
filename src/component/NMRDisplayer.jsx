@@ -181,7 +181,10 @@ const NMRDisplayer = memo(
                                 ) : (
                                   <Viewer2D />
                                 )}
-                                <Panels selectedTool={selectedTool} />
+                                <Panels
+                                  selectedTool={selectedTool}
+                                  displayerMode={displayerMode}
+                                />
                               </SplitPane>
                             </DropZone>
                           </div>
