@@ -111,9 +111,9 @@ const handleChangeSpectrumColor = (state, { id, color, key }) => {
   });
 };
 
-const handleDeleteSpectra = (state, action) => {
+const handleDeleteSpectra = (state) => {
   return produce(state, (draft) => {
-    const { activeSpectrum } = draft;
+    const { activeSpectrum, activeTab } = draft;
     if (activeSpectrum && activeSpectrum.id) {
       AnalysisObj.deleteDatumByIDs([activeSpectrum.id]);
       draft.activeSpectrum = null;
@@ -121,7 +121,10 @@ const handleDeleteSpectra = (state, action) => {
       setDomain(draft);
       setMode(draft);
     } else {
-      const { IDs } = action;
+      const IDs = draft.data.reduce((acc, datum) => {
+        if (datum.info.nucleus === activeTab) acc.push(datum.id);
+        return acc;
+      }, []);
       AnalysisObj.deleteDatumByIDs(IDs);
       draft.data = AnalysisObj.getSpectraData();
     }
