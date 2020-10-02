@@ -34,7 +34,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
   const assignmentData = useAssignmentData();
 
   const zoomRangeHandler = useCallback(() => {
-    const margin = Math.abs(rowData.from - rowData.to) / 2;
+    const margin = Math.abs(rowData.from - rowData.to);
     dispatch({
       type: SET_X_DOMAIN,
       xDomain: [rowData.from - margin, rowData.to + margin],
