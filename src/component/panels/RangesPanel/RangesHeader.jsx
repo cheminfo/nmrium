@@ -16,7 +16,7 @@ import {
   DELETE_RANGE,
   SET_SHOW_MULTIPLICITY_TREES,
 } from '../../reducer/types/Types';
-import { copyTextToClipboard } from '../../utility/Export';
+import { copyHTMLToClipboard } from '../../utility/Export';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 const sumButton = css`
@@ -126,7 +126,7 @@ const RangesHeader = ({
 
   const saveToClipboardHandler = useCallback(
     (value) => {
-      const success = copyTextToClipboard(value);
+      const success = copyHTMLToClipboard(value);
       if (success) {
         alert.success('Data copied to clipboard');
       } else {
