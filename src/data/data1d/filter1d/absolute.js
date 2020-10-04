@@ -15,7 +15,7 @@ export function apply(datum1D) {
 
   datum1D.data.re = reimAbsolute(datum1D.data);
   datum1D.data.im = new Float64Array(0);
-  datum1D.info.isComplex = false;
+  datum1D.info = { ...datum1D.info, isComplex: false };
 }
 
 export function isApplicable(datum1D) {
