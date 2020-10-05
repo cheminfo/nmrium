@@ -56,10 +56,13 @@ const FiltersTableRow = memo(({ filters }) => {
       filters.map((d) => (
         <TableRow
           key={d.id}
-          onClick={() => filterSnapShotHandler(d.id)}
           style={d.id === selectedFilterID ? { ...styles.active } : {}}
         >
-          <TableCell align="center" size="2">
+          <TableCell
+            align="center"
+            size="2"
+            onClick={() => filterSnapShotHandler(d.id)}
+          >
             {d.label}
           </TableCell>
           <TableCell align="left" size="3">

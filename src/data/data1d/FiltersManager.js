@@ -86,17 +86,20 @@ export class FiltersManager {
 
   static reapplyFilters(datum1d, filters = null) {
     const _filters = filters ? filters : datum1d.filters;
-    for (const filter of _filters) {
-      const { id, flag } = filter;
-      this.enableFilter(datum1d, id, flag, filters);
-    }
+    // for (const filter of _filters) {
+    // const { id, flag } = filter;
+    this.enableFilter(datum1d, null, null, _filters);
+    // }
   }
 
   // id filter id
   static enableFilter(datum1d, id, checked, filters = null) {
     datum1d.filters = datum1d.filters.slice(0);
-    const index = datum1d.filters.findIndex((filter) => filter.id === id);
-    datum1d.filters[index] = { ...datum1d.filters[index], flag: checked };
+
+    if (checked && id) {
+      const index = datum1d.filters.findIndex((filter) => filter.id === id);
+      datum1d.filters[index] = { ...datum1d.filters[index], flag: checked };
+    }
 
     datum1d.data = { ...datum1d.data, ...datum1d.source.original };
     datum1d.info = { ...datum1d.info, ...datum1d.originalInfo };
