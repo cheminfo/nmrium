@@ -158,7 +158,7 @@ const MultipletAnalysisModal = ({
 
   return (
     <div css={styles}>
-      <div className="header">
+      <div className="header handle">
         <span>Analyse Multiplet</span>
 
         <CloseButton onClick={onClose} />

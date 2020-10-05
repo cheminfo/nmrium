@@ -176,7 +176,7 @@ const EditRangeModal = ({
           {({ values, errors }) => {
             return (
               <Form>
-                <div className="header">
+                <div className="header handle">
                   <Button onClick={handleOnZoom} className="zoom-button">
                     <FaSearchPlus title="Set to default view on range in spectrum" />
                   </Button>
