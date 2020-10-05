@@ -1,12 +1,53 @@
 import { saveAs } from 'file-saver';
 
-// function removeContent(content) {
-//   return content.replace(
-//     /&lt;!--[\s]*export-remove[\s]*--&gt.+?&lt;!--[\s]*export-remove[\s]*--&gt;/gi,
-//     '',
-//   );
-// }
+function copyFormattedHtml(html) {
+  // Create an iframe (isolated container) for the HTML
+  let container = document.createElement('div');
+  container.innerHTML = html;
 
+  // Hide element
+  container.style.position = 'fixed';
+  container.style.pointerEvents = 'none';
+  container.style.opacity = 0;
+
+  // Detect all style sheets of the page
+  let activeSheets = Array.prototype.slice
+    .call(document.styleSheets)
+    .filter(function (sheet) {
+      return !sheet.disabled;
+    });
+
+  // Mount the iframe to the DOM to make `contentWindow` available
+  document.body.appendChild(container);
+
+  // Copy to clipboard
+  window.getSelection().removeAllRanges();
+
+  let range = document.createRange();
+  range.selectNode(container);
+  window.getSelection().addRange(range);
+
+  document.execCommand('copy');
+  for (let i = 0; i < activeSheets.length; i++) {
+    activeSheets[i].disabled = true;
+  }
+  document.execCommand('copy');
+  for (let i = 0; i < activeSheets.length; i++) {
+    activeSheets[i].disabled = false;
+  }
+
+  // Remove the iframe
+  document.body.removeChild(container);
+}
+
+async function copyHTMLToClipboard(data) {
+  try {
+    copyFormattedHtml(data);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
 async function copyTextToClipboard(data) {
   try {
     await navigator.clipboard.writeText(data);
@@ -130,5 +171,6 @@ export {
   exportAsPng,
   copyPNGToClipboard,
   copyTextToClipboard,
+  copyHTMLToClipboard,
   exportAsMol,
 };

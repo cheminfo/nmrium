@@ -234,7 +234,7 @@ export function spectrumReducer(state, action) {
       return MoleculeActions.handleDeleteMolecule(state, action.key);
 
     case types.DELETE_SPECTRA:
-      return SpectrumsActions.handleDeleteSpectra(state, action);
+      return SpectrumsActions.handleDeleteSpectra(state);
 
     case types.SET_INTEGRAL_Y_DOMAIN:
       return DomainActions.handleChangeIntegralYDomain(state, action.yDomain);
