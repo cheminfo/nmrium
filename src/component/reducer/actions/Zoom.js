@@ -15,11 +15,6 @@ export const ZoomType = {
 const setZoom = (state, draft, scale) => {
   const { height, margin, activeSpectrum } = state;
 
-  const t = zoomIdentity
-    .translate(0, height - margin.bottom)
-    .scale(scale)
-    .translate(0, -(height - margin.bottom));
-
   draft.zoomFactor = { scale };
 
   if (activeSpectrum === null) {
@@ -28,6 +23,11 @@ const setZoom = (state, draft, scale) => {
         height - margin.bottom,
         margin.top,
       ]);
+      const t = zoomIdentity
+        .translate(0, _scale(0))
+        .scale(scale)
+        .translate(0, -_scale(0));
+
       const yDomain = t.rescaleY(_scale).domain();
       acc[id] = yDomain;
       return acc;
@@ -38,6 +38,11 @@ const setZoom = (state, draft, scale) => {
       height - margin.bottom,
       margin.top,
     ]);
+    const t = zoomIdentity
+      .translate(0, _scale(0))
+      .scale(scale)
+      .translate(0, -_scale(0));
+
     const yDomain = t.rescaleY(_scale).domain();
     draft.yDomains[activeSpectrum.id] = yDomain;
   }
@@ -47,17 +52,16 @@ const setZoom1D = (draft, scale, height, margin, index) => {
 
   const { id } = tabActiveSpectrum[activeTab.split(',')[index]];
 
-  const t = zoomIdentity
-    .translate(0, height - margin)
-    .scale(scale)
-    .translate(0, -(height - margin));
-
   draft.zoomFactor = { scale };
 
   const _scale = scaleLinear(originDomain.yDomains[id], [
     height - margin,
     margin,
   ]);
+  const t = zoomIdentity
+    .translate(0, _scale(0))
+    .scale(scale)
+    .translate(0, -_scale(0));
   let yDomain = t.rescaleY(_scale).domain();
   draft.yDomains[id] = yDomain;
 };
@@ -74,9 +78,9 @@ const setIntegralZoom = (state, scale, draft) => {
       const scaleValue = scale < 0.1 ? 0.05 : scale;
 
       const t = zoomIdentity
-        .translate(0, height - margin.bottom)
+        .translate(0, _scale(0))
         .scale(scaleValue)
-        .translate(0, -(height - margin.bottom));
+        .translate(0, -_scale(0));
 
       const newYDomain = t.rescaleY(_scale).domain();
 
