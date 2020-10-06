@@ -77,7 +77,7 @@ const LoadJCAMPModal = ({ onLoadClick, onClose, startLoading }) => {
   }, [onLoadClick, startLoading]);
   return (
     <div css={styles}>
-      <div className="header">
+      <div className="header handle">
         <span>Load JCAMP Dialog</span>
 
         <CloseButton onClick={onClose} />

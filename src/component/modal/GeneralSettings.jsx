@@ -122,7 +122,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
 
   return (
     <div css={styles}>
-      <h6 className="header">General Settings</h6>
+      <h6 className="header handle">General Settings</h6>
       <div className="main-content">
         <Tabs defaultTabID={activeTab} onClick={tabChangeHandler}>
           <div

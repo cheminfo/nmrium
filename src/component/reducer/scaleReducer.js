@@ -14,11 +14,11 @@ export function scaleReducer(state, action) {
   switch (action.type) {
     case SET_X_SCALE:
       return produce(state, (draft) => {
-        draft.scaleX = (spectrumId = null) => getXScale(spectrumId, action);
+        draft.scaleX = (spectrumId = null) => getXScale(action, spectrumId);
       });
     case SET_Y_SCALE:
       return produce(state, (draft) => {
-        draft.scaleY = (spectrumId = null) => getYScale(spectrumId, action);
+        draft.scaleY = (spectrumId = null) => getYScale(action, spectrumId);
       });
     default:
       return state;

@@ -70,7 +70,7 @@ const NumberInput = ({ onSave, onClose, header }) => {
 
   return (
     <div css={styles}>
-      <div className="header">
+      <div className="header handle">
         <span>{header}</span>
 
         <CloseButton onClick={onClose} />

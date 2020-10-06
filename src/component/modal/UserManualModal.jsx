@@ -55,7 +55,7 @@ const UserManualModal = ({ onClose }) => {
 
   return (
     <div css={styles}>
-      <div className="manual-header">
+      <div className="manual-header handle">
         <h6 className="title">User Manual</h6>
         <CloseButton onClick={onClose} className="close-bt" />
       </div>

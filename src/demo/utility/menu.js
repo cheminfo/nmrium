@@ -17,6 +17,7 @@ function buildMenu(array = []) {
   return menu;
 }
 
+// eslint-disable-next-line default-param-last
 function getMenu(array = [], nodes = [], key, parentIndex = 0) {
   let _nodes = nodes;
   let children = [];

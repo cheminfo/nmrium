@@ -5,7 +5,7 @@ import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/Analysis';
 
 function getClosePeak(xShift, mouseCoordinates, state) {
-  const scaleX = getXScale(null, state);
+  const scaleX = getXScale(state);
   const { activeSpectrum } = state;
   const start = scaleX.invert(mouseCoordinates.x - xShift);
   const end = scaleX.invert(mouseCoordinates.x + xShift);
@@ -48,7 +48,7 @@ const addPeaks = (state, action) => {
       const spectrumID = state.activeSpectrum.id;
       const index = state.data.findIndex((d) => d.id === spectrumID);
 
-      const scaleX = getXScale(null, state);
+      const scaleX = getXScale(state);
 
       const start = scaleX.invert(action.startX);
       const end = scaleX.invert(action.endX);

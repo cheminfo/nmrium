@@ -34,7 +34,7 @@ const styles = css`
 const CopyClipboardModal = ({ text, onClose, onCopyClick }) => {
   return (
     <div css={styles}>
-      <div className="mainButtonsContainer">
+      <div className="mainButtonsContainer handle">
         <button type="button" onClick={() => onCopyClick(text)}>
           <FaCopy />
         </button>

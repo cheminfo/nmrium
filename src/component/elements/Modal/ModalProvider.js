@@ -1,12 +1,14 @@
-import React, {
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
+import {
   useRef,
   useState,
   useEffect,
   useCallback,
   Fragment,
+  cloneElement,
 } from 'react';
 import { createPortal } from 'react-dom';
-// import { Rnd } from 'react-rnd';
 import { Rnd } from 'react-rnd';
 import { TransitionGroup } from 'react-transition-group';
 
@@ -114,28 +116,30 @@ const ModalProvider = ({
     showConfirmDialog,
   };
 
+  const styles = css`
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+
+    .handle {
+      cursor: move;
+    }
+
+    .rnd-container {
+      box-sizing: initial;
+      background-color: #fff;
+      box-shadow: 0 0 0 0, 0 8px 16px rgba(0, 0, 0, 0.3);
+      borderradius: 5px;
+    }
+  `;
+
   const outerStyle =
     modal && modal.options.isBackgroundBlur
       ? { backgroundColor: 'rgba(255,255,255,0.8)' }
       : { pointerEvents: 'none' };
-
-  // const isEnableResizing = (flag) => {
-  //   return {
-  //     bottom: flag,
-  //     bottomLeft: flag,
-  //     bottomRight: flag,
-  //     left: flag,
-  //     right: flag,
-  //     top: flag,
-  //     topLeft: flag,
-  //     topRight: flag,
-  //   };
-  // };
-
-  const stopPropagation = useCallback((e) => {
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-  }, []);
 
   return (
     <Context.Provider value={modalContext}>
@@ -145,13 +149,8 @@ const ModalProvider = ({
           <Fragment>
             {modal && (
               <div
+                css={styles}
                 style={{
-                  position: 'fixed',
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  left: 0,
-                  zIndex: 1,
                   ...outerStyle,
                 }}
               >
@@ -191,48 +190,24 @@ const ModalProvider = ({
                         y: 0,
                       }}
                       // ref={rndRef}
+                      className="rnd-container"
                       style={{
-                        boxSizing: 'initial',
-                        backgroundColor: '#fff',
-                        boxShadow: '0 0 0 0, 0 8px 16px rgba(0,0,0,.30)',
-                        borderRadius: '5px',
                         ...style,
                         margin: offset,
                         pointerEvents: 'all',
                         position: 'none',
                         userSelect: 'none',
-                        cursor: 'default',
                       }}
-                      enableResizing={
-                        modal.options.enableResizing
-                        //   ? isEnableResizing(true)
-                        //   : isEnableResizing(false)
-                      }
+                      enableResizing={modal.options.enableResizing}
+                      dragHandleClassName="handle"
+                      enableUserSelectHack={false}
                     >
-                      {/* <div
-                      style={{
-                        boxSizing: 'initial',
-                        backgroundColor: '#fff',
-                        boxShadow: '0 0 0 0, 0 8px 16px rgba(0,0,0,.30)',
-                        borderRadius: '5px',
-                        ...style,
-                        margin: offset,
-                        pointerEvents: 'all',
-                        position: 'none',
-                      }}
-                    > */}
                       {modal.options &&
-                        React.cloneElement(modal.component, {
+                        cloneElement(modal.component, {
                           ...modal.options,
                           onClose: closeHandler,
                           style: { cursor: 'default' },
-                          onDrag: stopPropagation,
-                          onMouseDown: stopPropagation,
-                          onMouseUp: stopPropagation,
-                          onStart: stopPropagation,
-                          onStop: stopPropagation,
                         })}
-                      {/* </div> */}
                     </Rnd>
                   </Transition>
                 </TransitionGroup>
