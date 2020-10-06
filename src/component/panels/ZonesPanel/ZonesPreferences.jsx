@@ -9,9 +9,9 @@ import React, {
   memo,
 } from 'react';
 import { useAlert } from 'react-alert';
-import { MF } from 'react-mf';
 
 import { useDispatch } from '../../context/DispatchContext';
+import IsotopesViewer from '../../elements/IsotopesViewer';
 import ContextWrapper from '../../hoc/ContextWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
@@ -161,9 +161,7 @@ const ZonesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
         {nucleus &&
           nucleus.map((nucleusLabel) => (
             <div key={nucleusLabel} style={styles.groupContainer}>
-              <p style={styles.header}>
-                <MF mf={nucleusLabel} />
-              </p>
+              <IsotopesViewer style={styles.header} value={nucleusLabel} />
               {formatFields.map((field) => (
                 <ColumnFormatField
                   key={field.id}

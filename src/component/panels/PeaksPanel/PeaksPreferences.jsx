@@ -12,6 +12,7 @@ import { useAlert } from 'react-alert';
 
 // import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import IsotopesViewer from '../../elements/IsotopesViewer';
 import PeaksWrapper from '../../hoc/PeaksWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
@@ -168,7 +169,7 @@ const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
         {nucleus &&
           nucleus.map((nucleusLabel) => (
             <div key={nucleusLabel} style={styles.groupContainer}>
-              <p style={styles.header}>{nucleusLabel}</p>
+              <IsotopesViewer style={styles.header} value={nucleusLabel} />
               {formatFields.map((field) => (
                 <ColumnFormatField
                   key={field.id}
