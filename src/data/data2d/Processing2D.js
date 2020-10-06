@@ -79,7 +79,7 @@ export default class Processing2D {
   }
 
   getContours(zoomLevel, options = {}) {
-    const { negative = false, timeout = 4000, nbLevels = 10 } = options;
+    const { negative = false, timeout = 2000, nbLevels = 10 } = options;
 
     const max = Math.max(
       Math.abs(this.minMax.maxZ),
