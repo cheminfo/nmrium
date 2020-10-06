@@ -1,3 +1,4 @@
+/* eslint-disable no-loss-of-precision */
 /**
  * Returns the group delay for old Bruker NMR spectra
  * @param {number} gspfvs

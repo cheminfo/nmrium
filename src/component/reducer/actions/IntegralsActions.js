@@ -31,7 +31,7 @@ const handleChangeIntegralZoom = (state, action) => {
 };
 
 const addIntegral = (state, action) => {
-  const scaleX = getXScale(null, state);
+  const scaleX = getXScale(state);
 
   return produce(state, (draft) => {
     const start = scaleX.invert(action.startX);

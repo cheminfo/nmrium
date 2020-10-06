@@ -56,7 +56,7 @@ const handleChangeRangeSum = (state, value) => {
 };
 const handleAddRange = (state, action) => {
   return produce(state, (draft) => {
-    const scaleX = getXScale(null, state);
+    const scaleX = getXScale(state);
 
     const start = scaleX.invert(action.startX);
     const end = scaleX.invert(action.endX);

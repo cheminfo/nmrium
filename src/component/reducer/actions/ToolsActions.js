@@ -150,7 +150,7 @@ const handleChangeSpectrumDisplayMode = (state, { flag }) => {
 };
 
 const handleAddBaseLineZone = (state, { from, to }) => {
-  const scaleX = getXScale(null, state);
+  const scaleX = getXScale(state);
 
   return produce(state, (draft) => {
     let start = scaleX.invert(from);
@@ -222,9 +222,9 @@ const handleBrushEnd = (state, action) => {
   // const scale = getScale(state).x;
   return produce(state, (draft) => {
     const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
-    const xScale = getXScale(null, state);
+    const xScale = getXScale(state);
 
-    const yScale = is2D ? get2DYScale(state) : getYScale(null, state);
+    const yScale = is2D ? get2DYScale(state) : getYScale(state);
 
     const startX = xScale.invert(action.startX);
     const endX = xScale.invert(action.endX);
@@ -256,7 +256,7 @@ const handleBrushEnd = (state, action) => {
 };
 const setVerticalIndicatorXPosition = (state, position) => {
   return produce(state, (draft) => {
-    const scaleX = getXScale(null, state);
+    const scaleX = getXScale(state);
     draft.pivot = scaleX.invert(position);
   });
 };

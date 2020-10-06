@@ -1,3 +1,4 @@
+/* eslint-disable default-param-last */
 import { saveAs } from 'file-saver';
 
 function copyFormattedHtml(html) {
