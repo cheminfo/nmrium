@@ -487,7 +487,7 @@ const levelChangeHandler = (state, { deltaY, shiftKey }) => {
         }
 
         return produce(state, (draft) => {
-          const contours = processing2dController.drawContours();
+          const contours = Object.freeze(processing2dController.drawContours());
           draft.contours[id] = contours;
         });
       }
