@@ -308,6 +308,7 @@ export class Datum2D {
         jcampURL: this.source.jcampURL,
         original: this.source.jcampURL ? [] : this.source.original,
       },
+      zones: this.zones,
       display: this.display,
       info: this.originalInfo,
       meta: this.meta,
