@@ -102,6 +102,16 @@ const handleResizeIntegral = (state, action) => {
   });
 };
 
+const handleChangeIntegralsRaltiveValue = (state, action) => {
+  const { id: integralID, value } = action;
+  const { id, index } = state.activeSpectrum;
+  const datumObject = AnalysisObj.getDatum(id);
+  const integrals = datumObject.changeInetgralsRealtive(integralID, value);
+  return produce(state, (draft) => {
+    draft.data[index].integrals.values = integrals;
+  });
+};
+
 export {
   handleChangeIntegralSum,
   handleChangeIntegralZoom,
@@ -109,4 +119,5 @@ export {
   deleteIntegral,
   changeIntegral,
   handleResizeIntegral,
+  handleChangeIntegralsRaltiveValue,
 };

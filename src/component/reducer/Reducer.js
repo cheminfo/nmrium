@@ -144,6 +144,8 @@ export function spectrumReducer(state, action) {
       return IntegralsActions.handleChangeIntegralZoom(state, action);
     case types.CHANGE_INTEGRAL_SUM:
       return IntegralsActions.handleChangeIntegralSum(state, action.value);
+    case types.CHANGE_INTEGRAL_RELATIVE:
+      return IntegralsActions.handleChangeIntegralsRaltiveValue(state, action);
 
     case types.SET_ORIGINAL_DOMAIN:
       return DomainActions.setOriginalDomain(state, action.domain);

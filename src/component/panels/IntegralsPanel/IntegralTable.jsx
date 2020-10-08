@@ -3,12 +3,14 @@ import React, { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
+import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import Select from '../../elements/Select';
 import IntegralsWrapper from '../../hoc/IntegralsWrapper';
 import {
   DELETE_INTEGRAL,
   CHANGE_INTEGRAL_DATA,
+  CHANGE_INTEGRAL_RELATIVE,
 } from '../../reducer/types/Types';
 import formatNumber from '../../utility/FormatNumber';
 import { GetPreference } from '../../utility/PreferencesHelper';
@@ -112,6 +114,17 @@ const IntegralTable = memo(
       [changeIntegralDataHandler, deleteIntegralHandler],
     );
 
+    const saveRealtiveHandler = useCallback(
+      (event, row) => {
+        dispatch({
+          type: CHANGE_INTEGRAL_RELATIVE,
+          value: event.target.value,
+          id: row.id,
+        });
+      },
+      [dispatch],
+    );
+
     const tableColumns = useMemo(() => {
       const setCustomColumn = (array, index, columnLabel, cellHandler) => {
         array.push({
@@ -163,17 +176,24 @@ const IntegralTable = memo(
               integralDefaultValues.relativeFormat,
             ),
           );
+          return (
+            <EditableColumn
+              value={formattedNumber}
+              onSave={(event) => saveRealtiveHandler(event, row.original)}
+              type="number"
+            />
+          );
 
-          return row.original.kind !== 'signal'
-            ? `[${formattedNumber}]`
-            : formattedNumber;
+          // return row.original.kind !== 'signal'
+          //   ? `[${formattedNumber}]`
+          //   : formattedNumber;
         });
       }
 
       return cols.sort(
         (object1, object2) => object1.orderIndex - object2.orderIndex,
       );
-    }, [activeTab, defaultColumns, preferences]);
+    }, [activeTab, defaultColumns, preferences, saveRealtiveHandler]);
 
     const data = useMemo(() => {
       if (info.dimension === 1 && integrals && integrals.values) {
