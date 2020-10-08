@@ -2,7 +2,6 @@
   "reject": [
     "react-color",
     "react-table",
-    "rc-menu",
-    "immer"
+    "rc-menu"
   ]
 }
