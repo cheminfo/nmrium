@@ -82,6 +82,15 @@ const handleSetShowMultiplicityTrees = (state, action) => {
     draft.showMultiplicityTrees = !draft.showMultiplicityTrees;
   });
 };
+const handleChangeRangeRaltiveValue = (state, action) => {
+  const { id: rangeID, value } = action;
+  const { id, index } = state.activeSpectrum;
+  const datumObject = AnalysisObj.getDatum(id);
+  const ranges = datumObject.changeRangesRealtive(rangeID, value);
+  return produce(state, (draft) => {
+    draft.data[index].ranges.values = ranges;
+  });
+};
 
 export {
   handleAutoRangesDetection,
@@ -91,4 +100,5 @@ export {
   handleAddRange,
   handleResizeRange,
   handleSetShowMultiplicityTrees,
+  handleChangeRangeRaltiveValue,
 };
