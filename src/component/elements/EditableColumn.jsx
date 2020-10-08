@@ -36,7 +36,6 @@ const EditableColumn = ({ onSave, value, type = 'text', style }) => {
           value={value}
           type={type}
           onKeyDown={(e) => editModeHandler(false, e)}
-          style={{ input: { width: '100%' } }}
         />
       )}
     </div>
