@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import Input from './Input';
 
 const EditableColumn = ({ onSave, value, type = 'text', style }) => {
   const [enabled, enableEdit] = useState(false);
-
+  const refInput = useRef();
   const editModeHandler = useCallback(
     (flag, event = null) => {
       if (event && flag === false) {
@@ -31,6 +31,8 @@ const EditableColumn = ({ onSave, value, type = 'text', style }) => {
       {!enabled && value}
       {enabled && (
         <Input
+          enableAutoSelect={true}
+          ref={refInput}
           value={value}
           type={type}
           onKeyDown={(e) => editModeHandler(false, e)}

@@ -24,13 +24,29 @@ const styles = {
 
 const Input = forwardRef(
   (
-    { label, value, name, style, onChange, onKeyDown, checkValue, type },
+    {
+      label,
+      value,
+      name,
+      style,
+      onChange,
+      onKeyDown,
+      checkValue,
+      type,
+      enableAutoSelect,
+    },
     ref,
   ) => {
     const [val, setVal] = useState(value);
     useEffect(() => {
       setVal(value);
     }, [value]);
+
+    useEffect(() => {
+      if (enableAutoSelect) {
+        ref.current.select();
+      }
+    }, [enableAutoSelect, ref]);
 
     const getValue = useCallback(
       (value) => {
@@ -111,6 +127,7 @@ Input.propTypes = {
   checkValue: PropTypes.func,
   onKeyDown: PropTypes.func,
   type: PropTypes.oneOf(['text', 'number']),
+  enableAutoSelect: PropTypes.bool,
 };
 
 Input.defaultProps = {
@@ -126,6 +143,7 @@ Input.defaultProps = {
   checkValue: () => true,
   onKeyDown: () => null,
   type: 'text',
+  enableAutoSelect: false,
 };
 
 export default Input;
