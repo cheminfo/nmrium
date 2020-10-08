@@ -160,18 +160,17 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
 };
 
 const enableFilter = (state, filterID, checked) => {
+  const activeSpectrumId = state.activeSpectrum.id;
+  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
+  //apply filter into the spectrum
+  activeObject.enableFilter(filterID, checked);
+
+  const XYData = activeObject.getReal();
+  const spectrumIndex = state.data.findIndex(
+    (spectrum) => spectrum.id === activeSpectrumId,
+  );
+
   return produce(state, (draft) => {
-    const activeSpectrumId = state.activeSpectrum.id;
-    const activeObject = AnalysisObj.getDatum(activeSpectrumId);
-    //apply filter into the spectrum
-    activeObject.enableFilter(filterID, checked);
-
-    const XYData = activeObject.getReal();
-
-    const spectrumIndex = state.data.findIndex(
-      (spectrum) => spectrum.id === activeSpectrumId,
-    );
-
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
@@ -199,7 +198,7 @@ const deleteFilter = (state, filterID) => {
     draft.data[spectrumIndex].x = XYData.x;
     draft.data[spectrumIndex].y = XYData.y;
     draft.data[spectrumIndex].filters = activeObject.getFilters();
-    draft.data[spectrumIndex].info.isFid = activeObject.info.isFid;
+    draft.data[spectrumIndex].info = activeObject.info;
 
     setDomain(draft);
     setMode(draft);
