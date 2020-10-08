@@ -89,3 +89,10 @@ function MyComponent() {
   return <NMRDisplayer />;
 }
 ```
+## Publish
+
+```bash
+npm version patch 
+git push --follow-tags
+npm publish
+```
