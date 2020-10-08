@@ -7,9 +7,11 @@ import Range from './Range';
 const Ranges = memo(({ ranges }) => {
   return (
     <g clipPath="url(#clip)">
-      {ranges.values.map((range) => (
-        <Range key={range.id} rangeData={range} />
-      ))}
+      {ranges &&
+        ranges.values &&
+        ranges.values.map((range) => (
+          <Range key={range.id} rangeData={range} />
+        ))}
     </g>
   );
 });
