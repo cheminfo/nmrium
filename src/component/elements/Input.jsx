@@ -34,6 +34,7 @@ const Input = forwardRef(
       checkValue,
       type,
       enableAutoSelect,
+      ...prop
     },
     ref,
   ) => {
@@ -64,7 +65,7 @@ const Input = forwardRef(
         e.persist();
         function check(value) {
           if (type === 'number') {
-            const pattern = /^(?:-?[1-9]*|[1-9]\d*)(?:\.\d{0,20})?$/;
+            const pattern = /^(?:-?[0-9]*|[0-9]\d*)(?:\.\d{0,20})?$/;
             if (value.trim() === '' || pattern.test(value)) {
               return true;
             }
@@ -98,8 +99,11 @@ const Input = forwardRef(
 
     return (
       <Fragment>
-        <span style={{ ...styles.label, ...style.label }}>{label}</span>
+        <span style={{ ...styles.label, ...style.label }} className="label">
+          {label}
+        </span>
         <input
+          {...prop}
           ref={ref}
           name={name}
           style={{ ...styles.input, ...style.input }}
@@ -108,6 +112,7 @@ const Input = forwardRef(
           onChange={onChangeHandler}
           onKeyDown={handleKeyDown}
           onDoubleClick={(e) => e.stopPropagation()}
+          className="input"
         />
       </Fragment>
     );
