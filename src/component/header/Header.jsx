@@ -12,8 +12,8 @@ import { useChartData } from '../context/ChartContext';
 import { useHelp } from '../elements/Help';
 import { useModal, positions } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
-import GeneralSettings from '../modal/GeneralSettings';
 import UserManualModal from '../modal/UserManualModal';
+import GeneralSettings from '../modal/setting/GeneralSettings';
 import { options } from '../toolbar/ToolTypes';
 
 import AutoPeakPickingOptionPanel from './AutoPeakPickingOptionPanel';
