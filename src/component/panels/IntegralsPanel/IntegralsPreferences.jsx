@@ -58,7 +58,7 @@ const styles = {
 const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   const dispatch = useDispatch();
   const alert = useAlert();
-  const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
+  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
@@ -71,9 +71,7 @@ const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   }, [preferences]);
 
   const saveToLocalStorgate = (values) => {
-    let globalSettings = { ...settingData };
-    globalSettings = lodash.set(globalSettings, 'panels.integrals', values);
-    setSettingsData(JSON.stringify(globalSettings));
+    setSettingsData(values, 'panels.integrals');
   };
 
   const saveHandler = useCallback(

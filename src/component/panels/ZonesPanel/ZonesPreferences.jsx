@@ -88,7 +88,7 @@ const formatFields = [
 const ZonesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   const dispatch = useDispatch();
   const alert = useAlert();
-  const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
+  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
@@ -101,9 +101,7 @@ const ZonesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   }, [preferences]);
 
   const saveToLocalStorgate = (values) => {
-    let globalSettings = { ...settingData };
-    globalSettings = lodash.set(globalSettings, 'panels.ranges', values);
-    setSettingsData(JSON.stringify(globalSettings));
+    setSettingsData(values, 'panels.zones');
   };
 
   const saveHandler = useCallback(

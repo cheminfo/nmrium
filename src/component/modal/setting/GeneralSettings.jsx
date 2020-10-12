@@ -6,7 +6,7 @@ import CloseButton from '../../elements/CloseButton';
 import { Tabs } from '../../elements/Tab';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
-import { useStateWithLocalStorage } from '../../utility/LocalStorage';
+import { useStateWithLocalStorage, getValue } from '../../utility/LocalStorage';
 
 import initSetting from './InitSetting';
 
@@ -118,12 +118,15 @@ const styles = css`
 const GeneralSettings = ({ onClose, onSave }) => {
   const [activeTab, setActiveTab] = useState('controllers');
   const [settingData, setSettingsData] = useStateWithLocalStorage(
-    'general_settings',
+    'nmr-general-settings',
   );
   const refForm = useRef();
 
   useEffect(() => {
-    refForm.current.setValues({ ...initSetting, ...settingData });
+    refForm.current.setValues({
+      ...initSetting,
+      ...getValue(settingData, 'general', {}),
+    });
   }, [settingData]);
 
   const handleSave = useCallback(() => {
@@ -136,7 +139,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
   const submitHandler = useCallback(
     (values) => {
       // setSettingsData(JSON.stringify({ ...settingData, ...tempData }));
-      setSettingsData(JSON.stringify(values));
+      setSettingsData(values, 'general');
       onSave();
     },
     [onSave, setSettingsData],

@@ -99,7 +99,7 @@ const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   // const { data, preferences } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
-  const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
+  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
@@ -129,9 +129,7 @@ const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   }));
 
   const saveToLocalStorgate = (values) => {
-    let globalSettings = { ...settingData };
-    globalSettings = lodash.set(globalSettings, 'panels.peaks', values);
-    setSettingsData(JSON.stringify(globalSettings));
+    setSettingsData(values, 'panels.peaks');
   };
 
   const handleSubmit = async (event) => {
