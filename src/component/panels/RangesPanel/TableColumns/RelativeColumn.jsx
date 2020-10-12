@@ -26,7 +26,7 @@ const RelativeColumn = ({ rowData, rowSpanTags, onHoverRange, format }) => {
   );
 
   return (
-    <td {...rowSpanTags} {...onHoverRange} style={{ padding: 0 }}>
+    <td {...rowSpanTags} {...onHoverRange}>
       <EditableColumn
         value={integralVal}
         onSave={saveHandler}

@@ -126,19 +126,22 @@ export async function addBruker(spectra, options, data) {
         );
         usedcolors1D.push(color);
       }
-    }
-    if (info.dimension === 2 && info.isFt) {
-      const positiveColor = getColor(false, usedcolors2d);
-      const negativeColor = adjustAlpha(positiveColor, 50);
-      usedcolors2d.push(positiveColor);
+    } else if (info.dimension === 2) {
+      if (info.isFt) {
+        const positiveColor = getColor(false, usedcolors2d);
+        const negativeColor = adjustAlpha(positiveColor, 50);
+        usedcolors2d.push(positiveColor);
 
-      spectra.push(
-        Data2DManager.fromBruker(entry, {
-          ...options,
-          info,
-          display: { ...options.display, positiveColor, negativeColor },
-        }),
-      );
+        spectra.push(
+          Data2DManager.fromBruker(entry, {
+            ...options,
+            info,
+            display: { ...options.display, positiveColor, negativeColor },
+          }),
+        );
+      } else {
+        // in case of 2D FID spectrum
+      }
     }
   }
 }
