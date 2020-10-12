@@ -95,12 +95,11 @@ export class FiltersManager {
   // id filter id
   static enableFilter(datum1d, id, checked, filters = null) {
     datum1d.filters = datum1d.filters.slice(0);
-
-    if (checked && id) {
-      const index = datum1d.filters.findIndex((filter) => filter.id === id);
-      datum1d.filters[index] = { ...datum1d.filters[index], flag: checked };
+    if (id) {
+      datum1d.filters = datum1d.filters.map((filter) => {
+        return { ...filter, flag: filter.id === id ? checked : filter.flag };
+      }, []);
     }
-
     datum1d.data = { ...datum1d.data, ...datum1d.source.original };
     datum1d.info = { ...datum1d.info, ...datum1d.originalInfo };
     const _filters = filters ? filters : datum1d.filters;

@@ -117,7 +117,7 @@ const ZeroFillingOptionsPanel = () => {
         name="line-broadening"
         style={styles.input}
         type="number"
-        value={lineBroadeningValue}
+        defaultValue={lineBroadeningValue}
         onInput={handleInput}
         pattern="^\d*(\.\d{0,2})?$"
         step="any"

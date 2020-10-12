@@ -21,7 +21,7 @@ export default class Spectrum1DZoomHelper {
       Math.abs(deltaY).toString().length === 1
         ? Math.abs(deltaY)
         : Math.abs(deltaY) / 100;
-    const settings = getLocalStorage('settings');
+    const settings = getLocalStorage('general_settings');
 
     const _slowZoomStep = getValue(settings, 'controllers.mws.low');
     const _fastZoomStep = getValue(settings, 'controllers.mws.high');

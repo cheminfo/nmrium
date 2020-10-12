@@ -1,5 +1,7 @@
 /** @jsx jsx */
+
 import { jsx, css } from '@emotion/core';
+import { setAutoFreeze } from 'immer';
 import OCL from 'openchemlib/full';
 import PropTypes from 'prop-types';
 import {
@@ -42,6 +44,8 @@ import {
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
+
+setAutoFreeze(true);
 
 initOCL(OCL);
 

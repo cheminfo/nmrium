@@ -4,7 +4,10 @@ import React, {
   useCallback,
   useState,
   memo,
+  useEffect,
+  Fragment,
 } from 'react';
+import { createPortal, unmountComponentAtNode } from 'react-dom';
 
 const styles = {
   popup: {
@@ -32,10 +35,29 @@ const ToolTip = memo(
     title,
     offset = { x: 0, y: 0 },
   }) => {
+    const root = useRef(null);
     const refChild = useRef();
     const refContent = useRef();
     const [placement, setPlacement] = useState({ x: 0, y: 0 });
     const [show, showToolTip] = useState(false);
+
+    useEffect(() => {
+      const element = document.getElementById('__react-tooltip__');
+
+      if (element) {
+        root.current = element;
+      } else {
+        root.current = document.createElement('div');
+        root.current.id = '__react-tooltip__';
+        document.body.appendChild(root.current);
+      }
+
+      return () => {
+        if (root && root.current && element) {
+          unmountComponentAtNode(element);
+        }
+      };
+    }, []);
 
     useLayoutEffect(() => {
       const getPopupPlacement = () => {
@@ -95,33 +117,39 @@ const ToolTip = memo(
     }, []);
 
     return (
-      <div
-        style={{ position: 'relative', height: '100%', ...style.mainContainer }}
-      >
+      <Fragment>
         <div
+          style={{
+            position: 'relative',
+            height: '100%',
+            display: 'block',
+            ...style.mainContainer,
+          }}
           ref={refChild}
           onMouseOver={mouseOverHandler}
           onMouseOut={mouseLeaveHandler}
-          style={{ width: 'inherit', height: 'inherit' }}
         >
           {children}
         </div>
-        <div
-          ref={refContent}
-          style={{
-            ...styles.popup,
-            transform: `translate(${placement.x}px,${placement.y}px)`,
-            zIndex: 999999999,
-            left: offset.x,
-            top: offset.y,
-            display: show ? 'block' : 'none',
-            ...style.popup,
-          }}
-          className={className}
-        >
-          <span style={{ pointerEvents: 'none' }}>{title}</span>
-        </div>
-      </div>
+        {show &&
+          createPortal(
+            <div
+              ref={refContent}
+              style={{
+                ...styles.popup,
+                transform: `translate(${placement.x + offset.x}px,${
+                  placement.y + offset.y
+                }px)`,
+                zIndex: 999999999,
+                ...style.popup,
+              }}
+              className={className}
+            >
+              <span style={{ pointerEvents: 'none' }}>{title}</span>
+            </div>,
+            root.current,
+          )}
+      </Fragment>
     );
   },
 );

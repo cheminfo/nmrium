@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
+import Input from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Select from '../elements/Select';
-import TextInput from '../elements/TextInput';
 import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   APPLY_AUTO_PHASE_CORRECTION_FILTER,
@@ -99,10 +99,7 @@ const ManualPhaseCorrectionPanel = () => {
     (e) => {
       const fieldName = e.target.name;
       if (e.target) {
-        const inputValue =
-          parseFloat(e.target.value) || e.target.value.trim() === '-'
-            ? e.target.value
-            : 0;
+        const inputValue = e.target.value;
 
         setValue((prevValue) => {
           const _value = {
@@ -120,6 +117,7 @@ const ManualPhaseCorrectionPanel = () => {
                 newValue[key] -= prevValue[key];
               }
             }
+
             dispatch({
               type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
               value: newValue,
@@ -176,19 +174,21 @@ const ManualPhaseCorrectionPanel = () => {
 
       {phaseCorrectionType === phaseCorrectionTypes.manual && (
         <>
-          <TextInput
+          <Input
             label="PH0:"
             name="ph0"
             style={{ input: styles.input }}
             onChange={handleInput}
             value={value.ph0}
+            type="number"
           />
-          <TextInput
+          <Input
             label="PH1:"
             name="ph1"
             style={{ input: styles.input }}
             onChange={handleInput}
             value={value.ph1}
+            type="number"
           />
 
           <InputRange

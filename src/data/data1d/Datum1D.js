@@ -189,6 +189,35 @@ export class Datum1D {
     this.updateIntegralRanges();
   }
 
+  changeRangesRealtive(rangeID, newRealtiveValue) {
+    const range = this.ranges.values.find((range) => range.id === rangeID);
+    if (range) {
+      const ratio = range.absolute / newRealtiveValue;
+      this.ranges.values = this.ranges.values.map((range) => {
+        return {
+          ...range,
+          integral: range.absolute / ratio,
+        };
+      });
+    }
+    return this.ranges.values;
+  }
+  changeInetgralsRealtive(integralID, newIntegralValue) {
+    const integral = this.integrals.values.find(
+      (integral) => integral.id === integralID,
+    );
+    if (integral) {
+      const ratio = integral.absolute / newIntegralValue;
+      this.integrals.values = this.integrals.values.map((integral) => {
+        return {
+          ...integral,
+          integral: integral.absolute / ratio,
+        };
+      });
+    }
+    return this.integrals.values;
+  }
+
   updateIntegralIntegrals() {
     if (this.integrals.options.sum === undefined) {
       this.integrals.options = { ...this.integrals.options, sum: 100 };
