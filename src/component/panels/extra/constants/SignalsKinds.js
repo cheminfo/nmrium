@@ -42,6 +42,6 @@ const SignalKinds = [
 ];
 
 const SignalKindsToInclude = ['signal'];
-const DatumKind = { signal: 'signal', noSignal: 'noSignal' };
+const DatumKind = { signal: 'signal', mixed: 'mixed' };
 
 export { SignalKinds, SignalKindsToInclude, DatumKind };

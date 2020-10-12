@@ -34,7 +34,7 @@ const ActionsColumn = ({ rowData, rowSpanTags }) => {
       _zone.signal[_zone.tableMetaInfo.signalIndex].kind = value;
       _zone.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal
-        : DatumKind.noSignal;
+        : DatumKind.mixed;
       dispatch({
         type: CHANGE_ZONE_DATA,
         data: _zone,

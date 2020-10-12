@@ -55,7 +55,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
       _rowData.signal[_rowData.tableMetaInfo.signalIndex].kind = value;
       _rowData.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal
-        : DatumKind.noSignal;
+        : DatumKind.mixed;
       dispatch({
         type: CHANGE_RANGE_DATA,
         data: _rowData,
