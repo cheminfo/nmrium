@@ -67,6 +67,10 @@ const getExperiment = (data) => {
     return 'hsqc';
   }
 
+  if (pulse.includes('hmqc')) {
+    return 'hmqc';
+  }
+
   if (
     pulse.includes('hmbc') ||
     (pulse.includes('inv4') && pulse.includes('lp'))
@@ -112,7 +116,7 @@ const getExperiment = (data) => {
 const CorrelationTable = () => {
   const mf = 'C11H14N2O'; //'C8H10';
   const tolerance = useMemo(() => {
-    return { C: 0.4, H: 0.03 };
+    return { C: 0.25, H: 0.025 };
   }, []);
 
   const { data } = useChartData();
@@ -127,15 +131,14 @@ const CorrelationTable = () => {
     mf,
   ]);
 
+  const getAtomType = (nucleus) => nucleus.split(/\d+/)[1];
+
   // all experiments
   const experiments = useMemo(() => {
     const _experiments = {};
     if (data) {
       data
-        .filter(
-          (_data) =>
-            _data.info.isFid === false && _data.display.isVisible === true,
-        )
+        .filter((_data) => _data.info.isFid === false)
         .forEach((_data) => {
           if (!lodash.get(_experiments, `${_data.info.dimension}D`, false)) {
             _experiments[`${_data.info.dimension}D`] = {};
@@ -173,7 +176,7 @@ const CorrelationTable = () => {
       const _experiments = lodash
         .get(experiments, `1D.1d`, []) // don't consider DEPT etc. here
         .map((_experiment) => {
-          return _experiment.info.nucleus.split(/\d+/)[1] === atomType &&
+          return getAtomType(_experiment.info.nucleus) === atomType &&
             lodash.get(_experiment, 'ranges.values', []).length > 0
             ? _experiment
             : undefined;
@@ -237,9 +240,9 @@ const CorrelationTable = () => {
   // useEffect(() => {
   //   console.log(experiments);
   //   console.log(experiments1D);
-  //   console.log(experiments1DExtra);
+  //   // console.log(experiments1DExtra);
   //   console.log(experiments2D);
-  // }, [experiments, experiments1D, experiments1DExtra, experiments2D]);
+  // }, [experiments, experiments1D, experiments2D]);
 
   // search for matches in extra 1D (e.g. DEPT) and 2D experiments
   const getCorrelationsFor1D = useCallback(
@@ -254,7 +257,7 @@ const CorrelationTable = () => {
         const index = 0;
         const _experiment = experiments2D[_experimentType][index];
         const dim = _experiment.info.nucleus.findIndex(
-          (_nucleus) => _nucleus.split(/\d+/)[1] === atomType,
+          (_nucleus) => getAtomType(_nucleus) === atomType,
         );
         const axis = dim === 0 ? 'x' : dim === 1 ? 'y' : undefined;
         const matchedSignals = axis
@@ -290,7 +293,6 @@ const CorrelationTable = () => {
     const signals1D = {};
     Object.keys(atoms).forEach((atomType) => {
       const atomCount = atoms[atomType];
-
       let _signals = [];
       // store valid signals for 1D experiments
       if (lodash.get(experiments1D, `${atomType}`, []).length > 0) {
@@ -302,10 +304,11 @@ const CorrelationTable = () => {
             ),
           )
           .flat();
-        __signals.forEach((_signal) =>
+        __signals.forEach((_signal, s) =>
           _signals.push({
             experimentType: '1d',
             atomType,
+            label: `${atomType}${s + 1}`,
             signal: _signal,
           }),
         );
@@ -342,7 +345,7 @@ const CorrelationTable = () => {
           const otherAxis = _correlation2D.axis === 'x' ? 'y' : 'x';
           const otherNucleus =
             _correlation2D.nucleus[otherAxis === 'x' ? 0 : 1];
-          const otherAtomType = otherNucleus.split(/\d+/)[1];
+          const otherAtomType = getAtomType(otherNucleus);
           return _correlation2D.correlation.map((signalMatch2D) =>
             lodash
               .get(signals1D, `${otherAtomType}`, [])
@@ -373,110 +376,198 @@ const CorrelationTable = () => {
   //   console.log(correlations);
   // }, [correlations]);
 
+  const getAdditionalColumnsData = useCallback(
+    (correlation) => {
+      return additionalColumns.map((_experiment, n) => {
+        let content = '';
+        if (correlation) {
+          correlation.correlation.forEach((_correlation, l) => {
+            if (_correlation.experiment === _experiment) {
+              content = _correlation.correlation
+                .map((_signal2D, m) =>
+                  lodash.get(
+                    correlation,
+                    `correlation.matchIndices[${l}][${m}]`,
+                    [],
+                  ),
+                )
+                .flat()
+                .map(
+                  (matchIndex) =>
+                    correlations[
+                      getAtomType(
+                        _correlation.nucleus[_correlation.axis === 'x' ? 1 : 0], // reversed to get the other atom type
+                      )
+                    ][matchIndex].label,
+                )
+                .join(', ');
+            }
+          });
+        }
+        // eslint-disable-next-line react/no-array-index-key
+        return <td key={`addCol_${_experiment}_${n}`}>{content}</td>;
+      });
+    },
+    [additionalColumns, correlations],
+  );
+
+  const letters = [...Array(26).keys()].map((i) => String.fromCharCode(i + 97));
+  const attach = useCallback(
+    (_correlations, index, atomTypeToAttach, indicesToAttach) => {
+      const correlation = _correlations[index];
+      if (!lodash.get(correlation, `attached`, false)) {
+        correlation.attached = {};
+      }
+      if (!lodash.get(correlation, `attached.${atomTypeToAttach}`, false)) {
+        correlation.attached[atomTypeToAttach] = [];
+      }
+      correlation.attached[atomTypeToAttach] = correlation.attached[
+        atomTypeToAttach
+      ].concat(indicesToAttach);
+      if (atomTypeToAttach === 'H') {
+        indicesToAttach.forEach((indexToAttach, n) => {
+          if (lodash.get(correlations, `H[${indexToAttach}]`, false)) {
+            correlations.H[indexToAttach].label = `H${index + 1}${letters[n]}`;
+          }
+        });
+      }
+    },
+    [correlations, letters],
+  );
+
+  // update attachment information between heavy atoms and protons via HSQC or HMQC
+  useEffect(() => {
+    const _correlationsProtons = lodash.get(correlations, 'H', []);
+    Object.keys(atoms).forEach((atomType) => {
+      const _correlations = lodash.get(correlations, `${atomType}`, []);
+      if (atomType !== 'H') {
+        for (let j = 0; j < _correlations.length; j++) {
+          const indicesProtons1D = _correlations[j].correlation
+            .map((_correlation, n) =>
+              _correlation.experiment === 'hsqc' ||
+              _correlation.experiment === 'hmqc'
+                ? n
+                : -1,
+            )
+            .filter((_index) => _index >= 0)
+            .map((_index) =>
+              _correlations[j].correlation.matchIndices[_index].flat(),
+            )
+            .flat();
+          if (indicesProtons1D.length > 0) {
+            attach(_correlations, j, 'H', indicesProtons1D);
+          }
+          indicesProtons1D.forEach((_index) => {
+            attach(_correlationsProtons, _index, atomType, [j]);
+          });
+        }
+      }
+    });
+  }, [atoms, attach, correlations]);
+
   const rows = useMemo(() => {
     const _rows = [];
+    const _correlationsProtons = lodash.get(correlations, 'H', []);
+
     Object.keys(atoms).forEach((atomType, i) => {
       const _correlations = lodash.get(correlations, `${atomType}`, []);
-      // if (atomType !== 'H') {
-      for (let j = 0; j < atoms[atomType]; j++) {
-        if (_correlations.length > 0 && j < _correlations.length) {
-          const correlation = _correlations[j];
-          const additionalColumnsData = additionalColumns.map((_experiment) => {
-            let content = '';
-            correlation.correlation.forEach((_correlation, l) => {
-              if (_correlation.experiment === _experiment) {
-                content = _correlation.correlation
-                  .map((_signal2D, m) =>
-                    lodash
-                      .get(
-                        correlation,
-                        `correlation.matchIndices[${l}][${m}]`,
-                        [],
-                      )
-                      .map((matchIndex) => matchIndex + 1),
-                  )
-                  .flat()
-                  .join(', ');
-              }
+      if (atomType !== 'H') {
+        for (let j = 0; j < atoms[atomType]; j++) {
+          if (_correlations.length > 0 && j < _correlations.length) {
+            const correlation = _correlations[j];
+            _rows.push(
+              <tr
+                // eslint-disable-next-line react/no-array-index-key
+                key={`correlation${i}${j}${_correlations[j].signal.delta}`}
+                style={{ backgroundColor: 'mintcream' }}
+              >
+                <td>{correlation.label}</td>
+                <td>{correlation.signal.delta.toFixed(3)}</td>
+                <td>{''}</td>
+                {getAdditionalColumnsData(correlation)}
+              </tr>,
+            );
+            lodash.get(correlation, 'attached.H', []).forEach((_index, h) => {
+              _rows.push(
+                <tr
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`correlation${i}${j}_proton${h}`}
+                >
+                  <td>{`${_correlationsProtons[_index].label}`}</td>
+                  <td>
+                    {_correlationsProtons[_index].signal.delta.toFixed(3)}
+                  </td>
+                  <td>{''}</td>
+                  {getAdditionalColumnsData(_correlationsProtons[_index])}
+                </tr>,
+              );
             });
-            // eslint-disable-next-line react/no-array-index-key
-            return <td key={`addCol_${atomType}_${i}_${j}`}>{content}</td>;
-          });
-
-          _rows.push(
-            // eslint-disable-next-line react/no-array-index-key
-            <tr key={`correlation${i}${j}`}>
-              <td>{`${atomType}${j + 1}`}</td>
-              <td>{correlation.signal.delta.toFixed(3)}</td>
-              {/* <td>{JSON.stringify(_signal.j)}</td> */}
-              <td>{''}</td>
-              {additionalColumnsData}
-            </tr>,
-          );
-        } else {
-          const additionalColumnsDataDefault = additionalColumns.map(
-            // eslint-disable-next-line react/no-array-index-key
-            (_column, i) => <td key={`addCol_${atomType}_${i}`}>{''}</td>,
-          );
-          _rows.push(
-            // eslint-disable-next-line react/no-array-index-key
-            <tr key={`correlation${i}${j}`}>
-              <td
-                style={{
-                  color: _correlations.length > 0 ? 'red' : 'black',
-                }}
-              >{`${atomType}${j + 1}`}</td>
-              <td>{''}</td>
-              {/* <td>{''}</td> */}
-              <td>{''}</td>
-              {additionalColumnsDataDefault}
-            </tr>,
-          );
+          } else {
+            const additionalColumnsDataDefault = additionalColumns.map(
+              // eslint-disable-next-line react/no-array-index-key
+              (_column, i) => <td key={`addCol_${atomType}_${i}`}>{''}</td>,
+            );
+            _rows.push(
+              <tr
+                // eslint-disable-next-line react/no-array-index-key
+                key={`correlation${i}${j}`}
+                style={{ backgroundColor: 'mintcream' }}
+              >
+                <td
+                  style={{
+                    color: _correlations.length > 0 ? 'red' : 'black',
+                  }}
+                >
+                  {_correlations.length > 0
+                    ? `[${atomType}${j + 1}]`
+                    : `${atomType}${j + 1}`}
+                </td>
+                <td>{''}</td>
+                <td>{''}</td>
+                {additionalColumnsDataDefault}
+              </tr>,
+            );
+          }
+        }
+        if (_correlations.length > atoms[atomType]) {
+          for (let k = atoms[atomType]; k < _correlations.length; k++) {
+            const correlation = _correlations[k];
+            _rows.push(
+              <tr
+                // eslint-disable-next-line react/no-array-index-key
+                key={`correlation${i}${atoms[atomType] + k + 1}`}
+                style={{ backgroundColor: 'mintcream' }}
+              >
+                <td style={{ color: 'red' }}>{`${correlation.label}`}</td>
+                <td>{correlation.signal.delta.toFixed(3)}</td>
+                <td>{''}</td>
+                {getAdditionalColumnsData(correlation)}
+              </tr>,
+            );
+            lodash.get(correlation, 'attached.H', []).forEach((_index, h) => {
+              _rows.push(
+                <tr
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`correlation${i}${k}_proton${h}`}
+                >
+                  <td>{`${_correlationsProtons[_index].label}`}</td>
+                  <td>
+                    {_correlationsProtons[_index].signal.delta.toFixed(3)}
+                  </td>
+                  <td>{''}</td>
+                  {getAdditionalColumnsData(_correlationsProtons[_index])}
+                </tr>,
+              );
+            });
+          }
         }
       }
-      if (_correlations.length > atoms[atomType]) {
-        for (let k = atoms[atomType]; k < _correlations.length; k++) {
-          const correlation = _correlations[k];
-          const additionalColumnsData = additionalColumns.map((_experiment) => {
-            let content = '';
-            correlation.correlation.forEach((_correlation, l) => {
-              if (_correlation.experiment === _experiment) {
-                content = _correlation.correlation
-                  .map((_signal2D, m) =>
-                    lodash
-                      .get(
-                        correlation,
-                        `correlation.matchIndices[${l}][${m}]`,
-                        [],
-                      )
-                      .map((matchIndex) => matchIndex + 1),
-                  )
-                  .flat()
-                  .join(', ');
-              }
-            });
-            // eslint-disable-next-line react/no-array-index-key
-            return <td key={`addCol_${atomType}_${i}_${k}`}>{content}</td>;
-          });
-          _rows.push(
-            // eslint-disable-next-line react/no-array-index-key
-            <tr key={`correlation${i}${atoms[atomType] + k + 1}`}>
-              <td style={{ color: 'orange' }}>{`[${atomType}${k + 1}]`}</td>
-              <td>{_correlations[k].signal.delta.toFixed(3)}</td>
-              {/* <td>{''}</td> */}
-              <td>{''}</td>
-              {additionalColumnsData}
-            </tr>,
-          );
-        }
-      }
-      // }
 
       return _rows;
     });
 
     return _rows;
-  }, [additionalColumns, atoms, correlations]);
+  }, [additionalColumns, atoms, correlations, getAdditionalColumnsData]);
 
   const completenessView = useMemo(() => {
     const line = Object.keys(atoms).map((atom, i) => {
