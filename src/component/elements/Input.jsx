@@ -34,6 +34,7 @@ const Input = forwardRef(
       checkValue,
       type,
       enableAutoSelect,
+      className,
       ...prop
     },
     ref,
@@ -63,6 +64,8 @@ const Input = forwardRef(
     const onChangeHandler = useCallback(
       (e) => {
         e.persist();
+        e.stopPropagation();
+        e.preventDefault();
         function check(value) {
           if (type === 'number') {
             const pattern = /^(?:-?[0-9]*|[0-9]\d*)(?:\.\d{0,20})?$/;
@@ -88,6 +91,8 @@ const Input = forwardRef(
     const handleKeyDown = useCallback(
       (event) => {
         event.persist();
+        // event.preventDefault();
+        event.stopPropagation();
 
         onKeyDown({
           ...event,
@@ -96,12 +101,17 @@ const Input = forwardRef(
       },
       [getValue, onKeyDown, val],
     );
+    const preventPropagate = useCallback((event) => {
+      event.stopPropagation();
+    }, []);
 
     return (
       <Fragment>
-        <span style={{ ...styles.label, ...style.label }} className="label">
-          {label}
-        </span>
+        {label && (
+          <span style={{ ...styles.label, ...style.label }} className="label">
+            {label}
+          </span>
+        )}
         <input
           {...prop}
           ref={ref}
@@ -111,8 +121,9 @@ const Input = forwardRef(
           value={val}
           onChange={onChangeHandler}
           onKeyDown={handleKeyDown}
+          onKeyPress={preventPropagate}
           onDoubleClick={(e) => e.stopPropagation()}
-          className="input"
+          className={`input ${className}`}
         />
       </Fragment>
     );
@@ -131,6 +142,7 @@ Input.propTypes = {
   onChange: PropTypes.func,
   checkValue: PropTypes.func,
   onKeyDown: PropTypes.func,
+  className: PropTypes.string,
   type: PropTypes.oneOf(['text', 'number']),
   enableAutoSelect: PropTypes.bool,
 };
@@ -148,6 +160,7 @@ Input.defaultProps = {
   checkValue: () => true,
   onKeyDown: () => null,
   type: 'text',
+  className: '',
   enableAutoSelect: false,
 };
 
