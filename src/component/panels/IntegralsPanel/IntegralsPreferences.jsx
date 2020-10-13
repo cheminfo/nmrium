@@ -15,8 +15,10 @@ import ColorInput from '../../elements/ColorInput';
 import NumberInput from '../../elements/NumberInput';
 import IntegralsWrapper from '../../hoc/IntegralsWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
-import { useStateWithLocalStorage } from '../../utility/LocalStorage';
-import { GetPreference } from '../../utility/PreferencesHelper';
+import {
+  useStateWithLocalStorage,
+  getValue as getValueByKeyPath,
+} from '../../utility/LocalStorage';
 import ColumnFormatField from '../extra/preferences/ColumnFormatField';
 import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -64,14 +66,17 @@ const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   const formRef = useRef();
 
   useEffect(() => {
-    const integralsPreferences = GetPreference(preferences, 'integrals');
+    const integralsPreferences = getValueByKeyPath(
+      preferences,
+      'formatting.panels.integrals',
+    );
     if (integralsPreferences) {
       setSetting(integralsPreferences);
     }
   }, [preferences]);
 
   const saveToLocalStorgate = (values) => {
-    setSettingsData(values, 'panels.integrals');
+    setSettingsData(values, 'formatting.panels.integrals');
   };
 
   const saveHandler = useCallback(

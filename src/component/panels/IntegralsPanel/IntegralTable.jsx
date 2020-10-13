@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import Select from '../../elements/Select';
@@ -13,7 +14,7 @@ import {
   CHANGE_INTEGRAL_RELATIVE,
 } from '../../reducer/types/Types';
 import formatNumber from '../../utility/FormatNumber';
-import { GetPreference } from '../../utility/PreferencesHelper';
+import { getValue } from '../../utility/LocalStorage';
 import { SignalKinds } from '../extra/constants/SignalsKinds';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { integralDefaultValues } from '../extra/preferences/defaultValues';
@@ -26,13 +27,13 @@ const IntegralTable = memo(
   ({
     integrals,
     info,
-    preferences,
     activeTab,
     xDomain,
     enableFilter,
     onIntegralsChange,
   }) => {
     const dispatch = useDispatch();
+    const preferences = usePreferences();
 
     const deleteIntegralHandler = useCallback(
       (e, row) => {
@@ -135,9 +136,9 @@ const IntegralTable = memo(
         });
       };
 
-      const integralsPreferences = GetPreference(
+      const integralsPreferences = getValue(
         preferences,
-        `integrals.[${activeTab}]`,
+        `formatting.panels.integrals.[${activeTab}]`,
       );
       // if (integralsPreferences) {
       let cols = [...defaultColumns];

@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 
-import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import PeakNotation from '../Notations/PeakNotation';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
+// import { getPeakLabelNumberDecimals } from '../utility/default';
 // import ModifiedPeakNotation from './Notations/ModifiedPeakNotation';
 
 const PeaksNotations = () => {
@@ -60,7 +60,7 @@ const PeaksNotations = () => {
                     value={d.x[xIndex]}
                     // {d.color}
                     color="#730000"
-                    decimalFraction={getPeakLabelNumberDecimals(d.info.nucleus)}
+                    nucleus={d.info.nucleus}
                     isActive={
                       activeSpectrum == null
                         ? false

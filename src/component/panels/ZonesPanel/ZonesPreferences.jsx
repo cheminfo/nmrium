@@ -14,8 +14,10 @@ import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import ContextWrapper from '../../hoc/ContextWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
-import { useStateWithLocalStorage } from '../../utility/LocalStorage';
-import { GetPreference } from '../../utility/PreferencesHelper';
+import {
+  useStateWithLocalStorage,
+  getValue as getValueByKeyPath,
+} from '../../utility/LocalStorage';
 import ColumnFormatField from '../extra/preferences/ColumnFormatField';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -94,14 +96,17 @@ const ZonesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   const formRef = useRef();
 
   useEffect(() => {
-    const integralsPreferences = GetPreference(preferences, 'ranges');
+    const integralsPreferences = getValueByKeyPath(
+      preferences,
+      'formatting.panels.ranges',
+    );
     if (integralsPreferences) {
       setSetting(integralsPreferences);
     }
   }, [preferences]);
 
   const saveToLocalStorgate = (values) => {
-    setSettingsData(values, 'panels.zones');
+    setSettingsData(values, 'formatting.panels.ranges');
   };
 
   const saveHandler = useCallback(

@@ -42,6 +42,11 @@ import {
   dispatchMiddleware,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
+import {
+  preferencesInitialState,
+  preferencesReducer,
+  INIT_PREFERENCES,
+} from './reducer/preferencesReducer';
 import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 
@@ -120,8 +125,19 @@ const NMRDisplayer = memo(
     const [helpData, setHelpData] = useState(helpList());
 
     const [state, dispatch] = useReducer(spectrumReducer, initialState);
+    const [preferencesState, dispatchPreferences] = useReducer(
+      preferencesReducer,
+      preferencesInitialState,
+    );
 
     const { selectedTool, displayerMode } = state;
+
+    useEffect(() => {
+      dispatchPreferences({
+        type: INIT_PREFERENCES,
+        payload: { display: preferences, dispatch: dispatchPreferences },
+      });
+    }, [preferences]);
 
     useEffect(() => {
       dispatch({ type: SET_LOADING_FLAG, isLoading: true });
@@ -149,7 +165,7 @@ const NMRDisplayer = memo(
 
     return (
       <ErrorBoundary>
-        <PreferencesProvider value={preferences}>
+        <PreferencesProvider value={preferencesState}>
           <HelpProvider data={helpData} wrapperID="main-wrapper">
             <AlertProvider template={AlertTemplate} {...alertOptions}>
               <DispatchProvider value={dispatchMiddleWare}>

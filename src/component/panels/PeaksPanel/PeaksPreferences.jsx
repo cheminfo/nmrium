@@ -15,8 +15,10 @@ import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import PeaksWrapper from '../../hoc/PeaksWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
-import { useStateWithLocalStorage } from '../../utility/LocalStorage';
-import { GetPreference } from '../../utility/PreferencesHelper';
+import {
+  useStateWithLocalStorage,
+  getValue as getValueByKeyPath,
+} from '../../utility/LocalStorage';
 import ColumnFormatField from '../extra/preferences/ColumnFormatField';
 import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -105,7 +107,10 @@ const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   const formRef = useRef();
 
   useEffect(() => {
-    const peaksPreferences = GetPreference(preferences, 'peaks');
+    const peaksPreferences = getValueByKeyPath(
+      preferences,
+      `formatting.panels.peaks`,
+    );
     if (peaksPreferences) {
       setSetting(peaksPreferences);
     }
@@ -129,7 +134,7 @@ const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   }));
 
   const saveToLocalStorgate = (values) => {
-    setSettingsData(values, 'panels.peaks');
+    setSettingsData(values, 'formatting.panels.peaks');
   };
 
   const handleSubmit = async (event) => {
