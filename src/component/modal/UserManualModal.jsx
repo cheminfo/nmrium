@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
+import getHelpData from '../constants/help';
 import CloseButton from '../elements/CloseButton';
-import getHelpData from '../help';
 
 const styles = css`
   width: 100%;
