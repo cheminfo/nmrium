@@ -1,16 +1,24 @@
 import React, { useState, useCallback } from 'react';
 
-const CheckBox = ({ checked: checkProps, onChange }) => {
+const CheckBox = ({ name, checked: checkProps, onChange }) => {
   const [checked, setCheck] = useState(checkProps);
 
-  const handleCheck = useCallback(() => {
-    const _checked = !checked;
-    setCheck(_checked);
-    onChange(_checked);
-  }, [checked, onChange]);
+  const handleCheck = useCallback(
+    (e) => {
+      const _checked = !checked;
+      setCheck(_checked);
+      onChange(e);
+    },
+    [checked, onChange],
+  );
 
   return (
-    <input type="checkbox" onChange={handleCheck} defaultChecked={checked} />
+    <input
+      type="checkbox"
+      name={name}
+      onChange={handleCheck}
+      defaultChecked={checkProps}
+    />
   );
 };
 
@@ -18,6 +26,7 @@ CheckBox.defaultProps = {
   onChange: function () {
     return null;
   },
+  name: '',
 };
 
 export default CheckBox;
