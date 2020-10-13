@@ -37,11 +37,14 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
 
   const Children = useMemo(() => {
     return React.Children.map(children, (child, index) => {
-      return React.cloneElement(child, {
-        onOpen: handleOpen,
-        index,
-        isOpen: elements && elements[index],
-      });
+      return (
+        child &&
+        React.cloneElement(child, {
+          onOpen: handleOpen,
+          index,
+          isOpen: elements && elements[index],
+        })
+      );
     });
   }, [children, elements, handleOpen]);
 

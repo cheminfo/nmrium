@@ -112,7 +112,7 @@ const Panels = memo(({ selectedTool, displayerMode }) => {
   const check = useCallback(
     (item) => {
       return (
-        !lodash.get(preferences, `panels.${item.hidePreferenceKey}`) &&
+        !lodash.get(preferences, `display.panels.${item.hidePreferenceKey}`) &&
         (item.mode == null || item.mode === displayerMode)
       );
     },
@@ -122,12 +122,16 @@ const Panels = memo(({ selectedTool, displayerMode }) => {
   return (
     <Accordion defaultOpenIndex={panelIndex}>
       {accordionItems.map((item) => {
-        return check(item) ? (
-          <AccordionItem key={item.title} title={item.title} style={item.style}>
-            {item.component}
-          </AccordionItem>
-        ) : (
-          <span />
+        return (
+          check(item) && (
+            <AccordionItem
+              key={item.title}
+              title={item.title}
+              style={item.style}
+            >
+              {item.component}
+            </AccordionItem>
+          )
         );
       })}
     </Accordion>
