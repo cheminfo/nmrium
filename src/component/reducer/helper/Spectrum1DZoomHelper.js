@@ -1,8 +1,9 @@
+import initSetting from '../../constants/InitSetting';
 import { getLocalStorage, getValue } from '../../utility/LocalStorage';
 
 export const zoomDefaultValues = {
-  lowStep: 2,
-  highStep: 20,
+  lowStep: initSetting.controllers.mws.low,
+  highStep: initSetting.controllers.mws.high,
   speedThreshold: 3,
 };
 
@@ -21,10 +22,10 @@ export default class Spectrum1DZoomHelper {
       Math.abs(deltaY).toString().length === 1
         ? Math.abs(deltaY)
         : Math.abs(deltaY) / 100;
-    const settings = getLocalStorage('general_settings');
+    const settings = getLocalStorage('nmr-general-settings');
 
-    const _slowZoomStep = getValue(settings, 'controllers.mws.low');
-    const _fastZoomStep = getValue(settings, 'controllers.mws.high');
+    const _slowZoomStep = getValue(settings, 'general.controllers.mws.low');
+    const _fastZoomStep = getValue(settings, 'general.controllers.mws.high');
 
     const LOW_STEP = _slowZoomStep
       ? 0.01 * _slowZoomStep

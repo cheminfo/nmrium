@@ -1,14 +1,17 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
+import { usePreferences } from '../../context/PreferencesContext';
 import CloseButton from '../../elements/CloseButton';
 import { Tabs } from '../../elements/Tab';
 import FormikForm from '../../elements/formik/FormikForm';
-import FormikInput from '../../elements/formik/FormikInput';
+import { SET_PREFERENCES } from '../../reducer/preferencesReducer';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 
-import initSetting from './InitSetting';
+import ControllersTabContent from './ControllersTabContent';
+import DisplayTabContent from './DisplayTabContent';
+import FormattingTabContent from './FormattingTabContent';
 
 const styles = css`
   overflow: auto;
@@ -30,8 +33,15 @@ const styles = css`
     // padding-top: 10px;
   }
 
+  .tab-content {
+    width: 100%;
+  }
+
   .inner-content {
-    padding: 15px;
+    padding: 15px 30px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
   }
 
   button:focus {
@@ -100,6 +110,7 @@ const styles = css`
     padding: 5px;
     width: 100px;
     margin-right: 10px;
+    height: initial !important;
   }
 
   .close-bt {
@@ -113,33 +124,46 @@ const styles = css`
     width: 30px;
     height: 30px;
   }
+
+  .checkbox-lable {
+    min-width: 150px;
+    display: inline-block;
+  }
+  .checkbox-element {
+    margin-bottom: 5px;
+  }
+
+  .check-false {
+    opacity: 0.5;
+  }
 `;
 
 const GeneralSettings = ({ onClose, onSave }) => {
   const [activeTab, setActiveTab] = useState('controllers');
-  const [settingData, setSettingsData] = useStateWithLocalStorage(
-    'general_settings',
-  );
+  const preferences = usePreferences();
+  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const refForm = useRef();
 
-  useEffect(() => {
-    refForm.current.setValues({ ...initSetting, ...settingData });
-  }, [settingData]);
+  // useEffect(() => {
+  //   refForm.current.setValues({
+  //     ...initSetting,
+  //     ...settingData,
+  //   });
+  // }, [settingData]);
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
-    // setSettingsData(JSON.stringify({ ...settingData, ...tempData }));
-    // onSave();
-    // tempData = {};
   }, []);
 
   const submitHandler = useCallback(
     (values) => {
-      // setSettingsData(JSON.stringify({ ...settingData, ...tempData }));
-      setSettingsData(JSON.stringify(values));
+      // eslint-disable-next-line no-unused-vars
+      const { dispatch, ...resValues } = values;
+      setSettingsData(resValues);
+      preferences.dispatch({ type: SET_PREFERENCES, payload: values });
       onSave();
     },
-    [onSave, setSettingsData],
+    [onSave, preferences, setSettingsData],
   );
 
   const tabChangeHandler = useCallback((tab) => {
@@ -155,7 +179,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
       <div className="main-content">
         <FormikForm
           ref={refForm}
-          initialValues={initSetting}
+          initialValues={preferences}
           onSubmit={submitHandler}
         >
           <Tabs
@@ -165,20 +189,20 @@ const GeneralSettings = ({ onClose, onSave }) => {
           >
             <div
               className="inner-content"
-              tablabel="controllers"
+              tablabel="Controllers"
               tabid="controllers"
             >
-              <p className="section-header">Mouse Scroll Wheel Sensitivity</p>
-              <FormikInput
-                type="number"
-                label="Low"
-                name="controllers.mws.low"
-              />
-              <FormikInput
-                type="number"
-                label="high"
-                name="controllers.mws.high"
-              />
+              <ControllersTabContent />
+            </div>
+            <div
+              className="inner-content"
+              tablabel="Formatting"
+              tabid="formatting"
+            >
+              <FormattingTabContent />
+            </div>
+            <div className="inner-content" tablabel="Display" tabid="display">
+              <DisplayTabContent />
             </div>
           </Tabs>
         </FormikForm>

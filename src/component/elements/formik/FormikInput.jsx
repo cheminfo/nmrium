@@ -5,7 +5,15 @@ import React, { useCallback } from 'react';
 
 import Input from '../Input';
 
-const FormikInput = ({ label, name, style, onChange, checkValue, type }) => {
+const FormikInput = ({
+  label,
+  name,
+  style,
+  onChange,
+  checkValue,
+  type,
+  className,
+}) => {
   const { values, handleChange } = useFormikContext();
 
   const changeHandler = useCallback(
@@ -25,6 +33,7 @@ const FormikInput = ({ label, name, style, onChange, checkValue, type }) => {
       type={type}
       style={style}
       checkValue={checkValue}
+      className={className}
     />
   );
 };
@@ -40,6 +49,7 @@ FormikInput.propTypes = {
   onChange: PropTypes.func,
   checkValue: PropTypes.func,
   type: PropTypes.oneOf(['text', 'number']),
+  className: PropTypes.string,
 };
 
 FormikInput.defaultProps = {
@@ -52,6 +62,7 @@ FormikInput.defaultProps = {
   },
   checkValue: () => true,
   type: 'text',
+  className: '',
 };
 
 export default FormikInput;

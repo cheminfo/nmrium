@@ -1,9 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 
-import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
+// import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
+import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import { getLayoutID, LAYOUT } from '../utilities/DimensionLayout';
 import { get2DXScale, get2DYScale, get1DYScale } from '../utilities/scale';
 
@@ -43,6 +44,7 @@ const XYLabelPointer = ({ layout, data1D }) => {
     });
 
   const nucleuses = activeTab.split(',');
+  const format = useFormatNumberByNucleus(nucleuses);
 
   const scaleX = useMemo(() => {
     if (!data1D || data1D.length === 0) {
@@ -129,13 +131,9 @@ const XYLabelPointer = ({ layout, data1D }) => {
         transform: `translate(${position.x}px, ${position.y}px)`,
       }}
     >
-      <span>
-        {getYValue().toFixed(getPeakLabelNumberDecimals(nucleuses[1]))}
-      </span>
+      <span>{format(getYValue(), nucleuses[1])}</span>
       <span style={{ color: 'gray' }}>{','}</span>
-      <span style={{ color: 'red' }}>
-        {getXValue().toFixed(getPeakLabelNumberDecimals(nucleuses[0]))}
-      </span>
+      <span style={{ color: 'red' }}>{format(getXValue(), nucleuses[0])}</span>
     </div>
   );
 };

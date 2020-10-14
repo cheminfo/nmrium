@@ -1,10 +1,11 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useMemo } from 'react';
 
-import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
+// import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';
+import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 
 const style = {
   cursor: 'crosshair',
@@ -20,19 +21,22 @@ const style = {
 const XLabelPointer = () => {
   const { height, width, margin, data, activeSpectrum } = useChartData();
   const { scaleX } = useScale();
-
-  let position = useContext(MouseContext);
+  const activeSpectrumData = useMemo(() => {
+    const spectrumData = data.find((d) => d.id === activeSpectrum.id);
+    return spectrumData;
+  }, [activeSpectrum.id, data]);
+  const position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
+  const format = useFormatNumberByNucleus(activeSpectrumData.info.nucleus);
+
   const getXValue = useCallback(
     (xVal) => {
-      const spectrumData = data.find((d) => d.id === activeSpectrum.id);
-      if (spectrumData) {
-        return scaleX()
-          .invert(xVal)
-          .toFixed(getPeakLabelNumberDecimals(spectrumData.info.nucleus));
+      if (activeSpectrumData) {
+        const xInvert = scaleX().invert(xVal);
+        return format(xInvert);
       }
     },
-    [data, activeSpectrum, scaleX],
+    [activeSpectrumData, format, scaleX],
   );
 
   if (

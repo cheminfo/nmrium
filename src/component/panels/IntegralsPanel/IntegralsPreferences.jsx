@@ -15,8 +15,10 @@ import ColorInput from '../../elements/ColorInput';
 import NumberInput from '../../elements/NumberInput';
 import IntegralsWrapper from '../../hoc/IntegralsWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
-import { useStateWithLocalStorage } from '../../utility/LocalStorage';
-import { GetPreference } from '../../utility/PreferencesHelper';
+import {
+  useStateWithLocalStorage,
+  getValue as getValueByKeyPath,
+} from '../../utility/LocalStorage';
 import ColumnFormatField from '../extra/preferences/ColumnFormatField';
 import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -58,22 +60,23 @@ const styles = {
 const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   const dispatch = useDispatch();
   const alert = useAlert();
-  const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
+  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
 
   useEffect(() => {
-    const integralsPreferences = GetPreference(preferences, 'integrals');
+    const integralsPreferences = getValueByKeyPath(
+      preferences,
+      'formatting.panels.integrals',
+    );
     if (integralsPreferences) {
       setSetting(integralsPreferences);
     }
   }, [preferences]);
 
   const saveToLocalStorgate = (values) => {
-    let globalSettings = { ...settingData };
-    globalSettings = lodash.set(globalSettings, 'panels.integrals', values);
-    setSettingsData(JSON.stringify(globalSettings));
+    setSettingsData(values, 'formatting.panels.integrals');
   };
 
   const saveHandler = useCallback(

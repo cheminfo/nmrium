@@ -15,8 +15,10 @@ import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import PeaksWrapper from '../../hoc/PeaksWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
-import { useStateWithLocalStorage } from '../../utility/LocalStorage';
-import { GetPreference } from '../../utility/PreferencesHelper';
+import {
+  useStateWithLocalStorage,
+  getValue as getValueByKeyPath,
+} from '../../utility/LocalStorage';
 import ColumnFormatField from '../extra/preferences/ColumnFormatField';
 import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -99,13 +101,16 @@ const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   // const { data, preferences } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
-  const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
+  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
 
   useEffect(() => {
-    const peaksPreferences = GetPreference(preferences, 'peaks');
+    const peaksPreferences = getValueByKeyPath(
+      preferences,
+      `formatting.panels.peaks`,
+    );
     if (peaksPreferences) {
       setSetting(peaksPreferences);
     }
@@ -129,9 +134,7 @@ const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   }));
 
   const saveToLocalStorgate = (values) => {
-    let globalSettings = { ...settingData };
-    globalSettings = lodash.set(globalSettings, 'panels.peaks', values);
-    setSettingsData(JSON.stringify(globalSettings));
+    setSettingsData(values, 'formatting.panels.peaks');
   };
 
   const handleSubmit = async (event) => {

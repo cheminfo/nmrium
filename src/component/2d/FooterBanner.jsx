@@ -4,12 +4,16 @@ import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useContext, useMemo, Fragment } from 'react';
 import { MF } from 'react-mf';
 
-import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
+// import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
+import { useFormatNumberByNucleus } from '../utility/FormatNumber';
+
+// import { useChartData } from '../context/ChartContext';
 
 // import { useScale } from '../context/ScaleContext';
+
 import {
   getLayoutID,
   // get2DDimensionLayout,
@@ -75,6 +79,7 @@ const FooterBanner = ({ layout, data1D }) => {
     });
 
   const nucleuses = activeTab.split(',');
+  const format = useFormatNumberByNucleus(nucleuses);
 
   const scaleX = useMemo(() => {
     if (!data1D || data1D.length === 0) {
@@ -218,9 +223,7 @@ const FooterBanner = ({ layout, data1D }) => {
     <div css={styles}>
       <div>
         <span className="label">{getLabel('F2', 'X', nucleuses[0])} :</span>
-        <span className="value">
-          {getXValue().toFixed(getPeakLabelNumberDecimals(nucleuses[0]))}
-        </span>
+        <span className="value">{format(getXValue(), nucleuses[0])}</span>
         <span className="unit">ppm</span>
       </div>
       {/* {frequency && (
@@ -234,9 +237,7 @@ const FooterBanner = ({ layout, data1D }) => {
       )} */}
       <div>
         <span className="label">{getLabel('F1', 'Y', nucleuses[1])} :</span>
-        <span className="value">
-          {getYValue().toFixed(getPeakLabelNumberDecimals(nucleuses[1]))}
-        </span>
+        <span className="value">{format(getYValue(), nucleuses[1])}</span>
         <span className="unit">ppm</span>
       </div>
       {step === 'brushing' && (

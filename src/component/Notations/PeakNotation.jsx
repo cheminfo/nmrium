@@ -7,12 +7,14 @@ import {
   useLayoutEffect,
   useEffect,
   Fragment,
+  useMemo,
 } from 'react';
 import { FaMinus } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useHighlight } from '../highlight';
 import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/types/Types';
+import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
   user-select: 'none';
@@ -112,14 +114,14 @@ export const PeakNotation = ({
   value,
   color,
   isActive,
-  decimalFraction,
+  nucleus,
 }) => {
   const refText = useRef();
   const [isSelected, setIsSelected] = useState(false);
   const [_value, setValue] = useState(value);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [isOver, setIsOver] = useState({ id: null, flag: false });
-
+  const format = useFormatNumberByNucleus(nucleus);
   const highlight = useHighlight([id]);
 
   const dispatch = useDispatch();
@@ -192,6 +194,17 @@ export const PeakNotation = ({
     }, 200);
   }, []);
 
+  const newValue = useMemo(() => (isSelected ? value : format(value)), [
+    format,
+    isSelected,
+    value,
+  ]);
+  const oldValue = useMemo(() => (isSelected ? _value : format(_value)), [
+    _value,
+    format,
+    isSelected,
+  ]);
+
   return (
     <Fragment>
       <Global styles={styles} />
@@ -224,7 +237,7 @@ export const PeakNotation = ({
           dx="0.35em"
           fill="transparent"
         >
-          {isSelected ? value : parseFloat(value).toFixed(decimalFraction)}
+          {newValue}
         </text>
         <foreignObject
           x="0"
@@ -257,11 +270,7 @@ export const PeakNotation = ({
                 userSelect: 'none',
                 color: color,
               }}
-              value={
-                isSelected
-                  ? _value
-                  : parseFloat(_value).toFixed(decimalFraction)
-              }
+              value={oldValue}
               onKeyDown={handleKeyDown}
               onChange={handleChange}
               type="number"

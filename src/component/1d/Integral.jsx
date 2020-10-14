@@ -7,9 +7,9 @@ import React, {
   useMemo,
 } from 'react';
 
-import { useChartData } from '../context/ChartContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { integralDefaultValues } from '../panels/extra/preferences/defaultValues';
-import { GetPreference } from '../utility/PreferencesHelper';
+import { getValue } from '../utility/LocalStorage';
 
 import IntegralResizable from './IntegralResizable';
 
@@ -25,13 +25,14 @@ const Integral = ({
 }) => {
   const { from, to } = integralData;
   const [integral, setIntegral] = useState();
-  const { preferences } = useChartData();
+  // const { preferences } = useChartData();
+  const preferences = usePreferences();
 
   const integralSettings = useMemo(() => {
     let {
       color = integralDefaultValues.color,
       strokeWidth = integralDefaultValues.strokeWidth,
-    } = GetPreference(preferences, 'integrals') || {};
+    } = getValue(preferences, 'formatting.panels.integrals') || {};
     return { color, strokeWidth };
   }, [preferences]);
 

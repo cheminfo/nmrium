@@ -1,13 +1,15 @@
 import React, { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
+// import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import PeaksWrapper from '../../hoc/PeaksWrapper';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
-import formatNumber from '../../utility/FormatNumber';
-import { GetPreference } from '../../utility/PreferencesHelper';
+import formatNumber, {
+  useFormatNumberByNucleus,
+} from '../../utility/FormatNumber';
+import { getValue } from '../../utility/LocalStorage';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 const PeaksTable = memo(
@@ -23,6 +25,7 @@ const PeaksTable = memo(
     onPeaksChange,
   }) => {
     const dispatch = useDispatch();
+    const format = useFormatNumberByNucleus(info.nucleus);
 
     const deletePeakHandler = useCallback(
       (e, row) => {
@@ -102,9 +105,9 @@ const PeaksTable = memo(
         });
       };
 
-      const peaksPreferences = GetPreference(
+      const peaksPreferences = getValue(
         preferences,
-        `peaks.[${activeTab}]`,
+        `formatting.panels.peaks.[${activeTab}]`,
       );
       if (peaksPreferences) {
         let cols = [...initialColumns];
@@ -156,8 +159,6 @@ const PeaksTable = memo(
         );
       }
       if (peaks && peaks.values) {
-        const labelFraction = getPeakLabelNumberDecimals(info.nucleus);
-
         const _peaks = enableFilter
           ? peaks.values.filter((peak) => isInRange(x[peak.xIndex]))
           : peaks.values;
@@ -165,7 +166,7 @@ const PeaksTable = memo(
         onPeaksChange(_peaks);
 
         return _peaks.map((peak) => {
-          const value = x[peak.xIndex].toFixed(labelFraction);
+          const value = format(x[peak.xIndex]);
           return {
             xIndex: peak.xIndex,
             value: value,
@@ -178,7 +179,7 @@ const PeaksTable = memo(
           };
         });
       }
-    }, [enableFilter, info, onPeaksChange, peaks, x, xDomain, y]);
+    }, [enableFilter, format, info, onPeaksChange, peaks, x, xDomain, y]);
 
     return _data && _data.length > 0 ? (
       <ReactTable data={_data} columns={tableColumns} />

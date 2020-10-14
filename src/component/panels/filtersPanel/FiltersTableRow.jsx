@@ -73,7 +73,9 @@ const FiltersTableRow = memo(({ filters }) => {
           <TableCell align="center" vAlign="center" size="1">
             <CheckBox
               checked={d.flag}
-              onChange={(checked) => handelFilterCheck(d.id, checked)}
+              onChange={(event) =>
+                handelFilterCheck(d.id, event.target.checked)
+              }
             />
             {d.isDeleteAllow && (
               <button

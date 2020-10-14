@@ -14,8 +14,10 @@ import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import ContextWrapper from '../../hoc/ContextWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
-import { useStateWithLocalStorage } from '../../utility/LocalStorage';
-import { GetPreference } from '../../utility/PreferencesHelper';
+import {
+  useStateWithLocalStorage,
+  getValue as getValueByKeyPath,
+} from '../../utility/LocalStorage';
 import ColumnFormatField from '../extra/preferences/ColumnFormatField';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
 
@@ -88,22 +90,23 @@ const formatFields = [
 const ZonesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   const dispatch = useDispatch();
   const alert = useAlert();
-  const [settingData, setSettingsData] = useStateWithLocalStorage('settings');
+  const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
 
   useEffect(() => {
-    const integralsPreferences = GetPreference(preferences, 'ranges');
+    const integralsPreferences = getValueByKeyPath(
+      preferences,
+      'formatting.panels.ranges',
+    );
     if (integralsPreferences) {
       setSetting(integralsPreferences);
     }
   }, [preferences]);
 
   const saveToLocalStorgate = (values) => {
-    let globalSettings = { ...settingData };
-    globalSettings = lodash.set(globalSettings, 'panels.ranges', values);
-    setSettingsData(JSON.stringify(globalSettings));
+    setSettingsData(values, 'formatting.panels.ranges');
   };
 
   const saveHandler = useCallback(
