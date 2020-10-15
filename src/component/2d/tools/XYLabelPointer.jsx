@@ -44,7 +44,7 @@ const XYLabelPointer = ({ layout, data1D }) => {
     });
 
   const nucleuses = activeTab.split(',');
-  const format = useFormatNumberByNucleus(nucleuses);
+  const [formatX, formatY] = useFormatNumberByNucleus(nucleuses);
 
   const scaleX = useMemo(() => {
     if (!data1D || data1D.length === 0) {
@@ -131,9 +131,9 @@ const XYLabelPointer = ({ layout, data1D }) => {
         transform: `translate(${position.x}px, ${position.y}px)`,
       }}
     >
-      <span>{format(getYValue(), nucleuses[1])}</span>
+      <span>{formatY(getYValue())}</span>
       <span style={{ color: 'gray' }}>{','}</span>
-      <span style={{ color: 'red' }}>{format(getXValue(), nucleuses[0])}</span>
+      <span style={{ color: 'red' }}>{formatX(getXValue())}</span>
     </div>
   );
 };
