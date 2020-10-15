@@ -76,6 +76,7 @@ const RangesTablePanel = memo(
     ranges,
     x,
     y,
+    info,
     xDomain,
     preferences,
     activeTab,
@@ -206,6 +207,7 @@ const RangesTablePanel = memo(
           {!isFlipped && (
             <RangesHeader
               ranges={ranges}
+              info={info}
               activeTab={activeTab}
               molecules={molecules}
               onUnlink={unlinkRangeHandler}

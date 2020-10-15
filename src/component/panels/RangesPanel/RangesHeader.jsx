@@ -7,6 +7,7 @@ import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
@@ -17,6 +18,7 @@ import {
   SET_SHOW_MULTIPLICITY_TREES,
 } from '../../reducer/types/Types';
 import { copyHTMLToClipboard } from '../../utility/Export';
+import { getNumberOfDecimals } from '../../utility/FormatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 const sumButton = css`
@@ -74,6 +76,7 @@ const styles = {
 
 const RangesHeader = ({
   ranges,
+  info,
   activeTab,
   molecules,
   onUnlink,
@@ -86,8 +89,9 @@ const RangesHeader = ({
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
-  const currentSum = lodash.get(ranges, 'options.sum', null);
+  const preferences = usePreferences();
 
+  const currentSum = lodash.get(ranges, 'options.sum', null);
   const removeAssignments = useCallback(() => {
     ranges.values.forEach((range) => onUnlink(range));
   }, [ranges, onUnlink]);
@@ -137,7 +141,25 @@ const RangesHeader = ({
   );
 
   const saveAsHTMLHandler = useCallback(() => {
-    const result = getACS(ranges.values);
+    const { originFrequency: observedFrequency, nucleus } = info;
+    const format = lodash.get(
+      preferences,
+      `formatting.nucleusByKey[${nucleus.toLowerCase()}]`,
+    );
+    const nbDecimalDelta = getNumberOfDecimals(format.ppm);
+    const nbDecimalJ = getNumberOfDecimals(format.hz);
+
+    //   {  nucleus: '19F',
+    // nbDecimalDelta: 2,
+    // nbDecimalJ: 1,
+    // observedFrequency: 400}
+
+    const result = getACS(ranges.values, {
+      nucleus,
+      nbDecimalDelta,
+      nbDecimalJ,
+      observedFrequency,
+    });
     modal.show(
       <CopyClipboardModal
         text={result}
@@ -146,7 +168,7 @@ const RangesHeader = ({
       />,
       {},
     );
-  }, [modal, ranges.values, saveToClipboardHandler]);
+  }, [info, modal, preferences, ranges.values, saveToClipboardHandler]);
 
   const handleOnRemoveAssignments = useCallback(() => {
     modal.showConfirmDialog('All assignments will be removed, Are you sure?', {

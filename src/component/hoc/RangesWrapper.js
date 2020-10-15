@@ -15,12 +15,12 @@ function RangesWrapper(WrappedComponent) {
       tabActiveSpectrum,
     } = useChartData();
 
-    const { ranges = {}, x = [], y = [] } = useMemo(() => {
+    const { ranges = {}, x = [], y = [], info = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
-        const { ranges, x, y } = data.find(
+        const { ranges, x, y, info } = data.find(
           (datum) => datum.id === activeSpectrum.id,
         );
-        return { ranges, x, y };
+        return { ranges, x, y, info };
       }
       return {};
     }, [activeSpectrum, data]);
@@ -39,6 +39,7 @@ function RangesWrapper(WrappedComponent) {
         ranges={ranges}
         x={x}
         y={y}
+        info={info}
         xDomain={xDomain}
         preferences={preferences}
         activeTab={activeTab}
