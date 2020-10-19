@@ -41,7 +41,7 @@ const RelativeColumn = forwardRef(
     );
 
     return (
-      <td {...rowSpanTags} {...onHoverRange} style={{ padding: 0 }}>
+      <td {...rowSpanTags} {...onHoverRange}>
         <EditableColumn
           ref={ref}
           onEditStart={onEditStart}
