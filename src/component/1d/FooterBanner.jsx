@@ -77,9 +77,9 @@ const FooterBanner = () => {
   const { margin, width, height, activeSpectrum, data } = useChartData();
   const { scaleX, scaleY } = useScale();
   const { helpText } = useHelptData();
-  const { originFrequency: frequency, nucleus } = data[
-    activeSpectrum.index
-  ].info;
+  const { originFrequency: frequency, nucleus } = activeSpectrum
+    ? data[activeSpectrum.index].info
+    : {};
 
   const format = useFormatNumberByNucleus(nucleus);
 

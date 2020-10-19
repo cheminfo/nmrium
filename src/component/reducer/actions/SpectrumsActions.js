@@ -5,7 +5,7 @@ import { AnalysisObj } from '../core/Analysis';
 import { DISPLAYER_MODE } from '../core/Constants';
 
 import { setDomain, setMode } from './DomainActions';
-import { setTab } from './ToolsActions';
+import { setTab, setActiveTab } from './ToolsActions';
 
 function setVisible(datum, flag) {
   if (datum.info.dimension === 2) {
@@ -116,10 +116,10 @@ const handleDeleteSpectra = (state) => {
     const { activeSpectrum, activeTab } = draft;
     if (activeSpectrum && activeSpectrum.id) {
       AnalysisObj.deleteDatumByIDs([activeSpectrum.id]);
-      draft.activeSpectrum = null;
+      // draft.activeSpectrum = null;
       draft.data = AnalysisObj.getSpectraData();
-      setDomain(draft);
-      setMode(draft);
+      // setDomain(draft);
+      // setMode(draft);
     } else {
       const IDs = draft.data.reduce((acc, datum) => {
         if (datum.info.nucleus === activeTab) acc.push(datum.id);
@@ -128,6 +128,9 @@ const handleDeleteSpectra = (state) => {
       AnalysisObj.deleteDatumByIDs(IDs);
       draft.data = AnalysisObj.getSpectraData();
     }
+    draft.activeSpectrum = null;
+    // console.log(activeTab);
+    setActiveTab(draft, activeTab, true);
   });
 };
 const addMissingProjectionHander = (state, action) => {

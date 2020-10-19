@@ -14,7 +14,7 @@ function getActiveData(draft) {
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
       return data;
     } else {
-      if (draft.activeSpectrum) {
+      if (draft.activeSpectrum && data) {
         const activeSpectrumIndex = data.findIndex(
           (datum) => datum.id === draft.activeSpectrum.id,
         );

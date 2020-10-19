@@ -73,10 +73,14 @@ const XYLabelPointer = ({ layout, data1D }) => {
         return get2DYScale({ height, margin, yDomain });
       }
       case LAYOUT.TOP_1D: {
-        return get1DYScale(yDomains[data1D[0].id], margin.top);
+        return data1D[0]
+          ? get1DYScale(yDomains[data1D[0].id], margin.top)
+          : null;
       }
       case LAYOUT.LEFT_1D: {
-        return get1DYScale(yDomains[data1D[1].id], margin.left);
+        return data1D[1]
+          ? get1DYScale(yDomains[data1D[1].id], margin.left)
+          : null;
       }
       default:
         return null;
