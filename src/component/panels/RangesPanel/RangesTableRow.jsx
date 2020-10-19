@@ -26,7 +26,14 @@ const ConstantlyHighlightedRowStyle = css`
   background-color: #f5f5dc;
 `;
 
-const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
+const RangesTableRow = ({
+  rowData,
+  onUnlink,
+  onContextMenu,
+  onRelativeColumnEditStart,
+  preferences,
+  relativeFlags,
+}) => {
   const assignmentRange = useAssignment(rowData.id);
   const highlightRange = useHighlight(
     [assignmentRange.id].concat(assignmentRange.assigned.x || []),
@@ -161,6 +168,8 @@ const RangesTableRow = ({ rowData, onUnlink, onContextMenu, preferences }) => {
             SignalKindsToConsiderInIntegralsSum
           }
           format={getFormat('relativeFormat')}
+          onEditStart={() => onRelativeColumnEditStart(rowData.id)}
+          editStatus={relativeFlags[rowData.id]}
         />
       )}
 
