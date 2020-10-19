@@ -66,13 +66,7 @@ const menuButton = css`
   }
 `;
 
-const BasicToolBar = ({
-  isViewButtonVisible = true,
-  info,
-  verticalAlign,
-  displayerMode,
-  spectrumsCount,
-}) => {
+const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
   const dispatch = useDispatch();
   const preferences = usePreferences();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
@@ -254,9 +248,7 @@ const BasicToolBar = ({
       )}
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('hideSpectraStackAlignments') &&
-        isViewButtonVisible &&
-        spectrumsCount > 1 && (
+        isButtonVisible('hideSpectraStackAlignments') && (
           <button
             type="button"
             css={[styles, { display: 'block' }]}
