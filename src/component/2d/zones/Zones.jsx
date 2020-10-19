@@ -9,7 +9,9 @@ const Zones = () => {
   const _data = useMemo(() => {
     return data
       ? data.filter(
-          (d) => d.info.dimension === 2 && d.display.isVisible === true,
+          (d) =>
+            d.info.dimension === 2 &&
+            (d.display.isPositiveVisible || d.display.isNegativeVisible),
         )
       : [];
   }, [data]);
