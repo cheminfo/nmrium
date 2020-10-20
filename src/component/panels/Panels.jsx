@@ -120,6 +120,7 @@ const Panels = memo(({ selectedTool, displayerMode }) => {
   );
 
   return (
+    // <div style={{ overflow: 'auto' }}>
     <Accordion defaultOpenIndex={panelIndex}>
       {accordionItems.map((item) => {
         return (
@@ -135,6 +136,7 @@ const Panels = memo(({ selectedTool, displayerMode }) => {
         );
       })}
     </Accordion>
+    // </div>
   );
 });
 

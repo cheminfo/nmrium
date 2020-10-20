@@ -79,9 +79,13 @@ const splitPaneStyles = {
 
 const containerStyles = css`
   background-color: white;
+  width: 100%;
+  display: block;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+
+  // height: 100%;
+  // display: flex;
+  // flex-direction: column;
   div:focus {
     outline: none !important;
   }
@@ -101,6 +105,10 @@ const containerStyles = css`
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+  }
+
+  .SplitPane {
+    height: 100%;
   }
 `;
 
@@ -180,9 +188,15 @@ const NMRDisplayer = memo(
                             onMaximize={toggle}
                           />
                           {/* ref={containerRef} */}
-                          <div style={{ flex: 1 }}>
+                          <div
+                            style={{
+                              height: 'calc(100% - 36px)',
+                              width: '100%',
+                              backgroundColor: 'white',
+                            }}
+                          >
                             <DropZone>
-                              <ToolBar />
+                              <ToolBar selectedTool={selectedTool} />
                               <SplitPane
                                 style={splitPaneStyles.container}
                                 paneStyle={splitPaneStyles.pane}
