@@ -397,7 +397,7 @@ const setDisplayerMode = (draft, data) => {
 
 const setTabActiveSpectrum = (draft, dataGroupByTab) => {
   let tabs2D = [];
-  draft.tabActiveSpectrum = {};
+  const tabActiveSpectrum = {};
 
   const tabkeys = Object.keys(dataGroupByTab).sort((a, b) =>
     a.split(',').length > b.split(',').length ? -1 : 1,
@@ -411,24 +411,28 @@ const setTabActiveSpectrum = (draft, dataGroupByTab) => {
 
     if (data.length === 1) {
       const index = draft.data.findIndex((datum) => datum.id === data[0].id);
-      draft.tabActiveSpectrum[tabKey] = { id: data[0].id, index };
+      tabActiveSpectrum[tabKey] = { id: data[0].id, index };
     } else {
-      if (dataGroupByTab[tabKey].length === 2) {
+      console.log(tabKey);
+      console.log(dataGroupByTab[tabKey]);
+      if (dataGroupByTab[tabKey].length >= 2) {
         const FTSpectrums = dataGroupByTab[tabKey].filter((d) => !d.info.isFid);
+        console.log(FTSpectrums);
         if (FTSpectrums && FTSpectrums.length > 0) {
           const index = draft.data.findIndex(
             (datum) => datum.id === FTSpectrums[0].id,
           );
-          draft.tabActiveSpectrum[tabKey] = { id: FTSpectrums[0].id, index };
+          tabActiveSpectrum[tabKey] = { id: FTSpectrums[0].id, index };
         } else {
-          draft.tabActiveSpectrum[tabKey] = null;
+          tabActiveSpectrum[tabKey] = null;
         }
       } else {
-        draft.tabActiveSpectrum[tabKey] = null;
+        tabActiveSpectrum[tabKey] = null;
       }
     }
   }
-
+  console.log(tabActiveSpectrum);
+  draft.tabActiveSpectrum = tabActiveSpectrum;
   return tabs2D;
 };
 
