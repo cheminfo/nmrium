@@ -2,6 +2,7 @@
 
 import { jsx, css } from '@emotion/core';
 import { setAutoFreeze } from 'immer';
+import lodash from 'lodash';
 import OCL from 'openchemlib/full';
 import PropTypes from 'prop-types';
 import {
@@ -171,10 +172,22 @@ const NMRDisplayer = memo(
       return dispatchMiddleware(dispatch, dataChangeHandler);
     }, [onDataChange]);
 
+    const preventAutoHelp = useMemo(() => {
+      return lodash.get(
+        preferencesState,
+        'controllers.help.preventAutoHelp',
+        false,
+      );
+    }, [preferencesState]);
+
     return (
       <ErrorBoundary>
         <PreferencesProvider value={preferencesState}>
-          <HelpProvider data={helpData} wrapperID="main-wrapper">
+          <HelpProvider
+            data={helpData}
+            wrapperID="main-wrapper"
+            preventAutoHelp={preventAutoHelp}
+          >
             <AlertProvider template={AlertTemplate} {...alertOptions}>
               <DispatchProvider value={dispatchMiddleWare}>
                 <ChartDataProvider value={{ ...state, isResizeEventStart }}>

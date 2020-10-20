@@ -44,6 +44,9 @@ export const preferencesInitialState = {
   },
   controllers: {
     mws: { low: 2, high: 20 },
+    help: {
+      preventAutoHelp: false,
+    },
   },
   formatting: {
     nucleus: [

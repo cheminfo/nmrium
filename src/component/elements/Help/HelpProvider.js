@@ -57,6 +57,7 @@ const HelpProvider = ({
   containerStyle,
   wrapperID,
   multiple,
+  preventAutoHelp,
 }) => {
   const root = useRef();
   const timersId = useRef([]);
@@ -137,7 +138,7 @@ const HelpProvider = ({
 
           if (options.delay === 0) {
             startModal();
-          } else {
+          } else if (!preventAutoHelp) {
             dealyTimeOut = setTimeout(
               () => {
                 startModal();
@@ -152,7 +153,17 @@ const HelpProvider = ({
         }
       }
     },
-    [data, delay, modals, multiple, position, remove, timeout, type],
+    [
+      data,
+      delay,
+      modals,
+      multiple,
+      position,
+      preventAutoHelp,
+      remove,
+      timeout,
+      type,
+    ],
   );
 
   const clear = useCallback(() => {
@@ -260,6 +271,7 @@ HelpProvider.defaultProps = {
   },
   wrapperID: null,
   multiple: false,
+  preventAutoHelp: false,
 };
 
 export default HelpProvider;
