@@ -413,11 +413,8 @@ const setTabActiveSpectrum = (draft, dataGroupByTab) => {
       const index = draft.data.findIndex((datum) => datum.id === data[0].id);
       tabActiveSpectrum[tabKey] = { id: data[0].id, index };
     } else {
-      console.log(tabKey);
-      console.log(dataGroupByTab[tabKey]);
       if (dataGroupByTab[tabKey].length >= 2) {
         const FTSpectrums = dataGroupByTab[tabKey].filter((d) => !d.info.isFid);
-        console.log(FTSpectrums);
         if (FTSpectrums && FTSpectrums.length > 0) {
           const index = draft.data.findIndex(
             (datum) => datum.id === FTSpectrums[0].id,
@@ -431,7 +428,6 @@ const setTabActiveSpectrum = (draft, dataGroupByTab) => {
       }
     }
   }
-  console.log(tabActiveSpectrum);
   draft.tabActiveSpectrum = tabActiveSpectrum;
   return tabs2D;
 };
