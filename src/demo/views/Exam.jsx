@@ -30,19 +30,22 @@ const styles = css`
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding: 10px;
     margin-left: 30px;
 
     .mainContainer {
       display: flex;
       flex-direction: column;
-      height: 100%;
+      max-height: 100%;
+      overflow: hidden;
     }
     .nmrContainer {
-      height: 60%;
+      height: 50%;
     }
 
     .bottomContainer {
       display: flex;
+      height: 50%;
     }
 
     .bottomRightContainer {

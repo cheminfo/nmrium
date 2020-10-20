@@ -44,7 +44,15 @@ export default function View(props) {
         Display and process 1D NMR spectra from a jcamp-dx file
       </h5>
       <p className="category">{title}</p>
-      <NMRDisplayer data={data} />
+      <div
+        style={{
+          height: '100%',
+          display: 'flex',
+          width: '100%',
+        }}
+      >
+        <NMRDisplayer data={data} />
+      </div>
     </div>
   );
 }
