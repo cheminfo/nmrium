@@ -11,7 +11,7 @@ function ToolBarWrapper(WrappedComponent) {
       displayerMode,
     } = useChartData();
 
-    const { info = {}, spectrumsCount = 0 } = useMemo(() => {
+    const { info = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
         const result = data.find((datum) => datum.id === activeSpectrum.id);
         return result !== null && result !== undefined
@@ -27,7 +27,6 @@ function ToolBarWrapper(WrappedComponent) {
         {...rest}
         info={info}
         activeSpectrum={activeSpectrum}
-        spectrumsCount={spectrumsCount}
         verticalAlign={verticalAlign}
         displayerMode={displayerMode}
         ref={forwardedRef}

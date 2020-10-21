@@ -1,10 +1,11 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import lodash from 'lodash';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import ContextMenu from '../../elements/ContextMenu';
+import useToggleStatus from '../extra/utilities/UseToggleStatus';
 
 import RangesTableRow from './RangesTableRow';
 import useMapRanges from './useMapRanges';
@@ -56,8 +57,11 @@ const RangesTable = ({
   element,
 }) => {
   const contextRef = useRef();
-
   const data = useMapRanges(tableData);
+  const [relativeFlags, toggleResltiveColumn] = useToggleStatus(
+    'id',
+    tableData,
+  );
 
   const isVisible = (key) => {
     return lodash.get(preferences, key, false);
@@ -70,6 +74,21 @@ const RangesTable = ({
     },
     [contextRef],
   );
+
+  const editStartHander = useCallback(
+    (id) => {
+      toggleResltiveColumn(id);
+    },
+    [toggleResltiveColumn],
+  );
+
+  useEffect(() => {
+    const handleEditStart = () => {
+      editStartHander(null);
+    };
+    document.addEventListener('mousedown', handleEditStart);
+    return () => document.removeEventListener('mousedown', handleEditStart);
+  }, [editStartHander]);
 
   return (
     <div>
@@ -105,6 +124,8 @@ const RangesTable = ({
                   onEdit={onEdit}
                   onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                   preferences={preferences}
+                  onRelativeColumnEditStart={editStartHander}
+                  relativeFlags={relativeFlags}
                 />
               );
             })}

@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import React, { useCallback, useMemo, memo } from 'react';
+import React, { useCallback, useMemo, memo, useRef, useEffect } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
@@ -34,7 +34,7 @@ const IntegralTable = memo(
   }) => {
     const dispatch = useDispatch();
     const preferences = usePreferences();
-
+    const relativeRefs = useRef([]);
     const deleteIntegralHandler = useCallback(
       (e, row) => {
         e.preventDefault();
@@ -125,6 +125,18 @@ const IntegralTable = memo(
       },
       [dispatch],
     );
+    const editStartHander = useCallback((index) => {
+      relativeRefs.current.forEach((ref, i) => {
+        if (index !== i) {
+          ref.closeEdit();
+        }
+      });
+    }, []);
+
+    useEffect(() => {
+      document.addEventListener('mousedown', editStartHander);
+      return () => document.removeEventListener('mousedown', editStartHander);
+    }, [editStartHander]);
 
     const tableColumns = useMemo(() => {
       const setCustomColumn = (array, index, columnLabel, cellHandler) => {
@@ -179,6 +191,8 @@ const IntegralTable = memo(
           );
           return (
             <EditableColumn
+              onEditStart={() => editStartHander(row.index)}
+              ref={(ref) => (relativeRefs.current[row.index] = ref)}
               value={formattedNumber}
               onSave={(event) => saveRealtiveHandler(event, row.original)}
               type="number"
@@ -194,7 +208,13 @@ const IntegralTable = memo(
       return cols.sort(
         (object1, object2) => object1.orderIndex - object2.orderIndex,
       );
-    }, [activeTab, defaultColumns, preferences, saveRealtiveHandler]);
+    }, [
+      activeTab,
+      defaultColumns,
+      editStartHander,
+      preferences,
+      saveRealtiveHandler,
+    ]);
 
     const data = useMemo(() => {
       if (info.dimension === 1 && integrals && integrals.values) {

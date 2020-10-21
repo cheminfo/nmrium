@@ -8,6 +8,7 @@ import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import { useHelptData } from '../elements/Help';
+import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
   pointer-events: bounding-box;
@@ -76,6 +77,11 @@ const FooterBanner = () => {
   const { margin, width, height, activeSpectrum, data } = useChartData();
   const { scaleX, scaleY } = useScale();
   const { helpText } = useHelptData();
+  const { originFrequency: frequency, nucleus } = activeSpectrum
+    ? data[activeSpectrum.index].info
+    : {};
+
+  const format = useFormatNumberByNucleus(nucleus);
 
   const getYValue = useCallback(
     (xPosition) => {
@@ -110,22 +116,18 @@ const FooterBanner = () => {
     return <div css={styles} />;
   }
 
-  const frequency = data[activeSpectrum.index].info.originFrequency; // should be spectrum.info.originFrequency;
-
   return (
     <div css={styles}>
       <div>
         <span className="label"> X :</span>
-        <span className="value">
-          {scaleX().invert(position.x).toPrecision(6)}
-        </span>
+        <span className="value">{format(scaleX().invert(position.x))}</span>
         <span className="unit">ppm</span>
       </div>
       {frequency && (
         <div>
           <span className="label"> X :</span>
           <span className="value">
-            {(scaleX().invert(position.x) * frequency).toPrecision(6)}
+            {format(scaleX().invert(position.x) * frequency, 'hz')}
           </span>
           <span className="unit">Hz</span>
         </div>
@@ -133,7 +135,7 @@ const FooterBanner = () => {
       <div>
         <span className="label"> Y :</span>
         <span className="value">
-          {scaleY(activeSpectrum.id).invert(position.y).toFixed(2)}
+          {format(scaleY(activeSpectrum.id).invert(position.y))}
         </span>
       </div>
       {step === 'brushing' && (

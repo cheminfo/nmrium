@@ -389,9 +389,47 @@ function Processing2DData(draft, data) {
 }
 
 const setDisplayerMode = (draft, data) => {
-  draft.displayerMode = data.some((d) => d.info.dimension === 2)
-    ? DISPLAYER_MODE.DM_2D
-    : DISPLAYER_MODE.DM_1D;
+  draft.displayerMode =
+    data && data.some((d) => d.info.dimension === 2)
+      ? DISPLAYER_MODE.DM_2D
+      : DISPLAYER_MODE.DM_1D;
+};
+
+const setTabActiveSpectrum = (draft, dataGroupByTab) => {
+  let tabs2D = [];
+  const tabActiveSpectrum = {};
+
+  const tabkeys = Object.keys(dataGroupByTab).sort((a, b) =>
+    a.split(',').length > b.split(',').length ? -1 : 1,
+  );
+  for (let tabKey of tabkeys) {
+    const data = dataGroupByTab[tabKey];
+
+    if (tabKey.split(',').length === 2) {
+      tabs2D.push(tabKey);
+    }
+
+    if (data.length === 1) {
+      const index = draft.data.findIndex((datum) => datum.id === data[0].id);
+      tabActiveSpectrum[tabKey] = { id: data[0].id, index };
+    } else {
+      if (dataGroupByTab[tabKey].length >= 2) {
+        const FTSpectrums = dataGroupByTab[tabKey].filter((d) => !d.info.isFid);
+        if (FTSpectrums && FTSpectrums.length > 0) {
+          const index = draft.data.findIndex(
+            (datum) => datum.id === FTSpectrums[0].id,
+          );
+          tabActiveSpectrum[tabKey] = { id: FTSpectrums[0].id, index };
+        } else {
+          tabActiveSpectrum[tabKey] = null;
+        }
+      } else {
+        tabActiveSpectrum[tabKey] = null;
+      }
+    }
+  }
+  draft.tabActiveSpectrum = tabActiveSpectrum;
+  return tabs2D;
 };
 
 const setTab = (draft, dataGroupByTab, tab, refresh = false) => {
@@ -404,44 +442,13 @@ const setTab = (draft, dataGroupByTab, tab, refresh = false) => {
       JSON.stringify(Object.keys(draft.tabActiveSpectrum)) ||
     refresh
   ) {
-    let tabs2D = [];
-    const tabkeys = Object.keys(dataGroupByTab).sort((a, b) =>
-      a.split(',').length > b.split(',').length ? -1 : 1,
-    );
-    for (let tabKey of tabkeys) {
-      const data = dataGroupByTab[tabKey];
+    const tabs2D = setTabActiveSpectrum(draft, dataGroupByTab);
 
-      if (tabKey.split(',').length === 2) {
-        tabs2D.push(tabKey);
-      }
-
-      if (data.length === 1) {
-        const index = draft.data.findIndex((datum) => datum.id === data[0].id);
-        draft.tabActiveSpectrum[tabKey] = { id: data[0].id, index };
-      } else {
-        if (dataGroupByTab[tabKey].length === 2) {
-          const FTSpectrums = dataGroupByTab[tabKey].filter(
-            (d) => !d.info.isFid,
-          );
-          if (FTSpectrums && FTSpectrums.length > 0) {
-            const index = draft.data.findIndex(
-              (datum) => datum.id === FTSpectrums[0].id,
-            );
-            draft.tabActiveSpectrum[tabKey] = { id: FTSpectrums[0].id, index };
-          } else {
-            draft.tabActiveSpectrum[tabKey] = null;
-          }
-        } else {
-          draft.tabActiveSpectrum[tabKey] = null;
-        }
-      }
-    }
-
-    if (tabs2D.length > 0) {
+    if (tabs2D.length > 0 && tab == null) {
       draft.activeSpectrum = draft.tabActiveSpectrum[tabs2D[0]];
       draft.activeTab = tabs2D[0];
     } else {
-      draft.activeSpectrum = draft.tabActiveSpectrum[tab];
+      draft.activeSpectrum = tab ? draft.tabActiveSpectrum[tab] : tab;
       draft.activeTab = tab;
     }
   } else {
@@ -453,16 +460,19 @@ const setTab = (draft, dataGroupByTab, tab, refresh = false) => {
   setMargin(draft);
 };
 
-const setActiveTab = (draft, tab = null) => {
+const setActiveTab = (draft, tab = null, refreshTabActiveSpectrums = false) => {
   const groupByNucleus = GroupByInfoKey('nucleus');
   const dataGroupByNucleus = groupByNucleus(draft.data);
-  const firstTab = Object.keys(dataGroupByNucleus)[0];
-  if (firstTab) {
-    setTab(draft, dataGroupByNucleus, !tab ? firstTab : tab);
-    Processing2DData(draft, dataGroupByNucleus);
-    setDomain(draft);
-    setMode(draft);
-  }
+  const tabs = Object.keys(dataGroupByNucleus);
+  setTab(
+    draft,
+    dataGroupByNucleus,
+    !tab || !tabs.includes(tab) ? tabs[0] : tab,
+    refreshTabActiveSpectrums,
+  );
+  Processing2DData(draft, dataGroupByNucleus);
+  setDomain(draft);
+  setMode(draft);
 };
 
 const handelSetActiveTab = (state, tab) => {

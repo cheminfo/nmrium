@@ -21,13 +21,18 @@ const style = {
 const XLabelPointer = () => {
   const { height, width, margin, data, activeSpectrum } = useChartData();
   const { scaleX } = useScale();
-  const activeSpectrumData = useMemo(() => {
-    const spectrumData = data.find((d) => d.id === activeSpectrum.id);
-    return spectrumData;
-  }, [activeSpectrum.id, data]);
+
   const position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
-  const format = useFormatNumberByNucleus(activeSpectrumData.info.nucleus);
+  const activeSpectrumData = useMemo(() => {
+    const spectrumData = activeSpectrum
+      ? data.find((d) => d.id === activeSpectrum.id)
+      : null;
+    return spectrumData;
+  }, [activeSpectrum, data]);
+  const format = useFormatNumberByNucleus(
+    activeSpectrumData && activeSpectrumData.info.nucleus,
+  );
 
   const getXValue = useCallback(
     (xVal) => {

@@ -10,31 +10,40 @@ import CloseButton from '../../elements/CloseButton';
 import FormikInput from '../../elements/formik/FormikInput';
 
 const styles = css`
-  display: flex;
-  flex-direction: column;
-
-  .row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 5px;
+  .counter-col {
+    width: 30px;
   }
-
   .nucleus-label-col {
-    min-width: 80px;
     display: flex;
     justify-content: center;
+    width: 80px;
   }
 
-  .nucleus-label-input {
+  .width-100 {
+    width: 100% !important;
     margin: 0px !important;
-    width: 70px !important;
+  }
+
+  .nucleus-format-input-col {
+    text-align: center;
+    width: 100px;
+  }
+
+  th {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .operation-container {
+    display: flex;
   }
   .add {
     background-color: transparent;
     border: 0;
     outline: none;
-    color: green;
+    svg {
+      font-szie: 14px;
+      fill: green;
+    }
   }
 `;
 const FormattingTabContent = memo(() => {
@@ -56,7 +65,8 @@ const FormattingTabContent = memo(() => {
     const newFormat = {
       key: generateID(),
       name: '',
-      value: '0.00',
+      ppm: '0.00',
+      hz: '0.00',
     };
     const newNucleuses = [...nucleuses, newFormat];
     setFieldValue('formatting.nucleus', newNucleuses);
@@ -66,43 +76,62 @@ const FormattingTabContent = memo(() => {
     <Fragment>
       <p className="section-header">Formating according to Nucleus</p>
       <div css={styles}>
-        {nucleuses &&
-          nucleuses.map((nucleus, index) => {
-            const num = index + 1;
-            return (
-              <div className="row" key={`${nucleus.key}`}>
-                <span>{num} - </span>
-                <div className="nucleus-label-col">
-                  <FormikInput
-                    name={`formatting.nucleus.${index}.name`}
-                    className="nucleus-label-input"
-                  />
-                </div>
-                <div>
-                  <FormikInput
-                    name={`formatting.nucleus.${index}.value`}
-                    className="nucleus-format-input"
-                  />
-                </div>
-                <div>
-                  <CloseButton
-                    onClick={() => deleteHandler(index)}
-                    popupTitle={`remove ${nucleus.name}`}
-                    popupPlacement="right"
-                  />
-                </div>
-                {nucleuses.length === index + 1 && (
-                  <button
-                    className="add"
-                    type="button"
-                    onClick={addNewNucleusFormatHandler}
-                  >
-                    <FaPlus />
-                  </button>
-                )}
-              </div>
-            );
-          })}
+        <table>
+          <thead>
+            <th className="counter-col">#</th>
+            <th className="nucleus-label-col">Nucleus </th>
+            <th className="nucleus-format-input-col">δ (ppm)</th>
+            <th className="nucleus-format-input-col">Coupling (Hz)</th>
+            <th className="nucleus-format-input-col" />
+          </thead>
+          <tbody>
+            {nucleuses &&
+              nucleuses.map((nucleus, index) => {
+                const num = index + 1;
+                return (
+                  <tr key={`${nucleus.key}`}>
+                    <td className="counter-col">
+                      <span>{num} - </span>{' '}
+                    </td>
+                    <td className="nucleus-label-col">
+                      <FormikInput
+                        name={`formatting.nucleus.${index}.name`}
+                        className="width-100"
+                      />
+                    </td>
+                    <td className="nucleus-format-input-col">
+                      <FormikInput
+                        name={`formatting.nucleus.${index}.ppm`}
+                        className="width-100"
+                      />
+                    </td>
+                    <td className="nucleus-format-input-col">
+                      <FormikInput
+                        name={`formatting.nucleus.${index}.hz`}
+                        className="width-100"
+                      />
+                    </td>
+                    <td className="operation-container">
+                      <CloseButton
+                        onClick={() => deleteHandler(index)}
+                        popupTitle={`remove ${nucleus.name}`}
+                        popupPlacement="right"
+                      />
+                      {nucleuses.length === index + 1 && (
+                        <button
+                          className="add"
+                          type="button"
+                          onClick={addNewNucleusFormatHandler}
+                        >
+                          <FaPlus />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
       </div>
     </Fragment>
   );

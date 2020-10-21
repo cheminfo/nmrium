@@ -2,6 +2,7 @@
 
 import { jsx, css } from '@emotion/core';
 import { setAutoFreeze } from 'immer';
+import lodash from 'lodash';
 import OCL from 'openchemlib/full';
 import PropTypes from 'prop-types';
 import {
@@ -79,9 +80,13 @@ const splitPaneStyles = {
 
 const containerStyles = css`
   background-color: white;
+  width: 100%;
+  display: block;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+
+  // height: 100%;
+  // display: flex;
+  // flex-direction: column;
   div:focus {
     outline: none !important;
   }
@@ -101,6 +106,10 @@ const containerStyles = css`
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+  }
+
+  .SplitPane {
+    height: 100%;
   }
 `;
 
@@ -163,10 +172,22 @@ const NMRDisplayer = memo(
       return dispatchMiddleware(dispatch, dataChangeHandler);
     }, [onDataChange]);
 
+    const preventAutoHelp = useMemo(() => {
+      return lodash.get(
+        preferencesState,
+        'controllers.help.preventAutoHelp',
+        false,
+      );
+    }, [preferencesState]);
+
     return (
       <ErrorBoundary>
         <PreferencesProvider value={preferencesState}>
-          <HelpProvider data={helpData} wrapperID="main-wrapper">
+          <HelpProvider
+            data={helpData}
+            wrapperID="main-wrapper"
+            preventAutoHelp={preventAutoHelp}
+          >
             <AlertProvider template={AlertTemplate} {...alertOptions}>
               <DispatchProvider value={dispatchMiddleWare}>
                 <ChartDataProvider value={{ ...state, isResizeEventStart }}>
@@ -180,9 +201,15 @@ const NMRDisplayer = memo(
                             onMaximize={toggle}
                           />
                           {/* ref={containerRef} */}
-                          <div style={{ flex: 1 }}>
+                          <div
+                            style={{
+                              height: 'calc(100% - 36px)',
+                              width: '100%',
+                              backgroundColor: 'white',
+                            }}
+                          >
                             <DropZone>
-                              <ToolBar />
+                              <ToolBar selectedTool={selectedTool} />
                               <SplitPane
                                 style={splitPaneStyles.container}
                                 paneStyle={splitPaneStyles.pane}

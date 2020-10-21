@@ -79,7 +79,7 @@ const FooterBanner = ({ layout, data1D }) => {
     });
 
   const nucleuses = activeTab.split(',');
-  const format = useFormatNumberByNucleus(nucleuses);
+  const [formatX, formatY] = useFormatNumberByNucleus(nucleuses);
 
   const scaleX = useMemo(() => {
     if (!data1D || data1D.length === 0) {
@@ -108,10 +108,14 @@ const FooterBanner = ({ layout, data1D }) => {
         return get2DYScale({ height, margin, yDomain });
       }
       case LAYOUT.TOP_1D: {
-        return get1DYScale(yDomains[data1D[0].id], margin.top);
+        return data1D[0]
+          ? get1DYScale(yDomains[data1D[0].id], margin.top)
+          : null;
       }
       case LAYOUT.LEFT_1D: {
-        return get1DYScale(yDomains[data1D[1].id], margin.left);
+        return data1D[1]
+          ? get1DYScale(yDomains[data1D[1].id], margin.left)
+          : null;
       }
       default:
         return null;
@@ -223,7 +227,7 @@ const FooterBanner = ({ layout, data1D }) => {
     <div css={styles}>
       <div>
         <span className="label">{getLabel('F2', 'X', nucleuses[0])} :</span>
-        <span className="value">{format(getXValue(), nucleuses[0])}</span>
+        <span className="value">{formatX(getXValue())}</span>
         <span className="unit">ppm</span>
       </div>
       {/* {frequency && (
@@ -237,7 +241,7 @@ const FooterBanner = ({ layout, data1D }) => {
       )} */}
       <div>
         <span className="label">{getLabel('F1', 'Y', nucleuses[1])} :</span>
-        <span className="value">{format(getYValue(), nucleuses[1])}</span>
+        <span className="value">{formatY(getYValue())}</span>
         <span className="unit">ppm</span>
       </div>
       {step === 'brushing' && (

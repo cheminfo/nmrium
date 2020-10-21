@@ -8,41 +8,52 @@ function FormatNumber(value, format, prefix = '', suffix = '') {
   return prefix + Numeral(value).format(format) + suffix;
 }
 
-const getNucleusFormat = (preferences, nucleus) => {
-  return lodash.get(
-    preferences,
-    `formatting.nucleusByKey[${nucleus.toLocaleLowerCase()}]`,
-    '0.0',
-  );
-};
-
+/**
+ *
+ * @param {string|Array} nucleus
+ */
 export function useFormatNumberByNucleus(nucleus) {
   const preferences = usePreferences();
-  let formatValues = {};
-  let nuc = null;
-  if (typeof nucleus === 'string') {
-    nuc = nucleus.toLowerCase();
-    formatValues[nuc] = getNucleusFormat(preferences, nucleus);
-  } else if (Array.isArray(nucleus)) {
-    formatValues = nucleus.reduce((acc, n) => {
-      acc[n.toLowerCase()] = getNucleusFormat(preferences, n);
-      return acc;
-    }, {});
-  } else {
-    nuc = 'default';
-    formatValues = { [nuc]: '0.0' };
-  }
+  const nucleusByKey = lodash.get(preferences, `formatting.nucleusByKey`, {
+    ppm: '0.0',
+    hz: '0.0',
+  });
 
-  return (value, n = nuc, prefix = '', suffix = '') => {
-    if (n == null) {
-      throw Error('nuclues must be specified');
-    }
+  const formatFun = (n) => (
+    value,
+    formatKey = 'ppm',
+    prefix = '',
+    suffix = '',
+  ) => {
     return (
       prefix +
-      Numeral(Number(value)).format(formatValues[n.toLowerCase()]) +
+      Numeral(Number(value)).format(
+        lodash.get(nucleusByKey, `${n.toLowerCase()}.${formatKey}`, '0.0'),
+      ) +
       suffix
     );
   };
+
+  if (!nucleus) {
+    return;
+  }
+
+  if (typeof nucleus === 'string') {
+    return formatFun(nucleus);
+  } else if (Array.isArray(nucleus)) {
+    return nucleus.map((n) => formatFun(n));
+  } else {
+    throw Error('nuclus must be string or array of string');
+  }
+}
+
+/**
+ * @param {number|string} value
+ */
+export function getNumberOfDecimals(value) {
+  value = String(value).trim();
+  const lastIndex = value.lastIndexOf('.');
+  return lastIndex > 0 ? value.substr(lastIndex).split('').length - 1 : 0;
 }
 
 export default FormatNumber;

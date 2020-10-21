@@ -1,5 +1,7 @@
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
 import { Molecule } from 'openchemlib/full';
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
@@ -20,56 +22,83 @@ function checkStatus(response) {
   }
   return response;
 }
+const styles = css`
+   {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin-left: 30px;
 
-const styles = {
-  mainContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-  },
-  nmrContainer: {
-    height: '60%',
-  },
+    .mainContainer {
+      display: flex;
+      flex-direction: column;
+      max-height: 100%;
+      overflow: hidden;
+    }
+    .nmrContainer {
+      height: 50%;
+    }
 
-  bottomContainer: {
-    display: 'flex',
-  },
-  bottomRightContainer: {
-    width: '50%',
-    display: 'flex',
-    height: '100%',
-    flexDirection: 'column',
-  },
-  MF: {
-    height: '20%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    border: '1px dashed gray',
-  },
-  resultContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '80%',
-  },
+    .bottomContainer {
+      display: flex;
+      height: 50%;
+    }
 
-  result: {
-    width: '50%',
-    height: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '16px',
-    fontWeight: 'bold',
-  },
+    .bottomRightContainer {
+      width: 50%;
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+    }
+    .mf {
+      height: 20%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      border: 1px dashed gray;
+    }
 
-  StructureEditor: {
-    backgroundColor: 'white',
-    flex: '1',
-  },
-};
+    .result-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 80%;
+      position: relative;
+    }
+
+    .result {
+      width: 50%;
+      height: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .copy-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 50px;
+      height: 40px;
+      outline: none;
+      border: none;
+      background-color: white;
+      border-radius: 10px;
+    }
+    .copy-button:hover {
+      background-color: green;
+      color: white;
+    }
+    .structure-editor {
+      background-color: white;
+      flex: 1;
+    }
+  }
+`;
 
 export default function Exercise(props) {
   const [data, setData] = useState();
@@ -123,21 +152,14 @@ export default function Exercise(props) {
   }, [baseURL, file, props]);
 
   return (
-    <div
-      style={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        marginLeft: 30,
-      }}
-    >
+    <div css={styles}>
       <h5 className="title">
         Exercises: Determine the unknown structure for the compound having the
         following NMR spectrum
       </h5>
       <p className="category">{title}</p>
-      <div style={styles.mainContainer}>
-        <div style={styles.nmrContainer}>
+      <div className="mainContainer">
+        <div className="nmrContainer">
           <NMRDisplayer
             data={data}
             preferences={{
@@ -157,8 +179,8 @@ export default function Exercise(props) {
             }}
           />
         </div>
-        <div style={styles.bottomContainer}>
-          <div style={styles.StructureEditor}>
+        <div className="bottomContainer">
+          <div className="structure-editor">
             <StructureEditor
               svgMenu={true}
               fragment={false}
@@ -166,24 +188,25 @@ export default function Exercise(props) {
               initialMolfile={data && data.answer && data.answer.currentAnswer}
             />
           </div>
-          <div style={styles.bottomRightContainer}>
-            <div style={styles.MF}>
+          <div className="bottomRightContainer">
+            <div className="mf">
               <MF
                 style={{ color: 'navy', fontSize: 30 }}
                 mf={data && data.answer && data.answer.mf}
               />
             </div>
-            <div
-              style={{
-                ...styles.resultContainer,
-              }}
-            >
+            <div className="result-container">
               <div
                 style={{
                   ...styles.result,
                   backgroundColor:
                     resultFlag == null ? 'white' : resultFlag ? 'green' : 'red',
                   color: resultFlag == null ? 'black' : 'white',
+                  width: '80%',
+                  height: '80%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 {resultFlag == null ? (

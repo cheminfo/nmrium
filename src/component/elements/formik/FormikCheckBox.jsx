@@ -13,9 +13,9 @@ const FormikCheckBox = ({ label, name, onChange, className, reverse }) => {
     (e) => {
       e.persist();
       onChange(e);
-      setFieldValue(name, value);
+      setFieldValue(name, reverse ? value : !value);
     },
-    [name, onChange, setFieldValue, value],
+    [name, onChange, reverse, setFieldValue, value],
   );
   return (
     <div className={`${className} check-${value}`}>
@@ -35,11 +35,13 @@ FormikCheckBox.propTypes = {
   name: PropTypes.string,
   className: PropTypes.string,
   onChange: PropTypes.func,
+  reverse: PropTypes.bool,
 };
 
 FormikCheckBox.defaultProps = {
   className: '',
   onChange: () => null,
+  reverse: false,
 };
 
 export default FormikCheckBox;

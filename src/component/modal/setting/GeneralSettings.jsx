@@ -129,6 +129,12 @@ const styles = css`
     min-width: 150px;
     display: inline-block;
   }
+
+  .help-checkbox-element {
+    .checkbox-lable {
+      width: 260px;
+    }
+  }
   .checkbox-element {
     margin-bottom: 5px;
   }

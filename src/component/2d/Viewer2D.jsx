@@ -55,6 +55,8 @@ const Viewer2D = () => {
         if (spectrum) {
           acc.push(spectrum);
         }
+      } else {
+        acc.push(null);
       }
       return acc;
     }, []);
@@ -175,20 +177,22 @@ const Viewer2D = () => {
                 brushType={BRUSH_TYPE.XY}
                 dimensionBorder={DIMENSION.CENTER_2D}
               />
-              {spectrumData && spectrumData.length > 1 && (
-                <>
+              <>
+                {spectrumData && spectrumData[0] && (
                   <BrushXY
                     brushType={BRUSH_TYPE.X}
                     dimensionBorder={DIMENSION.TOP_1D}
                     height={margin.top}
                   />
+                )}
+                {spectrumData && spectrumData[1] && (
                   <BrushXY
                     brushType={BRUSH_TYPE.Y}
                     dimensionBorder={DIMENSION.LEFT_1D}
                     width={margin.left}
                   />
-                </>
-              )}
+                )}
+              </>
               {spectrumData && (
                 <FooterBanner data1D={spectrumData} layout={DIMENSION} />
               )}
