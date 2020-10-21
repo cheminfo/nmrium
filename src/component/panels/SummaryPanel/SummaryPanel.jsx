@@ -1,31 +1,71 @@
-import React from 'react';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
+import { useCallback, useEffect, useState } from 'react';
+import { FaFlask } from 'react-icons/fa';
+
+import { useChartData } from '../../context/ChartContext';
+import { useModal } from '../../elements/Modal';
+import ToolTip from '../../elements/ToolTip/ToolTip';
+import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import CorrelationTable from './CorrelationTable';
+import SetMolecularFormulaModal from './SetMolecularFormulaModal';
 
-const styles = {
-  // toolbar: {
-  //   display: 'flex',
-  //   flexDirection: 'row',
-  //   borderBottom: '0.55px solid rgb(240, 240, 240)',
-  // },
-  container: {
-    flexDirection: 'column',
-    height: '100%',
-    display: 'flex',
-  },
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-  },
-};
+const panelStyle = css`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  button {
+    border-radius: 5px;
+    margin-top: 3px;
+    margin-left: 2px;
+    border: none;
+    height: 16px;
+    width: 18px;
+    font-size: 12px;
+    padding: 0;
+    background-color: transparent;
+  }
+`;
 
 const SummaryPanel = () => {
+  const { molecules } = useChartData();
+  const modal = useModal();
+  const [mf, setMF] = useState();
+
+  useEffect(() => {
+    if (molecules && molecules.length > 0) {
+      setMF(molecules[0].mf);
+    } else {
+      setMF(undefined);
+    }
+  }, [molecules]);
+
+  const showSetMolecularFormulaModal = useCallback(() => {
+    modal.show(
+      <SetMolecularFormulaModal
+        onClose={() => modal.close()}
+        onSave={(mf) => setMF(mf)}
+        molecules={molecules}
+        previousMF={mf}
+      />,
+    );
+  }, [mf, modal, molecules]);
+
   return (
-    <>
-      <div style={styles.container}>
-        <CorrelationTable />
+    <div>
+      <div css={panelStyle}>
+        <DefaultPanelHeader showDeleteButton={false} showCounterLabel={false}>
+          <ToolTip title={`Set a Molecular Formula`} popupPlacement="right">
+            <button type="button" onClick={showSetMolecularFormulaModal}>
+              <FaFlask />
+            </button>
+          </ToolTip>
+        </DefaultPanelHeader>
+        <CorrelationTable mf={mf} />
       </div>
-    </>
+    </div>
   );
 };
 

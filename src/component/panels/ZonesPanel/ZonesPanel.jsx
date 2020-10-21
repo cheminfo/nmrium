@@ -26,26 +26,10 @@ import ZonesPreferences from './ZonesPreferences';
 import ZonesTable from './ZonesTable';
 
 const styles = {
-  toolbar: {
-    display: 'flex',
-    flexDirection: 'row',
-    borderBottom: '0.55px solid rgb(240, 240, 240)',
-  },
   container: {
     flexDirection: 'column',
     height: '100%',
     display: 'flex',
-  },
-  sumButton: {
-    borderRadius: '5px',
-    marginTop: '3px',
-    color: 'white',
-    backgroundColor: '#6d6d6d',
-    border: 'none',
-    height: '16px',
-    width: '18px',
-    fontSize: '12px',
-    padding: 0,
   },
   removeAssignmentsButton: {
     borderRadius: '5px',

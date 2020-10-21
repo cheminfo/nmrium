@@ -113,8 +113,7 @@ const getExperiment = (data) => {
   return '';
 };
 
-const CorrelationTable = () => {
-  const mf = 'C11H14N2O'; //'C8H10';
+const CorrelationTable = ({ mf }) => {
   const tolerance = useMemo(() => {
     return { C: 0.25, H: 0.025, N: 0.25 };
   }, []);
@@ -454,32 +453,6 @@ const CorrelationTable = () => {
     setCompleteness(_completeness);
   }, [atomTypesInSpectra.total, atoms, signals]);
 
-  // useEffect(() => {
-  //   console.log('\n\nexperiments:');
-  //   console.log(experiments);
-  //   console.log(experiments1D);
-  //   console.log(experiments1DExtra);
-  //   console.log(experiments2D);
-  //   console.log('\nsignals:');
-  //   console.log(signals1D);
-  //   console.log(signals1DExtra);
-  //   console.log(signals2D);
-  //   console.log('\natom types:');
-  //   console.log(atomTypesInSpectra);
-  //   console.log('signals ALL:');
-  //   console.log(signals);
-  // }, [
-  //   atomTypesInSpectra,
-  //   experiments,
-  //   experiments1D,
-  //   experiments1DExtra,
-  //   experiments2D,
-  //   signals,
-  //   signals1D,
-  //   signals1DExtra,
-  //   signals2D,
-  // ]);
-
   // search for matches in extra 1D (e.g. DEPT) and 2D experiments
   const getCorrelationsFor1D = useCallback(
     (signal1D, atomType) => {
@@ -676,10 +649,6 @@ const CorrelationTable = () => {
     getCorrelationsFor1D,
     signals,
   ]);
-
-  // useEffect(() => {
-  //   console.log(correlations);
-  // }, [correlations]);
 
   const getAdditionalColumnsData = useCallback(
     (correlation) => {
