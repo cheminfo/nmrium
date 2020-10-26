@@ -88,6 +88,10 @@ export class Datum1D {
     this.preprocessing();
   }
 
+  getID() {
+    return this.id;
+  }
+
   reapplyFilters() {
     FiltersManager.reapplyFilters(this);
   }
@@ -440,16 +444,20 @@ export class Datum1D {
     );
   }
 
+  detectRange(from, to) {
+    return {
+      id: generateID(),
+      from,
+      to,
+      absolute: this.getIntegration(from, to), // the real value,
+      signal: [this.detectSignal(from, to)],
+      // kind: 'signal',
+    };
+  }
+
   addRange(from, to) {
     try {
-      let range = {
-        id: generateID(),
-        from,
-        to,
-        absolute: this.getIntegration(from, to), // the real value,
-        signal: [this.detectSignal(from, to)],
-        // kind: 'signal',
-      };
+      const range = this.detectRange(from, to);
       this.ranges.values.push(range);
       this.updateIntegralRanges();
     } catch (e) {

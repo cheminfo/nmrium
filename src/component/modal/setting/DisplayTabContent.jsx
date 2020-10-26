@@ -60,6 +60,12 @@ const DisplayTabContent = () => {
         name="display.panels.hideSummaryPanel"
         reverse={true}
       />
+      <FormikCheckBox
+        className="checkbox-element"
+        label="Multiple Spectra Analysis Panel"
+        name="display.panels.hideMultipleSpectraAnalysisPanel"
+        reverse={true}
+      />
     </>
   );
 };

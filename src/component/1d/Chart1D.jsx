@@ -7,8 +7,9 @@ import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
 // import YAxis from './YAxis';
 import PeaksNotations from './PeaksNotations';
-import Ranges from './Ranges';
 import XAxis from './XAxis';
+import Ranges from './ranges/Ranges';
+import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 
 function Chart1D({ mode, width, height, margin }) {
   const { scaleX, scaleY } = useScale();
@@ -37,6 +38,7 @@ function Chart1D({ mode, width, height, margin }) {
       <IntegralsSeries />
       <PeaksNotations />
       <Ranges />
+      <MultiAnalysisRanges />
       <BaseLineZones />
 
       <g className="container" style={{ pointerEvents: 'none' }}>

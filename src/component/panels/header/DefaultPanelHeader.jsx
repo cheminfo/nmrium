@@ -51,21 +51,24 @@ const DefaultPanelHeader = memo(
     filterIsActive,
     counterFiltered,
     children,
-    showSettingButton = false,
     onSettingClick,
+    showSettingButton = false,
+    canDelete = true,
   }) => {
     return (
       <div style={styles.toolbar}>
-        <ToolTip title={deleteToolTip} popupPlacement="right">
-          <button
-            style={styles.button}
-            type="button"
-            onClick={onDelete}
-            disabled={counter === 0}
-          >
-            <FaRegTrashAlt />
-          </button>
-        </ToolTip>
+        {canDelete && (
+          <ToolTip title={deleteToolTip} popupPlacement="right">
+            <button
+              style={styles.button}
+              type="button"
+              onClick={onDelete}
+              disabled={counter === 0}
+            >
+              <FaRegTrashAlt />
+            </button>
+          </ToolTip>
+        )}
 
         {children}
 
@@ -92,15 +95,19 @@ const DefaultPanelHeader = memo(
           </ToolTip>
         ) : null}
 
-        <p style={styles.counterLabel}>
-          [{' '}
-          {filterIsActive &&
-          filterIsActive === true &&
-          counterFiltered !== undefined
-            ? `${counterFiltered}/${counter}`
-            : counter}{' '}
-          ]
-        </p>
+        {counter ? (
+          <p style={styles.counterLabel}>
+            [{' '}
+            {filterIsActive &&
+            filterIsActive === true &&
+            counterFiltered !== undefined
+              ? `${counterFiltered}/${counter}`
+              : counter}{' '}
+            ]
+          </p>
+        ) : (
+          <p style={{ flex: 1 }} />
+        )}
         {showSettingButton && (
           <ToolTip title="preferences" popupPlacement="left">
             <button

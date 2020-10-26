@@ -80,4 +80,11 @@ export const options = {
     hasOptionPanel: false,
     isFilter: false,
   },
+
+  multipleSpectraAnalysis: {
+    id: 'multipleSpectraAnalysis',
+    label: 'Multiple Spectra Analysis',
+    hasOptionPanel: false,
+    isFilter: false,
+  },
 };

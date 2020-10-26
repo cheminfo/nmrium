@@ -4,6 +4,7 @@ import { Molecule } from 'openchemlib/full';
 
 import * as SpectraManager from './SpectraManager';
 import { Datum1D } from './data1d/Datum1D';
+import { MultipleAnalysis } from './data1d/MulitpleAnalysis';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 import getColor from './utilities/getColor';
@@ -11,10 +12,12 @@ import getColor from './utilities/getColor';
 export class Analysis {
   spectra = [];
   molecules = [];
+
   constructor(spectra = [], molecules = [], preferences) {
     this.spectra = spectra.slice();
     this.molecules = molecules.slice(); // chemical structures
     this.preferences = preferences || {};
+    this.multipleAnalysisInstance = new MultipleAnalysis(this.spectra);
   }
 
   static async build(json = {}) {
@@ -215,5 +218,9 @@ export class Analysis {
   deleteDatumByIDs(IDs) {
     const _spectra = this.spectra.filter((d) => !IDs.includes(d.id));
     this.spectra = _spectra.length > 0 ? _spectra : [];
+  }
+
+  getMultipleAnalysisInstance() {
+    return this.multipleAnalysisInstance;
   }
 }

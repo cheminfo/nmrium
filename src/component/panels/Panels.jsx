@@ -15,6 +15,7 @@ import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
 import Summary from './Summary';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
 import FilterPanel from './filtersPanel/FilterPanel';
+import MultipleSpectraAnalysisPanel from './MultipleSpectraAnalysisPanel/MultipleSpectraAnalysisPanel';
 
 const accordionItems = [
   {
@@ -63,6 +64,14 @@ const accordionItems = [
     openWhen: [options.rangesPicking.id],
     style: '',
     hidePreferenceKey: 'hideRangesPanel',
+    mode: null,
+  },
+  {
+    title: 'Multiple Spectra Analysis',
+    component: <MultipleSpectraAnalysisPanel />,
+    openWhen: [options.multipleSpectraAnalysis.id],
+    style: '',
+    hidePreferenceKey: 'hideMultipleSpectraAnalysisPanel',
     mode: null,
   },
   {

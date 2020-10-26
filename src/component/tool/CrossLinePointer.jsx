@@ -24,6 +24,7 @@ const allowTools = [
   options.integral.id,
   options.rangesPicking.id,
   options.editRange.id,
+  options.multipleSpectraAnalysis.id,
 ];
 
 const CrossLinePointer = () => {

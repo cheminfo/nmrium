@@ -25,6 +25,7 @@ import * as RangesActions from './actions/RangesActions';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
+import * as SpectraAanalysisActions from './actions/SpectraAanalysisAction';
 import { AnalysisObj } from './core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
@@ -80,6 +81,7 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   showMultiplicityTrees: false,
+  spectraAanalysis: {},
 };
 
 export function dispatchMiddleware(dispatch, onDataChange = null) {
@@ -297,6 +299,10 @@ export function spectrumReducer(state, action) {
       return DomainActions.handelResetDomain(state);
     case types.CHANGE_ZONE_DATA:
       return ZonesActions.handleChangeZone(state, action);
+    case types.ANALYZE_SPECTRA:
+      return SpectraAanalysisActions.analyzeSpectra(state, action);
+    case types.DELETE_ANALYZE_SPECTRA_RANGE:
+      return SpectraAanalysisActions.handleDeleteSpectraRanges(state, action);
 
     case UNDO:
       return handleHistoryUndo(state);

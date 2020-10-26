@@ -312,6 +312,7 @@ NMRDisplayer.defaultProps = {
       hideFiltersPanel: false,
       hideZonesPanel: false,
       hideSummaryPanel: false,
+      hideMultipleSpectraAnalysisPanel: false,
     },
 
     toolsBarButtons: {
@@ -329,6 +330,7 @@ NMRDisplayer.defaultProps = {
       hidePhaseCorrectionTool: false,
       hideBaseLineCorrectionTool: false,
       hideFFTTool: false,
+      hideMultipleSpectraAnalysisTool: false,
     },
   },
 };
