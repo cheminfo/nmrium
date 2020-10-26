@@ -249,8 +249,10 @@ const handleBrushEnd = (state, action) => {
       }
     } else {
       const brushHistory = HorizontalZoomHistory.getInstance();
-      brushHistory.push(state.xDomain);
-      draft.xDomain = domainX;
+      if (brushHistory) {
+        brushHistory.push(state.xDomain);
+        draft.xDomain = domainX;
+      }
     }
   });
 };

@@ -1,10 +1,9 @@
 export default class HorizontalZoomHistory {
   stack = [];
   constructor() {
-    if (this.instance) {
-      return this.instance;
+    if (!this.instance) {
+      this.instance = this;
     }
-    this.instance = this;
   }
 
   static getInstance() {
@@ -12,6 +11,7 @@ export default class HorizontalZoomHistory {
       return this.instance;
     }
     this.instance = new HorizontalZoomHistory();
+    return this.instance;
   }
 
   push(val) {
