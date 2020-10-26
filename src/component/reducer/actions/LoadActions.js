@@ -168,8 +168,7 @@ async function loadZipFile(files) {
 function handleLoadZIPFile(state) {
   return produce(state, (draft) => {
     draft.data = AnalysisObj.getSpectraData();
-    setDomain(draft);
-    setMode(draft);
+    setActiveTab(draft);
     draft.isLoading = false;
   });
 }
