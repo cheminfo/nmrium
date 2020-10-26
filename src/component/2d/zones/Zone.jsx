@@ -5,6 +5,7 @@ import { useCallback, useState, useEffect, useMemo } from 'react';
 import { useAssignment, useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import DeleteButton from '../../elements/DeleteButton';
 import { useHighlight } from '../../highlight';
 import { SignalKindsToConsiderInIntegralsSum } from '../../panels/extra/constants/SignalsKinds';
 import { buildID } from '../../panels/extra/utilities/Concatenation';
@@ -81,23 +82,6 @@ const Zone = ({ zoneData }) => {
     deleteZone(assignmentData, dispatch, zoneData);
   }, [assignmentData, dispatch, zoneData]);
 
-  const DeleteButton = () => {
-    return (
-      <svg
-        className="delete-button"
-        x={scaleX(x1) - 20}
-        y={scaleY(y1)}
-        onClick={() => deleteHandler()}
-        data-no-export="true"
-        width="16"
-        height="16"
-      >
-        <rect rx="5" width="16" height="16" fill="#c81121" />
-        <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
-      </svg>
-    );
-  };
-
   const signals = useMemo(() => {
     return signal.map((_signal, i) => (
       <Signal
@@ -139,7 +123,11 @@ const Zone = ({ zoneData }) => {
       </g>
       {signals}
 
-      <DeleteButton />
+      <DeleteButton
+        x={scaleX(x1) - 20}
+        y={scaleY(y1)}
+        onClick={() => deleteHandler()}
+      />
     </g>
   );
 };
