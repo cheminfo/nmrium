@@ -19,6 +19,7 @@ class Events {
       }
     };
 
+    // eslint-disable-next-line no-constructor-return
     return Events.instance;
   }
 

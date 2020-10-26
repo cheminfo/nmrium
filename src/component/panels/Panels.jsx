@@ -9,13 +9,13 @@ import { options } from '../toolbar/ToolTypes';
 import InformationPanel from './InformationPanel';
 import IntegralPanel from './IntegralsPanel/IntegralPanel';
 import MoleculePanel from './MoleculePanel';
+import MultipleSpectraAnalysisPanel from './MultipleSpectraAnalysisPanel/MultipleSpectraAnalysisPanel';
 import PeaksPanel from './PeaksPanel/PeaksPanel';
 import RangesPanel from './RangesPanel/RangesPanel';
 import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
 import Summary from './Summary';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
 import FilterPanel from './filtersPanel/FilterPanel';
-import MultipleSpectraAnalysisPanel from './MultipleSpectraAnalysisPanel/MultipleSpectraAnalysisPanel';
 
 const accordionItems = [
   {

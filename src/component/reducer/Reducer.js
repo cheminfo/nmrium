@@ -22,10 +22,10 @@ import {
   applyKeyPreferencesHandler,
 } from './actions/PreferencesActions';
 import * as RangesActions from './actions/RangesActions';
+import * as SpectraAanalysisActions from './actions/SpectraAanalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
-import * as SpectraAanalysisActions from './actions/SpectraAanalysisAction';
 import { AnalysisObj } from './core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';

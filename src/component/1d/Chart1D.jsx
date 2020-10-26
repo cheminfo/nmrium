@@ -8,8 +8,8 @@ import LinesSeries from './LinesSeries';
 // import YAxis from './YAxis';
 import PeaksNotations from './PeaksNotations';
 import XAxis from './XAxis';
-import Ranges from './ranges/Ranges';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
+import Ranges from './ranges/Ranges';
 
 function Chart1D({ mode, width, height, margin }) {
   const { scaleX, scaleY } = useScale();
