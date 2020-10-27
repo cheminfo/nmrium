@@ -78,7 +78,7 @@ const SummaryPanel = memo(() => {
   return (
     <div>
       <div css={panelStyle}>
-        <DefaultPanelHeader showDeleteButton={false} showCounterLabel={false}>
+        <DefaultPanelHeader canDelete={false}>
           <ToolTip
             title={`Set molecular formula (${mf})`}
             popupPlacement="right"
