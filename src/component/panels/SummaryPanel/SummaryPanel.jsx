@@ -1,15 +1,16 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
-import { useCallback, useEffect, useState } from 'react';
-import { FaFlask } from 'react-icons/fa';
+import { memo, useCallback, useEffect, useState } from 'react';
+import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
 import { useChartData } from '../../context/ChartContext';
 import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
-import CorrelationTable from './CorrelationTable';
+import CorrelationTable from './CorrelationTable/CorrelationTable';
 import SetMolecularFormulaModal from './SetMolecularFormulaModal';
+import SetShiftToleranceModal from './SetShiftTolerancesModal';
 
 const panelStyle = css`
   display: flex;
@@ -29,10 +30,21 @@ const panelStyle = css`
   }
 `;
 
-const SummaryPanel = () => {
-  const { molecules } = useChartData();
+const SummaryPanel = memo(() => {
+  const { data, molecules } = useChartData();
   const modal = useModal();
   const [mf, setMF] = useState();
+
+  const defaultToleranceHeavyAtom = 0.25;
+  const defaultToleranceProton = 0.02;
+  const [tolerance, setTolerance] = useState({
+    C: defaultToleranceHeavyAtom,
+    H: defaultToleranceProton,
+    N: defaultToleranceHeavyAtom,
+    F: defaultToleranceHeavyAtom,
+    Si: defaultToleranceHeavyAtom,
+    P: defaultToleranceHeavyAtom,
+  });
 
   useEffect(() => {
     if (molecules && molecules.length > 0) {
@@ -53,20 +65,38 @@ const SummaryPanel = () => {
     );
   }, [mf, modal, molecules]);
 
+  const showSetShiftToleranceModal = useCallback(() => {
+    modal.show(
+      <SetShiftToleranceModal
+        onClose={() => modal.close()}
+        onSave={(_tolerance) => setTolerance(_tolerance)}
+        previousTolerance={tolerance}
+      />,
+    );
+  }, [modal, tolerance]);
+
   return (
     <div>
       <div css={panelStyle}>
         <DefaultPanelHeader showDeleteButton={false} showCounterLabel={false}>
-          <ToolTip title={`Set a Molecular Formula`} popupPlacement="right">
+          <ToolTip
+            title={`Set molecular formula (${mf})`}
+            popupPlacement="right"
+          >
             <button type="button" onClick={showSetMolecularFormulaModal}>
               <FaFlask />
             </button>
           </ToolTip>
+          <ToolTip title={`Set shift tolerance`} popupPlacement="right">
+            <button type="button" onClick={showSetShiftToleranceModal}>
+              <FaSlidersH />
+            </button>
+          </ToolTip>
         </DefaultPanelHeader>
-        <CorrelationTable mf={mf} />
+        <CorrelationTable data={data} mf={mf} tolerance={tolerance} />
       </div>
     </div>
   );
-};
+});
 
 export default SummaryPanel;
