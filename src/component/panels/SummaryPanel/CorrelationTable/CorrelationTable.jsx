@@ -547,12 +547,6 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
     return _rows;
   }, [additionalColumns, atoms, correlations, state]);
 
-  useEffect(() => {
-    console.log('---------');
-    console.log(correlations);
-    console.log(state);
-  }, [state, correlations]);
-
   return (
     <div>
       <Overview atoms={atoms} state={state} />
