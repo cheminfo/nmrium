@@ -1,18 +1,31 @@
 import { Conrec } from 'ml-conrec';
 
+export const defaultContourOpions = {
+  positive: {
+    contourLevels: [0, 21],
+    numberOfLayers: 10,
+  },
+  negative: {
+    contourLevels: [0, 21],
+    numberOfLayers: 10,
+  },
+};
+
 export default class Processing2D {
-  // static instance;
-
-  // static getInstance() {
-  //   return Processing2D.instance;
-  // }
-
-  constructor(minMax, levelPositive = 10, levelNegative = 10) {
+  constructor(
+    minMax,
+    options = defaultContourOpions,
+    defaultLevel = {
+      positive: 10,
+      negative: 10,
+    },
+  ) {
+    this.options = options;
     // Processing2D.instance = this;
+    const { positive, negative } = defaultLevel;
 
-    this.currentLevelPositive = levelPositive;
-
-    this.currentLevelNegative = levelNegative;
+    this.currentLevelPositive = positive;
+    this.currentLevelNegative = negative;
 
     const xs = getRange(minMax.minX, minMax.maxX, minMax.z[0].length);
 
@@ -37,19 +50,40 @@ export default class Processing2D {
     this.currentLevelNegative = levelNegative;
   }
 
+  setOptions(options) {
+    const positiveBoundary = options.positive.contourLevels;
+    const negativeBoundary = options.negative.contourLevels;
+
+    if (this.currentLevelPositive >= positiveBoundary[1]) {
+      this.currentLevelPositive = positiveBoundary[1];
+    } else if (this.currentLevelPositive <= positiveBoundary[0]) {
+      this.currentLevelPositive = positiveBoundary[0];
+    }
+
+    if (this.currentLevelNegative >= negativeBoundary[1]) {
+      this.currentLevelNegative = negativeBoundary[1];
+    } else if (this.currentLevelNegative <= negativeBoundary[0]) {
+      this.currentLevelNegative = negativeBoundary[0];
+    }
+
+    this.options = options;
+  }
+
   wheel(value) {
     const sign = Math.sign(value);
+    const positiveBoundary = this.options.positive.contourLevels;
+    const negativeBoundary = this.options.negative.contourLevels;
 
     if (
-      (this.currentLevelPositive > 0 && sign === -1) ||
-      (this.currentLevelPositive < 21 && sign === 1)
+      (this.currentLevelPositive > positiveBoundary[0] && sign === -1) ||
+      (this.currentLevelPositive < positiveBoundary[1] && sign === 1)
     ) {
       this.currentLevelPositive += sign;
     }
 
     if (
-      (this.currentLevelNegative > 0 && sign === -1) ||
-      (this.currentLevelNegative < 21 && sign === 1)
+      (this.currentLevelNegative > negativeBoundary[0] && sign === -1) ||
+      (this.currentLevelNegative < negativeBoundary[1] && sign === 1)
     ) {
       this.currentLevelNegative += sign;
     }
@@ -57,10 +91,10 @@ export default class Processing2D {
 
   shiftWheel(value) {
     const sign = Math.sign(value);
-
+    const [min, max] = this.options.negative.contourLevels;
     if (
-      (this.currentLevelNegative === 0 && sign === -1) ||
-      (this.currentLevelNegative > 20 && sign === 1)
+      (this.currentLevelNegative === min && sign === -1) ||
+      (this.currentLevelNegative >= max && sign === 1)
     ) {
       return;
     }
@@ -72,9 +106,18 @@ export default class Processing2D {
   drawContours() {
     const zoomPositive = this.currentLevelPositive / 2 + 1;
     const zoomNegative = this.currentLevelNegative / 2 + 1;
+    const {
+      positive: { numberOfLayers: numberOfPositiveLayer },
+      negative: { numberOfLayers: numberOfNegativeLayer },
+    } = this.options;
     return {
-      positive: this.getContours(zoomPositive),
-      negative: this.getContours(zoomNegative, { negative: true }),
+      positive: this.getContours(zoomPositive, {
+        nbLevels: numberOfPositiveLayer,
+      }),
+      negative: this.getContours(zoomNegative, {
+        negative: true,
+        nbLevels: numberOfNegativeLayer,
+      }),
     };
   }
 

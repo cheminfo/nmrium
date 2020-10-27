@@ -4,7 +4,7 @@ import { zoneToX } from 'ml-spectra-processing';
 import { Datum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
 
-import Processing2D from './Processing2D';
+import Processing2D, { defaultContourOpions } from './Processing2D';
 import autoZonesDetection from './autoZonesDetection';
 
 export class Datum2D {
@@ -30,6 +30,7 @@ export class Datum2D {
         negativeColor: 'blue',
         isPositiveVisible: true,
         isNegativeVisible: true,
+        contourOptions: defaultContourOpions,
       },
       options.display,
     );
@@ -64,7 +65,10 @@ export class Datum2D {
     );
     this.zones = Object.assign({ values: [], options: {} }, options.zones);
 
-    this.processingController = new Processing2D(this.data);
+    this.processingController = new Processing2D(
+      this.data,
+      this.display.contourOptions,
+    );
     // this.data.contours = this.processingController.drawContours();
   }
 
@@ -79,6 +83,7 @@ export class Datum2D {
   setDisplay(displayOptions) {
     this.display = Object.assign({}, this.display);
     this.display = { ...this.display, ...displayOptions };
+    this.processingController.setOptions(displayOptions.contourOptions);
   }
 
   getZones() {

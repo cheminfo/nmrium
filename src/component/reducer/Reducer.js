@@ -209,9 +209,11 @@ export function spectrumReducer(state, action) {
       );
     case types.CHANGE_ACTIVE_SPECTRUM:
       return SpectrumsActions.handleChangeActiveSpectrum(state, action.data);
-
     case types.CHANGE_SPECTRUM_COLOR:
       return SpectrumsActions.handleChangeSpectrumColor(state, action.data);
+    case types.CHANGE_SPECTRUM_SETTING:
+      return SpectrumsActions.changeSpectrumSetting(state, action);
+
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return ToolsActions.handleToggleRealImaginaryVisibility(state);
     case types.SET_ZOOM_FACTOR:
