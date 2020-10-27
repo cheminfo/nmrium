@@ -432,7 +432,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
   const rows = useMemo(() => {
     const _rows = [];
     const correlationsProtons = lodash.get(correlations, 'H', []);
-    Object.keys(atoms).forEach((atomType, i) => {
+    Object.keys(atoms).forEach((atomType) => {
       const correlationsAtomType = lodash.get(correlations, `${atomType}`, []);
       if (atomType !== 'H') {
         // for all heavy atoms
@@ -447,21 +447,19 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
                 additionalColumns={additionalColumns}
                 correlations={correlations}
                 correlation={correlation}
-                // eslint-disable-next-line react/no-array-index-key
-                key={`correlation${i}${j}${correlation.signal.delta}`}
+                rowKey={`correlation${atomType}${correlation.index}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={getLabelStyle(state, correlation)}
               />,
             );
-            lodash.get(correlation, 'attached.H', []).forEach((_index, h) => {
+            lodash.get(correlation, 'attached.H', []).forEach((_index) => {
               const correlationProton = correlationsProtons[_index];
               _rows.push(
                 <CorrelationTableRow
                   additionalColumns={additionalColumns}
                   correlations={correlations}
                   correlation={correlationProton}
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`correlation${i}${j}_proton${h}`}
+                  rowKey={`correlation${atomType}${correlationProton.index}_${correlation.index}`}
                   styleRow={{ backgroundColor: 'white' }}
                   styleLabel={getLabelStyle(state, correlationProton)}
                 />,
@@ -483,8 +481,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
                 additionalColumns={additionalColumns}
                 correlations={correlations}
                 correlation={pseudoCorrelation}
-                // eslint-disable-next-line react/no-array-index-key
-                key={`placeholder_correlation${i}${j}`}
+                rowKey={`placeholder_correlation$_${_rows.length}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={getLabelStyle(state, pseudoCorrelation)}
               />,
@@ -499,21 +496,19 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
                 additionalColumns={additionalColumns}
                 correlations={correlations}
                 correlation={correlation}
-                // eslint-disable-next-line react/no-array-index-key
-                key={`correlation${i}${atoms[atomType] + k + 1}`}
+                rowKey={`correlation${atomType}${correlation.index}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={getLabelStyle(state, correlation)}
               />,
             );
-            lodash.get(correlation, 'attached.H', []).forEach((_index, h) => {
+            lodash.get(correlation, 'attached.H', []).forEach((_index) => {
               const correlationProton = correlationsProtons[_index];
               _rows.push(
                 <CorrelationTableRow
                   additionalColumns={additionalColumns}
                   correlations={correlations}
                   correlation={correlationProton}
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`correlation${i}${k}_proton${h}`}
+                  rowKey={`correlation${atomType}${correlationProton.index}_${correlation.index}`}
                   styleRow={{ backgroundColor: 'white' }}
                   styleLabel={getLabelStyle(state, correlationProton)}
                 />,
@@ -531,8 +526,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
                 additionalColumns={additionalColumns}
                 correlations={correlations}
                 correlation={correlationProton}
-                // eslint-disable-next-line react/no-array-index-key
-                key={`correlationProton${i}${atoms[atomType] + k}`}
+                rowKey={`correlation${atomType}${correlationProton.index}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={getLabelStyle(state, correlationProton)}
               />,
@@ -557,11 +551,8 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
             <th>Atom</th>
             <th>δ (ppm)</th>
             <th>Equiv</th>
-            {additionalColumns.map((_experiment, i) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <th key={`expCol_${i}_${_experiment}`}>
-                {_experiment.toUpperCase()}
-              </th>
+            {additionalColumns.map((_experiment) => (
+              <th key={`expCol_${_experiment}`}>{_experiment.toUpperCase()}</th>
             ))}
           </tr>
           {rows}

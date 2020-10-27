@@ -7,7 +7,7 @@ const CorrelationTableRow = ({
   additionalColumns,
   correlations,
   correlation,
-  key,
+  rowKey,
   styleRow,
   styleLabel,
 }) => {
@@ -54,7 +54,7 @@ const CorrelationTableRow = ({
   );
 
   return (
-    <tr key={key} style={styleRow}>
+    <tr key={rowKey} style={styleRow}>
       <td>
         {lodash.get(correlation, 'experimentType', false)
           ? correlation.experimentType.toUpperCase()
