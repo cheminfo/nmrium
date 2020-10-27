@@ -303,6 +303,21 @@ const FunctionToolBar = ({
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
+          isButtonVisible('hideMultipleSpectraAnalysisTool') && (
+            <ToggleButton
+              key={options.multipleSpectraAnalysis.id}
+              value={options.multipleSpectraAnalysis.id}
+              className="ci-icon-nmr-range-picking"
+              style={styles.icon}
+            >
+              <ToolTip
+                title={options.multipleSpectraAnalysis.label}
+                popupPlacement="right"
+                offset={{ x: 10, y: 0 }}
+              />
+            </ToggleButton>
+          )}
+        {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideZeroFillingTool') && (
             <ToggleButton
               key={options.zeroFilling.id}

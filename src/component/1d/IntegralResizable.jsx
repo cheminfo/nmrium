@@ -6,6 +6,7 @@ import { useCallback, Fragment, useMemo } from 'react';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
+import DeleteButton from '../elements/DeleteButton';
 import { useHighlight } from '../highlight/index';
 import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from '../reducer/types/Types';
 
@@ -69,26 +70,6 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
     });
   }, [dispatch, id, spectrumID]);
 
-  function DeleteButton() {
-    return (
-      <svg
-        className="target"
-        x={`${scaleX()(xBoundary[1]) - 20}`}
-        y={height - margin.bottom - 20}
-        // transform={`translate(${scaleX()(xBoundary[1]) - 20}px,${height -
-        //   margin.bottom -
-        //   20}px)`}
-        onClick={deleteIntegral}
-        data-no-export="true"
-        width="16"
-        height="16"
-      >
-        <rect rx="5" width="16" height="16" fill="#c81121" />
-        <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
-      </svg>
-    );
-  }
-
   // const handleOnStartResizing = useCallback(() => {}, []);
 
   const handleOnStopResizing = useCallback(
@@ -131,7 +112,11 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
           // onDrag={handleOnStartResizing}
           onDrop={handleOnStopResizing}
         />
-        <DeleteButton />
+        <DeleteButton
+          x={`${scaleX()(xBoundary[1]) - 20}`}
+          y={height - margin.bottom - 20}
+          onDelete={deleteIntegral}
+        />
       </g>
     </Fragment>
   );

@@ -9,6 +9,7 @@ import { options } from '../toolbar/ToolTypes';
 import InformationPanel from './InformationPanel';
 import IntegralPanel from './IntegralsPanel/IntegralPanel';
 import MoleculePanel from './MoleculePanel';
+import MultipleSpectraAnalysisPanel from './MultipleSpectraAnalysisPanel/MultipleSpectraAnalysisPanel';
 import PeaksPanel from './PeaksPanel/PeaksPanel';
 import RangesPanel from './RangesPanel/RangesPanel';
 import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
@@ -63,6 +64,14 @@ const accordionItems = [
     openWhen: [options.rangesPicking.id],
     style: '',
     hidePreferenceKey: 'hideRangesPanel',
+    mode: null,
+  },
+  {
+    title: 'Multiple Spectra Analysis',
+    component: <MultipleSpectraAnalysisPanel />,
+    openWhen: [options.multipleSpectraAnalysis.id],
+    style: '',
+    hidePreferenceKey: 'hideMultipleSpectraAnalysisPanel',
     mode: null,
   },
   {

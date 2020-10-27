@@ -1,10 +1,11 @@
 import { jsx, css } from '@emotion/core';
-import { useCallback, Fragment } from 'react';
+import { useCallback } from 'react';
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
+import DeleteButton from '../elements/DeleteButton';
 import { DELETE_BASE_LINE_ZONE } from '../reducer/types/Types';
 
 const styles = css`
@@ -33,29 +34,12 @@ const BaseLineZones = () => {
   const { scaleX } = useScale();
   const dispatch = useDispatch();
 
-  const deleteRange = useCallback(
+  const deleteRangeHandler = useCallback(
     (id) => {
       dispatch({ type: DELETE_BASE_LINE_ZONE, id });
     },
     [dispatch],
   );
-
-  const DeleteButton = ({ id }) => {
-    return (
-      <Fragment>
-        <svg
-          className="delete-button"
-          x={-20}
-          y={10}
-          onClick={() => deleteRange(id)}
-          data-no-export="true"
-        >
-          <rect rx="5" width="16" height="16" fill="#c81121" />
-          <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
-        </svg>
-      </Fragment>
-    );
-  };
 
   return (
     baseLineZones &&
@@ -68,7 +52,11 @@ const BaseLineZones = () => {
             transform={`translate(${scaleX()(zone.to)},0)`}
             css={styles}
           >
-            <DeleteButton id={zone.id} />
+            <DeleteButton
+              x={-20}
+              y={10}
+              onDelete={() => deleteRangeHandler(zone.id)}
+            />
             <rect
               x="0"
               width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}

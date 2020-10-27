@@ -2,21 +2,21 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback, useState, useEffect } from 'react';
 
-import { useAssignment, useAssignmentData } from '../assignment';
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useScale } from '../context/ScaleContext';
-import { useHighlight } from '../highlight';
-import { buildID } from '../panels/extra/utilities/Concatenation';
+import { useAssignment, useAssignmentData } from '../../assignment';
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import { useScale } from '../../context/ScaleContext';
+import DeleteButton from '../../elements/DeleteButton';
+import { useHighlight } from '../../highlight';
+import { buildID } from '../../panels/extra/utilities/Concatenation';
 import {
-  deleteRange,
   checkRangeKind,
-} from '../panels/extra/utilities/RangeUtilities';
-import { RESIZE_RANGE } from '../reducer/types/Types';
-import { options } from '../toolbar/ToolTypes';
-
-import MultiplicityTree from './MultiplicityTree';
-import Resizable from './Resizable';
+  deleteRange,
+} from '../../panels/extra/utilities/RangeUtilities';
+import { RESIZE_RANGE } from '../../reducer/types/Types';
+import { options } from '../../toolbar/ToolTypes';
+import MultiplicityTree from '../MultiplicityTree';
+import Resizable from '../Resizable';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -98,24 +98,6 @@ const Range = ({ rangeData }) => {
     [dispatch, rangeData],
   );
 
-  const DeleteButton = () => {
-    return (
-      <svg
-        className="delete-button"
-        // transform={`translate(${scaleX()(to) - 20},10)`}
-        x={scaleX()(to) - 20}
-        y={10}
-        onClick={() => deleteHandler()}
-        data-no-export="true"
-        width="16"
-        height="16"
-      >
-        <rect rx="5" width="16" height="16" fill="#c81121" />
-        <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
-      </svg>
-    );
-  };
-
   return (
     <g
       css={
@@ -184,7 +166,13 @@ const Range = ({ rangeData }) => {
         // onDrag={handleOnStartResizing}
         onDrop={handleOnStopResizing}
       />
-      {!isBlockedByEditing ? <DeleteButton /> : null}
+      {!isBlockedByEditing ? (
+        <DeleteButton
+          x={scaleX()(to) - 20}
+          y={10}
+          onDelete={() => deleteHandler()}
+        />
+      ) : null}
       {signal && signal.length > 0
         ? signal.map((_signal, i) => (
             <MultiplicityTree

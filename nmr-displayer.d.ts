@@ -39,6 +39,7 @@ export type NMRDisplayerPreferences = Partial<{
     hideRangesPanel: boolean;
     hideStructuresPanel: boolean;
     hideFiltersPanel: boolean;
+    hideMultipleSpectraAnalysisPanel: boolean;
   }>;
   toolsBarButtons: Partial<{
     hideZoomTool: boolean;
@@ -55,6 +56,7 @@ export type NMRDisplayerPreferences = Partial<{
     hidePhaseCorrectionTool: boolean;
     hideBaseLineCorrectionTool: boolean;
     hideFFTTool: boolean;
+    hideMultipleSpectraAnalysisTool: boolean;
   }>;
 }>;
 

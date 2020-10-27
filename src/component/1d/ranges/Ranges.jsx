@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 
-import RangesWrapper from '../hoc/RangesWrapper';
+import RangesWrapper from '../../hoc/RangesWrapper';
 
 import Range from './Range';
 

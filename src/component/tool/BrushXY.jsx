@@ -25,6 +25,7 @@ const allowTools = [
   options.zone2D.id,
   options.slicingTool.id,
   options.editRange.id,
+  options.multipleSpectraAnalysis.id,
 ];
 
 export const BRUSH_TYPE = {

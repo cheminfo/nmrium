@@ -127,7 +127,7 @@ const IntegralTable = memo(
     );
     const editStartHander = useCallback((index) => {
       relativeRefs.current.forEach((ref, i) => {
-        if (index !== i) {
+        if (index !== i && ref) {
           ref.closeEdit();
         }
       });

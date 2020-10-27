@@ -23,6 +23,7 @@ export const preferencesInitialState = {
       hideFiltersPanel: false,
       hideZonesPanel: false,
       hideSummaryPanel: false,
+      hideMultipleSpectraAnalysisPanel: false,
     },
 
     toolsBarButtons: {
@@ -40,6 +41,7 @@ export const preferencesInitialState = {
       hidePhaseCorrectionTool: false,
       hideBaseLineCorrectionTool: false,
       hideFFTTool: false,
+      hideMultipleSpectraAnalysisTool: false,
     },
   },
   controllers: {

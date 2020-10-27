@@ -63,7 +63,9 @@ const moleculeContainerStyle = css`
 
 const SelectMolecule = ({ onSave, molecules, element }) => {
   const [currentIndex, setCurrentIndex] = useState();
-  const { general, panels } = usePreferences();
+  const {
+    display: { general, panels },
+  } = usePreferences();
 
   const newSum = useMemo(() => {
     return element &&
