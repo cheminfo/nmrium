@@ -17,13 +17,12 @@ import {
   SET_ACTIVE_TAB,
   CHANGE_VISIBILITY,
   CHANGE_ACTIVE_SPECTRUM,
-  CHANGE_SPECTRUM_COLOR,
 } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 
-import ColorPicker from './ColorPicker';
 import SpectrumListItem from './SpectrumListItem';
+import SpectrumSetting from './setting/SpectrumSetting';
 
 const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
   const contextRef = useRef();
@@ -31,8 +30,8 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
   const [activated, setActivated] = useState(null);
   const [markersVisible, setMarkersVisible] = useState([]);
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
-  const [colorPickerPosition, setColorPickerPosition] = useState(null);
-  const [isColorPickerDisplayed, setIsColorPickerDisplayed] = useState(false);
+  const [settingModalPosition, setSettingModalPosition] = useState(null);
+  const [isSettingModalDisplayed, setIsSettingModalDisplayed] = useState(false);
 
   const alert = useAlert();
   const dispatch = useDispatch();
@@ -117,13 +116,13 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
     [contextRef],
   );
 
-  const handleOpenColorPicker = useCallback((selectedSpectrum, event) => {
-    setColorPickerPosition({
+  const openSettingHandler = useCallback((selectedSpectrum, event) => {
+    setSettingModalPosition({
       x: event.nativeEvent.clientX,
       y: event.nativeEvent.clientY,
     });
     setSelectedSpectrum(selectedSpectrum);
-    setIsColorPickerDisplayed(true);
+    setIsSettingModalDisplayed(true);
   }, []);
 
   const handleChangeVisibility = useCallback(
@@ -149,25 +148,25 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
     [activated, dispatch],
   );
 
-  const handleCloseColorPicker = useCallback(() => {
-    setIsColorPickerDisplayed(false);
+  const mouseLeaveHandler = useCallback(() => {
+    setIsSettingModalDisplayed(false);
   }, []);
 
-  const handleOnColorChanged = useCallback(
-    (color, key) => {
-      if (selectedSpectrumData !== null) {
-        dispatch({
-          type: CHANGE_SPECTRUM_COLOR,
-          data: {
-            id: selectedSpectrumData.id,
-            color: `${color.hex}${Math.round(color.rgb.a * 255).toString(16)}`,
-            key,
-          },
-        });
-      }
-    },
-    [dispatch, selectedSpectrumData],
-  );
+  // const handleOnColorChanged = useCallback(
+  //   (color, key) => {
+  //     if (selectedSpectrumData !== null) {
+  //       dispatch({
+  //         type: CHANGE_SPECTRUM_COLOR,
+  //         data: {
+  //           id: selectedSpectrumData.id,
+  //           color: `${color.hex}${Math.round(color.rgb.a * 255).toString(16)}`,
+  //           key,
+  //         },
+  //       });
+  //     }
+  //   },
+  //   [dispatch, selectedSpectrumData],
+  // );
 
   return (
     <Fragment>
@@ -185,7 +184,7 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
                     onChangeVisibility={handleChangeVisibility}
                     onChangeMarkersVisibility={handleChangeMarkersVisibility}
                     onChangeActiveSpectrum={handleChangeActiveSpectrum}
-                    onOpenColorPicker={handleOpenColorPicker}
+                    onOpenSettingModal={openSettingHandler}
                     onContextMenu={(e) =>
                       d.info.dimension === 1 ? contextMenuHandler(e, d) : null
                     }
@@ -196,12 +195,11 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
       </Tabs>
       <ContextMenu ref={contextRef} context={contextMenu} />
 
-      {isColorPickerDisplayed ? (
-        <ColorPicker
-          onMouseLeave={handleCloseColorPicker}
-          selectedSpectrumData={selectedSpectrumData}
-          colorPickerPosition={colorPickerPosition}
-          onColorChanged={handleOnColorChanged}
+      {isSettingModalDisplayed ? (
+        <SpectrumSetting
+          onMouseLeave={mouseLeaveHandler}
+          data={selectedSpectrumData}
+          position={settingModalPosition}
         />
       ) : null}
     </Fragment>

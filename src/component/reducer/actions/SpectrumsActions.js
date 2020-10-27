@@ -101,6 +101,16 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
   });
 };
 
+const changeSpectrumSetting = (state, { id, display }) => {
+  const index = state.data.findIndex((d) => d.id === id);
+  const datumObject = AnalysisObj.getDatum(id);
+  return produce(state, (draft) => {
+    if (index !== -1 && datumObject) {
+      draft.data[index].display = display;
+      datumObject.setDisplay(display);
+    }
+  });
+};
 const handleChangeSpectrumColor = (state, { id, color, key }) => {
   return produce(state, (draft) => {
     const index = draft.data.findIndex((d) => d.id === id);
@@ -153,6 +163,7 @@ export {
   handleChangePeaksMarkersVisibility,
   handleChangeActiveSpectrum,
   handleChangeSpectrumColor,
+  changeSpectrumSetting,
   handleDeleteSpectra,
   addMissingProjectionHander,
 };

@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { FaEye, FaPaintBrush } from 'react-icons/fa';
+import { FaEye, FaCog } from 'react-icons/fa';
 
 const styles = {
   button: {
@@ -53,7 +53,7 @@ const SpectrumListItem = memo(
     onChangeVisibility,
     onChangeMarkersVisibility,
     onChangeActiveSpectrum,
-    onOpenColorPicker,
+    onOpenSettingModal,
     onContextMenu,
   }) => {
     const isVisible = (id, key) => {
@@ -221,9 +221,9 @@ const SpectrumListItem = memo(
           style={styles.button}
           type="button"
           className="color-change-bt"
-          onClick={(event) => onOpenColorPicker(data, event)}
+          onClick={(event) => onOpenSettingModal(data, event)}
         >
-          <FaPaintBrush />
+          <FaCog />
         </button>
       </div>
     );
