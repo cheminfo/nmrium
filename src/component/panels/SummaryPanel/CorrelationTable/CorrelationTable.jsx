@@ -2,7 +2,7 @@
 import { jsx, css } from '@emotion/core';
 import lodash from 'lodash';
 import { MF } from 'mf-parser';
-import { useMemo, useEffect, useState, useCallback } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 
 import { SignalKindsToInclude } from '../../extra/constants/SignalsKinds';
 
@@ -106,11 +106,11 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
   const experiments1D = useMemo(() => {
     const _experiments1D = {};
     Object.keys(atoms).forEach((atomType) => {
-      addToExperiments(_experiments1D, '1D.1d', true, atomType);
+      addToExperiments(experiments, _experiments1D, '1D.1d', true, atomType);
     });
 
     return _experiments1D;
-  }, [atoms]);
+  }, [atoms, experiments]);
 
   // "extra" 1D experiments containing ranges, e.g. DEPT
   const experiments1DExtra = useMemo(() => {
@@ -119,6 +119,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
       .filter((_experimentType) => _experimentType !== '1d') // don't consider "plain" 1D experiments here
       .forEach((_experimentType) => {
         addToExperiments(
+          experiments,
           _experiments1DExtra,
           `1D.${_experimentType}`,
           false,
@@ -135,6 +136,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
     Object.keys(lodash.get(experiments, '2D', {})).forEach(
       (_experimentType) => {
         addToExperiments(
+          experiments,
           _experiments2D,
           `2D.${_experimentType}`,
           false,
@@ -145,13 +147,6 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
 
     return _experiments2D;
   }, [experiments]);
-
-  useEffect(() => {
-    console.log(experiments);
-    console.log(experiments1D);
-    console.log(experiments1DExtra);
-    console.log(experiments2D);
-  }, [experiments, experiments1D, experiments1DExtra, experiments2D]);
 
   const signals1D = useMemo(() => {
     // store valid signals from 1D experiments
