@@ -1,5 +1,32 @@
 import lodash from 'lodash';
 
+const addToExperiments = (
+  experiments,
+  experimentsType,
+  type,
+  checkAtomType,
+  experimentKey,
+) => {
+  const _experiments = lodash
+    .get(experiments, `${type}`, []) // don't consider DEPT etc. here
+    .filter((_experiment) => {
+      const hasValues =
+        lodash.get(
+          _experiment,
+          type.includes('1D') ? 'ranges.values' : 'zones.values',
+          [],
+        ).length > 0;
+      return checkAtomType === true
+        ? getAtomType(_experiment.info.nucleus) === experimentKey && hasValues
+        : hasValues;
+    });
+
+  if (_experiments.length > 0) {
+    experimentsType[experimentKey] = _experiments;
+  }
+  return _experiments;
+};
+
 const getAtomType = (nucleus) => nucleus.split(/\d+/)[1];
 
 const getLabel = (correlation) => {
@@ -236,6 +263,7 @@ const setAttachments = (correlations, atomTypesInSpectra) => {
 };
 
 export {
+  addToExperiments,
   attach,
   checkSignalMatch,
   getAtomType,

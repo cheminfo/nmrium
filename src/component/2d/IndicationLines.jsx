@@ -46,14 +46,11 @@ const IndicationLines = ({ axis, show }) => {
         const deltas = ranges
           .map((_range) =>
             _range.signal
-              .map((_signal) =>
-                SignalKindsToInclude.some((_kind) => _signal.kind === _kind)
-                  ? _signal.delta
-                  : null,
+              .filter((_signal) =>
+                SignalKindsToInclude.some((_kind) => _signal.kind === _kind),
               )
-              .flat(),
+              .map((_signal) => _signal.delta),
           )
-          .filter((_delta) => _delta)
           .flat();
         setDeltas1D(deltas);
       } else {

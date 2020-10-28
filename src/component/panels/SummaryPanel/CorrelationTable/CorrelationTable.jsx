@@ -2,13 +2,14 @@
 import { jsx, css } from '@emotion/core';
 import lodash from 'lodash';
 import { MF } from 'mf-parser';
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useEffect, useState, useCallback } from 'react';
 
 import { SignalKindsToInclude } from '../../extra/constants/SignalsKinds';
 
 import CorrelationTableRow from './CorrelationTableRow';
 import Overview from './Overview';
 import {
+  addToExperiments,
   checkSignalMatch,
   getAtomType,
   getLabelStyle,
@@ -97,28 +98,19 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
     [experiments],
   );
 
-  // "plain" 1D experiments containing ranges, e.g. without DEPT
+  // general remark for all experiment types:
+  // build an array of experiments, because one could have more than
+  // one spectrum in spectra list for one atom type or experiment type
+
+  // "plain" 1D experiments containing ranges, i.e. without DEPT etc.
   const experiments1D = useMemo(() => {
     const _experiments1D = {};
-    // list of experiments, because one could have more than
-    // one spectrum in spectra list for one atom type
     Object.keys(atoms).forEach((atomType) => {
-      const _experiments = lodash
-        .get(experiments, `1D.1d`, []) // don't consider DEPT etc. here
-        .map((_experiment) => {
-          return getAtomType(_experiment.info.nucleus) === atomType &&
-            lodash.get(_experiment, 'ranges.values', []).length > 0
-            ? _experiment
-            : undefined;
-        })
-        .filter((_experiment) => _experiment);
-      if (_experiments.length > 0) {
-        _experiments1D[atomType] = _experiments;
-      }
+      addToExperiments(_experiments1D, '1D.1d', true, atomType);
     });
 
     return _experiments1D;
-  }, [atoms, experiments]);
+  }, [atoms]);
 
   // "extra" 1D experiments containing ranges, e.g. DEPT
   const experiments1DExtra = useMemo(() => {
@@ -126,18 +118,12 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
     Object.keys(lodash.get(experiments, `1D`, {}))
       .filter((_experimentType) => _experimentType !== '1d') // don't consider "plain" 1D experiments here
       .forEach((_experimentType) => {
-        // list of experiments, because one could have more than
-        // one spectrum in spectra list for the current experiment type
-        const _experimentsExtra = experiments['1D'][_experimentType]
-          .map((_experiment) =>
-            lodash.get(_experiment, 'ranges.values', []).length > 0
-              ? _experiment
-              : undefined,
-          )
-          .filter((_experiment) => _experiment);
-        if (_experimentsExtra.length > 0) {
-          _experiments1DExtra[`${_experimentType}`] = _experimentsExtra;
-        }
+        addToExperiments(
+          _experiments1DExtra,
+          `1D.${_experimentType}`,
+          false,
+          _experimentType,
+        );
       });
 
     return _experiments1DExtra;
@@ -146,26 +132,26 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
   // 2D experiments containing zones
   const experiments2D = useMemo(() => {
     const _experiments2D = {};
-    // list of experiments, because one could have more than
-    // one spectrum in spectra list for one atom type
     Object.keys(lodash.get(experiments, '2D', {})).forEach(
       (_experimentType) => {
-        const _experiments = lodash
-          .get(experiments, `2D.${_experimentType}`, [])
-          .map((_experiment) =>
-            lodash.get(_experiment, 'zones.values', []).length > 0
-              ? _experiment
-              : undefined,
-          )
-          .filter((_experiment) => _experiment);
-        if (_experiments.length > 0) {
-          _experiments2D[_experimentType] = _experiments;
-        }
+        addToExperiments(
+          _experiments2D,
+          `2D.${_experimentType}`,
+          false,
+          _experimentType,
+        );
       },
     );
 
     return _experiments2D;
   }, [experiments]);
+
+  useEffect(() => {
+    console.log(experiments);
+    console.log(experiments1D);
+    console.log(experiments1DExtra);
+    console.log(experiments2D);
+  }, [experiments, experiments1D, experiments1DExtra, experiments2D]);
 
   const signals1D = useMemo(() => {
     // store valid signals from 1D experiments

@@ -46,13 +46,10 @@ const MultiplicityTree = ({
     [assignment.id].concat(assignment.assigned.x || []),
   );
 
-  const spectrumData = useMemo(() => {
-    if (lodash.get(activeSpectrum, 'index', -1) < 0) {
-      return null;
-    }
-
-    return spectraData[activeSpectrum.index];
-  }, [activeSpectrum, spectraData]);
+  const spectrumData = useMemo(
+    () => lodash.get(spectraData, `${activeSpectrum.index}`, null),
+    [activeSpectrum, spectraData],
+  );
 
   const [xRange, setXRange] = useState({ x1: signal.delta, x2: signal.delta });
   const [treeProps, setTreeProps] = useState({
@@ -133,9 +130,11 @@ const MultiplicityTree = ({
       const jIndex = jIndices.findIndex(
         (_jIndex) => _jIndex === multiplicityIndex,
       );
+
+      const frequency = lodash.get(spectrumData, 'info.originFrequency', 0);
       const coupling =
-        jIndex >= 0 && lodash.get(spectrumData, 'info.originFrequency', false)
-          ? signal.j[jIndex].coupling / spectrumData.info.originFrequency // convert to ppm
+        jIndex >= 0 && frequency > 0
+          ? signal.j[jIndex].coupling / frequency // convert to ppm
           : null;
 
       // in case of "s": no coupling constant and build one tree node only
