@@ -2,8 +2,8 @@
 import { jsx, css } from '@emotion/core';
 import { useState, useEffect, useMemo } from 'react';
 
+import { SignalKindsToInclude } from '../../data/constants/SignalsKinds';
 import { useChartData } from '../context/ChartContext';
-import { SignalKindsToInclude } from '../panels/extra/constants/SignalsKinds';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';

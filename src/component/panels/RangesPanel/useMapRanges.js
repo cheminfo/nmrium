@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { buildID } from '../extra/utilities/Concatenation';
+import { buildID } from '../../../data/utilities/Concatenation';
 
 const useMapRanges = (data) => {
   return useMemo(() => {

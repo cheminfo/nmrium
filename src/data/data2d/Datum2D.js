@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import { zoneToX } from 'ml-spectra-processing';
 
-import { DatumKind } from '../../component/panels/extra/constants/SignalsKinds';
+import { DatumKind } from '../constants/SignalsKinds';
 import { Datum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
 

@@ -4,7 +4,7 @@ import lodash from 'lodash';
 import { MF } from 'mf-parser';
 import { useMemo, useEffect, useState } from 'react';
 
-import { SignalKindsToInclude } from '../../extra/constants/SignalsKinds';
+import { SignalKindsToInclude } from '../../../../data/constants/SignalsKinds';
 
 import CorrelationTableRow from './CorrelationTableRow';
 import Overview from './Overview';

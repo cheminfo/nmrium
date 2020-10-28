@@ -1,10 +1,10 @@
 import React, { forwardRef, useCallback, useMemo } from 'react';
 
+import { checkRangeKind } from '../../../../data/utilities/RangeUtilities';
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
 import { CHANGE_RANGE_RELATIVE } from '../../../reducer/types/Types';
 import FormatNumber from '../../../utility/FormatNumber';
-import { checkRangeKind } from '../../extra/utilities/RangeUtilities';
 
 const RelativeColumn = forwardRef(
   (

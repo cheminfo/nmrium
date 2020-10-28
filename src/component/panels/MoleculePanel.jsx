@@ -18,6 +18,9 @@ import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
 import { useMeasure } from 'react-use';
 
+import { SignalConcatenationString } from '../../data/constants/ConcatenationStrings';
+import * as RangeUtilities from '../../data/utilities/RangeUtilities';
+import * as ZoneUtilities from '../../data/utilities/ZoneUtilities';
 import { useAssignmentData, useAssignment } from '../assignment';
 import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
@@ -38,10 +41,6 @@ import {
   copyPNGToClipboard,
   exportAsSVG,
 } from '../utility/Export';
-
-import { SignalConcatenationString } from './extra/constants/ConcatenationStrings';
-import * as RangeUtilities from './extra/utilities/RangeUtilities';
-import * as ZoneUtilities from './extra/utilities/ZoneUtilities';
 
 const panelContainerStyle = css`
   display: flex;

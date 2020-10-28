@@ -1,6 +1,6 @@
 import lodash from 'lodash';
 
-import { DELETE_RANGE } from '../../../reducer/types/Types';
+import { DELETE_RANGE } from '../../component/reducer/types/Types';
 import { DatumKind } from '../constants/SignalsKinds';
 
 import { buildID } from './Concatenation';

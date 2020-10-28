@@ -2,16 +2,16 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback, useState, useEffect, useMemo } from 'react';
 
+import { buildID } from '../../../data/utilities/Concatenation';
+import {
+  checkZoneKind,
+  deleteZone,
+} from '../../../data/utilities/ZoneUtilities';
 import { useAssignment, useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import DeleteButton from '../../elements/DeleteButton';
 import { useHighlight } from '../../highlight';
-import { buildID } from '../../panels/extra/utilities/Concatenation';
-import {
-  deleteZone,
-  checkZoneKind,
-} from '../../panels/extra/utilities/ZoneUtilities';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import Signal from './Signal';
@@ -123,7 +123,7 @@ const Zone = ({ zoneData }) => {
       <DeleteButton
         x={scaleX(x1) - 20}
         y={scaleY(y1)}
-        onClick={() => deleteHandler()}
+        onDelete={() => deleteHandler()}
       />
     </g>
   );

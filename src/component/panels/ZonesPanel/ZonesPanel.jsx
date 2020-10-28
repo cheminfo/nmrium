@@ -6,6 +6,10 @@ import ReactCardFlip from 'react-card-flip';
 import { FaFileExport, FaUnlink } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 
+import {
+  unlink,
+  unlinkInAssignmentData,
+} from '../../../data/utilities/ZoneUtilities';
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
@@ -15,10 +19,6 @@ import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import { DELETE_2D_ZONE, CHANGE_ZONE_DATA } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import NoTableData from '../extra/placeholder/NoTableData';
-import {
-  unlink,
-  unlinkInAssignmentData,
-} from '../extra/utilities/ZoneUtilities';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 

@@ -3,9 +3,9 @@ import { jsx } from '@emotion/core';
 import lodash from 'lodash';
 import { useMemo, useCallback, useState } from 'react';
 
+import { buildID } from '../../../data/utilities/Concatenation';
 import { useAssignment } from '../../assignment';
 import { useHighlight } from '../../highlight';
-import { buildID } from '../extra/utilities/Concatenation';
 
 import ActionsColumn from './TableColumns/ActionsColumn';
 import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns';

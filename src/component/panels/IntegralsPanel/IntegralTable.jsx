@@ -2,6 +2,7 @@ import lodash from 'lodash';
 import React, { useCallback, useMemo, memo, useRef, useEffect } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
+import { SignalKinds } from '../../../data/constants/SignalsKinds';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import EditableColumn from '../../elements/EditableColumn';
@@ -15,7 +16,6 @@ import {
 } from '../../reducer/types/Types';
 import formatNumber from '../../utility/FormatNumber';
 import { getValue } from '../../utility/LocalStorage';
-import { SignalKinds } from '../extra/constants/SignalsKinds';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { integralDefaultValues } from '../extra/preferences/defaultValues';
 

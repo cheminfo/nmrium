@@ -2,17 +2,17 @@ import { jsx, css } from '@emotion/core';
 /** @jsx jsx */
 import { useCallback, useState, useEffect } from 'react';
 
+import { buildID } from '../../../data/utilities/Concatenation';
+import {
+  checkRangeKind,
+  deleteRange,
+} from '../../../data/utilities/RangeUtilities';
 import { useAssignment, useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScale } from '../../context/ScaleContext';
 import DeleteButton from '../../elements/DeleteButton';
 import { useHighlight } from '../../highlight';
-import { buildID } from '../../panels/extra/utilities/Concatenation';
-import {
-  checkRangeKind,
-  deleteRange,
-} from '../../panels/extra/utilities/RangeUtilities';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import MultiplicityTree from '../MultiplicityTree';

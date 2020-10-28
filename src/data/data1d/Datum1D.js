@@ -2,11 +2,8 @@ import lodash from 'lodash';
 import max from 'ml-array-max';
 import { xyIntegration } from 'ml-spectra-processing';
 
-import {
-  SignalKindsToInclude,
-  DatumKind,
-} from '../../component/panels/extra/constants/SignalsKinds';
-import { checkSignalKinds } from '../../component/panels/extra/utilities/RangeUtilities';
+import { SignalKindsToInclude, DatumKind } from '../constants/SignalsKinds';
+import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 
 import { FiltersManager } from './FiltersManager';

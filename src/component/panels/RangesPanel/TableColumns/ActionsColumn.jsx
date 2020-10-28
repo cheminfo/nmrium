@@ -3,6 +3,16 @@ import React, { Fragment, useCallback } from 'react';
 import { positions, transitions } from 'react-alert';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
+import {
+  DatumKind,
+  SignalKinds,
+  SignalKindsToInclude,
+} from '../../../../data/constants/SignalsKinds';
+import {
+  deleteRange,
+  unlink,
+  unlinkInAssignmentData,
+} from '../../../../data/utilities/RangeUtilities';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
 import { useModal } from '../../../elements/Modal';
@@ -14,16 +24,6 @@ import {
   RESET_SELECTED_TOOL,
   SET_SELECTED_TOOL,
 } from '../../../reducer/types/Types';
-import {
-  SignalKinds,
-  SignalKindsToInclude,
-  DatumKind,
-} from '../../extra/constants/SignalsKinds';
-import {
-  unlink,
-  unlinkInAssignmentData,
-  deleteRange,
-} from '../../extra/utilities/RangeUtilities';
 
 const selectBoxStyle = {
   marginLeft: 2,
