@@ -11,7 +11,6 @@ import Overview from './Overview';
 import {
   checkSignalMatch,
   getAtomType,
-  getExperiment,
   getLabelStyle,
   setAttachments,
   setCorrelations,
@@ -75,9 +74,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
           if (!lodash.get(_experiments, `${_data.info.dimension}D`, false)) {
             _experiments[`${_data.info.dimension}D`] = {};
           }
-          // @TODO replace the getExperiment method by using _data.info.experiment if the belonging issue in nmr-parser has been solved
-          // and delete the method in Utilities class too
-          let _experiment = getExperiment(_data);
+          let _experiment = _data.info.experiment;
           if (
             !lodash.get(
               _experiments,

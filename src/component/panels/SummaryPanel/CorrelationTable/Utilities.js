@@ -2,77 +2,6 @@ import lodash from 'lodash';
 
 const getAtomType = (nucleus) => nucleus.split(/\d+/)[1];
 
-// this is a copy of getSpectrumType method in
-// nmr-parser which is currently not working properly
-const getExperiment = (data) => {
-  let pulse = data.info.pulseSequence;
-  if (typeof pulse !== 'string') {
-    return '';
-  }
-
-  pulse = pulse.toLowerCase();
-  if (pulse.includes('zg') || pulse.includes('udeft')) {
-    // @TODO is udeft right here?
-    return '1d';
-  }
-
-  if (
-    pulse.includes('hsqct') ||
-    (pulse.includes('invi') && (pulse.includes('ml') || pulse.includes('di')))
-  ) {
-    return 'hsqctocsy';
-  }
-
-  if (pulse.includes('hsqc') || pulse.includes('invi')) {
-    return 'hsqc';
-  }
-
-  if (pulse.includes('hmqc')) {
-    return 'hmqc';
-  }
-
-  if (
-    pulse.includes('hmbc') ||
-    (pulse.includes('inv4') && pulse.includes('lp'))
-  ) {
-    return 'hmbc';
-  }
-
-  if (pulse.includes('cosy')) {
-    return 'cosy';
-  }
-
-  if (pulse.includes('jres')) {
-    return 'jres';
-  }
-
-  if (
-    pulse.includes('tocsy') ||
-    pulse.includes('mlev') ||
-    pulse.includes('dipsi')
-  ) {
-    return 'tocsy';
-  }
-
-  if (pulse.includes('noesy')) {
-    return 'noesy';
-  }
-
-  if (pulse.includes('roesy')) {
-    return 'roesy';
-  }
-
-  if (pulse.includes('dept')) {
-    return 'dept';
-  }
-
-  if (pulse.includes('jmod') || pulse.includes('apt')) {
-    return 'aptjmod';
-  }
-
-  return '';
-};
-
 const getLabel = (correlation) => {
   let label = Object.keys(lodash.get(correlation, 'attached', {}))
     .map((otherAtomType) =>
@@ -310,7 +239,6 @@ export {
   attach,
   checkSignalMatch,
   getAtomType,
-  getExperiment,
   getLabel,
   getLabelStyle,
   setAttachments,
