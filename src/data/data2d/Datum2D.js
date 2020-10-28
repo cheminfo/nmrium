@@ -83,7 +83,9 @@ export class Datum2D {
   setDisplay(displayOptions) {
     this.display = Object.assign({}, this.display);
     this.display = { ...this.display, ...displayOptions };
-    this.processingController.setOptions(displayOptions.contourOptions);
+    if (displayOptions.contourOptions) {
+      this.processingController.setOptions(displayOptions.contourOptions);
+    }
   }
 
   getZones() {
