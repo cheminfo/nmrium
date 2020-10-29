@@ -41,11 +41,7 @@ const SignalKinds = [
   },
 ];
 
-const SignalKindsToConsiderInIntegralsSum = ['signal'];
-const SignalKindsToConsiderAsIndicationLine = ['signal'];
+const SignalKindsToInclude = ['signal'];
+const DatumKind = { signal: 'signal', mixed: 'mixed' };
 
-export {
-  SignalKinds,
-  SignalKindsToConsiderInIntegralsSum,
-  SignalKindsToConsiderAsIndicationLine,
-};
+export { SignalKinds, SignalKindsToInclude, DatumKind };

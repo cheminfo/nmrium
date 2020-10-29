@@ -4,6 +4,10 @@ import React, { useCallback, useMemo, memo, useState, useRef } from 'react';
 import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
 
+import {
+  unlink,
+  unlinkInAssignmentData,
+} from '../../../data/utilities/RangeUtilities';
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import RangesWrapper from '../../hoc/RangesWrapper';
@@ -11,10 +15,6 @@ import { CHANGE_RANGE_DATA } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
-import {
-  unlink,
-  unlinkInAssignmentData,
-} from '../extra/utilities/RangeUtilities';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import RangesHeader from './RangesHeader';

@@ -5,7 +5,6 @@ import { useMemo, useCallback, useState } from 'react';
 
 import { useAssignment } from '../../assignment';
 import { useHighlight, useHighlightData } from '../../highlight';
-import { SignalKindsToConsiderInIntegralsSum } from '../extra/constants/SignalsKinds';
 import { isColumnVisible } from '../extra/preferences/ColumnsHelper';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn';
@@ -164,9 +163,6 @@ const RangesTableRow = ({
           rowData={rowData}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          SignalKindsToConsiderInIntegralsSum={
-            SignalKindsToConsiderInIntegralsSum
-          }
           format={getFormat('relativeFormat')}
           onEditStart={() => onRelativeColumnEditStart(rowData.id)}
           editStatus={relativeFlags[rowData.id]}

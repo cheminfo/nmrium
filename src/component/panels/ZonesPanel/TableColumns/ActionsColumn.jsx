@@ -2,6 +2,12 @@ import lodash from 'lodash';
 import React, { Fragment, useCallback } from 'react';
 import { FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
+import {
+  DatumKind,
+  SignalKinds,
+  SignalKindsToInclude,
+} from '../../../../data/constants/SignalsKinds';
+import { deleteZone } from '../../../../data/utilities/ZoneUtilities';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
@@ -10,8 +16,6 @@ import {
   SET_X_DOMAIN,
   SET_Y_DOMAIN,
 } from '../../../reducer/types/Types';
-import { SignalKinds } from '../../extra/constants/SignalsKinds';
-import { deleteZone } from '../../extra/utilities/ZoneUtilities';
 
 const selectBoxStyle = {
   marginLeft: 2,
@@ -28,6 +32,9 @@ const ActionsColumn = ({ rowData, rowSpanTags }) => {
     (value) => {
       const _zone = lodash.cloneDeep(rowData);
       _zone.signal[_zone.tableMetaInfo.signalIndex].kind = value;
+      _zone.kind = SignalKindsToInclude.includes(value)
+        ? DatumKind.signal
+        : DatumKind.mixed;
       dispatch({
         type: CHANGE_ZONE_DATA,
         data: _zone,

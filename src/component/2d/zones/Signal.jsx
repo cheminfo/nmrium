@@ -2,10 +2,10 @@
 import { jsx } from '@emotion/core';
 import { memo, useState, useEffect, useCallback } from 'react';
 
+import { buildID } from '../../../data/utilities/Concatenation';
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useHighlightData, useHighlight } from '../../highlight';
-import { buildID } from '../../panels/extra/utilities/Concatenation';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 const Signal = memo(({ signal, signalID }) => {

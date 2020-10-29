@@ -3,8 +3,8 @@ import { jsx, css } from '@emotion/core';
 import { useMemo, useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
+import { buildID } from '../../../data/utilities/Concatenation';
 import ContextMenu from '../../elements/ContextMenu';
-import { buildID } from '../extra/utilities/Concatenation';
 
 import ZonesTableRow from './ZonesTableRow';
 

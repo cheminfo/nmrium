@@ -1,4 +1,4 @@
-import { Multiplets } from '../constants/Multiplets';
+import { Multiplets } from '../../../../data/constants/Multiplets';
 
 const getMultiplicityNumber = (string) => {
   const multiplet = Multiplets.find(

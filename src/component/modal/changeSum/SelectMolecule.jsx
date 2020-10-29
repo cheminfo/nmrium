@@ -1,11 +1,9 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import { useCallback, useState, useEffect, useMemo } from 'react';
-import Slider from 'react-animated-slider-2';
-import MF from 'react-mf/lib/components/MF';
-import { MolfileSvgRenderer } from 'react-ocl/full';
 
 import { usePreferences } from '../../context/PreferencesContext';
+import MoleculeSelection from '../../elements/MoleculeSelection';
 
 const selectMoleculeContainerStyle = css`
   display: flex;
@@ -37,36 +35,7 @@ const optionalTextStyle = css`
   }
 `;
 
-const toolbarStyle = css`
-  display: flex;
-  flex-direction: row;
-  border-top: 0.55px solid rgb(240, 240, 240);
-  border-bottom: 0.55px solid rgb(240, 240, 240);
-  padding: 0px 5px;
-
-  p {
-    margin: 0;
-    text-align: right;
-    width: 100%;
-    line-height: 22px;
-    padding: 0px 10px;
-  }
-`;
-
 const moleculeContainerStyle = css`
-  .slider {
-    height: 180px;
-    padding: 0px;
-  }
-  .slider p {
-    width: 100%;
-    margin: 0 auto;
-    display: block;
-    position: relative;
-  }
-  .slider svg polygon {
-    fill: gray !important;
-  }
   button {
     flex: 2;
     padding: 5px;
@@ -122,6 +91,10 @@ const SelectMolecule = ({ onSave, molecules, element }) => {
     [newSum, onSave],
   );
 
+  const onChangeMoleculeSelectionHandler = useCallback((index) => {
+    setCurrentIndex(index);
+  }, []);
+
   return !general.hideSetSumFromMolecule &&
     !panels.hideStructuresPanel &&
     element &&
@@ -132,31 +105,11 @@ const SelectMolecule = ({ onSave, molecules, element }) => {
         <p className="optional">OR</p>
         <p className="optional2">Select a molecule as reference!</p>
       </div>
-      <div css={toolbarStyle}>
-        <p>
-          {molecules &&
-            molecules.length > 0 &&
-            `${+(currentIndex + 1)} / ${molecules.length}`}{' '}
-        </p>
-      </div>
       <div css={moleculeContainerStyle}>
-        <Slider onSlideChange={(event) => setCurrentIndex(event.slideIndex)}>
-          {molecules &&
-            molecules.map((mol, index) => (
-              <div key={mol.key}>
-                <div>
-                  <MolfileSvgRenderer
-                    id={`molSVG${index}`}
-                    width={120}
-                    molfile={mol.molfile}
-                  />
-                </div>
-                <p>
-                  <MF mf={mol.mf} /> - {mol.mw.toFixed(2)}
-                </p>
-              </div>
-            ))}
-        </Slider>
+        <MoleculeSelection
+          molecules={molecules}
+          onChange={onChangeMoleculeSelectionHandler}
+        />
         <button type="button" onClick={saveSelectMoleculeHandler}>
           Set
         </button>

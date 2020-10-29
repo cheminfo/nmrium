@@ -2,8 +2,8 @@
 import { jsx, css } from '@emotion/core';
 import { useState, useEffect, useMemo } from 'react';
 
+import { SignalKindsToInclude } from '../../data/constants/SignalsKinds';
 import { useChartData } from '../context/ChartContext';
-import { SignalKindsToConsiderAsIndicationLine } from '../panels/extra/constants/SignalsKinds';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
@@ -46,17 +46,12 @@ const IndicationLines = ({ axis, show }) => {
         const deltas = ranges
           .map((_range) =>
             _range.signal
-              .map((_signal) =>
-                SignalKindsToConsiderAsIndicationLine.some(
-                  (_kind) => _signal.kind === _kind,
-                )
-                  ? _signal.delta
-                  : null,
+              .filter((_signal) =>
+                SignalKindsToInclude.some((_kind) => _signal.kind === _kind),
               )
-              .flat(),
+              .map((_signal) => _signal.delta),
           )
-          .flat()
-          .filter((_delta) => _delta);
+          .flat();
         setDeltas1D(deltas);
       } else {
         setDeltas1D([]);
