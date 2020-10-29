@@ -84,16 +84,26 @@ function setYAxisShift(data, draft, height) {
   }
 }
 
+const resetTool = (draft) => {
+  draft.selectedOptionPanel = null;
+  draft.selectedTool = options.zoom.id;
+  draft.baseLineZones = [];
+  if (draft.tempData) {
+    draft.tempData = null;
+    setDomain(draft);
+  }
+};
+
 const resetSelectedTool = (state) => {
   return produce(state, (draft) => {
-    draft.selectedOptionPanel = null;
-    draft.selectedTool = options.zoom.id;
-    draft.baseLineZones = [];
-    if (state.tempData) {
-      draft.tempData = null;
-      setDomain(draft);
-    }
+    resetTool(draft);
   });
+};
+
+const resetFilterTool = (draft) => {
+  if (options[draft.selectedTool].isFilter) {
+    resetTool(draft);
+  }
 };
 
 const setSelectedTool = (state, selectedTool) => {
@@ -472,6 +482,9 @@ const setActiveTab = (draft, tab = null, refreshTabActiveSpectrums = false) => {
     !tab || !tabs.includes(tab) ? tabs[0] : tab,
     refreshTabActiveSpectrums,
   );
+
+  resetFilterTool(draft);
+
   Processing2DData(draft, dataGroupByNucleus);
   setDomain(draft);
   setMode(draft);
