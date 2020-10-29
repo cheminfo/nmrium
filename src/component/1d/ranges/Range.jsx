@@ -167,11 +167,7 @@ const Range = ({ rangeData }) => {
         onDrop={handleOnStopResizing}
       />
       {!isBlockedByEditing ? (
-        <DeleteButton
-          x={scaleX()(to) - 20}
-          y={10}
-          onDelete={() => deleteHandler()}
-        />
+        <DeleteButton x={scaleX()(to) - 20} y={10} onDelete={deleteHandler} />
       ) : null}
       {signal && signal.length > 0
         ? signal.map((_signal, i) => (

@@ -55,33 +55,63 @@ const getLabel = (correlation) => {
   return correlation.label.origin;
 };
 
+const sortLabels = (labels) => {
+  return labels.sort((a, b) =>
+    Number(a.split(/[a-z]+/i)[1]) - Number(b.split(/[a-z]+/i)[1]) < 0
+      ? -1
+      : Number(a.split(/[a-z]+/i)[1]) - Number(b.split(/[a-z]+/i)[1]) === 0 &&
+        a.split(/\d+/)[1] < b.split(/\d+/)[1]
+      ? -1
+      : 1,
+  );
+};
+
+const getLabels = (correlations, correlation, experimentType) => {
+  const labels = correlation.correlation
+    .filter((_correlation) => _correlation.experimentType === experimentType)
+    .map((_correlation) =>
+      _correlation.match
+        .map((match) => {
+          const otherAtomType =
+            _correlation.atomTypes[_correlation.axis === 'x' ? 1 : 0]; // reversed to get the other atom type
+          const matchingCorrelation = correlations[otherAtomType][match.index];
+          return getLabel(matchingCorrelation);
+        })
+        .flat(),
+    )
+    .flat()
+    .filter((label, i, a) => label.length > 0 && a.indexOf(label) === i);
+
+  return sortLabels(labels);
+};
+
 const getLabelStyle = (state, correlation) => {
-  if (lodash.get(state, `atomType.${correlation.atomTypes[0]}.error`, false)) {
-    const error = state.atomType[correlation.atomTypes[0]].error;
-    if (
-      lodash
-        .get(error, 'outOfLimit', [])
-        .some((index) => index === correlation.index)
-    ) {
-      return { color: 'red' };
-    }
-    if (
-      lodash
-        .get(error, 'notAttached', [])
-        .some((index) => index === correlation.index)
-    ) {
-      return { color: 'blue' };
-    }
-    if (
-      lodash
-        .get(error, 'ambiguousAttachment', [])
-        .some((index) => index === correlation.index)
-    ) {
-      return { color: 'orange' };
+  const error = lodash.get(
+    state,
+    `atomType.${correlation.atomTypes[0]}.error`,
+    null,
+  );
+
+  if (error) {
+    // label style by error in priority order
+    // might be extended by font size, background color etc. in future
+    const errorStyles = [
+      { key: 'outOfLimit', style: { color: 'red' } },
+      { key: 'ambiguousAttachment', style: { color: 'orange' } },
+      { key: 'notAttached', style: { color: 'blue' } },
+    ];
+    for (let errorStyleIndex in errorStyles) {
+      if (
+        lodash
+          .get(error, `${errorStyles[errorStyleIndex].key}`, [])
+          .some((index) => index === correlation.index)
+      ) {
+        return errorStyles[errorStyleIndex].style;
+      }
     }
   }
 
-  return undefined;
+  return null;
 };
 
 const checkSignalMatch = (signal1, signal2, tolerance) =>
@@ -268,6 +298,7 @@ export {
   checkSignalMatch,
   getAtomType,
   getLabel,
+  getLabels,
   getLabelStyle,
   setAttachments,
   setCorrelations,

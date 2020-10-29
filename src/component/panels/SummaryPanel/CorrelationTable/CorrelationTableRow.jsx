@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import React, { useMemo } from 'react';
 
-import { getLabel } from './Utilities';
+import { getLabel, getLabels } from './Utilities';
 
 const CorrelationTableRow = ({
   additionalColumns,
@@ -16,33 +16,7 @@ const CorrelationTableRow = ({
       additionalColumns.map((experimentType, n) => {
         let content = '';
         if (lodash.get(correlation, 'correlation', false)) {
-          let labels = [];
-          correlation.correlation.forEach((_correlation) => {
-            if (_correlation.experimentType === experimentType) {
-              _correlation.match.forEach((match) => {
-                const otherAtomType =
-                  _correlation.atomTypes[_correlation.axis === 'x' ? 1 : 0]; // reversed to get the other atom type
-                const matchingCorrelation =
-                  correlations[otherAtomType][match.index];
-                labels.push(getLabel(matchingCorrelation));
-              });
-            }
-          });
-
-          labels = labels
-            .flat()
-            .filter((label) => label.length > 0)
-            .filter((label, i, a) => a.indexOf(label) === i)
-            .sort((a, b) =>
-              Number(a.split(/[a-z]+/i)[1]) - Number(b.split(/[a-z]+/i)[1]) < 0
-                ? -1
-                : Number(a.split(/[a-z]+/i)[1]) -
-                    Number(b.split(/[a-z]+/i)[1]) ===
-                    0 && a.split(/\d+/)[1] < b.split(/\d+/)[1]
-                ? -1
-                : 1,
-            );
-
+          const labels = getLabels(correlations, correlation, experimentType);
           if (labels.length > 0) {
             content = labels.join(', ');
           }

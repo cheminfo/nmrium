@@ -123,7 +123,7 @@ const Zone = ({ zoneData }) => {
       <DeleteButton
         x={scaleX(x1) - 20}
         y={scaleY(y1)}
-        onDelete={() => deleteHandler()}
+        onDelete={deleteHandler}
       />
     </g>
   );
