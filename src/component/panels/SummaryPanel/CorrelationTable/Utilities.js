@@ -1,5 +1,7 @@
 import lodash from 'lodash';
 
+import { ErrorColors, Errors } from './Constants';
+
 const addToExperiments = (
   experiments,
   experimentsType,
@@ -85,28 +87,21 @@ const getLabels = (correlations, correlation, experimentType) => {
   return sortLabels(labels);
 };
 
-const getLabelStyle = (state, correlation) => {
+const getLabelColor = (state, correlation) => {
   const error = lodash.get(
     state,
     `atomType.${correlation.atomTypes[0]}.error`,
     null,
   );
-
   if (error) {
-    // label style by error in priority order
-    // might be extended by font size, background color etc. in future
-    const errorStyles = [
-      { key: 'outOfLimit', style: { color: 'red' } },
-      { key: 'ambiguousAttachment', style: { color: 'orange' } },
-      { key: 'notAttached', style: { color: 'blue' } },
-    ];
-    for (let errorStyleIndex in errorStyles) {
+    for (let errorIndex in Errors) {
       if (
+        ErrorColors[errorIndex].key !== 'incomplete' && // do not consider this for a single atom
         lodash
-          .get(error, `${errorStyles[errorStyleIndex].key}`, [])
+          .get(error, `${ErrorColors[errorIndex].key}`, [])
           .some((index) => index === correlation.index)
       ) {
-        return errorStyles[errorStyleIndex].style;
+        return ErrorColors[errorIndex].color;
       }
     }
   }
@@ -299,7 +294,7 @@ export {
   getAtomType,
   getLabel,
   getLabels,
-  getLabelStyle,
+  getLabelColor,
   setAttachments,
   setCorrelations,
   setMatches,

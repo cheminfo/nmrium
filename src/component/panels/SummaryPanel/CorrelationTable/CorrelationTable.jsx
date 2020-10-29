@@ -12,7 +12,7 @@ import {
   addToExperiments,
   checkSignalMatch,
   getAtomType,
-  getLabelStyle,
+  getLabelColor,
   setAttachments,
   setCorrelations,
   setMatches,
@@ -357,10 +357,14 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
           _state.atomType[atomType].error = {};
         }
       };
+      if (!_state.atomType[atomType].complete) {
+        createErrorProperty();
+        _state.atomType[atomType].error.incomplete = true;
+      }
       if (atomType === 'H') {
-        const attached = signalsAtomType
-          .filter((signal) => lodash.get(signal, 'attached', false))
-          .map((signal) => signal.index);
+        const attachedCount = signalsAtomType.filter((signal) =>
+          lodash.get(signal, 'attached', false),
+        ).length;
         const notAttached = signalsAtomType
           .filter((signal) => !lodash.get(signal, 'attached', false))
           .map((signal) => signal.index);
@@ -370,7 +374,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
         }
         const outOfLimit = notAttached
           .filter(
-            (signal, count) => count >= Math.abs(attached.length - atomCount),
+            (signal, count) => count >= Math.abs(attachedCount - atomCount),
           )
           .map((index) => index);
         if (outOfLimit.length > 0) {
@@ -427,7 +431,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
                 correlation={correlation}
                 rowKey={`correlation${atomType}${correlation.index}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
-                styleLabel={getLabelStyle(state, correlation)}
+                styleLabel={{ color: getLabelColor(state, correlation) }}
               />,
             );
             lodash.get(correlation, 'attached.H', []).forEach((_index) => {
@@ -439,7 +443,9 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
                   correlation={correlationProton}
                   rowKey={`correlation${atomType}${correlationProton.index}_${correlation.index}`}
                   styleRow={{ backgroundColor: 'white' }}
-                  styleLabel={getLabelStyle(state, correlationProton)}
+                  styleLabel={{
+                    color: getLabelColor(state, correlationProton),
+                  }}
                 />,
               );
             });
@@ -461,7 +467,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
                 correlation={pseudoCorrelation}
                 rowKey={`placeholder_correlation$_${_rows.length}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
-                styleLabel={getLabelStyle(state, pseudoCorrelation)}
+                styleLabel={{ color: getLabelColor(state, pseudoCorrelation) }}
               />,
             );
           }
@@ -476,7 +482,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
                 correlation={correlation}
                 rowKey={`correlation${atomType}${correlation.index}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
-                styleLabel={getLabelStyle(state, correlation)}
+                styleLabel={{ color: getLabelColor(state, correlation) }}
               />,
             );
             lodash.get(correlation, 'attached.H', []).forEach((_index) => {
@@ -488,7 +494,9 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
                   correlation={correlationProton}
                   rowKey={`correlation${atomType}${correlationProton.index}_${correlation.index}`}
                   styleRow={{ backgroundColor: 'white' }}
-                  styleLabel={getLabelStyle(state, correlationProton)}
+                  styleLabel={{
+                    color: getLabelColor(state, correlationProton),
+                  }}
                 />,
               );
             });
@@ -506,7 +514,7 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
                 correlation={correlationProton}
                 rowKey={`correlation${atomType}${correlationProton.index}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
-                styleLabel={getLabelStyle(state, correlationProton)}
+                styleLabel={{ color: getLabelColor(state, correlationProton) }}
               />,
             );
           }
