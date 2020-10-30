@@ -126,7 +126,12 @@ const Header = ({ isFullscreen, onMaximize }) => {
           alert.success('Settings saved successfully');
         }}
       />,
-      {},
+      {
+        position: positions.TOP_CENTER,
+        enableResizing: true,
+        width: 600,
+        height: 400,
+      },
     );
   }, [alert, modal]);
   const openUserManual = useCallback(() => {
@@ -175,34 +180,6 @@ const Header = ({ isFullscreen, onMaximize }) => {
         ) : (
           ''
         )}
-
-        {/* <ToolTip
-          title="General Settings"
-          popupPlacement="left"
-          style={{ mainContainer: { height: 'auto' } }}
-        >
-          <button
-            type="button"
-            onClick={openGeneralSettingsHandler}
-            className="windowButton"
-          >
-            <FaWrench />
-          </button>
-        </ToolTip>
-
-        {!isFullscreen ? (
-          <ToolTip
-            title="Full Screen"
-            popupPlacement="left"
-            style={{ mainContainer: { height: 'auto' } }}
-          >
-            <button type="button" onClick={onMaximize} className="windowButton">
-              <FaRegWindowMaximize />
-            </button>
-          </ToolTip>
-        ) : (
-          ''
-        )} */}
       </div>
     </div>
   );

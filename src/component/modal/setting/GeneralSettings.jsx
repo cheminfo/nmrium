@@ -15,7 +15,9 @@ import FormattingTabContent from './FormattingTabContent';
 
 const styles = css`
   overflow: auto;
-  width: 600px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
   .header {
     text-align: center;
@@ -28,7 +30,8 @@ const styles = css`
   }
   .main-content {
     width: 100%;
-    height: 250px;
+    flex: 1;
+    overflow: auto;
     border: none;
     // padding-top: 10px;
   }
@@ -40,7 +43,6 @@ const styles = css`
   .inner-content {
     padding: 15px 30px;
     width: 100%;
-    height: 100%;
     overflow: auto;
   }
 
@@ -126,7 +128,7 @@ const styles = css`
   }
 
   .checkbox-lable {
-    min-width: 150px;
+    min-width: 300px;
     display: inline-block;
   }
 
