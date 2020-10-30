@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 
-import { DELETE_RANGE } from '../../../reducer/types/Types';
+import { DELETE_RANGE } from '../../component/reducer/types/Types';
+import { DatumKind } from '../constants/SignalsKinds';
 
 import { buildID } from './Concatenation';
 
@@ -56,6 +57,10 @@ const addDefaultSignal = (range) => {
   });
 };
 
+const checkRangeKind = (range) => {
+  return range.kind === DatumKind.signal;
+};
+
 const checkSignalKinds = (range, kinds) => {
   return !range.signal.some(
     (_signal) => _signal.kind === undefined || !kinds.includes(_signal.kind),
@@ -98,6 +103,7 @@ const unlinkInAssignmentData = (
 
 export {
   addDefaultSignal,
+  checkRangeKind,
   checkSignalKinds,
   deleteRange,
   getDiaIDs,

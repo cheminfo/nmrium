@@ -18,6 +18,9 @@ import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
 import { useMeasure } from 'react-use';
 
+import { SignalConcatenationString } from '../../data/constants/ConcatenationStrings';
+import * as RangeUtilities from '../../data/utilities/RangeUtilities';
+import * as ZoneUtilities from '../../data/utilities/ZoneUtilities';
 import { useAssignmentData, useAssignment } from '../assignment';
 import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
@@ -25,6 +28,7 @@ import ToolTip from '../elements/ToolTip/ToolTip';
 import { useHighlightData } from '../highlight';
 import MoleculeWrapper from '../hoc/MoleculeWrapper';
 import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
+import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import {
   ADD_MOLECULE,
   DELETE_MOLECULE,
@@ -37,10 +41,6 @@ import {
   copyPNGToClipboard,
   exportAsSVG,
 } from '../utility/Export';
-
-import { SignalConcatenationString } from './extra/constants/ConcatenationStrings';
-import * as RangeUtilities from './extra/utilities/RangeUtilities';
-import * as ZoneUtilities from './extra/utilities/ZoneUtilities';
 
 const panelContainerStyle = css`
   display: flex;
@@ -193,9 +193,13 @@ const MoleculePanel = memo(
 
     const data = useMemo(() => {
       if (zones || ranges) {
-        if (displayerMode === '1D' && ranges && ranges.values) {
+        if (displayerMode === DISPLAYER_MODE.DM_1D && ranges && ranges.values) {
           return ranges.values;
-        } else if (displayerMode === '2D' && zones && zones.values) {
+        } else if (
+          displayerMode === DISPLAYER_MODE.DM_2D &&
+          zones &&
+          zones.values
+        ) {
           return zones.values;
         }
       }
@@ -278,19 +282,19 @@ const MoleculePanel = memo(
             // determine the level of setting the diaID array (range vs. signal level) and save there
             const _datum = lodash.cloneDeep(datum);
             if (signalIndex === undefined) {
-              if (displayerMode === '1D') {
+              if (displayerMode === DISPLAYER_MODE.DM_1D) {
                 _datum.diaID = toggleAssignment(
                   _datum.diaID || [],
                   atomInformation,
                 );
-              } else if (displayerMode === '2D') {
+              } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
                 _datum[activeAssignment.activeAxis].diaID = toggleAssignment(
                   _datum[activeAssignment.activeAxis].diaID || [],
                   atomInformation,
                 );
               }
             } else if (datum.signal && datum.signal[signalIndex]) {
-              if (displayerMode === '1D') {
+              if (displayerMode === DISPLAYER_MODE.DM_1D) {
                 _datum.signal[signalIndex] = {
                   ..._datum.signal[signalIndex],
                   diaID: toggleAssignment(
@@ -298,7 +302,7 @@ const MoleculePanel = memo(
                     atomInformation,
                   ),
                 };
-              } else if (displayerMode === '2D') {
+              } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
                 _datum.signal[signalIndex][activeAssignment.activeAxis] = {
                   ..._datum.signal[signalIndex][activeAssignment.activeAxis],
                   diaID: toggleAssignment(
@@ -309,10 +313,10 @@ const MoleculePanel = memo(
                 };
               }
             }
-            if (displayerMode === '1D') {
+            if (displayerMode === DISPLAYER_MODE.DM_1D) {
               _datum.pubIntegral = RangeUtilities.getPubIntegral(_datum);
               dispatch({ type: CHANGE_RANGE_DATA, data: _datum });
-            } else if (displayerMode === '2D') {
+            } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
               _datum[
                 activeAssignment.activeAxis
               ].pubIntegral = ZoneUtilities.getPubIntegral(
@@ -351,9 +355,9 @@ const MoleculePanel = memo(
         : null;
 
       return assignmentOnHover
-        ? displayerMode === '1D'
+        ? displayerMode === DISPLAYER_MODE.DM_1D
           ? assignmentOnHover.x || []
-          : displayerMode === '2D'
+          : displayerMode === DISPLAYER_MODE.DM_2D
           ? axisOnHover
             ? axisOnHover === 'x'
               ? assignmentOnHover.x || []
@@ -434,13 +438,13 @@ const MoleculePanel = memo(
 
     const handleOnUnlinkAll = useCallback(() => {
       data.forEach((datum) => {
-        if (displayerMode === '1D') {
+        if (displayerMode === DISPLAYER_MODE.DM_1D) {
           // unlink in assignment hook state
           RangeUtilities.unlinkInAssignmentData(assignmentData, datum);
           // unlink in global state
           const _datum = RangeUtilities.unlink(datum);
           dispatch({ type: CHANGE_RANGE_DATA, data: _datum });
-        } else if (displayerMode === '2D') {
+        } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
           // unlink in assignment hook state
           ZoneUtilities.unlinkInAssignmentData(assignmentData, datum);
           // unlink in global state

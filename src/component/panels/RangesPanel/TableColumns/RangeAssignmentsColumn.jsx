@@ -2,7 +2,7 @@ import lodash from 'lodash';
 import React, { useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
-import { SignalConcatenationString } from '../../extra/constants/ConcatenationStrings';
+import { SignalConcatenationString } from '../../../../data/constants/ConcatenationStrings';
 
 const spanStyle = {
   color: 'red',

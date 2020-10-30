@@ -2,8 +2,8 @@ import lodash from 'lodash';
 import max from 'ml-array-max';
 import { xyIntegration } from 'ml-spectra-processing';
 
-import { SignalKindsToConsiderInIntegralsSum } from '../../component/panels/extra/constants/SignalsKinds';
-import { checkSignalKinds } from '../../component/panels/extra/utilities/RangeUtilities';
+import { SignalKindsToInclude, DatumKind } from '../constants/SignalsKinds';
+import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 
 import { FiltersManager } from './FiltersManager';
@@ -224,10 +224,7 @@ export class Datum1D {
       this.integrals.options = { ...this.integrals.options, sum: 100 };
     }
     const countingCondition = (integral) => {
-      return (
-        integral.kind &&
-        SignalKindsToConsiderInIntegralsSum.includes(integral.kind)
-      );
+      return integral.kind && SignalKindsToInclude.includes(integral.kind);
     };
     this.integrals.values = this.updateRelatives(
       this.integrals.values.slice(),
@@ -242,10 +239,7 @@ export class Datum1D {
       this.ranges.options = { ...this.ranges.options, sum: 100 };
     }
     const countingCondition = (range) => {
-      return (
-        range.signal &&
-        checkSignalKinds(range, SignalKindsToConsiderInIntegralsSum)
-      );
+      return range.signal && checkSignalKinds(range, SignalKindsToInclude);
     };
     this.ranges.values = this.updateRelatives(
       this.ranges.values.slice(),
@@ -303,10 +297,10 @@ export class Datum1D {
     const ranges = autoRangesDetection(this, options);
     this.ranges.values = ranges.map((range) => {
       return {
+        kind: DatumKind.signal,
         ...range,
         id: generateID(),
         absolute: this.getIntegration(range.from, range.to),
-        // kind: 'signal',
         signal: range.signal.map((_signal) => {
           return { kind: 'signal', ..._signal };
         }),
@@ -451,7 +445,7 @@ export class Datum1D {
       to,
       absolute: this.getIntegration(from, to), // the real value,
       signal: [this.detectSignal(from, to)],
-      // kind: 'signal',
+      kind: DatumKind.signal,
     };
   }
 

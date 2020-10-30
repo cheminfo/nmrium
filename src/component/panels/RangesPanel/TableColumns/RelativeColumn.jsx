@@ -1,33 +1,22 @@
 import React, { forwardRef, useCallback, useMemo } from 'react';
 
+import { checkRangeKind } from '../../../../data/utilities/RangeUtilities';
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
 import { CHANGE_RANGE_RELATIVE } from '../../../reducer/types/Types';
 import FormatNumber from '../../../utility/FormatNumber';
-import { checkSignalKinds } from '../../extra/utilities/RangeUtilities';
 
 const RelativeColumn = forwardRef(
   (
-    {
-      rowData,
-      rowSpanTags,
-      onHoverRange,
-      SignalKindsToConsiderInIntegralsSum,
-      format,
-      onEditStart,
-      editStatus,
-    },
+    { rowData, rowSpanTags, onHoverRange, format, onEditStart, editStatus },
     ref,
   ) => {
     const dispatch = useDispatch();
     const integralVal = useMemo(() => {
-      const flag = checkSignalKinds(
-        rowData,
-        SignalKindsToConsiderInIntegralsSum,
-      );
-      const formatedValue = FormatNumber(rowData.integral, format);
-      return flag ? formatedValue : `[ ${formatedValue} ]`;
-    }, [SignalKindsToConsiderInIntegralsSum, format, rowData]);
+      const flag = checkRangeKind(rowData);
+      const formattedValue = FormatNumber(rowData.integral, format);
+      return flag ? formattedValue : `[ ${formattedValue} ]`;
+    }, [format, rowData]);
 
     const saveHandler = useCallback(
       (event) => {

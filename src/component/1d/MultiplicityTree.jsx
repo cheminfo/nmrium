@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import lodash from 'lodash';
 import { useMemo, useCallback, useState, useEffect } from 'react';
 
 import { useAssignment } from '../assignment';
@@ -45,11 +46,10 @@ const MultiplicityTree = ({
     [assignment.id].concat(assignment.assigned.x || []),
   );
 
-  const spectrumData = useMemo(() => {
-    return spectraData && activeSpectrum && spectraData[activeSpectrum.index]
-      ? spectraData[activeSpectrum.index]
-      : null;
-  }, [activeSpectrum, spectraData]);
+  const spectrumData = useMemo(
+    () => lodash.get(spectraData, `${activeSpectrum.index}`, null),
+    [activeSpectrum, spectraData],
+  );
 
   const [xRange, setXRange] = useState({ x1: signal.delta, x2: signal.delta });
   const [treeProps, setTreeProps] = useState({
@@ -130,9 +130,11 @@ const MultiplicityTree = ({
       const jIndex = jIndices.findIndex(
         (_jIndex) => _jIndex === multiplicityIndex,
       );
+
+      const frequency = lodash.get(spectrumData, 'info.originFrequency', 0);
       const coupling =
-        jIndex >= 0 && spectrumData.info && spectrumData.info.originFrequency
-          ? signal.j[jIndex].coupling / spectrumData.info.originFrequency // convert to ppm
+        jIndex >= 0 && frequency > 0
+          ? signal.j[jIndex].coupling / frequency // convert to ppm
           : null;
 
       // in case of "s": no coupling constant and build one tree node only
@@ -186,7 +188,7 @@ const MultiplicityTree = ({
 
       return treeNodesData;
     },
-    [signal.multiplicity, signal.j, spectrumData.info],
+    [signal.multiplicity, signal.j, spectrumData],
   );
 
   const treeNodesData = useMemo(() => {

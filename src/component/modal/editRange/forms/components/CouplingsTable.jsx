@@ -5,10 +5,10 @@ import lodash from 'lodash';
 import { memo, useEffect, useCallback } from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 
+import { Multiplets } from '../../../../../data/constants/Multiplets';
 import Button from '../../../../elements/Button';
 import Input from '../../../../elements/formik/Input';
 import SelectBox from '../../../../elements/formik/SelectBox';
-import { Multiplets } from '../../../../panels/extra/constants/Multiplets';
 import {
   hasCouplingConstant,
   translateMultiplet,
