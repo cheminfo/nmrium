@@ -3,6 +3,7 @@ import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 import { Data1DManager } from './data1d/Data1DManager';
 import { Datum1D } from './data1d/Datum1D';
 import { Data2DManager } from './data2d/Data2DManager';
+import { Datum2D } from './data2d/Datum2D';
 import getColor, { adjustAlpha } from './utilities/getColor';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
@@ -36,12 +37,22 @@ export function addJcamp(spectra, jcamp, options = {}) {
 }
 
 function addJcampSS(spectra, entry, options) {
-  let dimension = entry.info.dimension;
+  const dimension = entry.info.dimension;
   if (dimension === 1) {
     spectra.push(Data1DManager.fromParsedJcamp(entry, options));
   }
   if (dimension === 2) {
     spectra.push(Data2DManager.fromParsedJcamp(entry, options));
+  }
+}
+
+function addData(spectra, datum) {
+  const dimension = datum.info.dimension;
+  if (dimension === 1) {
+    spectra.push(new Datum1D({ ...datum, data: datum.source.original }));
+  }
+  if (dimension === 2) {
+    spectra.push(new Datum2D({ ...datum, data: datum.source.original }));
   }
 }
 
@@ -102,7 +113,7 @@ export async function fromJSON(spectra, data = []) {
     } else if (datum.source.jcampURL != null) {
       promises.push(addJcampFromURL(spectra, datum.source.jcampURL, datum));
     } else {
-      spectra.push(new Datum1D({ ...datum, data: datum.source.original }));
+      addData(spectra, datum);
     }
   }
   await Promise.all(promises);
