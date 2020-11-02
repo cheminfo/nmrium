@@ -156,11 +156,23 @@ function getBlob(elementID) {
   _svg
     .querySelectorAll('[data-no-export="true"]')
     .forEach((element) => element.remove());
-  const head = `<svg  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
+  const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
   const style = `<style>.grid line,.grid path{stroke:none;} .regular-text{fill:black} .x path{stroke-width:1px} .x text{
     font-size: 12px;
     font-weight: bold;
-  } </style>`;
+  } 
+ 
+  .nmr-svg,.contours{
+    background-color:white;
+    fill:white;
+  }
+  
+  // .left{
+  //   -ms-writing-mode: tb-rl;
+  //   -ms-transform: none;
+  // }
+  
+  </style>`;
   const svg = `${head + style + _svg.innerHTML}</svg>`;
   const blob = new Blob([svg], { type: 'image/svg+xml' });
   return { blob, width, height };

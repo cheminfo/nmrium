@@ -62,7 +62,13 @@ const Top1DChart = memo(({ margin: marginProps, data }) => {
         </clipPath>
       </defs>
       <g clipPath="url(#clip-top)">
-        <path className="line" stroke="red" fill="none" d={paths} />
+        <path
+          className="line"
+          stroke="red"
+          fill="none"
+          strokeWidth="1px"
+          d={paths}
+        />
       </g>
     </svg>
   );
