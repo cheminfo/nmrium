@@ -1,23 +1,15 @@
 import React, { useMemo, memo } from 'react';
-// import { FaRegTrashAlt } from 'react-icons/fa';
 
-// import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
+import ColumnHeader from './ColumnHeader';
+
 const MultipleSpectraAnalysisTable = memo(({ activeTab, spectraAanalysis }) => {
-  // const dispatch = useDispatch();
   const format = useFormatNumberByNucleus(activeTab);
-  // const deleteHandler = useCallback(
-  //   (e, row) => {
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     const params = row.original;
-  //   },
-  //   [dispatch],
-  // );
+
   const data = useMemo(() => {
     const result = Object.values(
       (spectraAanalysis[activeTab] && spectraAanalysis[activeTab].values) || [],
@@ -32,31 +24,20 @@ const MultipleSpectraAnalysisTable = memo(({ activeTab, spectraAanalysis }) => {
         index: 0,
         Cell: ({ row }) => row.index + 1,
       },
-      // {
-      //   Header: '',
-      //   id: 'delete-button',
-      //   index: 9999999,
-      //   Cell: ({ row }) => (
-      //     <button
-      //       type="button"
-      //       className="delete-button"
-      //       onClick={(e) => deleteHandler(e, row)}
-      //     >
-      //       <FaRegTrashAlt />
-      //     </button>
-      //   ),
-      // },
     ];
 
     const columns = initColumns;
     const setCustomColumn = (array, index, columnLabel, cellHandler) => {
-      const labels = columnLabel.split('-');
+      const row = data[0][columnLabel];
       array.push({
         index: index,
-        Header:
-          labels.length === 2
-            ? `${format(labels[0])} - ${format(labels[1])}`
-            : columnLabel,
+        Header: () => (
+          <ColumnHeader
+            charLabel={columnLabel}
+            rangeLabel={`${format(row.from)} - ${format(row.to)}`}
+          />
+        ),
+        id: columnLabel,
         sortType: 'basic',
         Cell: ({ row }) => cellHandler(row),
       });

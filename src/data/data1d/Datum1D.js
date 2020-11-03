@@ -1,6 +1,6 @@
 import lodash from 'lodash';
 import max from 'ml-array-max';
-import { xyIntegration } from 'ml-spectra-processing';
+import { xyIntegration, xyMinYPoint, xyMaxYPoint } from 'ml-spectra-processing';
 
 import { SignalKindsToInclude, DatumKind } from '../constants/SignalsKinds';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
@@ -439,19 +439,27 @@ export class Datum1D {
   }
 
   detectRange(from, to) {
+    const { x, re: y } = this.data;
     return {
       id: generateID(),
       from,
       to,
       absolute: this.getIntegration(from, to), // the real value,
-      signal: [this.detectSignal(from, to)],
-      kind: DatumKind.signal,
+      min: xyMinYPoint({ x, y }, { from, to }),
+      max: xyMaxYPoint({ x, y }, { from, to }),
     };
   }
 
   addRange(from, to) {
     try {
-      const range = this.detectRange(from, to);
+      const range = {
+        id: generateID(),
+        from,
+        to,
+        absolute: this.getIntegration(from, to), // the real value,
+        signal: [this.detectSignal(from, to)],
+        kind: DatumKind.signal,
+      };
       this.ranges.values.push(range);
       this.updateIntegralRanges();
     } catch (e) {

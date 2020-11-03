@@ -37,7 +37,6 @@ import {
   SET_DIMENSIONS,
   ADD_RANGE,
   ANALYZE_SPECTRA,
-  SET_LOADING_FLAG,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -101,11 +100,6 @@ const Viewer1D = () => {
 
   const handelBrushEnd = useCallback(
     (brushData) => {
-      dispatch({
-        type: SET_LOADING_FLAG,
-        isLoading: true,
-      });
-
       const propagateEvent = () => {
         const { startX, endX } = brushData;
         const startXPPM = scaleState.scaleX().invert(startX);
@@ -187,10 +181,6 @@ const Viewer1D = () => {
             break;
         }
       }
-      dispatch({
-        type: SET_LOADING_FLAG,
-        isLoading: false,
-      });
     },
     [scaleState, selectedTool, general, modal, data, activeSpectrum, dispatch],
   );
