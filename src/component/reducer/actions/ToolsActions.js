@@ -101,7 +101,7 @@ const resetSelectedTool = (state) => {
 };
 
 const resetFilterTool = (draft) => {
-  if (options[draft.selectedTool].isFilter) {
+  if (draft.selectedTool && options[draft.selectedTool].isFilter) {
     resetTool(draft);
   }
 };
