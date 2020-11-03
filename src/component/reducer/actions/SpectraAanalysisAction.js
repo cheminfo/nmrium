@@ -25,11 +25,9 @@ const analyzeSpectra = (state, action) => {
 };
 
 const handleDeleteSpectraRanges = (state, action) => {
-  const {
-    range: { from, to },
-  } = action;
+  const { colKey } = action;
   const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().deleteSpectraAnalysis(
-    `${from}-${to}`,
+    colKey,
     state.activeTab,
   );
 
@@ -37,5 +35,18 @@ const handleDeleteSpectraRanges = (state, action) => {
     draft.spectraAanalysis = spectraAanalysis;
   });
 };
+const handleResizeSpectraRange = (state, action) => {
+  const { colKey, from, to } = action.payload;
+  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().analyzeSpectra(
+    from,
+    to,
+    state.activeTab,
+    colKey,
+  );
 
-export { analyzeSpectra, handleDeleteSpectraRanges };
+  return produce(state, (draft) => {
+    draft.spectraAanalysis = spectraAanalysis;
+  });
+};
+
+export { analyzeSpectra, handleDeleteSpectraRanges, handleResizeSpectraRange };
