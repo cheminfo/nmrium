@@ -4,7 +4,6 @@ import { Route, Switch } from 'react-router-dom';
 import { getKey } from '../utility/menu';
 
 class SingleDisplayerLayout extends React.Component {
-  // eslint-disable-next-line no-useless-constructor
   constructor(props) {
     super(props);
   }

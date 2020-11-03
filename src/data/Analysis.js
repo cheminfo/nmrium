@@ -34,7 +34,6 @@ export class Analysis {
   async fromZip(zipFiles) {
     for (let zipFile of zipFiles) {
       const color = getColor(true);
-      // eslint-disable-next-line no-await-in-loop
       await SpectraManager.addBruker(
         this.spectra,
         { display: { color, name: zipFile.name } },
