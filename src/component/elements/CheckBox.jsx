@@ -16,6 +16,7 @@ const CheckBox = ({ name, checked: checkProps, onChange }) => {
     <input
       type="checkbox"
       name={name}
+      id={name}
       onChange={handleCheck}
       defaultChecked={checkProps}
     />
