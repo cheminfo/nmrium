@@ -51,7 +51,9 @@ import XLabelPointer from './tool/XLabelPointer';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
-  const { general } = usePreferences();
+  const {
+    display: { general },
+  } = usePreferences();
   const state = useChartData();
   const {
     selectedTool,
