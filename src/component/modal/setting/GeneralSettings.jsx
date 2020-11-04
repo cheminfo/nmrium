@@ -141,9 +141,9 @@ const styles = css`
     margin-bottom: 5px;
   }
 
-  .check-false {
-    opacity: 0.5;
-  }
+  // .check-false {
+  //   opacity: 0.8;
+  // }
 `;
 
 const GeneralSettings = ({ onClose, onSave }) => {
