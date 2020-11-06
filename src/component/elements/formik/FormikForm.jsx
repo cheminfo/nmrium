@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { forwardRef } from 'react';
 
-const AppForm = forwardRef(
+const FormikForm = forwardRef(
   ({ initialValues, onSubmit, validationSchema, children }, ref) => {
     return (
       <Formik
@@ -17,15 +17,15 @@ const AppForm = forwardRef(
   },
 );
 
-AppForm.defaultProps = {
+FormikForm.defaultProps = {
   initialValues: {},
   onSubmit: () => null,
   validationSchema: null,
 };
-AppForm.propTypes = {
+FormikForm.propTypes = {
   initialValues: PropTypes.object,
   onSubmit: PropTypes.func,
   validationSchema: PropTypes.object,
 };
 
-export default AppForm;
+export default FormikForm;
