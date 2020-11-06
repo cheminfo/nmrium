@@ -35,6 +35,7 @@ const Input = forwardRef(
       type,
       enableAutoSelect,
       className,
+      format,
       ...prop
     },
     ref,
@@ -52,13 +53,16 @@ const Input = forwardRef(
 
     const getValue = useCallback(
       (value) => {
-        return type === 'number'
-          ? String(value).trim() === '-'
-            ? Number(0)
-            : Number(value)
-          : value;
+        const formatValue = format();
+        return formatValue(
+          type === 'number'
+            ? String(value).trim() === '-'
+              ? Number(0)
+              : Number(value)
+            : value,
+        );
       },
-      [type],
+      [format, type],
     );
 
     const onChangeHandler = useCallback(
@@ -78,14 +82,16 @@ const Input = forwardRef(
         }
         const _value = e.target.value;
         if (check(_value) && checkValue(_value)) {
-          setVal(_value);
+          const formatValue = format();
+
+          setVal(formatValue(_value));
           onChange({
             ...e,
             target: { name: e.target.name, value: getValue(_value) },
           });
         }
       },
-      [checkValue, getValue, onChange, type],
+      [checkValue, format, getValue, onChange, type],
     );
 
     const handleKeyDown = useCallback(
@@ -143,6 +149,7 @@ Input.propTypes = {
   checkValue: PropTypes.func,
   onKeyDown: PropTypes.func,
   className: PropTypes.string,
+  format: PropTypes.func,
   type: PropTypes.oneOf(['text', 'number']),
   enableAutoSelect: PropTypes.bool,
 };
@@ -162,6 +169,7 @@ Input.defaultProps = {
   type: 'text',
   className: '',
   enableAutoSelect: false,
+  format: () => (val) => val,
 };
 
 export default Input;
