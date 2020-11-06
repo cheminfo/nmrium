@@ -4,10 +4,6 @@ import { Route, Switch } from 'react-router-dom';
 import { getKey } from '../utility/menu';
 
 class SingleDisplayerLayout extends React.PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div className="wrapper">
