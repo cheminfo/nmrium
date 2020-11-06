@@ -307,7 +307,7 @@ const FunctionToolBar = ({
             <ToggleButton
               key={options.multipleSpectraAnalysis.id}
               value={options.multipleSpectraAnalysis.id}
-              className="ci-icon-nmr-range-picking"
+              className="ci-icon-nmr-multiple-analysis"
               style={styles.icon}
             >
               <ToolTip
