@@ -445,8 +445,8 @@ export class Datum1D {
       from,
       to,
       absolute: this.getIntegration(from, to), // the real value,
-      min: xyMinYPoint({ x, y }, { from, to }),
-      max: xyMaxYPoint({ x, y }, { from, to }),
+      min: xyMinYPoint({ x, y }, { from, to }).y,
+      max: xyMaxYPoint({ x, y }, { from, to }).y,
     };
   }
 

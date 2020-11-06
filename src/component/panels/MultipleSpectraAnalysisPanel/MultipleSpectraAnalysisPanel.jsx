@@ -1,9 +1,11 @@
-import React, { useCallback, useState, useRef, memo } from 'react';
+import React, { useCallback, useState, useRef, memo, useMemo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
+import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
+import MultipleSpectraAnalysisPreferences from './MultipleSpectraAnalysisPreferences';
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 
 const styles = {
@@ -14,16 +16,29 @@ const styles = {
   },
 };
 
-const MultipleSpectraAnalysisPanel = memo(() => {
+const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef();
+
+  const data = useMemo(() => {
+    const {
+      values,
+      options: { columns },
+    } = spectraAanalysis[activeTab] || {
+      values: {},
+      options: { columns: {} },
+    };
+    // eslint-disable-next-line no-console
+    console.log(columns);
+    return { values: Object.values(values), columns };
+  }, [activeTab, spectraAanalysis]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(() => {
-    // settingRef.current.saveSetting();
+    settingRef.current.saveSetting();
     setFlipStatus(false);
   }, []);
 
@@ -50,12 +65,15 @@ const MultipleSpectraAnalysisPanel = memo(() => {
         containerStyle={{ height: '100%' }}
       >
         <div style={{ overflow: 'auto' }}>
-          <MultipleSpectraAnalysisTable />
+          <MultipleSpectraAnalysisTable data={data} activeTab={activeTab} />
         </div>
-        <div ref={settingRef}>comming soon</div>
+        <MultipleSpectraAnalysisPreferences
+          columns={data.columns}
+          ref={settingRef}
+        />
       </ReactCardFlip>
     </div>
   );
 });
 
-export default MultipleSpectraAnalysisPanel;
+export default MultiAnalysisWrapper(MultipleSpectraAnalysisPanel);

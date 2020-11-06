@@ -48,5 +48,20 @@ const handleResizeSpectraRange = (state, action) => {
     draft.spectraAanalysis = spectraAanalysis;
   });
 };
+const handleSetcolumns = (state, action) => {
+  const data = action.payload;
+  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().setColumn(
+    state.activeTab,
+    data,
+  );
+  return produce(state, (draft) => {
+    draft.spectraAanalysis = spectraAanalysis;
+  });
+};
 
-export { analyzeSpectra, handleDeleteSpectraRanges, handleResizeSpectraRange };
+export {
+  analyzeSpectra,
+  handleDeleteSpectraRanges,
+  handleResizeSpectraRange,
+  handleSetcolumns,
+};

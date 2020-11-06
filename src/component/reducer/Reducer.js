@@ -307,6 +307,8 @@ export function spectrumReducer(state, action) {
       return SpectraAanalysisActions.handleDeleteSpectraRanges(state, action);
     case types.RESIZE_ANALYZE_SPECTRA_RANGE:
       return SpectraAanalysisActions.handleResizeSpectraRange(state, action);
+    case types.SET_ANALYZE_SPECTRA_COLUMNS:
+      return SpectraAanalysisActions.handleSetcolumns(state, action);
 
     case UNDO:
       return handleHistoryUndo(state);
