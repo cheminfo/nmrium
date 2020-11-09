@@ -217,26 +217,33 @@ const Viewer1D = () => {
         });
       };
 
-      switch (selectedTool) {
-        case options.peakPicking.id:
-          dispatch({
-            type: ADD_PEAK,
-            mouseCoordinates: position,
-          });
-          break;
-        case options.phaseCorrection.id:
-          dispatch({
-            type: SET_VERTICAL_INDICATOR_X_POSITION,
-            position: position.x,
-          });
-          break;
-        case 'editRange':
-          if (position.shiftKey) {
-            propagateEvent();
-          }
-          break;
+      if (position.shiftKey) {
+        switch (selectedTool) {
+          case options.peakPicking.id:
+            dispatch({
+              type: ADD_PEAK,
+              mouseCoordinates: position,
+            });
+            break;
+          default:
+            break;
+        }
+      } else {
+        switch (selectedTool) {
+          case options.phaseCorrection.id:
+            dispatch({
+              type: SET_VERTICAL_INDICATOR_X_POSITION,
+              position: position.x,
+            });
+            break;
+          case 'editRange':
+            if (position.shiftKey) {
+              propagateEvent();
+            }
+            break;
 
-        default:
+          default:
+        }
       }
     },
     [dispatch, scaleState, selectedTool],
