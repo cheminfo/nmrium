@@ -69,7 +69,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
           transform={`translate(0,${height - margin.bottom})`}
           ref={refAxis}
         >
-          <text fill="#000" x={width - 60} y="20" dy="0.71em" textAnchor="end">
+          <text fill="#000" x={width - 10} y="30" dy="0.70em" textAnchor="end">
             {label}
           </text>
         </g>

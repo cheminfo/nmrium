@@ -1,5 +1,4 @@
 import { jsx, css } from '@emotion/core';
-import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 /** @jsx jsx */
@@ -8,6 +7,7 @@ import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 
 import Integral from './Integral';
+import { getIntegralYScale } from './utilities/scale';
 
 const pathStyles = css`
   -webkit-clip-path: url('#clip');
@@ -27,21 +27,21 @@ const IntegralsSeries = () => {
     data,
     height,
     margin,
+    verticalAlign,
     integralsYDomains,
   } = useChartData();
   const { scaleX } = useScale();
 
   const scaleY = useMemo(() => {
     if (activeSpectrum && integralsYDomains[activeSpectrum.id]) {
-      const scale = d3.scaleLinear(integralsYDomains[activeSpectrum.id], [
-        height - (margin.bottom + height * 0.3),
-        margin.top,
-      ]);
-      return scale;
+      return getIntegralYScale(
+        { height, margin, verticalAlign, integralsYDomains },
+        activeSpectrum.id,
+      );
     } else {
       return null;
     }
-  }, [activeSpectrum, height, integralsYDomains, margin]);
+  }, [activeSpectrum, height, integralsYDomains, margin, verticalAlign]);
 
   const Integrals = useMemo(() => {
     const IsActive = (id) => {

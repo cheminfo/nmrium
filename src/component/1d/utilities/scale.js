@@ -27,4 +27,15 @@ function getYScale(state, spectrumId = null) {
   // }
 }
 
-export { getXScale, getYScale };
+function getIntegralYScale(state, spectrumId) {
+  const { height, margin, verticalAlign, integralsYDomains } = state;
+  const _height =
+    verticalAlign.flag && !verticalAlign.stacked ? height / 2 : height;
+
+  return scaleLinear(integralsYDomains[spectrumId], [
+    _height - (margin.bottom + _height * 0.3),
+    margin.top,
+  ]);
+}
+
+export { getXScale, getYScale, getIntegralYScale };
