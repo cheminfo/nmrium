@@ -16,9 +16,28 @@ const styles = (styles) => css`
     right: 0px;
     top: 0px;
   }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+  }
+  .dropDown-container {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  .label-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 45px;
+  }
+
   .label {
     text-align: center;
-    display: block;
   }
 
   ${styles}
@@ -40,17 +59,25 @@ const ColumnHeader = ({ charLabel, rangeLabel, data, onColumnFilter }) => {
 
   return (
     <div css={styles}>
-      {data.type === COLUMNS_TYPES.NORMAL && (
-        <DropDownButton
-          data={columnsFilters}
-          formatSelectedValue={(value) => (value ? value.substr(0, 3) : value)}
-          selectedKey={data.valueKey}
-          onSelect={onColumnFilter}
-        />
-      )}
+      <div className="container">
+        {data.type === COLUMNS_TYPES.NORMAL && (
+          <div className="dropDown-container">
+            <DropDownButton
+              data={columnsFilters}
+              formatSelectedValue={(value) =>
+                value ? value.substr(0, 3) : value
+              }
+              selectedKey={data.valueKey}
+              onSelect={onColumnFilter}
+            />
+          </div>
+        )}
+        <div className="label-container">
+          <span className="label"> {charLabel}</span>
+          <span className="label">{rangeLabel}</span>
+        </div>
+      </div>
       <DeleteButton onDelete={deleteHandler} />
-      <span className="label"> {charLabel}</span>
-      <span className="label">{rangeLabel}</span>
     </div>
   );
 };

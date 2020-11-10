@@ -61,8 +61,6 @@ const MultipleSpectraAnalysisTable = memo(({ data, activeTab }) => {
     };
     if (data.columns) {
       Object.keys(data.columns).forEach((key) => {
-        // eslint-disable-next-line no-console
-        console.log(key);
         const { valueKey, index: columnIndex } = data.columns[key];
         setCustomColumn(columns, columnIndex + 1, key, (row) => {
           return format(

@@ -6,7 +6,7 @@ import { FaEllipsisH } from 'react-icons/fa';
 import DropDownList from './DropDownList';
 
 const styles = css`
-  position: absolute;
+  // position: absolute;
   padding: 2px;
   border-radius: 10px;
   width: auto;
