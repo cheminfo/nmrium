@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import React, { memo } from 'react';
 
-import { ErrorColors, Errors } from './Constants';
+import { ErrorColors, Errors } from './CorrelationTable/Constants';
 
 const Overview = memo(({ atoms, state }) => {
   return Object.keys(atoms).map((atom, i) => {

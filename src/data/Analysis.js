@@ -3,6 +3,7 @@ import lodash from 'lodash';
 import { Molecule } from 'openchemlib/full';
 
 import * as SpectraManager from './SpectraManager';
+import CorrelationManager from './correlation/CorrelationManager';
 import { Datum1D } from './data1d/Datum1D';
 import { MultipleAnalysis } from './data1d/MulitpleAnalysis';
 import { Molecule as mol } from './molecules/Molecule';
@@ -13,10 +14,14 @@ export class Analysis {
   spectra = [];
   molecules = [];
 
-  constructor(spectra = [], molecules = [], preferences) {
+  constructor(spectra = [], molecules = [], preferences, correlations = {}) {
     this.spectra = spectra.slice();
     this.molecules = molecules.slice(); // chemical structures
     this.preferences = preferences || {};
+    this.correlationManagerInstance = new CorrelationManager(
+      correlations.options,
+      correlations.values,
+    );
     this.multipleAnalysisInstance = new MultipleAnalysis(this.spectra);
   }
 
@@ -24,7 +29,12 @@ export class Analysis {
     const molecules = json.molecules
       ? MoleculeManager.fromJSON(json.molecules)
       : [];
-    const analysis = new Analysis([], molecules, json.preferences);
+    const analysis = new Analysis(
+      [],
+      molecules,
+      json.preferences,
+      json.correlations,
+    );
     await SpectraManager.fromJSON(analysis.spectra, json.spectra);
     return analysis;
   }
@@ -34,7 +44,6 @@ export class Analysis {
   async fromZip(zipFiles) {
     for (let zipFile of zipFiles) {
       const color = getColor(true);
-      // eslint-disable-next-line no-await-in-loop
       await SpectraManager.addBruker(
         this.spectra,
         { display: { color, name: zipFile.name } },
@@ -151,7 +160,12 @@ export class Analysis {
     });
 
     const molecules = this.molecules.map((ob) => ob.toJSON());
-    return { spectra: spectra, molecules, preferences: this.preferences };
+    return {
+      spectra: spectra,
+      molecules,
+      preferences: this.preferences,
+      correlations: this.getCorrelations(),
+    };
   }
 
   setPreferences(preferences) {
@@ -222,5 +236,13 @@ export class Analysis {
 
   getMultipleAnalysisInstance() {
     return this.multipleAnalysisInstance;
+  }
+
+  getCorrelations() {
+    return this.correlationManagerInstance.getData();
+  }
+
+  getCorrelationManagerInstance() {
+    return this.correlationManagerInstance;
   }
 }

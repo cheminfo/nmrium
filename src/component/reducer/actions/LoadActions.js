@@ -17,10 +17,12 @@ const initiate = (state, dataObject) => {
   const spectraData = AnalysisObj.getSpectraData();
   const molecules = AnalysisObj.getMolecules();
   const preferences = AnalysisObj.getPreferences('1d');
+  const correlations = AnalysisObj.getCorrelations();
   return produce(state, (draft) => {
     // const domain = getDomain(spectraData);
     draft.data = spectraData;
     draft.molecules = molecules;
+    draft.correlations = correlations;
     // draft.xDomain = domain.xDomain;
     // draft.yDomain = domain.yDomain;
     // draft.originDomain = domain;
@@ -51,10 +53,12 @@ const setData = (state, data) => {
   }
   const spectraData = AnalysisObj.getSpectraData();
   const molecules = AnalysisObj.getMolecules();
+  const correlations = AnalysisObj.getCorrelationManagerInstance().getData();
 
   return produce(state, (draft) => {
     draft.data = spectraData;
     draft.molecules = molecules;
+    draft.correlations = correlations;
 
     draft.isLoading = false;
     setActiveTab(draft);
@@ -124,11 +128,13 @@ const handleLoadJsonFile = (state, data) => {
   const spectraData = AnalysisObj.getSpectraData();
   const molecules = AnalysisObj.getMolecules();
   const preferences = AnalysisObj.getPreferences('1d');
+  const correlations = AnalysisObj.getCorrelationManagerInstance().getData();
 
   return produce(state, (draft) => {
     draft.data = spectraData;
     draft.molecules = molecules;
     draft.preferences = preferences;
+    draft.correlations = correlations;
     if (
       preferences.display &&
       Object.prototype.hasOwnProperty.call(preferences.display, 'center')

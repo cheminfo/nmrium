@@ -1,7 +1,8 @@
 import lodash from 'lodash';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import { getLabel, getLabels } from './Utilities';
+import EditableColumn from '../../../elements/EditableColumn';
+import { getLabel, getLabels } from '../Utilities';
 
 const CorrelationTableRow = ({
   additionalColumns,
@@ -10,7 +11,15 @@ const CorrelationTableRow = ({
   rowKey,
   styleRow,
   styleLabel,
+  onSaveEditCount,
 }) => {
+  const saveHandler = useCallback(
+    (e) => {
+      onSaveEditCount(correlation, e.target.value);
+    },
+    [correlation, onSaveEditCount],
+  );
+
   const additionalColumnsData = useMemo(
     () =>
       additionalColumns.map((experimentType, n) => {
@@ -29,18 +38,25 @@ const CorrelationTableRow = ({
 
   return (
     <tr key={rowKey} style={styleRow}>
-      <td>
-        {lodash.get(correlation, 'experimentType', false)
-          ? correlation.experimentType.toUpperCase()
-          : ''}
-      </td>
+      <td>{correlation.getExperimentType().toUpperCase()}</td>
       <td style={styleLabel}>{getLabel(correlation)}</td>
       <td>
-        {lodash.get(correlation, 'signal.delta', false)
-          ? correlation.signal.delta.toFixed(3)
+        {lodash.get(correlation.getSignal(), 'delta', false)
+          ? correlation.getSignal().delta.toFixed(3)
           : ''}
       </td>
-      <td>{''}</td>
+      <td>
+        {onSaveEditCount ? (
+          <EditableColumn
+            type="number"
+            value={correlation.count}
+            style={{ padding: '0.4rem' }}
+            onSave={saveHandler}
+          />
+        ) : (
+          ''
+        )}
+      </td>
       {additionalColumnsData}
     </tr>
   );

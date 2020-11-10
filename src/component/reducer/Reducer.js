@@ -3,6 +3,7 @@
 import { options } from '../toolbar/ToolTypes';
 
 import checkActionType from './IgnoreActions';
+import * as CorrelationsActions from './actions/CorrelationsActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
 import { exportData } from './actions/ExportActions';
@@ -238,6 +239,49 @@ export function spectrumReducer(state, action) {
 
     case types.DELETE_MOLECULE:
       return MoleculeActions.handleDeleteMolecule(state, action.key);
+
+    // case types.ADD_CORRELATION:
+    //   return CorrelationsActions.handleAddCorrelation(
+    //     state,
+    //     action.correlation,
+    //   );
+
+    case types.ADD_CORRELATIONS:
+      return CorrelationsActions.handleAddCorrelations(
+        state,
+        action.correlations,
+      );
+
+    // case types.DELETE_CORRELATION:
+    //   return CorrelationsActions.handleDeleteCorrelation(state, action.id);
+
+    case types.DELETE_CORRELATIONS:
+      return CorrelationsActions.handleDeleteCorrelations(state);
+
+    // case types.SET_CORRELATION:
+    //   return CorrelationsActions.handleSetCorrelation(
+    //     state,
+    //     action.id,
+    //     action.correlation,
+    //   );
+
+    // case types.SET_CORRELATIONS:
+    //   return CorrelationsActions.handleSetCorrelations(
+    //     state,
+    //     action.correlations,
+    //   );
+
+    case types.SET_CORRELATION_MF:
+      return CorrelationsActions.handleSetMF(state, action.mf);
+
+    case types.UNSET_CORRELATION_MF:
+      return CorrelationsActions.handleUnsetMF(state);
+
+    case types.SET_CORRELATION_TOLERANCE:
+      return CorrelationsActions.handleSetTolerance(state, action.tolerance);
+
+    case types.UNSET_CORRELATION_TOLERANCE:
+      return CorrelationsActions.handleUnsetTolerance(state);
 
     case types.DELETE_SPECTRA:
       return SpectrumsActions.handleDeleteSpectra(state);
