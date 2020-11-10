@@ -309,6 +309,8 @@ export function spectrumReducer(state, action) {
       return SpectraAanalysisActions.handleResizeSpectraRange(state, action);
     case types.SET_ANALYZE_SPECTRA_COLUMNS:
       return SpectraAanalysisActions.handleSetcolumns(state, action);
+    case types.FILTER_SPECTRA_COLUMN:
+      return SpectraAanalysisActions.handleFiltercolumn(state, action);
 
     case UNDO:
       return handleHistoryUndo(state);

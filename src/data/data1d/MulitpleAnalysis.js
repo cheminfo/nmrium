@@ -5,8 +5,8 @@ import generateChar from '../utilities/generateChar';
 
 import { Datum1D } from './Datum1D';
 
-const COLUMNS_TYPES = {
-  CALC: 'CALC',
+export const COLUMNS_TYPES = {
+  NORMAL: 'NORMAL',
   FORMULA: 'FORMULA',
 };
 
@@ -58,6 +58,13 @@ export class MultipleAnalysis {
         values: {},
       };
     }
+  }
+
+  changeColumnValueKey(nucleus, columnKey, newKey) {
+    this.spectraAanalysis[nucleus].options.columns[columnKey].valueKey = newKey;
+
+    this.spectraAanalysis[nucleus].values = this.refreshCalculation(nucleus);
+    return lodash.cloneDeep(this.spectraAanalysis);
   }
 
   setColumn(nucleus, inputColumns) {
@@ -148,7 +155,7 @@ export class MultipleAnalysis {
     const colKey = this.addColumnKey(
       nucleus,
       {
-        type: COLUMNS_TYPES.CALC,
+        type: COLUMNS_TYPES.NORMAL,
         valueKey: 'relative',
         from,
         to,

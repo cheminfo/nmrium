@@ -64,7 +64,7 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
         infinite={true}
         containerStyle={{ height: '100%' }}
       >
-        <div style={{ overflow: 'auto' }}>
+        <div style={{ overflow: 'auto', height: '100%' }}>
           <MultipleSpectraAnalysisTable data={data} activeTab={activeTab} />
         </div>
         <MultipleSpectraAnalysisPreferences
