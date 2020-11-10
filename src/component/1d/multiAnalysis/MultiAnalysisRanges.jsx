@@ -7,21 +7,18 @@ import AnalysisRange from './AnalysisRange';
 // import Range from './Range';
 
 const MultiAnalysisRanges = memo(({ activeTab, spectraAanalysis }) => {
-  const ranges = useMemo(() => {
-    const ranges = [];
-
-    if (spectraAanalysis && spectraAanalysis[activeTab]) {
-      const result = Object.values(spectraAanalysis[activeTab].values);
-      if (result[0]) {
-        Object.keys(result[0]).forEach((key) => {
-          if (!['key'].includes(key)) {
-            ranges.push(result[0][key]);
-          }
-        });
-      }
-    }
-    return ranges;
+  const columns = useMemo(() => {
+    const {
+      options: { columns },
+    } = spectraAanalysis[activeTab] || {
+      options: { columns: {} },
+    };
+    return columns;
   }, [activeTab, spectraAanalysis]);
+
+  const ranges = useMemo(() => {
+    return Object.keys(columns).map((key) => key, []);
+  }, [columns]);
 
   if (!ranges || ranges.length === 0) {
     return null;
@@ -29,8 +26,12 @@ const MultiAnalysisRanges = memo(({ activeTab, spectraAanalysis }) => {
 
   return (
     <g clipPath="url(#clip)">
-      {ranges.map((range) => (
-        <AnalysisRange key={range.colKey} rangeData={range} />
+      {ranges.map((columnKey) => (
+        <AnalysisRange
+          key={columnKey}
+          columnKey={columnKey}
+          rangeData={columns[columnKey]}
+        />
       ))}
     </g>
   );

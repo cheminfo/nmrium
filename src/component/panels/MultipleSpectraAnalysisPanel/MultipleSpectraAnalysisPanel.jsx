@@ -28,8 +28,6 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
       values: {},
       options: { columns: {} },
     };
-    // eslint-disable-next-line no-console
-    console.log(columns);
     return { values: Object.values(values), columns };
   }, [activeTab, spectraAanalysis]);
 

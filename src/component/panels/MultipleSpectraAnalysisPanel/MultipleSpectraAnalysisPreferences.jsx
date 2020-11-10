@@ -78,8 +78,6 @@ const MultipleSpectraAnalysisPreferences = forwardRef(({ columns }, ref) => {
     },
   }));
 
-  const format = useCallback(() => (val) => val.toUpperCase(), []);
-
   useEffect(() => {
     const result = Object.keys(columns).reduce((acc, key) => {
       acc[key] = { ...columns[key], tempKey: key };
@@ -144,7 +142,6 @@ const MultipleSpectraAnalysisPreferences = forwardRef(({ columns }, ref) => {
                     key={key}
                     name={`${key}.tempKey`}
                     value={data[key].tempKey}
-                    format={format}
                   />
                 </td>
                 <td>

@@ -84,7 +84,7 @@ export class MultipleAnalysis {
     let data = Object.entries(this.spectraAanalysis[nucleus].values).reduce(
       (outerAcc, [spectraKey, spectra]) => {
         outerAcc[spectraKey] = Object.keys(inputColumns).reduce((acc, key) => {
-          const newKey = inputColumns[key].tempKey.toUpperCase();
+          const newKey = inputColumns[key].tempKey;
           if (spectra[key]) {
             acc[newKey] = spectra[key];
           }
