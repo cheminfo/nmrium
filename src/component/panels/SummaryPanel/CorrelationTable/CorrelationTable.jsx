@@ -4,7 +4,11 @@ import lodash from 'lodash';
 import { useMemo } from 'react';
 
 import Correlation from '../../../../data/correlation/Correlation';
-import { getLabelColor } from '../Utilities';
+import {
+  getAtoms,
+  getCorrelationsByAtomType,
+  getLabelColor,
+} from '../Utilities';
 
 import CorrelationTableRow from './CorrelationTableRow';
 
@@ -45,16 +49,22 @@ const tableStyle = css`
 
 const CorrelationTable = ({
   correlations,
-  atoms,
-  state,
   additionalColumns,
   editCountSaveHandler,
 }) => {
   const rows = useMemo(() => {
     const _rows = [];
-    const correlationsProtons = lodash.get(correlations, 'H', []);
+    if (!correlations) {
+      return _rows;
+    }
+
+    const atoms = getAtoms(correlations);
+
     Object.keys(atoms).forEach((atomType) => {
-      const correlationsAtomType = lodash.get(correlations, `${atomType}`, []);
+      const correlationsAtomType = getCorrelationsByAtomType(
+        correlations.values,
+        atomType,
+      );
       if (atomType !== 'H') {
         // for all heavy atoms
         for (let j = 0; j < atoms[atomType]; j++) {
@@ -66,27 +76,37 @@ const CorrelationTable = ({
             _rows.push(
               <CorrelationTableRow
                 additionalColumns={additionalColumns}
-                correlations={correlations}
+                correlations={correlations.values}
                 correlation={correlation}
                 rowKey={`correlation${atomType}${correlation.getID()}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
-                styleLabel={{ color: getLabelColor(state, correlation) }}
+                styleLabel={{
+                  color: getLabelColor(
+                    correlations.state,
+                    correlations.values,
+                    correlation,
+                  ),
+                }}
                 onSaveEditCount={editCountSaveHandler}
               />,
             );
             lodash
               .get(correlation.getAttachments(), 'H', [])
               .forEach((index) => {
-                const correlationProton = correlationsProtons[index];
+                const correlationProton = correlations.values[index];
                 _rows.push(
                   <CorrelationTableRow
                     additionalColumns={additionalColumns}
-                    correlations={correlations}
+                    correlations={correlations.values}
                     correlation={correlationProton}
                     rowKey={`correlation${atomType}${correlationProton.getID()}_${correlation.getID()}`}
                     styleRow={{ backgroundColor: 'white' }}
                     styleLabel={{
-                      color: getLabelColor(state, correlationProton),
+                      color: getLabelColor(
+                        correlations.state,
+                        correlations.values,
+                        correlationProton,
+                      ),
                     }}
                     onSaveEditCount={editCountSaveHandler}
                   />,
@@ -100,17 +120,23 @@ const CorrelationTable = ({
                     ? `[${atomType}${j + 1}]` // put brackets around label if it is a missing atom
                     : `${atomType}${j + 1}`,
               },
-              atomType: [atomType],
+              atomType,
             });
             // add placeholder rows for missing atoms
             _rows.push(
               <CorrelationTableRow
                 additionalColumns={additionalColumns}
-                correlations={correlations}
+                correlations={correlations.values}
                 correlation={pseudoCorrelation}
                 rowKey={`placeholder_correlation$_${_rows.length}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
-                styleLabel={{ color: getLabelColor(state, pseudoCorrelation) }}
+                styleLabel={{
+                  color: getLabelColor(
+                    correlations.state,
+                    correlations.values,
+                    pseudoCorrelation,
+                  ),
+                }}
               />,
             );
           }
@@ -121,27 +147,37 @@ const CorrelationTable = ({
             _rows.push(
               <CorrelationTableRow
                 additionalColumns={additionalColumns}
-                correlations={correlations}
+                correlations={correlations.values}
                 correlation={correlation}
                 rowKey={`correlation${atomType}${correlation.getID()}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
-                styleLabel={{ color: getLabelColor(state, correlation) }}
+                styleLabel={{
+                  color: getLabelColor(
+                    correlations.state,
+                    correlations.values,
+                    correlation,
+                  ),
+                }}
                 onSaveEditCount={editCountSaveHandler}
               />,
             );
             lodash
               .get(correlation.getAttachments(), 'H', [])
               .forEach((index) => {
-                const correlationProton = correlationsProtons[index];
+                const correlationProton = correlations.values[index];
                 _rows.push(
                   <CorrelationTableRow
                     additionalColumns={additionalColumns}
-                    correlations={correlations}
+                    correlations={correlations.values}
                     correlation={correlationProton}
                     rowKey={`correlation${atomType}${correlationProton.getID()}_${correlation.getID()}`}
                     styleRow={{ backgroundColor: 'white' }}
                     styleLabel={{
-                      color: getLabelColor(state, correlationProton),
+                      color: getLabelColor(
+                        correlations.state,
+                        correlations.values,
+                        correlationProton,
+                      ),
                     }}
                     onSaveEditCount={editCountSaveHandler}
                   />,
@@ -157,11 +193,17 @@ const CorrelationTable = ({
             _rows.push(
               <CorrelationTableRow
                 additionalColumns={additionalColumns}
-                correlations={correlations}
+                correlations={correlations.values}
                 correlation={correlationProton}
                 rowKey={`correlation${atomType}${correlationProton.getID()}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
-                styleLabel={{ color: getLabelColor(state, correlationProton) }}
+                styleLabel={{
+                  color: getLabelColor(
+                    correlations.state,
+                    correlations.values,
+                    correlationProton,
+                  ),
+                }}
                 onSaveEditCount={editCountSaveHandler}
               />,
             );
@@ -173,7 +215,7 @@ const CorrelationTable = ({
     });
 
     return _rows;
-  }, [additionalColumns, atoms, correlations, editCountSaveHandler, state]);
+  }, [additionalColumns, correlations, editCountSaveHandler]);
 
   return (
     <div>

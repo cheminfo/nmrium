@@ -10,9 +10,10 @@ const defaultTolerance = {
 };
 
 export default class CorrelationManager {
-  constructor(options = {}, values = []) {
+  constructor(options = {}, values = [], state = {}) {
     this.options = options;
     this.values = values;
+    this.state = state;
 
     this.options.tolerance = this.options.tolerance || defaultTolerance;
   }
@@ -53,6 +54,14 @@ export default class CorrelationManager {
     return this.getOptions().tolerance;
   }
 
+  getState() {
+    return this.state;
+  }
+
+  setState(state) {
+    this.state = state;
+  }
+
   getValues() {
     return this.values;
   }
@@ -68,7 +77,7 @@ export default class CorrelationManager {
   }
 
   getData() {
-    return { options: this.options, values: this.values };
+    return { options: this.options, values: this.values, state: this.state };
   }
 
   addValue(correlation) {

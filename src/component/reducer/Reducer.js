@@ -283,6 +283,9 @@ export function spectrumReducer(state, action) {
     case types.UNSET_CORRELATION_TOLERANCE:
       return CorrelationsActions.handleUnsetTolerance(state);
 
+    case types.SET_CORRELATION_STATE:
+      return CorrelationsActions.handleSetState(state, action.state);
+
     case types.DELETE_SPECTRA:
       return SpectrumsActions.handleDeleteSpectra(state);
 

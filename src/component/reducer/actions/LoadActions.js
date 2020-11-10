@@ -53,7 +53,7 @@ const setData = (state, data) => {
   }
   const spectraData = AnalysisObj.getSpectraData();
   const molecules = AnalysisObj.getMolecules();
-  const correlations = AnalysisObj.getCorrelationManagerInstance().getData();
+  const correlations = AnalysisObj.getCorrelations();
 
   return produce(state, (draft) => {
     draft.data = spectraData;
@@ -128,7 +128,7 @@ const handleLoadJsonFile = (state, data) => {
   const spectraData = AnalysisObj.getSpectraData();
   const molecules = AnalysisObj.getMolecules();
   const preferences = AnalysisObj.getPreferences('1d');
-  const correlations = AnalysisObj.getCorrelationManagerInstance().getData();
+  const correlations = AnalysisObj.getCorrelations();
 
   return produce(state, (draft) => {
     draft.data = spectraData;

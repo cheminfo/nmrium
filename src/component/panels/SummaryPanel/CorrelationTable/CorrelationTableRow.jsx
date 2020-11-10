@@ -24,12 +24,11 @@ const CorrelationTableRow = ({
     () =>
       additionalColumns.map((experimentType, n) => {
         let content = '';
-        if (lodash.get(correlation, 'correlation', false)) {
-          const labels = getLabels(correlations, correlation, experimentType);
-          if (labels.length > 0) {
-            content = labels.join(', ');
-          }
+        const labels = getLabels(correlations, correlation, experimentType);
+        if (labels.length > 0) {
+          content = labels.join(', ');
         }
+
         // eslint-disable-next-line react/no-array-index-key
         return <td key={`addCol_${experimentType}_${n}`}>{content}</td>;
       }),
@@ -38,8 +37,12 @@ const CorrelationTableRow = ({
 
   return (
     <tr key={rowKey} style={styleRow}>
-      <td>{correlation.getExperimentType().toUpperCase()}</td>
-      <td style={styleLabel}>{getLabel(correlation)}</td>
+      <td>
+        {correlation.getExperimentType()
+          ? correlation.getExperimentType().toUpperCase()
+          : ''}
+      </td>
+      <td style={styleLabel}>{getLabel(correlations, correlation)}</td>
       <td>
         {lodash.get(correlation.getSignal(), 'delta', false)
           ? correlation.getSignal().delta.toFixed(3)

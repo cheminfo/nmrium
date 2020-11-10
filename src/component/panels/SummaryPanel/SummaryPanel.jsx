@@ -14,6 +14,7 @@ import {
   ADD_CORRELATIONS,
   DELETE_CORRELATIONS,
   SET_CORRELATION_MF,
+  SET_CORRELATION_STATE,
   SET_CORRELATION_TOLERANCE,
   UNSET_CORRELATION_MF,
 } from '../../reducer/types/Types';
@@ -24,13 +25,11 @@ import Overview from './Overview';
 import SetMolecularFormulaModal from './SetMolecularFormulaModal';
 import SetShiftToleranceModal from './SetShiftTolerancesModal';
 import {
-  addFromData1D,
   addToExperiments,
+  buildCorrelationsData,
+  buildCorrelationsState,
   checkSignalMatch,
   getAtomType,
-  setAttachments,
-  setCorrelations,
-  setMatches,
 } from './Utilities';
 
 const panelStyle = css`
@@ -63,7 +62,6 @@ const SummaryPanel = memo(() => {
   const { data, molecules, correlations } = useChartData();
   const dispatch = useDispatch();
   const modal = useModal();
-  console.log(correlations);
 
   const [mf, setMF] = useState();
 
@@ -114,10 +112,6 @@ const SummaryPanel = memo(() => {
 
   const [additionalColumns, setAdditionalColumns] = useState([]);
   const [atoms, setAtoms] = useState({});
-  const [state, setState] = useState({
-    complete: false,
-    atomType: [],
-  });
 
   useEffect(() => (mf ? setAtoms(new MF(mf).getInfo().atoms) : setAtoms({})), [
     mf,
@@ -372,100 +366,23 @@ const SummaryPanel = memo(() => {
       .filter((_atomType, i, a) => a.indexOf(_atomType) === i);
   }, [signals1D, signals1DExtra, signals2D]);
 
-  const buildCorrelationsData = useCallback(() => {
-    const _correlations = [];
-    // add all 1D signals
-    addFromData1D(_correlations, signals1D);
-    // add signals from 2D if 1D signals for an atom type are missing
-    // add correlations: 1D -> 2D
-    setCorrelations(_correlations, signals2D, tolerance);
-    // link signals via matches to same 2D signal: e.g. 13C -> HSQC <- 1H
-    setMatches(_correlations);
-    // set attachments via HSQC or HMQC, including labels
-    setAttachments(_correlations);
-
-    return _correlations;
-  }, [signals1D, signals2D, tolerance]);
-
   useEffect(() => {
+    const _correlations = buildCorrelationsData(
+      signals1D,
+      signals2D,
+      tolerance,
+    );
     dispatch({ type: DELETE_CORRELATIONS });
-    dispatch({ type: ADD_CORRELATIONS, correlations: buildCorrelationsData() });
-  }, [buildCorrelationsData, dispatch]);
-
-  useEffect(() => {
-    console.log(correlations);
-  }, [correlations]);
+    dispatch({ type: ADD_CORRELATIONS, correlations: _correlations });
+    dispatch({
+      type: SET_CORRELATION_STATE,
+      state: buildCorrelationsState(_correlations, atoms, atomTypesInSpectra),
+    });
+  }, [atomTypesInSpectra, atoms, dispatch, signals1D, signals2D, tolerance]);
 
   // useEffect(() => {
   //   console.log(correlations);
-  //   const _state = { atomType: {} };
-
-  //   atomTypesInSpectra.forEach((atomType) => {
-  //     const correlationsAtomType = correlations.getValuesByAtomType(atomType);
-  //     const atomCount = atoms[atomType];
-  //     _state.atomType[atomType] = {
-  //       current: correlationsAtomType.length,
-  //       total: atomCount,
-  //       complete: correlationsAtomType.length === atomCount ? true : false,
-  //     };
-  //     const createErrorProperty = () => {
-  //       if (!lodash.get(_state, `atomType.${atomType}.error`, false)) {
-  //         _state.atomType[atomType].error = {};
-  //       }
-  //     };
-  //     if (!_state.atomType[atomType].complete) {
-  //       createErrorProperty();
-  //       _state.atomType[atomType].error.incomplete = true;
-  //     }
-  //     if (atomType === 'H') {
-  //       const attachedCount = correlationsAtomType.filter(
-  //         (signal) => Object.keys(signal.getAttachments()).length > 0,
-  //       ).length;
-  //       const notAttached = correlationsAtomType
-  //         .filter((signal) => Object.keys(signal.getAttachments()).length === 0)
-  //         .map((signal) => signal.getID());
-  //       if (notAttached.length > 0) {
-  //         createErrorProperty();
-  //         _state.atomType[atomType].error.notAttached = notAttached;
-  //       }
-  //       const outOfLimit = notAttached
-  //         .filter(
-  //           (signal, count) => count >= Math.abs(attachedCount - atomCount),
-  //         )
-  //         .map((index) => index);
-  //       if (outOfLimit.length > 0) {
-  //         createErrorProperty();
-  //         _state.atomType[atomType].error.outOfLimit = outOfLimit;
-  //       }
-  //       const ambiguousAttachment = correlationsAtomType
-  //         .filter(
-  //           (signal) =>
-  //             Object.keys(signal.getAttachments()).length > 1 ||
-  //             Object.keys(signal.getAttachments()).some(
-  //               (otherAtomType) =>
-  //                 signal.getAttachments()[otherAtomType].length > 1,
-  //             ),
-  //         )
-  //         .map((signal) => signal.getID());
-  //       if (ambiguousAttachment.length > 0) {
-  //         createErrorProperty();
-  //         _state.atomType[
-  //           atomType
-  //         ].error.ambiguousAttachment = ambiguousAttachment;
-  //       }
-  //     } else {
-  //       const outOfLimit = correlationsAtomType
-  //         .filter((signal, count) => count >= atomCount)
-  //         .map((signal) => signal.getID());
-  //       if (outOfLimit.length > 0) {
-  //         createErrorProperty();
-  //         _state.atomType[atomType].error.outOfLimit = outOfLimit;
-  //       }
-  //     }
-  //   });
-
-  //   setState(_state);
-  // }, [atomTypesInSpectra, atoms, correlations]);
+  // }, [correlations]);
 
   const editCountSaveHandler = useCallback((correlation, value) => {
     correlation.setCount(value);
@@ -489,16 +406,14 @@ const SummaryPanel = memo(() => {
             </button>
           </ToolTip>
           <div className="overview-container">
-            <Overview atoms={atoms} state={state} />
+            <Overview correlations={correlations} />
           </div>
         </DefaultPanelHeader>
-        {/* <CorrelationTable
+        <CorrelationTable
           correlations={correlations}
-          atoms={atoms}
-          state={state}
           additionalColumns={additionalColumns}
           editCountSaveHandler={editCountSaveHandler}
-        /> */}
+        />
       </div>
     </div>
   );

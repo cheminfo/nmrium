@@ -1,4 +1,5 @@
 import lodash from 'lodash';
+import { MF } from 'mf-parser';
 
 import Correlation from '../../../data/correlation/Correlation';
 import Link from '../../../data/correlation/Link';
@@ -34,14 +35,20 @@ const addToExperiments = (
 
 const getAtomType = (nucleus) => nucleus.split(/\d+/)[1];
 
-const getLabel = (correlation) => {
+const getAtoms = (correlations) => {
+  return lodash.get(correlations, 'options.mf', false)
+    ? new MF(correlations.options.mf).getInfo().atoms
+    : {};
+};
+
+const getLabel = (correlations, correlation) => {
   let label = Object.keys(correlation.getAttachments())
     .map((otherAtomType) =>
       correlation
         .getAttachments()
         // eslint-disable-next-line no-unexpected-multiline
         [otherAtomType].map((index) =>
-          correlation.getLabel(`${otherAtomType}${index + 1}`),
+          correlation.getLabel(correlations[index].getLabel('origin')),
         )
         .filter((_label) => _label),
     )
@@ -77,15 +84,14 @@ const sortLabels = (labels) => {
 
 const getLabels = (correlations, correlation, experimentType) => {
   const labels = correlation
-    .getCorrelation()
-    .filter((_correlation) => _correlation.getExperimentType === experimentType)
-    .map((_correlation) =>
-      _correlation.match
+    .getLinks()
+    .filter((link) => link.getExperimentType() === experimentType)
+    .map((link) =>
+      link
+        .getMatches()
         .map((match) => {
-          const otherAtomType =
-            _correlation.atomType[_correlation.axis === 'x' ? 1 : 0]; // reversed to get the other atom type
-          const matchingCorrelation = correlations[otherAtomType][match.index];
-          return getLabel(matchingCorrelation);
+          const matchingCorrelation = correlations[match];
+          return getLabel(correlations, matchingCorrelation);
         })
         .flat(),
     )
@@ -95,10 +101,10 @@ const getLabels = (correlations, correlation, experimentType) => {
   return sortLabels(labels);
 };
 
-const getLabelColor = (state, correlation) => {
+const getLabelColor = (state, correlations, correlation) => {
   const error = lodash.get(
     state,
-    `atomType.${correlation.getAtomType()[0]}.error`,
+    `${correlation.getAtomType()[0]}.error`,
     null,
   );
   if (error) {
@@ -107,7 +113,13 @@ const getLabelColor = (state, correlation) => {
         ErrorColors[errorIndex].key !== 'incomplete' && // do not consider this for a single atom
         lodash
           .get(error, `${ErrorColors[errorIndex].key}`, [])
-          .some((id) => id === correlation.getID())
+          .some(
+            (index) =>
+              index ===
+              correlations.findIndex(
+                (_correlation) => _correlation.getID() === correlation.getID(),
+              ),
+          )
       ) {
         return ErrorColors[errorIndex].color;
       }
@@ -176,9 +188,7 @@ const setCorrelations = (correlations, signals2D, tolerance) => {
               label: {
                 origin: `${atomType}${
                   // correlations.getValuesByAtomType(atomType).length + 1
-                  correlations.filter(
-                    (correlation) => correlation.getAtomType() === atomType,
-                  ).length + 1
+                  getCorrelationsByAtomType(correlations, atomType).length + 1
                 }`,
               },
               signal: {
@@ -220,10 +230,9 @@ const setMatches = (correlations) => {
     correlation.getLinks().forEach((link) => {
       const otherAtomType =
         link.axis === 'x' ? link.atomType[1] : link.atomType[0];
-      correlations
-        // .getValuesByAtomType(otherAtomType)
-        .filter((correlation) => correlation.getAtomType() === otherAtomType)
-        .forEach((correlationOtherAtomType) => {
+      // correlations.getValuesByAtomType(otherAtomType)
+      getCorrelationsByAtomType(correlations, otherAtomType).forEach(
+        (correlationOtherAtomType) => {
           // const indexCorrelationOtherAtomType = correlations.getValueIndex(
           //   correlationOtherAtomType.getID(),
           // );
@@ -252,7 +261,8 @@ const setMatches = (correlations) => {
               link.addMatch(indexCorrelationOtherAtomType);
             }
           });
-        });
+        },
+      );
     });
   });
 };
@@ -261,16 +271,14 @@ const setAttachments = (correlations) => {
   // update attachment information between heavy atoms and protons via HSQC or HMQC
   // correlations.getValues().forEach((correlation) => {
   correlations.forEach((correlation) => {
-    const correlationIndexAtomType = correlations
-      // .getValuesByAtomType(correlation.getAtomType())
-      .filter(
-        (_correlation) =>
-          _correlation.getAtomType() === correlation.getAtomType(),
-      )
-      .findIndex(
-        (correlationAtomType) =>
-          correlationAtomType.getID() === correlation.getID(),
-      );
+    // const correlationIndexAtomType = correlations.getValuesByAtomType(correlation.getAtomType())
+    const correlationIndexAtomType = getCorrelationsByAtomType(
+      correlations,
+      correlation.getAtomType(),
+    ).findIndex(
+      (correlationAtomType) =>
+        correlationAtomType.getID() === correlation.getID(),
+    );
     correlation
       .getLinks()
       .filter(
@@ -299,11 +307,113 @@ const setAttachments = (correlations) => {
   });
 };
 
+const getCorrelationsByAtomType = (correlations, atomType) => {
+  return correlations
+    ? correlations.filter(
+        (correlation) => correlation.getAtomType() === atomType,
+      )
+    : [];
+};
+
+const buildCorrelationsData = (signals1D, signals2D, tolerance) => {
+  const correlations = [];
+  // add all 1D signals
+  addFromData1D(correlations, signals1D);
+  // add signals from 2D if 1D signals for an atom type are missing
+  // add correlations: 1D -> 2D
+  setCorrelations(correlations, signals2D, tolerance);
+  // link signals via matches to same 2D signal: e.g. 13C -> HSQC <- 1H
+  setMatches(correlations);
+  // set attachments via HSQC or HMQC, including labels
+  setAttachments(correlations);
+
+  return correlations;
+};
+
+const buildCorrelationsState = (correlations, atoms, atomTypesInSpectra) => {
+  const state = {};
+
+  atomTypesInSpectra.forEach((atomType) => {
+    // const correlationsAtomType = correlations.getValuesByAtomType(atomType);
+    const correlationsAtomType = getCorrelationsByAtomType(
+      correlations,
+      atomType,
+    );
+    const atomCount = atoms[atomType];
+    state[atomType] = {
+      current: correlationsAtomType.length,
+      total: atomCount,
+      complete: correlationsAtomType.length === atomCount ? true : false,
+    };
+    const createErrorProperty = () => {
+      if (!lodash.get(state, `${atomType}.error`, false)) {
+        state[atomType].error = {};
+      }
+    };
+    if (!state[atomType].complete) {
+      createErrorProperty();
+      state[atomType].error.incomplete = true;
+    }
+    if (atomType === 'H') {
+      const attachedCount = correlationsAtomType.filter(
+        (correlation) => Object.keys(correlation.getAttachments()).length > 0,
+      ).length;
+      const notAttached = correlationsAtomType
+        .map((correlation, k) =>
+          Object.keys(correlation.getAttachments()).length === 0 ? k : -1,
+        )
+        .filter((index) => index >= 0);
+      if (notAttached.length > 0) {
+        createErrorProperty();
+        state[atomType].error.notAttached = notAttached;
+      }
+      const outOfLimit = notAttached
+        .map((correlation, k) =>
+          k >= Math.abs(attachedCount - atomCount) ? k : -1,
+        )
+        .filter((index) => index >= 0);
+      if (outOfLimit.length > 0) {
+        createErrorProperty();
+        state[atomType].error.outOfLimit = outOfLimit;
+      }
+      const ambiguousAttachment = correlationsAtomType
+        .map((correlation, k) =>
+          Object.keys(correlation.getAttachments()).length > 1 ||
+          Object.keys(correlation.getAttachments()).some(
+            (otherAtomType) =>
+              correlation.getAttachments()[otherAtomType].length > 1,
+          )
+            ? k
+            : -1,
+        )
+        .filter((index) => index >= 0);
+      if (ambiguousAttachment.length > 0) {
+        createErrorProperty();
+        state[atomType].error.ambiguousAttachment = ambiguousAttachment;
+      }
+    } else {
+      const outOfLimit = correlationsAtomType
+        .map((correlation, k) => (k >= atomCount ? k : -1))
+        .filter((index) => index >= 0);
+      if (outOfLimit.length > 0) {
+        createErrorProperty();
+        state[atomType].error.outOfLimit = outOfLimit;
+      }
+    }
+  });
+
+  return state;
+};
+
 export {
   addFromData1D,
   addToExperiments,
+  buildCorrelationsData,
+  buildCorrelationsState,
   checkSignalMatch,
   getAtomType,
+  getAtoms,
+  getCorrelationsByAtomType,
   getLabel,
   getLabels,
   getLabelColor,

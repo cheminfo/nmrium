@@ -30,6 +30,13 @@ const handleUnsetTolerance = (state) => {
   });
 };
 
+const handleSetState = (state, correlationsState) => {
+  AnalysisObj.getCorrelationManagerInstance().setState(correlationsState);
+  return produce(state, (draft) => {
+    draft.correlations = AnalysisObj.getCorrelations();
+  });
+};
+
 // const handleAddCorrelation = (state, correlation) => {
 //   AnalysisObj.getCorrelationManagerInstance().addValue(correlation);
 //   return produce(state, (draft) => {
@@ -84,6 +91,7 @@ export {
   // handleSetCorrelations,
   handleSetMF,
   handleUnsetMF,
+  handleSetState,
   handleSetTolerance,
   handleUnsetTolerance,
 };
