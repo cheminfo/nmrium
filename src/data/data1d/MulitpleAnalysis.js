@@ -10,7 +10,7 @@ export const COLUMNS_TYPES = {
   FORMULA: 'FORMULA',
 };
 
-export class MultipleAnalysis {
+export default class MultipleAnalysis {
   spectraAanalysis = {};
   reservedColumnsNames = {};
 
@@ -275,6 +275,27 @@ export class MultipleAnalysis {
       // eslint-disable-next-line no-console
       console.log(e);
       result = 'Error';
+    }
+    return result;
+  }
+  getDataAsString(nucleus) {
+    const {
+      values,
+      options: { columns },
+    } = this.spectraAanalysis[nucleus];
+
+    let result = '';
+
+    for (const letter in columns) {
+      result += `${letter}\t`;
+    }
+    result += '\n';
+
+    for (const spectrum of Object.values(values)) {
+      for (const letter in columns) {
+        result += `${spectrum[letter][columns[letter].valueKey]}\t`;
+      }
+      result += '\n';
     }
     return result;
   }
