@@ -1,29 +1,13 @@
 import React, { useMemo, memo } from 'react';
-// import { FaRegTrashAlt } from 'react-icons/fa';
 
-// import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
-import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
-const MultipleSpectraAnalysisTable = memo(({ activeTab, spectraAanalysis }) => {
-  // const dispatch = useDispatch();
+import ColumnHeader from './ColumnHeader';
+
+const MultipleSpectraAnalysisTable = memo(({ data, activeTab }) => {
   const format = useFormatNumberByNucleus(activeTab);
-  // const deleteHandler = useCallback(
-  //   (e, row) => {
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     const params = row.original;
-  //   },
-  //   [dispatch],
-  // );
-  const data = useMemo(() => {
-    const result = Object.values(
-      (spectraAanalysis[activeTab] && spectraAanalysis[activeTab].values) || [],
-    );
-    return result;
-  }, [activeTab, spectraAanalysis]);
 
   const tableColumns = useMemo(() => {
     const initColumns = [
@@ -32,46 +16,40 @@ const MultipleSpectraAnalysisTable = memo(({ activeTab, spectraAanalysis }) => {
         index: 0,
         Cell: ({ row }) => row.index + 1,
       },
-      // {
-      //   Header: '',
-      //   id: 'delete-button',
-      //   index: 9999999,
-      //   Cell: ({ row }) => (
-      //     <button
-      //       type="button"
-      //       className="delete-button"
-      //       onClick={(e) => deleteHandler(e, row)}
-      //     >
-      //       <FaRegTrashAlt />
-      //     </button>
-      //   ),
-      // },
     ];
 
     const columns = initColumns;
     const setCustomColumn = (array, index, columnLabel, cellHandler) => {
-      const labels = columnLabel.split('-');
+      const columnData = data.columns[columnLabel];
       array.push({
         index: index,
-        Header:
-          labels.length === 2
-            ? `${format(labels[0])} - ${format(labels[1])}`
-            : columnLabel,
+        Header: () => (
+          <ColumnHeader
+            charLabel={columnLabel}
+            rangeLabel={
+              columnData.from && columnData.to
+                ? `${format(columnData.from)} - ${format(columnData.to)}`
+                : ''
+            }
+          />
+        ),
+        id: columnLabel,
         sortType: 'basic',
         Cell: ({ row }) => cellHandler(row),
       });
     };
-    if (data[0]) {
-      Object.keys(data[0]).forEach((key, index) => {
-        if (!['key'].includes(key)) {
-          setCustomColumn(columns, index + 1, key, (row) => {
-            return format(
-              row.original[key] && row.original[key].relative
-                ? row.original[key].relative
-                : '',
-            );
-          });
-        }
+    if (data.columns) {
+      Object.keys(data.columns).forEach((key) => {
+        // eslint-disable-next-line no-console
+        console.log(key);
+        const { valueKey, index: columnIndex } = data.columns[key];
+        setCustomColumn(columns, columnIndex + 1, key, (row) => {
+          return format(
+            row.original[key] && row.original[key][valueKey]
+              ? row.original[key][valueKey]
+              : '',
+          );
+        });
       });
     }
     const resultColumns = columns ? columns : initColumns;
@@ -80,11 +58,11 @@ const MultipleSpectraAnalysisTable = memo(({ activeTab, spectraAanalysis }) => {
     );
   }, [data, format]);
 
-  return data && data.length > 0 ? (
-    <ReactTable data={data} columns={tableColumns} />
+  return data.values && data.values.length > 0 ? (
+    <ReactTable data={data.values} columns={tableColumns} />
   ) : (
     <NoTableData />
   );
 });
 
-export default MultiAnalysisWrapper(MultipleSpectraAnalysisTable);
+export default MultipleSpectraAnalysisTable;

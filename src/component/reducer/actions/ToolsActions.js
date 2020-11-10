@@ -101,7 +101,7 @@ const resetSelectedTool = (state) => {
 };
 
 const resetFilterTool = (draft) => {
-  if (options[draft.selectedTool].isFilter) {
+  if (draft.selectedTool && options[draft.selectedTool].isFilter) {
     resetTool(draft);
   }
 };
@@ -416,8 +416,8 @@ const setTabActiveSpectrum = (draft, dataGroupByTab) => {
   );
   for (let tabKey of tabkeys) {
     const data = dataGroupByTab[tabKey];
-
-    if (tabKey.split(',').length === 2) {
+    const nucleusLength = tabKey.split(',').length;
+    if (nucleusLength === 2) {
       tabs2D.push(tabKey);
     }
 
@@ -425,9 +425,15 @@ const setTabActiveSpectrum = (draft, dataGroupByTab) => {
       const index = draft.data.findIndex((datum) => datum.id === data[0].id);
       tabActiveSpectrum[tabKey] = { id: data[0].id, index };
     } else {
-      if (dataGroupByTab[tabKey].length >= 2) {
-        const FTSpectrums = dataGroupByTab[tabKey].filter((d) => !d.info.isFid);
-        if (FTSpectrums && FTSpectrums.length > 0) {
+      const tabSpectra = dataGroupByTab[tabKey];
+      const tabSpectraLength = tabSpectra.length;
+      if (tabSpectraLength >= 2) {
+        const FTSpectrums = tabSpectra.filter((d) => !d.info.isFid);
+        if (
+          FTSpectrums.length > 0 &&
+          (nucleusLength === 2 ||
+            (nucleusLength === 1 && tabSpectraLength !== FTSpectrums.length))
+        ) {
           const index = draft.data.findIndex(
             (datum) => datum.id === FTSpectrums[0].id,
           );

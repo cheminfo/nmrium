@@ -37,7 +37,6 @@ import {
   SET_DIMENSIONS,
   ADD_RANGE,
   ANALYZE_SPECTRA,
-  SET_LOADING_FLAG,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -52,7 +51,9 @@ import XLabelPointer from './tool/XLabelPointer';
 
 const Viewer1D = () => {
   //   const { selectedTool, isLoading, data } = useChartData();
-  const { general } = usePreferences();
+  const {
+    display: { general },
+  } = usePreferences();
   const state = useChartData();
   const {
     selectedTool,
@@ -101,11 +102,6 @@ const Viewer1D = () => {
 
   const handelBrushEnd = useCallback(
     (brushData) => {
-      dispatch({
-        type: SET_LOADING_FLAG,
-        isLoading: true,
-      });
-
       const propagateEvent = () => {
         const { startX, endX } = brushData;
         const startXPPM = scaleState.scaleX().invert(startX);
@@ -187,10 +183,6 @@ const Viewer1D = () => {
             break;
         }
       }
-      dispatch({
-        type: SET_LOADING_FLAG,
-        isLoading: false,
-      });
     },
     [scaleState, selectedTool, general, modal, data, activeSpectrum, dispatch],
   );
@@ -225,26 +217,33 @@ const Viewer1D = () => {
         });
       };
 
-      switch (selectedTool) {
-        case options.peakPicking.id:
-          dispatch({
-            type: ADD_PEAK,
-            mouseCoordinates: position,
-          });
-          break;
-        case options.phaseCorrection.id:
-          dispatch({
-            type: SET_VERTICAL_INDICATOR_X_POSITION,
-            position: position.x,
-          });
-          break;
-        case 'editRange':
-          if (position.shiftKey) {
-            propagateEvent();
-          }
-          break;
+      if (position.shiftKey) {
+        switch (selectedTool) {
+          case options.peakPicking.id:
+            dispatch({
+              type: ADD_PEAK,
+              mouseCoordinates: position,
+            });
+            break;
+          default:
+            break;
+        }
+      } else {
+        switch (selectedTool) {
+          case options.phaseCorrection.id:
+            dispatch({
+              type: SET_VERTICAL_INDICATOR_X_POSITION,
+              position: position.x,
+            });
+            break;
+          case 'editRange':
+            if (position.shiftKey) {
+              propagateEvent();
+            }
+            break;
 
-        default:
+          default:
+        }
       }
     },
     [dispatch, scaleState, selectedTool],

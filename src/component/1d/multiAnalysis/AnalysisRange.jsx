@@ -6,7 +6,10 @@ import { useDispatch } from '../../context/DispatchContext';
 import { useScale } from '../../context/ScaleContext';
 import DeleteButton from '../../elements/DeleteButton';
 import { useHighlight } from '../../highlight';
-import { DELETE_ANALYZE_SPECTRA_RANGE } from '../../reducer/types/Types';
+import {
+  DELETE_ANALYZE_SPECTRA_RANGE,
+  RESIZE_ANALYZE_SPECTRA_RANGE,
+} from '../../reducer/types/Types';
 import Resizable from '../Resizable';
 
 const stylesOnHover = css`
@@ -17,12 +20,6 @@ const stylesOnHover = css`
   user-select: 'none';
   -webkit-user-select: none; /* Chrome all / Safari all */
   -moz-user-select: none; /* Firefox all */
-
-  //   :hover .range-area {
-  //     height: 100%;
-  //     fill: #ff6f0057;
-  //     cursor: pointer;
-  //   }
 
   .delete-button {
     visibility: hidden;
@@ -52,27 +49,25 @@ const AnalysisRange = ({ rangeData }) => {
   const dispatch = useDispatch();
 
   const deleteHandler = useCallback(() => {
-    dispatch({ type: DELETE_ANALYZE_SPECTRA_RANGE, range: rangeData });
-  }, [dispatch, rangeData]);
+    dispatch({ type: DELETE_ANALYZE_SPECTRA_RANGE, colKey });
+  }, [colKey, dispatch]);
 
-  // const handleOnStartResizing = useCallback(() => {}, []);
-
-  //   const handleOnStopResizing = useCallback(
-  //     (resized) => {
-  //       dispatch({
-  //         type: RESIZE_RANGE,
-  //         data: { ...rangeData, ...resized },
-  //       });
-  //     },
-  //     [rangeData],
-  //   );
+  const handleOnStopResizing = useCallback(
+    (resized) => {
+      dispatch({
+        type: RESIZE_ANALYZE_SPECTRA_RANGE,
+        payload: { ...rangeData, ...resized },
+      });
+    },
+    [dispatch, rangeData],
+  );
 
   return (
     <g
       {...highlight.onHover}
       css={highlight.isActive ? stylesHighlighted : stylesOnHover}
     >
-      <g transform={`translate(${scaleX()(to)},10)`}>
+      <g transform={`translate(${scaleX()(to)},25)`}>
         <rect
           x="0"
           width={scaleX()(from) - scaleX()(to)}
@@ -84,18 +79,19 @@ const AnalysisRange = ({ rangeData }) => {
         <text
           textAnchor="middle"
           x={(scaleX()(from) - scaleX()(to)) / 2}
-          y="20"
-          fontSize="10"
+          y="-5"
+          fontSize="12"
           fill="red"
+          fontWeight="bolder"
           fillOpacity={highlight.isActive ? 1 : 0.6}
         >
-          {/* {absolute !== undefined ? absolute.toFixed(2) : ''} */}
+          {rangeData.colKey}
         </text>
       </g>
       <Resizable
         from={rangeData.from}
         to={rangeData.to}
-        // onDrop={handleOnStopResizing}
+        onDrop={handleOnStopResizing}
       />
       <DeleteButton x={scaleX()(to) - 20} y={10} onDelete={deleteHandler} />
     </g>

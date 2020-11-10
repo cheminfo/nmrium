@@ -86,31 +86,32 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
     <Fragment>
       <g
         css={highlight.isActive ? stylesHighlighted : stylesOnHover}
-        data-no-export="true"
         {...highlight.onHover}
       >
         <rect
+          data-no-export="true"
           x={`${scaleX()(xBoundary[1])}`}
           y="0"
           width={`${scaleX()(xBoundary[0]) - scaleX()(xBoundary[1])}`}
           height={height - margin.bottom}
           className="highlight"
         />
-        {highlight.isActive && (
-          <text
-            x={scaleX()(xBoundary[1])}
-            y={height - margin.bottom + 30}
-            fill="black"
-            style={{ fontSize: '12px', fontWeight: 'bold' }}
-          >
-            {integral !== undefined ? integral.toFixed(2) : ''}
-          </text>
-        )}
+        {/* {highlight.isActive && ( */}
+        <text
+          x={scaleX()(xBoundary[1])}
+          y={height - margin.bottom + 30}
+          fill="black"
+          style={{ fontSize: '12px', fontWeight: 'bold' }}
+        >
+          {integral !== undefined ? integral.toFixed(2) : ''}
+        </text>
+        {/* )} */}
         <Resizable
           from={integralData.from}
           to={integralData.to}
           // onDrag={handleOnStartResizing}
           onDrop={handleOnStopResizing}
+          data-no-export="true"
         />
         <DeleteButton
           x={`${scaleX()(xBoundary[1]) - 20}`}

@@ -5,7 +5,7 @@ import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 const DisplayTabContent = () => {
   return (
     <>
-      <p className="section-header">Show / Hid Panels</p>
+      <p className="section-header">Show / Hide Panels</p>
       <FormikCheckBox
         className="checkbox-element"
         label="Spectra Panel"

@@ -10,7 +10,7 @@ const ControllersTabContent = () => {
       <FormikInput type="number" label="Low" name="controllers.mws.low" />
       <FormikInput type="number" label="high" name="controllers.mws.high" />
       <p className="section-header" style={{ marginTop: '40px' }}>
-        Show / Hid Panels
+        Show / Hide Panels
       </p>
       <FormikCheckBox
         className="help-checkbox-element"

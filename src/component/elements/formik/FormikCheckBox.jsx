@@ -19,8 +19,11 @@ const FormikCheckBox = ({ label, name, onChange, className, reverse }) => {
   );
   return (
     <div className={`${className} check-${value}`}>
-      <span className="checkbox-lable">{label}</span>
+      <label htmlFor={name} className="checkbox-lable">
+        {label}
+      </label>
       <CheckBox
+        id={name}
         name={name}
         checked={value}
         onChange={changeHandler}

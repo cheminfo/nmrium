@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
 import lodash from 'lodash';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import Input from '../Input';
 
@@ -13,9 +13,10 @@ const FormikInput = ({
   checkValue,
   type,
   className,
+  value,
+  format,
 }) => {
-  const { values, handleChange } = useFormikContext();
-
+  const { values, handleChange, setFieldValue } = useFormikContext();
   const changeHandler = useCallback(
     (e) => {
       onChange(e);
@@ -24,16 +25,23 @@ const FormikInput = ({
     [handleChange, onChange],
   );
 
+  useEffect(() => {
+    if (value) {
+      setFieldValue(name, value);
+    }
+  }, [name, setFieldValue, value]);
+
   return (
     <Input
       label={label}
       name={name}
-      value={lodash.get(values, name)}
+      value={value ? value : lodash.get(values, name)}
       onChange={changeHandler}
       type={type}
       style={style}
       checkValue={checkValue}
       className={className}
+      format={format}
     />
   );
 };
@@ -50,6 +58,8 @@ FormikInput.propTypes = {
   checkValue: PropTypes.func,
   type: PropTypes.oneOf(['text', 'number']),
   className: PropTypes.string,
+  value: PropTypes.any,
+  format: PropTypes.func,
 };
 
 FormikInput.defaultProps = {
@@ -63,6 +73,8 @@ FormikInput.defaultProps = {
   checkValue: () => true,
   type: 'text',
   className: '',
+  value: null,
+  format: () => (val) => val,
 };
 
 export default FormikInput;
