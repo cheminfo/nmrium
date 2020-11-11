@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
 
+import { getAtoms } from '../../../data/correlation/Utilities';
+
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
-import { getAtoms } from './Utilities';
 
 const Overview = memo(({ correlations }) => {
   if (!correlations) {

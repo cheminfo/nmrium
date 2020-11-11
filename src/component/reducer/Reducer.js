@@ -240,36 +240,34 @@ export function spectrumReducer(state, action) {
     case types.DELETE_MOLECULE:
       return MoleculeActions.handleDeleteMolecule(state, action.key);
 
-    // case types.ADD_CORRELATION:
-    //   return CorrelationsActions.handleAddCorrelation(
-    //     state,
-    //     action.correlation,
-    //   );
+    case types.BUILD_CORRELATIONS:
+      return CorrelationsActions.handleBuildCorrelations(
+        state,
+        action.signals1D,
+        action.signals2D,
+      );
 
-    case types.ADD_CORRELATIONS:
-      return CorrelationsActions.handleAddCorrelations(
+    case types.ADD_CORRELATION:
+      return CorrelationsActions.handleAddCorrelation(
+        state,
+        action.correlation,
+      );
+
+    case types.DELETE_CORRELATION:
+      return CorrelationsActions.handleDeleteCorrelation(state, action.id);
+
+    case types.SET_CORRELATION:
+      return CorrelationsActions.handleSetCorrelation(
+        state,
+        action.id,
+        action.correlation,
+      );
+
+    case types.SET_CORRELATIONS:
+      return CorrelationsActions.handleSetCorrelations(
         state,
         action.correlations,
       );
-
-    // case types.DELETE_CORRELATION:
-    //   return CorrelationsActions.handleDeleteCorrelation(state, action.id);
-
-    case types.DELETE_CORRELATIONS:
-      return CorrelationsActions.handleDeleteCorrelations(state);
-
-    // case types.SET_CORRELATION:
-    //   return CorrelationsActions.handleSetCorrelation(
-    //     state,
-    //     action.id,
-    //     action.correlation,
-    //   );
-
-    // case types.SET_CORRELATIONS:
-    //   return CorrelationsActions.handleSetCorrelations(
-    //     state,
-    //     action.correlations,
-    //   );
 
     case types.SET_CORRELATION_MF:
       return CorrelationsActions.handleSetMF(state, action.mf);
@@ -282,9 +280,6 @@ export function spectrumReducer(state, action) {
 
     case types.UNSET_CORRELATION_TOLERANCE:
       return CorrelationsActions.handleUnsetTolerance(state);
-
-    case types.SET_CORRELATION_STATE:
-      return CorrelationsActions.handleSetState(state, action.state);
 
     case types.DELETE_SPECTRA:
       return SpectrumsActions.handleDeleteSpectra(state);

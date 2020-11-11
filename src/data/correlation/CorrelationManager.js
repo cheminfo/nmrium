@@ -1,5 +1,7 @@
 import lodash from 'lodash';
 
+import { buildCorrelationsData, buildCorrelationsState } from './Utilities';
+
 const defaultTolerance = {
   C: 0.25,
   H: 0.02,
@@ -77,23 +79,19 @@ export default class CorrelationManager {
   }
 
   getData() {
-    return { options: this.options, values: this.values, state: this.state };
+    return {
+      options: Object.assign({}, this.options),
+      values: this.values.slice(),
+      state: Object.assign({}, this.state),
+    };
   }
 
   addValue(correlation) {
     this.setValues(this.getValues().concat([correlation]));
   }
 
-  addValues(correlations) {
-    correlations.forEach((correlation) => this.addValue(correlation));
-  }
-
   deleteValue(id) {
     this.setValues(this.values.filter((correlation) => correlation.id !== id));
-  }
-
-  deleteValues() {
-    this.setValues([]);
   }
 
   setValue(id, correlation) {
@@ -106,5 +104,12 @@ export default class CorrelationManager {
 
   setValues(correlations) {
     this.values = correlations;
+    this.setState(buildCorrelationsState(this.getData()));
+  }
+
+  buildValues(signals1D, signals2D) {
+    this.setValues(
+      buildCorrelationsData(signals1D, signals2D, this.getTolerance()),
+    );
   }
 }

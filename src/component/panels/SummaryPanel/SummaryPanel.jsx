@@ -6,15 +6,16 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
 import { SignalKindsToInclude } from '../../../data/constants/SignalsKinds';
+import Correlation from '../../../data/correlation/Correlation';
+import { checkSignalMatch } from '../../../data/correlation/Utilities';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import {
-  ADD_CORRELATIONS,
-  DELETE_CORRELATIONS,
+  BUILD_CORRELATIONS,
+  SET_CORRELATION,
   SET_CORRELATION_MF,
-  SET_CORRELATION_STATE,
   SET_CORRELATION_TOLERANCE,
   UNSET_CORRELATION_MF,
 } from '../../reducer/types/Types';
@@ -24,13 +25,7 @@ import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
 import SetMolecularFormulaModal from './SetMolecularFormulaModal';
 import SetShiftToleranceModal from './SetShiftTolerancesModal';
-import {
-  addToExperiments,
-  buildCorrelationsData,
-  buildCorrelationsState,
-  checkSignalMatch,
-  getAtomType,
-} from './Utilities';
+import { addToExperiments, getAtomType } from './Utilities';
 
 const panelStyle = css`
   display: flex;
@@ -164,23 +159,23 @@ const SummaryPanel = memo(() => {
     return _experiments1D;
   }, [atoms, experiments]);
 
-  // "extra" 1D experiments containing ranges, e.g. DEPT
-  const experiments1DExtra = useMemo(() => {
-    const _experiments1DExtra = {};
-    Object.keys(lodash.get(experiments, `1D`, {}))
-      .filter((_experimentType) => _experimentType !== '1d') // don't consider "plain" 1D experiments here
-      .forEach((_experimentType) => {
-        addToExperiments(
-          experiments,
-          _experiments1DExtra,
-          `1D.${_experimentType}`,
-          false,
-          _experimentType,
-        );
-      });
+  // // "extra" 1D experiments containing ranges, e.g. DEPT
+  // const experiments1DExtra = useMemo(() => {
+  //   const _experiments1DExtra = {};
+  //   Object.keys(lodash.get(experiments, `1D`, {}))
+  //     .filter((_experimentType) => _experimentType !== '1d') // don't consider "plain" 1D experiments here
+  //     .forEach((_experimentType) => {
+  //       addToExperiments(
+  //         experiments,
+  //         _experiments1DExtra,
+  //         `1D.${_experimentType}`,
+  //         false,
+  //         _experimentType,
+  //       );
+  //     });
 
-    return _experiments1DExtra;
-  }, [experiments]);
+  //   return _experiments1DExtra;
+  // }, [experiments]);
 
   // 2D experiments containing zones
   const experiments2D = useMemo(() => {
@@ -240,55 +235,55 @@ const SummaryPanel = memo(() => {
     return _signals1D;
   }, [atoms, experiments1D]);
 
-  const signals1DExtra = useMemo(() => {
-    // store valid signals from 1D extra experiments
-    const _signals1DExtra = {};
-    // store valid signals from 2D experiments
-    Object.keys(experiments1DExtra).forEach((_experimentType) => {
-      let _signals = [];
-      // @TODO for now we will use the first occurring matched spectrum only (index)
-      const index = 0;
-      const atomType = getAtomType(
-        experiments1DExtra[_experimentType][index].info.nucleus,
-      );
-      const __signals = experiments1DExtra[_experimentType][index].ranges.values
-        .map((_range) =>
-          _range.signal.filter((_signal) =>
-            SignalKindsToInclude.includes(_signal.kind),
-          ),
-        )
-        .flat();
-      let count = 0;
-      __signals.forEach((__signal) => {
-        if (
-          !_signals.some((_signal) =>
-            checkSignalMatch(_signal.signal, __signal, 0.0),
-          )
-        ) {
-          _signals.push({
-            experimentType: _experimentType,
-            experimentID: experiments1DExtra[_experimentType][index].id,
-            atomType: atomType,
-            label: { origin: `${_experimentType}${count + 1}` },
-            signal: __signal,
-          });
-          count++;
-        }
-      });
+  // const signals1DExtra = useMemo(() => {
+  //   // store valid signals from 1D extra experiments
+  //   const _signals1DExtra = {};
+  //   // store valid signals from 2D experiments
+  //   Object.keys(experiments1DExtra).forEach((_experimentType) => {
+  //     let _signals = [];
+  //     // @TODO for now we will use the first occurring matched spectrum only (index)
+  //     const index = 0;
+  //     const atomType = getAtomType(
+  //       experiments1DExtra[_experimentType][index].info.nucleus,
+  //     );
+  //     const __signals = experiments1DExtra[_experimentType][index].ranges.values
+  //       .map((_range) =>
+  //         _range.signal.filter((_signal) =>
+  //           SignalKindsToInclude.includes(_signal.kind),
+  //         ),
+  //       )
+  //       .flat();
+  //     let count = 0;
+  //     __signals.forEach((__signal) => {
+  //       if (
+  //         !_signals.some((_signal) =>
+  //           checkSignalMatch(_signal.signal, __signal, 0.0),
+  //         )
+  //       ) {
+  //         _signals.push({
+  //           experimentType: _experimentType,
+  //           experimentID: experiments1DExtra[_experimentType][index].id,
+  //           atomType: atomType,
+  //           label: { origin: `${_experimentType}${count + 1}` },
+  //           signal: __signal,
+  //         });
+  //         count++;
+  //       }
+  //     });
 
-      if (!lodash.get(_signals1DExtra, `${_experimentType}`, false)) {
-        _signals1DExtra[_experimentType] = [];
-      }
-      _signals1DExtra[_experimentType].push({
-        signals: _signals,
-        experimentType: _experimentType,
-        experimentID: experiments1DExtra[_experimentType][index].id,
-        atomType: atomType,
-      });
-    });
+  //     if (!lodash.get(_signals1DExtra, `${_experimentType}`, false)) {
+  //       _signals1DExtra[_experimentType] = [];
+  //     }
+  //     _signals1DExtra[_experimentType].push({
+  //       signals: _signals,
+  //       experimentType: _experimentType,
+  //       experimentID: experiments1DExtra[_experimentType][index].id,
+  //       atomType: atomType,
+  //     });
+  //   });
 
-    return _signals1DExtra;
-  }, [experiments1DExtra]);
+  //   return _signals1DExtra;
+  // }, [experiments1DExtra]);
 
   const signals2D = useMemo(() => {
     // store valid signals from 2D experiments
@@ -341,52 +336,24 @@ const SummaryPanel = memo(() => {
     return _signals2D;
   }, [experiments2D]);
 
-  const atomTypesInSpectra = useMemo(() => {
-    const atomTypes1D = Object.keys(signals1D);
-    const atomTypes1DExtra = Object.keys(signals1DExtra)
-      .map((_experimentType) =>
-        signals1DExtra[_experimentType].map(
-          (_experiment) => _experiment.atomType,
-        ),
-      )
-      .flat()
-      .filter((_atomType, i, a) => a.indexOf(_atomType) === i);
-    const atomTypes2D = Object.keys(signals2D)
-      .map((_experimentType) =>
-        signals2D[_experimentType]
-          .map((_experiment) => _experiment.atomType)
-          .flat(),
-      )
-      .flat()
-      .filter((_atomType, i, a) => a.indexOf(_atomType) === i);
-
-    return atomTypes1D
-      .concat(atomTypes1DExtra)
-      .concat(atomTypes2D)
-      .filter((_atomType, i, a) => a.indexOf(_atomType) === i);
-  }, [signals1D, signals1DExtra, signals2D]);
-
   useEffect(() => {
-    const _correlations = buildCorrelationsData(
-      signals1D,
-      signals2D,
-      tolerance,
-    );
-    dispatch({ type: DELETE_CORRELATIONS });
-    dispatch({ type: ADD_CORRELATIONS, correlations: _correlations });
-    dispatch({
-      type: SET_CORRELATION_STATE,
-      state: buildCorrelationsState(_correlations, atoms, atomTypesInSpectra),
-    });
-  }, [atomTypesInSpectra, atoms, dispatch, signals1D, signals2D, tolerance]);
+    dispatch({ type: BUILD_CORRELATIONS, signals1D, signals2D });
+  }, [dispatch, signals1D, signals2D]);
 
   // useEffect(() => {
   //   console.log(correlations);
   // }, [correlations]);
 
-  const editCountSaveHandler = useCallback((correlation, value) => {
-    correlation.setCount(value);
-  }, []);
+  const editCountSaveHandler = useCallback(
+    (correlation, value) => {
+      dispatch({
+        type: SET_CORRELATION,
+        id: correlation.getID(),
+        correlation: new Correlation({ ...correlation, count: value }),
+      });
+    },
+    [dispatch],
+  );
 
   return (
     <div>

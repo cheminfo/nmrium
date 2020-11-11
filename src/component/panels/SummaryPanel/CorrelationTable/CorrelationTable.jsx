@@ -7,8 +7,8 @@ import Correlation from '../../../../data/correlation/Correlation';
 import {
   getAtoms,
   getCorrelationsByAtomType,
-  getLabelColor,
-} from '../Utilities';
+} from '../../../../data/correlation/Utilities';
+import { getLabelColor } from '../Utilities';
 
 import CorrelationTableRow from './CorrelationTableRow';
 
@@ -81,11 +81,7 @@ const CorrelationTable = ({
                 rowKey={`correlation${atomType}${correlation.getID()}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={{
-                  color: getLabelColor(
-                    correlations.state,
-                    correlations.values,
-                    correlation,
-                  ),
+                  color: getLabelColor(correlations, correlation),
                 }}
                 onSaveEditCount={editCountSaveHandler}
               />,
@@ -102,11 +98,7 @@ const CorrelationTable = ({
                     rowKey={`correlation${atomType}${correlationProton.getID()}_${correlation.getID()}`}
                     styleRow={{ backgroundColor: 'white' }}
                     styleLabel={{
-                      color: getLabelColor(
-                        correlations.state,
-                        correlations.values,
-                        correlationProton,
-                      ),
+                      color: getLabelColor(correlations, correlationProton),
                     }}
                     onSaveEditCount={editCountSaveHandler}
                   />,
@@ -131,11 +123,7 @@ const CorrelationTable = ({
                 rowKey={`placeholder_correlation$_${_rows.length}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={{
-                  color: getLabelColor(
-                    correlations.state,
-                    correlations.values,
-                    pseudoCorrelation,
-                  ),
+                  color: getLabelColor(correlations, pseudoCorrelation),
                 }}
               />,
             );
@@ -152,11 +140,7 @@ const CorrelationTable = ({
                 rowKey={`correlation${atomType}${correlation.getID()}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={{
-                  color: getLabelColor(
-                    correlations.state,
-                    correlations.values,
-                    correlation,
-                  ),
+                  color: getLabelColor(correlations, correlation),
                 }}
                 onSaveEditCount={editCountSaveHandler}
               />,
@@ -173,11 +157,7 @@ const CorrelationTable = ({
                     rowKey={`correlation${atomType}${correlationProton.getID()}_${correlation.getID()}`}
                     styleRow={{ backgroundColor: 'white' }}
                     styleLabel={{
-                      color: getLabelColor(
-                        correlations.state,
-                        correlations.values,
-                        correlationProton,
-                      ),
+                      color: getLabelColor(correlations, correlationProton),
                     }}
                     onSaveEditCount={editCountSaveHandler}
                   />,
@@ -198,11 +178,7 @@ const CorrelationTable = ({
                 rowKey={`correlation${atomType}${correlationProton.getID()}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={{
-                  color: getLabelColor(
-                    correlations.state,
-                    correlations.values,
-                    correlationProton,
-                  ),
+                  color: getLabelColor(correlations, correlationProton),
                 }}
                 onSaveEditCount={editCountSaveHandler}
               />,
