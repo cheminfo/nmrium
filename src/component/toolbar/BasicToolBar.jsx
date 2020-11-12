@@ -289,13 +289,17 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
             css={styles}
             type="button"
             onClick={alignSpectrumsVerticallyHandler}
+            className={
+              !verticalAlign.flag
+                ? 'ci-icon-nmr-align-center'
+                : 'ci-icon-nmr-align-bottom'
+            }
           >
             <ToolTip
               title={!verticalAlign.flag ? 'Align Center' : 'Bottom Align'}
               popupPlacement="right"
-            >
-              {!verticalAlign.flag ? 'CA' : 'BA'}
-            </ToolTip>
+            />
+            {/* {!verticalAlign.flag ? 'CA' : 'BA'} */}
           </button>
         )}
     </Fragment>

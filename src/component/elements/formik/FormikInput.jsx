@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
 import lodash from 'lodash';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import Input from '../Input';
 
@@ -16,7 +16,13 @@ const FormikInput = ({
   value,
   format,
 }) => {
-  const { values, handleChange, setFieldValue } = useFormikContext();
+  const {
+    values,
+    handleChange,
+    setFieldValue,
+    errors,
+    touched,
+  } = useFormikContext();
   const changeHandler = useCallback(
     (e) => {
       onChange(e);
@@ -31,6 +37,9 @@ const FormikInput = ({
     }
   }, [name, setFieldValue, value]);
 
+  const isInvalid = useMemo(() => {
+    return lodash.get(errors, name) && lodash.get(touched, name);
+  }, [errors, name, touched]);
   return (
     <Input
       label={label}
@@ -38,7 +47,7 @@ const FormikInput = ({
       value={value ? value : lodash.get(values, name)}
       onChange={changeHandler}
       type={type}
-      style={style}
+      style={{ input: { ...style, ...(isInvalid && { borderColor: 'red' }) } }}
       checkValue={checkValue}
       className={className}
       format={format}

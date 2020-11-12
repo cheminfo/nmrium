@@ -362,7 +362,7 @@ const FunctionToolBar = ({
             <ToggleButton
               key={options.baseLineCorrection.id}
               value={options.baseLineCorrection.id}
-              className="ci-icon-nmr-base-line-correction"
+              className="ci-icon-nmr-baseline-correction"
               style={styles.icon}
               isVisible={
                 activeSpectrum &&
@@ -374,9 +374,7 @@ const FunctionToolBar = ({
                 title={options.baseLineCorrection.label}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
-              >
-                BLC
-              </ToolTip>
+              />
             </ToggleButton>
           )}
       </ToggleButtonGroup>

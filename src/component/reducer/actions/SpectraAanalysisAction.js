@@ -58,10 +58,22 @@ const handleSetcolumns = (state, action) => {
     draft.spectraAanalysis = spectraAanalysis;
   });
 };
+const handleFiltercolumn = (state, action) => {
+  const { columnKey, valueKey } = action.payload;
+  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().changeColumnValueKey(
+    state.activeTab,
+    columnKey,
+    valueKey,
+  );
+  return produce(state, (draft) => {
+    draft.spectraAanalysis = spectraAanalysis;
+  });
+};
 
 export {
   analyzeSpectra,
   handleDeleteSpectraRanges,
   handleResizeSpectraRange,
   handleSetcolumns,
+  handleFiltercolumn,
 };

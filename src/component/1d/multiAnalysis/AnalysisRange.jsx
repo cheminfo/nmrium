@@ -42,15 +42,15 @@ const stylesHighlighted = css`
   }
 `;
 
-const AnalysisRange = ({ rangeData }) => {
-  const { colKey, from, to } = rangeData;
-  const highlight = useHighlight([colKey]);
+const AnalysisRange = ({ rangeData, columnKey }) => {
+  const { from, to } = rangeData;
+  const highlight = useHighlight([columnKey]);
   const { scaleX } = useScale();
   const dispatch = useDispatch();
 
   const deleteHandler = useCallback(() => {
-    dispatch({ type: DELETE_ANALYZE_SPECTRA_RANGE, colKey });
-  }, [colKey, dispatch]);
+    dispatch({ type: DELETE_ANALYZE_SPECTRA_RANGE, colKey: columnKey });
+  }, [columnKey, dispatch]);
 
   const handleOnStopResizing = useCallback(
     (resized) => {
@@ -85,7 +85,7 @@ const AnalysisRange = ({ rangeData }) => {
           fontWeight="bolder"
           fillOpacity={highlight.isActive ? 1 : 0.6}
         >
-          {rangeData.colKey}
+          {columnKey}
         </text>
       </g>
       <Resizable

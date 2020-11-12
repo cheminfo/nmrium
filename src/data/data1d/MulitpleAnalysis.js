@@ -5,12 +5,12 @@ import generateChar from '../utilities/generateChar';
 
 import { Datum1D } from './Datum1D';
 
-const COLUMNS_TYPES = {
-  CALC: 'CALC',
+export const COLUMNS_TYPES = {
+  NORMAL: 'NORMAL',
   FORMULA: 'FORMULA',
 };
 
-export class MultipleAnalysis {
+export default class MultipleAnalysis {
   spectraAanalysis = {};
   reservedColumnsNames = {};
 
@@ -60,6 +60,13 @@ export class MultipleAnalysis {
     }
   }
 
+  changeColumnValueKey(nucleus, columnKey, newKey) {
+    this.spectraAanalysis[nucleus].options.columns[columnKey].valueKey = newKey;
+
+    this.spectraAanalysis[nucleus].values = this.refreshCalculation(nucleus);
+    return lodash.cloneDeep(this.spectraAanalysis);
+  }
+
   setColumn(nucleus, inputColumns) {
     this.init(nucleus);
     // const { columns } = this.spectraAanalysis[nucleus].options;
@@ -77,7 +84,7 @@ export class MultipleAnalysis {
     let data = Object.entries(this.spectraAanalysis[nucleus].values).reduce(
       (outerAcc, [spectraKey, spectra]) => {
         outerAcc[spectraKey] = Object.keys(inputColumns).reduce((acc, key) => {
-          const newKey = inputColumns[key].tempKey.toUpperCase();
+          const newKey = inputColumns[key].tempKey;
           if (spectra[key]) {
             acc[newKey] = spectra[key];
           }
@@ -148,7 +155,7 @@ export class MultipleAnalysis {
     const colKey = this.addColumnKey(
       nucleus,
       {
-        type: COLUMNS_TYPES.CALC,
+        type: COLUMNS_TYPES.NORMAL,
         valueKey: 'relative',
         from,
         to,
@@ -267,7 +274,28 @@ export class MultipleAnalysis {
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
-      result = 'Error';
+      result = new Error(`Invalid Formula ( ${formula} ) `);
+    }
+    return result;
+  }
+  getDataAsString(nucleus) {
+    const {
+      values,
+      options: { columns },
+    } = this.spectraAanalysis[nucleus];
+
+    let result = '';
+
+    for (const letter in columns) {
+      result += `${letter}\t`;
+    }
+    result += '\n';
+
+    for (const spectrum of Object.values(values)) {
+      for (const letter in columns) {
+        result += `${spectrum[letter][columns[letter].valueKey]}\t`;
+      }
+      result += '\n';
     }
     return result;
   }

@@ -5,7 +5,7 @@ import { Molecule } from 'openchemlib/full';
 import * as SpectraManager from './SpectraManager';
 import CorrelationManager from './correlation/CorrelationManager';
 import { Datum1D } from './data1d/Datum1D';
-import { MultipleAnalysis } from './data1d/MulitpleAnalysis';
+import MultipleAnalysis from './data1d/MulitpleAnalysis';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
 import getColor from './utilities/getColor';
@@ -236,6 +236,10 @@ export class Analysis {
 
   getMultipleAnalysisInstance() {
     return this.multipleAnalysisInstance;
+  }
+
+  getMultipleAnalysisTableAsString(nucleus) {
+    return this.multipleAnalysisInstance.getDataAsString(nucleus);
   }
 
   getCorrelations() {
