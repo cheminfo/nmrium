@@ -274,7 +274,7 @@ export default class MultipleAnalysis {
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
-      result = 'Error';
+      result = new Error(`Invalid Formula ( ${formula} ) `);
     }
     return result;
   }

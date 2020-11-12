@@ -63,11 +63,14 @@ const MultipleSpectraAnalysisTable = memo(({ data, activeTab }) => {
       Object.keys(data.columns).forEach((key) => {
         const { valueKey, index: columnIndex } = data.columns[key];
         setCustomColumn(columns, columnIndex + 1, key, (row) => {
-          return format(
-            row.original[key] && row.original[key][valueKey]
-              ? row.original[key][valueKey]
-              : '',
-          );
+          const value = row.original[key][valueKey];
+          const result =
+            value instanceof Error ? (
+              <span style={{ color: 'red' }}>{value.message}</span>
+            ) : (
+              format(value)
+            );
+          return result;
         });
       });
     }
