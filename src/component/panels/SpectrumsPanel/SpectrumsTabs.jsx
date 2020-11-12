@@ -173,7 +173,12 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
       <Tabs defaultTabID={activeTab} onClick={onTabChangeHandler}>
         {spectrumsGroupByNucleus &&
           Object.keys(spectrumsGroupByNucleus).map((group) => (
-            <div tablabel={group} tabid={group} key={group}>
+            <div
+              tablabel={group}
+              tabid={group}
+              key={group}
+              style={{ overflow: 'auto', height: '100%' }}
+            >
               {spectrumsGroupByNucleus[group] &&
                 spectrumsGroupByNucleus[group].map((d) => (
                   <SpectrumListItem

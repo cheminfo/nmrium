@@ -76,20 +76,19 @@ const PeaksPanel = memo(() => {
           onClose={settingsPanelHandler}
         />
       )}
-
-      <ReactCardFlip
-        isFlipped={isFlipped}
-        infinite={true}
-        containerStyle={{ height: '100%' }}
-      >
-        <div>
+      <div style={{ height: '100%', overflow: 'auto' }}>
+        <ReactCardFlip
+          isFlipped={isFlipped}
+          infinite={true}
+          containerStyle={{ overflow: 'hidden' }}
+        >
           <PeaksTable
             enableFilter={filterIsActive}
             onPeaksChange={peaksChangedHandler}
           />
-        </div>
-        <PeaksPreferences ref={settingRef} />
-      </ReactCardFlip>
+          <PeaksPreferences ref={settingRef} />
+        </ReactCardFlip>
+      </div>
     </div>
   );
 });

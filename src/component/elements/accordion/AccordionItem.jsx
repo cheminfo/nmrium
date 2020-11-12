@@ -41,7 +41,7 @@ const styles = {
   content: {
     backgroundColor: 'white',
     maxHeight: '0',
-    overflow: 'auto',
+    overflow: 'hidden',
     flex: '1 1 1px',
   },
 };

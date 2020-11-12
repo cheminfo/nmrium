@@ -31,6 +31,7 @@ const panelStyle = css`
   display: flex;
   flex-direction: column;
   text-align: center;
+  height: 100%;
 
   button {
     border-radius: 5px;
@@ -46,10 +47,20 @@ const panelStyle = css`
 
   .overview-container {
     width: 100%;
-
     span {
       margin-left: 7px;
     }
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 20px);
+    overflow: hidden;
+    padding: 0;
+  }
+  .table-container {
+    overflow: auto;
   }
 `;
 
@@ -361,32 +372,27 @@ const SummaryPanel = memo(() => {
   );
 
   return (
-    <div>
-      <div css={panelStyle}>
-        <DefaultPanelHeader canDelete={false}>
-          <ToolTip
-            title={`Set molecular formula (${mf})`}
-            popupPlacement="right"
-          >
-            <button type="button" onClick={showSetMolecularFormulaModal}>
-              <FaFlask />
-            </button>
-          </ToolTip>
-          <ToolTip title={`Set shift tolerance`} popupPlacement="right">
-            <button type="button" onClick={showSetShiftToleranceModal}>
-              <FaSlidersH />
-            </button>
-          </ToolTip>
-          <div className="overview-container">
-            <Overview correlations={correlations} />
-          </div>
-        </DefaultPanelHeader>
-        <CorrelationTable
-          correlations={correlations}
-          additionalColumns={additionalColumns}
-          editCountSaveHandler={editCountSaveHandler}
-        />
-      </div>
+    <div css={panelStyle}>
+      <DefaultPanelHeader canDelete={false}>
+        <ToolTip title={`Set molecular formula (${mf})`} popupPlacement="right">
+          <button type="button" onClick={showSetMolecularFormulaModal}>
+            <FaFlask />
+          </button>
+        </ToolTip>
+        <ToolTip title={`Set shift tolerance`} popupPlacement="right">
+          <button type="button" onClick={showSetShiftToleranceModal}>
+            <FaSlidersH />
+          </button>
+        </ToolTip>
+        <div className="overview-container">
+          <Overview correlations={correlations} />
+        </div>
+      </DefaultPanelHeader>
+      <CorrelationTable
+        correlations={correlations}
+        additionalColumns={additionalColumns}
+        editCountSaveHandler={editCountSaveHandler}
+      />
     </div>
   );
 });

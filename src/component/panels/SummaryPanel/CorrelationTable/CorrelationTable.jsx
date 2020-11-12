@@ -194,7 +194,7 @@ const CorrelationTable = ({
   }, [additionalColumns, correlations, editCountSaveHandler]);
 
   return (
-    <div>
+    <div className="table-container">
       <table css={tableStyle}>
         <tbody>
           <tr>

@@ -4,6 +4,12 @@ import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
 import InfoWrapper from '../hoc/InfoWrapper';
 
 const styles = {
+  container: {
+    height: '100%',
+  },
+  tableContainer: {
+    height: 'calc(100% - 30px)',
+  },
   searchInput: {
     width: '100%',
     borderRadius: '5px',
@@ -62,11 +68,12 @@ const InformationPanel = memo(({ info, meta }) => {
           <p
             style={{
               backgroundColor: '#efefef',
-              width: '100%',
+              // width: '100%',
               height: '100%',
               padding: '5px',
               fontFamily: 'monospace',
               whiteSpace: 'pre',
+              overflow: 'hidden',
             }}
           >
             {information[row.original].toString()}
@@ -78,7 +85,7 @@ const InformationPanel = memo(({ info, meta }) => {
   );
 
   return (
-    <>
+    <div style={styles.container}>
       <div>
         <input
           type="text"
@@ -87,9 +94,10 @@ const InformationPanel = memo(({ info, meta }) => {
           onChange={handleSearch}
         />
       </div>
-
-      <ReactTableFlexLayout data={matches} columns={columns} />
-    </>
+      <div style={styles.tableContainer}>
+        <ReactTableFlexLayout data={matches} columns={columns} />
+      </div>
+    </div>
   );
 });
 
