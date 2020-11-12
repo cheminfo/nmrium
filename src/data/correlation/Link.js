@@ -28,7 +28,9 @@ export default class Link {
   }
 
   addMatch(index) {
-    this.match.push(index);
+    if (!this.match.includes(index)) {
+      this.match.push(index);
+    }
   }
 
   getMatches() {

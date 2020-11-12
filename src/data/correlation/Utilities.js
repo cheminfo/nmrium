@@ -82,10 +82,10 @@ const getLetter = (number) => {
 
 const addFromData1D = (correlations, signals1D) => {
   Object.keys(signals1D).forEach((atomType) => {
-    lodash.cloneDeep(signals1D[atomType]).forEach((signal) => {
+    lodash.cloneDeep(signals1D[atomType]).forEach((signal1D) => {
       correlations.push(
         new Correlation({
-          ...signal,
+          ...signal1D,
         }),
       );
     });
@@ -94,69 +94,67 @@ const addFromData1D = (correlations, signals1D) => {
 
 const setCorrelations = (correlations, signals2D, tolerance) => {
   Object.keys(signals2D).forEach((experimentType) =>
-    signals2D[experimentType].forEach((experiment) =>
-      experiment.signals.forEach((signal2D) =>
-        experiment.atomType.forEach((atomType, dim) => {
-          const axis = dim === 0 ? 'x' : 'y';
-          const matchedCorrelationIndices = correlations
-            .map((correlation, k) =>
-              correlation.getAtomType() === atomType &&
-              checkSignalMatch(
-                correlation.getSignal(),
-                signal2D.signal[axis],
-                tolerance[atomType],
-              )
-                ? k
-                : -1,
+    signals2D[experimentType].forEach((signal2D) =>
+      signal2D.atomType.forEach((atomType, dim) => {
+        const axis = dim === 0 ? 'x' : 'y';
+        const matchedCorrelationIndices = correlations
+          .map((correlation, k) =>
+            correlation.getAtomType() === atomType &&
+            checkSignalMatch(
+              correlation.getSignal(),
+              signal2D.signal[axis],
+              tolerance[atomType],
             )
-            .filter((index) => index >= 0)
-            .filter((index, i, a) => a.indexOf(index) === i);
+              ? k
+              : -1,
+          )
+          .filter((index) => index >= 0)
+          .filter((index, i, a) => a.indexOf(index) === i);
 
-          const link = new Link({
-            experimentType: experiment.experimentType,
-            experimentID: experiment.experimentID,
-            signalID: signal2D.signal.id,
-            axis,
-            atomType: experiment.atomType,
+        const link = new Link({
+          experimentType: signal2D.experimentType,
+          experimentID: signal2D.experimentID,
+          signalID: signal2D.signal.id,
+          axis,
+          atomType: signal2D.atomType,
+        });
+        // in case of no signal match -> add new signal from 2D
+        if (matchedCorrelationIndices.length === 0) {
+          const newCorrelation = new Correlation({
+            experimentType: signal2D.experimentType,
+            experimentID: signal2D.experimentID,
+            atomType,
+            label: {
+              origin: `${atomType}${
+                getCorrelationsByAtomType(correlations, atomType).length + 1
+              }`,
+            },
+            signal: {
+              id: signal2D.signal.id,
+              delta: signal2D.signal[axis].delta,
+            },
           });
-          // in case of no signal match -> add new signal from 2D
-          if (matchedCorrelationIndices.length === 0) {
-            const newCorrelation = new Correlation({
-              experimentType: experiment.experimentType,
-              experimentID: experiment.experimentID,
-              atomType,
-              label: {
-                origin: `${atomType}${
-                  getCorrelationsByAtomType(correlations, atomType).length + 1
-                }`,
-              },
-              signal: {
-                id: signal2D.signal.id,
-                delta: signal2D.signal[axis].delta,
-              },
-            });
-            newCorrelation.addLink(link);
-            correlations.push(newCorrelation);
-          } else {
-            matchedCorrelationIndices.forEach((index) => {
-              if (
-                !correlations[index]
-                  .getLinks()
-                  .some(
-                    (_link) =>
-                      _link.getExperimentType() === link.getExperimentType() &&
-                      _link.getExperimentID() === link.getExperimentID() &&
-                      lodash.isEqual(_link.getAtomType(), link.getAtomType()) &&
-                      _link.getSignalID() === link.getSignalID() &&
-                      _link.getAxis() === link.getAxis(),
-                  )
-              ) {
-                correlations[index].addLink(link);
-              }
-            });
-          }
-        }),
-      ),
+          newCorrelation.addLink(link);
+          correlations.push(newCorrelation);
+        } else {
+          matchedCorrelationIndices.forEach((index) => {
+            if (
+              !correlations[index]
+                .getLinks()
+                .some(
+                  (_link) =>
+                    _link.getExperimentType() === link.getExperimentType() &&
+                    _link.getExperimentID() === link.getExperimentID() &&
+                    lodash.isEqual(_link.getAtomType(), link.getAtomType()) &&
+                    _link.getSignalID() === link.getSignalID() &&
+                    _link.getAxis() === link.getAxis(),
+                )
+            ) {
+              correlations[index].addLink(link);
+            }
+          });
+        }
+      }),
     ),
   );
 };
@@ -168,7 +166,7 @@ const setMatches = (correlations) => {
         link.axis === 'x' ? link.atomType[1] : link.atomType[0];
       getCorrelationsByAtomType(correlations, otherAtomType).forEach(
         (correlationOtherAtomType) => {
-          const indexCorrelationOtherAtomType = correlations.findIndex(
+          const correlationIndexOtherAtomType = correlations.findIndex(
             (_correlation) =>
               _correlation.getID() === correlationOtherAtomType.getID(),
           );
@@ -183,14 +181,9 @@ const setMatches = (correlations) => {
                 link.getAtomType(),
               ) &&
               linkOtherAtomType.getSignalID() === link.getSignalID() &&
-              linkOtherAtomType.getAxis() !== link.getAxis() &&
-              !link
-                .getMatches()
-                .some(
-                  (matchIndex) => matchIndex === indexCorrelationOtherAtomType,
-                )
+              linkOtherAtomType.getAxis() !== link.getAxis()
             ) {
-              link.addMatch(indexCorrelationOtherAtomType);
+              link.addMatch(correlationIndexOtherAtomType);
             }
           });
         },
@@ -272,11 +265,15 @@ const buildCorrelationsState = (correlations) => {
       correlations.values,
       atomType,
     );
+    const atomCountAtomType = correlationsAtomType.reduce(
+      (sum, correlation) => sum + correlation.getCount(),
+      0,
+    );
     const atomCount = atoms[atomType];
     state[atomType] = {
-      current: correlationsAtomType.length,
+      current: atomCountAtomType,
       total: atomCount,
-      complete: correlationsAtomType.length === atomCount ? true : false,
+      complete: atomCountAtomType === atomCount ? true : false,
     };
     const createErrorProperty = () => {
       if (!lodash.get(state, `${atomType}.error`, false)) {
@@ -288,9 +285,11 @@ const buildCorrelationsState = (correlations) => {
       state[atomType].error.incomplete = true;
     }
     if (atomType === 'H') {
-      const attachedCount = correlationsAtomType.filter(
-        (correlation) => Object.keys(correlation.getAttachments()).length > 0,
-      ).length;
+      const attachedCount = correlationsAtomType
+        .filter(
+          (correlation) => Object.keys(correlation.getAttachments()).length > 0,
+        )
+        .reduce((sum, correlation) => sum + correlation.getCount(), 0);
       const notAttached = correlations.values
         .map((correlation, k) =>
           correlation.getAtomType() === atomType &&

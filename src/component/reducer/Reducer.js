@@ -240,8 +240,8 @@ export function spectrumReducer(state, action) {
     case types.DELETE_MOLECULE:
       return MoleculeActions.handleDeleteMolecule(state, action.key);
 
-    case types.BUILD_CORRELATIONS:
-      return CorrelationsActions.handleBuildCorrelations(
+    case types.UPDATE_CORRELATIONS:
+      return CorrelationsActions.handleUpdateCorrelations(
         state,
         action.signals1D,
         action.signals2D,

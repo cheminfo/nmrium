@@ -13,7 +13,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import {
-  BUILD_CORRELATIONS,
+  UPDATE_CORRELATIONS,
   SET_CORRELATION,
   SET_CORRELATION_MF,
   SET_CORRELATION_TOLERANCE,
@@ -322,37 +322,42 @@ const SummaryPanel = memo(() => {
         }
       });
 
-      if (!lodash.get(_signals2D, `${_experimentType}`, false)) {
-        _signals2D[_experimentType] = [];
-      }
-      _signals2D[_experimentType].push({
-        signals: _signals,
-        experimentType: _experimentType,
-        experimentID: experiments2D[_experimentType][index].id,
-        atomType,
-      });
+      _signals2D[_experimentType] = _signals;
     });
 
     return _signals2D;
   }, [experiments2D]);
 
   useEffect(() => {
-    dispatch({ type: BUILD_CORRELATIONS, signals1D, signals2D });
+    dispatch({ type: UPDATE_CORRELATIONS, signals1D, signals2D });
   }, [dispatch, signals1D, signals2D]);
-
-  // useEffect(() => {
-  //   console.log(correlations);
-  // }, [correlations]);
 
   const editCountSaveHandler = useCallback(
     (correlation, value) => {
+      const factor = value / correlation.getCount();
       dispatch({
         type: SET_CORRELATION,
         id: correlation.getID(),
         correlation: new Correlation({ ...correlation, count: value }),
       });
+
+      // set the count of attached correlations according to the ratio
+      // e.g.in symmetry cases for heavy atoms, then also set the count of attached protons
+      if (lodash.get(correlation.getAttachments(), 'H', false)) {
+        correlation.getAttachments().H.forEach((index) => {
+          const attached = correlations.values[index];
+          dispatch({
+            type: SET_CORRELATION,
+            id: attached.getID(),
+            correlation: new Correlation({
+              ...attached,
+              count: attached.getCount() * factor,
+            }),
+          });
+        });
+      }
     },
-    [dispatch],
+    [correlations, dispatch],
   );
 
   return (

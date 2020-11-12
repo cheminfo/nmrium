@@ -30,8 +30,11 @@ const handleUnsetTolerance = (state) => {
   });
 };
 
-const handleBuildCorrelations = (state, signals1D, signals2D) => {
-  AnalysisObj.getCorrelationManagerInstance().buildValues(signals1D, signals2D);
+const handleUpdateCorrelations = (state, signals1D, signals2D) => {
+  AnalysisObj.getCorrelationManagerInstance().updateValues(
+    signals1D,
+    signals2D,
+  );
   return produce(state, (draft) => {
     draft.correlations = AnalysisObj.getCorrelations();
   });
@@ -67,7 +70,7 @@ const handleSetCorrelations = (state, correlations) => {
 
 export {
   handleAddCorrelation,
-  handleBuildCorrelations,
+  handleUpdateCorrelations,
   handleDeleteCorrelation,
   handleSetCorrelation,
   handleSetCorrelations,

@@ -1,6 +1,11 @@
 import lodash from 'lodash';
 
-import { buildCorrelationsData, buildCorrelationsState } from './Utilities';
+import Correlation from './Correlation';
+import {
+  buildCorrelationsData,
+  buildCorrelationsState,
+  checkSignalMatch,
+} from './Utilities';
 
 const defaultTolerance = {
   C: 0.25,
@@ -12,12 +17,12 @@ const defaultTolerance = {
 };
 
 export default class CorrelationManager {
-  constructor(options = {}, values = [], state = {}) {
+  constructor(options = {}, values = []) {
     this.options = options;
-    this.values = values;
-    this.state = state;
-
     this.options.tolerance = this.options.tolerance || defaultTolerance;
+    this.setValues(
+      values.map((correlation) => new Correlation({ ...correlation })),
+    );
   }
 
   getOptions() {
@@ -60,18 +65,8 @@ export default class CorrelationManager {
     return this.state;
   }
 
-  setState(state) {
-    this.state = state;
-  }
-
   getValues() {
     return this.values;
-  }
-
-  getValuesByAtomType(atomType) {
-    return this.values.filter(
-      (correlation) => correlation.getAtomType() === atomType,
-    );
   }
 
   getValueIndex(id) {
@@ -104,12 +99,35 @@ export default class CorrelationManager {
 
   setValues(correlations) {
     this.values = correlations;
-    this.setState(buildCorrelationsState(this.getData()));
+    this.state = buildCorrelationsState(this.getData());
   }
 
-  buildValues(signals1D, signals2D) {
-    this.setValues(
-      buildCorrelationsData(signals1D, signals2D, this.getTolerance()),
+  updateValues(signals1D, signals2D) {
+    const _correlations = buildCorrelationsData(
+      signals1D,
+      signals2D,
+      this.getTolerance(),
+      lodash.cloneDeep(this.getValues()),
     );
+
+    // important after data file import: set to the previous counts because they will be overwritten by default value (1)
+    this.getValues().forEach((correlation) => {
+      const index = _correlations.findIndex(
+        (_correlation) =>
+          correlation.getAtomType() === _correlation.getAtomType() &&
+          correlation.getExperimentType() ===
+            _correlation.getExperimentType() &&
+          checkSignalMatch(
+            correlation.getSignal(),
+            _correlation.getSignal(),
+            0.0,
+          ),
+      );
+      if (index >= 0) {
+        _correlations[index].setCount(correlation.getCount());
+      }
+    });
+
+    this.setValues(_correlations);
   }
 }

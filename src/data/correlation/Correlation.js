@@ -1,6 +1,6 @@
-import lodash from 'lodash';
-
 import generateID from '../utilities/generateID';
+
+import Link from './Link';
 
 export default class Correlation {
   constructor(options = {}) {
@@ -10,7 +10,9 @@ export default class Correlation {
     this.atomType = options.atomType;
     this.label = options.label || {};
     this.signal = options.signal || {};
-    this.link = options.link || [];
+    this.link = options.link
+      ? options.link.map((link) => new Link({ ...link }))
+      : [];
     this.count = options.count || 1;
     this.attachment = options.attachment || {};
   }
@@ -29,6 +31,10 @@ export default class Correlation {
 
   getLabel(labelKey) {
     return this.label[labelKey];
+  }
+
+  getLabels() {
+    return this.label;
   }
 
   setLabel(labelKey, label) {
@@ -59,20 +65,26 @@ export default class Correlation {
     return this.link;
   }
 
-  checkAttachmentAtomType(atomType) {
-    if (!lodash.get(this, `attachment.${atomType}`, false)) {
+  hasAttachmentAtomType(atomType) {
+    return this.attachment[atomType] ? true : false;
+  }
+
+  addAttachmentAtomType(atomType) {
+    if (!this.hasAttachmentAtomType(atomType)) {
       this.attachment[atomType] = [];
     }
   }
 
   setAttachments(atomType, attachment) {
-    this.checkAttachmentAtomType(atomType);
+    this.addAttachmentAtomType(atomType);
     this.attachment[atomType] = attachment;
   }
 
   addAttachment(atomType, attachment) {
-    this.checkAttachmentAtomType(atomType);
-    this.attachment[atomType].push(attachment);
+    this.addAttachmentAtomType(atomType);
+    if (!this.attachment[atomType].includes(attachment)) {
+      this.attachment[atomType].push(attachment);
+    }
   }
 
   getAttachments() {
