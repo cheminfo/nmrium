@@ -16,6 +16,9 @@ import { positions } from './options';
 const topStyles = css`
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+
   .tab-list {
     border-bottom: 1px solid #ccc;
     padding-left: 0;
@@ -41,6 +44,11 @@ const topStyles = css`
     background-color: white;
     border: solid #ccc;
     border-width: 1px 1px 0 1px;
+  }
+
+  .tab-content {
+    height: 100%;
+    overflow: auto;
   }
 `;
 
@@ -73,6 +81,11 @@ const leftStyles = css`
     background-color: white;
     border: solid #ccc;
     border-width: 1px 0px 1px 1px;
+  }
+
+  .tab-content {
+    height: 100%;
+    overflow: auto;
   }
 `;
 

@@ -1,4 +1,6 @@
-import React, { useCallback, memo, useState } from 'react';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/core';
+import { useCallback, memo, useState } from 'react';
 import { useAlert } from 'react-alert';
 import {
   FaEye,
@@ -19,17 +21,17 @@ import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import SpectrumsTabs from './SpectrumsTabs';
 
-const styles = {
-  toolbar: {
-    display: 'flex',
-    flexDirection: 'row',
-    borderBottom: '0.55px solid rgb(240, 240, 240)',
-  },
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-  },
-};
+const styles = css`
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  button {
+    background-color: transparent;
+    border: none;
+  }
+`;
 
 const SpectrumListPanel = memo(
   ({ data, activeSpectrum, activeTab: activeTabState }) => {
@@ -91,47 +93,33 @@ const SpectrumListPanel = memo(
     }, [activeTabState, alert, data, dispatch]);
 
     return (
-      <div style={styles.container}>
-        <div style={{ overflow: 'auto' }}>
-          <DefaultPanelHeader
-            onDelete={handleDelete}
-            counter={spectrums && spectrums.length}
-            deleteToolTip="Delete all spectra"
-          >
-            <ToolTip title="Hide all spectra" popupPlacement="right">
-              <button
-                style={styles.button}
-                type="button"
-                onClick={hideAllSpectrumsHandler}
-              >
-                <FaEyeSlash />
-              </button>
-            </ToolTip>
-            <ToolTip title="Show all spectra" popupPlacement="right">
-              <button
-                style={styles.button}
-                type="button"
-                onClick={showAllSpectrumsHandler}
-              >
-                <FaEye />
-              </button>
-            </ToolTip>
-            {activeSpectrum &&
-              activeTabState &&
-              activeTabState.split(',').length > 1 && (
-                <ToolTip title="Add missing projection" popupPlacement="right">
-                  <button
-                    style={styles.button}
-                    type="button"
-                    onClick={addMissingProjectionHandler}
-                  >
-                    <FaCreativeCommonsSamplingPlus />
-                  </button>
-                </ToolTip>
-              )}
-          </DefaultPanelHeader>
-          <SpectrumsTabs onTabChange={tabChangeHandler} />
-        </div>
+      <div css={styles}>
+        <DefaultPanelHeader
+          onDelete={handleDelete}
+          counter={spectrums && spectrums.length}
+          deleteToolTip="Delete all spectra"
+        >
+          <ToolTip title="Hide all spectra" popupPlacement="right">
+            <button type="button" onClick={hideAllSpectrumsHandler}>
+              <FaEyeSlash />
+            </button>
+          </ToolTip>
+          <ToolTip title="Show all spectra" popupPlacement="right">
+            <button type="button" onClick={showAllSpectrumsHandler}>
+              <FaEye />
+            </button>
+          </ToolTip>
+          {activeSpectrum &&
+            activeTabState &&
+            activeTabState.split(',').length > 1 && (
+              <ToolTip title="Add missing projection" popupPlacement="right">
+                <button type="button" onClick={addMissingProjectionHandler}>
+                  <FaCreativeCommonsSamplingPlus />
+                </button>
+              </ToolTip>
+            )}
+        </DefaultPanelHeader>
+        <SpectrumsTabs onTabChange={tabChangeHandler} />
       </div>
     );
   },

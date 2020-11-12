@@ -143,20 +143,21 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
             onClose={settingsPanelHandler}
           />
         )}
-
-        <ReactCardFlip
-          isFlipped={isFlipped}
-          infinite={true}
-          containerStyle={{ height: '100%' }}
-        >
-          <div>
-            <IntegralTable
-              enableFilter={filterIsActive}
-              onIntegralsChange={integralsChangedHandler}
-            />
-          </div>
-          <IntegralsPreferences ref={settingRef} />
-        </ReactCardFlip>
+        <div style={{ height: '100%', overflow: 'auto' }}>
+          <ReactCardFlip
+            isFlipped={isFlipped}
+            infinite={true}
+            containerStyle={{ overflow: 'hidden' }}
+          >
+            <div>
+              <IntegralTable
+                enableFilter={filterIsActive}
+                onIntegralsChange={integralsChangedHandler}
+              />
+            </div>
+            <IntegralsPreferences ref={settingRef} />
+          </ReactCardFlip>
+        </div>
       </div>
     </Fragment>
   );

@@ -528,22 +528,28 @@ const CorrelationTable = ({ data, mf, tolerance }) => {
   }, [additionalColumns, atoms, correlations, state]);
 
   return (
-    <div>
-      <Overview atoms={atoms} state={state} />
-      <table css={tableStyle}>
-        <tbody>
-          <tr>
-            <th>Exp</th>
-            <th>Atom</th>
-            <th>δ (ppm)</th>
-            <th>Equiv</th>
-            {additionalColumns.map((_experiment) => (
-              <th key={`expCol_${_experiment}`}>{_experiment.toUpperCase()}</th>
-            ))}
-          </tr>
-          {rows}
-        </tbody>
-      </table>
+    <div className="container">
+      <div>
+        <Overview atoms={atoms} state={state} />
+      </div>
+      <div className="table-container">
+        <table css={tableStyle}>
+          <tbody>
+            <tr>
+              <th>Exp</th>
+              <th>Atom</th>
+              <th>δ (ppm)</th>
+              <th>Equiv</th>
+              {additionalColumns.map((_experiment) => (
+                <th key={`expCol_${_experiment}`}>
+                  {_experiment.toUpperCase()}
+                </th>
+              ))}
+            </tr>
+            {rows}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

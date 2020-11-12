@@ -88,21 +88,20 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
           onClose={settingsPanelHandler}
         />
       )}
-
-      <ReactCardFlip
-        isFlipped={isFlipped}
-        infinite={true}
-        containerStyle={{ height: '100%' }}
-      >
-        <div style={{ overflow: 'auto', height: '100%' }}>
+      <div style={{ height: '100%', overflow: 'auto' }}>
+        <ReactCardFlip
+          isFlipped={isFlipped}
+          infinite={true}
+          containerStyle={{ overflow: 'hidden' }}
+        >
           <MultipleSpectraAnalysisTable data={data} activeTab={activeTab} />
-        </div>
-        <MultipleSpectraAnalysisPreferences
-          columns={data.columns}
-          onAfterSave={afterSaveHandler}
-          ref={settingRef}
-        />
-      </ReactCardFlip>
+          <MultipleSpectraAnalysisPreferences
+            columns={data.columns}
+            onAfterSave={afterSaveHandler}
+            ref={settingRef}
+          />
+        </ReactCardFlip>
+      </div>
     </div>
   );
 });

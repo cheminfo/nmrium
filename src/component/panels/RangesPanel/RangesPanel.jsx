@@ -224,31 +224,33 @@ const RangesTablePanel = memo(
               onClose={settingsPanelHandler}
             />
           )}
-          <ReactCardFlip
-            isFlipped={isFlipped}
-            infinite={true}
-            containerStyle={{ height: '100%' }}
-          >
-            <div>
-              {rangesData && rangesData.length > 0 ? (
-                <RangesTable
-                  tableData={rangesData}
-                  onUnlink={unlinkRangeHandler}
-                  context={contextMenu}
-                  preferences={rangesPreferences}
-                  element={activeTab && activeTab.replace(/[0-9]/g, '')}
-                />
-              ) : (
-                <NoTableData />
-              )}
-            </div>
-            <RangesPreferences
-              ranges={ranges}
-              ref={settingRef}
-              nucleus={nucleus}
-              preferences={preferences}
-            />
-          </ReactCardFlip>
+          <div style={{ height: '100%', overflow: 'auto' }}>
+            <ReactCardFlip
+              isFlipped={isFlipped}
+              infinite={true}
+              containerStyle={{ overflow: 'hidden' }}
+            >
+              <div>
+                {rangesData && rangesData.length > 0 ? (
+                  <RangesTable
+                    tableData={rangesData}
+                    onUnlink={unlinkRangeHandler}
+                    context={contextMenu}
+                    preferences={rangesPreferences}
+                    element={activeTab && activeTab.replace(/[0-9]/g, '')}
+                  />
+                ) : (
+                  <NoTableData />
+                )}
+              </div>
+              <RangesPreferences
+                ranges={ranges}
+                ref={settingRef}
+                nucleus={nucleus}
+                preferences={preferences}
+              />
+            </ReactCardFlip>
+          </div>
         </div>
       </>
     );

@@ -16,6 +16,7 @@ const panelStyle = css`
   display: flex;
   flex-direction: column;
   text-align: center;
+  height: 100%;
 
   button {
     border-radius: 5px;
@@ -27,6 +28,17 @@ const panelStyle = css`
     font-size: 12px;
     padding: 0;
     background-color: transparent;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 20px);
+    overflow: hidden;
+    padding: 0;
+  }
+  .table-container {
+    overflow: auto;
   }
 `;
 
@@ -76,25 +88,20 @@ const SummaryPanel = memo(() => {
   }, [modal, tolerance]);
 
   return (
-    <div>
-      <div css={panelStyle}>
-        <DefaultPanelHeader canDelete={false}>
-          <ToolTip
-            title={`Set molecular formula (${mf})`}
-            popupPlacement="right"
-          >
-            <button type="button" onClick={showSetMolecularFormulaModal}>
-              <FaFlask />
-            </button>
-          </ToolTip>
-          <ToolTip title={`Set shift tolerance`} popupPlacement="right">
-            <button type="button" onClick={showSetShiftToleranceModal}>
-              <FaSlidersH />
-            </button>
-          </ToolTip>
-        </DefaultPanelHeader>
-        <CorrelationTable data={data} mf={mf} tolerance={tolerance} />
-      </div>
+    <div css={panelStyle}>
+      <DefaultPanelHeader canDelete={false}>
+        <ToolTip title={`Set molecular formula (${mf})`} popupPlacement="right">
+          <button type="button" onClick={showSetMolecularFormulaModal}>
+            <FaFlask />
+          </button>
+        </ToolTip>
+        <ToolTip title={`Set shift tolerance`} popupPlacement="right">
+          <button type="button" onClick={showSetShiftToleranceModal}>
+            <FaSlidersH />
+          </button>
+        </ToolTip>
+      </DefaultPanelHeader>
+      <CorrelationTable data={data} mf={mf} tolerance={tolerance} />
     </div>
   );
 });

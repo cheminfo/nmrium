@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import lodash from 'lodash';
-import { useCallback, useEffect, useRef } from 'react';
+import { Fragment, useCallback, useEffect, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import ContextMenu from '../../elements/ContextMenu';
@@ -91,9 +91,9 @@ const RangesTable = ({
   }, [editStartHander]);
 
   return (
-    <div>
+    <Fragment>
       <table css={tableStyle}>
-        <tbody>
+        <thead>
           <tr>
             <th>#</th>
             {isVisible('showFrom') ? <th>From</th> : null}
@@ -110,6 +110,8 @@ const RangesTable = ({
             <th>Kind</th>
             <th>{''}</th>
           </tr>
+        </thead>
+        <tbody>
           {data &&
             data.map((range, i) => {
               return (
@@ -132,7 +134,7 @@ const RangesTable = ({
         </tbody>
       </table>
       <ContextMenu ref={contextRef} context={context} />
-    </div>
+    </Fragment>
   );
 };
 

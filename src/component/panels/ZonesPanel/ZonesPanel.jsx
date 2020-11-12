@@ -283,30 +283,32 @@ const ZonesPanel = memo(
               onClose={settingsPanelHandler}
             />
           )}
-          <ReactCardFlip
-            isFlipped={isFlipped}
-            infinite={true}
-            containerStyle={{ height: '100%' }}
-          >
-            <div>
-              {tableData && tableData.length > 0 ? (
-                <ZonesTable
-                  tableData={tableData}
-                  onUnlink={unlinkZoneHandler}
-                  context={contextMenu}
-                  preferences={zonesPreferences}
-                  nuclei={
-                    activeTab && activeTab.split(',').length === 2
-                      ? activeTab.split(',')
-                      : ['?', '?']
-                  }
-                />
-              ) : (
-                <NoTableData />
-              )}
-            </div>
-            <ZonesPreferences ref={settingRef} />
-          </ReactCardFlip>
+          <div style={{ height: '100%', overflow: 'auto' }}>
+            <ReactCardFlip
+              isFlipped={isFlipped}
+              infinite={true}
+              containerStyle={{ overflow: 'hidden' }}
+            >
+              <div>
+                {tableData && tableData.length > 0 ? (
+                  <ZonesTable
+                    tableData={tableData}
+                    onUnlink={unlinkZoneHandler}
+                    context={contextMenu}
+                    preferences={zonesPreferences}
+                    nuclei={
+                      activeTab && activeTab.split(',').length === 2
+                        ? activeTab.split(',')
+                        : ['?', '?']
+                    }
+                  />
+                ) : (
+                  <NoTableData />
+                )}
+              </div>
+              <ZonesPreferences ref={settingRef} />
+            </ReactCardFlip>
+          </div>
         </div>
       </>
     );
