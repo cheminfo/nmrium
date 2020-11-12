@@ -47,8 +47,11 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
 
   const saveSettingHandler = useCallback(() => {
     settingRef.current.saveSetting();
+  }, []);
+  const afterSaveHandler = useCallback(() => {
     setFlipStatus(false);
   }, []);
+
   const copyToClipboardHandler = useCallback(() => {
     const data = AnalysisObj.getMultipleAnalysisTableAsString(activeTab);
     const success = copyTextToClipboard(data);
@@ -96,6 +99,7 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
         </div>
         <MultipleSpectraAnalysisPreferences
           columns={data.columns}
+          onAfterSave={afterSaveHandler}
           ref={settingRef}
         />
       </ReactCardFlip>
