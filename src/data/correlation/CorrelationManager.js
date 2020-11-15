@@ -33,14 +33,20 @@ export default class CorrelationManager {
     this.options = options;
   }
 
+  setOption(key, value) {
+    this.setOptions({ ...this.options, [key]: value });
+  }
+
+  deleteOption(key) {
+    delete this.options[key];
+  }
+
   setMF(mf) {
     this.setOptions({ ...this.getOptions(), mf });
   }
 
   unsetMF() {
-    const _options = lodash.cloneDeep(this.options);
-    delete _options.mf;
-    this.setOptions(_options);
+    this.deleteOption('mf');
   }
 
   getMF() {
@@ -52,9 +58,7 @@ export default class CorrelationManager {
   }
 
   unsetTolerance() {
-    const _options = lodash.cloneDeep(this.options);
-    delete _options.tolerance;
-    this.setOptions(_options);
+    this.deleteOption('tolerance');
   }
 
   getTolerance() {
