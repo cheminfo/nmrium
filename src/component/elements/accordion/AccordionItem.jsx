@@ -56,33 +56,40 @@ const AccordionItem = ({ title, children, index, isOpen, onOpen, style }) => {
 
   const refContent = useRef();
   const refContainer = useRef();
-  function toggleAccordion() {
-    timer = setTimeout(function () {
-      if (!prevent) {
-        onOpen(index, triggerSource.click);
-      }
-      prevent = false;
-    }, delay);
-  }
+  const toggleAccordion = useCallback(
+    (e) => {
+      timer = setTimeout(function () {
+        if (!prevent) {
+          onOpen(index, { source: triggerSource.click, shiftKey: e.shiftKey });
+        }
+        prevent = false;
+      }, delay);
+    },
+    [index, onOpen],
+  );
 
-  const dbClickHandler = useCallback(() => {
-    clearTimeout(timer);
-    prevent = true;
-    setActiveState(active == null ? { backgroundColor: '#ccc' } : null);
-    if (active == null) {
-      onOpen(index, triggerSource.dbClick);
-    }
-  }, [active, index, onOpen]);
+  const dbClickHandler = useCallback(
+    (e) => {
+      e.persist();
+      clearTimeout(timer);
+      prevent = true;
+      // setActiveState(active == null ? { backgroundColor: '#ccc' } : null);
+      // if (active == null) {
+      onOpen(index, { source: triggerSource.dbClick, shiftKey: e.shiftKey });
+      // }
+    },
+    [index, onOpen],
+  );
 
   useEffect(() => {
     setActiveState(isOpen ? { backgroundColor: '#ccc' } : null);
   }, [isOpen]);
 
-  useEffect(() => {
-    if (isOpen === false) {
-      setActiveState(null);
-    }
-  }, [isOpen]);
+  // useEffect(() => {
+  //   if (isOpen === false) {
+  //     setActiveState(null);
+  //   }
+  // }, [isOpen]);
 
   return (
     <div

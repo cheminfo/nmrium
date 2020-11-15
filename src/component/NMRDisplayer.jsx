@@ -69,7 +69,6 @@ const splitPaneStyles = {
     position: 'relative',
     height: 'none',
   },
-  pane1: { maxWidth: '80%' },
   resizer: {
     width: 10,
     backgroundColor: '#f7f7f7',
@@ -111,6 +110,24 @@ const containerStyles = css`
   .SplitPane {
     height: 100%;
   }
+
+  .Resizer.vertical:after {
+    content: '\\22EE';
+    top: 50%;
+    color: black;
+    position: absolute;
+    font-size: 14px;
+  }
+
+  .Resizer.vertical {
+    padding: 2px;
+  }
+
+  .Resizer.vertical:hover {
+    background-color: #dfdfdf !important;
+    border-left: 0.55px #bbbbbb solid;
+    border-right: 0.55px #bbbbbb solid;
+  }
 `;
 
 const NMRDisplayer = memo(
@@ -129,7 +146,7 @@ const NMRDisplayer = memo(
         toggle(false);
       },
     });
-
+    const [isRightPanelHide, hideRightPanel] = useState(false);
     const [isResizeEventStart, setResizeEventStart] = useState(false);
     const [helpData, setHelpData] = useState(helpList());
 
@@ -180,6 +197,10 @@ const NMRDisplayer = memo(
       );
     }, [preferencesState]);
 
+    const rightPanelHandler = useCallback(() => {
+      hideRightPanel((prevFlag) => !prevFlag);
+    }, []);
+
     return (
       <ErrorBoundary>
         <PreferencesProvider value={preferencesState}>
@@ -200,6 +221,7 @@ const NMRDisplayer = memo(
                             isFullscreen={isFullscreen}
                             onMaximize={toggle}
                           />
+
                           {/* ref={containerRef} */}
                           <div
                             style={{
@@ -214,11 +236,23 @@ const NMRDisplayer = memo(
                                 style={splitPaneStyles.container}
                                 paneStyle={splitPaneStyles.pane}
                                 resizerStyle={splitPaneStyles.resizer}
-                                pane1Style={splitPaneStyles.pane1}
+                                pane1Style={
+                                  isRightPanelHide
+                                    ? {
+                                        maxWidth: '100%',
+                                        width: 'calc(100% - 10px)',
+                                      }
+                                    : { maxWidth: '80%' }
+                                }
                                 split="vertical"
-                                defaultSize="calc(100% - 600px)"
+                                defaultSize={
+                                  isRightPanelHide
+                                    ? '99%'
+                                    : 'calc(100% - 600px)'
+                                }
                                 minSize="80%"
                                 onDragFinished={handleSplitPanelDragFinished}
+                                onResizerDoubleClick={rightPanelHandler}
                                 onDragStarted={() => {
                                   setResizeEventStart(true);
                                 }}
@@ -228,10 +262,15 @@ const NMRDisplayer = memo(
                                 ) : (
                                   <Viewer2D />
                                 )}
-                                <Panels
-                                  selectedTool={selectedTool}
-                                  displayerMode={displayerMode}
-                                />
+                                {!isRightPanelHide ? (
+                                  <Panels
+                                    selectedTool={selectedTool}
+                                    displayerMode={displayerMode}
+                                    onHide={rightPanelHandler}
+                                  />
+                                ) : (
+                                  <div />
+                                )}
                               </SplitPane>
                             </DropZone>
                           </div>
