@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 

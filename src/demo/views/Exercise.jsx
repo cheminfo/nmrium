@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import { Molecule } from 'openchemlib/full';
 import { useState, useEffect, useCallback } from 'react';
 import { MF } from 'react-mf';

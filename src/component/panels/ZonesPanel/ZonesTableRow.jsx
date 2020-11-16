@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 import lodash from 'lodash';
 import { useMemo, useCallback, useState } from 'react';
 

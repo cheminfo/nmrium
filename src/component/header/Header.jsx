@@ -1,4 +1,4 @@
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import { useMemo, useCallback } from 'react';
 import { useAlert } from 'react-alert';
 import {

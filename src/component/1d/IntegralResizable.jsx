@@ -1,4 +1,4 @@
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 /** @jsx jsx */
 import * as d3 from 'd3';
 import { useCallback, Fragment, useMemo } from 'react';

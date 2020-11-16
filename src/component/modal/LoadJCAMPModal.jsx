@@ -1,4 +1,4 @@
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import { useRef, useCallback } from 'react';
 
 /** @jsx jsx */

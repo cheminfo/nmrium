@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import { useCallback, useEffect, useState } from 'react';
 import Slider from 'react-animated-slider-2';
 import MF from 'react-mf/lib/components/MF';

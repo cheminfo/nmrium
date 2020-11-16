@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import { setAutoFreeze } from 'immer';
 import lodash from 'lodash';
 import OCL from 'openchemlib/full';

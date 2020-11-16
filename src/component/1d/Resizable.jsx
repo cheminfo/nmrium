@@ -1,4 +1,4 @@
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 /** @jsx jsx */
 import { Fragment, useCallback, useState } from 'react';
 import Draggable from 'react-draggable';

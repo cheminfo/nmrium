@@ -1,4 +1,4 @@
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import { useState, useEffect, useCallback } from 'react';
 /** @jsx jsx */
 import { StructureEditor } from 'react-ocl/full';
