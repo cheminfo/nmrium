@@ -1,12 +1,20 @@
-import lodash from 'lodash';
 import React, { memo } from 'react';
 
-import { ErrorColors, Errors } from './Constants';
+import { getAtoms } from '../../../data/correlation/Utilities';
 
-const Overview = memo(({ atoms, state }) => {
-  return Object.keys(atoms).map((atom, i) => {
-    const stateAtomType = lodash.get(state, `atomType.${atom}`, false);
-    const error = stateAtomType.error;
+import { ErrorColors, Errors } from './CorrelationTable/Constants';
+
+const Overview = memo(({ correlations }) => {
+  if (!correlations) {
+    return null;
+  }
+
+  const atoms = getAtoms(correlations);
+
+  return Object.keys(atoms).map((atomType, i) => {
+    const stateAtomType = correlations.state[atomType];
+
+    const error = stateAtomType ? stateAtomType.error : undefined;
     const errorColorIndex = error
       ? Errors.findIndex((_error) => error[_error] !== undefined)
       : 'black';
@@ -25,8 +33,8 @@ const Overview = memo(({ atoms, state }) => {
             : 'black',
         }}
       >
-        {`${atom}: ${stateAtomType ? stateAtomType.current : '-'}/${
-          atoms[atom]
+        {`${atomType}: ${stateAtomType ? stateAtomType.current : '-'}/${
+          atoms[atomType]
         }   `}
       </span>
     );

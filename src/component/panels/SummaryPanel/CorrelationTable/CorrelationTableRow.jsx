@@ -1,7 +1,8 @@
 import lodash from 'lodash';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import { getLabel, getLabels } from './Utilities';
+import { getLabel, getLabels } from '../../../../data/correlation/Utilities';
+import EditableColumn from '../../../elements/EditableColumn';
 
 const CorrelationTableRow = ({
   additionalColumns,
@@ -10,17 +11,24 @@ const CorrelationTableRow = ({
   rowKey,
   styleRow,
   styleLabel,
+  onSaveEditCount,
 }) => {
+  const saveHandler = useCallback(
+    (e) => {
+      onSaveEditCount(correlation, e.target.value);
+    },
+    [correlation, onSaveEditCount],
+  );
+
   const additionalColumnsData = useMemo(
     () =>
       additionalColumns.map((experimentType, n) => {
         let content = '';
-        if (lodash.get(correlation, 'correlation', false)) {
-          const labels = getLabels(correlations, correlation, experimentType);
-          if (labels.length > 0) {
-            content = labels.join(', ');
-          }
+        const labels = getLabels(correlations, correlation, experimentType);
+        if (labels.length > 0) {
+          content = labels.join(', ');
         }
+
         // eslint-disable-next-line react/no-array-index-key
         return <td key={`addCol_${experimentType}_${n}`}>{content}</td>;
       }),
@@ -30,17 +38,28 @@ const CorrelationTableRow = ({
   return (
     <tr key={rowKey} style={styleRow}>
       <td>
-        {lodash.get(correlation, 'experimentType', false)
-          ? correlation.experimentType.toUpperCase()
+        {correlation.getExperimentType()
+          ? correlation.getExperimentType().toUpperCase()
           : ''}
       </td>
-      <td style={styleLabel}>{getLabel(correlation)}</td>
+      <td style={styleLabel}>{getLabel(correlations, correlation)}</td>
       <td>
-        {lodash.get(correlation, 'signal.delta', false)
-          ? correlation.signal.delta.toFixed(3)
+        {lodash.get(correlation.getSignal(), 'delta', false)
+          ? correlation.getSignal().delta.toFixed(3)
           : ''}
       </td>
-      <td>{''}</td>
+      <td>
+        {onSaveEditCount ? (
+          <EditableColumn
+            type="number"
+            value={correlation.count}
+            style={{ padding: '0.4rem' }}
+            onSave={saveHandler}
+          />
+        ) : (
+          ''
+        )}
+      </td>
       {additionalColumnsData}
     </tr>
   );

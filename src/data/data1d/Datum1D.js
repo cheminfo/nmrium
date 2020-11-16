@@ -302,7 +302,7 @@ export class Datum1D {
         id: generateID(),
         absolute: this.getIntegration(range.from, range.to),
         signal: range.signal.map((_signal) => {
-          return { kind: 'signal', ..._signal };
+          return { kind: 'signal', id: generateID(), ..._signal };
         }),
       };
     });
@@ -445,6 +445,8 @@ export class Datum1D {
       from,
       to,
       absolute: this.getIntegration(from, to), // the real value,
+      signal: [{ id: generateID(), ...this.detectSignal(from, to) }],
+      kind: DatumKind.signal,
       min: xyMinYPoint({ x, y }, { from, to }).y,
       max: xyMaxYPoint({ x, y }, { from, to }).y,
     };
