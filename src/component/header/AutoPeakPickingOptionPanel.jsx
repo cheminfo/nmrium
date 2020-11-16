@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
+import CheckBox from '../elements/CheckBox';
 import NumberInput from '../elements/NumberInput';
 import { AUTO_PEAK_PICKING, RESET_SELECTED_TOOL } from '../reducer/types/Types';
 
@@ -35,6 +36,7 @@ const AutoPeakPickingOptionPanel = () => {
   const minMaxRatioRef = useRef();
   const maxNumberOfPeaksRef = useRef();
   const noiseFactor = useRef();
+  const lookNegativeRef = useRef();
 
   const handleApplyFilter = useCallback(() => {
     dispatch({
@@ -43,6 +45,7 @@ const AutoPeakPickingOptionPanel = () => {
         maxNumberOfPeaks: maxNumberOfPeaksRef.current.value,
         minMaxRatio: minMaxRatioRef.current.value,
         noiseFactor: noiseFactor.current.value,
+        lookNegative: lookNegativeRef.current.checked,
       },
     });
   }, [dispatch]);
@@ -55,6 +58,13 @@ const AutoPeakPickingOptionPanel = () => {
 
   return (
     <div style={styles.container}>
+      <div style={{ justifyItems: 'baseline', marginRight: '3px' }}>
+        <label style={{ marginRight: '2px' }} htmlFor="lookNegative">
+          lookNegative
+        </label>
+        <CheckBox name="lookNegative" ref={lookNegativeRef} />
+      </div>
+
       <NumberInput
         ref={maxNumberOfPeaksRef}
         label="Max Number Of Peaks:"
