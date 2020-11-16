@@ -70,7 +70,7 @@ const RangesPickingOptionPanel = () => {
       <span style={styles.hint}>
         Manual selection using SHIFT + select zone or click on Auto peak picking
       </span>
-      <div style={{ justifyItems: 'baseline', margin: '0 2px' }}>
+      <div style={{ justifyItems: 'baseline', margin: '0 10px' }}>
         <label style={{ marginRight: '2px' }} htmlFor="lookNegative">
           lookNegative
         </label>
