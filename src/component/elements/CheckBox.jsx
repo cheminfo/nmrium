@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, forwardRef } from 'react';
 
-const CheckBox = ({ name, checked: checkProps, onChange }) => {
+const CheckBox = forwardRef(({ name, checked: checkProps, onChange }, ref) => {
   const [checked, setCheck] = useState(checkProps);
 
   const handleCheck = useCallback(
@@ -14,6 +14,7 @@ const CheckBox = ({ name, checked: checkProps, onChange }) => {
 
   return (
     <input
+      ref={ref}
       type="checkbox"
       name={name}
       id={name}
@@ -21,7 +22,7 @@ const CheckBox = ({ name, checked: checkProps, onChange }) => {
       defaultChecked={checkProps}
     />
   );
-};
+});
 
 CheckBox.defaultProps = {
   onChange: function () {

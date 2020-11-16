@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import lodash from 'lodash';
 import { Fragment, useCallback, useEffect, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';

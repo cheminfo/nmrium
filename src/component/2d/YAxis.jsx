@@ -1,4 +1,4 @@
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 import { Fragment, useEffect, useRef, useMemo, memo } from 'react';

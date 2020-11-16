@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css, Global } from '@emotion/core';
+import { jsx, css, Global } from '@emotion/react';
 import {
   useRef,
   useState,

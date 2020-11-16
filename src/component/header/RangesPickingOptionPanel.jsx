@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
+import CheckBox from '../elements/CheckBox';
 import {
   AUTO_RANGES_DETECTION,
   RESET_SELECTED_TOOL,
@@ -30,14 +31,16 @@ const styles = {
     margin: '0px 5px',
     userSelect: 'none',
   },
-  label: {
+  hint: {
     lineHeight: 2,
     userSelect: 'none',
+    fontSize: '11px',
   },
 };
 
 const RangesPickingOptionPanel = () => {
   const dispatch = useDispatch();
+  const lookNegativeRef = useRef();
 
   const handleApplyFilter = useCallback(() => {
     dispatch({
@@ -50,6 +53,7 @@ const RangesPickingOptionPanel = () => {
           frequencyCluster: 16,
           clean: true,
           keepPeaks: true,
+          lookNegative: lookNegativeRef.current.checked,
         },
       },
     });
@@ -63,9 +67,15 @@ const RangesPickingOptionPanel = () => {
 
   return (
     <div style={styles.container}>
-      <span style={styles.label}>
+      <span style={styles.hint}>
         Manual selection using SHIFT + select zone or click on Auto peak picking
       </span>
+      <div style={{ justifyItems: 'baseline', margin: '0 2px' }}>
+        <label style={{ marginRight: '2px' }} htmlFor="lookNegative">
+          lookNegative
+        </label>
+        <CheckBox name="lookNegative" ref={lookNegativeRef} />
+      </div>
       <button
         type="button"
         style={styles.actionButton}

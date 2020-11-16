@@ -1,4 +1,4 @@
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 /** @jsx jsx */
 import { Field, useField } from 'formik';
 import PropTypes from 'prop-types';

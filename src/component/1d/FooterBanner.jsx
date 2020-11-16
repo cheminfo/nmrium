@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useContext, useCallback } from 'react';
 

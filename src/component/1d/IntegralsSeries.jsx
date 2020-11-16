@@ -1,4 +1,4 @@
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 /** @jsx jsx */

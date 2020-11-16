@@ -1,4 +1,4 @@
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import { FaCopy } from 'react-icons/fa';
 
 import CloseButton from '../elements/CloseButton';
