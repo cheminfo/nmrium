@@ -123,7 +123,7 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
   const handleOnKeyPressed = useCallback(
     (e) => {
       if (
-        e.target.localName !== 'input' &&
+        !['input', 'textarea'].includes(e.target.localName) &&
         !e.shiftKey &&
         !e.metaKey &&
         !e.ctrlKey
@@ -139,7 +139,11 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
         }
       }
 
-      if (!e.shiftKey && (e.metaKey || e.ctrlKey)) {
+      if (
+        !['input', 'textarea'].includes(e.target.localName) &&
+        !e.shiftKey &&
+        (e.metaKey || e.ctrlKey)
+      ) {
         switch (e.key) {
           case 'c':
             saveToClipboardHandler();

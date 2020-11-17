@@ -109,7 +109,11 @@ const FunctionToolBar = ({
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (e.target.localName !== 'input' && !e.shiftKey && !e.metaKey) {
+      if (
+        !['input', 'textarea'].includes(e.target.localName) &&
+        !e.shiftKey &&
+        !e.metaKey
+      ) {
         switch (e.key) {
           case 'f':
             handleFullZoomOut();

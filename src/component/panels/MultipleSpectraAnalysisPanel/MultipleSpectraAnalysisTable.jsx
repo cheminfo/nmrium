@@ -1,8 +1,11 @@
-import React, { useMemo, memo, useCallback } from 'react';
+import lodash from 'lodash';
+import React, { useMemo, memo, useCallback, Fragment } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import { FILTER_SPECTRA_COLUMN } from '../../reducer/types/Types';
+import Eval from '../../utility/Evaluate';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import NoTableData from '../extra/placeholder/NoTableData';
 
@@ -10,6 +13,12 @@ import ColumnHeader from './ColumnHeader';
 
 const MultipleSpectraAnalysisTable = memo(({ data, activeTab }) => {
   const format = useFormatNumberByNucleus(activeTab);
+  const preferences = usePreferences();
+
+  const codeEvaluation = useMemo(() => {
+    const code = lodash.get(preferences, 'multipletAnalysis.code', '');
+    return Eval(code, data);
+  }, [data, preferences]);
 
   const dispatch = useDispatch();
 
@@ -81,7 +90,19 @@ const MultipleSpectraAnalysisTable = memo(({ data, activeTab }) => {
   }, [columnFilterHandler, data.columns, format]);
 
   return data.values && data.values.length > 0 ? (
-    <ReactTable data={data.values} columns={tableColumns} />
+    <Fragment>
+      <ReactTable data={data.values} columns={tableColumns} />
+      <div
+        style={{
+          // border: '0.55px solid #f3f3f3',
+          width: '100%',
+          // minHeight: '100px',
+          padding: '10px',
+        }}
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: codeEvaluation }}
+      />
+    </Fragment>
   ) : (
     <NoTableData />
   );

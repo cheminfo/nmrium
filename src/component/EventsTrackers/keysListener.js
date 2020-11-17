@@ -38,7 +38,7 @@ const KeyListener = ({ parentRef }) => {
   const handleOnKeyPressed = useCallback(
     (e) => {
       if (
-        e.target.localName !== 'input' &&
+        !['input', 'textarea'].includes(e.target.localName) &&
         e.keyCode >= 49 &&
         e.keyCode <= 57
       ) {
