@@ -203,7 +203,8 @@ export class Datum1D {
     }
     return this.ranges.values;
   }
-  changeInetgralsRealtive(integralID, newIntegralValue) {
+
+  changeIntegralsRealtive(integralID, newIntegralValue) {
     const integral = this.integrals.values.find(
       (integral) => integral.id === integralID,
     );
@@ -254,7 +255,7 @@ export class Datum1D {
     const currentSum = values.reduce((previous, current) => {
       return countingCondition !== undefined &&
         countingCondition(current) === true
-        ? (previous += current.absolute)
+        ? (previous += Math.abs(current.absolute))
         : previous;
     }, 0);
     const factor = currentSum > 0 ? sum / currentSum : 0.0;

@@ -58,13 +58,6 @@ const AutoPeakPickingOptionPanel = () => {
 
   return (
     <div style={styles.container}>
-      <div style={{ justifyItems: 'baseline', marginRight: '3px' }}>
-        <label style={{ marginRight: '2px' }} htmlFor="lookNegative">
-          lookNegative
-        </label>
-        <CheckBox name="lookNegative" ref={lookNegativeRef} />
-      </div>
-
       <NumberInput
         ref={maxNumberOfPeaksRef}
         label="Max Number Of Peaks:"
@@ -99,6 +92,16 @@ const AutoPeakPickingOptionPanel = () => {
         defaultValue={0.1}
         step="0.01"
       />
+
+      <div style={{ justifyItems: 'baseline', marginRight: '3px' }}>
+        <label
+          style={{ marginRight: '2px', lineHeight: 2, userSelect: 'none' }}
+          htmlFor="lookNegative"
+        >
+          Detect Negative:
+        </label>
+        <CheckBox name="lookNegative" ref={lookNegativeRef} />
+      </div>
 
       <button
         type="button"

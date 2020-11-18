@@ -67,12 +67,12 @@ const RangesPickingOptionPanel = () => {
 
   return (
     <div style={styles.container}>
-      <span style={styles.hint}>
-        Manual selection using SHIFT + select zone or click on Auto peak picking
-      </span>
       <div style={{ justifyItems: 'baseline', margin: '0 10px' }}>
-        <label style={{ marginRight: '2px' }} htmlFor="lookNegative">
-          lookNegative
+        <label
+          style={{ marginRight: '2px', lineHeight: 2, userSelect: 'none' }}
+          htmlFor="lookNegative"
+        >
+          Detect negative:
         </label>
         <CheckBox name="lookNegative" ref={lookNegativeRef} />
       </div>
@@ -90,6 +90,9 @@ const RangesPickingOptionPanel = () => {
       >
         Cancel
       </button>
+      <span style={styles.hint}>
+        Manual selection using SHIFT + select zone or click on Auto peak picking
+      </span>
     </div>
   );
 };
