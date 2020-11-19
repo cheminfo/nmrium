@@ -4,7 +4,7 @@ import { xyAutoPeaksPicking } from 'nmr-processing';
 import generateID from '../utilities/generateID';
 
 export default function autoPeakPicking(datum1D, options) {
-  const { minMaxRatio, maxNumberOfPeaks, noiseFactor } = options;
+  const { minMaxRatio, maxNumberOfPeaks, noiseFactor, lookNegative } = options;
   // we calculate the noise but this could be improved
   const noise = median(datum1D.data.re.map((y) => Math.abs(y)));
 
@@ -12,6 +12,7 @@ export default function autoPeakPicking(datum1D, options) {
   let peaks = xyAutoPeaksPicking(
     { x, y: re },
     {
+      lookNegative,
       noiseLevel: noise * noiseFactor,
       minMaxRatio: minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
       realTopDetection: true,
