@@ -61,11 +61,11 @@ function setFilterChanges(draft, state, selectedFilter) {
 
       draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
       draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
-      draft.tempData = null;
-      draft.selectedTool = null;
-
-      setDomain(draft);
     }
+    // draft.tempData = null;
+    // draft.selectedTool = null;
+
+    // setDomain(draft);
   }
 }
 
@@ -84,9 +84,11 @@ function setYAxisShift(data, draft, height) {
   }
 }
 
-const resetTool = (draft) => {
+const resetTool = (draft, setDefaultTool = true) => {
   draft.selectedOptionPanel = null;
-  draft.selectedTool = options.zoom.id;
+  if (setDefaultTool) {
+    draft.selectedTool = options.zoom.id;
+  }
   draft.baseLineZones = [];
   if (draft.tempData) {
     draft.tempData = null;
@@ -109,21 +111,28 @@ const resetFilterTool = (draft) => {
 const setSelectedTool = (state, selectedTool) => {
   return produce(state, (draft) => {
     if (selectedTool) {
+      if (selectedTool !== draft.selectedTool) {
+        resetTool(draft, false);
+      }
       draft.selectedTool = selectedTool;
       if (options[selectedTool].hasOptionPanel) {
         draft.selectedOptionPanel = selectedTool;
-      } else {
-        draft.selectedOptionPanel = null;
       }
+      // else {
+      //   draft.selectedOptionPanel = null;
+      // }
       if (options[selectedTool].isFilter) {
         setFilterChanges(draft, state, selectedTool);
       }
     } else {
-      draft.selectedTool = null;
-      if (options[state.selectedTool].hasOptionPanel) {
-        draft.selectedOptionPanel = null;
-      }
+      resetTool(draft, false);
     }
+    // else {
+    //   draft.selectedTool = null;
+    //   if (options[state.selectedTool].hasOptionPanel) {
+    //     draft.selectedOptionPanel = null;
+    //   }
+    // }
   });
 };
 
