@@ -102,6 +102,44 @@ function exportAsPng(fileName = 'experiment', elementID) {
     console.log(e);
   }
 }
+
+function copyDataURLCliboard(image) {
+  const img = document.createElement('img');
+  img.src = image;
+
+  img.style.position = 'fixed';
+  img.style.pointerEvents = 'none';
+  img.style.opacity = 0;
+
+  document.body.appendChild(img);
+  const range = document.createRange();
+  // r.setStartBefore(img);
+  // r.setEndAfter(img);
+  range.selectNode(img);
+  window.getSelection().addRange(range);
+  document.execCommand('Copy');
+  document.body.removeChild(img);
+}
+
+function copyBlobToCliboard(canvas) {
+  canvas.toBlob((b) => {
+    //eslint-disable-next-line no-undef
+    const clip = new ClipboardItem({
+      [b.type]: b,
+    });
+    navigator.clipboard.write([clip]).then(
+      () => {
+        // eslint-disable-next-line no-console
+        console.log('experiment copied.');
+      },
+      (err) => {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      },
+    );
+  });
+}
+
 function copyPNGToClipboard(elementID) {
   const { blob, width, height } = getBlob(elementID);
   try {
@@ -112,26 +150,15 @@ function copyPNGToClipboard(elementID) {
     context.fillStyle = 'white';
     context.fillRect(0, 0, canvas.width, canvas.height);
     let img = new Image();
-    let url = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
     img.onload = async function () {
       context.drawImage(img, 0, 0);
-      let png = canvas.toDataURL('image/png', 1);
-      canvas.toBlob((b) => {
-        // eslint-disable-next-line no-undef
-        const clip = new ClipboardItem({
-          [b.type]: b,
-        });
-        navigator.clipboard.write([clip]).then(
-          () => {
-            // eslint-disable-next-line no-console
-            console.log('experiment copied.');
-          },
-          (err) => {
-            // eslint-disable-next-line no-console
-            console.log(err);
-          },
-        );
-      });
+      const png = canvas.toDataURL('image/png', 1);
+      if (navigator.clipboard.write) {
+        copyBlobToCliboard(canvas);
+      } else {
+        copyDataURLCliboard(png);
+      }
 
       URL.revokeObjectURL(png);
     };
