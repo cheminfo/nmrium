@@ -1,0 +1,1662 @@
+{
+  "spectra": [
+    {
+      "data": {},
+      "id": "j06eG8yb",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/1H_t1_1s.dx"
+      },
+      "display": {
+        "name": "1H_t1_1s",
+        "color": "#F4C800",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_1H",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1ir",
+        "experiment": null,
+        "originFrequency": 600.20152017,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 600.2,
+        "fieldStrength": 14.096654402599738,
+        "frequencyOffset": 1520.1699999352059,
+        "spectralWidth": 6.01048728847242,
+        "numberOfPoints": 8192,
+        "sampleName": "Displayer_T1_1H",
+        "acquisitionTime": 1.1352726,
+        "pulseStrength90": 34246.57534246575,
+        "relaxationTime": 15,
+        "numberOfScans": 8,
+        "increment": 0.0007337916357553925,
+        "date": "2020-11-18T12:51:43.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_1H",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 12:51:43+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:35:28.612 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 600.20152017,
+        ".OBSERVENUCLEUS": "^1H",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 8,
+        ".DIGITISERRES": 23,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1ir",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 5.538023",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_1H/12/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:07:00.201 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 6 from\r\n       6 \"Displayer_T1_1H\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 8K\r\n       42 16 4A EE 61 C2 2D 28 0E 3F 21 5A 16 82 2E 61>)\r\n(   2,<2020-11-20 11:07:25.700 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 0.5 FT_mod = 6 PKNL = 1 PHC0 = 10.95949 PHC1 = -12.70477 SI = 8K \r\n       data hash MD5: 8K\r\n       C0 1D 05 7B 3B B4 0F 9A 11 68 12 E7 21 1B 73 94>)\r\n(   3,<2020-11-20 11:07:25.713 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 8K\r\n       2D 42 FF 1D 1A E2 84 7B 24 FC B2 B3 25 0B EE D0>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 36 BC EA E8 DE B7 90 E6 21 3F 28 E9 13 27 63 4D",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.440369092712843,
+        "YFACTOR": 1,
+        "DELTAX": -0.440369092712843,
+        "NPOINTS": 8192,
+        "FIRSTX": 3607.0632384109,
+        "FIRSTY": -26719,
+        "LASTX": 0,
+        "MAXY": 447237707,
+        "MINY": -41429852
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "1WJ72f0C",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/1H_t1_2s.dx"
+      },
+      "display": {
+        "name": "1H_t1_2s",
+        "color": "#7F180D",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_1H",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1ir",
+        "experiment": null,
+        "originFrequency": 600.20152017,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 600.2,
+        "fieldStrength": 14.096654402599738,
+        "frequencyOffset": 1520.1699999352059,
+        "spectralWidth": 6.01048728847242,
+        "numberOfPoints": 8192,
+        "sampleName": "Displayer_T1_1H",
+        "acquisitionTime": 1.1352726,
+        "pulseStrength90": 34246.57534246575,
+        "relaxationTime": 15,
+        "numberOfScans": 8,
+        "increment": 0.0007337916357553925,
+        "date": "2020-11-18T12:51:43.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_1H",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 12:51:43+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:35:07.616 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 600.20152017,
+        ".OBSERVENUCLEUS": "^1H",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 8,
+        ".DIGITISERRES": 23,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1ir",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 5.538023",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_1H/11/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:07:00.163 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 5 from\r\n       6 \"Displayer_T1_1H\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 8K\r\n       B5 6F C7 DD 17 BC 07 B6 90 D9 14 1E 6E 18 68 CC>)\r\n(   2,<2020-11-20 11:07:23.948 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 0.5 FT_mod = 6 PKNL = 1 PHC0 = 10.95949 PHC1 = -12.70477 SI = 8K \r\n       data hash MD5: 8K\r\n       58 6A D6 25 D3 70 9D 6F A1 5E 83 B0 48 17 B5 E9>)\r\n(   3,<2020-11-20 11:07:23.963 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 8K\r\n       6A 15 96 4B 48 26 7C 03 FB 9E 16 7F 30 B3 24 8C>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ DB EE B5 B7 E4 B0 05 84 42 10 D5 11 28 FF A2 67",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.440369092712843,
+        "YFACTOR": 1,
+        "DELTAX": -0.440369092712843,
+        "NPOINTS": 8192,
+        "FIRSTX": 3607.0632384109,
+        "FIRSTY": -27111,
+        "LASTX": 0,
+        "MAXY": 426925071,
+        "MINY": -15945262
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "8oysix2X",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/1H_t1_3s.dx"
+      },
+      "display": {
+        "name": "1H_t1_3s",
+        "color": "#93AA00",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_1H",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1ir",
+        "experiment": null,
+        "originFrequency": 600.20152017,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 600.2,
+        "fieldStrength": 14.096654402599738,
+        "frequencyOffset": 1520.1699999352059,
+        "spectralWidth": 6.01048728847242,
+        "numberOfPoints": 8192,
+        "sampleName": "Displayer_T1_1H",
+        "acquisitionTime": 1.1352726,
+        "pulseStrength90": 34246.57534246575,
+        "relaxationTime": 15,
+        "numberOfScans": 8,
+        "increment": 0.0007337916357553925,
+        "date": "2020-11-18T12:51:43.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_1H",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 12:51:43+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:34:40.551 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 600.20152017,
+        ".OBSERVENUCLEUS": "^1H",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 8,
+        ".DIGITISERRES": 23,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1ir",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 5.538023",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_1H/10/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:07:00.126 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 4 from\r\n       6 \"Displayer_T1_1H\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 8K\r\n       25 C8 8C 92 CD D0 D7 91 A9 D6 ED DD C9 51 B5 55>)\r\n(   2,<2020-11-20 11:07:21.759 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 0.5 FT_mod = 6 PKNL = 1 PHC0 = 10.95949 PHC1 = -12.70477 SI = 8K \r\n       data hash MD5: 8K\r\n       11 87 40 1D 2E A2 88 9C B5 64 B4 50 D0 ED A8 2F>)\r\n(   3,<2020-11-20 11:07:21.773 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 8K\r\n       D6 4E 94 3A 74 D6 9E B5 7A 40 9F 0B D6 BC A7 0E>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 6C 12 2C 5A 7F 61 16 20 26 94 75 75 5D 3B 8B 12",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.440369092712843,
+        "YFACTOR": 1,
+        "DELTAX": -0.440369092712843,
+        "NPOINTS": 8192,
+        "FIRSTX": 3607.0632384109,
+        "FIRSTY": -40338,
+        "LASTX": 0,
+        "MAXY": 476592180,
+        "MINY": -11686566
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "2vYpPtXb",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/1H_t1_4s.dx"
+      },
+      "display": {
+        "name": "1H_t1_4s",
+        "color": "#593315",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_1H",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1ir",
+        "experiment": null,
+        "originFrequency": 600.20152017,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 600.2,
+        "fieldStrength": 14.096654402599738,
+        "frequencyOffset": 1520.1699999352059,
+        "spectralWidth": 6.01048728847242,
+        "numberOfPoints": 8192,
+        "sampleName": "Displayer_T1_1H",
+        "acquisitionTime": 1.1352726,
+        "pulseStrength90": 34246.57534246575,
+        "relaxationTime": 15,
+        "numberOfScans": 8,
+        "increment": 0.0007337916357553925,
+        "date": "2020-11-18T12:51:43.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_1H",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 12:51:43+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:34:02.340 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 600.20152017,
+        ".OBSERVENUCLEUS": "^1H",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 8,
+        ".DIGITISERRES": 23,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1ir",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 5.538023",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_1H/9/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:07:00.089 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 3 from\r\n       6 \"Displayer_T1_1H\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 8K\r\n       08 DB 22 6A 5D 70 99 65 7B 93 80 31 34 B9 FB ED>)\r\n(   2,<2020-11-20 11:07:19.010 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 0.5 FT_mod = 6 PKNL = 1 PHC0 = 10.95949 PHC1 = -12.70477 SI = 8K \r\n       data hash MD5: 8K\r\n       D1 1E D9 10 A4 7E 11 BD CC 8F 9E 85 1D 90 52 72>)\r\n(   3,<2020-11-20 11:07:19.024 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 8K\r\n       3F F3 7A DB A9 AB 8D F5 E6 1B 77 A3 43 3C B6 D9>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 27 5F E4 7A A9 9E DA 46 35 F7 77 16 07 BC 4D A6",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.440369092712843,
+        "YFACTOR": 1,
+        "DELTAX": -0.440369092712843,
+        "NPOINTS": 8192,
+        "FIRSTX": 3607.0632384109,
+        "FIRSTY": -48104,
+        "LASTX": 0,
+        "MAXY": 496564186,
+        "MINY": -7876164
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "4721KG78",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/1H_t1_5s.dx"
+      },
+      "display": {
+        "name": "1H_t1_5s",
+        "color": "#FFB300",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_1H",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1ir",
+        "experiment": null,
+        "originFrequency": 600.20152017,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 600.2,
+        "fieldStrength": 14.096654402599738,
+        "frequencyOffset": 1520.1699999352059,
+        "spectralWidth": 6.01048728847242,
+        "numberOfPoints": 8192,
+        "sampleName": "Displayer_T1_1H",
+        "acquisitionTime": 1.1352726,
+        "pulseStrength90": 34246.57534246575,
+        "relaxationTime": 15,
+        "numberOfScans": 8,
+        "increment": 0.0007337916357553925,
+        "date": "2020-11-18T12:51:43.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_1H",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 12:51:43+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:33:41.679 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 600.20152017,
+        ".OBSERVENUCLEUS": "^1H",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 8,
+        ".DIGITISERRES": 23,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1ir",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 5.538023",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_1H/8/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:07:00.051 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 2 from\r\n       6 \"Displayer_T1_1H\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 8K\r\n       D4 E7 DD 9E 66 EC 74 24 1F 42 B0 F5 1B B8 36 A5>)\r\n(   2,<2020-11-20 11:07:16.846 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 0.5 FT_mod = 6 PKNL = 1 PHC0 = 10.95949 PHC1 = -12.70477 SI = 8K \r\n       data hash MD5: 8K\r\n       A5 88 75 77 42 D3 ED 3A C0 4D F2 35 8A 09 91 64>)\r\n(   3,<2020-11-20 11:07:16.859 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 8K\r\n       55 77 6E 09 54 9E C7 19 00 86 65 CA 65 00 84 F2>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ A0 3E 76 B4 54 22 68 BF 09 4A D9 71 91 46 D3 52",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.440369092712843,
+        "YFACTOR": 1,
+        "DELTAX": -0.440369092712843,
+        "NPOINTS": 8192,
+        "FIRSTX": 3607.0632384109,
+        "FIRSTY": -39896,
+        "LASTX": 0,
+        "MAXY": 502652533,
+        "MINY": -4355528
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "geklnmfK",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/1H_t1_10s.dx"
+      },
+      "display": {
+        "name": "1H_t1_10s",
+        "color": "#803E75",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_1H",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1ir",
+        "experiment": null,
+        "originFrequency": 600.20152017,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 600.2,
+        "fieldStrength": 14.096654402599738,
+        "frequencyOffset": 1520.1699999352059,
+        "spectralWidth": 6.01048728847242,
+        "numberOfPoints": 8192,
+        "sampleName": "Displayer_T1_1H",
+        "acquisitionTime": 1.1352726,
+        "pulseStrength90": 34246.57534246575,
+        "relaxationTime": 15,
+        "numberOfScans": 8,
+        "increment": 0.0007337916357553925,
+        "date": "2020-11-18T12:51:43.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_1H",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 12:51:43+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:33:20.264 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 600.20152017,
+        ".OBSERVENUCLEUS": "^1H",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 8,
+        ".DIGITISERRES": 23,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1ir",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 5.538023",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_1H/7/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:07:00.015 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 1 from\r\n       6 \"Displayer_T1_1H\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 8K\r\n       08 0E DC 8C BC 58 C9 A1 56 B4 26 85 5F A3 38 B1>)\r\n(   2,<2020-11-20 11:07:13.919 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 0.5 FT_mod = 6 PKNL = 1 PHC0 = 10.95949 PHC1 = -12.70477 SI = 8K \r\n       data hash MD5: 8K\r\n       52 FE 77 10 41 2C 63 7D 1D 58 EC 51 30 37 0E EA>)\r\n(   3,<2020-11-20 11:07:13.945 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 8K\r\n       0C C6 80 74 25 9E 2A FB 54 C5 D8 B5 A9 96 46 D9>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ F4 11 28 5B C8 90 1A 59 FE 11 6A A5 B3 30 8F 8A",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.440369092712843,
+        "YFACTOR": 1,
+        "DELTAX": -0.440369092712843,
+        "NPOINTS": 8192,
+        "FIRSTX": 3607.0632384109,
+        "FIRSTY": -16204,
+        "LASTX": 0,
+        "MAXY": 502692265,
+        "MINY": -115744
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "3YF850Fi",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/1H_t1_100ms.dx"
+      },
+      "display": {
+        "name": "1H_t1_100ms",
+        "color": "#FF6800",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_1H",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1ir",
+        "experiment": null,
+        "originFrequency": 600.20152017,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 600.2,
+        "fieldStrength": 14.096654402599738,
+        "frequencyOffset": 1520.1699999352059,
+        "spectralWidth": 6.01048728847242,
+        "numberOfPoints": 8192,
+        "sampleName": "Displayer_T1_1H",
+        "acquisitionTime": 1.1352726,
+        "pulseStrength90": 34246.57534246575,
+        "relaxationTime": 15,
+        "numberOfScans": 8,
+        "increment": 0.0007337916357553925,
+        "date": "2020-11-18T12:51:43.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_1H",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 12:51:43+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:37:13.128 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 600.20152017,
+        ".OBSERVENUCLEUS": "^1H",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 8,
+        ".DIGITISERRES": 23,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1ir",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 5.538023",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_1H/16/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:07:00.337 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 10 from\r\n       6 \"Displayer_T1_1H\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 8K\r\n       35 74 DE BC 05 0A F6 5E A0 DF A9 82 61 F0 A0 83>)\r\n(   2,<2020-11-20 11:07:35.459 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 0.5 FT_mod = 6 PKNL = 1 PHC0 = 10.95949 PHC1 = -12.70477 SI = 8K \r\n       data hash MD5: 8K\r\n       8B B0 72 7B 13 58 21 E8 C8 E7 CE 92 11 B0 36 83>)\r\n(   3,<2020-11-20 11:07:35.475 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 8K\r\n       E5 87 CB B0 5D 37 D7 7F B6 D7 E1 0A A5 12 77 EC>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ EE A7 D7 6C B7 E0 E8 2A EE 67 7D EE 81 5A C9 DC",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.440369092712843,
+        "YFACTOR": 1,
+        "DELTAX": -0.440369092712843,
+        "NPOINTS": 8192,
+        "FIRSTX": 3607.0632384109,
+        "FIRSTY": -155,
+        "LASTX": 0,
+        "MAXY": 42575,
+        "MINY": -268582871
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "8mHIhskn",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/1H_t1_250ms.dx"
+      },
+      "display": {
+        "name": "1H_t1_250ms",
+        "color": "#A6BDD7",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_1H",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1ir",
+        "experiment": null,
+        "originFrequency": 600.20152017,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 600.2,
+        "fieldStrength": 14.096654402599738,
+        "frequencyOffset": 1520.1699999352059,
+        "spectralWidth": 6.01048728847242,
+        "numberOfPoints": 8192,
+        "sampleName": "Displayer_T1_1H",
+        "acquisitionTime": 1.1352726,
+        "pulseStrength90": 34246.57534246575,
+        "relaxationTime": 15,
+        "numberOfScans": 8,
+        "increment": 0.0007337916357553925,
+        "date": "2020-11-18T12:51:43.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_1H",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 12:51:43+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:36:21.500 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 600.20152017,
+        ".OBSERVENUCLEUS": "^1H",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 8,
+        ".DIGITISERRES": 23,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1ir",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 5.538023",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_1H/14/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:07:00.264 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 8 from\r\n       6 \"Displayer_T1_1H\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 8K\r\n       CA B2 91 1F 96 DB 39 70 5D 1E D5 A0 10 58 AA 2A>)\r\n(   2,<2020-11-20 11:07:32.056 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 0.5 FT_mod = 6 PKNL = 1 PHC0 = 10.95949 PHC1 = -12.70477 SI = 8K \r\n       data hash MD5: 8K\r\n       0D AC 29 D1 28 A4 28 41 D0 78 9E E2 DF DB F2 A7>)\r\n(   3,<2020-11-20 11:07:32.070 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 8K\r\n       D1 F3 88 C5 A8 83 5E E7 45 86 0B EA 0C 91 31 60>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 7A 7B BC 3D 2A 2D D4 AB BB 2A 9F 0D 64 AB 92 5E",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.440369092712843,
+        "YFACTOR": 1,
+        "DELTAX": -0.440369092712843,
+        "NPOINTS": 8192,
+        "FIRSTX": 3607.0632384109,
+        "FIRSTY": 12035,
+        "LASTX": 0,
+        "MAXY": 207912,
+        "MINY": -430417966
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "5jYfA1oz",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/1H_t1_500ms.dx"
+      },
+      "display": {
+        "name": "1H_t1_500ms",
+        "color": "#C10020",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "1H",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_1H",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1ir",
+        "experiment": null,
+        "originFrequency": 600.20152017,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 600.2,
+        "fieldStrength": 14.096654402599738,
+        "frequencyOffset": 1520.1699999352059,
+        "spectralWidth": 6.01048728847242,
+        "numberOfPoints": 8192,
+        "sampleName": "Displayer_T1_1H",
+        "acquisitionTime": 1.1352726,
+        "pulseStrength90": 34246.57534246575,
+        "relaxationTime": 15,
+        "numberOfScans": 8,
+        "increment": 0.0007337916357553925,
+        "date": "2020-11-18T12:51:43.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_1H",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 12:51:43+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:35:57.283 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 600.20152017,
+        ".OBSERVENUCLEUS": "^1H",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 8,
+        ".DIGITISERRES": 23,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1ir",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 5.538023",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_1H/13/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:07:00.232 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 7 from\r\n       6 \"Displayer_T1_1H\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 8K\r\n       6C 74 A7 79 54 1F BF E9 88 40 2A 31 05 CB DB 90>)\r\n(   2,<2020-11-20 11:07:30.288 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 0.5 FT_mod = 6 PKNL = 1 PHC0 = 10.95949 PHC1 = -12.70477 SI = 8K \r\n       data hash MD5: 8K\r\n       14 12 68 9C 5D D5 CA 11 B2 2A B0 46 C9 73 6B 22>)\r\n(   3,<2020-11-20 11:07:30.301 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 8K\r\n       35 3D BA 5F 57 49 20 71 99 5D 40 9A 0E D6 77 DC>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 51 35 89 28 ED 67 D1 42 F3 95 76 CE AC 33 3F 4D",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.440369092712843,
+        "YFACTOR": 1,
+        "DELTAX": -0.440369092712843,
+        "NPOINTS": 8192,
+        "FIRSTX": 3607.0632384109,
+        "FIRSTY": 11681,
+        "LASTX": 0,
+        "MAXY": 3494042,
+        "MINY": -433634812
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "dIls8JPV",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/13C_t1_1s.dx"
+      },
+      "display": {
+        "name": "13C_t1_1s",
+        "color": "#CEA262",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_13C",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1irpg",
+        "experiment": null,
+        "originFrequency": 150.926751043,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 150.92041,
+        "fieldStrength": 14.09365155611028,
+        "frequencyOffset": 6341.0429999919415,
+        "spectralWidth": 91.0127836274047,
+        "numberOfPoints": 32768,
+        "sampleName": "Displayer_T1_13C",
+        "acquisitionTime": 1.1927188,
+        "pulseStrength90": 16129.032258064517,
+        "relaxationTime": 15,
+        "numberOfScans": 16,
+        "increment": 0.0027775744995698327,
+        "date": "2020-11-18T13:32:52.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_13C",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 13:32:52+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:40:45.783 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 150.926751043,
+        ".OBSERVENUCLEUS": "^13C",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 16,
+        ".DIGITISERRES": 22,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1irpg",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 87.52411",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_13C/13/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:09:20.939 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 6 from\r\n       7 \"Displayer_T1_13C\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 32K\r\n       D3 F2 06 E0 69 B0 F8 18 2D FC 77 E4 84 4C 50 FC>)\r\n(   2,<2020-11-20 11:09:33.654 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 3 FT_mod = 6 PKNL = 1 PHC0 = 37.07827 PHC1 = -64.8 SI = 16K \r\n       data hash MD5: 16K\r\n       3F 82 75 A7 A0 15 4A 4D 21 18 FF E4 13 98 7A 9E>)\r\n(   3,<2020-11-20 11:09:33.670 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 16K\r\n       EB B7 E0 BF A2 8F 76 9E B4 7C 2B 05 FD AA 9E 07>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 2C E4 3E 95 23 7F DD 51 54 8B 38 3E EB 6C 25 BE",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.838395003434064,
+        "YFACTOR": 1,
+        "DELTAX": -0.838395003434064,
+        "NPOINTS": 16384,
+        "FIRSTX": 13735.4253412603,
+        "FIRSTY": 953725,
+        "LASTX": 0,
+        "MAXY": 35400747,
+        "MINY": -281687740
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "dmueABmN",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/13C_t1_2s.dx"
+      },
+      "display": {
+        "name": "13C_t1_2s",
+        "color": "#817066",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_13C",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1irpg",
+        "experiment": null,
+        "originFrequency": 150.926751043,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 150.92041,
+        "fieldStrength": 14.09365155611028,
+        "frequencyOffset": 6341.0429999919415,
+        "spectralWidth": 91.0127836274047,
+        "numberOfPoints": 32768,
+        "sampleName": "Displayer_T1_13C",
+        "acquisitionTime": 1.1927188,
+        "pulseStrength90": 16129.032258064517,
+        "relaxationTime": 15,
+        "numberOfScans": 16,
+        "increment": 0.0027775744995698327,
+        "date": "2020-11-18T13:32:52.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_13C",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 13:32:52+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:40:25.469 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 150.926751043,
+        ".OBSERVENUCLEUS": "^13C",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 16,
+        ".DIGITISERRES": 22,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1irpg",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 87.52411",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_13C/12/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:09:20.902 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 5 from\r\n       7 \"Displayer_T1_13C\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 32K\r\n       E3 C9 9A FC CE 1F 16 96 AB 86 E7 3D F4 CF F4 BA>)\r\n(   2,<2020-11-20 11:09:32.239 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 3 FT_mod = 6 PKNL = 1 PHC0 = 37.07827 PHC1 = -64.8 SI = 16K \r\n       data hash MD5: 16K\r\n       EF 3A 9B F3 85 5C 02 64 AF B1 71 02 7C CE AD 18>)\r\n(   3,<2020-11-20 11:09:32.251 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 16K\r\n       0A B1 E0 C1 0E 74 EA 76 9D 2A D1 13 CD 9F 35 A3>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 15 07 28 5F 4C 63 6E 5A 85 DD 45 1F 5B 65 98 5F",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.838395003434064,
+        "YFACTOR": 1,
+        "DELTAX": -0.838395003434064,
+        "NPOINTS": 16384,
+        "FIRSTX": 13735.4253412603,
+        "FIRSTY": -2470144,
+        "LASTX": 0,
+        "MAXY": 178612326,
+        "MINY": -505052800
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "f9e7zEIY",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/13C_t1_3s.dx"
+      },
+      "display": {
+        "name": "13C_t1_3s",
+        "color": "#007D34",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_13C",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1irpg",
+        "experiment": null,
+        "originFrequency": 150.926751043,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 150.92041,
+        "fieldStrength": 14.09365155611028,
+        "frequencyOffset": 6341.0429999919415,
+        "spectralWidth": 91.0127836274047,
+        "numberOfPoints": 32768,
+        "sampleName": "Displayer_T1_13C",
+        "acquisitionTime": 1.1927188,
+        "pulseStrength90": 16129.032258064517,
+        "relaxationTime": 15,
+        "numberOfScans": 16,
+        "increment": 0.0027775744995698327,
+        "date": "2020-11-18T13:32:52.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_13C",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 13:32:52+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:40:12.652 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 150.926751043,
+        ".OBSERVENUCLEUS": "^13C",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 16,
+        ".DIGITISERRES": 22,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1irpg",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 87.52411",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_13C/11/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:09:20.866 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 4 from\r\n       7 \"Displayer_T1_13C\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 32K\r\n       16 56 7D 9B 71 EA 77 CD B9 8A 3F 97 E9 A9 60 DE>)\r\n(   2,<2020-11-20 11:09:30.693 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 3 FT_mod = 6 PKNL = 1 PHC0 = 37.07827 PHC1 = -64.8 SI = 16K \r\n       data hash MD5: 16K\r\n       82 4E A5 52 FA A7 F5 BE 23 49 7A 10 A1 10 62 CE>)\r\n(   3,<2020-11-20 11:09:30.707 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 16K\r\n       4C 4F 7A 09 37 D7 B2 D2 BB A5 BD 4A E7 EB A7 4E>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ DB 79 32 46 7B 33 5E AE BA 09 B4 6A 54 9B A2 CA",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.838395003434064,
+        "YFACTOR": 1,
+        "DELTAX": -0.838395003434064,
+        "NPOINTS": 16384,
+        "FIRSTX": 13735.4253412603,
+        "FIRSTY": -820189,
+        "LASTX": 0,
+        "MAXY": 211023477,
+        "MINY": -444722453
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "kKk42d97",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/13C_t1_4s.dx"
+      },
+      "display": {
+        "name": "13C_t1_4s",
+        "color": "#F6768E",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_13C",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1irpg",
+        "experiment": null,
+        "originFrequency": 150.926751043,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 150.92041,
+        "fieldStrength": 14.09365155611028,
+        "frequencyOffset": 6341.0429999919415,
+        "spectralWidth": 91.0127836274047,
+        "numberOfPoints": 32768,
+        "sampleName": "Displayer_T1_13C",
+        "acquisitionTime": 1.1927188,
+        "pulseStrength90": 16129.032258064517,
+        "relaxationTime": 15,
+        "numberOfScans": 16,
+        "increment": 0.0027775744995698327,
+        "date": "2020-11-18T13:32:52.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_13C",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 13:32:52+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:39:42.352 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 150.926751043,
+        ".OBSERVENUCLEUS": "^13C",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 16,
+        ".DIGITISERRES": 22,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1irpg",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 87.52411",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_13C/10/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:09:20.830 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 3 from\r\n       7 \"Displayer_T1_13C\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 32K\r\n       78 41 5D 08 25 6D D9 D0 A9 34 3D 68 51 F6 E8 08>)\r\n(   2,<2020-11-20 11:09:29.789 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 3 FT_mod = 6 PKNL = 1 PHC0 = 37.07827 PHC1 = -64.8 SI = 16K \r\n       data hash MD5: 16K\r\n       A9 85 89 FD 87 FC 02 08 C8 41 7B EF AD 84 D9 99>)\r\n(   3,<2020-11-20 11:09:29.802 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 16K\r\n       C0 F8 92 BE 89 DA 3D 22 A0 1F F9 52 31 67 B3 68>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 18 F2 4D 7D E0 DD 90 31 A0 E4 DB FA D9 9C 3B DF",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.838395003434064,
+        "YFACTOR": 1,
+        "DELTAX": -0.838395003434064,
+        "NPOINTS": 16384,
+        "FIRSTX": 13735.4253412603,
+        "FIRSTY": 10118929,
+        "LASTX": 0,
+        "MAXY": 227958681,
+        "MINY": -393229529
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "hg2Un7my",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/13C_t1_5s.dx"
+      },
+      "display": {
+        "name": "13C_t1_5s",
+        "color": "#00538A",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_13C",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1irpg",
+        "experiment": null,
+        "originFrequency": 150.926751043,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 150.92041,
+        "fieldStrength": 14.09365155611028,
+        "frequencyOffset": 6341.0429999919415,
+        "spectralWidth": 91.0127836274047,
+        "numberOfPoints": 32768,
+        "sampleName": "Displayer_T1_13C",
+        "acquisitionTime": 1.1927188,
+        "pulseStrength90": 16129.032258064517,
+        "relaxationTime": 15,
+        "numberOfScans": 16,
+        "increment": 0.0027775744995698327,
+        "date": "2020-11-18T13:32:52.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_13C",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 13:32:52+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:39:17.436 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 150.926751043,
+        ".OBSERVENUCLEUS": "^13C",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 16,
+        ".DIGITISERRES": 22,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1irpg",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 87.52411",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_13C/9/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:09:20.791 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 2 from\r\n       7 \"Displayer_T1_13C\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 32K\r\n       BA C7 33 39 63 64 83 C9 A3 48 C6 15 1F 46 84 97>)\r\n(   2,<2020-11-20 11:09:28.734 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 3 FT_mod = 6 PKNL = 1 PHC0 = 37.07827 PHC1 = -64.8 SI = 16K \r\n       data hash MD5: 16K\r\n       82 E6 FB 46 56 D8 01 CF 01 10 C4 9E 33 26 DA 39>)\r\n(   3,<2020-11-20 11:09:28.747 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 16K\r\n       C6 CA 2C 91 E5 7A 30 B7 1A 84 58 90 90 F0 0B 69>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 3F FE 02 3F E3 64 E4 97 AF F0 4F 63 9C 06 C9 B6",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.838395003434064,
+        "YFACTOR": 1,
+        "DELTAX": -0.838395003434064,
+        "NPOINTS": 16384,
+        "FIRSTX": 13735.4253412603,
+        "FIRSTY": 2524802,
+        "LASTX": 0,
+        "MAXY": 233955846,
+        "MINY": -335520877
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "aatUj35C",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/13C_t1_10s.dx"
+      },
+      "display": {
+        "name": "13C_t1_10s",
+        "color": "#FF7A5C",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_13C",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1irpg",
+        "experiment": null,
+        "originFrequency": 150.926751043,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 150.92041,
+        "fieldStrength": 14.09365155611028,
+        "frequencyOffset": 6341.0429999919415,
+        "spectralWidth": 91.0127836274047,
+        "numberOfPoints": 32768,
+        "sampleName": "Displayer_T1_13C",
+        "acquisitionTime": 1.1927188,
+        "pulseStrength90": 16129.032258064517,
+        "relaxationTime": 15,
+        "numberOfScans": 16,
+        "increment": 0.0027775744995698327,
+        "date": "2020-11-18T13:32:52.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_13C",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 13:32:52+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:38:55.836 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 150.926751043,
+        ".OBSERVENUCLEUS": "^13C",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 16,
+        ".DIGITISERRES": 22,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1irpg",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 87.52411",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_13C/8/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:09:20.757 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 1 from\r\n       7 \"Displayer_T1_13C\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 32K\r\n       EE 69 C1 C7 81 77 76 FD 74 44 60 C4 99 EC 6C 0F>)\r\n(   2,<2020-11-20 11:09:27.296 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 3 FT_mod = 6 PKNL = 1 PHC0 = 37.07827 PHC1 = -64.8 SI = 16K \r\n       data hash MD5: 16K\r\n       B1 D6 76 68 32 DC 1D 54 51 9E 5A 5F 95 48 A1 B6>)\r\n(   3,<2020-11-20 11:09:27.309 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 16K\r\n       3C 32 3D 02 4A 1E 9A AF F7 A0 30 37 42 EA 3F 24>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ D6 E9 32 D6 4B 67 1E C6 EF 3E 0F 36 C0 08 91 BE",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.838395003434064,
+        "YFACTOR": 1,
+        "DELTAX": -0.838395003434064,
+        "NPOINTS": 16384,
+        "FIRSTX": 13735.4253412603,
+        "FIRSTY": -2759572,
+        "LASTX": 0,
+        "MAXY": 495453835,
+        "MINY": -146292599
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "7uDFVAPL",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/13C_t1_100ms.dx"
+      },
+      "display": {
+        "name": "13C_t1_100ms",
+        "color": "#53377A",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_13C",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1irpg",
+        "experiment": null,
+        "originFrequency": 150.926751043,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 150.92041,
+        "fieldStrength": 14.09365155611028,
+        "frequencyOffset": 6341.0429999919415,
+        "spectralWidth": 91.0127836274047,
+        "numberOfPoints": 32768,
+        "sampleName": "Displayer_T1_13C",
+        "acquisitionTime": 1.1927188,
+        "pulseStrength90": 16129.032258064517,
+        "relaxationTime": 15,
+        "numberOfScans": 16,
+        "increment": 0.0027775744995698327,
+        "date": "2020-11-18T13:32:52.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_13C",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 13:32:52+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:42:03.773 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 150.926751043,
+        ".OBSERVENUCLEUS": "^13C",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 16,
+        ".DIGITISERRES": 22,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1irpg",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 87.52411",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_13C/16/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:09:21.052 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 9 from\r\n       7 \"Displayer_T1_13C\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 32K\r\n       65 7E D0 6F 72 3A 45 29 4D 31 20 9A 89 EE 1B 71>)\r\n(   2,<2020-11-20 11:09:38.128 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 3 FT_mod = 6 PKNL = 1 PHC0 = 37.07827 PHC1 = -64.8 SI = 16K \r\n       data hash MD5: 16K\r\n       E7 5D AB 57 F1 61 51 8E 19 34 59 EB BB 02 C9 23>)\r\n(   3,<2020-11-20 11:09:38.142 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 16K\r\n       39 47 A7 21 0F 06 B3 1A 56 DE 12 34 59 14 28 F2>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 77 E2 E4 B9 3F B3 BC FB 1A 59 39 59 84 C2 0D 55",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.838395003434064,
+        "YFACTOR": 1,
+        "DELTAX": -0.838395003434064,
+        "NPOINTS": 16384,
+        "FIRSTX": 13735.4253412603,
+        "FIRSTY": -1420467,
+        "LASTX": 0,
+        "MAXY": 5241882,
+        "MINY": -309515485
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "3Igr75tr",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/13C_t1_250ms.dx"
+      },
+      "display": {
+        "name": "13C_t1_250ms",
+        "color": "#FF8E00",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_13C",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1irpg",
+        "experiment": null,
+        "originFrequency": 150.926751043,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 150.92041,
+        "fieldStrength": 14.09365155611028,
+        "frequencyOffset": 6341.0429999919415,
+        "spectralWidth": 91.0127836274047,
+        "numberOfPoints": 32768,
+        "sampleName": "Displayer_T1_13C",
+        "acquisitionTime": 1.1927188,
+        "pulseStrength90": 16129.032258064517,
+        "relaxationTime": 15,
+        "numberOfScans": 16,
+        "increment": 0.0027775744995698327,
+        "date": "2020-11-18T13:32:52.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_13C",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 13:32:52+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:41:50.442 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 150.926751043,
+        ".OBSERVENUCLEUS": "^13C",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 16,
+        ".DIGITISERRES": 22,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1irpg",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 87.52411",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_13C/15/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:09:21.016 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 8 from\r\n       7 \"Displayer_T1_13C\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 32K\r\n       01 B2 05 4D B0 A7 C9 BC 9B A5 A7 2F 30 29 B9 93>)\r\n(   2,<2020-11-20 11:09:35.478 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 3 FT_mod = 6 PKNL = 1 PHC0 = 37.07827 PHC1 = -64.8 SI = 16K \r\n       data hash MD5: 16K\r\n       87 45 67 AF F8 E3 4D AB 17 AC 0D 38 B9 00 A8 BF>)\r\n(   3,<2020-11-20 11:09:35.495 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 16K\r\n       81 84 55 DF 24 49 D7 5D 00 7B 61 6C DD 4F EF 70>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 00 70 C9 00 54 20 EC 2C A5 28 55 95 45 18 A2 C9",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.838395003434064,
+        "YFACTOR": 1,
+        "DELTAX": -0.838395003434064,
+        "NPOINTS": 16384,
+        "FIRSTX": 13735.4253412603,
+        "FIRSTY": 153410,
+        "LASTX": 0,
+        "MAXY": 5154600,
+        "MINY": -307509432
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    },
+    {
+      "data": {},
+      "id": "8YtXVGdM",
+      "source": {
+        "jcamp": null,
+        "jcampURL": "./data/t1/13C_t1_500ms.dx"
+      },
+      "display": {
+        "name": "13C_t1_500ms",
+        "color": "#B32851",
+        "isVisible": true,
+        "isPeaksMarkersVisible": true,
+        "isRealSpectrumVisible": true,
+        "isVisibleInDomain": true
+      },
+      "info": {
+        "nucleus": "13C",
+        "isFid": false,
+        "isComplex": true,
+        "dimension": 1,
+        "isFt": true,
+        "title": "Displayer_T1_13C",
+        "solvent": "DMSO",
+        "temperature": 298,
+        "type": "NMR SPECTRUM",
+        "pulseSequence": "t1irpg",
+        "experiment": null,
+        "originFrequency": 150.926751043,
+        "probeName": "5 mm PABBI 1H/D-BB Z-GRD Z814601/0138",
+        "baseFrequency": 150.92041,
+        "fieldStrength": 14.09365155611028,
+        "frequencyOffset": 6341.0429999919415,
+        "spectralWidth": 91.0127836274047,
+        "numberOfPoints": 32768,
+        "sampleName": "Displayer_T1_13C",
+        "acquisitionTime": 1.1927188,
+        "pulseStrength90": 16129.032258064517,
+        "relaxationTime": 15,
+        "numberOfScans": 16,
+        "increment": 0.0027775744995698327,
+        "date": "2020-11-18T13:32:52.000Z"
+      },
+      "meta": {
+        "TITLE": "Displayer_T1_13C",
+        "JCAMPDX": "6.0         $$ Bruker NMR JCAMP-DX V2.0",
+        "DATATYPE": "NMR SPECTRUM",
+        "DATACLASS": "XYDATA",
+        "ORIGIN": "Bruker BioSpin GmbH",
+        "OWNER": "nes",
+        "LONGDATE": "2020/11/18 13:32:52+0000\r\n$$ 1.90.2.4 TopSpin 3.6.0\r\n$$ 2020-11-20 11:41:32.336 +0100  nes@nmr-nesnote2\r\n$$ Compression mode = diff/dup",
+        ".OBSERVEFREQUENCY": 150.926751043,
+        ".OBSERVENUCLEUS": "^13C",
+        ".ACQUISITIONMODE": "SIMULTANEOUS (DQD)",
+        ".ACQUISITIONSCHEME": "undefined",
+        ".AVERAGES": 16,
+        ".DIGITISERRES": 22,
+        "SPECTROMETER/DATASYSTEM": "spect",
+        ".PULSESEQUENCE": "t1irpg",
+        ".SOLVENTNAME": "DMSO",
+        ".SHIFTREFERENCE": "INTERNAL, DMSO, 1, 87.52411",
+        "AUDITTRAIL": "$$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n$$ ##TITLE= Audit trail, TopSpin 3.6.0\r\n$$ ##JCAMPDX= 5.01\r\n$$ ##ORIGIN= Bruker BioSpin GmbH\r\n$$ ##OWNER= nes\r\n$$ $$ C:/Bruker/TopSpin3.6.0/data/luc/nmr/Displayer_T1_13C/14/pdata/1/auditp.txt\r\n$$ ##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)\r\n(   1,<2020-11-20 11:09:20.977 +0100>,<nes>,<nmr-nesnote2>,<mvrow>,<TopSpin 3.6.0>,\r\n      <rser 7 from\r\n       7 \"Displayer_T1_13C\" \"C:/Bruker/TopSpin3.6.0/data/luc/nmr\"\r\n       data hash MD5: 32K\r\n       16 27 06 79 35 86 D5 8B A5 94 6F 53 69 11 33 48>)\r\n(   2,<2020-11-20 11:09:34.622 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <Start of raw data processing\r\n       efp LB = 3 FT_mod = 6 PKNL = 1 PHC0 = 37.07827 PHC1 = -64.8 SI = 16K \r\n       data hash MD5: 16K\r\n       9F 6B 60 89 91 AC D5 01 47 16 5D E6 F0 88 F7 FB>)\r\n(   3,<2020-11-20 11:09:34.635 +0100>,<nes>,<nmr-nesnote2>,<proc1d>,<TopSpin 3.6.0>,\r\n      <abs n ABSG = 5 \r\n       data hash MD5: 16K\r\n       E2 35 1F FE 0A F7 3B 9E BB 49 24 BD 1F 1D C3 A5>)\r\n$$ ##END=\r\n$$ \r\n$$ $$ hash MD5\r\n$$ $$ 75 55 61 A8 F5 8A 9E D1 3E 8D FC BF C6 13 7D 49",
+        "XUNITS": "HZ",
+        "YUNITS": "ARBITRARY UNITS",
+        "XFACTOR": 0.838395003434064,
+        "YFACTOR": 1,
+        "DELTAX": -0.838395003434064,
+        "NPOINTS": 16384,
+        "FIRSTX": 13735.4253412603,
+        "FIRSTY": 1037614,
+        "LASTX": 0,
+        "MAXY": 5413731,
+        "MINY": -297337884
+      },
+      "peaks": {
+        "values": [],
+        "options": {}
+      },
+      "integrals": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "ranges": {
+        "values": [],
+        "options": {
+          "sum": 100
+        }
+      },
+      "filters": []
+    }
+  ],
+  "molecules": [],
+  "preferences": {
+    "display": {
+      "center": true
+    }
+  },
+  "correlations": {
+    "options": {
+      "tolerance": {
+        "C": 0.25,
+        "H": 0.02,
+        "N": 0.25,
+        "F": 0.25,
+        "Si": 0.25,
+        "P": 0.25
+      }
+    },
+    "values": [],
+    "state": {}
+  }
+}

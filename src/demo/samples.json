@@ -77,6 +77,10 @@
       {
         "file": "./data/19f/19f.json",
         "title": "19F with baseline problems"
+      },
+      {
+        "file": "./data/t1/t1.json",
+        "title": "T1 samples (1H + 13C)"
       }
     ]
   },
