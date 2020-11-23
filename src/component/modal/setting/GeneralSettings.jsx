@@ -9,6 +9,7 @@ import FormikForm from '../../elements/formik/FormikForm';
 import { SET_PREFERENCES } from '../../reducer/preferencesReducer';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 
+import AboutTabContent from './AboutTabContent';
 import ControllersTabContent from './ControllersTabContent';
 import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
@@ -219,6 +220,9 @@ const GeneralSettings = ({ onClose, onSave }) => {
               tabid="multipletAnalysis"
             >
               <MultipletAnalysisTabContent />
+            </div>
+            <div className="inner-content" tablabel="About" tabid="about">
+              <AboutTabContent />
             </div>
           </Tabs>
         </FormikForm>
