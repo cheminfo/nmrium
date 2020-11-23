@@ -148,7 +148,7 @@ const setSpectrumsVerticalAlign = (state, flag) => {
 
 const handleChangeSpectrumDisplayMode = (state, { flag }) => {
   return produce(state, (draft) => {
-    const { activeSpectrum, data, height } = state;
+    const { activeSpectrum, data, height, activeTab } = state;
     let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
     if (activeSpectrum) {
       const { index } = activeSpectrum;
@@ -156,12 +156,14 @@ const handleChangeSpectrumDisplayMode = (state, { flag }) => {
         YAxisShift = height / 2;
       }
     }
-
     draft.verticalAlign.flag = flag;
     draft.verticalAlign.stacked = flag;
 
     if (flag) {
-      draft.verticalAlign.value = Math.floor(height / (state.data.length + 2));
+      const count = state.data.filter(
+        (datum) => datum.info.nucleus === activeTab,
+      ).length;
+      draft.verticalAlign.value = Math.floor(height / (count + 2));
     } else {
       draft.verticalAlign.value = YAxisShift;
     }
