@@ -62,7 +62,7 @@ const AboutTabContent = memo(() => {
   return (
     info && (
       <div css={styles}>
-        <img src={`${process.env.PUBLIC_URL}img/logo.svg`} alt="react-logo" />
+        <img src="./img/logo.svg" alt="" />
         <span>NMR Displayer </span>
         <span> {info[1][0].name}</span>
 
