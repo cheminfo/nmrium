@@ -86,14 +86,12 @@ const SpectrumSetting = ({
   const { x, y } = position;
   return (
     <div
-      css={[
-        style,
-        {
-          left: info.dimension === 2 ? x - 450 : x - 220,
-          padding: info.dimension === 2 ? '10px 0' : '',
-          top: y,
-        },
-      ]}
+      css={style}
+      style={{
+        left: info.dimension === 2 ? x - 450 : x - 220,
+        padding: info.dimension === 2 ? '10px 0' : '',
+        top: y,
+      }}
       onMouseLeave={onMouseLeave}
     >
       {info.dimension === 2 ? (

@@ -35,18 +35,21 @@ const ModalProvider = ({
   const [modal, setModal] = useState();
   useEffect(() => {
     root.current = document.createElement('div');
+    const ref = root.current;
     if (wrapperID) {
-      document.getElementById(wrapperID).appendChild(root.current);
+      const el = document.getElementById(wrapperID);
+      if (el) el.appendChild(ref);
     } else {
-      document.body.appendChild(root.current);
+      document.body.appendChild(ref);
     }
 
     return () => {
-      if (root.current) {
+      if (ref) {
         if (wrapperID) {
-          document.getElementById(wrapperID).removeChild(root.current);
+          const el = document.getElementById(wrapperID);
+          if (el) el.removeChild(ref);
         } else {
-          document.body.removeChild(root.current);
+          document.body.removeChild(ref);
         }
       }
     };
@@ -148,7 +151,7 @@ const ModalProvider = ({
       {root.current &&
         createPortal(
           <Fragment>
-            {modal && (
+            {modal ? (
               <div
                 css={styles}
                 style={{
@@ -213,6 +216,8 @@ const ModalProvider = ({
                   </Transition>
                 </TransitionGroup>
               </div>
+            ) : (
+              <div />
             )}
           </Fragment>,
           root.current,

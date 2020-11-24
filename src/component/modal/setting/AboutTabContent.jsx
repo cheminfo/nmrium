@@ -59,27 +59,25 @@ const AboutTabContent = memo(() => {
     });
   }, []);
 
-  return (
-    info && (
-      <div css={styles}>
-        <img src="./img/logo.svg" alt="" />
-        <span>NMR Displayer </span>
-        <span> {info[1][0].name}</span>
+  return info ? (
+    <div css={styles}>
+      <img src="./img/logo.svg" alt="" />
+      <span>NMR Displayer </span>
+      <span> {info[1][0].name}</span>
 
-        <span className="separator" />
+      <span className="separator" />
 
-        <a href={info[1][0].zipball_url} target="_blank" rel="noreferrer">
-          Download Last Version {info[1][0].name}
-        </a>
-        <span className="separator" />
+      <a href={info[1][0].zipball_url} target="_blank" rel="noreferrer">
+        Download Last Version {info[1][0].name}
+      </a>
+      <span className="separator" />
 
-        <a href={info[0][0].html_url} target="_blank" rel="noreferrer">
-          Last Commit {new Date(info[0][0].commit.author.date).toUTCString()} [
-          {info[0][0].sha.substr(0, 12)} ]
-        </a>
-      </div>
-    )
-  );
+      <a href={info[0][0].html_url} target="_blank" rel="noreferrer">
+        Last Commit {new Date(info[0][0].commit.author.date).toUTCString()} [
+        {info[0][0].sha.substr(0, 12)} ]
+      </a>
+    </div>
+  ) : null;
 });
 
 export default AboutTabContent;

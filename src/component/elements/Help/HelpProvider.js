@@ -65,20 +65,23 @@ const HelpProvider = ({
 
   useEffect(() => {
     root.current = document.createElement('div');
+    const ref = root.current;
     if (wrapperID) {
-      document.getElementById(wrapperID).appendChild(root.current);
+      const el = document.getElementById(wrapperID);
+      if (el) el.appendChild(ref);
     } else {
-      document.body.appendChild(root.current);
+      document.body.appendChild(ref);
     }
     const timersIdRef = timersId.current;
 
     return () => {
       timersIdRef.forEach(clearTimeout);
-      if (root.current) {
+      if (ref) {
         if (wrapperID) {
-          document.getElementById(wrapperID).removeChild(root.current);
+          const el = document.getElementById(wrapperID);
+          if (el) el.removeChild(ref);
         } else {
-          document.body.removeChild(root.current);
+          document.body.removeChild(ref);
         }
       }
     };
