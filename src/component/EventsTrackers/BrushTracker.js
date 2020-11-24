@@ -129,12 +129,15 @@ export function BrushTracker({
 
       return false;
     };
-    document.addEventListener('mousemove', moveCallback);
-    document.addEventListener('mouseup', upCallback);
+    document.nmrDisplayerRootNode.addEventListener('mousemove', moveCallback);
+    document.nmrDisplayerRootNode.addEventListener('mouseup', upCallback);
 
     return () => {
-      document.removeEventListener('mousemove', moveCallback);
-      document.removeEventListener('mouseup', upCallback);
+      document.nmrDisplayerRootNode.removeEventListener(
+        'mousemove',
+        moveCallback,
+      );
+      document.nmrDisplayerRootNode.removeEventListener('mouseup', upCallback);
     };
   }, []);
 

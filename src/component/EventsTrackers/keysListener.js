@@ -105,9 +105,17 @@ const KeyListener = ({ parentRef }) => {
   useEffect(() => {
     // ReactDOM.findDOMNode(parentRef.current)
 
-    document.addEventListener('keydown', handleOnKeyPressed, false);
+    document.nmrDisplayerRootNode.addEventListener(
+      'keydown',
+      handleOnKeyPressed,
+      false,
+    );
     return () => {
-      document.removeEventListener('keydown', handleOnKeyPressed, false);
+      document.nmrDisplayerRootNode.removeEventListener(
+        'keydown',
+        handleOnKeyPressed,
+        false,
+      );
     };
   }, [handleOnKeyPressed]);
 

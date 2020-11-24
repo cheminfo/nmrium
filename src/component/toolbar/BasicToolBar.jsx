@@ -194,10 +194,18 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
   }, [LoadJacmpHandler, modal, startLoadingHandler]);
 
   useEffect(() => {
-    document.addEventListener('keydown', handleOnKeyPressed, false);
+    document.nmrDisplayerRootNode.addEventListener(
+      'keydown',
+      handleOnKeyPressed,
+      false,
+    );
 
     return () => {
-      document.removeEventListener('keydown', handleOnKeyPressed, false);
+      document.nmrDisplayerRootNode.removeEventListener(
+        'keydown',
+        handleOnKeyPressed,
+        false,
+      );
     };
   }, [handleOnKeyPressed]);
 

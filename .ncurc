@@ -3,7 +3,5 @@
     "react-color",
     "react-table",
     "rc-menu",
-    "react",
-    "react-dom"
   ]
 }

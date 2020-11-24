@@ -124,9 +124,12 @@ const ContextMenu = forwardRef(({ context }, ref) => {
       if (wasOutside && isVisible) show(false);
     };
 
-    document.addEventListener('click', _handleGlobalClick);
+    document.nmrDisplayerRootNode.addEventListener('click', _handleGlobalClick);
     return () => {
-      document.removeEventListener('click', _handleGlobalClick);
+      document.nmrDisplayerRootNode.removeEventListener(
+        'click',
+        _handleGlobalClick,
+      );
     };
   }, [isVisible, ref, sourceElement]);
 
