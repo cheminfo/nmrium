@@ -1,5 +1,3 @@
-// import { setAutoFreeze } from 'immer';
-
 import { options } from '../toolbar/ToolTypes';
 
 import checkActionType from './IgnoreActions';
@@ -31,8 +29,6 @@ import { AnalysisObj } from './core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
-
-// setAutoFreeze(false);
 
 export const initialState = {
   data: null,

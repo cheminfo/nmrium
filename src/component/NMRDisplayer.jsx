@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { jsx, css } from '@emotion/react';
-import { setAutoFreeze } from 'immer';
 import lodash from 'lodash';
 import OCL from 'openchemlib/full';
 import PropTypes from 'prop-types';
@@ -50,8 +49,6 @@ import {
 } from './reducer/preferencesReducer';
 import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
-
-setAutoFreeze(true);
 
 initOCL(OCL);
 
