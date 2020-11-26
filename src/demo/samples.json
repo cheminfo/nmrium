@@ -81,6 +81,10 @@
       {
         "file": "./data/t1/t1.json",
         "title": "T1 samples (1H + 13C)"
+      },
+      {
+        "file": "./data/t2/t2.json",
+        "title": "T2 samples (1H + 13C)"
       }
     ]
   },
