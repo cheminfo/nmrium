@@ -124,6 +124,7 @@ const Header = ({ isFullscreen, onMaximize }) => {
       <GeneralSettings
         onSave={() => {
           alert.success('Settings saved successfully');
+          modal.close();
         }}
       />,
       {
