@@ -34,10 +34,10 @@ export default class MultipleAnalysis {
     return data[columns[colKey].valueKey];
   }
 
-  getSpectraAnalysis(from, to) {
+  getSpectraAnalysis(from, to, nucleus) {
     return this.spectra.reduce(
       (acc, ob) => {
-        if (ob instanceof Datum1D) {
+        if (ob instanceof Datum1D && ob.info.nucleus === nucleus) {
           const range = ob.detectRange(from, to);
           acc.sum += range.absolute;
           acc.values.push({ SID: ob.getID(), ...range });
@@ -169,6 +169,7 @@ export default class MultipleAnalysis {
     const { values: result, sum: spectraSum } = this.getSpectraAnalysis(
       from,
       to,
+      nucleus,
     );
 
     const prevNucleusData = lodash.get(
