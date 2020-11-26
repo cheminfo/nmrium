@@ -54,8 +54,8 @@ const SignalsForm = memo(() => {
   }, [activeSpectrum, spectraData]);
 
   useEffect(() => {
-    const unsubscribe = Events.subscribe('brushEnd', (event) => {
-      if (values.activeTab !== 'addSignalTab' && activeField && frequency) {
+    Events.on('brushEnd', (event) => {
+      if (activeField && frequency) {
         setFieldValue(
           activeField,
           Math.abs(event.range[0] - event.range[1]) * frequency,
@@ -64,19 +64,19 @@ const SignalsForm = memo(() => {
     });
 
     return () => {
-      unsubscribe();
+      Events.off('brushEnd');
     };
   }, [activeField, setFieldValue, frequency, values.activeTab]);
 
   useEffect(() => {
-    const unsubscribe = Events.subscribe('mouseClick', (event) => {
+    Events.on('mouseClick', (event) => {
       if (values.activeTab === 'addSignalTab' && activeField) {
         setFieldValue(activeField, event.xPPM);
       }
     });
 
     return () => {
-      unsubscribe();
+      Events.off('mouseClick');
     };
   }, [values.activeTab, activeField, setFieldValue]);
 
@@ -87,13 +87,14 @@ const SignalsForm = memo(() => {
     [setActiveField],
   );
 
-  const handleOnBlur = useCallback(() => {
-    setActiveField(null);
-  }, []);
+  // const handleOnBlur = useCallback(() => {
+  //   setActiveField(null);
+  // }, []);
 
   const tapClickHandler = useCallback(
     ({ tabid }) => {
       setFieldValue('activeTab', tabid);
+      setActiveField(null);
     },
     [setFieldValue],
   );
@@ -145,7 +146,7 @@ const SignalsForm = memo(() => {
                 .join('')})`}
               tabstyles={tabContainsErrors(i) ? tabStylesAddition : null}
             >
-              <SignalFormTab onFocus={handleOnFocus} onBlur={handleOnBlur} />
+              <SignalFormTab onFocus={handleOnFocus} />
             </div>
           ))
         : [];
@@ -157,12 +158,12 @@ const SignalsForm = memo(() => {
         candelete="false"
         key="addSignalTab"
       >
-        <AddSignalFormTab onFocus={handleOnFocus} onBlur={handleOnBlur} />
+        <AddSignalFormTab onFocus={handleOnFocus} />
       </div>
     );
 
     return signalTabs.concat(addSignalTab);
-  }, [handleOnBlur, handleOnFocus, tabContainsErrors, values.signals]);
+  }, [handleOnFocus, tabContainsErrors, values.signals]);
 
   const editSignalInfoText = (
     <p className="infoText">

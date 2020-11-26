@@ -7,7 +7,7 @@ import { AnalysisObj } from '../core/Analysis';
 
 let noiseFactor = 1;
 
-Events.subscribe('noiseFactorChanged', (val) => {
+Events.on('noiseFactorChanged', (val) => {
   noiseFactor = val;
 });
 

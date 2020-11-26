@@ -56,7 +56,7 @@ const Zones2DOptionPanel = () => {
     // const fieldName = e.target.name;
     if (e.target) {
       const val = e.target.value;
-      Events.publish('noiseFactorChanged', val);
+      Events.emit('noiseFactorChanged', val);
     }
   }, []);
 

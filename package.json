@@ -11,6 +11,7 @@
     "@emotion/react": "^11.1.1",
     "cheminfo-font": "^0.33.1",
     "d3": "^6.2.0",
+    "eventemitter3": "^4.0.7",
     "file-saver": "^2.0.5",
     "formik": "^2.2.5",
     "immer": "^8.0.0",
@@ -58,7 +59,6 @@
     "react-table": "7.6.0",
     "react-transition-group": "^4.4.1",
     "react-use": "^15.3.4",
-    "rxjs": "^6.6.3",
     "spectra-data-ranges": "^1.1.10",
     "yup": "^0.31.0"
   },

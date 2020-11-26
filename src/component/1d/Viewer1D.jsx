@@ -106,7 +106,7 @@ const Viewer1D = () => {
         const { startX, endX } = brushData;
         const startXPPM = scaleState.scaleX().invert(startX);
         const endXPPM = scaleState.scaleX().invert(endX);
-        Events.publish('brushEnd', {
+        Events.emit('brushEnd', {
           ...brushData,
           range: [startXPPM, endXPPM],
         });
@@ -211,7 +211,7 @@ const Viewer1D = () => {
     (position) => {
       const propagateEvent = () => {
         const xPPM = scaleState.scaleX().invert(position.x);
-        Events.publish('mouseClick', {
+        Events.emit('mouseClick', {
           ...position,
           xPPM,
         });
