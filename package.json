@@ -29,7 +29,7 @@
     "ml-spectra-processing": "^4.9.4",
     "mouse-speed": "^2.0.1",
     "multiplet-analysis": "0.3.0",
-    "nmr-parser": "0.2.8",
+    "nmr-parser": "^0.2.9",
     "nmr-processing": "^0.4.0",
     "numeral": "^2.0.6",
     "openchemlib": "^7.2.3",
