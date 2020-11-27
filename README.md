@@ -8,7 +8,7 @@ Want to play ? You can do some 1D NMR exercises ;)
 
 https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/toc.json
 
-Also you can do some 2D  NMR exercises ;)
+Also you can do some 2D NMR exercises ;)
 
 https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset1/data/2d.json
 
@@ -72,6 +72,7 @@ npm install nmr-displayer
 ```js
 import 'cheminfo-font/dist/style.css';
 import 'react-animated-slider-2/build/horizontal.css';
+import 'prismjs/themes/prism.css';
 ```
 
 ### OpenChemLib version
@@ -89,10 +90,11 @@ function MyComponent() {
   return <NMRDisplayer />;
 }
 ```
+
 ## Publish
 
 ```bash
-npm version patch 
+npm version patch
 git push --follow-tags
 npm publish
 ```
