@@ -1,5 +1,3 @@
-import lodash from 'lodash';
-
 import Correlation from './Correlation';
 import {
   buildCorrelationsData,
