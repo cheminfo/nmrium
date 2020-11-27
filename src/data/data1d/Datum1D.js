@@ -458,7 +458,7 @@ export class Datum1D {
         from,
         to,
         absolute: this.getIntegration(from, to), // the real value,
-        signal: [this.detectSignal(from, to)],
+        signal: [{ id: generateID(), ...this.detectSignal(from, to) }],
         kind: DatumKind.signal,
       };
       this.ranges.values.push(range);
