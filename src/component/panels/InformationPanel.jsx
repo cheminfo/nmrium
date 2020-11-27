@@ -1,4 +1,11 @@
-import React, { useState, useCallback, useEffect, memo, useMemo } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  memo,
+  useMemo,
+  useRef,
+} from 'react';
 
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
 import InfoWrapper from '../hoc/InfoWrapper';
@@ -21,13 +28,16 @@ const styles = {
 
 // information panel
 const InformationPanel = memo(({ info, meta }) => {
-  const [information, setInformation] = useState([]);
+  const [information, setInformation] = useState({});
   const [matches, setMatchesData] = useState([]);
+  const searchRef = useRef();
 
   const handleSearch = useCallback(
-    (input) => {
+    (e) => {
       const values = Object.keys(information).filter((key) =>
-        key.toLowerCase().includes(input.target.value.toLowerCase()),
+        key
+          .toLowerCase()
+          .includes(e.target ? e.target.value.toLowerCase() : e.toLowerCase()),
       );
       setMatchesData(values);
     },
@@ -35,9 +45,14 @@ const InformationPanel = memo(({ info, meta }) => {
   );
 
   useEffect(() => {
+    if (searchRef.current) {
+      handleSearch(searchRef.current.value);
+    }
+  }, [handleSearch, searchRef]);
+
+  useEffect(() => {
     if (info && meta) {
       const keys = Object.keys(info).concat(Object.keys(meta));
-
       setMatchesData(keys);
       setInformation({
         ...info,
@@ -92,6 +107,7 @@ const InformationPanel = memo(({ info, meta }) => {
           style={styles.searchInput}
           placeholder="Search for parameter..."
           onChange={handleSearch}
+          ref={searchRef}
         />
       </div>
       <div style={styles.tableContainer}>
