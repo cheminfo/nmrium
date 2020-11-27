@@ -34,7 +34,7 @@ const Spectrum2DSetting = ({ data, onSubmit }) => {
     <FormikForm ref={refForm} initialValues={data} onSubmit={onSubmit}>
       <div css={style}>
         <div className="positive">
-          <span style={{ padding: '0 10px' }}>Position</span>
+          <span style={{ padding: '0 10px' }}>Positive</span>
           <FormikColorPicker
             name="positiveColor"
             onColorChange={triggerSubmitHandler}
