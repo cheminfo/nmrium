@@ -111,7 +111,6 @@ export default class CorrelationManager {
       signals1D,
       signals2D,
       this.getTolerance(),
-      lodash.cloneDeep(this.getValues()),
     );
 
     // important after data file import: set to the previous counts because they will be overwritten by default value (1)
