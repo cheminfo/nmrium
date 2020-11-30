@@ -13,7 +13,6 @@ import AboutTabContent from './AboutTabContent';
 import ControllersTabContent from './ControllersTabContent';
 import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
-import MultipletAnalysisTabContent from './MultipletAnalysisTabContent';
 
 const styles = css`
   overflow: auto;
@@ -213,13 +212,6 @@ const GeneralSettings = ({ onClose, onSave }) => {
             </div>
             <div className="inner-content" tablabel="Display" tabid="display">
               <DisplayTabContent />
-            </div>
-            <div
-              className="inner-content"
-              tablabel="Multiplet Analysis"
-              tabid="multipletAnalysis"
-            >
-              <MultipletAnalysisTabContent />
             </div>
             <div className="inner-content" tablabel="About" tabid="about">
               <AboutTabContent />

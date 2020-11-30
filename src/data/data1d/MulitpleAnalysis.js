@@ -53,6 +53,7 @@ export default class MultipleAnalysis {
       this.spectraAanalysis[nucleus] = {
         options: {
           sum: 100,
+          code: null,
           columns: {},
         },
         values: {},
@@ -67,9 +68,10 @@ export default class MultipleAnalysis {
     return lodash.cloneDeep(this.spectraAanalysis);
   }
 
-  setColumn(nucleus, inputColumns) {
+  setColumn(nucleus, { columns: inputColumns, code }) {
     this.init(nucleus);
     // const { columns } = this.spectraAanalysis[nucleus].options;
+    this.spectraAanalysis[nucleus].options.code = code;
     this.spectraAanalysis[nucleus].options.columns = Object.values(
       inputColumns,
     ).reduce((acc, value) => {

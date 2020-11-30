@@ -1,5 +1,4 @@
 import { useFormikContext } from 'formik';
-import lodash from 'lodash';
 // eslint-disable-next-line import/order
 import { highlight, languages } from 'prismjs/components/prism-core';
 // eslint-disable-next-line import/no-unassigned-import
@@ -7,10 +6,9 @@ import 'prismjs/components/prism-clike';
 // eslint-disable-next-line import/no-unassigned-import
 import 'prismjs/components/prism-javascript';
 
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 
-import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import Eval from '../../utility/Evaluate';
 
 const initCode = `function run(data) {
@@ -20,29 +18,17 @@ const initCode = `function run(data) {
 }(args);
 `;
 
-const MultipletAnalysisTabContent = memo(({ spectraAanalysis, activeTab }) => {
+const MulipleAnalysisCodeEditor = memo(({ data }) => {
   const { values, setFieldValue } = useFormikContext();
-  const codeText = lodash.get(values, 'multipletAnalysis.code', initCode);
-  const [code, setCode] = useState(codeText);
+  const [code, setCode] = useState(values.code ? values.code : initCode);
   const [result, setResult] = useState('');
-
-  const data = useMemo(() => {
-    const {
-      values,
-      options: { columns },
-    } = spectraAanalysis[activeTab] || {
-      values: {},
-      options: { columns: {} },
-    };
-    return { values: Object.values(values), columns };
-  }, [activeTab, spectraAanalysis]);
 
   useEffect(() => {
     const evalResult = Eval(code, data);
     if (evalResult instanceof Error) {
       setResult(evalResult.message);
     } else {
-      setFieldValue('multipletAnalysis.code', code);
+      setFieldValue('code', code);
       setResult(evalResult);
     }
   }, [code, data, setFieldValue]);
@@ -59,7 +45,7 @@ const MultipletAnalysisTabContent = memo(({ spectraAanalysis, activeTab }) => {
   }, []);
 
   return (
-    <div>
+    <div style={{ marginTop: '20px' }}>
       <Editor
         value={code}
         onValueChange={valueChangeHandler}
@@ -105,4 +91,4 @@ const MultipletAnalysisTabContent = memo(({ spectraAanalysis, activeTab }) => {
   );
 });
 
-export default MultiAnalysisWrapper(MultipletAnalysisTabContent);
+export default MulipleAnalysisCodeEditor;

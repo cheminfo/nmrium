@@ -36,12 +36,12 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
   const data = useMemo(() => {
     const {
       values,
-      options: { columns },
+      options: { columns, code },
     } = spectraAanalysis[activeTab] || {
       values: {},
-      options: { columns: {} },
+      options: { columns: {}, code: null },
     };
-    return { values: Object.values(values), columns };
+    return { values: Object.values(values), columns, code };
   }, [activeTab, spectraAanalysis]);
 
   const settingsPanelHandler = useCallback(() => {
@@ -111,7 +111,7 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
         >
           <MultipleSpectraAnalysisTable data={data} activeTab={activeTab} />
           <MultipleSpectraAnalysisPreferences
-            columns={data.columns}
+            data={data}
             onAfterSave={afterSaveHandler}
             ref={settingRef}
           />

@@ -61,9 +61,6 @@ export const preferencesInitialState = {
     ],
     nucleusByKey: {},
   },
-  multipletAnalysis: {
-    code: undefined,
-  },
   dispatch: null,
 };
 
@@ -101,7 +98,6 @@ export function preferencesReducer(state, action) {
           draft.controllers = data.controllers;
           draft.formatting = data.formatting;
           draft.display.panels = data.display.panels;
-          draft.multipletAnalysis = data.multipletAnalysis;
           mapNucleus(draft, data);
         }
       });
