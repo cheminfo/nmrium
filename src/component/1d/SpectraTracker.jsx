@@ -44,7 +44,7 @@ const YTracker = ({ datum }) => {
 };
 
 const SpectraTracker = () => {
-  const { data } = useChartData();
+  const { data, activeTab } = useChartData();
   const [isVisible, ToggleVisiblility] = useState(false);
 
   useEffect(() => {
@@ -57,22 +57,24 @@ const SpectraTracker = () => {
     return (
       isVisible &&
       data.map(
-        (datum) => (
-          <div style={{ display: 'block' }} key={datum.id}>
-            <span
-              style={{
-                ...styles.colorIndicator,
-                borderColor: datum.display.color,
-              }}
-            />
-            <YTracker datum={datum} />
-            <span style={styles.value}>{datum.display.name}</span>
-          </div>
-        ),
+        (datum) =>
+          datum.display.isVisible &&
+          datum.info.nucleus === activeTab && (
+            <div style={{ display: 'block' }} key={datum.id}>
+              <span
+                style={{
+                  ...styles.colorIndicator,
+                  borderColor: datum.display.color,
+                }}
+              />
+              <YTracker datum={datum} />
+              <span style={styles.value}>{datum.display.name}</span>
+            </div>
+          ),
         [],
       )
     );
-  }, [data, isVisible]);
+  }, [activeTab, data, isVisible]);
 
   if (!isVisible) return null;
 
