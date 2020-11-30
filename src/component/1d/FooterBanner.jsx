@@ -1,7 +1,9 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { useContext, useCallback } from 'react';
+import { useContext, useCallback, Fragment } from 'react';
+import { BsCursor } from 'react-icons/bs';
+import { IoPulseSharp } from 'react-icons/io5';
 
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
@@ -40,11 +42,25 @@ const styles = css`
     .value {
       font-weight: bold;
       font-size: 14px;
+      display: inline-block;
     }
     .unit {
       font-weight: bold;
       font-size: 10px;
     }
+    .xvalue {
+      min-width: 50px;
+    }
+    .yvalue {
+      min-width: 80px;
+    }
+  }
+
+  .separator {
+    border-left: 2px solid gray;
+    margin: 0 20px;
+    width: 1px;
+    height: 100%;
   }
 `;
 
@@ -74,14 +90,21 @@ const helpStyles = css`
 const FooterBanner = () => {
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
-  const { margin, width, height, activeSpectrum, data } = useChartData();
+  const {
+    margin,
+    width,
+    height,
+    activeSpectrum,
+    data,
+    activeTab,
+  } = useChartData();
   const { scaleX, scaleY } = useScale();
   const { helpText } = useHelptData();
-  const { originFrequency: frequency, nucleus } = activeSpectrum
+  const { originFrequency: frequency } = activeSpectrum
     ? data[activeSpectrum.index].info
     : {};
 
-  const format = useFormatNumberByNucleus(nucleus);
+  const format = useFormatNumberByNucleus(activeTab);
 
   const getYValue = useCallback(
     (xPosition) => {
@@ -106,7 +129,6 @@ const FooterBanner = () => {
   }
 
   if (
-    !activeSpectrum ||
     !position ||
     position.y < margin.top ||
     position.x < margin.left ||
@@ -118,26 +140,32 @@ const FooterBanner = () => {
 
   return (
     <div css={styles}>
+      <BsCursor />
       <div>
         <span className="label"> X :</span>
         <span className="value">{format(scaleX().invert(position.x))}</span>
         <span className="unit">ppm</span>
       </div>
-      {frequency && (
-        <div>
-          <span className="label"> X :</span>
-          <span className="value">
-            {format(scaleX().invert(position.x) * frequency, 'hz')}
-          </span>
-          <span className="unit">Hz</span>
-        </div>
+      {activeSpectrum && (
+        <Fragment>
+          {frequency && (
+            <div>
+              <span className="label"> X :</span>
+              <span className="value xvalue">
+                {format(scaleX().invert(position.x) * frequency, 'hz')}
+              </span>
+              <span className="unit">Hz</span>
+            </div>
+          )}
+
+          <div>
+            <span className="label"> Y :</span>
+            <span className="value yvalue">
+              {format(scaleY(activeSpectrum.id).invert(position.y))}
+            </span>
+          </div>
+        </Fragment>
       )}
-      <div>
-        <span className="label"> Y :</span>
-        <span className="value">
-          {format(scaleY(activeSpectrum.id).invert(position.y))}
-        </span>
-      </div>
       {step === 'brushing' && (
         <div>
           <span className="label"> Δppm :</span>
@@ -146,28 +174,44 @@ const FooterBanner = () => {
           </span>
         </div>
       )}
-      {frequency && step === 'brushing' && (
-        <div>
-          <span className="label"> ΔHz :</span>
-          <span className="value">
-            {(
-              (scaleX().invert(startX) - scaleX().invert(endX)) *
-              frequency
-            ).toPrecision(5)}
-          </span>
-        </div>
+      {activeSpectrum && (
+        <Fragment>
+          {frequency && step === 'brushing' && (
+            <div>
+              <span className="label"> ΔHz :</span>
+              <span className="value">
+                {(
+                  (scaleX().invert(startX) - scaleX().invert(endX)) *
+                  frequency
+                ).toPrecision(5)}
+              </span>
+            </div>
+          )}
+          {step === 'brushing' && (
+            <div>
+              <span className="label"> ratio :</span>
+              <span className="value">
+                {(
+                  (getYValue(startX) / (getYValue(endX) || Number.MIN_VALUE)) *
+                  100
+                ).toFixed(2)}
+                %
+              </span>
+            </div>
+          )}
+        </Fragment>
       )}
-      {step === 'brushing' && (
-        <div>
-          <span className="label"> ratio :</span>
-          <span className="value">
-            {(
-              (getYValue(startX) / (getYValue(endX) || Number.MIN_VALUE)) *
-              100
-            ).toFixed(2)}
-            %
-          </span>
-        </div>
+      {activeSpectrum && (
+        <Fragment>
+          <div className="separator" />
+          <IoPulseSharp />
+          <div>
+            <span className="label"> Y :</span>
+            <span className="value yvalue">
+              {format(getYValue(position.x))}
+            </span>
+          </div>
+        </Fragment>
       )}
     </div>
   );
