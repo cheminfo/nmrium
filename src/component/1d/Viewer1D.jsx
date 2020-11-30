@@ -45,6 +45,7 @@ import Events from '../utility/Events';
 
 import Chart1D from './Chart1D';
 import FooterBanner from './FooterBanner';
+import SpectraTracker from './SpectraTracker';
 import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
@@ -271,6 +272,7 @@ const Viewer1D = () => {
             <MouseTracker
               style={{ width: '100%', height: `100%`, position: 'absolute' }}
             >
+              <SpectraTracker />
               <CrossLinePointer />
               <BrushXY brushType={BRUSH_TYPE.X} />
               <XLabelPointer />

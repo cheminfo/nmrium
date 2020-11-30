@@ -2,10 +2,13 @@ import React, { useCallback, useState, useRef, memo, useMemo } from 'react';
 import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
+import { IoPulseOutline } from 'react-icons/io5';
 
+import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import { AnalysisObj } from '../../reducer/core/Analysis';
+import Events from '../../utility/Events';
 import { copyTextToClipboard } from '../../utility/Export';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -48,8 +51,13 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
   const saveSettingHandler = useCallback(() => {
     settingRef.current.saveSetting();
   }, []);
+
   const afterSaveHandler = useCallback(() => {
     setFlipStatus(false);
+  }, []);
+
+  const showTrackerHandler = useCallback(() => {
+    Events.emit('showYSpectraTrackers', true);
   }, []);
 
   const copyToClipboardHandler = useCallback(() => {
@@ -80,6 +88,13 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
               <FaFileExport />
             </button>
           </ToolTip>
+          <ToggleButton
+            popupTitle="Y Spectra Tracker"
+            popupPlacement="right"
+            onClick={showTrackerHandler}
+          >
+            <IoPulseOutline />
+          </ToggleButton>
         </DefaultPanelHeader>
       )}
       {isFlipped && (
