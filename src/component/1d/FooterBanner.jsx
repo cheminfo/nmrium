@@ -98,7 +98,7 @@ const FooterBanner = () => {
     data,
     activeTab,
   } = useChartData();
-  const { scaleX, scaleY } = useScale();
+  const { scaleX } = useScale();
   const { helpText } = useHelptData();
   const { originFrequency: frequency } = activeSpectrum
     ? data[activeSpectrum.index].info
@@ -146,26 +146,16 @@ const FooterBanner = () => {
         <span className="value">{format(scaleX().invert(position.x))}</span>
         <span className="unit">ppm</span>
       </div>
-      {activeSpectrum && (
-        <Fragment>
-          {frequency && (
-            <div>
-              <span className="label"> X :</span>
-              <span className="value xvalue">
-                {format(scaleX().invert(position.x) * frequency, 'hz')}
-              </span>
-              <span className="unit">Hz</span>
-            </div>
-          )}
-
-          <div>
-            <span className="label"> Y :</span>
-            <span className="value yvalue">
-              {format(scaleY(activeSpectrum.id).invert(position.y))}
-            </span>
-          </div>
-        </Fragment>
+      {activeSpectrum && frequency && (
+        <div>
+          <span className="label"> X :</span>
+          <span className="value xvalue">
+            {format(scaleX().invert(position.x) * frequency, 'hz')}
+          </span>
+          <span className="unit">Hz</span>
+        </div>
       )}
+
       {step === 'brushing' && (
         <div>
           <span className="label"> Δppm :</span>
