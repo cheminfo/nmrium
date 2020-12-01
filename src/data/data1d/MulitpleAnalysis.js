@@ -14,8 +14,13 @@ export default class MultipleAnalysis {
   spectraAanalysis = {};
   reservedColumnsNames = {};
 
-  constructor(spectra = []) {
+  constructor(spectra = [], multipleAnalysis = {}) {
     this.spectra = spectra;
+    this.spectraAanalysis = multipleAnalysis;
+  }
+
+  getData() {
+    return this.spectraAanalysis;
   }
 
   addColumnKey(nucleus, columnProps, columnKey) {

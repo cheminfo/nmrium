@@ -14,7 +14,13 @@ export class Analysis {
   spectra = [];
   molecules = [];
 
-  constructor(spectra = [], molecules = [], preferences, correlations = {}) {
+  constructor(
+    spectra = [],
+    molecules = [],
+    preferences,
+    correlations = {},
+    multipleAnalysis = {},
+  ) {
     this.spectra = spectra.slice();
     this.molecules = molecules.slice(); // chemical structures
     this.preferences = preferences || {};
@@ -22,18 +28,35 @@ export class Analysis {
       correlations.options,
       correlations.values,
     );
-    this.multipleAnalysisInstance = new MultipleAnalysis(this.spectra);
+    this.multipleAnalysisInstance = new MultipleAnalysis(
+      this.spectra,
+      multipleAnalysis,
+    );
   }
 
   static async build(json = {}) {
-    const molecules = json.molecules
-      ? MoleculeManager.fromJSON(json.molecules)
+    const {
+      molecules: loadedMolecules,
+      preferences,
+      correlations,
+      multipleAnalysis,
+    } = json || {
+      molecules: [],
+      preferences: {},
+      correlations: {},
+      multipleAnalysis: {},
+    };
+
+    const molecules = loadedMolecules
+      ? MoleculeManager.fromJSON(loadedMolecules)
       : [];
+
     const analysis = new Analysis(
       [],
       molecules,
-      json.preferences,
-      json.correlations,
+      preferences,
+      correlations,
+      multipleAnalysis,
     );
     await SpectraManager.fromJSON(analysis.spectra, json.spectra);
     return analysis;
@@ -165,6 +188,7 @@ export class Analysis {
       molecules,
       preferences: this.preferences,
       correlations: this.getCorrelations(),
+      multipleAnalysis: this.getMultipleAnalysis(),
     };
   }
 
@@ -244,6 +268,10 @@ export class Analysis {
 
   getCorrelations() {
     return this.correlationManagerInstance.getData();
+  }
+
+  getMultipleAnalysis() {
+    return this.multipleAnalysisInstance.getData();
   }
 
   getCorrelationManagerInstance() {
