@@ -111,6 +111,7 @@ export const PeakNotation = ({
   spectrumID,
   x,
   y,
+  sign, // 1 positive -1 negative
   value,
   color,
   isActive,
@@ -223,8 +224,8 @@ export const PeakNotation = ({
         <line
           x1="0"
           x2="0"
-          y1="0"
-          y2="-18"
+          y1={sign === -1 ? 10 : 0}
+          y2={sign === -1 ? 28 : -18}
           stroke={color}
           strokeWidth={highlight.isActive ? '7px' : '1px'}
         />
@@ -232,7 +233,7 @@ export const PeakNotation = ({
           className="regular-text"
           ref={refText}
           x="0"
-          y={-10}
+          y={sign === -1 ? 20 : -10}
           dy="0.1em"
           dx="0.35em"
           fill="transparent"
@@ -241,7 +242,7 @@ export const PeakNotation = ({
         </text>
         <foreignObject
           x="0"
-          y={-20}
+          y={sign * -20}
           dy="0.1em"
           dx="0.35em"
           width={containerSize.width + 20}

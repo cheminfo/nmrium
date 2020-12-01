@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 
-import PeakNotation from '../Notations/PeakNotation';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
+
+import PeakNotation from './PeakNotation';
 // import { getPeakLabelNumberDecimals } from '../utility/default';
 // import ModifiedPeakNotation from './Notations/ModifiedPeakNotation';
 
@@ -53,6 +54,7 @@ const PeaksNotations = () => {
                     key={id}
                     x={scaleX()(d.x[xIndex] - (xShift ? xShift : 0))}
                     y={scaleY(d.id)(d.y[xIndex]) - 5}
+                    sign={Math.sign(d.y[xIndex])}
                     // verticalAlign.value
                     xIndex={xIndex}
                     id={id}
