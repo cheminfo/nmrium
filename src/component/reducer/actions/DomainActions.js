@@ -155,8 +155,18 @@ function setDomain(draft, isYDomainChanged = true) {
     draft.xDomains = domain.xDomains;
     if (isYDomainChanged) {
       draft.yDomain = domain.yDomain;
-      draft.yDomains = domain.yDomains;
-      draft.originDomain = domain;
+
+      if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+        draft.yDomains = Object.keys(domain.yDomains).reduce((acc, key) => {
+          acc[key] = domain.yDomain;
+          return acc;
+        }, {});
+        draft.originDomain = { ...domain, yDomains: draft.yDomains };
+      } else {
+        draft.yDomains = domain.yDomains;
+        draft.originDomain = domain;
+      }
+
       draft.integralsYDomains =
         domain.integralYDomain && domain.integralYDomain;
       draft.originIntegralYDomain =
