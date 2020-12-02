@@ -78,11 +78,13 @@ const FormattingTabContent = memo(() => {
       <div css={styles}>
         <table>
           <thead>
-            <th className="counter-col">#</th>
-            <th className="nucleus-label-col">Nucleus </th>
-            <th className="nucleus-format-input-col">δ (ppm)</th>
-            <th className="nucleus-format-input-col">Coupling (Hz)</th>
-            <th className="nucleus-format-input-col" />
+            <tr>
+              <th className="counter-col">#</th>
+              <th className="nucleus-label-col">Nucleus </th>
+              <th className="nucleus-format-input-col">δ (ppm)</th>
+              <th className="nucleus-format-input-col">Coupling (Hz)</th>
+              <th className="nucleus-format-input-col" />
+            </tr>
           </thead>
           <tbody>
             {nucleuses &&

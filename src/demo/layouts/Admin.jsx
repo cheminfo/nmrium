@@ -15,7 +15,6 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import PerfectScrollbar from 'perfect-scrollbar';
 import React, { Suspense } from 'react';
 // javascript plugin used to create scrollbars on windows
 // reactstrap components
@@ -23,11 +22,8 @@ import { Route, Switch } from 'react-router-dom';
 
 // core components
 import Sidebar from '../components/Sidebar/Sidebar';
-// import View from '../views/View';
 import { mapTreeToFlatArray, getKey } from '../utility/menu';
 
-let ps;
-let localRoutes;
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -39,26 +35,16 @@ class Dashboard extends React.Component {
     backgroundColor: 'blue',
     routesList: [],
     routes: [],
-    // isMenuClosed: false,
   };
 
-  // eslint-disable-next-line react/no-deprecated
-  componentWillMount() {
-    localRoutes = this.props.routes ? this.props.routes : localRoutes;
+  componentDidMount() {
     this.setState((prevState) => {
       return {
         ...prevState,
-        routesList: mapTreeToFlatArray(localRoutes),
-        routes: localRoutes,
+        routesList: mapTreeToFlatArray(this.props.routes),
+        routes: this.props.routes,
       };
     });
-  }
-
-  componentDidMount() {
-    if (navigator.platform.indexOf('Win') > -1) {
-      ps = new PerfectScrollbar(this.mainPanel.current);
-      document.body.classList.toggle('perfect-scrollbar-on');
-    }
   }
 
   componentDidUpdate(e) {
@@ -68,27 +54,12 @@ class Dashboard extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    if (navigator.platform.indexOf('Win') > -1) {
-      ps.destroy();
-      document.body.classList.toggle('perfect-scrollbar-on');
-    }
-  }
-
-  // handleColorClick = (color) => {
-  //   this.setState({ backgroundColor: color });
-  // };
-
   menuCloseHandler = (flag) => {
     setTimeout(() => {
       this.mainPanel.current.className = flag
         ? 'main-panel main-panel-when-menu-closed'
         : 'main-panel';
     }, 200);
-
-    // this.setState((prev) => {
-    //   return { ...prev, isMenuClosed: flag };
-    // });
   };
 
   render() {
@@ -101,82 +72,57 @@ class Dashboard extends React.Component {
           onMenuClose={this.menuCloseHandler}
         />
         <div className="main-panel" ref={this.mainPanel}>
-          {/* <Router {...this.props}> */}
-          <Suspense fallback={<div>Loading...</div>}>
-            <Switch>
-              {this.state.routesList.map((prop) => (
-                <Route
-                  path={`/SamplesDashboard/:id/${
-                    prop.view + getKey(prop.file)
-                  }`}
-                  // component={prop.component}
-                  render={(props) => {
-                    const {
-                      match: {
-                        params: { id },
-                      },
-                    } = props;
-                    const viewName = prop.view ? prop.view : 'View';
-                    const RenderedView = React.lazy(() =>
-                      import(`../views/${viewName}`),
-                    );
+          <React.StrictMode>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Switch>
+                {this.state.routesList.map((prop) => (
+                  <Route
+                    path={`/SamplesDashboard/:id/${
+                      prop.view + getKey(prop.file)
+                    }`}
+                    render={(props) => {
+                      const {
+                        match: {
+                          params: { id },
+                        },
+                      } = props;
+                      const viewName = prop.view ? prop.view : 'View';
+                      const RenderedView = React.lazy(() =>
+                        import(`../views/${viewName}`),
+                      );
 
-                    return (
-                      <RenderedView
-                        key={id}
-                        {...prop}
-                        id={getKey(prop.file)}
-                        baseURL={this.props.baseURL}
-                      />
-                    );
-                  }}
-                  key={getKey(prop.file)}
-                />
-              ))}
+                      return (
+                        <RenderedView
+                          key={id}
+                          {...prop}
+                          id={getKey(prop.file)}
+                          baseURL={this.props.baseURL}
+                        />
+                      );
+                    }}
+                    key={getKey(prop.file)}
+                  />
+                ))}
 
-              {this.state.routesList.length > 0 && (
-                <Route
-                  path="/"
-                  // component={prop.component}
+                {this.state.routesList.length > 0 && (
+                  <Route
+                    path="/"
+                    render={() => {
+                      const routeProp = this.state.routesList[0];
+                      const viewName = routeProp.view ? routeProp.view : 'View';
+                      const RenderedView = React.lazy(() =>
+                        import(`../views/${viewName}`),
+                      );
 
-                  render={() => {
-                    const routeProp = this.state.routesList[0];
-                    const viewName = routeProp.view ? routeProp.view : 'View';
-                    const RenderedView = React.lazy(() =>
-                      import(`../views/${viewName}`),
-                    );
-
-                    return <RenderedView {...routeProp[0]} />;
-                  }}
-                  key={getKey(this.state.routesList[0].file)}
-                />
-              )}
-            </Switch>
-          </Suspense>
-          {/* </Router> */}
-          {/* <DemoNavbar {...this.props} /> */}
-          {/* <Switch>
-            {routes.map((prop, key) => {
-              return (
-                <Route
-                  path={prop.layout + prop.path}
-                  // component={prop.component}
-                  render={(props) =>
-                    React.cloneElement(prop.component, { ...props, ...prop })
-                  }
-                  key={key}
-                />
-              );
-            })}
-            <Redirect from="/admin" to={`/admin${routes[0].path}`} />
-          </Switch> */}
-
-          {/* <Footer fluid /> */}
+                      return <RenderedView {...routeProp[0]} />;
+                    }}
+                    key={getKey(this.state.routesList[0].file)}
+                  />
+                )}
+              </Switch>
+            </Suspense>
+          </React.StrictMode>
         </div>
-        {/* <FixedPlugin
-          bgColor={this.state.backgroundColor}
-          handleColorClick={this.handleColorClick}
-        /> */}
       </div>
     );
   }

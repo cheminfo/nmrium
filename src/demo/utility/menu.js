@@ -4,7 +4,7 @@ import React from 'react';
 function buildMenu(array = []) {
   let menu = [];
   for (const item of array) {
-    const key = Math.random().toString(36).replace('0.', '');
+    const key = item.title || item.groupName;
 
     if (item.children && Array.isArray(item.children)) {
       menu.push(getMenu([item], [], key));

@@ -171,10 +171,12 @@ const MultipleSpectraAnalysisPreferences = forwardRef(
         {columnsKeys && (
           <table css={styles}>
             <thead>
-              <th className="counter">#</th>
-              <th className="label">Label</th>
-              <th>value</th>
-              <th className="index">index</th>
+              <tr>
+                <th className="counter">#</th>
+                <th className="label">Label</th>
+                <th>value</th>
+                <th className="index">index</th>
+              </tr>
             </thead>
             <tbody>
               {columnsKeys.map((key, index) => {

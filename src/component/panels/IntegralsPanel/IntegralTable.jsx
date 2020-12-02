@@ -159,7 +159,6 @@ const IntegralTable = memo(
         preferences,
         `formatting.panels.integrals.[${activeTab}]`,
       );
-      // if (integralsPreferences) {
       let cols = [...defaultColumns];
       if (
         lodash.get(
@@ -205,10 +204,6 @@ const IntegralTable = memo(
               type="number"
             />
           );
-
-          // return row.original.kind !== 'signal'
-          //   ? `[${formattedNumber}]`
-          //   : formattedNumber;
         });
       }
 
@@ -264,8 +259,3 @@ const IntegralTable = memo(
 );
 
 export default IntegralsWrapper(IntegralTable);
-// export default ContextWrapper(
-//   IntegralTable,
-//   ['spectrum', 'preferences', 'activeTab', 'xDomain'],
-//   { spectrum: ['integrals', 'info'] },
-// );

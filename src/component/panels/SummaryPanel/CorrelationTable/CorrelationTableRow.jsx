@@ -8,7 +8,6 @@ const CorrelationTableRow = ({
   additionalColumns,
   correlations,
   correlation,
-  rowKey,
   styleRow,
   styleLabel,
   onSaveEditCount,
@@ -36,7 +35,7 @@ const CorrelationTableRow = ({
   );
 
   return (
-    <tr key={rowKey} style={styleRow}>
+    <tr style={styleRow}>
       <td>
         {correlation.getExperimentType()
           ? correlation.getExperimentType().toUpperCase()

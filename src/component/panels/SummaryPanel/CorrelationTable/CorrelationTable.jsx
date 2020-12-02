@@ -78,7 +78,7 @@ const CorrelationTable = ({
                 additionalColumns={additionalColumns}
                 correlations={correlations.values}
                 correlation={correlation}
-                rowKey={`correlation${atomType}${correlation.getID()}`}
+                key={`correlation${atomType}${correlation.getID()}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={{
                   color: getLabelColor(correlations, correlation),
@@ -95,7 +95,7 @@ const CorrelationTable = ({
                     additionalColumns={additionalColumns}
                     correlations={correlations.values}
                     correlation={correlationProton}
-                    rowKey={`correlation${atomType}${correlationProton.getID()}_${correlation.getID()}`}
+                    key={`correlation${atomType}${correlationProton.getID()}_${correlation.getID()}`}
                     styleRow={{ backgroundColor: 'white' }}
                     styleLabel={{
                       color: getLabelColor(correlations, correlationProton),
@@ -120,7 +120,7 @@ const CorrelationTable = ({
                 additionalColumns={additionalColumns}
                 correlations={correlations.values}
                 correlation={pseudoCorrelation}
-                rowKey={`placeholder_correlation$_${_rows.length}`}
+                key={`placeholder_correlation$_${_rows.length}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={{
                   color: getLabelColor(correlations, pseudoCorrelation),
@@ -137,7 +137,7 @@ const CorrelationTable = ({
                 additionalColumns={additionalColumns}
                 correlations={correlations.values}
                 correlation={correlation}
-                rowKey={`correlation${atomType}${correlation.getID()}`}
+                key={`correlation${atomType}${correlation.getID()}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={{
                   color: getLabelColor(correlations, correlation),
@@ -154,7 +154,7 @@ const CorrelationTable = ({
                     additionalColumns={additionalColumns}
                     correlations={correlations.values}
                     correlation={correlationProton}
-                    rowKey={`correlation${atomType}${correlationProton.getID()}_${correlation.getID()}`}
+                    key={`correlation${atomType}${correlationProton.getID()}_${correlation.getID()}`}
                     styleRow={{ backgroundColor: 'white' }}
                     styleLabel={{
                       color: getLabelColor(correlations, correlationProton),
@@ -175,7 +175,7 @@ const CorrelationTable = ({
                 additionalColumns={additionalColumns}
                 correlations={correlations.values}
                 correlation={correlationProton}
-                rowKey={`correlation${atomType}${correlationProton.getID()}`}
+                key={`correlation${atomType}${correlationProton.getID()}`}
                 styleRow={{ backgroundColor: 'mintcream' }}
                 styleLabel={{
                   color: getLabelColor(correlations, correlationProton),

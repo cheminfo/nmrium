@@ -15,22 +15,17 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-/*eslint-disable*/
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Nav } from 'reactstrap';
 // javascript plugin used to create scrollbars on windows
-import PerfectScrollbar from 'perfect-scrollbar';
-import { buildMenu, getKey } from '../../utility/menu';
+/* eslint-disable */
 import Menu from 'rc-menu';
-import logo from '../../assets/img/logo-white.svg';
+import React from 'react';
 import 'rc-menu/assets/index.css';
 import { FaBars } from 'react-icons/fa';
 
-var ps;
+import logo from '../../assets/img/logo-white.svg';
+import { buildMenu, getKey } from '../../utility/menu';
 
 class Sidebar extends React.PureComponent {
-  state = { routes: [] };
   constructor(props) {
     super(props);
     this.sidebar = React.createRef();
@@ -38,27 +33,10 @@ class Sidebar extends React.PureComponent {
     this.menuHandler = this.menuHandler.bind(this);
     this.isMenuOpen = true;
   }
+
   // verifies if routeName is the one active (in browser input)
   activeRoute(routeName) {
     return this.props.location.pathname.indexOf(routeName) > -1 ? 'active' : '';
-  }
-  componentDidMount() {
-    if (navigator.platform.indexOf('Win') > -1) {
-      ps = new PerfectScrollbar(this.refs.sidebar, {
-        suppressScrollX: true,
-        suppressScrollY: false,
-      });
-    }
-    const routes = buildMenu(this.props.routes, []);
-    this.setState((prev) => {
-      return { ...prev, routes };
-    });
-    // this.sidebar.current.class = 'sidebar menu-open';
-  }
-  componentWillUnmount() {
-    if (navigator.platform.indexOf('Win') > -1) {
-      ps.destroy();
-    }
   }
 
   menuHandler(e) {
@@ -71,6 +49,7 @@ class Sidebar extends React.PureComponent {
   }
 
   render() {
+    const routes = buildMenu(this.props.routes, []);
     return (
       <div
         ref={this.sidebar}
@@ -81,63 +60,28 @@ class Sidebar extends React.PureComponent {
           <FaBars />
         </button>
         <div className="logo">
-          <a
-            // href="https://www.creative-tim.com?ref=nudr-sidebar"
-            className="simple-text logo-mini"
-            // target="_blank"
-          >
+          <a className="simple-text logo-mini">
             <div className="logo-img">
               <img src={logo} alt="react-logo" />
             </div>
           </a>
-          <a
-            // href="https://www.creative-tim.com?ref=nudr-sidebar"
-            className="simple-text logo-normal"
-            // target="_blank"
-          >
-            NMRium
-          </a>
+          <a className="simple-text logo-normal">NMRium</a>
         </div>
-        <div className="sidebar-wrapper" ref="sidebar">
+        <div className="sidebar-wrapper" style={{ overflowX: 'hidden' }}>
           <Menu
             onClick={(e) => {
               this.props.history.push(
                 `/SamplesDashboard/${Math.random()
                   .toString(36)
-                  .replace('0.', '')}/${e.item.props.view+getKey(e.item.props.file)}`,
+                  .replace('0.', '')}/${
+                  e.item.props.view + getKey(e.item.props.file)
+                }`,
               );
             }}
             mode="inline"
           >
-            {this.state.routes}
+            {routes}
           </Menu>
-
-          {/* <Nav>
-            {this.props.routes.map((prop, key) => {
-              if (prop.redirect) return null;
-              return (
-                <li
-                  className={
-                    this.activeRoute(prop.layout + prop.path) +
-                    (prop.pro ? ' active active-pro' : '')
-                  }
-                  key={key}
-                >
-                  <NavLink
-                    to={prop.layout + prop.path}
-                    className="nav-link"
-                    activeClassName="active"
-                    style={{ borderRadius: '10px' }}
-                  >
-                    <i className={'now-ui-icons ' + prop.icon} />
-                    <p style={{ whiteSpace: 'pre-line', paddingLeft: '60px' }}>
-                      {prop.name}
-                    </p>
-                  </NavLink>
-                </li>
-              );
-            })}
-          </Nav> */}
         </div>
       </div>
     );

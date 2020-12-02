@@ -1,5 +1,4 @@
 import { jsx, css } from '@emotion/react';
-import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 /** @jsx jsx */
 
@@ -89,18 +88,3 @@ const IntegralsSeries = () => {
 };
 
 export default IntegralsSeries;
-
-IntegralsSeries.contextTypes = {
-  width: PropTypes.number,
-  height: PropTypes.number,
-  data: PropTypes.object,
-  margin: PropTypes.shape({
-    top: PropTypes.number.isRequired,
-    right: PropTypes.number.isRequired,
-    bottom: PropTypes.number.isRequired,
-    left: PropTypes.number.isRequired,
-  }),
-  xDomain: PropTypes.array,
-  yDomain: PropTypes.array,
-  getScale: PropTypes.func,
-};
