@@ -63,6 +63,10 @@
         "title": "XTC"
       },
       {
+        "file": "./data/xtc/XTCligh.json",
+        "title": "XTC just links"
+      },
+      {
         "file": "./data/coffee/Coffee.json",
         "title": "Coffee"
       },

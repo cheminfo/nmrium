@@ -1,0 +1,59 @@
+{
+  "spectra": [
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-814d_zg30.jdx"
+      }
+    },
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-888_zg30.jdx"
+      }
+    },
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-966_zg30.jdx"
+      }
+    },
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-1111a_zg30.jdx"
+      }
+    },
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-1132a_zg30.jdx"
+      }
+    },
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-1153_zg30.jdx"
+      }
+    },
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-1541_zg30.jdx"
+      }
+    },
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-1693_zg30.jdx"
+      }
+    },
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-1693_zg30.jdx"
+      }
+    },
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-1731a_zg30.jdx"
+      }
+    },
+    {
+      "source": {
+        "jcampURL": "./data/xtc/XTC-z189_zg30.jdx"
+      }
+    }
+  ]
+}
