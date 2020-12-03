@@ -40,7 +40,7 @@ const MenuButton = ({
       e.preventDefault();
       e.stopPropagation();
       showMenu(true);
-      document.nmrDisplayerRootNode.addEventListener('click', closeMenu);
+      document.addEventListener('click', closeMenu);
     },
     [closeMenu],
   );

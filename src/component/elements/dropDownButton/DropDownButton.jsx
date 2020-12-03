@@ -35,9 +35,9 @@ const DropDownButton = ({
     }
   }
   useEffect(() => {
-    document.nmrDisplayerRootNode.addEventListener('click', handleClick);
+    document.addEventListener('click', handleClick);
     return () => {
-      document.nmrDisplayerRootNode.removeEventListener('click', handleClick);
+      document.removeEventListener('click', handleClick);
     };
   });
 

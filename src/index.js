@@ -14,9 +14,6 @@ import './demo/index.css';
 import './demo/assets/css/now-ui-dashboard.min.css';
 import './demo/assets/css/demo.css';
 
-const nmrDisplayerRootNode = document.getElementById('root');
-document.nmrDisplayerRootNode = nmrDisplayerRootNode;
-
 ReactDOM.render(
   <HashRouter>
     <Switch>
@@ -24,7 +21,7 @@ ReactDOM.render(
       <Route path="/test" component={TestRoutes} />
     </Switch>
   </HashRouter>,
-  nmrDisplayerRootNode,
+  document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change

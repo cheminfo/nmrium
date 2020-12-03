@@ -86,15 +86,8 @@ const RangesTable = ({
     const handleEditStart = () => {
       editStartHander(null);
     };
-    document.nmrDisplayerRootNode.addEventListener(
-      'mousedown',
-      handleEditStart,
-    );
-    return () =>
-      document.nmrDisplayerRootNode.removeEventListener(
-        'mousedown',
-        handleEditStart,
-      );
+    document.addEventListener('mousedown', handleEditStart);
+    return () => document.removeEventListener('mousedown', handleEditStart);
   }, [editStartHander]);
 
   return (

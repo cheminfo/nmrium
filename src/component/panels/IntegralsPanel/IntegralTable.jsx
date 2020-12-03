@@ -134,15 +134,8 @@ const IntegralTable = memo(
     }, []);
 
     useEffect(() => {
-      document.nmrDisplayerRootNode.addEventListener(
-        'mousedown',
-        editStartHander,
-      );
-      return () =>
-        document.nmrDisplayerRootNode.removeEventListener(
-          'mousedown',
-          editStartHander,
-        );
+      document.addEventListener('mousedown', editStartHander);
+      return () => document.removeEventListener('mousedown', editStartHander);
     }, [editStartHander]);
 
     const tableColumns = useMemo(() => {

@@ -159,17 +159,9 @@ const FunctionToolBar = ({
 
   useEffect(() => {
     setOption(defaultValue);
-    document.nmrDisplayerRootNode.addEventListener(
-      'keydown',
-      handleOnKeyPressed,
-      false,
-    );
+    document.addEventListener('keydown', handleOnKeyPressed, false);
     return () => {
-      document.nmrDisplayerRootNode.removeEventListener(
-        'keydown',
-        handleOnKeyPressed,
-        false,
-      );
+      document.removeEventListener('keydown', handleOnKeyPressed, false);
     };
   }, [defaultValue, handleOnKeyPressed]);
 

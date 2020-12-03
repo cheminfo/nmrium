@@ -108,9 +108,8 @@ const ModalProvider = ({
         closeHandler();
       }
     };
-    document.nmrDisplayerRootNode.addEventListener('keydown', keyHandler);
-    return () =>
-      document.nmrDisplayerRootNode.removeEventListener('keydown', keyHandler);
+    document.addEventListener('keydown', keyHandler);
+    return () => document.removeEventListener('keydown', keyHandler);
   }, [closeHandler]);
 
   modalContext.current = {
