@@ -27,7 +27,6 @@
     "ml-gsd": "^6.1.2",
     "ml-regression-polynomial": "^2.1.0",
     "ml-spectra-processing": "^4.9.4",
-    "mouse-speed": "^2.0.1",
     "multiplet-analysis": "^0.3.0",
     "nmr-parser": "^0.2.10",
     "nmr-processing": "^0.4.0",
