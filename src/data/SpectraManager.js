@@ -107,7 +107,13 @@ export function addJDF(spectra, jdf, options = {}) {
 
 export async function fromJSON(spectra, data = []) {
   let promises = [];
+  const usedcolors = [];
+
   for (let datum of data) {
+    const color = getColor(usedcolors);
+    usedcolors.push(color);
+    datum = { display: { color }, ...datum };
+
     if (datum.source.jcamp != null) {
       addJcamp(spectra, datum.source.jcamp, datum);
     } else if (datum.source.jcampURL != null) {

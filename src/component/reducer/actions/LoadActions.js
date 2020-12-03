@@ -22,6 +22,7 @@ const initiate = (state, dataObject) => {
 
   return produce(state, (draft) => {
     // const domain = getDomain(spectraData);
+
     draft.data = spectraData;
     draft.molecules = molecules;
     draft.correlations = correlations;
