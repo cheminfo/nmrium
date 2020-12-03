@@ -38,9 +38,10 @@ const Sidebar = memo((props) => {
   const menuHandler = useCallback((e) => {
     setMenuState((prestate) => {
       const isOpen = !prestate;
-      sidebar.current.className = isOpen
+      sidebarRef.current.className = isOpen
         ? 'sidebar menu-open'
         : 'sidebar menu-close';
+      props.onMenuClose(!isOpen);
       return isOpen;
     });
   }, []);
