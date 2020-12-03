@@ -18,74 +18,72 @@
 // javascript plugin used to create scrollbars on windows
 /* eslint-disable */
 import Menu from 'rc-menu';
-import React from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import 'rc-menu/assets/index.css';
 import { FaBars } from 'react-icons/fa';
 
 import logo from '../../assets/img/logo-white.svg';
 import { buildMenu, getKey } from '../../utility/menu';
+import { withRouter } from 'react-router-dom';
 
-class Sidebar extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.sidebar = React.createRef();
-    this.activeRoute.bind(this);
-    this.menuHandler = this.menuHandler.bind(this);
-    this.isMenuOpen = true;
-  }
+const Sidebar = memo((props) => {
+  const sidebarRef = useRef();
+  const [isMenuOpen, setMenuState] = useState(true);
 
   // verifies if routeName is the one active (in browser input)
-  activeRoute(routeName) {
-    return this.props.location.pathname.indexOf(routeName) > -1 ? 'active' : '';
-  }
+  // const activeRoute = useCallback((routeName) => {
+  //   return props.location.pathname.indexOf(routeName) > -1 ? 'active' : '';
+  // });
 
-  menuHandler(e) {
-    this.isMenuOpen = !this.isMenuOpen;
-    this.sidebar.current.className = this.isMenuOpen
-      ? 'sidebar menu-open'
-      : 'sidebar menu-close';
+  const menuHandler = useCallback((e) => {
+    setMenuState((prestate) => {
+      const isOpen = !prestate;
+      sidebar.current.className = isOpen
+        ? 'sidebar menu-open'
+        : 'sidebar menu-close';
+      return isOpen;
+    });
+  }, []);
 
-    this.props.onMenuClose(!this.isMenuOpen);
-  }
+  const routes = useMemo(() => {
+    return buildMenu(props.routes, []);
+  }, [props.routes]);
 
-  render() {
-    const routes = buildMenu(this.props.routes, []);
-    return (
-      <div
-        ref={this.sidebar}
-        data-color={this.props.backgroundColor}
-        className="sidebar menu-open"
-      >
-        <button type="button" className="menu-bt" onClick={this.menuHandler}>
-          <FaBars />
-        </button>
-        <div className="logo">
-          <a className="simple-text logo-mini">
-            <div className="logo-img">
-              <img src={logo} alt="react-logo" />
-            </div>
-          </a>
-          <a className="simple-text logo-normal">NMRium</a>
-        </div>
-        <div className="sidebar-wrapper" style={{ overflowX: 'hidden' }}>
-          <Menu
-            onClick={(e) => {
-              this.props.history.push(
-                `/SamplesDashboard/${Math.random()
-                  .toString(36)
-                  .replace('0.', '')}/${
-                  e.item.props.view + getKey(e.item.props.file)
-                }`,
-              );
-            }}
-            mode="inline"
-          >
-            {routes}
-          </Menu>
-        </div>
+  return (
+    <div
+      ref={sidebarRef}
+      data-color={props.backgroundColor}
+      className="sidebar menu-open"
+    >
+      <button type="button" className="menu-bt" onClick={menuHandler}>
+        <FaBars />
+      </button>
+      <div className="logo">
+        <a className="simple-text logo-mini">
+          <div className="logo-img">
+            <img src={logo} alt="react-logo" />
+          </div>
+        </a>
+        <a className="simple-text logo-normal">NMRium</a>
       </div>
-    );
-  }
-}
+      <div className="sidebar-wrapper" style={{ overflowX: 'hidden' }}>
+        <Menu
+          onClick={(e) => {
+            props.history.push(
+              `/SamplesDashboard/${Math.random()
+                .toString(36)
+                .replace('0.', '')}/${
+                e.item.props.view + getKey(e.item.props.file)
+              }`,
+            );
+          }}
+          mode="inline"
+        >
+          {routes}
+        </Menu>
+      </div>
+    </div>
+  );
+});
 
-export default Sidebar;
+export default withRouter(Sidebar);

@@ -18,7 +18,7 @@
 import React, { Suspense } from 'react';
 // javascript plugin used to create scrollbars on windows
 // reactstrap components
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, MemoryRouter } from 'react-router-dom';
 
 // core components
 import Sidebar from '../components/Sidebar/Sidebar';
@@ -65,64 +65,68 @@ class Dashboard extends React.Component {
   render() {
     return (
       <div className="wrapper">
-        <Sidebar
-          {...this.props}
-          routes={this.state.routes}
-          backgroundColor={this.state.backgroundColor}
-          onMenuClose={this.menuCloseHandler}
-        />
-        <div className="main-panel" ref={this.mainPanel}>
-          <React.StrictMode>
-            <Suspense fallback={<div>Loading...</div>}>
-              <Switch>
-                {this.state.routesList.map((prop) => (
-                  <Route
-                    path={`/SamplesDashboard/:id/${
-                      prop.view + getKey(prop.file)
-                    }`}
-                    render={(props) => {
-                      const {
-                        match: {
-                          params: { id },
-                        },
-                      } = props;
-                      const viewName = prop.view ? prop.view : 'View';
-                      const RenderedView = React.lazy(() =>
-                        import(`../views/${viewName}`),
-                      );
+        <MemoryRouter>
+          <Sidebar
+            {...this.props}
+            routes={this.state.routes}
+            backgroundColor={this.state.backgroundColor}
+            onMenuClose={this.menuCloseHandler}
+          />
+          <div className="main-panel" ref={this.mainPanel}>
+            <React.StrictMode>
+              <Suspense fallback={<div>Loading...</div>}>
+                <Switch>
+                  {this.state.routesList.map((prop) => (
+                    <Route
+                      path={`/SamplesDashboard/:id/${
+                        prop.view + getKey(prop.file)
+                      }`}
+                      render={(props) => {
+                        const {
+                          match: {
+                            params: { id },
+                          },
+                        } = props;
+                        const viewName = prop.view ? prop.view : 'View';
+                        const RenderedView = React.lazy(() =>
+                          import(`../views/${viewName}`),
+                        );
 
-                      return (
-                        <RenderedView
-                          key={id}
-                          {...prop}
-                          id={getKey(prop.file)}
-                          baseURL={this.props.baseURL}
-                        />
-                      );
-                    }}
-                    key={getKey(prop.file)}
-                  />
-                ))}
+                        return (
+                          <RenderedView
+                            key={id}
+                            {...prop}
+                            id={getKey(prop.file)}
+                            baseURL={this.props.baseURL}
+                          />
+                        );
+                      }}
+                      key={getKey(prop.file)}
+                    />
+                  ))}
 
-                {this.state.routesList.length > 0 && (
-                  <Route
-                    path="/"
-                    render={() => {
-                      const routeProp = this.state.routesList[0];
-                      const viewName = routeProp.view ? routeProp.view : 'View';
-                      const RenderedView = React.lazy(() =>
-                        import(`../views/${viewName}`),
-                      );
+                  {this.state.routesList.length > 0 && (
+                    <Route
+                      path="/"
+                      render={() => {
+                        const routeProp = this.state.routesList[0];
+                        const viewName = routeProp.view
+                          ? routeProp.view
+                          : 'View';
+                        const RenderedView = React.lazy(() =>
+                          import(`../views/${viewName}`),
+                        );
 
-                      return <RenderedView {...routeProp[0]} />;
-                    }}
-                    key={getKey(this.state.routesList[0].file)}
-                  />
-                )}
-              </Switch>
-            </Suspense>
-          </React.StrictMode>
-        </div>
+                        return <RenderedView {...routeProp[0]} />;
+                      }}
+                      key={getKey(this.state.routesList[0].file)}
+                    />
+                  )}
+                </Switch>
+              </Suspense>
+            </React.StrictMode>
+          </div>
+        </MemoryRouter>
       </div>
     );
   }
