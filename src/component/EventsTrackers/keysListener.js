@@ -3,12 +3,11 @@ import { useAlert } from 'react-alert';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useGlobal } from '../context/GlobalContext';
 import {
   SET_KEY_PREFERENCES,
   APPLY_KEY_PREFERENCES,
 } from '../reducer/types/Types';
-
-let isMouseOver = false;
 
 function isModifierKeyActivated(event) {
   const modifiersKeys = [
@@ -30,8 +29,9 @@ function isModifierKeyActivated(event) {
   return false;
 }
 
-const KeyListener = ({ parentRef }) => {
+const KeyListener = () => {
   const { keysPreferences } = useChartData();
+  const { isRootFocus, rootRef } = useGlobal();
   const dispatch = useDispatch();
   const alert = useAlert();
 
@@ -42,7 +42,7 @@ const KeyListener = ({ parentRef }) => {
         e.keyCode >= 49 &&
         e.keyCode <= 57
       ) {
-        if (isMouseOver) {
+        if (isRootFocus) {
           if (e.shiftKey) {
             dispatch({
               type: SET_KEY_PREFERENCES,
@@ -78,38 +78,19 @@ const KeyListener = ({ parentRef }) => {
         }
       }
     },
-    [dispatch, keysPreferences, alert],
+    [isRootFocus, dispatch, alert, keysPreferences],
   );
-  const handleMouseEnter = useCallback(() => {
-    isMouseOver = true;
-  }, []);
-  const handleMouseLeave = useCallback(() => {
-    isMouseOver = false;
-  }, []);
+
   useEffect(() => {
-    const element = parentRef ? parentRef.current : null;
-
-    if (element) {
-      element.addEventListener('mouseenter', handleMouseEnter);
-      element.addEventListener('mouseleave', handleMouseLeave);
+    if (rootRef) {
+      rootRef.addEventListener('keydown', handleOnKeyPressed, false);
     }
-
     return () => {
-      if (element) {
-        element.removeEventListener('mouseenter', handleMouseEnter);
-        element.removeEventListener('mouseleave', handleMouseLeave);
+      if (rootRef) {
+        rootRef.removeEventListener('keydown', handleOnKeyPressed, false);
       }
     };
-  }, [handleMouseEnter, handleMouseLeave, parentRef]);
-
-  useEffect(() => {
-    // ReactDOM.findDOMNode(parentRef.current)
-
-    document.addEventListener('keydown', handleOnKeyPressed, false);
-    return () => {
-      document.removeEventListener('keydown', handleOnKeyPressed, false);
-    };
-  }, [handleOnKeyPressed]);
+  }, [handleOnKeyPressed, rootRef]);
 
   return null;
 };

@@ -20,7 +20,7 @@ export default class MultipleAnalysis {
   }
 
   getData() {
-    return this.spectraAanalysis;
+    return lodash.cloneDeep(this.spectraAanalysis);
   }
 
   addColumnKey(nucleus, columnProps, columnKey) {

@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
+import { useGlobal } from '../context/GlobalContext';
 import { usePreferences } from '../context/PreferencesContext';
 import MenuButton from '../elements/MenuButton';
 import { useModal } from '../elements/Modal';
@@ -69,6 +70,7 @@ const menuButton = css`
 const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
   const dispatch = useDispatch();
   const preferences = usePreferences();
+  const { isRootFocus, rootRef } = useGlobal();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
   const [isStacked, activateStackView] = useState(false);
   const alert = useAlert();
@@ -122,44 +124,47 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (
-        !['input', 'textarea'].includes(e.target.localName) &&
-        !e.shiftKey &&
-        !e.metaKey &&
-        !e.ctrlKey
-      ) {
-        switch (e.key) {
-          case 'c':
-            alignSpectrumsVerticallyHandler();
-            break;
-          case 's':
-            handleChangeDisplayViewMode();
-            break;
-          default:
+      if (isRootFocus) {
+        if (
+          !['input', 'textarea'].includes(e.target.localName) &&
+          !e.shiftKey &&
+          !e.metaKey &&
+          !e.ctrlKey
+        ) {
+          switch (e.key) {
+            case 'c':
+              alignSpectrumsVerticallyHandler();
+              break;
+            case 's':
+              handleChangeDisplayViewMode();
+              break;
+            default:
+          }
         }
-      }
 
-      if (
-        !['input', 'textarea'].includes(e.target.localName) &&
-        !e.shiftKey &&
-        (e.metaKey || e.ctrlKey)
-      ) {
-        switch (e.key) {
-          case 'c':
-            saveToClipboardHandler();
-            e.preventDefault();
-            break;
-          case 's':
-            saveAsJSONHandler();
-            e.preventDefault();
-            break;
-          default:
+        if (
+          !['input', 'textarea'].includes(e.target.localName) &&
+          !e.shiftKey &&
+          (e.metaKey || e.ctrlKey)
+        ) {
+          switch (e.key) {
+            case 'c':
+              saveToClipboardHandler();
+              e.preventDefault();
+              break;
+            case 's':
+              saveAsJSONHandler();
+              e.preventDefault();
+              break;
+            default:
+          }
         }
       }
     },
     [
       alignSpectrumsVerticallyHandler,
       handleChangeDisplayViewMode,
+      isRootFocus,
       saveAsJSONHandler,
       saveToClipboardHandler,
     ],
@@ -194,12 +199,15 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
   }, [LoadJacmpHandler, modal, startLoadingHandler]);
 
   useEffect(() => {
-    document.addEventListener('keydown', handleOnKeyPressed, false);
-
+    if (rootRef) {
+      rootRef.addEventListener('keydown', handleOnKeyPressed, false);
+    }
     return () => {
-      document.removeEventListener('keydown', handleOnKeyPressed, false);
+      if (rootRef) {
+        rootRef.removeEventListener('keydown', handleOnKeyPressed, false);
+      }
     };
-  }, [handleOnKeyPressed]);
+  }, [handleOnKeyPressed, rootRef]);
 
   const isButtonVisible = useCallback(
     (key) => {

@@ -2,6 +2,8 @@
 import { jsx, css } from '@emotion/react';
 import { useState, useCallback, useEffect } from 'react';
 
+import { useGlobal } from '../context/GlobalContext';
+
 import ToolTip from './ToolTip/ToolTip';
 
 const menuStyles = css`
@@ -30,19 +32,24 @@ const MenuButton = ({
   className,
 }) => {
   const [isShown, showMenu] = useState(false);
+  const { isRootFocus, rootRef } = useGlobal();
 
   const closeMenu = useCallback(() => {
-    showMenu(false);
-  }, []);
+    if (isRootFocus) {
+      showMenu(false);
+    }
+  }, [isRootFocus]);
 
   const handleClick = useCallback(
     (e) => {
       e.preventDefault();
       e.stopPropagation();
-      showMenu(true);
-      document.addEventListener('click', closeMenu);
+      if (rootRef) {
+        showMenu(true);
+        rootRef.addEventListener('click', closeMenu);
+      }
     },
-    [closeMenu],
+    [closeMenu, rootRef],
   );
 
   const handleConetxt = useCallback((e) => {
@@ -53,10 +60,10 @@ const MenuButton = ({
   }, []);
 
   useEffect(() => {
-    if (!isShown) {
-      document.removeEventListener('click', closeMenu);
+    if (!isShown && rootRef) {
+      rootRef.removeEventListener('click', closeMenu);
     }
-  }, [closeMenu, isShown]);
+  }, [closeMenu, isShown, rootRef]);
 
   return (
     <div style={{ height: 'auto' }}>

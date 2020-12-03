@@ -3,6 +3,8 @@ import { jsx, css } from '@emotion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FaEllipsisH } from 'react-icons/fa';
 
+import { useGlobal } from '../../context/GlobalContext';
+
 import DropDownList from './DropDownList';
 
 const styles = css`
@@ -27,19 +29,27 @@ const DropDownButton = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(selectedKey);
+  const { isRootFocus, rootRef } = useGlobal();
 
   const drop = useRef(null);
-  function handleClick(e) {
-    if (!e.target.closest(`.${drop.current.className}`) && open) {
-      setOpen(false);
-    }
-  }
+  const handleClick = useCallback(
+    (e) => {
+      if (isRootFocus) {
+        if (!e.target.closest(`.${drop.current.className}`) && open) {
+          setTimeout(() => {
+            setOpen(false);
+          }, 0);
+        }
+      }
+    },
+    [isRootFocus, open],
+  );
   useEffect(() => {
-    document.addEventListener('click', handleClick);
-    return () => {
-      document.removeEventListener('click', handleClick);
-    };
-  });
+    if (rootRef) {
+      rootRef.addEventListener('click', handleClick);
+    }
+    return () => rootRef.removeEventListener('click', handleClick);
+  }, [handleClick, isRootFocus, open, rootRef]);
 
   const selectHandler = useCallback(
     (index) => {

@@ -4,6 +4,7 @@ import lodash from 'lodash';
 import { Fragment, useCallback, useEffect, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
+import { useGlobal } from '../../context/GlobalContext';
 import ContextMenu from '../../elements/ContextMenu';
 import useToggleStatus from '../extra/utilities/UseToggleStatus';
 
@@ -62,6 +63,7 @@ const RangesTable = ({
     'id',
     tableData,
   );
+  const { isRootFocus, rootRef } = useGlobal();
 
   const isVisible = (key) => {
     return lodash.get(preferences, key, false);
@@ -84,11 +86,19 @@ const RangesTable = ({
 
   useEffect(() => {
     const handleEditStart = () => {
-      editStartHander(null);
+      if (isRootFocus) {
+        editStartHander(null);
+      }
     };
-    document.addEventListener('mousedown', handleEditStart);
-    return () => document.removeEventListener('mousedown', handleEditStart);
-  }, [editStartHander]);
+    if (rootRef) {
+      rootRef.addEventListener('mousedown', handleEditStart);
+    }
+    return () => {
+      if (rootRef) {
+        rootRef.removeEventListener('mousedown', handleEditStart);
+      }
+    };
+  }, [editStartHander, isRootFocus, rootRef]);
 
   return (
     <Fragment>

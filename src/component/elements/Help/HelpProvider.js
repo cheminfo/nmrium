@@ -55,7 +55,7 @@ const HelpProvider = ({
   type,
   transition,
   containerStyle,
-  wrapperID,
+  wrapperRef,
   multiple,
   preventAutoHelp,
 }) => {
@@ -66,26 +66,19 @@ const HelpProvider = ({
   useEffect(() => {
     root.current = document.createElement('div');
     const ref = root.current;
-    if (wrapperID) {
-      const el = document.getElementById(wrapperID);
-      if (el) el.appendChild(ref);
-    } else {
-      document.body.appendChild(ref);
+    if (wrapperRef) {
+      wrapperRef.appendChild(ref);
     }
+
     const timersIdRef = timersId.current;
 
     return () => {
       timersIdRef.forEach(clearTimeout);
-      if (ref) {
-        if (wrapperID) {
-          const el = document.getElementById(wrapperID);
-          if (el) el.removeChild(ref);
-        } else {
-          document.body.removeChild(ref);
-        }
+      if (wrapperRef) {
+        wrapperRef.removeChild(ref);
       }
     };
-  }, [wrapperID]);
+  }, [wrapperRef]);
 
   const remove = useCallback((modal) => {
     setModals((currentModals) => {
@@ -272,7 +265,7 @@ HelpProvider.defaultProps = {
   containerStyle: {
     zIndex: 100,
   },
-  wrapperID: null,
+  wrapperRef: null,
   multiple: false,
   preventAutoHelp: false,
 };

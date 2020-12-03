@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import ToolTip from './ToolTip/ToolTip';
 
@@ -29,12 +29,15 @@ const ToggleButton = ({
 }) => {
   const [flag, Toggle] = useState(defaultValue);
 
+  useEffect(() => {
+    onClick(flag);
+  }, [flag, onClick]);
+
   const toggleHandler = useCallback(() => {
     Toggle((prev) => {
-      onClick(!prev);
       return !prev;
     });
-  }, [onClick]);
+  }, []);
   return (
     <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
       <button

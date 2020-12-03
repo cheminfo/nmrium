@@ -4,10 +4,11 @@ import React, {
   useCallback,
   useState,
   memo,
-  useEffect,
   Fragment,
 } from 'react';
-import { createPortal, unmountComponentAtNode } from 'react-dom';
+import { createPortal } from 'react-dom';
+
+import { useGlobal } from '../../context/GlobalContext';
 
 const styles = {
   popup: {
@@ -35,29 +36,11 @@ const ToolTip = memo(
     title,
     offset = { x: 0, y: 0 },
   }) => {
-    const root = useRef(null);
     const refChild = useRef();
     const refContent = useRef();
     const [placement, setPlacement] = useState({ x: 0, y: 0 });
     const [show, showToolTip] = useState(false);
-
-    useEffect(() => {
-      const element = document.getElementById('__react-tooltip__');
-
-      if (element) {
-        root.current = element;
-      } else {
-        root.current = document.createElement('div');
-        root.current.id = '__react-tooltip__';
-        document.body.appendChild(root.current);
-      }
-
-      return () => {
-        if (root && root.current && element) {
-          unmountComponentAtNode(element);
-        }
-      };
-    }, []);
+    const { elementsWraperRef } = useGlobal();
 
     useLayoutEffect(() => {
       const getPopupPlacement = () => {
@@ -147,7 +130,7 @@ const ToolTip = memo(
             >
               <span style={{ pointerEvents: 'none' }}>{title}</span>
             </div>,
-            root.current,
+            elementsWraperRef,
           )}
       </Fragment>
     );

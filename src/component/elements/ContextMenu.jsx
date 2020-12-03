@@ -1,3 +1,4 @@
+/** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import {
   forwardRef,
@@ -7,8 +8,9 @@ import {
   useRef,
   useEffect,
 } from 'react';
-/** @jsx jsx */
 import { createPortal } from 'react-dom';
+
+import { useGlobal } from '../context/GlobalContext';
 
 const styles = css`
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
@@ -47,6 +49,7 @@ const styles = css`
 `;
 const ContextMenu = forwardRef(({ context }, ref) => {
   const [position, setPosition] = useState({ lef: 0, top: 0 });
+  const { isRootFocus, rootRef, elementsWraperRef } = useGlobal();
   const [data, setData] = useState();
   const [isVisible, show] = useState();
   const [sourceElement, setSourceElement] = useState(null);
@@ -54,12 +57,15 @@ const ContextMenu = forwardRef(({ context }, ref) => {
 
   useEffect(() => {
     root.current = document.createElement('div');
-    document.body.appendChild(root.current);
-
+    if (elementsWraperRef) {
+      elementsWraperRef.appendChild(root.current);
+    }
     return () => {
-      if (root.current) document.body.removeChild(root.current);
+      if (root.current && elementsWraperRef) {
+        elementsWraperRef.removeChild(root.current);
+      }
     };
-  }, []);
+  }, [elementsWraperRef]);
 
   const contextMenuHandler = (event) => {
     event.preventDefault();
@@ -117,18 +123,23 @@ const ContextMenu = forwardRef(({ context }, ref) => {
   useEffect(() => {
     // console.log(ref.current);
     const _handleGlobalClick = (event) => {
-      const wasOutside =
-        sourceElement &&
-        event.target.parentElement &&
-        !event.target.parentElement.isSameNode(sourceElement);
-      if (wasOutside && isVisible) show(false);
+      if (isRootFocus) {
+        const wasOutside =
+          sourceElement &&
+          event.target.parentElement &&
+          !event.target.parentElement.isSameNode(sourceElement);
+        if (wasOutside && isVisible) show(false);
+      }
     };
-
-    document.addEventListener('click', _handleGlobalClick);
+    if (rootRef) {
+      rootRef.addEventListener('click', _handleGlobalClick);
+    }
     return () => {
-      document.removeEventListener('click', _handleGlobalClick);
+      if (rootRef) {
+        rootRef.removeEventListener('click', _handleGlobalClick);
+      }
     };
-  }, [isVisible, ref, sourceElement]);
+  }, [isRootFocus, isVisible, ref, rootRef, sourceElement]);
 
   if (!isVisible) {
     return null;

@@ -4,6 +4,7 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../data/constants/SignalsKinds';
 import { useDispatch } from '../../context/DispatchContext';
+import { useGlobal } from '../../context/GlobalContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';
@@ -35,6 +36,8 @@ const IntegralTable = memo(
     const dispatch = useDispatch();
     const preferences = usePreferences();
     const relativeRefs = useRef([]);
+    const { isRootFocus, rootRef } = useGlobal();
+
     const deleteIntegralHandler = useCallback(
       (e, row) => {
         e.preventDefault();
@@ -125,18 +128,29 @@ const IntegralTable = memo(
       },
       [dispatch],
     );
-    const editStartHander = useCallback((index) => {
-      relativeRefs.current.forEach((ref, i) => {
-        if (index !== i && ref) {
-          ref.closeEdit();
+    const editStartHander = useCallback(
+      (index) => {
+        if (isRootFocus) {
+          relativeRefs.current.forEach((ref, i) => {
+            if (index !== i && ref) {
+              ref.closeEdit();
+            }
+          });
         }
-      });
-    }, []);
+      },
+      [isRootFocus],
+    );
 
     useEffect(() => {
-      document.addEventListener('mousedown', editStartHander);
-      return () => document.removeEventListener('mousedown', editStartHander);
-    }, [editStartHander]);
+      if (rootRef) {
+        rootRef.addEventListener('mousedown', editStartHander);
+      }
+      return () => {
+        if (rootRef) {
+          rootRef.removeEventListener('mousedown', editStartHander);
+        }
+      };
+    }, [editStartHander, rootRef]);
 
     const tableColumns = useMemo(() => {
       const setCustomColumn = (array, index, columnLabel, cellHandler) => {

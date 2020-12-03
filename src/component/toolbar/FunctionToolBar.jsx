@@ -5,6 +5,7 @@ import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
 import { Filters } from '../../data/data1d/filter1d/Filters';
 import { useDispatch } from '../context/DispatchContext';
+import { useGlobal } from '../context/GlobalContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useHelp } from '../elements/Help/Context';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -52,6 +53,7 @@ const FunctionToolBar = ({
   const help = useHelp();
   const alert = useAlert();
   const preferences = usePreferences();
+  const { isRootFocus, rootRef } = useGlobal();
 
   const dispatch = useDispatch();
 
@@ -109,61 +111,67 @@ const FunctionToolBar = ({
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (
-        !['input', 'textarea'].includes(e.target.localName) &&
-        !e.shiftKey &&
-        !e.metaKey
-      ) {
-        switch (e.key) {
-          case 'f':
-            handleFullZoomOut();
-            break;
-          case 'z':
-          case 'Escape':
-            setOption(options.zoom.id);
-            handleChangeOption(options.zoom.id);
-            break;
-          case 'r':
-            setOption(options.rangesPicking.id);
-            handleChangeOption(options.rangesPicking.id);
-            break;
-          case 'b':
-            setOption(options.baseLineCorrection.id);
-            handleChangeOption(options.baseLineCorrection.id);
-            break;
-          case 'p':
-            setOption(options.peakPicking.id);
-            handleChangeOption(options.peakPicking.id);
-            break;
-          case 'i': {
-            const toolID =
-              displayerMode === DISPLAYER_MODE.DM_2D
-                ? options.zone2D.id
-                : displayerMode === DISPLAYER_MODE.DM_1D
-                ? options.integral.id
-                : '';
-            setOption(toolID);
-            handleChangeOption(toolID);
-            break;
+      if (isRootFocus) {
+        if (
+          !['input', 'textarea'].includes(e.target.localName) &&
+          !e.shiftKey &&
+          !e.metaKey
+        ) {
+          switch (e.key) {
+            case 'f':
+              handleFullZoomOut();
+              break;
+            case 'z':
+            case 'Escape':
+              setOption(options.zoom.id);
+              handleChangeOption(options.zoom.id);
+              break;
+            case 'r':
+              setOption(options.rangesPicking.id);
+              handleChangeOption(options.rangesPicking.id);
+              break;
+            case 'b':
+              setOption(options.baseLineCorrection.id);
+              handleChangeOption(options.baseLineCorrection.id);
+              break;
+            case 'p':
+              setOption(options.peakPicking.id);
+              handleChangeOption(options.peakPicking.id);
+              break;
+            case 'i': {
+              const toolID =
+                displayerMode === DISPLAYER_MODE.DM_2D
+                  ? options.zone2D.id
+                  : displayerMode === DISPLAYER_MODE.DM_1D
+                  ? options.integral.id
+                  : '';
+              setOption(toolID);
+              handleChangeOption(toolID);
+              break;
+            }
+            case 'a':
+              setOption(options.phaseCorrection.id);
+              handleChangeOption(options.phaseCorrection.id);
+              break;
+            default:
           }
-          case 'a':
-            setOption(options.phaseCorrection.id);
-            handleChangeOption(options.phaseCorrection.id);
-            break;
-          default:
         }
       }
     },
-    [displayerMode, handleChangeOption, handleFullZoomOut],
+    [displayerMode, handleChangeOption, handleFullZoomOut, isRootFocus],
   );
 
   useEffect(() => {
     setOption(defaultValue);
-    document.addEventListener('keydown', handleOnKeyPressed, false);
+    if (rootRef) {
+      rootRef.addEventListener('keydown', handleOnKeyPressed, false);
+    }
     return () => {
-      document.removeEventListener('keydown', handleOnKeyPressed, false);
+      if (rootRef) {
+        rootRef.removeEventListener('keydown', handleOnKeyPressed, false);
+      }
     };
-  }, [defaultValue, handleOnKeyPressed]);
+  }, [defaultValue, handleOnKeyPressed, rootRef]);
 
   const handleOnFFTFilter = useCallback(() => {
     dispatch({

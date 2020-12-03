@@ -38,7 +38,7 @@ const DropDownList = ({ data = [], onSelect }) => (
   <div css={styles}>
     <ul>
       {data.map((item, i) => (
-        <li key={item.lkey} onClick={() => onSelect(i)}>
+        <li key={item.key} onClick={() => onSelect(i)}>
           {item.label}
         </li>
       ))}

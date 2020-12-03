@@ -7,6 +7,8 @@ import React, {
   useState,
 } from 'react';
 
+import { useGlobal } from '../context/GlobalContext';
+
 export const BrushContext = createContext();
 
 const initialState = {
@@ -31,6 +33,7 @@ export function BrushTracker({
 }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [mouseDownTime, setMouseDownTime] = useState();
+  const { isRootFocus, rootRef } = useGlobal();
 
   const mouseDownHandler = useCallback(
     (event) => {
@@ -111,32 +114,40 @@ export function BrushTracker({
 
   useEffect(() => {
     const moveCallback = (event) => {
-      dispatch({
-        type: 'MOVE',
-        screenX: event.screenX,
-        screenY: event.screenY,
-        clientX: event.clientX,
-        clientY: event.clientY,
-      });
+      if (isRootFocus) {
+        dispatch({
+          type: 'MOVE',
+          screenX: event.screenX,
+          screenY: event.screenY,
+          clientX: event.clientX,
+          clientY: event.clientY,
+        });
+      }
     };
 
     const upCallback = (event) => {
-      dispatch({
-        type: 'UP',
-        clientX: event.clientX,
-        clientY: event.clientY,
-      });
+      if (isRootFocus) {
+        dispatch({
+          type: 'UP',
+          clientX: event.clientX,
+          clientY: event.clientY,
+        });
+      }
 
       return false;
     };
-    document.addEventListener('mousemove', moveCallback);
-    document.addEventListener('mouseup', upCallback);
+    if (rootRef) {
+      rootRef.addEventListener('mousemove', moveCallback);
+      rootRef.addEventListener('mouseup', upCallback);
+    }
 
     return () => {
-      document.removeEventListener('mousemove', moveCallback);
-      document.removeEventListener('mouseup', upCallback);
+      if (rootRef) {
+        rootRef.removeEventListener('mousemove', moveCallback);
+        rootRef.removeEventListener('mouseup', upCallback);
+      }
     };
-  }, []);
+  }, [isRootFocus, rootRef]);
 
   return (
     <BrushContext.Provider value={state}>

@@ -27,7 +27,7 @@ const ModalProvider = ({
   offset,
   position,
   transition,
-  wrapperID,
+  wrapperRef,
 }) => {
   const root = useRef();
   // const rndRef = useRef();
@@ -36,24 +36,17 @@ const ModalProvider = ({
   useEffect(() => {
     root.current = document.createElement('div');
     const ref = root.current;
-    if (wrapperID) {
-      const el = document.getElementById(wrapperID);
-      if (el) el.appendChild(ref);
-    } else {
-      document.body.appendChild(ref);
+    if (wrapperRef) {
+      wrapperRef.appendChild(ref);
     }
-
     return () => {
       if (ref) {
-        if (wrapperID) {
-          const el = document.getElementById(wrapperID);
-          if (el) el.removeChild(ref);
-        } else {
-          document.body.removeChild(ref);
+        if (wrapperRef) {
+          wrapperRef.removeChild(ref);
         }
       }
     };
-  }, [wrapperID]);
+  }, [wrapperRef]);
 
   const remove = () => {
     setModal(null);
@@ -234,7 +227,7 @@ ModalProvider.defaultProps = {
   // containerStyle: {
   //   zIndex: 100,
   // },
-  wrapperID: null,
+  wrapperRef: null,
   context: DefaultContext,
   style: {},
 };
