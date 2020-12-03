@@ -1,4 +1,3 @@
-import queryString from 'query-string';
 import React, { useEffect, useState, useCallback } from 'react';
 
 import routes from '../samples';
@@ -85,16 +84,18 @@ const Main = (props) => {
     return url.substring(url.lastIndexOf('.') + 1);
   };
 
+  const href = window.location.href;
   useEffect(() => {
-    const values = queryString.parse(props.location.search);
-    if (values && values.sampleURL) {
-      const extention = getFileExtension(values.sampleURL).toLowerCase();
+    const qs = new URL(href).searchParams;
+    if (qs.has('sampleURL')) {
+      const sampleURL = qs.get('sampleURL');
+      const extention = getFileExtension(sampleURL).toLowerCase();
       switch (extention) {
         case 'json': {
           setDashBoardType('multi');
-          loadData(values.sampleURL).then((remoteRoutes) => {
+          loadData(sampleURL).then((remoteRoutes) => {
             if (remoteRoutes) {
-              const baseURL = values.sampleURL.replace(
+              const baseURL = sampleURL.replace(
                 // eslint-disable-next-line no-useless-escape
                 /^(?<url>.*[\\\/])?(?<filename>.*?\.[^.]*?|)$/g,
                 '$1',
@@ -121,7 +122,7 @@ const Main = (props) => {
           setRoutes({
             isLoaded: true,
             status: 200,
-            path: values.sampleURL,
+            path: sampleURL,
           });
 
           break;
@@ -130,14 +131,11 @@ const Main = (props) => {
         default:
           break;
       }
-
-      //   console.log(remoteRoutes);
     } else {
       setDashBoardType('multi');
       setRoutes({ isLoaded: true, status: 200, routes: routes, baseURL: './' });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [href]);
 
   return !data.isLoaded ? (
     <div style={styles.bodyContainer}>
