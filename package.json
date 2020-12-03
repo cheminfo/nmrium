@@ -34,7 +34,6 @@
     "openchemlib": "^7.2.3",
     "prismjs": "^1.22.0",
     "prop-types": "^15.7.2",
-    "query-string": "^6.13.7",
     "re-resizable": "^6.9.0",
     "react-alert": "^7.0.2",
     "react-alert-template-basic": "^1.0.0",
