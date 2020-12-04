@@ -77,7 +77,7 @@ export function addJDF(spectra, jdf, options = {}) {
   if (info.dimension === 1) {
     let usedcolors1D = [];
     if (converted.dependentVariables) {
-      const color = getColor(usedcolors1D);
+      const color = getColor(false, usedcolors1D);
       spectra.push(
         Data1DManager.fromCSD(converted, {
           ...options,
@@ -110,7 +110,7 @@ export async function fromJSON(spectra, data = []) {
   const usedcolors = [];
 
   for (let datum of data) {
-    const color = getColor(usedcolors);
+    const color = getColor(false, usedcolors);
     usedcolors.push(color);
     datum = { display: { color }, ...datum };
 
@@ -134,7 +134,7 @@ export async function addBruker(spectra, options, data) {
     let { info, dependentVariables } = entry;
     if (info.dimension === 1) {
       if (dependentVariables[0].components) {
-        const color = getColor(usedcolors1D);
+        const color = getColor(false, usedcolors1D);
         spectra.push(
           Data1DManager.fromBruker(entry, {
             ...options,
