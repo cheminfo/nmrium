@@ -6,19 +6,19 @@ https://cheminfo.github.io/nmr-displayer/
 
 Want to play ? You can do some 1D NMR exercises ;)
 
-https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/toc.json
+https://cheminfo.github.io/nmr-displayer?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/toc.json
 
 Also you can do some 2D NMR exercises ;)
 
-https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset1/data/2d.json
+https://cheminfo.github.io/nmr-displayer?sampleURL=https%3A//cheminfo.github.io/nmr-dataset1/data/2d.json
 
 You can do some 1D NMR tests/ exams ;)
 
-https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/exam.json
+https://cheminfo.github.io/nmr-displayer?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/exam.json
 
 If you have jcamps accessible from an URL and that your server allow cross-origin you can directly open your file in the nmr-displayer:
 
-https://cheminfo.github.io/nmr-displayer/#/?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/100-86-7/1h.dx
+https://cheminfo.github.io/nmr-displayer?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/100-86-7/1h.dx
 
 ## Install and test locally
 
