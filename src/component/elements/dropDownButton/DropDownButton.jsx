@@ -29,27 +29,25 @@ const DropDownButton = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(selectedKey);
-  const { isRootFocus, rootRef } = useGlobal();
+  const { rootRef } = useGlobal();
 
   const drop = useRef(null);
   const handleClick = useCallback(
     (e) => {
-      if (isRootFocus) {
-        if (!e.target.closest(`.${drop.current.className}`) && open) {
-          setTimeout(() => {
-            setOpen(false);
-          }, 0);
-        }
+      if (!e.target.closest(`.${drop.current.className}`) && open) {
+        setTimeout(() => {
+          setOpen(false);
+        }, 0);
       }
     },
-    [isRootFocus, open],
+    [open],
   );
   useEffect(() => {
     if (rootRef) {
       rootRef.addEventListener('click', handleClick);
     }
     return () => rootRef.removeEventListener('click', handleClick);
-  }, [handleClick, isRootFocus, open, rootRef]);
+  }, [handleClick, open, rootRef]);
 
   const selectHandler = useCallback(
     (index) => {

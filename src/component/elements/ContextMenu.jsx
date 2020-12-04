@@ -49,7 +49,7 @@ const styles = css`
 `;
 const ContextMenu = forwardRef(({ context }, ref) => {
   const [position, setPosition] = useState({ lef: 0, top: 0 });
-  const { isRootFocus, rootRef, elementsWraperRef } = useGlobal();
+  const { rootRef, elementsWraperRef } = useGlobal();
   const [data, setData] = useState();
   const [isVisible, show] = useState();
   const [sourceElement, setSourceElement] = useState(null);
@@ -123,13 +123,11 @@ const ContextMenu = forwardRef(({ context }, ref) => {
   useEffect(() => {
     // console.log(ref.current);
     const _handleGlobalClick = (event) => {
-      if (isRootFocus) {
-        const wasOutside =
-          sourceElement &&
-          event.target.parentElement &&
-          !event.target.parentElement.isSameNode(sourceElement);
-        if (wasOutside && isVisible) show(false);
-      }
+      const wasOutside =
+        sourceElement &&
+        event.target.parentElement &&
+        !event.target.parentElement.isSameNode(sourceElement);
+      if (wasOutside && isVisible) show(false);
     };
     if (rootRef) {
       rootRef.addEventListener('click', _handleGlobalClick);
@@ -139,7 +137,7 @@ const ContextMenu = forwardRef(({ context }, ref) => {
         rootRef.removeEventListener('click', _handleGlobalClick);
       }
     };
-  }, [isRootFocus, isVisible, ref, rootRef, sourceElement]);
+  }, [isVisible, ref, rootRef, sourceElement]);
 
   if (!isVisible) {
     return null;

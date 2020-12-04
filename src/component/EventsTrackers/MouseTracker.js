@@ -31,6 +31,7 @@ export function MouseTracker({ children, className, style, noPropagation }) {
     },
     [noPropagation],
   );
+
   return (
     <MouseaProvider value={mouseTrackerState}>
       <div

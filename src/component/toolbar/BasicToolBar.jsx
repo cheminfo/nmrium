@@ -70,7 +70,7 @@ const menuButton = css`
 const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
   const dispatch = useDispatch();
   const preferences = usePreferences();
-  const { isRootFocus, rootRef } = useGlobal();
+  const { rootRef } = useGlobal();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
   const [isStacked, activateStackView] = useState(false);
   const alert = useAlert();
@@ -124,22 +124,20 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (isRootFocus) {
-        if (
-          !['input', 'textarea'].includes(e.target.localName) &&
-          !e.shiftKey &&
-          !e.metaKey &&
-          !e.ctrlKey
-        ) {
-          switch (e.key) {
-            case 'c':
-              alignSpectrumsVerticallyHandler();
-              break;
-            case 's':
-              handleChangeDisplayViewMode();
-              break;
-            default:
-          }
+      if (
+        !['input', 'textarea'].includes(e.target.localName) &&
+        !e.shiftKey &&
+        !e.metaKey &&
+        !e.ctrlKey
+      ) {
+        switch (e.key) {
+          case 'c':
+            alignSpectrumsVerticallyHandler();
+            break;
+          case 's':
+            handleChangeDisplayViewMode();
+            break;
+          default:
         }
 
         if (
@@ -164,7 +162,6 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
     [
       alignSpectrumsVerticallyHandler,
       handleChangeDisplayViewMode,
-      isRootFocus,
       saveAsJSONHandler,
       saveToClipboardHandler,
     ],

@@ -63,7 +63,7 @@ const RangesTable = ({
     'id',
     tableData,
   );
-  const { isRootFocus, rootRef } = useGlobal();
+  const { rootRef } = useGlobal();
 
   const isVisible = (key) => {
     return lodash.get(preferences, key, false);
@@ -86,9 +86,7 @@ const RangesTable = ({
 
   useEffect(() => {
     const handleEditStart = () => {
-      if (isRootFocus) {
-        editStartHander(null);
-      }
+      editStartHander(null);
     };
     if (rootRef) {
       rootRef.addEventListener('mousedown', handleEditStart);
@@ -98,7 +96,7 @@ const RangesTable = ({
         rootRef.removeEventListener('mousedown', handleEditStart);
       }
     };
-  }, [editStartHander, isRootFocus, rootRef]);
+  }, [editStartHander, rootRef]);
 
   return (
     <Fragment>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import BasicToolBar from './BasicToolBar';
 import FunctionToolBar from './FunctionToolBar';
@@ -13,7 +13,7 @@ const styles = {
   overflowY: 'auto',
   height: '100%',
 };
-const ToolBar = ({ selectedTool }) => {
+const ToolBar = memo(({ selectedTool }) => {
   return (
     <div style={{ ...styles }}>
       <FunctionToolBar defaultValue={selectedTool} />
@@ -21,6 +21,6 @@ const ToolBar = ({ selectedTool }) => {
       <BasicToolBar />
     </div>
   );
-};
+});
 
 export default ToolBar;

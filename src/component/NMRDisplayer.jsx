@@ -24,7 +24,7 @@ import { Analysis } from '../data/Analysis';
 import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
 import ErrorBoundary from './ErrorBoundary';
-import KeyListener from './EventsTrackers/keysListener';
+import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
 import { AssignmentProvider } from './assignment';
 import helpList, { setBaseUrl } from './constants/help';
 import { ChartDataProvider } from './context/ChartContext';
@@ -35,7 +35,6 @@ import { HelpProvider } from './elements/Help';
 import { ModalProvider } from './elements/Modal';
 import Header from './header/Header';
 import { HighlightProvider } from './highlight';
-import useFocus from './hoc/useFocus';
 import DropZone from './loader/DropZone';
 import Panels from './panels/Panels';
 import {
@@ -146,7 +145,6 @@ const NMRDisplayer = memo(
         toggle(false);
       },
     });
-    const isRootFocus = useFocus(rootRef);
     const [isRightPanelHide, hideRightPanel] = useState(false);
     const [isResizeEventStart, setResizeEventStart] = useState(false);
     const [helpData, setHelpData] = useState(helpList());
@@ -158,6 +156,10 @@ const NMRDisplayer = memo(
     );
 
     const { selectedTool, displayerMode } = state;
+
+    useEffect(() => {
+      rootRef.current.focus();
+    }, [isFullscreen]);
 
     useEffect(() => {
       dispatchPreferences({
@@ -206,7 +208,6 @@ const NMRDisplayer = memo(
       <ErrorBoundary>
         <GlobalProvider
           value={{
-            isRootFocus,
             rootRef: rootRef.current,
             elementsWraperRef: elementsWraperRef.current,
           }}
@@ -221,68 +222,71 @@ const NMRDisplayer = memo(
                 <DispatchProvider value={dispatchMiddleWare}>
                   <ChartDataProvider value={{ ...state, isResizeEventStart }}>
                     <ModalProvider wrapperRef={elementsWraperRef.current}>
-                      <KeyListener />
                       <HighlightProvider>
                         <AssignmentProvider>
                           <div ref={rootRef} css={containerStyles}>
-                            <Header
-                              isFullscreen={isFullscreen}
-                              onMaximize={toggle}
-                            />
+                            <KeysListenerTracker>
+                              <Header
+                                isFullscreen={isFullscreen}
+                                onMaximize={toggle}
+                              />
 
-                            {/* ref={containerRef} */}
-                            <div
-                              style={{
-                                height: 'calc(100% - 36px)',
-                                width: '100%',
-                                backgroundColor: 'white',
-                              }}
-                            >
-                              <DropZone>
-                                <ToolBar selectedTool={selectedTool} />
-                                <SplitPane
-                                  style={splitPaneStyles.container}
-                                  paneStyle={splitPaneStyles.pane}
-                                  resizerStyle={splitPaneStyles.resizer}
-                                  pane1Style={
-                                    isRightPanelHide
-                                      ? {
-                                          maxWidth: '100%',
-                                          width: 'calc(100% - 10px)',
-                                        }
-                                      : { maxWidth: '80%' }
-                                  }
-                                  split="vertical"
-                                  defaultSize={
-                                    isRightPanelHide
-                                      ? '99%'
-                                      : 'calc(100% - 600px)'
-                                  }
-                                  minSize="80%"
-                                  onDragFinished={handleSplitPanelDragFinished}
-                                  onResizerDoubleClick={rightPanelHandler}
-                                  onDragStarted={() => {
-                                    setResizeEventStart(true);
-                                  }}
-                                >
-                                  {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                                    <Viewer1D />
-                                  ) : (
-                                    <Viewer2D />
-                                  )}
-                                  {!isRightPanelHide ? (
-                                    <Panels
-                                      selectedTool={selectedTool}
-                                      displayerMode={displayerMode}
-                                      onHide={rightPanelHandler}
-                                    />
-                                  ) : (
-                                    <div />
-                                  )}
-                                </SplitPane>
-                              </DropZone>
-                            </div>
-                            <div ref={elementsWraperRef} id="main-wrapper" />
+                              {/* ref={containerRef} */}
+                              <div
+                                style={{
+                                  height: 'calc(100% - 36px)',
+                                  width: '100%',
+                                  backgroundColor: 'white',
+                                }}
+                              >
+                                <DropZone>
+                                  <ToolBar selectedTool={selectedTool} />
+                                  <SplitPane
+                                    style={splitPaneStyles.container}
+                                    paneStyle={splitPaneStyles.pane}
+                                    resizerStyle={splitPaneStyles.resizer}
+                                    pane1Style={
+                                      isRightPanelHide
+                                        ? {
+                                            maxWidth: '100%',
+                                            width: 'calc(100% - 10px)',
+                                          }
+                                        : { maxWidth: '80%' }
+                                    }
+                                    split="vertical"
+                                    defaultSize={
+                                      isRightPanelHide
+                                        ? '99%'
+                                        : 'calc(100% - 600px)'
+                                    }
+                                    minSize="80%"
+                                    onDragFinished={
+                                      handleSplitPanelDragFinished
+                                    }
+                                    onResizerDoubleClick={rightPanelHandler}
+                                    onDragStarted={() => {
+                                      setResizeEventStart(true);
+                                    }}
+                                  >
+                                    {displayerMode === DISPLAYER_MODE.DM_1D ? (
+                                      <Viewer1D />
+                                    ) : (
+                                      <Viewer2D />
+                                    )}
+                                    {!isRightPanelHide ? (
+                                      <Panels
+                                        selectedTool={selectedTool}
+                                        displayerMode={displayerMode}
+                                        onHide={rightPanelHandler}
+                                      />
+                                    ) : (
+                                      <div />
+                                    )}
+                                  </SplitPane>
+                                </DropZone>
+                              </div>
+                              <div ref={elementsWraperRef} id="main-wrapper" />
+                            </KeysListenerTracker>
                           </div>
                         </AssignmentProvider>
                       </HighlightProvider>

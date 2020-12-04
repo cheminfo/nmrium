@@ -36,7 +36,7 @@ const IntegralTable = memo(
     const dispatch = useDispatch();
     const preferences = usePreferences();
     const relativeRefs = useRef([]);
-    const { isRootFocus, rootRef } = useGlobal();
+    const { rootRef } = useGlobal();
 
     const deleteIntegralHandler = useCallback(
       (e, row) => {
@@ -128,18 +128,13 @@ const IntegralTable = memo(
       },
       [dispatch],
     );
-    const editStartHander = useCallback(
-      (index) => {
-        if (isRootFocus) {
-          relativeRefs.current.forEach((ref, i) => {
-            if (index !== i && ref) {
-              ref.closeEdit();
-            }
-          });
+    const editStartHander = useCallback((index) => {
+      relativeRefs.current.forEach((ref, i) => {
+        if (index !== i && ref) {
+          ref.closeEdit();
         }
-      },
-      [isRootFocus],
-    );
+      });
+    }, []);
 
     useEffect(() => {
       if (rootRef) {

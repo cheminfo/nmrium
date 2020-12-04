@@ -7,8 +7,6 @@ import React, {
   useState,
 } from 'react';
 
-import { useGlobal } from '../context/GlobalContext';
-
 export const BrushContext = createContext();
 
 const initialState = {
@@ -33,7 +31,6 @@ export function BrushTracker({
 }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [mouseDownTime, setMouseDownTime] = useState();
-  const { isRootFocus, rootRef } = useGlobal();
 
   const mouseDownHandler = useCallback(
     (event) => {
@@ -91,8 +88,6 @@ export function BrushTracker({
   const handleMouseWheel = useCallback(
     (event) => {
       event.stopPropagation();
-      event.preventDefault();
-
       const boundingRect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - boundingRect.x;
       const y = event.clientY - boundingRect.y;
@@ -112,42 +107,24 @@ export function BrushTracker({
     }
   }, [onBrush, state]);
 
-  useEffect(() => {
-    const moveCallback = (event) => {
-      if (isRootFocus) {
-        dispatch({
-          type: 'MOVE',
-          screenX: event.screenX,
-          screenY: event.screenY,
-          clientX: event.clientX,
-          clientY: event.clientY,
-        });
-      }
-    };
+  const moveCallback = useCallback((event) => {
+    dispatch({
+      type: 'MOVE',
+      screenX: event.screenX,
+      screenY: event.screenY,
+      clientX: event.clientX,
+      clientY: event.clientY,
+    });
+  }, []);
 
-    const upCallback = (event) => {
-      if (isRootFocus) {
-        dispatch({
-          type: 'UP',
-          clientX: event.clientX,
-          clientY: event.clientY,
-        });
-      }
-
-      return false;
-    };
-    if (rootRef) {
-      rootRef.addEventListener('mousemove', moveCallback);
-      rootRef.addEventListener('mouseup', upCallback);
-    }
-
-    return () => {
-      if (rootRef) {
-        rootRef.removeEventListener('mousemove', moveCallback);
-        rootRef.removeEventListener('mouseup', upCallback);
-      }
-    };
-  }, [isRootFocus, rootRef]);
+  const upCallback = useCallback((event) => {
+    dispatch({
+      type: 'UP',
+      clientX: event.clientX,
+      clientY: event.clientY,
+    });
+    return false;
+  }, []);
 
   return (
     <BrushContext.Provider value={state}>
@@ -155,7 +132,8 @@ export function BrushTracker({
         className={className}
         style={style}
         onMouseDown={mouseDownHandler}
-        // onDoubleClick={mouseDoubleClickHandler}
+        onMouseUp={upCallback}
+        onMouseMove={moveCallback}
         onClick={clickHandler}
         onWheel={handleMouseWheel}
       >
@@ -183,8 +161,6 @@ function reducer(state, action) {
           endX: clientX - state.boundingRect.x,
           endY: clientY - state.boundingRect.y,
 
-          // endX: state.startX + screenX - state.startScreenX,
-          // endY: state.startY + screenY - state.startScreenY,
           step: state.step === 'start' ? 'initial' : 'end',
         };
       }
@@ -220,14 +196,11 @@ function reducer(state, action) {
       return state;
     case 'MOVE':
       if (state.step === 'start' || state.step === 'brushing') {
-        // eslint-disable-next-line no-unused-vars
-        const { screenX, screenY, clientX, clientY } = action;
+        const { clientX, clientY } = action;
 
         return {
           ...state,
           step: 'brushing',
-          // endX: state.startX + screenX - state.startScreenX,
-          // endY: state.startY + screenY - state.startScreenY,
           endX: clientX - state.boundingRect.x,
           endY: clientY - state.boundingRect.y,
         };

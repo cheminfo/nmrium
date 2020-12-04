@@ -1,0 +1,89 @@
+import React, { useCallback } from 'react';
+import { useAlert } from 'react-alert';
+
+import { useChartData } from '../context/ChartContext';
+import { useDispatch } from '../context/DispatchContext';
+import {
+  SET_KEY_PREFERENCES,
+  APPLY_KEY_PREFERENCES,
+} from '../reducer/types/Types';
+
+function isModifierKeyActivated(event) {
+  const modifiersKeys = [
+    'Alt',
+    'AltGraph',
+    'CapsLock',
+    'Control',
+    'Meta',
+    'NumLocK',
+    'ScrollLock',
+    'Shift',
+    'OS',
+  ];
+  for (const key of modifiersKeys) {
+    if (event.getModifierState(key)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+const KeysListenerTracker = ({ children }) => {
+  const { keysPreferences } = useChartData();
+  const dispatch = useDispatch();
+  const alert = useAlert();
+
+  const keyPressHandler = useCallback(
+    (e) => {
+      e.stopPropagation();
+      const num = Number(e.code.substr(e.code.length - 1)) || 0;
+      if (
+        !['input', 'textarea'].includes(e.target.localName) &&
+        num >= 1 &&
+        num <= 9
+      ) {
+        if (e.shiftKey) {
+          dispatch({
+            type: SET_KEY_PREFERENCES,
+            keyCode: num,
+          });
+          alert.show(`Configuration Reset, press '${num}' again to reload it.`);
+        } else {
+          if (!isModifierKeyActivated(e)) {
+            if (keysPreferences && keysPreferences[num]) {
+              dispatch({
+                type: APPLY_KEY_PREFERENCES,
+                keyCode: num,
+              });
+            } else {
+              dispatch({
+                type: SET_KEY_PREFERENCES,
+                keyCode: num,
+              });
+              alert.show(
+                `Configuration saved, press '${num}' again to reload it.`,
+              );
+            }
+          }
+        }
+      }
+    },
+    [alert, dispatch, keysPreferences],
+  );
+  const mouseEnterHandler = useCallback((e) => {
+    e.currentTarget.focus();
+  }, []);
+
+  return (
+    <div
+      onKeyPress={keyPressHandler}
+      onMouseEnter={mouseEnterHandler}
+      tabIndex="0"
+      style={{ width: 'inherit', height: 'inherit' }}
+    >
+      {children}
+    </div>
+  );
+};
+
+export default KeysListenerTracker;

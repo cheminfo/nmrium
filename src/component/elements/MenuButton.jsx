@@ -32,13 +32,11 @@ const MenuButton = ({
   className,
 }) => {
   const [isShown, showMenu] = useState(false);
-  const { isRootFocus, rootRef } = useGlobal();
+  const { rootRef } = useGlobal();
 
   const closeMenu = useCallback(() => {
-    if (isRootFocus) {
-      showMenu(false);
-    }
-  }, [isRootFocus]);
+    showMenu(false);
+  }, []);
 
   const handleClick = useCallback(
     (e) => {

@@ -53,7 +53,7 @@ const FunctionToolBar = ({
   const help = useHelp();
   const alert = useAlert();
   const preferences = usePreferences();
-  const { isRootFocus, rootRef } = useGlobal();
+  const { rootRef } = useGlobal();
 
   const dispatch = useDispatch();
 
@@ -111,54 +111,52 @@ const FunctionToolBar = ({
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (isRootFocus) {
-        if (
-          !['input', 'textarea'].includes(e.target.localName) &&
-          !e.shiftKey &&
-          !e.metaKey
-        ) {
-          switch (e.key) {
-            case 'f':
-              handleFullZoomOut();
-              break;
-            case 'z':
-            case 'Escape':
-              setOption(options.zoom.id);
-              handleChangeOption(options.zoom.id);
-              break;
-            case 'r':
-              setOption(options.rangesPicking.id);
-              handleChangeOption(options.rangesPicking.id);
-              break;
-            case 'b':
-              setOption(options.baseLineCorrection.id);
-              handleChangeOption(options.baseLineCorrection.id);
-              break;
-            case 'p':
-              setOption(options.peakPicking.id);
-              handleChangeOption(options.peakPicking.id);
-              break;
-            case 'i': {
-              const toolID =
-                displayerMode === DISPLAYER_MODE.DM_2D
-                  ? options.zone2D.id
-                  : displayerMode === DISPLAYER_MODE.DM_1D
-                  ? options.integral.id
-                  : '';
-              setOption(toolID);
-              handleChangeOption(toolID);
-              break;
-            }
-            case 'a':
-              setOption(options.phaseCorrection.id);
-              handleChangeOption(options.phaseCorrection.id);
-              break;
-            default:
+      if (
+        !['input', 'textarea'].includes(e.target.localName) &&
+        !e.shiftKey &&
+        !e.metaKey
+      ) {
+        switch (e.key) {
+          case 'f':
+            handleFullZoomOut();
+            break;
+          case 'z':
+          case 'Escape':
+            setOption(options.zoom.id);
+            handleChangeOption(options.zoom.id);
+            break;
+          case 'r':
+            setOption(options.rangesPicking.id);
+            handleChangeOption(options.rangesPicking.id);
+            break;
+          case 'b':
+            setOption(options.baseLineCorrection.id);
+            handleChangeOption(options.baseLineCorrection.id);
+            break;
+          case 'p':
+            setOption(options.peakPicking.id);
+            handleChangeOption(options.peakPicking.id);
+            break;
+          case 'i': {
+            const toolID =
+              displayerMode === DISPLAYER_MODE.DM_2D
+                ? options.zone2D.id
+                : displayerMode === DISPLAYER_MODE.DM_1D
+                ? options.integral.id
+                : '';
+            setOption(toolID);
+            handleChangeOption(toolID);
+            break;
           }
+          case 'a':
+            setOption(options.phaseCorrection.id);
+            handleChangeOption(options.phaseCorrection.id);
+            break;
+          default:
         }
       }
     },
-    [displayerMode, handleChangeOption, handleFullZoomOut, isRootFocus],
+    [displayerMode, handleChangeOption, handleFullZoomOut],
   );
 
   useEffect(() => {
