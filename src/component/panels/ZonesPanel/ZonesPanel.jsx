@@ -11,9 +11,9 @@ import {
 } from '../../../data/utilities/ZoneUtilities';
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/popup/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
+import { useModal } from '../../elements/popup/Modal';
 import ContextWrapper from '../../hoc/ContextWrapper';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import { DELETE_2D_ZONE, CHANGE_ZONE_DATA } from '../../reducer/types/Types';

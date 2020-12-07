@@ -14,8 +14,12 @@ import {
 } from '../../../../data/utilities/RangeUtilities';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
-import { useModal, positions, transitions } from '../../../elements/popup/Modal';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
+import {
+  useModal,
+  positions,
+  transitions,
+} from '../../../elements/popup/Modal';
 import EditRangeModal from '../../../modal/editRange/EditRangeModal';
 import {
   SET_X_DOMAIN,

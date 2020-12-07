@@ -7,9 +7,9 @@ import { getACS } from 'spectra-data-ranges';
 
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
-import { useModal } from '../../elements/popup/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
+import { useModal } from '../../elements/popup/Modal';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import {

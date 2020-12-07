@@ -10,8 +10,8 @@ import Correlation from '../../../data/correlation/Correlation';
 import { checkSignalMatch } from '../../../data/correlation/Utilities';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/popup/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
+import { useModal } from '../../elements/popup/Modal';
 import {
   UPDATE_CORRELATIONS,
   SET_CORRELATION,

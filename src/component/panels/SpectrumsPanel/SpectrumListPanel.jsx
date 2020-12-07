@@ -8,9 +8,9 @@ import {
 } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/popup/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
+import { useModal } from '../../elements/popup/Modal';
 import ContextWrapper from '../../hoc/ContextWrapper';
 import {
   CHANGE_VISIBILITY,
