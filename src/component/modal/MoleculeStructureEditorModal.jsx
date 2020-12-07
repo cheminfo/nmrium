@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { StructureEditor } from 'react-ocl/full';
 
 import { useDispatch } from '../context/DispatchContext';
-import { Modal } from '../elements/Modal';
+import { Modal } from '../elements/popup/Modal';
 import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 
 const modalButtonStyle = css`

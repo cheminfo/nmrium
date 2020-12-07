@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import { useCallback, memo, useState } from 'react';
-import { useAlert } from 'react-alert';
 import {
   FaEye,
   FaEyeSlash,
@@ -9,8 +8,9 @@ import {
 } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/Modal';
+import { useModal } from '../../elements/popup/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
+import { useAlert } from '../../elements/popup/Alert';
 import ContextWrapper from '../../hoc/ContextWrapper';
 import {
   CHANGE_VISIBILITY,

@@ -1,9 +1,8 @@
 export const initState = {
   helpText: null,
   helpObject: null,
-  // highlighted: [],
 };
-export function helpReducer(state, action) {
+export default function helpReducer(state, action) {
   switch (action.type) {
     case 'SHOW': {
       const helpText = state.data[action.id].text;

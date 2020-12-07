@@ -9,7 +9,7 @@ import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
-import { useHelptData } from '../elements/Help';
+import { useHelptData } from '../elements/popup/Help';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`

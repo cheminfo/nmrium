@@ -1,14 +1,14 @@
 import lodash from 'lodash';
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import { useAlert } from 'react-alert';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
 import { Filters } from '../../data/data1d/filter1d/Filters';
 import { useDispatch } from '../context/DispatchContext';
 import { useGlobal } from '../context/GlobalContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { useHelp } from '../elements/Help/Context';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import { useAlert } from '../elements/popup/Alert';
+import { useHelp } from '../elements/popup/Help/Context';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 import ToolBarWrapper from '../hoc/ToolBarWrapper';
 import { ZoomType } from '../reducer/actions/Zoom';

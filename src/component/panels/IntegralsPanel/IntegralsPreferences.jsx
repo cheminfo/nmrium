@@ -7,12 +7,12 @@ import React, {
   useImperativeHandle,
   useRef,
 } from 'react';
-import { useAlert } from 'react-alert';
 import { MF } from 'react-mf';
 
 import { useDispatch } from '../../context/DispatchContext';
 import ColorInput from '../../elements/ColorInput';
 import NumberInput from '../../elements/NumberInput';
+import { useAlert } from '../../elements/popup/Alert';
 import IntegralsWrapper from '../../hoc/IntegralsWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import {

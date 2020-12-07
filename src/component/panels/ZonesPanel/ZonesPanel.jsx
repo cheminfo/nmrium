@@ -1,7 +1,6 @@
 import lodash from 'lodash';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import React, { useState, useMemo, useCallback, useRef, memo } from 'react';
-import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport, FaUnlink } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
@@ -12,8 +11,9 @@ import {
 } from '../../../data/utilities/ZoneUtilities';
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/Modal';
+import { useModal } from '../../elements/popup/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
+import { useAlert } from '../../elements/popup/Alert';
 import ContextWrapper from '../../hoc/ContextWrapper';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import { DELETE_2D_ZONE, CHANGE_ZONE_DATA } from '../../reducer/types/Types';

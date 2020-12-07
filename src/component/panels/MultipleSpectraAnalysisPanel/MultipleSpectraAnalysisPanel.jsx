@@ -1,11 +1,11 @@
 import React, { useCallback, useState, useRef, memo, useMemo } from 'react';
-import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
 
 import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
+import { useAlert } from '../../elements/popup/Alert';
 import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import { AnalysisObj } from '../../reducer/core/Analysis';
 import Events from '../../utility/Events';

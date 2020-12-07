@@ -6,11 +6,11 @@ import React, {
   Fragment,
   useEffect,
 } from 'react';
-import { useAlert } from 'react-alert';
 
 import { useDispatch } from '../../context/DispatchContext';
 import ContextMenu from '../../elements/ContextMenu';
 import { Tabs } from '../../elements/Tab';
+import { useAlert } from '../../elements/popup/Alert';
 import ContextWrapper from '../../hoc/ContextWrapper';
 import {
   CHANGE_PEAKS_MARKERS_VISIBILITY,

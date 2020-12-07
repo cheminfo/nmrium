@@ -10,13 +10,17 @@ export const positions = {
   BOTTOM_RIGHT: 'bottom right',
 };
 
-// export const types = {
-//   INFO: 'info',
-//   SUCCESS: 'success',
-//   ERROR: 'error',
-// };
+export const types = {
+  INFO: 'info',
+  SUCCESS: 'success',
+  ERROR: 'error',
+};
 
 export const transitions = {
   FADE: 'fade',
   SCALE: 'scale',
+  SLIDE_RIGHT: 'slide_right',
+  SLIDE_LEFT: 'slide_left',
+  SLIDE_TOP: 'slide_top',
+  SLIDE_BOTTOM: 'slide_bottom',
 };

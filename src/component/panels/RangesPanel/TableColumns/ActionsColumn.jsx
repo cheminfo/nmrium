@@ -1,6 +1,5 @@
 import lodash from 'lodash';
 import React, { Fragment, useCallback } from 'react';
-import { positions, transitions } from 'react-alert';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
 import {
@@ -15,7 +14,7 @@ import {
 } from '../../../../data/utilities/RangeUtilities';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
-import { useModal } from '../../../elements/Modal';
+import { useModal, positions, transitions } from '../../../elements/popup/Modal';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
 import EditRangeModal from '../../../modal/editRange/EditRangeModal';
 import {

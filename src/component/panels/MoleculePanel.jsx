@@ -3,7 +3,6 @@ import { jsx, css } from '@emotion/react';
 import lodash from 'lodash';
 import OCL from 'openchemlib/full';
 import React, { useState, useCallback, useMemo, useEffect, memo } from 'react';
-import { useAlert } from 'react-alert';
 import Slider from 'react-animated-slider-2';
 import {
   FaPlus,
@@ -25,6 +24,7 @@ import { useAssignmentData, useAssignment } from '../assignment';
 import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import { useAlert } from '../elements/popup/Alert';
 import { useHighlightData } from '../highlight';
 import MoleculeWrapper from '../hoc/MoleculeWrapper';
 import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';

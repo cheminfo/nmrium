@@ -8,11 +8,10 @@ import React, {
   useRef,
   memo,
 } from 'react';
-import { useAlert } from 'react-alert';
 
-// import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
+import { useAlert } from '../../elements/popup/Alert';
 import PeaksWrapper from '../../hoc/PeaksWrapper';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import {

@@ -1,7 +1,6 @@
 import lodash from 'lodash';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import React, { useCallback, useMemo, memo, useState, useRef } from 'react';
-import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
 
 import {
@@ -10,6 +9,7 @@ import {
 } from '../../../data/utilities/RangeUtilities';
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
+import { useAlert } from '../../elements/popup/Alert';
 import RangesWrapper from '../../hoc/RangesWrapper';
 import { CHANGE_RANGE_DATA } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';

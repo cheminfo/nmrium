@@ -13,8 +13,6 @@ import {
   useRef,
   memo,
 } from 'react';
-import { transitions, positions, Provider as AlertProvider } from 'react-alert';
-import AlertTemplate from 'react-alert-template-basic';
 import { initOCL } from 'react-ocl-nmr';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
@@ -31,8 +29,9 @@ import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { GlobalProvider } from './context/GlobalContext';
 import { PreferencesProvider } from './context/PreferencesContext';
-import { HelpProvider } from './elements/Help';
-import { ModalProvider } from './elements/Modal';
+import { AlertProvider } from './elements/popup/Alert';
+import { HelpProvider } from './elements/popup/Help';
+import { ModalProvider } from './elements/popup/Modal';
 import Header from './header/Header';
 import { HighlightProvider } from './highlight';
 import DropZone from './loader/DropZone';
@@ -52,15 +51,6 @@ import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 
 initOCL(OCL);
-
-// alert optional cofiguration
-const alertOptions = {
-  position: positions.BOTTOM_CENTER,
-  timeout: 5000,
-  offset: '30px',
-  transition: transitions.SCALE,
-  containerStyle: { fontSize: '18px', zIndex: 999999 },
-};
 
 const splitPaneStyles = {
   container: {
@@ -218,7 +208,7 @@ const NMRDisplayer = memo(
               wrapperRef={elementsWraperRef.current}
               preventAutoHelp={preventAutoHelp}
             >
-              <AlertProvider template={AlertTemplate} {...alertOptions}>
+              <AlertProvider wrapperRef={elementsWraperRef.current}>
                 <DispatchProvider value={dispatchMiddleWare}>
                   <ChartDataProvider value={{ ...state, isResizeEventStart }}>
                     <ModalProvider wrapperRef={elementsWraperRef.current}>

@@ -35,8 +35,6 @@
     "prismjs": "^1.22.0",
     "prop-types": "^15.7.2",
     "re-resizable": "^6.9.0",
-    "react-alert": "^7.0.2",
-    "react-alert-template-basic": "^1.0.0",
     "react-animated-slider-2": "^1.1.5",
     "react-card-flip": "^1.0.11",
     "react-color": "2.17.2",

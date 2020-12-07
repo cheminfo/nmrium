@@ -12,15 +12,27 @@ import { createPortal } from 'react-dom';
 import { Rnd } from 'react-rnd';
 import { TransitionGroup } from 'react-transition-group';
 
+import Transition from '../Transition';
+import Wrapper from '../Wrapper';
+import { positions, transitions } from '../options';
+
 import ConfirmDialog from './ConfirmDialog';
 import DefaultContext from './Context';
-// import Modal from './Modal';
-import Transition from './Transition';
-import Wrapper from './Wrapper';
-// import { groupBy } from './helpers';
-import { positions, transitions } from './options';
 
-const ModalProvider = ({
+const transitionStyles = {
+  [transitions.FADE]: {
+    entering: { opacity: 0 },
+    entered: { opacity: 1 },
+  },
+  [transitions.SCALE]: {
+    entering: { transform: 'scale(0)' },
+    entered: { transform: 'scale(1)' },
+    exiting: { transform: 'scale(0)' },
+    exited: { transform: 'scale(0)' },
+  },
+};
+
+const Provider = ({
   children,
   context: Context,
   style,
@@ -30,7 +42,6 @@ const ModalProvider = ({
   wrapperRef,
 }) => {
   const root = useRef();
-  // const rndRef = useRef();
   const modalContext = useRef(null);
   const [modal, setModal] = useState();
   useEffect(() => {
@@ -101,8 +112,8 @@ const ModalProvider = ({
         closeHandler();
       }
     };
-    document.addEventListener('keydown', keyHandler);
-    return () => document.removeEventListener('keydown', keyHandler);
+    document.addEventListener('keydown', keyHandler, false);
+    return () => document.removeEventListener('keydown', keyHandler, false);
   }, [closeHandler]);
 
   modalContext.current = {
@@ -172,6 +183,7 @@ const ModalProvider = ({
                         ? modal.options.transition
                         : transition
                     }
+                    transitionStyles={transitionStyles}
                     key={modal.id}
                   >
                     <Rnd
@@ -185,7 +197,6 @@ const ModalProvider = ({
                         x: 0,
                         y: 0,
                       }}
-                      // ref={rndRef}
                       className="rnd-container"
                       style={{
                         ...style,
@@ -218,16 +229,13 @@ const ModalProvider = ({
   );
 };
 
-export default ModalProvider;
-
-ModalProvider.defaultProps = {
+Provider.defaultProps = {
   offset: '10px',
   position: positions.CENTER,
   transition: transitions.SCALE,
-  // containerStyle: {
-  //   zIndex: 100,
-  // },
   wrapperRef: null,
   context: DefaultContext,
   style: {},
 };
+
+export default Provider;

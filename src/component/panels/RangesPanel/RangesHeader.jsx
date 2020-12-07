@@ -2,14 +2,14 @@
 import { jsx, css } from '@emotion/react';
 import lodash from 'lodash';
 import { useCallback } from 'react';
-import { useAlert } from 'react-alert';
 import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';
 
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
-import { useModal } from '../../elements/Modal';
+import { useModal } from '../../elements/popup/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
+import { useAlert } from '../../elements/popup/Alert';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import {

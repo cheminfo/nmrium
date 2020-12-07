@@ -2,7 +2,6 @@
 import { jsx, css } from '@emotion/react';
 import lodash from 'lodash';
 import { Fragment, useEffect, useCallback, useState, memo } from 'react';
-import { useAlert } from 'react-alert';
 import {
   FaDownload,
   FaFileDownload,
@@ -17,8 +16,9 @@ import { useDispatch } from '../context/DispatchContext';
 import { useGlobal } from '../context/GlobalContext';
 import { usePreferences } from '../context/PreferencesContext';
 import MenuButton from '../elements/MenuButton';
-import { useModal } from '../elements/Modal';
+import { useModal } from '../elements/popup/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import { useAlert } from '../elements/popup/Alert';
 import ToolBarWrapper from '../hoc/ToolBarWrapper';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';

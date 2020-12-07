@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState, useRef, memo, Fragment } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/Modal';
+import { useModal } from '../../elements/popup/Modal';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import IntegralsWrapper from '../../hoc/IntegralsWrapper';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';

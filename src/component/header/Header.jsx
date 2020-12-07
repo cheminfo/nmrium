@@ -1,6 +1,5 @@
 import { jsx, css } from '@emotion/react';
 import { useMemo, useCallback } from 'react';
-import { useAlert } from 'react-alert';
 import {
   FaRegWindowMaximize,
   FaWrench,
@@ -9,9 +8,10 @@ import {
 /** @jsx jsx */
 
 import { useChartData } from '../context/ChartContext';
-import { useHelp } from '../elements/Help';
-import { useModal, positions } from '../elements/Modal';
 import ToolTip from '../elements/ToolTip/ToolTip';
+import { useAlert } from '../elements/popup/Alert';
+import { useHelp } from '../elements/popup/Help';
+import { useModal, positions } from '../elements/popup/Modal';
 import UserManualModal from '../modal/UserManualModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
 import { options } from '../toolbar/ToolTypes';

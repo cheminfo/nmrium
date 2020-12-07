@@ -13,13 +13,27 @@ import { FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 import { TransitionGroup } from 'react-transition-group';
 
-import { HelpProvider as HProvider } from './Context';
-import { helpReducer, initState } from './HelpReducer';
-import Transition from './Transition';
-import Wrapper from './Wrapper';
-import { groupBy } from './helpers';
-import { positions, transitions } from './options';
-import { load } from './utility';
+import Transition from '../Transition';
+import Wrapper from '../Wrapper';
+import { groupBy } from '../helpers';
+import { positions, transitions } from '../options';
+import { load } from '../utility';
+
+import { HelpProvider } from './Context';
+import helpReducer, { initState } from './Reducer';
+
+const transitionStyles = {
+  [transitions.FADE]: {
+    entering: { opacity: 0 },
+    entered: { opacity: 1 },
+  },
+  [transitions.SCALE]: {
+    entering: { transform: 'scale(0)' },
+    entered: { transform: 'scale(1)' },
+    exiting: { transform: 'scale(0)' },
+    exited: { transform: 'scale(0)' },
+  },
+};
 
 const styles = {
   innerContainer: {
@@ -46,7 +60,7 @@ const styles = {
 
 let dealyTimeOut = null;
 
-const HelpProvider = memo(
+const Provider = memo(
   ({
     children,
     data,
@@ -187,7 +201,7 @@ const HelpProvider = memo(
     );
 
     return (
-      <HProvider value={contextValue}>
+      <HelpProvider value={contextValue}>
         {children}
         {root.current &&
           createPortal(
@@ -204,10 +218,11 @@ const HelpProvider = memo(
                   >
                     {modalsByPosition[_position]
                       ? modalsByPosition[_position].map((modal) => (
-                          <Transition type={transition} key={modal.id}>
-                            {/* <div */}
-                            {/* // {...modal} */}
-                            {/* // > */}
+                          <Transition
+                            type={transition}
+                            key={modal.id}
+                            transitionStyles={transitionStyles}
+                          >
                             <Rnd
                               style={{
                                 margin: offset,
@@ -233,7 +248,6 @@ const HelpProvider = memo(
                                 {modal.mdtext && (
                                   <div
                                     style={{
-                                      // overflow: 'auto',
                                       cursor: 'default',
                                       width: '100%',
                                       height: '100%',
@@ -250,7 +264,6 @@ const HelpProvider = memo(
                                 )}
                               </div>
                             </Rnd>
-                            {/* </div> */}
                           </Transition>
                         ))
                       : null}
@@ -260,12 +273,12 @@ const HelpProvider = memo(
             </Fragment>,
             root.current,
           )}
-      </HProvider>
+      </HelpProvider>
     );
   },
 );
 
-HelpProvider.defaultProps = {
+Provider.defaultProps = {
   offset: '10px',
   position: positions.TOP_RIGHT,
   timeout: 0,
@@ -279,4 +292,4 @@ HelpProvider.defaultProps = {
   preventAutoHelp: false,
 };
 
-export default HelpProvider;
+export default Provider;

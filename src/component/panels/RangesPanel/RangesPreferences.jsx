@@ -8,10 +8,10 @@ import React, {
   useRef,
   memo,
 } from 'react';
-import { useAlert } from 'react-alert';
 
 import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
+import { useAlert } from '../../elements/popup/Alert';
 import { SET_PREFERENCES } from '../../reducer/types/Types';
 import {
   useStateWithLocalStorage,

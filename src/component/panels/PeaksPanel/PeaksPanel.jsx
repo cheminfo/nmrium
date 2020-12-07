@@ -2,7 +2,7 @@ import React, { useCallback, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import { useDispatch } from '../../context/DispatchContext';
-import { useModal } from '../../elements/Modal';
+import { useModal } from '../../elements/popup/Modal';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
