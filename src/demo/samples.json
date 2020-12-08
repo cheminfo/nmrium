@@ -27,6 +27,14 @@
         "title": "HSQC / HMBC cytisine"
       },
       {
+        "file": "./data/cytisine/2d/all.json",
+        "title": "Full cytisine"
+      },
+      {
+        "file": "./data/cytisine/2d/full.json",
+        "title": "HSQC / HMBC / COSY cytisine"
+      },
+      {
         "file": "./data/50-78-2/linked-jcamp.json",
         "title": "Linked jcamp"
       },
