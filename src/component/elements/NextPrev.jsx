@@ -135,8 +135,10 @@ const NextPrev = memo(({ children, loop, defaultIndex, onChange }) => {
         {Sliders}
       </div>
 
-      <Arrow direction="left" onClick={prevHandler} />
-      <Arrow direction="right" onClick={nextHandler} />
+      {activeIndex !== 0 && <Arrow direction="left" onClick={prevHandler} />}
+      {activeIndex !== Sliders.length - 1 && (
+        <Arrow direction="right" onClick={nextHandler} />
+      )}
     </div>
   );
 });
