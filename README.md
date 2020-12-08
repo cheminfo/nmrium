@@ -71,7 +71,6 @@ npm install nmr-displayer
 
 ```js
 import 'cheminfo-font/dist/style.css';
-import 'react-animated-slider-2/build/horizontal.css';
 import 'prismjs/themes/prism.css';
 ```
 
