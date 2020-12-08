@@ -1,9 +1,10 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import { useCallback, useEffect, useState } from 'react';
-import Slider from 'react-animated-slider-2';
 import MF from 'react-mf/lib/components/MF';
 import { MolfileSvgRenderer } from 'react-ocl/full';
+
+import NextPrev from './NextPrev';
 
 const toolbarStyle = css`
   display: flex;
@@ -22,15 +23,26 @@ const toolbarStyle = css`
 `;
 
 const moleculeContainerStyle = css`
+  width: 450px;
+
   .slider {
     height: 180px;
+    width: 100%;
     padding: 0px;
+    height: 180px;
+    width: 100%;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
   .slider p {
     width: 100%;
     margin: 0 auto;
     display: block;
     position: relative;
+    text-align: center;
   }
   .slider svg polygon {
     fill: gray !important;
@@ -61,9 +73,9 @@ const MoleculeSelection = ({ molecules, onChange }) => {
   }, [molecules]);
 
   const onChangeHandler = useCallback(
-    (e) => {
-      setCurrentIndex(e.slideIndex);
-      onChange(e.slideIndex);
+    (slideIndex) => {
+      setCurrentIndex(slideIndex);
+      onChange(slideIndex);
     },
     [onChange],
   );
@@ -78,10 +90,10 @@ const MoleculeSelection = ({ molecules, onChange }) => {
         </p>
       </div>
       <div css={moleculeContainerStyle}>
-        <Slider onSlideChange={onChangeHandler}>
+        <NextPrev onChange={onChangeHandler}>
           {molecules &&
             molecules.map((mol, index) => (
-              <div key={mol.key}>
+              <div key={mol.key} className="slider">
                 <div>
                   <MolfileSvgRenderer
                     id={`molSVG${index}`}
@@ -94,7 +106,7 @@ const MoleculeSelection = ({ molecules, onChange }) => {
                 </p>
               </div>
             ))}
-        </Slider>
+        </NextPrev>
       </div>
     </div>
   );

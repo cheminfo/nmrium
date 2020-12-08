@@ -3,7 +3,6 @@ import { jsx, css } from '@emotion/react';
 import lodash from 'lodash';
 import OCL from 'openchemlib/full';
 import React, { useState, useCallback, useMemo, useEffect, memo } from 'react';
-import Slider from 'react-animated-slider-2';
 import {
   FaPlus,
   FaPaste,
@@ -23,6 +22,7 @@ import * as ZoneUtilities from '../../data/utilities/ZoneUtilities';
 import { useAssignmentData, useAssignment } from '../assignment';
 import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
+import NextPrev from '../elements/NextPrev';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useHighlightData } from '../highlight';
@@ -79,12 +79,15 @@ const moleculeContainerStyle = css`
   height: 100%;
 
   .slider {
-    width: inherit;
-    height: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
     padding: 0px;
-
     .mol-svg-container {
       height: calc(100% - 25px);
+      width: 100%;
       div {
         width: 100%;
         height: 100%;
@@ -96,6 +99,7 @@ const moleculeContainerStyle = css`
       margin: 0 auto;
       display: block;
       position: relative;
+      text-align: center;
     }
 
     svg polygon {
@@ -559,17 +563,22 @@ const MoleculePanel = memo(
           </p>
         </div>
         <div css={moleculeContainerStyle}>
-          <Slider
-            onSlideChange={(event) => setCurrentIndex(event.slideIndex)}
-            slideIndex={currentIndex}
+          <NextPrev
+            onChange={(slideIndex) => setCurrentIndex(slideIndex)}
+            defaultIndex={currentIndex}
           >
             {molecules && molecules.length > 0 ? (
               molecules.map((mol, index) => (
                 <div
+                  className="slider"
                   key={mol.key}
                   onDoubleClick={(event) =>
                     handleOpen(event, mol.key, mol.molfile)
                   }
+                  style={{
+                    backgroundColor:
+                      (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
+                  }}
                 >
                   <div className="mol-svg-container" ref={refContainer}>
                     <OCLnmr
@@ -609,7 +618,7 @@ const MoleculePanel = memo(
                 onClick={handleOpen}
               />
             )}
-          </Slider>
+          </NextPrev>
 
           <MoleculeStructureEditorModal
             open={open}
