@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import MF from 'react-mf/lib/components/MF';
 import { MolfileSvgRenderer } from 'react-ocl/full';
 
-import Slider from '../elements/Slider';
+import NextPrev from './NextPrev';
 
 const toolbarStyle = css`
   display: flex;
@@ -90,7 +90,7 @@ const MoleculeSelection = ({ molecules, onChange }) => {
         </p>
       </div>
       <div css={moleculeContainerStyle}>
-        <Slider onChange={onChangeHandler}>
+        <NextPrev onChange={onChangeHandler}>
           {molecules &&
             molecules.map((mol, index) => (
               <div key={mol.key} className="slider">
@@ -106,7 +106,7 @@ const MoleculeSelection = ({ molecules, onChange }) => {
                 </p>
               </div>
             ))}
-        </Slider>
+        </NextPrev>
       </div>
     </div>
   );

@@ -49,7 +49,7 @@ const Arrow = ({ direction, onClick }) => (
 
 const transition = 0.45;
 
-const Slider = memo(({ children, loop, defaultIndex, onChange }) => {
+const NextPrev = memo(({ children, loop, defaultIndex, onChange }) => {
   const [ref, { width }] = useMeasure();
   const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
@@ -141,9 +141,9 @@ const Slider = memo(({ children, loop, defaultIndex, onChange }) => {
   );
 });
 
-Slider.defaultProps = {
+NextPrev.defaultProps = {
   loop: false,
   defaultIndex: 0,
   onChange: () => null,
 };
-export default Slider;
+export default NextPrev;

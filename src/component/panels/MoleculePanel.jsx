@@ -22,7 +22,7 @@ import * as ZoneUtilities from '../../data/utilities/ZoneUtilities';
 import { useAssignmentData, useAssignment } from '../assignment';
 import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
-import Slider from '../elements/Slider';
+import NextPrev from '../elements/NextPrev';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useHighlightData } from '../highlight';
@@ -563,7 +563,7 @@ const MoleculePanel = memo(
           </p>
         </div>
         <div css={moleculeContainerStyle}>
-          <Slider
+          <NextPrev
             onChange={(slideIndex) => setCurrentIndex(slideIndex)}
             defaultIndex={currentIndex}
           >
@@ -618,7 +618,7 @@ const MoleculePanel = memo(
                 onClick={handleOpen}
               />
             )}
-          </Slider>
+          </NextPrev>
 
           <MoleculeStructureEditorModal
             open={open}
