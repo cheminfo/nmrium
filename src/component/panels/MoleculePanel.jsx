@@ -99,7 +99,7 @@ const moleculeContainerStyle = css`
       margin: 0 auto;
       display: block;
       position: relative;
-      text-align:center;
+      text-align: center;
     }
 
     svg polygon {
