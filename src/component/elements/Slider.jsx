@@ -122,10 +122,8 @@ const Slider = memo(({ children, loop, defaultIndex, onChange }) => {
         overflow: hidden;
       `}
       ref={ref}
-      key={width}
     >
       <div
-        className="sliderContent"
         css={css`
           transform: translateX(-${width * activeIndex}px);
           transition: transform ease-out ${transition}s;

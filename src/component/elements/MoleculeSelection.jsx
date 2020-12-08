@@ -29,12 +29,20 @@ const moleculeContainerStyle = css`
     height: 180px;
     width: 100%;
     padding: 0px;
+    height: 180px;
+    width: 100%;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
   .slider p {
     width: 100%;
     margin: 0 auto;
     display: block;
     position: relative;
+    text-align: center;
   }
   .slider svg polygon {
     fill: gray !important;
