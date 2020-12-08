@@ -15,7 +15,7 @@ import Wrapper from '../Wrapper';
 import { groupBy } from '../helpers';
 import { positions, transitions, types } from '../options';
 
-import DefaultContext from './Context';
+import { AlertProvider } from './Context';
 
 const Provider = ({
   children,
@@ -25,7 +25,6 @@ const Provider = ({
   timeout,
   type,
   transition,
-  context: Context,
   ...props
 }) => {
   const root = useRef(null);
@@ -136,16 +135,6 @@ const Provider = ({
     [show],
   );
 
-  alertContext.current = {
-    alerts,
-    show,
-    remove,
-    removeAll,
-    success,
-    error,
-    info,
-  };
-
   const closeHandler = useCallback(
     (alert) => {
       remove(alert);
@@ -155,7 +144,9 @@ const Provider = ({
 
   const alertsByPosition = groupBy(alerts, (alert) => alert.options.position);
   return (
-    <Context.Provider value={alertContext}>
+    <AlertProvider
+      value={{ alerts, show, remove, removeAll, success, error, info }}
+    >
       {children}
       {root.current &&
         createPortal(
@@ -213,7 +204,7 @@ const Provider = ({
           </Fragment>,
           root.current,
         )}
-    </Context.Provider>
+    </AlertProvider>
   );
 };
 
@@ -240,8 +231,7 @@ Provider.defaultProps = {
   position: positions.BOTTOM_CENTER,
   transition: transitions.FADE,
   wrapperRef: null,
-  context: DefaultContext,
-  timeout: 0,
+  timeout: 3000,
 };
 
 export default Provider;

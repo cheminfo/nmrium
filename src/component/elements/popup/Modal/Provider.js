@@ -17,7 +17,7 @@ import Wrapper from '../Wrapper';
 import { positions, transitions } from '../options';
 
 import ConfirmDialog from './ConfirmDialog';
-import DefaultContext from './Context';
+import { ModalProvider } from './Context';
 
 const transitionStyles = {
   [transitions.FADE]: {
@@ -34,7 +34,6 @@ const transitionStyles = {
 
 const Provider = ({
   children,
-  context: Context,
   style,
   offset,
   position,
@@ -42,8 +41,8 @@ const Provider = ({
   wrapperRef,
 }) => {
   const root = useRef();
-  const modalContext = useRef(null);
   const [modal, setModal] = useState();
+
   useEffect(() => {
     root.current = document.createElement('div');
     const ref = root.current;
@@ -75,7 +74,7 @@ const Provider = ({
    * @param {boolean} options.isBackgroundBlur
    * @param {boolean} options.enableResizing
    */
-  const show = (component, options = {}) => {
+  const show = useCallback((component, options = {}) => {
     const _modal = {
       component,
       options: { isBackgroundBlur: true, enableResizing: false, ...options },
@@ -86,9 +85,9 @@ const Provider = ({
     setModal(_modal);
     if (_modal.options.onOpen) _modal.options.onOpen();
     return _modal;
-  };
+  }, []);
 
-  const showConfirmDialog = (message, options = {}) => {
+  const showConfirmDialog = useCallback((message, options = {}) => {
     const _modal = {
       component: <ConfirmDialog message={message} />,
       options: { isBackgroundBlur: true, ...options },
@@ -100,7 +99,7 @@ const Provider = ({
     if (_modal.options.onOpen) _modal.options.onOpen();
 
     return _modal;
-  };
+  }, []);
 
   const close = () => {
     closeHandler();
@@ -115,13 +114,6 @@ const Provider = ({
     document.addEventListener('keydown', keyHandler, false);
     return () => document.removeEventListener('keydown', keyHandler, false);
   }, [closeHandler]);
-
-  modalContext.current = {
-    show,
-    close,
-    modal,
-    showConfirmDialog,
-  };
 
   const styles = css`
     position: fixed;
@@ -149,7 +141,7 @@ const Provider = ({
       : { pointerEvents: 'none' };
 
   return (
-    <Context.Provider value={modalContext}>
+    <ModalProvider value={{ show, close, modal, showConfirmDialog }}>
       {children}
       {root.current &&
         createPortal(
@@ -225,7 +217,7 @@ const Provider = ({
           </Fragment>,
           root.current,
         )}
-    </Context.Provider>
+    </ModalProvider>
   );
 };
 
@@ -234,7 +226,6 @@ Provider.defaultProps = {
   position: positions.CENTER,
   transition: transitions.SCALE,
   wrapperRef: null,
-  context: DefaultContext,
   style: {},
 };
 

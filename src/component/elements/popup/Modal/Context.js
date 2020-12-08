@@ -1,5 +1,8 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 
-const Context = createContext();
+const ModalContext = createContext();
+export const ModalProvider = ModalContext.Provider;
 
-export default Context;
+export const useModal = () => {
+  return useContext(ModalContext);
+};

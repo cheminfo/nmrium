@@ -1,6 +1,5 @@
 import React, {
   useReducer,
-  useMemo,
   useRef,
   useEffect,
   useCallback,
@@ -189,11 +188,6 @@ const Provider = memo(
       ...initState,
       data,
     });
-    const contextValue = useMemo(() => ({ helpState, dispatch, show, clear }), [
-      clear,
-      helpState,
-      show,
-    ]);
 
     const modalsByPosition = groupBy(
       modals,
@@ -201,7 +195,7 @@ const Provider = memo(
     );
 
     return (
-      <HelpProvider value={contextValue}>
+      <HelpProvider value={{ helpState, dispatch, show, clear }}>
         {children}
         {root.current &&
           createPortal(
