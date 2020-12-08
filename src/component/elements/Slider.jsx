@@ -1,6 +1,13 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { useState, Children, useMemo, useEffect, useCallback } from 'react';
+import {
+  useState,
+  Children,
+  useMemo,
+  useEffect,
+  useCallback,
+  memo,
+} from 'react';
 import { FaAngleLeft } from 'react-icons/fa';
 import { useMeasure } from 'react-use';
 
@@ -13,8 +20,8 @@ const Arrow = ({ direction, onClick }) => (
       position: absolute;
       top: 50%;
       ${direction === 'right' ? `right: 25px` : `left: 25px`};
-      height: 50px;
-      width: 50px;
+      height: 36px;
+      width: 36px;
       justify-content: center;
       background: white;
       border-radius: 50%;
@@ -23,7 +30,9 @@ const Arrow = ({ direction, onClick }) => (
       border: none;
       transition: transform ease-in 0.1s;
       &:hover {
-        transform: scale(1.1);
+        transform: scale(1.2);
+        background-color: #607d8b;
+        color: white;
       }
       img {
         transform: translateX(${direction === 'left' ? '-2' : '2'}px);
@@ -39,33 +48,14 @@ const Arrow = ({ direction, onClick }) => (
   </button>
 );
 
-const SliderCSS = css`
-  position: relative;
-  height: 100vh;
-  width: 100vw;
-  margin: 0 auto;
-  overflow: hidden;
-`;
+const transition = 0.45;
 
-const Slider = ({
-  children,
-  loop = false,
-  defaultIndex = 1,
-  onChange = () => null,
-}) => {
+const Slider = memo(({ children, loop, defaultIndex, onChange }) => {
   const [ref, { width }] = useMeasure();
-  const [{ translate, transition, activeIndex }, setSlide] = useState({
-    activeIndex: defaultIndex,
-    translate: width * defaultIndex,
-    transition: 0.45,
-  });
-
+  const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
-    setSlide((preState) => ({
-      ...preState,
-      translate: activeIndex * width,
-    }));
-  }, [activeIndex, width]);
+    setActiveIndex(defaultIndex);
+  }, [defaultIndex]);
 
   const Sliders = useMemo(
     () =>
@@ -74,7 +64,7 @@ const Slider = ({
           <div
             key={child.key}
             css={css`
-              width: 100%;
+              width: ${width}px;
               height: 100%;
             `}
           >
@@ -82,57 +72,63 @@ const Slider = ({
           </div>
         );
       }),
-    [children],
+    [children, width],
   );
 
   const nextHandler = useCallback(() => {
-    setSlide((preState) => {
-      if (preState.activeIndex === Sliders.length - 1) {
-        onChange(preState.activeIndex - 1);
+    setActiveIndex((preActiveIndex) => {
+      if (preActiveIndex === Sliders.length - 1) {
+        onChange(preActiveIndex);
 
         if (loop) {
-          return { ...preState, translate: 0, activeIndex: 0 };
+          return 0;
         } else {
-          return preState;
+          return preActiveIndex;
         }
       }
-      return {
-        ...preState,
-        activeIndex: preState.activeIndex + 1,
-        translate: (preState.activeIndex + 1) * width,
-      };
+
+      const nextIndex = preActiveIndex + 1;
+      onChange(nextIndex);
+
+      return nextIndex;
     });
-  }, [Sliders.length, loop, onChange, width]);
+  }, [Sliders.length, loop, onChange]);
 
   const prevHandler = useCallback(() => {
-    setSlide((preState) => {
-      if (preState.activeIndex === 0) {
-        onChange(preState.activeIndex);
+    setActiveIndex((preActiveIndex) => {
+      if (preActiveIndex === 0) {
+        onChange(preActiveIndex);
         if (loop) {
-          return { ...preState, translate: 0, activeIndex: 0 };
+          return 0;
         } else {
-          return preState;
+          return preActiveIndex;
         }
       }
+      const prevIndex = preActiveIndex - 1;
 
-      onChange(preState.activeIndex - 1);
+      onChange(prevIndex);
 
-      return {
-        ...preState,
-        activeIndex: preState.activeIndex - 1,
-        translate: (preState.activeIndex - 1) * width,
-      };
+      return prevIndex;
     });
-  }, [loop, onChange, width]);
+  }, [loop, onChange]);
 
   if (!width && !Sliders) return null;
-
   return (
-    <div css={SliderCSS} ref={ref}>
+    <div
+      css={css`
+        position: relative;
+        height: 100%;
+        width: 100%;
+        margin: 0 auto;
+        overflow: hidden;
+      `}
+      ref={ref}
+      key={width}
+    >
       <div
         className="sliderContent"
         css={css`
-          transform: translateX(-${translate}px);
+          transform: translateX(-${width * activeIndex}px);
           transition: transform ease-out ${transition}s;
           height: 100%;
           width: ${width * Sliders.length}px;
@@ -146,7 +142,7 @@ const Slider = ({
       <Arrow direction="right" onClick={nextHandler} />
     </div>
   );
-};
+});
 
 Slider.defaultProps = {
   loop: false,
