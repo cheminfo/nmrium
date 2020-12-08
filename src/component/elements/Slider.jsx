@@ -18,7 +18,7 @@ const Arrow = ({ direction, onClick }) => (
     css={css`
       display: flex;
       position: absolute;
-      top: 50%;
+      top: calc(50% - 18px);
       ${direction === 'right' ? `right: 25px` : `left: 25px`};
       height: 36px;
       width: 36px;
