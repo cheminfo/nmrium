@@ -12,8 +12,7 @@ import { FaAngleLeft } from 'react-icons/fa';
 import { useMeasure } from 'react-use';
 
 const Arrow = ({ direction, onClick }) => (
-  <button
-    type="button"
+  <div
     onClick={onClick}
     css={css`
       display: flex;
@@ -45,7 +44,7 @@ const Arrow = ({ direction, onClick }) => (
     <FaAngleLeft
       style={{ transform: `scaleX(${direction === 'right' ? '-1' : '1'})` }}
     />
-  </button>
+  </div>
 );
 
 const transition = 0.45;
