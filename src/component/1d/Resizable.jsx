@@ -10,6 +10,7 @@ const Resizable = ({ from, to, onDrag, onDrop }) => {
   const { height, margin, mode } = useChartData();
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
+  const [enable, setEnable] = useState(true);
 
   const { scaleX } = useScale();
 
@@ -102,6 +103,22 @@ const Resizable = ({ from, to, onDrag, onDrop }) => {
     [from, mode, onDrop, scaleX, to],
   );
 
+  const mouseDownCaptureHandler = useCallback(({ shiftKey }) => {
+    if (shiftKey) {
+      setEnable(false);
+    }
+  }, []);
+  const mouseUpCaptureHandler = useCallback(() => {
+    setEnable(true);
+  }, []);
+  const mouseOverHandler = useCallback(({ target, shiftKey }) => {
+    if (shiftKey) {
+      target.style.cursor = 'crosshair';
+    } else {
+      target.style.cursor = 'ew-resize';
+    }
+  }, []);
+
   return (
     <Fragment>
       <Draggable
@@ -115,16 +132,20 @@ const Resizable = ({ from, to, onDrag, onDrop }) => {
           y: 0,
         }}
         scale={1}
+        handle=".handle"
         onStart={handleRightStart}
         onDrag={handleRightDrag}
         onStop={handleRightStop}
       >
         <rect
-          cursor="ew-resize"
+          className={enable ? 'handle' : ''}
           width={rightDragVisibility ? 1 : 6}
           fill="red"
           height={height + margin.top}
           style={{ fillOpacity: rightDragVisibility ? 1 : 0 }}
+          onMouseDownCapture={mouseDownCaptureHandler}
+          onMouseUpCapture={mouseUpCaptureHandler}
+          onMouseEnter={mouseOverHandler}
         />
       </Draggable>
 
@@ -138,17 +159,21 @@ const Resizable = ({ from, to, onDrag, onDrop }) => {
           x: scaleX()(to),
           y: 0,
         }}
+        handle=".handle"
         scale={1}
         onStart={handleLeftStart}
         onDrag={handleLeftDrag}
         onStop={handleLeftStop}
       >
         <rect
-          cursor="ew-resize"
+          className={enable ? 'handle' : ''}
           width={leftDragVisibility ? 1 : 6}
           fill="red"
           height={height + margin.top}
           style={{ fillOpacity: leftDragVisibility ? 1 : 0 }}
+          onMouseDownCapture={mouseDownCaptureHandler}
+          onMouseUpCapture={mouseUpCaptureHandler}
+          onMouseEnter={mouseOverHandler}
         />
       </Draggable>
     </Fragment>
