@@ -19,7 +19,7 @@ import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
 import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
-import { setZoom1D, setZoom, spectrumZoomHanlder, ZoomType } from './Zoom';
+import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
 
 function getStrongestPeak(state) {
   const { activeSpectrum, data } = state;
@@ -284,35 +284,33 @@ const setVerticalIndicatorXPosition = (state, position) => {
   });
 };
 
+function getSpectrumID(draft, index) {
+  return draft.tabActiveSpectrum[draft.activeTab.split(',')[index]].id;
+}
+
 const handleZoom = (state, action) => {
   return produce(state, (draft) => {
     const { deltaY, deltaMode, trackID } = action;
-    spectrumZoomHanlder.wheel(deltaY, deltaMode);
     if (trackID) {
       switch (trackID) {
-        case LAYOUT.TOP_1D:
-          setZoom1D(
-            draft,
-            spectrumZoomHanlder.getScale(),
-            state.margin.top,
-            10,
-            0,
-          );
+        case LAYOUT.TOP_1D: {
+          const id = getSpectrumID(draft, 0);
+          wheel(deltaY, deltaMode, state, id);
+          setZoom1D(draft, state.margin.top, 10, 0);
           break;
-        case LAYOUT.LEFT_1D:
-          setZoom1D(
-            draft,
-            spectrumZoomHanlder.getScale(),
-            state.margin.left,
-            10,
-            1,
-          );
+        }
+        case LAYOUT.LEFT_1D: {
+          const id = getSpectrumID(draft, 1);
+          wheel(deltaY, deltaMode, state, id);
+          setZoom1D(draft, state.margin.left, 10, 1);
           break;
+        }
         default:
           return state;
       }
     } else {
-      setZoom(state, draft, spectrumZoomHanlder.getScale());
+      wheel(deltaY, deltaMode, state);
+      setZoom(state, draft);
     }
   });
 };
@@ -328,18 +326,15 @@ const zoomOut = (state, action) => {
           break;
         }
         case ZoomType.VERTICAL:
-          spectrumZoomHanlder.setScale(0.8);
           setZoom(state, draft, 0.8);
           break;
         case ZoomType.STEP_HROZENTAL: {
-          spectrumZoomHanlder.setScale(0.8);
           const zoomValue = zoomHistory.pop();
           draft.xDomain = zoomValue ? zoomValue : state.originDomain.xDomain;
           setZoom(state, draft, 0.8);
           break;
         }
         default: {
-          spectrumZoomHanlder.setScale(0.8);
           draft.xDomain = state.originDomain.xDomain;
           setZoom(state, draft, 0.8);
           break;

@@ -7,6 +7,7 @@ import { AnalysisObj, initiateObject } from '../core/Analysis';
 import { setMode, setDomain } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setYAxisShift, setActiveTab } from './ToolsActions';
+import { initZoom1DHandler } from './Zoom';
 
 const setIsLoading = (state, isLoading) => {
   return { ...state, isLoading };
@@ -27,6 +28,7 @@ const initiate = (state, dataObject) => {
     draft.molecules = molecules;
     draft.correlations = correlations;
     draft.spectraAanalysis = spectraAanalysis;
+    initZoom1DHandler(draft.data);
     // draft.xDomain = domain.xDomain;
     // draft.yDomain = domain.yDomain;
     // draft.originDomain = domain;
@@ -65,9 +67,9 @@ const setData = (state, data) => {
     draft.molecules = molecules;
     draft.correlations = correlations;
     draft.spectraAanalysis = spectraAanalysis;
-
     draft.isLoading = false;
     setActiveTab(draft);
+    initZoom1DHandler(draft.data);
 
     // setDomain(draft);
     // setMode(draft);
@@ -96,6 +98,8 @@ const loadJDFFile = (state, files) => {
     draft.data = AnalysisObj.getSpectraData();
     setDomain(draft);
     setMode(draft);
+    initZoom1DHandler(draft.data);
+
     draft.isLoading = false;
   });
 };
@@ -122,6 +126,7 @@ const loadJcampFile = (state, files) => {
     draft.data = AnalysisObj.getSpectraData();
 
     setActiveTab(draft);
+    initZoom1DHandler(draft.data);
 
     // setDomain(draft);
     // setMode(draft);
@@ -155,6 +160,7 @@ const handleLoadJsonFile = (state, data) => {
     }
 
     setActiveTab(draft);
+    initZoom1DHandler(draft.data);
 
     // setDomain(draft);
     // setMode(draft);
@@ -183,6 +189,7 @@ function handleLoadZIPFile(state) {
   return produce(state, (draft) => {
     draft.data = AnalysisObj.getSpectraData();
     setActiveTab(draft);
+    initZoom1DHandler(draft.data);
     draft.isLoading = false;
   });
 }

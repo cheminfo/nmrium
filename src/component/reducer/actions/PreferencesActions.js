@@ -6,7 +6,7 @@ import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 // import Spectrum2DProcessing from '../core/Spectrum2DProcessing';
 
 import { setDomain } from './DomainActions';
-import { setZoom, spectrumZoomHanlder } from './Zoom';
+import { setZoom } from './Zoom';
 
 const handelSetPreferences = (state, action) => {
   const { type, values } = action;
@@ -136,7 +136,6 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
         // spectrum2D.setLevel(levelPositive, levelNegative);
         // draft.contours = spectrum2D.drawContours();
       } else {
-        spectrumZoomHanlder.setScale(preferences.zoomFactor.scale);
         setZoom(state, draft, preferences.zoomFactor.scale);
       }
     }

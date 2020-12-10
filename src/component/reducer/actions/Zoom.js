@@ -2,7 +2,7 @@ import { zoomIdentity, scaleLinear } from 'd3';
 
 import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
 
-export const spectrumZoomHanlder = new Spectrum1DZoomHelper();
+export const spectraZoomHanlders = {};
 export const integralZoomHanlder = new Spectrum1DZoomHelper(0.5);
 
 export const ZoomType = {
@@ -12,9 +12,65 @@ export const ZoomType = {
   FULL: 'FULL',
 };
 
-const setZoom = (state, draft, scale) => {
-  const { height, margin, activeSpectrum } = state;
+export function initZoom1DHandler(data) {
+  data.forEach((datum) => {
+    if (!spectraZoomHanlders[datum.id] && datum.info.dimension === 1) {
+      spectraZoomHanlders[datum.id] = new Spectrum1DZoomHelper();
+    }
+  });
+}
 
+export function wheel(
+  deltaY,
+  deltaMode,
+  { data, activeSpectrum, activeTab },
+  id = null,
+) {
+  // initZoomHandler(data);
+  if (activeSpectrum || id) {
+    spectraZoomHanlders[id ? id : activeSpectrum.id].wheel(deltaY, deltaMode);
+  } else {
+    data.forEach((datum) => {
+      if (datum.info.dimension === 1 && activeTab === datum.info.nucleus) {
+        spectraZoomHanlders[datum.id].wheel(deltaY, deltaMode);
+      }
+    });
+  }
+}
+export function getScaleByID(id) {
+  return { [id]: spectraZoomHanlders[id].getScale(id) };
+}
+
+export function getScale({ data, activeTab }) {
+  return data.reduce((acc, datum) => {
+    if (datum.info.dimension === 1 && activeTab === datum.info.nucleus) {
+      acc[datum.id] = spectraZoomHanlders[datum.id].getScale();
+    }
+    return acc;
+  }, {});
+}
+
+export function setScale(scale) {
+  if (typeof scale === 'number') {
+    Object.keys(spectraZoomHanlders).forEach((id) => {
+      spectraZoomHanlders[id].setScale(scale);
+    });
+  } else if (typeof scale === 'object') {
+    Object.keys(scale).forEach((id) => {
+      spectraZoomHanlders[id].setScale(scale[id]);
+    });
+  } else {
+    throw Error('scale must be number or Object');
+  }
+}
+
+const setZoom = (state, draft, defaultScale = null) => {
+  const { height, margin, activeSpectrum } = state;
+  // initZoomHandler(state.data);
+  if (defaultScale) {
+    setScale(defaultScale);
+  }
+  const scale = getScale(state);
   draft.zoomFactor = { scale };
 
   if (activeSpectrum === null) {
@@ -25,7 +81,7 @@ const setZoom = (state, draft, scale) => {
       ]);
       const t = zoomIdentity
         .translate(0, _scale(0))
-        .scale(scale)
+        .scale(scale[id])
         .translate(0, -_scale(0));
 
       const yDomain = t.rescaleY(_scale).domain();
@@ -40,18 +96,22 @@ const setZoom = (state, draft, scale) => {
     ]);
     const t = zoomIdentity
       .translate(0, _scale(0))
-      .scale(scale)
+      .scale(scale[activeSpectrum.id])
       .translate(0, -_scale(0));
 
     const yDomain = t.rescaleY(_scale).domain();
     draft.yDomains[activeSpectrum.id] = yDomain;
   }
 };
-const setZoom1D = (draft, scale, height, margin, index) => {
+const setZoom1D = (draft, height, margin, index, defaultScale = null) => {
   const { originDomain, tabActiveSpectrum, activeTab } = draft;
+  // initZoomHandler(data);
 
   const { id } = tabActiveSpectrum[activeTab.split(',')[index]];
-
+  if (defaultScale) {
+    setScale(defaultScale);
+  }
+  const scale = getScaleByID(id);
   draft.zoomFactor = { scale };
 
   const _scale = scaleLinear(originDomain.yDomains[id], [
@@ -60,7 +120,7 @@ const setZoom1D = (draft, scale, height, margin, index) => {
   ]);
   const t = zoomIdentity
     .translate(0, _scale(0))
-    .scale(scale)
+    .scale(scale[id])
     .translate(0, -_scale(0));
   let yDomain = t.rescaleY(_scale).domain();
   draft.yDomains[id] = yDomain;
