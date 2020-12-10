@@ -5,16 +5,17 @@ import { useChartData } from '../../context/ChartContext';
 import Zone from './Zone';
 
 const Zones = () => {
-  const { data } = useChartData();
+  const { data, activeTab } = useChartData();
   const _data = useMemo(() => {
     return data
       ? data.filter(
           (d) =>
             d.info.dimension === 2 &&
+            d.info.nucleus.join(',') === activeTab &&
             (d.display.isPositiveVisible || d.display.isNegativeVisible),
         )
       : [];
-  }, [data]);
+  }, [activeTab, data]);
 
   return (
     <g clipPath="url(#clip)" className="2D-Zones">
