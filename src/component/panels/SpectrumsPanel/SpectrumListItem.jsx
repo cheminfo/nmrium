@@ -197,14 +197,16 @@ const SpectrumListItem = memo(
             ...styles.button,
             ...styles.icon,
             opacity:
-              isMarkerVisible(data.id) && data.peaks && data.peaks.length > 0
+              isMarkerVisible(data.id) &&
+              data.peaks &&
+              data.peaks.values.length > 0
                 ? 1
                 : 0.1,
           }}
           type="button"
           onClick={() => onChangeMarkersVisibility(data)}
           className="ci-icon-nmr-peaks"
-          disabled={data.peaks && data.peaks.length === 0}
+          disabled={data.peaks && data.peaks.values.length === 0}
         />
         <button
           style={styles.button}
