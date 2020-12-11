@@ -1,7 +1,7 @@
 export interface NMRDisplayerProps {
   data?: NMRDisplayerData;
-  docsBaseUrl: string;
-  onDataChange: (data: object) => void;
+  docsBaseUrl?: string;
+  onDataChange?: (data: object) => void;
   preferences?: NMRDisplayerPreferences;
 }
 

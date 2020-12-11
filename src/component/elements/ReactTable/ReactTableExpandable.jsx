@@ -1,7 +1,6 @@
-import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { Fragment, useRef, useCallback } from 'react';
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 import { useTable, useExpanded, useSortBy } from 'react-table';
 
 import ContextMenu from '../ContextMenu';

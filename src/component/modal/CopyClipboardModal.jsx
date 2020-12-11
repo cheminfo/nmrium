@@ -1,8 +1,8 @@
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import { FaCopy } from 'react-icons/fa';
 
 import CloseButton from '../elements/CloseButton';
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 
 const styles = css`
   overflow: auto;

@@ -1,5 +1,5 @@
-import { jsx, css } from '@emotion/react';
-/** @jsx jsx */
+import { css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
 import { useCallback } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';

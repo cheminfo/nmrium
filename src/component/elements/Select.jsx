@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
@@ -64,7 +64,6 @@ Select.defaultProps = {
   onChange: function () {
     return null;
   },
-  ref: null,
 };
 
 export default Select;

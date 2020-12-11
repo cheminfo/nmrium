@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css, Global } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css, Global } from '@emotion/react';
 import {
   useRef,
   useState,

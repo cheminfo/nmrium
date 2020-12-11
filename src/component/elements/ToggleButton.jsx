@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useCallback, useEffect, useState } from 'react';
 
 import ToolTip from './ToolTip/ToolTip';

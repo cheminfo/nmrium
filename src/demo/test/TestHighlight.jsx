@@ -1,6 +1,6 @@
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 
-import { css, jsx } from '@emotion/react';
+import { css } from '@emotion/react';
 
 import { HighlightProvider, useHighlight } from '../../component/highlight';
 

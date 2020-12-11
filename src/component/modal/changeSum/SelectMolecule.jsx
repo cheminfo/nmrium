@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useCallback, useState, useEffect, useMemo } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';

@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import lodash from 'lodash';
 import OCL from 'openchemlib/full';
 import React, { useState, useCallback, useMemo, useEffect, memo } from 'react';

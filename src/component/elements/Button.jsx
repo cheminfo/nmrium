@@ -1,5 +1,4 @@
-import { jsx } from '@emotion/react';
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 import { Fragment } from 'react';
 
 const Button = ({ onClick, ...props }) => {

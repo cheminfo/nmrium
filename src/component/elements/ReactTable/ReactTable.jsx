@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+
 import PropTypes from 'prop-types';
 import { Fragment, useRef, useCallback, memo } from 'react';
 import { useTable, useSortBy } from 'react-table';

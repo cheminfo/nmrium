@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { memo } from 'react';
 import { FaCheck } from 'react-icons/fa';
@@ -46,6 +46,7 @@ SaveButton.propTypes = {
   popupTitle: PropTypes.string,
   popupPlacement: PropTypes.string,
   disabled: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default SaveButton;

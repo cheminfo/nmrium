@@ -1,11 +1,11 @@
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import { useMemo, useCallback } from 'react';
 import {
   FaRegWindowMaximize,
   FaWrench,
   FaQuestionCircle,
 } from 'react-icons/fa';
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';

@@ -1,8 +1,8 @@
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useMemo } from 'react';
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
