@@ -124,27 +124,20 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
 
   const handleOnKeyPressed = useCallback(
     (e) => {
-      if (
-        !['input', 'textarea'].includes(e.target.localName) &&
-        !e.shiftKey &&
-        !e.metaKey &&
-        !e.ctrlKey
-      ) {
-        switch (e.key) {
-          case 'c':
-            alignSpectrumsVerticallyHandler();
-            break;
-          case 's':
-            handleChangeDisplayViewMode();
-            break;
-          default:
+      if (!['input', 'textarea'].includes(e.target.localName)) {
+        if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
+          switch (e.key) {
+            case 'c':
+              alignSpectrumsVerticallyHandler();
+              break;
+            case 's':
+              handleChangeDisplayViewMode();
+              break;
+            default:
+          }
         }
 
-        if (
-          !['input', 'textarea'].includes(e.target.localName) &&
-          !e.shiftKey &&
-          (e.metaKey || e.ctrlKey)
-        ) {
+        if (!e.shiftKey && (e.metaKey || e.ctrlKey)) {
           switch (e.key) {
             case 'c':
               saveToClipboardHandler();
@@ -197,11 +190,11 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
 
   useEffect(() => {
     if (rootRef) {
-      rootRef.addEventListener('keydown', handleOnKeyPressed, false);
+      rootRef.addEventListener('keydown', handleOnKeyPressed);
     }
     return () => {
       if (rootRef) {
-        rootRef.removeEventListener('keydown', handleOnKeyPressed, false);
+        rootRef.removeEventListener('keydown', handleOnKeyPressed);
       }
     };
   }, [handleOnKeyPressed, rootRef]);
