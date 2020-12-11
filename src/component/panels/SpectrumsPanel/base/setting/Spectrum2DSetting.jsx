@@ -2,10 +2,10 @@
 import { css } from '@emotion/react';
 import { useCallback, useRef } from 'react';
 
-import FormikColorPicker from '../../../elements/formik/FormikColorPicker';
-import FormikForm from '../../../elements/formik/FormikForm';
-import FormikInput from '../../../elements/formik/FormikInput';
-import FormikSlider from '../../../elements/formik/FormikSlider';
+import FormikColorPicker from '../../../../elements/formik/FormikColorPicker';
+import FormikForm from '../../../../elements/formik/FormikForm';
+import FormikInput from '../../../../elements/formik/FormikInput';
+import FormikSlider from '../../../../elements/formik/FormikSlider';
 
 const Spectrum2DSetting = ({ data, onSubmit }) => {
   const refForm = useRef();

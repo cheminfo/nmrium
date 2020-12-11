@@ -2,8 +2,8 @@
 import { css } from '@emotion/react';
 import { memo, useCallback } from 'react';
 
-import { useDispatch } from '../../../context/DispatchContext';
-import { CHANGE_SPECTRUM_SETTING } from '../../../reducer/types/Types';
+import { useDispatch } from '../../../../context/DispatchContext';
+import { CHANGE_SPECTRUM_SETTING } from '../../../../reducer/types/Types';
 
 import Spectrum1DSetting from './Spectrum1DSetting';
 import Spectrum2DSetting from './Spectrum2DSetting';

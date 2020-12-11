@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 
-import FormikColorPicker from '../../../elements/formik/FormikColorPicker';
-import FormikForm from '../../../elements/formik/FormikForm';
+import FormikColorPicker from '../../../../elements/formik/FormikColorPicker';
+import FormikForm from '../../../../elements/formik/FormikForm';
 
 const Spectrum1DSetting = ({ data, onSubmit }) => {
   const refForm = useRef();

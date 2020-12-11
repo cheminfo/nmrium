@@ -23,7 +23,7 @@ import { copyTextToClipboard } from '../../utility/Export';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 
 import SpectrumListItem from './SpectrumListItem';
-import SpectrumSetting from './setting/SpectrumSetting';
+import SpectrumSetting from './base/setting/SpectrumSetting';
 
 const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
   const contextRef = useRef();
@@ -160,22 +160,6 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
   const mouseLeaveHandler = useCallback(() => {
     setIsSettingModalDisplayed(false);
   }, []);
-
-  // const handleOnColorChanged = useCallback(
-  //   (color, key) => {
-  //     if (selectedSpectrumData !== null) {
-  //       dispatch({
-  //         type: CHANGE_SPECTRUM_COLOR,
-  //         data: {
-  //           id: selectedSpectrumData.id,
-  //           color: `${color.hex}${Math.round(color.rgb.a * 255).toString(16)}`,
-  //           key,
-  //         },
-  //       });
-  //     }
-  //   },
-  //   [dispatch, selectedSpectrumData],
-  // );
 
   return (
     <Fragment>
