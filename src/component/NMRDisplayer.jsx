@@ -207,7 +207,11 @@ const NMRDisplayer = memo(
                     <ModalProvider wrapperRef={elementsWraperRef.current}>
                       <HighlightProvider>
                         <AssignmentProvider>
-                          <div ref={rootRef} css={containerStyles}>
+                          <div
+                            ref={rootRef}
+                            css={containerStyles}
+                            onContextMenu={(e) => e.preventDefault()}
+                          >
                             <KeysListenerTracker>
                               <Header
                                 isFullscreen={isFullscreen}
