@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, memo } from 'react';
+import { useCallback, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import { useDispatch } from '../../context/DispatchContext';

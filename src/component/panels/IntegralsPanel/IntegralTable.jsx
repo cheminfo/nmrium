@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import React, { useCallback, useMemo, memo, useRef, useEffect } from 'react';
+import { useCallback, useMemo, memo, useRef, useEffect } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../data/constants/SignalsKinds';

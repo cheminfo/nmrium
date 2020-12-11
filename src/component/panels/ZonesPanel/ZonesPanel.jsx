@@ -1,6 +1,6 @@
 import lodash from 'lodash';
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import React, { useState, useMemo, useCallback, useRef, memo } from 'react';
+import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport, FaUnlink } from 'react-icons/fa';
 import { getACS } from 'spectra-data-ranges';

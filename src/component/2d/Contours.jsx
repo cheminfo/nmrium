@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 

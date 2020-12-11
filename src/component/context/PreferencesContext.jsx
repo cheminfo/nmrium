@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import { createContext, useContext } from 'react';
 
-export const PreferencesConext = React.createContext();
+export const PreferencesConext = createContext();
 
 export const PreferencesProvider = PreferencesConext.Provider;
 

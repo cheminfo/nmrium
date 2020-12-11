@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { checkMultiplicity } from '../../extra/utilities/MultiplicityUtilities';
 
 import useFormat from './format';

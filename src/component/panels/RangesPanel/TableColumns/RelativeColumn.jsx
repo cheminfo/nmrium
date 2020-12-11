@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useMemo } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
 
 import { checkRangeKind } from '../../../../data/utilities/RangeUtilities';
 import { useDispatch } from '../../../context/DispatchContext';

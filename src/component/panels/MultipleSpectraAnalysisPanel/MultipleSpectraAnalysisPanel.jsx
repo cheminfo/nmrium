@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, memo, useMemo } from 'react';
+import { useCallback, useState, useRef, memo, useMemo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';

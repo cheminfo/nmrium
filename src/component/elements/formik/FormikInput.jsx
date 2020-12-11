@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
 import lodash from 'lodash';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import Input from '../Input';
 

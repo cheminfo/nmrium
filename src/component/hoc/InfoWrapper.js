@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { forwardRef, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -22,7 +22,7 @@ function InfoWrapper(WrappedComponent) {
     );
   };
 
-  return React.forwardRef((props, ref) => {
+  return forwardRef((props, ref) => {
     return <Wrapper {...props} forwardedRef={ref} />;
   });
 }

@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import React, { useMemo, memo, useCallback, Fragment } from 'react';
+import { useMemo, memo, useCallback, Fragment } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';

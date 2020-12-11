@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import { createContext, useContext } from 'react';
 
-export const GlobalConetxt = React.createContext();
+export const GlobalConetxt = createContext();
 
 export const GlobalProvider = GlobalConetxt.Provider;
 

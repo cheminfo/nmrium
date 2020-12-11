@@ -1,5 +1,5 @@
 import { SubMenu, MenuItem } from 'rc-menu';
-import React from 'react';
+import { createElement, cloneElement } from 'react';
 
 function buildMenu(array = []) {
   let menu = [];
@@ -10,7 +10,7 @@ function buildMenu(array = []) {
       menu.push(getMenu([item], [], key));
     } else {
       menu.push(
-        React.createElement(MenuItem, { key: item.title, ...item }, item.title),
+        createElement(MenuItem, { key: item.title, ...item }, item.title),
       );
     }
   }
@@ -23,12 +23,12 @@ function getMenu(array = [], nodes = [], key, parentIndex = 0) {
   let children = [];
 
   if (parentIndex !== -1 && _nodes[parentIndex]) {
-    _nodes[parentIndex] = React.cloneElement(_nodes[parentIndex], {}, children);
+    _nodes[parentIndex] = cloneElement(_nodes[parentIndex], {}, children);
   }
 
   for (const index in array) {
     if (array[index].children && Array.isArray(array[index].children)) {
-      const node = React.createElement(SubMenu, {
+      const node = createElement(SubMenu, {
         key: index + key,
         title: array[index].groupName,
       });
@@ -36,7 +36,7 @@ function getMenu(array = [], nodes = [], key, parentIndex = 0) {
       return getMenu(array[index].children, _nodes, key, 0);
     } else {
       children.push(
-        React.createElement(
+        createElement(
           MenuItem,
           { key: index + key, ...array[index] },
           array[index].title,

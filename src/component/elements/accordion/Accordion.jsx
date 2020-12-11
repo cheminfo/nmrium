@@ -1,9 +1,11 @@
-import React, {
+import {
   useState,
   useRef,
   useCallback,
   useMemo,
   useEffect,
+  Children,
+  cloneElement,
 } from 'react';
 
 import { triggerSource } from './AccordionItem';
@@ -46,11 +48,11 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
     [elements],
   );
 
-  const Children = useMemo(() => {
-    return React.Children.map(children, (child, index) => {
+  const mappedChildren = useMemo(() => {
+    return Children.map(children, (child, index) => {
       return (
         child &&
-        React.cloneElement(child, {
+        cloneElement(child, {
           onOpen: handleOpen,
           index,
           isOpen: elements && elements[index],
@@ -82,7 +84,7 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
 
   return (
     <div ref={refContainer} style={styles.container}>
-      {Children}
+      {mappedChildren}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, memo } from 'react';
+import { Fragment, useCallback, memo } from 'react';
 import { FaUndo, FaRedo } from 'react-icons/fa';
 
 import { ChartContext, useChartData } from '../context/ChartContext';

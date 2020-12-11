@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { Suspense } from 'react';
+import { Suspense, Component, createRef, StrictMode, lazy } from 'react';
 // javascript plugin used to create scrollbars on windows
 // reactstrap components
 import { Route, Switch, MemoryRouter } from 'react-router-dom';
@@ -24,11 +24,11 @@ import { Route, Switch, MemoryRouter } from 'react-router-dom';
 import Sidebar from '../components/Sidebar/Sidebar';
 import { mapTreeToFlatArray, getKey } from '../utility/menu';
 
-class Dashboard extends React.Component {
+class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.menuCloseHandler = this.menuCloseHandler.bind(this);
-    this.mainPanel = React.createRef();
+    this.mainPanel = createRef();
   }
 
   state = {
@@ -73,7 +73,7 @@ class Dashboard extends React.Component {
             onMenuClose={this.menuCloseHandler}
           />
           <div className="main-panel" ref={this.mainPanel}>
-            <React.StrictMode>
+            <StrictMode>
               <Suspense fallback={<div>Loading...</div>}>
                 <Switch>
                   {this.state.routesList.map((prop) => (
@@ -88,7 +88,7 @@ class Dashboard extends React.Component {
                           },
                         } = props;
                         const viewName = prop.view ? prop.view : 'View';
-                        const RenderedView = React.lazy(() =>
+                        const RenderedView = lazy(() =>
                           import(`../views/${viewName}`),
                         );
 
@@ -113,7 +113,7 @@ class Dashboard extends React.Component {
                         const viewName = routeProp.view
                           ? routeProp.view
                           : 'View';
-                        const RenderedView = React.lazy(() =>
+                        const RenderedView = lazy(() =>
                           import(`../views/${viewName}`),
                         );
 
@@ -124,7 +124,7 @@ class Dashboard extends React.Component {
                   )}
                 </Switch>
               </Suspense>
-            </React.StrictMode>
+            </StrictMode>
           </div>
         </MemoryRouter>
       </div>

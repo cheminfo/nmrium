@@ -1,4 +1,11 @@
-import React, { useCallback, useState, useMemo, useEffect } from 'react';
+import {
+  useCallback,
+  useState,
+  useMemo,
+  useEffect,
+  Children,
+  cloneElement,
+} from 'react';
 
 const style = { display: 'flex', flexDirection: 'column' };
 
@@ -19,12 +26,12 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
     [onChange, toggleButtons],
   );
 
-  const Children = useMemo(() => {
+  const mappedChildren = useMemo(() => {
     let index = 0;
-    return React.Children.map(children, (child) => {
+    return mappedChildren.map(children, (child) => {
       if (child) {
         if (child.type.displayName === 'ToggleButton') {
-          const _child = React.cloneElement(child, {
+          const _child = cloneElement(child, {
             onChange: handleOnChange,
             isActive:
               toggleButtons[index] &&
@@ -35,14 +42,14 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
           index++;
           return _child;
         } else {
-          return React.cloneElement(child);
+          return cloneElement(child);
         }
       }
     });
   }, [children, handleOnChange, toggleButtons]);
 
   useEffect(() => {
-    const val = React.Children.map(children, (child) => {
+    const val = Children.map(children, (child) => {
       if (child && child.type.displayName === 'ToggleButton') {
         return {
           value: child.props.value,
@@ -53,7 +60,7 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
     setToggleButtons(val);
   }, [children, value]);
 
-  return <div style={style}> {Children} </div>;
+  return <div style={style}> {mappedChildren} </div>;
 };
 
 ToggleButtonGroup.defaultProps = {

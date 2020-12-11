@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import React, { Fragment, useCallback } from 'react';
+import { Fragment, useCallback } from 'react';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
 import {

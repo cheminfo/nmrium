@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react';
+import { useMemo, memo, forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -44,49 +44,6 @@ function ContextWrapper(WrappedComponent, subKeys) {
 
     const { forwardedRef, ...rest } = props;
 
-    // const data = useMemo(() => {
-    //   function getProp(key) {
-    //     if (key === 'nucleus') {
-    //       return { [key]: nucleus };
-    //     } else if (key === 'spectrum') {
-    //       return { [key]: spectrum };
-    //     }
-    //     return { [key]: chartData[key] };
-    //   }
-    //   return keysProps && Array.isArray(keysProps)
-    //     ? keysProps.reduce((acc, key) => ({ ...acc, ...getProp(key) }), {})
-    //     : {};
-    // }, [chartData, nucleus, spectrum]);
-
-    // const generalProps = useMemo(() => {
-    //   console.log({ ...data });
-    //   return data;
-    // }, [data]);
-
-    // const generalProps = useMemo(
-    //   () => {
-    //     function getProp(key) {
-    //       if (key === 'nucleus') {
-    //         return { [key]: nucleus };
-    //       } else if (key === 'spectrum') {
-    //         return { [key]: spectrum };
-    //       }
-    //       return { [key]:  eval('chartData.' + key) };
-    //     }
-    //     console.log(getProp());
-    //     return keysProps && Array.isArray(keysProps)
-    //       ? keysProps.reduce(
-    //           (acc, key) => ({ ...acc, [key]: getProp(key) }),
-    //           {},
-    //         )
-    //       : {};
-    //   },
-    //   () =>
-    //     keysProps &&
-    //     Array.isArray(keysProps) &&
-    //     keysProps.map((key) => eval('chartData.' + key)),
-    // );
-
     return (
       <WrappedComponent
         {...rest}
@@ -109,7 +66,7 @@ function ContextWrapper(WrappedComponent, subKeys) {
   };
 
   return memo(
-    React.forwardRef((props, ref) => {
+    forwardRef((props, ref) => {
       return <Wrapper {...props} forwardedRef={ref} />;
     }),
   );

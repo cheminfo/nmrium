@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import FormikColorPicker from '../../../elements/formik/FormikColorPicker';
 import FormikForm from '../../../elements/formik/FormikForm';

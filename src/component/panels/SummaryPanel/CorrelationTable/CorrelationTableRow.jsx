@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { getLabel, getLabels } from '../../../../data/correlation/Utilities';
 import EditableColumn from '../../../elements/EditableColumn';

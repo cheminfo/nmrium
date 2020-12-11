@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 
 const FormikForm = forwardRef(
   ({ initialValues, onSubmit, validationSchema, children }, ref) => {

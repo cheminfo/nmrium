@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { forwardRef, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -15,14 +15,11 @@ function FiltersWrapper(WrappedComponent) {
       }
       return {};
     }, [activeSpectrum, data]);
-    // const { filters = [] } = useMemo(() => {
-    //   return spectrum || {};
-    // }, [spectrum]);
     const { forwardedRef, ...rest } = props;
     return <WrappedComponent {...rest} filters={filters} ref={forwardedRef} />;
   };
 
-  return React.forwardRef((props, ref) => {
+  return forwardRef((props, ref) => {
     return <Wrapper {...props} forwardedRef={ref} />;
   });
 }

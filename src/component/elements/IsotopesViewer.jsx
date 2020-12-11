@@ -1,6 +1,5 @@
 /* eslint-disable prefer-named-capture-group */
 /* eslint-disable react/no-danger */
-import React from 'react';
 
 const IsotopesViewer = ({ value = '', ...othersProps }) => {
   return (

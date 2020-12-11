@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  Fragment,
-  useEffect,
-  useState,
-  useMemo,
-} from 'react';
+import { useCallback, Fragment, useEffect, useState, useMemo } from 'react';
 import { useSize, useDebounce } from 'react-use';
 
 import { BrushTracker } from '../EventsTrackers/BrushTracker';

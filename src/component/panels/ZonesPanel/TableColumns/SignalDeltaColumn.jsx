@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 
 const SignalDeltaColumn = ({ rowData, onHoverSignalX, onHoverSignalY }) => {
   const signalDeltaX = lodash.get(

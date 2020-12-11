@@ -1,9 +1,9 @@
-import React, { Suspense } from 'react';
+import { Suspense, PureComponent, lazy } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { getKey } from '../utility/menu';
 
-class SingleDisplayerLayout extends React.PureComponent {
+class SingleDisplayerLayout extends PureComponent {
   render() {
     return (
       <div className="wrapper">
@@ -21,7 +21,7 @@ class SingleDisplayerLayout extends React.PureComponent {
                   const viewName = this.props.view
                     ? this.props.view
                     : 'SingleView';
-                  const RenderedView = React.lazy(() =>
+                  const RenderedView = lazy(() =>
                     import(`../views/${viewName}`),
                   );
 

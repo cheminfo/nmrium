@@ -1,4 +1,4 @@
-import React from 'react';
+import { forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -16,7 +16,7 @@ function MultiAnalysisWrapper(WrappedComponent) {
       />
     );
   };
-  return React.forwardRef((props, ref) => {
+  return forwardRef((props, ref) => {
     return <Wrapper {...props} forwardedRef={ref} />;
   });
 }

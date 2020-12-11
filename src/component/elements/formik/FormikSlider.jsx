@@ -1,6 +1,6 @@
 import { useFormikContext } from 'formik';
 import lodash from 'lodash';
-import React, { useCallback, memo } from 'react';
+import { useCallback, memo } from 'react';
 import ReactSlider from 'react-slider';
 
 const FormikSlider = memo(({ onAfterChange, name, ...props }) => {

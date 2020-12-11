@@ -1,4 +1,4 @@
-import React, { useState, useCallback, forwardRef } from 'react';
+import { useState, useCallback, forwardRef } from 'react';
 
 const CheckBox = forwardRef(({ name, checked: checkProps, onChange }, ref) => {
   const [checked, setCheck] = useState(checkProps);

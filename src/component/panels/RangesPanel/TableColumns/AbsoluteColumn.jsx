@@ -1,5 +1,3 @@
-import React from 'react';
-
 import FormatNumber from '../../../utility/FormatNumber';
 
 const AbsoluteColumn = ({ rowSpanTags, value, onHoverRange, format }) => {

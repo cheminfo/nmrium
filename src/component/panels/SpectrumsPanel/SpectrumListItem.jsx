@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { FaEye, FaCog } from 'react-icons/fa';
 
 const styles = {

@@ -1,11 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Fragment,
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-} from 'react';
+import { Fragment, useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
 import { TransitionGroup } from 'react-transition-group';

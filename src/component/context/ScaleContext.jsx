@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import { createContext, useContext } from 'react';
 
-export const scaleConetxt = React.createContext();
+export const scaleContext = createContext();
 
-export const ScaleProvider = scaleConetxt.Provider;
+export const ScaleProvider = scaleContext.Provider;
 
 export function useScale() {
-  return useContext(scaleConetxt);
+  return useContext(scaleContext);
 }

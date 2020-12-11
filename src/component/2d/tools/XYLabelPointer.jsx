@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 
 // import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';

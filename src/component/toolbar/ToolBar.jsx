@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 import BasicToolBar from './BasicToolBar';
 import FunctionToolBar from './FunctionToolBar';

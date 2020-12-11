@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, memo, useState } from 'react';
+import { useMemo, useCallback, memo, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 

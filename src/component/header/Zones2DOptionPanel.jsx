@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import NumberInput from '../elements/NumberInput';
