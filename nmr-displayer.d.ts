@@ -41,7 +41,7 @@ export type NMRDisplayerPreferences = Partial<{
     hideFiltersPanel: boolean;
     hideMultipleSpectraAnalysisPanel: boolean;
   }>;
-  toolsBarButtons: Partial<{
+  toolBarButtons: Partial<{
     hideZoomTool: boolean;
     hideZoomOutTool: boolean;
     hideImport: boolean;

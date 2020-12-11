@@ -26,7 +26,7 @@ export const preferencesInitialState = {
       hideMultipleSpectraAnalysisPanel: false,
     },
 
-    toolsBarButtons: {
+    toolBarButtons: {
       hideZoomTool: false,
       hideZoomOutTool: false,
       hideImport: false,

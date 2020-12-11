@@ -303,7 +303,7 @@ NMRDisplayer.propTypes = {
         hideStructuresPanel: PropTypes.bool,
         hideFiltersPanel: PropTypes.bool,
       }),
-      toolsBarButtons: PropTypes.shape({
+      toolBarButtons: PropTypes.shape({
         hideZoomTool: PropTypes.bool,
         hideZoomOutTool: PropTypes.bool,
         hideImport: PropTypes.bool,
@@ -346,7 +346,7 @@ NMRDisplayer.defaultProps = {
       hideMultipleSpectraAnalysisPanel: false,
     },
 
-    toolsBarButtons: {
+    toolBarButtons: {
       hideZoomTool: false,
       hideZoomOutTool: false,
       hideImport: false,
