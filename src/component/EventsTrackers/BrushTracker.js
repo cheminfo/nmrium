@@ -88,7 +88,7 @@ export function BrushTracker({
 
   const handleMouseWheel = useCallback(
     (event) => {
-      event.stopPropagation();
+      // event.stopPropagation();
       const boundingRect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - boundingRect.x;
       const y = event.clientY - boundingRect.y;

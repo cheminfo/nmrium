@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 import { useGlobal } from '../context/GlobalContext';
 
@@ -34,34 +34,18 @@ const MenuButton = ({
   const [isShown, showMenu] = useState(false);
   const { rootRef } = useGlobal();
 
-  const closeMenu = useCallback(() => {
-    showMenu(false);
+  const closeMenuButton = useCallback(() => {
+    setTimeout(() => {
+      showMenu(false);
+    }, 100);
   }, []);
 
-  const handleClick = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (rootRef) {
-        showMenu(true);
-        rootRef.addEventListener('click', closeMenu);
-      }
-    },
-    [closeMenu, rootRef],
-  );
-
-  const handleConetxt = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-    //   e.preventDefault();
-  }, []);
-
-  useEffect(() => {
-    if (!isShown && rootRef) {
-      rootRef.removeEventListener('click', closeMenu);
+  const handleClick = useCallback(() => {
+    if (rootRef) {
+      showMenu(true);
+      rootRef.addEventListener('mousedown', closeMenuButton, { once: true });
     }
-  }, [closeMenu, isShown, rootRef]);
+  }, [closeMenuButton, rootRef]);
 
   return (
     <div style={{ height: 'auto' }}>
@@ -69,7 +53,6 @@ const MenuButton = ({
         type="button"
         css={style}
         onClick={handleClick}
-        onContextMenu={handleConetxt}
         className={className}
       >
         <ToolTip title={toolTip} popupPlacement="right">

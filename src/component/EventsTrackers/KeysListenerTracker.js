@@ -35,7 +35,7 @@ const KeysListenerTracker = ({ children }) => {
 
   const keyPressHandler = useCallback(
     (e) => {
-      e.stopPropagation();
+      // e.stopPropagation();
       const num = Number(e.code.substr(e.code.length - 1)) || 0;
       if (
         !['input', 'textarea'].includes(e.target.localName) &&

@@ -36,10 +36,9 @@ const ToggleButton = ({
   const [active, setActive] = useState(isActive);
   const toggleButton = useCallback(
     (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+      // e.preventDefault();
+      // e.stopPropagation();
       const _isActive = !active;
-      // isActive === false || isActive === undefined ? !active : active;
       setActive(_isActive);
       if (_isActive) {
         onChange(value);
