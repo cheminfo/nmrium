@@ -112,7 +112,9 @@ export async function fromJSON(spectra, data = []) {
   for (let datum of data) {
     const color = getColor(false, usedcolors);
     usedcolors.push(color);
-    datum = { display: { color }, ...datum };
+    if (datum.display === undefined || datum.display.color === undefined) {
+      datum.display = Object.assign({ color }, datum.display);
+    }
 
     if (datum.source.jcamp != null) {
       addJcamp(spectra, datum.source.jcamp, datum);
