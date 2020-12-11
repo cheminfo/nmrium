@@ -34,22 +34,23 @@ export function BrushTracker({
 
   const mouseDownHandler = useCallback(
     (event) => {
-      if (noPropagation) {
-        event.stopPropagation();
+      if (event.button === 0) {
+        if (noPropagation) {
+          event.stopPropagation();
+        }
+        dispatch({
+          type: 'DOWN',
+          shiftKey: event.shiftKey,
+          altKey: event.altKey,
+          screenX: event.screenX,
+          screenY: event.screenY,
+          clientX: event.clientX,
+          clientY: event.clientY,
+          boundingRect: event.currentTarget.getBoundingClientRect(),
+        });
+
+        setMouseDownTime(event.timeStamp);
       }
-      dispatch({
-        type: 'DOWN',
-        shiftKey: event.shiftKey,
-        altKey: event.altKey,
-        screenX: event.screenX,
-        screenY: event.screenY,
-        clientX: event.clientX,
-        clientY: event.clientY,
-        boundingRect: event.currentTarget.getBoundingClientRect(),
-      });
-
-      setMouseDownTime(event.timeStamp);
-
       return false;
     },
     [noPropagation],
