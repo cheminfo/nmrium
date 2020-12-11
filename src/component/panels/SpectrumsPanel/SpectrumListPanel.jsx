@@ -46,17 +46,12 @@ const SpectrumListPanel = memo(
     }, []);
 
     const handleDelete = useCallback(() => {
-      if (activeSpectrum) {
-        // setActivated(null);
-        dispatch({ type: DELETE_SPECTRA });
-      } else {
-        modal.showConfirmDialog('All records will be deleted, Are You sure?', {
-          onYes: () => {
-            dispatch({ type: DELETE_SPECTRA });
-          },
-        });
-      }
-    }, [activeSpectrum, dispatch, modal]);
+      modal.showConfirmDialog('All records will be deleted, Are You sure?', {
+        onYes: () => {
+          dispatch({ type: DELETE_SPECTRA });
+        },
+      });
+    }, [dispatch, modal]);
 
     const showAllSpectrumsHandler = useCallback(() => {
       const spectrumsPerTab = spectrums.map((datum) => {

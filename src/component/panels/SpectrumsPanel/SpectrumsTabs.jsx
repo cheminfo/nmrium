@@ -17,6 +17,7 @@ import {
   SET_ACTIVE_TAB,
   CHANGE_VISIBILITY,
   CHANGE_ACTIVE_SPECTRUM,
+  DELETE_SPECTRA,
 } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
@@ -104,8 +105,16 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
           }
         },
       },
+      {
+        label: 'Delete',
+        onClick: (spectrumData) => {
+          setTimeout(() => {
+            dispatch({ type: DELETE_SPECTRA, id: spectrumData.id });
+          }, 0);
+        },
+      },
     ],
-    [alert],
+    [alert, dispatch],
   );
 
   const contextMenuHandler = useCallback(
@@ -190,9 +199,7 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
                     onChangeMarkersVisibility={handleChangeMarkersVisibility}
                     onChangeActiveSpectrum={handleChangeActiveSpectrum}
                     onOpenSettingModal={openSettingHandler}
-                    onContextMenu={(e) =>
-                      d.info.dimension === 1 ? contextMenuHandler(e, d) : null
-                    }
+                    onContextMenu={(e) => contextMenuHandler(e, d)}
                   />
                 ))}
             </div>

@@ -278,7 +278,7 @@ export function spectrumReducer(state, action) {
       return CorrelationsActions.handleUnsetTolerance(state);
 
     case types.DELETE_SPECTRA:
-      return SpectrumsActions.handleDeleteSpectra(state);
+      return SpectrumsActions.handleDeleteSpectra(state, action);
 
     case types.SET_INTEGRAL_Y_DOMAIN:
       return DomainActions.handleChangeIntegralYDomain(state, action.yDomain);
