@@ -47,7 +47,7 @@ export const preferencesInitialState = {
   controllers: {
     mws: { low: 2, high: 20 },
     help: {
-      preventAutoHelp: false,
+      preventAutoHelp: true,
     },
   },
   formatting: {
@@ -77,7 +77,6 @@ const mapNucleus = (draft) => {
 export function preferencesReducer(state, action) {
   switch (action.type) {
     case INIT_PREFERENCES: {
-      // const display = Object.assign(state.display, action.payload.display);
       const localData = getLocalStorage('nmr-general-settings');
 
       return produce(state, (draft) => {
