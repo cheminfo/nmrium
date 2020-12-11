@@ -1,5 +1,7 @@
 import { memo } from 'react';
-import { FaEye, FaCog } from 'react-icons/fa';
+import { FaEye } from 'react-icons/fa';
+
+import ColorIndicator from './base/ColorIndicator';
 
 const styles = {
   button: {
@@ -70,20 +72,6 @@ const SpectrumListItem = memo(
         value = value.replace(/([0-9]+)/g, '<sub>$1</sub>');
       }
       return value;
-    };
-
-    const ColorIndicator = ({ id, color, width = '14px' }) => {
-      return (
-        <div
-          style={{
-            backgroundColor: color,
-            height: '4px',
-            width: width,
-            opacity: activated && activated.id === id ? 1 : 0.1,
-            display: 'inline-block',
-          }}
-        />
-      );
     };
 
     const { color, name, positiveColor, negativeColor } = data.display;
@@ -208,25 +196,14 @@ const SpectrumListItem = memo(
           className="ci-icon-nmr-peaks"
           disabled={data.peaks && data.peaks.values.length === 0}
         />
-        <button
+
+        <ColorIndicator
           style={styles.button}
-          type="button"
-          onClick={() => onChangeActiveSpectrum(data)}
-        >
-          {data.info.dimension === 2 ? (
-            <ColorIndicator id={data.id} color={positiveColor} />
-          ) : (
-            <ColorIndicator id={data.id} color={color} />
-          )}
-        </button>
-        <button
-          style={styles.button}
-          type="button"
-          className="color-change-bt"
+          dimension={data.info.dimension}
+          color={{ positiveColor, color, negativeColor }}
+          activated={activated && activated.id === data.id ? true : false}
           onClick={(event) => onOpenSettingModal(data, event)}
-        >
-          <FaCog />
-        </button>
+        />
       </div>
     );
   },
