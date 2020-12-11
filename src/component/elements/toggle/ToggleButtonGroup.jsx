@@ -28,7 +28,7 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
 
   const mappedChildren = useMemo(() => {
     let index = 0;
-    return mappedChildren.map(children, (child) => {
+    return Children.map(children, (child) => {
       if (child) {
         if (child.type.displayName === 'ToggleButton') {
           const _child = cloneElement(child, {
