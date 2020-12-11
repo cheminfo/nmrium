@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+
 import { memo, useState, useEffect, useCallback } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation';

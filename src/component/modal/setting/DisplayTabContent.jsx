@@ -1,5 +1,3 @@
-import React from 'react';
-
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 
 const DisplayTabContent = () => {

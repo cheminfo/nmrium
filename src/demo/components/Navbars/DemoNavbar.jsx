@@ -15,7 +15,8 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from 'react';
+
+import { Component, createRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Collapse,
@@ -36,7 +37,7 @@ import {
 } from 'reactstrap';
 import routes from 'routes.js';
 
-class Header extends React.Component {
+class Header extends Component {
   state = {
     isOpen: false,
     dropdownOpen: false,
@@ -58,7 +59,7 @@ class Header extends React.Component {
     }
   }
 
-  sidebarToggle = React.createRef();
+  sidebarToggle = createRef();
   toggle = () => {
     if (this.state.isOpen) {
       this.setState({

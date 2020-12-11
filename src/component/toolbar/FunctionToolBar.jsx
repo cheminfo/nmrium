@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import React, { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
 import { Filters } from '../../data/data1d/filter1d/Filters';
@@ -181,7 +181,7 @@ const FunctionToolBar = ({
 
   const isButtonVisible = useCallback(
     (key) => {
-      return !lodash.get(preferences, `toolsBarButtons.${key}`);
+      return !lodash.get(preferences, `toolBarButtons.${key}`);
     },
     [preferences],
   );

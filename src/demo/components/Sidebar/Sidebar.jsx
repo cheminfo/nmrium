@@ -18,7 +18,7 @@
 // javascript plugin used to create scrollbars on windows
 /* eslint-disable */
 import Menu from 'rc-menu';
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import 'rc-menu/assets/index.css';
 import { FaBars } from 'react-icons/fa';
 

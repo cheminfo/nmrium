@@ -1,5 +1,3 @@
-import React from 'react';
-
 const ReactTableHeader = ({ headerGroups }) => {
   return (
     <thead>

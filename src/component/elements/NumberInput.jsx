@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { forwardRef, useCallback, useRef } from 'react';
+import { forwardRef, useCallback, useRef } from 'react';
 
 const styles = {
   container: {

@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import lodash from 'lodash';
 import { memo, useEffect, useCallback } from 'react';

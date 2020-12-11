@@ -1,5 +1,5 @@
-import { jsx, css } from '@emotion/react';
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import { memo, useState, useCallback, useEffect } from 'react';
 import { FaPlus } from 'react-icons/fa';

@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import React, { useMemo, useCallback, memo } from 'react';
+import { useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
 import { SignalConcatenationString } from '../../../../data/constants/ConcatenationStrings';

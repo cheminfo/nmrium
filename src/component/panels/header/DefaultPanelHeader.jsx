@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { FaRegTrashAlt, FaCog, FaFilter } from 'react-icons/fa';
 
 import ToolTip from '../../elements/ToolTip/ToolTip';

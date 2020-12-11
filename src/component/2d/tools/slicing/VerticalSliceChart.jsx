@@ -1,5 +1,5 @@
 import { xyReduce } from 'ml-spectra-processing';
-import React, { useMemo, memo } from 'react';
+import { useMemo, memo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
 // import { LAYOUT } from '../utilities/DimensionLayout';

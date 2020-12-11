@@ -1,11 +1,5 @@
 import { xyReduce, xyIntegral } from 'ml-spectra-processing';
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  Fragment,
-  useMemo,
-} from 'react';
+import { useEffect, useState, useCallback, Fragment, useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
 import { integralDefaultValues } from '../panels/extra/preferences/defaultValues';

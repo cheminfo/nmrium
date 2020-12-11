@@ -1,57 +1,51 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import { forwardRef, useCallback } from 'react';
 
-const Select = React.forwardRef(
-  ({ data, style, onChange, defaultValue }, ref) => {
-    const handleOnChanged = useCallback(
-      (e) => {
-        onChange(e.target.value);
-      },
-      [onChange],
-    );
+const Select = forwardRef(({ data, style, onChange, defaultValue }, ref) => {
+  const handleOnChanged = useCallback(
+    (e) => {
+      onChange(e.target.value);
+    },
+    [onChange],
+  );
 
-    const styles = css`
-      position: relative;
-      padding: 0px 5px;
-      border: 0.55px solid #cacaca;
-      font-size: 14px;
-      width: ${style.width ? style.width - 5 : 115}px;
-      margin: 0;
-      height: 100%;
-      background: url(../img/br_down.png) no-repeat right white;
-      -webkit-appearance: none;
-      background-position-x: ${style.width ? style.width - 18 : 115 - 18}px;
-      background-size: 10px 10px;
-      border-radius: 5px;
-      margin: 0px 5px;
-      :focus,
-      input:focus {
-        outline: none;
-      }
-    `;
+  const styles = css`
+    position: relative;
+    padding: 0px 5px;
+    border: 0.55px solid #cacaca;
+    font-size: 14px;
+    width: ${style.width ? style.width - 5 : 115}px;
+    margin: 0;
+    height: 100%;
+    background: url(../img/br_down.png) no-repeat right white;
+    -webkit-appearance: none;
+    background-position-x: ${style.width ? style.width - 18 : 115 - 18}px;
+    background-size: 10px 10px;
+    border-radius: 5px;
+    margin: 0px 5px;
+    :focus,
+    input:focus {
+      outline: none;
+    }
+  `;
 
-    return (
-      <select
-        css={[styles, style]}
-        ref={ref}
-        onChange={handleOnChanged}
-        defaultValue={defaultValue}
-      >
-        {data.map((d) => (
-          <option
-            key={`${d.key}`}
-            value={d.value}
-            // selected={d.value === defaultValue ? 'selected' : ''}
-          >
-            {d.label}
-          </option>
-        ))}
-      </select>
-    );
-  },
-);
+  return (
+    <select
+      css={[styles, style]}
+      ref={ref}
+      onChange={handleOnChanged}
+      defaultValue={defaultValue}
+    >
+      {data.map((d) => (
+        <option key={`${d.key}`} value={d.value}>
+          {d.label}
+        </option>
+      ))}
+    </select>
+  );
+});
 
 Select.propTypes = {
   onChange: PropTypes.func,
@@ -64,7 +58,6 @@ Select.defaultProps = {
   onChange: function () {
     return null;
   },
-  ref: null,
 };
 
 export default Select;

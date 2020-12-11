@@ -1,6 +1,6 @@
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 
 const styles2 = css`
   pointer-events: bounding-box;

@@ -6,7 +6,7 @@ import 'prismjs/components/prism-clike';
 // eslint-disable-next-line import/no-unassigned-import
 import 'prismjs/components/prism-javascript';
 
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 
 import Eval from '../../utility/Evaluate';

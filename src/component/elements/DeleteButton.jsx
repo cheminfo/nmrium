@@ -1,5 +1,3 @@
-import React from 'react';
-
 const DeleteButton = ({ x, y, onDelete, fill }) => {
   return (
     <svg

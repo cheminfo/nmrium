@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useCallback } from 'react';
 
 import { COLUMNS_TYPES } from '../../../data/data1d/MulitpleAnalysis';

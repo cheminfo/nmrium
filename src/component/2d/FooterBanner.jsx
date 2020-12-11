@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useContext, useMemo, Fragment } from 'react';
 import { MF } from 'react-mf';

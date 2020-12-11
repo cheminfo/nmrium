@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useCallback,
-  useEffect,
-  memo,
-  useMemo,
-  useRef,
-} from 'react';
+import { useState, useCallback, useEffect, memo, useMemo, useRef } from 'react';
 
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
 import InfoWrapper from '../hoc/InfoWrapper';

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, Fragment } from 'react';
+import { useCallback, useRef, useState, Fragment } from 'react';
 
 import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
 import { useDispatch } from '../context/DispatchContext';

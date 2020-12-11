@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import lodash from 'lodash';
 import { useCallback, useMemo, useState, useRef, memo, Fragment } from 'react';
 import ReactCardFlip from 'react-card-flip';

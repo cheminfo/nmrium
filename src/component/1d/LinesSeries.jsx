@@ -1,10 +1,10 @@
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 
 import { useChartData } from '../context/ChartContext';
 
 import Line from './Line';
 
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 
 const pathStyles = css`
   -webkit-clip-path: url('#clip');

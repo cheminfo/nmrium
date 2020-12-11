@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react';
+import { useMemo, memo, Children, cloneElement } from 'react';
 
 const styles = {
   width: '100%',
@@ -9,9 +9,9 @@ const styles = {
   color: 'gray',
 };
 const TableBody = memo(({ children, className, style }) => {
-  const Children = useMemo(() => {
-    return React.Children.map(children, (child) =>
-      React.cloneElement(child, {
+  const mappedChildren = useMemo(() => {
+    return Children.map(children, (child) =>
+      cloneElement(child, {
         style: { borderBottom: '0.55px solid #d8d8d8', ...child.props.style },
       }),
     );
@@ -19,7 +19,7 @@ const TableBody = memo(({ children, className, style }) => {
 
   return (
     <div className={className} style={{ ...styles, style }}>
-      {Children}
+      {mappedChildren}
     </div>
   );
 });

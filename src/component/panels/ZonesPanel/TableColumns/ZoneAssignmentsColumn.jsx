@@ -1,5 +1,4 @@
 import lodash from 'lodash';
-import React from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
 const ZoneAssignmentColumn = ({

@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
 
 import { useHighlight } from '../../../highlight/index';
 import { HighlightedRowStyle, ConstantlyHighlightedRowStyle } from '../Style';

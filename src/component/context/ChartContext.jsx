@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import { createContext, useContext } from 'react';
 
-export const ChartContext = React.createContext();
+export const ChartContext = createContext();
 
 export const ChartDataProvider = ChartContext.Provider;
 

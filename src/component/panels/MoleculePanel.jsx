@@ -1,8 +1,8 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import lodash from 'lodash';
 import OCL from 'openchemlib/full';
-import React, { useState, useCallback, useMemo, useEffect, memo } from 'react';
+import { useState, useCallback, useMemo, useEffect, memo } from 'react';
 import {
   FaPlus,
   FaPaste,
@@ -129,7 +129,7 @@ const menuButton = css`
 const MoleculePanel = memo(
   ({ zones, ranges, molecules, activeTab, displayerMode }) => {
     const [refContainer, { width, height }] = useMeasure();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const [currentMolfile, setCurrentMolfile] = useState();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState([]);

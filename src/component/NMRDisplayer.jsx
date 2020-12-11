@@ -1,6 +1,6 @@
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import lodash from 'lodash';
 import OCL from 'openchemlib/full';
 import PropTypes from 'prop-types';
@@ -119,14 +119,7 @@ const containerStyles = css`
 `;
 
 const NMRDisplayer = memo(
-  ({
-    data: dataProp,
-    // height: heightProp,
-    // width: widthProps,
-    onDataChange,
-    docsBaseUrl,
-    preferences,
-  }) => {
+  ({ data: dataProp, onDataChange, docsBaseUrl, preferences }) => {
     const rootRef = useRef();
     const elementsWraperRef = useRef();
     const [show, toggle] = useToggle(false);
@@ -293,8 +286,6 @@ const NMRDisplayer = memo(
 );
 
 NMRDisplayer.propTypes = {
-  height: PropTypes.number,
-  width: PropTypes.number,
   docsBaseUrl: PropTypes.string,
   onDataChange: PropTypes.func,
   preferences: PropTypes.shape(
@@ -312,7 +303,7 @@ NMRDisplayer.propTypes = {
         hideStructuresPanel: PropTypes.bool,
         hideFiltersPanel: PropTypes.bool,
       }),
-      toolsBarButtons: PropTypes.shape({
+      toolBarButtons: PropTypes.shape({
         hideZoomTool: PropTypes.bool,
         hideZoomOutTool: PropTypes.bool,
         hideImport: PropTypes.bool,
@@ -334,8 +325,6 @@ NMRDisplayer.propTypes = {
 };
 
 NMRDisplayer.defaultProps = {
-  height: 600,
-  width: 800,
   docsBaseUrl: 'https://cheminfo.github.io/nmr-displayer/docs/v0',
   onDataChange: () => null,
   preferences: {
@@ -357,7 +346,7 @@ NMRDisplayer.defaultProps = {
       hideMultipleSpectraAnalysisPanel: false,
     },
 
-    toolsBarButtons: {
+    toolBarButtons: {
       hideZoomTool: false,
       hideZoomOutTool: false,
       hideImport: false,

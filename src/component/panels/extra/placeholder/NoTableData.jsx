@@ -1,5 +1,3 @@
-import React from 'react';
-
 // placeholder for empty tables if no data is available to show (e.g. peaks, integrals, ranges)
 const NoTableData = () => {
   return (

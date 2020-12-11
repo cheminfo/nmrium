@@ -1,5 +1,4 @@
 import lodash from 'lodash';
-import React from 'react';
 
 const CouplingColumn = ({ rowData, onHoverSignal }) => {
   const result = lodash.get(rowData, 'tableMetaInfo.signal.j');

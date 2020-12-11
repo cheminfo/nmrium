@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react';
+import { useMemo, memo, forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -52,7 +52,7 @@ function RangesWrapper(WrappedComponent) {
   };
 
   return memo(
-    React.forwardRef((props, ref) => {
+    forwardRef((props, ref) => {
       return <Wrapper {...props} forwardedRef={ref} />;
     }),
   );

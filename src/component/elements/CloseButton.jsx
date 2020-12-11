@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { memo } from 'react';
 import { FaTimes } from 'react-icons/fa';
@@ -37,14 +37,13 @@ CloseButton.defaultProps = {
   onClick: () => null,
   popupTitle: 'Close',
   popupPlacement: 'left',
-  disabled: false,
   className: '',
 };
 CloseButton.propTypes = {
   onClick: PropTypes.func,
   popupTitle: PropTypes.string,
   popupPlacement: PropTypes.string,
-  disabled: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default CloseButton;

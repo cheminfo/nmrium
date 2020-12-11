@@ -1,5 +1,5 @@
 import PropsTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 

@@ -1,5 +1,4 @@
-import { jsx } from '@emotion/react';
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 import { useField } from 'formik';
 
 const ErrorMessage = ({ style, ...props }) => {

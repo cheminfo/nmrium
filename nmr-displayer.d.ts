@@ -1,7 +1,7 @@
 export interface NMRDisplayerProps {
   data?: NMRDisplayerData;
-  docsBaseUrl: string;
-  onDataChange: (data: object) => void;
+  docsBaseUrl?: string;
+  onDataChange?: (data: object) => void;
   preferences?: NMRDisplayerPreferences;
 }
 
@@ -39,9 +39,11 @@ export type NMRDisplayerPreferences = Partial<{
     hideRangesPanel: boolean;
     hideStructuresPanel: boolean;
     hideFiltersPanel: boolean;
+    hideZonesPanel: boolean;
+    hideSummaryPanel: boolean;
     hideMultipleSpectraAnalysisPanel: boolean;
   }>;
-  toolsBarButtons: Partial<{
+  toolBarButtons: Partial<{
     hideZoomTool: boolean;
     hideZoomOutTool: boolean;
     hideImport: boolean;

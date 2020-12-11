@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  Fragment,
-  useEffect,
-  useState,
-  useReducer,
-} from 'react';
+import { useCallback, Fragment, useEffect, useState, useReducer } from 'react';
 import { useSize, useDebounce } from 'react-use';
 
 // import BrushX from '../tool/BrushX';

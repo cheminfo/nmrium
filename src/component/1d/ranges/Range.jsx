@@ -1,5 +1,5 @@
-import { jsx, css } from '@emotion/react';
-/** @jsx jsx */
+import { css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
 import { useCallback, useState, useEffect } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation';

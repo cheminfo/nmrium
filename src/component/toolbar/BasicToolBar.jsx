@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import lodash from 'lodash';
 import { Fragment, useEffect, useCallback, useState, memo } from 'react';
 import {
@@ -208,7 +208,7 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
 
   const isButtonVisible = useCallback(
     (key) => {
-      return !lodash.get(preferences, `toolsBarButtons.${key}`);
+      return !lodash.get(preferences, `toolBarButtons.${key}`);
     },
     [preferences],
   );

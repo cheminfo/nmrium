@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { useChartData } from '../context/ChartContext';

@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useState, useContext } from 'react';
+import { createContext, useCallback, useState, useContext } from 'react';
 
 export const MouseContext = createContext();
 const MouseaProvider = MouseContext.Provider;

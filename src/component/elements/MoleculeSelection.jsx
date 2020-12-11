@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useCallback, useEffect, useState } from 'react';
 import MF from 'react-mf/lib/components/MF';
 import { MolfileSvgRenderer } from 'react-ocl/full';

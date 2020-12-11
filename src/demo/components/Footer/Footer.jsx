@@ -16,16 +16,16 @@
 
 */
 /*eslint-disable*/
-import React from "react";
-import { Container } from "reactstrap";
+import { Component } from 'react';
+import { Container } from 'reactstrap';
 // used for making the prop types of this component
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-class Footer extends React.Component {
+class Footer extends Component {
   render() {
     return (
       <footer
-        className={"footer" + (this.props.default ? " footer-default" : "")}
+        className={'footer' + (this.props.default ? ' footer-default' : '')}
       >
         <Container fluid={this.props.fluid ? true : false}>
           {/* <nav>
@@ -42,19 +42,19 @@ class Footer extends React.Component {
             </ul>
           </nav> */}
           <div className="copyright">
-            &copy; {1900 + new Date().getYear()}, Designed by{" "}
+            &copy; {1900 + new Date().getYear()}, Designed by{' '}
             <a
-              // href="https://www.invisionapp.com"
-              // target="_blank"
-              // rel="noopener noreferrer"
+            // href="https://www.invisionapp.com"
+            // target="_blank"
+            // rel="noopener noreferrer"
             >
               {/* Invision */}
             </a>
             {/* . Coded by{" "} */}
             <a
-              // href="https://www.creative-tim.com?ref=nudr-footer"
-              // target="_blank"
-              // rel="noopener noreferrer"
+            // href="https://www.creative-tim.com?ref=nudr-footer"
+            // target="_blank"
+            // rel="noopener noreferrer"
             >
               NMR Team
             </a>
@@ -68,7 +68,7 @@ class Footer extends React.Component {
 
 Footer.propTypes = {
   default: PropTypes.bool,
-  fluid: PropTypes.bool
+  fluid: PropTypes.bool,
 };
 
 export default Footer;

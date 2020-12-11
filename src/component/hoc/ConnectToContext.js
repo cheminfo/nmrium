@@ -1,5 +1,3 @@
-import React from 'react';
-
 function ConnectToContext(WrappedComponent, contextData, additionalProps = {}) {
   return function (props) {
     const {

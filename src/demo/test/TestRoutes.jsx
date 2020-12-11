@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 const TestHighlight = lazy(() => import('./TestHighlight'));

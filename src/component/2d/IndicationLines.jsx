@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useState, useEffect, useMemo } from 'react';
 
 import { SignalKindsToInclude } from '../../data/constants/SignalsKinds';

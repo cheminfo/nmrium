@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import React, { useCallback, useState, useEffect, memo } from 'react';
+import { useCallback, useState, useEffect, memo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
 import { Accordion, AccordionItem } from '../elements/accordion';

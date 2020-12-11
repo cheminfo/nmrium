@@ -1,11 +1,9 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 
 import PeakNotation from './PeakNotation';
-// import { getPeakLabelNumberDecimals } from '../utility/default';
-// import ModifiedPeakNotation from './Notations/ModifiedPeakNotation';
 
 const PeaksNotations = () => {
   const { data, activeSpectrum, verticalAlign } = useChartData();
@@ -55,12 +53,10 @@ const PeaksNotations = () => {
                     x={scaleX()(d.x[xIndex] - (xShift ? xShift : 0))}
                     y={scaleY(d.id)(d.y[xIndex]) - 5}
                     sign={Math.sign(d.y[xIndex])}
-                    // verticalAlign.value
                     xIndex={xIndex}
                     id={id}
                     spectrumID={d.id}
                     value={d.x[xIndex]}
-                    // {d.color}
                     color="#730000"
                     nucleus={d.info.nucleus}
                     isActive={
