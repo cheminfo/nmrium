@@ -1,12 +1,13 @@
 {
   "name": "nmr-displayer",
   "version": "0.5.0",
+  "main": "lib-cjs/component/NMRDisplayer.js",
   "module": "lib/component/NMRDisplayer.js",
+  "types": "nmr-displayer.d.ts",
   "files": [
     "lib",
     "nmr-displayer.d.ts"
   ],
-  "types": "nmr-displayer.d.ts",
   "dependencies": {
     "@emotion/react": "^11.1.2",
     "cheminfo-font": "^0.34.1",
@@ -63,9 +64,11 @@
     "trailingComma": "all"
   },
   "scripts": {
-    "clean-lib": "rimraf lib",
-    "compile": "babel src  --out-dir lib --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.js\" --quiet",
-    "prepare": "npm run clean-lib && npm run compile",
+    "clean-lib": "rimraf lib lib-cjs",
+    "compile": "babel src --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.js\" --quiet",
+    "compile-esm": "npm run compile -- --out-dir lib",
+    "compile-cjs": "cross-env BABEL_MODE=cjs npm run compile -- --out-dir lib-cjs",
+    "prepublishOnly": "npm run clean-lib && npm run compile-esm && npm run compile-cjs",
     "start": "react-scripts start ",
     "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
@@ -105,10 +108,12 @@
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/plugin-proposal-optional-chaining": "^7.12.7",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "@babel/preset-react": "^7.12.10",
     "@types/prismjs": "^1.16.2",
     "babel-eslint": "^10.1.0",
     "bootstrap": "^4.5.3",
+    "cross-env": "^7.0.3",
     "eslint": "^7.15.0",
     "eslint-config-cheminfo-react": "^6.1.1",
     "eslint-plugin-import": "^2.22.1",
