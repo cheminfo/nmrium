@@ -43,8 +43,9 @@ const tableStyle = css`
   }
 `;
 
-const ZonesTable = ({ tableData, onUnlink, context, preferences, nuclei }) => {
+const ZonesTable = ({ tableData, onUnlink, context, nuclei, preferences }) => {
   const contextRef = useRef();
+
   const data = useMemo(() => {
     const _zonesData = [];
     tableData.forEach((zone, i) => {

@@ -34,20 +34,17 @@ const ToggleButton = ({
   helpID,
 }) => {
   const [active, setActive] = useState(isActive);
-  const toggleButton = useCallback(
-    (e) => {
-      // e.preventDefault();
-      // e.stopPropagation();
-      const _isActive = !active;
-      setActive(_isActive);
-      if (_isActive) {
-        onChange(value);
-      } else {
-        onChange(null);
-      }
-    },
-    [active, onChange, value],
-  );
+  const toggleButton = useCallback(() => {
+    // e.preventDefault();
+    // e.stopPropagation();
+    const _isActive = !active;
+    setActive(_isActive);
+    if (_isActive) {
+      onChange(value);
+    } else {
+      onChange(null);
+    }
+  }, [active, onChange, value]);
 
   useEffect(() => {
     setActive(isActive);

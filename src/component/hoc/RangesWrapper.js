@@ -1,6 +1,7 @@
 import { useMemo, memo, forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import { usePreferences } from '../context/PreferencesContext';
 
 function RangesWrapper(WrappedComponent) {
   const Wrapper = (props) => {
@@ -8,12 +9,12 @@ function RangesWrapper(WrappedComponent) {
       data,
       activeSpectrum,
       xDomain,
-      preferences,
       activeTab,
       molecules,
       showMultiplicityTrees,
       tabActiveSpectrum,
     } = useChartData();
+    const preferences = usePreferences();
 
     const { ranges = {}, x = [], y = [], info = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {

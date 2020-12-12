@@ -1,6 +1,7 @@
 import { forwardRef, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import { usePreferences } from '../context/PreferencesContext';
 
 function IntegralsWrapper(WrappedComponent) {
   const Wrapper = (props) => {
@@ -8,11 +9,11 @@ function IntegralsWrapper(WrappedComponent) {
       data,
       activeSpectrum,
       xDomain,
-      preferences,
       activeTab,
       tabActiveSpectrum,
       molecules,
     } = useChartData();
+    const preferences = usePreferences();
 
     const { integrals = {}, info = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {

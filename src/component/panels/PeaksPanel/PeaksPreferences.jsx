@@ -9,11 +9,10 @@ import {
   memo,
 } from 'react';
 
-import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import { useAlert } from '../../elements/popup/Alert';
 import PeaksWrapper from '../../hoc/PeaksWrapper';
-import { SET_PREFERENCES } from '../../reducer/types/Types';
+import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import {
   useStateWithLocalStorage,
   getValue as getValueByKeyPath,
@@ -96,12 +95,9 @@ const formatFields = [
   },
 ];
 
-const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
-  // const { data, preferences } = useChartData();
-  const dispatch = useDispatch();
+const PeaksPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
-
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
 
@@ -117,39 +113,45 @@ const PeaksPreferences = forwardRef(({ preferences, nucleus }, ref) => {
 
   const saveHandler = useCallback(
     (values, showMessage = false) => {
-      dispatch({
-        type: SET_PREFERENCES,
-        data: { type: 'peaks', values },
+      preferences.dispatch({
+        type: SET_PANELS_PREFERENCES,
+        payload: { key: 'peaks', value: values },
       });
       if (showMessage) alert.success('Peaks preferences saved successfully');
     },
-    [alert, dispatch],
+    [alert, preferences],
   );
 
   useImperativeHandle(ref, () => ({
     saveSetting() {
-      formRef.current.dispatchEvent(new Event('submit', { cancelable: true }));
+      if (typeof formRef.current.requestSubmit === 'function') {
+        formRef.current.requestSubmit();
+      } else {
+        formRef.current.dispatchEvent(
+          new Event('submit', { cancelable: true }),
+        );
+      }
     },
   }));
 
-  const saveToLocalStorgate = (values) => {
-    setSettingsData(values, 'formatting.panels.peaks');
-  };
-
-  const handleSubmit = async (event) => {
-    const form = event.target;
-    const formData = new FormData(form);
-    let values = {};
-    for (let field of formData.entries()) {
-      const keys = field[0].split('-').join('.');
-      const val = ['true', 'false'].includes(field[1])
-        ? field[1] === 'true'
-        : field[1];
-      values = lodash.set(values, keys, val);
-    }
-    saveHandler(values, true);
-    saveToLocalStorgate(values);
-  };
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+      let values = {};
+      for (let field of formData.entries()) {
+        const keys = field[0].split('-').join('.');
+        const val = ['true', 'false'].includes(field[1])
+          ? field[1] === 'true'
+          : field[1];
+        values = lodash.set(values, keys, val);
+      }
+      saveHandler(values, true);
+      setSettingsData(values, 'formatting.panels.peaks');
+    },
+    [saveHandler, setSettingsData],
+  );
 
   const getValue = useCallback(
     (...params) => {

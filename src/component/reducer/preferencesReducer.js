@@ -5,6 +5,7 @@ import { getLocalStorage } from '../utility/LocalStorage';
 
 export const INIT_PREFERENCES = 'INIT_PREFERENCES';
 export const SET_PREFERENCES = 'SET_PREFERENCES';
+export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
 
 export const preferencesInitialState = {
   display: {
@@ -60,6 +61,7 @@ export const preferencesInitialState = {
       { key: '31P', name: '31P', ppm: '0.00', hz: '0.00' },
     ],
     nucleusByKey: {},
+    panels: {},
   },
   dispatch: null,
 };
@@ -98,6 +100,13 @@ export function preferencesReducer(state, action) {
           draft.formatting = data.formatting;
           draft.display.panels = data.display.panels;
           mapNucleus(draft, data);
+        }
+      });
+    case SET_PANELS_PREFERENCES:
+      return produce(state, (draft) => {
+        if (action.payload) {
+          const { key, value } = action.payload;
+          draft.formatting.panels[key] = value;
         }
       });
     default:

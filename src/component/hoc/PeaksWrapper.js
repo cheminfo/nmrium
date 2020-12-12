@@ -1,6 +1,7 @@
 import { forwardRef, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import { usePreferences } from '../context/PreferencesContext';
 
 function PeaksWrapper(WrappedComponent) {
   const Wrapper = (props) => {
@@ -8,10 +9,10 @@ function PeaksWrapper(WrappedComponent) {
       data,
       activeSpectrum,
       xDomain,
-      preferences,
       activeTab,
       tabActiveSpectrum,
     } = useChartData();
+    const preferences = usePreferences();
 
     const { peaks = {}, info = {}, x = [], y = [] } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {

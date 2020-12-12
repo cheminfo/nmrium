@@ -54,9 +54,10 @@ const RangesTable = ({
   onZoom,
   onEdit,
   context,
+  activeTab,
   preferences,
-  element,
 }) => {
+  const element = activeTab && activeTab.replace(/[0-9]/g, '');
   const contextRef = useRef();
   const data = useMapRanges(tableData);
   const [relativeFlags, toggleResltiveColumn] = useToggleStatus(
@@ -66,7 +67,11 @@ const RangesTable = ({
   const { rootRef } = useGlobal();
 
   const isVisible = (key) => {
-    return lodash.get(preferences, key, false);
+    return lodash.get(
+      preferences,
+      `formatting.panels.ranges.[${activeTab}].${key}`,
+      false,
+    );
   };
 
   const contextMenuHandler = useCallback(

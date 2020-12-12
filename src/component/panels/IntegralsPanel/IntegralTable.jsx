@@ -5,7 +5,6 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { SignalKinds } from '../../../data/constants/SignalsKinds';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
-import { usePreferences } from '../../context/PreferencesContext';
 import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import Select from '../../elements/Select';
@@ -32,12 +31,11 @@ const IntegralTable = memo(
     xDomain,
     enableFilter,
     onIntegralsChange,
+    preferences,
   }) => {
     const dispatch = useDispatch();
-    const preferences = usePreferences();
     const relativeRefs = useRef([]);
     const { rootRef } = useGlobal();
-
     const deleteIntegralHandler = useCallback(
       (e, row) => {
         e.preventDefault();

@@ -26,7 +26,6 @@ const PeaksPanel = memo(() => {
   const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef();
-
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_PEAK_NOTATION, data: null });
   }, [dispatch]);

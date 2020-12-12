@@ -62,6 +62,7 @@ const NumberInput = forwardRef(
             onChange={changeHander}
             onInput={onInput}
             min={min}
+            key={defaultValue}
           />
         </div>
       </div>

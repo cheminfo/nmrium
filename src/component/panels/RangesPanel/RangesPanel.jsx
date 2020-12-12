@@ -233,11 +233,11 @@ const RangesTablePanel = memo(
               <div>
                 {rangesData && rangesData.length > 0 ? (
                   <RangesTable
+                    activeTab={activeTab}
                     tableData={rangesData}
                     onUnlink={unlinkRangeHandler}
                     context={contextMenu}
                     preferences={rangesPreferences}
-                    element={activeTab && activeTab.replace(/[0-9]/g, '')}
                   />
                 ) : (
                   <NoTableData />

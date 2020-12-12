@@ -1,7 +1,6 @@
 import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-// import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import PeaksWrapper from '../../hoc/PeaksWrapper';
@@ -19,14 +18,13 @@ const PeaksTable = memo(
     x,
     y,
     xDomain,
-    preferences,
     activeTab,
     enableFilter,
     onPeaksChange,
+    preferences,
   }) => {
     const dispatch = useDispatch();
     const format = useFormatNumberByNucleus(info.nucleus);
-
     const deletePeakHandler = useCallback(
       (e, row) => {
         e.preventDefault();
@@ -109,6 +107,7 @@ const PeaksTable = memo(
         preferences,
         `formatting.panels.peaks.[${activeTab}]`,
       );
+
       if (peaksPreferences) {
         let cols = [...initialColumns];
         if (peaksPreferences.showPeakNumber) {

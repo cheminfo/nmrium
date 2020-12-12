@@ -9,12 +9,11 @@ import {
 } from 'react';
 import { MF } from 'react-mf';
 
-import { useDispatch } from '../../context/DispatchContext';
 import ColorInput from '../../elements/ColorInput';
 import NumberInput from '../../elements/NumberInput';
 import { useAlert } from '../../elements/popup/Alert';
 import IntegralsWrapper from '../../hoc/IntegralsWrapper';
-import { SET_PREFERENCES } from '../../reducer/types/Types';
+import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import {
   useStateWithLocalStorage,
   getValue as getValueByKeyPath,
@@ -57,8 +56,7 @@ const styles = {
   },
 };
 
-const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
-  const dispatch = useDispatch();
+const IntegralsPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
@@ -70,6 +68,7 @@ const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
       preferences,
       'formatting.panels.integrals',
     );
+
     if (integralsPreferences) {
       setSetting(integralsPreferences);
     }
@@ -81,20 +80,26 @@ const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
 
   const saveHandler = useCallback(
     (values, showMessage = false) => {
-      dispatch({
-        type: SET_PREFERENCES,
-        data: { type: 'integrals', values },
+      preferences.dispatch({
+        type: SET_PANELS_PREFERENCES,
+        payload: { key: 'integrals', value: values },
       });
       if (showMessage) {
         alert.success('Integrals preferences saved successfully');
       }
     },
-    [alert, dispatch],
+    [alert, preferences],
   );
 
   useImperativeHandle(ref, () => ({
     saveSetting() {
-      formRef.current.dispatchEvent(new Event('submit', { cancelable: true }));
+      if (typeof formRef.current.requestSubmit === 'function') {
+        formRef.current.requestSubmit();
+      } else {
+        formRef.current.dispatchEvent(
+          new Event('submit', { cancelable: true }),
+        );
+      }
     },
   }));
 
@@ -116,6 +121,7 @@ const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
   ];
 
   const handleSubmit = async (event) => {
+    event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
     let values = {};
@@ -132,9 +138,12 @@ const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
 
   const getValue = useCallback(
     (...params) => {
-      const keys = params.join('.');
+      // console.log(params, settings);
       if (settings) {
-        const value = lodash.get(settings, keys);
+        const value =
+          params[0] === null
+            ? settings[params[1]]
+            : lodash.get(settings, params.join('.'));
         return value ? value : null;
       } else {
         const keyIndex = params.length - 1;
@@ -143,13 +152,12 @@ const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
     },
     [settings],
   );
-
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} ref={formRef}>
         <div style={styles.groupContainer}>
           <p style={styles.header}>General</p>
-          <ColorInput name="color" value={getValue('color')} />
+          <ColorInput name="color" value={`${getValue(null, 'color')}`} />
           <NumberInput
             name="strokeWidth"
             label="stroke width :"
@@ -161,8 +169,7 @@ const IntegralsPreferences = forwardRef(({ preferences, nucleus }, ref) => {
                 borderRadius: '0',
               },
             }}
-            defaultValue={1}
-            value={getValue('strokeWidth')}
+            defaultValue={getValue(null, 'strokeWidth')}
             min={1}
             pattern="[1-9]*"
           />

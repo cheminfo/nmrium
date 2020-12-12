@@ -9,11 +9,11 @@ import {
   memo,
 } from 'react';
 
-import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import { useAlert } from '../../elements/popup/Alert';
 import ContextWrapper from '../../hoc/ContextWrapper';
-import { SET_PREFERENCES } from '../../reducer/types/Types';
+import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import {
   useStateWithLocalStorage,
   getValue as getValueByKeyPath,
@@ -87,21 +87,20 @@ const formatFields = [
   },
 ];
 
-const ZonesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
-  const dispatch = useDispatch();
+const ZonesPreferences = forwardRef(({ nucleus }, ref) => {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
+  const preferences = usePreferences();
 
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
-
   useEffect(() => {
-    const integralsPreferences = getValueByKeyPath(
+    const zonesPreferences = getValueByKeyPath(
       preferences,
-      'formatting.panels.ranges',
+      'formatting.panels.zones',
     );
-    if (integralsPreferences) {
-      setSetting(integralsPreferences);
+    if (zonesPreferences) {
+      setSetting(zonesPreferences);
     }
   }, [preferences]);
 
@@ -111,24 +110,31 @@ const ZonesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
 
   const saveHandler = useCallback(
     (values, showMessage = false) => {
-      dispatch({
-        type: SET_PREFERENCES,
-        data: { type: 'ranges', values },
+      preferences.dispatch({
+        type: SET_PANELS_PREFERENCES,
+        payload: { key: 'zones', value: values },
       });
       if (showMessage) {
-        alert.success('ranges preferences saved successfully');
+        alert.success('zones preferences saved successfully');
       }
     },
-    [alert, dispatch],
+    [alert, preferences],
   );
 
   useImperativeHandle(ref, () => ({
     saveSetting() {
-      formRef.current.dispatchEvent(new Event('submit', { cancelable: true }));
+      if (typeof formRef.current.requestSubmit === 'function') {
+        formRef.current.requestSubmit();
+      } else {
+        formRef.current.dispatchEvent(
+          new Event('submit', { cancelable: true }),
+        );
+      }
     },
   }));
 
   const handleSubmit = async (event) => {
+    event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
     let values = {};

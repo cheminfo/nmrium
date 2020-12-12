@@ -9,10 +9,9 @@ import {
   memo,
 } from 'react';
 
-import { useDispatch } from '../../context/DispatchContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import { useAlert } from '../../elements/popup/Alert';
-import { SET_PREFERENCES } from '../../reducer/types/Types';
+import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import {
   useStateWithLocalStorage,
   getValue as getValueByKeyPath,
@@ -56,10 +55,8 @@ const styles = {
 };
 
 const RangesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
-  const dispatch = useDispatch();
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
-
   const [settings, setSetting] = useState(null);
   const formRef = useRef();
 
@@ -79,20 +76,26 @@ const RangesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
 
   const saveHandler = useCallback(
     (values, showMessage = false) => {
-      dispatch({
-        type: SET_PREFERENCES,
-        data: { type: 'ranges', values },
+      preferences.dispatch({
+        type: SET_PANELS_PREFERENCES,
+        payload: { key: 'ranges', value: values },
       });
       if (showMessage) {
         alert.success('ranges preferences saved successfully');
       }
     },
-    [alert, dispatch],
+    [alert, preferences],
   );
 
   useImperativeHandle(ref, () => ({
     saveSetting() {
-      formRef.current.dispatchEvent(new Event('submit', { cancelable: true }));
+      if (typeof formRef.current.requestSubmit === 'function') {
+        formRef.current.requestSubmit();
+      } else {
+        formRef.current.dispatchEvent(
+          new Event('submit', { cancelable: true }),
+        );
+      }
     },
   }));
 
@@ -128,6 +131,7 @@ const RangesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   ];
 
   const handleSubmit = async (event) => {
+    event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
     let values = {};
