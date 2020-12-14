@@ -1,0 +1,9 @@
+extends: cheminfo-react
+parser: babel-eslint
+rules:
+  'import/no-anonymous-default-export': warn
+  'import/no-unresolved': off
+  'eofline': off
+  'no-console': warn
+  'no-debugger': warn
+  'no-unused-vars': warn

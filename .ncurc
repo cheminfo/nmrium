@@ -1,5 +1,7 @@
 {
   "reject": [
+    "react",
+    "react-dom",
     "react-color",
     "react-table",
     "rc-menu",
