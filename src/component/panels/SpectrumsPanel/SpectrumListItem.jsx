@@ -176,6 +176,16 @@ const SpectrumListItem = memo(
               __html: data.info && formatValueAsHTML(data.info.solvent),
             }}
           />
+          <span style={styles.info}>
+            <span
+              style={{
+                borderLeft: '0.55px solid #e5e5e5',
+                paddingRight: '5px',
+              }}
+            />
+            {data.info && data.info.experiment}
+          </span>
+
           {/* {data.info && data.info.solvent} */}
           {/* </div> */}
           <span style={styles.info}>{data.info && data.info.pulse}</span>
