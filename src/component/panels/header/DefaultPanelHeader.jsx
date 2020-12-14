@@ -52,8 +52,8 @@ const DefaultPanelHeader = memo(
     counterFiltered,
     children,
     onSettingClick,
-    showSettingButton = false,
-    canDelete = true,
+    showSettingButton,
+    canDelete,
   }) => {
     return (
       <div style={styles.toolbar}>
@@ -123,5 +123,18 @@ const DefaultPanelHeader = memo(
     );
   },
 );
+
+DefaultPanelHeader.defaultProps = {
+  counter: 0,
+  onDelete: () => null,
+  deleteToolTip: 'Delete',
+  onFilter: () => null,
+  filterToolTip: '',
+  filterIsActive: false,
+  counterFiltered: 0,
+  onSettingClick: () => null,
+  showSettingButton: false,
+  canDelete: true,
+};
 
 export default DefaultPanelHeader;

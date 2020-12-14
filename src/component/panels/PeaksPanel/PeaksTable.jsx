@@ -1,4 +1,4 @@
-import { useCallback, useMemo, memo } from 'react';
+import { useCallback, useMemo, memo, useEffect } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
@@ -20,7 +20,7 @@ const PeaksTable = memo(
     xDomain,
     activeTab,
     enableFilter,
-    onPeaksChange,
+    onFilter,
     preferences,
   }) => {
     const dispatch = useDispatch();
@@ -162,8 +162,6 @@ const PeaksTable = memo(
           ? peaks.values.filter((peak) => isInRange(x[peak.xIndex]))
           : peaks.values;
 
-        onPeaksChange(_peaks);
-
         return _peaks.map((peak) => {
           const value = format(x[peak.xIndex]);
           return {
@@ -178,7 +176,13 @@ const PeaksTable = memo(
           };
         });
       }
-    }, [enableFilter, format, info, onPeaksChange, peaks, x, xDomain, y]);
+
+      return [];
+    }, [enableFilter, format, info, peaks, x, xDomain, y]);
+
+    useEffect(() => {
+      onFilter(_data.length);
+    }, [_data, onFilter]);
 
     return _data && _data.length > 0 ? (
       <ReactTable data={_data} columns={tableColumns} />

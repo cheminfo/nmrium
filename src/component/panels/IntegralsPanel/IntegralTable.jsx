@@ -30,7 +30,7 @@ const IntegralTable = memo(
     activeTab,
     xDomain,
     enableFilter,
-    onIntegralsChange,
+    onFilter,
     preferences,
   }) => {
     const dispatch = useDispatch();
@@ -218,13 +218,6 @@ const IntegralTable = memo(
       saveRealtiveHandler,
     ]);
 
-    const data = useMemo(() => {
-      if (info.dimension === 1 && integrals && integrals.values) {
-        return integrals.values;
-      }
-      return [];
-    }, [info.dimension, integrals]);
-
     const tableData = useMemo(() => {
       function isInRange(from, to) {
         const factor = 10000;
@@ -235,20 +228,26 @@ const IntegralTable = memo(
           (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
         );
       }
+      if (info.dimension === 1 && integrals && integrals.values) {
+        const _integrals = enableFilter
+          ? integrals.values.filter((integral) =>
+              isInRange(integral.from, integral.to),
+            )
+          : integrals.values;
 
-      const integrals = enableFilter
-        ? data.filter((integral) => isInRange(integral.from, integral.to))
-        : data;
+        return _integrals.map((integral) => {
+          return {
+            ...integral,
+            isConstantlyHighlighted: isInRange(integral.from, integral.to),
+          };
+        });
+      }
+      return [];
+    }, [enableFilter, info.dimension, integrals, xDomain]);
 
-      onIntegralsChange(integrals);
-
-      return integrals.map((integral) => {
-        return {
-          ...integral,
-          isConstantlyHighlighted: isInRange(integral.from, integral.to),
-        };
-      });
-    }, [data, enableFilter, onIntegralsChange, xDomain]);
+    useEffect(() => {
+      onFilter(tableData.length);
+    }, [tableData, onFilter]);
 
     return tableData && tableData.length > 0 ? (
       <ReactTable data={tableData} columns={tableColumns} />

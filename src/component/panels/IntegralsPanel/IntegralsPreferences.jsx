@@ -56,6 +56,22 @@ const styles = {
   },
 };
 
+const formatFields = [
+  {
+    id: 1,
+    label: 'Absolute :',
+    checkController: 'showAbsolute',
+    formatController: 'absoluteFormat',
+    defaultFormat: '0.00',
+  },
+  {
+    id: 2,
+    label: 'Relative :',
+    checkController: 'showRelative',
+    formatController: 'relativeFormat',
+    defaultFormat: '00.00',
+  },
+];
 const IntegralsPreferences = forwardRef(({ nucleus, preferences }, ref) => {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
@@ -102,23 +118,6 @@ const IntegralsPreferences = forwardRef(({ nucleus, preferences }, ref) => {
       }
     },
   }));
-
-  const formatFields = [
-    {
-      id: 1,
-      label: 'Absolute :',
-      checkController: 'showAbsolute',
-      formatController: 'absoluteFormat',
-      defaultFormat: '0.00',
-    },
-    {
-      id: 2,
-      label: 'Relative :',
-      checkController: 'showRelative',
-      formatController: 'relativeFormat',
-      defaultFormat: '00.00',
-    },
-  ];
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -169,7 +168,7 @@ const IntegralsPreferences = forwardRef(({ nucleus, preferences }, ref) => {
                 borderRadius: '0',
               },
             }}
-            defaultValue={getValue(null, 'strokeWidth')}
+            defaultValue={Number(getValue(null, 'strokeWidth'))}
             min={1}
             pattern="[1-9]*"
           />

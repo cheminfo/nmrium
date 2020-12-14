@@ -48,8 +48,8 @@ const PeaksPanel = memo(() => {
   const handleOnFilter = useCallback(() => {
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
-  const peaksChangedHandler = useCallback((peaks) => {
-    if (peaks) setPeaksCounter(peaks.length);
+  const changedHandler = useCallback((val) => {
+    setPeaksCounter(val);
   }, []);
 
   return (
@@ -81,10 +81,7 @@ const PeaksPanel = memo(() => {
           infinite={true}
           containerStyle={{ overflow: 'hidden' }}
         >
-          <PeaksTable
-            enableFilter={filterIsActive}
-            onPeaksChange={peaksChangedHandler}
-          />
+          <PeaksTable enableFilter={filterIsActive} onFilter={changedHandler} />
           <PeaksPreferences ref={settingRef} />
         </ReactCardFlip>
       </div>

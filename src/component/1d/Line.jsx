@@ -25,7 +25,9 @@ export const Line = ({ x, y, id, display, index }) => {
   }, [index, verticalAlign.flag, verticalAlign.stacked, verticalAlign.value]);
 
   const paths = useMemo(() => {
-    if (x && y) {
+    const _scaleX = scaleX();
+    const _scaleY = scaleY(id);
+    if (x && y && _scaleX(0)) {
       const pathPoints = xyReduce(
         { x, y },
         {
@@ -34,8 +36,6 @@ export const Line = ({ x, y, id, display, index }) => {
         },
       );
 
-      const _scaleX = scaleX();
-      const _scaleY = scaleY(id);
       let path = `M ${_scaleX(pathPoints.x[0])} ${_scaleY(pathPoints.y[0])} `;
       path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
         accumulator += ` L ${_scaleX(point)} ${_scaleY(pathPoints.y[i + 1])}`;
@@ -43,7 +43,7 @@ export const Line = ({ x, y, id, display, index }) => {
       }, '');
       return path;
     } else {
-      return null;
+      return '';
     }
   }, [id, scaleX, scaleY, x, xDomain, y]);
 

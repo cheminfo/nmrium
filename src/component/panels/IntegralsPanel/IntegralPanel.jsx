@@ -102,8 +102,8 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
 
-  const integralsChangedHandler = useCallback((integrals) => {
-    if (integrals) setIntegralsCounter(integrals.length);
+  const changedHandler = useCallback((val) => {
+    setIntegralsCounter(val);
   }, []);
 
   return (
@@ -152,7 +152,7 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
             <div>
               <IntegralTable
                 enableFilter={filterIsActive}
-                onIntegralsChange={integralsChangedHandler}
+                onFilter={changedHandler}
               />
             </div>
             <IntegralsPreferences ref={settingRef} />
