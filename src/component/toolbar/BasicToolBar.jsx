@@ -272,14 +272,14 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
         selectedSpectrumInfo &&
         selectedSpectrumInfo.isComplex && (
           <button
-            css={styles}
+            css={[styles, { display: 'block' }]}
             type="button"
             onClick={changeSpectrumViewHandler}
             className={'ci-icon-nmr-real-imag'}
           >
             <ToolTip
               title={
-                isRealSpectrumShown ? 'Real Spectrum' : 'Imaginary Spectrum'
+                isRealSpectrumShown ? 'Display Real ' : 'Display Imaginary '
               }
               popupPlacement="right"
             />
@@ -288,7 +288,7 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('hideSpectraCenterAlignments') && (
           <button
-            css={styles}
+            css={[styles, { display: 'block' }]}
             type="button"
             onClick={alignSpectrumsVerticallyHandler}
             className={
@@ -298,10 +298,11 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
             }
           >
             <ToolTip
-              title={!verticalAlign.flag ? 'Align Center' : 'Bottom Align'}
+              title={
+                !verticalAlign.flag ? 'Baseline  Center' : 'Baseline  Bottom'
+              }
               popupPlacement="right"
             />
-            {/* {!verticalAlign.flag ? 'CA' : 'BA'} */}
           </button>
         )}
     </Fragment>
