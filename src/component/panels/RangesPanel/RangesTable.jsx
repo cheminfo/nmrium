@@ -67,11 +67,7 @@ const RangesTable = ({
   const { rootRef } = useGlobal();
 
   const isVisible = (key) => {
-    return lodash.get(
-      preferences,
-      `formatting.panels.ranges.[${activeTab}].${key}`,
-      false,
-    );
+    return lodash.get(preferences, key, false);
   };
 
   const contextMenuHandler = useCallback(

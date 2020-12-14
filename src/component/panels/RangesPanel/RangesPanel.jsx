@@ -172,7 +172,7 @@ const RangesTablePanel = memo(
 
     const rangesPreferences = useMemo(() => {
       const _preferences =
-        lodash.get(preferences, `panels.ranges.[${activeTab}]`) ||
+        lodash.get(preferences, `formatting.panels.ranges.[${activeTab}]`) ||
         rangeDefaultValues;
 
       return _preferences;
