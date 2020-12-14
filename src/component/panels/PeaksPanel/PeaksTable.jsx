@@ -57,6 +57,9 @@ const PeaksTable = memo(
           sortType: 'basic',
         },
         {
+          width: '1%',
+          maxWidth: '24px',
+          minWidth: '24px',
           Header: '',
           id: 'delete-button',
           Cell: ({ row }) => (
@@ -78,7 +81,7 @@ const PeaksTable = memo(
         {
           index: 20,
           Header: '',
-          width: '2%',
+          width: '1%',
           maxWidth: '24px',
           minWidth: '24px',
           padding: 0,
