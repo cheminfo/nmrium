@@ -28,6 +28,7 @@ const ReactTableRow = ({ row, onContextMenu }) => {
       {...highlight.onHover}
     >
       {row.cells.map((cell) => {
+        const { minWidth, maxWidth, width, padding } = cell.column;
         return (
           <td
             key={cell.key}
@@ -37,6 +38,7 @@ const ReactTableRow = ({ row, onContextMenu }) => {
 
               return false;
             }}
+            style={{ minWidth, maxWidth, width, padding }}
           >
             {cell.render('Cell')}
           </td>

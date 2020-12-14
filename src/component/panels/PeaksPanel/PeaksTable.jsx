@@ -78,6 +78,10 @@ const PeaksTable = memo(
         {
           index: 20,
           Header: '',
+          width: '2%',
+          maxWidth: '24px',
+          minWidth: '24px',
+          padding: 0,
           id: 'delete-button',
           Cell: ({ row }) => (
             <button
