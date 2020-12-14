@@ -101,6 +101,10 @@ const IntegralTable = memo(
         {
           orderIndex: 7,
           Header: '',
+          width: '1%',
+          maxWidth: '24px',
+          minWidth: '24px',
+          padding: 0,
           id: 'delete-button',
           Cell: ({ row }) => (
             <button
