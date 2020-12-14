@@ -167,7 +167,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
   const submitHandler = useCallback(
     (values) => {
       // eslint-disable-next-line no-unused-vars
-      const { dispatch, ...resValues } = values;
+      const { dispatch, basePreferences, ...resValues } = values;
       setSettingsData(resValues);
       preferences.dispatch({ type: SET_PREFERENCES, payload: values });
       onSave();
@@ -211,7 +211,7 @@ const GeneralSettings = ({ onClose, onSave }) => {
               <FormattingTabContent />
             </div>
             <div className="inner-content" tablabel="Display" tabid="display">
-              <DisplayTabContent />
+              <DisplayTabContent preferences={preferences} />
             </div>
             <div className="inner-content" tablabel="About" tabid="about">
               <AboutTabContent />

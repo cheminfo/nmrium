@@ -201,7 +201,7 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
 
   const isButtonVisible = useCallback(
     (key) => {
-      return !lodash.get(preferences, `toolBarButtons.${key}`);
+      return !lodash.get(preferences, `display.toolBarButtons.${key}`);
     },
     [preferences],
   );

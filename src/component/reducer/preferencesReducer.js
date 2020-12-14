@@ -8,6 +8,7 @@ export const SET_PREFERENCES = 'SET_PREFERENCES';
 export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
 
 export const preferencesInitialState = {
+  basePreferences: {},
   display: {
     general: {
       disableMultipletAnalysis: false,
@@ -83,10 +84,15 @@ export function preferencesReducer(state, action) {
 
       return produce(state, (draft) => {
         if (action.payload) {
-          draft.display = action.payload.display;
-          draft.dispatch = action.payload.dispatch;
+          const { dispatch, ...resPreferences } = action.payload;
+          draft.basePreferences = resPreferences;
+          draft.display = resPreferences.display;
+          draft.dispatch = dispatch;
           Object.entries(localData).forEach(([k, v]) => {
-            draft[k] = v;
+            draft[k] = lodash.merge(
+              v,
+              resPreferences[k] ? resPreferences[k] : {},
+            );
           });
           mapNucleus(draft, state);
         }

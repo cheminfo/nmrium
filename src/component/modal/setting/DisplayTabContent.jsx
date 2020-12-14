@@ -1,69 +1,66 @@
+import lodash from 'lodash';
+
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 
-const DisplayTabContent = () => {
+const LIST = [
+  {
+    label: 'Spectra Panel',
+    name: 'display.panels.hideSpectraPanel',
+  },
+  {
+    label: 'Information Panel',
+    name: 'display.panels.hideInformationPanel',
+  },
+  {
+    label: 'Peaks Panel',
+    name: 'display.panels.hidePeaksPanel',
+  },
+  {
+    label: 'Integrals Panel',
+    name: 'display.panels.hideIntegralsPanel',
+  },
+  {
+    label: 'Ranges Panel',
+    name: 'display.panels.hideRangesPanel',
+  },
+  {
+    label: 'Structures Panel',
+    name: 'display.panels.hideStructuresPanel',
+  },
+  {
+    label: 'Filters Panel',
+    name: 'display.panels.hideFiltersPanel',
+  },
+  {
+    label: 'Zones Panel',
+    name: 'display.panels.hideZonesPanel',
+  },
+  {
+    label: 'Summary Panel',
+    name: 'display.panels.hideSummaryPanel',
+  },
+  {
+    label: 'Multiple Spectra Analysis Panel',
+    name: 'display.panels.hideMultipleSpectraAnalysisPanel',
+  },
+];
+
+const DisplayTabContent = ({ preferences }) => {
   return (
     <>
       <p className="section-header">Show / Hide Panels</p>
-      <FormikCheckBox
-        className="checkbox-element"
-        label="Spectra Panel"
-        name="display.panels.hideSpectraPanel"
-        reverse={true}
-      />
-      <FormikCheckBox
-        className="checkbox-element"
-        label="Information Panel"
-        name="display.panels.hideInformationPanel"
-        reverse={true}
-      />
-      <FormikCheckBox
-        className="checkbox-element"
-        label="Peaks Panel"
-        name="display.panels.hidePeaksPanel"
-        reverse={true}
-      />
-      <FormikCheckBox
-        className="checkbox-element"
-        label="Integrals Panel"
-        name="display.panels.hideIntegralsPanel"
-        reverse={true}
-      />
-      <FormikCheckBox
-        className="checkbox-element"
-        label="Ranges Panel"
-        name="display.panels.hideRangesPanel"
-        reverse={true}
-      />
-      <FormikCheckBox
-        className="checkbox-element"
-        label="Structures Panel"
-        name="display.panels.hideStructuresPanel"
-        reverse={true}
-      />
-      <FormikCheckBox
-        className="checkbox-element"
-        label="Filters Panel"
-        name="display.panels.hideFiltersPanel"
-        reverse={true}
-      />
-      <FormikCheckBox
-        className="checkbox-element"
-        label="Zones Panel"
-        name="display.panels.hideZonesPanel"
-        reverse={true}
-      />
-      <FormikCheckBox
-        className="checkbox-element"
-        label="Summary Panel"
-        name="display.panels.hideSummaryPanel"
-        reverse={true}
-      />
-      <FormikCheckBox
-        className="checkbox-element"
-        label="Multiple Spectra Analysis Panel"
-        name="display.panels.hideMultipleSpectraAnalysisPanel"
-        reverse={true}
-      />
+      {LIST.map(
+        (item) =>
+          !lodash.get(preferences, `basePreferences.${item.name}`, false) && (
+            <FormikCheckBox
+              key={item.name}
+              className="checkbox-element"
+              label={item.label}
+              name={item.name}
+              reverse={true}
+            />
+          ),
+      )}
     </>
   );
 };

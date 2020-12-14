@@ -181,7 +181,7 @@ const FunctionToolBar = ({
 
   const isButtonVisible = useCallback(
     (key) => {
-      return !lodash.get(preferences, `toolBarButtons.${key}`);
+      return !lodash.get(preferences, `display.toolBarButtons.${key}`);
     },
     [preferences],
   );
