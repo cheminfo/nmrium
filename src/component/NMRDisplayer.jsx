@@ -163,10 +163,15 @@ const NMRDisplayer = memo(
       setHelpData(helpList());
     }, [docsBaseUrl]);
 
-    const handleSplitPanelDragFinished = useCallback((size) => {
-      setResizeEventStart(false);
-      dispatch({ type: SET_WIDTH, width: size });
-    }, []);
+    const handleSplitPanelDragFinished = useCallback(
+      (size) => {
+        if (size && !isRightPanelHide) {
+          setResizeEventStart(false);
+          dispatch({ type: SET_WIDTH, width: size });
+        }
+      },
+      [isRightPanelHide],
+    );
 
     const dispatchMiddleWare = useMemo(() => {
       function dataChangeHandler(data) {
@@ -183,7 +188,8 @@ const NMRDisplayer = memo(
       );
     }, [preferencesState]);
 
-    const rightPanelHandler = useCallback(() => {
+    const rightPanelHandler = useCallback((e) => {
+      e.stopPropagation();
       hideRightPanel((prevFlag) => !prevFlag);
     }, []);
 
@@ -264,7 +270,6 @@ const NMRDisplayer = memo(
                                       <Panels
                                         selectedTool={selectedTool}
                                         displayerMode={displayerMode}
-                                        onHide={rightPanelHandler}
                                       />
                                     ) : (
                                       <div />
