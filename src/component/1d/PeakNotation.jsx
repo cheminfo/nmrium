@@ -233,7 +233,7 @@ export const PeakNotation = ({
           className="regular-text"
           ref={refText}
           x="0"
-          y={sign === -1 ? 20 : -10}
+          y={sign === -1 ? 18 : -20}
           dy="0.1em"
           dx="0.35em"
           fill="transparent"
@@ -242,17 +242,17 @@ export const PeakNotation = ({
         </text>
         <foreignObject
           x="0"
-          y={sign * -20}
+          y={sign === -1 ? 18 : -20}
           dy="0.1em"
           dx="0.35em"
           width={containerSize.width + 20}
-          height={containerSize.height + 30}
+          height="40px"
           data-no-export="true"
         >
           <div
             style={{
               width: containerSize.width + 20,
-              height: containerSize.height,
+              height: '100%',
               paddingRight: 5,
             }}
             xmlns="http://www.w3.org/1999/xhtml"
@@ -277,7 +277,7 @@ export const PeakNotation = ({
               type="number"
               disabled={!isActive}
             />
-            {isOver.id && isOver.flag === true && (
+            {isOver.id && isOver.flag === true && !isSelected && (
               <button
                 type="button"
                 onClick={(e) =>
@@ -286,7 +286,7 @@ export const PeakNotation = ({
                 className="delete-bt"
                 style={{
                   left: containerSize.width,
-                  top: containerSize.height + 7,
+                  top: '15px',
                 }}
               >
                 <FaMinus />
