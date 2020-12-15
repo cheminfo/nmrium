@@ -4,29 +4,18 @@ import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useContext, useMemo, Fragment } from 'react';
 import { MF } from 'react-mf';
 
-// import { getPeakLabelNumberDecimals } from '../../data/defaults/default';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
-// import { useChartData } from '../context/ChartContext';
-
-// import { useScale } from '../context/ScaleContext';
-
-import {
-  getLayoutID,
-  // get2DDimensionLayout,
-  LAYOUT,
-} from './utilities/DimensionLayout';
-import {
-  get2DXScale,
-  // get1DXScale,
-  get1DYScale,
-  get2DYScale,
-} from './utilities/scale';
+import { getLayoutID, LAYOUT } from './utilities/DimensionLayout';
+import { get2DXScale, get1DYScale, get2DYScale } from './utilities/scale';
 
 const styles = css`
+  display: flex;
+  flex-firection: row;
+  align-items: center;
   pointer-events: bounding-box;
   user-select: 'none';
   -webkit-user-select: none; /* Chrome all / Safari all */
@@ -221,8 +210,6 @@ const FooterBanner = ({ layout, data1D }) => {
     );
   };
 
-  // const frequency = data[activeSpectrum.index].info.originFrequency; // should be spectrum.info.originFrequency;
-
   return (
     <div css={styles}>
       <div>
@@ -230,15 +217,7 @@ const FooterBanner = ({ layout, data1D }) => {
         <span className="value">{formatX(getXValue())}</span>
         <span className="unit">ppm</span>
       </div>
-      {/* {frequency && (
-        <div>
-          <span className="label"> X :</span>
-          <span className="value">
-            {(scaleX().invert(position.x) * frequency).toPrecision(6)}
-          </span>
-          <span className="unit">Hz</span>
-        </div>
-      )} */}
+
       <div>
         <span className="label">{getLabel('F1', 'Y', nucleuses[1])} :</span>
         <span className="value">{formatY(getYValue())}</span>
@@ -250,17 +229,7 @@ const FooterBanner = ({ layout, data1D }) => {
           <span className="value">{getDeltaX()}</span>
         </div>
       )}
-      {/* {frequency && step === 'brushing' && (
-        <div>
-          <span className="label"> ΔHz :</span>
-          <span className="value">
-            {(
-              (scaleX().invert(startX) - scaleX().invert(endX)) *
-              frequency
-            ).toPrecision(5)}
-          </span>
-        </div>
-      )} */}
+
       {step === 'brushing' && (
         <div>
           <span className="label"> ratio :</span>

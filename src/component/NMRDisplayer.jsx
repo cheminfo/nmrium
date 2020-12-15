@@ -75,6 +75,14 @@ const containerStyles = css`
   div:focus {
     outline: none !important;
   }
+
+  button {
+    cursor: pointer;
+    &:disabled {
+      cursor: default;
+    }
+  }
+
   button:active,
   button:hover,
   button:focus,

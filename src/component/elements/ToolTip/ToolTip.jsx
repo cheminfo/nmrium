@@ -105,7 +105,9 @@ const ToolTip = memo(
           style={{
             position: 'relative',
             height: '100%',
-            display: 'block',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             ...style.mainContainer,
           }}
           ref={refChild}

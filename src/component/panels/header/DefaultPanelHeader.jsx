@@ -1,46 +1,52 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { memo } from 'react';
 import { FaRegTrashAlt, FaCog, FaFilter } from 'react-icons/fa';
 
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
-const styles = {
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: '1',
-    height: '100%',
+const styles = css`
+  
+  display: flex;
+    flex-direction: row;
+    borde-bottom: 0.55px solid rgb(240, 240, 240);
+    padding: 0px 5px;
+  
+
+  button {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+ 
+  }
+
+  button:disabled{
+    opacity:0.6;
+  }
+  
+  .counter-label {
+    margin: 0;
+    text-align: right;
+    width: 100%;
+    line-height: 22px;
+    padding: 0px 10px;
+  }
+
+  filter-button{
+    borderRadius: 5px;
+    marginTop: 3px;
+    marginLeft: 5px;
+    color: black;
+    backgroundColor: transparent;
+    border: none;
+    height: 16px;
+    width: 18px;
+    fontSize: 12px;
+    padding: 0;
   },
 
-  toolbar: {
-    display: 'flex',
-    flexDirection: 'row',
-    borderBottom: '0.55px solid rgb(240, 240, 240)',
-    padding: '0px 5px',
-  },
-  counterLabel: {
-    margin: 0,
-    textAlign: 'right',
-    width: '100%',
-    lineHeight: '22px',
-    padding: '0px 10px',
-  },
-  filterButton: {
-    borderRadius: '5px',
-    marginTop: '3px',
-    marginLeft: '5px',
-    color: 'black',
-    backgroundColor: 'transparent',
-    border: 'none',
-    height: '16px',
-    width: '18px',
-    fontSize: '12px',
-    padding: 0,
-  },
-};
+`;
+
 const DefaultPanelHeader = memo(
   ({
     counter,
@@ -56,15 +62,10 @@ const DefaultPanelHeader = memo(
     canDelete,
   }) => {
     return (
-      <div style={styles.toolbar}>
+      <div css={styles}>
         {canDelete && (
           <ToolTip title={deleteToolTip} popupPlacement="right">
-            <button
-              style={styles.button}
-              type="button"
-              onClick={onDelete}
-              disabled={counter === 0}
-            >
+            <button type="button" onClick={onDelete} disabled={counter === 0}>
               <FaRegTrashAlt />
             </button>
           </ToolTip>
@@ -76,15 +77,15 @@ const DefaultPanelHeader = memo(
         {onFilter && filterToolTip ? (
           <ToolTip title={filterToolTip} popupPlacement="right">
             <button
+              className="filter-button"
               style={
                 filterIsActive && filterIsActive === true
                   ? {
-                      ...styles.filterButton,
                       backgroundColor: '#6d6d6d',
                       color: 'white',
                       fontSize: '10px',
                     }
-                  : styles.filterButton
+                  : {}
               }
               type="button"
               onClick={onFilter}
@@ -96,7 +97,7 @@ const DefaultPanelHeader = memo(
         ) : null}
 
         {counter ? (
-          <p style={styles.counterLabel}>
+          <p className="counter-label">
             [{' '}
             {filterIsActive &&
             filterIsActive === true &&
@@ -110,11 +111,7 @@ const DefaultPanelHeader = memo(
         )}
         {showSettingButton && (
           <ToolTip title="preferences" popupPlacement="left">
-            <button
-              style={styles.button}
-              type="button"
-              onClick={onSettingClick}
-            >
+            <button type="button" onClick={onSettingClick}>
               <FaCog />
             </button>
           </ToolTip>

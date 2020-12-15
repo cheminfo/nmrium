@@ -24,7 +24,7 @@ const Select = forwardRef(({ data, style, onChange, defaultValue }, ref) => {
     background: ${arrowDownIcon} no-repeat right white;
     -webkit-appearance: none;
     background-position-x: ${style.width ? style.width - 18 : 115 - 18}px;
-    background-size: 10px 10px;
+    background-size: 15px 15px;
     border-radius: 5px;
     margin: 0px 5px;
     :focus,

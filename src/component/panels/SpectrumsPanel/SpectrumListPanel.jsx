@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { useCallback, memo, useState } from 'react';
 import {
   FaEye,
@@ -21,17 +19,12 @@ import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
 import SpectrumsTabs from './SpectrumsTabs';
 
-const styles = css`
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  button {
-    background-color: transparent;
-    border: none;
-  }
-`;
+const styles = {
+  overflow: 'hidden',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+};
 
 const SpectrumListPanel = memo(
   ({ data, activeSpectrum, activeTab: activeTabState }) => {
@@ -88,7 +81,7 @@ const SpectrumListPanel = memo(
     }, [activeTabState, alert, data, dispatch]);
 
     return (
-      <div css={styles}>
+      <div style={styles}>
         <DefaultPanelHeader
           onDelete={handleDelete}
           counter={spectrums && spectrums.length}

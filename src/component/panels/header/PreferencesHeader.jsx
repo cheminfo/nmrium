@@ -9,7 +9,15 @@ const styles = css`
   display: flex;
   flex-direction: row-reverse;
   border-bottom: 0.55px solid rgb(240, 240, 240);
-  padding: 1px 5px;
+
+  button {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+  }
+  button:disabled {
+    opacity: 0.6;
+  }
 `;
 const PreferencesHeader = memo(({ onClose, onSave }) => {
   return (

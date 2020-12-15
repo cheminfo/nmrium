@@ -13,6 +13,9 @@ import { useHelptData } from '../elements/popup/Help';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
+  display: flex;
+  flex-firection: row;
+  align-items: center;
   pointer-events: bounding-box;
   user-select: 'none';
   -webkit-user-select: none; /* Chrome all / Safari all */

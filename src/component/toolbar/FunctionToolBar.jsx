@@ -200,6 +200,7 @@ const FunctionToolBar = ({
               title={`${options.zoom.label} ( Press z )`}
               popupPlacement="right"
               offset={{ x: 10, y: 0 }}
+              style={{ display: 'flex' }}
             >
               <FaSearchPlus />
             </ToolTip>

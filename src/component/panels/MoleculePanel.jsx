@@ -60,9 +60,10 @@ const toolbarStyle = css`
     fill: #4e4e4e;
   }
 
-  .bar-button {
+  button {
     background-color: transparent;
     border: none;
+    padding: 5px;
   }
 
   p {
@@ -522,11 +523,7 @@ const MoleculePanel = memo(
     return (
       <div css={panelContainerStyle}>
         <div css={toolbarStyle}>
-          <MenuButton
-            className="bar-button"
-            component={<FaFileExport />}
-            toolTip="Export As"
-          >
+          <MenuButton component={<FaFileExport />} toolTip="Export As">
             <button type="button" css={menuButton} onClick={saveAsMolHandler}>
               <FaCopy />
               <span>Copy as molfile</span>
