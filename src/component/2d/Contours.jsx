@@ -16,7 +16,16 @@ const Contours = () => {
       xDomain,
       yDomain,
       contours,
+      activeSpectrum,
     } = useChartData();
+
+    const isActive = useMemo(() => {
+      return activeSpectrum === null
+        ? true
+        : spectrumID === activeSpectrum.id
+        ? true
+        : false;
+    }, [activeSpectrum, spectrumID]);
 
     const buildContourPath = (contour) => {
       const _scaleX = get2DXScale({ margin, width, xDomain });
@@ -40,6 +49,9 @@ const Contours = () => {
         fill="none"
         stroke={color}
         strokeWidth="1"
+        style={{
+          opacity: isActive ? 1 : 0.1,
+        }}
         d={buildContourPath(contoursData)}
       />
     ));
