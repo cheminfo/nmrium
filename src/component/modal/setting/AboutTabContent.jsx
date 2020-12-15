@@ -2,6 +2,8 @@
 import { css } from '@emotion/react';
 import { memo, useEffect, useState } from 'react';
 
+import Logo from '../../elements/Logo';
+
 async function getData(url) {
   try {
     const response = await fetch(url);
@@ -61,7 +63,7 @@ const AboutTabContent = memo(() => {
 
   return info ? (
     <div css={styles}>
-      <img src="./img/logo.svg" alt="" />
+      <Logo />
       <span>NMR Displayer </span>
       <span> {info[1][0].name}</span>
 
