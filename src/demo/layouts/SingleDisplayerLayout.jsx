@@ -1,13 +1,29 @@
-import { Suspense, PureComponent, lazy } from 'react';
+import { Suspense, PureComponent } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { getKey } from '../utility/menu';
+import { possibleViews } from '../views';
 
 class SingleDisplayerLayout extends PureComponent {
   render() {
     return (
-      <div className="wrapper">
-        <div className="main-panel main-panel-when-menu-closed">
+      <div
+        style={{
+          position: 'relative',
+          top: 0,
+          height: '100vh',
+        }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            float: 'right',
+            width: '98% !important',
+            marginLeft: '20px !important',
+            height: '100%',
+            backgroundColor: 'ebecf1',
+          }}
+        >
           <Suspense fallback={<div>Loading...</div>}>
             <Switch>
               <Route
@@ -21,9 +37,7 @@ class SingleDisplayerLayout extends PureComponent {
                   const viewName = this.props.view
                     ? this.props.view
                     : 'SingleView';
-                  const RenderedView = lazy(() =>
-                    import(`../views/${viewName}`),
-                  );
+                  const RenderedView = possibleViews[viewName];
 
                   return (
                     <RenderedView

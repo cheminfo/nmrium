@@ -95,8 +95,8 @@ const BrushXY = ({
       style={{
         ...styles.container,
         transform: `translate(${startX}px, ${startY}px) scale(${scaleX},${scaleY})`,
+        willChange: 'transform',
       }}
-      className="moving-element"
     >
       <svg width={width} height={height}>
         <rect

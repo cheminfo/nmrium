@@ -25,110 +25,115 @@ function checkStatus(response) {
   return response;
 }
 
+const mainContainer = css`
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow: hidden;
+`;
+
+const nmrContainer = css`
+  height: 50%;
+`;
+
+const bottomContainer = css`
+  display: flex;
+  height: 50%;
+`;
+
+const bottomRightContainer = css`
+  width: 50%;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+`;
+
+const mfCss = css`
+  height: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 1px dashed gray;
+`;
+
+const resultContainer = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80%;
+  position: relative;
+`;
+
+const copyButton = css`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 50px;
+  height: 40px;
+  outline: none;
+  border: none;
+  background-color: white;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: green;
+    color: white;
+  }
+`;
+
+const structureEditor = css`
+  background-color: white;
+  flex: 1;
+  overflow: auto;
+`;
+
+const showButton = css`
+  outline: none;
+  border: none;
+  border-top: 0.55px solid #c1c1c1;
+  border-bottom: 0.55px solid #c1c1c1;
+  color: #00b707;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 5px;
+
+  &:hover {
+    color: white !important;
+    background-color: #00b707;
+  }
+`;
+
+const titleCss = css`
+  text-transform: none;
+  margin: 0;
+  padding: 5px;
+  background-color: white;
+  font-size: 14px;
+  color: #3e3e3e;
+
+  p {
+    font-size: 10px;
+    margin: 0px;
+  }
+`;
+
+const resultCss = css`
+  width: 50%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
 const styles = css`
   height: 100%;
   display: flex;
   flex-direction: column;
   padding: 10px;
   margin-left: 30px;
-
-  .mainContainer {
-    display: flex;
-    flex-direction: column;
-    max-height: 100%;
-    overflow: hidden;
-  }
-  .nmrContainer {
-    height: 50%;
-  }
-
-  .bottomContainer {
-    display: flex;
-    height: 50%;
-  }
-
-  .bottomRightContainer {
-    width: 50%;
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-  }
-  .mf {
-    height: 20%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    border: 1px dashed gray;
-  }
-
-  .result-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 80%;
-    position: relative;
-  }
-
-  .result {
-    width: 50%;
-    height: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .copy-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 50px;
-    height: 40px;
-    outline: none;
-    border: none;
-    background-color: white;
-    border-radius: 10px;
-  }
-  .copy-button:hover {
-    background-color: green;
-    color: white;
-  }
-  .structure-editor {
-    background-color: white;
-    flex: 1;
-    overflow: auto;
-  }
-
-  .show-button {
-    outline: none;
-    border: none;
-    border-top: 0.55px solid #c1c1c1;
-    border-bottom: 0.55px solid #c1c1c1;
-    color: #00b707;
-    font-weight: bold;
-    font-size: 12px;
-    padding: 5px;
-
-    &:hover {
-      color: white !important;
-      background-color: #00b707;
-    }
-  }
-
-  .title {
-    text-transform: none;
-    margin: 0;
-    padding: 5px;
-    background-color: white;
-    font-size: 14px;
-    color: #3e3e3e;
-
-    p {
-      font-size: 10px;
-      margin: 0px;
-    }
   }
 `;
 
@@ -144,11 +149,7 @@ const CopyButton = ({ result }) => {
   }, [result]);
 
   return (
-    <button
-      type="button"
-      className="copy-button"
-      onClick={saveToClipboardHandler}
-    >
+    <button type="button" css={copyButton} onClick={saveToClipboardHandler}>
       {isCopied ? <FaCheck /> : <FaRegCopy />}
     </button>
   );
@@ -206,14 +207,14 @@ export default function Exam(props) {
 
   return (
     <div css={styles}>
-      <p className="title">
+      <p css={titleCss}>
         <strong>Exercises: </strong>Determine the unknown structure for the
         compound having the following NMR spectrum
         <p>{title}</p>
       </p>
-      <div className="mainContainer">
+      <div css={mainContainer}>
         <div
-          className="nmrContainer"
+          css={nmrContainer}
           style={{ height: answerAreaVisible ? '50%' : 'calc(100% - 25px)' }}
         >
           <NMRDisplayer
@@ -235,22 +236,18 @@ export default function Exam(props) {
             }}
           />
         </div>
-        <button
-          className="show-button"
-          type="button"
-          onClick={showAnswerAreaHander}
-        >
+        <button css={showButton} type="button" onClick={showAnswerAreaHander}>
           {!answerAreaVisible ? 'Show answer area' : 'Hide answer area '}
         </button>
         <div
-          className="bottomContainer"
+          css={bottomContainer}
           style={
             answerAreaVisible
               ? { height: '50%' }
               : { height: '0%', visibility: 'hidden' }
           }
         >
-          <div className="structure-editor">
+          <div css={structureEditor}>
             <StructureEditor
               svgMenu={true}
               fragment={false}
@@ -258,16 +255,16 @@ export default function Exam(props) {
               initialMolfile={data && data.answer && data.answer.currentAnswer}
             />
           </div>
-          <div className="bottomRightContainer">
-            <div className="mf">
+          <div css={bottomRightContainer}>
+            <div css={mfCss}>
               <MF
                 style={{ color: 'navy', fontSize: 30 }}
                 mf={data && data.answer && data.answer.mf}
               />
             </div>
-            <div className="result-container">
+            <div css={resultContainer}>
               <CopyButton result={result} />
-              <div className="result">{result}</div>
+              <div css={resultCss}>{result}</div>
             </div>
           </div>
         </div>

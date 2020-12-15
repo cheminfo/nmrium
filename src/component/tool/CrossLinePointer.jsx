@@ -47,9 +47,9 @@ const CrossLinePointer = () => {
   }
   return (
     <div
-      className="moving-element"
       key="crossLine"
       style={{
+        willChange: 'transform',
         cursor: 'crosshair',
         transform: `translate(${-width + position.x}px, ${
           -height + position.y

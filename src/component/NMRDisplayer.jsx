@@ -70,10 +70,8 @@ const containerStyles = css`
   width: 100%;
   display: block;
   height: 100%;
+  font-size: 14px;
 
-  // height: 100%;
-  // display: flex;
-  // flex-direction: column;
   div:focus {
     outline: none !important;
   }

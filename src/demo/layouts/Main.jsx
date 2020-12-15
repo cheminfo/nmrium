@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { MemoryRouter } from 'react-router-dom';
 
 import routes from '../samples';
 
@@ -168,7 +169,9 @@ const Main = (props) => {
   ) : dashBoardType && dashBoardType === 'single' ? (
     <SingleDisplayerLayout {...props} path={data.path} />
   ) : (
-    <AdminLayout {...props} routes={data.routes} baseURL={data.baseURL} />
+    <MemoryRouter>
+      <AdminLayout {...props} routes={data.routes} baseURL={data.baseURL} />
+    </MemoryRouter>
   );
 };
 

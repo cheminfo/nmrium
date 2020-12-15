@@ -1,135 +1,107 @@
-/*!
+/** @jsxImportSource @emotion/react */
 
-=========================================================
-* Now UI Dashboard React - v1.2.0
-=========================================================
+import { css } from '@emotion/react';
+import { Suspense, StrictMode, useMemo, useState, useCallback } from 'react';
+import { Route, Switch } from 'react-router-dom';
 
-* Product Page: https://www.creative-tim.com/product/now-ui-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/now-ui-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import { Suspense, Component, createRef, StrictMode, lazy } from 'react';
-// javascript plugin used to create scrollbars on windows
-// reactstrap components
-import { Route, Switch, MemoryRouter } from 'react-router-dom';
-
-// core components
-import Sidebar from '../components/Sidebar/Sidebar';
+import Sidebar from '../Sidebar';
 import { mapTreeToFlatArray, getKey } from '../utility/menu';
+import { possibleViews } from '../views';
 
-class Dashboard extends Component {
-  constructor(props) {
-    super(props);
-    this.menuCloseHandler = this.menuCloseHandler.bind(this);
-    this.mainPanel = createRef();
-  }
+const mainPanelCss = css`
+  position: relative;
+  float: right;
+  height: 100%;
+  background-color: #ebecf1;
+`;
 
-  state = {
-    backgroundColor: 'blue',
-    routesList: [],
-    routes: [],
-  };
+const mainPanelOpenCss = css`
+  width: calc(100% - 260px);
+`;
 
-  componentDidMount() {
-    this.setState((prevState) => {
-      return {
-        ...prevState,
-        routesList: mapTreeToFlatArray(this.props.routes),
-        routes: this.props.routes,
-      };
-    });
-  }
+const mainPanelClosedCss = css`
+  width: 98%;
+  margin-left: 20px !important;
+`;
 
-  componentDidUpdate(e) {
-    if (e.history.action === 'PUSH') {
-      this.mainPanel.current.scrollTop = 0;
-      document.scrollingElement.scrollTop = 0;
-    }
-  }
+export function Dashboard(props) {
+  const { routes = [], baseURL } = props;
+  const routesList = useMemo(() => mapTreeToFlatArray(routes), [routes]);
+  const [menuIsClosed, setMenuIsClosed] = useState(false);
+  const toggleMenu = useCallback(() => setMenuIsClosed(!menuIsClosed), [
+    menuIsClosed,
+  ]);
 
-  menuCloseHandler = (flag) => {
-    setTimeout(() => {
-      this.mainPanel.current.className = flag
-        ? 'main-panel main-panel-when-menu-closed'
-        : 'main-panel';
-    }, 200);
-  };
+  return (
+    <div
+      style={{
+        position: 'relative',
+        top: 0,
+        height: '100vh',
+      }}
+    >
+      <Sidebar
+        {...props}
+        routes={routes}
+        menuIsClosed={menuIsClosed}
+        onMenuToggle={toggleMenu}
+      />
+      <div
+        css={css(
+          mainPanelCss,
+          menuIsClosed ? mainPanelClosedCss : mainPanelOpenCss,
+        )}
+      >
+        <StrictMode>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Switch>
+              {routesList.map((prop) => {
+                return (
+                  <Route
+                    path={`/SamplesDashboard/:id/${
+                      prop.view + getKey(prop.file)
+                    }`}
+                    render={(props) => (
+                      <RenderView {...props} prop={prop} baseURL={baseURL} />
+                    )}
+                    key={getKey(prop.file)}
+                  />
+                );
+              })}
 
-  render() {
-    return (
-      <div className="wrapper">
-        <MemoryRouter>
-          <Sidebar
-            {...this.props}
-            routes={this.state.routes}
-            backgroundColor={this.state.backgroundColor}
-            onMenuClose={this.menuCloseHandler}
-          />
-          <div className="main-panel" ref={this.mainPanel}>
-            <StrictMode>
-              <Suspense fallback={<div>Loading...</div>}>
-                <Switch>
-                  {this.state.routesList.map((prop) => (
-                    <Route
-                      path={`/SamplesDashboard/:id/${
-                        prop.view + getKey(prop.file)
-                      }`}
-                      render={(props) => {
-                        const {
-                          match: {
-                            params: { id },
-                          },
-                        } = props;
-                        const viewName = prop.view ? prop.view : 'View';
-                        const RenderedView = lazy(() =>
-                          import(`../views/${viewName}`),
-                        );
-
-                        return (
-                          <RenderedView
-                            key={id}
-                            {...prop}
-                            id={getKey(prop.file)}
-                            baseURL={this.props.baseURL}
-                          />
-                        );
-                      }}
-                      key={getKey(prop.file)}
-                    />
-                  ))}
-
-                  {this.state.routesList.length > 0 && (
-                    <Route
-                      path="/"
-                      render={() => {
-                        const routeProp = this.state.routesList[0];
-                        const viewName = routeProp.view
-                          ? routeProp.view
-                          : 'View';
-                        const RenderedView = lazy(() =>
-                          import(`../views/${viewName}`),
-                        );
-
-                        return <RenderedView {...routeProp[0]} />;
-                      }}
-                      key={getKey(this.state.routesList[0].file)}
-                    />
-                  )}
-                </Switch>
-              </Suspense>
-            </StrictMode>
-          </div>
-        </MemoryRouter>
+              {routesList.length > 0 && (
+                <Route
+                  path="/"
+                  render={() => {
+                    const routeProp = routesList[0];
+                    const viewName = routeProp.view ? routeProp.view : 'View';
+                    const RenderedView = possibleViews[viewName];
+                    return <RenderedView {...routeProp[0]} />;
+                  }}
+                  key={getKey(routesList[0].file)}
+                />
+              )}
+            </Switch>
+          </Suspense>
+        </StrictMode>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
+function RenderView(props) {
+  const {
+    match: {
+      params: { id },
+    },
+    prop,
+    baseURL,
+  } = props;
+  const viewName = prop.view ? prop.view : 'View';
+  const RenderedView = possibleViews[viewName];
+  return (
+    <RenderedView key={id} {...prop} id={getKey(prop.file)} baseURL={baseURL} />
+  );
 }
 
 export default Dashboard;
