@@ -153,12 +153,8 @@ const RangesHeader = ({
     // nbDecimalDelta: 2,
     // nbDecimalJ: 1,
     // observedFrequency: 400}
-    const _ranges = ranges.values.filter(
-      (range) =>
-        !range.signal.some((s) => ['impurity', 'solvent'].includes(s.kind)),
-    );
 
-    const result = rangesToACS(_ranges, {
+    const result = rangesToACS(ranges.values, {
       nucleus,
       nbDecimalDelta,
       nbDecimalJ,
