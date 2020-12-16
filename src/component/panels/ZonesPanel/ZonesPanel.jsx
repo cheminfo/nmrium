@@ -1,9 +1,9 @@
 import lodash from 'lodash';
 import { xGetFromToIndex } from 'ml-spectra-processing';
+import { rangesToACS } from 'nmr-processing';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport, FaUnlink } from 'react-icons/fa';
-import { getACS } from 'spectra-data-ranges';
 
 import {
   unlink,
@@ -199,7 +199,7 @@ const ZonesPanel = memo(
     }, [modal]);
 
     const saveAsHTMLHandler = useCallback(() => {
-      const result = getACS(data);
+      const result = rangesToACS(data);
       modal.show(
         <CopyClipboardModal
           text={result}

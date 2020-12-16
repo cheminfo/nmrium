@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodash from 'lodash';
+import { rangesToACS } from 'nmr-processing';
 import { useCallback } from 'react';
 import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
-import { getACS } from 'spectra-data-ranges';
 
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
@@ -158,7 +158,7 @@ const RangesHeader = ({
         !range.signal.some((s) => ['impurity', 'solvent'].includes(s.kind)),
     );
 
-    const result = getACS(_ranges, {
+    const result = rangesToACS(_ranges, {
       nucleus,
       nbDecimalDelta,
       nbDecimalJ,

@@ -87,7 +87,6 @@
     "react-table": "7.6.0",
     "react-transition-group": "^4.4.1",
     "react-use": "^15.3.4",
-    "spectra-data-ranges": "^1.1.10",
     "yup": "^0.32.8"
   },
   "devDependencies": {
