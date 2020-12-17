@@ -78,6 +78,7 @@ const containerStyles = css`
 
   button {
     cursor: pointer;
+    color: black;
     &:disabled {
       cursor: default;
     }
