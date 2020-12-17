@@ -81,11 +81,11 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
       draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
       // }
     } else {
-      if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
-        draft.activeSpectrum = null;
-        draft.tabActiveSpectrum[draft.activeTab] = null;
-        refreshDomain = false;
-      }
+      // if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+      draft.activeSpectrum = null;
+      draft.tabActiveSpectrum[draft.activeTab] = null;
+      refreshDomain = false;
+      // }
     }
 
     /**
