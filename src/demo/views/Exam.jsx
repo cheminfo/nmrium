@@ -75,6 +75,9 @@ const copyButton = css`
   border: none;
   background-color: white;
   border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     background-color: green;
