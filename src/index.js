@@ -10,7 +10,6 @@ import './demo/preflight.css';
 
 // Dependencies for the React component
 import 'cheminfo-font/dist/style.css';
-import 'prismjs/themes/prism.css';
 
 import './demo/index.css';
 
