@@ -21,13 +21,14 @@ const styles = css`
     justify-content: space-between;
   }
 
-  button:focus {
-    outline: none;
-  }
-
   button {
     background-color: transparent;
     border: none;
+    padding: 0 5px;
+  }
+
+  button:disabled {
+    opacity: 0.6;
   }
 `;
 
