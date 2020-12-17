@@ -2,7 +2,6 @@ import { produce } from 'immer';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
-import { DISPLAYER_MODE } from '../core/Constants';
 
 import { setDomain, setMode } from './DomainActions';
 import { setTab, setActiveTab } from './ToolsActions';
