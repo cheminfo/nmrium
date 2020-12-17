@@ -1,7 +1,10 @@
 function getNucleusSum(input) {
-  return input
-    .split(',')
-    .reduce((acc, i) => (acc += Number(i.replace(/\D/g, ''))), 0);
+  const nucleus = input.split(',');
+  return nucleus.reduce((acc, i) => {
+    const additions = nucleus.length === 2 ? 100 : 0;
+    acc += Number(i.replace(/\D/g, '')) + additions;
+    return acc;
+  }, 0);
 }
 const GroupByInfoKey = (key) => (array) => {
   const unorderedGroup = array.reduce((objectsByKeyValue, obj) => {
