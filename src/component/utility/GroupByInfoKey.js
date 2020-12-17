@@ -6,19 +6,23 @@ function getNucleusSum(input) {
     return acc;
   }, 0);
 }
-const GroupByInfoKey = (key) => (array) => {
+const GroupByInfoKey = (key) => (array, orderByNucleus = false) => {
   const unorderedGroup = array.reduce((objectsByKeyValue, obj) => {
     const value = obj.info[key];
     objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
     return objectsByKeyValue;
   }, {});
 
-  return Object.keys(unorderedGroup)
-    .sort((a, b) => getNucleusSum(a) - getNucleusSum(b))
-    .reduce((acc, key) => {
-      acc[key] = unorderedGroup[key];
-      return acc;
-    }, {});
+  if (!orderByNucleus) {
+    return unorderedGroup;
+  } else {
+    return Object.keys(unorderedGroup)
+      .sort((a, b) => getNucleusSum(a) - getNucleusSum(b))
+      .reduce((acc, key) => {
+        acc[key] = unorderedGroup[key];
+        return acc;
+      }, {});
+  }
 };
 
 export default GroupByInfoKey;

@@ -55,7 +55,7 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
     if (!data) return [];
 
     const groupByNucleus = GroupByInfoKey('nucleus');
-    return groupByNucleus(data);
+    return groupByNucleus(data, true);
   }, [data]);
 
   useEffect(() => {
