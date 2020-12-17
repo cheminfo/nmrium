@@ -8,9 +8,6 @@ import TestRoutes from './demo/test/TestRoutes.jsx';
 import 'modern-normalize/modern-normalize.css';
 import './demo/preflight.css';
 
-// Dependencies for the React component
-import 'cheminfo-font/dist/style.css';
-
 import './demo/index.css';
 
 ReactDOM.render(

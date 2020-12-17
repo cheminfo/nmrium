@@ -1,5 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import {
+  SvgNmrRealImag,
+  SvgNmrOverlay3,
+  SvgNmrOverlay3Aligned,
+  SvgNmrAlignBottom,
+  SvgNmrAlignCenter,
+} from 'cheminfo-font';
 import lodash from 'lodash';
 import { Fragment, useEffect, useCallback, useState, memo } from 'react';
 import {
@@ -37,15 +44,23 @@ const styles = css`
   width: 35px;
   height: 35px;
   min-height: 35px;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   outline: outline;
   :focus {
     outline: none !important;
+  }
+
+  &.fa {
+    svg {
+      font-size: 14px;
+    }
+  }
+  &.cheminfo {
+    svg {
+      font-size: 24px;
+    }
   }
 `;
 
@@ -211,6 +226,7 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
       {isButtonVisible('hideImport') && (
         <MenuButton
           style={styles}
+          className="fa"
           component={<FaFileImport />}
           toolTip="Import"
         >
@@ -223,6 +239,7 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
       {isButtonVisible('hideExportAs') && (
         <MenuButton
           style={styles}
+          className="fa"
           component={<FaFileExport />}
           toolTip="Export As"
         >
@@ -253,17 +270,13 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
         isButtonVisible('hideSpectraStackAlignments') && (
           <button
             type="button"
-            css={[styles, { display: 'block' }]}
+            css={styles}
+            className="cheminfo"
             onClick={handleChangeDisplayViewMode}
-            className={
-              !isStacked
-                ? 'ci-icon-nmr-overlay3-aligned'
-                : 'ci-icon-nmr-overlay3'
-            }
           >
             <ToolTip title="Spectra alignment" popupPlacement="right">
               <div />
-              {/* {verticalAlign !== 0 ? <FaMinus /> : <FaBars />} */}
+              {!isStacked ? <SvgNmrOverlay3Aligned /> : <SvgNmrOverlay3 />}{' '}
             </ToolTip>
           </button>
         )}
@@ -272,37 +285,42 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
         selectedSpectrumInfo &&
         selectedSpectrumInfo.isComplex && (
           <button
-            css={[styles, { display: 'block' }]}
+            css={styles}
+            className="cheminfo"
             type="button"
             onClick={changeSpectrumViewHandler}
-            className={'ci-icon-nmr-real-imag'}
+            // className={'ci-icon-nmr-real-imag'}
           >
             <ToolTip
               title={
                 isRealSpectrumShown ? 'Display Real ' : 'Display Imaginary '
               }
               popupPlacement="right"
-            />
+            >
+              <SvgNmrRealImag />
+            </ToolTip>
           </button>
         )}
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('hideSpectraCenterAlignments') && (
           <button
-            css={[styles, { display: 'block' }]}
+            css={styles}
+            className="cheminfo"
             type="button"
             onClick={alignSpectrumsVerticallyHandler}
-            className={
-              !verticalAlign.flag
-                ? 'ci-icon-nmr-align-center'
-                : 'ci-icon-nmr-align-bottom'
-            }
           >
             <ToolTip
               title={
                 !verticalAlign.flag ? 'Baseline  Center' : 'Baseline  Bottom'
               }
               popupPlacement="right"
-            />
+            >
+              {!verticalAlign.flag ? (
+                <SvgNmrAlignCenter />
+              ) : (
+                <SvgNmrAlignBottom />
+              )}
+            </ToolTip>
           </button>
         )}
     </Fragment>
