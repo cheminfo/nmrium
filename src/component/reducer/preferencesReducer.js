@@ -51,6 +51,7 @@ export const preferencesInitialState = {
     help: {
       preventAutoHelp: true,
     },
+    dimmedSpectraTransparency: 0.1,
   },
   formatting: {
     nucleus: [

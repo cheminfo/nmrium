@@ -1,11 +1,14 @@
+import get from 'lodash/get';
 import { xyReduce } from 'ml-spectra-processing';
 import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import { usePreferences } from '../context/PreferencesContext';
 import { useScale } from '../context/ScaleContext';
 
 export const Line = ({ x, y, id, display, index }) => {
   const { xDomain, activeSpectrum, verticalAlign } = useChartData();
+  const preferences = usePreferences();
   const { scaleX, scaleY } = useScale();
 
   const isActive = useMemo(() => {
@@ -54,7 +57,9 @@ export const Line = ({ x, y, id, display, index }) => {
       stroke={display.color}
       fill="none"
       style={{
-        opacity: isActive ? 1 : 0.2,
+        opacity: isActive
+          ? 1
+          : get(preferences, 'controllers.dimmedSpectraTransparency', 0.1),
       }}
       d={paths}
       transform={`translate(0,-${vAlign})`}

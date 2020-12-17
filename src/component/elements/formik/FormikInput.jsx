@@ -15,6 +15,7 @@ const FormikInput = ({
   className,
   value,
   format,
+  ...resProps
 }) => {
   const {
     values,
@@ -51,6 +52,7 @@ const FormikInput = ({
       checkValue={checkValue}
       className={className}
       format={format}
+      {...resProps}
     />
   );
 };
