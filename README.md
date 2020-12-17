@@ -71,7 +71,6 @@ npm install nmr-displayer
 
 ```js
 import 'cheminfo-font/dist/style.css';
-import 'prismjs/themes/prism.css';
 ```
 
 ### OpenChemLib version
