@@ -9,26 +9,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 12
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+        uses: actions/setup-node@v2-beta
         with:
-          node-version: 12
-      - name: npm install and build
+          node-version: 14.x
+      - name: Install dependencies
         run: |
           npm ci
+          npm i -g gh-pages
+      - name: Build
+        run: |
           rm src/demo/samples.json
           mv src/demo/empty.json src/demo/samples.json
           npm run build
-      - name: remove spectra
-        run: |
-          cd build
-          rm -rf data
-      - name: push to gh-pages
+      - name: Remove spectra
+        run: rm -rf build/data
+      - name: Push to gh-pages
         run: |
           git config user.email luc@patiny.com
           git config user.name "Luc Patiny"
           git remote set-url origin "https://lpatiny:${{ secrets.ACCESS_NMRIUM }}@github.com/zakodium/nmrium.org.git"
-          npm i -g gh-pages
           VERSION=${GITHUB_REF//*\/}
           gh-pages --dest $VERSION -d build --dotfiles

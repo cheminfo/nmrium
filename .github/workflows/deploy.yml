@@ -8,19 +8,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 12
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
         with:
-          node-version: 12
-      - name: npm install and build
+          node-version: 14.x
+      - name: Install dependencies
         run: |
           npm ci
-          npm run build
+          npm i -g gh-pages
+      - name: Build
+        run: npm run build
       - name: push to gh-pages
         run: |
           git config user.email admin@cheminfo.org
           git config user.name "Cheminfo Bot"
           git remote set-url origin "https://cheminfo-bot:${{ secrets.ACCESS_TOKEN }}@github.com/cheminfo/nmr-displayer.git"
-          npm i -g gh-pages
           gh-pages -d build --dotfiles
