@@ -30,7 +30,6 @@ const NumberInput = forwardRef(
     { label, name, defaultValue, style, onChange, onInput, pattern, step, min },
     ref,
   ) => {
-    // const [value, setValue] = useState(defaultValue);
     const localRef = useRef();
     const changeHander = useCallback(
       (e) => {

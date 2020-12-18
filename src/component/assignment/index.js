@@ -251,14 +251,6 @@ export function useAssignment(key) {
     [context, id],
   );
 
-  //   useEffect(() => {
-  //     // if deletion of component then also delete its assignment information -> componentWillUnmount
-  //     return () => {
-  //       deleteRecord();
-  //     };
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, []);
-
   const onMouseEnter = useCallback((axis) => setIsOnHover('enter', axis), [
     setIsOnHover,
   ]);

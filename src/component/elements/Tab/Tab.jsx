@@ -50,12 +50,7 @@ const Tab = ({
   );
   return (
     <li className={className} onClick={clickHandler} css={styles(tabstyles)}>
-      {canDelete && (
-        <DeleteButton onDelete={deleteHandler} />
-        // <button className="delete" type="button" onClick={deleteHandler}>
-        //   <FaTimes className="icon" />
-        // </button>
-      )}
+      {canDelete && <DeleteButton onDelete={deleteHandler} />}
       {tablabel}
     </li>
   );

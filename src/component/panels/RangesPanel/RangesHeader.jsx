@@ -39,7 +39,6 @@ const styles = {
   },
   setShowMultiplicityTreesButton: {
     borderRadius: '5px',
-    // marginTop: '3px',
     marginLeft: '5px',
     color: 'black',
     backgroundColor: 'transparent',
@@ -130,16 +129,11 @@ const RangesHeader = ({
     const nbDecimalDelta = getNumberOfDecimals(format.ppm);
     const nbDecimalJ = getNumberOfDecimals(format.hz);
 
-    //   {  nucleus: '19F',
-    // nbDecimalDelta: 2,
-    // nbDecimalJ: 1,
-    // observedFrequency: 400}
-
     const result = rangesToACS(ranges.values, {
-      nucleus,
-      nbDecimalDelta,
-      nbDecimalJ,
-      observedFrequency,
+      nucleus, // '19f'
+      nbDecimalDelta, // 2
+      nbDecimalJ, // 1
+      observedFrequency, //400
     });
     modal.show(
       <CopyClipboardModal

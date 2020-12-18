@@ -26,7 +26,6 @@ export function wheel(
   { data, activeSpectrum, activeTab },
   id = null,
 ) {
-  // initZoomHandler(data);
   if (activeSpectrum || id) {
     spectraZoomHanlders[id ? id : activeSpectrum.id].wheel(deltaY, deltaMode);
   } else {
@@ -66,7 +65,6 @@ export function setScale(scale) {
 
 const setZoom = (state, draft, defaultScale = null) => {
   const { height, margin, activeSpectrum } = state;
-  // initZoomHandler(state.data);
   if (defaultScale) {
     setScale(defaultScale);
   }
@@ -87,7 +85,6 @@ const setZoom = (state, draft, defaultScale = null) => {
       const yDomain = t.rescaleY(_scale).domain();
       acc[id] = yDomain;
       return acc;
-      // return [y[0] + (yDomain[0] - y[0]), y[1] + (yDomain[1] - y[1])];
     }, {});
   } else {
     const _scale = scaleLinear(draft.originDomain.yDomains[activeSpectrum.id], [
@@ -105,7 +102,6 @@ const setZoom = (state, draft, defaultScale = null) => {
 };
 const setZoom1D = (draft, height, margin, index, defaultScale = null) => {
   const { originDomain, tabActiveSpectrum, activeTab } = draft;
-  // initZoomHandler(data);
 
   const { id } = tabActiveSpectrum[activeTab.split(',')[index]];
   if (defaultScale) {
@@ -146,7 +142,6 @@ const setIntegralZoom = (state, scale, draft) => {
 
       draft.integralZoomFactor = { scale };
       const activeSpectrum = draft.activeSpectrum;
-      // draft.zoomFactor = t;
       draft.integralsYDomains[activeSpectrum.id] = newYDomain;
     }
   }

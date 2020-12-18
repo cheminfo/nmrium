@@ -51,12 +51,10 @@ const SpectrumListPanel = memo(
         return datum.id;
       });
       dispatch({ type: CHANGE_VISIBILITY, id: spectrumsPerTab });
-      // setVisible(spectrumsPerTab);
     }, [dispatch, spectrums]);
 
     const hideAllSpectrumsHandler = useCallback(() => {
       dispatch({ type: CHANGE_VISIBILITY, id: [] });
-      // setVisible([]);
     }, [dispatch]);
 
     const addMissingProjectionHandler = useCallback(() => {

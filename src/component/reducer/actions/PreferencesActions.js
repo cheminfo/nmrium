@@ -3,7 +3,6 @@ import { produce } from 'immer';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
-// import Spectrum2DProcessing from '../core/Spectrum2DProcessing';
 
 import { setDomain } from './DomainActions';
 import { setZoom } from './Zoom';
@@ -109,7 +108,6 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
       draft.displayerMode = preferences.displayerMode;
       draft.tabActiveSpectrum = preferences.tabActiveSpectrum;
       draft.activeSpectrum = preferences.activeSpectrum;
-      // console.log()
 
       draft.margin = preferences.margin;
 
@@ -130,11 +128,6 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
           processController.setLevel(levelPositive, levelNegative);
           draft.contours[datumID] = processController.drawContours();
         }
-
-        // const { levelPositive, levelNegative } = preferences.level;
-        // const spectrum2D = Spectrum2DProcessing.getInstance();
-        // spectrum2D.setLevel(levelPositive, levelNegative);
-        // draft.contours = spectrum2D.drawContours();
       } else {
         setZoom(state, draft, preferences.zoomFactor.scale);
       }

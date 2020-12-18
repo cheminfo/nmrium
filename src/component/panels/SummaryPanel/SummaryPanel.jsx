@@ -170,24 +170,6 @@ const SummaryPanel = memo(() => {
     return _experiments1D;
   }, [atoms, experiments]);
 
-  // // "extra" 1D experiments containing ranges, e.g. DEPT
-  // const experiments1DExtra = useMemo(() => {
-  //   const _experiments1DExtra = {};
-  //   Object.keys(lodash.get(experiments, `1D`, {}))
-  //     .filter((_experimentType) => _experimentType !== '1d') // don't consider "plain" 1D experiments here
-  //     .forEach((_experimentType) => {
-  //       addToExperiments(
-  //         experiments,
-  //         _experiments1DExtra,
-  //         `1D.${_experimentType}`,
-  //         false,
-  //         _experimentType,
-  //       );
-  //     });
-
-  //   return _experiments1DExtra;
-  // }, [experiments]);
-
   // 2D experiments containing zones
   const experiments2D = useMemo(() => {
     const _experiments2D = {};
@@ -245,56 +227,6 @@ const SummaryPanel = memo(() => {
 
     return _signals1D;
   }, [atoms, experiments1D]);
-
-  // const signals1DExtra = useMemo(() => {
-  //   // store valid signals from 1D extra experiments
-  //   const _signals1DExtra = {};
-  //   // store valid signals from 2D experiments
-  //   Object.keys(experiments1DExtra).forEach((_experimentType) => {
-  //     let _signals = [];
-  //     // @TODO for now we will use the first occurring matched spectrum only (index)
-  //     const index = 0;
-  //     const atomType = getAtomType(
-  //       experiments1DExtra[_experimentType][index].info.nucleus,
-  //     );
-  //     const __signals = experiments1DExtra[_experimentType][index].ranges.values
-  //       .map((_range) =>
-  //         _range.signal.filter((_signal) =>
-  //           SignalKindsToInclude.includes(_signal.kind),
-  //         ),
-  //       )
-  //       .flat();
-  //     let count = 0;
-  //     __signals.forEach((__signal) => {
-  //       if (
-  //         !_signals.some((_signal) =>
-  //           checkSignalMatch(_signal.signal, __signal, 0.0),
-  //         )
-  //       ) {
-  //         _signals.push({
-  //           experimentType: _experimentType,
-  //           experimentID: experiments1DExtra[_experimentType][index].id,
-  //           atomType: atomType,
-  //           label: { origin: `${_experimentType}${count + 1}` },
-  //           signal: __signal,
-  //         });
-  //         count++;
-  //       }
-  //     });
-
-  //     if (!lodash.get(_signals1DExtra, `${_experimentType}`, false)) {
-  //       _signals1DExtra[_experimentType] = [];
-  //     }
-  //     _signals1DExtra[_experimentType].push({
-  //       signals: _signals,
-  //       experimentType: _experimentType,
-  //       experimentID: experiments1DExtra[_experimentType][index].id,
-  //       atomType: atomType,
-  //     });
-  //   });
-
-  //   return _signals1DExtra;
-  // }, [experiments1DExtra]);
 
   const signals2D = useMemo(() => {
     // store valid signals from 2D experiments

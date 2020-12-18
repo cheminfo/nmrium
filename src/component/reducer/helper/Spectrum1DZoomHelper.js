@@ -35,16 +35,6 @@ export default class Spectrum1DZoomHelper {
       : 0.05 * this.fastZoomStep;
 
     let ZOOM_STEP = deltaYValue <= this.speedThreshold ? LOW_STEP : FAST_STEP;
-    // let ZOOM_STEP =
-    //   deltaMode === 1
-    //     ? deltaYValue <= this.speedThreshold
-    //       ?  this.slowZoomStep * deltaMode
-    //       : this.fastZoomStep * deltaMode
-    //     : deltaMode
-    //     ? 1
-    //     : deltaYValue <= this.speedThreshold
-    //     ? this.slowZoomStep
-    //     : this.fastZoomStep * deltaYValue;
 
     const direction = Math.sign(deltaY);
     const _scale =

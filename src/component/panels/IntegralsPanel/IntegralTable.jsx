@@ -19,8 +19,6 @@ import { getValue } from '../../utility/LocalStorage';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
-// import ReactCardFlip from './node_modules/react-card-flip';
-
 const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
 const IntegralTable = memo(

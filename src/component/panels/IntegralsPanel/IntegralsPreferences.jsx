@@ -137,7 +137,6 @@ const IntegralsPreferences = forwardRef(({ nucleus, preferences }, ref) => {
 
   const getValue = useCallback(
     (...params) => {
-      // console.log(params, settings);
       if (settings) {
         const value =
           params[0] === null

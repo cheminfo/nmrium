@@ -76,8 +76,6 @@ const ContextMenu = forwardRef(({ context }, ref) => {
 
     const screenW = window.innerWidth;
     const screenH = window.innerHeight;
-    // const rootW = ref.current.offsetWidth;
-    // const rootH = ref.current.offsetHeight;
     const rootW = 150;
     const rootH = 0;
 
@@ -121,7 +119,6 @@ const ContextMenu = forwardRef(({ context }, ref) => {
   );
 
   useEffect(() => {
-    // console.log(ref.current);
     const _handleGlobalClick = (event) => {
       const wasOutside =
         sourceElement &&

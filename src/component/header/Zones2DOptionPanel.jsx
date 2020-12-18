@@ -53,7 +53,6 @@ const Zones2DOptionPanel = () => {
   }, [dispatch]);
 
   const handleInput = useCallback((e) => {
-    // const fieldName = e.target.name;
     if (e.target) {
       const val = e.target.value;
       Events.emit('noiseFactorChanged', val);

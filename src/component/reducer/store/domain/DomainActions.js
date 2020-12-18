@@ -10,7 +10,6 @@ function getActiveData(draft) {
   if (draft.activeTab) {
     const groupByNucleus = GroupByInfoKey('nucleus');
     let data = groupByNucleus(draft.data)[draft.activeTab];
-    // draft.activeSpectrum = null;
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
       return data;
     } else {
@@ -169,21 +168,7 @@ function setDomain(draft, isYDomainChanged = true) {
         xDomains: domain.xDomains,
       };
     }
-    // draft.integralsYDomains = domain.integralsYDomains;
-    // draft.data = draft.data.map((d) => {
-    //   return { ...d, integralsYDomain: domain.y };
-    // });
   }
-  // else {
-  //   domain = getDomain(data);
-  //   console.log(domain)
-
-  //   // console.log(domain);
-  //   draft.xDomain = domain.x;
-  //   draft.yDomain = domain.y;
-  //   draft.originDomain = domain;
-  //   draft.yDomains = domain.yDomains;
-  // }
 }
 
 const setOriginalDomain = (state, originDomain) => {

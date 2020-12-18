@@ -74,7 +74,6 @@ const AnalysisRange = ({ rangeData, columnKey }) => {
           height="6"
           className="range-area"
           fill="green"
-          //   fillOpacity={highlightRange.isActive ? 1 : 0.4}
         />
         <text
           textAnchor="middle"

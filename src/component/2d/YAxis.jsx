@@ -42,7 +42,6 @@ const YAxis = memo(({ show, label, margin: marginProps }) => {
 
     if (show && yDomain) {
       const scaleY = get2DYScale({ height, yDomain, margin });
-      // const scale = scaleY(null, null, true);
 
       d3.select(refAxis.current).call(axis.scale(scaleY));
     }

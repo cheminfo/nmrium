@@ -87,10 +87,6 @@ const SignalsForm = memo(() => {
     [setActiveField],
   );
 
-  // const handleOnBlur = useCallback(() => {
-  //   setActiveField(null);
-  // }, []);
-
   const tapClickHandler = useCallback(
     ({ tabid }) => {
       setFieldValue('activeTab', tabid);

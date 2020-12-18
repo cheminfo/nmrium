@@ -73,7 +73,6 @@ const PeakPointer = () => {
           const xValue = spectrumData.x[minIndex + xIndex];
           return {
             x: scaleX()(xValue),
-            // y: scale.y(yValue) - verticalAlign.value,
             y: scaleY(activeSpectrum.id)(yValue) - getVerticalAlign(),
             xIndex: minIndex + xIndex,
           };

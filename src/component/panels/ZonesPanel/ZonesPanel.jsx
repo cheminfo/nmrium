@@ -215,7 +215,6 @@ const ZonesPanel = memo(
         preferences,
         `panels.zones.[${activeTab}]`,
       );
-      // || rangeDefaultValues;
 
       return _preferences;
     }, [activeTab, preferences]);

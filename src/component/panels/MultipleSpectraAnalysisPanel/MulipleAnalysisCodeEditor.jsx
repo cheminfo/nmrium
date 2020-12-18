@@ -72,7 +72,6 @@ const MulipleAnalysisCodeEditor = memo(({ data }) => {
           border: '0.55px solid #f3f3f3',
           fontFamily: '"Fira code", "Fira Mono", monospace',
           fontSize: 12,
-          // backgroundColor: '#fcfcfc',
           marginBottom: '10px',
           minHeight: '100px',
           overflow: 'auto',

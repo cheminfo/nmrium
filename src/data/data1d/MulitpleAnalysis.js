@@ -1,7 +1,6 @@
 import lodash from 'lodash';
 
 import generateChar from '../utilities/generateChar';
-// import generateID from '../utilities/generateID';
 
 import { Datum1D } from './Datum1D';
 
@@ -75,7 +74,6 @@ export default class MultipleAnalysis {
 
   setColumn(nucleus, { columns: inputColumns, code }) {
     this.init(nucleus);
-    // const { columns } = this.spectraAanalysis[nucleus].options;
     this.spectraAanalysis[nucleus].options.code = code;
     this.spectraAanalysis[nucleus].options.columns = Object.values(
       inputColumns,
@@ -202,10 +200,6 @@ export default class MultipleAnalysis {
     this.spectraAanalysis[nucleus].values = data;
     this.spectraAanalysis[nucleus].values = this.refreshCalculation(nucleus);
 
-    // this.spectraAanalysis[nucleus].values = this.updateRelatives(
-    //   data,
-    //   totalSum,
-    // );
     return lodash.cloneDeep(this.spectraAanalysis);
   }
 
@@ -223,8 +217,6 @@ export default class MultipleAnalysis {
     );
 
     delete this.spectraAanalysis[nucleus].options.columns[colKey];
-    // const sum = this.spectraAanalysis[nucleus].options.sum;
-    // this.spectraAanalysis[nucleus].values = this.updateRelatives(result, sum);
     this.spectraAanalysis[nucleus].values = result;
     this.spectraAanalysis[nucleus].values = this.refreshCalculation(nucleus);
 
@@ -234,30 +226,6 @@ export default class MultipleAnalysis {
 
     return lodash.cloneDeep(this.spectraAanalysis);
   }
-
-  // updateRelatives(values, sum) {
-  //   return Object.entries(values).reduce((spectraAcc, spectraItems) => {
-  //     const currentSum = Object.values(spectraItems[1]).reduce(
-  //       (acc, current) => {
-  //         acc += Math.abs(current.absolute);
-  //         return acc;
-  //       },
-  //       0,
-  //     );
-  //     const factor = currentSum > 0 ? sum / currentSum : 0.0;
-  //     spectraAcc[spectraItems[0]] = Object.entries(spectraItems[1]).reduce(
-  //       (rangeAcc, rangeItem) => {
-  //         rangeAcc[rangeItem[0]] = {
-  //           ...rangeItem[1],
-  //           relative: Math.abs(rangeItem[1].absolute) * factor,
-  //         };
-  //         return rangeAcc;
-  //       },
-  //       {},
-  //     );
-  //     return spectraAcc;
-  //   }, {});
-  // }
 
   calculate(columns, data, formula = 'A+B') {
     const array = formula.split(/\+|-|\*|\/|%|\(|\)/);

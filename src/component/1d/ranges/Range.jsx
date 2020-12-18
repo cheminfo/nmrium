@@ -86,8 +86,6 @@ const Range = ({ rangeData }) => {
     deleteRange(assignmentData, dispatch, rangeData);
   }, [assignmentData, dispatch, rangeData]);
 
-  // const handleOnStartResizing = useCallback(() => {}, []);
-
   const handleOnStopResizing = useCallback(
     (resized) => {
       dispatch({
@@ -163,7 +161,6 @@ const Range = ({ rangeData }) => {
       <Resizable
         from={rangeData.from}
         to={rangeData.to}
-        // onDrag={handleOnStartResizing}
         onDrop={handleOnStopResizing}
       />
       {!isBlockedByEditing ? (

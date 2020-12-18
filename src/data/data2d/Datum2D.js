@@ -70,7 +70,6 @@ export class Datum2D {
       this.data,
       this.display.contourOptions,
     );
-    // this.data.contours = this.processingController.drawContours();
   }
 
   getProcessingController() {

@@ -101,7 +101,6 @@ const accordionItems = [
 ];
 
 const Panels = memo(({ selectedTool, displayerMode }) => {
-  // const { selectedTool } = useChartData();
   const [panelIndex, setSelectedPanelIndex] = useState(0);
   const preferences = usePreferences();
 
@@ -129,8 +128,6 @@ const Panels = memo(({ selectedTool, displayerMode }) => {
   );
 
   return (
-    // <div style={{ overflow: 'auto' }}>
-
     <Accordion defaultOpenIndex={panelIndex}>
       {accordionItems.map((item) => {
         return (
@@ -147,7 +144,6 @@ const Panels = memo(({ selectedTool, displayerMode }) => {
       })}
     </Accordion>
   );
-  // </div>
 });
 
 export default Panels;

@@ -116,7 +116,6 @@ export default function Exercise(props) {
         const idCodeResponse = MolResponse.getIDCode();
         answers[data.answer.idCode] = idCodeResponse;
         localStorage.setItem('nmrium-exercises', JSON.stringify(answers));
-        // console.log({ idCodeResponse, idCodeResult });
         if (data.answer.idCode === idCodeResponse) {
           // correct answer
           setResultFlag(true);

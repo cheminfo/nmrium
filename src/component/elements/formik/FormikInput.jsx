@@ -60,7 +60,6 @@ const FormikInput = ({
 FormikInput.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
-  // defaultValue: PropTypes.string,
   style: PropTypes.shape({
     label: PropTypes.object,
     input: PropTypes.object,

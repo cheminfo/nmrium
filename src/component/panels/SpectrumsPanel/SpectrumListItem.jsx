@@ -21,7 +21,6 @@ const styles = {
     flex: 1,
     height: '100%',
     display: 'flex',
-    // alignItems: 'center',
   },
   info: {
     flex: '1 1 1px',
@@ -68,7 +67,6 @@ const SpectrumListItem = memo(
     };
 
     const { color, name, positiveColor, negativeColor } = data.display;
-    // const eyeIconColor = data.info.dimension === 2 ? positiveColor : color;
     return (
       <div
         style={{

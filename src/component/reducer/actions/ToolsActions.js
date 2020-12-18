@@ -40,13 +40,10 @@ function setFilterChanges(draft, state, selectedFilter) {
   const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
   //save reduced snapshot
-  // console.log(dd);
   //select the equalizer tool when you enable manual phase correction filter
   if (selectedFilter === Filters.phaseCorrection.id) {
     draft.tempData = state.data;
 
-    // AnalysisObj.createDataSnapshot();
-    // draft.data = AnalysisObj.getSpectraData(true);
     const { xValue } = getStrongestPeak(state);
     draft.pivot = xValue;
   } else {
@@ -62,10 +59,6 @@ function setFilterChanges(draft, state, selectedFilter) {
       draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
       draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
     }
-    // draft.tempData = null;
-    // draft.selectedTool = null;
-
-    // setDomain(draft);
   }
 }
 
@@ -118,21 +111,13 @@ const setSelectedTool = (state, selectedTool) => {
       if (options[selectedTool].hasOptionPanel) {
         draft.selectedOptionPanel = selectedTool;
       }
-      // else {
-      //   draft.selectedOptionPanel = null;
-      // }
+
       if (options[selectedTool].isFilter) {
         setFilterChanges(draft, state, selectedTool);
       }
     } else {
       resetTool(draft, false);
     }
-    // else {
-    //   draft.selectedTool = null;
-    //   if (options[state.selectedTool].hasOptionPanel) {
-    //     draft.selectedOptionPanel = null;
-    //   }
-    // }
   });
 };
 
@@ -215,7 +200,6 @@ const handleToggleRealImaginaryVisibility = (state) => {
       draft.data[index].display.isRealSpectrumVisible = !draft.data[index]
         .display.isRealSpectrumVisible;
       ob.setIsRealSpectrumVisible();
-      // isRealSpectrumVisible
       if (draft.data[index].display.isRealSpectrumVisible) {
         if (reY !== null && reY !== undefined) {
           draft.data[index].y = reY;
@@ -240,7 +224,6 @@ const handleToggleRealImaginaryVisibility = (state) => {
 };
 
 const handleBrushEnd = (state, action) => {
-  // const scale = getScale(state).x;
   return produce(state, (draft) => {
     const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
     const xScale = getXScale(state);
@@ -366,9 +349,6 @@ const zoomOut = (state, action) => {
           draft.yDomains = yDomains;
           break;
       }
-      // draft.yDomain = yDomain;
-      // draft.xDomains = xDomains;
-      // draft.yDomains = yDomains;
     }
   });
 };

@@ -21,7 +21,6 @@ const Chart2D = ({ data }) => {
         width={width}
         height={height}
         id="nmrSVG"
-        // ref={centerRef}
       >
         <defs>
           <clipPath id="clip">

@@ -96,7 +96,7 @@ function exportAsPng(fileName = 'experiment', elementID) {
       saveAs(png, `${fileName}.png`);
       URL.revokeObjectURL(png);
     };
-    img.src = url; //   canvas.appendChild();
+    img.src = url;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
@@ -113,8 +113,6 @@ function copyDataURLCliboard(image) {
 
   document.body.appendChild(img);
   const range = document.createRange();
-  // r.setStartBefore(img);
-  // r.setEndAfter(img);
   range.selectNode(img);
   window.getSelection().addRange(range);
   document.execCommand('Copy');
@@ -194,10 +192,7 @@ function getBlob(elementID) {
     fill:white;
   }
   
-  // .left{
-  //   -ms-writing-mode: tb-rl;
-  //   -ms-transform: none;
-  // }
+
   
   </style>`;
   const svg = `${head + style + _svg.innerHTML}</svg>`;

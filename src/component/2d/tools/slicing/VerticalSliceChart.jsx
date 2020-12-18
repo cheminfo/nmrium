@@ -2,14 +2,12 @@ import { xyReduce } from 'ml-spectra-processing';
 import { useMemo, memo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
-// import { LAYOUT } from '../utilities/DimensionLayout';
 import { get2DYScale } from '../../utilities/scale';
 
 import { getYScale } from './SliceScale';
 
 const VerticalSliceChart = memo(({ margin: marignValue, data }) => {
   const { height: originHeight, margin, yDomain } = useChartData();
-  // const { yDomain: sliceYDomain, slicingData } = useSlicing();
 
   const height = margin.left;
 
@@ -18,7 +16,6 @@ const VerticalSliceChart = memo(({ margin: marignValue, data }) => {
       const { x, re: y } = data;
       const scaleX = get2DYScale({ height: originHeight, margin, yDomain });
 
-      // const { scaleX, xDomain } = getLeftXScale(originHeight, margin, x);
       const scaleY = getYScale(height, y, marignValue);
 
       const pathPoints = xyReduce(
@@ -72,9 +69,7 @@ const VerticalSliceChart = memo(({ margin: marignValue, data }) => {
           height={height}
           x={margin.top}
           y={`${0}`}
-          // fill="rgba(255,255,255,0.8)"
           fillOpacity="0"
-          // filter="url(#blur)"
         />
 
         <path className="line" stroke="red" fill="none" d={paths} />

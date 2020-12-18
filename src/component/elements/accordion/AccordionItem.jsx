@@ -12,8 +12,6 @@ const styles = {
     userSelect: 'none',
   },
   button: {
-    // backgroundColor: '#eee',
-    // color: '#444',
     cursor: 'pointer',
     padding: '6px 12px',
     display: 'flex',
@@ -73,10 +71,7 @@ const AccordionItem = ({ title, children, index, isOpen, onOpen, style }) => {
       e.persist();
       clearTimeout(timer);
       prevent = true;
-      // setActiveState(active == null ? { backgroundColor: '#ccc' } : null);
-      // if (active == null) {
       onOpen(index, { source: triggerSource.dbClick, shiftKey: e.shiftKey });
-      // }
     },
     [index, onOpen],
   );
@@ -84,12 +79,6 @@ const AccordionItem = ({ title, children, index, isOpen, onOpen, style }) => {
   useEffect(() => {
     setActiveState(isOpen ? { backgroundColor: '#ccc' } : null);
   }, [isOpen]);
-
-  // useEffect(() => {
-  //   if (isOpen === false) {
-  //     setActiveState(null);
-  //   }
-  // }, [isOpen]);
 
   return (
     <div
