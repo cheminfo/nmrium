@@ -243,7 +243,6 @@ const FooterBanner = ({ layout, data1D }) => {
       <div>
         <span className="label">Intensity :</span>
         <span className="value">{getZValue()}</span>
-        <span className="unit">ppm</span>
       </div>
       {step === 'brushing' && (
         <div>
