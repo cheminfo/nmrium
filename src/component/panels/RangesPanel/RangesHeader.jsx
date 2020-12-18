@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { SvgNmrSum } from 'cheminfo-font';
 import lodash from 'lodash';
 import { rangesToACS } from 'nmr-processing';
 import { useCallback } from 'react';
@@ -20,24 +19,6 @@ import {
 import { copyHTMLToClipboard } from '../../utility/Export';
 import { getNumberOfDecimals } from '../../utility/FormatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
-
-const sumButton = css`
-  background-color: transparent;
-  border: none;
-  width: 22px;
-  height: 22px;
-  min-height: 22px;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  outline: outline;
-  :focus {
-    outline: none !important;
-  }
-`;
 
 const styles = {
   toolbar: {
@@ -206,11 +187,12 @@ const RangesHeader = ({
         popupPlacement="right"
       >
         <button
-          className="ci-icon-nmr-sum"
-          css={sumButton}
+          css={styles.button}
           type="button"
           onClick={showChangeRangesSumModal}
-        />
+        >
+          <SvgNmrSum />
+        </button>
       </ToolTip>
       <ToolTip title={`Remove all Assignments`} popupPlacement="right">
         <button

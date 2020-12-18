@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { SvgNmrSum } from 'cheminfo-font';
 import lodash from 'lodash';
 import { useCallback, useMemo, useState, useRef, memo, Fragment } from 'react';
 import ReactCardFlip from 'react-card-flip';
@@ -25,21 +26,11 @@ const styles = css`
   height: 100%;
 
   .sum-button {
-    background-color: transparent;
-    border: none;
     width: 22px;
     height: 22px;
-    min-height: 22px;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    outline: outline;
-    :focus {
-      outline: none !important;
-    }
   }
 `;
 
@@ -130,10 +121,12 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
               popupPlacement="right"
             >
               <button
-                className="ci-icon-nmr-sum sum-button"
+                className="sum-button"
                 type="button"
                 onClick={showChangeIntegralSumModal}
-              />
+              >
+                <SvgNmrSum />
+              </button>
             </ToolTip>
           </DefaultPanelHeader>
         )}

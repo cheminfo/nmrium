@@ -1,3 +1,4 @@
+import { SvgNmrFid, SvgNmrFt, SvgNmr2D, SvgNmrPeaks } from 'cheminfo-font';
 import { memo } from 'react';
 import { FaEye } from 'react-icons/fa';
 
@@ -33,17 +34,9 @@ const styles = {
     lineHeight: '24px',
   },
   icon: {
-    backgroundPosition: 'center center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: '18px 18px',
-  },
-  spectrumClassIcon: {
-    backgroundPosition: 'center center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: '16px 16px',
-    width: '16px',
-    height: '100%',
-    margin: '0px 2px',
+    display: 'flex',
+    margin: 'auto',
+    justifyContent: 'center',
   },
 };
 
@@ -158,16 +151,15 @@ const SpectrumListItem = memo(
         )}
 
         <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
-          <div
-            style={styles.spectrumClassIcon}
-            className={
-              data.info.isFid
-                ? 'ci-icon-nmr-fid'
-                : data.info.dimension === 2
-                ? 'ci-icon-nmr-2d'
-                : 'ci-icon-nmr-ft'
-            }
-          />
+          <div style={{ ...styles.icon, width: '16px' }}>
+            {data.info.isFid ? (
+              <SvgNmrFid />
+            ) : data.info.dimension === 2 ? (
+              <SvgNmr2D />
+            ) : (
+              <SvgNmrFt />
+            )}
+          </div>
           <span style={styles.info}>{name}</span>
           <div
             style={styles.info}
@@ -192,8 +184,8 @@ const SpectrumListItem = memo(
         </div>
         <button
           style={{
-            ...styles.button,
             ...styles.icon,
+            ...styles.button,
             opacity:
               isMarkerVisible(data.id) &&
               data.peaks &&
@@ -203,9 +195,10 @@ const SpectrumListItem = memo(
           }}
           type="button"
           onClick={() => onChangeMarkersVisibility(data)}
-          className="ci-icon-nmr-peaks"
           disabled={data.peaks && data.peaks.values.length === 0}
-        />
+        >
+          <SvgNmrPeaks />
+        </button>
 
         <ColorIndicator
           style={styles.button}

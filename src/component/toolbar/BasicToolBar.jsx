@@ -289,7 +289,6 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
             className="cheminfo"
             type="button"
             onClick={changeSpectrumViewHandler}
-            // className={'ci-icon-nmr-real-imag'}
           >
             <ToolTip
               title={
