@@ -1,6 +1,6 @@
 {
   "name": "nmr-displayer",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "main": "lib-cjs/component/NMRDisplayer.js",
   "module": "lib/component/NMRDisplayer.js",
   "types": "nmr-displayer.d.ts",
