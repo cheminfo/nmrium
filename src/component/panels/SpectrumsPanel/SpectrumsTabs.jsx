@@ -11,7 +11,10 @@ import { useDispatch } from '../../context/DispatchContext';
 import ContextMenu from '../../elements/ContextMenu';
 import { Tabs } from '../../elements/Tab';
 import { useAlert } from '../../elements/popup/Alert';
+<<<<<<< HEAD
 import SpectraWraper from '../../hoc/SpectraWraper';
+=======
+>>>>>>> 4cf600b06239c50e38a968b0818c2588acc8e22f
 import {
   CHANGE_PEAKS_MARKERS_VISIBILITY,
   SET_ACTIVE_TAB,
