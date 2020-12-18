@@ -5,7 +5,6 @@ import { xyIntegral } from 'ml-spectra-processing';
 import { getXScale } from '../../1d/utilities/scale';
 import { AnalysisObj } from '../core/Analysis';
 
-// import { getScale } from './ScaleActions';
 import { setIntegralZoom, integralZoomHanlder } from './Zoom';
 
 const handleChangeIntegralSum = (state, value) => {

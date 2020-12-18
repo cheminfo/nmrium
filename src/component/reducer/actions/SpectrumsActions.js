@@ -2,7 +2,6 @@ import { produce } from 'immer';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
-import { DISPLAYER_MODE } from '../core/Constants';
 
 import { setDomain, setMode } from './DomainActions';
 import { setTab, setActiveTab } from './ToolsActions';
@@ -79,20 +78,17 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
       activeSpectrum = { ...activeSpectrum, index: newIndex };
       draft.activeSpectrum = activeSpectrum;
       draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
-      // }
     } else {
-      if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
-        draft.activeSpectrum = null;
-        draft.tabActiveSpectrum[draft.activeTab] = null;
-        refreshDomain = false;
-      }
+      draft.activeSpectrum = null;
+      draft.tabActiveSpectrum[draft.activeTab] = null;
+      refreshDomain = false;
     }
 
     /**
      * if the active spectrum not is FID then dont refresh the domain and the mode when the first time you activate soectrum
      * if the new active spectrum different than the previous active spectrum fid then refresh the domain andf the mode.
      */
-    //
+
     if (refreshDomain) {
       setDomain(draft);
       delete draft.tabActiveSpectrum[draft.activeTab];
@@ -126,10 +122,7 @@ const handleDeleteSpectra = (state, action) => {
     const { activeTab } = draft;
     if (action.id) {
       AnalysisObj.deleteDatumByIDs([action.id]);
-      // draft.activeSpectrum = null;
       draft.data = AnalysisObj.getSpectraData();
-      // setDomain(draft);
-      // setMode(draft);
     } else {
       const IDs = draft.data.reduce((acc, datum) => {
         if (datum.info.nucleus === activeTab) acc.push(datum.id);
@@ -139,7 +132,6 @@ const handleDeleteSpectra = (state, action) => {
       draft.data = AnalysisObj.getSpectraData();
     }
     draft.activeSpectrum = null;
-    // console.log(activeTab);
     setActiveTab(draft, activeTab, true);
   });
 };
@@ -152,7 +144,6 @@ const addMissingProjectionHander = (state, action) => {
       const groupByNucleus = GroupByInfoKey('nucleus');
       const dataGroupByNucleus = groupByNucleus(draft.data);
       setTab(draft, dataGroupByNucleus, draft.activeTab, true);
-      // setMargin(draft);
       setDomain(draft);
       setMode(draft);
     }

@@ -1,7 +1,6 @@
 import { useCallback, Fragment, useEffect, useState, useReducer } from 'react';
 import { useSize, useDebounce } from 'react-use';
 
-// import BrushX from '../tool/BrushX';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
@@ -45,7 +44,6 @@ import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
 
 const Viewer1D = () => {
-  //   const { selectedTool, isLoading, data } = useChartData();
   const {
     display: { general },
   } = usePreferences();

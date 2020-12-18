@@ -17,6 +17,7 @@ const styles = {
     border: 'none',
     height: 25,
     width: 25,
+    padding: '5px',
   },
   active: {
     backgroundColor: '#fbfbfb',

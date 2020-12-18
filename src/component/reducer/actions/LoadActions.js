@@ -22,18 +22,11 @@ const initiate = (state, dataObject) => {
   const spectraAanalysis = AnalysisObj.getMultipleAnalysis();
 
   return produce(state, (draft) => {
-    // const domain = getDomain(spectraData);
-
     draft.data = spectraData;
     draft.molecules = molecules;
     draft.correlations = correlations;
     draft.spectraAanalysis = spectraAanalysis;
     initZoom1DHandler(draft.data);
-    // draft.xDomain = domain.xDomain;
-    // draft.yDomain = domain.yDomain;
-    // draft.originDomain = domain;
-    // draft.yDomains = domain.yDomains;
-    // draft.xDomains = domain.xDomains;
     draft.isLoading = false;
     if (
       preferences.display &&
@@ -46,14 +39,10 @@ const initiate = (state, dataObject) => {
       setYAxisShift(spectraData, draft, state.height);
     }
     setActiveTab(draft);
-
-    // setDomain(draft);
-    // setMode(draft);
   });
 };
 
 const setData = (state, data) => {
-  // AnalysisObj= new Analysis()
   for (let d of data) {
     AnalysisObj.pushDatum(new Datum1D(d));
   }
@@ -70,9 +59,6 @@ const setData = (state, data) => {
     draft.isLoading = false;
     setActiveTab(draft);
     initZoom1DHandler(draft.data);
-
-    // setDomain(draft);
-    // setMode(draft);
   });
 };
 
@@ -114,8 +100,6 @@ const loadJcampFile = (state, files) => {
         display: {
           name: files[i].name,
           color: color,
-          // isVisible: true,
-          // isPeaksMarkersVisible: true,
         },
         source: {
           jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
@@ -128,8 +112,6 @@ const loadJcampFile = (state, files) => {
     setActiveTab(draft);
     initZoom1DHandler(draft.data);
 
-    // setDomain(draft);
-    // setMode(draft);
     draft.isLoading = false;
   });
 };
@@ -162,8 +144,6 @@ const handleLoadJsonFile = (state, data) => {
     setActiveTab(draft);
     initZoom1DHandler(draft.data);
 
-    // setDomain(draft);
-    // setMode(draft);
     draft.isLoading = false;
   });
 };

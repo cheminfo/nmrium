@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import lodash from 'lodash';
 import { Fragment, useCallback } from 'react';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
@@ -28,6 +30,19 @@ import {
   SET_SELECTED_TOOL,
 } from '../../../reducer/types/Types';
 
+const styles = css`
+  width: 66px;
+  padding: 0 !important;
+  button {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+  }
+
+  button:disabled {
+    opacity: 0.6;
+  }
+`;
 const selectBoxStyle = {
   marginLeft: 2,
   marginRight: 2,
@@ -122,7 +137,7 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
           style={selectBoxStyle}
         />
       </td>
-      <td {...rowSpanTags}>
+      <td {...rowSpanTags} css={styles}>
         <button
           type="button"
           className="delete-button"

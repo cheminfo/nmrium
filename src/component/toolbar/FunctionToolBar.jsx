@@ -1,3 +1,15 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+import {
+  SvgNmrBaselineCorrection,
+  SvgNmrFourierTransform,
+  SvgNmrIntegrate,
+  SvgNmrMultipleAnalysis,
+  SvgNmrPeakPicking,
+  SvgNmrPhaseCorrection,
+  SvgNmrRangePicking,
+  SvgNmrZeroFilling,
+} from 'cheminfo-font';
 import lodash from 'lodash';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
@@ -22,24 +34,33 @@ import {
 
 import { options } from './ToolTypes';
 
-const styles = {
-  icon: {
-    backgroundPosition: 'center center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: '18px 18px',
-  },
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    width: '35px',
-    height: '35px',
-    outline: 'outline',
-  },
-  faIcon: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-};
+const styles = css`
+  button {
+    background-color: transparent;
+    border: none;
+    width: 35px;
+    height: 35px;
+    min-height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: outline;
+    :focus {
+      outline: none !important;
+    }
+
+    &.fa {
+      svg {
+        font-size: 14px;
+      }
+    }
+    &.cheminfo {
+      svg {
+        font-size: 18px;
+      }
+    }
+  }
+`;
 
 let debounceClickEvents = [];
 
@@ -187,7 +208,7 @@ const FunctionToolBar = ({
   );
 
   return (
-    <>
+    <div css={styles}>
       <ToggleButtonGroup value={option} onChange={handleChange}>
         {isButtonVisible('hideZoomTool') && (
           <ToggleButton
@@ -195,6 +216,7 @@ const FunctionToolBar = ({
             value={options.zoom.id}
             {...help.onHover}
             helpID="zoomIn"
+            className="fa"
           >
             <ToolTip
               title={`${options.zoom.label} ( Press z )`}
@@ -208,11 +230,7 @@ const FunctionToolBar = ({
         )}
 
         {isButtonVisible('hideZoomOutTool') && (
-          <button
-            type="button"
-            style={{ ...styles.button, ...styles.faIcon }}
-            onClick={handleFullZoomOut}
-          >
+          <button className="fa" type="button" onClick={handleFullZoomOut}>
             <ToolTip
               title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
               popupPlacement="right"
@@ -227,8 +245,7 @@ const FunctionToolBar = ({
             <ToggleButton
               key={options.peakPicking.id}
               value={options.peakPicking.id}
-              className="ci-icon-nmr-peak-picking"
-              style={styles.icon}
+              className="cheminfo"
               isVisible={
                 activeSpectrum &&
                 selectedSpectrumInfo &&
@@ -241,7 +258,9 @@ const FunctionToolBar = ({
                 title={`${options.peakPicking.label} ( Press p )`}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
-              />
+              >
+                <SvgNmrPeakPicking />
+              </ToolTip>
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -249,8 +268,7 @@ const FunctionToolBar = ({
             <ToggleButton
               key={options.integral.id}
               value={options.integral.id}
-              className="ci-icon-nmr-integrate"
-              style={styles.icon}
+              className="cheminfo"
               isVisible={
                 activeSpectrum &&
                 selectedSpectrumInfo &&
@@ -263,12 +281,18 @@ const FunctionToolBar = ({
                 title={`${options.integral.label} ( Press i )`}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
-              />
+              >
+                <SvgNmrIntegrate />
+              </ToolTip>
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_2D &&
           isButtonVisible('hideIntegralTool') && (
-            <ToggleButton key={options.zone2D.id} value={options.zone2D.id}>
+            <ToggleButton
+              key={options.zone2D.id}
+              value={options.zone2D.id}
+              className="fa"
+            >
               <ToolTip
                 title={`${options.zone2D.label} ( Press i  )`}
                 popupPlacement="right"
@@ -298,8 +322,7 @@ const FunctionToolBar = ({
             <ToggleButton
               key={options.rangesPicking.id}
               value={options.rangesPicking.id}
-              className="ci-icon-nmr-range-picking"
-              style={styles.icon}
+              className="cheminfo"
               isVisible={
                 activeSpectrum &&
                 selectedSpectrumInfo &&
@@ -310,7 +333,9 @@ const FunctionToolBar = ({
                 title={options.rangesPicking.label}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
-              />
+              >
+                <SvgNmrRangePicking />
+              </ToolTip>
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -318,14 +343,15 @@ const FunctionToolBar = ({
             <ToggleButton
               key={options.multipleSpectraAnalysis.id}
               value={options.multipleSpectraAnalysis.id}
-              className="ci-icon-nmr-multiple-analysis"
-              style={styles.icon}
+              className="cheminfo"
             >
               <ToolTip
                 title={options.multipleSpectraAnalysis.label}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
-              />
+              >
+                <SvgNmrMultipleAnalysis />
+              </ToolTip>
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -333,8 +359,7 @@ const FunctionToolBar = ({
             <ToggleButton
               key={options.zeroFilling.id}
               value={options.zeroFilling.id}
-              className="ci-icon-nmr-zero-filling"
-              style={styles.icon}
+              className="cheminfo"
               isVisible={
                 selectedSpectrumInfo &&
                 Filters.zeroFilling.isApplicable(selectedSpectrumInfo)
@@ -344,7 +369,9 @@ const FunctionToolBar = ({
                 title={options.zeroFilling.label}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
-              />
+              >
+                <SvgNmrZeroFilling />
+              </ToolTip>
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -352,7 +379,7 @@ const FunctionToolBar = ({
             <ToggleButton
               key={options.phaseCorrection.id}
               value={options.phaseCorrection.id}
-              className="ci-icon-nmr-phase-correction"
+              className="cheminfo"
               style={styles.icon}
               isVisible={
                 activeSpectrum &&
@@ -364,7 +391,9 @@ const FunctionToolBar = ({
                 title={options.phaseCorrection.label}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
-              />
+              >
+                <SvgNmrPhaseCorrection />
+              </ToolTip>
             </ToggleButton>
           )}
 
@@ -373,8 +402,7 @@ const FunctionToolBar = ({
             <ToggleButton
               key={options.baseLineCorrection.id}
               value={options.baseLineCorrection.id}
-              className="ci-icon-nmr-baseline-correction"
-              style={styles.icon}
+              className="cheminfo"
               isVisible={
                 activeSpectrum &&
                 selectedSpectrumInfo &&
@@ -385,7 +413,9 @@ const FunctionToolBar = ({
                 title={options.baseLineCorrection.label}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
-              />
+              >
+                <SvgNmrBaselineCorrection />
+              </ToolTip>
             </ToggleButton>
           )}
       </ToggleButtonGroup>
@@ -395,8 +425,7 @@ const FunctionToolBar = ({
         selectedSpectrumInfo &&
         Filters.fft.isApplicable(selectedSpectrumInfo) && (
           <button
-            className="ci-icon-nmr-fourier-transform"
-            style={{ ...styles.icon, ...styles.button }}
+            className="cheminfo"
             type="button"
             onClick={handleOnFFTFilter}
           >
@@ -404,10 +433,12 @@ const FunctionToolBar = ({
               title={`FFT Filter`}
               popupPlacement="right"
               offset={{ x: 10, y: 0 }}
-            />
+            >
+              <SvgNmrFourierTransform />
+            </ToolTip>
           </button>
         )}
-    </>
+    </div>
   );
 };
 

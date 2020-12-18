@@ -41,7 +41,6 @@ export class Datum1D {
       },
       options.display,
     );
-    // this.original = options.data; //{ x, re, im }
     this.info = Object.assign(
       {
         nucleus: '1H', // 1H, 13C, 19F, ...
@@ -408,18 +407,6 @@ export class Datum1D {
     }
     return null;
   }
-  /**
-   *
-   * @param {number} chemicalShift Target chemical shift
-   * @param {number} window Range of chemical shifts to look for
-   * @example  addPeak(5, 0.1)
-   */
-  // addPeak(from, to, options = {}) {
-  //   // we look for the highest peak in the zone
-  //   // return one peak
-  //   // this.lookupPeak();
-  //   // add peak in this.peaks
-  // }
 
   checkPeakIsExists(peak) {
     const peaks = this.peaks.values.map((p) => p.xIndex);

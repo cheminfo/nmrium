@@ -62,7 +62,6 @@ const style = css`
 
   }
   .chrome-picker > div:last-child >  div:last-child {
-    // padding-bottom: 40% !important;
     display:none !important;
   }
 `;

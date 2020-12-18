@@ -134,7 +134,6 @@ Input.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
   value: PropTypes.any,
-  // defaultValue: PropTypes.string,
   style: PropTypes.shape({
     label: PropTypes.object,
     input: PropTypes.object,
@@ -153,7 +152,6 @@ Input.defaultProps = {
     label: {},
     input: {},
   },
-  // defaultValue: 0,
   value: '',
   onChange: () => {
     return null;

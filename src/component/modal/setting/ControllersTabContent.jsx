@@ -15,6 +15,16 @@ const ControllersTabContent = () => {
         label="Prevent automatic show help "
         name="controllers.help.preventAutoHelp"
       />
+
+      <p className="section-header" style={{ marginTop: '40px' }}>
+        Spectra
+      </p>
+      <FormikInput
+        type="number"
+        label="Transparency of Dimmed Spectra [ 0 - 1 ]"
+        name="controllers.dimmedSpectraTransparency"
+        checkValue={(value) => value >= 0 && value <= 1}
+      />
     </>
   );
 };

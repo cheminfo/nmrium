@@ -153,12 +153,6 @@ const ManualPhaseCorrectionPanel = () => {
     });
   }, [dispatch]);
 
-  // const handleAutoFilter = useCallback(() => {
-  //   dispatch({
-  //     type: APPLY_AUTO_PHASE_CORRECTION_FILTER,
-  //   });
-  // }, [dispatch]);
-
   const onChangeHandler = useCallback((val) => {
     setPhaseCorrectionType(val);
   }, []);

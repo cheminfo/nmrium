@@ -16,20 +16,9 @@ const HighlightedRowStyle = { backgroundColor: '#ff6f0057' };
 
 const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
-const ZonesTableRow = ({
-  rowData,
-  onUnlink,
-  onContextMenu,
-  // preferences,
-}) => {
+const ZonesTableRow = ({ rowData, onUnlink, onContextMenu }) => {
   const assignmentZone = useAssignment(rowData.id);
-  const highlightZone = useHighlight(
-    [assignmentZone.id],
-    // .concat(
-    //   assignmentZone.assigned.x || [],
-    //   assignmentZone.assigned.y || [],
-    // ),
-  );
+  const highlightZone = useHighlight([assignmentZone.id]);
   const highlightZoneX = useHighlight(
     [buildID(assignmentZone.id, 'X')].concat(assignmentZone.assigned.x || []),
   );

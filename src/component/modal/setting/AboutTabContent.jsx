@@ -33,7 +33,6 @@ const styles = css`
   }
 
   a {
-    // padding: 4px 0;
     color: #969696;
   }
 

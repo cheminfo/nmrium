@@ -67,13 +67,6 @@ And in particular we want to use immer: https://github.com/immerjs/immer
 npm install nmr-displayer
 ```
 
-### Import the required CSS
-
-```js
-import 'cheminfo-font/dist/style.css';
-import 'prismjs/themes/prism.css';
-```
-
 ### OpenChemLib version
 
 This module makes use of `openchemlib/full` and registers it with `openchemlib-utlis`.  

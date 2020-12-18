@@ -1,7 +1,8 @@
-import lodash from 'lodash';
+import get from 'lodash/get';
 import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import { usePreferences } from '../context/PreferencesContext';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
@@ -18,6 +19,8 @@ const Contours = () => {
       contours,
       activeSpectrum,
     } = useChartData();
+
+    const preferences = usePreferences();
 
     const isActive = useMemo(() => {
       return activeSpectrum === null
@@ -40,7 +43,7 @@ const Contours = () => {
       return path;
     };
     const data = useMemo(() => {
-      return lodash.get(contours, `${spectrumID}.${sign}`, []);
+      return get(contours, `${spectrumID}.${sign}`, []);
     }, [contours, sign, spectrumID]);
     return data.map((contoursData, innerIndex) => (
       <path
@@ -50,7 +53,9 @@ const Contours = () => {
         stroke={color}
         strokeWidth="1"
         style={{
-          opacity: isActive ? 1 : 0.1,
+          opacity: isActive
+            ? 1
+            : get(preferences, 'controllers.dimmedSpectraTransparency', 0.1),
         }}
         d={buildContourPath(contoursData)}
       />
@@ -62,8 +67,7 @@ const Contours = () => {
       {data
         .filter((datum) => datum.info.dimension === 2)
         .map((datum, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <g key={index}>
+          <g key={`${datum.id + index}`}>
             {datum.display.isPositiveVisible && (
               <ContoursPaths
                 id={datum.id}

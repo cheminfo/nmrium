@@ -26,9 +26,7 @@ const style = css`
     box-shadow: none !important;
   }
 
-  .sketch-picker > div:first-of-type {
-    // padding-bottom: 40% !important;
-  }
+
   .horizontal-slider {
     width: 80%;
     height: 15px;
@@ -45,8 +43,6 @@ const style = css`
     font-size: 10px;
     background-image: -webkit-linear-gradient(top, #f4f1ee, #fff);
     background-image: linear-gradient(top, #f4f1ee, #fff);
-    // box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, 0.3), inset 0px 4px 1px 1px white,
-      // inset 0px -3px 1px 1px rgba(204, 198, 197, 0.5);
   }
 
   .track {

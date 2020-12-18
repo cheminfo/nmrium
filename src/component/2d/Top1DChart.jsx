@@ -45,12 +45,7 @@ const Top1DChart = memo(({ margin: marginProps, data }) => {
   }
 
   return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      width={width}
-      height={height}
-      // ref={ref}
-    >
+    <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}>
       <defs>
         <clipPath id="clip-top">
           <rect

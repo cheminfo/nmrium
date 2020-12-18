@@ -18,10 +18,7 @@ function highlightReducer(state, action) {
       };
       for (const value of action.payload) {
         if (!(value in newState.highlights)) {
-          //   newState.highlights[value]++;
-          // } else {
           newState.highlights[value] = 1;
-          // }
         }
       }
       newState.highlighted = Object.keys(newState.highlights);
@@ -34,10 +31,7 @@ function highlightReducer(state, action) {
       };
       for (const value of action.payload) {
         if (value in newState.highlights) {
-          // newState.highlights[value]--;
-          // if (newState.highlights[value] === 0) {
           delete newState.highlights[value];
-          // }
         }
       }
       newState.highlighted = Object.keys(newState.highlights);

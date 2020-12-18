@@ -76,7 +76,6 @@ const InformationPanel = memo(({ info, meta }) => {
           <p
             style={{
               backgroundColor: '#efefef',
-              // width: '100%',
               height: '100%',
               padding: '5px',
               fontFamily: 'monospace',

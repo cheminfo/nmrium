@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { SvgNmrSum } from 'cheminfo-font';
 import lodash from 'lodash';
 import { rangesToACS } from 'nmr-processing';
 import { useCallback } from 'react';
@@ -21,24 +20,6 @@ import { copyHTMLToClipboard } from '../../utility/Export';
 import { getNumberOfDecimals } from '../../utility/FormatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
-const sumButton = css`
-  background-color: transparent;
-  border: none;
-  width: 22px;
-  height: 22px;
-  min-height: 22px;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  outline: outline;
-  :focus {
-    outline: none !important;
-  }
-`;
-
 const styles = {
   toolbar: {
     display: 'flex',
@@ -58,7 +39,6 @@ const styles = {
   },
   setShowMultiplicityTreesButton: {
     borderRadius: '5px',
-    // marginTop: '3px',
     marginLeft: '5px',
     color: 'black',
     backgroundColor: 'transparent',
@@ -149,16 +129,11 @@ const RangesHeader = ({
     const nbDecimalDelta = getNumberOfDecimals(format.ppm);
     const nbDecimalJ = getNumberOfDecimals(format.hz);
 
-    //   {  nucleus: '19F',
-    // nbDecimalDelta: 2,
-    // nbDecimalJ: 1,
-    // observedFrequency: 400}
-
     const result = rangesToACS(ranges.values, {
-      nucleus,
-      nbDecimalDelta,
-      nbDecimalJ,
-      observedFrequency,
+      nucleus, // '19f'
+      nbDecimalDelta, // 2
+      nbDecimalJ, // 1
+      observedFrequency, //400
     });
     modal.show(
       <CopyClipboardModal
@@ -206,11 +181,12 @@ const RangesHeader = ({
         popupPlacement="right"
       >
         <button
-          className="ci-icon-nmr-sum"
-          css={sumButton}
+          css={styles.button}
           type="button"
           onClick={showChangeRangesSumModal}
-        />
+        >
+          <SvgNmrSum />
+        </button>
       </ToolTip>
       <ToolTip title={`Remove all Assignments`} popupPlacement="right">
         <button

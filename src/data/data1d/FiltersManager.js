@@ -86,10 +86,7 @@ export class FiltersManager {
 
   static reapplyFilters(datum1d, filters = null) {
     const _filters = filters ? filters : datum1d.filters;
-    // for (const filter of _filters) {
-    // const { id, flag } = filter;
     this.enableFilter(datum1d, null, null, _filters);
-    // }
   }
 
   // id filter id

@@ -1,7 +1,9 @@
+import { SvgNmrFid, SvgNmrFt, SvgNmr2D } from 'cheminfo-font';
 import { memo } from 'react';
-import { FaEye } from 'react-icons/fa';
 
 import ColorIndicator from './base/ColorIndicator';
+import ShowHideMarkersButton from './base/ShowHideMarkersButton';
+import ShowHideSpectrumButton from './base/ShowHideSpectrumButton';
 
 const styles = {
   button: {
@@ -20,7 +22,6 @@ const styles = {
     flex: 1,
     height: '100%',
     display: 'flex',
-    // alignItems: 'center',
   },
   info: {
     flex: '1 1 1px',
@@ -33,17 +34,9 @@ const styles = {
     lineHeight: '24px',
   },
   icon: {
-    backgroundPosition: 'center center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: '18px 18px',
-  },
-  spectrumClassIcon: {
-    backgroundPosition: 'center center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: '16px 16px',
-    width: '16px',
-    height: '100%',
-    margin: '0px 2px',
+    display: 'flex',
+    margin: 'auto',
+    justifyContent: 'center',
   },
 };
 
@@ -58,14 +51,6 @@ const SpectrumListItem = memo(
     onOpenSettingModal,
     onContextMenu,
   }) => {
-    const isVisible = (id, key) => {
-      return data ? data.display[key] : true;
-    };
-
-    const isMarkerVisible = (id) => {
-      return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
-    };
-
     const formatValueAsHTML = (value) => {
       if (value) {
         // eslint-disable-next-line prefer-named-capture-group
@@ -75,99 +60,30 @@ const SpectrumListItem = memo(
     };
 
     const { color, name, positiveColor, negativeColor } = data.display;
-    // const eyeIconColor = data.info.dimension === 2 ? positiveColor : color;
     return (
       <div
         style={{
           ...styles.row,
-          ...(activated && activated.id === data.id
-            ? { backgroundColor: '#fafafa' }
-            : {}),
+          ...(activated ? { backgroundColor: '#fafafa' } : {}),
         }}
-        key={data.id}
         onContextMenu={onContextMenu}
       >
-        {data.info.dimension === 1 && (
-          <button
-            style={styles.button}
-            type="button"
-            onClick={() => onChangeVisibility(data, 'isVisible')}
-          >
-            <FaEye
-              style={{
-                fill: color,
-                ...(isVisible(data.id, 'isVisible')
-                  ? {
-                      opacity: 1,
-                      strokeWidth: '1px',
-                      fill: color,
-                    }
-                  : {
-                      opacity: 0.1,
-                      fill: color,
-                    }),
-              }}
-            />
-          </button>
-        )}
-        {data.info.dimension === 2 && (
-          <div style={{ minWidth: '40px' }}>
-            <button
-              style={{ ...styles.button, width: '20px', minWidth: '20px' }}
-              type="button"
-              onClick={() => onChangeVisibility(data, 'isPositiveVisible')}
-            >
-              <FaEye
-                style={{
-                  fill: positiveColor,
-                  ...(isVisible(data.id, 'isPositiveVisible')
-                    ? {
-                        opacity: 1,
-                        strokeWidth: '1px',
-                        fill: positiveColor,
-                      }
-                    : {
-                        opacity: 0.1,
-                        fill: positiveColor,
-                      }),
-                }}
-              />
-            </button>
-            <button
-              style={{ ...styles.button, width: '20px', minWidth: '20px' }}
-              type="button"
-              onClick={() => onChangeVisibility(data, 'isNegativeVisible')}
-            >
-              <FaEye
-                style={{
-                  fill: negativeColor,
-                  ...(isVisible(data.id, 'isNegativeVisible')
-                    ? {
-                        opacity: 1,
-                        strokeWidth: '1px',
-                        fill: negativeColor,
-                      }
-                    : {
-                        opacity: 0.1,
-                        fill: negativeColor,
-                      }),
-                }}
-              />
-            </button>
-          </div>
-        )}
+        <ShowHideSpectrumButton
+          data={data}
+          onChangeVisibility={onChangeVisibility}
+          style={styles.button}
+        />
 
         <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
-          <div
-            style={styles.spectrumClassIcon}
-            className={
-              data.info.isFid
-                ? 'ci-icon-nmr-fid'
-                : data.info.dimension === 2
-                ? 'ci-icon-nmr-2d'
-                : 'ci-icon-nmr-ft'
-            }
-          />
+          <div style={{ ...styles.icon, width: '16px' }}>
+            {data.info.isFid ? (
+              <SvgNmrFid />
+            ) : data.info.dimension === 2 ? (
+              <SvgNmr2D />
+            ) : (
+              <SvgNmrFt />
+            )}
+          </div>
           <span style={styles.info}>{name}</span>
           <div
             style={styles.info}
@@ -190,28 +106,21 @@ const SpectrumListItem = memo(
           {/* </div> */}
           <span style={styles.info}>{data.info && data.info.pulse}</span>
         </div>
-        <button
-          style={{
-            ...styles.button,
-            ...styles.icon,
-            opacity:
-              isMarkerVisible(data.id) &&
-              data.peaks &&
-              data.peaks.values.length > 0
-                ? 1
-                : 0.1,
-          }}
-          type="button"
-          onClick={() => onChangeMarkersVisibility(data)}
-          className="ci-icon-nmr-peaks"
-          disabled={data.peaks && data.peaks.values.length === 0}
-        />
 
+        <ShowHideMarkersButton
+          data={data}
+          style={{
+            ...styles.icon,
+            ...styles.button,
+          }}
+          onChangeMarkersVisibility={onChangeMarkersVisibility}
+          markersVisible={markersVisible}
+        />
         <ColorIndicator
           style={styles.button}
           dimension={data.info.dimension}
           color={{ positiveColor, color, negativeColor }}
-          activated={activated && activated.id === data.id ? true : false}
+          activated={activated}
           onClick={(event) => onOpenSettingModal(data, event)}
         />
       </div>

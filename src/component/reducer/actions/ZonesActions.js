@@ -14,7 +14,6 @@ Events.on('noiseFactorChanged', (val) => {
 const add2dZoneHandler = (state, action) => {
   return produce(state, (draft) => {
     const { startX, startY, endX, endY } = action;
-    // const { width, height, margin, xDomain, yDomain } = state;
     const scaleX = get2DXScale(state);
     const scaleY = get2DYScale(state);
     const x1 = startX * 1000000 > endX * 1000000 ? endX : startX;

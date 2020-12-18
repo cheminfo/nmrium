@@ -215,10 +215,6 @@ export function spectrumReducer(state, action) {
       return ToolsActions.handleToggleRealImaginaryVisibility(state);
     case types.SET_ZOOM_FACTOR:
       return ToolsActions.handleZoom(state, action);
-    // return {
-    //   ...state,
-    //   zoomFactor: action.zoomFactor,
-    // };
 
     case types.CHANGE_SPECTRUM_DISPLAY_VIEW_MODE:
       return ToolsActions.handleChangeSpectrumDisplayMode(state, action);

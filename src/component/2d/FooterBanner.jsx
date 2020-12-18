@@ -58,6 +58,7 @@ const FooterBanner = ({ layout, data1D }) => {
     yDomain,
     yDomains,
     activeTab,
+    data,
   } = useChartData();
 
   const trackID =
@@ -121,7 +122,6 @@ const FooterBanner = ({ layout, data1D }) => {
   ) {
     return <div css={styles} />;
   }
-
   const getRealYValue = (cordinate) => {
     let index = null;
     if (trackID === LAYOUT.TOP_1D) {
@@ -210,6 +210,23 @@ const FooterBanner = ({ layout, data1D }) => {
     );
   };
 
+  const getZValue = () => {
+    if (trackID === LAYOUT.CENTER_2D) {
+      const { maxX, maxY, minX, minY, z } = data[activeSpectrum.index];
+
+      const xStep = (maxX - minX) / (z[0].length - 1);
+      const yStep = (maxY - minY) / (z.length - 1);
+      const xIndex = Math.floor((getXValue() - minX) / xStep);
+      const yIndex = Math.floor((getYValue() - minY) / yStep);
+
+      if (xIndex < 0 || xIndex >= z[0].length) return 0;
+      if (yIndex < 0 || yIndex >= z.length) return 0;
+
+      return z[yIndex][xIndex];
+    }
+    return 0;
+  };
+
   return (
     <div css={styles}>
       <div>
@@ -222,6 +239,10 @@ const FooterBanner = ({ layout, data1D }) => {
         <span className="label">{getLabel('F1', 'Y', nucleuses[1])} :</span>
         <span className="value">{formatY(getYValue())}</span>
         <span className="unit">ppm</span>
+      </div>
+      <div>
+        <span className="label">Intensity :</span>
+        <span className="value">{getZValue()}</span>
       </div>
       {step === 'brushing' && (
         <div>

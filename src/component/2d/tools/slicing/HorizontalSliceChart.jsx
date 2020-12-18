@@ -16,7 +16,6 @@ const HorizontalSliceChart = memo(({ margin: marginProps, data }) => {
       const { x, re: y } = data;
       const scaleX = get2DXScale({ margin: originMargin, width, xDomain });
 
-      // const { scaleX, xDomain } = getTopXScale(width, originMargin, x);
       const scaleY = getYScale(height, y, marginProps);
       const pathPoints = xyReduce(
         { x, y },
@@ -42,12 +41,7 @@ const HorizontalSliceChart = memo(({ margin: marginProps, data }) => {
   }
 
   return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      width={width}
-      height={height}
-      // ref={ref}
-    >
+    <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}>
       <defs>
         <filter id="blur">
           <feGaussianBlur stdDeviation="5" />
@@ -67,9 +61,7 @@ const HorizontalSliceChart = memo(({ margin: marginProps, data }) => {
           height={height}
           x={originMargin.left}
           y={`${0}`}
-          // fill="rgba(255,255,255,0.8)"
           fillOpacity="0"
-          // filter="url(#blur)"
         />
         <path className="line" stroke="red" fill="none" d={paths} />
       </g>

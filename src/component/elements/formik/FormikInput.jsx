@@ -15,6 +15,7 @@ const FormikInput = ({
   className,
   value,
   format,
+  ...resProps
 }) => {
   const {
     values,
@@ -51,6 +52,7 @@ const FormikInput = ({
       checkValue={checkValue}
       className={className}
       format={format}
+      {...resProps}
     />
   );
 };
@@ -58,7 +60,6 @@ const FormikInput = ({
 FormikInput.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
-  // defaultValue: PropTypes.string,
   style: PropTypes.shape({
     label: PropTypes.object,
     input: PropTypes.object,

@@ -80,7 +80,6 @@ const applyFFTFilter = (state) => {
 const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
   return produce(state, (draft) => {
     const { id, index } = draft.activeSpectrum;
-    // draft.data = AnalysisObj.getSpectraData();
     let { ph0, ph1 } = filterOptions;
 
     const activeObject = AnalysisObj.getDatum(id);
@@ -132,8 +131,6 @@ const applyAutoPhaseCorrectionFilter = (state) => {
     ]);
 
     setDataByFilters(draft, activeObject, id, false);
-    // draft.dataSnapshot = null;
-    // draft.tempData = null;
     setDomain(draft);
   });
 };
@@ -145,7 +142,6 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
     const { x, y, im, info } = tempData[index];
 
     let { ph0, ph1 } = filterOptions;
-    // const activeObject = AnalysisObj.getDatum(id);
     const closest = getClosestNumber(tempData[index].x, state.pivot);
     const pivotIndex = tempData[index].x.indexOf(closest);
 

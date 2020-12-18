@@ -92,9 +92,7 @@ const MultipleSpectraAnalysisTable = memo(({ data, activeTab }) => {
       <ReactTable data={data.values} columns={tableColumns} />
       <div
         style={{
-          // border: '0.55px solid #f3f3f3',
           width: '100%',
-          // minHeight: '100px',
           padding: '10px',
         }}
         // eslint-disable-next-line react/no-danger

@@ -56,31 +56,10 @@ const Left1DChart = memo(({ margin: marignValue, data }) => {
     >
       <defs>
         <clipPath id="clip-left">
-          <rect
-            width={height}
-            height={mainHeight}
-            x="0"
-            y={margin.top}
-            // style={{
-            //   transform: ` translate(-${margin.left}px,${margin.top}px)`,
-            //   // transformOrigin: `${mainHeight + margin.top}px 0px`,
-            // }}
-          />
+          <rect width={height} height={mainHeight} x="0" y={margin.top} />
         </clipPath>
       </defs>
-      <g
-        clipPath="url(#clip-left)"
-        // style={{
-        //   transform: `rotate(-90deg) translate(-${margin.top}px,-${
-        //     mainHeight + margin.top
-        //   }px)`,
-        //   transformOrigin: `${mainHeight + margin.top}px 0px`,
-        // }}
-        // style={{
-        //   transform: ` translate(-${margin.left}px,${margin.top}px)`,
-        //   // transformOrigin: `${mainHeight + margin.top}px 0px`,
-        // }}
-      >
+      <g clipPath="url(#clip-left)">
         <path className="line" stroke="black" fill="none" d={paths} />
       </g>
     </svg>

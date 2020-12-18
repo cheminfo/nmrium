@@ -21,7 +21,6 @@ export default class Processing2D {
     },
   ) {
     this.options = options;
-    // Processing2D.instance = this;
     const { positive, negative } = defaultLevel;
 
     this.currentLevelPositive = positive;

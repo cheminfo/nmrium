@@ -95,7 +95,6 @@ const ToolTip = memo(
     }, []);
 
     const mouseLeaveHandler = useCallback(() => {
-      // const boundingRect = e.currentTarget.getBoundingClientRect();
       showToolTip(false);
     }, []);
 

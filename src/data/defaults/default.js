@@ -14,7 +14,6 @@ function getNucleus(nucleus = '1h') {
   nucleus = nucleus.toLowerCase();
   if (!defaults[nucleus]) {
     return '1h';
-    // throw new Error(`No defaults preferences for nucleus: ${nucleus}`);
   }
   return nucleus;
 }

@@ -39,7 +39,3 @@ const FilterPanel = memo(({ filters }) => {
 });
 
 export default FiltersWrapper(FilterPanel);
-
-// export default ContextWrapper(FilterPanel, ['spectrum'], {
-//   spectrum: ['filters'],
-// });

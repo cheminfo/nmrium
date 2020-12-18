@@ -34,7 +34,6 @@ const styles = css`
     flex: 1;
     overflow: auto;
     border: none;
-    // padding-top: 10px;
   }
 
   .tab-content {
@@ -141,10 +140,6 @@ const styles = css`
   .checkbox-element {
     margin-bottom: 5px;
   }
-
-  // .check-false {
-  //   opacity: 0.8;
-  // }
 `;
 
 const GeneralSettings = ({ onClose, onSave }) => {
@@ -152,13 +147,6 @@ const GeneralSettings = ({ onClose, onSave }) => {
   const preferences = usePreferences();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const refForm = useRef();
-
-  // useEffect(() => {
-  //   refForm.current.setValues({
-  //     ...initSetting,
-  //     ...settingData,
-  //   });
-  // }, [settingData]);
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();

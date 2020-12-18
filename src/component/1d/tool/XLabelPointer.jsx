@@ -1,6 +1,5 @@
 import { useContext, useCallback, useMemo } from 'react';
 
-// import { getPeakLabelNumberDecimals } from '../../../data/defaults/default';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';

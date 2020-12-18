@@ -17,7 +17,6 @@ const styles = css`
       color: #000000;
       place-items: normal;
       text-transform: none;
-      // border-bottom: 4px solid #2ca8ff;
       background-color: #fafafa;
     }
 
@@ -35,7 +34,6 @@ const styles = css`
     width: 100%;
     height: 100%;
     border: none;
-    // overflow: auto;
     padding-left: 5px;
   }
 

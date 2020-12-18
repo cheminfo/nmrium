@@ -234,19 +234,8 @@ export class Analysis {
             const { data, ...rest } = ob;
             return {
               ...rest,
-              // id: ob.id,
-              // x: ob.data.x,
-              // y: ob.data.re,
-              // im: ob.data.im,
               ..._data,
-
               isVisibleInDomain: ob.display.isVisibleInDomain,
-              // info: ob.info,
-              // meta: ob.meta,
-              // peaks: ob.peaks,
-              // integrals: ob.integrals,
-              // filters: ob.filters,
-              // ranges: ob.ranges,
             };
           }),
         )

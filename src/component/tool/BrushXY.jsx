@@ -89,7 +89,6 @@ const BrushXY = ({
       : 1;
   startY =
     brushType === BRUSH_TYPE.Y || brushType === BRUSH_TYPE.XY ? startY : 0;
-  // / window.devicePixelRatio
   return (
     <div
       style={{

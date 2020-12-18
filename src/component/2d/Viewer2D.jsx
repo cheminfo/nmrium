@@ -17,7 +17,6 @@ import {
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
 import { options } from '../toolbar/ToolTypes';
-// import FooterBanner from '../1d/FooterBanner';
 
 import Chart2D from './Chart2D';
 import FooterBanner from './FooterBanner';
@@ -55,14 +54,6 @@ const Viewer2D = () => {
       return acc;
     }, []);
   }, [activeTab, data, tabActiveSpectrum]);
-
-  // const colors = useMemo(() => {
-  //   const id = tabActiveSpectrum[activeTab].id;
-  //   const spectrum = data.find((datum) => datum.id === id);
-  //   return [spectrum.display.positiveColor, spectrum.display.negativeColor];
-  // }, [activeTab, data, tabActiveSpectrum]);
-
-  // console.log(colors);
 
   const DIMENSION = get2DDimensionLayout(state);
 

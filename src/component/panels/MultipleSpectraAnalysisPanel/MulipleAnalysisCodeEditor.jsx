@@ -1,14 +1,14 @@
+/** @jsxImportSource @emotion/react */
 import { useFormikContext } from 'formik';
-// eslint-disable-next-line import/order
 import { highlight, languages } from 'prismjs/components/prism-core';
 // eslint-disable-next-line import/no-unassigned-import
 import 'prismjs/components/prism-clike';
 // eslint-disable-next-line import/no-unassigned-import
 import 'prismjs/components/prism-javascript';
-
 import { memo, useCallback, useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 
+import prismStyles from '../../elements/styles/prism';
 import Eval from '../../utility/Evaluate';
 
 const initCode = `function run(data) {
@@ -45,7 +45,7 @@ const MulipleAnalysisCodeEditor = memo(({ data }) => {
   }, []);
 
   return (
-    <div style={{ marginTop: '20px' }}>
+    <div style={{ marginTop: '20px' }} css={prismStyles}>
       <Editor
         value={code}
         onValueChange={valueChangeHandler}
@@ -56,6 +56,9 @@ const MulipleAnalysisCodeEditor = memo(({ data }) => {
           fontSize: 12,
           backgroundColor: '#fcfcfc',
           marginBottom: '10px',
+          minHeight: '100px',
+          overflow: 'auto',
+          maxHeight: '200px',
         }}
       />
       <p style={{ marginBottom: '5px' }}>Result:</p>
@@ -69,24 +72,12 @@ const MulipleAnalysisCodeEditor = memo(({ data }) => {
           border: '0.55px solid #f3f3f3',
           fontFamily: '"Fira code", "Fira Mono", monospace',
           fontSize: 12,
-          // backgroundColor: '#fcfcfc',
           marginBottom: '10px',
           minHeight: '100px',
           overflow: 'auto',
           maxHeight: '200px',
         }}
       />
-
-      {/* <div
-        style={{
-          border: '0.55px solid #f3f3f3',
-          width: '100%',
-          minHeight: '100px',
-          padding: '10px',
-        }}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: result }}
-      /> */}
     </div>
   );
 });

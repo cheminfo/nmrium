@@ -38,30 +38,8 @@ const SlicingView = () => {
           style={{
             position: 'absolute',
             backgroundColor: 'rgba(255,255,255,0.8)',
-            // transform: `translate(${position.x},${position.y})`,
           }}
-          // id="nmrSVG"
-          // ref={centerRef}
         >
-          {/* <defs>
-          <clipPath id="clip">
-            <rect
-              width={width - margin.left - margin.right}
-              height={height - margin.top - margin.bottom}
-              x={margin.left}
-              y={margin.top}
-            />
-          </clipPath>
-        </defs> */}
-          {/* <rect
-          width={width - margin.left - margin.right}
-          height={height - margin.top - margin.bottom}
-          x={margin.left}
-          y={margin.top}
-          stroke="black"
-          strokeWidth="1"
-          fill="transparent"
-        /> */}
           {data && data.horizontal && (
             <HorizontalSliceChart data={data.horizontal.data} />
           )}

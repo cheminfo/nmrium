@@ -199,8 +199,3 @@ const PeaksTable = memo(
 );
 
 export default PeaksWrapper(PeaksTable);
-// export default ContextWrapper(
-//   PeaksTable,
-//   ['spectrum', 'xDomain', 'preferences', 'activeTab'],
-//   { spectrum: ['peaks', 'info', 'x', 'y'] },
-// );

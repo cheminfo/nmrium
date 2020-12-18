@@ -53,7 +53,6 @@ const moleculeContainerStyle = css`
 
   .newSumText {
     margin-top: 15px;
-    // margin-bottom: 25px;
     padding: 0px 10px;
     width: 100%;
 
