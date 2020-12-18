@@ -343,7 +343,7 @@ const SummaryPanel = memo(() => {
     dispatch({ type: UPDATE_CORRELATIONS, signals1D, signals2D, signalsDEPT });
   }, [dispatch, signals1D, signals2D, signalsDEPT]);
 
-  const editCountSaveHandler = useCallback(
+  const editEquivalencesSaveHandler = useCallback(
     (correlation, value) => {
       dispatch({
         type: SET_CORRELATION,
@@ -385,7 +385,7 @@ const SummaryPanel = memo(() => {
       <CorrelationTable
         correlations={correlations}
         additionalColumns={additionalColumns}
-        editCountSaveHandler={editCountSaveHandler}
+        editEquivalencesSaveHandler={editEquivalencesSaveHandler}
         changeHybridizationSaveHandler={changeHybridizationSaveHandler}
       />
     </div>
