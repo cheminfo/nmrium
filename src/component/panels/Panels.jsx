@@ -64,7 +64,7 @@ const accordionItems = [
     openWhen: [options.rangesPicking.id],
     style: '',
     hidePreferenceKey: 'hideRangesPanel',
-    mode: null,
+    mode: DISPLAYER_MODE.DM_1D,
   },
   {
     title: 'Multiple Spectra Analysis',
