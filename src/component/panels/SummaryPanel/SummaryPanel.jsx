@@ -170,23 +170,23 @@ const SummaryPanel = memo(() => {
     return _experiments1D;
   }, [atoms, experiments]);
 
-  // // "extra" 1D experiments containing ranges, e.g. DEPT
-  // const experiments1DExtra = useMemo(() => {
-  //   const _experiments1DExtra = {};
-  //   Object.keys(lodash.get(experiments, `1D`, {}))
-  //     .filter((_experimentType) => _experimentType !== '1d') // don't consider "plain" 1D experiments here
-  //     .forEach((_experimentType) => {
-  //       addToExperiments(
-  //         experiments,
-  //         _experiments1DExtra,
-  //         `1D.${_experimentType}`,
-  //         false,
-  //         _experimentType,
-  //       );
-  //     });
+  // "extra" 1D experiments containing ranges, e.g. DEPT
+  const experiments1DExtra = useMemo(() => {
+    const _experiments1DExtra = {};
+    Object.keys(lodash.get(experiments, `1D`, {}))
+      .filter((experimentType) => experimentType !== '1d') // don't consider "plain" 1D experiments here
+      .forEach((experimentType) => {
+        addToExperiments(
+          experiments,
+          _experiments1DExtra,
+          `1D.${experimentType}`,
+          false,
+          experimentType,
+        );
+      });
 
-  //   return _experiments1DExtra;
-  // }, [experiments]);
+    return _experiments1DExtra;
+  }, [experiments]);
 
   // 2D experiments containing zones
   const experiments2D = useMemo(() => {
@@ -221,7 +221,7 @@ const SummaryPanel = memo(() => {
             ),
           )
           .flat();
-        let count = 0;
+        let counter = 0;
         __signals.forEach((__signal) => {
           if (
             !_signals.some((_signal) =>
@@ -232,10 +232,10 @@ const SummaryPanel = memo(() => {
               experimentType: '1d',
               experimentID: experiments1D[`${atomType}`][index].id,
               atomType: atomType,
-              label: { origin: `${atomType}${count + 1}` },
+              label: { origin: `${atomType}${counter + 1}` },
               signal: __signal,
             });
-            count++;
+            counter++;
           }
         });
 
@@ -246,55 +246,55 @@ const SummaryPanel = memo(() => {
     return _signals1D;
   }, [atoms, experiments1D]);
 
-  // const signals1DExtra = useMemo(() => {
-  //   // store valid signals from 1D extra experiments
-  //   const _signals1DExtra = {};
-  //   // store valid signals from 2D experiments
-  //   Object.keys(experiments1DExtra).forEach((_experimentType) => {
-  //     let _signals = [];
-  //     // @TODO for now we will use the first occurring matched spectrum only (index)
-  //     const index = 0;
-  //     const atomType = getAtomType(
-  //       experiments1DExtra[_experimentType][index].info.nucleus,
-  //     );
-  //     const __signals = experiments1DExtra[_experimentType][index].ranges.values
-  //       .map((_range) =>
-  //         _range.signal.filter((_signal) =>
-  //           SignalKindsToInclude.includes(_signal.kind),
-  //         ),
-  //       )
-  //       .flat();
-  //     let count = 0;
-  //     __signals.forEach((__signal) => {
-  //       if (
-  //         !_signals.some((_signal) =>
-  //           checkSignalMatch(_signal.signal, __signal, 0.0),
-  //         )
-  //       ) {
-  //         _signals.push({
-  //           experimentType: _experimentType,
-  //           experimentID: experiments1DExtra[_experimentType][index].id,
-  //           atomType: atomType,
-  //           label: { origin: `${_experimentType}${count + 1}` },
-  //           signal: __signal,
-  //         });
-  //         count++;
-  //       }
-  //     });
+  const signalsDEPT = useMemo(() => {
+    // store valid signals from 1D extra experiments, e.g. DEPT, APT
+    const _signalsDEPT = {};
+    // store valid signals from 2D experiments
+    Object.keys(experiments1DExtra)
+      .filter((experimentType) => experimentType === 'dept')
+      .forEach((experimentType) =>
+        experiments1DExtra[experimentType].forEach((experimentDEPT) => {
+          let _signals = [];
+          const mode = experimentDEPT.info.pulseSequence
+            .match(/\d/g)
+            .reduce((_mode, digit) => _mode + digit);
+          const atomType = getAtomType(experimentDEPT.info.nucleus);
+          const __signals = experimentDEPT.ranges.values
+            .map((_range) =>
+              _range.signal
+                .filter((_signal) =>
+                  SignalKindsToInclude.includes(_signal.kind),
+                )
+                .map((_signal) => {
+                  return { ..._signal, position: _range.absolute > 0 ? 1 : -1 };
+                }),
+            )
+            .flat();
+          let counter = 0;
+          __signals.forEach((__signal) => {
+            if (
+              !_signals.some((_signal) =>
+                checkSignalMatch(_signal.signal, __signal, 0.0),
+              )
+            ) {
+              _signals.push({
+                experimentType,
+                experimentID: experimentDEPT.id,
+                mode,
+                atomType,
+                label: { origin: `${experimentType}${counter + 1}` },
+                signal: __signal,
+              });
+              counter++;
+            }
+          });
 
-  //     if (!lodash.get(_signals1DExtra, `${_experimentType}`, false)) {
-  //       _signals1DExtra[_experimentType] = [];
-  //     }
-  //     _signals1DExtra[_experimentType].push({
-  //       signals: _signals,
-  //       experimentType: _experimentType,
-  //       experimentID: experiments1DExtra[_experimentType][index].id,
-  //       atomType: atomType,
-  //     });
-  //   });
+          _signalsDEPT[mode] = _signals;
+        }),
+      );
 
-  //   return _signals1DExtra;
-  // }, [experiments1DExtra]);
+    return _signalsDEPT;
+  }, [experiments1DExtra]);
 
   const signals2D = useMemo(() => {
     // store valid signals from 2D experiments
@@ -313,7 +313,7 @@ const SummaryPanel = memo(() => {
           ),
         )
         .flat();
-      let count = 0;
+      let counter = 0;
       __signals.forEach((__signal) => {
         if (
           !_signals.some(
@@ -326,10 +326,10 @@ const SummaryPanel = memo(() => {
             experimentType: _experimentType,
             experimentID: experiments2D[_experimentType][index].id,
             atomType,
-            label: { origin: `${_experimentType}${count + 1}` },
+            label: { origin: `${_experimentType}${counter + 1}` },
             signal: __signal,
           });
-          count++;
+          counter++;
         }
       });
 
@@ -340,35 +340,29 @@ const SummaryPanel = memo(() => {
   }, [experiments2D]);
 
   useEffect(() => {
-    dispatch({ type: UPDATE_CORRELATIONS, signals1D, signals2D });
-  }, [dispatch, signals1D, signals2D]);
+    dispatch({ type: UPDATE_CORRELATIONS, signals1D, signals2D, signalsDEPT });
+  }, [dispatch, signals1D, signals2D, signalsDEPT]);
 
   const editCountSaveHandler = useCallback(
     (correlation, value) => {
-      const factor = value / correlation.getCount();
       dispatch({
         type: SET_CORRELATION,
         id: correlation.getID(),
-        correlation: new Correlation({ ...correlation, count: value }),
+        correlation: new Correlation({ ...correlation, equivalence: value }),
       });
-
-      // set the count of attached correlations according to the ratio
-      // e.g.in symmetry cases for heavy atoms, then also set the count of attached protons
-      if (lodash.get(correlation.getAttachments(), 'H', false)) {
-        correlation.getAttachments().H.forEach((index) => {
-          const attached = correlations.values[index];
-          dispatch({
-            type: SET_CORRELATION,
-            id: attached.getID(),
-            correlation: new Correlation({
-              ...attached,
-              count: attached.getCount() * factor,
-            }),
-          });
-        });
-      }
     },
-    [correlations, dispatch],
+    [dispatch],
+  );
+
+  const changeHybridizationSaveHandler = useCallback(
+    (correlation, value) => {
+      dispatch({
+        type: SET_CORRELATION,
+        id: correlation.getID(),
+        correlation: new Correlation({ ...correlation, hybridization: value }),
+      });
+    },
+    [dispatch],
   );
 
   return (
@@ -392,6 +386,7 @@ const SummaryPanel = memo(() => {
         correlations={correlations}
         additionalColumns={additionalColumns}
         editCountSaveHandler={editCountSaveHandler}
+        changeHybridizationSaveHandler={changeHybridizationSaveHandler}
       />
     </div>
   );

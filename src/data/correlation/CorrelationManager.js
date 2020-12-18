@@ -104,14 +104,16 @@ export default class CorrelationManager {
     this.state = buildCorrelationsState(this.getData());
   }
 
-  updateValues(signals1D, signals2D) {
+  updateValues(signals1D, signals2D, signalsDEPT) {
     const _correlations = buildCorrelationsData(
       signals1D,
       signals2D,
+      signalsDEPT,
       this.getTolerance(),
+      this.getMF(),
     );
 
-    // important after data file import: set to the previous counts because they will be overwritten by default value (1)
+    // important after data file import: set to the previous equivalences because they will be overwritten by default value (1)
     this.getValues().forEach((correlation) => {
       const index = _correlations.findIndex(
         (_correlation) =>
@@ -125,7 +127,8 @@ export default class CorrelationManager {
           ),
       );
       if (index >= 0) {
-        _correlations[index].setCount(correlation.getCount());
+        _correlations[index].setEquivalences(correlation.getEquivalences());
+        _correlations[index].setHybridization(correlation.getHybridization());
       }
     });
 

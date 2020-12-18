@@ -3,6 +3,16 @@ import { useCallback, useMemo } from 'react';
 
 import { getLabel, getLabels } from '../../../../data/correlation/Utilities';
 import EditableColumn from '../../../elements/EditableColumn';
+import SelectUncontrolled from '../../../elements/SelectUncontrolled';
+
+import { Hybridizations } from './Constants';
+
+const selectBoxStyle = {
+  marginLeft: 2,
+  marginRight: 2,
+  border: 'none',
+  height: '20px',
+};
 
 const CorrelationTableRow = ({
   additionalColumns,
@@ -10,13 +20,14 @@ const CorrelationTableRow = ({
   correlation,
   styleRow,
   styleLabel,
-  onSaveEditCount,
+  onSaveEditEquivalences,
+  onChangeHybridization,
 }) => {
   const saveHandler = useCallback(
     (e) => {
-      onSaveEditCount(correlation, e.target.value);
+      onSaveEditEquivalences(correlation, e.target.value);
     },
-    [correlation, onSaveEditCount],
+    [correlation, onSaveEditEquivalences],
   );
 
   const additionalColumnsData = useMemo(
@@ -34,6 +45,13 @@ const CorrelationTableRow = ({
     [additionalColumns, correlation, correlations],
   );
 
+  const onChangeHybridizationHandler = useCallback(
+    (value) => {
+      onChangeHybridization(correlation, value);
+    },
+    [correlation, onChangeHybridization],
+  );
+
   return (
     <tr style={styleRow}>
       <td>
@@ -48,12 +66,32 @@ const CorrelationTableRow = ({
           : ''}
       </td>
       <td>
-        {onSaveEditCount ? (
+        {onSaveEditEquivalences ? (
           <EditableColumn
             type="number"
-            value={correlation.count}
+            value={
+              correlation.getEquivalences() > 0
+                ? correlation.getEquivalences()
+                : ''
+            }
             style={{ padding: '0.4rem' }}
             onSave={saveHandler}
+          />
+        ) : (
+          ''
+        )}
+      </td>
+      <td>{correlation.getProtonsCount()}</td>
+      <td>
+        {correlation.getAtomType() !== 'H' ? (
+          <SelectUncontrolled
+            onChange={onChangeHybridizationHandler}
+            data={Hybridizations}
+            value={correlation.getHybridization()}
+            style={{
+              ...selectBoxStyle,
+              backgroundColor: styleRow.backgroundColor,
+            }}
           />
         ) : (
           ''

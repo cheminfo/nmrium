@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import lodash from 'lodash';
 import { useMemo } from 'react';
 
-import Correlation from '../../../../data/correlation/Correlation';
 import {
   getAtoms,
   getCorrelationsByAtomType,
@@ -50,7 +49,8 @@ const tableStyle = css`
 const CorrelationTable = ({
   correlations,
   additionalColumns,
-  editCountSaveHandler,
+  editEquivalencesSaveHandler,
+  changeHybridizationSaveHandler,
 }) => {
   const rows = useMemo(() => {
     const _rows = [];
@@ -68,66 +68,38 @@ const CorrelationTable = ({
       if (atomType !== 'H') {
         // for all heavy atoms
         for (let j = 0; j < atoms[atomType]; j++) {
-          if (
-            correlationsAtomType.length > 0 &&
-            j < correlationsAtomType.length
-          ) {
-            const correlation = correlationsAtomType[j];
+          const correlation = correlationsAtomType[j];
+          _rows.push(
+            <CorrelationTableRow
+              additionalColumns={additionalColumns}
+              correlations={correlations.values}
+              correlation={correlation}
+              key={`correlation${atomType}${correlation.getID()}`}
+              styleRow={{ backgroundColor: 'mintcream' }}
+              styleLabel={{
+                color: getLabelColor(correlations, correlation),
+              }}
+              onSaveEditEquivalences={editEquivalencesSaveHandler}
+              onChangeHybridization={changeHybridizationSaveHandler}
+            />,
+          );
+          lodash.get(correlation.getAttachments(), 'H', []).forEach((index) => {
+            const correlationProton = correlations.values[index];
             _rows.push(
               <CorrelationTableRow
                 additionalColumns={additionalColumns}
                 correlations={correlations.values}
-                correlation={correlation}
-                key={`correlation${atomType}${correlation.getID()}`}
-                styleRow={{ backgroundColor: 'mintcream' }}
+                correlation={correlationProton}
+                key={`correlation${atomType}${correlationProton.getID()}_${correlation.getID()}`}
+                styleRow={{ backgroundColor: 'white' }}
                 styleLabel={{
-                  color: getLabelColor(correlations, correlation),
+                  color: getLabelColor(correlations, correlationProton),
                 }}
-                onSaveEditCount={editCountSaveHandler}
+                onSaveEditEquivalences={editEquivalencesSaveHandler}
+                onChangeHybridization={changeHybridizationSaveHandler}
               />,
             );
-            lodash
-              .get(correlation.getAttachments(), 'H', [])
-              .forEach((index) => {
-                const correlationProton = correlations.values[index];
-                _rows.push(
-                  <CorrelationTableRow
-                    additionalColumns={additionalColumns}
-                    correlations={correlations.values}
-                    correlation={correlationProton}
-                    key={`correlation${atomType}${correlationProton.getID()}_${correlation.getID()}`}
-                    styleRow={{ backgroundColor: 'white' }}
-                    styleLabel={{
-                      color: getLabelColor(correlations, correlationProton),
-                    }}
-                    onSaveEditCount={editCountSaveHandler}
-                  />,
-                );
-              });
-          } else {
-            const pseudoCorrelation = new Correlation({
-              label: {
-                origin:
-                  correlationsAtomType.length > 0
-                    ? `[${atomType}${j + 1}]` // put brackets around label if it is a missing atom
-                    : `${atomType}${j + 1}`,
-              },
-              atomType,
-            });
-            // add placeholder rows for missing atoms
-            _rows.push(
-              <CorrelationTableRow
-                additionalColumns={additionalColumns}
-                correlations={correlations.values}
-                correlation={pseudoCorrelation}
-                key={`placeholder_correlation$_${_rows.length}`}
-                styleRow={{ backgroundColor: 'mintcream' }}
-                styleLabel={{
-                  color: getLabelColor(correlations, pseudoCorrelation),
-                }}
-              />,
-            );
-          }
+          });
         }
         if (correlationsAtomType.length > atoms[atomType]) {
           for (let k = atoms[atomType]; k < correlationsAtomType.length; k++) {
@@ -142,7 +114,8 @@ const CorrelationTable = ({
                 styleLabel={{
                   color: getLabelColor(correlations, correlation),
                 }}
-                onSaveEditCount={editCountSaveHandler}
+                onSaveEditEquivalences={editEquivalencesSaveHandler}
+                onChangeHybridization={changeHybridizationSaveHandler}
               />,
             );
             lodash
@@ -159,7 +132,8 @@ const CorrelationTable = ({
                     styleLabel={{
                       color: getLabelColor(correlations, correlationProton),
                     }}
-                    onSaveEditCount={editCountSaveHandler}
+                    onSaveEditEquivalences={editEquivalencesSaveHandler}
+                    onChangeHybridization={changeHybridizationSaveHandler}
                   />,
                 );
               });
@@ -180,7 +154,8 @@ const CorrelationTable = ({
                 styleLabel={{
                   color: getLabelColor(correlations, correlationProton),
                 }}
-                onSaveEditCount={editCountSaveHandler}
+                onSaveEditEquivalences={editEquivalencesSaveHandler}
+                onChangeHybridization={changeHybridizationSaveHandler}
               />,
             );
           }
@@ -191,7 +166,12 @@ const CorrelationTable = ({
     });
 
     return _rows;
-  }, [additionalColumns, correlations, editCountSaveHandler]);
+  }, [
+    additionalColumns,
+    changeHybridizationSaveHandler,
+    correlations,
+    editEquivalencesSaveHandler,
+  ]);
 
   return (
     <div className="table-container">
@@ -201,7 +181,9 @@ const CorrelationTable = ({
             <th>Exp</th>
             <th>Atom</th>
             <th>δ (ppm)</th>
-            <th>Count</th>
+            <th>Equiv</th>
+            <th>#H</th>
+            <th>Hybrid</th>
             {additionalColumns.map((experiment) => (
               <th key={`expCol_${experiment}`}>{experiment.toUpperCase()}</th>
             ))}

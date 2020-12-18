@@ -241,6 +241,7 @@ export function spectrumReducer(state, action) {
         state,
         action.signals1D,
         action.signals2D,
+        action.signalsDEPT,
       );
 
     case types.ADD_CORRELATION:

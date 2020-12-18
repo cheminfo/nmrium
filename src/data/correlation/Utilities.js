@@ -4,9 +4,13 @@ import { MF } from 'mf-parser';
 import Correlation from './Correlation';
 import Link from './Link';
 
+const getAtomsByMF = (mf) => {
+  return mf ? new MF(mf).getInfo().atoms : [];
+};
+
 const getAtoms = (correlations) => {
   return lodash.get(correlations, 'options.mf', false)
-    ? new MF(correlations.options.mf).getInfo().atoms
+    ? getAtomsByMF(correlations.options.mf)
     : {};
 };
 
@@ -237,17 +241,124 @@ const getCorrelationsByAtomType = (correlations, atomType) => {
     : [];
 };
 
-const buildCorrelationsData = (signals1D, signals2D, tolerance) => {
+const setProtonsCountViaDEPT = (
+  correlations,
+  signalsDEPT,
+  tolerance,
+  atomType,
+) => {
+  const _correlations = correlations.filter(
+    (correlation) => correlation.getAtomType() === atomType,
+  );
+  const signalsDEPT90 = lodash
+    .get(signalsDEPT, '90', [])
+    .filter((signalDEPT90) => signalDEPT90.atomType === atomType);
+  const signalsDEPT135 = lodash
+    .get(signalsDEPT, '135', [])
+    .filter((signalDEPT135) => signalDEPT135.atomType === atomType);
+
+  for (let i = 0; i < _correlations.length; i++) {
+    const match = [-1, -1];
+    for (let k = 0; k < signalsDEPT90.length; k++) {
+      if (
+        signalsDEPT90[k].signal.position === 1 &&
+        checkSignalMatch(
+          _correlations[i].signal,
+          signalsDEPT90[k].signal,
+          tolerance[atomType],
+        )
+      ) {
+        match[0] = k;
+        break;
+      }
+    }
+    for (let k = 0; k < signalsDEPT135.length; k++) {
+      if (
+        checkSignalMatch(
+          _correlations[i].signal,
+          signalsDEPT135[k].signal,
+          tolerance[atomType],
+        )
+      ) {
+        match[1] = k;
+        break;
+      }
+    }
+
+    if (match[0] >= 0) {
+      // signal match in DEPT90
+      // CH
+      _correlations[i].setProtonsCount(1);
+    } else {
+      // no signal match in DEPT90
+      if (match[1] >= 0) {
+        // signal match in DEPT135
+        if (signalsDEPT135[match[1]].signal.position === 1) {
+          // positive signal
+          // CH3
+          _correlations[i].setProtonsCount(3);
+        } else {
+          // negative signal
+          // CH2
+          _correlations[i].setProtonsCount(2);
+        }
+      } else {
+        // no signal match in both spectra
+        // qC
+        _correlations[i].setProtonsCount(0);
+      }
+    }
+  }
+};
+
+// const setProtonsCountViaEditedHSQC = (correlations, signals2D, tolerance) => {};
+
+const addPseudoCorrelations = (correlations, mf) => {
+  const atoms = getAtomsByMF(mf);
+  Object.keys(atoms).forEach((atomType) => {
+    const atomTypeCountInCorrelations = correlations.filter(
+      (correlation) => correlation.getAtomType() === atomType,
+    ).length;
+    for (let i = atomTypeCountInCorrelations; i < atoms[atomType]; i++) {
+      correlations.push(
+        new Correlation({
+          atomType,
+          label: { origin: atomType + (i + 1) },
+          pseudo: true,
+        }),
+      );
+    }
+  });
+
+  return correlations;
+};
+
+const buildCorrelationsData = (
+  signals1D,
+  signals2D,
+  signalsDEPT,
+  tolerance,
+  mf,
+) => {
+  if (!mf) {
+    return [];
+  }
   const correlations = [];
   // add all 1D signals
   addFromData1D(correlations, signals1D);
-  // add signals from 2D if 1D signals for an atom type are missing
+  // add signals from 2D if 1D signals for an atom type and belonging shift are missing
   // add correlations: 1D -> 2D
   setCorrelations(correlations, signals2D, tolerance);
   // link signals via matches to same 2D signal: e.g. 13C -> HSQC <- 1H
   setMatches(correlations);
+  // set the number of attached protons via DEPT, for now C only -> extendable
+  setProtonsCountViaDEPT(correlations, signalsDEPT, tolerance, 'C');
   // set attachments via HSQC or HMQC, including labels
   setAttachments(correlations);
+  // add pseudo correlations regarding molecular formula
+  addPseudoCorrelations(correlations, mf);
+
+  // console.log(correlations);
 
   return correlations;
 };
@@ -256,17 +367,24 @@ const buildCorrelationsState = (correlations) => {
   const state = {};
   const atoms = getAtoms(correlations);
 
-  const atomTypesInSpectra = correlations.values
+  const _correlations = {
+    ...correlations,
+    values: correlations.values.filter(
+      (correlation) => correlation.getPseudo() === false,
+    ),
+  };
+
+  const atomTypesInCorrelations = _correlations.values
     .map((correlation) => correlation.getAtomType())
     .filter((atomType, i, a) => a.indexOf(atomType) === i);
 
-  atomTypesInSpectra.forEach((atomType) => {
+  atomTypesInCorrelations.forEach((atomType) => {
     const correlationsAtomType = getCorrelationsByAtomType(
-      correlations.values,
+      _correlations.values,
       atomType,
     );
     const atomCountAtomType = correlationsAtomType.reduce(
-      (sum, correlation) => sum + correlation.getCount(),
+      (sum, correlation) => sum + 1 + correlation.getEquivalences(),
       0,
     );
     const atomCount = atoms[atomType];
@@ -289,8 +407,8 @@ const buildCorrelationsState = (correlations) => {
         .filter(
           (correlation) => Object.keys(correlation.getAttachments()).length > 0,
         )
-        .reduce((sum, correlation) => sum + correlation.getCount(), 0);
-      const notAttached = correlations.values
+        .reduce((sum, correlation) => sum + correlation.getEquivalences(), 0);
+      const notAttached = _correlations.values
         .map((correlation, k) =>
           correlation.getAtomType() === atomType &&
           Object.keys(correlation.getAttachments()).length === 0
@@ -311,7 +429,7 @@ const buildCorrelationsState = (correlations) => {
         createErrorProperty();
         state[atomType].error.outOfLimit = outOfLimit;
       }
-      const ambiguousAttachment = correlations.values
+      const ambiguousAttachment = _correlations.values
         .map((correlation, k) =>
           correlation.getAtomType() === atomType &&
           (Object.keys(correlation.getAttachments()).length > 1 ||
@@ -329,7 +447,7 @@ const buildCorrelationsState = (correlations) => {
       }
     } else {
       let counter = 0;
-      const outOfLimit = correlations.values
+      const outOfLimit = _correlations.values
         .map((correlation, k) => {
           if (correlation.getAtomType() === atomType) {
             if (counter >= atomCount) {

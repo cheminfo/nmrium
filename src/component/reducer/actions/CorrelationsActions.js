@@ -30,10 +30,11 @@ const handleUnsetTolerance = (state) => {
   });
 };
 
-const handleUpdateCorrelations = (state, signals1D, signals2D) => {
+const handleUpdateCorrelations = (state, signals1D, signals2D, signalsDEPT) => {
   AnalysisObj.getCorrelationManagerInstance().updateValues(
     signals1D,
     signals2D,
+    signalsDEPT,
   );
   return produce(state, (draft) => {
     draft.correlations = AnalysisObj.getCorrelations();

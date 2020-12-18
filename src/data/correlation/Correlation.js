@@ -13,8 +13,11 @@ export default class Correlation {
     this.link = options.link
       ? options.link.map((link) => new Link({ ...link }))
       : [];
-    this.count = options.count || 1;
+    this.equivalence = options.equivalence || 0;
     this.attachment = options.attachment || {};
+    this.protonsCount = options.protonsCount;
+    this.hybridization = options.hybridization || '';
+    this.pseudo = options.pseudo || false;
   }
 
   getExperimentType() {
@@ -45,12 +48,12 @@ export default class Correlation {
     return this.signal;
   }
 
-  getCount() {
-    return this.count;
+  getEquivalences() {
+    return this.equivalence;
   }
 
-  setCount(count) {
-    this.count = count;
+  setEquivalences(equivalence) {
+    this.equivalence = equivalence;
   }
 
   getID() {
@@ -89,5 +92,29 @@ export default class Correlation {
 
   getAttachments() {
     return this.attachment;
+  }
+
+  getProtonsCount() {
+    return this.protonsCount;
+  }
+
+  setProtonsCount(protonsCount) {
+    this.protonsCount = protonsCount;
+  }
+
+  getHybridization() {
+    return this.hybridization;
+  }
+
+  setHybridization(hybridization) {
+    this.hybridization = hybridization;
+  }
+
+  getPseudo() {
+    return this.pseudo;
+  }
+
+  setPseudo(pseudo) {
+    this.pseudo = pseudo;
   }
 }
