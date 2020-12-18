@@ -1,4 +1,4 @@
-import { SvgNmrFid, SvgNmrFt, SvgNmr2D, SvgNmrPeaks } from 'cheminfo-font';
+import { SvgNmrFid, SvgNmrFt, SvgNmr2D } from 'cheminfo-font';
 import { memo } from 'react';
 
 import ColorIndicator from './base/ColorIndicator';
