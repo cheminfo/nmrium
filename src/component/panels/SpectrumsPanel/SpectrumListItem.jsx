@@ -1,8 +1,9 @@
 import { SvgNmrFid, SvgNmrFt, SvgNmr2D, SvgNmrPeaks } from 'cheminfo-font';
 import { memo } from 'react';
-import { FaEye } from 'react-icons/fa';
 
 import ColorIndicator from './base/ColorIndicator';
+import ShowHideMarkersButton from './base/ShowHideMarkersButton';
+import ShowHideSpectrumButton from './base/ShowHideSpectrumButton';
 
 const styles = {
   button: {
@@ -50,14 +51,6 @@ const SpectrumListItem = memo(
     onOpenSettingModal,
     onContextMenu,
   }) => {
-    const isVisible = (id, key) => {
-      return data ? data.display[key] : true;
-    };
-
-    const isMarkerVisible = (id) => {
-      return markersVisible.findIndex((v) => v.id === id) !== -1 ? true : false;
-    };
-
     const formatValueAsHTML = (value) => {
       if (value) {
         // eslint-disable-next-line prefer-named-capture-group
@@ -71,82 +64,15 @@ const SpectrumListItem = memo(
       <div
         style={{
           ...styles.row,
-          ...(activated && activated.id === data.id
-            ? { backgroundColor: '#fafafa' }
-            : {}),
+          ...(activated ? { backgroundColor: '#fafafa' } : {}),
         }}
-        key={data.id}
         onContextMenu={onContextMenu}
       >
-        {data.info.dimension === 1 && (
-          <button
-            style={styles.button}
-            type="button"
-            onClick={() => onChangeVisibility(data, 'isVisible')}
-          >
-            <FaEye
-              style={{
-                fill: color,
-                ...(isVisible(data.id, 'isVisible')
-                  ? {
-                      opacity: 1,
-                      strokeWidth: '1px',
-                      fill: color,
-                    }
-                  : {
-                      opacity: 0.1,
-                      fill: color,
-                    }),
-              }}
-            />
-          </button>
-        )}
-        {data.info.dimension === 2 && (
-          <div style={{ minWidth: '40px' }}>
-            <button
-              style={{ ...styles.button, width: '20px', minWidth: '20px' }}
-              type="button"
-              onClick={() => onChangeVisibility(data, 'isPositiveVisible')}
-            >
-              <FaEye
-                style={{
-                  fill: positiveColor,
-                  ...(isVisible(data.id, 'isPositiveVisible')
-                    ? {
-                        opacity: 1,
-                        strokeWidth: '1px',
-                        fill: positiveColor,
-                      }
-                    : {
-                        opacity: 0.1,
-                        fill: positiveColor,
-                      }),
-                }}
-              />
-            </button>
-            <button
-              style={{ ...styles.button, width: '20px', minWidth: '20px' }}
-              type="button"
-              onClick={() => onChangeVisibility(data, 'isNegativeVisible')}
-            >
-              <FaEye
-                style={{
-                  fill: negativeColor,
-                  ...(isVisible(data.id, 'isNegativeVisible')
-                    ? {
-                        opacity: 1,
-                        strokeWidth: '1px',
-                        fill: negativeColor,
-                      }
-                    : {
-                        opacity: 0.1,
-                        fill: negativeColor,
-                      }),
-                }}
-              />
-            </button>
-          </div>
-        )}
+        <ShowHideSpectrumButton
+          data={data}
+          onChangeVisibility={onChangeVisibility}
+          style={styles.button}
+        />
 
         <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
           <div style={{ ...styles.icon, width: '16px' }}>
@@ -180,29 +106,21 @@ const SpectrumListItem = memo(
           {/* </div> */}
           <span style={styles.info}>{data.info && data.info.pulse}</span>
         </div>
-        <button
+
+        <ShowHideMarkersButton
+          data={data}
           style={{
             ...styles.icon,
             ...styles.button,
-            opacity:
-              isMarkerVisible(data.id) &&
-              data.peaks &&
-              data.peaks.values.length > 0
-                ? 1
-                : 0.1,
           }}
-          type="button"
-          onClick={() => onChangeMarkersVisibility(data)}
-          disabled={data.peaks && data.peaks.values.length === 0}
-        >
-          <SvgNmrPeaks />
-        </button>
-
+          onChangeMarkersVisibility={onChangeMarkersVisibility}
+          markersVisible={markersVisible}
+        />
         <ColorIndicator
           style={styles.button}
           dimension={data.info.dimension}
           color={{ positiveColor, color, negativeColor }}
-          activated={activated && activated.id === data.id ? true : false}
+          activated={activated}
           onClick={(event) => onOpenSettingModal(data, event)}
         />
       </div>

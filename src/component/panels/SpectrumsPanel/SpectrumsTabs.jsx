@@ -5,8 +5,10 @@ import {
   useRef,
   Fragment,
   useEffect,
+  memo,
 } from 'react';
 
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ContextMenu from '../../elements/ContextMenu';
 import { Tabs } from '../../elements/Tab';
@@ -27,8 +29,6 @@ import SpectrumSetting from './base/setting/SpectrumSetting';
 
 const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
   const contextRef = useRef();
-
-  const [activated, setActivated] = useState(null);
   const [markersVisible, setMarkersVisible] = useState([]);
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
   const [settingModalPosition, setSettingModalPosition] = useState(null);
@@ -36,10 +36,6 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
 
   const alert = useAlert();
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    setActivated(activeSpectrum);
-  }, [activeSpectrum]);
 
   useEffect(() => {
     if (data) {
@@ -53,7 +49,6 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
 
   const spectrumsGroupByNucleus = useMemo(() => {
     if (!data) return [];
-
     const groupByNucleus = GroupByInfoKey('nucleus');
     return groupByNucleus(data, true);
   }, [data]);
@@ -82,7 +77,11 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
 
   const onTabChangeHandler = useCallback(
     (tab) => {
-      onTabChange({ tab: tab.tabid, data: spectrumsGroupByNucleus[tab.tabid] });
+      onTabChange({
+        tab: tab.tabid,
+        data: spectrumsGroupByNucleus[tab.tabid],
+      });
+
       dispatch({ type: SET_ACTIVE_TAB, tab: tab.tabid });
     },
     [dispatch, onTabChange, spectrumsGroupByNucleus],
@@ -148,13 +147,15 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
 
   const handleChangeActiveSpectrum = useCallback(
     (d) => {
-      if (activated && activated.id === d.id) {
-        dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: null });
-      } else {
-        dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: { id: d.id } });
-      }
+      setTimeout(() => {
+        if (activeSpectrum && activeSpectrum.id === d.id) {
+          dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: null });
+        } else {
+          dispatch({ type: CHANGE_ACTIVE_SPECTRUM, data: { id: d.id } });
+        }
+      }, 0);
     },
-    [activated, dispatch],
+    [activeSpectrum, dispatch],
   );
 
   const mouseLeaveHandler = useCallback(() => {
@@ -176,7 +177,11 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
                 spectrumsGroupByNucleus[group].map((d) => (
                   <SpectrumListItem
                     key={d.id}
-                    activated={activated}
+                    activated={
+                      activeSpectrum && activeSpectrum.id === d.id
+                        ? true
+                        : false
+                    }
                     markersVisible={markersVisible}
                     data={d}
                     onChangeVisibility={handleChangeVisibility}
@@ -202,8 +207,4 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
   );
 };
 
-export default ContextWrapper(SpectrumsTabs, [
-  'data',
-  'activeSpectrum',
-  'activeTab',
-]);
+export default SpectrumsTabs;

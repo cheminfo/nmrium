@@ -9,7 +9,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import ContextWrapper from '../../hoc/ContextWrapper';
+import SpectraWraper from '../../hoc/SpectraWraper';
 import {
   CHANGE_VISIBILITY,
   DELETE_SPECTRA,
@@ -105,14 +105,15 @@ const SpectrumListPanel = memo(
               </ToolTip>
             )}
         </DefaultPanelHeader>
-        <SpectrumsTabs onTabChange={tabChangeHandler} />
+        <SpectrumsTabs
+          onTabChange={tabChangeHandler}
+          data={data}
+          activeSpectrum={activeSpectrum}
+          activeTab={activeTabState}
+        />
       </div>
     );
   },
 );
 
-export default ContextWrapper(SpectrumListPanel, [
-  'data',
-  'activeSpectrum',
-  'activeTab',
-]);
+export default SpectraWraper(SpectrumListPanel);

@@ -67,8 +67,7 @@ const Contours = () => {
       {data
         .filter((datum) => datum.info.dimension === 2)
         .map((datum, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <g key={index}>
+          <g key={`${datum.id + index}`}>
             {datum.display.isPositiveVisible && (
               <ContoursPaths
                 id={datum.id}
