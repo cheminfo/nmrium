@@ -1,9 +1,5 @@
 import Correlation from './Correlation';
-import {
-  buildCorrelationsData,
-  buildCorrelationsState,
-  checkSignalMatch,
-} from './Utilities';
+import { buildCorrelationsData, buildCorrelationsState } from './Utilities';
 
 const defaultTolerance = {
   C: 0.25,
@@ -40,7 +36,7 @@ export default class CorrelationManager {
   }
 
   setMF(mf) {
-    this.setOptions({ ...this.getOptions(), mf });
+    this.setOption('mf', mf);
   }
 
   unsetMF() {
@@ -52,11 +48,7 @@ export default class CorrelationManager {
   }
 
   setTolerance(tolerance) {
-    this.setOptions({ ...this.getOptions(), tolerance });
-  }
-
-  unsetTolerance() {
-    this.deleteOption('tolerance');
+    this.setOption('tolerance', tolerance);
   }
 
   getTolerance() {
@@ -105,33 +97,15 @@ export default class CorrelationManager {
   }
 
   updateValues(signals1D, signals2D, signalsDEPT) {
-    const _correlations = buildCorrelationsData(
-      signals1D,
-      signals2D,
-      signalsDEPT,
-      this.getTolerance(),
-      this.getMF(),
+    this.setValues(
+      buildCorrelationsData(
+        signals1D,
+        signals2D,
+        signalsDEPT,
+        this.getTolerance(),
+        this.getMF(),
+        this.getValues(),
+      ),
     );
-
-    // important after data file import: set to the previous equivalences because they will be overwritten by default value (1)
-    this.getValues().forEach((correlation) => {
-      const index = _correlations.findIndex(
-        (_correlation) =>
-          correlation.getAtomType() === _correlation.getAtomType() &&
-          correlation.getExperimentType() ===
-            _correlation.getExperimentType() &&
-          checkSignalMatch(
-            correlation.getSignal(),
-            _correlation.getSignal(),
-            0.0,
-          ),
-      );
-      if (index >= 0) {
-        _correlations[index].setEquivalences(correlation.getEquivalences());
-        _correlations[index].setHybridization(correlation.getHybridization());
-      }
-    });
-
-    this.setValues(_correlations);
   }
 }

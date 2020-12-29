@@ -93,6 +93,10 @@ const SummaryPanel = memo(() => {
     }
   }, [dispatch, molecules]);
 
+  useEffect(() => {
+    dispatch({ type: SET_CORRELATION_TOLERANCE, tolerance });
+  }, [dispatch, tolerance]);
+
   const showSetMolecularFormulaModal = useCallback(() => {
     modal.show(
       <SetMolecularFormulaModal
@@ -108,13 +112,11 @@ const SummaryPanel = memo(() => {
     modal.show(
       <SetShiftToleranceModal
         onClose={() => modal.close()}
-        onSave={(_tolerance) =>
-          dispatch({ type: SET_CORRELATION_TOLERANCE, tolerance: _tolerance })
-        }
+        onSave={(_tolerance) => setTolerance(_tolerance)}
         previousTolerance={tolerance}
       />,
     );
-  }, [dispatch, modal, tolerance]);
+  }, [modal, tolerance]);
 
   const [additionalColumns, setAdditionalColumns] = useState([]);
   const [atoms, setAtoms] = useState({});
@@ -221,7 +223,6 @@ const SummaryPanel = memo(() => {
             ),
           )
           .flat();
-        let counter = 0;
         __signals.forEach((__signal) => {
           if (
             !_signals.some((_signal) =>
@@ -232,10 +233,8 @@ const SummaryPanel = memo(() => {
               experimentType: '1d',
               experimentID: experiments1D[`${atomType}`][index].id,
               atomType: atomType,
-              label: { origin: `${atomType}${counter + 1}` },
               signal: __signal,
             });
-            counter++;
           }
         });
 
@@ -266,11 +265,10 @@ const SummaryPanel = memo(() => {
                   SignalKindsToInclude.includes(_signal.kind),
                 )
                 .map((_signal) => {
-                  return { ..._signal, position: _range.absolute > 0 ? 1 : -1 };
+                  return { ..._signal, sign: _range.absolute > 0 ? 1 : -1 };
                 }),
             )
             .flat();
-          let counter = 0;
           __signals.forEach((__signal) => {
             if (
               !_signals.some((_signal) =>
@@ -282,10 +280,8 @@ const SummaryPanel = memo(() => {
                 experimentID: experimentDEPT.id,
                 mode,
                 atomType,
-                label: { origin: `${experimentType}${counter + 1}` },
                 signal: __signal,
               });
-              counter++;
             }
           });
 
@@ -313,7 +309,6 @@ const SummaryPanel = memo(() => {
           ),
         )
         .flat();
-      let counter = 0;
       __signals.forEach((__signal) => {
         if (
           !_signals.some(
@@ -326,10 +321,8 @@ const SummaryPanel = memo(() => {
             experimentType: _experimentType,
             experimentID: experiments2D[_experimentType][index].id,
             atomType,
-            label: { origin: `${_experimentType}${counter + 1}` },
             signal: __signal,
           });
-          counter++;
         }
       });
 
@@ -340,15 +333,39 @@ const SummaryPanel = memo(() => {
   }, [experiments2D]);
 
   useEffect(() => {
-    dispatch({ type: UPDATE_CORRELATIONS, signals1D, signals2D, signalsDEPT });
-  }, [dispatch, signals1D, signals2D, signalsDEPT]);
+    dispatch({
+      type: UPDATE_CORRELATIONS,
+      signals1D,
+      signals2D,
+      signalsDEPT,
+    });
+  }, [dispatch, signals1D, signals2D, signalsDEPT, tolerance]);
 
   const editEquivalencesSaveHandler = useCallback(
     (correlation, value) => {
       dispatch({
         type: SET_CORRELATION,
         id: correlation.getID(),
-        correlation: new Correlation({ ...correlation, equivalence: value }),
+        correlation: new Correlation({
+          ...correlation,
+          equivalence: value,
+          edited: { ...correlation.getEdited(), equivalence: true },
+        }),
+      });
+    },
+    [dispatch],
+  );
+
+  const editProtonsCountSaveHandler = useCallback(
+    (correlation, value) => {
+      dispatch({
+        type: SET_CORRELATION,
+        id: correlation.getID(),
+        correlation: new Correlation({
+          ...correlation,
+          protonsCount: value,
+          edited: { ...correlation.getEdited(), protonsCount: true },
+        }),
       });
     },
     [dispatch],
@@ -359,7 +376,11 @@ const SummaryPanel = memo(() => {
       dispatch({
         type: SET_CORRELATION,
         id: correlation.getID(),
-        correlation: new Correlation({ ...correlation, hybridization: value }),
+        correlation: new Correlation({
+          ...correlation,
+          hybridization: value,
+          edited: { ...correlation.getEdited(), hybridization: true },
+        }),
       });
     },
     [dispatch],
@@ -387,6 +408,7 @@ const SummaryPanel = memo(() => {
         additionalColumns={additionalColumns}
         editEquivalencesSaveHandler={editEquivalencesSaveHandler}
         changeHybridizationSaveHandler={changeHybridizationSaveHandler}
+        editProtonsCountSaveHandler={editProtonsCountSaveHandler}
       />
     </div>
   );

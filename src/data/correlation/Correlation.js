@@ -16,8 +16,9 @@ export default class Correlation {
     this.equivalence = options.equivalence || 0;
     this.attachment = options.attachment || {};
     this.protonsCount = options.protonsCount;
-    this.hybridization = options.hybridization || '';
+    this.hybridization = options.hybridization;
     this.pseudo = options.pseudo || false;
+    this.edited = options.edited || {};
   }
 
   getExperimentType() {
@@ -90,6 +91,19 @@ export default class Correlation {
     }
   }
 
+  removeAttachment(atomType, attachment) {
+    if (this.hasAttachmentAtomType(atomType)) {
+      const indexOf = this.attachment[atomType].indexOf(attachment);
+      if (indexOf >= 0) {
+        this.attachment[atomType].splice(indexOf, 1);
+      }
+    }
+  }
+
+  removeAttachments() {
+    this.attachment = {};
+  }
+
   getAttachments() {
     return this.attachment;
   }
@@ -116,5 +130,13 @@ export default class Correlation {
 
   setPseudo(pseudo) {
     this.pseudo = pseudo;
+  }
+
+  getEdited() {
+    return this.edited;
+  }
+
+  setEdited(edited) {
+    this.edited = edited;
   }
 }

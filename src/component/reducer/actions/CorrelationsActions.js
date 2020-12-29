@@ -23,13 +23,6 @@ const handleSetTolerance = (state, tolerance) => {
   });
 };
 
-const handleUnsetTolerance = (state) => {
-  AnalysisObj.getCorrelationManagerInstance().unsetTolerance();
-  return produce(state, (draft) => {
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
-};
-
 const handleUpdateCorrelations = (state, signals1D, signals2D, signalsDEPT) => {
   AnalysisObj.getCorrelationManagerInstance().updateValues(
     signals1D,
@@ -78,5 +71,4 @@ export {
   handleSetMF,
   handleUnsetMF,
   handleSetTolerance,
-  handleUnsetTolerance,
 };

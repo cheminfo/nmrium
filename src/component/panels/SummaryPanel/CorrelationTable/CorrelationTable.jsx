@@ -51,6 +51,7 @@ const CorrelationTable = ({
   additionalColumns,
   editEquivalencesSaveHandler,
   changeHybridizationSaveHandler,
+  editProtonsCountSaveHandler,
 }) => {
   const rows = useMemo(() => {
     const _rows = [];
@@ -81,6 +82,7 @@ const CorrelationTable = ({
               }}
               onSaveEditEquivalences={editEquivalencesSaveHandler}
               onChangeHybridization={changeHybridizationSaveHandler}
+              onSaveEditProtonsCount={editProtonsCountSaveHandler}
             />,
           );
           lodash.get(correlation.getAttachments(), 'H', []).forEach((index) => {
@@ -97,6 +99,7 @@ const CorrelationTable = ({
                 }}
                 onSaveEditEquivalences={editEquivalencesSaveHandler}
                 onChangeHybridization={changeHybridizationSaveHandler}
+                onSaveEditProtonsCount={editProtonsCountSaveHandler}
               />,
             );
           });
@@ -116,6 +119,7 @@ const CorrelationTable = ({
                 }}
                 onSaveEditEquivalences={editEquivalencesSaveHandler}
                 onChangeHybridization={changeHybridizationSaveHandler}
+                onSaveEditProtonsCount={editProtonsCountSaveHandler}
               />,
             );
             lodash
@@ -134,6 +138,7 @@ const CorrelationTable = ({
                     }}
                     onSaveEditEquivalences={editEquivalencesSaveHandler}
                     onChangeHybridization={changeHybridizationSaveHandler}
+                    onSaveEditProtonsCount={editProtonsCountSaveHandler}
                   />,
                 );
               });
@@ -156,6 +161,7 @@ const CorrelationTable = ({
                 }}
                 onSaveEditEquivalences={editEquivalencesSaveHandler}
                 onChangeHybridization={changeHybridizationSaveHandler}
+                onSaveEditProtonsCount={editProtonsCountSaveHandler}
               />,
             );
           }
@@ -171,6 +177,7 @@ const CorrelationTable = ({
     changeHybridizationSaveHandler,
     correlations,
     editEquivalencesSaveHandler,
+    editProtonsCountSaveHandler,
   ]);
 
   return (
@@ -184,9 +191,9 @@ const CorrelationTable = ({
             <th>Equiv</th>
             <th>#H</th>
             <th>Hybrid</th>
-            {additionalColumns.map((experiment) => (
+            {/* {additionalColumns.map((experiment) => (
               <th key={`expCol_${experiment}`}>{experiment.toUpperCase()}</th>
-            ))}
+            ))} */}
           </tr>
           {rows}
         </tbody>

@@ -22,12 +22,20 @@ const CorrelationTableRow = ({
   styleLabel,
   onSaveEditEquivalences,
   onChangeHybridization,
+  onSaveEditProtonsCount,
 }) => {
-  const saveHandler = useCallback(
+  const onSaveEquivalencesHandler = useCallback(
     (e) => {
       onSaveEditEquivalences(correlation, e.target.value);
     },
     [correlation, onSaveEditEquivalences],
+  );
+
+  const onSaveProtonsCountHandler = useCallback(
+    (e) => {
+      onSaveEditProtonsCount(correlation, e.target.value);
+    },
+    [correlation, onSaveEditProtonsCount],
   );
 
   const additionalColumnsData = useMemo(
@@ -66,7 +74,7 @@ const CorrelationTableRow = ({
           : ''}
       </td>
       <td>
-        {onSaveEditEquivalences ? (
+        {
           <EditableColumn
             type="number"
             value={
@@ -74,30 +82,58 @@ const CorrelationTableRow = ({
                 ? correlation.getEquivalences()
                 : ''
             }
-            style={{ padding: '0.4rem' }}
-            onSave={saveHandler}
+            style={
+              correlation.getEdited().equivalence
+                ? { padding: '0.4rem', backgroundColor: '#F7F2E0' }
+                : { padding: '0.4rem' }
+            }
+            onSave={onSaveEquivalencesHandler}
+          />
+        }
+      </td>
+      <td>
+        {correlation.getAtomType() !== 'H' ? (
+          <EditableColumn
+            type="number"
+            value={
+              correlation.getProtonsCount() >= 0
+                ? correlation.getProtonsCount()
+                : ''
+            }
+            style={
+              correlation.getEdited().protonsCount
+                ? { padding: '0.4rem', backgroundColor: '#F7F2E0' }
+                : { padding: '0.4rem' }
+            }
+            onSave={onSaveProtonsCountHandler}
           />
         ) : (
           ''
         )}
       </td>
-      <td>{correlation.getProtonsCount()}</td>
       <td>
         {correlation.getAtomType() !== 'H' ? (
           <SelectUncontrolled
             onChange={onChangeHybridizationHandler}
             data={Hybridizations}
             value={correlation.getHybridization()}
-            style={{
-              ...selectBoxStyle,
-              backgroundColor: styleRow.backgroundColor,
-            }}
+            style={
+              correlation.getEdited().hybridization
+                ? {
+                    ...selectBoxStyle,
+                    backgroundColor: '#F7F2E0',
+                  }
+                : {
+                    ...selectBoxStyle,
+                    backgroundColor: styleRow.backgroundColor,
+                  }
+            }
           />
         ) : (
           ''
         )}
       </td>
-      {additionalColumnsData}
+      {/* {additionalColumnsData} */}
     </tr>
   );
 };

@@ -33,6 +33,17 @@ export default class Link {
     }
   }
 
+  removeMatch(index) {
+    const indexOf = this.match.indexOf(index);
+    if (indexOf >= 0) {
+      this.match.splice(indexOf, 1);
+    }
+  }
+
+  removeMatches() {
+    this.match = [];
+  }
+
   getMatches() {
     return this.match;
   }
