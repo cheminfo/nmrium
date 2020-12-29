@@ -295,17 +295,19 @@ export class Datum1D {
 
   detectRanges(options) {
     const ranges = autoRangesDetection(this, options);
-    this.ranges.values = ranges.map((range) => {
-      return {
-        kind: DatumKind.signal,
-        ...range,
-        id: generateID(),
-        absolute: this.getIntegration(range.from, range.to),
-        signal: range.signal.map((_signal) => {
-          return { kind: 'signal', id: generateID(), ..._signal };
-        }),
-      };
-    });
+    this.ranges.values = this.ranges.values.concat(
+      ranges.map((range) => {
+        return {
+          kind: DatumKind.signal,
+          ...range,
+          id: generateID(),
+          absolute: this.getIntegration(range.from, range.to),
+          signal: range.signal.map((_signal) => {
+            return { kind: 'signal', id: generateID(), ..._signal };
+          }),
+        };
+      }),
+    );
     this.updateIntegralRanges();
 
     return lodash.cloneDeep(this.ranges);
