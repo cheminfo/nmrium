@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import { useCallback, useMemo } from 'react';
 
-import { getLabel, getLabels } from '../../../../data/correlation/Utilities';
+import { getLabel } from '../../../../data/correlation/Utilities';
 import EditableColumn from '../../../elements/EditableColumn';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
 
@@ -40,17 +40,42 @@ const CorrelationTableRow = ({
 
   const additionalColumnsData = useMemo(
     () =>
-      additionalColumns.map((experimentType, n) => {
-        let content = '';
-        const labels = getLabels(correlations, correlation, experimentType);
-        if (labels.length > 0) {
-          content = labels.join(', ');
-        }
-
-        // eslint-disable-next-line react/no-array-index-key
-        return <td key={`addCol_${experimentType}_${n}`}>{content}</td>;
+      additionalColumns.map((_correlation) => {
+        let content = [];
+        correlation.getLinks().forEach((link) => {
+          _correlation.getLinks().forEach((_link) => {
+            if (
+              link.getAxis() !== _link.getAxis() &&
+              link.getExperimentID() === _link.getExperimentID() &&
+              link.getSignalID() === _link.getSignalID()
+            ) {
+              if (
+                link.getExperimentType() === 'hsqc' ||
+                link.getExperimentType() === 'hmqc'
+              ) {
+                content.push('S');
+              } else if (
+                link.getExperimentType() === 'hmbc' ||
+                link.getExperimentType() === 'cosy' ||
+                link.getExperimentType() === 'tocsy'
+              ) {
+                content.push('M');
+              } else if (
+                link.getExperimentType() === 'noesy' ||
+                link.getExperimentType() === 'roesy'
+              ) {
+                content.push('NOE');
+              }
+            }
+          });
+        });
+        return (
+          <td key={`addColData_${_correlation.getID()}`}>
+            {content.join('/')}
+          </td>
+        );
       }),
-    [additionalColumns, correlation, correlations],
+    [additionalColumns, correlation],
   );
 
   const onChangeHybridizationHandler = useCallback(
@@ -111,7 +136,7 @@ const CorrelationTableRow = ({
           ''
         )}
       </td>
-      <td>
+      <td style={{ borderRight: '1px solid' }}>
         {correlation.getAtomType() !== 'H' ? (
           <SelectUncontrolled
             onChange={onChangeHybridizationHandler}
@@ -133,7 +158,7 @@ const CorrelationTableRow = ({
           ''
         )}
       </td>
-      {/* {additionalColumnsData} */}
+      {additionalColumnsData}
     </tr>
   );
 };

@@ -10,6 +10,7 @@ import Correlation from '../../../data/correlation/Correlation';
 import { checkSignalMatch } from '../../../data/correlation/Utilities';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import {
@@ -52,6 +53,13 @@ const panelStyle = css`
     }
   }
 
+  .homoHeteroKinds-container {
+    width: 100%;
+    span {
+      margin-left: 7px;
+    }
+  }
+
   .container {
     display: flex;
     flex-direction: column;
@@ -70,8 +78,14 @@ const SummaryPanel = memo(() => {
   const modal = useModal();
 
   const [mf, setMF] = useState();
-
   const [tolerance, setTolerance] = useState();
+  const [additionalColumns, setAdditionalColumns] = useState([]);
+  const [atoms, setAtoms] = useState({});
+  const [
+    selectedAdditionalColumnsAtomType,
+    setSelectedAdditionalColumnsAtomType,
+  ] = useState('H');
+  const [showProtonsAsRows, setShowProtonsAsRows] = useState(false);
 
   useEffect(() => {
     if (lodash.get(correlations, 'options.mf', false)) {
@@ -118,9 +132,6 @@ const SummaryPanel = memo(() => {
     );
   }, [modal, tolerance]);
 
-  const [additionalColumns, setAdditionalColumns] = useState([]);
-  const [atoms, setAtoms] = useState({});
-
   useEffect(() => (mf ? setAtoms(new MF(mf).getInfo().atoms) : setAtoms({})), [
     mf,
   ]);
@@ -153,10 +164,20 @@ const SummaryPanel = memo(() => {
     return _experiments;
   }, [data]);
 
-  useEffect(
-    () => setAdditionalColumns(Object.keys(lodash.get(experiments, '2D', []))),
-    [experiments],
-  );
+  useEffect(() => {
+    const _selectedAdditionalColumnsAtomType = selectedAdditionalColumnsAtomType.split(
+      '-',
+    )[0];
+
+    setAdditionalColumns(
+      correlations
+        ? correlations.values.filter(
+            (correlation) =>
+              correlation.atomType === _selectedAdditionalColumnsAtomType,
+          )
+        : [],
+    );
+  }, [correlations, selectedAdditionalColumnsAtomType]);
 
   // general remark for all experiment types:
   // build an array of experiments, because one could have more than
@@ -386,6 +407,14 @@ const SummaryPanel = memo(() => {
     [dispatch],
   );
 
+  const additionalColumnsTypes = useMemo(() => {
+    return Object.keys(atoms)
+      .map((atom) => {
+        return { key: atom, label: atom, value: atom };
+      })
+      .concat({ key: 'H-H', label: 'H-H', value: 'H-H' });
+  }, [atoms]);
+
   return (
     <div css={panelStyle}>
       <DefaultPanelHeader canDelete={false}>
@@ -402,6 +431,26 @@ const SummaryPanel = memo(() => {
         <div className="overview-container">
           <Overview correlations={correlations} />
         </div>
+        <div className="homoHeteroKinds-container">
+          <SelectUncontrolled
+            onChange={(selection) => {
+              setSelectedAdditionalColumnsAtomType(selection);
+              if (selection === 'H-H') {
+                setShowProtonsAsRows(true);
+              } else {
+                setShowProtonsAsRows(false);
+              }
+            }}
+            data={additionalColumnsTypes}
+            value={selectedAdditionalColumnsAtomType}
+            style={{
+              marginLeft: 2,
+              marginRight: 2,
+              border: 'none',
+              height: '20px',
+            }}
+          />
+        </div>
       </DefaultPanelHeader>
       <CorrelationTable
         correlations={correlations}
@@ -409,6 +458,7 @@ const SummaryPanel = memo(() => {
         editEquivalencesSaveHandler={editEquivalencesSaveHandler}
         changeHybridizationSaveHandler={changeHybridizationSaveHandler}
         editProtonsCountSaveHandler={editProtonsCountSaveHandler}
+        showProtonsAsRows={showProtonsAsRows}
       />
     </div>
   );
