@@ -70,7 +70,7 @@ const CorrelationTableRow = ({
           });
         });
         return (
-          <td key={`addColData_${_correlation.getID()}`}>
+          <td key={`addColData_${correlation.getID()}_${_correlation.getID()}`}>
             {content.join('/')}
           </td>
         );
@@ -119,12 +119,8 @@ const CorrelationTableRow = ({
       <td>
         {correlation.getAtomType() !== 'H' ? (
           <EditableColumn
-            type="number"
-            value={
-              correlation.getProtonsCount() >= 0
-                ? correlation.getProtonsCount()
-                : ''
-            }
+            type="text"
+            value={correlation.getProtonsCount().join(',')}
             style={
               correlation.getEdited().protonsCount
                 ? { padding: '0.4rem', backgroundColor: '#F7F2E0' }
@@ -142,17 +138,13 @@ const CorrelationTableRow = ({
             onChange={onChangeHybridizationHandler}
             data={Hybridizations}
             value={correlation.getHybridization()}
-            style={
-              correlation.getEdited().hybridization
-                ? {
-                    ...selectBoxStyle,
-                    backgroundColor: '#F7F2E0',
-                  }
-                : {
-                    ...selectBoxStyle,
-                    backgroundColor: styleRow.backgroundColor,
-                  }
-            }
+            style={{
+              ...selectBoxStyle,
+              backgroundColor: correlation.getEdited().hybridization
+                ? '#F7F2E0'
+                : styleRow.backgroundColor,
+              width: '50px',
+            }}
           />
         ) : (
           ''

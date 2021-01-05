@@ -97,17 +97,21 @@ const CorrelationTable = ({
             <th style={{ borderRight: '1px solid' }}>Hybrid</th>
             {additionalColumns.map((correlation) => (
               <th
-                key={`CorrCol_${correlation}`}
+                key={`CorrCol_${correlation.getID()}`}
                 style={{ color: getLabelColor(correlations, correlation) }}
               >
                 <div style={{ display: 'block' }}>
                   <p>{correlation.getLabel('origin')}</p>
-                  <br />
                   <p>
                     {correlation &&
                     correlation.getSignal() &&
                     correlation.getSignal().delta
                       ? correlation.getSignal().delta.toFixed(2)
+                      : ''}
+                  </p>
+                  <p style={{ fontSize: 8 }}>
+                    {correlation.getExperimentType()
+                      ? `(${correlation.getExperimentType().toUpperCase()})`
                       : ''}
                   </p>
                 </div>

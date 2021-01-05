@@ -214,17 +214,15 @@ const SummaryPanel = memo(() => {
   // 2D experiments containing zones
   const experiments2D = useMemo(() => {
     const _experiments2D = {};
-    Object.keys(lodash.get(experiments, '2D', {})).forEach(
-      (_experimentType) => {
-        addToExperiments(
-          experiments,
-          _experiments2D,
-          `2D.${_experimentType}`,
-          false,
-          _experimentType,
-        );
-      },
-    );
+    Object.keys(lodash.get(experiments, '2D', {})).forEach((experimentType) => {
+      addToExperiments(
+        experiments,
+        _experiments2D,
+        `2D.${experimentType}`,
+        false,
+        experimentType,
+      );
+    });
 
     return _experiments2D;
   }, [experiments]);
@@ -280,20 +278,18 @@ const SummaryPanel = memo(() => {
             .reduce((_mode, digit) => _mode + digit);
           const atomType = getAtomType(experimentDEPT.info.nucleus);
           const __signals = experimentDEPT.ranges.values
-            .map((_range) =>
-              _range.signal
-                .filter((_signal) =>
-                  SignalKindsToInclude.includes(_signal.kind),
-                )
-                .map((_signal) => {
-                  return { ..._signal, sign: _range.absolute > 0 ? 1 : -1 };
+            .map((range) =>
+              range.signal
+                .filter((signal) => SignalKindsToInclude.includes(signal.kind))
+                .map((signal) => {
+                  return { ...signal, sign: range.absolute > 0 ? 1 : -1 };
                 }),
             )
             .flat();
-          __signals.forEach((__signal) => {
+          __signals.forEach((signal) => {
             if (
               !_signals.some((_signal) =>
-                checkSignalMatch(_signal.signal, __signal, 0.0),
+                checkSignalMatch(_signal.signal, signal, 0.0),
               )
             ) {
               _signals.push({
@@ -301,7 +297,7 @@ const SummaryPanel = memo(() => {
                 experimentID: experimentDEPT.id,
                 mode,
                 atomType,
-                signal: __signal,
+                signal,
               });
             }
           });
@@ -316,38 +312,51 @@ const SummaryPanel = memo(() => {
   const signals2D = useMemo(() => {
     // store valid signals from 2D experiments
     const _signals2D = {};
-    Object.keys(experiments2D).forEach((_experimentType) => {
+    Object.keys(experiments2D).forEach((experimentType) => {
       let _signals = [];
-      // @TODO for now we will use the first occurring matched spectrum only (index)
-      const index = 0;
-      const atomType = experiments2D[_experimentType][
-        index
-      ].info.nucleus.map((_nucleus) => getAtomType(_nucleus));
-      const __signals = experiments2D[_experimentType][index].zones.values
-        .map((_zone) =>
-          _zone.signal.filter((_signal) =>
-            SignalKindsToInclude.includes(_signal.kind),
-          ),
-        )
-        .flat();
-      __signals.forEach((__signal) => {
+      // for now we use the first occurring spectrum only, for each experiment type (current loop) and nuclei combination
+      const indices = [];
+      const nuclei = [];
+      experiments2D[experimentType].forEach((experiment, i) => {
         if (
-          !_signals.some(
-            (_signal) =>
-              checkSignalMatch(_signal.signal.x, __signal.x, 0.0) &&
-              checkSignalMatch(_signal.signal.y, __signal.y, 0.0),
+          !nuclei.some((_nuclei) =>
+            lodash.isEqual(_nuclei, experiment.info.nucleus),
           )
         ) {
-          _signals.push({
-            experimentType: _experimentType,
-            experimentID: experiments2D[_experimentType][index].id,
-            atomType,
-            signal: __signal,
-          });
+          nuclei.push(experiment.info.nucleus);
+          indices.push(i);
         }
       });
+      indices.forEach((index) => {
+        const atomType = experiments2D[experimentType][
+          index
+        ].info.nucleus.map((nucleus) => getAtomType(nucleus));
+        const __signals = experiments2D[experimentType][index].zones.values
+          .map((zone) =>
+            zone.signal.filter((signal) =>
+              SignalKindsToInclude.includes(signal.kind),
+            ),
+          )
+          .flat();
+        __signals.forEach((signal) => {
+          if (
+            !_signals.some(
+              (_signal) =>
+                checkSignalMatch(_signal.signal.x, signal.x, 0.0) &&
+                checkSignalMatch(_signal.signal.y, signal.y, 0.0),
+            )
+          ) {
+            _signals.push({
+              experimentType,
+              experimentID: experiments2D[experimentType][index].id,
+              atomType,
+              signal,
+            });
+          }
+        });
+      });
 
-      _signals2D[_experimentType] = _signals;
+      _signals2D[experimentType] = _signals;
     });
 
     return _signals2D;
@@ -378,16 +387,32 @@ const SummaryPanel = memo(() => {
   );
 
   const editProtonsCountSaveHandler = useCallback(
-    (correlation, value) => {
-      dispatch({
-        type: SET_CORRELATION,
-        id: correlation.getID(),
-        correlation: new Correlation({
-          ...correlation,
-          protonsCount: value,
-          edited: { ...correlation.getEdited(), protonsCount: true },
-        }),
-      });
+    (correlation, valuesString) => {
+      let values;
+      // eslint-disable-next-line prefer-named-capture-group
+      if (valuesString.match(/^([0-9],{0,1})+$/g)) {
+        // allow digits followed by optional comma only
+        values = valuesString
+          .split(',')
+          .filter((char) => char.length > 0)
+          .map((char) => Number(char));
+      } else if (valuesString.trim().length === 0) {
+        // set values to default
+        values = [];
+      }
+
+      if (values) {
+        // ignore not supported text input
+        dispatch({
+          type: SET_CORRELATION,
+          id: correlation.getID(),
+          correlation: new Correlation({
+            ...correlation,
+            protonsCount: values,
+            edited: { ...correlation.getEdited(), protonsCount: true },
+          }),
+        });
+      }
     },
     [dispatch],
   );

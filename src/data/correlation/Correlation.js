@@ -15,7 +15,7 @@ export default class Correlation {
       : [];
     this.equivalence = options.equivalence || 0;
     this.attachment = options.attachment || {};
-    this.protonsCount = options.protonsCount;
+    this.protonsCount = options.protonsCount || [];
     this.hybridization = options.hybridization;
     this.pseudo = options.pseudo || false;
     this.edited = options.edited || {};

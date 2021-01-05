@@ -282,10 +282,6 @@ const setPropertiesFromDEPT = (
     .get(signalsDEPT, '135', [])
     .filter((signalDEPT135) => signalDEPT135.atomType === atomType);
 
-  if (signalsDEPT90.length === 0 || signalsDEPT135.length === 0) {
-    return;
-  }
-
   for (let i = 0; i < correlationsAtomType.length; i++) {
     const match = [-1, -1];
     for (let k = 0; k < signalsDEPT90.length; k++) {
@@ -317,31 +313,43 @@ const setPropertiesFromDEPT = (
     if (match[0] >= 0) {
       // signal match in DEPT90
       // CH
-      correlationsAtomType[i].setProtonsCount(1);
-    } else {
-      // no signal match in DEPT90
-      if (match[1] >= 0) {
-        // signal match in DEPT135
-        if (signalsDEPT135[match[1]].signal.sign === 1) {
-          // positive signal
+      correlationsAtomType[i].setProtonsCount([1]);
+      continue;
+    }
+    // no signal match in DEPT90
+    if (match[1] >= 0) {
+      // signal match in DEPT135
+      if (signalsDEPT135[match[1]].signal.sign === 1) {
+        // positive signal
+        if (signalsDEPT90.length > 0) {
+          // in case of both DEPT90 and DEPT135 are given
           // CH3
-          correlationsAtomType[i].setProtonsCount(3);
+          correlationsAtomType[i].setProtonsCount([3]);
           correlationsAtomType[i].setHybridization('SP3');
         } else {
-          // negative signal
-          // CH2
-          correlationsAtomType[i].setProtonsCount(2);
+          // in case of DEPT135 is given only
+          // CH or CH3
+          correlationsAtomType[i].setProtonsCount([1, 3]);
         }
       } else {
+        // negative signal
+        // CH2
+        correlationsAtomType[i].setProtonsCount([2]);
+      }
+    } else {
+      if (signalsDEPT135.length > 0) {
         // no signal match in both spectra
         // qC
-        correlationsAtomType[i].setProtonsCount(0);
+        correlationsAtomType[i].setProtonsCount([0]);
+      } else {
+        // no information
+        correlationsAtomType[i].setProtonsCount([]);
       }
     }
   }
 };
 
-// const setProtonsCountViaEditedHSQC = (correlations, signals2D, tolerance) => {};
+// const setPropertiesFromEditedHSQC = (correlations, signals2D, tolerance) => {};
 
 const addPseudoCorrelations = (correlations, mf) => {
   const atoms = getAtomsByMF(mf);
