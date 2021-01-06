@@ -42,18 +42,28 @@ const CorrelationTableRow = ({
     () =>
       additionalColumns.map((_correlation) => {
         let content = [];
-        correlation.getLinks().forEach((link) => {
-          _correlation.getLinks().forEach((_link) => {
+        // const matchingLinks = [];
+        correlation.getLinks().forEach((link, i) => {
+          _correlation.getLinks().forEach((_link, j) => {
             if (
               link.getAxis() !== _link.getAxis() &&
               link.getExperimentID() === _link.getExperimentID() &&
               link.getSignalID() === _link.getSignalID()
             ) {
+              // matchingLinks.push({
+              //   experimentType: link.getExperimentType(),
+              //   atomType: link.getAtomType(),
+              //   idx: [i, j],
+              // });
               if (
                 link.getExperimentType() === 'hsqc' ||
                 link.getExperimentType() === 'hmqc'
               ) {
-                content.push('S');
+                content.push(
+                  link.getSignal().sign === 0
+                    ? 'S'
+                    : `S${link.getSignal().sign === 1 ? '+' : '-'}`,
+                );
               } else if (
                 link.getExperimentType() === 'hmbc' ||
                 link.getExperimentType() === 'cosy' ||
@@ -72,6 +82,7 @@ const CorrelationTableRow = ({
         return (
           <td key={`addColData_${correlation.getID()}_${_correlation.getID()}`}>
             {content.join('/')}
+            {/* {JSON.stringify(matchingLinks)} */}
           </td>
         );
       }),

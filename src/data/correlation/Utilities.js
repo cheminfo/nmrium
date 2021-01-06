@@ -142,7 +142,7 @@ const addFromData2D = (correlations, signals2D, tolerance) => {
         const link = new Link({
           experimentType: signal2D.experimentType,
           experimentID: signal2D.experimentID,
-          signalID: signal2D.signal.id,
+          signal: signal2D.signal,
           axis,
           atomType: signal2D.atomType,
         });
@@ -155,6 +155,7 @@ const addFromData2D = (correlations, signals2D, tolerance) => {
             signal: {
               id: signal2D.signal.id,
               delta: signal2D.signal[axis].delta,
+              sign: signal2D.signal.sign,
             },
           });
           newCorrelation.addLink(link);
@@ -265,7 +266,7 @@ const getCorrelationsByAtomType = (correlations, atomType) => {
     : [];
 };
 
-const setPropertiesFromDEPT = (
+const setProtonsCountFromDEPT = (
   correlations,
   signalsDEPT,
   tolerance,
@@ -277,32 +278,80 @@ const setPropertiesFromDEPT = (
   ).filter((correlation) => correlation.getPseudo() === false);
   const signalsDEPT90 = lodash
     .get(signalsDEPT, '90', [])
-    .filter((signalDEPT90) => signalDEPT90.atomType === atomType);
+    .filter((signalDEPT90) => signalDEPT90.atomType === atomType)
+    .map((signalDEPT90) => signalDEPT90.signal);
   const signalsDEPT135 = lodash
     .get(signalsDEPT, '135', [])
-    .filter((signalDEPT135) => signalDEPT135.atomType === atomType);
+    .filter((signalDEPT135) => signalDEPT135.atomType === atomType)
+    .map((signalDEPT135) => signalDEPT135.signal);
 
+  setProtonsCount(
+    correlationsAtomType,
+    signalsDEPT90,
+    signalsDEPT135,
+    tolerance[atomType],
+  );
+};
+
+const setProtonsCountFromEditedHSQC = (
+  correlations,
+  tolerance,
+  heavyAtomType,
+) => {
+  const correlationsAtomTypeHSQC = getCorrelationsByAtomType(
+    correlations,
+    heavyAtomType,
+  ).filter(
+    (correlation) =>
+      correlation.getPseudo() === false &&
+      correlation.getExperimentType() === 'hsqc' &&
+      correlation.getSignal().sign !== undefined &&
+      correlation.getSignal().sign !== 0,
+  );
+  const signalsEditedHSQC = correlationsAtomTypeHSQC.map((correlation) =>
+    correlation.getSignal(),
+  );
+
+  setProtonsCount(
+    correlationsAtomTypeHSQC,
+    [],
+    signalsEditedHSQC,
+    tolerance[heavyAtomType],
+  );
+};
+
+const setProtonsCount = (
+  correlationsAtomType,
+  signals90,
+  signals135,
+  toleranceAtomType,
+) => {
   for (let i = 0; i < correlationsAtomType.length; i++) {
+    if (correlationsAtomType[i].getEdited().protonsCount) {
+      // do not overwrite a manually edited value
+      continue;
+    }
+
     const match = [-1, -1];
-    for (let k = 0; k < signalsDEPT90.length; k++) {
+    for (let k = 0; k < signals90.length; k++) {
       if (
-        signalsDEPT90[k].signal.sign === 1 &&
+        signals90[k].sign === 1 &&
         checkSignalMatch(
           correlationsAtomType[i].signal,
-          signalsDEPT90[k].signal,
-          tolerance[atomType],
+          signals90[k],
+          toleranceAtomType,
         )
       ) {
         match[0] = k;
         break;
       }
     }
-    for (let k = 0; k < signalsDEPT135.length; k++) {
+    for (let k = 0; k < signals135.length; k++) {
       if (
         checkSignalMatch(
           correlationsAtomType[i].signal,
-          signalsDEPT135[k].signal,
-          tolerance[atomType],
+          signals135[k],
+          toleranceAtomType,
         )
       ) {
         match[1] = k;
@@ -319,13 +368,16 @@ const setPropertiesFromDEPT = (
     // no signal match in DEPT90
     if (match[1] >= 0) {
       // signal match in DEPT135
-      if (signalsDEPT135[match[1]].signal.sign === 1) {
+      if (signals135[match[1]].sign === 1) {
         // positive signal
-        if (signalsDEPT90.length > 0) {
+        if (signals90.length > 0) {
           // in case of both DEPT90 and DEPT135 are given
           // CH3
           correlationsAtomType[i].setProtonsCount([3]);
-          correlationsAtomType[i].setHybridization('SP3');
+          if (!correlationsAtomType[i].getEdited().hybridization) {
+            // do not overwrite a manually edited value
+            correlationsAtomType[i].setHybridization('SP3');
+          }
         } else {
           // in case of DEPT135 is given only
           // CH or CH3
@@ -337,7 +389,7 @@ const setPropertiesFromDEPT = (
         correlationsAtomType[i].setProtonsCount([2]);
       }
     } else {
-      if (signalsDEPT135.length > 0) {
+      if (signals135.length > 0) {
         // no signal match in both spectra
         // qC
         correlationsAtomType[i].setProtonsCount([0]);
@@ -348,8 +400,6 @@ const setPropertiesFromDEPT = (
     }
   }
 };
-
-// const setPropertiesFromEditedHSQC = (correlations, signals2D, tolerance) => {};
 
 const addPseudoCorrelations = (correlations, mf) => {
   const atoms = getAtomsByMF(mf);
@@ -463,8 +513,8 @@ const buildCorrelationsData = (
   signals1D,
   signals2D,
   signalsDEPT,
-  tolerance,
   mf,
+  tolerance = {},
   correlations = [],
 ) => {
   let _correlations = correlations.slice();
@@ -483,8 +533,15 @@ const buildCorrelationsData = (
   }
   // link signals via matches to same 2D signal: e.g. 13C -> HSQC <- 1H
   setMatches(_correlations);
-  // set atoms properties via DEPT, i.e. the number of attached protons; for now C only -> extendable
-  setPropertiesFromDEPT(_correlations, signalsDEPT, tolerance, 'C');
+  // set the number of attached protons via DEPT or edited HSQC; for now C and N only
+  if (Object.keys(signalsDEPT).length > 0) {
+    setProtonsCountFromDEPT(_correlations, signalsDEPT, tolerance, 'C');
+    setProtonsCountFromDEPT(_correlations, signalsDEPT, tolerance, 'N');
+  } else {
+    setProtonsCountFromEditedHSQC(_correlations, tolerance, 'C');
+    setProtonsCountFromEditedHSQC(_correlations, tolerance, 'N');
+  }
+
   // set attachments via HSQC or HMQC
   setAttachments(_correlations);
   // set labels
@@ -550,14 +607,15 @@ const buildCorrelationsState = (correlations) => {
         createErrorProperty();
         state[atomType].error.notAttached = notAttached;
       }
-      const outOfLimit = notAttached
-        .map((correlationIndex, k) =>
-          k >= Math.abs(attachedCount - atomCount) ? correlationIndex : -1,
-        )
-        .filter((index) => index >= 0);
-      if (outOfLimit.length > 0) {
+      const outOfLimit =
+        notAttached
+          .map((correlationIndex, k) =>
+            k >= Math.abs(attachedCount - atomCount) ? correlationIndex : -1,
+          )
+          .filter((index) => index >= 0).length > 0;
+      if (outOfLimit) {
         createErrorProperty();
-        state[atomType].error.outOfLimit = outOfLimit;
+        state[atomType].error.outOfLimit = true;
       }
       const ambiguousAttachment = _correlations.values
         .map((correlation, k) =>
@@ -577,20 +635,21 @@ const buildCorrelationsState = (correlations) => {
       }
     } else {
       let counter = 0;
-      const outOfLimit = _correlations.values
-        .map((correlation, k) => {
-          if (correlation.getAtomType() === atomType) {
-            if (counter >= atomCount) {
-              return k;
+      const outOfLimit =
+        _correlations.values
+          .map((correlation, k) => {
+            if (correlation.getAtomType() === atomType) {
+              if (counter >= atomCount) {
+                return k;
+              }
+              counter++;
             }
-            counter++;
-          }
-          return -1;
-        })
-        .filter((index) => index >= 0);
-      if (outOfLimit.length > 0) {
+            return -1;
+          })
+          .filter((index) => index >= 0).length > 0;
+      if (outOfLimit) {
         createErrorProperty();
-        state[atomType].error.outOfLimit = outOfLimit;
+        state[atomType].error.outOfLimit = true;
       }
     }
   });

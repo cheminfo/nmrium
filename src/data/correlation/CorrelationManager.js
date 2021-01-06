@@ -102,8 +102,8 @@ export default class CorrelationManager {
         signals1D,
         signals2D,
         signalsDEPT,
-        this.getTolerance(),
         this.getMF(),
+        this.getTolerance(),
         this.getValues(),
       ),
     );

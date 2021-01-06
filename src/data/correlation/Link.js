@@ -3,7 +3,7 @@ export default class Link {
     this.experimentType = options.experimentType;
     this.experimentID = options.experimentID;
     this.atomType = options.atomType || [];
-    this.signalID = options.signalID;
+    this.signal = options.signal;
     this.axis = options.axis;
     this.match = options.match || [];
   }
@@ -20,8 +20,12 @@ export default class Link {
     return this.atomType;
   }
 
+  getSignal() {
+    return this.signal;
+  }
+
   getSignalID() {
-    return this.signalID;
+    return this.getSignal().id;
   }
   getAxis() {
     return this.axis;

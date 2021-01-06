@@ -67,9 +67,13 @@ const CorrelationTable = ({
           correlation={correlation}
           key={`correlation${correlation.getAtomType()}${correlation.getID()}`}
           styleRow={{ backgroundColor: 'mintcream' }}
-          styleLabel={{
-            color: getLabelColor(correlations, correlation),
-          }}
+          styleLabel={
+            correlation.getAtomType() === 'H'
+              ? {
+                  color: getLabelColor(correlations, correlation),
+                }
+              : {}
+          }
           onSaveEditEquivalences={editEquivalencesSaveHandler}
           onChangeHybridization={changeHybridizationSaveHandler}
           onSaveEditProtonsCount={editProtonsCountSaveHandler}
@@ -106,7 +110,7 @@ const CorrelationTable = ({
                     {correlation &&
                     correlation.getSignal() &&
                     correlation.getSignal().delta
-                      ? correlation.getSignal().delta.toFixed(2)
+                      ? correlation.getSignal().delta.toFixed(3)
                       : ''}
                   </p>
                   <p style={{ fontSize: 8 }}>

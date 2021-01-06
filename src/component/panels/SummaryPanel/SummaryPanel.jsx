@@ -350,7 +350,17 @@ const SummaryPanel = memo(() => {
               experimentType,
               experimentID: experiments2D[experimentType][index].id,
               atomType,
-              signal,
+              // here we assume that only one peak exists for the signal and its intensity indicates the sign
+              signal: {
+                ...signal,
+                sign: experiments2D[experimentType][
+                  index
+                ].info.pulseSequence.includes('hsqced') // detection whether edited HSQC; for Bruker files only for now
+                  ? signal.peak[0].z >= 0
+                    ? 1
+                    : -1
+                  : 0,
+              },
             });
           }
         });
