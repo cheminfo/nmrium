@@ -69,13 +69,15 @@ export const preferencesInitialState = {
 };
 
 const mapNucleus = (draft) => {
-  draft.formatting.nucleusByKey = draft.formatting.nucleus.reduce(
-    (acc, item) => {
-      acc[item.name.toLowerCase()] = item;
-      return { ...acc };
-    },
-    {},
-  );
+  if (draft.formatting.nucleus && Array.isArray(draft.formatting.nucleus)) {
+    draft.formatting.nucleusByKey = draft.formatting.nucleus.reduce(
+      (acc, item) => {
+        acc[item.name.toLowerCase()] = item;
+        return { ...acc };
+      },
+      {},
+    );
+  }
 };
 
 export function preferencesReducer(state, action) {
@@ -89,13 +91,15 @@ export function preferencesReducer(state, action) {
           draft.basePreferences = resPreferences;
           draft.display = resPreferences.display;
           draft.dispatch = dispatch;
-          Object.entries(localData).forEach(([k, v]) => {
-            draft[k] = lodash.merge(
-              v,
-              resPreferences[k] ? resPreferences[k] : {},
-            );
-          });
-          mapNucleus(draft, state);
+          if (localData) {
+            Object.entries(localData).forEach(([k, v]) => {
+              draft[k] = lodash.merge(
+                v,
+                resPreferences[k] ? resPreferences[k] : {},
+              );
+            });
+            mapNucleus(draft, state);
+          }
         }
       });
     }

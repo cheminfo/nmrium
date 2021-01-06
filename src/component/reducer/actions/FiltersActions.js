@@ -106,6 +106,8 @@ const applyAbsoluteFilter = (state) => {
     activeObject.applyFilter([{ name: Filters.absolute.id, options: {} }]);
 
     setDataByFilters(draft, activeObject, id);
+    draft.dataSnapshot = null;
+    draft.tempData = null;
     setDomain(draft);
   });
 };
