@@ -27,13 +27,26 @@ const useStateWithLocalStorage = (localStorageKey, key = null) => {
   ];
 };
 
-const getLocalStorage = (localStorageKey) => {
+const getLocalStorage = (localStorageKey, isJson = true) => {
   const settings = localStorage.getItem(localStorageKey);
-  return settings ? JSON.parse(settings) : settings;
+  return settings && isJson ? JSON.parse(settings) : settings;
+};
+
+const storeData = (localStorageKey, value) => {
+  localStorage.setItem(localStorageKey, value);
+};
+const removeData = (localStorageKey) => {
+  localStorage.removeItem(localStorageKey);
 };
 
 const getValue = (object, keyPath, defaultValue = null) => {
   return lodash.get(object, keyPath, defaultValue);
 };
 
-export { useStateWithLocalStorage, getLocalStorage, getValue };
+export {
+  useStateWithLocalStorage,
+  getLocalStorage,
+  getValue,
+  storeData,
+  removeData,
+};
