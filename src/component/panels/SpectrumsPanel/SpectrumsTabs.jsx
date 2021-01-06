@@ -175,11 +175,12 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
                 spectrumsGroupByNucleus[group].map((d) => (
                   <SpectrumListItem
                     key={d.id}
-                    activated={
-                      activeSpectrum && activeSpectrum.id === d.id
-                        ? true
-                        : false
-                    }
+                    activeSpectrum={activeSpectrum}
+                    // activated={
+                    //   activeSpectrum && activeSpectrum.id === d.id
+                    //     ? true
+                    //     : false
+                    // }
                     markersVisible={markersVisible}
                     data={d}
                     onChangeVisibility={handleChangeVisibility}

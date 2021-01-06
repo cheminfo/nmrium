@@ -42,7 +42,7 @@ const styles = {
 
 const SpectrumListItem = memo(
   ({
-    activated,
+    activeSpectrum,
     markersVisible,
     data,
     onChangeVisibility,
@@ -58,13 +58,15 @@ const SpectrumListItem = memo(
       }
       return value;
     };
-
+    const activated = activeSpectrum && activeSpectrum.id === data.id;
     const { color, name, positiveColor, negativeColor } = data.display;
     return (
       <div
         style={{
           ...styles.row,
-          ...(activated ? { backgroundColor: '#fafafa' } : {}),
+          ...(activated
+            ? { backgroundColor: '#fafafa' }
+            : { opacity: activeSpectrum ? 0.2 : 1 }),
         }}
         onContextMenu={onContextMenu}
       >
