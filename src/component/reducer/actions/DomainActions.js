@@ -52,8 +52,10 @@ function getDomain(data) {
       if (d.isVisibleInDomain) {
         const domain = [d.x[0], d.x[d.x.length - 1]];
         xDomains[d.id] = domain;
-
-        return acc.concat(domain);
+        if (d.display.isVisible) {
+          acc = acc.concat(domain);
+        }
+        return acc;
       } else {
         return acc.concat([]);
       }
@@ -77,7 +79,10 @@ function getDomain(data) {
           );
           integralYDomain[d.id] = extent(integralResult.y);
         }
-        return acc.concat(_extent);
+        if (d.display.isVisible) {
+          acc = acc.concat(_extent);
+        }
+        return acc;
       } else {
         return acc.concat([]);
       }
