@@ -40,14 +40,6 @@ const styles = {
     fontSize: '12px',
     backgroundColor: 'transparent',
   },
-  setShowMultiplicityTreesButton: {
-    color: 'black',
-    backgroundColor: 'transparent',
-    border: 'none',
-    // width: '22px',
-    height: '20px',
-    fontSize: '13px',
-  },
   button: {
     backgroundColor: 'transparent',
     border: 'none',
