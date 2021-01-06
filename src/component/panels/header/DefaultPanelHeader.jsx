@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { memo } from 'react';
 import { FaRegTrashAlt, FaCog, FaFilter } from 'react-icons/fa';
 
+import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
 const styles = css`
@@ -75,25 +76,14 @@ const DefaultPanelHeader = memo(
 
         {/* Optional if there is no filter needed, e.g. in spectra panel */}
         {onFilter && filterToolTip ? (
-          <ToolTip title={filterToolTip} popupPlacement="right">
-            <button
-              className="filter-button"
-              style={
-                filterIsActive && filterIsActive === true
-                  ? {
-                      backgroundColor: '#6d6d6d',
-                      color: 'white',
-                      fontSize: '10px',
-                    }
-                  : {}
-              }
-              type="button"
-              onClick={onFilter}
-              disabled={counter === 0}
-            >
-              <FaFilter />
-            </button>
-          </ToolTip>
+          <ToggleButton
+            popupTitle={filterToolTip}
+            popupPlacement="right"
+            onClick={onFilter}
+            // defaultValue={filterIsActive && filterIsActive === true}
+          >
+            <FaFilter style={{ pointerEvents: 'none', fontSize: '12px' }} />
+          </ToggleButton>
         ) : null}
 
         {counter ? (

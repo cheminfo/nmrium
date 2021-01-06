@@ -6,6 +6,7 @@ import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
+import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
@@ -26,27 +27,26 @@ const styles = {
     flexDirection: 'row',
     borderBottom: '0.55px solid rgb(240, 240, 240)',
   },
+  center: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '5px',
+  },
   removeAssignmentsButton: {
-    borderRadius: '5px',
-    marginTop: '3px',
-    marginLeft: '2px',
     border: 'none',
     height: '16px',
-    width: '18px',
+    // width: '18px',
     fontSize: '12px',
-    padding: 0,
     backgroundColor: 'transparent',
   },
   setShowMultiplicityTreesButton: {
-    borderRadius: '5px',
-    marginLeft: '5px',
     color: 'black',
     backgroundColor: 'transparent',
     border: 'none',
-    width: '22px',
+    // width: '22px',
     height: '20px',
-    fontSize: '15px',
-    padding: 0,
+    fontSize: '13px',
   },
   button: {
     backgroundColor: 'transparent',
@@ -190,7 +190,7 @@ const RangesHeader = ({
       </ToolTip>
       <ToolTip title={`Remove all Assignments`} popupPlacement="right">
         <button
-          style={styles.removeAssignmentsButton}
+          style={{ ...styles.center, ...styles.removeAssignmentsButton }}
           type="button"
           onClick={handleOnRemoveAssignments}
           disabled={!ranges || !ranges.values || ranges.values.length === 0}
@@ -198,31 +198,20 @@ const RangesHeader = ({
           <FaUnlink />
         </button>
       </ToolTip>
-      <ToolTip
-        title={
+
+      <ToggleButton
+        popupTitle={
           showMultiplicityTrees
             ? 'Hide Multiplicity Trees in Spectrum'
             : 'Show Multiplicity Trees in Spectrum'
         }
         popupPlacement="right"
+        onClick={handleSetShowMultiplicityTrees}
+        disabled={!ranges || !ranges.values || ranges.values.length === 0}
+        // defaultValue={filshowMultiplicityTrees && showMultiplicityTrees === true}
       >
-        <button
-          style={
-            showMultiplicityTrees && showMultiplicityTrees === true
-              ? {
-                  ...styles.setShowMultiplicityTreesButton,
-                  backgroundColor: '#6d6d6d',
-                  color: 'white',
-                }
-              : styles.setShowMultiplicityTreesButton
-          }
-          type="button"
-          onClick={handleSetShowMultiplicityTrees}
-          disabled={!ranges || !ranges.values || ranges.values.length === 0}
-        >
-          <FaSitemap />
-        </button>
-      </ToolTip>
+        <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
+      </ToggleButton>
     </DefaultPanelHeader>
   );
 };
