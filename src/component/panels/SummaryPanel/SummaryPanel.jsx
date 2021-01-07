@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodash from 'lodash';
-import { MF } from 'mf-parser';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
@@ -80,11 +79,10 @@ const SummaryPanel = memo(() => {
   const [mf, setMF] = useState();
   const [tolerance, setTolerance] = useState();
   const [additionalColumns, setAdditionalColumns] = useState([]);
-  const [atoms, setAtoms] = useState({});
   const [
     selectedAdditionalColumnsAtomType,
     setSelectedAdditionalColumnsAtomType,
-  ] = useState('H');
+  ] = useState('');
   const [showProtonsAsRows, setShowProtonsAsRows] = useState(false);
 
   useEffect(() => {
@@ -132,10 +130,6 @@ const SummaryPanel = memo(() => {
     );
   }, [modal, tolerance]);
 
-  useEffect(() => (mf ? setAtoms(new MF(mf).getInfo().atoms) : setAtoms({})), [
-    mf,
-  ]);
-
   // all experiments
   const experiments = useMemo(() => {
     const _experiments = {};
@@ -164,6 +158,34 @@ const SummaryPanel = memo(() => {
     return _experiments;
   }, [data]);
 
+  const additionalColumnTypes = useMemo(() => {
+    const columnTypes = [''].concat(
+      correlations
+        ? correlations.values
+            .map((correlation) => correlation.getAtomType())
+            .filter((atomType, i, array) => array.indexOf(atomType) === i)
+        : [],
+    );
+
+    if (columnTypes.includes('H')) {
+      columnTypes.push('H-H');
+    }
+
+    if (columnTypes.includes('H')) {
+      setSelectedAdditionalColumnsAtomType('H');
+    } else {
+      setSelectedAdditionalColumnsAtomType('');
+    }
+
+    return columnTypes.map((columnType) => {
+      return {
+        key: columnType,
+        label: columnType,
+        value: columnType,
+      };
+    });
+  }, [correlations]);
+
   useEffect(() => {
     const _selectedAdditionalColumnsAtomType = selectedAdditionalColumnsAtomType.split(
       '-',
@@ -186,12 +208,15 @@ const SummaryPanel = memo(() => {
   // "plain" 1D experiments containing ranges, i.e. without DEPT etc.
   const experiments1D = useMemo(() => {
     const _experiments1D = {};
-    Object.keys(atoms).forEach((atomType) => {
-      addToExperiments(experiments, _experiments1D, '1D.1d', true, atomType);
-    });
+    lodash
+      .get(experiments, '1D.1d', [])
+      .map((experiment) => getAtomType(experiment.info.nucleus))
+      .forEach((atomType) => {
+        addToExperiments(experiments, _experiments1D, '1D.1d', true, atomType);
+      });
 
     return _experiments1D;
-  }, [atoms, experiments]);
+  }, [experiments]);
 
   // "extra" 1D experiments containing ranges, e.g. DEPT
   const experiments1DExtra = useMemo(() => {
@@ -230,7 +255,7 @@ const SummaryPanel = memo(() => {
   const signals1D = useMemo(() => {
     // store valid signals from 1D experiments
     const _signals1D = {};
-    Object.keys(atoms).forEach((atomType) => {
+    Object.keys(experiments1D).forEach((atomType) => {
       let _signals = [];
       if (lodash.get(experiments1D, `${atomType}`, []).length > 0) {
         // @TODO for now we will use the first occurring matched spectrum only (index)
@@ -262,7 +287,7 @@ const SummaryPanel = memo(() => {
     });
 
     return _signals1D;
-  }, [atoms, experiments1D]);
+  }, [experiments1D]);
 
   const signalsDEPT = useMemo(() => {
     // store valid signals from 1D extra experiments, e.g. DEPT, APT
@@ -442,14 +467,6 @@ const SummaryPanel = memo(() => {
     [dispatch],
   );
 
-  const additionalColumnsTypes = useMemo(() => {
-    return Object.keys(atoms)
-      .map((atom) => {
-        return { key: atom, label: atom, value: atom };
-      })
-      .concat({ key: 'H-H', label: 'H-H', value: 'H-H' });
-  }, [atoms]);
-
   return (
     <div css={panelStyle}>
       <DefaultPanelHeader canDelete={false}>
@@ -467,24 +484,26 @@ const SummaryPanel = memo(() => {
           <Overview correlations={correlations} />
         </div>
         <div className="homoHeteroKinds-container">
-          <SelectUncontrolled
-            onChange={(selection) => {
-              setSelectedAdditionalColumnsAtomType(selection);
-              if (selection === 'H-H') {
-                setShowProtonsAsRows(true);
-              } else {
-                setShowProtonsAsRows(false);
-              }
-            }}
-            data={additionalColumnsTypes}
-            value={selectedAdditionalColumnsAtomType}
-            style={{
-              marginLeft: 2,
-              marginRight: 2,
-              border: 'none',
-              height: '20px',
-            }}
-          />
+          {additionalColumnTypes.length > 0 ? (
+            <SelectUncontrolled
+              onChange={(selection) => {
+                setSelectedAdditionalColumnsAtomType(selection);
+                if (selection === 'H-H') {
+                  setShowProtonsAsRows(true);
+                } else {
+                  setShowProtonsAsRows(false);
+                }
+              }}
+              data={additionalColumnTypes}
+              value={selectedAdditionalColumnsAtomType}
+              style={{
+                marginLeft: 2,
+                marginRight: 2,
+                border: 'none',
+                height: '20px',
+              }}
+            />
+          ) : null}
         </div>
       </DefaultPanelHeader>
       <CorrelationTable
