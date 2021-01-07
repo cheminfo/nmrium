@@ -92,23 +92,8 @@ const loadJDFFile = (state, files) => {
 
 const loadJcampFile = (state, files) => {
   return produce(state, (draft) => {
-    let usedColors = draft.data.map((d) => d.color);
-    const filesLength = files.length;
-    for (let i = 0; i < filesLength; i++) {
-      const color = getColor(false, usedColors);
-      AnalysisObj.addJcamp(files[i].binary.toString(), {
-        display: {
-          name: files[i].name,
-          color: color,
-        },
-        source: {
-          jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
-        },
-      });
-      usedColors.push(color);
-    }
+    AnalysisObj.addJcamps(files);
     draft.data = AnalysisObj.getSpectraData();
-
     setActiveTab(draft);
     initZoom1DHandler(draft.data);
 

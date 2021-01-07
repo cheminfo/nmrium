@@ -4,7 +4,6 @@ import { Data1DManager } from './data1d/Data1DManager';
 import { Datum1D } from './data1d/Datum1D';
 import { Data2DManager } from './data2d/Data2DManager';
 import { Datum2D } from './data2d/Datum2D';
-import getColor, { adjustAlpha } from './utilities/getColor';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
   return fetch(jcampURL, { credentials: 'include' })
@@ -75,30 +74,22 @@ export function addJDF(spectra, jdf, options = {}) {
   info.spectralWidthClipped = converted.application.spectralWidthClipped;
 
   if (info.dimension === 1) {
-    let usedcolors1D = [];
     if (converted.dependentVariables) {
-      const color = getColor(false, usedcolors1D);
       spectra.push(
         Data1DManager.fromCSD(converted, {
           ...options,
-          display: { ...options.display, color },
+          display: { ...options.display },
           info: info,
           meta: metadata,
         }),
       );
-      usedcolors1D.push(color);
     }
   }
   if (info.dimension === 2 && info.isFt) {
-    let usedcolors2d = [];
-    const positiveColor = getColor(false, usedcolors2d);
-    const negativeColor = adjustAlpha(positiveColor, 50);
-    usedcolors2d.push(positiveColor);
-
     spectra.push(
       Data2DManager.fromCSD(converted, {
         ...options,
-        display: { ...options.display, positiveColor, negativeColor },
+        display: { ...options.display },
         info,
       }),
     );
@@ -107,15 +98,8 @@ export function addJDF(spectra, jdf, options = {}) {
 
 export async function fromJSON(spectra, data = []) {
   let promises = [];
-  const usedcolors = [];
 
   for (let datum of data) {
-    const color = getColor(false, usedcolors);
-    usedcolors.push(color);
-    if (datum.display === undefined || datum.display.color === undefined) {
-      datum.display = Object.assign({ color }, datum.display);
-    }
-
     if (datum.source.jcamp != null) {
       addJcamp(spectra, datum.source.jcamp, datum);
     } else if (datum.source.jcampURL != null) {
@@ -129,33 +113,25 @@ export async function fromJSON(spectra, data = []) {
 
 export async function addBruker(spectra, options, data) {
   let result = await fromBruker(data, { xy: true, noContours: true });
-  const usedcolors1D = [];
-  const usedcolors2d = [];
   let entries = result;
   for (let entry of entries) {
     let { info, dependentVariables } = entry;
     if (info.dimension === 1) {
       if (dependentVariables[0].components) {
-        const color = getColor(false, usedcolors1D);
         spectra.push(
           Data1DManager.fromBruker(entry, {
             ...options,
-            display: { ...options.display, color },
+            display: { ...options.display },
           }),
         );
-        usedcolors1D.push(color);
       }
     } else if (info.dimension === 2) {
       if (info.isFt) {
-        const positiveColor = getColor(false, usedcolors2d);
-        const negativeColor = adjustAlpha(positiveColor, 50);
-        usedcolors2d.push(positiveColor);
-
         spectra.push(
           Data2DManager.fromBruker(entry, {
             ...options,
             info,
-            display: { ...options.display, positiveColor, negativeColor },
+            display: { ...options.display },
           }),
         );
       } else {

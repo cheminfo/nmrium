@@ -8,7 +8,6 @@ import { Datum1D } from './data1d/Datum1D';
 import MultipleAnalysis from './data1d/MulitpleAnalysis';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
-import getColor from './utilities/getColor';
 
 export class Analysis {
   spectra = [];
@@ -66,10 +65,9 @@ export class Analysis {
 
   async fromZip(zipFiles) {
     for (let zipFile of zipFiles) {
-      const color = getColor(true);
       await SpectraManager.addBruker(
         this.spectra,
-        { display: { color, name: zipFile.name } },
+        { display: { name: zipFile.name } },
         zipFile.binary,
       );
     }
@@ -79,6 +77,19 @@ export class Analysis {
     SpectraManager.addJcampFromURL(this.spectra, jcampURL, options);
   }
 
+  addJcamps(files) {
+    const filesLength = files.length;
+    for (let i = 0; i < filesLength; i++) {
+      SpectraManager.addJcamp(this.spectra, files[i].binary.toString(), {
+        display: {
+          name: files[i].name,
+        },
+        source: {
+          jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
+        },
+      });
+    }
+  }
   addJcamp(jcamp, options = {}) {
     SpectraManager.addJcamp(this.spectra, jcamp, options);
   }

@@ -5,6 +5,7 @@ import { xyIntegration, xyMinYPoint, xyMaxYPoint } from 'ml-spectra-processing';
 import { SignalKindsToInclude, DatumKind } from '../constants/SignalsKinds';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
+import get1dColor from '../utilities/getColor';
 
 import { FiltersManager } from './FiltersManager';
 import autoPeakPicking from './autoPeakPicking';
@@ -13,6 +14,7 @@ import detectSignal from './detectSignal';
 import { Filters } from './filter1d/Filters';
 
 export class Datum1D {
+  static usedColors = [];
   /**
    *
    * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
@@ -34,6 +36,7 @@ export class Datum1D {
             ? options.display.name
             : generateID(),
         color: 'black',
+        ...this.getColor(options),
         isVisible: true,
         isPeaksMarkersVisible: true,
         isRealSpectrumVisible: true,
@@ -85,6 +88,15 @@ export class Datum1D {
     FiltersManager.reapplyFilters(this);
 
     this.preprocessing();
+  }
+
+  getColor(options) {
+    if (options.display === undefined || options.display.color === undefined) {
+      const color = get1dColor(false, Datum1D.usedColors);
+      Datum1D.usedColors.push(color);
+      return { color };
+    }
+    return {};
   }
 
   getID() {
