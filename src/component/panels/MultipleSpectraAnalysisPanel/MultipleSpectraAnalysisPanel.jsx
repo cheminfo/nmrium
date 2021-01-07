@@ -1,12 +1,15 @@
+import { SvgNmrOverlay } from 'cheminfo-font';
 import { useCallback, useState, useRef, memo, useMemo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
 
+import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
-import ToolTip from '../../elements/ToolTip/ToolTip';
-import { useAlert } from '../../elements/popup/Alert';
+import { positions, useAlert } from '../../elements/popup/Alert';
+import { useModal } from '../../elements/popup/Modal';
 import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
+import AlignSpectraModal from '../../modal/AlignSpectraModal';
 import { AnalysisObj } from '../../reducer/core/Analysis';
 import Events from '../../utility/Events';
 import { copyTextToClipboard } from '../../utility/Export';
@@ -32,6 +35,7 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef();
   const alert = useAlert();
+  const modal = useModal();
 
   const data = useMemo(() => {
     const {
@@ -59,6 +63,15 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
   const showTrackerHandler = useCallback(() => {
     Events.emit('showYSpectraTrackers', true);
   }, []);
+  const openAlignSpectra = useCallback(() => {
+    modal.show(<AlignSpectraModal />, {
+      isBackgroundBlur: false,
+      position: positions.TOP_CENTER,
+      // enableResizing: false,
+      width: 400,
+      // height: 600,
+    });
+  }, [modal]);
 
   const copyToClipboardHandler = useCallback(() => {
     const data = AnalysisObj.getMultipleAnalysisTableAsString(activeTab);
@@ -79,15 +92,20 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
           canDelete={false}
           onSettingClick={settingsPanelHandler}
         >
-          <ToolTip title="Copy To Clipboard" popupPlacement="right">
-            <button
-              style={styles.button}
-              type="button"
-              onClick={copyToClipboardHandler}
-            >
-              <FaFileExport />
-            </button>
-          </ToolTip>
+          <Button
+            popupTitle="Copy To Clipboard"
+            style={styles.button}
+            onClick={copyToClipboardHandler}
+          >
+            <FaFileExport />
+          </Button>
+          <Button
+            popupTitle="Align Spectra"
+            style={styles.button}
+            onClick={openAlignSpectra}
+          >
+            <SvgNmrOverlay style={{ fontSize: '18px' }} />
+          </Button>
           <ToggleButton
             popupTitle="Y Spectra Tracker"
             popupPlacement="right"

@@ -253,6 +253,26 @@ export class Analysis {
       : [];
   }
 
+  alignSpectra(nucleus, { from, to, nbPeaks }) {
+    const spectra = this.spectra.filter(
+      (spectrum) =>
+        spectrum instanceof Datum1D && spectrum.info.nucleus === nucleus,
+    );
+    if (spectra && spectra.length > 0) {
+      const peaks = spectra.map((spectrum) => {
+        const { x } = spectrum.lookupPeak(from, to);
+        return x ? x : 0;
+      }, []);
+      const peaksSum = peaks.reduce((acc, val) => {
+        return acc + val;
+      }, 0);
+      const targetX = peaksSum / peaks.length;
+      spectra.forEach((spectrum) => {
+        spectrum.alignX(spectrum, { targetX, from, to, nbPeaks });
+      });
+    }
+  }
+
   deleteDatumByIDs(IDs) {
     const _spectra = this.spectra.filter((d) => !IDs.includes(d.id));
     this.spectra = _spectra.length > 0 ? _spectra : [];

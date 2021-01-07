@@ -255,24 +255,27 @@ export default class MultipleAnalysis {
     return result;
   }
   getDataAsString(nucleus) {
-    const {
-      values,
-      options: { columns },
-    } = this.spectraAanalysis[nucleus];
+    if (this.spectraAanalysis && this.spectraAanalysis[nucleus]) {
+      const {
+        values,
+        options: { columns },
+      } = this.spectraAanalysis[nucleus];
 
-    let result = '';
+      let result = '';
 
-    for (const letter in columns) {
-      result += `${letter}\t`;
-    }
-    result += '\n';
-
-    for (const spectrum of Object.values(values)) {
       for (const letter in columns) {
-        result += `${spectrum[letter][columns[letter].valueKey]}\t`;
+        result += `${letter}\t`;
       }
       result += '\n';
+
+      for (const spectrum of Object.values(values)) {
+        for (const letter in columns) {
+          result += `${spectrum[letter][columns[letter].valueKey]}\t`;
+        }
+        result += '\n';
+      }
+      return result;
     }
-    return result;
+    return null;
   }
 }
