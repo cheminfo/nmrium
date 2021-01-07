@@ -17,7 +17,7 @@ const ShowHideSpectrumButton = ({ data, onChangeVisibility, style }) => {
             style={{
               fill: data.display.color,
 
-              ...(isVisible
+              ...(isVisible(data.id, 'isVisible')
                 ? {
                     opacity: 1,
                     strokeWidth: '1px',

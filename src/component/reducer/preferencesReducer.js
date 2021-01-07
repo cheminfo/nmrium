@@ -1,12 +1,16 @@
 import { produce } from 'immer';
 import lodash from 'lodash';
 
-import { getLocalStorage } from '../utility/LocalStorage';
+import {
+  getLocalStorage,
+  removeData,
+  storeData,
+} from '../utility/LocalStorage';
 
 export const INIT_PREFERENCES = 'INIT_PREFERENCES';
 export const SET_PREFERENCES = 'SET_PREFERENCES';
 export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
-
+const LOCAL_STORGAE_VERSION = '1';
 export const preferencesInitialState = {
   basePreferences: {},
   display: {
@@ -83,6 +87,18 @@ const mapNucleus = (draft) => {
 export function preferencesReducer(state, action) {
   switch (action.type) {
     case INIT_PREFERENCES: {
+      const nmrLocalStorageVersion = getLocalStorage(
+        'nmr-local-storage-version',
+        false,
+      );
+      if (
+        !nmrLocalStorageVersion ||
+        nmrLocalStorageVersion !== LOCAL_STORGAE_VERSION
+      ) {
+        removeData('nmr-general-settings');
+        storeData('nmr-local-storage-version', LOCAL_STORGAE_VERSION);
+      }
+
       const localData = getLocalStorage('nmr-general-settings');
 
       return produce(state, (draft) => {
