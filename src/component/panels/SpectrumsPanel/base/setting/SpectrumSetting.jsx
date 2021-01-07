@@ -11,14 +11,21 @@ import Spectrum2DSetting from './Spectrum2DSetting';
 const style = css`
   position: fixed;
   z-index: 999999999;
-  display: flex;
-  flex-direction: row-reverse;
-  border-radius: 4px;
-  background-color: white;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px,
-    rgba(0, 0, 0, 0.15) 0px 8px 16px;
-    overflow: auto;
-    height: 350px;
+  width:100%;
+  height:100%;
+  left:0;
+  top:0;
+  .ineer-conatiner{
+    position:absolute;
+    display: flex;
+    flex-direction: row-reverse;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px,
+      rgba(0, 0, 0, 0.15) 0px 8px 16px;
+      overflow: auto;
+      height: 350px;
+  }
 
 
   .sketch-picker {
@@ -68,7 +75,7 @@ const style = css`
 const SpectrumSetting = ({
   position,
   data: { id, info, display },
-  onMouseLeave,
+  onClose,
 }) => {
   const dispatch = useDispatch();
 
@@ -79,22 +86,32 @@ const SpectrumSetting = ({
     [dispatch, id],
   );
 
+  const clickHandler = useCallback(
+    (e) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
+
   const { x, y } = position;
   return (
-    <div
-      css={style}
-      style={{
-        left: info.dimension === 2 ? x - 450 : x - 220,
-        padding: info.dimension === 2 ? '10px 0' : '',
-        top: y,
-      }}
-      onMouseLeave={onMouseLeave}
-    >
-      {info.dimension === 2 ? (
-        <Spectrum2DSetting onSubmit={submitHandler} data={display} />
-      ) : (
-        <Spectrum1DSetting onSubmit={submitHandler} data={display} />
-      )}
+    <div css={style} onClick={clickHandler}>
+      <div
+        className="ineer-conatiner"
+        style={{
+          left: info.dimension === 2 ? x - 450 : x - 220,
+          padding: info.dimension === 2 ? '10px 0' : '',
+          top: y,
+        }}
+      >
+        {info.dimension === 2 ? (
+          <Spectrum2DSetting onSubmit={submitHandler} data={display} />
+        ) : (
+          <Spectrum1DSetting onSubmit={submitHandler} data={display} />
+        )}
+      </div>
     </div>
   );
 };
