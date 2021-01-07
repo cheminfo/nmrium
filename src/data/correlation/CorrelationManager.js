@@ -14,8 +14,14 @@ export default class CorrelationManager {
   constructor(options = {}, values = []) {
     this.options = options;
     this.options.tolerance = this.options.tolerance || defaultTolerance;
+    this.signals1D = {};
+    this.signals2D = {};
+    this.signalsDEPT = {};
     this.setValues(
       values.map((correlation) => new Correlation({ ...correlation })),
+      this.signals1D,
+      this.signals2D,
+      this.signalsDEPT,
     );
   }
 
@@ -92,20 +98,21 @@ export default class CorrelationManager {
   }
 
   setValues(correlations) {
-    this.values = correlations;
+    this.values = buildCorrelationsData(
+      this.signals1D,
+      this.signals2D,
+      this.signalsDEPT,
+      this.getMF(),
+      this.getTolerance(),
+      correlations,
+    );
     this.state = buildCorrelationsState(this.getData());
   }
 
   updateValues(signals1D, signals2D, signalsDEPT) {
-    this.setValues(
-      buildCorrelationsData(
-        signals1D,
-        signals2D,
-        signalsDEPT,
-        this.getMF(),
-        this.getTolerance(),
-        this.getValues(),
-      ),
-    );
+    this.signals1D = signals1D;
+    this.signals2D = signals2D;
+    this.signalsDEPT = signalsDEPT;
+    this.setValues(this.getValues());
   }
 }

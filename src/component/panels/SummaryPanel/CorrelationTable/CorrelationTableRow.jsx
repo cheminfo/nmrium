@@ -42,7 +42,7 @@ const CorrelationTableRow = ({
     () =>
       additionalColumns.map((_correlation) => {
         let content = [];
-        // const matchingLinks = [];
+        // const commonLinks = [];
         correlation.getLinks().forEach((link, i) => {
           _correlation.getLinks().forEach((_link, j) => {
             if (
@@ -50,7 +50,7 @@ const CorrelationTableRow = ({
               link.getExperimentID() === _link.getExperimentID() &&
               link.getSignalID() === _link.getSignalID()
             ) {
-              // matchingLinks.push({
+              // commonLinks.push({
               //   experimentType: link.getExperimentType(),
               //   atomType: link.getAtomType(),
               //   idx: [i, j],
@@ -110,22 +110,30 @@ const CorrelationTableRow = ({
           : ''}
       </td>
       <td>
-        {
-          <EditableColumn
-            type="number"
-            value={
-              correlation.getEquivalences() > 0
-                ? correlation.getEquivalences()
-                : ''
-            }
-            style={
-              correlation.getEdited().equivalence
-                ? { padding: '0.4rem', backgroundColor: '#F7F2E0' }
-                : { padding: '0.4rem' }
-            }
-            onSave={onSaveEquivalencesHandler}
-          />
-        }
+        {correlation.getPseudo() === false ? (
+          correlation.getAtomType() !== 'H' ? (
+            <EditableColumn
+              type="number"
+              value={
+                correlation.getEquivalences() > 0
+                  ? correlation.getEquivalences()
+                  : ''
+              }
+              style={
+                correlation.getEdited().equivalence
+                  ? { padding: '0.4rem', backgroundColor: '#F7F2E0' }
+                  : { padding: '0.4rem' }
+              }
+              onSave={onSaveEquivalencesHandler}
+            />
+          ) : correlation.getEquivalences() > 0 ? (
+            correlation.getEquivalences()
+          ) : (
+            ''
+          )
+        ) : (
+          ''
+        )}
       </td>
       <td>
         {correlation.getAtomType() !== 'H' ? (

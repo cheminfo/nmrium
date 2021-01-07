@@ -6,7 +6,10 @@ import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
 import { SignalKindsToInclude } from '../../../data/constants/SignalsKinds';
 import Correlation from '../../../data/correlation/Correlation';
-import { checkSignalMatch } from '../../../data/correlation/Utilities';
+import {
+  checkSignalMatch,
+  isEditedHSQC,
+} from '../../../data/correlation/Utilities';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
@@ -378,9 +381,7 @@ const SummaryPanel = memo(() => {
               // here we assume that only one peak exists for the signal and its intensity indicates the sign
               signal: {
                 ...signal,
-                sign: experiments2D[experimentType][
-                  index
-                ].info.pulseSequence.includes('hsqced') // detection whether edited HSQC; for Bruker files only for now
+                sign: isEditedHSQC(experiments2D[experimentType][index])
                   ? signal.peak[0].z >= 0
                     ? 1
                     : -1
@@ -396,6 +397,10 @@ const SummaryPanel = memo(() => {
 
     return _signals2D;
   }, [experiments2D]);
+
+  // useEffect(() => {
+  //   console.log(correlations);
+  // }, [correlations]);
 
   useEffect(() => {
     dispatch({

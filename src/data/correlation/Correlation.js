@@ -70,7 +70,9 @@ export default class Correlation {
   }
 
   hasAttachmentAtomType(atomType) {
-    return this.attachment[atomType] ? true : false;
+    return this.attachment[atomType] && this.attachment[atomType].length > 0
+      ? true
+      : false;
   }
 
   addAttachmentAtomType(atomType) {
