@@ -12,6 +12,7 @@ import autoPeakPicking from './autoPeakPicking';
 import autoRangesDetection from './autoRangesDetection';
 import detectSignal from './detectSignal';
 import { Filters } from './filter1d/Filters';
+import getReferenceShift from './getReferenceShift';
 
 export class Datum1D {
   static usedColors = [];
@@ -105,6 +106,10 @@ export class Datum1D {
 
   reapplyFilters() {
     FiltersManager.reapplyFilters(this);
+  }
+
+  alignX(options) {
+    console.log(getReferenceShift(this, options));
   }
 
   applyFilterSnapshot(id) {

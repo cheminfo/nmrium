@@ -150,6 +150,17 @@ const addMissingProjectionHander = (state, action) => {
     }
   });
 };
+const alignSpectraHandler = (state, action) => {
+  const { activeTab } = state;
+  return produce(state, (draft) => {
+    console.log(action);
+    AnalysisObj.alignSpectra(activeTab, action.payload);
+    draft.data = AnalysisObj.getSpectraData();
+    setDomain(draft);
+    setMode(draft);
+  });
+};
+
 export {
   handleSpectrumVisibility,
   handleChangePeaksMarkersVisibility,
@@ -158,4 +169,5 @@ export {
   changeSpectrumSetting,
   handleDeleteSpectra,
   addMissingProjectionHander,
+  alignSpectraHandler,
 };

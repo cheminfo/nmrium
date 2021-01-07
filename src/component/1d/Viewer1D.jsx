@@ -101,7 +101,7 @@ const Viewer1D = () => {
         const endXPPM = scaleState.scaleX().invert(endX);
         Events.emit('brushEnd', {
           ...brushData,
-          range: [startXPPM, endXPPM],
+          range: [startXPPM, endXPPM].sort(),
         });
       };
 
