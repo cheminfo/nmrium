@@ -1,16 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
+import { REFERENCES } from '../../data/constants/References';
 import { useDispatch } from '../context/DispatchContext';
-import { usePreferences } from '../context/PreferencesContext';
-import Button from '../elements/ButtonToolTip';
 import CloseButton from '../elements/CloseButton';
 import Select from '../elements/Select';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
-import Events from '../utility/Events';
 import { ALIGN_SPECTRA } from '../reducer/types/Types';
+import Events from '../utility/Events';
 
 const styles = css`
   overflow: auto;
@@ -132,13 +131,25 @@ const styles = css`
   }
 `;
 
-const LIST = [{ key: 1, value: 'manual', label: 'Manual' }];
+const baseList = [{ key: 1, value: 'manual', label: 'Manual' }];
 
-const AlignSpectraModal = ({ onClose }) => {
-  const preferences = usePreferences();
+const AlignSpectraModal = ({ onClose, nucleus }) => {
   const refForm = useRef();
   const dispatch = useDispatch();
+  const List = useMemo(() => {
+    const list = REFERENCES[nucleus]
+      ? Object.entries(REFERENCES[nucleus]).map(
+          (item) => ({
+            key: item[0],
+            value: item[0],
+            label: item[0],
+          }),
+          [],
+        )
+      : [];
 
+    return baseList.concat(list);
+  }, [nucleus]);
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
   }, []);
@@ -146,8 +157,9 @@ const AlignSpectraModal = ({ onClose }) => {
   const submitHandler = useCallback(
     (values) => {
       dispatch({ type: ALIGN_SPECTRA, payload: values });
+      onClose();
     },
-    [dispatch],
+    [dispatch, onClose],
   );
 
   useEffect(() => {
@@ -161,6 +173,17 @@ const AlignSpectraModal = ({ onClose }) => {
     };
   }, []);
 
+  const optionChangeHandler = useCallback(
+    (id) => {
+      const value = REFERENCES[nucleus][id];
+      refForm.current.setValues({
+        ...refForm.current.values,
+        ...value,
+      });
+    },
+    [nucleus],
+  );
+
   return (
     <div css={styles}>
       <div className="header handle">
@@ -170,19 +193,27 @@ const AlignSpectraModal = ({ onClose }) => {
       <div className="inner-content">
         <FormikForm
           ref={refForm}
-          initialValues={{ from: -1, to: 1, nbPeaks: 1 }}
+          initialValues={{ from: -1, to: 1, nbPeaks: 1, targetX: 0 }}
           onSubmit={submitHandler}
         >
           <Select
-            data={LIST}
+            data={List}
             style={{ width: 285, height: 30, marginBottom: '20px' }}
+            onChange={optionChangeHandler}
           />
           <div className="row margin-10">
             <FormikInput label="From : " name="from" type="number" />
             <FormikInput label="To :" name="to" type="number" />
           </div>
           <div className="margin-10">
-            <FormikInput label="Number of Peaks" name="nbPeaks" type="number" />
+            <FormikInput
+              label="Number of Peaks : "
+              name="nbPeaks"
+              type="number"
+            />
+          </div>
+          <div className="margin-10">
+            <FormikInput label="Target PPM :" name="targetX" type="number" />
           </div>
         </FormikForm>
       </div>

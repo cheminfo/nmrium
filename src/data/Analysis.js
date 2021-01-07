@@ -253,7 +253,7 @@ export class Analysis {
       : [];
   }
 
-  alignSpectra(nucleus, { from, to, nbPeaks, targetX = 0 }) {
+  alignSpectra(nucleus, { from, to, nbPeaks, targetX }) {
     const spectra = this.spectra.filter(
       (spectrum) =>
         spectrum instanceof Datum1D && spectrum.info.nucleus === nucleus,

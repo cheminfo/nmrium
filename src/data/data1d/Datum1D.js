@@ -109,7 +109,13 @@ export class Datum1D {
   }
 
   alignX(options) {
-    console.log(getReferenceShift(this, options));
+    const shift = getReferenceShift(this, options);
+    FiltersManager.applyFilter(this, [
+      {
+        name: Filters.shiftX.id,
+        options: shift,
+      },
+    ]);
   }
 
   applyFilterSnapshot(id) {

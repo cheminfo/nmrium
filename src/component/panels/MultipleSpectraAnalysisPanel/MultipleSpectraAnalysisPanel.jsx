@@ -64,14 +64,14 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
     Events.emit('showYSpectraTrackers', true);
   }, []);
   const openAlignSpectra = useCallback(() => {
-    modal.show(<AlignSpectraModal />, {
+    modal.show(<AlignSpectraModal nucleus={activeTab} />, {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,
       // enableResizing: false,
       width: 400,
       // height: 600,
     });
-  }, [modal]);
+  }, [activeTab, modal]);
 
   const copyToClipboardHandler = useCallback(() => {
     const data = AnalysisObj.getMultipleAnalysisTableAsString(activeTab);
