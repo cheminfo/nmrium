@@ -1,7 +1,7 @@
 import { SvgNmrSum } from 'cheminfo-font';
 import lodash from 'lodash';
 import { rangesToACS } from 'nmr-processing';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
@@ -12,11 +12,8 @@ import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import {
-  CHANGE_RANGE_SUM,
-  DELETE_RANGE,
-  SET_SHOW_MULTIPLICITY_TREES,
-} from '../../reducer/types/Types';
+import { CHANGE_RANGE_SUM, DELETE_RANGE } from '../../reducer/types/Types';
+import Events from '../../utility/Events';
 import { copyHTMLToClipboard } from '../../utility/Export';
 import { getNumberOfDecimals } from '../../utility/FormatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -56,12 +53,12 @@ const RangesHeader = ({
   onSettingClick,
   isFilterActive,
   filterCounter,
-  showMultiplicityTrees,
 }) => {
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
   const preferences = usePreferences();
+  const [isMultiplicityTreesVisible, showMultiplicityTrees] = useState(false);
 
   const currentSum = lodash.get(ranges, 'options.sum', null);
   const removeAssignments = useCallback(() => {
@@ -143,11 +140,10 @@ const RangesHeader = ({
     });
   }, [removeAssignments, modal]);
 
-  const handleSetShowMultiplicityTrees = useCallback(() => {
-    dispatch({
-      type: SET_SHOW_MULTIPLICITY_TREES,
-    });
-  }, [dispatch]);
+  const handleSetShowMultiplicityTrees = useCallback((flag) => {
+    Events.emit('showMultiplicityTrees', flag);
+    showMultiplicityTrees(flag);
+  }, []);
 
   return (
     <DefaultPanelHeader
@@ -193,14 +189,13 @@ const RangesHeader = ({
 
       <ToggleButton
         popupTitle={
-          showMultiplicityTrees
+          isMultiplicityTreesVisible
             ? 'Hide Multiplicity Trees in Spectrum'
             : 'Show Multiplicity Trees in Spectrum'
         }
         popupPlacement="right"
         onClick={handleSetShowMultiplicityTrees}
         disabled={!ranges || !ranges.values || ranges.values.length === 0}
-        // defaultValue={filshowMultiplicityTrees && showMultiplicityTrees === true}
       >
         <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
       </ToggleButton>

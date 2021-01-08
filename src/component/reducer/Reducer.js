@@ -77,7 +77,6 @@ export const initialState = {
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
-  showMultiplicityTrees: false,
   spectraAanalysis: {},
 };
 
@@ -305,8 +304,6 @@ export function spectrumReducer(state, action) {
       return RangesActions.handleResizeRange(state, action);
     case types.CHANGE_RANGE_SUM:
       return RangesActions.handleChangeRangeSum(state, action.value);
-    case types.SET_SHOW_MULTIPLICITY_TREES:
-      return RangesActions.handleSetShowMultiplicityTrees(state, action);
     case types.CHANGE_RANGE_RELATIVE:
       return RangesActions.handleChangeRangeRaltiveValue(state, action);
 

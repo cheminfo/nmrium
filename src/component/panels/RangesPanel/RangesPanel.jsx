@@ -81,7 +81,6 @@ const RangesTablePanel = memo(
     preferences,
     activeTab,
     molecules,
-    showMultiplicityTrees,
     nucleus,
   }) => {
     const [isFilterActive, setFilterIsActive] = useState(false);
@@ -215,7 +214,6 @@ const RangesTablePanel = memo(
               onSettingClick={settingsPanelHandler}
               isFilterActive={isFilterActive}
               filterCounter={rangesData.length}
-              showMultiplicityTrees={showMultiplicityTrees}
             />
           )}
           {isFlipped && (

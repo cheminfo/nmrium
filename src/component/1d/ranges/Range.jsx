@@ -15,8 +15,8 @@ import DeleteButton from '../../elements/DeleteButton';
 import { useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
-import MultiplicityTree from '../MultiplicityTree';
 import Resizable from '../Resizable';
+import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -55,7 +55,7 @@ const stylesHighlighted = css`
   }
 `;
 
-const Range = ({ rangeData }) => {
+const Range = ({ rangeData, showMultiplicityTrees }) => {
   const { id, from, to, integral, signal } = rangeData;
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -166,7 +166,7 @@ const Range = ({ rangeData }) => {
       {!isBlockedByEditing ? (
         <DeleteButton x={scaleX()(to) - 20} y={10} onDelete={deleteHandler} />
       ) : null}
-      {signal && signal.length > 0
+      {showMultiplicityTrees && signal && signal.length > 0
         ? signal.map((_signal, i) => (
             <MultiplicityTree
               rangeFrom={from}
