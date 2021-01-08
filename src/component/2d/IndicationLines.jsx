@@ -39,7 +39,8 @@ const IndicationLines = ({ axis, show }) => {
             (_datum) =>
               _datum.info.dimension === 1 &&
               _datum.display.isVisible === true &&
-              _datum.info.nucleus === nucleus,
+              _datum.info.nucleus === nucleus &&
+              _datum.info.experiment === '1d',
           )
           .map((_datum) => _datum.ranges.values)
           .flat();
