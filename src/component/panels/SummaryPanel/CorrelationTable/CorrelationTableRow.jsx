@@ -82,7 +82,7 @@ const CorrelationTableRow = ({
         return (
           <td key={`addColData_${correlation.getID()}_${_correlation.getID()}`}>
             {content.join('/')}
-            {/* {JSON.stringify(matchingLinks)} */}
+            {/* {JSON.stringify(commonLinks)} */}
           </td>
         );
       }),

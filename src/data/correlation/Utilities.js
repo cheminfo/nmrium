@@ -612,38 +612,6 @@ const sortCorrelations = (correlations) => {
   return correlationsSorted;
 };
 
-const buildCorrelationsData = (
-  signals1D,
-  signals2D,
-  signalsDEPT,
-  mf,
-  tolerance,
-  correlations = [],
-) => {
-  let _correlations = correlations.slice();
-  // remove deleted correlations
-  removeDeletedCorrelations(_correlations, signals1D, signals2D);
-  // add all 1D signals
-  addFromData1D(_correlations, signals1D, tolerance);
-  // add signals from 2D if 1D signals for an atom type and belonging shift are missing
-  // add correlations: 1D -> 2D
-  addFromData2D(_correlations, signals2D, tolerance);
-  // sort by atom type and shift value
-  _correlations = sortCorrelations(_correlations);
-  // link signals via matches to same 2D signal: e.g. 13C -> HSQC <- 1H
-  setMatches(_correlations);
-  // set the number of attached protons via DEPT or edited HSQC
-  setProtonsCountFromData(_correlations, signalsDEPT, signals2D, tolerance);
-  // set attachments via HSQC or HMQC
-  setAttachmentsAndProtonEquivalences(_correlations);
-  // update pseudo correlations
-  updatePseudoCorrelations(_correlations, mf);
-  // set labels
-  setLabels(_correlations);
-
-  return _correlations;
-};
-
 const buildCorrelationsState = (correlations) => {
   const state = {};
   const atoms = getAtomCounts(correlations);
@@ -751,6 +719,45 @@ const buildCorrelationsState = (correlations) => {
   return state;
 };
 
+const buildCorrelationsData = (
+  signals1D,
+  signals2D,
+  signalsDEPT,
+  mf,
+  tolerance,
+  correlations = [],
+) => {
+  let _correlations = correlations.slice();
+  // remove deleted correlations
+  removeDeletedCorrelations(_correlations, signals1D, signals2D);
+  // add all 1D signals
+  addFromData1D(_correlations, signals1D, tolerance);
+  // add signals from 2D if 1D signals for an atom type and belonging shift are missing
+  // add correlations: 1D -> 2D
+  addFromData2D(_correlations, signals2D, tolerance);
+  // sort by atom type and shift value
+  _correlations = sortCorrelations(_correlations);
+  // link signals via matches to same 2D signal: e.g. 13C -> HSQC <- 1H
+  setMatches(_correlations);
+  // set the number of attached protons via DEPT or edited HSQC
+  setProtonsCountFromData(_correlations, signalsDEPT, signals2D, tolerance);
+
+  updateCorrelationsData(_correlations, mf);
+
+  return _correlations;
+};
+
+const updateCorrelationsData = (correlations, mf) => {
+  // set attachments via HSQC or HMQC
+  setAttachmentsAndProtonEquivalences(correlations);
+  // update pseudo correlation
+  updatePseudoCorrelations(correlations, mf);
+  // set labels
+  setLabels(correlations);
+
+  return correlations;
+};
+
 export {
   buildCorrelationsData,
   buildCorrelationsState,
@@ -762,4 +769,5 @@ export {
   getLabels,
   getLetter,
   isEditedHSQC,
+  updateCorrelationsData,
 };
