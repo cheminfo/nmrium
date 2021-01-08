@@ -77,7 +77,6 @@ export const initialState = {
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
-  showMultiplicityTrees: false,
   spectraAanalysis: {},
 };
 
@@ -210,7 +209,8 @@ export function spectrumReducer(state, action) {
       return SpectrumsActions.handleChangeSpectrumColor(state, action.data);
     case types.CHANGE_SPECTRUM_SETTING:
       return SpectrumsActions.changeSpectrumSetting(state, action);
-
+    case types.ALIGN_SPECTRA:
+      return SpectrumsActions.alignSpectraHandler(state, action);
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return ToolsActions.handleToggleRealImaginaryVisibility(state);
     case types.SET_ZOOM_FACTOR:
@@ -302,8 +302,6 @@ export function spectrumReducer(state, action) {
       return RangesActions.handleResizeRange(state, action);
     case types.CHANGE_RANGE_SUM:
       return RangesActions.handleChangeRangeSum(state, action.value);
-    case types.SET_SHOW_MULTIPLICITY_TREES:
-      return RangesActions.handleSetShowMultiplicityTrees(state, action);
     case types.CHANGE_RANGE_RELATIVE:
       return RangesActions.handleChangeRangeRaltiveValue(state, action);
 

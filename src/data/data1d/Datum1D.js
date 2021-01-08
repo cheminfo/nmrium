@@ -5,14 +5,17 @@ import { xyIntegration, xyMinYPoint, xyMaxYPoint } from 'ml-spectra-processing';
 import { SignalKindsToInclude, DatumKind } from '../constants/SignalsKinds';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
+import get1dColor from '../utilities/getColor';
 
 import { FiltersManager } from './FiltersManager';
 import autoPeakPicking from './autoPeakPicking';
 import autoRangesDetection from './autoRangesDetection';
 import detectSignal from './detectSignal';
 import { Filters } from './filter1d/Filters';
+import getReferenceShift from './getReferenceShift';
 
 export class Datum1D {
+  static usedColors = [];
   /**
    *
    * @param {object} options {display: {name, color, isVisible, isPeaksMarksVisible, ...}, meta: {isFid, nucleus}, ... }
@@ -34,6 +37,7 @@ export class Datum1D {
             ? options.display.name
             : generateID(),
         color: 'black',
+        ...this.getColor(options),
         isVisible: true,
         isPeaksMarkersVisible: true,
         isRealSpectrumVisible: true,
@@ -87,12 +91,31 @@ export class Datum1D {
     this.preprocessing();
   }
 
+  getColor(options) {
+    if (options.display === undefined || options.display.color === undefined) {
+      const color = get1dColor(false, Datum1D.usedColors);
+      Datum1D.usedColors.push(color);
+      return { color };
+    }
+    return {};
+  }
+
   getID() {
     return this.id;
   }
 
   reapplyFilters() {
     FiltersManager.reapplyFilters(this);
+  }
+
+  alignX(options) {
+    const shift = getReferenceShift(this, options);
+    FiltersManager.applyFilter(this, [
+      {
+        name: Filters.shiftX.id,
+        options: shift,
+      },
+    ]);
   }
 
   applyFilterSnapshot(id) {
@@ -290,7 +313,7 @@ export class Datum1D {
   applyAutoPeakPicking(options) {
     const peaks = autoPeakPicking(this, options);
     this.peaks.values = peaks;
-    return this.peaks.values;
+    return lodash.cloneDeep(this.peaks);
   }
 
   detectRanges(options) {

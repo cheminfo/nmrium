@@ -197,7 +197,7 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
 
       {isSettingModalDisplayed ? (
         <SpectrumSetting
-          onMouseLeave={mouseLeaveHandler}
+          onClose={mouseLeaveHandler}
           data={selectedSpectrumData}
           position={settingModalPosition}
         />

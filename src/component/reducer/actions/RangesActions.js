@@ -76,12 +76,6 @@ const handleAddRange = (state, action) => {
   });
 };
 
-// eslint-disable-next-line no-unused-vars
-const handleSetShowMultiplicityTrees = (state, action) => {
-  return produce(state, (draft) => {
-    draft.showMultiplicityTrees = !draft.showMultiplicityTrees;
-  });
-};
 const handleChangeRangeRaltiveValue = (state, action) => {
   const { id: rangeID, value } = action;
   const { id, index } = state.activeSpectrum;
@@ -99,6 +93,5 @@ export {
   handleChangeRangeSum,
   handleAddRange,
   handleResizeRange,
-  handleSetShowMultiplicityTrees,
   handleChangeRangeRaltiveValue,
 };

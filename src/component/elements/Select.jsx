@@ -60,6 +60,7 @@ Select.defaultProps = {
   onChange: function () {
     return null;
   },
+  style: { width: 100 },
 };
 
 export default Select;

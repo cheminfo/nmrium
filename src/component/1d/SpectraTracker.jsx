@@ -35,7 +35,7 @@ const YTracker = ({ datum }) => {
   const position = useContext(MouseContext);
 
   if (!scaleX || !position) {
-    return <span style={styles.value}>{''.padStart(10, '0')}</span>;
+    return null;
   }
 
   const xIndex = xFindClosestIndex(datum.x, scaleX().invert(position.x));
@@ -48,8 +48,8 @@ const SpectraTracker = () => {
   const [isVisible, ToggleVisiblility] = useState(false);
 
   useEffect(() => {
-    Events.on('showYSpectraTrackers', () => {
-      ToggleVisiblility((prevState) => !prevState);
+    Events.on('showYSpectraTrackers', (flag) => {
+      ToggleVisiblility(flag);
     });
   }, []);
 

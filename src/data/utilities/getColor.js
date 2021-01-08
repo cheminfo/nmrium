@@ -19,7 +19,30 @@ export const COLORS = [
   '#593315',
   '#F13A13',
   '#232C16',
+  '',
 ];
+
+const color2D = {
+  cosy: { positiveColor: 'darkblue', negativeColor: 'lightblue' },
+  roesy: { positiveColor: 'pink', negativeColor: 'yellow' },
+  noesy: { positiveColor: 'pink', negativeColor: 'yellow' },
+  tocsy: { positiveColor: 'green', negativeColor: 'yellow' },
+  hsqc: { positiveColor: 'black', negativeColor: 'yellow' },
+  hmbc: { positiveColor: 'grey', negativeColor: 'yellow' },
+};
+
+const hasPredefine2DColor = (experiment) => {
+  return color2D[experiment] ? true : false;
+};
+
+const get2DColor = (experiment, colors = []) => {
+  if (!color2D[experiment]) {
+    const positiveColor = getColor(false, colors);
+    const negativeColor = adjustAlpha(positiveColor, 50);
+    return { positiveColor, negativeColor };
+  }
+  return color2D[experiment];
+};
 
 const percentToHex = (p) => {
   const percent = Math.max(0, Math.min(100, p));
@@ -56,5 +79,5 @@ const getColor = (isRandom = false, usedColors = [], opacity = 100) => {
     return rgb + percentToHex(opacity);
   }
 };
-export { percentToHex, adjustAlpha };
+export { percentToHex, adjustAlpha, hasPredefine2DColor, get2DColor };
 export default getColor;

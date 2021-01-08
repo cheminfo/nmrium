@@ -14,7 +14,6 @@ function ContextWrapper(WrappedComponent, subKeys) {
       yDomain,
       tabActiveSpectrum,
       molecules,
-      showMultiplicityTrees,
       displayerMode,
     } = useChartData();
 
@@ -58,7 +57,6 @@ function ContextWrapper(WrappedComponent, subKeys) {
         yDomain={yDomain}
         tabActiveSpectrum={tabActiveSpectrum}
         molecules={molecules}
-        showMultiplicityTrees={showMultiplicityTrees}
         displayerMode={displayerMode}
         ref={forwardedRef}
       />

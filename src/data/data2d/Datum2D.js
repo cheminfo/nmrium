@@ -4,11 +4,13 @@ import { zoneToX } from 'ml-spectra-processing';
 import { DatumKind } from '../constants/SignalsKinds';
 import { Datum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
+import { get2DColor } from '../utilities/getColor';
 
 import Processing2D, { defaultContourOpions } from './Processing2D';
 import autoZonesDetection from './autoZonesDetection';
 
 export class Datum2D {
+  static usedColors = [];
   /**
    *
    * @param {string} id
@@ -29,6 +31,7 @@ export class Datum2D {
         name: options.display.name || generateID(),
         positiveColor: 'red',
         negativeColor: 'blue',
+        ...this.getColor(options),
         isPositiveVisible: true,
         isNegativeVisible: true,
         contourOptions: defaultContourOpions,
@@ -70,6 +73,19 @@ export class Datum2D {
       this.data,
       this.display.contourOptions,
     );
+  }
+
+  getColor(options) {
+    if (
+      options.display === undefined ||
+      options.display.negativeColor === undefined ||
+      options.display.positiveColor === undefined
+    ) {
+      const color = get2DColor(options.info.experiment, Datum2D.usedColors);
+      Datum2D.usedColors.push(color.positiveColor);
+      return color;
+    }
+    return {};
   }
 
   getProcessingController() {

@@ -11,7 +11,6 @@ function RangesWrapper(WrappedComponent) {
       xDomain,
       activeTab,
       molecules,
-      showMultiplicityTrees,
       tabActiveSpectrum,
     } = useChartData();
     const preferences = usePreferences();
@@ -46,7 +45,6 @@ function RangesWrapper(WrappedComponent) {
         activeTab={activeTab}
         molecules={molecules}
         nucleus={nucleus}
-        showMultiplicityTrees={showMultiplicityTrees}
         ref={forwardedRef}
       />
     );

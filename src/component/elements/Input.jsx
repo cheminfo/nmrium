@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Fragment, forwardRef, useState, useEffect, useCallback } from 'react';
+import { forwardRef, useState, useEffect, useCallback } from 'react';
 
 const styles = {
   label: {
@@ -106,7 +106,9 @@ const Input = forwardRef(
     }, []);
 
     return (
-      <Fragment>
+      <div
+        style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      >
         {label && (
           <span style={{ ...styles.label, ...style.label }} className="label">
             {label}
@@ -125,7 +127,7 @@ const Input = forwardRef(
           onDoubleClick={(e) => e.stopPropagation()}
           className={`input ${className}`}
         />
-      </Fragment>
+      </div>
     );
   },
 );
