@@ -60,8 +60,8 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
     setFlipStatus(false);
   }, []);
 
-  const showTrackerHandler = useCallback(() => {
-    Events.emit('showYSpectraTrackers', true);
+  const showTrackerHandler = useCallback((flag) => {
+    Events.emit('showYSpectraTrackers', flag);
   }, []);
   const openAlignSpectra = useCallback(() => {
     modal.show(<AlignSpectraModal nucleus={activeTab} />, {
