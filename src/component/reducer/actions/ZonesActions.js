@@ -5,6 +5,8 @@ import { get2DYScale, get2DXScale } from '../../2d/utilities/scale';
 import Events from '../../utility/Events';
 import { AnalysisObj } from '../core/Analysis';
 
+import { setDomain } from './DomainActions';
+
 let noiseFactor = 1;
 
 Events.on('noiseFactorChanged', (val) => {
@@ -71,10 +73,26 @@ const handleChangeZone = (state, action) => {
     }
   });
 };
+const changeZoneSignal = (state, action) => {
+  const { zoneID, signal } = action.payload;
+  return produce(state, (draft) => {
+    if (state.activeSpectrum) {
+      const { id, index } = state.activeSpectrum;
+      const datumObject = AnalysisObj.getDatum(id);
+      if (datumObject instanceof Datum2D) {
+        const zones = datumObject.changeZoneSignal(zoneID, signal);
+        draft.data[index].zones = zones;
+        draft.data = AnalysisObj.getSpectraData();
+        setDomain(draft);
+      }
+    }
+  });
+};
 
 export {
   add2dZoneHandler,
   delete2dZoneHandler,
   handleAutoZonesDetection,
   handleChangeZone,
+  changeZoneSignal,
 };

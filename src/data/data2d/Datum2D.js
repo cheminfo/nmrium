@@ -103,6 +103,50 @@ export class Datum2D {
       this.processingController.setOptions(displayOptions.contourOptions);
     }
   }
+  /**
+   *
+   * @param {number} zoneID
+   * @param {object} signal
+   * @param {number} signal.x
+   * @param {number} signal.y
+   * @param {string} signal.id
+   */
+  changeZoneSignal(zoneID, newSignal) {
+    this.zones = lodash.cloneDeep(this.zones);
+    const zoneIndex = this.zones.values.findIndex((zone) => zone.id === zoneID);
+    if (zoneIndex !== -1) {
+      const signalIndex = this.zones.values[zoneIndex].signal.findIndex(
+        (s) => s.id === newSignal.id,
+      );
+      if (signalIndex !== -1) {
+        const originalSignal = this.zones.values[zoneIndex].signal[signalIndex];
+        const shiftX = newSignal.x ? newSignal.x - originalSignal.x.delta : 0;
+        const shiftY = newSignal.y ? newSignal.y - originalSignal.y.delta : 0;
+        this.shiftXY(shiftX, shiftY);
+
+        if (newSignal.x) {
+          this.zones.values[zoneIndex].signal[signalIndex].x.delta =
+            newSignal.x;
+        }
+        if (newSignal.y) {
+          this.zones.values[zoneIndex].signal[signalIndex].y.delta =
+            newSignal.y;
+        }
+      }
+    }
+    return this.zones;
+  }
+
+  shiftXY(x, y) {
+    this.data.minX += x;
+    this.data.maxX += x;
+    this.data.minY += y;
+    this.data.maxY += y;
+  }
+
+  getData() {
+    return this.data;
+  }
 
   getZones() {
     return lodash.cloneDeep(this.zones);

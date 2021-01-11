@@ -335,6 +335,9 @@ export function spectrumReducer(state, action) {
       return DomainActions.handelResetDomain(state);
     case types.CHANGE_ZONE_DATA:
       return ZonesActions.handleChangeZone(state, action);
+    case types.CHANGE_ZONE_SIGNAL:
+      return ZonesActions.changeZoneSignal(state, action);
+
     case types.ANALYZE_SPECTRA:
       return SpectraAanalysisActions.analyzeSpectra(state, action);
     case types.DELETE_ANALYZE_SPECTRA_RANGE:
