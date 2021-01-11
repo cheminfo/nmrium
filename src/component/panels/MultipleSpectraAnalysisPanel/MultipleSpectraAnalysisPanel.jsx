@@ -68,7 +68,7 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,
       // enableResizing: false,
-      width: 400,
+      width: 500,
       // height: 600,
     });
   }, [activeTab, modal]);

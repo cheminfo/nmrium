@@ -99,10 +99,11 @@ const styles = css`
     padding: 6px 2px;
   }
 
-  .label {
+  .custom-label {
     font-size: 12px;
     font-weight: bold;
     margin-right: 10px;
+    width: 120px;
   }
   .margin-10 {
     margin: 10px 0;
@@ -196,24 +197,27 @@ const AlignSpectraModal = ({ onClose, nucleus }) => {
           initialValues={{ from: -1, to: 1, nbPeaks: 1, targetX: 0 }}
           onSubmit={submitHandler}
         >
-          <Select
-            data={List}
-            style={{ width: 285, height: 30, marginBottom: '20px' }}
-            onChange={optionChangeHandler}
-          />
           <div className="row margin-10">
+            <span className="custom-label">Options :</span>
+
+            <Select
+              data={List}
+              style={{ width: 270, height: 30, marginBottom: '20px' }}
+              onChange={optionChangeHandler}
+            />
+          </div>
+          <div className="row margin-10">
+            <span className="custom-label">Range :</span>
             <FormikInput label="From : " name="from" type="number" />
             <FormikInput label="To :" name="to" type="number" />
           </div>
-          <div className="margin-10">
-            <FormikInput
-              label="Number of Peaks : "
-              name="nbPeaks"
-              type="number"
-            />
+          <div className="row margin-10">
+            <span className="custom-label">Number of Peaks : </span>
+            <FormikInput name="nbPeaks" type="number" />
           </div>
-          <div className="margin-10">
-            <FormikInput label="Target PPM :" name="targetX" type="number" />
+          <div className="row margin-10">
+            <span className="custom-label">Target PPM :</span>
+            <FormikInput laname="targetX" type="number" />
           </div>
         </FormikForm>
       </div>
