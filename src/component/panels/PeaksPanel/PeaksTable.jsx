@@ -1,10 +1,14 @@
-import { useCallback, useMemo, memo, useEffect } from 'react';
+import { useCallback, useMemo, memo, useEffect, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
+import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import PeaksWrapper from '../../hoc/PeaksWrapper';
-import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
+import {
+  DELETE_PEAK_NOTATION,
+  SHIFT_SPECTRUM,
+} from '../../reducer/types/Types';
 import formatNumber, {
   useFormatNumberByNucleus,
 } from '../../utility/FormatNumber';
@@ -24,6 +28,7 @@ const PeaksTable = memo(
     preferences,
   }) => {
     const dispatch = useDispatch();
+    const deltaPPMRefs = useRef([]);
     const format = useFormatNumberByNucleus(info.nucleus);
     const deletePeakHandler = useCallback(
       (e, row) => {
@@ -99,6 +104,23 @@ const PeaksTable = memo(
       [deletePeakHandler],
     );
 
+    const editStartHander = useCallback((index) => {
+      deltaPPMRefs.current.forEach((ref, i) => {
+        if (index !== i && ref) {
+          ref.closeEdit();
+        }
+      });
+    }, []);
+
+    const saveDeltaPPMRefsHandler = useCallback(
+      (event, row) => {
+        const shiftValue =
+          parseFloat(event.target.value) - parseFloat(row.value);
+        dispatch({ type: SHIFT_SPECTRUM, shiftValue });
+      },
+      [dispatch],
+    );
+
     const tableColumns = useMemo(() => {
       const setCustomColumn = (array, index, columnLabel, cellHandler) => {
         array.push({
@@ -127,9 +149,18 @@ const PeaksTable = memo(
           );
         }
         if (peaksPreferences.showDeltaPPM) {
-          setCustomColumn(cols, 3, 'δ (ppm)', (row) =>
-            formatNumber(row.original.value, peaksPreferences.deltaPPMFormat),
-          );
+          setCustomColumn(cols, 3, 'δ (ppm)', (row) => (
+            <EditableColumn
+              onEditStart={() => editStartHander(row.index)}
+              ref={(ref) => (deltaPPMRefs.current[row.index] = ref)}
+              value={formatNumber(
+                row.original.value,
+                peaksPreferences.deltaPPMFormat,
+              )}
+              onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
+              type="number"
+            />
+          ));
         }
         if (peaksPreferences.showDeltaHz) {
           setCustomColumn(cols, 4, 'δ (Hz)', (row) =>
@@ -153,7 +184,14 @@ const PeaksTable = memo(
       } else {
         return defaultColumns;
       }
-    }, [activeTab, defaultColumns, initialColumns, preferences]);
+    }, [
+      activeTab,
+      defaultColumns,
+      editStartHander,
+      initialColumns,
+      preferences,
+      saveDeltaPPMRefsHandler,
+    ]);
 
     const _data = useMemo(() => {
       function isInRange(value) {
