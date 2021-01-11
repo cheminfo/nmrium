@@ -31,6 +31,10 @@
         "title": "Full cytisine"
       },
       {
+        "file": "./data/cytisine/2d/HMBC_HN_Cytisin.json",
+        "title": "1H, 15N HMQC cytisine"
+      },
+      {
         "file": "./data/50-78-2/linked-jcamp.json",
         "title": "Linked jcamp"
       },
