@@ -225,6 +225,18 @@ export class Datum1D {
     }
     return this.ranges.values;
   }
+  changeRangeSignal(rangeID, signalID, newSignalValue) {
+    const rangeIndex = this.ranges.values.findIndex(
+      (range) => range.id === rangeID,
+    );
+    if (rangeIndex !== -1) {
+      const signalIndex = this.ranges.values[rangeIndex].signal.findIndex(
+        (signal) => signal.id === signalID,
+      );
+      this.ranges.values[rangeIndex].signal[signalIndex].delta = newSignalValue;
+    }
+    return lodash.cloneDeep(this.ranges.values);
+  }
 
   changeIntegralsRealtive(integralID, newIntegralValue) {
     const integral = this.integrals.values.find(
