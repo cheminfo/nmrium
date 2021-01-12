@@ -1,9 +1,7 @@
 import lodash from 'lodash';
-import { xGetFromToIndex } from 'ml-spectra-processing';
-import { rangesToACS } from 'nmr-processing';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
-import { FaFileExport, FaUnlink } from 'react-icons/fa';
+import { FaUnlink } from 'react-icons/fa';
 
 import {
   unlink,
@@ -12,12 +10,9 @@ import {
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import ToolTip from '../../elements/ToolTip/ToolTip';
-import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import ContextWrapper from '../../hoc/ContextWrapper';
-import CopyClipboardModal from '../../modal/CopyClipboardModal';
+import ZonesWrapper from '../../hoc/ZonesWrapper';
 import { DELETE_2D_ZONE, CHANGE_ZONE_DATA } from '../../reducer/types/Types';
-import { copyTextToClipboard } from '../../utility/Export';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -49,26 +44,15 @@ const styles = {
 };
 
 const ZonesPanel = memo(
-  ({ spectrum, activeTab, preferences, xDomain, yDomain }) => {
+  ({ zones, activeTab, preferences, xDomain, yDomain }) => {
     const [filterIsActive, setFilterIsActive] = useState(false);
-    const [zonesCounter, setZonesCounter] = useState(0);
 
     const assignmentData = useAssignmentData();
 
     const dispatch = useDispatch();
     const modal = useModal();
-    const alert = useAlert();
     const [isFlipped, setFlipStatus] = useState(false);
     const settingRef = useRef();
-
-    const data = useMemo(() => {
-      if (spectrum && spectrum.zones && spectrum.zones.values) {
-        setZonesCounter(spectrum.zones.values.length);
-        return spectrum.zones.values;
-      }
-      setZonesCounter(0);
-      return [];
-    }, [spectrum]);
 
     const tableData = useMemo(() => {
       const isInView = (xFrom, xTo, yFrom, yTo) => {
@@ -90,24 +74,26 @@ const ZonesPanel = memo(
           return isInView(zone.x.from, zone.x.to, zone.y.from, zone.y.to);
         });
       };
+      if (zones.values) {
+        const _zones = filterIsActive
+          ? getFilteredZones(zones.values)
+          : zones.values;
 
-      const zones = filterIsActive ? getFilteredZones(data) : data;
-
-      return zones.map((zone) => {
-        return {
-          ...zone,
-          tableMetaInfo: {
-            isConstantlyHighlighted: isInView(
-              zone.x.from,
-              zone.x.to,
-              zone.y.from,
-              zone.y.to,
-            ),
-          },
-        };
-      });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, data.length, filterIsActive, xDomain, yDomain]);
+        return _zones.map((zone) => {
+          return {
+            ...zone,
+            tableMetaInfo: {
+              isConstantlyHighlighted: isInView(
+                zone.x.from,
+                zone.x.to,
+                zone.y.from,
+                zone.y.to,
+              ),
+            },
+          };
+        });
+      }
+    }, [zones, filterIsActive, xDomain, yDomain]);
 
     const handleOnFilter = useCallback(() => {
       setFilterIsActive(!filterIsActive);
@@ -131,8 +117,8 @@ const ZonesPanel = memo(
     );
 
     const removeAssignments = useCallback(() => {
-      data.forEach((zone) => unlinkZoneHandler(zone));
-    }, [data, unlinkZoneHandler]);
+      zones.values.forEach((zone) => unlinkZoneHandler(zone));
+    }, [zones.values, unlinkZoneHandler]);
 
     const handleOnRemoveAssignments = useCallback(() => {
       modal.showConfirmDialog(
@@ -152,64 +138,6 @@ const ZonesPanel = memo(
       });
     }, [dispatch, modal, removeAssignments]);
 
-    const saveToClipboardHandler = useCallback(
-      (value) => {
-        const success = copyTextToClipboard(value);
-        if (success) {
-          alert.success('Data copied to clipboard');
-        } else {
-          alert.error('copy to clipboard failed');
-        }
-      },
-      [alert],
-    );
-
-    const saveJSONToClipboardHandler = useCallback(
-      (value) => {
-        if (spectrum) {
-          const { from, to } = value;
-          const { x, y } = spectrum;
-          const { fromIndex, toIndex } = xGetFromToIndex(x, {
-            from,
-            to,
-          });
-
-          const dataToClipboard = {
-            x: x.slice(fromIndex, toIndex),
-            y: y.slice(fromIndex, toIndex),
-            ...value,
-          };
-
-          const success = copyTextToClipboard(
-            JSON.stringify(dataToClipboard, undefined, 2),
-          );
-
-          if (success) {
-            alert.show('Data copied to clipboard');
-          } else {
-            alert.error('copy to clipboard failed');
-          }
-        }
-      },
-      [spectrum, alert],
-    );
-
-    const closeClipBoardHandler = useCallback(() => {
-      modal.close();
-    }, [modal]);
-
-    const saveAsHTMLHandler = useCallback(() => {
-      const result = rangesToACS(data);
-      modal.show(
-        <CopyClipboardModal
-          text={result}
-          onCopyClick={saveToClipboardHandler}
-          onClose={closeClipBoardHandler}
-        />,
-        {},
-      );
-    }, [closeClipBoardHandler, data, modal, saveToClipboardHandler]);
-
     const zonesPreferences = useMemo(() => {
       const _preferences = lodash.get(
         preferences,
@@ -218,13 +146,6 @@ const ZonesPanel = memo(
 
       return _preferences;
     }, [activeTab, preferences]);
-
-    const contextMenu = [
-      {
-        label: 'Copy to clipboard',
-        onClick: saveJSONToClipboardHandler,
-      },
-    ];
 
     const settingsPanelHandler = useCallback(() => {
       setFlipStatus(!isFlipped);
@@ -240,7 +161,7 @@ const ZonesPanel = memo(
         <div style={styles.container}>
           {!isFlipped && (
             <DefaultPanelHeader
-              counter={zonesCounter}
+              counter={zones.values ? zones.values.length : 0}
               onDelete={handleDeleteAll}
               deleteToolTip="Delete All Zones"
               onFilter={handleOnFilter}
@@ -252,24 +173,12 @@ const ZonesPanel = memo(
               showSettingButton="true"
               onSettingClick={settingsPanelHandler}
             >
-              <ToolTip
-                title="Preview publication string"
-                popupPlacement="right"
-              >
-                <button
-                  style={styles.button}
-                  type="button"
-                  onClick={saveAsHTMLHandler}
-                >
-                  <FaFileExport />
-                </button>
-              </ToolTip>
               <ToolTip title={`Remove all Assignments`} popupPlacement="right">
                 <button
                   style={styles.removeAssignmentsButton}
                   type="button"
                   onClick={handleOnRemoveAssignments}
-                  disabled={!data || data.length === 0}
+                  disabled={!zones.values || zones.values.length === 0}
                 >
                   <FaUnlink />
                 </button>
@@ -293,7 +202,6 @@ const ZonesPanel = memo(
                   <ZonesTable
                     tableData={tableData}
                     onUnlink={unlinkZoneHandler}
-                    context={contextMenu}
                     preferences={zonesPreferences}
                     nuclei={
                       activeTab && activeTab.split(',').length === 2
@@ -314,8 +222,4 @@ const ZonesPanel = memo(
   },
 );
 
-export default ContextWrapper(
-  ZonesPanel,
-  ['spectrum', 'activeTab', 'preferences', 'xDomain', 'yDomain'],
-  { spectrum: ['zones', 'x', 'y'] },
-);
+export default ZonesWrapper(ZonesPanel);

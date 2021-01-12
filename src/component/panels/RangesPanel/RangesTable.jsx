@@ -60,10 +60,8 @@ const RangesTable = ({
   const element = activeTab && activeTab.replace(/[0-9]/g, '');
   const contextRef = useRef();
   const data = useMapRanges(tableData);
-  const [relativeFlags, toggleResltiveColumn] = useToggleStatus(
-    'id',
-    tableData,
-  );
+  const [relativeFlags, toggleResltiveColumn] = useToggleStatus('id', data);
+  const [signalFlags, toggleSignalColumn] = useToggleStatus('id', data);
   const { rootRef } = useGlobal();
 
   const isVisible = (key) => {
@@ -78,16 +76,23 @@ const RangesTable = ({
     [contextRef],
   );
 
-  const editStartHander = useCallback(
-    (id) => {
-      toggleResltiveColumn(id);
+  // console.log(relativeFlags);
+
+  const columnEditStartHander = useCallback(
+    (columnKey, id) => {
+      if (columnKey === 'relative') {
+        toggleResltiveColumn(id);
+      } else if (columnKey === 'signal') {
+        toggleSignalColumn(id);
+      }
     },
-    [toggleResltiveColumn],
+    [toggleResltiveColumn, toggleSignalColumn],
   );
 
   useEffect(() => {
     const handleEditStart = () => {
-      editStartHander(null);
+      columnEditStartHander('realtive', null);
+      columnEditStartHander('signal', null);
     };
     if (rootRef) {
       rootRef.addEventListener('mousedown', handleEditStart);
@@ -97,7 +102,7 @@ const RangesTable = ({
         rootRef.removeEventListener('mousedown', handleEditStart);
       }
     };
-  }, [editStartHander, rootRef]);
+  }, [columnEditStartHander, rootRef]);
 
   return (
     <Fragment>
@@ -135,8 +140,8 @@ const RangesTable = ({
                   onEdit={onEdit}
                   onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                   preferences={preferences}
-                  onRelativeColumnEditStart={editStartHander}
-                  relativeFlags={relativeFlags}
+                  onColumnEditStart={columnEditStartHander}
+                  editFlags={{ relativeFlags, signalFlags }}
                 />
               );
             })}

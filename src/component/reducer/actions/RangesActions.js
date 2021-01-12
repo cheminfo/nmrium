@@ -86,6 +86,16 @@ const handleChangeRangeRaltiveValue = (state, action) => {
   });
 };
 
+const handleChangeRangeSignalValue = (state, action) => {
+  const { rangeID, signalID, value } = action.payload;
+  const { id, index } = state.activeSpectrum;
+  const datumObject = AnalysisObj.getDatum(id);
+  const ranges = datumObject.changeRangeSignal(rangeID, signalID, value);
+  return produce(state, (draft) => {
+    draft.data[index].ranges.values = ranges;
+  });
+};
+
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
@@ -94,4 +104,5 @@ export {
   handleAddRange,
   handleResizeRange,
   handleChangeRangeRaltiveValue,
+  handleChangeRangeSignalValue,
 };

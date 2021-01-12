@@ -73,7 +73,15 @@ const PeaksNotations = () => {
           );
         })
     );
-  }, [data, verticalAlign, activeSpectrum, scaleX, scaleY]);
+  }, [
+    data,
+    verticalAlign.flag,
+    verticalAlign.stacked,
+    verticalAlign.value,
+    activeSpectrum,
+    scaleX,
+    scaleY,
+  ]);
 
   return (
     <g className="peaks" clipPath="url(#clip)">

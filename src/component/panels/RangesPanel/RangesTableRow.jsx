@@ -29,9 +29,9 @@ const RangesTableRow = ({
   rowData,
   onUnlink,
   onContextMenu,
-  onRelativeColumnEditStart,
+  onColumnEditStart,
   preferences,
-  relativeFlags,
+  editFlags: { relativeFlags, signalFlags },
 }) => {
   const assignmentRange = useAssignment(rowData.id);
   const highlightRange = useHighlight(
@@ -156,6 +156,8 @@ const RangesTableRow = ({
         rowData={rowData}
         onHoverSignal={onHoverSignal}
         preferences={preferences}
+        onEditStart={(signalId) => onColumnEditStart('signal', `${signalId}`)}
+        editStatus={signalFlags[rowData.tableMetaInfo.signal.id]}
       />
 
       {isColumnVisible(preferences, 'showRelative') && (
@@ -164,7 +166,7 @@ const RangesTableRow = ({
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
           format={getFormat('relativeFormat')}
-          onEditStart={() => onRelativeColumnEditStart(rowData.id)}
+          onEditStart={() => onColumnEditStart('relative', rowData.id)}
           editStatus={relativeFlags[rowData.id]}
         />
       )}

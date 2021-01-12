@@ -9,7 +9,6 @@ import {
   Fragment,
   useMemo,
 } from 'react';
-import { FaMinus } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useHighlight } from '../highlight';
@@ -39,20 +38,6 @@ const styles = css`
     -moz-appearance: textfield;
   }
 
-  .delete-bt {
-    background-color: red;
-    color: white;
-    border: 0px;
-    border-radius: 15px;
-    padding: 0px;
-    width: 15px;
-    height: 15px;
-    border: 15px;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
   .notification-input {
     width: calc(100% - 10px) !important;
     user-select: 'none';
@@ -121,7 +106,6 @@ export const PeakNotation = ({
   const [isSelected, setIsSelected] = useState(false);
   const [_value, setValue] = useState(value);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const [isOver, setIsOver] = useState({ id: null, flag: false });
   const format = useFormatNumberByNucleus(nucleus);
   const highlight = useHighlight([id]);
 
@@ -129,14 +113,6 @@ export const PeakNotation = ({
 
   const handleOnPeakChange = useCallback(
     (e) => dispatch({ type: SHIFT_SPECTRUM, shiftValue: e.shiftValue }),
-    [dispatch],
-  );
-  const handleDeleteNotation = useCallback(
-    (e, data) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dispatch({ type: DELETE_PEAK_NOTATION, data });
-    },
     [dispatch],
   );
 
@@ -185,15 +161,21 @@ export const PeakNotation = ({
     return false;
   }, []);
 
-  const handleOnEnterNotation = useCallback((notationId) => {
-    setIsOver({ id: notationId, flag: true });
-  }, []);
+  const handleOnEnterNotation = useCallback(
+    (event) => {
+      highlight.show();
+      event.currentTarget.focus();
+    },
+    [highlight],
+  );
 
-  const handleOnMouseLeaveNotation = useCallback(() => {
-    setTimeout(() => {
-      setIsOver({ id: null, flag: false });
-    }, 200);
-  }, []);
+  const handleOnMouseLeaveNotation = useCallback(
+    (event) => {
+      highlight.hide();
+      event.currentTarget.blur();
+    },
+    [highlight],
+  );
 
   const newValue = useMemo(() => (isSelected ? value : format(value)), [
     format,
@@ -206,20 +188,32 @@ export const PeakNotation = ({
     isSelected,
   ]);
 
+  const keyDownHandler = useCallback(
+    (e) => {
+      if (
+        ['Escape', 'Esc', 'Backspace'].includes(e.key) &&
+        e.target.nodeName === 'g'
+      ) {
+        dispatch({
+          type: DELETE_PEAK_NOTATION,
+          data: { xIndex: xIndex, id: spectrumID },
+        });
+      }
+    },
+    [dispatch, spectrumID, xIndex],
+  );
+
   return (
     <Fragment>
       <Global styles={styles} />
       <g
+        tabIndex="0"
         id={xIndex}
+        style={{ outline: 'none' }}
         transform={`translate(${x}, ${y})`}
-        onMouseEnter={() => {
-          handleOnEnterNotation(xIndex);
-          highlight.show();
-        }}
-        onMouseLeave={() => {
-          handleOnMouseLeaveNotation();
-          highlight.hide();
-        }}
+        onMouseEnter={handleOnEnterNotation}
+        onMouseLeave={handleOnMouseLeaveNotation}
+        onKeyDown={keyDownHandler}
       >
         <line
           x1="0"
@@ -277,21 +271,6 @@ export const PeakNotation = ({
               type="number"
               disabled={!isActive}
             />
-            {isOver.id && isOver.flag === true && !isSelected && (
-              <button
-                type="button"
-                onClick={(e) =>
-                  handleDeleteNotation(e, { xIndex: xIndex, id: spectrumID })
-                }
-                className="delete-bt"
-                style={{
-                  left: containerSize.width,
-                  top: '15px',
-                }}
-              >
-                <FaMinus />
-              </button>
-            )}
           </div>
         </foreignObject>
       </g>
