@@ -24,7 +24,7 @@ const sidebarOpenCss = css`
 `;
 
 const sidebarClosedCss = css`
-  width: 2%;
+  width: 3%;
 `;
 
 const menuBtCss = css`
