@@ -11,7 +11,6 @@ import { useAssignment, useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScale } from '../../context/ScaleContext';
-import DeleteButton from '../../elements/DeleteButton';
 import { useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
@@ -82,10 +81,6 @@ const Range = ({ rangeData, showMultiplicityTrees }) => {
     setReduceOpacity(!checkRangeKind(rangeData));
   }, [rangeData]);
 
-  const deleteHandler = useCallback(() => {
-    deleteRange(assignmentData, dispatch, rangeData);
-  }, [assignmentData, dispatch, rangeData]);
-
   const handleOnStopResizing = useCallback(
     (resized) => {
       dispatch({
@@ -96,8 +91,48 @@ const Range = ({ rangeData, showMultiplicityTrees }) => {
     [dispatch, rangeData],
   );
 
+  const mouseEnterHandler = useCallback(
+    (event) => {
+      event.currentTarget.focus();
+      assignmentRange.onMouseEnter('x');
+      highlightRange.show();
+    },
+    [assignmentRange, highlightRange],
+  );
+  const mouseLeaveHandler = useCallback(
+    (event) => {
+      event.currentTarget.blur();
+      assignmentRange.onMouseLeave('x');
+      highlightRange.hide();
+    },
+    [assignmentRange, highlightRange],
+  );
+
+  const keyDownHandler = useCallback(
+    (e) => {
+      if (
+        ['Escape', 'Esc', 'Backspace'].includes(e.key) &&
+        e.target.nodeName === 'g' &&
+        !isBlockedByEditing
+      ) {
+        deleteRange(assignmentData, dispatch, rangeData);
+      }
+    },
+    [assignmentData, dispatch, isBlockedByEditing, rangeData],
+  );
+  const assignHandler = useCallback(
+    (e) => {
+      if (e.shiftKey && !isBlockedByEditing) {
+        assignmentRange.onClick(e, 'x');
+      }
+    },
+    [assignmentRange, isBlockedByEditing],
+  );
+
   return (
     <g
+      tabIndex="0"
+      style={{ outline: 'none' }}
       css={
         isBlockedByEditing ||
         highlightRange.isActive ||
@@ -106,25 +141,10 @@ const Range = ({ rangeData, showMultiplicityTrees }) => {
           : stylesOnHover
       }
       key={id}
-      {...{
-        onMouseEnter: () => {
-          assignmentRange.onMouseEnter('x');
-          highlightRange.show();
-        },
-        onMouseLeave: () => {
-          assignmentRange.onMouseLeave('x');
-          highlightRange.hide();
-        },
-      }}
-      {...{
-        onClick: !isBlockedByEditing
-          ? (e) => {
-              if (e.shiftKey) {
-                assignmentRange.onClick(e, 'x');
-              }
-            }
-          : null,
-      }}
+      onMouseEnter={mouseEnterHandler}
+      onMouseLeave={mouseLeaveHandler}
+      onKeyDown={keyDownHandler}
+      onClick={assignHandler}
     >
       <g transform={`translate(${scaleX()(to)},10)`}>
         <rect
@@ -163,9 +183,6 @@ const Range = ({ rangeData, showMultiplicityTrees }) => {
         to={rangeData.to}
         onDrop={handleOnStopResizing}
       />
-      {!isBlockedByEditing ? (
-        <DeleteButton x={scaleX()(to) - 20} y={10} onDelete={deleteHandler} />
-      ) : null}
       {showMultiplicityTrees && signal && signal.length > 0
         ? signal.map((_signal, i) => (
             <MultiplicityTree
