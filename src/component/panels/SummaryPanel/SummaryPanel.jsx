@@ -472,19 +472,22 @@ const SummaryPanel = memo(() => {
   );
 
   const editAdditionalColumnFieldSaveHandler = useCallback(
-    (correlation, fieldCorrelation) => {
+    (rowCorrelation, columnCorrelation) => {
       dispatch({
         type: SET_CORRELATIONS,
-        ids: [correlation.getID(), fieldCorrelation.getID()],
+        ids: [rowCorrelation.getID(), columnCorrelation.getID()],
         correlations: [
           new Correlation({
-            ...correlation,
-            edited: { ...correlation.getEdited(), additionalColumnField: true },
+            ...rowCorrelation,
+            edited: {
+              ...rowCorrelation.getEdited(),
+              additionalColumnField: true,
+            },
           }),
           new Correlation({
-            ...fieldCorrelation,
+            ...columnCorrelation,
             edited: {
-              ...fieldCorrelation.getEdited(),
+              ...columnCorrelation.getEdited(),
               additionalColumnField: true,
             },
           }),

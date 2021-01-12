@@ -101,7 +101,8 @@ const addFromData1D = (correlations, signals1D, tolerance) => {
         const pseudoIndex = correlations.findIndex(
           (correlation) =>
             correlation.getAtomType() === atomType &&
-            correlation.getPseudo() === true,
+            correlation.getPseudo() === true &&
+            correlation.getLinks().length === 0,
         );
         if (pseudoIndex >= 0) {
           correlations[pseudoIndex] = new Correlation({
@@ -163,7 +164,8 @@ const addFromData2D = (correlations, signals2D, tolerance) => {
           const pseudoIndex = correlations.findIndex(
             (correlation) =>
               correlation.getAtomType() === atomType &&
-              correlation.getPseudo() === true,
+              correlation.getPseudo() === true &&
+              correlation.getLinks().length === 0,
           );
           if (pseudoIndex >= 0) {
             correlations[pseudoIndex] = newCorrelation;
@@ -194,42 +196,39 @@ const addFromData2D = (correlations, signals2D, tolerance) => {
 };
 
 const setMatches = (correlations) => {
-  correlations
-    .filter((correlation) => correlation.getPseudo() === false)
-    .forEach((correlation) => {
-      correlation.getLinks().forEach((link) => {
-        // remove previous added matches
-        link.removeMatches();
-        // add matches
-        const otherAtomType =
-          link.axis === 'x' ? link.atomType[1] : link.atomType[0];
-        getCorrelationsByAtomType(correlations, otherAtomType)
-          .filter((correlation) => correlation.getPseudo() === false)
-          .forEach((correlationOtherAtomType) => {
-            const correlationIndexOtherAtomType = correlations.findIndex(
-              (_correlation) =>
-                _correlation.getID() === correlationOtherAtomType.getID(),
-            );
-            correlationOtherAtomType.getLinks().forEach((linkOtherAtomType) => {
-              // check for correlation match and avoid possible duplicates
-              if (
-                linkOtherAtomType.getExperimentType() ===
-                  link.getExperimentType() &&
-                linkOtherAtomType.getExperimentID() ===
-                  link.getExperimentID() &&
-                lodash.isEqual(
-                  linkOtherAtomType.getAtomType(),
-                  link.getAtomType(),
-                ) &&
-                linkOtherAtomType.getSignalID() === link.getSignalID() &&
-                linkOtherAtomType.getAxis() !== link.getAxis()
-              ) {
-                link.addMatch(correlationIndexOtherAtomType);
-              }
-            });
+  correlations.forEach((correlation) => {
+    correlation.getLinks().forEach((link) => {
+      // remove previous added matches
+      link.removeMatches();
+      // add matches
+      const otherAtomType =
+        link.axis === 'x' ? link.atomType[1] : link.atomType[0];
+      getCorrelationsByAtomType(correlations, otherAtomType).forEach(
+        (correlationOtherAtomType) => {
+          const correlationIndexOtherAtomType = correlations.findIndex(
+            (_correlation) =>
+              _correlation.getID() === correlationOtherAtomType.getID(),
+          );
+          correlationOtherAtomType.getLinks().forEach((linkOtherAtomType) => {
+            // check for correlation match and avoid possible duplicates
+            if (
+              linkOtherAtomType.getExperimentType() ===
+                link.getExperimentType() &&
+              linkOtherAtomType.getExperimentID() === link.getExperimentID() &&
+              lodash.isEqual(
+                linkOtherAtomType.getAtomType(),
+                link.getAtomType(),
+              ) &&
+              linkOtherAtomType.getSignalID() === link.getSignalID() &&
+              linkOtherAtomType.getAxis() !== link.getAxis()
+            ) {
+              link.addMatch(correlationIndexOtherAtomType);
+            }
           });
-      });
+        },
+      );
     });
+  });
 
   // remove links without any matches
   correlations.forEach((correlation) => {

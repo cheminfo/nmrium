@@ -4,8 +4,23 @@ import Link from '../../../../data/correlation/Link';
 import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
 
-const AdditionalColumnField = ({ correlation, fieldCorrelation, onEdit }) => {
+const AdditionalColumnField = ({
+  rowCorrelation,
+  columnCorrelation,
+  commonLinks,
+  onEdit,
+}) => {
   const contextRef = useRef();
+  const [isEdited, setIsEdited] = useState(false);
+
+  useEffect(() => {
+    if (commonLinks.some((commonLink) => commonLink.getPseudo() === true)) {
+      setIsEdited(true);
+    } else {
+      setIsEdited(false);
+    }
+  }, [commonLinks]);
+
   const contextMenuHandler = useCallback(
     (e, rowData) => {
       e.preventDefault();
@@ -14,36 +29,9 @@ const AdditionalColumnField = ({ correlation, fieldCorrelation, onEdit }) => {
     [contextRef],
   );
 
-  const commonLinks = useMemo(() => {
-    const _commonLinks = [];
-    correlation.getLinks().forEach((link) => {
-      fieldCorrelation.getLinks().forEach((_link) => {
-        if (
-          link.getAxis() !== _link.getAxis() &&
-          link.getExperimentID() === _link.getExperimentID() &&
-          link.getSignalID() === _link.getSignalID()
-        ) {
-          let experimentLabel = link.getExperimentType();
-          if (link.getSignal() && link.getSignal().sign !== 0) {
-            experimentLabel += ' (edited)';
-          }
-          _commonLinks.push(
-            new Link({
-              ...link,
-              experimentLabel,
-              axis: undefined,
-            }),
-          );
-        }
-      });
-    });
-
-    return _commonLinks;
-  }, [correlation, fieldCorrelation]);
-
   const onEditHandler = useCallback(
     (experimentType, action, commonLink) => {
-      const pseudoLinkCountHSQC = correlation
+      const pseudoLinkCountHSQC = rowCorrelation
         .getLinks()
         .filter(
           (link) =>
@@ -57,39 +45,45 @@ const AdditionalColumnField = ({ correlation, fieldCorrelation, onEdit }) => {
         const pseudoCommonLinkXAxis = new Link({
           experimentType,
           experimentID: pseudoExperimentID,
-          atomType: [fieldCorrelation.getAtomType(), correlation.getAtomType()],
+          atomType: [
+            columnCorrelation.getAtomType(),
+            rowCorrelation.getAtomType(),
+          ],
           axis: 'x',
-          match: [correlation.getIndex()],
+          match: [rowCorrelation.getIndex()],
           id: pseudoLinkID,
           pseudo: true,
         });
         const pseudoCommonLinkYAxis = new Link({
           experimentType,
           experimentID: pseudoExperimentID,
-          atomType: [fieldCorrelation.getAtomType(), correlation.getAtomType()],
+          atomType: [
+            columnCorrelation.getAtomType(),
+            rowCorrelation.getAtomType(),
+          ],
           axis: 'y',
-          match: [fieldCorrelation.getIndex()],
+          match: [columnCorrelation.getIndex()],
           id: pseudoLinkID,
           pseudo: true,
         });
-        correlation.addLink(pseudoCommonLinkYAxis);
-        fieldCorrelation.addLink(pseudoCommonLinkXAxis);
-        if (!correlation.getEdited().protonsCount) {
-          correlation.setProtonsCount([pseudoLinkCountHSQC + 1]);
+        rowCorrelation.addLink(pseudoCommonLinkYAxis);
+        columnCorrelation.addLink(pseudoCommonLinkXAxis);
+        if (!rowCorrelation.getEdited().protonsCount) {
+          rowCorrelation.setProtonsCount([pseudoLinkCountHSQC + 1]);
         }
       } else if (action === 'remove') {
-        correlation.removeLink(commonLink.getID());
-        fieldCorrelation.removeLink(commonLink.getID());
-        if (!correlation.getEdited().protonsCount) {
-          correlation.setProtonsCount(
+        rowCorrelation.removeLink(commonLink.getID());
+        columnCorrelation.removeLink(commonLink.getID());
+        if (!rowCorrelation.getEdited().protonsCount) {
+          rowCorrelation.setProtonsCount(
             pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [],
           );
         }
       }
 
-      onEdit(correlation, fieldCorrelation);
+      onEdit(rowCorrelation, columnCorrelation);
     },
-    [correlation, fieldCorrelation, onEdit],
+    [rowCorrelation, columnCorrelation, onEdit],
   );
 
   const contextMenu = useMemo(() => {
@@ -100,7 +94,7 @@ const AdditionalColumnField = ({ correlation, fieldCorrelation, onEdit }) => {
         commonLink.experimentType === 'hsqc' && commonLink.getPseudo() === true,
     );
 
-    return correlation.getPseudo() === true
+    return rowCorrelation.getPseudo() === true
       ? commonLinkHSQC
         ? [
             {
@@ -119,7 +113,7 @@ const AdditionalColumnField = ({ correlation, fieldCorrelation, onEdit }) => {
             },
           ]
       : [];
-  }, [commonLinks, correlation, onEditHandler]);
+  }, [commonLinks, onEditHandler, rowCorrelation]);
 
   const content = useMemo(() => {
     const linkSet = new Set();
@@ -150,21 +144,11 @@ const AdditionalColumnField = ({ correlation, fieldCorrelation, onEdit }) => {
     return [...linkSet];
   }, [commonLinks]);
 
-  const [isEdited, setIsEdited] = useState(false);
-
-  useEffect(() => {
-    if (commonLinks.some((commonLink) => commonLink.getPseudo() === true)) {
-      setIsEdited(true);
-    } else {
-      setIsEdited(false);
-    }
-  }, [commonLinks]);
-
   return (
     <td
       onContextMenu={(e) => {
         if (contextMenu.length > 0) {
-          contextMenuHandler(e, correlation);
+          contextMenuHandler(e, rowCorrelation);
         }
       }}
       style={isEdited ? { backgroundColor: '#F7F2E0' } : {}}

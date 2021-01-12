@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 import { useCallback, useMemo } from 'react';
 
+import Link from '../../../../data/correlation/Link';
 import { getLabel } from '../../../../data/correlation/Utilities';
 import EditableColumn from '../../../elements/EditableColumn';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
@@ -40,18 +41,42 @@ const CorrelationTableRow = ({
     [correlation, onSaveEditProtonsCount],
   );
 
-  const additionalColumnFields = useMemo(
-    () =>
-      additionalColumnData.map((_correlation) => (
+  const additionalColumnFields = useMemo(() => {
+    return additionalColumnData.map((_correlation) => {
+      const commonLinks = [];
+      correlation.getLinks().forEach((link) => {
+        _correlation.getLinks().forEach((_link) => {
+          if (
+            link.getAxis() !== _link.getAxis() &&
+            link.getExperimentID() === _link.getExperimentID() &&
+            link.getSignalID() === _link.getSignalID()
+          ) {
+            let experimentLabel = link.getExperimentType();
+            if (link.getSignal() && link.getSignal().sign !== 0) {
+              experimentLabel += ' (edited)';
+            }
+            commonLinks.push(
+              new Link({
+                ...link,
+                experimentLabel,
+                axis: undefined,
+              }),
+            );
+          }
+        });
+      });
+
+      return (
         <AdditionalColumnField
           key={`addColData_${correlation.getID()}_${_correlation.getID()}`}
-          correlation={correlation}
-          fieldCorrelation={_correlation}
+          rowCorrelation={correlation}
+          columnCorrelation={_correlation}
+          commonLinks={commonLinks}
           onEdit={onEditAdditionalColumnField}
         />
-      )),
-    [additionalColumnData, correlation, onEditAdditionalColumnField],
-  );
+      );
+    });
+  }, [additionalColumnData, correlation, onEditAdditionalColumnField]);
 
   const onChangeHybridizationHandler = useCallback(
     (value) => {
