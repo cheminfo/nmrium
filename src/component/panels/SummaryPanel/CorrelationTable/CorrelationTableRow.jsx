@@ -5,6 +5,7 @@ import { getLabel } from '../../../../data/correlation/Utilities';
 import EditableColumn from '../../../elements/EditableColumn';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
 
+import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
 
 const selectBoxStyle = {
@@ -15,7 +16,7 @@ const selectBoxStyle = {
 };
 
 const CorrelationTableRow = ({
-  additionalColumns,
+  additionalColumnData,
   correlations,
   correlation,
   styleRow,
@@ -23,6 +24,7 @@ const CorrelationTableRow = ({
   onSaveEditEquivalences,
   onChangeHybridization,
   onSaveEditProtonsCount,
+  onEditAdditionalColumnField,
 }) => {
   const onSaveEquivalencesHandler = useCallback(
     (e) => {
@@ -38,55 +40,17 @@ const CorrelationTableRow = ({
     [correlation, onSaveEditProtonsCount],
   );
 
-  const additionalColumnsData = useMemo(
+  const additionalColumnFields = useMemo(
     () =>
-      additionalColumns.map((_correlation) => {
-        let content = [];
-        // const commonLinks = [];
-        correlation.getLinks().forEach((link, i) => {
-          _correlation.getLinks().forEach((_link, j) => {
-            if (
-              link.getAxis() !== _link.getAxis() &&
-              link.getExperimentID() === _link.getExperimentID() &&
-              link.getSignalID() === _link.getSignalID()
-            ) {
-              // commonLinks.push({
-              //   experimentType: link.getExperimentType(),
-              //   atomType: link.getAtomType(),
-              //   idx: [i, j],
-              // });
-              if (
-                link.getExperimentType() === 'hsqc' ||
-                link.getExperimentType() === 'hmqc'
-              ) {
-                content.push(
-                  link.getSignal().sign === 0
-                    ? 'S'
-                    : `S${link.getSignal().sign === 1 ? '+' : '-'}`,
-                );
-              } else if (
-                link.getExperimentType() === 'hmbc' ||
-                link.getExperimentType() === 'cosy' ||
-                link.getExperimentType() === 'tocsy'
-              ) {
-                content.push('M');
-              } else if (
-                link.getExperimentType() === 'noesy' ||
-                link.getExperimentType() === 'roesy'
-              ) {
-                content.push('NOE');
-              }
-            }
-          });
-        });
-        return (
-          <td key={`addColData_${correlation.getID()}_${_correlation.getID()}`}>
-            {content.join('/')}
-            {/* {JSON.stringify(commonLinks)} */}
-          </td>
-        );
-      }),
-    [additionalColumns, correlation],
+      additionalColumnData.map((_correlation) => (
+        <AdditionalColumnField
+          key={`addColData_${correlation.getID()}_${_correlation.getID()}`}
+          correlation={correlation}
+          fieldCorrelation={_correlation}
+          onEdit={onEditAdditionalColumnField}
+        />
+      )),
+    [additionalColumnData, correlation, onEditAdditionalColumnField],
   );
 
   const onChangeHybridizationHandler = useCallback(
@@ -121,8 +85,8 @@ const CorrelationTableRow = ({
               }
               style={
                 correlation.getEdited().equivalence
-                  ? { padding: '0.4rem', backgroundColor: '#F7F2E0' }
-                  : { padding: '0.4rem' }
+                  ? { backgroundColor: '#F7F2E0' }
+                  : {}
               }
               onSave={onSaveEquivalencesHandler}
             />
@@ -142,8 +106,8 @@ const CorrelationTableRow = ({
             value={correlation.getProtonsCount().join(',')}
             style={
               correlation.getEdited().protonsCount
-                ? { padding: '0.4rem', backgroundColor: '#F7F2E0' }
-                : { padding: '0.4rem' }
+                ? { backgroundColor: '#F7F2E0' }
+                : {}
             }
             onSave={onSaveProtonsCountHandler}
           />
@@ -169,7 +133,7 @@ const CorrelationTableRow = ({
           ''
         )}
       </td>
-      {additionalColumnsData}
+      {additionalColumnFields}
     </tr>
   );
 };

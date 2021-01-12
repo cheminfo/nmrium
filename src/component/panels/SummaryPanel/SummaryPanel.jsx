@@ -21,6 +21,7 @@ import {
   SET_CORRELATION_MF,
   SET_CORRELATION_TOLERANCE,
   UNSET_CORRELATION_MF,
+  SET_CORRELATIONS,
 } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
@@ -81,7 +82,7 @@ const SummaryPanel = memo(() => {
 
   const [mf, setMF] = useState();
   const [tolerance, setTolerance] = useState();
-  const [additionalColumns, setAdditionalColumns] = useState([]);
+  const [additionalColumnData, setAdditionalColumnData] = useState([]);
   const [
     selectedAdditionalColumnsAtomType,
     setSelectedAdditionalColumnsAtomType,
@@ -194,12 +195,14 @@ const SummaryPanel = memo(() => {
       '-',
     )[0];
 
-    setAdditionalColumns(
+    setAdditionalColumnData(
       correlations
-        ? correlations.values.filter(
-            (correlation) =>
-              correlation.atomType === _selectedAdditionalColumnsAtomType,
-          )
+        ? correlations.values
+            .filter(
+              (correlation) =>
+                correlation.atomType === _selectedAdditionalColumnsAtomType,
+            )
+            .reverse()
         : [],
     );
   }, [correlations, selectedAdditionalColumnsAtomType]);
@@ -208,7 +211,7 @@ const SummaryPanel = memo(() => {
   // build an array of experiments, because one could have more than
   // one spectrum in spectra list for one atom type or experiment type
 
-  // "plain" 1D experiments containing ranges, i.e. without DEPT etc.
+  // "plain" 1D experiments contain ranges, i.e. without DEPT etc.
   const experiments1D = useMemo(() => {
     const _experiments1D = {};
     lodash
@@ -221,7 +224,7 @@ const SummaryPanel = memo(() => {
     return _experiments1D;
   }, [experiments]);
 
-  // "extra" 1D experiments containing ranges, e.g. DEPT
+  // "extra" 1D experiments contain ranges, e.g. DEPT
   const experiments1DExtra = useMemo(() => {
     const _experiments1DExtra = {};
     Object.keys(lodash.get(experiments, `1D`, {}))
@@ -239,7 +242,7 @@ const SummaryPanel = memo(() => {
     return _experiments1DExtra;
   }, [experiments]);
 
-  // 2D experiments containing zones
+  // 2D experiments contain zones
   const experiments2D = useMemo(() => {
     const _experiments2D = {};
     Object.keys(lodash.get(experiments, '2D', {})).forEach((experimentType) => {
@@ -398,10 +401,6 @@ const SummaryPanel = memo(() => {
     return _signals2D;
   }, [experiments2D]);
 
-  // useEffect(() => {
-  //   console.log(correlations);
-  // }, [correlations]);
-
   useEffect(() => {
     dispatch({
       type: UPDATE_CORRELATIONS,
@@ -472,6 +471,29 @@ const SummaryPanel = memo(() => {
     [dispatch],
   );
 
+  const editAdditionalColumnFieldSaveHandler = useCallback(
+    (correlation, fieldCorrelation) => {
+      dispatch({
+        type: SET_CORRELATIONS,
+        ids: [correlation.getID(), fieldCorrelation.getID()],
+        correlations: [
+          new Correlation({
+            ...correlation,
+            edited: { ...correlation.getEdited(), additionalColumnField: true },
+          }),
+          new Correlation({
+            ...fieldCorrelation,
+            edited: {
+              ...fieldCorrelation.getEdited(),
+              additionalColumnField: true,
+            },
+          }),
+        ],
+      });
+    },
+    [dispatch],
+  );
+
   return (
     <div css={panelStyle}>
       <DefaultPanelHeader canDelete={false}>
@@ -512,11 +534,14 @@ const SummaryPanel = memo(() => {
         </div>
       </DefaultPanelHeader>
       <CorrelationTable
-        correlations={correlations}
-        additionalColumns={additionalColumns}
+        correlationData={correlations}
+        additionalColumnData={additionalColumnData}
         editEquivalencesSaveHandler={editEquivalencesSaveHandler}
         changeHybridizationSaveHandler={changeHybridizationSaveHandler}
         editProtonsCountSaveHandler={editProtonsCountSaveHandler}
+        editAdditionalColumnFieldSaveHandler={
+          editAdditionalColumnFieldSaveHandler
+        }
         showProtonsAsRows={showProtonsAsRows}
       />
     </div>

@@ -55,11 +55,18 @@ const handleSetCorrelation = (state, id, correlation) => {
   });
 };
 
-const handleSetCorrelations = (state, correlations) => {
-  return produce(state, (draft) => {
-    AnalysisObj.getCorrelationManagerInstance().setValues(correlations);
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
+const handleSetCorrelations = (state, ids, correlations) => {
+  if (ids.length === correlations.length) {
+    return produce(state, (draft) => {
+      ids.forEach((id, i) =>
+        AnalysisObj.getCorrelationManagerInstance().setValue(
+          id,
+          correlations[i],
+        ),
+      );
+      draft.correlations = AnalysisObj.getCorrelations();
+    });
+  }
 };
 
 export {

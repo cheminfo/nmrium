@@ -42,19 +42,20 @@ const tableStyle = css`
 `;
 
 const CorrelationTable = ({
-  correlations,
-  additionalColumns,
+  correlationData,
+  additionalColumnData,
   editEquivalencesSaveHandler,
   changeHybridizationSaveHandler,
   editProtonsCountSaveHandler,
+  editAdditionalColumnFieldSaveHandler,
   showProtonsAsRows,
 }) => {
   const rows = useMemo(() => {
-    if (!correlations) {
+    if (!correlationData) {
       return [];
     }
 
-    return correlations.values
+    return correlationData.values
       .filter((correlation) =>
         showProtonsAsRows
           ? correlation.getAtomType() === 'H'
@@ -62,29 +63,31 @@ const CorrelationTable = ({
       )
       .map((correlation) => (
         <CorrelationTableRow
-          additionalColumns={additionalColumns}
-          correlations={correlations.values}
+          additionalColumnData={additionalColumnData}
+          correlations={correlationData.values}
           correlation={correlation}
           key={`correlation${correlation.getAtomType()}${correlation.getID()}`}
           styleRow={{ backgroundColor: 'mintcream' }}
           styleLabel={
             correlation.getAtomType() === 'H'
               ? {
-                  color: getLabelColor(correlations, correlation),
+                  color: getLabelColor(correlationData, correlation),
                 }
               : {}
           }
           onSaveEditEquivalences={editEquivalencesSaveHandler}
           onChangeHybridization={changeHybridizationSaveHandler}
           onSaveEditProtonsCount={editProtonsCountSaveHandler}
+          onEditAdditionalColumnField={editAdditionalColumnFieldSaveHandler}
         />
       ));
   }, [
-    additionalColumns,
+    additionalColumnData,
     changeHybridizationSaveHandler,
-    correlations,
+    correlationData,
     editEquivalencesSaveHandler,
     editProtonsCountSaveHandler,
+    editAdditionalColumnFieldSaveHandler,
     showProtonsAsRows,
   ]);
 
@@ -99,10 +102,10 @@ const CorrelationTable = ({
             <th>Equiv</th>
             <th>#H</th>
             <th style={{ borderRight: '1px solid' }}>Hybrid</th>
-            {additionalColumns.map((correlation) => (
+            {additionalColumnData.map((correlation) => (
               <th
                 key={`CorrCol_${correlation.getID()}`}
-                style={{ color: getLabelColor(correlations, correlation) }}
+                style={{ color: getLabelColor(correlationData, correlation) }}
               >
                 <div style={{ display: 'block' }}>
                   <p>{correlation.getLabel('origin')}</p>
@@ -115,9 +118,10 @@ const CorrelationTable = ({
                   </p>
                   <p style={{ fontSize: 8 }}>
                     {correlation.getExperimentType()
-                      ? `(${correlation.getExperimentType().toUpperCase()})`
+                      ? `${correlation.getExperimentType().toUpperCase()}`
                       : ''}
                   </p>
+                  {/* <p>{correlation.getEquivalences()}</p> */}
                 </div>
               </th>
             ))}

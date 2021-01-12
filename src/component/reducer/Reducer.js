@@ -259,6 +259,7 @@ export function spectrumReducer(state, action) {
     case types.SET_CORRELATIONS:
       return CorrelationsActions.handleSetCorrelations(
         state,
+        action.ids,
         action.correlations,
       );
 

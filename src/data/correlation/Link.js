@@ -1,3 +1,5 @@
+import generateID from '../utilities/generateID';
+
 export default class Link {
   constructor(options = {}) {
     this.experimentType = options.experimentType;
@@ -6,6 +8,9 @@ export default class Link {
     this.signal = options.signal;
     this.axis = options.axis;
     this.match = options.match || [];
+    this.id = options.id || generateID();
+    this.experimentLabel = options.experimentLabel || '';
+    this.pseudo = options.pseudo || false;
   }
 
   getExperimentType() {
@@ -25,7 +30,9 @@ export default class Link {
   }
 
   getSignalID() {
-    return this.getSignal().id;
+    if (this.getSignal()) {
+      return this.getSignal().id;
+    }
   }
   getAxis() {
     return this.axis;
@@ -50,5 +57,25 @@ export default class Link {
 
   getMatches() {
     return this.match;
+  }
+
+  getID() {
+    return this.id;
+  }
+
+  setExperimentLabel(label) {
+    this.experimentLabel = label;
+  }
+
+  getExperimentLabel() {
+    return this.experimentLabel;
+  }
+
+  getPseudo() {
+    return this.pseudo;
+  }
+
+  setPseudo(pseudo) {
+    this.pseudo = pseudo;
   }
 }
