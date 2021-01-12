@@ -91,9 +91,6 @@ const Input = forwardRef(
     const handleKeyDown = useCallback(
       (event) => {
         event.persist();
-        // event.preventDefault();
-        event.stopPropagation();
-
         onKeyDown({
           ...event,
           target: { name: event.target.name, value: getValue(val) },
