@@ -117,11 +117,16 @@ const CorrelationTable = ({
                       : ''}
                   </p>
                   <p style={{ fontSize: 8 }}>
-                    {correlation.getExperimentType()
-                      ? `${correlation.getExperimentType().toUpperCase()}`
-                      : ''}
+                    {`${
+                      correlation.getExperimentType()
+                        ? `${correlation.getExperimentType().toUpperCase()}`
+                        : ''
+                    } ${
+                      correlation.getEquivalences() > 0
+                        ? `(+${correlation.getEquivalences()})`
+                        : ''
+                    }`}
                   </p>
-                  {/* <p>{correlation.getEquivalences()}</p> */}
                 </div>
               </th>
             ))}
