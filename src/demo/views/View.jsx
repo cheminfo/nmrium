@@ -137,8 +137,11 @@ export default function View(props) {
                 height: 'calc(100% - 30px)',
               }}
             >
-              {logs.map((log) => (
-                <div key={`${log.datetime}`} style={{ margin: '5px 0' }}>
+              {logs.map((log, index) => (
+                <div
+                  key={`${index + log.datetime}`}
+                  style={{ margin: '5px 0' }}
+                >
                   <span style={{ fontSize: '12px' }}>{log.datetime}</span>
                   <ObjectInspector data={log.data} />
                 </div>
