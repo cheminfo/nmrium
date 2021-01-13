@@ -94,7 +94,7 @@ const CorrelationTable = ({
   return (
     <div className="table-container">
       <table css={tableStyle}>
-        <tbody>
+        <thead>
           <tr>
             <th>Exp</th>
             <th>Atom</th>
@@ -131,8 +131,8 @@ const CorrelationTable = ({
               </th>
             ))}
           </tr>
-          {rows}
-        </tbody>
+        </thead>
+        <tbody>{rows}</tbody>
       </table>
     </div>
   );

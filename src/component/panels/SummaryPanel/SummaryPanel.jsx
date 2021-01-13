@@ -86,7 +86,7 @@ const SummaryPanel = memo(() => {
   const [
     selectedAdditionalColumnsAtomType,
     setSelectedAdditionalColumnsAtomType,
-  ] = useState('');
+  ] = useState('-');
   const [showProtonsAsRows, setShowProtonsAsRows] = useState(false);
 
   useEffect(() => {
@@ -163,7 +163,7 @@ const SummaryPanel = memo(() => {
   }, [data]);
 
   const additionalColumnTypes = useMemo(() => {
-    const columnTypes = [''].concat(
+    const columnTypes = ['-'].concat(
       correlations
         ? correlations.values
             .map((correlation) => correlation.getAtomType())
@@ -178,7 +178,7 @@ const SummaryPanel = memo(() => {
     if (columnTypes.includes('H')) {
       setSelectedAdditionalColumnsAtomType('H');
     } else {
-      setSelectedAdditionalColumnsAtomType('');
+      setSelectedAdditionalColumnsAtomType('-');
     }
 
     return columnTypes.map((columnType) => {
@@ -514,26 +514,23 @@ const SummaryPanel = memo(() => {
           <Overview correlations={correlations} />
         </div>
         <div className="homoHeteroKinds-container">
-          {additionalColumnTypes.length > 0 ? (
-            <SelectUncontrolled
-              onChange={(selection) => {
-                setSelectedAdditionalColumnsAtomType(selection);
-                if (selection === 'H-H') {
-                  setShowProtonsAsRows(true);
-                } else {
-                  setShowProtonsAsRows(false);
-                }
-              }}
-              data={additionalColumnTypes}
-              value={selectedAdditionalColumnsAtomType}
-              style={{
-                marginLeft: 2,
-                marginRight: 2,
-                border: 'none',
-                height: '20px',
-              }}
-            />
-          ) : null}
+          <SelectUncontrolled
+            onChange={(selection) => {
+              setSelectedAdditionalColumnsAtomType(selection);
+              if (selection === 'H-H') {
+                setShowProtonsAsRows(true);
+              } else {
+                setShowProtonsAsRows(false);
+              }
+            }}
+            data={additionalColumnTypes}
+            value={selectedAdditionalColumnsAtomType}
+            style={{
+              width: '65px',
+              height: '20px',
+              border: '1px solid grey',
+            }}
+          />
         </div>
       </DefaultPanelHeader>
       <CorrelationTable
