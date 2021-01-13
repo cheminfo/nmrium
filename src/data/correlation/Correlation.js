@@ -74,6 +74,10 @@ export default class Correlation {
     return this.link;
   }
 
+  hasLinks() {
+    return this.link.length > 0;
+  }
+
   hasAttachmentAtomType(atomType) {
     return this.attachment[atomType] && this.attachment[atomType].length > 0
       ? true

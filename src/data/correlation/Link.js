@@ -34,6 +34,7 @@ export default class Link {
       return this.getSignal().id;
     }
   }
+
   getAxis() {
     return this.axis;
   }

@@ -42,32 +42,31 @@ const AdditionalColumnField = ({
       if (action === 'add') {
         const pseudoLinkID = generateID();
         const pseudoExperimentID = generateID();
-        const pseudoCommonLinkXAxis = new Link({
+        const pseudoCommonLink = new Link({
           experimentType,
           experimentID: pseudoExperimentID,
           atomType: [
             columnCorrelation.getAtomType(),
             rowCorrelation.getAtomType(),
           ],
-          axis: 'x',
-          match: [rowCorrelation.getIndex()],
           id: pseudoLinkID,
           pseudo: true,
         });
-        const pseudoCommonLinkYAxis = new Link({
-          experimentType,
-          experimentID: pseudoExperimentID,
-          atomType: [
-            columnCorrelation.getAtomType(),
-            rowCorrelation.getAtomType(),
-          ],
-          axis: 'y',
-          match: [columnCorrelation.getIndex()],
-          id: pseudoLinkID,
-          pseudo: true,
-        });
-        rowCorrelation.addLink(pseudoCommonLinkYAxis);
-        columnCorrelation.addLink(pseudoCommonLinkXAxis);
+
+        columnCorrelation.addLink(
+          new Link({
+            ...pseudoCommonLink,
+            axis: 'x',
+            match: [rowCorrelation.getIndex()],
+          }),
+        );
+        rowCorrelation.addLink(
+          new Link({
+            ...pseudoCommonLink,
+            axis: 'y',
+            match: [columnCorrelation.getIndex()],
+          }),
+        );
         if (!rowCorrelation.getEdited().protonsCount) {
           rowCorrelation.setProtonsCount([pseudoLinkCountHSQC + 1]);
         }

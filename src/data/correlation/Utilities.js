@@ -102,7 +102,7 @@ const addFromData1D = (correlations, signals1D, tolerance) => {
           (correlation) =>
             correlation.getAtomType() === atomType &&
             correlation.getPseudo() === true &&
-            correlation.getLinks().length === 0,
+            !correlation.hasLinks(),
         );
         if (pseudoIndex >= 0) {
           correlations[pseudoIndex] = new Correlation({
@@ -165,7 +165,7 @@ const addFromData2D = (correlations, signals2D, tolerance) => {
             (correlation) =>
               correlation.getAtomType() === atomType &&
               correlation.getPseudo() === true &&
-              correlation.getLinks().length === 0,
+              !correlation.hasLinks(),
           );
           if (pseudoIndex >= 0) {
             correlations[pseudoIndex] = newCorrelation;
@@ -474,21 +474,22 @@ const setProtonsCount = (
 };
 
 const updatePseudoCorrelations = (correlations, mf) => {
+  const atoms = getAtomCountsByMF(mf);
   // add pseudo correlations
-  addPseudoCorrelations(correlations, mf);
+  addPseudoCorrelations(correlations, atoms);
   // remove pseudo correlations to be replaced by equivalences
-  replacePseudoCorrelationsByEquivalences(correlations, mf);
+  replacePseudoCorrelationsByEquivalences(correlations, atoms);
+  // remove pseudo correlations which are out of limit
+  removePseudoCorrelations(correlations, atoms);
 
   return correlations;
 };
 
-const addPseudoCorrelations = (correlations, mf) => {
-  const atoms = getAtomCountsByMF(mf);
+const addPseudoCorrelations = (correlations, atoms) => {
   Object.keys(atoms).forEach((atomType) => {
     // consider also pseudo correlations since they do not need to be added again
-    const atomTypeCount = correlations.filter(
-      (correlation) => correlation.getAtomType() === atomType,
-    ).length;
+    const atomTypeCount = getCorrelationsByAtomType(correlations, atomType)
+      .length;
     // add missing pseudo correlations
     for (let i = atomTypeCount; i < atoms[atomType]; i++) {
       correlations.push(
@@ -501,8 +502,7 @@ const addPseudoCorrelations = (correlations, mf) => {
   });
 };
 
-const replacePseudoCorrelationsByEquivalences = (correlations, mf) => {
-  const atoms = getAtomCountsByMF(mf);
+const replacePseudoCorrelationsByEquivalences = (correlations, atoms) => {
   Object.keys(atoms).forEach((atomType) => {
     // remove pseudo correlations to be replaced by equivalences, starting at the end
     const atomTypeEquivalencesCount = correlations.reduce(
@@ -524,6 +524,30 @@ const replacePseudoCorrelationsByEquivalences = (correlations, mf) => {
       }
       const pseudoCorrelationToRemove = pseudoCorrelationsAtomType.pop();
       correlations.splice(correlations.indexOf(pseudoCorrelationToRemove), 1);
+    }
+  });
+};
+
+const removePseudoCorrelations = (correlations, atoms) => {
+  Object.keys(atoms).forEach((atomType) => {
+    // consider also pseudo correlations
+    const correlationsAtomType = getCorrelationsByAtomType(
+      correlations,
+      atomType,
+    );
+    if (correlationsAtomType.length > atoms[atomType]) {
+      // remove pseudo correlations which are out of limit and are not linked
+      const pseudoCorrelationsAtomType = correlationsAtomType.filter(
+        (correlation) =>
+          correlation.getPseudo() === true && !correlation.hasLinks(),
+      );
+      for (let i = correlationsAtomType.length - 1; i >= atoms[atomType]; i--) {
+        if (pseudoCorrelationsAtomType.length === 0) {
+          break;
+        }
+        const pseudoCorrelationToRemove = pseudoCorrelationsAtomType.pop();
+        correlations.splice(correlations.indexOf(pseudoCorrelationToRemove), 1);
+      }
     }
   });
 };
