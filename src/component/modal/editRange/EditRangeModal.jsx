@@ -40,6 +40,8 @@ const styles = css`
     button {
       background-color: transparent;
       border: none;
+      padding: 5px;
+
       svg {
         height: 16px;
       }

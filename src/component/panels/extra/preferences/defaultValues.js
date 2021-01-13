@@ -20,10 +20,10 @@ const rangeDefaultValues = {
 
 const peaksDefaultValues = {
   showPeakNumber: true,
-  peakNumberFormat: '0.00',
-  showPeakIndex: true,
+  peakNumberFormat: '0',
+  showPeakIndex: false,
   peakIndexFormat: '0.00',
-  showDeltaPPM: false,
+  showDeltaPPM: true,
   deltaPPMFormat: '0.00',
   showDeltaHz: false,
   deltaHzFormat: '0.00',

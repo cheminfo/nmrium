@@ -184,6 +184,7 @@ export default function Exercise(props) {
                 hideFiltersPanel: true,
                 hideZonesPanel: true,
                 hideSummaryPanel: true,
+                hideMultipleSpectraAnalysisPanel: true,
               },
             }}
           />

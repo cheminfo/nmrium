@@ -235,6 +235,7 @@ export default function Exam(props) {
                 hideFiltersPanel: true,
                 hideZonesPanel: true,
                 hideSummaryPanel: true,
+                hideMultipleSpectraAnalysisPanel: true,
               },
             }}
           />

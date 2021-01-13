@@ -14,6 +14,7 @@ import formatNumber, {
 } from '../../utility/FormatNumber';
 import { getValue } from '../../utility/LocalStorage';
 import NoTableData from '../extra/placeholder/NoTableData';
+import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
 const PeaksTable = memo(
   ({
@@ -41,44 +42,6 @@ const PeaksTable = memo(
         });
       },
       [dispatch],
-    );
-
-    const defaultColumns = useMemo(
-      () => [
-        {
-          Header: '#',
-          Cell: ({ row }) => row.index + 1,
-        },
-
-        {
-          Header: 'peak index',
-          accessor: 'xIndex',
-          sortType: 'basic',
-        },
-
-        {
-          Header: 'Intensity ',
-          accessor: 'yValue',
-          sortType: 'basic',
-        },
-        {
-          width: '1%',
-          maxWidth: '24px',
-          minWidth: '24px',
-          Header: '',
-          id: 'delete-button',
-          Cell: ({ row }) => (
-            <button
-              type="button"
-              className="delete-button"
-              onClick={(e) => deletePeakHandler(e, row)}
-            >
-              <FaRegTrashAlt />
-            </button>
-          ),
-        },
-      ],
-      [deletePeakHandler],
     );
 
     const initialColumns = useMemo(
@@ -122,8 +85,15 @@ const PeaksTable = memo(
     );
 
     const tableColumns = useMemo(() => {
-      const setCustomColumn = (array, index, columnLabel, cellHandler) => {
+      const setCustomColumn = (
+        array,
+        index,
+        columnLabel,
+        cellHandler,
+        extraParams,
+      ) => {
         array.push({
+          ...extraParams,
           index: index,
           Header: columnLabel,
           sortType: 'basic',
@@ -134,59 +104,60 @@ const PeaksTable = memo(
       const peaksPreferences = getValue(
         preferences,
         `formatting.panels.peaks.[${activeTab}]`,
+        peaksDefaultValues,
       );
 
-      if (peaksPreferences) {
-        let cols = [...initialColumns];
-        if (peaksPreferences.showPeakNumber) {
-          setCustomColumn(cols, 1, '#', (row) =>
+      let cols = [...initialColumns];
+      if (peaksPreferences.showPeakNumber) {
+        setCustomColumn(
+          cols,
+          1,
+          '#',
+          (row) =>
             formatNumber(row.index + 1, peaksPreferences.peakNumberFormat),
-          );
-        }
-        if (peaksPreferences.showPeakIndex) {
-          setCustomColumn(cols, 2, 'index', (row) =>
-            formatNumber(row.original.xIndex, peaksPreferences.peakIndexFormat),
-          );
-        }
-        if (peaksPreferences.showDeltaPPM) {
-          setCustomColumn(cols, 3, 'δ (ppm)', (row) => (
-            <EditableColumn
-              onEditStart={() => editStartHander(row.index)}
-              ref={(ref) => (deltaPPMRefs.current[row.index] = ref)}
-              value={formatNumber(
-                row.original.value,
-                peaksPreferences.deltaPPMFormat,
-              )}
-              onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
-              type="number"
-            />
-          ));
-        }
-        if (peaksPreferences.showDeltaHz) {
-          setCustomColumn(cols, 4, 'δ (Hz)', (row) =>
-            formatNumber(row.original.valueHz, peaksPreferences.deltaHzFormat),
-          );
-        }
-        if (peaksPreferences.showIntensity) {
-          setCustomColumn(cols, 5, 'Intensity', (row) =>
-            formatNumber(row.original.yValue, peaksPreferences.intensityFormat),
-          );
-        }
-        if (peaksPreferences.showPeakWidth) {
-          setCustomColumn(cols, 5, 'Peak Width', (row) =>
-            formatNumber(
-              row.original.peakWidth,
-              peaksPreferences.peakWidthFormat,
-            ),
-          );
-        }
-        return cols.sort((object1, object2) => object1.index - object2.index);
-      } else {
-        return defaultColumns;
+          { width: '1%', maxWidth: '40px', minWidth: '40px' },
+        );
       }
+      if (peaksPreferences.showPeakIndex) {
+        setCustomColumn(cols, 2, 'index', (row) =>
+          formatNumber(row.original.xIndex, peaksPreferences.peakIndexFormat),
+        );
+      }
+      if (peaksPreferences.showDeltaPPM) {
+        setCustomColumn(cols, 3, 'δ (ppm)', (row) => (
+          <EditableColumn
+            onEditStart={() => editStartHander(row.index)}
+            ref={(ref) => (deltaPPMRefs.current[row.index] = ref)}
+            value={formatNumber(
+              row.original.value,
+              peaksPreferences.deltaPPMFormat,
+            )}
+            onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
+            type="number"
+          />
+        ));
+      }
+      if (peaksPreferences.showDeltaHz) {
+        setCustomColumn(cols, 4, 'δ (Hz)', (row) =>
+          formatNumber(row.original.valueHz, peaksPreferences.deltaHzFormat),
+        );
+      }
+      if (peaksPreferences.showIntensity) {
+        setCustomColumn(cols, 5, 'Intensity', (row) =>
+          formatNumber(row.original.yValue, peaksPreferences.intensityFormat),
+        );
+      }
+      if (peaksPreferences.showPeakWidth) {
+        setCustomColumn(cols, 5, 'Peak Width', (row) =>
+          formatNumber(
+            row.original.peakWidth,
+            peaksPreferences.peakWidthFormat,
+          ),
+        );
+      }
+      return cols.sort((object1, object2) => object1.index - object2.index);
     }, [
       activeTab,
-      defaultColumns,
       editStartHander,
       initialColumns,
       preferences,

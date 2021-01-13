@@ -20,8 +20,8 @@ function checkStatus(response) {
 export default function View(props) {
   const [data, setData] = useState();
   const { file, title, baseURL } = props;
-  const [logs, setLog] = useState([]);
-  const [isLogVisible, showLog] = useState(false);
+  const [callbackData, setCallbackData] = useState([]);
+  const [isCallbackVisible, showCallback] = useState(false);
 
   useEffect(() => {
     if (file) {
@@ -35,15 +35,18 @@ export default function View(props) {
   }, [baseURL, file, props]);
 
   const changeHadnler = useCallback((logData) => {
-    setLog((prevLogs) => {
+    setCallbackData((prevLogs) => {
       return prevLogs.concat({
         datetime: new Date().toLocaleTimeString(),
         data: logData,
       });
     });
   }, []);
-  const showLogHandler = useCallback(() => {
-    showLog((prevflag) => !prevflag);
+  const showCallbackHandler = useCallback(() => {
+    showCallback((prevflag) => !prevflag);
+  }, []);
+  const clearHandler = useCallback(() => {
+    setCallbackData([]);
   }, []);
 
   return (
@@ -86,7 +89,7 @@ export default function View(props) {
         )}
         <button
           type="button"
-          onClick={showLogHandler}
+          onClick={showCallbackHandler}
           style={{
             position: 'absolute',
             right: '20px',
@@ -96,7 +99,7 @@ export default function View(props) {
             fontSize: '12px',
           }}
         >
-          {isLogVisible ? 'Hide Logs' : 'Show logs'}
+          {isCallbackVisible ? 'Hide callback ' : 'Show callback '}
         </button>
       </div>
       <div
@@ -107,12 +110,12 @@ export default function View(props) {
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-          <div style={{ width: isLogVisible ? '75%' : '100%' }}>
+          <div style={{ width: isCallbackVisible ? '75%' : '100%' }}>
             <NMRDisplayer data={data} onDataChange={changeHadnler} />
           </div>
           <div
             style={
-              isLogVisible
+              isCallbackVisible
                 ? {
                     backgroundColor: 'white',
                     width: '25%',
@@ -126,9 +129,23 @@ export default function View(props) {
                 backgroundColor: 'lightgray',
                 padding: '5px',
                 height: '30px',
+                position: 'relative',
+                display: 'flex',
+                justifyContent: 'space-between',
               }}
             >
-              <span>Logs</span>
+              <span>Callback</span>
+              <button
+                type="button"
+                onClick={clearHandler}
+                style={{
+                  backgroundColor: 'white',
+                  width: '50px',
+                  fontSize: '12px',
+                }}
+              >
+                Clear
+              </button>
             </div>
             <div
               style={{
@@ -137,7 +154,7 @@ export default function View(props) {
                 height: 'calc(100% - 30px)',
               }}
             >
-              {logs.map((log, index) => (
+              {callbackData.map((log, index) => (
                 <div
                   key={`${index + log.datetime}`}
                   style={{ margin: '5px 0' }}
