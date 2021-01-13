@@ -6,7 +6,8 @@ import { Data2DManager } from './data2d/Data2DManager';
 import { Datum2D } from './data2d/Datum2D';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
-  return fetch(jcampURL, { credentials: 'include' })
+  // { credentials: 'include' }
+  return fetch(jcampURL)
     .then((response) => response.text())
     .then((jcamp) => {
       addJcamp(spectra, jcamp, options);
