@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { getAtoms } from '../../../data/correlation/Utilities';
+import { getAtomCounts } from '../../../data/correlation/utilities/GeneralUtilities';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
 
@@ -9,7 +9,7 @@ const Overview = memo(({ correlations }) => {
     return null;
   }
 
-  const atoms = getAtoms(correlations);
+  const atoms = getAtomCounts(correlations);
 
   return Object.keys(atoms).map((atomType, i) => {
     const stateAtomType = correlations.state[atomType];

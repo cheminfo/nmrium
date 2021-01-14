@@ -23,17 +23,11 @@ const handleSetTolerance = (state, tolerance) => {
   });
 };
 
-const handleUnsetTolerance = (state) => {
-  AnalysisObj.getCorrelationManagerInstance().unsetTolerance();
-  return produce(state, (draft) => {
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
-};
-
-const handleUpdateCorrelations = (state, signals1D, signals2D) => {
+const handleUpdateCorrelations = (state, signals1D, signals2D, signalsDEPT) => {
   AnalysisObj.getCorrelationManagerInstance().updateValues(
     signals1D,
     signals2D,
+    signalsDEPT,
   );
   return produce(state, (draft) => {
     draft.correlations = AnalysisObj.getCorrelations();
@@ -61,11 +55,18 @@ const handleSetCorrelation = (state, id, correlation) => {
   });
 };
 
-const handleSetCorrelations = (state, correlations) => {
-  return produce(state, (draft) => {
-    AnalysisObj.getCorrelationManagerInstance().setValues(correlations);
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
+const handleSetCorrelations = (state, ids, correlations) => {
+  if (ids.length === correlations.length) {
+    return produce(state, (draft) => {
+      ids.forEach((id, i) =>
+        AnalysisObj.getCorrelationManagerInstance().setValue(
+          id,
+          correlations[i],
+        ),
+      );
+      draft.correlations = AnalysisObj.getCorrelations();
+    });
+  }
 };
 
 export {
@@ -77,5 +78,4 @@ export {
   handleSetMF,
   handleUnsetMF,
   handleSetTolerance,
-  handleUnsetTolerance,
 };
