@@ -2,7 +2,7 @@ import lodash from 'lodash';
 import { useCallback, useMemo } from 'react';
 
 import Link from '../../../../data/correlation/Link';
-import { getLabel } from '../../../../data/correlation/Utilities';
+import { getLabel } from '../../../../data/correlation/utilities/GeneralUtilities';
 import EditableColumn from '../../../elements/EditableColumn';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
 

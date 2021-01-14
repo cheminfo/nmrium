@@ -91,6 +91,39 @@ const CorrelationTable = ({
     showProtonsAsRows,
   ]);
 
+  const additionalColumnHeader = useMemo(
+    () =>
+      additionalColumnData.map((correlation) => (
+        <th
+          key={`CorrCol_${correlation.getID()}`}
+          style={{ color: getLabelColor(correlationData, correlation) }}
+        >
+          <div style={{ display: 'block' }}>
+            <p>{correlation.getLabel('origin')}</p>
+            <p>
+              {correlation &&
+              correlation.getSignal() &&
+              correlation.getSignal().delta
+                ? correlation.getSignal().delta.toFixed(3)
+                : ''}
+            </p>
+            <p style={{ fontSize: 8 }}>
+              {`${
+                correlation.getExperimentType()
+                  ? `${correlation.getExperimentType().toUpperCase()}`
+                  : ''
+              } ${
+                correlation.getEquivalences() > 0
+                  ? `(+${correlation.getEquivalences()})`
+                  : ''
+              }`}
+            </p>
+          </div>
+        </th>
+      )),
+    [additionalColumnData, correlationData],
+  );
+
   return (
     <div className="table-container">
       <table css={tableStyle}>
@@ -102,34 +135,7 @@ const CorrelationTable = ({
             <th>Equiv</th>
             <th>#H</th>
             <th style={{ borderRight: '1px solid' }}>Hybrid</th>
-            {additionalColumnData.map((correlation) => (
-              <th
-                key={`CorrCol_${correlation.getID()}`}
-                style={{ color: getLabelColor(correlationData, correlation) }}
-              >
-                <div style={{ display: 'block' }}>
-                  <p>{correlation.getLabel('origin')}</p>
-                  <p>
-                    {correlation &&
-                    correlation.getSignal() &&
-                    correlation.getSignal().delta
-                      ? correlation.getSignal().delta.toFixed(3)
-                      : ''}
-                  </p>
-                  <p style={{ fontSize: 8 }}>
-                    {`${
-                      correlation.getExperimentType()
-                        ? `${correlation.getExperimentType().toUpperCase()}`
-                        : ''
-                    } ${
-                      correlation.getEquivalences() > 0
-                        ? `(+${correlation.getEquivalences()})`
-                        : ''
-                    }`}
-                  </p>
-                </div>
-              </th>
-            ))}
+            {additionalColumnHeader}
           </tr>
         </thead>
         <tbody>{rows}</tbody>

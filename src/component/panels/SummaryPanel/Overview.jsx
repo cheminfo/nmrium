@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { getAtomCounts } from '../../../data/correlation/Utilities';
+import { getAtomCounts } from '../../../data/correlation/utilities/GeneralUtilities';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
 

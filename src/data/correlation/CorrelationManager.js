@@ -3,7 +3,7 @@ import {
   buildCorrelationsData,
   buildCorrelationsState,
   updateCorrelationsData,
-} from './Utilities';
+} from './utilities/CorrelationUtilities';
 
 const defaultTolerance = {
   C: 0.25,
@@ -41,6 +41,7 @@ export default class CorrelationManager {
 
   setMF(mf) {
     this.setOption('mf', mf);
+    this.setValues(this.getValues());
   }
 
   unsetMF() {
@@ -53,6 +54,7 @@ export default class CorrelationManager {
 
   setTolerance(tolerance) {
     this.setOption('tolerance', tolerance);
+    this.setValues(this.getValues());
   }
 
   getTolerance() {

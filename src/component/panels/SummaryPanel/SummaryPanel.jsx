@@ -9,7 +9,7 @@ import Correlation from '../../../data/correlation/Correlation';
 import {
   checkSignalMatch,
   isEditedHSQC,
-} from '../../../data/correlation/Utilities';
+} from '../../../data/correlation/utilities/GeneralUtilities';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
