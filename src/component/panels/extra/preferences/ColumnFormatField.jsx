@@ -1,9 +1,12 @@
 import { memo, useState } from 'react';
 
+import Input from '../../../elements/Input';
+
 const styles = {
   row: {
     display: 'flex',
     margin: '5px 0px',
+    alignItems: 'center',
   },
   inputLabel: {
     flex: 2,
@@ -32,7 +35,14 @@ const ColumnFormatField = memo(
     return (
       <div style={styles.row}>
         <span style={styles.inputLabel}>{label}</span>
-        <div style={{ flex: 4 }}>
+        <div
+          style={{
+            flex: 4,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
           <input
             type="checkbox"
             onChange={(e) => setChecked(e.target.checked)}
@@ -44,12 +54,12 @@ const ColumnFormatField = memo(
             type="hidden"
             value={_checked}
           />
-          <input
-            style={styles.input}
+          <Input
+            style={{ container: styles.input }}
             name={`${groupID}-${formatControllerName}`}
             type="text"
             onChange={inputChangeHandler}
-            defaultValue={format}
+            value={format}
           />
         </div>
       </div>

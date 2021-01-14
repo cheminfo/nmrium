@@ -104,7 +104,12 @@ const Input = forwardRef(
 
     return (
       <div
-        style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          ...style.container,
+        }}
       >
         {label && (
           <span style={{ ...styles.label, ...style.label }} className="label">
@@ -136,6 +141,7 @@ Input.propTypes = {
   style: PropTypes.shape({
     label: PropTypes.object,
     input: PropTypes.object,
+    container: PropTypes.object,
   }),
   onChange: PropTypes.func,
   checkValue: PropTypes.func,
@@ -150,6 +156,7 @@ Input.defaultProps = {
   style: {
     label: {},
     input: {},
+    container: {},
   },
   value: '',
   onChange: () => {

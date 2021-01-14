@@ -164,7 +164,7 @@ const IntegralsPreferences = forwardRef(({ nucleus, preferences }, ref) => {
               input: {
                 width: '60%',
                 textAlign: 'center',
-                borderRadius: '0',
+                borderRadius: '5px',
               },
             }}
             defaultValue={Number(getValue(null, 'strokeWidth'))}
