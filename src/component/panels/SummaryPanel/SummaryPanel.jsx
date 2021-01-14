@@ -1,15 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodash from 'lodash';
-import { MF } from 'mf-parser';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
 import { SignalKindsToInclude } from '../../../data/constants/SignalsKinds';
 import Correlation from '../../../data/correlation/Correlation';
-import { checkSignalMatch } from '../../../data/correlation/Utilities';
+import {
+  checkSignalMatch,
+  isEditedHSQC,
+} from '../../../data/correlation/utilities/GeneralUtilities';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import {
@@ -18,6 +21,7 @@ import {
   SET_CORRELATION_MF,
   SET_CORRELATION_TOLERANCE,
   UNSET_CORRELATION_MF,
+  SET_CORRELATIONS,
 } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
@@ -52,6 +56,13 @@ const panelStyle = css`
     }
   }
 
+  .homoHeteroKinds-container {
+    width: 100%;
+    span {
+      margin-left: 7px;
+    }
+  }
+
   .container {
     display: flex;
     flex-direction: column;
@@ -70,8 +81,13 @@ const SummaryPanel = memo(() => {
   const modal = useModal();
 
   const [mf, setMF] = useState();
-
   const [tolerance, setTolerance] = useState();
+  const [additionalColumnData, setAdditionalColumnData] = useState([]);
+  const [
+    selectedAdditionalColumnsAtomType,
+    setSelectedAdditionalColumnsAtomType,
+  ] = useState('-');
+  const [showProtonsAsRows, setShowProtonsAsRows] = useState(false);
 
   useEffect(() => {
     if (lodash.get(correlations, 'options.mf', false)) {
@@ -93,6 +109,10 @@ const SummaryPanel = memo(() => {
     }
   }, [dispatch, molecules]);
 
+  useEffect(() => {
+    dispatch({ type: SET_CORRELATION_TOLERANCE, tolerance });
+  }, [dispatch, tolerance]);
+
   const showSetMolecularFormulaModal = useCallback(() => {
     modal.show(
       <SetMolecularFormulaModal
@@ -108,20 +128,11 @@ const SummaryPanel = memo(() => {
     modal.show(
       <SetShiftToleranceModal
         onClose={() => modal.close()}
-        onSave={(_tolerance) =>
-          dispatch({ type: SET_CORRELATION_TOLERANCE, tolerance: _tolerance })
-        }
+        onSave={(_tolerance) => setTolerance(_tolerance)}
         previousTolerance={tolerance}
       />,
     );
-  }, [dispatch, modal, tolerance]);
-
-  const [additionalColumns, setAdditionalColumns] = useState([]);
-  const [atoms, setAtoms] = useState({});
-
-  useEffect(() => (mf ? setAtoms(new MF(mf).getInfo().atoms) : setAtoms({})), [
-    mf,
-  ]);
+  }, [modal, tolerance]);
 
   // all experiments
   const experiments = useMemo(() => {
@@ -151,39 +162,98 @@ const SummaryPanel = memo(() => {
     return _experiments;
   }, [data]);
 
-  useEffect(
-    () => setAdditionalColumns(Object.keys(lodash.get(experiments, '2D', []))),
-    [experiments],
-  );
+  const additionalColumnTypes = useMemo(() => {
+    const columnTypes = ['-'].concat(
+      correlations
+        ? correlations.values
+            .map((correlation) => correlation.getAtomType())
+            .filter((atomType, i, array) => array.indexOf(atomType) === i)
+        : [],
+    );
+
+    if (columnTypes.includes('H')) {
+      columnTypes.push('H-H');
+    }
+
+    if (columnTypes.includes('H')) {
+      setSelectedAdditionalColumnsAtomType('H');
+    } else {
+      setSelectedAdditionalColumnsAtomType('-');
+    }
+
+    return columnTypes.map((columnType) => {
+      return {
+        key: columnType,
+        label: columnType,
+        value: columnType,
+      };
+    });
+  }, [correlations]);
+
+  useEffect(() => {
+    const _selectedAdditionalColumnsAtomType = selectedAdditionalColumnsAtomType.split(
+      '-',
+    )[0];
+
+    setAdditionalColumnData(
+      correlations
+        ? correlations.values
+            .filter(
+              (correlation) =>
+                correlation.atomType === _selectedAdditionalColumnsAtomType,
+            )
+            .reverse()
+        : [],
+    );
+  }, [correlations, selectedAdditionalColumnsAtomType]);
 
   // general remark for all experiment types:
   // build an array of experiments, because one could have more than
   // one spectrum in spectra list for one atom type or experiment type
 
-  // "plain" 1D experiments containing ranges, i.e. without DEPT etc.
+  // "plain" 1D experiments contain ranges, i.e. without DEPT etc.
   const experiments1D = useMemo(() => {
     const _experiments1D = {};
-    Object.keys(atoms).forEach((atomType) => {
-      addToExperiments(experiments, _experiments1D, '1D.1d', true, atomType);
-    });
+    lodash
+      .get(experiments, '1D.1d', [])
+      .map((experiment) => getAtomType(experiment.info.nucleus))
+      .forEach((atomType) => {
+        addToExperiments(experiments, _experiments1D, '1D.1d', true, atomType);
+      });
 
     return _experiments1D;
-  }, [atoms, experiments]);
+  }, [experiments]);
 
-  // 2D experiments containing zones
-  const experiments2D = useMemo(() => {
-    const _experiments2D = {};
-    Object.keys(lodash.get(experiments, '2D', {})).forEach(
-      (_experimentType) => {
+  // "extra" 1D experiments contain ranges, e.g. DEPT
+  const experiments1DExtra = useMemo(() => {
+    const _experiments1DExtra = {};
+    Object.keys(lodash.get(experiments, `1D`, {}))
+      .filter((experimentType) => experimentType !== '1d') // don't consider "plain" 1D experiments here
+      .forEach((experimentType) => {
         addToExperiments(
           experiments,
-          _experiments2D,
-          `2D.${_experimentType}`,
+          _experiments1DExtra,
+          `1D.${experimentType}`,
           false,
-          _experimentType,
+          experimentType,
         );
-      },
-    );
+      });
+
+    return _experiments1DExtra;
+  }, [experiments]);
+
+  // 2D experiments contain zones
+  const experiments2D = useMemo(() => {
+    const _experiments2D = {};
+    Object.keys(lodash.get(experiments, '2D', {})).forEach((experimentType) => {
+      addToExperiments(
+        experiments,
+        _experiments2D,
+        `2D.${experimentType}`,
+        false,
+        experimentType,
+      );
+    });
 
     return _experiments2D;
   }, [experiments]);
@@ -191,7 +261,7 @@ const SummaryPanel = memo(() => {
   const signals1D = useMemo(() => {
     // store valid signals from 1D experiments
     const _signals1D = {};
-    Object.keys(atoms).forEach((atomType) => {
+    Object.keys(experiments1D).forEach((atomType) => {
       let _signals = [];
       if (lodash.get(experiments1D, `${atomType}`, []).length > 0) {
         // @TODO for now we will use the first occurring matched spectrum only (index)
@@ -203,7 +273,6 @@ const SummaryPanel = memo(() => {
             ),
           )
           .flat();
-        let count = 0;
         __signals.forEach((__signal) => {
           if (
             !_signals.some((_signal) =>
@@ -214,10 +283,8 @@ const SummaryPanel = memo(() => {
               experimentType: '1d',
               experimentID: experiments1D[`${atomType}`][index].id,
               atomType: atomType,
-              label: { origin: `${atomType}${count + 1}` },
               signal: __signal,
             });
-            count++;
           }
         });
 
@@ -226,81 +293,208 @@ const SummaryPanel = memo(() => {
     });
 
     return _signals1D;
-  }, [atoms, experiments1D]);
+  }, [experiments1D]);
+
+  const signalsDEPT = useMemo(() => {
+    // store valid signals from 1D extra experiments, e.g. DEPT, APT
+    const _signalsDEPT = {};
+    // store valid signals from 2D experiments
+    Object.keys(experiments1DExtra)
+      .filter((experimentType) => experimentType === 'dept')
+      .forEach((experimentType) =>
+        experiments1DExtra[experimentType].forEach((experimentDEPT) => {
+          let _signals = [];
+          const mode = experimentDEPT.info.pulseSequence
+            .match(/\d/g)
+            .reduce((_mode, digit) => _mode + digit);
+          const atomType = getAtomType(experimentDEPT.info.nucleus);
+          const __signals = experimentDEPT.ranges.values
+            .map((range) =>
+              range.signal
+                .filter((signal) => SignalKindsToInclude.includes(signal.kind))
+                .map((signal) => {
+                  return { ...signal, sign: range.absolute > 0 ? 1 : -1 };
+                }),
+            )
+            .flat();
+          __signals.forEach((signal) => {
+            if (
+              !_signals.some((_signal) =>
+                checkSignalMatch(_signal.signal, signal, 0.0),
+              )
+            ) {
+              _signals.push({
+                experimentType,
+                experimentID: experimentDEPT.id,
+                mode,
+                atomType,
+                signal,
+              });
+            }
+          });
+
+          _signalsDEPT[mode] = _signals;
+        }),
+      );
+
+    return _signalsDEPT;
+  }, [experiments1DExtra]);
 
   const signals2D = useMemo(() => {
     // store valid signals from 2D experiments
     const _signals2D = {};
-    Object.keys(experiments2D).forEach((_experimentType) => {
+    Object.keys(experiments2D).forEach((experimentType) => {
       let _signals = [];
-      // @TODO for now we will use the first occurring matched spectrum only (index)
-      const index = 0;
-      const atomType = experiments2D[_experimentType][
-        index
-      ].info.nucleus.map((_nucleus) => getAtomType(_nucleus));
-      const __signals = experiments2D[_experimentType][index].zones.values
-        .map((_zone) =>
-          _zone.signal.filter((_signal) =>
-            SignalKindsToInclude.includes(_signal.kind),
-          ),
-        )
-        .flat();
-      let count = 0;
-      __signals.forEach((__signal) => {
+      // for now we use the first occurring spectrum only, for each experiment type (current loop) and nuclei combination
+      const indices = [];
+      const nuclei = [];
+      experiments2D[experimentType].forEach((experiment, i) => {
         if (
-          !_signals.some(
-            (_signal) =>
-              checkSignalMatch(_signal.signal.x, __signal.x, 0.0) &&
-              checkSignalMatch(_signal.signal.y, __signal.y, 0.0),
+          !nuclei.some((_nuclei) =>
+            lodash.isEqual(_nuclei, experiment.info.nucleus),
           )
         ) {
-          _signals.push({
-            experimentType: _experimentType,
-            experimentID: experiments2D[_experimentType][index].id,
-            atomType,
-            label: { origin: `${_experimentType}${count + 1}` },
-            signal: __signal,
-          });
-          count++;
+          nuclei.push(experiment.info.nucleus);
+          indices.push(i);
         }
       });
+      indices.forEach((index) => {
+        const atomType = experiments2D[experimentType][
+          index
+        ].info.nucleus.map((nucleus) => getAtomType(nucleus));
+        const __signals = experiments2D[experimentType][index].zones.values
+          .map((zone) =>
+            zone.signal.filter((signal) =>
+              SignalKindsToInclude.includes(signal.kind),
+            ),
+          )
+          .flat();
+        __signals.forEach((signal) => {
+          if (
+            !_signals.some(
+              (_signal) =>
+                checkSignalMatch(_signal.signal.x, signal.x, 0.0) &&
+                checkSignalMatch(_signal.signal.y, signal.y, 0.0),
+            )
+          ) {
+            _signals.push({
+              experimentType,
+              experimentID: experiments2D[experimentType][index].id,
+              atomType,
+              // here we assume that only one peak exists for the signal and its intensity indicates the sign
+              signal: {
+                ...signal,
+                sign: isEditedHSQC(experiments2D[experimentType][index])
+                  ? signal.peak[0].z >= 0
+                    ? 1
+                    : -1
+                  : 0,
+              },
+            });
+          }
+        });
+      });
 
-      _signals2D[_experimentType] = _signals;
+      _signals2D[experimentType] = _signals;
     });
 
     return _signals2D;
   }, [experiments2D]);
 
   useEffect(() => {
-    dispatch({ type: UPDATE_CORRELATIONS, signals1D, signals2D });
-  }, [dispatch, signals1D, signals2D]);
+    dispatch({
+      type: UPDATE_CORRELATIONS,
+      signals1D,
+      signals2D,
+      signalsDEPT,
+    });
+  }, [dispatch, signals1D, signals2D, signalsDEPT, tolerance]);
 
-  const editCountSaveHandler = useCallback(
+  const editEquivalencesSaveHandler = useCallback(
     (correlation, value) => {
-      const factor = value / correlation.getCount();
       dispatch({
         type: SET_CORRELATION,
         id: correlation.getID(),
-        correlation: new Correlation({ ...correlation, count: value }),
+        correlation: new Correlation({
+          ...correlation,
+          equivalence: value,
+          edited: { ...correlation.getEdited(), equivalence: true },
+        }),
       });
+    },
+    [dispatch],
+  );
 
-      // set the count of attached correlations according to the ratio
-      // e.g.in symmetry cases for heavy atoms, then also set the count of attached protons
-      if (lodash.get(correlation.getAttachments(), 'H', false)) {
-        correlation.getAttachments().H.forEach((index) => {
-          const attached = correlations.values[index];
-          dispatch({
-            type: SET_CORRELATION,
-            id: attached.getID(),
-            correlation: new Correlation({
-              ...attached,
-              count: attached.getCount() * factor,
-            }),
-          });
+  const editProtonsCountSaveHandler = useCallback(
+    (correlation, valuesString) => {
+      let values;
+      // eslint-disable-next-line prefer-named-capture-group
+      if (valuesString.match(/^([0-9],{0,1})+$/g)) {
+        // allow digits followed by optional comma only
+        values = valuesString
+          .split(',')
+          .filter((char) => char.length > 0)
+          .map((char) => Number(char));
+      } else if (valuesString.trim().length === 0) {
+        // set values to default
+        values = [];
+      }
+
+      if (values) {
+        // ignore not supported text input
+        dispatch({
+          type: SET_CORRELATION,
+          id: correlation.getID(),
+          correlation: new Correlation({
+            ...correlation,
+            protonsCount: values,
+            edited: { ...correlation.getEdited(), protonsCount: true },
+          }),
         });
       }
     },
-    [correlations, dispatch],
+    [dispatch],
+  );
+
+  const changeHybridizationSaveHandler = useCallback(
+    (correlation, value) => {
+      dispatch({
+        type: SET_CORRELATION,
+        id: correlation.getID(),
+        correlation: new Correlation({
+          ...correlation,
+          hybridization: value,
+          edited: { ...correlation.getEdited(), hybridization: true },
+        }),
+      });
+    },
+    [dispatch],
+  );
+
+  const editAdditionalColumnFieldSaveHandler = useCallback(
+    (rowCorrelation, columnCorrelation) => {
+      dispatch({
+        type: SET_CORRELATIONS,
+        ids: [rowCorrelation.getID(), columnCorrelation.getID()],
+        correlations: [
+          new Correlation({
+            ...rowCorrelation,
+            edited: {
+              ...rowCorrelation.getEdited(),
+              additionalColumnField: true,
+            },
+          }),
+          new Correlation({
+            ...columnCorrelation,
+            edited: {
+              ...columnCorrelation.getEdited(),
+              additionalColumnField: true,
+            },
+          }),
+        ],
+      });
+    },
+    [dispatch],
   );
 
   return (
@@ -319,11 +513,36 @@ const SummaryPanel = memo(() => {
         <div className="overview-container">
           <Overview correlations={correlations} />
         </div>
+        <div className="homoHeteroKinds-container">
+          <SelectUncontrolled
+            onChange={(selection) => {
+              setSelectedAdditionalColumnsAtomType(selection);
+              if (selection === 'H-H') {
+                setShowProtonsAsRows(true);
+              } else {
+                setShowProtonsAsRows(false);
+              }
+            }}
+            data={additionalColumnTypes}
+            value={selectedAdditionalColumnsAtomType}
+            style={{
+              width: '65px',
+              height: '20px',
+              border: '1px solid grey',
+            }}
+          />
+        </div>
       </DefaultPanelHeader>
       <CorrelationTable
-        correlations={correlations}
-        additionalColumns={additionalColumns}
-        editCountSaveHandler={editCountSaveHandler}
+        correlationData={correlations}
+        additionalColumnData={additionalColumnData}
+        editEquivalencesSaveHandler={editEquivalencesSaveHandler}
+        changeHybridizationSaveHandler={changeHybridizationSaveHandler}
+        editProtonsCountSaveHandler={editProtonsCountSaveHandler}
+        editAdditionalColumnFieldSaveHandler={
+          editAdditionalColumnFieldSaveHandler
+        }
+        showProtonsAsRows={showProtonsAsRows}
       />
     </div>
   );

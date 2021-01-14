@@ -31,21 +31,23 @@ const addToExperiments = (
 
 const getAtomType = (nucleus) => nucleus.split(/\d+/)[1];
 
-const getLabelColor = (correlations, correlation) => {
+const getLabelColor = (correlationData, correlation) => {
   const error = lodash.get(
-    correlations,
+    correlationData,
     `state.${correlation.getAtomType()}.error`,
     null,
   );
   if (error) {
     for (let errorIndex in Errors) {
       if (
-        ErrorColors[errorIndex].key !== 'incomplete' && // do not consider this for a single atom
+        ErrorColors[errorIndex].key !== 'incomplete' && // do not consider this for a single atom type
+        (ErrorColors[errorIndex].key === 'notAttached' ||
+          ErrorColors[errorIndex].key === 'ambiguousAttachment') &&
         lodash
           .get(error, `${ErrorColors[errorIndex].key}`, [])
           .some(
             (index) =>
-              correlations.values[index].getID() === correlation.getID(),
+              correlationData.values[index].getID() === correlation.getID(),
           )
       ) {
         return ErrorColors[errorIndex].color;

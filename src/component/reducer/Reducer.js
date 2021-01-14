@@ -237,6 +237,7 @@ export function spectrumReducer(state, action) {
         state,
         action.signals1D,
         action.signals2D,
+        action.signalsDEPT,
       );
 
     case types.ADD_CORRELATION:
@@ -258,6 +259,7 @@ export function spectrumReducer(state, action) {
     case types.SET_CORRELATIONS:
       return CorrelationsActions.handleSetCorrelations(
         state,
+        action.ids,
         action.correlations,
       );
 
@@ -269,9 +271,6 @@ export function spectrumReducer(state, action) {
 
     case types.SET_CORRELATION_TOLERANCE:
       return CorrelationsActions.handleSetTolerance(state, action.tolerance);
-
-    case types.UNSET_CORRELATION_TOLERANCE:
-      return CorrelationsActions.handleUnsetTolerance(state);
 
     case types.DELETE_SPECTRA:
       return SpectrumsActions.handleDeleteSpectra(state, action);

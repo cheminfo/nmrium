@@ -13,8 +13,13 @@ export default class Correlation {
     this.link = options.link
       ? options.link.map((link) => new Link({ ...link }))
       : [];
-    this.count = options.count || 1;
+    this.equivalence = options.equivalence || 0;
     this.attachment = options.attachment || {};
+    this.protonsCount = options.protonsCount || [];
+    this.hybridization = options.hybridization;
+    this.pseudo = options.pseudo || false;
+    this.edited = options.edited || {};
+    this.index = options.index;
   }
 
   getExperimentType() {
@@ -45,12 +50,12 @@ export default class Correlation {
     return this.signal;
   }
 
-  getCount() {
-    return this.count;
+  getEquivalences() {
+    return this.equivalence;
   }
 
-  setCount(count) {
-    this.count = count;
+  setEquivalences(equivalence) {
+    this.equivalence = equivalence;
   }
 
   getID() {
@@ -61,12 +66,22 @@ export default class Correlation {
     this.link.push(link);
   }
 
+  removeLink(id) {
+    this.link = this.link.filter((_link) => _link.getID() !== id);
+  }
+
   getLinks() {
     return this.link;
   }
 
+  hasLinks() {
+    return this.link.length > 0;
+  }
+
   hasAttachmentAtomType(atomType) {
-    return this.attachment[atomType] ? true : false;
+    return this.attachment[atomType] && this.attachment[atomType].length > 0
+      ? true
+      : false;
   }
 
   addAttachmentAtomType(atomType) {
@@ -87,7 +102,60 @@ export default class Correlation {
     }
   }
 
+  removeAttachment(atomType, attachment) {
+    if (this.hasAttachmentAtomType(atomType)) {
+      const indexOf = this.attachment[atomType].indexOf(attachment);
+      if (indexOf >= 0) {
+        this.attachment[atomType].splice(indexOf, 1);
+      }
+    }
+  }
+
+  removeAttachments() {
+    this.attachment = {};
+  }
+
   getAttachments() {
     return this.attachment;
+  }
+
+  getProtonsCount() {
+    return this.protonsCount;
+  }
+
+  setProtonsCount(protonsCount) {
+    this.protonsCount = protonsCount;
+  }
+
+  getHybridization() {
+    return this.hybridization;
+  }
+
+  setHybridization(hybridization) {
+    this.hybridization = hybridization;
+  }
+
+  getPseudo() {
+    return this.pseudo;
+  }
+
+  setPseudo(pseudo) {
+    this.pseudo = pseudo;
+  }
+
+  getEdited() {
+    return this.edited;
+  }
+
+  setEdited(edited) {
+    this.edited = edited;
+  }
+
+  getIndex() {
+    return this.index;
+  }
+
+  setIndex(index) {
+    this.index = index;
   }
 }

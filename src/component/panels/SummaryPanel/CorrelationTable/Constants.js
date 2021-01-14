@@ -8,4 +8,27 @@ const ErrorColors = [
 
 const Errors = ErrorColors.map((errorColor) => errorColor.key);
 
-export { Errors, ErrorColors };
+const Hybridizations = [
+  {
+    key: '-',
+    label: '',
+    value: '',
+  },
+  {
+    key: 'sp',
+    label: 'sp',
+    value: 'SP',
+  },
+  {
+    key: 'sp2',
+    label: 'sp2',
+    value: 'SP2',
+  },
+  {
+    key: 'sp3',
+    label: 'sp3',
+    value: 'SP3',
+  },
+];
+
+export { Errors, ErrorColors, Hybridizations };

@@ -2,8 +2,8 @@ import Correlation from './Correlation';
 import {
   buildCorrelationsData,
   buildCorrelationsState,
-  checkSignalMatch,
-} from './Utilities';
+  updateCorrelationsData,
+} from './utilities/CorrelationUtilities';
 
 const defaultTolerance = {
   C: 0.25,
@@ -40,7 +40,8 @@ export default class CorrelationManager {
   }
 
   setMF(mf) {
-    this.setOptions({ ...this.getOptions(), mf });
+    this.setOption('mf', mf);
+    this.setValues(this.getValues());
   }
 
   unsetMF() {
@@ -52,11 +53,8 @@ export default class CorrelationManager {
   }
 
   setTolerance(tolerance) {
-    this.setOptions({ ...this.getOptions(), tolerance });
-  }
-
-  unsetTolerance() {
-    this.deleteOption('tolerance');
+    this.setOption('tolerance', tolerance);
+    this.setValues(this.getValues());
   }
 
   getTolerance() {
@@ -100,35 +98,20 @@ export default class CorrelationManager {
   }
 
   setValues(correlations) {
-    this.values = correlations;
+    this.values = updateCorrelationsData(correlations, this.getMF());
     this.state = buildCorrelationsState(this.getData());
   }
 
-  updateValues(signals1D, signals2D) {
-    const _correlations = buildCorrelationsData(
-      signals1D,
-      signals2D,
-      this.getTolerance(),
+  updateValues(signals1D, signals2D, signalsDEPT) {
+    this.setValues(
+      buildCorrelationsData(
+        signals1D,
+        signals2D,
+        signalsDEPT,
+        this.getMF(),
+        this.getTolerance(),
+        this.getValues(),
+      ),
     );
-
-    // important after data file import: set to the previous counts because they will be overwritten by default value (1)
-    this.getValues().forEach((correlation) => {
-      const index = _correlations.findIndex(
-        (_correlation) =>
-          correlation.getAtomType() === _correlation.getAtomType() &&
-          correlation.getExperimentType() ===
-            _correlation.getExperimentType() &&
-          checkSignalMatch(
-            correlation.getSignal(),
-            _correlation.getSignal(),
-            0.0,
-          ),
-      );
-      if (index >= 0) {
-        _correlations[index].setCount(correlation.getCount());
-      }
-    });
-
-    this.setValues(_correlations);
   }
 }
