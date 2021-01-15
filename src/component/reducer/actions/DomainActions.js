@@ -105,10 +105,14 @@ function get2DDomain(state) {
   let xDomains = {};
 
   const { activeTab, tabActiveSpectrum, data } = state;
+  const { id = 0 } = tabActiveSpectrum[activeTab] || { id: 0 };
   const nucleus = activeTab.split(',');
-  const { minX, maxX, minY, maxY } = data.find(
-    (datum) => datum.id === tabActiveSpectrum[activeTab].id,
-  );
+  const { minX, maxX, minY, maxY } = data.find((datum) => datum.id === id) || {
+    minX: 0,
+    maxX: 0,
+    minY: 0,
+    maxY: 0,
+  };
 
   const spectrumsIDs = nucleus.map(
     (n) => tabActiveSpectrum[n] && tabActiveSpectrum[n].id,
