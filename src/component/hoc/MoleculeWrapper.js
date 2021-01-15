@@ -14,10 +14,11 @@ function MoleculeWrapper(WrappedComponent) {
 
     const { ranges = {}, zones = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
-        const { ranges, zones } = data.find(
-          (datum) => datum.id === activeSpectrum.id,
-        );
-        return { ranges, zones };
+        const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
+          ranges: {},
+          zones: {},
+        };
+        return datum;
       }
       return {};
     }, [activeSpectrum, data]);

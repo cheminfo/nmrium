@@ -17,10 +17,11 @@ function ZonesWrapper(WrappedComponent) {
 
     const { zones = {}, info = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
-        const { zones, info } = data.find(
-          (datum) => datum.id === activeSpectrum.id,
-        );
-        return { zones, info };
+        const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
+          zones: {},
+          info: {},
+        };
+        return datum;
       }
       return {};
     }, [activeSpectrum, data]);

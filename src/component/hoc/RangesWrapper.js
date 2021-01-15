@@ -17,10 +17,13 @@ function RangesWrapper(WrappedComponent) {
 
     const { ranges = {}, x = [], y = [], info = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
-        const { ranges, x, y, info } = data.find(
-          (datum) => datum.id === activeSpectrum.id,
-        );
-        return { ranges, x, y, info };
+        const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
+          ranges: {},
+          x: [],
+          y: [],
+          info: {},
+        };
+        return datum;
       }
       return {};
     }, [activeSpectrum, data]);

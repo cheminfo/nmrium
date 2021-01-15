@@ -8,10 +8,11 @@ function InfoWrapper(WrappedComponent) {
 
     const { info = {}, meta = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
-        const { info, meta } = data.find(
-          (datum) => datum.id === activeSpectrum.id,
-        );
-        return { info, meta };
+        const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
+          info: {},
+          meta: {},
+        };
+        return datum;
       }
       return {};
     }, [activeSpectrum, data]);

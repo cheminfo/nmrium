@@ -8,10 +8,10 @@ function FiltersWrapper(WrappedComponent) {
 
     const { filters = [] } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
-        const { filters } = data.find(
-          (datum) => datum.id === activeSpectrum.id,
-        );
-        return { filters };
+        const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
+          filters: [],
+        };
+        return datum;
       }
       return {};
     }, [activeSpectrum, data]);

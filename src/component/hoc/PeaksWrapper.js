@@ -16,10 +16,13 @@ function PeaksWrapper(WrappedComponent) {
 
     const { peaks = {}, info = {}, x = [], y = [] } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
-        const { peaks, info, x, y } = data.find(
-          (datum) => datum.id === activeSpectrum.id,
-        );
-        return { peaks, info, x, y };
+        const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
+          peaks: {},
+          info: {},
+          x: [],
+          y: [],
+        };
+        return datum;
       }
       return {};
     }, [activeSpectrum, data]);

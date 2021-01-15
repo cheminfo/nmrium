@@ -17,10 +17,11 @@ function IntegralsWrapper(WrappedComponent) {
 
     const { integrals = {}, info = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
-        const { integrals, info } = data.find(
-          (datum) => datum.id === activeSpectrum.id,
-        );
-        return { integrals, info };
+        const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
+          integrals: {},
+          info: {},
+        };
+        return datum;
       }
       return {};
     }, [activeSpectrum, data]);
