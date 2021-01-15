@@ -448,78 +448,85 @@ const buildCorrelationsState = (correlationData) => {
       correlationData.values,
       atomType,
     );
-    let atomCountAtomType = correlationsAtomType.reduce(
-      (sum, correlation) =>
-        correlation.getPseudo() === false
-          ? sum + 1 + correlation.getEquivalences()
-          : sum,
-      0,
-    );
-    // add protons count from pseudo correlations
-    if (atomType === 'H') {
-      correlationData.values.forEach((correlation) => {
-        if (
-          correlation.getPseudo() === true &&
-          correlation.getAtomType() !== 'H' &&
-          correlation.getProtonsCount().length === 1
-        ) {
-          atomCountAtomType += correlation.getProtonsCount()[0];
+    // consider correlations from specific atom type only if there is at least one real correlations
+    if (
+      correlationsAtomType.some(
+        (correlation) => correlation.getPseudo() === false,
+      )
+    ) {
+      let atomCountAtomType = correlationsAtomType.reduce(
+        (sum, correlation) =>
+          correlation.getPseudo() === false
+            ? sum + 1 + correlation.getEquivalences()
+            : sum,
+        0,
+      );
+      // add protons count from pseudo correlations
+      if (atomType === 'H') {
+        correlationData.values.forEach((correlation) => {
+          if (
+            correlation.getPseudo() === true &&
+            correlation.getAtomType() !== 'H' &&
+            correlation.getProtonsCount().length === 1
+          ) {
+            atomCountAtomType += correlation.getProtonsCount()[0];
+          }
+        });
+      }
+      const atomCount = atoms[atomType];
+      state[atomType] = {
+        current: atomCountAtomType,
+        total: atomCount,
+        complete: atomCountAtomType === atomCount ? true : false,
+      };
+      const createErrorProperty = () => {
+        if (!lodash.get(state, `${atomType}.error`, false)) {
+          state[atomType].error = {};
         }
-      });
-    }
-    const atomCount = atoms[atomType];
-    state[atomType] = {
-      current: atomCountAtomType,
-      total: atomCount,
-      complete: atomCountAtomType === atomCount ? true : false,
-    };
-    const createErrorProperty = () => {
-      if (!lodash.get(state, `${atomType}.error`, false)) {
-        state[atomType].error = {};
-      }
-    };
-    if (!state[atomType].complete) {
-      createErrorProperty();
-      state[atomType].error.incomplete = true;
-    }
-    if (atomType === 'H') {
-      const notAttached = correlationsAtomType.reduce(
-        (array, correlation) =>
-          Object.keys(correlation.getAttachments()).length === 0
-            ? array.concat(correlation.getIndex())
-            : array,
-        [],
-      );
-      if (notAttached.length > 0) {
+      };
+      if (!state[atomType].complete) {
         createErrorProperty();
-        state[atomType].error.notAttached = notAttached;
+        state[atomType].error.incomplete = true;
       }
-      const ambiguousAttachment = correlationsAtomType.reduce(
-        (array, correlation) =>
-          Object.keys(correlation.getAttachments()).length > 1 ||
-          Object.keys(correlation.getAttachments()).some(
-            (otherAtomType) =>
-              correlation.getAttachments()[otherAtomType].length > 1,
-          )
-            ? array.concat(correlation.getIndex())
-            : array,
-        [],
-      );
-      if (ambiguousAttachment.length > 0) {
-        createErrorProperty();
-        state[atomType].error.ambiguousAttachment = ambiguousAttachment;
+      if (atomType === 'H') {
+        const notAttached = correlationsAtomType.reduce(
+          (array, correlation) =>
+            Object.keys(correlation.getAttachments()).length === 0
+              ? array.concat(correlation.getIndex())
+              : array,
+          [],
+        );
+        if (notAttached.length > 0) {
+          createErrorProperty();
+          state[atomType].error.notAttached = notAttached;
+        }
+        const ambiguousAttachment = correlationsAtomType.reduce(
+          (array, correlation) =>
+            Object.keys(correlation.getAttachments()).length > 1 ||
+            Object.keys(correlation.getAttachments()).some(
+              (otherAtomType) =>
+                correlation.getAttachments()[otherAtomType].length > 1,
+            )
+              ? array.concat(correlation.getIndex())
+              : array,
+          [],
+        );
+        if (ambiguousAttachment.length > 0) {
+          createErrorProperty();
+          state[atomType].error.ambiguousAttachment = ambiguousAttachment;
+        }
       }
-    }
 
-    const outOfLimit = correlationsAtomType.some(
-      (correlation, k) =>
-        correlation.getPseudo() === false &&
-        correlation.getAtomType() === atomType &&
-        k >= atomCount,
-    );
-    if (outOfLimit) {
-      createErrorProperty();
-      state[atomType].error.outOfLimit = true;
+      const outOfLimit = correlationsAtomType.some(
+        (correlation, k) =>
+          correlation.getPseudo() === false &&
+          correlation.getAtomType() === atomType &&
+          k >= atomCount,
+      );
+      if (outOfLimit) {
+        createErrorProperty();
+        state[atomType].error.outOfLimit = true;
+      }
     }
   });
 
