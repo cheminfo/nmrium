@@ -221,7 +221,7 @@ const updatePseudoCorrelations = (correlations, mf) => {
   replacePseudoCorrelationsByEquivalences(correlations, atoms);
   // remove pseudo correlations which are out of limit, clean up links and proton counts
   checkPseudoCorrelations(correlations, atoms);
-
+  // update indices
   setIndices(correlations);
 
   return correlations;
