@@ -188,7 +188,7 @@ const AlignSpectraModal = ({ onClose, nucleus }) => {
   return (
     <div css={styles}>
       <div className="header handle">
-        <span>Align Spectra</span>
+        <span>Spectra calibration</span>
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">

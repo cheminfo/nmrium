@@ -100,7 +100,7 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
             <FaFileExport />
           </Button>
           <Button
-            popupTitle="Align Spectra"
+            popupTitle="Spectra calibration"
             style={styles.button}
             onClick={openAlignSpectra}
           >
