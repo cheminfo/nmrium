@@ -448,7 +448,7 @@ const buildCorrelationsState = (correlationData) => {
       correlationData.values,
       atomType,
     );
-    // consider correlations from specific atom type only if there is at least one real correlations
+    // create error for specific atom type only if there is at least one real correlation
     if (
       correlationsAtomType.some(
         (correlation) => correlation.getPseudo() === false,
