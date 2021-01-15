@@ -214,8 +214,6 @@ const setAttachmentsAndProtonEquivalences = (correlations) => {
 };
 
 const updatePseudoCorrelations = (correlations, mf) => {
-  // if we have no real and no pseudo correlations then we need to set the indices for added pseudo correlations
-  let toSetIndices = correlations.length === 0;
   const atoms = getAtomCountsByMF(mf);
   // add pseudo correlations
   addPseudoCorrelations(correlations, atoms);
@@ -224,9 +222,7 @@ const updatePseudoCorrelations = (correlations, mf) => {
   // remove pseudo correlations which are out of limit, clean up links and proton counts
   checkPseudoCorrelations(correlations, atoms);
 
-  if (toSetIndices) {
-    setIndices(correlations);
-  }
+  setIndices(correlations);
 
   return correlations;
 };
@@ -403,10 +399,16 @@ const setIndices = (correlations) => {
 
 const sortCorrelations = (correlations) => {
   const compare = (corr1, corr2) => {
-    if (corr1.getSignal().delta < corr2.getSignal().delta) {
+    if (
+      (corr1.getPseudo() === false && corr2.getPseudo() === true) ||
+      corr1.getSignal().delta < corr2.getSignal().delta
+    ) {
       return -1;
     }
-    if (corr1.getSignal().delta > corr2.getSignal().delta) {
+    if (
+      (corr1.getPseudo() === true && corr2.getPseudo() === false) ||
+      corr1.getSignal().delta > corr2.getSignal().delta
+    ) {
       return 1;
     }
     return 0;
