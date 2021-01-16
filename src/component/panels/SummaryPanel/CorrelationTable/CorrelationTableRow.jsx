@@ -72,11 +72,17 @@ const CorrelationTableRow = ({
           rowCorrelation={correlation}
           columnCorrelation={_correlation}
           commonLinks={commonLinks}
+          correlations={correlations}
           onEdit={onEditAdditionalColumnField}
         />
       );
     });
-  }, [additionalColumnData, correlation, onEditAdditionalColumnField]);
+  }, [
+    additionalColumnData,
+    correlation,
+    correlations,
+    onEditAdditionalColumnField,
+  ]);
 
   const onChangeHybridizationHandler = useCallback(
     (value) => {
