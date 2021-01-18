@@ -89,16 +89,16 @@ const resetTool = (draft, setDefaultTool = true) => {
   }
 };
 
-const resetSelectedTool = (state) => {
+const resetSelectedTool = (state, filterOnly = false) => {
   return produce(state, (draft) => {
-    resetTool(draft);
+    if (!filterOnly) {
+      resetTool(draft);
+    } else {
+      if (draft.selectedTool && options[draft.selectedTool].isFilter) {
+        resetTool(draft);
+      }
+    }
   });
-};
-
-const resetFilterTool = (draft) => {
-  if (draft.selectedTool && options[draft.selectedTool].isFilter) {
-    resetTool(draft);
-  }
 };
 
 const setSelectedTool = (state, selectedTool) => {
