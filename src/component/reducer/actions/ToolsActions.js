@@ -474,8 +474,8 @@ const setActiveTab = (draft, tab = null, refreshTabActiveSpectrums = false) => {
     !tab || !tabs.includes(tab) ? tabs[0] : tab,
     refreshTabActiveSpectrums,
   );
-
-  resetFilterTool(draft);
+  resetTool(draft);
+  // resetFilterTool(draft);
 
   Processing2DData(draft, dataGroupByNucleus);
   setDomain(draft);
