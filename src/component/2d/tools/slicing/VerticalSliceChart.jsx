@@ -25,11 +25,17 @@ const VerticalSliceChart = memo(({ margin: marignValue, data }) => {
           to: yDomain[1],
         },
       );
-      let path = `M ${scaleX(pathPoints.x[0])} ${scaleY(pathPoints.y[0])} `;
-      path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${scaleX(point)} ${scaleY(pathPoints.y[i + 1])}`;
-        return accumulator;
-      }, '');
+      const lastXIndex = pathPoints.x.length - 1;
+      const lastYIndex = pathPoints.y.length - 1;
+      let path = `M  ${scaleY(pathPoints.y[lastYIndex])} ${scaleX(
+        lastXIndex,
+      )} `;
+      path += pathPoints.x
+        .slice(0, lastXIndex)
+        .reduceRight((accumulator, point, index) => {
+          accumulator += ` L  ${scaleY(pathPoints.y[index])} ${scaleX(point)}`;
+          return accumulator;
+        }, '');
       return path;
     } else {
       return null;
@@ -47,31 +53,11 @@ const VerticalSliceChart = memo(({ margin: marignValue, data }) => {
       height={mainHeight + margin.top}
     >
       <defs>
-        <filter id="blur">
-          <feGaussianBlur stdDeviation="5" />
-        </filter>
-
         <clipPath id="clip-left">
-          <rect width={mainHeight} height={height} x={margin.top} y={`${0}`} />
+          <rect width={height} height={mainHeight} x="0" y={margin.top} />
         </clipPath>
       </defs>
-      <g
-        clipPath="url(#clip-left)"
-        style={{
-          transform: `rotate(-90deg) translate(-${margin.top}px,-${
-            mainHeight + margin.top
-          }px)`,
-          transformOrigin: `${mainHeight + margin.top}px 0px`,
-        }}
-      >
-        <rect
-          width={mainHeight}
-          height={height}
-          x={margin.top}
-          y={`${0}`}
-          fillOpacity="0"
-        />
-
+      <g clipPath="url(#clip-left)">
         <path className="line" stroke="red" fill="none" d={paths} />
       </g>
     </svg>

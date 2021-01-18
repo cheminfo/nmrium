@@ -7,6 +7,7 @@ import { MF } from 'react-mf';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
+import { options } from '../toolbar/ToolTypes';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 import { getLayoutID, LAYOUT } from './utilities/DimensionLayout';
@@ -59,6 +60,7 @@ const FooterBanner = ({ layout, data1D }) => {
     yDomains,
     activeTab,
     data,
+    selectedTool,
   } = useChartData();
 
   const trackID =
@@ -75,42 +77,47 @@ const FooterBanner = ({ layout, data1D }) => {
     if (!data1D || data1D.length === 0) {
       return get2DXScale({ width, margin, xDomain });
     }
-    switch (trackID) {
-      case LAYOUT.TOP_1D:
-      case LAYOUT.CENTER_2D: {
-        return get2DXScale({ width, margin, xDomain });
+    if (selectedTool !== options.slicingTool.id) {
+      switch (trackID) {
+        case LAYOUT.TOP_1D:
+        case LAYOUT.CENTER_2D: {
+          return get2DXScale({ width, margin, xDomain });
+        }
+        case LAYOUT.LEFT_1D: {
+          return get2DYScale({ height, margin, yDomain });
+        }
+        default:
+          return null;
       }
-      case LAYOUT.LEFT_1D: {
-        return get2DYScale({ height, margin, yDomain });
-      }
-      default:
-        return null;
     }
-  }, [data1D, height, margin, trackID, width, xDomain, yDomain]);
+    return null;
+  }, [data1D, height, margin, selectedTool, trackID, width, xDomain, yDomain]);
 
   const scaleY = useMemo(() => {
     if (!data1D || data1D.length === 0) {
       return get2DYScale({ height, margin, yDomain });
     }
-
-    switch (trackID) {
-      case LAYOUT.CENTER_2D: {
-        return get2DYScale({ height, margin, yDomain });
+    if (selectedTool !== options.slicingTool.id) {
+      switch (trackID) {
+        case LAYOUT.CENTER_2D: {
+          return get2DYScale({ height, margin, yDomain });
+        }
+        case LAYOUT.TOP_1D: {
+          return data1D[0]
+            ? get1DYScale(yDomains[data1D[0].id], margin.top)
+            : null;
+        }
+        case LAYOUT.LEFT_1D: {
+          return data1D[1]
+            ? get1DYScale(yDomains[data1D[1].id], margin.left)
+            : null;
+        }
+        default:
+          return null;
       }
-      case LAYOUT.TOP_1D: {
-        return data1D[0]
-          ? get1DYScale(yDomains[data1D[0].id], margin.top)
-          : null;
-      }
-      case LAYOUT.LEFT_1D: {
-        return data1D[1]
-          ? get1DYScale(yDomains[data1D[1].id], margin.left)
-          : null;
-      }
-      default:
-        return null;
     }
-  }, [data1D, height, margin, trackID, yDomain, yDomains]);
+    return null;
+  }, [data1D, height, margin, selectedTool, trackID, yDomain, yDomains]);
 
   if (
     !activeSpectrum ||
@@ -130,7 +137,7 @@ const FooterBanner = ({ layout, data1D }) => {
       index = 1;
     }
 
-    if (index != null) {
+    if (index != null && scaleX != null) {
       const xIndex = xFindClosestIndex(
         data1D[index].x,
         scaleX.invert(cordinate),
@@ -141,31 +148,37 @@ const FooterBanner = ({ layout, data1D }) => {
   };
 
   const getXValue = (x = null) => {
-    switch (trackID) {
-      case LAYOUT.CENTER_2D:
-      case LAYOUT.TOP_1D: {
-        return scaleX.invert(x ? x : position.x);
+    if (scaleX != null) {
+      switch (trackID) {
+        case LAYOUT.CENTER_2D:
+        case LAYOUT.TOP_1D: {
+          return scaleX.invert(x ? x : position.x);
+        }
+        case LAYOUT.LEFT_1D: {
+          return scaleX.invert(x ? x : position.y);
+        }
+        default:
+          return 0;
       }
-      case LAYOUT.LEFT_1D: {
-        return scaleX.invert(x ? x : position.y);
-      }
-      default:
-        return 0;
     }
+    return 0;
   };
 
   const getYValue = () => {
-    switch (trackID) {
-      case LAYOUT.CENTER_2D:
-      case LAYOUT.TOP_1D: {
-        return scaleY.invert(position.y);
+    if (scaleY != null) {
+      switch (trackID) {
+        case LAYOUT.CENTER_2D:
+        case LAYOUT.TOP_1D: {
+          return scaleY.invert(position.y);
+        }
+        case LAYOUT.LEFT_1D: {
+          return scaleY.invert(position.x);
+        }
+        default:
+          return 0;
       }
-      case LAYOUT.LEFT_1D: {
-        return scaleY.invert(position.x);
-      }
-      default:
-        return 0;
     }
+    return 0;
   };
 
   const getRation = () => {

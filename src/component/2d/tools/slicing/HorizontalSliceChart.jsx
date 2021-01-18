@@ -43,9 +43,6 @@ const HorizontalSliceChart = memo(({ margin: marginProps, data }) => {
   return (
     <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}>
       <defs>
-        <filter id="blur">
-          <feGaussianBlur stdDeviation="5" />
-        </filter>
         <clipPath id="clip-top">
           <rect
             width={width - originMargin.left - originMargin.right}

@@ -118,6 +118,7 @@ const setSelectedTool = (state, selectedTool) => {
     } else {
       resetTool(draft, false);
     }
+    setMargin(draft);
   });
 };
 
@@ -362,7 +363,10 @@ function hasAcceptedSpectrum(draft, index) {
 }
 
 const setMargin = (draft) => {
-  if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+  if (
+    draft.displayerMode === DISPLAYER_MODE.DM_2D &&
+    draft.selectedTool !== options.slicingTool.id
+  ) {
     const top = hasAcceptedSpectrum(draft, 0)
       ? MARGIN['2D'].top
       : MARGIN['1D'].top;
@@ -370,7 +374,9 @@ const setMargin = (draft) => {
       ? MARGIN['2D'].left
       : MARGIN['1D'].left;
     draft.margin = { ...MARGIN['2D'], top, left };
-  } else {
+  } else if (draft.selectedTool === options.slicingTool.id) {
+    draft.margin = MARGIN['2D'];
+  } else if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
     draft.margin = MARGIN['1D'];
   }
 };
