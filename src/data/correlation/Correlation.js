@@ -19,7 +19,6 @@ export default class Correlation {
     this.hybridization = options.hybridization;
     this.pseudo = options.pseudo || false;
     this.edited = options.edited || {};
-    this.index = options.index;
   }
 
   getExperimentType() {
@@ -149,13 +148,5 @@ export default class Correlation {
 
   setEdited(edited) {
     this.edited = edited;
-  }
-
-  getIndex() {
-    return this.index;
-  }
-
-  setIndex(index) {
-    this.index = index;
   }
 }

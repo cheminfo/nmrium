@@ -98,11 +98,18 @@ const isEditedHSQC = (experiment) => {
   return false;
 };
 
+const getCorrelationIndex = (correlations, correlation) => {
+  return correlations.findIndex(
+    (_correlation) => _correlation.getID() === correlation.getID(),
+  );
+};
+
 export {
   checkSignalMatch,
   getAtomCounts,
   getAtomCountsByMF,
   getCorrelationsByAtomType,
+  getCorrelationIndex,
   getLabel,
   getLabels,
   getLetter,

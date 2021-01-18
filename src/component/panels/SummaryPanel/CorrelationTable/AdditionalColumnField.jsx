@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import Link from '../../../../data/correlation/Link';
+import { getCorrelationIndex } from '../../../../data/correlation/utilities/GeneralUtilities';
 import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
 
@@ -8,6 +9,7 @@ const AdditionalColumnField = ({
   rowCorrelation,
   columnCorrelation,
   commonLinks,
+  correlations,
   onEdit,
 }) => {
   const contextRef = useRef();
@@ -57,14 +59,14 @@ const AdditionalColumnField = ({
           new Link({
             ...pseudoCommonLink,
             axis: 'x',
-            match: [rowCorrelation.getIndex()],
+            match: [getCorrelationIndex(correlations, rowCorrelation)],
           }),
         );
         rowCorrelation.addLink(
           new Link({
             ...pseudoCommonLink,
             axis: 'y',
-            match: [columnCorrelation.getIndex()],
+            match: [getCorrelationIndex(correlations, columnCorrelation)],
           }),
         );
         if (!rowCorrelation.getEdited().protonsCount) {
@@ -82,7 +84,7 @@ const AdditionalColumnField = ({
 
       onEdit(rowCorrelation, columnCorrelation);
     },
-    [rowCorrelation, columnCorrelation, onEdit],
+    [rowCorrelation, onEdit, columnCorrelation, correlations],
   );
 
   const contextMenu = useMemo(() => {

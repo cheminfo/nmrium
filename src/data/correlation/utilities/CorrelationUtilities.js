@@ -7,6 +7,7 @@ import {
   checkSignalMatch,
   getAtomCounts,
   getAtomCountsByMF,
+  getCorrelationIndex,
   getCorrelationsByAtomType,
 } from './GeneralUtilities';
 import { setProtonsCountFromData } from './ProtonsCountUtilities';
@@ -125,33 +126,36 @@ const addFromData2D = (correlations, signals2D, tolerance) => {
 const setMatches = (correlations) => {
   correlations.forEach((correlation) => {
     correlation.getLinks().forEach((link) => {
-      // remove previous added matches
+      // remove previously added matches
       link.removeMatches();
       // add matches
       const otherAtomType =
         link.axis === 'x' ? link.atomType[1] : link.atomType[0];
       getCorrelationsByAtomType(correlations, otherAtomType).forEach(
         (correlationOtherAtomType) => {
-          const correlationIndexOtherAtomType = correlations.findIndex(
-            (_correlation) =>
-              _correlation.getID() === correlationOtherAtomType.getID(),
-          );
-          correlationOtherAtomType.getLinks().forEach((linkOtherAtomType) => {
-            // check for correlation match and avoid possible duplicates
-            if (
-              linkOtherAtomType.getExperimentType() ===
-                link.getExperimentType() &&
-              linkOtherAtomType.getExperimentID() === link.getExperimentID() &&
-              lodash.isEqual(
-                linkOtherAtomType.getAtomType(),
-                link.getAtomType(),
-              ) &&
-              linkOtherAtomType.getSignalID() === link.getSignalID() &&
-              linkOtherAtomType.getAxis() !== link.getAxis()
-            ) {
-              link.addMatch(correlationIndexOtherAtomType);
-            }
-          });
+          if (correlation.getID() !== correlationOtherAtomType.getID()) {
+            const correlationIndexOtherAtomType = getCorrelationIndex(
+              correlations,
+              correlationOtherAtomType,
+            );
+            correlationOtherAtomType.getLinks().forEach((linkOtherAtomType) => {
+              // check for correlation match and avoid possible duplicates
+              if (
+                linkOtherAtomType.getExperimentType() ===
+                  link.getExperimentType() &&
+                linkOtherAtomType.getExperimentID() ===
+                  link.getExperimentID() &&
+                lodash.isEqual(
+                  linkOtherAtomType.getAtomType(),
+                  link.getAtomType(),
+                ) &&
+                linkOtherAtomType.getSignalID() === link.getSignalID() &&
+                linkOtherAtomType.getAxis() !== link.getAxis()
+              ) {
+                link.addMatch(correlationIndexOtherAtomType);
+              }
+            });
+          }
         },
       );
     });
@@ -214,8 +218,6 @@ const setAttachmentsAndProtonEquivalences = (correlations) => {
 };
 
 const updatePseudoCorrelations = (correlations, mf) => {
-  // if we have no real and no pseudo correlations then we need to set the indices for added pseudo correlations
-  let toSetIndices = correlations.length === 0;
   const atoms = getAtomCountsByMF(mf);
   // add pseudo correlations
   addPseudoCorrelations(correlations, atoms);
@@ -224,18 +226,16 @@ const updatePseudoCorrelations = (correlations, mf) => {
   // remove pseudo correlations which are out of limit, clean up links and proton counts
   checkPseudoCorrelations(correlations, atoms);
 
-  if (toSetIndices) {
-    setIndices(correlations);
-  }
-
   return correlations;
 };
 
 const addPseudoCorrelations = (correlations, atoms) => {
   Object.keys(atoms).forEach((atomType) => {
     // consider also pseudo correlations since they do not need to be added again
-    const atomTypeCount = getCorrelationsByAtomType(correlations, atomType)
-      .length;
+    const atomTypeCount = getCorrelationsByAtomType(
+      correlations,
+      atomType,
+    ).reduce((sum, correlation) => sum + 1 + correlation.getEquivalences(), 0);
     // add missing pseudo correlations
     for (let i = atomTypeCount; i < atoms[atomType]; i++) {
       correlations.push(
@@ -282,7 +282,7 @@ const checkPseudoCorrelations = (correlations, atoms) => {
       atomType,
     );
     if (correlationsAtomType.length > atoms[atomType]) {
-      // remove pseudo correlations which are out of limit and are not linked
+      // remove pseudo correlations which are out of limit and not linked
       const pseudoCorrelationsAtomType = correlationsAtomType.filter(
         (correlation) =>
           correlation.getPseudo() === true && !correlation.hasLinks(),
@@ -301,6 +301,10 @@ const checkPseudoCorrelations = (correlations, atoms) => {
     if (pseudoCorrelation.getPseudo() === true) {
       // remove wrong (old) match indices and empty links
       const linksToRemove = [];
+      const pseudoCorrelationIndex = getCorrelationIndex(
+        correlations,
+        pseudoCorrelation,
+      );
       pseudoCorrelation.getLinks().forEach((pseudoLink) => {
         for (let i = 0; i < pseudoLink.getMatches().length; i++) {
           const matchIndex = pseudoLink.getMatches()[i];
@@ -309,7 +313,7 @@ const checkPseudoCorrelations = (correlations, atoms) => {
             !correlations[matchIndex]
               .getLinks()
               .some((_link) =>
-                _link.getMatches().includes(pseudoCorrelation.getIndex()),
+                _link.getMatches().includes(pseudoCorrelationIndex),
               )
           ) {
             pseudoLink.removeMatch(matchIndex);
@@ -322,7 +326,7 @@ const checkPseudoCorrelations = (correlations, atoms) => {
       linksToRemove.forEach((pseudoLink) =>
         pseudoCorrelation.removeLink(pseudoLink.getID()),
       );
-      // correct protons count if no HSQC was found and the field was not edited manually
+      // correct protons count if no HSQC link was found anymore and the field was not edited manually
       if (
         !pseudoCorrelation.getEdited().protonsCount &&
         !pseudoCorrelation
@@ -396,17 +400,18 @@ const setLabels = (correlations) => {
   });
 };
 
-const setIndices = (correlations) => {
-  // set indices to correlations
-  correlations.forEach((correlation, i) => correlation.setIndex(i));
-};
-
 const sortCorrelations = (correlations) => {
   const compare = (corr1, corr2) => {
-    if (corr1.getSignal().delta < corr2.getSignal().delta) {
+    if (
+      (corr1.getPseudo() === false && corr2.getPseudo() === true) ||
+      corr1.getSignal().delta < corr2.getSignal().delta
+    ) {
       return -1;
     }
-    if (corr1.getSignal().delta > corr2.getSignal().delta) {
+    if (
+      (corr1.getPseudo() === true && corr2.getPseudo() === false) ||
+      corr1.getSignal().delta > corr2.getSignal().delta
+    ) {
       return 1;
     }
     return 0;
@@ -424,8 +429,6 @@ const sortCorrelations = (correlations) => {
     correlationsAtomType.sort(compare);
     sortedCorrelations = sortedCorrelations.concat(correlationsAtomType);
   });
-  // set indices to correlations
-  setIndices(sortedCorrelations);
 
   return sortedCorrelations;
 };
@@ -446,78 +449,89 @@ const buildCorrelationsState = (correlationData) => {
       correlationData.values,
       atomType,
     );
-    let atomCountAtomType = correlationsAtomType.reduce(
-      (sum, correlation) =>
-        correlation.getPseudo() === false
-          ? sum + 1 + correlation.getEquivalences()
-          : sum,
-      0,
-    );
-    // add protons count from pseudo correlations
-    if (atomType === 'H') {
-      correlationData.values.forEach((correlation) => {
-        if (
-          correlation.getPseudo() === true &&
-          correlation.getAtomType() !== 'H' &&
-          correlation.getProtonsCount().length === 1
-        ) {
-          atomCountAtomType += correlation.getProtonsCount()[0];
+    // create error for specific atom type only if there is at least one real correlation
+    if (
+      correlationsAtomType.some(
+        (correlation) => correlation.getPseudo() === false,
+      )
+    ) {
+      let atomCountAtomType = correlationsAtomType.reduce(
+        (sum, correlation) =>
+          correlation.getPseudo() === false
+            ? sum + 1 + correlation.getEquivalences()
+            : sum,
+        0,
+      );
+      // add protons count from pseudo correlations
+      if (atomType === 'H') {
+        correlationData.values.forEach((correlation) => {
+          if (
+            correlation.getPseudo() === true &&
+            correlation.getAtomType() !== 'H' &&
+            correlation.getProtonsCount().length === 1
+          ) {
+            atomCountAtomType += correlation.getProtonsCount()[0];
+          }
+        });
+      }
+      const atomCount = atoms[atomType];
+      state[atomType] = {
+        current: atomCountAtomType,
+        total: atomCount,
+        complete: atomCountAtomType === atomCount ? true : false,
+      };
+      const createErrorProperty = () => {
+        if (!lodash.get(state, `${atomType}.error`, false)) {
+          state[atomType].error = {};
         }
-      });
-    }
-    const atomCount = atoms[atomType];
-    state[atomType] = {
-      current: atomCountAtomType,
-      total: atomCount,
-      complete: atomCountAtomType === atomCount ? true : false,
-    };
-    const createErrorProperty = () => {
-      if (!lodash.get(state, `${atomType}.error`, false)) {
-        state[atomType].error = {};
-      }
-    };
-    if (!state[atomType].complete) {
-      createErrorProperty();
-      state[atomType].error.incomplete = true;
-    }
-    if (atomType === 'H') {
-      const notAttached = correlationsAtomType.reduce(
-        (array, correlation) =>
-          Object.keys(correlation.getAttachments()).length === 0
-            ? array.concat(correlation.getIndex())
-            : array,
-        [],
-      );
-      if (notAttached.length > 0) {
+      };
+      if (!state[atomType].complete) {
         createErrorProperty();
-        state[atomType].error.notAttached = notAttached;
+        state[atomType].error.incomplete = true;
       }
-      const ambiguousAttachment = correlationsAtomType.reduce(
-        (array, correlation) =>
-          Object.keys(correlation.getAttachments()).length > 1 ||
-          Object.keys(correlation.getAttachments()).some(
-            (otherAtomType) =>
-              correlation.getAttachments()[otherAtomType].length > 1,
-          )
-            ? array.concat(correlation.getIndex())
-            : array,
-        [],
-      );
-      if (ambiguousAttachment.length > 0) {
-        createErrorProperty();
-        state[atomType].error.ambiguousAttachment = ambiguousAttachment;
+      if (atomType === 'H') {
+        const notAttached = correlationsAtomType.reduce(
+          (array, correlation) =>
+            Object.keys(correlation.getAttachments()).length === 0
+              ? array.concat(
+                  getCorrelationIndex(correlationData.values, correlation),
+                )
+              : array,
+          [],
+        );
+        if (notAttached.length > 0) {
+          createErrorProperty();
+          state[atomType].error.notAttached = notAttached;
+        }
+        const ambiguousAttachment = correlationsAtomType.reduce(
+          (array, correlation) =>
+            Object.keys(correlation.getAttachments()).length > 1 ||
+            Object.keys(correlation.getAttachments()).some(
+              (otherAtomType) =>
+                correlation.getAttachments()[otherAtomType].length > 1,
+            )
+              ? array.concat(
+                  getCorrelationIndex(correlationData.values, correlation),
+                )
+              : array,
+          [],
+        );
+        if (ambiguousAttachment.length > 0) {
+          createErrorProperty();
+          state[atomType].error.ambiguousAttachment = ambiguousAttachment;
+        }
       }
-    }
 
-    const outOfLimit = correlationsAtomType.some(
-      (correlation, k) =>
-        correlation.getPseudo() === false &&
-        correlation.getAtomType() === atomType &&
-        k >= atomCount,
-    );
-    if (outOfLimit) {
-      createErrorProperty();
-      state[atomType].error.outOfLimit = true;
+      const outOfLimit = correlationsAtomType.some(
+        (correlation, k) =>
+          correlation.getPseudo() === false &&
+          correlation.getAtomType() === atomType &&
+          k >= atomCount,
+      );
+      if (outOfLimit) {
+        createErrorProperty();
+        state[atomType].error.outOfLimit = true;
+      }
     }
   });
 
