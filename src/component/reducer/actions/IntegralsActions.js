@@ -47,10 +47,10 @@ const addIntegral = (state, action) => {
       const { id, index } = state.activeSpectrum;
       const datumObject = AnalysisObj.getDatum(id);
       datumObject.addIntegral(integralRange);
-      draft.data[index].integrals = datumObject.getIntegrals();
-      const values = draft.data[index].integrals.values;
-      if (values.length === 1) {
-        const { from, to } = values[0];
+      const integrals = datumObject.getIntegrals();
+      draft.data[index].integrals = integrals;
+      if (integrals.values.length === 1) {
+        const { from, to } = integrals.values[0];
         const { x, y } = draft.data[index];
         const integralResult = xyIntegral(
           { x: x, y: y },
@@ -105,9 +105,11 @@ const handleChangeIntegralsRaltiveValue = (state, action) => {
   const { id: integralID, value } = action;
   const { id, index } = state.activeSpectrum;
   const datumObject = AnalysisObj.getDatum(id);
-  const integrals = datumObject.changeIntegralsRealtive(integralID, value);
+  datumObject.changeIntegralsRealtive(integralID, value);
+  const integrals = datumObject.getIntegrals();
+
   return produce(state, (draft) => {
-    draft.data[index].integrals.values = integrals;
+    draft.data[index].integrals = integrals;
   });
 };
 

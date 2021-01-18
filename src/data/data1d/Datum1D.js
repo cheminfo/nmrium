@@ -244,14 +244,23 @@ export class Datum1D {
     );
     if (integral) {
       const ratio = integral.absolute / newIntegralValue;
-      this.integrals.values = this.integrals.values.map((integral) => {
-        return {
-          ...integral,
-          integral: integral.absolute / ratio,
-        };
-      });
+      const { values, sum } = this.integrals.values.reduce(
+        (acc, integral, index) => {
+          const newIntegralValue = integral.absolute / ratio;
+          acc.sum += newIntegralValue;
+          acc.values[index] = {
+            ...integral,
+            integral: newIntegralValue,
+          };
+
+          return acc;
+        },
+        { values: [], sum: 0 },
+      );
+
+      this.integrals.values = values;
+      this.integrals.options.sum = sum;
     }
-    return this.integrals.values;
   }
 
   updateIntegralIntegrals() {
