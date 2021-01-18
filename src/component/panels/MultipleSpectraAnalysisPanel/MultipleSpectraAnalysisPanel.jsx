@@ -4,6 +4,7 @@ import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
 
+import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
 import { positions, useAlert } from '../../elements/popup/Alert';
@@ -11,6 +12,7 @@ import { useModal } from '../../elements/popup/Modal';
 import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
 import { AnalysisObj } from '../../reducer/core/Analysis';
+import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { copyTextToClipboard } from '../../utility/Export';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -36,6 +38,7 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
   const settingRef = useRef();
   const alert = useAlert();
   const modal = useModal();
+  const dispatch = useDispatch();
 
   const data = useMemo(() => {
     const {
@@ -64,6 +67,7 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
     Events.emit('showYSpectraTrackers', flag);
   }, []);
   const openAlignSpectra = useCallback(() => {
+    dispatch({ type: RESET_SELECTED_TOOL });
     modal.show(<AlignSpectraModal nucleus={activeTab} />, {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,
@@ -71,7 +75,7 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
       width: 500,
       // height: 600,
     });
-  }, [activeTab, modal]);
+  }, [activeTab, modal, dispatch]);
 
   const copyToClipboardHandler = useCallback(() => {
     const data = AnalysisObj.getMultipleAnalysisTableAsString(activeTab);
