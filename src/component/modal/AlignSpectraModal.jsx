@@ -177,9 +177,11 @@ const AlignSpectraModal = ({ onClose, nucleus }) => {
   const optionChangeHandler = useCallback(
     (id) => {
       const value = REFERENCES[nucleus][id];
+      const { delta = 0, ...resValues } = value || { delta: 0 };
       refForm.current.setValues({
         ...refForm.current.values,
-        ...value,
+        targetX: delta,
+        ...resValues,
       });
     },
     [nucleus],
@@ -217,7 +219,7 @@ const AlignSpectraModal = ({ onClose, nucleus }) => {
           </div>
           <div className="row margin-10">
             <span className="custom-label">Target PPM :</span>
-            <FormikInput laname="targetX" type="number" />
+            <FormikInput name="targetX" type="number" />
           </div>
         </FormikForm>
       </div>
