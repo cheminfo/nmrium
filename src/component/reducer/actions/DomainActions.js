@@ -101,18 +101,33 @@ function getDomain(data) {
   };
 }
 function get2DDomain(state) {
+  let xArray = [];
+  let yArray = [];
   let yDomains = {};
   let xDomains = {};
 
   const { activeTab, tabActiveSpectrum, data } = state;
-  const { id = 0 } = tabActiveSpectrum[activeTab] || { id: 0 };
+
   const nucleus = activeTab.split(',');
-  const { minX, maxX, minY, maxY } = data.find((datum) => datum.id === id) || {
-    minX: 0,
-    maxX: 0,
-    minY: 0,
-    maxY: 0,
-  };
+
+  try {
+    xArray = data.reduce((acc, datum) => {
+      if (datum.info.dimension === 2) {
+        acc = acc.concat([datum.minX, datum.maxX]);
+      }
+      return acc;
+    }, []);
+
+    yArray = data.reduce((acc, datum) => {
+      if (datum.info.dimension === 2) {
+        acc = acc.concat([datum.minY, datum.maxY]);
+      }
+      return acc;
+    }, []);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+  }
 
   const spectrumsIDs = nucleus.map(
     (n) => tabActiveSpectrum[n] && tabActiveSpectrum[n].id,
@@ -140,8 +155,8 @@ function get2DDomain(state) {
   }
 
   return {
-    xDomain: [minX, maxX],
-    yDomain: [minY, maxY],
+    xDomain: extent(xArray),
+    yDomain: extent(yArray),
     yDomains,
     xDomains,
   };
