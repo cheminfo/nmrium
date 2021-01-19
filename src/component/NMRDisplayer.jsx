@@ -159,10 +159,12 @@ const NMRDisplayer = memo(
     }, [preferences]);
 
     useEffect(() => {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
-      Analysis.build(dataProp || {}).then((object) => {
-        dispatch({ type: INITIATE, data: { AnalysisObj: object } });
-      });
+      if (dataProp !== undefined) {
+        dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+        Analysis.build(dataProp || {}).then((object) => {
+          dispatch({ type: INITIATE, data: { AnalysisObj: object } });
+        });
+      }
     }, [dataProp]);
 
     useEffect(() => {
