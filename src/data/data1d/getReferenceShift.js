@@ -22,6 +22,7 @@ export default function getReferenceShift(datum1D, options) {
     nbPeaks = data.nbPeaks;
     targetX = data.delta;
   }
+
   const { re, x } = datum1D.data;
-  return xyCalibrate({ x, y: re }, { from, to, nbPeaks, targetX });
+  return xyCalibrate({ x, y: re }, { from, to }, { nbPeaks, targetX });
 }
