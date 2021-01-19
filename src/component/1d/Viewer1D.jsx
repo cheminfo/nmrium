@@ -14,8 +14,7 @@ import { ZoomType } from '../reducer/actions/Zoom';
 import {
   scaleInitialState,
   scaleReducer,
-  SET_X_SCALE,
-  SET_Y_SCALE,
+  SET_SCALE,
 } from '../reducer/scaleReducer';
 import {
   ADD_INTEGRAL,
@@ -73,25 +72,28 @@ const Viewer1D = () => {
 
   useEffect(() => {
     dispatchScale({
-      type: SET_Y_SCALE,
+      type: SET_SCALE,
       yDomain,
       yDomains,
-      margin,
-      height: heightProp,
-      verticalAlign,
-    });
-  }, [heightProp, margin, verticalAlign, yDomain, yDomains]);
-
-  useEffect(() => {
-    dispatchScale({
-      type: SET_X_SCALE,
       xDomain,
       xDomains,
-      width: widthProp,
       margin,
+      height: heightProp,
+      width: widthProp,
+      verticalAlign,
       mode,
     });
-  }, [margin, widthProp, xDomain, xDomains, mode]);
+  }, [
+    heightProp,
+    margin,
+    mode,
+    verticalAlign,
+    widthProp,
+    xDomain,
+    xDomains,
+    yDomain,
+    yDomains,
+  ]);
 
   const handelBrushEnd = useCallback(
     (brushData) => {
@@ -287,7 +289,7 @@ const Viewer1D = () => {
   const [finalSize, setFinalSize] = useState();
   useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
   useEffect(() => {
-    if (finalSize) {
+    if (finalSize && isFinite(finalSize.width) && isFinite(finalSize.height)) {
       dispatch({
         type: SET_DIMENSIONS,
         ...finalSize,
