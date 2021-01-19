@@ -1,4 +1,4 @@
-import { xyXShift } from 'ml-spectra-processing';
+import { xyCalibrate } from 'ml-spectra-processing';
 
 import { getRange } from '../constants/References';
 /**
@@ -23,5 +23,5 @@ export default function getReferenceShift(datum1D, options) {
     targetX = data.delta;
   }
   const { re, x } = datum1D.data;
-  return xyXShift({ x, y: re }, { from, to, nbPeaks, targetX });
+  return xyCalibrate({ x, y: re }, { from, to, nbPeaks, targetX });
 }
