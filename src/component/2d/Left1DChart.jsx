@@ -3,8 +3,7 @@ import { useMemo, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-import { LAYOUT } from './utilities/DimensionLayout';
-import { get1DXScale, get1DYScale } from './utilities/scale';
+import { get1DYScale, get2DYScale } from './utilities/scale';
 
 const Left1DChart = memo(({ margin: marignValue, data }) => {
   const { height: originHeight, margin, yDomain, yDomains } = useChartData();
@@ -13,10 +12,11 @@ const Left1DChart = memo(({ margin: marignValue, data }) => {
 
   const paths = useMemo(() => {
     if (data) {
-      const scaleX = get1DXScale(
-        { height: originHeight, yDomain: [yDomain[1], yDomain[0]], margin },
-        LAYOUT.LEFT_1D,
-      );
+      const scaleX = get2DYScale({
+        height: originHeight,
+        yDomain: [yDomain[0], yDomain[1]],
+        margin,
+      });
       const scaleY = get1DYScale(yDomains[data.id], height, marignValue);
 
       const { x, y } = data;

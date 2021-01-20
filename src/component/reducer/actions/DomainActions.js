@@ -119,7 +119,10 @@ function get2DDomain(state) {
     }, []);
 
     yArray = data.reduce((acc, datum) => {
-      if (datum.info.dimension === 2) {
+      if (
+        datum.info.dimension === 2 &&
+        datum.info.nucleus.join(',') === activeTab
+      ) {
         acc = acc.concat([datum.minY, datum.maxY]);
       }
       return acc;
