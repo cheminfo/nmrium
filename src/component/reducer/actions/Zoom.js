@@ -97,7 +97,10 @@ const setZoom = (state, draft, defaultScale = null) => {
       .translate(0, -_scale(0));
 
     const yDomain = t.rescaleY(_scale).domain();
-    draft.yDomains[activeSpectrum.id] = yDomain;
+    draft.yDomains = {
+      ...draft.yDomains,
+      [activeSpectrum.id]: yDomain,
+    };
   }
 };
 const setZoom1D = (draft, height, margin, index, defaultScale = null) => {

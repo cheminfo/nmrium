@@ -49,6 +49,7 @@ const setKeyPreferencesHandler = (state, keyCode) => {
       xDomains,
       yDomain,
       yDomains,
+      originDomain,
       margin,
       displayerMode,
       tabActiveSpectrum,
@@ -78,13 +79,16 @@ const setKeyPreferencesHandler = (state, keyCode) => {
         xDomains,
         yDomain,
         yDomains,
+        originDomain,
         level,
         margin,
         data: spectrumsGroupsList[activeTab].reduce((acc, datum) => {
           acc[datum.id] = {
-            color: datum.display.color,
-            isVisible: datum.display.isVisible,
-            isPeaksMarkersVisible: datum.display.isPeaksMarkersVisible,
+            display: {
+              color: datum.display.color,
+              isVisible: datum.display.isVisible,
+              isPeaksMarkersVisible: datum.display.isPeaksMarkersVisible,
+            },
           };
           return acc;
         }, {}),
@@ -92,6 +96,11 @@ const setKeyPreferencesHandler = (state, keyCode) => {
     }
   });
 };
+
+const nucluesToString = (nuclues) => {
+  return typeof nuclues === 'string' ? nuclues : nuclues.join(',');
+};
+
 const applyKeyPreferencesHandler = (state, keyCode) => {
   return produce(state, (draft) => {
     const preferences = state.keysPreferences[keyCode];
@@ -100,9 +109,14 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
       draft.data = state.data.map((datum) => {
         return {
           ...datum,
-          ...(datum.info.nucleus === preferences.activeTab
-            ? preferences.data[datum.id]
-            : { display: datum.display }),
+          ...(nucluesToString(datum.info.nucleus) === preferences.activeTab
+            ? {
+                display: {
+                  ...datum.display,
+                  ...preferences.data[datum.id].display,
+                },
+              }
+            : {}),
         };
       });
       draft.displayerMode = preferences.displayerMode;
@@ -116,9 +130,11 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
       draft.xDomain = preferences.xDomain;
       draft.xDomains = preferences.xDomains;
       draft.yDomain = preferences.yDomain;
+      draft.originDomain = preferences.originDomain;
+      draft.yDomains = preferences.yDomains;
 
       if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-        draft.yDomains = preferences.yDomains;
+        // draft.yDomains = preferences.yDomains;
 
         for (const datumID of Object.keys(preferences.level)) {
           const { levelPositive, levelNegative } = preferences.level[datumID];
@@ -129,7 +145,15 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
           draft.contours[datumID] = processController.drawContours();
         }
       } else {
-        setZoom(state, draft, preferences.zoomFactor.scale);
+        setZoom(
+          {
+            ...state,
+            activeSpectrum: draft.activeSpectrum,
+            activeTab: draft.activeTab,
+          },
+          draft,
+          preferences.zoomFactor.scale,
+        );
       }
     }
   });
