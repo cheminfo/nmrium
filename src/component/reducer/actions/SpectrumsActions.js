@@ -36,7 +36,6 @@ const handleSpectrumVisibility = (state, action) => {
       const index = draft.data.findIndex((d) => d.id === action.id);
       draft.data[index].display[action.key] = action.value;
     }
-    setDomain(draft);
   });
 };
 
