@@ -1,17 +1,20 @@
 export default class HorizontalZoomHistory {
+  static instance = {};
   stack = [];
-  constructor() {
-    if (!this.instance) {
-      this.instance = this;
+  constructor(nucleus) {
+    if (!HorizontalZoomHistory.instance[nucleus]) {
+      HorizontalZoomHistory.instance[nucleus] = this;
     }
   }
 
-  static getInstance() {
-    if (this.instance) {
-      return this.instance;
+  static getInstance(nucleus) {
+    if (HorizontalZoomHistory.instance[nucleus]) {
+      return HorizontalZoomHistory.instance[nucleus];
     }
-    this.instance = new HorizontalZoomHistory();
-    return this.instance;
+    HorizontalZoomHistory.instance[nucleus] = new HorizontalZoomHistory(
+      nucleus,
+    );
+    return HorizontalZoomHistory.instance[nucleus];
   }
 
   push(val) {
@@ -21,5 +24,10 @@ export default class HorizontalZoomHistory {
   pop() {
     if (this.stack.length === 0) return null;
     return this.stack.pop();
+  }
+
+  getLast() {
+    if (this.stack.length === 0) return null;
+    return this.stack[this.stack.length - 1];
   }
 }

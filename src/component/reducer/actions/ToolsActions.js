@@ -237,6 +237,8 @@ const handleBrushEnd = (state, action) => {
     const endY = yScale.invert(action.endY);
     const domainX = startX > endX ? [endX, startX] : [startX, endX];
     const domainY = startY > endY ? [endY, startY] : [startY, endY];
+    const brushHistory = HorizontalZoomHistory.getInstance(state.activeTab);
+
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
       switch (action.trackID) {
         case LAYOUT.CENTER_2D:
@@ -252,11 +254,13 @@ const handleBrushEnd = (state, action) => {
         default:
           break;
       }
-    } else {
-      const brushHistory = HorizontalZoomHistory.getInstance();
       if (brushHistory) {
-        brushHistory.push(state.xDomain);
-        draft.xDomain = domainX;
+        brushHistory.push({ xDomain: domainX, yDomain: domainY });
+      }
+    } else {
+      draft.xDomain = domainX;
+      if (brushHistory) {
+        brushHistory.push({ xDomain: domainX, yDomain: state.yDomain });
       }
     }
   });
@@ -302,8 +306,9 @@ const handleZoom = (state, action) => {
 const zoomOut = (state, action) => {
   const { zoomType, trackID } = action;
   return produce(state, (draft) => {
+    const zoomHistory = HorizontalZoomHistory.getInstance(state.activeTab);
+
     if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
-      const zoomHistory = HorizontalZoomHistory.getInstance();
       switch (zoomType) {
         case ZoomType.HORIZONTAL: {
           draft.xDomain = state.originDomain.xDomain;
@@ -314,7 +319,9 @@ const zoomOut = (state, action) => {
           break;
         case ZoomType.STEP_HROZENTAL: {
           const zoomValue = zoomHistory.pop();
-          draft.xDomain = zoomValue ? zoomValue : state.originDomain.xDomain;
+          draft.xDomain = zoomValue
+            ? zoomValue.xDomain
+            : state.originDomain.xDomain;
           setZoom(state, draft, 0.8);
           break;
         }
@@ -340,10 +347,12 @@ const zoomOut = (state, action) => {
 
           break;
         }
-        case LAYOUT.CENTER_2D:
-          draft.xDomain = xDomain;
-          draft.yDomain = yDomain;
+        case LAYOUT.CENTER_2D: {
+          const zoomValue = zoomHistory.pop();
+          draft.xDomain = zoomValue ? zoomValue.xDomain : xDomain;
+          draft.yDomain = zoomValue ? zoomValue.yDomain : yDomain;
           break;
+        }
         default:
           draft.xDomain = xDomain;
           draft.yDomain = yDomain;
@@ -474,17 +483,20 @@ const setActiveTab = (draft, tab = null, refreshTabActiveSpectrums = false) => {
   const groupByNucleus = GroupByInfoKey('nucleus');
   const dataGroupByNucleus = groupByNucleus(draft.data);
   const tabs = Object.keys(dataGroupByNucleus);
-  setTab(
-    draft,
-    dataGroupByNucleus,
-    !tab || !tabs.includes(tab) ? tabs[0] : tab,
-    refreshTabActiveSpectrums,
-  );
+  const currentTab = !tab || !tabs.includes(tab) ? tabs[0] : tab;
+  setTab(draft, dataGroupByNucleus, currentTab, refreshTabActiveSpectrums);
   resetTool(draft);
   // resetFilterTool(draft);
 
   Processing2DData(draft, dataGroupByNucleus);
   setDomain(draft);
+
+  const zoomHistory = HorizontalZoomHistory.getInstance(draft.activeTab);
+  const zoomValue = zoomHistory.getLast();
+  if (zoomValue) {
+    draft.xDomain = zoomValue.xDomain;
+    draft.yDomain = zoomValue.yDomain;
+  }
   setMode(draft);
 };
 

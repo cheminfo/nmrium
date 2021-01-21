@@ -5,6 +5,7 @@ import { xyIntegral } from 'ml-spectra-processing';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { AnalysisObj } from '../core/Analysis';
 import { DISPLAYER_MODE } from '../core/Constants';
+import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
 function getActiveData(draft) {
   if (draft.activeTab) {
