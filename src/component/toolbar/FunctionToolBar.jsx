@@ -292,6 +292,7 @@ const FunctionToolBar = ({
               key={options.zone2D.id}
               value={options.zone2D.id}
               className="fa"
+              isVisible={activeSpectrum}
             >
               <ToolTip
                 title={`${options.zone2D.label} ( Press i  )`}
@@ -307,6 +308,7 @@ const FunctionToolBar = ({
             key={options.slicingTool.id}
             value={options.slicingTool.id}
             style={styles.icon}
+            isVisible={activeSpectrum}
           >
             <ToolTip
               title={`${options.slicingTool.label}`}
