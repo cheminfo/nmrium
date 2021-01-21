@@ -39,6 +39,7 @@ const tableStyle = css`
     button {
       background-color: transparent;
       border: none;
+      padding: 0 5px;
     }
   }
 `;
