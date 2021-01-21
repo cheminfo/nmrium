@@ -62,24 +62,26 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
   }, [children, elements, handleOpen]);
 
   useEffect(() => {
-    setElements((prevState) => {
-      if (prevState.length > 0) {
-        return prevState.map((e, i) =>
-          !forcedOpenedElements[i]
-            ? i === defaultOpenIndex
-              ? true
-              : false
-            : e,
-        );
-      }
-      forcedOpenedElements = Array(children.length)
-        .fill(false)
-        .map((e) => e);
+    if (defaultOpenIndex != null) {
+      setElements((prevState) => {
+        if (prevState.length > 0) {
+          return prevState.map((e, i) =>
+            !forcedOpenedElements[i]
+              ? i === defaultOpenIndex
+                ? true
+                : false
+              : e,
+          );
+        }
+        forcedOpenedElements = Array(children.length)
+          .fill(false)
+          .map((e) => e);
 
-      return Array(children.length)
-        .fill(false)
-        .map((e, i) => (i === defaultOpenIndex ? true : e));
-    });
+        return Array(children.length)
+          .fill(false)
+          .map((e, i) => (i === defaultOpenIndex ? true : e));
+      });
+    }
   }, [children.length, defaultOpenIndex]);
 
   return (

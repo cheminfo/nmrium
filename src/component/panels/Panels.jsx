@@ -104,18 +104,18 @@ const Panels = memo(({ selectedTool, displayerMode }) => {
   const [panelIndex, setSelectedPanelIndex] = useState(0);
   const preferences = usePreferences();
 
-  const getDefaultIndex = useCallback(() => {
-    const index = accordionItems.findIndex(
-      (item) => item.openWhen && item.openWhen.includes(selectedTool),
-    );
-    return index === -1 ? panelIndex : index;
-  }, [panelIndex, selectedTool]);
-
   useEffect(() => {
-    if (selectedTool) {
-      setSelectedPanelIndex(getDefaultIndex());
+    function getDefaultIndex() {
+      const index = accordionItems.findIndex(
+        (item) => item.openWhen && item.openWhen.includes(selectedTool),
+      );
+      return index !== -1 ? index : null;
     }
-  }, [getDefaultIndex, selectedTool]);
+    const index = getDefaultIndex();
+    if (selectedTool) {
+      setSelectedPanelIndex(index);
+    }
+  }, [selectedTool]);
 
   const check = useCallback(
     (item) => {
