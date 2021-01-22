@@ -4,6 +4,7 @@ import lodash from 'lodash';
 import { Fragment, useCallback, useEffect, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
+import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import { useGlobal } from '../../context/GlobalContext';
 import ContextMenu from '../../elements/ContextMenu';
 import useToggleStatus from '../extra/utilities/UseToggleStatus';
@@ -70,8 +71,10 @@ const RangesTable = ({
 
   const contextMenuHandler = useCallback(
     (e, rowData) => {
-      e.preventDefault();
-      contextRef.current.handleContextMenu(e, rowData);
+      if (!checkModifierKeyActivated(e)) {
+        e.preventDefault();
+        contextRef.current.handleContextMenu(e, rowData);
+      }
     },
     [contextRef],
   );

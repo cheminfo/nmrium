@@ -7,6 +7,7 @@ import {
   useEffect,
 } from 'react';
 
+import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import { useDispatch } from '../../context/DispatchContext';
 import ContextMenu from '../../elements/ContextMenu';
 import { Tabs } from '../../elements/Tab';
@@ -116,8 +117,10 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
 
   const contextMenuHandler = useCallback(
     (e, rowData) => {
-      e.preventDefault();
-      contextRef.current.handleContextMenu(e, rowData);
+      if (!checkModifierKeyActivated(e)) {
+        e.preventDefault();
+        contextRef.current.handleContextMenu(e, rowData);
+      }
     },
     [contextRef],
   );

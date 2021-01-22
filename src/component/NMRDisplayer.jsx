@@ -18,6 +18,7 @@ import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
 import { Analysis } from '../data/Analysis';
+import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
 
 import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
@@ -202,6 +203,12 @@ const NMRDisplayer = memo(
       hideRightPanel((prevFlag) => !prevFlag);
     }, []);
 
+    const preventContextMenuHandler = useCallback((e) => {
+      if (!checkModifierKeyActivated(e)) {
+        e.preventDefault();
+      }
+    }, []);
+
     return (
       <ErrorBoundary>
         <GlobalProvider
@@ -225,7 +232,7 @@ const NMRDisplayer = memo(
                           <div
                             ref={rootRef}
                             css={containerStyles}
-                            onContextMenu={(e) => e.preventDefault()}
+                            onContextMenu={preventContextMenuHandler}
                           >
                             <KeysListenerTracker>
                               <Header

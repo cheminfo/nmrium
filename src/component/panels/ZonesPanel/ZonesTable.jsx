@@ -4,6 +4,7 @@ import { useMemo, useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import { buildID } from '../../../data/utilities/Concatenation';
+import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import ContextMenu from '../../elements/ContextMenu';
 
 import ZonesTableRow from './ZonesTableRow';
@@ -96,8 +97,10 @@ const ZonesTable = ({ tableData, onUnlink, context, nuclei, preferences }) => {
 
   const contextMenuHandler = useCallback(
     (e, rowData) => {
-      e.preventDefault();
-      contextRef.current.handleContextMenu(e, rowData);
+      if (!checkModifierKeyActivated(e)) {
+        e.preventDefault();
+        contextRef.current.handleContextMenu(e, rowData);
+      }
     },
     [contextRef],
   );

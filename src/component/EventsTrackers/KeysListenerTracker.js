@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useAlert } from '../elements/popup/Alert';
@@ -7,26 +8,6 @@ import {
   SET_KEY_PREFERENCES,
   APPLY_KEY_PREFERENCES,
 } from '../reducer/types/Types';
-
-function isModifierKeyActivated(event) {
-  const modifiersKeys = [
-    'Alt',
-    'AltGraph',
-    'CapsLock',
-    'Control',
-    'Meta',
-    'NumLocK',
-    'ScrollLock',
-    'Shift',
-    'OS',
-  ];
-  for (const key of modifiersKeys) {
-    if (event.getModifierState(key)) {
-      return true;
-    }
-  }
-  return false;
-}
 
 const KeysListenerTracker = ({ children }) => {
   const { keysPreferences } = useChartData();
@@ -48,7 +29,7 @@ const KeysListenerTracker = ({ children }) => {
           });
           alert.show(`Configuration Reset, press '${num}' again to reload it.`);
         } else {
-          if (!isModifierKeyActivated(e)) {
+          if (!checkModifierKeyActivated(e)) {
             if (keysPreferences && keysPreferences[num]) {
               dispatch({
                 type: APPLY_KEY_PREFERENCES,

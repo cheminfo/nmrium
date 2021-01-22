@@ -3,6 +3,7 @@ import { Fragment, useRef, useCallback } from 'react';
 /** @jsxImportSource @emotion/react */
 import { useTable, useExpanded, useSortBy } from 'react-table';
 
+import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import ContextMenu from '../ContextMenu';
 
 import ReactTableHeader from './Elements/ReactTableHeader';
@@ -35,8 +36,10 @@ const ReactTableExpandable = ({
 
   const contextMenuHandler = useCallback(
     (e, row) => {
-      e.preventDefault();
-      contextRef.current.handleContextMenu(e, row.original);
+      if (!checkModifierKeyActivated(e)) {
+        e.preventDefault();
+        contextRef.current.handleContextMenu(e, row.original);
+      }
     },
     [contextRef],
   );

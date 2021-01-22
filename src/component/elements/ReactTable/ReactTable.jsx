@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Fragment, useRef, useCallback, memo } from 'react';
 import { useTable, useSortBy } from 'react-table';
 
+import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import ContextMenu from '../ContextMenu';
 
 import ReactTableHeader from './Elements/ReactTableHeader';
@@ -28,8 +29,10 @@ const ReactTable = memo(({ data, columns, context }) => {
 
   const contextMenuHandler = useCallback(
     (e, row) => {
-      e.preventDefault();
-      contextRef.current.handleContextMenu(e, row.original);
+      if (!checkModifierKeyActivated(e)) {
+        e.preventDefault();
+        contextRef.current.handleContextMenu(e, row.original);
+      }
     },
     [contextRef],
   );
