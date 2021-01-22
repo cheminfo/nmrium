@@ -6,6 +6,7 @@ import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCor
 import { options } from '../../toolbar/ToolTypes';
 import { AnalysisObj } from '../core/Analysis';
 import getClosestNumber from '../helper/GetClosestNumber';
+import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
 import { setDomain, setMode } from './DomainActions';
 import { setYAxisShift } from './ToolsActions';
@@ -176,6 +177,13 @@ const enableFilter = (state, filterID, checked) => {
 
     setDomain(draft);
     setMode(draft);
+
+    const zoomHistory = HorizontalZoomHistory.getInstance(draft.activeTab);
+    const zoomValue = zoomHistory.getLast();
+    if (zoomValue) {
+      draft.xDomain = zoomValue.xDomain;
+      draft.yDomain = zoomValue.yDomain;
+    }
   });
 };
 
