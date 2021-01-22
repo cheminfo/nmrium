@@ -11,7 +11,7 @@ import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 
-const ReactTable = memo(({ data, columns, context }) => {
+function ReactTable({ data, columns, context }) {
   const contextRef = useRef();
   const {
     getTableProps,
@@ -57,7 +57,8 @@ const ReactTable = memo(({ data, columns, context }) => {
       <ContextMenu ref={contextRef} context={context} />
     </Fragment>
   );
-});
+}
+
 ReactTable.propTypes = {
   context: PropTypes.arrayOf(
     PropTypes.shape({
@@ -70,4 +71,4 @@ ReactTable.defaultProps = {
   context: null,
 };
 
-export default ReactTable;
+export default memo(ReactTable);

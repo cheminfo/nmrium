@@ -10,12 +10,12 @@ import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 
-const ReactTableExpandable = ({
+function ReactTableExpandable({
   columns,
   data,
   renderRowSubComponent,
   context,
-}) => {
+}) {
   const contextRef = useRef();
 
   const {
@@ -75,7 +75,7 @@ const ReactTableExpandable = ({
       </tbody>
     </table>
   );
-};
+}
 
 ReactTableExpandable.defaultProps = {
   context: null,
