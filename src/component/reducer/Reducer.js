@@ -1,5 +1,3 @@
-import { produce } from 'immer';
-
 import { options } from '../toolbar/ToolTypes';
 
 import checkActionType from './IgnoreActions';
@@ -104,139 +102,139 @@ export function dispatchMiddleware(dispatch, onDataChange = null) {
   };
 }
 
-function innerSpectrumReducer(draft, action) {
+export function spectrumReducer(state, action) {
   switch (action.type) {
     case types.INITIATE:
-      return LoadActions.initiate(draft, action.data);
+      return LoadActions.initiate(state, action.data);
     case types.SET_LOADING_FLAG:
-      return LoadActions.setIsLoading(draft, action.isLoading);
+      return LoadActions.setIsLoading(state, action.isLoading);
     case types.LOAD_JSON_FILE:
-      return LoadActions.handleLoadJsonFile(draft, action.data);
+      return LoadActions.handleLoadJsonFile(state, action.data);
     case types.LOAD_JCAMP_FILE:
-      return LoadActions.loadJcampFile(draft, action.files);
+      return LoadActions.loadJcampFile(state, action.files);
     case types.LOAD_JDF_FILE:
-      return LoadActions.loadJDFFile(draft, action.files);
+      return LoadActions.loadJDFFile(state, action.files);
     case types.LOAD_MOL_FILE:
-      return LoadActions.handleLoadMOLFile(draft, action.files);
+      return LoadActions.handleLoadMOLFile(state, action.files);
     case types.LOAD_ZIP_FILE:
-      return LoadActions.handleLoadZIPFile(draft, action.files);
+      return LoadActions.handleLoadZIPFile(state, action.files);
     case types.SET_DATA:
-      return LoadActions.setData(draft, action.data);
+      return LoadActions.setData(state, action.data);
     case types.EXPORT_DATA:
-      return exportData(draft, action);
+      return exportData(state, action);
     case types.ADD_PEAK:
-      return PeaksActions.addPeak(draft, action.mouseCoordinates);
+      return PeaksActions.addPeak(state, action.mouseCoordinates);
     case types.ADD_PEAKS:
-      return PeaksActions.addPeaks(draft, action);
+      return PeaksActions.addPeaks(state, action);
 
     case types.DELETE_PEAK_NOTATION:
-      return PeaksActions.deletePeak(draft, action.data);
+      return PeaksActions.deletePeak(state, action.data);
 
     case types.ADD_INTEGRAL:
-      return IntegralsActions.addIntegral(draft, action);
+      return IntegralsActions.addIntegral(state, action);
     case types.DELETE_INTEGRAL:
-      return IntegralsActions.deleteIntegral(draft, action);
+      return IntegralsActions.deleteIntegral(state, action);
     case types.CHANGE_INTEGRAL_DATA:
-      return IntegralsActions.changeIntegral(draft, action);
+      return IntegralsActions.changeIntegral(state, action);
     case types.RESIZE_INTEGRAL:
-      return IntegralsActions.handleResizeIntegral(draft, action);
+      return IntegralsActions.handleResizeIntegral(state, action);
     case types.CHANGE_INTEGRAL_ZOOM:
-      return IntegralsActions.handleChangeIntegralZoom(draft, action);
+      return IntegralsActions.handleChangeIntegralZoom(state, action);
     case types.CHANGE_INTEGRAL_SUM:
-      return IntegralsActions.handleChangeIntegralSum(draft, action.value);
+      return IntegralsActions.handleChangeIntegralSum(state, action.value);
     case types.CHANGE_INTEGRAL_RELATIVE:
-      return IntegralsActions.handleChangeIntegralsRaltiveValue(draft, action);
+      return IntegralsActions.handleChangeIntegralsRaltiveValue(state, action);
 
     case types.SET_ORIGINAL_DOMAIN:
-      return DomainActions.setOriginalDomain(draft, action.domain);
+      return DomainActions.setOriginalDomain(state, action.domain);
 
     case types.SET_X_DOMAIN:
-      return DomainActions.setXDomain(draft, action.xDomain);
+      return DomainActions.setXDomain(state, action.xDomain);
 
     case types.SET_Y_DOMAIN:
-      return DomainActions.setYDomain(draft, action.yDomain);
+      return DomainActions.setYDomain(state, action.yDomain);
 
     case types.SET_WIDTH:
-      return setWidth(draft, action.width);
+      return setWidth(state, action.width);
 
     case types.SET_DIMENSIONS:
-      return handleSetDimensions(draft, action.width, action.height);
+      return handleSetDimensions(state, action.width, action.height);
 
     case types.SET_SELECTED_TOOL:
-      return ToolsActions.setSelectedTool(draft, action.selectedTool);
+      return ToolsActions.setSelectedTool(state, action.selectedTool);
     case types.RESET_SELECTED_TOOL:
-      return ToolsActions.resetSelectedTool(draft);
+      return ToolsActions.resetSelectedTool(state);
     case types.SET_SELECTED_OPTIONS_PANEL:
       return ToolsActions.setSelectedOptionPanel(
-        draft,
+        state,
         action.selectedOptionPanel,
       );
     case types.FULL_ZOOM_OUT:
-      return ToolsActions.zoomOut(draft, action);
+      return ToolsActions.zoomOut(state, action);
     case types.SHIFT_SPECTRUM:
-      return FiltersActions.shiftSpectrumAlongXAxis(draft, action.shiftValue);
+      return FiltersActions.shiftSpectrumAlongXAxis(state, action.shiftValue);
     case types.APPLY_ZERO_FILLING_FILTER:
-      return FiltersActions.applyZeroFillingFilter(draft, action.value);
+      return FiltersActions.applyZeroFillingFilter(state, action.value);
     case types.APPLY_FFT_FILTER:
-      return FiltersActions.applyFFTFilter(draft);
+      return FiltersActions.applyFFTFilter(state);
     case types.APPLY_MANUAL_PHASE_CORRECTION_FILTER:
       return FiltersActions.applyManualPhaseCorrectionFilter(
-        draft,
+        state,
         action.value,
       );
     case types.APPLY_AUTO_PHASE_CORRECTION_FILTER:
-      return FiltersActions.applyAutoPhaseCorrectionFilter(draft, action.value);
+      return FiltersActions.applyAutoPhaseCorrectionFilter(state, action.value);
     case types.APPLY_ABSOLUTE_FILTER:
-      return FiltersActions.applyAbsoluteFilter(draft);
+      return FiltersActions.applyAbsoluteFilter(state);
     case types.CALCULATE_MANUAL_PHASE_CORRECTION_FILTER:
-      return FiltersActions.calculateManualPhaseCorrection(draft, action.value);
+      return FiltersActions.calculateManualPhaseCorrection(state, action.value);
     case types.ENABLE_FILTER:
-      return FiltersActions.enableFilter(draft, action.id, action.checked);
+      return FiltersActions.enableFilter(state, action.id, action.checked);
     case types.DELETE_FILTER:
-      return FiltersActions.deleteFilter(draft, action.id);
+      return FiltersActions.deleteFilter(state, action.id);
     case types.SET_FILTER_SNAPSHOT:
-      return FiltersActions.filterSnapshotHandler(draft, action);
+      return FiltersActions.filterSnapshotHandler(state, action);
 
     case types.CHANGE_VISIBILITY:
-      return SpectrumsActions.handleSpectrumVisibility(draft, action);
+      return SpectrumsActions.handleSpectrumVisibility(state, action);
 
     case types.CHANGE_PEAKS_MARKERS_VISIBILITY:
       return SpectrumsActions.handleChangePeaksMarkersVisibility(
-        draft,
+        state,
         action.data,
       );
     case types.CHANGE_ACTIVE_SPECTRUM:
-      return SpectrumsActions.handleChangeActiveSpectrum(draft, action.data);
+      return SpectrumsActions.handleChangeActiveSpectrum(state, action.data);
     case types.CHANGE_SPECTRUM_COLOR:
-      return SpectrumsActions.handleChangeSpectrumColor(draft, action.data);
+      return SpectrumsActions.handleChangeSpectrumColor(state, action.data);
     case types.CHANGE_SPECTRUM_SETTING:
-      return SpectrumsActions.changeSpectrumSetting(draft, action);
+      return SpectrumsActions.changeSpectrumSetting(state, action);
     case types.ALIGN_SPECTRA:
-      return SpectrumsActions.alignSpectraHandler(draft, action);
+      return SpectrumsActions.alignSpectraHandler(state, action);
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
-      return ToolsActions.handleToggleRealImaginaryVisibility(draft);
+      return ToolsActions.handleToggleRealImaginaryVisibility(state);
     case types.SET_ZOOM_FACTOR:
-      return ToolsActions.handleZoom(draft, action);
+      return ToolsActions.handleZoom(state, action);
 
     case types.CHANGE_SPECTRUM_DISPLAY_VIEW_MODE:
-      return ToolsActions.handleChangeSpectrumDisplayMode(draft, action);
+      return ToolsActions.handleChangeSpectrumDisplayMode(state, action);
 
     case types.ADD_MOLECULE:
-      return MoleculeActions.handleAddMolecule(draft, action.molfile);
+      return MoleculeActions.handleAddMolecule(state, action.molfile);
 
     case types.SET_MOLECULE:
       return MoleculeActions.handleSetMolecule(
-        draft,
+        state,
         action.molfile,
         action.key,
       );
 
     case types.DELETE_MOLECULE:
-      return MoleculeActions.handleDeleteMolecule(draft, action.key);
+      return MoleculeActions.handleDeleteMolecule(state, action.key);
 
     case types.UPDATE_CORRELATIONS:
       return CorrelationsActions.handleUpdateCorrelations(
-        draft,
+        state,
         action.signals1D,
         action.signals2D,
         action.signalsDEPT,
@@ -244,124 +242,122 @@ function innerSpectrumReducer(draft, action) {
 
     case types.ADD_CORRELATION:
       return CorrelationsActions.handleAddCorrelation(
-        draft,
+        state,
         action.correlation,
       );
 
     case types.DELETE_CORRELATION:
-      return CorrelationsActions.handleDeleteCorrelation(draft, action.id);
+      return CorrelationsActions.handleDeleteCorrelation(state, action.id);
 
     case types.SET_CORRELATION:
       return CorrelationsActions.handleSetCorrelation(
-        draft,
+        state,
         action.id,
         action.correlation,
       );
 
     case types.SET_CORRELATIONS:
       return CorrelationsActions.handleSetCorrelations(
-        draft,
+        state,
         action.ids,
         action.correlations,
       );
 
     case types.SET_CORRELATION_MF:
-      return CorrelationsActions.handleSetMF(draft, action.mf);
+      return CorrelationsActions.handleSetMF(state, action.mf);
 
     case types.UNSET_CORRELATION_MF:
-      return CorrelationsActions.handleUnsetMF(draft);
+      return CorrelationsActions.handleUnsetMF(state);
 
     case types.SET_CORRELATION_TOLERANCE:
-      return CorrelationsActions.handleSetTolerance(draft, action.tolerance);
+      return CorrelationsActions.handleSetTolerance(state, action.tolerance);
 
     case types.DELETE_SPECTRA:
-      return SpectrumsActions.handleDeleteSpectra(draft, action);
+      return SpectrumsActions.handleDeleteSpectra(state, action);
 
     case types.SET_INTEGRAL_Y_DOMAIN:
-      return DomainActions.handleChangeIntegralYDomain(draft, action.yDomain);
+      return DomainActions.handleChangeIntegralYDomain(state, action.yDomain);
 
     case types.BRUSH_END:
-      return ToolsActions.handleBrushEnd(draft, action);
+      return ToolsActions.handleBrushEnd(state, action);
 
     case types.SET_VERTICAL_INDICATOR_X_POSITION:
-      return ToolsActions.setVerticalIndicatorXPosition(draft, action.position);
+      return ToolsActions.setVerticalIndicatorXPosition(state, action.position);
     case types.SET_SPECTRUMS_VERTICAL_ALIGN:
-      return ToolsActions.setSpectrumsVerticalAlign(draft, action.flag);
+      return ToolsActions.setSpectrumsVerticalAlign(state, action.flag);
 
     case types.AUTO_PEAK_PICKING:
-      return PeaksActions.handleAutoPeakPicking(draft, action.options);
+      return PeaksActions.handleAutoPeakPicking(state, action.options);
 
     case types.AUTO_ZONES_DETECTION:
-      return ZonesActions.handleAutoZonesDetection(draft, action.options);
+      return ZonesActions.handleAutoZonesDetection(state, action.options);
     case types.AUTO_RANGES_DETECTION:
-      return RangesActions.handleAutoRangesDetection(draft, action.options);
+      return RangesActions.handleAutoRangesDetection(state, action.options);
     case types.ADD_RANGE:
-      return RangesActions.handleAddRange(draft, action);
+      return RangesActions.handleAddRange(state, action);
     case types.DELETE_RANGE:
-      return RangesActions.handleDeleteRange(draft, action.rangeID);
+      return RangesActions.handleDeleteRange(state, action.rangeID);
     case types.CHANGE_RANGE_DATA:
-      return RangesActions.handleChangeRange(draft, action);
+      return RangesActions.handleChangeRange(state, action);
     case types.RESIZE_RANGE:
-      return RangesActions.handleResizeRange(draft, action);
+      return RangesActions.handleResizeRange(state, action);
     case types.CHANGE_RANGE_SUM:
-      return RangesActions.handleChangeRangeSum(draft, action.value);
+      return RangesActions.handleChangeRangeSum(state, action.value);
     case types.CHANGE_RANGE_RELATIVE:
-      return RangesActions.handleChangeRangeRaltiveValue(draft, action);
+      return RangesActions.handleChangeRangeRaltiveValue(state, action);
     case types.CHANGE_RANGE_SIGNAL:
-      return RangesActions.handleChangeRangeSignalValue(draft, action);
+      return RangesActions.handleChangeRangeSignalValue(state, action);
 
     case types.SET_PREFERENCES:
-      return handelSetPreferences(draft, action.data);
+      return handelSetPreferences(state, action.data);
     case types.SET_ACTIVE_TAB:
-      return ToolsActions.handelSetActiveTab(draft, action.tab);
+      return ToolsActions.handelSetActiveTab(state, action.tab);
     case types.ADD_BASE_LINE_ZONE:
-      return ToolsActions.handleAddBaseLineZone(draft, action.zone);
+      return ToolsActions.handleAddBaseLineZone(state, action.zone);
     case types.DELETE_BASE_LINE_ZONE:
-      return ToolsActions.handleDeleteBaseLineZone(draft, action.id);
+      return ToolsActions.handleDeleteBaseLineZone(state, action.id);
     case types.APPLY_BASE_LINE_CORRECTION_FILTER:
-      return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
+      return FiltersActions.handleBaseLineCorrectionFilter(state, action);
     case types.SET_KEY_PREFERENCES:
-      return setKeyPreferencesHandler(draft, action.keyCode);
+      return setKeyPreferencesHandler(state, action.keyCode);
     case types.APPLY_KEY_PREFERENCES:
-      return applyKeyPreferencesHandler(draft, action.keyCode);
+      return applyKeyPreferencesHandler(state, action.keyCode);
     case types.SET_2D_LEVEL:
-      return ToolsActions.levelChangeHandler(draft, action);
+      return ToolsActions.levelChangeHandler(state, action);
     case types.ADD_2D_ZONE:
-      return ZonesActions.add2dZoneHandler(draft, action);
+      return ZonesActions.add2dZoneHandler(state, action);
     case types.DELETE_2D_ZONE:
-      return ZonesActions.delete2dZoneHandler(draft, action.zoneID);
+      return ZonesActions.delete2dZoneHandler(state, action.zoneID);
     case types.ADD_MISSING_PROJECTION:
-      return SpectrumsActions.addMissingProjectionHander(draft, action);
+      return SpectrumsActions.addMissingProjectionHander(state, action);
     case types.RESET_DOMAIN:
-      return DomainActions.handelResetDomain(draft);
+      return DomainActions.handelResetDomain(state);
     case types.CHANGE_ZONE_DATA:
-      return ZonesActions.handleChangeZone(draft, action);
+      return ZonesActions.handleChangeZone(state, action);
     case types.CHANGE_ZONE_SIGNAL:
-      return ZonesActions.changeZoneSignal(draft, action);
+      return ZonesActions.changeZoneSignal(state, action);
 
     case types.ANALYZE_SPECTRA:
-      return SpectraAanalysisActions.analyzeSpectra(draft, action);
+      return SpectraAanalysisActions.analyzeSpectra(state, action);
     case types.DELETE_ANALYZE_SPECTRA_RANGE:
-      return SpectraAanalysisActions.handleDeleteSpectraRanges(draft, action);
+      return SpectraAanalysisActions.handleDeleteSpectraRanges(state, action);
     case types.RESIZE_ANALYZE_SPECTRA_RANGE:
-      return SpectraAanalysisActions.handleResizeSpectraRange(draft, action);
+      return SpectraAanalysisActions.handleResizeSpectraRange(state, action);
     case types.SET_ANALYZE_SPECTRA_COLUMNS:
-      return SpectraAanalysisActions.handleSetcolumns(draft, action);
+      return SpectraAanalysisActions.handleSetcolumns(state, action);
     case types.FILTER_SPECTRA_COLUMN:
-      return SpectraAanalysisActions.handleFiltercolumn(draft, action);
+      return SpectraAanalysisActions.handleFiltercolumn(state, action);
 
     case UNDO:
-      return handleHistoryUndo(draft);
+      return handleHistoryUndo(state);
 
     case REDO:
-      return handleHistoryRedo(draft);
+      return handleHistoryRedo(state);
 
     case RESET:
-      return handleHistoryReset(draft, action);
+      return handleHistoryReset(state, action);
 
     default:
-      return draft;
+      return state;
   }
 }
-
-export const spectrumReducer = produce(innerSpectrumReducer);
