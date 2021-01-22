@@ -1,5 +1,6 @@
 export default class HorizontalZoomHistory {
   static instance = {};
+
   stack = [];
   constructor(nucleus) {
     if (!HorizontalZoomHistory.instance[nucleus]) {
@@ -17,13 +18,17 @@ export default class HorizontalZoomHistory {
     return HorizontalZoomHistory.instance[nucleus];
   }
 
+  static initiate() {
+    HorizontalZoomHistory.instance = {};
+  }
+
   push(val) {
     this.stack.push(val);
   }
 
   pop() {
-    if (this.stack.length === 0) return null;
-    return this.stack.pop();
+    const val = this.stack.pop();
+    return val ? this.stack[this.stack.length - 1] : null;
   }
 
   getLast() {

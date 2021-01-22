@@ -3,6 +3,7 @@ import { produce } from 'immer';
 import { Datum1D } from '../../../data/data1d/Datum1D';
 import getColor from '../../../data/utilities/getColor';
 import { AnalysisObj, initiateObject } from '../core/Analysis';
+import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
 import { setMode, setDomain } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
@@ -14,6 +15,7 @@ const setIsLoading = (state, isLoading) => {
 };
 
 const initiate = (state, dataObject) => {
+  HorizontalZoomHistory.initiate();
   initiateObject(dataObject.AnalysisObj);
   const spectraData = AnalysisObj.getSpectraData();
   const molecules = AnalysisObj.getMolecules();
