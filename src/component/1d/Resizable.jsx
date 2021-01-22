@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Fragment, useCallback, useState } from 'react';
+import { Fragment, useCallback, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 
 import { useChartData } from '../context/ChartContext';
@@ -10,6 +10,8 @@ const Resizable = ({ from, to, onDrag, onDrop }) => {
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
   const [enable, setEnable] = useState(true);
+  const draggableRightRef = useRef(null);
+  const draggableLeftRef = useRef(null);
 
   const { scaleX } = useScale();
 
@@ -135,8 +137,10 @@ const Resizable = ({ from, to, onDrag, onDrop }) => {
         onStart={handleRightStart}
         onDrag={handleRightDrag}
         onStop={handleRightStop}
+        nodeRef={draggableRightRef}
       >
         <rect
+          ref={draggableRightRef}
           className={enable ? 'handle' : ''}
           width={rightDragVisibility ? 1 : 6}
           fill="red"
@@ -163,8 +167,10 @@ const Resizable = ({ from, to, onDrag, onDrop }) => {
         onStart={handleLeftStart}
         onDrag={handleLeftDrag}
         onStop={handleLeftStop}
+        nodeRef={draggableLeftRef}
       >
         <rect
+          ref={draggableLeftRef}
           className={enable ? 'handle' : ''}
           width={leftDragVisibility ? 1 : 6}
           fill="red"
