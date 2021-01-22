@@ -170,17 +170,16 @@ export class Datum2D {
         id: generateID(),
         peak: zone.peaks,
         x: {
-          delta: (zone.fromTo[0].from + zone.fromTo[0].to) / 2,
+          delta: zone.shiftX,
           diaID: [],
         },
         y: {
-          delta: (zone.fromTo[1].from + zone.fromTo[1].to) / 2,
+          delta: zone.shiftY,
           diaID: [],
         },
         kind: 'signal',
       };
     });
-
     const zone = {
       id: generateID(),
       x: { from: fromX, to: toX },
@@ -351,11 +350,11 @@ export class Datum2D {
             id: generateID(),
             peak: zone.peaks,
             x: {
-              delta: (zone.fromTo[0].from + zone.fromTo[0].to) / 2,
+              delta: zone.shiftX,
               diaID: [],
             },
             y: {
-              delta: (zone.fromTo[1].from + zone.fromTo[1].to) / 2,
+              delta: zone.shiftY,
               diaID: [],
             },
             kind: 'signal',
@@ -393,7 +392,13 @@ export class Datum2D {
     let yIndexFrom = Math.floor((fromY - data.minY) / yStep);
     let xIndexTo = Math.floor((toX - data.minX) / xStep);
     let yIndexTo = Math.floor((toY - data.minY) / yStep);
-    let dataMatrix = { z: [], maxX: toX, minX: fromX, maxY: toY, minY: fromY };
+    let dataMatrix = {
+      z: [],
+      maxX: data.minX + xIndexTo * xStep,
+      minX: data.minX + xIndexFrom * xStep,
+      maxY: data.minY + yIndexTo * yStep,
+      minY: data.minY + yIndexFrom * yStep,
+    };
     let maxZ = Number.MIN_SAFE_INTEGER;
     let minZ = Number.MAX_SAFE_INTEGER;
 
