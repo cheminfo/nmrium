@@ -18,6 +18,7 @@
     "prepublishOnly": "npm run clean-lib && npm run compile-esm && npm run compile-cjs",
     "start": "react-scripts start ",
     "build": "react-scripts --max_old_space_size=4096 build",
+    "build-with-profiling": "react-scripts --max_old_space_size=4096 build --profile",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "eslint": "eslint src --ext js,jsx --cache",
