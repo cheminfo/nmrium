@@ -142,7 +142,7 @@ function NMRDisplayer({
   });
   const [isRightPanelHide, hideRightPanel] = useState(false);
   const [isResizeEventStart, setResizeEventStart] = useState(false);
-  const [helpData, setHelpData] = useState(helpList());
+  const [helpData, setHelpData] = useState(helpList);
 
   const [state, dispatch] = useReducer(spectrumReducer, initialState);
   const [preferencesState, dispatchPreferences] = useReducer(
