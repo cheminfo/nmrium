@@ -24,13 +24,7 @@ const menuStyles = css`
   }
 `;
 
-const MenuButton = ({
-  style,
-  component,
-  toolTip = '',
-  children,
-  className,
-}) => {
+function MenuButton({ style, component, toolTip = '', children, className }) {
   const [isShown, showMenu] = useState(false);
   const { rootRef } = useGlobal();
 
@@ -67,6 +61,6 @@ const MenuButton = ({
       ) : null}
     </div>
   );
-};
+}
 
 export default MenuButton;

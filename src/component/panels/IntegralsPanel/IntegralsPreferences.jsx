@@ -72,7 +72,7 @@ const formatFields = [
     defaultFormat: '00.00',
   },
 ];
-const IntegralsPreferences = forwardRef(({ nucleus, preferences }, ref) => {
+function IntegralsPreferences({ nucleus, preferences }, ref) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
@@ -195,6 +195,6 @@ const IntegralsPreferences = forwardRef(({ nucleus, preferences }, ref) => {
       </form>
     </div>
   );
-});
+}
 
-export default IntegralsWrapper(IntegralsPreferences);
+export default IntegralsWrapper(forwardRef(IntegralsPreferences));

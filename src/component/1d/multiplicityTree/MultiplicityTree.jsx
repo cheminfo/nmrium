@@ -23,7 +23,7 @@ const styles = {
   strokeWidth: 1,
 };
 
-const MultiplicityTree = ({
+function MultiplicityTree({
   rangeFrom,
   rangeTo,
   signal,
@@ -32,7 +32,7 @@ const MultiplicityTree = ({
     distance: 10,
     fontSize: 11,
   },
-}) => {
+}) {
   const { scaleX, scaleY } = useScale();
   const {
     data: spectraData,
@@ -273,6 +273,6 @@ const MultiplicityTree = ({
       {multiplicityTree}
     </g>
   );
-};
+}
 
 export default MultiplicityTree;

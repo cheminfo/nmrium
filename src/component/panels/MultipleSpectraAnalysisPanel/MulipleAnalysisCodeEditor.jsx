@@ -18,7 +18,7 @@ const initCode = `function run(data) {
 }(args);
 `;
 
-const MulipleAnalysisCodeEditor = memo(({ data }) => {
+function MulipleAnalysisCodeEditor({ data }) {
   const { values, setFieldValue } = useFormikContext();
   const [code, setCode] = useState(values.code ? values.code : initCode);
   const [result, setResult] = useState('');
@@ -80,6 +80,6 @@ const MulipleAnalysisCodeEditor = memo(({ data }) => {
       />
     </div>
   );
-});
+}
 
-export default MulipleAnalysisCodeEditor;
+export default memo(MulipleAnalysisCodeEditor);

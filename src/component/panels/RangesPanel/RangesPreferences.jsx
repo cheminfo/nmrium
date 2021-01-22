@@ -54,7 +54,7 @@ const styles = {
   },
 };
 
-const RangesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
+function RangesPreferences({ nucleus, preferences }, ref) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const [settings, setSetting] = useState(null);
@@ -184,6 +184,6 @@ const RangesPreferences = forwardRef(({ nucleus, preferences }, ref) => {
       </form>
     </div>
   );
-});
+}
 
-export default memo(RangesPreferences);
+export default memo(forwardRef(RangesPreferences));

@@ -100,7 +100,7 @@ const accordionItems = [
   },
 ];
 
-const Panels = memo(({ selectedTool, displayerMode }) => {
+function Panels({ selectedTool, displayerMode }) {
   const [panelIndex, setSelectedPanelIndex] = useState(0);
   const preferences = usePreferences();
 
@@ -144,6 +144,6 @@ const Panels = memo(({ selectedTool, displayerMode }) => {
       })}
     </Accordion>
   );
-});
+}
 
-export default Panels;
+export default memo(Panels);

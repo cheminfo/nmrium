@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 
 import Input from '../Input';
 
-const FormikInput = ({
+function FormikInput({
   label,
   name,
   style,
@@ -16,7 +16,7 @@ const FormikInput = ({
   value,
   format,
   ...resProps
-}) => {
+}) {
   const {
     values,
     handleChange,
@@ -55,7 +55,7 @@ const FormikInput = ({
       {...resProps}
     />
   );
-};
+}
 
 FormikInput.propTypes = {
   label: PropTypes.string,

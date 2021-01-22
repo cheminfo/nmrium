@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { memo, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Logo from '../../elements/Logo';
 
@@ -49,7 +49,7 @@ const styles = css`
   }
 `;
 
-const AboutTabContent = memo(() => {
+function AboutTabContent() {
   const [info, setInfo] = useState();
   useEffect(() => {
     Promise.all([
@@ -79,6 +79,6 @@ const AboutTabContent = memo(() => {
       </a>
     </div>
   ) : null;
-});
+}
 
 export default AboutTabContent;

@@ -47,7 +47,7 @@ const styles = css`
     border: none;
   }
 `;
-const ContextMenu = forwardRef(({ context }, ref) => {
+function ContextMenu({ context }, ref) {
   const [position, setPosition] = useState({ lef: 0, top: 0 });
   const { rootRef, elementsWraperRef } = useGlobal();
   const [data, setData] = useState();
@@ -160,6 +160,6 @@ const ContextMenu = forwardRef(({ context }, ref) => {
       root.current,
     )
   );
-});
+}
 
-export default ContextMenu;
+export default forwardRef(ContextMenu);

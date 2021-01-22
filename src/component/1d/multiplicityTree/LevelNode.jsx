@@ -2,7 +2,7 @@ import { useScale } from '../../context/ScaleContext';
 
 import { TREE_LEVEL_COLORS } from './TreeColors';
 
-const LevelNode = ({ signal, signalID, startY, levelHeight }) => {
+function LevelNode({ signal, signalID, startY, levelHeight }) {
   const { scaleX } = useScale();
   return (
     <line
@@ -14,6 +14,6 @@ const LevelNode = ({ signal, signalID, startY, levelHeight }) => {
       stroke={TREE_LEVEL_COLORS[0]}
     />
   );
-};
+}
 
 export default LevelNode;

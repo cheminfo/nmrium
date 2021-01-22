@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { getXScale } from '../../1d/utilities/scale';
 import { AnalysisObj } from '../core/Analysis';
 
-const analyzeSpectra = (state, action) => {
+function analyzeSpectra(state, action) {
   const scaleX = getXScale(state);
   const start = scaleX.invert(action.startX);
   const end = scaleX.invert(action.endX);
@@ -22,9 +22,9 @@ const analyzeSpectra = (state, action) => {
   return produce(state, (draft) => {
     draft.spectraAanalysis = spectraAanalysis;
   });
-};
+}
 
-const handleDeleteSpectraRanges = (state, action) => {
+function handleDeleteSpectraRanges(state, action) {
   const { colKey } = action;
   const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().deleteSpectraAnalysis(
     colKey,
@@ -34,8 +34,8 @@ const handleDeleteSpectraRanges = (state, action) => {
   return produce(state, (draft) => {
     draft.spectraAanalysis = spectraAanalysis;
   });
-};
-const handleResizeSpectraRange = (state, action) => {
+}
+function handleResizeSpectraRange(state, action) {
   const { colKey, from, to } = action.payload;
   const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().analyzeSpectra(
     from,
@@ -47,8 +47,8 @@ const handleResizeSpectraRange = (state, action) => {
   return produce(state, (draft) => {
     draft.spectraAanalysis = spectraAanalysis;
   });
-};
-const handleSetcolumns = (state, action) => {
+}
+function handleSetcolumns(state, action) {
   const data = action.payload;
   const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().setColumn(
     state.activeTab,
@@ -57,8 +57,8 @@ const handleSetcolumns = (state, action) => {
   return produce(state, (draft) => {
     draft.spectraAanalysis = spectraAanalysis;
   });
-};
-const handleFiltercolumn = (state, action) => {
+}
+function handleFiltercolumn(state, action) {
   const { columnKey, valueKey } = action.payload;
   const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().changeColumnValueKey(
     state.activeTab,
@@ -68,7 +68,7 @@ const handleFiltercolumn = (state, action) => {
   return produce(state, (draft) => {
     draft.spectraAanalysis = spectraAanalysis;
   });
-};
+}
 
 export {
   analyzeSpectra,

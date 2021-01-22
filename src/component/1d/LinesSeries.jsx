@@ -19,7 +19,7 @@ const pathStyles = css`
   }
 `;
 
-export const LinesSeries = () => {
+function LinesSeries() {
   const { data, tempData } = useChartData();
 
   const _data = tempData ? tempData : data;
@@ -34,6 +34,6 @@ export const LinesSeries = () => {
           .map((d, i) => <Line key={d.id} {...d} index={i} />)}
     </g>
   );
-};
+}
 
 export default LinesSeries;

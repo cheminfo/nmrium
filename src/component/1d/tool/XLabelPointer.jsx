@@ -17,7 +17,7 @@ const style = {
   userSelect: 'none',
 };
 
-const XLabelPointer = () => {
+function XLabelPointer() {
   const { height, width, margin, data, activeSpectrum } = useChartData();
   const { scaleX } = useScale();
 
@@ -65,6 +65,6 @@ const XLabelPointer = () => {
       <span>{getXValue(position.x)}</span>
     </div>
   );
-};
+}
 
 export default XLabelPointer;

@@ -69,7 +69,7 @@ const headerStyle = css`
   }
 `;
 
-export const Button = ({
+export function Button({
   title,
   popupPlacement,
   style,
@@ -77,7 +77,7 @@ export const Button = ({
   onClick,
   children,
   helpID = '',
-}) => {
+}) {
   const help = useHelp();
 
   return (
@@ -93,9 +93,9 @@ export const Button = ({
       </button>
     </ToolTip>
   );
-};
+}
 
-const Header = ({ isFullscreen, onMaximize }) => {
+function Header({ isFullscreen, onMaximize }) {
   const { selectedOptionPanel } = useChartData();
   const modal = useModal();
   const alert = useAlert();
@@ -184,7 +184,7 @@ const Header = ({ isFullscreen, onMaximize }) => {
       </div>
     </div>
   );
-};
+}
 
 Header.defaultProps = {
   onMaximize: function () {

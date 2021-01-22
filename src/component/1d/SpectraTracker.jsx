@@ -30,7 +30,7 @@ const styles = {
   },
 };
 
-const YTracker = ({ datum }) => {
+function YTracker({ datum }) {
   const { scaleX } = useScale();
   const position = useContext(MouseContext);
 
@@ -41,9 +41,9 @@ const YTracker = ({ datum }) => {
   const xIndex = xFindClosestIndex(datum.x, scaleX().invert(position.x));
 
   return <span style={styles.value}>{datum.y[xIndex]}</span>;
-};
+}
 
-const SpectraTracker = () => {
+function SpectraTracker() {
   const { data, activeTab } = useChartData();
   const [isVisible, ToggleVisiblility] = useState(false);
   useEffect(() => {
@@ -79,6 +79,6 @@ const SpectraTracker = () => {
   if (!isVisible) return null;
 
   return <div style={styles.container}>{trackers}</div>;
-};
+}
 
 export default SpectraTracker;

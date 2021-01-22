@@ -20,7 +20,7 @@ const styles = {
 };
 
 // information panel
-const InformationPanel = memo(({ info, meta }) => {
+function InformationPanel({ info, meta }) {
   const [information, setInformation] = useState({});
   const [matches, setMatchesData] = useState([]);
   const searchRef = useRef();
@@ -107,6 +107,6 @@ const InformationPanel = memo(({ info, meta }) => {
       </div>
     </div>
   );
-});
+}
 
-export default InfoWrapper(InformationPanel);
+export default InfoWrapper(memo(InformationPanel));

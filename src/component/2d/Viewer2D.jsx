@@ -24,7 +24,7 @@ import XYLabelPointer from './tools/XYLabelPointer';
 import SlicingView from './tools/slicing/SlicingView';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 
-const Viewer2D = () => {
+function Viewer2D() {
   const state = useChartData();
   const {
     selectedTool,
@@ -202,6 +202,6 @@ const Viewer2D = () => {
   }, [dispatch, finalSize]);
 
   return sizedNMRChart;
-};
+}
 
 export default Viewer2D;

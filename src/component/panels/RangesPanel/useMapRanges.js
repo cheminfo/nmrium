@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation';
 
-const useMapRanges = (data) => {
+function useMapRanges(data) {
   return useMemo(() => {
     const _rangesData = [];
     data.forEach((range, i) => {
@@ -49,6 +49,6 @@ const useMapRanges = (data) => {
 
     return _rangesData;
   }, [data]);
-};
+}
 
 export default useMapRanges;

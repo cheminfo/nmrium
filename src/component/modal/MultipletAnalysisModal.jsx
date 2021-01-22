@@ -93,14 +93,14 @@ const loaderStyles = css`
   }
 `;
 
-const MultipletAnalysisModal = ({
+function MultipletAnalysisModal({
   data,
   activeSpectrum,
   scaleX,
   startX,
   endX,
   onClose,
-}) => {
+}) {
   const [analysisData, setAnalysisData] = useState();
   const [calcStart, setCalcStartStatus] = useState(false);
   const [isCalcFinished, setCalcFinished] = useState(false);
@@ -201,7 +201,7 @@ const MultipletAnalysisModal = ({
       </div>
     </div>
   );
-};
+}
 
 MultipletAnalysisModal.defaultProps = {
   onClose: () => {

@@ -30,7 +30,7 @@ const tabStylesAddition = css`
   color: red;
 `;
 
-const SignalsForm = memo(() => {
+function SignalsForm() {
   const { values, setFieldValue, errors } = useFormikContext();
 
   const { data: spectraData, activeSpectrum } = useChartData();
@@ -203,6 +203,6 @@ const SignalsForm = memo(() => {
       </Tabs>
     </div>
   );
-});
+}
 
-export default SignalsForm;
+export default memo(SignalsForm);

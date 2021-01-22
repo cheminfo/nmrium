@@ -25,7 +25,7 @@ const axisStyles = css`
   }
 `;
 
-const YAxis = memo(({ show, label, margin: marginProps }) => {
+function YAxis({ show, label, margin: marginProps }) {
   const refAxis = useRef();
   const state = useChartData();
   const {
@@ -80,9 +80,7 @@ const YAxis = memo(({ show, label, margin: marginProps }) => {
   }
 
   return Axis;
-});
-
-export default YAxis;
+}
 
 YAxis.contextTypes = {
   showGrid: PropTypes.bool,
@@ -101,3 +99,5 @@ YAxis.defaultProps = {
   label: '',
   margin: { right: 50, top: 0, bottom: 0, left: 0 },
 };
+
+export default memo(YAxis);

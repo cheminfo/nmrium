@@ -1,7 +1,7 @@
 /* eslint-disable prefer-named-capture-group */
 /* eslint-disable react/no-danger */
 
-const IsotopesViewer = ({ value = '', ...othersProps }) => {
+function IsotopesViewer({ value = '', ...othersProps }) {
   return (
     <div
       {...othersProps}
@@ -10,6 +10,6 @@ const IsotopesViewer = ({ value = '', ...othersProps }) => {
       }}
     />
   );
-};
+}
 
 export default IsotopesViewer;

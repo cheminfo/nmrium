@@ -48,7 +48,7 @@ const styles = css`
   }
 `;
 
-const UserManualModal = ({ onClose }) => {
+function UserManualModal({ onClose }) {
   const filePath = getHelpData().loadSpectrum.filePath;
 
   return (
@@ -70,6 +70,6 @@ const UserManualModal = ({ onClose }) => {
       </div>
     </div>
   );
-};
+}
 
 export default UserManualModal;

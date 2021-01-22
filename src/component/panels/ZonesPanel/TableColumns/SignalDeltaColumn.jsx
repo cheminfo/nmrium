@@ -5,7 +5,7 @@ import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
 import { CHANGE_ZONE_SIGNAL } from '../../../reducer/types/Types';
 
-const SignalDeltaColumn = ({ rowData, onHoverSignalX, onHoverSignalY }) => {
+function SignalDeltaColumn({ rowData, onHoverSignalX, onHoverSignalY }) {
   const dispatch = useDispatch();
 
   const signalDeltaX = lodash.get(
@@ -79,6 +79,6 @@ const SignalDeltaColumn = ({ rowData, onHoverSignalX, onHoverSignalY }) => {
       </td>
     </Fragment>
   );
-};
+}
 
 export default SignalDeltaColumn;

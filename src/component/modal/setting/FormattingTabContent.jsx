@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import lodash from 'lodash';
-import { Fragment, memo, useCallback, useMemo } from 'react';
+import { Fragment, useCallback, useMemo } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
 import generateID from '../../../data/utilities/generateID';
@@ -46,7 +46,7 @@ const styles = css`
     }
   }
 `;
-const FormattingTabContent = memo(() => {
+function FormattingTabContent() {
   const { values, setFieldValue } = useFormikContext();
   const nucleuses = useMemo(
     () => lodash.cloneDeep(lodash.get(values, 'formatting.nucleus', [])),
@@ -137,6 +137,6 @@ const FormattingTabContent = memo(() => {
       </div>
     </Fragment>
   );
-});
+}
 
 export default FormattingTabContent;

@@ -26,7 +26,7 @@ import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import SpectrumListItem from './SpectrumListItem';
 import SpectrumSetting from './base/setting/SpectrumSetting';
 
-const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
+function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
   const contextRef = useRef();
   const [markersVisible, setMarkersVisible] = useState([]);
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
@@ -207,6 +207,6 @@ const SpectrumsTabs = ({ data, activeSpectrum, activeTab, onTabChange }) => {
       ) : null}
     </Fragment>
   );
-};
+}
 
 export default SpectraWraper(SpectrumsTabs);

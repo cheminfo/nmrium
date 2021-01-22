@@ -41,7 +41,7 @@ const tableStyle = css`
   }
 `;
 
-const CorrelationTable = ({
+function CorrelationTable({
   correlationData,
   additionalColumnData,
   editEquivalencesSaveHandler,
@@ -49,7 +49,7 @@ const CorrelationTable = ({
   editProtonsCountSaveHandler,
   editAdditionalColumnFieldSaveHandler,
   showProtonsAsRows,
-}) => {
+}) {
   const rows = useMemo(() => {
     if (!correlationData) {
       return [];
@@ -142,6 +142,6 @@ const CorrelationTable = ({
       </table>
     </div>
   );
-};
+}
 
 export default CorrelationTable;

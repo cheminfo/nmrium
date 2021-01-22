@@ -6,7 +6,6 @@ import {
   forwardRef,
   useImperativeHandle,
   useRef,
-  memo,
 } from 'react';
 
 import IsotopesViewer from '../../elements/IsotopesViewer';
@@ -95,7 +94,7 @@ const formatFields = [
   },
 ];
 
-const PeaksPreferences = forwardRef(({ nucleus, preferences }, ref) => {
+function PeaksPreferences({ nucleus, preferences }, ref) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const [settings, setSetting] = useState(null);
@@ -190,6 +189,6 @@ const PeaksPreferences = forwardRef(({ nucleus, preferences }, ref) => {
       </form>
     </div>
   );
-});
+}
 
-export default PeaksWrapper(memo(PeaksPreferences));
+export default PeaksWrapper(forwardRef(PeaksPreferences));

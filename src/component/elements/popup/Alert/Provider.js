@@ -11,7 +11,7 @@ import { positions, transitions, types } from '../options';
 
 import { AlertProvider } from './Context';
 
-const Provider = ({
+function Provider({
   children,
   wrapperRef,
   offset,
@@ -20,7 +20,7 @@ const Provider = ({
   type,
   transition,
   ...props
-}) => {
+}) {
   const root = useRef(null);
   const alertContext = useRef(null);
   const timersId = useRef([]);
@@ -200,7 +200,7 @@ const Provider = ({
         )}
     </AlertProvider>
   );
-};
+}
 
 Provider.propTypes = {
   offset: PropTypes.string,

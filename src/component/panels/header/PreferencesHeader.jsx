@@ -19,13 +19,13 @@ const styles = css`
     opacity: 0.6;
   }
 `;
-const PreferencesHeader = memo(({ onClose, onSave }) => {
+function PreferencesHeader({ onClose, onSave }) {
   return (
     <div css={styles}>
       <CloseButton onClick={onClose} popupTitle="close Preferences" />
       <SaveButton onClick={onSave} popupTitle="save Preferences" />
     </div>
   );
-});
+}
 
-export default PreferencesHeader;
+export default memo(PreferencesHeader);

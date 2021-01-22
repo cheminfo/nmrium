@@ -61,7 +61,7 @@ const algorithms = [
   },
 ];
 
-const ManualPhaseCorrectionPanel = () => {
+function ManualPhaseCorrectionPanel() {
   const dispatch = useDispatch();
   const [value, setValue] = useState({ ph0: 0, ph1: 0, pivotIndex: 1 });
   const [phaseCorrectionType, setPhaseCorrectionType] = useState(
@@ -225,6 +225,6 @@ const ManualPhaseCorrectionPanel = () => {
       </button> */}
     </div>
   );
-};
+}
 
 export default ManualPhaseCorrectionPanel;

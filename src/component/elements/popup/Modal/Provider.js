@@ -32,14 +32,14 @@ const transitionStyles = {
   },
 };
 
-const Provider = ({
+function Provider({
   children,
   style,
   offset,
   position,
   transition,
   wrapperRef,
-}) => {
+}) {
   const root = useRef();
   const [modal, setModal] = useState();
 
@@ -219,7 +219,7 @@ const Provider = ({
         )}
     </ModalProvider>
   );
-};
+}
 
 Provider.defaultProps = {
   offset: '10px',

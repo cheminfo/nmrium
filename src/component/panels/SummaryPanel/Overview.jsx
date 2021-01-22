@@ -4,7 +4,7 @@ import { getAtomCounts } from '../../../data/correlation/utilities/GeneralUtilit
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
 
-const Overview = memo(({ correlations }) => {
+function Overview({ correlations }) {
   if (!correlations) {
     return null;
   }
@@ -39,6 +39,6 @@ const Overview = memo(({ correlations }) => {
       </span>
     );
   });
-});
+}
 
-export default Overview;
+export default memo(Overview);

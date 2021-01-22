@@ -142,7 +142,7 @@ const styles = css`
   }
 `;
 
-const GeneralSettings = ({ onClose, onSave }) => {
+function GeneralSettings({ onClose, onSave }) {
   const [activeTab, setActiveTab] = useState('controllers');
   const preferences = usePreferences();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
@@ -214,6 +214,6 @@ const GeneralSettings = ({ onClose, onSave }) => {
       </div>
     </div>
   );
-};
+}
 
 export default GeneralSettings;

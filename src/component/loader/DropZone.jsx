@@ -50,7 +50,7 @@ const containerStyle = css`
   height: 100%;
 `;
 
-const DropZone = (props) => {
+function DropZone(props) {
   const { width, height } = useChartData();
   const dispatch = useDispatch();
   const onDrop = useCallback(
@@ -167,6 +167,6 @@ const DropZone = (props) => {
       {props.children}
     </div>
   );
-};
+}
 
 export default DropZone;

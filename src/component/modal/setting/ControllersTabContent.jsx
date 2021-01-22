@@ -1,7 +1,7 @@
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
 
-const ControllersTabContent = () => {
+function ControllersTabContent() {
   return (
     <>
       <p className="section-header">Mouse Scroll Wheel Sensitivity</p>
@@ -27,6 +27,6 @@ const ControllersTabContent = () => {
       />
     </>
   );
-};
+}
 
 export default ControllersTabContent;

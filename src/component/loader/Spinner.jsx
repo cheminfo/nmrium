@@ -39,7 +39,7 @@ const styles = css`
     }
   }
 `;
-const Spinner = ({ isLoading = true }) => {
+function Spinner({ isLoading = true }) {
   const { data } = useChartData();
   const [checkEmpty, startCheckEmpty] = useState(false);
 
@@ -73,6 +73,6 @@ const Spinner = ({ isLoading = true }) => {
       )}
     </Fragment>
   );
-};
+}
 
 export default Spinner;

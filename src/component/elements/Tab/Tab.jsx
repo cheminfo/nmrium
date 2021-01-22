@@ -17,38 +17,44 @@ const styles = (styles) => css`
   ${styles}
 `;
 
-const Tab = memo(
-  ({ tabid, tablabel, activeTab, onClick, canDelete, onDelete, tabstyles }) => {
-    let className = 'tab-list-item';
+function Tab({
+  tabid,
+  tablabel,
+  activeTab,
+  onClick,
+  canDelete,
+  onDelete,
+  tabstyles,
+}) {
+  let className = 'tab-list-item';
 
-    // use tab identifier if given (higher priority)
-    if (activeTab === tabid) {
-      className += ' tab-list-active';
-    }
+  // use tab identifier if given (higher priority)
+  if (activeTab === tabid) {
+    className += ' tab-list-active';
+  }
 
-    const clickHandler = useCallback(
-      (e) => {
-        onClick({ ...e, tablabel, tabid });
-      },
-      [onClick, tablabel, tabid],
-    );
-    const deleteHandler = useCallback(
-      (e) => {
-        // stop propagation here to not have set it
-        // as active tab too (via tab click event triggering)
-        e.stopPropagation();
-        onDelete({ ...e, tablabel, tabid });
-      },
-      [onDelete, tablabel, tabid],
-    );
-    return (
-      <li className={className} onClick={clickHandler} css={styles(tabstyles)}>
-        {canDelete && <DeleteButton onDelete={deleteHandler} />}
-        {tablabel}
-      </li>
-    );
-  },
-);
+  const clickHandler = useCallback(
+    (e) => {
+      onClick({ ...e, tablabel, tabid });
+    },
+    [onClick, tablabel, tabid],
+  );
+  const deleteHandler = useCallback(
+    (e) => {
+      // stop propagation here to not have set it
+      // as active tab too (via tab click event triggering)
+      e.stopPropagation();
+      onDelete({ ...e, tablabel, tabid });
+    },
+    [onDelete, tablabel, tabid],
+  );
+  return (
+    <li className={className} onClick={clickHandler} css={styles(tabstyles)}>
+      {canDelete && <DeleteButton onDelete={deleteHandler} />}
+      {tablabel}
+    </li>
+  );
+}
 
 Tab.propTypes = {
   activeTab: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -58,4 +64,4 @@ Tab.propTypes = {
   canDelete: PropTypes.bool,
 };
 
-export default Tab;
+export default memo(Tab);

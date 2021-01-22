@@ -10,26 +10,28 @@ const styles = {
   flexDirection: 'column',
 };
 
-const SpectrumListPanel = memo(
-  ({ data, activeSpectrum, activeTab: activeTabState }) => {
-    const [spectrums, setSpectrums] = useState([]);
+function SpectrumListPanel({
+  data,
+  activeSpectrum,
+  activeTab: activeTabState,
+}) {
+  const [spectrums, setSpectrums] = useState([]);
 
-    const tabChangeHandler = useCallback((e) => {
-      setSpectrums(e.data ? e.data : []);
-    }, []);
+  const tabChangeHandler = useCallback((e) => {
+    setSpectrums(e.data ? e.data : []);
+  }, []);
 
-    return (
-      <div style={styles}>
-        <SpectraPanelHeader spectrums={spectrums} />
-        <SpectrumsTabs
-          onTabChange={tabChangeHandler}
-          data={data}
-          activeSpectrum={activeSpectrum}
-          activeTab={activeTabState}
-        />
-      </div>
-    );
-  },
-);
+  return (
+    <div style={styles}>
+      <SpectraPanelHeader spectrums={spectrums} />
+      <SpectrumsTabs
+        onTabChange={tabChangeHandler}
+        data={data}
+        activeSpectrum={activeSpectrum}
+        activeTab={activeTabState}
+      />
+    </div>
+  );
+}
 
-export default SpectrumListPanel;
+export default memo(SpectrumListPanel);

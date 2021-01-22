@@ -1,13 +1,13 @@
 import { useScale } from '../../context/ScaleContext';
 
-const StringNode = ({
+function StringNode({
   signal,
   signalID,
   startY,
   levelHeight,
   fontSize,
   showLabels,
-}) => {
+}) {
   const { scaleX } = useScale();
   return (
     <text
@@ -23,6 +23,6 @@ const StringNode = ({
       {signal.multiplicity}
     </text>
   );
-};
+}
 
 export default StringNode;

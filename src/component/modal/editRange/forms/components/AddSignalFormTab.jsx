@@ -35,7 +35,7 @@ const AddSignalFormTabStyle = css`
   }
 `;
 
-const AddSignalFormTab = memo(({ onFocus, onBlur }) => {
+function AddSignalFormTab({ onFocus, onBlur }) {
   const { values, setFieldValue, errors } = useFormikContext();
 
   const [disableAddButton, setDisableAddButton] = useState(false);
@@ -91,6 +91,6 @@ const AddSignalFormTab = memo(({ onFocus, onBlur }) => {
       </div>
     </div>
   );
-});
+}
 
-export default AddSignalFormTab;
+export default memo(AddSignalFormTab);

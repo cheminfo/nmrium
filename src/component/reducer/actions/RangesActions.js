@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { getXScale } from '../../1d/utilities/scale';
 import { AnalysisObj } from '../core/Analysis';
 
-const handleAutoRangesDetection = (state, detectionOptions) => {
+function handleAutoRangesDetection(state, detectionOptions) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
@@ -12,17 +12,17 @@ const handleAutoRangesDetection = (state, detectionOptions) => {
       draft.data[index].ranges = ranges;
     }
   });
-};
-const handleDeleteRange = (state, rangeID) => {
+}
+function handleDeleteRange(state, rangeID) {
   return produce(state, (draft) => {
     const { id, index } = state.activeSpectrum;
     const ob = AnalysisObj.getDatum(id);
     ob.deleteRange(rangeID);
     draft.data[index].ranges = ob.getRanges();
   });
-};
+}
 
-const handleChangeRange = (state, action) => {
+function handleChangeRange(state, action) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
@@ -31,9 +31,9 @@ const handleChangeRange = (state, action) => {
       draft.data[index].ranges = datumObject.getRanges();
     }
   });
-};
+}
 
-const handleResizeRange = (state, action) => {
+function handleResizeRange(state, action) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
@@ -42,9 +42,9 @@ const handleResizeRange = (state, action) => {
       draft.data[index].ranges = datumObject.getRanges();
     }
   });
-};
+}
 
-const handleChangeRangeSum = (state, value) => {
+function handleChangeRangeSum(state, value) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
@@ -53,8 +53,8 @@ const handleChangeRangeSum = (state, value) => {
       draft.data[index].ranges = datumObject.getRanges();
     }
   });
-};
-const handleAddRange = (state, action) => {
+}
+function handleAddRange(state, action) {
   return produce(state, (draft) => {
     const scaleX = getXScale(state);
 
@@ -74,9 +74,9 @@ const handleAddRange = (state, action) => {
       draft.data[index].ranges = datumObject.getRanges();
     }
   });
-};
+}
 
-const handleChangeRangeRaltiveValue = (state, action) => {
+function handleChangeRangeRaltiveValue(state, action) {
   const { id: rangeID, value } = action;
   const { id, index } = state.activeSpectrum;
   const datumObject = AnalysisObj.getDatum(id);
@@ -84,9 +84,9 @@ const handleChangeRangeRaltiveValue = (state, action) => {
   return produce(state, (draft) => {
     draft.data[index].ranges.values = ranges;
   });
-};
+}
 
-const handleChangeRangeSignalValue = (state, action) => {
+function handleChangeRangeSignalValue(state, action) {
   const { rangeID, signalID, value } = action.payload;
   const { id, index } = state.activeSpectrum;
   const datumObject = AnalysisObj.getDatum(id);
@@ -94,7 +94,7 @@ const handleChangeRangeSignalValue = (state, action) => {
   return produce(state, (draft) => {
     draft.data[index].ranges.values = ranges;
   });
-};
+}
 
 export {
   handleAutoRangesDetection,

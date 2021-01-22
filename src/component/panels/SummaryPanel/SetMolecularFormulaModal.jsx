@@ -74,12 +74,7 @@ const modalContainer = css`
   }
 `;
 
-const SetMolecularFormulaModal = ({
-  onClose,
-  onSave,
-  molecules,
-  previousMF,
-}) => {
+function SetMolecularFormulaModal({ onClose, onSave, molecules, previousMF }) {
   const [currentIndex, setCurrentIndex] = useState();
 
   useEffect(() => {
@@ -130,7 +125,7 @@ const SetMolecularFormulaModal = ({
       </button>
     </div>
   );
-};
+}
 
 SetMolecularFormulaModal.defaultProps = {
   onSave: () => {

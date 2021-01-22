@@ -13,7 +13,7 @@ const lineStyle = css`
   opacity: 0.7;
 `;
 
-const IndicationLines = ({ axis, show }) => {
+function IndicationLines({ axis, show }) {
   const {
     data,
     activeTab,
@@ -92,6 +92,6 @@ const IndicationLines = ({ axis, show }) => {
   }, [axis, deltas1D, scaleX, scaleY, show, xDomain, yDomain]);
 
   return <g>{indicationLines}</g>;
-};
+}
 
 export default IndicationLines;

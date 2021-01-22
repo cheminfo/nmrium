@@ -32,7 +32,7 @@ const styles = css`
   }
 `;
 
-const CopyClipboardModal = ({ text, onClose, onCopyClick }) => {
+function CopyClipboardModal({ text, onClose, onCopyClick }) {
   return (
     <div css={styles}>
       <div className="mainButtonsContainer handle">
@@ -49,6 +49,6 @@ const CopyClipboardModal = ({ text, onClose, onCopyClick }) => {
       />
     </div>
   );
-};
+}
 
 export default CopyClipboardModal;

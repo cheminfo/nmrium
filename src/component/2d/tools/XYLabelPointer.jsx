@@ -21,7 +21,7 @@ const style = {
   textAlign: 'right',
 };
 
-const XYLabelPointer = ({ layout, data1D }) => {
+function XYLabelPointer({ layout, data1D }) {
   const position = useContext(MouseContext);
   const { step } = useContext(BrushContext);
   const {
@@ -139,6 +139,6 @@ const XYLabelPointer = ({ layout, data1D }) => {
       <span style={{ color: 'red' }}>{formatX(getXValue())}</span>
     </div>
   );
-};
+}
 
 export default XYLabelPointer;

@@ -75,11 +75,11 @@ export const getStyles = (position) => {
   }
 };
 
-const Wrapper = ({
+function Wrapper({
   children,
   options: { position, containerStyle },
   ...props
-}) => {
+}) {
   const styles = useMemo(() => getStyles(position), [position]);
 
   return (
@@ -89,6 +89,6 @@ const Wrapper = ({
       </div>
     )
   );
-};
+}
 
 export default Wrapper;

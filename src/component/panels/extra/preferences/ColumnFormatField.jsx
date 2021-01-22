@@ -20,51 +20,49 @@ const styles = {
   },
 };
 
-const ColumnFormatField = memo(
-  ({
-    label,
-    checkControllerName,
-    checked,
-    format,
-    formatControllerName,
-    inputChangeHandler,
-    groupID,
-  }) => {
-    const [_checked, setChecked] = useState(Boolean(checked));
+function ColumnFormatField({
+  label,
+  checkControllerName,
+  checked,
+  format,
+  formatControllerName,
+  inputChangeHandler,
+  groupID,
+}) {
+  const [_checked, setChecked] = useState(Boolean(checked));
 
-    return (
-      <div style={styles.row}>
-        <span style={styles.inputLabel}>{label}</span>
-        <div
-          style={{
-            flex: 4,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <input
-            type="checkbox"
-            onChange={(e) => setChecked(e.target.checked)}
-            style={{ margin: '0px 5px' }}
-            defaultChecked={_checked}
-          />
-          <input
-            name={`${groupID}-${checkControllerName}`}
-            type="hidden"
-            value={_checked}
-          />
-          <Input
-            style={{ container: styles.input }}
-            name={`${groupID}-${formatControllerName}`}
-            type="text"
-            onChange={inputChangeHandler}
-            value={format}
-          />
-        </div>
+  return (
+    <div style={styles.row}>
+      <span style={styles.inputLabel}>{label}</span>
+      <div
+        style={{
+          flex: 4,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <input
+          type="checkbox"
+          onChange={(e) => setChecked(e.target.checked)}
+          style={{ margin: '0px 5px' }}
+          defaultChecked={_checked}
+        />
+        <input
+          name={`${groupID}-${checkControllerName}`}
+          type="hidden"
+          value={_checked}
+        />
+        <Input
+          style={{ container: styles.input }}
+          name={`${groupID}-${formatControllerName}`}
+          type="text"
+          onChange={inputChangeHandler}
+          value={format}
+        />
       </div>
-    );
-  },
-);
+    </div>
+  );
+}
 
-export default ColumnFormatField;
+export default memo(ColumnFormatField);

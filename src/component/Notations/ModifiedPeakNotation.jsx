@@ -33,14 +33,14 @@ function EditButton() {
   );
 }
 
-export const ModifiedPeakNotation = ({
+export function ModifiedPeakNotation({
   id,
   x,
   y,
   value,
   color,
   decimalFraction,
-}) => {
+}) {
   return (
     <g css={styles2} id={id} transform={`translate(${x},${y})`}>
       <line x1="0" x2="0" y1="-5" y2={-30} stroke={color} strokeWidth="1" />
@@ -57,6 +57,6 @@ export const ModifiedPeakNotation = ({
       <EditButton />
     </g>
   );
-};
+}
 
 export default ModifiedPeakNotation;

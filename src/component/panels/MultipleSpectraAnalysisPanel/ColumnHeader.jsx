@@ -50,7 +50,7 @@ const columnsFilters = [
   { key: 'max', label: 'Max Intensity' },
 ];
 
-const ColumnHeader = ({ charLabel, rangeLabel, data, onColumnFilter }) => {
+function ColumnHeader({ charLabel, rangeLabel, data, onColumnFilter }) {
   const dispatch = useDispatch();
 
   const deleteHandler = useCallback(() => {
@@ -80,6 +80,6 @@ const ColumnHeader = ({ charLabel, rangeLabel, data, onColumnFilter }) => {
       <DeleteButton onDelete={deleteHandler} />
     </div>
   );
-};
+}
 
 export default ColumnHeader;

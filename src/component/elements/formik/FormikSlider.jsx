@@ -3,7 +3,7 @@ import lodash from 'lodash';
 import { useCallback, memo } from 'react';
 import ReactSlider from 'react-slider';
 
-const FormikSlider = memo(({ onAfterChange, name, ...props }) => {
+function FormikSlider({ onAfterChange, name, ...props }) {
   const { values, setFieldValue } = useFormikContext();
 
   const changeHandler = useCallback(
@@ -33,10 +33,10 @@ const FormikSlider = memo(({ onAfterChange, name, ...props }) => {
       {...props}
     />
   );
-});
+}
 
 FormikSlider.defaultProps = {
   onColorChange: () => null,
 };
 
-export default FormikSlider;
+export default memo(FormikSlider);

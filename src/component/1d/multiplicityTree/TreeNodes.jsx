@@ -2,14 +2,14 @@ import { useCallback } from 'react';
 
 import { useScale } from '../../context/ScaleContext';
 
-const TreeNodes = ({
+function TreeNodes({
   nodesData,
   levelHeight,
   startY,
   signalID,
   labelOptions,
   showLabels,
-}) => {
+}) {
   const { scaleX } = useScale();
   const buildTreeNodeAndEdge = useCallback(
     ({ startX, _startX, ratio, multiplicityIndex, color }) => {
@@ -61,6 +61,6 @@ const TreeNodes = ({
   );
 
   return nodesData && nodesData.map((node) => buildTreeNodeAndEdge(node));
-};
+}
 
 export default TreeNodes;

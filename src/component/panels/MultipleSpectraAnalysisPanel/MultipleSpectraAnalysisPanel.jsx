@@ -33,7 +33,7 @@ const styles = {
   },
 };
 
-const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
+function MultipleSpectraAnalysisPanel({ spectraAanalysis, activeTab }) {
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef();
   const alert = useAlert();
@@ -141,6 +141,6 @@ const MultipleSpectraAnalysisPanel = memo(({ spectraAanalysis, activeTab }) => {
       </div>
     </div>
   );
-});
+}
 
-export default MultiAnalysisWrapper(MultipleSpectraAnalysisPanel);
+export default MultiAnalysisWrapper(memo(MultipleSpectraAnalysisPanel));

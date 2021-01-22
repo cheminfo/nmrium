@@ -14,36 +14,34 @@ function getVAlign(align) {
   }
   return 'center';
 }
-const TableHeader = memo(
-  ({
-    children,
-    className,
-    style,
-    align = 'center',
-    vAlign = 'center',
-    size = 1,
-    onClick,
-  }) => {
-    return (
-      <div
-        className={className}
-        style={{
-          ...styles,
-          alignItems: getVAlign(vAlign),
-          textAlign: align,
-          flex: size,
-          ...style,
-        }}
-        onClick={onClick}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+function TableHeader({
+  children,
+  className,
+  style,
+  align = 'center',
+  vAlign = 'center',
+  size = 1,
+  onClick,
+}) {
+  return (
+    <div
+      className={className}
+      style={{
+        ...styles,
+        alignItems: getVAlign(vAlign),
+        textAlign: align,
+        flex: size,
+        ...style,
+      }}
+      onClick={onClick}
+    >
+      {children}
+    </div>
+  );
+}
 
 TableHeader.defaultProps = {
   onClick: () => null,
 };
 
-export default TableHeader;
+export default memo(TableHeader);

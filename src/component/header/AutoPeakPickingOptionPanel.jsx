@@ -31,7 +31,7 @@ const styles = {
   },
 };
 
-const AutoPeakPickingOptionPanel = () => {
+function AutoPeakPickingOptionPanel() {
   const dispatch = useDispatch();
   const minMaxRatioRef = useRef();
   const maxNumberOfPeaksRef = useRef();
@@ -119,6 +119,6 @@ const AutoPeakPickingOptionPanel = () => {
       </button>
     </div>
   );
-};
+}
 
 export default AutoPeakPickingOptionPanel;

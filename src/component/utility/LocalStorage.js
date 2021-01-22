@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 
-const useStateWithLocalStorage = (localStorageKey, key = null) => {
+function useStateWithLocalStorage(localStorageKey, key = null) {
   const [value, setValue] = useState(
     localStorage.getItem(localStorageKey) || '{}',
   );
@@ -25,7 +25,7 @@ const useStateWithLocalStorage = (localStorageKey, key = null) => {
     key ? lodash.get(JSON.parse(value), key, {}) : JSON.parse(value),
     setData,
   ];
-};
+}
 
 const getLocalStorage = (localStorageKey, isJson = true) => {
   const settings = localStorage.getItem(localStorageKey);

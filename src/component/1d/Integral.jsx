@@ -7,7 +7,7 @@ import { getValue } from '../utility/LocalStorage';
 
 import IntegralResizable from './IntegralResizable';
 
-const Integral = ({
+function Integral({
   integralData,
   x,
   y,
@@ -16,7 +16,7 @@ const Integral = ({
   spectrumID,
   scaleY,
   scaleX,
-}) => {
+}) {
   const { from, to } = integralData;
   const [integral, setIntegral] = useState();
   // const { preferences } = useChartData();
@@ -86,6 +86,6 @@ const Integral = ({
       />
     </Fragment>
   );
-};
+}
 
 export default Integral;

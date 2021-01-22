@@ -12,7 +12,7 @@ import NoTableData from '../extra/placeholder/NoTableData';
 
 import FiltersTableRow from './FiltersTableRow';
 
-const FilterPanel = memo(({ filters }) => {
+function FilterPanel({ filters }) {
   const filtersTable = useMemo(() => {
     return filters ? (
       <Table>
@@ -36,6 +36,6 @@ const FilterPanel = memo(({ filters }) => {
   }, [filters]);
 
   return filtersTable;
-});
+}
 
-export default FiltersWrapper(FilterPanel);
+export default FiltersWrapper(memo(FilterPanel));

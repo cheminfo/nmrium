@@ -134,7 +134,7 @@ const styles = css`
 
 const baseList = [{ key: 1, value: 'manual', label: 'Manual' }];
 
-const AlignSpectraModal = ({ onClose, nucleus }) => {
+function AlignSpectraModal({ onClose, nucleus }) {
   const refForm = useRef();
   const dispatch = useDispatch();
   const List = useMemo(() => {
@@ -230,6 +230,6 @@ const AlignSpectraModal = ({ onClose, nucleus }) => {
       </div>
     </div>
   );
-};
+}
 
 export default AlignSpectraModal;

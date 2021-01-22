@@ -63,7 +63,7 @@ export function setScale(scale) {
   }
 }
 
-const setZoom = (state, draft, defaultScale = null) => {
+function setZoom(state, draft, defaultScale = null) {
   const { height, margin, activeSpectrum } = state;
   if (defaultScale) {
     setScale(defaultScale);
@@ -102,8 +102,8 @@ const setZoom = (state, draft, defaultScale = null) => {
       [activeSpectrum.id]: yDomain,
     };
   }
-};
-const setZoom1D = (draft, height, margin, index, defaultScale = null) => {
+}
+function setZoom1D(draft, height, margin, index, defaultScale = null) {
   const { originDomain, tabActiveSpectrum, activeTab } = draft;
 
   const { id } = tabActiveSpectrum[activeTab.split(',')[index]];
@@ -123,9 +123,9 @@ const setZoom1D = (draft, height, margin, index, defaultScale = null) => {
     .translate(0, -_scale(0));
   let yDomain = t.rescaleY(_scale).domain();
   draft.yDomains[id] = yDomain;
-};
+}
 
-const setIntegralZoom = (state, scale, draft) => {
+function setIntegralZoom(state, scale, draft) {
   if (draft.activeSpectrum) {
     const { height, margin } = state;
     if (draft.originIntegralYDomain[draft.activeSpectrum.id]) {
@@ -148,6 +148,6 @@ const setIntegralZoom = (state, scale, draft) => {
       draft.integralsYDomains[activeSpectrum.id] = newYDomain;
     }
   }
-};
+}
 
 export { setZoom, setZoom1D, setIntegralZoom };

@@ -9,7 +9,7 @@ import {
   APPLY_KEY_PREFERENCES,
 } from '../reducer/types/Types';
 
-const KeysListenerTracker = ({ children }) => {
+function KeysListenerTracker({ children }) {
   const { keysPreferences } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
@@ -64,6 +64,6 @@ const KeysListenerTracker = ({ children }) => {
       {children}
     </div>
   );
-};
+}
 
 export default KeysListenerTracker;

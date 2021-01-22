@@ -12,7 +12,7 @@ const styles = {
   overflowY: 'auto',
   height: '100%',
 };
-const ToolBar = memo(({ selectedTool }) => {
+function ToolBar({ selectedTool }) {
   return (
     <div style={{ ...styles }}>
       <FunctionToolBar defaultValue={selectedTool} />
@@ -20,6 +20,6 @@ const ToolBar = memo(({ selectedTool }) => {
       <BasicToolBar />
     </div>
   );
-});
+}
 
-export default ToolBar;
+export default memo(ToolBar);

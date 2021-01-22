@@ -71,188 +71,186 @@ const styles = {
   },
 };
 
-const RangesTablePanel = memo(
-  ({
-    ranges,
-    x,
-    y,
-    info,
-    xDomain,
-    preferences,
-    activeTab,
-    molecules,
-    nucleus,
-  }) => {
-    const [isFilterActive, setFilterIsActive] = useState(false);
-    const assignmentData = useAssignmentData();
+function RangesTablePanel({
+  ranges,
+  x,
+  y,
+  info,
+  xDomain,
+  preferences,
+  activeTab,
+  molecules,
+  nucleus,
+}) {
+  const [isFilterActive, setFilterIsActive] = useState(false);
+  const assignmentData = useAssignmentData();
 
-    const dispatch = useDispatch();
-    const alert = useAlert();
-    const [isFlipped, setFlipStatus] = useState(false);
-    const settingRef = useRef();
+  const dispatch = useDispatch();
+  const alert = useAlert();
+  const [isFlipped, setFlipStatus] = useState(false);
+  const settingRef = useRef();
 
-    const rangesData = useMemo(() => {
-      const isInView = (from, to) => {
-        const factor = 10000;
-        to = to * factor;
-        from = from * factor;
-        return (
-          (to >= xDomain[0] * factor && from <= xDomain[1] * factor) ||
-          (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
-        );
-      };
+  const rangesData = useMemo(() => {
+    const isInView = (from, to) => {
+      const factor = 10000;
+      to = to * factor;
+      from = from * factor;
+      return (
+        (to >= xDomain[0] * factor && from <= xDomain[1] * factor) ||
+        (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
+      );
+    };
 
-      const getFilteredRanges = (ranges) => {
-        return ranges.filter((range) => isInView(range.from, range.to));
-      };
+    const getFilteredRanges = (ranges) => {
+      return ranges.filter((range) => isInView(range.from, range.to));
+    };
 
-      if (ranges.values) {
-        const _ranges = isFilterActive
-          ? getFilteredRanges(ranges.values)
-          : ranges.values;
+    if (ranges.values) {
+      const _ranges = isFilterActive
+        ? getFilteredRanges(ranges.values)
+        : ranges.values;
 
-        return _ranges.map((range) => {
-          return {
-            ...range,
-            tableMetaInfo: {
-              isConstantlyHighlighted: isInView(range.from, range.to),
-            },
-          };
+      return _ranges.map((range) => {
+        return {
+          ...range,
+          tableMetaInfo: {
+            isConstantlyHighlighted: isInView(range.from, range.to),
+          },
+        };
+      });
+    }
+    return [];
+  }, [isFilterActive, ranges.values, xDomain]);
+
+  const unlinkRangeHandler = useCallback(
+    (range, isOnRangeLevel, signalIndex) => {
+      // remove assignments in assignment hook data
+      unlinkInAssignmentData(
+        assignmentData,
+        range,
+        isOnRangeLevel,
+        signalIndex,
+      );
+
+      // remove assignments in global state
+      const _range = unlink(range, isOnRangeLevel, signalIndex);
+      dispatch({ type: CHANGE_RANGE_DATA, data: _range });
+    },
+    [assignmentData, dispatch],
+  );
+
+  const saveJSONToClipboardHandler = useCallback(
+    (value) => {
+      if (x && y) {
+        const { from, to } = value;
+        const { fromIndex, toIndex } = xGetFromToIndex(x, {
+          from,
+          to,
         });
-      }
-      return [];
-    }, [isFilterActive, ranges.values, xDomain]);
 
-    const unlinkRangeHandler = useCallback(
-      (range, isOnRangeLevel, signalIndex) => {
-        // remove assignments in assignment hook data
-        unlinkInAssignmentData(
-          assignmentData,
-          range,
-          isOnRangeLevel,
-          signalIndex,
+        const dataToClipboard = {
+          x: x.slice(fromIndex, toIndex),
+          y: y.slice(fromIndex, toIndex),
+          ...value,
+        };
+
+        const success = copyTextToClipboard(
+          JSON.stringify(dataToClipboard, undefined, 2),
         );
 
-        // remove assignments in global state
-        const _range = unlink(range, isOnRangeLevel, signalIndex);
-        dispatch({ type: CHANGE_RANGE_DATA, data: _range });
-      },
-      [assignmentData, dispatch],
-    );
-
-    const saveJSONToClipboardHandler = useCallback(
-      (value) => {
-        if (x && y) {
-          const { from, to } = value;
-          const { fromIndex, toIndex } = xGetFromToIndex(x, {
-            from,
-            to,
-          });
-
-          const dataToClipboard = {
-            x: x.slice(fromIndex, toIndex),
-            y: y.slice(fromIndex, toIndex),
-            ...value,
-          };
-
-          const success = copyTextToClipboard(
-            JSON.stringify(dataToClipboard, undefined, 2),
-          );
-
-          if (success) {
-            alert.show('Data copied to clipboard');
-          } else {
-            alert.error('copy to clipboard failed');
-          }
+        if (success) {
+          alert.show('Data copied to clipboard');
+        } else {
+          alert.error('copy to clipboard failed');
         }
+      }
+    },
+    [x, y, alert],
+  );
+
+  const rangesPreferences = useMemo(() => {
+    const _preferences =
+      lodash.get(preferences, `formatting.panels.ranges.[${activeTab}]`) ||
+      rangeDefaultValues;
+
+    return _preferences;
+  }, [activeTab, preferences]);
+
+  const contextMenu = useMemo(
+    () => [
+      {
+        label: 'Copy to clipboard',
+        onClick: saveJSONToClipboardHandler,
       },
-      [x, y, alert],
-    );
+    ],
+    [saveJSONToClipboardHandler],
+  );
 
-    const rangesPreferences = useMemo(() => {
-      const _preferences =
-        lodash.get(preferences, `formatting.panels.ranges.[${activeTab}]`) ||
-        rangeDefaultValues;
+  const filterHandler = useCallback(() => {
+    setFilterIsActive(!isFilterActive);
+  }, [isFilterActive]);
 
-      return _preferences;
-    }, [activeTab, preferences]);
+  const settingsPanelHandler = useCallback(() => {
+    setFlipStatus(!isFlipped);
+  }, [isFlipped]);
 
-    const contextMenu = useMemo(
-      () => [
-        {
-          label: 'Copy to clipboard',
-          onClick: saveJSONToClipboardHandler,
-        },
-      ],
-      [saveJSONToClipboardHandler],
-    );
+  const saveSettingHandler = useCallback(() => {
+    settingRef.current.saveSetting();
+    setFlipStatus(false);
+  }, []);
 
-    const filterHandler = useCallback(() => {
-      setFilterIsActive(!isFilterActive);
-    }, [isFilterActive]);
-
-    const settingsPanelHandler = useCallback(() => {
-      setFlipStatus(!isFlipped);
-    }, [isFlipped]);
-
-    const saveSettingHandler = useCallback(() => {
-      settingRef.current.saveSetting();
-      setFlipStatus(false);
-    }, []);
-
-    return (
-      <>
-        <div style={styles.container}>
-          {!isFlipped && (
-            <RangesHeader
+  return (
+    <>
+      <div style={styles.container}>
+        {!isFlipped && (
+          <RangesHeader
+            ranges={ranges}
+            info={info}
+            activeTab={activeTab}
+            molecules={molecules}
+            onUnlink={unlinkRangeHandler}
+            onFilterActivated={filterHandler}
+            onSettingClick={settingsPanelHandler}
+            isFilterActive={isFilterActive}
+            filterCounter={rangesData.length}
+          />
+        )}
+        {isFlipped && (
+          <PreferencesHeader
+            onSave={saveSettingHandler}
+            onClose={settingsPanelHandler}
+          />
+        )}
+        <div style={{ height: '100%', overflow: 'auto' }}>
+          <ReactCardFlip
+            isFlipped={isFlipped}
+            infinite={true}
+            containerStyle={{ overflow: 'hidden' }}
+          >
+            <div>
+              {rangesData && rangesData.length > 0 ? (
+                <RangesTable
+                  activeTab={activeTab}
+                  tableData={rangesData}
+                  onUnlink={unlinkRangeHandler}
+                  context={contextMenu}
+                  preferences={rangesPreferences}
+                />
+              ) : (
+                <NoTableData />
+              )}
+            </div>
+            <RangesPreferences
               ranges={ranges}
-              info={info}
-              activeTab={activeTab}
-              molecules={molecules}
-              onUnlink={unlinkRangeHandler}
-              onFilterActivated={filterHandler}
-              onSettingClick={settingsPanelHandler}
-              isFilterActive={isFilterActive}
-              filterCounter={rangesData.length}
+              ref={settingRef}
+              nucleus={nucleus}
+              preferences={preferences}
             />
-          )}
-          {isFlipped && (
-            <PreferencesHeader
-              onSave={saveSettingHandler}
-              onClose={settingsPanelHandler}
-            />
-          )}
-          <div style={{ height: '100%', overflow: 'auto' }}>
-            <ReactCardFlip
-              isFlipped={isFlipped}
-              infinite={true}
-              containerStyle={{ overflow: 'hidden' }}
-            >
-              <div>
-                {rangesData && rangesData.length > 0 ? (
-                  <RangesTable
-                    activeTab={activeTab}
-                    tableData={rangesData}
-                    onUnlink={unlinkRangeHandler}
-                    context={contextMenu}
-                    preferences={rangesPreferences}
-                  />
-                ) : (
-                  <NoTableData />
-                )}
-              </div>
-              <RangesPreferences
-                ranges={ranges}
-                ref={settingRef}
-                nucleus={nucleus}
-                preferences={preferences}
-              />
-            </ReactCardFlip>
-          </div>
+          </ReactCardFlip>
         </div>
-      </>
-    );
-  },
-);
+      </div>
+    </>
+  );
+}
 
-export default RangesWrapper(RangesTablePanel);
+export default RangesWrapper(memo(RangesTablePanel));

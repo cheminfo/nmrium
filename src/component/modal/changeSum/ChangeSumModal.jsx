@@ -11,7 +11,7 @@ const modalContainer = css`
   padding: 5px;
 `;
 
-const ChangeSumModal = ({ onSave, onClose, header, molecules, element }) => {
+function ChangeSumModal({ onSave, onClose, header, molecules, element }) {
   const saveInputValueHandler = useCallback(
     (inputValue) => {
       onSave(inputValue);
@@ -41,7 +41,7 @@ const ChangeSumModal = ({ onSave, onClose, header, molecules, element }) => {
       />
     </div>
   );
-};
+}
 
 ChangeSumModal.defaultProps = {
   onSave: () => {

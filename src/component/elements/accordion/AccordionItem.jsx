@@ -49,7 +49,7 @@ export const triggerSource = {
   dbClick: 2,
 };
 
-const AccordionItem = ({ title, children, index, isOpen, onOpen, style }) => {
+function AccordionItem({ title, children, index, isOpen, onOpen, style }) {
   const [active, setActiveState] = useState(null);
 
   const refContent = useRef();
@@ -110,7 +110,7 @@ const AccordionItem = ({ title, children, index, isOpen, onOpen, style }) => {
       </div>
     </div>
   );
-};
+}
 
 AccordionItem.defaultProps = {
   onOpen: function () {

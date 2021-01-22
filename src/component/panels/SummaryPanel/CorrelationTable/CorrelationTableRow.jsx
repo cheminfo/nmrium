@@ -16,7 +16,7 @@ const selectBoxStyle = {
   height: '20px',
 };
 
-const CorrelationTableRow = ({
+function CorrelationTableRow({
   additionalColumnData,
   correlations,
   correlation,
@@ -26,7 +26,7 @@ const CorrelationTableRow = ({
   onChangeHybridization,
   onSaveEditProtonsCount,
   onEditAdditionalColumnField,
-}) => {
+}) {
   const onSaveEquivalencesHandler = useCallback(
     (e) => {
       onSaveEditEquivalences(correlation, e.target.value);
@@ -167,6 +167,6 @@ const CorrelationTableRow = ({
       {additionalColumnFields}
     </tr>
   );
-};
+}
 
 export default CorrelationTableRow;

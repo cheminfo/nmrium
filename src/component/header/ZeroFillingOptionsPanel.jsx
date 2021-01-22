@@ -61,7 +61,7 @@ function formatNumber(number) {
 
 const Sizes = generateSizes();
 
-const ZeroFillingOptionsPanel = () => {
+function ZeroFillingOptionsPanel() {
   const dispatch = useDispatch();
   const { data, activeSpectrum } = useChartData();
   const sizeTextInputRef = useRef();
@@ -140,6 +140,6 @@ const ZeroFillingOptionsPanel = () => {
       </button>
     </div>
   );
-};
+}
 
 export default ZeroFillingOptionsPanel;

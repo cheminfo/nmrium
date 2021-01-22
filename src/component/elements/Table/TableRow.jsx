@@ -5,7 +5,7 @@ const styles = {
   display: 'flex',
   padding: '5px 0px',
 };
-const TableHeader = memo(({ children, className, style, onClick }) => {
+function TableHeader({ children, className, style, onClick }) {
   return (
     <div
       className={className}
@@ -15,10 +15,10 @@ const TableHeader = memo(({ children, className, style, onClick }) => {
       {children}
     </div>
   );
-});
+}
 
 TableHeader.defaultProps = {
   onClick: () => null,
 };
 
-export default TableHeader;
+export default memo(TableHeader);

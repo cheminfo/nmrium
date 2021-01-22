@@ -45,7 +45,7 @@ const LIST = [
   },
 ];
 
-const DisplayTabContent = ({ preferences }) => {
+function DisplayTabContent({ preferences }) {
   return (
     <>
       <p className="section-header">Show / Hide Panels</p>
@@ -63,6 +63,6 @@ const DisplayTabContent = ({ preferences }) => {
       )}
     </>
   );
-};
+}
 
 export default DisplayTabContent;

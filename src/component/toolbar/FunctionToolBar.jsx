@@ -64,12 +64,12 @@ const styles = css`
 
 let debounceClickEvents = [];
 
-const FunctionToolBar = ({
+function FunctionToolBar({
   defaultValue,
   activeSpectrum,
   info,
   displayerMode,
-}) => {
+}) {
   const [option, setOption] = useState();
   const help = useHelp();
   const alert = useAlert();
@@ -442,7 +442,7 @@ const FunctionToolBar = ({
         )}
     </div>
   );
-};
+}
 
 export default ToolBarWrapper(memo(FunctionToolBar));
 

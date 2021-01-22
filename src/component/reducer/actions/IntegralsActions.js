@@ -7,7 +7,7 @@ import { AnalysisObj } from '../core/Analysis';
 
 import { setIntegralZoom, integralZoomHanlder } from './Zoom';
 
-const handleChangeIntegralSum = (state, value) => {
+function handleChangeIntegralSum(state, value) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
@@ -19,17 +19,17 @@ const handleChangeIntegralSum = (state, value) => {
       }
     }
   });
-};
+}
 
-const handleChangeIntegralZoom = (state, action) => {
+function handleChangeIntegralZoom(state, action) {
   return produce(state, (draft) => {
     const { deltaY, deltaMode } = action;
     integralZoomHanlder.wheel(deltaY, deltaMode);
     setIntegralZoom(state, integralZoomHanlder.getScale(), draft);
   });
-};
+}
 
-const addIntegral = (state, action) => {
+function addIntegral(state, action) {
   const scaleX = getXScale(state);
 
   return produce(state, (draft) => {
@@ -67,9 +67,9 @@ const addIntegral = (state, action) => {
       }
     }
   });
-};
+}
 
-const deleteIntegral = (state, action) => {
+function deleteIntegral(state, action) {
   return produce(state, (draft) => {
     const { integralID } = action;
     const { id, index } = state.activeSpectrum;
@@ -77,9 +77,9 @@ const deleteIntegral = (state, action) => {
     object.deleteIntegral(integralID);
     draft.data[index].integrals = object.getIntegrals();
   });
-};
+}
 
-const changeIntegral = (state, action) => {
+function changeIntegral(state, action) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
@@ -88,9 +88,9 @@ const changeIntegral = (state, action) => {
       draft.data[index].integrals = datumObject.getIntegrals();
     }
   });
-};
+}
 
-const handleResizeIntegral = (state, action) => {
+function handleResizeIntegral(state, action) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
@@ -99,9 +99,9 @@ const handleResizeIntegral = (state, action) => {
       draft.data[index].integrals = datumObject.getIntegrals();
     }
   });
-};
+}
 
-const handleChangeIntegralsRaltiveValue = (state, action) => {
+function handleChangeIntegralsRaltiveValue(state, action) {
   const { id: integralID, value } = action;
   const { id, index } = state.activeSpectrum;
   const datumObject = AnalysisObj.getDatum(id);
@@ -111,7 +111,7 @@ const handleChangeIntegralsRaltiveValue = (state, action) => {
   return produce(state, (draft) => {
     draft.data[index].integrals = integrals;
   });
-};
+}
 
 export {
   handleChangeIntegralSum,

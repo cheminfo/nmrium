@@ -9,7 +9,7 @@ import {
 
 const style = { display: 'flex', flexDirection: 'column' };
 
-const ToggleButtonGroup = ({ children, value, onChange }) => {
+function ToggleButtonGroup({ children, value, onChange }) {
   const [toggleButtons, setToggleButtons] = useState([]);
   const handleOnChange = useCallback(
     (val) => {
@@ -61,7 +61,7 @@ const ToggleButtonGroup = ({ children, value, onChange }) => {
   }, [children, value]);
 
   return <div style={style}> {mappedChildren} </div>;
-};
+}
 
 ToggleButtonGroup.defaultProps = {
   onChange: function () {

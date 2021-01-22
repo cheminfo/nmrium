@@ -1,4 +1,4 @@
-const DeleteButton = ({ x, y, onDelete, fill }) => {
+function DeleteButton({ x, y, onDelete, fill }) {
   return (
     <svg
       className="delete-button"
@@ -11,7 +11,7 @@ const DeleteButton = ({ x, y, onDelete, fill }) => {
       <line x1="5" x2="10" y1="8" y2="8" stroke="white" strokeWidth="2" />
     </svg>
   );
-};
+}
 
 DeleteButton.defaultProps = {
   onDelete: () => null,

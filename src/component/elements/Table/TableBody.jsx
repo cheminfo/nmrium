@@ -8,7 +8,7 @@ const styles = {
   padding: '5px 0px',
   color: 'gray',
 };
-const TableBody = memo(({ children, className, style }) => {
+function TableBody({ children, className, style }) {
   const mappedChildren = useMemo(() => {
     return Children.map(children, (child) =>
       cloneElement(child, {
@@ -22,6 +22,6 @@ const TableBody = memo(({ children, className, style }) => {
       {mappedChildren}
     </div>
   );
-});
+}
 
-export default TableBody;
+export default memo(TableBody);

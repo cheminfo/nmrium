@@ -52,7 +52,7 @@ const styles = css`
   }
 `;
 
-const NumberInput = ({ onSave, onClose, header }) => {
+function NumberInput({ onSave, onClose, header }) {
   const valueReft = useRef();
 
   const saveHandler = useCallback(() => {
@@ -88,7 +88,7 @@ const NumberInput = ({ onSave, onClose, header }) => {
       </div>
     </div>
   );
-};
+}
 
 NumberInput.defaultProps = {
   onSave: () => {

@@ -1,14 +1,14 @@
 import { Multiplets } from '../../../../data/constants/Multiplets';
 
-const getMultiplicityNumber = (string) => {
+function getMultiplicityNumber(string) {
   const multiplet = Multiplets.find(
     (_multiplet) => string === _multiplet.label || string === _multiplet.value,
   );
 
   return multiplet ? multiplet.multiplicity : null;
-};
+}
 
-const checkMultiplet = (multiplet, rejected = []) => {
+function checkMultiplet(multiplet, rejected = []) {
   // options to determine whether a massive (m), for example, should be considered as rejected multiplet
   if (multiplet === undefined || multiplet.length === 0) {
     return false;
@@ -21,9 +21,9 @@ const checkMultiplet = (multiplet, rejected = []) => {
     !rejected.includes(_multiplet.value) &&
     !rejected.includes(_multiplet.label)
   );
-};
+}
 
-const checkMultiplicity = (multiplicity, rejected = []) => {
+function checkMultiplicity(multiplicity, rejected = []) {
   // options to determine whether a massive (m), for example, should be considered as rejected multiplicity
   if (multiplicity === undefined || multiplicity.length === 0) {
     return false;
@@ -31,23 +31,23 @@ const checkMultiplicity = (multiplicity, rejected = []) => {
   return !multiplicity
     .split('')
     .find((_multiplet) => !checkMultiplet(_multiplet, rejected));
-};
+}
 
-const translateMultiplet = (multiplet) => {
+function translateMultiplet(multiplet) {
   return multiplet.length === 1
     ? Multiplets.find((_multiplet) => _multiplet.value === multiplet).label
     : Multiplets.find((_multiplet) => _multiplet.label === multiplet).value;
-};
+}
 
-const hasCouplingConstant = (multiplet) => {
+function hasCouplingConstant(multiplet) {
   if (multiplet.length > 1) {
     multiplet = translateMultiplet(multiplet);
   }
   // with the pre-set rejected ones, we check the given multiplicity for the need of having a coupling constant (massive and singlet do not)
   return checkMultiplicity(multiplet, ['m', 's']);
-};
+}
 
-const getPascal = (n, spin) => {
+function getPascal(n, spin) {
   if (n === undefined || n === 0 || spin === undefined) return [1];
   let mult = 2 * spin + 1;
   let previousLine = [];
@@ -65,7 +65,7 @@ const getPascal = (n, spin) => {
     previousLine = _line.slice();
   }
   return previousLine;
-};
+}
 
 export {
   checkMultiplet,

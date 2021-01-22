@@ -34,12 +34,12 @@ export const BRUSH_TYPE = {
   XY: 3,
 };
 
-const BrushXY = ({
+function BrushXY({
   brushType,
   dimensionBorder,
   width: widthProps,
   height: heightProps,
-}) => {
+}) {
   let { width, height, selectedTool } = useChartData();
   let { startX, endX, startY, endY, step } = useContext(BrushContext);
 
@@ -109,7 +109,7 @@ const BrushXY = ({
       </svg>
     </div>
   );
-};
+}
 
 BrushXY.defaultProps = {
   brushType: BRUSH_TYPE.XY,

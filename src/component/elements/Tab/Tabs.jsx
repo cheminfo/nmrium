@@ -90,76 +90,81 @@ const leftStyles = css`
   }
 `;
 
-const Tabs = memo(
-  ({ children, onClick, defaultTabID, position, canDelete, onDelete }) => {
-    const [activeTab, setActiveTab] = useState();
+function Tabs({
+  children,
+  onClick,
+  defaultTabID,
+  position,
+  canDelete,
+  onDelete,
+}) {
+  const [activeTab, setActiveTab] = useState();
 
-    useEffect(() => {
-      setActiveTab(defaultTabID);
-    }, [defaultTabID]);
+  useEffect(() => {
+    setActiveTab(defaultTabID);
+  }, [defaultTabID]);
 
-    const onClickTabHandler = useCallback(
-      (tab) => {
-        const { tablabel, tabid } = tab;
-        onClick({ tablabel, tabid });
-        // use tab identifier if given (higher priority)
-        setActiveTab(tabid);
-      },
-      [onClick],
-    );
+  const onClickTabHandler = useCallback(
+    (tab) => {
+      const { tablabel, tabid } = tab;
+      onClick({ tablabel, tabid });
+      // use tab identifier if given (higher priority)
+      setActiveTab(tabid);
+    },
+    [onClick],
+  );
 
-    const tabs = useMemo(() => {
-      return Children.map(children, (child) => {
-        const { tablabel, tabid, candelete, tabstyles } = child.props;
-        const deleteFlag = candelete
-          ? candelete.toLowerCase() === 'true'
-          : canDelete;
-        return (
-          <Tab
-            activeTab={activeTab}
-            key={tabid}
-            tablabel={tablabel}
-            onClick={onClickTabHandler}
-            tabid={tabid}
-            canDelete={deleteFlag}
-            onDelete={onDelete}
-            tabstyles={tabstyles}
-          />
-        );
-      });
-    }, [activeTab, canDelete, children, onClickTabHandler, onDelete]);
+  const tabs = useMemo(() => {
+    return Children.map(children, (child) => {
+      const { tablabel, tabid, candelete, tabstyles } = child.props;
+      const deleteFlag = candelete
+        ? candelete.toLowerCase() === 'true'
+        : canDelete;
+      return (
+        <Tab
+          activeTab={activeTab}
+          key={tabid}
+          tablabel={tablabel}
+          onClick={onClickTabHandler}
+          tabid={tabid}
+          canDelete={deleteFlag}
+          onDelete={onDelete}
+          tabstyles={tabstyles}
+        />
+      );
+    });
+  }, [activeTab, canDelete, children, onClickTabHandler, onDelete]);
 
-    const tabsContent = useMemo(() => {
-      return Children.map(children, (child) => {
-        const { tabid, style } = child.props;
-        if (tabid !== activeTab) {
-          return cloneElement(child, { style: { display: 'none' } });
-        }
-        return cloneElement(child, {
-          style: { display: 'block', ...style },
-        });
-      });
-    }, [activeTab, children]);
-
-    const styles = useMemo(() => {
-      switch (position) {
-        case positions.TOP:
-          return topStyles;
-        case positions.LEFT:
-          return leftStyles;
-        default:
-          return topStyles;
+  const tabsContent = useMemo(() => {
+    return Children.map(children, (child) => {
+      const { tabid, style } = child.props;
+      if (tabid !== activeTab) {
+        return cloneElement(child, { style: { display: 'none' } });
       }
-    }, [position]);
+      return cloneElement(child, {
+        style: { display: 'block', ...style },
+      });
+    });
+  }, [activeTab, children]);
 
-    return (
-      <div className="tabs" css={styles}>
-        <ol className="tab-list">{tabs}</ol>
-        <div className="tab-content">{tabsContent}</div>
-      </div>
-    );
-  },
-);
+  const styles = useMemo(() => {
+    switch (position) {
+      case positions.TOP:
+        return topStyles;
+      case positions.LEFT:
+        return leftStyles;
+      default:
+        return topStyles;
+    }
+  }, [position]);
+
+  return (
+    <div className="tabs" css={styles}>
+      <ol className="tab-list">{tabs}</ol>
+      <div className="tab-content">{tabsContent}</div>
+    </div>
+  );
+}
 
 Tabs.defaultProps = {
   onClick: () => null,
@@ -176,4 +181,4 @@ Tabs.propTypes = {
   onDelete: PropTypes.func,
 };
 
-export default Tabs;
+export default memo(Tabs);

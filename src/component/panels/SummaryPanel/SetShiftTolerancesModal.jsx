@@ -64,7 +64,7 @@ const modalContainer = css`
   }
 `;
 
-const SetShiftToleranceModal = ({ onClose, onSave, previousTolerance }) => {
+function SetShiftToleranceModal({ onClose, onSave, previousTolerance }) {
   const [tolerance, setTolerance] = useState();
 
   useEffect(() => {
@@ -120,7 +120,7 @@ const SetShiftToleranceModal = ({ onClose, onSave, previousTolerance }) => {
       </button>
     </div>
   );
-};
+}
 
 SetShiftToleranceModal.defaultProps = {
   onSave: () => {

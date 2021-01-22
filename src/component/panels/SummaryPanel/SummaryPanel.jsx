@@ -75,7 +75,7 @@ const panelStyle = css`
   }
 `;
 
-const SummaryPanel = memo(() => {
+function SummaryPanel() {
   const { data, molecules, correlations } = useChartData();
   const dispatch = useDispatch();
   const modal = useModal();
@@ -546,6 +546,6 @@ const SummaryPanel = memo(() => {
       />
     </div>
   );
-});
+}
 
-export default SummaryPanel;
+export default memo(SummaryPanel);

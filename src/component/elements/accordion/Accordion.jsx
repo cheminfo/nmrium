@@ -20,7 +20,7 @@ const styles = {
 };
 let forcedOpenedElements = [];
 let alwaysOpen = null;
-const Accordion = ({ children, defaultOpenIndex = 0 }) => {
+function Accordion({ children, defaultOpenIndex = 0 }) {
   const [elements, setElements] = useState([]);
   const refContainer = useRef();
 
@@ -89,6 +89,6 @@ const Accordion = ({ children, defaultOpenIndex = 0 }) => {
       {mappedChildren}
     </div>
   );
-};
+}
 
 export default Accordion;

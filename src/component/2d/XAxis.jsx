@@ -21,7 +21,7 @@ const axisStyles = css`
   }
 `;
 
-const XAxis = memo(({ show, label, margin: marginProps }) => {
+function XAxis({ show, label, margin: marginProps }) {
   const state = useChartData();
   const {
     xDomain,
@@ -81,7 +81,7 @@ const XAxis = memo(({ show, label, margin: marginProps }) => {
   }
 
   return Axis;
-});
+}
 
 XAxis.propTypes = {
   margin: PropTypes.shape({
@@ -100,4 +100,4 @@ XAxis.defaultProps = {
   margin: { right: 100, top: 0, left: 0, bottom: 0 },
 };
 
-export default XAxis;
+export default memo(XAxis);

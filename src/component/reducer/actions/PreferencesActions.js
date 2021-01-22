@@ -7,7 +7,7 @@ import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 import { setDomain } from './DomainActions';
 import { setZoom } from './Zoom';
 
-const handelSetPreferences = (state, action) => {
+function handelSetPreferences(state, action) {
   const { type, values } = action;
   return produce(state, (draft) => {
     const preferences = AnalysisObj.getPreferences();
@@ -20,9 +20,9 @@ const handelSetPreferences = (state, action) => {
     });
     draft.preferences = AnalysisObj.getPreferences();
   });
-};
+}
 
-const changeSpectrumDisplayPreferences = (state, draft, { center }) => {
+function changeSpectrumDisplayPreferences(state, draft, { center }) {
   const { height } = state;
   if (center) {
     const YAxisShift = height / 2;
@@ -36,9 +36,9 @@ const changeSpectrumDisplayPreferences = (state, draft, { center }) => {
     draft.verticalAlign.stacked = false;
     AnalysisObj.setPreferences({ display: { center: false } });
   }
-};
+}
 
-const setKeyPreferencesHandler = (state, keyCode) => {
+function setKeyPreferencesHandler(state, keyCode) {
   return produce(state, (draft) => {
     const {
       activeTab,
@@ -95,13 +95,13 @@ const setKeyPreferencesHandler = (state, keyCode) => {
       };
     }
   });
-};
+}
 
-const nucluesToString = (nuclues) => {
+function nucluesToString(nuclues) {
   return typeof nuclues === 'string' ? nuclues : nuclues.join(',');
-};
+}
 
-const applyKeyPreferencesHandler = (state, keyCode) => {
+function applyKeyPreferencesHandler(state, keyCode) {
   return produce(state, (draft) => {
     const preferences = state.keysPreferences[keyCode];
     if (preferences) {
@@ -157,7 +157,7 @@ const applyKeyPreferencesHandler = (state, keyCode) => {
       }
     }
   });
-};
+}
 
 export {
   changeSpectrumDisplayPreferences,

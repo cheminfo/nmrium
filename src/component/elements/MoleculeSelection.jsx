@@ -63,7 +63,7 @@ const moleculeContainerStyle = css`
   }
 `;
 
-const MoleculeSelection = ({ molecules, onChange }) => {
+function MoleculeSelection({ molecules, onChange }) {
   const [currentIndex, setCurrentIndex] = useState();
 
   useEffect(() => {
@@ -110,7 +110,7 @@ const MoleculeSelection = ({ molecules, onChange }) => {
       </div>
     </div>
   );
-};
+}
 
 MoleculeSelection.defaultProps = {
   onChange: () => {

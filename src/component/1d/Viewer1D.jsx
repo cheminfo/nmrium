@@ -42,7 +42,7 @@ import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
 
-const Viewer1D = () => {
+function Viewer1D() {
   const {
     display: { general },
   } = usePreferences();
@@ -298,6 +298,6 @@ const Viewer1D = () => {
   }, [dispatch, finalSize]);
 
   return <ScaleProvider value={scaleState}>{sizedNMRChart}</ScaleProvider>;
-};
+}
 
 export default Viewer1D;

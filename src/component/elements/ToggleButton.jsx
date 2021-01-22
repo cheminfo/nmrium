@@ -19,40 +19,38 @@ const styles = css`
   }
 `;
 
-const ToggleButton = memo(
-  ({
-    children,
-    style,
-    onClick,
-    popupTitle,
-    popupPlacement,
-    defaultValue,
-    disabled,
-  }) => {
-    const [flag, Toggle] = useState(defaultValue);
+function ToggleButton({
+  children,
+  style,
+  onClick,
+  popupTitle,
+  popupPlacement,
+  defaultValue,
+  disabled,
+}) {
+  const [flag, Toggle] = useState(defaultValue);
 
-    const toggleHandler = useCallback(() => {
-      Toggle((prev) => {
-        onClick(!prev);
+  const toggleHandler = useCallback(() => {
+    Toggle((prev) => {
+      onClick(!prev);
 
-        return !prev;
-      });
-    }, [onClick]);
-    return (
-      <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
-        <button
-          disabled={disabled}
-          css={[styles, style]}
-          className={flag ? 'toogle toggle-active' : 'toggle'}
-          type="button"
-          onClick={toggleHandler}
-        >
-          {children}
-        </button>
-      </ToolTip>
-    );
-  },
-);
+      return !prev;
+    });
+  }, [onClick]);
+  return (
+    <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
+      <button
+        disabled={disabled}
+        css={[styles, style]}
+        className={flag ? 'toogle toggle-active' : 'toggle'}
+        type="button"
+        onClick={toggleHandler}
+      >
+        {children}
+      </button>
+    </ToolTip>
+  );
+}
 
 ToggleButton.defaultProps = {
   popupTitle: '',
@@ -63,4 +61,4 @@ ToggleButton.defaultProps = {
   disabled: false,
 };
 
-export default ToggleButton;
+export default memo(ToggleButton);

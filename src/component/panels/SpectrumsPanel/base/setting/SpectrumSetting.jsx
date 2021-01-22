@@ -72,11 +72,7 @@ const style = css`
  
   }
 `;
-const SpectrumSetting = ({
-  position,
-  data: { id, info, display },
-  onClose,
-}) => {
+function SpectrumSetting({ position, data: { id, info, display }, onClose }) {
   const dispatch = useDispatch();
 
   const submitHandler = useCallback(
@@ -114,7 +110,7 @@ const SpectrumSetting = ({
       </div>
     </div>
   );
-};
+}
 
 function arePropsEqual() {
   return true;

@@ -126,189 +126,190 @@ const containerStyles = css`
   }
 `;
 
-const NMRDisplayer = memo(
-  ({ data: dataProp, onDataChange, docsBaseUrl, preferences }) => {
-    const rootRef = useRef();
-    const elementsWraperRef = useRef();
-    const [show, toggle] = useToggle(false);
-    const isFullscreen = useFullscreen(rootRef, show, {
-      onClose: () => {
-        toggle(false);
-      },
+function NMRDisplayer({
+  data: dataProp,
+  onDataChange,
+  docsBaseUrl,
+  preferences,
+}) {
+  const rootRef = useRef();
+  const elementsWraperRef = useRef();
+  const [show, toggle] = useToggle(false);
+  const isFullscreen = useFullscreen(rootRef, show, {
+    onClose: () => {
+      toggle(false);
+    },
+  });
+  const [isRightPanelHide, hideRightPanel] = useState(false);
+  const [isResizeEventStart, setResizeEventStart] = useState(false);
+  const [helpData, setHelpData] = useState(helpList());
+
+  const [state, dispatch] = useReducer(spectrumReducer, initialState);
+  const [preferencesState, dispatchPreferences] = useReducer(
+    preferencesReducer,
+    preferencesInitialState,
+  );
+
+  const { selectedTool, displayerMode } = state;
+
+  useEffect(() => {
+    rootRef.current.focus();
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    dispatchPreferences({
+      type: INIT_PREFERENCES,
+      payload: { display: preferences, dispatch: dispatchPreferences },
     });
-    const [isRightPanelHide, hideRightPanel] = useState(false);
-    const [isResizeEventStart, setResizeEventStart] = useState(false);
-    const [helpData, setHelpData] = useState(helpList());
+  }, [preferences]);
 
-    const [state, dispatch] = useReducer(spectrumReducer, initialState);
-    const [preferencesState, dispatchPreferences] = useReducer(
-      preferencesReducer,
-      preferencesInitialState,
-    );
-
-    const { selectedTool, displayerMode } = state;
-
-    useEffect(() => {
-      rootRef.current.focus();
-    }, [isFullscreen]);
-
-    useEffect(() => {
-      dispatchPreferences({
-        type: INIT_PREFERENCES,
-        payload: { display: preferences, dispatch: dispatchPreferences },
+  useEffect(() => {
+    if (dataProp !== undefined) {
+      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+      Analysis.build(dataProp || {}).then((object) => {
+        dispatch({ type: INITIATE, data: { AnalysisObj: object } });
       });
-    }, [preferences]);
+    }
+  }, [dataProp]);
 
-    useEffect(() => {
-      if (dataProp !== undefined) {
-        dispatch({ type: SET_LOADING_FLAG, isLoading: true });
-        Analysis.build(dataProp || {}).then((object) => {
-          dispatch({ type: INITIATE, data: { AnalysisObj: object } });
-        });
+  useEffect(() => {
+    setBaseUrl(docsBaseUrl);
+    setHelpData(helpList());
+  }, [docsBaseUrl]);
+
+  const handleSplitPanelDragFinished = useCallback(
+    (size) => {
+      if (size && !isRightPanelHide) {
+        setResizeEventStart(false);
+        dispatch({ type: SET_WIDTH, width: size });
       }
-    }, [dataProp]);
+    },
+    [isRightPanelHide],
+  );
 
-    useEffect(() => {
-      setBaseUrl(docsBaseUrl);
-      setHelpData(helpList());
-    }, [docsBaseUrl]);
+  const dispatchMiddleWare = useMemo(() => {
+    function dataChangeHandler(data) {
+      onDataChange(data);
+    }
+    return dispatchMiddleware(dispatch, dataChangeHandler);
+  }, [onDataChange]);
 
-    const handleSplitPanelDragFinished = useCallback(
-      (size) => {
-        if (size && !isRightPanelHide) {
-          setResizeEventStart(false);
-          dispatch({ type: SET_WIDTH, width: size });
-        }
-      },
-      [isRightPanelHide],
+  const preventAutoHelp = useMemo(() => {
+    return lodash.get(
+      preferencesState,
+      'controllers.help.preventAutoHelp',
+      false,
     );
+  }, [preferencesState]);
 
-    const dispatchMiddleWare = useMemo(() => {
-      function dataChangeHandler(data) {
-        onDataChange(data);
-      }
-      return dispatchMiddleware(dispatch, dataChangeHandler);
-    }, [onDataChange]);
+  const rightPanelHandler = useCallback((e) => {
+    e.stopPropagation();
+    hideRightPanel((prevFlag) => !prevFlag);
+  }, []);
 
-    const preventAutoHelp = useMemo(() => {
-      return lodash.get(
-        preferencesState,
-        'controllers.help.preventAutoHelp',
-        false,
-      );
-    }, [preferencesState]);
+  const preventContextMenuHandler = useCallback((e) => {
+    if (!checkModifierKeyActivated(e)) {
+      e.preventDefault();
+    }
+  }, []);
 
-    const rightPanelHandler = useCallback((e) => {
-      e.stopPropagation();
-      hideRightPanel((prevFlag) => !prevFlag);
-    }, []);
+  return (
+    <ErrorBoundary>
+      <GlobalProvider
+        value={{
+          rootRef: rootRef.current,
+          elementsWraperRef: elementsWraperRef.current,
+        }}
+      >
+        <PreferencesProvider value={preferencesState}>
+          <HelpProvider
+            data={helpData}
+            wrapperRef={elementsWraperRef.current}
+            preventAutoHelp={preventAutoHelp}
+          >
+            <AlertProvider wrapperRef={elementsWraperRef.current}>
+              <DispatchProvider value={dispatchMiddleWare}>
+                <ChartDataProvider value={{ ...state, isResizeEventStart }}>
+                  <ModalProvider wrapperRef={elementsWraperRef.current}>
+                    <HighlightProvider>
+                      <AssignmentProvider>
+                        <div
+                          ref={rootRef}
+                          css={containerStyles}
+                          onContextMenu={preventContextMenuHandler}
+                        >
+                          <KeysListenerTracker>
+                            <Header
+                              isFullscreen={isFullscreen}
+                              onMaximize={toggle}
+                            />
 
-    const preventContextMenuHandler = useCallback((e) => {
-      if (!checkModifierKeyActivated(e)) {
-        e.preventDefault();
-      }
-    }, []);
-
-    return (
-      <ErrorBoundary>
-        <GlobalProvider
-          value={{
-            rootRef: rootRef.current,
-            elementsWraperRef: elementsWraperRef.current,
-          }}
-        >
-          <PreferencesProvider value={preferencesState}>
-            <HelpProvider
-              data={helpData}
-              wrapperRef={elementsWraperRef.current}
-              preventAutoHelp={preventAutoHelp}
-            >
-              <AlertProvider wrapperRef={elementsWraperRef.current}>
-                <DispatchProvider value={dispatchMiddleWare}>
-                  <ChartDataProvider value={{ ...state, isResizeEventStart }}>
-                    <ModalProvider wrapperRef={elementsWraperRef.current}>
-                      <HighlightProvider>
-                        <AssignmentProvider>
-                          <div
-                            ref={rootRef}
-                            css={containerStyles}
-                            onContextMenu={preventContextMenuHandler}
-                          >
-                            <KeysListenerTracker>
-                              <Header
-                                isFullscreen={isFullscreen}
-                                onMaximize={toggle}
-                              />
-
-                              {/* ref={containerRef} */}
-                              <div
-                                style={{
-                                  height: 'calc(100% - 36px)',
-                                  width: '100%',
-                                  backgroundColor: 'white',
-                                }}
-                              >
-                                <DropZone>
-                                  <ToolBar selectedTool={selectedTool} />
-                                  <SplitPane
-                                    style={splitPaneStyles.container}
-                                    paneStyle={splitPaneStyles.pane}
-                                    resizerStyle={splitPaneStyles.resizer}
-                                    pane1Style={
-                                      isRightPanelHide
-                                        ? {
-                                            maxWidth: '100%',
-                                            width: 'calc(100% - 10px)',
-                                          }
-                                        : { maxWidth: '80%' }
-                                    }
-                                    split="vertical"
-                                    defaultSize={
-                                      isRightPanelHide
-                                        ? '99%'
-                                        : 'calc(100% - 600px)'
-                                    }
-                                    minSize="80%"
-                                    onDragFinished={
-                                      handleSplitPanelDragFinished
-                                    }
-                                    onResizerDoubleClick={rightPanelHandler}
-                                    onDragStarted={() => {
-                                      setResizeEventStart(true);
-                                    }}
-                                  >
-                                    {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                                      <Viewer1D />
-                                    ) : (
-                                      <Viewer2D />
-                                    )}
-                                    {!isRightPanelHide ? (
-                                      <Panels
-                                        selectedTool={selectedTool}
-                                        displayerMode={displayerMode}
-                                      />
-                                    ) : (
-                                      <div />
-                                    )}
-                                  </SplitPane>
-                                </DropZone>
-                              </div>
-                              <div ref={elementsWraperRef} id="main-wrapper" />
-                            </KeysListenerTracker>
-                          </div>
-                        </AssignmentProvider>
-                      </HighlightProvider>
-                    </ModalProvider>
-                  </ChartDataProvider>
-                </DispatchProvider>
-              </AlertProvider>
-            </HelpProvider>
-          </PreferencesProvider>
-        </GlobalProvider>
-      </ErrorBoundary>
-    );
-  },
-);
+                            {/* ref={containerRef} */}
+                            <div
+                              style={{
+                                height: 'calc(100% - 36px)',
+                                width: '100%',
+                                backgroundColor: 'white',
+                              }}
+                            >
+                              <DropZone>
+                                <ToolBar selectedTool={selectedTool} />
+                                <SplitPane
+                                  style={splitPaneStyles.container}
+                                  paneStyle={splitPaneStyles.pane}
+                                  resizerStyle={splitPaneStyles.resizer}
+                                  pane1Style={
+                                    isRightPanelHide
+                                      ? {
+                                          maxWidth: '100%',
+                                          width: 'calc(100% - 10px)',
+                                        }
+                                      : { maxWidth: '80%' }
+                                  }
+                                  split="vertical"
+                                  defaultSize={
+                                    isRightPanelHide
+                                      ? '99%'
+                                      : 'calc(100% - 600px)'
+                                  }
+                                  minSize="80%"
+                                  onDragFinished={handleSplitPanelDragFinished}
+                                  onResizerDoubleClick={rightPanelHandler}
+                                  onDragStarted={() => {
+                                    setResizeEventStart(true);
+                                  }}
+                                >
+                                  {displayerMode === DISPLAYER_MODE.DM_1D ? (
+                                    <Viewer1D />
+                                  ) : (
+                                    <Viewer2D />
+                                  )}
+                                  {!isRightPanelHide ? (
+                                    <Panels
+                                      selectedTool={selectedTool}
+                                      displayerMode={displayerMode}
+                                    />
+                                  ) : (
+                                    <div />
+                                  )}
+                                </SplitPane>
+                              </DropZone>
+                            </div>
+                            <div ref={elementsWraperRef} id="main-wrapper" />
+                          </KeysListenerTracker>
+                        </div>
+                      </AssignmentProvider>
+                    </HighlightProvider>
+                  </ModalProvider>
+                </ChartDataProvider>
+              </DispatchProvider>
+            </AlertProvider>
+          </HelpProvider>
+        </PreferencesProvider>
+      </GlobalProvider>
+    </ErrorBoundary>
+  );
+}
 
 NMRDisplayer.propTypes = {
   docsBaseUrl: PropTypes.string,
@@ -391,4 +392,4 @@ NMRDisplayer.defaultProps = {
   },
 };
 
-export default NMRDisplayer;
+export default memo(NMRDisplayer);

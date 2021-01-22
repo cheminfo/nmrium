@@ -43,7 +43,7 @@ const stylesHighlighted = css`
   }
 `;
 
-const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
+function IntegralResizable({ spectrumID, integralSeries, integralData }) {
   const { height, margin } = useChartData();
   const { scaleX } = useScale();
 
@@ -121,6 +121,6 @@ const IntegralResizable = ({ spectrumID, integralSeries, integralData }) => {
       </g>
     </Fragment>
   );
-};
+}
 
 export default IntegralResizable;

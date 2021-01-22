@@ -47,7 +47,7 @@ const styles = css`
     }
   }
 `;
-const FooterBanner = ({ layout, data1D }) => {
+function FooterBanner({ layout, data1D }) {
   const position = useContext(MouseContext);
   const { startX, endX, startY, endY, step } = useContext(BrushContext);
   const {
@@ -272,6 +272,6 @@ const FooterBanner = ({ layout, data1D }) => {
       )}
     </div>
   );
-};
+}
 
 export default FooterBanner;

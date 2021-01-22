@@ -25,7 +25,7 @@ const styles = {
     borderBottom: '1px solid #817066',
   },
 };
-const FiltersTableRow = memo(({ filters }) => {
+function FiltersTableRow({ filters }) {
   const dispatch = useDispatch();
   const [selectedFilterID, setSelectedFilter] = useState();
 
@@ -99,6 +99,6 @@ const FiltersTableRow = memo(({ filters }) => {
     selectedFilterID,
   ]);
   return filtersTableRow;
-});
+}
 
-export default FiltersTableRow;
+export default memo(FiltersTableRow);

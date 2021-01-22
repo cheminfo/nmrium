@@ -24,7 +24,7 @@ const selectBoxStyle = {
   height: '20px',
 };
 
-const ActionsColumn = ({ rowData, rowSpanTags }) => {
+function ActionsColumn({ rowData, rowSpanTags }) {
   const dispatch = useDispatch();
   const assignmentData = useAssignmentData();
 
@@ -92,6 +92,6 @@ const ActionsColumn = ({ rowData, rowSpanTags }) => {
       </td>
     </Fragment>
   );
-};
+}
 
 export default ActionsColumn;

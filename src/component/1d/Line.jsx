@@ -6,7 +6,7 @@ import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useScale } from '../context/ScaleContext';
 
-export const Line = ({ x, y, id, display, index }) => {
+function Line({ x, y, id, display, index }) {
   const { xDomain, activeSpectrum, verticalAlign } = useChartData();
   const preferences = usePreferences();
   const { scaleX, scaleY } = useScale();
@@ -65,6 +65,6 @@ export const Line = ({ x, y, id, display, index }) => {
       transform={`translate(0,-${vAlign})`}
     />
   );
-};
+}
 
 export default Line;

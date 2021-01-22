@@ -10,11 +10,11 @@ import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setYAxisShift, setActiveTab } from './ToolsActions';
 import { initZoom1DHandler } from './Zoom';
 
-const setIsLoading = (state, isLoading) => {
+function setIsLoading(state, isLoading) {
   return { ...state, isLoading };
-};
+}
 
-const initiate = (state, dataObject) => {
+function initiate(state, dataObject) {
   HorizontalZoomHistory.initiate();
   initiateObject(dataObject.AnalysisObj);
   const spectraData = AnalysisObj.getSpectraData();
@@ -42,9 +42,9 @@ const initiate = (state, dataObject) => {
     }
     setActiveTab(draft);
   });
-};
+}
 
-const setData = (state, data) => {
+function setData(state, data) {
   for (let d of data) {
     AnalysisObj.pushDatum(new Datum1D(d));
   }
@@ -62,9 +62,9 @@ const setData = (state, data) => {
     setActiveTab(draft);
     initZoom1DHandler(draft.data);
   });
-};
+}
 
-const loadJDFFile = (state, files) => {
+function loadJDFFile(state, files) {
   return produce(state, (draft) => {
     let usedColors = draft.data.map((d) => d.color);
     const filesLength = files.length;
@@ -90,9 +90,9 @@ const loadJDFFile = (state, files) => {
 
     draft.isLoading = false;
   });
-};
+}
 
-const loadJcampFile = (state, files) => {
+function loadJcampFile(state, files) {
   return produce(state, (draft) => {
     AnalysisObj.addJcamps(files);
     draft.data = AnalysisObj.getSpectraData();
@@ -101,9 +101,9 @@ const loadJcampFile = (state, files) => {
 
     draft.isLoading = false;
   });
-};
+}
 
-const handleLoadJsonFile = (state, data) => {
+function handleLoadJsonFile(state, data) {
   initiateObject(data.AnalysisObj);
   const spectraData = AnalysisObj.getSpectraData();
   const molecules = AnalysisObj.getMolecules();
@@ -133,9 +133,9 @@ const handleLoadJsonFile = (state, data) => {
 
     draft.isLoading = false;
   });
-};
+}
 
-const handleLoadMOLFile = (state, files) => {
+function handleLoadMOLFile(state, files) {
   const filesLength = files.length;
   for (let i = 0; i < filesLength; i++) {
     AnalysisObj.addMolfile(files[i].binary.toString());
@@ -146,7 +146,7 @@ const handleLoadMOLFile = (state, files) => {
     draft.molecules = molecules;
     draft.isLoading = false;
   });
-};
+}
 
 async function loadZipFile(files) {
   await AnalysisObj.fromZip(files);

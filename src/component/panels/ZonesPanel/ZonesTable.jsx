@@ -45,7 +45,7 @@ const tableStyle = css`
   }
 `;
 
-const ZonesTable = ({ tableData, onUnlink, context, nuclei, preferences }) => {
+function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
   const contextRef = useRef();
 
   const data = useMemo(() => {
@@ -145,6 +145,6 @@ const ZonesTable = ({ tableData, onUnlink, context, nuclei, preferences }) => {
       <ContextMenu ref={contextRef} context={context} />
     </div>
   );
-};
+}
 
 export default ZonesTable;

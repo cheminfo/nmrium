@@ -82,7 +82,7 @@ const menuButton = css`
   }
 `;
 
-const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
+function BasicToolBar({ info, verticalAlign, displayerMode }) {
   const dispatch = useDispatch();
   const preferences = usePreferences();
   const { rootRef } = useGlobal();
@@ -324,6 +324,6 @@ const BasicToolBar = ({ info, verticalAlign, displayerMode }) => {
         )}
     </Fragment>
   );
-};
+}
 
 export default ToolBarWrapper(memo(BasicToolBar));

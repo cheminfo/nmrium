@@ -16,7 +16,7 @@ const HighlightedRowStyle = { backgroundColor: '#ff6f0057' };
 
 const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
-const ZonesTableRow = ({ rowData, onUnlink, onContextMenu }) => {
+function ZonesTableRow({ rowData, onUnlink, onContextMenu }) {
   const assignmentZone = useAssignment(rowData.id);
   const highlightZone = useHighlight([assignmentZone.id]);
   const highlightZoneX = useHighlight(
@@ -210,6 +210,6 @@ const ZonesTableRow = ({ rowData, onUnlink, onContextMenu }) => {
       <ActionsColumn rowData={rowData} rowSpanTags={rowSpanTags} />
     </tr>
   );
-};
+}
 
 export default ZonesTableRow;

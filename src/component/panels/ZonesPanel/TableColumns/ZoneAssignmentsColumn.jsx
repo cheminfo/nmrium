@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import { FaMinusCircle } from 'react-icons/fa';
 
-const ZoneAssignmentColumn = ({
+function ZoneAssignmentColumn({
   rowData,
   assignment,
   highlight,
@@ -12,7 +12,7 @@ const ZoneAssignmentColumn = ({
   showUnlinkButton,
   setShowUnlinkButton,
   rowSpanTags,
-}) => {
+}) {
   return (
     <td
       {...rowSpanTags}
@@ -82,6 +82,6 @@ const ZoneAssignmentColumn = ({
       )}
     </td>
   );
-};
+}
 
 export default ZoneAssignmentColumn;

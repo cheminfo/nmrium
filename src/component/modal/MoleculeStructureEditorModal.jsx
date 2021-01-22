@@ -52,7 +52,7 @@ const modalButtonStyle = css`
   }
 `;
 
-const MoleculeStructureEditorModal = (props) => {
+function MoleculeStructureEditorModal(props) {
   const { onClose, open, selectedMolecule } = props;
   const [molfile, setMolfile] = useState(null);
   const dispatch = useDispatch();
@@ -113,6 +113,6 @@ const MoleculeStructureEditorModal = (props) => {
       </div>
     </Modal>
   );
-};
+}
 
 export default MoleculeStructureEditorModal;

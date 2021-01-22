@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useField } from 'formik';
 
-const ErrorMessage = ({ style, ...props }) => {
+function ErrorMessage({ style, ...props }) {
   const meta = useField(props)[1];
 
   return (
@@ -11,6 +11,6 @@ const ErrorMessage = ({ style, ...props }) => {
       ) : null}
     </div>
   );
-};
+}
 
 export default ErrorMessage;

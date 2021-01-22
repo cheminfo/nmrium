@@ -23,10 +23,10 @@ const styles = {
   },
 };
 
-const HistoryToolBar = ({
+function HistoryToolBar({
   isUndoButtonVisible = true,
   isRedoButtonVisible = true,
-}) => {
+}) {
   const { history } = useChartData(ChartContext);
 
   const dispatch = useDispatch();
@@ -73,6 +73,6 @@ const HistoryToolBar = ({
       )}
     </Fragment>
   );
-};
+}
 
 export default memo(HistoryToolBar);

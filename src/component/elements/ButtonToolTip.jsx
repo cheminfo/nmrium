@@ -2,14 +2,14 @@ import React from 'react';
 
 import ToolTip from './ToolTip/ToolTip';
 
-const ButtonToolTip = ({
+function ButtonToolTip({
   children,
   style,
   onClick,
   popupTitle,
   popupPlacement,
   ...props
-}) => {
+}) {
   return (
     <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
       <button style={style} type="button" onClick={onClick} {...props}>
@@ -17,7 +17,7 @@ const ButtonToolTip = ({
       </button>
     </ToolTip>
   );
-};
+}
 
 ButtonToolTip.defaultProps = {
   popupTitle: '',

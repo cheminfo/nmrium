@@ -5,7 +5,7 @@ import { useChartData } from '../context/ChartContext';
 
 import { get1DYScale, get2DYScale } from './utilities/scale';
 
-const Left1DChart = memo(({ margin: marignValue, data }) => {
+function Left1DChart({ margin: marignValue, data }) {
   const { height: originHeight, margin, yDomain, yDomains } = useChartData();
 
   const height = margin.left;
@@ -64,10 +64,10 @@ const Left1DChart = memo(({ margin: marignValue, data }) => {
       </g>
     </svg>
   );
-});
+}
 
 Left1DChart.defaultProps = {
   margin: 10,
 };
 
-export default Left1DChart;
+export default memo(Left1DChart);

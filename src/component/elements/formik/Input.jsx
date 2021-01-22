@@ -2,7 +2,7 @@ import { useField } from 'formik';
 
 import ErrorMessage from './ErrorMessage';
 
-const Input = ({ onFocus, onBlur, enableErrorMessage, ...props }) => {
+function Input({ onFocus, onBlur, enableErrorMessage, ...props }) {
   const [field] = useField(props);
   return (
     <div>
@@ -17,7 +17,7 @@ const Input = ({ onFocus, onBlur, enableErrorMessage, ...props }) => {
       ) : null}
     </div>
   );
-};
+}
 
 Input.defaultProps = {
   onFocus: () => null,

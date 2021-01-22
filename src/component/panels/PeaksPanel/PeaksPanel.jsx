@@ -18,7 +18,7 @@ const styles = {
   },
 };
 
-const PeaksPanel = memo(() => {
+function PeaksPanel() {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [peaksCounter, setPeaksCounter] = useState(0);
 
@@ -87,6 +87,6 @@ const PeaksPanel = memo(() => {
       </div>
     </div>
   );
-});
+}
 
-export default PeaksPanel;
+export default memo(PeaksPanel);

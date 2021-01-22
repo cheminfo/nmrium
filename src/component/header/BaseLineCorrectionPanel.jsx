@@ -29,7 +29,7 @@ const styles = {
   },
 };
 
-const BaseLineCorrectionPanel = () => {
+function BaseLineCorrectionPanel() {
   const dispatch = useDispatch();
   const algorithmRef = useRef();
   const maxIterationsRef = useRef();
@@ -140,6 +140,6 @@ const BaseLineCorrectionPanel = () => {
       </button>
     </div>
   );
-};
+}
 
 export default BaseLineCorrectionPanel;

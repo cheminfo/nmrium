@@ -54,7 +54,7 @@ const stylesHighlighted = css`
   }
 `;
 
-const Range = ({ rangeData, showMultiplicityTrees }) => {
+function Range({ rangeData, showMultiplicityTrees }) {
   const { id, from, to, integral, signal } = rangeData;
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -196,6 +196,6 @@ const Range = ({ rangeData, showMultiplicityTrees }) => {
         : null}
     </g>
   );
-};
+}
 
 export default Range;

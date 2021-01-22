@@ -37,7 +37,7 @@ const gridStyles = css`
   }
 `;
 
-const XAxis = ({ label, show, showGrid, mode }) => {
+function XAxis({ label, show, showGrid, mode }) {
   const { xDomain, height, width, margin } = useChartData();
   const { scaleX } = useScale();
 
@@ -102,7 +102,7 @@ const XAxis = ({ label, show, showGrid, mode }) => {
       {Grid}
     </>
   );
-};
+}
 
 XAxis.propTypes = {
   showGrid: PropTypes.bool,

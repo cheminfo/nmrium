@@ -34,16 +34,18 @@ const styles = css`
   }
 `;
 
-const DropDownList = ({ data = [], onSelect }) => (
-  <div css={styles}>
-    <ul>
-      {data.map((item, i) => (
-        <li key={item.key} onClick={() => onSelect(i)}>
-          {item.label}
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+function DropDownList({ data = [], onSelect }) {
+  return (
+    <div css={styles}>
+      <ul>
+        {data.map((item, i) => (
+          <li key={item.key} onClick={() => onSelect(i)}>
+            {item.label}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export default DropDownList;

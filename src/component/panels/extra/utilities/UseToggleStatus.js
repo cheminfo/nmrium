@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 let oldId = null;
 
-const useToggleStatus = (key, data) => {
+function useToggleStatus(key, data) {
   const [status, setStatus] = useState({});
 
   useEffect(() => {
@@ -37,6 +37,6 @@ const useToggleStatus = (key, data) => {
   );
 
   return [status, toggle];
-};
+}
 
 export default useToggleStatus;

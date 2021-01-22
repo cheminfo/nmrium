@@ -19,7 +19,7 @@ const pathStyles = css`
     // will-change: transform;
   }
 `;
-const IntegralsSeries = () => {
+function IntegralsSeries() {
   const {
     xDomain,
     activeSpectrum,
@@ -85,6 +85,6 @@ const IntegralsSeries = () => {
       {Integrals}
     </g>
   );
-};
+}
 
 export default IntegralsSeries;

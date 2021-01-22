@@ -1,6 +1,6 @@
 import lodash from 'lodash';
 
-const CouplingColumn = ({ rowData, onHoverSignal }) => {
+function CouplingColumn({ rowData, onHoverSignal }) {
   const result = lodash.get(rowData, 'tableMetaInfo.signal.j');
   return (
     <td {...onHoverSignal}>
@@ -8,6 +8,6 @@ const CouplingColumn = ({ rowData, onHoverSignal }) => {
         result.map((coupling) => coupling.coupling.toFixed(1)).join(',')}
     </td>
   );
-};
+}
 
 export default CouplingColumn;

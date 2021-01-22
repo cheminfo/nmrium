@@ -69,12 +69,12 @@ const styles = css`
   }
 `;
 
-const EditRangeModal = ({
+function EditRangeModal({
   onSaveEditRangeModal,
   onCloseEditRangeModal,
   onZoomEditRangeModal,
   rangeData,
-}) => {
+}) {
   const handleOnZoom = useCallback(() => {
     onZoomEditRangeModal(rangeData);
   }, [onZoomEditRangeModal, rangeData]);
@@ -199,7 +199,7 @@ const EditRangeModal = ({
       )}
     </div>
   );
-};
+}
 
 EditRangeModal.defaultProps = {
   onSave: () => {

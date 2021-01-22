@@ -21,12 +21,7 @@ const styles = css`
   }
 `;
 
-const DropDownButton = ({
-  data,
-  selectedKey,
-  onSelect,
-  formatSelectedValue,
-}) => {
+function DropDownButton({ data, selectedKey, onSelect, formatSelectedValue }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(selectedKey);
   const { rootRef } = useGlobal();
@@ -65,7 +60,7 @@ const DropDownButton = ({
       {open && <DropDownList data={data} onSelect={selectHandler} />}
     </div>
   );
-};
+}
 
 DropDownButton.defaultProps = {
   data: null,

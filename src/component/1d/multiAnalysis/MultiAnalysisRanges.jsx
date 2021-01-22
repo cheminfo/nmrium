@@ -4,7 +4,7 @@ import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 
 import AnalysisRange from './AnalysisRange';
 
-const MultiAnalysisRanges = memo(({ activeTab, spectraAanalysis }) => {
+function MultiAnalysisRanges({ activeTab, spectraAanalysis }) {
   const columns = useMemo(() => {
     const {
       options: { columns },
@@ -33,6 +33,6 @@ const MultiAnalysisRanges = memo(({ activeTab, spectraAanalysis }) => {
       ))}
     </g>
   );
-});
+}
 
-export default MultiAnalysisWrapper(MultiAnalysisRanges);
+export default MultiAnalysisWrapper(memo(MultiAnalysisRanges));

@@ -5,7 +5,7 @@ import Events from '../../utility/Events';
 
 import Range from './Range';
 
-const Ranges = memo(({ ranges }) => {
+function Ranges({ ranges }) {
   const [isMultiplicityTreesVisibile, showMultiplicityTrees] = useState(false);
 
   useEffect(() => {
@@ -27,6 +27,6 @@ const Ranges = memo(({ ranges }) => {
         ))}
     </g>
   );
-});
+}
 
-export default RangesWrapper(Ranges);
+export default RangesWrapper(memo(Ranges));

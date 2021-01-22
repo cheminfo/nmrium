@@ -43,7 +43,7 @@ const styles = {
   },
 };
 
-const RangesHeader = ({
+function RangesHeader({
   ranges,
   info,
   activeTab,
@@ -53,7 +53,7 @@ const RangesHeader = ({
   onSettingClick,
   isFilterActive,
   filterCounter,
-}) => {
+}) {
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
@@ -201,6 +201,6 @@ const RangesHeader = ({
       </ToggleButton>
     </DefaultPanelHeader>
   );
-};
+}
 
 export default RangesHeader;

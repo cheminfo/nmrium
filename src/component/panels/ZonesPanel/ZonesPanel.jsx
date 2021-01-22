@@ -43,183 +43,175 @@ const styles = {
   },
 };
 
-const ZonesPanel = memo(
-  ({ zones, activeTab, preferences, xDomain, yDomain }) => {
-    const [filterIsActive, setFilterIsActive] = useState(false);
+function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
+  const [filterIsActive, setFilterIsActive] = useState(false);
 
-    const assignmentData = useAssignmentData();
+  const assignmentData = useAssignmentData();
 
-    const dispatch = useDispatch();
-    const modal = useModal();
-    const [isFlipped, setFlipStatus] = useState(false);
-    const settingRef = useRef();
+  const dispatch = useDispatch();
+  const modal = useModal();
+  const [isFlipped, setFlipStatus] = useState(false);
+  const settingRef = useRef();
 
-    const tableData = useMemo(() => {
-      const isInView = (xFrom, xTo, yFrom, yTo) => {
-        const factor = 10000;
-        xFrom = xFrom * factor;
-        xTo = xTo * factor;
-        yFrom = yFrom * factor;
-        yTo = yTo * factor;
-        return (
-          ((xTo >= xDomain[0] * factor && xFrom <= xDomain[1] * factor) ||
-            (xFrom <= xDomain[0] * factor && xTo >= xDomain[1] * factor)) &&
-          ((yTo >= yDomain[0] * factor && yFrom <= yDomain[1] * factor) ||
-            (yFrom <= yDomain[0] * factor && yTo >= yDomain[1] * factor))
-        );
-      };
-
-      const getFilteredZones = (zones) => {
-        return zones.filter((zone) => {
-          return isInView(zone.x.from, zone.x.to, zone.y.from, zone.y.to);
-        });
-      };
-      if (zones.values) {
-        const _zones = filterIsActive
-          ? getFilteredZones(zones.values)
-          : zones.values;
-
-        return _zones.map((zone) => {
-          return {
-            ...zone,
-            tableMetaInfo: {
-              isConstantlyHighlighted: isInView(
-                zone.x.from,
-                zone.x.to,
-                zone.y.from,
-                zone.y.to,
-              ),
-            },
-          };
-        });
-      }
-    }, [zones, filterIsActive, xDomain, yDomain]);
-
-    const handleOnFilter = useCallback(() => {
-      setFilterIsActive(!filterIsActive);
-    }, [filterIsActive]);
-
-    const unlinkZoneHandler = useCallback(
-      (zone, isOnZoneLevel, signalIndex, axis) => {
-        // unlink in assignment hook data
-        unlinkInAssignmentData(
-          assignmentData,
-          zone,
-          isOnZoneLevel,
-          signalIndex,
-          axis,
-        );
-        // unlink in global state
-        const _zone = unlink(zone, isOnZoneLevel, signalIndex, axis);
-        dispatch({ type: CHANGE_ZONE_DATA, data: _zone });
-      },
-      [assignmentData, dispatch],
-    );
-
-    const removeAssignments = useCallback(() => {
-      zones.values.forEach((zone) => unlinkZoneHandler(zone));
-    }, [zones.values, unlinkZoneHandler]);
-
-    const handleOnRemoveAssignments = useCallback(() => {
-      modal.showConfirmDialog(
-        'All assignments will be removed, Are you sure?',
-        {
-          onYes: removeAssignments,
-        },
+  const tableData = useMemo(() => {
+    const isInView = (xFrom, xTo, yFrom, yTo) => {
+      const factor = 10000;
+      xFrom = xFrom * factor;
+      xTo = xTo * factor;
+      yFrom = yFrom * factor;
+      yTo = yTo * factor;
+      return (
+        ((xTo >= xDomain[0] * factor && xFrom <= xDomain[1] * factor) ||
+          (xFrom <= xDomain[0] * factor && xTo >= xDomain[1] * factor)) &&
+        ((yTo >= yDomain[0] * factor && yFrom <= yDomain[1] * factor) ||
+          (yFrom <= yDomain[0] * factor && yTo >= yDomain[1] * factor))
       );
-    }, [removeAssignments, modal]);
+    };
 
-    const handleDeleteAll = useCallback(() => {
-      modal.showConfirmDialog('All zones will be deleted, Are You sure?', {
-        onYes: () => {
-          removeAssignments();
-          dispatch({ type: DELETE_2D_ZONE });
-        },
+    const getFilteredZones = (zones) => {
+      return zones.filter((zone) => {
+        return isInView(zone.x.from, zone.x.to, zone.y.from, zone.y.to);
       });
-    }, [dispatch, modal, removeAssignments]);
+    };
+    if (zones.values) {
+      const _zones = filterIsActive
+        ? getFilteredZones(zones.values)
+        : zones.values;
 
-    const zonesPreferences = useMemo(() => {
-      const _preferences = lodash.get(
-        preferences,
-        `panels.zones.[${activeTab}]`,
+      return _zones.map((zone) => {
+        return {
+          ...zone,
+          tableMetaInfo: {
+            isConstantlyHighlighted: isInView(
+              zone.x.from,
+              zone.x.to,
+              zone.y.from,
+              zone.y.to,
+            ),
+          },
+        };
+      });
+    }
+  }, [zones, filterIsActive, xDomain, yDomain]);
+
+  const handleOnFilter = useCallback(() => {
+    setFilterIsActive(!filterIsActive);
+  }, [filterIsActive]);
+
+  const unlinkZoneHandler = useCallback(
+    (zone, isOnZoneLevel, signalIndex, axis) => {
+      // unlink in assignment hook data
+      unlinkInAssignmentData(
+        assignmentData,
+        zone,
+        isOnZoneLevel,
+        signalIndex,
+        axis,
       );
+      // unlink in global state
+      const _zone = unlink(zone, isOnZoneLevel, signalIndex, axis);
+      dispatch({ type: CHANGE_ZONE_DATA, data: _zone });
+    },
+    [assignmentData, dispatch],
+  );
 
-      return _preferences;
-    }, [activeTab, preferences]);
+  const removeAssignments = useCallback(() => {
+    zones.values.forEach((zone) => unlinkZoneHandler(zone));
+  }, [zones.values, unlinkZoneHandler]);
 
-    const settingsPanelHandler = useCallback(() => {
-      setFlipStatus(!isFlipped);
-    }, [isFlipped]);
+  const handleOnRemoveAssignments = useCallback(() => {
+    modal.showConfirmDialog('All assignments will be removed, Are you sure?', {
+      onYes: removeAssignments,
+    });
+  }, [removeAssignments, modal]);
 
-    const saveSettingHandler = useCallback(() => {
-      settingRef.current.saveSetting();
-      setFlipStatus(false);
-    }, []);
+  const handleDeleteAll = useCallback(() => {
+    modal.showConfirmDialog('All zones will be deleted, Are You sure?', {
+      onYes: () => {
+        removeAssignments();
+        dispatch({ type: DELETE_2D_ZONE });
+      },
+    });
+  }, [dispatch, modal, removeAssignments]);
 
-    return (
-      <>
-        <div style={styles.container}>
-          {!isFlipped && (
-            <DefaultPanelHeader
-              counter={zones.values ? zones.values.length : 0}
-              onDelete={handleDeleteAll}
-              deleteToolTip="Delete All Zones"
-              onFilter={handleOnFilter}
-              filterToolTip={
-                filterIsActive ? 'Show all zones' : 'Hide zones out of view'
-              }
-              filterIsActive={filterIsActive}
-              counterFiltered={tableData && tableData.length}
-              showSettingButton="true"
-              onSettingClick={settingsPanelHandler}
-            >
-              <ToolTip title={`Remove all Assignments`} popupPlacement="right">
-                <button
-                  style={styles.removeAssignmentsButton}
-                  type="button"
-                  onClick={handleOnRemoveAssignments}
-                  disabled={!zones.values || zones.values.length === 0}
-                >
-                  <FaUnlink />
-                </button>
-              </ToolTip>
-            </DefaultPanelHeader>
-          )}
-          {isFlipped && (
-            <PreferencesHeader
-              onSave={saveSettingHandler}
-              onClose={settingsPanelHandler}
-            />
-          )}
-          <div style={{ height: '100%', overflow: 'auto' }}>
-            <ReactCardFlip
-              isFlipped={isFlipped}
-              infinite={true}
-              containerStyle={{ overflow: 'hidden' }}
-            >
-              <div>
-                {tableData && tableData.length > 0 ? (
-                  <ZonesTable
-                    tableData={tableData}
-                    onUnlink={unlinkZoneHandler}
-                    preferences={zonesPreferences}
-                    nuclei={
-                      activeTab && activeTab.split(',').length === 2
-                        ? activeTab.split(',')
-                        : ['?', '?']
-                    }
-                  />
-                ) : (
-                  <NoTableData />
-                )}
-              </div>
-              <ZonesPreferences ref={settingRef} />
-            </ReactCardFlip>
-          </div>
+  const zonesPreferences = useMemo(() => {
+    const _preferences = lodash.get(preferences, `panels.zones.[${activeTab}]`);
+
+    return _preferences;
+  }, [activeTab, preferences]);
+
+  const settingsPanelHandler = useCallback(() => {
+    setFlipStatus(!isFlipped);
+  }, [isFlipped]);
+
+  const saveSettingHandler = useCallback(() => {
+    settingRef.current.saveSetting();
+    setFlipStatus(false);
+  }, []);
+
+  return (
+    <>
+      <div style={styles.container}>
+        {!isFlipped && (
+          <DefaultPanelHeader
+            counter={zones.values ? zones.values.length : 0}
+            onDelete={handleDeleteAll}
+            deleteToolTip="Delete All Zones"
+            onFilter={handleOnFilter}
+            filterToolTip={
+              filterIsActive ? 'Show all zones' : 'Hide zones out of view'
+            }
+            filterIsActive={filterIsActive}
+            counterFiltered={tableData && tableData.length}
+            showSettingButton="true"
+            onSettingClick={settingsPanelHandler}
+          >
+            <ToolTip title={`Remove all Assignments`} popupPlacement="right">
+              <button
+                style={styles.removeAssignmentsButton}
+                type="button"
+                onClick={handleOnRemoveAssignments}
+                disabled={!zones.values || zones.values.length === 0}
+              >
+                <FaUnlink />
+              </button>
+            </ToolTip>
+          </DefaultPanelHeader>
+        )}
+        {isFlipped && (
+          <PreferencesHeader
+            onSave={saveSettingHandler}
+            onClose={settingsPanelHandler}
+          />
+        )}
+        <div style={{ height: '100%', overflow: 'auto' }}>
+          <ReactCardFlip
+            isFlipped={isFlipped}
+            infinite={true}
+            containerStyle={{ overflow: 'hidden' }}
+          >
+            <div>
+              {tableData && tableData.length > 0 ? (
+                <ZonesTable
+                  tableData={tableData}
+                  onUnlink={unlinkZoneHandler}
+                  preferences={zonesPreferences}
+                  nuclei={
+                    activeTab && activeTab.split(',').length === 2
+                      ? activeTab.split(',')
+                      : ['?', '?']
+                  }
+                />
+              ) : (
+                <NoTableData />
+              )}
+            </div>
+            <ZonesPreferences ref={settingRef} />
+          </ReactCardFlip>
         </div>
-      </>
-    );
-  },
-);
+      </div>
+    </>
+  );
+}
 
-export default ZonesWrapper(ZonesPanel);
+export default ZonesWrapper(memo(ZonesPanel));

@@ -50,7 +50,7 @@ const selectBoxStyle = {
   height: '20px',
 };
 
-const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
+function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
   const dispatch = useDispatch();
   const modal = useModal();
   const assignmentData = useAssignmentData();
@@ -162,6 +162,6 @@ const ActionsColumn = ({ rowData, onHoverSignal, rowSpanTags }) => {
       </td>
     </Fragment>
   );
-};
+}
 
 export default ActionsColumn;

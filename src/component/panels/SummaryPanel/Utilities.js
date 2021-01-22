@@ -2,13 +2,13 @@ import lodash from 'lodash';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
 
-const addToExperiments = (
+function addToExperiments(
   experiments,
   experimentsType,
   type,
   checkAtomType,
   experimentKey,
-) => {
+) {
   const _experiments = lodash
     .get(experiments, `${type}`, []) // don't consider DEPT etc. here
     .filter((_experiment) => {
@@ -27,11 +27,13 @@ const addToExperiments = (
     experimentsType[experimentKey] = _experiments;
   }
   return _experiments;
-};
+}
 
-const getAtomType = (nucleus) => nucleus.split(/\d+/)[1];
+function getAtomType(nucleus) {
+  return nucleus.split(/\d+/)[1];
+}
 
-const getLabelColor = (correlationData, correlation) => {
+function getLabelColor(correlationData, correlation) {
   const error = lodash.get(
     correlationData,
     `state.${correlation.getAtomType()}.error`,
@@ -56,6 +58,6 @@ const getLabelColor = (correlationData, correlation) => {
   }
 
   return null;
-};
+}
 
 export { addToExperiments, getAtomType, getLabelColor };

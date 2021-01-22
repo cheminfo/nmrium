@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import ErrorMessage from './ErrorMessage';
 
-const SelectBox = ({ values, ...props }) => {
+function SelectBox({ values, ...props }) {
   const [field] = useField(props);
 
   return values && values.length > 0 ? (
@@ -24,7 +24,7 @@ const SelectBox = ({ values, ...props }) => {
       <ErrorMessage {...props} />
     </div>
   ) : null;
-};
+}
 
 SelectBox.protoTypes = {
   valuePath: PropTypes.instanceOf(Array).isRequired,

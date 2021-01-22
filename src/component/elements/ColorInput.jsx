@@ -66,7 +66,7 @@ const style = css`
   }
 `;
 
-const ColorInput = memo(({ label, onColorChange, name, value }) => {
+function ColorInput({ label, onColorChange, name, value }) {
   const [displayColorPicker, showColorPicker] = useState(false);
   const [color, setColor] = useState(value);
 
@@ -109,7 +109,7 @@ const ColorInput = memo(({ label, onColorChange, name, value }) => {
       </div>
     </div>
   );
-});
+}
 
 ColorInput.defaultProps = {
   value: '#000000',
@@ -117,4 +117,4 @@ ColorInput.defaultProps = {
   onColorChange: () => null,
 };
 
-export default ColorInput;
+export default memo(ColorInput);

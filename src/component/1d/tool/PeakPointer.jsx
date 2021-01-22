@@ -15,7 +15,7 @@ const styles = {
   SVGPadding: 1,
 };
 
-const PeakPointer = () => {
+function PeakPointer() {
   const {
     height,
     width,
@@ -153,6 +153,6 @@ const PeakPointer = () => {
       </svg>
     </div>
   );
-};
+}
 
 export default PeakPointer;

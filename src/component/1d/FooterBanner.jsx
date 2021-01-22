@@ -90,7 +90,7 @@ const helpStyles = css`
   }
 `;
 
-const FooterBanner = () => {
+function FooterBanner() {
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
   const {
@@ -208,6 +208,6 @@ const FooterBanner = () => {
       )}
     </div>
   );
-};
+}
 
 export default FooterBanner;

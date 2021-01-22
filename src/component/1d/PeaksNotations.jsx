@@ -5,7 +5,7 @@ import { useScale } from '../context/ScaleContext';
 
 import PeakNotation from './PeakNotation';
 
-const PeaksNotations = () => {
+function PeaksNotations() {
   const { data, activeSpectrum, verticalAlign } = useChartData();
   const { scaleX, scaleY } = useScale();
 
@@ -88,6 +88,6 @@ const PeaksNotations = () => {
       {Peaks}
     </g>
   );
-};
+}
 
 export default PeaksNotations;

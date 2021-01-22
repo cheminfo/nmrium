@@ -27,7 +27,7 @@ const allowTools = [
   options.multipleSpectraAnalysis.id,
 ];
 
-const CrossLinePointer = () => {
+function CrossLinePointer() {
   const { height, width, margin, selectedTool } = useChartData();
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
@@ -81,6 +81,6 @@ const CrossLinePointer = () => {
       </svg>
     </div>
   );
-};
+}
 
 export default CrossLinePointer;

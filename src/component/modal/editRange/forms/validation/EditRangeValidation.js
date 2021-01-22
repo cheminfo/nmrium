@@ -1,6 +1,6 @@
 import { hasCouplingConstant } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 
-const EditRangeValidation = (values, rangeData) => {
+function EditRangeValidation(values, rangeData) {
   const errors = {};
 
   if (!values.newSignalDelta) {
@@ -54,6 +54,6 @@ const EditRangeValidation = (values, rangeData) => {
   }
 
   return errors;
-};
+}
 
 export default EditRangeValidation;

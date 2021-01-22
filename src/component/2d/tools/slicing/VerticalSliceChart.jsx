@@ -6,7 +6,7 @@ import { get2DYScale } from '../../utilities/scale';
 
 import { getYScale } from './SliceScale';
 
-const VerticalSliceChart = memo(({ margin: marignValue, data }) => {
+function VerticalSliceChart({ margin: marignValue, data }) {
   const { height: originHeight, margin, yDomain } = useChartData();
 
   const height = margin.left;
@@ -62,10 +62,10 @@ const VerticalSliceChart = memo(({ margin: marignValue, data }) => {
       </g>
     </svg>
   );
-});
+}
 
 VerticalSliceChart.defaultProps = {
   margin: 10,
 };
 
-export default VerticalSliceChart;
+export default memo(VerticalSliceChart);

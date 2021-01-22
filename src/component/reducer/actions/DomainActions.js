@@ -207,25 +207,25 @@ function setDomain(draft, isYDomainChanged = true) {
   }
 }
 
-const setOriginalDomain = (state, originDomain) => {
+function setOriginalDomain(state, originDomain) {
   return produce(state, (draft) => {
     draft.originDomain = originDomain;
   });
-};
+}
 
-const setXDomain = (state, xDomain) => {
+function setXDomain(state, xDomain) {
   return produce(state, (draft) => {
     draft.xDomain = xDomain;
   });
-};
+}
 
-const setYDomain = (state, yDomain) => {
+function setYDomain(state, yDomain) {
   return produce(state, (draft) => {
     draft.yDomain = yDomain;
   });
-};
+}
 
-const handelResetDomain = (state) => {
+function handelResetDomain(state) {
   return produce(state, (draft) => {
     const { xDomain, yDomain, xDomains, yDomains } = state.originDomain;
     draft.xDomain = xDomain;
@@ -233,7 +233,7 @@ const handelResetDomain = (state) => {
     draft.xDomains = xDomains;
     draft.yDomains = yDomains;
   });
-};
+}
 
 function setMode(draft) {
   const data = getActiveData(draft).filter(
@@ -242,14 +242,14 @@ function setMode(draft) {
   draft.mode = data && data[0] && data[0].info.isFid ? 'LTR' : 'RTL';
 }
 
-const handleChangeIntegralYDomain = (state, newYDomain) => {
+function handleChangeIntegralYDomain(state, newYDomain) {
   return produce(state, (draft) => {
     const activeSpectrum = draft.activeSpectrum;
     if (activeSpectrum) {
       draft.integralsYDomains[activeSpectrum.id] = newYDomain;
     }
   });
-};
+}
 
 export {
   getDomain,

@@ -5,13 +5,13 @@ import { getCorrelationIndex } from '../../../../data/correlation/utilities/Gene
 import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
 
-const AdditionalColumnField = ({
+function AdditionalColumnField({
   rowCorrelation,
   columnCorrelation,
   commonLinks,
   correlations,
   onEdit,
-}) => {
+}) {
   const contextRef = useRef();
   const [isEdited, setIsEdited] = useState(false);
 
@@ -158,6 +158,6 @@ const AdditionalColumnField = ({
       <ContextMenu ref={contextRef} context={contextMenu} />
     </td>
   );
-};
+}
 
 export default AdditionalColumnField;

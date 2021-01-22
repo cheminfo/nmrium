@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-const ColorIndicator1D = ({ color, activated }) => {
+function ColorIndicator1D({ color, activated }) {
   return (
     <div
       style={{
@@ -12,8 +12,8 @@ const ColorIndicator1D = ({ color, activated }) => {
       }}
     />
   );
-};
-const ColorIndicator2D = ({ positiveColor, negativeColor, activated }) => {
+}
+function ColorIndicator2D({ positiveColor, negativeColor, activated }) {
   return (
     <svg
       width="12"
@@ -27,20 +27,18 @@ const ColorIndicator2D = ({ positiveColor, negativeColor, activated }) => {
       </g>
     </svg>
   );
-};
+}
 
-const ColorIndicator = memo(
-  ({ dimension, color, activated, onClick, style }) => {
-    return (
-      <button style={style} type="button" onClick={onClick}>
-        {dimension === 2 ? (
-          <ColorIndicator2D {...color} activated={activated} />
-        ) : (
-          <ColorIndicator1D activated={activated} {...color} />
-        )}
-      </button>
-    );
-  },
-);
+function ColorIndicator({ dimension, color, activated, onClick, style }) {
+  return (
+    <button style={style} type="button" onClick={onClick}>
+      {dimension === 2 ? (
+        <ColorIndicator2D {...color} activated={activated} />
+      ) : (
+        <ColorIndicator1D activated={activated} {...color} />
+      )}
+    </button>
+  );
+}
 
-export default ColorIndicator;
+export default memo(ColorIndicator);

@@ -28,12 +28,12 @@ const styles = css`
   }
 `;
 
-const DeleteButton = ({ onDelete, className = 'delete' }) => {
+function DeleteButton({ onDelete, className = 'delete' }) {
   return (
     <button css={styles} className={className} type="button" onClick={onDelete}>
       <FaTimes className="icon" />
     </button>
   );
-};
+}
 
 export default DeleteButton;

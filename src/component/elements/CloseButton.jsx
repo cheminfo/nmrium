@@ -19,19 +19,17 @@ const styles = css`
     font-size: 16px;
   }
 `;
-const CloseButton = memo(
-  ({ onClick, popupTitle, popupPlacement, className }) => {
-    return (
-      <div className={className}>
-        <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
-          <button css={styles} type="button" onClick={onClick}>
-            <FaTimes />
-          </button>
-        </ToolTip>
-      </div>
-    );
-  },
-);
+function CloseButton({ onClick, popupTitle, popupPlacement, className }) {
+  return (
+    <div className={className}>
+      <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
+        <button css={styles} type="button" onClick={onClick}>
+          <FaTimes />
+        </button>
+      </ToolTip>
+    </div>
+  );
+}
 
 CloseButton.defaultProps = {
   onClick: () => null,
@@ -46,4 +44,4 @@ CloseButton.propTypes = {
   className: PropTypes.string,
 };
 
-export default CloseButton;
+export default memo(CloseButton);

@@ -90,7 +90,7 @@ const styles = css`
   }
 `;
 
-export const PeakNotation = ({
+function PeakNotation({
   xIndex,
   id,
   spectrumID,
@@ -101,7 +101,7 @@ export const PeakNotation = ({
   color,
   isActive,
   nucleus,
-}) => {
+}) {
   const refText = useRef();
   const [isSelected, setIsSelected] = useState(false);
   const [_value, setValue] = useState(value);
@@ -276,6 +276,6 @@ export const PeakNotation = ({
       </g>
     </Fragment>
   );
-};
+}
 
 export default PeakNotation;

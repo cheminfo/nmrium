@@ -32,7 +32,7 @@ function setDataByFilters(
   draft.data[spectrumIndex].info = activeObject.getInfo();
 }
 
-const shiftSpectrumAlongXAxis = (state, shiftValue) => {
+function shiftSpectrumAlongXAxis(state, shiftValue) {
   return produce(state, (draft) => {
     //apply filter into the spectrum
     const activeSpectrumId = state.activeSpectrum.id;
@@ -43,9 +43,9 @@ const shiftSpectrumAlongXAxis = (state, shiftValue) => {
     setDataByFilters(draft, activeObject, activeSpectrumId);
     setDomain(draft);
   });
-};
+}
 
-const applyZeroFillingFilter = (state, filterOptions) => {
+function applyZeroFillingFilter(state, filterOptions) {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum(activeSpectrumId);
@@ -62,8 +62,8 @@ const applyZeroFillingFilter = (state, filterOptions) => {
     setDomain(draft);
     setMode(draft);
   });
-};
-const applyFFTFilter = (state) => {
+}
+function applyFFTFilter(state) {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum(activeSpectrumId);
@@ -77,8 +77,8 @@ const applyFFTFilter = (state) => {
     setDomain(draft);
     setMode(draft);
   });
-};
-const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
+}
+function applyManualPhaseCorrectionFilter(state, filterOptions) {
   return produce(state, (draft) => {
     const { id, index } = draft.activeSpectrum;
     let { ph0, ph1 } = filterOptions;
@@ -98,8 +98,8 @@ const applyManualPhaseCorrectionFilter = (state, filterOptions) => {
     draft.tempData = null;
     setDomain(draft);
   });
-};
-const applyAbsoluteFilter = (state) => {
+}
+function applyAbsoluteFilter(state) {
   return produce(state, (draft) => {
     const { id } = draft.activeSpectrum;
 
@@ -111,9 +111,9 @@ const applyAbsoluteFilter = (state) => {
     draft.tempData = null;
     setDomain(draft);
   });
-};
+}
 
-const applyAutoPhaseCorrectionFilter = (state) => {
+function applyAutoPhaseCorrectionFilter(state) {
   return produce(state, (draft) => {
     const { tempData } = state;
     const { index } = state.activeSpectrum;
@@ -136,9 +136,9 @@ const applyAutoPhaseCorrectionFilter = (state) => {
     setDataByFilters(draft, activeObject, id, false);
     setDomain(draft);
   });
-};
+}
 
-const calculateManualPhaseCorrection = (state, filterOptions) => {
+function calculateManualPhaseCorrection(state, filterOptions) {
   return produce(state, (draft) => {
     const { tempData } = state;
     const { index } = state.activeSpectrum;
@@ -156,9 +156,9 @@ const calculateManualPhaseCorrection = (state, filterOptions) => {
     draft.tempData[index].im = newIm;
     draft.tempData[index].y = newRe;
   });
-};
+}
 
-const enableFilter = (state, filterID, checked) => {
+function enableFilter(state, filterID, checked) {
   const activeSpectrumId = state.activeSpectrum.id;
   const activeObject = AnalysisObj.getDatum(activeSpectrumId);
   //apply filter into the spectrum
@@ -185,9 +185,9 @@ const enableFilter = (state, filterID, checked) => {
       draft.yDomain = zoomValue.yDomain;
     }
   });
-};
+}
 
-const deleteFilter = (state, filterID) => {
+function deleteFilter(state, filterID) {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum(activeSpectrumId);
@@ -209,9 +209,9 @@ const deleteFilter = (state, filterID) => {
     setDomain(draft);
     setMode(draft);
   });
-};
+}
 
-const handleBaseLineCorrectionFilter = (state, action) => {
+function handleBaseLineCorrectionFilter(state, action) {
   return produce(state, (draft) => {
     const activeSpectrumId = state.activeSpectrum.id;
     const activeObject = AnalysisObj.getDatum(activeSpectrumId);
@@ -229,9 +229,9 @@ const handleBaseLineCorrectionFilter = (state, action) => {
     setDomain(draft);
     draft.xDomain = xDomainSnapshot;
   });
-};
+}
 
-const filterSnapshotHandler = (state, action) => {
+function filterSnapshotHandler(state, action) {
   return produce(state, (draft) => {
     if (state.activeSpectrum && state.activeSpectrum.id) {
       const { id } = state.activeSpectrum;
@@ -244,7 +244,7 @@ const filterSnapshotHandler = (state, action) => {
       setMode(draft);
     }
   });
-};
+}
 
 export {
   shiftSpectrumAlongXAxis,

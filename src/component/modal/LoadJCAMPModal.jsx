@@ -54,7 +54,7 @@ const styles = css`
 `;
 const allowedExtensions = ['dx', 'jdx'];
 
-const LoadJCAMPModal = ({ onLoadClick, onClose, startLoading }) => {
+function LoadJCAMPModal({ onLoadClick, onClose, startLoading }) {
   const pathReft = useRef();
 
   const loadJCAMPHandler = useCallback(() => {
@@ -94,7 +94,7 @@ const LoadJCAMPModal = ({ onLoadClick, onClose, startLoading }) => {
       </div>
     </div>
   );
-};
+}
 
 LoadJCAMPModal.defaultProps = {
   onLoadButtonClick: () => {

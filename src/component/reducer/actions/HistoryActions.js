@@ -4,7 +4,7 @@ import { AnalysisObj } from '../core/Analysis';
 
 import { setDomain, getDomain } from './DomainActions';
 
-const handleHistoryUndo = (state) => {
+function handleHistoryUndo(state) {
   const { past, present, future } = state.history;
   const previous = past[past.length - 1];
   const newPast = past.slice(0, past.length - 1);
@@ -33,9 +33,9 @@ const handleHistoryUndo = (state) => {
     originDomain: domain,
     history,
   };
-};
+}
 
-const handleHistoryRedo = (state) => {
+function handleHistoryRedo(state) {
   return produce(state, (draft) => {
     const { history } = draft;
     const next = history.future[0];
@@ -49,9 +49,9 @@ const handleHistoryRedo = (state) => {
     draft.data = AnalysisObj.getSpectraData();
     setDomain(draft);
   });
-};
+}
 
-const handleHistoryReset = (state, action) => {
+function handleHistoryReset(state, action) {
   return produce(state, (draft) => {
     draft.history = {
       past: [],
@@ -61,6 +61,6 @@ const handleHistoryReset = (state, action) => {
       hasUndo: false,
     };
   });
-};
+}
 
 export { handleHistoryUndo, handleHistoryRedo, handleHistoryReset };

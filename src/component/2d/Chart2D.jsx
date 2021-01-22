@@ -11,7 +11,7 @@ import XAxis from './XAxis';
 import YAxis from './YAxis';
 import Zones from './zones/Zones';
 
-const Chart2D = ({ data }) => {
+function Chart2D({ data }) {
   const { width, height, margin } = useChartData();
 
   const chart2d = useMemo(() => {
@@ -65,7 +65,7 @@ const Chart2D = ({ data }) => {
   ]);
 
   return chart2d;
-};
+}
 Chart2D.defaultProps = {
   onDimensionChange: () => null,
 };

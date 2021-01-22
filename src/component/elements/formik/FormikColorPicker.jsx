@@ -5,7 +5,7 @@ import { SketchPicker } from 'react-color';
 
 import { COLORS } from '../../../data/utilities/getColor';
 
-const FormikColorPicker = memo(({ onColorChange, name, ...props }) => {
+function FormikColorPicker({ onColorChange, name, ...props }) {
   const { values, setFieldValue } = useFormikContext();
 
   const colorchangeHandler = useCallback(
@@ -27,10 +27,10 @@ const FormikColorPicker = memo(({ onColorChange, name, ...props }) => {
       {...props}
     />
   );
-});
+}
 
 FormikColorPicker.defaultProps = {
   onColorChange: () => null,
 };
 
-export default FormikColorPicker;
+export default memo(FormikColorPicker);

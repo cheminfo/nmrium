@@ -12,45 +12,47 @@ import {
 import { FaAngleLeft } from 'react-icons/fa';
 import { useMeasure } from 'react-use';
 
-const Arrow = ({ direction, onClick }) => (
-  <div
-    onClick={onClick}
-    css={css`
-      display: flex;
-      position: absolute;
-      top: calc(50% - 18px);
-      ${direction === 'right' ? `right: 25px` : `left: 25px`};
-      height: 36px;
-      width: 36px;
-      justify-content: center;
-      background: white;
-      border-radius: 50%;
-      cursor: pointer;
-      align-items: center;
-      border: none;
-      transition: transform ease-in 0.1s;
-      &:hover {
-        transform: scale(1.2);
-        background-color: #607d8b;
-        color: white;
-      }
-      img {
-        transform: translateX(${direction === 'left' ? '-2' : '2'}px);
-        &:focus {
-          outline: 0;
+function Arrow({ direction, onClick }) {
+  return (
+    <div
+      onClick={onClick}
+      css={css`
+        display: flex;
+        position: absolute;
+        top: calc(50% - 18px);
+        ${direction === 'right' ? `right: 25px` : `left: 25px`};
+        height: 36px;
+        width: 36px;
+        justify-content: center;
+        background: white;
+        border-radius: 50%;
+        cursor: pointer;
+        align-items: center;
+        border: none;
+        transition: transform ease-in 0.1s;
+        &:hover {
+          transform: scale(1.2);
+          background-color: #607d8b;
+          color: white;
         }
-      }
-    `}
-  >
-    <FaAngleLeft
-      style={{ transform: `scaleX(${direction === 'right' ? '-1' : '1'})` }}
-    />
-  </div>
-);
+        img {
+          transform: translateX(${direction === 'left' ? '-2' : '2'}px);
+          &:focus {
+            outline: 0;
+          }
+        }
+      `}
+    >
+      <FaAngleLeft
+        style={{ transform: `scaleX(${direction === 'right' ? '-1' : '1'})` }}
+      />
+    </div>
+  );
+}
 
 const transition = 0.45;
 
-const NextPrev = memo(({ children, loop, defaultIndex, onChange }) => {
+function NextPrev({ children, loop, defaultIndex, onChange }) {
   const [ref, { width }] = useMeasure();
   const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
@@ -142,11 +144,11 @@ const NextPrev = memo(({ children, loop, defaultIndex, onChange }) => {
       )}
     </div>
   );
-});
+}
 
 NextPrev.defaultProps = {
   loop: false,
   defaultIndex: 0,
   onChange: () => null,
 };
-export default NextPrev;
+export default memo(NextPrev);

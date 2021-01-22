@@ -16,123 +16,121 @@ const styles = {
   },
 };
 
-const Input = forwardRef(
-  (
-    {
-      label,
-      value,
-      name,
-      style,
-      onChange,
-      onKeyDown,
-      checkValue,
-      type,
-      enableAutoSelect,
-      className,
-      format,
-      ...prop
-    },
-    ref,
-  ) => {
-    const [val, setVal] = useState(value);
-    useEffect(() => {
-      setVal(value);
-    }, [value]);
-
-    useEffect(() => {
-      if (enableAutoSelect) {
-        ref.current.select();
-      }
-    }, [enableAutoSelect, ref]);
-
-    const getValue = useCallback(
-      (value) => {
-        const formatValue = format();
-        return formatValue(
-          type === 'number'
-            ? String(value).trim() === '-'
-              ? Number(0)
-              : Number(value)
-            : value,
-        );
-      },
-      [format, type],
-    );
-
-    const onChangeHandler = useCallback(
-      (e) => {
-        e.persist();
-        e.stopPropagation();
-        e.preventDefault();
-        function check(value) {
-          if (type === 'number') {
-            const pattern = /^(?:-?[0-9]*|[0-9]\d*)(?:\.\d{0,20})?$/;
-            if (value.trim() === '' || pattern.test(value)) {
-              return true;
-            }
-            return false;
-          }
-          return true;
-        }
-        const _value = e.target.value;
-        if (check(_value) && checkValue(_value)) {
-          const formatValue = format();
-
-          setVal(formatValue(_value));
-          onChange({
-            ...e,
-            target: { name: e.target.name, value: getValue(_value) },
-          });
-        }
-      },
-      [checkValue, format, getValue, onChange, type],
-    );
-
-    const handleKeyDown = useCallback(
-      (event) => {
-        event.persist();
-        onKeyDown({
-          ...event,
-          target: { name: event.target.name, value: getValue(val) },
-        });
-      },
-      [getValue, onKeyDown, val],
-    );
-    const preventPropagate = useCallback((event) => {
-      event.stopPropagation();
-    }, []);
-
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          ...style.container,
-        }}
-      >
-        {label && (
-          <span style={{ ...styles.label, ...style.label }} className="label">
-            {label}
-          </span>
-        )}
-        <input
-          {...prop}
-          ref={ref}
-          name={name}
-          style={{ ...styles.input, ...style.input }}
-          type="text"
-          value={val}
-          onChange={onChangeHandler}
-          onKeyDown={handleKeyDown}
-          onKeyPress={preventPropagate}
-          onDoubleClick={(e) => e.stopPropagation()}
-          className={`input ${className}`}
-        />
-      </div>
-    );
+function Input(
+  {
+    label,
+    value,
+    name,
+    style,
+    onChange,
+    onKeyDown,
+    checkValue,
+    type,
+    enableAutoSelect,
+    className,
+    format,
+    ...prop
   },
-);
+  ref,
+) {
+  const [val, setVal] = useState(value);
+  useEffect(() => {
+    setVal(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (enableAutoSelect) {
+      ref.current.select();
+    }
+  }, [enableAutoSelect, ref]);
+
+  const getValue = useCallback(
+    (value) => {
+      const formatValue = format();
+      return formatValue(
+        type === 'number'
+          ? String(value).trim() === '-'
+            ? Number(0)
+            : Number(value)
+          : value,
+      );
+    },
+    [format, type],
+  );
+
+  const onChangeHandler = useCallback(
+    (e) => {
+      e.persist();
+      e.stopPropagation();
+      e.preventDefault();
+      function check(value) {
+        if (type === 'number') {
+          const pattern = /^(?:-?[0-9]*|[0-9]\d*)(?:\.\d{0,20})?$/;
+          if (value.trim() === '' || pattern.test(value)) {
+            return true;
+          }
+          return false;
+        }
+        return true;
+      }
+      const _value = e.target.value;
+      if (check(_value) && checkValue(_value)) {
+        const formatValue = format();
+
+        setVal(formatValue(_value));
+        onChange({
+          ...e,
+          target: { name: e.target.name, value: getValue(_value) },
+        });
+      }
+    },
+    [checkValue, format, getValue, onChange, type],
+  );
+
+  const handleKeyDown = useCallback(
+    (event) => {
+      event.persist();
+      onKeyDown({
+        ...event,
+        target: { name: event.target.name, value: getValue(val) },
+      });
+    },
+    [getValue, onKeyDown, val],
+  );
+  const preventPropagate = useCallback((event) => {
+    event.stopPropagation();
+  }, []);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        ...style.container,
+      }}
+    >
+      {label && (
+        <span style={{ ...styles.label, ...style.label }} className="label">
+          {label}
+        </span>
+      )}
+      <input
+        {...prop}
+        ref={ref}
+        name={name}
+        style={{ ...styles.input, ...style.input }}
+        type="text"
+        value={val}
+        onChange={onChangeHandler}
+        onKeyDown={handleKeyDown}
+        onKeyPress={preventPropagate}
+        onDoubleClick={(e) => e.stopPropagation()}
+        className={`input ${className}`}
+      />
+    </div>
+  );
+}
 
 Input.propTypes = {
   label: PropTypes.string,
@@ -170,4 +168,4 @@ Input.defaultProps = {
   format: () => (val) => val,
 };
 
-export default Input;
+export default forwardRef(Input);

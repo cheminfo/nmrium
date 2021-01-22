@@ -78,7 +78,7 @@ const errorStyle = {
   border: '1px solid red',
 };
 
-const CouplingsTable = memo(({ push, remove, onFocus, onBlur }) => {
+function CouplingsTable({ push, remove, onFocus, onBlur }) {
   const { values, setFieldValue, errors } = useFormikContext();
 
   useEffect(() => {
@@ -165,6 +165,6 @@ const CouplingsTable = memo(({ push, remove, onFocus, onBlur }) => {
       </tbody>
     </table>
   );
-});
+}
 
-export default CouplingsTable;
+export default memo(CouplingsTable);

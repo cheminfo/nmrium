@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Logo = ({ size = 100 }) => {
+function Logo({ size = 100 }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,6 +13,6 @@ const Logo = ({ size = 100 }) => {
       </g>
     </svg>
   );
-};
+}
 
 export default Logo;

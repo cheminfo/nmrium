@@ -10,12 +10,12 @@ const styles = {
   fontSize: 11,
   fontWeight: 'bold',
 };
-const TableHead = memo(({ children, className, style }) => {
+function TableHead({ children, className, style }) {
   return (
     <div className={className} style={{ ...styles, ...style }}>
       {children}
     </div>
   );
-});
+}
 
-export default TableHead;
+export default memo(TableHead);

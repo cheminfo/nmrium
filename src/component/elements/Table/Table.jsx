@@ -7,12 +7,12 @@ const styles = {
   display: 'flex',
   flexDirection: 'column',
 };
-const Table = memo(({ children, className, style }) => {
+function Table({ children, className, style }) {
   return (
     <div className={className} style={{ ...styles, ...style }}>
       {children}
     </div>
   );
-});
+}
 
-export default Table;
+export default memo(Table);

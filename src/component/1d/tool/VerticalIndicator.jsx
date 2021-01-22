@@ -13,7 +13,7 @@ const styles = {
   },
 };
 
-const VerticalIndicator = () => {
+function VerticalIndicator() {
   const { height, selectedTool, pivot } = useChartData();
   const { scaleX } = useScale();
 
@@ -27,6 +27,6 @@ const VerticalIndicator = () => {
       }}
     />
   );
-};
+}
 
 export default VerticalIndicator;

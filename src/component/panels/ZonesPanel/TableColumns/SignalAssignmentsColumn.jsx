@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import { FaMinusCircle } from 'react-icons/fa';
 
-const SignalAssignmentsColumn = ({
+function SignalAssignmentsColumn({
   rowData,
   assignment,
   highlight,
@@ -11,7 +11,7 @@ const SignalAssignmentsColumn = ({
   axis,
   showUnlinkButton,
   setShowUnlinkButton,
-}) => {
+}) {
   return (
     <td
       {...onHover}
@@ -54,6 +54,6 @@ const SignalAssignmentsColumn = ({
       )}
     </td>
   );
-};
+}
 
 export default SignalAssignmentsColumn;

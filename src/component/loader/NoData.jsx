@@ -26,7 +26,7 @@ const styles = css`
   }
 }
 `;
-const NoData = ({ isEmpty = true }) => {
+function NoData({ isEmpty = true }) {
   if (!isEmpty) {
     return null;
   }
@@ -36,6 +36,6 @@ const NoData = ({ isEmpty = true }) => {
       <p>Drag and drop here a Jcamp or NMRium file</p>
     </div>
   );
-};
+}
 
 export default NoData;

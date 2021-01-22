@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 
 import SignalAssignmentsColumn from './SignalAssignmentsColumn';
 
-const SignalAssignmentsColumns = ({
+function SignalAssignmentsColumns({
   rowData,
   assignmentSignal,
   onHoverSignalX,
@@ -15,7 +15,7 @@ const SignalAssignmentsColumns = ({
   onUnlink,
   highlightSignalX,
   highlightSignalY,
-}) => {
+}) {
   return (
     <Fragment>
       <SignalAssignmentsColumn
@@ -42,6 +42,6 @@ const SignalAssignmentsColumns = ({
       />
     </Fragment>
   );
-};
+}
 
 export default SignalAssignmentsColumns;

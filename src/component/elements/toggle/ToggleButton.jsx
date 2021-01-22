@@ -20,7 +20,7 @@ const activeStyles = css`
   background-color: #f3f3f3 !important;
 `;
 
-const ToggleButton = ({
+function ToggleButton({
   children,
   value,
   disabled,
@@ -32,7 +32,7 @@ const ToggleButton = ({
   onMouseEnter,
   onMouseLeave,
   helpID,
-}) => {
+}) {
   const [active, setActive] = useState(isActive);
   const toggleButton = useCallback(() => {
     const _isActive = !active;
@@ -66,7 +66,7 @@ const ToggleButton = ({
       {cloneElement(children, { style: { fontSize: '10px' } })}
     </button>
   );
-};
+}
 ToggleButton.displayName = 'ToggleButton';
 
 ToggleButton.defaultProps = {

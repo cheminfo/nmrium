@@ -28,7 +28,7 @@ const styles = css`
   }
 `;
 
-const BaseLineZones = () => {
+function BaseLineZones() {
   const { baseLineZones } = useChartData();
 
   const { scaleX } = useScale();
@@ -67,6 +67,6 @@ const BaseLineZones = () => {
       </g>
     )
   );
-};
+}
 
 export default BaseLineZones;

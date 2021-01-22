@@ -5,7 +5,7 @@ import { useTable, useSortBy, useFlexLayout } from 'react-table';
 
 import { ReactTableStyle } from './Style';
 
-const ReactTableFlexLayout = memo(({ data, columns, onMouseDown }) => {
+function ReactTableFlexLayout({ data, columns, onMouseDown }) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -71,11 +71,12 @@ const ReactTableFlexLayout = memo(({ data, columns, onMouseDown }) => {
       </tbody>
     </table>
   );
-});
+}
+
 ReactTableFlexLayout.defaultProps = {
   onMouseDown: () => {
     return null;
   },
 };
 
-export default ReactTableFlexLayout;
+export default memo(ReactTableFlexLayout);

@@ -17,7 +17,7 @@ const SignalFormTabStyle = css`
   text-align: center;
 `;
 
-const SignalFormTab = memo(({ onFocus, onBlur }) => {
+function SignalFormTab({ onFocus, onBlur }) {
   const { values } = useFormikContext();
 
   return (
@@ -37,6 +37,6 @@ const SignalFormTab = memo(({ onFocus, onBlur }) => {
       />
     </div>
   );
-});
+}
 
-export default SignalFormTab;
+export default memo(SignalFormTab);

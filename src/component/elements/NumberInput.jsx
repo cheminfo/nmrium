@@ -25,49 +25,47 @@ const styles = {
   },
 };
 
-const NumberInput = forwardRef(
-  (
-    { label, name, defaultValue, style, onChange, onInput, pattern, step, min },
-    ref,
-  ) => {
-    const localRef = useRef();
-    const changeHander = useCallback(
-      (e) => {
-        if (e.target.checkValidity()) {
-          if (e.target.value === '') {
-            onChange({ ...e, target: { ...e.target, value: defaultValue } });
-          } else {
-            onChange(e);
-          }
+function NumberInput(
+  { label, name, defaultValue, style, onChange, onInput, pattern, step, min },
+  ref,
+) {
+  const localRef = useRef();
+  const changeHander = useCallback(
+    (e) => {
+      if (e.target.checkValidity()) {
+        if (e.target.value === '') {
+          onChange({ ...e, target: { ...e.target, value: defaultValue } });
         } else {
-          const _ref = ref ? ref : localRef;
-          _ref.current.value = defaultValue;
+          onChange(e);
         }
-      },
-      [defaultValue, onChange, ref],
-    );
-    return (
-      <div style={{ ...styles.container, ...style.container }}>
-        <span style={{ ...styles.label, ...style.label }}>{label}</span>
-        <div style={{ ...styles.inputContainer, ...style.inputContainer }}>
-          <input
-            ref={ref ? ref : localRef}
-            name={name}
-            style={{ ...styles.input, ...style.input }}
-            type="number"
-            pattern={pattern}
-            defaultValue={defaultValue}
-            step={step}
-            onChange={changeHander}
-            onInput={onInput}
-            min={min}
-            key={defaultValue}
-          />
-        </div>
+      } else {
+        const _ref = ref ? ref : localRef;
+        _ref.current.value = defaultValue;
+      }
+    },
+    [defaultValue, onChange, ref],
+  );
+  return (
+    <div style={{ ...styles.container, ...style.container }}>
+      <span style={{ ...styles.label, ...style.label }}>{label}</span>
+      <div style={{ ...styles.inputContainer, ...style.inputContainer }}>
+        <input
+          ref={ref ? ref : localRef}
+          name={name}
+          style={{ ...styles.input, ...style.input }}
+          type="number"
+          pattern={pattern}
+          defaultValue={defaultValue}
+          step={step}
+          onChange={changeHander}
+          onInput={onInput}
+          min={min}
+          key={defaultValue}
+        />
       </div>
-    );
-  },
-);
+    </div>
+  );
+}
 
 NumberInput.propTypes = {
   pattern: PropTypes.string,
@@ -105,4 +103,4 @@ NumberInput.defaultProps = {
   },
 };
 
-export default NumberInput;
+export default forwardRef(NumberInput);

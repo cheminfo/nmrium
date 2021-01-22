@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 
 import CheckBox from '../CheckBox';
 
-const FormikCheckBox = ({ label, name, onChange, className, reverse }) => {
+function FormikCheckBox({ label, name, onChange, className, reverse }) {
   const { values, setFieldValue } = useFormikContext();
   const value = reverse ? !lodash.get(values, name) : lodash.get(values, name);
 
@@ -31,7 +31,7 @@ const FormikCheckBox = ({ label, name, onChange, className, reverse }) => {
       />
     </div>
   );
-};
+}
 
 FormikCheckBox.propTypes = {
   label: PropTypes.string,

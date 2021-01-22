@@ -25,7 +25,7 @@ function getClosePeak(xShift, mouseCoordinates, state) {
   return closePeak;
 }
 
-const addPeak = (state, mouseCoordinates) => {
+function addPeak(state, mouseCoordinates) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const spectrumID = state.activeSpectrum.id;
@@ -40,9 +40,9 @@ const addPeak = (state, mouseCoordinates) => {
       }
     }
   });
-};
+}
 
-const addPeaks = (state, action) => {
+function addPeaks(state, action) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const spectrumID = state.activeSpectrum.id;
@@ -70,9 +70,9 @@ const addPeaks = (state, action) => {
       }
     }
   });
-};
+}
 
-const deletePeak = (state, peakData) => {
+function deletePeak(state, peakData) {
   const { id, index } = state.activeSpectrum;
   const object = AnalysisObj.getDatum(id);
   const peaks = object.deletePeak(peakData);
@@ -80,9 +80,9 @@ const deletePeak = (state, peakData) => {
   return produce(state, (draft) => {
     draft.data[index].peaks.values = peaks;
   });
-};
+}
 
-const handleAutoPeakPicking = (state, autOptions) => {
+function handleAutoPeakPicking(state, autOptions) {
   return produce(state, (draft) => {
     draft.selectedTool = options.zoom.id;
     draft.selectedOptionPanel = null;
@@ -94,6 +94,6 @@ const handleAutoPeakPicking = (state, autOptions) => {
       draft.data[index].peaks = peaks;
     }
   });
-};
+}
 
 export { addPeak, addPeaks, deletePeak, handleAutoPeakPicking };

@@ -6,7 +6,7 @@ import {
 } from '../../utility/Export';
 import { AnalysisObj } from '../core/Analysis';
 
-const exportData = (state, { exportType }) => {
+function exportData(state, { exportType }) {
   const { data } = state;
   //check if there is data to export it
   if (data.length > 0) {
@@ -36,6 +36,6 @@ const exportData = (state, { exportType }) => {
     }
   }
   return state;
-};
+}
 
 export { exportData };

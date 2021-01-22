@@ -33,7 +33,7 @@ const styles = {
   },
 };
 
-const Zones2DOptionPanel = () => {
+function Zones2DOptionPanel() {
   const dispatch = useDispatch();
   const thresholdFactor = useRef();
 
@@ -89,6 +89,6 @@ const Zones2DOptionPanel = () => {
       </button>
     </div>
   );
-};
+}
 
 export default Zones2DOptionPanel;

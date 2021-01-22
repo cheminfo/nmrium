@@ -47,7 +47,7 @@ const tableStyle = css`
   }
 `;
 
-const RangesTable = ({
+function RangesTable({
   tableData,
   onChangeKind,
   onDelete,
@@ -57,7 +57,7 @@ const RangesTable = ({
   context,
   activeTab,
   preferences,
-}) => {
+}) {
   const element = activeTab && activeTab.replace(/[0-9]/g, '');
   const contextRef = useRef();
   const data = useMapRanges(tableData);
@@ -153,6 +153,6 @@ const RangesTable = ({
       <ContextMenu ref={contextRef} context={context} />
     </Fragment>
   );
-};
+}
 
 export default RangesTable;

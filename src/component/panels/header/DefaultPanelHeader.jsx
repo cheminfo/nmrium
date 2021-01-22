@@ -48,68 +48,66 @@ const styles = css`
 
 `;
 
-const DefaultPanelHeader = memo(
-  ({
-    counter,
-    onDelete,
-    deleteToolTip,
-    onFilter,
-    filterToolTip,
-    filterIsActive,
-    counterFiltered,
-    children,
-    onSettingClick,
-    showSettingButton,
-    canDelete,
-  }) => {
-    return (
-      <div css={styles}>
-        {canDelete && (
-          <ToolTip title={deleteToolTip} popupPlacement="right">
-            <button type="button" onClick={onDelete} disabled={counter === 0}>
-              <FaRegTrashAlt />
-            </button>
-          </ToolTip>
-        )}
+function DefaultPanelHeader({
+  counter,
+  onDelete,
+  deleteToolTip,
+  onFilter,
+  filterToolTip,
+  filterIsActive,
+  counterFiltered,
+  children,
+  onSettingClick,
+  showSettingButton,
+  canDelete,
+}) {
+  return (
+    <div css={styles}>
+      {canDelete && (
+        <ToolTip title={deleteToolTip} popupPlacement="right">
+          <button type="button" onClick={onDelete} disabled={counter === 0}>
+            <FaRegTrashAlt />
+          </button>
+        </ToolTip>
+      )}
 
-        {children}
+      {children}
 
-        {/* Optional if there is no filter needed, e.g. in spectra panel */}
-        {onFilter && filterToolTip ? (
-          <ToggleButton
-            popupTitle={filterToolTip}
-            popupPlacement="right"
-            onClick={onFilter}
-            // defaultValue={filterIsActive && filterIsActive === true}
-          >
-            <FaFilter style={{ pointerEvents: 'none', fontSize: '12px' }} />
-          </ToggleButton>
-        ) : null}
+      {/* Optional if there is no filter needed, e.g. in spectra panel */}
+      {onFilter && filterToolTip ? (
+        <ToggleButton
+          popupTitle={filterToolTip}
+          popupPlacement="right"
+          onClick={onFilter}
+          // defaultValue={filterIsActive && filterIsActive === true}
+        >
+          <FaFilter style={{ pointerEvents: 'none', fontSize: '12px' }} />
+        </ToggleButton>
+      ) : null}
 
-        {counter ? (
-          <p className="counter-label">
-            [{' '}
-            {filterIsActive &&
-            filterIsActive === true &&
-            counterFiltered !== undefined
-              ? `${counterFiltered}/${counter}`
-              : counter}{' '}
-            ]
-          </p>
-        ) : (
-          <p style={{ flex: 1 }} />
-        )}
-        {showSettingButton && (
-          <ToolTip title="preferences" popupPlacement="left">
-            <button type="button" onClick={onSettingClick}>
-              <FaCog />
-            </button>
-          </ToolTip>
-        )}
-      </div>
-    );
-  },
-);
+      {counter ? (
+        <p className="counter-label">
+          [{' '}
+          {filterIsActive &&
+          filterIsActive === true &&
+          counterFiltered !== undefined
+            ? `${counterFiltered}/${counter}`
+            : counter}{' '}
+          ]
+        </p>
+      ) : (
+        <p style={{ flex: 1 }} />
+      )}
+      {showSettingButton && (
+        <ToolTip title="preferences" popupPlacement="left">
+          <button type="button" onClick={onSettingClick}>
+            <FaCog />
+          </button>
+        </ToolTip>
+      )}
+    </div>
+  );
+}
 
 DefaultPanelHeader.defaultProps = {
   counter: 0,
@@ -124,4 +122,4 @@ DefaultPanelHeader.defaultProps = {
   canDelete: true,
 };
 
-export default DefaultPanelHeader;
+export default memo(DefaultPanelHeader);

@@ -40,98 +40,96 @@ const styles = {
   },
 };
 
-const SpectrumListItem = memo(
-  ({
-    activeSpectrum,
-    markersVisible,
-    data,
-    onChangeVisibility,
-    onChangeMarkersVisibility,
-    onChangeActiveSpectrum,
-    onOpenSettingModal,
-    onContextMenu,
-  }) => {
-    const formatValueAsHTML = (value) => {
-      if (value) {
-        // eslint-disable-next-line prefer-named-capture-group
-        value = value.replace(/([0-9]+)/g, '<sub>$1</sub>');
-      }
-      return value;
-    };
-    const activated = activeSpectrum && activeSpectrum.id === data.id;
-    const { color, name, positiveColor, negativeColor } = data.display;
-    return (
-      <div
-        style={{
-          ...styles.row,
-          ...(activated
-            ? { backgroundColor: '#fafafa' }
-            : { opacity: activeSpectrum ? 0.2 : 1 }),
-        }}
-        onContextMenu={onContextMenu}
-      >
-        <ShowHideSpectrumButton
-          data={data}
-          onChangeVisibility={onChangeVisibility}
-          style={styles.button}
-        />
+function SpectrumListItem({
+  activeSpectrum,
+  markersVisible,
+  data,
+  onChangeVisibility,
+  onChangeMarkersVisibility,
+  onChangeActiveSpectrum,
+  onOpenSettingModal,
+  onContextMenu,
+}) {
+  const formatValueAsHTML = (value) => {
+    if (value) {
+      // eslint-disable-next-line prefer-named-capture-group
+      value = value.replace(/([0-9]+)/g, '<sub>$1</sub>');
+    }
+    return value;
+  };
+  const activated = activeSpectrum && activeSpectrum.id === data.id;
+  const { color, name, positiveColor, negativeColor } = data.display;
+  return (
+    <div
+      style={{
+        ...styles.row,
+        ...(activated
+          ? { backgroundColor: '#fafafa' }
+          : { opacity: activeSpectrum ? 0.2 : 1 }),
+      }}
+      onContextMenu={onContextMenu}
+    >
+      <ShowHideSpectrumButton
+        data={data}
+        onChangeVisibility={onChangeVisibility}
+        style={styles.button}
+      />
 
-        <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
-          <div style={{ ...styles.icon, width: '16px' }}>
-            {data.info.isFid ? (
-              <SvgNmrFid />
-            ) : data.info.dimension === 2 ? (
-              <SvgNmr2D />
-            ) : (
-              <SvgNmrFt />
-            )}
-          </div>
-          <span style={styles.info}>{name}</span>
-          <div
-            style={styles.info}
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{
-              __html: data.info && formatValueAsHTML(data.info.solvent),
+      <div style={styles.name} onClick={() => onChangeActiveSpectrum(data)}>
+        <div style={{ ...styles.icon, width: '16px' }}>
+          {data.info.isFid ? (
+            <SvgNmrFid />
+          ) : data.info.dimension === 2 ? (
+            <SvgNmr2D />
+          ) : (
+            <SvgNmrFt />
+          )}
+        </div>
+        <span style={styles.info}>{name}</span>
+        <div
+          style={styles.info}
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: data.info && formatValueAsHTML(data.info.solvent),
+          }}
+        />
+        <span style={styles.info}>
+          <span
+            style={{
+              borderLeft: '0.55px solid #e5e5e5',
+              paddingRight: '5px',
             }}
           />
-          <span style={styles.info}>
-            <span
-              style={{
-                borderLeft: '0.55px solid #e5e5e5',
-                paddingRight: '5px',
-              }}
-            />
-            {data.info && data.info.experiment}
-          </span>
+          {data.info && data.info.experiment}
+        </span>
 
-          {/* {data.info && data.info.solvent} */}
-          {/* </div> */}
-          <span style={styles.info}>{data.info && data.info.pulse}</span>
-        </div>
-
-        <ShowHideMarkersButton
-          data={data}
-          style={{
-            ...styles.icon,
-            ...styles.button,
-          }}
-          onChangeMarkersVisibility={onChangeMarkersVisibility}
-          markersVisible={markersVisible}
-        />
-        <ColorIndicator
-          style={styles.button}
-          dimension={data.info.dimension}
-          color={{ positiveColor, color, negativeColor }}
-          activated={activated}
-          onClick={(event) => onOpenSettingModal(data, event)}
-        />
+        {/* {data.info && data.info.solvent} */}
+        {/* </div> */}
+        <span style={styles.info}>{data.info && data.info.pulse}</span>
       </div>
-    );
-  },
-);
+
+      <ShowHideMarkersButton
+        data={data}
+        style={{
+          ...styles.icon,
+          ...styles.button,
+        }}
+        onChangeMarkersVisibility={onChangeMarkersVisibility}
+        markersVisible={markersVisible}
+      />
+      <ColorIndicator
+        style={styles.button}
+        dimension={data.info.dimension}
+        color={{ positiveColor, color, negativeColor }}
+        activated={activated}
+        onClick={(event) => onOpenSettingModal(data, event)}
+      />
+    </div>
+  );
+}
 
 SpectrumListItem.defaultProps = {
   onContextMenu: () => null,
 };
 
-export default SpectrumListItem;
+export default memo(SpectrumListItem);

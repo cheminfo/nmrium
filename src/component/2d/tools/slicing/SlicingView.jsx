@@ -9,7 +9,7 @@ import { get2DXScale, get2DYScale } from '../../utilities/scale';
 import HorizontalSliceChart from './HorizontalSliceChart';
 import VerticalSliceChart from './VerticalSliceChart';
 
-const SlicingView = () => {
+function SlicingView() {
   const {
     width,
     height,
@@ -57,7 +57,7 @@ const SlicingView = () => {
   }
 
   return chart2d;
-};
+}
 SlicingView.defaultProps = {
   onDimensionChange: () => null,
 };

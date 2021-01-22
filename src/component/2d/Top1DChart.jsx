@@ -5,7 +5,7 @@ import { useChartData } from '../context/ChartContext';
 
 import { get1DYScale, get2DXScale } from './utilities/scale';
 
-const Top1DChart = memo(({ margin: marginProps, data }) => {
+function Top1DChart({ margin: marginProps, data }) {
   const { width, margin: originMargin, xDomain, yDomains } = useChartData();
 
   const height = originMargin.top;
@@ -63,10 +63,10 @@ const Top1DChart = memo(({ margin: marginProps, data }) => {
       </g>
     </svg>
   );
-});
+}
 
 Top1DChart.defaultProps = {
   margin: 10,
 };
 
-export default Top1DChart;
+export default memo(Top1DChart);

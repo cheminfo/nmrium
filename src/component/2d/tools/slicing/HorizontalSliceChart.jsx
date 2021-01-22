@@ -6,7 +6,7 @@ import { get2DXScale } from '../../utilities/scale';
 
 import { getYScale } from './SliceScale';
 
-const HorizontalSliceChart = memo(({ margin: marginProps, data }) => {
+function HorizontalSliceChart({ margin: marginProps, data }) {
   const { width, margin: originMargin, xDomain } = useChartData();
 
   const height = originMargin.top;
@@ -64,10 +64,10 @@ const HorizontalSliceChart = memo(({ margin: marginProps, data }) => {
       </g>
     </svg>
   );
-});
+}
 
 HorizontalSliceChart.defaultProps = {
   margin: 10,
 };
 
-export default HorizontalSliceChart;
+export default memo(HorizontalSliceChart);

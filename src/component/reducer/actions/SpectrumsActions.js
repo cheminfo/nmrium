@@ -15,7 +15,7 @@ function setVisible(datum, flag) {
   }
 }
 
-const handleSpectrumVisibility = (state, action) => {
+function handleSpectrumVisibility(state, action) {
   return produce(state, (draft) => {
     if (Array.isArray(action.id)) {
       const IDs = action.id;
@@ -37,9 +37,9 @@ const handleSpectrumVisibility = (state, action) => {
       draft.data[index].display[action.key] = action.value;
     }
   });
-};
+}
 
-const handleChangePeaksMarkersVisibility = (state, data) => {
+function handleChangePeaksMarkersVisibility(state, data) {
   return produce(state, (draft) => {
     for (let datum of draft.data) {
       const datusmObject = AnalysisObj.getDatum(datum.id);
@@ -52,9 +52,9 @@ const handleChangePeaksMarkersVisibility = (state, data) => {
       }
     }
   });
-};
+}
 
-const handleChangeActiveSpectrum = (state, activeSpectrum) => {
+function handleChangeActiveSpectrum(state, activeSpectrum) {
   return produce(state, (draft) => {
     let refreshDomain = false;
     if (activeSpectrum) {
@@ -95,9 +95,9 @@ const handleChangeActiveSpectrum = (state, activeSpectrum) => {
       setMode(draft);
     }
   });
-};
+}
 
-const changeSpectrumSetting = (state, { id, display }) => {
+function changeSpectrumSetting(state, { id, display }) {
   const index = state.data.findIndex((d) => d.id === id);
   const datumObject = AnalysisObj.getDatum(id);
   return produce(state, (draft) => {
@@ -106,8 +106,8 @@ const changeSpectrumSetting = (state, { id, display }) => {
       datumObject.setDisplay(display);
     }
   });
-};
-const handleChangeSpectrumColor = (state, { id, color, key }) => {
+}
+function handleChangeSpectrumColor(state, { id, color, key }) {
   return produce(state, (draft) => {
     const index = draft.data.findIndex((d) => d.id === id);
     if (index !== -1) {
@@ -115,9 +115,9 @@ const handleChangeSpectrumColor = (state, { id, color, key }) => {
       AnalysisObj.getDatum(id).setDisplay({ [key]: color });
     }
   });
-};
+}
 
-const handleDeleteSpectra = (state, action) => {
+function handleDeleteSpectra(state, action) {
   return produce(state, (draft) => {
     const { activeTab } = draft;
     if (action.id) {
@@ -134,8 +134,8 @@ const handleDeleteSpectra = (state, action) => {
     draft.activeSpectrum = null;
     setActiveTab(draft, activeTab, true);
   });
-};
-const addMissingProjectionHander = (state, action) => {
+}
+function addMissingProjectionHander(state, action) {
   return produce(state, (draft) => {
     const nucleus = action.nucleus;
     if (state.activeSpectrum && state.activeSpectrum.id) {
@@ -148,8 +148,8 @@ const addMissingProjectionHander = (state, action) => {
       setMode(draft);
     }
   });
-};
-const alignSpectraHandler = (state, action) => {
+}
+function alignSpectraHandler(state, action) {
   const { activeTab } = state;
   return produce(state, (draft) => {
     AnalysisObj.alignSpectra(activeTab, action.payload);
@@ -157,7 +157,7 @@ const alignSpectraHandler = (state, action) => {
     setDomain(draft);
     setMode(draft);
   });
-};
+}
 
 export {
   handleSpectrumVisibility,

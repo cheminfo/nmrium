@@ -10,7 +10,7 @@ import NoTableData from '../extra/placeholder/NoTableData';
 
 import ColumnHeader from './ColumnHeader';
 
-const MultipleSpectraAnalysisTable = memo(({ data, activeTab }) => {
+function MultipleSpectraAnalysisTable({ data, activeTab }) {
   const format = useFormatNumberByNucleus(activeTab);
 
   const codeEvaluation = useMemo(() => {
@@ -102,6 +102,6 @@ const MultipleSpectraAnalysisTable = memo(({ data, activeTab }) => {
   ) : (
     <NoTableData />
   );
-});
+}
 
-export default MultipleSpectraAnalysisTable;
+export default memo(MultipleSpectraAnalysisTable);

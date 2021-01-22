@@ -12,7 +12,7 @@ import {
 import { usePreferences } from '../../context/PreferencesContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import { useAlert } from '../../elements/popup/Alert';
-import ContextWrapper from '../../hoc/ContextWrapper';
+import ZonesWrapper from '../../hoc/ZonesWrapper';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import {
   useStateWithLocalStorage,
@@ -87,7 +87,7 @@ const formatFields = [
   },
 ];
 
-const ZonesPreferences = forwardRef(({ nucleus }, ref) => {
+function ZonesPreferences({ nucleus }, ref) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const preferences = usePreferences();
@@ -187,9 +187,6 @@ const ZonesPreferences = forwardRef(({ nucleus }, ref) => {
       </form>
     </div>
   );
-});
+}
 
-export default ContextWrapper(memo(ZonesPreferences), [
-  'nucleus',
-  'preferences',
-]);
+export default ZonesWrapper(memo(forwardRef(ZonesPreferences)));

@@ -25,14 +25,14 @@ const ConstantlyHighlightedRowStyle = css`
   background-color: #f5f5dc;
 `;
 
-const RangesTableRow = ({
+function RangesTableRow({
   rowData,
   onUnlink,
   onContextMenu,
   onColumnEditStart,
   preferences,
   editFlags: { relativeFlags, signalFlags },
-}) => {
+}) {
   const assignmentRange = useAssignment(rowData.id);
   const highlightRange = useHighlight(
     [assignmentRange.id].concat(assignmentRange.assigned.x || []),
@@ -218,6 +218,6 @@ const RangesTableRow = ({
       />
     </tr>
   );
-};
+}
 
 export default RangesTableRow;

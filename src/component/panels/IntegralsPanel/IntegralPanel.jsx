@@ -34,7 +34,7 @@ const styles = css`
   }
 `;
 
-const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
+function IntegralPanel({ integrals, activeTab, molecules }) {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [integralsCounter, setIntegralsCounter] = useState(0);
 
@@ -154,6 +154,6 @@ const IntegralPanel = memo(({ integrals, activeTab, molecules }) => {
       </div>
     </Fragment>
   );
-});
+}
 
-export default IntegralsWrapper(IntegralPanel);
+export default IntegralsWrapper(memo(IntegralPanel));

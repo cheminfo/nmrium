@@ -1,5 +1,5 @@
 // placeholder for empty tables if no data is available to show (e.g. peaks, integrals, ranges)
-const NoTableData = () => {
+function NoTableData() {
   return (
     <p
       style={{
@@ -13,5 +13,5 @@ const NoTableData = () => {
       No Data
     </p>
   );
-};
+}
 export default NoTableData;

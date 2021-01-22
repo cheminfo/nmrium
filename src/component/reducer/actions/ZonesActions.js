@@ -13,7 +13,7 @@ Events.on('noiseFactorChanged', (val) => {
   noiseFactor = val;
 });
 
-const add2dZoneHandler = (state, action) => {
+function add2dZoneHandler(state, action) {
   return produce(state, (draft) => {
     const { startX, startY, endX, endY } = action;
     const scaleX = get2DXScale(state);
@@ -40,8 +40,8 @@ const add2dZoneHandler = (state, action) => {
       draft.data[state.activeSpectrum.index].zones.values.push(zone);
     }
   });
-};
-const delete2dZoneHandler = (state, zoneID) => {
+}
+function delete2dZoneHandler(state, zoneID) {
   return produce(state, (draft) => {
     if (state.activeSpectrum && state.activeSpectrum.id) {
       const datumObject = AnalysisObj.getDatum(state.activeSpectrum.id);
@@ -50,9 +50,9 @@ const delete2dZoneHandler = (state, zoneID) => {
       draft.data[state.activeSpectrum.index].zones = zones;
     }
   });
-};
+}
 
-const handleAutoZonesDetection = (state, detectionOptions) => {
+function handleAutoZonesDetection(state, detectionOptions) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
@@ -61,9 +61,9 @@ const handleAutoZonesDetection = (state, detectionOptions) => {
       draft.data[index].zones = zones;
     }
   });
-};
+}
 
-const handleChangeZone = (state, action) => {
+function handleChangeZone(state, action) {
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
       const { id, index } = state.activeSpectrum;
@@ -72,8 +72,8 @@ const handleChangeZone = (state, action) => {
       draft.data[index].zones = datumObject.getZones();
     }
   });
-};
-const changeZoneSignal = (state, action) => {
+}
+function changeZoneSignal(state, action) {
   const { zoneID, signal } = action.payload;
   return produce(state, (draft) => {
     if (state.activeSpectrum) {
@@ -87,7 +87,7 @@ const changeZoneSignal = (state, action) => {
       }
     }
   });
-};
+}
 
 export {
   add2dZoneHandler,

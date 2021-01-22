@@ -24,7 +24,7 @@ const axisStyles = css`
   }
 `;
 
-const YAxis = ({ show, label, margin }) => {
+function YAxis({ show, label, margin }) {
   const refAxis = useRef();
   const { yDomain, width, height } = useChartData();
   const { scaleY } = useScale();
@@ -70,7 +70,7 @@ const YAxis = ({ show, label, margin }) => {
   }
 
   return Axis;
-};
+}
 
 export default YAxis;
 

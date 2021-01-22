@@ -38,7 +38,7 @@ const styles = {
   },
 };
 
-const RangesPickingOptionPanel = () => {
+function RangesPickingOptionPanel() {
   const dispatch = useDispatch();
   const lookNegativeRef = useRef();
 
@@ -95,6 +95,6 @@ const RangesPickingOptionPanel = () => {
       </span>
     </div>
   );
-};
+}
 
 export default RangesPickingOptionPanel;

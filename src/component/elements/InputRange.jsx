@@ -50,7 +50,7 @@ function setToZero() {
   }, 50);
 }
 
-const InputRange = ({
+function InputRange({
   name,
   minValue,
   maxValue,
@@ -60,7 +60,7 @@ const InputRange = ({
   style,
   className,
   noPropagation,
-}) => {
+}) {
   const mouseEnterHandler = useCallback(() => {
     if (stateValues.step === 'moving' || stateValues.step === 'start') {
       stateValues = {
@@ -141,7 +141,7 @@ const InputRange = ({
       <span style={styles.label}>{label}</span>
     </div>
   );
-};
+}
 
 InputRange.defaultProps = {
   name: '',

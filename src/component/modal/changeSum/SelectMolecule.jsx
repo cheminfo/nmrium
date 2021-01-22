@@ -60,7 +60,7 @@ const moleculeContainerStyle = css`
   }
 `;
 
-const SelectMolecule = ({ onSave, molecules, element }) => {
+function SelectMolecule({ onSave, molecules, element }) {
   const [currentIndex, setCurrentIndex] = useState();
   const {
     display: { general, panels },
@@ -118,7 +118,7 @@ const SelectMolecule = ({ onSave, molecules, element }) => {
       </div>
     </div>
   ) : null;
-};
+}
 
 SelectMolecule.defaultProps = {
   onSave: () => {

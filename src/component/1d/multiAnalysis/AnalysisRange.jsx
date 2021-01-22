@@ -42,7 +42,7 @@ const stylesHighlighted = css`
   }
 `;
 
-const AnalysisRange = ({ rangeData, columnKey }) => {
+function AnalysisRange({ rangeData, columnKey }) {
   const { from, to } = rangeData;
   const highlight = useHighlight([columnKey]);
   const { scaleX } = useScale();
@@ -95,6 +95,6 @@ const AnalysisRange = ({ rangeData, columnKey }) => {
       <DeleteButton x={scaleX()(to) - 20} y={10} onDelete={deleteHandler} />
     </g>
   );
-};
+}
 
 export default AnalysisRange;

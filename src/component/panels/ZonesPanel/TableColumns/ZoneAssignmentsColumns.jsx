@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 
 import ZoneAssignmentColumn from './ZoneAssignmentsColumn';
 
-const ZoneAssignmentsColumns = ({
+function ZoneAssignmentsColumns({
   rowData,
   assignmentZone,
   onHoverZoneX,
@@ -16,7 +16,7 @@ const ZoneAssignmentsColumns = ({
   onUnlink,
   highlightZoneX,
   highlightZoneY,
-}) => {
+}) {
   return (
     <Fragment>
       <ZoneAssignmentColumn
@@ -45,6 +45,6 @@ const ZoneAssignmentsColumns = ({
       />
     </Fragment>
   );
-};
+}
 
 export default ZoneAssignmentsColumns;

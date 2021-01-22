@@ -7,13 +7,13 @@ import { checkMultiplicity } from '../../extra/utilities/MultiplicityUtilities';
 
 import useFormat from './format';
 
-const SignalDeltaColumn = ({
+function SignalDeltaColumn({
   rowData,
   onHoverSignal,
   preferences,
   onEditStart,
   editStatus,
-}) => {
+}) {
   const dispatch = useDispatch();
   const signal = rowData.tableMetaInfo.signal;
   const format = useFormat(preferences);
@@ -56,6 +56,6 @@ const SignalDeltaColumn = ({
       )}
     </td>
   );
-};
+}
 
 export default SignalDeltaColumn;
