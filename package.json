@@ -64,7 +64,7 @@
     "ml-regression-polynomial": "^2.1.0",
     "ml-spectra-processing": "^5.1.0",
     "multiplet-analysis": "^0.3.0",
-    "nmr-parser": "^0.3.1",
+    "nmr-parser": "^0.4.0",
     "nmr-processing": "^0.6.0",
     "numeral": "^2.0.6",
     "openchemlib": "^7.3.0",
