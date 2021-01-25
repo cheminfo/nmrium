@@ -1,3 +1,6 @@
+import { setAutoFreeze } from 'immer';
+
+import { Analysis } from '../../data/Analysis';
 import { options } from '../toolbar/ToolTypes';
 
 import checkActionType from './IgnoreActions';
@@ -25,10 +28,12 @@ import * as SpectraAanalysisActions from './actions/SpectraAanalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
-import { AnalysisObj } from './core/Analysis';
+// import { AnalysisObj } from './core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
+
+setAutoFreeze(false);
 
 export const initialState = {
   data: null,
@@ -78,6 +83,7 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAanalysis: {},
+  AnalysisObj: new Analysis(),
 };
 
 export function dispatchMiddleware(dispatch, onDataChange = null) {
@@ -87,7 +93,7 @@ export function dispatchMiddleware(dispatch, onDataChange = null) {
         LoadActions.loadZipFile(action.files).then(() => {
           dispatch(action);
           if (onDataChange && checkActionType(action.type)) {
-            onDataChange(AnalysisObj.toJSON());
+            // onDataChange(AnalysisObj.toJSON());
           }
         });
         break;
@@ -95,7 +101,7 @@ export function dispatchMiddleware(dispatch, onDataChange = null) {
       default:
         dispatch(action);
         if (onDataChange && checkActionType(action.type)) {
-          onDataChange(AnalysisObj.toJSON());
+          // onDataChange(AnalysisObj.toJSON());
         }
         break;
     }

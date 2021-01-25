@@ -237,7 +237,7 @@ export class Analysis {
    */
   getSpectraData() {
     return this.spectra
-      ? lodash.cloneDeep(
+      ? Object.freeze(
           this.spectra.map((ob) => {
             const _data =
               ob instanceof Datum1D ? { ...ob.data, y: ob.data.re } : ob.data;
