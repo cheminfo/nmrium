@@ -133,10 +133,6 @@ function handleLoadMOLFile(draft, files) {
   draft.isLoading = false;
 }
 
-async function loadZipFile(files) {
-  // await draft.AnalysisObj.fromZip(files);
-}
-
 function handleLoadZIPFile(draft) {
   draft.data = draft.AnalysisObj.getSpectraData();
   setActiveTab(draft);
@@ -153,5 +149,4 @@ export {
   handleLoadJsonFile,
   handleLoadMOLFile,
   handleLoadZIPFile,
-  loadZipFile,
 };

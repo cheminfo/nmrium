@@ -89,7 +89,7 @@ export function dispatchMiddleware(dispatch, AnalysisObj, onDataChange = null) {
   return (action) => {
     switch (action.type) {
       case types.LOAD_ZIP_FILE:
-        LoadActions.loadZipFile(action.files).then(() => {
+        AnalysisObj.fromZip(action.files).then(() => {
           dispatch(action);
           if (onDataChange && checkActionType(action.type)) {
             onDataChange(AnalysisObj.toJSON());
