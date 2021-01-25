@@ -1,5 +1,4 @@
 /* eslint-disable default-param-last */
-import lodash from 'lodash';
 import { Molecule } from 'openchemlib/full';
 
 import * as SpectraManager from './SpectraManager';

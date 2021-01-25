@@ -125,9 +125,9 @@ function setZoom1D(draft, height, margin, index, defaultScale = null) {
   draft.yDomains[id] = yDomain;
 }
 
-function setIntegralZoom(state, scale, draft) {
+function setIntegralZoom(scale, draft) {
   if (draft.activeSpectrum) {
-    const { height, margin } = state;
+    const { height, margin } = draft;
     if (draft.originIntegralYDomain[draft.activeSpectrum.id]) {
       const _scale = scaleLinear(
         draft.originIntegralYDomain[draft.activeSpectrum.id],

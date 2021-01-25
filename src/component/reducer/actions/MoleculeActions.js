@@ -1,25 +1,17 @@
-import { produce } from 'immer';
-
 import { AnalysisObj } from '../core/Analysis';
 
-function handleAddMolecule(state, molfile) {
+function handleAddMolecule(draft, molfile) {
   AnalysisObj.addMolfile(molfile);
-  return produce(state, (draft) => {
-    draft.molecules = AnalysisObj.getMolecules();
-  });
+  draft.molecules = AnalysisObj.getMolecules();
 }
 
-function handleSetMolecule(state, molfile, key) {
-  return produce(state, (draft) => {
-    draft.molecules = AnalysisObj.setMolfile(molfile, key);
-  });
+function handleSetMolecule(draft, molfile, key) {
+  draft.molecules = AnalysisObj.setMolfile(molfile, key);
 }
 
-function handleDeleteMolecule(state, key) {
-  return produce(state, (draft) => {
-    AnalysisObj.removeMolecule(key);
-    draft.molecules = AnalysisObj.getMolecules();
-  });
+function handleDeleteMolecule(draft, key) {
+  AnalysisObj.removeMolecule(key);
+  draft.molecules = AnalysisObj.getMolecules();
 }
 
 export { handleAddMolecule, handleSetMolecule, handleDeleteMolecule };
