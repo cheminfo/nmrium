@@ -6,8 +6,8 @@ import {
 } from '../../utility/Export';
 import { AnalysisObj } from '../core/Analysis';
 
-function exportData(state, { exportType }) {
-  const { data } = state;
+function exportData(draft, { exportType }) {
+  const { data } = draft;
   //check if there is data to export it
   if (data.length > 0) {
     //exported file name by default will be the first spectrum name
@@ -35,7 +35,6 @@ function exportData(state, { exportType }) {
         break;
     }
   }
-  return state;
 }
 
 export { exportData };

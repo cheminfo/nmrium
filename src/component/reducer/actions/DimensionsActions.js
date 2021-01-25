@@ -1,9 +1,10 @@
-function setWidth(state, width) {
-  return { ...state, width };
+function setWidth(draft, width) {
+  draft.width = width;
 }
 
-function handleSetDimensions(state, width, height) {
-  return { ...state, width, height };
+function handleSetDimensions(draft, width, height) {
+  draft.width = width;
+  draft.height = height;
 }
 
 export { setWidth, handleSetDimensions };

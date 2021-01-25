@@ -1,11 +1,9 @@
-import { produce } from 'immer';
-
 import { AnalysisObj } from '../core/Analysis';
 
 import { setDomain, getDomain } from './DomainActions';
 
-function handleHistoryUndo(state) {
-  const { past, present, future } = state.history;
+function handleHistoryUndo(draft) {
+  const { past, present, future } = draft.history;
   const previous = past[past.length - 1];
   const newPast = past.slice(0, past.length - 1);
   const newfuture = [present, ...future];
@@ -25,42 +23,35 @@ function handleHistoryUndo(state) {
     hasUndo,
   };
 
-  return {
-    ...state,
-    data: resultData,
-    xDomain: domain.xDomain,
-    yDomain: domain.yDomain,
-    originDomain: domain,
-    history,
+  draft.data = resultData;
+  draft.xDomain = domain.xDomain;
+  draft.yDomain = domain.yDomain;
+  draft.originDomain = domain;
+  draft.history = history;
+}
+
+function handleHistoryRedo(draft) {
+  const { history } = draft;
+  const next = history.future[0];
+  const newPresent = history.future.shift();
+  history.past.push(history.present);
+  history.present = newPresent;
+  history.hasUndo = true;
+  history.hasRedo = history.future.length > 0;
+
+  AnalysisObj.redoFilter(next);
+  draft.data = AnalysisObj.getSpectraData();
+  setDomain(draft);
+}
+
+function handleHistoryReset(draft, action) {
+  draft.history = {
+    past: [],
+    present: action,
+    future: [],
+    hasRedo: false,
+    hasUndo: false,
   };
-}
-
-function handleHistoryRedo(state) {
-  return produce(state, (draft) => {
-    const { history } = draft;
-    const next = history.future[0];
-    const newPresent = history.future.shift();
-    history.past.push(history.present);
-    history.present = newPresent;
-    history.hasUndo = true;
-    history.hasRedo = history.future.length > 0;
-
-    AnalysisObj.redoFilter(next);
-    draft.data = AnalysisObj.getSpectraData();
-    setDomain(draft);
-  });
-}
-
-function handleHistoryReset(state, action) {
-  return produce(state, (draft) => {
-    draft.history = {
-      past: [],
-      present: action,
-      future: [],
-      hasRedo: false,
-      hasUndo: false,
-    };
-  });
 }
 
 export { handleHistoryUndo, handleHistoryRedo, handleHistoryReset };

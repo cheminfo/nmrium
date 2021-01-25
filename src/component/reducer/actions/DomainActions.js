@@ -1,5 +1,4 @@
 import { extent } from 'd3';
-import { produce } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
@@ -207,32 +206,24 @@ function setDomain(draft, isYDomainChanged = true) {
   }
 }
 
-function setOriginalDomain(state, originDomain) {
-  return produce(state, (draft) => {
-    draft.originDomain = originDomain;
-  });
+function setOriginalDomain(draft, originDomain) {
+  draft.originDomain = originDomain;
 }
 
-function setXDomain(state, xDomain) {
-  return produce(state, (draft) => {
-    draft.xDomain = xDomain;
-  });
+function setXDomain(draft, xDomain) {
+  draft.xDomain = xDomain;
 }
 
-function setYDomain(state, yDomain) {
-  return produce(state, (draft) => {
-    draft.yDomain = yDomain;
-  });
+function setYDomain(draft, yDomain) {
+  draft.yDomain = yDomain;
 }
 
-function handelResetDomain(state) {
-  return produce(state, (draft) => {
-    const { xDomain, yDomain, xDomains, yDomains } = state.originDomain;
-    draft.xDomain = xDomain;
-    draft.yDomain = yDomain;
-    draft.xDomains = xDomains;
-    draft.yDomains = yDomains;
-  });
+function handelResetDomain(draft) {
+  const { xDomain, yDomain, xDomains, yDomains } = draft.originDomain;
+  draft.xDomain = xDomain;
+  draft.yDomain = yDomain;
+  draft.xDomains = xDomains;
+  draft.yDomains = yDomains;
 }
 
 function setMode(draft) {
@@ -242,13 +233,11 @@ function setMode(draft) {
   draft.mode = data && data[0] && data[0].info.isFid ? 'LTR' : 'RTL';
 }
 
-function handleChangeIntegralYDomain(state, newYDomain) {
-  return produce(state, (draft) => {
-    const activeSpectrum = draft.activeSpectrum;
-    if (activeSpectrum) {
-      draft.integralsYDomains[activeSpectrum.id] = newYDomain;
-    }
-  });
+function handleChangeIntegralYDomain(draft, newYDomain) {
+  const activeSpectrum = draft.activeSpectrum;
+  if (activeSpectrum) {
+    draft.integralsYDomains[activeSpectrum.id] = newYDomain;
+  }
 }
 
 export {
