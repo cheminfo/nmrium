@@ -97,6 +97,11 @@
       {
         "file": "./data/t2/t2.json",
         "title": "T2 samples (1H + 13C)"
+      },
+      {
+        "file": "",
+        "title": "Two instances",
+        "view": "TwoInstances"
       }
     ]
   },
