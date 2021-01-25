@@ -1,7 +1,6 @@
 import { original } from 'immer';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import { AnalysisObj } from '../core/Analysis';
 
 import { setDomain, setMode } from './DomainActions';
 import { setTab, setActiveTab } from './ToolsActions';
@@ -39,7 +38,7 @@ function handleSpectrumVisibility(draft, action) {
 
 function handleChangePeaksMarkersVisibility(draft, data) {
   for (let datum of draft.data) {
-    const datusmObject = AnalysisObj.getDatum(datum.id);
+    const datusmObject = draft.AnalysisObj.getDatum(datum.id);
     if (data.some((activeData) => activeData.id === datum.id)) {
       datusmObject.setDisplay({ isPeaksMarkersVisible: true });
       datum.display.isPeaksMarkersVisible = true;
@@ -53,7 +52,9 @@ function handleChangePeaksMarkersVisibility(draft, data) {
 function handleChangeActiveSpectrum(draft, activeSpectrum) {
   let refreshDomain = false;
   if (activeSpectrum) {
-    AnalysisObj.getDatum(activeSpectrum.id).setDisplay({ isVisible: true });
+    draft.AnalysisObj.getDatum(activeSpectrum.id).setDisplay({
+      isVisible: true,
+    });
     const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
     const oldIndex = draft.data.findIndex(
       (d) => d.id === draft.activeSpectrum?.id,
@@ -95,7 +96,7 @@ function changeSpectrumSetting(draft, { id, display }) {
   const state = original(draft);
 
   const index = state.data.findIndex((d) => d.id === id);
-  const datumObject = AnalysisObj.getDatum(id);
+  const datumObject = draft.AnalysisObj.getDatum(id);
   if (index !== -1 && datumObject) {
     draft.data[index].display = display;
     datumObject.setDisplay(display);
@@ -106,22 +107,22 @@ function handleChangeSpectrumColor(draft, { id, color, key }) {
   const index = state.data.findIndex((d) => d.id === id);
   if (index !== -1) {
     draft.data[index].display[key] = color;
-    AnalysisObj.getDatum(id).setDisplay({ [key]: color });
+    draft.AnalysisObj.getDatum(id).setDisplay({ [key]: color });
   }
 }
 
 function handleDeleteSpectra(draft, action) {
   const { activeTab } = draft;
   if (action.id) {
-    AnalysisObj.deleteDatumByIDs([action.id]);
-    draft.data = AnalysisObj.getSpectraData();
+    draft.AnalysisObj.deleteDatumByIDs([action.id]);
+    draft.data = draft.AnalysisObj.getSpectraData();
   } else {
     const IDs = draft.data.reduce((acc, datum) => {
       if (datum.info.nucleus === activeTab) acc.push(datum.id);
       return acc;
     }, []);
-    AnalysisObj.deleteDatumByIDs(IDs);
-    draft.data = AnalysisObj.getSpectraData();
+    draft.AnalysisObj.deleteDatumByIDs(IDs);
+    draft.data = draft.AnalysisObj.getSpectraData();
   }
   draft.activeSpectrum = null;
   setActiveTab(draft, activeTab, true);
@@ -129,8 +130,8 @@ function handleDeleteSpectra(draft, action) {
 function addMissingProjectionHander(draft, action) {
   const nucleus = action.nucleus;
   if (draft.activeSpectrum && draft.activeSpectrum.id) {
-    AnalysisObj.addMissingProjection(draft.activeSpectrum.id, nucleus);
-    draft.data = AnalysisObj.getSpectraData();
+    draft.AnalysisObj.addMissingProjection(draft.activeSpectrum.id, nucleus);
+    draft.data = draft.AnalysisObj.getSpectraData();
     const groupByNucleus = GroupByInfoKey('nucleus');
     const dataGroupByNucleus = groupByNucleus(draft.data);
     setTab(draft, dataGroupByNucleus, draft.activeTab, true);
@@ -139,8 +140,8 @@ function addMissingProjectionHander(draft, action) {
   }
 }
 function alignSpectraHandler(draft, action) {
-  AnalysisObj.alignSpectra(draft.activeTab, action.payload);
-  draft.data = AnalysisObj.getSpectraData();
+  draft.AnalysisObj.alignSpectra(draft.activeTab, action.payload);
+  draft.data = draft.AnalysisObj.getSpectraData();
   setDomain(draft);
   setMode(draft);
 }

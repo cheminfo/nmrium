@@ -60,8 +60,6 @@ export class Analysis {
     return analysis;
   }
   // handle zip files
-  static usedColors = [];
-
   async fromZip(zipFiles) {
     for (let zipFile of zipFiles) {
       await SpectraManager.addBruker(

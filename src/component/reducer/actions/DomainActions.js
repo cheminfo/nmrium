@@ -2,7 +2,6 @@ import { extent } from 'd3';
 import { xyIntegral } from 'ml-spectra-processing';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import { AnalysisObj } from '../core/Analysis';
 import { DISPLAYER_MODE } from '../core/Constants';
 
 function getActiveData(draft) {
@@ -26,10 +25,10 @@ function getActiveData(draft) {
 
       for (let datum of draft.data) {
         if (data.some((activeData) => activeData.id === datum.id)) {
-          AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
+          draft.AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
           datum.isVisibleInDomain = true;
         } else {
-          AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
+          draft.AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
           datum.isVisibleInDomain = false;
         }
       }

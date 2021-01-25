@@ -1,6 +1,5 @@
 import { Datum1D } from '../../../data/data1d/Datum1D';
 import getColor from '../../../data/utilities/getColor';
-import { AnalysisObj, initiateObject } from '../core/Analysis';
 import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
 import { setMode, setDomain } from './DomainActions';
@@ -14,12 +13,12 @@ function setIsLoading(state, isLoading) {
 
 function initiate(draft, dataObject) {
   HorizontalZoomHistory.initiate();
-  initiateObject(dataObject.AnalysisObj);
-  const spectraData = AnalysisObj.getSpectraData();
-  const molecules = AnalysisObj.getMolecules();
-  const preferences = AnalysisObj.getPreferences('1d');
-  const correlations = AnalysisObj.getCorrelations();
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysis();
+  draft.AnalysisObj = dataObject.AnalysisObj;
+  const spectraData = draft.AnalysisObj.getSpectraData();
+  const molecules = draft.AnalysisObj.getMolecules();
+  const preferences = draft.AnalysisObj.getPreferences('1d');
+  const correlations = draft.AnalysisObj.getCorrelations();
+  const spectraAanalysis = draft.AnalysisObj.getMultipleAnalysis();
 
   draft.data = spectraData;
   draft.molecules = molecules;
@@ -42,12 +41,12 @@ function initiate(draft, dataObject) {
 
 function setData(draft, data) {
   for (let d of data) {
-    AnalysisObj.pushDatum(new Datum1D(d));
+    draft.AnalysisObj.pushDatum(new Datum1D(d));
   }
-  const spectraData = AnalysisObj.getSpectraData();
-  const molecules = AnalysisObj.getMolecules();
-  const correlations = AnalysisObj.getCorrelations();
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysis();
+  const spectraData = draft.AnalysisObj.getSpectraData();
+  const molecules = draft.AnalysisObj.getMolecules();
+  const correlations = draft.AnalysisObj.getCorrelations();
+  const spectraAanalysis = draft.AnalysisObj.getMultipleAnalysis();
 
   draft.data = spectraData;
   draft.molecules = molecules;
@@ -63,7 +62,7 @@ function loadJDFFile(draft, files) {
   const filesLength = files.length;
   for (let i = 0; i < filesLength; i++) {
     const color = getColor(false, usedColors);
-    AnalysisObj.addJDF(files[i].binary, {
+    draft.AnalysisObj.addJDF(files[i].binary, {
       display: {
         name: files[i].name,
         color: color,
@@ -76,7 +75,7 @@ function loadJDFFile(draft, files) {
     });
     usedColors.push(color);
   }
-  draft.data = AnalysisObj.getSpectraData();
+  draft.data = draft.AnalysisObj.getSpectraData();
   setDomain(draft);
   setMode(draft);
   initZoom1DHandler(draft.data);
@@ -85,8 +84,8 @@ function loadJDFFile(draft, files) {
 }
 
 function loadJcampFile(draft, files) {
-  AnalysisObj.addJcamps(files);
-  draft.data = AnalysisObj.getSpectraData();
+  draft.AnalysisObj.addJcamps(files);
+  draft.data = draft.AnalysisObj.getSpectraData();
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
 
@@ -94,12 +93,12 @@ function loadJcampFile(draft, files) {
 }
 
 function handleLoadJsonFile(draft, data) {
-  initiateObject(data.AnalysisObj);
-  const spectraData = AnalysisObj.getSpectraData();
-  const molecules = AnalysisObj.getMolecules();
-  const preferences = AnalysisObj.getPreferences('1d');
-  const correlations = AnalysisObj.getCorrelations();
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysis();
+  draft.AnalysisObj = data.AnalysisObj;
+  const spectraData = draft.AnalysisObj.getSpectraData();
+  const molecules = draft.AnalysisObj.getMolecules();
+  const preferences = draft.AnalysisObj.getPreferences('1d');
+  const correlations = draft.AnalysisObj.getCorrelations();
+  const spectraAanalysis = draft.AnalysisObj.getMultipleAnalysis();
 
   draft.data = spectraData;
   draft.molecules = molecules;
@@ -126,20 +125,20 @@ function handleLoadJsonFile(draft, data) {
 function handleLoadMOLFile(draft, files) {
   const filesLength = files.length;
   for (let i = 0; i < filesLength; i++) {
-    AnalysisObj.addMolfile(files[i].binary.toString());
+    draft.AnalysisObj.addMolfile(files[i].binary.toString());
   }
-  const molecules = AnalysisObj.getMolecules();
+  const molecules = draft.AnalysisObj.getMolecules();
 
   draft.molecules = molecules;
   draft.isLoading = false;
 }
 
 async function loadZipFile(files) {
-  await AnalysisObj.fromZip(files);
+  // await draft.AnalysisObj.fromZip(files);
 }
 
 function handleLoadZIPFile(draft) {
-  draft.data = AnalysisObj.getSpectraData();
+  draft.data = draft.AnalysisObj.getSpectraData();
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
   draft.isLoading = false;

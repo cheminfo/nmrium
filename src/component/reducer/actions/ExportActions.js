@@ -4,7 +4,6 @@ import {
   exportAsPng,
   copyPNGToClipboard,
 } from '../../utility/Export';
-import { AnalysisObj } from '../core/Analysis';
 
 function exportData(draft, { exportType }) {
   const { data } = draft;
@@ -15,7 +14,7 @@ function exportData(draft, { exportType }) {
 
     switch (exportType) {
       case 'json': {
-        const exportedData = AnalysisObj.toJSON();
+        const exportedData = draft.AnalysisObj.toJSON();
         exportAsJSON(exportedData, fileName);
         break;
       }

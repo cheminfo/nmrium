@@ -28,7 +28,6 @@ import * as SpectraAanalysisActions from './actions/SpectraAanalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
-import { AnalysisObj } from './core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
@@ -86,7 +85,7 @@ export const initialState = {
   AnalysisObj: new Analysis(),
 };
 
-export function dispatchMiddleware(dispatch, onDataChange = null) {
+export function dispatchMiddleware(dispatch, AnalysisObj, onDataChange = null) {
   return (action) => {
     switch (action.type) {
       case types.LOAD_ZIP_FILE:

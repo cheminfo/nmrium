@@ -2,7 +2,6 @@ import { original } from 'immer';
 
 import { getXScale } from '../../1d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
-import { AnalysisObj } from '../core/Analysis';
 
 function getClosePeak(xShift, mouseCoordinates, state) {
   const scaleX = getXScale(state);
@@ -18,7 +17,7 @@ function getClosePeak(xShift, mouseCoordinates, state) {
     range[1] = end;
   }
 
-  const closePeak = AnalysisObj.getDatum(activeSpectrum.id).lookupPeak(
+  const closePeak = state.AnalysisObj.getDatum(activeSpectrum.id).lookupPeak(
     range[0],
     range[1],
   );
@@ -35,7 +34,7 @@ function addPeak(draft, mouseCoordinates) {
 
     if (index !== -1 && candidatePeak) {
       const peak = { xIndex: candidatePeak.xIndex };
-      const newPeak = AnalysisObj.getDatum(spectrumID).addPeak(peak);
+      const newPeak = draft.AnalysisObj.getDatum(spectrumID).addPeak(peak);
       if (newPeak) draft.data[index].peaks.values.push(newPeak);
     }
   }
@@ -62,7 +61,7 @@ function addPeaks(draft, action) {
     }
 
     if (index !== -1) {
-      const newPeak = AnalysisObj.getDatum(spectrumID).addPeaks(
+      const newPeak = draft.AnalysisObj.getDatum(spectrumID).addPeaks(
         range[0],
         range[1],
       );
@@ -73,7 +72,7 @@ function addPeaks(draft, action) {
 
 function deletePeak(draft, peakData) {
   const { id, index } = draft.activeSpectrum;
-  const object = AnalysisObj.getDatum(id);
+  const object = draft.AnalysisObj.getDatum(id);
   const peaks = object.deletePeak(peakData);
 
   draft.data[index].peaks.values = peaks;
@@ -84,7 +83,7 @@ function handleAutoPeakPicking(draft, autOptions) {
   draft.selectedTool = options.zoom.id;
   draft.selectedOptionPanel = null;
   const activeSpectrumId = draft.activeSpectrum.id;
-  const ob = AnalysisObj.getDatum(activeSpectrumId);
+  const ob = draft.AnalysisObj.getDatum(activeSpectrumId);
   const peaks = ob.applyAutoPeakPicking(autOptions);
   const index = state.data.findIndex((d) => d.id === activeSpectrumId);
   if (index !== -1) {

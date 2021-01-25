@@ -1,5 +1,4 @@
 import { getXScale } from '../../1d/utilities/scale';
-import { AnalysisObj } from '../core/Analysis';
 
 function analyzeSpectra(draft, action) {
   const scaleX = getXScale(draft);
@@ -11,7 +10,7 @@ function analyzeSpectra(draft, action) {
   } else {
     range = [start, end];
   }
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().analyzeSpectra(
+  const spectraAanalysis = draft.AnalysisObj.getMultipleAnalysisInstance().analyzeSpectra(
     range[0],
     range[1],
     draft.activeTab,
@@ -21,7 +20,7 @@ function analyzeSpectra(draft, action) {
 
 function handleDeleteSpectraRanges(draft, action) {
   const { colKey } = action;
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().deleteSpectraAnalysis(
+  const spectraAanalysis = draft.AnalysisObj.getMultipleAnalysisInstance().deleteSpectraAnalysis(
     colKey,
     draft.activeTab,
   );
@@ -30,7 +29,7 @@ function handleDeleteSpectraRanges(draft, action) {
 }
 function handleResizeSpectraRange(draft, action) {
   const { colKey, from, to } = action.payload;
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().analyzeSpectra(
+  const spectraAanalysis = draft.AnalysisObj.getMultipleAnalysisInstance().analyzeSpectra(
     from,
     to,
     draft.activeTab,
@@ -41,7 +40,7 @@ function handleResizeSpectraRange(draft, action) {
 }
 function handleSetcolumns(draft, action) {
   const data = action.payload;
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().setColumn(
+  const spectraAanalysis = draft.AnalysisObj.getMultipleAnalysisInstance().setColumn(
     draft.activeTab,
     data,
   );
@@ -49,7 +48,7 @@ function handleSetcolumns(draft, action) {
 }
 function handleFiltercolumn(draft, action) {
   const { columnKey, valueKey } = action.payload;
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().changeColumnValueKey(
+  const spectraAanalysis = draft.AnalysisObj.getMultipleAnalysisInstance().changeColumnValueKey(
     draft.activeTab,
     columnKey,
     valueKey,
