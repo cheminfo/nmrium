@@ -27,7 +27,6 @@ function MultiplicityTree({
   rangeFrom,
   rangeTo,
   signal,
-  signalID,
   labelOptions = {
     distance: 10,
     fontSize: 11,
@@ -40,7 +39,7 @@ function MultiplicityTree({
     selectedTool,
     width,
   } = useChartData();
-  const assignment = useAssignment(signalID);
+  const assignment = useAssignment(signal.id);
   const highlight = useHighlight(
     [assignment.id].concat(assignment.assigned.x || []),
   );
@@ -185,7 +184,6 @@ function MultiplicityTree({
         <g>
           <StringNode
             signal={signal}
-            signalID={signalID}
             startY={firstLevelStartY}
             levelHeight={levelHeight}
             fontSize={labelOptions.fontSize}
@@ -193,7 +191,6 @@ function MultiplicityTree({
           />
           <LevelNode
             signal={signal}
-            signalID={signalID}
             startY={secondLevelStartY}
             levelHeight={levelHeight}
           />
@@ -206,7 +203,6 @@ function MultiplicityTree({
       <g>
         <StringNode
           signal={signal}
-          signalID={signalID}
           startY={firstLevelStartY}
           levelHeight={levelHeight}
           fontSize={labelOptions.fontSize}
@@ -214,7 +210,6 @@ function MultiplicityTree({
         />
         <LevelNode
           signal={signal}
-          signalID={signalID}
           startY={secondLevelStartY}
           levelHeight={levelHeight}
         />
@@ -233,7 +228,6 @@ function MultiplicityTree({
     startY,
     drawInFullRange,
     signal,
-    signalID,
     labelOptions,
     showLabels,
     treeNodesData,

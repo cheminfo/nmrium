@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 
-import { buildID } from '../../../data/utilities/Concatenation';
-
 function useMapRanges(data) {
   return useMemo(() => {
     const _rangesData = [];
@@ -14,7 +12,7 @@ function useMapRanges(data) {
             signal: range.signal[0],
             rowIndex: i,
             signalIndex: 0,
-            id: buildID(range.id, 0),
+            id: range.signal[0].id,
           },
         });
       } else if (range.signal.length > 1) {
@@ -40,7 +38,7 @@ function useMapRanges(data) {
               hide,
               rowIndex: i,
               signalIndex: j,
-              id: buildID(range.id, j),
+              id: signal.id,
             },
           });
         });

@@ -2,11 +2,11 @@ import { useScale } from '../../context/ScaleContext';
 
 import { TREE_LEVEL_COLORS } from './TreeColors';
 
-function LevelNode({ signal, signalID, startY, levelHeight }) {
+function LevelNode({ signal, startY, levelHeight }) {
   const { scaleX } = useScale();
   return (
     <line
-      key={`startLevelNode_${signalID}`}
+      key={`startLevelNode_${signal.id}`}
       x1={scaleX()(signal.delta)}
       y1={startY}
       x2={scaleX()(signal.delta)}

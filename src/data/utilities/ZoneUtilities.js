@@ -3,8 +3,6 @@ import lodash from 'lodash';
 import { DELETE_2D_ZONE } from '../../component/reducer/types/Types';
 import { DatumKind } from '../constants/SignalsKinds';
 
-import { buildID } from './Concatenation';
-
 const getDiaIDs = (zone, axis) => {
   return [].concat(
     zone[axis].diaID || [],
@@ -91,23 +89,54 @@ const unlinkInAssignmentData = (
       isOnZoneLevel === true
         ? [zone.id]
         : signalIndex !== undefined
-        ? [buildID(zone.id, signalIndex)]
+        ? [zone.signal[signalIndex].id]
         : [],
       axis,
     );
   } else if (axis !== undefined) {
     _unlinkInAssignmentData(
       assignmentData,
-      [zone.id].concat(zone.signal.map((_signal, i) => buildID(zone.id, i))),
+      [zone.id].concat(zone.signal.map((signal) => signal.id)),
       axis,
     );
   } else {
-    const id = [zone.id].concat(
-      zone.signal.map((_signal, i) => buildID(zone.id, i)),
-    );
+    const id = [zone.id].concat(zone.signal.map((signal) => signal.id));
     _unlinkInAssignmentData(assignmentData, id, 'x');
     _unlinkInAssignmentData(assignmentData, id, 'y');
   }
+};
+
+const initAssignmentData = (zone, assignmentData) => {
+  assignmentData.dispatch({
+    type: 'DELETE_RECORD',
+    payload: { id: zone.id },
+  });
+  (zone.y.diaID || []).forEach((_diaID) =>
+    assignmentData.dispatch({
+      type: 'ADD',
+      payload: { id: [zone.id, _diaID], axis: 'y' },
+    }),
+  );
+  (zone.x.diaID || []).forEach((_diaID) =>
+    assignmentData.dispatch({
+      type: 'ADD',
+      payload: { id: [zone.id, _diaID], axis: 'x' },
+    }),
+  );
+  zone.signal.forEach((signal) => {
+    (signal.x.diaID || []).forEach((_diaID) =>
+      assignmentData.dispatch({
+        type: 'ADD',
+        payload: { id: [signal.id, _diaID], axis: 'x' },
+      }),
+    );
+    (signal.y.diaID || []).forEach((_diaID) =>
+      assignmentData.dispatch({
+        type: 'ADD',
+        payload: { id: [signal.id, _diaID], axis: 'y' },
+      }),
+    );
+  });
 };
 
 export {
@@ -116,6 +145,7 @@ export {
   deleteZone,
   getDiaIDs,
   getPubIntegral,
+  initAssignmentData,
   resetDiaIDs,
   unlink,
   unlinkInAssignmentData,

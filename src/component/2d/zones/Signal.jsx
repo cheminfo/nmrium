@@ -8,7 +8,7 @@ import { useChartData } from '../../context/ChartContext';
 import { useHighlightData, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
-const Signal = memo(({ signal, signalID }) => {
+const Signal = memo(({ signal }) => {
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
@@ -20,7 +20,7 @@ const Signal = memo(({ signal, signalID }) => {
     return [id].concat(buildID(id, 'X'), buildID(id, 'Y'));
   }, []);
 
-  const assignment = useAssignment(signalID);
+  const assignment = useAssignment(signal.id);
   const highlight = useHighlight(buildIDs(assignment.id));
   const highlightData = useHighlightData();
 
@@ -29,7 +29,7 @@ const Signal = memo(({ signal, signalID }) => {
   useEffect(() => {
     if (
       highlightData.highlight.highlighted.some((_highlighted) =>
-        buildIDs(signalID).includes(_highlighted),
+        buildIDs(signal.id).includes(_highlighted),
       ) ||
       assignment.isActive
     ) {
@@ -41,7 +41,7 @@ const Signal = memo(({ signal, signalID }) => {
     assignment.isActive,
     buildIDs,
     highlightData.highlight.highlighted,
-    signalID,
+    signal.id,
   ]);
 
   if (!signal) return null;
@@ -59,7 +59,7 @@ const Signal = memo(({ signal, signalID }) => {
       }}
     >
       <circle
-        key={signalID}
+        key={signal.id}
         cx={x}
         cy={y}
         r={isHighlighted ? 6 : 3}

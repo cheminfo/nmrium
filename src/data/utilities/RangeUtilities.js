@@ -3,8 +3,6 @@ import lodash from 'lodash';
 import { DELETE_RANGE } from '../../component/reducer/types/Types';
 import { DatumKind } from '../constants/SignalsKinds';
 
-import { buildID } from './Concatenation';
-
 const getDiaIDs = (range) => {
   return [].concat(
     range.diaID || [],
@@ -91,14 +89,33 @@ const unlinkInAssignmentData = (
       isOnRangeLevel === true
         ? [range.id]
         : signalIndex !== undefined
-        ? [buildID(range.id, signalIndex)]
+        ? [range.signal[signalIndex].id]
         : [];
   } else {
-    id = [range.id].concat(
-      range.signal.map((_signal, i) => buildID(range.id, i)),
-    );
+    id = [range.id].concat(range.signal.map((signal) => signal.id));
   }
   _unlinkInAssignmentData(assignmentData, id);
+};
+
+const initAssignmentData = (range, assignmentData) => {
+  assignmentData.dispatch({
+    type: 'DELETE_RECORD',
+    payload: { id: range.id },
+  });
+  (range.diaID || []).forEach((_diaID) =>
+    assignmentData.dispatch({
+      type: 'ADD',
+      payload: { id: [range.id, _diaID], axis: 'x' },
+    }),
+  );
+  range.signal.forEach((signal) =>
+    (signal.diaID || []).forEach((_diaID) =>
+      assignmentData.dispatch({
+        type: 'ADD',
+        payload: { id: [signal.id, _diaID], axis: 'x' },
+      }),
+    ),
+  );
 };
 
 export {
@@ -108,6 +125,7 @@ export {
   deleteRange,
   getDiaIDs,
   getPubIntegral,
+  initAssignmentData,
   resetDiaIDs,
   unlink,
   unlinkInAssignmentData,

@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { useMemo, useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
-import { buildID } from '../../../data/utilities/Concatenation';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import ContextMenu from '../../elements/ContextMenu';
 
@@ -59,7 +58,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
             signal: zone.signal[0],
             rowIndex: i,
             signalIndex: 0,
-            id: buildID(zone.id, 0),
+            id: zone.signal[0].id,
           },
         });
       } else if (zone.signal.length > 1) {
@@ -85,7 +84,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
               hide,
               rowIndex: i,
               signalIndex: j,
-              id: buildID(zone.id, j),
+              id: signal.id,
             },
           });
         });

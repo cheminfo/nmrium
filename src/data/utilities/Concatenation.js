@@ -1,7 +1,7 @@
-import { SignalConcatenationString } from '../constants/ConcatenationStrings';
+const ConcatenationString = '___';
 
 const buildID = (prefix, suffix) => {
-  return `${prefix}${SignalConcatenationString}${suffix}`;
+  return `${prefix}${ConcatenationString}${suffix}`;
 };
 
-export { buildID };
+export { buildID, ConcatenationString };

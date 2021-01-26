@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 /** @jsxImportSource @emotion/react */
 import { useCallback, useState, useEffect } from 'react';
 
-import { buildID } from '../../../data/utilities/Concatenation';
 import {
   checkRangeKind,
   deleteRange,
@@ -184,13 +183,12 @@ function Range({ rangeData, showMultiplicityTrees }) {
         onDrop={handleOnStopResizing}
       />
       {showMultiplicityTrees && signal && signal.length > 0
-        ? signal.map((_signal, i) => (
+        ? signal.map((_signal) => (
             <MultiplicityTree
               rangeFrom={from}
               rangeTo={to}
               signal={_signal}
-              signalID={buildID(id, i)}
-              key={buildID(id, i)}
+              key={signal.id}
             />
           ))
         : null}
