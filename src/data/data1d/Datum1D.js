@@ -338,11 +338,12 @@ export class Datum1D {
   }
 
   detectRanges(options) {
+    options.impurities = { solvent: this.info.solvent };
     const ranges = autoRangesDetection(this, options);
     this.ranges.values = this.ranges.values.concat(
       ranges.map((range) => {
         return {
-          kind: DatumKind.signal,
+          kind: range.signal[0].kind || DatumKind.signal,
           ...range,
           id: generateID(),
           absolute: this.getIntegration(range.from, range.to),
