@@ -1,4 +1,5 @@
 import { Datum1D } from '../../../data/data1d/Datum1D';
+import generateID from '../../../data/utilities/generateID';
 import getColor from '../../../data/utilities/getColor';
 import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
@@ -13,6 +14,7 @@ function setIsLoading(state, isLoading) {
 
 function initiate(draft, dataObject) {
   HorizontalZoomHistory.initiate();
+  draft.displayerKey = generateID();
   draft.AnalysisObj = dataObject.AnalysisObj;
   const spectraData = draft.AnalysisObj.getSpectraData();
   const molecules = draft.AnalysisObj.getMolecules();

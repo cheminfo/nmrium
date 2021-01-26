@@ -5,7 +5,7 @@ import Events from '../../utility/Events';
 
 import Range from './Range';
 
-function Ranges({ ranges }) {
+function Ranges({ ranges, displayerKey }) {
   const [isMultiplicityTreesVisibile, showMultiplicityTrees] = useState(false);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ function Ranges({ ranges }) {
   }, []);
 
   return (
-    <g clipPath="url(#clip)">
+    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {ranges &&
         ranges.values &&
         ranges.values.map((range) => (

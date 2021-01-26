@@ -6,7 +6,7 @@ import { useScale } from '../context/ScaleContext';
 import PeakNotation from './PeakNotation';
 
 function PeaksNotations() {
-  const { data, activeSpectrum, verticalAlign } = useChartData();
+  const { data, activeSpectrum, verticalAlign, displayerKey } = useChartData();
   const { scaleX, scaleY } = useScale();
 
   const Peaks = useMemo(() => {
@@ -84,7 +84,7 @@ function PeaksNotations() {
   ]);
 
   return (
-    <g className="peaks" clipPath="url(#clip)">
+    <g className="peaks" clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {Peaks}
     </g>
   );

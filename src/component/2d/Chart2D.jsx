@@ -12,7 +12,7 @@ import YAxis from './YAxis';
 import Zones from './zones/Zones';
 
 function Chart2D({ data }) {
-  const { width, height, margin } = useChartData();
+  const { width, height, margin, displayerKey } = useChartData();
 
   const chart2d = useMemo(() => {
     return (
@@ -23,7 +23,7 @@ function Chart2D({ data }) {
         id="nmrSVG"
       >
         <defs>
-          <clipPath id="clip">
+          <clipPath id={`${displayerKey}clip-chart-2d`}>
             <rect
               width={width - margin.left - margin.right}
               height={height - margin.top - margin.bottom}
@@ -57,6 +57,7 @@ function Chart2D({ data }) {
   }, [
     width,
     height,
+    displayerKey,
     margin.left,
     margin.right,
     margin.top,

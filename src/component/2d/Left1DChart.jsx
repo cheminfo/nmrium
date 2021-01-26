@@ -6,7 +6,13 @@ import { useChartData } from '../context/ChartContext';
 import { get1DYScale, get2DYScale } from './utilities/scale';
 
 function Left1DChart({ margin: marignValue, data }) {
-  const { height: originHeight, margin, yDomain, yDomains } = useChartData();
+  const {
+    height: originHeight,
+    margin,
+    yDomain,
+    yDomains,
+    displayerKey,
+  } = useChartData();
 
   const height = margin.left;
 
@@ -55,11 +61,11 @@ function Left1DChart({ margin: marignValue, data }) {
       height={mainHeight + margin.top}
     >
       <defs>
-        <clipPath id="clip-left">
+        <clipPath id={`${displayerKey}clip-left`}>
           <rect width={height} height={mainHeight} x="0" y={margin.top} />
         </clipPath>
       </defs>
-      <g clipPath="url(#clip-left)">
+      <g clipPath={`url(#${displayerKey}clip-left)`}>
         <path className="line" stroke="black" fill="none" d={paths} />
       </g>
     </svg>

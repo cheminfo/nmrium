@@ -1,6 +1,4 @@
-import { css } from '@emotion/react';
 import { useMemo } from 'react';
-/** @jsxImportSource @emotion/react */
 
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
@@ -8,17 +6,6 @@ import { useScale } from '../context/ScaleContext';
 import Integral from './Integral';
 import { getIntegralYScale } from './utilities/scale';
 
-const pathStyles = css`
-  -webkit-clip-path: url('#clip');
-  clip-path: url('#clip');
-
-  path {
-    fill: none;
-    // stroke-linejoin: round;
-    // stroke-linecap: round;
-    // will-change: transform;
-  }
-`;
 function IntegralsSeries() {
   const {
     xDomain,
@@ -28,6 +15,7 @@ function IntegralsSeries() {
     margin,
     verticalAlign,
     integralsYDomains,
+    displayerKey,
   } = useChartData();
   const { scaleX } = useScale();
 
@@ -80,11 +68,7 @@ function IntegralsSeries() {
     );
   }, [activeSpectrum, data, scaleX, scaleY, xDomain]);
 
-  return (
-    <g css={pathStyles} clipPath="url(#clip)">
-      {Integrals}
-    </g>
-  );
+  return <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>{Integrals}</g>;
 }
 
 export default IntegralsSeries;

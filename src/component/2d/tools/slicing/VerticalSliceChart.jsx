@@ -7,7 +7,12 @@ import { get2DYScale } from '../../utilities/scale';
 import { getYScale } from './SliceScale';
 
 function VerticalSliceChart({ margin: marignValue, data }) {
-  const { height: originHeight, margin, yDomain } = useChartData();
+  const {
+    height: originHeight,
+    margin,
+    yDomain,
+    displayerKey,
+  } = useChartData();
 
   const height = margin.left;
 
@@ -53,11 +58,11 @@ function VerticalSliceChart({ margin: marignValue, data }) {
       height={mainHeight + margin.top}
     >
       <defs>
-        <clipPath id="clip-left">
+        <clipPath id={`${displayerKey}clip-left`}>
           <rect width={height} height={mainHeight} x="0" y={margin.top} />
         </clipPath>
       </defs>
-      <g clipPath="url(#clip-left)">
+      <g clipPath={`url(#${displayerKey}clip-left)`}>
         <path className="line" stroke="red" fill="none" d={paths} />
       </g>
     </svg>

@@ -83,6 +83,7 @@ export const initialState = {
   tabActiveSpectrum: {},
   spectraAanalysis: {},
   AnalysisObj: new Analysis(),
+  displayerKey: '',
 };
 
 export function dispatchMiddleware(dispatch, AnalysisObj, onDataChange = null) {

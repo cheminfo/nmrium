@@ -7,7 +7,7 @@ import { get2DXScale } from '../../utilities/scale';
 import { getYScale } from './SliceScale';
 
 function HorizontalSliceChart({ margin: marginProps, data }) {
-  const { width, margin: originMargin, xDomain } = useChartData();
+  const { width, margin: originMargin, xDomain, displayerKey } = useChartData();
 
   const height = originMargin.top;
 
@@ -43,7 +43,7 @@ function HorizontalSliceChart({ margin: marginProps, data }) {
   return (
     <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}>
       <defs>
-        <clipPath id="clip-top">
+        <clipPath id={`${displayerKey}clip-top`}>
           <rect
             width={width - originMargin.left - originMargin.right}
             height={height}
@@ -52,7 +52,7 @@ function HorizontalSliceChart({ margin: marginProps, data }) {
           />
         </clipPath>
       </defs>
-      <g clipPath="url(#clip-top)">
+      <g clipPath={`url(#${displayerKey}clip-top)`}>
         <rect
           width={width - originMargin.left - originMargin.right}
           height={height}
