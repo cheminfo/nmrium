@@ -16,10 +16,11 @@ class SingleDisplayerLayout extends PureComponent {
       >
         <div
           style={{
-            position: 'relative',
-            float: 'right',
-            width: '98% !important',
-            marginLeft: '20px !important',
+            position: 'absolute',
+            display: 'block',
+            width: '99%',
+            marginLeft: 'auto',
+            marginRight: 'auto',
             height: '100%',
             backgroundColor: 'ebecf1',
           }}
