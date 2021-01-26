@@ -364,7 +364,7 @@ function innerSpectrumReducer(draft, action) {
       return handleHistoryReset(draft, action);
 
     default:
-      return draft;
+      return;
   }
 }
 

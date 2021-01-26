@@ -1,5 +1,5 @@
 import { max } from 'd3';
-import { original } from 'immer';
+import { original, current } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import { Datum2D } from '../../../data/data2d/Datum2D';
@@ -118,8 +118,8 @@ function setSelectedTool(draft, selectedTool) {
   setMargin(draft);
 }
 
-function setSelectedOptionPanel(state, selectedOptionPanel) {
-  return { ...state, selectedOptionPanel };
+function setSelectedOptionPanel(draft, selectedOptionPanel) {
+  draft.selectedOptionPanel = selectedOptionPanel;
 }
 
 function setSpectrumsVerticalAlign(draft, flag) {
@@ -177,36 +177,37 @@ function handleDeleteBaseLineZone(draft, id) {
 
 function handleToggleRealImaginaryVisibility(draft) {
   const state = original(draft);
-  if (draft.activeSpectrum === null) return;
-  const activeSpectrumId = draft.activeSpectrum.id;
-  const ob = draft.AnalysisObj.getDatum(activeSpectrumId);
+  if (draft.activeSpectrum != null) {
+    const activeSpectrumId = draft.activeSpectrum.id;
+    const ob = draft.AnalysisObj.getDatum(activeSpectrumId);
 
-  if (ob) {
-    const reY = ob.getReal().y;
-    const imY = ob.getImaginary().y;
-    const index = state.data.findIndex((d) => d.id === activeSpectrumId);
-    ob.setIsRealSpectrumVisible(!draft.data[index]);
+    if (ob) {
+      const reY = ob.getReal().y;
+      const imY = ob.getImaginary().y;
+      const index = state.data.findIndex((d) => d.id === activeSpectrumId);
+      ob.setIsRealSpectrumVisible(!draft.data[index]);
 
-    draft.data[index].display.isRealSpectrumVisible = !draft.data[index].display
-      .isRealSpectrumVisible;
-    ob.setIsRealSpectrumVisible();
-    if (draft.data[index].display.isRealSpectrumVisible) {
-      if (reY !== null && reY !== undefined) {
-        draft.data[index].y = reY;
-        const domain = getDomain(draft.data);
-        draft.xDomain = domain.xDomain;
-        draft.yDomain = domain.yDomain;
-        draft.xDomains = domain.xDomains;
-        draft.yDomains = domain.yDomains;
-      }
-    } else {
-      if (imY !== null && imY !== undefined) {
-        draft.data[index].y = imY;
-        const domain = getDomain(draft.data);
-        draft.xDomain = domain.xDomain;
-        draft.yDomain = domain.yDomain;
-        draft.xDomains = domain.xDomains;
-        draft.yDomains = domain.yDomains;
+      draft.data[index].display.isRealSpectrumVisible = !draft.data[index]
+        .display.isRealSpectrumVisible;
+      ob.setIsRealSpectrumVisible();
+      if (draft.data[index].display.isRealSpectrumVisible) {
+        if (reY !== null && reY !== undefined) {
+          draft.data[index].y = reY;
+          const domain = getDomain(draft.data);
+          draft.xDomain = domain.xDomain;
+          draft.yDomain = domain.yDomain;
+          draft.xDomains = domain.xDomains;
+          draft.yDomains = domain.yDomains;
+        }
+      } else {
+        if (imY !== null && imY !== undefined) {
+          draft.data[index].y = imY;
+          const domain = getDomain(draft.data);
+          draft.xDomain = domain.xDomain;
+          draft.yDomain = domain.yDomain;
+          draft.xDomains = domain.xDomains;
+          draft.yDomains = domain.yDomains;
+        }
       }
     }
   }
@@ -278,7 +279,7 @@ function handleZoom(draft, action) {
         break;
       }
       default:
-        return state;
+        break;
     }
   } else {
     wheel(deltaY, deltaMode, state);
@@ -463,7 +464,7 @@ function setTab(draft, dataGroupByTab, tab, refresh = false) {
 
 function setActiveTab(draft, tab = null, refreshTabActiveSpectrums = false) {
   const groupByNucleus = GroupByInfoKey('nucleus');
-  const dataGroupByNucleus = groupByNucleus(draft.data);
+  const dataGroupByNucleus = groupByNucleus(current(draft).data);
   const tabs = Object.keys(dataGroupByNucleus);
   const currentTab = !tab || !tabs.includes(tab) ? tabs[0] : tab;
   setTab(draft, dataGroupByNucleus, currentTab, refreshTabActiveSpectrums);

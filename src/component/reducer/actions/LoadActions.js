@@ -8,8 +8,8 @@ import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setYAxisShift, setActiveTab } from './ToolsActions';
 import { initZoom1DHandler } from './Zoom';
 
-function setIsLoading(state, isLoading) {
-  return { ...state, isLoading };
+function setIsLoading(draft, isLoading) {
+  draft.isLoading = isLoading;
 }
 
 function initiate(draft, dataObject) {
@@ -119,7 +119,7 @@ function handleLoadJsonFile(draft, data) {
   }
 
   setActiveTab(draft);
-  initZoom1DHandler(draft.data);
+  initZoom1DHandler(spectraData);
 
   draft.isLoading = false;
 }

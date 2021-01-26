@@ -1,3 +1,5 @@
+import { original } from 'immer';
+
 import {
   exportAsJSON,
   exportAsSVG,
@@ -6,7 +8,7 @@ import {
 } from '../../utility/Export';
 
 function exportData(draft, { exportType }) {
-  const { data } = draft;
+  const { data } = original(draft);
   //check if there is data to export it
   if (data.length > 0) {
     //exported file name by default will be the first spectrum name
