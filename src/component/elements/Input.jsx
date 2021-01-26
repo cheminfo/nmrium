@@ -16,19 +16,37 @@ const styles = {
   },
 };
 
+const defaultProps = {
+  style: {
+    label: {},
+    input: {},
+    container: {},
+  },
+  value: '',
+  onChange: () => {
+    return null;
+  },
+  checkValue: () => true,
+  onKeyDown: () => null,
+  type: 'text',
+  className: '',
+  enableAutoSelect: false,
+  format: () => (val) => val,
+};
+
 function Input(
   {
-    label,
-    value,
-    name,
-    style,
-    onChange,
-    onKeyDown,
-    checkValue,
-    type,
-    enableAutoSelect,
-    className,
-    format,
+    label = defaultProps.label,
+    value = defaultProps.value,
+    name = defaultProps.name,
+    style = defaultProps.style,
+    onChange = defaultProps.onChange,
+    onKeyDown = defaultProps.onKeyDown,
+    checkValue = defaultProps.checkValue,
+    type = defaultProps.type,
+    enableAutoSelect = defaultProps.enableAutoSelect,
+    className = defaultProps.className,
+    format = defaultProps.format,
     ...prop
   },
   ref,
@@ -46,6 +64,8 @@ function Input(
 
   const getValue = useCallback(
     (value) => {
+      console.log(format);
+
       const formatValue = format();
       return formatValue(
         type === 'number'
@@ -159,22 +179,6 @@ Input.propTypes = {
   enableAutoSelect: PropTypes.bool,
 };
 
-Input.defaultProps = {
-  style: {
-    label: {},
-    input: {},
-    container: {},
-  },
-  value: '',
-  onChange: () => {
-    return null;
-  },
-  checkValue: () => true,
-  onKeyDown: () => null,
-  type: 'text',
-  className: '',
-  enableAutoSelect: false,
-  format: () => (val) => val,
-};
+Input.defaultProps = defaultProps;
 
 export default forwardRef(Input);
