@@ -6,4 +6,5 @@ export const possibleViews = {
   SingleView: memo(lazy(() => import('./SingleView'))),
   Test: memo(lazy(() => import('./Test'))),
   View: memo(lazy(() => import('./View'))),
+  TwoInstances: memo(lazy(() => import('./TwoInstances'))),
 };

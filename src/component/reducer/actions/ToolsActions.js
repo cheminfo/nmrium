@@ -1,5 +1,5 @@
 import { max } from 'd3';
-import { produce } from 'immer';
+import { original } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import { Datum2D } from '../../../data/data2d/Datum2D';
@@ -9,7 +9,6 @@ import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import { AnalysisObj } from '../core/Analysis';
 import {
   DEFAULT_YAXIS_SHIFT_VALUE,
   DISPLAYER_MODE,
@@ -37,7 +36,7 @@ function getStrongestPeak(state) {
 
 function setFilterChanges(draft, state, selectedFilter) {
   const activeSpectrumId = state.activeSpectrum.id;
-  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
+  const activeObject = draft.AnalysisObj.getDatum(activeSpectrumId);
 
   //save reduced snapshot
   //select the equalizer tool when you enable manual phase correction filter
@@ -89,278 +88,261 @@ function resetTool(draft, setDefaultTool = true) {
   }
 }
 
-function resetSelectedTool(state, filterOnly = false) {
-  return produce(state, (draft) => {
-    if (!filterOnly) {
+function resetSelectedTool(draft, filterOnly = false) {
+  if (!filterOnly) {
+    resetTool(draft);
+  } else {
+    if (draft.selectedTool && options[draft.selectedTool].isFilter) {
       resetTool(draft);
-    } else {
-      if (draft.selectedTool && options[draft.selectedTool].isFilter) {
-        resetTool(draft);
-      }
     }
-  });
+  }
 }
 
-function setSelectedTool(state, selectedTool) {
-  return produce(state, (draft) => {
-    if (selectedTool) {
-      if (selectedTool !== draft.selectedTool) {
-        resetTool(draft, false);
-      }
-      draft.selectedTool = selectedTool;
-      if (options[selectedTool].hasOptionPanel) {
-        draft.selectedOptionPanel = selectedTool;
-      }
-
-      if (options[selectedTool].isFilter) {
-        setFilterChanges(draft, state, selectedTool);
-      }
-    } else {
+function setSelectedTool(draft, selectedTool) {
+  const state = original(draft);
+  if (selectedTool) {
+    if (selectedTool !== draft.selectedTool) {
       resetTool(draft, false);
     }
-    setMargin(draft);
-  });
+    draft.selectedTool = selectedTool;
+    if (options[selectedTool].hasOptionPanel) {
+      draft.selectedOptionPanel = selectedTool;
+    }
+
+    if (options[selectedTool].isFilter) {
+      setFilterChanges(draft, state, selectedTool);
+    }
+  } else {
+    resetTool(draft, false);
+  }
+  setMargin(draft);
 }
 
 function setSelectedOptionPanel(state, selectedOptionPanel) {
   return { ...state, selectedOptionPanel };
 }
 
-function setSpectrumsVerticalAlign(state, flag) {
-  return produce(state, (draft) => {
-    changeSpectrumDisplayPreferences(state, draft, { center: flag });
-  });
+function setSpectrumsVerticalAlign(draft, flag) {
+  changeSpectrumDisplayPreferences(draft, { center: flag });
 }
 
-function handleChangeSpectrumDisplayMode(state, { flag }) {
-  return produce(state, (draft) => {
-    const { activeSpectrum, data, height, activeTab } = state;
-    let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
-    if (activeSpectrum) {
-      const { index } = activeSpectrum;
-      if (data[index].isFid) {
-        YAxisShift = height / 2;
-      }
+function handleChangeSpectrumDisplayMode(draft, { flag }) {
+  const state = original(draft);
+  const { activeSpectrum, height, activeTab } = draft;
+  let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
+  if (activeSpectrum) {
+    const { index } = activeSpectrum;
+    if (state.data[index].isFid) {
+      YAxisShift = height / 2;
     }
-    draft.verticalAlign.flag = flag;
-    draft.verticalAlign.stacked = flag;
+  }
+  draft.verticalAlign.flag = flag;
+  draft.verticalAlign.stacked = flag;
 
-    if (flag) {
-      const count = state.data.filter(
-        (datum) => datum.info.nucleus === activeTab,
-      ).length;
-      draft.verticalAlign.value = Math.floor(height / (count + 2));
-    } else {
-      draft.verticalAlign.value = YAxisShift;
-    }
-  });
+  if (flag) {
+    const count = state.data.filter((datum) => datum.info.nucleus === activeTab)
+      .length;
+    draft.verticalAlign.value = Math.floor(height / (count + 2));
+  } else {
+    draft.verticalAlign.value = YAxisShift;
+  }
 }
 
-function handleAddBaseLineZone(state, { from, to }) {
-  const scaleX = getXScale(state);
+function handleAddBaseLineZone(draft, { from, to }) {
+  const scaleX = getXScale(draft);
 
-  return produce(state, (draft) => {
-    let start = scaleX.invert(from);
-    const end = scaleX.invert(to);
+  let start = scaleX.invert(from);
+  const end = scaleX.invert(to);
 
-    let zone = [];
-    if (start > end) {
-      zone = [end, start];
-    } else {
-      zone = [start, end];
-    }
+  let zone = [];
+  if (start > end) {
+    zone = [end, start];
+  } else {
+    zone = [start, end];
+  }
 
-    const zones = state.baseLineZones.slice();
-    zones.push({
-      id: generateID(),
-      from: zone[0],
-      to: zone[1],
-    });
-    draft.baseLineZones = zones;
+  const zones = draft.baseLineZones.slice();
+  zones.push({
+    id: generateID(),
+    from: zone[0],
+    to: zone[1],
   });
+  draft.baseLineZones = zones;
 }
 
-function handleDeleteBaseLineZone(state, id) {
-  return produce(state, (draft) => {
-    draft.baseLineZones = state.baseLineZones.filter((zone) => zone.id !== id);
-  });
+function handleDeleteBaseLineZone(draft, id) {
+  const state = original(draft);
+  draft.baseLineZones = state.baseLineZones.filter((zone) => zone.id !== id);
 }
 
-function handleToggleRealImaginaryVisibility(state) {
-  return produce(state, (draft) => {
-    if (state.activeSpectrum === null) return;
-    const activeSpectrumId = state.activeSpectrum.id;
-    const ob = AnalysisObj.getDatum(activeSpectrumId);
+function handleToggleRealImaginaryVisibility(draft) {
+  const state = original(draft);
+  if (draft.activeSpectrum === null) return;
+  const activeSpectrumId = draft.activeSpectrum.id;
+  const ob = draft.AnalysisObj.getDatum(activeSpectrumId);
 
-    if (ob) {
-      const reY = ob.getReal().y;
-      const imY = ob.getImaginary().y;
-      const index = state.data.findIndex((d) => d.id === activeSpectrumId);
-      ob.setIsRealSpectrumVisible(!draft.data[index]);
+  if (ob) {
+    const reY = ob.getReal().y;
+    const imY = ob.getImaginary().y;
+    const index = state.data.findIndex((d) => d.id === activeSpectrumId);
+    ob.setIsRealSpectrumVisible(!draft.data[index]);
 
-      draft.data[index].display.isRealSpectrumVisible = !draft.data[index]
-        .display.isRealSpectrumVisible;
-      ob.setIsRealSpectrumVisible();
-      if (draft.data[index].display.isRealSpectrumVisible) {
-        if (reY !== null && reY !== undefined) {
-          draft.data[index].y = reY;
-          const domain = getDomain(draft.data);
-          draft.xDomain = domain.xDomain;
-          draft.yDomain = domain.yDomain;
-          draft.xDomains = domain.xDomains;
-          draft.yDomains = domain.yDomains;
-        }
-      } else {
-        if (imY !== null && imY !== undefined) {
-          draft.data[index].y = imY;
-          const domain = getDomain(draft.data);
-          draft.xDomain = domain.xDomain;
-          draft.yDomain = domain.yDomain;
-          draft.xDomains = domain.xDomains;
-          draft.yDomains = domain.yDomains;
-        }
-      }
-    }
-  });
-}
-
-function handleBrushEnd(state, action) {
-  return produce(state, (draft) => {
-    const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
-    const xScale = getXScale(state);
-
-    const yScale = is2D ? get2DYScale(state) : getYScale(state);
-
-    const startX = xScale.invert(action.startX);
-    const endX = xScale.invert(action.endX);
-    const startY = yScale.invert(action.startY);
-    const endY = yScale.invert(action.endY);
-    const domainX = startX > endX ? [endX, startX] : [startX, endX];
-    const domainY = startY > endY ? [endY, startY] : [startY, endY];
-    const brushHistory = HorizontalZoomHistory.getInstance(state.activeTab);
-
-    if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-      switch (action.trackID) {
-        case LAYOUT.CENTER_2D:
-          draft.xDomain = domainX;
-          draft.yDomain = domainY;
-          break;
-        case LAYOUT.TOP_1D:
-          draft.xDomain = domainX;
-          break;
-        case LAYOUT.LEFT_1D:
-          draft.yDomain = domainY;
-          break;
-        default:
-          break;
-      }
-      if (brushHistory) {
-        brushHistory.push({ xDomain: domainX, yDomain: domainY });
+    draft.data[index].display.isRealSpectrumVisible = !draft.data[index].display
+      .isRealSpectrumVisible;
+    ob.setIsRealSpectrumVisible();
+    if (draft.data[index].display.isRealSpectrumVisible) {
+      if (reY !== null && reY !== undefined) {
+        draft.data[index].y = reY;
+        const domain = getDomain(draft.data);
+        draft.xDomain = domain.xDomain;
+        draft.yDomain = domain.yDomain;
+        draft.xDomains = domain.xDomains;
+        draft.yDomains = domain.yDomains;
       }
     } else {
-      draft.xDomain = domainX;
-      if (brushHistory) {
-        brushHistory.push({ xDomain: domainX, yDomain: state.yDomain });
+      if (imY !== null && imY !== undefined) {
+        draft.data[index].y = imY;
+        const domain = getDomain(draft.data);
+        draft.xDomain = domain.xDomain;
+        draft.yDomain = domain.yDomain;
+        draft.xDomains = domain.xDomains;
+        draft.yDomains = domain.yDomains;
       }
     }
-  });
+  }
 }
-function setVerticalIndicatorXPosition(state, position) {
-  return produce(state, (draft) => {
-    const scaleX = getXScale(state);
-    draft.pivot = scaleX.invert(position);
-  });
+
+function handleBrushEnd(draft, action) {
+  const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
+  const xScale = getXScale(draft);
+
+  const yScale = is2D ? get2DYScale(draft) : getYScale(draft);
+
+  const startX = xScale.invert(action.startX);
+  const endX = xScale.invert(action.endX);
+  const startY = yScale.invert(action.startY);
+  const endY = yScale.invert(action.endY);
+  const domainX = startX > endX ? [endX, startX] : [startX, endX];
+  const domainY = startY > endY ? [endY, startY] : [startY, endY];
+  const brushHistory = HorizontalZoomHistory.getInstance(draft.activeTab);
+
+  if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
+    switch (action.trackID) {
+      case LAYOUT.CENTER_2D:
+        draft.xDomain = domainX;
+        draft.yDomain = domainY;
+        break;
+      case LAYOUT.TOP_1D:
+        draft.xDomain = domainX;
+        break;
+      case LAYOUT.LEFT_1D:
+        draft.yDomain = domainY;
+        break;
+      default:
+        break;
+    }
+    if (brushHistory) {
+      brushHistory.push({ xDomain: domainX, yDomain: domainY });
+    }
+  } else {
+    draft.xDomain = domainX;
+    if (brushHistory) {
+      brushHistory.push({ xDomain: domainX, yDomain: draft.yDomain });
+    }
+  }
+}
+function setVerticalIndicatorXPosition(draft, position) {
+  const scaleX = getXScale(draft);
+  draft.pivot = scaleX.invert(position);
 }
 
 function getSpectrumID(draft, index) {
   return draft.tabActiveSpectrum[draft.activeTab.split(',')[index]].id;
 }
 
-function handleZoom(state, action) {
-  return produce(state, (draft) => {
-    const { deltaY, deltaMode, trackID } = action;
-    if (trackID) {
-      switch (trackID) {
-        case LAYOUT.TOP_1D: {
-          const id = getSpectrumID(draft, 0);
-          wheel(deltaY, deltaMode, state, id);
-          setZoom1D(draft, state.margin.top, 10, 0);
-          break;
-        }
-        case LAYOUT.LEFT_1D: {
-          const id = getSpectrumID(draft, 1);
-          wheel(deltaY, deltaMode, state, id);
-          setZoom1D(draft, state.margin.left, 10, 1);
-          break;
-        }
-        default:
-          return state;
+function handleZoom(draft, action) {
+  const state = original(draft);
+  const { deltaY, deltaMode, trackID } = action;
+  if (trackID) {
+    switch (trackID) {
+      case LAYOUT.TOP_1D: {
+        const id = getSpectrumID(draft, 0);
+        wheel(deltaY, deltaMode, state, id);
+        setZoom1D(draft, state.margin.top, 10, 0);
+        break;
       }
-    } else {
-      wheel(deltaY, deltaMode, state);
-      setZoom(state, draft);
+      case LAYOUT.LEFT_1D: {
+        const id = getSpectrumID(draft, 1);
+        wheel(deltaY, deltaMode, state, id);
+        setZoom1D(draft, state.margin.left, 10, 1);
+        break;
+      }
+      default:
+        return state;
     }
-  });
+  } else {
+    wheel(deltaY, deltaMode, state);
+    setZoom(state, draft);
+  }
 }
 
-function zoomOut(state, action) {
+function zoomOut(draft, action) {
   const { zoomType, trackID } = action;
-  return produce(state, (draft) => {
-    const zoomHistory = HorizontalZoomHistory.getInstance(state.activeTab);
+  const state = original(draft);
+  const zoomHistory = HorizontalZoomHistory.getInstance(draft.activeTab);
 
-    if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
-      switch (zoomType) {
-        case ZoomType.HORIZONTAL: {
-          draft.xDomain = state.originDomain.xDomain;
-          break;
-        }
-        case ZoomType.VERTICAL:
-          setZoom(state, draft, 0.8);
-          break;
-        case ZoomType.STEP_HROZENTAL: {
-          const zoomValue = zoomHistory.pop();
-          draft.xDomain = zoomValue
-            ? zoomValue.xDomain
-            : state.originDomain.xDomain;
-          setZoom(state, draft, 0.8);
-          break;
-        }
-        default: {
-          draft.xDomain = state.originDomain.xDomain;
-          setZoom(state, draft, 0.8);
-          break;
-        }
+  if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+    switch (zoomType) {
+      case ZoomType.HORIZONTAL: {
+        draft.xDomain = draft.originDomain.xDomain;
+        break;
       }
-    } else {
-      const { xDomain, yDomain, yDomains } = state.originDomain;
-      switch (trackID) {
-        case LAYOUT.TOP_1D: {
-          const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[0]];
-          draft.xDomain = xDomain;
-          draft.yDomains[id] = yDomains[id];
-          break;
-        }
-        case LAYOUT.LEFT_1D: {
-          const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[1]];
-          draft.yDomain = yDomain;
-          draft.yDomains[id] = yDomains[id];
-
-          break;
-        }
-        case LAYOUT.CENTER_2D: {
-          const zoomValue = zoomHistory.pop();
-          draft.xDomain = zoomValue ? zoomValue.xDomain : xDomain;
-          draft.yDomain = zoomValue ? zoomValue.yDomain : yDomain;
-          break;
-        }
-        default:
-          draft.xDomain = xDomain;
-          draft.yDomain = yDomain;
-          draft.yDomains = yDomains;
-          break;
+      case ZoomType.VERTICAL:
+        setZoom(state, draft, 0.8);
+        break;
+      case ZoomType.STEP_HROZENTAL: {
+        const zoomValue = zoomHistory.pop();
+        draft.xDomain = zoomValue
+          ? zoomValue.xDomain
+          : draft.originDomain.xDomain;
+        setZoom(state, draft, 0.8);
+        break;
+      }
+      default: {
+        draft.xDomain = draft.originDomain.xDomain;
+        setZoom(state, draft, 0.8);
+        break;
       }
     }
-  });
+  } else {
+    const { xDomain, yDomain, yDomains } = state.originDomain;
+    switch (trackID) {
+      case LAYOUT.TOP_1D: {
+        const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[0]];
+        draft.xDomain = xDomain;
+        draft.yDomains[id] = yDomains[id];
+        break;
+      }
+      case LAYOUT.LEFT_1D: {
+        const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[1]];
+        draft.yDomain = yDomain;
+        draft.yDomains[id] = yDomains[id];
+
+        break;
+      }
+      case LAYOUT.CENTER_2D: {
+        const zoomValue = zoomHistory.pop();
+        draft.xDomain = zoomValue ? zoomValue.xDomain : xDomain;
+        draft.yDomain = zoomValue ? zoomValue.yDomain : yDomain;
+        break;
+      }
+      default:
+        draft.xDomain = xDomain;
+        draft.yDomain = yDomain;
+        draft.yDomains = yDomains;
+        break;
+    }
+  }
 }
 
 function hasAcceptedSpectrum(draft, index) {
@@ -394,7 +376,7 @@ function Processing2DData(draft, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     let _data = {};
     for (const datum of data[draft.activeTab]) {
-      const data2dObject = AnalysisObj.getDatum(datum.id);
+      const data2dObject = draft.AnalysisObj.getDatum(datum.id);
       _data[datum.id] = data2dObject.getContourLines();
     }
     draft.contours = _data;
@@ -500,19 +482,17 @@ function setActiveTab(draft, tab = null, refreshTabActiveSpectrums = false) {
   setMode(draft);
 }
 
-function handelSetActiveTab(state, tab) {
-  return produce(state, (draft) => {
-    if (tab) {
-      setActiveTab(draft, tab);
-    }
-  });
+function handelSetActiveTab(draft, tab) {
+  if (tab) {
+    setActiveTab(draft, tab);
+  }
 }
 
-function levelChangeHandler(state, { deltaY, shiftKey }) {
+function levelChangeHandler(draft, { deltaY, shiftKey }) {
   try {
-    if (state.activeSpectrum) {
-      const { id } = state.activeSpectrum;
-      const datum2dObject = AnalysisObj.getDatum(id);
+    if (draft.activeSpectrum) {
+      const { id } = draft.activeSpectrum;
+      const datum2dObject = draft.AnalysisObj.getDatum(id);
       if (datum2dObject instanceof Datum2D) {
         const processing2dController = datum2dObject.getProcessingController();
         if (shiftKey) {
@@ -521,16 +501,12 @@ function levelChangeHandler(state, { deltaY, shiftKey }) {
           processing2dController.wheel(deltaY);
         }
         const contours = Object.freeze(processing2dController.drawContours());
-        return produce(state, (draft) => {
-          draft.contours[id] = contours;
-        });
+        draft.contours[id] = contours;
       }
-      return state;
-    } else {
-      return state;
     }
   } catch (e) {
-    return state;
+    // eslint-disable-next-line no-console
+    console.log(e);
   }
 }
 

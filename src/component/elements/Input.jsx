@@ -107,11 +107,17 @@ function Input(
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        ...style.container,
+        ...(style && style.container ? style.container : {}),
       }}
     >
       {label && (
-        <span style={{ ...styles.label, ...style.label }} className="label">
+        <span
+          style={{
+            ...styles.label,
+            ...(style && style.label ? style.label : {}),
+          }}
+          className="label"
+        >
           {label}
         </span>
       )}
@@ -119,7 +125,10 @@ function Input(
         {...prop}
         ref={ref}
         name={name}
-        style={{ ...styles.input, ...style.input }}
+        style={{
+          ...styles.input,
+          ...(style && style.input ? style.input : {}),
+        }}
         type="text"
         value={val}
         onChange={onChangeHandler}

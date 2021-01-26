@@ -11,7 +11,6 @@ import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
-import { AnalysisObj } from '../../reducer/core/Analysis';
 import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { copyTextToClipboard } from '../../utility/Export';
@@ -33,7 +32,11 @@ const styles = {
   },
 };
 
-function MultipleSpectraAnalysisPanel({ spectraAanalysis, activeTab }) {
+function MultipleSpectraAnalysisPanel({
+  spectraAanalysis,
+  activeTab,
+  AnalysisObj,
+}) {
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef();
   const alert = useAlert();
@@ -85,7 +88,7 @@ function MultipleSpectraAnalysisPanel({ spectraAanalysis, activeTab }) {
     } else {
       alert.error('copy to clipboard failed');
     }
-  }, [activeTab, alert]);
+  }, [AnalysisObj, activeTab, alert]);
 
   return (
     <div style={styles.container}>

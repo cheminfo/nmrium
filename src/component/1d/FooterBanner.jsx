@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { useContext, useCallback, Fragment } from 'react';
+import { useContext, useCallback, Fragment, memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
 
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
-import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import { useHelptData } from '../elements/popup/Help';
+import FooterWarpper from '../hoc/FooterWarpper';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
@@ -90,17 +90,16 @@ const helpStyles = css`
   }
 `;
 
-function FooterBanner() {
+function FooterBanner({
+  margin,
+  width,
+  height,
+  activeSpectrum,
+  data,
+  activeTab,
+}) {
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
-  const {
-    margin,
-    width,
-    height,
-    activeSpectrum,
-    data,
-    activeTab,
-  } = useChartData();
   const { scaleX } = useScale();
   const { helpText } = useHelptData();
   const { originFrequency: frequency } = activeSpectrum
@@ -210,4 +209,4 @@ function FooterBanner() {
   );
 }
 
-export default FooterBanner;
+export default FooterWarpper(memo(FooterBanner));

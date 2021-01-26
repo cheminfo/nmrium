@@ -1,71 +1,51 @@
-import { produce } from 'immer';
-
-import { AnalysisObj } from '../core/Analysis';
-
-function handleSetMF(state, mf) {
-  AnalysisObj.getCorrelationManagerInstance().setMF(mf);
-  return produce(state, (draft) => {
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
+function handleSetMF(draft, mf) {
+  draft.AnalysisObj.getCorrelationManagerInstance().setMF(mf);
+  draft.correlations = draft.AnalysisObj.getCorrelations();
 }
 
-function handleUnsetMF(state) {
-  AnalysisObj.getCorrelationManagerInstance().unsetMF();
-  return produce(state, (draft) => {
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
+function handleUnsetMF(draft) {
+  draft.AnalysisObj.getCorrelationManagerInstance().unsetMF();
+  draft.correlations = draft.AnalysisObj.getCorrelations();
 }
 
-function handleSetTolerance(state, tolerance) {
-  AnalysisObj.getCorrelationManagerInstance().setTolerance(tolerance);
-  return produce(state, (draft) => {
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
+function handleSetTolerance(draft, tolerance) {
+  draft.AnalysisObj.getCorrelationManagerInstance().setTolerance(tolerance);
+  draft.correlations = draft.AnalysisObj.getCorrelations();
 }
 
-function handleUpdateCorrelations(state, signals1D, signals2D, signalsDEPT) {
-  AnalysisObj.getCorrelationManagerInstance().updateValues(
+function handleUpdateCorrelations(draft, signals1D, signals2D, signalsDEPT) {
+  draft.AnalysisObj.getCorrelationManagerInstance().updateValues(
     signals1D,
     signals2D,
     signalsDEPT,
   );
-  return produce(state, (draft) => {
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
+  draft.correlations = draft.AnalysisObj.getCorrelations();
 }
 
-function handleAddCorrelation(state, correlation) {
-  AnalysisObj.getCorrelationManagerInstance().addValue(correlation);
-  return produce(state, (draft) => {
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
+function handleAddCorrelation(draft, correlation) {
+  draft.AnalysisObj.getCorrelationManagerInstance().addValue(correlation);
+  draft.correlations = draft.AnalysisObj.getCorrelations();
 }
 
-function handleDeleteCorrelation(state, id) {
-  AnalysisObj.getCorrelationManagerInstance().deleteValue(id);
-  return produce(state, (draft) => {
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
+function handleDeleteCorrelation(draft, id) {
+  draft.AnalysisObj.getCorrelationManagerInstance().deleteValue(id);
+  draft.correlations = draft.AnalysisObj.getCorrelations();
 }
 
-function handleSetCorrelation(state, id, correlation) {
-  return produce(state, (draft) => {
-    AnalysisObj.getCorrelationManagerInstance().setValue(id, correlation);
-    draft.correlations = AnalysisObj.getCorrelations();
-  });
+function handleSetCorrelation(draft, id, correlation) {
+  draft.AnalysisObj.getCorrelationManagerInstance().setValue(id, correlation);
+  draft.correlations = draft.AnalysisObj.getCorrelations();
 }
 
-function handleSetCorrelations(state, ids, correlations) {
+function handleSetCorrelations(draft, ids, correlations) {
   if (ids.length === correlations.length) {
-    return produce(state, (draft) => {
-      ids.forEach((id, i) =>
-        AnalysisObj.getCorrelationManagerInstance().setValue(
-          id,
-          correlations[i],
-        ),
-      );
-      draft.correlations = AnalysisObj.getCorrelations();
-    });
+    ids.forEach((id, i) =>
+      draft.AnalysisObj.getCorrelationManagerInstance().setValue(
+        id,
+        correlations[i],
+      ),
+    );
+    draft.correlations = draft.AnalysisObj.getCorrelations();
   }
 }
 

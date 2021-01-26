@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 
 import { useMouseTracker } from '../../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../../context/ChartContext';
-import { AnalysisObj } from '../../../reducer/core/Analysis';
 import { get2DXScale, get2DYScale } from '../../utilities/scale';
 
 import HorizontalSliceChart from './HorizontalSliceChart';
@@ -17,6 +16,7 @@ function SlicingView() {
     activeSpectrum,
     xDomain,
     yDomain,
+    AnalysisObj,
   } = useChartData();
   const position = useMouseTracker();
 
@@ -50,7 +50,16 @@ function SlicingView() {
       );
     }
     return null;
-  }, [position, activeSpectrum.id, margin, width, xDomain, height, yDomain]);
+  }, [
+    position,
+    activeSpectrum.id,
+    margin,
+    width,
+    xDomain,
+    height,
+    yDomain,
+    AnalysisObj,
+  ]);
 
   if (!position) {
     return null;
