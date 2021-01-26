@@ -9,8 +9,22 @@ import {
 
 import Input from './Input';
 
+const defaultProps = {
+  onSave: () => null,
+  onEditStart: () => null,
+  type: 'text',
+  editStatus: false,
+};
+
 function EditableColumn(
-  { onSave, value, type, style, onEditStart, editStatus },
+  {
+    onSave = defaultProps.onSave,
+    value,
+    type = defaultProps.type,
+    style = defaultProps.style,
+    onEditStart = defaultProps.onEditStart,
+    editStatus = defaultProps.editStatus,
+  },
   ref,
 ) {
   const [enabled, enableEdit] = useState();
@@ -67,11 +81,6 @@ function EditableColumn(
   );
 }
 
-EditableColumn.defaultProps = {
-  onSave: () => null,
-  onEditStart: () => null,
-  type: 'text',
-  editStatus: false,
-};
+EditableColumn.defaultProps = defaultProps;
 
 export default forwardRef(EditableColumn);
