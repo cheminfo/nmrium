@@ -430,7 +430,7 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
       if (oclIDs.length > 0) {
         let highlights = [];
         for (let key in assignmentData.assignment.assignment) {
-          const { datum, signalIndex } = findDatumAndSignalIndex(key);
+          // const { datum, signalIndex } = findDatumAndSignalIndex(key);
           // const _highlights = (datum ? [datum.id] : []).concat(
           //   datum && signalIndex !== undefined
           //     ? [datum.signal[signalIndex].id]
@@ -466,11 +466,7 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
         setOnAtomHoverAction('hide');
       }
     },
-    [
-      assignmentData.assignment.assignment,
-      extractFromAtom,
-      findDatumAndSignalIndex,
-    ],
+    [assignmentData.assignment.assignment, extractFromAtom],
   );
 
   const handleOnUnlinkAll = useCallback(() => {

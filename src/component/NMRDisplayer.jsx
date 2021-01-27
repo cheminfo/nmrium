@@ -232,7 +232,7 @@ function NMRDisplayer({
                 <ChartDataProvider value={{ ...state, isResizeEventStart }}>
                   <ModalProvider wrapperRef={elementsWraperRef.current}>
                     <HighlightProvider>
-                      <AssignmentProvider>
+                      <AssignmentProvider spectraData={state.data}>
                         <div
                           ref={rootRef}
                           css={containerStyles}

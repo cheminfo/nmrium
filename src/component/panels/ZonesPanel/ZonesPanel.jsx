@@ -1,10 +1,9 @@
 import lodash from 'lodash';
-import { useState, useMemo, useCallback, useRef, memo, useEffect } from 'react';
+import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaUnlink } from 'react-icons/fa';
 
 import {
-  initAssignmentData,
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities';
@@ -53,13 +52,6 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
   const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef();
-
-  useEffect(() => {
-    if (zones && zones.values) {
-      zones.values.forEach((zone) => initAssignmentData(zone, assignmentData));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const tableData = useMemo(() => {
     const isInView = (xFrom, xTo, yFrom, yTo) => {

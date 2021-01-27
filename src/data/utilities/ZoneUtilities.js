@@ -106,38 +106,38 @@ const unlinkInAssignmentData = (
   }
 };
 
-const initAssignmentData = (zone, assignmentData) => {
-  assignmentData.dispatch({
-    type: 'DELETE_RECORD',
-    payload: { id: zone.id },
-  });
-  (zone.y.diaID || []).forEach((_diaID) =>
-    assignmentData.dispatch({
-      type: 'ADD',
-      payload: { id: [zone.id, _diaID], axis: 'y' },
-    }),
-  );
-  (zone.x.diaID || []).forEach((_diaID) =>
-    assignmentData.dispatch({
-      type: 'ADD',
-      payload: { id: [zone.id, _diaID], axis: 'x' },
-    }),
-  );
-  zone.signal.forEach((signal) => {
-    (signal.x.diaID || []).forEach((_diaID) =>
-      assignmentData.dispatch({
-        type: 'ADD',
-        payload: { id: [signal.id, _diaID], axis: 'x' },
-      }),
-    );
-    (signal.y.diaID || []).forEach((_diaID) =>
-      assignmentData.dispatch({
-        type: 'ADD',
-        payload: { id: [signal.id, _diaID], axis: 'y' },
-      }),
-    );
-  });
-};
+// const initAssignmentData = (zone, assignmentData) => {
+//   assignmentData.dispatch({
+//     type: 'DELETE_RECORD',
+//     payload: { id: zone.id },
+//   });
+//   (zone.y.diaID || []).forEach((_diaID) =>
+//     assignmentData.dispatch({
+//       type: 'ADD',
+//       payload: { id: [zone.id, _diaID], axis: 'y' },
+//     }),
+//   );
+//   (zone.x.diaID || []).forEach((_diaID) =>
+//     assignmentData.dispatch({
+//       type: 'ADD',
+//       payload: { id: [zone.id, _diaID], axis: 'x' },
+//     }),
+//   );
+//   zone.signal.forEach((signal) => {
+//     (signal.x.diaID || []).forEach((_diaID) =>
+//       assignmentData.dispatch({
+//         type: 'ADD',
+//         payload: { id: [signal.id, _diaID], axis: 'x' },
+//       }),
+//     );
+//     (signal.y.diaID || []).forEach((_diaID) =>
+//       assignmentData.dispatch({
+//         type: 'ADD',
+//         payload: { id: [signal.id, _diaID], axis: 'y' },
+//       }),
+//     );
+//   });
+// };
 
 export {
   checkSignalKinds,
@@ -145,7 +145,7 @@ export {
   deleteZone,
   getDiaIDs,
   getPubIntegral,
-  initAssignmentData,
+  // initAssignmentData,
   resetDiaIDs,
   unlink,
   unlinkInAssignmentData,

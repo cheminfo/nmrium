@@ -1,10 +1,9 @@
 import lodash from 'lodash';
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import { useCallback, useMemo, memo, useState, useRef, useEffect } from 'react';
+import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import {
-  initAssignmentData,
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
@@ -90,15 +89,6 @@ function RangesTablePanel({
   const alert = useAlert();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef();
-
-  useEffect(() => {
-    if (ranges && ranges.values) {
-      ranges.values.forEach((range) =>
-        initAssignmentData(range, assignmentData),
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const rangesData = useMemo(() => {
     const isInView = (from, to) => {

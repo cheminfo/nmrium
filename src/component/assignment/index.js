@@ -4,6 +4,7 @@ import {
   useMemo,
   useContext,
   useCallback,
+  useEffect,
 } from 'react';
 
 const assignmentContext = createContext();
@@ -120,8 +121,88 @@ const emptyState = {
 };
 
 export function AssignmentProvider(props) {
+  const { spectraData } = props;
+  console.log(spectraData);
   const [assignment, dispatch] = useReducer(assignmentReducer, emptyState);
   const contextValue = useMemo(() => ({ assignment, dispatch }), [assignment]);
+
+  const initAssignmentDataRanges = useCallback(
+    (range) => {
+      contextValue.dispatch({
+        type: 'DELETE_RECORD',
+        payload: { id: range.id },
+      });
+      (range.diaID || []).forEach((_diaID) =>
+        contextValue.dispatch({
+          type: 'ADD',
+          payload: { id: [range.id, _diaID], axis: 'x' },
+        }),
+      );
+      range.signal.forEach((signal) =>
+        (signal.diaID || []).forEach((_diaID) =>
+          contextValue.dispatch({
+            type: 'ADD',
+            payload: { id: [signal.id, _diaID], axis: 'x' },
+          }),
+        ),
+      );
+    },
+    [contextValue],
+  );
+
+  const initAssignmentDataZones = useCallback(
+    (zone) => {
+      contextValue.dispatch({
+        type: 'DELETE_RECORD',
+        payload: { id: zone.id },
+      });
+      (zone.y.diaID || []).forEach((_diaID) =>
+        contextValue.dispatch({
+          type: 'ADD',
+          payload: { id: [zone.id, _diaID], axis: 'y' },
+        }),
+      );
+      (zone.x.diaID || []).forEach((_diaID) =>
+        contextValue.dispatch({
+          type: 'ADD',
+          payload: { id: [zone.id, _diaID], axis: 'x' },
+        }),
+      );
+      zone.signal.forEach((signal) => {
+        (signal.x.diaID || []).forEach((_diaID) =>
+          contextValue.dispatch({
+            type: 'ADD',
+            payload: { id: [signal.id, _diaID], axis: 'x' },
+          }),
+        );
+        (signal.y.diaID || []).forEach((_diaID) =>
+          contextValue.dispatch({
+            type: 'ADD',
+            payload: { id: [signal.id, _diaID], axis: 'y' },
+          }),
+        );
+      });
+    },
+    [contextValue],
+  );
+
+  useEffect(() => {
+    if (spectraData) {
+      spectraData.forEach((spectrum) => {
+        if (spectrum.info.dimension === 1) {
+          spectrum.ranges.values.forEach((range) =>
+            initAssignmentDataRanges(range),
+          );
+        } else if (spectrum.info.dimension === 2) {
+          spectrum.zones.values.forEach((zone) =>
+            initAssignmentDataZones(zone),
+          );
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <assignmentContext.Provider value={contextValue}>
       {props.children}
