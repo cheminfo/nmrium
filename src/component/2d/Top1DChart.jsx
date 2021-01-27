@@ -6,7 +6,13 @@ import { useChartData } from '../context/ChartContext';
 import { get1DYScale, get2DXScale } from './utilities/scale';
 
 function Top1DChart({ margin: marginProps, data }) {
-  const { width, margin: originMargin, xDomain, yDomains } = useChartData();
+  const {
+    width,
+    margin: originMargin,
+    xDomain,
+    yDomains,
+    displayerKey,
+  } = useChartData();
 
   const height = originMargin.top;
 
@@ -43,7 +49,7 @@ function Top1DChart({ margin: marginProps, data }) {
   return (
     <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}>
       <defs>
-        <clipPath id="clip-top">
+        <clipPath id={`${displayerKey}clip-top`}>
           <rect
             width={width - originMargin.left - originMargin.right}
             height={height}
@@ -52,7 +58,7 @@ function Top1DChart({ margin: marginProps, data }) {
           />
         </clipPath>
       </defs>
-      <g clipPath="url(#clip-top)">
+      <g clipPath={`url(#${displayerKey}clip-top)`}>
         <path
           className="line"
           stroke="red"

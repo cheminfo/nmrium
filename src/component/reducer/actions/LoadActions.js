@@ -1,4 +1,5 @@
 import { Datum1D } from '../../../data/data1d/Datum1D';
+import generateID from '../../../data/utilities/generateID';
 import getColor from '../../../data/utilities/getColor';
 import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
@@ -7,12 +8,13 @@ import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setYAxisShift, setActiveTab } from './ToolsActions';
 import { initZoom1DHandler } from './Zoom';
 
-function setIsLoading(state, isLoading) {
-  return { ...state, isLoading };
+function setIsLoading(draft, isLoading) {
+  draft.isLoading = isLoading;
 }
 
 function initiate(draft, dataObject) {
   HorizontalZoomHistory.initiate();
+  draft.displayerKey = generateID();
   draft.AnalysisObj = dataObject.AnalysisObj;
   const spectraData = draft.AnalysisObj.getSpectraData();
   const molecules = draft.AnalysisObj.getMolecules();
@@ -117,7 +119,7 @@ function handleLoadJsonFile(draft, data) {
   }
 
   setActiveTab(draft);
-  initZoom1DHandler(draft.data);
+  initZoom1DHandler(spectraData);
 
   draft.isLoading = false;
 }

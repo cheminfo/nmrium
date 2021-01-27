@@ -4,7 +4,7 @@ import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 
 import AnalysisRange from './AnalysisRange';
 
-function MultiAnalysisRanges({ activeTab, spectraAanalysis }) {
+function MultiAnalysisRanges({ activeTab, spectraAanalysis, displayerKey }) {
   const columns = useMemo(() => {
     const {
       options: { columns },
@@ -23,7 +23,7 @@ function MultiAnalysisRanges({ activeTab, spectraAanalysis }) {
   }
 
   return (
-    <g clipPath="url(#clip)">
+    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {ranges.map((columnKey) => (
         <AnalysisRange
           key={columnKey}

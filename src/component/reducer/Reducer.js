@@ -83,6 +83,7 @@ export const initialState = {
   tabActiveSpectrum: {},
   spectraAanalysis: {},
   AnalysisObj: new Analysis(),
+  displayerKey: '',
 };
 
 export function dispatchMiddleware(dispatch, AnalysisObj, onDataChange = null) {
@@ -363,7 +364,7 @@ function innerSpectrumReducer(draft, action) {
       return handleHistoryReset(draft, action);
 
     default:
-      return draft;
+      return;
   }
 }
 

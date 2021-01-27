@@ -1,31 +1,14 @@
-import { css } from '@emotion/react';
-
 import { useChartData } from '../context/ChartContext';
 
 import Line from './Line';
 
-/** @jsxImportSource @emotion/react */
-
-const pathStyles = css`
-  -webkit-clip-path: url('#clip');
-  clip-path: url('#clip');
-
-  path {
-    stroke-width: 1.5;
-    fill: none;
-    // stroke-linejoin: round;
-    // stroke-linecap: round;
-    // will-change: transform;
-  }
-`;
-
 function LinesSeries() {
-  const { data, tempData } = useChartData();
+  const { data, tempData, displayerKey } = useChartData();
 
   const _data = tempData ? tempData : data;
 
   return (
-    <g css={pathStyles} clipPath="url(#clip)">
+    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {_data &&
         _data
           .filter(

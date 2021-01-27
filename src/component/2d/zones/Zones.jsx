@@ -18,7 +18,7 @@ const Zones = () => {
   }, [activeTab, data]);
 
   return (
-    <g clipPath="url(#clip)" className="2D-Zones">
+    <g clipPath="url(#clip-chart-2d)" className="2D-Zones">
       {_data.map((d) => (
         <g key={d.id}>
           {d.zones.values.map((zone) => (

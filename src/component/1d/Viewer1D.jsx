@@ -61,6 +61,7 @@ function Viewer1D() {
     yDomain,
     yDomains,
     verticalAlign,
+    displayerKey,
   } = state;
 
   const dispatch = useDispatch();
@@ -278,6 +279,7 @@ function Viewer1D() {
                 height={heightProp}
                 margin={margin}
                 mode={mode}
+                displayerKey={displayerKey}
               />
             </MouseTracker>
           </BrushTracker>

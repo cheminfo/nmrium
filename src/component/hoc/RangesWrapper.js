@@ -12,6 +12,7 @@ function RangesWrapper(WrappedComponent) {
       activeTab,
       molecules,
       tabActiveSpectrum,
+      displayerKey,
     } = useChartData();
     const preferences = usePreferences();
 
@@ -48,6 +49,7 @@ function RangesWrapper(WrappedComponent) {
         activeTab={activeTab}
         molecules={molecules}
         nucleus={nucleus}
+        displayerKey={displayerKey}
         ref={forwardedRef}
       />
     );

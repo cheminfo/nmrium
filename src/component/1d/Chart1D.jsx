@@ -8,7 +8,7 @@ import XAxis from './XAxis';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
 
-function Chart1D({ mode, width, height, margin }) {
+function Chart1D({ mode, width, height, margin, displayerKey }) {
   const { scaleX, scaleY } = useScale();
   if (!scaleX || !scaleY || !width || !height) return null;
 
@@ -20,7 +20,7 @@ function Chart1D({ mode, width, height, margin }) {
       id="nmrSVG"
     >
       <defs>
-        <clipPath id="clip">
+        <clipPath id={`${displayerKey}clip-chart-1d`}>
           <rect
             width={`${width - margin.left - margin.right}`}
             height={`${height}`}

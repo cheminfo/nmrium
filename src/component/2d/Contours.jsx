@@ -60,10 +60,10 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
 }
 
 function Contours() {
-  const { data } = useChartData();
+  const { data, displayerKey } = useChartData();
 
   return (
-    <g clipPath="url(#clip)" className="contours">
+    <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
       {data
         .filter((datum) => datum.info.dimension === 2)
         .map((datum, index) => (

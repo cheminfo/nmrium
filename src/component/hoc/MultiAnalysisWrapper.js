@@ -4,7 +4,12 @@ import { useChartData } from '../context/ChartContext';
 
 function MultiAnalysisWrapper(WrappedComponent) {
   const Wrapper = (props) => {
-    const { activeTab, spectraAanalysis, AnalysisObj } = useChartData();
+    const {
+      activeTab,
+      spectraAanalysis,
+      AnalysisObj,
+      displayerKey,
+    } = useChartData();
     const { forwardedRef, ...rest } = props;
 
     return (
@@ -13,6 +18,7 @@ function MultiAnalysisWrapper(WrappedComponent) {
         activeTab={activeTab}
         spectraAanalysis={spectraAanalysis}
         AnalysisObj={AnalysisObj}
+        displayerKey={displayerKey}
         ref={forwardedRef}
       />
     );

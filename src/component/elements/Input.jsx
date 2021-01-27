@@ -64,8 +64,6 @@ function Input(
 
   const getValue = useCallback(
     (value) => {
-      console.log(format);
-
       const formatValue = format();
       return formatValue(
         type === 'number'
