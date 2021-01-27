@@ -191,8 +191,8 @@ function NMRDisplayer({
     function dataChangeHandler(data) {
       onDataChange(data);
     }
-    return dispatchMiddleware(dispatch, state.AnalysisObj, dataChangeHandler);
-  }, [onDataChange, state.AnalysisObj]);
+    return dispatchMiddleware(dispatch, dataChangeHandler);
+  }, [onDataChange]);
 
   const preventAutoHelp = useMemo(() => {
     return lodash.get(

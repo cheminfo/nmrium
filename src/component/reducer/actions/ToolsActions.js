@@ -9,6 +9,7 @@ import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { AnalysisObj } from '../core/Analysis';
 import {
   DEFAULT_YAXIS_SHIFT_VALUE,
   DISPLAYER_MODE,
@@ -36,7 +37,7 @@ function getStrongestPeak(state) {
 
 function setFilterChanges(draft, state, selectedFilter) {
   const activeSpectrumId = state.activeSpectrum.id;
-  const activeObject = draft.AnalysisObj.getDatum(activeSpectrumId);
+  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
   //save reduced snapshot
   //select the equalizer tool when you enable manual phase correction filter
@@ -179,7 +180,7 @@ function handleToggleRealImaginaryVisibility(draft) {
   const state = original(draft);
   if (draft.activeSpectrum != null) {
     const activeSpectrumId = draft.activeSpectrum.id;
-    const ob = draft.AnalysisObj.getDatum(activeSpectrumId);
+    const ob = AnalysisObj.getDatum(activeSpectrumId);
 
     if (ob) {
       const reY = ob.getReal().y;
@@ -377,7 +378,7 @@ function Processing2DData(draft, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     let _data = {};
     for (const datum of data[draft.activeTab]) {
-      const data2dObject = draft.AnalysisObj.getDatum(datum.id);
+      const data2dObject = AnalysisObj.getDatum(datum.id);
       _data[datum.id] = data2dObject.getContourLines();
     }
     draft.contours = _data;
@@ -493,7 +494,7 @@ function levelChangeHandler(draft, { deltaY, shiftKey }) {
   try {
     if (draft.activeSpectrum) {
       const { id } = draft.activeSpectrum;
-      const datum2dObject = draft.AnalysisObj.getDatum(id);
+      const datum2dObject = AnalysisObj.getDatum(id);
       if (datum2dObject instanceof Datum2D) {
         const processing2dController = datum2dObject.getProcessingController();
         if (shiftKey) {

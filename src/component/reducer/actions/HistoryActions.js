@@ -1,3 +1,5 @@
+import { AnalysisObj } from '../core/Analysis';
+
 import { setDomain, getDomain } from './DomainActions';
 
 function handleHistoryUndo(draft) {
@@ -9,8 +11,8 @@ function handleHistoryUndo(draft) {
   const hasRedo = newfuture.length !== 0;
   const hasUndo = past.length !== 0;
 
-  draft.AnalysisObj.undoFilter(past);
-  let resultData = draft.AnalysisObj.getSpectraData();
+  AnalysisObj.undoFilter(past);
+  let resultData = AnalysisObj.getSpectraData();
 
   const domain = getDomain(resultData);
   const history = {
@@ -37,8 +39,8 @@ function handleHistoryRedo(draft) {
   history.hasUndo = true;
   history.hasRedo = history.future.length > 0;
 
-  draft.AnalysisObj.redoFilter(next);
-  draft.data = draft.AnalysisObj.getSpectraData();
+  AnalysisObj.redoFilter(next);
+  draft.data = AnalysisObj.getSpectraData();
   setDomain(draft);
 }
 
