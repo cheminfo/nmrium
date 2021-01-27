@@ -97,27 +97,6 @@ const unlinkInAssignmentData = (
   _unlinkInAssignmentData(assignmentData, id);
 };
 
-// const initAssignmentData = (range, assignmentData) => {
-//   assignmentData.dispatch({
-//     type: 'DELETE_RECORD',
-//     payload: { id: range.id },
-//   });
-//   (range.diaID || []).forEach((_diaID) =>
-//     assignmentData.dispatch({
-//       type: 'ADD',
-//       payload: { id: [range.id, _diaID], axis: 'x' },
-//     }),
-//   );
-//   range.signal.forEach((signal) =>
-//     (signal.diaID || []).forEach((_diaID) =>
-//       assignmentData.dispatch({
-//         type: 'ADD',
-//         payload: { id: [signal.id, _diaID], axis: 'x' },
-//       }),
-//     ),
-//   );
-// };
-
 export {
   addDefaultSignal,
   checkRangeKind,
@@ -125,7 +104,6 @@ export {
   deleteRange,
   getDiaIDs,
   getPubIntegral,
-  // initAssignmentData,
   resetDiaIDs,
   unlink,
   unlinkInAssignmentData,

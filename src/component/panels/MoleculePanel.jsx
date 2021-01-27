@@ -303,53 +303,55 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
           const { datum, signalIndex } = findDatumAndSignalIndex(
             activeAssignment.id,
           );
-          // determine the level of setting the diaID array (range vs. signal level) and save there
-          const _datum = lodash.cloneDeep(datum);
-          // on range/zone level
-          if (signalIndex === undefined) {
-            if (displayerMode === DISPLAYER_MODE.DM_1D) {
-              _datum.diaID = toggleAssignment(
-                _datum.diaID || [],
-                atomInformation,
-              );
-            } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-              _datum[activeAssignment.activeAxis].diaID = toggleAssignment(
-                _datum[activeAssignment.activeAxis].diaID || [],
-                atomInformation,
-              );
-            }
-          } else if (datum.signal && datum.signal[signalIndex]) {
-            // on signal level
-            if (displayerMode === DISPLAYER_MODE.DM_1D) {
-              _datum.signal[signalIndex] = {
-                ..._datum.signal[signalIndex],
-                diaID: toggleAssignment(
-                  _datum.signal[signalIndex].diaID || [],
+          if (datum) {
+            // determine the level of setting the diaID array (range vs. signal level) and save there
+            const _datum = lodash.cloneDeep(datum);
+            // on range/zone level
+            if (signalIndex === undefined) {
+              if (displayerMode === DISPLAYER_MODE.DM_1D) {
+                _datum.diaID = toggleAssignment(
+                  _datum.diaID || [],
                   atomInformation,
-                ),
-              };
-            } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-              _datum.signal[signalIndex][activeAssignment.activeAxis] = {
-                ..._datum.signal[signalIndex][activeAssignment.activeAxis],
-                diaID: toggleAssignment(
-                  _datum.signal[signalIndex][activeAssignment.activeAxis]
-                    .diaID || [],
+                );
+              } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
+                _datum[activeAssignment.activeAxis].diaID = toggleAssignment(
+                  _datum[activeAssignment.activeAxis].diaID || [],
                   atomInformation,
-                ),
-              };
+                );
+              }
+            } else if (datum.signal && datum.signal[signalIndex]) {
+              // on signal level
+              if (displayerMode === DISPLAYER_MODE.DM_1D) {
+                _datum.signal[signalIndex] = {
+                  ..._datum.signal[signalIndex],
+                  diaID: toggleAssignment(
+                    _datum.signal[signalIndex].diaID || [],
+                    atomInformation,
+                  ),
+                };
+              } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
+                _datum.signal[signalIndex][activeAssignment.activeAxis] = {
+                  ..._datum.signal[signalIndex][activeAssignment.activeAxis],
+                  diaID: toggleAssignment(
+                    _datum.signal[signalIndex][activeAssignment.activeAxis]
+                      .diaID || [],
+                    atomInformation,
+                  ),
+                };
+              }
             }
-          }
-          if (displayerMode === DISPLAYER_MODE.DM_1D) {
-            _datum.pubIntegral = RangeUtilities.getPubIntegral(_datum);
-            dispatch({ type: CHANGE_RANGE_DATA, data: _datum });
-          } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-            _datum[
-              activeAssignment.activeAxis
-            ].pubIntegral = ZoneUtilities.getPubIntegral(
-              _datum,
-              activeAssignment.activeAxis,
-            );
-            dispatch({ type: CHANGE_ZONE_DATA, data: _datum });
+            if (displayerMode === DISPLAYER_MODE.DM_1D) {
+              _datum.pubIntegral = RangeUtilities.getPubIntegral(_datum);
+              dispatch({ type: CHANGE_RANGE_DATA, data: _datum });
+            } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
+              _datum[
+                activeAssignment.activeAxis
+              ].pubIntegral = ZoneUtilities.getPubIntegral(
+                _datum,
+                activeAssignment.activeAxis,
+              );
+              dispatch({ type: CHANGE_ZONE_DATA, data: _datum });
+            }
           }
         } else {
           alert.info(
@@ -401,10 +403,6 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
     displayerMode,
   ]);
 
-  // useEffect(() => {
-  //   console.log(assignmentData.assignment);
-  // }, [assignmentData]);
-
   useEffect(() => {
     if (onAtomHoverAction) {
       if (onAtomHoverAction === 'show') {
@@ -428,14 +426,11 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
       const oclIDs = extractFromAtom(atom).oclIDs;
       // on enter the atom
       if (oclIDs.length > 0) {
+        // set all IDs to highlight when hovering over an atom from assignment data
         let highlights = [];
         for (let key in assignmentData.assignment.assignment) {
-          // const { datum, signalIndex } = findDatumAndSignalIndex(key);
-          // const _highlights = (datum ? [datum.id] : []).concat(
-          //   datum && signalIndex !== undefined
-          //     ? [datum.signal[signalIndex].id]
-          //     : [],
-          // );
+          let datum, signalIndex;
+          let stop = false;
           if (
             assignmentData.assignment.assignment[key].x &&
             assignmentData.assignment.assignment[key].x.some((_assigned) =>
@@ -445,6 +440,10 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
             highlights = highlights.concat(
               assignmentData.assignment.assignment[key].x,
             );
+            const result = findDatumAndSignalIndex(key);
+            datum = result.datum;
+            signalIndex = result.signalIndex;
+            stop = true;
           }
           if (
             assignmentData.assignment.assignment[key].y &&
@@ -455,10 +454,21 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
             highlights = highlights.concat(
               assignmentData.assignment.assignment[key].y,
             );
+            const result = findDatumAndSignalIndex(key);
+            datum = result.datum;
+            signalIndex = result.signalIndex;
+            stop = true;
           }
-          // highlights = highlights.concat(_highlights);
+          if (datum) {
+            highlights.push(datum.id);
+            if (signalIndex !== undefined) {
+              highlights.push(datum.signal[signalIndex].id);
+            }
+          }
+          if (stop) {
+            break;
+          }
         }
-        // console.log(highlights);
         setOnAtomHoverHighlights(highlights);
         setOnAtomHoverAction('show');
       } else {
@@ -466,7 +476,11 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
         setOnAtomHoverAction('hide');
       }
     },
-    [assignmentData.assignment.assignment, extractFromAtom],
+    [
+      assignmentData.assignment.assignment,
+      extractFromAtom,
+      findDatumAndSignalIndex,
+    ],
   );
 
   const handleOnUnlinkAll = useCallback(() => {

@@ -150,7 +150,7 @@ function NMRDisplayer({
     preferencesInitialState,
   );
 
-  const { selectedTool, displayerMode } = state;
+  const { selectedTool, displayerMode, data: spectraData } = state;
 
   useEffect(() => {
     rootRef.current.focus();
@@ -232,7 +232,7 @@ function NMRDisplayer({
                 <ChartDataProvider value={{ ...state, isResizeEventStart }}>
                   <ModalProvider wrapperRef={elementsWraperRef.current}>
                     <HighlightProvider>
-                      <AssignmentProvider spectraData={state.data}>
+                      <AssignmentProvider spectraData={spectraData}>
                         <div
                           ref={rootRef}
                           css={containerStyles}
