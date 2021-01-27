@@ -1,4 +1,4 @@
-import { setAutoFreeze, produce } from 'immer';
+import { produce } from 'immer';
 
 import { Analysis } from '../../data/Analysis';
 import { options } from '../toolbar/ToolTypes';
@@ -28,11 +28,10 @@ import * as SpectraAanalysisActions from './actions/SpectraAanalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
+import { AnalysisObj } from './core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
-
-setAutoFreeze(false);
 
 export const initialState = {
   data: null,
@@ -86,7 +85,7 @@ export const initialState = {
   displayerKey: '',
 };
 
-export function dispatchMiddleware(dispatch, AnalysisObj, onDataChange = null) {
+export function dispatchMiddleware(dispatch, onDataChange = null) {
   return (action) => {
     switch (action.type) {
       case types.LOAD_ZIP_FILE:

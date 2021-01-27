@@ -1,4 +1,5 @@
 /* eslint-disable default-param-last */
+import { cloneDeep } from 'lodash';
 import { Molecule } from 'openchemlib/full';
 
 import * as SpectraManager from './SpectraManager';
@@ -60,6 +61,8 @@ export class Analysis {
     return analysis;
   }
   // handle zip files
+  static usedColors = [];
+
   async fromZip(zipFiles) {
     for (let zipFile of zipFiles) {
       await SpectraManager.addBruker(
@@ -234,7 +237,7 @@ export class Analysis {
    */
   getSpectraData() {
     return this.spectra
-      ? Object.freeze(
+      ? cloneDeep(
           this.spectra.map((ob) => {
             const _data =
               ob instanceof Datum1D ? { ...ob.data, y: ob.data.re } : ob.data;

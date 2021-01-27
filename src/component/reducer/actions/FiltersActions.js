@@ -4,6 +4,7 @@ import { Filters } from '../../../data/data1d/filter1d/Filters';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
 import { options } from '../../toolbar/ToolTypes';
+import { AnalysisObj } from '../core/Analysis';
 import getClosestNumber from '../helper/GetClosestNumber';
 import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
@@ -34,7 +35,7 @@ function setDataByFilters(
 function shiftSpectrumAlongXAxis(draft, shiftValue) {
   //apply filter into the spectrum
   const activeSpectrumId = draft.activeSpectrum.id;
-  const activeObject = draft.AnalysisObj.getDatum(activeSpectrumId);
+  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
   activeObject.applyFilter([{ name: Filters.shiftX.id, options: shiftValue }]);
   setDataByFilters(draft, activeObject, activeSpectrumId);
   setDomain(draft);
@@ -42,7 +43,7 @@ function shiftSpectrumAlongXAxis(draft, shiftValue) {
 
 function applyZeroFillingFilter(draft, filterOptions) {
   const activeSpectrumId = draft.activeSpectrum.id;
-  const activeObject = draft.AnalysisObj.getDatum(activeSpectrumId);
+  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
   activeObject.applyFilter([
     { name: Filters.zeroFilling.id, options: filterOptions.zeroFillingSize },
@@ -58,7 +59,7 @@ function applyZeroFillingFilter(draft, filterOptions) {
 }
 function applyFFTFilter(draft) {
   const activeSpectrumId = draft.activeSpectrum.id;
-  const activeObject = draft.AnalysisObj.getDatum(activeSpectrumId);
+  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
   //apply filter into the spectrum
   activeObject.applyFilter([{ name: Filters.fft.id, options: {} }]);
@@ -73,7 +74,7 @@ function applyManualPhaseCorrectionFilter(draft, filterOptions) {
   const { id, index } = draft.activeSpectrum;
   let { ph0, ph1 } = filterOptions;
 
-  const activeObject = draft.AnalysisObj.getDatum(id);
+  const activeObject = AnalysisObj.getDatum(id);
   const closest = getClosestNumber(draft.data[index].x, draft.pivot);
   const pivotIndex = draft.data[index].x.indexOf(closest);
 
@@ -91,7 +92,7 @@ function applyManualPhaseCorrectionFilter(draft, filterOptions) {
 function applyAbsoluteFilter(draft) {
   const { id } = draft.activeSpectrum;
 
-  const activeObject = draft.AnalysisObj.getDatum(id);
+  const activeObject = AnalysisObj.getDatum(id);
   activeObject.applyFilter([{ name: Filters.absolute.id, options: {} }]);
 
   setDataByFilters(draft, activeObject, id);
@@ -105,7 +106,7 @@ function applyAutoPhaseCorrectionFilter(draft) {
   const { index, id } = draft.activeSpectrum;
   const { x, y, im, info } = tempData[index];
 
-  const activeObject = draft.AnalysisObj.getDatum(id);
+  const activeObject = AnalysisObj.getDatum(id);
 
   let _data = { data: { x, re: y, im }, info };
   const { data, ph0, ph1 } = autoPhaseCorrection(_data);
@@ -143,7 +144,7 @@ function calculateManualPhaseCorrection(draft, filterOptions) {
 function enableFilter(draft, filterID, checked) {
   const state = original(draft);
   const activeSpectrumId = draft.activeSpectrum.id;
-  const activeObject = draft.AnalysisObj.getDatum(activeSpectrumId);
+  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
   //apply filter into the spectrum
   activeObject.enableFilter(filterID, checked);
 
@@ -171,7 +172,7 @@ function enableFilter(draft, filterID, checked) {
 function deleteFilter(draft, filterID) {
   const state = original(draft);
   const activeSpectrumId = state.activeSpectrum.id;
-  const activeObject = draft.AnalysisObj.getDatum(activeSpectrumId);
+  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
   //apply filter into the spectrum
   activeObject.deleteFilter(filterID);
@@ -193,7 +194,7 @@ function deleteFilter(draft, filterID) {
 
 function handleBaseLineCorrectionFilter(draft, action) {
   const activeSpectrumId = draft.activeSpectrum.id;
-  const activeObject = draft.AnalysisObj.getDatum(activeSpectrumId);
+  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
   activeObject.applyFilter([
     {
@@ -212,7 +213,7 @@ function handleBaseLineCorrectionFilter(draft, action) {
 function filterSnapshotHandler(draft, action) {
   if (draft.activeSpectrum && draft.activeSpectrum.id) {
     const { id } = draft.activeSpectrum;
-    const activeObject = draft.AnalysisObj.getDatum(id);
+    const activeObject = AnalysisObj.getDatum(id);
 
     activeObject.applyFilterSnapshot(action.id);
 

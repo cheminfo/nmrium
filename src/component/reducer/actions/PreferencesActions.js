@@ -1,6 +1,7 @@
 import { original } from 'immer';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { AnalysisObj } from '../core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 
 import { setDomain } from './DomainActions';
@@ -8,15 +9,15 @@ import { setZoom } from './Zoom';
 
 function handelSetPreferences(draft, action) {
   const { type, values } = action;
-  const preferences = draft.AnalysisObj.getPreferences();
+  const preferences = AnalysisObj.getPreferences();
   const panelsPreferences =
     preferences && Object.prototype.hasOwnProperty.call(preferences, 'panels')
       ? preferences.panels
       : {};
-  draft.AnalysisObj.setPreferences({
+  AnalysisObj.setPreferences({
     panels: { ...panelsPreferences, [type]: values },
   });
-  draft.preferences = draft.AnalysisObj.getPreferences();
+  draft.preferences = AnalysisObj.getPreferences();
 }
 
 function changeSpectrumDisplayPreferences(draft, { center }) {
@@ -25,12 +26,12 @@ function changeSpectrumDisplayPreferences(draft, { center }) {
     draft.verticalAlign.flag = true;
     draft.verticalAlign.value = YAxisShift;
     draft.verticalAlign.stacked = false;
-    draft.AnalysisObj.setPreferences({ display: { center: true } });
+    AnalysisObj.setPreferences({ display: { center: true } });
   } else {
     draft.verticalAlign.flag = false;
     draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
     draft.verticalAlign.stacked = false;
-    draft.AnalysisObj.setPreferences({ display: { center: false } });
+    AnalysisObj.setPreferences({ display: { center: false } });
   }
 }
 
@@ -58,7 +59,7 @@ function setKeyPreferencesHandler(draft, keyCode) {
     const level =
       displayerMode === DISPLAYER_MODE.DM_2D
         ? spectrumsGroupsList[activeTab].reduce((acc, datum) => {
-            acc[datum.id] = draft.AnalysisObj.getDatum(datum.id)
+            acc[datum.id] = AnalysisObj.getDatum(datum.id)
               .getProcessingController()
               .getLevel();
             return acc;
@@ -134,7 +135,7 @@ function applyKeyPreferencesHandler(draft, keyCode) {
 
       for (const datumID of Object.keys(preferences.level)) {
         const { levelPositive, levelNegative } = preferences.level[datumID];
-        const processController = draft.AnalysisObj.getDatum(
+        const processController = AnalysisObj.getDatum(
           datumID,
         ).getProcessingController();
         processController.setLevel(levelPositive, levelNegative);

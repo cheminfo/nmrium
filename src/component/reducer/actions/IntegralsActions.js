@@ -2,13 +2,14 @@ import { extent } from 'd3';
 import { xyIntegral } from 'ml-spectra-processing';
 
 import { getXScale } from '../../1d/utilities/scale';
+import { AnalysisObj } from '../core/Analysis';
 
 import { setIntegralZoom, integralZoomHanlder } from './Zoom';
 
 function handleChangeIntegralSum(draft, value) {
   if (draft.activeSpectrum) {
     const { id, index } = draft.activeSpectrum;
-    const datumObject = draft.AnalysisObj.getDatum(id);
+    const datumObject = AnalysisObj.getDatum(id);
     datumObject.changeIntegralSum(value);
     draft.data[index].integrals = datumObject.getIntegrals();
     if (!draft.data.integralsYDomain) {
@@ -38,7 +39,7 @@ function addIntegral(draft, action) {
 
   if (draft.activeSpectrum) {
     const { id, index } = draft.activeSpectrum;
-    const datumObject = draft.AnalysisObj.getDatum(id);
+    const datumObject = AnalysisObj.getDatum(id);
     datumObject.addIntegral(integralRange);
     const integrals = datumObject.getIntegrals();
     draft.data[index].integrals = integrals;
@@ -64,7 +65,7 @@ function addIntegral(draft, action) {
 function deleteIntegral(draft, action) {
   const { integralID } = action;
   const { id, index } = draft.activeSpectrum;
-  const object = draft.AnalysisObj.getDatum(id);
+  const object = AnalysisObj.getDatum(id);
   object.deleteIntegral(integralID);
   draft.data[index].integrals = object.getIntegrals();
 }
@@ -72,7 +73,7 @@ function deleteIntegral(draft, action) {
 function changeIntegral(draft, action) {
   if (draft.activeSpectrum) {
     const { id, index } = draft.activeSpectrum;
-    const datumObject = draft.AnalysisObj.getDatum(id);
+    const datumObject = AnalysisObj.getDatum(id);
     datumObject.setIntegral(action.data);
     draft.data[index].integrals = datumObject.getIntegrals();
   }
@@ -81,7 +82,7 @@ function changeIntegral(draft, action) {
 function handleResizeIntegral(draft, action) {
   if (draft.activeSpectrum) {
     const { id, index } = draft.activeSpectrum;
-    const datumObject = draft.AnalysisObj.getDatum(id);
+    const datumObject = AnalysisObj.getDatum(id);
     datumObject.changeIntegral(action.data);
     draft.data[index].integrals = datumObject.getIntegrals();
   }
@@ -90,7 +91,7 @@ function handleResizeIntegral(draft, action) {
 function handleChangeIntegralsRaltiveValue(draft, action) {
   const { id: integralID, value } = action;
   const { id, index } = draft.activeSpectrum;
-  const datumObject = draft.AnalysisObj.getDatum(id);
+  const datumObject = AnalysisObj.getDatum(id);
   datumObject.changeIntegralsRealtive(integralID, value);
   const integrals = datumObject.getIntegrals();
 

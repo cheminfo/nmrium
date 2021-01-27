@@ -1,15 +1,17 @@
+import { AnalysisObj } from '../core/Analysis';
+
 function handleAddMolecule(draft, molfile) {
-  draft.AnalysisObj.addMolfile(molfile);
-  draft.molecules = draft.AnalysisObj.getMolecules();
+  AnalysisObj.addMolfile(molfile);
+  draft.molecules = AnalysisObj.getMolecules();
 }
 
 function handleSetMolecule(draft, molfile, key) {
-  draft.molecules = draft.AnalysisObj.setMolfile(molfile, key);
+  draft.molecules = AnalysisObj.setMolfile(molfile, key);
 }
 
 function handleDeleteMolecule(draft, key) {
-  draft.AnalysisObj.removeMolecule(key);
-  draft.molecules = draft.AnalysisObj.getMolecules();
+  AnalysisObj.removeMolecule(key);
+  draft.molecules = AnalysisObj.getMolecules();
 }
 
 export { handleAddMolecule, handleSetMolecule, handleDeleteMolecule };
