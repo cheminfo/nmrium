@@ -4,6 +4,7 @@ import {
   useMemo,
   useContext,
   useCallback,
+  useEffect,
 } from 'react';
 
 const assignmentContext = createContext();
@@ -120,8 +121,81 @@ const emptyState = {
 };
 
 export function AssignmentProvider(props) {
+  const { spectraData } = props;
   const [assignment, dispatch] = useReducer(assignmentReducer, emptyState);
   const contextValue = useMemo(() => ({ assignment, dispatch }), [assignment]);
+
+  const initAssignmentDataRanges = (range, _contextValue) => {
+    _contextValue.dispatch({
+      type: 'DELETE_RECORD',
+      payload: { id: range.id },
+    });
+    (range.diaID || []).forEach((_diaID) =>
+      _contextValue.dispatch({
+        type: 'ADD',
+        payload: { id: [range.id, _diaID], axis: 'x' },
+      }),
+    );
+    range.signal.forEach((signal) =>
+      (signal.diaID || []).forEach((_diaID) =>
+        _contextValue.dispatch({
+          type: 'ADD',
+          payload: { id: [signal.id, _diaID], axis: 'x' },
+        }),
+      ),
+    );
+  };
+
+  const initAssignmentDataZones = (zone, _contextValue) => {
+    _contextValue.dispatch({
+      type: 'DELETE_RECORD',
+      payload: { id: zone.id },
+    });
+    (zone.y.diaID || []).forEach((_diaID) =>
+      _contextValue.dispatch({
+        type: 'ADD',
+        payload: { id: [zone.id, _diaID], axis: 'y' },
+      }),
+    );
+    (zone.x.diaID || []).forEach((_diaID) =>
+      _contextValue.dispatch({
+        type: 'ADD',
+        payload: { id: [zone.id, _diaID], axis: 'x' },
+      }),
+    );
+    zone.signal.forEach((signal) => {
+      (signal.x.diaID || []).forEach((_diaID) =>
+        _contextValue.dispatch({
+          type: 'ADD',
+          payload: { id: [signal.id, _diaID], axis: 'x' },
+        }),
+      );
+      (signal.y.diaID || []).forEach((_diaID) =>
+        _contextValue.dispatch({
+          type: 'ADD',
+          payload: { id: [signal.id, _diaID], axis: 'y' },
+        }),
+      );
+    });
+  };
+
+  useEffect(() => {
+    if (spectraData) {
+      spectraData.forEach((spectrum) => {
+        if (spectrum.info.dimension === 1) {
+          spectrum.ranges.values.forEach((range) =>
+            initAssignmentDataRanges(range, contextValue),
+          );
+        } else if (spectrum.info.dimension === 2) {
+          spectrum.zones.values.forEach((zone) =>
+            initAssignmentDataZones(zone, contextValue),
+          );
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spectraData]);
+
   return (
     <assignmentContext.Provider value={contextValue}>
       {props.children}

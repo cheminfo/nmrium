@@ -61,7 +61,7 @@ function RangesTable({
   const element = activeTab && activeTab.replace(/[0-9]/g, '');
   const contextRef = useRef();
   const data = useMapRanges(tableData);
-  const [relativeFlags, toggleResltiveColumn] = useToggleStatus('id', data);
+  const [relativeFlags, toggleRelativeColumn] = useToggleStatus('id', data);
   const [signalFlags, toggleSignalColumn] = useToggleStatus('id', data);
   const { rootRef } = useGlobal();
 
@@ -79,23 +79,21 @@ function RangesTable({
     [contextRef],
   );
 
-  // console.log(relativeFlags);
-
-  const columnEditStartHander = useCallback(
+  const columnEditStartHandler = useCallback(
     (columnKey, id) => {
       if (columnKey === 'relative') {
-        toggleResltiveColumn(id);
+        toggleRelativeColumn(id);
       } else if (columnKey === 'signal') {
         toggleSignalColumn(id);
       }
     },
-    [toggleResltiveColumn, toggleSignalColumn],
+    [toggleRelativeColumn, toggleSignalColumn],
   );
 
   useEffect(() => {
     const handleEditStart = () => {
-      columnEditStartHander('realtive', null);
-      columnEditStartHander('signal', null);
+      columnEditStartHandler('realtive', null);
+      columnEditStartHandler('signal', null);
     };
     if (rootRef) {
       rootRef.addEventListener('mousedown', handleEditStart);
@@ -105,7 +103,7 @@ function RangesTable({
         rootRef.removeEventListener('mousedown', handleEditStart);
       }
     };
-  }, [columnEditStartHander, rootRef]);
+  }, [columnEditStartHandler, rootRef]);
 
   return (
     <Fragment>
@@ -143,7 +141,7 @@ function RangesTable({
                   onEdit={onEdit}
                   onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                   preferences={preferences}
-                  onColumnEditStart={columnEditStartHander}
+                  onColumnEditStart={columnEditStartHandler}
                   editFlags={{ relativeFlags, signalFlags }}
                 />
               );

@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 /** @jsxImportSource @emotion/react */
 import { useCallback, useState, useEffect, useMemo } from 'react';
 
-import { buildID } from '../../../data/utilities/Concatenation';
 import {
   checkZoneKind,
   deleteZone,
@@ -85,7 +84,6 @@ const Zone = ({ zoneData }) => {
         // eslint-disable-next-line react/no-array-index-key
         key={`zone_${id}_signal${i}`}
         signal={_signal}
-        signalID={buildID(id, i)}
       />
     ));
   }, [id, signal]);
