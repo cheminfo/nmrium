@@ -449,12 +449,21 @@ const buildCorrelationsState = (correlationData) => {
       correlationData.values,
       atomType,
     );
-    // create error for specific atom type only if there is at least one real correlation
+    // create state for specific atom type only if there is at least one real correlation
     if (
       correlationsAtomType.some(
         (correlation) => correlation.getPseudo() === false,
       )
     ) {
+      // create state and error creation method
+      state[atomType] = {};
+      const createErrorProperty = () => {
+        if (!lodash.get(state, `${atomType}.error`, false)) {
+          state[atomType].error = {};
+        }
+      };
+
+      const atomCount = atoms[atomType];
       let atomCountAtomType = correlationsAtomType.reduce(
         (sum, correlation) =>
           correlation.getPseudo() === false
@@ -462,34 +471,28 @@ const buildCorrelationsState = (correlationData) => {
             : sum,
         0,
       );
-      // add protons count from pseudo correlations
+
       if (atomType === 'H') {
+        // add protons count from pseudo correlations without any pseudo HSQC correlation
         correlationData.values.forEach((correlation) => {
           if (
             correlation.getPseudo() === true &&
             correlation.getAtomType() !== 'H' &&
-            correlation.getProtonsCount().length === 1
+            correlation.getProtonsCount().length === 1 &&
+            !correlation
+              .getLinks()
+              .some((link) => link.getExperimentType() === 'hsqc')
           ) {
             atomCountAtomType += correlation.getProtonsCount()[0];
           }
         });
-      }
-      const atomCount = atoms[atomType];
-      state[atomType] = {
-        current: atomCountAtomType,
-        total: atomCount,
-        complete: atomCountAtomType === atomCount ? true : false,
-      };
-      const createErrorProperty = () => {
-        if (!lodash.get(state, `${atomType}.error`, false)) {
-          state[atomType].error = {};
-        }
-      };
-      if (!state[atomType].complete) {
-        createErrorProperty();
-        state[atomType].error.incomplete = true;
-      }
-      if (atomType === 'H') {
+        // determine the number of pseudo correlations
+        const pseudoCorrelationCount = correlationsAtomType.reduce(
+          (sum, correlation) =>
+            correlation.getPseudo() === true ? sum + 1 : sum,
+          0,
+        );
+        // determine the not attached protons
         const notAttached = correlationsAtomType.reduce(
           (array, correlation) =>
             Object.keys(correlation.getAttachments()).length === 0
@@ -503,6 +506,12 @@ const buildCorrelationsState = (correlationData) => {
           createErrorProperty();
           state[atomType].error.notAttached = notAttached;
         }
+        atomCountAtomType -= notAttached.length - pseudoCorrelationCount;
+        if (atomCountAtomType < 0) {
+          atomCountAtomType = 0;
+        }
+
+        // determine the ambiguous attached protons
         const ambiguousAttachment = correlationsAtomType.reduce(
           (array, correlation) =>
             Object.keys(correlation.getAttachments()).length > 1 ||
@@ -520,6 +529,18 @@ const buildCorrelationsState = (correlationData) => {
           createErrorProperty();
           state[atomType].error.ambiguousAttachment = ambiguousAttachment;
         }
+      }
+
+      state[atomType] = {
+        ...state[atomType],
+        current: atomCountAtomType,
+        total: atomCount,
+        complete: atomCountAtomType === atomCount ? true : false,
+      };
+
+      if (!state[atomType].complete) {
+        createErrorProperty();
+        state[atomType].error.incomplete = true;
       }
 
       const outOfLimit = correlationsAtomType.some(
