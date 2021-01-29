@@ -1,35 +1,34 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useChartData } from '../../context/ChartContext';
+import ZonesWrapper from '../../hoc/ZonesWrapper';
+import Events from '../../utility/Events';
 
 import Zone from './Zone';
 
-const Zones = () => {
-  const { data, activeTab } = useChartData();
-  const _data = useMemo(() => {
-    return data
-      ? data.filter(
-          (d) =>
-            d.info.dimension === 2 &&
-            d.info.nucleus.join(',') === activeTab &&
-            (d.display.isPositiveVisible || d.display.isNegativeVisible),
-        )
-      : [];
-  }, [activeTab, data]);
-
+const Zones = ({ zones, display, displayerKey }) => {
+  const [isVisible, setVisibility] = useState({
+    zones: true,
+    signals: true,
+    peaks: true,
+  });
+  useEffect(() => {
+    Events.on('onZonesVisibilityChange', ({ key }) => {
+      setVisibility((prevVisiblity) => ({
+        ...prevVisiblity,
+        [key]: !prevVisiblity[key],
+      }));
+    });
+  }, []);
   return (
-    <g clipPath="url(#clip-chart-2d)" className="2D-Zones">
-      {_data.map((d) => (
-        <g key={d.id}>
-          {d.zones.values.map((zone) => (
-            <g className="zone" key={zone.id}>
-              <Zone zoneData={zone} />
-            </g>
-          ))}
-        </g>
-      ))}
+    <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="2D-Zones">
+      {(display.isPositiveVisible || display.isNegativeVisible) &&
+        zones.values.map((zone) => (
+          <g className="zone" key={zone.id}>
+            <Zone zoneData={zone} isVisible={isVisible} />
+          </g>
+        ))}
     </g>
   );
 };
 
-export default Zones;
+export default ZonesWrapper(Zones);

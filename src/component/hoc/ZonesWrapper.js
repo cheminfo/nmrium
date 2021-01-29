@@ -12,14 +12,16 @@ function ZonesWrapper(WrappedComponent) {
       yDomain,
       activeTab,
       tabActiveSpectrum,
+      displayerKey,
     } = useChartData();
     const preferences = usePreferences();
 
-    const { zones = {}, info = {} } = useMemo(() => {
+    const { zones = {}, info = {}, display = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
         const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
           zones: {},
           info: {},
+          display: {},
         };
         return datum;
       }
@@ -38,12 +40,14 @@ function ZonesWrapper(WrappedComponent) {
       <WrappedComponent
         {...rest}
         zones={zones}
+        display={display}
         info={info}
         xDomain={xDomain}
         yDomain={yDomain}
         preferences={preferences}
         activeTab={activeTab}
         nucleus={nucleus}
+        displayerKey={displayerKey}
         ref={forwardedRef}
       />
     );

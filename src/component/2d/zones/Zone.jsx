@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 /** @jsxImportSource @emotion/react */
-import { useCallback, useState, useEffect, useMemo } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 
 import {
   checkZoneKind,
@@ -52,7 +52,7 @@ const stylesHighlighted = css`
   }
 `;
 
-const Zone = ({ zoneData }) => {
+const Zone = ({ zoneData, isVisible }) => {
   const { x, y, id, signal } = zoneData;
   const assignmentZone = useAssignment(id);
   const highlightZone = useHighlight(
@@ -78,16 +78,6 @@ const Zone = ({ zoneData }) => {
     deleteZone(assignmentData, dispatch, zoneData);
   }, [assignmentData, dispatch, zoneData]);
 
-  const signals = useMemo(() => {
-    return signal.map((_signal, i) => (
-      <Signal
-        // eslint-disable-next-line react/no-array-index-key
-        key={`zone_${id}_signal${i}`}
-        signal={_signal}
-      />
-    ));
-  }, [id, signal]);
-
   return (
     <g
       css={
@@ -105,18 +95,22 @@ const Zone = ({ zoneData }) => {
         highlightZone.hide();
       }}
     >
-      <g transform={`translate(${scaleX(x1)},${scaleY(y1)})`}>
-        <rect
-          x="0"
-          width={scaleX(x2) - scaleX(x1)}
-          height={scaleY(y2) - scaleY(y1)}
-          className="Integral-area"
-          fill="#0000000f"
-          stroke={reduceOpacity ? '#343a40' : 'darkgreen'}
-          strokeWidth={reduceOpacity ? '0' : '1'}
-        />
-      </g>
-      {signals}
+      {isVisible.zones && (
+        <g transform={`translate(${scaleX(x1)},${scaleY(y1)})`}>
+          <rect
+            x="0"
+            width={scaleX(x2) - scaleX(x1)}
+            height={scaleY(y2) - scaleY(y1)}
+            className="Integral-area"
+            fill="#0000000f"
+            stroke={reduceOpacity ? '#343a40' : 'darkgreen'}
+            strokeWidth={reduceOpacity ? '0' : '1'}
+          />
+        </g>
+      )}
+      {signal.map((_signal, i) => (
+        <Signal key={`${id + i}`} signal={_signal} isVisible={isVisible} />
+      ))}
 
       <DeleteButton
         x={scaleX(x1) - 20}

@@ -9,10 +9,12 @@ import {
 } from '../../../data/utilities/ZoneUtilities';
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
+import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import ZonesWrapper from '../../hoc/ZonesWrapper';
 import { DELETE_2D_ZONE, CHANGE_ZONE_DATA } from '../../reducer/types/Types';
+import Events from '../../utility/Events';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -40,6 +42,14 @@ const styles = {
   button: {
     backgroundColor: 'transparent',
     border: 'none',
+  },
+  toggle: {
+    width: '22px',
+    height: '22px',
+    marginLeft: '2px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 };
 
@@ -149,6 +159,10 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
     setFlipStatus(false);
   }, []);
 
+  const visibilityHandler = useCallback((key) => {
+    Events.emit('onZonesVisibilityChange', { key });
+  }, []);
+
   return (
     <>
       <div style={styles.container}>
@@ -176,6 +190,33 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
                 <FaUnlink />
               </button>
             </ToolTip>
+            <ToggleButton
+              popupTitle="show/hide zones"
+              popupPlacement="right"
+              style={styles.toggle}
+              defaultValue={true}
+              onClick={() => visibilityHandler('zones')}
+            >
+              <span style={{ fontSize: '12px', pointerEvents: 'none' }}>z</span>
+            </ToggleButton>
+            <ToggleButton
+              popupTitle="show/hide signals"
+              popupPlacement="right"
+              style={styles.toggle}
+              defaultValue={true}
+              onClick={() => visibilityHandler('signals')}
+            >
+              <span style={{ fontSize: '12px', pointerEvents: 'none' }}>s</span>
+            </ToggleButton>
+            <ToggleButton
+              popupTitle="show/hide peaks"
+              popupPlacement="right"
+              style={styles.toggle}
+              defaultValue={true}
+              onClick={() => visibilityHandler('peaks')}
+            >
+              <span style={{ fontSize: '12px', pointerEvents: 'none' }}>p</span>
+            </ToggleButton>
           </DefaultPanelHeader>
         )}
         {isFlipped && (

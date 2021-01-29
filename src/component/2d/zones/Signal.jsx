@@ -8,13 +8,10 @@ import { useChartData } from '../../context/ChartContext';
 import { useHighlightData, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
-const Signal = memo(({ signal }) => {
+const Signal = memo(({ signal, isVisible }) => {
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
-
-  const x = scaleX(signal.x.delta);
-  const y = scaleY(signal.y.delta);
 
   const buildIDs = useCallback((id) => {
     return [id].concat(buildID(id, 'X'), buildID(id, 'Y'));
@@ -58,13 +55,27 @@ const Signal = memo(({ signal }) => {
         highlight.hide();
       }}
     >
-      <circle
-        key={signal.id}
-        cx={x}
-        cy={y}
-        r={isHighlighted ? 6 : 3}
-        fill={isHighlighted ? 'green' : 'darkgreen'}
-      />
+      {isVisible.signals && (
+        <circle
+          key={signal.id}
+          cx={scaleX(signal.x.delta)}
+          cy={scaleY(signal.y.delta)}
+          r={isHighlighted ? 6 : 4}
+          fill={isHighlighted ? 'green' : 'darkgreen'}
+        />
+      )}
+      <g className="zone-signal-peak">
+        {isVisible.peaks &&
+          signal.peak.map((peak, i) => (
+            <circle
+              key={`${signal.id + i}`}
+              cx={scaleX(peak.x)}
+              cy={scaleY(peak.y)}
+              r={2}
+              fill="black"
+            />
+          ))}
+      </g>
     </g>
   );
 });
