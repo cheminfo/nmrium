@@ -31,17 +31,16 @@ function ToggleButton({
   const [flag, Toggle] = useState(defaultValue);
 
   const toggleHandler = useCallback(() => {
-    Toggle((prev) => {
-      onClick(!prev);
+    onClick(!flag);
 
-      return !prev;
-    });
-  }, [onClick]);
+    Toggle(!flag);
+  }, [onClick, flag]);
   return (
     <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
       <button
         disabled={disabled}
-        css={[styles, style]}
+        css={styles}
+        style={style}
         className={flag ? 'toogle toggle-active' : 'toggle'}
         type="button"
         onClick={toggleHandler}
