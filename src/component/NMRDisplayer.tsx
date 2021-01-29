@@ -12,6 +12,8 @@ import {
   useMemo,
   useRef,
   memo,
+  Reducer,
+  CSSProperties,
 } from 'react';
 import { initOCL } from 'react-ocl-nmr';
 import SplitPane from 'react-split-pane';
@@ -53,7 +55,10 @@ import ToolBar from './toolbar/ToolBar';
 
 initOCL(OCL);
 
-const splitPaneStyles = {
+const splitPaneStyles: Record<
+  'container' | 'resizer' | 'pane',
+  CSSProperties
+> = {
   container: {
     position: 'relative',
     height: 'none',
@@ -132,8 +137,8 @@ function NMRDisplayer({
   docsBaseUrl,
   preferences,
 }) {
-  const rootRef = useRef();
-  const elementsWraperRef = useRef();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const elementsWraperRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
   const isFullscreen = useFullscreen(rootRef, show, {
     onClose: () => {
@@ -144,8 +149,11 @@ function NMRDisplayer({
   const [isResizeEventStart, setResizeEventStart] = useState(false);
   const [helpData, setHelpData] = useState(helpList);
 
-  const [state, dispatch] = useReducer(spectrumReducer, initialState);
-  const [preferencesState, dispatchPreferences] = useReducer(
+  const [state, dispatch] = useReducer<Reducer<any, any>>(
+    spectrumReducer,
+    initialState,
+  );
+  const [preferencesState, dispatchPreferences] = useReducer<Reducer<any, any>>(
     preferencesReducer,
     preferencesInitialState,
   );
@@ -153,7 +161,7 @@ function NMRDisplayer({
   const { selectedTool, displayerMode, data: spectraData } = state;
 
   useEffect(() => {
-    rootRef.current.focus();
+    rootRef.current?.focus();
   }, [isFullscreen]);
 
   useEffect(() => {
@@ -166,6 +174,8 @@ function NMRDisplayer({
   useEffect(() => {
     if (dataProp !== undefined) {
       dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+      // TODO: Handle error
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       Analysis.build(dataProp || {}).then((object) => {
         dispatch({ type: INITIATE, data: { AnalysisObj: object } });
       });
@@ -222,11 +232,13 @@ function NMRDisplayer({
         }}
       >
         <PreferencesProvider value={preferencesState}>
+          {/* @ts-expect-error: TODO remove when HelpProvider is migrated */}
           <HelpProvider
             data={helpData}
             wrapperRef={elementsWraperRef.current}
             preventAutoHelp={preventAutoHelp}
           >
+            {/* @ts-expect-error: TODO remove when AlertProvider is migrated */}
             <AlertProvider wrapperRef={elementsWraperRef.current}>
               <DispatchProvider value={dispatchMiddleWare}>
                 <ChartDataProvider value={{ ...state, isResizeEventStart }}>
@@ -256,8 +268,8 @@ function NMRDisplayer({
                                 <ToolBar selectedTool={selectedTool} />
                                 <SplitPane
                                   style={splitPaneStyles.container}
-                                  paneStyle={splitPaneStyles.pane}
                                   resizerStyle={splitPaneStyles.resizer}
+                                  paneStyle={splitPaneStyles.pane}
                                   pane1Style={
                                     isRightPanelHide
                                       ? {
@@ -314,40 +326,37 @@ function NMRDisplayer({
 NMRDisplayer.propTypes = {
   docsBaseUrl: PropTypes.string,
   onDataChange: PropTypes.func,
-  preferences: PropTypes.shape(
-    {
-      general: PropTypes.shape({
-        disableMultipletAnalysis: PropTypes.bool,
-        hideSetSumFromMolecule: PropTypes.bool,
-      }),
-      panels: PropTypes.shape({
-        hideSpectraPanel: PropTypes.bool,
-        hideInformationPanel: PropTypes.bool,
-        hidePeaksPanel: PropTypes.bool,
-        hideIntegralsPanel: PropTypes.bool,
-        hideRangesPanel: PropTypes.bool,
-        hideStructuresPanel: PropTypes.bool,
-        hideFiltersPanel: PropTypes.bool,
-      }),
-      toolBarButtons: PropTypes.shape({
-        hideZoomTool: PropTypes.bool,
-        hideZoomOutTool: PropTypes.bool,
-        hideImport: PropTypes.bool,
-        hideExportAs: PropTypes.bool,
-        hideSpectraStackAlignments: PropTypes.bool,
-        hideSpectraCenterAlignments: PropTypes.bool,
-        hideRealImaginary: PropTypes.bool,
-        hidePeakTool: PropTypes.bool,
-        hideIntegralTool: PropTypes.bool,
-        hideAutoRangesTool: PropTypes.bool,
-        hideZeroFillingTool: PropTypes.bool,
-        hidePhaseCorrectionTool: PropTypes.bool,
-        hideBaseLineCorrectionTool: PropTypes.bool,
-        hideFFTTool: PropTypes.bool,
-      }),
-    },
-    true,
-  ),
+  preferences: PropTypes.shape({
+    general: PropTypes.shape({
+      disableMultipletAnalysis: PropTypes.bool,
+      hideSetSumFromMolecule: PropTypes.bool,
+    }),
+    panels: PropTypes.shape({
+      hideSpectraPanel: PropTypes.bool,
+      hideInformationPanel: PropTypes.bool,
+      hidePeaksPanel: PropTypes.bool,
+      hideIntegralsPanel: PropTypes.bool,
+      hideRangesPanel: PropTypes.bool,
+      hideStructuresPanel: PropTypes.bool,
+      hideFiltersPanel: PropTypes.bool,
+    }),
+    toolBarButtons: PropTypes.shape({
+      hideZoomTool: PropTypes.bool,
+      hideZoomOutTool: PropTypes.bool,
+      hideImport: PropTypes.bool,
+      hideExportAs: PropTypes.bool,
+      hideSpectraStackAlignments: PropTypes.bool,
+      hideSpectraCenterAlignments: PropTypes.bool,
+      hideRealImaginary: PropTypes.bool,
+      hidePeakTool: PropTypes.bool,
+      hideIntegralTool: PropTypes.bool,
+      hideAutoRangesTool: PropTypes.bool,
+      hideZeroFillingTool: PropTypes.bool,
+      hidePhaseCorrectionTool: PropTypes.bool,
+      hideBaseLineCorrectionTool: PropTypes.bool,
+      hideFFTTool: PropTypes.bool,
+    }),
+  }),
 };
 
 NMRDisplayer.defaultProps = {

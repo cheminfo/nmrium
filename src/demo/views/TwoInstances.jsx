@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import NMRDisplayer from '../../component/NMRDisplayer.jsx';
+import NMRDisplayer from '../../component/NMRDisplayer';
 
 const data1 = {
   spectra: [

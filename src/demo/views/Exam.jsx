@@ -6,7 +6,7 @@ import { FaRegCopy, FaCheck } from 'react-icons/fa';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
-import NMRDisplayer from '../../component/NMRDisplayer.jsx';
+import NMRDisplayer from '../../component/NMRDisplayer';
 import { copyTextToClipboard } from '../../component/utility/Export.js';
 
 let answers = JSON.parse(localStorage.getItem('nmrium-exams') || '{}');

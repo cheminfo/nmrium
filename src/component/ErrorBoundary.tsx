@@ -1,6 +1,6 @@
-import { Component } from 'react';
+import { Component, CSSProperties, ErrorInfo } from 'react';
 
-const styles = {
+const styles: Record<string, CSSProperties> = {
   container: {
     margin: '25px',
   },
@@ -21,13 +21,16 @@ const styles = {
   },
 };
 
-class ErrorBoundary extends Component {
-  constructor(props) {
+export default class ErrorBoundary extends Component<
+  unknown,
+  { error: Error | null; errorInfo: ErrorInfo | null }
+> {
+  public constructor(props: unknown) {
     super(props);
     this.state = { error: null, errorInfo: null };
   }
 
-  componentDidCatch(error, errorInfo) {
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Catch errors in any components below and re-render with error message
     this.setState({
       error: error,
@@ -35,14 +38,15 @@ class ErrorBoundary extends Component {
     });
     // You can also log error messages to an error reporting service here
   }
-  render() {
+
+  public render() {
     if (this.state.errorInfo && process.env.NODE_ENV === 'production') {
       // Error path
       return (
         <div style={styles.container}>
           <p style={styles.header}>Something went wrong.</p>
           <details style={styles.body}>
-            {this.state.error && this.state.error.toString()}
+            {this.state.error}
             <br />
             {this.state.errorInfo.componentStack}
           </details>
@@ -53,5 +57,3 @@ class ErrorBoundary extends Component {
     return this.props.children;
   }
 }
-
-export default ErrorBoundary;

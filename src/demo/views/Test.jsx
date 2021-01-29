@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import NMRDisplayer from '../../component/NMRDisplayer.jsx';
+import NMRDisplayer from '../../component/NMRDisplayer';
 
 async function loadData(file) {
   const response = await fetch(file);

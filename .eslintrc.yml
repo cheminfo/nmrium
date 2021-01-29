@@ -1,9 +1,5 @@
-extends: cheminfo-react
-parser: babel-eslint
+extends: '@zakodium/eslint-config/typescript-react-app'
 rules:
-  'import/no-anonymous-default-export': warn
+  'import/default': off
   'import/no-unresolved': off
-  'eofline': off
-  'no-console': warn
-  'no-debugger': warn
-  'no-unused-vars': warn
+  '@typescript-eslint/no-explicit-any': off
