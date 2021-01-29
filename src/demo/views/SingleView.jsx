@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import NMRDisplayer from '../../component/NMRDisplayer.jsx';
+import NMRDisplayer from '../../component/NMRDisplayer';
 
 export default function SingleView(props) {
   const [data, setData] = useState();
