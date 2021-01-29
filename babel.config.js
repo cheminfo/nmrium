@@ -3,7 +3,10 @@ const config = {
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-optional-chaining',
   ],
-  presets: [['@babel/preset-react', { runtime: 'automatic' }]],
+  presets: [
+    '@babel/preset-typescript',
+    ['@babel/preset-react', { runtime: 'automatic' }],
+  ],
 };
 
 if (process.env.BABEL_MODE === 'cjs') {
