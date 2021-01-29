@@ -18,6 +18,8 @@ jobs:
           npm i -g gh-pages
       - name: Build
         run: npm run build-with-profiling
+        env:
+          CI: 'false'
       - name: push to gh-pages
         run: |
           git config user.email admin@cheminfo.org
