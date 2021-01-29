@@ -3,26 +3,23 @@
   "version": "0.6.3",
   "main": "lib-cjs/component/NMRDisplayer.js",
   "module": "lib/component/NMRDisplayer.js",
-  "types": "nmr-displayer.d.ts",
+  "types": "lib/component/NMRDisplayer.d.ts",
   "files": [
     "lib",
-    "lib-cjs",
-    "nmr-displayer.d.ts"
+    "lib-cjs"
   ],
   "scripts": {
     "build": "react-scripts --max_old_space_size=4096 build",
     "build-with-profiling": "react-scripts --max_old_space_size=4096 build --profile",
     "check-types": "tsc --noEmit",
+    "compile": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json",
     "clean-lib": "rimraf lib lib-cjs",
-    "compile": "babel src --extensions \".ts,.tsx,.js,.jsx\" --ignore \"src/**/__tests__/*\",\"src/demo/*\",\"src/index.tsx\",\"src/react-app-env.d.ts\" --quiet",
-    "compile-cjs": "cross-env BABEL_MODE=cjs npm run compile -- --out-dir lib-cjs",
-    "compile-esm": "npm run compile -- --out-dir lib",
     "dev": "react-scripts start",
     "docs": "markdown-folder-to-html docs",
     "eslint": "eslint src --ext js,jsx,ts,tsx --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
-    "prepublishOnly": "npm run clean-lib && npm run compile-esm && npm run compile-cjs",
+    "prepublishOnly": "npm run clean-lib && npm run compile",
     "start": "react-scripts start ",
     "test": "react-scripts test"
   },
@@ -91,13 +88,6 @@
     "yup": "^0.32.8"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/plugin-proposal-optional-chaining": "^7.12.7",
-    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
-    "@babel/preset-react": "^7.12.10",
-    "@babel/preset-typescript": "^7.12.7",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.22",
     "@types/prismjs": "^1.16.2",
@@ -105,7 +95,6 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@zakodium/eslint-config": "^2.2.2",
-    "babel-eslint": "^10.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.18.0",
     "markdown-folder-to-html": "^2.4.0",
