@@ -1,6 +1,7 @@
 {
   "name": "nmr-displayer",
   "version": "0.6.3",
+  "license": "MIT",
   "main": "lib-cjs/component/NMRDisplayer.js",
   "module": "lib/component/NMRDisplayer.js",
   "types": "lib/component/NMRDisplayer.d.ts",
@@ -36,6 +37,13 @@
     ]
   },
   "homepage": ".",
+  "bugs": {
+    "url": "https://github.com/cheminfo/nmr-displayer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cheminfo/nmr-displayer.git"
+  },
   "peerDependencies": {
     "react": ">=16.0.0",
     "react-dom": ">=16.0.0"
