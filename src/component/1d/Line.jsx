@@ -6,7 +6,7 @@ import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useScale } from '../context/ScaleContext';
 
-function Line({ x, y, id, display, index }) {
+function Line({ data: { x, y }, id, display, index }) {
   const { xDomain, activeSpectrum, verticalAlign } = useChartData();
   const preferences = usePreferences();
   const { scaleX, scaleY } = useScale();

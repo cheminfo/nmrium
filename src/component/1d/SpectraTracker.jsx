@@ -58,7 +58,7 @@ function SpectraTracker() {
       data.map(
         (datum) =>
           datum.display.isVisible &&
-          datum.isVisibleInDomain &&
+          datum.display.isVisibleInDomain &&
           datum.info.nucleus === activeTab && (
             <div style={{ display: 'block' }} key={datum.id}>
               <span

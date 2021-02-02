@@ -1,4 +1,4 @@
-import { Datum1D } from '../../../data/data1d/Datum1D';
+import { initiateDatum1D } from '../../../data/data1d/Datum1D';
 import generateID from '../../../data/utilities/generateID';
 import getColor from '../../../data/utilities/getColor';
 import { AnalysisObj, initiateObject } from '../core/Analysis';
@@ -44,7 +44,7 @@ function initiate(draft, dataObject) {
 
 function setData(draft, data) {
   for (let d of data) {
-    AnalysisObj.pushDatum(new Datum1D(d));
+    AnalysisObj.pushDatum(initiateDatum1D(d));
   }
   const spectraData = AnalysisObj.getSpectraData();
   const molecules = AnalysisObj.getMolecules();
