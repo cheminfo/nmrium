@@ -1,14 +1,14 @@
 import { extent } from 'd3';
+import { current } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import { AnalysisObj } from '../core/Analysis';
 import { DISPLAYER_MODE } from '../core/Constants';
 
 function getActiveData(draft) {
   if (draft.activeTab) {
     const groupByNucleus = GroupByInfoKey('nucleus');
-    let data = groupByNucleus(draft.data)[draft.activeTab];
+    let data = groupByNucleus(current(draft).data)[draft.activeTab];
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
       return data;
     } else {
@@ -26,11 +26,11 @@ function getActiveData(draft) {
 
       for (let datum of draft.data) {
         if (data.some((activeData) => activeData.id === datum.id)) {
-          AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
-          datum.isVisibleInDomain = true;
+          // AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
+          datum.display.isVisibleInDomain = true;
         } else {
-          AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
-          datum.isVisibleInDomain = false;
+          // AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
+          datum.display.isVisibleInDomain = false;
         }
       }
       return draft.data;
@@ -48,10 +48,11 @@ function getDomain(data) {
   let integralYDomain = {};
   try {
     xArray = data.reduce((acc, d) => {
-      if (d.isVisibleInDomain) {
-        const domain = [d.x[0], d.x[d.x.length - 1]];
+      const { display, data } = d;
+      if (display.isVisibleInDomain) {
+        const domain = [data.x[0], data.x[data.x.length - 1]];
         xDomains[d.id] = domain;
-        if (d.display.isVisible) {
+        if (display.isVisible) {
           acc = acc.concat(domain);
         }
         return acc;
@@ -61,11 +62,12 @@ function getDomain(data) {
     }, []);
 
     yArray = data.reduce((acc, d) => {
-      if (d.isVisibleInDomain) {
-        const _extent = extent(d.y);
+      const { display, data, integrals } = d;
+      if (display.isVisibleInDomain) {
+        const _extent = extent(data.y);
         yDomains[d.id] = _extent;
-        if (d.integrals.values && d.integrals.values.length > 0) {
-          const values = d.integrals.values;
+        if (integrals.values && integrals.values.length > 0) {
+          const values = integrals.values;
           const { from, to } = values[0];
           const { x, y } = d;
           const integralResult = xyIntegral(
@@ -78,7 +80,7 @@ function getDomain(data) {
           );
           integralYDomain[d.id] = extent(integralResult.y);
         }
-        if (d.display.isVisible) {
+        if (display.isVisible) {
           acc = acc.concat(_extent);
         }
         return acc;

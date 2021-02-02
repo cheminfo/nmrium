@@ -39,25 +39,25 @@ function handleSpectrumVisibility(draft, action) {
 
 function handleChangePeaksMarkersVisibility(draft, data) {
   for (let datum of draft.data) {
-    const datusmObject = AnalysisObj.getDatum(datum.id);
     if (data.some((activeData) => activeData.id === datum.id)) {
-      datusmObject.setDisplay({ isPeaksMarkersVisible: true });
       datum.display.isPeaksMarkersVisible = true;
     } else {
-      datusmObject.setDisplay({ isPeaksMarkersVisible: false });
       datum.display.isPeaksMarkersVisible = false;
     }
   }
 }
 
 function handleChangeActiveSpectrum(draft, activeSpectrum) {
+  // const state = original(draft);
+
   let refreshDomain = false;
   if (activeSpectrum) {
-    AnalysisObj.getDatum(activeSpectrum.id).setDisplay({ isVisible: true });
+    // AnalysisObj.getDatum(activeSpectrum.id).setDisplay({ isVisible: true });
     const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
     const oldIndex = draft.data.findIndex(
       (d) => d.id === draft.activeSpectrum?.id,
     );
+
     if (newIndex !== -1) {
       draft.data[newIndex].display.isVisible = true;
     }
@@ -83,22 +83,20 @@ function handleChangeActiveSpectrum(draft, activeSpectrum) {
    * if the active spectrum not is FID then dont refresh the domain and the mode when the first time you activate soectrum
    * if the new active spectrum different than the previous active spectrum fid then refresh the domain andf the mode.
    */
-
   if (refreshDomain) {
     setDomain(draft);
-    delete draft.tabActiveSpectrum[draft.activeTab];
+    // const tab = draft.activeTab;
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    // delete draft.tabActiveSpectrum[tab];
     setMode(draft);
   }
 }
 
 function changeSpectrumSetting(draft, { id, display }) {
   const state = original(draft);
-
   const index = state.data.findIndex((d) => d.id === id);
-  const datumObject = AnalysisObj.getDatum(id);
-  if (index !== -1 && datumObject) {
+  if (index !== -1) {
     draft.data[index].display = display;
-    datumObject.setDisplay(display);
   }
 }
 function handleChangeSpectrumColor(draft, { id, color, key }) {
@@ -106,29 +104,26 @@ function handleChangeSpectrumColor(draft, { id, color, key }) {
   const index = state.data.findIndex((d) => d.id === id);
   if (index !== -1) {
     draft.data[index].display[key] = color;
-    AnalysisObj.getDatum(id).setDisplay({ [key]: color });
   }
 }
 
 function handleDeleteSpectra(draft, action) {
   const { activeTab } = draft;
+  const state = original(draft);
   if (action.id) {
-    AnalysisObj.deleteDatumByIDs([action.id]);
-    draft.data = AnalysisObj.getSpectraData();
+    const index = state.data.findIndex((d) => (d.id = action.id));
+    draft.data.splice(index, 1);
   } else {
-    const IDs = draft.data.reduce((acc, datum) => {
-      if (datum.info.nucleus === activeTab) acc.push(datum.id);
-      return acc;
-    }, []);
-    AnalysisObj.deleteDatumByIDs(IDs);
-    draft.data = AnalysisObj.getSpectraData();
+    draft.data.foreach((datum, index) => {
+      draft.data.splice(index, 1);
+    });
   }
   draft.activeSpectrum = null;
   setActiveTab(draft, activeTab, true);
 }
 function addMissingProjectionHander(draft, action) {
   const nucleus = action.nucleus;
-  if (draft.activeSpectrum && draft.activeSpectrum.id) {
+  if (draft.activeSpectrum?.id) {
     AnalysisObj.addMissingProjection(draft.activeSpectrum.id, nucleus);
     draft.data = AnalysisObj.getSpectraData();
     const groupByNucleus = GroupByInfoKey('nucleus');

@@ -37,7 +37,6 @@ function getStrongestPeak(state) {
 
 function setFilterChanges(draft, state, selectedFilter) {
   const activeSpectrumId = state.activeSpectrum.id;
-  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
   //save reduced snapshot
   //select the equalizer tool when you enable manual phase correction filter
@@ -52,10 +51,8 @@ function setFilterChanges(draft, state, selectedFilter) {
         (spectrum) => spectrum.id === activeSpectrumId,
       );
 
-      activeObject.data.x = state.tempData[spectrumIndex].x;
-      activeObject.data.re = state.tempData[spectrumIndex].y;
-      activeObject.data.im = state.tempData[spectrumIndex].im;
-
+      draft.data[spectrumIndex].re = state.tempData[spectrumIndex].y;
+      draft.data[spectrumIndex].im = state.tempData[spectrumIndex].im;
       draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
       draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
     }
@@ -177,40 +174,45 @@ function handleDeleteBaseLineZone(draft, id) {
 }
 
 function handleToggleRealImaginaryVisibility(draft) {
-  const state = original(draft);
+  // const state = original(draft);
   if (draft.activeSpectrum != null) {
-    const activeSpectrumId = draft.activeSpectrum.id;
-    const ob = AnalysisObj.getDatum(activeSpectrumId);
+    const { index } = draft.activeSpectrum;
+    // const ob = AnalysisObj.getDatum(activeSpectrumId);
 
-    if (ob) {
-      const reY = ob.getReal().y;
-      const imY = ob.getImaginary().y;
-      const index = state.data.findIndex((d) => d.id === activeSpectrumId);
-      ob.setIsRealSpectrumVisible(!draft.data[index]);
+    // if (ob) {
+    // const reY = ob.getReal().y;
+    // const imY = ob.getImaginary().y;
+    // console.log(draft.activeSpectrum.id);
+    // const index = state.data.findIndex((d) => d.id === draft.activeSpectrum.id);
+    // console.log(index);
 
-      draft.data[index].display.isRealSpectrumVisible = !draft.data[index]
-        .display.isRealSpectrumVisible;
-      ob.setIsRealSpectrumVisible();
-      if (draft.data[index].display.isRealSpectrumVisible) {
-        if (reY !== null && reY !== undefined) {
-          draft.data[index].y = reY;
-          const domain = getDomain(draft.data);
-          draft.xDomain = domain.xDomain;
-          draft.yDomain = domain.yDomain;
-          draft.xDomains = domain.xDomains;
-          draft.yDomains = domain.yDomains;
-        }
-      } else {
-        if (imY !== null && imY !== undefined) {
-          draft.data[index].y = imY;
-          const domain = getDomain(draft.data);
-          draft.xDomain = domain.xDomain;
-          draft.yDomain = domain.yDomain;
-          draft.xDomains = domain.xDomains;
-          draft.yDomains = domain.yDomains;
-        }
+    // ob.setIsRealSpectrumVisible(!draft.data[index]);
+    draft.data[index].display.isRealSpectrumVisible = !draft.data[index].display
+      .isRealSpectrumVisible;
+    // ob.setIsRealSpectrumVisible();
+    if (draft.data[index].display.isRealSpectrumVisible) {
+      const re = draft.data[index].re;
+      if (re !== null && re !== undefined) {
+        draft.data[index].y = re;
+        const domain = getDomain(draft.data);
+        draft.xDomain = domain.xDomain;
+        draft.yDomain = domain.yDomain;
+        draft.xDomains = domain.xDomains;
+        draft.yDomains = domain.yDomains;
+      }
+    } else {
+      const im = draft.data[index].im;
+
+      if (im !== null && im !== undefined) {
+        draft.data[index].y = im;
+        const domain = getDomain(draft.data);
+        draft.xDomain = domain.xDomain;
+        draft.yDomain = domain.yDomain;
+        draft.xDomains = domain.xDomains;
+        draft.yDomains = domain.yDomains;
       }
     }
+    // }
   }
 }
 
