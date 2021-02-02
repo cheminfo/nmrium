@@ -2,7 +2,7 @@ import lodash from 'lodash';
 
 import generateChar from '../utilities/generateChar';
 
-import { Datum1D } from './Datum1D';
+import { Datum1D } from './Datum1DOld';
 
 export const COLUMNS_TYPES = {
   NORMAL: 'NORMAL',

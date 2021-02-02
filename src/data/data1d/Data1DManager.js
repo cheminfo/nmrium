@@ -1,4 +1,4 @@
-import { Datum1D } from './Datum1D';
+import { initiateDatum1D } from './Datum1D';
 
 export class Data1DManager {
   static fromBruker = function fromBruker(result, options = {}) {
@@ -8,7 +8,7 @@ export class Data1DManager {
 
     if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
 
-    const datum1D = new Datum1D({
+    const datum1D = initiateDatum1D({
       ...options,
       info,
       meta,
@@ -67,7 +67,7 @@ export class Data1DManager {
 
     data.x = scale;
 
-    const datum1D = new Datum1D({
+    const datum1D = initiateDatum1D({
       ...options,
       meta: options.meta,
       data,
@@ -84,7 +84,7 @@ export class Data1DManager {
     const { dependentVariables, info, meta } = parsedJcamp;
     let data = getData(dependentVariables[0].components);
     if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
-    const datum1D = new Datum1D({
+    const datum1D = initiateDatum1D({
       ...options,
       info,
       meta,

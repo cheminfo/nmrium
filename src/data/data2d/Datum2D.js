@@ -2,7 +2,7 @@ import lodash from 'lodash';
 import { zoneToX } from 'ml-spectra-processing';
 
 import { DatumKind } from '../constants/SignalsKinds';
-import { Datum1D } from '../data1d/Datum1D';
+import { Datum1D } from '../data1d/Datum1DOld';
 import generateID from '../utilities/generateID';
 import { get2DColor } from '../utilities/getColor';
 

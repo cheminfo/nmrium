@@ -4,10 +4,11 @@ import { Molecule } from 'openchemlib/full';
 
 import * as SpectraManager from './SpectraManager';
 import CorrelationManager from './correlation/CorrelationManager';
-import { Datum1D } from './data1d/Datum1D';
+// import { Datum1D } from './data1d/Datum1DOld';
 import MultipleAnalysis from './data1d/MulitpleAnalysis';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
+import { toJSON } from './data1d/Datum1D';
 
 export class Analysis {
   spectra = [];
@@ -188,7 +189,7 @@ export class Analysis {
   toJSON() {
     const spectra = this.spectra.map((ob) => {
       return {
-        ...ob.toJSON(),
+        ...toJSON(ob),
         data: {},
       };
     });
@@ -237,26 +238,25 @@ export class Analysis {
    */
   getSpectraData() {
     return this.spectra
-      ? cloneDeep(
-          this.spectra.map((ob) => {
-            const _data =
-              ob instanceof Datum1D ? { ...ob.data, y: ob.data.re } : ob.data;
-            // eslint-disable-next-line no-unused-vars
-            const { data, ...rest } = ob;
-            return {
-              ...rest,
-              ..._data,
-              isVisibleInDomain: ob.display.isVisibleInDomain,
-            };
-          }),
-        )
-      : [];
+      ? this.spectra
+      : // ? this.spectra.map((ob) => {
+        //     const _data =
+        //       ob.info.dimension === 1 ? { ...ob.data, y: ob.data.re } : ob.data;
+        //     // eslint-disable-next-line no-unused-vars
+        //     const { data, ...rest } = ob;
+        //     return {
+        //       ...rest,
+        //       ..._data,
+        //       isVisibleInDomain: ob.display.isVisibleInDomain,
+        //     };
+        //   })
+        [];
   }
 
   alignSpectra(nucleus, { from, to, nbPeaks, targetX }) {
     const spectra = this.spectra.filter(
       (spectrum) =>
-        spectrum instanceof Datum1D && spectrum.info.nucleus === nucleus,
+        spectrum.info.dimension === 1 && spectrum.info.nucleus === nucleus,
     );
     if (spectra && spectra.length > 0) {
       spectra.forEach((spectrum) => {
