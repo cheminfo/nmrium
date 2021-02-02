@@ -340,6 +340,7 @@ export class Datum1D {
   detectRanges(options) {
     options.impurities = { solvent: this.info.solvent };
     const ranges = autoRangesDetection(this, options);
+    console.log(ranges);
     this.ranges.values = this.ranges.values.concat(
       ranges.map((range) => {
         return {
