@@ -25,8 +25,37 @@ const styles = {
   },
 };
 
+const defaultProps = {
+  pattern: '^d*(.d{0,2})?$',
+  step: 'any',
+  min: 'any',
+  style: {
+    label: {},
+    input: {},
+    container: {},
+    inputContainer: {},
+  },
+  defaultValue: 0,
+  onChange: () => {
+    return null;
+  },
+  onInput: () => {
+    return null;
+  },
+};
+
 function NumberInput(
-  { label, name, defaultValue, style, onChange, onInput, pattern, step, min },
+  {
+    label,
+    name,
+    defaultValue = defaultProps.defaultValue,
+    style = defaultProps.style,
+    onChange = defaultProps.onChange,
+    onInput = defaultProps.onInput,
+    pattern = defaultProps.pattern,
+    step = defaultProps.step,
+    min = defaultProps.min,
+  },
   ref,
 ) {
   const localRef = useRef();
@@ -84,23 +113,6 @@ NumberInput.propTypes = {
   onInput: PropTypes.func,
 };
 
-NumberInput.defaultProps = {
-  pattern: '^d*(.d{0,2})?$',
-  step: 'any',
-  min: 'any',
-  style: {
-    label: {},
-    input: {},
-    container: {},
-    inputContainer: {},
-  },
-  defaultValue: 0,
-  onChange: () => {
-    return null;
-  },
-  onInput: () => {
-    return null;
-  },
-};
+NumberInput.defaultProps = defaultProps;
 
 export default forwardRef(NumberInput);
