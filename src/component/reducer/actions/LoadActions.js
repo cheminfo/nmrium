@@ -37,7 +37,7 @@ function initiate(draft, dataObject) {
       center: preferences.display.center,
     });
   } else {
-    setYAxisShift(spectraData, draft, draft.height);
+    setYAxisShift(draft, draft.height);
   }
   setActiveTab(draft);
 }
@@ -108,6 +108,7 @@ function handleLoadJsonFile(draft, data) {
   draft.preferences = preferences;
   draft.correlations = correlations;
   draft.spectraAanalysis = spectraAanalysis;
+
   if (
     preferences.display &&
     Object.prototype.hasOwnProperty.call(preferences.display, 'center')
@@ -116,7 +117,7 @@ function handleLoadJsonFile(draft, data) {
       center: preferences.display.center,
     });
   } else {
-    setYAxisShift(spectraData, draft, draft.height);
+    setYAxisShift(draft, draft.height);
   }
 
   setActiveTab(draft);

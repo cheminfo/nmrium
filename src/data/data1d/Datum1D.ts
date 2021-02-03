@@ -1,9 +1,12 @@
 import max from 'ml-array-max';
-import { xyIntegration, xyMinYPoint, xyMaxYPoint } from 'ml-spectra-processing';
+import { xyIntegration } from 'ml-spectra-processing';
 
 import { SignalKindsToInclude } from '../constants/SignalsKinds';
 import generateID from '../utilities/generateID';
 import get1dColor from '../utilities/getColor';
+
+import * as FiltersManager from './FiltersManager';
+import { Filters as FiltersTypes } from './filter1d/Filters';
 
 export const usedColors1D: Array<string> = [];
 
@@ -96,8 +99,10 @@ export interface Datum1D {
 }
 
 export function initiateDatum1D(options: Datum1D): Datum1D {
-  options.id = options.id || generateID();
-  options.source = Object.assign(
+  const data: any = {};
+
+  data.id = options.id || generateID();
+  data.source = Object.assign(
     {
       jcamp: null,
       jcampURL: null,
@@ -105,7 +110,7 @@ export function initiateDatum1D(options: Datum1D): Datum1D {
     },
     options.source,
   );
-  options.display = Object.assign(
+  data.display = Object.assign(
     {
       name: options.display?.name ? options.display.name : generateID(),
       color: 'black',
@@ -118,7 +123,7 @@ export function initiateDatum1D(options: Datum1D): Datum1D {
     options.display,
   );
 
-  options.info = Object.assign(
+  data.info = Object.assign(
     {
       nucleus: '1H', // 1H, 13C, 19F, ...
       isFid: false,
@@ -127,7 +132,7 @@ export function initiateDatum1D(options: Datum1D): Datum1D {
     options.info,
   );
 
-  options.originalInfo = Object.assign(
+  data.originalInfo = Object.assign(
     {
       nucleus: '1H', // 1H, 13C, 19F, ...
       isFid: false,
@@ -136,32 +141,55 @@ export function initiateDatum1D(options: Datum1D): Datum1D {
     options.info,
   );
 
-  options.meta = Object.assign({}, options.meta);
-  options.data = Object.assign(
+  data.meta = Object.assign({}, options.meta);
+  data.data = Object.assign(
     {
       x: [],
       re: [],
       im: [],
       y: [],
     },
-    { ...options.data, y: options.data.re },
+    options.data,
   );
 
-  options.peaks = Object.assign({ values: [], options: {} }, options.peaks);
+  data.peaks = Object.assign({ values: [], options: {} }, options.peaks);
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
-  options.integrals = Object.assign(
+  data.integrals = Object.assign(
     { values: [], options: { sum: 100 } },
     options.integrals,
   ); // array of object (from: xIndex, to: xIndex)
-  options.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
-  options.ranges = Object.assign(
+  data.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
+  data.ranges = Object.assign(
     { values: [], options: { sum: 100 } },
     options.ranges,
   );
 
-  return options;
+  //reapply filters after load the original data
+  FiltersManager.reapplyFilters(data);
+
+  preprocessing(data);
+  data.data.y = data.data.re;
+  return data;
+}
+
+function preprocessing(data) {
+  if (
+    data.info.isFid &&
+    data.filters.findIndex((f) => f.name === FiltersTypes.digitalFilter.id) ===
+      -1
+  ) {
+    FiltersManager.applyFilter(data, [
+      {
+        name: FiltersTypes.digitalFilter.id,
+        options: {
+          digitalFilterValue: data.info.digitalFilter,
+        },
+        isDeleteAllow: false,
+      },
+    ]);
+  }
 }
 
 export function toJSON(datum1D: Datum1D) {
@@ -203,7 +231,6 @@ function getColor(options) {
  */
 export function lookupPeak(data, options) {
   const { from, to } = options;
-  console.log(options);
   let minIndex = data.x.findIndex((number) => number >= from);
   let maxIndex = data.x.findIndex((number) => number >= to) - 1;
 

@@ -1,5 +1,4 @@
 import { extent } from 'd3';
-import { current } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
@@ -8,7 +7,7 @@ import { DISPLAYER_MODE } from '../core/Constants';
 function getActiveData(draft) {
   if (draft.activeTab) {
     const groupByNucleus = GroupByInfoKey('nucleus');
-    let data = groupByNucleus(current(draft).data)[draft.activeTab];
+    let data = groupByNucleus(draft.data)[draft.activeTab];
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
       return data;
     } else {
@@ -230,7 +229,7 @@ function handelResetDomain(draft) {
 
 function setMode(draft) {
   const data = getActiveData(draft).filter(
-    (datum) => datum.isVisibleInDomain === true,
+    (datum) => datum.display.isVisibleInDomain === true,
   );
   draft.mode = data && data[0] && data[0].info.isFid ? 'LTR' : 'RTL';
 }

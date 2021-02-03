@@ -1,14 +1,13 @@
 /* eslint-disable default-param-last */
-import { cloneDeep } from 'lodash';
 import { Molecule } from 'openchemlib/full';
 
 import * as SpectraManager from './SpectraManager';
 import CorrelationManager from './correlation/CorrelationManager';
 // import { Datum1D } from './data1d/Datum1DOld';
+import { toJSON } from './data1d/Datum1D';
 import MultipleAnalysis from './data1d/MulitpleAnalysis';
 import { Molecule as mol } from './molecules/Molecule';
 import { MoleculeManager } from './molecules/MoleculeManager';
-import { toJSON } from './data1d/Datum1D';
 
 export class Analysis {
   spectra = [];

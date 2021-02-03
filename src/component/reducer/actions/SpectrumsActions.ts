@@ -86,7 +86,6 @@ function handleChangeActiveSpectrum(draft, activeSpectrum) {
   if (refreshDomain) {
     setDomain(draft);
     // const tab = draft.activeTab;
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     // delete draft.tabActiveSpectrum[tab];
     setMode(draft);
   }

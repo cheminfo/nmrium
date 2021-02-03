@@ -238,7 +238,6 @@ function NMRDisplayer({
   useEffect(() => {
     if (dataProp !== undefined) {
       dispatch({ type: SET_LOADING_FLAG, isLoading: true });
-      // TODO: Handle error
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       Analysis.build(dataProp || {}).then((object) => {
         dispatch({ type: INITIATE, data: { AnalysisObj: object } });

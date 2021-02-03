@@ -21,11 +21,9 @@ import { setDomain, getDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
 
-function getStrongestPeak(state) {
-  const { activeSpectrum, data } = state;
-
-  const activeSpectrumId = activeSpectrum.id;
-  const activeData = data.find((d) => d.id === activeSpectrumId);
+function getStrongestPeak(draft) {
+  const { activeSpectrum, data } = draft;
+  const activeData = data[activeSpectrum.index].data;
   const strongestPeakValue = max(activeData.y);
   const index = activeData.y.findIndex((val) => val === strongestPeakValue);
   return {
@@ -35,15 +33,15 @@ function getStrongestPeak(state) {
   };
 }
 
-function setFilterChanges(draft, state, selectedFilter) {
-  const activeSpectrumId = state.activeSpectrum.id;
+function setFilterChanges(draft, selectedFilter) {
+  const activeSpectrumId = draft.activeSpectrum.id;
 
   //save reduced snapshot
   //select the equalizer tool when you enable manual phase correction filter
   if (selectedFilter === Filters.phaseCorrection.id) {
-    draft.tempData = state.data;
+    draft.tempData = draft.data;
 
-    const { xValue } = getStrongestPeak(state);
+    const { xValue } = getStrongestPeak(draft);
     draft.pivot = xValue;
   } else {
     if (draft.selectedTool === options.phaseCorrection.id) {
@@ -51,17 +49,17 @@ function setFilterChanges(draft, state, selectedFilter) {
         (spectrum) => spectrum.id === activeSpectrumId,
       );
 
-      draft.data[spectrumIndex].re = state.tempData[spectrumIndex].y;
-      draft.data[spectrumIndex].im = state.tempData[spectrumIndex].im;
-      draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
-      draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
+      draft.data[spectrumIndex].data = draft.tempData[spectrumIndex].data;
     }
   }
 }
 
-function setYAxisShift(data, draft, height) {
-  if (data && data.length > 0) {
-    if (data[0].info.isFid && !data.some((d) => d.info.isFid === false)) {
+function setYAxisShift(draft, height) {
+  if (draft.data && draft.data.length > 0) {
+    if (
+      draft.data[0].info.isFid &&
+      !draft.data.some((d) => d.info.isFid === false)
+    ) {
       const YAxisShift = height / 2;
       draft.verticalAlign.flag = true;
       draft.verticalAlign.value = YAxisShift;
@@ -97,7 +95,6 @@ function resetSelectedTool(draft, filterOnly = false) {
 }
 
 function setSelectedTool(draft, selectedTool) {
-  const state = original(draft);
   if (selectedTool) {
     if (selectedTool !== draft.selectedTool) {
       resetTool(draft, false);
@@ -108,7 +105,7 @@ function setSelectedTool(draft, selectedTool) {
     }
 
     if (options[selectedTool].isFilter) {
-      setFilterChanges(draft, state, selectedTool);
+      setFilterChanges(draft, selectedTool);
     }
   } else {
     resetTool(draft, false);

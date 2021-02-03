@@ -7,7 +7,7 @@ import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 import get1dColor from '../utilities/getColor';
 
-import { FiltersManager } from './FiltersManager';
+import * as FiltersManager from './FiltersManager';
 import autoPeakPicking from './autoPeakPicking';
 import autoRangesDetection from './autoRangesDetection';
 import detectSignal from './detectSignal';
@@ -340,7 +340,6 @@ export class Datum1D {
   detectRanges(options) {
     options.impurities = { solvent: this.info.solvent };
     const ranges = autoRangesDetection(this, options);
-    console.log(ranges);
     this.ranges.values = this.ranges.values.concat(
       ranges.map((range) => {
         return {
