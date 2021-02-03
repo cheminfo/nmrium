@@ -36,7 +36,7 @@ function getStrongestPeak(state) {
 }
 
 function setFilterChanges(draft, state, selectedFilter) {
-  const activeSpectrumId = state.activeSpectrum.id;
+  const activeSpectrumId = draft.activeSpectrum.id;
   const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
   //save reduced snapshot
