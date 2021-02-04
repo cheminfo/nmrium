@@ -1,9 +1,8 @@
 import { extent } from 'd3';
 import { original } from 'immer';
-import { xyIntegral } from 'ml-spectra-processing';
+import { xyIntegral, xyIntegration } from 'ml-spectra-processing';
 
 import {
-  getIntegration,
   updateIntegralIntegrals,
   changeIntegralsRealtive,
 } from '../../../data/data1d/Datum1D';
@@ -38,12 +37,12 @@ function addIntegral(draft: State, action) {
 
   if (draft.activeSpectrum?.id && state) {
     const { id, index } = draft.activeSpectrum;
-
+    const { x, re } = state.data[index].data;
     const integral = {
       id: generateID(),
       from,
       to,
-      absolute: getIntegration(state.data[index].data, { from, to }), // the real value
+      absolute: xyIntegration({ x, y: re }, { from, to, reverse: true }), // the real value
       kind: 'signal',
     };
 
@@ -89,6 +88,7 @@ function changeIntegral(draft, action) {
   const integral = action.data;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
+    const { x, re } = state.data[index].data;
     const integralIndex = state.data[index].integrals.values.findIndex(
       (i) => i.id === integral.id,
     );
@@ -96,10 +96,10 @@ function changeIntegral(draft, action) {
       draft.data[index].integrals.values[integralIndex] = {
         // ...draft.data[index].integrals.values[integralIndex],
         ...integral,
-        absolute: getIntegration(state.data[index].data, {
-          from: integral.from,
-          to: integral.to,
-        }),
+        absolute: xyIntegration(
+          { x, y: re },
+          { from: integral.from, to: integral.to, reverse: true },
+        ),
       };
       updateIntegralIntegrals(draft.data[index].integrals);
     }
