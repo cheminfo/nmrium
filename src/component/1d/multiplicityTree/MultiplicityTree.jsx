@@ -95,21 +95,21 @@ function MultiplicityTree({
 
   const startY = useMemo(() => {
     let yMax;
-    spectrumData.x.forEach((_x, i) => {
+    spectrumData.data.x.forEach((_x, i) => {
       if (
         _x >= rangeFrom &&
         _x <= rangeTo &&
-        (!yMax || spectrumData.y[i] > yMax)
+        (!yMax || spectrumData.data.y[i] > yMax)
       ) {
-        yMax = spectrumData.y[i];
+        yMax = spectrumData.data.y[i];
       }
     });
 
     return scaleY(spectrumData.id)(yMax) - treeProps.height - 30;
   }, [
-    spectrumData.x,
+    spectrumData.data.x,
+    spectrumData.data.y,
     spectrumData.id,
-    spectrumData.y,
     scaleY,
     treeProps.height,
     rangeFrom,

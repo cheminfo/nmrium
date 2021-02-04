@@ -1,11 +1,14 @@
 import max from 'ml-array-max';
 import { xyIntegration } from 'ml-spectra-processing';
 
-import { SignalKindsToInclude } from '../constants/SignalsKinds';
+import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
+import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 import get1dColor from '../utilities/getColor';
 
 import * as FiltersManager from './FiltersManager';
+import autoRangesDetection from './autoRangesDetection';
+import detectSignal from './detectSignal';
 import { Filters as FiltersTypes } from './filter1d/Filters';
 
 export const usedColors1D: Array<string> = [];
@@ -249,10 +252,6 @@ export function lookupPeak(data, options) {
   return null;
 }
 
-export function getIntegration(data, { from, to }) {
-  return xyIntegration({ x: data.x, y: data.re }, { from, to, reverse: true });
-}
-
 export function updateIntegralIntegrals(integrals) {
   if (integrals.options.sum === undefined) {
     integrals.options = { ...integrals.options, sum: 100 };
@@ -266,19 +265,6 @@ export function updateIntegralIntegrals(integrals) {
     'integral',
     countingCondition,
   );
-}
-
-export function updateRelatives(values, sum, storageKey, countingCondition) {
-  const currentSum = values.reduce((previous, current) => {
-    return countingCondition !== undefined &&
-      countingCondition(current) === true
-      ? (previous += Math.abs(current.absolute))
-      : previous;
-  }, 0);
-  const factor = currentSum > 0 ? sum / currentSum : 0.0;
-  return values.map((value) => {
-    return { ...value, [storageKey]: value.absolute * factor };
-  });
 }
 
 export function changeIntegralsRealtive(integrals, id, newIntegralValue) {
@@ -301,5 +287,126 @@ export function changeIntegralsRealtive(integrals, id, newIntegralValue) {
 
     integrals.values = values;
     integrals.options.sum = sum;
+  }
+}
+
+function updateRelatives(values, sum, storageKey, countingCondition) {
+  const currentSum = values.reduce((previous, current) => {
+    return countingCondition !== undefined &&
+      countingCondition(current) === true
+      ? (previous += Math.abs(current.absolute))
+      : previous;
+  }, 0);
+  const factor = currentSum > 0 ? sum / currentSum : 0.0;
+  return values.map((value) => {
+    return { ...value, [storageKey]: value.absolute * factor };
+  });
+}
+
+export function updateIntegralRanges(datum) {
+  if (datum.ranges.options.sum === undefined) {
+    datum.ranges.options.sum = 100;
+  }
+  const countingCondition = (range) => {
+    return range.signal && checkSignalKinds(range, SignalKindsToInclude);
+  };
+  datum.ranges.values = updateRelatives(
+    datum.ranges.values.slice(),
+    datum.ranges.options.sum,
+    'integral',
+    countingCondition,
+  );
+}
+
+export function detectRanges(datum, options) {
+  const { x, re } = datum.data;
+  options.impurities = { solvent: datum.info.solvent };
+  const ranges = autoRangesDetection(datum, options);
+  datum.ranges.values = datum.ranges.values.concat(
+    ranges.map((range) => {
+      const absolute = xyIntegration(
+        { x, y: re },
+        { from: range.from, to: range.to, reverse: true },
+      );
+
+      const signal = range.signal.map((_signal) => {
+        return { kind: 'signal', id: generateID(), ..._signal };
+      });
+
+      return {
+        kind: range.signal[0].kind || DatumKind.signal,
+        ...range,
+        id: generateID(),
+        absolute,
+        signal,
+      };
+    }),
+  );
+  updateIntegralRanges(datum);
+}
+
+export function changeRange(datum, range) {
+  const { from, to } = range;
+  const { x, re } = datum.data;
+
+  const index = datum.ranges.values.findIndex((i) => i.id === range.id);
+  const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
+
+  if (index !== -1) {
+    datum.ranges.values[index] = {
+      ...datum.ranges.values[index],
+      ...range,
+      absolute,
+    };
+    updateIntegralRanges(datum);
+  }
+}
+
+export function addRange(datum, options) {
+  const { from, to } = options;
+  const { x, re } = datum.data;
+  const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
+
+  const signals = detectSignal(x, re, from, to, datum.info.originFrequency);
+
+  try {
+    const range = {
+      id: generateID(),
+      from,
+      to,
+      absolute, // the real value,
+      signal: [{ id: generateID(), ...signals }],
+      kind: DatumKind.signal,
+    };
+    datum.ranges.values.push(range);
+
+    updateIntegralRanges(datum);
+  } catch (e) {
+    throw new Error('Could not calculate the multiplicity');
+  }
+}
+
+export function changeRangesRealtive(datum, rangeID, newRealtiveValue) {
+  const range = datum.ranges.values.find((range) => range.id === rangeID);
+  if (range) {
+    const ratio = range.absolute / newRealtiveValue;
+    datum.ranges.values = datum.ranges.values.map((range) => {
+      return {
+        ...range,
+        integral: range.absolute / ratio,
+      };
+    });
+  }
+}
+
+export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
+  const rangeIndex = datum.ranges.values.findIndex(
+    (range) => range.id === rangeID,
+  );
+  if (rangeIndex !== -1) {
+    const signalIndex = datum.ranges.values[rangeIndex].signal.findIndex(
+      (signal) => signal.id === signalID,
+    );
+    datum.ranges.values[rangeIndex].signal[signalIndex].delta = newSignalValue;
   }
 }
