@@ -101,11 +101,11 @@ export interface Datum1D {
   filters: Filters;
 }
 
-export function initiateDatum1D(options: Datum1D): Datum1D {
-  const data: any = {};
+export function initiateDatum1D(options: any): Datum1D {
+  const datum: any = {};
 
-  data.id = options.id || generateID();
-  data.source = Object.assign(
+  datum.id = options.id || generateID();
+  datum.source = Object.assign(
     {
       jcamp: null,
       jcampURL: null,
@@ -113,7 +113,7 @@ export function initiateDatum1D(options: Datum1D): Datum1D {
     },
     options.source,
   );
-  data.display = Object.assign(
+  datum.display = Object.assign(
     {
       name: options.display?.name ? options.display.name : generateID(),
       color: 'black',
@@ -126,7 +126,7 @@ export function initiateDatum1D(options: Datum1D): Datum1D {
     options.display,
   );
 
-  data.info = Object.assign(
+  datum.info = Object.assign(
     {
       nucleus: '1H', // 1H, 13C, 19F, ...
       isFid: false,
@@ -135,7 +135,7 @@ export function initiateDatum1D(options: Datum1D): Datum1D {
     options.info,
   );
 
-  data.originalInfo = Object.assign(
+  datum.originalInfo = Object.assign(
     {
       nucleus: '1H', // 1H, 13C, 19F, ...
       isFid: false,
@@ -144,8 +144,8 @@ export function initiateDatum1D(options: Datum1D): Datum1D {
     options.info,
   );
 
-  data.meta = Object.assign({}, options.meta);
-  data.data = Object.assign(
+  datum.meta = Object.assign({}, options.meta);
+  datum.data = Object.assign(
     {
       x: [],
       re: [],
@@ -155,39 +155,39 @@ export function initiateDatum1D(options: Datum1D): Datum1D {
     options.data,
   );
 
-  data.peaks = Object.assign({ values: [], options: {} }, options.peaks);
+  datum.peaks = Object.assign({ values: [], options: {} }, options.peaks);
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
-  data.integrals = Object.assign(
+  datum.integrals = Object.assign(
     { values: [], options: { sum: 100 } },
     options.integrals,
   ); // array of object (from: xIndex, to: xIndex)
-  data.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
-  data.ranges = Object.assign(
+  datum.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
+  datum.ranges = Object.assign(
     { values: [], options: { sum: 100 } },
     options.ranges,
   );
 
   //reapply filters after load the original data
-  FiltersManager.reapplyFilters(data);
+  FiltersManager.reapplyFilters(datum);
 
-  preprocessing(data);
-  data.data.y = data.data.re;
-  return data;
+  preprocessing(datum);
+  datum.data.y = datum.data.re;
+  return datum;
 }
 
-function preprocessing(data) {
+function preprocessing(datum) {
   if (
-    data.info.isFid &&
-    data.filters.findIndex((f) => f.name === FiltersTypes.digitalFilter.id) ===
+    datum.info.isFid &&
+    datum.filters.findIndex((f) => f.name === FiltersTypes.digitalFilter.id) ===
       -1
   ) {
-    FiltersManager.applyFilter(data, [
+    FiltersManager.applyFilter(datum, [
       {
         name: FiltersTypes.digitalFilter.id,
         options: {
-          digitalFilterValue: data.info.digitalFilter,
+          digitalFilterValue: datum.info.digitalFilter,
         },
         isDeleteAllow: false,
       },
