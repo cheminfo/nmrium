@@ -113,7 +113,7 @@ function get2DDomain(state) {
   try {
     xArray = data.reduce((acc, datum) => {
       if (datum.info.dimension === 2) {
-        acc = acc.concat([datum.minX, datum.maxX]);
+        acc = acc.concat([datum.data.minX, datum.data.maxX]);
       }
       return acc;
     }, []);
@@ -123,7 +123,7 @@ function get2DDomain(state) {
         datum.info.dimension === 2 &&
         datum.info.nucleus.join(',') === activeTab
       ) {
-        acc = acc.concat([datum.minY, datum.maxY]);
+        acc = acc.concat([datum.data.minY, datum.data.maxY]);
       }
       return acc;
     }, []);
@@ -142,13 +142,14 @@ function get2DDomain(state) {
   }, []);
   try {
     xDomains = filteredData.reduce((acc, d) => {
-      const domain = [d.x[0], d.x[d.x.length - 1]];
+      const { x } = d.data;
+      const domain = [x[0], x[x.length - 1]];
       acc[d.id] = domain;
       return acc;
     }, {});
 
     yDomains = filteredData.reduce((acc, d) => {
-      const _extent = extent(d.y);
+      const _extent = extent(d.data.y);
       acc[d.id] = _extent;
       return acc;
     }, {});

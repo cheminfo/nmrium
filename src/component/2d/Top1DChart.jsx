@@ -5,7 +5,7 @@ import { useChartData } from '../context/ChartContext';
 
 import { get1DYScale, get2DXScale } from './utilities/scale';
 
-function Top1DChart({ margin: marginProps, data }) {
+function Top1DChart({ margin: marginProps, data: spectrum }) {
   const {
     width,
     margin: originMargin,
@@ -17,12 +17,12 @@ function Top1DChart({ margin: marginProps, data }) {
   const height = originMargin.top;
 
   const paths = useMemo(() => {
-    if (data) {
+    if (spectrum) {
       const scaleX = get2DXScale({ width, xDomain, margin: originMargin });
 
-      const scaleY = get1DYScale(yDomains[data.id], height, marginProps);
+      const scaleY = get1DYScale(yDomains[spectrum.id], height, marginProps);
 
-      const { x, y } = data;
+      const { x, y } = spectrum.data;
       const pathPoints = xyReduce(
         { x, y },
         {
@@ -40,7 +40,7 @@ function Top1DChart({ margin: marginProps, data }) {
     } else {
       return null;
     }
-  }, [data, height, marginProps, originMargin, width, xDomain, yDomains]);
+  }, [height, marginProps, originMargin, spectrum, width, xDomain, yDomains]);
 
   if (!width || !height) {
     return null;

@@ -1,9 +1,9 @@
 import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 
 import { Data1DManager } from './data1d/Data1DManager';
-import { initiateDatum1D } from './data1d/Datum1D.ts';
+import { initiateDatum1D } from './data1d/Datum1D';
 import { Data2DManager } from './data2d/Data2DManager';
-import { Datum2D } from './data2d/Datum2D';
+import { initiateDatum2D } from './data2d/Datum2D';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
   // { credentials: 'include' }
@@ -52,7 +52,7 @@ function addData(spectra, datum) {
     spectra.push(initiateDatum1D({ ...datum, data: datum.source.original }));
   }
   if (dimension === 2) {
-    spectra.push(new Datum2D({ ...datum, data: datum.source.original }));
+    spectra.push(initiateDatum2D({ ...datum, data: datum.source.original }));
   }
 }
 

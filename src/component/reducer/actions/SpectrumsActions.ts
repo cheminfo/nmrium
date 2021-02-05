@@ -1,7 +1,10 @@
 import { original } from 'immer';
 
+import { applyFilter } from '../../../data/data1d/FiltersManager';
+import { Filters } from '../../../data/data1d/filter1d/Filters';
+import getReferenceShift from '../../../data/data1d/getReferenceShift';
+import { getMissingProjection } from '../../../data/data2d/Datum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import { AnalysisObj } from '../core/Analysis';
 
 import { setDomain, setMode } from './DomainActions';
 import { setTab, setActiveTab } from './ToolsActions';
@@ -121,10 +124,14 @@ function handleDeleteSpectra(draft, action) {
   setActiveTab(draft, activeTab, true);
 }
 function addMissingProjectionHander(draft, action) {
+  const state = original(draft);
   const nucleus = action.nucleus;
   if (draft.activeSpectrum?.id) {
-    AnalysisObj.addMissingProjection(draft.activeSpectrum.id, nucleus);
-    draft.data = AnalysisObj.getSpectraData();
+    const { index } = draft.activeSpectrum;
+    for (let n of nucleus) {
+      const datum1D = getMissingProjection(state.data[index], n);
+      draft.data.push(datum1D);
+    }
     const groupByNucleus = GroupByInfoKey('nucleus');
     const dataGroupByNucleus = groupByNucleus(draft.data);
     setTab(draft, dataGroupByNucleus, draft.activeTab, true);
@@ -133,8 +140,23 @@ function addMissingProjectionHander(draft, action) {
   }
 }
 function alignSpectraHandler(draft, action) {
-  AnalysisObj.alignSpectra(draft.activeTab, action.payload);
-  draft.data = AnalysisObj.getSpectraData();
+  if (draft.data && draft.data.length > 0) {
+    for (let datum of draft.data) {
+      if (
+        datum.info.dimension === 1 &&
+        datum.info.nucleus === draft.activeTab
+      ) {
+        const shift = getReferenceShift(datum, { ...action.payload });
+        applyFilter(datum, [
+          {
+            name: Filters.shiftX.id,
+            options: shift,
+          },
+        ]);
+      }
+    }
+  }
+
   setDomain(draft);
   setMode(draft);
 }

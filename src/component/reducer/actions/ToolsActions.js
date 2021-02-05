@@ -2,14 +2,13 @@ import { max } from 'd3';
 import { original, current } from 'immer';
 
 import { Filters } from '../../../data/data1d/filter1d/Filters';
-import { Datum2D } from '../../../data/data2d/Datum2D';
+// import { Datum2D } from '../../../data/data2d/Datum2D';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import { AnalysisObj } from '../core/Analysis';
 import {
   DEFAULT_YAXIS_SHIFT_VALUE,
   DISPLAYER_MODE,
@@ -377,8 +376,8 @@ function Processing2DData(draft, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     let _data = {};
     for (const datum of data[draft.activeTab]) {
-      const data2dObject = AnalysisObj.getDatum(datum.id);
-      _data[datum.id] = data2dObject.getContourLines();
+      // const data2dObject = AnalysisObj.getDatum(datum.id);
+      _data[datum.id] = datum.processingController.drawContours();
     }
     draft.contours = _data;
   }
@@ -491,19 +490,20 @@ function handelSetActiveTab(draft, tab) {
 
 function levelChangeHandler(draft, { deltaY, shiftKey }) {
   try {
-    if (draft.activeSpectrum) {
-      const { id } = draft.activeSpectrum;
-      const datum2dObject = AnalysisObj.getDatum(id);
-      if (datum2dObject instanceof Datum2D) {
-        const processing2dController = datum2dObject.getProcessingController();
-        if (shiftKey) {
-          processing2dController.shiftWheel(deltaY);
-        } else {
-          processing2dController.wheel(deltaY);
-        }
-        const contours = Object.freeze(processing2dController.drawContours());
-        draft.contours[id] = contours;
+    if (draft.activeSpectrum?.id) {
+      const { index, id } = draft.activeSpectrum;
+      // const datum2dObject = AnalysisObj.getDatum(id);
+      // if (datum2dObject instanceof Datum2D) {
+      const processingController = draft.data[index].processingController;
+      // const processing2dController = processingController.drawContours;
+      if (shiftKey) {
+        processingController.shiftWheel(deltaY);
+      } else {
+        processingController.wheel(deltaY);
       }
+      const contours = Object.freeze(processingController.drawContours());
+      draft.contours[id] = contours;
+      // }
     }
   } catch (e) {
     // eslint-disable-next-line no-console

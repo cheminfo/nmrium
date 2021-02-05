@@ -225,7 +225,7 @@ function FooterBanner({ layout, data1D }) {
 
   const getZValue = () => {
     if (trackID === LAYOUT.CENTER_2D) {
-      const { maxX, maxY, minX, minY, z } = data[activeSpectrum.index];
+      const { maxX, maxY, minX, minY, z } = data[activeSpectrum.index].data;
 
       const xStep = (maxX - minX) / (z[0].length - 1);
       const yStep = (maxY - minY) / (z.length - 1);
