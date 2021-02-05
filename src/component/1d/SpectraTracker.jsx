@@ -67,7 +67,7 @@ function SpectraTracker() {
                   borderColor: datum.display.color,
                 }}
               />
-              <YTracker datum={datum} />
+              <YTracker datum={datum.data} />
               <span style={styles.value}>{datum.display.name}</span>
             </div>
           ),
