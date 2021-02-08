@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import OCL from 'openchemlib/full';
 import PropTypes from 'prop-types';
 import {
@@ -19,7 +19,6 @@ import { initOCL } from 'react-ocl-nmr';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
-import { Analysis } from '../data/Analysis';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
 
 import Viewer1D from './1d/Viewer1D';
@@ -224,6 +223,13 @@ function NMRDisplayer({
 
   const { selectedTool, displayerMode, data: spectraData } = state;
 
+  const dispatchMiddleWare = useMemo(() => {
+    function dataChangeHandler(data) {
+      onDataChange?.(data);
+    }
+    return dispatchMiddleware(dispatch, dataChangeHandler);
+  }, [onDataChange]);
+
   useEffect(() => {
     rootRef.current?.focus();
   }, [isFullscreen]);
@@ -237,13 +243,10 @@ function NMRDisplayer({
 
   useEffect(() => {
     if (dataProp !== undefined) {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      Analysis.build(dataProp || {}).then((object) => {
-        dispatch({ type: INITIATE, data: { AnalysisObj: object } });
-      });
+      dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
+      dispatchMiddleWare({ type: INITIATE, payload: dataProp });
     }
-  }, [dataProp]);
+  }, [dataProp, dispatchMiddleWare]);
 
   useEffect(() => {
     setBaseUrl(docsBaseUrl);
@@ -260,15 +263,8 @@ function NMRDisplayer({
     [isRightPanelHide],
   );
 
-  const dispatchMiddleWare = useMemo(() => {
-    function dataChangeHandler(data) {
-      onDataChange?.(data);
-    }
-    return dispatchMiddleware(dispatch, dataChangeHandler);
-  }, [onDataChange]);
-
   const preventAutoHelp = useMemo(() => {
-    return lodash.get(
+    return lodashGet(
       preferencesState,
       'controllers.help.preventAutoHelp',
       false,

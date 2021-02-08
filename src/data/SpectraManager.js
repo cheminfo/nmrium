@@ -97,7 +97,8 @@ export function addJDF(spectra, jdf, options = {}) {
   }
 }
 
-export async function fromJSON(spectra, data = []) {
+export async function fromJSON(data = []) {
+  const spectra = [];
   let promises = [];
 
   for (let datum of data) {
@@ -110,9 +111,11 @@ export async function fromJSON(spectra, data = []) {
     }
   }
   await Promise.all(promises);
+  return spectra;
 }
 
-export async function addBruker(spectra, options, data) {
+export async function addBruker(options, data) {
+  const spectra = [];
   let result = await fromBruker(data, { xy: true, noContours: true });
   let entries = result;
   for (let entry of entries) {
@@ -140,4 +143,5 @@ export async function addBruker(spectra, options, data) {
       }
     }
   }
+  return spectra;
 }

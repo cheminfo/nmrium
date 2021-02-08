@@ -1,4 +1,5 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import generateChar from '../utilities/generateChar';
 
@@ -19,7 +20,7 @@ export default class MultipleAnalysis {
   }
 
   getData() {
-    return lodash.cloneDeep(this.spectraAanalysis);
+    return this.spectraAanalysis;
   }
 
   addColumnKey(nucleus, columnProps, columnKey) {
@@ -69,7 +70,7 @@ export default class MultipleAnalysis {
     this.spectraAanalysis[nucleus].options.columns[columnKey].valueKey = newKey;
 
     this.spectraAanalysis[nucleus].values = this.refreshCalculation(nucleus);
-    return lodash.cloneDeep(this.spectraAanalysis);
+    return this.spectraAanalysis;
   }
 
   setColumn(nucleus, { columns: inputColumns, code }) {
@@ -120,7 +121,7 @@ export default class MultipleAnalysis {
       return acc;
     }, {});
     this.spectraAanalysis[nucleus].values = data;
-    return lodash.cloneDeep(this.spectraAanalysis);
+    return this.spectraAanalysis;
   }
 
   refreshByRow(row, columns) {
@@ -177,7 +178,7 @@ export default class MultipleAnalysis {
       nucleus,
     );
 
-    const prevNucleusData = lodash.get(
+    const prevNucleusData = lodashGet(
       this.spectraAanalysis,
       `${nucleus}.values`,
       {},
@@ -200,7 +201,7 @@ export default class MultipleAnalysis {
     this.spectraAanalysis[nucleus].values = data;
     this.spectraAanalysis[nucleus].values = this.refreshCalculation(nucleus);
 
-    return lodash.cloneDeep(this.spectraAanalysis);
+    return this.spectraAanalysis;
   }
 
   deleteSpectraAnalysis(colKey, nucleus) {
@@ -220,11 +221,11 @@ export default class MultipleAnalysis {
     this.spectraAanalysis[nucleus].values = result;
     this.spectraAanalysis[nucleus].values = this.refreshCalculation(nucleus);
 
-    if (lodash.isEmpty(this.spectraAanalysis[nucleus].values)) {
+    if (isEmpty(this.spectraAanalysis[nucleus].values)) {
       this.reservedColumnsNames[nucleus] = [];
     }
 
-    return lodash.cloneDeep(this.spectraAanalysis);
+    return this.spectraAanalysis;
   }
 
   calculate(columns, data, formula = 'A+B') {

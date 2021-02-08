@@ -1,6 +1,7 @@
 import { produce } from 'immer';
 
 import { Analysis } from '../../data/Analysis';
+import * as SpectraManager from '../../data/SpectraManager';
 import { options } from '../toolbar/ToolTypes';
 
 import checkActionType from './IgnoreActions';
@@ -134,14 +135,29 @@ export interface State {
 export function dispatchMiddleware(dispatch, onDataChange) {
   return (action) => {
     switch (action.type) {
-      case types.LOAD_ZIP_FILE:
-        void AnalysisObj.fromZip(action.files).then(() => {
+      case types.INITIATE: {
+        const { spectra, ...res } = action.payload;
+        void SpectraManager.fromJSON(spectra).then((data) => {
+          action.payload = { spectra: data, ...res };
           dispatch(action);
-          if (onDataChange && checkActionType(action.type)) {
-            onDataChange(AnalysisObj.toJSON());
-          }
         });
         break;
+      }
+      case types.LOAD_ZIP_FILE: {
+        for (let zipFile of action.files) {
+          void SpectraManager.addBruker(
+            { display: { name: zipFile.name } },
+            zipFile.binary,
+          ).then((data) => {
+            action.payload = data;
+            dispatch(action);
+            if (onDataChange && checkActionType(action.type)) {
+              onDataChange(AnalysisObj.toJSON());
+            }
+          });
+        }
+        break;
+      }
 
       default:
         dispatch(action);
@@ -156,11 +172,11 @@ export function dispatchMiddleware(dispatch, onDataChange) {
 function innerSpectrumReducer(draft, action) {
   switch (action.type) {
     case types.INITIATE:
-      return LoadActions.initiate(draft, action.data);
+      return LoadActions.initiate(draft, action);
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
     case types.LOAD_JSON_FILE:
-      return LoadActions.handleLoadJsonFile(draft, action.data);
+      return LoadActions.handleLoadJsonFile(draft, action.files);
     case types.LOAD_JCAMP_FILE:
       return LoadActions.loadJcampFile(draft, action.files);
     case types.LOAD_JDF_FILE:
@@ -168,9 +184,7 @@ function innerSpectrumReducer(draft, action) {
     case types.LOAD_MOL_FILE:
       return LoadActions.handleLoadMOLFile(draft, action.files);
     case types.LOAD_ZIP_FILE:
-      return LoadActions.handleLoadZIPFile(draft);
-    case types.SET_DATA:
-      return LoadActions.setData(draft, action.data);
+      return LoadActions.handleLoadZIPFile(draft, action);
     case types.EXPORT_DATA:
       return exportData(draft, action);
     case types.ADD_PEAK:

@@ -1,7 +1,8 @@
-import { initiateDatum1D } from '../../../data/data1d/Datum1D';
+import get from 'lodash/get';
+
+import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
-import getColor from '../../../data/utilities/getColor';
-import { AnalysisObj, initiateObject } from '../core/Analysis';
+import { AnalysisObj } from '../core/Analysis';
 import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
 import { setMode, setDomain } from './DomainActions';
@@ -13,72 +14,49 @@ function setIsLoading(draft, isLoading) {
   draft.isLoading = isLoading;
 }
 
-function initiate(draft, dataObject) {
-  HorizontalZoomHistory.initiate();
-  initiateObject(dataObject.AnalysisObj);
-  draft.displayerKey = generateID();
-  const spectraData = AnalysisObj.getSpectraData();
-  const molecules = AnalysisObj.getMolecules();
-  const preferences = AnalysisObj.getPreferences('1d');
-  const correlations = AnalysisObj.getCorrelations();
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysis();
+function setData(draft, data) {
+  const {
+    spectra,
+    molecules,
+    preferences,
+    // correlations,
+    // multipleAnalysis,
+  } = data || {
+    spectra: [],
+    molecules: [],
+    preferences: {},
+    correlations: {},
+    multipleAnalysis: {},
+  };
+  draft.data = spectra;
+  draft.molecules = MoleculeManager.fromJSON(molecules);
+  draft.preferences = preferences;
+  // const correlations = AnalysisObj.getCorrelations();
+  // const spectraAanalysis = AnalysisObj.getMultipleAnalysis();
+}
 
-  draft.data = spectraData;
-  draft.molecules = molecules;
-  draft.correlations = correlations;
-  draft.spectraAanalysis = spectraAanalysis;
+function initiate(draft, action) {
+  HorizontalZoomHistory.initiate();
+  draft.displayerKey = generateID();
+  setData(draft, action.payload);
   initZoom1DHandler(draft.data);
-  draft.isLoading = false;
-  if (
-    preferences.display &&
-    Object.prototype.hasOwnProperty.call(preferences.display, 'center')
-  ) {
+  const alignCenter = get(draft.preferences, 'display.center', null);
+  if (alignCenter) {
     changeSpectrumDisplayPreferences(draft, {
-      center: preferences.display.center,
+      center: alignCenter,
     });
   } else {
     setYAxisShift(draft, draft.height);
   }
   setActiveTab(draft);
-}
-
-function setData(draft, data) {
-  for (let d of data) {
-    AnalysisObj.pushDatum(initiateDatum1D(d));
-  }
-  const spectraData = AnalysisObj.getSpectraData();
-  const molecules = AnalysisObj.getMolecules();
-  const correlations = AnalysisObj.getCorrelations();
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysis();
-
-  draft.data = spectraData;
-  draft.molecules = molecules;
-  draft.correlations = correlations;
-  draft.spectraAanalysis = spectraAanalysis;
   draft.isLoading = false;
-  setActiveTab(draft);
-  initZoom1DHandler(draft.data);
 }
 
 function loadJDFFile(draft, files) {
-  let usedColors = draft.data.map((d) => d.color);
-  const filesLength = files.length;
-  for (let i = 0; i < filesLength; i++) {
-    const color = getColor(false, usedColors);
-    AnalysisObj.addJDF(files[i].binary, {
-      display: {
-        name: files[i].name,
-        color: color,
-        isVisible: true,
-        isPeaksMarkersVisible: true,
-      },
-      source: {
-        jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
-      },
-    });
-    usedColors.push(color);
+  const spectra = AnalysisObj.addJDFs(files);
+  for (const spectrum of spectra) {
+    draft.data.push(spectrum);
   }
-  draft.data = AnalysisObj.getSpectraData();
   setDomain(draft);
   setMode(draft);
   initZoom1DHandler(draft.data);
@@ -87,58 +65,47 @@ function loadJDFFile(draft, files) {
 }
 
 function loadJcampFile(draft, files) {
-  AnalysisObj.addJcamps(files);
-  draft.data = AnalysisObj.getSpectraData();
+  const spectra = AnalysisObj.addJcamps(files);
+  for (const spectrum of spectra) {
+    draft.data.push(spectrum);
+  }
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
 
   draft.isLoading = false;
 }
 
-function handleLoadJsonFile(draft, data) {
-  initiateObject(data.AnalysisObj);
-  const spectraData = AnalysisObj.getSpectraData();
-  const molecules = AnalysisObj.getMolecules();
-  const preferences = AnalysisObj.getPreferences('1d');
-  const correlations = AnalysisObj.getCorrelations();
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysis();
+function handleLoadJsonFile(draft, files) {
+  const data = JSON.parse(files[0].binary.toString());
+  setData(draft, data);
+  const alignCenter = get(draft.preferences, 'display.center', null);
 
-  draft.data = spectraData;
-  draft.molecules = molecules;
-  draft.preferences = preferences;
-  draft.correlations = correlations;
-  draft.spectraAanalysis = spectraAanalysis;
-
-  if (
-    preferences.display &&
-    Object.prototype.hasOwnProperty.call(preferences.display, 'center')
-  ) {
+  if (alignCenter) {
     changeSpectrumDisplayPreferences(draft, {
-      center: preferences.display.center,
+      center: alignCenter,
     });
   } else {
     setYAxisShift(draft, draft.height);
   }
 
   setActiveTab(draft);
-  initZoom1DHandler(spectraData);
+  initZoom1DHandler(draft.data);
 
   draft.isLoading = false;
 }
 
 function handleLoadMOLFile(draft, files) {
-  const filesLength = files.length;
-  for (let i = 0; i < filesLength; i++) {
-    AnalysisObj.addMolfile(files[i].binary.toString());
+  for (let i = 0; i < files.length; i++) {
+    const moelcules = AnalysisObj.addMolfile(files[i].binary.toString());
+    for (let m of moelcules) {
+      draft.molecules.push(m);
+    }
   }
-  const molecules = AnalysisObj.getMolecules();
-
-  draft.molecules = molecules;
   draft.isLoading = false;
 }
 
-function handleLoadZIPFile(draft) {
-  draft.data = AnalysisObj.getSpectraData();
+function handleLoadZIPFile(draft, action) {
+  draft.data = action.payload;
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
   draft.isLoading = false;
@@ -147,7 +114,6 @@ function handleLoadZIPFile(draft) {
 export {
   setIsLoading,
   initiate,
-  setData,
   loadJcampFile,
   loadJDFFile,
   handleLoadJsonFile,

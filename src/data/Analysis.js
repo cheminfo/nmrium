@@ -1,28 +1,16 @@
-/* eslint-disable default-param-last */
 import { Molecule } from 'openchemlib/full';
 
 import * as SpectraManager from './SpectraManager';
 import CorrelationManager from './correlation/CorrelationManager';
-// import { Datum1D } from './data1d/Datum1DOld';
 import { toJSON } from './data1d/Datum1D';
 import MultipleAnalysis from './data1d/MulitpleAnalysis';
 import { Molecule as mol } from './molecules/Molecule';
-import { MoleculeManager } from './molecules/MoleculeManager';
 
 export class Analysis {
   spectra = [];
   molecules = [];
 
-  constructor(
-    spectra = [],
-    molecules = [],
-    preferences,
-    correlations = {},
-    multipleAnalysis = {},
-  ) {
-    this.spectra = spectra.slice();
-    this.molecules = molecules.slice(); // chemical structures
-    this.preferences = preferences || {};
+  constructor(correlations = {}, multipleAnalysis = {}) {
     this.correlationManagerInstance = new CorrelationManager(
       correlations.options,
       correlations.values,
@@ -33,54 +21,25 @@ export class Analysis {
     );
   }
 
-  static async build(json = {}) {
-    const {
-      molecules: loadedMolecules,
-      preferences,
-      correlations,
-      multipleAnalysis,
-    } = json || {
-      molecules: [],
-      preferences: {},
-      correlations: {},
-      multipleAnalysis: {},
-    };
-
-    const molecules = loadedMolecules
-      ? MoleculeManager.fromJSON(loadedMolecules)
-      : [];
-
-    const analysis = new Analysis(
-      [],
-      molecules,
-      preferences,
-      correlations,
-      multipleAnalysis,
-    );
-    await SpectraManager.fromJSON(analysis.spectra, json.spectra);
-    return analysis;
-  }
   // handle zip files
   static usedColors = [];
 
   async fromZip(zipFiles) {
+    const spectra = [];
     for (let zipFile of zipFiles) {
       await SpectraManager.addBruker(
-        this.spectra,
+        spectra,
         { display: { name: zipFile.name } },
         zipFile.binary,
       );
     }
+    return spectra;
   }
 
-  async addJcampFromURL(jcampURL, options) {
-    SpectraManager.addJcampFromURL(this.spectra, jcampURL, options);
-  }
-
-  addJcamps(files) {
-    const filesLength = files.length;
-    for (let i = 0; i < filesLength; i++) {
-      SpectraManager.addJcamp(this.spectra, files[i].binary.toString(), {
+  addJDFs(files) {
+    const spectra = [];
+    for (let i = 0; i < files.length; i++) {
+      SpectraManager.addJDF(spectra, files[i].binary, {
         display: {
           name: files[i].name,
         },
@@ -89,13 +48,22 @@ export class Analysis {
         },
       });
     }
-  }
-  addJcamp(jcamp, options = {}) {
-    SpectraManager.addJcamp(this.spectra, jcamp, options);
+    return spectra;
   }
 
-  addJDF(jdf, options = {}) {
-    SpectraManager.addJDF(this.spectra, jdf, options);
+  addJcamps(files) {
+    const spectra = [];
+    for (let i = 0; i < files.length; i++) {
+      SpectraManager.addJcamp(spectra, files[i].binary.toString(), {
+        display: {
+          name: files[i].name,
+        },
+        source: {
+          jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
+        },
+      });
+    }
+    return spectra;
   }
 
   async addMolfileFromURL(molfileURL) {
@@ -118,11 +86,11 @@ export class Analysis {
   addMolfile(molfile) {
     // try to parse molfile
     // this will throw if the molecule can not be parsed !
-    let molecule = Molecule.fromMolfile(molfile);
-    let fragments = molecule.getFragments();
-    this.molecules = Object.assign([], this.molecules);
+    const molecules = [];
+    const molecule = Molecule.fromMolfile(molfile);
+    const fragments = molecule.getFragments();
     for (let fragment of fragments) {
-      this.molecules.push(
+      molecules.push(
         new mol({
           molfile: fragment.toMolfileV3(),
           svg: fragment.toSVG(150, 150),
@@ -132,6 +100,7 @@ export class Analysis {
         }),
       );
     }
+    return molecules;
     // we will split if we have many fragments
   }
 
@@ -201,72 +170,6 @@ export class Analysis {
       correlations: this.getCorrelations(),
       multipleAnalysis: this.getMultipleAnalysis(),
     };
-  }
-
-  setPreferences(preferences) {
-    this.preferences = { ...this.preferences, ...preferences };
-  }
-
-  pushDatum(object) {
-    this.spectra.push(object);
-  }
-
-  createSlice(id2d, position = { x: 0, y: 0 }) {
-    const spectrum2d = this.getDatum(id2d);
-    if (!spectrum2d) return;
-
-    return spectrum2d.getSlice(position);
-  }
-
-  addMissingProjection(id2d, nucleus = []) {
-    const spectrum2d = this.getDatum(id2d);
-
-    for (let n of nucleus) {
-      const datum1D = spectrum2d.getMissingProjection(n);
-      this.spectra.push(datum1D);
-    }
-  }
-
-  getDatum(id) {
-    return this.spectra.find((ob) => ob.id === id);
-  }
-
-  /**
-   *
-   * @param {boolean} isRealData
-   */
-  getSpectraData() {
-    return this.spectra
-      ? this.spectra
-      : // ? this.spectra.map((ob) => {
-        //     const _data =
-        //       ob.info.dimension === 1 ? { ...ob.data, y: ob.data.re } : ob.data;
-        //     // eslint-disable-next-line no-unused-vars
-        //     const { data, ...rest } = ob;
-        //     return {
-        //       ...rest,
-        //       ..._data,
-        //       isVisibleInDomain: ob.display.isVisibleInDomain,
-        //     };
-        //   })
-        [];
-  }
-
-  alignSpectra(nucleus, { from, to, nbPeaks, targetX }) {
-    const spectra = this.spectra.filter(
-      (spectrum) =>
-        spectrum.info.dimension === 1 && spectrum.info.nucleus === nucleus,
-    );
-    if (spectra && spectra.length > 0) {
-      spectra.forEach((spectrum) => {
-        spectrum.alignX({ targetX, from, to, nbPeaks });
-      });
-    }
-  }
-
-  deleteDatumByIDs(IDs) {
-    const _spectra = this.spectra.filter((d) => !IDs.includes(d.id));
-    this.spectra = _spectra.length > 0 ? _spectra : [];
   }
 
   getMultipleAnalysisInstance() {
