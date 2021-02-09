@@ -1,60 +1,44 @@
-import { getXScale } from '../../1d/utilities/scale';
-import { AnalysisObj } from '../core/Analysis';
+import * as MulitpleAnalysis from '../../../data/data1d/MulitpleAnalysis';
+import getRange from '../helper/getRange';
 
 function analyzeSpectra(draft, action) {
-  const scaleX = getXScale(draft);
-  const start = scaleX.invert(action.startX);
-  const end = scaleX.invert(action.endX);
-  let range = [];
-  if (start > end) {
-    range = [end, start];
-  } else {
-    range = [start, end];
-  }
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().analyzeSpectra(
-    range[0],
-    range[1],
-    draft.activeTab,
-  );
-  draft.spectraAanalysis = spectraAanalysis;
+  const [from, to] = getRange(draft, action);
+  MulitpleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
+    from,
+    to,
+    nucleus: draft.activeTab,
+  });
 }
 
 function handleDeleteSpectraRanges(draft, action) {
   const { colKey } = action;
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().deleteSpectraAnalysis(
+  MulitpleAnalysis.deleteSpectraAnalysis(
+    draft.spectraAnalysis,
     colKey,
     draft.activeTab,
   );
-
-  draft.spectraAanalysis = spectraAanalysis;
 }
 function handleResizeSpectraRange(draft, action) {
-  const { colKey, from, to } = action.payload;
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().analyzeSpectra(
+  const { colKey: columnKey, from, to } = action.payload;
+  MulitpleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
     from,
     to,
-    draft.activeTab,
-    colKey,
-  );
-
-  draft.spectraAanalysis = spectraAanalysis;
+    nucleus: draft.activeTab,
+    columnKey,
+  });
 }
 function handleSetcolumns(draft, action) {
   const data = action.payload;
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().setColumn(
-    draft.activeTab,
-    data,
-  );
-  draft.spectraAanalysis = spectraAanalysis;
+  MulitpleAnalysis.setColumn(draft.spectraAnalysis, draft.activeTab, data);
 }
 function handleFiltercolumn(draft, action) {
   const { columnKey, valueKey } = action.payload;
-  const spectraAanalysis = AnalysisObj.getMultipleAnalysisInstance().changeColumnValueKey(
+  MulitpleAnalysis.changeColumnValueKey(
+    draft.spectraAnalysis,
     draft.activeTab,
     columnKey,
     valueKey,
   );
-  draft.spectraAanalysis = spectraAanalysis;
 }
 
 export {

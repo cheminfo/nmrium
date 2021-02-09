@@ -3,22 +3,21 @@ import { Molecule } from 'openchemlib/full';
 import * as SpectraManager from './SpectraManager';
 import CorrelationManager from './correlation/CorrelationManager';
 import { toJSON } from './data1d/Datum1D';
-import MultipleAnalysis from './data1d/MulitpleAnalysis';
 import { Molecule as mol } from './molecules/Molecule';
 
 export class Analysis {
   spectra = [];
   molecules = [];
 
-  constructor(correlations = {}, multipleAnalysis = {}) {
+  constructor(correlations = {}) {
     this.correlationManagerInstance = new CorrelationManager(
       correlations.options,
       correlations.values,
     );
-    this.multipleAnalysisInstance = new MultipleAnalysis(
-      this.spectra,
-      multipleAnalysis,
-    );
+    // this.multipleAnalysisInstance = new MultipleAnalysis(
+    //   this.spectra,
+    //   multipleAnalysis,
+    // );
   }
 
   // handle zip files
@@ -168,25 +167,25 @@ export class Analysis {
       molecules,
       preferences: this.preferences,
       correlations: this.getCorrelations(),
-      multipleAnalysis: this.getMultipleAnalysis(),
+      // multipleAnalysis: this.getMultipleAnalysis(),
     };
   }
 
-  getMultipleAnalysisInstance() {
-    return this.multipleAnalysisInstance;
-  }
+  // getMultipleAnalysisInstance() {
+  //   return this.multipleAnalysisInstance;
+  // }
 
-  getMultipleAnalysisTableAsString(nucleus) {
-    return this.multipleAnalysisInstance.getDataAsString(nucleus);
-  }
+  // getMultipleAnalysisTableAsString(nucleus) {
+  //   return this.multipleAnalysisInstance.getDataAsString(nucleus);
+  // }
 
   getCorrelations() {
     return this.correlationManagerInstance.getData();
   }
 
-  getMultipleAnalysis() {
-    return this.multipleAnalysisInstance.getData();
-  }
+  // getMultipleAnalysis() {
+  //   return this.multipleAnalysisInstance.getData();
+  // }
 
   getCorrelationManagerInstance() {
     return this.correlationManagerInstance;

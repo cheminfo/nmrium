@@ -32,7 +32,7 @@ function setData(draft, data) {
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
   // const correlations = AnalysisObj.getCorrelations();
-  // const spectraAanalysis = AnalysisObj.getMultipleAnalysis();
+  // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
 }
 
 function initiate(draft, action) {

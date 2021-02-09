@@ -4,15 +4,15 @@ import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 
 import AnalysisRange from './AnalysisRange';
 
-function MultiAnalysisRanges({ activeTab, spectraAanalysis, displayerKey }) {
+function MultiAnalysisRanges({ activeTab, spectraAnalysis, displayerKey }) {
   const columns = useMemo(() => {
     const {
       options: { columns },
-    } = spectraAanalysis[activeTab] || {
+    } = spectraAnalysis[activeTab] || {
       options: { columns: {} },
     };
     return columns;
-  }, [activeTab, spectraAanalysis]);
+  }, [activeTab, spectraAnalysis]);
 
   const ranges = useMemo(() => {
     return Object.keys(columns).map((key) => key, []);

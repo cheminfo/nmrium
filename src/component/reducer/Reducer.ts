@@ -81,7 +81,7 @@ export const initialState = {
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
-  spectraAanalysis: {},
+  spectraAnalysis: {},
   AnalysisObj: new Analysis(),
   displayerKey: '',
 };
@@ -128,7 +128,7 @@ export interface State {
   keysPreferences: any;
   displayerMode: any;
   tabActiveSpectrum: any;
-  spectraAanalysis: any;
+  spectraAnalysis: any;
   displayerKey: any;
 }
 

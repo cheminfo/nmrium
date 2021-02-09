@@ -3,280 +3,279 @@ import isEmpty from 'lodash/isEmpty';
 
 import generateChar from '../utilities/generateChar';
 
-import { Datum1D } from './Datum1DOld';
+import { detectRange } from './Datum1D';
 
 export const COLUMNS_TYPES = {
   NORMAL: 'NORMAL',
   FORMULA: 'FORMULA',
 };
 
-export default class MultipleAnalysis {
-  spectraAanalysis = {};
-  reservedColumnsNames = {};
+let reservedColumnsNames = {};
 
-  constructor(spectra = [], multipleAnalysis = {}) {
-    this.spectra = spectra;
-    this.spectraAanalysis = multipleAnalysis;
-  }
+function addColumnKey(spectraAnalysis, nucleus, columnProps, columnKey) {
+  const index = Object.keys(spectraAnalysis[nucleus].options.columns).length;
+  const key = columnKey ? columnKey : generateChar(index).toUpperCase();
+  spectraAnalysis[nucleus].options.columns[key] = columnProps;
+  return key;
+}
 
-  getData() {
-    return this.spectraAanalysis;
-  }
+export function getColumns(spectraAnalysis, nucleus) {
+  return spectraAnalysis[nucleus].options.columns;
+}
 
-  addColumnKey(nucleus, columnProps, columnKey) {
-    const index = Object.keys(this.spectraAanalysis[nucleus].options.columns)
-      .length;
-    const key = columnKey ? columnKey : generateChar(index).toUpperCase();
-    this.spectraAanalysis[nucleus].options.columns[key] = columnProps;
-    return key;
-  }
+export function getValue(colKey, columns, data) {
+  return data[columns[colKey].valueKey];
+}
 
-  getColumns(nucleus) {
-    return this.spectraAanalysis[nucleus].options.columns;
-  }
+export function getSpectraAnalysis(spectra, options) {
+  const { from, to, nucleus } = options;
+  return spectra.reduce(
+    (acc, datum) => {
+      if (datum.info.dimension === 1 && datum.info.nucleus === nucleus) {
+        const range = detectRange(datum, { from, to });
+        acc.sum += range.absolute;
+        acc.values.push({ SID: datum.id, ...range });
+      }
+      return acc;
+    },
+    { values: [], sum: 0 },
+  );
+}
 
-  getValue(colKey, columns, data) {
-    return data[columns[colKey].valueKey];
-  }
-
-  getSpectraAnalysis(from, to, nucleus) {
-    return this.spectra.reduce(
-      (acc, ob) => {
-        if (ob instanceof Datum1D && ob.info.nucleus === nucleus) {
-          const range = ob.detectRange(from, to);
-          acc.sum += range.absolute;
-          acc.values.push({ SID: ob.getID(), ...range });
-        }
-        return acc;
+function init(spectraAnalysis, nucleus) {
+  if (spectraAnalysis[nucleus] === undefined) {
+    spectraAnalysis[nucleus] = {
+      options: {
+        sum: 100,
+        code: null,
+        columns: {},
       },
-      { values: [], sum: 0 },
-    );
+      values: {},
+    };
   }
+}
 
-  init(nucleus) {
-    if (this.spectraAanalysis[nucleus] === undefined) {
-      this.spectraAanalysis[nucleus] = {
-        options: {
-          sum: 100,
-          code: null,
-          columns: {},
-        },
-        values: {},
-      };
-    }
-  }
+export function changeColumnValueKey(
+  spectraAnalysis,
+  nucleus,
+  columnKey,
+  newKey,
+) {
+  spectraAnalysis[nucleus].options.columns[columnKey].valueKey = newKey;
 
-  changeColumnValueKey(nucleus, columnKey, newKey) {
-    this.spectraAanalysis[nucleus].options.columns[columnKey].valueKey = newKey;
+  spectraAnalysis[nucleus].values = refreshCalculation(
+    spectraAnalysis,
+    nucleus,
+  );
+}
 
-    this.spectraAanalysis[nucleus].values = this.refreshCalculation(nucleus);
-    return this.spectraAanalysis;
-  }
-
-  setColumn(nucleus, { columns: inputColumns, code }) {
-    this.init(nucleus);
-    this.spectraAanalysis[nucleus].options.code = code;
-    this.spectraAanalysis[nucleus].options.columns = Object.values(
-      inputColumns,
-    ).reduce((acc, value) => {
+export function setColumn(
+  spectraAnalysis,
+  nucleus,
+  { columns: inputColumns, code },
+) {
+  init(spectraAnalysis, nucleus);
+  spectraAnalysis[nucleus].options.code = code;
+  spectraAnalysis[nucleus].options.columns = Object.values(inputColumns).reduce(
+    (acc, value) => {
       const data = { ...value };
       delete data.tempKey;
       acc[value.tempKey] = data;
       return acc;
-    }, {});
+    },
+    {},
+  );
 
-    const { columns: newColumns } = this.spectraAanalysis[nucleus].options;
+  const { columns: newColumns } = spectraAnalysis[nucleus].options;
 
-    let data = Object.entries(this.spectraAanalysis[nucleus].values).reduce(
-      (outerAcc, [spectraKey, spectra]) => {
-        outerAcc[spectraKey] = Object.keys(inputColumns).reduce((acc, key) => {
-          const newKey = inputColumns[key].tempKey;
-          if (spectra[key]) {
-            acc[newKey] = spectra[key];
-          }
-          return acc;
-        }, {});
-        return outerAcc;
-      },
-      {},
-    );
-
-    data = Object.entries(data).reduce((acc, spectra) => {
-      acc[spectra[0]] = Object.keys(newColumns).reduce((acc, key) => {
-        const isFormula = newColumns[key].type === COLUMNS_TYPES.FORMULA;
-        acc[key] = isFormula
-          ? {
-              colKey: key,
-              value: this.calculate(
-                newColumns,
-                data[spectra[0]],
-                newColumns[key].formula,
-              ),
-            }
-          : { ...spectra[1][key], colKey: key };
-
-        return acc;
-      }, {});
-
-      return acc;
-    }, {});
-    this.spectraAanalysis[nucleus].values = data;
-    return this.spectraAanalysis;
-  }
-
-  refreshByRow(row, columns) {
-    return Object.keys(columns).reduce((acc, key) => {
-      if (columns[key].type === COLUMNS_TYPES.FORMULA) {
-        acc[key] = {
-          colKey: key,
-          ...row,
-          value: this.calculate(columns, row, columns[key].formula),
-        };
-      }
-
-      return acc;
-    }, {});
-  }
-
-  refreshCalculation(nucleus) {
-    const { columns } = this.spectraAanalysis[nucleus].options;
-
-    const data = Object.entries(this.spectraAanalysis[nucleus].values).reduce(
-      (acc, spectra) => {
-        const [id, row] = spectra;
-        acc[id] = {
-          ...row,
-          ...this.refreshByRow(row, columns),
-        };
-        return acc;
-      },
-      {},
-    );
-
-    return data;
-  }
-
-  analyzeSpectra(from, to, nucleus, columnKey = null) {
-    this.init(nucleus);
-    const colKey = this.addColumnKey(
-      nucleus,
-      {
-        type: COLUMNS_TYPES.NORMAL,
-        valueKey: 'relative',
-        from,
-        to,
-        index: 1,
-      },
-      columnKey,
-    );
-
-    const { sum } = this.spectraAanalysis[nucleus].options;
-
-    const { values: result, sum: spectraSum } = this.getSpectraAnalysis(
-      from,
-      to,
-      nucleus,
-    );
-
-    const prevNucleusData = lodashGet(
-      this.spectraAanalysis,
-      `${nucleus}.values`,
-      {},
-    );
-
-    let data = result.reduce((acc, row) => {
-      const factor = spectraSum > 0 ? sum / spectraSum : 0.0;
-
-      acc[row.SID] = {
-        ...prevNucleusData[row.SID],
-        [colKey]: {
-          colKey,
-          ...row,
-          relative: Math.abs(row.absolute) * factor,
-        },
-      };
-      return acc;
-    }, {});
-
-    this.spectraAanalysis[nucleus].values = data;
-    this.spectraAanalysis[nucleus].values = this.refreshCalculation(nucleus);
-
-    return this.spectraAanalysis;
-  }
-
-  deleteSpectraAnalysis(colKey, nucleus) {
-    const result = Object.entries(this.spectraAanalysis[nucleus].values).reduce(
-      (acc, item) => {
-        delete item[1][colKey];
-        if (item[1] && Object.keys(item[1]).length > 0) {
-          acc[item[0]] = item[1];
-          return acc;
+  let data = Object.entries(spectraAnalysis[nucleus].values).reduce(
+    (outerAcc, [spectraKey, spectra]) => {
+      outerAcc[spectraKey] = Object.keys(inputColumns).reduce((acc, key) => {
+        const newKey = inputColumns[key].tempKey;
+        if (spectra[key]) {
+          acc[newKey] = spectra[key];
         }
         return acc;
-      },
-      {},
-    );
+      }, {});
+      return outerAcc;
+    },
+    {},
+  );
 
-    delete this.spectraAanalysis[nucleus].options.columns[colKey];
-    this.spectraAanalysis[nucleus].values = result;
-    this.spectraAanalysis[nucleus].values = this.refreshCalculation(nucleus);
+  data = Object.entries(data).reduce((acc, spectra) => {
+    acc[spectra[0]] = Object.keys(newColumns).reduce((acc, key) => {
+      const isFormula = newColumns[key].type === COLUMNS_TYPES.FORMULA;
+      acc[key] = isFormula
+        ? {
+            colKey: key,
+            value: calculate(
+              newColumns,
+              data[spectra[0]],
+              newColumns[key].formula,
+            ),
+          }
+        : { ...spectra[1][key], colKey: key };
 
-    if (isEmpty(this.spectraAanalysis[nucleus].values)) {
-      this.reservedColumnsNames[nucleus] = [];
+      return acc;
+    }, {});
+
+    return acc;
+  }, {});
+  spectraAnalysis[nucleus].values = data;
+}
+
+function refreshByRow(row, columns) {
+  return Object.keys(columns).reduce((acc, key) => {
+    if (columns[key].type === COLUMNS_TYPES.FORMULA) {
+      acc[key] = {
+        colKey: key,
+        ...row,
+        value: calculate(columns, row, columns[key].formula),
+      };
     }
 
-    return this.spectraAanalysis;
+    return acc;
+  }, {});
+}
+
+function refreshCalculation(spectraAnalysis, nucleus) {
+  const { columns } = spectraAnalysis[nucleus].options;
+
+  const data = Object.entries(spectraAnalysis[nucleus].values).reduce(
+    (acc, spectra) => {
+      const [id, row] = spectra;
+      acc[id] = {
+        ...row,
+        ...refreshByRow(row, columns),
+      };
+      return acc;
+    },
+    {},
+  );
+
+  return data;
+}
+
+export function analyzeSpectra(spectra, spectraAnalysis, options) {
+  const { from, to, nucleus, columnKey = null } = options;
+  init(spectraAnalysis, nucleus);
+  const colKey = addColumnKey(
+    spectraAnalysis,
+    nucleus,
+    {
+      type: COLUMNS_TYPES.NORMAL,
+      valueKey: 'relative',
+      from,
+      to,
+      index: 1,
+    },
+    columnKey,
+  );
+
+  const { sum } = spectraAnalysis[nucleus].options;
+
+  const { values: result, sum: spectraSum } = getSpectraAnalysis(spectra, {
+    from,
+    to,
+    nucleus,
+  });
+
+  const prevNucleusData = lodashGet(spectraAnalysis, `${nucleus}.values`, {});
+
+  let data = result.reduce((acc, row) => {
+    const factor = spectraSum > 0 ? sum / spectraSum : 0.0;
+
+    acc[row.SID] = {
+      ...prevNucleusData[row.SID],
+      [colKey]: {
+        colKey,
+        ...row,
+        relative: Math.abs(row.absolute) * factor,
+      },
+    };
+    return acc;
+  }, {});
+
+  spectraAnalysis[nucleus].values = data;
+  spectraAnalysis[nucleus].values = refreshCalculation(
+    spectraAnalysis,
+    nucleus,
+  );
+}
+
+export function deleteSpectraAnalysis(spectraAnalysis, colKey, nucleus) {
+  const result = Object.entries(spectraAnalysis[nucleus].values).reduce(
+    (acc, item) => {
+      delete item[1][colKey];
+      if (item[1] && Object.keys(item[1]).length > 0) {
+        acc[item[0]] = item[1];
+        return acc;
+      }
+      return acc;
+    },
+    {},
+  );
+
+  delete spectraAnalysis[nucleus].options.columns[colKey];
+  spectraAnalysis[nucleus].values = result;
+  spectraAnalysis[nucleus].values = refreshCalculation(
+    spectraAnalysis,
+    nucleus,
+  );
+
+  if (isEmpty(spectraAnalysis[nucleus].values)) {
+    reservedColumnsNames[nucleus] = [];
+  }
+}
+
+function calculate(columns, data, formula = 'A+B') {
+  const array = formula.split(/\+|-|\*|\/|%|\(|\)/);
+
+  const variables = [];
+
+  for (let i of array) {
+    const l = i.trim();
+    if (columns[l]) {
+      variables.push(l);
+    }
   }
 
-  calculate(columns, data, formula = 'A+B') {
-    const array = formula.split(/\+|-|\*|\/|%|\(|\)/);
+  const params = variables.map((key) =>
+    data[key] ? data[key][columns[key].valueKey] : null,
+  );
 
-    const variables = [];
+  let result;
+  try {
+    // eslint-disable-next-line no-new-func
+    result = new Function(...variables, `return ${formula}`)(...params);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+    result = new Error(`Invalid Formula ( ${formula} ) `);
+  }
+  return result;
+}
+export function getDataAsString(spectraAnalysis, nucleus) {
+  if (spectraAnalysis && spectraAnalysis[nucleus]) {
+    const {
+      values,
+      options: { columns },
+    } = spectraAnalysis[nucleus];
 
-    for (let i of array) {
-      const l = i.trim();
-      if (columns[l]) {
-        variables.push(l);
-      }
+    let result = '';
+
+    for (const letter in columns) {
+      result += `${letter}\t`;
     }
+    result += '\n';
 
-    const params = variables.map((key) =>
-      data[key] ? data[key][columns[key].valueKey] : null,
-    );
-
-    let result;
-    try {
-      // eslint-disable-next-line no-new-func
-      result = new Function(...variables, `return ${formula}`)(...params);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-      result = new Error(`Invalid Formula ( ${formula} ) `);
+    for (const spectrum of Object.values(values)) {
+      for (const letter in columns) {
+        result += `${spectrum[letter][columns[letter].valueKey]}\t`;
+      }
+      result += '\n';
     }
     return result;
   }
-  getDataAsString(nucleus) {
-    if (this.spectraAanalysis && this.spectraAanalysis[nucleus]) {
-      const {
-        values,
-        options: { columns },
-      } = this.spectraAanalysis[nucleus];
-
-      let result = '';
-
-      for (const letter in columns) {
-        result += `${letter}\t`;
-      }
-      result += '\n';
-
-      for (const spectrum of Object.values(values)) {
-        for (const letter in columns) {
-          result += `${spectrum[letter][columns[letter].valueKey]}\t`;
-        }
-        result += '\n';
-      }
-      return result;
-    }
-    return null;
-  }
+  return null;
 }

@@ -1,5 +1,5 @@
 import max from 'ml-array-max';
-import { xyIntegration } from 'ml-spectra-processing';
+import { xyIntegration, xyMinYPoint, xyMaxYPoint } from 'ml-spectra-processing';
 
 import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
@@ -316,6 +316,24 @@ export function updateIntegralRanges(datum) {
     'integral',
     countingCondition,
   );
+}
+
+export function detectRange(datum, options) {
+  const { from, to } = options;
+  const { x, re: y } = datum.data;
+
+  const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
+  const min = xyMinYPoint({ x, y }, { from, to }).y;
+  const max = xyMaxYPoint({ x, y }, { from, to }).y;
+
+  return {
+    id: generateID(),
+    from,
+    to,
+    absolute, // the real value,
+    min,
+    max,
+  };
 }
 
 export function detectRanges(datum, options) {
