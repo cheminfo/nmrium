@@ -1,6 +1,6 @@
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import { Molecule } from './Molecule';
+import { initMolecule } from './Molecule';
 
 export function fromJSON(mols = []) {
   const molecules = [];
@@ -9,7 +9,7 @@ export function fromJSON(mols = []) {
     const fragments = molecule.getFragments();
     for (let fragment of fragments) {
       molecules.push(
-        new Molecule({
+        initMolecule({
           molfile: fragment.toMolfileV3(),
         }),
       );

@@ -1,9 +1,6 @@
-import { Molecule } from 'openchemlib/full';
-
 import * as SpectraManager from './SpectraManager';
 import CorrelationManager from './correlation/CorrelationManager';
 import { toJSON } from './data1d/Datum1D';
-import { Molecule as mol } from './molecules/Molecule';
 
 export class Analysis {
   spectra = [];
@@ -68,83 +65,6 @@ export class Analysis {
   async addMolfileFromURL(molfileURL) {
     let molfile = await fetch(molfileURL).then((response) => response.text());
     this.addMolfile(molfile);
-  }
-
-  getMolecules() {
-    return this.molecules;
-  }
-
-  getPreferences() {
-    return this.preferences;
-  }
-
-  removeMolecule(key) {
-    this.molecules = this.molecules.filter((molecule) => molecule.key !== key);
-  }
-
-  addMolfile(molfile) {
-    // try to parse molfile
-    // this will throw if the molecule can not be parsed !
-    const molecules = [];
-    const molecule = Molecule.fromMolfile(molfile);
-    const fragments = molecule.getFragments();
-    for (let fragment of fragments) {
-      molecules.push(
-        new mol({
-          molfile: fragment.toMolfileV3(),
-          svg: fragment.toSVG(150, 150),
-          mf: fragment.getMolecularFormula().formula,
-          em: fragment.getMolecularFormula().absoluteWeight,
-          mw: fragment.getMolecularFormula().relativeWeight,
-        }),
-      );
-    }
-    return molecules;
-    // we will split if we have many fragments
-  }
-
-  setMolecules(molecules) {
-    this.molecules = molecules;
-  }
-
-  setMolfile(molfile, key) {
-    // try to parse molfile
-    // this will throw if the molecule can not be parsed !
-    let molecule = Molecule.fromMolfile(molfile);
-    let fragments = molecule.getFragments();
-
-    if (fragments.length > 1) {
-      this.molecules = this.molecules.filter((m) => m.key !== key);
-
-      for (let fragment of fragments) {
-        this.molecules.push(
-          new mol({
-            molfile: fragment.toMolfileV3(),
-            svg: fragment.toSVG(150, 150),
-            mf: fragment.getMolecularFormula().formula,
-            em: fragment.getMolecularFormula().absoluteWeight,
-            mw: fragment.getMolecularFormula().relativeWeight,
-          }),
-        );
-      }
-    } else if (fragments.length === 1) {
-      const fragment = fragments[0];
-      const _mol = new mol({
-        molfile: fragment.toMolfileV3(),
-        svg: fragment.toSVG(150, 150),
-        mf: fragment.getMolecularFormula().formula,
-        em: fragment.getMolecularFormula().absoluteWeight,
-        mw: fragment.getMolecularFormula().relativeWeight,
-        key: key,
-      });
-      let molIndex = this.molecules.findIndex((m) => m.key === key);
-      const _molecules = this.molecules.slice();
-      _molecules.splice(molIndex, 1, _mol);
-      this.molecules = _molecules;
-    }
-
-    return this.molecules;
-    // we will split if we have many fragments
   }
 
   /**
