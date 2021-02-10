@@ -23,13 +23,13 @@ function getActiveData(draft) {
         data = data ? data.filter((datum) => datum.info.isFid === false) : [];
       }
 
-      for (let datum of draft.data) {
-        if (data.some((activeData) => activeData.id === datum.id)) {
+      for (let index in draft.data) {
+        if (data.some((activeData) => activeData.id === draft.data[index].id)) {
           // AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
-          datum.display.isVisibleInDomain = true;
+          draft.data[index].display.isVisibleInDomain = true;
         } else {
           // AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
-          datum.display.isVisibleInDomain = false;
+          draft.data[index].display.isVisibleInDomain = false;
         }
       }
       return draft.data;

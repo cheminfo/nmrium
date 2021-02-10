@@ -247,7 +247,7 @@ function handleBrushEnd(draft, action) {
   } else {
     draft.xDomain = domainX;
     if (brushHistory) {
-      brushHistory.push({ xDomain: domainX, yDomain: draft.yDomain });
+      brushHistory.push({ xDomain: domainX, yDomain: domainY });
     }
   }
 }
