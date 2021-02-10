@@ -1,8 +1,8 @@
 import get from 'lodash/get';
 
+import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
-import { AnalysisObj } from '../core/Analysis';
 import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
 import { setMode, setDomain } from './DomainActions';
@@ -53,7 +53,7 @@ function initiate(draft, action) {
 }
 
 function loadJDFFile(draft, files) {
-  const spectra = AnalysisObj.addJDFs(files);
+  const spectra = addJDFs(files);
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
@@ -65,7 +65,7 @@ function loadJDFFile(draft, files) {
 }
 
 function loadJcampFile(draft, files) {
-  const spectra = AnalysisObj.addJcamps(files);
+  const spectra = addJcamps(files);
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
@@ -96,10 +96,7 @@ function handleLoadJsonFile(draft, files) {
 
 function handleLoadMOLFile(draft, files) {
   for (let i = 0; i < files.length; i++) {
-    const moelcules = AnalysisObj.addMolfile(files[i].binary.toString());
-    for (let m of moelcules) {
-      draft.molecules.push(m);
-    }
+    MoleculeManager.addMolfile(draft.molecules, files[i].binary.toString());
   }
   draft.isLoading = false;
 }

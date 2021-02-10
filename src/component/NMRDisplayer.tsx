@@ -38,6 +38,7 @@ import Header from './header/Header';
 import { HighlightProvider } from './highlight';
 import DropZone from './loader/DropZone';
 import Panels from './panels/Panels';
+import checkActionType from './reducer/IgnoreActions';
 import {
   spectrumReducer,
   initialState,
@@ -223,12 +224,15 @@ function NMRDisplayer({
 
   const { selectedTool, displayerMode, data: spectraData } = state;
 
-  const dispatchMiddleWare = useMemo(() => {
-    function dataChangeHandler(data) {
-      onDataChange?.(data);
+  useEffect(() => {
+    if (checkActionType(state.actionType)) {
+      onDataChange?.(state);
     }
-    return dispatchMiddleware(dispatch, dataChangeHandler);
-  }, [onDataChange]);
+  }, [onDataChange, state]);
+
+  const dispatchMiddleWare = useMemo(() => {
+    return dispatchMiddleware(dispatch);
+  }, []);
 
   useEffect(() => {
     rootRef.current?.focus();

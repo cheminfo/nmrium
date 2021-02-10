@@ -1,10 +1,9 @@
 import { produce } from 'immer';
 
-import { Analysis } from '../../data/Analysis';
 import * as SpectraManager from '../../data/SpectraManager';
+import CorrelationManager from '../../data/correlation/CorrelationManager';
 import { options } from '../toolbar/ToolTypes';
 
-import checkActionType from './IgnoreActions';
 import * as CorrelationsActions from './actions/CorrelationsActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
@@ -29,7 +28,6 @@ import * as SpectraAanalysisActions from './actions/SpectraAanalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
-import { AnalysisObj } from './core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
@@ -82,7 +80,7 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAnalysis: {},
-  AnalysisObj: new Analysis(),
+  CorrelationObj: new CorrelationManager(),
   displayerKey: '',
 };
 
@@ -130,9 +128,10 @@ export interface State {
   tabActiveSpectrum: any;
   spectraAnalysis: any;
   displayerKey: any;
+  actionType: null;
 }
 
-export function dispatchMiddleware(dispatch, onDataChange) {
+export function dispatchMiddleware(dispatch) {
   return (action) => {
     switch (action.type) {
       case types.INITIATE: {
@@ -151,9 +150,6 @@ export function dispatchMiddleware(dispatch, onDataChange) {
           ).then((data) => {
             action.payload = data;
             dispatch(action);
-            if (onDataChange && checkActionType(action.type)) {
-              onDataChange(AnalysisObj.toJSON());
-            }
           });
         }
         break;
@@ -161,15 +157,14 @@ export function dispatchMiddleware(dispatch, onDataChange) {
 
       default:
         dispatch(action);
-        if (onDataChange && checkActionType(action.type)) {
-          onDataChange(AnalysisObj.toJSON());
-        }
+
         break;
     }
   };
 }
 
 function innerSpectrumReducer(draft, action) {
+  draft.actionType = action.type;
   switch (action.type) {
     case types.INITIATE:
       return LoadActions.initiate(draft, action);
