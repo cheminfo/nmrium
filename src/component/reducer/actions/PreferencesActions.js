@@ -1,7 +1,8 @@
 import { original } from 'immer';
+import cloneDeep from 'lodash/cloneDeep';
+import lodashGet from 'lodash/get';
 
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import { AnalysisObj } from '../core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 
 import { setDomain } from './DomainActions';
@@ -9,15 +10,8 @@ import { setZoom } from './Zoom';
 
 function handelSetPreferences(draft, action) {
   const { type, values } = action;
-  const preferences = AnalysisObj.getPreferences();
-  const panelsPreferences =
-    preferences && Object.prototype.hasOwnProperty.call(preferences, 'panels')
-      ? preferences.panels
-      : {};
-  AnalysisObj.setPreferences({
-    panels: { ...panelsPreferences, [type]: values },
-  });
-  draft.preferences = AnalysisObj.getPreferences();
+  const panelsPreferences = lodashGet(draft.preferences, 'panels', {});
+  draft.preferences.panels = { ...panelsPreferences, [type]: values };
 }
 
 function changeSpectrumDisplayPreferences(draft, { center }) {
@@ -26,12 +20,10 @@ function changeSpectrumDisplayPreferences(draft, { center }) {
     draft.verticalAlign.flag = true;
     draft.verticalAlign.value = YAxisShift;
     draft.verticalAlign.stacked = false;
-    AnalysisObj.setPreferences({ display: { center: true } });
   } else {
     draft.verticalAlign.flag = false;
     draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
     draft.verticalAlign.stacked = false;
-    AnalysisObj.setPreferences({ display: { center: false } });
   }
 }
 
@@ -59,9 +51,7 @@ function setKeyPreferencesHandler(draft, keyCode) {
     const level =
       displayerMode === DISPLAYER_MODE.DM_2D
         ? spectrumsGroupsList[activeTab].reduce((acc, datum) => {
-            acc[datum.id] = AnalysisObj.getDatum(datum.id)
-              .getProcessingController()
-              .getLevel();
+            acc[datum.id] = datum.processingController.getLevel();
             return acc;
           }, {})
         : null;
@@ -103,18 +93,13 @@ function applyKeyPreferencesHandler(draft, keyCode) {
   const preferences = state.keysPreferences[keyCode];
   if (preferences) {
     draft.activeTab = preferences.activeTab;
-    draft.data = state.data.map((datum) => {
-      return {
-        ...datum,
-        ...(nucluesToString(datum.info.nucleus) === preferences.activeTab
-          ? {
-              display: {
-                ...datum.display,
-                ...preferences.data[datum.id].display,
-              },
-            }
-          : {}),
-      };
+    state.data.forEach((datum, index) => {
+      if (nucluesToString(datum.info.nucleus) === preferences.activeTab) {
+        draft.data[index].display = Object.assign(
+          cloneDeep(datum.display),
+          preferences.data[datum.id].display,
+        );
+      }
     });
     draft.displayerMode = preferences.displayerMode;
     draft.tabActiveSpectrum = preferences.tabActiveSpectrum;
@@ -135,9 +120,8 @@ function applyKeyPreferencesHandler(draft, keyCode) {
 
       for (const datumID of Object.keys(preferences.level)) {
         const { levelPositive, levelNegative } = preferences.level[datumID];
-        const processController = AnalysisObj.getDatum(
-          datumID,
-        ).getProcessingController();
+        const index = state.data.findIndex((datum) => datum.id === datumID);
+        const processController = draft.data[index].processingController;
         processController.setLevel(levelPositive, levelNegative);
         draft.contours[datumID] = processController.drawContours();
       }
