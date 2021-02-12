@@ -1,6 +1,6 @@
 import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 
-import { Data1DManager } from './data1d/Data1DManager';
+import * as Data1DManager from './data1d/Data1DManager';
 import * as Datum1D from './data1d/Datum1D';
 import { Data2DManager } from './data2d/Data2DManager';
 import * as Datum2D from './data2d/Datum2D';
@@ -74,7 +74,7 @@ export function addJDF(spectra, jdf, options = {}) {
   info.acquisitionTime = info.acquisitionTime[0];
 
   info.baseFrequency = info.baseFrequency[0];
-  info.frequencyOffset = info.offset[0];
+  info.frequencyOffset = info.frequencyOffset[0];
 
   info.spectralWidthClipped = converted.application.spectralWidthClipped;
 

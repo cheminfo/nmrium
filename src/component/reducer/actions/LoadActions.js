@@ -5,7 +5,6 @@ import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
 import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
-import { setMode, setDomain } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setYAxisShift, setActiveTab } from './ToolsActions';
 import { initZoom1DHandler } from './Zoom';
@@ -57,8 +56,8 @@ function loadJDFFile(draft, files) {
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
-  setDomain(draft);
-  setMode(draft);
+
+  setActiveTab(draft);
   initZoom1DHandler(draft.data);
 
   draft.isLoading = false;
