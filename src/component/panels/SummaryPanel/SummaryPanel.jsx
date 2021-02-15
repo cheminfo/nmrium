@@ -1,15 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodash from 'lodash';
+import { Correlation, GeneralUtilities } from 'nmr-correlation';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
 import { SignalKindsToInclude } from '../../../data/constants/SignalsKinds';
-import Correlation from '../../../data/correlation/Correlation';
-import {
-  checkSignalMatch,
-  isEditedHSQC,
-} from '../../../data/correlation/utilities/GeneralUtilities';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
@@ -276,7 +272,7 @@ function SummaryPanel() {
         __signals.forEach((__signal) => {
           if (
             !_signals.some((_signal) =>
-              checkSignalMatch(_signal.signal, __signal, 0.0),
+              GeneralUtilities.checkSignalMatch(_signal.signal, __signal, 0.0),
             )
           ) {
             _signals.push({
@@ -320,7 +316,7 @@ function SummaryPanel() {
           __signals.forEach((signal) => {
             if (
               !_signals.some((_signal) =>
-                checkSignalMatch(_signal.signal, signal, 0.0),
+                GeneralUtilities.checkSignalMatch(_signal.signal, signal, 0.0),
               )
             ) {
               _signals.push({
@@ -373,8 +369,16 @@ function SummaryPanel() {
           if (
             !_signals.some(
               (_signal) =>
-                checkSignalMatch(_signal.signal.x, signal.x, 0.0) &&
-                checkSignalMatch(_signal.signal.y, signal.y, 0.0),
+                GeneralUtilities.checkSignalMatch(
+                  _signal.signal.x,
+                  signal.x,
+                  0.0,
+                ) &&
+                GeneralUtilities.checkSignalMatch(
+                  _signal.signal.y,
+                  signal.y,
+                  0.0,
+                ),
             )
           ) {
             _signals.push({
@@ -384,7 +388,9 @@ function SummaryPanel() {
               // here we assume that only one peak exists for the signal and its intensity indicates the sign
               signal: {
                 ...signal,
-                sign: isEditedHSQC(experiments2D[experimentType][index])
+                sign: GeneralUtilities.isEditedHSQC(
+                  experiments2D[experimentType][index],
+                )
                   ? signal.peak[0].z >= 0
                     ? 1
                     : -1

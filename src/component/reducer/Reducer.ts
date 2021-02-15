@@ -1,7 +1,7 @@
 import { produce } from 'immer';
+import { CorrelationManager } from 'nmr-correlation';
 
 import * as SpectraManager from '../../data/SpectraManager';
-import CorrelationManager from '../../data/correlation/CorrelationManager';
 import { options } from '../toolbar/ToolTypes';
 
 import * as CorrelationsActions from './actions/CorrelationsActions';
