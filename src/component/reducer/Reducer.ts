@@ -82,6 +82,7 @@ export const initialState = {
   spectraAnalysis: {},
   CorrelationObj: new CorrelationManager(),
   displayerKey: '',
+  ZoomHistory: {},
 };
 
 export interface State {
