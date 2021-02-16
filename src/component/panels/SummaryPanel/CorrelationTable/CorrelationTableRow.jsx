@@ -111,7 +111,7 @@ function CorrelationTableRow({
             <EditableColumn
               type="number"
               value={
-                correlation.getEquivalences() > 0
+                correlation.getEquivalences() > 1
                   ? correlation.getEquivalences()
                   : ''
               }
@@ -122,7 +122,7 @@ function CorrelationTableRow({
               }
               onSave={onSaveEquivalencesHandler}
             />
-          ) : correlation.getEquivalences() > 0 ? (
+          ) : correlation.getEquivalences() > 1 ? (
             correlation.getEquivalences()
           ) : (
             ''
