@@ -4,7 +4,7 @@ import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/auto
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
 import { options } from '../../toolbar/ToolTypes';
 import getClosestNumber from '../helper/GetClosestNumber';
-import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
+import ZoomHistory from '../helper/ZoomHistory';
 
 import { setDomain, setMode } from './DomainActions';
 import { setYAxisShift } from './ToolsActions';
@@ -153,7 +153,10 @@ function enableFilter(draft, filterID, checked) {
     setDomain(draft);
     setMode(draft);
 
-    const zoomHistory = HorizontalZoomHistory.getInstance(draft.activeTab);
+    const zoomHistory = ZoomHistory.getInstance(
+      draft.ZoomHistory,
+      draft.activeTab,
+    );
     const zoomValue = zoomHistory.getLast();
     if (zoomValue) {
       draft.xDomain = zoomValue.xDomain;

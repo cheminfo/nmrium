@@ -3,7 +3,6 @@ import get from 'lodash/get';
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
-import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
 
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setYAxisShift, setActiveTab } from './ToolsActions';
@@ -35,7 +34,6 @@ function setData(draft, data) {
 }
 
 function initiate(draft, action) {
-  HorizontalZoomHistory.initiate();
   draft.displayerKey = generateID();
   setData(draft, action.payload);
   initZoom1DHandler(draft.data);
