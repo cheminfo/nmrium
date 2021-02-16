@@ -295,9 +295,7 @@ function innerSpectrumReducer(draft, action) {
     case types.UPDATE_CORRELATIONS:
       return CorrelationsActions.handleUpdateCorrelations(
         draft,
-        action.signals1D,
-        action.signals2D,
-        action.signalsDEPT,
+        action.spectra,
       );
 
     case types.ADD_CORRELATION:

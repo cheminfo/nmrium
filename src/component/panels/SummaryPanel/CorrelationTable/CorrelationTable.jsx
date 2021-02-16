@@ -55,7 +55,7 @@ function CorrelationTable({
       return [];
     }
 
-    return correlationData.values
+    return correlationData.correlations
       .filter((correlation) =>
         showProtonsAsRows
           ? correlation.getAtomType() === 'H'
@@ -64,7 +64,7 @@ function CorrelationTable({
       .map((correlation) => (
         <CorrelationTableRow
           additionalColumnData={additionalColumnData}
-          correlations={correlationData.values}
+          correlations={correlationData.correlations}
           correlation={correlation}
           key={`correlation${correlation.getAtomType()}${correlation.getID()}`}
           styleRow={{ backgroundColor: 'mintcream' }}

@@ -3,16 +3,14 @@ import { memo } from 'react';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
 
-function Overview({ correlations }) {
-  if (!correlations) {
+function Overview({ correlationData }) {
+  if (!correlationData) {
     return null;
   }
-
-  const atoms = GeneralUtilities.getAtomCounts(correlations);
+  const atoms = GeneralUtilities.getAtomCounts(correlationData);
 
   return Object.keys(atoms).map((atomType, i) => {
-    const stateAtomType = correlations.state[atomType];
-
+    const stateAtomType = correlationData.state[atomType];
     const error = stateAtomType ? stateAtomType.error : undefined;
     const errorColorIndex = error
       ? Errors.findIndex((_error) => error[_error] !== undefined)
