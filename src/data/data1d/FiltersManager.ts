@@ -71,7 +71,6 @@ function lookupForFilter(datum1d, filterName) {
 }
 
 function reapplyFilters(datum1d, filters = null) {
-  datum1d.xx = 5555555;
   const _filters = filters ? filters : datum1d.filters;
   enableFilter(datum1d, null, null, _filters);
 }
