@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodash from 'lodash';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Correlation } from 'nmr-correlation';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
