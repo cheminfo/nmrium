@@ -1,5 +1,6 @@
 import lodash from 'lodash';
-import { Link, GeneralUtilities } from 'nmr-correlation';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Link, Utilities } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
 import EditableColumn from '../../../elements/EditableColumn';
@@ -98,7 +99,7 @@ function CorrelationTableRow({
           : ''}
       </td>
       <td style={styleLabel}>
-        {GeneralUtilities.getLabel(correlations, correlation)}
+        {Utilities.getLabel(correlations, correlation)}
       </td>
       <td>
         {lodash.get(correlation.getSignal(), 'delta', false)

@@ -1,4 +1,5 @@
 import { produce } from 'immer';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { CorrelationManager } from 'nmr-correlation';
 
 import * as SpectraManager from '../../data/SpectraManager';
@@ -80,7 +81,7 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAnalysis: {},
-  correlationObj: new CorrelationManager(),
+  correlations: CorrelationManager.init(),
   displayerKey: '',
   ZoomHistory: {},
 };
@@ -297,20 +298,15 @@ function innerSpectrumReducer(draft, action) {
       return CorrelationsActions.handleUpdateCorrelations(
         draft,
         action.spectra,
+        action.mf,
+        action.tolerance,
+        action.correlationsData,
       );
-
-    case types.ADD_CORRELATION:
-      return CorrelationsActions.handleAddCorrelation(
-        draft,
-        action.correlation,
-      );
-
-    case types.DELETE_CORRELATION:
-      return CorrelationsActions.handleDeleteCorrelation(draft, action.id);
 
     case types.SET_CORRELATION:
       return CorrelationsActions.handleSetCorrelation(
         draft,
+        action.correlationsData,
         action.id,
         action.correlation,
       );
@@ -318,18 +314,10 @@ function innerSpectrumReducer(draft, action) {
     case types.SET_CORRELATIONS:
       return CorrelationsActions.handleSetCorrelations(
         draft,
+        action.correlationsData,
         action.ids,
         action.correlations,
       );
-
-    case types.SET_CORRELATION_MF:
-      return CorrelationsActions.handleSetMF(draft, action.mf);
-
-    case types.UNSET_CORRELATION_MF:
-      return CorrelationsActions.handleUnsetMF(draft);
-
-    case types.SET_CORRELATION_TOLERANCE:
-      return CorrelationsActions.handleSetTolerance(draft, action.tolerance);
 
     case types.DELETE_SPECTRA:
       return SpectrumsActions.handleDeleteSpectra(draft, action);

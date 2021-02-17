@@ -32,8 +32,6 @@ const ignoreActions = [
   types.CHANGE_INTEGRAL_ZOOM,
   types.CHANGE_SPECTRUM_COLOR,
   types.UPDATE_CORRELATIONS,
-  types.SET_CORRELATION_MF,
-  types.SET_CORRELATION_TOLERANCE,
 ];
 
 function checkActionType(type: string): boolean {

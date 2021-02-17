@@ -1,4 +1,5 @@
 import get from 'lodash/get';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { CorrelationManager } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
@@ -30,12 +31,7 @@ function setData(draft, data) {
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
-  draft.correlationObj = new CorrelationManager(
-    correlations ? correlations.options : {},
-    correlations ? correlations.spectra : [],
-    correlations ? correlations.values : [],
-  );
-  draft.correlations = draft.correlationObj.getData();
+  draft.correlations = CorrelationManager.init(correlations);
 
   // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
 }
