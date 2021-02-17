@@ -16,7 +16,7 @@ import {
 } from '../core/Constants';
 import ZoomHistory from '../helper/ZoomHistory';
 
-import { setDomain, getDomain, setMode } from './DomainActions';
+import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
 
@@ -84,12 +84,11 @@ function resetTool(draft, setDefaultTool = true) {
 }
 
 function resetSelectedTool(draft, filterOnly = false) {
-  if (!filterOnly) {
+  if (
+    (draft.selectedTool && options[draft.selectedTool].isFilter) ||
+    !filterOnly
+  ) {
     resetTool(draft);
-  } else {
-    if (draft.selectedTool && options[draft.selectedTool].isFilter) {
-      resetTool(draft);
-    }
   }
 }
 
@@ -170,45 +169,25 @@ function handleDeleteBaseLineZone(draft, id) {
 }
 
 function handleToggleRealImaginaryVisibility(draft) {
-  // const state = original(draft);
   if (draft.activeSpectrum != null) {
     const { index } = draft.activeSpectrum;
-    // const ob = AnalysisObj.getDatum(activeSpectrumId);
 
-    // if (ob) {
-    // const reY = ob.getReal().y;
-    // const imY = ob.getImaginary().y;
-    // console.log(draft.activeSpectrum.id);
-    // const index = state.data.findIndex((d) => d.id === draft.activeSpectrum.id);
-    // console.log(index);
-
-    // ob.setIsRealSpectrumVisible(!draft.data[index]);
     draft.data[index].display.isRealSpectrumVisible = !draft.data[index].display
       .isRealSpectrumVisible;
-    // ob.setIsRealSpectrumVisible();
     if (draft.data[index].display.isRealSpectrumVisible) {
-      const re = draft.data[index].re;
+      const re = draft.data[index].data.re;
       if (re !== null && re !== undefined) {
-        draft.data[index].y = re;
-        const domain = getDomain(draft.data);
-        draft.xDomain = domain.xDomain;
-        draft.yDomain = domain.yDomain;
-        draft.xDomains = domain.xDomains;
-        draft.yDomains = domain.yDomains;
+        draft.data[index].data.y = re;
       }
     } else {
-      const im = draft.data[index].im;
+      const im = draft.data[index].data.im;
 
       if (im !== null && im !== undefined) {
-        draft.data[index].y = im;
-        const domain = getDomain(draft.data);
-        draft.xDomain = domain.xDomain;
-        draft.yDomain = domain.yDomain;
-        draft.xDomains = domain.xDomains;
-        draft.yDomains = domain.yDomains;
+        draft.data[index].data.y = im;
       }
     }
-    // }
+
+    setDomain(draft);
   }
 }
 
