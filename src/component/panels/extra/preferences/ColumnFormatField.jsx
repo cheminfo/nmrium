@@ -58,7 +58,7 @@ function ColumnFormatField({
           name={`${groupID}-${formatControllerName}`}
           type="text"
           onChange={inputChangeHandler}
-          value={format}
+          value={format ? format : ''}
         />
       </div>
     </div>

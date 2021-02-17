@@ -50,6 +50,8 @@ function SpectraTracker() {
     Events.on('showYSpectraTrackers', (flag) => {
       ToggleVisiblility(flag);
     });
+
+    return () => Events.off('showYSpectraTrackers');
   }, []);
 
   const trackers = useMemo(() => {
