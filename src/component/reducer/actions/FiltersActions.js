@@ -71,7 +71,7 @@ function applyManualPhaseCorrectionFilter(draft, filterOptions) {
     const { index } = draft.activeSpectrum;
     let { ph0, ph1 } = filterOptions;
 
-    const closest = getClosestNumber(draft.data[index].x, draft.pivot);
+    const closest = getClosestNumber(draft.data[index].data.x, draft.pivot);
     const pivotIndex = draft.data[index].data.x.indexOf(closest);
 
     ph0 = ph0 - (ph1 * pivotIndex) / draft.data[index].data.y.length;
