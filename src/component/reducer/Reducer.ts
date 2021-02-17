@@ -1,7 +1,7 @@
 import { produce } from 'immer';
+import { CorrelationManager } from 'nmr-correlation';
 
 import * as SpectraManager from '../../data/SpectraManager';
-import CorrelationManager from '../../data/correlation/CorrelationManager';
 import { options } from '../toolbar/ToolTypes';
 
 import * as CorrelationsActions from './actions/CorrelationsActions';
@@ -80,7 +80,7 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAnalysis: {},
-  CorrelationObj: new CorrelationManager(),
+  correlationObj: new CorrelationManager(),
   displayerKey: '',
   ZoomHistory: {},
 };
@@ -296,9 +296,7 @@ function innerSpectrumReducer(draft, action) {
     case types.UPDATE_CORRELATIONS:
       return CorrelationsActions.handleUpdateCorrelations(
         draft,
-        action.signals1D,
-        action.signals2D,
-        action.signalsDEPT,
+        action.spectra,
       );
 
     case types.ADD_CORRELATION:

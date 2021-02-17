@@ -113,8 +113,8 @@ function CorrelationTable({
                   ? `${correlation.getExperimentType().toUpperCase()}`
                   : ''
               } ${
-                correlation.getEquivalences() > 0
-                  ? `(+${correlation.getEquivalences()})`
+                correlation.getEquivalences() > 1
+                  ? `(${correlation.getEquivalences()})`
                   : ''
               }`}
             </p>

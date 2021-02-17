@@ -1,8 +1,7 @@
 import lodash from 'lodash';
+import { Link, GeneralUtilities } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
-import Link from '../../../../data/correlation/Link';
-import { getLabel } from '../../../../data/correlation/utilities/GeneralUtilities';
 import EditableColumn from '../../../elements/EditableColumn';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
 
@@ -98,7 +97,9 @@ function CorrelationTableRow({
           ? correlation.getExperimentType().toUpperCase()
           : ''}
       </td>
-      <td style={styleLabel}>{getLabel(correlations, correlation)}</td>
+      <td style={styleLabel}>
+        {GeneralUtilities.getLabel(correlations, correlation)}
+      </td>
       <td>
         {lodash.get(correlation.getSignal(), 'delta', false)
           ? correlation.getSignal().delta.toFixed(3)
@@ -110,7 +111,7 @@ function CorrelationTableRow({
             <EditableColumn
               type="number"
               value={
-                correlation.getEquivalences() > 0
+                correlation.getEquivalences() > 1
                   ? correlation.getEquivalences()
                   : ''
               }
@@ -121,7 +122,7 @@ function CorrelationTableRow({
               }
               onSave={onSaveEquivalencesHandler}
             />
-          ) : correlation.getEquivalences() > 0 ? (
+          ) : correlation.getEquivalences() > 1 ? (
             correlation.getEquivalences()
           ) : (
             ''

@@ -1,4 +1,5 @@
 import get from 'lodash/get';
+import { CorrelationManager } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
@@ -17,7 +18,7 @@ function setData(draft, data) {
     spectra,
     molecules,
     preferences,
-    // correlations,
+    correlations,
     // multipleAnalysis,
   } = data || {
     spectra: [],
@@ -29,7 +30,13 @@ function setData(draft, data) {
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
-  // const correlations = AnalysisObj.getCorrelations();
+  draft.correlationObj = new CorrelationManager(
+    correlations ? correlations.options : {},
+    correlations ? correlations.spectra : [],
+    correlations ? correlations.values : [],
+  );
+  draft.correlations = draft.correlationObj.getData();
+
   // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
 }
 
