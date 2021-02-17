@@ -14,7 +14,6 @@ import {
   SET_CORRELATION,
   SET_CORRELATION_MF,
   SET_CORRELATION_TOLERANCE,
-  UNSET_CORRELATION_MF,
   SET_CORRELATIONS,
   UPDATE_CORRELATIONS,
 } from '../../reducer/types/Types';
@@ -90,25 +89,10 @@ function SummaryPanel() {
   }, [correlationData]);
 
   useEffect(() => {
-    if (molecules && molecules.length > 0) {
-      dispatch({ type: SET_CORRELATION_MF, mf: molecules[0].mf });
-    } else {
-      dispatch({ type: UNSET_CORRELATION_MF });
-    }
-  }, [dispatch, molecules]);
-
-  useEffect(() => {
-    const _tolerance = lodash.get(correlationData, 'options.tolerance', false);
-    if (_tolerance) {
-      setTolerance(_tolerance);
+    if (lodash.get(correlationData, 'options.tolerance', false)) {
+      setTolerance(correlationData.options.tolerance);
     }
   }, [correlationData]);
-
-  useEffect(() => {
-    if (tolerance) {
-      dispatch({ type: SET_CORRELATION_TOLERANCE, tolerance });
-    }
-  }, [dispatch, tolerance]);
 
   const showSetMolecularFormulaModal = useCallback(() => {
     modal.show(
@@ -121,20 +105,28 @@ function SummaryPanel() {
     );
   }, [dispatch, mf, modal, molecules]);
 
+  const onSaveSetShiftToleranceHandler = useCallback(
+    (_tolerance) => {
+      setTolerance(_tolerance);
+      dispatch({ type: SET_CORRELATION_TOLERANCE, tolerance: _tolerance });
+    },
+    [dispatch],
+  );
+
   const showSetShiftToleranceModal = useCallback(() => {
     modal.show(
       <SetShiftToleranceModal
         onClose={() => modal.close()}
-        onSave={(_tolerance) => setTolerance(_tolerance)}
+        onSave={onSaveSetShiftToleranceHandler}
         previousTolerance={tolerance}
       />,
     );
-  }, [modal, tolerance]);
+  }, [modal, onSaveSetShiftToleranceHandler, tolerance]);
 
   const additionalColumnTypes = useMemo(() => {
     const columnTypes = ['-'].concat(
       correlationData
-        ? correlationData.correlations
+        ? correlationData.values
             .map((correlation) => correlation.getAtomType())
             .filter((atomType, i, array) => array.indexOf(atomType) === i)
         : [],
@@ -166,7 +158,7 @@ function SummaryPanel() {
 
     setAdditionalColumnData(
       correlationData
-        ? correlationData.correlations
+        ? correlationData.values
             .filter(
               (correlation) =>
                 correlation.atomType === _selectedAdditionalColumnsAtomType,

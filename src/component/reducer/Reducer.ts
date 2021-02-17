@@ -80,7 +80,7 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAnalysis: {},
-  CorrelationObj: new CorrelationManager(),
+  correlationObj: new CorrelationManager(),
   displayerKey: '',
   ZoomHistory: {},
 };

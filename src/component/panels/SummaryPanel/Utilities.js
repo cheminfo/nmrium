@@ -18,8 +18,7 @@ function getLabelColor(correlationData, correlation) {
           .get(error, `${ErrorColors[errorIndex].key}`, [])
           .some(
             (index) =>
-              correlationData.correlations[index].getID() ===
-              correlation.getID(),
+              correlationData.values[index].getID() === correlation.getID(),
           )
       ) {
         return ErrorColors[errorIndex].color;
