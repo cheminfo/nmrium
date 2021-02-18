@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Utilities } from 'nmr-correlation';
 import { memo } from 'react';
 
@@ -7,7 +8,7 @@ function Overview({ correlationsData }) {
   if (!correlationsData) {
     return null;
   }
-  const atoms = Utilities.getAtomCounts(correlationsData);
+  const atoms = Utilities.getAtomCounts(correlationsData.options.mf);
 
   return Object.keys(atoms).map((atomType, i) => {
     const stateAtomType = correlationsData.state[atomType];

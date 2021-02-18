@@ -1,38 +1,62 @@
+import { current, original } from 'immer';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { CorrelationManager } from 'nmr-correlation';
 
-function handleUpdateCorrelations(
-  draft,
-  spectra,
-  mf,
-  tolerance,
-  correlationsData,
-) {
-  draft.correlations = CorrelationManager.build(
+function build(spectra, options, values) {
+  return CorrelationManager.build(spectra, options, values);
+}
+
+function handleUpdateCorrelations(draft) {
+  const state = current(draft);
+  const { data: spectra, correlations } = state;
+  draft.correlations = build(
     spectra,
-    mf,
-    tolerance,
-    correlationsData,
+    correlations.options,
+    correlations.values,
   );
 }
 
-function handleSetCorrelation(draft, correlationsData, id, correlation) {
+function handleSetMF(draft, payload) {
+  const state = original(draft);
+  const { data: spectra, correlations } = state;
+  const { mf } = payload;
+  if (correlations.options.mf === '' || correlations.options.mf !== mf) {
+    draft.correlations = build(spectra, { ...correlations.options, mf }, []);
+  }
+}
+
+function handleSetTolerance(draft, payload) {
+  const state = original(draft);
+  const { data: spectra, correlations } = state;
+  const { tolerance } = payload;
+  draft.correlations = build(
+    spectra,
+    { ...correlations.options, tolerance },
+    correlations.values,
+  );
+}
+
+function handleSetCorrelation(draft, payload) {
+  const state = original(draft);
+  const { correlations } = state;
+  const { id, correlation } = payload;
   draft.correlations = CorrelationManager.setCorrelation(
-    correlationsData,
+    correlations,
     id,
     correlation,
   );
+  handleUpdateCorrelations(draft);
 }
 
-function handleSetCorrelations(draft, correlationsData, ids, correlations) {
-  if (ids.length === correlations.length) {
-    ids.forEach((id, i) =>
-      handleSetCorrelation(draft, correlationsData, id, correlations[i]),
-    );
-  }
+function handleSetCorrelations(draft, payload) {
+  const { ids, correlations } = payload;
+  ids.forEach((id, i) => handleSetCorrelation(draft, id, correlations[i]));
 }
 
 export {
   handleUpdateCorrelations,
   handleSetCorrelation,
   handleSetCorrelations,
+  handleSetMF,
+  handleSetTolerance,
 };

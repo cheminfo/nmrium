@@ -10,10 +10,13 @@ import {
 } from '../../../data/data1d/Datum1D';
 import getRange from '../helper/getRange';
 
+import { handleUpdateCorrelations } from './CorrelationsActions';
+
 function handleAutoRangesDetection(draft, detectionOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     detectRanges(draft.data[index], detectionOptions);
+    handleOnChangeRangesData(draft);
   }
 }
 function handleDeleteRange(draft, rangeID) {
@@ -29,6 +32,7 @@ function handleDeleteRange(draft, rangeID) {
     draft.data[index].ranges.values.splice(peakIndex, 1);
   }
   updateIntegralRanges(draft.data[index]);
+  handleOnChangeRangesData(draft);
 }
 
 function handleChangeRange(draft, action) {
@@ -42,6 +46,7 @@ function handleChangeRange(draft, action) {
     draft.data[index].ranges.values[RangeIndex] = action.data;
 
     updateIntegralRanges(draft.data[index]);
+    handleOnChangeRangesData(draft);
   }
 }
 
@@ -67,6 +72,7 @@ function handleAddRange(draft, action) {
     const { index } = draft.activeSpectrum;
     const [from, to] = range;
     addRange(draft.data[index], { from, to });
+    handleOnChangeRangesData(draft);
   }
 }
 
@@ -83,7 +89,12 @@ function handleChangeRangeSignalValue(draft, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     changeRangeSignal(draft.data[index], rangeID, signalID, value);
+    handleOnChangeRangesData(draft);
   }
+}
+
+function handleOnChangeRangesData(draft) {
+  handleUpdateCorrelations(draft);
 }
 
 export {
