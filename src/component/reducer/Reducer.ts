@@ -1,5 +1,4 @@
 import { produce } from 'immer';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { CorrelationManager } from 'nmr-correlation';
 
 import * as SpectraManager from '../../data/SpectraManager';

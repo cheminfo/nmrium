@@ -1,5 +1,4 @@
 import { current, original } from 'immer';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { CorrelationManager } from 'nmr-correlation';
 
 function build(spectra, options, values) {

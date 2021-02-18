@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Utilities } from 'nmr-correlation';
 import { memo } from 'react';
 

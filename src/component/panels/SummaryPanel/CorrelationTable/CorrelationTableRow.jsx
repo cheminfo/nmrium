@@ -1,5 +1,4 @@
 import lodash from 'lodash';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Link, Utilities } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
