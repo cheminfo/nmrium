@@ -12,13 +12,12 @@ import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import {
   SET_CORRELATION,
-  SET_CORRELATION_MF,
-  SET_CORRELATION_TOLERANCE,
   SET_CORRELATIONS,
   UPDATE_CORRELATIONS,
 } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
+import { DefaultTolerance } from './CorrelationTable/Constants';
 import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
 import SetMolecularFormulaModal from './SetMolecularFormulaModal';
@@ -69,12 +68,12 @@ const panelStyle = css`
 `;
 
 function SummaryPanel() {
-  const { data, molecules, correlations: correlationData } = useChartData();
+  const { data, molecules, correlations: correlationsData } = useChartData();
   const dispatch = useDispatch();
   const modal = useModal();
 
   const [mf, setMF] = useState();
-  const [tolerance, setTolerance] = useState();
+  const [tolerance, setTolerance] = useState(DefaultTolerance);
   const [additionalColumnData, setAdditionalColumnData] = useState([]);
   const [
     selectedAdditionalColumnsAtomType,
@@ -83,50 +82,42 @@ function SummaryPanel() {
   const [showProtonsAsRows, setShowProtonsAsRows] = useState(false);
 
   useEffect(() => {
-    if (lodash.get(correlationData, 'options.mf', false)) {
-      setMF(correlationData.options.mf);
+    if (lodash.get(correlationsData, 'options.mf', false)) {
+      setMF(correlationsData.options.mf);
     }
-  }, [correlationData]);
+  }, [correlationsData]);
 
   useEffect(() => {
-    if (lodash.get(correlationData, 'options.tolerance', false)) {
-      setTolerance(correlationData.options.tolerance);
+    if (lodash.get(correlationsData, 'options.tolerance', false)) {
+      setTolerance(correlationsData.options.tolerance);
     }
-  }, [correlationData]);
+  }, [correlationsData]);
 
   const showSetMolecularFormulaModal = useCallback(() => {
     modal.show(
       <SetMolecularFormulaModal
         onClose={() => modal.close()}
-        onSave={(mf) => dispatch({ type: SET_CORRELATION_MF, mf })}
+        onSave={(_mf) => setMF(_mf)}
         molecules={molecules}
         previousMF={mf}
       />,
     );
-  }, [dispatch, mf, modal, molecules]);
-
-  const onSaveSetShiftToleranceHandler = useCallback(
-    (_tolerance) => {
-      setTolerance(_tolerance);
-      dispatch({ type: SET_CORRELATION_TOLERANCE, tolerance: _tolerance });
-    },
-    [dispatch],
-  );
+  }, [mf, modal, molecules]);
 
   const showSetShiftToleranceModal = useCallback(() => {
     modal.show(
       <SetShiftToleranceModal
         onClose={() => modal.close()}
-        onSave={onSaveSetShiftToleranceHandler}
+        onSave={(_tolerance) => setTolerance(_tolerance)}
         previousTolerance={tolerance}
       />,
     );
-  }, [modal, onSaveSetShiftToleranceHandler, tolerance]);
+  }, [modal, tolerance]);
 
   const additionalColumnTypes = useMemo(() => {
     const columnTypes = ['-'].concat(
-      correlationData
-        ? correlationData.values
+      correlationsData
+        ? correlationsData.values
             .map((correlation) => correlation.getAtomType())
             .filter((atomType, i, array) => array.indexOf(atomType) === i)
         : [],
@@ -149,7 +140,7 @@ function SummaryPanel() {
         value: columnType,
       };
     });
-  }, [correlationData]);
+  }, [correlationsData]);
 
   useEffect(() => {
     const _selectedAdditionalColumnsAtomType = selectedAdditionalColumnsAtomType.split(
@@ -157,8 +148,8 @@ function SummaryPanel() {
     )[0];
 
     setAdditionalColumnData(
-      correlationData
-        ? correlationData.values
+      correlationsData
+        ? correlationsData.values
             .filter(
               (correlation) =>
                 correlation.atomType === _selectedAdditionalColumnsAtomType,
@@ -166,19 +157,26 @@ function SummaryPanel() {
             .reverse()
         : [],
     );
-  }, [correlationData, selectedAdditionalColumnsAtomType]);
+  }, [correlationsData, selectedAdditionalColumnsAtomType]);
 
   useEffect(() => {
-    dispatch({
-      type: UPDATE_CORRELATIONS,
-      spectra: data,
-    });
-  }, [data, dispatch]);
+    if (data && mf && tolerance) {
+      dispatch({
+        type: UPDATE_CORRELATIONS,
+        spectra: data,
+        mf,
+        tolerance,
+        correlationsData,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, dispatch, mf, tolerance]);
 
   const editEquivalencesSaveHandler = useCallback(
     (correlation, value) => {
       dispatch({
         type: SET_CORRELATION,
+        correlationsData: lodash.cloneDeep(correlationsData),
         id: correlation.getID(),
         correlation: new Correlation({
           ...correlation,
@@ -187,7 +185,7 @@ function SummaryPanel() {
         }),
       });
     },
-    [dispatch],
+    [correlationsData, dispatch],
   );
 
   const editProtonsCountSaveHandler = useCallback(
@@ -209,6 +207,7 @@ function SummaryPanel() {
         // ignore not supported text input
         dispatch({
           type: SET_CORRELATION,
+          correlationsData: lodash.cloneDeep(correlationsData),
           id: correlation.getID(),
           correlation: new Correlation({
             ...correlation,
@@ -218,13 +217,14 @@ function SummaryPanel() {
         });
       }
     },
-    [dispatch],
+    [correlationsData, dispatch],
   );
 
   const changeHybridizationSaveHandler = useCallback(
     (correlation, value) => {
       dispatch({
         type: SET_CORRELATION,
+        correlationsData: lodash.cloneDeep(correlationsData),
         id: correlation.getID(),
         correlation: new Correlation({
           ...correlation,
@@ -233,13 +233,14 @@ function SummaryPanel() {
         }),
       });
     },
-    [dispatch],
+    [correlationsData, dispatch],
   );
 
   const editAdditionalColumnFieldSaveHandler = useCallback(
     (rowCorrelation, columnCorrelation) => {
       dispatch({
         type: SET_CORRELATIONS,
+        correlationsData: lodash.cloneDeep(correlationsData),
         ids: [rowCorrelation.getID(), columnCorrelation.getID()],
         correlations: [
           new Correlation({
@@ -259,7 +260,7 @@ function SummaryPanel() {
         ],
       });
     },
-    [dispatch],
+    [correlationsData, dispatch],
   );
 
   return (
@@ -276,7 +277,7 @@ function SummaryPanel() {
           </button>
         </ToolTip>
         <div className="overview-container">
-          <Overview correlationData={correlationData} />
+          <Overview correlationsData={correlationsData} />
         </div>
         <div className="homoHeteroKinds-container">
           <SelectUncontrolled
@@ -299,7 +300,7 @@ function SummaryPanel() {
         </div>
       </DefaultPanelHeader>
       <CorrelationTable
-        correlationData={correlationData}
+        correlationsData={correlationsData}
         additionalColumnData={additionalColumnData}
         editEquivalencesSaveHandler={editEquivalencesSaveHandler}
         changeHybridizationSaveHandler={changeHybridizationSaveHandler}

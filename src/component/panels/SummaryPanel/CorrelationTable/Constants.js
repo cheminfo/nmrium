@@ -31,4 +31,13 @@ const Hybridizations = [
   },
 ];
 
-export { Errors, ErrorColors, Hybridizations };
+const DefaultTolerance = {
+  C: 0.25,
+  H: 0.02,
+  N: 0.25,
+  F: 0.25,
+  Si: 0.25,
+  P: 0.25,
+};
+
+export { DefaultTolerance, Errors, ErrorColors, Hybridizations };

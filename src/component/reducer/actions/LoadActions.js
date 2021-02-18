@@ -30,12 +30,7 @@ function setData(draft, data) {
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
-  draft.correlationObj = new CorrelationManager(
-    correlations ? correlations.options : {},
-    correlations ? correlations.spectra : [],
-    correlations ? correlations.values : [],
-  );
-  draft.correlations = draft.correlationObj.getData();
+  draft.correlations = CorrelationManager.init(correlations);
 
   // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
 }

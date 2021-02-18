@@ -42,7 +42,7 @@ const tableStyle = css`
 `;
 
 function CorrelationTable({
-  correlationData,
+  correlationsData,
   additionalColumnData,
   editEquivalencesSaveHandler,
   changeHybridizationSaveHandler,
@@ -51,11 +51,11 @@ function CorrelationTable({
   showProtonsAsRows,
 }) {
   const rows = useMemo(() => {
-    if (!correlationData) {
+    if (!correlationsData) {
       return [];
     }
 
-    return correlationData.values
+    return correlationsData.values
       .filter((correlation) =>
         showProtonsAsRows
           ? correlation.getAtomType() === 'H'
@@ -64,14 +64,14 @@ function CorrelationTable({
       .map((correlation) => (
         <CorrelationTableRow
           additionalColumnData={additionalColumnData}
-          correlations={correlationData.values}
+          correlations={correlationsData.values}
           correlation={correlation}
           key={`correlation${correlation.getAtomType()}${correlation.getID()}`}
           styleRow={{ backgroundColor: 'mintcream' }}
           styleLabel={
             correlation.getAtomType() === 'H'
               ? {
-                  color: getLabelColor(correlationData, correlation),
+                  color: getLabelColor(correlationsData, correlation),
                 }
               : {}
           }
@@ -84,7 +84,7 @@ function CorrelationTable({
   }, [
     additionalColumnData,
     changeHybridizationSaveHandler,
-    correlationData,
+    correlationsData,
     editEquivalencesSaveHandler,
     editProtonsCountSaveHandler,
     editAdditionalColumnFieldSaveHandler,
@@ -96,7 +96,7 @@ function CorrelationTable({
       additionalColumnData.map((correlation) => (
         <th
           key={`CorrCol_${correlation.getID()}`}
-          style={{ color: getLabelColor(correlationData, correlation) }}
+          style={{ color: getLabelColor(correlationsData, correlation) }}
         >
           <div style={{ display: 'block' }}>
             <p>{correlation.getLabel('origin')}</p>
@@ -121,7 +121,7 @@ function CorrelationTable({
           </div>
         </th>
       )),
-    [additionalColumnData, correlationData],
+    [additionalColumnData, correlationsData],
   );
 
   return (

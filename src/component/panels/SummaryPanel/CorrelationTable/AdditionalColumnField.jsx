@@ -1,4 +1,4 @@
-import { Link, GeneralUtilities } from 'nmr-correlation';
+import { Link, Utilities } from 'nmr-correlation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import generateID from '../../../../data/utilities/generateID';
@@ -59,10 +59,7 @@ function AdditionalColumnField({
             ...pseudoCommonLink,
             axis: 'x',
             match: [
-              GeneralUtilities.getCorrelationIndex(
-                correlations,
-                rowCorrelation,
-              ),
+              Utilities.getCorrelationIndex(correlations, rowCorrelation),
             ],
           }),
         );
@@ -71,10 +68,7 @@ function AdditionalColumnField({
             ...pseudoCommonLink,
             axis: 'y',
             match: [
-              GeneralUtilities.getCorrelationIndex(
-                correlations,
-                columnCorrelation,
-              ),
+              Utilities.getCorrelationIndex(correlations, columnCorrelation),
             ],
           }),
         );
