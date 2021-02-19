@@ -3,6 +3,9 @@ import { original } from 'immer';
 import { detectZones, detectZonesManual } from '../../../data/data2d/Datum2D';
 import Events from '../../utility/Events';
 import get2DRange from '../helper/get2DRange';
+
+// eslint-disable-next-line import/order
+import { handleUpdateCorrelations } from './CorrelationsActions';
 // import { AnalysisObj } from '../core/Analysis';
 
 import { setDomain } from './DomainActions';
@@ -22,6 +25,7 @@ function add2dZoneHandler(draft, action) {
       thresholdFactor: noiseFactor,
       convolutionByFFT: false,
     });
+    handleOnChangeZonesData(draft);
   }
 }
 function delete2dZoneHandler(draft, zoneID) {
@@ -37,6 +41,7 @@ function delete2dZoneHandler(draft, zoneID) {
       );
       draft.data[index].zones.values.splice(zoneIndex, 1);
     }
+    handleOnChangeZonesData(draft);
   }
 }
 
@@ -44,6 +49,7 @@ function handleAutoZonesDetection(draft, detectionOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     detectZones(draft.data[index], detectionOptions);
+    handleOnChangeZonesData(draft);
   }
 }
 
@@ -55,6 +61,7 @@ function handleChangeZone(draft, action) {
       (p) => p.id === action.data.id,
     );
     draft.data[index].zones.values[zoneIndex] = action.data;
+    handleOnChangeZonesData(draft);
   }
 }
 
@@ -64,7 +71,12 @@ function changeZoneSignal(draft, action) {
     const { index } = draft.activeSpectrum;
     changeZoneSignal(draft.data[index], zoneID, signal);
     setDomain(draft);
+    handleOnChangeZonesData(draft);
   }
+}
+
+function handleOnChangeZonesData(draft) {
+  handleUpdateCorrelations(draft);
 }
 
 export {

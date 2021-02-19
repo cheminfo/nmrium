@@ -2,6 +2,7 @@ import { produce } from 'immer';
 import { CorrelationManager } from 'nmr-correlation';
 
 import * as SpectraManager from '../../data/SpectraManager';
+import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
 
 import * as CorrelationsActions from './actions/CorrelationsActions';
@@ -80,7 +81,9 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAnalysis: {},
-  correlations: CorrelationManager.init(),
+  correlations: CorrelationManager.init({
+    options: { tolerance: DefaultTolerance, mf: '' },
+  }),
   displayerKey: '',
   ZoomHistory: {},
 };
@@ -293,30 +296,17 @@ function innerSpectrumReducer(draft, action) {
     case types.DELETE_MOLECULE:
       return MoleculeActions.handleDeleteMolecule(draft, action.key);
 
-    case types.UPDATE_CORRELATIONS:
-      return CorrelationsActions.handleUpdateCorrelations(
-        draft,
-        action.spectra,
-        action.mf,
-        action.tolerance,
-        action.correlationsData,
-      );
+    case types.SET_CORRELATIONS_MF:
+      return CorrelationsActions.handleSetMF(draft, action.payload);
+
+    case types.SET_CORRELATIONS_TOLERANCE:
+      return CorrelationsActions.handleSetTolerance(draft, action.payload);
 
     case types.SET_CORRELATION:
-      return CorrelationsActions.handleSetCorrelation(
-        draft,
-        action.correlationsData,
-        action.id,
-        action.correlation,
-      );
+      return CorrelationsActions.handleSetCorrelation(draft, action.payload);
 
     case types.SET_CORRELATIONS:
-      return CorrelationsActions.handleSetCorrelations(
-        draft,
-        action.correlationsData,
-        action.ids,
-        action.correlations,
-      );
+      return CorrelationsActions.handleSetCorrelations(draft, action.payload);
 
     case types.DELETE_SPECTRA:
       return SpectrumsActions.handleDeleteSpectra(draft, action);
