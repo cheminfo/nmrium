@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { FaMinusCircle } from 'react-icons/fa';
 
 function ZoneAssignmentColumn({
@@ -19,8 +19,8 @@ function ZoneAssignmentColumn({
       {...onHover}
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
     >
-      {lodash.get(rowData, `${axis}.pubIntegral`, 0) > 0 ? (
-        lodash.get(rowData, `${axis}.diaID`, []).length > 0 ? (
+      {lodashGet(rowData, `${axis}.pubIntegral`, 0) > 0 ? (
+        lodashGet(rowData, `${axis}.diaID`, []).length > 0 ? (
           <div
             onMouseEnter={() => setShowUnlinkButton(true)}
             onMouseLeave={() => setShowUnlinkButton(false)}
@@ -38,7 +38,7 @@ function ZoneAssignmentColumn({
                   : { color: 'black', fontWeight: 'normal' }
               }
             >
-              {lodash.get(rowData, `${axis}.diaID`, []).length}
+              {lodashGet(rowData, `${axis}.diaID`, []).length}
             </span>
             {`)`}{' '}
             <sup>
@@ -57,7 +57,7 @@ function ZoneAssignmentColumn({
           </div>
         ) : assignment.isActive && assignment.activeAxis === axis ? (
           <div>
-            {`${lodash.get(rowData, `${axis}.pubIntegral`, '')} (`}
+            {`${lodashGet(rowData, `${axis}.pubIntegral`, '')} (`}
             <span
               style={{
                 color: 'red',

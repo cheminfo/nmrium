@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodash from 'lodash';
 import { Fragment, useCallback } from 'react';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
@@ -69,7 +68,7 @@ function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
 
   const changeRangeSignalKindHandler = useCallback(
     (value) => {
-      const _rowData = lodash.cloneDeep(rowData);
+      const _rowData = { ...rowData };
       _rowData.signal[_rowData.tableMetaInfo.signalIndex].kind = value;
       _rowData.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal
@@ -84,15 +83,14 @@ function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
 
   const saveEditRangeHandler = useCallback(
     (editedRange) => {
-      let _range = lodash.cloneDeep(editedRange);
       // for now: clear all assignments for this range because signals or levels to store might have changed
-      unlinkInAssignmentData(assignmentData, _range);
-      _range = unlink(_range);
-      delete _range.tableMetaInfo;
+      unlinkInAssignmentData(assignmentData, editedRange);
+      editedRange = unlink(editedRange);
+      delete editedRange.tableMetaInfo;
 
       dispatch({
         type: CHANGE_RANGE_DATA,
-        data: _range,
+        data: editedRange,
       });
     },
     [assignmentData, dispatch],

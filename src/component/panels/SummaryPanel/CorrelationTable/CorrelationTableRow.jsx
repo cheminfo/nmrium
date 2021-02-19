@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { Link, Utilities } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
@@ -101,7 +101,7 @@ function CorrelationTableRow({
         {Utilities.getLabel(correlations, correlation)}
       </td>
       <td>
-        {lodash.get(correlation.getSignal(), 'delta', false)
+        {lodashGet(correlation.getSignal(), 'delta', false)
           ? correlation.getSignal().delta.toFixed(3)
           : ''}
       </td>

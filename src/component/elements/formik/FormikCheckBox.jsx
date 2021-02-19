@@ -1,5 +1,5 @@
 import { useFormikContext } from 'formik';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
 
@@ -7,7 +7,7 @@ import CheckBox from '../CheckBox';
 
 function FormikCheckBox({ label, name, onChange, className, reverse }) {
   const { values, setFieldValue } = useFormikContext();
-  const value = reverse ? !lodash.get(values, name) : lodash.get(values, name);
+  const value = reverse ? !lodashGet(values, name) : lodashGet(values, name);
 
   const changeHandler = useCallback(
     (e) => {

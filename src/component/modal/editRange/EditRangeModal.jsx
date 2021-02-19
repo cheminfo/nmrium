@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 /** @jsxImportSource @emotion/react */
 import { Form, Formik } from 'formik';
-import lodash from 'lodash';
 import { useCallback, useEffect, useMemo } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
@@ -117,8 +116,8 @@ function EditRangeModal({
 
   const handleOnSave = useCallback(
     async (formValues) => {
-      const _range = lodash.cloneDeep(rangeData);
-      _range.signal = getSignals(formValues.signals);
+      const _range = { ...rangeData };
+      rangeData.signal = getSignals(formValues.signals);
       await onSaveEditRangeModal(_range);
       handleOnClose();
     },

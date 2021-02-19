@@ -1,5 +1,5 @@
 import { SvgNmrSum } from 'cheminfo-font';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
 import { useCallback, useState } from 'react';
 import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
@@ -60,9 +60,11 @@ function RangesHeader({
   const preferences = usePreferences();
   const [isMultiplicityTreesVisible, showMultiplicityTrees] = useState(false);
 
-  const currentSum = lodash.get(ranges, 'options.sum', null);
+  const currentSum = lodashGet(ranges, 'options.sum', null);
   const removeAssignments = useCallback(() => {
-    ranges.values.forEach((range) => onUnlink(range));
+    for (const range of ranges.values) {
+      onUnlink(range);
+    }
   }, [ranges, onUnlink]);
 
   const changeRangesSumHandler = useCallback(
@@ -111,7 +113,7 @@ function RangesHeader({
 
   const saveAsHTMLHandler = useCallback(() => {
     const { originFrequency: observedFrequency, nucleus } = info;
-    const format = lodash.get(
+    const format = lodashGet(
       preferences,
       `formatting.nucleusByKey[${nucleus.toLowerCase()}]`,
     );

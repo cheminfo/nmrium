@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { DELETE_2D_ZONE } from '../../component/reducer/types/Types';
 import { DatumKind } from '../constants/SignalsKinds';
@@ -43,7 +43,7 @@ const checkSignalKinds = (zone, kinds) => {
 };
 
 const unlink = (zone, isOnZoneLevel, signalIndex, axis) => {
-  const zoneObject = lodash.cloneDeep(zone);
+  const zoneObject = cloneDeep(zone);
 
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {

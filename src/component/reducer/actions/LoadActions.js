@@ -1,4 +1,4 @@
-import get from 'lodash/get';
+import lodashGet from 'lodash/get';
 import { CorrelationManager } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
@@ -41,7 +41,7 @@ function initiate(draft, action) {
   draft.displayerKey = generateID();
   setData(draft, action.payload);
   initZoom1DHandler(draft.data);
-  const alignCenter = get(draft.preferences, 'display.center', null);
+  const alignCenter = lodashGet(draft.preferences, 'display.center', null);
   if (alignCenter) {
     changeSpectrumDisplayPreferences(draft, {
       center: alignCenter,
@@ -79,7 +79,7 @@ function loadJcampFile(draft, files) {
 function handleLoadJsonFile(draft, files) {
   const data = JSON.parse(files[0].binary.toString());
   setData(draft, data);
-  const alignCenter = get(draft.preferences, 'display.center', null);
+  const alignCenter = lodashGet(draft.preferences, 'display.center', null);
 
   if (alignCenter) {
     changeSpectrumDisplayPreferences(draft, {

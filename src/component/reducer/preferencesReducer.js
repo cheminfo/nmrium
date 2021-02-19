@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import lodash from 'lodash';
+import lodashMerge from 'lodash/merge';
 
 import {
   getLocalStorage,
@@ -109,7 +109,7 @@ export function preferencesReducer(state, action) {
           draft.dispatch = dispatch;
           if (localData) {
             Object.entries(localData).forEach(([k, v]) => {
-              draft[k] = lodash.merge(
+              draft[k] = lodashMerge(
                 v,
                 resPreferences[k] ? resPreferences[k] : {},
               );
@@ -122,7 +122,7 @@ export function preferencesReducer(state, action) {
     case SET_PREFERENCES:
       return produce(state, (draft) => {
         if (action.payload) {
-          const data = lodash.cloneDeep(action.payload);
+          const data = action.payload;
           draft.controllers = data.controllers;
           draft.formatting = data.formatting;
           draft.display.panels = data.display.panels;

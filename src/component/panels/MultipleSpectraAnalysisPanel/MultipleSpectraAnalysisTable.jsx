@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useMemo, memo, useCallback, Fragment } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';
@@ -14,7 +14,7 @@ function MultipleSpectraAnalysisTable({ data, activeTab }) {
   const format = useFormatNumberByNucleus(activeTab);
 
   const codeEvaluation = useMemo(() => {
-    const code = lodash.get(data, 'code', '');
+    const code = lodashGet(data, 'code', '');
     return Eval(code, data);
   }, [data]);
 

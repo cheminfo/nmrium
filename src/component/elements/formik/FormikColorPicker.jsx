@@ -1,5 +1,5 @@
 import { useFormikContext } from 'formik';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useCallback, memo } from 'react';
 import { SketchPicker } from 'react-color';
 
@@ -21,7 +21,7 @@ function FormikColorPicker({ onColorChange, name, ...props }) {
 
   return (
     <SketchPicker
-      color={{ hex: lodash.get(values, name, '#000') }}
+      color={{ hex: lodashGet(values, name, '#000') }}
       presetColors={COLORS}
       onChangeComplete={(e) => colorchangeHandler(e)}
       {...props}

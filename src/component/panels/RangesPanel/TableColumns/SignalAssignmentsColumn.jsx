@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
@@ -13,7 +13,7 @@ function SignalAssignmentsColumn({
   onUnlink,
 }) {
   const diaIDs = useMemo(() => {
-    return lodash.get(rowData, 'tableMetaInfo.signal.diaID', []);
+    return lodashGet(rowData, 'tableMetaInfo.signal.diaID', []);
   }, [rowData]);
 
   const tdCss = useMemo(() => {

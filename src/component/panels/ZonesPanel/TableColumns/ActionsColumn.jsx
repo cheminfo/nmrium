@@ -1,4 +1,3 @@
-import lodash from 'lodash';
 import { Fragment, useCallback } from 'react';
 import { FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
@@ -30,7 +29,7 @@ function ActionsColumn({ rowData, rowSpanTags }) {
 
   const changeSignalKindHandler = useCallback(
     (value) => {
-      const _zone = lodash.cloneDeep(rowData);
+      const _zone = { ...rowData };
       _zone.signal[_zone.tableMetaInfo.signalIndex].kind = value;
       _zone.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal

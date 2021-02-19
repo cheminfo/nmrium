@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useMemo, useCallback, useState } from 'react';
 
 import { useAssignment } from '../../assignment';
@@ -53,7 +53,7 @@ function RangesTableRow({
   const rowSpanTags = useMemo(() => {
     return {
       rowSpan: rowData.tableMetaInfo.rowSpan,
-      style: lodash.get(rowData.tableMetaInfo, 'hide', false)
+      style: lodashGet(rowData.tableMetaInfo, 'hide', false)
         ? { display: 'none' }
         : null,
     };
@@ -69,7 +69,7 @@ function RangesTableRow({
       onUnlink(
         rowData,
         isOnRangeLevel,
-        lodash.get(rowData, 'tableMetaInfo.signalIndex', undefined),
+        lodashGet(rowData, 'tableMetaInfo.signalIndex', undefined),
       );
       if (isOnRangeLevel !== undefined) {
         if (isOnRangeLevel) {
@@ -120,7 +120,7 @@ function RangesTableRow({
   const trCss = useMemo(() => {
     return highlightRange.isActive || assignmentRange.isActive
       ? HighlightedRowStyle
-      : lodash.get(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
+      : lodashGet(rowData, 'tableMetaInfo.isConstantlyHighlighted', false)
       ? ConstantlyHighlightedRowStyle
       : null;
   }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
@@ -181,7 +181,7 @@ function RangesTableRow({
       )}
 
       <td {...onHoverSignal}>
-        {lodash.get(rowData, 'tableMetaInfo.signal.multiplicity', '')}
+        {lodashGet(rowData, 'tableMetaInfo.signal.multiplicity', '')}
       </td>
 
       <CouplingColumn rowData={rowData} onHoverSignal={onHoverSignal} />

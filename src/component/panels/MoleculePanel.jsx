@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodash from 'lodash';
 import OCL from 'openchemlib/full';
 import { useState, useCallback, useMemo, useEffect, memo } from 'react';
 import {
@@ -305,7 +304,7 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
           );
           if (datum) {
             // determine the level of setting the diaID array (range vs. signal level) and save there
-            const _datum = lodash.cloneDeep(datum);
+            const _datum = { ...datum };
             // on range/zone level
             if (signalIndex === undefined) {
               if (displayerMode === DISPLAYER_MODE.DM_1D) {

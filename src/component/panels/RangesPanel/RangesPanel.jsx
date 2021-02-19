@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import ReactCardFlip from 'react-card-flip';
@@ -170,7 +170,7 @@ function RangesTablePanel({
 
   const rangesPreferences = useMemo(() => {
     const _preferences =
-      lodash.get(preferences, `formatting.panels.ranges.[${activeTab}]`) ||
+      lodashGet(preferences, `formatting.panels.ranges.[${activeTab}]`) ||
       rangeDefaultValues;
 
     return _preferences;

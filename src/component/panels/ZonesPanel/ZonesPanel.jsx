@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaUnlink } from 'react-icons/fa';
@@ -145,7 +145,7 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
   }, [dispatch, modal, removeAssignments]);
 
   const zonesPreferences = useMemo(() => {
-    const _preferences = lodash.get(preferences, `panels.zones.[${activeTab}]`);
+    const _preferences = lodashGet(preferences, `panels.zones.[${activeTab}]`);
 
     return _preferences;
   }, [activeTab, preferences]);

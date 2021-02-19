@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useMemo, useState, useEffect } from 'react';
 
 import { useAssignment } from '../../assignment';
@@ -45,7 +45,7 @@ function MultiplicityTree({
   );
 
   const spectrumData = useMemo(
-    () => lodash.get(spectraData, `${activeSpectrum.index}`, null),
+    () => lodashGet(spectraData, `${activeSpectrum.index}`, null),
     [activeSpectrum, spectraData],
   );
 

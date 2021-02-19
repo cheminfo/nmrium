@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { DELETE_RANGE } from '../../component/reducer/types/Types';
 import { DatumKind } from '../constants/SignalsKinds';
@@ -32,7 +32,7 @@ const resetDiaIDs = (range) => {
 };
 
 const unlink = (range, isOnRangeLevel, signalIndex) => {
-  const rangeObject = lodash.cloneDeep(range);
+  const rangeObject = cloneDeep(range);
 
   if (isOnRangeLevel !== undefined) {
     if (isOnRangeLevel === true) {

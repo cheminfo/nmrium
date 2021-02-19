@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { Fragment, useCallback } from 'react';
 
 import { useDispatch } from '../../../context/DispatchContext';
@@ -8,17 +8,17 @@ import { CHANGE_ZONE_SIGNAL } from '../../../reducer/types/Types';
 function SignalDeltaColumn({ rowData, onHoverSignalX, onHoverSignalY }) {
   const dispatch = useDispatch();
 
-  const signalDeltaX = lodash.get(
+  const signalDeltaX = lodashGet(
     rowData,
     'tableMetaInfo.signal.x.delta',
     undefined,
   );
-  const signalDeltaY = lodash.get(
+  const signalDeltaY = lodashGet(
     rowData,
     'tableMetaInfo.signal.y.delta',
     undefined,
   );
-  const id = lodash.get(rowData, 'tableMetaInfo.signal.id', undefined);
+  const id = lodashGet(rowData, 'tableMetaInfo.signal.id', undefined);
 
   const saveXHandler = useCallback(
     (event) => {
