@@ -2,16 +2,13 @@ import { css } from '@emotion/react';
 /** @jsxImportSource @emotion/react */
 import { useCallback, useState, useEffect } from 'react';
 
-import {
-  checkRangeKind,
-  deleteRange,
-} from '../../../data/utilities/RangeUtilities';
+import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import { useAssignment, useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScale } from '../../context/ScaleContext';
 import { useHighlight } from '../../highlight';
-import { RESIZE_RANGE } from '../../reducer/types/Types';
+import { DELETE_RANGE, RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Resizable from '../Resizable';
 import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
@@ -114,7 +111,13 @@ function Range({ rangeData, showMultiplicityTrees }) {
         e.target.nodeName === 'g' &&
         !isBlockedByEditing
       ) {
-        deleteRange(assignmentData, dispatch, rangeData);
+        dispatch({
+          type: DELETE_RANGE,
+          payload: {
+            rangeData,
+            assignmentData,
+          },
+        });
       }
     },
     [assignmentData, dispatch, isBlockedByEditing, rangeData],

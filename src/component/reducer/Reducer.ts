@@ -332,17 +332,21 @@ function innerSpectrumReducer(draft, action) {
     case types.ADD_RANGE:
       return RangesActions.handleAddRange(draft, action);
     case types.DELETE_RANGE:
-      return RangesActions.handleDeleteRange(draft, action.rangeID);
-    case types.CHANGE_RANGE_DATA:
-      return RangesActions.handleChangeRange(draft, action);
+      return RangesActions.handleDeleteRange(draft, action);
     case types.RESIZE_RANGE:
       return RangesActions.handleResizeRange(draft, action);
     case types.CHANGE_RANGE_SUM:
       return RangesActions.handleChangeRangeSum(draft, action.value);
     case types.CHANGE_RANGE_RELATIVE:
       return RangesActions.handleChangeRangeRaltiveValue(draft, action);
-    case types.CHANGE_RANGE_SIGNAL:
+    case types.CHANGE_RANGE_SIGNAL_VALUE:
       return RangesActions.handleChangeRangeSignalValue(draft, action);
+    case types.CHANGE_RANGE_SIGNAL_KIND:
+      return RangesActions.handleChangeRangeSignalKind(draft, action);
+    case types.SAVE_EDITED_RANGE:
+      return RangesActions.handleSaveEditedRange(draft, action);
+    case types.UNLINK_RANGE:
+      return RangesActions.handleUnlinkRange(draft, action);
 
     case types.SET_PREFERENCES:
       return handelSetPreferences(draft, action.data);
