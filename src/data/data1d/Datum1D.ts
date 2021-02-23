@@ -14,6 +14,7 @@ import { Filters as FiltersTypes } from './filter1d/Filters';
 export const usedColors1D: Array<string> = [];
 
 export interface Data1D {
+  y: Array<number>;
   x: Array<number>;
   re: Array<number>;
   im: Array<number>;
@@ -35,61 +36,66 @@ export interface Info {
   dimension: number;
   isFt: boolean;
 }
+export interface Peak {
+  id: string;
+  xIndex: number;
+  width: number;
+}
 export interface Peaks {
-  values: Array<
-    Partial<{
-      id: string;
-      xIndex: number;
-      width: number;
-    }>
-  >;
-  options?: any;
+  values: Array<Partial<Peak>>;
+  options: any;
+}
+export interface Integral {
+  id: string;
+  from: number;
+  to: number;
+  absolute: number;
+  integral: number;
+  kind: string;
 }
 export interface Integrals {
-  values: Array<
-    Partial<{
-      id: string;
-      from: number;
-      to: number;
-      absolute: number;
-      integral: number;
-      kind: string;
-    }>
-  >;
-  options?: Partial<{ sum: number }>;
-}
-export interface Ranges {
-  values: Array<
-    Partial<{
-      id: string;
-      from: number;
-      to: number;
-      absolute: number;
-      integral: number;
-      kind: string;
-      signal?: Array<
-        Partial<{
-          id: string;
-          kind: string;
-          delta: number;
-          multiplicity: string;
-          peak?: Array<
-            Partial<{ x: number; intensity: number; width: number }>
-          >;
-        }>
-      >;
-    }>
-  >;
-  options?: Partial<{ sum: number }>;
+  values: Array<Partial<Integral>>;
+  options: Partial<{ sum: number }>;
 }
 
-export type Filters = Array<
-  Partial<{ name: string; isDeleteAllow: boolean; options?: any }>
->;
+export interface Signal {
+  id: string;
+  kind: string;
+  delta: number;
+  multiplicity: string;
+  peak?: Array<Partial<{ x: number; intensity: number; width: number }>>;
+}
+export interface Range {
+  id: string;
+  from: number;
+  to: number;
+  absolute: number;
+  integral: number;
+  kind: string;
+  signal?: Array<Partial<Signal>>;
+}
+
+export interface Ranges {
+  values: Array<Partial<Range>>;
+  options: Partial<{ sum: number }>;
+}
+
+export interface Filter {
+  id: string;
+  name: string;
+  isDeleteAllow: boolean;
+  options?: any;
+}
+
+export interface Source {
+  jcamp: string;
+  jcampURL: string;
+  original: Data1D;
+}
 
 export interface Datum1D {
-  id: string;
-  source: Partial<{ jcamp: string; jcampURL: string; original: Data1D }>;
+  id: string | number;
+  source: Partial<Source>;
   display: Display;
   info: Partial<Info>;
   originalInfo: Partial<Info>;
@@ -98,7 +104,7 @@ export interface Datum1D {
   peaks: Peaks;
   integrals: Integrals;
   ranges: Ranges;
-  filters: Filters;
+  filters: Array<Partial<Filter>>;
 }
 
 export function initiateDatum1D(options: any): Datum1D {
@@ -173,7 +179,7 @@ export function initiateDatum1D(options: any): Datum1D {
   FiltersManager.reapplyFilters(datum);
 
   preprocessing(datum);
-  datum.data.y = datum.data.re;
+  datum.data = Object.assign(datum.data, { y: datum?.data?.re });
   return datum;
 }
 
