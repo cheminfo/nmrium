@@ -1,24 +1,28 @@
+import { Draft } from 'immer';
+
+import { Datum1D } from '../../../data/data1d/Datum1D';
 import * as FiltersManager from '../../../data/data1d/FiltersManager';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
 import { options } from '../../toolbar/ToolTypes';
+import { State } from '../Reducer';
 import getClosestNumber from '../helper/GetClosestNumber';
 import ZoomHistory from '../helper/ZoomHistory';
 
 import { setDomain, setMode } from './DomainActions';
 import { setYAxisShift } from './ToolsActions';
 
-function setDataByFilters(draft, hideOptionPanel = true) {
+function setDataByFilters(draft: Draft<State>, hideOptionPanel = true) {
   if (hideOptionPanel) {
     draft.selectedOptionPanel = null;
     draft.selectedTool = options.zoom.id;
   }
-  draft.data[draft.activeSpectrum.index].data.y =
-    draft.data[draft.activeSpectrum.index].data.re;
+  const datum = draft.data[draft.activeSpectrum.index] as Datum1D;
+  datum.data.y = datum.data.re;
 }
 
-function shiftSpectrumAlongXAxis(draft, shiftValue) {
+function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   //apply filter into the spectrum
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum.index;
@@ -31,7 +35,7 @@ function shiftSpectrumAlongXAxis(draft, shiftValue) {
   }
 }
 
-function applyZeroFillingFilter(draft, filterOptions) {
+function applyZeroFillingFilter(draft: Draft<State>, filterOptions) {
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum.index;
     // const activeObject = AnalysisObj.getDatum(activeSpectrumId);
@@ -48,7 +52,7 @@ function applyZeroFillingFilter(draft, filterOptions) {
     setMode(draft);
   }
 }
-function applyFFTFilter(draft) {
+function applyFFTFilter(draft: Draft<State>) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
 
@@ -66,40 +70,38 @@ function applyFFTFilter(draft) {
     setMode(draft);
   }
 }
-function applyManualPhaseCorrectionFilter(draft, filterOptions) {
+function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     let { ph0, ph1 } = filterOptions;
+    const datum = draft.data[index] as Datum1D;
+    const closest = getClosestNumber(datum.data.x, draft.pivot);
+    const pivotIndex = datum.data.x.indexOf(closest);
 
-    const closest = getClosestNumber(draft.data[index].data.x, draft.pivot);
-    const pivotIndex = draft.data[index].data.x.indexOf(closest);
-
-    ph0 = ph0 - (ph1 * pivotIndex) / draft.data[index].data.y.length;
+    ph0 = ph0 - (ph1 * pivotIndex) / datum.data.y.length;
 
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
     ]);
 
     setDataByFilters(draft);
-    draft.dataSnapshot = null;
     draft.tempData = null;
     setDomain(draft);
   }
 }
-function applyAbsoluteFilter(draft) {
+function applyAbsoluteFilter(draft: Draft<State>) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.absolute.id, options: {} },
     ]);
     setDataByFilters(draft);
-    draft.dataSnapshot = null;
     draft.tempData = null;
     setDomain(draft);
   }
 }
 
-function applyAutoPhaseCorrectionFilter(draft) {
+function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
 
@@ -121,7 +123,7 @@ function applyAutoPhaseCorrectionFilter(draft) {
   }
 }
 
-function calculateManualPhaseCorrection(draft, filterOptions) {
+function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
   const { tempData } = draft;
   const { index } = draft.activeSpectrum;
   const {
@@ -142,7 +144,7 @@ function calculateManualPhaseCorrection(draft, filterOptions) {
   draft.tempData[index].data.y = newRe;
 }
 
-function enableFilter(draft, filterID, checked) {
+function enableFilter(draft: Draft<State>, filterID, checked) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
 
@@ -165,7 +167,7 @@ function enableFilter(draft, filterID, checked) {
   }
 }
 
-function deleteFilter(draft, filterID) {
+function deleteFilter(draft: Draft<State>, filterID) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     //apply filter into the spectrum
@@ -176,7 +178,7 @@ function deleteFilter(draft, filterID) {
   }
 }
 
-function handleBaseLineCorrectionFilter(draft, action) {
+function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
 
@@ -196,15 +198,18 @@ function handleBaseLineCorrectionFilter(draft, action) {
   }
 }
 
-function filterSnapshotHandler(draft, action) {
+function filterSnapshotHandler(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum.index;
 
     if (action.id) {
-      const filterIndex = draft.data[index].filters.findIndex(
+      const filterIndex = (draft.data[index] as Datum1D).filters.findIndex(
         (f) => f.id === action.id,
       );
-      const filters = draft.data[index].filters.slice(0, filterIndex + 1);
+      const filters = (draft.data[index] as Datum1D).filters.slice(
+        0,
+        filterIndex + 1,
+      );
       FiltersManager.reapplyFilters(draft.data[index], filters);
     } else {
       //close filter snapshot mode and replay all enabled filters
