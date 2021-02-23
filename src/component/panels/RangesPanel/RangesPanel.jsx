@@ -3,15 +3,11 @@ import { xGetFromToIndex } from 'ml-spectra-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
-import {
-  unlink,
-  unlinkInAssignmentData,
-} from '../../../data/utilities/RangeUtilities';
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import RangesWrapper from '../../hoc/RangesWrapper';
-import { CHANGE_RANGE_DATA } from '../../reducer/types/Types';
+import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
@@ -123,18 +119,16 @@ function RangesTablePanel({
   }, [isFilterActive, ranges.values, xDomain]);
 
   const unlinkRangeHandler = useCallback(
-    (range, isOnRangeLevel, signalIndex) => {
-      // remove assignments in assignment hook data
-      unlinkInAssignmentData(
-        assignmentData,
-        range,
-        isOnRangeLevel,
-        signalIndex,
-      );
-
-      // remove assignments in global state
-      const _range = unlink(range, isOnRangeLevel, signalIndex);
-      dispatch({ type: CHANGE_RANGE_DATA, data: _range });
+    (rangeData, isOnRangeLevel, signalIndex) => {
+      dispatch({
+        type: UNLINK_RANGE,
+        payload: {
+          rangeData,
+          assignmentData,
+          isOnRangeLevel,
+          signalIndex,
+        },
+      });
     },
     [assignmentData, dispatch],
   );

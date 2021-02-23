@@ -3,17 +3,13 @@ import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaUnlink } from 'react-icons/fa';
 
-import {
-  unlink,
-  unlinkInAssignmentData,
-} from '../../../data/utilities/ZoneUtilities';
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import ZonesWrapper from '../../hoc/ZonesWrapper';
-import { DELETE_2D_ZONE, CHANGE_ZONE_DATA } from '../../reducer/types/Types';
+import { DELETE_2D_ZONE, UNLINK_ZONE } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -109,18 +105,17 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
   }, [filterIsActive]);
 
   const unlinkZoneHandler = useCallback(
-    (zone, isOnZoneLevel, signalIndex, axis) => {
-      // unlink in assignment hook data
-      unlinkInAssignmentData(
-        assignmentData,
-        zone,
-        isOnZoneLevel,
-        signalIndex,
-        axis,
-      );
-      // unlink in global state
-      const _zone = unlink(zone, isOnZoneLevel, signalIndex, axis);
-      dispatch({ type: CHANGE_ZONE_DATA, data: _zone });
+    (zoneData, isOnZoneLevel, signalIndex, axis) => {
+      dispatch({
+        type: UNLINK_ZONE,
+        payload: {
+          zoneData,
+          assignmentData,
+          isOnZoneLevel,
+          signalIndex,
+          axis,
+        },
+      });
     },
     [assignmentData, dispatch],
   );
@@ -130,19 +125,18 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
   }, [zones.values, unlinkZoneHandler]);
 
   const handleOnRemoveAssignments = useCallback(() => {
-    modal.showConfirmDialog('All assignments will be removed, Are you sure?', {
+    modal.showConfirmDialog('All assignments will be removed. Are you sure?', {
       onYes: removeAssignments,
     });
   }, [removeAssignments, modal]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All zones will be deleted, Are You sure?', {
+    modal.showConfirmDialog('All zones will be deleted. Are You sure?', {
       onYes: () => {
-        removeAssignments();
-        dispatch({ type: DELETE_2D_ZONE });
+        dispatch({ type: DELETE_2D_ZONE, payload: { assignmentData } });
       },
     });
-  }, [dispatch, modal, removeAssignments]);
+  }, [assignmentData, dispatch, modal]);
 
   const zonesPreferences = useMemo(() => {
     const _preferences = lodashGet(preferences, `panels.zones.[${activeTab}]`);

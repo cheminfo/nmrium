@@ -336,17 +336,23 @@ function innerSpectrumReducer(draft, action) {
     case types.ADD_RANGE:
       return RangesActions.handleAddRange(draft, action);
     case types.DELETE_RANGE:
-      return RangesActions.handleDeleteRange(draft, action.rangeID);
-    case types.CHANGE_RANGE_DATA:
-      return RangesActions.handleChangeRange(draft, action);
+      return RangesActions.handleDeleteRange(draft, action);
     case types.RESIZE_RANGE:
       return RangesActions.handleResizeRange(draft, action);
     case types.CHANGE_RANGE_SUM:
       return RangesActions.handleChangeRangeSum(draft, action.value);
     case types.CHANGE_RANGE_RELATIVE:
       return RangesActions.handleChangeRangeRaltiveValue(draft, action);
-    case types.CHANGE_RANGE_SIGNAL:
+    case types.CHANGE_RANGE_SIGNAL_VALUE:
       return RangesActions.handleChangeRangeSignalValue(draft, action);
+    case types.CHANGE_RANGE_SIGNAL_KIND:
+      return RangesActions.handleChangeRangeSignalKind(draft, action);
+    case types.SAVE_EDITED_RANGE:
+      return RangesActions.handleSaveEditedRange(draft, action);
+    case types.UNLINK_RANGE:
+      return RangesActions.handleUnlinkRange(draft, action);
+    case types.SET_DIAID_RANGE:
+      return RangesActions.handleSetDiaIDRange(draft, action);
 
     case types.SET_PREFERENCES:
       return handelSetPreferences(draft, action.data);
@@ -367,15 +373,19 @@ function innerSpectrumReducer(draft, action) {
     case types.ADD_2D_ZONE:
       return ZonesActions.add2dZoneHandler(draft, action);
     case types.DELETE_2D_ZONE:
-      return ZonesActions.delete2dZoneHandler(draft, action.zoneID);
+      return ZonesActions.handleDeleteZone(draft, action);
     case types.ADD_MISSING_PROJECTION:
       return SpectrumsActions.addMissingProjectionHander(draft, action);
     case types.RESET_DOMAIN:
       return DomainActions.handelResetDomain(draft);
-    case types.CHANGE_ZONE_DATA:
-      return ZonesActions.handleChangeZone(draft, action);
-    case types.CHANGE_ZONE_SIGNAL:
-      return ZonesActions.changeZoneSignal(draft, action);
+    case types.CHANGE_ZONE_SIGNAL_VALUE:
+      return ZonesActions.changeZoneSignalDelta(draft, action);
+    case types.CHANGE_ZONE_SIGNAL_KIND:
+      return ZonesActions.handleChangeZoneSignalKind(draft, action);
+    case types.UNLINK_ZONE:
+      return ZonesActions.handleUnlinkZone(draft, action);
+    case types.SET_DIAID_ZONE:
+      return ZonesActions.handleSetDiaIDZone(draft, action);
 
     case types.ANALYZE_SPECTRA:
       return SpectraAanalysisActions.analyzeSpectra(draft, action);
