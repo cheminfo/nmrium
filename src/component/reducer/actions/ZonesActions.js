@@ -10,6 +10,7 @@ import {
   detectZonesManual,
 } from '../../../data/data2d/Datum2D';
 import {
+  getPubIntegral,
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities';
@@ -126,6 +127,23 @@ function handleUnlinkZone(draft, action) {
   }
 }
 
+function handleSetDiaIDZone(draft, action) {
+  const state = original(draft);
+  if (state.activeSpectrum?.id) {
+    const { index } = state.activeSpectrum;
+    const { zoneData, diaID, axis, signalIndex } = action.payload;
+
+    const zoneIndex = getZoneIndex(state, index, zoneData.id);
+    const _zone = draft.data[index].zones.values[zoneIndex];
+    if (signalIndex === undefined) {
+      _zone[axis].diaID = diaID;
+    } else {
+      _zone.signal[signalIndex][axis].diaID = diaID;
+    }
+    _zone[axis].pubIntegral = getPubIntegral(_zone, axis);
+  }
+}
+
 function handleOnChangeZonesData(draft) {
   handleUpdateCorrelations(draft);
 }
@@ -137,4 +155,5 @@ export {
   changeZoneSignalDelta,
   handleChangeZoneSignalKind,
   handleUnlinkZone,
+  handleSetDiaIDZone,
 };

@@ -347,6 +347,8 @@ function innerSpectrumReducer(draft, action) {
       return RangesActions.handleSaveEditedRange(draft, action);
     case types.UNLINK_RANGE:
       return RangesActions.handleUnlinkRange(draft, action);
+    case types.SET_DIAID_RANGE:
+      return RangesActions.handleSetDiaIDRange(draft, action);
 
     case types.SET_PREFERENCES:
       return handelSetPreferences(draft, action.data);
@@ -378,6 +380,8 @@ function innerSpectrumReducer(draft, action) {
       return ZonesActions.handleChangeZoneSignalKind(draft, action);
     case types.UNLINK_ZONE:
       return ZonesActions.handleUnlinkZone(draft, action);
+    case types.SET_DIAID_ZONE:
+      return ZonesActions.handleSetDiaIDZone(draft, action);
 
     case types.ANALYZE_SPECTRA:
       return SpectraAanalysisActions.analyzeSpectra(draft, action);

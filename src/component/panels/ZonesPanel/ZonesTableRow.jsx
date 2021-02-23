@@ -101,7 +101,8 @@ function ZonesTableRow({ rowData, onUnlink, onContextMenu }) {
   );
 
   const clickHandler = useCallback((e, assignment, axis) => {
-    assignment.onClick(e, axis);
+    e.stopPropagation();
+    assignment.onClick(axis);
   }, []);
 
   const onHoverZoneX = useMemo(() => {

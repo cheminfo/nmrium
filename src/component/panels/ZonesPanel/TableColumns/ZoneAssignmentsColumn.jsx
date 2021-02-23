@@ -69,7 +69,7 @@ function ZoneAssignmentColumn({
             {')'}
           </div>
         ) : (
-          rowData.x.pubIntegral
+          rowData[axis].pubIntegral
         )
       ) : assignment.isActive && assignment.activeAxis === axis ? (
         <div>

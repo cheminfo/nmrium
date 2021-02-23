@@ -13,6 +13,7 @@ import {
   changeRangesRealtive,
 } from '../../../data/data1d/Datum1D';
 import {
+  getPubIntegral,
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
@@ -100,7 +101,7 @@ function handleUnlinkRange(draft, action) {
       signalIndex,
     } = action.payload;
     // remove assignments in global state
-    const _rangeData = unlink(rangeData);
+    const _rangeData = unlink(rangeData, isOnRangeLevel, signalIndex);
     // remove assignments in assignment hook data
     unlinkInAssignmentData(
       assignmentData,
@@ -111,6 +112,23 @@ function handleUnlinkRange(draft, action) {
 
     const rangeIndex = getRangeIndex(state, index, _rangeData.id);
     draft.data[index].ranges.values[rangeIndex] = _rangeData;
+  }
+}
+
+function handleSetDiaIDRange(draft, action) {
+  const state = original(draft);
+  if (state.activeSpectrum?.id) {
+    const { index } = state.activeSpectrum;
+    const { rangeData, diaID, signalIndex } = action.payload;
+
+    const rangeIndex = getRangeIndex(state, index, rangeData.id);
+    const _range = draft.data[index].ranges.values[rangeIndex];
+    if (signalIndex === undefined) {
+      _range.diaID = diaID;
+    } else {
+      _range.signal[signalIndex].diaID = diaID;
+    }
+    _range.pubIntegral = getPubIntegral(_range);
   }
 }
 
@@ -172,4 +190,5 @@ export {
   handleChangeRangeSignalKind,
   handleSaveEditedRange,
   handleUnlinkRange,
+  handleSetDiaIDRange,
 };

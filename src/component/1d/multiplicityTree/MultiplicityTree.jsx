@@ -259,7 +259,8 @@ function MultiplicityTree({
             ? null
             : (e) => {
                 if (e.shiftKey) {
-                  assignment.onClick(e, 'x');
+                  e.stopPropagation();
+                  assignment.onClick('x');
                 }
               },
       }}

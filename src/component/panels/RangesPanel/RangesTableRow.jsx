@@ -88,7 +88,8 @@ function RangesTableRow({
   );
 
   const linkHandler = useCallback((e, assignment) => {
-    assignment.onClick(e, 'x');
+    e.stopPropagation();
+    assignment.onClick('x');
   }, []);
 
   const onHoverRange = useMemo(() => {

@@ -125,7 +125,8 @@ function Range({ rangeData, showMultiplicityTrees }) {
   const assignHandler = useCallback(
     (e) => {
       if (e.shiftKey && !isBlockedByEditing) {
-        assignmentRange.onClick(e, 'x');
+        e.stopPropagation();
+        assignmentRange.onClick('x');
       }
     },
     [assignmentRange, isBlockedByEditing],
