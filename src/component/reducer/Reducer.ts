@@ -2,6 +2,8 @@ import { produce } from 'immer';
 import { CorrelationManager } from 'nmr-correlation';
 
 import * as SpectraManager from '../../data/SpectraManager';
+import { Datum1D } from '../../data/data1d/Datum1D';
+import { Datum2D } from '../../data/data2d/Datum2D';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
 
@@ -89,7 +91,7 @@ export const initialState = {
 };
 
 export interface State {
-  data: any;
+  data: Array<Partial<Datum1D> | Partial<Datum2D>>;
   contours: any;
   tempData: any;
   xDomain: Array<number>;
@@ -132,7 +134,9 @@ export interface State {
   tabActiveSpectrum: any;
   spectraAnalysis: any;
   displayerKey: any;
+  correlations: any;
   actionType: null;
+  ZoomHistory: any;
 }
 
 export function dispatchMiddleware(dispatch) {

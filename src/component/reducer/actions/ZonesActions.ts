@@ -1,4 +1,4 @@
-import { original } from 'immer';
+import { Draft, original } from 'immer';
 
 import {
   DatumKind,
@@ -6,8 +6,10 @@ import {
 } from '../../../data/constants/SignalsKinds';
 import {
   changeZoneSignal,
+  Datum2D,
   detectZones,
   detectZonesManual,
+  Zone,
 } from '../../../data/data2d/Datum2D';
 import {
   getPubIntegral,
@@ -15,6 +17,7 @@ import {
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities';
 import Events from '../../utility/Events';
+import { State } from '../Reducer';
 import get2DRange from '../helper/get2DRange';
 
 // eslint-disable-next-line import/order
@@ -29,7 +32,7 @@ Events.on('noiseFactorChanged', (val) => {
   noiseFactor = val;
 });
 
-function add2dZoneHandler(draft, action) {
+function add2dZoneHandler(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     const drawnZone = get2DRange(draft, action);
@@ -42,7 +45,7 @@ function add2dZoneHandler(draft, action) {
   }
 }
 
-function handleAutoZonesDetection(draft, detectionOptions) {
+function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     detectZones(draft.data[index], detectionOptions);
@@ -50,7 +53,7 @@ function handleAutoZonesDetection(draft, detectionOptions) {
   }
 }
 
-function changeZoneSignalDelta(draft, action) {
+function changeZoneSignalDelta(draft: Draft<State>, action) {
   const { zoneID, signal } = action.payload;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
@@ -66,13 +69,15 @@ function getZoneIndex(state, spectrumIndex, zoneID) {
   );
 }
 
-function handleChangeZoneSignalKind(draft, action) {
-  const state = original(draft);
+function handleChangeZoneSignalKind(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const { rowData, value } = action.payload;
     const zoneIndex = getZoneIndex(state, index, rowData.id);
-    const _zone = draft.data[index].zones.values[zoneIndex];
+    const _zone = (draft.data[index] as Datum2D).zones.values[
+      zoneIndex
+    ] as Zone;
     _zone.signal[rowData.tableMetaInfo.signalIndex].kind = value;
     _zone.kind = SignalKindsToInclude.includes(value)
       ? DatumKind.signal
@@ -81,27 +86,27 @@ function handleChangeZoneSignalKind(draft, action) {
   }
 }
 
-function handleDeleteZone(draft, action) {
-  const state = original(draft);
+function handleDeleteZone(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const { zoneData, assignmentData } = action.payload;
     if (zoneData === undefined) {
-      draft.data[index].zones.values.forEach((zone) =>
+      (draft.data[index] as Datum2D).zones.values.forEach((zone) =>
         unlinkInAssignmentData(assignmentData, zone),
       );
-      draft.data[index].zones.values = [];
+      (draft.data[index] as Datum2D).zones.values = [];
     } else {
       unlinkInAssignmentData(assignmentData, zoneData);
       const zoneIndex = getZoneIndex(state, index, zoneData.id);
-      draft.data[index].zones.values.splice(zoneIndex, 1);
+      (draft.data[index] as Datum2D).zones.values.splice(zoneIndex, 1);
     }
     handleOnChangeZonesData(draft);
   }
 }
 
-function handleUnlinkZone(draft, action) {
-  const state = original(draft);
+function handleUnlinkZone(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const {
@@ -123,18 +128,20 @@ function handleUnlinkZone(draft, action) {
     );
 
     const zoneIndex = getZoneIndex(state, index, _zoneData.id);
-    draft.data[index].zones.values[zoneIndex] = _zoneData;
+    (draft.data[index] as Datum2D).zones.values[zoneIndex] = _zoneData;
   }
 }
 
-function handleSetDiaIDZone(draft, action) {
-  const state = original(draft);
+function handleSetDiaIDZone(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const { zoneData, diaID, axis, signalIndex } = action.payload;
 
     const zoneIndex = getZoneIndex(state, index, zoneData.id);
-    const _zone = draft.data[index].zones.values[zoneIndex];
+    const _zone = (draft.data[index] as Datum2D).zones.values[
+      zoneIndex
+    ] as Zone;
     if (signalIndex === undefined) {
       _zone[axis].diaID = diaID;
     } else {

@@ -1,10 +1,11 @@
 import { extent } from 'd3';
-import { original } from 'immer';
+import { Draft, original } from 'immer';
 import { xyIntegral, xyIntegration } from 'ml-spectra-processing';
 
 import {
   updateIntegralIntegrals,
   changeIntegralsRealtive,
+  Datum1D,
 } from '../../../data/data1d/Datum1D';
 import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
@@ -12,32 +13,34 @@ import getRange from '../helper/getRange';
 
 import { setIntegralZoom, integralZoomHanlder } from './Zoom';
 
-function handleChangeIntegralSum(draft: State, value) {
+function handleChangeIntegralSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
     const { index, id } = draft.activeSpectrum;
-    draft.data[index].integrals.options.sum = value;
-    updateIntegralIntegrals(draft.data[index].integrals);
+    (draft.data[index] as Datum1D).integrals.options.sum = value;
+    updateIntegralIntegrals((draft.data[index] as Datum1D).integrals);
 
-    if (!draft.data.integralsYDomain) {
+    if (!draft.integralsYDomains) {
       draft.integralsYDomains[id] = draft.yDomains[id];
     }
   }
 }
 
-function handleChangeIntegralZoom(draft, action) {
+function handleChangeIntegralZoom(draft: Draft<State>, action) {
   const { deltaY, deltaMode } = action;
   integralZoomHanlder.wheel(deltaY, deltaMode);
   setIntegralZoom(integralZoomHanlder.getScale(), draft);
 }
 
-function addIntegral(draft: State, action) {
+function addIntegral(draft: Draft<State>, action) {
   const state = original(draft);
   const { startX, endX } = action;
   const [from, to] = getRange(draft, { startX, endX });
 
   if (draft.activeSpectrum?.id && state) {
     const { id, index } = draft.activeSpectrum;
-    const { x, re } = state.data[index].data;
+    const datum = draft.data[index] as Datum1D;
+
+    const { x, re } = datum.data;
     const integral = {
       id: generateID(),
       from,
@@ -45,12 +48,11 @@ function addIntegral(draft: State, action) {
       absolute: xyIntegration({ x, y: re }, { from, to, reverse: true }), // the real value
       kind: 'signal',
     };
-
-    draft.data[index].integrals.values.push(integral);
-    updateIntegralIntegrals(draft.data[index].integrals);
-    if (draft.data[index].integrals.values.length === 1) {
-      const { from, to } = draft.data[index].integrals.values[0];
-      const { x, y } = draft.data[index].data;
+    datum.integrals.values.push(integral);
+    updateIntegralIntegrals(datum.integrals);
+    if (datum.integrals.values.length === 1) {
+      const { from, to } = datum.integrals.values[0];
+      const { x, y } = datum.data;
       const integralResult = xyIntegral(
         { x: x, y: y },
         {
@@ -67,33 +69,39 @@ function addIntegral(draft: State, action) {
   }
 }
 
-function deleteIntegral(draft, action) {
-  const state = original(draft);
+function deleteIntegral(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   const { index } = draft.activeSpectrum;
   const { integralID } = action;
 
+  const datum = draft.data[index] as Datum1D;
+
   if (integralID == null) {
-    draft.data[index].integrals.values = [];
+    datum.integrals.values = [];
   } else {
-    const peakIndex = state.data[index].integrals.values.findIndex(
+    const peakIndex = (state.data[index] as Datum1D).integrals.values.findIndex(
       (p) => p.id === integralID,
     );
-    draft.data[index].integrals.values.splice(peakIndex, 1);
-    updateIntegralIntegrals(draft.data[index].integrals);
+    datum.integrals.values.splice(peakIndex, 1);
+    updateIntegralIntegrals(datum.integrals);
   }
 }
 
-function changeIntegral(draft, action) {
-  const state = original(draft);
+function changeIntegral(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   const integral = action.data;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    const { x, re } = state.data[index].data;
-    const integralIndex = state.data[index].integrals.values.findIndex(
+
+    const orignalDatum = state.data[index] as Datum1D;
+    const datum = draft.data[index] as Datum1D;
+
+    const { x, re } = orignalDatum.data;
+    const integralIndex = orignalDatum.integrals.values.findIndex(
       (i) => i.id === integral.id,
     );
     if (integralIndex !== -1) {
-      draft.data[index].integrals.values[integralIndex] = {
+      datum.integrals.values[integralIndex] = {
         // ...draft.data[index].integrals.values[integralIndex],
         ...integral,
         absolute: xyIntegration(
@@ -101,16 +109,20 @@ function changeIntegral(draft, action) {
           { from: integral.from, to: integral.to, reverse: true },
         ),
       };
-      updateIntegralIntegrals(draft.data[index].integrals);
+      updateIntegralIntegrals(datum.integrals);
     }
   }
 }
 
-function handleChangeIntegralsRaltiveValue(draft, action) {
+function handleChangeIntegralsRaltiveValue(draft: Draft<State>, action) {
   const { id, value } = action;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeIntegralsRealtive(draft.data[index].integrals, id, value);
+    changeIntegralsRealtive(
+      (draft.data[index] as Datum1D).integrals,
+      id,
+      value,
+    );
   }
 }
 

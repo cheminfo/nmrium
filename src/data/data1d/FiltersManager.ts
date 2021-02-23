@@ -70,7 +70,7 @@ function lookupForFilter(datum1d, filterName) {
   return datum1d.filters.find((f) => f.name === filterName);
 }
 
-function reapplyFilters(datum1d, filters = null) {
+function reapplyFilters(datum1d, filters: any = null) {
   const _filters = filters ? filters : datum1d.filters;
   enableFilter(datum1d, null, null, _filters);
 }

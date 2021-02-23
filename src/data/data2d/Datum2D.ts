@@ -10,7 +10,92 @@ import autoZonesDetection from './autoZonesDetection';
 
 export const usedColors2D: Array<string> = [];
 
-export function initiateDatum2D(options: any): any {
+export interface Data2D {
+  z: Array<Array<number>>;
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+}
+
+export interface ContourOptions {
+  positive: {
+    contourLevels: [number, number];
+    numberOfLayers: number;
+  };
+  negative: {
+    contourLevels: [number, number];
+    numberOfLayers: number;
+  };
+}
+
+export interface Display {
+  name: string;
+  positiveColor: string;
+  negativeColor: string;
+  isVisible: boolean;
+  isPositiveVisible: boolean;
+  isNegativeVisible: boolean;
+  contourOptions: ContourOptions;
+  isVisibleInDomain: boolean;
+}
+
+export interface Info {
+  nucleus: Array<string>;
+  isFid: boolean;
+  isComplex: boolean;
+  dimension: number;
+  isFt: boolean;
+}
+
+export interface Signal {
+  id: number;
+  peak: any;
+  x: Partial<{
+    delta: number;
+    diaID: any;
+  }>;
+  y: Partial<{
+    delta: number;
+    diaID: any;
+  }>;
+  kind: string;
+}
+
+export interface Zone {
+  id: number;
+  x: Partial<{ from: number; to: number }>;
+  y: Partial<{ from: number; to: number }>;
+  signal: Signal;
+  kind: string;
+}
+
+export interface ZoneOption {
+  sum: number;
+}
+export interface Zones {
+  values: Array<Partial<Zone>>;
+  options?: Partial<ZoneOption>;
+}
+
+export type Filters = Array<
+  Partial<{ name: string; isDeleteAllow: boolean; options?: any }>
+>;
+
+export interface Datum2D {
+  id: string;
+  source: Partial<{ jcamp: string; jcampURL: string; original: Data2D }>;
+  display: Display;
+  info: Partial<Info>;
+  originalInfo: Partial<Info>;
+  meta: any;
+  data: Data2D;
+  zones: Zones;
+  filters: Filters;
+  processingController: Processing2D;
+}
+
+export function initiateDatum2D(options: any): Datum2D {
   const datum: any = {};
 
   datum.id = options.id || generateID();

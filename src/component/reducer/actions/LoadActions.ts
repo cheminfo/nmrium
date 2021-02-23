@@ -1,9 +1,11 @@
+import { Draft } from 'immer';
 import lodashGet from 'lodash/get';
 import { CorrelationManager } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
+import { State } from '../Reducer';
 
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setYAxisShift, setActiveTab } from './ToolsActions';
@@ -13,7 +15,7 @@ function setIsLoading(draft, isLoading) {
   draft.isLoading = isLoading;
 }
 
-function setData(draft, data) {
+function setData(draft: Draft<State>, data) {
   const {
     spectra,
     molecules,
@@ -37,7 +39,7 @@ function setData(draft, data) {
   // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
 }
 
-function initiate(draft, action) {
+function initiate(draft: Draft<State>, action) {
   draft.displayerKey = generateID();
   setData(draft, action.payload);
   initZoom1DHandler(draft.data);
@@ -53,7 +55,7 @@ function initiate(draft, action) {
   draft.isLoading = false;
 }
 
-function loadJDFFile(draft, files) {
+function loadJDFFile(draft: Draft<State>, files) {
   const spectra = addJDFs(files);
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
@@ -65,7 +67,7 @@ function loadJDFFile(draft, files) {
   draft.isLoading = false;
 }
 
-function loadJcampFile(draft, files) {
+function loadJcampFile(draft: Draft<State>, files) {
   const spectra = addJcamps(files);
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
@@ -76,7 +78,7 @@ function loadJcampFile(draft, files) {
   draft.isLoading = false;
 }
 
-function handleLoadJsonFile(draft, files) {
+function handleLoadJsonFile(draft: Draft<State>, files) {
   const data = JSON.parse(files[0].binary.toString());
   setData(draft, data);
   const alignCenter = lodashGet(draft.preferences, 'display.center', null);
@@ -95,14 +97,14 @@ function handleLoadJsonFile(draft, files) {
   draft.isLoading = false;
 }
 
-function handleLoadMOLFile(draft, files) {
-  for (let i = 0; i < files.length; i++) {
-    MoleculeManager.addMolfile(draft.molecules, files[i].binary.toString());
+function handleLoadMOLFile(draft: Draft<State>, files) {
+  for (let file of files) {
+    MoleculeManager.addMolfile(draft.molecules, file.binary.toString());
   }
   draft.isLoading = false;
 }
 
-function handleLoadZIPFile(draft, action) {
+function handleLoadZIPFile(draft: Draft<State>, action) {
   draft.data = action.payload;
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
