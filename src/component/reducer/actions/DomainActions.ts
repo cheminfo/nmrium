@@ -1,10 +1,14 @@
 import { extent } from 'd3';
+import { Draft } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
+import { Datum1D } from '../../../data/data1d/Datum1D';
+import { Datum2D } from '../../../data/data2d/Datum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 
-function getActiveData(draft) {
+function getActiveData(draft: Draft<State>) {
   if (draft.activeTab) {
     const groupByNucleus = GroupByInfoKey('nucleus');
     let data = groupByNucleus(draft.data)[draft.activeTab];
@@ -23,13 +27,20 @@ function getActiveData(draft) {
         data = data ? data.filter((datum) => datum.info.isFid === false) : [];
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-for-in-array
       for (let index in draft.data) {
-        if (data.some((activeData) => activeData.id === draft.data[index].id)) {
+        if (
+          data.some((activeData: any) => activeData.id === draft.data[index].id)
+        ) {
           // AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
-          draft.data[index].display.isVisibleInDomain = true;
+          (draft.data[index] as
+            | Datum2D
+            | Datum1D).display.isVisibleInDomain = true;
         } else {
           // AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
-          draft.data[index].display.isVisibleInDomain = false;
+          (draft.data[index] as
+            | Datum2D
+            | Datum1D).display.isVisibleInDomain = false;
         }
       }
       return draft.data;
@@ -46,7 +57,7 @@ function getDomain(data) {
   let xDomains = {};
   let integralYDomain = {};
   try {
-    xArray = data.reduce((acc, d) => {
+    xArray = data.reduce((acc, d: Datum1D) => {
       const { display, data } = d;
       if (display.isVisibleInDomain) {
         const domain = [data.x[0], data.x[data.x.length - 1]];
@@ -60,7 +71,7 @@ function getDomain(data) {
       }
     }, []);
 
-    yArray = data.reduce((acc, d) => {
+    yArray = data.reduce((acc, d: Datum1D) => {
       const { display, data, integrals } = d;
       if (display.isVisibleInDomain) {
         const _extent = extent(data.y);
@@ -68,7 +79,7 @@ function getDomain(data) {
         if (integrals.values && integrals.values.length > 0) {
           const values = integrals.values;
           const { from, to } = values[0];
-          const { x, y } = d;
+          const { x, y } = data;
           const integralResult = xyIntegral(
             { x: x, y: y },
             {
@@ -111,19 +122,25 @@ function get2DDomain(state) {
   const nucleus = activeTab.split(',');
 
   try {
-    xArray = data.reduce((acc, datum) => {
+    xArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
       if (datum.info.dimension === 2) {
-        acc = acc.concat([datum.data.minX, datum.data.maxX]);
+        acc = acc.concat([
+          (datum as Datum2D).data.minX,
+          (datum as Datum2D).data.maxX,
+        ]);
       }
       return acc;
     }, []);
 
-    yArray = data.reduce((acc, datum) => {
+    yArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
       if (
         datum.info.dimension === 2 &&
-        datum.info.nucleus.join(',') === activeTab
+        datum.info.nucleus?.join(',') === activeTab
       ) {
-        acc = acc.concat([datum.data.minY, datum.data.maxY]);
+        acc = acc.concat([
+          (datum as Datum2D).data.minY,
+          (datum as Datum2D).data.maxY,
+        ]);
       }
       return acc;
     }, []);
@@ -132,23 +149,22 @@ function get2DDomain(state) {
     console.log(e);
   }
 
-  const spectrumsIDs = nucleus.map(
-    (n) => tabActiveSpectrum[n] && tabActiveSpectrum[n].id,
-  );
-  const filteredData = data.reduce((acc, datum) => {
+  const spectrumsIDs = nucleus.map((n) => tabActiveSpectrum[n]?.id);
+
+  const filteredData = data.reduce((acc, datum: Datum1D | Datum2D) => {
     return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
       ? acc.concat(datum)
       : acc.concat([]);
   }, []);
   try {
-    xDomains = filteredData.reduce((acc, d) => {
+    xDomains = filteredData.reduce((acc, d: Datum1D) => {
       const { x } = d.data;
       const domain = [x[0], x[x.length - 1]];
       acc[d.id] = domain;
       return acc;
     }, {});
 
-    yDomains = filteredData.reduce((acc, d) => {
+    yDomains = filteredData.reduce((acc, d: Datum1D) => {
       const _extent = extent(d.data.y);
       acc[d.id] = _extent;
       return acc;
@@ -166,7 +182,7 @@ function get2DDomain(state) {
   };
 }
 
-function setDomain(draft, isYDomainChanged = true) {
+function setDomain(draft: Draft<State>, isYDomainChanged = true) {
   let domain;
   const data = getActiveData(draft);
 
@@ -208,19 +224,19 @@ function setDomain(draft, isYDomainChanged = true) {
   }
 }
 
-function setOriginalDomain(draft, originDomain) {
+function setOriginalDomain(draft: Draft<State>, originDomain) {
   draft.originDomain = originDomain;
 }
 
-function setXDomain(draft, xDomain) {
+function setXDomain(draft: Draft<State>, xDomain) {
   draft.xDomain = xDomain;
 }
 
-function setYDomain(draft, yDomain) {
+function setYDomain(draft: Draft<State>, yDomain) {
   draft.yDomain = yDomain;
 }
 
-function handelResetDomain(draft) {
+function handelResetDomain(draft: Draft<State>) {
   const { xDomain, yDomain, xDomains, yDomains } = draft.originDomain;
   draft.xDomain = xDomain;
   draft.yDomain = yDomain;
@@ -232,7 +248,7 @@ function setMode(draft) {
   const data = getActiveData(draft).filter(
     (datum) => datum.display.isVisibleInDomain === true,
   );
-  draft.mode = data && data[0] && data[0].info.isFid ? 'LTR' : 'RTL';
+  draft.mode = (data[0] as Datum1D)?.info.isFid ? 'LTR' : 'RTL';
 }
 
 function handleChangeIntegralYDomain(draft, newYDomain) {
