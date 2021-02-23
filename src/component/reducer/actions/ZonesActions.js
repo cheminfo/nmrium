@@ -1,6 +1,18 @@
 import { original } from 'immer';
 
-import { detectZones, detectZonesManual } from '../../../data/data2d/Datum2D';
+import {
+  DatumKind,
+  SignalKindsToInclude,
+} from '../../../data/constants/SignalsKinds';
+import {
+  changeZoneSignal,
+  detectZones,
+  detectZonesManual,
+} from '../../../data/data2d/Datum2D';
+import {
+  unlink,
+  unlinkInAssignmentData,
+} from '../../../data/utilities/ZoneUtilities';
 import Events from '../../utility/Events';
 import get2DRange from '../helper/get2DRange';
 
@@ -28,22 +40,6 @@ function add2dZoneHandler(draft, action) {
     handleOnChangeZonesData(draft);
   }
 }
-function delete2dZoneHandler(draft, zoneID) {
-  const state = original(draft);
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
-
-    if ((zoneID == null) | (zoneID === undefined)) {
-      draft.data[index].zones.values = [];
-    } else {
-      const zoneIndex = state.data[index].zones.values.findIndex(
-        (p) => p.id === zoneID,
-      );
-      draft.data[index].zones.values.splice(zoneIndex, 1);
-    }
-    handleOnChangeZonesData(draft);
-  }
-}
 
 function handleAutoZonesDetection(draft, detectionOptions) {
   if (draft.activeSpectrum?.id) {
@@ -53,19 +49,7 @@ function handleAutoZonesDetection(draft, detectionOptions) {
   }
 }
 
-function handleChangeZone(draft, action) {
-  const state = original(draft);
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
-    const zoneIndex = state.data[index].zones.values.findIndex(
-      (p) => p.id === action.data.id,
-    );
-    draft.data[index].zones.values[zoneIndex] = action.data;
-    handleOnChangeZonesData(draft);
-  }
-}
-
-function changeZoneSignal(draft, action) {
+function changeZoneSignalDelta(draft, action) {
   const { zoneID, signal } = action.payload;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
@@ -75,14 +59,82 @@ function changeZoneSignal(draft, action) {
   }
 }
 
+function getZoneIndex(state, spectrumIndex, zoneID) {
+  return state.data[spectrumIndex].zones.values.findIndex(
+    (zone) => zone.id === zoneID,
+  );
+}
+
+function handleChangeZoneSignalKind(draft, action) {
+  const state = original(draft);
+  if (state.activeSpectrum?.id) {
+    const { index } = state.activeSpectrum;
+    const { rowData, value } = action.payload;
+    const zoneIndex = getZoneIndex(state, index, rowData.id);
+    const _zone = draft.data[index].zones.values[zoneIndex];
+    _zone.signal[rowData.tableMetaInfo.signalIndex].kind = value;
+    _zone.kind = SignalKindsToInclude.includes(value)
+      ? DatumKind.signal
+      : DatumKind.mixed;
+    handleOnChangeZonesData(draft);
+  }
+}
+
+function handleDeleteZone(draft, action) {
+  const state = original(draft);
+  if (state.activeSpectrum?.id) {
+    const { index } = state.activeSpectrum;
+    const { zoneData, assignmentData } = action.payload;
+    if (zoneData === undefined) {
+      draft.data[index].zones.values.forEach((zone) =>
+        unlinkInAssignmentData(assignmentData, zone),
+      );
+      draft.data[index].zones.values = [];
+    } else {
+      unlinkInAssignmentData(assignmentData, zoneData);
+      const zoneIndex = getZoneIndex(state, index, zoneData.id);
+      draft.data[index].zones.values.splice(zoneIndex, 1);
+    }
+    handleOnChangeZonesData(draft);
+  }
+}
+
+function handleUnlinkZone(draft, action) {
+  const state = original(draft);
+  if (state.activeSpectrum?.id) {
+    const { index } = state.activeSpectrum;
+    const {
+      zoneData,
+      assignmentData,
+      isOnZoneLevel,
+      signalIndex,
+      axis,
+    } = action.payload;
+    // remove assignments in global state
+    const _zoneData = unlink(zoneData, isOnZoneLevel, signalIndex, axis);
+    // remove assignments in assignment hook data
+    unlinkInAssignmentData(
+      assignmentData,
+      _zoneData,
+      isOnZoneLevel,
+      signalIndex,
+      axis,
+    );
+
+    const zoneIndex = getZoneIndex(state, index, _zoneData.id);
+    draft.data[index].zones.values[zoneIndex] = _zoneData;
+  }
+}
+
 function handleOnChangeZonesData(draft) {
   handleUpdateCorrelations(draft);
 }
 
 export {
   add2dZoneHandler,
-  delete2dZoneHandler,
   handleAutoZonesDetection,
-  handleChangeZone,
-  changeZoneSignal,
+  handleDeleteZone,
+  changeZoneSignalDelta,
+  handleChangeZoneSignalKind,
+  handleUnlinkZone,
 };

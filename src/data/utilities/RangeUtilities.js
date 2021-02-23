@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep';
+
 import { DatumKind } from '../constants/SignalsKinds';
 
 const getDiaIDs = (range) => {
@@ -29,18 +31,19 @@ const resetDiaIDs = (range) => {
 };
 
 const unlink = (range, isOnRangeLevel, signalIndex) => {
+  const _range = cloneDeep(range);
   if (isOnRangeLevel !== undefined) {
     if (isOnRangeLevel === true) {
-      delete range.diaID;
+      delete _range.diaID;
     } else if (signalIndex !== undefined) {
-      delete range.signal[signalIndex].diaID;
+      delete _range.signal[signalIndex].diaID;
     }
   } else {
-    resetDiaIDs(range);
+    resetDiaIDs(_range);
   }
-  setPubIntegral(range);
+  setPubIntegral(_range);
 
-  return range;
+  return _range;
 };
 
 const addDefaultSignal = (range) => {

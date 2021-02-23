@@ -367,15 +367,17 @@ function innerSpectrumReducer(draft, action) {
     case types.ADD_2D_ZONE:
       return ZonesActions.add2dZoneHandler(draft, action);
     case types.DELETE_2D_ZONE:
-      return ZonesActions.delete2dZoneHandler(draft, action.zoneID);
+      return ZonesActions.handleDeleteZone(draft, action);
     case types.ADD_MISSING_PROJECTION:
       return SpectrumsActions.addMissingProjectionHander(draft, action);
     case types.RESET_DOMAIN:
       return DomainActions.handelResetDomain(draft);
-    case types.CHANGE_ZONE_DATA:
-      return ZonesActions.handleChangeZone(draft, action);
-    case types.CHANGE_ZONE_SIGNAL:
-      return ZonesActions.changeZoneSignal(draft, action);
+    case types.CHANGE_ZONE_SIGNAL_VALUE:
+      return ZonesActions.changeZoneSignalDelta(draft, action);
+    case types.CHANGE_ZONE_SIGNAL_KIND:
+      return ZonesActions.handleChangeZoneSignalKind(draft, action);
+    case types.UNLINK_ZONE:
+      return ZonesActions.handleUnlinkZone(draft, action);
 
     case types.ANALYZE_SPECTRA:
       return SpectraAanalysisActions.analyzeSpectra(draft, action);

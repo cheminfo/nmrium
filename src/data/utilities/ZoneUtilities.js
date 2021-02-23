@@ -1,6 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep';
 
-import { DELETE_2D_ZONE } from '../../component/reducer/types/Types';
 import { DatumKind } from '../constants/SignalsKinds';
 
 const getDiaIDs = (zone, axis) => {
@@ -43,30 +42,24 @@ const checkSignalKinds = (zone, kinds) => {
 };
 
 const unlink = (zone, isOnZoneLevel, signalIndex, axis) => {
-  const zoneObject = cloneDeep(zone);
-
+  const _zone = cloneDeep(zone);
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {
-      delete zoneObject[axis].diaID;
+      delete _zone[axis].diaID;
     } else if (signalIndex !== undefined) {
-      delete zoneObject.signal[signalIndex][axis].diaID;
+      delete _zone.signal[signalIndex][axis].diaID;
     }
-    setPubIntegral(zoneObject, axis);
+    setPubIntegral(_zone, axis);
   } else if (axis !== undefined) {
-    resetDiaIDs(zoneObject, axis);
-    setPubIntegral(zoneObject, axis);
+    resetDiaIDs(_zone, axis);
+    setPubIntegral(_zone, axis);
   } else {
     ['x', 'y'].forEach((key) => {
-      resetDiaIDs(zoneObject, key);
-      setPubIntegral(zoneObject, key);
+      resetDiaIDs(_zone, key);
+      setPubIntegral(_zone, key);
     });
   }
-  return zoneObject;
-};
-
-const deleteZone = (assignmentData, dispatch, zone) => {
-  unlinkInAssignmentData(assignmentData, zone);
-  dispatch({ type: DELETE_2D_ZONE, zoneID: zone.id });
+  return _zone;
 };
 
 const _unlinkInAssignmentData = (assignmentData, id, axis) => {
@@ -109,7 +102,6 @@ const unlinkInAssignmentData = (
 export {
   checkSignalKinds,
   checkZoneKind,
-  deleteZone,
   getDiaIDs,
   getPubIntegral,
   resetDiaIDs,

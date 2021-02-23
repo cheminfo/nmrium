@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import lodashGet from 'lodash/set';
+import lodashGet from 'lodash/get';
 import { useMemo, useCallback, useState } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation';

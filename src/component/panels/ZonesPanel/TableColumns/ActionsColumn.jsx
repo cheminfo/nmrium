@@ -1,17 +1,13 @@
 import { Fragment, useCallback } from 'react';
 import { FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
-import {
-  DatumKind,
-  SignalKinds,
-  SignalKindsToInclude,
-} from '../../../../data/constants/SignalsKinds';
-import { deleteZone } from '../../../../data/utilities/ZoneUtilities';
+import { SignalKinds } from '../../../../data/constants/SignalsKinds';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
 import {
-  CHANGE_ZONE_DATA,
+  CHANGE_ZONE_SIGNAL_KIND,
+  DELETE_2D_ZONE,
   SET_X_DOMAIN,
   SET_Y_DOMAIN,
 } from '../../../reducer/types/Types';
@@ -29,21 +25,25 @@ function ActionsColumn({ rowData, rowSpanTags }) {
 
   const changeSignalKindHandler = useCallback(
     (value) => {
-      const _zone = { ...rowData };
-      _zone.signal[_zone.tableMetaInfo.signalIndex].kind = value;
-      _zone.kind = SignalKindsToInclude.includes(value)
-        ? DatumKind.signal
-        : DatumKind.mixed;
       dispatch({
-        type: CHANGE_ZONE_DATA,
-        data: _zone,
+        type: CHANGE_ZONE_SIGNAL_KIND,
+        payload: {
+          rowData,
+          value,
+        },
       });
     },
     [dispatch, rowData],
   );
 
   const deleteZoneHandler = useCallback(() => {
-    deleteZone(assignmentData, dispatch, rowData);
+    dispatch({
+      type: DELETE_2D_ZONE,
+      payload: {
+        zoneData: rowData,
+        assignmentData,
+      },
+    });
   }, [assignmentData, dispatch, rowData]);
 
   const zoomZoneHandler = useCallback(() => {

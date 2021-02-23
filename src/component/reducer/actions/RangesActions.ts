@@ -27,29 +27,31 @@ function handleAutoRangesDetection(draft, detectionOptions) {
     handleOnChangeRangesData(draft);
   }
 }
-function handleDeleteRange(draft, action) {
-  const state = original(draft);
-  if (state.activeSpectrum?.id) {
-    const { index } = state.activeSpectrum;
-    const { rangeData, assignmentData } = action.payload;
-    if (rangeData === null) {
-      draft.data[index].ranges.values = [];
-    } else {
-      unlinkInAssignmentData(assignmentData, rangeData);
-      const peakIndex = state.data[index].ranges.values.findIndex(
-        (_range) => _range.id === rangeData.id,
-      );
-      draft.data[index].ranges.values.splice(peakIndex, 1);
-    }
-    updateIntegralRanges(draft.data[index]);
-    handleOnChangeRangesData(draft);
-  }
-}
 
 function getRangeIndex(state, spectrumIndex, rangeID) {
   return state.data[spectrumIndex].ranges.values.findIndex(
     (range) => range.id === rangeID,
   );
+}
+
+function handleDeleteRange(draft, action) {
+  const state = original(draft);
+  if (state.activeSpectrum?.id) {
+    const { index } = state.activeSpectrum;
+    const { rangeData, assignmentData } = action.payload;
+    if (rangeData === undefined) {
+      draft.data[index].ranges.values.forEach((range) =>
+        unlinkInAssignmentData(assignmentData, range),
+      );
+      draft.data[index].ranges.values = [];
+    } else {
+      unlinkInAssignmentData(assignmentData, rangeData);
+      const rangeIndex = getRangeIndex(state, index, rangeData.id);
+      draft.data[index].ranges.values.splice(rangeIndex, 1);
+    }
+    updateIntegralRanges(draft.data[index]);
+    handleOnChangeRangesData(draft);
+  }
 }
 
 function handleChangeRangeSignalKind(draft, action) {
@@ -73,13 +75,12 @@ function handleSaveEditedRange(draft, action) {
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const { editedRowData, assignmentData } = action.payload;
-    let _editedRowData = { ...editedRowData };
+    // remove assignments in global state
+    const _editedRowData = unlink(editedRowData);
     delete _editedRowData.tableMetaInfo;
     // remove assignments in assignment hook data
     // for now: clear all assignments for this range because signals or levels to store might have changed
     unlinkInAssignmentData(assignmentData, _editedRowData);
-    // remove assignments in global state
-    _editedRowData = unlink(_editedRowData);
 
     const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
     draft.data[index].ranges.values[rangeIndex] = _editedRowData;
@@ -98,15 +99,15 @@ function handleUnlinkRange(draft, action) {
       isOnRangeLevel,
       signalIndex,
     } = action.payload;
+    // remove assignments in global state
+    const _rangeData = unlink(rangeData);
     // remove assignments in assignment hook data
     unlinkInAssignmentData(
       assignmentData,
-      rangeData,
+      _rangeData,
       isOnRangeLevel,
       signalIndex,
     );
-    // remove assignments in global state
-    const _rangeData = unlink({ ...rangeData });
 
     const rangeIndex = getRangeIndex(state, index, _rangeData.id);
     draft.data[index].ranges.values[rangeIndex] = _rangeData;

@@ -2,15 +2,13 @@ import { css } from '@emotion/react';
 /** @jsxImportSource @emotion/react */
 import { useCallback, useState, useEffect } from 'react';
 
-import {
-  checkZoneKind,
-  deleteZone,
-} from '../../../data/utilities/ZoneUtilities';
+import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment, useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import DeleteButton from '../../elements/DeleteButton';
 import { useHighlight } from '../../highlight';
+import { DELETE_2D_ZONE } from '../../reducer/types/Types';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import Signal from './Signal';
@@ -75,7 +73,13 @@ const Zone = ({ zoneData, isVisible }) => {
   }, [zoneData]);
 
   const deleteHandler = useCallback(() => {
-    deleteZone(assignmentData, dispatch, zoneData);
+    dispatch({
+      type: DELETE_2D_ZONE,
+      payload: {
+        zoneData,
+        assignmentData,
+      },
+    });
   }, [assignmentData, dispatch, zoneData]);
 
   return (
