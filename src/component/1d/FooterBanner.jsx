@@ -112,10 +112,10 @@ function FooterBanner({
     (xPosition) => {
       if (activeSpectrum) {
         const xIndex = xFindClosestIndex(
-          data[activeSpectrum.index].x,
+          data[activeSpectrum.index].data.x,
           scaleX().invert(xPosition),
         );
-        return data[activeSpectrum.index].y[xIndex];
+        return data[activeSpectrum.index].data.y[xIndex];
       }
       return 1;
     },

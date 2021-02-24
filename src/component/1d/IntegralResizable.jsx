@@ -82,6 +82,9 @@ function IntegralResizable({ spectrumID, integralSeries, integralData }) {
     [dispatch, integralData],
   );
 
+  const x0 = xBoundary[0] ? scaleX()(xBoundary[0]) : 0;
+  const x1 = xBoundary[1] ? scaleX()(xBoundary[1]) : 0;
+
   return (
     <Fragment>
       <g
@@ -90,15 +93,15 @@ function IntegralResizable({ spectrumID, integralSeries, integralData }) {
       >
         <rect
           data-no-export="true"
-          x={`${scaleX()(xBoundary[1])}`}
+          x={`${x1}`}
           y="0"
-          width={`${scaleX()(xBoundary[0]) - scaleX()(xBoundary[1])}`}
+          width={`${x0 - x1}`}
           height={height - margin.bottom}
           className="highlight"
         />
         {/* {highlight.isActive && ( */}
         <text
-          x={scaleX()(xBoundary[1])}
+          x={x1}
           y={height - margin.bottom + 30}
           fill="black"
           style={{ fontSize: '12px', fontWeight: 'bold' }}
@@ -114,7 +117,7 @@ function IntegralResizable({ spectrumID, integralSeries, integralData }) {
           data-no-export="true"
         />
         <DeleteButton
-          x={`${scaleX()(xBoundary[1]) - 20}`}
+          x={`${x1 - 20}`}
           y={height - margin.bottom - 20}
           onDelete={deleteIntegral}
         />

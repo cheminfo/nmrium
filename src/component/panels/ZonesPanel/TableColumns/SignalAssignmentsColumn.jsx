@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { FaMinusCircle } from 'react-icons/fa';
 
 function SignalAssignmentsColumn({
@@ -26,7 +26,7 @@ function SignalAssignmentsColumn({
           : null
       }
     >
-      {lodash.get(rowData, `tableMetaInfo.signal.${axis}.diaID`, []).length >
+      {lodashGet(rowData, `tableMetaInfo.signal.${axis}.diaID`, []).length >
       0 ? (
         <div
           onMouseEnter={() => setShowUnlinkButton(true)}

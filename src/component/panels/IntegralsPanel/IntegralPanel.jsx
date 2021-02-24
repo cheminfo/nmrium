@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SvgNmrSum } from 'cheminfo-font';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useCallback, useMemo, useState, useRef, memo, Fragment } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
@@ -65,7 +65,7 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
   );
 
   const currentSum = useMemo(() => {
-    return lodash.get(integrals, 'options.sum', null);
+    return lodashGet(integrals, 'options.sum', null);
   }, [integrals]);
 
   const showChangeIntegralSumModal = useCallback(() => {

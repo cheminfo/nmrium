@@ -6,7 +6,7 @@ import { usePreferences } from '../context/PreferencesContext';
 function PeaksWrapper(WrappedComponent) {
   const Wrapper = (props) => {
     const {
-      data,
+      data: spectra,
       activeSpectrum,
       xDomain,
       activeTab,
@@ -14,18 +14,19 @@ function PeaksWrapper(WrappedComponent) {
     } = useChartData();
     const preferences = usePreferences();
 
-    const { peaks = {}, info = {}, x = [], y = [] } = useMemo(() => {
-      if (data && activeSpectrum && activeSpectrum.id) {
-        const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
+    const { peaks = {}, info = {}, data = {} } = useMemo(() => {
+      if (spectra && activeSpectrum && activeSpectrum.id) {
+        const datum = spectra.find(
+          (datum) => datum.id === activeSpectrum.id,
+        ) || {
           peaks: {},
           info: {},
-          x: [],
-          y: [],
+          data: {},
         };
         return datum;
       }
       return {};
-    }, [activeSpectrum, data]);
+    }, [activeSpectrum, spectra]);
 
     const nucleus = useMemo(() => {
       if (tabActiveSpectrum && Object.keys(tabActiveSpectrum).length > 0) {
@@ -41,8 +42,8 @@ function PeaksWrapper(WrappedComponent) {
         {...rest}
         peaks={peaks}
         info={info}
-        x={x}
-        y={y}
+        x={data.x}
+        y={data.y}
         xDomain={xDomain}
         preferences={preferences}
         activeTab={activeTab}

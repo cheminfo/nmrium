@@ -1,9 +1,10 @@
 import { SvgNmrSum } from 'cheminfo-font';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
 import { useCallback, useState } from 'react';
 import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
 
+import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import ToggleButton from '../../elements/ToggleButton';
@@ -58,12 +59,10 @@ function RangesHeader({
   const modal = useModal();
   const alert = useAlert();
   const preferences = usePreferences();
+  const assignmentData = useAssignmentData();
   const [isMultiplicityTreesVisible, showMultiplicityTrees] = useState(false);
 
-  const currentSum = lodash.get(ranges, 'options.sum', null);
-  const removeAssignments = useCallback(() => {
-    ranges.values.forEach((range) => onUnlink(range));
-  }, [ranges, onUnlink]);
+  const currentSum = lodashGet(ranges, 'options.sum', null);
 
   const changeRangesSumHandler = useCallback(
     (value) => {
@@ -88,14 +87,30 @@ function RangesHeader({
     );
   }, [activeTab, changeRangesSumHandler, currentSum, modal, molecules]);
 
+  const removeAssignments = useCallback(() => {
+    for (const range of ranges.values) {
+      onUnlink(range);
+    }
+  }, [ranges, onUnlink]);
+
+  const handleOnRemoveAssignments = useCallback(() => {
+    modal.showConfirmDialog('All assignments will be removed. Are you sure?', {
+      onYes: removeAssignments,
+    });
+  }, [removeAssignments, modal]);
+
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All ranges will be deleted, Are You sure?', {
+    modal.showConfirmDialog('All ranges will be deleted. Are You sure?', {
       onYes: () => {
-        removeAssignments();
-        dispatch({ type: DELETE_RANGE });
+        dispatch({ type: DELETE_RANGE, payload: { assignmentData } });
       },
     });
-  }, [dispatch, modal, removeAssignments]);
+  }, [assignmentData, dispatch, modal]);
+
+  const handleSetShowMultiplicityTrees = useCallback((flag) => {
+    Events.emit('showMultiplicityTrees', flag);
+    showMultiplicityTrees(flag);
+  }, []);
 
   const saveToClipboardHandler = useCallback(
     (value) => {
@@ -111,7 +126,7 @@ function RangesHeader({
 
   const saveAsHTMLHandler = useCallback(() => {
     const { originFrequency: observedFrequency, nucleus } = info;
-    const format = lodash.get(
+    const format = lodashGet(
       preferences,
       `formatting.nucleusByKey[${nucleus.toLowerCase()}]`,
     );
@@ -133,17 +148,6 @@ function RangesHeader({
       {},
     );
   }, [info, modal, preferences, ranges.values, saveToClipboardHandler]);
-
-  const handleOnRemoveAssignments = useCallback(() => {
-    modal.showConfirmDialog('All assignments will be removed, Are you sure?', {
-      onYes: removeAssignments,
-    });
-  }, [removeAssignments, modal]);
-
-  const handleSetShowMultiplicityTrees = useCallback((flag) => {
-    Events.emit('showMultiplicityTrees', flag);
-    showMultiplicityTrees(flag);
-  }, []);
 
   return (
     <DefaultPanelHeader

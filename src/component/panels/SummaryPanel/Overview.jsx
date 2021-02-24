@@ -1,19 +1,16 @@
+import { Utilities } from 'nmr-correlation';
 import { memo } from 'react';
-
-import { getAtomCounts } from '../../../data/correlation/utilities/GeneralUtilities';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
 
-function Overview({ correlations }) {
-  if (!correlations) {
+function Overview({ correlationsData }) {
+  if (!correlationsData) {
     return null;
   }
-
-  const atoms = getAtomCounts(correlations);
+  const atoms = Utilities.getAtomCounts(correlationsData.options.mf);
 
   return Object.keys(atoms).map((atomType, i) => {
-    const stateAtomType = correlations.state[atomType];
-
+    const stateAtomType = correlationsData.state[atomType];
     const error = stateAtomType ? stateAtomType.error : undefined;
     const errorColorIndex = error
       ? Errors.findIndex((_error) => error[_error] !== undefined)

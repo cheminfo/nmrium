@@ -50,6 +50,8 @@ function SpectraTracker() {
     Events.on('showYSpectraTrackers', (flag) => {
       ToggleVisiblility(flag);
     });
+
+    return () => Events.off('showYSpectraTrackers');
   }, []);
 
   const trackers = useMemo(() => {
@@ -58,7 +60,7 @@ function SpectraTracker() {
       data.map(
         (datum) =>
           datum.display.isVisible &&
-          datum.isVisibleInDomain &&
+          datum.display.isVisibleInDomain &&
           datum.info.nucleus === activeTab && (
             <div style={{ display: 'block' }} key={datum.id}>
               <span
@@ -67,7 +69,7 @@ function SpectraTracker() {
                   borderColor: datum.display.color,
                 }}
               />
-              <YTracker datum={datum} />
+              <YTracker datum={datum.data} />
               <span style={styles.value}>{datum.display.name}</span>
             </div>
           ),

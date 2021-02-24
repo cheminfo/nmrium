@@ -1,7 +1,6 @@
+import { Link, Utilities } from 'nmr-correlation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import Link from '../../../../data/correlation/Link';
-import { getCorrelationIndex } from '../../../../data/correlation/utilities/GeneralUtilities';
 import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
 
@@ -59,14 +58,18 @@ function AdditionalColumnField({
           new Link({
             ...pseudoCommonLink,
             axis: 'x',
-            match: [getCorrelationIndex(correlations, rowCorrelation)],
+            match: [
+              Utilities.getCorrelationIndex(correlations, rowCorrelation),
+            ],
           }),
         );
         rowCorrelation.addLink(
           new Link({
             ...pseudoCommonLink,
             axis: 'y',
-            match: [getCorrelationIndex(correlations, columnCorrelation)],
+            match: [
+              Utilities.getCorrelationIndex(correlations, columnCorrelation),
+            ],
           }),
         );
         if (!rowCorrelation.getEdited().protonsCount) {

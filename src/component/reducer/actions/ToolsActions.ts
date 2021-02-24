@@ -1,7 +1,9 @@
 import { max } from 'd3';
-import { original, current } from 'immer';
+import { original, current, Draft } from 'immer';
 
+import { Data1D, Datum1D } from '../../../data/data1d/Datum1D';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
+// import { Datum2D } from '../../../data/data2d/Datum2D';
 import { Datum2D } from '../../../data/data2d/Datum2D';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
@@ -9,23 +11,21 @@ import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import { AnalysisObj } from '../core/Analysis';
+import { State } from '../Reducer';
 import {
   DEFAULT_YAXIS_SHIFT_VALUE,
   DISPLAYER_MODE,
   MARGIN,
 } from '../core/Constants';
-import HorizontalZoomHistory from '../helper/HorizontalZoomHistory';
+import ZoomHistory from '../helper/ZoomHistory';
 
-import { setDomain, getDomain, setMode } from './DomainActions';
+import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
 
-function getStrongestPeak(state) {
-  const { activeSpectrum, data } = state;
-
-  const activeSpectrumId = activeSpectrum.id;
-  const activeData = data.find((d) => d.id === activeSpectrumId);
+function getStrongestPeak(draft: Draft<State>) {
+  const { activeSpectrum, data } = draft;
+  const activeData = data[activeSpectrum.index].data as Data1D;
   const strongestPeakValue = max(activeData.y);
   const index = activeData.y.findIndex((val) => val === strongestPeakValue);
   return {
@@ -35,16 +35,15 @@ function getStrongestPeak(state) {
   };
 }
 
-function setFilterChanges(draft, state, selectedFilter) {
+function setFilterChanges(draft: Draft<State>, selectedFilter) {
   const activeSpectrumId = draft.activeSpectrum.id;
-  const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
   //save reduced snapshot
   //select the equalizer tool when you enable manual phase correction filter
   if (selectedFilter === Filters.phaseCorrection.id) {
-    draft.tempData = state.data;
+    draft.tempData = draft.data;
 
-    const { xValue } = getStrongestPeak(state);
+    const { xValue } = getStrongestPeak(draft);
     draft.pivot = xValue;
   } else {
     if (draft.selectedTool === options.phaseCorrection.id) {
@@ -52,19 +51,17 @@ function setFilterChanges(draft, state, selectedFilter) {
         (spectrum) => spectrum.id === activeSpectrumId,
       );
 
-      activeObject.data.x = state.tempData[spectrumIndex].x;
-      activeObject.data.re = state.tempData[spectrumIndex].y;
-      activeObject.data.im = state.tempData[spectrumIndex].im;
-
-      draft.data[spectrumIndex].x = state.tempData[spectrumIndex].x;
-      draft.data[spectrumIndex].y = state.tempData[spectrumIndex].y;
+      draft.data[spectrumIndex].data = draft.tempData[spectrumIndex].data;
     }
   }
 }
 
-function setYAxisShift(data, draft, height) {
-  if (data && data.length > 0) {
-    if (data[0].info.isFid && !data.some((d) => d.info.isFid === false)) {
+function setYAxisShift(draft: Draft<State>, height) {
+  if (draft.data && draft.data.length > 0) {
+    if (
+      (draft.data[0] as Datum1D).info.isFid &&
+      !(draft.data as Datum1D[]).some((d) => d.info.isFid === false)
+    ) {
       const YAxisShift = height / 2;
       draft.verticalAlign.flag = true;
       draft.verticalAlign.value = YAxisShift;
@@ -77,7 +74,7 @@ function setYAxisShift(data, draft, height) {
   }
 }
 
-function resetTool(draft, setDefaultTool = true) {
+function resetTool(draft: Draft<State>, setDefaultTool = true) {
   draft.selectedOptionPanel = null;
   if (setDefaultTool) {
     draft.selectedTool = options.zoom.id;
@@ -89,18 +86,16 @@ function resetTool(draft, setDefaultTool = true) {
   }
 }
 
-function resetSelectedTool(draft, filterOnly = false) {
-  if (!filterOnly) {
+function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
+  if (
+    (draft.selectedTool && options[draft.selectedTool].isFilter) ||
+    !filterOnly
+  ) {
     resetTool(draft);
-  } else {
-    if (draft.selectedTool && options[draft.selectedTool].isFilter) {
-      resetTool(draft);
-    }
   }
 }
 
-function setSelectedTool(draft, selectedTool) {
-  const state = original(draft);
+function setSelectedTool(draft: Draft<State>, selectedTool) {
   if (selectedTool) {
     if (selectedTool !== draft.selectedTool) {
       resetTool(draft, false);
@@ -111,7 +106,7 @@ function setSelectedTool(draft, selectedTool) {
     }
 
     if (options[selectedTool].isFilter) {
-      setFilterChanges(draft, state, selectedTool);
+      setFilterChanges(draft, selectedTool);
     }
   } else {
     resetTool(draft, false);
@@ -119,21 +114,21 @@ function setSelectedTool(draft, selectedTool) {
   setMargin(draft);
 }
 
-function setSelectedOptionPanel(draft, selectedOptionPanel) {
+function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
   draft.selectedOptionPanel = selectedOptionPanel;
 }
 
-function setSpectrumsVerticalAlign(draft, flag) {
+function setSpectrumsVerticalAlign(draft: Draft<State>, flag) {
   changeSpectrumDisplayPreferences(draft, { center: flag });
 }
 
-function handleChangeSpectrumDisplayMode(draft, { flag }) {
-  const state = original(draft);
+function handleChangeSpectrumDisplayMode(draft: Draft<State>, { flag }) {
+  const state = original(draft) as State;
   const { activeSpectrum, height, activeTab } = draft;
   let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
   if (activeSpectrum) {
     const { index } = activeSpectrum;
-    if (state.data[index].isFid) {
+    if ((state.data[index] as Datum1D).info.isFid) {
       YAxisShift = height / 2;
     }
   }
@@ -141,21 +136,22 @@ function handleChangeSpectrumDisplayMode(draft, { flag }) {
   draft.verticalAlign.stacked = flag;
 
   if (flag) {
-    const count = state.data.filter((datum) => datum.info.nucleus === activeTab)
-      .length;
+    const count = (state.data as Datum1D[]).filter(
+      (datum) => datum.info.nucleus === activeTab,
+    ).length;
     draft.verticalAlign.value = Math.floor(height / (count + 2));
   } else {
     draft.verticalAlign.value = YAxisShift;
   }
 }
 
-function handleAddBaseLineZone(draft, { from, to }) {
+function handleAddBaseLineZone(draft: Draft<State>, { from, to }) {
   const scaleX = getXScale(draft);
 
   let start = scaleX.invert(from);
   const end = scaleX.invert(to);
 
-  let zone = [];
+  let zone: any = [];
   if (start > end) {
     zone = [end, start];
   } else {
@@ -171,50 +167,35 @@ function handleAddBaseLineZone(draft, { from, to }) {
   draft.baseLineZones = zones;
 }
 
-function handleDeleteBaseLineZone(draft, id) {
-  const state = original(draft);
+function handleDeleteBaseLineZone(draft: Draft<State>, id) {
+  const state = original(draft) as State;
   draft.baseLineZones = state.baseLineZones.filter((zone) => zone.id !== id);
 }
 
 function handleToggleRealImaginaryVisibility(draft) {
-  const state = original(draft);
   if (draft.activeSpectrum != null) {
-    const activeSpectrumId = draft.activeSpectrum.id;
-    const ob = AnalysisObj.getDatum(activeSpectrumId);
+    const { index } = draft.activeSpectrum;
 
-    if (ob) {
-      const reY = ob.getReal().y;
-      const imY = ob.getImaginary().y;
-      const index = state.data.findIndex((d) => d.id === activeSpectrumId);
-      ob.setIsRealSpectrumVisible(!draft.data[index]);
+    draft.data[index].display.isRealSpectrumVisible = !draft.data[index].display
+      .isRealSpectrumVisible;
+    if (draft.data[index].display.isRealSpectrumVisible) {
+      const re = draft.data[index].data.re;
+      if (re !== null && re !== undefined) {
+        draft.data[index].data.y = re;
+      }
+    } else {
+      const im = draft.data[index].data.im;
 
-      draft.data[index].display.isRealSpectrumVisible = !draft.data[index]
-        .display.isRealSpectrumVisible;
-      ob.setIsRealSpectrumVisible();
-      if (draft.data[index].display.isRealSpectrumVisible) {
-        if (reY !== null && reY !== undefined) {
-          draft.data[index].y = reY;
-          const domain = getDomain(draft.data);
-          draft.xDomain = domain.xDomain;
-          draft.yDomain = domain.yDomain;
-          draft.xDomains = domain.xDomains;
-          draft.yDomains = domain.yDomains;
-        }
-      } else {
-        if (imY !== null && imY !== undefined) {
-          draft.data[index].y = imY;
-          const domain = getDomain(draft.data);
-          draft.xDomain = domain.xDomain;
-          draft.yDomain = domain.yDomain;
-          draft.xDomains = domain.xDomains;
-          draft.yDomains = domain.yDomains;
-        }
+      if (im !== null && im !== undefined) {
+        draft.data[index].data.y = im;
       }
     }
+
+    setDomain(draft);
   }
 }
 
-function handleBrushEnd(draft, action) {
+function handleBrushEnd(draft: Draft<State>, action) {
   const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
   const xScale = getXScale(draft);
 
@@ -226,7 +207,10 @@ function handleBrushEnd(draft, action) {
   const endY = yScale.invert(action.endY);
   const domainX = startX > endX ? [endX, startX] : [startX, endX];
   const domainY = startY > endY ? [endY, startY] : [startY, endY];
-  const brushHistory = HorizontalZoomHistory.getInstance(draft.activeTab);
+  const brushHistory = ZoomHistory.getInstance(
+    draft.ZoomHistory,
+    draft.activeTab,
+  );
 
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     switch (action.trackID) {
@@ -249,21 +233,21 @@ function handleBrushEnd(draft, action) {
   } else {
     draft.xDomain = domainX;
     if (brushHistory) {
-      brushHistory.push({ xDomain: domainX, yDomain: draft.yDomain });
+      brushHistory.push({ xDomain: domainX, yDomain: domainY });
     }
   }
 }
-function setVerticalIndicatorXPosition(draft, position) {
+function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
   const scaleX = getXScale(draft);
   draft.pivot = scaleX.invert(position);
 }
 
-function getSpectrumID(draft, index) {
+function getSpectrumID(draft: Draft<State>, index) {
   return draft.tabActiveSpectrum[draft.activeTab.split(',')[index]].id;
 }
 
-function handleZoom(draft, action) {
-  const state = original(draft);
+function handleZoom(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   const { deltaY, deltaMode, trackID } = action;
   if (trackID) {
     switch (trackID) {
@@ -288,10 +272,13 @@ function handleZoom(draft, action) {
   }
 }
 
-function zoomOut(draft, action) {
+function zoomOut(draft: Draft<State>, action) {
   const { zoomType, trackID } = action;
-  const state = original(draft);
-  const zoomHistory = HorizontalZoomHistory.getInstance(draft.activeTab);
+  const state = original(draft) as State;
+  const zoomHistory = ZoomHistory.getInstance(
+    draft.ZoomHistory,
+    draft.activeTab,
+  );
 
   if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
     switch (zoomType) {
@@ -347,15 +334,16 @@ function zoomOut(draft, action) {
   }
 }
 
-function hasAcceptedSpectrum(draft, index) {
+function hasAcceptedSpectrum(draft: Draft<State>, index) {
   const nucleuses = draft.activeTab.split(',');
   return (
     draft.tabActiveSpectrum[nucleuses[index]] &&
-    !draft.data[draft.tabActiveSpectrum[nucleuses[index]].index].info.isFid
+    !(draft.data[draft.tabActiveSpectrum[nucleuses[index]].index] as Datum1D)
+      .info.isFid
   );
 }
 
-function setMargin(draft) {
+function setMargin(draft: Draft<State>) {
   if (
     draft.displayerMode === DISPLAYER_MODE.DM_2D &&
     draft.selectedTool !== options.slicingTool.id
@@ -374,26 +362,26 @@ function setMargin(draft) {
   }
 }
 
-function Processing2DData(draft, data) {
+function Processing2DData(draft: Draft<State>, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     let _data = {};
     for (const datum of data[draft.activeTab]) {
-      const data2dObject = AnalysisObj.getDatum(datum.id);
-      _data[datum.id] = data2dObject.getContourLines();
+      // const data2dObject = AnalysisObj.getDatum(datum.id);
+      _data[datum.id] = datum.processingController.drawContours();
     }
     draft.contours = _data;
   }
 }
 
-function setDisplayerMode(draft, data) {
+function setDisplayerMode(draft: Draft<State>, data) {
   draft.displayerMode =
-    data && data.some((d) => d.info.dimension === 2)
+    data && (data as Datum1D[] | Datum2D[]).some((d) => d.info.dimension === 2)
       ? DISPLAYER_MODE.DM_2D
       : DISPLAYER_MODE.DM_1D;
 }
 
-function setTabActiveSpectrum(draft, dataGroupByTab) {
-  let tabs2D = [];
+function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
+  let tabs2D: any[] = [];
   const tabActiveSpectrum = {};
 
   const tabkeys = Object.keys(dataGroupByTab).sort((a, b) =>
@@ -435,7 +423,7 @@ function setTabActiveSpectrum(draft, dataGroupByTab) {
   return tabs2D;
 }
 
-function setTab(draft, dataGroupByTab, tab, refresh = false) {
+function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
   const groupByTab = Object.keys(dataGroupByTab).sort((a, b) =>
     a.split(',').length > b.split(',').length ? -1 : 1,
   );
@@ -463,11 +451,15 @@ function setTab(draft, dataGroupByTab, tab, refresh = false) {
   setMargin(draft);
 }
 
-function setActiveTab(draft, tab = null, refreshTabActiveSpectrums = false) {
+function setActiveTab(
+  draft: Draft<State>,
+  tab = null,
+  refreshTabActiveSpectrums = false,
+) {
   const groupByNucleus = GroupByInfoKey('nucleus');
   const dataGroupByNucleus = groupByNucleus(current(draft).data);
   const tabs = Object.keys(dataGroupByNucleus);
-  const currentTab = !tab || !tabs.includes(tab) ? tabs[0] : tab;
+  const currentTab = !tab || !tabs.includes(tab ?? '') ? tabs[0] : tab;
   setTab(draft, dataGroupByNucleus, currentTab, refreshTabActiveSpectrums);
   resetTool(draft);
   // resetFilterTool(draft);
@@ -475,7 +467,10 @@ function setActiveTab(draft, tab = null, refreshTabActiveSpectrums = false) {
   Processing2DData(draft, dataGroupByNucleus);
   setDomain(draft);
 
-  const zoomHistory = HorizontalZoomHistory.getInstance(draft.activeTab);
+  const zoomHistory = ZoomHistory.getInstance(
+    draft.ZoomHistory,
+    draft.activeTab,
+  );
   const zoomValue = zoomHistory.getLast();
   if (zoomValue) {
     draft.xDomain = zoomValue.xDomain;
@@ -484,27 +479,29 @@ function setActiveTab(draft, tab = null, refreshTabActiveSpectrums = false) {
   setMode(draft);
 }
 
-function handelSetActiveTab(draft, tab) {
+function handelSetActiveTab(draft: Draft<State>, tab) {
   if (tab) {
     setActiveTab(draft, tab);
   }
 }
 
-function levelChangeHandler(draft, { deltaY, shiftKey }) {
+function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
   try {
-    if (draft.activeSpectrum) {
-      const { id } = draft.activeSpectrum;
-      const datum2dObject = AnalysisObj.getDatum(id);
-      if (datum2dObject instanceof Datum2D) {
-        const processing2dController = datum2dObject.getProcessingController();
-        if (shiftKey) {
-          processing2dController.shiftWheel(deltaY);
-        } else {
-          processing2dController.wheel(deltaY);
-        }
-        const contours = Object.freeze(processing2dController.drawContours());
-        draft.contours[id] = contours;
+    if (draft.activeSpectrum?.id) {
+      const { index, id } = draft.activeSpectrum;
+      // const datum2dObject = AnalysisObj.getDatum(id);
+      // if (datum2dObject instanceof Datum2D) {
+      const processingController = (draft.data[index] as Datum2D)
+        .processingController;
+      // const processing2dController = processingController.drawContours;
+      if (shiftKey) {
+        processingController.shiftWheel(deltaY);
+      } else {
+        processingController.wheel(deltaY);
       }
+      const contours = Object.freeze(processingController.drawContours());
+      draft.contours[id] = contours;
+      // }
     }
   } catch (e) {
     // eslint-disable-next-line no-console

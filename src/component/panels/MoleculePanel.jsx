@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodash from 'lodash';
 import OCL from 'openchemlib/full';
 import { useState, useCallback, useMemo, useEffect, memo } from 'react';
 import {
@@ -17,8 +16,6 @@ import OCLnmr from 'react-ocl-nmr';
 import { useMeasure } from 'react-use';
 
 import { ConcatenationString } from '../../data/utilities/Concatenation';
-import * as RangeUtilities from '../../data/utilities/RangeUtilities';
-import * as ZoneUtilities from '../../data/utilities/ZoneUtilities';
 import { useAssignmentData, useAssignment } from '../assignment';
 import { useDispatch } from '../context/DispatchContext';
 import MenuButton from '../elements/MenuButton';
@@ -32,9 +29,9 @@ import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import {
   ADD_MOLECULE,
   DELETE_MOLECULE,
+  SET_DIAID_RANGE,
+  SET_DIAID_ZONE,
   SET_MOLECULE,
-  CHANGE_RANGE_DATA,
-  CHANGE_ZONE_DATA,
 } from '../reducer/types/Types';
 import {
   copyTextToClipboard,
@@ -305,52 +302,51 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
           );
           if (datum) {
             // determine the level of setting the diaID array (range vs. signal level) and save there
-            const _datum = lodash.cloneDeep(datum);
+            let _diaID = [];
             // on range/zone level
             if (signalIndex === undefined) {
               if (displayerMode === DISPLAYER_MODE.DM_1D) {
-                _datum.diaID = toggleAssignment(
-                  _datum.diaID || [],
-                  atomInformation,
-                );
+                _diaID = toggleAssignment(datum.diaID || [], atomInformation);
               } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-                _datum[activeAssignment.activeAxis].diaID = toggleAssignment(
-                  _datum[activeAssignment.activeAxis].diaID || [],
+                _diaID = toggleAssignment(
+                  datum[activeAssignment.activeAxis].diaID || [],
                   atomInformation,
                 );
               }
             } else if (datum.signal && datum.signal[signalIndex]) {
               // on signal level
               if (displayerMode === DISPLAYER_MODE.DM_1D) {
-                _datum.signal[signalIndex] = {
-                  ..._datum.signal[signalIndex],
-                  diaID: toggleAssignment(
-                    _datum.signal[signalIndex].diaID || [],
-                    atomInformation,
-                  ),
-                };
+                _diaID = toggleAssignment(
+                  datum.signal[signalIndex].diaID || [],
+                  atomInformation,
+                );
               } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-                _datum.signal[signalIndex][activeAssignment.activeAxis] = {
-                  ..._datum.signal[signalIndex][activeAssignment.activeAxis],
-                  diaID: toggleAssignment(
-                    _datum.signal[signalIndex][activeAssignment.activeAxis]
-                      .diaID || [],
-                    atomInformation,
-                  ),
-                };
+                _diaID = toggleAssignment(
+                  datum.signal[signalIndex][activeAssignment.activeAxis]
+                    .diaID || [],
+                  atomInformation,
+                );
               }
             }
             if (displayerMode === DISPLAYER_MODE.DM_1D) {
-              _datum.pubIntegral = RangeUtilities.getPubIntegral(_datum);
-              dispatch({ type: CHANGE_RANGE_DATA, data: _datum });
+              dispatch({
+                type: SET_DIAID_RANGE,
+                payload: {
+                  rangeData: datum,
+                  diaID: _diaID,
+                  signalIndex,
+                },
+              });
             } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-              _datum[
-                activeAssignment.activeAxis
-              ].pubIntegral = ZoneUtilities.getPubIntegral(
-                _datum,
-                activeAssignment.activeAxis,
-              );
-              dispatch({ type: CHANGE_ZONE_DATA, data: _datum });
+              dispatch({
+                type: SET_DIAID_ZONE,
+                payload: {
+                  zoneData: datum,
+                  diaID: _diaID,
+                  axis: activeAssignment.activeAxis,
+                  signalIndex,
+                },
+              });
             }
           }
         } else {
@@ -362,12 +358,12 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
     },
     [
       activeAssignment,
+      alert,
+      dispatch,
+      displayerMode,
       extractFromAtom,
       findDatumAndSignalIndex,
-      displayerMode,
       toggleAssignment,
-      dispatch,
-      alert,
     ],
   );
 
@@ -483,24 +479,6 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
     ],
   );
 
-  const handleOnUnlinkAll = useCallback(() => {
-    data.forEach((datum) => {
-      if (displayerMode === DISPLAYER_MODE.DM_1D) {
-        // unlink in assignment hook state
-        RangeUtilities.unlinkInAssignmentData(assignmentData, datum);
-        // unlink in global state
-        const _datum = RangeUtilities.unlink(datum);
-        dispatch({ type: CHANGE_RANGE_DATA, data: _datum });
-      } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-        // unlink in assignment hook state
-        ZoneUtilities.unlinkInAssignmentData(assignmentData, datum);
-        // unlink in global state
-        const _datum = ZoneUtilities.unlink(datum);
-        dispatch({ type: CHANGE_ZONE_DATA, data: _datum });
-      }
-    });
-  }, [data, displayerMode, assignmentData, dispatch]);
-
   const handleClose = useCallback(
     (e) => {
       setOpen(false);
@@ -529,11 +507,12 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
   const handleDelete = useCallback(() => {
     if (molecules[currentIndex] && molecules[currentIndex].key) {
       setCurrentIndex(0);
-      dispatch({ type: DELETE_MOLECULE, key: molecules[currentIndex].key });
-
-      handleOnUnlinkAll();
+      dispatch({
+        type: DELETE_MOLECULE,
+        payload: { key: molecules[currentIndex].key, assignmentData },
+      });
     }
-  }, [molecules, currentIndex, dispatch, handleOnUnlinkAll]);
+  }, [molecules, currentIndex, assignmentData, dispatch]);
 
   const saveAsSVGHandler = useCallback(() => {
     exportAsSVG('molFile', `molSVG${currentIndex}`);

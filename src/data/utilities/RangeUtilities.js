@@ -1,6 +1,3 @@
-import lodash from 'lodash';
-
-import { DELETE_RANGE } from '../../component/reducer/types/Types';
 import { DatumKind } from '../constants/SignalsKinds';
 
 const getDiaIDs = (range) => {
@@ -32,19 +29,18 @@ const resetDiaIDs = (range) => {
 };
 
 const unlink = (range, isOnRangeLevel, signalIndex) => {
-  const rangeObject = lodash.cloneDeep(range);
-
   if (isOnRangeLevel !== undefined) {
     if (isOnRangeLevel === true) {
-      delete rangeObject.diaID;
+      delete range.diaID;
     } else if (signalIndex !== undefined) {
-      delete rangeObject.signal[signalIndex].diaID;
+      delete range.signal[signalIndex].diaID;
     }
   } else {
-    resetDiaIDs(rangeObject);
+    resetDiaIDs(range);
   }
-  setPubIntegral(rangeObject);
-  return rangeObject;
+  setPubIntegral(range);
+
+  return range;
 };
 
 const addDefaultSignal = (range) => {
@@ -65,18 +61,6 @@ const checkSignalKinds = (range, kinds) => {
   );
 };
 
-const deleteRange = (assignmentData, dispatch, range) => {
-  unlinkInAssignmentData(assignmentData, range);
-  dispatch({ type: DELETE_RANGE, rangeID: range.id });
-};
-
-const _unlinkInAssignmentData = (assignmentData, id) => {
-  assignmentData.dispatch({
-    type: 'REMOVE_ALL',
-    payload: { id, axis: 'x' },
-  });
-};
-
 const unlinkInAssignmentData = (
   assignmentData,
   range,
@@ -94,14 +78,16 @@ const unlinkInAssignmentData = (
   } else {
     id = [range.id].concat(range.signal.map((signal) => signal.id));
   }
-  _unlinkInAssignmentData(assignmentData, id);
+  assignmentData.dispatch({
+    type: 'REMOVE_ALL',
+    payload: { id, axis: 'x' },
+  });
 };
 
 export {
   addDefaultSignal,
   checkRangeKind,
   checkSignalKinds,
-  deleteRange,
   getDiaIDs,
   getPubIntegral,
   resetDiaIDs,

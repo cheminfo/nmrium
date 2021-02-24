@@ -7,7 +7,7 @@ import {
   SvgNmrAlignBottom,
   SvgNmrAlignCenter,
 } from 'cheminfo-font';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { Fragment, useEffect, useCallback, useState, memo } from 'react';
 import {
   FaDownload,
@@ -216,7 +216,7 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
 
   const isButtonVisible = useCallback(
     (key) => {
-      return !lodash.get(preferences, `display.toolBarButtons.${key}`);
+      return !lodashGet(preferences, `display.toolBarButtons.${key}`);
     },
     [preferences],
   );

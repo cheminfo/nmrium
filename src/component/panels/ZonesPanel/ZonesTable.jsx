@@ -47,11 +47,21 @@ const tableStyle = css`
 function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
   const contextRef = useRef();
 
+  const contextMenuHandler = useCallback(
+    (e, rowData) => {
+      if (!checkModifierKeyActivated(e)) {
+        e.preventDefault();
+        contextRef.current.handleContextMenu(e, rowData);
+      }
+    },
+    [contextRef],
+  );
+
   const data = useMemo(() => {
-    const _zonesData = [];
+    const _data = [];
     tableData.forEach((zone, i) => {
       if (zone.signal.length === 1) {
-        _zonesData.push({
+        _data.push({
           ...zone,
           tableMetaInfo: {
             ...zone.tableMetaInfo,
@@ -74,8 +84,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
           } else {
             hide = true;
           }
-
-          _zonesData.push({
+          _data.push({
             ...zone,
             tableMetaInfo: {
               ...zone.tableMetaInfo,
@@ -91,17 +100,21 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
       }
     });
 
-    return _zonesData;
+    return _data;
   }, [tableData]);
 
-  const contextMenuHandler = useCallback(
-    (e, rowData) => {
-      if (!checkModifierKeyActivated(e)) {
-        e.preventDefault();
-        contextRef.current.handleContextMenu(e, rowData);
-      }
-    },
-    [contextRef],
+  const rows = useMemo(
+    () =>
+      data.map((rowData) => (
+        <ZonesTableRow
+          key={`zonesTableRow_${rowData.id}`}
+          rowData={rowData}
+          onUnlink={onUnlink}
+          onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
+          preferences={preferences}
+        />
+      )),
+    [contextMenuHandler, data, onUnlink, preferences],
   );
 
   return (
@@ -126,19 +139,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
             <th>{nuclei[0]}</th>
             <th>{nuclei[1]}</th>
           </tr>
-          {data &&
-            data.map((range, i) => {
-              return (
-                <ZonesTableRow
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`zonesTableRow${i}`}
-                  rowData={data[i]}
-                  onUnlink={onUnlink}
-                  onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
-                  preferences={preferences}
-                />
-              );
-            })}
+          {rows}
         </tbody>
       </table>
       <ContextMenu ref={contextRef} context={context} />

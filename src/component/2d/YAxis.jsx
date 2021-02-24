@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
-import PropTypes from 'prop-types';
 import { Fragment, useEffect, useRef, useMemo, memo } from 'react';
 /** @jsxImportSource @emotion/react */
 
@@ -81,18 +80,6 @@ function YAxis({ show, label, margin: marginProps }) {
 
   return Axis;
 }
-
-YAxis.contextTypes = {
-  showGrid: PropTypes.bool,
-  show: PropTypes.bool,
-  label: PropTypes.string,
-  margin: PropTypes.shape({
-    top: PropTypes.number,
-    right: PropTypes.number,
-    bottom: PropTypes.number,
-    left: PropTypes.number,
-  }),
-};
 
 YAxis.defaultProps = {
   show: true,
