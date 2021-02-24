@@ -1,12 +1,14 @@
-import { current, original } from 'immer';
+import { current, original, Draft } from 'immer';
 import { CorrelationManager } from 'nmr-correlation';
+
+import { State } from '../Reducer';
 
 function build(spectra, options, values) {
   return CorrelationManager.build(spectra, options, values);
 }
 
-function handleUpdateCorrelations(draft) {
-  const state = current(draft);
+function handleUpdateCorrelations(draft: Draft<State>) {
+  const state = current(draft) as State;
   const { data: spectra, correlations } = state;
   draft.correlations = build(
     spectra,
@@ -15,8 +17,8 @@ function handleUpdateCorrelations(draft) {
   );
 }
 
-function handleSetMF(draft, payload) {
-  const state = original(draft);
+function handleSetMF(draft: Draft<State>, payload) {
+  const state = original(draft) as State;
   const { data: spectra, correlations } = state;
   const { mf } = payload;
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
@@ -24,8 +26,8 @@ function handleSetMF(draft, payload) {
   }
 }
 
-function handleSetTolerance(draft, payload) {
-  const state = original(draft);
+function handleSetTolerance(draft: Draft<State>, payload) {
+  const state = original(draft) as State;
   const { data: spectra, correlations } = state;
   const { tolerance } = payload;
   draft.correlations = build(
@@ -35,8 +37,8 @@ function handleSetTolerance(draft, payload) {
   );
 }
 
-function handleSetCorrelation(draft, payload) {
-  const state = original(draft);
+function handleSetCorrelation(draft: Draft<State>, payload) {
+  const state = original(draft) as State;
   const { correlations } = state;
   const { id, correlation } = payload;
   draft.correlations = CorrelationManager.setCorrelation(
@@ -47,9 +49,14 @@ function handleSetCorrelation(draft, payload) {
   handleUpdateCorrelations(draft);
 }
 
-function handleSetCorrelations(draft, payload) {
+function handleSetCorrelations(draft: Draft<State>, payload) {
   const { ids, correlations } = payload;
-  ids.forEach((id, i) => handleSetCorrelation(draft, id, correlations[i]));
+  ids.forEach((id, i) =>
+    handleSetCorrelation(draft, {
+      id,
+      correlation: correlations[i],
+    }),
+  );
 }
 
 export {
