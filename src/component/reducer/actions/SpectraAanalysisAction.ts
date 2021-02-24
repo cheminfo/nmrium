@@ -1,7 +1,10 @@
+import { Draft } from 'immer';
+
 import * as MulitpleAnalysis from '../../../data/data1d/MulitpleAnalysis';
+import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
-function analyzeSpectra(draft, action) {
+function analyzeSpectra(draft: Draft<State>, action) {
   const [from, to] = getRange(draft, action);
   MulitpleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
     from,
@@ -10,7 +13,7 @@ function analyzeSpectra(draft, action) {
   });
 }
 
-function handleDeleteSpectraRanges(draft, action) {
+function handleDeleteSpectraRanges(draft: Draft<State>, action) {
   const { colKey } = action;
   MulitpleAnalysis.deleteSpectraAnalysis(
     draft.spectraAnalysis,
@@ -18,7 +21,7 @@ function handleDeleteSpectraRanges(draft, action) {
     draft.activeTab,
   );
 }
-function handleResizeSpectraRange(draft, action) {
+function handleResizeSpectraRange(draft: Draft<State>, action) {
   const { colKey: columnKey, from, to } = action.payload;
   MulitpleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
     from,
@@ -27,11 +30,11 @@ function handleResizeSpectraRange(draft, action) {
     columnKey,
   });
 }
-function handleSetcolumns(draft, action) {
+function handleSetcolumns(draft: Draft<State>, action) {
   const data = action.payload;
   MulitpleAnalysis.setColumn(draft.spectraAnalysis, draft.activeTab, data);
 }
-function handleFiltercolumn(draft, action) {
+function handleFiltercolumn(draft: Draft<State>, action) {
   const { columnKey, valueKey } = action.payload;
   MulitpleAnalysis.changeColumnValueKey(
     draft.spectraAnalysis,
