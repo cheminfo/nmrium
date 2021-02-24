@@ -1,4 +1,5 @@
 import { Draft, original } from 'immer';
+import cloneDeep from 'lodash/cloneDeep';
 
 import {
   DatumKind,
@@ -69,9 +70,7 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
     const _range = (draft.data[index] as Datum1D).ranges.values[
       rangeIndex
     ] as Range;
-    console.log(_range, _range.signal, rowData);
     if (_range?.signal) {
-      console.log(value);
       (_range.signal[rowData.tableMetaInfo.signalIndex] as Signal).kind = value;
       _range.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal
@@ -112,17 +111,21 @@ function handleUnlinkRange(draft: Draft<State>, action) {
       signalIndex,
     } = action.payload;
     // remove assignments in global state
-    const _rangeData = unlink(rangeData, isOnRangeLevel, signalIndex);
-    // remove assignments in assignment hook data
-    unlinkInAssignmentData(
-      assignmentData,
-      _rangeData,
-      isOnRangeLevel,
-      signalIndex,
-    );
+    for (let range of rangeData
+      ? [rangeData]
+      : (state.data[index] as Datum1D).ranges.values) {
+      const _rangeData = unlink(cloneDeep(range), isOnRangeLevel, signalIndex);
+      // remove assignments in assignment hook data
+      unlinkInAssignmentData(
+        assignmentData,
+        _rangeData,
+        isOnRangeLevel,
+        signalIndex,
+      );
 
-    const rangeIndex = getRangeIndex(state, index, _rangeData.id);
-    (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _rangeData;
+      const rangeIndex = getRangeIndex(state, index, _rangeData.id);
+      (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _rangeData;
+    }
   }
 }
 

@@ -298,7 +298,7 @@ function innerSpectrumReducer(draft, action) {
       );
 
     case types.DELETE_MOLECULE:
-      return MoleculeActions.handleDeleteMolecule(draft, action.key);
+      return MoleculeActions.handleDeleteMolecule(draft, action);
 
     case types.SET_CORRELATIONS_MF:
       return CorrelationsActions.handleSetMF(draft, action.payload);

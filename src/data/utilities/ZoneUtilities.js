@@ -1,5 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep';
-
 import { DatumKind } from '../constants/SignalsKinds';
 
 const getDiaIDs = (zone, axis) => {
@@ -42,24 +40,23 @@ const checkSignalKinds = (zone, kinds) => {
 };
 
 const unlink = (zone, isOnZoneLevel, signalIndex, axis) => {
-  const _zone = cloneDeep(zone);
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {
-      delete _zone[axis].diaID;
+      delete zone[axis].diaID;
     } else if (signalIndex !== undefined) {
-      delete _zone.signal[signalIndex][axis].diaID;
+      delete zone.signal[signalIndex][axis].diaID;
     }
-    setPubIntegral(_zone, axis);
+    setPubIntegral(zone, axis);
   } else if (axis !== undefined) {
-    resetDiaIDs(_zone, axis);
-    setPubIntegral(_zone, axis);
+    resetDiaIDs(zone, axis);
+    setPubIntegral(zone, axis);
   } else {
     ['x', 'y'].forEach((key) => {
-      resetDiaIDs(_zone, key);
-      setPubIntegral(_zone, key);
+      resetDiaIDs(zone, key);
+      setPubIntegral(zone, key);
     });
   }
-  return _zone;
+  return zone;
 };
 
 const _unlinkInAssignmentData = (assignmentData, id, axis) => {

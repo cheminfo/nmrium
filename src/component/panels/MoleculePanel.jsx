@@ -32,8 +32,6 @@ import {
   SET_DIAID_RANGE,
   SET_DIAID_ZONE,
   SET_MOLECULE,
-  UNLINK_RANGE,
-  UNLINK_ZONE,
 } from '../reducer/types/Types';
 import {
   copyTextToClipboard,
@@ -481,25 +479,6 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
     ],
   );
 
-  const handleOnUnlinkAll = useCallback(() => {
-    data.forEach((datum) => {
-      if (displayerMode === DISPLAYER_MODE.DM_1D) {
-        dispatch({
-          type: UNLINK_RANGE,
-          payload: { rangeData: datum, assignmentData },
-        });
-      } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-        dispatch({
-          type: UNLINK_ZONE,
-          payload: {
-            zoneData: datum,
-            assignmentData,
-          },
-        });
-      }
-    });
-  }, [data, displayerMode, dispatch, assignmentData]);
-
   const handleClose = useCallback(
     (e) => {
       setOpen(false);
@@ -528,11 +507,12 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
   const handleDelete = useCallback(() => {
     if (molecules[currentIndex] && molecules[currentIndex].key) {
       setCurrentIndex(0);
-      dispatch({ type: DELETE_MOLECULE, key: molecules[currentIndex].key });
-
-      handleOnUnlinkAll();
+      dispatch({
+        type: DELETE_MOLECULE,
+        payload: { key: molecules[currentIndex].key, assignmentData },
+      });
     }
-  }, [molecules, currentIndex, dispatch, handleOnUnlinkAll]);
+  }, [molecules, currentIndex, assignmentData, dispatch]);
 
   const saveAsSVGHandler = useCallback(() => {
     exportAsSVG('molFile', `molSVG${currentIndex}`);

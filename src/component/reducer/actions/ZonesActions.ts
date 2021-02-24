@@ -1,4 +1,5 @@
 import { Draft, original } from 'immer';
+import cloneDeep from 'lodash/cloneDeep';
 
 import {
   DatumKind,
@@ -116,19 +117,29 @@ function handleUnlinkZone(draft: Draft<State>, action) {
       signalIndex,
       axis,
     } = action.payload;
-    // remove assignments in global state
-    const _zoneData = unlink(zoneData, isOnZoneLevel, signalIndex, axis);
-    // remove assignments in assignment hook data
-    unlinkInAssignmentData(
-      assignmentData,
-      _zoneData,
-      isOnZoneLevel,
-      signalIndex,
-      axis,
-    );
 
-    const zoneIndex = getZoneIndex(state, index, _zoneData.id);
-    (draft.data[index] as Datum2D).zones.values[zoneIndex] = _zoneData;
+    for (let zone of zoneData
+      ? [zoneData]
+      : (state.data[index] as Datum2D).zones.values) {
+      // remove assignments in global state
+      const _zoneData = unlink(
+        cloneDeep(zone),
+        isOnZoneLevel,
+        signalIndex,
+        axis,
+      );
+      // remove assignments in assignment hook data
+      unlinkInAssignmentData(
+        assignmentData,
+        _zoneData,
+        isOnZoneLevel,
+        signalIndex,
+        axis,
+      );
+
+      const zoneIndex = getZoneIndex(state, index, _zoneData.id);
+      (draft.data[index] as Datum2D).zones.values[zoneIndex] = _zoneData;
+    }
   }
 }
 
