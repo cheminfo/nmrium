@@ -1,20 +1,23 @@
-import { original } from 'immer';
+import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 import lodashGet from 'lodash/get';
 
+import { Datum1D } from '../../../data/data1d/Datum1D';
+import { Datum2D } from '../../../data/data2d/Datum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { State } from '../Reducer';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 
 import { setDomain } from './DomainActions';
 import { setZoom } from './Zoom';
 
-function handelSetPreferences(draft, action) {
+function handelSetPreferences(draft: Draft<State>, action) {
   const { type, values } = action;
   const panelsPreferences = lodashGet(draft.preferences, 'panels', {});
   draft.preferences.panels = { ...panelsPreferences, [type]: values };
 }
 
-function changeSpectrumDisplayPreferences(draft, { center }) {
+function changeSpectrumDisplayPreferences(draft: Draft<State>, { center }) {
   if (center) {
     const YAxisShift = draft.height / 2;
     draft.verticalAlign.flag = true;
@@ -27,8 +30,8 @@ function changeSpectrumDisplayPreferences(draft, { center }) {
   }
 }
 
-function setKeyPreferencesHandler(draft, keyCode) {
-  const state = original(draft);
+function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
+  const state = original(draft) as State;
   const {
     activeTab,
     data,
@@ -87,13 +90,13 @@ function nucluesToString(nuclues) {
   return typeof nuclues === 'string' ? nuclues : nuclues.join(',');
 }
 
-function applyKeyPreferencesHandler(draft, keyCode) {
-  const state = original(draft);
+function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
+  const state = original(draft) as State;
 
   const preferences = state.keysPreferences[keyCode];
   if (preferences) {
     draft.activeTab = preferences.activeTab;
-    state.data.forEach((datum, index) => {
+    (state.data as Datum1D[] | Datum2D[]).forEach((datum, index) => {
       if (nucluesToString(datum.info.nucleus) === preferences.activeTab) {
         draft.data[index].display = Object.assign(
           cloneDeep(datum.display),
@@ -121,7 +124,8 @@ function applyKeyPreferencesHandler(draft, keyCode) {
       for (const datumID of Object.keys(preferences.level)) {
         const { levelPositive, levelNegative } = preferences.level[datumID];
         const index = state.data.findIndex((datum) => datum.id === datumID);
-        const processController = draft.data[index].processingController;
+        const processController = (draft.data[index] as Datum2D)
+          .processingController;
         processController.setLevel(levelPositive, levelNegative);
         draft.contours[datumID] = processController.drawContours();
       }
