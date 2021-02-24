@@ -1,14 +1,17 @@
 import { max } from 'd3';
-import { original, current } from 'immer';
+import { original, current, Draft } from 'immer';
 
+import { Data1D, Datum1D } from '../../../data/data1d/Datum1D';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 // import { Datum2D } from '../../../data/data2d/Datum2D';
+import { Datum2D } from '../../../data/data2d/Datum2D';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
 import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { State } from '../Reducer';
 import {
   DEFAULT_YAXIS_SHIFT_VALUE,
   DISPLAYER_MODE,
@@ -20,9 +23,9 @@ import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumDisplayPreferences } from './PreferencesActions';
 import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
 
-function getStrongestPeak(draft) {
+function getStrongestPeak(draft: Draft<State>) {
   const { activeSpectrum, data } = draft;
-  const activeData = data[activeSpectrum.index].data;
+  const activeData = data[activeSpectrum.index].data as Data1D;
   const strongestPeakValue = max(activeData.y);
   const index = activeData.y.findIndex((val) => val === strongestPeakValue);
   return {
@@ -32,7 +35,7 @@ function getStrongestPeak(draft) {
   };
 }
 
-function setFilterChanges(draft, selectedFilter) {
+function setFilterChanges(draft: Draft<State>, selectedFilter) {
   const activeSpectrumId = draft.activeSpectrum.id;
 
   //save reduced snapshot
@@ -53,11 +56,11 @@ function setFilterChanges(draft, selectedFilter) {
   }
 }
 
-function setYAxisShift(draft, height) {
+function setYAxisShift(draft: Draft<State>, height) {
   if (draft.data && draft.data.length > 0) {
     if (
-      draft.data[0].info.isFid &&
-      !draft.data.some((d) => d.info.isFid === false)
+      (draft.data[0] as Datum1D).info.isFid &&
+      !(draft.data as Datum1D[]).some((d) => d.info.isFid === false)
     ) {
       const YAxisShift = height / 2;
       draft.verticalAlign.flag = true;
@@ -71,7 +74,7 @@ function setYAxisShift(draft, height) {
   }
 }
 
-function resetTool(draft, setDefaultTool = true) {
+function resetTool(draft: Draft<State>, setDefaultTool = true) {
   draft.selectedOptionPanel = null;
   if (setDefaultTool) {
     draft.selectedTool = options.zoom.id;
@@ -83,7 +86,7 @@ function resetTool(draft, setDefaultTool = true) {
   }
 }
 
-function resetSelectedTool(draft, filterOnly = false) {
+function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
   if (
     (draft.selectedTool && options[draft.selectedTool].isFilter) ||
     !filterOnly
@@ -92,7 +95,7 @@ function resetSelectedTool(draft, filterOnly = false) {
   }
 }
 
-function setSelectedTool(draft, selectedTool) {
+function setSelectedTool(draft: Draft<State>, selectedTool) {
   if (selectedTool) {
     if (selectedTool !== draft.selectedTool) {
       resetTool(draft, false);
@@ -111,21 +114,21 @@ function setSelectedTool(draft, selectedTool) {
   setMargin(draft);
 }
 
-function setSelectedOptionPanel(draft, selectedOptionPanel) {
+function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
   draft.selectedOptionPanel = selectedOptionPanel;
 }
 
-function setSpectrumsVerticalAlign(draft, flag) {
+function setSpectrumsVerticalAlign(draft: Draft<State>, flag) {
   changeSpectrumDisplayPreferences(draft, { center: flag });
 }
 
-function handleChangeSpectrumDisplayMode(draft, { flag }) {
-  const state = original(draft);
+function handleChangeSpectrumDisplayMode(draft: Draft<State>, { flag }) {
+  const state = original(draft) as State;
   const { activeSpectrum, height, activeTab } = draft;
   let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
   if (activeSpectrum) {
     const { index } = activeSpectrum;
-    if (state.data[index].isFid) {
+    if ((state.data[index] as Datum1D).info.isFid) {
       YAxisShift = height / 2;
     }
   }
@@ -133,21 +136,22 @@ function handleChangeSpectrumDisplayMode(draft, { flag }) {
   draft.verticalAlign.stacked = flag;
 
   if (flag) {
-    const count = state.data.filter((datum) => datum.info.nucleus === activeTab)
-      .length;
+    const count = (state.data as Datum1D[]).filter(
+      (datum) => datum.info.nucleus === activeTab,
+    ).length;
     draft.verticalAlign.value = Math.floor(height / (count + 2));
   } else {
     draft.verticalAlign.value = YAxisShift;
   }
 }
 
-function handleAddBaseLineZone(draft, { from, to }) {
+function handleAddBaseLineZone(draft: Draft<State>, { from, to }) {
   const scaleX = getXScale(draft);
 
   let start = scaleX.invert(from);
   const end = scaleX.invert(to);
 
-  let zone = [];
+  let zone: any = [];
   if (start > end) {
     zone = [end, start];
   } else {
@@ -163,8 +167,8 @@ function handleAddBaseLineZone(draft, { from, to }) {
   draft.baseLineZones = zones;
 }
 
-function handleDeleteBaseLineZone(draft, id) {
-  const state = original(draft);
+function handleDeleteBaseLineZone(draft: Draft<State>, id) {
+  const state = original(draft) as State;
   draft.baseLineZones = state.baseLineZones.filter((zone) => zone.id !== id);
 }
 
@@ -191,7 +195,7 @@ function handleToggleRealImaginaryVisibility(draft) {
   }
 }
 
-function handleBrushEnd(draft, action) {
+function handleBrushEnd(draft: Draft<State>, action) {
   const is2D = draft.displayerMode === DISPLAYER_MODE.DM_2D;
   const xScale = getXScale(draft);
 
@@ -233,17 +237,17 @@ function handleBrushEnd(draft, action) {
     }
   }
 }
-function setVerticalIndicatorXPosition(draft, position) {
+function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
   const scaleX = getXScale(draft);
   draft.pivot = scaleX.invert(position);
 }
 
-function getSpectrumID(draft, index) {
+function getSpectrumID(draft: Draft<State>, index) {
   return draft.tabActiveSpectrum[draft.activeTab.split(',')[index]].id;
 }
 
-function handleZoom(draft, action) {
-  const state = original(draft);
+function handleZoom(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   const { deltaY, deltaMode, trackID } = action;
   if (trackID) {
     switch (trackID) {
@@ -268,9 +272,9 @@ function handleZoom(draft, action) {
   }
 }
 
-function zoomOut(draft, action) {
+function zoomOut(draft: Draft<State>, action) {
   const { zoomType, trackID } = action;
-  const state = original(draft);
+  const state = original(draft) as State;
   const zoomHistory = ZoomHistory.getInstance(
     draft.ZoomHistory,
     draft.activeTab,
@@ -330,15 +334,16 @@ function zoomOut(draft, action) {
   }
 }
 
-function hasAcceptedSpectrum(draft, index) {
+function hasAcceptedSpectrum(draft: Draft<State>, index) {
   const nucleuses = draft.activeTab.split(',');
   return (
     draft.tabActiveSpectrum[nucleuses[index]] &&
-    !draft.data[draft.tabActiveSpectrum[nucleuses[index]].index].info.isFid
+    !(draft.data[draft.tabActiveSpectrum[nucleuses[index]].index] as Datum1D)
+      .info.isFid
   );
 }
 
-function setMargin(draft) {
+function setMargin(draft: Draft<State>) {
   if (
     draft.displayerMode === DISPLAYER_MODE.DM_2D &&
     draft.selectedTool !== options.slicingTool.id
@@ -357,7 +362,7 @@ function setMargin(draft) {
   }
 }
 
-function Processing2DData(draft, data) {
+function Processing2DData(draft: Draft<State>, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     let _data = {};
     for (const datum of data[draft.activeTab]) {
@@ -368,15 +373,15 @@ function Processing2DData(draft, data) {
   }
 }
 
-function setDisplayerMode(draft, data) {
+function setDisplayerMode(draft: Draft<State>, data) {
   draft.displayerMode =
-    data && data.some((d) => d.info.dimension === 2)
+    data && (data as Datum1D[] | Datum2D[]).some((d) => d.info.dimension === 2)
       ? DISPLAYER_MODE.DM_2D
       : DISPLAYER_MODE.DM_1D;
 }
 
-function setTabActiveSpectrum(draft, dataGroupByTab) {
-  let tabs2D = [];
+function setTabActiveSpectrum(draft: Draft<State>, dataGroupByTab) {
+  let tabs2D: any[] = [];
   const tabActiveSpectrum = {};
 
   const tabkeys = Object.keys(dataGroupByTab).sort((a, b) =>
@@ -418,7 +423,7 @@ function setTabActiveSpectrum(draft, dataGroupByTab) {
   return tabs2D;
 }
 
-function setTab(draft, dataGroupByTab, tab, refresh = false) {
+function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
   const groupByTab = Object.keys(dataGroupByTab).sort((a, b) =>
     a.split(',').length > b.split(',').length ? -1 : 1,
   );
@@ -446,11 +451,15 @@ function setTab(draft, dataGroupByTab, tab, refresh = false) {
   setMargin(draft);
 }
 
-function setActiveTab(draft, tab = null, refreshTabActiveSpectrums = false) {
+function setActiveTab(
+  draft: Draft<State>,
+  tab = null,
+  refreshTabActiveSpectrums = false,
+) {
   const groupByNucleus = GroupByInfoKey('nucleus');
   const dataGroupByNucleus = groupByNucleus(current(draft).data);
   const tabs = Object.keys(dataGroupByNucleus);
-  const currentTab = !tab || !tabs.includes(tab) ? tabs[0] : tab;
+  const currentTab = !tab || !tabs.includes(tab ?? '') ? tabs[0] : tab;
   setTab(draft, dataGroupByNucleus, currentTab, refreshTabActiveSpectrums);
   resetTool(draft);
   // resetFilterTool(draft);
@@ -470,19 +479,20 @@ function setActiveTab(draft, tab = null, refreshTabActiveSpectrums = false) {
   setMode(draft);
 }
 
-function handelSetActiveTab(draft, tab) {
+function handelSetActiveTab(draft: Draft<State>, tab) {
   if (tab) {
     setActiveTab(draft, tab);
   }
 }
 
-function levelChangeHandler(draft, { deltaY, shiftKey }) {
+function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
   try {
     if (draft.activeSpectrum?.id) {
       const { index, id } = draft.activeSpectrum;
       // const datum2dObject = AnalysisObj.getDatum(id);
       // if (datum2dObject instanceof Datum2D) {
-      const processingController = draft.data[index].processingController;
+      const processingController = (draft.data[index] as Datum2D)
+        .processingController;
       // const processing2dController = processingController.drawContours;
       if (shiftKey) {
         processingController.shiftWheel(deltaY);
