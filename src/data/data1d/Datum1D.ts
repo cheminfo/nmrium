@@ -179,7 +179,7 @@ export function initiateDatum1D(options: any): Datum1D {
   FiltersManager.reapplyFilters(datum);
 
   preprocessing(datum);
-  datum.data = Object.assign(datum.data, { y: datum?.data?.re });
+  (datum.data as Data1D).y = datum.data.re;
   return datum;
 }
 
@@ -202,8 +202,14 @@ function preprocessing(datum) {
 }
 
 export function toJSON(datum1D: Datum1D) {
+  const { re, im, y, x } = datum1D.data;
   return {
-    data: datum1D.data,
+    data: {
+      x: Array.from(x),
+      re: Array.from(re),
+      im: Array.from(im),
+      y: Array.from(y),
+    },
     id: datum1D.id,
     source: {
       jcamp: datum1D.source.jcamp,

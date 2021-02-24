@@ -171,9 +171,11 @@ function getColor(options) {
   return {};
 }
 
-export function toJSON(datum: any) {
+export function toJSON(datum: Datum2D) {
+  const { z, ...resData } = datum.data;
+
   return {
-    data: datum.data,
+    data: { z: Array.from(z), ...resData },
     id: datum.id,
     source: {
       jcamp: datum.source.jcamp,
