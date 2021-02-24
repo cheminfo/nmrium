@@ -1,4 +1,4 @@
-import { original } from 'immer';
+import { Draft, original } from 'immer';
 
 import {
   DatumKind,
@@ -11,17 +11,21 @@ import {
   updateIntegralRanges,
   changeRange,
   changeRangesRealtive,
+  Datum1D,
+  Range,
+  Signal,
 } from '../../../data/data1d/Datum1D';
 import {
   getPubIntegral,
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
+import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
 
-function handleAutoRangesDetection(draft, detectionOptions) {
+function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     detectRanges(draft.data[index], detectionOptions);
@@ -29,50 +33,57 @@ function handleAutoRangesDetection(draft, detectionOptions) {
   }
 }
 
-function getRangeIndex(state, spectrumIndex, rangeID) {
-  return state.data[spectrumIndex].ranges.values.findIndex(
+function getRangeIndex(state: State, spectrumIndex, rangeID) {
+  return (state.data[spectrumIndex] as Datum1D).ranges.values.findIndex(
     (range) => range.id === rangeID,
   );
 }
 
-function handleDeleteRange(draft, action) {
-  const state = original(draft);
+function handleDeleteRange(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const { rangeData, assignmentData } = action.payload;
+    const datum = draft.data[index] as Datum1D;
     if (rangeData === undefined) {
-      draft.data[index].ranges.values.forEach((range) =>
+      datum.ranges.values.forEach((range) =>
         unlinkInAssignmentData(assignmentData, range),
       );
-      draft.data[index].ranges.values = [];
+      datum.ranges.values = [];
     } else {
       unlinkInAssignmentData(assignmentData, rangeData);
       const rangeIndex = getRangeIndex(state, index, rangeData.id);
-      draft.data[index].ranges.values.splice(rangeIndex, 1);
+      datum.ranges.values.splice(rangeIndex, 1);
     }
     updateIntegralRanges(draft.data[index]);
     handleOnChangeRangesData(draft);
   }
 }
 
-function handleChangeRangeSignalKind(draft, action) {
-  const state = original(draft);
+function handleChangeRangeSignalKind(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const { rowData, value } = action.payload;
     const rangeIndex = getRangeIndex(state, index, rowData.id);
-    const _range = draft.data[index].ranges.values[rangeIndex];
-    _range.signal[rowData.tableMetaInfo.signalIndex].kind = value;
-    _range.kind = SignalKindsToInclude.includes(value)
-      ? DatumKind.signal
-      : DatumKind.mixed;
-    updateIntegralRanges(draft.data[index]);
-    handleOnChangeRangesData(draft);
+    const _range = (draft.data[index] as Datum1D).ranges.values[
+      rangeIndex
+    ] as Range;
+    console.log(_range, _range.signal, rowData);
+    if (_range?.signal) {
+      console.log(value);
+      (_range.signal[rowData.tableMetaInfo.signalIndex] as Signal).kind = value;
+      _range.kind = SignalKindsToInclude.includes(value)
+        ? DatumKind.signal
+        : DatumKind.mixed;
+      updateIntegralRanges(draft.data[index]);
+      handleOnChangeRangesData(draft);
+    }
   }
 }
 
-function handleSaveEditedRange(draft, action) {
-  const state = original(draft);
+function handleSaveEditedRange(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const { editedRowData, assignmentData } = action.payload;
@@ -84,14 +95,14 @@ function handleSaveEditedRange(draft, action) {
     unlinkInAssignmentData(assignmentData, _editedRowData);
 
     const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
-    draft.data[index].ranges.values[rangeIndex] = _editedRowData;
+    (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _editedRowData;
     updateIntegralRanges(draft.data[index]);
     handleOnChangeRangesData(draft);
   }
 }
 
-function handleUnlinkRange(draft, action) {
-  const state = original(draft);
+function handleUnlinkRange(draft: Draft<State>, action) {
+  const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const {
@@ -111,7 +122,7 @@ function handleUnlinkRange(draft, action) {
     );
 
     const rangeIndex = getRangeIndex(state, index, _rangeData.id);
-    draft.data[index].ranges.values[rangeIndex] = _rangeData;
+    (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _rangeData;
   }
 }
 
@@ -132,21 +143,21 @@ function handleSetDiaIDRange(draft, action) {
   }
 }
 
-function handleResizeRange(draft, action) {
+function handleResizeRange(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     changeRange(draft.data[index], action.data);
   }
 }
 
-function handleChangeRangeSum(draft, value) {
+function handleChangeRangeSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    draft.data[index].ranges.sum = value;
+    (draft.data[index] as Datum1D).ranges.options.sum = value;
     updateIntegralRanges(draft.data[index]);
   }
 }
-function handleAddRange(draft, action) {
+function handleAddRange(draft: Draft<State>, action) {
   const { startX, endX } = action;
   const range = getRange(draft, { startX, endX });
 

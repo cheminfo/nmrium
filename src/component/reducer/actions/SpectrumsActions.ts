@@ -1,24 +1,26 @@
-import { original } from 'immer';
+import { Draft, original } from 'immer';
 
+import { Datum1D } from '../../../data/data1d/Datum1D';
 import { applyFilter } from '../../../data/data1d/FiltersManager';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import getReferenceShift from '../../../data/data1d/getReferenceShift';
-import { getMissingProjection } from '../../../data/data2d/Datum2D';
+import { getMissingProjection, Datum2D } from '../../../data/data2d/Datum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { State } from '../Reducer';
 
 import { setDomain, setMode } from './DomainActions';
 import { setTab, setActiveTab } from './ToolsActions';
 
 function setVisible(datum, flag) {
   if (datum.info.dimension === 2) {
-    datum.display.isPositiveVisible = flag;
-    datum.display.isNegativeVisible = flag;
+    (datum as Datum2D).display.isPositiveVisible = flag;
+    (datum as Datum2D).display.isNegativeVisible = flag;
   } else {
-    datum.display.isVisible = flag;
+    (datum as Datum1D).display.isVisible = flag;
   }
 }
 
-function handleSpectrumVisibility(draft, action) {
+function handleSpectrumVisibility(draft: Draft<State>, action) {
   if (Array.isArray(action.id)) {
     const IDs = action.id;
     if (IDs.length === 0) {
@@ -36,21 +38,24 @@ function handleSpectrumVisibility(draft, action) {
     }
   } else {
     const index = draft.data.findIndex((d) => d.id === action.id);
-    draft.data[index].display[action.key] = action.value;
+    (draft.data[index] as Datum1D | Datum2D).display[action.key] = action.value;
   }
 }
 
-function handleChangePeaksMarkersVisibility(draft, data) {
+function handleChangePeaksMarkersVisibility(draft: Draft<State>, data) {
   for (let datum of draft.data) {
-    if (data.some((activeData) => activeData.id === datum.id)) {
-      datum.display.isPeaksMarkersVisible = true;
+    if (
+      datum.info?.dimension === 1 &&
+      data.some((activeData) => activeData.id === datum.id)
+    ) {
+      (datum as Datum1D).display.isPeaksMarkersVisible = true;
     } else {
-      datum.display.isPeaksMarkersVisible = false;
+      (datum as Datum1D).display.isPeaksMarkersVisible = false;
     }
   }
 }
 
-function handleChangeActiveSpectrum(draft, activeSpectrum) {
+function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
   // const state = original(draft);
 
   let refreshDomain = false;
@@ -60,19 +65,21 @@ function handleChangeActiveSpectrum(draft, activeSpectrum) {
     const oldIndex = draft.data.findIndex(
       (d) => d.id === draft.activeSpectrum?.id,
     );
-
     if (newIndex !== -1) {
-      draft.data[newIndex].display.isVisible = true;
-    }
-    if (oldIndex !== -1) {
-      refreshDomain =
-        draft.data[oldIndex].info.isFid === draft.data[newIndex].info.isFid
-          ? false
-          : true;
-    } else {
-      refreshDomain = draft.data[newIndex].info.isFid;
-    }
+      const newActiveSpectrum = draft.data[newIndex] as Datum1D | Datum2D;
 
+      newActiveSpectrum.display.isVisible = true;
+
+      if (oldIndex !== -1) {
+        refreshDomain =
+          (draft.data[oldIndex] as Datum1D | Datum2D).info.isFid ===
+          newActiveSpectrum.info.isFid
+            ? false
+            : true;
+      } else {
+        refreshDomain = newActiveSpectrum.info.isFid || false;
+      }
+    }
     activeSpectrum = { ...activeSpectrum, index: newIndex };
     draft.activeSpectrum = activeSpectrum;
     draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
@@ -94,29 +101,29 @@ function handleChangeActiveSpectrum(draft, activeSpectrum) {
   }
 }
 
-function changeSpectrumSetting(draft, { id, display }) {
-  const state = original(draft);
+function changeSpectrumSetting(draft: Draft<State>, { id, display }) {
+  const state = original(draft) as State;
   const index = state.data.findIndex((d) => d.id === id);
   if (index !== -1) {
     draft.data[index].display = display;
   }
 }
-function handleChangeSpectrumColor(draft, { id, color, key }) {
-  const state = original(draft);
+function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
+  const state = original(draft) as State;
   const index = state.data.findIndex((d) => d.id === id);
   if (index !== -1) {
-    draft.data[index].display[key] = color;
+    (draft.data[index] as Datum1D | Datum2D).display[key] = color;
   }
 }
 
-function handleDeleteSpectra(draft, action) {
+function handleDeleteSpectra(draft: Draft<State>, action) {
   const { activeTab } = draft;
-  const state = original(draft);
+  const state = original(draft) as State;
   if (action.id) {
     const index = state.data.findIndex((d) => (d.id = action.id));
     draft.data.splice(index, 1);
   } else {
-    draft.data.foreach((datum, index) => {
+    draft.data.forEach((datum, index) => {
       draft.data.splice(index, 1);
     });
   }
@@ -139,11 +146,11 @@ function addMissingProjectionHander(draft, action) {
     setMode(draft);
   }
 }
-function alignSpectraHandler(draft, action) {
+function alignSpectraHandler(draft: Draft<State>, action) {
   if (draft.data && draft.data.length > 0) {
     for (let datum of draft.data) {
       if (
-        datum.info.dimension === 1 &&
+        datum.info?.dimension === 1 &&
         datum.info.nucleus === draft.activeTab
       ) {
         const shift = getReferenceShift(datum, { ...action.payload });
