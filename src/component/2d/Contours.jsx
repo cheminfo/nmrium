@@ -27,7 +27,7 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
       : false;
   }, [activeSpectrum, spectrumID]);
 
-  const buildContourPath = (contour) => {
+  function buildContourPath(contour) {
     const _scaleX = get2DXScale({ margin, width, xDomain });
     const _scaleY = get2DYScale({ margin, height, yDomain });
 
@@ -38,7 +38,7 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
     }, '');
     path += ' z';
     return path;
-  };
+  }
   const data = useMemo(() => {
     return get(contours, `${spectrumID}.${sign}`, []);
   }, [contours, sign, spectrumID]);
