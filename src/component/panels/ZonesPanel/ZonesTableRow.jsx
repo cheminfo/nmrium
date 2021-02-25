@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useMemo, useCallback, useState } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation';
@@ -47,7 +47,7 @@ function ZonesTableRow({ rowData, onUnlink, onContextMenu }) {
     return {
       rowSpan: rowData.tableMetaInfo.rowSpan,
       style:
-        lodash.get(rowData, 'tableMetaInfo.hide', false) === true
+        lodashGet(rowData, 'tableMetaInfo.hide', false) === true
           ? { display: 'none' }
           : null,
     };
@@ -101,7 +101,8 @@ function ZonesTableRow({ rowData, onUnlink, onContextMenu }) {
   );
 
   const clickHandler = useCallback((e, assignment, axis) => {
-    assignment.onClick(e, axis);
+    e.stopPropagation();
+    assignment.onClick(axis);
   }, []);
 
   const onHoverZoneX = useMemo(() => {
@@ -162,7 +163,7 @@ function ZonesTableRow({ rowData, onUnlink, onContextMenu }) {
       style={
         highlightZone.isActive || assignmentZone.isActive
           ? HighlightedRowStyle
-          : lodash.get(
+          : lodashGet(
               rowData,
               'tableMetaInfo.isConstantlyHighlighted',
               false,

@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useCallback, useState, useEffect, memo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
@@ -120,7 +120,7 @@ function Panels({ selectedTool, displayerMode }) {
   const check = useCallback(
     (item) => {
       return (
-        !lodash.get(preferences, `display.panels.${item.hidePreferenceKey}`) &&
+        !lodashGet(preferences, `display.panels.${item.hidePreferenceKey}`) &&
         (item.mode == null || item.mode === displayerMode)
       );
     },

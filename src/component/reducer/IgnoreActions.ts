@@ -15,6 +15,7 @@ const ignoreActions = [
   types.SET_SPECTRUMS_VERTICAL_ALIGN,
   types.SET_VERTICAL_INDICATOR_X_POSITION,
   types.SET_WIDTH,
+  types.SET_DIMENSIONS,
   types.SET_X_DOMAIN,
   types.SET_Y_DOMAIN,
   types.SET_ZOOM_FACTOR,
@@ -30,12 +31,9 @@ const ignoreActions = [
   types.CHANGE_ACTIVE_SPECTRUM,
   types.CHANGE_INTEGRAL_ZOOM,
   types.CHANGE_SPECTRUM_COLOR,
-  types.UPDATE_CORRELATIONS,
-  types.SET_CORRELATION_MF,
-  types.SET_CORRELATION_TOLERANCE,
 ];
 
-function checkActionType(type) {
+function checkActionType(type: string): boolean {
   if (!ignoreActions.includes(type)) return true;
   return false;
 }

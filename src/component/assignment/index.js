@@ -25,9 +25,16 @@ function assignmentReducer(state, action) {
       ) {
         newState.assignment[action.payload.id[0]][action.payload.axis] = [];
       }
-      newState.assignment[action.payload.id[0]][action.payload.axis].push(
-        action.payload.id[1],
-      );
+      // avoid duplicates
+      if (
+        !newState.assignment[action.payload.id[0]][
+          action.payload.axis
+        ].includes(action.payload.id[1])
+      ) {
+        newState.assignment[action.payload.id[0]][action.payload.axis].push(
+          action.payload.id[1],
+        );
+      }
 
       return newState;
     }
@@ -46,6 +53,18 @@ function assignmentReducer(state, action) {
         ] = newState.assignment[action.payload.id[0]][
           action.payload.axis
         ].filter((_id) => _id !== action.payload.id[1]);
+
+        if (
+          newState.assignment[action.payload.id[0]][action.payload.axis]
+            .length === 0
+        ) {
+          delete newState.assignment[action.payload.id[0]][action.payload.axis];
+        }
+        if (
+          Object.keys(newState.assignment[action.payload.id[0]]).length === 0
+        ) {
+          delete newState.assignment[action.payload.id[0]];
+        }
       }
 
       return newState;
@@ -62,6 +81,9 @@ function assignmentReducer(state, action) {
           newState.assignment[_id][action.payload.axis] !== undefined
         ) {
           delete newState.assignment[_id][action.payload.axis];
+          if (Object.keys(newState.assignment[_id]).length === 0) {
+            delete newState.assignment[_id];
+          }
         }
       });
 
@@ -290,10 +312,7 @@ export function useAssignment(key) {
   }, [context, id]);
 
   const onClick = useCallback(
-    (e, axis) => {
-      e.preventDefault();
-      e.stopPropagation();
-
+    (axis) => {
       context.dispatch({
         type: 'SET_IS_ACTIVE',
         payload: {

@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
 /** @jsxImportSource @emotion/react */
 import { Form, Formik } from 'formik';
-import lodash from 'lodash';
 import { useCallback, useEffect, useMemo } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
+import generateID from '../../../data/utilities/generateID';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';
@@ -104,6 +104,7 @@ function EditRangeModal({
     (signals) => {
       return signals.map((_signal) => {
         return {
+          id: generateID(),
           ..._signal,
           multiplicity: _signal.j
             .map((_coupling) => translateMultiplet(_coupling.multiplicity))
@@ -117,7 +118,7 @@ function EditRangeModal({
 
   const handleOnSave = useCallback(
     async (formValues) => {
-      const _range = lodash.cloneDeep(rangeData);
+      const _range = { ...rangeData };
       _range.signal = getSignals(formValues.signals);
       await onSaveEditRangeModal(_range);
       handleOnClose();

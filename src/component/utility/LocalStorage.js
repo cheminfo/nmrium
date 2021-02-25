@@ -1,4 +1,5 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 import { useCallback, useEffect, useState } from 'react';
 
 function useStateWithLocalStorage(localStorageKey, key = null) {
@@ -13,7 +14,7 @@ function useStateWithLocalStorage(localStorageKey, key = null) {
     (data, key = null) => {
       let castData = JSON.parse(value);
       if (key) {
-        lodash.set(castData, key, data);
+        lodashSet(castData, key, data);
       } else {
         castData = { ...castData, ...data };
       }
@@ -22,7 +23,7 @@ function useStateWithLocalStorage(localStorageKey, key = null) {
     [value],
   );
   return [
-    key ? lodash.get(JSON.parse(value), key, {}) : JSON.parse(value),
+    key ? lodashGet(JSON.parse(value), key, {}) : JSON.parse(value),
     setData,
   ];
 }
@@ -40,7 +41,7 @@ const removeData = (localStorageKey) => {
 };
 
 const getValue = (object, keyPath, defaultValue = null) => {
-  return lodash.get(object, keyPath, defaultValue);
+  return lodashGet(object, keyPath, defaultValue);
 };
 
 export {

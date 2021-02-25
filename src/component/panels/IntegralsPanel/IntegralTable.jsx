@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useCallback, useMemo, memo, useRef, useEffect } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
@@ -161,7 +161,7 @@ function IntegralTable({
     );
     let cols = [...defaultColumns];
     if (
-      lodash.get(
+      lodashGet(
         integralsPreferences,
         'showAbsolute',
         integralDefaultValues.showAbsolute,
@@ -170,7 +170,7 @@ function IntegralTable({
       setCustomColumn(cols, 4, 'Absolute', (row) =>
         formatNumber(
           row.original.absolute,
-          lodash.get(
+          lodashGet(
             integralsPreferences,
             'absoluteFormat',
             integralDefaultValues.absoluteFormat,
@@ -179,7 +179,7 @@ function IntegralTable({
       );
     }
     if (
-      lodash.get(
+      lodashGet(
         integralsPreferences,
         'showRelative',
         integralDefaultValues.showRelative,
@@ -189,7 +189,7 @@ function IntegralTable({
       setCustomColumn(cols, 5, `Relative ${n}`, (row) => {
         const formattedNumber = formatNumber(
           row.original.integral,
-          lodash.get(
+          lodashGet(
             integralsPreferences,
             'relativeFormat',
             integralDefaultValues.relativeFormat,

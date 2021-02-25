@@ -6,7 +6,7 @@ import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useScale } from '../context/ScaleContext';
 
-function Line({ x, y, id, display, index }) {
+function Line({ data, id, display, index }) {
   const { xDomain, activeSpectrum, verticalAlign } = useChartData();
   const preferences = usePreferences();
   const { scaleX, scaleY } = useScale();
@@ -30,9 +30,9 @@ function Line({ x, y, id, display, index }) {
   const paths = useMemo(() => {
     const _scaleX = scaleX();
     const _scaleY = scaleY(id);
-    if (x && y && _scaleX(0)) {
+    if (data?.x && data?.y && _scaleX(0)) {
       const pathPoints = xyReduce(
-        { x, y },
+        { x: data.x, y: data.y },
         {
           from: xDomain[0],
           to: xDomain[1],
@@ -48,7 +48,7 @@ function Line({ x, y, id, display, index }) {
     } else {
       return '';
     }
-  }, [id, scaleX, scaleY, x, xDomain, y]);
+  }, [id, scaleX, scaleY, data, xDomain]);
 
   return (
     <path

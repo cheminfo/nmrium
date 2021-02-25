@@ -1,9 +1,9 @@
 import PropsTypes from 'prop-types';
 import { useMemo } from 'react';
 
+import { getSlice } from '../../../../data/data2d/Datum2D';
 import { useMouseTracker } from '../../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../../context/ChartContext';
-import { AnalysisObj } from '../../../reducer/core/Analysis';
 import { get2DXScale, get2DYScale } from '../../utilities/scale';
 
 import HorizontalSliceChart from './HorizontalSliceChart';
@@ -15,6 +15,7 @@ function SlicingView() {
     height,
     margin,
     activeSpectrum,
+    data: spectra,
     xDomain,
     yDomain,
   } = useChartData();
@@ -25,8 +26,7 @@ function SlicingView() {
       const { x, y } = position;
       const scale2dX = get2DXScale({ margin, width, xDomain });
       const scale2dY = get2DYScale({ margin, height, yDomain });
-
-      const data = AnalysisObj.createSlice(activeSpectrum.id, {
+      const data = getSlice(spectra[activeSpectrum.index], {
         x: scale2dX.invert(x),
         y: scale2dY.invert(y),
       });
@@ -50,7 +50,17 @@ function SlicingView() {
       );
     }
     return null;
-  }, [position, activeSpectrum.id, margin, width, xDomain, height, yDomain]);
+  }, [
+    position,
+    activeSpectrum.id,
+    activeSpectrum.index,
+    margin,
+    width,
+    xDomain,
+    height,
+    yDomain,
+    spectra,
+  ]);
 
   if (!position) {
     return null;

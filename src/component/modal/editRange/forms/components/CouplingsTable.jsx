@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { memo, useEffect, useCallback } from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 
@@ -93,9 +93,11 @@ function CouplingsTable({ push, remove, onFocus, onBlur }) {
 
   const hasMissingCouplingValue = useCallback(
     (i) =>
-      lodash
-        .get(errors, `signals[${values.activeTab}].missingCouplings`, [])
-        .some((_error) => _error.index === i),
+      lodashGet(
+        errors,
+        `signals[${values.activeTab}].missingCouplings`,
+        [],
+      ).some((_error) => _error.index === i),
     [errors, values.activeTab],
   );
 
@@ -108,9 +110,8 @@ function CouplingsTable({ push, remove, onFocus, onBlur }) {
           <th>J (Hz)</th>
           <th>{''}</th>
         </tr>
-        {lodash
-          .get(values, `signals[${values.activeTab}].j`, [])
-          .map((_coupling, i) => (
+        {lodashGet(values, `signals[${values.activeTab}].j`, []).map(
+          (_coupling, i) => (
             <tr
               // eslint-disable-next-line react/no-array-index-key
               key={`editCouplings${values.activeTab}${i}`}
@@ -145,7 +146,8 @@ function CouplingsTable({ push, remove, onFocus, onBlur }) {
                 </Button>
               </td>
             </tr>
-          ))}
+          ),
+        )}
         <tr />
         <tr>
           <td colSpan={4}>

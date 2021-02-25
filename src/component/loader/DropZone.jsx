@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
-import { Analysis } from '../../data/Analysis';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import {
@@ -83,11 +82,7 @@ function DropZone(props) {
             if (selectedFilesByExtensions.length === 1) {
               loadFiles(selectedFilesByExtensions).then(
                 (files) => {
-                  Analysis.build(JSON.parse(files[0].binary.toString())).then(
-                    (AnalysisObj) => {
-                      dispatch({ type: LOAD_JSON_FILE, data: { AnalysisObj } });
-                    },
-                  );
+                  dispatch({ type: LOAD_JSON_FILE, files });
                 },
                 (err) => {
                   // eslint-disable-next-line no-alert

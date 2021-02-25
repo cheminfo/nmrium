@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodash from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import CloseButton from '../../elements/CloseButton';
@@ -69,7 +68,7 @@ function SetShiftToleranceModal({ onClose, onSave, previousTolerance }) {
 
   useEffect(() => {
     if (previousTolerance) {
-      setTolerance(lodash.cloneDeep(previousTolerance));
+      setTolerance(previousTolerance);
     } else {
       setTolerance(undefined);
     }

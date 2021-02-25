@@ -81,7 +81,7 @@ function RangesPickingOptionPanel() {
         style={styles.actionButton}
         onClick={handleApplyFilter}
       >
-        Auto peak picking
+        Auto ranges picking
       </button>
       <button
         type="button"

@@ -1,30 +1,30 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { Fragment, useCallback } from 'react';
 
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
-import { CHANGE_ZONE_SIGNAL } from '../../../reducer/types/Types';
+import { CHANGE_ZONE_SIGNAL_VALUE } from '../../../reducer/types/Types';
 
 function SignalDeltaColumn({ rowData, onHoverSignalX, onHoverSignalY }) {
   const dispatch = useDispatch();
 
-  const signalDeltaX = lodash.get(
+  const signalDeltaX = lodashGet(
     rowData,
     'tableMetaInfo.signal.x.delta',
     undefined,
   );
-  const signalDeltaY = lodash.get(
+  const signalDeltaY = lodashGet(
     rowData,
     'tableMetaInfo.signal.y.delta',
     undefined,
   );
-  const id = lodash.get(rowData, 'tableMetaInfo.signal.id', undefined);
+  const id = lodashGet(rowData, 'tableMetaInfo.signal.id', undefined);
 
   const saveXHandler = useCallback(
     (event) => {
       const value = event.target.value;
       dispatch({
-        type: CHANGE_ZONE_SIGNAL,
+        type: CHANGE_ZONE_SIGNAL_VALUE,
         payload: {
           zoneID: rowData.id,
           signal: { id, x: value },
@@ -37,7 +37,7 @@ function SignalDeltaColumn({ rowData, onHoverSignalX, onHoverSignalY }) {
     (event) => {
       const value = event.target.value;
       dispatch({
-        type: CHANGE_ZONE_SIGNAL,
+        type: CHANGE_ZONE_SIGNAL_VALUE,
         payload: {
           zoneID: rowData.id,
           signal: { id, y: value },

@@ -1,9 +1,12 @@
 import { produce } from 'immer';
+import { CorrelationManager } from 'nmr-correlation';
 
-import { Analysis } from '../../data/Analysis';
+import * as SpectraManager from '../../data/SpectraManager';
+import { Datum1D } from '../../data/data1d/Datum1D';
+import { Datum2D } from '../../data/data2d/Datum2D';
+import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
 
-import checkActionType from './IgnoreActions';
 import * as CorrelationsActions from './actions/CorrelationsActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
@@ -28,7 +31,6 @@ import * as SpectraAanalysisActions from './actions/SpectraAanalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
-import { AnalysisObj } from './core/Analysis';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
@@ -80,41 +82,104 @@ export const initialState = {
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
-  spectraAanalysis: {},
-  AnalysisObj: new Analysis(),
+  spectraAnalysis: {},
+  correlations: CorrelationManager.init({
+    options: { tolerance: DefaultTolerance, mf: '' },
+  }),
   displayerKey: '',
+  ZoomHistory: {},
 };
 
-export function dispatchMiddleware(dispatch, onDataChange = null) {
+export interface State {
+  data: Array<Partial<Datum1D> | Partial<Datum2D>>;
+  contours: any;
+  tempData: any;
+  xDomain: Array<number>;
+  yDomain: Array<number>;
+  yDomains: any;
+  xDomains: any;
+  originDomain: any;
+  integralsYDomains: any;
+  originIntegralYDomain: any;
+  selectedTool: any;
+  selectedFilter: any;
+  selectedOptionPanel: any;
+  activeTab: any;
+  width: any;
+  height: any;
+  margin: Partial<{ top: number; right: number; bottom: number; left: number }>;
+  activeSpectrum: any;
+  mode: string;
+  zoomFactor: Partial<{ scale: number }>;
+  integralZoomFactor: Partial<{ scale: number }>;
+  molecules: Array<any>;
+  verticalAlign: Partial<{
+    flag: boolean;
+    stacked: boolean;
+    value: number;
+  }>;
+  history: Partial<{
+    past: Array<any>;
+    present: any;
+    future: Array<any>;
+    hasUndo: boolean;
+    hasRedo: boolean;
+  }>;
+  pivot: number;
+  isLoading: boolean;
+  preferences: any;
+  baseLineZones: any;
+  keysPreferences: any;
+  displayerMode: any;
+  tabActiveSpectrum: any;
+  spectraAnalysis: any;
+  displayerKey: any;
+  correlations: any;
+  actionType: null;
+  ZoomHistory: any;
+}
+
+export function dispatchMiddleware(dispatch) {
   return (action) => {
     switch (action.type) {
-      case types.LOAD_ZIP_FILE:
-        AnalysisObj.fromZip(action.files).then(() => {
+      case types.INITIATE: {
+        const { spectra, ...res } = action.payload;
+        void SpectraManager.fromJSON(spectra).then((data) => {
+          action.payload = { spectra: data, ...res };
           dispatch(action);
-          if (onDataChange && checkActionType(action.type)) {
-            onDataChange(AnalysisObj.toJSON());
-          }
         });
         break;
+      }
+      case types.LOAD_ZIP_FILE: {
+        for (let zipFile of action.files) {
+          void SpectraManager.addBruker(
+            { display: { name: zipFile.name } },
+            zipFile.binary,
+          ).then((data) => {
+            action.payload = data;
+            dispatch(action);
+          });
+        }
+        break;
+      }
 
       default:
         dispatch(action);
-        if (onDataChange && checkActionType(action.type)) {
-          onDataChange(AnalysisObj.toJSON());
-        }
+
         break;
     }
   };
 }
 
 function innerSpectrumReducer(draft, action) {
+  draft.actionType = action.type;
   switch (action.type) {
     case types.INITIATE:
-      return LoadActions.initiate(draft, action.data);
+      return LoadActions.initiate(draft, action);
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
     case types.LOAD_JSON_FILE:
-      return LoadActions.handleLoadJsonFile(draft, action.data);
+      return LoadActions.handleLoadJsonFile(draft, action.files);
     case types.LOAD_JCAMP_FILE:
       return LoadActions.loadJcampFile(draft, action.files);
     case types.LOAD_JDF_FILE:
@@ -122,9 +187,7 @@ function innerSpectrumReducer(draft, action) {
     case types.LOAD_MOL_FILE:
       return LoadActions.handleLoadMOLFile(draft, action.files);
     case types.LOAD_ZIP_FILE:
-      return LoadActions.handleLoadZIPFile(draft, action.files);
-    case types.SET_DATA:
-      return LoadActions.setData(draft, action.data);
+      return LoadActions.handleLoadZIPFile(draft, action);
     case types.EXPORT_DATA:
       return exportData(draft, action);
     case types.ADD_PEAK:
@@ -142,7 +205,7 @@ function innerSpectrumReducer(draft, action) {
     case types.CHANGE_INTEGRAL_DATA:
       return IntegralsActions.changeIntegral(draft, action);
     case types.RESIZE_INTEGRAL:
-      return IntegralsActions.handleResizeIntegral(draft, action);
+      return IntegralsActions.changeIntegral(draft, action);
     case types.CHANGE_INTEGRAL_ZOOM:
       return IntegralsActions.handleChangeIntegralZoom(draft, action);
     case types.CHANGE_INTEGRAL_SUM:
@@ -188,7 +251,7 @@ function innerSpectrumReducer(draft, action) {
         action.value,
       );
     case types.APPLY_AUTO_PHASE_CORRECTION_FILTER:
-      return FiltersActions.applyAutoPhaseCorrectionFilter(draft, action.value);
+      return FiltersActions.applyAutoPhaseCorrectionFilter(draft);
     case types.APPLY_ABSOLUTE_FILTER:
       return FiltersActions.applyAbsoluteFilter(draft);
     case types.CALCULATE_MANUAL_PHASE_CORRECTION_FILTER:
@@ -235,47 +298,19 @@ function innerSpectrumReducer(draft, action) {
       );
 
     case types.DELETE_MOLECULE:
-      return MoleculeActions.handleDeleteMolecule(draft, action.key);
+      return MoleculeActions.handleDeleteMolecule(draft, action);
 
-    case types.UPDATE_CORRELATIONS:
-      return CorrelationsActions.handleUpdateCorrelations(
-        draft,
-        action.signals1D,
-        action.signals2D,
-        action.signalsDEPT,
-      );
+    case types.SET_CORRELATIONS_MF:
+      return CorrelationsActions.handleSetMF(draft, action.payload);
 
-    case types.ADD_CORRELATION:
-      return CorrelationsActions.handleAddCorrelation(
-        draft,
-        action.correlation,
-      );
-
-    case types.DELETE_CORRELATION:
-      return CorrelationsActions.handleDeleteCorrelation(draft, action.id);
+    case types.SET_CORRELATIONS_TOLERANCE:
+      return CorrelationsActions.handleSetTolerance(draft, action.payload);
 
     case types.SET_CORRELATION:
-      return CorrelationsActions.handleSetCorrelation(
-        draft,
-        action.id,
-        action.correlation,
-      );
+      return CorrelationsActions.handleSetCorrelation(draft, action.payload);
 
     case types.SET_CORRELATIONS:
-      return CorrelationsActions.handleSetCorrelations(
-        draft,
-        action.ids,
-        action.correlations,
-      );
-
-    case types.SET_CORRELATION_MF:
-      return CorrelationsActions.handleSetMF(draft, action.mf);
-
-    case types.UNSET_CORRELATION_MF:
-      return CorrelationsActions.handleUnsetMF(draft);
-
-    case types.SET_CORRELATION_TOLERANCE:
-      return CorrelationsActions.handleSetTolerance(draft, action.tolerance);
+      return CorrelationsActions.handleSetCorrelations(draft, action.payload);
 
     case types.DELETE_SPECTRA:
       return SpectrumsActions.handleDeleteSpectra(draft, action);
@@ -301,17 +336,23 @@ function innerSpectrumReducer(draft, action) {
     case types.ADD_RANGE:
       return RangesActions.handleAddRange(draft, action);
     case types.DELETE_RANGE:
-      return RangesActions.handleDeleteRange(draft, action.rangeID);
-    case types.CHANGE_RANGE_DATA:
-      return RangesActions.handleChangeRange(draft, action);
+      return RangesActions.handleDeleteRange(draft, action);
     case types.RESIZE_RANGE:
       return RangesActions.handleResizeRange(draft, action);
     case types.CHANGE_RANGE_SUM:
       return RangesActions.handleChangeRangeSum(draft, action.value);
     case types.CHANGE_RANGE_RELATIVE:
       return RangesActions.handleChangeRangeRaltiveValue(draft, action);
-    case types.CHANGE_RANGE_SIGNAL:
+    case types.CHANGE_RANGE_SIGNAL_VALUE:
       return RangesActions.handleChangeRangeSignalValue(draft, action);
+    case types.CHANGE_RANGE_SIGNAL_KIND:
+      return RangesActions.handleChangeRangeSignalKind(draft, action);
+    case types.SAVE_EDITED_RANGE:
+      return RangesActions.handleSaveEditedRange(draft, action);
+    case types.UNLINK_RANGE:
+      return RangesActions.handleUnlinkRange(draft, action);
+    case types.SET_DIAID_RANGE:
+      return RangesActions.handleSetDiaIDRange(draft, action);
 
     case types.SET_PREFERENCES:
       return handelSetPreferences(draft, action.data);
@@ -332,15 +373,19 @@ function innerSpectrumReducer(draft, action) {
     case types.ADD_2D_ZONE:
       return ZonesActions.add2dZoneHandler(draft, action);
     case types.DELETE_2D_ZONE:
-      return ZonesActions.delete2dZoneHandler(draft, action.zoneID);
+      return ZonesActions.handleDeleteZone(draft, action);
     case types.ADD_MISSING_PROJECTION:
       return SpectrumsActions.addMissingProjectionHander(draft, action);
     case types.RESET_DOMAIN:
       return DomainActions.handelResetDomain(draft);
-    case types.CHANGE_ZONE_DATA:
-      return ZonesActions.handleChangeZone(draft, action);
-    case types.CHANGE_ZONE_SIGNAL:
-      return ZonesActions.changeZoneSignal(draft, action);
+    case types.CHANGE_ZONE_SIGNAL_VALUE:
+      return ZonesActions.changeZoneSignalDelta(draft, action);
+    case types.CHANGE_ZONE_SIGNAL_KIND:
+      return ZonesActions.handleChangeZoneSignalKind(draft, action);
+    case types.UNLINK_ZONE:
+      return ZonesActions.handleUnlinkZone(draft, action);
+    case types.SET_DIAID_ZONE:
+      return ZonesActions.handleSetDiaIDZone(draft, action);
 
     case types.ANALYZE_SPECTRA:
       return SpectraAanalysisActions.analyzeSpectra(draft, action);

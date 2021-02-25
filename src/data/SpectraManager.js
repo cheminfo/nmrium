@@ -1,9 +1,9 @@
 import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 
-import { Data1DManager } from './data1d/Data1DManager';
-import { Datum1D } from './data1d/Datum1D';
+import * as Data1DManager from './data1d/Data1DManager';
+import * as Datum1D from './data1d/Datum1D';
 import { Data2DManager } from './data2d/Data2DManager';
-import { Datum2D } from './data2d/Datum2D';
+import * as Datum2D from './data2d/Datum2D';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
   // { credentials: 'include' }
@@ -49,10 +49,14 @@ function addJcampSS(spectra, entry, options) {
 function addData(spectra, datum) {
   const dimension = datum.info.dimension;
   if (dimension === 1) {
-    spectra.push(new Datum1D({ ...datum, data: datum.source.original }));
+    spectra.push(
+      Datum1D.initiateDatum1D({ ...datum, data: datum.source.original }),
+    );
   }
   if (dimension === 2) {
-    spectra.push(new Datum2D({ ...datum, data: datum.source.original }));
+    spectra.push(
+      Datum2D.initiateDatum2D({ ...datum, data: datum.source.original }),
+    );
   }
 }
 
@@ -70,7 +74,7 @@ export function addJDF(spectra, jdf, options = {}) {
   info.acquisitionTime = info.acquisitionTime[0];
 
   info.baseFrequency = info.baseFrequency[0];
-  info.frequencyOffset = info.offset[0];
+  info.frequencyOffset = info.frequencyOffset[0];
 
   info.spectralWidthClipped = converted.application.spectralWidthClipped;
 
@@ -97,7 +101,8 @@ export function addJDF(spectra, jdf, options = {}) {
   }
 }
 
-export async function fromJSON(spectra, data = []) {
+export async function fromJSON(data = []) {
+  const spectra = [];
   let promises = [];
 
   for (let datum of data) {
@@ -110,9 +115,11 @@ export async function fromJSON(spectra, data = []) {
     }
   }
   await Promise.all(promises);
+  return spectra;
 }
 
-export async function addBruker(spectra, options, data) {
+export async function addBruker(options, data) {
+  const spectra = [];
   let result = await fromBruker(data, { xy: true, noContours: true });
   let entries = result;
   for (let entry of entries) {
@@ -140,4 +147,84 @@ export async function addBruker(spectra, options, data) {
       }
     }
   }
+  return spectra;
+}
+
+// handle zip files
+export async function fromZip(zipFiles) {
+  const spectra = [];
+  for (let zipFile of zipFiles) {
+    await addBruker(
+      spectra,
+      { display: { name: zipFile.name } },
+      zipFile.binary,
+    );
+  }
+  return spectra;
+}
+
+export function addJDFs(files) {
+  const spectra = [];
+  for (let i = 0; i < files.length; i++) {
+    addJDF(spectra, files[i].binary, {
+      display: {
+        name: files[i].name,
+      },
+      source: {
+        jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
+      },
+    });
+  }
+  return spectra;
+}
+
+export function addJcamps(files) {
+  const spectra = [];
+  for (let i = 0; i < files.length; i++) {
+    addJcamp(spectra, files[i].binary.toString(), {
+      display: {
+        name: files[i].name,
+      },
+      source: {
+        jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
+      },
+    });
+  }
+  return spectra;
+}
+
+export async function addMolfileFromURL(molfileURL) {
+  let molfile = await fetch(molfileURL).then((response) => response.text());
+  this.addMolfile(molfile);
+}
+
+/**
+ *
+ * @param {object} state
+ */
+export function toJSON(state) {
+  const {
+    data,
+    molecules,
+    preferences,
+    correlations,
+    multipleAnalysis,
+  } = state || {
+    data: [],
+    molecules: [],
+    preferences: {},
+    correlations: {},
+    multipleAnalysis: {},
+  };
+  const spectra = data.map((ob) => {
+    return ob.info.dimension === 1 ? Datum1D.toJSON(ob) : Datum2D.toJSON(ob);
+  });
+
+  return {
+    spectra,
+    molecules,
+    preferences,
+    correlations,
+    multipleAnalysis,
+  };
 }

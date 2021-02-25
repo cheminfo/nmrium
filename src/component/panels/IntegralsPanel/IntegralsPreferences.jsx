@@ -1,4 +1,5 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 import {
   useEffect,
   useState,
@@ -129,7 +130,7 @@ function IntegralsPreferences({ nucleus, preferences }, ref) {
       const val = ['true', 'false'].includes(field[1])
         ? field[1] === 'true'
         : field[1];
-      values = lodash.set(values, keys, val);
+      values = lodashSet(values, keys, val);
     }
     saveHandler(values, true);
     saveToLocalStorgate(values);
@@ -141,7 +142,7 @@ function IntegralsPreferences({ nucleus, preferences }, ref) {
         const value =
           params[0] === null
             ? settings[params[1]]
-            : lodash.get(settings, params.join('.'));
+            : lodashGet(settings, params.join('.'));
         return value ? value : null;
       } else {
         const keyIndex = params.length - 1;

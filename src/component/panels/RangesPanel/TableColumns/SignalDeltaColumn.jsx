@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
-import { CHANGE_RANGE_SIGNAL } from '../../../reducer/types/Types';
+import { CHANGE_RANGE_SIGNAL_VALUE } from '../../../reducer/types/Types';
 import { checkMultiplicity } from '../../extra/utilities/MultiplicityUtilities';
 
 import useFormat from './format';
@@ -21,7 +21,7 @@ function SignalDeltaColumn({
   const saveHandler = useCallback(
     (event) => {
       dispatch({
-        type: CHANGE_RANGE_SIGNAL,
+        type: CHANGE_RANGE_SIGNAL_VALUE,
         payload: {
           value: event.target.value,
           rangeID: rowData.id,

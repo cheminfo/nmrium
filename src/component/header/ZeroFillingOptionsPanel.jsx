@@ -78,9 +78,10 @@ function ZeroFillingOptionsPanel() {
   }, [dispatch, lineBroadeningValue]);
 
   const getDefaultValue = useCallback(() => {
-    if (data && activeSpectrum) {
-      const spectrum = data.find((d) => d.id === activeSpectrum.id);
-      return 2 ** Math.round(Math.log2(spectrum.x.length));
+    if (data && activeSpectrum?.id) {
+      return (
+        2 ** Math.round(Math.log2(data[activeSpectrum.index].data.x.length))
+      );
     }
     return '';
   }, [activeSpectrum, data]);

@@ -16,37 +16,19 @@ const styles = {
   },
 };
 
-const defaultProps = {
-  style: {
-    label: {},
-    input: {},
-    container: {},
-  },
-  value: '',
-  onChange: () => {
-    return null;
-  },
-  checkValue: () => true,
-  onKeyDown: () => null,
-  type: 'text',
-  className: '',
-  enableAutoSelect: false,
-  format: () => (val) => val,
-};
-
-function Input(
+const Input = forwardRef(function Input(
   {
-    label = defaultProps.label,
-    value = defaultProps.value,
-    name = defaultProps.name,
-    style = defaultProps.style,
-    onChange = defaultProps.onChange,
-    onKeyDown = defaultProps.onKeyDown,
-    checkValue = defaultProps.checkValue,
-    type = defaultProps.type,
-    enableAutoSelect = defaultProps.enableAutoSelect,
-    className = defaultProps.className,
-    format = defaultProps.format,
+    label,
+    value,
+    name,
+    style,
+    onChange,
+    onKeyDown,
+    checkValue,
+    type,
+    enableAutoSelect,
+    className,
+    format,
     ...prop
   },
   ref,
@@ -157,7 +139,7 @@ function Input(
       />
     </div>
   );
-}
+});
 
 Input.propTypes = {
   label: PropTypes.string,
@@ -177,6 +159,22 @@ Input.propTypes = {
   enableAutoSelect: PropTypes.bool,
 };
 
-Input.defaultProps = defaultProps;
+Input.defaultProps = {
+  style: {
+    label: {},
+    input: {},
+    container: {},
+  },
+  value: '',
+  onChange: () => {
+    return null;
+  },
+  checkValue: () => true,
+  onKeyDown: () => null,
+  type: 'text',
+  className: '',
+  enableAutoSelect: false,
+  format: () => (val) => val,
+};
 
-export default forwardRef(Input);
+export default Input;
