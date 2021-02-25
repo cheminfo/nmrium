@@ -36,7 +36,9 @@ function PeaksNotations() {
       data &&
       reSortData()
         .filter(
-          (d) => d.display.isVisible === true && d.isVisibleInDomain === true,
+          (d) =>
+            d.display.isVisible === true &&
+            d.display.isVisibleInDomain === true,
         )
         .map((d) => {
           return (
@@ -50,13 +52,13 @@ function PeaksNotations() {
                 {d.peaks.values.map(({ xIndex, xShift, id }) => (
                   <PeakNotation
                     key={id}
-                    x={scaleX()(d.x[xIndex] - (xShift ? xShift : 0))}
-                    y={scaleY(d.id)(d.y[xIndex]) - 5}
-                    sign={Math.sign(d.y[xIndex])}
+                    x={scaleX()(d.data.x[xIndex] - (xShift ? xShift : 0))}
+                    y={scaleY(d.id)(d.data.y[xIndex]) - 5}
+                    sign={Math.sign(d.data.y[xIndex])}
                     xIndex={xIndex}
                     id={id}
                     spectrumID={d.id}
-                    value={d.x[xIndex]}
+                    value={d.data.x[xIndex]}
                     color="#730000"
                     nucleus={d.info.nucleus}
                     isActive={

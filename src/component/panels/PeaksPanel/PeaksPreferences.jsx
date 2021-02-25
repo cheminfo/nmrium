@@ -1,4 +1,5 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 import {
   useEffect,
   useState,
@@ -144,7 +145,7 @@ function PeaksPreferences({ nucleus, preferences }, ref) {
         const val = ['true', 'false'].includes(field[1])
           ? field[1] === 'true'
           : field[1];
-        values = lodash.set(values, keys, val);
+        values = lodashSet(values, keys, val);
       }
       saveHandler(values, true);
       setSettingsData(values, 'formatting.panels.peaks');
@@ -156,7 +157,7 @@ function PeaksPreferences({ nucleus, preferences }, ref) {
     (...params) => {
       const keys = params.join('.');
       if (settings) {
-        const value = lodash.get(settings, keys);
+        const value = lodashGet(settings, keys);
         return value ? value : null;
       } else {
         const keyIndex = params.length - 1;

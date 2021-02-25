@@ -44,7 +44,9 @@ function IntegralsSeries() {
       data[0] &&
       data
         .filter(
-          (d) => d.display.isVisible === true && d.isVisibleInDomain === true,
+          (d) =>
+            d.display.isVisible === true &&
+            d.display.isVisibleInDomain === true,
         )
         .map(
           (spectrum) =>
@@ -55,8 +57,8 @@ function IntegralsSeries() {
                 <Integral
                   spectrumID={spectrum.id}
                   integralData={integral}
-                  x={spectrum.x}
-                  y={spectrum.y}
+                  x={spectrum.data.x}
+                  y={spectrum.data.y}
                   isActive={IsActive(spectrum.id)}
                   xDomain={xDomain}
                   scaleY={scaleY}

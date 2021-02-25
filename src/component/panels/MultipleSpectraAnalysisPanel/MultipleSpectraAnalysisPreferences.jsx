@@ -70,164 +70,166 @@ const styles = css`
     }
   }
 `;
-function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref) {
-  const dispatch = useDispatch();
-  const refForm = useRef();
-  const [columns, setColumns] = useState({});
+const MultipleSpectraAnalysisPreferences = forwardRef(
+  function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref) {
+    const dispatch = useDispatch();
+    const refForm = useRef();
+    const [columns, setColumns] = useState({});
 
-  useImperativeHandle(ref, () => ({
-    saveSetting() {
-      refForm.current.submitForm();
-    },
-  }));
+    useImperativeHandle(ref, () => ({
+      saveSetting() {
+        refForm.current.submitForm();
+      },
+    }));
 
-  useEffect(() => {
-    const result = Object.keys(data.columns).reduce((acc, key) => {
-      acc[key] = { ...data.columns[key], tempKey: key };
-      return acc;
-    }, {});
-    setColumns(result);
-    refForm.current.setValues({ columns: result, code: data.code });
-  }, [data]);
-
-  const columnsKeys = useMemo(() => {
-    return Object.keys(columns);
-  }, [columns]);
-
-  const preferncesSchema = useMemo(() => {
-    function columnSchema() {
-      return columnsKeys.reduce((acc, key) => {
-        acc[key] = Yup.object().shape({
-          tempKey: Yup.string()
-            .required()
-            .test('unique', 'must be unique column name', (colmnName) => {
-              const formData = refForm.current.values.columns;
-              return (
-                Object.keys(formData).reduce((acc, colKey) => {
-                  if (formData[colKey].tempKey === colmnName) {
-                    acc.push(colmnName);
-                  }
-                  return acc;
-                }, []).length === 1
-              );
-            }),
-          ...(columns[key].type === COLUMNS_TYPES.FORMULA
-            ? { formula: Yup.string().required() }
-            : {}),
-          index: Yup.string().required(),
-        });
+    useEffect(() => {
+      const result = Object.keys(data.columns).reduce((acc, key) => {
+        acc[key] = { ...data.columns[key], tempKey: key };
         return acc;
       }, {});
-    }
+      setColumns(result);
+      refForm.current.setValues({ columns: result, code: data.code });
+    }, [data]);
 
-    //   console.log(columnSchema());
+    const columnsKeys = useMemo(() => {
+      return Object.keys(columns);
+    }, [columns]);
 
-    return Yup.object().shape({
-      columns: Yup.object().shape(columnSchema()),
-    });
-  }, [columns, columnsKeys, refForm]);
-
-  const submitHandler = useCallback(
-    (values) => {
-      onAfterSave(true);
-      const result = Object.entries(values.columns).reduce(
-        (acc, [key, value]) => {
-          acc[key] = { ...columns[key], ...value };
+    const preferncesSchema = useMemo(() => {
+      function columnSchema() {
+        return columnsKeys.reduce((acc, key) => {
+          acc[key] = Yup.object().shape({
+            tempKey: Yup.string()
+              .required()
+              .test('unique', 'must be unique column name', (colmnName) => {
+                const formData = refForm.current.values.columns;
+                return (
+                  Object.keys(formData).reduce((acc, colKey) => {
+                    if (formData[colKey].tempKey === colmnName) {
+                      acc.push(colmnName);
+                    }
+                    return acc;
+                  }, []).length === 1
+                );
+              }),
+            ...(columns[key].type === COLUMNS_TYPES.FORMULA
+              ? { formula: Yup.string().required() }
+              : {}),
+            index: Yup.string().required(),
+          });
           return acc;
-        },
-        {},
-      );
-      dispatch({
-        type: SET_ANALYZE_SPECTRA_COLUMNS,
-        payload: { code: values.code, columns: result },
+        }, {});
+      }
+
+      //   console.log(columnSchema());
+
+      return Yup.object().shape({
+        columns: Yup.object().shape(columnSchema()),
       });
-    },
-    [columns, dispatch, onAfterSave],
-  );
+    }, [columns, columnsKeys, refForm]);
 
-  const addNewColumn = useCallback((index) => {
-    setColumns((prevData) => {
-      return {
-        ...prevData,
-        [`temp${index}`]: {
-          tempKey: '',
-          type: 'FORMULA',
-          valueKey: 'value',
-          formula: '',
-          index: index,
-        },
-      };
-    });
-  }, []);
+    const submitHandler = useCallback(
+      (values) => {
+        onAfterSave(true);
+        const result = Object.entries(values.columns).reduce(
+          (acc, [key, value]) => {
+            acc[key] = { ...columns[key], ...value };
+            return acc;
+          },
+          {},
+        );
+        dispatch({
+          type: SET_ANALYZE_SPECTRA_COLUMNS,
+          payload: { code: values.code, columns: result },
+        });
+      },
+      [columns, dispatch, onAfterSave],
+    );
 
-  return (
-    <FormikForm
-      ref={refForm}
-      initialValues={{ columns, code: null }}
-      validationSchema={preferncesSchema}
-      onSubmit={submitHandler}
-    >
-      {columnsKeys && (
-        <table css={styles}>
-          <thead>
-            <tr>
-              <th className="counter">#</th>
-              <th className="label">Label</th>
-              <th>value</th>
-              <th className="index">index</th>
-            </tr>
-          </thead>
-          <tbody>
-            {columnsKeys.map((key, index) => {
-              return (
-                <tr key={key}>
-                  <td className="counter">{index + 1}</td>
-                  <td className="label">
-                    <FormikInput
-                      key={key}
-                      name={`columns.${key}.tempKey`}
-                      value={columns[key].tempKey}
-                    />
-                  </td>
-                  <td>
-                    {columns[key].type === COLUMNS_TYPES.FORMULA ? (
+    const addNewColumn = useCallback((index) => {
+      setColumns((prevData) => {
+        return {
+          ...prevData,
+          [`temp${index}`]: {
+            tempKey: '',
+            type: 'FORMULA',
+            valueKey: 'value',
+            formula: '',
+            index: index,
+          },
+        };
+      });
+    }, []);
+
+    return (
+      <FormikForm
+        ref={refForm}
+        initialValues={{ columns, code: null }}
+        validationSchema={preferncesSchema}
+        onSubmit={submitHandler}
+      >
+        {columnsKeys && (
+          <table css={styles}>
+            <thead>
+              <tr>
+                <th className="counter">#</th>
+                <th className="label">Label</th>
+                <th>value</th>
+                <th className="index">index</th>
+              </tr>
+            </thead>
+            <tbody>
+              {columnsKeys.map((key, index) => {
+                return (
+                  <tr key={key}>
+                    <td className="counter">{index + 1}</td>
+                    <td className="label">
                       <FormikInput
-                        name={`columns.${key}.formula`}
-                        value={columns[key].formula}
+                        key={key}
+                        name={`columns.${key}.tempKey`}
+                        value={columns[key].tempKey}
                       />
-                    ) : (
-                      <div className="input disbale" />
-                    )}
-                  </td>
-                  <td className="index">
-                    <FormikInput
-                      name={`columns.${key}.index`}
-                      value={columns[key].index}
-                    />
-                  </td>
-                  <td className="operation-col">
-                    {columnsKeys.length === index + 1 && (
-                      <button
-                        className="add"
-                        type="button"
-                        onClick={() => addNewColumn(index + 1)}
-                      >
-                        <FaPlus />
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
-      <MulipleAnalysisCodeEditor data={data} />
-    </FormikForm>
-  );
-}
+                    </td>
+                    <td>
+                      {columns[key].type === COLUMNS_TYPES.FORMULA ? (
+                        <FormikInput
+                          name={`columns.${key}.formula`}
+                          value={columns[key].formula}
+                        />
+                      ) : (
+                        <div className="input disbale" />
+                      )}
+                    </td>
+                    <td className="index">
+                      <FormikInput
+                        name={`columns.${key}.index`}
+                        value={columns[key].index}
+                      />
+                    </td>
+                    <td className="operation-col">
+                      {columnsKeys.length === index + 1 && (
+                        <button
+                          className="add"
+                          type="button"
+                          onClick={() => addNewColumn(index + 1)}
+                        >
+                          <FaPlus />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+        <MulipleAnalysisCodeEditor data={data} />
+      </FormikForm>
+    );
+  },
+);
 
 MultipleSpectraAnalysisPreferences.defaultProps = {
   onAfterSave: () => false,
 };
-export default forwardRef(MultipleSpectraAnalysisPreferences);
+export default MultipleSpectraAnalysisPreferences;

@@ -25,37 +25,8 @@ const styles = {
   },
 };
 
-const defaultProps = {
-  pattern: '^d*(.d{0,2})?$',
-  step: 'any',
-  min: 'any',
-  style: {
-    label: {},
-    input: {},
-    container: {},
-    inputContainer: {},
-  },
-  defaultValue: 0,
-  onChange: () => {
-    return null;
-  },
-  onInput: () => {
-    return null;
-  },
-};
-
-function NumberInput(
-  {
-    label,
-    name,
-    defaultValue = defaultProps.defaultValue,
-    style = defaultProps.style,
-    onChange = defaultProps.onChange,
-    onInput = defaultProps.onInput,
-    pattern = defaultProps.pattern,
-    step = defaultProps.step,
-    min = defaultProps.min,
-  },
+const NumberInput = forwardRef(function NumberInput(
+  { label, name, defaultValue, style, onChange, onInput, pattern, step, min },
   ref,
 ) {
   const localRef = useRef();
@@ -94,7 +65,7 @@ function NumberInput(
       </div>
     </div>
   );
-}
+});
 
 NumberInput.propTypes = {
   pattern: PropTypes.string,
@@ -113,6 +84,23 @@ NumberInput.propTypes = {
   onInput: PropTypes.func,
 };
 
-NumberInput.defaultProps = defaultProps;
+NumberInput.defaultProps = {
+  pattern: '^d*(.d{0,2})?$',
+  step: 'any',
+  min: 'any',
+  style: {
+    label: {},
+    input: {},
+    container: {},
+    inputContainer: {},
+  },
+  defaultValue: 0,
+  onChange: () => {
+    return null;
+  },
+  onInput: () => {
+    return null;
+  },
+};
 
-export default forwardRef(NumberInput);
+export default NumberInput;

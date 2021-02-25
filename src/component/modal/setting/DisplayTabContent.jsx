@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 
@@ -51,7 +51,7 @@ function DisplayTabContent({ preferences }) {
       <p className="section-header">Show / Hide Panels</p>
       {LIST.map(
         (item) =>
-          !lodash.get(preferences, `basePreferences.${item.name}`, false) && (
+          !lodashGet(preferences, `basePreferences.${item.name}`, false) && (
             <FormikCheckBox
               key={item.name}
               className="checkbox-element"

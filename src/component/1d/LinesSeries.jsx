@@ -12,7 +12,9 @@ function LinesSeries() {
       {_data &&
         _data
           .filter(
-            (d) => d.display.isVisible === true && d.isVisibleInDomain === true,
+            (d) =>
+              d.display.isVisible === true &&
+              d.display.isVisibleInDomain === true,
           )
           .map((d, i) => <Line key={d.id} {...d} index={i} />)}
     </g>

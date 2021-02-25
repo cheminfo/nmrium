@@ -1,7 +1,7 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 
 function CouplingColumn({ rowData, onHoverSignal }) {
-  const result = lodash.get(rowData, 'tableMetaInfo.signal.j');
+  const result = lodashGet(rowData, 'tableMetaInfo.signal.j');
   return (
     <td {...onHoverSignal}>
       {result &&

@@ -4,6 +4,7 @@ import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
 
+import { getDataAsString } from '../../../data/data1d/MulitpleAnalysis';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
@@ -11,7 +12,6 @@ import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
-import { AnalysisObj } from '../../reducer/core/Analysis';
 import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { copyTextToClipboard } from '../../utility/Export';
@@ -33,7 +33,7 @@ const styles = {
   },
 };
 
-function MultipleSpectraAnalysisPanel({ spectraAanalysis, activeTab }) {
+function MultipleSpectraAnalysisPanel({ spectraAnalysis, activeTab }) {
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef();
   const alert = useAlert();
@@ -44,12 +44,12 @@ function MultipleSpectraAnalysisPanel({ spectraAanalysis, activeTab }) {
     const {
       values,
       options: { columns, code },
-    } = spectraAanalysis[activeTab] || {
+    } = spectraAnalysis[activeTab] || {
       values: {},
       options: { columns: {}, code: null },
     };
     return { values: Object.values(values), columns, code };
-  }, [activeTab, spectraAanalysis]);
+  }, [activeTab, spectraAnalysis]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -78,14 +78,14 @@ function MultipleSpectraAnalysisPanel({ spectraAanalysis, activeTab }) {
   }, [activeTab, modal, dispatch]);
 
   const copyToClipboardHandler = useCallback(() => {
-    const data = AnalysisObj.getMultipleAnalysisTableAsString(activeTab);
+    const data = getDataAsString(spectraAnalysis, activeTab);
     const success = copyTextToClipboard(data);
     if (success) {
       alert.success('Data copied to clipboard');
     } else {
       alert.error('copy to clipboard failed');
     }
-  }, [activeTab, alert]);
+  }, [activeTab, alert, spectraAnalysis]);
 
   return (
     <div style={styles.container}>

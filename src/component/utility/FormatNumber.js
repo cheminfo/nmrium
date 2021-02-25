@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import Numeral from 'numeral';
 
 import { usePreferences } from '../context/PreferencesContext';
@@ -14,7 +14,7 @@ function FormatNumber(value, format, prefix = '', suffix = '') {
  */
 export function useFormatNumberByNucleus(nucleus) {
   const preferences = usePreferences();
-  const nucleusByKey = lodash.get(preferences, `formatting.nucleusByKey`, {
+  const nucleusByKey = lodashGet(preferences, `formatting.nucleusByKey`, {
     ppm: '0.0',
     hz: '0.0',
   });
@@ -28,7 +28,7 @@ export function useFormatNumberByNucleus(nucleus) {
     return (
       prefix +
       Numeral(Number(value)).format(
-        lodash.get(nucleusByKey, `${n.toLowerCase()}.${formatKey}`, '0.0'),
+        lodashGet(nucleusByKey, `${n.toLowerCase()}.${formatKey}`, '0.0'),
       ) +
       suffix
     );

@@ -1,6 +1,3 @@
-import lodash from 'lodash';
-
-import { DELETE_2D_ZONE } from '../../component/reducer/types/Types';
 import { DatumKind } from '../constants/SignalsKinds';
 
 const getDiaIDs = (zone, axis) => {
@@ -43,30 +40,23 @@ const checkSignalKinds = (zone, kinds) => {
 };
 
 const unlink = (zone, isOnZoneLevel, signalIndex, axis) => {
-  const zoneObject = lodash.cloneDeep(zone);
-
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {
-      delete zoneObject[axis].diaID;
+      delete zone[axis].diaID;
     } else if (signalIndex !== undefined) {
-      delete zoneObject.signal[signalIndex][axis].diaID;
+      delete zone.signal[signalIndex][axis].diaID;
     }
-    setPubIntegral(zoneObject, axis);
+    setPubIntegral(zone, axis);
   } else if (axis !== undefined) {
-    resetDiaIDs(zoneObject, axis);
-    setPubIntegral(zoneObject, axis);
+    resetDiaIDs(zone, axis);
+    setPubIntegral(zone, axis);
   } else {
     ['x', 'y'].forEach((key) => {
-      resetDiaIDs(zoneObject, key);
-      setPubIntegral(zoneObject, key);
+      resetDiaIDs(zone, key);
+      setPubIntegral(zone, key);
     });
   }
-  return zoneObject;
-};
-
-const deleteZone = (assignmentData, dispatch, zone) => {
-  unlinkInAssignmentData(assignmentData, zone);
-  dispatch({ type: DELETE_2D_ZONE, zoneID: zone.id });
+  return zone;
 };
 
 const _unlinkInAssignmentData = (assignmentData, id, axis) => {
@@ -109,7 +99,6 @@ const unlinkInAssignmentData = (
 export {
   checkSignalKinds,
   checkZoneKind,
-  deleteZone,
   getDiaIDs,
   getPubIntegral,
   resetDiaIDs,

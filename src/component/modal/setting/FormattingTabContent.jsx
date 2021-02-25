@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { Fragment, useCallback, useMemo } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
@@ -48,10 +48,9 @@ const styles = css`
 `;
 function FormattingTabContent() {
   const { values, setFieldValue } = useFormikContext();
-  const nucleuses = useMemo(
-    () => lodash.cloneDeep(lodash.get(values, 'formatting.nucleus', [])),
-    [values],
-  );
+  const nucleuses = useMemo(() => lodashGet(values, 'formatting.nucleus', []), [
+    values,
+  ]);
 
   const deleteHandler = useCallback(
     (index) => {

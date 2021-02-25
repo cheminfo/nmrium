@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useCallback, useMemo, memo, useEffect, useState } from 'react';
 
 import { useChartData } from '../../../../context/ChartContext';
@@ -41,7 +41,7 @@ function SignalsForm() {
     if (
       spectraData &&
       activeSpectrum &&
-      lodash.get(
+      lodashGet(
         spectraData,
         `[${activeSpectrum.index}].info.originFrequency`,
         undefined,
@@ -118,10 +118,10 @@ function SignalsForm() {
     (i) => {
       return (
         errors.signals &&
-        (lodash
-          .get(errors, 'signals.noCouplings', [])
-          .some((_error) => _error.index === i) ||
-          lodash.get(errors, `signals[${i}].missingCouplings`, []).length > 0)
+        (lodashGet(errors, 'signals.noCouplings', []).some(
+          (_error) => _error.index === i,
+        ) ||
+          lodashGet(errors, `signals[${i}].missingCouplings`, []).length > 0)
       );
     },
     [errors],

@@ -18,7 +18,7 @@ function get2DXScale(props) {
  * props {height,margin,yDomain}
  */
 /***
- * @param {object} props
+ * @param {any} props
  * @param {number}  props.height
  * @param {number}  props.margin
  * @param {number}  props.yDomain

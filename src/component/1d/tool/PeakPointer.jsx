@@ -61,16 +61,16 @@ function PeakPointer() {
         const spectrumData = data.find((d) => d.id === activeSpectrum.id);
 
         const maxIndex =
-          spectrumData.x.findIndex((number) => number >= range[1]) - 1;
-        const minIndex = spectrumData.x.findIndex(
+          spectrumData.data.x.findIndex((number) => number >= range[1]) - 1;
+        const minIndex = spectrumData.data.x.findIndex(
           (number) => number >= range[0],
         );
 
-        const yDataRange = spectrumData.y.slice(minIndex, maxIndex);
+        const yDataRange = spectrumData.data.y.slice(minIndex, maxIndex);
         if (yDataRange && yDataRange.length > 0) {
           const yValue = max(yDataRange);
           const xIndex = yDataRange.findIndex((value) => value === yValue);
-          const xValue = spectrumData.x[minIndex + xIndex];
+          const xValue = spectrumData.data.x[minIndex + xIndex];
           return {
             x: scaleX()(xValue),
             y: scaleY(activeSpectrum.id)(yValue) - getVerticalAlign(),

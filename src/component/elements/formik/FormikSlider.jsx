@@ -1,5 +1,5 @@
 import { useFormikContext } from 'formik';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useCallback, memo } from 'react';
 import ReactSlider from 'react-slider';
 
@@ -19,7 +19,7 @@ function FormikSlider({ onAfterChange, name, ...props }) {
       className="horizontal-slider"
       thumbClassName="thumb"
       trackClassName="track"
-      defaultValue={lodash.get(values, name, [0, 100])}
+      defaultValue={lodashGet(values, name, [0, 100])}
       onAfterChange={changeHandler}
       // ariaLabel={['Lower thumb', 'Upper thumb']}
       // ariaValuetext={(state) => ` ${state.valueNow}`}

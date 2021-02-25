@@ -1,4 +1,5 @@
-import lodash from 'lodash';
+import lodashDebounce from 'lodash/debounce';
+import lodashMap from 'lodash/map';
 import {
   createContext,
   useCallback,
@@ -64,7 +65,7 @@ export function BrushTracker({
       const x = e.clientX - boundingRect.x;
       const y = e.clientY - boundingRect.y;
 
-      const callback = lodash.debounce(() => {
+      const callback = lodashDebounce(() => {
         if (
           timeStamp - mouseDownTime <= 150 &&
           debounceClickEvents.length === 1
@@ -78,7 +79,7 @@ export function BrushTracker({
       callback();
 
       if (debounceClickEvents.length > 1) {
-        lodash.map(debounceClickEvents, (debounce) => debounce.cancel());
+        lodashMap(debounceClickEvents, (debounce) => debounce.cancel());
         debounceClickEvents = [];
         onDoubleClick({ ...e, x, y });
       }
@@ -102,10 +103,10 @@ export function BrushTracker({
     const { step, startX, endX } = state;
     if (step === 'end' && Math.abs(startX - endX) > 5) {
       onBrush(state);
+      dispatch({
+        type: 'DONE',
+      });
     }
-    dispatch({
-      type: 'DONE',
-    });
   }, [onBrush, state]);
 
   const moveCallback = useCallback((event) => {

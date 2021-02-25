@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { useMemo, useState, useEffect } from 'react';
 
 import { useAssignment } from '../../assignment';
@@ -45,7 +45,7 @@ function MultiplicityTree({
   );
 
   const spectrumData = useMemo(
-    () => lodash.get(spectraData, `${activeSpectrum.index}`, null),
+    () => lodashGet(spectraData, `${activeSpectrum.index}`, null),
     [activeSpectrum, spectraData],
   );
 
@@ -95,21 +95,21 @@ function MultiplicityTree({
 
   const startY = useMemo(() => {
     let yMax;
-    spectrumData.x.forEach((_x, i) => {
+    spectrumData.data.x.forEach((_x, i) => {
       if (
         _x >= rangeFrom &&
         _x <= rangeTo &&
-        (!yMax || spectrumData.y[i] > yMax)
+        (!yMax || spectrumData.data.y[i] > yMax)
       ) {
-        yMax = spectrumData.y[i];
+        yMax = spectrumData.data.y[i];
       }
     });
 
     return scaleY(spectrumData.id)(yMax) - treeProps.height - 30;
   }, [
-    spectrumData.x,
+    spectrumData.data.x,
+    spectrumData.data.y,
     spectrumData.id,
-    spectrumData.y,
     scaleY,
     treeProps.height,
     rangeFrom,
@@ -259,7 +259,8 @@ function MultiplicityTree({
             ? null
             : (e) => {
                 if (e.shiftKey) {
-                  assignment.onClick(e, 'x');
+                  e.stopPropagation();
+                  assignment.onClick('x');
                 }
               },
       }}

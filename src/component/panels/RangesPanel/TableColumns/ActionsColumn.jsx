@@ -1,19 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodash from 'lodash';
 import { Fragment, useCallback } from 'react';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
-import {
-  DatumKind,
-  SignalKinds,
-  SignalKindsToInclude,
-} from '../../../../data/constants/SignalsKinds';
-import {
-  deleteRange,
-  unlink,
-  unlinkInAssignmentData,
-} from '../../../../data/utilities/RangeUtilities';
+import { SignalKinds } from '../../../../data/constants/SignalsKinds';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
@@ -25,9 +15,11 @@ import {
 import EditRangeModal from '../../../modal/editRange/EditRangeModal';
 import {
   SET_X_DOMAIN,
-  CHANGE_RANGE_DATA,
   RESET_SELECTED_TOOL,
   SET_SELECTED_TOOL,
+  CHANGE_RANGE_SIGNAL_KIND,
+  SAVE_EDITED_RANGE,
+  DELETE_RANGE,
 } from '../../../reducer/types/Types';
 
 const styles = css`
@@ -64,35 +56,36 @@ function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
   }, [dispatch, rowData.from, rowData.to]);
 
   const deleteRangeHandler = useCallback(() => {
-    deleteRange(assignmentData, dispatch, rowData);
+    dispatch({
+      type: DELETE_RANGE,
+      payload: {
+        rangeData: rowData,
+        assignmentData,
+      },
+    });
   }, [assignmentData, dispatch, rowData]);
 
   const changeRangeSignalKindHandler = useCallback(
     (value) => {
-      const _rowData = lodash.cloneDeep(rowData);
-      _rowData.signal[_rowData.tableMetaInfo.signalIndex].kind = value;
-      _rowData.kind = SignalKindsToInclude.includes(value)
-        ? DatumKind.signal
-        : DatumKind.mixed;
       dispatch({
-        type: CHANGE_RANGE_DATA,
-        data: _rowData,
+        type: CHANGE_RANGE_SIGNAL_KIND,
+        payload: {
+          rowData,
+          value,
+        },
       });
     },
     [dispatch, rowData],
   );
 
   const saveEditRangeHandler = useCallback(
-    (editedRange) => {
-      let _range = lodash.cloneDeep(editedRange);
-      // for now: clear all assignments for this range because signals or levels to store might have changed
-      unlinkInAssignmentData(assignmentData, _range);
-      _range = unlink(_range);
-      delete _range.tableMetaInfo;
-
+    (editedRowData) => {
       dispatch({
-        type: CHANGE_RANGE_DATA,
-        data: _range,
+        type: SAVE_EDITED_RANGE,
+        payload: {
+          editedRowData,
+          assignmentData,
+        },
       });
     },
     [assignmentData, dispatch],

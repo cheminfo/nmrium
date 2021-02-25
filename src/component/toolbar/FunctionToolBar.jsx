@@ -10,7 +10,9 @@ import {
   SvgNmrRangePicking,
   SvgNmrZeroFilling,
 } from 'cheminfo-font';
-import lodash from 'lodash';
+import lodashDebounce from 'lodash/debounce';
+import lodashGet from 'lodash/get';
+import lodashMap from 'lodash/map';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
@@ -114,7 +116,7 @@ function FunctionToolBar({
         zoomType: ZoomType.HORIZONTAL,
       });
     }
-    const callback = lodash.debounce(() => {
+    const callback = lodashDebounce(() => {
       debounceClickEvents = [];
     }, 500);
     debounceClickEvents.push(callback);
@@ -122,7 +124,7 @@ function FunctionToolBar({
     callback();
 
     if (debounceClickEvents.length > 1) {
-      lodash.map(debounceClickEvents, (debounce) => debounce.cancel());
+      lodashMap(debounceClickEvents, (debounce) => debounce.cancel());
       debounceClickEvents = [];
       dispatch({
         type: FULL_ZOOM_OUT,
@@ -202,7 +204,7 @@ function FunctionToolBar({
 
   const isButtonVisible = useCallback(
     (key) => {
-      return !lodash.get(preferences, `display.toolBarButtons.${key}`);
+      return !lodashGet(preferences, `display.toolBarButtons.${key}`);
     },
     [preferences],
   );

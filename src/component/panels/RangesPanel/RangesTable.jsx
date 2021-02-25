@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 import { Fragment, useCallback, useEffect, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
@@ -66,7 +66,7 @@ function RangesTable({
   const { rootRef } = useGlobal();
 
   const isVisible = (key) => {
-    return lodash.get(preferences, key, false);
+    return lodashGet(preferences, key, false);
   };
 
   const contextMenuHandler = useCallback(
