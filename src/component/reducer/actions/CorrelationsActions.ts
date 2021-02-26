@@ -1,4 +1,4 @@
-import { current, original, Draft } from 'immer';
+import { original, Draft } from 'immer';
 import { CorrelationManager } from 'nmr-correlation';
 
 import { State } from '../Reducer';
@@ -8,8 +8,7 @@ function build(spectra, options, values) {
 }
 
 function handleUpdateCorrelations(draft: Draft<State>) {
-  const state = current(draft) as State;
-  const { data: spectra, correlations } = state;
+  const { data: spectra, correlations } = draft;
   draft.correlations = build(
     spectra,
     correlations.options,

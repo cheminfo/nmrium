@@ -1,5 +1,5 @@
 import { max } from 'd3';
-import { original, current, Draft } from 'immer';
+import { original, Draft } from 'immer';
 
 import { Data1D, Datum1D } from '../../../data/data1d/Datum1D';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
@@ -457,7 +457,7 @@ function setActiveTab(
   refreshTabActiveSpectrums = false,
 ) {
   const groupByNucleus = GroupByInfoKey('nucleus');
-  const dataGroupByNucleus = groupByNucleus(current(draft).data);
+  const dataGroupByNucleus = groupByNucleus(draft.data);
   const tabs = Object.keys(dataGroupByNucleus);
   const currentTab = !tab || !tabs.includes(tab ?? '') ? tabs[0] : tab;
   setTab(draft, dataGroupByNucleus, currentTab, refreshTabActiveSpectrums);
