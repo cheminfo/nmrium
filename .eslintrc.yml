@@ -1,5 +1,8 @@
-extends: '@zakodium/eslint-config/typescript-react-app'
+extends: '@zakodium/eslint-config/typescript-react'
 rules:
   'import/default': off
   'import/no-unresolved': off
   '@typescript-eslint/no-explicit-any': off
+parserOptions: 
+        'sourceType': "module"
+    
