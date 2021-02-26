@@ -33,13 +33,14 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
     let path = '';
     const dataLength = data.length;
     for (let i = 1; i < dataLength; i++) {
-      path += ` M ${_scaleX(data[i][0].x)} ${_scaleY(data[i][0].y)} `;
+      path += `M ${_scaleX(data[i][0].x)} ${_scaleY(data[i][0].y)} `;
       const contursLength = data[i].length;
       for (let j = 1; j < contursLength; j++) {
-        path += ` L ${_scaleX(data[i][j].x)} ${_scaleY(data[i][j].y)} `;
+        path += `L ${_scaleX(data[i][j].x)} ${_scaleY(data[i][j].y)} `;
       }
     }
-    path += ' z';
+    if (!path) path = 'm0 0 ';
+    path += 'z';
 
     return path;
   }
