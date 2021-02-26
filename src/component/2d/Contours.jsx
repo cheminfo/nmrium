@@ -27,25 +27,27 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
       : false;
   }, [activeSpectrum, spectrumID]);
 
-  function buildContourPath(contour) {
+  function buildContourPath(data) {
     const _scaleX = get2DXScale({ margin, width, xDomain });
     const _scaleY = get2DYScale({ margin, height, yDomain });
-
-    let path = ` M ${_scaleX(contour[0].x)} ${_scaleY(contour[0].y)} `;
-    path += contour.slice(1).reduce((acc, co) => {
-      acc += ` L ${_scaleX(co.x)} ${_scaleY(co.y)} `;
-      return acc;
-    }, '');
+    let path = '';
+    const dataLength = data.length;
+    for (let i = 1; i < dataLength; i++) {
+      path += ` M ${_scaleX(data[i][0].x)} ${_scaleY(data[i][0].y)} `;
+      const contursLength = data[i].length;
+      for (let j = 1; j < contursLength; j++) {
+        path += ` L ${_scaleX(data[i][j].x)} ${_scaleY(data[i][j].y)} `;
+      }
+    }
     path += ' z';
+
     return path;
   }
   const data = useMemo(() => {
     return get(contours, `${spectrumID}.${sign}`, []);
   }, [contours, sign, spectrumID]);
-  return data.map((contoursData, innerIndex) => (
+  return (
     <path
-      // eslint-disable-next-line react/no-array-index-key
-      key={innerIndex}
       fill="none"
       stroke={color}
       strokeWidth="1"
@@ -54,9 +56,9 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
           ? 1
           : get(preferences, 'controllers.dimmedSpectraTransparency', 0.1),
       }}
-      d={buildContourPath(contoursData)}
+      d={buildContourPath(data)}
     />
-  ));
+  );
 }
 
 function Contours() {
