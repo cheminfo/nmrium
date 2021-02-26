@@ -1,1 +1,5 @@
-src/demo/serviceWorker.js
+build
+lib
+lib-cjs
+node_modules
+public
