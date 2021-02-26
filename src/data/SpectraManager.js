@@ -2,7 +2,7 @@ import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 
 import * as Data1DManager from './data1d/Data1DManager';
 import * as Datum1D from './data1d/Datum1D';
-import { Data2DManager } from './data2d/Data2DManager';
+import * as Data2DManager from './data2d/Data2DManager';
 import * as Datum2D from './data2d/Datum2D';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
