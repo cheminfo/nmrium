@@ -56,7 +56,7 @@ const EditableColumn = forwardRef(function EditableColumn(
       {!enabled && value}
       {enabled && (
         <Input
-          enableAutoSelect={true}
+          enableAutoSelect
           ref={refInput}
           value={value}
           type={type}

@@ -196,7 +196,7 @@ function SignalsForm() {
       <Tabs
         defaultTabID={values.activeTab}
         onClick={tapClickHandler}
-        canDelete={true}
+        canDelete
         onDelete={handleDeleteSignal}
       >
         {signalFormTabs}

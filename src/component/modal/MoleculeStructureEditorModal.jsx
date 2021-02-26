@@ -99,7 +99,7 @@ function MoleculeStructureEditorModal(props) {
     <Modal open={open} onClose={handleClose}>
       <StructureEditor
         initialMolfile={selectedMolecule && selectedMolecule.molfile}
-        svgMenu={true}
+        svgMenu
         fragment={false}
         onChange={cb}
       />

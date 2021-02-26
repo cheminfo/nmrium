@@ -45,8 +45,8 @@ function Chart2D({ data }) {
         {data && data[1] && <Left1DChart data={data[1]} />}
         <Contours />
         <Zones />
-        <IndicationLines axis="X" show={true} />
-        <IndicationLines axis="Y" show={true} />
+        <IndicationLines axis="X" show />
+        <IndicationLines axis="Y" show />
 
         <g className="container" style={{ pointerEvents: 'none' }}>
           <XAxis />

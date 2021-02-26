@@ -57,7 +57,7 @@ function DisplayTabContent({ preferences }) {
               className="checkbox-element"
               label={item.label}
               name={item.name}
-              reverse={true}
+              reverse
             />
           ),
       )}

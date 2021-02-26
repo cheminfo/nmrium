@@ -78,7 +78,7 @@ function PeaksPanel() {
       <div style={{ height: '100%', overflow: 'auto' }}>
         <ReactCardFlip
           isFlipped={isFlipped}
-          infinite={true}
+          infinite
           containerStyle={{ overflow: 'hidden' }}
         >
           <PeaksTable enableFilter={filterIsActive} onFilter={changedHandler} />

@@ -38,7 +38,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <BaseLineZones />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
-        <XAxis showGrid={true} mode={mode} />
+        <XAxis showGrid mode={mode} />
         {/* <YAxis label="PPM" show={false} /> */}
       </g>
     </svg>

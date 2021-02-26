@@ -188,7 +188,7 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
               popupTitle="show/hide zones"
               popupPlacement="right"
               style={styles.toggle}
-              defaultValue={true}
+              defaultValue
               onClick={() => visibilityHandler('zones')}
             >
               <span style={{ fontSize: '12px', pointerEvents: 'none' }}>z</span>
@@ -197,7 +197,7 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
               popupTitle="show/hide signals"
               popupPlacement="right"
               style={styles.toggle}
-              defaultValue={true}
+              defaultValue
               onClick={() => visibilityHandler('signals')}
             >
               <span style={{ fontSize: '12px', pointerEvents: 'none' }}>s</span>
@@ -206,7 +206,7 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
               popupTitle="show/hide peaks"
               popupPlacement="right"
               style={styles.toggle}
-              defaultValue={true}
+              defaultValue
               onClick={() => visibilityHandler('peaks')}
             >
               <span style={{ fontSize: '12px', pointerEvents: 'none' }}>p</span>
@@ -222,7 +222,7 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
         <div style={{ height: '100%', overflow: 'auto' }}>
           <ReactCardFlip
             isFlipped={isFlipped}
-            infinite={true}
+            infinite
             containerStyle={{ overflow: 'hidden' }}
           >
             <div>

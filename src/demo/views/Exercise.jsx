@@ -207,7 +207,7 @@ export default function Exercise(props) {
         >
           <div css={structureEditorCss}>
             <StructureEditor
-              svgMenu={true}
+              svgMenu
               fragment={false}
               onChange={checkAnswer}
               initialMolfile={data && data.answer && data.answer.currentAnswer}

@@ -218,7 +218,7 @@ function RangesTablePanel({
         <div style={{ height: '100%', overflow: 'auto' }}>
           <ReactCardFlip
             isFlipped={isFlipped}
-            infinite={true}
+            infinite
             containerStyle={{ overflow: 'hidden' }}
           >
             <div>
