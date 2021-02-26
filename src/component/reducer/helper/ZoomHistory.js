@@ -1,5 +1,7 @@
 export default class ZoomHistory {
-  stack = [];
+  constructor() {
+    this.stack = [];
+  }
 
   static getInstance(ZoomHistoryInstances, nucleus) {
     if (
@@ -8,7 +10,7 @@ export default class ZoomHistory {
     ) {
       return ZoomHistoryInstances[nucleus];
     }
-    ZoomHistoryInstances[nucleus] = new ZoomHistory(nucleus);
+    ZoomHistoryInstances[nucleus] = new ZoomHistory();
     return ZoomHistoryInstances[nucleus];
   }
 
