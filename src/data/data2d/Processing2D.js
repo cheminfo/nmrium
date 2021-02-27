@@ -144,7 +144,7 @@ export default class Processing2D {
     let contours = [];
     try {
       contours = this.conrec.drawContour({
-        contourDrawer: 'shape',
+        contourDrawer: 'basic', // shape or basic
         levels: _range,
         timeout: timeout,
       });

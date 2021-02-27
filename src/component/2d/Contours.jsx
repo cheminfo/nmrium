@@ -31,16 +31,22 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
     const _scaleX = get2DXScale({ margin, width, xDomain });
     const _scaleY = get2DYScale({ margin, height, yDomain });
     let path = '';
-    const dataLength = data.length;
-    for (let i = 1; i < dataLength; i++) {
-      path += `M ${_scaleX(data[i][0].x)} ${_scaleY(data[i][0].y)} `;
-      const contursLength = data[i].length;
-      for (let j = 1; j < contursLength; j++) {
-        path += `L ${_scaleX(data[i][j].x)} ${_scaleY(data[i][j].y)} `;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].lines) {
+        const lines = data[i].lines;
+        for (let i = 0; i < lines.length; i += 4) {
+          path += `M${_scaleX(lines[i])} ${_scaleY(lines[i + 1])} `;
+          path += `L${_scaleX(lines[i + 2])} ${_scaleY(lines[i + 3])} `;
+        }
+      } else {
+        path += `M${_scaleX(data[i][0].x)} ${_scaleY(data[i][0].y)} `;
+        for (let j = 1; j < data[i].length; j++) {
+          path += `L${_scaleX(data[i][j].x)} ${_scaleY(data[i][j].y)} `;
+        }
       }
     }
-    if (!path) path = 'm0 0 ';
-    path += 'z';
+    if (!path) path = 'M0 0 ';
+    path += 'Z';
 
     return path;
   }
