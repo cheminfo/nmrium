@@ -471,10 +471,9 @@
       },
       "display": {
         "name": "cosy",
-        "positiveColor": "red",
+        "positiveColor": "darkblue",
         "negativeColor": "blue",
         "isVisible": true,
-        "color": "#4c2bb5",
         "isPeaksMarkersVisible": true
       },
       "info": {

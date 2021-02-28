@@ -9,8 +9,6 @@
       },
       "display": {
         "name": "test",
-        "positiveColor": "red",
-        "negativeColor": "blue",
         "isPositiveVisible": true,
         "isNegativeVisible": true
       }

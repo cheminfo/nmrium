@@ -23,12 +23,12 @@ export const COLORS = [
 ];
 
 const color2D = {
-  cosy: { positiveColor: 'darkblue', negativeColor: 'lightblue' },
+  cosy: { positiveColor: 'darkblue', negativeColor: 'blue' },
   roesy: { positiveColor: 'pink', negativeColor: 'yellow' },
   noesy: { positiveColor: 'pink', negativeColor: 'yellow' },
   tocsy: { positiveColor: 'green', negativeColor: 'yellow' },
   hsqc: { positiveColor: 'black', negativeColor: 'yellow' },
-  hmbc: { positiveColor: 'grey', negativeColor: 'yellow' },
+  hmbc: { positiveColor: 'darkviolet', negativeColor: 'yellow' },
 };
 
 const hasPredefine2DColor = (experiment) => {
