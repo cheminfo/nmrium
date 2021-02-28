@@ -121,7 +121,7 @@ export default class Processing2D {
   }
 
   getContours(zoomLevel, options = {}) {
-    const { negative = false, timeout = 4000, nbLevels = 10 } = options;
+    const { negative = false, timeout = 2000, nbLevels = 10 } = options;
 
     const max = Math.max(
       Math.abs(this.minMax.maxZ),
@@ -129,7 +129,7 @@ export default class Processing2D {
     );
 
     let _range = getRange(
-      this.median * 3 * Math.pow(2, zoomLevel),
+      this.median * 1 * Math.pow(2, zoomLevel),
       max,
       nbLevels,
       2,
