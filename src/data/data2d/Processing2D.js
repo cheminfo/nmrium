@@ -1,6 +1,6 @@
 import { Conrec } from 'ml-conrec';
 
-export const defaultContourOpions = {
+export const defaultContourOptions = {
   positive: {
     contourLevels: [0, 21],
     numberOfLayers: 10,
@@ -14,7 +14,7 @@ export const defaultContourOpions = {
 export default class Processing2D {
   constructor(
     minMax,
-    options = defaultContourOpions,
+    options = defaultContourOptions,
     defaultLevel = {
       positive: 10,
       negative: 10,
@@ -130,11 +130,8 @@ export default class Processing2D {
 
     let _range = getRange(
       this.median * 3 * Math.pow(2, zoomLevel),
-
       max,
-
       nbLevels,
-
       2,
     );
 
@@ -187,7 +184,9 @@ function getRange(min, max, length, exp) {
 function range(from, to, step) {
   const result = [];
 
-  for (let i = from; i < to; i += step) result.push(i);
+  for (let i = from; i < to; i += step) {
+    result.push(i);
+  }
 
   return result;
 }

@@ -5,7 +5,7 @@ import { initiateDatum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
 import { get2DColor } from '../utilities/getColor';
 
-import Processing2D, { defaultContourOpions } from './Processing2D';
+import Processing2D, { defaultContourOptions } from './Processing2D';
 import autoZonesDetection from './autoZonesDetection';
 
 export const usedColors2D: Array<string> = [];
@@ -115,7 +115,7 @@ export function initiateDatum2D(options: any): Datum2D {
       ...getColor(options),
       isPositiveVisible: true,
       isNegativeVisible: true,
-      contourOptions: defaultContourOpions,
+      contourOptions: defaultContourOptions,
     },
     options.display,
   );
