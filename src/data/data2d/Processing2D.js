@@ -90,15 +90,15 @@ export default class Processing2D {
 
   shiftWheel(value) {
     const sign = Math.sign(value);
-    const [min, max] = this.options.negative.contourLevels;
+    const [min, max] = this.options.positive.contourLevels;
     if (
-      (this.currentLevelNegative === min && sign === -1) ||
-      (this.currentLevelNegative >= max && sign === 1)
+      (this.currentLevelPositive === min && sign === -1) ||
+      (this.currentLevelPositive >= max && sign === 1)
     ) {
       return;
     }
 
-    this.currentLevelNegative += sign;
+    this.currentLevelPositive += sign;
     return [];
   }
 
