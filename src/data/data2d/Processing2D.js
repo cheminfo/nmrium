@@ -1,3 +1,4 @@
+import cloneDeep from 'lodash/cloneDeep';
 import { Conrec } from 'ml-conrec';
 
 export const defaultContourOptions = {
@@ -20,7 +21,7 @@ export default class Processing2D {
       negative: 10,
     },
   ) {
-    this.options = options;
+    this.options = cloneDeep(options);
     const { positive, negative } = defaultLevel;
 
     this.currentLevelPositive = positive;
@@ -84,6 +85,7 @@ export default class Processing2D {
       (this.currentLevelPositive > positiveBoundary[0] && sign === -1) ||
       (this.currentLevelPositive < positiveBoundary[1] && sign === 1)
     ) {
+      this.options.positive.contourLevels[0] += sign;
       this.currentLevelPositive += sign;
     }
 
@@ -91,6 +93,7 @@ export default class Processing2D {
       (this.currentLevelNegative > negativeBoundary[0] && sign === -1) ||
       (this.currentLevelNegative < negativeBoundary[1] && sign === 1)
     ) {
+      this.options.negative.contourLevels[0] += sign;
       this.currentLevelNegative += sign;
     }
   }
@@ -104,52 +107,49 @@ export default class Processing2D {
     ) {
       return;
     }
-
+    this.options.positive.contourLevels[0] += sign;
     this.currentLevelPositive += sign;
     return [];
   }
 
   drawContours() {
-    const zoomPositive = this.currentLevelPositive / 2 + 1;
-    const zoomNegative = this.currentLevelNegative / 2 + 1;
-    const {
-      positive: { numberOfLayers: numberOfPositiveLayer },
-      negative: { numberOfLayers: numberOfNegativeLayer },
-    } = this.options;
+    // const zoomPositive = this.currentLevelPositive / 2 + 1;
+    // const zoomNegative = this.currentLevelNegative / 2 + 1;
+    // const {
+    //   positive: { numberOfLayers: numberOfPositiveLayer },
+    //   negative: { numberOfLayers: numberOfNegativeLayer },
+    // } = this.options;
     return {
-      positive: this.getContours(zoomPositive, {
-        nbLevels: numberOfPositiveLayer,
-      }),
-      negative: this.getContours(zoomNegative, {
-        negative: true,
-        nbLevels: numberOfNegativeLayer,
-      }),
+      positive: this.getContours(),
+      negative: this.getContours({ negative: true }),
     };
   }
 
-  getContours(zoomLevel, options = {}) {
-    const { negative = false, timeout = 2000, nbLevels = 10 } = options;
-
-    const max = Math.max(
-      Math.abs(this.minMax.maxZ),
-      Math.abs(this.minMax.minZ),
+  getLevels(negative = false) {
+    const levelKey = negative ? 'negative' : 'positive';
+    let ranges = [];
+    const [min, max] = this.options[levelKey].contourLevels;
+    let interval = Math.floor(
+      (max - min) / (this.options[levelKey].numberOfLayers - 1),
     );
-
-    let _range = getRange(
-      this.median * 1 * Math.pow(2, zoomLevel),
-      max,
-      nbLevels,
-      2,
-    );
-
-    if (negative) {
-      _range = _range.map((value) => -value);
+    interval = interval < 1 ? 1 : interval;
+    let index = min;
+    while (index < max) {
+      ranges.push(
+        negative ? -this.allowedLevels[index] : this.allowedLevels[index],
+      );
+      index += interval;
     }
+    return ranges;
+  }
+
+  getContours(options = {}) {
+    const { negative = false, timeout = 6000 } = options;
     let contours = [];
     try {
       contours = this.conrec.drawContour({
         contourDrawer: 'basic', // shape or basic
-        levels: _range,
+        levels: this.getLevels(negative),
         timeout: timeout,
       });
     } catch (e) {
