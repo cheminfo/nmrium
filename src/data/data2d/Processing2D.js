@@ -3,11 +3,11 @@ import { Conrec } from 'ml-conrec';
 
 export const defaultContourOptions = {
   positive: {
-    contourLevels: [0, 20],
+    contourLevels: [0, 60],
     numberOfLayers: 10,
   },
   negative: {
-    contourLevels: [0, 20],
+    contourLevels: [0, 60],
     numberOfLayers: 10,
   },
 };
@@ -42,7 +42,7 @@ export default class Processing2D {
       Math.abs(this.minMax.minZ),
     );
 
-    this.allowedLevels = getRange(this.median, max, 101, 1.5);
+    this.allowedLevels = getRange(this.median, max, 101, 1.15);
   }
 
   getLevel() {
