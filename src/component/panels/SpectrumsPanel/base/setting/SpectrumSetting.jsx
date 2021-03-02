@@ -24,7 +24,8 @@ const style = css`
     box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px,
       rgba(0, 0, 0, 0.15) 0px 8px 16px;
       overflow: auto;
-      height: 350px;
+   
+   
   }
 
 
@@ -66,7 +67,7 @@ const style = css`
    
   .label{
     font-size: 12px;
-    margin: 8px 0;
+    padding: 0px 0px 8px 0px ;
     display: block;
   }
  
@@ -99,6 +100,7 @@ function SpectrumSetting({ position, data: { id, info, display }, onClose }) {
         style={{
           left: info.dimension === 2 ? x - 450 : x - 220,
           padding: info.dimension === 2 ? '10px 0' : '',
+          height: info.dimension === 2 ? '390px' : '350px',
           top: y,
         }}
       >

@@ -11,6 +11,11 @@ function Spectrum2DSetting({ data, onSubmit }) {
   const refForm = useRef();
 
   const style = css`
+    .sketch-picker > div:first-of-type {
+      height: 80px !important;
+      padding-bottom: 5px !important;
+    }
+
     .positive {
       display: inline-block;
       .track-1 {
@@ -23,6 +28,10 @@ function Spectrum2DSetting({ data, onSubmit }) {
       .track-1 {
         background-color: ${data.negativeColor} !important;
       }
+    }
+
+    .options-container {
+      padding: 5px 0 0 5px;
     }
   `;
 
@@ -39,7 +48,7 @@ function Spectrum2DSetting({ data, onSubmit }) {
             name="positiveColor"
             onColorChange={triggerSubmitHandler}
           />
-          <div style={{ padding: '5px' }}>
+          <div className="options-container">
             <span className="label">contour Levels [ min - max ]</span>
             <FormikSlider
               name="contourOptions.positive.contourLevels"
@@ -59,7 +68,7 @@ function Spectrum2DSetting({ data, onSubmit }) {
             name="negativeColor"
             onColorChange={triggerSubmitHandler}
           />
-          <div style={{ padding: '5px' }}>
+          <div className="options-container">
             <span className="label">contour Levels [ min - max ]</span>
             <FormikSlider
               name="contourOptions.negative.contourLevels"
