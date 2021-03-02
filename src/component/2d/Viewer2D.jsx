@@ -1,4 +1,12 @@
-import { useCallback, Fragment, useEffect, useState, useMemo } from 'react';
+import debounce from 'lodash/debounce';
+import {
+  useCallback,
+  Fragment,
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+} from 'react';
 import { useSize, useDebounce } from 'react-use';
 
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
@@ -36,6 +44,12 @@ function Viewer2D() {
   } = state;
 
   const dispatch = useDispatch();
+  const dispatchDebounce = useRef(
+    debounce((option) => {
+      dispatch(option);
+    }, 100),
+    [],
+  ).current;
 
   const spectrumData = useMemo(() => {
     const nucleuses = activeTab.split(',');
@@ -102,18 +116,21 @@ function Viewer2D() {
     [DIMENSION, dispatch],
   );
 
-  const handleZoom = (wheelData) => {
-    const { x: startX, y: startY } = wheelData;
-    const trackID = getLayoutID(DIMENSION, { startX, startY });
+  const handleZoom = useCallback(
+    (wheelData) => {
+      const { x: startX, y: startY } = wheelData;
+      const trackID = getLayoutID(DIMENSION, { startX, startY });
 
-    if (trackID) {
-      if (trackID === 'CENTER_2D') {
-        dispatch({ type: SET_2D_LEVEL, ...wheelData });
-      } else {
-        dispatch({ type: SET_ZOOM_FACTOR, ...wheelData, trackID });
+      if (trackID) {
+        if (trackID === 'CENTER_2D') {
+          dispatchDebounce({ type: SET_2D_LEVEL, ...wheelData });
+        } else {
+          dispatch({ type: SET_ZOOM_FACTOR, ...wheelData, trackID });
+        }
       }
-    }
-  };
+    },
+    [DIMENSION, dispatch, dispatchDebounce],
+  );
 
   const mouseClick = useCallback(
     (position) => {
