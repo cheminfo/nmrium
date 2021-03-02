@@ -1,7 +1,8 @@
 import { useFormikContext } from 'formik';
+import debounce from 'lodash/debounce';
 import lodashGet from 'lodash/get';
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import Input from '../Input';
 
@@ -15,6 +16,7 @@ function FormikInput({
   className,
   value,
   format,
+  debouce = 0,
   ...resProps
 }) {
   const {
@@ -24,12 +26,18 @@ function FormikInput({
     errors,
     touched,
   } = useFormikContext();
-  const changeHandler = useCallback(
-    (e) => {
+  const debounceChange = useRef(
+    debounce((e) => {
       onChange(e);
       handleChange(e);
+    }, debouce),
+  ).current;
+
+  const changeHandler = useCallback(
+    (e) => {
+      debounceChange(e);
     },
-    [handleChange, onChange],
+    [debounceChange],
   );
 
   useEffect(() => {

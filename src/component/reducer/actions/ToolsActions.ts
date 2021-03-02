@@ -1,5 +1,6 @@
 import { max } from 'd3';
 import { original, Draft } from 'immer';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { Data1D, Datum1D } from '../../../data/data1d/Datum1D';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
@@ -491,14 +492,18 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
       const { index, id } = draft.activeSpectrum;
       // const datum2dObject = AnalysisObj.getDatum(id);
       // if (datum2dObject instanceof Datum2D) {
-      const processingController = (draft.data[index] as Datum2D)
-        .processingController;
+      const datum2d = draft.data[index] as Datum2D;
+      const processingController = datum2d.processingController;
       // const processing2dController = processingController.drawContours;
       if (shiftKey) {
         processingController.shiftWheel(deltaY);
       } else {
         processingController.wheel(deltaY);
       }
+      // datum2d.display.contourOptions = processingController.getOptions();
+      datum2d.display.contourOptions = cloneDeep(
+        processingController.getOptions(),
+      );
       const contours = Object.freeze(processingController.drawContours());
       draft.contours[id] = contours;
       // }

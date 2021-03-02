@@ -12,6 +12,8 @@ export const defaultContourOptions = {
   },
 };
 
+const maxLevelsNumber = 101;
+
 export default class Processing2D {
   constructor(
     minMax,
@@ -42,7 +44,7 @@ export default class Processing2D {
       Math.abs(this.minMax.minZ),
     );
 
-    this.allowedLevels = getRange(this.median, max, 101, 1.15);
+    this.allowedLevels = getRange(this.median, max, maxLevelsNumber, 1.15);
   }
 
   getLevel() {
@@ -58,40 +60,30 @@ export default class Processing2D {
   }
 
   setOptions(options) {
-    const positiveBoundary = options.positive.contourLevels;
-    const negativeBoundary = options.negative.contourLevels;
-
-    if (this.currentLevelPositive >= positiveBoundary[1]) {
-      this.currentLevelPositive = positiveBoundary[1];
-    } else if (this.currentLevelPositive <= positiveBoundary[0]) {
-      this.currentLevelPositive = positiveBoundary[0];
-    }
-
-    if (this.currentLevelNegative >= negativeBoundary[1]) {
-      this.currentLevelNegative = negativeBoundary[1];
-    } else if (this.currentLevelNegative <= negativeBoundary[0]) {
-      this.currentLevelNegative = negativeBoundary[0];
-    }
+    options = cloneDeep(options);
+    this.currentLevelPositive = options.positive.contourLevels[0];
+    this.currentLevelNegative = options.negative.contourLevels[0];
 
     this.options = options;
   }
 
+  getOptions() {
+    return this.options;
+  }
+
   wheel(value) {
     const sign = Math.sign(value);
-    const positiveBoundary = this.options.positive.contourLevels;
-    const negativeBoundary = this.options.negative.contourLevels;
-
     if (
-      (this.currentLevelPositive > positiveBoundary[0] && sign === -1) ||
-      (this.currentLevelPositive < positiveBoundary[1] && sign === 1)
+      (this.currentLevelPositive > 0 && sign === -1) ||
+      (this.currentLevelPositive < maxLevelsNumber && sign === 1)
     ) {
       this.options.positive.contourLevels[0] += sign;
       this.currentLevelPositive += sign;
     }
 
     if (
-      (this.currentLevelNegative > negativeBoundary[0] && sign === -1) ||
-      (this.currentLevelNegative < negativeBoundary[1] && sign === 1)
+      (this.currentLevelNegative > 0 && sign === -1) ||
+      (this.currentLevelNegative < maxLevelsNumber && sign === 1)
     ) {
       this.options.negative.contourLevels[0] += sign;
       this.currentLevelNegative += sign;
@@ -100,16 +92,14 @@ export default class Processing2D {
 
   shiftWheel(value) {
     const sign = Math.sign(value);
-    const [min, max] = this.options.positive.contourLevels;
+
     if (
-      (this.currentLevelPositive === min && sign === -1) ||
-      (this.currentLevelPositive >= max && sign === 1)
+      (this.currentLevelNegative > 0 && sign === -1) ||
+      (this.currentLevelNegative < maxLevelsNumber && sign === 1)
     ) {
-      return;
+      this.options.negative.contourLevels[0] += sign;
+      this.currentLevelNegative += sign;
     }
-    this.options.positive.contourLevels[0] += sign;
-    this.currentLevelPositive += sign;
-    return [];
   }
 
   drawContours() {

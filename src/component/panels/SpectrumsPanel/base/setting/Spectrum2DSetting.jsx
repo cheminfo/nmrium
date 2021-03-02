@@ -59,6 +59,7 @@ function Spectrum2DSetting({ data, onSubmit }) {
               name="contourOptions.positive.numberOfLayers"
               onChange={triggerSubmitHandler}
               type="number"
+              debouce={500}
             />
           </div>
         </div>
@@ -79,6 +80,7 @@ function Spectrum2DSetting({ data, onSubmit }) {
               name="contourOptions.negative.numberOfLayers"
               onChange={triggerSubmitHandler}
               type="number"
+              debouce={500}
             />
           </div>
         </div>
