@@ -20,11 +20,11 @@ export interface Data2D {
 
 export interface ContourOptions {
   positive: {
-    contourLevels: [number, number];
+    contourLevels: number[];
     numberOfLayers: number;
   };
   negative: {
-    contourLevels: [number, number];
+    contourLevels: number[];
     numberOfLayers: number;
   };
 }

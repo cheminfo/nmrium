@@ -107,6 +107,14 @@ function changeSpectrumSetting(draft: Draft<State>, { id, display }) {
   if (index !== -1) {
     draft.data[index].display = display;
   }
+
+  if (draft.data[index].info?.dimension === 2) {
+    const processingController = (draft.data[index] as Datum2D)
+      .processingController;
+    processingController.setOptions(display.contourOptions);
+    const contours = Object.freeze(processingController.drawContours());
+    draft.contours[id] = contours;
+  }
 }
 function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
   const state = original(draft) as State;
