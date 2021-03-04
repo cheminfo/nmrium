@@ -3,11 +3,11 @@ import { Conrec } from 'ml-conrec';
 
 export const defaultContourOptions = {
   positive: {
-    contourLevels: [0, 60],
+    contourLevels: [20, 100],
     numberOfLayers: 10,
   },
   negative: {
-    contourLevels: [0, 60],
+    contourLevels: [20, 100],
     numberOfLayers: 10,
   },
 };
@@ -119,9 +119,9 @@ export default class Processing2D {
     const levelKey = negative ? 'negative' : 'positive';
     let levels = [];
     const [min, max] = this.options[levelKey].contourLevels;
-    let interval = Math.floor(
-      (max - min) / (this.options[levelKey].numberOfLayers - 1),
-    );
+    const numberOfLayers = this.options[levelKey].numberOfLayers;
+    if (numberOfLayers < 1) return [];
+    let interval = numberOfLayers < 2 ? 1 : (max - min) / (numberOfLayers - 1);
     interval = interval < 1 ? 1 : interval;
     let currentLevel = min;
     let previousIndex = Number.NEGATIVE_INFINITY;
@@ -131,13 +131,13 @@ export default class Processing2D {
         previousIndex = currentIndex;
         levels.push(
           negative
-            ? -this.allowedLevels[currentLevel]
-            : this.allowedLevels[currentLevel],
+            ? -this.allowedLevels[currentIndex]
+            : this.allowedLevels[currentIndex],
         );
       }
       currentLevel += interval;
     }
-    return levels;
+    return levels.reverse();
   }
 
   getContours(options = {}) {
@@ -174,7 +174,8 @@ function getRange(min, max, length, exp) {
     const result = new Array(length);
 
     for (let i = 0; i < length; i++) {
-      result[i] = (max - min) * (1 - factors[i + 1] / lastFactor) + min;
+      result[length - i - 1] =
+        (max - min) * (1 - factors[i + 1] / lastFactor) + min;
     }
 
     return result;
