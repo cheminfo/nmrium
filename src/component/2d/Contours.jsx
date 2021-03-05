@@ -1,14 +1,12 @@
-import debounce from 'lodash/debounce';
 import get from 'lodash/get';
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { useAlert } from '../elements/popup/Alert';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
-function ContoursPaths({ id: spectrumID, sign, color, showMessage }) {
+function ContoursPaths({ id: spectrumID, sign, color }) {
   const {
     margin,
     width,
@@ -36,13 +34,9 @@ function ContoursPaths({ id: spectrumID, sign, color, showMessage }) {
     for (let i = 0; i < data.length; i++) {
       if (data[i].lines) {
         const lines = data[i].lines;
-        if (lines.length < 1e6) {
-          for (let i = 0; i < lines.length; i += 4) {
-            path += `M${_scaleX(lines[i])} ${_scaleY(lines[i + 1])} `;
-            path += `L${_scaleX(lines[i + 2])} ${_scaleY(lines[i + 3])} `;
-          }
-        } else {
-          showMessage('Too many lines to display');
+        for (let i = 0; i < lines.length; i += 4) {
+          path += `M${_scaleX(lines[i])} ${_scaleY(lines[i + 1])} `;
+          path += `L${_scaleX(lines[i + 2])} ${_scaleY(lines[i + 3])} `;
         }
       } else {
         path += `M${_scaleX(data[i][0].x)} ${_scaleY(data[i][0].y)} `;
@@ -77,13 +71,6 @@ function ContoursPaths({ id: spectrumID, sign, color, showMessage }) {
 
 function Contours() {
   const { data, displayerKey } = useChartData();
-  const alert = useAlert();
-
-  const showMessage = useRef(
-    debounce((message) => {
-      alert.show(message);
-    }, 1000),
-  ).current;
 
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
@@ -96,7 +83,6 @@ function Contours() {
                 id={datum.id}
                 sign="positive"
                 color={datum.display.positiveColor}
-                showMessage={showMessage}
               />
             )}
             {datum.display.isNegativeVisible && (
@@ -104,7 +90,6 @@ function Contours() {
                 id={datum.id}
                 sign="negative"
                 color={datum.display.negativeColor}
-                showMessage={showMessage}
               />
             )}
           </g>

@@ -44,7 +44,12 @@ export default class Processing2D {
       Math.abs(this.minMax.minZ),
     );
 
-    this.allowedLevels = getRange(this.median, max, maxLevelsNumber, 1.15);
+    this.allowedLevels = getRange(this.median, max, maxLevelsNumber, 1.15).map(
+      (level) => ({
+        cache: { positive: {}, negative: {} },
+        zValue: level,
+      }),
+    );
   }
 
   getLevel() {
@@ -129,33 +134,49 @@ export default class Processing2D {
       let currentIndex = Math.round(currentLevel);
       if (currentIndex !== previousIndex) {
         previousIndex = currentIndex;
-        levels.push(
-          negative
-            ? -this.allowedLevels[currentIndex]
-            : this.allowedLevels[currentIndex],
-        );
+        levels.push(this.allowedLevels[currentIndex]);
       }
       currentLevel += interval;
     }
-    return levels.reverse();
+    return negative ? levels.reverse() : levels;
   }
 
   getContours(options = {}) {
-    const { negative = false, timeout = 6000 } = options;
-    let contours = [];
+    const { negative = false, timeout = 5000, maxLines = 1e6 } = options;
+    const levelKey = negative ? 'negative' : 'positive';
     try {
-      contours = this.conrec.drawContour({
+      const levels = this.getLevels(negative);
+      const toCalculate = [];
+      for (const level of levels) {
+        if (!level.cache[levelKey].lines) {
+          toCalculate.push(level);
+        }
+      }
+
+      const newContours = this.conrec.drawContour({
         contourDrawer: 'basic', // shape or basic
-        levels: this.getLevels(negative),
-        timeout: timeout,
+        levels: toCalculate.map((level) => level.zValue * (negative ? -1 : 1)),
+        timeout,
       });
+      for (let i = 0; i < toCalculate.length; i++) {
+        if (newContours[i].lines.length < maxLines) {
+          toCalculate[i].cache[levelKey].lines = newContours[i].lines;
+        } else {
+          toCalculate[i].cache[levelKey].lines = [];
+        }
+      }
+      for (let level of levels) {
+        console.log(level.cache[levelKey].lines.length);
+      }
+      return levels.map((level) => ({
+        lines: level.cache[levelKey].lines,
+        zValue: level.zValue,
+      }));
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
       throw e;
     }
-
-    return contours;
   }
 }
 
