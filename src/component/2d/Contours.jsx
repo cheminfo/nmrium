@@ -1,12 +1,14 @@
+import debounce from 'lodash/debounce';
 import get from 'lodash/get';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
+import { useAlert } from '../elements/popup/Alert';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
-function ContoursPaths({ id: spectrumID, sign, color }) {
+function ContoursPaths({ id: spectrumID, sign, color, showMessage }) {
   const {
     margin,
     width,
@@ -31,7 +33,9 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
     const _scaleX = get2DXScale({ margin, width, xDomain });
     const _scaleY = get2DYScale({ margin, height, yDomain });
     let path = '';
+    let degraded = false;
     for (let i = 0; i < data.length; i++) {
+      degraded = data[i].degraded;
       if (data[i].lines) {
         const lines = data[i].lines;
         for (let i = 0; i < lines.length; i += 4) {
@@ -45,6 +49,8 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
         }
       }
     }
+    if (degraded) showMessage('Too many lines to display');
+
     if (!path) path = 'M0 0 ';
     path += 'Z';
 
@@ -71,6 +77,13 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
 
 function Contours() {
   const { data, displayerKey } = useChartData();
+  const alert = useAlert();
+
+  const showMessage = useRef(
+    debounce((message) => {
+      alert(message);
+    }, 1000),
+  );
 
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
@@ -83,6 +96,7 @@ function Contours() {
                 id={datum.id}
                 sign="positive"
                 color={datum.display.positiveColor}
+                showMessage={showMessage}
               />
             )}
             {datum.display.isNegativeVisible && (
@@ -90,6 +104,7 @@ function Contours() {
                 id={datum.id}
                 sign="negative"
                 color={datum.display.negativeColor}
+                showMessage={showMessage}
               />
             )}
           </g>
