@@ -20,6 +20,10 @@ If you have jcamps accessible from an URL and that your server allow cross-origi
 
 https://cheminfo.github.io/nmr-displayer?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/100-86-7/1h.dx
 
+The source code for nmrium.org is here:
+
+https://github.com/zakodium/nmrium.org
+
 ## Install and test locally
 
 ```
