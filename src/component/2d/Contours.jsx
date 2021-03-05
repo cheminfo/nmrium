@@ -34,11 +34,9 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
     for (let i = 0; i < data.length; i++) {
       if (data[i].lines) {
         const lines = data[i].lines;
-        if (lines.length < 1e6) {
-          for (let i = 0; i < lines.length; i += 4) {
-            path += `M${_scaleX(lines[i])} ${_scaleY(lines[i + 1])} `;
-            path += `L${_scaleX(lines[i + 2])} ${_scaleY(lines[i + 3])} `;
-          }
+        for (let i = 0; i < lines.length; i += 4) {
+          path += `M${_scaleX(lines[i])} ${_scaleY(lines[i + 1])} `;
+          path += `L${_scaleX(lines[i + 2])} ${_scaleY(lines[i + 3])} `;
         }
       } else {
         path += `M${_scaleX(data[i][0].x)} ${_scaleY(data[i][0].y)} `;
