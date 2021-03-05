@@ -163,6 +163,7 @@ export default class Processing2D {
           toCalculate[i].cache[levelKey].lines = newContours[i].lines;
         } else {
           toCalculate[i].cache[levelKey].lines = [];
+          toCalculate[i].cache[levelKey].degraded = true;
         }
       }
       for (let level of levels) {

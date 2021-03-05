@@ -30,31 +30,37 @@ function ContoursPaths({ id: spectrumID, sign, color, showMessage }) {
   }, [activeSpectrum, spectrumID]);
 
   function buildContourPath(data) {
+    console.time('build');
     const _scaleX = get2DXScale({ margin, width, xDomain });
     const _scaleY = get2DYScale({ margin, height, yDomain });
-    let path = '';
+
+    let paths = [];
     let degraded = false;
+
     for (let i = 0; i < data.length; i++) {
       degraded = data[i].degraded;
       if (data[i].lines) {
         const lines = data[i].lines;
         for (let i = 0; i < lines.length; i += 4) {
-          path += `M${_scaleX(lines[i])} ${_scaleY(lines[i + 1])} `;
-          path += `L${_scaleX(lines[i + 2])} ${_scaleY(lines[i + 3])} `;
+          paths.push(`M${_scaleX(lines[i])} ${_scaleY(lines[i + 1])} `);
+          paths.push(`L${_scaleX(lines[i + 2])} ${_scaleY(lines[i + 3])} `);
         }
       } else {
-        path += `M${_scaleX(data[i][0].x)} ${_scaleY(data[i][0].y)} `;
+        paths.push(`M${_scaleX(data[i][0].x)} ${_scaleY(data[i][0].y)} `);
         for (let j = 1; j < data[i].length; j++) {
-          path += `L${_scaleX(data[i][j].x)} ${_scaleY(data[i][j].y)} `;
+          paths.push(`L${_scaleX(data[i][j].x)} ${_scaleY(data[i][j].y)} `);
         }
       }
     }
+
     if (degraded) showMessage('Too many lines to display');
 
-    if (!path) path = 'M0 0 ';
-    path += 'Z';
+    if (!paths.length === 0) paths.push('M0 0 ');
+    paths.push('Z');
+    let result = paths.join('');
+    console.timeEnd('build');
 
-    return path;
+    return result;
   }
   const data = useMemo(() => {
     return get(contours, `${spectrumID}.${sign}`, []);
@@ -83,7 +89,7 @@ function Contours() {
     debounce((message) => {
       alert(message);
     }, 1000),
-  );
+  ).current;
 
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
