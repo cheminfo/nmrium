@@ -143,11 +143,15 @@ export function dispatchMiddleware(dispatch) {
   return (action) => {
     switch (action.type) {
       case types.INITIATE: {
-        const { spectra, ...res } = action.payload;
-        void SpectraManager.fromJSON(spectra).then((data) => {
-          action.payload = { spectra: data, ...res };
+        if (action.payload) {
+          const { spectra, ...res } = action.payload;
+          void SpectraManager.fromJSON(spectra).then((data) => {
+            action.payload = { spectra: data, ...res };
+            dispatch(action);
+          });
+        } else {
           dispatch(action);
-        });
+        }
         break;
       }
       case types.LOAD_ZIP_FILE: {

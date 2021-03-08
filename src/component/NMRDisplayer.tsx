@@ -246,10 +246,8 @@ function NMRDisplayer({
   }, [preferences]);
 
   useEffect(() => {
-    if (dataProp !== undefined) {
-      dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
-      dispatchMiddleWare({ type: INITIATE, payload: dataProp });
-    }
+    dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
+    dispatchMiddleWare({ type: INITIATE, payload: dataProp });
   }, [dataProp, dispatchMiddleWare]);
 
   useEffect(() => {
