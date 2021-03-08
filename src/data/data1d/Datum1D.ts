@@ -221,6 +221,7 @@ export function toJSON(datum1D: Datum1D) {
     },
     display: datum1D.display,
     info: datum1D.originalInfo,
+    originalInfo: datum1D.originalInfo,
     meta: datum1D.meta,
     peaks: datum1D.peaks,
     integrals: datum1D.integrals,
