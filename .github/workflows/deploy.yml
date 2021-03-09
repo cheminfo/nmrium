@@ -20,6 +20,9 @@ jobs:
         run: npm run build-with-profiling
         env:
           CI: 'false'
+      - name: Copy samples.json
+        run: |
+          cp src/demo/samples.json build/
       - name: push to gh-pages
         run: |
           git config user.email admin@cheminfo.org
