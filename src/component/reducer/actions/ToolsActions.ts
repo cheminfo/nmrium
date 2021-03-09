@@ -366,7 +366,6 @@ function Processing2DData(draft: Draft<State>, data) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     let _data = {};
     for (const datum of data[draft.activeTab]) {
-      // const data2dObject = AnalysisObj.getDatum(datum.id);
       _data[datum.id] = datum.processingController.drawContours();
     }
     draft.contours = _data;
