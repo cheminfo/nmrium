@@ -98,9 +98,10 @@ export interface Datum1D {
   source: Partial<Source>;
   display: Display;
   info: Partial<Info>;
-  originalInfo: Partial<Info>;
+  originalInfo?: Partial<Info>;
   meta: any;
   data: Data1D;
+  originalData?: Data1D;
   peaks: Peaks;
   integrals: Integrals;
   ranges: Ranges;
@@ -141,14 +142,7 @@ export function initiateDatum1D(options: any): Datum1D {
     options.info,
   );
 
-  datum.originalInfo = Object.assign(
-    {
-      nucleus: '1H', // 1H, 13C, 19F, ...
-      isFid: false,
-      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
-    },
-    options.info,
-  );
+  datum.originalInfo = datum.info;
 
   datum.meta = Object.assign({}, options.meta);
   datum.data = Object.assign(
@@ -160,6 +154,7 @@ export function initiateDatum1D(options: any): Datum1D {
     },
     options.data,
   );
+  datum.originalData = datum.data;
 
   datum.peaks = Object.assign({ values: [], options: {} }, options.peaks);
   // array of object {index: xIndex, xShift}
@@ -202,7 +197,12 @@ function preprocessing(datum) {
 }
 
 export function toJSON(datum1D: Datum1D) {
-  const { re, im, y, x } = datum1D.data;
+  const { re, im, y, x } = datum1D.originalData || {
+    re: [],
+    im: [],
+    y: [],
+    x: [],
+  };
   return {
     data: {
       x: Array.from(x),
@@ -221,7 +221,6 @@ export function toJSON(datum1D: Datum1D) {
     },
     display: datum1D.display,
     info: datum1D.originalInfo,
-    originalInfo: datum1D.originalInfo,
     meta: datum1D.meta,
     peaks: datum1D.peaks,
     integrals: datum1D.integrals,

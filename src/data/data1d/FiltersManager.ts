@@ -83,7 +83,7 @@ function enableFilter(datum1d, id, checked, filters = null) {
       return { ...filter, flag: filter.id === id ? checked : filter.flag };
     }, []);
   }
-  datum1d.data = { ...datum1d.data, ...datum1d.source.original };
+  datum1d.data = { ...datum1d.data, ...datum1d.originalData };
   datum1d.info = { ...datum1d.info, ...datum1d.originalInfo };
   const _filters = filters ? filters : datum1d.filters;
   for (let filterIndex in _filters) {
@@ -108,7 +108,7 @@ function enableFilter(datum1d, id, checked, filters = null) {
 function deleteFilter(datum1d, id) {
   datum1d.filters = datum1d.filters.slice(0);
   datum1d.filters = datum1d.filters.filter((filter) => filter.id !== id);
-  datum1d.data = { ...datum1d.data, ...datum1d.source.original };
+  datum1d.data = { ...datum1d.data, ...datum1d.originalData };
   datum1d.info = { ...datum1d.info, ...datum1d.originalInfo };
 
   for (let filterIndex in datum1d.filters) {

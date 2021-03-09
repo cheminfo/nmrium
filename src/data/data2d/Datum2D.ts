@@ -87,9 +87,10 @@ export interface Datum2D {
   source: Partial<{ jcamp: string; jcampURL: string; original: Data2D }>;
   display: Display;
   info: Partial<Info>;
-  originalInfo: Partial<Info>;
+  originalInfo?: Partial<Info>;
   meta: any;
   data: Data2D;
+  originalData?: Data2D;
   zones: Zones;
   filters: Filters;
   processingController: Processing2D;
@@ -129,14 +130,7 @@ export function initiateDatum2D(options: any): Datum2D {
     options.info,
   );
 
-  datum.originalInfo = Object.assign(
-    {
-      nucleus: ['1H', '1H'], // 1H, 13C, 19F, ...
-      isFid: false,
-      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
-    },
-    options.info,
-  );
+  datum.originalInfo = datum.info;
   datum.meta = Object.assign({}, options.meta);
   datum.data = Object.assign(
     {
@@ -148,6 +142,9 @@ export function initiateDatum2D(options: any): Datum2D {
     },
     options.data,
   );
+
+  datum.originalData = datum.data;
+
   datum.zones = Object.assign({ values: [], options: {} }, options.zones);
 
   datum.processingController = new Processing2D(
@@ -172,7 +169,13 @@ function getColor(options) {
 }
 
 export function toJSON(datum: Datum2D) {
-  const { z, ...resData } = datum.data;
+  const { z, ...resData } = datum.originalData || {
+    z: [],
+    minX: 0,
+    minY: 0,
+    maxX: 0,
+    maxY: 0,
+  };
 
   return {
     data: { z: Array.from(z), ...resData },
