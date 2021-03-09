@@ -9,8 +9,8 @@ import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
 
-import { changeSpectrumDisplayPreferences } from './PreferencesActions';
-import { setYAxisShift, setActiveTab } from './ToolsActions';
+import { changeSpectrumVerticalAlignment } from './PreferencesActions';
+import { setActiveTab } from './ToolsActions';
 import { initZoom1DHandler } from './Zoom';
 
 function setIsLoading(draft, isLoading) {
@@ -46,13 +46,7 @@ function initiate(draft: Draft<State>, action) {
   setData(draft, action.payload);
   initZoom1DHandler(draft.data);
   const alignCenter = lodashGet(draft.preferences, 'display.center', null);
-  if (alignCenter) {
-    changeSpectrumDisplayPreferences(draft, {
-      center: alignCenter,
-    });
-  } else {
-    setYAxisShift(draft, draft.height);
-  }
+  changeSpectrumVerticalAlignment(draft, alignCenter, true);
   setActiveTab(draft);
   draft.isLoading = false;
 }
@@ -74,6 +68,7 @@ function loadJcampFile(draft: Draft<State>, files) {
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
+  changeSpectrumVerticalAlignment(draft, false, true);
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
 
@@ -94,13 +89,7 @@ function handleLoadJsonFile(draft: Draft<State>, files) {
   setData(draft, data);
   const alignCenter = lodashGet(draft.preferences, 'display.center', null);
 
-  if (alignCenter) {
-    changeSpectrumDisplayPreferences(draft, {
-      center: alignCenter,
-    });
-  } else {
-    setYAxisShift(draft, draft.height);
-  }
+  changeSpectrumVerticalAlignment(draft, alignCenter, true);
 
   setActiveTab(draft);
   initZoom1DHandler(draft.data);

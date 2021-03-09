@@ -11,7 +11,7 @@ import getClosestNumber from '../helper/GetClosestNumber';
 import ZoomHistory from '../helper/ZoomHistory';
 
 import { setDomain, setMode } from './DomainActions';
-import { setYAxisShift } from './ToolsActions';
+import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 
 function setDataByFilters(draft: Draft<State>, hideOptionPanel = true) {
   if (hideOptionPanel) {
@@ -62,9 +62,8 @@ function applyFFTFilter(draft: Draft<State>) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.fft.id, options: {} },
     ]);
-
     setDataByFilters(draft);
-    setYAxisShift(draft, draft.height);
+    changeSpectrumVerticalAlignment(draft, false, true);
 
     setDomain(draft);
     setMode(draft);

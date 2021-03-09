@@ -17,16 +17,27 @@ function handelSetPreferences(draft: Draft<State>, action) {
   draft.preferences.panels = { ...panelsPreferences, [type]: values };
 }
 
-function changeSpectrumDisplayPreferences(draft: Draft<State>, { center }) {
-  if (center) {
-    const YAxisShift = draft.height / 2;
-    draft.verticalAlign.flag = true;
-    draft.verticalAlign.value = YAxisShift;
-    draft.verticalAlign.stacked = false;
-  } else {
-    draft.verticalAlign.flag = false;
-    draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
-    draft.verticalAlign.stacked = false;
+function changeSpectrumVerticalAlignment(
+  draft: Draft<State>,
+  center,
+  checkData = false,
+) {
+  if (draft.data && draft.data.length > 0) {
+    if (
+      center ||
+      (checkData &&
+        (draft.data[0] as Datum1D).info.isFid &&
+        !(draft.data as Datum1D[]).some((d) => d.info.isFid === false))
+    ) {
+      const YAxisShift = draft.height / 2;
+      draft.verticalAlign.flag = true;
+      draft.verticalAlign.value = YAxisShift;
+      draft.verticalAlign.stacked = false;
+    } else {
+      draft.verticalAlign.flag = false;
+      draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
+      draft.verticalAlign.stacked = false;
+    }
   }
 }
 
@@ -144,7 +155,7 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
 }
 
 export {
-  changeSpectrumDisplayPreferences,
+  changeSpectrumVerticalAlignment,
   handelSetPreferences,
   setKeyPreferencesHandler,
   applyKeyPreferencesHandler,

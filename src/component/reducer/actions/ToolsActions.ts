@@ -20,7 +20,7 @@ import {
 import ZoomHistory from '../helper/ZoomHistory';
 
 import { setDomain, setMode } from './DomainActions';
-import { changeSpectrumDisplayPreferences } from './PreferencesActions';
+import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
 
 function getStrongestPeak(draft: Draft<State>) {
@@ -52,24 +52,6 @@ function setFilterChanges(draft: Draft<State>, selectedFilter) {
       );
 
       draft.data[spectrumIndex].data = draft.tempData[spectrumIndex].data;
-    }
-  }
-}
-
-function setYAxisShift(draft: Draft<State>, height) {
-  if (draft.data && draft.data.length > 0) {
-    if (
-      (draft.data[0] as Datum1D).info.isFid &&
-      !(draft.data as Datum1D[]).some((d) => d.info.isFid === false)
-    ) {
-      const YAxisShift = height / 2;
-      draft.verticalAlign.flag = true;
-      draft.verticalAlign.value = YAxisShift;
-      draft.verticalAlign.stacked = false;
-    } else {
-      draft.verticalAlign.flag = false;
-      draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
-      draft.verticalAlign.stacked = false;
     }
   }
 }
@@ -118,8 +100,8 @@ function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
   draft.selectedOptionPanel = selectedOptionPanel;
 }
 
-function setSpectrumsVerticalAlign(draft: Draft<State>, flag) {
-  changeSpectrumDisplayPreferences(draft, { center: flag });
+function setSpectrumsVerticalAlign(draft: Draft<State>, isCentered) {
+  changeSpectrumVerticalAlignment(draft, isCentered);
 }
 
 function handleChangeSpectrumDisplayMode(draft: Draft<State>, { flag }) {
@@ -512,7 +494,6 @@ export {
   resetSelectedTool,
   setSelectedTool,
   setSelectedOptionPanel,
-  setYAxisShift,
   setSpectrumsVerticalAlign,
   handleChangeSpectrumDisplayMode,
   handleAddBaseLineZone,
