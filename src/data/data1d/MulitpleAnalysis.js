@@ -31,7 +31,11 @@ export function getSpectraAnalysis(spectra, options) {
   const { from, to, nucleus } = options;
   return spectra.reduce(
     (acc, datum) => {
-      if (datum.info.dimension === 1 && datum.info.nucleus === nucleus) {
+      if (
+        datum.info.dimension === 1 &&
+        datum.info.nucleus === nucleus &&
+        !datum.info.isFid
+      ) {
         const range = detectRange(datum, { from, to });
         acc.sum += range.absolute;
         acc.values.push({ SID: datum.id, ...range });

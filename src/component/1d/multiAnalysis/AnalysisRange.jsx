@@ -56,10 +56,10 @@ function AnalysisRange({ rangeData, columnKey }) {
     (resized) => {
       dispatch({
         type: RESIZE_ANALYZE_SPECTRA_RANGE,
-        payload: { ...rangeData, ...resized },
+        payload: { ...rangeData, ...resized, columnKey },
       });
     },
-    [dispatch, rangeData],
+    [columnKey, dispatch, rangeData],
   );
 
   return (

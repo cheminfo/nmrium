@@ -151,7 +151,8 @@ function alignSpectraHandler(draft: Draft<State>, action) {
     for (let datum of draft.data) {
       if (
         datum.info?.dimension === 1 &&
-        datum.info.nucleus === draft.activeTab
+        datum.info.nucleus === draft.activeTab &&
+        !datum.info?.isFid
       ) {
         const shift = getReferenceShift(datum, { ...action.payload });
         applyFilter(datum, [
