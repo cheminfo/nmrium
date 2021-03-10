@@ -70,8 +70,14 @@ const menuButton = css`
   border-bottom: 0.55px solid whitesmoke;
   height: 35px;
   outline: outline;
-  display: flex;
-  justify-content: flex-start;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: left;
+  padding: 0 10px;
+
+  svg {
+    display: inline-block;
+  }
 
   :focus {
     outline: none !important;
