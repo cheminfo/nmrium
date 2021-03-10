@@ -70,7 +70,7 @@
     "ml-regression-polynomial": "^2.1.0",
     "ml-spectra-processing": "^5.5.3",
     "multiplet-analysis": "^0.3.0",
-    "nmr-correlation": "^1.1.4",
+    "nmr-correlation": "^1.1.5",
     "nmr-parser": "^0.5.0",
     "nmr-processing": "^0.9.0",
     "numeral": "^2.0.6",
