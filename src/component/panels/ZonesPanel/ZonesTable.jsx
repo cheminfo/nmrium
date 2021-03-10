@@ -107,7 +107,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
     () =>
       data.map((rowData) => (
         <ZonesTableRow
-          key={`zonesTableRow_${rowData.id}`}
+          key={`zonesTableRow_${rowData.tableMetaInfo.id}`}
           rowData={rowData}
           onUnlink={onUnlink}
           onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
