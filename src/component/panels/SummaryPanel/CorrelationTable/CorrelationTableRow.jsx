@@ -110,22 +110,21 @@ function CorrelationTableRow({
           correlation.getAtomType() !== 'H' ? (
             <EditableColumn
               type="number"
-              value={
-                correlation.getEquivalences() > 1
-                  ? correlation.getEquivalences()
-                  : ''
-              }
+              value={correlation.getEquivalences()}
               style={
                 correlation.getEdited().equivalence
                   ? { backgroundColor: '#F7F2E0' }
-                  : {}
+                  : {
+                      color:
+                        correlation.getEquivalences() === 1
+                          ? '#bebebe'
+                          : 'black',
+                    }
               }
               onSave={onSaveEquivalencesHandler}
             />
-          ) : correlation.getEquivalences() > 1 ? (
-            correlation.getEquivalences()
           ) : (
-            ''
+            correlation.getEquivalences()
           )
         ) : (
           ''
