@@ -7,6 +7,7 @@ import { initiateDatum1D } from '../../../data/data1d/Datum1D';
 import { initiateDatum2D } from '../../../data/data2d/Datum2D';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
+import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import { State } from '../Reducer';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
@@ -34,8 +35,13 @@ function setData(draft: Draft<State>, data) {
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
+
   if (correlations) {
     draft.correlations = CorrelationManager.init(correlations);
+  } else {
+    draft.correlations = CorrelationManager.init({
+      options: { tolerance: DefaultTolerance, mf: '' },
+    });
   }
 
   // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
