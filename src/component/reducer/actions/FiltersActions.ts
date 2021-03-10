@@ -118,6 +118,8 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
     ]);
+    setDataByFilters(draft);
+    draft.tempData = null;
     setDomain(draft);
   }
 }
