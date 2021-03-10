@@ -113,7 +113,10 @@ function MultipletAnalysisModal({
 
   useEffect(() => {
     if (activeSpectrum && startX && endX && calcStart) {
-      const { x, info, y } = data[activeSpectrum.index];
+      const {
+        data: { x, y },
+        info,
+      } = data[activeSpectrum.index];
 
       const from = scaleX().invert(startX);
       const to = scaleX().invert(endX);
