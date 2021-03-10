@@ -182,7 +182,7 @@ function getBlob(elementID) {
     .querySelectorAll('[data-no-export="true"]')
     .forEach((element) => element.remove());
   const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
-  const style = `<style>.grid line,.grid path{stroke:none;} .regular-text{fill:black} .x path{stroke-width:1px} .x text{
+  const style = `<style>.grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
     font-size: 12px;
     font-weight: bold;
   } 

@@ -136,13 +136,12 @@ function FooterBanner({ layout, data1D }) {
     } else if (trackID === LAYOUT.LEFT_1D) {
       index = 1;
     }
-
     if (index != null && scaleX != null) {
       const xIndex = xFindClosestIndex(
-        data1D[index].x,
+        data1D[index].data.x,
         scaleX.invert(cordinate),
       );
-      return data1D[index].y[xIndex];
+      return data1D[index].data.y[xIndex];
     }
     return 1;
   };

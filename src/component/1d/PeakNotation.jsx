@@ -224,19 +224,24 @@ function PeakNotation({
           strokeWidth={highlight.isActive ? '7px' : '1px'}
         />
         <text
-          className="regular-text"
           ref={refText}
+          className="peaks-text"
           x="0"
-          y={sign === -1 ? 18 : -20}
-          dy="0.1em"
+          y={sign === -1 ? 28 : -12}
+          dy="0"
           dx="0.35em"
           fill="transparent"
+          fontSize="10px"
+          fontWeight="100"
+          style={{
+            position: 'absolute',
+          }}
         >
           {newValue}
         </text>
         <foreignObject
           x="0"
-          y={sign === -1 ? 18 : -20}
+          y={sign === -1 ? 16 : -22}
           dy="0.1em"
           dx="0.35em"
           width={containerSize.width + 20}
