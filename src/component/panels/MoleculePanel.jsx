@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { SvgNmrFt } from 'cheminfo-font';
 import OCL from 'openchemlib/full';
 import { useState, useCallback, useMemo, useEffect, memo } from 'react';
 import {
@@ -18,13 +19,16 @@ import { useMeasure } from 'react-use';
 import { ConcatenationString } from '../../data/utilities/Concatenation';
 import { useAssignmentData, useAssignment } from '../assignment';
 import { useDispatch } from '../context/DispatchContext';
+import ButtonToolTip from '../elements/ButtonToolTip';
 import MenuButton from '../elements/MenuButton';
 import NextPrev from '../elements/NextPrev';
 import ToolTip from '../elements/ToolTip/ToolTip';
-import { useAlert } from '../elements/popup/Alert';
+import { positions, useAlert } from '../elements/popup/Alert';
+import { useModal } from '../elements/popup/Modal';
 import { useHighlightData } from '../highlight';
 import MoleculeWrapper from '../hoc/MoleculeWrapper';
 import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
+import PredictSpectraModal from '../modal/PredictSpectraModal';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import {
   ADD_MOLECULE,
@@ -134,6 +138,7 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
 
   const dispatch = useDispatch();
   const alert = useAlert();
+  const modal = useModal();
 
   const highlightData = useHighlightData();
   const assignmentData = useAssignmentData();
@@ -541,6 +546,23 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
     [dispatch],
   );
 
+  const openPredicSpectraModal = useCallback(() => {
+    modal.show(
+      <PredictSpectraModal
+        onSave={() => {
+          modal.close();
+        }}
+        molfile={molecules[currentIndex]}
+      />,
+      {
+        position: positions.TOP_CENTER,
+        enableResizing: true,
+        width: 600,
+        height: 350,
+      },
+    );
+  }, [modal, molecules, currentIndex]);
+
   return (
     <div css={panelContainerStyle}>
       <div css={toolbarStyle}>
@@ -574,6 +596,13 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
             <FaRegTrashAlt />
           </button>
         </ToolTip>
+        <ButtonToolTip
+          popupTitle="Predic Spectra"
+          popupPlacement="left"
+          onClick={openPredicSpectraModal}
+        >
+          <SvgNmrFt />
+        </ButtonToolTip>
         <p>
           {molecules &&
             molecules.length > 0 &&
