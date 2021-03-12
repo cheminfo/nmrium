@@ -11,10 +11,21 @@ import { State } from '../Reducer';
 import { setDomain, setMode } from './DomainActions';
 import { setTab, setActiveTab } from './ToolsActions';
 
+function checkIsVisible2D(datum: Datum2D): boolean {
+  if (
+    datum.display.isPositiveVisible === false &&
+    datum.display.isNegativeVisible === false
+  ) {
+    return false;
+  }
+  return true;
+}
+
 function setVisible(datum, flag) {
   if (datum.info.dimension === 2) {
     (datum as Datum2D).display.isPositiveVisible = flag;
     (datum as Datum2D).display.isNegativeVisible = flag;
+    (datum as Datum2D).display.isVisible = checkIsVisible2D(datum as Datum2D);
   } else {
     (datum as Datum1D).display.isVisible = flag;
   }
@@ -39,6 +50,12 @@ function handleSpectrumVisibility(draft: Draft<State>, action) {
   } else {
     const index = draft.data.findIndex((d) => d.id === action.id);
     (draft.data[index] as Datum1D | Datum2D).display[action.key] = action.value;
+
+    if ((draft.data[index] as Datum1D | Datum2D).info.dimension === 2) {
+      (draft.data[index] as Datum2D).display.isVisible = checkIsVisible2D(
+        draft.data[index] as Datum2D,
+      );
+    }
   }
 }
 

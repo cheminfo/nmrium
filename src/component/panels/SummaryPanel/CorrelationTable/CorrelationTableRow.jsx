@@ -90,6 +90,14 @@ function CorrelationTableRow({
     [correlation, onChangeHybridization],
   );
 
+  const equivalenceCellStyle = useMemo(() => {
+    return correlation.getEdited().equivalence
+      ? { backgroundColor: '#F7F2E0' }
+      : {
+          color: correlation.getEquivalences() === 1 ? '#bebebe' : 'black',
+        };
+  }, [correlation]);
+
   return (
     <tr style={styleRow}>
       <td>
@@ -111,20 +119,13 @@ function CorrelationTableRow({
             <EditableColumn
               type="number"
               value={correlation.getEquivalences()}
-              style={
-                correlation.getEdited().equivalence
-                  ? { backgroundColor: '#F7F2E0' }
-                  : {
-                      color:
-                        correlation.getEquivalences() === 1
-                          ? '#bebebe'
-                          : 'black',
-                    }
-              }
+              style={equivalenceCellStyle}
               onSave={onSaveEquivalencesHandler}
             />
           ) : (
-            correlation.getEquivalences()
+            <text style={equivalenceCellStyle}>
+              {correlation.getEquivalences()}
+            </text>
           )
         ) : (
           ''
