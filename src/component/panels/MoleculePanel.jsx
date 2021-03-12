@@ -600,6 +600,7 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
           popupTitle="Predic Spectra"
           popupPlacement="left"
           onClick={openPredicSpectraModal}
+          disabled={!molecules || molecules.length === 0}
         >
           <SvgNmrFt />
         </ButtonToolTip>
