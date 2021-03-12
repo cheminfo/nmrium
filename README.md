@@ -24,6 +24,10 @@ The source code for nmrium.org is here:
 
 https://github.com/zakodium/nmrium.org
 
+Link loading the default samples test cases
+
+https://cheminfo.github.io/nmr-displayer/?sampleURL=https%3A%2F%2Fcheminfo.github.io%2Fnmr-displayer%2Fsamples.json#/
+
 ## Install and test locally
 
 ```
