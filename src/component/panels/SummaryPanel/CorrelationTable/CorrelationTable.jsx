@@ -50,6 +50,7 @@ function CorrelationTable({
   editProtonsCountSaveHandler,
   editAdditionalColumnFieldSaveHandler,
   showProtonsAsRows,
+  spectraData,
 }) {
   const rows = useMemo(() => {
     if (!filteredCorrelationsData) {
@@ -80,6 +81,7 @@ function CorrelationTable({
           onChangeHybridization={changeHybridizationSaveHandler}
           onSaveEditProtonsCount={editProtonsCountSaveHandler}
           onEditAdditionalColumnField={editAdditionalColumnFieldSaveHandler}
+          spectraData={spectraData}
         />
       ));
   }, [
@@ -91,6 +93,7 @@ function CorrelationTable({
     changeHybridizationSaveHandler,
     editProtonsCountSaveHandler,
     editAdditionalColumnFieldSaveHandler,
+    spectraData,
   ]);
 
   const additionalColumnHeader = useMemo(

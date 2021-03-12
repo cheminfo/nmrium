@@ -4,6 +4,8 @@ import { useCallback, useMemo } from 'react';
 
 import EditableColumn from '../../../elements/EditableColumn';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
+import { useHighlight } from '../../../highlight';
+import { findRangeOrZoneID } from '../Utilities';
 
 import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
@@ -25,7 +27,27 @@ function CorrelationTableRow({
   onChangeHybridization,
   onSaveEditProtonsCount,
   onEditAdditionalColumnField,
+  spectraData,
 }) {
+  const highlightIDs = useMemo(() => {
+    const ids = [correlation.signal.id].concat(
+      correlation.link.map((link) => link.signal.id),
+    );
+    const id = findRangeOrZoneID(spectraData, correlation);
+    if (id) {
+      ids.push(id);
+    }
+    correlation.link.forEach((link) => {
+      const _id = findRangeOrZoneID(spectraData, link);
+      if (_id) {
+        ids.push(_id);
+      }
+    });
+
+    return ids;
+  }, [correlation, spectraData]);
+  const highlightCorrelation = useHighlight(highlightIDs);
+
   const onSaveEquivalencesHandler = useCallback(
     (e) => {
       onSaveEditEquivalences(correlation, e.target.value);
@@ -98,8 +120,32 @@ function CorrelationTableRow({
         };
   }, [correlation]);
 
+  const mouseEnterHandler = useCallback(
+    (event) => {
+      event.currentTarget.focus();
+      highlightCorrelation.show();
+    },
+    [highlightCorrelation],
+  );
+  const mouseLeaveHandler = useCallback(
+    (event) => {
+      event.currentTarget.blur();
+      highlightCorrelation.hide();
+    },
+    [highlightCorrelation],
+  );
+
   return (
-    <tr style={styleRow}>
+    <tr
+      style={{
+        ...styleRow,
+        backgroundColor: highlightCorrelation.isActive
+          ? '#ff6f0057'
+          : styleRow.backgroundColor,
+      }}
+      onMouseEnter={mouseEnterHandler}
+      onMouseLeave={mouseLeaveHandler}
+    >
       <td>
         {correlation.getExperimentType()
           ? correlation.getExperimentType().toUpperCase()

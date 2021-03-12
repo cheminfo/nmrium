@@ -122,7 +122,6 @@ function SummaryPanel() {
             const spectrum = findSpectrum(spectraData, link);
             return findSignalMatch1D(
               spectrum,
-              value,
               link,
               factor,
               xDomain0,
@@ -443,6 +442,7 @@ function SummaryPanel() {
           editAdditionalColumnFieldSaveHandler
         }
         showProtonsAsRows={showProtonsAsRows}
+        spectraData={spectraData}
       />
     </div>
   );

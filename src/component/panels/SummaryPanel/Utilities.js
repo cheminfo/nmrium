@@ -38,25 +38,56 @@ function findSpectrum(spectraData, value) {
       _spectrum.display.isVisible === true,
   )[0];
 }
-const findSignalMatch1D = (
-  spectrum,
-  value,
-  link,
-  factor,
-  xDomain0,
-  xDomain1,
-) => {
-  if (spectrum && spectrum.info.dimension === 2) {
-    let signal;
-    for (let i = 0; i < spectrum.zones.values.length; i++) {
-      const signalIndex = spectrum.zones.values[i].signal.findIndex(
-        (_signal) => _signal.id === link.signal.id,
-      );
-      if (signalIndex >= 0) {
-        signal = spectrum.zones.values[i].signal[signalIndex];
-        break;
-      }
+
+function findSignal(spectrum, value) {
+  for (let i = 0; i < spectrum.zones.values.length; i++) {
+    const signalIndex = spectrum.zones.values[i].signal.findIndex(
+      (_signal) => _signal.id === value.signal.id,
+    );
+    if (signalIndex >= 0) {
+      return spectrum.zones.values[i].signal[signalIndex];
     }
+  }
+}
+
+function findRange(spectrum, value) {
+  for (let i = 0; i < spectrum.ranges.values.length; i++) {
+    const signalIndex = spectrum.ranges.values[i].signal.findIndex(
+      (_signal) => _signal.id === value.signal.id,
+    );
+    if (signalIndex >= 0) {
+      return spectrum.ranges.values[i];
+    }
+  }
+}
+
+function findZone(spectrum, value) {
+  for (let i = 0; i < spectrum.zones.values.length; i++) {
+    const signalIndex = spectrum.zones.values[i].signal.findIndex(
+      (_signal) => _signal.id === value.signal.id,
+    );
+    if (signalIndex >= 0) {
+      return spectrum.zones.values[i];
+    }
+  }
+}
+
+const findRangeOrZoneID = (spectraData, value) => {
+  const spectrum = findSpectrum(spectraData, value);
+  if (spectrum) {
+    if (spectrum.info.dimension === 1) {
+      const range = findRange(spectrum, value);
+      return range.id;
+    } else if (spectrum.info.dimension === 2) {
+      const zone = findZone(spectrum, value);
+      return zone.id;
+    }
+  }
+};
+
+function findSignalMatch1D(spectrum, link, factor, xDomain0, xDomain1) {
+  if (spectrum && spectrum.info.dimension === 2) {
+    const signal = findSignal(spectrum, link);
     if (signal) {
       const otherAxis = link.axis === 'x' ? 'y' : 'x';
       return (
@@ -66,8 +97,8 @@ const findSignalMatch1D = (
     }
   }
   return false;
-};
-const findSignalMatch2D = (
+}
+function findSignalMatch2D(
   spectrum,
   value,
   factor,
@@ -75,18 +106,9 @@ const findSignalMatch2D = (
   xDomain1,
   yDomain0,
   yDomain1,
-) => {
+) {
   if (spectrum && spectrum.info.dimension === 2) {
-    let signal;
-    for (let i = 0; i < spectrum.zones.values.length; i++) {
-      const signalIndex = spectrum.zones.values[i].signal.findIndex(
-        (_signal) => _signal.id === value.signal.id,
-      );
-      if (signalIndex >= 0) {
-        signal = spectrum.zones.values[i].signal[signalIndex];
-        break;
-      }
-    }
+    const signal = findSignal(spectrum, value);
     if (signal) {
       return (
         signal.x.delta * factor >= xDomain0 &&
@@ -97,12 +119,15 @@ const findSignalMatch2D = (
     }
   }
   return false;
-};
+}
 
 export {
+  findRange,
+  findRangeOrZoneID,
   findSignalMatch1D,
   findSignalMatch2D,
   findSpectrum,
+  findZone,
   getAtomType,
   getLabelColor,
 };
