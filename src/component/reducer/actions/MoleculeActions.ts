@@ -39,7 +39,7 @@ function predictSpectraFromMolculeHandler(draft: Draft<State>, action) {
   const { x, y } = signalsToXY(fromMolfile.signals, {});
   if (options.spectra['1h']) {
     const datum = initiateDatum1D({
-      data: { x, im: y, re: y },
+      data: { x, im: null, re: y },
       info: { nucleus: '1H' },
     });
     draft.data.push(datum);
