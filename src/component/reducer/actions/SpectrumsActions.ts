@@ -120,7 +120,7 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
   const { activeTab } = draft;
   const state = original(draft) as State;
   if (action.id) {
-    const index = state.data.findIndex((d) => (d.id = action.id));
+    const index = state.data.findIndex((d) => d.id === action.id);
     draft.data.splice(index, 1);
   } else {
     draft.data.forEach((datum, index) => {
