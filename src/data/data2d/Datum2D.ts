@@ -116,6 +116,7 @@ export function initiateDatum2D(options: any): Datum2D {
       ...getColor(options),
       isPositiveVisible: true,
       isNegativeVisible: true,
+      isVisible: true,
       contourOptions: defaultContourOptions,
     },
     options.display,
