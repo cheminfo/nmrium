@@ -30,6 +30,9 @@ function CorrelationTableRow({
   spectraData,
 }) {
   const highlightIDs = useMemo(() => {
+    if (correlation.getPseudo() === true) {
+      return [];
+    }
     const ids = [correlation.signal.id];
     const id = findRangeOrZoneID(spectraData, correlation);
     if (id) {

@@ -20,11 +20,13 @@ function AdditionalColumnField({
   const highlightIDsCommonLinks = useMemo(() => {
     const ids = [];
     commonLinks.forEach((link) => {
-      ids.push(link.signal.id);
-      ids.push(`${link.signal.id}_Crosshair`);
-      const _id = findRangeOrZoneID(spectraData, link);
-      if (_id) {
-        ids.push(_id);
+      if (link.getPseudo() === false) {
+        ids.push(link.signal.id);
+        ids.push(`${link.signal.id}_Crosshair`);
+        const _id = findRangeOrZoneID(spectraData, link);
+        if (_id) {
+          ids.push(_id);
+        }
       }
     });
 
