@@ -39,10 +39,12 @@ function CorrelationTableRow({
       ids.push(id);
     }
     correlation.link.forEach((link) => {
-      ids.push(link.signal.id);
-      const _id = findRangeOrZoneID(spectraData, link);
-      if (_id) {
-        ids.push(_id);
+      if (link.getPseudo() === false) {
+        ids.push(link.signal.id);
+        const _id = findRangeOrZoneID(spectraData, link);
+        if (_id) {
+          ids.push(_id);
+        }
       }
     });
 
