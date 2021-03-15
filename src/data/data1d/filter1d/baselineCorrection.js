@@ -4,7 +4,7 @@ import baselineRegression from 'ml-baseline-correction-regression';
 import PolynomialRegression from 'ml-regression-polynomial';
 
 export const id = 'baselineCorrection';
-export const name = 'baseline correction';
+export const name = 'Baseline correction';
 
 /**
  *

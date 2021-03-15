@@ -1,7 +1,7 @@
 import { reimAbsolute } from 'ml-spectra-processing';
 
 export const id = 'absolute';
-export const name = 'absolute';
+export const name = 'Absolute';
 
 /**
  *
