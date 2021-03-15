@@ -30,14 +30,13 @@ function CorrelationTableRow({
   spectraData,
 }) {
   const highlightIDs = useMemo(() => {
-    const ids = [correlation.signal.id].concat(
-      correlation.link.map((link) => link.signal.id),
-    );
+    const ids = [correlation.signal.id];
     const id = findRangeOrZoneID(spectraData, correlation);
     if (id) {
       ids.push(id);
     }
     correlation.link.forEach((link) => {
+      ids.push(link.signal.id);
       const _id = findRangeOrZoneID(spectraData, link);
       if (_id) {
         ids.push(_id);
@@ -94,6 +93,7 @@ function CorrelationTableRow({
           columnCorrelation={_correlation}
           commonLinks={commonLinks}
           correlations={correlations}
+          spectraData={spectraData}
           onEdit={onEditAdditionalColumnField}
         />
       );
@@ -103,6 +103,7 @@ function CorrelationTableRow({
     correlation,
     correlations,
     onEditAdditionalColumnField,
+    spectraData,
   ]);
 
   const onChangeHybridizationHandler = useCallback(
@@ -135,31 +136,45 @@ function CorrelationTableRow({
     [highlightCorrelation],
   );
 
-  return (
-    <tr
-      style={{
+  const tableDataProps = useMemo(() => {
+    return {
+      style: {
         ...styleRow,
         backgroundColor: highlightCorrelation.isActive
           ? '#ff6f0057'
-          : styleRow.backgroundColor,
-      }}
-      onMouseEnter={mouseEnterHandler}
-      onMouseLeave={mouseLeaveHandler}
-    >
-      <td>
+          : 'inherit',
+      },
+      onMouseEnter: mouseEnterHandler,
+      onMouseLeave: mouseLeaveHandler,
+    };
+  }, [
+    highlightCorrelation.isActive,
+    mouseEnterHandler,
+    mouseLeaveHandler,
+    styleRow,
+  ]);
+
+  return (
+    <tr style={styleRow}>
+      <td {...tableDataProps}>
         {correlation.getExperimentType()
           ? correlation.getExperimentType().toUpperCase()
           : ''}
       </td>
-      <td style={styleLabel}>
+      <td
+        {...{
+          ...tableDataProps,
+          style: { ...tableDataProps.style, styleLabel },
+        }}
+      >
         {Utilities.getLabel(correlations, correlation)}
       </td>
-      <td>
+      <td {...tableDataProps}>
         {lodashGet(correlation.getSignal(), 'delta', false)
           ? correlation.getSignal().delta.toFixed(3)
           : ''}
       </td>
-      <td>
+      <td {...tableDataProps}>
         {correlation.getPseudo() === false ? (
           correlation.getAtomType() !== 'H' ? (
             <EditableColumn
@@ -177,7 +192,7 @@ function CorrelationTableRow({
           ''
         )}
       </td>
-      <td>
+      <td {...tableDataProps}>
         {correlation.getAtomType() !== 'H' ? (
           <EditableColumn
             type="text"
@@ -193,7 +208,12 @@ function CorrelationTableRow({
           ''
         )}
       </td>
-      <td style={{ borderRight: '1px solid' }}>
+      <td
+        {...{
+          ...tableDataProps,
+          style: { ...tableDataProps.style, borderRight: '1px solid' },
+        }}
+      >
         {correlation.getAtomType() !== 'H' ? (
           <SelectUncontrolled
             onChange={onChangeHybridizationHandler}
