@@ -296,6 +296,10 @@ function innerSpectrumReducer(draft, action) {
       return ToolsActions.handleToggleRealImaginaryVisibility(draft);
     case types.SET_ZOOM_FACTOR:
       return ToolsActions.handleZoom(draft, action);
+    case types.SET_SPECTRA_SAME_TOP:
+      return ToolsActions.setSpectraSameTopHandler(draft);
+    case types.RESET_SPECTRA_SCALE:
+      return ToolsActions.resetSpectraScale(draft);
 
     case types.CHANGE_SPECTRUM_DISPLAY_VIEW_MODE:
       return ToolsActions.handleChangeSpectrumDisplayMode(draft, action);

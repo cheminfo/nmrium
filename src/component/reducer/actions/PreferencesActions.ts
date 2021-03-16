@@ -142,11 +142,11 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
       }
     } else {
       setZoom(
-        {
-          ...state,
-          activeSpectrum: draft.activeSpectrum,
-          activeTab: draft.activeTab,
-        },
+        // {
+        //   ...state,
+        //   activeSpectrum: draft.activeSpectrum,
+        //   activeTab: draft.activeTab,
+        // },
         draft,
         preferences.zoomFactor.scale,
       );

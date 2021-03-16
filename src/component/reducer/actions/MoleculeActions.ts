@@ -9,7 +9,7 @@ import { DISPLAYER_MODE } from '../core/Constants';
 import { handleUnlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
 import { handleUnlinkZone } from './ZonesActions';
-import { initZoom1DHandler } from './Zoom';
+import { initZoom1DHandler, setZoom } from './Zoom';
 
 function addMoleculeHandler(draft: Draft<State>, molfile) {
   MoleculeManager.addMolfile(draft.molecules, molfile);
@@ -37,15 +37,20 @@ function deleteMoleculeHandler(draft: Draft<State>, action) {
 function predictSpectraFromMolculeHandler(draft: Draft<State>, action) {
   const { fromMolfile, options } = action.payload;
   const { x, y } = signalsToXY(fromMolfile.signals, {});
+  let id: any = null;
   if (options.spectra['1h']) {
     const datum = initiateDatum1D({
       data: { x, im: null, re: y },
       info: { nucleus: '1H' },
     });
     draft.data.push(datum);
+    id = datum.id;
+    draft.activeSpectrum = null;
+    draft.tabActiveSpectrum['1H'] = null;
   }
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
+  setZoom(draft, 0.9, id);
 
   draft.isLoading = false;
 }

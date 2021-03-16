@@ -1,3 +1,4 @@
+import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
 import React, { memo, useCallback } from 'react';
 import {
   FaCreativeCommonsSamplingPlus,
@@ -14,6 +15,8 @@ import {
   ADD_MISSING_PROJECTION,
   CHANGE_VISIBILITY,
   DELETE_SPECTRA,
+  RESET_SPECTRA_SCALE,
+  SET_SPECTRA_SAME_TOP,
 } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
@@ -62,6 +65,13 @@ function SpectraPanelHeader({ data, activeSpectrum, activeTab, spectrums }) {
     }
   }, [activeTab, alert, data, dispatch]);
 
+  const setSameTopHandler = useCallback(() => {
+    dispatch({ type: SET_SPECTRA_SAME_TOP });
+  }, [dispatch]);
+  const resetScaleHandler = useCallback(() => {
+    dispatch({ type: RESET_SPECTRA_SCALE });
+  }, [dispatch]);
+
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
@@ -85,6 +95,16 @@ function SpectraPanelHeader({ data, activeSpectrum, activeTab, spectrums }) {
           </button>
         </ToolTip>
       )}
+      <ToolTip title="Reset Scale" popupPlacement="right">
+        <button type="button" onClick={resetScaleHandler}>
+          <SvgNmrResetScale />
+        </button>
+      </ToolTip>
+      <ToolTip title="Same Top" popupPlacement="right">
+        <button type="button" onClick={setSameTopHandler}>
+          <SvgNmrSameTop />
+        </button>
+      </ToolTip>
     </DefaultPanelHeader>
   );
 }

@@ -204,7 +204,11 @@ function setDomain(draft: Draft<State>, isYDomainChanged = true) {
           acc[key] = domain.yDomain;
           return acc;
         }, {});
-        draft.originDomain = { ...domain, yDomains: draft.yDomains };
+        draft.originDomain = {
+          ...domain,
+          yDomains: draft.yDomains,
+          originYDomains: domain.yDomains,
+        };
       } else {
         draft.yDomains = domain.yDomains;
         draft.originDomain = domain;

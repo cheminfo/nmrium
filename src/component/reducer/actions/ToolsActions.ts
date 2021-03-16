@@ -229,34 +229,32 @@ function getSpectrumID(draft: Draft<State>, index) {
 }
 
 function handleZoom(draft: Draft<State>, action) {
-  const state = original(draft) as State;
   const { deltaY, deltaMode, trackID } = action;
   if (trackID) {
     switch (trackID) {
       case LAYOUT.TOP_1D: {
         const id = getSpectrumID(draft, 0);
-        wheel(deltaY, deltaMode, state, id);
-        setZoom1D(draft, state.margin.top, 10, 0);
+        wheel(deltaY, deltaMode, draft, id);
+        setZoom1D(draft, draft.margin.top, 10, 0);
         break;
       }
       case LAYOUT.LEFT_1D: {
         const id = getSpectrumID(draft, 1);
-        wheel(deltaY, deltaMode, state, id);
-        setZoom1D(draft, state.margin.left, 10, 1);
+        wheel(deltaY, deltaMode, draft, id);
+        setZoom1D(draft, draft.margin.left, 10, 1);
         break;
       }
       default:
         break;
     }
   } else {
-    wheel(deltaY, deltaMode, state);
-    setZoom(state, draft);
+    wheel(deltaY, deltaMode, draft);
+    setZoom(draft);
   }
 }
 
 function zoomOut(draft: Draft<State>, action) {
   const { zoomType, trackID } = action;
-  const state = original(draft) as State;
   const zoomHistory = ZoomHistory.getInstance(
     draft.ZoomHistory,
     draft.activeTab,
@@ -269,24 +267,24 @@ function zoomOut(draft: Draft<State>, action) {
         break;
       }
       case ZoomType.VERTICAL:
-        setZoom(state, draft, 0.8);
+        setZoom(draft, 0.8);
         break;
       case ZoomType.STEP_HROZENTAL: {
         const zoomValue = zoomHistory.pop();
         draft.xDomain = zoomValue
           ? zoomValue.xDomain
           : draft.originDomain.xDomain;
-        setZoom(state, draft, 0.8);
+        setZoom(draft, 0.8);
         break;
       }
       default: {
         draft.xDomain = draft.originDomain.xDomain;
-        setZoom(state, draft, 0.8);
+        setZoom(draft, 0.8);
         break;
       }
     }
   } else {
-    const { xDomain, yDomain, yDomains } = state.originDomain;
+    const { xDomain, yDomain, yDomains } = draft.originDomain;
     switch (trackID) {
       case LAYOUT.TOP_1D: {
         const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[0]];
@@ -490,6 +488,24 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
   }
 }
 
+function setSpectraSameTopHandler(draft: Draft<State>) {
+  if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+    draft.originDomain.yDomains = draft.originDomain.originYDomains;
+    setZoom(draft, 0.8);
+  }
+}
+function resetSpectraScale(draft: Draft<State>) {
+  if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+    draft.yDomains = Object.keys(draft.yDomains).reduce((acc, key) => {
+      acc[key] = draft.originDomain.yDomain;
+      return acc;
+    }, {});
+    draft.originDomain.yDomains = draft.yDomains;
+
+    draft.yDomain = draft.originDomain.yDomain;
+  }
+}
+
 export {
   resetSelectedTool,
   setSelectedTool,
@@ -507,4 +523,6 @@ export {
   levelChangeHandler,
   setActiveTab,
   setTab,
+  setSpectraSameTopHandler,
+  resetSpectraScale,
 };
