@@ -43,19 +43,21 @@ const tableStyle = css`
 
 function CorrelationTable({
   correlationsData,
+  filteredCorrelationsData,
   additionalColumnData,
   editEquivalencesSaveHandler,
   changeHybridizationSaveHandler,
   editProtonsCountSaveHandler,
   editAdditionalColumnFieldSaveHandler,
   showProtonsAsRows,
+  spectraData,
 }) {
   const rows = useMemo(() => {
-    if (!correlationsData) {
+    if (!filteredCorrelationsData) {
       return [];
     }
 
-    return correlationsData.values
+    return filteredCorrelationsData.values
       .filter((correlation) =>
         showProtonsAsRows
           ? correlation.getAtomType() === 'H'
@@ -79,16 +81,19 @@ function CorrelationTable({
           onChangeHybridization={changeHybridizationSaveHandler}
           onSaveEditProtonsCount={editProtonsCountSaveHandler}
           onEditAdditionalColumnField={editAdditionalColumnFieldSaveHandler}
+          spectraData={spectraData}
         />
       ));
   }, [
+    filteredCorrelationsData,
+    showProtonsAsRows,
     additionalColumnData,
-    changeHybridizationSaveHandler,
     correlationsData,
     editEquivalencesSaveHandler,
+    changeHybridizationSaveHandler,
     editProtonsCountSaveHandler,
     editAdditionalColumnFieldSaveHandler,
-    showProtonsAsRows,
+    spectraData,
   ]);
 
   const additionalColumnHeader = useMemo(

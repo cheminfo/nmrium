@@ -9,16 +9,14 @@ import ToolTip from '../../elements/ToolTip/ToolTip';
 const styles = css`
   
   display: flex;
-    flex-direction: row;
-    borde-bottom: 0.55px solid rgb(240, 240, 240);
-    padding: 0px 5px;
-  
+  flex-direction: row;
+  border-bottom: 0.55px solid rgb(240, 240, 240);
+  padding: 0px 5px;
 
   button {
     background-color: transparent;
     border: none;
     padding: 5px;
- 
   }
 
   button:disabled{
@@ -71,8 +69,6 @@ function DefaultPanelHeader({
         </ToolTip>
       )}
 
-      {children}
-
       {/* Optional if there is no filter needed, e.g. in spectra panel */}
       {onFilter && filterToolTip ? (
         <ToggleButton
@@ -84,6 +80,8 @@ function DefaultPanelHeader({
           <FaFilter style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ToggleButton>
       ) : null}
+
+      {children}
 
       {counter ? (
         <p className="counter-label">

@@ -4,6 +4,8 @@ import { useCallback, useMemo } from 'react';
 
 import EditableColumn from '../../../elements/EditableColumn';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
+import { useHighlight } from '../../../highlight';
+import { findRangeOrZoneID } from '../Utilities';
 
 import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
@@ -25,7 +27,31 @@ function CorrelationTableRow({
   onChangeHybridization,
   onSaveEditProtonsCount,
   onEditAdditionalColumnField,
+  spectraData,
 }) {
+  const highlightIDs = useMemo(() => {
+    if (correlation.getPseudo() === true) {
+      return [];
+    }
+    const ids = [correlation.signal.id];
+    const id = findRangeOrZoneID(spectraData, correlation);
+    if (id) {
+      ids.push(id);
+    }
+    correlation.link.forEach((link) => {
+      if (link.getPseudo() === false) {
+        ids.push(link.signal.id);
+        const _id = findRangeOrZoneID(spectraData, link);
+        if (_id) {
+          ids.push(_id);
+        }
+      }
+    });
+
+    return ids;
+  }, [correlation, spectraData]);
+  const highlightCorrelation = useHighlight(highlightIDs);
+
   const onSaveEquivalencesHandler = useCallback(
     (e) => {
       onSaveEditEquivalences(correlation, e.target.value);
@@ -72,6 +98,7 @@ function CorrelationTableRow({
           columnCorrelation={_correlation}
           commonLinks={commonLinks}
           correlations={correlations}
+          spectraData={spectraData}
           onEdit={onEditAdditionalColumnField}
         />
       );
@@ -81,6 +108,7 @@ function CorrelationTableRow({
     correlation,
     correlations,
     onEditAdditionalColumnField,
+    spectraData,
   ]);
 
   const onChangeHybridizationHandler = useCallback(
@@ -90,48 +118,86 @@ function CorrelationTableRow({
     [correlation, onChangeHybridization],
   );
 
+  const equivalenceCellStyle = useMemo(() => {
+    return correlation.getEdited().equivalence
+      ? { backgroundColor: '#F7F2E0' }
+      : {
+          color: correlation.getEquivalences() === 1 ? '#bebebe' : 'black',
+        };
+  }, [correlation]);
+
+  const mouseEnterHandler = useCallback(
+    (event) => {
+      event.currentTarget.focus();
+      highlightCorrelation.show();
+    },
+    [highlightCorrelation],
+  );
+  const mouseLeaveHandler = useCallback(
+    (event) => {
+      event.currentTarget.blur();
+      highlightCorrelation.hide();
+    },
+    [highlightCorrelation],
+  );
+
+  const tableDataProps = useMemo(() => {
+    return {
+      style: {
+        ...styleRow,
+        backgroundColor: highlightCorrelation.isActive
+          ? '#ff6f0057'
+          : 'inherit',
+      },
+      onMouseEnter: mouseEnterHandler,
+      onMouseLeave: mouseLeaveHandler,
+    };
+  }, [
+    highlightCorrelation.isActive,
+    mouseEnterHandler,
+    mouseLeaveHandler,
+    styleRow,
+  ]);
+
   return (
     <tr style={styleRow}>
-      <td>
+      <td {...tableDataProps}>
         {correlation.getExperimentType()
           ? correlation.getExperimentType().toUpperCase()
           : ''}
       </td>
-      <td style={styleLabel}>
+      <td
+        {...{
+          ...tableDataProps,
+          style: { ...tableDataProps.style, styleLabel },
+        }}
+      >
         {Utilities.getLabel(correlations, correlation)}
       </td>
-      <td>
+      <td {...tableDataProps}>
         {lodashGet(correlation.getSignal(), 'delta', false)
           ? correlation.getSignal().delta.toFixed(3)
           : ''}
       </td>
-      <td>
+      <td {...tableDataProps}>
         {correlation.getPseudo() === false ? (
           correlation.getAtomType() !== 'H' ? (
             <EditableColumn
               type="number"
-              value={
-                correlation.getEquivalences() > 1
-                  ? correlation.getEquivalences()
-                  : ''
-              }
-              style={
-                correlation.getEdited().equivalence
-                  ? { backgroundColor: '#F7F2E0' }
-                  : {}
-              }
+              value={correlation.getEquivalences()}
+              style={equivalenceCellStyle}
               onSave={onSaveEquivalencesHandler}
             />
-          ) : correlation.getEquivalences() > 1 ? (
-            correlation.getEquivalences()
           ) : (
-            ''
+            <text style={equivalenceCellStyle}>
+              {correlation.getEquivalences()}
+            </text>
           )
         ) : (
           ''
         )}
       </td>
-      <td>
+      <td {...tableDataProps}>
         {correlation.getAtomType() !== 'H' ? (
           <EditableColumn
             type="text"
@@ -147,7 +213,12 @@ function CorrelationTableRow({
           ''
         )}
       </td>
-      <td style={{ borderRight: '1px solid' }}>
+      <td
+        {...{
+          ...tableDataProps,
+          style: { ...tableDataProps.style, borderRight: '1px solid' },
+        }}
+      >
         {correlation.getAtomType() !== 'H' ? (
           <SelectUncontrolled
             onChange={onChangeHybridizationHandler}
