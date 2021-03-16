@@ -118,6 +118,7 @@ export function initiateDatum2D(options: any): Datum2D {
       isNegativeVisible: true,
       isVisible: true,
       contourOptions: defaultContourOptions,
+      dimension: 2,
     },
     options.display,
   );

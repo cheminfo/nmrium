@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 import { CorrelationManager } from 'nmr-correlation';
+import { fromMolfile } from 'nmr-processing';
 
 import * as SpectraManager from '../../data/SpectraManager';
 import { Datum1D } from '../../data/data1d/Datum1D';
@@ -166,6 +167,14 @@ export function dispatchMiddleware(dispatch) {
         }
         break;
       }
+      case types.PREDICT_SPECTRA: {
+        void fromMolfile(action.payload.mol.molfile, {}).then((result) => {
+          action.payload.fromMolfile = result;
+          dispatch(action);
+        });
+
+        break;
+      }
 
       default:
         dispatch(action);
@@ -292,17 +301,20 @@ function innerSpectrumReducer(draft, action) {
       return ToolsActions.handleChangeSpectrumDisplayMode(draft, action);
 
     case types.ADD_MOLECULE:
-      return MoleculeActions.handleAddMolecule(draft, action.molfile);
+      return MoleculeActions.addMoleculeHandler(draft, action.molfile);
 
     case types.SET_MOLECULE:
-      return MoleculeActions.handleSetMolecule(
+      return MoleculeActions.setMoleculeHandler(
         draft,
         action.molfile,
         action.key,
       );
 
     case types.DELETE_MOLECULE:
-      return MoleculeActions.handleDeleteMolecule(draft, action);
+      return MoleculeActions.deleteMoleculeHandler(draft, action);
+
+    case types.PREDICT_SPECTRA:
+      return MoleculeActions.predictSpectraFromMolculeHandler(draft, action);
 
     case types.SET_CORRELATIONS_MF:
       return CorrelationsActions.handleSetMF(draft, action.payload);

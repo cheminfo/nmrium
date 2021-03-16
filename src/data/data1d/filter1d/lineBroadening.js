@@ -1,5 +1,5 @@
 export const id = 'lineBroadening';
-export const name = 'line broadening';
+export const name = 'Line broadening';
 
 /**
  *

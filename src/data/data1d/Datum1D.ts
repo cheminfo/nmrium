@@ -138,6 +138,7 @@ export function initiateDatum1D(options: any): Datum1D {
       nucleus: '1H', // 1H, 13C, 19F, ...
       isFid: false,
       isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+      dimension: 1,
     },
     options.info,
   );
