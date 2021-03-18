@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 
 import { getLabelColor } from '../Utilities';
 
+import AdditionalColumnHeader from './AdditionalColumnHeader';
 import CorrelationTableRow from './CorrelationTableRow';
 
 const tableStyle = css`
@@ -99,34 +100,14 @@ function CorrelationTable({
   const additionalColumnHeader = useMemo(
     () =>
       additionalColumnData.map((correlation) => (
-        <th
-          key={`CorrCol_${correlation.getID()}`}
-          style={{ color: getLabelColor(correlationsData, correlation) }}
-        >
-          <div style={{ display: 'block' }}>
-            <p>{correlation.getLabel('origin')}</p>
-            <p>
-              {correlation &&
-              correlation.getSignal() &&
-              correlation.getSignal().delta
-                ? correlation.getSignal().delta.toFixed(3)
-                : ''}
-            </p>
-            <p style={{ fontSize: 8 }}>
-              {`${
-                correlation.getExperimentType()
-                  ? `${correlation.getExperimentType().toUpperCase()}`
-                  : ''
-              } ${
-                correlation.getEquivalences() > 1
-                  ? `(${correlation.getEquivalences()})`
-                  : ''
-              }`}
-            </p>
-          </div>
-        </th>
+        <AdditionalColumnHeader
+          key={`additionalCorrelationHeader_${correlation.id}`}
+          spectraData={spectraData}
+          correlationsData={correlationsData}
+          correlation={correlation}
+        />
       )),
-    [additionalColumnData, correlationsData],
+    [additionalColumnData, correlationsData, spectraData],
   );
 
   return (

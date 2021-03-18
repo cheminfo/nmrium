@@ -2,6 +2,7 @@ import lodashGet from 'lodash/get';
 import { Link, Utilities } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
+import { buildID } from '../../../../data/utilities/Concatenation';
 import EditableColumn from '../../../elements/EditableColumn';
 import SelectUncontrolled from '../../../elements/SelectUncontrolled';
 import { useHighlight } from '../../../highlight';
@@ -29,11 +30,14 @@ function CorrelationTableRow({
   onEditAdditionalColumnField,
   spectraData,
 }) {
-  const highlightIDs = useMemo(() => {
+  const highlightIDsRow = useMemo(() => {
     if (correlation.getPseudo() === true) {
       return [];
     }
-    const ids = [correlation.signal.id];
+    const ids = [
+      correlation.signal.id,
+      buildID(correlation.signal.id, 'Crosshair_Y'),
+    ];
     const id = findRangeOrZoneID(spectraData, correlation);
     if (id) {
       ids.push(id);
@@ -50,7 +54,7 @@ function CorrelationTableRow({
 
     return ids;
   }, [correlation, spectraData]);
-  const highlightCorrelation = useHighlight(highlightIDs);
+  const highlightRow = useHighlight(highlightIDsRow);
 
   const onSaveEquivalencesHandler = useCallback(
     (e) => {
@@ -129,35 +133,28 @@ function CorrelationTableRow({
   const mouseEnterHandler = useCallback(
     (event) => {
       event.currentTarget.focus();
-      highlightCorrelation.show();
+      highlightRow.show();
     },
-    [highlightCorrelation],
+    [highlightRow],
   );
   const mouseLeaveHandler = useCallback(
     (event) => {
       event.currentTarget.blur();
-      highlightCorrelation.hide();
+      highlightRow.hide();
     },
-    [highlightCorrelation],
+    [highlightRow],
   );
 
   const tableDataProps = useMemo(() => {
     return {
       style: {
         ...styleRow,
-        backgroundColor: highlightCorrelation.isActive
-          ? '#ff6f0057'
-          : 'inherit',
+        backgroundColor: highlightRow.isActive ? '#ff6f0057' : 'inherit',
       },
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
-  }, [
-    highlightCorrelation.isActive,
-    mouseEnterHandler,
-    mouseLeaveHandler,
-    styleRow,
-  ]);
+  }, [highlightRow.isActive, mouseEnterHandler, mouseLeaveHandler, styleRow]);
 
   return (
     <tr style={styleRow}>
