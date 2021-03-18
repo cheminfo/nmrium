@@ -27,20 +27,13 @@ function getActiveData(draft: Draft<State>) {
         data = data ? data.filter((datum) => datum.info.isFid === false) : [];
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-for-in-array
-      for (let index in draft.data) {
-        if (
-          data.some((activeData: any) => activeData.id === draft.data[index].id)
-        ) {
+      for (let datum of draft.data) {
+        if (data.some((activeData: any) => activeData.id === datum.id)) {
           // AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
-          (draft.data[index] as
-            | Datum2D
-            | Datum1D).display.isVisibleInDomain = true;
+          (datum as Datum2D | Datum1D).display.isVisibleInDomain = true;
         } else {
           // AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
-          (draft.data[index] as
-            | Datum2D
-            | Datum1D).display.isVisibleInDomain = false;
+          (datum as Datum2D | Datum1D).display.isVisibleInDomain = false;
         }
       }
       return draft.data;

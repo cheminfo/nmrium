@@ -1,14 +1,11 @@
 import { css } from '@emotion/react';
 /** @jsxImportSource @emotion/react */
-import { useCallback, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
-import { useAssignment, useAssignmentData } from '../../assignment';
+import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
-import { useDispatch } from '../../context/DispatchContext';
-import DeleteButton from '../../elements/DeleteButton';
-import { useHighlight } from '../../highlight';
-import { DELETE_2D_ZONE } from '../../reducer/types/Types';
+import { TYPES, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import Signal from './Signal';
@@ -53,34 +50,18 @@ const stylesHighlighted = css`
 const Zone = ({ zoneData, isVisible }) => {
   const { x, y, id, signal } = zoneData;
   const assignmentZone = useAssignment(id);
-  const highlightZone = useHighlight(
-    [assignmentZone.id],
-    // assignmentZone.assigned.x || [],
-    // assignmentZone.assigned.y || [],
-  );
-  const assignmentData = useAssignmentData();
+  const highlightZone = useHighlight([assignmentZone.id], TYPES.ZONE);
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
   const { from: x1, to: x2 } = x;
   const { from: y1, to: y2 } = y;
-  const dispatch = useDispatch();
 
   const [reduceOpacity, setReduceOpacity] = useState(false);
 
   useEffect(() => {
     setReduceOpacity(!checkZoneKind(zoneData));
   }, [zoneData]);
-
-  const deleteHandler = useCallback(() => {
-    dispatch({
-      type: DELETE_2D_ZONE,
-      payload: {
-        zoneData,
-        assignmentData,
-      },
-    });
-  }, [assignmentData, dispatch, zoneData]);
 
   return (
     <g
@@ -115,12 +96,6 @@ const Zone = ({ zoneData, isVisible }) => {
       {signal.map((_signal, i) => (
         <Signal key={`${id + i}`} signal={_signal} isVisible={isVisible} />
       ))}
-
-      <DeleteButton
-        x={scaleX(x1) - 20}
-        y={scaleY(y1)}
-        onDelete={deleteHandler}
-      />
     </g>
   );
 };

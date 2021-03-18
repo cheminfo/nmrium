@@ -59,7 +59,7 @@ function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
     dispatch({
       type: DELETE_RANGE,
       payload: {
-        rangeData: rowData,
+        id: rowData.id,
         assignmentData,
       },
     });

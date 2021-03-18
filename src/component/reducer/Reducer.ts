@@ -13,6 +13,7 @@ import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
 import { exportData } from './actions/ExportActions';
 import * as FiltersActions from './actions/FiltersActions';
+import * as GlobalActions from './actions/GlobalActions';
 import {
   handleHistoryUndo,
   handleHistoryRedo,
@@ -89,6 +90,7 @@ export const initialState = {
   }),
   displayerKey: '',
   ZoomHistory: {},
+  overDisplayer: false,
 };
 
 export interface State {
@@ -138,6 +140,7 @@ export interface State {
   correlations: any;
   actionType: null;
   ZoomHistory: any;
+  overDisplayer: boolean;
 }
 
 export function dispatchMiddleware(dispatch) {
@@ -344,7 +347,7 @@ function innerSpectrumReducer(draft, action) {
     case types.SET_VERTICAL_INDICATOR_X_POSITION:
       return ToolsActions.setVerticalIndicatorXPosition(draft, action.position);
     case types.SET_SPECTRUMS_VERTICAL_ALIGN:
-      return ToolsActions.setSpectrumsVerticalAlign(draft, action.flag);
+      return ToolsActions.setSpectrumsVerticalAlign(draft);
 
     case types.AUTO_PEAK_PICKING:
       return PeaksActions.handleAutoPeakPicking(draft, action.options);
@@ -426,6 +429,9 @@ function innerSpectrumReducer(draft, action) {
 
     case RESET:
       return handleHistoryReset(draft, action);
+
+    case types.SET_MOUSE_OVER_DISPLAYER:
+      return GlobalActions.setIsOverDisplayer(draft, action);
 
     default:
       return;

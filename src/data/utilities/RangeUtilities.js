@@ -61,26 +61,18 @@ const checkSignalKinds = (range, kinds) => {
   );
 };
 
-const unlinkInAssignmentData = (
-  assignmentData,
-  range,
-  isOnRangeLevel,
-  signalIndex,
-) => {
-  let id = [];
-  if (isOnRangeLevel !== undefined) {
-    id =
-      isOnRangeLevel === true
-        ? [range.id]
-        : signalIndex !== undefined
-        ? [range.signal[signalIndex].id]
-        : [];
-  } else {
-    id = [range.id].concat(range.signal.map((signal) => signal.id));
-  }
+const unlinkInAssignmentData = (assignmentData, ranges) => {
+  const ids = ranges.reduce((acc, range) => {
+    acc.push(range.id);
+    if (range.signal) {
+      acc.concat(range.signal.map((signal) => signal.id, []));
+    }
+    return acc;
+  }, []);
+
   assignmentData.dispatch({
     type: 'REMOVE_ALL',
-    payload: { id, axis: 'x' },
+    payload: { id: ids, axis: 'x' },
   });
 };
 

@@ -409,12 +409,12 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
       if (onAtomHoverAction === 'show') {
         highlightData.dispatch({
           type: 'SHOW',
-          payload: onAtomHoverHighlights,
+          payload: { convertedHighlights: onAtomHoverHighlights },
         });
       } else if (onAtomHoverAction === 'hide') {
         highlightData.dispatch({
           type: 'HIDE',
-          payload: onAtomHoverHighlights,
+          payload: { convertedHighlights: onAtomHoverHighlights },
         });
         setOnAtomHoverHighlights([]);
       }
