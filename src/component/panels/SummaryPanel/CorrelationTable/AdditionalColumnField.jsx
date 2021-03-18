@@ -3,16 +3,51 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
+import { useHighlight } from '../../../highlight';
+import { findRangeOrZoneID } from '../Utilities';
 
 function AdditionalColumnField({
   rowCorrelation,
   columnCorrelation,
   commonLinks,
   correlations,
+  spectraData,
   onEdit,
 }) {
   const contextRef = useRef();
   const [isEdited, setIsEdited] = useState(false);
+
+  const highlightIDsCommonLinks = useMemo(() => {
+    const ids = [];
+    commonLinks.forEach((link) => {
+      if (link.getPseudo() === false) {
+        ids.push(link.signal.id);
+        ids.push(`${link.signal.id}_Crosshair`);
+        const _id = findRangeOrZoneID(spectraData, link);
+        if (_id) {
+          ids.push(_id);
+        }
+      }
+    });
+
+    return ids;
+  }, [commonLinks, spectraData]);
+  const highlightCommonLinks = useHighlight(highlightIDsCommonLinks);
+
+  const mouseEnterHandler = useCallback(
+    (event) => {
+      event.currentTarget.focus();
+      highlightCommonLinks.show();
+    },
+    [highlightCommonLinks],
+  );
+  const mouseLeaveHandler = useCallback(
+    (event) => {
+      event.currentTarget.blur();
+      highlightCommonLinks.hide();
+    },
+    [highlightCommonLinks],
+  );
 
   useEffect(() => {
     if (commonLinks.some((commonLink) => commonLink.getPseudo() === true)) {
@@ -155,7 +190,15 @@ function AdditionalColumnField({
           contextMenuHandler(e, rowCorrelation);
         }
       }}
-      style={isEdited ? { backgroundColor: '#F7F2E0' } : {}}
+      style={{
+        backgroundColor: highlightCommonLinks.isActive
+          ? '#ff6f0057'
+          : isEdited
+          ? '#F7F2E0'
+          : 'inherit',
+      }}
+      onMouseEnter={mouseEnterHandler}
+      onMouseLeave={mouseLeaveHandler}
     >
       {content.join('/')}
       <ContextMenu ref={contextRef} context={contextMenu} />

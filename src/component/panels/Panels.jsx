@@ -8,7 +8,7 @@ import { options } from '../toolbar/ToolTypes';
 
 import InformationPanel from './InformationPanel';
 import IntegralPanel from './IntegralsPanel/IntegralPanel';
-import MoleculePanel from './MoleculePanel';
+import MoleculePanel from './MoleculesPanel/MoleculePanel';
 import MultipleSpectraAnalysisPanel from './MultipleSpectraAnalysisPanel/MultipleSpectraAnalysisPanel';
 import PeaksPanel from './PeaksPanel/PeaksPanel';
 import RangesPanel from './RangesPanel/RangesPanel';

@@ -16,32 +16,40 @@ import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
 import { useMeasure } from 'react-use';
 
-import { ConcatenationString } from '../../data/utilities/Concatenation';
-import { useAssignmentData, useAssignment } from '../assignment';
-import { useDispatch } from '../context/DispatchContext';
-import ButtonToolTip from '../elements/ButtonToolTip';
-import MenuButton from '../elements/MenuButton';
-import NextPrev from '../elements/NextPrev';
-import ToolTip from '../elements/ToolTip/ToolTip';
-import { positions, useAlert } from '../elements/popup/Alert';
-import { useModal } from '../elements/popup/Modal';
-import { useHighlightData } from '../highlight';
-import MoleculeWrapper from '../hoc/MoleculeWrapper';
-import MoleculeStructureEditorModal from '../modal/MoleculeStructureEditorModal';
-import PredictSpectraModal from '../modal/PredictSpectraModal';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
+import { ConcatenationString } from '../../../data/utilities/Concatenation';
+import { useAssignmentData, useAssignment } from '../../assignment';
+import { useDispatch } from '../../context/DispatchContext';
+import ButtonToolTip from '../../elements/ButtonToolTip';
+import MenuButton from '../../elements/MenuButton';
+import NextPrev from '../../elements/NextPrev';
+import ToolTip from '../../elements/ToolTip/ToolTip';
+import { positions, useAlert } from '../../elements/popup/Alert';
+import { useModal } from '../../elements/popup/Modal';
+import { useHighlightData } from '../../highlight';
+import MoleculeWrapper from '../../hoc/MoleculeWrapper';
+import MoleculeStructureEditorModal from '../../modal/MoleculeStructureEditorModal';
+import PredictSpectraModal from '../../modal/PredictSpectraModal';
+import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MOLECULE,
   DELETE_MOLECULE,
   SET_DIAID_RANGE,
   SET_DIAID_ZONE,
   SET_MOLECULE,
-} from '../reducer/types/Types';
+} from '../../reducer/types/Types';
 import {
   copyTextToClipboard,
   copyPNGToClipboard,
   exportAsSVG,
-} from '../utility/Export';
+} from '../../utility/Export';
+
+import {
+  extractFromAtom,
+  findDatumAndSignalIndex,
+  getCurrentDiaIDsToHighlight,
+  getHighlightsOnHover,
+  toggleDiaIDs,
+} from './Utilities';
 
 const panelContainerStyle = css`
   display: flex;
@@ -163,40 +171,6 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
       : ConcatenationString, // dummy value
   );
 
-  const extractFromAtom = useCallback(
-    (atom) => {
-      if (elements.length > 0 && Object.keys(atom).length > 0) {
-        const dim =
-          activeAssignment.activeAxis === 'x'
-            ? 0
-            : activeAssignment.activeAxis === 'y'
-            ? 1
-            : undefined;
-        if (dim !== undefined) {
-          if (elements[dim] === atom.atomLabel) {
-            // take always oclID if atom type is same as element of activeTab)
-            return { oclIDs: [atom.oclID], nbAtoms: atom.nbAtoms };
-          }
-          if (elements[dim] === 'H') {
-            // if we are in proton spectrum and use then the IDs of attached hydrogens of an atom
-            return {
-              oclIDs: atom.hydrogenOCLIDs,
-              nbAtoms: atom.nbAtoms * atom.nbHydrogens,
-            };
-          }
-        } else {
-          return {
-            oclIDs: [atom.oclID].concat(atom.hydrogenOCLIDs),
-            nbAtoms: atom.nbAtoms + atom.nbAtoms * atom.nbHydrogens,
-          };
-        }
-      }
-
-      return { oclIDs: [], nbAtoms: 0 };
-    },
-    [activeAssignment.activeAxis, elements],
-  );
-
   const data = useMemo(() => {
     if (zones || ranges) {
       if (displayerMode === DISPLAYER_MODE.DM_1D && ranges && ranges.values) {
@@ -245,57 +219,20 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
         alert.info('Atom is already assigned to another signal!');
         return diaID;
       }
-      let _diaID = diaID ? diaID.slice() : [];
-      if (atomInformation.oclIDs.length === 1) {
-        if (_diaID.includes(atomInformation.oclIDs[0])) {
-          _diaID = _diaID.filter((_id) => _id !== atomInformation.oclIDs[0]);
-        } else {
-          for (let i = 0; i < atomInformation.nbAtoms; i++) {
-            _diaID.push(atomInformation.oclIDs[0]);
-          }
-        }
-      } else if (atomInformation.oclIDs.length > 1) {
-        atomInformation.oclIDs.forEach((_oclID) => {
-          if (_diaID.includes(_oclID)) {
-            _diaID = _diaID.filter((_id) => _id !== _oclID);
-          } else {
-            _diaID.push(_oclID);
-          }
-        });
-      }
 
-      return _diaID;
+      return toggleDiaIDs(diaID, atomInformation);
     },
     [alert, assignedDiaIDsMerged],
-  );
-
-  const findDatumAndSignalIndex = useCallback(
-    (id) => {
-      // if datum could be found then the id is on range/zone level
-      let datum = data.find((_datum) => _datum.id === id);
-      let signalIndex;
-      if (!datum) {
-        // figure out the datum via id
-        for (let i = 0; i < data.length; i++) {
-          signalIndex = data[i].signal.findIndex(
-            (_signal) => _signal.id === id,
-          );
-          if (signalIndex >= 0) {
-            datum = data[i];
-            break;
-          }
-        }
-      }
-
-      return { datum, signalIndex };
-    },
-    [data],
   );
 
   const handleOnClickAtom = useCallback(
     (atom) => {
       if (activeAssignment.isActive) {
-        const atomInformation = extractFromAtom(atom);
+        const atomInformation = extractFromAtom(
+          atom,
+          elements,
+          activeAssignment.activeAxis,
+        );
         if (atomInformation.nbAtoms > 0) {
           // save assignment in assignment hook
           atomInformation.oclIDs.forEach((_oclID) => {
@@ -303,6 +240,7 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
           });
           // save assignment (diaIDs) in range/zone data
           const { datum, signalIndex } = findDatumAndSignalIndex(
+            data,
             activeAssignment.id,
           );
           if (datum) {
@@ -364,45 +302,17 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
     [
       activeAssignment,
       alert,
+      data,
       dispatch,
       displayerMode,
-      extractFromAtom,
-      findDatumAndSignalIndex,
+      elements,
       toggleAssignment,
     ],
   );
 
   const currentDiaIDsToHighlight = useMemo(() => {
-    const assignmentOnHover = assignmentData.assignment.isOnHover
-      ? assignmentData.assignment.assignment[
-          assignmentData.assignment.onHoverID
-        ]
-      : null;
-
-    const axisOnHover = assignmentData.assignment.isOnHover
-      ? assignmentData.assignment.onHoverAxis
-      : null;
-
-    return assignmentOnHover
-      ? displayerMode === DISPLAYER_MODE.DM_1D
-        ? assignmentOnHover.x || []
-        : displayerMode === DISPLAYER_MODE.DM_2D
-        ? axisOnHover
-          ? axisOnHover === 'x'
-            ? assignmentOnHover.x || []
-            : axisOnHover === 'y'
-            ? assignmentOnHover.y || []
-            : (assignmentOnHover.x || []).concat(assignmentOnHover.y || [])
-          : (assignmentOnHover.x || []).concat(assignmentOnHover.y || [])
-        : []
-      : [];
-  }, [
-    assignmentData.assignment.assignment,
-    assignmentData.assignment.isOnHover,
-    assignmentData.assignment.onHoverAxis,
-    assignmentData.assignment.onHoverID,
-    displayerMode,
-  ]);
+    return getCurrentDiaIDsToHighlight(assignmentData, displayerMode);
+  }, [assignmentData, displayerMode]);
 
   useEffect(() => {
     if (onAtomHoverAction) {
@@ -424,52 +334,15 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
 
   const handleOnAtomHover = useCallback(
     (atom) => {
-      const oclIDs = extractFromAtom(atom).oclIDs;
+      const oclIDs = extractFromAtom(
+        atom,
+        elements,
+        activeAssignment.activeAxis,
+      ).oclIDs;
       // on enter the atom
       if (oclIDs.length > 0) {
         // set all IDs to highlight when hovering over an atom from assignment data
-        let highlights = [];
-        for (let key in assignmentData.assignment.assignment) {
-          let datum, signalIndex;
-          let stop = false;
-          if (
-            assignmentData.assignment.assignment[key].x &&
-            assignmentData.assignment.assignment[key].x.some((_assigned) =>
-              oclIDs.includes(_assigned),
-            )
-          ) {
-            highlights = highlights.concat(
-              assignmentData.assignment.assignment[key].x,
-            );
-            const result = findDatumAndSignalIndex(key);
-            datum = result.datum;
-            signalIndex = result.signalIndex;
-            stop = true;
-          }
-          if (
-            assignmentData.assignment.assignment[key].y &&
-            assignmentData.assignment.assignment[key].y.some((_assigned) =>
-              oclIDs.includes(_assigned),
-            )
-          ) {
-            highlights = highlights.concat(
-              assignmentData.assignment.assignment[key].y,
-            );
-            const result = findDatumAndSignalIndex(key);
-            datum = result.datum;
-            signalIndex = result.signalIndex;
-            stop = true;
-          }
-          if (datum) {
-            highlights.push(datum.id);
-            if (signalIndex !== undefined) {
-              highlights.push(datum.signal[signalIndex].id);
-            }
-          }
-          if (stop) {
-            break;
-          }
-        }
+        const highlights = getHighlightsOnHover(assignmentData, oclIDs, data);
         setOnAtomHoverHighlights(highlights);
         setOnAtomHoverAction('show');
       } else {
@@ -477,11 +350,7 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
         setOnAtomHoverAction('hide');
       }
     },
-    [
-      assignmentData.assignment.assignment,
-      extractFromAtom,
-      findDatumAndSignalIndex,
-    ],
+    [activeAssignment.activeAxis, assignmentData, data, elements],
   );
 
   const handleClose = useCallback(

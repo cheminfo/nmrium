@@ -30,11 +30,13 @@ function ZonesTableRow({ rowData, onUnlink, onContextMenu }) {
   const highlightSignalX = useHighlight(
     [buildID(assignmentSignal.id, 'X')].concat(
       assignmentSignal.assigned.x || [],
+      `${assignmentSignal.id}_Crosshair`,
     ),
   );
   const highlightSignalY = useHighlight(
     [buildID(assignmentSignal.id, 'Y')].concat(
       assignmentSignal.assigned.y || [],
+      `${assignmentSignal.id}_Crosshair`,
     ),
   );
 
