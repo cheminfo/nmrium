@@ -53,18 +53,17 @@ function IntegralsSeries() {
             spectrum.integrals &&
             spectrum.integrals.values &&
             spectrum.integrals.values.map((integral) => (
-              <g key={integral.id}>
-                <Integral
-                  spectrumID={spectrum.id}
-                  integralData={integral}
-                  x={spectrum.data.x}
-                  y={spectrum.data.y}
-                  isActive={IsActive(spectrum.id)}
-                  xDomain={xDomain}
-                  scaleY={scaleY}
-                  scaleX={scaleX}
-                />
-              </g>
+              <Integral
+                key={integral.id}
+                spectrumID={spectrum.id}
+                integralData={integral}
+                x={spectrum.data.x}
+                y={spectrum.data.y}
+                isActive={IsActive(spectrum.id)}
+                xDomain={xDomain}
+                scaleY={scaleY}
+                scaleX={scaleX}
+              />
             )),
         )
     );

@@ -50,7 +50,12 @@ import {
   preferencesReducer,
   INIT_PREFERENCES,
 } from './reducer/preferencesReducer';
-import { INITIATE, SET_WIDTH, SET_LOADING_FLAG } from './reducer/types/Types';
+import {
+  INITIATE,
+  SET_WIDTH,
+  SET_LOADING_FLAG,
+  SET_MOUSE_OVER_DISPLAYER,
+} from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 
 initOCL(OCL);
@@ -283,6 +288,12 @@ function NMRDisplayer({
       e.preventDefault();
     }
   }, []);
+  const mouseEnterHandler = useCallback(() => {
+    dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: true });
+  }, [dispatchMiddleWare]);
+  const mouseLeaveHandler = useCallback(() => {
+    dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
+  }, [dispatchMiddleWare]);
 
   return (
     <ErrorBoundary>
@@ -309,67 +320,69 @@ function NMRDisplayer({
                         <div
                           ref={rootRef}
                           css={containerStyles}
+                          onMouseEnter={mouseEnterHandler}
+                          onMouseLeave={mouseLeaveHandler}
                           onContextMenu={preventContextMenuHandler}
                         >
-                          <KeysListenerTracker>
-                            <Header
-                              isFullscreen={isFullscreen}
-                              onMaximize={toggle}
-                            />
+                          <KeysListenerTracker />
 
-                            {/* ref={containerRef} */}
-                            <div
-                              style={{
-                                height: 'calc(100% - 36px)',
-                                width: '100%',
-                                backgroundColor: 'white',
-                              }}
-                            >
-                              <DropZone>
-                                <ToolBar selectedTool={selectedTool} />
-                                <SplitPane
-                                  style={splitPaneStyles.container}
-                                  resizerStyle={splitPaneStyles.resizer}
-                                  paneStyle={splitPaneStyles.pane}
-                                  pane1Style={
-                                    isRightPanelHide
-                                      ? {
-                                          maxWidth: '100%',
-                                          width: 'calc(100% - 10px)',
-                                        }
-                                      : { maxWidth: '80%' }
-                                  }
-                                  split="vertical"
-                                  defaultSize={
-                                    isRightPanelHide
-                                      ? '99%'
-                                      : 'calc(100% - 600px)'
-                                  }
-                                  minSize="80%"
-                                  onDragFinished={handleSplitPanelDragFinished}
-                                  onResizerDoubleClick={rightPanelHandler}
-                                  onDragStarted={() => {
-                                    setResizeEventStart(true);
-                                  }}
-                                >
-                                  {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                                    <Viewer1D />
-                                  ) : (
-                                    <Viewer2D />
-                                  )}
-                                  {!isRightPanelHide ? (
-                                    <Panels
-                                      selectedTool={selectedTool}
-                                      displayerMode={displayerMode}
-                                    />
-                                  ) : (
-                                    <div />
-                                  )}
-                                </SplitPane>
-                              </DropZone>
-                            </div>
-                            <div ref={elementsWraperRef} id="main-wrapper" />
-                          </KeysListenerTracker>
+                          <Header
+                            isFullscreen={isFullscreen}
+                            onMaximize={toggle}
+                          />
+
+                          {/* ref={containerRef} */}
+                          <div
+                            style={{
+                              height: 'calc(100% - 36px)',
+                              width: '100%',
+                              backgroundColor: 'white',
+                            }}
+                          >
+                            <DropZone>
+                              <ToolBar selectedTool={selectedTool} />
+                              <SplitPane
+                                style={splitPaneStyles.container}
+                                resizerStyle={splitPaneStyles.resizer}
+                                paneStyle={splitPaneStyles.pane}
+                                pane1Style={
+                                  isRightPanelHide
+                                    ? {
+                                        maxWidth: '100%',
+                                        width: 'calc(100% - 10px)',
+                                      }
+                                    : { maxWidth: '80%' }
+                                }
+                                split="vertical"
+                                defaultSize={
+                                  isRightPanelHide
+                                    ? '99%'
+                                    : 'calc(100% - 600px)'
+                                }
+                                minSize="80%"
+                                onDragFinished={handleSplitPanelDragFinished}
+                                onResizerDoubleClick={rightPanelHandler}
+                                onDragStarted={() => {
+                                  setResizeEventStart(true);
+                                }}
+                              >
+                                {displayerMode === DISPLAYER_MODE.DM_1D ? (
+                                  <Viewer1D />
+                                ) : (
+                                  <Viewer2D />
+                                )}
+                                {!isRightPanelHide ? (
+                                  <Panels
+                                    selectedTool={selectedTool}
+                                    displayerMode={displayerMode}
+                                  />
+                                ) : (
+                                  <div />
+                                )}
+                              </SplitPane>
+                            </DropZone>
+                          </div>
+                          <div ref={elementsWraperRef} id="main-wrapper" />
                         </div>
                       </AssignmentProvider>
                     </HighlightProvider>

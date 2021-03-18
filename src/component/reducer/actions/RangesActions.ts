@@ -44,17 +44,16 @@ function handleDeleteRange(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
-    const { rangeData, assignmentData } = action.payload;
+    const { id, assignmentData } = action.payload;
     const datum = draft.data[index] as Datum1D;
-    if (rangeData === undefined) {
-      datum.ranges.values.forEach((range) =>
-        unlinkInAssignmentData(assignmentData, range),
-      );
-      datum.ranges.values = [];
-    } else {
-      unlinkInAssignmentData(assignmentData, rangeData);
-      const rangeIndex = getRangeIndex(state, index, rangeData.id);
+    if (id) {
+      const range = datum.ranges.values.find((range) => range.id === id);
+      unlinkInAssignmentData(assignmentData, [range]);
+      const rangeIndex = getRangeIndex(state, index, id);
       datum.ranges.values.splice(rangeIndex, 1);
+    } else {
+      unlinkInAssignmentData(assignmentData, datum.ranges.values);
+      datum.ranges.values = [];
     }
     updateIntegralRanges(draft.data[index]);
     handleOnChangeRangesData(draft);
@@ -116,12 +115,13 @@ function handleUnlinkRange(draft: Draft<State>, action) {
       : (state.data[index] as Datum1D).ranges.values) {
       const _rangeData = unlink(cloneDeep(range), isOnRangeLevel, signalIndex);
       // remove assignments in assignment hook data
-      unlinkInAssignmentData(
-        assignmentData,
-        _rangeData,
-        isOnRangeLevel,
-        signalIndex,
-      );
+      if (isOnRangeLevel) {
+        unlinkInAssignmentData(assignmentData, [{ id: _rangeData.id }]);
+      } else {
+        unlinkInAssignmentData(assignmentData, [
+          { id: _rangeData.signal[signalIndex].id },
+        ]);
+      }
 
       const rangeIndex = getRangeIndex(state, index, _rangeData.id);
       (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _rangeData;

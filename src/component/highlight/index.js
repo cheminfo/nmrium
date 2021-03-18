@@ -7,29 +7,42 @@ import {
   useEffect,
 } from 'react';
 
+export const TYPES = {
+  PEAK: 'PEAK',
+  INTEGRAL: 'INTEGRAL',
+  RANGE: 'RANGE',
+  ZONE: 'ZONE',
+};
+
 const highlightContext = createContext();
 
 function highlightReducer(state, action) {
   switch (action.type) {
     case 'SHOW': {
+      const { convertedHighlights, type } = action.payload;
       const newState = {
         ...state,
         highlights: { ...state.highlights },
+        type,
       };
-      for (const value of action.payload) {
+      for (const value of convertedHighlights) {
         if (!(value in newState.highlights)) {
           newState.highlights[value] = 1;
         }
       }
       newState.highlighted = Object.keys(newState.highlights);
+
       return newState;
     }
     case 'HIDE': {
+      const { convertedHighlights } = action.payload;
+
       const newState = {
         ...state,
         highlights: { ...state.highlights },
+        type: null,
       };
-      for (const value of action.payload) {
+      for (const value of convertedHighlights) {
         if (value in newState.highlights) {
           delete newState.highlights[value];
         }
@@ -64,6 +77,7 @@ const emptyState = {
   highlights: {},
   highlighted: [],
   highlightedPermanently: [],
+  type: null,
 };
 
 export function HighlightProvider(props) {
@@ -80,7 +94,7 @@ export function useHighlightData() {
   return useContext(highlightContext);
 }
 
-export function useHighlight(highlights) {
+export function useHighlight(highlights, type = null) {
   if (!Array.isArray(highlights)) {
     throw new Error('highlights must be an array');
   }
@@ -105,7 +119,7 @@ export function useHighlight(highlights) {
     return () => {
       context.dispatch({
         type: 'HIDE',
-        payload: convertedHighlights,
+        payload: { convertedHighlights },
       });
       context.dispatch({
         type: 'UNSET_PERMANENT',
@@ -127,23 +141,40 @@ export function useHighlight(highlights) {
   }, [context.highlight.highlightedPermanently, convertedHighlights]);
 
   const show = useCallback(() => {
-    context.dispatch({ type: 'SHOW', payload: convertedHighlights });
-  }, [context, convertedHighlights]);
+    context.dispatch({
+      type: 'SHOW',
+      payload: {
+        convertedHighlights,
+        type,
+      },
+    });
+  }, [context, convertedHighlights, type]);
 
   const hide = useCallback(() => {
-    context.dispatch({ type: 'HIDE', payload: convertedHighlights });
+    context.dispatch({
+      type: 'HIDE',
+      payload: {
+        convertedHighlights,
+      },
+    });
   }, [context, convertedHighlights]);
 
   const add = useCallback(
     (id) => {
-      context.dispatch({ type: 'SHOW', payload: id });
+      context.dispatch({
+        type: 'SHOW',
+        payload: { convertedHighlights: [], id },
+      });
     },
     [context],
   );
 
   const remove = useCallback(
     (id) => {
-      context.dispatch({ type: 'HIDE', payload: id });
+      context.dispatch({
+        type: 'HIDE',
+        payload: { convertedHighlights: [], id },
+      });
     },
     [context],
   );

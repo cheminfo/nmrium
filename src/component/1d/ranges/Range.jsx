@@ -3,12 +3,12 @@ import { css } from '@emotion/react';
 import { useCallback, useState, useEffect } from 'react';
 
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
-import { useAssignment, useAssignmentData } from '../../assignment';
+import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScale } from '../../context/ScaleContext';
-import { useHighlight } from '../../highlight';
-import { DELETE_RANGE, RESIZE_RANGE } from '../../reducer/types/Types';
+import { TYPES, useHighlight } from '../../highlight';
+import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Resizable from '../Resizable';
 import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
@@ -55,8 +55,8 @@ function Range({ rangeData, showMultiplicityTrees }) {
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
     [assignmentRange.id].concat(assignmentRange.assigned.x || []),
+    TYPES.RANGE,
   );
-  const assignmentData = useAssignmentData();
 
   const { scaleX } = useScale();
   const { selectedTool } = useChartData();
@@ -87,41 +87,15 @@ function Range({ rangeData, showMultiplicityTrees }) {
     [dispatch, rangeData],
   );
 
-  const mouseEnterHandler = useCallback(
-    (event) => {
-      event.currentTarget.focus();
-      assignmentRange.onMouseEnter('x');
-      highlightRange.show();
-    },
-    [assignmentRange, highlightRange],
-  );
-  const mouseLeaveHandler = useCallback(
-    (event) => {
-      event.currentTarget.blur();
-      assignmentRange.onMouseLeave('x');
-      highlightRange.hide();
-    },
-    [assignmentRange, highlightRange],
-  );
+  const mouseEnterHandler = useCallback(() => {
+    assignmentRange.onMouseEnter('x');
+    highlightRange.show();
+  }, [assignmentRange, highlightRange]);
+  const mouseLeaveHandler = useCallback(() => {
+    assignmentRange.onMouseLeave('x');
+    highlightRange.hide();
+  }, [assignmentRange, highlightRange]);
 
-  const keyDownHandler = useCallback(
-    (e) => {
-      if (
-        ['Escape', 'Esc', 'Backspace'].includes(e.key) &&
-        e.target.nodeName === 'g' &&
-        !isBlockedByEditing
-      ) {
-        dispatch({
-          type: DELETE_RANGE,
-          payload: {
-            rangeData,
-            assignmentData,
-          },
-        });
-      }
-    },
-    [assignmentData, dispatch, isBlockedByEditing, rangeData],
-  );
   const assignHandler = useCallback(
     (e) => {
       if (e.shiftKey && !isBlockedByEditing) {
@@ -134,7 +108,7 @@ function Range({ rangeData, showMultiplicityTrees }) {
 
   return (
     <g
-      tabIndex="0"
+      // tabIndex="0"
       style={{ outline: 'none' }}
       css={
         isBlockedByEditing ||
@@ -146,7 +120,6 @@ function Range({ rangeData, showMultiplicityTrees }) {
       key={id}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
-      onKeyDown={keyDownHandler}
       onClick={assignHandler}
     >
       <g transform={`translate(${scaleX()(to)},10)`}>

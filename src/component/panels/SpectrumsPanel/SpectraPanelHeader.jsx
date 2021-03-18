@@ -11,6 +11,7 @@ import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import SpectraWraper from '../../hoc/SpectraWraper';
+import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MISSING_PROJECTION,
   CHANGE_VISIBILITY,
@@ -20,7 +21,13 @@ import {
 } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
-function SpectraPanelHeader({ data, activeSpectrum, activeTab, spectrums }) {
+function SpectraPanelHeader({
+  data,
+  activeSpectrum,
+  activeTab,
+  displayerMode,
+  spectrums,
+}) {
   const modal = useModal();
   const alert = useAlert();
   const dispatch = useDispatch();
@@ -95,16 +102,20 @@ function SpectraPanelHeader({ data, activeSpectrum, activeTab, spectrums }) {
           </button>
         </ToolTip>
       )}
-      <ToolTip title="Reset Scale" popupPlacement="right">
-        <button type="button" onClick={resetScaleHandler}>
-          <SvgNmrResetScale />
-        </button>
-      </ToolTip>
-      <ToolTip title="Same Top" popupPlacement="right">
-        <button type="button" onClick={setSameTopHandler}>
-          <SvgNmrSameTop />
-        </button>
-      </ToolTip>
+      {displayerMode === DISPLAYER_MODE.DM_1D && (
+        <>
+          <ToolTip title="Reset Scale" popupPlacement="right">
+            <button type="button" onClick={resetScaleHandler}>
+              <SvgNmrResetScale />
+            </button>
+          </ToolTip>
+          <ToolTip title="Same Top" popupPlacement="right">
+            <button type="button" onClick={setSameTopHandler}>
+              <SvgNmrSameTop />
+            </button>
+          </ToolTip>
+        </>
+      )}
     </DefaultPanelHeader>
   );
 }

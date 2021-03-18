@@ -87,20 +87,22 @@ export default function View(props) {
             {title}
           </p>
         )}
-        <button
-          type="button"
-          onClick={showCallbackHandler}
-          style={{
-            position: 'absolute',
-            right: '20px',
-            top: '20px',
-            backgroundColor: 'white',
-            width: '100px',
-            fontSize: '12px',
-          }}
-        >
-          {isCallbackVisible ? 'Hide callback ' : 'Show callback '}
-        </button>
+        {process.env.NODE_ENV !== 'production' && (
+          <button
+            type="button"
+            onClick={showCallbackHandler}
+            style={{
+              position: 'absolute',
+              right: '20px',
+              top: '20px',
+              backgroundColor: 'white',
+              width: '100px',
+              fontSize: '12px',
+            }}
+          >
+            {isCallbackVisible ? 'Hide callback ' : 'Show callback '}
+          </button>
+        )}
       </div>
       <div
         style={{
@@ -113,58 +115,60 @@ export default function View(props) {
           <div style={{ width: isCallbackVisible ? '75%' : '100%' }}>
             <NMRDisplayer data={data} onDataChange={changeHadnler} />
           </div>
-          <div
-            style={
-              isCallbackVisible
-                ? {
-                    backgroundColor: 'white',
-                    width: '25%',
-                    marginLeft: '5px',
-                  }
-                : { width: 0, display: 'none' }
-            }
-          >
+          {process.env.NODE_ENV !== 'production' && (
             <div
-              style={{
-                backgroundColor: 'lightgray',
-                padding: '5px',
-                height: '30px',
-                position: 'relative',
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
+              style={
+                isCallbackVisible
+                  ? {
+                      backgroundColor: 'white',
+                      width: '25%',
+                      marginLeft: '5px',
+                    }
+                  : { width: 0, display: 'none' }
+              }
             >
-              <span>Callback</span>
-              <button
-                type="button"
-                onClick={clearHandler}
+              <div
                 style={{
-                  backgroundColor: 'white',
-                  width: '50px',
-                  fontSize: '12px',
+                  backgroundColor: 'lightgray',
+                  padding: '5px',
+                  height: '30px',
+                  position: 'relative',
+                  display: 'flex',
+                  justifyContent: 'space-between',
                 }}
               >
-                Clear
-              </button>
-            </div>
-            <div
-              style={{
-                padding: '5px',
-                overflowY: 'scroll',
-                height: 'calc(100% - 30px)',
-              }}
-            >
-              {callbackData.map((log, index) => (
-                <div
-                  key={`${index + log.datetime}`}
-                  style={{ margin: '5px 0' }}
+                <span>Callback</span>
+                <button
+                  type="button"
+                  onClick={clearHandler}
+                  style={{
+                    backgroundColor: 'white',
+                    width: '50px',
+                    fontSize: '12px',
+                  }}
                 >
-                  <span style={{ fontSize: '12px' }}>{log.datetime}</span>
-                  <ObjectInspector data={log.data} />
-                </div>
-              ))}
+                  Clear
+                </button>
+              </div>
+              <div
+                style={{
+                  padding: '5px',
+                  overflowY: 'scroll',
+                  height: 'calc(100% - 30px)',
+                }}
+              >
+                {callbackData.map((log, index) => (
+                  <div
+                    key={`${index + log.datetime}`}
+                    style={{ margin: '5px 0' }}
+                  >
+                    <span style={{ fontSize: '12px' }}>{log.datetime}</span>
+                    <ObjectInspector data={log.data} />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

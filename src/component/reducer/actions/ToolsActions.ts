@@ -100,8 +100,8 @@ function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
   draft.selectedOptionPanel = selectedOptionPanel;
 }
 
-function setSpectrumsVerticalAlign(draft: Draft<State>, isCentered) {
-  changeSpectrumVerticalAlignment(draft, isCentered);
+function setSpectrumsVerticalAlign(draft: Draft<State>) {
+  changeSpectrumVerticalAlignment(draft, !draft.verticalAlign.flag);
 }
 
 function handleChangeSpectrumDisplayMode(draft: Draft<State>, { flag }) {
@@ -501,7 +501,6 @@ function resetSpectraScale(draft: Draft<State>) {
       return acc;
     }, {});
     draft.originDomain.yDomains = draft.yDomains;
-
     draft.yDomain = draft.originDomain.yDomain;
   }
 }

@@ -9,7 +9,7 @@ import {
 } from '../../utility/Export';
 import { State } from '../Reducer';
 
-function exportData(draft: Draft<State>, { exportType }) {
+function exportData(draft: Draft<State>, { exportType, spaceIndent }) {
   const state = original(draft) as State;
   //check if there is data to export it
   if (state.data.length > 0) {
@@ -19,7 +19,7 @@ function exportData(draft: Draft<State>, { exportType }) {
     switch (exportType) {
       case 'json': {
         const exportedData = toJSON(state);
-        exportAsJSON(exportedData, fileName);
+        exportAsJSON(exportedData, fileName, spaceIndent);
         break;
       }
       case 'svg': {

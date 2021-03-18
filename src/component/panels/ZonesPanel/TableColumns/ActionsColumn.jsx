@@ -40,7 +40,7 @@ function ActionsColumn({ rowData, rowSpanTags }) {
     dispatch({
       type: DELETE_2D_ZONE,
       payload: {
-        zoneData: rowData,
+        id: rowData.id,
         assignmentData,
       },
     });
