@@ -198,19 +198,8 @@ function preprocessing(datum) {
 }
 
 export function toJSON(datum1D: Datum1D) {
-  const { re, im, y, x } = datum1D.originalData || {
-    re: [],
-    im: [],
-    y: [],
-    x: [],
-  };
   return {
-    data: {
-      x: Array.from(x),
-      re: Array.from(re),
-      im: Array.from(im),
-      y: Array.from(y),
-    },
+    data: datum1D.originalData,
     id: datum1D.id,
     source: {
       jcamp: datum1D.source.jcamp,

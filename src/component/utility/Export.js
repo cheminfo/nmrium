@@ -62,7 +62,11 @@ async function copyTextToClipboard(data) {
  * @param {*} data
  */
 function exportAsJSON(data, fileName = 'experiment', spaceIndent) {
-  const fileData = JSON.stringify(data, undefined, spaceIndent);
+  const fileData = JSON.stringify(
+    data,
+    (key, value) => (ArrayBuffer.isView(value) ? Array.from(value) : value),
+    spaceIndent,
+  );
   const blob = new Blob([fileData], { type: 'text/plain' });
   saveAs(blob, `${fileName}.nmrium`);
 }
