@@ -1,6 +1,7 @@
 import { Link, Utilities } from 'nmr-correlation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { buildID } from '../../../../data/utilities/Concatenation';
 import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
 import { useHighlight } from '../../../highlight';
@@ -22,7 +23,7 @@ function AdditionalColumnField({
     commonLinks.forEach((link) => {
       if (link.getPseudo() === false) {
         ids.push(link.signal.id);
-        ids.push(`${link.signal.id}_Crosshair`);
+        ids.push(buildID(link.signal.id, 'Crosshair'));
         const _id = findRangeOrZoneID(spectraData, link);
         if (_id) {
           ids.push(_id);
