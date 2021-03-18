@@ -77,10 +77,10 @@ const findRangeOrZoneID = (spectraData, value) => {
   if (spectrum) {
     if (spectrum.info.dimension === 1) {
       const range = findRange(spectrum, value);
-      return range.id;
+      if (range) return range.id;
     } else if (spectrum.info.dimension === 2) {
       const zone = findZone(spectrum, value);
-      return zone.id;
+      if (zone) return zone.id;
     }
   }
 };
