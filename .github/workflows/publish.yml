@@ -30,6 +30,6 @@ jobs:
         run: |
           git config user.email luc@patiny.com
           git config user.name "Luc Patiny"
-          git remote set-url origin "https://lpatiny:${{ secrets.ACCESS_NMRIUM }}@github.com/zakodium/nmrium.org.git"
+          git remote set-url origin "https://lpatiny:${{ secrets.ACCESS_NMRIUM }}@github.com/zakodium/cdn.nmrium.org.git"
           VERSION=${GITHUB_REF//*\/}
           gh-pages --dest $VERSION -d build --dotfiles
