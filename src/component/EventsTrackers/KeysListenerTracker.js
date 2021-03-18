@@ -172,6 +172,15 @@ function KeysListenerTracker() {
           default:
         }
       }
+      if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
+        switch (e.key) {
+          case 'S':
+            saveAsJSONHandler(2);
+            e.preventDefault();
+            break;
+          default:
+        }
+      }
     },
     [
       alignSpectrumsVerticallyHandler,

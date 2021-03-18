@@ -68,7 +68,13 @@ export default function useToolsFunctions(dispatch, alert) {
   }, [alert, dispatch]);
 
   const saveAsJSONHandler = useCallback(
-    () => dispatch({ type: EXPORT_DATA, exportType: 'json' }),
+    (spaceIndent = 0) => {
+      dispatch({
+        type: EXPORT_DATA,
+        exportType: 'json',
+        spaceIndent: spaceIndent,
+      });
+    },
     [dispatch],
   );
 
