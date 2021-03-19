@@ -336,30 +336,32 @@ export function detectRange(datum, options) {
     max,
   };
 }
+export function mapRanges(ranges, { x, re }) {
+  return ranges.map((range) => {
+    const absolute = xyIntegration(
+      { x, y: re },
+      { from: range.from, to: range.to, reverse: true },
+    );
+
+    const signal = range.signal.map((_signal) => {
+      return { kind: 'signal', id: generateID(), ..._signal };
+    });
+
+    return {
+      kind: range.signal[0].kind || DatumKind.signal,
+      ...range,
+      id: generateID(),
+      absolute,
+      signal,
+    };
+  });
+}
 
 export function detectRanges(datum, options) {
-  const { x, re } = datum.data;
   options.impurities = { solvent: datum.info.solvent };
   const ranges = autoRangesDetection(datum, options);
   datum.ranges.values = datum.ranges.values.concat(
-    ranges.map((range) => {
-      const absolute = xyIntegration(
-        { x, y: re },
-        { from: range.from, to: range.to, reverse: true },
-      );
-
-      const signal = range.signal.map((_signal) => {
-        return { kind: 'signal', id: generateID(), ..._signal };
-      });
-
-      return {
-        kind: range.signal[0].kind || DatumKind.signal,
-        ...range,
-        id: generateID(),
-        absolute,
-        signal,
-      };
-    }),
+    mapRanges(ranges, datum.data),
   );
   updateIntegralRanges(datum);
 }

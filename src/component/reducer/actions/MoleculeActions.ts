@@ -1,7 +1,11 @@
 import { Draft } from 'immer';
 import { signalsToXY } from 'nmr-processing';
 
-import { initiateDatum1D } from '../../../data/data1d/Datum1D';
+import {
+  initiateDatum1D,
+  mapRanges,
+  updateIntegralRanges,
+} from '../../../data/data1d/Datum1D';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -43,10 +47,13 @@ function predictSpectraFromMolculeHandler(draft: Draft<State>, action) {
       data: { x, im: null, re: y },
       info: { nucleus: '1H' },
     });
-    draft.data.push(datum);
     id = datum.id;
-    draft.activeSpectrum = null;
-    draft.tabActiveSpectrum['1H'] = null;
+    datum.ranges.values = mapRanges(fromMolfile.ranges, datum.data);
+    updateIntegralRanges(datum);
+    draft.data.push(datum);
+    const activeSpectrum = { id, index: draft.data.length - 1 };
+    draft.tabActiveSpectrum['1H'] = activeSpectrum;
+    draft.activeSpectrum = activeSpectrum;
   }
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
