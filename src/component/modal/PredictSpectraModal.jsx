@@ -147,6 +147,7 @@ const INITIAL_VALUE = {
   spectra: {
     '1h': true,
     '13c': false,
+    cosy: false,
     hsqc: false,
     hmbc: false,
   },
@@ -238,15 +239,19 @@ function PredictSpectraModal({ onClose, molfile }) {
               <IsotopesViewer value="1H" style={{ padding: ' 0 10px' }} />
             </div>
             <div className="row">
-              <FormikCheckBox name="spectra.13c" />
+              <FormikCheckBox disabled name="spectra.13c" />
               <IsotopesViewer value="13C" style={{ padding: ' 0 10px' }} />
             </div>
             <div className="row">
-              <FormikCheckBox name="spectra.hsqc" />
+              <FormikCheckBox disabled name="spectra.cosy" />
+              <IsotopesViewer value="cosy" style={{ padding: ' 0 10px' }} />
+            </div>
+            <div className="row">
+              <FormikCheckBox disabled name="spectra.hsqc" />
               <IsotopesViewer value="HSQC" style={{ padding: ' 0 10px' }} />
             </div>
             <div className="row">
-              <FormikCheckBox name="spectra.hmbc" />
+              <FormikCheckBox disabled name="spectra.hmbc" />
               <IsotopesViewer value="HMBC" style={{ padding: ' 0 10px' }} />
             </div>
           </div>

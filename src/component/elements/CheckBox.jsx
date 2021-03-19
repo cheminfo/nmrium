@@ -1,7 +1,7 @@
 import { useState, useCallback, forwardRef } from 'react';
 
 const CheckBox = forwardRef(function CheckBox(
-  { name = '', checked: checkProps, onChange = () => null },
+  { name = '', checked: checkProps, onChange = () => null, disabled },
   ref,
 ) {
   const [checked, setCheck] = useState(checkProps);
@@ -23,6 +23,7 @@ const CheckBox = forwardRef(function CheckBox(
       id={name}
       onChange={handleCheck}
       defaultChecked={checkProps}
+      disabled={disabled}
     />
   );
 });
@@ -32,6 +33,7 @@ CheckBox.defaultProps = {
     return null;
   },
   name: '',
+  disabled: false,
 };
 
 export default CheckBox;

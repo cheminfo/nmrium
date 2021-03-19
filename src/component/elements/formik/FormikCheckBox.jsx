@@ -5,7 +5,14 @@ import { useCallback } from 'react';
 
 import CheckBox from '../CheckBox';
 
-function FormikCheckBox({ label, name, onChange, className, reverse }) {
+function FormikCheckBox({
+  label,
+  name,
+  onChange,
+  className,
+  reverse,
+  ...resProps
+}) {
   const { values, setFieldValue } = useFormikContext();
   const value = reverse ? !lodashGet(values, name) : lodashGet(values, name);
 
@@ -28,6 +35,7 @@ function FormikCheckBox({ label, name, onChange, className, reverse }) {
         checked={value}
         onChange={changeHandler}
         className="checkbox"
+        {...resProps}
       />
     </div>
   );
