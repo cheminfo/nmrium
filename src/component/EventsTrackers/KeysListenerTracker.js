@@ -19,7 +19,12 @@ import { options } from '../toolbar/ToolTypes';
 import useToolsFunctions from '../toolbar/useToolsFunctions';
 
 function KeysListenerTracker() {
-  const { keysPreferences, displayerMode, overDisplayer } = useChartData();
+  const {
+    keysPreferences,
+    displayerMode,
+    overDisplayer,
+    data,
+  } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
   const {
@@ -80,7 +85,7 @@ function KeysListenerTracker() {
 
   const keysPreferencesListenerHandler = useCallback(
     (e, num) => {
-      if (num >= 1 && num <= 9) {
+      if (data && data.length > 0 && num >= 1 && num <= 9) {
         if (e.shiftKey) {
           dispatch({
             type: SET_KEY_PREFERENCES,
@@ -107,7 +112,7 @@ function KeysListenerTracker() {
         }
       }
     },
-    [alert, dispatch, keysPreferences],
+    [alert, data, dispatch, keysPreferences],
   );
 
   const toolsListenerHandler = useCallback(
