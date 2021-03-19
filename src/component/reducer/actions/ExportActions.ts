@@ -1,4 +1,4 @@
-import { Draft, original } from 'immer';
+import { current, Draft } from 'immer';
 
 import { toJSON } from '../../../data/SpectraManager';
 import {
@@ -10,7 +10,7 @@ import {
 import { State } from '../Reducer';
 
 function exportData(draft: Draft<State>, { exportType, spaceIndent }) {
-  const state = original(draft) as State;
+  const state = current(draft) as State;
   //check if there is data to export it
   if (state.data.length > 0) {
     //exported file name by default will be the first spectrum name

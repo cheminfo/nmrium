@@ -1,4 +1,5 @@
 import { original, Draft } from 'immer';
+import cloneDeep from 'lodash/cloneDeep';
 import { CorrelationManager } from 'nmr-correlation';
 
 import { State } from '../Reducer';
@@ -10,7 +11,7 @@ function build(spectra, options, values) {
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;
   draft.correlations = build(
-    spectra,
+    cloneDeep(spectra),
     correlations.options,
     correlations.values,
   );

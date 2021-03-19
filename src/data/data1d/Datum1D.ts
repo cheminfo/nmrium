@@ -262,7 +262,7 @@ export function updateIntegralIntegrals(integrals) {
     return integral.kind && SignalKindsToInclude.includes(integral.kind);
   };
   integrals.values = updateRelatives(
-    integrals.values.slice(),
+    integrals.values,
     integrals.options.sum,
     'integral',
     countingCondition,
@@ -294,8 +294,7 @@ export function changeIntegralsRealtive(integrals, id, newIntegralValue) {
 
 function updateRelatives(values, sum, storageKey, countingCondition) {
   const currentSum = values.reduce((previous, current) => {
-    return countingCondition !== undefined &&
-      countingCondition(current) === true
+    return countingCondition && countingCondition(current) === true
       ? (previous += Math.abs(current.absolute))
       : previous;
   }, 0);
@@ -313,7 +312,7 @@ export function updateIntegralRanges(datum) {
     return range.signal && checkSignalKinds(range, SignalKindsToInclude);
   };
   datum.ranges.values = updateRelatives(
-    datum.ranges.values.slice(),
+    datum.ranges.values,
     datum.ranges.options.sum,
     'integral',
     countingCondition,
