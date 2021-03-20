@@ -61,18 +61,18 @@ function CorrelationTable({
     return filteredCorrelationsData.values
       .filter((correlation) =>
         showProtonsAsRows
-          ? correlation.getAtomType() === 'H'
-          : correlation.getAtomType() !== 'H',
+          ? correlation.atomType === 'H'
+          : correlation.atomType !== 'H',
       )
       .map((correlation) => (
         <CorrelationTableRow
           additionalColumnData={additionalColumnData}
           correlations={correlationsData.values}
           correlation={correlation}
-          key={`correlation${correlation.getAtomType()}${correlation.getID()}`}
+          key={`correlation${correlation.atomType}${correlation.id}`}
           styleRow={{ backgroundColor: 'mintcream' }}
           styleLabel={
-            correlation.getAtomType() === 'H'
+            correlation.atomType === 'H'
               ? {
                   color: getLabelColor(correlationsData, correlation),
                 }

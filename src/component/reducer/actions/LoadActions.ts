@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 import lodashGet from 'lodash/get';
-import { CorrelationManager } from 'nmr-correlation';
+import { Build } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import { initiateDatum1D } from '../../../data/data1d/Datum1D';
@@ -37,9 +37,9 @@ function setData(draft: Draft<State>, data) {
   draft.preferences = preferences;
 
   if (correlations) {
-    draft.correlations = CorrelationManager.init(correlations);
+    draft.correlations = Build.init(correlations);
   } else {
-    draft.correlations = CorrelationManager.init({
+    draft.correlations = Build.init({
       options: { tolerance: DefaultTolerance, mf: '' },
     });
   }

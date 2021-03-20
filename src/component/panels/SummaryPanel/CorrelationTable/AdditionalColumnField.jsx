@@ -1,4 +1,8 @@
-import { Link, Utilities } from 'nmr-correlation';
+import {
+  CorrelationUtilities,
+  GeneralUtilities,
+  LinkUtilities,
+} from 'nmr-correlation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
@@ -21,7 +25,7 @@ function AdditionalColumnField({
   const highlightIDsCommonLinks = useMemo(() => {
     const ids = [];
     commonLinks.forEach((link) => {
-      if (link.getPseudo() === false) {
+      if (link.pseudo === false) {
         ids.push(link.signal.id);
         ids.push(buildID(link.signal.id, 'Crosshair'));
         const _id = findRangeOrZoneID(spectraData, link);
@@ -51,7 +55,7 @@ function AdditionalColumnField({
   );
 
   useEffect(() => {
-    if (commonLinks.some((commonLink) => commonLink.getPseudo() === true)) {
+    if (commonLinks.some((commonLink) => commonLink.pseudo === true)) {
       setIsEdited(true);
     } else {
       setIsEdited(false);
@@ -68,56 +72,57 @@ function AdditionalColumnField({
 
   const onEditHandler = useCallback(
     (experimentType, action, commonLink) => {
-      const pseudoLinkCountHSQC = rowCorrelation
-        .getLinks()
-        .filter(
-          (link) =>
-            link.getExperimentType() === 'hsqc' ||
-            link.getExperimentType() === 'hmqc',
-        ).length;
+      const pseudoLinkCountHSQC = rowCorrelation.link.filter(
+        (link) =>
+          link.experimentType === 'hsqc' || link.experimentType === 'hmqc',
+      ).length;
 
       if (action === 'add') {
         const pseudoLinkID = generateID();
         const pseudoExperimentID = generateID();
-        const pseudoCommonLink = new Link({
+        const pseudoCommonLink = LinkUtilities.buildLink({
           experimentType,
           experimentID: pseudoExperimentID,
-          atomType: [
-            columnCorrelation.getAtomType(),
-            rowCorrelation.getAtomType(),
-          ],
+          atomType: [columnCorrelation.atomType, rowCorrelation.atomType],
           id: pseudoLinkID,
           pseudo: true,
         });
 
-        columnCorrelation.addLink(
-          new Link({
+        CorrelationUtilities.addLink(
+          columnCorrelation,
+          LinkUtilities.buildLink({
             ...pseudoCommonLink,
             axis: 'x',
             match: [
-              Utilities.getCorrelationIndex(correlations, rowCorrelation),
+              GeneralUtilities.getCorrelationIndex(
+                correlations,
+                rowCorrelation,
+              ),
             ],
           }),
         );
-        rowCorrelation.addLink(
-          new Link({
+        CorrelationUtilities.addLink(
+          rowCorrelation,
+          LinkUtilities.buildLink({
             ...pseudoCommonLink,
             axis: 'y',
             match: [
-              Utilities.getCorrelationIndex(correlations, columnCorrelation),
+              GeneralUtilities.getCorrelationIndex(
+                correlations,
+                columnCorrelation,
+              ),
             ],
           }),
         );
-        if (!rowCorrelation.getEdited().protonsCount) {
-          rowCorrelation.setProtonsCount([pseudoLinkCountHSQC + 1]);
+        if (!rowCorrelation.edited.protonsCount) {
+          rowCorrelation.protonsCount = [pseudoLinkCountHSQC + 1];
         }
       } else if (action === 'remove') {
-        rowCorrelation.removeLink(commonLink.getID());
-        columnCorrelation.removeLink(commonLink.getID());
-        if (!rowCorrelation.getEdited().protonsCount) {
-          rowCorrelation.setProtonsCount(
-            pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [],
-          );
+        CorrelationUtilities.removeLink(rowCorrelation, commonLink.id);
+        CorrelationUtilities.removeLink(columnCorrelation, commonLink.id);
+        if (!rowCorrelation.edited.protonsCount) {
+          rowCorrelation.protonsCount =
+            pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [];
         }
       }
 
@@ -131,10 +136,10 @@ function AdditionalColumnField({
     // assumption here that only one pseudo HSQC can be added to a pseudo correlation
     const commonLinkHSQC = commonLinks.find(
       (commonLink) =>
-        commonLink.experimentType === 'hsqc' && commonLink.getPseudo() === true,
+        commonLink.experimentType === 'hsqc' && commonLink.pseudo === true,
     );
 
-    return rowCorrelation.getPseudo() === true
+    return rowCorrelation.pseudo === true
       ? commonLinkHSQC
         ? [
             {
@@ -159,23 +164,23 @@ function AdditionalColumnField({
     const linkSet = new Set();
     commonLinks.forEach((commonLink) => {
       if (
-        commonLink.getExperimentType() === 'hsqc' ||
-        commonLink.getExperimentType() === 'hmqc'
+        commonLink.experimentType === 'hsqc' ||
+        commonLink.experimentType === 'hmqc'
       ) {
         linkSet.add(
-          !commonLink.getSignal() || commonLink.getSignal().sign === 0
+          !commonLink.signal || commonLink.signal.sign === 0
             ? 'S'
-            : `S${commonLink.getSignal().sign === 1 ? '+' : '-'}`,
+            : `S${commonLink.signal.sign === 1 ? '+' : '-'}`,
         );
       } else if (
-        commonLink.getExperimentType() === 'hmbc' ||
-        commonLink.getExperimentType() === 'cosy' ||
-        commonLink.getExperimentType() === 'tocsy'
+        commonLink.experimentType === 'hmbc' ||
+        commonLink.experimentType === 'cosy' ||
+        commonLink.experimentType === 'tocsy'
       ) {
         linkSet.add('M');
       } else if (
-        commonLink.getExperimentType() === 'noesy' ||
-        commonLink.getExperimentType() === 'roesy'
+        commonLink.experimentType === 'noesy' ||
+        commonLink.experimentType === 'roesy'
       ) {
         linkSet.add('NOE');
       }

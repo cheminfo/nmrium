@@ -1,10 +1,10 @@
 import { original, Draft } from 'immer';
-import { CorrelationManager } from 'nmr-correlation';
+import { Build, CorrelationUtilities } from 'nmr-correlation';
 
 import { State } from '../Reducer';
 
 function build(spectra, options, values) {
-  return CorrelationManager.build(spectra, options, values);
+  return Build.build(spectra, options, values);
 }
 
 function handleUpdateCorrelations(draft: Draft<State>) {
@@ -40,7 +40,7 @@ function handleSetCorrelation(draft: Draft<State>, payload) {
   const state = original(draft) as State;
   const { correlations } = state;
   const { id, correlation } = payload;
-  draft.correlations = CorrelationManager.setCorrelation(
+  draft.correlations = CorrelationUtilities.setCorrelation(
     correlations,
     id,
     correlation,

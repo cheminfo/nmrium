@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import { CorrelationManager } from 'nmr-correlation';
+import { Build } from 'nmr-correlation';
 import { fromMolfile } from 'nmr-processing';
 
 import * as SpectraManager from '../../data/SpectraManager';
@@ -85,7 +85,7 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAnalysis: {},
-  correlations: CorrelationManager.init({
+  correlations: Build.init({
     options: { tolerance: DefaultTolerance, mf: '' },
   }),
   displayerKey: '',

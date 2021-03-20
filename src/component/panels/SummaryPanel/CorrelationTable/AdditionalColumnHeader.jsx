@@ -11,7 +11,7 @@ function AdditionalColumnHeader({
   correlation,
 }) {
   const highlightIDsAdditionalColumn = useMemo(() => {
-    if (correlation.getPseudo() === true) {
+    if (correlation.pseudo === true) {
       return [];
     }
     const ids = [
@@ -23,7 +23,7 @@ function AdditionalColumnHeader({
       ids.push(id);
     }
     correlation.link.forEach((link) => {
-      if (link.getPseudo() === false) {
+      if (link.pseudo === false) {
         ids.push(link.signal.id);
         const _id = findRangeOrZoneID(spectraData, link);
         if (_id) {
@@ -73,23 +73,19 @@ function AdditionalColumnHeader({
   return (
     <th {...tableHeaderProps}>
       <div style={{ display: 'block' }}>
-        <p>{correlation.getLabel('origin')}</p>
+        <p>{correlation.label.origin}</p>
         <p>
-          {correlation &&
-          correlation.getSignal() &&
-          correlation.getSignal().delta
-            ? correlation.getSignal().delta.toFixed(3)
+          {correlation && correlation.signal && correlation.signal.delta
+            ? correlation.signal.delta.toFixed(3)
             : ''}
         </p>
         <p style={{ fontSize: 8 }}>
           {`${
-            correlation.getExperimentType()
-              ? `${correlation.getExperimentType().toUpperCase()}`
+            correlation.experimentType
+              ? `${correlation.experimentType.toUpperCase()}`
               : ''
           } ${
-            correlation.getEquivalences() > 1
-              ? `(${correlation.getEquivalences()})`
-              : ''
+            correlation.equivalence > 1 ? `(${correlation.equivalence})` : ''
           }`}
         </p>
       </div>
