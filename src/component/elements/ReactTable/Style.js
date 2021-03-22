@@ -29,7 +29,7 @@ const ReactTableStyle = css`
   th,
   td {
     margin: 0;
-    padding: 0.4rem;
+    padding: 0.15rem 0.4rem;
     border-bottom: 1px solid #dedede;
     border-right: 1px solid #dedede;
 
