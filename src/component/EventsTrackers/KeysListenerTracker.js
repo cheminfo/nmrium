@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActivated';
 import { useAssignmentData } from '../assignment';
@@ -19,7 +19,12 @@ import { options } from '../toolbar/ToolTypes';
 import useToolsFunctions from '../toolbar/useToolsFunctions';
 
 function KeysListenerTracker() {
-  const { keysPreferences, displayerMode, overDisplayer } = useChartData();
+  const {
+    keysPreferences,
+    displayerMode,
+    overDisplayer,
+    data,
+  } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
   const {
@@ -33,6 +38,14 @@ function KeysListenerTracker() {
 
   const { highlight } = useHighlightData();
   const assignmentData = useAssignmentData();
+
+  const allow1DTool = useMemo(() => {
+    return displayerMode === DISPLAYER_MODE.DM_1D && data && data.length > 0;
+  }, [data, displayerMode]);
+
+  const allow2DTool = useMemo(() => {
+    return displayerMode === DISPLAYER_MODE.DM_2D && data && data.length > 0;
+  }, [data, displayerMode]);
 
   const deleteHandler = useCallback(
     (type, data) => {
@@ -80,7 +93,7 @@ function KeysListenerTracker() {
 
   const keysPreferencesListenerHandler = useCallback(
     (e, num) => {
-      if (num >= 1 && num <= 9) {
+      if (data && data.length > 0 && num >= 1 && num <= 9) {
         if (e.shiftKey) {
           dispatch({
             type: SET_KEY_PREFERENCES,
@@ -107,7 +120,7 @@ function KeysListenerTracker() {
         }
       }
     },
-    [alert, dispatch, keysPreferences],
+    [alert, data, dispatch, keysPreferences],
   );
 
   const toolsListenerHandler = useCallback(
@@ -121,40 +134,57 @@ function KeysListenerTracker() {
           case 'Escape':
             handleChangeOption(options.zoom.id);
             break;
-          case 'r':
-            handleChangeOption(options.rangesPicking.id);
+          case 'r': {
+            if (allow1DTool) {
+              handleChangeOption(options.rangesPicking.id);
+            }
             break;
-          case 'b':
-            handleChangeOption(options.baseLineCorrection.id);
+          }
+          case 'b': {
+            if (allow1DTool) {
+              handleChangeOption(options.baseLineCorrection.id);
+            }
             break;
-          case 'p':
-            handleChangeOption(options.peakPicking.id);
+          }
+          case 'p': {
+            if (allow1DTool) {
+              handleChangeOption(options.peakPicking.id);
+            }
             break;
+          }
           case 'i': {
-            const toolID =
-              displayerMode === DISPLAYER_MODE.DM_2D
-                ? options.zone2D.id
-                : displayerMode === DISPLAYER_MODE.DM_1D
-                ? options.integral.id
-                : '';
+            const toolID = allow2DTool
+              ? options.zone2D.id
+              : allow1DTool
+              ? options.integral.id
+              : '';
             handleChangeOption(toolID);
             break;
           }
-          case 'a':
-            handleChangeOption(options.phaseCorrection.id);
+          case 'a': {
+            if (allow1DTool) {
+              handleChangeOption(options.phaseCorrection.id);
+            }
             break;
+          }
           default:
         }
       }
 
       if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
         switch (e.key) {
-          case 'c':
-            alignSpectrumsVerticallyHandler();
+          case 'c': {
+            if (allow1DTool) {
+              alignSpectrumsVerticallyHandler();
+            }
             break;
-          case 's':
-            handleChangeDisplayViewMode();
+          }
+          case 's': {
+            if (allow1DTool) {
+              handleChangeDisplayViewMode();
+            }
             break;
+          }
           default:
         }
       }
@@ -184,7 +214,8 @@ function KeysListenerTracker() {
     },
     [
       alignSpectrumsVerticallyHandler,
-      displayerMode,
+      allow1DTool,
+      allow2DTool,
       handleChangeDisplayViewMode,
       handleChangeOption,
       handleFullZoomOut,

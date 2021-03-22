@@ -56,7 +56,7 @@ function SignalDeltaColumn({ rowData, onHoverSignalX, onHoverSignalY }) {
             value={signalDeltaX.toFixed(2)}
             onSave={saveXHandler}
             type="number"
-            style={{ padding: '0.4rem' }}
+            style={{ padding: '0.1rem 0.4rem' }}
             // editStatus={editStatus}
           />
         ) : (
@@ -70,7 +70,7 @@ function SignalDeltaColumn({ rowData, onHoverSignalX, onHoverSignalY }) {
             value={signalDeltaY.toFixed(2)}
             onSave={saveYHandler}
             type="number"
-            style={{ padding: '0.4rem' }}
+            style={{ padding: '0.1rem 0.4rem' }}
             // editStatus={editStatus}
           />
         ) : (

@@ -36,7 +36,7 @@ function RelativeColumn(
         value={integralVal}
         onSave={saveHandler}
         type="number"
-        style={{ padding: '0.4rem' }}
+        style={{ padding: '0.1rem 0.4rem' }}
         editStatus={editStatus}
       />
     </td>

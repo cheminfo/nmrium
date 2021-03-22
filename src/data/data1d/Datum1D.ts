@@ -198,19 +198,8 @@ function preprocessing(datum) {
 }
 
 export function toJSON(datum1D: Datum1D) {
-  const { re, im, y, x } = datum1D.originalData || {
-    re: [],
-    im: [],
-    y: [],
-    x: [],
-  };
   return {
-    data: {
-      x: Array.from(x),
-      re: Array.from(re),
-      im: Array.from(im),
-      y: Array.from(y),
-    },
+    data: datum1D.originalData,
     id: datum1D.id,
     source: {
       jcamp: datum1D.source.jcamp,
@@ -273,7 +262,7 @@ export function updateIntegralIntegrals(integrals) {
     return integral.kind && SignalKindsToInclude.includes(integral.kind);
   };
   integrals.values = updateRelatives(
-    integrals.values.slice(),
+    integrals.values,
     integrals.options.sum,
     'integral',
     countingCondition,
@@ -305,8 +294,7 @@ export function changeIntegralsRealtive(integrals, id, newIntegralValue) {
 
 function updateRelatives(values, sum, storageKey, countingCondition) {
   const currentSum = values.reduce((previous, current) => {
-    return countingCondition !== undefined &&
-      countingCondition(current) === true
+    return countingCondition && countingCondition(current) === true
       ? (previous += Math.abs(current.absolute))
       : previous;
   }, 0);
@@ -324,7 +312,7 @@ export function updateIntegralRanges(datum) {
     return range.signal && checkSignalKinds(range, SignalKindsToInclude);
   };
   datum.ranges.values = updateRelatives(
-    datum.ranges.values.slice(),
+    datum.ranges.values,
     datum.ranges.options.sum,
     'integral',
     countingCondition,
@@ -348,30 +336,32 @@ export function detectRange(datum, options) {
     max,
   };
 }
+export function mapRanges(ranges, { x, re }) {
+  return ranges.map((range) => {
+    const absolute = xyIntegration(
+      { x, y: re },
+      { from: range.from, to: range.to, reverse: true },
+    );
+
+    const signal = range.signal.map((_signal) => {
+      return { kind: 'signal', id: generateID(), ..._signal };
+    });
+
+    return {
+      kind: range.signal[0].kind || DatumKind.signal,
+      ...range,
+      id: generateID(),
+      absolute,
+      signal,
+    };
+  });
+}
 
 export function detectRanges(datum, options) {
-  const { x, re } = datum.data;
   options.impurities = { solvent: datum.info.solvent };
   const ranges = autoRangesDetection(datum, options);
   datum.ranges.values = datum.ranges.values.concat(
-    ranges.map((range) => {
-      const absolute = xyIntegration(
-        { x, y: re },
-        { from: range.from, to: range.to, reverse: true },
-      );
-
-      const signal = range.signal.map((_signal) => {
-        return { kind: 'signal', id: generateID(), ..._signal };
-      });
-
-      return {
-        kind: range.signal[0].kind || DatumKind.signal,
-        ...range,
-        id: generateID(),
-        absolute,
-        signal,
-      };
-    }),
+    mapRanges(ranges, datum.data),
   );
   updateIntegralRanges(datum);
 }
