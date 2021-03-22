@@ -49,14 +49,14 @@ function setData(
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
 
-  if (correlations) {
-    draft.correlations = Build.init(correlations);
-  } else {
+  if (!correlations || Object.keys(correlations).length === 0) {
     draft.correlations = Build.init({
       values: [],
       options: { tolerance: DefaultTolerance, mf: '' },
       state: {},
     });
+  } else {
+    draft.correlations = Build.init(correlations);
   }
 
   // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
