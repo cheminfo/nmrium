@@ -1,3 +1,4 @@
+import lodashCloneDeep from 'lodash/cloneDeep';
 import {
   CorrelationUtilities,
   GeneralUtilities,
@@ -72,7 +73,9 @@ function AdditionalColumnField({
 
   const onEditHandler = useCallback(
     (experimentType, action, commonLink) => {
-      const pseudoLinkCountHSQC = rowCorrelation.link.filter(
+      const _rowCorrelation = lodashCloneDeep(rowCorrelation);
+      const _columnCorrelation = lodashCloneDeep(columnCorrelation);
+      const pseudoLinkCountHSQC = _rowCorrelation.link.filter(
         (link) =>
           link.experimentType === 'hsqc' || link.experimentType === 'hmqc',
       ).length;
@@ -83,50 +86,50 @@ function AdditionalColumnField({
         const pseudoCommonLink = LinkUtilities.buildLink({
           experimentType,
           experimentID: pseudoExperimentID,
-          atomType: [columnCorrelation.atomType, rowCorrelation.atomType],
+          atomType: [_columnCorrelation.atomType, _rowCorrelation.atomType],
           id: pseudoLinkID,
           pseudo: true,
         });
 
         CorrelationUtilities.addLink(
-          columnCorrelation,
+          _columnCorrelation,
           LinkUtilities.buildLink({
             ...pseudoCommonLink,
             axis: 'x',
             match: [
               GeneralUtilities.getCorrelationIndex(
                 correlations,
-                rowCorrelation,
+                _rowCorrelation,
               ),
             ],
           }),
         );
         CorrelationUtilities.addLink(
-          rowCorrelation,
+          _rowCorrelation,
           LinkUtilities.buildLink({
             ...pseudoCommonLink,
             axis: 'y',
             match: [
               GeneralUtilities.getCorrelationIndex(
                 correlations,
-                columnCorrelation,
+                _columnCorrelation,
               ),
             ],
           }),
         );
-        if (!rowCorrelation.edited.protonsCount) {
-          rowCorrelation.protonsCount = [pseudoLinkCountHSQC + 1];
+        if (!_rowCorrelation.edited.protonsCount) {
+          _rowCorrelation.protonsCount = [pseudoLinkCountHSQC + 1];
         }
       } else if (action === 'remove') {
-        CorrelationUtilities.removeLink(rowCorrelation, commonLink.id);
-        CorrelationUtilities.removeLink(columnCorrelation, commonLink.id);
-        if (!rowCorrelation.edited.protonsCount) {
-          rowCorrelation.protonsCount =
+        CorrelationUtilities.removeLink(_rowCorrelation, commonLink.id);
+        CorrelationUtilities.removeLink(_columnCorrelation, commonLink.id);
+        if (!_rowCorrelation.edited.protonsCount) {
+          _rowCorrelation.protonsCount =
             pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [];
         }
       }
 
-      onEdit(rowCorrelation, columnCorrelation);
+      onEdit(_rowCorrelation, _columnCorrelation);
     },
     [rowCorrelation, onEdit, columnCorrelation, correlations],
   );

@@ -95,6 +95,9 @@ function SummaryPanel() {
 
   const filteredCorrelationsData = useMemo(() => {
     const isInView = (value) => {
+      if (value.pseudo === true) {
+        return false;
+      }
       const atomTypesInView = activeTab
         .split(',')
         .map((tab) => getAtomType(tab));

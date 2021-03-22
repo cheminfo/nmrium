@@ -1,42 +1,50 @@
 import { original, Draft } from 'immer';
-import { Build, CorrelationUtilities } from 'nmr-correlation';
+import lodashCloneDeep from 'lodash/cloneDeep';
+import { Build, CorrelationUtilities, Types } from 'nmr-correlation';
 
 import { State } from '../Reducer';
 
-function build(spectra, options, values) {
-  return Build.build(spectra, options, values);
-}
-
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;
-  draft.correlations = build(
-    spectra,
+  draft.correlations = Build.build(
+    spectra as Types.Spectra,
     correlations.options,
-    correlations.values,
+    lodashCloneDeep(correlations.values),
   );
 }
 
-function handleSetMF(draft: Draft<State>, payload) {
+function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
   const { mf } = payload;
+  // update of correlation data is needed only if the following is true
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
-    draft.correlations = build(spectra, { ...correlations.options, mf }, []);
+    draft.correlations = Build.build(
+      spectra as Types.Spectra,
+      { ...correlations.options, mf },
+      lodashCloneDeep(correlations.values),
+    );
   }
 }
 
-function handleSetTolerance(draft: Draft<State>, payload) {
+function handleSetTolerance(
+  draft: Draft<State>,
+  payload: { tolerance: Types.Tolerance },
+) {
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
   const { tolerance } = payload;
-  draft.correlations = build(
-    spectra,
+  draft.correlations = Build.build(
+    spectra as Types.Spectra,
     { ...correlations.options, tolerance },
-    correlations.values,
+    lodashCloneDeep(correlations.values),
   );
 }
 
-function handleSetCorrelation(draft: Draft<State>, payload) {
+function handleSetCorrelation(
+  draft: Draft<State>,
+  payload: { id: string; correlation: Types.Correlation },
+) {
   const state = original(draft) as State;
   const { correlations } = state;
   const { id, correlation } = payload;
@@ -48,7 +56,10 @@ function handleSetCorrelation(draft: Draft<State>, payload) {
   handleUpdateCorrelations(draft);
 }
 
-function handleSetCorrelations(draft: Draft<State>, payload) {
+function handleSetCorrelations(
+  draft: Draft<State>,
+  payload: { ids: Array<string>; correlations: Types.Values },
+) {
   const { ids, correlations } = payload;
   ids.forEach((id, i) =>
     handleSetCorrelation(draft, {

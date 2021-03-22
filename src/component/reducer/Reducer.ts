@@ -1,10 +1,9 @@
 import { produce } from 'immer';
-import { Build } from 'nmr-correlation';
+import { Build, Types } from 'nmr-correlation';
 import { fromMolfile } from 'nmr-processing';
 
 import * as SpectraManager from '../../data/SpectraManager';
-import { Datum1D } from '../../data/data1d/Datum1D';
-import { Datum2D } from '../../data/data2d/Datum2D';
+import { Spectra } from '../NMRDisplayer';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
 
@@ -86,7 +85,9 @@ export const initialState = {
   tabActiveSpectrum: {},
   spectraAnalysis: {},
   correlations: Build.init({
+    values: [],
     options: { tolerance: DefaultTolerance, mf: '' },
+    state: {},
   }),
   displayerKey: '',
   ZoomHistory: {},
@@ -94,7 +95,7 @@ export const initialState = {
 };
 
 export interface State {
-  data: Array<Partial<Datum1D> | Partial<Datum2D>>;
+  data: Spectra;
   contours: any;
   tempData: any;
   xDomain: Array<number>;
@@ -137,7 +138,7 @@ export interface State {
   tabActiveSpectrum: any;
   spectraAnalysis: any;
   displayerKey: any;
-  correlations: any;
+  correlations: Types.CorrelationData;
   actionType: null;
   ZoomHistory: any;
   overDisplayer: boolean;
