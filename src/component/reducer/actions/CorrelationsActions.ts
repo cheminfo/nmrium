@@ -61,12 +61,15 @@ function handleSetCorrelations(
   payload: { ids: Array<string>; correlations: Types.Values },
 ) {
   const { ids, correlations } = payload;
-  ids.forEach((id, i) =>
-    handleSetCorrelation(draft, {
+  ids.forEach((id, i) => {
+    const { correlations: correlationsData } = draft;
+    draft.correlations = CorrelationUtilities.setCorrelation(
+      correlationsData,
       id,
-      correlation: correlations[i],
-    }),
-  );
+      correlations[i],
+    );
+  });
+  handleUpdateCorrelations(draft);
 }
 
 export {

@@ -89,6 +89,7 @@ function AdditionalColumnField({
           atomType: [_columnCorrelation.atomType, _rowCorrelation.atomType],
           id: pseudoLinkID,
           pseudo: true,
+          signal: { id: generateID(), sign: 0 }, // pseudo signal
         });
 
         CorrelationUtilities.addLink(
