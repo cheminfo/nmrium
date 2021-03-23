@@ -59,6 +59,23 @@ function AdditionalColumnHeader({
           ? '#ff6f0057'
           : 'inherit',
       },
+      title:
+        correlation.pseudo === false &&
+        [correlation.experimentType.toUpperCase()]
+          .concat(
+            correlation.link.reduce((arr, link) => {
+              if (
+                link.pseudo === false &&
+                link.experimentType !== correlation.experimentType &&
+                !arr.includes(link.experimentType.toUpperCase())
+              ) {
+                arr.push(link.experimentType.toUpperCase());
+              }
+              return arr;
+            }, []),
+          )
+          .sort()
+          .join('/'),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
@@ -70,24 +87,24 @@ function AdditionalColumnHeader({
     mouseLeaveHandler,
   ]);
 
+  const equivalenceTextStyle = useMemo(() => {
+    return correlation.edited.equivalence
+      ? { backgroundColor: '#F7F2E0' }
+      : {
+          color: correlation.equivalence === 1 ? '#bebebe' : 'black',
+        };
+  }, [correlation]);
+
   return (
     <th {...tableHeaderProps}>
       <div style={{ display: 'block' }}>
         <p>{correlation.label.origin}</p>
         <p>
           {correlation && correlation.signal && correlation.signal.delta
-            ? correlation.signal.delta.toFixed(3)
+            ? correlation.signal.delta.toFixed(2)
             : ''}
         </p>
-        <p style={{ fontSize: 8 }}>
-          {`${
-            correlation.experimentType
-              ? `${correlation.experimentType.toUpperCase()}`
-              : ''
-          } ${
-            correlation.equivalence > 1 ? `(${correlation.equivalence})` : ''
-          }`}
-        </p>
+        <p style={equivalenceTextStyle}>{correlation.equivalence}</p>
       </div>
     </th>
   );

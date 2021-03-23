@@ -192,6 +192,20 @@ function AdditionalColumnField({
     return [...linkSet];
   }, [commonLinks]);
 
+  const title = useMemo(
+    () =>
+      commonLinks
+        .reduce((arr, link) => {
+          if (!arr.includes(link.experimentType.toUpperCase())) {
+            arr.push(link.experimentType.toUpperCase());
+          }
+          return arr;
+        }, [])
+        .sort()
+        .join('/'),
+    [commonLinks],
+  );
+
   return (
     <td
       onContextMenu={(e) => {
@@ -206,6 +220,7 @@ function AdditionalColumnField({
           ? '#F7F2E0'
           : 'inherit',
       }}
+      title={title}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
     >

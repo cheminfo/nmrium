@@ -115,7 +115,6 @@ function CorrelationTable({
       <table css={tableStyle}>
         <thead>
           <tr>
-            <th>Exp</th>
             <th>Atom</th>
             <th>δ (ppm)</th>
             <th>Equiv</th>

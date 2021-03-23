@@ -151,18 +151,38 @@ function CorrelationTableRow({
         ...styleRow,
         backgroundColor: highlightRow.isActive ? '#ff6f0057' : 'inherit',
       },
+      title:
+        correlation.pseudo === false &&
+        [correlation.experimentType.toUpperCase()]
+          .concat(
+            correlation.link.reduce((arr, link) => {
+              if (
+                link.pseudo === false &&
+                link.experimentType !== correlation.experimentType &&
+                !arr.includes(link.experimentType.toUpperCase())
+              ) {
+                arr.push(link.experimentType.toUpperCase());
+              }
+              return arr;
+            }, []),
+          )
+          .sort()
+          .join('/'),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
-  }, [highlightRow.isActive, mouseEnterHandler, mouseLeaveHandler, styleRow]);
+  }, [
+    correlation.experimentType,
+    correlation.link,
+    correlation.pseudo,
+    highlightRow.isActive,
+    mouseEnterHandler,
+    mouseLeaveHandler,
+    styleRow,
+  ]);
 
   return (
     <tr style={styleRow}>
-      <td {...tableDataProps}>
-        {correlation.experimentType
-          ? correlation.experimentType.toUpperCase()
-          : ''}
-      </td>
       <td
         {...{
           ...tableDataProps,
