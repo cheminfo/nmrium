@@ -193,7 +193,7 @@ function CorrelationTableRow({
       </td>
       <td {...tableDataProps}>
         {lodashGet(correlation.signal, 'delta', false)
-          ? correlation.signal.delta.toFixed(3)
+          ? correlation.signal.delta.toFixed(2)
           : ''}
       </td>
       <td {...tableDataProps}>
