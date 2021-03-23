@@ -23,7 +23,8 @@ function Overview({ correlationsData }) {
           key={`molFormulaView_${i}`}
           style={{
             color: stateAtomType
-              ? stateAtomType.complete === true && !error
+              ? stateAtomType.complete === true &&
+                (!error || Object.keys(error).length === 0)
                 ? 'green'
                 : errorColorIndex >= 0
                 ? ErrorColors[errorColorIndex].color
