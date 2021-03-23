@@ -7,7 +7,6 @@ import PeaksNotations from './PeaksNotations';
 import XAxis from './XAxis';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
-import YAxis from './YAxis';
 
 function Chart1D({ mode, width, height, margin, displayerKey }) {
   const { scaleX, scaleY } = useScale();
