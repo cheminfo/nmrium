@@ -25,6 +25,7 @@ function AdditionalColumnHeader({
     correlation.link.forEach((link) => {
       if (link.pseudo === false) {
         ids.push(link.signal.id);
+        ids.push(buildID(link.signal.id, 'Crosshair_X'));
         const _id = findRangeOrZoneID(spectraData, link);
         if (_id) {
           ids.push(_id);
