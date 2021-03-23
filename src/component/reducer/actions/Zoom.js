@@ -83,8 +83,14 @@ function setZoom(draft, defaultScale = null, spectrumID = null) {
         height - margin.bottom,
         margin.top,
       ]);
+      const [min, max] = draft.originDomain.yDomains[id];
+      const maxPoint = Math.max(Math.abs(max), Math.abs(min));
+      const scalePoint = maxPoint === max ? 0 : min;
       const t = zoomIdentity
-        .translate(0, _scale(0))
+        .translate(
+          0,
+          Math.sign(scalePoint) >= 0 ? _scale(scalePoint) : _scale(scalePoint),
+        )
         .scale(scale[id])
         .translate(0, -_scale(0));
       const yDomain = t.rescaleY(_scale).domain();
