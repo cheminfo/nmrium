@@ -92,7 +92,11 @@ function AdditionalColumnHeader({
     return correlation.edited.equivalence
       ? { backgroundColor: '#F7F2E0' }
       : {
-          color: correlation.equivalence === 1 ? '#bebebe' : 'black',
+          color: Number.isInteger(correlation.equivalence)
+            ? correlation.equivalence === 1
+              ? '#bebebe'
+              : 'black'
+            : 'red',
         };
   }, [correlation]);
 
@@ -105,7 +109,11 @@ function AdditionalColumnHeader({
             ? correlation.signal.delta.toFixed(2)
             : ''}
         </p>
-        <p style={equivalenceTextStyle}>{correlation.equivalence}</p>
+        <p style={equivalenceTextStyle}>
+          {Number.isInteger(correlation.equivalence)
+            ? correlation.equivalence
+            : correlation.equivalence.toFixed(2)}
+        </p>
       </div>
     </th>
   );
