@@ -12,7 +12,9 @@ function getXScale(state, spectrumId = null) {
 function getYScale(state, spectrumId = null) {
   const { height, margin, verticalAlign, yDomain, yDomains } = state;
   const _height =
-    verticalAlign.flag && !verticalAlign.stacked ? height / 2 : height;
+    verticalAlign.flag && !verticalAlign.stacked
+      ? (height - 30) / 2
+      : height - margin.bottom - 30;
 
   let domainY = [];
   if (spectrumId === null || yDomains[spectrumId] === undefined) {
@@ -20,7 +22,7 @@ function getYScale(state, spectrumId = null) {
   } else {
     domainY = [0, yDomains[spectrumId][1]];
   }
-  return scaleLinear(domainY, [_height - margin.bottom, margin.top]);
+  return scaleLinear(domainY, [_height, margin.top]);
 }
 
 function getIntegralYScale(state, spectrumId) {

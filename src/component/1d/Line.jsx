@@ -24,7 +24,7 @@ function Line({ data, id, display, index }) {
       ? verticalAlign.stacked
         ? index * verticalAlign.value
         : 0
-      : verticalAlign.value;
+      : 0;
   }, [index, verticalAlign.flag, verticalAlign.stacked, verticalAlign.value]);
 
   const paths = useMemo(() => {

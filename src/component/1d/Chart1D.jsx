@@ -7,6 +7,7 @@ import PeaksNotations from './PeaksNotations';
 import XAxis from './XAxis';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
+import YAxis from './YAxis';
 
 function Chart1D({ mode, width, height, margin, displayerKey }) {
   const { scaleX, scaleY } = useScale();
@@ -39,7 +40,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid mode={mode} />
-        {/* <YAxis label="PPM" show={false} /> */}
+        {/* <YAxis label="PPM" show /> */}
       </g>
     </svg>
   );
