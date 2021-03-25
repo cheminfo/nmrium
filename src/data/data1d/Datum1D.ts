@@ -433,9 +433,9 @@ export function addRange(datum, options) {
 }
 
 export function getShiftX(datum: Datum1D) {
-  const filter = datum.filters.find(
-    (filter) => filter.name === Filters.shiftX.id,
-  );
+  const filter =
+    datum?.filters &&
+    datum?.filters.find((filter) => filter.name === Filters.shiftX.id);
   return filter;
 }
 
