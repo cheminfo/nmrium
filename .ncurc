@@ -1,6 +1,7 @@
 {
   "dep": "prod,dev",
   "reject": [
+    "nmr-correlation",
     "react-color",
     "react-table",
     "rc-menu",
