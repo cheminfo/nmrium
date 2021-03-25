@@ -1,6 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useState, useEffect, useCallback } from 'react';
-/** @jsxImportSource @emotion/react */
 import { StructureEditor } from 'react-ocl/full';
 
 import { useDispatch } from '../context/DispatchContext';

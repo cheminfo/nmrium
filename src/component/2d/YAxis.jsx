@@ -1,7 +1,7 @@
+/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
 import { Fragment, useEffect, useRef, useMemo, memo } from 'react';
-/** @jsxImportSource @emotion/react */
 
 import { useChartData } from '../context/ChartContext';
 
