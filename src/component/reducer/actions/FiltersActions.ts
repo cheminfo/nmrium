@@ -1,6 +1,12 @@
 import { Draft } from 'immer';
 
-import { Datum1D } from '../../../data/data1d/Datum1D';
+import {
+  Datum1D,
+  updatePeaksXShift,
+  updateRangesXShift,
+  updateIntegralXShift,
+  getShiftX,
+} from '../../../data/data1d/Datum1D';
 import * as FiltersManager from '../../../data/data1d/FiltersManager';
 import { Filters } from '../../../data/data1d/filter1d/Filters';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
@@ -12,6 +18,16 @@ import ZoomHistory from '../helper/ZoomHistory';
 
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
+
+function updateXShift(datum: Datum1D, isDeleted = false) {
+  const filter = getShiftX(datum);
+  if (filter) {
+    const shiftX = filter.flag && !isDeleted ? filter.value : 0;
+    updatePeaksXShift(datum, shiftX);
+    updateRangesXShift(datum, shiftX);
+    updateIntegralXShift(datum, shiftX);
+  }
+}
 
 function setDataByFilters(draft: Draft<State>, hideOptionPanel = true) {
   if (hideOptionPanel) {
@@ -30,6 +46,7 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.shiftX.id, options: shiftValue },
     ]);
+    updateXShift(draft.data[index] as Datum1D);
     setDataByFilters(draft);
     setDomain(draft);
   }
@@ -152,6 +169,7 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
     //apply filter into the spectrum
     FiltersManager.enableFilter(draft.data[index], filterID, checked);
 
+    updateXShift(draft.data[index] as Datum1D);
     setDataByFilters(draft, false);
     setDomain(draft);
     setMode(draft);
@@ -171,8 +189,11 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
 function deleteFilter(draft: Draft<State>, filterID) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
+
+    updateXShift(draft.data[index] as Datum1D, true);
     //apply filter into the spectrum
     FiltersManager.deleteFilter(draft.data[index], filterID);
+
     setDataByFilters(draft, false);
     setDomain(draft);
     setMode(draft);

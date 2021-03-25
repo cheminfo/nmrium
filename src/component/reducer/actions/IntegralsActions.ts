@@ -6,6 +6,7 @@ import {
   updateIntegralIntegrals,
   changeIntegralsRealtive,
   Datum1D,
+  getShiftX,
 } from '../../../data/data1d/Datum1D';
 import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
@@ -41,8 +42,14 @@ function addIntegral(draft: Draft<State>, action) {
     const datum = draft.data[index] as Datum1D;
 
     const { x, re } = datum.data;
+
+    const shiftXFilter = getShiftX(datum);
+    const shiftX = shiftXFilter?.flag ? shiftXFilter.value : 0;
+
     const integral = {
       id: generateID(),
+      originFrom: from - shiftX,
+      originTo: to - shiftX,
       from,
       to,
       absolute: xyIntegration({ x, y: re }, { from, to, reverse: true }), // the real value
@@ -103,6 +110,8 @@ function changeIntegral(draft: Draft<State>, action) {
     if (integralIndex !== -1) {
       datum.integrals.values[integralIndex] = {
         // ...draft.data[index].integrals.values[integralIndex],
+        originFrom: integral.from,
+        originTo: integral.to,
         ...integral,
         absolute: xyIntegration(
           { x, y: re },

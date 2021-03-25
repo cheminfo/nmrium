@@ -1,6 +1,6 @@
 import { Draft, original } from 'immer';
 
-import { lookupPeak, Datum1D } from '../../../data/data1d/Datum1D';
+import { lookupPeak, Datum1D, getShiftX } from '../../../data/data1d/Datum1D';
 import autoPeakPicking from '../../../data/data1d/autoPeakPicking';
 import generateID from '../../../data/utilities/generateID';
 import { options } from '../../toolbar/ToolTypes';
@@ -18,8 +18,17 @@ function addPeak(draft: Draft<State>, mouseCoordinates) {
     const endX = mouseCoordinates.x + xShift;
     const [from, to] = getRange(draft, { startX, endX });
     const candidatePeak = lookupPeak(state.data[index].data, { from, to });
+
+    const shiftXFilter = getShiftX(draft.data[index] as Datum1D);
+    const shiftX = shiftXFilter?.flag ? shiftXFilter.value : 0;
+
     if (candidatePeak) {
-      const peak = { id: generateID(), ...candidatePeak };
+      const peak = {
+        id: generateID(),
+        originDelta: candidatePeak.x - shiftX,
+        delta: candidatePeak.x,
+        intensity: candidatePeak.y,
+      };
       (draft.data[index] as Datum1D).peaks.values.push(peak);
     }
   }
@@ -37,11 +46,17 @@ function addPeaks(draft: Draft<State>, action) {
 
     if (from !== to) {
       const peak = lookupPeak(datumOriginal.data, { from, to });
-      if (
-        peak &&
-        !datumOriginal.peaks.values.some((p) => p.xIndex === peak.xIndex)
-      ) {
-        const newPeak = { id: generateID(), ...peak };
+
+      const shiftXFilter = getShiftX(draft.data[index] as Datum1D);
+      const shiftX = shiftXFilter?.flag ? shiftXFilter.value : 0;
+
+      if (peak && !datumOriginal.peaks.values.some((p) => p.delta === peak.x)) {
+        const newPeak = {
+          id: generateID(),
+          originDelta: peak.x - shiftX,
+          delta: peak.x,
+          intensity: peak.y,
+        };
         (draft.data[index] as Datum1D).peaks.values.push(newPeak);
       }
     }

@@ -91,7 +91,6 @@ const styles = css`
 `;
 
 function PeakNotation({
-  xIndex,
   id,
   x,
   y,
@@ -132,7 +131,7 @@ function PeakNotation({
         const shiftValue = parseFloat(event.target.value) - parseFloat(value);
 
         handleOnPeakChange({
-          id: xIndex,
+          id,
           value: newValue,
           oldValue: oldValue,
           shiftValue: shiftValue,
@@ -146,7 +145,7 @@ function PeakNotation({
         setIsSelected(false);
       }
     },
-    [value, handleOnPeakChange, xIndex],
+    [value, handleOnPeakChange, id],
   );
 
   const handleChange = useCallback((event) => {
@@ -183,7 +182,7 @@ function PeakNotation({
     <Fragment>
       <Global styles={styles} />
       <g
-        id={xIndex}
+        id={id}
         style={{ outline: 'none' }}
         transform={`translate(${x}, ${y})`}
         onMouseEnter={handleOnEnterNotation}

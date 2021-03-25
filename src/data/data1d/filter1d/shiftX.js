@@ -19,9 +19,9 @@ export function isApplicable() {
   return true;
 }
 
-export function reduce() {
+export function reduce(previousValue, newValue) {
   return {
-    once: false,
-    reduce: null,
+    once: true,
+    reduce: previousValue + newValue,
   };
 }
