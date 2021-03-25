@@ -43,8 +43,7 @@ function addIntegral(draft: Draft<State>, action) {
 
     const { x, re } = datum.data;
 
-    const shiftXFilter = getShiftX(datum);
-    const shiftX = shiftXFilter?.flag ? shiftXFilter.value : 0;
+    const shiftX = getShiftX(datum);
 
     const integral = {
       id: generateID(),

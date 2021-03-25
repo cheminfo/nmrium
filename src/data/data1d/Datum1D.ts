@@ -335,8 +335,7 @@ export function detectRange(datum, options) {
   const min = xyMinYPoint({ x, y }, { from, to }).y;
   const max = xyMaxYPoint({ x, y }, { from, to }).y;
 
-  const shiftXFilter = getShiftX(datum);
-  const shiftX = shiftXFilter?.flag ? shiftXFilter.value : 0;
+  const shiftX = getShiftX(datum);
 
   return {
     id: generateID(),
@@ -351,8 +350,7 @@ export function detectRange(datum, options) {
 }
 export function mapRanges(ranges, datum) {
   const { x, re } = datum.data;
-  const shiftXFilter = getShiftX(datum);
-  const shiftX = shiftXFilter?.flag ? shiftXFilter.value : 0;
+  const shiftX = getShiftX(datum);
 
   return ranges.map((range) => {
     const absolute = xyIntegration(
@@ -410,8 +408,7 @@ export function addRange(datum, options) {
 
   const signals = detectSignal(x, re, from, to, datum.info.originFrequency);
 
-  const shiftXFilter = getShiftX(datum);
-  const shiftX = shiftXFilter?.flag ? shiftXFilter.value : 0;
+  const shiftX = getShiftX(datum);
 
   try {
     const range = {
@@ -436,7 +433,8 @@ export function getShiftX(datum: Datum1D) {
   const filter =
     datum?.filters &&
     datum?.filters.find((filter) => filter.name === Filters.shiftX.id);
-  return filter;
+
+  return filter?.flag ? filter.value : 0;
 }
 
 export function updatePeaksXShift(datum: Datum1D, shiftValue) {

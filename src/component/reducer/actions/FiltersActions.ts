@@ -20,13 +20,10 @@ import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 
 function updateXShift(datum: Datum1D, isDeleted = false) {
-  const filter = getShiftX(datum);
-  if (filter) {
-    const shiftX = filter.flag && !isDeleted ? filter.value : 0;
-    updatePeaksXShift(datum, shiftX);
-    updateRangesXShift(datum, shiftX);
-    updateIntegralXShift(datum, shiftX);
-  }
+  const shiftX = !isDeleted ? getShiftX(datum) : 0;
+  updatePeaksXShift(datum, shiftX);
+  updateRangesXShift(datum, shiftX);
+  updateIntegralXShift(datum, shiftX);
 }
 
 function setDataByFilters(draft: Draft<State>, hideOptionPanel = true) {

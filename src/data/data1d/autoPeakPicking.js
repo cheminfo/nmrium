@@ -25,8 +25,7 @@ export default function autoPeakPicking(datum1D, options) {
   peaks.sort((a, b) => b.y - a.y);
   if (maxNumberOfPeaks < peaks.length) peaks = peaks.slice(0, maxNumberOfPeaks);
 
-  const shiftXFilter = getShiftX(datum1D);
-  const shiftX = shiftXFilter?.flag ? shiftXFilter.value : 0;
+  const shiftX = getShiftX(datum1D);
 
   return peaks.map((peak) => {
     return {

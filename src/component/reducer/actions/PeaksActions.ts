@@ -19,8 +19,7 @@ function addPeak(draft: Draft<State>, mouseCoordinates) {
     const [from, to] = getRange(draft, { startX, endX });
     const candidatePeak = lookupPeak(state.data[index].data, { from, to });
 
-    const shiftXFilter = getShiftX(draft.data[index] as Datum1D);
-    const shiftX = shiftXFilter?.flag ? shiftXFilter.value : 0;
+    const shiftX = getShiftX(draft.data[index] as Datum1D);
 
     if (candidatePeak) {
       const peak = {
@@ -47,8 +46,7 @@ function addPeaks(draft: Draft<State>, action) {
     if (from !== to) {
       const peak = lookupPeak(datumOriginal.data, { from, to });
 
-      const shiftXFilter = getShiftX(draft.data[index] as Datum1D);
-      const shiftX = shiftXFilter?.flag ? shiftXFilter.value : 0;
+      const shiftX = getShiftX(draft.data[index] as Datum1D);
 
       if (peak && !datumOriginal.peaks.values.some((p) => p.delta === peak.x)) {
         const newPeak = {
