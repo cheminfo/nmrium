@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+
 import { css } from '@emotion/react';
 import { useMemo, useCallback } from 'react';
 import {
@@ -5,7 +7,6 @@ import {
   FaWrench,
   FaQuestionCircle,
 } from 'react-icons/fa';
-/** @jsxImportSource @emotion/react */
 
 import { useChartData } from '../context/ChartContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
