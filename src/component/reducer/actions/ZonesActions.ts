@@ -1,6 +1,8 @@
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 
+import { Filters } from '../../../data/Filters';
+import * as FiltersManager from '../../../data/FiltersManager';
 import {
   DatumKind,
   SignalKindsToInclude,
@@ -10,6 +12,7 @@ import {
   Datum2D,
   detectZones,
   detectZonesManual,
+  updateShift,
   Zone,
 } from '../../../data/data2d/Datum2D';
 import {
@@ -58,7 +61,23 @@ function changeZoneSignalDelta(draft: Draft<State>, action) {
   const { zoneID, signal } = action.payload;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeZoneSignal(draft.data[index], zoneID, signal);
+    const { xShift, yShift } = changeZoneSignal(
+      draft.data[index],
+      zoneID,
+      signal,
+    );
+    let filters: any = [];
+    if (xShift !== 0) {
+      filters.push({ name: Filters.shift2DX.id, options: xShift });
+    }
+    if (yShift !== 0) {
+      filters.push({ name: Filters.shift2DY.id, options: yShift });
+    }
+
+    FiltersManager.applyFilter(draft.data[index], filters);
+
+    updateShift(draft.data[index] as Datum2D);
+
     setDomain(draft);
     handleOnChangeZonesData(draft);
   }

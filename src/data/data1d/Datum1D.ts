@@ -1,15 +1,15 @@
 import max from 'ml-array-max';
 import { xyIntegration, xyMinYPoint, xyMaxYPoint } from 'ml-spectra-processing';
 
+import { Filters as FiltersTypes } from '../Filters';
+import * as FiltersManager from '../FiltersManager';
 import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 import get1dColor from '../utilities/getColor';
 
-import * as FiltersManager from './FiltersManager';
 import autoRangesDetection from './autoRangesDetection';
 import detectSignal from './detectSignal';
-import { Filters, Filters as FiltersTypes } from './filter1d/Filters';
 
 export const usedColors1D: Array<string> = [];
 
@@ -85,15 +85,6 @@ export interface Ranges {
   options: Partial<{ sum: number }>;
 }
 
-export interface Filter {
-  id: string;
-  name: string;
-  label: string;
-  isDeleteAllow: boolean;
-  flag: boolean;
-  value: any;
-}
-
 export interface Source {
   jcamp: string;
   jcampURL: string;
@@ -112,7 +103,7 @@ export interface Datum1D {
   peaks: Peaks;
   integrals: Integrals;
   ranges: Ranges;
-  filters: Array<Partial<Filter>>;
+  filters: Array<Partial<FiltersManager.Filter>>;
   shiftX?: number;
 }
 
@@ -429,10 +420,17 @@ export function addRange(datum, options) {
   }
 }
 
+export function updateXShift(datum: Datum1D) {
+  const shiftX = getShiftX(datum);
+  updatePeaksXShift(datum, shiftX);
+  updateRangesXShift(datum, shiftX);
+  updateIntegralXShift(datum, shiftX);
+}
+
 export function getShiftX(datum: Datum1D) {
   const filter =
     datum?.filters &&
-    datum?.filters.find((filter) => filter.name === Filters.shiftX.id);
+    datum?.filters.find((filter) => filter.name === FiltersTypes.shiftX.id);
 
   return filter?.flag ? filter.value : 0;
 }
