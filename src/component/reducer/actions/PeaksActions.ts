@@ -76,12 +76,11 @@ function deletePeak(draft: Draft<State>, peakData) {
 }
 
 function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
-  const state = original(draft);
-  draft.selectedTool = options.zoom.id;
-  draft.selectedOptionPanel = null;
-  if (draft.activeSpectrum?.id && state) {
+  if (draft.activeSpectrum?.id) {
+    draft.selectedTool = options.zoom.id;
+    draft.selectedOptionPanel = null;
     const { index } = draft.activeSpectrum;
-    const peaks = autoPeakPicking(state.data[index], autOptions);
+    const peaks = autoPeakPicking(draft.data[index], autOptions);
     (draft.data[index] as Datum1D).peaks.values = peaks;
   }
 }

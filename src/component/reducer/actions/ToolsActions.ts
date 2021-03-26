@@ -78,22 +78,24 @@ function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
 }
 
 function setSelectedTool(draft: Draft<State>, selectedTool) {
-  if (selectedTool) {
-    if (selectedTool !== draft.selectedTool) {
+  if (draft?.data.length > 0) {
+    if (selectedTool) {
+      if (selectedTool !== draft.selectedTool) {
+        resetTool(draft, false);
+      }
+      draft.selectedTool = selectedTool;
+      if (options[selectedTool].hasOptionPanel) {
+        draft.selectedOptionPanel = selectedTool;
+      }
+
+      if (options[selectedTool].isFilter) {
+        setFilterChanges(draft, selectedTool);
+      }
+    } else {
       resetTool(draft, false);
     }
-    draft.selectedTool = selectedTool;
-    if (options[selectedTool].hasOptionPanel) {
-      draft.selectedOptionPanel = selectedTool;
-    }
-
-    if (options[selectedTool].isFilter) {
-      setFilterChanges(draft, selectedTool);
-    }
-  } else {
-    resetTool(draft, false);
+    setMargin(draft);
   }
-  setMargin(draft);
 }
 
 function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
@@ -254,62 +256,64 @@ function handleZoom(draft: Draft<State>, action) {
 }
 
 function zoomOut(draft: Draft<State>, action) {
-  const { zoomType, trackID } = action;
-  const zoomHistory = ZoomHistory.getInstance(
-    draft.ZoomHistory,
-    draft.activeTab,
-  );
+  if (draft?.data.length > 0) {
+    const { zoomType, trackID } = action;
+    const zoomHistory = ZoomHistory.getInstance(
+      draft.ZoomHistory,
+      draft.activeTab,
+    );
 
-  if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
-    switch (zoomType) {
-      case ZoomType.HORIZONTAL: {
-        draft.xDomain = draft.originDomain.xDomain;
-        break;
+    if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+      switch (zoomType) {
+        case ZoomType.HORIZONTAL: {
+          draft.xDomain = draft.originDomain.xDomain;
+          break;
+        }
+        case ZoomType.VERTICAL:
+          setZoom(draft, 0.8);
+          break;
+        case ZoomType.STEP_HROZENTAL: {
+          const zoomValue = zoomHistory.pop();
+          draft.xDomain = zoomValue
+            ? zoomValue.xDomain
+            : draft.originDomain.xDomain;
+          setZoom(draft, 0.8);
+          break;
+        }
+        default: {
+          draft.xDomain = draft.originDomain.xDomain;
+          setZoom(draft, 0.8);
+          break;
+        }
       }
-      case ZoomType.VERTICAL:
-        setZoom(draft, 0.8);
-        break;
-      case ZoomType.STEP_HROZENTAL: {
-        const zoomValue = zoomHistory.pop();
-        draft.xDomain = zoomValue
-          ? zoomValue.xDomain
-          : draft.originDomain.xDomain;
-        setZoom(draft, 0.8);
-        break;
-      }
-      default: {
-        draft.xDomain = draft.originDomain.xDomain;
-        setZoom(draft, 0.8);
-        break;
-      }
-    }
-  } else {
-    const { xDomain, yDomain, yDomains } = draft.originDomain;
-    switch (trackID) {
-      case LAYOUT.TOP_1D: {
-        const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[0]];
-        draft.xDomain = xDomain;
-        draft.yDomains[id] = yDomains[id];
-        break;
-      }
-      case LAYOUT.LEFT_1D: {
-        const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[1]];
-        draft.yDomain = yDomain;
-        draft.yDomains[id] = yDomains[id];
+    } else {
+      const { xDomain, yDomain, yDomains } = draft.originDomain;
+      switch (trackID) {
+        case LAYOUT.TOP_1D: {
+          const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[0]];
+          draft.xDomain = xDomain;
+          draft.yDomains[id] = yDomains[id];
+          break;
+        }
+        case LAYOUT.LEFT_1D: {
+          const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[1]];
+          draft.yDomain = yDomain;
+          draft.yDomains[id] = yDomains[id];
 
-        break;
+          break;
+        }
+        case LAYOUT.CENTER_2D: {
+          const zoomValue = zoomHistory.pop();
+          draft.xDomain = zoomValue ? zoomValue.xDomain : xDomain;
+          draft.yDomain = zoomValue ? zoomValue.yDomain : yDomain;
+          break;
+        }
+        default:
+          draft.xDomain = xDomain;
+          draft.yDomain = yDomain;
+          draft.yDomains = yDomains;
+          break;
       }
-      case LAYOUT.CENTER_2D: {
-        const zoomValue = zoomHistory.pop();
-        draft.xDomain = zoomValue ? zoomValue.xDomain : xDomain;
-        draft.yDomain = zoomValue ? zoomValue.yDomain : yDomain;
-        break;
-      }
-      default:
-        draft.xDomain = xDomain;
-        draft.yDomain = yDomain;
-        draft.yDomains = yDomains;
-        break;
     }
   }
 }
