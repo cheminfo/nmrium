@@ -1,8 +1,8 @@
 import { max } from 'd3';
 import { original, Draft } from 'immer';
 
+import { Filters } from '../../../data/Filters';
 import { Data1D, Datum1D } from '../../../data/data1d/Datum1D';
-import { Filters } from '../../../data/data1d/filter1d/Filters';
 // import { Datum2D } from '../../../data/data2d/Datum2D';
 import { Datum2D } from '../../../data/data2d/Datum2D';
 import generateID from '../../../data/utilities/generateID';

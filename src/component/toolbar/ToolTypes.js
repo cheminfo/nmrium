@@ -1,4 +1,4 @@
-import { Filters } from '../../data/data1d/filter1d/Filters';
+import { Filters } from '../../data/Filters';
 
 export const options = {
   zoom: {

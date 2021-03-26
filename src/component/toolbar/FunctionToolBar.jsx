@@ -14,7 +14,7 @@ import lodashGet from 'lodash/get';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
-import { Filters } from '../../data/data1d/filter1d/Filters';
+import { Filters } from '../../data/Filters';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
