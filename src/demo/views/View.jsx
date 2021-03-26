@@ -57,7 +57,7 @@ export default function View(props) {
       }}
     >
       <div
-        tyle={{
+        style={{
           height: '60px',
           display: 'flex',
           flexDirection: 'column',
