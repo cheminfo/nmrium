@@ -39,7 +39,7 @@ function PeakPointer() {
           ? verticalAlign.stacked
             ? (activeSpectrum.index + 1) * verticalAlign.value
             : 0
-          : verticalAlign.value;
+          : 0;
       }
       return 0;
     }

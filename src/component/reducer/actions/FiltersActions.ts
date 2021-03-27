@@ -1,10 +1,14 @@
 import { Draft } from 'immer';
 
-import { Datum1D } from '../../../data/data1d/Datum1D';
-import * as FiltersManager from '../../../data/data1d/FiltersManager';
-import { Filters } from '../../../data/data1d/filter1d/Filters';
+import { Filters } from '../../../data/Filters';
+import * as FiltersManager from '../../../data/FiltersManager';
+import { Datum1D, updateXShift } from '../../../data/data1d/Datum1D';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
+import {
+  Datum2D,
+  updateShift as update2dShift,
+} from '../../../data/data2d/Datum2D';
 import { options } from '../../toolbar/ToolTypes';
 import { State } from '../Reducer';
 import getClosestNumber from '../helper/GetClosestNumber';
@@ -30,6 +34,7 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.shiftX.id, options: shiftValue },
     ]);
+    updateXShift(draft.data[index] as Datum1D);
     setDataByFilters(draft);
     setDomain(draft);
   }
@@ -152,6 +157,12 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
     //apply filter into the spectrum
     FiltersManager.enableFilter(draft.data[index], filterID, checked);
 
+    if (draft.data[index].info?.dimension === 1) {
+      updateXShift(draft.data[index] as Datum1D);
+    } else if (draft.data[index].info?.dimension === 2) {
+      update2dShift(draft.data[index] as Datum2D);
+    }
+
     setDataByFilters(draft, false);
     setDomain(draft);
     setMode(draft);
@@ -171,8 +182,16 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
 function deleteFilter(draft: Draft<State>, filterID) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
+
     //apply filter into the spectrum
     FiltersManager.deleteFilter(draft.data[index], filterID);
+
+    if (draft.data[index].info?.dimension === 1) {
+      updateXShift(draft.data[index] as Datum1D);
+    } else if (draft.data[index].info?.dimension === 2) {
+      update2dShift(draft.data[index] as Datum2D);
+    }
+
     setDataByFilters(draft, false);
     setDomain(draft);
     setMode(draft);

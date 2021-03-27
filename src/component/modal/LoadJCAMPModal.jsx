@@ -1,7 +1,7 @@
+/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useRef, useCallback } from 'react';
 
-/** @jsxImportSource @emotion/react */
 import CloseButton from '../elements/CloseButton';
 import { loadFile, extractFileMetaFromPath } from '../utility/FileUtility';
 

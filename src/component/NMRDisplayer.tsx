@@ -2,7 +2,6 @@
 
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
-import OCL from 'openchemlib/full';
 import PropTypes from 'prop-types';
 import {
   useEffect,
@@ -15,7 +14,6 @@ import {
   Reducer,
   CSSProperties,
 } from 'react';
-import { initOCL } from 'react-ocl-nmr';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
@@ -59,8 +57,6 @@ import {
   SET_MOUSE_OVER_DISPLAYER,
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
-
-initOCL(OCL);
 
 const splitPaneStyles: Record<
   'container' | 'resizer' | 'pane',

@@ -1,8 +1,8 @@
 import { Draft, original } from 'immer';
 
+import { Filters } from '../../../data/Filters';
+import { applyFilter } from '../../../data/FiltersManager';
 import { Datum1D } from '../../../data/data1d/Datum1D';
-import { applyFilter } from '../../../data/data1d/FiltersManager';
-import { Filters } from '../../../data/data1d/filter1d/Filters';
 import getReferenceShift from '../../../data/data1d/getReferenceShift';
 import { getMissingProjection, Datum2D } from '../../../data/data2d/Datum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';

@@ -48,7 +48,7 @@ function predictSpectraFromMolculeHandler(draft: Draft<State>, action) {
       info: { nucleus: '1H' },
     });
     id = datum.id;
-    datum.ranges.values = mapRanges(fromMolfile.ranges, datum.data);
+    datum.ranges.values = mapRanges(fromMolfile.ranges, datum);
     updateIntegralRanges(datum);
     draft.data.push(datum);
     const activeSpectrum = { id, index: draft.data.length - 1 };

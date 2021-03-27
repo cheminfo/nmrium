@@ -1,15 +1,15 @@
 import max from 'ml-array-max';
 import { xyIntegration, xyMinYPoint, xyMaxYPoint } from 'ml-spectra-processing';
 
+import { Filters as FiltersTypes } from '../Filters';
+import * as FiltersManager from '../FiltersManager';
 import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 import get1dColor from '../utilities/getColor';
 
-import * as FiltersManager from './FiltersManager';
 import autoRangesDetection from './autoRangesDetection';
 import detectSignal from './detectSignal';
-import { Filters as FiltersTypes } from './filter1d/Filters';
 
 export const usedColors1D: Array<string> = [];
 
@@ -38,7 +38,8 @@ export interface Info {
 }
 export interface Peak {
   id: string;
-  xIndex: number;
+  delta: number;
+  originDelta: number;
   width: number;
 }
 export interface Peaks {
@@ -47,6 +48,8 @@ export interface Peaks {
 }
 export interface Integral {
   id: string;
+  originFrom: number;
+  originTo: number;
   from: number;
   to: number;
   absolute: number;
@@ -67,6 +70,8 @@ export interface Signal {
 }
 export interface Range {
   id: string;
+  originFrom?: number;
+  originTo?: number;
   from: number;
   to: number;
   absolute: number;
@@ -78,13 +83,6 @@ export interface Range {
 export interface Ranges {
   values: Array<Partial<Range>>;
   options: Partial<{ sum: number }>;
-}
-
-export interface Filter {
-  id: string;
-  name: string;
-  isDeleteAllow: boolean;
-  options?: any;
 }
 
 export interface Source {
@@ -105,12 +103,13 @@ export interface Datum1D {
   peaks: Peaks;
   integrals: Integrals;
   ranges: Ranges;
-  filters: Array<Partial<Filter>>;
+  filters: Array<Partial<FiltersManager.Filter>>;
+  shiftX?: number;
 }
 
 export function initiateDatum1D(options: any): Datum1D {
   const datum: any = {};
-
+  datum.shiftX = options.shiftX || 0;
   datum.id = options.id || generateID();
   datum.source = Object.assign(
     {
@@ -327,8 +326,12 @@ export function detectRange(datum, options) {
   const min = xyMinYPoint({ x, y }, { from, to }).y;
   const max = xyMaxYPoint({ x, y }, { from, to }).y;
 
+  const shiftX = getShiftX(datum);
+
   return {
     id: generateID(),
+    originFrom: from - shiftX,
+    originTo: to - shiftX,
     from,
     to,
     absolute, // the real value,
@@ -336,7 +339,10 @@ export function detectRange(datum, options) {
     max,
   };
 }
-export function mapRanges(ranges, { x, re }) {
+export function mapRanges(ranges, datum) {
+  const { x, re } = datum.data;
+  const shiftX = getShiftX(datum);
+
   return ranges.map((range) => {
     const absolute = xyIntegration(
       { x, y: re },
@@ -349,6 +355,8 @@ export function mapRanges(ranges, { x, re }) {
 
     return {
       kind: range.signal[0].kind || DatumKind.signal,
+      originFrom: range.from - shiftX,
+      originTo: range.to - shiftX,
       ...range,
       id: generateID(),
       absolute,
@@ -360,9 +368,8 @@ export function mapRanges(ranges, { x, re }) {
 export function detectRanges(datum, options) {
   options.impurities = { solvent: datum.info.solvent };
   const ranges = autoRangesDetection(datum, options);
-  datum.ranges.values = datum.ranges.values.concat(
-    mapRanges(ranges, datum.data),
-  );
+
+  datum.ranges.values = datum.ranges.values.concat(mapRanges(ranges, datum));
   updateIntegralRanges(datum);
 }
 
@@ -376,6 +383,8 @@ export function changeRange(datum, range) {
   if (index !== -1) {
     datum.ranges.values[index] = {
       ...datum.ranges.values[index],
+      originFrom: from,
+      originTo: to,
       ...range,
       absolute,
     };
@@ -390,9 +399,13 @@ export function addRange(datum, options) {
 
   const signals = detectSignal(x, re, from, to, datum.info.originFrequency);
 
+  const shiftX = getShiftX(datum);
+
   try {
     const range = {
       id: generateID(),
+      originFrom: from - shiftX,
+      originTo: to - shiftX,
       from,
       to,
       absolute, // the real value,
@@ -405,6 +418,42 @@ export function addRange(datum, options) {
   } catch (e) {
     throw new Error('Could not calculate the multiplicity');
   }
+}
+
+export function updateXShift(datum: Datum1D) {
+  const shiftX = getShiftX(datum);
+  updatePeaksXShift(datum, shiftX);
+  updateRangesXShift(datum, shiftX);
+  updateIntegralXShift(datum, shiftX);
+}
+
+export function getShiftX(datum: Datum1D) {
+  const filter =
+    datum?.filters &&
+    datum?.filters.find((filter) => filter.name === FiltersTypes.shiftX.id);
+
+  return filter?.flag ? filter.value : 0;
+}
+
+export function updatePeaksXShift(datum: Datum1D, shiftValue) {
+  datum.peaks.values = datum.peaks.values.map((peak) => ({
+    ...peak,
+    delta: peak.originDelta + shiftValue,
+  }));
+}
+export function updateRangesXShift(datum: Datum1D, shiftValue) {
+  datum.ranges.values = datum.ranges.values.map((range) => ({
+    ...range,
+    from: range.originFrom + shiftValue,
+    to: range.originTo + shiftValue,
+  }));
+}
+export function updateIntegralXShift(datum: Datum1D, shiftValue) {
+  datum.integrals.values = datum.integrals.values.map((integral) => ({
+    ...integral,
+    from: integral.originFrom + shiftValue,
+    to: integral.originTo + shiftValue,
+  }));
 }
 
 export function changeRangesRealtive(datum, rangeID, newRealtiveValue) {

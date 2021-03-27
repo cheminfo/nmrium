@@ -1,5 +1,7 @@
 import { zoneToX } from 'ml-spectra-processing';
 
+import { Filters } from '../Filters';
+import * as FiltersManager from '../FiltersManager';
 import { DatumKind } from '../constants/SignalsKinds';
 import { initiateDatum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
@@ -52,10 +54,12 @@ export interface Signal {
   id: number;
   peak: any;
   x: Partial<{
+    originDelta: number;
     delta: number;
     diaID: any;
   }>;
   y: Partial<{
+    originDelta: number;
     delta: number;
     diaID: any;
   }>;
@@ -66,7 +70,7 @@ export interface Zone {
   id: number;
   x: Partial<{ from: number; to: number }>;
   y: Partial<{ from: number; to: number }>;
-  signal: Signal;
+  signal: Array<Signal>;
   kind: string;
 }
 
@@ -78,10 +82,6 @@ export interface Zones {
   options?: Partial<ZoneOption>;
 }
 
-export type Filters = Array<
-  Partial<{ name: string; isDeleteAllow: boolean; options?: any }>
->;
-
 export interface Datum2D {
   id: string;
   source: Partial<{ jcamp: string; jcampURL: string; original: Data2D }>;
@@ -92,7 +92,7 @@ export interface Datum2D {
   data: Data2D;
   originalData?: Data2D;
   zones: Zones;
-  filters: Filters;
+  filters: Array<Partial<FiltersManager.Filter>>;
   processingController: Processing2D;
 }
 
@@ -146,6 +146,7 @@ export function initiateDatum2D(options: any): Datum2D {
   );
 
   datum.originalData = datum.data;
+  datum.filters = Object.assign([], options.filters);
 
   datum.zones = Object.assign({ values: [], options: {} }, options.zones);
 
@@ -155,6 +156,26 @@ export function initiateDatum2D(options: any): Datum2D {
   );
 
   return datum;
+}
+
+export function getShift(datum: Datum2D): { xShift: number; yShift: number } {
+  let shift: any = { xShift: 0, yShift: 0 };
+  if (datum?.filters) {
+    shift = datum.filters.reduce(
+      (acc, filter) => {
+        if (filter.name === Filters.shift2DX.id) {
+          acc.xShift = filter?.flag ? filter.value : 0;
+        }
+        if (filter.name === Filters.shift2DY.id) {
+          acc.yShift = filter?.flag ? filter.value : 0;
+        }
+        return acc;
+      },
+      { xShift: 0, yShift: 0 },
+    );
+  }
+
+  return shift;
 }
 
 function getColor(options) {
@@ -244,6 +265,26 @@ export function getSlice(spectrum, position) {
   return { horizontal, vertical };
 }
 
+export function updateShift(datum: Datum2D) {
+  const { xShift, yShift } = getShift(datum);
+
+  updateZonesShift(datum, {
+    xShift,
+    yShift,
+  });
+}
+
+export function updateZonesShift(datum: Datum2D, { xShift, yShift }) {
+  datum.zones.values = datum.zones.values.map((zone) => ({
+    ...zone,
+    signal: zone.signal?.map((signal) => ({
+      ...signal,
+      x: { ...signal.x, delta: signal.x.originDelta + xShift },
+      y: { ...signal.y, delta: signal.y.originDelta + yShift },
+    })),
+  }));
+}
+
 /**
  *
  * @param {number} zoneID
@@ -252,7 +293,11 @@ export function getSlice(spectrum, position) {
  * @param {number} signal.y
  * @param {string} signal.id
  */
-export function changeZoneSignal(datum, zoneID, newSignal) {
+export function changeZoneSignal(
+  datum,
+  zoneID,
+  newSignal,
+): { xShift: number; yShift: number } {
   const zoneIndex = datum.zones.values.findIndex((zone) => zone.id === zoneID);
   if (zoneIndex !== -1) {
     const signalIndex = datum.zones.values[zoneIndex].signal.findIndex(
@@ -260,25 +305,19 @@ export function changeZoneSignal(datum, zoneID, newSignal) {
     );
     if (signalIndex !== -1) {
       const originalSignal = datum.zones.values[zoneIndex].signal[signalIndex];
-      const shiftX = newSignal.x ? newSignal.x - originalSignal.x.delta : 0;
-      const shiftY = newSignal.y ? newSignal.y - originalSignal.y.delta : 0;
-      shiftXY(datum, { x: shiftX, y: shiftY });
+      const xShift = newSignal.x ? newSignal.x - originalSignal.x.delta : 0;
+      const yShift = newSignal.y ? newSignal.y - originalSignal.y.delta : 0;
 
-      if (newSignal.x) {
-        datum.zones.values[zoneIndex].signal[signalIndex].x.delta = newSignal.x;
-      }
-      if (newSignal.y) {
-        datum.zones.values[zoneIndex].signal[signalIndex].y.delta = newSignal.y;
-      }
+      // if (newSignal.x) {
+      //   datum.zones.values[zoneIndex].signal[signalIndex].x.delta = newSignal.x;
+      // }
+      // if (newSignal.y) {
+      //   datum.zones.values[zoneIndex].signal[signalIndex].y.delta = newSignal.y;
+      // }
+      return { xShift, yShift };
     }
   }
-}
-
-function shiftXY(datum, { x, y }) {
-  datum.data.minX += x;
-  datum.data.maxX += x;
-  datum.data.minY += y;
-  datum.data.maxY += y;
+  return { xShift: 0, yShift: 0 };
 }
 
 /**
@@ -295,15 +334,18 @@ function shiftXY(datum, { x, y }) {
 export function detectZonesManual(datum, options) {
   const { fromX, toX, fromY, toY } = options.selectedZone;
   const zones = getDetectionZones(datum, options);
+  const { xShift, yShift } = getShift(datum);
   const signals = zones.map((zone) => {
     return {
       id: generateID(),
       peak: zone.peaks,
       x: {
+        originDelta: zone.shiftX - xShift,
         delta: zone.shiftX,
         diaID: [],
       },
       y: {
+        originDelta: zone.shiftY - yShift,
         delta: zone.shiftY,
         diaID: [],
       },
@@ -397,6 +439,8 @@ export function getDetectionZones(datum, options) {
  */
 export function detectZones(datum, options) {
   const zones = getDetectionZones(datum, options);
+  const { xShift, yShift } = getShift(datum);
+
   const formattedZones = zones.map((zone) => {
     return {
       id: generateID(),
@@ -407,10 +451,12 @@ export function detectZones(datum, options) {
           id: generateID(),
           peak: zone.peaks,
           x: {
+            originDelta: zone.shiftX - xShift,
             delta: zone.shiftX,
             diaID: [],
           },
           y: {
+            originDelta: zone.shiftY - yShift,
             delta: zone.shiftY,
             diaID: [],
           },

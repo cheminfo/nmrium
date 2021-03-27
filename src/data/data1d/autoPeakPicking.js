@@ -1,6 +1,7 @@
 import median from 'ml-array-median';
 import { xyAutoPeaksPicking } from 'nmr-processing';
 
+import { getShiftX } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
 
 export default function autoPeakPicking(datum1D, options) {
@@ -24,13 +25,15 @@ export default function autoPeakPicking(datum1D, options) {
   peaks.sort((a, b) => b.y - a.y);
   if (maxNumberOfPeaks < peaks.length) peaks = peaks.slice(0, maxNumberOfPeaks);
 
+  const shiftX = getShiftX(datum1D);
+
   return peaks.map((peak) => {
     return {
       id: generateID(),
-      xIndex: peak.index,
+      originDelta: peak.x - shiftX,
+      delta: peak.x,
       intensity: peak.y,
       width: peak.width,
-      xShift: datum1D.data.x[peak.index] - peak.x,
     };
   });
 }
