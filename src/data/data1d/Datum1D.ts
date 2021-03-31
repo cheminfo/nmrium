@@ -460,6 +460,8 @@ export function changeRangesRealtive(datum, rangeID, newRealtiveValue) {
   const range = datum.ranges.values.find((range) => range.id === rangeID);
   if (range) {
     const ratio = range.absolute / newRealtiveValue;
+    datum.ranges.options.sum =
+      (newRealtiveValue / range.integral) * datum.ranges.options.sum;
     datum.ranges.values = datum.ranges.values.map((range) => {
       return {
         ...range,
