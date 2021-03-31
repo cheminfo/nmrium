@@ -7,13 +7,12 @@
 export const id = 'shift2DX';
 export const name = 'Shift 2D X';
 
-// eslint-disable-next-line no-unused-vars
 export function apply(datum2D, shiftValue = 0) {
   if (!isApplicable(datum2D)) {
     throw new Error('shiftX not applicable on this data');
   }
-  // datum2D.data.minX += shiftValue;
-  // datum2D.data.maxX += shiftValue;
+  datum2D.data.minX += shiftValue;
+  datum2D.data.maxX += shiftValue;
 }
 
 export function isApplicable() {

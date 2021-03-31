@@ -144,7 +144,6 @@ export function initiateDatum2D(options: any): Datum2D {
     },
     options.data,
   );
-
   datum.originalData = datum.data;
   datum.filters = Object.assign([], options.filters);
 
@@ -154,6 +153,9 @@ export function initiateDatum2D(options: any): Datum2D {
     datum.data,
     datum.display.contourOptions,
   );
+
+  //reapply filters after load the original data
+  FiltersManager.reapplyFilters(datum);
 
   return datum;
 }
@@ -201,6 +203,7 @@ export function toJSON(datum: Datum2D) {
       original: datum.source.jcampURL ? [] : datum.source.original,
     },
     zones: datum.zones,
+    filters: datum.filters,
     display: datum.display,
     info: datum.originalInfo,
     meta: datum.meta,
@@ -267,7 +270,6 @@ export function getSlice(spectrum, position) {
 
 export function updateShift(datum: Datum2D) {
   const { xShift, yShift } = getShift(datum);
-
   updateZonesShift(datum, {
     xShift,
     yShift,
