@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { Link, Utilities } from 'nmr-correlation';
+import { LinkUtilities, GeneralUtilities } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
@@ -31,7 +31,7 @@ function CorrelationTableRow({
   spectraData,
 }) {
   const highlightIDsRow = useMemo(() => {
-    if (correlation.getPseudo() === true) {
+    if (correlation.pseudo === true) {
       return [];
     }
     const ids = [
@@ -43,8 +43,9 @@ function CorrelationTableRow({
       ids.push(id);
     }
     correlation.link.forEach((link) => {
-      if (link.getPseudo() === false) {
+      if (link.pseudo === false) {
         ids.push(link.signal.id);
+        ids.push(buildID(link.signal.id, 'Crosshair_Y'));
         const _id = findRangeOrZoneID(spectraData, link);
         if (_id) {
           ids.push(_id);
@@ -73,19 +74,19 @@ function CorrelationTableRow({
   const additionalColumnFields = useMemo(() => {
     return additionalColumnData.map((_correlation) => {
       const commonLinks = [];
-      correlation.getLinks().forEach((link) => {
-        _correlation.getLinks().forEach((_link) => {
+      correlation.link.forEach((link) => {
+        _correlation.link.forEach((_link) => {
           if (
-            link.getAxis() !== _link.getAxis() &&
-            link.getExperimentID() === _link.getExperimentID() &&
-            link.getSignalID() === _link.getSignalID()
+            link.axis !== _link.axis &&
+            link.experimentID === _link.experimentID &&
+            link.signal.id === _link.signal.id
           ) {
-            let experimentLabel = link.getExperimentType();
-            if (link.getSignal() && link.getSignal().sign !== 0) {
+            let experimentLabel = link.experimentType;
+            if (link.signal && link.signal.sign !== 0) {
               experimentLabel += ' (edited)';
             }
             commonLinks.push(
-              new Link({
+              LinkUtilities.buildLink({
                 ...link,
                 experimentLabel,
                 axis: undefined,
@@ -97,7 +98,7 @@ function CorrelationTableRow({
 
       return (
         <AdditionalColumnField
-          key={`addColData_${correlation.getID()}_${_correlation.getID()}`}
+          key={`addColData_${correlation.id}_${_correlation.id}`}
           rowCorrelation={correlation}
           columnCorrelation={_correlation}
           commonLinks={commonLinks}
@@ -123,10 +124,10 @@ function CorrelationTableRow({
   );
 
   const equivalenceCellStyle = useMemo(() => {
-    return correlation.getEdited().equivalence
+    return correlation.edited.equivalence
       ? { backgroundColor: '#F7F2E0' }
       : {
-          color: correlation.getEquivalences() === 1 ? '#bebebe' : 'black',
+          color: correlation.equivalence === 1 ? '#bebebe' : 'black',
         };
   }, [correlation]);
 
@@ -151,56 +152,74 @@ function CorrelationTableRow({
         ...styleRow,
         backgroundColor: highlightRow.isActive ? '#ff6f0057' : 'inherit',
       },
+      title:
+        correlation.pseudo === false &&
+        [correlation.experimentType.toUpperCase()]
+          .concat(
+            correlation.link.reduce((arr, link) => {
+              if (
+                link.pseudo === false &&
+                link.experimentType !== correlation.experimentType &&
+                !arr.includes(link.experimentType.toUpperCase())
+              ) {
+                arr.push(link.experimentType.toUpperCase());
+              }
+              return arr;
+            }, []),
+          )
+          .sort()
+          .join('/'),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
-  }, [highlightRow.isActive, mouseEnterHandler, mouseLeaveHandler, styleRow]);
+  }, [
+    correlation.experimentType,
+    correlation.link,
+    correlation.pseudo,
+    highlightRow.isActive,
+    mouseEnterHandler,
+    mouseLeaveHandler,
+    styleRow,
+  ]);
 
   return (
     <tr style={styleRow}>
-      <td {...tableDataProps}>
-        {correlation.getExperimentType()
-          ? correlation.getExperimentType().toUpperCase()
-          : ''}
-      </td>
       <td
         {...{
           ...tableDataProps,
           style: { ...tableDataProps.style, styleLabel },
         }}
       >
-        {Utilities.getLabel(correlations, correlation)}
+        {GeneralUtilities.getLabel(correlations, correlation)}
       </td>
       <td {...tableDataProps}>
-        {lodashGet(correlation.getSignal(), 'delta', false)
-          ? correlation.getSignal().delta.toFixed(3)
+        {lodashGet(correlation.signal, 'delta', false)
+          ? correlation.signal.delta.toFixed(2)
           : ''}
       </td>
       <td {...tableDataProps}>
-        {correlation.getPseudo() === false ? (
-          correlation.getAtomType() !== 'H' ? (
+        {correlation.pseudo === false ? (
+          correlation.atomType !== 'H' ? (
             <EditableColumn
               type="number"
-              value={correlation.getEquivalences()}
+              value={correlation.equivalence}
               style={equivalenceCellStyle}
               onSave={onSaveEquivalencesHandler}
             />
           ) : (
-            <text style={equivalenceCellStyle}>
-              {correlation.getEquivalences()}
-            </text>
+            <text style={equivalenceCellStyle}>{correlation.equivalence}</text>
           )
         ) : (
           ''
         )}
       </td>
       <td {...tableDataProps}>
-        {correlation.getAtomType() !== 'H' ? (
+        {correlation.atomType !== 'H' ? (
           <EditableColumn
             type="text"
-            value={correlation.getProtonsCount().join(',')}
+            value={correlation.protonsCount.join(',')}
             style={
-              correlation.getEdited().protonsCount
+              correlation.edited.protonsCount
                 ? { backgroundColor: '#F7F2E0' }
                 : {}
             }
@@ -216,14 +235,14 @@ function CorrelationTableRow({
           style: { ...tableDataProps.style, borderRight: '1px solid' },
         }}
       >
-        {correlation.getAtomType() !== 'H' ? (
+        {correlation.atomType !== 'H' ? (
           <SelectUncontrolled
             onChange={onChangeHybridizationHandler}
             data={Hybridizations}
-            value={correlation.getHybridization()}
+            value={correlation.hybridization}
             style={{
               ...selectBoxStyle,
-              backgroundColor: correlation.getEdited().hybridization
+              backgroundColor: correlation.edited.hybridization
                 ? '#F7F2E0'
                 : styleRow.backgroundColor,
               width: '50px',

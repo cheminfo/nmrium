@@ -9,7 +9,7 @@ function getAtomType(nucleus) {
 function getLabelColor(correlationData, correlation) {
   const error = lodashGet(
     correlationData,
-    `state.${correlation.getAtomType()}.error`,
+    `state.${correlation.atomType}.error`,
     null,
   );
   if (error) {
@@ -19,8 +19,7 @@ function getLabelColor(correlationData, correlation) {
         (ErrorColors[errorIndex].key === 'notAttached' ||
           ErrorColors[errorIndex].key === 'ambiguousAttachment') &&
         lodashGet(error, `${ErrorColors[errorIndex].key}`, []).some(
-          (index) =>
-            correlationData.values[index].getID() === correlation.getID(),
+          (index) => correlationData.values[index].id === correlation.id,
         )
       ) {
         return ErrorColors[errorIndex].color;

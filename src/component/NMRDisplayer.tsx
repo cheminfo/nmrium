@@ -17,6 +17,8 @@ import {
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
+import { Datum1D } from '../data/data1d/Datum1D';
+import { Datum2D } from '../data/data2d/Datum2D';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
 
 import Viewer1D from './1d/Viewer1D';
@@ -175,25 +177,12 @@ export type NMRDisplayerPreferences = Partial<{
   }>;
 }>;
 
+export type Molecules = Array<{ molfile: string }>;
+export type Spectra = Array<Partial<Datum1D> | Partial<Datum2D>>;
+
 export interface NMRDisplayerData {
-  molecules?: Array<{ molfile: string }>;
-  spectra: Array<{
-    data?: any;
-    id?: string;
-    display: {
-      name?: string;
-    };
-    source:
-      | {
-          jcamp: string;
-        }
-      | {
-          jcampURL: string;
-        }
-      | {
-          original: any;
-        };
-  }>;
+  molecules?: Molecules;
+  spectra: Spectra;
 }
 
 function NMRDisplayer({

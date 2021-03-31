@@ -1,4 +1,4 @@
-import { Utilities } from 'nmr-correlation';
+import { GeneralUtilities } from 'nmr-correlation';
 import { memo } from 'react';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
@@ -7,7 +7,7 @@ function Overview({ correlationsData }) {
   if (!correlationsData) {
     return null;
   }
-  const atoms = Utilities.getAtomCounts(correlationsData.options.mf);
+  const atoms = GeneralUtilities.getAtomCounts(correlationsData.options.mf);
 
   return Object.keys(atoms).length > 0 ? (
     Object.keys(atoms).map((atomType, i) => {
@@ -23,7 +23,8 @@ function Overview({ correlationsData }) {
           key={`molFormulaView_${i}`}
           style={{
             color: stateAtomType
-              ? stateAtomType.complete === true && !error
+              ? stateAtomType.complete === true &&
+                (!error || Object.keys(error).length === 0)
                 ? 'green'
                 : errorColorIndex >= 0
                 ? ErrorColors[errorColorIndex].color
