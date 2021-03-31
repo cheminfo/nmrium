@@ -1,6 +1,8 @@
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 
+import { Filters } from '../../../data/Filters';
+import * as FiltersManager from '../../../data/FiltersManager';
 import {
   DatumKind,
   SignalKindsToInclude,
@@ -15,6 +17,7 @@ import {
   Datum1D,
   Range,
   Signal,
+  updateXShift,
 } from '../../../data/data1d/Datum1D';
 import {
   getPubIntegral,
@@ -25,6 +28,7 @@ import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
+import { setDomain } from './DomainActions';
 
 function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
   if (draft.activeSpectrum?.id) {
@@ -184,8 +188,21 @@ function handleChangeRangeSignalValue(draft, action) {
   const { rangeID, signalID, value } = action.payload;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeRangeSignal(draft.data[index], rangeID, signalID, value);
+
+    const shift = changeRangeSignal(
+      draft.data[index],
+      rangeID,
+      signalID,
+      value,
+    );
+    FiltersManager.applyFilter(draft.data[index], [
+      { name: Filters.shiftX.id, options: shift },
+    ]);
+
+    updateXShift(draft.data[index] as Datum1D);
+
     handleOnChangeRangesData(draft);
+    setDomain(draft);
   }
 }
 

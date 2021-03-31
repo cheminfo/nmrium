@@ -64,6 +64,7 @@ export interface Integrals {
 export interface Signal {
   id: string;
   kind: string;
+  originDelta?: number;
   delta: number;
   multiplicity: string;
   peak?: Array<Partial<{ x: number; intensity: number; width: number }>>;
@@ -350,7 +351,12 @@ export function mapRanges(ranges, datum) {
     );
 
     const signal = range.signal.map((_signal) => {
-      return { kind: 'signal', id: generateID(), ..._signal };
+      return {
+        kind: 'signal',
+        id: generateID(),
+        originDelta: _signal.delta - shiftX,
+        ..._signal,
+      };
     });
 
     return {
@@ -399,21 +405,16 @@ export function addRange(datum, options) {
 
   const signals = detectSignal(x, re, from, to, datum.info.originFrequency);
 
-  const shiftX = getShiftX(datum);
-
   try {
     const range = {
       id: generateID(),
-      originFrom: from - shiftX,
-      originTo: to - shiftX,
       from,
       to,
       absolute, // the real value,
       signal: [{ id: generateID(), ...signals }],
       kind: DatumKind.signal,
     };
-    datum.ranges.values.push(range);
-
+    datum.ranges.values = datum.ranges.values.concat(mapRanges([range], datum));
     updateIntegralRanges(datum);
   } catch (e) {
     throw new Error('Could not calculate the multiplicity');
@@ -446,6 +447,9 @@ export function updateRangesXShift(datum: Datum1D, shiftValue) {
     ...range,
     from: range.originFrom + shiftValue,
     to: range.originTo + shiftValue,
+    signal:
+      range?.signal &&
+      range.signal.map((s) => ({ ...s, delta: s.originDelta + shiftValue })),
   }));
 }
 export function updateIntegralXShift(datum: Datum1D, shiftValue) {
@@ -472,6 +476,7 @@ export function changeRangesRealtive(datum, rangeID, newRealtiveValue) {
 }
 
 export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
+  let shiftValue = 0;
   const rangeIndex = datum.ranges.values.findIndex(
     (range) => range.id === rangeID,
   );
@@ -479,6 +484,10 @@ export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
     const signalIndex = datum.ranges.values[rangeIndex].signal.findIndex(
       (signal) => signal.id === signalID,
     );
+    shiftValue =
+      newSignalValue -
+      datum.ranges.values[rangeIndex].signal[signalIndex].delta;
     datum.ranges.values[rangeIndex].signal[signalIndex].delta = newSignalValue;
   }
+  return shiftValue;
 }
