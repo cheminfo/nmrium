@@ -95,6 +95,9 @@ function SummaryPanel() {
 
   const filteredCorrelationsData = useMemo(() => {
     const isInView = (value) => {
+      if (value.pseudo === true) {
+        return false;
+      }
       const atomTypesInView = activeTab
         .split(',')
         .map((tab) => getAtomType(tab));
@@ -239,7 +242,7 @@ function SummaryPanel() {
     const columnTypes = ['-'].concat(
       correlationsData
         ? correlationsData.values
-            .map((correlation) => correlation.getAtomType())
+            .map((correlation) => correlation.atomType)
             .filter((atomType, i, array) => array.indexOf(atomType) === i)
         : [],
     );
@@ -285,11 +288,11 @@ function SummaryPanel() {
       dispatch({
         type: SET_CORRELATION,
         payload: {
-          id: correlation.getID(),
+          id: correlation.id,
           correlation: {
             ...correlation,
             equivalence: value,
-            edited: { ...correlation.getEdited(), equivalence: true },
+            edited: { ...correlation.edited, equivalence: true },
           },
         },
       });
@@ -317,11 +320,11 @@ function SummaryPanel() {
         dispatch({
           type: SET_CORRELATION,
           payload: {
-            id: correlation.getID(),
+            id: correlation.id,
             correlation: {
               ...correlation,
               protonsCount: values,
-              edited: { ...correlation.getEdited(), protonsCount: true },
+              edited: { ...correlation.edited, protonsCount: true },
             },
           },
         });
@@ -335,11 +338,11 @@ function SummaryPanel() {
       dispatch({
         type: SET_CORRELATION,
         payload: {
-          id: correlation.getID(),
+          id: correlation.id,
           correlation: {
             ...correlation,
             hybridization: value,
-            edited: { ...correlation.getEdited(), hybridization: true },
+            edited: { ...correlation.edited, hybridization: true },
           },
         },
       });
@@ -352,19 +355,19 @@ function SummaryPanel() {
       dispatch({
         type: SET_CORRELATIONS,
         payload: {
-          ids: [rowCorrelation.getID(), columnCorrelation.getID()],
+          ids: [rowCorrelation.id, columnCorrelation.id],
           correlations: [
             {
               ...rowCorrelation,
               edited: {
-                ...rowCorrelation.getEdited(),
+                ...rowCorrelation.edited,
                 additionalColumnField: true,
               },
             },
             {
               ...columnCorrelation,
               edited: {
-                ...columnCorrelation.getEdited(),
+                ...columnCorrelation.edited,
                 additionalColumnField: true,
               },
             },

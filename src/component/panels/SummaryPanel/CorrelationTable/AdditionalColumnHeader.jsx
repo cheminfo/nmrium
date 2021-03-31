@@ -11,7 +11,7 @@ function AdditionalColumnHeader({
   correlation,
 }) {
   const highlightIDsAdditionalColumn = useMemo(() => {
-    if (correlation.getPseudo() === true) {
+    if (correlation.pseudo === true) {
       return [];
     }
     const ids = [
@@ -23,8 +23,9 @@ function AdditionalColumnHeader({
       ids.push(id);
     }
     correlation.link.forEach((link) => {
-      if (link.getPseudo() === false) {
+      if (link.pseudo === false) {
         ids.push(link.signal.id);
+        ids.push(buildID(link.signal.id, 'Crosshair_X'));
         const _id = findRangeOrZoneID(spectraData, link);
         if (_id) {
           ids.push(_id);
@@ -59,6 +60,23 @@ function AdditionalColumnHeader({
           ? '#ff6f0057'
           : 'inherit',
       },
+      title:
+        correlation.pseudo === false &&
+        [correlation.experimentType.toUpperCase()]
+          .concat(
+            correlation.link.reduce((arr, link) => {
+              if (
+                link.pseudo === false &&
+                link.experimentType !== correlation.experimentType &&
+                !arr.includes(link.experimentType.toUpperCase())
+              ) {
+                arr.push(link.experimentType.toUpperCase());
+              }
+              return arr;
+            }, []),
+          )
+          .sort()
+          .join('/'),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
@@ -70,27 +88,31 @@ function AdditionalColumnHeader({
     mouseLeaveHandler,
   ]);
 
+  const equivalenceTextStyle = useMemo(() => {
+    return correlation.edited.equivalence
+      ? { backgroundColor: '#F7F2E0' }
+      : {
+          color: Number.isInteger(correlation.equivalence)
+            ? correlation.equivalence === 1
+              ? '#bebebe'
+              : 'black'
+            : 'red',
+        };
+  }, [correlation]);
+
   return (
     <th {...tableHeaderProps}>
       <div style={{ display: 'block' }}>
-        <p>{correlation.getLabel('origin')}</p>
+        <p>{correlation.label.origin}</p>
         <p>
-          {correlation &&
-          correlation.getSignal() &&
-          correlation.getSignal().delta
-            ? correlation.getSignal().delta.toFixed(3)
+          {correlation && correlation.signal && correlation.signal.delta
+            ? correlation.signal.delta.toFixed(2)
             : ''}
         </p>
-        <p style={{ fontSize: 8 }}>
-          {`${
-            correlation.getExperimentType()
-              ? `${correlation.getExperimentType().toUpperCase()}`
-              : ''
-          } ${
-            correlation.getEquivalences() > 1
-              ? `(${correlation.getEquivalences()})`
-              : ''
-          }`}
+        <p style={equivalenceTextStyle}>
+          {Number.isInteger(correlation.equivalence)
+            ? correlation.equivalence
+            : correlation.equivalence.toFixed(2)}
         </p>
       </div>
     </th>

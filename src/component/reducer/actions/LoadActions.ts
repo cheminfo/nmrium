@@ -1,12 +1,17 @@
 import { Draft } from 'immer';
 import lodashGet from 'lodash/get';
-import { CorrelationManager } from 'nmr-correlation';
+import { Build, Types } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import { initiateDatum1D } from '../../../data/data1d/Datum1D';
 import { initiateDatum2D } from '../../../data/data2d/Datum2D';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
+import {
+  Molecules,
+  NMRDisplayerPreferences,
+  Spectra,
+} from '../../NMRDisplayer';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import { State } from '../Reducer';
 
@@ -14,11 +19,19 @@ import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
 import { initZoom1DHandler } from './Zoom';
 
-function setIsLoading(draft, isLoading) {
+function setIsLoading(draft: Draft<State>, isLoading: boolean) {
   draft.isLoading = isLoading;
 }
 
-function setData(draft: Draft<State>, data) {
+function setData(
+  draft: Draft<State>,
+  data: {
+    spectra: Spectra;
+    molecules: Molecules;
+    preferences: NMRDisplayerPreferences;
+    correlations: Types.CorrelationData;
+  },
+) {
   const {
     spectra,
     molecules,
@@ -36,12 +49,14 @@ function setData(draft: Draft<State>, data) {
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
 
-  if (correlations) {
-    draft.correlations = CorrelationManager.init(correlations);
-  } else {
-    draft.correlations = CorrelationManager.init({
+  if (!correlations || Object.keys(correlations).length === 0) {
+    draft.correlations = Build.init({
+      values: [],
       options: { tolerance: DefaultTolerance, mf: '' },
+      state: {},
     });
+  } else {
+    draft.correlations = Build.init(correlations);
   }
 
   // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
