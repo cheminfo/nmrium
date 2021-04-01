@@ -4,7 +4,6 @@ import { useCallback, useState, useEffect } from 'react';
 
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import { useAssignment } from '../../assignment';
-import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScale } from '../../context/ScaleContext';
 import { TYPES, useHighlight } from '../../highlight';
@@ -50,7 +49,7 @@ const stylesHighlighted = css`
   }
 `;
 
-function Range({ rangeData, showMultiplicityTrees }) {
+function Range({ rangeData, showMultiplicityTrees, selectedTool }) {
   const { id, from, to, integral, signal } = rangeData;
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -59,7 +58,6 @@ function Range({ rangeData, showMultiplicityTrees }) {
   );
 
   const { scaleX } = useScale();
-  const { selectedTool } = useChartData();
   const dispatch = useDispatch();
 
   const [reduceOpacity, setReduceOpacity] = useState(false);
@@ -98,12 +96,15 @@ function Range({ rangeData, showMultiplicityTrees }) {
 
   const assignHandler = useCallback(
     (e) => {
-      if (e.shiftKey && !isBlockedByEditing) {
-        e.stopPropagation();
+      if (
+        selectedTool === options.rangesPicking.id &&
+        e.shiftKey &&
+        !isBlockedByEditing
+      ) {
         assignmentRange.onClick('x');
       }
     },
-    [assignmentRange, isBlockedByEditing],
+    [assignmentRange, isBlockedByEditing, selectedTool],
   );
 
   return (
