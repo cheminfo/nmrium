@@ -307,8 +307,14 @@ export function changeZoneSignal(
     );
     if (signalIndex !== -1) {
       const originalSignal = datum.zones.values[zoneIndex].signal[signalIndex];
-      const xShift = newSignal.x ? newSignal.x - originalSignal.x.delta : 0;
-      const yShift = newSignal.y ? newSignal.y - originalSignal.y.delta : 0;
+      const xShift =
+        newSignal?.x || newSignal?.x === 0
+          ? newSignal.x - originalSignal.x.delta
+          : 0;
+      const yShift =
+        newSignal?.y || newSignal?.y === 0
+          ? newSignal.y - originalSignal.y.delta
+          : 0;
 
       // if (newSignal.x) {
       //   datum.zones.values[zoneIndex].signal[signalIndex].x.delta = newSignal.x;
