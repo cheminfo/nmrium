@@ -289,93 +289,97 @@ function NMRDisplayer({
         }}
       >
         <PreferencesProvider value={preferencesState}>
-          {/* @ts-expect-error: TODO remove when HelpProvider is migrated */}
-          <HelpProvider
-            data={helpData}
-            wrapperRef={elementsWraperRef.current}
-            preventAutoHelp={preventAutoHelp}
+          <div
+            onMouseEnter={mouseEnterHandler}
+            onMouseLeave={mouseLeaveHandler}
+            style={{ height: '100%' }}
           >
-            {/* @ts-expect-error: TODO remove when AlertProvider is migrated */}
-            <AlertProvider wrapperRef={elementsWraperRef.current}>
-              <DispatchProvider value={dispatchMiddleWare}>
-                <ChartDataProvider value={{ ...state, isResizeEventStart }}>
-                  <ModalProvider wrapperRef={elementsWraperRef.current}>
-                    <HighlightProvider>
-                      <AssignmentProvider spectraData={spectraData}>
-                        <div
-                          ref={rootRef}
-                          css={containerStyles}
-                          onMouseEnter={mouseEnterHandler}
-                          onMouseLeave={mouseLeaveHandler}
-                          onContextMenu={preventContextMenuHandler}
-                        >
-                          <KeysListenerTracker />
-
-                          <Header
-                            isFullscreen={isFullscreen}
-                            onMaximize={toggle}
-                          />
-
-                          {/* ref={containerRef} */}
+            {/* @ts-expect-error: TODO remove when HelpProvider is migrated */}
+            <HelpProvider
+              data={helpData}
+              wrapperRef={elementsWraperRef.current}
+              preventAutoHelp={preventAutoHelp}
+            >
+              {/* @ts-expect-error: TODO remove when AlertProvider is migrated */}
+              <AlertProvider wrapperRef={elementsWraperRef.current}>
+                <DispatchProvider value={dispatchMiddleWare}>
+                  <ChartDataProvider value={{ ...state, isResizeEventStart }}>
+                    <ModalProvider wrapperRef={elementsWraperRef.current}>
+                      <HighlightProvider>
+                        <AssignmentProvider spectraData={spectraData}>
                           <div
-                            style={{
-                              height: 'calc(100% - 36px)',
-                              width: '100%',
-                              backgroundColor: 'white',
-                            }}
+                            ref={rootRef}
+                            css={containerStyles}
+                            onContextMenu={preventContextMenuHandler}
                           >
-                            <DropZone>
-                              <ToolBar selectedTool={selectedTool} />
-                              <SplitPane
-                                style={splitPaneStyles.container}
-                                resizerStyle={splitPaneStyles.resizer}
-                                paneStyle={splitPaneStyles.pane}
-                                pane1Style={
-                                  isRightPanelHide
-                                    ? {
-                                        maxWidth: '100%',
-                                        width: 'calc(100% - 10px)',
-                                      }
-                                    : { maxWidth: '80%' }
-                                }
-                                split="vertical"
-                                defaultSize={
-                                  isRightPanelHide
-                                    ? '99%'
-                                    : 'calc(100% - 600px)'
-                                }
-                                minSize="80%"
-                                onDragFinished={handleSplitPanelDragFinished}
-                                onResizerDoubleClick={rightPanelHandler}
-                                onDragStarted={() => {
-                                  setResizeEventStart(true);
-                                }}
-                              >
-                                {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                                  <Viewer1D />
-                                ) : (
-                                  <Viewer2D />
-                                )}
-                                {!isRightPanelHide ? (
-                                  <Panels
-                                    selectedTool={selectedTool}
-                                    displayerMode={displayerMode}
-                                  />
-                                ) : (
-                                  <div />
-                                )}
-                              </SplitPane>
-                            </DropZone>
+                            <KeysListenerTracker />
+
+                            <Header
+                              isFullscreen={isFullscreen}
+                              onMaximize={toggle}
+                            />
+
+                            {/* ref={containerRef} */}
+                            <div
+                              style={{
+                                height: 'calc(100% - 36px)',
+                                width: '100%',
+                                backgroundColor: 'white',
+                              }}
+                            >
+                              <DropZone>
+                                <ToolBar selectedTool={selectedTool} />
+                                <SplitPane
+                                  style={splitPaneStyles.container}
+                                  resizerStyle={splitPaneStyles.resizer}
+                                  paneStyle={splitPaneStyles.pane}
+                                  pane1Style={
+                                    isRightPanelHide
+                                      ? {
+                                          maxWidth: '100%',
+                                          width: 'calc(100% - 10px)',
+                                        }
+                                      : { maxWidth: '80%' }
+                                  }
+                                  split="vertical"
+                                  defaultSize={
+                                    isRightPanelHide
+                                      ? '99%'
+                                      : 'calc(100% - 600px)'
+                                  }
+                                  minSize="80%"
+                                  onDragFinished={handleSplitPanelDragFinished}
+                                  onResizerDoubleClick={rightPanelHandler}
+                                  onDragStarted={() => {
+                                    setResizeEventStart(true);
+                                  }}
+                                >
+                                  {displayerMode === DISPLAYER_MODE.DM_1D ? (
+                                    <Viewer1D />
+                                  ) : (
+                                    <Viewer2D />
+                                  )}
+                                  {!isRightPanelHide ? (
+                                    <Panels
+                                      selectedTool={selectedTool}
+                                      displayerMode={displayerMode}
+                                    />
+                                  ) : (
+                                    <div />
+                                  )}
+                                </SplitPane>
+                              </DropZone>
+                            </div>
+                            <div ref={elementsWraperRef} id="main-wrapper" />
                           </div>
-                          <div ref={elementsWraperRef} id="main-wrapper" />
-                        </div>
-                      </AssignmentProvider>
-                    </HighlightProvider>
-                  </ModalProvider>
-                </ChartDataProvider>
-              </DispatchProvider>
-            </AlertProvider>
-          </HelpProvider>
+                        </AssignmentProvider>
+                      </HighlightProvider>
+                    </ModalProvider>
+                  </ChartDataProvider>
+                </DispatchProvider>
+              </AlertProvider>
+            </HelpProvider>
+          </div>
         </PreferencesProvider>
       </GlobalProvider>
     </ErrorBoundary>
