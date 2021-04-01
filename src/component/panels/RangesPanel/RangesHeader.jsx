@@ -80,7 +80,11 @@ function RangesHeader({
       <ChangeSumModal
         onClose={() => modal.close()}
         onSave={changeRangesSumHandler}
-        header={`Set new Ranges Sum (Current: ${currentSum})`}
+        header={
+          currentSum
+            ? `Set new Ranges Sum (Current: ${Number(currentSum).toFixed(2)})`
+            : 'Set new Ranges Sum'
+        }
         molecules={molecules}
         element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
       />,
@@ -169,7 +173,11 @@ function RangesHeader({
         </button>
       </ToolTip>
       <ToolTip
-        title={`Change Ranges Sum (${currentSum})`}
+        title={
+          currentSum
+            ? `Change Ranges Sum (${Number(currentSum).toFixed(2)})`
+            : 'Change Ranges Sum'
+        }
         popupPlacement="right"
       >
         <button

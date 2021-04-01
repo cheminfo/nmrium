@@ -73,7 +73,13 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
       <ChangeSumModal
         onClose={() => modal.close()}
         onSave={changeIntegralSumHandler}
-        header={`Set new Integrals Sum (Current: ${currentSum})`}
+        header={
+          currentSum
+            ? `Set new Integrals Sum (Current: ${Number(currentSum).toFixed(
+                2,
+              )})`
+            : 'Set new Integrals Sum'
+        }
         molecules={molecules}
         element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
       />,
@@ -117,7 +123,11 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
             onSettingClick={settingsPanelHandler}
           >
             <ToolTip
-              title={`Change Integrals Sum (${currentSum})`}
+              title={
+                currentSum
+                  ? `Change Integrals Sum (${Number(currentSum).toFixed(2)})`
+                  : 'Change Integrals Sum'
+              }
               popupPlacement="right"
             >
               <button
