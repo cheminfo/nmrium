@@ -95,7 +95,7 @@ export interface Source {
 export interface Datum1D {
   id: string | number;
   source: Partial<Source>;
-  display: Display;
+  display: Partial<Display>;
   info: Partial<Info>;
   originalInfo?: Partial<Info>;
   meta: any;
