@@ -86,7 +86,7 @@ function LoadJCAMPModal({ onLoadClick, onClose, startLoading }) {
         <input
           ref={pathReft}
           type="text"
-          placeholder="Enter JCAMP file relative path ex: ./path/file.dx"
+          placeholder="Enter URL to JCAMP-DX file"
         />
         <button type="button" onClick={loadJCAMPHandler}>
           Load

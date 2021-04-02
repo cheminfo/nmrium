@@ -47,7 +47,7 @@ export default function Test(props) {
           marginBottom: '15px',
         }}
       >
-        Display and process 1D NMR spectra from a jcamp-dx file
+        Display and process 1D NMR spectra from a JCAMP-DX file
       </h5>
       {title && (
         <p

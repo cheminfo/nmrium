@@ -34,7 +34,7 @@ function NoData({ isEmpty = true }) {
   return (
     <div css={styles}>
       <p>
-        Drag and drop here a Jcamp-dx, zipped Bruker folder, Jeol jdf or NMRium
+        Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium
         file
       </p>
     </div>

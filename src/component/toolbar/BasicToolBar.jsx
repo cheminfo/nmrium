@@ -147,7 +147,7 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
         >
           <button type="button" css={menuButton} onClick={importJCAMPFile}>
             <FaFile />
-            <span>Add jcamp from URL</span>
+            <span>Add JCAMP-DX from URL</span>
           </button>
         </MenuButton>
       )}
