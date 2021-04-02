@@ -13,7 +13,7 @@ async function getData(url) {
   }
 }
 
-const baseUrl = 'https://api.github.com/repos/cheminfo/nmr-displayer';
+const baseUrl = 'https://api.github.com/repos/cheminfo/nmrium';
 
 const styles = css`
   width: 100%;
@@ -63,7 +63,7 @@ function AboutTabContent() {
   return info ? (
     <div css={styles}>
       <Logo />
-      <span>NMR Displayer </span>
+      <span>NMRium</span>
       <span> {info[1][0].name}</span>
 
       <span className="separator" />

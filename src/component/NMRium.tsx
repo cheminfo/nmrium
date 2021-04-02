@@ -134,14 +134,14 @@ const containerStyles = css`
   }
 `;
 
-export interface NMRDisplayerProps {
-  data?: NMRDisplayerData;
+export interface NMRiumProps {
+  data?: NMRiumData;
   docsBaseUrl?: string;
   onDataChange?: (data: any) => void;
-  preferences?: NMRDisplayerPreferences;
+  preferences?: NMRiumPreferences;
 }
 
-export type NMRDisplayerPreferences = Partial<{
+export type NMRiumPreferences = Partial<{
   general: Partial<{
     disableMultipletAnalysis: boolean;
     hideSetSumFromMolecule: boolean;
@@ -180,7 +180,7 @@ export type NMRDisplayerPreferences = Partial<{
 export type Molecules = Array<{ molfile: string }>;
 export type Spectra = Array<Partial<Datum1D> | Partial<Datum2D>>;
 
-export interface NMRDisplayerData {
+export interface NMRiumData {
   molecules?: Molecules;
   spectra: Spectra;
 }
@@ -190,7 +190,7 @@ function NMRium({
   onDataChange,
   docsBaseUrl,
   preferences,
-}: NMRDisplayerProps) {
+}: NMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWraperRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
@@ -423,7 +423,7 @@ NMRium.propTypes = {
 };
 
 NMRium.defaultProps = {
-  docsBaseUrl: 'https://cheminfo.github.io/nmr-displayer/docs/v0',
+  docsBaseUrl: 'https://dev.nmrium.org/docs/v0',
   onDataChange: () => null,
   preferences: {
     general: {
