@@ -27,7 +27,7 @@ Visit https://www.nmrium.org for examples of usage.
 ### Install the package
 
 ```console
-npm install nmr-displayer
+npm install nmrium
 ```
 
 ### OpenChemLib version
@@ -64,13 +64,13 @@ You can do some 1D NMR tests/ exams ;)
 
 https://dev.nmrium.org?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/exam.json
 
-If you have jcamps accessible from an URL and that your server allow cross-origin you can directly open your file in the nmr-displayer:
+If you have jcamps accessible from an URL and that your server allow cross-origin you can directly open your file in the demo application:
 
 https://dev.nmrium.org?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/100-86-7/1h.dx
 
 Link loading the default samples test cases
 
-https://dev.nmrium.org?sampleURL=https%3A%2F%2Fcheminfo.github.io%2Fnmr-displayer%2Fsamples.json#/
+https://dev.nmrium.org?sampleURL=https%3A%2F%2Fcheminfo.github.io%2Fnmrium%2Fsamples.json#/
 
 ### Install and test locally
 
