@@ -70,7 +70,7 @@ https://dev.nmrium.org?sampleURL=https%3A//cheminfo.github.io/nmr-dataset2/100-8
 
 Link loading the default samples test cases
 
-https://dev.nmrium.org?sampleURL=https%3A%2F%2Fcheminfo.github.io%2Fnmrium%2Fsamples.json#/
+https://dev.nmrium.org/?sampleURL=samples.json
 
 ### Install and test locally
 
