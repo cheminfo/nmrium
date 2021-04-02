@@ -7,11 +7,7 @@ import { initiateDatum1D } from '../../../data/data1d/Datum1D';
 import { initiateDatum2D } from '../../../data/data2d/Datum2D';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
-import {
-  Molecules,
-  NMRDisplayerPreferences,
-  Spectra,
-} from '../../NMRDisplayer';
+import { Molecules, NMRDisplayerPreferences, Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import { State } from '../Reducer';
 

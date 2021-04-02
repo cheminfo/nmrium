@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import NMRDisplayer from '../../component/NMRDisplayer';
+import NMRium from '../../component/NMRium';
 
 export default function SingleView(props) {
   const [data, setData] = useState();
@@ -56,7 +56,7 @@ export default function SingleView(props) {
           {path}
         </p>
       )}
-      <NMRDisplayer data={data} />
+      <NMRium data={data} />
     </div>
   );
 }

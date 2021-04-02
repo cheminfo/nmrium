@@ -185,7 +185,7 @@ export interface NMRDisplayerData {
   spectra: Spectra;
 }
 
-function NMRDisplayer({
+function NMRium({
   data: dataProp,
   onDataChange,
   docsBaseUrl,
@@ -386,7 +386,7 @@ function NMRDisplayer({
   );
 }
 
-NMRDisplayer.propTypes = {
+NMRium.propTypes = {
   docsBaseUrl: PropTypes.string,
   onDataChange: PropTypes.func,
   preferences: PropTypes.shape({
@@ -422,7 +422,7 @@ NMRDisplayer.propTypes = {
   }),
 };
 
-NMRDisplayer.defaultProps = {
+NMRium.defaultProps = {
   docsBaseUrl: 'https://cheminfo.github.io/nmr-displayer/docs/v0',
   onDataChange: () => null,
   preferences: {
@@ -464,4 +464,4 @@ NMRDisplayer.defaultProps = {
   },
 };
 
-export default memo(NMRDisplayer);
+export default memo(NMRium);

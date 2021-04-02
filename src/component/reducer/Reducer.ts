@@ -4,7 +4,7 @@ import { predictionProton } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
 import * as SpectraManager from '../../data/SpectraManager';
-import { Spectra } from '../NMRDisplayer';
+import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
 

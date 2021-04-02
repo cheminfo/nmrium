@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import NMRDisplayer from '../../component/NMRDisplayer';
+import NMRium from '../../component/NMRium';
 
 async function loadData(file) {
   const response = await fetch(file);
@@ -62,7 +62,7 @@ export default function Test(props) {
           {title}
         </p>
       )}
-      <NMRDisplayer
+      <NMRium
         data={data}
         preferences={{
           panels: { hidePeaksPanel: true, hideStructuresPanel: true },

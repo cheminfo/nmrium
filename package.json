@@ -1,10 +1,10 @@
 {
-  "name": "nmr-displayer",
+  "name": "nmrium",
   "version": "0.8.1",
   "license": "MIT",
-  "main": "lib-cjs/component/NMRDisplayer.js",
-  "module": "lib/component/NMRDisplayer.js",
-  "types": "lib/component/NMRDisplayer.d.ts",
+  "main": "lib-cjs/component/NMRium.js",
+  "module": "lib/component/NMRium.js",
+  "types": "lib/component/NMRium.d.ts",
   "files": [
     "lib",
     "lib-cjs"

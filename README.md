@@ -80,10 +80,10 @@ from `openchemlib/full` to avoid having multiple OCL versions in your bundle.
 ### Use the component
 
 ```jsx
-import NMRDisplayer from 'nmr-displayer';
+import NMRium from 'nmr-displayer';
 
 function MyComponent() {
-  return <NMRDisplayer />;
+  return <NMRium />;
 }
 ```
 

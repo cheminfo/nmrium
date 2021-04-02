@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
-import NMRDisplayer from '../../component/NMRDisplayer';
+import NMRium from '../../component/NMRium';
 
 async function loadData(file) {
   const response = await fetch(file);
@@ -113,7 +113,7 @@ export default function View(props) {
       >
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
           <div style={{ width: isCallbackVisible ? '75%' : '100%' }}>
-            <NMRDisplayer data={data} onDataChange={changeHadnler} />
+            <NMRium data={data} onDataChange={changeHadnler} />
           </div>
           {process.env.NODE_ENV !== 'production' && (
             <div
