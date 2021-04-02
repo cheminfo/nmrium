@@ -39,11 +39,11 @@
   },
   "homepage": ".",
   "bugs": {
-    "url": "https://github.com/cheminfo/nmr-displayer/issues"
+    "url": "https://github.com/cheminfo/nmrium/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cheminfo/nmr-displayer.git"
+    "url": "git+https://github.com/cheminfo/nmrium.git"
   },
   "peerDependencies": {
     "react": ">=16.0.0",

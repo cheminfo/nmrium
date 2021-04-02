@@ -27,5 +27,5 @@ jobs:
         run: |
           git config user.email admin@cheminfo.org
           git config user.name "Cheminfo Bot"
-          git remote set-url origin "https://cheminfo-bot:${{ secrets.ACCESS_TOKEN }}@github.com/cheminfo/nmr-displayer.git"
-          gh-pages -d build --dotfiles
+          git remote set-url origin "https://cheminfo-bot:${{ secrets.ACCESS_TOKEN }}@github.com/cheminfo/nmrium.git"
+          gh-pages -d build --dest docs --dotfiles
