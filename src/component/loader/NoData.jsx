@@ -14,6 +14,8 @@ const styles = css`
   height: 100%;
   outline: 10px dashed rgba(0, 0, 0, 0.3);
   outline-offset: -10px;
+  padding-left: 20px;
+  padding-right: 20px;
 
   p {
     padding: 15px 30px;
