@@ -190,8 +190,7 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
             onClick={handleChangeDisplayViewMode}
           >
             <ToolTip title="Spectra alignment" popupPlacement="right">
-              <div />
-              {!isStacked ? <SvgNmrOverlay3Aligned /> : <SvgNmrOverlay3 />}{' '}
+              {!isStacked ? <SvgNmrOverlay3Aligned /> : <SvgNmrOverlay3 />}
             </ToolTip>
           </button>
         )}

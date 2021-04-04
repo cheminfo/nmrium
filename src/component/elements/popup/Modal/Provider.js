@@ -211,9 +211,7 @@ function Provider({
                   </Transition>
                 </TransitionGroup>
               </div>
-            ) : (
-              <div />
-            )}
+            ) : null}
           </Fragment>,
           root.current,
         )}
