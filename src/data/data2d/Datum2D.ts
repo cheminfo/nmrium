@@ -340,35 +340,34 @@ export function changeZoneSignal(
  * @param {boolean} options.convolutionByFFT
  */
 export function detectZonesManual(datum, options) {
-  const { fromX, toX, fromY, toY } = options.selectedZone;
-  const zones = getDetectionZones(datum, options);
+  const signals = getDetectionZones(datum, options);
   const { xShift, yShift } = getShift(datum);
-  const signals = zones.map((zone) => {
-    return {
+  for (let signal of signals) {
+    let { fromTo } = signal;
+    datum.zones.values.push({
       id: generateID(),
-      peak: zone.peaks,
-      x: {
-        originDelta: zone.shiftX - xShift,
-        delta: zone.shiftX,
-        diaID: [],
-      },
-      y: {
-        originDelta: zone.shiftY - yShift,
-        delta: zone.shiftY,
-        diaID: [],
-      },
-      kind: 'signal',
-    };
-  });
-  const zone = {
-    id: generateID(),
-    x: { from: fromX, to: toX },
-    y: { from: fromY, to: toY },
-    signal: signals,
-    kind: DatumKind.signal,
-  };
-
-  datum.zones.values.push(zone);
+      x: fromTo[0],
+      y: fromTo[1],
+      signal: [
+        {
+          id: generateID(),
+          peak: signal.peaks,
+          x: {
+            originDelta: signal.shiftX - xShift,
+            delta: signal.shiftX,
+            diaID: [],
+          },
+          y: {
+            originDelta: signal.shiftY - yShift,
+            delta: signal.shiftY,
+            diaID: [],
+          },
+          kind: 'signal',
+        },
+      ],
+      kind: DatumKind.signal,
+    });
+  }
 }
 
 /** calculate the missing projection
