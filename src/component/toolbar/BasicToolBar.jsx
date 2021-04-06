@@ -93,6 +93,7 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
     saveAsSVGHandler,
     saveAsPNGHandler,
     saveAsJSONHandler,
+    saveAsNMREHandler,
     saveToClipboardHandler,
     changeSpectrumViewHandler,
     handleChangeDisplayViewMode,
@@ -169,6 +170,10 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
           <button type="button" css={menuButton} onClick={saveAsJSONHandler}>
             <FaFileDownload />
             <span>Save data ( Press Ctrl + S )</span>
+          </button>
+          <button type="button" css={menuButton} onClick={saveAsNMREHandler}>
+            <FaFileDownload />
+            <span>Save NMRE data </span>
           </button>
           <button
             type="button"

@@ -78,6 +78,13 @@ export default function useToolsFunctions(dispatch, alert) {
     [dispatch],
   );
 
+  const saveAsNMREHandler = useCallback(() => {
+    dispatch({
+      type: EXPORT_DATA,
+      exportType: 'nmre',
+    });
+  }, [dispatch]);
+
   const saveAsSVGHandler = useCallback(() => {
     dispatch({
       type: EXPORT_DATA,
@@ -118,6 +125,7 @@ export default function useToolsFunctions(dispatch, alert) {
     handleFullZoomOut,
     saveToClipboardHandler,
     saveAsJSONHandler,
+    saveAsNMREHandler,
     saveAsSVGHandler,
     saveAsPNGHandler,
     handleChangeDisplayViewMode,

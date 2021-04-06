@@ -3,6 +3,7 @@ import { current, Draft } from 'immer';
 import { toJSON } from '../../../data/SpectraManager';
 import {
   exportAsJSON,
+  exportAsNMRE,
   exportAsSVG,
   exportAsPng,
   copyPNGToClipboard,
@@ -20,6 +21,11 @@ function exportData(draft: Draft<State>, { exportType, spaceIndent }) {
       case 'json': {
         const exportedData = toJSON(state);
         exportAsJSON(exportedData, fileName, spaceIndent);
+        break;
+      }
+      case 'nmre': {
+        const exportedData = toJSON(state);
+        exportAsNMRE(exportedData, fileName);
         break;
       }
       case 'svg': {

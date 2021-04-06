@@ -70,6 +70,15 @@ function exportAsJSON(data, fileName = 'experiment', spaceIndent) {
   const blob = new Blob([fileData], { type: 'text/plain' });
   saveAs(blob, `${fileName}.nmrium`);
 }
+function exportAsNMRE(data, fileName = 'experiment') {
+  const fileData = JSON.stringify(
+    data,
+    (key, value) => (ArrayBuffer.isView(value) ? Array.from(value) : value),
+    0,
+  );
+  const blob = new Blob([fileData], { type: 'text/plain' });
+  saveAs(blob, `${fileName}.nmrium`);
+}
 
 function exportAsMol(data, fileName = 'mol') {
   const blob = new Blob([data], { type: 'text/plain' });
@@ -207,6 +216,7 @@ function getBlob(elementID) {
 export {
   exportAsSVG,
   exportAsJSON,
+  exportAsNMRE,
   exportAsPng,
   copyPNGToClipboard,
   copyTextToClipboard,
