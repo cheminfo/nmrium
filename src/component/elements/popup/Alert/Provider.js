@@ -1,5 +1,12 @@
 import PropTypes from 'prop-types';
-import { Fragment, useState, useRef, useEffect, useCallback } from 'react';
+import {
+  Fragment,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
 import { TransitionGroup } from 'react-transition-group';
@@ -137,6 +144,18 @@ function Provider({
   );
 
   const alertsByPosition = groupBy(alerts, (alert) => alert.options.position);
+
+  const parentStyle = useMemo(() => {
+    return wrapperRef
+      ? wrapperRef.getBoundingClientRect()
+      : {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+  }, [wrapperRef]);
+
   return (
     <AlertProvider
       value={{ alerts, show, remove, removeAll, success, error, info }}
@@ -154,6 +173,7 @@ function Provider({
                   key={position}
                   options={{ position, zIndex: 999999 }}
                   component={Wrapper}
+                  containerStyle={parentStyle}
                   {...props}
                 >
                   {alertsByPosition[position]

@@ -299,7 +299,7 @@ function NMRium({
           <div
             onMouseEnter={mouseEnterHandler}
             onMouseLeave={mouseLeaveHandler}
-            style={{ height: '100%' }}
+            style={{ height: '100%', position: 'relative' }}
           >
             {/* @ts-expect-error: TODO remove when HelpProvider is migrated */}
             <HelpProvider
@@ -377,7 +377,20 @@ function NMRium({
                                   </SplitPane>
                                 </DropZone>
                               </div>
-                              <div ref={elementsWraperRef} id="main-wrapper" />
+                              <div
+                                ref={elementsWraperRef}
+                                key={String(isFullscreen)}
+                                id="main-wrapper"
+                                style={{
+                                  position: 'absolute',
+                                  pointerEvents: 'none',
+                                  zIndex: 0,
+                                  left: 0,
+                                  right: 0,
+                                  top: 0,
+                                  bottom: 0,
+                                }}
+                              />
                             </div>
                           </SpinnerProvider>
                         </AssignmentProvider>

@@ -31,7 +31,6 @@ const defaultTransitionStyles = {
 
 const Transtion = ({ children, type, transitionStyles, ...props }) => {
   const ref = useRef(null);
-
   return (
     <ContainerTransition nodeRef={ref} {...props} timeout={duration}>
       {(state) => (
@@ -40,6 +39,7 @@ const Transtion = ({ children, type, transitionStyles, ...props }) => {
           style={{
             ...defaultStyle[type],
             ...transitionStyles[type][state],
+            ...transitionStyles.default,
           }}
         >
           {children}
