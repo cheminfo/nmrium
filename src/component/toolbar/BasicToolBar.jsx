@@ -26,6 +26,7 @@ import ToolTip from '../elements/ToolTip/ToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import ToolBarWrapper from '../hoc/ToolBarWrapper';
+import { DropZoneRef } from '../loader/DropZone';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
@@ -136,6 +137,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
     },
     [preferences],
   );
+  const importFromFileSystemHandler = useCallback(() => {
+    DropZoneRef.current.open();
+  }, []);
 
   return (
     <Fragment>
@@ -146,6 +150,14 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
           component={<FaFileImport />}
           toolTip="Import"
         >
+          <button
+            type="button"
+            css={menuButton}
+            onClick={importFromFileSystemHandler}
+          >
+            <FaFile />
+            <span>Import from file system</span>
+          </button>
           <button type="button" css={menuButton} onClick={importJCAMPFile}>
             <FaFile />
             <span>Add JCAMP-DX from URL</span>

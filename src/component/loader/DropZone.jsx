@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback } from 'react';
+import { createRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
@@ -48,6 +48,8 @@ const containerStyle = css`
   flex-direction: 'column';
   height: 100%;
 `;
+
+export const DropZoneRef = createRef();
 
 function DropZone(props) {
   const { width, height } = useChartData();
@@ -142,10 +144,12 @@ function DropZone(props) {
     [dispatch],
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  DropZoneRef.current = useDropzone({
     onDrop,
     noClick: true,
   });
+
+  const { getRootProps, getInputProps, isDragActive } = DropZoneRef.current;
 
   return (
     <div {...getRootProps()} css={containerStyle}>
