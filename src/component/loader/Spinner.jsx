@@ -5,7 +5,7 @@ import { useChartData } from '../context/ChartContext';
 import NoData from './NoData';
 import { spinnerContext } from './SpinnerContext';
 
-function Spinner({ isLoading = true }) {
+function Spinner({ isLoading = true, message = undefined }) {
   const { data } = useChartData();
   const [checkEmpty, startCheckEmpty] = useState(false);
 
@@ -27,7 +27,7 @@ function Spinner({ isLoading = true }) {
     <Fragment>
       {isLoading && getSpinner()}
       {checkEmpty && !isLoading && (
-        <NoData isEmpty={data && data.length === 0} />
+        <NoData isEmpty={data && data.length === 0} message={message} />
       )}
     </Fragment>
   );

@@ -28,17 +28,17 @@ const styles = css`
   }
 }
 `;
-function NoData({ isEmpty = true }) {
+function NoData({
+  isEmpty = true,
+  message = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
+}) {
   if (!isEmpty) {
     return null;
   }
 
   return (
     <div css={styles}>
-      <p>
-        Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium
-        file
-      </p>
+      <p>{message}</p>
     </div>
   );
 }
