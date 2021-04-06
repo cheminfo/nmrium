@@ -1,5 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useCallback } from 'react';
+
+import { DropZoneRef } from './DropZone';
 
 const styles = css`
   display: flex;
@@ -28,17 +31,22 @@ const styles = css`
   }
 }
 `;
+
 function NoData({
   isEmpty = true,
   message = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
 }) {
+  const openFileDialogHadnler = useCallback(() => {
+    DropZoneRef.current.open();
+  }, []);
+
   if (!isEmpty) {
     return null;
   }
 
   return (
-    <div css={styles}>
-      <p>{message}</p>
+    <div css={styles} onClick={openFileDialogHadnler}>
+       <p>{message}</p>
     </div>
   );
 }
