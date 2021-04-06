@@ -42,7 +42,7 @@ import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
 
-function Viewer1D() {
+function Viewer1D({ message = undefined }) {
   const {
     display: { general },
   } = usePreferences();
@@ -248,7 +248,7 @@ function Viewer1D() {
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
       <Fragment>
-        <Spinner isLoading={isLoading} />
+        <Spinner isLoading={isLoading} message={message} />
 
         {data && data.length > 0 && (
           <BrushTracker

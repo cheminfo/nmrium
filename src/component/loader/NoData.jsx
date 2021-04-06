@@ -31,7 +31,11 @@ const styles = css`
   }
 }
 `;
-function NoData({ isEmpty = true }) {
+
+function NoData({
+  isEmpty = true,
+  message = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
+}) {
   const openFileDialogHadnler = useCallback(() => {
     DropZoneRef.current.open();
   }, []);
@@ -42,10 +46,7 @@ function NoData({ isEmpty = true }) {
 
   return (
     <div css={styles} onClick={openFileDialogHadnler}>
-      <p>
-        Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium
-        file
-      </p>
+       <p>{message}</p>
     </div>
   );
 }
