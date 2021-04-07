@@ -118,23 +118,23 @@ const moleculeContainerStyle = css`
   }
 `;
 
-const menuButton = css`
-  background-color: transparent;
-  border: none;
-  border-bottom: 0.55px solid whitesmoke;
-  height: 35px;
-  outline: outline;
-  display: flex;
-  justify-content: flex-start;
-
-  :focus {
-    outline: none !important;
-  }
-  span {
-    font-size: 10px;
-    padding: 0px 10px;
-  }
-`;
+const MOL_EXPORT_MENU = [
+  {
+    id: 'molfile',
+    icon: <FaCopy />,
+    label: 'Copy as molfile',
+  },
+  {
+    id: 'png',
+    icon: <FaFileImage />,
+    label: 'Copy as PNG',
+  },
+  {
+    id: 'svg',
+    icon: <FaDownload />,
+    label: 'Export as SVG',
+  },
+];
 
 function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
   const [refContainer, { width, height }] = useMeasure();
@@ -432,23 +432,34 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
     );
   }, [modal, molecules, currentIndex]);
 
+  const exportHandler = useCallback(
+    ({ id }) => {
+      switch (id) {
+        case 'molfile':
+          saveAsMolHandler();
+          break;
+        case 'png':
+          saveAsPNGHandler();
+          break;
+        case 'svg':
+          saveAsSVGHandler();
+          break;
+        default:
+          break;
+      }
+    },
+    [saveAsMolHandler, saveAsPNGHandler, saveAsSVGHandler],
+  );
+
   return (
     <div css={panelContainerStyle}>
       <div css={toolbarStyle}>
-        <MenuButton component={<FaFileExport />} toolTip="Export As">
-          <button type="button" css={menuButton} onClick={saveAsMolHandler}>
-            <FaCopy />
-            <span>Copy as molfile</span>
-          </button>
-          <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
-            <FaFileImage />
-            <span>Copy as PNG</span>
-          </button>
-          <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
-            <FaDownload />
-            <span>Export as SVG</span>
-          </button>
-        </MenuButton>
+        <MenuButton
+          component={<FaFileExport />}
+          toolTip="Export As"
+          items={MOL_EXPORT_MENU}
+          onClick={exportHandler}
+        />
 
         <ToolTip title="Paste molfile" popupPlacement="left">
           <button className="bar-button" type="button" onClick={handlePaste}>

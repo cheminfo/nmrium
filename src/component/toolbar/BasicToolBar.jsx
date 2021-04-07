@@ -59,29 +59,45 @@ const styles = css`
   }
 `;
 
-const menuButton = css`
-  background-color: transparent;
-  border: none;
-  border-bottom: 0.55px solid whitesmoke;
-  height: 35px;
-  outline: outline;
-  display: table-cell;
-  vertical-align: middle;
-  text-align: left;
-  padding: 0 10px;
-
-  svg {
-    display: inline-block;
-  }
-
-  :focus {
-    outline: none !important;
-  }
-  span {
-    font-size: 10px;
-    padding: 0px 10px;
-  }
-`;
+const IMPORT_MENU = [
+  {
+    id: 'importFile',
+    icon: <FaFile />,
+    label: 'Import from file system',
+  },
+  {
+    id: 'importJDX',
+    icon: <FaFile />,
+    label: 'Add JCAMP-DX from URL',
+  },
+];
+const EXPORT_MENU = [
+  {
+    id: 'svg',
+    icon: <FaDownload />,
+    label: 'Export as SVG',
+  },
+  {
+    id: 'png',
+    icon: <FaFileImage />,
+    label: 'Export as PNG',
+  },
+  {
+    id: 'json',
+    icon: <FaFileDownload />,
+    label: 'Save data ( Press Ctrl + S )',
+  },
+  {
+    id: 'nmre',
+    icon: <FaFileDownload />,
+    label: 'Save NMRE data',
+  },
+  {
+    id: 'copy',
+    icon: <FaCopy />,
+    label: 'Copy image to Clipboard ( Press Ctrl + C',
+  },
+];
 
 function BasicToolBar({ info, verticalAlign, displayerMode }) {
   const dispatch = useDispatch();
@@ -141,6 +157,54 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
     DropZoneRef.current.open();
   }, []);
 
+  const ImportHandler = useCallback(
+    ({ id }) => {
+      switch (id) {
+        case 'importFile':
+          importFromFileSystemHandler();
+          break;
+        case 'importJDX':
+          importJCAMPFile();
+          break;
+        default:
+          return;
+      }
+    },
+    [importFromFileSystemHandler, importJCAMPFile],
+  );
+
+  const exportHandler = useCallback(
+    ({ id }) => {
+      switch (id) {
+        case 'svg':
+          saveAsSVGHandler();
+          break;
+        case 'png':
+          saveAsPNGHandler();
+          break;
+        case 'json':
+          saveAsJSONHandler();
+          break;
+        case 'nmre':
+          saveAsNMREHandler();
+          break;
+        case 'copy':
+          saveToClipboardHandler();
+          break;
+
+        default:
+          break;
+      }
+    },
+    [
+      saveAsSVGHandler,
+      saveAsPNGHandler,
+      saveAsJSONHandler,
+      saveAsNMREHandler,
+      saveToClipboardHandler,
+    ],
+  );
+
   return (
     <Fragment>
       {isButtonVisible('hideImport') && (
@@ -149,20 +213,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
           className="fa"
           component={<FaFileImport />}
           toolTip="Import"
-        >
-          <button
-            type="button"
-            css={menuButton}
-            onClick={importFromFileSystemHandler}
-          >
-            <FaFile />
-            <span>Import from file system</span>
-          </button>
-          <button type="button" css={menuButton} onClick={importJCAMPFile}>
-            <FaFile />
-            <span>Add JCAMP-DX from URL</span>
-          </button>
-        </MenuButton>
+          onClick={ImportHandler}
+          items={IMPORT_MENU}
+        />
       )}
       {isButtonVisible('hideExportAs') && (
         <MenuButton
@@ -170,32 +223,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
           className="fa"
           component={<FaFileExport />}
           toolTip="Export As"
-        >
-          <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
-            <FaDownload />
-            <span>Export as SVG</span>
-          </button>
-          <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
-            <FaFileImage />
-            <span>Export as PNG</span>
-          </button>
-          <button type="button" css={menuButton} onClick={saveAsJSONHandler}>
-            <FaFileDownload />
-            <span>Save data ( Press Ctrl + S )</span>
-          </button>
-          <button type="button" css={menuButton} onClick={saveAsNMREHandler}>
-            <FaFileDownload />
-            <span>Save NMRE data </span>
-          </button>
-          <button
-            type="button"
-            css={menuButton}
-            onClick={saveToClipboardHandler}
-          >
-            <FaCopy />
-            <span>Copy image to Clipboard ( Press Ctrl + C )</span>
-          </button>
-        </MenuButton>
+          onClick={exportHandler}
+          items={EXPORT_MENU}
+        />
       )}
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&
