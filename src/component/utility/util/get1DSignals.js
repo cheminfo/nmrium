@@ -36,7 +36,7 @@ export function get1DSignals(data, labels, options = {}) {
     let toFix = getToFix(nucleus)[0];
 
     for (let range of ranges) {
-      let signals = range.signal.filter((s) => s.diaID && s.diaID.length);
+      let signals = range.signal; //.filter((s) => s.diaID && s.diaID.length);
 
       for (let signal of signals) {
         let { multiplicity } = signal;
@@ -52,13 +52,16 @@ export function get1DSignals(data, labels, options = {}) {
 
         let signalLabel = '';
 
-        signal.diaID.forEach((diaID, i, arr) => {
-          let separator = ', ';
-          if (i === arr.length - 1) separator = '';
-          let label = labels.byDiaID[diaID].label || diaID;
-          signalLabel += `(${label})${separator}`;
-        });
-        str += `, L=${signalLabel}`;
+        if (signal.diaID && signal.diaID.length > 0) {
+          signal.diaID.forEach((diaID, i, arr) => {
+            let separator = ', ';
+            if (i === arr.length - 1) separator = '';
+            let label = labels.byDiaID[diaID].label || diaID;
+            signalLabel += `(${label})${separator}`;
+          });
+          str += `, L=${signalLabel}`;
+        }
+
         if (nucleus === '1H') {
           if (signal.multiplicity) str += `, S=${signal.multiplicity}`;
 
