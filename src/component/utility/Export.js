@@ -71,13 +71,9 @@ function exportAsJSON(data, fileName = 'experiment', spaceIndent) {
   saveAs(blob, `${fileName}.nmrium`);
 }
 function exportAsNMRE(data, fileName = 'experiment') {
-  const fileData = JSON.stringify(
-    data,
-    (key, value) => (ArrayBuffer.isView(value) ? Array.from(value) : value),
-    0,
-  );
-  const blob = new Blob([fileData], { type: 'text/plain' });
-  saveAs(blob, `${fileName}.nmrium`);
+  data.generateAsync({ type: 'blob' }).then((content) => {
+    saveAs(content, `${fileName}.zip`);
+  });
 }
 
 function exportAsMol(data, fileName = 'mol') {

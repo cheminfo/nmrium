@@ -8,6 +8,7 @@ import {
   exportAsPng,
   copyPNGToClipboard,
 } from '../../utility/Export';
+import { toNmredata } from '../../utility/toNmredata';
 import { State } from '../Reducer';
 
 function exportData(draft: Draft<State>, { exportType, spaceIndent }) {
@@ -24,7 +25,7 @@ function exportData(draft: Draft<State>, { exportType, spaceIndent }) {
         break;
       }
       case 'nmre': {
-        const exportedData = toJSON(state);
+        const exportedData = toNmredata(state);
         exportAsNMRE(exportedData, fileName);
         break;
       }
