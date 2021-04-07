@@ -14,6 +14,7 @@ import {
   Reducer,
   CSSProperties,
   ReactElement,
+  ReactNode,
 } from 'react';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
@@ -141,6 +142,7 @@ export interface NMRiumProps {
   docsBaseUrl?: string;
   onDataChange?: (data: any) => void;
   preferences?: NMRiumPreferences;
+  message?: ReactNode;
   /**
    * Returns a custom spinner that will be rendered while loading data.
    */
@@ -197,6 +199,7 @@ function NMRium({
   docsBaseUrl,
   preferences,
   getSpinner = defaultGetSpinner,
+  message = undefined,
 }: NMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWraperRef = useRef<HTMLDivElement>(null);
@@ -364,9 +367,9 @@ function NMRium({
                                     }}
                                   >
                                     {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                                      <Viewer1D />
+                                      <Viewer1D message={message} />
                                     ) : (
-                                      <Viewer2D />
+                                      <Viewer2D message={message} />
                                     )}
                                     {!isRightPanelHide ? (
                                       <Panels
