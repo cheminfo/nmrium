@@ -4,6 +4,7 @@ export function get1DSignals(data, labels, options = {}) {
   const { prefix, nmrRecord } = options;
   let str = '';
   let nucleusArray = [];
+  let nbOneD = 0;
   for (let spectrum of data) {
     if (spectrum.info.dimension > 1) continue;
 
@@ -19,18 +20,18 @@ export function get1DSignals(data, labels, options = {}) {
 
     if (counter > 1) subfix = `#${counter}`;
 
-    str += `${prefix}1D_${nucleus.toUpperCase()}#${subfix}>`;
+    str += `${prefix}1D_${nucleus.toUpperCase()}${subfix}>`;
 
     if (spectrum.info.frequency) {
       str += `\nLarmor=${Number(spectrum.info.frequency).toFixed(2)}\\`;
     }
 
+    str += `\nSpectrum_Jcamp=file:./jcamp_folder/1d/${spectrum.display.name}\\`;
     if (spectrum.source.jcamp) {
       nmrRecord.file(
         `jcamp_folder/1d/${spectrum.display.name}`,
         spectrum.source.jcamp,
       );
-      str += `\nSpectrum_Jcamp=file:./jcamp_folder/1d/${spectrum.display.name}\\`;
     }
 
     let toFix = getToFix(nucleus)[0];
@@ -92,7 +93,8 @@ export function get1DSignals(data, labels, options = {}) {
       if (signals.length) str += '\\';
     }
     str += '\n';
+    nbOneD++;
   }
-
+  if (nbOneD > 0) nmrRecord.folder('jcamp_folder/1d');
   return str;
 }
