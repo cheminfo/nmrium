@@ -26,11 +26,10 @@ export function get2DSignals(data, labels, options = {}) {
 
     str += `\nLarmor=${Number(spectrum.info.baseFrequency[0]).toFixed(2)}\\`;
 
-    str += `\nSpectrum_Jcamp=file:./${pathPrefix}${spectrum.display.name}\\`;
+    str += `\nSpectrum_Jcamp=file:./jcamp_folder/2d/${spectrum.display.name}\\`;
     if (spectrum.source.jcamp) {
-      let pathPrefix = 'jcamp_folder/1d/';
       nmrRecord.file(
-        `${pathPrefix}'${spectrum.display.name}`,
+        `jcamp_folder/2d/${spectrum.display.name}`,
         spectrum.source.jcamp,
       );
     }
