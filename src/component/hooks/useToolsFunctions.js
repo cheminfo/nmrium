@@ -2,19 +2,21 @@ import lodashDebounce from 'lodash/debounce';
 import lodashMap from 'lodash/map';
 import { useCallback, useRef, useState } from 'react';
 
+import { useDispatch } from '../context/DispatchContext';
+import { useAlert } from '../elements/popup/Alert';
 import { ZoomType } from '../reducer/actions/Zoom';
 import {
   CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
-  EXPORT_DATA,
   FULL_ZOOM_OUT,
   SET_SELECTED_TOOL,
   SET_SPECTRUMS_VERTICAL_ALIGN,
   TOGGLE_REAL_IMAGINARY_VISIBILITY,
 } from '../reducer/types/Types';
+import { options } from '../toolbar/ToolTypes';
 
-import { options } from './ToolTypes';
-
-export default function useToolsFunctions(dispatch, alert) {
+export default function useToolsFunctions() {
+  const dispatch = useDispatch();
+  const alert = useAlert();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
   const [isStacked, activateStackView] = useState(false);
 
@@ -62,41 +64,6 @@ export default function useToolsFunctions(dispatch, alert) {
     }
   }, [dispatch, debounceClickEventsRef]);
 
-  const saveToClipboardHandler = useCallback(() => {
-    dispatch({ type: EXPORT_DATA, exportType: 'copy' });
-    alert.show('Spectrum copied to clipboard');
-  }, [alert, dispatch]);
-
-  const saveAsJSONHandler = useCallback(
-    (spaceIndent = 0) => {
-      dispatch({
-        type: EXPORT_DATA,
-        exportType: 'json',
-        spaceIndent: spaceIndent,
-      });
-    },
-    [dispatch],
-  );
-
-  const saveAsNMREHandler = useCallback(() => {
-    dispatch({
-      type: EXPORT_DATA,
-      exportType: 'nmre',
-    });
-  }, [dispatch]);
-
-  const saveAsSVGHandler = useCallback(() => {
-    dispatch({
-      type: EXPORT_DATA,
-      exportType: 'svg',
-    });
-  }, [dispatch]);
-
-  const saveAsPNGHandler = useCallback(
-    () => dispatch({ type: EXPORT_DATA, exportType: 'png' }),
-    [dispatch],
-  );
-
   const handleChangeDisplayViewMode = useCallback(() => {
     const flag = !isStacked;
     activateStackView(flag);
@@ -123,11 +90,6 @@ export default function useToolsFunctions(dispatch, alert) {
   return {
     handleChangeOption,
     handleFullZoomOut,
-    saveToClipboardHandler,
-    saveAsJSONHandler,
-    saveAsNMREHandler,
-    saveAsSVGHandler,
-    saveAsPNGHandler,
     handleChangeDisplayViewMode,
     changeSpectrumViewHandler,
     alignSpectrumsVerticallyHandler,

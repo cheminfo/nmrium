@@ -46,7 +46,7 @@ function NoData({
 
   return (
     <div css={styles} onClick={openFileDialogHadnler}>
-       <p>{message}</p>
+      <p>{message}</p>
     </div>
   );
 }

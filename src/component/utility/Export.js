@@ -1,5 +1,6 @@
 /* eslint-disable default-param-last */
 import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
 
 function copyFormattedHtml(html) {
   // Create an iframe (isolated container) for the HTML
@@ -61,14 +62,31 @@ async function copyTextToClipboard(data) {
  * export the experiments result in JSON format
  * @param {*} data
  */
-function exportAsJSON(data, fileName = 'experiment', spaceIndent) {
+async function exportAsJSON(
+  data,
+  fileName = 'experiment',
+  spaceIndent = 0,
+  isCompressed = false,
+) {
   const fileData = JSON.stringify(
     data,
     (key, value) => (ArrayBuffer.isView(value) ? Array.from(value) : value),
     spaceIndent,
   );
-  const blob = new Blob([fileData], { type: 'text/plain' });
-  saveAs(blob, `${fileName}.nmrium`);
+  if (!isCompressed) {
+    const blob = new Blob([fileData], { type: 'text/plain' });
+    saveAs(blob, `${fileName}.nmrium`);
+  } else {
+    try {
+      const zip = new JSZip();
+      zip.file(`${fileName}.nmrium`, fileData);
+      const blob = await zip.generateAsync({ type: 'blob' });
+      saveAs(blob, `${fileName}.zip`);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+  }
 }
 function exportAsNMRE(data, fileName = 'experiment') {
   data.generateAsync({ type: 'blob' }).then((content) => {

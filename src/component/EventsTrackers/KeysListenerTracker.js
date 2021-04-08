@@ -6,6 +6,8 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useAlert } from '../elements/popup/Alert';
 import { TYPES, useHighlightData } from '../highlight/index';
+import useExport from '../hooks/useExport';
+import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import {
   SET_KEY_PREFERENCES,
@@ -16,7 +18,6 @@ import {
   DELETE_2D_ZONE,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
-import useToolsFunctions from '../toolbar/useToolsFunctions';
 
 function KeysListenerTracker() {
   const {
@@ -32,9 +33,9 @@ function KeysListenerTracker() {
     handleFullZoomOut,
     alignSpectrumsVerticallyHandler,
     handleChangeDisplayViewMode,
-    saveToClipboardHandler,
-    saveAsJSONHandler,
-  } = useToolsFunctions(dispatch, alert);
+  } = useToolsFunctions();
+
+  const { saveToClipboardHandler, saveAsJSONHandler } = useExport();
 
   const { highlight } = useHighlightData();
   const assignmentData = useAssignmentData();
@@ -205,7 +206,7 @@ function KeysListenerTracker() {
       if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
         switch (e.key) {
           case 'S':
-            saveAsJSONHandler(2);
+            saveAsJSONHandler(2, false);
             e.preventDefault();
             break;
           default:

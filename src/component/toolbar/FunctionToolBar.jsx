@@ -18,15 +18,14 @@ import { Filters } from '../../data/Filters';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
-import { useAlert } from '../elements/popup/Alert';
 import { useHelp } from '../elements/popup/Help/Context';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 import ToolBarWrapper from '../hoc/ToolBarWrapper';
+import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { APPLY_FFT_FILTER, SET_SELECTED_FILTER } from '../reducer/types/Types';
 
 import { options } from './ToolTypes';
-import useToolsFunctions from './useToolsFunctions';
 
 const styles = css`
   button {
@@ -66,7 +65,6 @@ function FunctionToolBar({
 }) {
   const [option, setOption] = useState();
   const help = useHelp();
-  const alert = useAlert();
   const preferences = usePreferences();
 
   const dispatch = useDispatch();
@@ -74,10 +72,7 @@ function FunctionToolBar({
   const selectedSpectrumInfo = {
     info: { isComplex: false, isFid: false, ...info },
   };
-  const { handleChangeOption, handleFullZoomOut } = useToolsFunctions(
-    dispatch,
-    alert,
-  );
+  const { handleChangeOption, handleFullZoomOut } = useToolsFunctions();
 
   const handleChange = useCallback(
     (selectedOption) => {

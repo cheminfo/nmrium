@@ -11,7 +11,6 @@ import { options } from '../toolbar/ToolTypes';
 import * as CorrelationsActions from './actions/CorrelationsActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
-import { exportData } from './actions/ExportActions';
 import * as FiltersActions from './actions/FiltersActions';
 import * as GlobalActions from './actions/GlobalActions';
 import {
@@ -207,8 +206,6 @@ function innerSpectrumReducer(draft, action) {
       return LoadActions.handleLoadMOLFile(draft, action.files);
     case types.LOAD_ZIP_FILE:
       return LoadActions.handleLoadZIPFile(draft, action);
-    case types.EXPORT_DATA:
-      return exportData(draft, action);
     case types.ADD_PEAK:
       return PeaksActions.addPeak(draft, action.mouseCoordinates);
     case types.ADD_PEAKS:

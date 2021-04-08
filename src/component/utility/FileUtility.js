@@ -1,3 +1,13 @@
+export const FILES_TYPES = {
+  MOL: 'mol',
+  NMRIUM: 'nmrium',
+  JSON: 'json',
+  DX: 'dx',
+  JDX: 'jdx',
+  JDF: 'jdf',
+  ZIP: 'zip',
+};
+
 async function loadFile(file) {
   const response = await fetch(file);
   checkStatus(response);
@@ -54,8 +64,25 @@ function loadFiles(acceptedFiles, options = {}) {
   );
 }
 
+async function loadFilesFromZip(files, options = {}) {
+  const result = [];
+  for (const file of files) {
+    try {
+      const binary = await file.async(options.asBuffer ? 'uint8array' : 'text');
+      const name = getFileName(file.name);
+      const extension = getFileExtension(file.name);
+      result.push({ binary, name, extension });
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+  }
+  return result;
+}
+
 export {
   loadFiles,
+  loadFilesFromZip,
   loadFile,
   getFileExtension,
   getFileName,

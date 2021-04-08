@@ -26,12 +26,12 @@ import ToolTip from '../elements/ToolTip/ToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import ToolBarWrapper from '../hoc/ToolBarWrapper';
+import useExport from '../hooks/useExport';
+import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DropZoneRef } from '../loader/DropZone';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
-
-import useToolsFunctions from './useToolsFunctions';
 
 const styles = css`
   background-color: transparent;
@@ -107,15 +107,19 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
   const {
     isStacked,
     isRealSpectrumShown,
+
+    changeSpectrumViewHandler,
+    handleChangeDisplayViewMode,
+    alignSpectrumsVerticallyHandler,
+  } = useToolsFunctions();
+
+  const {
     saveAsSVGHandler,
     saveAsPNGHandler,
     saveAsJSONHandler,
     saveAsNMREHandler,
     saveToClipboardHandler,
-    changeSpectrumViewHandler,
-    handleChangeDisplayViewMode,
-    alignSpectrumsVerticallyHandler,
-  } = useToolsFunctions(dispatch, alert);
+  } = useExport();
 
   const selectedSpectrumInfo = { isComplex: false, isFid: false, ...info };
 

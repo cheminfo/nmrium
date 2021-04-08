@@ -3,7 +3,6 @@ import * as types from './types/Types';
 const ignoreActions = [
   types.APPLY_KEY_PREFERENCES,
   types.BRUSH_END,
-  types.EXPORT_DATA,
   types.RESET_DOMAIN,
   types.RESET_SELECTED_TOOL,
   types.SET_KEY_PREFERENCES,
