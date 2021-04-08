@@ -54,11 +54,11 @@ https://dev.nmrium.org/
 
 Want to play ? You can do some 1D NMR exercises ;)
 
-https://www.nmrium.org/teaching#toc=https://cheminfo.github.io/nmr-dataset2/toc.json
+https://www.nmrium.org/teaching#?toc=https://cheminfo.github.io/nmr-dataset2/toc.json
 
 Also you can do some 2D NMR exercises ;)
 
-https://www.nmrium.org/teaching#toc=https://cheminfo.github.io/nmr-dataset1/data/2d.json
+https://www.nmrium.org/teaching#?toc=https://cheminfo.github.io/nmr-dataset1/data/2d.json
 
 https://dev.nmrium.org?sampleURL=https%3A//cheminfo.github.io/nmr-dataset1/data/2d.json
 
