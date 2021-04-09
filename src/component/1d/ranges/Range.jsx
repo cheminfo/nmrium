@@ -126,7 +126,7 @@ function Range({ rangeData, showMultiplicityTrees, selectedTool }) {
       <g transform={`translate(${scaleX()(to)},10)`}>
         <rect
           x="0"
-          width={scaleX()(from) - scaleX()(to)}
+          width={Math.abs(scaleX()(from) - scaleX()(to))}
           height="6"
           className="range-area"
           fill="green"
@@ -140,7 +140,7 @@ function Range({ rangeData, showMultiplicityTrees, selectedTool }) {
         />
         <text
           textAnchor="middle"
-          x={(scaleX()(from) - scaleX()(to)) / 2}
+          x={Math.abs(scaleX()(from) - scaleX()(to)) / 2}
           y="20"
           fontSize="10"
           fill="red"

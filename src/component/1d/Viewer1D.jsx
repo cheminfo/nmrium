@@ -63,7 +63,6 @@ function Viewer1D({ message = undefined }) {
     verticalAlign,
     displayerKey,
   } = state;
-
   const dispatch = useDispatch();
   const modal = useModal();
   const [scaleState, dispatchScale] = useReducer(
@@ -72,18 +71,22 @@ function Viewer1D({ message = undefined }) {
   );
 
   useEffect(() => {
-    dispatchScale({
-      type: SET_SCALE,
-      yDomain,
-      yDomains,
-      xDomain,
-      xDomains,
-      margin,
-      height: heightProp,
-      width: widthProp,
-      verticalAlign,
-      mode,
-    });
+    if (xDomain.length > 0 && yDomain.length > 0 && widthProp && heightProp) {
+      dispatchScale({
+        type: SET_SCALE,
+        payload: {
+          yDomain,
+          yDomains,
+          xDomain,
+          xDomains,
+          margin,
+          height: heightProp,
+          width: widthProp,
+          verticalAlign,
+          mode,
+        },
+      });
+    }
   }, [
     heightProp,
     margin,
@@ -250,7 +253,7 @@ function Viewer1D({ message = undefined }) {
       <Fragment>
         <Spinner isLoading={isLoading} message={message} />
 
-        {data && data.length > 0 && (
+        {scaleState.scaleX && scaleState.scaleY && data && data.length > 0 && (
           <BrushTracker
             onBrush={handelBrushEnd}
             onDoubleClick={handelOnDoubleClick}
