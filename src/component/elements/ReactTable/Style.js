@@ -26,6 +26,13 @@ const ReactTableStyle = css`
       }
     }
   }
+
+  th {
+    position: sticky;
+    background-color: white;
+    z-index: 2;
+    top: 0;
+  }
   th,
   td {
     margin: 0;

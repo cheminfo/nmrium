@@ -66,9 +66,7 @@ const panelStyle = css`
     }
   }
 
-  .table-container {
-    overflow: auto;
-  }
+
 `;
 
 function SummaryPanel() {

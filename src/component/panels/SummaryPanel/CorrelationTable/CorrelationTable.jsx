@@ -8,11 +8,16 @@ import AdditionalColumnHeader from './AdditionalColumnHeader';
 import CorrelationTableRow from './CorrelationTableRow';
 
 const tableStyle = css`
-  border-spacing: 0;
-  border: 1px solid #dedede;
-  width: 100%;
-  font-size: 12px;
+  overflow: auto;
   height: 100%;
+  display: block;
+  table {
+    border-spacing: 0;
+    border: 1px solid #dedede;
+    width: 100%;
+    font-size: 12px;
+    height: 100%;
+  }
   .react-contextmenu-wrapper {
     display: contents;
   }
@@ -23,6 +28,16 @@ const tableStyle = css`
       }
     }
   }
+  thead tr {
+    background-color: white !important;
+  }
+  th {
+    position: sticky;
+    background-color: white;
+    z-index: 2;
+    top: 0;
+  }
+
   th,
   td {
     white-space: nowrap;
@@ -111,8 +126,8 @@ function CorrelationTable({
   );
 
   return (
-    <div className="table-container">
-      <table css={tableStyle}>
+    <div css={tableStyle}>
+      <table>
         <thead>
           <tr>
             <th>Atom</th>

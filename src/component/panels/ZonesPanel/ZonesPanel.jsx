@@ -219,13 +219,13 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
             onClose={settingsPanelHandler}
           />
         )}
-        <div style={{ height: '100%', overflow: 'auto' }}>
+        <div style={{ height: '100%', overflow: 'hidden' }}>
           <ReactCardFlip
             isFlipped={isFlipped}
             infinite
-            containerStyle={{ overflow: 'hidden' }}
+            containerStyle={{ overflow: 'hidden', height: '100%' }}
           >
-            <div>
+            <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
               {tableData && tableData.length > 0 ? (
                 <ZonesTable
                   tableData={tableData}
