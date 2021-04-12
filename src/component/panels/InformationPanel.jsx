@@ -9,7 +9,10 @@ const styles = {
   },
   tableContainer: {
     height: 'calc(100% - 30px)',
+    overflow: 'auto',
+    display: 'block',
   },
+
   searchInput: {
     width: '100%',
     borderRadius: '5px',
