@@ -113,11 +113,7 @@ export default function View(props) {
       >
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
           <div style={{ width: isCallbackVisible ? '75%' : '100%' }}>
-            <NMRium
-              data={data}
-              emptyText="Hello, this is not the default message, and can be changed with the emptyText props"
-              onDataChange={changeHadnler}
-            />
+            <NMRium data={data} onDataChange={changeHadnler} />
           </div>
           {process.env.NODE_ENV !== 'production' && (
             <div
