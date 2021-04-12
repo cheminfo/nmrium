@@ -24,7 +24,7 @@ import XYLabelPointer from './tools/XYLabelPointer';
 import SlicingView from './tools/slicing/SlicingView';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 
-function Viewer2D({ message = undefined }) {
+function Viewer2D({ emptyText = undefined }) {
   const state = useChartData();
   const {
     selectedTool,
@@ -130,7 +130,7 @@ function Viewer2D({ message = undefined }) {
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
       <Fragment>
-        <Spinner isLoading={isLoading} message={message} />
+        <Spinner isLoading={isLoading} emptyText={emptyText} />
 
         {data && data.length > 0 && (
           <BrushTracker
