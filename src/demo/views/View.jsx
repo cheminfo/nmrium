@@ -115,7 +115,7 @@ export default function View(props) {
           <div style={{ width: isCallbackVisible ? '75%' : '100%' }}>
             <NMRium
               data={data}
-              message="Hello, this is not the default message, and can be changed with the message props"
+              emptyText="Hello, this is not the default message, and can be changed with the emptyText props"
               onDataChange={changeHadnler}
             />
           </div>

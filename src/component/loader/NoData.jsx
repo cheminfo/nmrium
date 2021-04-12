@@ -34,7 +34,7 @@ const styles = css`
 
 function NoData({
   isEmpty = true,
-  message = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
+  emptyText = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
 }) {
   const loader = useLoader();
 
@@ -48,7 +48,7 @@ function NoData({
 
   return (
     <div css={styles} onClick={openFileDialogHadnler}>
-      <p>{message}</p>
+      <p>{emptyText}</p>
     </div>
   );
 }

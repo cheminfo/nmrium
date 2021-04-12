@@ -142,7 +142,7 @@ export interface NMRiumProps {
   docsBaseUrl?: string;
   onDataChange?: (data: any) => void;
   preferences?: NMRiumPreferences;
-  message?: ReactNode;
+  emptyText?: ReactNode;
   /**
    * Returns a custom spinner that will be rendered while loading data.
    */
@@ -199,7 +199,7 @@ function NMRium({
   docsBaseUrl,
   preferences,
   getSpinner = defaultGetSpinner,
-  message = undefined,
+  emptyText = undefined,
 }: NMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWraperRef = useRef<HTMLDivElement>(null);
@@ -367,9 +367,9 @@ function NMRium({
                                     }}
                                   >
                                     {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                                      <Viewer1D message={message} />
+                                      <Viewer1D emptyText={emptyText} />
                                     ) : (
-                                      <Viewer2D message={message} />
+                                      <Viewer2D emptyText={emptyText} />
                                     )}
                                     {!isRightPanelHide ? (
                                       <Panels
