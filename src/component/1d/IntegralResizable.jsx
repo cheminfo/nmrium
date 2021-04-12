@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import * as d3 from 'd3';
-import { useCallback, Fragment, useMemo } from 'react';
+import { useCallback, Fragment, useState } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -42,22 +41,13 @@ const stylesHighlighted = css`
   }
 `;
 
-function IntegralResizable({ integralSeries, integralData }) {
+function IntegralResizable({ integralData }) {
   const { height, margin } = useChartData();
   const { scaleX } = useScale();
 
-  const { id, integral } = integralData;
+  const [{ id, integral, from, to }, setIntgral] = useState(integralData);
 
   const highlight = useHighlight([id], TYPES.INTEGRAL);
-
-  // isn't it actually the from/to range? -> return [from, to]
-  const xBoundary = useMemo(() => {
-    if (integralSeries) {
-      return d3.extent(integralSeries.x);
-    } else {
-      return [];
-    }
-  }, [integralSeries]);
 
   const dispatch = useDispatch();
 
@@ -79,8 +69,12 @@ function IntegralResizable({ integralSeries, integralData }) {
     highlight.hide();
   }, [highlight]);
 
-  const x0 = xBoundary[0] ? scaleX()(xBoundary[0]) : 0;
-  const x1 = xBoundary[1] ? scaleX()(xBoundary[1]) : 0;
+  const dragHandler = useCallback((boundary) => {
+    setIntgral((integral) => ({ ...integral, ...boundary }));
+  }, []);
+
+  const x0 = from ? scaleX()(from) : 0;
+  const x1 = to ? scaleX()(to) : 0;
 
   return (
     <Fragment>
@@ -110,7 +104,7 @@ function IntegralResizable({ integralSeries, integralData }) {
         <Resizable
           from={integralData.from}
           to={integralData.to}
-          // onDrag={handleOnStartResizing}
+          onDrag={dragHandler}
           onDrop={handleOnStopResizing}
           data-no-export="true"
         />

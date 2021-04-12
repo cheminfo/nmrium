@@ -1,5 +1,5 @@
 import { xyReduce, xyIntegral } from 'ml-spectra-processing';
-import { useEffect, useState, useCallback, Fragment, useMemo } from 'react';
+import { useCallback, Fragment, useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
 import { integralDefaultValues } from '../panels/extra/preferences/defaultValues';
@@ -18,7 +18,6 @@ function Integral({
   scaleX,
 }) {
   const { from, to } = integralData;
-  const [integral, setIntegral] = useState();
   // const { preferences } = useChartData();
   const preferences = usePreferences();
 
@@ -30,8 +29,8 @@ function Integral({
     return { color, strokeWidth };
   }, [preferences]);
 
-  useEffect(() => {
-    const integralResult = xyIntegral(
+  const integral = useMemo(() => {
+    return xyIntegral(
       { x: x, y: y },
       {
         from: from,
@@ -39,7 +38,6 @@ function Integral({
         reverse: true,
       },
     );
-    setIntegral(integralResult);
   }, [from, to, x, y]);
 
   const makePath = useCallback(() => {
@@ -80,7 +78,6 @@ function Integral({
 
       <IntegralResizable
         spectrumID={spectrumID}
-        integralSeries={integral}
         integralData={integralData}
         scaleY={scaleY}
       />
