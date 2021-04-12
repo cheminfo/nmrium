@@ -40,7 +40,7 @@ export function toNmredata(state, options = {}) {
     nmrRecord,
   };
 
-  sdfResult += molecules[0].molfile;
+  sdfResult += molecule.toMolfile();
   let labels = getLabels(data, groupedOptions);
   sdfResult += `${prefix}VERSION>\n1.1\\\n`;
   sdfResult += putTag(data, 'temperature', { prefix });
