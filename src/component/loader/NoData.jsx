@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useCallback } from 'react';
 
-import { DropZoneRef } from './DropZone';
+import { useLoader } from '../context/LoaderContext';
 
 const styles = css`
   display: flex;
@@ -36,9 +36,11 @@ function NoData({
   isEmpty = true,
   message = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
 }) {
+  const loader = useLoader();
+
   const openFileDialogHadnler = useCallback(() => {
-    DropZoneRef.current.open();
-  }, []);
+    loader.open();
+  }, [loader]);
 
   if (!isEmpty) {
     return null;

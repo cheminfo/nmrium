@@ -20,6 +20,7 @@ import {
 } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
+import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import MenuButton from '../elements/MenuButton';
 import ToolTip from '../elements/ToolTip/ToolTip';
@@ -28,7 +29,6 @@ import { useModal } from '../elements/popup/Modal';
 import ToolBarWrapper from '../hoc/ToolBarWrapper';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
-import { DropZoneRef } from '../loader/DropZone';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
@@ -104,6 +104,8 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
   const preferences = usePreferences();
   const alert = useAlert();
   const modal = useModal();
+  const loader = useLoader();
+
   const {
     isStacked,
     isRealSpectrumShown,
@@ -158,8 +160,8 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
     [preferences],
   );
   const importFromFileSystemHandler = useCallback(() => {
-    DropZoneRef.current.open();
-  }, []);
+    loader.open();
+  }, [loader]);
 
   const ImportHandler = useCallback(
     ({ id }) => {

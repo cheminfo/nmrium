@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import Zip from 'jszip';
-import { createRef, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaUpload } from 'react-icons/fa';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { LoaderProvider } from '../context/LoaderContext';
 import {
   LOAD_MOL_FILE,
   LOAD_JSON_FILE,
@@ -54,8 +55,6 @@ const containerStyle = css`
   flex-direction: 'column';
   height: 100%;
 `;
-
-export const DropZoneRef = createRef();
 
 function DropZone(props) {
   const { width, height } = useChartData();
@@ -209,6 +208,7 @@ function DropZone(props) {
             );
             break;
           default:
+            dispatch({ type: SET_LOADING_FLAG, isLoading: false });
             // eslint-disable-next-line no-alert
             alert(
               'The file extension must be zip, dx, jdx, json, mol or nmrium.',
@@ -228,27 +228,36 @@ function DropZone(props) {
     [dispatch, loadFilesHandler],
   );
 
-  DropZoneRef.current = useDropzone({
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    open: openImportDialog,
+  } = useDropzone({
     onDrop,
     noClick: true,
   });
 
-  const { getRootProps, getInputProps, isDragActive } = DropZoneRef.current;
+  const open = useCallback(() => {
+    openImportDialog();
+  }, [openImportDialog]);
 
   return (
-    <div {...getRootProps()} css={containerStyle}>
-      <input {...getInputProps()} />
-      {isDragActive && (
-        <div
-          css={style}
-          style={{ width: `${width + 41}px`, height: `${height}px` }}
-        >
-          <FaUpload />
-          <p>Drop your files here</p>
-        </div>
-      )}
-      {props.children}
-    </div>
+    <LoaderProvider value={{ open }}>
+      <div {...getRootProps()} css={containerStyle}>
+        <input {...getInputProps()} />
+        {isDragActive && (
+          <div
+            css={style}
+            style={{ width: `${width + 41}px`, height: `${height}px` }}
+          >
+            <FaUpload />
+            <p>Drop your files here</p>
+          </div>
+        )}
+        {props.children}
+      </div>
+    </LoaderProvider>
   );
 }
 
