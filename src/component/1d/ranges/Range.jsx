@@ -50,12 +50,16 @@ const stylesHighlighted = css`
 `;
 
 function Range({ rangeData, showMultiplicityTrees, selectedTool }) {
-  const { id, from, to, integral, signal } = rangeData;
+  const { id, from: rangeFrom, to: rangeTo, integral, signal } = rangeData;
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
     [assignmentRange.id].concat(assignmentRange.assigned.x || []),
     TYPES.RANGE,
   );
+  const [rangeBoundary, setRangeBoundary] = useState({
+    from: rangeFrom,
+    to: rangeTo,
+  });
 
   const { scaleX } = useScale();
   const dispatch = useDispatch();
@@ -106,6 +110,12 @@ function Range({ rangeData, showMultiplicityTrees, selectedTool }) {
     },
     [assignmentRange, isBlockedByEditing, selectedTool],
   );
+
+  const dragHandler = useCallback((boundary) => {
+    setRangeBoundary((range) => ({ ...range, ...boundary }));
+  }, []);
+
+  const { from, to } = rangeBoundary;
 
   return (
     <g
@@ -159,6 +169,7 @@ function Range({ rangeData, showMultiplicityTrees, selectedTool }) {
         from={rangeData.from}
         to={rangeData.to}
         onDrop={handleOnStopResizing}
+        onDrag={dragHandler}
       />
       {showMultiplicityTrees && signal && signal.length > 0
         ? signal.map((_signal) => (
