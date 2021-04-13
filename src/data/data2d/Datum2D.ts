@@ -479,12 +479,13 @@ export function detectZones(datum, options) {
 export function getSubMatrix(datum, selectedZone) {
   const { fromX, toX, fromY, toY } = selectedZone;
   const data = datum.data;
-  const xStep = (data.maxX - data.minX) / data.z[0].length;
-  const yStep = (data.maxY - data.minY) / data.z.length;
+  const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
+  const yStep = (data.maxY - data.minY) / (data.z.length - 1);
   let xIndexFrom = Math.floor((fromX - data.minX) / xStep);
   let yIndexFrom = Math.floor((fromY - data.minY) / yStep);
   let xIndexTo = Math.floor((toX - data.minX) / xStep);
   let yIndexTo = Math.floor((toY - data.minY) / yStep);
+
   let dataMatrix: any = {
     z: [],
     maxX: data.minX + xIndexTo * xStep,
@@ -510,6 +511,5 @@ export function getSubMatrix(datum, selectedZone) {
   }
   dataMatrix.minZ = minZ;
   dataMatrix.maxZ = maxZ;
-
   return dataMatrix;
 }
