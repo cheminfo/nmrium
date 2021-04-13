@@ -495,12 +495,12 @@ export function getSubMatrix(datum, selectedZone) {
   let maxZ = Number.MIN_SAFE_INTEGER;
   let minZ = Number.MAX_SAFE_INTEGER;
 
-  let nbXPoints = xIndexFrom - xIndexTo + 1;
+  let nbXPoints = xIndexTo - xIndexFrom + 1;
   for (let j = yIndexFrom; j < yIndexTo; j++) {
     let row = new Float32Array(nbXPoints);
     let xIndex = xIndexFrom;
     for (let i = 0; i < nbXPoints; i++) {
-      row[i] = data.z[j][xIndex--];
+      row[i] = data.z[j][xIndex++];
     }
     for (let rowValue of row) {
       if (maxZ < rowValue) maxZ = rowValue;

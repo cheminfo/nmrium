@@ -48,10 +48,14 @@ function add2dZoneHandler(draft: Draft<State>, action) {
     handleOnChangeZonesData(draft);
   }
 }
-
 function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
+
+    const [fromX, toX] = draft.xDomain;
+    const [fromY, toY] = draft.yDomain;
+    detectionOptions.selectedZone = { fromX, toX, fromY, toY };
+
     detectZones(draft.data[index], detectionOptions);
     handleOnChangeZonesData(draft);
   }
