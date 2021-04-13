@@ -1,5 +1,6 @@
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import { Filters } from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
@@ -33,7 +34,17 @@ import { setDomain } from './DomainActions';
 function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    detectRanges(draft.data[index], detectionOptions);
+    const datum = draft.data[index] as Datum1D;
+
+    const [from, to] = draft.xDomain;
+    const windowFromIndex = xFindClosestIndex(datum.data.x, from);
+    const windowToIndex = xFindClosestIndex(datum.data.x, to);
+
+    detectRanges(datum, {
+      ...detectionOptions,
+      windowFromIndex,
+      windowToIndex,
+    });
     handleOnChangeRangesData(draft);
   }
 }

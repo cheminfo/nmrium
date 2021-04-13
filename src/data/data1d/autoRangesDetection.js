@@ -18,12 +18,15 @@ export default function autoRangesDetection(datum1D, options = {}) {
   // we calculate the noise but this could be improved
   let noiseLevel = xAbsoluteMedian(datum1D.data.re);
 
-  const { re, x } = datum1D.data;
+  let { re, x } = datum1D.data;
+
   const { originFrequency, nucleus } = datum1D.info;
+
+  const { windowFromIndex, windowToIndex, peakPicking } = options;
 
   const peakPickingOptions = {
     ...defaultPeakPickingOptions,
-    ...options.peakPicking,
+    ...peakPicking,
   };
 
   const rangesOptions = {
@@ -31,6 +34,11 @@ export default function autoRangesDetection(datum1D, options = {}) {
     nucleus,
     noiseLevel: 3 * noiseLevel,
   };
+
+  if (windowFromIndex !== undefined && windowToIndex !== undefined) {
+    x = x.slice(windowFromIndex, windowToIndex);
+    re = re.slice(windowFromIndex, windowToIndex);
+  }
 
   const ranges = xyAutoRangesPicking(
     { x, y: re },
