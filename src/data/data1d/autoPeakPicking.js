@@ -5,11 +5,24 @@ import { getShiftX } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
 
 export default function autoPeakPicking(datum1D, options) {
-  const { minMaxRatio, maxNumberOfPeaks, noiseFactor, lookNegative } = options;
+  const {
+    minMaxRatio,
+    maxNumberOfPeaks,
+    noiseFactor,
+    lookNegative,
+    windowFromIndex,
+    windowToIndex,
+  } = options;
   // we calculate the noise but this could be improved
   const noise = median(datum1D.data.re.map((y) => Math.abs(y)));
 
-  const { re, x } = datum1D.data;
+  let { re, x } = datum1D.data;
+
+  if (windowFromIndex !== undefined && windowToIndex !== undefined) {
+    x = x.slice(windowFromIndex, windowToIndex);
+    re = re.slice(windowFromIndex, windowToIndex);
+  }
+
   let peaks = xyAutoPeaksPicking(
     { x, y: re },
     {
