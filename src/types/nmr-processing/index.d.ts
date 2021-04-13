@@ -6,4 +6,5 @@ declare module 'nmr-processing' {
     options: any,
   ): Promise<any>;
   declare function signalsToXY(signals: any, options: any): any;
+  declare function xyAutoRangesPicking(data: any, options: any): any;
 }

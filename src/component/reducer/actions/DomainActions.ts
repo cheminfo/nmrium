@@ -71,7 +71,7 @@ function getDomain(data) {
         yDomains[d.id] = _extent;
         if (integrals.values && integrals.values.length > 0) {
           const values = integrals.values;
-          const { from, to } = values[0];
+          const { from = 0, to = 0 } = values[0];
           const { x, y } = data;
           const integralResult = xyIntegral(
             { x: x, y: y },

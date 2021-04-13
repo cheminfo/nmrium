@@ -57,7 +57,7 @@ function addIntegral(draft: Draft<State>, action) {
     datum.integrals.values.push(integral);
     updateIntegralIntegrals(datum.integrals);
     if (datum.integrals.values.length === 1) {
-      const { from, to } = datum.integrals.values[0];
+      const { from = 0, to = 0 } = datum.integrals.values[0];
       const { x, y } = datum.data;
       const integralResult = xyIntegral(
         { x: x, y: y },
