@@ -88,6 +88,23 @@ async function exportAsJSON(
     }
   }
 }
+
+function exportAsMatrix(data, options, fileName = 'experiment') {
+  // eslint-disable-next-line no-unused-vars
+  const { from, to, nbPoints } = options;
+
+  // your code
+
+  const exportData = JSON.stringify(
+    data,
+    (key, value) => (ArrayBuffer.isView(value) ? Array.from(value) : value),
+    2,
+  );
+
+  const blob = new Blob([exportData], { type: 'text/plain' });
+  saveAs(blob, `${fileName}.tsv`);
+}
+
 function exportAsNMRE(data, fileName = 'experiment') {
   data.generateAsync({ type: 'blob' }).then((content) => {
     saveAs(content, `${fileName}.zip`);
@@ -236,4 +253,5 @@ export {
   copyTextToClipboard,
   copyHTMLToClipboard,
   exportAsMol,
+  exportAsMatrix,
 };

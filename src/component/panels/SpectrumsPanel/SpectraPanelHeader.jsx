@@ -1,21 +1,24 @@
 import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import {
   FaCreativeCommonsSamplingPlus,
   FaEye,
   FaEyeSlash,
+  FaFileExport,
 } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
-import ToolTip from '../../elements/ToolTip/ToolTip';
+import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
-import { useModal } from '../../elements/popup/Modal';
+import { positions, useModal } from '../../elements/popup/Modal';
 import SpectraWraper from '../../hoc/SpectraWraper';
+import ExportAsMatrixModal from '../../modal/ExportAsMatrixModal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MISSING_PROJECTION,
   CHANGE_VISIBILITY,
   DELETE_SPECTRA,
+  RESET_SELECTED_TOOL,
   RESET_SPECTRA_SCALE,
   SET_SPECTRA_SAME_TOP,
 } from '../../reducer/types/Types';
@@ -79,41 +82,49 @@ function SpectraPanelHeader({
     dispatch({ type: RESET_SPECTRA_SCALE });
   }, [dispatch]);
 
+  const openExportAsMatrixModal = useCallback(() => {
+    dispatch({ type: RESET_SELECTED_TOOL });
+    modal.show(<ExportAsMatrixModal />, {
+      isBackgroundBlur: false,
+      position: positions.TOP_CENTER,
+      width: 500,
+    });
+  }, [modal, dispatch]);
+
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
       counter={spectrums && spectrums.length}
       deleteToolTip="Delete all spectra"
     >
-      <ToolTip title="Hide all spectra" popupPlacement="right">
-        <button type="button" onClick={hideAllSpectrumsHandler}>
-          <FaEyeSlash />
-        </button>
-      </ToolTip>
-      <ToolTip title="Show all spectra" popupPlacement="right">
-        <button type="button" onClick={showAllSpectrumsHandler}>
-          <FaEye />
-        </button>
-      </ToolTip>
+      <Button popupTitle="Hide all spectra" onClick={hideAllSpectrumsHandler}>
+        <FaEyeSlash />
+      </Button>
+      <Button popupTitle="Show all spectra" onClick={showAllSpectrumsHandler}>
+        <FaEye />
+      </Button>
       {activeSpectrum && activeTab && activeTab.split(',').length > 1 && (
-        <ToolTip title="Add missing projection" popupPlacement="right">
-          <button type="button" onClick={addMissingProjectionHandler}>
-            <FaCreativeCommonsSamplingPlus />
-          </button>
-        </ToolTip>
+        <Button
+          popupTitle="Add missing projection"
+          onClick={addMissingProjectionHandler}
+        >
+          <FaCreativeCommonsSamplingPlus />
+        </Button>
       )}
       {displayerMode === DISPLAYER_MODE.DM_1D && (
         <>
-          <ToolTip title="Reset Scale" popupPlacement="right">
-            <button type="button" onClick={resetScaleHandler}>
-              <SvgNmrResetScale />
-            </button>
-          </ToolTip>
-          <ToolTip title="Same Top" popupPlacement="right">
-            <button type="button" onClick={setSameTopHandler}>
-              <SvgNmrSameTop />
-            </button>
-          </ToolTip>
+          <Button popupTitle="Reset Scale" onClick={resetScaleHandler}>
+            <SvgNmrResetScale />
+          </Button>
+          <Button popupTitle="Same Top" onClick={setSameTopHandler}>
+            <SvgNmrSameTop />
+          </Button>
+          <Button
+            popupTitle="Export spectra as a Matrix"
+            onClick={openExportAsMatrixModal}
+          >
+            <FaFileExport />
+          </Button>
         </>
       )}
     </DefaultPanelHeader>
