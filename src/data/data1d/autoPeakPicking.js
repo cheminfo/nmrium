@@ -40,13 +40,24 @@ export default function autoPeakPicking(datum1D, options) {
 
   const shiftX = getShiftX(datum1D);
 
-  return peaks.map((peak) => {
-    return {
+  const error = (x[x.length - 1] - x[0]) / 10000;
+
+  return peaks.reduce((acc, newPeak) => {
+    // check if the peak is already exists
+    for (const { delta } of datum1D.peaks.values) {
+      if (Math.abs(newPeak.x - delta) < error) {
+        return acc;
+      }
+    }
+
+    acc.push({
       id: generateID(),
-      originDelta: peak.x - shiftX,
-      delta: peak.x,
-      intensity: peak.y,
-      width: peak.width,
-    };
-  });
+      originDelta: newPeak.x - shiftX,
+      delta: newPeak.x,
+      intensity: newPeak.y,
+      width: newPeak.width,
+    });
+
+    return acc;
+  }, []);
 }
