@@ -344,13 +344,25 @@ export function mapRanges(ranges, datum) {
   const { x, re } = datum.data;
   const shiftX = getShiftX(datum);
 
-  return ranges.map((range) => {
+  const error = (x[x.length - 1] - x[0]) / 10000;
+
+  return ranges.reduce((acc, newRange) => {
+    // check if the range is already exists
+    for (const { from, to } of datum.ranges.values) {
+      if (
+        Math.abs(newRange.from - from) < error &&
+        Math.abs(newRange.to - to) < error
+      ) {
+        return acc;
+      }
+    }
+
     const absolute = xyIntegration(
       { x, y: re },
-      { from: range.from, to: range.to, reverse: true },
+      { from: newRange.from, to: newRange.to, reverse: true },
     );
 
-    const signal = range.signal.map((_signal) => {
+    const signal = newRange.signal.map((_signal) => {
       return {
         kind: 'signal',
         id: generateID(),
@@ -358,17 +370,18 @@ export function mapRanges(ranges, datum) {
         ..._signal,
       };
     });
-
-    return {
-      kind: range.signal[0].kind || DatumKind.signal,
-      originFrom: range.from - shiftX,
-      originTo: range.to - shiftX,
-      ...range,
+    acc.push({
+      kind: newRange.signal[0].kind || DatumKind.signal,
+      originFrom: newRange.from - shiftX,
+      originTo: newRange.to - shiftX,
+      ...newRange,
       id: generateID(),
       absolute,
       signal,
-    };
-  });
+    });
+
+    return acc;
+  }, []);
 }
 
 export function detectRanges(datum, options) {
