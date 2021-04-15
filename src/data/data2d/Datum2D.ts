@@ -448,11 +448,29 @@ export function detectZones(datum, options) {
   const zones = getDetectionZones(datum, options);
   const { xShift, yShift } = getShift(datum);
 
-  const formattedZones = zones.map((zone) => {
-    return {
+  const { minX, maxX, minY, maxY } = datum.data;
+  const xError = Math.abs(maxX - minX) / 10000;
+  const yError = Math.abs(maxY - minY) / 10000;
+
+  const formattedZones = zones.reduce((acc, zone) => {
+    const [newXRange, newYRange] = zone.fromTo;
+
+    // check if the zone is already exists
+    for (const { x, y } of datum.zones.values) {
+      if (
+        Math.abs(newXRange.from - x.from) < xError &&
+        Math.abs(newXRange.to - x.to) < xError &&
+        Math.abs(newYRange.from - y.from) < yError &&
+        Math.abs(newYRange.to - y.to) < yError
+      ) {
+        return acc;
+      }
+    }
+
+    acc.push({
       id: generateID(),
-      x: { from: zone.fromTo[0].from, to: zone.fromTo[0].to },
-      y: { from: zone.fromTo[1].from, to: zone.fromTo[1].to },
+      x: { from: newXRange.from, to: newXRange.to },
+      y: { from: newYRange.from, to: newYRange.to },
       signal: [
         {
           id: generateID(),
@@ -471,8 +489,10 @@ export function detectZones(datum, options) {
         },
       ],
       kind: DatumKind.signal,
-    };
-  });
+    });
+
+    return acc;
+  }, []);
   datum.zones.values = datum.zones.values.concat(formattedZones);
 }
 
