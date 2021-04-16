@@ -1,8 +1,9 @@
 import lodashCloneDeep from 'lodash/cloneDeep';
 import {
-  CorrelationUtilities,
-  GeneralUtilities,
-  LinkUtilities,
+  addLink,
+  buildLink,
+  getCorrelationIndex,
+  removeLink,
 } from 'nmr-correlation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -83,7 +84,7 @@ function AdditionalColumnField({
       if (action === 'add') {
         const pseudoLinkID = generateID();
         const pseudoExperimentID = generateID();
-        const pseudoCommonLink = LinkUtilities.buildLink({
+        const pseudoCommonLink = buildLink({
           experimentType,
           experimentID: pseudoExperimentID,
           atomType: [_columnCorrelation.atomType, _rowCorrelation.atomType],
@@ -92,38 +93,28 @@ function AdditionalColumnField({
           signal: { id: generateID(), sign: 0 }, // pseudo signal
         });
 
-        CorrelationUtilities.addLink(
+        addLink(
           _columnCorrelation,
-          LinkUtilities.buildLink({
+          buildLink({
             ...pseudoCommonLink,
             axis: 'x',
-            match: [
-              GeneralUtilities.getCorrelationIndex(
-                correlations,
-                _rowCorrelation,
-              ),
-            ],
+            match: [getCorrelationIndex(correlations, _rowCorrelation)],
           }),
         );
-        CorrelationUtilities.addLink(
+        addLink(
           _rowCorrelation,
-          LinkUtilities.buildLink({
+          buildLink({
             ...pseudoCommonLink,
             axis: 'y',
-            match: [
-              GeneralUtilities.getCorrelationIndex(
-                correlations,
-                _columnCorrelation,
-              ),
-            ],
+            match: [getCorrelationIndex(correlations, _columnCorrelation)],
           }),
         );
         if (!_rowCorrelation.edited.protonsCount) {
           _rowCorrelation.protonsCount = [pseudoLinkCountHSQC + 1];
         }
       } else if (action === 'remove') {
-        CorrelationUtilities.removeLink(_rowCorrelation, commonLink.id);
-        CorrelationUtilities.removeLink(_columnCorrelation, commonLink.id);
+        removeLink(_rowCorrelation, commonLink.id);
+        removeLink(_columnCorrelation, commonLink.id);
         if (!_rowCorrelation.edited.protonsCount) {
           _rowCorrelation.protonsCount =
             pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [];

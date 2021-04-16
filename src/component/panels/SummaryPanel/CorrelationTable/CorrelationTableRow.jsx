@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { LinkUtilities, GeneralUtilities } from 'nmr-correlation';
+import { buildLink, getLabel } from 'nmr-correlation';
 import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
@@ -86,7 +86,7 @@ function CorrelationTableRow({
               experimentLabel += ' (edited)';
             }
             commonLinks.push(
-              LinkUtilities.buildLink({
+              buildLink({
                 ...link,
                 experimentLabel,
                 axis: undefined,
@@ -190,7 +190,7 @@ function CorrelationTableRow({
           style: { ...tableDataProps.style, styleLabel },
         }}
       >
-        {GeneralUtilities.getLabel(correlations, correlation)}
+        {getLabel(correlations, correlation)}
       </td>
       <td {...tableDataProps}>
         {lodashGet(correlation.signal, 'delta', false)

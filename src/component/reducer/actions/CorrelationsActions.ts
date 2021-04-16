@@ -1,12 +1,12 @@
 import { original, Draft } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
-import { Build, CorrelationUtilities, Types } from 'nmr-correlation';
+import { buildCorrelationData, setCorrelation, Types } from 'nmr-correlation';
 
 import { State } from '../Reducer';
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;
-  draft.correlations = Build.build(
+  draft.correlations = buildCorrelationData(
     spectra as Types.Spectra,
     correlations.options,
     lodashCloneDeep(correlations.values),
@@ -19,7 +19,7 @@ function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
   const { mf } = payload;
   // update of correlation data is needed only if the following is true
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
-    draft.correlations = Build.build(
+    draft.correlations = buildCorrelationData(
       spectra as Types.Spectra,
       { ...correlations.options, mf },
       lodashCloneDeep(correlations.values),
@@ -34,7 +34,7 @@ function handleSetTolerance(
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
   const { tolerance } = payload;
-  draft.correlations = Build.build(
+  draft.correlations = buildCorrelationData(
     spectra as Types.Spectra,
     { ...correlations.options, tolerance },
     lodashCloneDeep(correlations.values),
@@ -48,11 +48,7 @@ function handleSetCorrelation(
   const state = original(draft) as State;
   const { correlations } = state;
   const { id, correlation } = payload;
-  draft.correlations = CorrelationUtilities.setCorrelation(
-    correlations,
-    id,
-    correlation,
-  );
+  draft.correlations = setCorrelation(correlations, id, correlation);
   handleUpdateCorrelations(draft);
 }
 
@@ -63,11 +59,7 @@ function handleSetCorrelations(
   const { ids, correlations } = payload;
   ids.forEach((id, i) => {
     const { correlations: correlationsData } = draft;
-    draft.correlations = CorrelationUtilities.setCorrelation(
-      correlationsData,
-      id,
-      correlations[i],
-    );
+    draft.correlations = setCorrelation(correlationsData, id, correlations[i]);
   });
   handleUpdateCorrelations(draft);
 }
