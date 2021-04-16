@@ -243,6 +243,26 @@ function filterSnapshotHandler(draft: Draft<State>, action) {
   }
 }
 
+function handleFromToFilter(draft: Draft<State>, action) {
+  if (draft.data && draft.data.length > 0) {
+    for (let datum of draft.data) {
+      if (
+        datum.info?.dimension === 1 &&
+        datum.info.nucleus === draft.activeTab
+      ) {
+        FiltersManager.applyFilter(datum, [
+          {
+            name: Filters.fromTo.id,
+            options: action.payload,
+          },
+        ]);
+        (datum as Datum1D).data.y = (datum as Datum1D).data.re;
+      }
+    }
+  }
+  setDomain(draft);
+}
+
 export {
   shiftSpectrumAlongXAxis,
   applyZeroFillingFilter,
@@ -251,6 +271,7 @@ export {
   applyAutoPhaseCorrectionFilter,
   applyAbsoluteFilter,
   calculateManualPhaseCorrection,
+  handleFromToFilter,
   enableFilter,
   deleteFilter,
   handleBaseLineCorrectionFilter,

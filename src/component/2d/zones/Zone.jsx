@@ -81,10 +81,10 @@ const Zone = ({ zoneData, isVisible }) => {
       }}
     >
       {isVisible.zones && (
-        <g transform={`translate(${scaleX(x1)},${scaleY(y1)})`}>
+        <g transform={`translate(${scaleX(x2)},${scaleY(y1)})`}>
           <rect
             x="0"
-            width={scaleX(x2) - scaleX(x1)}
+            width={scaleX(x1) - scaleX(x2)}
             height={scaleY(y2) - scaleY(y1)}
             className="Integral-area"
             fill="#0000000f"
