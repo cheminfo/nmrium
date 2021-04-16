@@ -278,6 +278,8 @@ function innerSpectrumReducer(draft, action) {
       return FiltersActions.deleteFilter(draft, action.id);
     case types.SET_FILTER_SNAPSHOT:
       return FiltersActions.filterSnapshotHandler(draft, action);
+    case types.APPLY_FROM_TO_FILTER:
+      return FiltersActions.handleFromToFilter(draft, action);
 
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);
