@@ -10,6 +10,27 @@ declare module 'ml-spectra-processing' {
     target: number,
   ): number;
 
+  /**
+   * Returns an object with {fromIndex, toIndex} for a specific from / to
+   * @param {array} x
+   * @param {object} [options={}]
+   * @param {number} [options.from] - First value for xyIntegration in the X scale
+   * @param {number} [options.fromIndex=0] - First point for xyIntegration
+   * @param {number} [options.to] - Last value for xyIntegration in the X scale
+   * @param {number} [options.toIndex=x.length-1] - Last point for xyIntegration
+   */
+
+  declare function xGetFromToIndex(
+    x: Array<number>,
+    options: {
+      from?: number;
+      fromIndex?: number;
+      to?: number;
+      toIndex?: number;
+      reverse?: boolean;
+    },
+  ): { fromIndex: number; toIndex: number };
+
   declare function zoneToX(
     zone: { from: number; to: number },
     size: number,
