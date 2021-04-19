@@ -6,6 +6,7 @@ export const FILES_TYPES = {
   JDX: 'jdx',
   JDF: 'jdf',
   ZIP: 'zip',
+  SDF: 'sdf',
 };
 
 async function loadFile(file) {
