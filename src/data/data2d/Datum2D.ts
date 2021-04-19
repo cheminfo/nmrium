@@ -506,6 +506,9 @@ export function getSubMatrix(datum, selectedZone) {
   let xIndexTo = Math.floor((toX - data.minX) / xStep);
   let yIndexTo = Math.floor((toY - data.minY) / yStep);
 
+  if (xIndexFrom > xIndexTo) [xIndexFrom, xIndexTo] = [xIndexTo, xIndexFrom];
+  if (yIndexFrom > yIndexTo) [yIndexFrom, yIndexTo] = [yIndexTo, yIndexFrom];
+
   let dataMatrix: any = {
     z: [],
     maxX: data.minX + xIndexTo * xStep,
