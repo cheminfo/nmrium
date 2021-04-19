@@ -7,6 +7,7 @@ import * as SpectraManager from '../../data/SpectraManager';
 import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
+import { nmredataToNmrium } from '../utility/nmredataToNmrium';
 
 import * as CorrelationsActions from './actions/CorrelationsActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
@@ -171,6 +172,13 @@ export function dispatchMiddleware(dispatch) {
         }
         break;
       }
+      case types.LOAD_NMREDATA_FILE: {
+        void nmredataToNmrium(action.files).then((data) => {
+          action.payload = data;
+          dispatch(action);
+        });
+        break;
+      }
       case types.PREDICT_SPECTRA: {
         const molecule = OCL.Molecule.fromMolfile(action.payload.mol.molfile);
         void predictionProton(molecule, {}).then((result) => {
@@ -206,6 +214,8 @@ function innerSpectrumReducer(draft, action) {
       return LoadActions.handleLoadMOLFile(draft, action.files);
     case types.LOAD_ZIP_FILE:
       return LoadActions.handleLoadZIPFile(draft, action);
+    case types.LOAD_NMREDATA_FILE:
+      return LoadActions.handleLoadNmredata(draft, action);
     case types.ADD_PEAK:
       return PeaksActions.addPeak(draft, action.mouseCoordinates);
     case types.ADD_PEAKS:
