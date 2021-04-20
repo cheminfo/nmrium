@@ -95,7 +95,7 @@ const EXPORT_MENU = [
   {
     id: 'copy',
     icon: <FaCopy />,
-    label: 'Copy image to Clipboard ( Press Ctrl + C',
+    label: 'Copy image to Clipboard ( Press Ctrl + C )',
   },
 ];
 
