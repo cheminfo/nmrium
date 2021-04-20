@@ -5,10 +5,13 @@ import { ObjectInspector } from 'react-inspector';
 import { useDispatch } from '../../context/DispatchContext';
 import CheckBox from '../../elements/CheckBox';
 import { TableCell, TableRow } from '../../elements/Table';
+import { useModal } from '../../elements/popup/Modal';
 import {
   ENABLE_FILTER,
   DELETE_FILTER,
   SET_FILTER_SNAPSHOT,
+  DELETE_SPECTRA_FILTER,
+  SET_LOADING_FLAG,
 } from '../../reducer/types/Types';
 
 const styles = {
@@ -27,6 +30,7 @@ const styles = {
 };
 function FiltersTableRow({ filters }) {
   const dispatch = useDispatch();
+  const modal = useModal();
   const [selectedFilterID, setSelectedFilter] = useState();
 
   const handelFilterCheck = useCallback(
@@ -36,10 +40,42 @@ function FiltersTableRow({ filters }) {
     [dispatch],
   );
   const handelDeleteFilter = useCallback(
-    (id) => {
-      dispatch({ type: DELETE_FILTER, id });
+    ({ id, name }) => {
+      modal.showConfirmDialog({
+        message: 'Filter/s will be deleted, Are You sure?',
+        buttons: [
+          {
+            text: 'Yes,All spectra',
+            handler: () => {
+              dispatch({
+                type: SET_LOADING_FLAG,
+                isLoading: true,
+              });
+              setTimeout(() => {
+                dispatch({
+                  type: DELETE_SPECTRA_FILTER,
+                  payload: { filterType: name },
+                });
+              });
+            },
+          },
+          {
+            text: 'Yes ',
+            handler: () => {
+              dispatch({
+                type: SET_LOADING_FLAG,
+                isLoading: true,
+              });
+              setTimeout(() => {
+                dispatch({ type: DELETE_FILTER, payload: { id } });
+              });
+            },
+          },
+          { text: 'No' },
+        ],
+      });
     },
-    [dispatch],
+    [dispatch, modal],
   );
   const filterSnapShotHandler = useCallback(
     (newID) => {
@@ -82,7 +118,7 @@ function FiltersTableRow({ filters }) {
               <button
                 style={styles.button}
                 type="button"
-                onClick={() => handelDeleteFilter(d.id)}
+                onClick={() => handelDeleteFilter(d)}
               >
                 <FaRegTrashAlt />
               </button>

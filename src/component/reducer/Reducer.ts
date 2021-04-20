@@ -275,7 +275,9 @@ function innerSpectrumReducer(draft, action) {
     case types.ENABLE_FILTER:
       return FiltersActions.enableFilter(draft, action.id, action.checked);
     case types.DELETE_FILTER:
-      return FiltersActions.deleteFilter(draft, action.id);
+      return FiltersActions.deleteFilter(draft, action);
+    case types.DELETE_SPECTRA_FILTER:
+      return FiltersActions.deleteSpectraFilter(draft, action);
     case types.SET_FILTER_SNAPSHOT:
       return FiltersActions.filterSnapshotHandler(draft, action);
     case types.APPLY_FROM_TO_FILTER:
