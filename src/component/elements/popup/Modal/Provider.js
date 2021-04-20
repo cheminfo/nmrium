@@ -99,19 +99,28 @@ function Provider({
     return _modal;
   }, []);
 
-  const showConfirmDialog = useCallback((message, options = {}) => {
-    const _modal = {
-      component: <ConfirmDialog message={message} />,
-      options: { isBackgroundBlur: true, ...options },
-    };
+  /**
+   * @param {object} dialogOptions
+   * @param {object} dialogOptions.message
+   * @param {Array<{ handler: Function,text: string,style: object}>} dialogOptions.buttons
+   * @param {object} dialogOptions.tyle
+   */
+  const showConfirmDialog = useCallback(
+    (dialogOptions, options = { enableResizing: false }) => {
+      const _modal = {
+        component: <ConfirmDialog {...dialogOptions} />,
+        options: { isBackgroundBlur: true, ...options },
+      };
 
-    _modal.close = () => remove();
+      _modal.close = () => remove();
 
-    setModal(_modal);
-    if (_modal.options.onOpen) _modal.options.onOpen();
+      setModal(_modal);
+      if (_modal.options.onOpen) _modal.options.onOpen();
 
-    return _modal;
-  }, []);
+      return _modal;
+    },
+    [],
+  );
 
   const close = () => {
     closeHandler();
