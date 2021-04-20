@@ -228,6 +228,7 @@ function deleteSpectraFilter(draft: Draft<State>, actions) {
     resetSelectedTool(draft);
     setDomain(draft);
     setMode(draft);
+    draft.isLoading = false;
   }
   draft.isLoading = false;
 }
