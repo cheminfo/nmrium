@@ -18,7 +18,6 @@ export default function useToolsFunctions() {
   const dispatch = useDispatch();
   const alert = useAlert();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
-  const [isStacked, activateStackView] = useState(false);
 
   const debounceClickEventsRef = useRef({ clicks: [] });
   const handleChangeOption = useCallback(
@@ -64,14 +63,11 @@ export default function useToolsFunctions() {
     }
   }, [dispatch, debounceClickEventsRef]);
 
-  const handleChangeDisplayViewMode = useCallback(() => {
-    const flag = !isStacked;
-    activateStackView(flag);
+  const changeDisplayViewModeHandler = useCallback(() => {
     dispatch({
       type: CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
-      flag: flag,
     });
-  }, [dispatch, isStacked]);
+  }, [dispatch]);
 
   const changeSpectrumViewHandler = useCallback(() => {
     dispatch({
@@ -90,10 +86,9 @@ export default function useToolsFunctions() {
   return {
     handleChangeOption,
     handleFullZoomOut,
-    handleChangeDisplayViewMode,
+    changeDisplayViewModeHandler,
     changeSpectrumViewHandler,
     alignSpectrumsVerticallyHandler,
     isRealSpectrumShown,
-    isStacked,
   };
 }

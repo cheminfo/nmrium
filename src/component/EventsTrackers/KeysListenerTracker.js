@@ -35,7 +35,7 @@ function KeysListenerTracker() {
     handleChangeOption,
     handleFullZoomOut,
     alignSpectrumsVerticallyHandler,
-    handleChangeDisplayViewMode,
+    changeDisplayViewModeHandler,
   } = useToolsFunctions();
 
   const { saveToClipboardHandler, saveAsJSONHandler } = useExport();
@@ -185,7 +185,7 @@ function KeysListenerTracker() {
           }
           case 's': {
             if (allow1DTool) {
-              handleChangeDisplayViewMode();
+              changeDisplayViewModeHandler();
             }
             break;
           }
@@ -224,7 +224,7 @@ function KeysListenerTracker() {
       alignSpectrumsVerticallyHandler,
       allow1DTool,
       allow2DTool,
-      handleChangeDisplayViewMode,
+      changeDisplayViewModeHandler,
       handleChangeOption,
       handleFullZoomOut,
       loader,

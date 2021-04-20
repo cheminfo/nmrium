@@ -106,7 +106,7 @@ function setSpectrumsVerticalAlign(draft: Draft<State>) {
   changeSpectrumVerticalAlignment(draft, !draft.verticalAlign.flag);
 }
 
-function handleChangeSpectrumDisplayMode(draft: Draft<State>, { flag }) {
+function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
   const state = original(draft) as State;
   const { activeSpectrum, height, activeTab } = draft;
   let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
@@ -116,10 +116,10 @@ function handleChangeSpectrumDisplayMode(draft: Draft<State>, { flag }) {
       YAxisShift = height / 2;
     }
   }
-  draft.verticalAlign.flag = flag;
-  draft.verticalAlign.stacked = flag;
+  draft.verticalAlign.flag = !draft.verticalAlign.stacked;
+  draft.verticalAlign.stacked = !draft.verticalAlign.stacked;
 
-  if (flag) {
+  if (draft.verticalAlign.stacked) {
     const count = (state.data as Datum1D[]).filter(
       (datum) => datum.info.nucleus === activeTab,
     ).length;

@@ -307,7 +307,7 @@ function innerSpectrumReducer(draft, action) {
       return ToolsActions.resetSpectraScale(draft);
 
     case types.CHANGE_SPECTRUM_DISPLAY_VIEW_MODE:
-      return ToolsActions.handleChangeSpectrumDisplayMode(draft, action);
+      return ToolsActions.handleChangeSpectrumDisplayMode(draft);
 
     case types.ADD_MOLECULE:
       return MoleculeActions.addMoleculeHandler(draft, action.molfile);

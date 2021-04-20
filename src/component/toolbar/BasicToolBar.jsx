@@ -107,11 +107,10 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
   const loader = useLoader();
 
   const {
-    isStacked,
     isRealSpectrumShown,
 
     changeSpectrumViewHandler,
-    handleChangeDisplayViewMode,
+    changeDisplayViewModeHandler,
     alignSpectrumsVerticallyHandler,
   } = useToolsFunctions();
 
@@ -240,10 +239,17 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
             type="button"
             css={styles}
             className="cheminfo"
-            onClick={handleChangeDisplayViewMode}
+            onClick={changeDisplayViewModeHandler}
           >
-            <ToolTip title="Spectra alignment" popupPlacement="right">
-              {!isStacked ? <SvgNmrOverlay3Aligned /> : <SvgNmrOverlay3 />}
+            <ToolTip
+              title="Spectra alignment ( Press s )"
+              popupPlacement="right"
+            >
+              {verticalAlign.stacked ? (
+                <SvgNmrOverlay3Aligned />
+              ) : (
+                <SvgNmrOverlay3 />
+              )}
             </ToolTip>
           </button>
         )}
