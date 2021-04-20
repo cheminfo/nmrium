@@ -277,7 +277,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
           >
             <ToolTip
               title={
-                !verticalAlign.flag ? 'Baseline  Center' : 'Baseline  Bottom'
+                !verticalAlign.flag
+                  ? 'Baseline  Center ( Press c )'
+                  : 'Baseline  Bottom ( Press c )'
               }
               popupPlacement="right"
             >
