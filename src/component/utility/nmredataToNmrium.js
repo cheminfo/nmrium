@@ -4,6 +4,12 @@ import { addBruker, addJcamp } from '../../data/SpectraManager';
 import { detectRanges, mapRanges } from '../../data/data1d/Datum1D';
 import { detectZones } from '../../data/data2d/Datum2D';
 
+const computeDistance = (s1, s2) =>
+  ['x', 'y'].reduce(
+    (dist, axis) => Math.pow(s2[axis].delta - s1[axis].delta, 2) + dist,
+    0,
+  );
+
 export async function nmredataToNmrium(zipFilesValues) {
   let files = {};
   for (let file of zipFilesValues) files[file.name] = file;
@@ -32,17 +38,16 @@ export async function nmredataToNmrium(zipFilesValues) {
 
     let { info } = spectrum[0];
     if (info.dimension > 1) {
-      // detectZones(spectrum[0], {});
+      detectZones(spectrum[0], {});
+      assignZones(spectrum[0], data.signals);
     } else {
       detectRanges(spectrum[0], {});
-      let ranges = assignRanges(spectrum[0], data.signals);
-      spectrum[0].ranges.values = ranges;
+      assignRanges(spectrum[0], data.signals);
     }
     nmrium.spectra.push(...spectrum);
   }
 
   nmrium.molecules = molecules;
-
   return nmrium;
 }
 
@@ -63,6 +68,53 @@ async function getSDF(zipFiles) {
   return result;
 }
 
+function assignZones(datum, eSignals) {
+  let zones = datum.zones.values;
+  let signals = eSignals.slice();
+  for (let zone of zones) {
+    let signalsInside = [];
+    for (let i = 0; i < signals.length; i++) {
+      let isInside = 0;
+      let signal = signals[i];
+      for (let axis of ['x', 'y']) {
+        let { from, to } = zone[axis];
+        let deltaIn = signal[axis].delta;
+        if (deltaIn >= from && deltaIn <= to) isInside++;
+      }
+      if (isInside > 1) {
+        signalsInside.push(signal);
+        signals.splice(i, 1);
+        i--;
+      }
+    }
+    if (signalsInside.length > 0) {
+      for (let signal of signalsInside) {
+        for (let axis of ['x', 'y']) {
+          if (!signal[axis].diaID) continue;
+          let index = closeSignalIndex(signal, zone);
+          zone.signal[index][axis].diaID = signal[axis].diaID;
+        }
+      }
+    }
+  }
+}
+
+function closeSignalIndex(signal, zone) {
+  let index = 0;
+  let signals = zone.signal;
+  let distance = computeDistance(signals[0], signal);
+
+  for (let i = 1; i < signals.length; i++) {
+    let currentDistance = computeDistance(signals[i], signal);
+    if (currentDistance < distance) {
+      index = i;
+      distance = currentDistance;
+    }
+  }
+
+  return index;
+}
+
 function assignRanges(datum, signals) {
   let ranges = datum.ranges.values.slice();
   ranges.sort((a, b) => a.from - b.from);
@@ -80,5 +132,5 @@ function assignRanges(datum, signals) {
     if (signalsInside.length > 0) range.signal = signalsInside;
   }
   datum.ranges.values = [];
-  return mapRanges(ranges, datum);
+  datum.ranges.values = mapRanges(ranges, datum);
 }
