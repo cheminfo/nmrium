@@ -125,16 +125,24 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
   }, [zones.values, unlinkZoneHandler]);
 
   const handleOnRemoveAssignments = useCallback(() => {
-    modal.showConfirmDialog('All assignments will be removed. Are you sure?', {
-      onYes: removeAssignments,
+    modal.showConfirmDialog({
+      message: 'All assignments will be removed. Are you sure?',
+      buttons: [{ text: 'Yes', handler: removeAssignments }, { text: 'No' }],
     });
   }, [removeAssignments, modal]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All zones will be deleted. Are You sure?', {
-      onYes: () => {
-        dispatch({ type: DELETE_2D_ZONE, payload: { assignmentData } });
-      },
+    modal.showConfirmDialog({
+      message: 'All zones will be deleted. Are You sure?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            dispatch({ type: DELETE_2D_ZONE, payload: { assignmentData } });
+          },
+        },
+        { text: 'No' },
+      ],
     });
   }, [assignmentData, dispatch, modal]);
 

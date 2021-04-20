@@ -36,10 +36,17 @@ function SpectraPanelHeader({
   const dispatch = useDispatch();
 
   const handleDelete = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted, Are You sure?', {
-      onYes: () => {
-        dispatch({ type: DELETE_SPECTRA });
-      },
+    modal.showConfirmDialog({
+      message: 'All records will be deleted, Are You sure?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            dispatch({ type: DELETE_SPECTRA });
+          },
+        },
+        { text: 'No' },
+      ],
     });
   }, [dispatch, modal]);
 
