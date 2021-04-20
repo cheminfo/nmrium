@@ -4,6 +4,7 @@ import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActi
 import { useAssignmentData } from '../assignment';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useLoader } from '../context/LoaderContext';
 import { useAlert } from '../elements/popup/Alert';
 import { TYPES, useHighlightData } from '../highlight/index';
 import useExport from '../hooks/useExport';
@@ -28,6 +29,8 @@ function KeysListenerTracker() {
   } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const loader = useLoader();
+
   const {
     handleChangeOption,
     handleFullZoomOut,
@@ -200,6 +203,10 @@ function KeysListenerTracker() {
             saveAsJSONHandler();
             e.preventDefault();
             break;
+          case 'o':
+            loader.open();
+            e.preventDefault();
+            break;
           default:
         }
       }
@@ -220,6 +227,7 @@ function KeysListenerTracker() {
       handleChangeDisplayViewMode,
       handleChangeOption,
       handleFullZoomOut,
+      loader,
       saveAsJSONHandler,
       saveToClipboardHandler,
     ],
@@ -231,7 +239,6 @@ function KeysListenerTracker() {
         highlighted: [activeKey],
         type,
       } = highlight;
-
       if (
         !['input', 'textarea'].includes(e.target.localName) &&
         overDisplayer

@@ -323,8 +323,6 @@ function NMRium({
                               css={containerStyles}
                               onContextMenu={preventContextMenuHandler}
                             >
-                              <KeysListenerTracker />
-
                               <Header
                                 isFullscreen={isFullscreen}
                                 onMaximize={toggle}
@@ -338,6 +336,8 @@ function NMRium({
                                 }}
                               >
                                 <DropZone>
+                                  <KeysListenerTracker />
+
                                   <ToolBar selectedTool={selectedTool} />
                                   <SplitPane
                                     style={splitPaneStyles.container}

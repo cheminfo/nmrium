@@ -63,7 +63,7 @@ const IMPORT_MENU = [
   {
     id: 'importFile',
     icon: <FaFile />,
-    label: 'Import from file system',
+    label: 'Import from file system (Press Ctrl + O)',
   },
   {
     id: 'importJDX',
