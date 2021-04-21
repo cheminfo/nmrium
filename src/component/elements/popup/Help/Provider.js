@@ -17,7 +17,6 @@ import Transition from '../Transition';
 import Wrapper from '../Wrapper';
 import { groupBy } from '../helpers';
 import { positions, transitions } from '../options';
-import { load } from '../utility';
 
 import { HelpProvider } from './Context';
 import helpReducer, { initState } from './Reducer';
@@ -112,8 +111,6 @@ function Provider({
     async (helpid, options = { delay: null }) => {
       if (!modals.some((m) => m.helpid === helpid)) {
         try {
-          const mdtext = await load(data[helpid].filePath);
-
           const id = Math.random().toString(36).substr(2, 9);
 
           const modalOptions = {
@@ -126,7 +123,6 @@ function Provider({
           const modal = {
             helpid,
             id,
-            mdtext,
             options: modalOptions,
           };
 
@@ -164,17 +160,7 @@ function Provider({
         }
       }
     },
-    [
-      data,
-      delay,
-      modals,
-      multiple,
-      position,
-      preventAutoHelp,
-      remove,
-      timeout,
-      type,
-    ],
+    [delay, modals, multiple, position, preventAutoHelp, remove, timeout, type],
   );
 
   const clear = useCallback(() => {
@@ -251,7 +237,7 @@ function Provider({
                                   <FaTimes />
                                 </button>
                               </div>
-                              {modal.mdtext && (
+                              {data[modal.helpid].filePath && (
                                 <div
                                   style={{
                                     cursor: 'default',

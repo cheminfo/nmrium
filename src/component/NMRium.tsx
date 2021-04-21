@@ -447,7 +447,7 @@ NMRium.propTypes = {
 };
 
 NMRium.defaultProps = {
-  docsBaseUrl: 'https://dev.nmrium.org/docs/v0',
+  docsBaseUrl: 'https://docs.nmrium.org',
   onDataChange: () => null,
   preferences: {
     general: {
