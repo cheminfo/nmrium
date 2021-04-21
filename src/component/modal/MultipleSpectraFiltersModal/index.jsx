@@ -69,7 +69,9 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
   useEffect(() => {
     Events.on('brushEnd', (event) => {
       const [from, to] = event.range;
-      refForm.current.setValues({ ...refForm.current.values, from, to });
+      if (refForm.current) {
+        refForm.current.setValues({ ...refForm.current.values, from, to });
+      }
     });
 
     return () => {
