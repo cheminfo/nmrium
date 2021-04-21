@@ -56,11 +56,12 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
     (options) => {
       switch (filter) {
         case Filters.fromTo.id:
-          return dispatch({ type: APPLY_FROM_TO_FILTER, payload: options });
+          dispatch({ type: APPLY_FROM_TO_FILTER, payload: options });
+          break;
+
         default:
           break;
       }
-
       onClose();
     },
     [dispatch, filter, onClose],
