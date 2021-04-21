@@ -14,6 +14,7 @@ export const types = {
   INFO: 'info',
   SUCCESS: 'success',
   ERROR: 'error',
+  PROGRESS_INDICATOR: 'progress_indicator',
 };
 
 export const transitions = {

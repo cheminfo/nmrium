@@ -17,6 +17,7 @@ import { groupBy } from '../helpers';
 import { positions, transitions, types } from '../options';
 
 import { AlertProvider } from './Context';
+import ProgressIndicator from './ProgressIndicator';
 
 function Provider({
   children,
@@ -136,6 +137,18 @@ function Provider({
     [show],
   );
 
+  const showLoading = useCallback(
+    (message = 'Process in progress', options = {}) => {
+      options.type = types.PROGRESS_INDICATOR;
+      options.timeout = 0;
+      options.backgroundColor = '#232323';
+
+      const alert = show(message, options);
+      return () => remove(alert);
+    },
+    [remove, show],
+  );
+
   const closeHandler = useCallback(
     (alert) => {
       remove(alert);
@@ -158,7 +171,16 @@ function Provider({
 
   return (
     <AlertProvider
-      value={{ alerts, show, remove, removeAll, success, error, info }}
+      value={{
+        alerts,
+        show,
+        remove,
+        removeAll,
+        success,
+        error,
+        info,
+        showLoading,
+      }}
     >
       {children}
       {root.current &&
@@ -208,6 +230,8 @@ function Provider({
                             </button>
 
                             <span>{alert.message}</span>
+                            {alert.options.type ===
+                              types.PROGRESS_INDICATOR && <ProgressIndicator />}
                           </div>
                         </Transition>
                       ))
