@@ -143,8 +143,12 @@ function Provider({
       options.timeout = 0;
       options.backgroundColor = '#232323';
 
-      const alert = show(message, options);
-      return () => remove(alert);
+      return new Promise((resolve) => {
+        const alert = show(message, options);
+        setTimeout(() => {
+          resolve(() => remove(alert));
+        }, 500);
+      });
     },
     [remove, show],
   );
