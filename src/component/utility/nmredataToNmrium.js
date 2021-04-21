@@ -29,7 +29,7 @@ export async function nmredataToNmrium(zipFilesValues) {
     let spectrum;
     if (zip) {
       spectrum = await addBruker(
-        { xy: true, noContours: true, base64: true },
+        { xy: true, noContours: true },
         zip,
       );
     } else {
