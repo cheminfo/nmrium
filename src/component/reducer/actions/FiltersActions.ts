@@ -200,8 +200,6 @@ function deleteFilter(draft: Draft<State>, actions) {
     setDomain(draft);
     setMode(draft);
   }
-
-  draft.isLoading = false;
 }
 function deleteSpectraFilter(draft: Draft<State>, actions) {
   const filterType = actions.payload.filterType;
@@ -228,9 +226,7 @@ function deleteSpectraFilter(draft: Draft<State>, actions) {
     resetSelectedTool(draft);
     setDomain(draft);
     setMode(draft);
-    draft.isLoading = false;
   }
-  draft.isLoading = false;
 }
 
 function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {

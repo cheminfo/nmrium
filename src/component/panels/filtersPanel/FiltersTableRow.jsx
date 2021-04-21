@@ -5,13 +5,13 @@ import { ObjectInspector } from 'react-inspector';
 import { useDispatch } from '../../context/DispatchContext';
 import CheckBox from '../../elements/CheckBox';
 import { TableCell, TableRow } from '../../elements/Table';
+import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import {
   ENABLE_FILTER,
   DELETE_FILTER,
   SET_FILTER_SNAPSHOT,
   DELETE_SPECTRA_FILTER,
-  SET_LOADING_FLAG,
 } from '../../reducer/types/Types';
 
 const styles = {
@@ -31,6 +31,7 @@ const styles = {
 function FiltersTableRow({ filters }) {
   const dispatch = useDispatch();
   const modal = useModal();
+  const alert = useAlert();
   const [selectedFilterID, setSelectedFilter] = useState();
 
   const handelFilterCheck = useCallback(
@@ -46,36 +47,32 @@ function FiltersTableRow({ filters }) {
         buttons: [
           {
             text: 'Yes,All spectra',
-            handler: () => {
+            handler: async () => {
+              const hideLoading = await alert.showLoading(
+                'Delete all spectra filter processs in progress',
+              );
               dispatch({
-                type: SET_LOADING_FLAG,
-                isLoading: true,
+                type: DELETE_SPECTRA_FILTER,
+                payload: { filterType: name },
               });
-              setTimeout(() => {
-                dispatch({
-                  type: DELETE_SPECTRA_FILTER,
-                  payload: { filterType: name },
-                });
-              });
+              hideLoading();
             },
           },
           {
             text: 'Yes ',
-            handler: () => {
-              dispatch({
-                type: SET_LOADING_FLAG,
-                isLoading: true,
-              });
-              setTimeout(() => {
-                dispatch({ type: DELETE_FILTER, payload: { id } });
-              });
+            handler: async () => {
+              const hideLoading = await alert.showLoading(
+                'Delete filter processs in progress',
+              );
+              dispatch({ type: DELETE_FILTER, payload: { id } });
+              hideLoading();
             },
           },
           { text: 'No' },
         ],
       });
     },
-    [dispatch, modal],
+    [alert, dispatch, modal],
   );
   const filterSnapShotHandler = useCallback(
     (newID) => {
