@@ -12,31 +12,28 @@ const computeDistance = (s1, s2) =>
 
 export async function nmredataToNmrium(zipFilesValues) {
   let files = {};
-  for (let file of zipFilesValues) files[file.name] = file;
-  let sdfFiles = await getSDF(files);
-  let jsonData = await NmrRecord.toJSON({
+  for (const file of zipFilesValues) files[file.name] = file;
+  const sdfFiles = await getSDF(files);
+  const jsonData = await NmrRecord.toJSON({
     sdf: sdfFiles[0],
     zipFiles: files,
   });
+
+  let { spectra, molecules = [] } = jsonData;
+
   let nmrium = {
     spectra: [],
-    molecules: [],
+    molecules,
   };
 
-  let { spectra, molecules } = jsonData;
-  for (let data of spectra) {
-    let { zip, jcamp } = data.source;
-    let spectrum;
-    if (zip) {
-      spectrum = await addBruker(
-        { xy: true, noContours: true },
-        zip,
-      );
-    } else {
-      spectrum = addJcamp({}, jcamp);
-    }
+  for (const data of spectra) {
+    const { zip, jcamp } = data.source;
 
-    let { info } = spectrum[0];
+    let spectrum = zip
+      ? await addBruker({ xy: true, noContours: true }, zip)
+      : (spectrum = addJcamp({}, jcamp));
+
+    const { info } = spectrum[0];
     if (info.dimension > 1) {
       detectZones(spectrum[0], {});
       assignZones(spectrum[0], data.signals);
@@ -47,18 +44,17 @@ export async function nmredataToNmrium(zipFilesValues) {
     nmrium.spectra.push(...spectrum);
   }
 
-  nmrium.molecules = molecules;
   return nmrium;
 }
 
 async function getSDF(zipFiles) {
   let result = [];
-  for (let file in zipFiles) {
-    let pathFile = file.split('/');
+  for (const file in zipFiles) {
+    const pathFile = file.split('/');
     if (pathFile[pathFile.length - 1].match(/^[^.].+sdf$/)) {
-      let filename = pathFile[pathFile.length - 1].replace(/\.sdf/, '');
-      let root = pathFile.slice(0, pathFile.length - 1).join('/');
-      let sdf = await zipFiles[file].async('string');
+      const filename = pathFile[pathFile.length - 1].replace(/\.sdf/, '');
+      const root = pathFile.slice(0, pathFile.length - 1).join('/');
+      const sdf = await zipFiles[file].async('string');
       let parserResult = parseSDF(`${sdf}`, { mixedEOL: true });
       parserResult.filename = filename;
       parserResult.root = root !== '' ? `${root}/` : '';
@@ -100,18 +96,18 @@ function assignZones(datum, eSignals) {
 }
 
 function closeSignalIndex(signal, zone) {
-  let index = 0;
-  let signals = zone.signal;
-  let distance = computeDistance(signals[0], signal);
+  const signals = zone.signal;
+  if (signals.length === 1) return 0;
 
-  for (let i = 1; i < signals.length; i++) {
+  let index = 0;
+  let distance = computeDistance(signals[0], signal);
+  for (let i = 0; i < signals.length; i++) {
     let currentDistance = computeDistance(signals[i], signal);
     if (currentDistance < distance) {
       index = i;
       distance = currentDistance;
     }
   }
-
   return index;
 }
 
