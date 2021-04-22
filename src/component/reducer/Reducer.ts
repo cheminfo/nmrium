@@ -92,6 +92,7 @@ export const initialState = {
   displayerKey: '',
   ZoomHistory: {},
   overDisplayer: false,
+  exclusionZones: {},
 };
 
 export interface State {
@@ -139,9 +140,10 @@ export interface State {
   spectraAnalysis: any;
   displayerKey: any;
   correlations: Types.CorrelationData;
-  actionType: null;
   ZoomHistory: any;
-  overDisplayer: boolean;
+  exclusionZones: {
+    [key: string]: Array<{ id: string; from: number; to: number }>;
+  };
 }
 
 export function dispatchMiddleware(dispatch) {
@@ -389,6 +391,11 @@ function innerSpectrumReducer(draft, action) {
       return ToolsActions.handleAddBaseLineZone(draft, action.zone);
     case types.DELETE_BASE_LINE_ZONE:
       return ToolsActions.handleDeleteBaseLineZone(draft, action.id);
+    case types.ADD_EXCLUSION_ZONE:
+      return ToolsActions.handleAddExclusionZone(draft, action);
+    case types.DELETE_EXCLUSION_ZONE:
+      return ToolsActions.handleDeleteExclusionZone(draft, action);
+
     case types.APPLY_BASE_LINE_CORRECTION_FILTER:
       return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
     case types.SET_KEY_PREFERENCES:

@@ -209,12 +209,14 @@ export function toJSON(state) {
     preferences,
     correlations,
     multipleAnalysis,
+    exclusionZones,
   } = state || {
     data: [],
     molecules: [],
     preferences: {},
     correlations: {},
     multipleAnalysis: {},
+    exclusionZones: {},
   };
   const spectra = data.map((ob) => {
     return ob.info.dimension === 1 ? Datum1D.toJSON(ob) : Datum2D.toJSON(ob);
@@ -226,5 +228,6 @@ export function toJSON(state) {
     preferences,
     correlations,
     multipleAnalysis,
+    exclusionZones,
   };
 }

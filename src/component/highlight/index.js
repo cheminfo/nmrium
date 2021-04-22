@@ -12,6 +12,7 @@ export const TYPES = {
   INTEGRAL: 'INTEGRAL',
   RANGE: 'RANGE',
   ZONE: 'ZONE',
+  EXCLUSION_ZONE: 'EXCLUSION_ZONE',
 };
 
 const highlightContext = createContext();

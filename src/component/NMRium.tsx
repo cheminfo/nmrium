@@ -442,6 +442,7 @@ NMRium.propTypes = {
       hidePhaseCorrectionTool: PropTypes.bool,
       hideBaseLineCorrectionTool: PropTypes.bool,
       hideFFTTool: PropTypes.bool,
+      hideExclusionZonesTool: PropTypes.bool,
     }),
   }),
 };
@@ -484,6 +485,7 @@ NMRium.defaultProps = {
       hideBaseLineCorrectionTool: false,
       hideFFTTool: false,
       hideMultipleSpectraAnalysisTool: false,
+      hideExclusionZonesTool: false,
     },
   },
 };

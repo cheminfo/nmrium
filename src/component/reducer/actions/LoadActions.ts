@@ -26,6 +26,7 @@ function setData(
     molecules: Molecules;
     preferences: NMRiumPreferences;
     correlations: Types.CorrelationData;
+    exclusionZones: any;
   },
 ) {
   const {
@@ -33,17 +34,19 @@ function setData(
     molecules,
     preferences,
     correlations,
-    // multipleAnalysis,
+    exclusionZones = {},
   } = data || {
     spectra: [],
     molecules: [],
     preferences: {},
     correlations: {},
     multipleAnalysis: {},
+    exclusionZones: {},
   };
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
+  draft.exclusionZones = exclusionZones;
 
   if (!correlations || Object.keys(correlations).length === 0) {
     draft.correlations = Build.init({

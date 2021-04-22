@@ -87,4 +87,10 @@ export const options = {
     hasOptionPanel: false,
     isFilter: false,
   },
+  exclusionZones: {
+    id: 'exclusionZones',
+    label: 'Exclusion Zones',
+    hasOptionPanel: false,
+    isFilter: false,
+  },
 };

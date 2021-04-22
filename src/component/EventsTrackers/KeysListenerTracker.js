@@ -17,6 +17,7 @@ import {
   DELETE_PEAK_NOTATION,
   DELETE_RANGE,
   DELETE_2D_ZONE,
+  DELETE_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
@@ -84,6 +85,15 @@ function KeysListenerTracker() {
             payload: {
               id: data.activeKey,
               assignmentData,
+            },
+          });
+          break;
+        }
+        case TYPES.EXCLUSION_ZONE: {
+          dispatch({
+            type: DELETE_EXCLUSION_ZONE,
+            payload: {
+              id: data.activeKey,
             },
           });
           break;

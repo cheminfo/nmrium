@@ -21,6 +21,7 @@ const allowTools = [
   options.phaseCorrection.id,
   options.baseLineCorrection.id,
   options.rangesPicking.id,
+  options.exclusionZones.id,
 ];
 
 export default function BrushX() {
