@@ -275,19 +275,26 @@ function filterSnapshotHandler(draft: Draft<State>, action) {
   }
 }
 
-function handleFromToFilter(draft: Draft<State>, action) {
+function handleMultipleSpectraFilter(draft: Draft<State>, action) {
   if (draft.data && draft.data.length > 0) {
     for (let datum of draft.data) {
       if (
         datum.info?.dimension === 1 &&
-        datum.info.nucleus === draft.activeTab
+        datum.info.nucleus === draft.activeTab &&
+        Array.isArray(action.payload)
       ) {
-        FiltersManager.applyFilter(datum, [
-          {
-            name: Filters.fromTo.id,
-            options: action.payload,
-          },
-        ]);
+        const filters = action.payload.map((filter) => {
+          if (filter.name === Filters.equallySpaced.id) {
+            const exclusions = draft.exclusionZones[draft.activeTab] || [];
+            return {
+              ...filter,
+              options: { ...filter.options, exclusions },
+            };
+          }
+          return filter;
+        });
+
+        FiltersManager.applyFilter(datum, filters);
         (datum as Datum1D).data.y = (datum as Datum1D).data.re;
       }
     }
@@ -303,7 +310,7 @@ export {
   applyAutoPhaseCorrectionFilter,
   applyAbsoluteFilter,
   calculateManualPhaseCorrection,
-  handleFromToFilter,
+  handleMultipleSpectraFilter,
   enableFilter,
   deleteFilter,
   deleteSpectraFilter,

@@ -2,6 +2,7 @@ import * as absolute from './data1d/filter1d/absolute';
 import * as autoPhaseCorrection from './data1d/filter1d/autoPhaseCorrection';
 import * as baselineCorrection from './data1d/filter1d/baselineCorrection';
 import * as digitalFilter from './data1d/filter1d/digitalFilter';
+import * as equallySpaced from './data1d/filter1d/equallySpaced';
 import * as fft from './data1d/filter1d/fft';
 import * as fromTo from './data1d/filter1d/fromTo';
 import * as lineBroadening from './data1d/filter1d/lineBroadening';
@@ -22,6 +23,7 @@ export const Filters = {
   zeroFilling,
   digitalFilter,
   fromTo,
+  equallySpaced,
   shift2DX,
   shift2DY,
 };
