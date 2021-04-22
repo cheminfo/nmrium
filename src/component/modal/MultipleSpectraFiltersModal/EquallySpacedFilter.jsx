@@ -12,7 +12,7 @@ function EquallySpacedFilter({ onSubmit }, ref) {
       initialValues={{
         from: xDomain[0],
         to: xDomain[1],
-        numberOfPoints: 0,
+        numberOfPoints: 1024,
       }}
       onSubmit={onSubmit}
     >
