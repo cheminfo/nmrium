@@ -141,6 +141,7 @@ export interface State {
   displayerKey: any;
   correlations: Types.CorrelationData;
   ZoomHistory: any;
+  overDisplayer: boolean;
   exclusionZones: {
     [key: string]: Array<{ id: string; from: number; to: number }>;
   };
