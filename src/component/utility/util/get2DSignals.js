@@ -58,7 +58,7 @@ function getAssignment(axis, labels, toFix) {
   let { diaID, delta } = axis;
   if (diaID) {
     if (!isArray(diaID)) diaID = [diaID];
-    if (diaID.length < 1) Number(delta).toFixed(toFix);
+    if (diaID.length < 1) return Number(delta).toFixed(toFix);
     let label = diaID.map((diaID) => labels[diaID].label).join(',');
     return diaID.length > 1 ? `(${label})` : label;
   }

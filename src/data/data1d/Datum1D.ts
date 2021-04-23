@@ -361,7 +361,6 @@ export function mapRanges(ranges, datum) {
       { x, y: re },
       { from: newRange.from, to: newRange.to, reverse: true },
     );
-
     const signal = newRange.signal.map((_signal) => {
       return {
         kind: 'signal',

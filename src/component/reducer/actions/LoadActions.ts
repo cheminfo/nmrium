@@ -131,12 +131,22 @@ function handleLoadZIPFile(draft: Draft<State>, action) {
   draft.isLoading = false;
 }
 
+function handleLoadNmredata(draft: Draft<State>, action) {
+  setData(draft, action.payload);
+  const alignCenter = lodashGet(draft.preferences, 'display.center', null);
+  changeSpectrumVerticalAlignment(draft, alignCenter, true);
+  setActiveTab(draft);
+  initZoom1DHandler(draft.data);
+  draft.isLoading = false;
+}
+
 export {
   setIsLoading,
   initiate,
   loadJcampFile,
   loadJDFFile,
   handleLoadJsonFile,
+  handleLoadNmredata,
   handleLoadMOLFile,
   handleLoadZIPFile,
 };
