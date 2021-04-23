@@ -7,6 +7,7 @@ import { REFERENCES } from '../../../data/constants/References';
 import { useDispatch } from '../../context/DispatchContext';
 import CloseButton from '../../elements/CloseButton';
 import Select from '../../elements/Select';
+import FormikForm from '../../elements/formik/FormikForm';
 import { APPLY_MULTIPLE_SPECTRA_FILTER } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { ModalStyles } from '../ModalStyle';
@@ -25,6 +26,21 @@ const baseList = [
     key: Filters.equallySpaced.id,
     value: Filters.equallySpaced.id,
     label: Filters.equallySpaced.name,
+  },
+  {
+    key: Filters.standardDeviation.id,
+    value: Filters.standardDeviation.id,
+    label: Filters.standardDeviation.name,
+  },
+  {
+    key: Filters.centerMean.id,
+    value: Filters.centerMean.id,
+    label: Filters.centerMean.name,
+  },
+  {
+    key: Filters.pareto.id,
+    value: Filters.pareto.id,
+    label: Filters.pareto.name,
   },
 ];
 
@@ -114,7 +130,13 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
             onChange={filterChangeHandler}
           />
         </div>
-        {filterOptions}
+        {filterOptions || (
+          <FormikForm
+            ref={refForm}
+            initialValues={{}}
+            onSubmit={submitHandler}
+          />
+        )}
       </div>
       <div className="footer-container">
         <button type="button" onClick={handleSave} className="save-button">
