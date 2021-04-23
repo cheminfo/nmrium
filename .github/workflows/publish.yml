@@ -21,6 +21,8 @@ jobs:
         run: |
           rm src/demo/samples.json
           mv src/demo/empty.json src/demo/samples.json
+          newPackage=$(jq 'setpath(["homepage"]; ".")' package.json)
+          echo $newPackage > package.json
           npm run build
         env:
           CI: 'false'
