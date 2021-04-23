@@ -82,3 +82,14 @@ cd nmrium
 npm i
 npm start
 ```
+
+## License
+
+[MIT](./LICENSE)
+
+[npm-image]: https://img.shields.io/npm/v/nmrium.svg
+[npm-url]: https://npmjs.org/package/nmrium
+[ci-image]: https://github.com/cheminfo/nmrium/workflows/Node.js%20CI/badge.svg?branch=master
+[ci-url]: https://github.com/cheminfo/nmrium/actions?query=workflow%3A%22Node.js+CI%22
+[download-image]: https://img.shields.io/npm/dm/nmrium.svg
+[download-url]: https://npmjs.org/package/nmrium
