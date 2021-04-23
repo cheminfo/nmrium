@@ -15,6 +15,7 @@ import {
   SET_LOADING_FLAG,
   LOAD_ZIP_FILE,
   LOAD_JDF_FILE,
+  LOAD_NMREDATA_FILE,
 } from '../reducer/types/Types';
 import {
   FILES_TYPES,
@@ -71,7 +72,6 @@ function DropZone(props) {
             loadFilesFromZip(selectedFilesByExtensions).then((files) =>
               dispatch({ type: LOAD_MOL_FILE, files }),
             );
-
             break;
           case FILES_TYPES.NMRIUM:
           case FILES_TYPES.JSON:
@@ -85,7 +85,6 @@ function DropZone(props) {
               }
             });
             break;
-
           case FILES_TYPES.JDX:
           case FILES_TYPES.DX:
             loadFilesFromZip(selectedFilesByExtensions).then((files) =>
@@ -98,7 +97,9 @@ function DropZone(props) {
               asBuffer: true,
             }).then((files) => dispatch({ type: LOAD_JDF_FILE, files }));
             break;
-
+          case FILES_TYPES.SDF:
+            dispatch({ type: LOAD_NMREDATA_FILE, files: extractedfiles });
+            break;
           default:
             break;
         }
@@ -185,12 +186,10 @@ function DropZone(props) {
                       ),
                     ),
                   ];
-
                   const isNotZip = uniqueFileExtensions.some(
                     (ex) =>
                       FILES_TYPES[ex.toUpperCase()] && ex !== FILES_TYPES.ZIP,
                   );
-
                   if (isNotZip) {
                     loadsubFilesfromZip(
                       Object.values(unzipResult.files),
