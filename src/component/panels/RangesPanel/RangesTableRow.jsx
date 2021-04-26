@@ -66,16 +66,16 @@ function RangesTableRow({
         e.stopPropagation();
       }
 
-      onUnlink(
-        rowData,
-        isOnRangeLevel,
-        lodashGet(rowData, 'tableMetaInfo.signalIndex', undefined),
-      );
       if (isOnRangeLevel !== undefined) {
         if (isOnRangeLevel) {
+          onUnlink(rowData);
           showUnlinkRangeButton(false);
           assignmentRange.removeAll('x');
         } else {
+          onUnlink(
+            rowData,
+            lodashGet(rowData, 'tableMetaInfo.signalIndex', undefined),
+          );
           showUnlinkSignalButton(false);
           assignmentSignal.removeAll('x');
         }

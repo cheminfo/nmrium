@@ -115,31 +115,45 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
 }
 
 function handleUnlinkRange(draft: Draft<State>, action) {
-  const state = original(draft) as State;
-  if (state.activeSpectrum?.id) {
-    const { index } = state.activeSpectrum;
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
     const {
-      rangeData,
       assignmentData,
-      isOnRangeLevel,
-      signalIndex,
+      rangeData = null,
+      signalIndex = -1,
     } = action.payload;
-    // remove assignments in global state
-    for (let range of rangeData
-      ? [rangeData]
-      : (state.data[index] as Datum1D).ranges.values) {
-      const _rangeData = unlink(cloneDeep(range), isOnRangeLevel, signalIndex);
-      // remove assignments in assignment hook data
-      if (isOnRangeLevel) {
-        unlinkInAssignmentData(assignmentData, [{ id: _rangeData.id }]);
-      } else {
-        unlinkInAssignmentData(assignmentData, [
-          { id: _rangeData.signal[signalIndex].id },
-        ]);
-      }
 
-      const rangeIndex = getRangeIndex(state, index, _rangeData.id);
-      (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _rangeData;
+    // remove assignments in global state
+    if (rangeData) {
+      const rangeIndex = getRangeIndex(draft, index, rangeData.id);
+      const range = cloneDeep(
+        (draft.data[index] as Datum1D).ranges.values[rangeIndex],
+      );
+
+      let newRange: any = {};
+      let id = rangeData.id;
+      if (rangeData && signalIndex === -1) {
+        newRange = unlink(range, 'range');
+      } else {
+        newRange = unlink(range, 'signal', { signalIndex });
+        id = rangeData.signal[signalIndex].id;
+      }
+      // remove assignments in assignment hook data
+      unlinkInAssignmentData(assignmentData, [
+        {
+          id,
+        },
+      ]);
+      (draft.data[index] as Datum1D).ranges.values[rangeIndex] = newRange;
+    } else {
+      const ranges = (draft.data[index] as Datum1D).ranges.values.map(
+        (range) => {
+          return unlink(range);
+        },
+      );
+      (draft.data[index] as Datum1D).ranges.values = ranges;
+
+      unlinkInAssignmentData(assignmentData, ranges);
     }
   }
 }
