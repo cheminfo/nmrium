@@ -84,11 +84,9 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAnalysis: {},
-  correlations: buildCorrelationData(
-    [],
-    { tolerance: DefaultTolerance, mf: '' },
-    [],
-  ),
+  correlations: buildCorrelationData([], {
+    tolerance: DefaultTolerance,
+  }),
   displayerKey: '',
   ZoomHistory: {},
   overDisplayer: false,

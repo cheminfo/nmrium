@@ -46,11 +46,9 @@ function setData(
   draft.preferences = preferences;
 
   if (!correlations || Object.keys(correlations).length === 0) {
-    draft.correlations = buildCorrelationData(
-      [],
-      { tolerance: DefaultTolerance, mf: '' },
-      [],
-    );
+    draft.correlations = buildCorrelationData([], {
+      tolerance: DefaultTolerance,
+    });
   } else {
     draft.correlations = correlations;
   }

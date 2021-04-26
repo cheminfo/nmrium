@@ -19,11 +19,11 @@ function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
   const { mf } = payload;
   // update of correlation data is needed only if the following is true
   if (correlations.options.mf === '' || correlations.options.mf !== mf) {
-    draft.correlations = buildCorrelationData(
-      spectra as Types.Spectra,
-      { ...correlations.options, mf },
-      lodashCloneDeep(correlations.values),
-    );
+    draft.correlations = buildCorrelationData(spectra as Types.Spectra, {
+      ...correlations.options,
+      mf,
+      values: lodashCloneDeep(correlations.values),
+    });
   }
 }
 
@@ -34,11 +34,11 @@ function handleSetTolerance(
   const state = original(draft) as State;
   const { data: spectra, correlations } = state;
   const { tolerance } = payload;
-  draft.correlations = buildCorrelationData(
-    spectra as Types.Spectra,
-    { ...correlations.options, tolerance },
-    lodashCloneDeep(correlations.values),
-  );
+  draft.correlations = buildCorrelationData(spectra as Types.Spectra, {
+    ...correlations.options,
+    tolerance,
+    values: lodashCloneDeep(correlations.values),
+  });
 }
 
 function handleSetCorrelation(
