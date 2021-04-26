@@ -136,7 +136,7 @@ function DropZone(props) {
           case FILES_TYPES.NMRIUM:
           case FILES_TYPES.JSON:
             if (selectedFilesByExtensions.length === 1) {
-              loadFiles(selectedFilesByExtensions).then(
+              loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
                 async (files) => {
                   const fileSignature = getFileSignature(files[0].binary);
                   if (fileSignature === FILES_SIGNATURES.ZIP) {
@@ -145,6 +145,8 @@ function DropZone(props) {
                       FILES_TYPES.NMRIUM,
                     ]);
                   } else {
+                    const decoder = new TextDecoder('utf8');
+                    files[0].binary = decoder.decode(files[0].binary);
                     dispatch({ type: LOAD_JSON_FILE, files });
                   }
                 },
@@ -184,7 +186,7 @@ function DropZone(props) {
             );
             break;
           case FILES_TYPES.ZIP:
-            loadFiles(selectedFilesByExtensions).then(
+            loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
               async (files) => {
                 for (const zipFile of files) {
                   const unzipResult = await Zip.loadAsync(zipFile.binary);

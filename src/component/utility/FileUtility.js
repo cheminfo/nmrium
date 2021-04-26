@@ -12,8 +12,8 @@ export const FILES_SIGNATURES = {
   ZIP: '504b0304',
 };
 
-function getFileSignature(string) {
-  return Buffer.from(string)
+function getFileSignature(fileArrayBuffer) {
+  return new Uint8Array(fileArrayBuffer)
     .slice(0, 4)
     .reduce((acc, byte) => (acc += byte.toString(16).padStart(2, '0')), '');
 }
@@ -48,7 +48,13 @@ function extractFileMetaFromPath(path) {
 
   return { name: meta[0].toLowerCase(), extension: meta[1].toLowerCase() };
 }
-
+/**
+ *
+ * @param {Array<File>} acceptedFiles
+ * @param {object} options
+ * @param {boolean} options.asBuffer
+ * @returns
+ */
 function loadFiles(acceptedFiles, options = {}) {
   return Promise.all(
     [].map.call(acceptedFiles, (file) => {
