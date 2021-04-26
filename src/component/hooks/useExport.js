@@ -2,10 +2,9 @@ import { useCallback } from 'react';
 
 import { toJSON } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
 import { useAlert } from '../elements/popup/Alert';
-import { SET_LOADING_FLAG } from '../reducer/types/Types';
 import {
+  copyPNGToClipboard,
   exportAsJSON,
   exportAsNMRE,
   exportAsPng,
@@ -14,70 +13,79 @@ import {
 import { toNmredata } from '../utility/toNmredata';
 
 export default function useExport() {
-  const dispatch = useDispatch();
   const alert = useAlert();
   const state = useChartData();
 
-  const saveToClipboardHandler = useCallback(() => {
+  const saveToClipboardHandler = useCallback(async () => {
     if (state.data.length > 0) {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+      const hideLoading = await alert.showLoading(
+        'Exporting as numrium process in progress',
+      );
       setTimeout(() => {
-        // eslint-disable-next-line no-undef
         copyPNGToClipboard('nmrSVG');
-        dispatch({ type: SET_LOADING_FLAG, isLoading: false });
-        alert.show('Spectrum copied to clipboard');
+        hideLoading();
+        alert.success('Image copied to clipboard');
       }, 0);
     }
-  }, [alert, dispatch, state]);
+  }, [alert, state]);
 
   const saveAsJSONHandler = useCallback(
-    (spaceIndent = 0, isCompressed = true) => {
+    async (spaceIndent = 0, isCompressed = true) => {
       if (state.data.length > 0) {
-        dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+        const hideLoading = await alert.showLoading(
+          'Exporting as numrium process in progress',
+        );
         setTimeout(async () => {
           //exported file name by default will be the first spectrum name
           const fileName = state.data[0]?.display?.name;
           const exportedData = toJSON(state);
           await exportAsJSON(exportedData, fileName, spaceIndent, isCompressed);
-          dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+          hideLoading();
         }, 0);
       }
     },
-    [dispatch, state],
+    [alert, state],
   );
 
-  const saveAsNMREHandler = useCallback(() => {
+  const saveAsNMREHandler = useCallback(async () => {
     if (state.data.length > 0) {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+      const hideLoading = await alert.showLoading(
+        'Exporting as NMRE process in progress',
+      );
       setTimeout(() => {
         const fileName = state.data[0]?.display?.name;
         const exportedData = toNmredata(state);
         exportAsNMRE(exportedData, fileName);
-        dispatch({ type: SET_LOADING_FLAG, isLoading: false });
+        hideLoading();
       }, 0);
     }
-  }, [dispatch, state]);
+  }, [alert, state]);
 
-  const saveAsSVGHandler = useCallback(() => {
+  const saveAsSVGHandler = useCallback(async () => {
     if (state.data.length > 0) {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+      const hideLoading = await alert.showLoading(
+        'Exporting as SVG process in progress',
+      );
       setTimeout(() => {
         const fileName = state.data[0]?.display?.name;
         exportAsSVG(fileName, 'nmrSVG');
-        dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+        hideLoading();
       }, 0);
     }
-  }, [dispatch, state.data]);
+  }, [alert, state.data]);
 
-  const saveAsPNGHandler = useCallback(() => {
+  const saveAsPNGHandler = useCallback(async () => {
     if (state.data.length > 0) {
-      dispatch({ type: SET_LOADING_FLAG, isLoading: true });
+      const hideLoading = await alert.showLoading(
+        'Exporting as PNG process in progress',
+      );
       setTimeout(() => {
         const fileName = state.data[0]?.display?.name;
         exportAsPng(fileName, 'nmrSVG');
+        hideLoading();
       }, 0);
     }
-  }, [dispatch, state.data]);
+  }, [alert, state.data]);
 
   return {
     saveToClipboardHandler,
