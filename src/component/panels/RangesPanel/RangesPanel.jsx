@@ -119,13 +119,12 @@ function RangesTablePanel({
   }, [isFilterActive, ranges.values, xDomain]);
 
   const unlinkRangeHandler = useCallback(
-    (rangeData, isOnRangeLevel, signalIndex) => {
+    (rangeData, signalIndex = -1) => {
       dispatch({
         type: UNLINK_RANGE,
         payload: {
           rangeData,
           assignmentData,
-          isOnRangeLevel,
           signalIndex,
         },
       });

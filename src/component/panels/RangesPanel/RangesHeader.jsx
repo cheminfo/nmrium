@@ -92,10 +92,8 @@ function RangesHeader({
   }, [activeTab, changeRangesSumHandler, currentSum, modal, molecules]);
 
   const removeAssignments = useCallback(() => {
-    for (const range of ranges.values) {
-      onUnlink(range);
-    }
-  }, [ranges, onUnlink]);
+    onUnlink();
+  }, [onUnlink]);
 
   const handleOnRemoveAssignments = useCallback(() => {
     modal.showConfirmDialog({

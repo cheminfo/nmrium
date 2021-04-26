@@ -6,7 +6,7 @@ import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 import { SignalKinds } from '../../../../data/constants/SignalsKinds';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
-import SelectUncontrolled from '../../../elements/SelectUncontrolled';
+import Select from '../../../elements/Select';
 import {
   useModal,
   positions,
@@ -123,10 +123,10 @@ function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
   return (
     <Fragment>
       <td {...onHoverSignal}>
-        <SelectUncontrolled
+        <Select
           onChange={changeRangeSignalKindHandler}
           data={SignalKinds}
-          value={rowData.tableMetaInfo.signal.kind}
+          defaultValue={rowData.tableMetaInfo.signal.kind}
           style={selectBoxStyle}
         />
       </td>

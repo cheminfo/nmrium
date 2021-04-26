@@ -19,7 +19,9 @@ import {
 } from '../reducer/types/Types';
 import {
   FILES_TYPES,
+  FILES_SIGNATURES,
   getFileExtension,
+  getFileSignature,
   loadFiles,
   loadFilesFromZip,
 } from '../utility/FileUtility';
@@ -135,8 +137,16 @@ function DropZone(props) {
           case FILES_TYPES.JSON:
             if (selectedFilesByExtensions.length === 1) {
               loadFiles(selectedFilesByExtensions).then(
-                (files) => {
-                  dispatch({ type: LOAD_JSON_FILE, files });
+                async (files) => {
+                  const fileSignature = getFileSignature(files[0].binary);
+                  if (fileSignature === FILES_SIGNATURES.ZIP) {
+                    const unzipResult = await Zip.loadAsync(files[0].binary);
+                    loadsubFilesfromZip(Object.values(unzipResult.files), [
+                      FILES_TYPES.NMRIUM,
+                    ]);
+                  } else {
+                    dispatch({ type: LOAD_JSON_FILE, files });
+                  }
                 },
                 (err) => {
                   // eslint-disable-next-line no-alert

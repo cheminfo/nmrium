@@ -8,6 +8,15 @@ export const FILES_TYPES = {
   ZIP: 'zip',
   SDF: 'sdf',
 };
+export const FILES_SIGNATURES = {
+  ZIP: '504b0304',
+};
+
+function getFileSignature(string) {
+  return Buffer.from(string)
+    .slice(0, 4)
+    .reduce((acc, byte) => (acc += byte.toString(16).padStart(2, '0')), '');
+}
 
 async function loadFile(file) {
   const response = await fetch(file);
@@ -88,4 +97,5 @@ export {
   getFileExtension,
   getFileName,
   extractFileMetaFromPath,
+  getFileSignature,
 };
