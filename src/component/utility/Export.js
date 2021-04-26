@@ -81,7 +81,7 @@ async function exportAsJSON(
       const zip = new JSZip();
       zip.file(`${fileName}.nmrium`, fileData);
       const blob = await zip.generateAsync({ type: 'blob' });
-      saveAs(blob, `${fileName}.zip`);
+      saveAs(blob, `${fileName}.nmrium`);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
