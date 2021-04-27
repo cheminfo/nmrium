@@ -49,8 +49,8 @@ function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
   }
 }
 
-function getRangeIndex(state: State, spectrumIndex, rangeID) {
-  return (state.data[spectrumIndex] as Datum1D).ranges.values.findIndex(
+function getRangeIndex(drfat: Draft<State>, spectrumIndex, rangeID) {
+  return (drfat.data[spectrumIndex] as Datum1D).ranges.values.findIndex(
     (range) => range.id === rangeID,
   );
 }
@@ -159,12 +159,11 @@ function handleUnlinkRange(draft: Draft<State>, action) {
 }
 
 function handleSetDiaIDRange(draft, action) {
-  const state = original(draft);
-  if (state.activeSpectrum?.id) {
-    const { index } = state.activeSpectrum;
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
     const { rangeData, diaID, signalIndex } = action.payload;
 
-    const rangeIndex = getRangeIndex(state, index, rangeData.id);
+    const rangeIndex = getRangeIndex(draft, index, rangeData.id);
     const _range = draft.data[index].ranges.values[rangeIndex];
     if (signalIndex === undefined) {
       _range.diaID = diaID;

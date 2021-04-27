@@ -163,6 +163,14 @@ export function dispatchMiddleware(dispatch) {
         }
         break;
       }
+      case types.LOAD_JSON_FILE: {
+        const data = JSON.parse(action.files[0].binary.toString());
+        void SpectraManager.fromJSON(data.spectra).then((spectra) => {
+          action.payload = Object.assign(data, { spectra });
+          dispatch(action);
+        });
+        break;
+      }
       case types.LOAD_ZIP_FILE: {
         for (let zipFile of action.files) {
           void SpectraManager.addBruker(
@@ -208,7 +216,7 @@ function innerSpectrumReducer(draft, action) {
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
     case types.LOAD_JSON_FILE:
-      return LoadActions.handleLoadJsonFile(draft, action.files);
+      return LoadActions.handleLoadJsonFile(draft, action);
     case types.LOAD_JCAMP_FILE:
       return LoadActions.loadJcampFile(draft, action.files);
     case types.LOAD_JDF_FILE:

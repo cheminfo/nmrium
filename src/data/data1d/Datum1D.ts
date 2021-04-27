@@ -13,6 +13,12 @@ import detectSignal from './detectSignal';
 
 export const usedColors1D: Array<string> = [];
 
+export interface File {
+  binary: ArrayBuffer;
+  name: string;
+  extension?: string;
+}
+
 export interface Data1D {
   y: Array<number>;
   x: Array<number>;
@@ -87,9 +93,8 @@ export interface Ranges {
 }
 
 export interface Source {
-  jcamp: string;
   jcampURL: string;
-  original: Data1D;
+  file: File;
 }
 
 export interface Datum1D {
@@ -114,12 +119,16 @@ export function initiateDatum1D(options: any): Datum1D {
   datum.id = options.id || generateID();
   datum.source = Object.assign(
     {
-      jcamp: null,
       jcampURL: null,
-      original: [],
+      file: {
+        binary: null,
+        name: '',
+        extension: '',
+      },
     },
     options.source,
   );
+
   datum.display = Object.assign(
     {
       name: options.display?.name ? options.display.name : generateID(),
@@ -199,19 +208,16 @@ function preprocessing(datum) {
 
 export function toJSON(datum1D: Datum1D) {
   return {
-    data: datum1D.originalData,
     id: datum1D.id,
     source: {
-      jcamp: datum1D.source.jcamp,
       jcampURL: datum1D.source.jcampURL,
-      original:
-        datum1D.source.jcampURL || datum1D.source.jcamp
-          ? []
-          : datum1D.source.original,
     },
     display: datum1D.display,
-    info: datum1D.originalInfo,
-    meta: datum1D.meta,
+    ...(!datum1D.source.jcampURL && {
+      data: datum1D.originalData,
+      info: datum1D.originalInfo,
+      meta: datum1D.meta,
+    }),
     peaks: datum1D.peaks,
     integrals: datum1D.integrals,
     ranges: datum1D.ranges,

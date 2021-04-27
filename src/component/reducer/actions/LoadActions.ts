@@ -3,8 +3,6 @@ import lodashGet from 'lodash/get';
 import { Build, Types } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
-import { initiateDatum1D } from '../../../data/data1d/Datum1D';
-import { initiateDatum2D } from '../../../data/data2d/Datum2D';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
 import { Molecules, NMRiumPreferences, Spectra } from '../../NMRium';
@@ -95,18 +93,10 @@ function loadJcampFile(draft: Draft<State>, files) {
   draft.isLoading = false;
 }
 
-function handleLoadJsonFile(draft: Draft<State>, files) {
-  const data = JSON.parse(files[0].binary.toString());
-
-  for (const i in data.spectra) {
-    if (data.spectra[i].info?.dimension === 1) {
-      data.spectra[i] = initiateDatum1D(data.spectra[i]);
-    } else if (data.spectra[i].info?.dimension === 2) {
-      data.spectra[i] = initiateDatum2D(data.spectra[i]);
-    }
-  }
-
+function handleLoadJsonFile(draft: Draft<State>, actions) {
+  const data = actions.payload;
   setData(draft, data);
+
   const alignCenter = lodashGet(draft.preferences, 'display.center', null);
 
   changeSpectrumVerticalAlignment(draft, alignCenter, true);

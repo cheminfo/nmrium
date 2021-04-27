@@ -18,10 +18,12 @@ function getFileSignature(fileArrayBuffer) {
     .reduce((acc, byte) => (acc += byte.toString(16).padStart(2, '0')), '');
 }
 
-async function loadFile(file) {
+async function loadFile(file, options = { asBuffer: false }) {
   const response = await fetch(file);
   checkStatus(response);
-  const data = await response.text();
+  const data = (await options.asBuffer)
+    ? response.arrayBuffer()
+    : response.text();
   return data;
 }
 

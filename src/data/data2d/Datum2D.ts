@@ -12,6 +12,17 @@ import autoZonesDetection from './autoZonesDetection';
 
 export const usedColors2D: Array<string> = [];
 
+export interface File {
+  binary: ArrayBuffer;
+  name: string;
+  extension?: string;
+}
+
+export interface Source {
+  jcampURL: string;
+  file: File;
+}
+
 export interface Data2D {
   z: Array<Array<number>>;
   minX: number;
@@ -84,7 +95,7 @@ export interface Zones {
 
 export interface Datum2D {
   id: string;
-  source: Partial<{ jcamp: string; jcampURL: string; original: Data2D }>;
+  source: Partial<Source>;
   display: Display;
   info: Partial<Info>;
   originalInfo?: Partial<Info>;
@@ -195,18 +206,18 @@ function getColor(options) {
 
 export function toJSON(datum: Datum2D) {
   return {
-    data: datum.originalData,
     id: datum.id,
     source: {
-      jcamp: datum.source.jcamp,
       jcampURL: datum.source.jcampURL,
-      original: datum.source.jcampURL ? [] : datum.source.original,
     },
+    ...(!datum.source.jcampURL && {
+      data: datum.originalData,
+      info: datum.originalInfo,
+      meta: datum.meta,
+    }),
     zones: datum.zones,
     filters: datum.filters,
     display: datum.display,
-    info: datum.originalInfo,
-    meta: datum.meta,
   };
 }
 

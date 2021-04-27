@@ -164,7 +164,7 @@ function DropZone(props) {
 
           case FILES_TYPES.JDX:
           case FILES_TYPES.DX:
-            loadFiles(selectedFilesByExtensions).then(
+            loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
               (files) => {
                 dispatch({ type: LOAD_JCAMP_FILE, files });
               },
