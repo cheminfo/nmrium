@@ -13,10 +13,11 @@ export function fromParsedJcamp(parsedJcamp, options = {}) {
 }
 
 export function fromBruker(result, options = {}) {
-  const { dependentVariables, meta } = result;
+  const { dependentVariables, meta, source } = result;
   let data = dependentVariables[0].components;
   const datum2D = initiateDatum2D({
     ...options,
+    source,
     meta,
     data,
   });
