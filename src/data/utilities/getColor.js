@@ -23,8 +23,8 @@ export const COLORS = [
 
 const color2D = {
   cosy: { positiveColor: 'darkblue', negativeColor: 'blue' },
-  roesy: { positiveColor: 'pink', negativeColor: 'yellow' },
-  noesy: { positiveColor: 'pink', negativeColor: 'yellow' },
+  roesy: { positiveColor: '#e75480', negativeColor: 'yellow' },
+  noesy: { positiveColor: '#e75480', negativeColor: 'yellow' },
   tocsy: { positiveColor: 'green', negativeColor: 'yellow' },
   hsqc: { positiveColor: 'black', negativeColor: 'yellow' },
   hmbc: { positiveColor: 'darkviolet', negativeColor: 'yellow' },
