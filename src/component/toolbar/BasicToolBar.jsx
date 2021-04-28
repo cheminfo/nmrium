@@ -8,7 +8,7 @@ import {
   SvgNmrAlignCenter,
 } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
-import { Fragment, useEffect, useCallback, useState, memo } from 'react';
+import { Fragment, useCallback, memo } from 'react';
 import {
   FaDownload,
   FaFileDownload,
@@ -20,23 +20,18 @@ import {
 } from 'react-icons/fa';
 
 import { useDispatch } from '../context/DispatchContext';
-import { useGlobal } from '../context/GlobalContext';
+import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import MenuButton from '../elements/MenuButton';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import ToolBarWrapper from '../hoc/ToolBarWrapper';
+import useExport from '../hooks/useExport';
+import useToolsFunctions from '../hooks/useToolsFunctions';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
-import {
-  CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
-  TOGGLE_REAL_IMAGINARY_VISIBILITY,
-  SET_SPECTRUMS_VERTICAL_ALIGN,
-  EXPORT_DATA,
-  LOAD_JCAMP_FILE,
-  SET_LOADING_FLAG,
-} from '../reducer/types/Types';
+import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
 
 const styles = css`
   background-color: transparent;
@@ -64,116 +59,70 @@ const styles = css`
   }
 `;
 
-const menuButton = css`
-  background-color: transparent;
-  border: none;
-  border-bottom: 0.55px solid whitesmoke;
-  height: 35px;
-  outline: outline;
-  display: flex;
-  justify-content: flex-start;
-
-  :focus {
-    outline: none !important;
-  }
-  span {
-    font-size: 10px;
-    padding: 0px 10px;
-  }
-`;
+const IMPORT_MENU = [
+  {
+    id: 'importFile',
+    icon: <FaFile />,
+    label: 'Import from file system (Press Ctrl + O)',
+  },
+  {
+    id: 'importJDX',
+    icon: <FaFile />,
+    label: 'Add JCAMP-DX from URL',
+  },
+];
+const EXPORT_MENU = [
+  {
+    id: 'svg',
+    icon: <FaDownload />,
+    label: 'Export as SVG',
+  },
+  {
+    id: 'png',
+    icon: <FaFileImage />,
+    label: 'Export as PNG',
+  },
+  {
+    id: 'json',
+    icon: <FaFileDownload />,
+    label: 'Save data ( Press Ctrl + S )',
+  },
+  {
+    id: 'nmre',
+    icon: <FaFileDownload />,
+    label: 'Save NMRE data',
+  },
+  {
+    id: 'copy',
+    icon: <FaCopy />,
+    label: 'Copy image to Clipboard ( Press Ctrl + C )',
+  },
+];
 
 function BasicToolBar({ info, verticalAlign, displayerMode }) {
   const dispatch = useDispatch();
   const preferences = usePreferences();
-  const { rootRef } = useGlobal();
-  const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
-  const [isStacked, activateStackView] = useState(false);
   const alert = useAlert();
   const modal = useModal();
+  const loader = useLoader();
+
+  const {
+    isRealSpectrumShown,
+
+    changeSpectrumViewHandler,
+    changeDisplayViewModeHandler,
+    alignSpectrumsVerticallyHandler,
+  } = useToolsFunctions();
+
+  const {
+    saveAsSVGHandler,
+    saveAsPNGHandler,
+    saveAsJSONHandler,
+    saveAsNMREHandler,
+    saveToClipboardHandler,
+  } = useExport();
 
   const selectedSpectrumInfo = { isComplex: false, isFid: false, ...info };
-
-  const saveAsSVGHandler = useCallback(() => {
-    dispatch({
-      type: EXPORT_DATA,
-      exportType: 'svg',
-    });
-  }, [dispatch]);
-
-  const saveAsPNGHandler = useCallback(
-    () => dispatch({ type: EXPORT_DATA, exportType: 'png' }),
-    [dispatch],
-  );
-  const saveToClipboardHandler = useCallback(() => {
-    dispatch({ type: EXPORT_DATA, exportType: 'copy' });
-    alert.show('Spectrum copied to clipboard');
-  }, [alert, dispatch]);
-  const saveAsJSONHandler = useCallback(
-    () => dispatch({ type: EXPORT_DATA, exportType: 'json' }),
-    [dispatch],
-  );
-
-  const handleChangeDisplayViewMode = useCallback(() => {
-    const flag = !isStacked;
-    activateStackView(flag);
-    dispatch({
-      type: CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
-      flag: flag,
-    });
-  }, [dispatch, isStacked]);
-
-  const changeSpectrumViewHandler = useCallback(() => {
-    dispatch({
-      type: TOGGLE_REAL_IMAGINARY_VISIBILITY,
-      isRealSpectrumVisible: !isRealSpectrumShown,
-    });
-    setIsRealSpectrumShown(!isRealSpectrumShown);
-  }, [dispatch, isRealSpectrumShown]);
-
-  const alignSpectrumsVerticallyHandler = useCallback(() => {
-    dispatch({
-      type: SET_SPECTRUMS_VERTICAL_ALIGN,
-      flag: !verticalAlign.flag,
-    });
-  }, [dispatch, verticalAlign.flag]);
-
-  const handleOnKeyPressed = useCallback(
-    (e) => {
-      if (!['input', 'textarea'].includes(e.target.localName)) {
-        if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
-          switch (e.key) {
-            case 'c':
-              alignSpectrumsVerticallyHandler();
-              break;
-            case 's':
-              handleChangeDisplayViewMode();
-              break;
-            default:
-          }
-        }
-
-        if (!e.shiftKey && (e.metaKey || e.ctrlKey)) {
-          switch (e.key) {
-            case 'c':
-              saveToClipboardHandler();
-              e.preventDefault();
-              break;
-            case 's':
-              saveAsJSONHandler();
-              e.preventDefault();
-              break;
-            default:
-          }
-        }
-      }
-    },
-    [
-      alignSpectrumsVerticallyHandler,
-      handleChangeDisplayViewMode,
-      saveAsJSONHandler,
-      saveToClipboardHandler,
-    ],
-  );
 
   const LoadJacmpHandler = useCallback(
     (file) => {
@@ -203,22 +152,62 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
     );
   }, [LoadJacmpHandler, modal, startLoadingHandler]);
 
-  useEffect(() => {
-    if (rootRef) {
-      rootRef.addEventListener('keydown', handleOnKeyPressed);
-    }
-    return () => {
-      if (rootRef) {
-        rootRef.removeEventListener('keydown', handleOnKeyPressed);
-      }
-    };
-  }, [handleOnKeyPressed, rootRef]);
-
   const isButtonVisible = useCallback(
     (key) => {
       return !lodashGet(preferences, `display.toolBarButtons.${key}`);
     },
     [preferences],
+  );
+  const importFromFileSystemHandler = useCallback(() => {
+    loader.open();
+  }, [loader]);
+
+  const ImportHandler = useCallback(
+    ({ id }) => {
+      switch (id) {
+        case 'importFile':
+          importFromFileSystemHandler();
+          break;
+        case 'importJDX':
+          importJCAMPFile();
+          break;
+        default:
+          return;
+      }
+    },
+    [importFromFileSystemHandler, importJCAMPFile],
+  );
+
+  const exportHandler = useCallback(
+    ({ id }) => {
+      switch (id) {
+        case 'svg':
+          saveAsSVGHandler();
+          break;
+        case 'png':
+          saveAsPNGHandler();
+          break;
+        case 'json':
+          saveAsJSONHandler();
+          break;
+        case 'nmre':
+          saveAsNMREHandler();
+          break;
+        case 'copy':
+          saveToClipboardHandler();
+          break;
+
+        default:
+          break;
+      }
+    },
+    [
+      saveAsSVGHandler,
+      saveAsPNGHandler,
+      saveAsJSONHandler,
+      saveAsNMREHandler,
+      saveToClipboardHandler,
+    ],
   );
 
   return (
@@ -229,12 +218,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
           className="fa"
           component={<FaFileImport />}
           toolTip="Import"
-        >
-          <button type="button" css={menuButton} onClick={importJCAMPFile}>
-            <FaFile />
-            <span>Add jcamp from URL</span>
-          </button>
-        </MenuButton>
+          onClick={ImportHandler}
+          items={IMPORT_MENU}
+        />
       )}
       {isButtonVisible('hideExportAs') && (
         <MenuButton
@@ -242,28 +228,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
           className="fa"
           component={<FaFileExport />}
           toolTip="Export As"
-        >
-          <button type="button" css={menuButton} onClick={saveAsSVGHandler}>
-            <FaDownload />
-            <span>Export as SVG</span>
-          </button>
-          <button type="button" css={menuButton} onClick={saveAsPNGHandler}>
-            <FaFileImage />
-            <span>Export as PNG</span>
-          </button>
-          <button type="button" css={menuButton} onClick={saveAsJSONHandler}>
-            <FaFileDownload />
-            <span>Save data ( Press Ctrl + S )</span>
-          </button>
-          <button
-            type="button"
-            css={menuButton}
-            onClick={saveToClipboardHandler}
-          >
-            <FaCopy />
-            <span>Copy image to Clipboard ( Press Ctrl + C )</span>
-          </button>
-        </MenuButton>
+          onClick={exportHandler}
+          items={EXPORT_MENU}
+        />
       )}
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -272,11 +239,17 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
             type="button"
             css={styles}
             className="cheminfo"
-            onClick={handleChangeDisplayViewMode}
+            onClick={changeDisplayViewModeHandler}
           >
-            <ToolTip title="Spectra alignment" popupPlacement="right">
-              <div />
-              {!isStacked ? <SvgNmrOverlay3Aligned /> : <SvgNmrOverlay3 />}{' '}
+            <ToolTip
+              title="Spectra alignment ( Press s )"
+              popupPlacement="right"
+            >
+              {verticalAlign.stacked ? (
+                <SvgNmrOverlay3Aligned />
+              ) : (
+                <SvgNmrOverlay3 />
+              )}
             </ToolTip>
           </button>
         )}
@@ -310,7 +283,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
           >
             <ToolTip
               title={
-                !verticalAlign.flag ? 'Baseline  Center' : 'Baseline  Bottom'
+                !verticalAlign.flag
+                  ? 'Baseline  Center ( Press c )'
+                  : 'Baseline  Bottom ( Press c )'
               }
               popupPlacement="right"
             >

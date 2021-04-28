@@ -1,5 +1,12 @@
 import PropTypes from 'prop-types';
-import { Fragment, useState, useRef, useEffect, useCallback } from 'react';
+import {
+  Fragment,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
 import { TransitionGroup } from 'react-transition-group';
@@ -10,6 +17,7 @@ import { groupBy } from '../helpers';
 import { positions, transitions, types } from '../options';
 
 import { AlertProvider } from './Context';
+import ProgressIndicator from './ProgressIndicator';
 
 function Provider({
   children,
@@ -129,6 +137,22 @@ function Provider({
     [show],
   );
 
+  const showLoading = useCallback(
+    (message = 'Process in progress', options = {}) => {
+      options.type = types.PROGRESS_INDICATOR;
+      options.timeout = 0;
+      options.backgroundColor = '#232323';
+
+      return new Promise((resolve) => {
+        const alert = show(message, options);
+        setTimeout(() => {
+          resolve(() => remove(alert));
+        }, 500);
+      });
+    },
+    [remove, show],
+  );
+
   const closeHandler = useCallback(
     (alert) => {
       remove(alert);
@@ -137,9 +161,30 @@ function Provider({
   );
 
   const alertsByPosition = groupBy(alerts, (alert) => alert.options.position);
+
+  const parentStyle = useMemo(() => {
+    return wrapperRef
+      ? wrapperRef.getBoundingClientRect()
+      : {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+  }, [wrapperRef]);
+
   return (
     <AlertProvider
-      value={{ alerts, show, remove, removeAll, success, error, info }}
+      value={{
+        alerts,
+        show,
+        remove,
+        removeAll,
+        success,
+        error,
+        info,
+        showLoading,
+      }}
     >
       {children}
       {root.current &&
@@ -154,6 +199,7 @@ function Provider({
                   key={position}
                   options={{ position, zIndex: 999999 }}
                   component={Wrapper}
+                  containerStyle={parentStyle}
                   {...props}
                 >
                   {alertsByPosition[position]
@@ -188,6 +234,8 @@ function Provider({
                             </button>
 
                             <span>{alert.message}</span>
+                            {alert.options.type ===
+                              types.PROGRESS_INDICATOR && <ProgressIndicator />}
                           </div>
                         </Transition>
                       ))

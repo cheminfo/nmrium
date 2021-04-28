@@ -19,8 +19,6 @@ import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 function PeaksTable({
   peaks,
   info,
-  x,
-  y,
   xDomain,
   activeTab,
   enableFilter,
@@ -141,7 +139,7 @@ function PeaksTable({
     }
     if (peaksPreferences.showIntensity) {
       setCustomColumn(cols, 5, 'Intensity', (row) =>
-        formatNumber(row.original.yValue, peaksPreferences.intensityFormat),
+        formatNumber(row.original.intensity, peaksPreferences.intensityFormat),
       );
     }
     if (peaksPreferences.showPeakWidth) {
@@ -168,18 +166,17 @@ function PeaksTable({
     }
     if (peaks && peaks.values) {
       const _peaks = enableFilter
-        ? peaks.values.filter((peak) => isInRange(x[peak.xIndex]))
+        ? peaks.values.filter((peak) => isInRange(peak.delta))
         : peaks.values;
 
       return _peaks.map((peak) => {
-        const value = format(x[peak.xIndex]);
+        const value = format(peak.delta);
         return {
-          xIndex: peak.xIndex,
           value: value,
           valueHz:
             info && info.originFrequency ? value * info.originFrequency : '',
           id: peak.id,
-          yValue: y[peak.xIndex],
+          intensity: peak.intensity,
           peakWidth: peak.width ? peak.width : '',
           isConstantlyHighlighted: isInRange(value),
         };
@@ -187,7 +184,7 @@ function PeaksTable({
     }
 
     return [];
-  }, [enableFilter, format, info, peaks, x, xDomain, y]);
+  }, [enableFilter, format, info, peaks, xDomain]);
 
   useEffect(() => {
     onFilter(_data.length);

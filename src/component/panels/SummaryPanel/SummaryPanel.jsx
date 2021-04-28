@@ -8,6 +8,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import SelectUncontrolled from '../../elements/SelectUncontrolled';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
+import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   SET_CORRELATION,
   SET_CORRELATIONS,
@@ -20,12 +21,21 @@ import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
 import SetMolecularFormulaModal from './SetMolecularFormulaModal';
 import SetShiftToleranceModal from './SetShiftTolerancesModal';
+import {
+  findSignalMatch1D,
+  findSignalMatch2D,
+  findSpectrum,
+  getAtomType,
+} from './Utilities';
 
 const panelStyle = css`
   display: flex;
   flex-direction: column;
   text-align: center;
   height: 100%;
+  width: 100%;
+  justify-content: center,
+  align-items: 'center',
 
   button {
     border-radius: 5px;
@@ -41,32 +51,35 @@ const panelStyle = css`
 
   .overview-container {
     width: 100%;
+    margin-left: 15px;
+    white-space: nowrap;
     span {
-      margin-left: 7px;
+      margin-left: 8px;
     }
   }
 
   .homoHeteroKinds-container {
     width: 100%;
+    margin-left: 15px;
     span {
       margin-left: 7px;
     }
   }
 
-  .container {
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 20px);
-    overflow: hidden;
-    padding: 0;
-  }
-  .table-container {
-    overflow: auto;
-  }
+
 `;
 
 function SummaryPanel() {
-  const { molecules, correlations: correlationsData } = useChartData();
+  const {
+    molecules,
+    correlations: correlationsData,
+    data: spectraData,
+    xDomain,
+    yDomain,
+    displayerMode,
+    activeTab,
+  } = useChartData();
+
   const dispatch = useDispatch();
   const modal = useModal();
 
@@ -76,6 +89,107 @@ function SummaryPanel() {
     setSelectedAdditionalColumnsAtomType,
   ] = useState('-');
   const [showProtonsAsRows, setShowProtonsAsRows] = useState(false);
+  const [filterIsActive, setFilterIsActive] = useState(false);
+
+  const filteredCorrelationsData = useMemo(() => {
+    const isInView = (value) => {
+      if (value.pseudo === true) {
+        return false;
+      }
+      const atomTypesInView = activeTab
+        .split(',')
+        .map((tab) => getAtomType(tab));
+
+      const factor = 10000;
+      const xDomain0 = xDomain[0] * factor;
+      const xDomain1 = xDomain[1] * factor;
+      const yDomain0 = yDomain[0] * factor;
+      const yDomain1 = yDomain[1] * factor;
+
+      if (displayerMode === DISPLAYER_MODE.DM_1D) {
+        const delta = value.signal.delta * factor;
+        const spectrum = findSpectrum(spectraData, value);
+        if (
+          spectrum &&
+          atomTypesInView[0] === value.atomType &&
+          delta >= xDomain0 &&
+          delta <= xDomain1
+        ) {
+          return true;
+        }
+        // try to find a link which contains the belonging 2D signal in the spectra in view
+        if (
+          value.link.some((link) => {
+            const spectrum = findSpectrum(spectraData, link);
+            return findSignalMatch1D(
+              spectrum,
+              link,
+              factor,
+              xDomain0,
+              xDomain1,
+            );
+          })
+        ) {
+          return true;
+        }
+      } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
+        if (!atomTypesInView.includes(value.atomType)) {
+          return false;
+        }
+        const spectrum = findSpectrum(spectraData, value);
+        // correlation is represented by a 2D signal
+        if (
+          findSignalMatch2D(
+            spectrum,
+            value,
+            factor,
+            xDomain0,
+            xDomain1,
+            yDomain0,
+            yDomain1,
+          )
+        ) {
+          return true;
+        } else {
+          // try to find a link which contains the belonging 2D signal in the spectra in view
+          if (
+            value.link.some((link) => {
+              const spectrum = findSpectrum(spectraData, link);
+              return findSignalMatch2D(
+                spectrum,
+                link,
+                factor,
+                xDomain0,
+                xDomain1,
+                yDomain0,
+                yDomain1,
+              );
+            })
+          ) {
+            return true;
+          }
+        }
+      }
+      // do not show correlation
+      return false;
+    };
+
+    if (correlationsData) {
+      const _values = filterIsActive
+        ? correlationsData.values.filter((value) => isInView(value))
+        : correlationsData.values;
+
+      return { ...correlationsData, values: _values };
+    }
+  }, [
+    activeTab,
+    correlationsData,
+    displayerMode,
+    filterIsActive,
+    spectraData,
+    xDomain,
+    yDomain,
+  ]);
 
   const handleOnSetMolecularFormula = useCallback(
     (mf) => {
@@ -126,7 +240,7 @@ function SummaryPanel() {
     const columnTypes = ['-'].concat(
       correlationsData
         ? correlationsData.values
-            .map((correlation) => correlation.getAtomType())
+            .map((correlation) => correlation.atomType)
             .filter((atomType, i, array) => array.indexOf(atomType) === i)
         : [],
     );
@@ -156,8 +270,8 @@ function SummaryPanel() {
     )[0];
 
     setAdditionalColumnData(
-      correlationsData
-        ? correlationsData.values
+      filteredCorrelationsData
+        ? filteredCorrelationsData.values
             .filter(
               (correlation) =>
                 correlation.atomType === _selectedAdditionalColumnsAtomType,
@@ -165,18 +279,18 @@ function SummaryPanel() {
             .reverse()
         : [],
     );
-  }, [correlationsData, selectedAdditionalColumnsAtomType]);
+  }, [filteredCorrelationsData, selectedAdditionalColumnsAtomType]);
 
   const editEquivalencesSaveHandler = useCallback(
     (correlation, value) => {
       dispatch({
         type: SET_CORRELATION,
         payload: {
-          id: correlation.getID(),
+          id: correlation.id,
           correlation: {
             ...correlation,
             equivalence: value,
-            edited: { ...correlation.getEdited(), equivalence: true },
+            edited: { ...correlation.edited, equivalence: true },
           },
         },
       });
@@ -204,11 +318,11 @@ function SummaryPanel() {
         dispatch({
           type: SET_CORRELATION,
           payload: {
-            id: correlation.getID(),
+            id: correlation.id,
             correlation: {
               ...correlation,
               protonsCount: values,
-              edited: { ...correlation.getEdited(), protonsCount: true },
+              edited: { ...correlation.edited, protonsCount: true },
             },
           },
         });
@@ -222,11 +336,11 @@ function SummaryPanel() {
       dispatch({
         type: SET_CORRELATION,
         payload: {
-          id: correlation.getID(),
+          id: correlation.id,
           correlation: {
             ...correlation,
             hybridization: value,
-            edited: { ...correlation.getEdited(), hybridization: true },
+            edited: { ...correlation.edited, hybridization: true },
           },
         },
       });
@@ -239,19 +353,19 @@ function SummaryPanel() {
       dispatch({
         type: SET_CORRELATIONS,
         payload: {
-          ids: [rowCorrelation.getID(), columnCorrelation.getID()],
+          ids: [rowCorrelation.id, columnCorrelation.id],
           correlations: [
             {
               ...rowCorrelation,
               edited: {
-                ...rowCorrelation.getEdited(),
+                ...rowCorrelation.edited,
                 additionalColumnField: true,
               },
             },
             {
               ...columnCorrelation,
               edited: {
-                ...columnCorrelation.getEdited(),
+                ...columnCorrelation.edited,
                 additionalColumnField: true,
               },
             },
@@ -262,9 +376,26 @@ function SummaryPanel() {
     [dispatch],
   );
 
+  const handleOnFilter = useCallback(() => {
+    setFilterIsActive(!filterIsActive);
+  }, [filterIsActive]);
+
   return (
     <div css={panelStyle}>
-      <DefaultPanelHeader canDelete={false}>
+      <DefaultPanelHeader
+        canDelete={false}
+        counter={correlationsData ? correlationsData.values.length : 0}
+        onFilter={handleOnFilter}
+        filterToolTip={
+          filterIsActive
+            ? 'Show all correlations'
+            : 'Hide correlations out of view'
+        }
+        filterIsActive={filterIsActive}
+        counterFiltered={
+          filteredCorrelationsData && filteredCorrelationsData.values.length
+        }
+      >
         <ToolTip
           title={`Set molecular formula (${correlationsData.options.mf})`}
           popupPlacement="right"
@@ -303,6 +434,7 @@ function SummaryPanel() {
       </DefaultPanelHeader>
       <CorrelationTable
         correlationsData={correlationsData}
+        filteredCorrelationsData={filteredCorrelationsData}
         additionalColumnData={additionalColumnData}
         editEquivalencesSaveHandler={editEquivalencesSaveHandler}
         changeHybridizationSaveHandler={changeHybridizationSaveHandler}
@@ -311,6 +443,7 @@ function SummaryPanel() {
           editAdditionalColumnFieldSaveHandler
         }
         showProtonsAsRows={showProtonsAsRows}
+        spectraData={spectraData}
       />
     </div>
   );

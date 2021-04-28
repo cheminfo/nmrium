@@ -22,7 +22,7 @@ function handleDeleteSpectraRanges(draft: Draft<State>, action) {
   );
 }
 function handleResizeSpectraRange(draft: Draft<State>, action) {
-  const { colKey: columnKey, from, to } = action.payload;
+  const { columnKey, from, to } = action.payload;
   MulitpleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
     from,
     to,

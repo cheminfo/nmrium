@@ -5,10 +5,13 @@ import { ObjectInspector } from 'react-inspector';
 import { useDispatch } from '../../context/DispatchContext';
 import CheckBox from '../../elements/CheckBox';
 import { TableCell, TableRow } from '../../elements/Table';
+import { useAlert } from '../../elements/popup/Alert';
+import { useModal } from '../../elements/popup/Modal';
 import {
   ENABLE_FILTER,
   DELETE_FILTER,
   SET_FILTER_SNAPSHOT,
+  DELETE_SPECTRA_FILTER,
 } from '../../reducer/types/Types';
 
 const styles = {
@@ -27,6 +30,8 @@ const styles = {
 };
 function FiltersTableRow({ filters }) {
   const dispatch = useDispatch();
+  const modal = useModal();
+  const alert = useAlert();
   const [selectedFilterID, setSelectedFilter] = useState();
 
   const handelFilterCheck = useCallback(
@@ -36,10 +41,38 @@ function FiltersTableRow({ filters }) {
     [dispatch],
   );
   const handelDeleteFilter = useCallback(
-    (id) => {
-      dispatch({ type: DELETE_FILTER, id });
+    ({ id, name }) => {
+      modal.showConfirmDialog({
+        message: 'Filter/s will be deleted, Are You sure?',
+        buttons: [
+          {
+            text: 'Yes,All spectra',
+            handler: async () => {
+              const hideLoading = await alert.showLoading(
+                'Delete all spectra filter processs in progress',
+              );
+              dispatch({
+                type: DELETE_SPECTRA_FILTER,
+                payload: { filterType: name },
+              });
+              hideLoading();
+            },
+          },
+          {
+            text: 'Yes ',
+            handler: async () => {
+              const hideLoading = await alert.showLoading(
+                'Delete filter processs in progress',
+              );
+              dispatch({ type: DELETE_FILTER, payload: { id } });
+              hideLoading();
+            },
+          },
+          { text: 'No' },
+        ],
+      });
     },
-    [dispatch],
+    [alert, dispatch, modal],
   );
   const filterSnapShotHandler = useCallback(
     (newID) => {
@@ -82,7 +115,7 @@ function FiltersTableRow({ filters }) {
               <button
                 style={styles.button}
                 type="button"
-                onClick={() => handelDeleteFilter(d.id)}
+                onClick={() => handelDeleteFilter(d)}
               >
                 <FaRegTrashAlt />
               </button>

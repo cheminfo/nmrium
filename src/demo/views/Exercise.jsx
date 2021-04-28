@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
-import NMRDisplayer from '../../component/NMRDisplayer';
+import NMRium from '../../component/NMRium';
 
 let answers = JSON.parse(localStorage.getItem('nmrium-exercises') || '{}');
 
@@ -169,7 +169,7 @@ export default function Exercise(props) {
         <div
           style={{ height: answerAreaVisible ? '50%' : 'calc(100% - 25px)' }}
         >
-          <NMRDisplayer
+          <NMRium
             data={data}
             preferences={{
               general: {

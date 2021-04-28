@@ -1,6 +1,9 @@
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 
+import { Filters } from '../../../data/Filters';
+import * as FiltersManager from '../../../data/FiltersManager';
 import {
   DatumKind,
   SignalKindsToInclude,
@@ -15,6 +18,7 @@ import {
   Datum1D,
   Range,
   Signal,
+  updateXShift,
 } from '../../../data/data1d/Datum1D';
 import {
   getPubIntegral,
@@ -25,17 +29,28 @@ import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
 import { handleUpdateCorrelations } from './CorrelationsActions';
+import { setDomain } from './DomainActions';
 
 function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    detectRanges(draft.data[index], detectionOptions);
+    const datum = draft.data[index] as Datum1D;
+
+    const [from, to] = draft.xDomain;
+    const windowFromIndex = xFindClosestIndex(datum.data.x, from);
+    const windowToIndex = xFindClosestIndex(datum.data.x, to);
+
+    detectRanges(datum, {
+      ...detectionOptions,
+      windowFromIndex,
+      windowToIndex,
+    });
     handleOnChangeRangesData(draft);
   }
 }
 
-function getRangeIndex(state: State, spectrumIndex, rangeID) {
-  return (state.data[spectrumIndex] as Datum1D).ranges.values.findIndex(
+function getRangeIndex(drfat: Draft<State>, spectrumIndex, rangeID) {
+  return (drfat.data[spectrumIndex] as Datum1D).ranges.values.findIndex(
     (range) => range.id === rangeID,
   );
 }
@@ -44,17 +59,16 @@ function handleDeleteRange(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
-    const { rangeData, assignmentData } = action.payload;
+    const { id, assignmentData } = action.payload;
     const datum = draft.data[index] as Datum1D;
-    if (rangeData === undefined) {
-      datum.ranges.values.forEach((range) =>
-        unlinkInAssignmentData(assignmentData, range),
-      );
-      datum.ranges.values = [];
-    } else {
-      unlinkInAssignmentData(assignmentData, rangeData);
-      const rangeIndex = getRangeIndex(state, index, rangeData.id);
+    if (id) {
+      const range = datum.ranges.values.find((range) => range.id === id);
+      unlinkInAssignmentData(assignmentData, [range]);
+      const rangeIndex = getRangeIndex(state, index, id);
       datum.ranges.values.splice(rangeIndex, 1);
+    } else {
+      unlinkInAssignmentData(assignmentData, datum.ranges.values);
+      datum.ranges.values = [];
     }
     updateIntegralRanges(draft.data[index]);
     handleOnChangeRangesData(draft);
@@ -101,41 +115,55 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
 }
 
 function handleUnlinkRange(draft: Draft<State>, action) {
-  const state = original(draft) as State;
-  if (state.activeSpectrum?.id) {
-    const { index } = state.activeSpectrum;
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
     const {
-      rangeData,
       assignmentData,
-      isOnRangeLevel,
-      signalIndex,
+      rangeData = null,
+      signalIndex = -1,
     } = action.payload;
+
     // remove assignments in global state
-    for (let range of rangeData
-      ? [rangeData]
-      : (state.data[index] as Datum1D).ranges.values) {
-      const _rangeData = unlink(cloneDeep(range), isOnRangeLevel, signalIndex);
-      // remove assignments in assignment hook data
-      unlinkInAssignmentData(
-        assignmentData,
-        _rangeData,
-        isOnRangeLevel,
-        signalIndex,
+    if (rangeData) {
+      const rangeIndex = getRangeIndex(draft, index, rangeData.id);
+      const range = cloneDeep(
+        (draft.data[index] as Datum1D).ranges.values[rangeIndex],
       );
 
-      const rangeIndex = getRangeIndex(state, index, _rangeData.id);
-      (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _rangeData;
+      let newRange: any = {};
+      let id = rangeData.id;
+      if (rangeData && signalIndex === -1) {
+        newRange = unlink(range, 'range');
+      } else {
+        newRange = unlink(range, 'signal', { signalIndex });
+        id = rangeData.signal[signalIndex].id;
+      }
+      // remove assignments in assignment hook data
+      unlinkInAssignmentData(assignmentData, [
+        {
+          id,
+        },
+      ]);
+      (draft.data[index] as Datum1D).ranges.values[rangeIndex] = newRange;
+    } else {
+      const ranges = (draft.data[index] as Datum1D).ranges.values.map(
+        (range) => {
+          return unlink(range);
+        },
+      );
+      (draft.data[index] as Datum1D).ranges.values = ranges;
+
+      unlinkInAssignmentData(assignmentData, ranges);
     }
   }
 }
 
 function handleSetDiaIDRange(draft, action) {
-  const state = original(draft);
-  if (state.activeSpectrum?.id) {
-    const { index } = state.activeSpectrum;
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
     const { rangeData, diaID, signalIndex } = action.payload;
 
-    const rangeIndex = getRangeIndex(state, index, rangeData.id);
+    const rangeIndex = getRangeIndex(draft, index, rangeData.id);
     const _range = draft.data[index].ranges.values[rangeIndex];
     if (signalIndex === undefined) {
       _range.diaID = diaID;
@@ -184,8 +212,21 @@ function handleChangeRangeSignalValue(draft, action) {
   const { rangeID, signalID, value } = action.payload;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeRangeSignal(draft.data[index], rangeID, signalID, value);
+
+    const shift = changeRangeSignal(
+      draft.data[index],
+      rangeID,
+      signalID,
+      value,
+    );
+    FiltersManager.applyFilter(draft.data[index], [
+      { name: Filters.shiftX.id, options: shift },
+    ]);
+
+    updateXShift(draft.data[index] as Datum1D);
+
     handleOnChangeRangesData(draft);
+    setDomain(draft);
   }
 }
 

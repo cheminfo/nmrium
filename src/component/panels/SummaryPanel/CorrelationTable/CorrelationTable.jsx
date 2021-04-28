@@ -4,14 +4,20 @@ import { useMemo } from 'react';
 
 import { getLabelColor } from '../Utilities';
 
+import AdditionalColumnHeader from './AdditionalColumnHeader';
 import CorrelationTableRow from './CorrelationTableRow';
 
 const tableStyle = css`
-  border-spacing: 0;
-  border: 1px solid #dedede;
-  width: 100%;
-  font-size: 12px;
+  overflow: auto;
   height: 100%;
+  display: block;
+  table {
+    border-spacing: 0;
+    border: 1px solid #dedede;
+    width: 100%;
+    font-size: 12px;
+    height: 100%;
+  }
   .react-contextmenu-wrapper {
     display: contents;
   }
@@ -22,6 +28,16 @@ const tableStyle = css`
       }
     }
   }
+  thead tr {
+    background-color: white !important;
+  }
+  th {
+    position: sticky;
+    background-color: white;
+    z-index: 2;
+    top: 0;
+  }
+
   th,
   td {
     white-space: nowrap;
@@ -43,33 +59,35 @@ const tableStyle = css`
 
 function CorrelationTable({
   correlationsData,
+  filteredCorrelationsData,
   additionalColumnData,
   editEquivalencesSaveHandler,
   changeHybridizationSaveHandler,
   editProtonsCountSaveHandler,
   editAdditionalColumnFieldSaveHandler,
   showProtonsAsRows,
+  spectraData,
 }) {
   const rows = useMemo(() => {
-    if (!correlationsData) {
+    if (!filteredCorrelationsData) {
       return [];
     }
 
-    return correlationsData.values
+    return filteredCorrelationsData.values
       .filter((correlation) =>
         showProtonsAsRows
-          ? correlation.getAtomType() === 'H'
-          : correlation.getAtomType() !== 'H',
+          ? correlation.atomType === 'H'
+          : correlation.atomType !== 'H',
       )
       .map((correlation) => (
         <CorrelationTableRow
           additionalColumnData={additionalColumnData}
           correlations={correlationsData.values}
           correlation={correlation}
-          key={`correlation${correlation.getAtomType()}${correlation.getID()}`}
+          key={`correlation${correlation.atomType}${correlation.id}`}
           styleRow={{ backgroundColor: 'mintcream' }}
           styleLabel={
-            correlation.getAtomType() === 'H'
+            correlation.atomType === 'H'
               ? {
                   color: getLabelColor(correlationsData, correlation),
                 }
@@ -79,57 +97,39 @@ function CorrelationTable({
           onChangeHybridization={changeHybridizationSaveHandler}
           onSaveEditProtonsCount={editProtonsCountSaveHandler}
           onEditAdditionalColumnField={editAdditionalColumnFieldSaveHandler}
+          spectraData={spectraData}
         />
       ));
   }, [
+    filteredCorrelationsData,
+    showProtonsAsRows,
     additionalColumnData,
-    changeHybridizationSaveHandler,
     correlationsData,
     editEquivalencesSaveHandler,
+    changeHybridizationSaveHandler,
     editProtonsCountSaveHandler,
     editAdditionalColumnFieldSaveHandler,
-    showProtonsAsRows,
+    spectraData,
   ]);
 
   const additionalColumnHeader = useMemo(
     () =>
       additionalColumnData.map((correlation) => (
-        <th
-          key={`CorrCol_${correlation.getID()}`}
-          style={{ color: getLabelColor(correlationsData, correlation) }}
-        >
-          <div style={{ display: 'block' }}>
-            <p>{correlation.getLabel('origin')}</p>
-            <p>
-              {correlation &&
-              correlation.getSignal() &&
-              correlation.getSignal().delta
-                ? correlation.getSignal().delta.toFixed(3)
-                : ''}
-            </p>
-            <p style={{ fontSize: 8 }}>
-              {`${
-                correlation.getExperimentType()
-                  ? `${correlation.getExperimentType().toUpperCase()}`
-                  : ''
-              } ${
-                correlation.getEquivalences() > 1
-                  ? `(${correlation.getEquivalences()})`
-                  : ''
-              }`}
-            </p>
-          </div>
-        </th>
+        <AdditionalColumnHeader
+          key={`additionalCorrelationHeader_${correlation.id}`}
+          spectraData={spectraData}
+          correlationsData={correlationsData}
+          correlation={correlation}
+        />
       )),
-    [additionalColumnData, correlationsData],
+    [additionalColumnData, correlationsData, spectraData],
   );
 
   return (
-    <div className="table-container">
-      <table css={tableStyle}>
+    <div css={tableStyle}>
+      <table>
         <thead>
           <tr>
-            <th>Exp</th>
             <th>Atom</th>
             <th>δ (ppm)</th>
             <th>Equiv</th>

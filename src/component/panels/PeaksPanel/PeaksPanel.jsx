@@ -31,8 +31,9 @@ function PeaksPanel() {
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted, Are You sure?', {
-      onYes: yesHandler,
+    modal.showConfirmDialog({
+      message: 'All records will be deleted, Are You sure?',
+      buttons: [{ text: 'Yes', handler: yesHandler }, { text: 'No' }],
     });
   }, [modal, yesHandler]);
 
@@ -75,13 +76,19 @@ function PeaksPanel() {
           onClose={settingsPanelHandler}
         />
       )}
-      <div style={{ height: '100%', overflow: 'auto' }}>
+      <div style={{ height: '100%', overflow: 'hidden' }}>
         <ReactCardFlip
           isFlipped={isFlipped}
           infinite
-          containerStyle={{ overflow: 'hidden' }}
+          containerStyle={{ overflow: 'hidden', height: '100%' }}
         >
-          <PeaksTable enableFilter={filterIsActive} onFilter={changedHandler} />
+          <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
+            <PeaksTable
+              enableFilter={filterIsActive}
+              onFilter={changedHandler}
+            />
+          </div>
+
           <PeaksPreferences ref={settingRef} />
         </ReactCardFlip>
       </div>

@@ -1,5 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useCallback } from 'react';
+
+import { useLoader } from '../context/LoaderContext';
 
 const styles = css`
   display: flex;
@@ -14,6 +17,8 @@ const styles = css`
   height: 100%;
   outline: 10px dashed rgba(0, 0, 0, 0.3);
   outline-offset: -10px;
+  padding-left: 20px;
+  padding-right: 20px;
 
   p {
     padding: 15px 30px;
@@ -26,14 +31,24 @@ const styles = css`
   }
 }
 `;
-function NoData({ isEmpty = true }) {
+
+function NoData({
+  isEmpty = true,
+  emptyText = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
+}) {
+  const loader = useLoader();
+
+  const openFileDialogHadnler = useCallback(() => {
+    loader.open();
+  }, [loader]);
+
   if (!isEmpty) {
     return null;
   }
 
   return (
-    <div css={styles}>
-      <p>Drag and drop here a Jcamp or NMRium file</p>
+    <div css={styles} onClick={openFileDialogHadnler}>
+      <p>{emptyText}</p>
     </div>
   );
 }

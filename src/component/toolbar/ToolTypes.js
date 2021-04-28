@@ -1,4 +1,4 @@
-import { Filters } from '../../data/data1d/filter1d/Filters';
+import { Filters } from '../../data/Filters';
 
 export const options = {
   zoom: {
@@ -84,6 +84,12 @@ export const options = {
   multipleSpectraAnalysis: {
     id: 'multipleSpectraAnalysis',
     label: 'Multiple Spectra Analysis',
+    hasOptionPanel: false,
+    isFilter: false,
+  },
+  exclusionZones: {
+    id: 'exclusionZones',
+    label: 'Exclusion Zones',
     hasOptionPanel: false,
     isFilter: false,
   },

@@ -80,7 +80,11 @@ function RangesHeader({
       <ChangeSumModal
         onClose={() => modal.close()}
         onSave={changeRangesSumHandler}
-        header={`Set new Ranges Sum (Current: ${currentSum})`}
+        header={
+          currentSum
+            ? `Set new Ranges Sum (Current: ${Number(currentSum).toFixed(2)})`
+            : 'Set new Ranges Sum'
+        }
         molecules={molecules}
         element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
       />,
@@ -88,22 +92,28 @@ function RangesHeader({
   }, [activeTab, changeRangesSumHandler, currentSum, modal, molecules]);
 
   const removeAssignments = useCallback(() => {
-    for (const range of ranges.values) {
-      onUnlink(range);
-    }
-  }, [ranges, onUnlink]);
+    onUnlink();
+  }, [onUnlink]);
 
   const handleOnRemoveAssignments = useCallback(() => {
-    modal.showConfirmDialog('All assignments will be removed. Are you sure?', {
-      onYes: removeAssignments,
+    modal.showConfirmDialog({
+      message: 'All assignments will be removed. Are you sure?',
+      buttons: [{ text: 'Yes', handler: removeAssignments }, { text: 'No' }],
     });
   }, [removeAssignments, modal]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All ranges will be deleted. Are You sure?', {
-      onYes: () => {
-        dispatch({ type: DELETE_RANGE, payload: { assignmentData } });
-      },
+    modal.showConfirmDialog({
+      message: 'All ranges will be deleted. Are You sure?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            dispatch({ type: DELETE_RANGE, payload: { assignmentData } });
+          },
+        },
+        { text: 'No' },
+      ],
     });
   }, [assignmentData, dispatch, modal]);
 
@@ -169,7 +179,11 @@ function RangesHeader({
         </button>
       </ToolTip>
       <ToolTip
-        title={`Change Ranges Sum (${currentSum})`}
+        title={
+          currentSum
+            ? `Change Ranges Sum (${Number(currentSum).toFixed(2)})`
+            : 'Change Ranges Sum'
+        }
         popupPlacement="right"
       >
         <button

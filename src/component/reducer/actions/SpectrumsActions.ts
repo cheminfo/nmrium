@@ -1,8 +1,8 @@
 import { Draft, original } from 'immer';
 
+import { Filters } from '../../../data/Filters';
+import { applyFilter } from '../../../data/FiltersManager';
 import { Datum1D } from '../../../data/data1d/Datum1D';
-import { applyFilter } from '../../../data/data1d/FiltersManager';
-import { Filters } from '../../../data/data1d/filter1d/Filters';
 import getReferenceShift from '../../../data/data1d/getReferenceShift';
 import { getMissingProjection, Datum2D } from '../../../data/data2d/Datum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
@@ -11,10 +11,21 @@ import { State } from '../Reducer';
 import { setDomain, setMode } from './DomainActions';
 import { setTab, setActiveTab } from './ToolsActions';
 
+function checkIsVisible2D(datum: Datum2D): boolean {
+  if (
+    datum.display.isPositiveVisible === false &&
+    datum.display.isNegativeVisible === false
+  ) {
+    return false;
+  }
+  return true;
+}
+
 function setVisible(datum, flag) {
   if (datum.info.dimension === 2) {
     (datum as Datum2D).display.isPositiveVisible = flag;
     (datum as Datum2D).display.isNegativeVisible = flag;
+    (datum as Datum2D).display.isVisible = checkIsVisible2D(datum as Datum2D);
   } else {
     (datum as Datum1D).display.isVisible = flag;
   }
@@ -39,6 +50,12 @@ function handleSpectrumVisibility(draft: Draft<State>, action) {
   } else {
     const index = draft.data.findIndex((d) => d.id === action.id);
     (draft.data[index] as Datum1D | Datum2D).display[action.key] = action.value;
+
+    if ((draft.data[index] as Datum1D | Datum2D).info.dimension === 2) {
+      (draft.data[index] as Datum2D).display.isVisible = checkIsVisible2D(
+        draft.data[index] as Datum2D,
+      );
+    }
   }
 }
 
@@ -128,7 +145,7 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
   const { activeTab } = draft;
   const state = original(draft) as State;
   if (action.id) {
-    const index = state.data.findIndex((d) => (d.id = action.id));
+    const index = state.data.findIndex((d) => d.id === action.id);
     draft.data.splice(index, 1);
   } else {
     draft.data.forEach((datum, index) => {
@@ -159,7 +176,8 @@ function alignSpectraHandler(draft: Draft<State>, action) {
     for (let datum of draft.data) {
       if (
         datum.info?.dimension === 1 &&
-        datum.info.nucleus === draft.activeTab
+        datum.info.nucleus === draft.activeTab &&
+        !datum.info?.isFid
       ) {
         const shift = getReferenceShift(datum, { ...action.payload });
         applyFilter(datum, [

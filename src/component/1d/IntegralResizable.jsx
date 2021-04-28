@@ -1,14 +1,12 @@
-import { css } from '@emotion/react';
 /** @jsxImportSource @emotion/react */
-import * as d3 from 'd3';
-import { useCallback, Fragment, useMemo } from 'react';
+import { css } from '@emotion/react';
+import { useCallback, Fragment, useState } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScale } from '../context/ScaleContext';
-import DeleteButton from '../elements/DeleteButton';
-import { useHighlight } from '../highlight/index';
-import { RESIZE_INTEGRAL, DELETE_INTEGRAL } from '../reducer/types/Types';
+import { TYPES, useHighlight } from '../highlight/index';
+import { RESIZE_INTEGRAL } from '../reducer/types/Types';
 
 import Resizable from './Resizable';
 
@@ -43,34 +41,15 @@ const stylesHighlighted = css`
   }
 `;
 
-function IntegralResizable({ spectrumID, integralSeries, integralData }) {
+function IntegralResizable({ integralData }) {
   const { height, margin } = useChartData();
   const { scaleX } = useScale();
 
-  const { id, integral } = integralData;
+  const [{ id, integral, from, to }, setIntgral] = useState(integralData);
 
-  const highlight = useHighlight([id]);
-
-  // isn't it actually the from/to range? -> return [from, to]
-  const xBoundary = useMemo(() => {
-    if (integralSeries) {
-      return d3.extent(integralSeries.x);
-    } else {
-      return [];
-    }
-  }, [integralSeries]);
+  const highlight = useHighlight([id], TYPES.INTEGRAL);
 
   const dispatch = useDispatch();
-
-  const deleteIntegral = useCallback(() => {
-    dispatch({
-      type: DELETE_INTEGRAL,
-      integralID: id,
-      spectrumID: spectrumID,
-    });
-  }, [dispatch, id, spectrumID]);
-
-  // const handleOnStartResizing = useCallback(() => {}, []);
 
   const handleOnStopResizing = useCallback(
     (resized) => {
@@ -82,14 +61,27 @@ function IntegralResizable({ spectrumID, integralSeries, integralData }) {
     [dispatch, integralData],
   );
 
-  const x0 = xBoundary[0] ? scaleX()(xBoundary[0]) : 0;
-  const x1 = xBoundary[1] ? scaleX()(xBoundary[1]) : 0;
+  const handleOnEnterNotation = useCallback(() => {
+    highlight.show();
+  }, [highlight]);
+
+  const handleOnMouseLeaveNotation = useCallback(() => {
+    highlight.hide();
+  }, [highlight]);
+
+  const dragHandler = useCallback((boundary) => {
+    setIntgral((integral) => ({ ...integral, ...boundary }));
+  }, []);
+
+  const x0 = from ? scaleX()(from) : 0;
+  const x1 = to ? scaleX()(to) : 0;
 
   return (
     <Fragment>
       <g
         css={highlight.isActive ? stylesHighlighted : stylesOnHover}
-        {...highlight.onHover}
+        onMouseEnter={handleOnEnterNotation}
+        onMouseLeave={handleOnMouseLeaveNotation}
       >
         <rect
           data-no-export="true"
@@ -112,14 +104,9 @@ function IntegralResizable({ spectrumID, integralSeries, integralData }) {
         <Resizable
           from={integralData.from}
           to={integralData.to}
-          // onDrag={handleOnStartResizing}
+          onDrag={dragHandler}
           onDrop={handleOnStopResizing}
           data-no-export="true"
-        />
-        <DeleteButton
-          x={`${x1 - 20}`}
-          y={height - margin.bottom - 20}
-          onDelete={deleteIntegral}
         />
       </g>
     </Fragment>

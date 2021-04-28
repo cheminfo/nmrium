@@ -1,5 +1,7 @@
 import { zoneToX } from 'ml-spectra-processing';
 
+import { Filters } from '../Filters';
+import * as FiltersManager from '../FiltersManager';
 import { DatumKind } from '../constants/SignalsKinds';
 import { initiateDatum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
@@ -9,6 +11,17 @@ import Processing2D, { defaultContourOptions } from './Processing2D';
 import autoZonesDetection from './autoZonesDetection';
 
 export const usedColors2D: Array<string> = [];
+
+export interface File {
+  binary: ArrayBuffer;
+  name: string;
+  extension?: string;
+}
+
+export interface Source {
+  jcampURL: string;
+  file: File;
+}
 
 export interface Data2D {
   z: Array<Array<number>>;
@@ -52,10 +65,12 @@ export interface Signal {
   id: number;
   peak: any;
   x: Partial<{
+    originDelta: number;
     delta: number;
     diaID: any;
   }>;
   y: Partial<{
+    originDelta: number;
     delta: number;
     diaID: any;
   }>;
@@ -66,32 +81,26 @@ export interface Zone {
   id: number;
   x: Partial<{ from: number; to: number }>;
   y: Partial<{ from: number; to: number }>;
-  signal: Signal;
+  signal: Array<Signal>;
   kind: string;
 }
 
-export interface ZoneOption {
-  sum: number;
-}
 export interface Zones {
   values: Array<Partial<Zone>>;
-  options?: Partial<ZoneOption>;
+  options?: Partial<{ sum: number }>;
 }
-
-export type Filters = Array<
-  Partial<{ name: string; isDeleteAllow: boolean; options?: any }>
->;
 
 export interface Datum2D {
   id: string;
-  source: Partial<{ jcamp: string; jcampURL: string; original: Data2D }>;
+  source: Partial<Source>;
   display: Display;
   info: Partial<Info>;
-  originalInfo: Partial<Info>;
+  originalInfo?: Partial<Info>;
   meta: any;
   data: Data2D;
+  originalData?: Data2D;
   zones: Zones;
-  filters: Filters;
+  filters: Array<Partial<FiltersManager.Filter>>;
   processingController: Processing2D;
 }
 
@@ -115,7 +124,9 @@ export function initiateDatum2D(options: any): Datum2D {
       ...getColor(options),
       isPositiveVisible: true,
       isNegativeVisible: true,
+      isVisible: true,
       contourOptions: defaultContourOptions,
+      dimension: 2,
     },
     options.display,
   );
@@ -129,14 +140,7 @@ export function initiateDatum2D(options: any): Datum2D {
     options.info,
   );
 
-  datum.originalInfo = Object.assign(
-    {
-      nucleus: ['1H', '1H'], // 1H, 13C, 19F, ...
-      isFid: false,
-      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
-    },
-    options.info,
-  );
+  datum.originalInfo = datum.info;
   datum.meta = Object.assign({}, options.meta);
   datum.data = Object.assign(
     {
@@ -148,6 +152,9 @@ export function initiateDatum2D(options: any): Datum2D {
     },
     options.data,
   );
+  datum.originalData = datum.data;
+  datum.filters = Object.assign([], options.filters);
+
   datum.zones = Object.assign({ values: [], options: {} }, options.zones);
 
   datum.processingController = new Processing2D(
@@ -155,7 +162,30 @@ export function initiateDatum2D(options: any): Datum2D {
     datum.display.contourOptions,
   );
 
+  //reapply filters after load the original data
+  FiltersManager.reapplyFilters(datum);
+
   return datum;
+}
+
+export function getShift(datum: Datum2D): { xShift: number; yShift: number } {
+  let shift: any = { xShift: 0, yShift: 0 };
+  if (datum?.filters) {
+    shift = datum.filters.reduce(
+      (acc, filter) => {
+        if (filter.name === Filters.shift2DX.id) {
+          acc.xShift = filter?.flag ? filter.value : 0;
+        }
+        if (filter.name === Filters.shift2DY.id) {
+          acc.yShift = filter?.flag ? filter.value : 0;
+        }
+        return acc;
+      },
+      { xShift: 0, yShift: 0 },
+    );
+  }
+
+  return shift;
 }
 
 function getColor(options) {
@@ -172,20 +202,19 @@ function getColor(options) {
 }
 
 export function toJSON(datum: Datum2D) {
-  const { z, ...resData } = datum.data;
-
   return {
-    data: { z: Array.from(z), ...resData },
     id: datum.id,
     source: {
-      jcamp: datum.source.jcamp,
       jcampURL: datum.source.jcampURL,
-      original: datum.source.jcampURL ? [] : datum.source.original,
     },
+    ...(!datum.source.jcampURL && {
+      data: datum.originalData,
+      info: datum.originalInfo,
+      meta: datum.meta,
+    }),
     zones: datum.zones,
+    filters: datum.filters,
     display: datum.display,
-    info: datum.originalInfo,
-    meta: datum.meta,
   };
 }
 
@@ -247,6 +276,25 @@ export function getSlice(spectrum, position) {
   return { horizontal, vertical };
 }
 
+export function updateShift(datum: Datum2D) {
+  const { xShift, yShift } = getShift(datum);
+  updateZonesShift(datum, {
+    xShift,
+    yShift,
+  });
+}
+
+export function updateZonesShift(datum: Datum2D, { xShift, yShift }) {
+  datum.zones.values = datum.zones.values.map((zone) => ({
+    ...zone,
+    signal: zone.signal?.map((signal) => ({
+      ...signal,
+      x: { ...signal.x, delta: signal.x.originDelta + xShift },
+      y: { ...signal.y, delta: signal.y.originDelta + yShift },
+    })),
+  }));
+}
+
 /**
  *
  * @param {number} zoneID
@@ -255,7 +303,11 @@ export function getSlice(spectrum, position) {
  * @param {number} signal.y
  * @param {string} signal.id
  */
-export function changeZoneSignal(datum, zoneID, newSignal) {
+export function changeZoneSignal(
+  datum,
+  zoneID,
+  newSignal,
+): { xShift: number; yShift: number } {
   const zoneIndex = datum.zones.values.findIndex((zone) => zone.id === zoneID);
   if (zoneIndex !== -1) {
     const signalIndex = datum.zones.values[zoneIndex].signal.findIndex(
@@ -263,25 +315,25 @@ export function changeZoneSignal(datum, zoneID, newSignal) {
     );
     if (signalIndex !== -1) {
       const originalSignal = datum.zones.values[zoneIndex].signal[signalIndex];
-      const shiftX = newSignal.x ? newSignal.x - originalSignal.x.delta : 0;
-      const shiftY = newSignal.y ? newSignal.y - originalSignal.y.delta : 0;
-      shiftXY(datum, { x: shiftX, y: shiftY });
+      const xShift =
+        newSignal?.x || newSignal?.x === 0
+          ? newSignal.x - originalSignal.x.delta
+          : 0;
+      const yShift =
+        newSignal?.y || newSignal?.y === 0
+          ? newSignal.y - originalSignal.y.delta
+          : 0;
 
-      if (newSignal.x) {
-        datum.zones.values[zoneIndex].signal[signalIndex].x.delta = newSignal.x;
-      }
-      if (newSignal.y) {
-        datum.zones.values[zoneIndex].signal[signalIndex].y.delta = newSignal.y;
-      }
+      // if (newSignal.x) {
+      //   datum.zones.values[zoneIndex].signal[signalIndex].x.delta = newSignal.x;
+      // }
+      // if (newSignal.y) {
+      //   datum.zones.values[zoneIndex].signal[signalIndex].y.delta = newSignal.y;
+      // }
+      return { xShift, yShift };
     }
   }
-}
-
-function shiftXY(datum, { x, y }) {
-  datum.data.minX += x;
-  datum.data.maxX += x;
-  datum.data.minY += y;
-  datum.data.maxY += y;
+  return { xShift: 0, yShift: 0 };
 }
 
 /**
@@ -296,32 +348,34 @@ function shiftXY(datum, { x, y }) {
  * @param {boolean} options.convolutionByFFT
  */
 export function detectZonesManual(datum, options) {
-  const { fromX, toX, fromY, toY } = options.selectedZone;
-  const zones = getDetectionZones(datum, options);
-  const signals = zones.map((zone) => {
-    return {
+  const signals = getDetectionZones(datum, options);
+  const { xShift, yShift } = getShift(datum);
+  for (let signal of signals) {
+    let { fromTo } = signal;
+    datum.zones.values.push({
       id: generateID(),
-      peak: zone.peaks,
-      x: {
-        delta: zone.shiftX,
-        diaID: [],
-      },
-      y: {
-        delta: zone.shiftY,
-        diaID: [],
-      },
-      kind: 'signal',
-    };
-  });
-  const zone = {
-    id: generateID(),
-    x: { from: fromX, to: toX },
-    y: { from: fromY, to: toY },
-    signal: signals,
-    kind: DatumKind.signal,
-  };
-
-  datum.zones.values.push(zone);
+      x: fromTo[0],
+      y: fromTo[1],
+      signal: [
+        {
+          id: generateID(),
+          peak: signal.peaks,
+          x: {
+            originDelta: signal.shiftX - xShift,
+            delta: signal.shiftX,
+            diaID: [],
+          },
+          y: {
+            originDelta: signal.shiftY - yShift,
+            delta: signal.shiftY,
+            diaID: [],
+          },
+          kind: 'signal',
+        },
+      ],
+      kind: DatumKind.signal,
+    });
+  }
 }
 
 /** calculate the missing projection
@@ -400,20 +454,42 @@ export function getDetectionZones(datum, options) {
  */
 export function detectZones(datum, options) {
   const zones = getDetectionZones(datum, options);
-  const formattedZones = zones.map((zone) => {
-    return {
+  const { xShift, yShift } = getShift(datum);
+
+  const { minX, maxX, minY, maxY } = datum.data;
+  const xError = Math.abs(maxX - minX) / 10000;
+  const yError = Math.abs(maxY - minY) / 10000;
+
+  const formattedZones = zones.reduce((acc, zone) => {
+    const [newXRange, newYRange] = zone.fromTo;
+
+    // check if the zone is already exists
+    for (const { x, y } of datum.zones.values) {
+      if (
+        Math.abs(newXRange.from - x.from) < xError &&
+        Math.abs(newXRange.to - x.to) < xError &&
+        Math.abs(newYRange.from - y.from) < yError &&
+        Math.abs(newYRange.to - y.to) < yError
+      ) {
+        return acc;
+      }
+    }
+
+    acc.push({
       id: generateID(),
-      x: { from: zone.fromTo[0].from, to: zone.fromTo[0].to },
-      y: { from: zone.fromTo[1].from, to: zone.fromTo[1].to },
+      x: { from: newXRange.from, to: newXRange.to },
+      y: { from: newYRange.from, to: newYRange.to },
       signal: [
         {
           id: generateID(),
           peak: zone.peaks,
           x: {
+            originDelta: zone.shiftX - xShift,
             delta: zone.shiftX,
             diaID: [],
           },
           y: {
+            originDelta: zone.shiftY - yShift,
             delta: zone.shiftY,
             diaID: [],
           },
@@ -421,20 +497,26 @@ export function detectZones(datum, options) {
         },
       ],
       kind: DatumKind.signal,
-    };
-  });
+    });
+
+    return acc;
+  }, []);
   datum.zones.values = datum.zones.values.concat(formattedZones);
 }
 
 export function getSubMatrix(datum, selectedZone) {
   const { fromX, toX, fromY, toY } = selectedZone;
   const data = datum.data;
-  const xStep = (data.maxX - data.minX) / data.z[0].length;
-  const yStep = (data.maxY - data.minY) / data.z.length;
+  const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
+  const yStep = (data.maxY - data.minY) / (data.z.length - 1);
   let xIndexFrom = Math.floor((fromX - data.minX) / xStep);
   let yIndexFrom = Math.floor((fromY - data.minY) / yStep);
   let xIndexTo = Math.floor((toX - data.minX) / xStep);
   let yIndexTo = Math.floor((toY - data.minY) / yStep);
+
+  if (xIndexFrom > xIndexTo) [xIndexFrom, xIndexTo] = [xIndexTo, xIndexFrom];
+  if (yIndexFrom > yIndexTo) [yIndexFrom, yIndexTo] = [yIndexTo, yIndexFrom];
+
   let dataMatrix: any = {
     z: [],
     maxX: data.minX + xIndexTo * xStep,
@@ -445,12 +527,12 @@ export function getSubMatrix(datum, selectedZone) {
   let maxZ = Number.MIN_SAFE_INTEGER;
   let minZ = Number.MAX_SAFE_INTEGER;
 
-  let nbXPoints = xIndexFrom - xIndexTo + 1;
+  let nbXPoints = xIndexTo - xIndexFrom + 1;
   for (let j = yIndexFrom; j < yIndexTo; j++) {
     let row = new Float32Array(nbXPoints);
     let xIndex = xIndexFrom;
     for (let i = 0; i < nbXPoints; i++) {
-      row[i] = data.z[j][xIndex--];
+      row[i] = data.z[j][xIndex++];
     }
     for (let rowValue of row) {
       if (maxZ < rowValue) maxZ = rowValue;
@@ -460,6 +542,5 @@ export function getSubMatrix(datum, selectedZone) {
   }
   dataMatrix.minZ = minZ;
   dataMatrix.maxZ = maxZ;
-
   return dataMatrix;
 }

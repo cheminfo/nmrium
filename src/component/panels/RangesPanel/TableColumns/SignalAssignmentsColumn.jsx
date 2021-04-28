@@ -31,13 +31,15 @@ function SignalAssignmentsColumn({
     },
     [onUnlinkVisibilityChange],
   );
+  const assignHandler = useCallback(
+    (e) => {
+      onLink(e, assignment);
+    },
+    [assignment, onLink],
+  );
 
   return (
-    <td
-      {...onHover}
-      {...{ onClick: (e) => onLink(e, assignment) }}
-      style={tdCss}
-    >
+    <td {...onHover} onClick={assignHandler} style={tdCss}>
       {diaIDs && diaIDs.length > 0 ? (
         <div
           onMouseEnter={() => visibilityChangeHandler(true)}

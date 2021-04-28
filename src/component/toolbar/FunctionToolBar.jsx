@@ -10,29 +10,20 @@ import {
   SvgNmrRangePicking,
   SvgNmrZeroFilling,
 } from 'cheminfo-font';
-import lodashDebounce from 'lodash/debounce';
 import lodashGet from 'lodash/get';
-import lodashMap from 'lodash/map';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
-import { Filters } from '../../data/data1d/filter1d/Filters';
+import { Filters } from '../../data/Filters';
 import { useDispatch } from '../context/DispatchContext';
-import { useGlobal } from '../context/GlobalContext';
 import { usePreferences } from '../context/PreferencesContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
-import { useAlert } from '../elements/popup/Alert';
 import { useHelp } from '../elements/popup/Help/Context';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
 import ToolBarWrapper from '../hoc/ToolBarWrapper';
-import { ZoomType } from '../reducer/actions/Zoom';
+import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
-import {
-  SET_SELECTED_TOOL,
-  APPLY_FFT_FILTER,
-  SET_SELECTED_FILTER,
-  FULL_ZOOM_OUT,
-} from '../reducer/types/Types';
+import { APPLY_FFT_FILTER, SET_SELECTED_FILTER } from '../reducer/types/Types';
 
 import { options } from './ToolTypes';
 
@@ -64,7 +55,7 @@ const styles = css`
   }
 `;
 
-let debounceClickEvents = [];
+// let debounceClickEvents = [];
 
 function FunctionToolBar({
   defaultValue,
@@ -74,32 +65,14 @@ function FunctionToolBar({
 }) {
   const [option, setOption] = useState();
   const help = useHelp();
-  const alert = useAlert();
   const preferences = usePreferences();
-  const { rootRef } = useGlobal();
 
   const dispatch = useDispatch();
 
   const selectedSpectrumInfo = {
     info: { isComplex: false, isFid: false, ...info },
   };
-  const handleChangeOption = useCallback(
-    (selectedTool) => {
-      if (
-        [
-          options.peakPicking.id,
-          options.integral.id,
-          options.zone2D.id,
-        ].includes(selectedTool)
-      ) {
-        alert.show(
-          'Press Shift + Left Mouse button to select zone for integral and peak picking',
-        );
-      }
-      dispatch({ type: SET_SELECTED_TOOL, selectedTool });
-    },
-    [alert, dispatch],
-  );
+  const { handleChangeOption, handleFullZoomOut } = useToolsFunctions();
 
   const handleChange = useCallback(
     (selectedOption) => {
@@ -109,90 +82,9 @@ function FunctionToolBar({
     [handleChangeOption],
   );
 
-  const handleFullZoomOut = useCallback(() => {
-    if (debounceClickEvents.length === 0) {
-      dispatch({
-        type: FULL_ZOOM_OUT,
-        zoomType: ZoomType.HORIZONTAL,
-      });
-    }
-    const callback = lodashDebounce(() => {
-      debounceClickEvents = [];
-    }, 500);
-    debounceClickEvents.push(callback);
-
-    callback();
-
-    if (debounceClickEvents.length > 1) {
-      lodashMap(debounceClickEvents, (debounce) => debounce.cancel());
-      debounceClickEvents = [];
-      dispatch({
-        type: FULL_ZOOM_OUT,
-      });
-    }
-  }, [dispatch]);
-
-  const handleOnKeyPressed = useCallback(
-    (e) => {
-      if (
-        !['input', 'textarea'].includes(e.target.localName) &&
-        !e.shiftKey &&
-        !e.metaKey
-      ) {
-        switch (e.key) {
-          case 'f':
-            handleFullZoomOut();
-            break;
-          case 'z':
-          case 'Escape':
-            setOption(options.zoom.id);
-            handleChangeOption(options.zoom.id);
-            break;
-          case 'r':
-            setOption(options.rangesPicking.id);
-            handleChangeOption(options.rangesPicking.id);
-            break;
-          case 'b':
-            setOption(options.baseLineCorrection.id);
-            handleChangeOption(options.baseLineCorrection.id);
-            break;
-          case 'p':
-            setOption(options.peakPicking.id);
-            handleChangeOption(options.peakPicking.id);
-            break;
-          case 'i': {
-            const toolID =
-              displayerMode === DISPLAYER_MODE.DM_2D
-                ? options.zone2D.id
-                : displayerMode === DISPLAYER_MODE.DM_1D
-                ? options.integral.id
-                : '';
-            setOption(toolID);
-            handleChangeOption(toolID);
-            break;
-          }
-          case 'a':
-            setOption(options.phaseCorrection.id);
-            handleChangeOption(options.phaseCorrection.id);
-            break;
-          default:
-        }
-      }
-    },
-    [displayerMode, handleChangeOption, handleFullZoomOut],
-  );
-
   useEffect(() => {
     setOption(defaultValue);
-    if (rootRef) {
-      rootRef.addEventListener('keydown', handleOnKeyPressed, false);
-    }
-    return () => {
-      if (rootRef) {
-        rootRef.removeEventListener('keydown', handleOnKeyPressed, false);
-      }
-    };
-  }, [defaultValue, handleOnKeyPressed, rootRef]);
+  }, [defaultValue]);
 
   const handleOnFFTFilter = useCallback(() => {
     dispatch({
@@ -419,6 +311,23 @@ function FunctionToolBar({
                 offset={{ x: 10, y: 0 }}
               >
                 <SvgNmrBaselineCorrection />
+              </ToolTip>
+            </ToggleButton>
+          )}
+
+        {displayerMode === DISPLAYER_MODE.DM_1D &&
+          isButtonVisible('hideExclusionZonesTool') && (
+            <ToggleButton
+              key={options.exclusionZones.id}
+              value={options.exclusionZones.id}
+              className="cheminfo"
+            >
+              <ToolTip
+                title={options.exclusionZones.label}
+                popupPlacement="right"
+                offset={{ x: 10, y: 0 }}
+              >
+                <SvgNmrMultipleAnalysis />
               </ToolTip>
             </ToggleButton>
           )}

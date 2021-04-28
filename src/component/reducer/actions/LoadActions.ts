@@ -1,39 +1,59 @@
 import { Draft } from 'immer';
 import lodashGet from 'lodash/get';
-import { CorrelationManager } from 'nmr-correlation';
+import { Build, Types } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
+import { Molecules, NMRiumPreferences, Spectra } from '../../NMRium';
+import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import { State } from '../Reducer';
 
-import { changeSpectrumDisplayPreferences } from './PreferencesActions';
-import { setYAxisShift, setActiveTab } from './ToolsActions';
+import { changeSpectrumVerticalAlignment } from './PreferencesActions';
+import { setActiveTab } from './ToolsActions';
 import { initZoom1DHandler } from './Zoom';
 
-function setIsLoading(draft, isLoading) {
+function setIsLoading(draft: Draft<State>, isLoading: boolean) {
   draft.isLoading = isLoading;
 }
 
-function setData(draft: Draft<State>, data) {
+function setData(
+  draft: Draft<State>,
+  data: {
+    spectra: Spectra;
+    molecules: Molecules;
+    preferences: NMRiumPreferences;
+    correlations: Types.CorrelationData;
+    exclusionZones: any;
+  },
+) {
   const {
     spectra,
     molecules,
     preferences,
     correlations,
-    // multipleAnalysis,
+    exclusionZones = {},
   } = data || {
     spectra: [],
     molecules: [],
     preferences: {},
     correlations: {},
     multipleAnalysis: {},
+    exclusionZones: {},
   };
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
-  if (correlations) {
-    draft.correlations = CorrelationManager.init(correlations);
+  draft.exclusionZones = exclusionZones;
+
+  if (!correlations || Object.keys(correlations).length === 0) {
+    draft.correlations = Build.init({
+      values: [],
+      options: { tolerance: DefaultTolerance, mf: '' },
+      state: {},
+    });
+  } else {
+    draft.correlations = Build.init(correlations);
   }
 
   // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
@@ -44,13 +64,7 @@ function initiate(draft: Draft<State>, action) {
   setData(draft, action.payload);
   initZoom1DHandler(draft.data);
   const alignCenter = lodashGet(draft.preferences, 'display.center', null);
-  if (alignCenter) {
-    changeSpectrumDisplayPreferences(draft, {
-      center: alignCenter,
-    });
-  } else {
-    setYAxisShift(draft, draft.height);
-  }
+  changeSpectrumVerticalAlignment(draft, alignCenter, true);
   setActiveTab(draft);
   draft.isLoading = false;
 }
@@ -72,24 +86,20 @@ function loadJcampFile(draft: Draft<State>, files) {
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
+  changeSpectrumVerticalAlignment(draft, false, true);
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
 
   draft.isLoading = false;
 }
 
-function handleLoadJsonFile(draft: Draft<State>, files) {
-  const data = JSON.parse(files[0].binary.toString());
+function handleLoadJsonFile(draft: Draft<State>, actions) {
+  const data = actions.payload;
   setData(draft, data);
+
   const alignCenter = lodashGet(draft.preferences, 'display.center', null);
 
-  if (alignCenter) {
-    changeSpectrumDisplayPreferences(draft, {
-      center: alignCenter,
-    });
-  } else {
-    setYAxisShift(draft, draft.height);
-  }
+  changeSpectrumVerticalAlignment(draft, alignCenter, true);
 
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
@@ -111,12 +121,22 @@ function handleLoadZIPFile(draft: Draft<State>, action) {
   draft.isLoading = false;
 }
 
+function handleLoadNmredata(draft: Draft<State>, action) {
+  setData(draft, action.payload);
+  const alignCenter = lodashGet(draft.preferences, 'display.center', null);
+  changeSpectrumVerticalAlignment(draft, alignCenter, true);
+  setActiveTab(draft);
+  initZoom1DHandler(draft.data);
+  draft.isLoading = false;
+}
+
 export {
   setIsLoading,
   initiate,
   loadJcampFile,
   loadJDFFile,
   handleLoadJsonFile,
+  handleLoadNmredata,
   handleLoadMOLFile,
   handleLoadZIPFile,
 };

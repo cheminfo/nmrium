@@ -1,5 +1,6 @@
 /* eslint-disable default-param-last */
 import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
 
 function copyFormattedHtml(html) {
   // Create an iframe (isolated container) for the HTML
@@ -61,10 +62,59 @@ async function copyTextToClipboard(data) {
  * export the experiments result in JSON format
  * @param {*} data
  */
-function exportAsJSON(data, fileName = 'experiment') {
-  const fileData = JSON.stringify(data, undefined, 2);
-  const blob = new Blob([fileData], { type: 'text/plain' });
-  saveAs(blob, `${fileName}.nmrium`);
+async function exportAsJSON(
+  data,
+  fileName = 'experiment',
+  spaceIndent = 0,
+  isCompressed = false,
+) {
+  const fileData = JSON.stringify(
+    data,
+    (key, value) => (ArrayBuffer.isView(value) ? Array.from(value) : value),
+    spaceIndent,
+  );
+  if (!isCompressed) {
+    const blob = new Blob([fileData], { type: 'text/plain' });
+    saveAs(blob, `${fileName}.nmrium`);
+  } else {
+    try {
+      const zip = new JSZip();
+      zip.file(`${fileName}.nmrium`, fileData);
+      const blob = await zip.generateAsync({
+        type: 'blob',
+        compression: 'DEFLATE',
+        compressionOptions: {
+          level: 9,
+        },
+      });
+      saveAs(blob, `${fileName}.nmrium`);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+  }
+}
+
+function exportAsMatrix(data, options, fileName = 'experiment') {
+  // eslint-disable-next-line no-unused-vars
+  const { from, to, nbPoints } = options;
+
+  // your code
+
+  const exportData = JSON.stringify(
+    data,
+    (key, value) => (ArrayBuffer.isView(value) ? Array.from(value) : value),
+    2,
+  );
+
+  const blob = new Blob([exportData], { type: 'text/plain' });
+  saveAs(blob, `${fileName}.tsv`);
+}
+
+function exportAsNMRE(data, fileName = 'experiment') {
+  data.generateAsync({ type: 'blob' }).then((content) => {
+    saveAs(content, `${fileName}.zip`);
+  });
 }
 
 function exportAsMol(data, fileName = 'mol') {
@@ -182,7 +232,7 @@ function getBlob(elementID) {
     .querySelectorAll('[data-no-export="true"]')
     .forEach((element) => element.remove());
   const head = `<svg class="nmr-svg"  viewBox='0 0 ${width} ${height}' width="${width}"  height="${height}"  version="1.1" xmlns="http://www.w3.org/2000/svg">`;
-  const style = `<style>.grid line,.grid path{stroke:none;} .regular-text{fill:black} .x path{stroke-width:1px} .x text{
+  const style = `<style>.grid line,.grid path{stroke:none;} .peaks-text{fill:#730000} .x path{stroke-width:1px} .x text{
     font-size: 12px;
     font-weight: bold;
   } 
@@ -203,9 +253,11 @@ function getBlob(elementID) {
 export {
   exportAsSVG,
   exportAsJSON,
+  exportAsNMRE,
   exportAsPng,
   copyPNGToClipboard,
   copyTextToClipboard,
   copyHTMLToClipboard,
   exportAsMol,
+  exportAsMatrix,
 };

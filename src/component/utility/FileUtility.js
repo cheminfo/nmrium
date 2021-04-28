@@ -1,7 +1,29 @@
-async function loadFile(file) {
+export const FILES_TYPES = {
+  MOL: 'mol',
+  NMRIUM: 'nmrium',
+  JSON: 'json',
+  DX: 'dx',
+  JDX: 'jdx',
+  JDF: 'jdf',
+  ZIP: 'zip',
+  SDF: 'sdf',
+};
+export const FILES_SIGNATURES = {
+  ZIP: '504b0304',
+};
+
+function getFileSignature(fileArrayBuffer) {
+  return new Uint8Array(fileArrayBuffer)
+    .slice(0, 4)
+    .reduce((acc, byte) => (acc += byte.toString(16).padStart(2, '0')), '');
+}
+
+async function loadFile(file, options = { asBuffer: false }) {
   const response = await fetch(file);
   checkStatus(response);
-  const data = await response.text();
+  const data = (await options.asBuffer)
+    ? response.arrayBuffer()
+    : response.text();
   return data;
 }
 
@@ -28,7 +50,13 @@ function extractFileMetaFromPath(path) {
 
   return { name: meta[0].toLowerCase(), extension: meta[1].toLowerCase() };
 }
-
+/**
+ *
+ * @param {Array<File>} acceptedFiles
+ * @param {object} options
+ * @param {boolean} options.asBuffer
+ * @returns
+ */
 function loadFiles(acceptedFiles, options = {}) {
   return Promise.all(
     [].map.call(acceptedFiles, (file) => {
@@ -54,10 +82,28 @@ function loadFiles(acceptedFiles, options = {}) {
   );
 }
 
+async function loadFilesFromZip(files, options = {}) {
+  const result = [];
+  for (const file of files) {
+    try {
+      const binary = await file.async(options.asBuffer ? 'uint8array' : 'text');
+      const name = getFileName(file.name);
+      const extension = getFileExtension(file.name);
+      result.push({ binary, name, extension });
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+  }
+  return result;
+}
+
 export {
   loadFiles,
+  loadFilesFromZip,
   loadFile,
   getFileExtension,
   getFileName,
   extractFileMetaFromPath,
+  getFileSignature,
 };

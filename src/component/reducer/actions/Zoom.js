@@ -62,47 +62,61 @@ export function setScale(scale) {
     throw Error('scale must be number or Object');
   }
 }
-
-function setZoom(state, draft, defaultScale = null) {
-  const { height, margin, activeSpectrum } = state;
+/**
+ *
+ * @param {Draft} draft
+ * @param {number} defaultScale
+ * @param {string | null } [spectrumID = null]
+ * @param {boolean} [useOrigin = false]
+ */
+function setZoom(draft, defaultScale = null, spectrumID = null) {
+  const { height, margin, activeSpectrum } = draft;
   if (defaultScale) {
     setScale(defaultScale);
   }
-  const scale = getScale(state);
+  const scale = getScale(draft);
   draft.zoomFactor = { scale };
 
-  if (activeSpectrum === null) {
+  if (activeSpectrum === null && spectrumID === null) {
     draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
       const _scale = scaleLinear(draft.originDomain.yDomains[id], [
         height - margin.bottom,
         margin.top,
       ]);
+      const [min, max] = draft.originDomain.yDomains[id];
+      const maxPoint = Math.max(Math.abs(max), Math.abs(min));
+      const scalePoint = maxPoint === max ? 0 : min;
       const t = zoomIdentity
-        .translate(0, _scale(0))
+        .translate(
+          0,
+          Math.sign(scalePoint) >= 0 ? _scale(scalePoint) : _scale(scalePoint),
+        )
         .scale(scale[id])
         .translate(0, -_scale(0));
-
       const yDomain = t.rescaleY(_scale).domain();
       acc[id] = yDomain;
       return acc;
     }, {});
   } else {
-    const _scale = scaleLinear(draft.originDomain.yDomains[activeSpectrum.id], [
+    const spectrumId = spectrumID ? spectrumID : activeSpectrum.id;
+    const _scale = scaleLinear(draft.originDomain.yDomains[spectrumId], [
       height - margin.bottom,
       margin.top,
     ]);
+
     const t = zoomIdentity
       .translate(0, _scale(0))
-      .scale(scale[activeSpectrum.id])
+      .scale(scale[spectrumId])
       .translate(0, -_scale(0));
 
     const yDomain = t.rescaleY(_scale).domain();
     draft.yDomains = {
       ...draft.yDomains,
-      [activeSpectrum.id]: yDomain,
+      [spectrumId]: yDomain,
     };
   }
 }
+
 function setZoom1D(draft, height, margin, index, defaultScale = null) {
   const { originDomain, tabActiveSpectrum, activeTab } = draft;
 

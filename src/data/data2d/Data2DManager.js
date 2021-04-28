@@ -8,14 +8,6 @@ export function fromParsedJcamp(parsedJcamp, options = {}) {
     info,
     meta,
     data,
-    source: {
-      jcamp: null,
-      jcampURL:
-        options.source && options.source.jcampURL
-          ? options.source.jcampURL
-          : null,
-      original: data,
-    },
   });
   return ob;
 }
@@ -27,11 +19,6 @@ export function fromBruker(result, options = {}) {
     ...options,
     meta,
     data,
-    source: {
-      jcamp: null,
-      jcampURL: null,
-      original: data,
-    },
   });
 
   return datum2D;

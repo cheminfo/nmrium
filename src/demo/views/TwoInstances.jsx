@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import NMRDisplayer from '../../component/NMRDisplayer';
+import NMRium from '../../component/NMRium';
 
 const data1 = {
   spectra: [
@@ -59,7 +59,7 @@ export default function TwoInstances(props) {
           marginBottom: '15px',
         }}
       >
-        Display and process 1D NMR spectra from a jcamp-dx file
+        Display and process 1D NMR spectra from a JCAMP-DX file
       </h5>
       {path && (
         <p
@@ -75,10 +75,10 @@ export default function TwoInstances(props) {
         </p>
       )}
       <div style={{ flex: 1 }}>
-        <NMRDisplayer data={data1} key="1" />
+        <NMRium data={data1} key="1" />
       </div>
       <div style={{ flex: 1 }}>
-        <NMRDisplayer data={data2} key="2" />
+        <NMRium data={data2} key="2" />
       </div>
     </div>
   );
