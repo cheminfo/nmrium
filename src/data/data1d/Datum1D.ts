@@ -110,7 +110,6 @@ export interface Datum1D {
   integrals: Integrals;
   ranges: Ranges;
   filters: Array<Partial<FiltersManager.Filter>>;
-  shiftX?: number;
 }
 
 export function initiateDatum1D(options: any): Datum1D {

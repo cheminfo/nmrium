@@ -85,12 +85,9 @@ export interface Zone {
   kind: string;
 }
 
-export interface ZoneOption {
-  sum: number;
-}
 export interface Zones {
   values: Array<Partial<Zone>>;
-  options?: Partial<ZoneOption>;
+  options?: Partial<{ sum: number }>;
 }
 
 export interface Datum2D {
