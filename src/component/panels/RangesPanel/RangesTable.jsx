@@ -17,7 +17,7 @@ const tableStyle = css`
   border: 1px solid #dedede;
   width: 100%;
   font-size: 12px;
-  height: 100%;
+  // height: 100%;
   .react-contextmenu-wrapper {
     display: contents;
   }
@@ -28,12 +28,18 @@ const tableStyle = css`
       }
     }
   }
+  th {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+  }
   th,
   td {
     white-space: nowrap;
     text-align: center;
     margin: 0;
-    padding: 0.4rem;
+    padding: 0.1rem 0.4rem;
     border-bottom: 1px solid #dedede;
     border-right: 1px solid #dedede;
 

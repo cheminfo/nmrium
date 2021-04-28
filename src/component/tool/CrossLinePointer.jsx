@@ -25,6 +25,7 @@ const allowTools = [
   options.rangesPicking.id,
   options.editRange.id,
   options.multipleSpectraAnalysis.id,
+  options.exclusionZones.id,
 ];
 
 function CrossLinePointer() {

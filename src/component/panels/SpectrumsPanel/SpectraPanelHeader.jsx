@@ -1,4 +1,5 @@
-import React, { memo, useCallback } from 'react';
+import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
+import { memo, useCallback } from 'react';
 import {
   FaCreativeCommonsSamplingPlus,
   FaEye,
@@ -6,27 +7,43 @@ import {
 } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
-import ToolTip from '../../elements/ToolTip/ToolTip';
+import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import SpectraWraper from '../../hoc/SpectraWraper';
+import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MISSING_PROJECTION,
   CHANGE_VISIBILITY,
   DELETE_SPECTRA,
+  RESET_SPECTRA_SCALE,
+  SET_SPECTRA_SAME_TOP,
 } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
-function SpectraPanelHeader({ data, activeSpectrum, activeTab, spectrums }) {
+function SpectraPanelHeader({
+  data,
+  activeSpectrum,
+  activeTab,
+  displayerMode,
+  spectrums,
+}) {
   const modal = useModal();
   const alert = useAlert();
   const dispatch = useDispatch();
 
   const handleDelete = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted, Are You sure?', {
-      onYes: () => {
-        dispatch({ type: DELETE_SPECTRA });
-      },
+    modal.showConfirmDialog({
+      message: 'All records will be deleted, Are You sure?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            dispatch({ type: DELETE_SPECTRA });
+          },
+        },
+        { text: 'No' },
+      ],
     });
   }, [dispatch, modal]);
 
@@ -62,28 +79,42 @@ function SpectraPanelHeader({ data, activeSpectrum, activeTab, spectrums }) {
     }
   }, [activeTab, alert, data, dispatch]);
 
+  const setSameTopHandler = useCallback(() => {
+    dispatch({ type: SET_SPECTRA_SAME_TOP });
+  }, [dispatch]);
+  const resetScaleHandler = useCallback(() => {
+    dispatch({ type: RESET_SPECTRA_SCALE });
+  }, [dispatch]);
+
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
       counter={spectrums && spectrums.length}
       deleteToolTip="Delete all spectra"
     >
-      <ToolTip title="Hide all spectra" popupPlacement="right">
-        <button type="button" onClick={hideAllSpectrumsHandler}>
-          <FaEyeSlash />
-        </button>
-      </ToolTip>
-      <ToolTip title="Show all spectra" popupPlacement="right">
-        <button type="button" onClick={showAllSpectrumsHandler}>
-          <FaEye />
-        </button>
-      </ToolTip>
+      <Button popupTitle="Hide all spectra" onClick={hideAllSpectrumsHandler}>
+        <FaEyeSlash />
+      </Button>
+      <Button popupTitle="Show all spectra" onClick={showAllSpectrumsHandler}>
+        <FaEye />
+      </Button>
       {activeSpectrum && activeTab && activeTab.split(',').length > 1 && (
-        <ToolTip title="Add missing projection" popupPlacement="right">
-          <button type="button" onClick={addMissingProjectionHandler}>
-            <FaCreativeCommonsSamplingPlus />
-          </button>
-        </ToolTip>
+        <Button
+          popupTitle="Add missing projection"
+          onClick={addMissingProjectionHandler}
+        >
+          <FaCreativeCommonsSamplingPlus />
+        </Button>
+      )}
+      {displayerMode === DISPLAYER_MODE.DM_1D && (
+        <>
+          <Button popupTitle="Reset Scale" onClick={resetScaleHandler}>
+            <SvgNmrResetScale />
+          </Button>
+          <Button popupTitle="Same Top" onClick={setSameTopHandler}>
+            <SvgNmrSameTop />
+          </Button>
+        </>
       )}
     </DefaultPanelHeader>
   );

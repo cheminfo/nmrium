@@ -1,17 +1,19 @@
 import { produce } from 'immer';
-import { CorrelationManager } from 'nmr-correlation';
+import { Build, Types } from 'nmr-correlation';
+import { predictionProton } from 'nmr-processing';
+import OCL from 'openchemlib/full';
 
 import * as SpectraManager from '../../data/SpectraManager';
-import { Datum1D } from '../../data/data1d/Datum1D';
-import { Datum2D } from '../../data/data2d/Datum2D';
+import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
+import { nmredataToNmrium } from '../utility/nmredataToNmrium';
 
 import * as CorrelationsActions from './actions/CorrelationsActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
-import { exportData } from './actions/ExportActions';
 import * as FiltersActions from './actions/FiltersActions';
+import * as GlobalActions from './actions/GlobalActions';
 import {
   handleHistoryUndo,
   handleHistoryRedo,
@@ -83,15 +85,19 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAnalysis: {},
-  correlations: CorrelationManager.init({
+  correlations: Build.init({
+    values: [],
     options: { tolerance: DefaultTolerance, mf: '' },
+    state: {},
   }),
   displayerKey: '',
   ZoomHistory: {},
+  overDisplayer: false,
+  exclusionZones: {},
 };
 
 export interface State {
-  data: Array<Partial<Datum1D> | Partial<Datum2D>>;
+  data: Spectra;
   contours: any;
   tempData: any;
   xDomain: Array<number>;
@@ -134,18 +140,33 @@ export interface State {
   tabActiveSpectrum: any;
   spectraAnalysis: any;
   displayerKey: any;
-  correlations: any;
-  actionType: null;
+  correlations: Types.CorrelationData;
   ZoomHistory: any;
+  overDisplayer: boolean;
+  exclusionZones: {
+    [key: string]: Array<{ id: string; from: number; to: number }>;
+  };
 }
 
 export function dispatchMiddleware(dispatch) {
   return (action) => {
     switch (action.type) {
       case types.INITIATE: {
-        const { spectra, ...res } = action.payload;
-        void SpectraManager.fromJSON(spectra).then((data) => {
-          action.payload = { spectra: data, ...res };
+        if (action.payload) {
+          const { spectra, ...res } = action.payload;
+          void SpectraManager.fromJSON(spectra).then((data) => {
+            action.payload = { spectra: data, ...res };
+            dispatch(action);
+          });
+        } else {
+          dispatch(action);
+        }
+        break;
+      }
+      case types.LOAD_JSON_FILE: {
+        const data = JSON.parse(action.files[0].binary.toString());
+        void SpectraManager.fromJSON(data.spectra).then((spectra) => {
+          action.payload = Object.assign(data, { spectra });
           dispatch(action);
         });
         break;
@@ -160,6 +181,22 @@ export function dispatchMiddleware(dispatch) {
             dispatch(action);
           });
         }
+        break;
+      }
+      case types.LOAD_NMREDATA_FILE: {
+        void nmredataToNmrium(action.files).then((data) => {
+          action.payload = data;
+          dispatch(action);
+        });
+        break;
+      }
+      case types.PREDICT_SPECTRA: {
+        const molecule = OCL.Molecule.fromMolfile(action.payload.mol.molfile);
+        void predictionProton(molecule, {}).then((result) => {
+          action.payload.fromMolfile = result;
+          dispatch(action);
+        });
+
         break;
       }
 
@@ -179,7 +216,7 @@ function innerSpectrumReducer(draft, action) {
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
     case types.LOAD_JSON_FILE:
-      return LoadActions.handleLoadJsonFile(draft, action.files);
+      return LoadActions.handleLoadJsonFile(draft, action);
     case types.LOAD_JCAMP_FILE:
       return LoadActions.loadJcampFile(draft, action.files);
     case types.LOAD_JDF_FILE:
@@ -188,8 +225,8 @@ function innerSpectrumReducer(draft, action) {
       return LoadActions.handleLoadMOLFile(draft, action.files);
     case types.LOAD_ZIP_FILE:
       return LoadActions.handleLoadZIPFile(draft, action);
-    case types.EXPORT_DATA:
-      return exportData(draft, action);
+    case types.LOAD_NMREDATA_FILE:
+      return LoadActions.handleLoadNmredata(draft, action);
     case types.ADD_PEAK:
       return PeaksActions.addPeak(draft, action.mouseCoordinates);
     case types.ADD_PEAKS:
@@ -259,9 +296,13 @@ function innerSpectrumReducer(draft, action) {
     case types.ENABLE_FILTER:
       return FiltersActions.enableFilter(draft, action.id, action.checked);
     case types.DELETE_FILTER:
-      return FiltersActions.deleteFilter(draft, action.id);
+      return FiltersActions.deleteFilter(draft, action);
+    case types.DELETE_SPECTRA_FILTER:
+      return FiltersActions.deleteSpectraFilter(draft, action);
     case types.SET_FILTER_SNAPSHOT:
       return FiltersActions.filterSnapshotHandler(draft, action);
+    case types.APPLY_MULTIPLE_SPECTRA_FILTER:
+      return FiltersActions.handleMultipleSpectraFilter(draft, action);
 
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);
@@ -283,22 +324,29 @@ function innerSpectrumReducer(draft, action) {
       return ToolsActions.handleToggleRealImaginaryVisibility(draft);
     case types.SET_ZOOM_FACTOR:
       return ToolsActions.handleZoom(draft, action);
+    case types.SET_SPECTRA_SAME_TOP:
+      return ToolsActions.setSpectraSameTopHandler(draft);
+    case types.RESET_SPECTRA_SCALE:
+      return ToolsActions.resetSpectraScale(draft);
 
     case types.CHANGE_SPECTRUM_DISPLAY_VIEW_MODE:
-      return ToolsActions.handleChangeSpectrumDisplayMode(draft, action);
+      return ToolsActions.handleChangeSpectrumDisplayMode(draft);
 
     case types.ADD_MOLECULE:
-      return MoleculeActions.handleAddMolecule(draft, action.molfile);
+      return MoleculeActions.addMoleculeHandler(draft, action.molfile);
 
     case types.SET_MOLECULE:
-      return MoleculeActions.handleSetMolecule(
+      return MoleculeActions.setMoleculeHandler(
         draft,
         action.molfile,
         action.key,
       );
 
     case types.DELETE_MOLECULE:
-      return MoleculeActions.handleDeleteMolecule(draft, action);
+      return MoleculeActions.deleteMoleculeHandler(draft, action);
+
+    case types.PREDICT_SPECTRA:
+      return MoleculeActions.predictSpectraFromMolculeHandler(draft, action);
 
     case types.SET_CORRELATIONS_MF:
       return CorrelationsActions.handleSetMF(draft, action.payload);
@@ -324,7 +372,7 @@ function innerSpectrumReducer(draft, action) {
     case types.SET_VERTICAL_INDICATOR_X_POSITION:
       return ToolsActions.setVerticalIndicatorXPosition(draft, action.position);
     case types.SET_SPECTRUMS_VERTICAL_ALIGN:
-      return ToolsActions.setSpectrumsVerticalAlign(draft, action.flag);
+      return ToolsActions.setSpectrumsVerticalAlign(draft);
 
     case types.AUTO_PEAK_PICKING:
       return PeaksActions.handleAutoPeakPicking(draft, action.options);
@@ -362,6 +410,11 @@ function innerSpectrumReducer(draft, action) {
       return ToolsActions.handleAddBaseLineZone(draft, action.zone);
     case types.DELETE_BASE_LINE_ZONE:
       return ToolsActions.handleDeleteBaseLineZone(draft, action.id);
+    case types.ADD_EXCLUSION_ZONE:
+      return ToolsActions.handleAddExclusionZone(draft, action);
+    case types.DELETE_EXCLUSION_ZONE:
+      return ToolsActions.handleDeleteExclusionZone(draft, action);
+
     case types.APPLY_BASE_LINE_CORRECTION_FILTER:
       return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
     case types.SET_KEY_PREFERENCES:
@@ -406,6 +459,9 @@ function innerSpectrumReducer(draft, action) {
 
     case RESET:
       return handleHistoryReset(draft, action);
+
+    case types.SET_MOUSE_OVER_DISPLAYER:
+      return GlobalActions.setIsOverDisplayer(draft, action);
 
     default:
       return;

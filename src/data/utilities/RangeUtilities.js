@@ -27,17 +27,33 @@ const resetDiaIDs = (range) => {
   });
   delete range.pubIntegral;
 };
+/**
+ *
+ * @param {object} range
+ * @param {String('both' | 'range' | 'signal')} unlinkType
+ * @param {object} options
+ * @param {number} [options.signalIndex]
+ * @returns {object}
+ */
+const unlink = (range, unlinkType = 'both', options = {}) => {
+  switch (unlinkType) {
+    case 'both':
+      resetDiaIDs(range);
 
-const unlink = (range, isOnRangeLevel, signalIndex) => {
-  if (isOnRangeLevel !== undefined) {
-    if (isOnRangeLevel === true) {
+      break;
+    case 'range':
       delete range.diaID;
-    } else if (signalIndex !== undefined) {
-      delete range.signal[signalIndex].diaID;
-    }
-  } else {
-    resetDiaIDs(range);
+
+      break;
+    case 'signal':
+      delete range.signal[options.signalIndex].diaID;
+
+      break;
+
+    default:
+      break;
   }
+
   setPubIntegral(range);
 
   return range;
@@ -61,26 +77,17 @@ const checkSignalKinds = (range, kinds) => {
   );
 };
 
-const unlinkInAssignmentData = (
-  assignmentData,
-  range,
-  isOnRangeLevel,
-  signalIndex,
-) => {
-  let id = [];
-  if (isOnRangeLevel !== undefined) {
-    id =
-      isOnRangeLevel === true
-        ? [range.id]
-        : signalIndex !== undefined
-        ? [range.signal[signalIndex].id]
-        : [];
-  } else {
-    id = [range.id].concat(range.signal.map((signal) => signal.id));
-  }
+const unlinkInAssignmentData = (assignmentData, ranges) => {
+  const ids = ranges.reduce((acc, range) => {
+    acc.push(range.id);
+    if (range.signal) {
+      acc = acc.concat(range.signal.map((signal) => signal.id, []));
+    }
+    return acc;
+  }, []);
   assignmentData.dispatch({
     type: 'REMOVE_ALL',
-    payload: { id, axis: 'x' },
+    payload: { id: ids, axis: 'x' },
   });
 };
 

@@ -6,6 +6,7 @@ import {
   Fragment,
   useState,
   memo,
+  useMemo,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
@@ -16,7 +17,6 @@ import Transition from '../Transition';
 import Wrapper from '../Wrapper';
 import { groupBy } from '../helpers';
 import { positions, transitions } from '../options';
-import { load } from '../utility';
 
 import { HelpProvider } from './Context';
 import helpReducer, { initState } from './Reducer';
@@ -111,8 +111,6 @@ function Provider({
     async (helpid, options = { delay: null }) => {
       if (!modals.some((m) => m.helpid === helpid)) {
         try {
-          const mdtext = await load(data[helpid].filePath);
-
           const id = Math.random().toString(36).substr(2, 9);
 
           const modalOptions = {
@@ -125,7 +123,6 @@ function Provider({
           const modal = {
             helpid,
             id,
-            mdtext,
             options: modalOptions,
           };
 
@@ -163,22 +160,23 @@ function Provider({
         }
       }
     },
-    [
-      data,
-      delay,
-      modals,
-      multiple,
-      position,
-      preventAutoHelp,
-      remove,
-      timeout,
-      type,
-    ],
+    [delay, modals, multiple, position, preventAutoHelp, remove, timeout, type],
   );
 
   const clear = useCallback(() => {
     clearTimeout(dealyTimeOut);
   }, []);
+
+  const parentStyle = useMemo(() => {
+    return wrapperRef
+      ? wrapperRef.getBoundingClientRect()
+      : {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+  }, [wrapperRef]);
 
   const [helpState, dispatch] = useReducer(helpReducer, {
     ...initState,
@@ -204,6 +202,7 @@ function Provider({
                   appear
                   key={_position}
                   options={{ position, containerStyle }}
+                  containerStyle={parentStyle}
                   component={Wrapper}
                 >
                   {modalsByPosition[_position]
@@ -211,7 +210,10 @@ function Provider({
                         <Transition
                           type={transition}
                           key={modal.id}
-                          transitionStyles={transitionStyles}
+                          transitionStyles={{
+                            ...transitionStyles,
+                            default: { width: '400px', height: '400px' },
+                          }}
                         >
                           <Rnd
                             style={{
@@ -219,7 +221,7 @@ function Provider({
                               ...styles.outerContainer,
                             }}
                             default={{
-                              x: -200,
+                              x: 0,
                               y: 0,
                               width: 400,
                               height: 400,
@@ -235,7 +237,7 @@ function Provider({
                                   <FaTimes />
                                 </button>
                               </div>
-                              {modal.mdtext && (
+                              {data[modal.helpid].filePath && (
                                 <div
                                   style={{
                                     cursor: 'default',

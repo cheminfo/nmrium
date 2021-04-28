@@ -1,8 +1,8 @@
+/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
-import { Fragment, useEffect, useRef, useMemo } from 'react';
-/** @jsxImportSource @emotion/react */
+import { useEffect, useRef, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
@@ -24,9 +24,9 @@ const axisStyles = css`
   }
 `;
 
-function YAxis({ show, label, margin }) {
+function YAxis({ show, label }) {
   const refAxis = useRef();
-  const { yDomain, width, height } = useChartData();
+  const { yDomain, width, height, margin } = useChartData();
   const { scaleY } = useScale();
 
   useEffect(() => {
@@ -39,27 +39,24 @@ function YAxis({ show, label, margin }) {
 
   const Axis = useMemo(
     () =>
-      show &&
-      show === true && (
-        <Fragment>
-          <g
-            className="y"
-            css={axisStyles}
-            transform={`translate(${width - margin.right})`}
-            ref={refAxis}
+      show && (
+        <g
+          className="y"
+          css={axisStyles}
+          transform={`translate(${width - 50})`}
+          ref={refAxis}
+        >
+          <text
+            fill="#000"
+            x={-margin.top}
+            y={-(margin.right - 5)}
+            dy="0.71em"
+            transform="rotate(-90)"
+            textAnchor="end"
           >
-            <text
-              fill="#000"
-              x={-margin.top}
-              y={-(margin.right - 5)}
-              dy="0.71em"
-              transform="rotate(-90)"
-              textAnchor="end"
-            >
-              {label}
-            </text>
-          </g>
-        </Fragment>
+            {label}
+          </text>
+        </g>
       ),
 
     [label, margin.right, margin.top, show, width],

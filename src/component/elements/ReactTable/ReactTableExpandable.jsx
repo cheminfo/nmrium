@@ -1,6 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types';
 import { Fragment, useRef, useCallback } from 'react';
-/** @jsxImportSource @emotion/react */
 import { useTable, useExpanded, useSortBy } from 'react-table';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';

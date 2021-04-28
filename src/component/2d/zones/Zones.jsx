@@ -21,7 +21,7 @@ const Zones = ({ zones, display, displayerKey }) => {
   }, []);
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="2D-Zones">
-      {(display.isPositiveVisible || display.isNegativeVisible) &&
+      {display.isVisible &&
         zones.values.map((zone) => (
           <g className="zone" key={zone.id}>
             <Zone zoneData={zone} isVisible={isVisible} />

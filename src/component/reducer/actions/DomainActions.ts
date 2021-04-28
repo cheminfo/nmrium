@@ -27,20 +27,13 @@ function getActiveData(draft: Draft<State>) {
         data = data ? data.filter((datum) => datum.info.isFid === false) : [];
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-for-in-array
-      for (let index in draft.data) {
-        if (
-          data.some((activeData: any) => activeData.id === draft.data[index].id)
-        ) {
+      for (let datum of draft.data) {
+        if (data.some((activeData: any) => activeData.id === datum.id)) {
           // AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
-          (draft.data[index] as
-            | Datum2D
-            | Datum1D).display.isVisibleInDomain = true;
+          (datum as Datum2D | Datum1D).display.isVisibleInDomain = true;
         } else {
           // AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
-          (draft.data[index] as
-            | Datum2D
-            | Datum1D).display.isVisibleInDomain = false;
+          (datum as Datum2D | Datum1D).display.isVisibleInDomain = false;
         }
       }
       return draft.data;
@@ -78,7 +71,7 @@ function getDomain(data) {
         yDomains[d.id] = _extent;
         if (integrals.values && integrals.values.length > 0) {
           const values = integrals.values;
-          const { from, to } = values[0];
+          const { from = 0, to = 0 } = values[0];
           const { x, y } = data;
           const integralResult = xyIntegral(
             { x: x, y: y },
@@ -204,7 +197,11 @@ function setDomain(draft: Draft<State>, isYDomainChanged = true) {
           acc[key] = domain.yDomain;
           return acc;
         }, {});
-        draft.originDomain = { ...domain, yDomains: draft.yDomains };
+        draft.originDomain = {
+          ...domain,
+          yDomains: draft.yDomains,
+          originYDomains: domain.yDomains,
+        };
       } else {
         draft.yDomains = domain.yDomains;
         draft.originDomain = domain;

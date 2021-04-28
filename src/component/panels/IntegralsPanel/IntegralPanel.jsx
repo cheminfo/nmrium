@@ -48,8 +48,9 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted, Are You sure?', {
-      onYes: yesHandler,
+    modal.showConfirmDialog({
+      message: 'All records will be deleted, Are You sure?',
+      buttons: [{ text: 'Yes', handler: yesHandler }, { text: 'No' }],
     });
   }, [modal, yesHandler]);
 
@@ -73,7 +74,13 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
       <ChangeSumModal
         onClose={() => modal.close()}
         onSave={changeIntegralSumHandler}
-        header={`Set new Integrals Sum (Current: ${currentSum})`}
+        header={
+          currentSum
+            ? `Set new Integrals Sum (Current: ${Number(currentSum).toFixed(
+                2,
+              )})`
+            : 'Set new Integrals Sum'
+        }
         molecules={molecules}
         element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
       />,
@@ -117,7 +124,11 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
             onSettingClick={settingsPanelHandler}
           >
             <ToolTip
-              title={`Change Integrals Sum (${currentSum})`}
+              title={
+                currentSum
+                  ? `Change Integrals Sum (${Number(currentSum).toFixed(2)})`
+                  : 'Change Integrals Sum'
+              }
               popupPlacement="right"
             >
               <button
@@ -136,13 +147,13 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
             onClose={settingsPanelHandler}
           />
         )}
-        <div style={{ height: '100%', overflow: 'auto' }}>
+        <div style={{ height: '100%', overflow: 'hidden' }}>
           <ReactCardFlip
             isFlipped={isFlipped}
             infinite
-            containerStyle={{ overflow: 'hidden' }}
+            containerStyle={{ overflow: 'hidden', height: '100%' }}
           >
-            <div>
+            <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
               <IntegralTable
                 enableFilter={filterIsActive}
                 onFilter={changedHandler}

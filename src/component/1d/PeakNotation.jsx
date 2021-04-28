@@ -11,8 +11,8 @@ import {
 } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import { useHighlight } from '../highlight';
-import { SHIFT_SPECTRUM, DELETE_PEAK_NOTATION } from '../reducer/types/Types';
+import { TYPES, useHighlight } from '../highlight';
+import { SHIFT_SPECTRUM } from '../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
@@ -91,9 +91,7 @@ const styles = css`
 `;
 
 function PeakNotation({
-  xIndex,
   id,
-  spectrumID,
   x,
   y,
   sign, // 1 positive -1 negative
@@ -107,7 +105,7 @@ function PeakNotation({
   const [_value, setValue] = useState(value);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const format = useFormatNumberByNucleus(nucleus);
-  const highlight = useHighlight([id]);
+  const highlight = useHighlight([id], TYPES.PEAK);
 
   const dispatch = useDispatch();
 
@@ -133,7 +131,7 @@ function PeakNotation({
         const shiftValue = parseFloat(event.target.value) - parseFloat(value);
 
         handleOnPeakChange({
-          id: xIndex,
+          id,
           value: newValue,
           oldValue: oldValue,
           shiftValue: shiftValue,
@@ -147,7 +145,7 @@ function PeakNotation({
         setIsSelected(false);
       }
     },
-    [value, handleOnPeakChange, xIndex],
+    [value, handleOnPeakChange, id],
   );
 
   const handleChange = useCallback((event) => {
@@ -161,21 +159,13 @@ function PeakNotation({
     return false;
   }, []);
 
-  const handleOnEnterNotation = useCallback(
-    (event) => {
-      highlight.show();
-      event.currentTarget.focus();
-    },
-    [highlight],
-  );
+  const handleOnEnterNotation = useCallback(() => {
+    highlight.show();
+  }, [highlight]);
 
-  const handleOnMouseLeaveNotation = useCallback(
-    (event) => {
-      highlight.hide();
-      event.currentTarget.blur();
-    },
-    [highlight],
-  );
+  const handleOnMouseLeaveNotation = useCallback(() => {
+    highlight.hide();
+  }, [highlight]);
 
   const newValue = useMemo(() => (isSelected ? value : format(value)), [
     format,
@@ -188,32 +178,16 @@ function PeakNotation({
     isSelected,
   ]);
 
-  const keyDownHandler = useCallback(
-    (e) => {
-      if (
-        ['Escape', 'Esc', 'Backspace'].includes(e.key) &&
-        e.target.nodeName === 'g'
-      ) {
-        dispatch({
-          type: DELETE_PEAK_NOTATION,
-          data: { xIndex: xIndex, id: spectrumID },
-        });
-      }
-    },
-    [dispatch, spectrumID, xIndex],
-  );
-
   return (
     <Fragment>
       <Global styles={styles} />
       <g
-        tabIndex="0"
-        id={xIndex}
+        id={id}
         style={{ outline: 'none' }}
         transform={`translate(${x}, ${y})`}
         onMouseEnter={handleOnEnterNotation}
         onMouseLeave={handleOnMouseLeaveNotation}
-        onKeyDown={keyDownHandler}
+        // onKeyDown={keyDownHandler}
       >
         <line
           x1="0"
@@ -224,19 +198,24 @@ function PeakNotation({
           strokeWidth={highlight.isActive ? '7px' : '1px'}
         />
         <text
-          className="regular-text"
           ref={refText}
+          className="peaks-text"
           x="0"
-          y={sign === -1 ? 18 : -20}
-          dy="0.1em"
+          y={sign === -1 ? 28 : -12}
+          dy="0"
           dx="0.35em"
           fill="transparent"
+          fontSize="10px"
+          fontWeight="100"
+          style={{
+            position: 'absolute',
+          }}
         >
           {newValue}
         </text>
         <foreignObject
           x="0"
-          y={sign === -1 ? 18 : -20}
+          y={sign === -1 ? 16 : -22}
           dy="0.1em"
           dx="0.35em"
           width={containerSize.width + 20}

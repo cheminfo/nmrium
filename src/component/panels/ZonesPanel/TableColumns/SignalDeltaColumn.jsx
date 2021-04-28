@@ -8,16 +8,8 @@ import { CHANGE_ZONE_SIGNAL_VALUE } from '../../../reducer/types/Types';
 function SignalDeltaColumn({ rowData, onHoverSignalX, onHoverSignalY }) {
   const dispatch = useDispatch();
 
-  const signalDeltaX = lodashGet(
-    rowData,
-    'tableMetaInfo.signal.x.delta',
-    undefined,
-  );
-  const signalDeltaY = lodashGet(
-    rowData,
-    'tableMetaInfo.signal.y.delta',
-    undefined,
-  );
+  const signalDeltaX = lodashGet(rowData, 'tableMetaInfo.signal.x.delta', null);
+  const signalDeltaY = lodashGet(rowData, 'tableMetaInfo.signal.y.delta', null);
   const id = lodashGet(rowData, 'tableMetaInfo.signal.id', undefined);
 
   const saveXHandler = useCallback(
@@ -50,28 +42,24 @@ function SignalDeltaColumn({ rowData, onHoverSignalX, onHoverSignalY }) {
   return (
     <Fragment>
       <td {...onHoverSignalX}>
-        {signalDeltaX ? (
+        {signalDeltaX !== null ? (
           <EditableColumn
-            // onEditStart={editStartHandler}
             value={signalDeltaX.toFixed(2)}
             onSave={saveXHandler}
             type="number"
-            style={{ padding: '0.4rem' }}
-            // editStatus={editStatus}
+            style={{ padding: '0.1rem 0.4rem' }}
           />
         ) : (
           ''
         )}
       </td>
       <td {...onHoverSignalY}>
-        {signalDeltaY ? (
+        {signalDeltaY !== null ? (
           <EditableColumn
-            // onEditStart={editStartHandler}
             value={signalDeltaY.toFixed(2)}
             onSave={saveYHandler}
             type="number"
-            style={{ padding: '0.4rem' }}
-            // editStatus={editStatus}
+            style={{ padding: '0.1rem 0.4rem' }}
           />
         ) : (
           ''

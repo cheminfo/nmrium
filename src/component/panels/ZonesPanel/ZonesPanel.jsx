@@ -125,16 +125,24 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
   }, [zones.values, unlinkZoneHandler]);
 
   const handleOnRemoveAssignments = useCallback(() => {
-    modal.showConfirmDialog('All assignments will be removed. Are you sure?', {
-      onYes: removeAssignments,
+    modal.showConfirmDialog({
+      message: 'All assignments will be removed. Are you sure?',
+      buttons: [{ text: 'Yes', handler: removeAssignments }, { text: 'No' }],
     });
   }, [removeAssignments, modal]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All zones will be deleted. Are You sure?', {
-      onYes: () => {
-        dispatch({ type: DELETE_2D_ZONE, payload: { assignmentData } });
-      },
+    modal.showConfirmDialog({
+      message: 'All zones will be deleted. Are You sure?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            dispatch({ type: DELETE_2D_ZONE, payload: { assignmentData } });
+          },
+        },
+        { text: 'No' },
+      ],
     });
   }, [assignmentData, dispatch, modal]);
 
@@ -219,13 +227,13 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
             onClose={settingsPanelHandler}
           />
         )}
-        <div style={{ height: '100%', overflow: 'auto' }}>
+        <div style={{ height: '100%', overflow: 'hidden' }}>
           <ReactCardFlip
             isFlipped={isFlipped}
             infinite
-            containerStyle={{ overflow: 'hidden' }}
+            containerStyle={{ overflow: 'hidden', height: '100%' }}
           >
-            <div>
+            <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
               {tableData && tableData.length > 0 ? (
                 <ZonesTable
                   tableData={tableData}

@@ -119,13 +119,12 @@ function RangesTablePanel({
   }, [isFilterActive, ranges.values, xDomain]);
 
   const unlinkRangeHandler = useCallback(
-    (rangeData, isOnRangeLevel, signalIndex) => {
+    (rangeData, signalIndex = -1) => {
       dispatch({
         type: UNLINK_RANGE,
         payload: {
           rangeData,
           assignmentData,
-          isOnRangeLevel,
           signalIndex,
         },
       });
@@ -215,13 +214,13 @@ function RangesTablePanel({
             onClose={settingsPanelHandler}
           />
         )}
-        <div style={{ height: '100%', overflow: 'auto' }}>
+        <div style={{ height: '100%', overflow: 'hidden' }}>
           <ReactCardFlip
             isFlipped={isFlipped}
             infinite
-            containerStyle={{ overflow: 'hidden' }}
+            containerStyle={{ overflow: 'hidden', height: '100%' }}
           >
-            <div>
+            <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
               {rangesData && rangesData.length > 0 ? (
                 <RangesTable
                   activeTab={activeTab}

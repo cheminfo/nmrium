@@ -1,4 +1,8 @@
-import { SvgNmrOverlay } from 'cheminfo-font';
+import {
+  SvgNmrOverlay,
+  SvgNmrAddFilter,
+  SvgNmrExportAsMatrix,
+} from 'cheminfo-font';
 import { useCallback, useState, useRef, memo, useMemo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
@@ -12,6 +16,8 @@ import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
+import ExportAsMatrixModal from '../../modal/ExportAsMatrixModal';
+import MultipleSpectraFiltersModal from '../../modal/MultipleSpectraFiltersModal';
 import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { copyTextToClipboard } from '../../utility/Export';
@@ -76,6 +82,16 @@ function MultipleSpectraAnalysisPanel({ spectraAnalysis, activeTab }) {
       // height: 600,
     });
   }, [activeTab, modal, dispatch]);
+  const openFiltersModal = useCallback(() => {
+    dispatch({ type: RESET_SELECTED_TOOL });
+    modal.show(<MultipleSpectraFiltersModal />, {
+      isBackgroundBlur: false,
+      position: positions.TOP_CENTER,
+      // enableResizing: false,
+      width: 500,
+      // height: 600,
+    });
+  }, [modal, dispatch]);
 
   const copyToClipboardHandler = useCallback(() => {
     const data = getDataAsString(spectraAnalysis, activeTab);
@@ -86,6 +102,15 @@ function MultipleSpectraAnalysisPanel({ spectraAnalysis, activeTab }) {
       alert.error('copy to clipboard failed');
     }
   }, [activeTab, alert, spectraAnalysis]);
+
+  const openExportAsMatrixModal = useCallback(() => {
+    dispatch({ type: RESET_SELECTED_TOOL });
+    modal.show(<ExportAsMatrixModal />, {
+      isBackgroundBlur: false,
+      position: positions.TOP_CENTER,
+      width: 500,
+    });
+  }, [modal, dispatch]);
 
   return (
     <div style={styles.container}>
@@ -117,6 +142,20 @@ function MultipleSpectraAnalysisPanel({ spectraAnalysis, activeTab }) {
           >
             <IoPulseOutline />
           </ToggleButton>
+
+          <Button
+            popupTitle="Add Filter"
+            style={styles.button}
+            onClick={openFiltersModal}
+          >
+            <SvgNmrAddFilter style={{ fontSize: '18px' }} />
+          </Button>
+          <Button
+            popupTitle="Export spectra as a Matrix"
+            onClick={openExportAsMatrixModal}
+          >
+            <SvgNmrExportAsMatrix />
+          </Button>
         </DefaultPanelHeader>
       )}
       {isFlipped && (

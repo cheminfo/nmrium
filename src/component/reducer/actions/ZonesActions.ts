@@ -1,6 +1,8 @@
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 
+import { Filters } from '../../../data/Filters';
+import * as FiltersManager from '../../../data/FiltersManager';
 import {
   DatumKind,
   SignalKindsToInclude,
@@ -10,6 +12,7 @@ import {
   Datum2D,
   detectZones,
   detectZonesManual,
+  updateShift,
   Zone,
 } from '../../../data/data2d/Datum2D';
 import {
@@ -45,10 +48,14 @@ function add2dZoneHandler(draft: Draft<State>, action) {
     handleOnChangeZonesData(draft);
   }
 }
-
 function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
+
+    const [fromX, toX] = draft.xDomain;
+    const [fromY, toY] = draft.yDomain;
+    detectionOptions.selectedZone = { fromX, toX, fromY, toY };
+
     detectZones(draft.data[index], detectionOptions);
     handleOnChangeZonesData(draft);
   }
@@ -58,7 +65,23 @@ function changeZoneSignalDelta(draft: Draft<State>, action) {
   const { zoneID, signal } = action.payload;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeZoneSignal(draft.data[index], zoneID, signal);
+    const { xShift, yShift } = changeZoneSignal(
+      draft.data[index],
+      zoneID,
+      signal,
+    );
+    let filters: any = [];
+    if (xShift !== 0) {
+      filters.push({ name: Filters.shift2DX.id, options: xShift });
+    }
+    if (yShift !== 0) {
+      filters.push({ name: Filters.shift2DY.id, options: yShift });
+    }
+
+    FiltersManager.applyFilter(draft.data[index], filters);
+
+    updateShift(draft.data[index] as Datum2D);
+
     setDomain(draft);
     handleOnChangeZonesData(draft);
   }
@@ -91,16 +114,20 @@ function handleDeleteZone(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
-    const { zoneData, assignmentData } = action.payload;
-    if (zoneData === undefined) {
-      (draft.data[index] as Datum2D).zones.values.forEach((zone) =>
-        unlinkInAssignmentData(assignmentData, zone),
+    const { id, assignmentData } = action.payload;
+    if (id) {
+      const zone = (draft.data[index] as Datum2D).zones.values.find(
+        (zone) => zone.id === id,
+      );
+      unlinkInAssignmentData(assignmentData, [zone]);
+      const zoneIndex = getZoneIndex(state, index, id);
+      (draft.data[index] as Datum2D).zones.values.splice(zoneIndex, 1);
+    } else {
+      unlinkInAssignmentData(
+        assignmentData,
+        (draft.data[index] as Datum2D).zones.values,
       );
       (draft.data[index] as Datum2D).zones.values = [];
-    } else {
-      unlinkInAssignmentData(assignmentData, zoneData);
-      const zoneIndex = getZoneIndex(state, index, zoneData.id);
-      (draft.data[index] as Datum2D).zones.values.splice(zoneIndex, 1);
     }
     handleOnChangeZonesData(draft);
   }
@@ -129,13 +156,15 @@ function handleUnlinkZone(draft: Draft<State>, action) {
         axis,
       );
       // remove assignments in assignment hook data
-      unlinkInAssignmentData(
-        assignmentData,
-        _zoneData,
-        isOnZoneLevel,
-        signalIndex,
-        axis,
-      );
+      if (isOnZoneLevel) {
+        unlinkInAssignmentData(assignmentData, [{ id: _zoneData.id }], axis);
+      } else {
+        unlinkInAssignmentData(
+          assignmentData,
+          [{ id: _zoneData.signal[signalIndex].id }],
+          axis,
+        );
+      }
 
       const zoneIndex = getZoneIndex(state, index, _zoneData.id);
       (draft.data[index] as Datum2D).zones.values[zoneIndex] = _zoneData;

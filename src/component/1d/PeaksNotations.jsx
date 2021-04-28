@@ -16,7 +16,7 @@ function PeaksNotations() {
         ? verticalAlign.stacked
           ? (i + 1) * verticalAlign.value
           : 0
-        : verticalAlign.value;
+        : 0;
     };
 
     const reSortData = () => {
@@ -49,16 +49,15 @@ function PeaksNotations() {
                 key={d.id}
                 transform={`translate(0,-${getVerticalAlign(d.id)})`}
               >
-                {d.peaks.values.map(({ xIndex, xShift, id }) => (
+                {d.peaks.values.map(({ delta, intensity, id }) => (
                   <PeakNotation
                     key={id}
-                    x={scaleX()(d.data.x[xIndex] - (xShift ? xShift : 0))}
-                    y={scaleY(d.id)(d.data.y[xIndex]) - 5}
-                    sign={Math.sign(d.data.y[xIndex])}
-                    xIndex={xIndex}
+                    x={scaleX()(delta)}
+                    y={scaleY(d.id)(intensity) - 5}
+                    sign={Math.sign(intensity)}
                     id={id}
                     spectrumID={d.id}
-                    value={d.data.x[xIndex]}
+                    value={delta}
                     color="#730000"
                     nucleus={d.info.nucleus}
                     isActive={

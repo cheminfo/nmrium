@@ -1,10 +1,11 @@
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
-import { useMemo, useRef } from 'react';
+import { useMemo, memo, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useAlert } from '../elements/popup/Alert';
+import ContoursWrapper from '../hoc/ContoursWrapper';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
@@ -81,8 +82,7 @@ function ContoursPaths({ id: spectrumID, sign, color, showMessage }) {
   );
 }
 
-function Contours() {
-  const { data, displayerKey } = useChartData();
+function Contours({ data, displayerKey }) {
   const alert = useAlert();
 
   const showMessage = useRef(
@@ -119,4 +119,4 @@ function Contours() {
   );
 }
 
-export default Contours;
+export default ContoursWrapper(memo(Contours));

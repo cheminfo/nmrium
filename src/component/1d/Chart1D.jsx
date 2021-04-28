@@ -1,6 +1,5 @@
-import { useScale } from '../context/ScaleContext';
-
 import BaseLineZones from './BaseLineZones';
+import ExclusionZones from './ExclusionZones';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
 import PeaksNotations from './PeaksNotations';
@@ -9,9 +8,6 @@ import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
 
 function Chart1D({ mode, width, height, margin, displayerKey }) {
-  const { scaleX, scaleY } = useScale();
-  if (!scaleX || !scaleY || !width || !height) return null;
-
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
@@ -36,10 +32,11 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <Ranges />
       <MultiAnalysisRanges />
       <BaseLineZones />
+      <ExclusionZones />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid mode={mode} />
-        {/* <YAxis label="PPM" show={false} /> */}
+        {/* <YAxis label="PPM" show /> */}
       </g>
     </svg>
   );

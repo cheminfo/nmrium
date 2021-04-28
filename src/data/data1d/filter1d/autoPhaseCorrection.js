@@ -1,7 +1,7 @@
 import { reimAutoPhaseCorrection } from 'ml-spectra-processing';
 
 export const id = 'autoPhaseCorrection';
-export const name = 'automatic phase correction';
+export const name = 'Automatic phase correction';
 
 /**
  *

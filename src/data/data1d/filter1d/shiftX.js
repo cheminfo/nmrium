@@ -5,7 +5,7 @@
  */
 
 export const id = 'shiftX';
-export const name = 'shift X';
+export const name = 'Shift X';
 
 export function apply(datum1D, shiftValue = 0) {
   if (!isApplicable(datum1D)) {
@@ -19,9 +19,9 @@ export function isApplicable() {
   return true;
 }
 
-export function reduce() {
+export function reduce(previousValue, newValue) {
   return {
-    once: false,
-    reduce: null,
+    once: true,
+    reduce: previousValue + newValue,
   };
 }

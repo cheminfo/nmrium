@@ -20,9 +20,12 @@ jobs:
         run: npm run build-with-profiling
         env:
           CI: 'false'
+      - name: Copy samples.json
+        run: |
+          cp src/demo/samples.json build/
       - name: push to gh-pages
         run: |
           git config user.email admin@cheminfo.org
           git config user.name "Cheminfo Bot"
-          git remote set-url origin "https://cheminfo-bot:${{ secrets.ACCESS_TOKEN }}@github.com/cheminfo/nmr-displayer.git"
+          git remote set-url origin "https://cheminfo-bot:${{ secrets.ACCESS_TOKEN }}@github.com/cheminfo/nmrium.git"
           gh-pages -d build --dotfiles

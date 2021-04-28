@@ -5,7 +5,7 @@ import Events from '../../utility/Events';
 
 import Range from './Range';
 
-function Ranges({ ranges, displayerKey }) {
+function Ranges({ ranges, displayerKey, selectedTool }) {
   const [isMultiplicityTreesVisibile, showMultiplicityTrees] = useState(false);
 
   useEffect(() => {
@@ -22,6 +22,7 @@ function Ranges({ ranges, displayerKey }) {
           <Range
             key={range.id}
             rangeData={range}
+            selectedTool={selectedTool}
             showMultiplicityTrees={isMultiplicityTreesVisibile}
           />
         ))}

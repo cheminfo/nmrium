@@ -5,7 +5,7 @@ import Draggable from 'react-draggable';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 
-function Resizable({ from, to, onDrag, onDrop }) {
+function Resizable({ from, to, onDrag = () => null, onDrop }) {
   const { height, margin, mode } = useChartData();
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
@@ -15,21 +15,17 @@ function Resizable({ from, to, onDrag, onDrop }) {
 
   const { scaleX } = useScale();
 
-  const handleRightStart = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setRightDragVisibility(true);
-
-      if (onDrag) {
-        onDrag();
-      }
-    },
-    [onDrag],
-  );
-  const handleRightDrag = useCallback(() => {
-    // Empty
+  const handleRightStart = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setRightDragVisibility(true);
   }, []);
+  const handleRightDrag = useCallback(
+    (e) => {
+      onDrag({ from: scaleX().invert(e.layerX) });
+    },
+    [onDrag, scaleX],
+  );
   const handleRightStop = useCallback(
     (e) => {
       e.preventDefault();
@@ -60,21 +56,17 @@ function Resizable({ from, to, onDrag, onDrop }) {
     [from, mode, onDrop, scaleX, to],
   );
 
-  const handleLeftStart = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setLeftDragVisibility(true);
-
-      if (onDrag) {
-        onDrag();
-      }
-    },
-    [onDrag],
-  );
-  const handleLeftDrag = useCallback(() => {
-    // Empty
+  const handleLeftStart = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setLeftDragVisibility(true);
   }, []);
+  const handleLeftDrag = useCallback(
+    (e) => {
+      onDrag({ to: scaleX().invert(e.layerX) });
+    },
+    [onDrag, scaleX],
+  );
   const handleLeftStop = useCallback(
     (e) => {
       e.preventDefault();

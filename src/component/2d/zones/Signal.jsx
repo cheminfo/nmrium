@@ -8,6 +8,8 @@ import { useChartData } from '../../context/ChartContext';
 import { useHighlightData, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
+import SignalCrosshair from './SignalCrosshair';
+
 const Signal = memo(({ signal, isVisible }) => {
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
@@ -56,13 +58,16 @@ const Signal = memo(({ signal, isVisible }) => {
       }}
     >
       {isVisible.signals && (
-        <circle
-          key={signal.id}
-          cx={scaleX(signal.x.delta)}
-          cy={scaleY(signal.y.delta)}
-          r={isHighlighted ? 6 : 4}
-          fill={isHighlighted ? 'green' : 'darkgreen'}
-        />
+        <g>
+          <circle
+            key={signal.id}
+            cx={scaleX(signal.x.delta)}
+            cy={scaleY(signal.y.delta)}
+            r={isHighlighted ? 6 : 4}
+            fill={isHighlighted ? 'green' : 'darkgreen'}
+          />
+          <SignalCrosshair signal={signal} />
+        </g>
       )}
       <g className="zone-signal-peak">
         {isVisible.peaks &&

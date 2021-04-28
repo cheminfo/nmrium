@@ -59,40 +59,29 @@ const unlink = (zone, isOnZoneLevel, signalIndex, axis) => {
   return zone;
 };
 
-const _unlinkInAssignmentData = (assignmentData, id, axis) => {
-  assignmentData.dispatch({
-    type: 'REMOVE_ALL',
-    payload: { id, axis },
-  });
-};
+const unlinkInAssignmentData = (assignmentData, zones, axis) => {
+  const ids = zones.reduce((acc, zone) => {
+    acc.push(zone.id);
+    if (zone.signal) {
+      acc.concat(zone.signal.map((signal) => signal.id, []));
+    }
+    return acc;
+  }, []);
 
-const unlinkInAssignmentData = (
-  assignmentData,
-  zone,
-  isOnZoneLevel,
-  signalIndex,
-  axis,
-) => {
-  if (isOnZoneLevel !== undefined && axis !== undefined) {
-    _unlinkInAssignmentData(
-      assignmentData,
-      isOnZoneLevel === true
-        ? [zone.id]
-        : signalIndex !== undefined
-        ? [zone.signal[signalIndex].id]
-        : [],
-      axis,
-    );
-  } else if (axis !== undefined) {
-    _unlinkInAssignmentData(
-      assignmentData,
-      [zone.id].concat(zone.signal.map((signal) => signal.id)),
-      axis,
-    );
+  if (axis) {
+    assignmentData.dispatch({
+      type: 'REMOVE_ALL',
+      payload: { id: ids, axis },
+    });
   } else {
-    const id = [zone.id].concat(zone.signal.map((signal) => signal.id));
-    _unlinkInAssignmentData(assignmentData, id, 'x');
-    _unlinkInAssignmentData(assignmentData, id, 'y');
+    assignmentData.dispatch({
+      type: 'REMOVE_ALL',
+      payload: { id: ids, axis: 'x' },
+    });
+    assignmentData.dispatch({
+      type: 'REMOVE_ALL',
+      payload: { id: ids, axis: 'y' },
+    });
   }
 };
 

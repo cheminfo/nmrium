@@ -7,6 +7,7 @@ import {
   useCallback,
   Fragment,
   cloneElement,
+  useMemo,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Rnd } from 'react-rnd';
@@ -62,6 +63,17 @@ function Provider({
     setModal(null);
   };
 
+  const parentStyle = useMemo(() => {
+    return wrapperRef
+      ? wrapperRef.getBoundingClientRect()
+      : {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+  }, [wrapperRef]);
+
   const closeHandler = useCallback(() => {
     remove();
   }, []);
@@ -87,19 +99,28 @@ function Provider({
     return _modal;
   }, []);
 
-  const showConfirmDialog = useCallback((message, options = {}) => {
-    const _modal = {
-      component: <ConfirmDialog message={message} />,
-      options: { isBackgroundBlur: true, ...options },
-    };
+  /**
+   * @param {object} dialogOptions
+   * @param {object} dialogOptions.message
+   * @param {Array<{ handler: Function,text: string,style: object}>} dialogOptions.buttons
+   * @param {object} dialogOptions.tyle
+   */
+  const showConfirmDialog = useCallback(
+    (dialogOptions, options = { enableResizing: false }) => {
+      const _modal = {
+        component: <ConfirmDialog {...dialogOptions} />,
+        options: { isBackgroundBlur: true, ...options },
+      };
 
-    _modal.close = () => remove();
+      _modal.close = () => remove();
 
-    setModal(_modal);
-    if (_modal.options.onOpen) _modal.options.onOpen();
+      setModal(_modal);
+      if (_modal.options.onOpen) _modal.options.onOpen();
 
-    return _modal;
-  }, []);
+      return _modal;
+    },
+    [],
+  );
 
   const close = () => {
     closeHandler();
@@ -116,12 +137,12 @@ function Provider({
   }, [closeHandler]);
 
   const styles = css`
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
+    position: absolute;
     left: 0;
-    z-index: 1;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
 
     .handle {
       cursor: move;
@@ -167,6 +188,7 @@ function Provider({
                       ? modal.options.position
                       : position,
                   }}
+                  containerStyle={parentStyle}
                   component={Wrapper}
                 >
                   <Transition
@@ -175,7 +197,17 @@ function Provider({
                         ? modal.options.transition
                         : transition
                     }
-                    transitionStyles={transitionStyles}
+                    transitionStyles={{
+                      ...transitionStyles,
+                      default: {
+                        width: modal.options.width
+                          ? `${modal.options.width}px`
+                          : 'auto',
+                      },
+                      height: modal.options.height
+                        ? `${modal.options.height}px`
+                        : 'auto',
+                    }}
                     key={modal.id}
                   >
                     <Rnd
@@ -211,9 +243,7 @@ function Provider({
                   </Transition>
                 </TransitionGroup>
               </div>
-            ) : (
-              <div />
-            )}
+            ) : null}
           </Fragment>,
           root.current,
         )}

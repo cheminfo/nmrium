@@ -1,7 +1,7 @@
+/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useRef, useCallback } from 'react';
 
-/** @jsxImportSource @emotion/react */
 import CloseButton from '../elements/CloseButton';
 import { loadFile, extractFileMetaFromPath } from '../utility/FileUtility';
 
@@ -60,13 +60,14 @@ function LoadJCAMPModal({ onLoadClick, onClose, startLoading }) {
   const loadJCAMPHandler = useCallback(() => {
     // ./data/xtc/XTC-814d_zg30.jdx
     const path = pathReft.current.value;
-    const meta = extractFileMetaFromPath(path);
-    if (allowedExtensions.includes(meta.extension)) {
+    const { name, extension } = extractFileMetaFromPath(path);
+    if (allowedExtensions.includes(extension)) {
       startLoading();
-      loadFile(path).then((data) => {
+      loadFile(path, { asBuffer: true }).then((data) => {
         const file = {
           binary: data,
-          name: meta.name,
+          name,
+          extension,
           jcampURL: path,
         };
         onLoadClick(file);
@@ -86,7 +87,7 @@ function LoadJCAMPModal({ onLoadClick, onClose, startLoading }) {
         <input
           ref={pathReft}
           type="text"
-          placeholder="Enter JCAMP file relative path ex: ./path/file.dx"
+          placeholder="Enter URL to JCAMP-DX file"
         />
         <button type="button" onClick={loadJCAMPHandler}>
           Load

@@ -4,7 +4,7 @@ import { useChartData } from '../context/ChartContext';
 
 function SpectraWraper(WrappedComponent) {
   const Wrapper = (props) => {
-    const { data, activeSpectrum, activeTab } = useChartData();
+    const { data, activeSpectrum, activeTab, displayerMode } = useChartData();
 
     const { forwardedRef, ...rest } = props;
     return (
@@ -13,6 +13,7 @@ function SpectraWraper(WrappedComponent) {
         data={data}
         activeSpectrum={activeSpectrum}
         activeTab={activeTab}
+        displayerMode={displayerMode}
         ref={forwardedRef}
       />
     );

@@ -13,7 +13,7 @@ const tableStyle = css`
   border: 1px solid #dedede;
   width: 100%;
   font-size: 12px;
-  height: 100%;
+  // height: 100%;
   .react-contextmenu-wrapper {
     display: contents;
   }
@@ -24,12 +24,23 @@ const tableStyle = css`
       }
     }
   }
+  thead tr:nth-of-type(1) th {
+    top: 0;
+  }
+  thead tr:nth-of-type(2) th {
+    top: 21px;
+  }
+  th {
+    position: sticky;
+    background-color: white;
+    z-index: 2;
+  }
   th,
   td {
     white-space: nowrap;
     text-align: center;
     margin: 0;
-    padding: 0.4rem;
+    padding: 0.1rem 0.4rem;
     border-bottom: 1px solid #dedede;
     border-right: 1px solid #dedede;
 
@@ -107,7 +118,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
     () =>
       data.map((rowData) => (
         <ZonesTableRow
-          key={`zonesTableRow_${rowData.id}`}
+          key={`zonesTableRow_${rowData.tableMetaInfo.id}`}
           rowData={rowData}
           onUnlink={onUnlink}
           onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
@@ -120,7 +131,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
   return (
     <div>
       <table css={tableStyle}>
-        <tbody>
+        <thead>
           <tr>
             <th rowSpan={2}>#</th>
             <th colSpan={2}>δ (ppm)</th>
@@ -139,8 +150,8 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
             <th>{nuclei[0]}</th>
             <th>{nuclei[1]}</th>
           </tr>
-          {rows}
-        </tbody>
+        </thead>
+        <tbody>{rows}</tbody>
       </table>
       <ContextMenu ref={contextRef} context={context} />
     </div>

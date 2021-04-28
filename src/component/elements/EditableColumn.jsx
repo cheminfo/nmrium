@@ -50,18 +50,24 @@ const EditableColumn = forwardRef(function EditableColumn(
 
   return (
     <div
-      style={{ width: '100%', height: '100%', ...style }}
+      style={{ display: 'table', width: '100%', height: '100%', ...style }}
       onDoubleClick={(event) => editModeHandler(true, event)}
     >
-      {!enabled && value}
+      {!enabled && (
+        <span style={{ display: 'table-cell', verticalAlign: 'middle' }}>
+          {value}
+        </span>
+      )}
       {enabled && (
-        <Input
-          enableAutoSelect
-          ref={refInput}
-          value={value}
-          type={type}
-          onKeyDown={(e) => editModeHandler(false, e)}
-        />
+        <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
+          <Input
+            enableAutoSelect
+            ref={refInput}
+            value={value}
+            type={type}
+            onKeyDown={(e) => editModeHandler(false, e)}
+          />
+        </div>
       )}
     </div>
   );

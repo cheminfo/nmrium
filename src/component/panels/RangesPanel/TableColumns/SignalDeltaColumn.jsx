@@ -50,7 +50,7 @@ function SignalDeltaColumn({
           value={signal.delta.toFixed(3)}
           onSave={saveHandler}
           type="number"
-          style={{ padding: '0.4rem' }}
+          style={{ padding: '0.1rem 0.4rem' }}
           editStatus={editStatus}
         />
       )}

@@ -29,6 +29,7 @@ import {
   SET_DIMENSIONS,
   ADD_RANGE,
   ANALYZE_SPECTRA,
+  ADD_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -42,7 +43,7 @@ import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
 
-function Viewer1D() {
+function Viewer1D({ emptyText = undefined }) {
   const {
     display: { general },
   } = usePreferences();
@@ -63,7 +64,6 @@ function Viewer1D() {
     verticalAlign,
     displayerKey,
   } = state;
-
   const dispatch = useDispatch();
   const modal = useModal();
   const [scaleState, dispatchScale] = useReducer(
@@ -72,18 +72,22 @@ function Viewer1D() {
   );
 
   useEffect(() => {
-    dispatchScale({
-      type: SET_SCALE,
-      yDomain,
-      yDomains,
-      xDomain,
-      xDomains,
-      margin,
-      height: heightProp,
-      width: widthProp,
-      verticalAlign,
-      mode,
-    });
+    if (xDomain.length > 0 && yDomain.length > 0 && widthProp && heightProp) {
+      dispatchScale({
+        type: SET_SCALE,
+        payload: {
+          yDomain,
+          yDomains,
+          xDomain,
+          xDomains,
+          margin,
+          height: heightProp,
+          width: widthProp,
+          verticalAlign,
+          mode,
+        },
+      });
+    }
   }, [
     heightProp,
     margin,
@@ -158,13 +162,7 @@ function Viewer1D() {
               ...brushData,
             });
             break;
-          default:
-            propagateEvent(brushData);
 
-            break;
-        }
-      } else {
-        switch (selectedTool) {
           case options.baseLineCorrection.id:
             dispatch({
               type: ADD_BASE_LINE_ZONE,
@@ -172,6 +170,20 @@ function Viewer1D() {
             });
             break;
 
+          case options.exclusionZones.id:
+            dispatch({
+              type: ADD_EXCLUSION_ZONE,
+              payload: { from: brushData.startX, to: brushData.endX },
+            });
+            break;
+
+          default:
+            propagateEvent(brushData);
+
+            break;
+        }
+      } else {
+        switch (selectedTool) {
           default:
             if (selectedTool != null) {
               dispatch({ type: BRUSH_END, ...brushData });
@@ -248,9 +260,9 @@ function Viewer1D() {
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
       <Fragment>
-        <Spinner isLoading={isLoading} />
+        <Spinner isLoading={isLoading} emptyText={emptyText} />
 
-        {data && data.length > 0 && (
+        {scaleState.scaleX && scaleState.scaleY && data && data.length > 0 && (
           <BrushTracker
             onBrush={handelBrushEnd}
             onDoubleClick={handelOnDoubleClick}
