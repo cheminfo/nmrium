@@ -16,7 +16,10 @@ export function addJcampFromURL(spectra, jcampURL, options) {
 
 export function addJcamp(spectra, jcamp, options = {}) {
   // need to parse the jcamp
-  let entries = fromJCAMP(jcamp, {
+  const decoder = new TextDecoder('utf8');
+  const decodedJcamp = decoder.decode(jcamp);
+
+  let entries = fromJCAMP(decodedJcamp, {
     noContour: true,
     xy: true,
     keepRecordsRegExp: /.*/,
