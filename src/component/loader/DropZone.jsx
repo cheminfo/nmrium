@@ -77,8 +77,12 @@ function DropZone(props) {
             break;
           case FILES_TYPES.NMRIUM:
           case FILES_TYPES.JSON:
-            loadFilesFromZip(selectedFilesByExtensions).then((files) => {
+            loadFilesFromZip(selectedFilesByExtensions, {
+              asBuffer: true,
+            }).then((files) => {
               if (selectedFilesByExtensions.length === 1) {
+                const decoder = new TextDecoder('utf8');
+                files[0].binary = decoder.decode(files[0].binary);
                 dispatch({ type: LOAD_JSON_FILE, files });
               } else {
                 dispatch({ type: SET_LOADING_FLAG, isLoading: false });
@@ -89,9 +93,9 @@ function DropZone(props) {
             break;
           case FILES_TYPES.JDX:
           case FILES_TYPES.DX:
-            loadFilesFromZip(selectedFilesByExtensions).then((files) =>
-              dispatch({ type: LOAD_JCAMP_FILE, files }),
-            );
+            loadFilesFromZip(selectedFilesByExtensions, {
+              asBuffer: true,
+            }).then((files) => dispatch({ type: LOAD_JCAMP_FILE, files }));
 
             break;
           case FILES_TYPES.JDF:
