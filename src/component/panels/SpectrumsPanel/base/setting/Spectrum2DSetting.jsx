@@ -7,21 +7,23 @@ import FormikForm from '../../../../elements/formik/FormikForm';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import FormikSlider from '../../../../elements/formik/FormikSlider';
 
-function Spectrum2DSetting({ data, onSubmit }) {
+import Spectrum2DHistogram from './Spectrum2DHistogram';
+
+function Spectrum2DSetting({ data: SpectrumData, onSubmit }) {
   const refForm = useRef();
 
   const style = css`
     .positive {
       display: inline-block;
       .track-1 {
-        background-color: ${data.display.positiveColor} !important;
+        background-color: ${SpectrumData.display.positiveColor} !important;
       }
     }
     .negative {
       display: inline-block;
 
       .track-1 {
-        background-color: ${data.display.negativeColor} !important;
+        background-color: ${SpectrumData.display.negativeColor} !important;
       }
     }
   `;
@@ -31,7 +33,11 @@ function Spectrum2DSetting({ data, onSubmit }) {
   }, []);
 
   return (
-    <FormikForm ref={refForm} initialValues={data.display} onSubmit={onSubmit}>
+    <FormikForm
+      ref={refForm}
+      initialValues={SpectrumData.display}
+      onSubmit={onSubmit}
+    >
       <div css={style}>
         <div className="positive">
           <span style={{ padding: '0 10px' }}>Positive</span>
@@ -73,6 +79,7 @@ function Spectrum2DSetting({ data, onSubmit }) {
             />
           </div>
         </div>
+        <Spectrum2DHistogram data={SpectrumData.data} />
       </div>
     </FormikForm>
   );

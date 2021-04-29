@@ -1,15 +1,15 @@
-import { xHistogram } from 'ml-spectra-processing';
+import { matrixHistogram } from 'ml-spectra-processing';
 import { memo, useMemo } from 'react';
 import { Axis, BarSeries, Heading, Plot } from 'react-plot';
 
-const Spectrum2DHistogram = memo(({ color = 'red', data }) => {
+const Spectrum1DHistogram = memo(({ color = 'red', data }) => {
   const histogramData = useMemo(() => {
-    const result = xHistogram(data.re, { logBaseX: 10, logBaseY: 10 });
+    const result = matrixHistogram(data.z, { logBaseX: 10, logBaseY: 10 });
     return result.x.reduce((acc, value, index) => {
       acc.push({ x: value, y: result.y[index] });
       return acc;
     }, []);
-  }, [data.re]);
+  }, [data.z]);
 
   return (
     <div
@@ -20,7 +20,7 @@ const Spectrum2DHistogram = memo(({ color = 'red', data }) => {
       }}
     >
       <Plot
-        width={220}
+        width={450}
         height={200}
         margin={{ bottom: 50, left: 10, top: 30, right: 10 }}
         // seriesViewportStyle={{ stroke: 'gray' }}
@@ -52,4 +52,4 @@ const Spectrum2DHistogram = memo(({ color = 'red', data }) => {
   );
 });
 
-export default Spectrum2DHistogram;
+export default Spectrum1DHistogram;
