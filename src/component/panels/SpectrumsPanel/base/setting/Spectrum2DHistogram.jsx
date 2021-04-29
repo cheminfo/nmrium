@@ -30,8 +30,6 @@ const Spectrum1DHistogram = memo(({ color = 'red', data }) => {
           data={histogramData}
           xAxis="x"
           yAxis="y"
-          displayMarker
-          markerShape="circle"
           lineStyle={{
             stroke: color,
           }}
