@@ -91,6 +91,7 @@
     "react-mf": "^2.0.1",
     "react-ocl": "^4.3.3",
     "react-ocl-nmr": "^1.0.0",
+    "react-plot": "^0.10.0",
     "react-rnd": "^10.2.4",
     "react-simple-code-editor": "^0.11.0",
     "react-slider": "^1.1.4",
