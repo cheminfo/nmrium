@@ -14,14 +14,14 @@ function Spectrum2DSetting({ data, onSubmit }) {
     .positive {
       display: inline-block;
       .track-1 {
-        background-color: ${data.positiveColor} !important;
+        background-color: ${data.display.positiveColor} !important;
       }
     }
     .negative {
       display: inline-block;
 
       .track-1 {
-        background-color: ${data.negativeColor} !important;
+        background-color: ${data.display.negativeColor} !important;
       }
     }
   `;
@@ -31,7 +31,7 @@ function Spectrum2DSetting({ data, onSubmit }) {
   }, []);
 
   return (
-    <FormikForm ref={refForm} initialValues={data} onSubmit={onSubmit}>
+    <FormikForm ref={refForm} initialValues={data.display} onSubmit={onSubmit}>
       <div css={style}>
         <div className="positive">
           <span style={{ padding: '0 10px' }}>Positive</span>

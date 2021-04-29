@@ -72,9 +72,9 @@ const style = css`
  
   }
 `;
-function SpectrumSetting({ position, data: { id, info, display }, onClose }) {
+function SpectrumSetting({ position, data, onClose }) {
   const dispatch = useDispatch();
-
+  const { id, info } = data;
   const submitHandler = useCallback(
     (values) => {
       dispatch({ type: CHANGE_SPECTRUM_SETTING, id, display: values });
@@ -103,9 +103,9 @@ function SpectrumSetting({ position, data: { id, info, display }, onClose }) {
         }}
       >
         {info.dimension === 2 ? (
-          <Spectrum2DSetting onSubmit={submitHandler} data={display} />
+          <Spectrum2DSetting onSubmit={submitHandler} data={data} />
         ) : (
-          <Spectrum1DSetting onSubmit={submitHandler} data={display} />
+          <Spectrum1DSetting onSubmit={submitHandler} data={data} />
         )}
       </div>
     </div>
