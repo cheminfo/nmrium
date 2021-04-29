@@ -17,7 +17,7 @@ const styles = {
 
   input: {
     height: '100%',
-    width: '50px',
+    width: '80px',
     borderRadius: '5px',
     border: '0.55px solid #c7c7c7',
     margin: '0px 5px 0px 5px',
