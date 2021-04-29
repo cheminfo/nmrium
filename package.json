@@ -68,7 +68,7 @@
     "ml-fft": "^1.3.5",
     "ml-gsd": "^6.6.1",
     "ml-regression-polynomial": "^2.1.0",
-    "ml-spectra-processing": "^6.1.0",
+    "ml-spectra-processing": "^6.1.2",
     "ml-stat": "^1.3.3",
     "multiplet-analysis": "^1.0.0",
     "nmr-correlation": "^1.2.0",
