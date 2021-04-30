@@ -1,10 +1,20 @@
-import { matrixHistogram } from 'ml-spectra-processing';
+import {
+  matrixHistogram,
+  xAbsolute,
+  matrixMinMaxZ,
+} from 'ml-spectra-processing';
 import { memo, useMemo } from 'react';
 import { Axis, BarSeries, Heading, Plot } from 'react-plot';
 
 const Spectrum1DHistogram = memo(({ color = 'red', data }) => {
   const histogramData = useMemo(() => {
-    const result = matrixHistogram(data.z, { logBaseX: 10, logBaseY: 10 });
+    let matrix = prepareData(data.z);
+
+    const result = matrixHistogram(matrix, {
+      logBaseX: 10,
+      logBaseY: 2,
+      nbSlots: 256,
+    });
     return result.x.reduce((acc, value, index) => {
       acc.push({ x: value, y: result.y[index] });
       return acc;
@@ -51,3 +61,23 @@ const Spectrum1DHistogram = memo(({ color = 'red', data }) => {
 });
 
 export default Spectrum1DHistogram;
+
+function prepareData(existingMatrix) {
+  const matrix = [];
+  for (let row of existingMatrix) {
+    matrix.push(xAbsolute(row));
+  }
+  // we will shift the minValue that is not 0
+  let { min, max } = matrixMinMaxZ(matrix);
+  if (min < 1) {
+    if (max > 1e6) min = 1;
+  }
+
+  for (let row of matrix) {
+    for (let i = 0; i < row.length; i++) {
+      row[i] += min;
+    }
+  }
+
+  return matrix;
+}
