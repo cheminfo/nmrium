@@ -6,7 +6,7 @@ export const FILES_TYPES = {
   JDX: 'jdx',
   JDF: 'jdf',
   ZIP: 'zip',
-  SDF: 'sdf',
+  NMREDATA: 'nmredata',
 };
 export const FILES_SIGNATURES = {
   ZIP: '504b0304',

@@ -116,7 +116,7 @@ export async function addBruker(options, data) {
   let result = await fromBruker(data, {
     xy: true,
     noContours: true,
-    keepZip: true,
+    keepOriginal: true,
   });
   let entries = result;
   for (let entry of entries) {

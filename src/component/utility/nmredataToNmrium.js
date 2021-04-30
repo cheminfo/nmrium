@@ -1,6 +1,6 @@
 import { NmrRecord, parseSDF } from 'nmredata';
 
-import { addBruker, addJcamp } from '../../data/SpectraManager';
+import { addBruker, addJcamps } from '../../data/SpectraManager';
 import { detectRanges, mapRanges } from '../../data/data1d/Datum1D';
 import { detectZones } from '../../data/data2d/Datum2D';
 
@@ -10,15 +10,12 @@ const computeDistance = (s1, s2) =>
     0,
   );
 
-export async function nmredataToNmrium(zipFilesValues) {
-  let files = {};
-  for (const file of zipFilesValues) files[file.name] = file;
+export async function nmredataToNmrium(files) {
   const sdfFiles = await getSDF(files);
   const jsonData = await NmrRecord.toJSON({
     sdf: sdfFiles[0],
     zipFiles: files,
   });
-
   let { spectra, molecules = [] } = jsonData;
 
   let nmrium = {
@@ -27,24 +24,48 @@ export async function nmredataToNmrium(zipFilesValues) {
   };
 
   for (const data of spectra) {
-    const { zip, jcamp } = data.source;
+    const { file, jcampURL } = data.source;
 
-    let spectrum = zip
-      ? await addBruker({ xy: true, noContours: true }, zip)
-      : (spectrum = addJcamp({}, jcamp));
+    let spectrum = await getSpectra(file, { jcampURL });
 
-    const { info } = spectrum[0];
-    if (info.dimension > 1) {
-      detectZones(spectrum[0], {});
-      assignZones(spectrum[0], data.signals);
-    } else {
-      detectRanges(spectrum[0], {});
-      assignRanges(spectrum[0], data.signals);
+    for (let i = 0; i < spectrum.length; i++) {
+      const { info } = spectrum[i];
+
+      if (info.isFid) continue;
+
+      if (info.dimension > 1) {
+        detectZones(spectrum[i], {});
+        assignZones(spectrum[i], data.signals);
+      } else {
+        detectRanges(spectrum[i], {});
+        assignRanges(spectrum[i], data.signals);
+      }
     }
     nmrium.spectra.push(...spectrum);
   }
 
   return nmrium;
+}
+
+async function getSpectra(file, options = {}) {
+  const {
+    xy = true,
+    noContours = true,
+    keepOriginal = true,
+    jcampURL,
+  } = options;
+  switch (file.extension) {
+    case 'jdx':
+    case 'dx':
+      return addJcamps([file]);
+    case 'zip':
+      return addBruker({ xy, noContours, keepOriginal }, file.binary);
+    default:
+      if (!jcampURL) {
+        new Error('file extension is not supported');
+        return;
+      }
+  }
 }
 
 async function getSDF(zipFiles) {

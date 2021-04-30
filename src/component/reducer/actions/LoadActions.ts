@@ -123,8 +123,7 @@ function handleLoadZIPFile(draft: Draft<State>, action) {
 
 function handleLoadNmredata(draft: Draft<State>, action) {
   setData(draft, action.payload);
-  const alignCenter = lodashGet(draft.preferences, 'display.center', null);
-  changeSpectrumVerticalAlignment(draft, alignCenter, true);
+  changeSpectrumVerticalAlignment(draft, false, true);
   setActiveTab(draft);
   initZoom1DHandler(draft.data);
   draft.isLoading = false;
