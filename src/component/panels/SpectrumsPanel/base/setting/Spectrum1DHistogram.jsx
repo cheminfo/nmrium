@@ -4,7 +4,6 @@ import { Axis, BarSeries, Heading, Plot } from 'react-plot';
 
 const Spectrum2DHistogram = memo(({ color = 'red', data }) => {
   const histogramData = useMemo(() => {
-    console.log(data.re);
     const array = prepareData(data.re);
     const result = xHistogram(array, {
       logBaseX: 10,
