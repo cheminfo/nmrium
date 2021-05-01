@@ -93,6 +93,7 @@
     "react-ocl-nmr": "^1.0.0",
     "react-plot": "^0.10.0",
     "react-rnd": "^10.2.4",
+    "react-shadow": "^19.0.2",
     "react-simple-code-editor": "^0.11.0",
     "react-slider": "^1.1.4",
     "react-split-pane": "^0.1.92",

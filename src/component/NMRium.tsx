@@ -16,6 +16,7 @@ import {
   ReactElement,
   ReactNode,
 } from 'react';
+import root from 'react-shadow/emotion';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
@@ -291,19 +292,19 @@ function NMRium({
   }, [dispatchMiddleWare]);
 
   return (
-    <ErrorBoundary>
-      <GlobalProvider
-        value={{
-          rootRef: rootRef.current,
-          elementsWraperRef: elementsWraperRef.current,
-        }}
-      >
-        <PreferencesProvider value={preferencesState}>
-          <div
-            onMouseEnter={mouseEnterHandler}
-            onMouseLeave={mouseLeaveHandler}
-            style={{ height: '100%', position: 'relative' }}
-          >
+    <root.div
+      onMouseEnter={mouseEnterHandler}
+      onMouseLeave={mouseLeaveHandler}
+      style={{ height: '100%', position: 'relative' }}
+    >
+      <ErrorBoundary>
+        <GlobalProvider
+          value={{
+            rootRef: rootRef.current,
+            elementsWraperRef: elementsWraperRef.current,
+          }}
+        >
+          <PreferencesProvider value={preferencesState}>
             {/* @ts-expect-error: TODO remove when HelpProvider is migrated */}
             <HelpProvider
               data={helpData}
@@ -403,10 +404,10 @@ function NMRium({
                 </DispatchProvider>
               </AlertProvider>
             </HelpProvider>
-          </div>
-        </PreferencesProvider>
-      </GlobalProvider>
-    </ErrorBoundary>
+          </PreferencesProvider>
+        </GlobalProvider>
+      </ErrorBoundary>
+    </root.div>
   );
 }
 
