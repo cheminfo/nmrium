@@ -184,7 +184,7 @@ export function dispatchMiddleware(dispatch) {
         break;
       }
       case types.LOAD_NMREDATA_FILE: {
-        void nmredataToNmrium(action.files).then((data) => {
+        void nmredataToNmrium(action.file).then((data) => {
           action.payload = data;
           dispatch(action);
         });

@@ -2,9 +2,9 @@ import jszip from 'jszip';
 import { getGroupedDiastereotopicAtomIDs } from 'openchemlib-utils';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import { get1DSignals } from './util/get1DSignals';
-import { get2DSignals } from './util/get2DSignals';
-import { getLabels } from './util/getLabels';
+import { get1DSignals } from './util/nmredata/get1DSignals';
+import { get2DSignals } from './util/nmredata/get2DSignals';
+import { getLabels } from './util/nmredata/getLabels';
 
 const tags = {
   solvent: 'SOLVENT',
@@ -15,7 +15,7 @@ const tags = {
   id: 'ID',
 };
 
-export async function toNmredata(state, options = {}) {
+export async function nmriumToNmredata(state, options = {}) {
   const {
     data, // it would be changed depending of the final location
     molecules,

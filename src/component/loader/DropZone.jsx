@@ -222,10 +222,9 @@ function DropZone(props) {
             loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
               async (files) => {
                 for (const zipFile of files) {
-                  const unzipResult = await Zip.loadAsync(zipFile.binary);
                   dispatch({
                     type: LOAD_NMREDATA_FILE,
-                    files: unzipResult.files,
+                    file: zipFile,
                   });
                 }
               },

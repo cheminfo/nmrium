@@ -1,3 +1,4 @@
+import Jszip from 'jszip';
 import { NmrRecord, parseSDF } from 'nmredata';
 
 import { addBruker, addJcamps } from '../../data/SpectraManager';
@@ -10,11 +11,13 @@ const computeDistance = (s1, s2) =>
     0,
   );
 
-export async function nmredataToNmrium(files) {
-  const sdfFiles = await getSDF(files);
+export async function nmredataToNmrium(file) {
+  const jszip = new Jszip();
+  const zip = await jszip.loadAsync(file.binary);
+  const sdfFiles = await getSDF(zip.files);
   const jsonData = await NmrRecord.toJSON({
     sdf: sdfFiles[0],
-    zipFiles: files,
+    zipFiles: zip.files,
   });
   let { spectra, molecules = [] } = jsonData;
 

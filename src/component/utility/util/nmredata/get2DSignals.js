@@ -45,6 +45,7 @@ export async function get2DSignals(data, nmrRecord, options = {}) {
         partTag += `\n${xLabel}/${yLabel}, I=${intensity.toFixed(2)}\\`;
       }
     }
+    str += partTag;
   }
   return str;
 }
