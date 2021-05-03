@@ -201,17 +201,19 @@ function getColor(options) {
   return {};
 }
 
-export function toJSON(datum: Datum2D) {
+export function toJSON(datum: Datum2D, forceIncludeData = false) {
   return {
     id: datum.id,
     source: {
       jcampURL: datum.source.jcampURL,
     },
-    ...(!datum.source.jcampURL && {
-      data: datum.originalData,
-      info: datum.originalInfo,
-      meta: datum.meta,
-    }),
+    ...(!datum.source.jcampURL || forceIncludeData
+      ? {
+          data: datum.originalData,
+          info: datum.originalInfo,
+          meta: datum.meta,
+        }
+      : {}),
     zones: datum.zones,
     filters: datum.filters,
     display: datum.display,
