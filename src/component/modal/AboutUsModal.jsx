@@ -57,7 +57,6 @@ const styles = css`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px;
   }
   ul {
     list-style-type: disc;
@@ -148,11 +147,10 @@ function AboutUsModal({ onClose }) {
           <ul>
             <li>
               IDNMR grant, which part of the Scientific Library Services and
+              Information Systems (LIS) initiative of the DFG.
             </li>
-            <li>
-              Information Systems (LIS) initiative of the DFG. Zakodium Sàrl
-            </li>
-            <li>(Switzerland) Universidad del Valle (Cali, Colombia)</li>
+            <li>Zakodium Sàrl (Switzerland).</li>
+            <li>Universidad del Valle (Cali, Colombia).</li>
           </ul>
         </span>
       </div>

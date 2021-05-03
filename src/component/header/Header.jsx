@@ -130,8 +130,8 @@ function Header({ isFullscreen, onMaximize }) {
     modal.show(<AboutUsModal />, {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,
-      width: 450,
-      height: 500,
+      width: 500,
+      height: 480,
     });
   }, [modal]);
 
