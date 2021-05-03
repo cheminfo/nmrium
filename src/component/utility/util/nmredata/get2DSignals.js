@@ -5,17 +5,15 @@ import { getToFix } from './getToFix';
 const isArray = Array.isArray;
 
 export async function get2DSignals(data, nmrRecord, options = {}) {
-  let { prefix, labels } = options;
-  let { byDiaID } = labels;
+  const { byDiaID } = options.labels;
   let str = '';
   let nucleusRecorded = [];
+  const prefix = `\n> <NMREDATA_2D_`;
   for (let spectrum of data) {
     if (spectrum.info.dimension < 2) continue;
     let partTag = '';
     const { info, source } = spectrum;
     let { nucleus, experiment, pulseSequence } = info;
-
-    if (experiment) prefix = `\n> 2D ${experiment} <NMREDATA_2D_`;
 
     nucleusRecorded.push(nucleus);
 

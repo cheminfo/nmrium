@@ -347,6 +347,7 @@ export function detectRange(datum, options) {
     max,
   };
 }
+
 export function mapRanges(ranges, datum) {
   const { x, re } = datum.data;
   const shiftX = getShiftX(datum);

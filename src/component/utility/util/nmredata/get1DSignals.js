@@ -78,7 +78,8 @@ export async function get1DSignals(data, nmrRecord, options = {}) {
                 let { diaID } = jCoupling[i];
                 if (!Array.isArray(diaID)) diaID = [diaID];
                 if (!diaID.length) continue;
-                let jCouple = labels[diaID[0]].label || String(diaID[0]);
+                let jCouple =
+                  labels.byDiaID[diaID[0]].label || String(diaID[0]);
                 partTag += `(${jCouple})`;
               }
               separator = ', ';
