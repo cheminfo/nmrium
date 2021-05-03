@@ -9,7 +9,6 @@ import FormikForm from '../../elements/formik/FormikForm';
 import { SET_PREFERENCES } from '../../reducer/preferencesReducer';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
 
-import AboutTabContent from './AboutTabContent';
 import ControllersTabContent from './ControllersTabContent';
 import DisplayTabContent from './DisplayTabContent';
 import FormattingTabContent from './FormattingTabContent';
@@ -200,9 +199,6 @@ function GeneralSettings({ onClose, onSave }) {
             </div>
             <div className="inner-content" tablabel="Display" tabid="display">
               <DisplayTabContent preferences={preferences} />
-            </div>
-            <div className="inner-content" tablabel="About" tabid="about">
-              <AboutTabContent />
             </div>
           </Tabs>
         </FormikForm>
