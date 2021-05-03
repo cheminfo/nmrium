@@ -14,6 +14,7 @@ import Button from '../elements/ButtonToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useHelp } from '../elements/popup/Help';
 import { useModal, positions } from '../elements/popup/Modal';
+import AboutUsModal from '../modal/AboutUsModal';
 import UserManualModal from '../modal/UserManualModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
 import { options } from '../toolbar/ToolTypes';
@@ -24,7 +25,6 @@ import ManualPhaseCorrectionPanel from './ManualPhaseCorrectionPanel';
 import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
-import AboutUsModal from '../modal/AboutUsModal';
 
 const headerStyle = css`
   display: flex;
