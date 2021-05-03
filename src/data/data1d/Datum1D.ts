@@ -205,18 +205,20 @@ function preprocessing(datum) {
   }
 }
 
-export function toJSON(datum1D: Datum1D) {
+export function toJSON(datum1D: Datum1D, forceIncludeData = false) {
   return {
     id: datum1D.id,
     source: {
       jcampURL: datum1D.source.jcampURL,
     },
     display: datum1D.display,
-    ...(!datum1D.source.jcampURL && {
-      data: datum1D.originalData,
-      info: datum1D.originalInfo,
-      meta: datum1D.meta,
-    }),
+    ...(!datum1D.source.jcampURL || forceIncludeData
+      ? {
+          data: datum1D.originalData,
+          info: datum1D.originalInfo,
+          meta: datum1D.meta,
+        }
+      : {}),
     peaks: datum1D.peaks,
     integrals: datum1D.integrals,
     ranges: datum1D.ranges,

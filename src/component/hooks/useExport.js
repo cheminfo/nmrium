@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 import { toJSON } from '../../data/SpectraManager';
 import { useChartData } from '../context/ChartContext';
 import { useAlert } from '../elements/popup/Alert';
+import { positions, useModal } from '../elements/popup/Modal';
+import SaveAsModal from '../modal/SaveAsModal';
 import {
   copyPNGToClipboard,
   exportAsJSON,
@@ -13,6 +15,7 @@ import {
 import { toNmredata } from '../utility/toNmredata';
 
 export default function useExport() {
+  const modal = useModal();
   const alert = useAlert();
   const state = useChartData();
 
@@ -87,11 +90,48 @@ export default function useExport() {
     }
   }, [alert, state.data]);
 
+  const saveHandler = useCallback(
+    async (options) => {
+      const { name, pretty, compressed, includeData } = options;
+      const hideLoading = await alert.showLoading(
+        `Exporting as ${name}.numrium process in progress`,
+      );
+      setTimeout(async () => {
+        const exportedData = toJSON(state, includeData);
+        const spaceIndent = pretty ? 2 : 0;
+        await exportAsJSON(exportedData, name, spaceIndent, compressed);
+        hideLoading();
+      }, 0);
+    },
+    [alert, state],
+  );
+  const saveAsHandler = useCallback(async () => {
+    if (state.data.length > 0) {
+      const fileName = state.data[0]?.display?.name;
+      modal.show(<SaveAsModal name={fileName} onSave={saveHandler} />, {
+        isBackgroundBlur: false,
+        position: positions.TOP_CENTER,
+        width: 400,
+        height: 280,
+      });
+
+      // const hideLoading = await alert.showLoading(
+      //   'Exporting as PNG process in progress',
+      // );
+      // setTimeout(() => {
+      //   const fileName = state.data[0]?.display?.name;
+      //   exportAsPng(fileName, 'nmrSVG');
+      //   hideLoading();
+      // }, 0);
+    }
+  }, [modal, saveHandler, state.data]);
+
   return {
     saveToClipboardHandler,
     saveAsJSONHandler,
     saveAsNMREHandler,
     saveAsSVGHandler,
     saveAsPNGHandler,
+    saveAsHandler,
   };
 }

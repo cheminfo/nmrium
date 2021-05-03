@@ -198,7 +198,7 @@ export async function addMolfileFromURL(molfileURL) {
  *
  * @param {object} state
  */
-export function toJSON(state) {
+export function toJSON(state, forceIncludeData = false) {
   const {
     data,
     molecules,
@@ -215,7 +215,9 @@ export function toJSON(state) {
     exclusionZones: {},
   };
   const spectra = data.map((ob) => {
-    return ob.info.dimension === 1 ? Datum1D.toJSON(ob) : Datum2D.toJSON(ob);
+    return ob.info.dimension === 1
+      ? Datum1D.toJSON(ob, forceIncludeData)
+      : Datum2D.toJSON(ob, forceIncludeData);
   });
 
   return {

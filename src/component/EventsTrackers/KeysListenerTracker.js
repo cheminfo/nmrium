@@ -39,7 +39,11 @@ function KeysListenerTracker() {
     changeDisplayViewModeHandler,
   } = useToolsFunctions();
 
-  const { saveToClipboardHandler, saveAsJSONHandler } = useExport();
+  const {
+    saveToClipboardHandler,
+    saveAsJSONHandler,
+    saveAsHandler,
+  } = useExport();
 
   const { highlight } = useHighlightData();
   const assignmentData = useAssignmentData();
@@ -223,7 +227,7 @@ function KeysListenerTracker() {
       if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
         switch (e.key) {
           case 'S':
-            saveAsJSONHandler(2, false);
+            saveAsHandler();
             e.preventDefault();
             break;
           default:
@@ -238,6 +242,7 @@ function KeysListenerTracker() {
       handleChangeOption,
       handleFullZoomOut,
       loader,
+      saveAsHandler,
       saveAsJSONHandler,
       saveToClipboardHandler,
     ],

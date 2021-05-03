@@ -88,6 +88,11 @@ const EXPORT_MENU = [
     label: 'Save data ( Press Ctrl + S )',
   },
   {
+    id: 'advance_save',
+    icon: <FaFileDownload />,
+    label: 'Save data as  ( Press Ctrl + Shift + S )',
+  },
+  {
     id: 'nmre',
     icon: <FaFileDownload />,
     label: 'Save NMRE data',
@@ -120,6 +125,7 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
     saveAsJSONHandler,
     saveAsNMREHandler,
     saveToClipboardHandler,
+    saveAsHandler,
   } = useExport();
 
   const selectedSpectrumInfo = { isComplex: false, isFid: false, ...info };
@@ -190,6 +196,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
         case 'json':
           saveAsJSONHandler();
           break;
+        case 'advance_save':
+          saveAsHandler();
+          break;
         case 'nmre':
           saveAsNMREHandler();
           break;
@@ -205,6 +214,7 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
       saveAsSVGHandler,
       saveAsPNGHandler,
       saveAsJSONHandler,
+      saveAsHandler,
       saveAsNMREHandler,
       saveToClipboardHandler,
     ],
