@@ -3,6 +3,7 @@ name: gh-pages deployment
 on:
   push:
     branches: master
+  workflow_dispatch:
 
 jobs:
   build:
