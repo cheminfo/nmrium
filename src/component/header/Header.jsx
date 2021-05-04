@@ -129,7 +129,7 @@ function Header({ isFullscreen, onMaximize }) {
   const openAboutUs = useCallback(() => {
     modal.show(<AboutUsModal />, {
       isBackgroundBlur: false,
-      position: positions.TOP_CENTER,
+      position: positions.MIDDLE,
       width: 500,
       height: 480,
     });

@@ -60,8 +60,8 @@ const styles = css`
   }
   ul {
     list-style-type: disc;
-    list-style-position: inside;
-  }
+    margin-left:20px;
+    }
   span,li{
     user-select: text;
   }
@@ -118,12 +118,8 @@ function AboutUsModal({ onClose }) {
 
           <span className="separator" />
 
-          <a
-            href="https://github.com/cheminfo/nmrium"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Githup ( https://github.com/cheminfo/nmrium )
+          <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
+            GibHub ( https://git.nmrium.org )
           </a>
         </div>
         <div className="center-container">
@@ -143,7 +139,7 @@ function AboutUsModal({ onClose }) {
           <span className="separator" />
         </div>
 
-        <span className="content">
+        <div className="content">
           <ul>
             <li>
               IDNMR grant, which part of the Scientific Library Services and
@@ -152,7 +148,7 @@ function AboutUsModal({ onClose }) {
             <li>Zakodium Sàrl (Switzerland).</li>
             <li>Universidad del Valle (Cali, Colombia).</li>
           </ul>
-        </span>
+        </div>
       </div>
     </div>
   );
