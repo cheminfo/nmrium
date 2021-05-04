@@ -12,7 +12,7 @@ export function addZones(signals, datum) {
   for (const signal of signals) {
     let zone = { x: {}, y: {}, id: generateID(), kind: 'signal' };
     let signalFormated = { id: generateID(), kind: 'signal', peak: [] };
-    let width = { x: 1, y: 1 };
+    let width = { x: 10, y: 10 };
     for (let axis of axisLabels) {
       let { coupling = [], delta, diaID = [] } = signal[axis];
       for (let j of coupling) {
