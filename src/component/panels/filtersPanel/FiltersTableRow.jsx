@@ -35,10 +35,16 @@ function FiltersTableRow({ filters }) {
   const [selectedFilterID, setSelectedFilter] = useState();
 
   const handelFilterCheck = useCallback(
-    (id, checked) => {
-      dispatch({ type: ENABLE_FILTER, id, checked });
+    async (id, checked) => {
+      const hideLoading = await alert.showLoading(
+        `${checked ? 'Enable' : 'Disable'} filter in progress`,
+      );
+      setTimeout(() => {
+        dispatch({ type: ENABLE_FILTER, id, checked });
+        hideLoading();
+      }, 0);
     },
-    [dispatch],
+    [alert, dispatch],
   );
   const handelDeleteFilter = useCallback(
     ({ id, name }) => {
@@ -75,14 +81,20 @@ function FiltersTableRow({ filters }) {
     [alert, dispatch, modal],
   );
   const filterSnapShotHandler = useCallback(
-    (newID) => {
-      setSelectedFilter((prevId) => {
-        const id = prevId === newID ? null : newID;
-        dispatch({ type: SET_FILTER_SNAPSHOT, id });
-        return id;
-      });
+    async (newID) => {
+      const hideLoading = await alert.showLoading(
+        'Filter snapshot processs in progress',
+      );
+      setTimeout(() => {
+        setSelectedFilter((prevId) => {
+          const id = prevId === newID ? null : newID;
+          dispatch({ type: SET_FILTER_SNAPSHOT, id });
+          return id;
+        });
+        hideLoading();
+      }, 0);
     },
-    [dispatch],
+    [alert, dispatch],
   );
   const filtersTableRow = useMemo(() => {
     return (

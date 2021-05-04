@@ -253,19 +253,21 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
 function filterSnapshotHandler(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum.index;
-
+    const datum = draft.data[index] as Datum1D | Datum2D;
     if (action.id) {
-      const filterIndex = (draft.data[index] as Datum1D).filters.findIndex(
-        (f) => f.id === action.id,
-      );
-      const filters = (draft.data[index] as Datum1D).filters.slice(
-        0,
-        filterIndex + 1,
-      );
-      FiltersManager.reapplyFilters(draft.data[index], filters);
+      const filterIndex = datum.filters.findIndex((f) => f.id === action.id);
+      const filters = datum.filters.slice(0, filterIndex + 1);
+      FiltersManager.reapplyFilters(datum, filters);
     } else {
       //close filter snapshot mode and replay all enabled filters
-      FiltersManager.reapplyFilters(draft.data[index]);
+      FiltersManager.reapplyFilters(datum);
+    }
+
+    if (datum.info?.dimension === 1) {
+      updateXShift(datum as Datum1D);
+      setDataBy1DFilter(datum as Datum1D);
+    } else if (datum.info?.dimension === 2) {
+      update2dShift(datum as Datum2D);
     }
     // const activeObject = AnalysisObj.getDatum(id);
 
