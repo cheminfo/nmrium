@@ -11,8 +11,16 @@
         "title": "1H spectrum test"
       },
       {
+        "file": "./data/ethylbenzene/1h.json",
+        "title": "1H ethylbenzene"
+      },
+      {
         "file": "./data/ethylbenzene/cosy.json",
         "title": "COSY ethylbenzene"
+      },
+      {
+        "file": "./data/ethylbenzene/hsqc.json",
+        "title": "HSQC ethylbenzene"
       },
       {
         "file": "./data/cytisine/2d/hsqc.json",
