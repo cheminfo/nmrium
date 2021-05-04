@@ -19,10 +19,6 @@
         "title": "COSY ethylbenzene"
       },
       {
-        "file": "./data/ethylbenzene/hsqc.json",
-        "title": "HSQC ethylbenzene"
-      },
-      {
         "file": "./data/cytisine/2d/hsqc.json",
         "title": "HSQC cytisine"
       },
