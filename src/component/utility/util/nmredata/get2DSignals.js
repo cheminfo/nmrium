@@ -32,6 +32,10 @@ export async function get2DSignals(data, nmrRecord, options = {}) {
     if (experiment) partTag += `\nCorType=${experiment} \\`;
     if (pulseSequence) partTag += `\nPulseProgram=${pulseSequence} \\`;
 
+    if (spectrum.info.baseFrequency) {
+      partTag += `\nLarmor=${Number(spectrum.info.baseFrequency[0]).toFixed(2)}\\`;
+    }
+
     let zones = spectrum.zones.values || [];
     for (let zone of zones) {
       let signals = zone.signal;
@@ -45,7 +49,7 @@ export async function get2DSignals(data, nmrRecord, options = {}) {
     }
     str += partTag;
   }
-  return str;
+  return str.length > 0 ? str + '\n' : '';
 }
 
 function getAssignment(axis, labels, toFix) {
