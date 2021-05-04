@@ -119,7 +119,7 @@ function AboutUsModal({ onClose }) {
           <span className="separator" />
 
           <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
-            GibHub ( https://git.nmrium.org )
+            GitHub ( https://git.nmrium.org )
           </a>
         </div>
         <div className="center-container">
