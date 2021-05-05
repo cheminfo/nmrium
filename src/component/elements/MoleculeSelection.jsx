@@ -23,14 +23,12 @@ const toolbarStyle = css`
 `;
 
 const moleculeContainerStyle = css`
-  width: 450px;
-
+  width: 100%;
+  position: relative;
   .slider {
     height: 180px;
     width: 100%;
     padding: 0px;
-    height: 180px;
-    width: 100%;
     padding: 0px;
     display: flex;
     justify-content: center;
