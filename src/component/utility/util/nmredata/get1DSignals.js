@@ -1,13 +1,14 @@
+import { addSource } from './addSource';
 import { getToFix } from './getToFix';
 
-export function get1DSignals(data, labels, options = {}) {
-  const { prefix, nmrRecord } = options;
+export async function get1DSignals(data, nmrRecord, options = {}) {
+  let { prefix, labels } = options;
   let str = '';
   let nucleusArray = [];
-  let nbOneD = 0;
   for (let spectrum of data) {
-    if (spectrum.info.dimension > 1) continue;
-
+    const { info } = spectrum;
+    if (info.isFid || info.dimension > 1) continue;
+    let partTag = '';
     let ranges = spectrum.ranges.values || [];
 
     let nucleus = spectrum.info.nucleus;
@@ -20,33 +21,33 @@ export function get1DSignals(data, labels, options = {}) {
 
     if (counter > 1) subfix = `#${counter}`;
 
-    str += `${prefix}1D_${nucleus.toUpperCase()}${subfix}>`;
+    partTag += `${prefix}1D_${nucleus.toUpperCase()}${subfix}>`;
 
-    if (spectrum.info.frequency) {
-      str += `\nLarmor=${Number(spectrum.info.frequency).toFixed(2)}\\`;
+    if (spectrum.info.baseFrequency) {
+      partTag += `\nLarmor=${Number(spectrum.info.baseFrequency).toFixed(2)}\\`;
     }
 
-    str += `\nSpectrum_Jcamp=file:./jcamp_folder/1d/${spectrum.display.name}\\`;
-    if (spectrum.source.jcamp) {
-      nmrRecord.file(
-        `jcamp_folder/1d/${spectrum.display.name}`,
-        spectrum.source.jcamp,
-      );
-    }
+    const { source = {} } = spectrum;
+
+    partTag += await addSource(nmrRecord, {
+      spectrum,
+      tag: partTag,
+      source,
+    });
 
     let toFix = getToFix(nucleus)[0];
 
     for (let range of ranges) {
-      let signals = range.signal; //.filter((s) => s.diaID && s.diaID.length);
+      let signals = range.signal;
 
       for (let signal of signals) {
         let { multiplicity } = signal;
         if ((!multiplicity || multiplicity === 'm') && nucleus === '1H') {
-          str += `\n${Number(range.from).toFixed(toFix)}-${Number(
+          partTag += `\n${Number(range.from).toFixed(toFix)}-${Number(
             range.to,
           ).toFixed(toFix)}`;
         } else if (signal.delta) {
-          str += `\n${Number(signal.delta).toFixed(toFix)}`;
+          partTag += `\n${Number(signal.delta).toFixed(toFix)}`;
         } else {
           continue;
         }
@@ -58,43 +59,46 @@ export function get1DSignals(data, labels, options = {}) {
             let separator = ', ';
             if (i === arr.length - 1) separator = '';
             let label = labels.byDiaID[diaID].label || diaID;
-            signalLabel += `(${label})${separator}`;
+            signalLabel += `${label}${separator}`;
           });
-          str += `, L=${signalLabel}`;
+          partTag += `, L=${signalLabel}`;
         }
 
         if (nucleus === '1H') {
-          if (signal.multiplicity) str += `, S=${signal.multiplicity}`;
+          if (signal.multiplicity) partTag += `, S=${signal.multiplicity}`;
 
           let jCoupling = signal.j;
           if (Array.isArray(jCoupling) && jCoupling.length) {
             let separator = ', J=';
             for (let i = 0; i < jCoupling.length; i++) {
-              str += `${separator}${Number(jCoupling[i].coupling).toFixed(3)}`;
+              partTag += `${separator}${Number(jCoupling[i].coupling).toFixed(
+                3,
+              )}`;
               if (jCoupling[i].diaID) {
                 let { diaID } = jCoupling[i];
                 if (!Array.isArray(diaID)) diaID = [diaID];
                 if (!diaID.length) continue;
-                let jCouple = labels[diaID[0]].label || String(diaID[0]);
-                str += `(${jCouple})`;
+                let jCouple =
+                  labels.byDiaID[diaID[0]].label || String(diaID[0]);
+                partTag += `(${jCouple})`;
               }
               separator = ', ';
             }
           }
           if (range.integral) {
-            str += `, E=${Number(range.integral).toFixed(toFix)}`;
+            partTag += `, E=${Number(range.integral).toFixed(toFix)}`;
           } else if (range.pubIntegral) {
-            str += `, E=${range.putIntegral.toFixed(toFix)}`;
+            partTag += `, E=${range.putIntegral.toFixed(toFix)}`;
           } else if (range.signal[0].nbAtoms !== undefined) {
-            str += `, E=${range.signal[0].nbAtoms}`;
+            partTag += `, E=${range.signal[0].nbAtoms}`;
           }
         }
       }
-      if (signals.length) str += '\\';
+      if (signals.length) partTag += '\\';
     }
-    str += '\n';
-    nbOneD++;
+    partTag += '\n';
+
+    if (partTag.match('\\\n')) str += partTag;
   }
-  if (nbOneD > 0) nmrRecord.folder('jcamp_folder/1d');
   return str;
 }

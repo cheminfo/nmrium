@@ -103,9 +103,6 @@ function DropZone(props) {
               asBuffer: true,
             }).then((files) => dispatch({ type: LOAD_JDF_FILE, files }));
             break;
-          case FILES_TYPES.SDF:
-            dispatch({ type: LOAD_NMREDATA_FILE, files: extractedfiles });
-            break;
           default:
             break;
         }
@@ -165,7 +162,6 @@ function DropZone(props) {
             }
 
             break;
-
           case FILES_TYPES.JDX:
           case FILES_TYPES.DX:
             loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
@@ -222,11 +218,23 @@ function DropZone(props) {
               },
             );
             break;
+          case FILES_TYPES.NMREDATA:
+            loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
+              async (files) => {
+                for (const zipFile of files) {
+                  dispatch({
+                    type: LOAD_NMREDATA_FILE,
+                    file: zipFile,
+                  });
+                }
+              },
+            );
+            break;
           default:
             dispatch({ type: SET_LOADING_FLAG, isLoading: false });
             // eslint-disable-next-line no-alert
             alert(
-              'The file extension must be zip, dx, jdx, json, mol or nmrium.',
+              'The file extension must be zip, dx, jdx, json, mol, nmredata or nmrium.',
             );
             break;
         }

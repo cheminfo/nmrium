@@ -114,8 +114,11 @@ export async function fromJSON(data = []) {
 
 export async function addBruker(options, data) {
   const spectra = [];
-  let result = await fromBruker(data, { xy: true, noContours: true });
-
+  let result = await fromBruker(data, {
+    xy: true,
+    noContours: true,
+    keepOriginal: true,
+  });
   let entries = result;
   for (let entry of entries) {
     let { info, dependentVariables } = entry;

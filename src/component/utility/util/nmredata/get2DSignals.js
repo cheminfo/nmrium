@@ -1,41 +1,42 @@
+import { addSource } from './addSource';
 import { getCouplingObserved } from './getCouplingObserved';
 import { getToFix } from './getToFix';
 
 const isArray = Array.isArray;
 
-export function get2DSignals(data, labels, options = {}) {
-  let { prefix, nmrRecord } = options;
-  let { byDiaID } = labels;
+export async function get2DSignals(data, nmrRecord, options = {}) {
+  const { byDiaID } = options.labels;
   let str = '';
   let nucleusRecorded = [];
-  let nbTwoD = 0;
+  const prefix = `\n> <NMREDATA_2D_`;
   for (let spectrum of data) {
     if (spectrum.info.dimension < 2) continue;
-
-    let { nucleus, experiment, pulseSequence } = spectrum.info;
-
-    if (experiment) prefix = `\n> 2D ${experiment} <NMREDATA_2D_`;
+    let partTag = '';
+    const { info, source } = spectrum;
+    let { nucleus, experiment, pulseSequence } = info;
 
     nucleusRecorded.push(nucleus);
 
     let couplingObserved = getCouplingObserved(experiment);
     if (nucleus) {
-      str += `${prefix}${nucleus[1]}_${couplingObserved}_${nucleus[0]}>`;
+      partTag += `${prefix}${nucleus[1]}_${couplingObserved}_${nucleus[0]}>`;
     }
     let toFix = getToFix(nucleus);
 
-    str += `\nLarmor=${Number(spectrum.info.baseFrequency[0]).toFixed(2)}\\`;
+    partTag += await addSource(nmrRecord, {
+      spectrum,
+      tag: partTag,
+      source,
+    });
 
-    str += `\nSpectrum_Jcamp=file:./jcamp_folder/2d/${spectrum.display.name}\\`;
-    if (spectrum.source.jcamp) {
-      nmrRecord.file(
-        `jcamp_folder/2d/${spectrum.display.name}`,
-        spectrum.source.jcamp,
-      );
+    if (experiment) partTag += `\nCorType=${experiment} \\`;
+    if (pulseSequence) partTag += `\nPulseProgram=${pulseSequence} \\`;
+
+    if (spectrum.info.baseFrequency) {
+      partTag += `\nLarmor=${Number(spectrum.info.baseFrequency[0]).toFixed(
+        2,
+      )}\\`;
     }
-
-    if (experiment) str += `\nCorType=${experiment} \\`;
-    if (pulseSequence) str += `\nPulseProgram=${pulseSequence} \\`;
 
     let zones = spectrum.zones.values || [];
     for (let zone of zones) {
@@ -45,13 +46,12 @@ export function get2DSignals(data, labels, options = {}) {
         let xLabel = getAssignment(x, byDiaID, toFix[0]);
         let yLabel = getAssignment(y, byDiaID, toFix[1]);
         let intensity = Math.max(...peak.map((e) => e.z));
-        str += `\n${xLabel}/${yLabel}, I=${intensity.toFixed(2)}\\`;
+        partTag += `\n${xLabel}/${yLabel}, I=${intensity.toFixed(2)}\\`;
       }
     }
-    nbTwoD++;
+    str += partTag;
   }
-  if (nbTwoD > 0) nmrRecord.folder('jcamp_folder/2d');
-  return str;
+  return str.length > 0 ? `${str}\n` : '';
 }
 
 function getAssignment(axis, labels, toFix) {

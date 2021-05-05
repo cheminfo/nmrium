@@ -12,7 +12,7 @@ import {
   exportAsPng,
   exportAsSVG,
 } from '../utility/Export';
-import { toNmredata } from '../utility/toNmredata';
+import { nmriumToNmredata } from '../utility/nmriumToNmredata';
 
 export default function useExport() {
   const modal = useModal();
@@ -55,9 +55,9 @@ export default function useExport() {
       const hideLoading = await alert.showLoading(
         'Exporting as NMRE process in progress',
       );
-      setTimeout(() => {
+      setTimeout(async () => {
         const fileName = state.data[0]?.display?.name;
-        const exportedData = toNmredata(state);
+        const exportedData = await nmriumToNmredata(state);
         exportAsNMRE(exportedData, fileName);
         hideLoading();
       }, 0);

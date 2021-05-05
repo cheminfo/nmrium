@@ -1,7 +1,7 @@
 import { initiateDatum1D } from './Datum1D';
 
 export function fromBruker(result, options = {}) {
-  const { dependentVariables, info, meta } = result;
+  const { dependentVariables, info, meta, source } = result;
   let data = getData(dependentVariables[0].components);
   if (data.im) info.isComplex = true;
 
@@ -9,6 +9,7 @@ export function fromBruker(result, options = {}) {
 
   const datum1D = initiateDatum1D({
     ...options,
+    source,
     info,
     meta,
     data,

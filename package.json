@@ -74,7 +74,7 @@
     "nmr-correlation": "^1.2.0",
     "nmr-parser": "^1.1.0",
     "nmr-processing": "^1.2.0",
-    "nmredata": "^0.3.0",
+    "nmredata": "^0.4.0",
     "numeral": "^2.0.6",
     "openchemlib": "^7.4.0",
     "openchemlib-utils": "^1.0.0",

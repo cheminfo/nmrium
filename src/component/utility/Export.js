@@ -125,7 +125,7 @@ function exportAsMatrix(data, options, fileName = 'experiment') {
 
 function exportAsNMRE(data, fileName = 'experiment') {
   data.generateAsync({ type: 'blob' }).then((content) => {
-    saveAs(content, `${fileName}.zip`);
+    saveAs(content, `${fileName}.nmredata`);
   });
 }
 

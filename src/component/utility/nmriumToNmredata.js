@@ -2,9 +2,9 @@ import jszip from 'jszip';
 import { getGroupedDiastereotopicAtomIDs } from 'openchemlib-utils';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import { get1DSignals } from './util/get1DSignals';
-import { get2DSignals } from './util/get2DSignals';
-import { getLabels } from './util/getLabels';
+import { get1DSignals } from './util/nmredata/get1DSignals';
+import { get2DSignals } from './util/nmredata/get2DSignals';
+import { getLabels } from './util/nmredata/getLabels';
 
 const tags = {
   solvent: 'SOLVENT',
@@ -15,7 +15,7 @@ const tags = {
   id: 'ID',
 };
 
-export function toNmredata(state, options = {}) {
+export async function nmriumToNmredata(state, options = {}) {
   const {
     data, // it would be changed depending of the final location
     molecules,
@@ -24,41 +24,53 @@ export function toNmredata(state, options = {}) {
     molecules: [],
   };
 
-  const { id, prefix = '\n> <NMREDATA_', filename = 'nmredata' } = options;
-
-  let sdfResult = '';
   let nmrRecord = new jszip();
 
-  let molecule = OCLMolecule.fromMolfile(molecules[0].molfile);
-  molecule.addImplicitHydrogens();
-  let groupedDiaIDs = getGroupedDiastereotopicAtomIDs(molecule);
+  for (const molecule of molecules) {
+    await addNMReDATA(data, nmrRecord, {
+      ...options,
+      molecule,
+    });
+  }
 
-  let groupedOptions = {
-    prefix,
+  if (!molecules.length) await addNMReDATA(data, nmrRecord, options);
+  return nmrRecord;
+}
+
+async function addNMReDATA(data, nmrRecord, options = {}) {
+  let {
+    id,
+    prefix = '\n> <NMREDATA_',
+    filename = 'nmredata',
     molecule,
-    groupedDiaIDs,
-    nmrRecord,
-  };
+  } = options;
 
-  sdfResult += molecule.toMolfile();
-  let labels = getLabels(data, groupedOptions);
+  let sdfResult = '';
+
+  let groupedDiaIDs;
+  if (molecule) {
+    molecule = OCLMolecule.fromMolfile(molecule.molfile);
+    sdfResult += molecule.toMolfile();
+    molecule.addImplicitHydrogens();
+    groupedDiaIDs = getGroupedDiastereotopicAtomIDs(molecule);
+  }
+
+  let labels = molecule ? getLabels(data, { groupedDiaIDs, molecule }) : {};
+
   sdfResult += `${prefix}VERSION>\n1.1\\\n`;
   sdfResult += putTag(data, 'temperature', { prefix });
   sdfResult += putTag(data, 'solvent', { prefix });
 
-  if (id) {
-    sdfResult += `${prefix + tags.id}>\nid\\\n`;
-  }
-
-  sdfResult += formatAssignments(labels.byDiaID, groupedOptions);
-  sdfResult += get1DSignals(data, labels, groupedOptions);
-  sdfResult += get2DSignals(data, labels, groupedOptions);
+  if (id) sdfResult += `${prefix + tags.id}>\nid\\\n`;
+  sdfResult += formatAssignments(labels.byDiaID, { prefix });
+  sdfResult += await get1DSignals(data, nmrRecord, { prefix, labels });
+  sdfResult += await get2DSignals(data, nmrRecord, { prefix, labels });
   sdfResult += '\n$$$$\n';
   nmrRecord.file(`${filename}.sdf`, sdfResult);
-  return nmrRecord;
 }
 
 function formatAssignments(labels, options) {
+  if (!labels) return '';
   const { prefix } = options;
   let str = `${prefix + tags.assignment}>\n`;
   for (let l in labels) {
