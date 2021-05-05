@@ -14,9 +14,9 @@ export function useHelp() {
     (e) => {
       const id = e.target.getAttribute('data-helpid');
       if (id) {
-        e.target.style.cursor = 'help';
+        e.target.style.cursor =
+          !context.preventAutoHelp || e.ctrlKey ? 'help' : 'pointer';
         context.dispatch({ type: 'SHOW', id });
-
         context.show(id, { delay: e.ctrlKey ? 0 : null });
       }
     },

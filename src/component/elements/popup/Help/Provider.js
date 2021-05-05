@@ -189,7 +189,7 @@ function Provider({
   );
 
   return (
-    <HelpProvider value={{ helpState, dispatch, show, clear }}>
+    <HelpProvider value={{ helpState, dispatch, show, clear, preventAutoHelp }}>
       {children}
       {root.current &&
         createPortal(
