@@ -119,10 +119,10 @@ function Header({ isFullscreen, onMaximize }) {
   const openUserManual = useCallback(() => {
     modal.show(<UserManualModal />, {
       isBackgroundBlur: false,
-      position: positions.TOP_CENTER,
+      position: positions.MIDDLE,
       enableResizing: true,
-      width: 800,
-      height: 600,
+      width: 1020,
+      height: 500,
     });
   }, [modal]);
 
