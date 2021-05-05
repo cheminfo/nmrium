@@ -209,17 +209,7 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
   const toggleAssignment = useCallback(
     (diaID, atomInformation) => {
       // 1. one atom can only be assigned to one range/zone/signal
-      // 2. check whether an atom is already assigned to a range to allow toggling the assignment
-      if (
-        assignedDiaIDsMerged.some((_oclID) =>
-          atomInformation.oclIDs.includes(_oclID),
-        ) &&
-        !diaID.some((_oclID) => atomInformation.oclIDs.includes(_oclID))
-      ) {
-        alert.info('Atom is already assigned to another signal!');
-        return diaID;
-      }
-
+      // 2. check whether an atom is already assigned to a range to allow toggling the assignmen
       return toggleDiaIDs(diaID, atomInformation);
     },
     [alert, assignedDiaIDsMerged],
