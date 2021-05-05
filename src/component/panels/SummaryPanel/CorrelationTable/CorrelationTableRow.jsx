@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import EditableColumn from '../../../elements/EditableColumn';
-import SelectUncontrolled from '../../../elements/SelectUncontrolled';
+import Select from '../../../elements/Select';
 import { useHighlight } from '../../../highlight';
 import { findRangeOrZoneID } from '../Utilities';
 
@@ -236,10 +236,10 @@ function CorrelationTableRow({
         }}
       >
         {correlation.atomType !== 'H' ? (
-          <SelectUncontrolled
+          <Select
             onChange={onChangeHybridizationHandler}
             data={Hybridizations}
-            value={correlation.hybridization}
+            defaultValue={correlation.hybridization}
             style={{
               ...selectBoxStyle,
               backgroundColor: correlation.edited.hybridization
