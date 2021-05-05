@@ -152,7 +152,7 @@ function Provider({
       box-sizing: initial;
       background-color: #fff;
       box-shadow: 0 0 0 0, 0 8px 16px rgba(0, 0, 0, 0.3);
-      borderradius: 5px;
+      border-radius: 5px;
     }
   `;
 
@@ -252,7 +252,7 @@ function Provider({
 }
 
 Provider.defaultProps = {
-  offset: '10px',
+  offset: '0px',
   position: positions.CENTER,
   transition: transitions.SCALE,
   wrapperRef: null,
