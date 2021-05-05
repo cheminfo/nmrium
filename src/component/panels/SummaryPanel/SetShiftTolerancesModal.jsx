@@ -107,7 +107,7 @@ function SetShiftToleranceModal({ onClose, onSave, previousTolerance }) {
 
   return (
     <div css={modalContainer}>
-      <div className="header">
+      <div className="header handle">
         <CloseButton onClick={onClose} />
       </div>
       <div>

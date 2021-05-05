@@ -143,7 +143,7 @@ function Provider({
     bottom: 0;
     right: 0;
     z-index: 0;
-
+    pointer-events: all;
     .handle {
       cursor: move;
     }
