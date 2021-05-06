@@ -14,7 +14,7 @@ function PeaksNotations() {
       const i = data.findIndex((d) => d.id === id);
       return verticalAlign.flag
         ? verticalAlign.stacked
-          ? (i + 1) * verticalAlign.value
+          ? i * verticalAlign.value
           : 0
         : 0;
     };
