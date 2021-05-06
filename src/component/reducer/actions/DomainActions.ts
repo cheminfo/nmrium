@@ -116,7 +116,11 @@ function get2DDomain(state) {
 
   try {
     xArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
-      if (datum.info.dimension === 2) {
+      if (
+        datum.info.dimension === 2 &&
+        datum.info.nucleus?.join(',') === activeTab &&
+        datum.info.isFt
+      ) {
         acc = acc.concat([
           (datum as Datum2D).data.minX,
           (datum as Datum2D).data.maxX,
@@ -128,7 +132,8 @@ function get2DDomain(state) {
     yArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
       if (
         datum.info.dimension === 2 &&
-        datum.info.nucleus?.join(',') === activeTab
+        datum.info.nucleus?.join(',') === activeTab &&
+        datum.info.isFt
       ) {
         acc = acc.concat([
           (datum as Datum2D).data.minY,

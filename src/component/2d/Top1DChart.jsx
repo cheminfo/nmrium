@@ -13,7 +13,6 @@ function Top1DChart({ margin: marginProps, data: spectrum }) {
     yDomains,
     displayerKey,
   } = useChartData();
-
   const height = originMargin.top;
 
   const paths = useMemo(() => {
