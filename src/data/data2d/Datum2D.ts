@@ -511,10 +511,16 @@ export function getSubMatrix(datum, selectedZone) {
   const data = datum.data;
   const xStep = (data.maxX - data.minX) / (data.z[0].length - 1);
   const yStep = (data.maxY - data.minY) / (data.z.length - 1);
-  let xIndexFrom = Math.floor((fromX - data.minX) / xStep);
-  let yIndexFrom = Math.floor((fromY - data.minY) / yStep);
-  let xIndexTo = Math.floor((toX - data.minX) / xStep);
-  let yIndexTo = Math.floor((toY - data.minY) / yStep);
+  let xIndexFrom = Math.max(Math.floor((fromX - data.minX) / xStep), 0);
+  let yIndexFrom = Math.max(Math.floor((fromY - data.minY) / yStep), 0);
+  let xIndexTo = Math.min(
+    Math.floor((toX - data.minX) / xStep),
+    data.z[0].length - 1,
+  );
+  let yIndexTo = Math.min(
+    Math.floor((toY - data.minY) / yStep),
+    data.z.length - 1,
+  );
 
   if (xIndexFrom > xIndexTo) [xIndexFrom, xIndexTo] = [xIndexTo, xIndexFrom];
   if (yIndexFrom > yIndexTo) [yIndexFrom, yIndexTo] = [yIndexTo, yIndexFrom];
@@ -530,6 +536,7 @@ export function getSubMatrix(datum, selectedZone) {
   let minZ = Number.MAX_SAFE_INTEGER;
 
   let nbXPoints = xIndexTo - xIndexFrom + 1;
+
   for (let j = yIndexFrom; j < yIndexTo; j++) {
     let row = new Float32Array(nbXPoints);
     let xIndex = xIndexFrom;
