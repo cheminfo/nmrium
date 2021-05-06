@@ -6,11 +6,10 @@ import { State } from '../Reducer';
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;
-  draft.correlations = buildCorrelationData(
-    spectra as Types.Spectra,
-    correlations.options,
-    lodashCloneDeep(correlations.values),
-  );
+  draft.correlations = buildCorrelationData(spectra as Types.Spectra, {
+    ...correlations.options,
+    values: lodashCloneDeep(correlations.values),
+  });
 }
 
 function handleSetMF(draft: Draft<State>, payload: { mf: string }) {
