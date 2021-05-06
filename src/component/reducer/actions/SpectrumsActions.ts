@@ -140,11 +140,8 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
     const index = state.data.findIndex((d) => d.id === action.id);
     draft.data.splice(index, 1);
   } else {
-    draft.data.forEach((datum, index) => {
-      draft.data.splice(index, 1);
-    });
+    draft.data = [];
   }
-  draft.activeSpectrum = null;
   setActiveTab(draft, activeTab, true);
 }
 function addMissingProjectionHander(draft, action) {
