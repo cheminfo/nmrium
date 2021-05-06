@@ -8,23 +8,23 @@ function getHelpList() {
   return {
     zoomIn: {
       text: 'Zoom Tool',
-      filePath: `${baseURL}/1d/zoom/zoomIn.html`,
+      filePath: `${baseURL}/help/zoom-and-scale`,
     },
     peakPicking: {
       text: 'peak picking tool',
-      filePath: `${baseURL}/1d/peak/peakPicking.html`,
+      filePath: `${baseURL}/help/peaks`,
     },
     integralPicking: {
       text: 'integral tool',
-      filePath: `${baseURL}/1d/integral/integration.html`,
+      filePath: `${baseURL}/help/integrations`,
     },
     fullScreen: {
       text: 'Full Screen mode',
-      filePath: `${baseURL}/1d/general/fullScreen.html`,
+      filePath: `${baseURL}/help/general`,
     },
     loadSpectrum: {
       text: 'load spectrums',
-      filePath: `${baseURL}/1d/load/loadSpectrum.html`,
+      filePath: `${baseURL}/help/loading-a-spectrum`,
     },
   };
 }

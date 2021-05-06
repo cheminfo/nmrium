@@ -18,9 +18,9 @@ const tableStyle = css`
     font-size: 12px;
     height: 100%;
   }
-  .react-contextmenu-wrapper {
-    display: contents;
-  }
+  // .react-contextmenu-wrapper {
+  //   display: contents;
+  // }
   tr {
     :last-child {
       td {
@@ -34,7 +34,6 @@ const tableStyle = css`
   th {
     position: sticky;
     background-color: white;
-    z-index: 2;
     top: 0;
   }
 

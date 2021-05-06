@@ -6,12 +6,24 @@ export const FILES_TYPES = {
   JDX: 'jdx',
   JDF: 'jdf',
   ZIP: 'zip',
+  NMREDATA: 'nmredata',
+};
+export const FILES_SIGNATURES = {
+  ZIP: '504b0304',
 };
 
-async function loadFile(file) {
+function getFileSignature(fileArrayBuffer) {
+  return new Uint8Array(fileArrayBuffer)
+    .slice(0, 4)
+    .reduce((acc, byte) => (acc += byte.toString(16).padStart(2, '0')), '');
+}
+
+async function loadFile(file, options = { asBuffer: false }) {
   const response = await fetch(file);
   checkStatus(response);
-  const data = await response.text();
+  const data = (await options.asBuffer)
+    ? response.arrayBuffer()
+    : response.text();
   return data;
 }
 
@@ -38,7 +50,13 @@ function extractFileMetaFromPath(path) {
 
   return { name: meta[0].toLowerCase(), extension: meta[1].toLowerCase() };
 }
-
+/**
+ *
+ * @param {Array<File>} acceptedFiles
+ * @param {object} options
+ * @param {boolean} options.asBuffer
+ * @returns
+ */
 function loadFiles(acceptedFiles, options = {}) {
   return Promise.all(
     [].map.call(acceptedFiles, (file) => {
@@ -87,4 +105,5 @@ export {
   getFileExtension,
   getFileName,
   extractFileMetaFromPath,
+  getFileSignature,
 };

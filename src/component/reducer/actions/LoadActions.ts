@@ -3,8 +3,6 @@ import lodashGet from 'lodash/get';
 import { buildCorrelationData, Types } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
-import { initiateDatum1D } from '../../../data/data1d/Datum1D';
-import { initiateDatum2D } from '../../../data/data2d/Datum2D';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
 import { Molecules, NMRiumPreferences, Spectra } from '../../NMRium';
@@ -26,6 +24,7 @@ function setData(
     molecules: Molecules;
     preferences: NMRiumPreferences;
     correlations: Types.CorrelationData;
+    exclusionZones: any;
   },
 ) {
   const {
@@ -33,17 +32,19 @@ function setData(
     molecules,
     preferences,
     correlations,
-    // multipleAnalysis,
+    exclusionZones = {},
   } = data || {
     spectra: [],
     molecules: [],
     preferences: {},
     correlations: {},
     multipleAnalysis: {},
+    exclusionZones: {},
   };
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
+  draft.exclusionZones = exclusionZones;
 
   if (!correlations || Object.keys(correlations).length === 0) {
     draft.correlations = buildCorrelationData([], {
@@ -90,18 +91,10 @@ function loadJcampFile(draft: Draft<State>, files) {
   draft.isLoading = false;
 }
 
-function handleLoadJsonFile(draft: Draft<State>, files) {
-  const data = JSON.parse(files[0].binary.toString());
-
-  for (const i in data.spectra) {
-    if (data.spectra[i].info?.dimension === 1) {
-      data.spectra[i] = initiateDatum1D(data.spectra[i]);
-    } else if (data.spectra[i].info?.dimension === 2) {
-      data.spectra[i] = initiateDatum2D(data.spectra[i]);
-    }
-  }
-
+function handleLoadJsonFile(draft: Draft<State>, actions) {
+  const data = actions.payload;
   setData(draft, data);
+
   const alignCenter = lodashGet(draft.preferences, 'display.center', null);
 
   changeSpectrumVerticalAlignment(draft, alignCenter, true);
@@ -126,12 +119,21 @@ function handleLoadZIPFile(draft: Draft<State>, action) {
   draft.isLoading = false;
 }
 
+function handleLoadNmredata(draft: Draft<State>, action) {
+  setData(draft, action.payload);
+  changeSpectrumVerticalAlignment(draft, false, true);
+  setActiveTab(draft);
+  initZoom1DHandler(draft.data);
+  draft.isLoading = false;
+}
+
 export {
   setIsLoading,
   initiate,
   loadJcampFile,
   loadJDFFile,
   handleLoadJsonFile,
+  handleLoadNmredata,
   handleLoadMOLFile,
   handleLoadZIPFile,
 };

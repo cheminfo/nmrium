@@ -48,8 +48,9 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
   }, [dispatch]);
 
   const handleDeleteAll = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted, Are You sure?', {
-      onYes: yesHandler,
+    modal.showConfirmDialog({
+      message: 'All records will be deleted, Are You sure?',
+      buttons: [{ text: 'Yes', handler: yesHandler }, { text: 'No' }],
     });
   }, [modal, yesHandler]);
 

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
+import { SvgLogoNmrium } from 'cheminfo-font';
 import { useMemo, useCallback } from 'react';
 import {
   FaRegWindowMaximize,
@@ -9,10 +10,11 @@ import {
 } from 'react-icons/fa';
 
 import { useChartData } from '../context/ChartContext';
-import ToolTip from '../elements/ToolTip/ToolTip';
+import Button from '../elements/ButtonToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useHelp } from '../elements/popup/Help';
 import { useModal, positions } from '../elements/popup/Modal';
+import AboutUsModal from '../modal/AboutUsModal';
 import UserManualModal from '../modal/UserManualModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
 import { options } from '../toolbar/ToolTypes';
@@ -60,8 +62,11 @@ const headerStyle = css`
   }
 
   .windowButton {
-    width: 40px !important;
-    min-width: 40px !important;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: transparent;
     border: none;
   }
@@ -70,36 +75,11 @@ const headerStyle = css`
   }
 `;
 
-export function Button({
-  title,
-  popupPlacement,
-  style,
-  className,
-  onClick,
-  children,
-  helpID = '',
-}) {
-  const help = useHelp();
-
-  return (
-    <ToolTip title={title} popupPlacement={popupPlacement} style={style}>
-      <button
-        type="button"
-        onClick={onClick}
-        className={className}
-        {...help.onHover}
-        data-helpid={helpID}
-      >
-        {children}
-      </button>
-    </ToolTip>
-  );
-}
-
 function Header({ isFullscreen, onMaximize }) {
   const { selectedOptionPanel } = useChartData();
   const modal = useModal();
   const alert = useAlert();
+  const help = useHelp();
 
   const selectedPanel = useMemo(() => {
     switch (selectedOptionPanel) {
@@ -139,30 +119,46 @@ function Header({ isFullscreen, onMaximize }) {
   const openUserManual = useCallback(() => {
     modal.show(<UserManualModal />, {
       isBackgroundBlur: false,
-      position: positions.TOP_CENTER,
+      position: positions.MIDDLE,
       enableResizing: true,
-      width: 800,
-      height: 600,
+      width: 1020,
+      height: 500,
+    });
+  }, [modal]);
+
+  const openAboutUs = useCallback(() => {
+    modal.show(<AboutUsModal />, {
+      isBackgroundBlur: false,
+      position: positions.MIDDLE,
+      width: 500,
+      height: 480,
     });
   }, [modal]);
 
   return (
     <div css={headerStyle}>
+      <Button
+        popupTitle="About Us"
+        popupPlacement="right"
+        style={{ width: '36px' }}
+        onClick={openAboutUs}
+        className="windowButton"
+      >
+        <SvgLogoNmrium />
+      </Button>
       <div className="toolOptionsPanel">{selectedPanel}</div>
       <div className="windowButtonsContainer">
         <Button
-          title="User Manual"
+          popupTitle="User Manual"
           popupPlacement="left"
-          style={{ mainContainer: { height: 'auto' } }}
           onClick={openUserManual}
           className="windowButton"
         >
           <FaQuestionCircle />
         </Button>
         <Button
-          title="General Settings"
+          popupTitle="General Settings"
           popupPlacement="left"
-          style={{ mainContainer: { height: 'auto' } }}
           onClick={openGeneralSettingsHandler}
           className="windowButton"
         >
@@ -170,12 +166,12 @@ function Header({ isFullscreen, onMaximize }) {
         </Button>
         {!isFullscreen ? (
           <Button
-            title="Full Screen"
+            popupTitle="Full Screen"
             popupPlacement="left"
-            style={{ mainContainer: { height: 'auto' } }}
             onClick={onMaximize}
             className="windowButton"
-            helpID="fullScreen"
+            data-helpid="fullScreen"
+            {...help.onHover}
           >
             <FaRegWindowMaximize />
           </Button>

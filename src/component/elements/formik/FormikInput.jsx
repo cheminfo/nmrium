@@ -48,7 +48,10 @@ function FormikInput({
       value={value ? value : lodashGet(values, name)}
       onChange={changeHandler}
       type={type}
-      style={{ input: { ...style, ...(isInvalid && { borderColor: 'red' }) } }}
+      style={{
+        ...style,
+        input: { ...style.input, ...(isInvalid && { borderColor: 'red' }) },
+      }}
       checkValue={checkValue}
       className={className}
       format={format}

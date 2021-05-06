@@ -109,4 +109,23 @@ declare module 'ml-spectra-processing' {
     data: { x: Array<any>; y: Array<any> },
     options: { from: number; fromIndex?: number; to: number; toIndex?: number },
   ): { x: number; y: number; index: number };
+
+  /**
+import { matrixMinMaxZ } from './matrixMinMaxZ';
+import { xHistogram } from '../x/xHistogram';
+ * Calculates an histogram of defined number of slots
+ * @param {Array<Array<Number>>} [matrix] - matrix [rows][cols].
+ * @param {number} [options.nbSlots=256] Number of slots
+ * @param {number} [options.min=minValue] Minimum value to calculate used to calculate slot size
+ * @param {number} [options.max=maxValue] Maximal value to calculate used to calculate slot size
+ * @param {number} [options.logBaseX] We can first apply a log on x axi
+ * @param {number} [options.logBaseY] We can apply a log on the resulting histogra
+ * @param {number} [options.centerX=true] Center the X value. We will enlarge the first and
+ * @return {DataXY} {x,y} of the histogram
+ *
+ */
+  declare function matrixHistogram(
+    matrix: Array<Array<number>>,
+    options: any = {},
+  ): { x: Array<number>; y: Array<number> };
 }

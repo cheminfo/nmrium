@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css, Global } from '@emotion/react';
+import { css } from '@emotion/react';
 import {
   useRef,
   useState,
@@ -16,10 +16,6 @@ import { SHIFT_SPECTRUM } from '../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
-
   text,
   input {
     -webkit-user-select: none; /* Safari 3.1+ */
@@ -180,8 +176,8 @@ function PeakNotation({
 
   return (
     <Fragment>
-      <Global styles={styles} />
       <g
+        css={styles}
         id={id}
         style={{ outline: 'none' }}
         transform={`translate(${x}, ${y})`}

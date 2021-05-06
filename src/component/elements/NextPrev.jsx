@@ -123,6 +123,7 @@ function NextPrev({ children, loop, defaultIndex, onChange }) {
         width: 100%;
         margin: 0 auto;
         overflow: hidden;
+        display: block;
       `}
       ref={ref}
     >

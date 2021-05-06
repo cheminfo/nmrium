@@ -323,8 +323,6 @@ function NMRium({
                               css={containerStyles}
                               onContextMenu={preventContextMenuHandler}
                             >
-                              <KeysListenerTracker />
-
                               <Header
                                 isFullscreen={isFullscreen}
                                 onMaximize={toggle}
@@ -338,6 +336,8 @@ function NMRium({
                                 }}
                               >
                                 <DropZone>
+                                  <KeysListenerTracker />
+
                                   <ToolBar selectedTool={selectedTool} />
                                   <SplitPane
                                     style={splitPaneStyles.container}
@@ -442,12 +442,13 @@ NMRium.propTypes = {
       hidePhaseCorrectionTool: PropTypes.bool,
       hideBaseLineCorrectionTool: PropTypes.bool,
       hideFFTTool: PropTypes.bool,
+      hideExclusionZonesTool: PropTypes.bool,
     }),
   }),
 };
 
 NMRium.defaultProps = {
-  docsBaseUrl: 'https://dev.nmrium.org/docs/v0',
+  docsBaseUrl: 'https://docs.nmrium.org',
   onDataChange: () => null,
   preferences: {
     general: {
@@ -484,6 +485,7 @@ NMRium.defaultProps = {
       hideBaseLineCorrectionTool: false,
       hideFFTTool: false,
       hideMultipleSpectraAnalysisTool: false,
+      hideExclusionZonesTool: false,
     },
   },
 };

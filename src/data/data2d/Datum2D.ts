@@ -12,6 +12,17 @@ import autoZonesDetection from './autoZonesDetection';
 
 export const usedColors2D: Array<string> = [];
 
+export interface File {
+  binary: ArrayBuffer;
+  name: string;
+  extension?: string;
+}
+
+export interface Source {
+  jcampURL: string;
+  file: File;
+}
+
 export interface Data2D {
   z: Array<Array<number>>;
   minX: number;
@@ -74,17 +85,14 @@ export interface Zone {
   kind: string;
 }
 
-export interface ZoneOption {
-  sum: number;
-}
 export interface Zones {
   values: Array<Partial<Zone>>;
-  options?: Partial<ZoneOption>;
+  options?: Partial<{ sum: number }>;
 }
 
 export interface Datum2D {
   id: string;
-  source: Partial<{ jcamp: string; jcampURL: string; original: Data2D }>;
+  source: Partial<Source>;
   display: Display;
   info: Partial<Info>;
   originalInfo?: Partial<Info>;
@@ -110,7 +118,7 @@ export function initiateDatum2D(options: any): Datum2D {
   );
   datum.display = Object.assign(
     {
-      name: options.display.name || generateID(),
+      name: options.display?.name ? options.display.name : generateID(),
       positiveColor: 'red',
       negativeColor: 'blue',
       ...getColor(options),
@@ -193,20 +201,22 @@ function getColor(options) {
   return {};
 }
 
-export function toJSON(datum: Datum2D) {
+export function toJSON(datum: Datum2D, forceIncludeData = false) {
   return {
-    data: datum.originalData,
     id: datum.id,
     source: {
-      jcamp: datum.source.jcamp,
       jcampURL: datum.source.jcampURL,
-      original: datum.source.jcampURL ? [] : datum.source.original,
     },
+    ...(!datum.source.jcampURL || forceIncludeData
+      ? {
+          data: datum.originalData,
+          info: datum.originalInfo,
+          meta: datum.meta,
+        }
+      : {}),
     zones: datum.zones,
     filters: datum.filters,
     display: datum.display,
-    info: datum.originalInfo,
-    meta: datum.meta,
   };
 }
 
@@ -505,6 +515,9 @@ export function getSubMatrix(datum, selectedZone) {
   let yIndexFrom = Math.floor((fromY - data.minY) / yStep);
   let xIndexTo = Math.floor((toX - data.minX) / xStep);
   let yIndexTo = Math.floor((toY - data.minY) / yStep);
+
+  if (xIndexFrom > xIndexTo) [xIndexFrom, xIndexTo] = [xIndexTo, xIndexFrom];
+  if (yIndexFrom > yIndexTo) [yIndexFrom, yIndexTo] = [yIndexTo, yIndexFrom];
 
   let dataMatrix: any = {
     z: [],

@@ -1,8 +1,9 @@
 import get from 'lodash/get';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
+import ContoursWrapper from '../hoc/ContoursWrapper';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
@@ -70,9 +71,7 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
   );
 }
 
-function Contours() {
-  const { data, displayerKey } = useChartData();
-
+function Contours({ data, displayerKey }) {
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
       {data
@@ -99,4 +98,4 @@ function Contours() {
   );
 }
 
-export default Contours;
+export default ContoursWrapper(memo(Contours));

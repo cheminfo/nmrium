@@ -1,4 +1,8 @@
-import { SvgNmrOverlay, SvgNmrAddFilter } from 'cheminfo-font';
+import {
+  SvgNmrOverlay,
+  SvgNmrAddFilter,
+  SvgNmrExportAsMatrix,
+} from 'cheminfo-font';
 import { useCallback, useState, useRef, memo, useMemo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
@@ -12,6 +16,7 @@ import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
+import ExportAsMatrixModal from '../../modal/ExportAsMatrixModal';
 import MultipleSpectraFiltersModal from '../../modal/MultipleSpectraFiltersModal';
 import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
@@ -98,6 +103,15 @@ function MultipleSpectraAnalysisPanel({ spectraAnalysis, activeTab }) {
     }
   }, [activeTab, alert, spectraAnalysis]);
 
+  const openExportAsMatrixModal = useCallback(() => {
+    dispatch({ type: RESET_SELECTED_TOOL });
+    modal.show(<ExportAsMatrixModal />, {
+      isBackgroundBlur: false,
+      position: positions.TOP_CENTER,
+      width: 500,
+    });
+  }, [modal, dispatch]);
+
   return (
     <div style={styles.container}>
       {!isFlipped && (
@@ -135,6 +149,12 @@ function MultipleSpectraAnalysisPanel({ spectraAnalysis, activeTab }) {
             onClick={openFiltersModal}
           >
             <SvgNmrAddFilter style={{ fontSize: '18px' }} />
+          </Button>
+          <Button
+            popupTitle="Export spectra as a Matrix"
+            onClick={openExportAsMatrixModal}
+          >
+            <SvgNmrExportAsMatrix />
           </Button>
         </DefaultPanelHeader>
       )}

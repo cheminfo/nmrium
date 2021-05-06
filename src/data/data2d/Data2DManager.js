@@ -8,30 +8,18 @@ export function fromParsedJcamp(parsedJcamp, options = {}) {
     info,
     meta,
     data,
-    source: {
-      jcamp: null,
-      jcampURL:
-        options.source && options.source.jcampURL
-          ? options.source.jcampURL
-          : null,
-      original: data,
-    },
   });
   return ob;
 }
 
 export function fromBruker(result, options = {}) {
-  const { dependentVariables, meta } = result;
+  const { dependentVariables, meta, source } = result;
   let data = dependentVariables[0].components;
   const datum2D = initiateDatum2D({
     ...options,
+    source,
     meta,
     data,
-    source: {
-      jcamp: null,
-      jcampURL: null,
-      original: data,
-    },
   });
 
   return datum2D;

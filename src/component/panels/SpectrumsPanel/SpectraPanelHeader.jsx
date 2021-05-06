@@ -4,21 +4,18 @@ import {
   FaCreativeCommonsSamplingPlus,
   FaEye,
   FaEyeSlash,
-  FaFileExport,
 } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
-import { positions, useModal } from '../../elements/popup/Modal';
+import { useModal } from '../../elements/popup/Modal';
 import SpectraWraper from '../../hoc/SpectraWraper';
-import ExportAsMatrixModal from '../../modal/ExportAsMatrixModal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MISSING_PROJECTION,
   CHANGE_VISIBILITY,
   DELETE_SPECTRA,
-  RESET_SELECTED_TOOL,
   RESET_SPECTRA_SCALE,
   SET_SPECTRA_SAME_TOP,
 } from '../../reducer/types/Types';
@@ -36,10 +33,17 @@ function SpectraPanelHeader({
   const dispatch = useDispatch();
 
   const handleDelete = useCallback(() => {
-    modal.showConfirmDialog('All records will be deleted, Are You sure?', {
-      onYes: () => {
-        dispatch({ type: DELETE_SPECTRA });
-      },
+    modal.showConfirmDialog({
+      message: 'All records will be deleted, Are You sure?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            dispatch({ type: DELETE_SPECTRA });
+          },
+        },
+        { text: 'No' },
+      ],
     });
   }, [dispatch, modal]);
 
@@ -82,15 +86,6 @@ function SpectraPanelHeader({
     dispatch({ type: RESET_SPECTRA_SCALE });
   }, [dispatch]);
 
-  const openExportAsMatrixModal = useCallback(() => {
-    dispatch({ type: RESET_SELECTED_TOOL });
-    modal.show(<ExportAsMatrixModal />, {
-      isBackgroundBlur: false,
-      position: positions.TOP_CENTER,
-      width: 500,
-    });
-  }, [modal, dispatch]);
-
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
@@ -118,12 +113,6 @@ function SpectraPanelHeader({
           </Button>
           <Button popupTitle="Same Top" onClick={setSameTopHandler}>
             <SvgNmrSameTop />
-          </Button>
-          <Button
-            popupTitle="Export spectra as a Matrix"
-            onClick={openExportAsMatrixModal}
-          >
-            <FaFileExport />
           </Button>
         </>
       )}

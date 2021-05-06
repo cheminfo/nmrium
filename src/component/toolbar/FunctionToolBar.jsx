@@ -314,6 +314,23 @@ function FunctionToolBar({
               </ToolTip>
             </ToggleButton>
           )}
+
+        {displayerMode === DISPLAYER_MODE.DM_1D &&
+          isButtonVisible('hideExclusionZonesTool') && (
+            <ToggleButton
+              key={options.exclusionZones.id}
+              value={options.exclusionZones.id}
+              className="cheminfo"
+            >
+              <ToolTip
+                title={options.exclusionZones.label}
+                popupPlacement="right"
+                offset={{ x: 10, y: 0 }}
+              >
+                <SvgNmrMultipleAnalysis />
+              </ToolTip>
+            </ToggleButton>
+          )}
       </ToggleButtonGroup>
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&

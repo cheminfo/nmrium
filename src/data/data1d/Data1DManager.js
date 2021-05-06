@@ -1,7 +1,7 @@
 import { initiateDatum1D } from './Datum1D';
 
 export function fromBruker(result, options = {}) {
-  const { dependentVariables, info, meta } = result;
+  const { dependentVariables, info, meta, source } = result;
   let data = getData(dependentVariables[0].components);
   if (data.im) info.isComplex = true;
 
@@ -9,14 +9,10 @@ export function fromBruker(result, options = {}) {
 
   const datum1D = initiateDatum1D({
     ...options,
+    source,
     info,
     meta,
     data,
-    source: {
-      jcamp: null,
-      jcampURL: null,
-      original: data,
-    },
   });
 
   return datum1D;
@@ -68,13 +64,7 @@ export function fromCSD(result, options = {}) {
 
   const datum1D = initiateDatum1D({
     ...options,
-    meta: options.meta,
     data,
-    source: {
-      jcamp: null,
-      jcampURL: null,
-      original: data,
-    },
   });
   return datum1D;
 }
@@ -83,19 +73,12 @@ export function fromParsedJcamp(parsedJcamp, options = {}) {
   const { dependentVariables, info, meta } = parsedJcamp;
   let data = getData(dependentVariables[0].components);
   if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
+
   const datum1D = initiateDatum1D({
     ...options,
     info,
     meta,
     data,
-    source: {
-      jcamp: null,
-      jcampURL:
-        options.source && options.source.jcampURL
-          ? options.source.jcampURL
-          : null,
-      original: data,
-    },
   });
 
   return datum1D;

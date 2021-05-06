@@ -4,6 +4,7 @@ import checkModifierKeyActivated from '../../data/utilities/checkModifierKeyActi
 import { useAssignmentData } from '../assignment';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
+import { useLoader } from '../context/LoaderContext';
 import { useAlert } from '../elements/popup/Alert';
 import { TYPES, useHighlightData } from '../highlight/index';
 import useExport from '../hooks/useExport';
@@ -16,6 +17,7 @@ import {
   DELETE_PEAK_NOTATION,
   DELETE_RANGE,
   DELETE_2D_ZONE,
+  DELETE_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
@@ -28,14 +30,20 @@ function KeysListenerTracker() {
   } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
+  const loader = useLoader();
+
   const {
     handleChangeOption,
     handleFullZoomOut,
     alignSpectrumsVerticallyHandler,
-    handleChangeDisplayViewMode,
+    changeDisplayViewModeHandler,
   } = useToolsFunctions();
 
-  const { saveToClipboardHandler, saveAsJSONHandler } = useExport();
+  const {
+    saveToClipboardHandler,
+    saveAsJSONHandler,
+    saveAsHandler,
+  } = useExport();
 
   const { highlight } = useHighlightData();
   const assignmentData = useAssignmentData();
@@ -81,6 +89,15 @@ function KeysListenerTracker() {
             payload: {
               id: data.activeKey,
               assignmentData,
+            },
+          });
+          break;
+        }
+        case TYPES.EXCLUSION_ZONE: {
+          dispatch({
+            type: DELETE_EXCLUSION_ZONE,
+            payload: {
+              id: data.activeKey,
             },
           });
           break;
@@ -182,7 +199,7 @@ function KeysListenerTracker() {
           }
           case 's': {
             if (allow1DTool) {
-              handleChangeDisplayViewMode();
+              changeDisplayViewModeHandler();
             }
             break;
           }
@@ -200,13 +217,17 @@ function KeysListenerTracker() {
             saveAsJSONHandler();
             e.preventDefault();
             break;
+          case 'o':
+            loader.open();
+            e.preventDefault();
+            break;
           default:
         }
       }
       if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
         switch (e.key) {
           case 'S':
-            saveAsJSONHandler(2, false);
+            saveAsHandler();
             e.preventDefault();
             break;
           default:
@@ -217,9 +238,11 @@ function KeysListenerTracker() {
       alignSpectrumsVerticallyHandler,
       allow1DTool,
       allow2DTool,
-      handleChangeDisplayViewMode,
+      changeDisplayViewModeHandler,
       handleChangeOption,
       handleFullZoomOut,
+      loader,
+      saveAsHandler,
       saveAsJSONHandler,
       saveToClipboardHandler,
     ],
@@ -231,7 +254,6 @@ function KeysListenerTracker() {
         highlighted: [activeKey],
         type,
       } = highlight;
-
       if (
         !['input', 'textarea'].includes(e.target.localName) &&
         overDisplayer

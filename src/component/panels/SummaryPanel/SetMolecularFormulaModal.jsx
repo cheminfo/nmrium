@@ -102,7 +102,7 @@ function SetMolecularFormulaModal({ onClose, onSave, molecules, previousMF }) {
 
   return (
     <div css={modalContainer}>
-      <div className="header">
+      <div className="header handle">
         <CloseButton onClick={onClose} />
       </div>
       <div>

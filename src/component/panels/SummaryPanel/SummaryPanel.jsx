@@ -5,7 +5,7 @@ import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
-import SelectUncontrolled from '../../elements/SelectUncontrolled';
+import Select from '../../elements/Select';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
@@ -413,7 +413,7 @@ function SummaryPanel() {
           <Overview correlationsData={correlationsData} />
         </div>
         <div className="homoHeteroKinds-container">
-          <SelectUncontrolled
+          <Select
             onChange={(selection) => {
               setSelectedAdditionalColumnsAtomType(selection);
               if (selection === 'H-H') {
@@ -423,7 +423,7 @@ function SummaryPanel() {
               }
             }}
             data={additionalColumnTypes}
-            value={selectedAdditionalColumnsAtomType}
+            defaultValue={selectedAdditionalColumnsAtomType}
             style={{
               width: '65px',
               height: '20px',

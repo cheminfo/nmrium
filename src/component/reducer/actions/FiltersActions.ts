@@ -9,20 +9,16 @@ import {
   Datum2D,
   updateShift as update2dShift,
 } from '../../../data/data2d/Datum2D';
-import { options } from '../../toolbar/ToolTypes';
+import nucluesToString from '../../utility/nucluesToString';
 import { State } from '../Reducer';
 import getClosestNumber from '../helper/GetClosestNumber';
 import ZoomHistory from '../helper/ZoomHistory';
 
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
+import { resetSelectedTool } from './ToolsActions';
 
-function setDataByFilters(draft: Draft<State>, hideOptionPanel = true) {
-  if (hideOptionPanel) {
-    draft.selectedOptionPanel = null;
-    draft.selectedTool = options.zoom.id;
-  }
-  const datum = draft.data[draft.activeSpectrum.index] as Datum1D;
+function setDataBy1DFilter(datum: Datum1D) {
   datum.data.y = datum.data.re;
 }
 
@@ -35,7 +31,8 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
       { name: Filters.shiftX.id, options: shiftValue },
     ]);
     updateXShift(draft.data[index] as Datum1D);
-    setDataByFilters(draft);
+    resetSelectedTool(draft);
+    setDataBy1DFilter(draft.data[index] as Datum1D);
     setDomain(draft);
   }
 }
@@ -52,7 +49,8 @@ function applyZeroFillingFilter(draft: Draft<State>, filterOptions) {
       },
     ];
     FiltersManager.applyFilter(draft.data[index], filters);
-    setDataByFilters(draft);
+    resetSelectedTool(draft);
+    setDataBy1DFilter(draft.data[index] as Datum1D);
     setDomain(draft);
     setMode(draft);
   }
@@ -67,7 +65,8 @@ function applyFFTFilter(draft: Draft<State>) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.fft.id, options: {} },
     ]);
-    setDataByFilters(draft);
+    resetSelectedTool(draft);
+    setDataBy1DFilter(draft.data[index] as Datum1D);
     changeSpectrumVerticalAlignment(draft, false, true);
 
     setDomain(draft);
@@ -88,7 +87,8 @@ function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
       { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
     ]);
 
-    setDataByFilters(draft);
+    resetSelectedTool(draft);
+    setDataBy1DFilter(draft.data[index] as Datum1D);
     draft.tempData = null;
     setDomain(draft);
   }
@@ -99,7 +99,8 @@ function applyAbsoluteFilter(draft: Draft<State>) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.absolute.id, options: {} },
     ]);
-    setDataByFilters(draft);
+    resetSelectedTool(draft);
+    setDataBy1DFilter(draft.data[index] as Datum1D);
     draft.tempData = null;
     setDomain(draft);
   }
@@ -123,7 +124,8 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
     ]);
-    setDataByFilters(draft);
+    resetSelectedTool(draft);
+    setDataBy1DFilter(draft.data[index] as Datum1D);
     draft.tempData = null;
     setDomain(draft);
   }
@@ -159,11 +161,12 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
 
     if (draft.data[index].info?.dimension === 1) {
       updateXShift(draft.data[index] as Datum1D);
+      setDataBy1DFilter(draft.data[index] as Datum1D);
     } else if (draft.data[index].info?.dimension === 2) {
       update2dShift(draft.data[index] as Datum2D);
     }
 
-    setDataByFilters(draft, false);
+    resetSelectedTool(draft);
     setDomain(draft);
     setMode(draft);
 
@@ -179,20 +182,48 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
   }
 }
 
-function deleteFilter(draft: Draft<State>, filterID) {
+function deleteFilter(draft: Draft<State>, actions) {
+  const filterID = actions.payload.id;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-
     //apply filter into the spectrum
     FiltersManager.deleteFilter(draft.data[index], filterID);
 
     if (draft.data[index].info?.dimension === 1) {
       updateXShift(draft.data[index] as Datum1D);
+      setDataBy1DFilter(draft.data[index] as Datum1D);
     } else if (draft.data[index].info?.dimension === 2) {
       update2dShift(draft.data[index] as Datum2D);
     }
 
-    setDataByFilters(draft, false);
+    resetSelectedTool(draft);
+    setDomain(draft);
+    setMode(draft);
+  }
+}
+function deleteSpectraFilter(draft: Draft<State>, actions) {
+  const filterType = actions.payload.filterType;
+
+  if (draft.activeTab) {
+    for (const datum of draft.data) {
+      if (nucluesToString(datum?.info?.nucleus) === draft.activeTab) {
+        const filtersResult =
+          datum.filters?.filter((filter) => filter.name === filterType) || [];
+
+        filtersResult.forEach((filter) => {
+          FiltersManager.deleteFilter(datum, filter.id);
+
+          if (datum.info?.dimension === 1) {
+            updateXShift(datum as Datum1D);
+            setDataBy1DFilter(datum as Datum1D);
+          } else if (datum.info?.dimension === 2) {
+            update2dShift(datum as Datum2D);
+          }
+        });
+      }
+    }
+
+    resetSelectedTool(draft);
     setDomain(draft);
     setMode(draft);
   }
@@ -212,7 +243,8 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
     draft.baseLineZones = [];
     const xDomainSnapshot = draft.xDomain.slice();
 
-    setDataByFilters(draft);
+    resetSelectedTool(draft);
+    setDataBy1DFilter(draft.data[index] as Datum1D);
     setDomain(draft);
     draft.xDomain = xDomainSnapshot;
   }
@@ -221,41 +253,50 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
 function filterSnapshotHandler(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum.index;
-
+    const datum = draft.data[index] as Datum1D | Datum2D;
     if (action.id) {
-      const filterIndex = (draft.data[index] as Datum1D).filters.findIndex(
-        (f) => f.id === action.id,
-      );
-      const filters = (draft.data[index] as Datum1D).filters.slice(
-        0,
-        filterIndex + 1,
-      );
-      FiltersManager.reapplyFilters(draft.data[index], filters);
+      const filterIndex = datum.filters.findIndex((f) => f.id === action.id);
+      const filters = datum.filters.slice(0, filterIndex + 1);
+      FiltersManager.reapplyFilters(datum, filters);
     } else {
       //close filter snapshot mode and replay all enabled filters
-      FiltersManager.reapplyFilters(draft.data[index]);
+      FiltersManager.reapplyFilters(datum);
+    }
+
+    if (datum.info?.dimension === 1) {
+      updateXShift(datum as Datum1D);
+      setDataBy1DFilter(datum as Datum1D);
+    } else if (datum.info?.dimension === 2) {
+      update2dShift(datum as Datum2D);
     }
     // const activeObject = AnalysisObj.getDatum(id);
 
-    setDataByFilters(draft);
+    resetSelectedTool(draft);
     setDomain(draft);
     setMode(draft);
   }
 }
 
-function handleFromToFilter(draft: Draft<State>, action) {
+function handleMultipleSpectraFilter(draft: Draft<State>, action) {
   if (draft.data && draft.data.length > 0) {
     for (let datum of draft.data) {
       if (
         datum.info?.dimension === 1 &&
-        datum.info.nucleus === draft.activeTab
+        datum.info.nucleus === draft.activeTab &&
+        Array.isArray(action.payload)
       ) {
-        FiltersManager.applyFilter(datum, [
-          {
-            name: Filters.fromTo.id,
-            options: action.payload,
-          },
-        ]);
+        const filters = action.payload.map((filter) => {
+          if (filter.name === Filters.equallySpaced.id) {
+            const exclusions = draft.exclusionZones[draft.activeTab] || [];
+            return {
+              ...filter,
+              options: { ...filter.options, exclusions },
+            };
+          }
+          return filter;
+        });
+
+        FiltersManager.applyFilter(datum, filters);
         (datum as Datum1D).data.y = (datum as Datum1D).data.re;
       }
     }
@@ -271,9 +312,10 @@ export {
   applyAutoPhaseCorrectionFilter,
   applyAbsoluteFilter,
   calculateManualPhaseCorrection,
-  handleFromToFilter,
+  handleMultipleSpectraFilter,
   enableFilter,
   deleteFilter,
+  deleteSpectraFilter,
   handleBaseLineCorrectionFilter,
   filterSnapshotHandler,
 };

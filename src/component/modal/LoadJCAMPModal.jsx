@@ -60,13 +60,14 @@ function LoadJCAMPModal({ onLoadClick, onClose, startLoading }) {
   const loadJCAMPHandler = useCallback(() => {
     // ./data/xtc/XTC-814d_zg30.jdx
     const path = pathReft.current.value;
-    const meta = extractFileMetaFromPath(path);
-    if (allowedExtensions.includes(meta.extension)) {
+    const { name, extension } = extractFileMetaFromPath(path);
+    if (allowedExtensions.includes(extension)) {
       startLoading();
-      loadFile(path).then((data) => {
+      loadFile(path, { asBuffer: true }).then((data) => {
         const file = {
           binary: data,
-          name: meta.name,
+          name,
+          extension,
           jcampURL: path,
         };
         onLoadClick(file);

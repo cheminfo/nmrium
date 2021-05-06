@@ -5,6 +5,7 @@ import lodashGet from 'lodash/get';
 import { Datum1D } from '../../../data/data1d/Datum1D';
 import { Datum2D } from '../../../data/data2d/Datum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import nucluesToString from '../../utility/nucluesToString';
 import { State } from '../Reducer';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 
@@ -95,10 +96,6 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
       }, {}),
     };
   }
-}
-
-function nucluesToString(nuclues) {
-  return typeof nuclues === 'string' ? nuclues : nuclues.join(',');
 }
 
 function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {

@@ -63,7 +63,7 @@ const IMPORT_MENU = [
   {
     id: 'importFile',
     icon: <FaFile />,
-    label: 'Import from file system',
+    label: 'Import from file system (Press Ctrl + O)',
   },
   {
     id: 'importJDX',
@@ -88,6 +88,11 @@ const EXPORT_MENU = [
     label: 'Save data ( Press Ctrl + S )',
   },
   {
+    id: 'advance_save',
+    icon: <FaFileDownload />,
+    label: 'Save data as  ( Press Ctrl + Shift + S )',
+  },
+  {
     id: 'nmre',
     icon: <FaFileDownload />,
     label: 'Save NMRE data',
@@ -95,7 +100,7 @@ const EXPORT_MENU = [
   {
     id: 'copy',
     icon: <FaCopy />,
-    label: 'Copy image to Clipboard ( Press Ctrl + C',
+    label: 'Copy image to Clipboard ( Press Ctrl + C )',
   },
 ];
 
@@ -107,11 +112,10 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
   const loader = useLoader();
 
   const {
-    isStacked,
     isRealSpectrumShown,
 
     changeSpectrumViewHandler,
-    handleChangeDisplayViewMode,
+    changeDisplayViewModeHandler,
     alignSpectrumsVerticallyHandler,
   } = useToolsFunctions();
 
@@ -121,6 +125,7 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
     saveAsJSONHandler,
     saveAsNMREHandler,
     saveToClipboardHandler,
+    saveAsHandler,
   } = useExport();
 
   const selectedSpectrumInfo = { isComplex: false, isFid: false, ...info };
@@ -191,6 +196,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
         case 'json':
           saveAsJSONHandler();
           break;
+        case 'advance_save':
+          saveAsHandler();
+          break;
         case 'nmre':
           saveAsNMREHandler();
           break;
@@ -206,6 +214,7 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
       saveAsSVGHandler,
       saveAsPNGHandler,
       saveAsJSONHandler,
+      saveAsHandler,
       saveAsNMREHandler,
       saveToClipboardHandler,
     ],
@@ -240,10 +249,17 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
             type="button"
             css={styles}
             className="cheminfo"
-            onClick={handleChangeDisplayViewMode}
+            onClick={changeDisplayViewModeHandler}
           >
-            <ToolTip title="Spectra alignment" popupPlacement="right">
-              {!isStacked ? <SvgNmrOverlay3Aligned /> : <SvgNmrOverlay3 />}
+            <ToolTip
+              title="Spectra alignment ( Press s )"
+              popupPlacement="right"
+            >
+              {verticalAlign.stacked ? (
+                <SvgNmrOverlay3Aligned />
+              ) : (
+                <SvgNmrOverlay3 />
+              )}
             </ToolTip>
           </button>
         )}
@@ -277,7 +293,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
           >
             <ToolTip
               title={
-                !verticalAlign.flag ? 'Baseline  Center' : 'Baseline  Bottom'
+                !verticalAlign.flag
+                  ? 'Baseline  Center ( Press c )'
+                  : 'Baseline  Bottom ( Press c )'
               }
               popupPlacement="right"
             >

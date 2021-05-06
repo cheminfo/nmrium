@@ -29,6 +29,7 @@ import {
   SET_DIMENSIONS,
   ADD_RANGE,
   ANALYZE_SPECTRA,
+  ADD_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -161,13 +162,7 @@ function Viewer1D({ emptyText = undefined }) {
               ...brushData,
             });
             break;
-          default:
-            propagateEvent(brushData);
 
-            break;
-        }
-      } else {
-        switch (selectedTool) {
           case options.baseLineCorrection.id:
             dispatch({
               type: ADD_BASE_LINE_ZONE,
@@ -175,6 +170,20 @@ function Viewer1D({ emptyText = undefined }) {
             });
             break;
 
+          case options.exclusionZones.id:
+            dispatch({
+              type: ADD_EXCLUSION_ZONE,
+              payload: { from: brushData.startX, to: brushData.endX },
+            });
+            break;
+
+          default:
+            propagateEvent(brushData);
+
+            break;
+        }
+      } else {
+        switch (selectedTool) {
           default:
             if (selectedTool != null) {
               dispatch({ type: BRUSH_END, ...brushData });

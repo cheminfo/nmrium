@@ -7,10 +7,12 @@ import { REFERENCES } from '../../../data/constants/References';
 import { useDispatch } from '../../context/DispatchContext';
 import CloseButton from '../../elements/CloseButton';
 import Select from '../../elements/Select';
-import { APPLY_FROM_TO_FILTER } from '../../reducer/types/Types';
+import FormikForm from '../../elements/formik/FormikForm';
+import { APPLY_MULTIPLE_SPECTRA_FILTER } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { ModalStyles } from '../ModalStyle';
 
+import EquallySpacedFilter from './EquallySpacedFilter';
 import FromToFilter from './FromToFilter';
 
 const baseList = [
@@ -19,6 +21,26 @@ const baseList = [
     key: Filters.fromTo.id,
     value: Filters.fromTo.id,
     label: Filters.fromTo.name,
+  },
+  {
+    key: Filters.equallySpaced.id,
+    value: Filters.equallySpaced.id,
+    label: Filters.equallySpaced.name,
+  },
+  {
+    key: Filters.standardDeviation.id,
+    value: Filters.standardDeviation.id,
+    label: Filters.standardDeviation.name,
+  },
+  {
+    key: Filters.centerMean.id,
+    value: Filters.centerMean.id,
+    label: Filters.centerMean.name,
+  },
+  {
+    key: Filters.pareto.id,
+    value: Filters.pareto.id,
+    label: Filters.pareto.name,
   },
 ];
 
@@ -54,12 +76,10 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
 
   const submitHandler = useCallback(
     (options) => {
-      switch (filter) {
-        case Filters.fromTo.id:
-          return dispatch({ type: APPLY_FROM_TO_FILTER, payload: options });
-        default:
-          break;
-      }
+      dispatch({
+        type: APPLY_MULTIPLE_SPECTRA_FILTER,
+        payload: [{ name: filter, options }],
+      });
 
       onClose();
     },
@@ -69,7 +89,9 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
   useEffect(() => {
     Events.on('brushEnd', (event) => {
       const [from, to] = event.range;
-      refForm.current.setValues({ ...refForm.current.values, from, to });
+      if (refForm.current) {
+        refForm.current.setValues({ ...refForm.current.values, from, to });
+      }
     });
 
     return () => {
@@ -85,6 +107,8 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
     switch (filter) {
       case Filters.fromTo.id:
         return <FromToFilter onSubmit={submitHandler} ref={refForm} />;
+      case Filters.equallySpaced.id:
+        return <EquallySpacedFilter onSubmit={submitHandler} ref={refForm} />;
       default:
         break;
     }
@@ -106,7 +130,13 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
             onChange={filterChangeHandler}
           />
         </div>
-        {filterOptions}
+        {filterOptions || (
+          <FormikForm
+            ref={refForm}
+            initialValues={{}}
+            onSubmit={submitHandler}
+          />
+        )}
       </div>
       <div className="footer-container">
         <button type="button" onClick={handleSave} className="save-button">

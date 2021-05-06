@@ -24,6 +24,8 @@ const styles = css`
   padding: 2px;
   background-color: white;
   width: 150px;
+  pointer-events: all;
+
   button {
     background-color: transparent;
     border: none;

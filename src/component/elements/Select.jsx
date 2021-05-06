@@ -21,7 +21,6 @@ const Select = forwardRef(function Select(
   );
 
   const styles = css`
-    position: relative;
     padding: 0px 5px;
     border: 0.55px solid #cacaca;
     font-size: 14px;

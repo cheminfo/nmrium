@@ -1,4 +1,5 @@
 import BaseLineZones from './BaseLineZones';
+import ExclusionZones from './ExclusionZones';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
 import PeaksNotations from './PeaksNotations';
@@ -31,6 +32,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <Ranges />
       <MultiAnalysisRanges />
       <BaseLineZones />
+      <ExclusionZones />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid mode={mode} />

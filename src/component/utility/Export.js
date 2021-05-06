@@ -80,8 +80,14 @@ async function exportAsJSON(
     try {
       const zip = new JSZip();
       zip.file(`${fileName}.nmrium`, fileData);
-      const blob = await zip.generateAsync({ type: 'blob' });
-      saveAs(blob, `${fileName}.zip`);
+      const blob = await zip.generateAsync({
+        type: 'blob',
+        compression: 'DEFLATE',
+        compressionOptions: {
+          level: 9,
+        },
+      });
+      saveAs(blob, `${fileName}.nmrium`);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
@@ -93,21 +99,33 @@ function exportAsMatrix(data, options, fileName = 'experiment') {
   // eslint-disable-next-line no-unused-vars
   const { from, to, nbPoints } = options;
 
-  // your code
+  //columns labels
+  const columnsLables = ['name', 'experiment'];
+  for (const value of data[0].data.x) {
+    columnsLables.push(value);
+  }
+  let matrix = `${columnsLables.join('\t')}\n`;
 
-  const exportData = JSON.stringify(
-    data,
-    (key, value) => (ArrayBuffer.isView(value) ? Array.from(value) : value),
-    2,
-  );
+  for (const spectrum of data) {
+    const {
+      data: { re },
+      info: { experiment },
+      display: { name },
+    } = spectrum;
+    const cellsValues = [name, experiment];
+    for (const value of re) {
+      cellsValues.push(value);
+    }
+    matrix += `${cellsValues.join('\t')}\n`;
+  }
 
-  const blob = new Blob([exportData], { type: 'text/plain' });
+  const blob = new Blob([matrix], { type: 'text/tab-separated-values' });
   saveAs(blob, `${fileName}.tsv`);
 }
 
 function exportAsNMRE(data, fileName = 'experiment') {
   data.generateAsync({ type: 'blob' }).then((content) => {
-    saveAs(content, `${fileName}.zip`);
+    saveAs(content, `${fileName}.nmredata`);
   });
 }
 

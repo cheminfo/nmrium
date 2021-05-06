@@ -7,6 +7,7 @@ import * as SpectraManager from '../../data/SpectraManager';
 import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
+import { nmredataToNmrium } from '../utility/nmredataToNmrium';
 
 import * as CorrelationsActions from './actions/CorrelationsActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
@@ -90,6 +91,7 @@ export const initialState = {
   displayerKey: '',
   ZoomHistory: {},
   overDisplayer: false,
+  exclusionZones: {},
 };
 
 export interface State {
@@ -137,9 +139,11 @@ export interface State {
   spectraAnalysis: any;
   displayerKey: any;
   correlations: Types.CorrelationData;
-  actionType: null;
   ZoomHistory: any;
   overDisplayer: boolean;
+  exclusionZones: {
+    [key: string]: Array<{ id: string; from: number; to: number }>;
+  };
 }
 
 export function dispatchMiddleware(dispatch) {
@@ -157,6 +161,14 @@ export function dispatchMiddleware(dispatch) {
         }
         break;
       }
+      case types.LOAD_JSON_FILE: {
+        const data = JSON.parse(action.files[0].binary.toString());
+        void SpectraManager.fromJSON(data.spectra).then((spectra) => {
+          action.payload = Object.assign(data, { spectra });
+          dispatch(action);
+        });
+        break;
+      }
       case types.LOAD_ZIP_FILE: {
         for (let zipFile of action.files) {
           void SpectraManager.addBruker(
@@ -167,6 +179,13 @@ export function dispatchMiddleware(dispatch) {
             dispatch(action);
           });
         }
+        break;
+      }
+      case types.LOAD_NMREDATA_FILE: {
+        void nmredataToNmrium(action.file).then((data) => {
+          action.payload = data;
+          dispatch(action);
+        });
         break;
       }
       case types.PREDICT_SPECTRA: {
@@ -195,7 +214,7 @@ function innerSpectrumReducer(draft, action) {
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
     case types.LOAD_JSON_FILE:
-      return LoadActions.handleLoadJsonFile(draft, action.files);
+      return LoadActions.handleLoadJsonFile(draft, action);
     case types.LOAD_JCAMP_FILE:
       return LoadActions.loadJcampFile(draft, action.files);
     case types.LOAD_JDF_FILE:
@@ -204,6 +223,8 @@ function innerSpectrumReducer(draft, action) {
       return LoadActions.handleLoadMOLFile(draft, action.files);
     case types.LOAD_ZIP_FILE:
       return LoadActions.handleLoadZIPFile(draft, action);
+    case types.LOAD_NMREDATA_FILE:
+      return LoadActions.handleLoadNmredata(draft, action);
     case types.ADD_PEAK:
       return PeaksActions.addPeak(draft, action.mouseCoordinates);
     case types.ADD_PEAKS:
@@ -273,11 +294,13 @@ function innerSpectrumReducer(draft, action) {
     case types.ENABLE_FILTER:
       return FiltersActions.enableFilter(draft, action.id, action.checked);
     case types.DELETE_FILTER:
-      return FiltersActions.deleteFilter(draft, action.id);
+      return FiltersActions.deleteFilter(draft, action);
+    case types.DELETE_SPECTRA_FILTER:
+      return FiltersActions.deleteSpectraFilter(draft, action);
     case types.SET_FILTER_SNAPSHOT:
       return FiltersActions.filterSnapshotHandler(draft, action);
-    case types.APPLY_FROM_TO_FILTER:
-      return FiltersActions.handleFromToFilter(draft, action);
+    case types.APPLY_MULTIPLE_SPECTRA_FILTER:
+      return FiltersActions.handleMultipleSpectraFilter(draft, action);
 
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);
@@ -305,7 +328,7 @@ function innerSpectrumReducer(draft, action) {
       return ToolsActions.resetSpectraScale(draft);
 
     case types.CHANGE_SPECTRUM_DISPLAY_VIEW_MODE:
-      return ToolsActions.handleChangeSpectrumDisplayMode(draft, action);
+      return ToolsActions.handleChangeSpectrumDisplayMode(draft);
 
     case types.ADD_MOLECULE:
       return MoleculeActions.addMoleculeHandler(draft, action.molfile);
@@ -385,6 +408,11 @@ function innerSpectrumReducer(draft, action) {
       return ToolsActions.handleAddBaseLineZone(draft, action.zone);
     case types.DELETE_BASE_LINE_ZONE:
       return ToolsActions.handleDeleteBaseLineZone(draft, action.id);
+    case types.ADD_EXCLUSION_ZONE:
+      return ToolsActions.handleAddExclusionZone(draft, action);
+    case types.DELETE_EXCLUSION_ZONE:
+      return ToolsActions.handleDeleteExclusionZone(draft, action);
+
     case types.APPLY_BASE_LINE_CORRECTION_FILTER:
       return FiltersActions.handleBaseLineCorrectionFilter(draft, action);
     case types.SET_KEY_PREFERENCES:

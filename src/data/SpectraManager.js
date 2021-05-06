@@ -4,19 +4,19 @@ import * as Data1DManager from './data1d/Data1DManager';
 import * as Datum1D from './data1d/Datum1D';
 import * as Data2DManager from './data2d/Data2DManager';
 import * as Datum2D from './data2d/Datum2D';
+import * as Molecule from './molecules/Molecule';
 
 export function addJcampFromURL(spectra, jcampURL, options) {
   // { credentials: 'include' }
   return fetch(jcampURL)
-    .then((response) => response.text())
+    .then((response) => response.arrayBuffer())
     .then((jcamp) => {
       addJcamp(spectra, jcamp, options);
     });
 }
 
 export function addJcamp(spectra, jcamp, options = {}) {
-  // need to parse the jcamp
-  let entries = fromJCAMP(jcamp, {
+  const entries = fromJCAMP(jcamp, {
     noContour: true,
     xy: true,
     keepRecordsRegExp: /.*/,
@@ -49,14 +49,10 @@ function addJcampSS(spectra, entry, options) {
 function addData(spectra, datum) {
   const dimension = datum.info.dimension;
   if (dimension === 1) {
-    spectra.push(
-      Datum1D.initiateDatum1D({ ...datum, data: datum.source.original }),
-    );
+    spectra.push(Datum1D.initiateDatum1D(datum));
   }
   if (dimension === 2) {
-    spectra.push(
-      Datum2D.initiateDatum2D({ ...datum, data: datum.source.original }),
-    );
+    spectra.push(Datum2D.initiateDatum2D(datum));
   }
 }
 
@@ -106,9 +102,7 @@ export async function fromJSON(data = []) {
   let promises = [];
 
   for (let datum of data) {
-    if (datum.source.jcamp != null) {
-      addJcamp(spectra, datum.source.jcamp, datum);
-    } else if (datum.source.jcampURL != null) {
+    if (datum.source.jcampURL != null) {
       promises.push(addJcampFromURL(spectra, datum.source.jcampURL, datum));
     } else {
       addData(spectra, datum);
@@ -120,7 +114,11 @@ export async function fromJSON(data = []) {
 
 export async function addBruker(options, data) {
   const spectra = [];
-  let result = await fromBruker(data, { xy: true, noContours: true });
+  let result = await fromBruker(data, {
+    xy: true,
+    noContours: true,
+    keepOriginal: true,
+  });
   let entries = result;
   for (let entry of entries) {
     let { info, dependentVariables } = entry;
@@ -165,13 +163,14 @@ export async function fromZip(zipFiles) {
 
 export function addJDFs(files) {
   const spectra = [];
-  for (let i = 0; i < files.length; i++) {
-    addJDF(spectra, files[i].binary, {
+  for (const file of files) {
+    addJDF(spectra, file.binary, {
       display: {
-        name: files[i].name,
+        name: file.name,
       },
       source: {
-        jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
+        jcampURL: file.jcampURL ? file.jcampURL : null,
+        file,
       },
     });
   }
@@ -180,13 +179,14 @@ export function addJDFs(files) {
 
 export function addJcamps(files) {
   const spectra = [];
-  for (let i = 0; i < files.length; i++) {
-    addJcamp(spectra, files[i].binary.toString(), {
+  for (const file of files) {
+    addJcamp(spectra, file.binary, {
       display: {
-        name: files[i].name,
+        name: file.name,
       },
       source: {
-        jcampURL: files[i].jcampURL ? files[i].jcampURL : null,
+        jcampURL: file.jcampURL ? file.jcampURL : null,
+        file,
       },
     });
   }
@@ -202,23 +202,29 @@ export async function addMolfileFromURL(molfileURL) {
  *
  * @param {object} state
  */
-export function toJSON(state) {
+export function toJSON(state, forceIncludeData = false) {
   const {
     data,
-    molecules,
+    molecules: mols,
     preferences,
     correlations,
     multipleAnalysis,
+    exclusionZones,
   } = state || {
     data: [],
     molecules: [],
     preferences: {},
     correlations: {},
     multipleAnalysis: {},
+    exclusionZones: {},
   };
   const spectra = data.map((ob) => {
-    return ob.info.dimension === 1 ? Datum1D.toJSON(ob) : Datum2D.toJSON(ob);
+    return ob.info.dimension === 1
+      ? Datum1D.toJSON(ob, forceIncludeData)
+      : Datum2D.toJSON(ob, forceIncludeData);
   });
+
+  const molecules = mols.map((mol) => Molecule.toJSON(mol));
 
   return {
     spectra,
@@ -226,5 +232,6 @@ export function toJSON(state) {
     preferences,
     correlations,
     multipleAnalysis,
+    exclusionZones,
   };
 }

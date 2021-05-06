@@ -106,7 +106,7 @@ function setSpectrumsVerticalAlign(draft: Draft<State>) {
   changeSpectrumVerticalAlignment(draft, !draft.verticalAlign.flag);
 }
 
-function handleChangeSpectrumDisplayMode(draft: Draft<State>, { flag }) {
+function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
   const state = original(draft) as State;
   const { activeSpectrum, height, activeTab } = draft;
   let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
@@ -116,10 +116,10 @@ function handleChangeSpectrumDisplayMode(draft: Draft<State>, { flag }) {
       YAxisShift = height / 2;
     }
   }
-  draft.verticalAlign.flag = flag;
-  draft.verticalAlign.stacked = flag;
+  draft.verticalAlign.flag = !draft.verticalAlign.stacked;
+  draft.verticalAlign.stacked = !draft.verticalAlign.stacked;
 
-  if (flag) {
+  if (draft.verticalAlign.stacked) {
     const count = (state.data as Datum1D[]).filter(
       (datum) => datum.info.nucleus === activeTab,
     ).length;
@@ -509,6 +509,39 @@ function resetSpectraScale(draft: Draft<State>) {
   }
 }
 
+function handleAddExclusionZone(draft: Draft<State>, action) {
+  const { from, to } = action.payload;
+  const scaleX = getXScale(draft);
+
+  const start = scaleX.invert(from);
+  const end = scaleX.invert(to);
+
+  let zone: any = [];
+  if (start > end) {
+    zone = [end, start];
+  } else {
+    zone = [start, end];
+  }
+  const newExclusionZone = {
+    id: generateID(),
+    from: zone[0],
+    to: zone[1],
+  };
+  if (draft.exclusionZones[draft.activeTab]) {
+    draft.exclusionZones[draft.activeTab].push(newExclusionZone);
+  } else {
+    draft.exclusionZones[draft.activeTab] = [newExclusionZone];
+  }
+}
+
+function handleDeleteExclusionZone(draft: Draft<State>, action) {
+  const id = action.payload.id;
+  const index = draft.exclusionZones[draft.activeTab].findIndex(
+    (zone) => zone.id === id,
+  );
+  draft.exclusionZones[draft.activeTab].splice(index, 1);
+}
+
 export {
   resetSelectedTool,
   setSelectedTool,
@@ -528,4 +561,6 @@ export {
   setTab,
   setSpectraSameTopHandler,
   resetSpectraScale,
+  handleAddExclusionZone,
+  handleDeleteExclusionZone,
 };

@@ -18,7 +18,9 @@ export function apply(datum1D, options = {}) {
 
   datum1D.data.x = x.slice(fromIndex, toIndex);
   datum1D.data.re = re.slice(fromIndex, toIndex);
-  datum1D.data.im = im.slice(fromIndex, toIndex);
+  if (im) {
+    datum1D.data.im = im.slice(fromIndex, toIndex);
+  }
 }
 
 export function isApplicable(datum1D) {

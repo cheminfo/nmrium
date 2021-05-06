@@ -99,19 +99,28 @@ function Provider({
     return _modal;
   }, []);
 
-  const showConfirmDialog = useCallback((message, options = {}) => {
-    const _modal = {
-      component: <ConfirmDialog message={message} />,
-      options: { isBackgroundBlur: true, ...options },
-    };
+  /**
+   * @param {object} dialogOptions
+   * @param {object} dialogOptions.message
+   * @param {Array<{ handler: Function,text: string,style: object}>} dialogOptions.buttons
+   * @param {object} dialogOptions.tyle
+   */
+  const showConfirmDialog = useCallback(
+    (dialogOptions, options = { enableResizing: false }) => {
+      const _modal = {
+        component: <ConfirmDialog {...dialogOptions} />,
+        options: { isBackgroundBlur: true, ...options },
+      };
 
-    _modal.close = () => remove();
+      _modal.close = () => remove();
 
-    setModal(_modal);
-    if (_modal.options.onOpen) _modal.options.onOpen();
+      setModal(_modal);
+      if (_modal.options.onOpen) _modal.options.onOpen();
 
-    return _modal;
-  }, []);
+      return _modal;
+    },
+    [],
+  );
 
   const close = () => {
     closeHandler();
@@ -134,7 +143,7 @@ function Provider({
     bottom: 0;
     right: 0;
     z-index: 0;
-
+    pointer-events: all;
     .handle {
       cursor: move;
     }
@@ -143,7 +152,7 @@ function Provider({
       box-sizing: initial;
       background-color: #fff;
       box-shadow: 0 0 0 0, 0 8px 16px rgba(0, 0, 0, 0.3);
-      borderradius: 5px;
+      border-radius: 5px;
     }
   `;
 
@@ -243,7 +252,7 @@ function Provider({
 }
 
 Provider.defaultProps = {
-  offset: '10px',
+  offset: '0px',
   position: positions.CENTER,
   transition: transitions.SCALE,
   wrapperRef: null,
