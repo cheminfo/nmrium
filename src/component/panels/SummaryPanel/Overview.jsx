@@ -1,4 +1,4 @@
-import { GeneralUtilities } from 'nmr-correlation';
+import { getAtomCounts } from 'nmr-correlation';
 import { memo } from 'react';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
@@ -7,7 +7,7 @@ function Overview({ correlationsData }) {
   if (!correlationsData) {
     return null;
   }
-  const atoms = GeneralUtilities.getAtomCounts(correlationsData.options.mf);
+  const atoms = getAtomCounts(correlationsData.options.mf);
 
   return Object.keys(atoms).length > 0 ? (
     Object.keys(atoms).map((atomType, i) => {

@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 import lodashGet from 'lodash/get';
-import { Build, Types } from 'nmr-correlation';
+import { buildCorrelationData, Types } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
@@ -47,13 +47,11 @@ function setData(
   draft.exclusionZones = exclusionZones;
 
   if (!correlations || Object.keys(correlations).length === 0) {
-    draft.correlations = Build.init({
-      values: [],
-      options: { tolerance: DefaultTolerance, mf: '' },
-      state: {},
+    draft.correlations = buildCorrelationData([], {
+      tolerance: DefaultTolerance,
     });
   } else {
-    draft.correlations = Build.init(correlations);
+    draft.correlations = correlations;
   }
 
   // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
