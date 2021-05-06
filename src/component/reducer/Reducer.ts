@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import { Build, Types } from 'nmr-correlation';
+import { buildCorrelationData, Types } from 'nmr-correlation';
 import { predictionProton } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
@@ -85,10 +85,8 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAnalysis: {},
-  correlations: Build.init({
-    values: [],
-    options: { tolerance: DefaultTolerance, mf: '' },
-    state: {},
+  correlations: buildCorrelationData([], {
+    tolerance: DefaultTolerance,
   }),
   displayerKey: '',
   ZoomHistory: {},
