@@ -72,7 +72,7 @@
     "ml-stat": "^1.3.3",
     "multiplet-analysis": "^1.0.0",
     "nmr-correlation": "^1.3.2",
-    "nmr-parser": "^1.1.0",
+    "nmr-parser": "^1.1.1",
     "nmr-processing": "^1.2.0",
     "nmredata": "^0.4.0",
     "numeral": "^2.0.6",
