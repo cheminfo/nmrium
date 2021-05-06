@@ -118,7 +118,7 @@ export function initiateDatum2D(options: any): Datum2D {
   );
   datum.display = Object.assign(
     {
-      name: options.display.name || generateID(),
+      name: options.display?.name ? options.display.name : generateID(),
       positiveColor: 'red',
       negativeColor: 'blue',
       ...getColor(options),
