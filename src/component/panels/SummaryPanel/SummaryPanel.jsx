@@ -5,6 +5,7 @@ import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import Select from '../../elements/Select';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
@@ -26,7 +27,6 @@ import {
   findSpectrum,
   getAtomType,
 } from './Utilities';
-import Select from '../../elements/Select';
 
 const panelStyle = css`
   display: flex;
