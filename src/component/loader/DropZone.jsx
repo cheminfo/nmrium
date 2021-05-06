@@ -198,7 +198,6 @@ function DropZone(props) {
                       ),
                     ),
                   ];
-                  console.log('uniquetFileExt', uniqueFileExtensions);
                   const isNotZip = uniqueFileExtensions.some(
                     (ex) =>
                       FILES_TYPES[ex.toUpperCase()] && ex !== FILES_TYPES.ZIP,
@@ -208,11 +207,14 @@ function DropZone(props) {
                       Object.values(unzipResult.files),
                       uniqueFileExtensions,
                     );
-                    const hasBruker = Object.keys(unzipResult.files).some((path) => {
-                      return ['2rr','fid', '1r'].some((brukerFile) => path.endsWith(brukerFile));
-                    });
+                    const hasBruker = Object.keys(unzipResult.files).some(
+                      (path) => {
+                        return ['2rr', 'fid', '1r'].some((brukerFile) =>
+                          path.endsWith(brukerFile),
+                        );
+                      },
+                    );
                     if (hasBruker) dispatch({ type: LOAD_ZIP_FILE, files });
-  
                   } else {
                     dispatch({ type: LOAD_ZIP_FILE, files });
                   }
