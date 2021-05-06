@@ -20,7 +20,7 @@
     "eslint": "eslint . --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
-    "prepublishOnly": "npm run clean-lib && npm run compile",
+    "prepack": "npm run clean-lib && npm run compile",
     "start": "react-scripts start ",
     "test": "npm run test-only && npm run eslint && npm run check-types",
     "test-only": "react-scripts test --watchAll=false"
