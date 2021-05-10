@@ -59,9 +59,9 @@ function Provider({
     };
   }, [wrapperRef]);
 
-  const remove = () => {
+  function remove() {
     setModal(null);
-  };
+  }
 
   const parentStyle = useMemo(() => {
     return wrapperRef
@@ -122,16 +122,16 @@ function Provider({
     [],
   );
 
-  const close = () => {
+  function close() {
     closeHandler();
-  };
+  }
 
   useEffect(() => {
-    const keyHandler = (e) => {
+    function keyHandler(e) {
       if (['Escape', 'Esc'].includes(e.key)) {
         closeHandler();
       }
-    };
+    }
     document.addEventListener('keydown', keyHandler, false);
     return () => document.removeEventListener('keydown', keyHandler, false);
   }, [closeHandler]);

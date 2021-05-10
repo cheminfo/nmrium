@@ -2,8 +2,8 @@ import { useMemo, memo, forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-function ToolBarWrapper(WrappedComponent) {
-  const Wrapper = (props) => {
+export default function ToolBarWrapper(WrappedComponent) {
+  function Wrapper(props) {
     const { data, activeSpectrum, verticalAlign, displayerMode } =
       useChartData();
 
@@ -28,7 +28,7 @@ function ToolBarWrapper(WrappedComponent) {
         ref={forwardedRef}
       />
     );
-  };
+  }
 
   return memo(
     forwardRef((props, ref) => {
@@ -36,4 +36,3 @@ function ToolBarWrapper(WrappedComponent) {
     }),
   );
 }
-export default ToolBarWrapper;

@@ -41,7 +41,7 @@ function getActiveData(draft) {
   }
 }
 
-function getDomain(data) {
+export function getDomain(data) {
   let xArray = [];
   let yArray = [];
   let yDomains = {};
@@ -95,6 +95,7 @@ function getDomain(data) {
     integralYDomain,
   };
 }
+
 function get2DDomain(state) {
   let yDomains = {};
   let xDomains = {};
@@ -139,7 +140,7 @@ function get2DDomain(state) {
   };
 }
 
-function setDomain(draft, isYDomainChanged = true) {
+export function setDomain(draft, isYDomainChanged = true) {
   let domain;
   const data = getActiveData(draft);
 
@@ -171,25 +172,25 @@ function setDomain(draft, isYDomainChanged = true) {
   }
 }
 
-const setOriginalDomain = (state, originDomain) => {
+export function setOriginalDomain(state, originDomain) {
   return produce(state, (draft) => {
     draft.originDomain = originDomain;
   });
-};
+}
 
-const setXDomain = (state, xDomain) => {
+export function setXDomain(state, xDomain) {
   return produce(state, (draft) => {
     draft.xDomain = xDomain;
   });
-};
+}
 
-const setYDomain = (state, yDomain) => {
+export function setYDomain(state, yDomain) {
   return produce(state, (draft) => {
     draft.yDomain = yDomain;
   });
-};
+}
 
-const handelResetDomain = (state) => {
+export function handelResetDomain(state) {
   return produce(state, (draft) => {
     const { xDomain, yDomain, xDomains, yDomains } = state.originDomain;
     draft.xDomain = xDomain;
@@ -197,31 +198,20 @@ const handelResetDomain = (state) => {
     draft.xDomains = xDomains;
     draft.yDomains = yDomains;
   });
-};
+}
 
-function setMode(draft) {
+export function setMode(draft) {
   const data = getActiveData(draft).filter(
     (datum) => datum.isVisibleInDomain === true,
   );
   draft.mode = data && data[0] && data[0].info.isFid ? 'LTR' : 'RTL';
 }
 
-const handleChangeIntegralYDomain = (state, newYDomain) => {
+export function handleChangeIntegralYDomain(state, newYDomain) {
   return produce(state, (draft) => {
     const activeSpectrum = draft.activeSpectrum;
     if (activeSpectrum) {
       draft.integralsYDomains[activeSpectrum.id] = newYDomain;
     }
   });
-};
-
-export {
-  getDomain,
-  setOriginalDomain,
-  setXDomain,
-  setYDomain,
-  handelResetDomain,
-  setDomain,
-  setMode,
-  handleChangeIntegralYDomain,
-};
+}

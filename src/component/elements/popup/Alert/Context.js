@@ -4,6 +4,6 @@ const AlertContext = createContext();
 
 export const AlertProvider = AlertContext.Provider;
 
-export const useAlert = () => {
+export function useAlert() {
   return useContext(AlertContext);
-};
+}

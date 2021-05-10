@@ -10,7 +10,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import SpectraWraper from '../../hoc/SpectraWraper';
+import SpectraWrapper from '../../hoc/SpectraWrapper';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MISSING_PROJECTION,
@@ -120,4 +120,4 @@ function SpectraPanelHeader({
   );
 }
 
-export default SpectraWraper(memo(SpectraPanelHeader));
+export default SpectraWrapper(memo(SpectraPanelHeader));

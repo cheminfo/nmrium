@@ -3,8 +3,8 @@ import { forwardRef, useMemo } from 'react';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 
-function IntegralsWrapper(WrappedComponent) {
-  const Wrapper = (props) => {
+export default function IntegralsWrapper(WrappedComponent) {
+  function Wrapper(props) {
     const {
       data,
       activeSpectrum,
@@ -47,10 +47,9 @@ function IntegralsWrapper(WrappedComponent) {
         ref={forwardedRef}
       />
     );
-  };
+  }
 
   return forwardRef((props, ref) => {
     return <Wrapper {...props} forwardedRef={ref} />;
   });
 }
-export default IntegralsWrapper;

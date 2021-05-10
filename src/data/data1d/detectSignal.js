@@ -1,7 +1,7 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 
-const detectSignal = (x, re, from, to, frequency) => {
+export default function detectSignal(x, re, from, to, frequency) {
   const { fromIndex, toIndex } = xGetFromToIndex(x, {
     from: from,
     to: to,
@@ -23,6 +23,4 @@ const detectSignal = (x, re, from, to, frequency) => {
     delta: result.chemShift,
     j: result.j,
   };
-};
-
-export default detectSignal;
+}

@@ -1,4 +1,4 @@
-const ReactTableHeader = ({ headerGroups }) => {
+export default function ReactTableHeader({ headerGroups }) {
   return (
     <thead>
       {headerGroups.map((headerGroup) => (
@@ -21,6 +21,4 @@ const ReactTableHeader = ({ headerGroups }) => {
       ))}
     </thead>
   );
-};
-
-export default ReactTableHeader;
+}

@@ -26,8 +26,6 @@ const styles = css`
   }
 `;
 
-const ProgressIndicator = () => {
+export default function ProgressIndicator() {
   return <div css={styles} />;
-};
-
-export default ProgressIndicator;
+}

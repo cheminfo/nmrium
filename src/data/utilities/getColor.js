@@ -30,31 +30,35 @@ const color2D = {
   hmbc: { positiveColor: 'darkviolet', negativeColor: 'yellow' },
 };
 
-const hasPredefine2DColor = (experiment) => {
+export function hasPredefine2DColor(experiment) {
   return color2D[experiment] ? true : false;
-};
+}
 
-const get2DColor = (experiment, colors = []) => {
+export function get2DColor(experiment, colors = []) {
   if (!color2D[experiment]) {
     const positiveColor = getColor(false, colors);
     const negativeColor = adjustAlpha(positiveColor, 50);
     return { positiveColor, negativeColor };
   }
   return color2D[experiment];
-};
+}
 
-const percentToHex = (p) => {
+export function percentToHex(p) {
   const percent = Math.max(0, Math.min(100, p));
   const intValue = Math.round((percent / 100) * 255);
   const hexValue = intValue.toString(16);
   return percent === 100 ? '' : hexValue.padStart(2, '0');
-};
+}
 
-const adjustAlpha = (color, factor) => {
+export function adjustAlpha(color, factor) {
   return color + percentToHex(factor);
-};
+}
 
-const getColor = (isRandom = false, usedColors = [], opacity = 100) => {
+export default function getColor(
+  isRandom = false,
+  usedColors = [],
+  opacity = 100,
+) {
   const resetColors = COLORS.filter((c) => !usedColors.includes(c));
   if (resetColors.length > 0 && !isRandom) {
     return resetColors[0] + percentToHex(opacity);
@@ -77,6 +81,4 @@ const getColor = (isRandom = false, usedColors = [], opacity = 100) => {
 
     return rgb + percentToHex(opacity);
   }
-};
-export { percentToHex, adjustAlpha, hasPredefine2DColor, get2DColor };
-export default getColor;
+}

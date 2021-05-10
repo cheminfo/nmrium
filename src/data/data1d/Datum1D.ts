@@ -265,9 +265,9 @@ export function updateIntegralIntegrals(integrals) {
   if (integrals.options.sum === undefined) {
     integrals.options = { ...integrals.options, sum: 100 };
   }
-  const countingCondition = (integral) => {
+  function countingCondition(integral) {
     return integral.kind && SignalKindsToInclude.includes(integral.kind);
-  };
+  }
   integrals.values = updateRelatives(
     integrals.values,
     integrals.options.sum,
@@ -315,9 +315,9 @@ export function updateIntegralRanges(datum) {
   if (datum.ranges.options.sum === undefined) {
     datum.ranges.options.sum = 100;
   }
-  const countingCondition = (range) => {
+  function countingCondition(range) {
     return range.signal && checkSignalKinds(range, SignalKindsToInclude);
-  };
+  }
   datum.ranges.values = updateRelatives(
     datum.ranges.values,
     datum.ranges.options.sum,

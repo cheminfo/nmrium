@@ -3,7 +3,7 @@
 import { useHighlight } from '../../../highlight/index';
 import { HighlightedRowStyle, ConstantlyHighlightedRowStyle } from '../Style';
 
-const ReactTableRow = ({ row, onContextMenu }) => {
+function ReactTableRow({ row, onContextMenu }) {
   const highlight = useHighlight([
     Object.prototype.hasOwnProperty.call(row.original, 'id')
       ? row.original.id
@@ -46,6 +46,6 @@ const ReactTableRow = ({ row, onContextMenu }) => {
       })}
     </tr>
   );
-};
+}
 
 export default ReactTableRow;

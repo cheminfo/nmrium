@@ -2,8 +2,8 @@ import { useMemo, memo, forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-function MoleculeWrapper(WrappedComponent) {
-  const Wrapper = (props) => {
+export default function MoleculeWrapper(WrappedComponent) {
+  function Wrapper(props) {
     const { data, activeSpectrum, molecules, displayerMode, activeTab } =
       useChartData();
 
@@ -30,7 +30,7 @@ function MoleculeWrapper(WrappedComponent) {
         ref={forwardedRef}
       />
     );
-  };
+  }
 
   return memo(
     forwardRef((props, ref) => {
@@ -38,4 +38,3 @@ function MoleculeWrapper(WrappedComponent) {
     }),
   );
 }
-export default MoleculeWrapper;

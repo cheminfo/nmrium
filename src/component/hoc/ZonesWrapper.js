@@ -3,8 +3,8 @@ import { useMemo, memo, forwardRef } from 'react';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 
-function ZonesWrapper(WrappedComponent) {
-  const Wrapper = (props) => {
+export default function ZonesWrapper(WrappedComponent) {
+  function Wrapper(props) {
     const {
       data,
       activeSpectrum,
@@ -55,7 +55,7 @@ function ZonesWrapper(WrappedComponent) {
         ref={forwardedRef}
       />
     );
-  };
+  }
 
   return memo(
     forwardRef((props, ref) => {
@@ -63,4 +63,3 @@ function ZonesWrapper(WrappedComponent) {
     }),
   );
 }
-export default ZonesWrapper;

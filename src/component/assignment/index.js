@@ -146,7 +146,7 @@ export function AssignmentProvider(props) {
   const [assignment, dispatch] = useReducer(assignmentReducer, emptyState);
   const contextValue = useMemo(() => ({ assignment, dispatch }), [assignment]);
 
-  const initAssignmentDataRanges = (range, _contextValue) => {
+  function initAssignmentDataRanges(range, _contextValue) {
     _contextValue.dispatch({
       type: 'DELETE_RECORD',
       payload: { id: range.id },
@@ -165,9 +165,9 @@ export function AssignmentProvider(props) {
         }),
       ),
     );
-  };
+  }
 
-  const initAssignmentDataZones = (zone, _contextValue) => {
+  function initAssignmentDataZones(zone, _contextValue) {
     _contextValue.dispatch({
       type: 'DELETE_RECORD',
       payload: { id: zone.id },
@@ -198,7 +198,7 @@ export function AssignmentProvider(props) {
         }),
       );
     });
-  };
+  }
 
   useEffect(() => {
     if (spectraData) {

@@ -12,7 +12,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import ContextMenu from '../../elements/ContextMenu';
 import { Tabs } from '../../elements/Tab';
 import { useAlert } from '../../elements/popup/Alert';
-import SpectraWraper from '../../hoc/SpectraWraper';
+import SpectraWrapper from '../../hoc/SpectraWrapper';
 import {
   CHANGE_PEAKS_MARKERS_VISIBILITY,
   SET_ACTIVE_TAB,
@@ -209,4 +209,4 @@ function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
   );
 }
 
-export default SpectraWraper(SpectrumsTabs);
+export default SpectraWrapper(SpectrumsTabs);

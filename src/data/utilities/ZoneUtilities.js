@@ -1,45 +1,45 @@
 import { DatumKind } from '../constants/SignalsKinds';
 
-const getDiaIDs = (zone, axis) => {
+export function getDiaIDs(zone, axis) {
   return [].concat(
     zone[axis].diaID || [],
     zone.signal
       ? zone.signal.map((_signal) => _signal[axis].diaID || []).flat()
       : [],
   );
-};
+}
 
-const getPubIntegral = (zone, axis) => {
+export function getPubIntegral(zone, axis) {
   return getDiaIDs(zone, axis).length;
-};
+}
 
-const setPubIntegral = (zone, axis) => {
+export function setPubIntegral(zone, axis) {
   zone[axis].pubIntegral = getPubIntegral(zone, axis);
   if (zone[axis].pubIntegral === 0) {
     delete zone[axis].pubIntegral;
   }
-};
+}
 
-const resetDiaIDs = (zone, axis) => {
+export function resetDiaIDs(zone, axis) {
   delete zone[axis].diaID;
   delete zone.pubIntegral;
   zone.signal.forEach((_signal) => {
     delete _signal[axis].diaID;
   });
   return zone;
-};
+}
 
-const checkZoneKind = (zone) => {
+export function checkZoneKind(zone) {
   return zone.kind === DatumKind.signal;
-};
+}
 
-const checkSignalKinds = (zone, kinds) => {
+export function checkSignalKinds(zone, kinds) {
   return !zone.signal.some(
     (_signal) => _signal.kind === undefined || !kinds.includes(_signal.kind),
   );
-};
+}
 
-const unlink = (zone, isOnZoneLevel, signalIndex, axis) => {
+export function unlink(zone, isOnZoneLevel, signalIndex, axis) {
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {
       delete zone[axis].diaID;
@@ -57,9 +57,9 @@ const unlink = (zone, isOnZoneLevel, signalIndex, axis) => {
     });
   }
   return zone;
-};
+}
 
-const unlinkInAssignmentData = (assignmentData, zones, axis) => {
+export function unlinkInAssignmentData(assignmentData, zones, axis) {
   const ids = zones.reduce((acc, zone) => {
     acc.push(zone.id);
     if (zone.signal) {
@@ -83,14 +83,4 @@ const unlinkInAssignmentData = (assignmentData, zones, axis) => {
       payload: { id: ids, axis: 'y' },
     });
   }
-};
-
-export {
-  checkSignalKinds,
-  checkZoneKind,
-  getDiaIDs,
-  getPubIntegral,
-  resetDiaIDs,
-  unlink,
-  unlinkInAssignmentData,
-};
+}

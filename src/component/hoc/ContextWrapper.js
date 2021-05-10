@@ -2,8 +2,8 @@ import { useMemo, memo, forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-function ContextWrapper(WrappedComponent, subKeys) {
-  const Wrapper = (props) => {
+export default function ContextWrapper(WrappedComponent, subKeys) {
+  function Wrapper(props) {
     const {
       data,
       activeSpectrum,
@@ -61,7 +61,7 @@ function ContextWrapper(WrappedComponent, subKeys) {
         ref={forwardedRef}
       />
     );
-  };
+  }
 
   return memo(
     forwardRef((props, ref) => {
@@ -69,4 +69,3 @@ function ContextWrapper(WrappedComponent, subKeys) {
     }),
   );
 }
-export default ContextWrapper;

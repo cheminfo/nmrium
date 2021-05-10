@@ -2,8 +2,8 @@ import { forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-function SpectraWraper(WrappedComponent) {
-  const Wrapper = (props) => {
+export default function SpectraWrapper(WrappedComponent) {
+  function Wrapper(props) {
     const { data, activeSpectrum, activeTab, displayerMode } = useChartData();
 
     const { forwardedRef, ...rest } = props;
@@ -17,10 +17,9 @@ function SpectraWraper(WrappedComponent) {
         ref={forwardedRef}
       />
     );
-  };
+  }
 
   return forwardRef((props, ref) => {
     return <Wrapper {...props} forwardedRef={ref} />;
   });
 }
-export default SpectraWraper;
