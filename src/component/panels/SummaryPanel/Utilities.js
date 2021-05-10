@@ -71,7 +71,7 @@ function findZone(spectrum, value) {
   }
 }
 
-const findRangeOrZoneID = (spectraData, value) => {
+function findRangeOrZoneID(spectraData, value) {
   const spectrum = findSpectrum(spectraData, value);
   if (spectrum) {
     if (spectrum.info.dimension === 1) {
@@ -82,7 +82,7 @@ const findRangeOrZoneID = (spectraData, value) => {
       if (zone) return zone.id;
     }
   }
-};
+}
 
 function findSignalMatch1D(spectrum, link, factor, xDomain0, xDomain1) {
   if (spectrum && spectrum.info.dimension === 2) {
@@ -97,6 +97,7 @@ function findSignalMatch1D(spectrum, link, factor, xDomain0, xDomain1) {
   }
   return false;
 }
+
 function findSignalMatch2D(
   spectrum,
   value,

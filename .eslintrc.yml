@@ -3,6 +3,5 @@ rules:
   'import/default': off
   'import/no-unresolved': off
   '@typescript-eslint/no-explicit-any': off
-parserOptions: 
-        'sourceType': "module"
-    
+parserOptions:
+  sourceType: module

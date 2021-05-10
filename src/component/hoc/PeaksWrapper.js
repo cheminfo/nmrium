@@ -3,8 +3,8 @@ import { forwardRef, useMemo } from 'react';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 
-function PeaksWrapper(WrappedComponent) {
-  const Wrapper = (props) => {
+export default function PeaksWrapper(WrappedComponent) {
+  function Wrapper(props) {
     const {
       data: spectra,
       activeSpectrum,
@@ -55,9 +55,8 @@ function PeaksWrapper(WrappedComponent) {
         ref={forwardedRef}
       />
     );
-  };
+  }
   return forwardRef((props, ref) => {
     return <Wrapper {...props} forwardedRef={ref} />;
   });
 }
-export default PeaksWrapper;

@@ -73,7 +73,7 @@ export const preferencesInitialState = {
   docsBaseUrl: null,
 };
 
-const mapNucleus = (draft) => {
+function mapNucleus(draft) {
   if (draft.formatting.nucleus && Array.isArray(draft.formatting.nucleus)) {
     draft.formatting.nucleusByKey = draft.formatting.nucleus.reduce(
       (acc, item) => {
@@ -83,7 +83,7 @@ const mapNucleus = (draft) => {
       {},
     );
   }
-};
+}
 
 export function preferencesReducer(state, action) {
   switch (action.type) {

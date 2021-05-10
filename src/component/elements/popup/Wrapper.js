@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { positions } from './options';
 
-export const getStyles = (position, props) => {
+export function getStyles(position, props) {
   const initialStyles = {
     // left: 0,
     position: 'fixed',
@@ -95,9 +95,9 @@ export const getStyles = (position, props) => {
       return initialStyles;
     }
   }
-};
+}
 
-function Wrapper({ children, options: { position }, ...props }) {
+export default function Wrapper({ children, options: { position }, ...props }) {
   const styles = useMemo(() => getStyles(position, props), [position, props]);
 
   return (
@@ -108,5 +108,3 @@ function Wrapper({ children, options: { position }, ...props }) {
     )
   );
 }
-
-export default Wrapper;

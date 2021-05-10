@@ -1,7 +1,7 @@
 import { useChartData } from '../context/ChartContext';
 
-function ExclusionZonesWrapper(WrappedComponent) {
-  const Wrapper = (props) => {
+export default function ExclusionZonesWrapper(WrappedComponent) {
+  function Wrapper(props) {
     const { exclusionZones, activeTab } = useChartData();
 
     return (
@@ -12,10 +12,9 @@ function ExclusionZonesWrapper(WrappedComponent) {
         }
       />
     );
-  };
+  }
 
   return (props) => {
     return <Wrapper {...props} />;
   };
 }
-export default ExclusionZonesWrapper;

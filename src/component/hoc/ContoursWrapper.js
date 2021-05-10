@@ -1,7 +1,7 @@
 import { useChartData } from '../context/ChartContext';
 
-function ContoursWrapper(WrappedComponent) {
-  const Wrapper = (props) => {
+export default function ContoursWrapper(WrappedComponent) {
+  function Wrapper(props) {
     const { data, displayerKey } = useChartData();
 
     const { forwardedRef, ...rest } = props;
@@ -13,10 +13,9 @@ function ContoursWrapper(WrappedComponent) {
         ref={forwardedRef}
       />
     );
-  };
+  }
 
   return (props) => {
     return <Wrapper {...props} />;
   };
 }
-export default ContoursWrapper;

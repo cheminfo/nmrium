@@ -14,14 +14,14 @@ function EditRangeValidation(values, rangeData) {
     )} ppm out of the range`;
   }
 
-  const createSignalsError = (i) => {
+  function createSignalsError(i) {
     if (!errors.signals) {
       errors.signals = {};
     }
     if (i !== undefined && !errors.signals[`${i}`]) {
       errors.signals[`${i}`] = { missingCouplings: [] };
     }
-  };
+  }
 
   if (values.signals.length === 0) {
     createSignalsError();

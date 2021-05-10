@@ -2,8 +2,8 @@ import { forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-function MultiAnalysisWrapper(WrappedComponent) {
-  const Wrapper = (props) => {
+export default function MultiAnalysisWrapper(WrappedComponent) {
+  function Wrapper(props) {
     const { activeTab, spectraAnalysis, displayerKey } = useChartData();
     const { forwardedRef, ...rest } = props;
 
@@ -16,9 +16,8 @@ function MultiAnalysisWrapper(WrappedComponent) {
         ref={forwardedRef}
       />
     );
-  };
+  }
   return forwardRef((props, ref) => {
     return <Wrapper {...props} forwardedRef={ref} />;
   });
 }
-export default MultiAnalysisWrapper;

@@ -29,7 +29,12 @@ const defaultTransitionStyles = {
   },
 };
 
-const Transtion = ({ children, type, transitionStyles, ...props }) => {
+export default function Transtion({
+  children,
+  type,
+  transitionStyles,
+  ...props
+}) {
   const ref = useRef(null);
   return (
     <ContainerTransition nodeRef={ref} {...props} timeout={duration}>
@@ -47,10 +52,8 @@ const Transtion = ({ children, type, transitionStyles, ...props }) => {
       )}
     </ContainerTransition>
   );
-};
+}
 
 Transtion.defaultProps = {
   transitionStyles: defaultTransitionStyles,
 };
-
-export default Transtion;

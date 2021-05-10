@@ -1,6 +1,6 @@
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 
-const extractFromAtom = (atom, elements, activeAxis) => {
+export function extractFromAtom(atom, elements, activeAxis) {
   if (elements.length > 0 && Object.keys(atom).length > 0) {
     const dim = activeAxis === 'x' ? 0 : activeAxis === 'y' ? 1 : undefined;
     if (dim !== undefined) {
@@ -24,9 +24,9 @@ const extractFromAtom = (atom, elements, activeAxis) => {
   }
 
   return { oclIDs: [], nbAtoms: 0 };
-};
+}
 
-const findDatumAndSignalIndex = (spectraData, id) => {
+export function findDatumAndSignalIndex(spectraData, id) {
   // if datum could be found then the id is on range/zone level
   let datum = spectraData.find((_datum) => _datum.id === id);
   let signalIndex;
@@ -44,9 +44,9 @@ const findDatumAndSignalIndex = (spectraData, id) => {
   }
 
   return { datum, signalIndex };
-};
+}
 
-const getHighlightsOnHover = (assignmentData, oclIDs, spectraData) => {
+export function getHighlightsOnHover(assignmentData, oclIDs, spectraData) {
   // set all IDs to highlight when hovering over an atom from assignment data
   let highlights = [];
   for (let key in assignmentData.assignment.assignment) {
@@ -91,9 +91,9 @@ const getHighlightsOnHover = (assignmentData, oclIDs, spectraData) => {
     }
   }
   return highlights;
-};
+}
 
-const getCurrentDiaIDsToHighlight = (assignmentData, displayerMode) => {
+export function getCurrentDiaIDsToHighlight(assignmentData, displayerMode) {
   const assignmentOnHover = assignmentData.assignment.isOnHover
     ? assignmentData.assignment.assignment[assignmentData.assignment.onHoverID]
     : null;
@@ -115,9 +115,9 @@ const getCurrentDiaIDsToHighlight = (assignmentData, displayerMode) => {
         : (assignmentOnHover.x || []).concat(assignmentOnHover.y || [])
       : []
     : [];
-};
+}
 
-const toggleDiaIDs = (diaID, atomInformation) => {
+export function toggleDiaIDs(diaID, atomInformation) {
   let _diaID = diaID ? diaID.slice() : [];
   if (atomInformation.oclIDs.length === 1) {
     if (_diaID.includes(atomInformation.oclIDs[0])) {
@@ -137,12 +137,4 @@ const toggleDiaIDs = (diaID, atomInformation) => {
     });
   }
   return _diaID;
-};
-
-export {
-  extractFromAtom,
-  findDatumAndSignalIndex,
-  getCurrentDiaIDsToHighlight,
-  getHighlightsOnHover,
-  toggleDiaIDs,
-};
+}

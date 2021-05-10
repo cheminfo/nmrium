@@ -7,7 +7,7 @@ import {
 
 import { TREE_LEVEL_COLORS } from './TreeColors';
 
-const createTreeNodes = (signal, spectrumData) => {
+function createTreeNodes(signal, spectrumData) {
   function buildTreeNodesData(
     multiplicityIndex,
     jIndices,
@@ -83,7 +83,7 @@ const createTreeNodes = (signal, spectrumData) => {
     return treeNodesData;
   }
   return buildTreeNodesData;
-};
+}
 //   [signal.multiplicity, signal.j, spectrumData],
 
 export default createTreeNodes;

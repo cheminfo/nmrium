@@ -2,8 +2,8 @@ import { forwardRef, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-function InfoWrapper(WrappedComponent) {
-  const Wrapper = (props) => {
+export default function InfoWrapper(WrappedComponent) {
+  function Wrapper(props) {
     const { data, activeSpectrum } = useChartData();
 
     const { info = {}, meta = {} } = useMemo(() => {
@@ -21,10 +21,9 @@ function InfoWrapper(WrappedComponent) {
     return (
       <WrappedComponent {...rest} info={info} meta={meta} ref={forwardedRef} />
     );
-  };
+  }
 
   return forwardRef((props, ref) => {
     return <Wrapper {...props} forwardedRef={ref} />;
   });
 }
-export default InfoWrapper;
