@@ -9,7 +9,7 @@ import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useScale } from '../context/ScaleContext';
 import { useHelptData } from '../elements/popup/Help';
-import FooterWarpper from '../hoc/FooterWarpper';
+import FooterWrapper from '../hoc/FooterWrapper';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
@@ -209,4 +209,4 @@ function FooterBanner({
   );
 }
 
-export default FooterWarpper(memo(FooterBanner));
+export default FooterWrapper(memo(FooterBanner));

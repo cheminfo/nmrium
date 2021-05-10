@@ -61,21 +61,19 @@ import {
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 
-const splitPaneStyles: Record<
-  'container' | 'resizer' | 'pane',
-  CSSProperties
-> = {
-  container: {
-    position: 'relative',
-    height: 'none',
-  },
-  resizer: {
-    width: 10,
-    backgroundColor: '#f7f7f7',
-    cursor: 'ew-resize',
-  },
-  pane: { overflow: 'hidden' },
-};
+const splitPaneStyles: Record<'container' | 'resizer' | 'pane', CSSProperties> =
+  {
+    container: {
+      position: 'relative',
+      height: 'none',
+    },
+    resizer: {
+      width: 10,
+      backgroundColor: '#f7f7f7',
+      cursor: 'ew-resize',
+    },
+    pane: { overflow: 'hidden' },
+  };
 
 const containerStyles = css`
   background-color: white;

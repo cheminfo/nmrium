@@ -8,9 +8,8 @@ export function getSpectrumType(meta = {}, info = {}) {
   if (typeof meta === 'string') {
     meta = { pulse: meta };
   }
-  let spectyp = (Array.isArray(info.$SPECTYP)
-    ? info.$SPECTYP[0]
-    : info.$SPECTYP || ''
+  let spectyp = (
+    Array.isArray(info.$SPECTYP) ? info.$SPECTYP[0] : info.$SPECTYP || ''
   )
     .replace(/^<(.*)>$/, '$1') // eslint-disable-line prefer-named-capture-group
     .toLowerCase();

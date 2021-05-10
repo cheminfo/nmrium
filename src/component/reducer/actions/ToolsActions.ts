@@ -160,8 +160,8 @@ function handleToggleRealImaginaryVisibility(draft) {
   if (draft.activeSpectrum != null) {
     const { index } = draft.activeSpectrum;
 
-    draft.data[index].display.isRealSpectrumVisible = !draft.data[index].display
-      .isRealSpectrumVisible;
+    draft.data[index].display.isRealSpectrumVisible =
+      !draft.data[index].display.isRealSpectrumVisible;
     if (draft.data[index].display.isRealSpectrumVisible) {
       const re = draft.data[index].data.re;
       if (re !== null && re !== undefined) {
