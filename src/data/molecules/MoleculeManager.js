@@ -25,8 +25,11 @@ export function addMolfile(molecules, molfile) {
   const molecule = Molecule.fromMolfile(molfile);
   let fragments = molecule.getFragments();
   for (let fragment of fragments) {
-    const { formula, absoluteWeight, relativeWeight } =
-      fragment.getMolecularFormula();
+    const {
+      formula,
+      absoluteWeight,
+      relativeWeight,
+    } = fragment.getMolecularFormula();
     molecules.push(
       initMolecule({
         molfile: fragment.toMolfileV3(),
@@ -50,8 +53,11 @@ export function setMolfile(molecules, molfile, key) {
     molecules = this.molecules.filter((m) => m.key !== key);
 
     for (let fragment of fragments) {
-      const { formula, absoluteWeight, relativeWeight } =
-        fragment.getMolecularFormula();
+      const {
+        formula,
+        absoluteWeight,
+        relativeWeight,
+      } = fragment.getMolecularFormula();
 
       molecules.push(
         new initMolecule({
@@ -65,8 +71,11 @@ export function setMolfile(molecules, molfile, key) {
     }
   } else if (fragments.length === 1) {
     const fragment = fragments[0];
-    const { formula, absoluteWeight, relativeWeight } =
-      fragment.getMolecularFormula();
+    const {
+      formula,
+      absoluteWeight,
+      relativeWeight,
+    } = fragment.getMolecularFormula();
     const _mol = initMolecule({
       molfile: fragment.toMolfileV3(),
       svg: fragment.toSVG(150, 150),

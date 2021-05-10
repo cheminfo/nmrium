@@ -14,11 +14,7 @@ export default function PeaksWrapper(WrappedComponent) {
     } = useChartData();
     const preferences = usePreferences();
 
-    const {
-      peaks = {},
-      info = {},
-      data = {},
-    } = useMemo(() => {
+    const { peaks = {}, info = {}, data = {} } = useMemo(() => {
       if (spectra && activeSpectrum && activeSpectrum.id) {
         const datum = spectra.find(
           (datum) => datum.id === activeSpectrum.id,

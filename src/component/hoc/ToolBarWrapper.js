@@ -4,8 +4,12 @@ import { useChartData } from '../context/ChartContext';
 
 export default function ToolBarWrapper(WrappedComponent) {
   function Wrapper(props) {
-    const { data, activeSpectrum, verticalAlign, displayerMode } =
-      useChartData();
+    const {
+      data,
+      activeSpectrum,
+      verticalAlign,
+      displayerMode,
+    } = useChartData();
 
     const { info = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {

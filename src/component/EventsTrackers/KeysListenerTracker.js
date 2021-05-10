@@ -22,8 +22,12 @@ import {
 import { options } from '../toolbar/ToolTypes';
 
 function KeysListenerTracker() {
-  const { keysPreferences, displayerMode, overDisplayer, data } =
-    useChartData();
+  const {
+    keysPreferences,
+    displayerMode,
+    overDisplayer,
+    data,
+  } = useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
   const loader = useLoader();
@@ -35,8 +39,11 @@ function KeysListenerTracker() {
     changeDisplayViewModeHandler,
   } = useToolsFunctions();
 
-  const { saveToClipboardHandler, saveAsJSONHandler, saveAsHandler } =
-    useExport();
+  const {
+    saveToClipboardHandler,
+    saveAsJSONHandler,
+    saveAsHandler,
+  } = useExport();
 
   const { highlight } = useHighlightData();
   const assignmentData = useAssignmentData();
