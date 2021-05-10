@@ -48,6 +48,8 @@ function MyComponent() {
 
 ## Development and testing
 
+See [General information for NMRium development](./README_DEV.md).
+
 There is an automatic build on each commit. You can test the latest build from `master` at:
 
 https://dev.nmrium.org/
