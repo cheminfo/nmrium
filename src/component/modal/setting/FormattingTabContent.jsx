@@ -48,9 +48,10 @@ const styles = css`
 `;
 function FormattingTabContent() {
   const { values, setFieldValue } = useFormikContext();
-  const nucleuses = useMemo(() => lodashGet(values, 'formatting.nucleus', []), [
-    values,
-  ]);
+  const nucleuses = useMemo(
+    () => lodashGet(values, 'formatting.nucleus', []),
+    [values],
+  );
 
   const deleteHandler = useCallback(
     (index) => {

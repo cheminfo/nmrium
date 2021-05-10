@@ -28,9 +28,10 @@ export function Dashboard(props) {
   const { routes = [], baseURL } = props;
   const routesList = useMemo(() => mapTreeToFlatArray(routes), [routes]);
   const [menuIsClosed, setMenuIsClosed] = useState(false);
-  const toggleMenu = useCallback(() => setMenuIsClosed(!menuIsClosed), [
-    menuIsClosed,
-  ]);
+  const toggleMenu = useCallback(
+    () => setMenuIsClosed(!menuIsClosed),
+    [menuIsClosed],
+  );
 
   return (
     <div
