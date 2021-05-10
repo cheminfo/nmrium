@@ -101,11 +101,13 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
     const { index } = state.activeSpectrum;
     const { editedRowData, assignmentData } = action.payload;
     // remove assignments in global state
+
     const _editedRowData = unlink(editedRowData);
+
     delete _editedRowData.tableMetaInfo;
     // remove assignments in assignment hook data
     // for now: clear all assignments for this range because signals or levels to store might have changed
-    unlinkInAssignmentData(assignmentData, _editedRowData);
+    unlinkInAssignmentData(assignmentData, [_editedRowData]);
 
     const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
     (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _editedRowData;
