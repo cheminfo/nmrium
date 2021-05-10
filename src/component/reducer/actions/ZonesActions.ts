@@ -137,13 +137,8 @@ function handleUnlinkZone(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
-    const {
-      zoneData,
-      assignmentData,
-      isOnZoneLevel,
-      signalIndex,
-      axis,
-    } = action.payload;
+    const { zoneData, assignmentData, isOnZoneLevel, signalIndex, axis } =
+      action.payload;
 
     for (let zone of zoneData
       ? [zoneData]

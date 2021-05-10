@@ -4,13 +4,8 @@ import { useChartData } from '../context/ChartContext';
 
 function MoleculeWrapper(WrappedComponent) {
   const Wrapper = (props) => {
-    const {
-      data,
-      activeSpectrum,
-      molecules,
-      displayerMode,
-      activeTab,
-    } = useChartData();
+    const { data, activeSpectrum, molecules, displayerMode, activeTab } =
+      useChartData();
 
     const { ranges = {}, zones = {} } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {

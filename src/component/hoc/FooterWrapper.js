@@ -2,16 +2,10 @@ import { forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
-function FooterWarpper(WrappedComponent) {
+function FooterWrapper(WrappedComponent) {
   const Wrapper = (props) => {
-    const {
-      margin,
-      width,
-      height,
-      activeSpectrum,
-      data,
-      activeTab,
-    } = useChartData();
+    const { margin, width, height, activeSpectrum, data, activeTab } =
+      useChartData();
 
     const { forwardedRef, ...rest } = props;
     return (
@@ -32,4 +26,4 @@ function FooterWarpper(WrappedComponent) {
     return <Wrapper {...props} forwardedRef={ref} />;
   });
 }
-export default FooterWarpper;
+export default FooterWrapper;

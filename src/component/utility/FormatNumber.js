@@ -19,20 +19,17 @@ export function useFormatNumberByNucleus(nucleus) {
     hz: '0.0',
   });
 
-  const formatFun = (n) => (
-    value,
-    formatKey = 'ppm',
-    prefix = '',
-    suffix = '',
-  ) => {
-    return (
-      prefix +
-      Numeral(Number(value)).format(
-        lodashGet(nucleusByKey, `${n.toLowerCase()}.${formatKey}`, '0.0'),
-      ) +
-      suffix
-    );
-  };
+  function formatFun(n) {
+    return function (value, formatKey = 'ppm', prefix = '', suffix = '') {
+      return (
+        prefix +
+        Numeral(Number(value)).format(
+          lodashGet(nucleusByKey, `${n.toLowerCase()}.${formatKey}`, '0.0'),
+        ) +
+        suffix
+      );
+    };
+  }
 
   if (!nucleus) {
     return;
