@@ -27,14 +27,8 @@ const axisStyles = css`
 function YAxis({ show, label, margin: marginProps }) {
   const refAxis = useRef();
   const state = useChartData();
-  const {
-    yDomain,
-    width,
-    height,
-    activeTab,
-    tabActiveSpectrum,
-    margin,
-  } = state;
+  const { yDomain, width, height, activeTab, tabActiveSpectrum, margin } =
+    state;
 
   useEffect(() => {
     const axis = d3.axisRight().ticks(8).tickFormat(d3.format('0'));

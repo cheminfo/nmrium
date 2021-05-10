@@ -16,7 +16,11 @@ export default function ZonesWrapper(WrappedComponent) {
     } = useChartData();
     const preferences = usePreferences();
 
-    const { zones = {}, info = {}, display = {} } = useMemo(() => {
+    const {
+      zones = {},
+      info = {},
+      display = {},
+    } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
         const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
           zones: {},

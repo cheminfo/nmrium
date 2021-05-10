@@ -48,11 +48,10 @@ function assignmentReducer(state, action) {
         newState.assignment[action.payload.id[0]][action.payload.axis] !==
           undefined
       ) {
-        newState.assignment[action.payload.id[0]][
-          action.payload.axis
-        ] = newState.assignment[action.payload.id[0]][
-          action.payload.axis
-        ].filter((_id) => _id !== action.payload.id[1]);
+        newState.assignment[action.payload.id[0]][action.payload.axis] =
+          newState.assignment[action.payload.id[0]][action.payload.axis].filter(
+            (_id) => _id !== action.payload.id[1],
+          );
 
         if (
           newState.assignment[action.payload.id[0]][action.payload.axis]
@@ -344,13 +343,15 @@ export function useAssignment(key) {
     [context, id],
   );
 
-  const onMouseEnter = useCallback((axis) => setIsOnHover('enter', axis), [
-    setIsOnHover,
-  ]);
+  const onMouseEnter = useCallback(
+    (axis) => setIsOnHover('enter', axis),
+    [setIsOnHover],
+  );
 
-  const onMouseLeave = useCallback((axis) => setIsOnHover('leave', axis), [
-    setIsOnHover,
-  ]);
+  const onMouseLeave = useCallback(
+    (axis) => setIsOnHover('leave', axis),
+    [setIsOnHover],
+  );
 
   return {
     id,

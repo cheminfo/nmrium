@@ -4,14 +4,8 @@ import { useChartData } from '../context/ChartContext';
 
 export default function FooterWrapper(WrappedComponent) {
   function Wrapper(props) {
-    const {
-      margin,
-      width,
-      height,
-      activeSpectrum,
-      data,
-      activeTab,
-    } = useChartData();
+    const { margin, width, height, activeSpectrum, data, activeTab } =
+      useChartData();
 
     const { forwardedRef, ...rest } = props;
     return (

@@ -17,7 +17,12 @@ export default function RangesWrapper(WrappedComponent) {
     } = useChartData();
     const preferences = usePreferences();
 
-    const { ranges = {}, x = [], y = [], info = {} } = useMemo(() => {
+    const {
+      ranges = {},
+      x = [],
+      y = [],
+      info = {},
+    } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
         const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
           ranges: {},

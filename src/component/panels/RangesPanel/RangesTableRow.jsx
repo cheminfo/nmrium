@@ -44,9 +44,8 @@ function RangesTableRow({
   const highlightData = useHighlightData();
 
   const [unlinkRangeButtonVisibility, showUnlinkRangeButton] = useState(false);
-  const [unlinkSignalButtonVisibility, showUnlinkSignalButton] = useState(
-    false,
-  );
+  const [unlinkSignalButtonVisibility, showUnlinkSignalButton] =
+    useState(false);
 
   const getFormat = useFormat(preferences);
 

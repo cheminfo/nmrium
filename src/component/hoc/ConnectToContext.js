@@ -1,12 +1,7 @@
 function ConnectToContext(WrappedComponent, contextData, additionalProps = {}) {
   return function (props) {
-    const {
-      data,
-      activeSpectrum,
-      preferences,
-      activeTab,
-      selectedTool,
-    } = contextData();
+    const { data, activeSpectrum, preferences, activeTab, selectedTool } =
+      contextData();
 
     return (
       <WrappedComponent
