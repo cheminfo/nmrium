@@ -13,14 +13,19 @@ import { ReactTableStyle } from './Style';
 
 function ReactTable({ data, columns, context }) {
   const contextRef = useRef();
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
-      {
-        columns,
-        data,
-      },
-      useSortBy,
-    );
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useSortBy,
+  );
 
   const contextMenuHandler = useCallback(
     (e, row) => {

@@ -8,8 +8,15 @@ import ContoursWrapper from '../hoc/ContoursWrapper';
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
 function ContoursPaths({ id: spectrumID, sign, color }) {
-  const { margin, width, height, xDomain, yDomain, contours, activeSpectrum } =
-    useChartData();
+  const {
+    margin,
+    width,
+    height,
+    xDomain,
+    yDomain,
+    contours,
+    activeSpectrum,
+  } = useChartData();
 
   const preferences = usePreferences();
 

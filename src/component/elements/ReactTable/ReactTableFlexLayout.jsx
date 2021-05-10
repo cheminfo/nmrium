@@ -6,15 +6,20 @@ import { useTable, useSortBy, useFlexLayout } from 'react-table';
 import { ReactTableStyle } from './Style';
 
 function ReactTableFlexLayout({ data, columns, onMouseDown }) {
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
-      {
-        columns,
-        data,
-      },
-      useSortBy,
-      useFlexLayout,
-    );
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useSortBy,
+    useFlexLayout,
+  );
   return (
     <table {...getTableProps()} css={ReactTableStyle}>
       <thead>

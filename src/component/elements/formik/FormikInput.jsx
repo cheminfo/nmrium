@@ -17,8 +17,13 @@ function FormikInput({
   format,
   ...resProps
 }) {
-  const { values, handleChange, setFieldValue, errors, touched } =
-    useFormikContext();
+  const {
+    values,
+    handleChange,
+    setFieldValue,
+    errors,
+    touched,
+  } = useFormikContext();
   const changeHandler = useCallback(
     (e) => {
       onChange(e);

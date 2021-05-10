@@ -23,8 +23,14 @@ const axisStyles = css`
 
 function XAxis({ show, label, margin: marginProps }) {
   const state = useChartData();
-  const { xDomain, height, width, margin, tabActiveSpectrum, activeTab } =
-    state;
+  const {
+    xDomain,
+    height,
+    width,
+    margin,
+    tabActiveSpectrum,
+    activeTab,
+  } = state;
 
   const refAxis = useRef();
 

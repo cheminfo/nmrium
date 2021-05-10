@@ -163,14 +163,16 @@ function PeakNotation({
     highlight.hide();
   }, [highlight]);
 
-  const newValue = useMemo(
-    () => (isSelected ? value : format(value)),
-    [format, isSelected, value],
-  );
-  const oldValue = useMemo(
-    () => (isSelected ? _value : format(_value)),
-    [_value, format, isSelected],
-  );
+  const newValue = useMemo(() => (isSelected ? value : format(value)), [
+    format,
+    isSelected,
+    value,
+  ]);
+  const oldValue = useMemo(() => (isSelected ? _value : format(_value)), [
+    _value,
+    format,
+    isSelected,
+  ]);
 
   return (
     <Fragment>
