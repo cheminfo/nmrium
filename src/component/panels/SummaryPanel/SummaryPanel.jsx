@@ -265,9 +265,8 @@ function SummaryPanel() {
   }, [correlationsData]);
 
   useEffect(() => {
-    const _selectedAdditionalColumnsAtomType = selectedAdditionalColumnsAtomType.split(
-      '-',
-    )[0];
+    const _selectedAdditionalColumnsAtomType =
+      selectedAdditionalColumnsAtomType.split('-')[0];
 
     setAdditionalColumnData(
       filteredCorrelationsData

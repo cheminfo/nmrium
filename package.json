@@ -21,8 +21,10 @@
     "eslint-fix": "npm run eslint -- --fix",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
     "prepack": "npm run clean-lib && npm run compile",
+    "prettier": "prettier --check src",
+    "prettier-write": "prettier --write src",
     "start": "react-scripts start ",
-    "test": "npm run test-only && npm run eslint && npm run check-types",
+    "test": "npm run test-only && npm run eslint && npm run prettier && npm run check-types",
     "test-only": "react-scripts test --watchAll=false"
   },
   "browserslist": {
@@ -109,7 +111,7 @@
     "@types/react": "^17.0.5",
     "@types/react-dom": "^17.0.3",
     "@types/react-router-dom": "^5.1.7",
-    "@zakodium/eslint-config": "^3.0.1",
+    "@zakodium/eslint-config": "^3.0.2",
     "cross-env": "^7.0.3",
     "eslint": "^7.26.0",
     "modern-normalize": "^1.1.0",
