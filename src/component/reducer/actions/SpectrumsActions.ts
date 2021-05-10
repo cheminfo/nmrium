@@ -146,11 +146,11 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
 }
 function addMissingProjectionHander(draft, action) {
   const state = original(draft);
-  const nucleus = action.nucleus;
+  const { nucleus, usedColors } = action;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     for (let n of nucleus) {
-      const datum1D = getMissingProjection(state.data[index], n);
+      const datum1D = getMissingProjection(state.data[index], n, usedColors);
       draft.data.push(datum1D);
     }
     const groupByNucleus = GroupByInfoKey('nucleus');

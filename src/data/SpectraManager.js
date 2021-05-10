@@ -6,16 +6,17 @@ import * as Data2DManager from './data2d/Data2DManager';
 import * as Datum2D from './data2d/Datum2D';
 import * as Molecule from './molecules/Molecule';
 
-export function addJcampFromURL(spectra, jcampURL, options) {
+export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
   // { credentials: 'include' }
   return fetch(jcampURL)
     .then((response) => response.arrayBuffer())
     .then((jcamp) => {
-      addJcamp(spectra, jcamp, options);
+      addJcamp(spectra, jcamp, options, usedColors);
     });
 }
 
-export function addJcamp(spectra, jcamp, options = {}) {
+export function addJcamp(spectra, jcamp, options, usedColors) {
+  options = options || {};
   const entries = fromJCAMP(jcamp, {
     noContour: true,
     xy: true,
@@ -31,18 +32,18 @@ export function addJcamp(spectra, jcamp, options = {}) {
       (dependentVariables[0].components.length > 0 ||
         dependentVariables[0].components.z.length)
     ) {
-      addJcampSS(spectra, entry, options);
+      addJcampSS(spectra, entry, options, usedColors);
     }
   }
 }
 
-function addJcampSS(spectra, entry, options) {
+function addJcampSS(spectra, entry, options, usedColors) {
   const dimension = entry.info.dimension;
   if (dimension === 1) {
-    spectra.push(Data1DManager.fromParsedJcamp(entry, options));
+    spectra.push(Data1DManager.fromParsedJcamp(entry, options, usedColors));
   }
   if (dimension === 2) {
-    spectra.push(Data2DManager.fromParsedJcamp(entry, options));
+    spectra.push(Data2DManager.fromParsedJcamp(entry, options, usedColors));
   }
 }
 
@@ -56,7 +57,7 @@ function addData(spectra, datum) {
   }
 }
 
-export function addJDF(spectra, jdf, options = {}) {
+export function addJDF(spectra, jdf, options = {}, usedColors = {}) {
   // need to parse the jcamp
   let converted = fromJEOL(jdf, {});
   let info = converted.description;
@@ -77,42 +78,52 @@ export function addJDF(spectra, jdf, options = {}) {
   if (info.dimension === 1) {
     if (converted.dependentVariables) {
       spectra.push(
-        Data1DManager.fromCSD(converted, {
-          ...options,
-          display: { ...options.display },
-          info: info,
-          meta: metadata,
-        }),
+        Data1DManager.fromCSD(
+          converted,
+          {
+            ...options,
+            display: { ...options.display },
+            info: info,
+            meta: metadata,
+          },
+          usedColors,
+        ),
       );
     }
   }
   if (info.dimension === 2 && info.isFt) {
     spectra.push(
-      Data2DManager.fromCSD(converted, {
-        ...options,
-        display: { ...options.display },
-        info,
-      }),
+      Data2DManager.fromCSD(
+        converted,
+        {
+          ...options,
+          display: { ...options.display },
+          info,
+        },
+        usedColors,
+      ),
     );
   }
 }
 
-export async function fromJSON(data = []) {
+export async function fromJSON(data = [], usedColors = {}) {
   const spectra = [];
   let promises = [];
 
   for (let datum of data) {
     if (datum.source.jcampURL != null) {
-      promises.push(addJcampFromURL(spectra, datum.source.jcampURL, datum));
+      promises.push(
+        addJcampFromURL(spectra, datum.source.jcampURL, datum, usedColors),
+      );
     } else {
-      addData(spectra, datum);
+      addData(spectra, datum, usedColors);
     }
   }
   await Promise.all(promises);
   return spectra;
 }
 
-export async function addBruker(options, data) {
+export async function addBruker(options, data, usedColors) {
   const spectra = [];
   let result = await fromBruker(data, {
     xy: true,
@@ -125,20 +136,28 @@ export async function addBruker(options, data) {
     if (info.dimension === 1) {
       if (dependentVariables[0].components) {
         spectra.push(
-          Data1DManager.fromBruker(entry, {
-            ...options,
-            display: { ...options.display },
-          }),
+          Data1DManager.fromBruker(
+            entry,
+            {
+              ...options,
+              display: { ...options.display },
+            },
+            usedColors,
+          ),
         );
       }
     } else if (info.dimension === 2) {
       if (info.isFt) {
         spectra.push(
-          Data2DManager.fromBruker(entry, {
-            ...options,
-            info,
-            display: { ...options.display },
-          }),
+          Data2DManager.fromBruker(
+            entry,
+            {
+              ...options,
+              info,
+              display: { ...options.display },
+            },
+            usedColors,
+          ),
         );
       } else {
         // in case of 2D FID spectrum
@@ -161,34 +180,44 @@ export async function fromZip(zipFiles) {
   return spectra;
 }
 
-export function addJDFs(files) {
+export function addJDFs(files, usedColors) {
   const spectra = [];
   for (const file of files) {
-    addJDF(spectra, file.binary, {
-      display: {
-        name: file.name,
+    addJDF(
+      spectra,
+      file.binary,
+      {
+        display: {
+          name: file.name,
+        },
+        source: {
+          jcampURL: file.jcampURL ? file.jcampURL : null,
+          file,
+        },
       },
-      source: {
-        jcampURL: file.jcampURL ? file.jcampURL : null,
-        file,
-      },
-    });
+      usedColors,
+    );
   }
   return spectra;
 }
 
-export function addJcamps(files) {
+export function addJcamps(files, usedColors) {
   const spectra = [];
   for (const file of files) {
-    addJcamp(spectra, file.binary, {
-      display: {
-        name: file.name,
+    addJcamp(
+      spectra,
+      file.binary,
+      {
+        display: {
+          name: file.name,
+        },
+        source: {
+          jcampURL: file.jcampURL ? file.jcampURL : null,
+          file,
+        },
       },
-      source: {
-        jcampURL: file.jcampURL ? file.jcampURL : null,
-        file,
-      },
-    });
+      usedColors,
+    );
   }
   return spectra;
 }

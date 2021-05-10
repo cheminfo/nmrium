@@ -11,8 +11,6 @@ import get1dColor from '../utilities/getColor';
 import autoRangesDetection from './autoRangesDetection';
 import detectSignal from './detectSignal';
 
-export const usedColors1D: Array<string> = [];
-
 export interface File {
   binary: ArrayBuffer;
   name: string;
@@ -112,7 +110,7 @@ export interface Datum1D {
   filters: Array<Partial<FiltersManager.Filter>>;
 }
 
-export function initiateDatum1D(options: any): Datum1D {
+export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   const datum: any = {};
   datum.shiftX = options.shiftX || 0;
   datum.id = options.id || generateID();
@@ -132,7 +130,7 @@ export function initiateDatum1D(options: any): Datum1D {
     {
       name: options.display?.name ? options.display.name : generateID(),
       color: 'black',
-      ...getColor(options),
+      ...getColor(options, usedColors),
       isVisible: true,
       isPeaksMarkersVisible: true,
       isRealSpectrumVisible: true,
@@ -226,10 +224,12 @@ export function toJSON(datum1D: Datum1D, forceIncludeData = false) {
   };
 }
 
-function getColor(options) {
+function getColor(options, usedColors) {
   if (options.display === undefined || options.display.color === undefined) {
-    const color = get1dColor(false, usedColors1D);
-    usedColors1D.push(color);
+    const color = get1dColor(false, usedColors['1d'] || []);
+    if (usedColors['1d']) {
+      usedColors['1d'].push(color);
+    }
     return { color };
   }
   return {};

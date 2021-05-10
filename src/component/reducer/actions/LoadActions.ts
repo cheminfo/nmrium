@@ -67,8 +67,9 @@ function initiate(draft: Draft<State>, action) {
   draft.isLoading = false;
 }
 
-function loadJDFFile(draft: Draft<State>, files) {
-  const spectra = addJDFs(files);
+function loadJDFFile(draft: Draft<State>, actions) {
+  const { files, usedColors } = actions;
+  const spectra = addJDFs(files, usedColors);
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
@@ -79,8 +80,9 @@ function loadJDFFile(draft: Draft<State>, files) {
   draft.isLoading = false;
 }
 
-function loadJcampFile(draft: Draft<State>, files) {
-  const spectra = addJcamps(files);
+function loadJcampFile(draft: Draft<State>, actions) {
+  const { files, usedColors } = actions;
+  const spectra = addJcamps(files, usedColors);
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
@@ -105,7 +107,8 @@ function handleLoadJsonFile(draft: Draft<State>, actions) {
   draft.isLoading = false;
 }
 
-function handleLoadMOLFile(draft: Draft<State>, files) {
+function handleLoadMOLFile(draft: Draft<State>, actions) {
+  const { files } = actions;
   for (let file of files) {
     MoleculeManager.addMolfile(draft.molecules, file.binary.toString());
   }
