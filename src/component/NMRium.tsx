@@ -28,7 +28,7 @@ import Viewer2D from './2d/Viewer2D';
 import ErrorBoundary from './ErrorBoundary';
 import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
 import { AssignmentProvider } from './assignment';
-import helpList, { setBaseUrl } from './constants/help';
+import helpList from './constants/help';
 import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { GlobalProvider } from './context/GlobalContext';
@@ -241,9 +241,13 @@ function NMRium({
   useEffect(() => {
     dispatchPreferences({
       type: INIT_PREFERENCES,
-      payload: { display: preferences, dispatch: dispatchPreferences },
+      payload: {
+        display: preferences,
+        docsBaseUrl,
+        dispatch: dispatchPreferences,
+      },
     });
-  }, [preferences]);
+  }, [preferences, docsBaseUrl]);
 
   useEffect(() => {
     dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
@@ -251,8 +255,8 @@ function NMRium({
   }, [dataProp, dispatchMiddleWare]);
 
   useEffect(() => {
-    setBaseUrl(docsBaseUrl);
-    setHelpData(helpList());
+    // setBaseUrl(docsBaseUrl);
+    setHelpData(helpList(docsBaseUrl));
   }, [docsBaseUrl]);
 
   const handleSplitPanelDragFinished = useCallback(

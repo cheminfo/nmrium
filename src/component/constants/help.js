@@ -1,10 +1,4 @@
-let baseURL = '';
-
-export function setBaseUrl(newBaseUrl) {
-  baseURL = newBaseUrl;
-}
-
-function getHelpList() {
+function getHelpList(baseURL) {
   return {
     zoomIn: {
       text: 'Zoom Tool',

@@ -70,6 +70,7 @@ export const preferencesInitialState = {
     panels: {},
   },
   dispatch: null,
+  docsBaseUrl: null,
 };
 
 const mapNucleus = (draft) => {
@@ -103,10 +104,11 @@ export function preferencesReducer(state, action) {
 
       return produce(state, (draft) => {
         if (action.payload) {
-          const { dispatch, ...resPreferences } = action.payload;
+          const { dispatch, docsBaseUrl, ...resPreferences } = action.payload;
           draft.basePreferences = resPreferences;
           draft.display = resPreferences.display;
           draft.dispatch = dispatch;
+          draft.docsBaseUrl = docsBaseUrl;
           if (localData) {
             Object.entries(localData).forEach(([k, v]) => {
               draft[k] = lodashMerge(

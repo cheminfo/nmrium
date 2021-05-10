@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import getHelpData from '../constants/help';
+import { usePreferences } from '../context/PreferencesContext';
 import CloseButton from '../elements/CloseButton';
 
 const styles = css`
@@ -49,7 +49,7 @@ const styles = css`
 `;
 
 function UserManualModal({ onClose }) {
-  const filePath = getHelpData().loadSpectrum.filePath;
+  const { docsBaseUrl } = usePreferences();
 
   return (
     <div css={styles}>
@@ -61,7 +61,7 @@ function UserManualModal({ onClose }) {
         <div className="inner-container">
           <iframe
             title="General User Manual "
-            src={filePath}
+            src={docsBaseUrl}
             frameBorder="0"
             scrolling="auto"
             style={{ width: '100%', height: '100%' }}
