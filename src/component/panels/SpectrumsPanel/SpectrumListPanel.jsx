@@ -1,4 +1,4 @@
-import React, { useCallback, memo, useState } from 'react';
+import { useCallback, memo, useState } from 'react';
 
 import SpectraPanelHeader from './SpectraPanelHeader';
 import SpectrumsTabs from './SpectrumsTabs';

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ToolTip from './ToolTip/ToolTip';
 
 function ButtonToolTip({

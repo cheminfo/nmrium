@@ -1,7 +1,6 @@
 import { SvgNmrPeaks } from 'cheminfo-font';
-import React from 'react';
 
-function ShowHideMarkersButton({
+export default function ShowHideMarkersButton({
   data,
   onChangeMarkersVisibility,
   markersVisible,
@@ -28,5 +27,3 @@ function ShowHideMarkersButton({
     </button>
   );
 }
-
-export default ShowHideMarkersButton;

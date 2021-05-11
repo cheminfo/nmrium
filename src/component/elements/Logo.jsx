@@ -1,6 +1,4 @@
-import React from 'react';
-
-function Logo({ width = 100, height = 100 }) {
+export default function Logo({ width = 100, height = 100 }) {
   return (
     <svg
       style={{ width: width, height: height }}
@@ -51,5 +49,3 @@ function Logo({ width = 100, height = 100 }) {
     </svg>
   );
 }
-
-export default Logo;

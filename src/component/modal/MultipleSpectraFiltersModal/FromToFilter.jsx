@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
 import FormikForm from '../../elements/formik/FormikForm';

@@ -1,7 +1,10 @@
-import React from 'react';
 import { FaEye } from 'react-icons/fa';
 
-function ShowHideSpectrumButton({ data, onChangeVisibility, style }) {
+export default function ShowHideSpectrumButton({
+  data,
+  onChangeVisibility,
+  style,
+}) {
   const isVisible = (id, key) => {
     return data ? data.display[key] : true;
   };
@@ -80,5 +83,3 @@ function ShowHideSpectrumButton({ data, onChangeVisibility, style }) {
     </>
   );
 }
-
-export default ShowHideSpectrumButton;
