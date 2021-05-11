@@ -10,12 +10,12 @@ import {
 } from 'react-icons/fa';
 
 import { useChartData } from '../context/ChartContext';
+import { usePreferences } from '../context/PreferencesContext';
 import Button from '../elements/ButtonToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useHelp } from '../elements/popup/Help';
 import { useModal, positions } from '../elements/popup/Modal';
 import AboutUsModal from '../modal/AboutUsModal';
-import UserManualModal from '../modal/UserManualModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
 import { options } from '../toolbar/ToolTypes';
 
@@ -77,6 +77,8 @@ const headerStyle = css`
 
 function Header({ isFullscreen, onMaximize }) {
   const { selectedOptionPanel } = useChartData();
+  const { docsBaseUrl } = usePreferences();
+
   const modal = useModal();
   const alert = useAlert();
   const help = useHelp();
@@ -117,14 +119,8 @@ function Header({ isFullscreen, onMaximize }) {
     );
   }, [alert, modal]);
   const openUserManual = useCallback(() => {
-    modal.show(<UserManualModal />, {
-      isBackgroundBlur: false,
-      position: positions.MIDDLE,
-      enableResizing: true,
-      width: 1020,
-      height: 500,
-    });
-  }, [modal]);
+    window.open(docsBaseUrl, '_blank');
+  }, [docsBaseUrl]);
 
   const openAboutUs = useCallback(() => {
     modal.show(<AboutUsModal />, {
