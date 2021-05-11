@@ -1,24 +1,27 @@
 import { initiateDatum1D } from './Datum1D';
 
-export function fromBruker(result, options = {}) {
+export function fromBruker(result, options = {}, usedColors = {}) {
   const { dependentVariables, info, meta, source } = result;
   let data = getData(dependentVariables[0].components);
   if (data.im) info.isComplex = true;
 
   if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
 
-  const datum1D = initiateDatum1D({
-    ...options,
-    source,
-    info,
-    meta,
-    data,
-  });
+  const datum1D = initiateDatum1D(
+    {
+      ...options,
+      source,
+      info,
+      meta,
+      data,
+    },
+    usedColors,
+  );
 
   return datum1D;
 }
 
-export function fromCSD(result, options = {}) {
+export function fromCSD(result, options = {}, usedColors = {}) {
   let dimension = result.dimensions[0];
   let dependentVariables = result.dependentVariables;
 
@@ -62,24 +65,30 @@ export function fromCSD(result, options = {}) {
 
   data.x = scale;
 
-  const datum1D = initiateDatum1D({
-    ...options,
-    data,
-  });
+  const datum1D = initiateDatum1D(
+    {
+      ...options,
+      data,
+    },
+    usedColors,
+  );
   return datum1D;
 }
 
-export function fromParsedJcamp(parsedJcamp, options = {}) {
+export function fromParsedJcamp(parsedJcamp, options, usedColors) {
   const { dependentVariables, info, meta } = parsedJcamp;
   let data = getData(dependentVariables[0].components);
   if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
 
-  const datum1D = initiateDatum1D({
-    ...options,
-    info,
-    meta,
-    data,
-  });
+  const datum1D = initiateDatum1D(
+    {
+      ...options,
+      info,
+      meta,
+      data,
+    },
+    usedColors,
+  );
 
   return datum1D;
 }

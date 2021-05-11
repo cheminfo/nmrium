@@ -6,7 +6,7 @@ import { addBruker, addJcamps } from '../../data/SpectraManager';
 import { addRanges } from './util/nmredata/addRanges';
 import { addZones } from './util/nmredata/addZones';
 
-export async function nmredataToNmrium(file) {
+export async function nmredataToNmrium(file, usedColors) {
   const jszip = new Jszip();
   const zip = await jszip.loadAsync(file.binary);
   const sdfFiles = await getSDF(zip.files);
@@ -25,7 +25,7 @@ export async function nmredataToNmrium(file) {
   for (const data of spectra) {
     const { file, jcampURL } = data.source;
 
-    let spectrum = await getSpectra(file, { jcampURL });
+    let spectrum = await getSpectra(file, { jcampURL }, usedColors);
 
     for (let i = 0; i < spectrum.length; i++) {
       const { info } = spectrum[i];
@@ -44,7 +44,7 @@ export async function nmredataToNmrium(file) {
   return nmrium;
 }
 
-async function getSpectra(file, options = {}) {
+async function getSpectra(file, options = {}, usedColors = {}) {
   const {
     xy = true,
     noContours = true,
@@ -54,9 +54,13 @@ async function getSpectra(file, options = {}) {
   switch (file.extension) {
     case 'jdx':
     case 'dx':
-      return addJcamps([file]);
+      return addJcamps([file], usedColors);
     case 'zip':
-      return addBruker({ xy, noContours, keepOriginal }, file.binary);
+      return addBruker(
+        { xy, noContours, keepOriginal },
+        file.binary,
+        usedColors,
+      );
     default:
       if (!jcampURL) {
         new Error('file extension is not supported');

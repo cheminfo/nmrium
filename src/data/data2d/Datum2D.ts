@@ -10,8 +10,6 @@ import { get2DColor } from '../utilities/getColor';
 import Processing2D, { defaultContourOptions } from './Processing2D';
 import autoZonesDetection from './autoZonesDetection';
 
-export const usedColors2D: Array<string> = [];
-
 export interface File {
   binary: ArrayBuffer;
   name: string;
@@ -104,7 +102,7 @@ export interface Datum2D {
   processingController: Processing2D;
 }
 
-export function initiateDatum2D(options: any): Datum2D {
+export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};
 
   datum.id = options.id || generateID();
@@ -121,7 +119,7 @@ export function initiateDatum2D(options: any): Datum2D {
       name: options.display?.name ? options.display.name : generateID(),
       positiveColor: 'red',
       negativeColor: 'blue',
-      ...getColor(options),
+      ...getColor(options, usedColors),
       isPositiveVisible: true,
       isNegativeVisible: true,
       isVisible: true,
@@ -188,14 +186,16 @@ export function getShift(datum: Datum2D): { xShift: number; yShift: number } {
   return shift;
 }
 
-function getColor(options) {
+function getColor(options, usedColors) {
   if (
     options.display === undefined ||
     options.display.negativeColor === undefined ||
     options.display.positiveColor === undefined
   ) {
-    const color = get2DColor(options.info.experiment, usedColors2D);
-    usedColors2D.push(color.positiveColor);
+    const color = get2DColor(options.info.experiment, usedColors['2d'] || []);
+    if (usedColors['2d']) {
+      usedColors['2d'].push(color.positiveColor);
+    }
     return color;
   }
   return {};
@@ -273,8 +273,8 @@ export function getSlice(spectrum, position) {
     dataY.re[i] += spectrum.data.z[index--][xIndex];
   }
 
-  const horizontal = initiateDatum1D({ info: infoX, data: dataX });
-  const vertical = initiateDatum1D({ info: infoY, data: dataY });
+  const horizontal = initiateDatum1D({ info: infoX, data: dataX }, {});
+  const vertical = initiateDatum1D({ info: infoY, data: dataY }, {});
   return { horizontal, vertical };
 }
 
@@ -383,7 +383,7 @@ export function detectZonesManual(datum, options) {
 /** calculate the missing projection
  * @param {string[]} nucleus
  */
-export function getMissingProjection(datum, nucleus) {
+export function getMissingProjection(datum, nucleus, usedColors) {
   let index = datum.info.nucleus.indexOf(nucleus);
   // temporary because nuclus was undefined;
   if (index === -1) index = 0;
@@ -419,7 +419,7 @@ export function getMissingProjection(datum, nucleus) {
     x: zoneToX({ from, to }, nbPoints),
     re: projection,
   };
-  const datum1D = initiateDatum1D({ info, data });
+  const datum1D = initiateDatum1D({ info, data }, usedColors);
   return datum1D;
 }
 /**

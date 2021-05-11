@@ -39,14 +39,17 @@ function deleteMoleculeHandler(draft: Draft<State>, action) {
 }
 
 function predictSpectraFromMolculeHandler(draft: Draft<State>, action) {
-  const { fromMolfile, options } = action.payload;
+  const { fromMolfile, options, usedColors } = action.payload;
   const { x, y } = signalsToXY(fromMolfile.signals, {});
   let id: any = null;
   if (options.spectra['1h']) {
-    const datum = initiateDatum1D({
-      data: { x, im: null, re: y },
-      info: { nucleus: '1H' },
-    });
+    const datum = initiateDatum1D(
+      {
+        data: { x, im: null, re: y },
+        info: { nucleus: '1H' },
+      },
+      usedColors,
+    );
     id = datum.id;
     datum.ranges.values = mapRanges(fromMolfile.ranges, datum);
     updateIntegralRanges(datum);

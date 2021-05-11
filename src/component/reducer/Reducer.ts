@@ -147,12 +147,14 @@ export interface State {
 }
 
 export function dispatchMiddleware(dispatch) {
+  const usedColors = { '1d': [], '2d': [] };
+
   return (action) => {
     switch (action.type) {
       case types.INITIATE: {
         if (action.payload) {
           const { spectra, ...res } = action.payload;
-          void SpectraManager.fromJSON(spectra).then((data) => {
+          void SpectraManager.fromJSON(spectra, usedColors).then((data) => {
             action.payload = { spectra: data, ...res };
             dispatch(action);
           });
@@ -163,10 +165,12 @@ export function dispatchMiddleware(dispatch) {
       }
       case types.LOAD_JSON_FILE: {
         const data = JSON.parse(action.files[0].binary.toString());
-        void SpectraManager.fromJSON(data.spectra).then((spectra) => {
-          action.payload = Object.assign(data, { spectra });
-          dispatch(action);
-        });
+        void SpectraManager.fromJSON(data.spectra, usedColors).then(
+          (spectra) => {
+            action.payload = Object.assign(data, { spectra });
+            dispatch(action);
+          },
+        );
         break;
       }
       case types.LOAD_ZIP_FILE: {
@@ -174,6 +178,7 @@ export function dispatchMiddleware(dispatch) {
           void SpectraManager.addBruker(
             { display: { name: zipFile.name } },
             zipFile.binary,
+            usedColors,
           ).then((data) => {
             action.payload = data;
             dispatch(action);
@@ -182,7 +187,7 @@ export function dispatchMiddleware(dispatch) {
         break;
       }
       case types.LOAD_NMREDATA_FILE: {
-        void nmredataToNmrium(action.file).then((data) => {
+        void nmredataToNmrium(action.file, usedColors).then((data) => {
           action.payload = data;
           dispatch(action);
         });
@@ -192,6 +197,7 @@ export function dispatchMiddleware(dispatch) {
         const molecule = OCL.Molecule.fromMolfile(action.payload.mol.molfile);
         void predictionProton(molecule, {}).then((result) => {
           action.payload.fromMolfile = result;
+          action.payload.usedColors = usedColors;
           dispatch(action);
         });
 
@@ -199,6 +205,7 @@ export function dispatchMiddleware(dispatch) {
       }
 
       default:
+        action.usedColors = usedColors;
         dispatch(action);
 
         break;
@@ -216,11 +223,11 @@ function innerSpectrumReducer(draft, action) {
     case types.LOAD_JSON_FILE:
       return LoadActions.handleLoadJsonFile(draft, action);
     case types.LOAD_JCAMP_FILE:
-      return LoadActions.loadJcampFile(draft, action.files);
+      return LoadActions.loadJcampFile(draft, action);
     case types.LOAD_JDF_FILE:
-      return LoadActions.loadJDFFile(draft, action.files);
+      return LoadActions.loadJDFFile(draft, action);
     case types.LOAD_MOL_FILE:
-      return LoadActions.handleLoadMOLFile(draft, action.files);
+      return LoadActions.handleLoadMOLFile(draft, action);
     case types.LOAD_ZIP_FILE:
       return LoadActions.handleLoadZIPFile(draft, action);
     case types.LOAD_NMREDATA_FILE:
