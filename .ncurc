@@ -2,7 +2,6 @@
   "dep": "prod,dev",
   "reject": [
     "react-color",
-    "react-table",
-    "rc-menu",
+    "react-table"
   ]
 }

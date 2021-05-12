@@ -2,23 +2,21 @@ import { useMemo } from 'react';
 
 import { positions } from './options';
 
-export function getStyles(position, props) {
+function getStyles(position, containerStyle) {
   const initialStyles = {
-    // left: 0,
     position: 'fixed',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    // width: '100%',
     pointerEvents: 'none',
     overflow: 'visible',
-    ...(props.containerStyle
+    ...(containerStyle
       ? {
-          top: `${props.containerStyle.top}px`,
-          left: `${props.containerStyle.left}px`,
-          height: `${props.containerStyle.height}px`,
-          width: `${props.containerStyle.width}px`,
+          top: `${containerStyle.top}px`,
+          left: `${containerStyle.left}px`,
+          height: `${containerStyle.height}px`,
+          width: `${containerStyle.width}px`,
         }
       : { width: '100%', height: '100%' }),
   };
@@ -35,34 +33,28 @@ export function getStyles(position, props) {
       return {
         ...initialStyles,
         justifyContent: 'flex-start',
-
-        // top: 0,
       };
     case positions.TOP_RIGHT:
       return {
         ...initialStyles,
-        // top: 0,
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
       };
     case positions.MIDDLE_LEFT:
       return {
         ...initialStyles,
-        // top: '50%',
         justifyContent: 'center',
         alignItems: 'flex-start',
       };
     case positions.MIDDLE: {
       return {
         ...initialStyles,
-        // top: '50%',
         justifyContent: 'center',
       };
     }
     case positions.MIDDLE_RIGHT:
       return {
         ...initialStyles,
-        // top: '50%',
         justifyContent: 'center',
 
         alignItems: 'flex-end',
@@ -71,7 +63,6 @@ export function getStyles(position, props) {
     case positions.BOTTOM_LEFT:
       return {
         ...initialStyles,
-        // bottom: 0,
         justifyContent: 'flex-end',
 
         alignItems: 'flex-start',
@@ -79,13 +70,11 @@ export function getStyles(position, props) {
     case positions.BOTTOM_CENTER:
       return {
         ...initialStyles,
-        // bottom: 0,
         justifyContent: 'flex-end',
       };
     case positions.BOTTOM_RIGHT:
       return {
         ...initialStyles,
-        // bottom: 0,
         justifyContent: 'flex-end',
 
         alignItems: 'flex-end',
@@ -97,8 +86,16 @@ export function getStyles(position, props) {
   }
 }
 
-export default function Wrapper({ children, options: { position }, ...props }) {
-  const styles = useMemo(() => getStyles(position, props), [position, props]);
+export default function Wrapper({
+  children,
+  options: { position },
+  containerStyle,
+  ...props
+}) {
+  const styles = useMemo(
+    () => getStyles(position, containerStyle),
+    [position, containerStyle],
+  );
 
   return (
     children.length > 0 && (

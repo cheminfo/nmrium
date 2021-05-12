@@ -1,14 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useFormikContext } from 'formik';
-import { highlight, languages } from 'prismjs/components/prism-core';
-// eslint-disable-next-line import/no-unassigned-import
-import 'prismjs/components/prism-clike';
-// eslint-disable-next-line import/no-unassigned-import
-import 'prismjs/components/prism-javascript';
-import { memo, useCallback, useEffect, useState } from 'react';
-import Editor from 'react-simple-code-editor';
+import { memo, useEffect, useState } from 'react';
 
-import prismStyles from '../../elements/styles/prism';
 import Eval from '../../utility/Evaluate';
 
 const initCode = `function run(data) {
@@ -33,27 +26,16 @@ function MulipleAnalysisCodeEditor({ data }) {
     }
   }, [code, data, setFieldValue]);
 
-  const valueChangeHandler = useCallback((code) => {
-    setCode(code);
-  }, []);
-  const highlightHandler = useCallback((code) => {
-    try {
-      return highlight(code, languages.js);
-    } catch (e) {
-      return null;
-    }
-  }, []);
-
   return (
-    <div style={{ marginTop: '20px' }} css={prismStyles}>
-      <Editor
+    <div style={{ marginTop: '20px' }}>
+      <textarea
         value={code}
-        onValueChange={valueChangeHandler}
-        highlight={highlightHandler}
-        padding={10}
+        onChange={(event) => setCode(event.target.value)}
         style={{
           fontFamily: '"Fira code", "Fira Mono", monospace',
           fontSize: 12,
+          padding: '1em',
+          width: '90%',
           backgroundColor: '#fcfcfc',
           marginBottom: '10px',
           minHeight: '100px',
@@ -63,15 +45,15 @@ function MulipleAnalysisCodeEditor({ data }) {
       />
       <p style={{ marginBottom: '5px' }}>Result:</p>
 
-      <Editor
+      <textarea
         value={result}
-        onValueChange={(code) => code}
-        highlight={highlightHandler}
-        padding={10}
+        readOnly
         style={{
           border: '0.55px solid #f3f3f3',
           fontFamily: '"Fira code", "Fira Mono", monospace',
           fontSize: 12,
+          padding: '1em',
+          width: '90%',
           marginBottom: '10px',
           minHeight: '100px',
           overflow: 'auto',
