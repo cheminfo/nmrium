@@ -1,19 +1,22 @@
-import { xHistogram, xAbsolute, xMinMaxValues } from 'ml-spectra-processing';
+import {
+  xHistogram,
+  xAbsolute,
+  xMinMaxValues,
+  xNoiseSanPlot,
+} from 'ml-spectra-processing';
 import { memo, useMemo } from 'react';
 import { Axis, BarSeries, Heading, Plot } from 'react-plot';
 
-const Spectrum2DHistogram = memo(({ color = 'red', data }) => {
+const Spectrum1DHistogram = memo(({ color = 'red', data }) => {
   const histogramData = useMemo(() => {
-    const array = prepareData(data.re);
-    const result = xHistogram(array, {
-      logBaseX: 10,
-      logBaseY: 2,
-      nbSlots: 100,
-    });
-    return result.x.reduce((acc, value, index) => {
-      acc.push({ x: value, y: result.y[index] });
-      return acc;
-    }, []);
+    const input = prepareData(data.re);
+    const { sanplot } = xNoiseSanPlot(input);
+    const { x, y } = sanplot.positive;
+    let result = new Array(x.length);
+    for (let i = 0; i < x.length; i++) {
+      result[i] = { x: x[i], y: y[i] };
+    }
+    return result;
   }, [data.re]);
 
   return (
@@ -55,17 +58,15 @@ const Spectrum2DHistogram = memo(({ color = 'red', data }) => {
   );
 });
 
-export default Spectrum2DHistogram;
+export default Spectrum1DHistogram;
 
-function prepareData(array) {
-  array = xAbsolute(array);
-  // we will shift of the minValue that is not 0
-  let { min, max } = xMinMaxValues(array);
-  if (min < 1) {
-    if (max > 1e6) min = 1;
-  }
-  for (let i = 0; i < array.length; i++) {
-    array[i] += min;
+function prepareData(input) {
+  let length = input.length;
+  let jump = Math.floor(length / 24576) || 1;
+  const array = new Float64Array((length / jump) >> 0);
+  let index = 0;
+  for (let i = 0; i < array.length; i += jump) {
+    array[index++] = input[i];
   }
   return array;
 }
