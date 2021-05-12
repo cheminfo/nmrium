@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.12.1](https://www.github.com/cheminfo/nmrium/compare/v0.12.0...v0.12.1) (2021-05-12)
+
+
+### Bug Fixes
+
+* crash when edit and save range. ([907b49f](https://www.github.com/cheminfo/nmrium/commit/907b49f214f1d26dc47c536d8f6500be97c8ebd7)), closes [#1031](https://www.github.com/cheminfo/nmrium/issues/1031)
+
 ## [0.12.0](https://www.github.com/cheminfo/nmrium/compare/v0.11.0...v0.12.0) (2021-05-07)
 
 
