@@ -1,22 +1,18 @@
-import { xAbsoluteMedian } from 'ml-spectra-processing';
 import { xyAutoRangesPicking } from 'nmr-processing';
 
 let defaultPeakPickingOptions = {
-  minMaxRatio: 0.05,
+  minMaxRatio: 1,
   realTopDetection: true,
   maxCriteria: true,
   smoothY: false,
   nH: 100,
-  compile: true,
-  frequencyCluster: 16,
+  factorStd: 5,
   clean: true,
-  keepPeaks: true,
   sgOptions: { windowSize: 7, polynomial: 3 },
 };
 
 export default function autoRangesDetection(datum1D, options = {}) {
   // we calculate the noise but this could be improved
-  let noiseLevel = xAbsoluteMedian(datum1D.data.re);
 
   let { re, x } = datum1D.data;
 
@@ -32,12 +28,22 @@ export default function autoRangesDetection(datum1D, options = {}) {
   const rangesOptions = {
     frequency: originFrequency,
     nucleus,
-    noiseLevel: 3 * noiseLevel,
+    compile: true,
+    frequencyCluster: 8,
+    keepPeaks: true,
   };
 
   if (windowFromIndex !== undefined && windowToIndex !== undefined) {
     x = x.slice(windowFromIndex, windowToIndex);
     re = re.slice(windowFromIndex, windowToIndex);
+  }
+
+  if (originFrequency) {
+    let ws = Math.max(Math.round(1 / originFrequency / (x[1] - x[0])), 5);
+    peakPickingOptions.sgOptions = {
+      windowSize: ws - (ws % 2) + 1,
+      polynomial: 3,
+    };
   }
 
   const ranges = xyAutoRangesPicking(

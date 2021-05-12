@@ -1,24 +1,17 @@
-import {
-  matrixHistogram,
-  xAbsolute,
-  matrixMinMaxZ,
-} from 'ml-spectra-processing';
+import { xNoiseSanPlot } from 'ml-spectra-processing';
 import { memo, useMemo } from 'react';
 import { Axis, BarSeries, Heading, Plot } from 'react-plot';
 
-const Spectrum1DHistogram = memo(({ color = 'red', data }) => {
+const Spectrum2DHistogram = memo(({ color = 'red', data }) => {
   const histogramData = useMemo(() => {
     let matrix = prepareData(data.z);
-
-    const result = matrixHistogram(matrix, {
-      logBaseX: 10,
-      logBaseY: 2,
-      nbSlots: 256,
-    });
-    return result.x.reduce((acc, value, index) => {
-      acc.push({ x: value, y: result.y[index] });
-      return acc;
-    }, []);
+    const { sanplot } = xNoiseSanPlot(matrix);
+    const { x, y } = sanplot.positive;
+    let result = new Array(x.length);
+    for (let i = 0; i < x.length; i++) {
+      result[i] = { x: x[i], y: y[i] };
+    }
+    return result;
   }, [data.z]);
 
   return (
@@ -60,24 +53,16 @@ const Spectrum1DHistogram = memo(({ color = 'red', data }) => {
   );
 });
 
-export default Spectrum1DHistogram;
+export default Spectrum2DHistogram;
 
-function prepareData(existingMatrix) {
-  const matrix = [];
-  for (let row of existingMatrix) {
-    matrix.push(xAbsolute(row));
+function prepareData(matrix) {
+  let cols = matrix[0].length;
+  let rows = matrix.length;
+  let jump = Math.floor((cols * rows) / 51200) || 1;
+  const array = new Float64Array(((cols * rows) / jump) >> 0);
+  let index = 0;
+  for (let i = 0; i < array.length; i += jump) {
+    array[index++] = matrix[(i / rows) >> 0][i % rows];
   }
-  // we will shift the minValue that is not 0
-  let { min, max } = matrixMinMaxZ(matrix);
-  if (min < 1) {
-    if (max > 1e6) min = 1;
-  }
-
-  for (let row of matrix) {
-    for (let i = 0; i < row.length; i++) {
-      row[i] += min;
-    }
-  }
-
-  return matrix;
+  return array;
 }

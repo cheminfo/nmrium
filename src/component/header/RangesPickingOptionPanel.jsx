@@ -47,7 +47,8 @@ function RangesPickingOptionPanel() {
       type: AUTO_RANGES_DETECTION,
       options: {
         peakPicking: {
-          minMaxRatio: 0.05,
+          factorStd: 8,
+          minMaxRatio: 0.1,
           nH: 100,
           compile: true,
           frequencyCluster: 16,
