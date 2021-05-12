@@ -30,7 +30,7 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            var fs = require('fs'); 
+            const fs = require('fs'); 
             const filepath = 'src/versionInfo.js';
             fs.writeFileSync(filepath,`export default { version : 'V${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}};`);    
       - run: |
