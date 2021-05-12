@@ -1,6 +1,4 @@
-import {
-  xNoiseSanPlot,
-} from 'ml-spectra-processing';
+import { xNoiseSanPlot } from 'ml-spectra-processing';
 import { memo, useMemo } from 'react';
 import { Axis, BarSeries, Heading, Plot } from 'react-plot';
 
@@ -60,8 +58,8 @@ export default Spectrum2DHistogram;
 function prepareData(matrix) {
   let cols = matrix[0].length;
   let rows = matrix.length;
-  let jump = Math.floor(cols * rows / 51200) || 1;
-  const array = new Float64Array(cols * rows / jump >> 0);
+  let jump = Math.floor((cols * rows) / 51200) || 1;
+  const array = new Float64Array(((cols * rows) / jump) >> 0);
   let index = 0;
   for (let i = 0; i < array.length; i += jump) {
     array[index++] = matrix[(i / rows) >> 0][i % rows];

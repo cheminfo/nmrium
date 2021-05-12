@@ -1,4 +1,9 @@
-import { xHistogram, xAbsolute, xMinMaxValues, xNoiseSanPlot } from 'ml-spectra-processing';
+import {
+  xHistogram,
+  xAbsolute,
+  xMinMaxValues,
+  xNoiseSanPlot,
+} from 'ml-spectra-processing';
 import { memo, useMemo } from 'react';
 import { Axis, BarSeries, Heading, Plot } from 'react-plot';
 
@@ -58,7 +63,7 @@ export default Spectrum1DHistogram;
 function prepareData(input) {
   let length = input.length;
   let jump = Math.floor(length / 24576) || 1;
-  const array = new Float64Array(length / jump >> 0);
+  const array = new Float64Array((length / jump) >> 0);
   let index = 0;
   for (let i = 0; i < array.length; i += jump) {
     array[index++] = input[i];
