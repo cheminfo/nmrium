@@ -1,20 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
 
+import versionInfo from '../../versionInfo';
 import CloseButton from '../elements/CloseButton';
 import Logo from '../elements/Logo';
-
-async function getData(url) {
-  try {
-    const response = await fetch(url);
-    return response.json();
-  } catch (e) {
-    return null;
-  }
-}
-
-const baseUrl = 'https://api.github.com/repos/cheminfo/nmrium';
 
 const styles = css`
   display: flex;
@@ -97,13 +86,6 @@ const styles = css`
 `;
 
 function AboutUsModal({ onClose }) {
-  const [info, setInfo] = useState();
-  useEffect(() => {
-    getData(`${baseUrl}/tags`).then((data) => {
-      setInfo(data);
-    });
-  }, []);
-
   return (
     <div css={styles}>
       <div className="header handle">
@@ -114,7 +96,7 @@ function AboutUsModal({ onClose }) {
       <div className="container">
         <div className="center-container">
           <Logo width={160} height={50} />
-          <span> {info && info[0].name}</span>
+          <span> {versionInfo.version}</span>
 
           <span className="separator" />
 
