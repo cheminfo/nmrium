@@ -4,10 +4,8 @@ import { createElement, cloneElement } from 'react';
 function buildMenu(array = []) {
   let menu = [];
   for (const item of array) {
-    const key = item.title || item.groupName;
-
     if (item.children && Array.isArray(item.children)) {
-      menu.push(getMenu([item], [], key));
+      menu.push(getMenu([item], [], item.groupName));
     } else {
       menu.push(
         createElement(MenuItem, { key: item.title, ...item }, item.title),
@@ -33,7 +31,7 @@ function getMenu(array = [], nodes = [], key, parentIndex = 0) {
         title: array[index].groupName,
       });
       _nodes.push(node);
-      return getMenu(array[index].children, _nodes, key, 0);
+      return getMenu(array[index].children, _nodes, index + key, 0);
     } else {
       children.push(
         createElement(

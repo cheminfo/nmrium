@@ -24,8 +24,6 @@ jobs:
           newPackage=$(jq 'setpath(["homepage"]; ".")' package.json)
           echo $newPackage > package.json
           npm run build
-        env:
-          CI: 'false'
       - name: Remove spectra
         run: rm -rf build/data
       - name: Push to gh-pages

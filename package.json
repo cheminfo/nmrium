@@ -11,33 +11,22 @@
     "lib-cjs"
   ],
   "scripts": {
-    "build": "react-scripts --max_old_space_size=4096 build",
-    "build-with-profiling": "npm run build -- --profile",
+    "build": "vite build --outDir build",
+    "build-with-profiling": "npm run build -- --mode profiling --sourcemap",
     "check-types": "tsc --noEmit",
     "compile": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json",
     "clean-lib": "rimraf lib lib-cjs",
-    "dev": "react-scripts start",
+    "dev": "vite --open",
     "eslint": "eslint . --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
     "prepack": "npm run clean-lib && npm run compile",
     "prettier": "prettier --check src",
     "prettier-write": "prettier --write src",
-    "start": "react-scripts start ",
+    "serve": "vite preview",
+    "start": "npm run dev",
     "test": "npm run test-only && npm run eslint && npm run prettier && npm run check-types",
-    "test-only": "react-scripts test --watchAll=false"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "test-only": "jest --coverage"
   },
   "bugs": {
     "url": "https://github.com/cheminfo/nmrium/issues"
@@ -68,19 +57,18 @@
     "ml-baseline-correction-regression": "^1.0.0",
     "ml-conrec": "^3.2.0",
     "ml-fft": "^1.3.5",
-    "ml-gsd": "^6.6.1",
+    "ml-gsd": "^6.6.2",
     "ml-regression-polynomial": "^2.1.0",
     "ml-spectra-processing": "^6.6.0",
     "ml-stat": "^1.3.3",
     "multiplet-analysis": "^1.0.0",
     "nmr-correlation": "^1.3.2",
     "nmr-parser": "^1.2.0",
-    "nmr-processing": "^1.2.0",
+    "nmr-processing": "^1.3.0",
     "nmredata": "^0.4.0",
     "numeral": "^2.0.6",
     "openchemlib": "^7.4.0",
-    "openchemlib-utils": "^1.0.0",
-    "prismjs": "^1.23.0",
+    "openchemlib-utils": "^1.1.0",
     "prop-types": "^15.7.2",
     "re-resizable": "^6.9.0",
     "react-card-flip": "^1.1.1",
@@ -95,7 +83,6 @@
     "react-ocl-nmr": "^1.0.0",
     "react-plot": "^0.10.0",
     "react-rnd": "^10.2.4",
-    "react-simple-code-editor": "^0.11.0",
     "react-slider": "^1.1.4",
     "react-split-pane": "^0.1.92",
     "react-table": "7.6.0",
@@ -104,26 +91,29 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.14.0",
+    "@babel/preset-typescript": "^7.13.0",
     "@types/d3": "^6.3.0",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.0.2",
-    "@types/prismjs": "^1.16.5",
     "@types/react": "^17.0.5",
-    "@types/react-dom": "^17.0.3",
+    "@types/react-dom": "^17.0.4",
     "@types/react-router-dom": "^5.1.7",
+    "@vitejs/plugin-react-refresh": "^1.3.3",
     "@zakodium/eslint-config": "^3.0.2",
     "cross-env": "^7.0.3",
     "eslint": "^7.26.0",
+    "jest": "^26.6.3",
     "modern-normalize": "^1.1.0",
     "prettier": "^2.3.0",
-    "rc-menu": "^7.5.5",
+    "rc-menu": "^9.0.0-alpha.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3",
     "reactstrap": "^8.9.0",
     "rimraf": "^3.0.2",
-    "typescript": "~4.2.4"
+    "typescript": "~4.2.4",
+    "vite": "^2.3.0"
   },
   "volta": {
     "node": "16.1.0"

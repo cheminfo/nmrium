@@ -19,8 +19,6 @@ jobs:
           npm i -g gh-pages
       - name: Build
         run: npm run build-with-profiling
-        env:
-          CI: 'false'
       - name: Copy samples.json
         run: |
           cp src/demo/samples.json build/
