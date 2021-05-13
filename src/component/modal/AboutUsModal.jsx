@@ -96,10 +96,8 @@ function AboutUsModal({ onClose }) {
       <div className="container">
         <div className="center-container">
           <Logo width={160} height={50} />
-          <span> {versionInfo.version}</span>
-
+          Version <VersionInfo />
           <span className="separator" />
-
           <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
             GitHub ( https://git.nmrium.org )
           </a>
@@ -142,3 +140,30 @@ AboutUsModal.defaultProps = {
   },
 };
 export default AboutUsModal;
+
+function VersionInfo() {
+  const { version } = versionInfo;
+  if (version === 'HEAD') {
+    return 'HEAD';
+  } else if (version.startsWith('git-')) {
+    return (
+      <a
+        href={`https://github.com/cheminfo/nmrium/tree/${version.slice(4)}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        git-{version.slice(4, 14)}
+      </a>
+    );
+  } else {
+    return (
+      <a
+        href={`https://github.com/cheminfo/nmrium/tree/${version}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {version}
+      </a>
+    );
+  }
+}
