@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { xGetFromToIndex } from 'ml-spectra-processing';
+import { xGetFromToIndex, xyToXYObject } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 import { useState, useEffect } from 'react';
-import { Chart } from 'react-jsgraph';
+import { Plot, LineSeries, Axis } from 'react-plot';
 
 import CloseButton from '../elements/CloseButton';
 
@@ -169,38 +169,73 @@ function MultipletAnalysisModal({
       <div className="container">
         {analysisData &&
           analysisData.debug &&
-          analysisData.debug.steps.map((d, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <div key={index} className="row">
-              <Chart
-                chart={{
-                  series: {
-                    type: 'line',
-                    data: d.multiplet,
-                  },
-                }}
-                style={{ height: 200, width: 400, overflow: 'auto' }}
-              />
-              <div className="multiplicity">
-                <p>
-                  {analysisData.j[index]
-                    ? `${analysisData.j[index]?.multiplicity}: ${analysisData.j[
-                        index
-                      ]?.coupling.toFixed(3)} Hz`
-                    : ''}
-                </p>
+          analysisData.debug.steps.map((d, index) => {
+            return (
+              // eslint-disable-next-line react/no-array-index-key
+              <div key={index} className="row">
+                <Plot
+                  width={400}
+                  height={200}
+                  svgStyle={{ overflow: 'visible' }}
+                  seriesViewportStyle={{ stroke: 'black' }}
+                  margin={{ left: 10, bottom: 40, right: 10 }}
+                >
+                  <LineSeries data={xyToXYObject(d.multiplet)} />
+                  <Axis
+                    id="y"
+                    position="left"
+                    tickEmbedded
+                    displayGridLines
+                    hiddenTicks
+                    paddingStart={0.1}
+                    paddingEnd={0.1}
+                  />
+                  <Axis
+                    id="x"
+                    position="bottom"
+                    tickEmbedded
+                    displayGridLines
+                  />
+                </Plot>
+                <div className="multiplicity">
+                  <p>
+                    {analysisData.j[index]
+                      ? `${
+                          analysisData.j[index]?.multiplicity
+                        }: ${analysisData.j[index]?.coupling.toFixed(3)} Hz`
+                      : ''}
+                  </p>
+                </div>
+                <Plot
+                  width={400}
+                  height={200}
+                  style={{ overflow: 'auto' }}
+                  seriesViewportStyle={{ stroke: 'black' }}
+                  margin={{ left: 10, bottom: 40, right: 10 }}
+                >
+                  <LineSeries
+                    data={xyToXYObject(d.errorFunction)}
+                    lineStyle={{ strokeWidth: 1 }}
+                  />
+                  <Axis
+                    id="y"
+                    position="left"
+                    tickEmbedded
+                    displayGridLines
+                    hiddenTicks
+                    paddingStart={0.1}
+                    paddingEnd={0.1}
+                  />
+                  <Axis
+                    id="x"
+                    position="bottom"
+                    tickEmbedded
+                    displayGridLines
+                  />
+                </Plot>
               </div>
-              <Chart
-                chart={{
-                  series: {
-                    type: 'line',
-                    data: d.errorFunction,
-                  },
-                }}
-                style={{ height: 200, width: 400, overflow: 'auto' }}
-              />
-            </div>
-          ))}
+            );
+          })}
       </div>
     </div>
   );
