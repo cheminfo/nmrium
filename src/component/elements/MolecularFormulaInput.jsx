@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { MF } from 'mf-parser';
 import { useCallback, useState } from 'react';
+
+import getAtomsFromMF from '../../data/utilities/getAtomsFromMF';
 
 const inputStyle = css`
   text-align: center;
@@ -38,7 +39,7 @@ function MolecularFormulaInput({ onSave, previousMF }) {
 
   const checkMF = useCallback((mf) => {
     try {
-      new MF(mf);
+      getAtomsFromMF(mf);
       return true;
     } catch (error) {
       return false;

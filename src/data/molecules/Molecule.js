@@ -1,7 +1,7 @@
-import { MF } from 'mf-parser';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
 import generateID from '../utilities/generateID';
+import getAtomsFromMF from '../utilities/getAtomsFromMF';
 
 /**
  * @param {object} [options={}]
@@ -19,8 +19,7 @@ export function initMolecule(options = {}) {
   molecule.mw = mfInfo.relativeWeight;
   molecule.svg = mol.toSVG(50, 50);
 
-  const mf = new MF(molecule.mf);
-  molecule.atoms = mf.getInfo().atoms;
+  molecule.atoms = getAtomsFromMF(molecule.mf);
   return molecule;
 }
 
