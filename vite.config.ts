@@ -1,9 +1,10 @@
 import reactRefresh from '@vitejs/plugin-react-refresh';
-import { defineConfig } from 'vite';
+import analyze from 'rollup-plugin-analyzer';
+import { AliasOptions, defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
-  let resolveAliases = {};
+  let resolveAliases: AliasOptions = [];
   if (mode === 'profiling') {
     resolveAliases = [
       { find: /react-dom$/, replacement: 'react-dom/profiling' },
@@ -19,6 +20,11 @@ export default ({ mode }) => {
       import { jsx } from '@emotion/react';
       import React from 'react';
     `,
+    },
+    build: {
+      rollupOptions: {
+        plugins: process.env.ANALYZE ? [analyze()] : [],
+      },
     },
     plugins: [reactRefresh()],
     resolve: {

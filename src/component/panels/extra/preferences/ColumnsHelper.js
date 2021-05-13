@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import lodashGet from 'lodash/get';
 
 import FormatNumber from '../../../utility/FormatNumber';
 
@@ -86,5 +86,5 @@ export default class ColumnsHelper {
 }
 
 export function isColumnVisible(preferences, key) {
-  return lodash.get(preferences, key, false);
+  return lodashGet(preferences, key, false);
 }

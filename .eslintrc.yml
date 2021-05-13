@@ -3,5 +3,9 @@ rules:
   'import/default': off
   'import/no-unresolved': off
   '@typescript-eslint/no-explicit-any': off
+  no-restricted-imports:
+    - error
+    - name: lodash
+      message: "Use a deep import instead, like for example 'lodash/get'"
 parserOptions:
   sourceType: module
