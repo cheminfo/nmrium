@@ -104,7 +104,7 @@ const EXPORT_MENU = [
   },
 ];
 
-function BasicToolBar({ info, verticalAlign, displayerMode }) {
+function BasicToolBar({ info, verticalAlign, displayerMode, ftCounter }) {
   const dispatch = useDispatch();
   const preferences = usePreferences();
   const alert = useAlert();
@@ -244,7 +244,8 @@ function BasicToolBar({ info, verticalAlign, displayerMode }) {
       )}
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('hideSpectraStackAlignments') && (
+        isButtonVisible('hideSpectraStackAlignments') &&
+        ftCounter > 1 && (
           <button
             type="button"
             css={styles}
