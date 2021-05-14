@@ -316,7 +316,8 @@ function FunctionToolBar({
           )}
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
-          isButtonVisible('hideExclusionZonesTool') && (
+          isButtonVisible('hideExclusionZonesTool') &&
+          !selectedSpectrumInfo.info.isFid && (
             <ToggleButton
               key={options.exclusionZones.id}
               value={options.exclusionZones.id}
