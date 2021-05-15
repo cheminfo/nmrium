@@ -190,7 +190,7 @@ function FunctionToolBar({
               isVisible={activeSpectrum}
             >
               <ToolTip
-                title={`${options.zone2D.label} ( Press i  )`}
+                title={`${options.zone2D.label} ( Press r )`}
                 popupPlacement="right"
                 offset={{ x: 10, y: 0 }}
               >

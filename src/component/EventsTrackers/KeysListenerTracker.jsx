@@ -146,9 +146,12 @@ function KeysListenerTracker() {
             handleChangeOption(options.zoom.id);
             break;
           case 'r': {
-            if (allow1DTool) {
-              handleChangeOption(options.rangesPicking.id);
-            }
+            const toolID = allow2DTool
+              ? options.zone2D.id
+              : allow1DTool
+              ? options.rangesPicking.id
+              : '';
+            handleChangeOption(toolID);
             break;
           }
           case 'b': {
@@ -164,17 +167,8 @@ function KeysListenerTracker() {
             break;
           }
           case 'i': {
-            const toolID = allow2DTool
-              ? options.zone2D.id
-              : allow1DTool
-              ? options.integral.id
-              : '';
-            handleChangeOption(toolID);
-            break;
-          }
-          case 'a': {
             if (allow1DTool) {
-              handleChangeOption(options.phaseCorrection.id);
+              handleChangeOption(options.integral.id);
             }
             break;
           }
