@@ -4,27 +4,27 @@ import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 
 const LIST = [
   {
-    label: 'Spectra Panel',
+    label: 'Spectra selection panel',
     name: 'display.panels.hideSpectraPanel',
   },
   {
-    label: 'Information Panel',
+    label: 'Spectra information Panel',
     name: 'display.panels.hideInformationPanel',
   },
   {
-    label: 'Peaks Panel',
+    label: 'Peaks and peak picking',
     name: 'display.panels.hidePeaksPanel',
   },
   {
-    label: 'Integrals Panel',
+    label: 'Integration and integrals',
     name: 'display.panels.hideIntegralsPanel',
   },
   {
-    label: 'Ranges Panel',
+    label: '1D ranges peak picking',
     name: 'display.panels.hideRangesPanel',
   },
   {
-    label: 'Structures Panel',
+    label: 'Chemical structure panel',
     name: 'display.panels.hideStructuresPanel',
   },
   {
@@ -32,11 +32,11 @@ const LIST = [
     name: 'display.panels.hideFiltersPanel',
   },
   {
-    label: 'Zones Panel',
+    label: '2D zones peak picking',
     name: 'display.panels.hideZonesPanel',
   },
   {
-    label: 'Summary Panel',
+    label: 'Assignment summary Panel',
     name: 'display.panels.hideSummaryPanel',
   },
   {
