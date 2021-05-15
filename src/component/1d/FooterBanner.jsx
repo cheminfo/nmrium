@@ -144,23 +144,23 @@ function FooterBanner({
     <div css={styles}>
       <BsCursor />
       <div>
-        <span className="label"> X :</span>
+        <span className="label"> 𝛅: </span>
         <span className="value">{format(scaleX().invert(position.x))}</span>
         <span className="unit">ppm</span>
+        {activeSpectrum && frequency && (
+          <>
+            <span className="value">
+              &nbsp;({format(scaleX().invert(position.x) * frequency, 'hz')}
+            </span>
+            <span className="unit">Hz</span>
+            <span className="value">) </span>
+          </>
+        )}
       </div>
-      {activeSpectrum && frequency && (
-        <div>
-          <span className="label"> X :</span>
-          <span className="value xvalue">
-            {format(scaleX().invert(position.x) * frequency, 'hz')}
-          </span>
-          <span className="unit">Hz</span>
-        </div>
-      )}
 
       {step === 'brushing' && (
         <div>
-          <span className="label"> Δppm :</span>
+          <span className="label"> Δppm: </span>
           <span className="value">
             {(scaleX().invert(startX) - scaleX().invert(endX)).toPrecision(6)}
           </span>
@@ -170,7 +170,7 @@ function FooterBanner({
         <Fragment>
           {frequency && step === 'brushing' && (
             <div>
-              <span className="label"> ΔHz :</span>
+              <span className="label"> ΔHz: </span>
               <span className="value">
                 {(
                   (scaleX().invert(startX) - scaleX().invert(endX)) *
@@ -198,7 +198,7 @@ function FooterBanner({
           <div className="separator" />
           <IoPulseSharp />
           <div>
-            <span className="label"> Y :</span>
+            <span className="label">Intensity: </span>
             <span className="value yvalue">
               {format(getYValue(position.x))}
             </span>
