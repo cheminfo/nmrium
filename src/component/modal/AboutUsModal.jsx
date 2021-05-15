@@ -104,8 +104,6 @@ function AboutUsModal({ onClose }) {
         </div>
         <div className="center-container">
           <span className="separator" />
-          <span className="title">About NMRium</span>
-          <span className="separator" />
         </div>
 
         <span className="content">
