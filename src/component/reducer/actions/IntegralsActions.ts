@@ -5,9 +5,9 @@ import { xyIntegral, xyIntegration } from 'ml-spectra-processing';
 import {
   updateIntegralIntegrals,
   changeIntegralsRealtive,
-  Datum1D,
+  Spectrum1D,
   getShiftX,
-} from '../../../data/data1d/Datum1D';
+} from '../../../data/data1d/Spectra1D';
 import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';
@@ -17,8 +17,8 @@ import { setIntegralZoom, integralZoomHanlder } from './Zoom';
 function handleChangeIntegralSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
     const { index, id } = draft.activeSpectrum;
-    (draft.data[index] as Datum1D).integrals.options.sum = value;
-    updateIntegralIntegrals((draft.data[index] as Datum1D).integrals);
+    (draft.data[index] as Spectrum1D).integrals.options.sum = value;
+    updateIntegralIntegrals((draft.data[index] as Spectrum1D).integrals);
 
     if (!draft.integralsYDomains) {
       draft.integralsYDomains[id] = draft.yDomains[id];
@@ -39,7 +39,7 @@ function addIntegral(draft: Draft<State>, action) {
 
   if (draft.activeSpectrum?.id && state) {
     const { id, index } = draft.activeSpectrum;
-    const datum = draft.data[index] as Datum1D;
+    const datum = draft.data[index] as Spectrum1D;
 
     const { x, re } = datum.data;
 
@@ -80,14 +80,14 @@ function deleteIntegral(draft: Draft<State>, action) {
   const { index } = draft.activeSpectrum;
   const { integralID } = action;
 
-  const datum = draft.data[index] as Datum1D;
+  const datum = draft.data[index] as Spectrum1D;
 
   if (integralID == null) {
     datum.integrals.values = [];
   } else {
-    const peakIndex = (state.data[index] as Datum1D).integrals.values.findIndex(
-      (p) => p.id === integralID,
-    );
+    const peakIndex = (
+      state.data[index] as Spectrum1D
+    ).integrals.values.findIndex((p) => p.id === integralID);
     datum.integrals.values.splice(peakIndex, 1);
     updateIntegralIntegrals(datum.integrals);
   }
@@ -99,8 +99,8 @@ function changeIntegral(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
 
-    const orignalDatum = state.data[index] as Datum1D;
-    const datum = draft.data[index] as Datum1D;
+    const orignalDatum = state.data[index] as Spectrum1D;
+    const datum = draft.data[index] as Spectrum1D;
 
     const { x, re } = orignalDatum.data;
     const integralIndex = orignalDatum.integrals.values.findIndex(
@@ -127,7 +127,7 @@ function handleChangeIntegralsRaltiveValue(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     changeIntegralsRealtive(
-      (draft.data[index] as Datum1D).integrals,
+      (draft.data[index] as Spectrum1D).integrals,
       id,
       value,
     );

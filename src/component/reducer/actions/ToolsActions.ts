@@ -2,9 +2,9 @@ import { max } from 'd3';
 import { original, Draft } from 'immer';
 
 import { Filters } from '../../../data/Filters';
-import { Data1D, Datum1D } from '../../../data/data1d/Datum1D';
-// import { Datum2D } from '../../../data/data2d/Datum2D';
-import { Datum2D } from '../../../data/data2d/Datum2D';
+import { Data1D, Spectrum1D } from '../../../data/data1d/Spectra1D';
+// import { Spectrum2D } from '../../../data/data2d/Spectrum2D';
+import { Spectrum2D } from '../../../data/data2d/Spectrum2D';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
@@ -112,7 +112,7 @@ function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
   let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
   if (activeSpectrum) {
     const { index } = activeSpectrum;
-    if ((state.data[index] as Datum1D).info.isFid) {
+    if ((state.data[index] as Spectrum1D).info.isFid) {
       YAxisShift = height / 2;
     }
   }
@@ -120,7 +120,7 @@ function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
   draft.verticalAlign.stacked = !draft.verticalAlign.stacked;
 
   if (draft.verticalAlign.stacked) {
-    const count = (state.data as Datum1D[]).filter(
+    const count = (state.data as Spectrum1D[]).filter(
       (datum) => datum.info.nucleus === activeTab,
     ).length;
     draft.verticalAlign.value = Math.floor(height / (count + 2));
@@ -322,7 +322,7 @@ function hasAcceptedSpectrum(draft: Draft<State>, index) {
   const nucleuses = draft.activeTab.split(',');
   return (
     draft.tabActiveSpectrum[nucleuses[index]] &&
-    !(draft.data[draft.tabActiveSpectrum[nucleuses[index]].index] as Datum1D)
+    !(draft.data[draft.tabActiveSpectrum[nucleuses[index]].index] as Spectrum1D)
       .info.isFid
   );
 }
@@ -358,7 +358,8 @@ function Processing2DData(draft: Draft<State>, data) {
 
 function setDisplayerMode(draft: Draft<State>, data) {
   draft.displayerMode =
-    data && (data as Datum1D[] | Datum2D[]).some((d) => d.info.dimension === 2)
+    data &&
+    (data as Spectrum1D[] | Spectrum2D[]).some((d) => d.info.dimension === 2)
       ? DISPLAYER_MODE.DM_2D
       : DISPLAYER_MODE.DM_1D;
 }
@@ -473,8 +474,8 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
     if (draft.activeSpectrum?.id) {
       const { index, id } = draft.activeSpectrum;
       // const datum2dObject = AnalysisObj.getDatum(id);
-      // if (datum2dObject instanceof Datum2D) {
-      const processingController = (draft.data[index] as Datum2D)
+      // if (datum2dObject instanceof Spectrum2D) {
+      const processingController = (draft.data[index] as Spectrum2D)
         .processingController;
       // const processing2dController = processingController.drawContours;
       if (shiftKey) {

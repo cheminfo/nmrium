@@ -5,7 +5,7 @@ import {
   initiateDatum1D,
   mapRanges,
   updateIntegralRanges,
-} from '../../../data/data1d/Datum1D';
+} from '../../../data/data1d/Spectra1D';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';

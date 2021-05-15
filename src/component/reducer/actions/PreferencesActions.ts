@@ -2,8 +2,8 @@ import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 import lodashGet from 'lodash/get';
 
-import { Datum1D } from '../../../data/data1d/Datum1D';
-import { Datum2D } from '../../../data/data2d/Datum2D';
+import { Spectrum1D } from '../../../data/data1d/Spectra1D';
+import { Spectrum2D } from '../../../data/data2d/Spectrum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import nucluesToString from '../../utility/nucluesToString';
 import { State } from '../Reducer';
@@ -27,8 +27,8 @@ function changeSpectrumVerticalAlignment(
     if (
       center ||
       (checkData &&
-        (draft.data[0] as Datum1D).info.isFid &&
-        !(draft.data as Datum1D[]).some((d) => d.info.isFid === false))
+        (draft.data[0] as Spectrum1D).info.isFid &&
+        !(draft.data as Spectrum1D[]).some((d) => d.info.isFid === false))
     ) {
       const YAxisShift = draft.height / 2;
       draft.verticalAlign.flag = true;
@@ -104,7 +104,7 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
   const preferences = state.keysPreferences[keyCode];
   if (preferences) {
     draft.activeTab = preferences.activeTab;
-    (state.data as Datum1D[] | Datum2D[]).forEach((datum, index) => {
+    (state.data as Spectrum1D[] | Spectrum2D[]).forEach((datum, index) => {
       if (nucluesToString(datum.info.nucleus) === preferences.activeTab) {
         draft.data[index].display = Object.assign(
           cloneDeep(datum.display),
@@ -132,7 +132,7 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
       for (const datumID of Object.keys(preferences.level)) {
         const { levelPositive, levelNegative } = preferences.level[datumID];
         const index = state.data.findIndex((datum) => datum.id === datumID);
-        const processController = (draft.data[index] as Datum2D)
+        const processController = (draft.data[index] as Spectrum2D)
           .processingController;
         processController.setLevel(levelPositive, levelNegative);
         draft.contours[datumID] = processController.drawContours();

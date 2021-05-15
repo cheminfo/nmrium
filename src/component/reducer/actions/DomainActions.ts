@@ -2,8 +2,8 @@ import { extent } from 'd3';
 import { Draft } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
-import { Datum1D } from '../../../data/data1d/Datum1D';
-import { Datum2D } from '../../../data/data2d/Datum2D';
+import { Spectrum1D } from '../../../data/data1d/Spectra1D';
+import { Spectrum2D } from '../../../data/data2d/Spectrum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -30,10 +30,10 @@ function getActiveData(draft: Draft<State>) {
       for (let datum of draft.data) {
         if (data.some((activeData: any) => activeData.id === datum.id)) {
           // AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
-          (datum as Datum2D | Datum1D).display.isVisibleInDomain = true;
+          datum.display.isVisibleInDomain = true;
         } else {
           // AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
-          (datum as Datum2D | Datum1D).display.isVisibleInDomain = false;
+          datum.display.isVisibleInDomain = false;
         }
       }
       return draft.data;
@@ -50,7 +50,7 @@ function getDomain(data) {
   let xDomains = {};
   let integralYDomain = {};
   try {
-    xArray = data.reduce((acc, d: Datum1D) => {
+    xArray = data.reduce((acc, d: Spectrum1D) => {
       const { display, data } = d;
       if (display.isVisibleInDomain) {
         const domain = [data.x[0], data.x[data.x.length - 1]];
@@ -64,7 +64,7 @@ function getDomain(data) {
       }
     }, []);
 
-    yArray = data.reduce((acc, d: Datum1D) => {
+    yArray = data.reduce((acc, d: Spectrum1D) => {
       const { display, data, integrals } = d;
       if (display.isVisibleInDomain) {
         const _extent = extent(data.y);
@@ -115,29 +115,29 @@ function get2DDomain(state) {
   const nucleus = activeTab.split(',');
 
   try {
-    xArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
+    xArray = data.reduce((acc, datum: Spectrum1D | Spectrum2D) => {
       if (
         datum.info.dimension === 2 &&
         datum.info.nucleus?.join(',') === activeTab &&
         datum.info.isFt
       ) {
         acc = acc.concat([
-          (datum as Datum2D).data.minX,
-          (datum as Datum2D).data.maxX,
+          (datum as Spectrum2D).data.minX,
+          (datum as Spectrum2D).data.maxX,
         ]);
       }
       return acc;
     }, []);
 
-    yArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
+    yArray = data.reduce((acc, datum: Spectrum1D | Spectrum2D) => {
       if (
         datum.info.dimension === 2 &&
         datum.info.nucleus?.join(',') === activeTab &&
         datum.info.isFt
       ) {
         acc = acc.concat([
-          (datum as Datum2D).data.minY,
-          (datum as Datum2D).data.maxY,
+          (datum as Spectrum2D).data.minY,
+          (datum as Spectrum2D).data.maxY,
         ]);
       }
       return acc;
@@ -149,20 +149,20 @@ function get2DDomain(state) {
 
   const spectrumsIDs = nucleus.map((n) => tabActiveSpectrum[n]?.id);
 
-  const filteredData = data.reduce((acc, datum: Datum1D | Datum2D) => {
+  const filteredData = data.reduce((acc, datum: Spectrum1D | Spectrum2D) => {
     return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
       ? acc.concat(datum)
       : acc.concat([]);
   }, []);
   try {
-    xDomains = filteredData.reduce((acc, d: Datum1D) => {
+    xDomains = filteredData.reduce((acc, d: Spectrum1D) => {
       const { x } = d.data;
       const domain = [x[0], x[x.length - 1]];
       acc[d.id] = domain;
       return acc;
     }, {});
 
-    yDomains = filteredData.reduce((acc, d: Datum1D) => {
+    yDomains = filteredData.reduce((acc, d: Spectrum1D) => {
       const _extent = extent(d.data.y);
       acc[d.id] = _extent;
       return acc;
@@ -250,7 +250,7 @@ function setMode(draft) {
   const data = getActiveData(draft).filter(
     (datum) => datum.display.isVisibleInDomain === true,
   );
-  draft.mode = (data[0] as Datum1D)?.info.isFid ? 'LTR' : 'RTL';
+  draft.mode = (data[0] as Spectrum1D)?.info.isFid ? 'LTR' : 'RTL';
 }
 
 function handleChangeIntegralYDomain(draft, newYDomain) {

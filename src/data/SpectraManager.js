@@ -1,9 +1,9 @@
 import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 
 import * as Data1DManager from './data1d/Data1DManager';
-import * as Datum1D from './data1d/Datum1D';
+import * as Spectrum1D from './data1d/Spectra1D';
 import * as Data2DManager from './data2d/Data2DManager';
-import * as Datum2D from './data2d/Datum2D';
+import * as Spectrum2D from './data2d/Spectrum2D';
 import * as Molecule from './molecules/Molecule';
 
 export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
@@ -50,10 +50,10 @@ function addJcampSS(spectra, entry, options, usedColors) {
 function addData(spectra, datum) {
   const dimension = datum.info.dimension;
   if (dimension === 1) {
-    spectra.push(Datum1D.initiateDatum1D(datum));
+    spectra.push(Spectrum1D.initiateDatum1D(datum));
   }
   if (dimension === 2) {
-    spectra.push(Datum2D.initiateDatum2D(datum));
+    spectra.push(Spectrum2D.initiateDatum2D(datum));
   }
 }
 
@@ -249,8 +249,8 @@ export function toJSON(state, forceIncludeData = false) {
   };
   const spectra = data.map((ob) => {
     return ob.info.dimension === 1
-      ? Datum1D.toJSON(ob, forceIncludeData)
-      : Datum2D.toJSON(ob, forceIncludeData);
+      ? Spectrum1D.toJSON(ob, forceIncludeData)
+      : Spectrum2D.toJSON(ob, forceIncludeData);
   });
 
   const molecules = mols.map((mol) => Molecule.toJSON(mol));

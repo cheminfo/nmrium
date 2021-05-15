@@ -4,7 +4,7 @@
 // import { Data1DManager } from '../Data1DManager';
 
 // eslint-disable-next-line jest/no-commented-out-tests
-// describe('test Datum1D', () => {
+// describe('test Spectrum1D', () => {
 //   let jcamp = readFileSync(
 //     join(__dirname, './data/ethylbenzene-1h.jdx'),
 //     'utf8',
@@ -31,7 +31,7 @@
 //   });
 // });
 
-describe('test Datum1D', () => {
+describe('test Spectrum1D', () => {
   it('check x, re, im', () => {
     expect(true).toStrictEqual(true);
   });

@@ -2,16 +2,19 @@ import { Draft, original } from 'immer';
 
 import { Filters } from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
-import { Datum1D } from '../../../data/data1d/Datum1D';
+import { Spectrum1D } from '../../../data/data1d/Spectra1D';
 import getReferenceShift from '../../../data/data1d/getReferenceShift';
-import { getMissingProjection, Datum2D } from '../../../data/data2d/Datum2D';
+import {
+  getMissingProjection,
+  Spectrum2D,
+} from '../../../data/data2d/Spectrum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { State } from '../Reducer';
 
 import { setDomain, setMode } from './DomainActions';
 import { setTab, setActiveTab } from './ToolsActions';
 
-function checkIsVisible2D(datum: Datum2D): boolean {
+function checkIsVisible2D(datum: Spectrum2D): boolean {
   if (
     datum.display.isPositiveVisible === false &&
     datum.display.isNegativeVisible === false
@@ -23,11 +26,13 @@ function checkIsVisible2D(datum: Datum2D): boolean {
 
 function setVisible(datum, flag) {
   if (datum.info.dimension === 2) {
-    (datum as Datum2D).display.isPositiveVisible = flag;
-    (datum as Datum2D).display.isNegativeVisible = flag;
-    (datum as Datum2D).display.isVisible = checkIsVisible2D(datum as Datum2D);
+    (datum as Spectrum2D).display.isPositiveVisible = flag;
+    (datum as Spectrum2D).display.isNegativeVisible = flag;
+    (datum as Spectrum2D).display.isVisible = checkIsVisible2D(
+      datum as Spectrum2D,
+    );
   } else {
-    (datum as Datum1D).display.isVisible = flag;
+    (datum as Spectrum1D).display.isVisible = flag;
   }
 }
 
@@ -49,11 +54,11 @@ function handleSpectrumVisibility(draft: Draft<State>, action) {
     }
   } else {
     const index = draft.data.findIndex((d) => d.id === action.id);
-    (draft.data[index] as Datum1D | Datum2D).display[action.key] = action.value;
+    draft.data[index].display[action.key] = action.value;
 
-    if ((draft.data[index] as Datum1D | Datum2D).info.dimension === 2) {
-      (draft.data[index] as Datum2D).display.isVisible = checkIsVisible2D(
-        draft.data[index] as Datum2D,
+    if (draft.data[index].info.dimension === 2) {
+      (draft.data[index] as Spectrum2D).display.isVisible = checkIsVisible2D(
+        draft.data[index] as Spectrum2D,
       );
     }
   }
@@ -65,9 +70,9 @@ function handleChangePeaksMarkersVisibility(draft: Draft<State>, data) {
       datum.info?.dimension === 1 &&
       data.some((activeData) => activeData.id === datum.id)
     ) {
-      (datum as Datum1D).display.isPeaksMarkersVisible = true;
+      (datum as Spectrum1D).display.isPeaksMarkersVisible = true;
     } else {
-      (datum as Datum1D).display.isPeaksMarkersVisible = false;
+      (datum as Spectrum1D).display.isPeaksMarkersVisible = false;
     }
   }
 }
@@ -83,14 +88,13 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
       (d) => d.id === draft.activeSpectrum?.id,
     );
     if (newIndex !== -1) {
-      const newActiveSpectrum = draft.data[newIndex] as Datum1D | Datum2D;
+      const newActiveSpectrum = draft.data[newIndex];
 
       newActiveSpectrum.display.isVisible = true;
 
       if (oldIndex !== -1) {
         refreshDomain =
-          (draft.data[oldIndex] as Datum1D | Datum2D).info.isFid ===
-          newActiveSpectrum.info.isFid
+          draft.data[oldIndex].info.isFid === newActiveSpectrum.info.isFid
             ? false
             : true;
       } else {
@@ -129,7 +133,7 @@ function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
   const state = original(draft) as State;
   const index = state.data.findIndex((d) => d.id === id);
   if (index !== -1) {
-    (draft.data[index] as Datum1D | Datum2D).display[key] = color;
+    draft.data[index].display[key] = color;
   }
 }
 
