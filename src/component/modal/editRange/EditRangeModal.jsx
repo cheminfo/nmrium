@@ -183,7 +183,7 @@ function EditRangeModal({
                   <Button onClick={handleOnZoom} className="zoom-button">
                     <FaSearchPlus title="Set to default view on range in spectrum" />
                   </Button>
-                  <span>Range Information and Editing</span>
+                  <span>Range and signals edition</span>
                   <SaveButton
                     onClick={() => handleOnSave(values)}
                     disabled={isSaveButtonDisabled(errors)}
