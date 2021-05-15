@@ -135,7 +135,7 @@ function SignalsForm() {
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}
               tabid={`${i}`}
-              tablabel={`${'\u0394'}: ${signal.delta.toFixed(5)} (${signal.j
+              tablabel={`𝛅: ${signal.delta.toFixed(5)} (${signal.j
                 .map((_coupling) => translateMultiplet(_coupling.multiplicity))
                 .join('')})`}
               tabstyles={tabContainsErrors(i) ? tabStylesAddition : null}

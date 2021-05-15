@@ -70,7 +70,7 @@ function AddSignalFormTab({ onFocus, onBlur }) {
         <Input
           name="newSignalDelta"
           type="number"
-          placeholder={`${'\u0394'} (ppm)`}
+          placeholder={`𝛅 (ppm)`}
           onFocus={onFocus}
           onBlur={onBlur}
         />
