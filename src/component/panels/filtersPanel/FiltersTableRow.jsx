@@ -49,10 +49,10 @@ function FiltersTableRow({ filters }) {
   const handelDeleteFilter = useCallback(
     ({ id, name }) => {
       modal.showConfirmDialog({
-        message: 'Filter/s will be deleted, Are You sure?',
+        message: 'Are you sure you want to delete the spectrum?',
         buttons: [
           {
-            text: 'Yes,All spectra',
+            text: 'Yes, for all spectra',
             handler: async () => {
               const hideLoading = await alert.showLoading(
                 'Delete all spectra filter processs in progress',
@@ -65,7 +65,7 @@ function FiltersTableRow({ filters }) {
             },
           },
           {
-            text: 'Yes ',
+            text: 'Yes',
             handler: async () => {
               const hideLoading = await alert.showLoading(
                 'Delete filter processs in progress',
