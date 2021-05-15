@@ -1,4 +1,4 @@
-import { initiateDatum1D } from './Spectra1D';
+import { initiateDatum1D } from './Datum1D';
 
 export function fromBruker(result, options = {}, usedColors = {}) {
   const { dependentVariables, info, meta, source } = result;

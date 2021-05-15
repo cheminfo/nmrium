@@ -3,7 +3,7 @@
 
 // import { Data2DManager } from '../Data2DManager';
 
-test('Spectrum2D', () => {
+test('Datum2D', () => {
   // let jcamp = readFileSync(join(__dirname, './data/cosy.jdx'), 'utf8');
   // let datum2D = Data2DManager.fromJcamp(jcamp, {
   //   display: {

@@ -1,4 +1,4 @@
-import { getShift } from '../../../../data/data2d/Spectrum2D';
+import { getShift } from '../../../../data/data2d/Datum2D';
 import generateID from '../../../../data/utilities/generateID';
 
 const axisLabels = ['x', 'y'];

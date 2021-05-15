@@ -1,4 +1,4 @@
-import { mapRanges } from '../../../../data/data1d/Spectra1D';
+import { mapRanges } from '../../../../data/data1d/Datum1D';
 
 export function addRanges(signals, datum) {
   let ranges = [];

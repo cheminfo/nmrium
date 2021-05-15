@@ -1,11 +1,7 @@
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import {
-  lookupPeak,
-  Spectrum1D,
-  getShiftX,
-} from '../../../data/data1d/Spectra1D';
+import { lookupPeak, Datum1D, getShiftX } from '../../../data/data1d/Datum1D';
 import autoPeakPicking from '../../../data/data1d/autoPeakPicking';
 import generateID from '../../../data/utilities/generateID';
 import { options } from '../../toolbar/ToolTypes';
@@ -24,7 +20,7 @@ function addPeak(draft: Draft<State>, mouseCoordinates) {
     const [from, to] = getRange(draft, { startX, endX });
     const candidatePeak = lookupPeak(state.data[index].data, { from, to });
 
-    const shiftX = getShiftX(draft.data[index] as Spectrum1D);
+    const shiftX = getShiftX(draft.data[index] as Datum1D);
 
     if (candidatePeak) {
       const peak = {
@@ -33,7 +29,7 @@ function addPeak(draft: Draft<State>, mouseCoordinates) {
         delta: candidatePeak.x,
         intensity: candidatePeak.y,
       };
-      (draft.data[index] as Spectrum1D).peaks.values.push(peak);
+      (draft.data[index] as Datum1D).peaks.values.push(peak);
     }
   }
 }
@@ -43,7 +39,7 @@ function addPeaks(draft: Draft<State>, action) {
 
   if (draft.activeSpectrum) {
     const { index } = draft.activeSpectrum;
-    const datumOriginal = state.data[index] as Spectrum1D;
+    const datumOriginal = state.data[index] as Datum1D;
 
     const { startX, endX } = action;
     const [from, to] = getRange(draft, { startX, endX });
@@ -51,7 +47,7 @@ function addPeaks(draft: Draft<State>, action) {
     if (from !== to) {
       const peak = lookupPeak(datumOriginal.data, { from, to });
 
-      const shiftX = getShiftX(draft.data[index] as Spectrum1D);
+      const shiftX = getShiftX(draft.data[index] as Datum1D);
 
       if (peak && !datumOriginal.peaks.values.some((p) => p.delta === peak.x)) {
         const newPeak = {
@@ -60,7 +56,7 @@ function addPeaks(draft: Draft<State>, action) {
           delta: peak.x,
           intensity: peak.y,
         };
-        (draft.data[index] as Spectrum1D).peaks.values.push(newPeak);
+        (draft.data[index] as Datum1D).peaks.values.push(newPeak);
       }
     }
   }
@@ -71,12 +67,12 @@ function deletePeak(draft: Draft<State>, peakData) {
   const state = original(draft) as State;
 
   if (peakData == null) {
-    (draft.data[index] as Spectrum1D).peaks.values = [];
+    (draft.data[index] as Datum1D).peaks.values = [];
   } else {
-    const peakIndex = (state.data[index] as Spectrum1D).peaks.values.findIndex(
+    const peakIndex = (state.data[index] as Datum1D).peaks.values.findIndex(
       (p) => p.id === peakData.id,
     );
-    (draft.data[index] as Spectrum1D).peaks.values.splice(peakIndex, 1);
+    (draft.data[index] as Datum1D).peaks.values.splice(peakIndex, 1);
   }
 }
 
@@ -85,7 +81,7 @@ function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
     draft.selectedTool = options.zoom.id;
     draft.selectedOptionPanel = null;
     const { index } = draft.activeSpectrum;
-    const datum = draft.data[index] as Spectrum1D;
+    const datum = draft.data[index] as Datum1D;
 
     const [from, to] = draft.xDomain;
     const windowFromIndex = xFindClosestIndex(datum.data.x, from);

@@ -19,8 +19,8 @@ import {
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
-import { Spectrum1D } from '../data/data1d/Spectra1D';
-import { Spectrum2D } from '../data/data2d/Spectrum2D';
+import { Datum1D } from '../data/data1d/Datum1D';
+import { Datum2D } from '../data/data2d/Datum2D';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
 
 import Viewer1D from './1d/Viewer1D';
@@ -184,7 +184,7 @@ export type NMRiumPreferences = Partial<{
 }>;
 
 export type Molecules = Array<{ molfile: string }>;
-export type Spectra = Array<Partial<Spectrum1D> | Partial<Spectrum2D>>;
+export type Spectra = Array<Partial<Datum1D> | Partial<Datum2D>>;
 
 export interface NMRiumData {
   molecules?: Molecules;

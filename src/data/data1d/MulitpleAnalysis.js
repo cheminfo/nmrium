@@ -3,7 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import generateChar from '../utilities/generateChar';
 
-import { detectRange } from './Spectra1D';
+import { detectRange } from './Datum1D';
 
 export const COLUMNS_TYPES = {
   NORMAL: 'NORMAL',

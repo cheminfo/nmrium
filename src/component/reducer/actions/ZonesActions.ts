@@ -9,12 +9,12 @@ import {
 } from '../../../data/constants/SignalsKinds';
 import {
   changeZoneSignal,
-  Spectrum2D,
+  Datum2D,
   detectZones,
   detectZonesManual,
   updateShift,
   Zone,
-} from '../../../data/data2d/Spectrum2D';
+} from '../../../data/data2d/Datum2D';
 import {
   getPubIntegral,
   unlink,
@@ -80,7 +80,7 @@ function changeZoneSignalDelta(draft: Draft<State>, action) {
 
     FiltersManager.applyFilter(draft.data[index], filters);
 
-    updateShift(draft.data[index] as Spectrum2D);
+    updateShift(draft.data[index] as Datum2D);
 
     setDomain(draft);
     handleOnChangeZonesData(draft);
@@ -99,7 +99,7 @@ function handleChangeZoneSignalKind(draft: Draft<State>, action) {
     const { index } = state.activeSpectrum;
     const { rowData, value } = action.payload;
     const zoneIndex = getZoneIndex(state, index, rowData.id);
-    const _zone = (draft.data[index] as Spectrum2D).zones.values[
+    const _zone = (draft.data[index] as Datum2D).zones.values[
       zoneIndex
     ] as Zone;
     _zone.signal[rowData.tableMetaInfo.signalIndex].kind = value;
@@ -116,18 +116,18 @@ function handleDeleteZone(draft: Draft<State>, action) {
     const { index } = state.activeSpectrum;
     const { id, assignmentData } = action.payload;
     if (id) {
-      const zone = (draft.data[index] as Spectrum2D).zones.values.find(
+      const zone = (draft.data[index] as Datum2D).zones.values.find(
         (zone) => zone.id === id,
       );
       unlinkInAssignmentData(assignmentData, [zone]);
       const zoneIndex = getZoneIndex(state, index, id);
-      (draft.data[index] as Spectrum2D).zones.values.splice(zoneIndex, 1);
+      (draft.data[index] as Datum2D).zones.values.splice(zoneIndex, 1);
     } else {
       unlinkInAssignmentData(
         assignmentData,
-        (draft.data[index] as Spectrum2D).zones.values,
+        (draft.data[index] as Datum2D).zones.values,
       );
-      (draft.data[index] as Spectrum2D).zones.values = [];
+      (draft.data[index] as Datum2D).zones.values = [];
     }
     handleOnChangeZonesData(draft);
   }
@@ -142,7 +142,7 @@ function handleUnlinkZone(draft: Draft<State>, action) {
 
     for (let zone of zoneData
       ? [zoneData]
-      : (state.data[index] as Spectrum2D).zones.values) {
+      : (state.data[index] as Datum2D).zones.values) {
       // remove assignments in global state
       const _zoneData = unlink(
         cloneDeep(zone),
@@ -162,7 +162,7 @@ function handleUnlinkZone(draft: Draft<State>, action) {
       }
 
       const zoneIndex = getZoneIndex(state, index, _zoneData.id);
-      (draft.data[index] as Spectrum2D).zones.values[zoneIndex] = _zoneData;
+      (draft.data[index] as Datum2D).zones.values[zoneIndex] = _zoneData;
     }
   }
 }
@@ -174,7 +174,7 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
     const { zoneData, diaID, axis, signalIndex } = action.payload;
 
     const zoneIndex = getZoneIndex(state, index, zoneData.id);
-    const _zone = (draft.data[index] as Spectrum2D).zones.values[
+    const _zone = (draft.data[index] as Datum2D).zones.values[
       zoneIndex
     ] as Zone;
     if (signalIndex === undefined) {

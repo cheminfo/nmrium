@@ -15,11 +15,11 @@ import {
   updateIntegralRanges,
   changeRange,
   changeRangesRealtive,
-  Spectrum1D,
+  Datum1D,
   Range,
   Signal,
   updateXShift,
-} from '../../../data/data1d/Spectra1D';
+} from '../../../data/data1d/Datum1D';
 import {
   getPubIntegral,
   unlink,
@@ -34,7 +34,7 @@ import { setDomain } from './DomainActions';
 function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    const datum = draft.data[index] as Spectrum1D;
+    const datum = draft.data[index] as Datum1D;
 
     const [from, to] = draft.xDomain;
     const windowFromIndex = xFindClosestIndex(datum.data.x, from);
@@ -50,7 +50,7 @@ function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
 }
 
 function getRangeIndex(drfat: Draft<State>, spectrumIndex, rangeID) {
-  return (drfat.data[spectrumIndex] as Spectrum1D).ranges.values.findIndex(
+  return (drfat.data[spectrumIndex] as Datum1D).ranges.values.findIndex(
     (range) => range.id === rangeID,
   );
 }
@@ -60,7 +60,7 @@ function handleDeleteRange(draft: Draft<State>, action) {
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const { id, assignmentData } = action.payload;
-    const datum = draft.data[index] as Spectrum1D;
+    const datum = draft.data[index] as Datum1D;
     if (id) {
       const range = datum.ranges.values.find((range) => range.id === id);
       unlinkInAssignmentData(assignmentData, [range]);
@@ -81,7 +81,7 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
     const { index } = state.activeSpectrum;
     const { rowData, value } = action.payload;
     const rangeIndex = getRangeIndex(state, index, rowData.id);
-    const _range = (draft.data[index] as Spectrum1D).ranges.values[
+    const _range = (draft.data[index] as Datum1D).ranges.values[
       rangeIndex
     ] as Range;
     if (_range?.signal) {
@@ -110,8 +110,7 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
     unlinkInAssignmentData(assignmentData, [_editedRowData]);
 
     const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
-    (draft.data[index] as Spectrum1D).ranges.values[rangeIndex] =
-      _editedRowData;
+    (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _editedRowData;
     updateIntegralRanges(draft.data[index]);
     handleOnChangeRangesData(draft);
   }
@@ -130,7 +129,7 @@ function handleUnlinkRange(draft: Draft<State>, action) {
     if (rangeData) {
       const rangeIndex = getRangeIndex(draft, index, rangeData.id);
       const range = cloneDeep(
-        (draft.data[index] as Spectrum1D).ranges.values[rangeIndex],
+        (draft.data[index] as Datum1D).ranges.values[rangeIndex],
       );
 
       let newRange: any = {};
@@ -147,14 +146,14 @@ function handleUnlinkRange(draft: Draft<State>, action) {
           id,
         },
       ]);
-      (draft.data[index] as Spectrum1D).ranges.values[rangeIndex] = newRange;
+      (draft.data[index] as Datum1D).ranges.values[rangeIndex] = newRange;
     } else {
-      const ranges = (draft.data[index] as Spectrum1D).ranges.values.map(
+      const ranges = (draft.data[index] as Datum1D).ranges.values.map(
         (range) => {
           return unlink(range);
         },
       );
-      (draft.data[index] as Spectrum1D).ranges.values = ranges;
+      (draft.data[index] as Datum1D).ranges.values = ranges;
 
       unlinkInAssignmentData(assignmentData, ranges);
     }
@@ -187,7 +186,7 @@ function handleResizeRange(draft: Draft<State>, action) {
 function handleChangeRangeSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    (draft.data[index] as Spectrum1D).ranges.options.sum = value;
+    (draft.data[index] as Datum1D).ranges.options.sum = value;
     updateIntegralRanges(draft.data[index]);
   }
 }
@@ -226,7 +225,7 @@ function handleChangeRangeSignalValue(draft, action) {
       { name: Filters.shiftX.id, options: shift },
     ]);
 
-    updateXShift(draft.data[index] as Spectrum1D);
+    updateXShift(draft.data[index] as Datum1D);
 
     handleOnChangeRangesData(draft);
     setDomain(draft);

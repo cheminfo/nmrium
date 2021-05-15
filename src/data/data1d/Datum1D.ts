@@ -95,7 +95,7 @@ export interface Source {
   file: File;
 }
 
-export interface Spectrum1D {
+export interface Datum1D {
   id: string | number;
   source: Partial<Source>;
   display: Partial<Display>;
@@ -110,7 +110,7 @@ export interface Spectrum1D {
   filters: Array<Partial<FiltersManager.Filter>>;
 }
 
-export function initiateDatum1D(options: any, usedColors = {}): Spectrum1D {
+export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   const datum: any = {};
   datum.shiftX = options.shiftX || 0;
   datum.id = options.id || generateID();
@@ -203,7 +203,7 @@ function preprocessing(datum) {
   }
 }
 
-export function toJSON(datum1D: Spectrum1D, forceIncludeData = false) {
+export function toJSON(datum1D: Datum1D, forceIncludeData = false) {
   return {
     id: datum1D.id,
     source: {
@@ -441,14 +441,14 @@ export function addRange(datum, options) {
   }
 }
 
-export function updateXShift(datum: Spectrum1D) {
+export function updateXShift(datum: Datum1D) {
   const shiftX = getShiftX(datum);
   updatePeaksXShift(datum, shiftX);
   updateRangesXShift(datum, shiftX);
   updateIntegralXShift(datum, shiftX);
 }
 
-export function getShiftX(datum: Spectrum1D) {
+export function getShiftX(datum: Datum1D) {
   const filter =
     datum?.filters &&
     datum?.filters.find((filter) => filter.name === FiltersTypes.shiftX.id);
@@ -456,13 +456,13 @@ export function getShiftX(datum: Spectrum1D) {
   return filter?.flag ? filter.value : 0;
 }
 
-export function updatePeaksXShift(datum: Spectrum1D, shiftValue) {
+export function updatePeaksXShift(datum: Datum1D, shiftValue) {
   datum.peaks.values = datum.peaks.values.map((peak) => ({
     ...peak,
     delta: peak.originDelta + shiftValue,
   }));
 }
-export function updateRangesXShift(datum: Spectrum1D, shiftValue) {
+export function updateRangesXShift(datum: Datum1D, shiftValue) {
   datum.ranges.values = datum.ranges.values.map((range) => ({
     ...range,
     from: range.originFrom + shiftValue,
@@ -472,7 +472,7 @@ export function updateRangesXShift(datum: Spectrum1D, shiftValue) {
       range.signal.map((s) => ({ ...s, delta: s.originDelta + shiftValue })),
   }));
 }
-export function updateIntegralXShift(datum: Spectrum1D, shiftValue) {
+export function updateIntegralXShift(datum: Datum1D, shiftValue) {
   datum.integrals.values = datum.integrals.values.map((integral) => ({
     ...integral,
     from: integral.originFrom + shiftValue,

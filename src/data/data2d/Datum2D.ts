@@ -3,7 +3,7 @@ import { zoneToX } from 'ml-spectra-processing';
 import { Filters } from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DatumKind } from '../constants/SignalsKinds';
-import { initiateDatum1D } from '../data1d/Spectra1D';
+import { initiateDatum1D } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
 import { get2DColor } from '../utilities/getColor';
 
@@ -88,7 +88,7 @@ export interface Zones {
   options?: Partial<{ sum: number }>;
 }
 
-export interface Spectrum2D {
+export interface Datum2D {
   id: string;
   source: Partial<Source>;
   display: Display;
@@ -102,7 +102,7 @@ export interface Spectrum2D {
   processingController: Processing2D;
 }
 
-export function initiateDatum2D(options: any, usedColors = {}): Spectrum2D {
+export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};
 
   datum.id = options.id || generateID();
@@ -166,10 +166,7 @@ export function initiateDatum2D(options: any, usedColors = {}): Spectrum2D {
   return datum;
 }
 
-export function getShift(datum: Spectrum2D): {
-  xShift: number;
-  yShift: number;
-} {
+export function getShift(datum: Datum2D): { xShift: number; yShift: number } {
   let shift: any = { xShift: 0, yShift: 0 };
   if (datum?.filters) {
     shift = datum.filters.reduce(
@@ -204,7 +201,7 @@ function getColor(options, usedColors) {
   return {};
 }
 
-export function toJSON(datum: Spectrum2D, forceIncludeData = false) {
+export function toJSON(datum: Datum2D, forceIncludeData = false) {
   return {
     id: datum.id,
     source: {
@@ -281,7 +278,7 @@ export function getSlice(spectrum, position) {
   return { horizontal, vertical };
 }
 
-export function updateShift(datum: Spectrum2D) {
+export function updateShift(datum: Datum2D) {
   const { xShift, yShift } = getShift(datum);
   updateZonesShift(datum, {
     xShift,
@@ -289,7 +286,7 @@ export function updateShift(datum: Spectrum2D) {
   });
 }
 
-export function updateZonesShift(datum: Spectrum2D, { xShift, yShift }) {
+export function updateZonesShift(datum: Datum2D, { xShift, yShift }) {
   datum.zones.values = datum.zones.values.map((zone) => ({
     ...zone,
     signal: zone.signal?.map((signal) => ({

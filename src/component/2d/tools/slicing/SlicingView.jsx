@@ -1,7 +1,7 @@
 import PropsTypes from 'prop-types';
 import { useMemo } from 'react';
 
-import { getSlice } from '../../../../data/data2d/Spectrum2D';
+import { getSlice } from '../../../../data/data2d/Datum2D';
 import { useMouseTracker } from '../../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../../context/ChartContext';
 import { get2DXScale, get2DYScale } from '../../utilities/scale';
