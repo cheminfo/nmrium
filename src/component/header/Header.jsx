@@ -134,7 +134,7 @@ function Header({ isFullscreen, onMaximize }) {
   return (
     <div css={headerStyle}>
       <Button
-        popupTitle="About Us"
+        popupTitle="About NMRium"
         popupPlacement="right"
         style={{ width: '36px' }}
         onClick={openAboutUs}

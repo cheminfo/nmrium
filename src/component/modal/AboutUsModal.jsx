@@ -89,7 +89,7 @@ function AboutUsModal({ onClose }) {
   return (
     <div css={styles}>
       <div className="header handle">
-        <span>About Us</span>
+        <span>About NMRium</span>
 
         <CloseButton onClick={onClose} />
       </div>
@@ -104,7 +104,7 @@ function AboutUsModal({ onClose }) {
         </div>
         <div className="center-container">
           <span className="separator" />
-          <span className="title">About Us</span>
+          <span className="title">About NMRium</span>
           <span className="separator" />
         </div>
 
