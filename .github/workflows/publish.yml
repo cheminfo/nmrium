@@ -29,7 +29,9 @@ jobs:
           echo $newPackage > package.json
           npm run build
       - name: Remove spectra
-        run: rm -rf build/data
+        run: |
+          rm -rf build/data
+          rm -rf build/exercises
       - name: Push to gh-pages
         run: |
           git config user.email luc@patiny.com

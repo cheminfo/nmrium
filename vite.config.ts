@@ -13,6 +13,7 @@ export default ({ mode }) => {
   }
 
   return defineConfig({
+    base: './',
     esbuild: {
       // Import jsx for Emotion and React for Fragment.
       jsxFactory: 'jsx',
