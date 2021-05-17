@@ -158,7 +158,7 @@ function PredictSpectraModal({ onClose, molfile }) {
         </FormikForm>
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="save-button">
+        <button type="button" onClick={handleSave} className="btn">
           Start Predicting
         </button>
       </div>

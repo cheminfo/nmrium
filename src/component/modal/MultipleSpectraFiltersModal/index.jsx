@@ -139,7 +139,7 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
         )}
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="save-button">
+        <button type="button" onClick={handleSave} className="btn">
           Done
         </button>
       </div>

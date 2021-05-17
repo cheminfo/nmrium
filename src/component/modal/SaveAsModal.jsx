@@ -89,10 +89,10 @@ function SaveAsModal({ onClose, onSave, name }) {
         </FormikForm>
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="save-button">
+        <button type="button" onClick={handleSave} className="btn primary">
           Save
         </button>
-        <button type="button" onClick={onClose} className="save-button">
+        <button type="button" onClick={onClose} className="btn">
           Close
         </button>
       </div>

@@ -21,21 +21,23 @@ const styles = css`
   }
   .buttons-container {
     display: flex;
+    flex-direction: row-reverse;
     align-items: flex-end;
-    justify-content: flex-end;
+    // justify-content: flex-end;
     padding: 5px;
     border-top: 1px solid #efefef;
 
-    button:first-of-type {
+    button:last-of-type {
       border-radius: 5px 0 0 5px;
-      border-weight: 0 1px 0 0;
     }
-    button:last-child {
+    button:first-of-type {
       border-radius: 0px 5px 5px 0px;
-      border-weight: 0 0 0 1px;
+      border-width: 1px;
+
     }
     button {
-      border: 1px solid #dcdcdc;
+      border-color: #dcdcdc;
+      border-width: 1px 0px 1px 1px;
       background-color: white;
       display: inline-block;
       cursor: pointer;

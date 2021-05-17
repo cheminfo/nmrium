@@ -35,10 +35,10 @@ export const ModalStyles = css`
   button:hover {
     color: #007bff;
   }
-  .save-button:hover {
+  .btn:hover {
     background-color: #ffffff;
   }
-  .save-button {
+  .btn {
     border: none;
     padding: 0 15px;
     background-color: #ffffff5e;
@@ -46,10 +46,14 @@ export const ModalStyles = css`
     height: 25px;
   }
 
+  .primary {
+    background-color: #d5d5d5;
+  }
+
   .footer-container {
     display: flex;
+    flex-direction: row-reverse;
     align-items: flex-end;
-    justify-content: flex-end;
     background: rgb(242, 242, 242);
     background: -moz-linear-gradient(
       0deg,

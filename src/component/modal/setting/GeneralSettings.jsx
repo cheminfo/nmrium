@@ -51,10 +51,10 @@ const styles = css`
   button:hover {
     color: #007bff;
   }
-  .save-button:hover {
+  .btn:hover {
     background-color: #ffffff;
   }
-  .save-button {
+  .btn {
     border: none;
     padding: 0 15px;
     background-color: #ffffff5e;
@@ -204,7 +204,7 @@ function GeneralSettings({ onClose, onSave }) {
         </FormikForm>
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="save-button">
+        <button type="button" onClick={handleSave} className="btn">
           Save
         </button>
       </div>
