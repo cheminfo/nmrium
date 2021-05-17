@@ -44,14 +44,13 @@ const NumberInput = forwardRef(function NumberInput(
   const changeHander = useCallback(
     (e) => {
       if (e.target.checkValidity()) {
-        if (e.target.value === '') {
-          onChange({ ...e, target: { ...e.target, value: defaultValue } });
-        } else {
-          onChange(e);
-        }
+        const value = Number(
+          e.target.value === '' ? defaultValue : e.target.value,
+        );
+        onChange({ ...e, target: { ...e.target, value } });
       } else {
         const _ref = ref ? ref : localRef;
-        _ref.current.value = defaultValue;
+        _ref.current.value = Number(defaultValue);
       }
     },
     [defaultValue, onChange, ref],

@@ -43,14 +43,14 @@ function BaseLineCorrectionPanel() {
       case 'airpls':
         options = {
           algorithm: algorithmRef.current.value,
-          maxIterations: maxIterationsRef.current.value,
-          tolerance: toleranceRef.current.value,
+          maxIterations: Number(maxIterationsRef.current.value),
+          tolerance: Number(toleranceRef.current.value),
         };
         break;
       case 'polynomial':
         options = {
           algorithm: algorithmRef.current.value,
-          degree: degreeRef.current.value,
+          degree: Number(degreeRef.current.value),
         };
         break;
       default:
