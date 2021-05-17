@@ -29,7 +29,7 @@ const Spectrum1DHistogram = memo(({ color = 'red', data, options = {} }) => {
     >
       <Plot
         width={220}
-        height={200}
+        height={220}
         margin={{ bottom: 40, left: 40, top: 50, right: 13 }}
         // seriesViewportStyle={{ stroke: 'gray' }}
       >
@@ -41,7 +41,7 @@ const Spectrum1DHistogram = memo(({ color = 'red', data, options = {} }) => {
           label="positive"
           lineStyle={{
             stroke: color,
-            strokeWidth: 1,
+            strokeWidth: 1.2,
           }}
           markerStyle={{
             fill: color,
@@ -56,6 +56,7 @@ const Spectrum1DHistogram = memo(({ color = 'red', data, options = {} }) => {
           lineStyle={{
             stroke: 'blue',
             strokeWidth: 0.8,
+            strokeDasharray: [3, 3],
           }}
           markerStyle={{
             fill: color,
@@ -81,8 +82,8 @@ const Spectrum1DHistogram = memo(({ color = 'red', data, options = {} }) => {
 
       <Plot
         width={220}
-        height={150}
-        margin={{ bottom: 40, left: 40, top: 10, right: 13 }}
+        height={180}
+        margin={{ bottom: 50, left: 40, top: 10, right: 13 }}
         // seriesViewportStyle={{ stroke: 'gray' }}
       >
         <LineSeries
@@ -92,7 +93,7 @@ const Spectrum1DHistogram = memo(({ color = 'red', data, options = {} }) => {
           label="negative"
           lineStyle={{
             stroke: color,
-            strokeWidth: 1,
+            strokeWidth: 1.2,
           }}
           markerStyle={{
             fill: color,
@@ -108,6 +109,7 @@ const Spectrum1DHistogram = memo(({ color = 'red', data, options = {} }) => {
           lineStyle={{
             stroke: 'blue',
             strokeWidth: 0.8,
+            strokeDasharray: [3, 3],
           }}
           markerStyle={{
             fill: color,
