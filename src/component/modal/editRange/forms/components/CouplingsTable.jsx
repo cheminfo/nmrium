@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
 import { memo, useEffect, useCallback } from 'react';
-import { FaMinus, FaPlus } from 'react-icons/fa';
+import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
 import { Multiplets } from '../../../../../data/constants/Multiplets';
 import Button from '../../../../elements/Button';
@@ -45,9 +45,8 @@ const CouplingsTableStyle = css`
       padding-right: 0.3rem;
     }
     .delete-button:hover {
-      background-color: red;
       .icon {
-        color: white;
+        color: red;
       }
     }
 
@@ -142,7 +141,7 @@ function CouplingsTable({ push, remove, onFocus, onBlur }) {
                     remove(i);
                   }}
                 >
-                  <FaMinus className="icon" title="Delete coupling" />
+                  <FaRegTrashAlt className="icon" title="Delete coupling" />
                 </Button>
               </td>
             </tr>
