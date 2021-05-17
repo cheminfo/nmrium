@@ -29,11 +29,15 @@ export function apply(datum1D, options = {}) {
       break;
     case 'polynomial':
       {
+        const baselineOptions = {
+          // regression: polynomialRegression,
+          regressionOptions: options.degree,
+        };
         let reduced = equallySpaced(
           { x, y: re },
           { numberOfPoints: 4096, zones },
         );
-        let result = baselineRegression(reduced.x, reduced.y, options);
+        let result = baselineRegression(reduced.x, reduced.y, baselineOptions);
         let { regression } = result;
         corrected = new Float64Array(x.length);
         for (let i = 0; i < re.length; i++) {
