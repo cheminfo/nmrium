@@ -207,12 +207,14 @@ export function toJSON(datum: Datum2D, forceIncludeData = false) {
     source: {
       jcampURL: datum.source.jcampURL,
     },
-    ...(!datum.source.jcampURL || forceIncludeData
-      ? {
-          data: datum.originalData,
-          info: datum.originalInfo,
-          meta: datum.meta,
-        }
+    ...(forceIncludeData
+      ? !datum.source.jcampURL
+        ? {
+            data: datum.originalData,
+            info: datum.originalInfo,
+            meta: datum.meta,
+          }
+        : {}
       : {}),
     zones: datum.zones,
     filters: datum.filters,

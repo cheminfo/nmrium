@@ -32,7 +32,7 @@ const INITIAL_VALUE = {
   name: '',
   compressed: false,
   pretty: false,
-  includeData: false,
+  includeData: true,
 };
 
 function SaveAsModal({ onClose, onSave, name }) {
