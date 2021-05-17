@@ -1,5 +1,10 @@
 import max from 'ml-array-max';
-import { xyIntegration, xyMinYPoint, xyMaxYPoint } from 'ml-spectra-processing';
+import {
+  xyIntegration,
+  xyMinYPoint,
+  xyMaxYPoint,
+  xFindClosestIndex,
+} from 'ml-spectra-processing';
 
 import { Filters as FiltersTypes } from '../Filters';
 import * as FiltersManager from '../FiltersManager';
@@ -457,10 +462,15 @@ export function getShiftX(datum: Datum1D) {
 }
 
 export function updatePeaksXShift(datum: Datum1D, shiftValue) {
-  datum.peaks.values = datum.peaks.values.map((peak) => ({
-    ...peak,
-    delta: peak.originDelta + shiftValue,
-  }));
+  datum.peaks.values = datum.peaks.values.map((peak) => {
+    const delta = peak.originDelta + shiftValue;
+    const xIndex = xFindClosestIndex(datum.data.x, delta);
+    return {
+      ...peak,
+      intensity: datum.data.re[xIndex],
+      delta: peak.originDelta + shiftValue,
+    };
+  });
 }
 export function updateRangesXShift(datum: Datum1D, shiftValue) {
   datum.ranges.values = datum.ranges.values.map((range) => ({
