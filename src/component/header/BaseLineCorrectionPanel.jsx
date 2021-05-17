@@ -105,21 +105,15 @@ function BaseLineCorrectionPanel() {
         </Fragment>
       )}
 
-      {algorithm && algorithm === 'autoPolynomial' && (
+      {algorithm && ['autoPolynomial', 'polynomial'].includes(algorithm) && (
         <NumberInput
           label="degree:"
           ref={degreeRef}
           name="degree"
           defaultValue={3}
-        />
-      )}
-
-      {algorithm && algorithm === 'polynomial' && (
-        <NumberInput
-          label="degree:"
-          ref={degreeRef}
-          name="degree"
-          defaultValue={3}
+          min={1}
+          max={6}
+          pattern="[1-6]+"
         />
       )}
 
