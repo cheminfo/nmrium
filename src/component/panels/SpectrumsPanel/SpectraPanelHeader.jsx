@@ -106,7 +106,7 @@ function SpectraPanelHeader({
           <FaCreativeCommonsSamplingPlus />
         </Button>
       )}
-      {displayerMode === DISPLAYER_MODE.DM_1D && (
+      {displayerMode === DISPLAYER_MODE.DM_1D && spectrums.length > 1 && (
         <>
           <Button popupTitle="Reset Scale" onClick={resetScaleHandler}>
             <SvgNmrResetScale />
