@@ -125,7 +125,7 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
   return (
     <div css={[ModalStyles, styles]}>
       <div className="header handle">
-        <span>Spectra calibration</span>
+        <span>Apply filters</span>
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
