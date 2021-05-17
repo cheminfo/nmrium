@@ -32,7 +32,7 @@ function FiltersTableRow({ filters }) {
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
-  const [selectedFilterID, setSelectedFilter] = useState();
+  const [selectedFilterIndex, setSelectedFilter] = useState();
 
   const handelFilterCheck = useCallback(
     async (id, checked) => {
@@ -81,15 +81,15 @@ function FiltersTableRow({ filters }) {
     [alert, dispatch, modal],
   );
   const filterSnapShotHandler = useCallback(
-    async (newID) => {
+    async (newID, index) => {
       const hideLoading = await alert.showLoading(
         'Filter snapshot processs in progress',
       );
       setTimeout(() => {
-        setSelectedFilter((prevId) => {
-          const id = prevId === newID ? null : newID;
+        setSelectedFilter((prevIndex) => {
+          const id = prevIndex === index ? null : newID;
           dispatch({ type: SET_FILTER_SNAPSHOT, id });
-          return id;
+          return id ? index : null;
         });
         hideLoading();
       }, 0);
@@ -99,15 +99,20 @@ function FiltersTableRow({ filters }) {
   const filtersTableRow = useMemo(() => {
     return (
       filters &&
-      filters.map((d) => (
+      filters.map((d, index) => (
         <TableRow
           key={d.id}
-          style={d.id === selectedFilterID ? { ...styles.active } : {}}
+          style={{
+            ...(index === selectedFilterIndex && styles.active),
+            ...(selectedFilterIndex != null && index > selectedFilterIndex
+              ? { opacity: 0.3 }
+              : {}),
+          }}
         >
           <TableCell
             align="center"
             size="2"
-            onClick={() => filterSnapShotHandler(d.id)}
+            onClick={() => filterSnapShotHandler(d.id, index)}
           >
             {d.label}
           </TableCell>
@@ -141,7 +146,7 @@ function FiltersTableRow({ filters }) {
     filters,
     handelDeleteFilter,
     handelFilterCheck,
-    selectedFilterID,
+    selectedFilterIndex,
   ]);
   return filtersTableRow;
 }
