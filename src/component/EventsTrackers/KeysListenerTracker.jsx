@@ -213,6 +213,7 @@ function KeysListenerTracker() {
       }
       if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
         switch (e.key) {
+          case 's':
           case 'S':
             saveAsHandler();
             e.preventDefault();
