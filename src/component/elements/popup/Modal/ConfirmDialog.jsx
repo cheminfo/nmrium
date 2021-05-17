@@ -33,7 +33,6 @@ const styles = css`
     button:first-of-type {
       border-radius: 0px 5px 5px 0px;
       border-width: 1px;
-
     }
     button {
       border-color: #dcdcdc;
