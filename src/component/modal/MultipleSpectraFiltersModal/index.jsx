@@ -68,7 +68,8 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
 
     return baseList.concat(list);
   }, [nucleus]);
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback((e) => {
+    e.preventDefault();
     if (refForm.current) {
       refForm.current.submitForm();
     }
@@ -76,12 +77,14 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
 
   const submitHandler = useCallback(
     (options) => {
-      dispatch({
-        type: APPLY_MULTIPLE_SPECTRA_FILTER,
-        payload: [{ name: filter, options }],
-      });
+      if (options) {
+        dispatch({
+          type: APPLY_MULTIPLE_SPECTRA_FILTER,
+          payload: [{ name: filter, options }],
+        });
 
-      onClose();
+        onClose();
+      }
     },
     [dispatch, filter, onClose],
   );
@@ -110,6 +113,11 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
       case Filters.equallySpaced.id:
         return <EquallySpacedFilter onSubmit={submitHandler} ref={refForm} />;
       default:
+        <FormikForm
+          ref={refForm}
+          initialValues={null}
+          onSubmit={submitHandler}
+        />;
         break;
     }
   }, [filter, submitHandler]);
@@ -130,17 +138,14 @@ function MultipleSpectraFiltersModal({ onClose, nucleus }) {
             onChange={filterChangeHandler}
           />
         </div>
-        {filterOptions || (
-          <FormikForm
-            ref={refForm}
-            initialValues={{}}
-            onSubmit={submitHandler}
-          />
-        )}
+        {filterOptions}
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="btn">
-          Done
+        <button type="button" onClick={handleSave} className="btn primary">
+          Apply
+        </button>
+        <button type="button" onClick={onClose} className="btn">
+          Close
         </button>
       </div>
     </div>

@@ -47,7 +47,7 @@ export const ModalStyles = css`
   }
 
   .primary {
-    background-color: #d5d5d5;
+    background-color: #e2e2e2;
   }
 
   .footer-container {
