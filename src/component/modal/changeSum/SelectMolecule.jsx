@@ -36,6 +36,11 @@ const optionalTextStyle = css`
 `;
 
 const moleculeContainerStyle = css`
+  .molecule-selection-container {
+    width: 450px;
+    disblay: block;
+    margin: 0 auto;
+  }
   button {
     flex: 2;
     padding: 5px;
@@ -105,10 +110,12 @@ function SelectMolecule({ onSave, molecules, element }) {
         <p className="optional2">Select a molecule as reference!</p>
       </div>
       <div css={moleculeContainerStyle}>
-        <MoleculeSelection
-          molecules={molecules}
-          onChange={onChangeMoleculeSelectionHandler}
-        />
+        <div className="molecule-selection-container">
+          <MoleculeSelection
+            molecules={molecules}
+            onChange={onChangeMoleculeSelectionHandler}
+          />
+        </div>
         <button type="button" onClick={saveSelectMoleculeHandler}>
           Set
         </button>
