@@ -26,7 +26,18 @@ const styles = {
 };
 
 const NumberInput = forwardRef(function NumberInput(
-  { label, name, defaultValue, style, onChange, onInput, pattern, step, min },
+  {
+    label,
+    name,
+    defaultValue,
+    style,
+    onChange,
+    onInput,
+    pattern,
+    step,
+    min,
+    max,
+  },
   ref,
 ) {
   const localRef = useRef();
@@ -60,6 +71,7 @@ const NumberInput = forwardRef(function NumberInput(
           onChange={changeHander}
           onInput={onInput}
           min={min}
+          max={max}
           key={defaultValue}
         />
       </div>
@@ -73,6 +85,7 @@ NumberInput.propTypes = {
   name: PropTypes.string,
   step: PropTypes.any,
   min: PropTypes.any,
+  max: PropTypes.any,
   defaultValue: PropTypes.number,
   style: PropTypes.shape({
     container: PropTypes.object,
@@ -88,6 +101,7 @@ NumberInput.defaultProps = {
   pattern: '^d*(.d{0,2})?$',
   step: 'any',
   min: 'any',
+  max: 'any',
   style: {
     label: {},
     input: {},
