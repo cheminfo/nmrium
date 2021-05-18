@@ -1,8 +1,5 @@
-import lodashGet from 'lodash/get';
-import lodashSet from 'lodash/set';
 import {
   useEffect,
-  useState,
   useCallback,
   forwardRef,
   useImperativeHandle,
@@ -10,8 +7,10 @@ import {
 } from 'react';
 import { MF } from 'react-mf';
 
-import ColorInput from '../../elements/ColorInput';
-import NumberInput from '../../elements/NumberInput';
+import FormikColorInput from '../../elements/formik/FormikColorInput';
+import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
+import FormikForm from '../../elements/formik/FormikForm';
+import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import { useAlert } from '../../elements/popup/Alert';
 import IntegralsWrapper from '../../hoc/IntegralsWrapper';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
@@ -19,7 +18,6 @@ import {
   useStateWithLocalStorage,
   getValue as getValueByKeyPath,
 } from '../../utility/LocalStorage';
-import ColumnFormatField from '../extra/preferences/ColumnFormatField';
 import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles = {
@@ -27,7 +25,7 @@ const styles = {
     padding: 10,
     backgroundColor: '#f1f1f1',
     height: '100%',
-    flex: 1,
+    overflowY: 'auto',
   },
   groupContainer: {
     padding: '5px',
@@ -63,33 +61,44 @@ const formatFields = [
     label: 'Absolute :',
     checkController: 'showAbsolute',
     formatController: 'absoluteFormat',
-    defaultFormat: '0.00',
   },
   {
     id: 2,
     label: 'Relative :',
     checkController: 'showRelative',
     formatController: 'relativeFormat',
-    defaultFormat: '00.00',
   },
 ];
 function IntegralsPreferences({ nucleus, preferences }, ref) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
-  const [settings, setSetting] = useState(null);
   const formRef = useRef();
 
-  useEffect(() => {
-    const integralsPreferences = getValueByKeyPath(
-      preferences,
-      'formatting.panels.integrals',
-    );
+  const updateValues = useCallback(() => {
+    if (nucleus) {
+      const { color, strokeWidth, ...restProps } = integralDefaultValues;
 
-    if (integralsPreferences) {
-      setSetting(integralsPreferences);
+      const integralPreferences = getValueByKeyPath(
+        preferences,
+        `formatting.panels.integrals`,
+      );
+
+      let defaultValues = nucleus.reduce((acc, nucleusLabel) => {
+        acc[nucleusLabel] = restProps;
+        return acc;
+      }, {});
+      defaultValues = Object.assign(defaultValues, { color, strokeWidth });
+
+      formRef.current.setValues(
+        integralPreferences ? integralPreferences : defaultValues,
+      );
     }
-  }, [preferences]);
+  }, [nucleus, preferences]);
+
+  useEffect(() => {
+    updateValues();
+  }, [updateValues]);
 
   const saveToLocalStorgate = (values) => {
     setSettingsData(values, 'formatting.panels.integrals');
@@ -109,55 +118,26 @@ function IntegralsPreferences({ nucleus, preferences }, ref) {
   );
 
   useImperativeHandle(ref, () => ({
-    saveSetting() {
-      if (typeof formRef.current.requestSubmit === 'function') {
-        formRef.current.requestSubmit();
-      } else {
-        formRef.current.dispatchEvent(
-          new Event('submit', { cancelable: true }),
-        );
-      }
+    saveSetting: () => {
+      formRef.current.submitForm();
+    },
+    cancelSetting: () => {
+      updateValues();
     },
   }));
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
-    let values = {};
-    for (const field of formData.entries()) {
-      const keys = field[0].split('-').join('.');
-      const val = ['true', 'false'].includes(field[1])
-        ? field[1] === 'true'
-        : field[1];
-      values = lodashSet(values, keys, val);
-    }
+  const handleSubmit = (values) => {
     saveHandler(values, true);
     saveToLocalStorgate(values);
   };
 
-  const getValue = useCallback(
-    (...params) => {
-      if (settings) {
-        const value =
-          params[0] === null
-            ? settings[params[1]]
-            : lodashGet(settings, params.join('.'));
-        return value ? value : null;
-      } else {
-        const keyIndex = params.length - 1;
-        return integralDefaultValues[params[keyIndex]];
-      }
-    },
-    [settings],
-  );
   return (
     <div style={styles.container}>
-      <form onSubmit={handleSubmit} ref={formRef}>
+      <FormikForm onSubmit={handleSubmit} ref={formRef}>
         <div style={styles.groupContainer}>
           <p style={styles.header}>General</p>
-          <ColorInput name="color" value={`${getValue(null, 'color')}`} />
-          <NumberInput
+          <FormikColorInput name="color" />
+          <FormikNumberInput
             name="strokeWidth"
             label="stroke width :"
             style={{
@@ -168,9 +148,9 @@ function IntegralsPreferences({ nucleus, preferences }, ref) {
                 borderRadius: '5px',
               },
             }}
-            defaultValue={Number(getValue(null, 'strokeWidth'))}
             min={1}
-            pattern="[1-9]*"
+            max={9}
+            pattern="[1-9]+"
           />
         </div>
 
@@ -181,19 +161,16 @@ function IntegralsPreferences({ nucleus, preferences }, ref) {
                 <MF mf={nucleusLabel} />
               </p>
               {formatFields.map((field) => (
-                <ColumnFormatField
+                <FormikColumnFormatField
                   key={field.id}
                   label={field.label}
-                  checked={getValue(nucleusLabel, field.checkController)}
-                  format={getValue(nucleusLabel, field.formatController)}
-                  checkControllerName={field.checkController}
-                  formatControllerName={field.formatController}
-                  groupID={nucleusLabel}
+                  checkControllerName={`${nucleusLabel}.${field.checkController}`}
+                  formatControllerName={`${nucleusLabel}.${field.formatController}`}
                 />
               ))}
             </div>
           ))}
-      </form>
+      </FormikForm>
     </div>
   );
 }

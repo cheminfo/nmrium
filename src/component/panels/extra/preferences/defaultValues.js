@@ -7,6 +7,16 @@ const integralDefaultValues = {
   strokeWidth: 1,
 };
 
+const zoneDefaultValues = {
+  showFrom: false,
+  fromFormat: '0.00',
+  showTo: false,
+  toFormat: '0.00',
+  showAbsolute: false,
+  absoluteFormat: '0.00',
+  showRelative: true,
+  relativeFormat: '0.00',
+};
 const rangeDefaultValues = {
   showFrom: false,
   fromFormat: '0.00',
@@ -33,4 +43,9 @@ const peaksDefaultValues = {
   intensityFormat: '0.00',
 };
 
-export { peaksDefaultValues, integralDefaultValues, rangeDefaultValues };
+export {
+  peaksDefaultValues,
+  integralDefaultValues,
+  rangeDefaultValues,
+  zoneDefaultValues,
+};

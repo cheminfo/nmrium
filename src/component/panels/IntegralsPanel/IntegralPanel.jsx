@@ -89,6 +89,9 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
+    if (!isFlipped) {
+      settingRef.current.cancelSetting();
+    }
   }, [isFlipped]);
 
   const saveSettingHandler = useCallback(() => {

@@ -1,8 +1,5 @@
-import lodashGet from 'lodash/get';
-import lodashSet from 'lodash/set';
 import {
   useEffect,
-  useState,
   useCallback,
   forwardRef,
   useImperativeHandle,
@@ -10,6 +7,8 @@ import {
 } from 'react';
 
 import IsotopesViewer from '../../elements/IsotopesViewer';
+import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
+import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
 import PeaksWrapper from '../../hoc/PeaksWrapper';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
@@ -17,11 +16,15 @@ import {
   useStateWithLocalStorage,
   getValue as getValueByKeyPath,
 } from '../../utility/LocalStorage';
-import ColumnFormatField from '../extra/preferences/ColumnFormatField';
 import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles = {
-  container: { padding: 10, backgroundColor: '#f1f1f1', height: '100%' },
+  container: {
+    padding: 10,
+    backgroundColor: '#f1f1f1',
+    height: '100%',
+    overflowY: 'auto',
+  },
   groupContainer: {
     padding: '5px',
     borderRadius: '5px',
@@ -56,60 +59,63 @@ const formatFields = [
     label: 'Peak Number :',
     checkController: 'showPeakNumber',
     formatController: 'peakNumberFormat',
-    defaultFormat: '',
   },
   {
     id: 2,
     label: 'Peak Index : ',
     checkController: 'showPeakIndex',
     formatController: 'peakIndexFormat',
-    defaultFormat: '',
   },
   {
     id: 3,
     label: 'δ (ppm) :',
     checkController: 'showDeltaPPM',
     formatController: 'deltaPPMFormat',
-    defaultFormat: '00.00',
   },
   {
     id: 4,
     label: 'δ (Hz) :',
     checkController: 'showDeltaHz',
     formatController: 'deltaHzFormat',
-    defaultFormat: '00.00',
   },
   {
     id: 5,
     label: 'Peak Width',
     checkController: 'showPeakWidth',
     formatController: 'peakWidthFormat',
-    defaultFormat: '00.0000',
   },
   {
     id: 6,
     label: 'Intensity :',
     checkController: 'showIntensity',
     formatController: 'intensityFormat',
-    defaultFormat: '00.00',
   },
 ];
 
 function PeaksPreferences({ nucleus, preferences }, ref) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
-  const [settings, setSetting] = useState(null);
   const formRef = useRef();
 
-  useEffect(() => {
-    const peaksPreferences = getValueByKeyPath(
-      preferences,
-      `formatting.panels.peaks`,
-    );
-    if (peaksPreferences) {
-      setSetting(peaksPreferences);
+  const updateValues = useCallback(() => {
+    if (nucleus) {
+      const defaultValues = nucleus.reduce((acc, nucleusLabel) => {
+        acc[nucleusLabel] = peaksDefaultValues;
+        return acc;
+      }, {});
+      const peaksPreferences = getValueByKeyPath(
+        preferences,
+        `formatting.panels.peaks`,
+      );
+      formRef.current.setValues(
+        peaksPreferences ? peaksPreferences : defaultValues,
+      );
     }
-  }, [preferences]);
+  }, [nucleus, preferences]);
+
+  useEffect(() => {
+    updateValues();
+  }, [updateValues]);
 
   const saveHandler = useCallback(
     (values, showMessage = false) => {
@@ -122,72 +128,45 @@ function PeaksPreferences({ nucleus, preferences }, ref) {
     [alert, preferences],
   );
 
-  useImperativeHandle(ref, () => ({
-    saveSetting() {
-      if (typeof formRef.current.requestSubmit === 'function') {
-        formRef.current.requestSubmit();
-      } else {
-        formRef.current.dispatchEvent(
-          new Event('submit', { cancelable: true }),
-        );
-      }
-    },
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      saveSetting: () => {
+        formRef.current.submitForm();
+      },
+      cancelSetting: () => {
+        updateValues();
+      },
+    }),
+    [updateValues],
+  );
 
   const handleSubmit = useCallback(
-    (event) => {
-      event.preventDefault();
-      const form = event.target;
-      const formData = new FormData(form);
-      let values = {};
-      for (let field of formData.entries()) {
-        const keys = field[0].split('-').join('.');
-        const val = ['true', 'false'].includes(field[1])
-          ? field[1] === 'true'
-          : field[1];
-        values = lodashSet(values, keys, val);
-      }
+    (values) => {
       saveHandler(values, true);
       setSettingsData(values, 'formatting.panels.peaks');
     },
     [saveHandler, setSettingsData],
   );
 
-  const getValue = useCallback(
-    (...params) => {
-      const keys = params.join('.');
-      if (settings) {
-        const value = lodashGet(settings, keys);
-        return value ? value : null;
-      } else {
-        const keyIndex = params.length - 1;
-        return peaksDefaultValues[params[keyIndex]];
-      }
-    },
-    [settings],
-  );
-
   return (
     <div style={styles.container}>
-      <form onSubmit={handleSubmit} ref={formRef}>
+      <FormikForm onSubmit={handleSubmit} ref={formRef}>
         {nucleus &&
           nucleus.map((nucleusLabel) => (
             <div key={nucleusLabel} style={styles.groupContainer}>
               <IsotopesViewer style={styles.header} value={nucleusLabel} />
               {formatFields.map((field) => (
-                <ColumnFormatField
+                <FormikColumnFormatField
                   key={field.id}
                   label={field.label}
-                  checked={getValue(nucleusLabel, field.checkController)}
-                  format={getValue(nucleusLabel, field.formatController)}
-                  checkControllerName={field.checkController}
-                  formatControllerName={field.formatController}
-                  groupID={nucleusLabel}
+                  checkControllerName={`${nucleusLabel}.${field.checkController}`}
+                  formatControllerName={`${nucleusLabel}.${field.formatController}`}
                 />
               ))}
             </div>
           ))}
-      </form>
+      </FormikForm>
     </div>
   );
 }
