@@ -2,8 +2,8 @@ import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 import lodashGet from 'lodash/get';
 
-import { Datum1D } from '../../../data/data1d/Datum1D';
-import { Datum2D } from '../../../data/data2d/Datum2D';
+import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import nucluesToString from '../../utility/nucluesToString';
 import { State } from '../Reducer';

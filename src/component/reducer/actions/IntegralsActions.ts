@@ -7,7 +7,7 @@ import {
   changeIntegralsRealtive,
   Datum1D,
   getShiftX,
-} from '../../../data/data1d/Datum1D';
+} from '../../../data/data1d/Spectrum1D';
 import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';

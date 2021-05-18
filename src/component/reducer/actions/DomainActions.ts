@@ -2,8 +2,8 @@ import { extent } from 'd3';
 import { Draft } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
-import { Datum1D } from '../../../data/data1d/Datum1D';
-import { Datum2D } from '../../../data/data2d/Datum2D';
+import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';

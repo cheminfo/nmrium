@@ -1,4 +1,4 @@
-import { initiateDatum2D } from './Datum2D';
+import { initiateDatum2D } from './Spectrum2D';
 
 export function fromParsedJcamp(parsedJcamp, options, usedColors) {
   const { dependentVariables, info, meta } = parsedJcamp;

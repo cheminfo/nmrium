@@ -2,13 +2,13 @@ import { Draft } from 'immer';
 
 import { Filters } from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
-import { Datum1D, updateXShift } from '../../../data/data1d/Datum1D';
+import { Datum1D, updateXShift } from '../../../data/data1d/Spectrum1D';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
 import {
   Datum2D,
   updateShift as update2dShift,
-} from '../../../data/data2d/Datum2D';
+} from '../../../data/data2d/Spectrum2D';
 import nucluesToString from '../../utility/nucluesToString';
 import { State } from '../Reducer';
 import getClosestNumber from '../helper/GetClosestNumber';

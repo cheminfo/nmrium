@@ -1,8 +1,9 @@
 import median from 'ml-array-median';
 import { xyAutoPeaksPicking } from 'nmr-processing';
 
-import { getShiftX } from '../data1d/Datum1D';
 import generateID from '../utilities/generateID';
+
+import { getShiftX } from './Spectrum1D';
 
 export default function autoPeakPicking(datum1D, options) {
   const {

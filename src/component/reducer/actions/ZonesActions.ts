@@ -14,7 +14,7 @@ import {
   detectZonesManual,
   updateShift,
   Zone,
-} from '../../../data/data2d/Datum2D';
+} from '../../../data/data2d/Spectrum2D';
 import {
   getPubIntegral,
   unlink,

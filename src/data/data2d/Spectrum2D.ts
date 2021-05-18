@@ -3,7 +3,7 @@ import { zoneToX } from 'ml-spectra-processing';
 import { Filters } from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DatumKind } from '../constants/SignalsKinds';
-import { initiateDatum1D } from '../data1d/Datum1D';
+import { initiateDatum1D } from '../data1d/Spectrum1D';
 import generateID from '../utilities/generateID';
 import { get2DColor } from '../utilities/getColor';
 

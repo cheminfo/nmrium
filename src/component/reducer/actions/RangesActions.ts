@@ -19,7 +19,7 @@ import {
   Range,
   Signal,
   updateXShift,
-} from '../../../data/data1d/Datum1D';
+} from '../../../data/data1d/Spectrum1D';
 import {
   getPubIntegral,
   unlink,

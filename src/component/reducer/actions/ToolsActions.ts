@@ -2,9 +2,8 @@ import { max } from 'd3';
 import { original, Draft } from 'immer';
 
 import { Filters } from '../../../data/Filters';
-import { Data1D, Datum1D } from '../../../data/data1d/Datum1D';
-// import { Datum2D } from '../../../data/data2d/Datum2D';
-import { Datum2D } from '../../../data/data2d/Datum2D';
+import { Data1D, Datum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
