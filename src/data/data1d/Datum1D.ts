@@ -216,7 +216,7 @@ export function toJSON(datum1D: Datum1D, forceIncludeData = false) {
     },
     display: datum1D.display,
     ...(forceIncludeData
-      ? datum1D.source.jcampURL
+      ? !datum1D.source.jcampURL
         ? {
             data: datum1D.originalData,
             info: datum1D.originalInfo,
