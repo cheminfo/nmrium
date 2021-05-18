@@ -47,7 +47,7 @@ const NumberInput = forwardRef(function NumberInput(
         const value = Number(
           e.target.value === '' ? defaultValue : e.target.value,
         );
-        onChange({ ...e, target: { ...e.target, value } });
+        onChange({ ...e, target: { ...e.target, name: e.target.name, value } });
       } else {
         const _ref = ref ? ref : localRef;
         _ref.current.value = Number(defaultValue);
