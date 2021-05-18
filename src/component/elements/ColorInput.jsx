@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, memo, useState } from 'react';
+import { useCallback, memo, useState, useEffect } from 'react';
 import { ChromePicker } from 'react-color';
 
 const style = css`
@@ -66,9 +66,18 @@ const style = css`
   }
 `;
 
-function ColorInput({ label, onColorChange, name, value }) {
+const ColorInput = memo(function ColorInput({
+  label,
+  onColorChange,
+  name,
+  value,
+}) {
   const [displayColorPicker, showColorPicker] = useState(false);
-  const [color, setColor] = useState(value);
+  const [selectedColor, setColor] = useState(value);
+
+  useEffect(() => {
+    setColor(value);
+  }, [value]);
 
   const handleClick = useCallback(() => {
     showColorPicker(!displayColorPicker);
@@ -88,20 +97,19 @@ function ColorInput({ label, onColorChange, name, value }) {
     },
     [name, onColorChange],
   );
-
   return (
     <div css={style}>
       <span className="inputLabel">{label}</span>
       <div style={{ flex: 4 }}>
         <div className="swatch" onClick={handleClick}>
-          <div className="color" style={{ backgroundColor: color }} />
-          <input type="hidden" value={color} name={name} />
+          <div className="color" style={{ backgroundColor: selectedColor }} />
+          <input type="hidden" value={selectedColor} name={name} />
         </div>
         {displayColorPicker ? (
           <div className="color-popover">
             <div className="cover" onClick={handleClose} />
             <ChromePicker
-              color={{ hex: color }}
+              color={{ hex: selectedColor }}
               onChangeComplete={handleOnColorChanged}
             />
           </div>
@@ -109,12 +117,12 @@ function ColorInput({ label, onColorChange, name, value }) {
       </div>
     </div>
   );
-}
+});
 
 ColorInput.defaultProps = {
-  value: '#000000',
+  // value: '#000000',
   label: 'Color: ',
   onColorChange: () => null,
 };
 
-export default memo(ColorInput);
+export default ColorInput;
