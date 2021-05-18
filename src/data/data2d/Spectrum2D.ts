@@ -399,8 +399,7 @@ export function getMissingProjection(datum, nucleus, usedColors) {
 
   let from = index === 0 ? datum.data.minX : datum.data.minY;
   let to = index === 0 ? datum.data.maxX : datum.data.maxY;
-  let nbPoints = index === 0 ? datum.data.z.length : datum.data.z[0].length;
-
+  let nbPoints = index === 0 ? datum.data.z[0].length : datum.data.z.length;
   let projection = new Float64Array(nbPoints);
   if (index === 1) {
     for (let i = 0; i < datum.data.z.length; i++) {
