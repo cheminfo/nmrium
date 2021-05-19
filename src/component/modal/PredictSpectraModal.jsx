@@ -176,13 +176,14 @@ function PredictSpectraModal({ onClose, molfile }) {
           </div>
         </FormikForm>
         <p className="warning">
-          In order to predict spectra, We are calling an external service and
-          the chemical structure will be sent to this service.
+          In order to predict spectra we are calling an external service and the
+          chemical structure will leave your browser! You should never predict
+          spectra for confidential molecules.
         </p>
       </div>
       <div className="footer-container">
         <button type="button" onClick={handleSave} className="btn">
-          Start Predicting
+          Predict spectrum
         </button>
       </div>
     </div>
