@@ -136,13 +136,20 @@ const MOL_EXPORT_MENU = [
   },
 ];
 
-function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
+function MoleculePanel({
+  zones,
+  ranges,
+  molecules: moleculesProp,
+  activeTab,
+  displayerMode,
+}) {
   const [refContainer, { width, height }] = useMeasure();
   const [open, setOpen] = useState(false);
   const [currentMolfile, setCurrentMolfile] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState([]);
   const [onAtomHoverAction, setOnAtomHoverAction] = useState(null);
+  const [molecules, setMolecules] = useState([]);
 
   const dispatch = useDispatch();
   const alert = useAlert();
@@ -151,6 +158,17 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
   const highlightData = useHighlightData();
   const assignmentData = useAssignmentData();
   const [elements, setElements] = useState([]);
+
+  useEffect(() => {
+    if (moleculesProp) {
+      setMolecules((prevMolecules) => {
+        if (moleculesProp.length > prevMolecules.length) {
+          setCurrentIndex(molecules.length);
+        }
+        return moleculesProp;
+      });
+    }
+  }, [molecules.length, moleculesProp]);
 
   useEffect(() => {
     if (activeTab) {
@@ -353,15 +371,9 @@ function MoleculePanel({ zones, ranges, molecules, activeTab, displayerMode }) {
     [activeAssignment.activeAxis, assignmentData, data, elements],
   );
 
-  const handleClose = useCallback(
-    (e) => {
-      setOpen(false);
-      if (e === 'new') {
-        setCurrentIndex(molecules.length);
-      }
-    },
-    [molecules.length],
-  );
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, []);
 
   const handleOpen = useCallback((event, key, molfile) => {
     if (molfile) {

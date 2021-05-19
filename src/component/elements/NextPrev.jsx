@@ -19,10 +19,10 @@ function Arrow({ direction, onClick }) {
       css={css`
         display: flex;
         position: absolute;
-        top: calc(50% - 18px);
+        top: calc(50% - 20px);
         ${direction === 'right' ? `right: 25px` : `left: 25px`};
-        height: 36px;
-        width: 36px;
+        height: 40px;
+        width: 40px;
         justify-content: center;
         background: white;
         border-radius: 50%;
@@ -30,9 +30,11 @@ function Arrow({ direction, onClick }) {
         align-items: center;
         border: none;
         transition: transform ease-in 0.1s;
+        background-color: #f7f7f7;
+
         &:hover {
-          transform: scale(1.2);
-          background-color: #607d8b;
+          transform: scale(1.1);
+          background-color: #607d8b !important;
           color: white;
         }
         img {
