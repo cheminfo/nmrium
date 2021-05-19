@@ -12,7 +12,7 @@ import {
 import nucluesToString from '../../utility/nucluesToString';
 import { State } from '../Reducer';
 import getClosestNumber from '../helper/GetClosestNumber';
-import ZoomHistory from '../helper/ZoomHistory';
+import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
@@ -170,10 +170,7 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
     setDomain(draft);
     setMode(draft);
 
-    const zoomHistory = ZoomHistory.getInstance(
-      draft.ZoomHistory,
-      draft.activeTab,
-    );
+    const zoomHistory = zoomHistoryManager(draft.ZoomHistory, draft.activeTab);
     const zoomValue = zoomHistory.getLast();
     if (zoomValue) {
       draft.xDomain = zoomValue.xDomain;

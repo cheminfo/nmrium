@@ -16,7 +16,7 @@ import {
   DISPLAYER_MODE,
   MARGIN,
 } from '../core/Constants';
-import ZoomHistory from '../helper/ZoomHistory';
+import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
@@ -190,11 +190,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
   const endY = yScale.invert(action.endY);
   const domainX = startX > endX ? [endX, startX] : [startX, endX];
   const domainY = startY > endY ? [endY, startY] : [startY, endY];
-  const brushHistory = ZoomHistory.getInstance(
-    draft.ZoomHistory,
-    draft.activeTab,
-  );
-
+  const brushHistory = zoomHistoryManager(draft.ZoomHistory, draft.activeTab);
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     switch (action.trackID) {
       case LAYOUT.CENTER_2D:
@@ -257,10 +253,7 @@ function handleZoom(draft: Draft<State>, action) {
 function zoomOut(draft: Draft<State>, action) {
   if (draft?.data.length > 0) {
     const { zoomType, trackID } = action;
-    const zoomHistory = ZoomHistory.getInstance(
-      draft.ZoomHistory,
-      draft.activeTab,
-    );
+    const zoomHistory = zoomHistoryManager(draft.ZoomHistory, draft.activeTab);
 
     if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
       switch (zoomType) {
@@ -449,10 +442,7 @@ function setActiveTab(
   Processing2DData(draft, dataGroupByNucleus);
   setDomain(draft);
 
-  const zoomHistory = ZoomHistory.getInstance(
-    draft.ZoomHistory,
-    draft.activeTab,
-  );
+  const zoomHistory = zoomHistoryManager(draft.ZoomHistory, draft.activeTab);
   const zoomValue = zoomHistory.getLast();
   if (zoomValue) {
     draft.xDomain = zoomValue.xDomain;
