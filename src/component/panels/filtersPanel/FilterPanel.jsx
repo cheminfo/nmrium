@@ -12,7 +12,7 @@ import NoTableData from '../extra/placeholder/NoTableData';
 
 import FiltersTableRow from './FiltersTableRow';
 
-function FilterPanel({ filters }) {
+function FilterPanel({ filters, spectraCounter }) {
   const filtersTable = useMemo(() => {
     return filters ? (
       <Table>
@@ -27,13 +27,13 @@ function FilterPanel({ filters }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          <FiltersTableRow filters={filters} />
+          <FiltersTableRow filters={filters} spectraCounter={spectraCounter} />
         </TableBody>
       </Table>
     ) : (
       <NoTableData />
     );
-  }, [filters]);
+  }, [filters, spectraCounter]);
 
   return filtersTable;
 }

@@ -28,7 +28,7 @@ const styles = {
     borderBottom: '1px solid #817066',
   },
 };
-function FiltersTableRow({ filters }) {
+function FiltersTableRow({ filters, spectraCounter }) {
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
@@ -48,37 +48,42 @@ function FiltersTableRow({ filters }) {
   );
   const handelDeleteFilter = useCallback(
     ({ id, name }) => {
+      const buttons = [
+        {
+          text: 'Yes',
+          handler: async () => {
+            const hideLoading = await alert.showLoading(
+              'Delete filter processs in progress',
+            );
+            dispatch({ type: DELETE_FILTER, payload: { id } });
+            hideLoading();
+          },
+        },
+        { text: 'No' },
+      ];
+
+      if (spectraCounter > 1) {
+        buttons.unshift({
+          text: 'Yes, for all spectra',
+          handler: async () => {
+            const hideLoading = await alert.showLoading(
+              'Delete all spectra filter processs in progress',
+            );
+            dispatch({
+              type: DELETE_SPECTRA_FILTER,
+              payload: { filterType: name },
+            });
+            hideLoading();
+          },
+        });
+      }
+
       modal.showConfirmDialog({
         message: 'Are you sure you want to delete the spectrum?',
-        buttons: [
-          {
-            text: 'Yes, for all spectra',
-            handler: async () => {
-              const hideLoading = await alert.showLoading(
-                'Delete all spectra filter processs in progress',
-              );
-              dispatch({
-                type: DELETE_SPECTRA_FILTER,
-                payload: { filterType: name },
-              });
-              hideLoading();
-            },
-          },
-          {
-            text: 'Yes',
-            handler: async () => {
-              const hideLoading = await alert.showLoading(
-                'Delete filter processs in progress',
-              );
-              dispatch({ type: DELETE_FILTER, payload: { id } });
-              hideLoading();
-            },
-          },
-          { text: 'No' },
-        ],
+        buttons,
       });
     },
-    [alert, dispatch, modal],
+    [alert, dispatch, modal, spectraCounter],
   );
   const filterSnapShotHandler = useCallback(
     async (newID, index) => {
