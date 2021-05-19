@@ -104,7 +104,14 @@ const EXPORT_MENU = [
   },
 ];
 
-function BasicToolBar({ info, verticalAlign, displayerMode, ftCounter }) {
+function BasicToolBar({
+  info,
+  verticalAlign,
+  displayerMode,
+  ftCounter,
+  fidCounter,
+  activeSpectrum,
+}) {
   const dispatch = useDispatch();
   const preferences = usePreferences();
   const alert = useAlert();
@@ -128,7 +135,9 @@ function BasicToolBar({ info, verticalAlign, displayerMode, ftCounter }) {
     saveAsHandler,
   } = useExport();
 
-  const selectedSpectrumInfo = { isComplex: false, isFid: false, ...info };
+  const selectedSpectrumInfo = {
+    info: { isComplex: false, isFid: false, ...info },
+  };
 
   const LoadJacmpHandler = useCallback(
     (file) => {
@@ -245,7 +254,10 @@ function BasicToolBar({ info, verticalAlign, displayerMode, ftCounter }) {
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('hideSpectraStackAlignments') &&
-        ftCounter > 1 && (
+        ((activeSpectrum &&
+          !selectedSpectrumInfo?.info?.isFid &&
+          ftCounter > 1) ||
+          (!activeSpectrum && fidCounter === 0)) && (
           <button
             type="button"
             css={styles}
@@ -267,7 +279,7 @@ function BasicToolBar({ info, verticalAlign, displayerMode, ftCounter }) {
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('hideRealImaginary') &&
         selectedSpectrumInfo &&
-        selectedSpectrumInfo.isComplex && (
+        selectedSpectrumInfo.info.isComplex && (
           <button
             css={styles}
             className="cheminfo"

@@ -63,6 +63,7 @@ function FunctionToolBar({
   info,
   displayerMode,
   ftCounter,
+  fidCounter,
 }) {
   const [option, setOption] = useState();
   const help = useHelp();
@@ -243,7 +244,10 @@ function FunctionToolBar({
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideMultipleSpectraAnalysisTool') &&
-          ftCounter > 1 && (
+          ((activeSpectrum &&
+            !selectedSpectrumInfo?.info?.isFid &&
+            ftCounter > 1) ||
+            (!activeSpectrum && fidCounter === 0)) && (
             <ToggleButton
               key={options.multipleSpectraAnalysis.id}
               value={options.multipleSpectraAnalysis.id}
