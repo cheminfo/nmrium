@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
+import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
 import IsotopesViewer from '../elements/IsotopesViewer';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
@@ -40,9 +41,23 @@ const styles = css`
   .warning {
     color: #c40000;
     font-weight: bold;
-    font-size: 14px;
-    padding: 15px 0;
+    font-size: 13px;
     text-align: justify;
+    margin-top: 10px;
+  }
+
+  .warning-container {
+    margin-top: 5px;
+    display: flex;
+    input {
+      margin: 5px 5px 5px 0;
+    }
+  }
+
+  button[disabled],
+  button[disabled]:hover {
+    opacity: 0.5;
+    color: black;
   }
 `;
 
@@ -75,6 +90,7 @@ const INITIAL_VALUE = {
 function PredictSpectraModal({ onClose, molfile }) {
   const refForm = useRef();
   const dispatch = useDispatch();
+  const [isApproved, setApproved] = useState(false);
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
@@ -95,6 +111,9 @@ function PredictSpectraModal({ onClose, molfile }) {
     [dispatch, molfile, onClose],
   );
 
+  const approveCheckHandler = useCallback((e) => {
+    setApproved(e.target.checked);
+  }, []);
   return (
     <div css={[ModalStyles, styles]}>
       <div className="header handle">
@@ -180,9 +199,18 @@ function PredictSpectraModal({ onClose, molfile }) {
           chemical structure will leave your browser! You should never predict
           spectra for confidential molecules.
         </p>
+        <div className="warning-container">
+          <CheckBox onChange={approveCheckHandler} />
+          <p>I understood, the structure is not confidential.</p>
+        </div>
       </div>
       <div className="footer-container">
-        <button type="button" onClick={handleSave} className="btn">
+        <button
+          type="button"
+          onClick={handleSave}
+          className="btn"
+          disabled={!isApproved}
+        >
           Predict spectrum
         </button>
       </div>
