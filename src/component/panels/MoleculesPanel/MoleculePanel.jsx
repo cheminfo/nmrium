@@ -439,7 +439,7 @@ function MoleculePanel({
         position: positions.TOP_CENTER,
         enableResizing: true,
         width: 600,
-        height: 350,
+        height: 400,
       },
     );
   }, [modal, molecules, currentIndex]);

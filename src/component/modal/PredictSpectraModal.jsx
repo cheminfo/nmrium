@@ -29,13 +29,20 @@ const styles = css`
 
   .nuclues-label {
     padding: 0 10px;
-    color: red;
+    color: black;
     font-weight: 700;
 
     &.disabled {
       opacity: 0.5;
-      color: gray;
+      color: black;
     }
+  }
+  .warning {
+    color: #c40000;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 15px 0;
+    text-align: justify;
   }
 `;
 
@@ -168,6 +175,10 @@ function PredictSpectraModal({ onClose, molfile }) {
             </div>
           </div>
         </FormikForm>
+        <p className="warning">
+          In order to predict spectra, We are calling an external service and
+          the chemical structure will be sent to this service.
+        </p>
       </div>
       <div className="footer-container">
         <button type="button" onClick={handleSave} className="btn">
