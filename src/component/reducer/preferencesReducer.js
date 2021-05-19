@@ -10,7 +10,7 @@ import {
 export const INIT_PREFERENCES = 'INIT_PREFERENCES';
 export const SET_PREFERENCES = 'SET_PREFERENCES';
 export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
-const LOCAL_STORGAE_VERSION = '1';
+const LOCAL_STORGAE_VERSION = '1.1';
 export const preferencesInitialState = {
   basePreferences: {},
   display: {
@@ -28,8 +28,8 @@ export const preferencesInitialState = {
       hideStructuresPanel: false,
       hideFiltersPanel: false,
       hideZonesPanel: false,
-      hideSummaryPanel: false,
-      hideMultipleSpectraAnalysisPanel: false,
+      hideSummaryPanel: true,
+      hideMultipleSpectraAnalysisPanel: true,
     },
 
     toolBarButtons: {
@@ -106,15 +106,32 @@ export function preferencesReducer(state, action) {
         if (action.payload) {
           const { dispatch, docsBaseUrl, ...resPreferences } = action.payload;
           draft.basePreferences = resPreferences;
-          draft.display = resPreferences.display;
+
+          const hiddenFeatures = JSON.parse(
+            JSON.stringify(resPreferences.display),
+            (key, value) => {
+              if (value) {
+                return value;
+              }
+            },
+          );
+
+          draft.display = lodashMerge(
+            {},
+            preferencesInitialState.display,
+            hiddenFeatures,
+          );
           draft.dispatch = dispatch;
           draft.docsBaseUrl = docsBaseUrl;
           if (localData) {
             Object.entries(localData).forEach(([k, v]) => {
-              draft[k] = lodashMerge(
-                v,
-                resPreferences[k] ? resPreferences[k] : {},
-              );
+              if (k !== 'basePreferences') {
+                draft[k] = lodashMerge(
+                  {},
+                  resPreferences[k] ? resPreferences[k] : {},
+                  v,
+                );
+              }
             });
             mapNucleus(draft, state);
           }

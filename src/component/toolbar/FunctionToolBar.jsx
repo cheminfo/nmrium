@@ -96,8 +96,14 @@ function FunctionToolBar({
   }, [dispatch]);
 
   const isButtonVisible = useCallback(
-    (key) => {
-      return !lodashGet(preferences, `display.toolBarButtons.${key}`);
+    (toolKey) => {
+      return !lodashGet(preferences, `display.toolBarButtons.${toolKey}`);
+    },
+    [preferences],
+  );
+  const isPanelVisible = useCallback(
+    (panelKey) => {
+      return !lodashGet(preferences, `display.panels.${panelKey}`);
     },
     [preferences],
   );
@@ -319,6 +325,7 @@ function FunctionToolBar({
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideExclusionZonesTool') &&
+          isPanelVisible('hideMultipleSpectraAnalysisPanel') &&
           !selectedSpectrumInfo.info.isFid && (
             <ToggleButton
               key={options.exclusionZones.id}
