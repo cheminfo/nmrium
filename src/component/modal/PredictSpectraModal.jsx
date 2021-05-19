@@ -23,7 +23,19 @@ const styles = css`
   }
 
   .custom-label {
-    width: 155px;
+    width: 160px;
+    font-weight: 500;
+  }
+
+  .nuclues-label {
+    padding: 0 10px;
+    color: red;
+    font-weight: 700;
+
+    &.disabled {
+      opacity: 0.5;
+      color: gray;
+    }
   }
 `;
 
@@ -79,7 +91,7 @@ function PredictSpectraModal({ onClose, molfile }) {
   return (
     <div css={[ModalStyles, styles]}>
       <div className="header handle">
-        <span>Predict Spectra</span>
+        <span>Prediciton of NMR spectrum</span>
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
@@ -136,23 +148,23 @@ function PredictSpectraModal({ onClose, molfile }) {
           >
             <div className="row">
               <FormikCheckBox name="spectra.1h" />
-              <IsotopesViewer value="1H" style={{ padding: ' 0 10px' }} />
+              <IsotopesViewer value="1H" className="nuclues-label" />
             </div>
             <div className="row">
               <FormikCheckBox disabled name="spectra.13c" />
-              <IsotopesViewer value="13C" style={{ padding: ' 0 10px' }} />
+              <IsotopesViewer value="13C" className="nuclues-label disabled" />
             </div>
             <div className="row">
               <FormikCheckBox disabled name="spectra.cosy" />
-              <IsotopesViewer value="cosy" style={{ padding: ' 0 10px' }} />
+              <IsotopesViewer value="COSY" className="nuclues-label disabled" />
             </div>
             <div className="row">
               <FormikCheckBox disabled name="spectra.hsqc" />
-              <IsotopesViewer value="HSQC" style={{ padding: ' 0 10px' }} />
+              <IsotopesViewer value="HSQC" className="nuclues-label disabled" />
             </div>
             <div className="row">
               <FormikCheckBox disabled name="spectra.hmbc" />
-              <IsotopesViewer value="HMBC" style={{ padding: ' 0 10px' }} />
+              <IsotopesViewer value="HMBC" className="nuclues-label disabled" />
             </div>
           </div>
         </FormikForm>
