@@ -22,7 +22,7 @@ export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('phaseCorrection not applicable on this data');
   }
-  options = Object.assign({}, defaultOptions, options);
+  options = { ...defaultOptions, ...options };
   return reimAutoPhaseCorrection(datum1D.data, options);
 }
 
