@@ -18,6 +18,7 @@ export default function autoPeakPicking(datum1D, options) {
   const noise = median(datum1D.data.re.map((y) => Math.abs(y)));
 
   let { re, x } = datum1D.data;
+  let { values: currentPeaks = [] } = datum1D.peaks || {};
 
   if (windowFromIndex !== undefined && windowToIndex !== undefined) {
     x = x.slice(windowFromIndex, windowToIndex);
@@ -45,7 +46,7 @@ export default function autoPeakPicking(datum1D, options) {
 
   return peaks.reduce((acc, newPeak) => {
     // check if the peak is already exists
-    for (const { delta } of datum1D.peaks.values) {
+    for (const { delta } of currentPeaks) {
       if (Math.abs(newPeak.x - delta) < error) {
         return acc;
       }
