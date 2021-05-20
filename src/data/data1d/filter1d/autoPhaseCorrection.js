@@ -12,18 +12,20 @@ export const name = 'Automatic phase correction';
  */
 
 const defaultOptions = {
-  magnitudeMode: false,
-  minRegSize: 30,
-  maxDistanceToJoin: 256,
+  minRegSize: 5,
+  maxDistanceToJoin: 128,
+  magnitudeMode: true,
+  factorNoise: 5,
 };
 
 export function apply(datum1D, options = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('phaseCorrection not applicable on this data');
   }
-  options = Object.assign({}, defaultOptions, options);
-
-  return reimAutoPhaseCorrection(datum1D.data, options);
+  return reimAutoPhaseCorrection(datum1D.data, {
+    ...defaultOptions,
+    ...options,
+  });
 }
 
 export function isApplicable(datum1D) {
