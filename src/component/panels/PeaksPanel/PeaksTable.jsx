@@ -85,15 +85,14 @@ function PeaksTable({
       array,
       index,
       columnLabel,
-      cellHandler,
       extraParams,
+      sortType = 'basic',
     ) => {
       array.push({
         ...extraParams,
         index: index,
         Header: columnLabel,
-        sortType: 'basic',
-        Cell: ({ row }) => cellHandler(row),
+        sortType,
       });
     };
 
@@ -105,47 +104,54 @@ function PeaksTable({
 
     let cols = [...initialColumns];
     if (peaksPreferences.showPeakNumber) {
-      setCustomColumn(
-        cols,
-        1,
-        '#',
-        (row) => formatNumber(row.index + 1, peaksPreferences.peakNumberFormat),
-        { width: '1%', maxWidth: '40px', minWidth: '40px' },
-      );
+      setCustomColumn(cols, 1, '#', {
+        Cell: ({ row }) => row.index + 1,
+        width: '1%',
+        maxWidth: '40px',
+        minWidth: '40px',
+      });
     }
     if (peaksPreferences.showPeakIndex) {
-      setCustomColumn(cols, 2, 'index', (row) =>
-        formatNumber(row.original.xIndex, peaksPreferences.peakIndexFormat),
-      );
+      setCustomColumn(cols, 2, 'index', {
+        accessor: (row) =>
+          formatNumber(row.xIndex, peaksPreferences.peakIndexFormat),
+      });
     }
     if (peaksPreferences.showDeltaPPM) {
-      setCustomColumn(cols, 3, 'δ (ppm)', (row) => (
-        <EditableColumn
-          onEditStart={() => editStartHander(row.index)}
-          ref={(ref) => (deltaPPMRefs.current[row.index] = ref)}
-          value={formatNumber(
-            row.original.value,
-            peaksPreferences.deltaPPMFormat,
-          )}
-          onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
-          type="number"
-        />
-      ));
+      setCustomColumn(cols, 3, 'δ (ppm)', {
+        accessor: (row) =>
+          formatNumber(row.value, peaksPreferences.deltaPPMFormat),
+        Cell: ({ row }) => (
+          <EditableColumn
+            onEditStart={() => editStartHander(row.index)}
+            ref={(ref) => (deltaPPMRefs.current[row.index] = ref)}
+            value={formatNumber(
+              row.original.value,
+              peaksPreferences.deltaPPMFormat,
+            )}
+            onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
+            type="number"
+          />
+        ),
+      });
     }
     if (peaksPreferences.showDeltaHz) {
-      setCustomColumn(cols, 4, 'δ (Hz)', (row) =>
-        formatNumber(row.original.valueHz, peaksPreferences.deltaHzFormat),
-      );
+      setCustomColumn(cols, 4, 'δ (Hz)', {
+        accessor: (row) =>
+          formatNumber(row.valueHz, peaksPreferences.deltaHzFormat),
+      });
     }
     if (peaksPreferences.showIntensity) {
-      setCustomColumn(cols, 5, 'Intensity', (row) =>
-        formatNumber(row.original.intensity, peaksPreferences.intensityFormat),
-      );
+      setCustomColumn(cols, 5, 'Intensity', {
+        accessor: (row) =>
+          formatNumber(row.intensity, peaksPreferences.intensityFormat),
+      });
     }
     if (peaksPreferences.showPeakWidth) {
-      setCustomColumn(cols, 5, 'Peak Width', (row) =>
-        formatNumber(row.original.peakWidth, peaksPreferences.peakWidthFormat),
-      );
+      setCustomColumn(cols, 5, 'Peak Width', {
+        accessor: (row) =>
+          formatNumber(row.peakWidth, peaksPreferences.peakWidthFormat),
+      });
     }
     return cols.sort((object1, object2) => object1.index - object2.index);
   }, [
@@ -169,18 +175,20 @@ function PeaksTable({
         ? peaks.values.filter((peak) => isInRange(peak.delta))
         : peaks.values;
 
-      return _peaks.map((peak) => {
-        const value = format(peak.delta);
-        return {
-          value: value,
-          valueHz:
-            info && info.originFrequency ? value * info.originFrequency : '',
-          id: peak.id,
-          intensity: peak.intensity,
-          peakWidth: peak.width ? peak.width : '',
-          isConstantlyHighlighted: isInRange(value),
-        };
-      });
+      return _peaks
+        .map((peak) => {
+          const value = format(peak.delta);
+          return {
+            value: value,
+            valueHz:
+              info && info.originFrequency ? value * info.originFrequency : '',
+            id: peak.id,
+            intensity: peak.intensity,
+            peakWidth: peak.width ? peak.width : '',
+            isConstantlyHighlighted: isInRange(value),
+          };
+        })
+        .sort((prev, next) => prev.value - next.value);
     }
 
     return [];
