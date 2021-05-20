@@ -29,7 +29,7 @@ function SignalDeltaColumn({
         },
       });
     },
-    [dispatch, rowData, signal.id],
+    [dispatch, rowData.id, signal.id],
   );
   const editStartHandler = useCallback(() => {
     onEditStart(signal.id);

@@ -70,8 +70,10 @@ function KeysListenerTracker() {
           dispatch({
             type: DELETE_RANGE,
             payload: {
-              id: data.activeKey,
-              assignmentData,
+              data: {
+                id: data.activeKey,
+                assignmentData,
+              },
             },
           });
           break;

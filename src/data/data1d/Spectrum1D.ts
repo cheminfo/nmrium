@@ -268,7 +268,7 @@ export function lookupPeak(data, options) {
   return null;
 }
 
-export function updateIntegralIntegrals(integrals) {
+export function updateIntegralIntegrals(integrals, isSumConstant = false) {
   if (integrals.options.sum === undefined) {
     integrals.options = { ...integrals.options, sum: 100 };
   }
@@ -280,45 +280,64 @@ export function updateIntegralIntegrals(integrals) {
     integrals.options.sum,
     'integral',
     countingCondition,
+    isSumConstant,
   );
 }
 
-export function changeIntegralsRealtive(integrals, id, newIntegralValue) {
-  const integral = integrals.values.find((integral) => integral.id === id);
-  if (integral) {
-    const ratio = integral.absolute / newIntegralValue;
-    const { values, sum } = integrals.values.reduce(
-      (acc, integral, index) => {
-        const newIntegralValue = integral.absolute / ratio;
-        acc.sum += newIntegralValue;
-        acc.values[index] = {
-          ...integral,
-          integral: newIntegralValue,
-        };
+export function changeIntegralsRealtive(
+  integrals,
+  id,
+  newIntegralValue,
+  isSumConstant = false,
+) {
+  const index = integrals.values.findIndex((integral) => integral.id === id);
+  if (index !== -1) {
+    if (!isSumConstant) {
+      const ratio = integrals.values[index].absolute / newIntegralValue;
+      const { values, sum } = integrals.values.reduce(
+        (acc, integral, index) => {
+          const newIntegralValue = integral.absolute / ratio;
+          acc.sum += newIntegralValue;
+          acc.values[index] = {
+            ...integral,
+            integral: newIntegralValue,
+          };
 
-        return acc;
-      },
-      { values: [], sum: 0 },
-    );
+          return acc;
+        },
+        { values: [], sum: 0 },
+      );
 
-    integrals.values = values;
-    integrals.options.sum = sum;
+      integrals.values = values;
+      integrals.options.sum = sum;
+    } else {
+      integrals.values[index].integral = newIntegralValue;
+    }
   }
 }
 
-function updateRelatives(values, sum, storageKey, countingCondition) {
-  const currentSum = values.reduce((previous, current) => {
-    return countingCondition && countingCondition(current) === true
-      ? (previous += Math.abs(current.absolute))
-      : previous;
-  }, 0);
-  const factor = currentSum > 0 ? sum / currentSum : 0.0;
-  return values.map((value) => {
-    return { ...value, [storageKey]: value.absolute * factor };
-  });
+function updateRelatives(
+  values,
+  sum,
+  storageKey,
+  countingCondition,
+  isSumConstant = false,
+) {
+  if (!isSumConstant) {
+    const currentSum = values.reduce((previous, current) => {
+      return countingCondition && countingCondition(current) === true
+        ? (previous += Math.abs(current.absolute))
+        : previous;
+    }, 0);
+    const factor = currentSum > 0 ? sum / currentSum : 0.0;
+    return values.map((value) => {
+      return { ...value, [storageKey]: value.absolute * factor };
+    });
+  }
+  return values;
 }
 
-export function updateIntegralRanges(datum) {
+export function updateIntegralRanges(datum, isSumConstant = false) {
   if (datum.ranges.options.sum === undefined) {
     datum.ranges.options.sum = 100;
   }
@@ -330,6 +349,7 @@ export function updateIntegralRanges(datum) {
     datum.ranges.options.sum,
     'integral',
     countingCondition,
+    isSumConstant,
   );
 }
 
@@ -492,18 +512,28 @@ export function updateIntegralXShift(datum: Datum1D, shiftValue) {
   }));
 }
 
-export function changeRangesRealtive(datum, rangeID, newRealtiveValue) {
-  const range = datum.ranges.values.find((range) => range.id === rangeID);
-  if (range) {
-    const ratio = range.absolute / newRealtiveValue;
-    datum.ranges.options.sum =
-      (newRealtiveValue / range.integral) * datum.ranges.options.sum;
-    datum.ranges.values = datum.ranges.values.map((range) => {
-      return {
-        ...range,
-        integral: range.absolute / ratio,
-      };
-    });
+export function changeRangesRealtive(
+  datum,
+  rangeID,
+  newRealtiveValue,
+  isSumConstant = false,
+) {
+  const index = datum.ranges.values.findIndex((range) => range.id === rangeID);
+  if (index !== -1) {
+    if (!isSumConstant) {
+      const ratio = datum.ranges.values[index].absolute / newRealtiveValue;
+      datum.ranges.options.sum =
+        (newRealtiveValue / datum.ranges.values[index].integral) *
+        datum.ranges.options.sum;
+      datum.ranges.values = datum.ranges.values.map((range) => {
+        return {
+          ...range,
+          integral: range.absolute / ratio,
+        };
+      });
+    } else {
+      datum.ranges.values[index].integral = newRealtiveValue;
+    }
   }
 }
 

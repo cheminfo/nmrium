@@ -29,6 +29,7 @@ function IntegralTable({
   enableFilter,
   onFilter,
   preferences,
+  isSumConstant,
 }) {
   const dispatch = useDispatch();
   const relativeRefs = useRef([]);
@@ -41,19 +42,20 @@ function IntegralTable({
       dispatch({
         type: DELETE_INTEGRAL,
         integralID: params.id,
+        isSumConstant,
       });
     },
-    [dispatch],
+    [dispatch, isSumConstant],
   );
   const changeIntegralDataHandler = useCallback(
     (value, row) => {
       const data = { ...row.original, kind: value };
       dispatch({
         type: CHANGE_INTEGRAL_DATA,
-        data,
+        payload: { isSumConstant, data },
       });
     },
-    [dispatch],
+    [dispatch, isSumConstant],
   );
   const defaultColumns = useMemo(
     () => [
@@ -116,13 +118,13 @@ function IntegralTable({
 
   const saveRealtiveHandler = useCallback(
     (event, row) => {
+      const data = { value: event.target.value, id: row.id };
       dispatch({
         type: CHANGE_INTEGRAL_RELATIVE,
-        value: event.target.value,
-        id: row.id,
+        payload: { isSumConstant, data },
       });
     },
-    [dispatch],
+    [dispatch, isSumConstant],
   );
   const editStartHander = useCallback((index) => {
     relativeRefs.current.forEach((ref, i) => {

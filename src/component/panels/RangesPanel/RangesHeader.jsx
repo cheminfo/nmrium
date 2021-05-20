@@ -3,6 +3,7 @@ import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
 import { useCallback, useState } from 'react';
 import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
+import { ImLink } from 'react-icons/im';
 
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
@@ -52,6 +53,7 @@ function RangesHeader({
   onUnlink,
   onFilterActivated,
   onSettingClick,
+  onSumConstantFlagChange,
   isFilterActive,
   filterCounter,
 }) {
@@ -109,7 +111,10 @@ function RangesHeader({
         {
           text: 'Yes',
           handler: () => {
-            dispatch({ type: DELETE_RANGE, payload: { assignmentData } });
+            dispatch({
+              type: DELETE_RANGE,
+              payload: { data: { assignmentData } },
+            });
           },
         },
         { text: 'No' },
@@ -216,6 +221,14 @@ function RangesHeader({
         disabled={!ranges || !ranges.values || ranges.values.length === 0}
       >
         <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
+      </ToggleButton>
+
+      <ToggleButton
+        popupTitle="Constant Sum"
+        popupPlacement="right"
+        onClick={onSumConstantFlagChange}
+      >
+        <ImLink />
       </ToggleButton>
     </DefaultPanelHeader>
   );

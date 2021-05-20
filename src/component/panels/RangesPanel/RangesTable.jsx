@@ -63,6 +63,7 @@ function RangesTable({
   context,
   activeTab,
   preferences,
+  isSumConstant,
 }) {
   const element = activeTab && activeTab.replace(/[0-9]/g, '');
   const contextRef = useRef();
@@ -149,6 +150,7 @@ function RangesTable({
                   preferences={preferences}
                   onColumnEditStart={columnEditStartHandler}
                   editFlags={{ relativeFlags, signalFlags }}
+                  isSumConstant={isSumConstant}
                 />
               );
             })}
