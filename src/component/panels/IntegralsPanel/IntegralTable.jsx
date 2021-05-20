@@ -67,25 +67,23 @@ function IntegralTable({
       {
         orderIndex: 2,
         Header: 'From',
-        accessor: 'from',
         sortType: 'basic',
         resizable: true,
-        Cell: ({ row }) => row.original.from.toFixed(2),
+        accessor: (row) => row.from.toFixed(2),
       },
       {
         orderIndex: 3,
         Header: 'To',
-        accessor: 'to',
         sortType: 'basic',
         resizable: true,
-        Cell: ({ row }) => row.original.to.toFixed(2),
+        accessor: (row) => row.to.toFixed(2),
       },
       {
         orderIndex: 6,
         Header: 'Kind',
-        accessor: 'kind',
         sortType: 'basic',
         resizable: true,
+        accessor: (row) => row.kind,
         Cell: ({ row }) => (
           <Select
             onChange={(value) => changeIntegralDataHandler(value, row)}
@@ -146,12 +144,12 @@ function IntegralTable({
   }, [editStartHander, rootRef]);
 
   const tableColumns = useMemo(() => {
-    const setCustomColumn = (array, index, columnLabel, cellHandler) => {
+    const setCustomColumn = (array, index, columnLabel, extraParams) => {
       array.push({
+        ...extraParams,
         orderIndex: index,
         Header: columnLabel,
         sortType: 'basic',
-        Cell: ({ row }) => cellHandler(row),
       });
     };
 
@@ -167,16 +165,17 @@ function IntegralTable({
         integralDefaultValues.showAbsolute,
       )
     ) {
-      setCustomColumn(cols, 4, 'Absolute', (row) =>
-        formatNumber(
-          row.original.absolute,
-          lodashGet(
-            integralsPreferences,
-            'absoluteFormat',
-            integralDefaultValues.absoluteFormat,
+      setCustomColumn(cols, 4, 'Absolute', {
+        accessor: (row) =>
+          formatNumber(
+            row.absolute,
+            lodashGet(
+              integralsPreferences,
+              'absoluteFormat',
+              integralDefaultValues.absoluteFormat,
+            ),
           ),
-        ),
-      );
+      });
     }
     if (
       lodashGet(
@@ -186,24 +185,35 @@ function IntegralTable({
       )
     ) {
       const n = activeTab && activeTab.replace(/[0-9]/g, '');
-      setCustomColumn(cols, 5, `Relative ${n}`, (row) => {
-        const formattedNumber = formatNumber(
-          row.original.integral,
-          lodashGet(
-            integralsPreferences,
-            'relativeFormat',
-            integralDefaultValues.relativeFormat,
+      setCustomColumn(cols, 5, `Relative ${n}`, {
+        accessor: (row) =>
+          formatNumber(
+            row.integral,
+            lodashGet(
+              integralsPreferences,
+              'relativeFormat',
+              integralDefaultValues.relativeFormat,
+            ),
           ),
-        );
-        return (
-          <EditableColumn
-            onEditStart={() => editStartHander(row.index)}
-            ref={(ref) => (relativeRefs.current[row.index] = ref)}
-            value={formattedNumber}
-            onSave={(event) => saveRealtiveHandler(event, row.original)}
-            type="number"
-          />
-        );
+        Cell: ({ row }) => {
+          const formattedNumber = formatNumber(
+            row.original.integral,
+            lodashGet(
+              integralsPreferences,
+              'relativeFormat',
+              integralDefaultValues.relativeFormat,
+            ),
+          );
+          return (
+            <EditableColumn
+              onEditStart={() => editStartHander(row.index)}
+              ref={(ref) => (relativeRefs.current[row.index] = ref)}
+              value={formattedNumber}
+              onSave={(event) => saveRealtiveHandler(event, row.original)}
+              type="number"
+            />
+          );
+        },
       });
     }
 
