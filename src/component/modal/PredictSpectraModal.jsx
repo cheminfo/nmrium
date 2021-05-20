@@ -201,7 +201,7 @@ function PredictSpectraModal({ onClose, molfile }) {
         </p>
         <div className="warning-container">
           <CheckBox onChange={approveCheckHandler} />
-          <p>I understood, the structure is not confidential.</p>
+          <p>I confirm that the chemical structure is not confidential.</p>
         </div>
       </div>
       <div className="footer-container">
