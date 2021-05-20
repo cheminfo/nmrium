@@ -32,7 +32,7 @@ export default function FiltersWrapper(WrappedComponent) {
       <WrappedComponent
         {...rest}
         filters={filters}
-        spectraCounter={spectraPerTab.length}
+        spectraCounter={spectraPerTab && spectraPerTab.length}
         ref={forwardedRef}
       />
     );
