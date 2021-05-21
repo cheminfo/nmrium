@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
 let timer = 0;
-let delay = 200;
+const delay = 200;
 let prevent = false;
 
 const styles = {
