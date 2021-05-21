@@ -479,7 +479,12 @@ function MoleculePanel({
           </button>
         </ToolTip>
         <ToolTip title="Add Molecule" popupPlacement="left">
-          <button className="bar-button" type="button" onClick={handleOpen}>
+          <button
+            className="bar-button"
+            type="button"
+            onClick={handleOpen}
+            data-test-id="panel-structures-button-add"
+          >
             <FaPlus />
           </button>
         </ToolTip>

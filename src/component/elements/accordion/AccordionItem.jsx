@@ -90,6 +90,7 @@ function AccordionItem({ title, children, index, isOpen, onOpen, style }) {
         transition: isOpen ? 'flex 0.2s ease' : '',
       }}
       className="custom-accordion"
+      data-test-id={`panel-title-${title}`}
     >
       <button
         type="button"
