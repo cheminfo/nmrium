@@ -42,7 +42,7 @@ const selectBoxStyle = {
   height: '20px',
 };
 
-function ActionsColumn({ rowData, onHoverSignal, rowSpanTags, isSumConstant }) {
+function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
   const dispatch = useDispatch();
   const modal = useModal();
   const assignmentData = useAssignmentData();
@@ -60,10 +60,9 @@ function ActionsColumn({ rowData, onHoverSignal, rowSpanTags, isSumConstant }) {
       type: DELETE_RANGE,
       payload: {
         data: { id: rowData.id, assignmentData },
-        isSumConstant,
       },
     });
-  }, [assignmentData, dispatch, isSumConstant, rowData.id]);
+  }, [assignmentData, dispatch, rowData.id]);
 
   const changeRangeSignalKindHandler = useCallback(
     (value) => {
@@ -71,11 +70,10 @@ function ActionsColumn({ rowData, onHoverSignal, rowSpanTags, isSumConstant }) {
         type: CHANGE_RANGE_SIGNAL_KIND,
         payload: {
           data: { rowData, value },
-          isSumConstant,
         },
       });
     },
-    [dispatch, isSumConstant, rowData],
+    [dispatch, rowData],
   );
 
   const saveEditRangeHandler = useCallback(

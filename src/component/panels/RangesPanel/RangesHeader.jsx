@@ -14,7 +14,11 @@ import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
-import { CHANGE_RANGE_SUM, DELETE_RANGE } from '../../reducer/types/Types';
+import {
+  CHANGE_RANGES_SUM_FLAG,
+  CHANGE_RANGE_SUM,
+  DELETE_RANGE,
+} from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { copyHTMLToClipboard } from '../../utility/Export';
 import { getNumberOfDecimals } from '../../utility/FormatNumber';
@@ -53,7 +57,6 @@ function RangesHeader({
   onUnlink,
   onFilterActivated,
   onSettingClick,
-  onSumConstantFlagChange,
   isFilterActive,
   filterCounter,
 }) {
@@ -164,6 +167,16 @@ function RangesHeader({
     );
   }, [info, modal, preferences, ranges.values, saveToClipboardHandler]);
 
+  const changeSumContantFlagHandler = useCallback(
+    (flag) => {
+      dispatch({
+        type: CHANGE_RANGES_SUM_FLAG,
+        payload: flag,
+      });
+    },
+    [dispatch],
+  );
+
   return (
     <DefaultPanelHeader
       counter={ranges && ranges.values && ranges.values.length}
@@ -226,7 +239,7 @@ function RangesHeader({
       <ToggleButton
         popupTitle="Constant Sum"
         popupPlacement="right"
-        onClick={onSumConstantFlagChange}
+        onClick={changeSumContantFlagHandler}
       >
         <ImLink />
       </ToggleButton>

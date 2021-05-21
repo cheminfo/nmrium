@@ -7,15 +7,7 @@ import { CHANGE_RANGE_RELATIVE } from '../../../reducer/types/Types';
 import FormatNumber from '../../../utility/FormatNumber';
 
 function RelativeColumn(
-  {
-    rowData,
-    rowSpanTags,
-    onHoverRange,
-    format,
-    onEditStart,
-    editStatus,
-    isSumConstant,
-  },
+  { rowData, rowSpanTags, onHoverRange, format, onEditStart, editStatus },
   ref,
 ) {
   const dispatch = useDispatch();
@@ -31,11 +23,10 @@ function RelativeColumn(
         type: CHANGE_RANGE_RELATIVE,
         payload: {
           data: { value: event.target.value, id: rowData.id },
-          isSumConstant,
         },
       });
     },
-    [dispatch, isSumConstant, rowData.id],
+    [dispatch, rowData.id],
   );
 
   return (

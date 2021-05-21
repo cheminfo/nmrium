@@ -84,7 +84,6 @@ function RangesTablePanel({
   const dispatch = useDispatch();
   const alert = useAlert();
   const [isFlipped, setFlipStatus] = useState(false);
-  const [isSumConstant, setSumContantFlag] = useState(false);
 
   const settingRef = useRef();
 
@@ -197,10 +196,6 @@ function RangesTablePanel({
     setFlipStatus(false);
   }, []);
 
-  const toggleConstantSumHandler = useCallback((flag) => {
-    setSumContantFlag(flag);
-  }, []);
-
   return (
     <>
       <div style={styles.container}>
@@ -213,7 +208,6 @@ function RangesTablePanel({
             onUnlink={unlinkRangeHandler}
             onFilterActivated={filterHandler}
             onSettingClick={settingsPanelHandler}
-            onSumConstantFlagChange={toggleConstantSumHandler}
             isFilterActive={isFilterActive}
             filterCounter={rangesData.length}
           />
@@ -238,7 +232,6 @@ function RangesTablePanel({
                   onUnlink={unlinkRangeHandler}
                   context={contextMenu}
                   preferences={rangesPreferences}
-                  isSumConstant={isSumConstant}
                 />
               ) : (
                 <NoTableData />

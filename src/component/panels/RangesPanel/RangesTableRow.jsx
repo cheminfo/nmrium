@@ -32,7 +32,6 @@ function RangesTableRow({
   onColumnEditStart,
   preferences,
   editFlags: { relativeFlags, signalFlags },
-  isSumConstant,
 }) {
   const assignmentRange = useAssignment(rowData.id);
   const highlightRange = useHighlight(
@@ -169,7 +168,6 @@ function RangesTableRow({
           format={getFormat('relativeFormat')}
           onEditStart={() => onColumnEditStart('relative', rowData.id)}
           editStatus={relativeFlags[rowData.id]}
-          isSumConstant={isSumConstant}
         />
       )}
 
@@ -217,7 +215,6 @@ function RangesTableRow({
         onHoverSignal={onHoverSignal}
         onHoverRange={onHoverRange}
         rowSpanTags={rowSpanTags}
-        isSumConstant={isSumConstant}
       />
     </tr>
   );

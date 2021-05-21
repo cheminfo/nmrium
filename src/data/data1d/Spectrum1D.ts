@@ -1,3 +1,4 @@
+import merge from 'lodash/merge';
 import max from 'ml-array-max';
 import {
   xyIntegration,
@@ -172,13 +173,13 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
-  datum.integrals = Object.assign(
-    { values: [], options: { sum: 100 } },
+  datum.integrals = merge(
+    { values: [], options: { sum: 100, isSumConstant: false } },
     options.integrals,
   ); // array of object (from: xIndex, to: xIndex)
   datum.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
-  datum.ranges = Object.assign(
-    { values: [], options: { sum: 100 } },
+  datum.ranges = merge(
+    { values: [], options: { sum: 100, isSumConstant: false } },
     options.ranges,
   );
 
@@ -268,33 +269,18 @@ export function lookupPeak(data, options) {
   return null;
 }
 
-export function updateIntegralIntegrals(integrals, isSumConstant = false) {
-  if (integrals.options.sum === undefined) {
-    integrals.options = { ...integrals.options, sum: 100 };
-  }
-  function countingCondition(integral) {
-    return integral.kind && SignalKindsToInclude.includes(integral.kind);
-  }
-  integrals.values = updateRelatives(
-    integrals.values,
-    integrals.options.sum,
-    'integral',
-    countingCondition,
-    isSumConstant,
-  );
+export function updateIntegralIntegrals(datum) {
+  updateRelatives(datum.integrals, 'integral', integralCountingCondition);
 }
 
-export function changeIntegralsRealtive(
-  integrals,
-  id,
-  newIntegralValue,
-  isSumConstant = false,
-) {
-  const index = integrals.values.findIndex((integral) => integral.id === id);
+export function changeIntegralsRealtive(datum, newIntegral) {
+  const index = datum.integrals.values.findIndex(
+    (integral) => integral.id === newIntegral.id,
+  );
   if (index !== -1) {
-    if (!isSumConstant) {
-      const ratio = integrals.values[index].absolute / newIntegralValue;
-      const { values, sum } = integrals.values.reduce(
+    if (!datum.integrals.options.isSumConstant) {
+      const ratio = datum.integrals.values[index].absolute / newIntegral.value;
+      const { values, sum } = datum.integrals.values.reduce(
         (acc, integral, index) => {
           const newIntegralValue = integral.absolute / ratio;
           acc.sum += newIntegralValue;
@@ -308,49 +294,51 @@ export function changeIntegralsRealtive(
         { values: [], sum: 0 },
       );
 
-      integrals.values = values;
-      integrals.options.sum = sum;
+      datum.integrals.values = values;
+      datum.integrals.options.sum = sum;
     } else {
-      integrals.values[index].integral = newIntegralValue;
+      datum.integrals.values[index].integral = newIntegral.value;
+      datum.integrals.options.sum = getSum(
+        datum.integrals.values,
+        'integral',
+        integralCountingCondition,
+      );
     }
   }
 }
 
-function updateRelatives(
-  values,
-  sum,
-  storageKey,
-  countingCondition,
-  isSumConstant = false,
-) {
-  if (!isSumConstant) {
-    const currentSum = values.reduce((previous, current) => {
-      return countingCondition && countingCondition(current) === true
-        ? (previous += Math.abs(current.absolute))
-        : previous;
-    }, 0);
-    const factor = currentSum > 0 ? sum / currentSum : 0.0;
-    return values.map((value) => {
-      return { ...value, [storageKey]: value.absolute * factor };
-    });
-  }
-  return values;
+function getSum(values, key, countingCondition) {
+  return values.reduce((previous, current) => {
+    return countingCondition && countingCondition(current) === true
+      ? (previous += Math.abs(current[key]))
+      : previous;
+  }, 0);
 }
 
-export function updateIntegralRanges(datum, isSumConstant = false) {
-  if (datum.ranges.options.sum === undefined) {
-    datum.ranges.options.sum = 100;
+function integralCountingCondition(integral) {
+  return integral.kind && SignalKindsToInclude.includes(integral.kind);
+}
+
+function rangeCountingCondition(range) {
+  return range.signal && checkSignalKinds(range, SignalKindsToInclude);
+}
+
+function updateRelatives(data, storageKey, countingCondition) {
+  const { values, options } = data;
+  if (!data.options.isSumConstant) {
+    const currentSum = getSum(values, 'absolute', countingCondition);
+
+    const factor = currentSum > 0 ? options.sum / currentSum : 0.0;
+    data.values = data.values.map((value) => {
+      return { ...value, [storageKey]: value.absolute * factor };
+    });
+  } else {
+    data.options.sum = getSum(values, storageKey, countingCondition);
   }
-  function countingCondition(range) {
-    return range.signal && checkSignalKinds(range, SignalKindsToInclude);
-  }
-  datum.ranges.values = updateRelatives(
-    datum.ranges.values,
-    datum.ranges.options.sum,
-    'integral',
-    countingCondition,
-    isSumConstant,
-  );
+}
+
+export function updateIntegralRanges(datum) {
+  updateRelatives(datum.ranges, 'integral', rangeCountingCondition);
 }
 
 export function detectRange(datum, options) {
@@ -512,18 +500,15 @@ export function updateIntegralXShift(datum: Datum1D, shiftValue) {
   }));
 }
 
-export function changeRangesRealtive(
-  datum,
-  rangeID,
-  newRealtiveValue,
-  isSumConstant = false,
-) {
-  const index = datum.ranges.values.findIndex((range) => range.id === rangeID);
+export function changeRangesRealtive(datum, newRange) {
+  const index = datum.ranges.values.findIndex(
+    (range) => range.id === newRange.id,
+  );
   if (index !== -1) {
-    if (!isSumConstant) {
-      const ratio = datum.ranges.values[index].absolute / newRealtiveValue;
+    if (!datum.ranges.options.isSumConstant) {
+      const ratio = datum.ranges.values[index].absolute / newRange.value;
       datum.ranges.options.sum =
-        (newRealtiveValue / datum.ranges.values[index].integral) *
+        (newRange.value / datum.ranges.values[index].integral) *
         datum.ranges.options.sum;
       datum.ranges.values = datum.ranges.values.map((range) => {
         return {
@@ -532,7 +517,12 @@ export function changeRangesRealtive(
         };
       });
     } else {
-      datum.ranges.values[index].integral = newRealtiveValue;
+      datum.ranges.values[index].integral = newRange.value;
+      datum.ranges.options.sum = getSum(
+        datum.ranges.values,
+        'integral',
+        rangeCountingCondition,
+      );
     }
   }
 }

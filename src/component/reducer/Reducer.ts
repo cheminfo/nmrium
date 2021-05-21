@@ -252,6 +252,8 @@ function innerSpectrumReducer(draft, action) {
       return IntegralsActions.handleChangeIntegralZoom(draft, action);
     case types.CHANGE_INTEGRAL_SUM:
       return IntegralsActions.handleChangeIntegralSum(draft, action.value);
+    case types.CHANGE_INTEGRALS_SUM_FLAG:
+      return IntegralsActions.handleChangeIntegralsSumFlag(draft, action);
     case types.CHANGE_INTEGRAL_RELATIVE:
       return IntegralsActions.handleChangeIntegralsRaltiveValue(draft, action);
 
@@ -394,6 +396,8 @@ function innerSpectrumReducer(draft, action) {
       return RangesActions.handleResizeRange(draft, action);
     case types.CHANGE_RANGE_SUM:
       return RangesActions.handleChangeRangeSum(draft, action.value);
+    case types.CHANGE_RANGES_SUM_FLAG:
+      return RangesActions.handleChangeRangesSumFlag(draft, action);
     case types.CHANGE_RANGE_RELATIVE:
       return RangesActions.handleChangeRangeRaltiveValue(draft, action);
     case types.CHANGE_RANGE_SIGNAL_VALUE:

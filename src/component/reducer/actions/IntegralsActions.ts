@@ -18,7 +18,7 @@ function handleChangeIntegralSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
     const { index, id } = draft.activeSpectrum;
     (draft.data[index] as Datum1D).integrals.options.sum = value;
-    updateIntegralIntegrals((draft.data[index] as Datum1D).integrals);
+    updateIntegralIntegrals(draft.data[index] as Datum1D);
 
     if (!draft.integralsYDomains) {
       draft.integralsYDomains[id] = draft.yDomains[id];
@@ -55,7 +55,7 @@ function addIntegral(draft: Draft<State>, action) {
       kind: 'signal',
     };
     datum.integrals.values.push(integral);
-    updateIntegralIntegrals(datum.integrals);
+    updateIntegralIntegrals(datum);
     if (datum.integrals.values.length === 1) {
       const { from = 0, to = 0 } = datum.integrals.values[0];
       const { x, y } = datum.data;
@@ -78,7 +78,7 @@ function addIntegral(draft: Draft<State>, action) {
 function deleteIntegral(draft: Draft<State>, action) {
   const state = original(draft) as State;
   const { index } = draft.activeSpectrum;
-  const { integralID, isSumConstant } = action;
+  const { integralID } = action;
 
   const datum = draft.data[index] as Datum1D;
 
@@ -89,13 +89,13 @@ function deleteIntegral(draft: Draft<State>, action) {
       (p) => p.id === integralID,
     );
     datum.integrals.values.splice(peakIndex, 1);
-    updateIntegralIntegrals(datum.integrals, isSumConstant);
+    updateIntegralIntegrals(datum);
   }
 }
 
 function changeIntegral(draft: Draft<State>, action) {
   const state = original(draft) as State;
-  const { isSumConstant, data: integral } = action.payload;
+  const integral = action.payload.data;
 
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
@@ -118,24 +118,24 @@ function changeIntegral(draft: Draft<State>, action) {
           { from: integral.from, to: integral.to, reverse: true },
         ),
       };
-      updateIntegralIntegrals(datum.integrals, isSumConstant);
+      updateIntegralIntegrals(datum);
     }
   }
 }
 
 function handleChangeIntegralsRaltiveValue(draft: Draft<State>, action) {
-  const {
-    isSumConstant,
-    data: { id, value },
-  } = action.payload;
+  const data = action.payload.data;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeIntegralsRealtive(
-      (draft.data[index] as Datum1D).integrals,
-      id,
-      value,
-      isSumConstant,
-    );
+    changeIntegralsRealtive(draft.data[index] as Datum1D, data);
+  }
+}
+
+function handleChangeIntegralsSumFlag(draft, action) {
+  const flag = action.payload;
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
+    draft.data[index].integrals.options.isSumConstant = flag;
   }
 }
 
@@ -146,4 +146,5 @@ export {
   deleteIntegral,
   changeIntegral,
   handleChangeIntegralsRaltiveValue,
+  handleChangeIntegralsSumFlag,
 };

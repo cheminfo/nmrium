@@ -15,6 +15,7 @@ import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import {
   DELETE_INTEGRAL,
   CHANGE_INTEGRAL_SUM,
+  CHANGE_INTEGRALS_SUM_FLAG,
 } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -49,7 +50,6 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
   const dispatch = useDispatch();
   const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
-  const [isSumConstant, setSumContantFlag] = useState(false);
   const settingRef = useRef();
 
   const yesHandler = useCallback(() => {
@@ -116,9 +116,12 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
     setIntegralsCounter(val);
   }, []);
 
-  const toggleConstantSumHandler = useCallback((flag) => {
-    setSumContantFlag(flag);
-  }, []);
+  const toggleConstantSumHandler = useCallback(
+    (flag) => {
+      dispatch({ type: CHANGE_INTEGRALS_SUM_FLAG, payload: flag });
+    },
+    [dispatch],
+  );
 
   return (
     <Fragment>
@@ -179,7 +182,6 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
             <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
               <IntegralTable
                 enableFilter={filterIsActive}
-                isSumConstant={isSumConstant}
                 onFilter={changedHandler}
               />
             </div>

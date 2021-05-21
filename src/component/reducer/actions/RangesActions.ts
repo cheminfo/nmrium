@@ -59,10 +59,7 @@ function handleDeleteRange(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
-    const {
-      data: { id = null, assignmentData },
-      isSumConstant = false,
-    } = action.payload;
+    const { id = null, assignmentData } = action.payload.data;
     const datum = draft.data[index] as Datum1D;
     if (id) {
       const range = datum.ranges.values.find((range) => range.id === id);
@@ -73,7 +70,7 @@ function handleDeleteRange(draft: Draft<State>, action) {
       unlinkInAssignmentData(assignmentData, datum.ranges.values);
       datum.ranges.values = [];
     }
-    updateIntegralRanges(draft.data[index], isSumConstant);
+    updateIntegralRanges(draft.data[index]);
     handleOnChangeRangesData(draft);
   }
 }
@@ -82,10 +79,7 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
-    const {
-      isSumConstant,
-      data: { rowData, value },
-    } = action.payload;
+    const { rowData, value } = action.payload.data;
     const rangeIndex = getRangeIndex(state, index, rowData.id);
     const _range = (draft.data[index] as Datum1D).ranges.values[
       rangeIndex
@@ -95,7 +89,7 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
       _range.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal
         : DatumKind.mixed;
-      updateIntegralRanges(draft.data[index], isSumConstant);
+      updateIntegralRanges(draft.data[index]);
       handleOnChangeRangesData(draft);
     }
   }
@@ -209,13 +203,10 @@ function handleAddRange(draft: Draft<State>, action) {
 }
 
 function handleChangeRangeRaltiveValue(draft, action) {
-  const {
-    isSumConstant,
-    data: { id: rangeID, value },
-  } = action.payload;
+  const data = action.payload.data;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeRangesRealtive(draft.data[index], rangeID, value, isSumConstant);
+    changeRangesRealtive(draft.data[index], data);
   }
 }
 
@@ -245,6 +236,14 @@ function handleOnChangeRangesData(draft) {
   handleUpdateCorrelations(draft);
 }
 
+function handleChangeRangesSumFlag(draft, action) {
+  const flag = action.payload;
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
+    draft.data[index].ranges.options.isSumConstant = flag;
+  }
+}
+
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
@@ -257,4 +256,5 @@ export {
   handleSaveEditedRange,
   handleUnlinkRange,
   handleSetDiaIDRange,
+  handleChangeRangesSumFlag,
 };
