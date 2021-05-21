@@ -1,6 +1,12 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["**/__tests__", "src/demo", "src/index.tsx", "vite.config.ts"],
+  "exclude": [
+    "**/__tests__",
+    "src/demo",
+    "src/index.tsx",
+    "test-e2e",
+    "vite.config.ts"
+  ],
   "compilerOptions": {
     "outDir": "lib",
     "noEmit": false,
