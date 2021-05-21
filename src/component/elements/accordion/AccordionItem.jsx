@@ -96,6 +96,7 @@ function AccordionItem({ title, children, index, isOpen, onOpen, style }) {
         style={styles.button}
         onClick={toggleAccordion}
         onDoubleClick={dbClickHandler}
+        data-test-id={`panel-title-${title}`}
       >
         <p style={styles.buttonTitle}>{title}</p>
       </button>
@@ -106,6 +107,7 @@ function AccordionItem({ title, children, index, isOpen, onOpen, style }) {
           maxHeight: active == null ? 0 : '100%',
           ...style,
         }}
+        data-test-id={`panel-content-${title}`}
       >
         {children}
       </div>

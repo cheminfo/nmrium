@@ -1,0 +1,4 @@
+env:
+  jest: true
+globals:
+  globalThis: false
