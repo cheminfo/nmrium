@@ -19,7 +19,9 @@ jobs:
         with:
           node-version: 16.x
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npx playwright install-deps
       - name: Build test application
         run: npm run build
       - name: Run E2E tests on ${{ matrix.browser }}
