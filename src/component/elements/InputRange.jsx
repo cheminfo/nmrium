@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useRef } from 'react';
 
 const styles = {
   container: {
@@ -24,108 +24,24 @@ const styles = {
   },
 };
 
-let stateValues = {
-  step: 'initial',
-};
+const previousPosition = { x: 0, nano: performance.now() };
 
-let timerId = null;
-let speedX = 1;
-let oldX = 0;
-let firstCalc = true;
-function calcSpeed(e) {
-  if (!firstCalc) {
-    speedX = e.clientX - oldX;
-    oldX = e.clientX;
-    setToZero();
-  } else {
-    oldX = e.clientX;
-    firstCalc = false;
-  }
-}
-
-function setToZero() {
-  clearTimeout(timerId);
-  timerId = setTimeout(() => {
-    speedX = 0;
-  }, 50);
-}
-
-function InputRange({
+export default function InputRange({
   name,
-  minValue,
-  maxValue,
-  value: valueProps,
+  value,
   onChange,
   label,
   style,
   className,
-  noPropagation,
 }) {
-  const mouseEnterHandler = useCallback(() => {
-    if (stateValues.step === 'moving' || stateValues.step === 'start') {
-      stateValues = {
-        ...stateValues,
-        step: stateValues.step === 'start' ? 'initial' : 'end',
-      };
-    }
-  }, []);
-
-  const mouseDownHandler = useCallback(
-    (event) => {
-      if (noPropagation) {
-        event.stopPropagation();
-      }
-
-      const boundingRect = event.currentTarget.getBoundingClientRect();
-      const x = event.clientX - boundingRect.x;
-      const y = event.clientY - boundingRect.y;
-      if (stateValues.step === 'initial' || stateValues.step === 'end') {
-        stateValues = {
-          startX: x,
-          startY: y,
-          startScreenX: event.screenX,
-          startScreenY: event.screenY,
-          boundingRect: event.currentTarget.getBoundingClientRect(),
-          step: 'start',
-          clientX: event.clientX,
-          clientY: event.clientY,
-        };
-      }
-
-      return false;
-    },
-    [noPropagation],
-  );
-
   const mouseMoveCallback = (event) => {
-    if (stateValues.step === 'start' || stateValues.step === 'moving') {
-      const { screenX, screenY } = event;
-      stateValues = {
-        ...stateValues,
-        step: 'moving',
-        endX: stateValues.startX + screenX - stateValues.startScreenX,
-        endY: stateValues.startY + screenY - stateValues.startScreenY,
-      };
-      calcSpeed(event);
-      const valueRange = maxValue - minValue;
-      const positionDiff = stateValues.endX - stateValues.startX;
-      const value =
-        (Math.abs(positionDiff) * (Math.abs(speedX) > 3 ? valueRange : 5)) /
-        stateValues.boundingRect.width;
-
+    let diff = event.clientX - previousPosition.x;
+    previousPosition.x = event.clientX;
+    if (event.buttons === 1) {
       onChange({
-        value: speedX >= 0 ? valueProps + Math.abs(value) : valueProps - value,
+        value: value + diff / (event.shiftKey ? 10 : 1),
         name,
       });
-    }
-  };
-
-  const mouseUpCallback = () => {
-    if (stateValues.step === 'moving' || stateValues.step === 'start') {
-      stateValues = {
-        ...stateValues,
-        step: stateValues.step === 'start' ? 'initial' : 'end',
-      };
     }
   };
 
@@ -134,25 +50,8 @@ function InputRange({
       style={{ ...styles.container, ...style }}
       className={className}
       onMouseMove={mouseMoveCallback}
-      onMouseUp={mouseUpCallback}
-      onMouseDown={mouseDownHandler}
-      onMouseEnter={mouseEnterHandler}
     >
       <span style={styles.label}>{label}</span>
     </div>
   );
 }
-
-InputRange.defaultProps = {
-  name: '',
-  minValue: 0,
-  maxValue: 50,
-  value: 0,
-  onChange: () => {
-    return null;
-  },
-  label: 'Drag to Change the value',
-  noPropagation: true,
-};
-
-export default InputRange;
