@@ -13,4 +13,10 @@ export default class NmriumPage {
     globalThis.nmriumPages.push(page);
     return new NmriumPage(page);
   }
+
+  public async open1D() {
+    await this.page.click('text=General');
+    await this.page.click('text=1H spectrum test');
+    await this.page.waitForSelector('text=CD2Cl2');
+  }
 }
