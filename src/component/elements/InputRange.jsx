@@ -24,8 +24,6 @@ const styles = {
   },
 };
 
-const previousPosition = { x: 0, nano: performance.now() };
-
 export default function InputRange({
   name,
   value,
@@ -34,9 +32,10 @@ export default function InputRange({
   style,
   className,
 }) {
+  const previousPosition = useRef(0);
   const mouseMoveCallback = (event) => {
-    let diff = event.clientX - previousPosition.x;
-    previousPosition.x = event.clientX;
+    let diff = event.clientX - previousPosition.current;
+    previousPosition.current = event.clientX;
     if (event.buttons === 1) {
       onChange({
         value: value + diff / (event.shiftKey ? 10 : 1),
