@@ -5,9 +5,19 @@ const browserType = playwright[browserName];
 
 beforeAll(async () => {
   // Create a browser instance for all tests.
-  globalThis.nmriumBrowser = await browserType.launch();
+  globalThis.nmriumBrowser = await browserType.launch({
+    // slowMo: 500
+  });
+  // Create a default context.
+  globalThis.nmriumMainContext = await globalThis.nmriumBrowser.newContext({
+    // recordVideo: {
+    //   dir: 'videos/',
+    // },
+  });
 });
 afterAll(async () => {
+  // Close the default context.
+  await globalThis.nmriumMainContext.close();
   // Close the browser instance.
   await globalThis.nmriumBrowser.close();
 });

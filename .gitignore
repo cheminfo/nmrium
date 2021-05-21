@@ -30,3 +30,5 @@ pnpm-lock.yaml
 .eslintcache
 
 .vscode
+
+test-e2e/videos

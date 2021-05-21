@@ -28,8 +28,9 @@ test('should draw structure and display it with MF', async () => {
   await nmrium.page.click('text=Save');
 
   // The molecule SVG rendering should now be visible in the panel.
-  expect(await nmrium.page.isVisible('.mol-svg-container')).toBe(true);
-  expect(await nmrium.page.isVisible('#molSVG0')).toBe(true);
+  expect(
+    await nmrium.page.getAttribute('.mol-svg-container #molSVG0', 'xmlns'),
+  ).toStrictEqual('http://www.w3.org/2000/svg');
 
   // The molecular formula should now be visible in the panel.
   expect(await nmrium.page.isVisible('text=C6H6 - 78.11')).toBe(true);

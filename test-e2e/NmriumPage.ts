@@ -8,7 +8,7 @@ export default class NmriumPage {
   }
 
   public static async create(): Promise<NmriumPage> {
-    const page = await globalThis.nmriumBrowser.newPage();
+    const page = await globalThis.nmriumMainContext.newPage();
     await page.goto('http://localhost:3000/#/');
     globalThis.nmriumPages.push(page);
     return new NmriumPage(page);
