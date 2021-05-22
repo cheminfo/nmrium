@@ -33,7 +33,8 @@ export default function InputRange({
   className,
 }) {
   const previousPosition = useRef(0);
-  const mouseMoveCallback = (event) => {
+
+  function mouseMoveCallback(event) {
     let diff = event.clientX - previousPosition.current;
     previousPosition.current = event.clientX;
     if (event.buttons === 1) {
@@ -42,13 +43,24 @@ export default function InputRange({
         name,
       });
     }
-  };
+  }
+
+  function mouseUpCallback() {
+    window.removeEventListener('mousemove', mouseMoveCallback);
+    window.removeEventListener('mouseup', mouseUpCallback);
+  }
+
+  function mouseDownCallback() {
+    previousPosition.current = event.clientX;
+    window.addEventListener('mousemove', mouseMoveCallback);
+    window.addEventListener('mouseup', mouseUpCallback);
+  }
 
   return (
     <div
       style={{ ...styles.container, ...style }}
       className={className}
-      onMouseMove={mouseMoveCallback}
+      onMouseDown={mouseDownCallback}
     >
       <span style={styles.label}>{label}</span>
     </div>
