@@ -1,4 +1,11 @@
-const REFERENCES = {
+interface ReferenceInfo {
+  from: number;
+  to: number;
+  nbPeaks: number;
+  delta: number;
+}
+
+export const REFERENCES: Record<string, Record<string, ReferenceInfo>> = {
   '1H': {
     tms: {
       from: -0.1,
@@ -22,17 +29,19 @@ const REFERENCES = {
   '13C': {},
 };
 
-function getRange(options = {}) {
+export function getRange(
+  options: { nucleus?: string; reference?: string } = {},
+): ReferenceInfo {
   const { nucleus = '1H', reference = 'tms' } = options;
 
   if (!REFERENCES[nucleus]) {
-    throw new Error('Nucleus not found: ', nucleus);
+    throw new Error(`Nucleus not found: ${nucleus}`);
   }
 
-  let info = REFERENCES[nucleus][reference.toLowerCase()];
+  const info = REFERENCES[nucleus][reference.toLowerCase()];
 
   if (!info) {
-    throw new Error('Reference not found: ', reference);
+    throw new Error(`Reference not found: ${reference}`);
   }
 
   return {
@@ -42,5 +51,3 @@ function getRange(options = {}) {
     nbPeaks: info.nbPeaks,
   };
 }
-
-export { REFERENCES, getRange };
