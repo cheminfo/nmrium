@@ -315,7 +315,7 @@ function getSum(values, key, countingCondition) {
   }, 0);
 }
 
-function integralCountingCondition(integral) {
+export function integralCountingCondition(integral) {
   return integral.kind && SignalKindsToInclude.includes(integral.kind);
 }
 
@@ -330,7 +330,12 @@ function updateRelatives(data, storageKey, countingCondition) {
 
     const factor = currentSum > 0 ? options.sum / currentSum : 0.0;
     data.values = data.values.map((value) => {
-      return { ...value, [storageKey]: value.absolute * factor };
+      return {
+        ...value,
+        ...(countingCondition(value) && {
+          [storageKey]: value.absolute * factor,
+        }),
+      };
     });
   } else {
     data.options.sum = getSum(values, storageKey, countingCondition);

@@ -3,6 +3,7 @@ import { useCallback, useMemo, memo, useRef, useEffect } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../data/constants/SignalsKinds';
+import { integralCountingCondition } from '../../../data/data1d/Spectrum1D';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
 import EditableColumn from '../../elements/EditableColumn';
@@ -196,7 +197,7 @@ function IntegralTable({
             ),
           ),
         Cell: ({ row }) => {
-          const formattedNumber = formatNumber(
+          const value = formatNumber(
             row.original.integral,
             lodashGet(
               integralsPreferences,
@@ -204,11 +205,14 @@ function IntegralTable({
               integralDefaultValues.relativeFormat,
             ),
           );
+          const flag = integralCountingCondition(row.original);
+          const intergal = flag ? value : `[ ${value} ]`;
+
           return (
             <EditableColumn
               onEditStart={() => editStartHander(row.index)}
               ref={(ref) => (relativeRefs.current[row.index] = ref)}
-              value={formattedNumber}
+              value={intergal}
               onSave={(event) => saveRealtiveHandler(event, row.original)}
               type="number"
             />
