@@ -220,7 +220,11 @@ function NMRium({
     preferencesInitialState,
   );
 
-  const { selectedTool, displayerMode, data: spectraData } = state;
+  const {
+    toolOptions: { selectedTool },
+    displayerMode,
+    data: spectraData,
+  } = state;
 
   useEffect(() => {
     if (checkActionType(state.actionType)) {

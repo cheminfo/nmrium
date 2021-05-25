@@ -41,7 +41,11 @@ function BrushXY({
   width: widthProps,
   height: heightProps,
 }) {
-  let { width, height, selectedTool } = useChartData();
+  let {
+    width,
+    height,
+    toolOptions: { selectedTool },
+  } = useChartData();
   let { startX, endX, startY, endY, step } = useContext(BrushContext);
 
   if (

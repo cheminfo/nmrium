@@ -27,7 +27,7 @@ import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 function Viewer2D({ emptyText = undefined }) {
   const state = useChartData();
   const {
-    selectedTool,
+    toolOptions: { selectedTool },
     isLoading,
     data,
     margin,

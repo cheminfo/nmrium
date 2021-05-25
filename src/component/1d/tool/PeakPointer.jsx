@@ -23,7 +23,7 @@ function PeakPointer() {
     activeSpectrum,
     data,
     mode,
-    selectedTool,
+    toolOptions: { selectedTool },
     verticalAlign,
   } = useChartData();
   const { scaleX, scaleY } = useScale();

@@ -60,7 +60,7 @@ function FooterBanner({ layout, data1D }) {
     yDomains,
     activeTab,
     data,
-    selectedTool,
+    toolOptions: { selectedTool },
   } = useChartData();
 
   const trackID =

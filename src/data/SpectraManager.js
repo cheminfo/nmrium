@@ -238,7 +238,9 @@ export function toJSON(state, forceIncludeData = false) {
     preferences,
     correlations,
     multipleAnalysis,
-    exclusionZones,
+    toolOptions: {
+      data: { exclusionZones },
+    },
   } = state || {
     data: [],
     molecules: [],

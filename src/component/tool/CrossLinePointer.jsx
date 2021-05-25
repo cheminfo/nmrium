@@ -29,7 +29,12 @@ const allowTools = [
 ];
 
 function CrossLinePointer() {
-  const { height, width, margin, selectedTool } = useChartData();
+  const {
+    height,
+    width,
+    margin,
+    toolOptions: { selectedTool },
+  } = useChartData();
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
 

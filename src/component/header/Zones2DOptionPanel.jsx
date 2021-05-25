@@ -5,8 +5,8 @@ import NumberInput from '../elements/NumberInput';
 import {
   RESET_SELECTED_TOOL,
   AUTO_ZONES_DETECTION,
+  CHANGE_ZONES_NOISE_FACTOR,
 } from '../reducer/types/Types';
-import Events from '../utility/Events';
 
 const styles = {
   container: {
@@ -52,12 +52,14 @@ function Zones2DOptionPanel() {
     });
   }, [dispatch]);
 
-  const handleInput = useCallback((e) => {
-    if (e.target) {
-      const val = e.target.value;
-      Events.emit('noiseFactorChanged', val);
-    }
-  }, []);
+  const handleInput = useCallback(
+    (e) => {
+      if (e.target) {
+        dispatch({ type: CHANGE_ZONES_NOISE_FACTOR, payload: e.target.value });
+      }
+    },
+    [dispatch],
+  );
 
   return (
     <div style={styles.container}>

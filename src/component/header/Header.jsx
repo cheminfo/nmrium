@@ -76,7 +76,9 @@ const headerStyle = css`
 `;
 
 function Header({ isFullscreen, onMaximize }) {
-  const { selectedOptionPanel } = useChartData();
+  const {
+    toolOptions: { selectedOptionPanel },
+  } = useChartData();
   const { docsBaseUrl } = usePreferences();
 
   const modal = useModal();

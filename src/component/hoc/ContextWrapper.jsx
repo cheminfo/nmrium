@@ -9,7 +9,7 @@ export default function ContextWrapper(WrappedComponent, subKeys) {
       activeSpectrum,
       preferences,
       activeTab,
-      selectedTool,
+      toolOptions: { selectedTool },
       xDomain,
       yDomain,
       tabActiveSpectrum,
