@@ -525,9 +525,7 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
       newExclusionZone,
     );
   } else {
-    draft.toolOptions.data.exclusionZones[draft.activeTab] = [
-      newExclusionZone,
-    ];
+    draft.toolOptions.data.exclusionZones[draft.activeTab] = [newExclusionZone];
   }
 }
 

@@ -79,7 +79,9 @@ export function BrushTracker({
       callback();
 
       if (debounceClickEventsRef.current.length > 1) {
-        lodashMap(debounceClickEventsRef.current, (debounce) => debounce.cancel());
+        lodashMap(debounceClickEventsRef.current, (debounce) =>
+          debounce.cancel(),
+        );
         debounceClickEventsRef.current = [];
         onDoubleClick({ ...e, x, y });
       }
