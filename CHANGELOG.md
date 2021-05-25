@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.14.1](https://www.github.com/cheminfo/nmrium/compare/v0.14.0...v0.14.1) (2021-05-25)
+
+
+### Bug Fixes
+
+* improve phase correction ([c3d889e](https://www.github.com/cheminfo/nmrium/commit/c3d889ebe21eba02bac71c65d4646417807c9b96))
+
 ## [0.14.0](https://www.github.com/cheminfo/nmrium/compare/v0.13.0...v0.14.0) (2021-05-20)
 
 
