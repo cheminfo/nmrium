@@ -1,4 +1,10 @@
-const Multiplets = [
+export interface MultipletDefinition {
+  label: string;
+  value: string;
+  multiplicity: number | null;
+}
+
+export const Multiplets: MultipletDefinition[] = [
   { label: 'massive (m)', value: 'm', multiplicity: null },
   { label: 'singlet (s)', value: 's', multiplicity: 1 },
   { label: 'doublet (d)', value: 'd', multiplicity: 2 },
@@ -10,5 +16,3 @@ const Multiplets = [
   { label: 'octet (o)', value: 'o', multiplicity: 8 },
   { label: 'nonet (n)', value: 'n', multiplicity: 9 },
 ];
-
-export { Multiplets };

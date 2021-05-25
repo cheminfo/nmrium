@@ -1,4 +1,4 @@
-const SignalKinds = [
+export const SignalKinds: { key: string; label: string; value: string }[] = [
   {
     key: 'signal',
     label: 'Signal',
@@ -41,7 +41,5 @@ const SignalKinds = [
   },
 ];
 
-const SignalKindsToInclude = ['signal'];
-const DatumKind = { signal: 'signal', mixed: 'mixed' };
-
-export { SignalKinds, SignalKindsToInclude, DatumKind };
+export const SignalKindsToInclude = ['signal'];
+export const DatumKind = { signal: 'signal', mixed: 'mixed' };
