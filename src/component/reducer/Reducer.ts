@@ -92,7 +92,7 @@ export const initialState = {
     data: {
       baseLineZones: [],
       exclusionZones: {},
-      pivot: 0,
+      pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
     },
   },
@@ -150,7 +150,7 @@ export interface State {
       exclusionZones: {
         [key: string]: Array<{ id: string; from: number; to: number }>;
       };
-      pivot: number;
+      pivot: { value: number; index: number };
       zonesNoiseFactor: number;
     };
   };

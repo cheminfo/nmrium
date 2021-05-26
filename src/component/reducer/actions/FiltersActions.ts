@@ -11,7 +11,6 @@ import {
 } from '../../../data/data2d/Spectrum2D';
 import nucluesToString from '../../utility/nucluesToString';
 import { State } from '../Reducer';
-import getClosestNumber from '../helper/GetClosestNumber';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
 import { setDomain, setMode } from './DomainActions';
@@ -76,15 +75,7 @@ function applyFFTFilter(draft: Draft<State>) {
 function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    let { ph0, ph1 } = filterOptions;
-    const datum = draft.data[index] as Datum1D;
-    const closest = getClosestNumber(
-      datum.data.x,
-      draft.toolOptions.data.pivot,
-    );
-    const pivotIndex = datum.data.x.indexOf(closest);
-
-    ph0 = ph0 - (ph1 * pivotIndex) / datum.data.y.length;
+    const { ph0, ph1 } = filterOptions;
 
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
@@ -142,15 +133,7 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
     info,
   } = tempData[index];
 
-  let { ph0, ph1 } = filterOptions;
-  const closest = getClosestNumber(
-    tempData[index].data.x,
-    draft.toolOptions.data.pivot,
-  );
-  const pivotIndex = tempData[index].data.x.indexOf(closest);
-
-  ph0 = ph0 - (ph1 * pivotIndex) / y.length;
-
+  const { ph0, ph1 } = filterOptions;
   let _data = { data: { x, re: y, im }, info };
   phaseCorrection(_data, { ph0, ph1 });
   const { im: newIm, re: newRe } = _data.data;

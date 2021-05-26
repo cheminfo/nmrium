@@ -1,5 +1,6 @@
 import { max } from 'd3';
 import { original, Draft } from 'immer';
+import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import { Filters } from '../../../data/Filters';
 import { Data1D, Datum1D } from '../../../data/data1d/Spectrum1D';
@@ -42,8 +43,8 @@ function setFilterChanges(draft: Draft<State>, selectedFilter) {
   if (selectedFilter === Filters.phaseCorrection.id) {
     draft.tempData = draft.data;
 
-    const { xValue } = getStrongestPeak(draft);
-    draft.toolOptions.data.pivot = xValue;
+    const { xValue, index } = getStrongestPeak(draft);
+    draft.toolOptions.data.pivot = { value: xValue, index };
   } else {
     if (draft.toolOptions.selectedTool === options.phaseCorrection.id) {
       const spectrumIndex = draft.data.findIndex(
@@ -221,8 +222,13 @@ function handleBrushEnd(draft: Draft<State>, action) {
   }
 }
 function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
-  const scaleX = getXScale(draft);
-  draft.toolOptions.data.pivot = scaleX.invert(position);
+  if (draft.activeSpectrum?.id) {
+    const scaleX = getXScale(draft);
+    const value = scaleX.invert(position);
+    const datum = draft.data[draft.activeSpectrum.index] as Datum1D;
+    const index = xFindClosestIndex(datum.data.x, value);
+    draft.toolOptions.data.pivot = { value, index };
+  }
 }
 
 function getSpectrumID(draft: Draft<State>, index) {

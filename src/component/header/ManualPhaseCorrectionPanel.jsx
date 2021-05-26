@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import Input from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Select from '../elements/Select';
+import ManualPhaseCorrectionWrapper from '../hoc/ManualPhaseCorrectionWrapper';
 import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   APPLY_AUTO_PHASE_CORRECTION_FILTER,
@@ -61,12 +62,18 @@ const algorithms = [
   },
 ];
 
-function ManualPhaseCorrectionPanel() {
+function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
   const dispatch = useDispatch();
   const [value, setValue] = useState({ ph0: 0, ph1: 0, pivotIndex: 1 });
   const [phaseCorrectionType, setPhaseCorrectionType] = useState(
     phaseCorrectionTypes.manual,
   );
+
+  useEffect(() => {
+    if (filter) {
+      setValue(filter.value);
+    }
+  }, [filter]);
 
   const handleApplyFilter = useCallback(() => {
     switch (phaseCorrectionType) {
@@ -107,6 +114,11 @@ function ManualPhaseCorrectionPanel() {
             [fieldName]: inputValue,
           };
 
+          if (fieldName === 'ph1') {
+            _value.ph0 =
+              _value.ph0 - (_value.ph1 * pivot.index) / datum.y.length;
+          }
+
           if (inputValue !== '-') {
             const newValue = {
               ...value,
@@ -128,23 +140,29 @@ function ManualPhaseCorrectionPanel() {
         });
       }
     },
-    [dispatch, value],
+    [datum.y.length, dispatch, pivot.index, value],
   );
 
   const handleRangeChange = useCallback(
     (e) => {
       const _value = { ...value, [e.name]: e.value };
+
       let diff = {};
       for (let key in value) {
         diff[key] = _value[key] - value[key];
       }
+
+      if (e.name === 'ph1') {
+        _value.ph0 = _value.ph0 - (_value.ph1 * pivot.index) / datum.y.length;
+      }
+
       dispatch({
         type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
         value: diff,
       });
-      setValue(_value);
+      setValue(diff);
     },
-    [dispatch, value],
+    [datum.y.length, dispatch, pivot.index, value],
   );
 
   const handleCancelFilter = useCallback(() => {
@@ -227,4 +245,4 @@ function ManualPhaseCorrectionPanel() {
   );
 }
 
-export default ManualPhaseCorrectionPanel;
+export default ManualPhaseCorrectionWrapper(memo(ManualPhaseCorrectionPanel));
