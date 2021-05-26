@@ -66,6 +66,10 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
   const dispatch = useDispatch();
   const [value, setValue] = useState({ ph0: 0, ph1: 0 });
   const valueRef = useRef({ ph0: 0, ph1: 0 });
+
+  const ph0Ref = useRef();
+  const ph1Ref = useRef();
+
   const [phaseCorrectionType, setPhaseCorrectionType] = useState(
     phaseCorrectionTypes.manual,
   );
@@ -74,6 +78,11 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
     if (filter) {
       valueRef.current = filter.value;
       setValue(filter.value);
+      ph0Ref.current.setValue(filter.value.ph0);
+      ph1Ref.current.setValue(filter.value.ph1);
+    } else {
+      ph0Ref.current.setValue(valueRef.current.ph0);
+      ph1Ref.current.setValue(valueRef.current.ph1);
     }
   }, [filter]);
 
@@ -192,15 +201,15 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
           />
 
           <InputRange
+            ref={ph0Ref}
             name="ph0"
-            value={value.ph0}
             label="Change Ph0 By mouse click and drag"
             style={{ width: '20%' }}
             onChange={handleRangeChange}
           />
           <InputRange
+            ref={ph1Ref}
             name="ph1"
-            value={value.ph1}
             label="Change Ph1 By mouse click and drag"
             style={{ width: '20%' }}
             onChange={handleRangeChange}

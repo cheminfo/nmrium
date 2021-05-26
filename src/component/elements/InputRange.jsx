@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 
 const styles = {
   container: {
@@ -23,44 +23,45 @@ const styles = {
     maxWidth: '100%',
   },
 };
-
-export default function InputRange({
-  name,
-  value,
-  onChange,
-  label,
-  style,
-  className,
-}) {
+function InputRange(
+  { name, value = 0, onChange, label, style, className },
+  ref,
+) {
   const previousPosition = useRef(0);
   const valueRef = useRef(value);
 
-  const mouseMoveCallback = useCallback(
+  useImperativeHandle(ref, () => ({
+    setValue: (value) => {
+      valueRef.current = value;
+    },
+  }));
+
+  const mouseDownCallback = useCallback(
     (event) => {
-      let diff = event.clientX - previousPosition.current;
-      previousPosition.current = event.clientX;
-      if (event.buttons === 1) {
-        const step = diff / (event.shiftKey ? 10 : 1);
-        valueRef.current = valueRef.current + step;
-        onChange({
-          value: valueRef.current,
-          name,
-        });
+      function mouseMoveCallback(event) {
+        let diff = event.clientX - previousPosition.current;
+        previousPosition.current = event.clientX;
+        if (event.buttons === 1) {
+          const step = diff / (event.shiftKey ? 10 : 1);
+          valueRef.current = valueRef.current + step;
+          onChange({
+            value: valueRef.current,
+            name,
+          });
+        }
       }
+
+      function mouseUpCallback() {
+        window.removeEventListener('mousemove', mouseMoveCallback);
+        window.removeEventListener('mouseup', mouseUpCallback);
+      }
+
+      previousPosition.current = event.clientX;
+      window.addEventListener('mousemove', mouseMoveCallback);
+      window.addEventListener('mouseup', mouseUpCallback);
     },
     [name, onChange],
   );
-
-  function mouseUpCallback() {
-    window.removeEventListener('mousemove', mouseMoveCallback);
-    window.removeEventListener('mouseup', mouseUpCallback);
-  }
-
-  function mouseDownCallback(event) {
-    previousPosition.current = event.clientX;
-    window.addEventListener('mousemove', mouseMoveCallback);
-    window.addEventListener('mouseup', mouseUpCallback);
-  }
 
   return (
     <div
@@ -72,3 +73,5 @@ export default function InputRange({
     </div>
   );
 }
+
+export default forwardRef(InputRange);
