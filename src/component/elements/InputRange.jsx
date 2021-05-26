@@ -33,13 +33,16 @@ export default function InputRange({
   className,
 }) {
   const previousPosition = useRef(0);
+  const valueRef = useRef(value);
 
   function mouseMoveCallback(event) {
     let diff = event.clientX - previousPosition.current;
     previousPosition.current = event.clientX;
     if (event.buttons === 1) {
+      const step = (diff / (event.shiftKey ? 10 : 1));
+      valueRef.current = valueRef.current + step ;
       onChange({
-        value: value + diff / (event.shiftKey ? 10 : 1),
+        value: valueRef.current,
         name,
       });
     }
@@ -50,7 +53,7 @@ export default function InputRange({
     window.removeEventListener('mouseup', mouseUpCallback);
   }
 
-  function mouseDownCallback() {
+  function mouseDownCallback(event) {
     previousPosition.current = event.clientX;
     window.addEventListener('mousemove', mouseMoveCallback);
     window.addEventListener('mouseup', mouseUpCallback);
