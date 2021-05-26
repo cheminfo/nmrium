@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 const styles = {
   container: {
@@ -35,18 +35,21 @@ export default function InputRange({
   const previousPosition = useRef(0);
   const valueRef = useRef(value);
 
-  function mouseMoveCallback(event) {
-    let diff = event.clientX - previousPosition.current;
-    previousPosition.current = event.clientX;
-    if (event.buttons === 1) {
-      const step = diff / (event.shiftKey ? 10 : 1);
-      valueRef.current = valueRef.current + step;
-      onChange({
-        value: valueRef.current,
-        name,
-      });
-    }
-  }
+  const mouseMoveCallback = useCallback(
+    (event) => {
+      let diff = event.clientX - previousPosition.current;
+      previousPosition.current = event.clientX;
+      if (event.buttons === 1) {
+        const step = diff / (event.shiftKey ? 10 : 1);
+        valueRef.current = valueRef.current + step;
+        onChange({
+          value: valueRef.current,
+          name,
+        });
+      }
+    },
+    [name, onChange],
+  );
 
   function mouseUpCallback() {
     window.removeEventListener('mousemove', mouseMoveCallback);

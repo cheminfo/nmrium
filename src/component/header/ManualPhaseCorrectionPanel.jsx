@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import Input from '../elements/Input';
@@ -64,13 +64,15 @@ const algorithms = [
 
 function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
   const dispatch = useDispatch();
-  const [value, setValue] = useState({ ph0: 0, ph1: 0, pivotIndex: 1 });
+  const [value, setValue] = useState({ ph0: 0, ph1: 0 });
+  const valueRef = useRef({ ph0: 0, ph1: 0 });
   const [phaseCorrectionType, setPhaseCorrectionType] = useState(
     phaseCorrectionTypes.manual,
   );
 
   useEffect(() => {
     if (filter) {
+      valueRef.current = filter.value;
       setValue(filter.value);
     }
   }, [filter]);
@@ -85,9 +87,13 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
       }
 
       case phaseCorrectionTypes.manual: {
+        const newValue = { ...value };
+        newValue.ph0 =
+          newValue.ph0 - (newValue.ph1 * pivot.index) / datum.y.length;
+
         dispatch({
           type: APPLY_MANUAL_PHASE_CORRECTION_FILTER,
-          value: value,
+          value: newValue,
         });
         break;
       }
@@ -100,69 +106,51 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
       default:
         break;
     }
-  }, [dispatch, phaseCorrectionType, value]);
+  }, [datum.y.length, dispatch, phaseCorrectionType, pivot.index, value]);
 
-  const handleInput = useCallback(
-    (e) => {
-      const fieldName = e.target.name;
-      if (e.target) {
-        const inputValue = e.target.value;
+  const calcPhaseCorrectionHandler = useCallback(
+    (newValues, filedName) => {
+      const diff = { ...newValues };
 
-        setValue((prevValue) => {
-          const _value = {
-            ...prevValue,
-            [fieldName]: inputValue,
-          };
-
-          if (fieldName === 'ph1') {
-            _value.ph0 =
-              _value.ph0 - (_value.ph1 * pivot.index) / datum.y.length;
-          }
-
-          if (inputValue !== '-') {
-            const newValue = {
-              ...value,
-              [fieldName]: inputValue - prevValue[fieldName],
-            };
-            for (let key in prevValue) {
-              if (prevValue[key] === newValue[key]) {
-                newValue[key] -= prevValue[key];
-              }
-            }
-
-            dispatch({
-              type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-              value: newValue,
-            });
-          }
-
-          return _value;
-        });
-      }
-    },
-    [datum.y.length, dispatch, pivot.index, value],
-  );
-
-  const handleRangeChange = useCallback(
-    (e) => {
-      const _value = { ...value, [e.name]: e.value };
-
-      let diff = {};
-      for (let key in value) {
-        diff[key] = _value[key] - value[key];
+      for (const key in valueRef.current) {
+        diff[key] = newValues[key] - valueRef.current[key];
       }
 
-      if (e.name === 'ph1') {
-        _value.ph0 = _value.ph0 - (_value.ph1 * pivot.index) / datum.y.length;
+      if (filedName === 'ph1') {
+        diff.ph0 = diff.ph0 - (diff.ph1 * pivot.index) / datum.y.length;
       }
 
       dispatch({
         type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
         value: diff,
       });
-      setValue(diff);
     },
-    [datum.y.length, dispatch, pivot.index, value],
+    [datum.y.length, dispatch, pivot.index],
+  );
+
+  const handleInput = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      if (e.target) {
+        const newValue = { ...valueRef.current, [name]: value };
+        if (value.trim() !== '-') {
+          calcPhaseCorrectionHandler(newValue, name);
+        }
+        valueRef.current = newValue;
+        setValue(valueRef.current);
+      }
+    },
+    [calcPhaseCorrectionHandler],
+  );
+
+  const handleRangeChange = useCallback(
+    (e) => {
+      const newValue = { ...valueRef.current, [e.name]: e.value };
+      calcPhaseCorrectionHandler(newValue, e.name);
+      valueRef.current = newValue;
+      setValue(valueRef.current);
+    },
+    [calcPhaseCorrectionHandler],
   );
 
   const handleCancelFilter = useCallback(() => {
