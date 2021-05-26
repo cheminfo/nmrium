@@ -39,8 +39,8 @@ export default function InputRange({
     let diff = event.clientX - previousPosition.current;
     previousPosition.current = event.clientX;
     if (event.buttons === 1) {
-      const step = (diff / (event.shiftKey ? 10 : 1));
-      valueRef.current = valueRef.current + step ;
+      const step = diff / (event.shiftKey ? 10 : 1);
+      valueRef.current = valueRef.current + step;
       onChange({
         value: valueRef.current,
         name,
