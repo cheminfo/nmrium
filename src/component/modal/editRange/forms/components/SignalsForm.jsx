@@ -8,6 +8,7 @@ import { useChartData } from '../../../../context/ChartContext';
 import { Tabs } from '../../../../elements/Tab';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import Events from '../../../../utility/Events';
+import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import SignalFormTab from './SignalFormTab';
@@ -33,7 +34,9 @@ const tabStylesAddition = css`
 function SignalsForm() {
   const { values, setFieldValue, errors } = useFormikContext();
 
-  const { data: spectraData, activeSpectrum } = useChartData();
+  const { data: spectraData, activeSpectrum, activeTab } = useChartData();
+  const format = useFormatNumberByNucleus(activeTab);
+
   const [activeField, setActiveField] = useState(null);
   const [frequency, setFrequency] = useState(null);
 
@@ -135,7 +138,7 @@ function SignalsForm() {
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}
               tabid={`${i}`}
-              tablabel={`𝛅: ${signal.delta.toFixed(5)} (${signal.j
+              tablabel={`𝛅: ${format(signal.delta)} (${signal.j
                 .map((_coupling) => translateMultiplet(_coupling.multiplicity))
                 .join('')})`}
               tabstyles={tabContainsErrors(i) ? tabStylesAddition : null}

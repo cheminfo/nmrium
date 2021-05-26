@@ -1,6 +1,6 @@
 import { xyAutoRangesPicking } from 'nmr-processing';
 
-let defaultPeakPickingOptions = {
+const defaultPeakPickingOptions = {
   minMaxRatio: 1,
   realTopDetection: true,
   maxCriteria: true,

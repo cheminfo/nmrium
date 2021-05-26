@@ -36,7 +36,7 @@ function MultiplicityTree({
   const {
     data: spectraData,
     activeSpectrum,
-    selectedTool,
+    toolOptions: { selectedTool },
     width,
   } = useChartData();
   const assignment = useAssignment(signal.id);

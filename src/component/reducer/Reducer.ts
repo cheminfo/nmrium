@@ -48,9 +48,6 @@ export const initialState = {
   originDomain: {},
   integralsYDomains: {},
   originIntegralYDomain: {},
-  selectedTool: options.zoom.id,
-  selectedFilter: null,
-  selectedOptionPanel: null,
   activeTab: null,
   width: 0,
   height: 0,
@@ -77,10 +74,8 @@ export const initialState = {
     hasUndo: false,
     hasRedo: false,
   },
-  pivot: 0,
   isLoading: false,
   preferences: {},
-  baseLineZones: [],
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
@@ -91,7 +86,16 @@ export const initialState = {
   displayerKey: '',
   ZoomHistory: {},
   overDisplayer: false,
-  exclusionZones: {},
+  toolOptions: {
+    selectedTool: options.zoom.id,
+    selectedOptionPanel: null,
+    data: {
+      baseLineZones: [],
+      exclusionZones: {},
+      pivot: 0,
+      zonesNoiseFactor: 1,
+    },
+  },
 };
 
 export interface State {
@@ -105,9 +109,6 @@ export interface State {
   originDomain: any;
   integralsYDomains: any;
   originIntegralYDomain: any;
-  selectedTool: any;
-  selectedFilter: any;
-  selectedOptionPanel: any;
   activeTab: any;
   width: any;
   height: any;
@@ -129,10 +130,8 @@ export interface State {
     hasUndo: boolean;
     hasRedo: boolean;
   }>;
-  pivot: number;
   isLoading: boolean;
   preferences: any;
-  baseLineZones: any;
   keysPreferences: any;
   displayerMode: any;
   tabActiveSpectrum: any;
@@ -141,8 +140,19 @@ export interface State {
   correlations: Types.CorrelationData;
   ZoomHistory: any;
   overDisplayer: boolean;
-  exclusionZones: {
-    [key: string]: Array<{ id: string; from: number; to: number }>;
+
+  toolOptions: {
+    selectedTool: any;
+    selectedOptionPanel: any;
+
+    data: {
+      baseLineZones: any;
+      exclusionZones: {
+        [key: string]: Array<{ id: string; from: number; to: number }>;
+      };
+      pivot: number;
+      zonesNoiseFactor: number;
+    };
   };
 }
 
@@ -386,6 +396,8 @@ function innerSpectrumReducer(draft, action) {
 
     case types.AUTO_ZONES_DETECTION:
       return ZonesActions.handleAutoZonesDetection(draft, action.options);
+    case types.CHANGE_ZONES_NOISE_FACTOR:
+      return ZonesActions.changeZonesFactorHandler(draft, action);
     case types.AUTO_RANGES_DETECTION:
       return RangesActions.handleAutoRangesDetection(draft, action.options);
     case types.ADD_RANGE:

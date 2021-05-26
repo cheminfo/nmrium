@@ -20,7 +20,6 @@ import {
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities';
-import Events from '../../utility/Events';
 import { State } from '../Reducer';
 import get2DRange from '../helper/get2DRange';
 
@@ -30,11 +29,9 @@ import { handleUpdateCorrelations } from './CorrelationsActions';
 
 import { setDomain } from './DomainActions';
 
-let noiseFactor = 1;
-
-Events.on('noiseFactorChanged', (val) => {
-  noiseFactor = val;
-});
+function changeZonesFactorHandler(draft: Draft<State>, action) {
+  draft.toolOptions.data.zonesNoiseFactor = action.payload;
+}
 
 function add2dZoneHandler(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
@@ -42,7 +39,7 @@ function add2dZoneHandler(draft: Draft<State>, action) {
     const drawnZone = get2DRange(draft, action);
     detectZonesManual(draft.data[index], {
       selectedZone: drawnZone,
-      thresholdFactor: noiseFactor,
+      thresholdFactor: draft.toolOptions.data.zonesNoiseFactor,
       convolutionByFFT: false,
     });
     handleOnChangeZonesData(draft);
@@ -198,4 +195,5 @@ export {
   handleChangeZoneSignalKind,
   handleUnlinkZone,
   handleSetDiaIDZone,
+  changeZonesFactorHandler,
 };

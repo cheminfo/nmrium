@@ -82,8 +82,8 @@ function deletePeak(draft: Draft<State>, peakData) {
 
 function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
   if (draft.activeSpectrum?.id) {
-    draft.selectedTool = options.zoom.id;
-    draft.selectedOptionPanel = null;
+    draft.toolOptions.selectedTool = options.zoom.id;
+    draft.toolOptions.selectedOptionPanel = null;
     const { index } = draft.activeSpectrum;
     const datum = draft.data[index] as Datum1D;
 

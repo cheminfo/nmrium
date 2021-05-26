@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import generateID from '../../../data/utilities/generateID';
+import { useChartData } from '../../context/ChartContext';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';
@@ -12,6 +13,7 @@ import {
   hasCouplingConstant,
   translateMultiplet,
 } from '../../panels/extra/utilities/MultiplicityUtilities';
+import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
 import EditRangeValidation from './forms/validation/EditRangeValidation';
@@ -75,6 +77,9 @@ function EditRangeModal({
   onZoomEditRangeModal,
   rangeData,
 }) {
+  const { activeTab } = useChartData();
+  const format = useFormatNumberByNucleus(activeTab);
+
   const handleOnZoom = useCallback(() => {
     onZoomEditRangeModal(rangeData);
   }, [onZoomEditRangeModal, rangeData]);
@@ -135,6 +140,7 @@ function EditRangeModal({
       _signal.multiplicity.split('').forEach((_multiplicity) => {
         if (hasCouplingConstant(_multiplicity)) {
           coupling = { ..._signal.j[counterJ] };
+          coupling.coupling = format(coupling.coupling);
           counterJ++;
         } else {
           coupling = { multiplicity: _multiplicity, coupling: '' };
@@ -142,9 +148,10 @@ function EditRangeModal({
         coupling.multiplicity = translateMultiplet(coupling.multiplicity);
         couplings.push(coupling);
       });
+
       return { ..._signal, j: couplings };
     });
-  }, [rangeData.signal]);
+  }, [format, rangeData.signal]);
 
   const isSaveButtonDisabled = useCallback((errors) => {
     const errorKeys = Object.keys(errors);
@@ -183,7 +190,11 @@ function EditRangeModal({
                   <Button onClick={handleOnZoom} className="zoom-button">
                     <FaSearchPlus title="Set to default view on range in spectrum" />
                   </Button>
-                  <span>Range and signals edition</span>
+                  <span>
+                    {` Range and Signal edition: ${format(
+                      rangeData.from,
+                    )} ppm to ${format(rangeData.to)} ppm`}
+                  </span>
                   <SaveButton
                     onClick={() => handleOnSave(values)}
                     disabled={isSaveButtonDisabled(errors)}

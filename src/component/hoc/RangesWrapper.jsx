@@ -13,7 +13,7 @@ export default function RangesWrapper(WrappedComponent) {
       molecules,
       tabActiveSpectrum,
       displayerKey,
-      selectedTool,
+      toolOptions: { selectedTool },
     } = useChartData();
     const preferences = usePreferences();
 

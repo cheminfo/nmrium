@@ -14,7 +14,13 @@ const styles = {
 };
 
 function VerticalIndicator() {
-  const { height, selectedTool, pivot } = useChartData();
+  const {
+    height,
+    toolOptions: {
+      selectedTool,
+      data: { pivot },
+    },
+  } = useChartData();
   const { scaleX } = useScale();
 
   if (options.phaseCorrection.id !== selectedTool) return null;

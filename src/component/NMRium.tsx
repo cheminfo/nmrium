@@ -16,6 +16,7 @@ import {
   ReactElement,
   ReactNode,
 } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
@@ -25,7 +26,7 @@ import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivat
 
 import Viewer1D from './1d/Viewer1D';
 import Viewer2D from './2d/Viewer2D';
-import ErrorBoundary from './ErrorBoundary';
+import ErrorOverlay from './ErrorOverlay';
 import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
 import { AssignmentProvider } from './assignment';
 import helpList from './constants/help';
@@ -220,7 +221,11 @@ function NMRium({
     preferencesInitialState,
   );
 
-  const { selectedTool, displayerMode, data: spectraData } = state;
+  const {
+    toolOptions: { selectedTool },
+    displayerMode,
+    data: spectraData,
+  } = state;
 
   useEffect(() => {
     if (checkActionType(state.actionType)) {
@@ -293,7 +298,7 @@ function NMRium({
   }, [dispatchMiddleWare]);
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary FallbackComponent={ErrorOverlay}>
       <GlobalProvider
         value={{
           rootRef: rootRef.current,

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  *
@@ -6,10 +6,9 @@ import { useCallback, useEffect, useState } from 'react';
  * @param {Array} data
  */
 
-let oldId = null;
-
 function useToggleStatus(key, data) {
   const [status, setStatus] = useState({});
+  const oldIdRef = useRef();
 
   useEffect(() => {
     let statusflags = {};
@@ -24,11 +23,11 @@ function useToggleStatus(key, data) {
   const toggle = useCallback(
     (id) => {
       const newStatus = { ...status };
-      if (oldId) {
-        newStatus[oldId] = false;
+      if (oldIdRef.current) {
+        newStatus[oldIdRef.current] = false;
       }
       if (id != null) {
-        oldId = id;
+        oldIdRef.current = id;
         newStatus[id] = true;
       }
       setStatus(newStatus);

@@ -57,8 +57,6 @@ const styles = {
   },
 };
 
-let dealyTimeOut = null;
-
 function Provider({
   children,
   data,
@@ -76,6 +74,7 @@ function Provider({
   const root = useRef();
   const timersId = useRef([]);
   const [modals, setModals] = useState([]);
+  const timeoutRef = useRef();
 
   useEffect(() => {
     root.current = document.createElement('div');
@@ -146,7 +145,7 @@ function Provider({
           if (options.delay === 0) {
             startModal();
           } else if (!preventAutoHelp) {
-            dealyTimeOut = setTimeout(
+            timeoutRef.current = setTimeout(
               () => {
                 startModal();
               },
@@ -164,7 +163,7 @@ function Provider({
   );
 
   const clear = useCallback(() => {
-    clearTimeout(dealyTimeOut);
+    clearTimeout(timeoutRef.current);
   }, []);
 
   const parentStyle = useMemo(() => {

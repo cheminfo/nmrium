@@ -25,7 +25,11 @@ const allowTools = [
 ];
 
 export default function BrushX() {
-  const { width, height, selectedTool } = useChartData();
+  const {
+    width,
+    height,
+    toolOptions: { selectedTool },
+  } = useChartData();
   const { startX, endX, step } = useContext(BrushContext);
 
   if (!allowTools.includes(selectedTool) || step !== 'brushing') return null;

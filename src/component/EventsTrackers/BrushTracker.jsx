@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useReducer,
+  useRef,
   useState,
 } from 'react';
 
@@ -18,8 +19,6 @@ const initialState = {
   },
 };
 
-let debounceClickEvents = [];
-
 export function BrushTracker({
   children,
   className,
@@ -32,6 +31,7 @@ export function BrushTracker({
 }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [mouseDownTime, setMouseDownTime] = useState();
+  const debounceClickEventsRef = useRef([]);
 
   const mouseDownHandler = useCallback(
     (event) => {
@@ -68,19 +68,21 @@ export function BrushTracker({
       const callback = lodashDebounce(() => {
         if (
           timeStamp - mouseDownTime <= 150 &&
-          debounceClickEvents.length === 1
+          debounceClickEventsRef.current.length === 1
         ) {
           onClick({ ...e, x, y });
         }
-        debounceClickEvents = [];
+        debounceClickEventsRef.current = [];
       }, 200);
-      debounceClickEvents.push(callback);
+      debounceClickEventsRef.current.push(callback);
 
       callback();
 
-      if (debounceClickEvents.length > 1) {
-        lodashMap(debounceClickEvents, (debounce) => debounce.cancel());
-        debounceClickEvents = [];
+      if (debounceClickEventsRef.current.length > 1) {
+        lodashMap(debounceClickEventsRef.current, (debounce) =>
+          debounce.cancel(),
+        );
+        debounceClickEventsRef.current = [];
         onDoubleClick({ ...e, x, y });
       }
     },

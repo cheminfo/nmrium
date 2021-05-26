@@ -43,9 +43,9 @@ function setFilterChanges(draft: Draft<State>, selectedFilter) {
     draft.tempData = draft.data;
 
     const { xValue } = getStrongestPeak(draft);
-    draft.pivot = xValue;
+    draft.toolOptions.data.pivot = xValue;
   } else {
-    if (draft.selectedTool === options.phaseCorrection.id) {
+    if (draft.toolOptions.selectedTool === options.phaseCorrection.id) {
       const spectrumIndex = draft.data.findIndex(
         (spectrum) => spectrum.id === activeSpectrumId,
       );
@@ -56,11 +56,11 @@ function setFilterChanges(draft: Draft<State>, selectedFilter) {
 }
 
 function resetTool(draft: Draft<State>, setDefaultTool = true) {
-  draft.selectedOptionPanel = null;
+  draft.toolOptions.selectedOptionPanel = null;
   if (setDefaultTool) {
-    draft.selectedTool = options.zoom.id;
+    draft.toolOptions.selectedTool = options.zoom.id;
   }
-  draft.baseLineZones = [];
+  draft.toolOptions.data.baseLineZones = [];
   if (draft.tempData) {
     draft.tempData = null;
     setDomain(draft);
@@ -69,7 +69,8 @@ function resetTool(draft: Draft<State>, setDefaultTool = true) {
 
 function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
   if (
-    (draft.selectedTool && options[draft.selectedTool].isFilter) ||
+    (draft.toolOptions.selectedTool &&
+      options[draft.toolOptions.selectedTool].isFilter) ||
     !filterOnly
   ) {
     resetTool(draft);
@@ -79,12 +80,12 @@ function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
 function setSelectedTool(draft: Draft<State>, selectedTool) {
   if (draft?.data.length > 0) {
     if (selectedTool) {
-      if (selectedTool !== draft.selectedTool) {
+      if (selectedTool !== draft.toolOptions.selectedTool) {
         resetTool(draft, false);
       }
-      draft.selectedTool = selectedTool;
+      draft.toolOptions.selectedTool = selectedTool;
       if (options[selectedTool].hasOptionPanel) {
-        draft.selectedOptionPanel = selectedTool;
+        draft.toolOptions.selectedOptionPanel = selectedTool;
       }
 
       if (options[selectedTool].isFilter) {
@@ -98,7 +99,7 @@ function setSelectedTool(draft: Draft<State>, selectedTool) {
 }
 
 function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
-  draft.selectedOptionPanel = selectedOptionPanel;
+  draft.toolOptions.selectedOptionPanel = selectedOptionPanel;
 }
 
 function setSpectrumsVerticalAlign(draft: Draft<State>) {
@@ -141,18 +142,21 @@ function handleAddBaseLineZone(draft: Draft<State>, { from, to }) {
     zone = [start, end];
   }
 
-  const zones = draft.baseLineZones.slice();
+  const zones = draft.toolOptions.data.baseLineZones.slice();
   zones.push({
     id: generateID(),
     from: zone[0],
     to: zone[1],
   });
-  draft.baseLineZones = zones;
+  draft.toolOptions.data.baseLineZones = zones;
 }
 
 function handleDeleteBaseLineZone(draft: Draft<State>, id) {
   const state = original(draft) as State;
-  draft.baseLineZones = state.baseLineZones.filter((zone) => zone.id !== id);
+  draft.toolOptions.data.baseLineZones =
+    state.toolOptions.data.baseLineZones.baseLineZones.filter(
+      (zone) => zone.id !== id,
+    );
 }
 
 function handleToggleRealImaginaryVisibility(draft) {
@@ -218,7 +222,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
 }
 function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
   const scaleX = getXScale(draft);
-  draft.pivot = scaleX.invert(position);
+  draft.toolOptions.data.pivot = scaleX.invert(position);
 }
 
 function getSpectrumID(draft: Draft<State>, index) {
@@ -322,7 +326,7 @@ function hasAcceptedSpectrum(draft: Draft<State>, index) {
 function setMargin(draft: Draft<State>) {
   if (
     draft.displayerMode === DISPLAYER_MODE.DM_2D &&
-    draft.selectedTool !== options.slicingTool.id
+    draft.toolOptions.selectedTool !== options.slicingTool.id
   ) {
     const top = hasAcceptedSpectrum(draft, 0)
       ? MARGIN['2D'].top
@@ -331,7 +335,7 @@ function setMargin(draft: Draft<State>) {
       ? MARGIN['2D'].left
       : MARGIN['1D'].left;
     draft.margin = { ...MARGIN['2D'], top, left };
-  } else if (draft.selectedTool === options.slicingTool.id) {
+  } else if (draft.toolOptions.selectedTool === options.slicingTool.id) {
     draft.margin = MARGIN['2D'];
   } else if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
     draft.margin = MARGIN['1D'];
@@ -516,19 +520,21 @@ function handleAddExclusionZone(draft: Draft<State>, action) {
     from: zone[0],
     to: zone[1],
   };
-  if (draft.exclusionZones[draft.activeTab]) {
-    draft.exclusionZones[draft.activeTab].push(newExclusionZone);
+  if (draft.toolOptions.data.exclusionZones[draft.activeTab]) {
+    draft.toolOptions.data.exclusionZones[draft.activeTab].push(
+      newExclusionZone,
+    );
   } else {
-    draft.exclusionZones[draft.activeTab] = [newExclusionZone];
+    draft.toolOptions.data.exclusionZones[draft.activeTab] = [newExclusionZone];
   }
 }
 
 function handleDeleteExclusionZone(draft: Draft<State>, action) {
   const id = action.payload.id;
-  const index = draft.exclusionZones[draft.activeTab].findIndex(
-    (zone) => zone.id === id,
-  );
-  draft.exclusionZones[draft.activeTab].splice(index, 1);
+  const index = draft.toolOptions.data.exclusionZones[
+    draft.activeTab
+  ].findIndex((zone) => zone.id === id);
+  draft.toolOptions.data.exclusionZones[draft.activeTab].splice(index, 1);
 }
 
 export {

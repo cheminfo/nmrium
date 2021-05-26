@@ -49,7 +49,7 @@ function Viewer1D({ emptyText = undefined }) {
   } = usePreferences();
   const state = useChartData();
   const {
-    selectedTool,
+    toolOptions: { selectedTool },
     isLoading,
     data,
     mode,

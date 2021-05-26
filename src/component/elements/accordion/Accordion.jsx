@@ -18,31 +18,33 @@ const styles = {
     flexDirection: 'column',
   },
 };
-let forcedOpenedElements = [];
-let alwaysOpen = null;
 function Accordion({ children, defaultOpenIndex = 0 }) {
   const [elements, setElements] = useState([]);
   const refContainer = useRef();
+  const forcedOpenedElementsRef = useRef([]);
+  const alwaysOpenIndexRef = useRef();
 
   const handleOpen = useCallback(
     (index, trigger) => {
       let el = elements.slice();
       if (trigger.source === triggerSource.click) {
-        el = el.map((e, i) => (i === index && alwaysOpen !== index ? !e : e));
+        el = el.map((e, i) =>
+          i === index && alwaysOpenIndexRef.current !== index ? !e : e,
+        );
       } else {
         el = el.map((e, i) => (i === index ? true : false));
         if (trigger.shiftKey) {
-          if (alwaysOpen === index) {
-            alwaysOpen = null;
+          if (alwaysOpenIndexRef.current === index) {
+            alwaysOpenIndexRef.current = null;
           } else {
-            alwaysOpen = index;
+            alwaysOpenIndexRef.current = index;
           }
         } else {
-          alwaysOpen = null;
+          alwaysOpenIndexRef.current = null;
         }
       }
 
-      forcedOpenedElements = el;
+      forcedOpenedElementsRef.current = el;
       setElements(el);
     },
     [elements],
@@ -66,14 +68,14 @@ function Accordion({ children, defaultOpenIndex = 0 }) {
       setElements((prevState) => {
         if (prevState.length > 0) {
           return prevState.map((e, i) =>
-            !forcedOpenedElements[i]
+            !forcedOpenedElementsRef.current[i]
               ? i === defaultOpenIndex
                 ? true
                 : false
               : e,
           );
         }
-        forcedOpenedElements = Array(children.length)
+        forcedOpenedElementsRef.current = Array(children.length)
           .fill(false)
           .map((e) => e);
 

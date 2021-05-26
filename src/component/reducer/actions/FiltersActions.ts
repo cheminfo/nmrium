@@ -78,7 +78,10 @@ function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
     const { index } = draft.activeSpectrum;
     let { ph0, ph1 } = filterOptions;
     const datum = draft.data[index] as Datum1D;
-    const closest = getClosestNumber(datum.data.x, draft.pivot);
+    const closest = getClosestNumber(
+      datum.data.x,
+      draft.toolOptions.data.pivot,
+    );
     const pivotIndex = datum.data.x.indexOf(closest);
 
     ph0 = ph0 - (ph1 * pivotIndex) / datum.data.y.length;
@@ -140,7 +143,10 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
   } = tempData[index];
 
   let { ph0, ph1 } = filterOptions;
-  const closest = getClosestNumber(tempData[index].data.x, draft.pivot);
+  const closest = getClosestNumber(
+    tempData[index].data.x,
+    draft.toolOptions.data.pivot,
+  );
   const pivotIndex = tempData[index].data.x.indexOf(closest);
 
   ph0 = ph0 - (ph1 * pivotIndex) / y.length;
@@ -233,11 +239,14 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
     FiltersManager.applyFilter(draft.data[index], [
       {
         name: Filters.baselineCorrection.id,
-        options: { zones: draft.baseLineZones, ...action.options },
+        options: {
+          zones: draft.toolOptions.data.baseLineZones,
+          ...action.options,
+        },
       },
     ]);
 
-    draft.baseLineZones = [];
+    draft.toolOptions.data.baseLineZones = [];
     const xDomainSnapshot = draft.xDomain.slice();
 
     resetSelectedTool(draft);
@@ -284,7 +293,8 @@ function handleMultipleSpectraFilter(draft: Draft<State>, action) {
       ) {
         const filters = action.payload.map((filter) => {
           if (filter.name === Filters.equallySpaced.id) {
-            const exclusions = draft.exclusionZones[draft.activeTab] || [];
+            const exclusions =
+              draft.toolOptions.data.exclusionZones[draft.activeTab] || [];
             return {
               ...filter,
               options: { ...filter.options, exclusions },

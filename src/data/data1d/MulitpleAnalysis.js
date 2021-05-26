@@ -1,5 +1,4 @@
 import lodashGet from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
 
 import generateChar from '../utilities/generateChar';
 
@@ -9,8 +8,6 @@ export const COLUMNS_TYPES = {
   NORMAL: 'NORMAL',
   FORMULA: 'FORMULA',
 };
-
-let reservedColumnsNames = {};
 
 function addColumnKey(spectraAnalysis, nucleus, columnProps, columnKey) {
   const index = Object.keys(spectraAnalysis[nucleus].options.columns).length;
@@ -226,10 +223,6 @@ export function deleteSpectraAnalysis(spectraAnalysis, colKey, nucleus) {
     spectraAnalysis,
     nucleus,
   );
-
-  if (isEmpty(spectraAnalysis[nucleus].values)) {
-    reservedColumnsNames[nucleus] = [];
-  }
 }
 
 function calculate(columns, data, formula = 'A+B') {

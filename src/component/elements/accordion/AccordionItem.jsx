@@ -1,9 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-let timer = 0;
-const delay = 200;
-let prevent = false;
-
 const styles = {
   container: {
     display: 'flex',
@@ -52,26 +48,29 @@ export const triggerSource = {
 
 function AccordionItem({ title, children, index, isOpen, onOpen, style }) {
   const [active, setActiveState] = useState(null);
+  const timeoutRef = useRef();
+  const preventEventRef = useRef(false);
+  const delay = useRef(200).current;
 
   const refContent = useRef();
   const refContainer = useRef();
   const toggleAccordion = useCallback(
     (e) => {
-      timer = setTimeout(function () {
-        if (!prevent) {
+      timeoutRef.current = setTimeout(function () {
+        if (!preventEventRef.current) {
           onOpen(index, { source: triggerSource.click, shiftKey: e.shiftKey });
         }
-        prevent = false;
+        preventEventRef.current = false;
       }, delay);
     },
-    [index, onOpen],
+    [delay, index, onOpen],
   );
 
   const dbClickHandler = useCallback(
     (e) => {
       e.persist();
-      clearTimeout(timer);
-      prevent = true;
+      clearTimeout(timeoutRef.current);
+      preventEventRef.current = true;
       onOpen(index, { source: triggerSource.dbClick, shiftKey: e.shiftKey });
     },
     [index, onOpen],

@@ -44,7 +44,7 @@ function setData(
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
-  draft.exclusionZones = exclusionZones;
+  draft.toolOptions.data.exclusionZones = exclusionZones;
 
   if (!correlations || Object.keys(correlations).length === 0) {
     draft.correlations = buildCorrelationData([], {

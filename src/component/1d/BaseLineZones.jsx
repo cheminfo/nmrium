@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -29,7 +29,7 @@ const styles = css`
 `;
 
 function BaseLineZones() {
-  const { baseLineZones } = useChartData();
+  const { toolOptions } = useChartData();
 
   const { scaleX } = useScale();
   const dispatch = useDispatch();
@@ -41,9 +41,11 @@ function BaseLineZones() {
     [dispatch],
   );
 
+  const baseLineZones = useMemo(() => {
+    return toolOptions.data.baseLineZones;
+  }, [toolOptions]);
+
   return (
-    baseLineZones &&
-    Array.isArray(baseLineZones) &&
     baseLineZones.length > 0 && (
       <g>
         {baseLineZones.map((zone) => (
