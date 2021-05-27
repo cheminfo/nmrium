@@ -1,22 +1,27 @@
-// import { readFileSync } from 'fs';
-// import { join } from 'path';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-// import { Data2DManager } from '../Data2DManager';
+import { addJcamp } from '../../SpectraManager';
 
 test('Datum2D', () => {
-  // let jcamp = readFileSync(join(__dirname, './data/cosy.jdx'), 'utf8');
-  // let datum2D = Data2DManager.fromJcamp(jcamp, {
-  //   display: {
-  //     name: 'test',
-  //     color: 'red',
-  //     isVisible: true,
-  //     isPeaksMarkersVisible: true,
-  //   },
-  // });
+  const jcamp = readFileSync(join(__dirname, './data/cosy.jdx'), 'utf8');
+  const spectra = [];
 
-  // let contour = datum2D.getContourLines();
-  // expect(contour).toHaveLength(10);
-
-  //pass test
-  expect(true).toStrictEqual(true);
+  addJcamp(
+    spectra,
+    jcamp,
+    {
+      display: {
+        name: 'test',
+        isVisible: true,
+      },
+      source: {
+        jcampURL: null,
+      },
+    },
+    [],
+  );
+  const { positive, negative } = spectra[0].processingController.drawContours();
+  expect(positive).toHaveLength(10);
+  expect(negative).toHaveLength(10);
 });
