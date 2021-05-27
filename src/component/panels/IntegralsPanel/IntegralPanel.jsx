@@ -159,7 +159,7 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
               </button>
             </ToolTip>
             <ToggleButton
-              popupTitle="Constant Sum"
+              popupTitle="fix integral values"
               popupPlacement="right"
               onClick={toggleConstantSumHandler}
             >

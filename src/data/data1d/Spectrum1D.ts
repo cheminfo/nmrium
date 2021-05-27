@@ -174,12 +174,12 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
   datum.integrals = merge(
-    { values: [], options: { sum: 100, isSumConstant: false } },
+    { values: [], options: { sum: 100, isSumConstant: true } },
     options.integrals,
   ); // array of object (from: xIndex, to: xIndex)
   datum.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
   datum.ranges = merge(
-    { values: [], options: { sum: 100, isSumConstant: false } },
+    { values: [], options: { sum: 100, isSumConstant: true } },
     options.ranges,
   );
 
@@ -278,7 +278,7 @@ export function changeIntegralsRealtive(datum, newIntegral) {
     (integral) => integral.id === newIntegral.id,
   );
   if (index !== -1) {
-    if (!datum.integrals.options.isSumConstant) {
+    if (datum.integrals.options.isSumConstant) {
       const ratio = datum.integrals.values[index].absolute / newIntegral.value;
       const { values, sum } = datum.integrals.values.reduce(
         (acc, integral, index) => {
@@ -325,7 +325,7 @@ function rangeCountingCondition(range) {
 
 function updateRelatives(data, storageKey, countingCondition) {
   const { values, options } = data;
-  if (!data.options.isSumConstant) {
+  if (data.options.isSumConstant) {
     const currentSum = getSum(values, 'absolute', countingCondition);
 
     const factor = currentSum > 0 ? options.sum / currentSum : 0.0;
@@ -510,7 +510,7 @@ export function changeRangesRealtive(datum, newRange) {
     (range) => range.id === newRange.id,
   );
   if (index !== -1) {
-    if (!datum.ranges.options.isSumConstant) {
+    if (datum.ranges.options.isSumConstant) {
       const ratio = datum.ranges.values[index].absolute / newRange.value;
       datum.ranges.options.sum =
         (newRange.value / datum.ranges.values[index].integral) *
