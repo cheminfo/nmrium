@@ -96,13 +96,9 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
       }
 
       case phaseCorrectionTypes.manual: {
-        const newValue = { ...value };
-        newValue.ph0 =
-          newValue.ph0 - (newValue.ph1 * pivot.index) / datum.y.length;
-
         dispatch({
           type: APPLY_MANUAL_PHASE_CORRECTION_FILTER,
-          value: newValue,
+          value,
         });
         break;
       }
@@ -115,23 +111,19 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
       default:
         break;
     }
-  }, [datum.y.length, dispatch, phaseCorrectionType, pivot.index, value]);
+  }, [dispatch, phaseCorrectionType, value]);
 
   const calcPhaseCorrectionHandler = useCallback(
     (newValues, filedName) => {
-      const diff = { ...newValues };
-
-      for (const key in valueRef.current) {
-        diff[key] = newValues[key] - valueRef.current[key];
-      }
-
       if (filedName === 'ph1') {
-        diff.ph0 = diff.ph0 - (diff.ph1 * pivot.index) / datum.y.length;
+        const diff0 = newValues.ph0 - valueRef.current.ph0;
+        const diff1 = newValues.ph1 - valueRef.current.ph1;
+        newValues.ph0 += diff0 - (diff1 * pivot.index) / datum.y.length;
       }
 
       dispatch({
         type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-        value: diff,
+        value: newValues,
       });
     },
     [datum.y.length, dispatch, pivot.index],
@@ -142,7 +134,7 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
       const { name, value } = e.target;
       if (e.target) {
         const newValue = { ...valueRef.current, [name]: value };
-        if (value.trim() !== '-') {
+        if (String(value).trim() !== '-') {
           calcPhaseCorrectionHandler(newValue, name);
         }
         valueRef.current = newValue;

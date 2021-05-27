@@ -104,17 +104,8 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
 
-    const {
-      data: { x, y, im },
-      info,
-    } = draft.tempData[index];
+    const { ph0, ph1 } = autoPhaseCorrection(draft.data[index]);
 
-    let _data = { data: { x, re: y, im }, info };
-    const { data, ph0, ph1 } = autoPhaseCorrection(_data);
-
-    const { im: newIm, re: newRe } = data;
-    draft.tempData[index].data.im = newIm;
-    draft.tempData[index].data.y = newRe;
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
     ]);
@@ -126,18 +117,18 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
 }
 
 function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
-  const { tempData } = draft;
   const { index } = draft.activeSpectrum;
   const {
-    data: { x, y, im },
+    data: { x, re, im },
     info,
-  } = tempData[index];
+  } = draft.data[index] as Datum1D;
 
   const { ph0, ph1 } = filterOptions;
-  let _data = { data: { x, re: y, im }, info };
+  let _data = { data: { x: x, re: re, im }, info };
   phaseCorrection(_data, { ph0, ph1 });
   const { im: newIm, re: newRe } = _data.data;
   draft.tempData[index].data.im = newIm;
+  draft.tempData[index].data.re = newRe;
   draft.tempData[index].data.y = newRe;
 }
 
@@ -238,13 +229,13 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
     draft.xDomain = xDomainSnapshot;
   }
 }
-
-function filterSnapshotHandler(draft: Draft<State>, action) {
+function resetDataToFilterSavePoint(draft, filterId) {
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum.index;
     const datum = draft.data[index] as Datum1D | Datum2D;
-    if (action.id) {
-      const filterIndex = datum.filters.findIndex((f) => f.id === action.id);
+
+    if (filterId) {
+      const filterIndex = datum.filters.findIndex((f) => f.id === filterId);
       const filters = datum.filters.slice(0, filterIndex + 1);
       FiltersManager.reapplyFilters(datum, filters);
     } else {
@@ -264,6 +255,9 @@ function filterSnapshotHandler(draft: Draft<State>, action) {
     setDomain(draft);
     setMode(draft);
   }
+}
+function filterSnapshotHandler(draft: Draft<State>, action) {
+  resetDataToFilterSavePoint(draft, action.id);
 }
 
 function handleMultipleSpectraFilter(draft: Draft<State>, action) {
@@ -308,4 +302,5 @@ export {
   deleteSpectraFilter,
   handleBaseLineCorrectionFilter,
   filterSnapshotHandler,
+  resetDataToFilterSavePoint,
 };

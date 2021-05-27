@@ -27,12 +27,8 @@ export function isApplicable(datum1D) {
 }
 
 export function reduce(previousValue, newValue) {
-  let reduced = Object.assign({}, previousValue);
-  for (const k in reduced) {
-    reduced[k] += newValue[k];
-  }
   return {
     once: true,
-    reduce: reduced,
+    reduce: newValue,
   };
 }
