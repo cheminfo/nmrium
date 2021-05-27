@@ -26,3 +26,30 @@ Please read the following blog post:
 https://dev.to/glebec/four-ways-to-immutability-in-javascript-3b3l
 
 And in particular we use Immer: https://github.com/immerjs/immer
+
+## Testing
+
+We use the [Jest](https://jestjs.io/docs/getting-started) test runner.
+
+Keep the tests simple and focused. Do not hesitate to write many tests instead of doing everything in the same test.
+This is important because in case one test fails, the others will still run.
+
+Use `describe()` blocks to group tests in a meaningful way. It is not useful to have only one big `describe()` with the name of the file.
+
+### Unit tests
+
+Please write any unit test as close to the tested file as possible, in a `__tests__` subdirectory.
+The test file's name should end with `.test.{js,jsx,ts,tsx}`.
+
+For example, tests for the file located in `src/data/data1d/autoPeakPicking.js` should be written in `src/data/data1d/__tests__/autoPeakPicking.test.js`.
+
+You can run all unit tests with `npm run test-only`.
+
+### End-to-end tests
+
+End-to-end (e2e) tests are written in the `test-e2e` directory.
+
+We use [Playwright](https://playwright.dev/docs/intro) to run the tests in real browsers.
+
+You can run all e2e tests with `npm run test-e2e-jest`.
+Note that a server with the application should be running. It can be the dev server (`npm run dev`) or a server with the production build (`npm run build && npm run test-e2e-server`).
