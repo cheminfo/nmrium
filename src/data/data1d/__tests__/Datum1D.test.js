@@ -21,9 +21,7 @@ describe('test Datum1D', () => {
         isPeaksMarkersVisible: true,
       },
       source: {
-        jcamp: null,
         jcampURL: null,
-        original: null,
       },
     },
     [],
