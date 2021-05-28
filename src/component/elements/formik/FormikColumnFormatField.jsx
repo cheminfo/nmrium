@@ -58,12 +58,12 @@ function FormikColumnFormatField({
           style={{ margin: '0px 5px' }}
           name={checkControllerName}
           onChange={checkChangeHandler}
-          checked={lodashGet(values, checkControllerName)}
+          checked={lodashGet(values, checkControllerName, false)}
         />
         <Input
           style={{ container: styles.input }}
           name={formatControllerName}
-          value={lodashGet(values, formatControllerName)}
+          value={lodashGet(values, formatControllerName, '')}
           onChange={changeHandler}
           type="text"
         />

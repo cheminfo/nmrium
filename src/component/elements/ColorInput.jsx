@@ -120,7 +120,7 @@ const ColorInput = memo(function ColorInput({
 });
 
 ColorInput.defaultProps = {
-  // value: '#000000',
+  value: '#000000',
   label: 'Color: ',
   onColorChange: () => null,
 };
