@@ -1,5 +1,6 @@
+import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
-import { forwardRef, useState, useEffect, useCallback } from 'react';
+import { forwardRef, useState, useEffect, useCallback, useRef } from 'react';
 
 const styles = {
   label: {
@@ -23,6 +24,7 @@ const Input = forwardRef(function Input(
     name,
     style,
     onChange,
+    debounceTime,
     onKeyDown,
     checkValue,
     type,
@@ -34,6 +36,12 @@ const Input = forwardRef(function Input(
   ref,
 ) {
   const [val, setVal] = useState(value);
+  const debounceOnChange = useRef(
+    debounce((value) => {
+      onChange(value);
+    }, debounceTime),
+  ).current;
+
   useEffect(() => {
     setVal(value);
   }, [value]);
@@ -78,13 +86,28 @@ const Input = forwardRef(function Input(
         const formatValue = format();
 
         setVal(formatValue(_value));
-        onChange({
+
+        const val = {
           ...e,
           target: { name: e.target.name, value: getValue(_value) },
-        });
+        };
+
+        if (debounceTime) {
+          debounceOnChange(val);
+        } else {
+          onChange(val);
+        }
       }
     },
-    [checkValue, format, getValue, onChange, type],
+    [
+      checkValue,
+      debounceOnChange,
+      debounceTime,
+      format,
+      getValue,
+      onChange,
+      type,
+    ],
   );
 
   const handleKeyDown = useCallback(
@@ -157,6 +180,7 @@ Input.propTypes = {
   format: PropTypes.func,
   type: PropTypes.oneOf(['text', 'number']),
   enableAutoSelect: PropTypes.bool,
+  debounceTime: PropTypes.number,
 };
 
 Input.defaultProps = {
@@ -175,6 +199,7 @@ Input.defaultProps = {
   className: '',
   enableAutoSelect: false,
   format: () => (val) => val,
+  debounceTime: 0,
 };
 
 export default Input;

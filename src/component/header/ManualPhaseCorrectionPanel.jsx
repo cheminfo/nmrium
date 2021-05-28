@@ -182,6 +182,7 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
             onChange={handleInput}
             value={value.ph0}
             type="number"
+            debounceTime={500}
           />
           <Input
             label="PH1:"
@@ -190,6 +191,7 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
             onChange={handleInput}
             value={value.ph1}
             type="number"
+            debounceTime={500}
           />
 
           <InputRange
