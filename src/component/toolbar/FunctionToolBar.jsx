@@ -61,6 +61,7 @@ function FunctionToolBar({
   defaultValue,
   activeSpectrum,
   info,
+  datum,
   displayerMode,
   ftCounter,
   fidCounter,
@@ -292,7 +293,8 @@ function FunctionToolBar({
               isVisible={
                 activeSpectrum &&
                 selectedSpectrumInfo &&
-                Filters.phaseCorrection.isApplicable(selectedSpectrumInfo)
+                Filters.phaseCorrection.isApplicable(selectedSpectrumInfo) &&
+                datum.im
               }
             >
               <ToolTip
