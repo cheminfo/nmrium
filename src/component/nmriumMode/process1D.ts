@@ -1,0 +1,38 @@
+export default {
+  general: {
+    disableMultipletAnalysis: true,
+    hideSetSumFromMolecule: false,
+  },
+
+  panels: {
+    hideSpectraPanel: false,
+    hideInformationPanel: false,
+    hidePeaksPanel: false,
+    hideIntegralsPanel: false,
+    hideRangesPanel: true,
+    hideStructuresPanel: false,
+    hideFiltersPanel: false,
+    hideZonesPanel: true,
+    hideSummaryPanel: true,
+    hideMultipleSpectraAnalysisPanel: true,
+  },
+
+  toolBarButtons: {
+    hideZoomTool: false,
+    hideZoomOutTool: false,
+    hideImport: true,
+    hideExportAs: true,
+    hideSpectraStackAlignments: false,
+    hideSpectraCenterAlignments: false,
+    hideRealImaginary: false,
+    hidePeakTool: false,
+    hideIntegralTool: false,
+    hideAutoRangesTool: true,
+    hideZeroFillingTool: false,
+    hidePhaseCorrectionTool: false,
+    hideBaseLineCorrectionTool: false,
+    hideFFTTool: false,
+    hideMultipleSpectraAnalysisTool: true,
+    hideExclusionZonesTool: true,
+  },
+};

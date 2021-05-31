@@ -1,6 +1,10 @@
 import { produce } from 'immer';
 import lodashMerge from 'lodash/merge';
 
+import { NMRiumMode } from '../NMRium';
+import basic from '../nmriumMode/basic';
+import exercise1D from '../nmriumMode/exercise1D';
+import process1D from '../nmriumMode/process1D';
 import {
   getLocalStorage,
   removeData,
@@ -10,46 +14,23 @@ import {
 export const INIT_PREFERENCES = 'INIT_PREFERENCES';
 export const SET_PREFERENCES = 'SET_PREFERENCES';
 export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
+
 const LOCAL_STORGAE_VERSION = '1.1';
+
+function getPreferencesbyMode(mode) {
+  switch (mode) {
+    case NMRiumMode.EXERCISE_1D:
+      return exercise1D;
+    case NMRiumMode.PROCESS_1D:
+      return process1D;
+    default:
+      return basic;
+  }
+}
+
 export const preferencesInitialState = {
   basePreferences: {},
-  display: {
-    general: {
-      disableMultipletAnalysis: false,
-      hideSetSumFromMolecule: false,
-    },
-
-    panels: {
-      hideSpectraPanel: false,
-      hideInformationPanel: false,
-      hidePeaksPanel: false,
-      hideIntegralsPanel: false,
-      hideRangesPanel: false,
-      hideStructuresPanel: false,
-      hideFiltersPanel: false,
-      hideZonesPanel: false,
-      hideSummaryPanel: true,
-      hideMultipleSpectraAnalysisPanel: true,
-    },
-
-    toolBarButtons: {
-      hideZoomTool: false,
-      hideZoomOutTool: false,
-      hideImport: false,
-      hideExportAs: false,
-      hideSpectraStackAlignments: false,
-      hideSpectraCenterAlignments: false,
-      hideRealImaginary: false,
-      hidePeakTool: false,
-      hideIntegralTool: false,
-      hideAutoRangesTool: false,
-      hideZeroFillingTool: false,
-      hidePhaseCorrectionTool: false,
-      hideBaseLineCorrectionTool: false,
-      hideFFTTool: false,
-      hideMultipleSpectraAnalysisTool: false,
-    },
-  },
+  display: basic,
   controllers: {
     mws: { low: 2, high: 20 },
     help: {
@@ -104,11 +85,19 @@ export function preferencesReducer(state, action) {
 
       return produce(state, (draft) => {
         if (action.payload) {
-          const { dispatch, docsBaseUrl, ...resPreferences } = action.payload;
-          draft.basePreferences = resPreferences;
+          const { dispatch, docsBaseUrl, mode, ...resProps } = action.payload;
+
+          draft.basePreferences = lodashMerge(
+            {},
+            {
+              display:
+                mode === NMRiumMode.DEFAULT ? {} : getPreferencesbyMode(mode),
+            },
+            resProps,
+          );
 
           const hiddenFeatures = JSON.parse(
-            JSON.stringify(resPreferences.display),
+            JSON.stringify(draft.basePreferences.display),
             (key, value) => {
               if (value) {
                 return value;
@@ -118,7 +107,7 @@ export function preferencesReducer(state, action) {
 
           draft.display = lodashMerge(
             {},
-            preferencesInitialState.display,
+            getPreferencesbyMode(NMRiumMode.DEFAULT),
             hiddenFeatures,
           );
           draft.dispatch = dispatch;
@@ -126,11 +115,7 @@ export function preferencesReducer(state, action) {
           if (localData) {
             Object.entries(localData).forEach(([k, v]) => {
               if (k !== 'basePreferences') {
-                draft[k] = lodashMerge(
-                  {},
-                  resPreferences[k] ? resPreferences[k] : {},
-                  v,
-                );
+                draft[k] = lodashMerge({}, resProps[k] ? resProps[k] : {}, v);
               }
             });
             mapNucleus(draft, state);
