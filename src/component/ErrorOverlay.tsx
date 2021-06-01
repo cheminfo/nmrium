@@ -1,16 +1,23 @@
 import { CSSProperties } from 'react';
 import { FallbackProps } from 'react-error-boundary';
 
-const styles: Record<string, CSSProperties> = {
+type RecordKey = 'container' | 'header' | 'title' | 'body';
+
+const styles: Record<RecordKey, CSSProperties> = {
   container: {
     margin: '25px',
   },
+
   header: {
     backgroundColor: '#ffffff',
     padding: '20px',
     borderRadius: '10px',
     fontSize: '30px',
     textAlign: 'center',
+  },
+
+  title: {
+    textDecoration: 'underline',
   },
 
   body: {
@@ -27,7 +34,10 @@ export default function ErrorOverlay(props: FallbackProps) {
   return (
     <div style={styles.container}>
       <p style={styles.header}>Something went wrong.</p>
-      <details style={styles.body}>{props.error.stack}</details>
+      <details style={styles.body}>
+        <p style={styles.title}>{props.error.message}</p>
+        {props.error.stack}
+      </details>
     </div>
   );
 }
