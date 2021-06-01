@@ -6,7 +6,6 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
   let input = prepareData(data.z);
   const { factorStd = 5, yLogBase = 2 } = options;
   const sanResult = xNoiseSanPlot(input, options);
-
   let sanPlot = {};
   let lines = {};
   for (let plotKey in sanResult.sanplot) {
@@ -158,9 +157,11 @@ function prepareData(matrix) {
 function getLine(value, data, options) {
   const { log10, abs } = Math;
   const { yLogBase } = options;
+  const first = data.length > 0 ? data[0].x : 0;
+  const last = data.length > 0 ? data[data.length - 1].x : 0;
   const inLogScale = log10(abs(value)) / log10(yLogBase);
   return [
-    { x: data[0].x, y: inLogScale },
-    { x: data[data.length - 1].x, y: inLogScale },
+    { x: first, y: inLogScale },
+    { x: last, y: inLogScale },
   ];
 }
