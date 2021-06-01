@@ -36,6 +36,11 @@ const CouplingsTableStyle = css`
 
     .add-button {
       color: blue;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .delete-button {
@@ -68,7 +73,7 @@ const CouplingsTableStyle = css`
 
   tr {
     :last-child {
-      border-top: 3px solid #dedede;
+      background-color: #fcfcfc;
     }
   }
 `;

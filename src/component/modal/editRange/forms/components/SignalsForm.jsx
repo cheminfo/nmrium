@@ -22,8 +22,13 @@ const textStyles = css`
   }
 
   .infoText {
-    margin-bottom: 20px;
-    font-size: 11px;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 14px;
+    text-align: left;
+    color: white;
+    background-color: #5f5f5f;
+    border-radius: 5px;
   }
 `;
 
@@ -31,7 +36,7 @@ const tabStylesAddition = css`
   color: red;
 `;
 
-function SignalsForm() {
+function SignalsForm({ rangeLabel }) {
   const { values, setFieldValue, errors } = useFormikContext();
 
   const { data: spectraData, activeSpectrum, activeTab } = useChartData();
@@ -150,17 +155,18 @@ function SignalsForm() {
 
     const addSignalTab = (
       <div
-        tablabel={'\u002B'}
+        tablabel={'+'}
         tabid="addSignalTab"
         candelete="false"
         key="addSignalTab"
+        className="add-signal-tab"
       >
-        <AddSignalFormTab onFocus={handleOnFocus} />
+        <AddSignalFormTab onFocus={handleOnFocus} rangeLabel={rangeLabel} />
       </div>
     );
 
     return signalTabs.concat(addSignalTab);
-  }, [handleOnFocus, tabContainsErrors, values.signals]);
+  }, [format, handleOnFocus, rangeLabel, tabContainsErrors, values.signals]);
 
   const editSignalInfoText = (
     <p className="infoText">
