@@ -1,4 +1,5 @@
 build
+coverage
 lib
 lib-cjs
 node_modules
