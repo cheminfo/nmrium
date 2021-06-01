@@ -16,11 +16,11 @@ const styles = css`
 `;
 
 interface SaveButtonProps {
-  popupTitle: string;
-  popupPlacement: string;
-  disabled: boolean;
-  className: string;
-  onClick: () => void;
+  popupTitle?: string;
+  popupPlacement?: string;
+  disabled?: boolean;
+  className?: string;
+  onClick?: () => void;
 }
 
 function SaveButton(props: SaveButtonProps) {
@@ -34,11 +34,7 @@ function SaveButton(props: SaveButtonProps) {
 
   return (
     <div className={className}>
-      <ToolTip
-        className={className}
-        title={popupTitle}
-        popupPlacement={popupPlacement}
-      >
+      <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
         <button
           css={styles}
           type="button"

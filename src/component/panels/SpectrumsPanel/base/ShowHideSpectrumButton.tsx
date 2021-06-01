@@ -1,10 +1,28 @@
+import { CSSProperties } from 'react';
 import { FaEye } from 'react-icons/fa';
+
+interface DataProps {
+  id: string;
+  display: { color: string; positiveColor: string; negativeColor: string };
+  info: {
+    dimension: 1 | 2;
+  };
+}
+
+interface ShowHideSpectrumButtonProps {
+  data: DataProps;
+  onChangeVisibility: (
+    data: DataProps,
+    is: 'isVisible' | 'isPositiveVisible' | 'isNegativeVisible',
+  ) => void;
+  style: CSSProperties;
+}
 
 export default function ShowHideSpectrumButton({
   data,
   onChangeVisibility,
   style,
-}) {
+}: ShowHideSpectrumButtonProps) {
   const isVisible = (id, key) => {
     return data ? data.display[key] : true;
   };
@@ -18,8 +36,6 @@ export default function ShowHideSpectrumButton({
         >
           <FaEye
             style={{
-              fill: data.display.color,
-
               ...(isVisible(data.id, 'isVisible')
                 ? {
                     opacity: 1,
@@ -43,7 +59,6 @@ export default function ShowHideSpectrumButton({
           >
             <FaEye
               style={{
-                fill: data.display.positiveColor,
                 ...(isVisible(data.id, 'isPositiveVisible')
                   ? {
                       opacity: 1,
@@ -64,7 +79,6 @@ export default function ShowHideSpectrumButton({
           >
             <FaEye
               style={{
-                fill: data.display.negativeColor,
                 ...(isVisible(data.id, 'isNegativeVisible')
                   ? {
                       opacity: 1,
