@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import PropTypes from 'prop-types';
 import { memo } from 'react';
 import { FaCheck } from 'react-icons/fa';
 
@@ -15,16 +14,31 @@ const styles = css`
     font-size: 16px;
   }
 `;
-function SaveButton({
-  onClick,
-  popupTitle,
-  popupPlacement,
-  disabled,
-  className,
-}) {
+
+interface SaveButtonProps {
+  popupTitle: string;
+  popupPlacement: string;
+  disabled: boolean;
+  className: string;
+  onClick: () => void;
+}
+
+function SaveButton(props: SaveButtonProps) {
+  const {
+    className = '',
+    disabled = false,
+    popupPlacement = 'left',
+    popupTitle = 'Save',
+    onClick,
+  } = props;
+
   return (
     <div className={className}>
-      <ToolTip title={popupTitle} popupPlacement={popupPlacement}>
+      <ToolTip
+        className={className}
+        title={popupTitle}
+        popupPlacement={popupPlacement}
+      >
         <button
           css={styles}
           type="button"
@@ -38,20 +52,5 @@ function SaveButton({
     </div>
   );
 }
-
-SaveButton.defaultProps = {
-  onClick: () => null,
-  popupTitle: 'Save',
-  popupPlacement: 'left',
-  disabled: false,
-  className: '',
-};
-SaveButton.propTypes = {
-  onClick: PropTypes.func,
-  popupTitle: PropTypes.string,
-  popupPlacement: PropTypes.string,
-  disabled: PropTypes.bool,
-  className: PropTypes.string,
-};
 
 export default memo(SaveButton);
