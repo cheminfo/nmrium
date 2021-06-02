@@ -16,44 +16,44 @@ import { SET_MOLECULE } from '../../reducer/types/Types';
 import MoleculePanelHeader from './MoleculePanelHeader';
 import useAtomAssignment from './useAtomAssignment';
 
-const panelContainerStyle = css`
+const styles = css`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
   height: 100%;
-`;
 
-const moleculeContainerStyle = css`
-  width: 100%;
-  height: 100%;
-
-  .slider {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  .molecule-container {
+    width: 100%;
     height: 100%;
-    padding: 0px;
-    .mol-svg-container {
-      height: calc(100% - 25px);
-      width: 100%;
-      div {
+
+    .slider {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      padding: 0px;
+      .mol-svg-container {
+        height: calc(100% - 25px);
         width: 100%;
-        height: 100%;
+        div {
+          width: 100%;
+          height: 100%;
+        }
       }
-    }
 
-    p {
-      width: 100%;
-      margin: 0 auto;
-      display: block;
-      position: relative;
-      text-align: center;
-    }
+      p {
+        width: 100%;
+        margin: 0 auto;
+        display: block;
+        position: relative;
+        text-align: center;
+      }
 
-    svg polygon {
-      fill: gray !important;
+      svg polygon {
+        fill: gray !important;
+      }
     }
   }
 `;
@@ -121,7 +121,7 @@ function MoleculePanel({
   }, []);
 
   return (
-    <div css={panelContainerStyle}>
+    <div css={styles}>
       <MoleculePanelHeader
         currentIndex={currentIndex}
         molecules={molecules}
@@ -129,7 +129,7 @@ function MoleculePanel({
         onMoleculeIndexChange={moleculeIndexHandler}
       />
 
-      <div css={moleculeContainerStyle}>
+      <div className="molecule-container">
         <NextPrev
           onChange={(slideIndex) => setCurrentIndex(slideIndex)}
           defaultIndex={currentIndex}
