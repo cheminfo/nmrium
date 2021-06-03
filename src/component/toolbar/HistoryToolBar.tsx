@@ -1,10 +1,10 @@
 import { Fragment, useCallback, memo } from 'react';
 import { FaUndo, FaRedo } from 'react-icons/fa';
 
-import { ChartContext, useChartData } from '../context/ChartContext';
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
-import { REDO, UNDO } from '../reducer/HistoryActions';
+import { REDO, UNDO } from '../reducer/types/HistoryTypes';
 
 const styles = {
   button: {
@@ -23,25 +23,20 @@ const styles = {
   },
 };
 
+interface HistoryToolBarProps {
+  isUndoButtonVisible?: boolean;
+  isRedoButtonVisible?: boolean;
+}
+
 function HistoryToolBar({
   isUndoButtonVisible = true,
   isRedoButtonVisible = true,
-}) {
-  const { history } = useChartData(ChartContext);
-
+}: HistoryToolBarProps) {
+  const { history } = useChartData();
   const dispatch = useDispatch();
-  const handleRedo = useCallback(
-    () =>
-      dispatch({
-        type: REDO,
-      }),
-    [dispatch],
-  );
-  const handleUndo = useCallback(
-    () =>
-      dispatch({
-        type: UNDO,
-      }),
+
+  const handle = useCallback(
+    (type: typeof REDO | typeof UNDO) => dispatch({ type }),
     [dispatch],
   );
 
@@ -51,7 +46,7 @@ function HistoryToolBar({
         <button
           style={styles.button}
           type="button"
-          onClick={handleRedo}
+          onClick={() => handle(REDO)}
           disabled={!history.hasRedo}
         >
           <ToolTip title="Redo" popupPlacement="right">
@@ -63,7 +58,7 @@ function HistoryToolBar({
         <button
           type="button"
           style={styles.button}
-          onClick={handleUndo}
+          onClick={() => handle(UNDO)}
           disabled={!history.hasUndo}
         >
           <ToolTip title="Undo" popupPlacement="right">

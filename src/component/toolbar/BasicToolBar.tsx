@@ -71,6 +71,7 @@ const IMPORT_MENU = [
     label: 'Add JCAMP-DX from URL',
   },
 ];
+
 const EXPORT_MENU = [
   {
     id: 'svg',
@@ -104,6 +105,18 @@ const EXPORT_MENU = [
   },
 ];
 
+interface BasicToolBarProps {
+  activeSpectrum: boolean;
+  fidCounter: number;
+  ftCounter: number;
+  displayerMode: any;
+  info: any;
+  verticalAlign: {
+    flag: boolean;
+    stacked: boolean;
+  };
+}
+
 function BasicToolBar({
   info,
   verticalAlign,
@@ -111,7 +124,7 @@ function BasicToolBar({
   ftCounter,
   fidCounter,
   activeSpectrum,
-}) {
+}: BasicToolBarProps) {
   const dispatch = useDispatch();
   const preferences = usePreferences();
   const alert = useAlert();
@@ -173,11 +186,12 @@ function BasicToolBar({
     },
     [preferences],
   );
+
   const importFromFileSystemHandler = useCallback(() => {
     loader.open();
   }, [loader]);
 
-  const ImportHandler = useCallback(
+  const importHandler = useCallback(
     ({ id }) => {
       switch (id) {
         case 'importFile':
@@ -197,22 +211,22 @@ function BasicToolBar({
     ({ id }) => {
       switch (id) {
         case 'svg':
-          saveAsSVGHandler();
+          void saveAsSVGHandler();
           break;
         case 'png':
-          saveAsPNGHandler();
+          void saveAsPNGHandler();
           break;
         case 'json':
-          saveAsJSONHandler();
+          void saveAsJSONHandler();
           break;
         case 'advance_save':
-          saveAsHandler();
+          void saveAsHandler();
           break;
         case 'nmre':
-          saveAsNMREHandler();
+          void saveAsNMREHandler();
           break;
         case 'copy':
-          saveToClipboardHandler();
+          void saveToClipboardHandler();
           break;
 
         default:
@@ -237,7 +251,10 @@ function BasicToolBar({
           className="fa"
           component={<FaFileImport />}
           toolTip="Import"
-          onClick={ImportHandler}
+          onClick={(element) => {
+            importHandler(element);
+            return null;
+          }}
           items={IMPORT_MENU}
         />
       )}
@@ -247,7 +264,10 @@ function BasicToolBar({
           className="fa"
           component={<FaFileExport />}
           toolTip="Export As"
-          onClick={exportHandler}
+          onClick={(element) => {
+            exportHandler(element);
+            return null;
+          }}
           items={EXPORT_MENU}
         />
       )}

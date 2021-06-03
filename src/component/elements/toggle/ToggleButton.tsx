@@ -1,6 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useState, useEffect, cloneElement } from 'react';
+import {
+  useCallback,
+  useState,
+  useEffect,
+  cloneElement,
+  CSSProperties,
+  ReactElement,
+  JSXElementConstructor,
+} from 'react';
 
 const styles = css`
   width: 35px;
@@ -20,19 +28,34 @@ const activeStyles = css`
   background-color: #f3f3f3 !important;
 `;
 
+interface ToggleButtonProps {
+  isActive?: boolean;
+  disabled?: boolean;
+  isVisible?: boolean;
+  className?: string;
+  value?: any;
+  onChange?: (value: any) => null;
+
+  children: ReactElement<any, string | JSXElementConstructor<any>>;
+  style?: CSSProperties;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  helpID?: string;
+}
+
 function ToggleButton({
   children,
-  value,
-  disabled,
-  isActive,
-  onChange,
-  className,
-  style,
-  isVisible,
+  value = null,
+  disabled = false,
+  isActive = false,
+  onChange = () => null,
+  className = '',
+  style = {},
+  isVisible = false,
   onMouseEnter,
   onMouseLeave,
   helpID,
-}) {
+}: ToggleButtonProps) {
   const [active, setActive] = useState(isActive);
   const toggleButton = useCallback(() => {
     const _isActive = !active;
@@ -51,6 +74,7 @@ function ToggleButton({
   if (!isVisible) {
     return null;
   }
+
   return (
     <button
       type="button"
@@ -67,20 +91,7 @@ function ToggleButton({
     </button>
   );
 }
-ToggleButton.displayName = 'ToggleButton';
 
-ToggleButton.defaultProps = {
-  isActive: false,
-  disabled: false,
-  isVisible: true,
-  value: null,
-  className: '',
-  onChange: function () {
-    return null;
-  },
-  onValueReady: function () {
-    return null;
-  },
-};
+ToggleButton.displayName = 'ToggleButton';
 
 export default ToggleButton;
