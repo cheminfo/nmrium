@@ -75,7 +75,14 @@ const headerStyle = css`
   }
 `;
 
-function Header({ isFullscreen, onMaximize }) {
+interface HeaderProps {
+  onMaximize?: () => null;
+  isFullscreen: boolean;
+}
+
+function Header(props: HeaderProps) {
+  const { isFullscreen, onMaximize = () => null } = props;
+
   const {
     toolOptions: { selectedOptionPanel },
   } = useChartData();
@@ -180,11 +187,5 @@ function Header({ isFullscreen, onMaximize }) {
     </div>
   );
 }
-
-Header.defaultProps = {
-  onMaximize: function () {
-    return null;
-  },
-};
 
 export default Header;

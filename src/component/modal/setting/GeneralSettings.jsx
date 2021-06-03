@@ -150,6 +150,7 @@ function GeneralSettings({ onClose, onSave }) {
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
   }, []);
+
   const submitHandler = useCallback(
     (values) => {
       // eslint-disable-next-line no-unused-vars
