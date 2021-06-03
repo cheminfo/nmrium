@@ -57,15 +57,24 @@ const styles = css`
 
 // let debounceClickEvents = [];
 
+interface FunctionToolBarProps {
+  defaultValue?: string;
+  activeSpectrum: boolean;
+  fidCounter: number;
+  ftCounter: number;
+  displayerMode: any;
+  info: any;
+}
+
 function FunctionToolBar({
-  defaultValue,
+  defaultValue = options.zoom.id,
   activeSpectrum,
   info,
   displayerMode,
   ftCounter,
   fidCounter,
-}) {
-  const [option, setOption] = useState();
+}: FunctionToolBarProps) {
+  const [option, setOption] = useState<any>();
   const help = useHelp();
   const preferences = usePreferences();
 
@@ -209,7 +218,6 @@ function FunctionToolBar({
           <ToggleButton
             key={options.slicingTool.id}
             value={options.slicingTool.id}
-            style={styles.icon}
             isVisible={activeSpectrum}
           >
             <ToolTip
@@ -288,7 +296,6 @@ function FunctionToolBar({
               key={options.phaseCorrection.id}
               value={options.phaseCorrection.id}
               className="cheminfo"
-              style={styles.icon}
               isVisible={
                 activeSpectrum &&
                 selectedSpectrumInfo &&
@@ -370,7 +377,3 @@ function FunctionToolBar({
 }
 
 export default ToolBarWrapper(memo(FunctionToolBar));
-
-FunctionToolBar.defaultProps = {
-  defaultValue: options.zoom.id,
-};

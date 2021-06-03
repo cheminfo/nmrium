@@ -93,7 +93,7 @@ function MenuButton({
   toolTip = '',
   className,
   items = [],
-  onClick = () => null,
+  onClick = (element) => null,
 }) {
   const menuButtonRef = useRef();
   const [isShown, showMenu] = useState(false);
