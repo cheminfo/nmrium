@@ -32,7 +32,17 @@ const styles = css`
   }
 `;
 
-function CopyClipboardModal({ text, onClose, onCopyClick }) {
+interface CopyClipboardModalProps {
+  text: string;
+  onClose: () => void;
+  onCopyClick: (text: string) => void;
+}
+
+function CopyClipboardModal({
+  text,
+  onClose,
+  onCopyClick,
+}: CopyClipboardModalProps) {
   return (
     <div css={styles}>
       <div className="mainButtonsContainer handle">

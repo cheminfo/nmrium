@@ -85,7 +85,13 @@ const styles = css`
   }
 `;
 
-function AboutUsModal({ onClose }) {
+interface AboutUsModalProps {
+  onClose: () => null;
+}
+
+function AboutUsModal({ onClose = () => null }: AboutUsModalProps) {
+  const info = VersionInfo();
+
   return (
     <div css={styles}>
       <div className="header handle">
@@ -96,7 +102,7 @@ function AboutUsModal({ onClose }) {
       <div className="container">
         <div className="center-container">
           <Logo width={160} height={50} />
-          Version <VersionInfo />
+          Version {info === 'HEAD' ? 'HEAD' : { info }}
           <span className="separator" />
           <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
             GitHub ( https://git.nmrium.org )
@@ -132,11 +138,6 @@ function AboutUsModal({ onClose }) {
   );
 }
 
-AboutUsModal.defaultProps = {
-  onClose: () => {
-    return null;
-  },
-};
 export default AboutUsModal;
 
 function VersionInfo() {
