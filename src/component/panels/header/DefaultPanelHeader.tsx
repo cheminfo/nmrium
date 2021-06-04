@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { memo } from 'react';
+import { memo, ReactNode } from 'react';
 import { FaRegTrashAlt, FaCog, FaFilter } from 'react-icons/fa';
 
 import ToggleButton from '../../elements/ToggleButton';
@@ -43,22 +43,35 @@ const styles = css`
     fontSize: 12px;
     padding: 0;
   },
-
 `;
 
+interface DefaultPanelHeaderProps {
+  counter?: number;
+  counterFiltered?: number;
+  deleteToolTip?: string;
+  filterToolTip?: string;
+  onDelete?: () => void;
+  onFilter?: () => void;
+  onSettingClick?: () => void;
+  filterIsActive?: boolean;
+  canDelete?: boolean;
+  showSettingButton?: boolean;
+  children: ReactNode;
+}
+
 function DefaultPanelHeader({
-  counter,
-  onDelete,
-  deleteToolTip,
-  onFilter,
-  filterToolTip,
-  filterIsActive,
-  counterFiltered,
+  counter = 0,
+  onDelete = () => null,
+  deleteToolTip = 'Delete',
+  onFilter = () => null,
+  filterToolTip = '',
+  filterIsActive = false,
+  counterFiltered = 0,
   children,
-  onSettingClick,
-  showSettingButton,
-  canDelete,
-}) {
+  onSettingClick = () => null,
+  showSettingButton = false,
+  canDelete = true,
+}: DefaultPanelHeaderProps) {
   return (
     <div css={styles}>
       {canDelete && (
@@ -70,7 +83,7 @@ function DefaultPanelHeader({
       )}
 
       {/* Optional if there is no filter needed, e.g. in spectra panel */}
-      {onFilter && filterToolTip ? (
+      {filterToolTip ? (
         <ToggleButton
           popupTitle={filterToolTip}
           popupPlacement="right"
@@ -106,18 +119,5 @@ function DefaultPanelHeader({
     </div>
   );
 }
-
-DefaultPanelHeader.defaultProps = {
-  counter: 0,
-  onDelete: () => null,
-  deleteToolTip: 'Delete',
-  onFilter: () => null,
-  filterToolTip: '',
-  filterIsActive: false,
-  counterFiltered: 0,
-  onSettingClick: () => null,
-  showSettingButton: false,
-  canDelete: true,
-};
 
 export default memo(DefaultPanelHeader);
