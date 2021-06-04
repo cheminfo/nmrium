@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { CSSProperties, memo, ReactNode } from 'react';
 
 const styles = {
   width: '100%',
@@ -14,6 +14,17 @@ function getVAlign(align) {
   }
   return 'center';
 }
+
+interface TableHeaderProps {
+  className?: string;
+  style?: CSSProperties;
+  children: ReactNode;
+  align?: CSSProperties['textAlign'];
+  vAlign?: 'center' | 'top' | 'bottom';
+  size?: number;
+  onClick?: () => void;
+}
+
 function TableHeader({
   children,
   className,
@@ -21,8 +32,8 @@ function TableHeader({
   align = 'center',
   vAlign = 'center',
   size = 1,
-  onClick,
-}) {
+  onClick = () => null,
+}: TableHeaderProps) {
   return (
     <div
       className={className}
@@ -39,9 +50,5 @@ function TableHeader({
     </div>
   );
 }
-
-TableHeader.defaultProps = {
-  onClick: () => null,
-};
 
 export default memo(TableHeader);
