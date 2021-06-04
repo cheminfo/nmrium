@@ -1,6 +1,6 @@
-import { memo } from 'react';
+import { CSSProperties, memo, ReactNode } from 'react';
 
-const styles = {
+const styles: CSSProperties = {
   width: '100%',
   display: 'flex',
   padding: '0px 5px',
@@ -10,7 +10,14 @@ const styles = {
   fontSize: 11,
   fontWeight: 'bold',
 };
-function TableHead({ children, className, style }) {
+
+interface TableHeadProps {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+}
+
+function TableHead({ children, className, style }: TableHeadProps) {
   return (
     <div className={className} style={{ ...styles, ...style }}>
       {children}
