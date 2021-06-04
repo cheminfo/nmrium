@@ -86,7 +86,7 @@ const styles = css`
 `;
 
 interface AboutUsModalProps {
-  onClose: () => null;
+  onClose?: () => null;
 }
 
 function AboutUsModal({ onClose = () => null }: AboutUsModalProps) {
