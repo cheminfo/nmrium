@@ -12,16 +12,33 @@ import NoTableData from '../extra/placeholder/NoTableData';
 
 import FiltersTableRow from './FiltersTableRow';
 
-function FilterPanel({ filters, spectraCounter }) {
+export interface FiltersProps {
+  id: number;
+  name: string;
+
+  flag: boolean;
+  label: string;
+  isDeleteAllow: boolean;
+
+  error?: any;
+  value: any;
+}
+
+interface FilterPanelProps {
+  filters: Array<FiltersProps>;
+  spectraCounter: number;
+}
+
+function FilterPanel({ filters, spectraCounter }: FilterPanelProps) {
   const filtersTable = useMemo(() => {
     return filters ? (
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell align="center" size="1">
+            <TableCell align="center" size={1}>
               Label
             </TableCell>
-            <TableCell align="center" size="2">
+            <TableCell align="center" size={2}>
               Properties
             </TableCell>
           </TableRow>

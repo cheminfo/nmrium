@@ -14,6 +14,8 @@ import {
   DELETE_SPECTRA_FILTER,
 } from '../../reducer/types/Types';
 
+import { FiltersProps } from './FilterPanel';
+
 const styles = {
   button: {
     backgroundColor: 'transparent',
@@ -28,11 +30,17 @@ const styles = {
     borderBottom: '1px solid #817066',
   },
 };
-function FiltersTableRow({ filters, spectraCounter }) {
+
+interface FiltersTableRowProps {
+  filters: Array<FiltersProps>;
+  spectraCounter: number;
+}
+
+function FiltersTableRow({ filters, spectraCounter }: FiltersTableRowProps) {
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
-  const [selectedFilterIndex, setSelectedFilter] = useState();
+  const [selectedFilterIndex, setSelectedFilter] = useState<number>(0);
 
   const handelFilterCheck = useCallback(
     async (id, checked) => {
@@ -102,50 +110,45 @@ function FiltersTableRow({ filters, spectraCounter }) {
     [alert, dispatch],
   );
   const filtersTableRow = useMemo(() => {
-    return (
-      filters &&
-      filters.map((d, index) => (
-        <TableRow
-          key={d.id}
-          style={{
-            ...(index === selectedFilterIndex && styles.active),
-            ...(selectedFilterIndex != null && index > selectedFilterIndex
-              ? { opacity: 0.3 }
-              : {}),
-          }}
+    return filters?.map((d, index) => (
+      <TableRow
+        key={d.id}
+        style={{
+          ...(index === selectedFilterIndex && styles.active),
+          ...(selectedFilterIndex != null && index > selectedFilterIndex
+            ? { opacity: 0.3 }
+            : {}),
+        }}
+      >
+        <TableCell
+          align="center"
+          size={2}
+          onClick={() => filterSnapShotHandler(d.id, index)}
         >
-          <TableCell
-            align="center"
-            size="2"
-            onClick={() => filterSnapShotHandler(d.id, index)}
-          >
-            {d.label}
-          </TableCell>
-          <TableCell align="left" size="3">
-            <div onClick={(e) => e.stopPropagation()}>
-              <ObjectInspector data={d.error ? d.error : d.value} />
-            </div>
-          </TableCell>
-          <TableCell align="center" vAlign="center" size="1">
-            <CheckBox
-              checked={d.flag}
-              onChange={(event) =>
-                handelFilterCheck(d.id, event.target.checked)
-              }
-            />
-            {d.isDeleteAllow && (
-              <button
-                style={styles.button}
-                type="button"
-                onClick={() => handelDeleteFilter(d)}
-              >
-                <FaRegTrashAlt />
-              </button>
-            )}
-          </TableCell>
-        </TableRow>
-      ))
-    );
+          {d.label}
+        </TableCell>
+        <TableCell align="left" size={3}>
+          <div onClick={(e) => e.stopPropagation()}>
+            <ObjectInspector data={d.error ? d.error : d.value} />
+          </div>
+        </TableCell>
+        <TableCell align="center" vAlign="center" size={1}>
+          <CheckBox
+            checked={d.flag}
+            onChange={(event) => handelFilterCheck(d.id, event.target.checked)}
+          />
+          {d.isDeleteAllow && (
+            <button
+              style={styles.button}
+              type="button"
+              onClick={() => handelDeleteFilter(d)}
+            >
+              <FaRegTrashAlt />
+            </button>
+          )}
+        </TableCell>
+      </TableRow>
+    ));
   }, [
     filterSnapShotHandler,
     filters,
@@ -153,7 +156,8 @@ function FiltersTableRow({ filters, spectraCounter }) {
     handelFilterCheck,
     selectedFilterIndex,
   ]);
-  return filtersTableRow;
+
+  return <>{filtersTableRow}</>;
 }
 
 export default memo(FiltersTableRow);
