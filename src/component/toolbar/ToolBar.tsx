@@ -1,9 +1,9 @@
-import { memo } from 'react';
+import { CSSProperties, memo } from 'react';
 
 import BasicToolBar from './BasicToolBar';
 import FunctionToolBar from './FunctionToolBar';
 
-const styles = {
+const styles: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'start',
@@ -12,9 +12,14 @@ const styles = {
   overflowY: 'auto',
   height: '100%',
 };
-function ToolBar({ selectedTool }) {
+
+interface ToolBarProps {
+  selectedTool: string;
+}
+
+function ToolBar({ selectedTool }: ToolBarProps) {
   return (
-    <div style={{ ...styles }}>
+    <div style={styles}>
       <FunctionToolBar defaultValue={selectedTool} />
       {/* <HistoryToolBar /> */}
       <BasicToolBar />
