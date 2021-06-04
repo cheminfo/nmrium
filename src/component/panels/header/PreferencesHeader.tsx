@@ -19,7 +19,13 @@ const styles = css`
     opacity: 0.6;
   }
 `;
-function PreferencesHeader({ onClose, onSave }) {
+
+interface PreferencesHeaderProps {
+  onClose: () => void;
+  onSave: () => void;
+}
+
+function PreferencesHeader({ onClose, onSave }: PreferencesHeaderProps) {
   return (
     <div css={styles}>
       <CloseButton onClick={onClose} popupTitle="close Preferences" />
