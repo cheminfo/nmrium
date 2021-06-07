@@ -56,7 +56,13 @@ const menuStyles = css`
   }
 `;
 
-function MenuItem({ icon, label, onClick }) {
+interface MenuItemProps {
+  icon: any;
+  label: string;
+  onClick: () => void;
+}
+
+function MenuItem({ icon, label, onClick }: MenuItemProps) {
   return (
     <button type="button" className="menu-item" onClick={onClick}>
       {icon}
@@ -65,7 +71,13 @@ function MenuItem({ icon, label, onClick }) {
   );
 }
 
-function MenuList({ items, boxBounding, onClick }) {
+interface MenuListProps {
+  items: any;
+  boxBounding: any;
+  onClick: (element: any) => void;
+}
+
+function MenuList({ items, boxBounding, onClick }: MenuListProps) {
   return (
     <div
       className="menu"
@@ -73,18 +85,26 @@ function MenuList({ items, boxBounding, onClick }) {
         transform: `translate(${boxBounding.width}px, -${boxBounding.height}px) `,
       }}
     >
-      {items &&
-        items.map((item) => {
-          return (
-            <MenuItem
-              key={`${item.id}`}
-              {...item}
-              onClick={() => onClick(item)}
-            />
-          );
-        })}
+      {items?.map((item) => {
+        return (
+          <MenuItem
+            key={`${item.id}`}
+            {...item}
+            onClick={() => onClick(item)}
+          />
+        );
+      })}
     </div>
   );
+}
+
+interface MenuButtonProps {
+  style?: any;
+  component: any;
+  toolTip: string;
+  className?: string;
+  items: Array<any>;
+  onClick: (element: any) => void;
 }
 
 function MenuButton({
@@ -93,9 +113,9 @@ function MenuButton({
   toolTip = '',
   className,
   items = [],
-  onClick = (element) => null,
-}) {
-  const menuButtonRef = useRef();
+  onClick = () => null,
+}: MenuButtonProps) {
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const [isShown, showMenu] = useState(false);
 
   const closeMenuButton = useCallback(() => {
@@ -130,7 +150,7 @@ function MenuButton({
       {isShown && (
         <MenuList
           items={items}
-          boxBounding={menuButtonRef.current.getBoundingClientRect()}
+          boxBounding={menuButtonRef.current?.getBoundingClientRect()}
           onClick={clickHandler}
         />
       )}

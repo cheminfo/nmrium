@@ -17,6 +17,8 @@ export default function ToolBarWrapper(WrappedComponent) {
         let info = null;
         let ftCounter = 0;
         let fidCounter = 0;
+
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < data.length; i++) {
           const { isFid, isFt, nucleus } = data[i].info;
 
@@ -60,7 +62,7 @@ export default function ToolBarWrapper(WrappedComponent) {
   }
 
   return memo(
-    forwardRef((props, ref) => {
+    forwardRef((props: any, ref) => {
       return <Wrapper {...props} forwardedRef={ref} />;
     }),
   );

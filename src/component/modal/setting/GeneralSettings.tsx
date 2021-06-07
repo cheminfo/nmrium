@@ -141,11 +141,16 @@ const styles = css`
   }
 `;
 
-function GeneralSettings({ onClose, onSave }) {
+interface GeneralSettingsProps {
+  onClose?: () => void;
+  onSave?: () => void;
+}
+
+function GeneralSettings({ onClose, onSave }: GeneralSettingsProps) {
   const [activeTab, setActiveTab] = useState('controllers');
   const preferences = usePreferences();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
-  const refForm = useRef();
+  const refForm = useRef<any>();
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
@@ -153,11 +158,10 @@ function GeneralSettings({ onClose, onSave }) {
 
   const submitHandler = useCallback(
     (values) => {
-      // eslint-disable-next-line no-unused-vars
       const { dispatch, basePreferences, ...resValues } = values;
       setSettingsData(resValues);
       preferences.dispatch({ type: SET_PREFERENCES, payload: values });
-      onSave();
+      onSave?.();
     },
     [onSave, preferences, setSettingsData],
   );
@@ -183,21 +187,13 @@ function GeneralSettings({ onClose, onSave }) {
             defaultTabID={activeTab}
             onClick={tabChangeHandler}
           >
-            <div
-              className="inner-content"
-              tablabel="Controllers"
-              tabid="controllers"
-            >
+            <div className="inner-content">
               <ControllersTabContent />
             </div>
-            <div
-              className="inner-content"
-              tablabel="Formatting"
-              tabid="formatting"
-            >
+            <div className="inner-content">
               <FormattingTabContent />
             </div>
-            <div className="inner-content" tablabel="Display" tabid="display">
+            <div className="inner-content">
               <DisplayTabContent preferences={preferences} />
             </div>
           </Tabs>
