@@ -1,9 +1,5 @@
-import React from "react";
-
-export type PropsOf<T = unknown> = T extends React.ElementType
-  ? React.ComponentProps<T>
-  : never;
+import { forwardRef } from 'react';
 
 export function forwardRefWithAs<T>(component: T): T {
-  return React.forwardRef(component as unknown as any) as any;
+  return forwardRef(component as unknown as any) as any;
 }

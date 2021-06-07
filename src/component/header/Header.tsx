@@ -76,7 +76,7 @@ const headerStyle = css`
 `;
 
 interface HeaderProps {
-  onMaximize?: () => null;
+  onMaximize?: () => void;
   isFullscreen: boolean;
 }
 
