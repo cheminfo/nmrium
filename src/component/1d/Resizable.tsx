@@ -5,7 +5,14 @@ import Draggable from 'react-draggable';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 
-function Resizable({ from, to, onDrag = () => null, onDrop }) {
+interface ResizableProps {
+  from: number;
+  to: number;
+  onDrag?: (element: { from?: number; to?: number }) => void;
+  onDrop: (element: any) => void;
+}
+
+function Resizable({ from, to, onDrag = () => null, onDrop }: ResizableProps) {
   const { height, margin, mode } = useChartData();
   const [rightDragVisibility, setRightDragVisibility] = useState(false);
   const [leftDragVisibility, setLeftDragVisibility] = useState(false);
