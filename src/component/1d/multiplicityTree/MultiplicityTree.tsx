@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import lodashGet from 'lodash/get';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, CSSProperties } from 'react';
 
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
@@ -23,6 +23,22 @@ const styles = {
   strokeWidth: 1,
 };
 
+export interface SignalNodeProps {
+  id: string;
+  delta: number;
+  multiplicity: string;
+}
+
+interface MultiplicityTreeProps {
+  rangeFrom: number;
+  rangeTo: number;
+  signal: SignalNodeProps;
+  labelOptions?: {
+    distance: number;
+    fontSize: CSSProperties['fontSize'];
+  };
+}
+
 function MultiplicityTree({
   rangeFrom,
   rangeTo,
@@ -31,7 +47,7 @@ function MultiplicityTree({
     distance: 10,
     fontSize: 11,
   },
-}) {
+}: MultiplicityTreeProps) {
   const { scaleX, scaleY } = useScale();
   const {
     data: spectraData,
@@ -256,7 +272,9 @@ function MultiplicityTree({
       {...{
         onClick:
           selectedTool && selectedTool === options.editRange.id
-            ? null
+            ? () => {
+                return null;
+              }
             : (e) => {
                 if (e.shiftKey) {
                   e.stopPropagation();
