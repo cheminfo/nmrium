@@ -7,6 +7,8 @@ import {
   cloneElement,
 } from 'react';
 
+import ToggleButton from './ToggleButton';
+
 const style = { display: 'flex', flexDirection: 'column' };
 
 function ToggleButtonGroup({ children, value, onChange }) {
@@ -30,7 +32,7 @@ function ToggleButtonGroup({ children, value, onChange }) {
     let index = 0;
     return Children.map(children, (child) => {
       if (child) {
-        if (child.type.displayName === 'ToggleButton') {
+        if (child.type === ToggleButton) {
           const _child = cloneElement(child, {
             onChange: handleOnChange,
             isActive:
@@ -50,7 +52,7 @@ function ToggleButtonGroup({ children, value, onChange }) {
 
   useEffect(() => {
     const val = Children.map(children, (child) => {
-      if (child && child.type.displayName === 'ToggleButton') {
+      if (child && child.type === ToggleButton) {
         return {
           value: child.props.value,
           isActive: child.props.value === value ? true : false,
