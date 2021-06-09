@@ -5,7 +5,8 @@ import lodashGet from 'lodash/get';
 import { useCallback, useMemo, memo, useEffect, useState } from 'react';
 
 import { useChartData } from '../../../../context/ChartContext';
-import { Tabs } from '../../../../elements/Tab';
+import Tab from '../../../../elements/Tab/Tab';
+import Tabs from '../../../../elements/Tab/Tabs';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import Events from '../../../../utility/Events';
 import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
@@ -139,7 +140,7 @@ function SignalsForm({ rangeLabel }) {
     const signalTabs =
       values.signals.length > 0
         ? values.signals.map((signal, i) => (
-            <div
+            <Tab
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}
               tabid={`${i}`}
@@ -149,20 +150,20 @@ function SignalsForm({ rangeLabel }) {
               tabstyles={tabContainsErrors(i) ? tabStylesAddition : null}
             >
               <SignalFormTab onFocus={handleOnFocus} />
-            </div>
+            </Tab>
           ))
         : [];
 
     const addSignalTab = (
-      <div
-        tablabel={'+'}
+      <Tab
+        tablabel="+"
         tabid="addSignalTab"
-        candelete="false"
+        candelete={false}
         key="addSignalTab"
         className="add-signal-tab"
       >
         <AddSignalFormTab onFocus={handleOnFocus} rangeLabel={rangeLabel} />
-      </div>
+      </Tab>
     );
 
     return signalTabs.concat(addSignalTab);
@@ -201,7 +202,7 @@ function SignalsForm({ rangeLabel }) {
         )}
       </div>
       <Tabs
-        defaultTabID={values.activeTab}
+        activeTab={values.activeTab}
         onClick={tapClickHandler}
         canDelete
         onDelete={handleDeleteSignal}

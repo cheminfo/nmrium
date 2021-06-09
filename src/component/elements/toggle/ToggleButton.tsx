@@ -92,6 +92,4 @@ function ToggleButton({
   );
 }
 
-ToggleButton.displayName = 'ToggleButton';
-
 export default ToggleButton;
