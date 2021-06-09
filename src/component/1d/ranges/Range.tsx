@@ -10,7 +10,9 @@ import { TYPES, useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Resizable from '../Resizable';
-import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
+import MultiplicityTree, {
+  SignalNodeProps,
+} from '../multiplicityTree/MultiplicityTree';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -49,7 +51,21 @@ const stylesHighlighted = css`
   }
 `;
 
-function Range({ rangeData, showMultiplicityTrees, selectedTool }) {
+export interface RangeData {
+  id: number;
+  from: number;
+  to: number;
+  integral: number;
+  signal: Array<SignalNodeProps>;
+}
+
+interface RangeProps {
+  showMultiplicityTrees: boolean;
+  selectedTool: string;
+  rangeData: RangeData;
+}
+
+function Range({ rangeData, showMultiplicityTrees, selectedTool }: RangeProps) {
   const { id, from: rangeFrom, to: rangeTo, integral, signal } = rangeData;
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -177,7 +193,7 @@ function Range({ rangeData, showMultiplicityTrees, selectedTool }) {
               rangeFrom={from}
               rangeTo={to}
               signal={_signal}
-              key={signal.id}
+              key={_signal.id}
             />
           ))
         : null}
