@@ -4,7 +4,17 @@ import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 
 import AnalysisRange from './AnalysisRange';
 
-function MultiAnalysisRanges({ activeTab, spectraAnalysis, displayerKey }) {
+interface MultiAnalysisRangesProps {
+  activeTab: string;
+  displayerKey: string;
+  spectraAnalysis: Record<string, { options: { columns: Array<number> } }>;
+}
+
+function MultiAnalysisRanges({
+  activeTab,
+  spectraAnalysis,
+  displayerKey,
+}: MultiAnalysisRangesProps) {
   const columns = useMemo(() => {
     const {
       options: { columns },
