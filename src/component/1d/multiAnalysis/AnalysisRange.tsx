@@ -42,7 +42,15 @@ const stylesHighlighted = css`
   }
 `;
 
-function AnalysisRange({ rangeData, columnKey }) {
+interface AnalysisRangeProps {
+  columnKey: string;
+  rangeData: {
+    from: number;
+    to: number;
+  };
+}
+
+function AnalysisRange({ rangeData, columnKey }: AnalysisRangeProps) {
   const { from, to } = rangeData;
   const highlight = useHighlight([columnKey]);
   const { scaleX } = useScale();
