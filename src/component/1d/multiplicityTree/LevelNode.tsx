@@ -1,8 +1,15 @@
 import { useScale } from '../../context/ScaleContext';
 
+import { SignalNodeProps } from './MultiplicityTree';
 import { TREE_LEVEL_COLORS } from './TreeColors';
 
-function LevelNode({ signal, startY, levelHeight }) {
+interface LevelNodeProps {
+  signal: SignalNodeProps;
+  startY: number;
+  levelHeight: number;
+}
+
+function LevelNode({ signal, startY, levelHeight }: LevelNodeProps) {
   const { scaleX } = useScale();
   return (
     <line

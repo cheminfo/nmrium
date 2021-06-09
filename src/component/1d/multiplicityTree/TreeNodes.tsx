@@ -1,6 +1,27 @@
-import { useCallback } from 'react';
+/* eslint-disable react/no-unused-prop-types */
+import { CSSProperties, useCallback } from 'react';
 
 import { useScale } from '../../context/ScaleContext';
+
+interface NodeData {
+  startX: number;
+  _startX: number;
+  ratio: number;
+  multiplicityIndex: number;
+  color: string;
+}
+
+interface TreeNodesProps {
+  showLabels: boolean;
+  startY: number;
+  signalID: string;
+  levelHeight: number;
+  nodesData: Array<NodeData>;
+  labelOptions: {
+    distance: number;
+    fontSize: CSSProperties['fontSize'];
+  };
+}
 
 function TreeNodes({
   nodesData,
@@ -9,10 +30,10 @@ function TreeNodes({
   signalID,
   labelOptions,
   showLabels,
-}) {
+}: TreeNodesProps) {
   const { scaleX } = useScale();
   const buildTreeNodeAndEdge = useCallback(
-    ({ startX, _startX, ratio, multiplicityIndex, color }) => {
+    ({ startX, _startX, ratio, multiplicityIndex, color }: NodeData) => {
       const edgeLevel = 2 * multiplicityIndex + 2;
       const _startYEdge = startY + edgeLevel * levelHeight;
       const _startYNode = startY + (edgeLevel + 1) * levelHeight;
@@ -60,7 +81,7 @@ function TreeNodes({
     ],
   );
 
-  return nodesData && nodesData.map((node) => buildTreeNodeAndEdge(node));
+  return <>{nodesData?.map((node) => buildTreeNodeAndEdge(node))}</>;
 }
 
 export default TreeNodes;

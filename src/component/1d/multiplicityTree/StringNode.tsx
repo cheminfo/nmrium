@@ -1,6 +1,24 @@
+import { CSSProperties } from 'react';
+
 import { useScale } from '../../context/ScaleContext';
 
-function StringNode({ signal, startY, levelHeight, fontSize, showLabels }) {
+import { SignalNodeProps } from './MultiplicityTree';
+
+interface StringNodeProps {
+  signal: SignalNodeProps;
+  startY: number;
+  levelHeight: number;
+  fontSize: CSSProperties['fontSize'];
+  showLabels: boolean;
+}
+
+function StringNode({
+  signal,
+  startY,
+  levelHeight,
+  fontSize,
+  showLabels,
+}: StringNodeProps) {
   const { scaleX } = useScale();
   return (
     <text
