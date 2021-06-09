@@ -90,8 +90,6 @@ interface AboutUsModalProps {
 }
 
 function AboutUsModal({ onClose = () => null }: AboutUsModalProps) {
-  const info = VersionInfo();
-
   return (
     <div css={styles}>
       <div className="header handle">
@@ -102,7 +100,7 @@ function AboutUsModal({ onClose = () => null }: AboutUsModalProps) {
       <div className="container">
         <div className="center-container">
           <Logo width={160} height={50} />
-          Version {info === 'HEAD' ? 'HEAD' : { info }}
+          Version <VersionInfo />
           <span className="separator" />
           <a href="https://git.nmrium.org" target="_blank" rel="noreferrer">
             GitHub ( https://git.nmrium.org )
@@ -143,7 +141,7 @@ export default AboutUsModal;
 function VersionInfo() {
   const { version } = versionInfo;
   if (version === 'HEAD') {
-    return 'HEAD';
+    return <>HEAD</>;
   } else if (version.startsWith('git-')) {
     return (
       <a

@@ -4,7 +4,8 @@ import { useCallback, useRef, useState } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import CloseButton from '../../elements/CloseButton';
-import { Tabs } from '../../elements/Tab';
+import Tab from '../../elements/Tab/Tab';
+import Tabs, { PositionsEnum } from '../../elements/Tab/Tabs';
 import FormikForm from '../../elements/formik/FormikForm';
 import { SET_PREFERENCES } from '../../reducer/preferencesReducer';
 import { useStateWithLocalStorage } from '../../utility/LocalStorage';
@@ -183,19 +184,27 @@ function GeneralSettings({ onClose, onSave }: GeneralSettingsProps) {
           onSubmit={submitHandler}
         >
           <Tabs
-            position="LEFT"
-            defaultTabID={activeTab}
+            position={PositionsEnum.LEFT}
+            activeTab={activeTab}
             onClick={tabChangeHandler}
           >
-            <div className="inner-content">
-              <ControllersTabContent />
-            </div>
-            <div className="inner-content">
-              <FormattingTabContent />
-            </div>
-            <div className="inner-content">
-              <DisplayTabContent preferences={preferences} />
-            </div>
+            <Tab tablabel="Controllers" tabid="controllers">
+              <div className="inner-content">
+                <ControllersTabContent />
+              </div>
+            </Tab>
+
+            <Tab tablabel="Formatting" tabid="formatting">
+              <div className="inner-content">
+                <FormattingTabContent />
+              </div>
+            </Tab>
+
+            <Tab tablabel="Display" tabid="display">
+              <div className="inner-content">
+                <DisplayTabContent preferences={preferences} />
+              </div>
+            </Tab>
           </Tabs>
         </FormikForm>
       </div>

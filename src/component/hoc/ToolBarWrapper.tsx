@@ -18,9 +18,8 @@ export default function ToolBarWrapper(WrappedComponent) {
         let ftCounter = 0;
         let fidCounter = 0;
 
-        // eslint-disable-next-line @typescript-eslint/prefer-for-of
-        for (let i = 0; i < data.length; i++) {
-          const { isFid, isFt, nucleus } = data[i].info;
+        for (const dataInfo of data) {
+          const { isFid, isFt, nucleus } = dataInfo.info;
 
           if (activeTab === nucluesToString(nucleus)) {
             if (isFid) {
@@ -29,8 +28,8 @@ export default function ToolBarWrapper(WrappedComponent) {
             if (isFt) {
               ftCounter++;
             }
-            if (activeSpectrum && data[i].id === activeSpectrum.id) {
-              info = data[i].info;
+            if (activeSpectrum && dataInfo.id === activeSpectrum.id) {
+              info = dataInfo.info;
             }
           }
         }

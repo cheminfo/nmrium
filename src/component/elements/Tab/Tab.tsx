@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import PropTypes from 'prop-types';
-import { memo, useCallback } from 'react';
+import { CSSProperties, ReactNode, useCallback } from 'react';
 
 import DeleteButton from './DeleteButton';
 
@@ -17,19 +16,38 @@ const styles = (styles) => css`
   ${styles}
 `;
 
-function Tab({
+export interface InternalTabProps {
+  tabid: string;
+  tablabel: string;
+  isActive: boolean;
+  tabstyles?: CSSProperties;
+  canDelete?: boolean;
+  onDelete?: (element: any) => void;
+  onClick?: (element: any) => void;
+}
+
+export interface TabProps {
+  tabid: string;
+  tablabel: string;
+  canDelete?: boolean;
+  onDelete?: (element: any) => void;
+  tabstyles?: CSSProperties;
+  children: ReactNode;
+}
+
+export function InternalTab({
   tabid,
   tablabel,
-  activeTab,
-  onClick,
+  isActive,
+  onClick = () => null,
   canDelete,
-  onDelete,
+  onDelete = () => null,
   tabstyles,
-}) {
+}: InternalTabProps) {
   let className = 'tab-list-item';
 
   // use tab identifier if given (higher priority)
-  if (activeTab === tabid) {
+  if (isActive) {
     className += ' tab-list-active';
   }
 
@@ -39,6 +57,7 @@ function Tab({
     },
     [onClick, tablabel, tabid],
   );
+
   const deleteHandler = useCallback(
     (e) => {
       // stop propagation here to not have set it
@@ -48,6 +67,7 @@ function Tab({
     },
     [onDelete, tablabel, tabid],
   );
+
   return (
     <li className={className} onClick={clickHandler} css={styles(tabstyles)}>
       {canDelete && <DeleteButton onDelete={deleteHandler} />}
@@ -56,12 +76,6 @@ function Tab({
   );
 }
 
-Tab.propTypes = {
-  activeTab: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  tablabel: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-  tabid: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  canDelete: PropTypes.bool,
-};
-
-export default memo(Tab);
+export default function Tab(props: TabProps) {
+  return <>{props.children}</>;
+}
