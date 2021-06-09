@@ -3,9 +3,17 @@ import { memo, useEffect, useState } from 'react';
 import RangesWrapper from '../../hoc/RangesWrapper';
 import Events from '../../utility/Events';
 
-import Range from './Range';
+import Range, { RangeData } from './Range';
 
-function Ranges({ ranges, displayerKey, selectedTool }) {
+interface RangesProps {
+  displayerKey: string;
+  selectedTool: string;
+  ranges: {
+    values: Array<RangeData>;
+  };
+}
+
+function Ranges({ ranges, displayerKey, selectedTool }: RangesProps) {
   const [isMultiplicityTreesVisibile, showMultiplicityTrees] = useState(false);
 
   useEffect(() => {
@@ -16,16 +24,14 @@ function Ranges({ ranges, displayerKey, selectedTool }) {
 
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
-      {ranges &&
-        ranges.values &&
-        ranges.values.map((range) => (
-          <Range
-            key={range.id}
-            rangeData={range}
-            selectedTool={selectedTool}
-            showMultiplicityTrees={isMultiplicityTreesVisibile}
-          />
-        ))}
+      {ranges?.values?.map((range) => (
+        <Range
+          key={range.id}
+          rangeData={range}
+          selectedTool={selectedTool}
+          showMultiplicityTrees={isMultiplicityTreesVisibile}
+        />
+      ))}
     </g>
   );
 }
