@@ -16,7 +16,7 @@ const HighlightedRowStyle = { backgroundColor: '#ff6f0057' };
 
 const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
-function ZonesTableRow({ rowData, onUnlink, onContextMenu }) {
+function ZonesTableRow({ rowData, onUnlink, onContextMenu, rowIndex }) {
   const assignmentZone = useAssignment(rowData.id);
   const highlightZone = useHighlight([assignmentZone.id]);
   const highlightZoneX = useHighlight(
@@ -175,7 +175,7 @@ function ZonesTableRow({ rowData, onUnlink, onContextMenu }) {
       }
       {...highlightZone.onHover}
     >
-      <td {...rowSpanTags}>{rowData.tableMetaInfo.rowIndex + 1}</td>
+      <td {...rowSpanTags}>{rowIndex + 1}</td>
       <SignalDeltaColumn
         rowData={rowData}
         onHoverSignalX={onHoverSignalX}

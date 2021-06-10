@@ -1,27 +1,55 @@
 import { xNoiseSanPlot } from 'ml-spectra-processing';
 import { memo, useMemo } from 'react';
-import { Axis, LineSeries, Legend, Heading, Plot } from 'react-plot';
+import { Axis, LineSeries, Legend, Plot } from 'react-plot';
+
+function prepareData(matrix) {
+  let cols = matrix[0].length;
+  let rows = matrix.length;
+  let jump = Math.floor((cols * rows) / 204800) || 1;
+  const array = new Float64Array(((cols * rows) / jump) >> 0);
+  let index = 0;
+  for (let i = 0; i < array.length; i += jump) {
+    array[index++] = matrix[(i / rows) >> 0][i % rows];
+  }
+  return array;
+}
+
+function getLine(value, data, options) {
+  const { log10, abs } = Math;
+  const { yLogBase } = options;
+  const first = data.length > 0 ? data[0].x : 0;
+  const last = data.length > 0 ? data[data.length - 1].x : 0;
+  const inLogScale = log10(abs(value)) / log10(yLogBase);
+  return [
+    { x: first, y: inLogScale },
+    { x: last, y: inLogScale },
+  ];
+}
 
 const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
-  let input = prepareData(data.z);
-  const { factorStd = 5, yLogBase = 2 } = options;
-  const sanResult = xNoiseSanPlot(input, options);
+  const { yLogBase = 2 } = options;
 
-  let sanPlot = {};
-  let lines = {};
-  for (let plotKey in sanResult.sanplot) {
-    const { x, y } = sanResult.sanplot[plotKey];
-    let result = new Array(x.length);
-    for (let i = 0; i < x.length; i++) {
-      result[i] = { x: x[i], y: y[i] };
+  const processedData = useMemo(() => {
+    const input = prepareData(data.z);
+    const sanResult = xNoiseSanPlot(input, options);
+    const sanPlot = {};
+    const lines = {};
+    for (let plotKey in sanResult.sanplot) {
+      const { x, y } = sanResult.sanplot[plotKey];
+      let result = new Array(x.length);
+      for (let i = 0; i < x.length; i++) {
+        result[i] = { x: x[i], y: y[i] };
+      }
+      sanPlot[plotKey] = result;
+      lines[plotKey] = getLine(sanResult[plotKey], result, { yLogBase });
     }
-    sanPlot[plotKey] = result;
-    lines[plotKey] = getLine(sanResult[plotKey], result, { yLogBase });
-  }
+    return { sanPlot, lines };
+  }, [data.z, options, yLogBase]);
 
   return (
     <div>
       <span style={{ padding: '0 200px' }}>San Plot</span>
+
       <div
         style={{
           borderTop: '1px solid #ededed',
@@ -38,7 +66,7 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
           // seriesViewportStyle={{ stroke: 'gray' }}
         >
           <LineSeries
-            data={sanPlot.positive}
+            data={processedData.sanPlot.positive}
             xAxis="x"
             yAxis="y"
             label="positive"
@@ -52,7 +80,7 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
             }}
           />
           <LineSeries
-            data={lines.positive}
+            data={processedData.lines.positive}
             xAxis="x"
             yAxis="y"
             label="noise level"
@@ -75,7 +103,7 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
           />
           <Axis
             id="y"
-            label={`Intensity [Log${yLogBase}]`}
+            label={`Intensity [Log ${yLogBase}]`}
             position="left"
             tickStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.7rem' }}
@@ -90,7 +118,7 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
           // seriesViewportStyle={{ stroke: 'gray' }}
         >
           <LineSeries
-            data={sanPlot.negative}
+            data={processedData.sanPlot.negative}
             xAxis="x"
             yAxis="y"
             label="negative"
@@ -105,7 +133,7 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
           />
 
           <LineSeries
-            data={lines.negative}
+            data={processedData.lines.negative}
             xAxis="x"
             yAxis="y"
             label="noise level"
@@ -141,26 +169,3 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
 });
 
 export default Spectrum2DHistogram;
-
-function prepareData(matrix) {
-  let cols = matrix[0].length;
-  let rows = matrix.length;
-  let jump = Math.floor((cols * rows) / 204800) || 1;
-  const array = new Float64Array(((cols * rows) / jump) >> 0);
-  console.log(array.length);
-  let index = 0;
-  for (let i = 0; i < array.length; i += jump) {
-    array[index++] = matrix[(i / rows) >> 0][i % rows];
-  }
-  return array;
-}
-
-function getLine(value, data, options) {
-  const { log10, abs } = Math;
-  const { yLogBase } = options;
-  const inLogScale = log10(abs(value)) / log10(yLogBase);
-  return [
-    { x: data[0].x, y: inLogScale },
-    { x: data[data.length - 1].x, y: inLogScale },
-  ];
-}

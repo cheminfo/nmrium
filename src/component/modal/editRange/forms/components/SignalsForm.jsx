@@ -5,7 +5,8 @@ import lodashGet from 'lodash/get';
 import { useCallback, useMemo, memo, useEffect, useState } from 'react';
 
 import { useChartData } from '../../../../context/ChartContext';
-import { Tabs } from '../../../../elements/Tab';
+import Tab from '../../../../elements/Tab/Tab';
+import Tabs from '../../../../elements/Tab/Tabs';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import Events from '../../../../utility/Events';
 import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
@@ -22,8 +23,13 @@ const textStyles = css`
   }
 
   .infoText {
-    margin-bottom: 20px;
-    font-size: 11px;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 14px;
+    text-align: left;
+    color: white;
+    background-color: #5f5f5f;
+    border-radius: 5px;
   }
 `;
 
@@ -31,7 +37,7 @@ const tabStylesAddition = css`
   color: red;
 `;
 
-function SignalsForm() {
+function SignalsForm({ rangeLabel }) {
   const { values, setFieldValue, errors } = useFormikContext();
 
   const { data: spectraData, activeSpectrum, activeTab } = useChartData();
@@ -134,7 +140,7 @@ function SignalsForm() {
     const signalTabs =
       values.signals.length > 0
         ? values.signals.map((signal, i) => (
-            <div
+            <Tab
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}
               tabid={`${i}`}
@@ -144,23 +150,24 @@ function SignalsForm() {
               tabstyles={tabContainsErrors(i) ? tabStylesAddition : null}
             >
               <SignalFormTab onFocus={handleOnFocus} />
-            </div>
+            </Tab>
           ))
         : [];
 
     const addSignalTab = (
-      <div
-        tablabel={'\u002B'}
+      <Tab
+        tablabel="+"
         tabid="addSignalTab"
-        candelete="false"
+        candelete={false}
         key="addSignalTab"
+        className="add-signal-tab"
       >
-        <AddSignalFormTab onFocus={handleOnFocus} />
-      </div>
+        <AddSignalFormTab onFocus={handleOnFocus} rangeLabel={rangeLabel} />
+      </Tab>
     );
 
     return signalTabs.concat(addSignalTab);
-  }, [handleOnFocus, tabContainsErrors, values.signals]);
+  }, [format, handleOnFocus, rangeLabel, tabContainsErrors, values.signals]);
 
   const editSignalInfoText = (
     <p className="infoText">
@@ -195,7 +202,7 @@ function SignalsForm() {
         )}
       </div>
       <Tabs
-        defaultTabID={values.activeTab}
+        activeTab={values.activeTab}
         onClick={tapClickHandler}
         canDelete
         onDelete={handleDeleteSignal}

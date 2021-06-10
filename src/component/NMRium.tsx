@@ -136,10 +136,17 @@ const containerStyles = css`
   }
 `;
 
+export enum NMRiumMode {
+  EXERCISE_1D = 'exercise1D',
+  PROCESS_1D = 'process1D',
+  DEFAULT = 'default',
+}
+
 export interface NMRiumProps {
   data?: NMRiumData;
   docsBaseUrl?: string;
   onDataChange?: (data: any) => void;
+  mode?: NMRiumMode;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
   /**
@@ -194,6 +201,7 @@ export interface NMRiumData {
 
 function NMRium({
   data: dataProp,
+  mode,
   onDataChange,
   docsBaseUrl,
   preferences,
@@ -246,11 +254,12 @@ function NMRium({
       type: INIT_PREFERENCES,
       payload: {
         display: preferences,
+        mode,
         docsBaseUrl,
         dispatch: dispatchPreferences,
       },
     });
-  }, [preferences, docsBaseUrl]);
+  }, [preferences, docsBaseUrl, mode]);
 
   useEffect(() => {
     dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
@@ -420,6 +429,7 @@ function NMRium({
 NMRium.propTypes = {
   docsBaseUrl: PropTypes.string,
   onDataChange: PropTypes.func,
+  mode: PropTypes.oneOf(Object.values(NMRiumMode)),
   preferences: PropTypes.shape({
     general: PropTypes.shape({
       disableMultipletAnalysis: PropTypes.bool,
@@ -457,44 +467,8 @@ NMRium.propTypes = {
 NMRium.defaultProps = {
   docsBaseUrl: 'https://docs.nmrium.org',
   onDataChange: () => null,
-  preferences: {
-    general: {
-      disableMultipletAnalysis: false,
-      hideSetSumFromMolecule: false,
-    },
-
-    panels: {
-      hideSpectraPanel: false,
-      hideInformationPanel: false,
-      hidePeaksPanel: false,
-      hideIntegralsPanel: false,
-      hideRangesPanel: false,
-      hideStructuresPanel: false,
-      hideFiltersPanel: false,
-      hideZonesPanel: false,
-      hideSummaryPanel: false,
-      hideMultipleSpectraAnalysisPanel: false,
-    },
-
-    toolBarButtons: {
-      hideZoomTool: false,
-      hideZoomOutTool: false,
-      hideImport: false,
-      hideExportAs: false,
-      hideSpectraStackAlignments: false,
-      hideSpectraCenterAlignments: false,
-      hideRealImaginary: false,
-      hidePeakTool: false,
-      hideIntegralTool: false,
-      hideAutoRangesTool: false,
-      hideZeroFillingTool: false,
-      hidePhaseCorrectionTool: false,
-      hideBaseLineCorrectionTool: false,
-      hideFFTTool: false,
-      hideMultipleSpectraAnalysisTool: false,
-      hideExclusionZonesTool: false,
-    },
-  },
+  mode: NMRiumMode.DEFAULT,
+  preferences: {},
 };
 
 export default memo(NMRium);

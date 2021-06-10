@@ -10,7 +10,8 @@ import {
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import { useDispatch } from '../../context/DispatchContext';
 import ContextMenu from '../../elements/ContextMenu';
-import { Tabs } from '../../elements/Tab';
+import Tab from '../../elements/Tab/Tab';
+import Tabs from '../../elements/Tab/Tabs';
 import { useAlert } from '../../elements/popup/Alert';
 import SpectraWrapper from '../../hoc/SpectraWrapper';
 import {
@@ -165,25 +166,20 @@ function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
 
   return (
     <Fragment>
-      <Tabs defaultTabID={activeTab} onClick={onTabChangeHandler}>
+      <Tabs activeTab={activeTab} onClick={onTabChangeHandler}>
         {spectrumsGroupByNucleus &&
           Object.keys(spectrumsGroupByNucleus).map((group) => (
-            <div
+            <Tab
               tablabel={group}
               tabid={group}
               key={group}
-              style={{ overflow: 'auto', height: '100%' }}
+              tabstyles={{ overflow: 'auto', height: '100%' }}
             >
               {spectrumsGroupByNucleus[group] &&
                 spectrumsGroupByNucleus[group].map((d) => (
                   <SpectrumListItem
                     key={d.id}
                     activeSpectrum={activeSpectrum}
-                    // activated={
-                    //   activeSpectrum && activeSpectrum.id === d.id
-                    //     ? true
-                    //     : false
-                    // }
                     markersVisible={markersVisible}
                     data={d}
                     onChangeVisibility={handleChangeVisibility}
@@ -193,7 +189,7 @@ function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
                     onContextMenu={(e) => contextMenuHandler(e, d)}
                   />
                 ))}
-            </div>
+            </Tab>
           ))}
       </Tabs>
       <ContextMenu ref={contextRef} context={contextMenu} />

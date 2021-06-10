@@ -12,7 +12,7 @@ const ReactTableStyle = css`
   border-spacing: 0;
   border: 1px solid #dedede;
   width: 100%;
-  // height: 100%;
+  max-height: 100%;
   font-size: 12px;
 
   .react-contextmenu-wrapper {
@@ -30,7 +30,7 @@ const ReactTableStyle = css`
   th {
     position: sticky;
     background-color: white;
-    z-index: 2;
+    z-index: 0;
     top: 0;
   }
   th,

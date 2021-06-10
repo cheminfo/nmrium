@@ -6,6 +6,8 @@ import InfoWrapper from '../hoc/InfoWrapper';
 const styles = {
   container: {
     height: '100%',
+    flexDirection: 'column',
+    display: 'flex',
   },
   tableContainer: {
     height: 'calc(100% - 30px)',

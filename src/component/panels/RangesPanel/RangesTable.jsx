@@ -7,6 +7,7 @@ import { FaLink } from 'react-icons/fa';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import { useGlobal } from '../../context/GlobalContext';
 import ContextMenu from '../../elements/ContextMenu';
+import useTableSortBy from '../../hooks/useTableSortBy';
 import useToggleStatus from '../extra/utilities/UseToggleStatus';
 
 import RangesTableRow from './RangesTableRow';
@@ -71,6 +72,8 @@ function RangesTable({
   const [signalFlags, toggleSignalColumn] = useToggleStatus('id', data);
   const { rootRef } = useGlobal();
 
+  const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
+
   const isVisible = (key) => {
     return lodashGet(preferences, key, false);
   };
@@ -117,10 +120,24 @@ function RangesTable({
         <thead>
           <tr>
             <th>#</th>
-            {isVisible('showFrom') ? <th>From</th> : null}
-            {isVisible('showTo') ? <th>To</th> : null}
-            <th>δ (ppm)</th>
-            {isVisible('showRelative') ? <th>Rel. {element}</th> : null}
+            {isVisible('showFrom') ? (
+              <th id="from" {...onSort}>
+                From
+                {isSortedDesc('from').content}
+              </th>
+            ) : null}
+            {isVisible('showTo') ? (
+              <th id="to" {...onSort}>
+                To {isSortedDesc('to').content}
+              </th>
+            ) : null}
+            <th>δ (ppm) </th>
+
+            {isVisible('showRelative') ? (
+              <th id="integral" {...onSort}>
+                Rel. {element} {isSortedDesc('integral').content}
+              </th>
+            ) : null}
             {isVisible('showAbsolute') ? <th>Absolute</th> : null}
             <th>Mult.</th>
             <th>J (Hz)</th>
@@ -133,13 +150,13 @@ function RangesTable({
           </tr>
         </thead>
         <tbody>
-          {data &&
-            data.map((range, i) => {
+          {sortedData &&
+            sortedData.map((range, index) => {
               return (
                 <RangesTableRow
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`rangesTableRow${i}`}
-                  rowData={data[i]}
+                  rowIndex={index}
+                  key={sortedData[index].rowKey}
+                  rowData={sortedData[index]}
                   onChangeKind={onChangeKind}
                   onDelete={onDelete}
                   onUnlink={onUnlink}

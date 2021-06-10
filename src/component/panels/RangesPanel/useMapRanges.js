@@ -1,11 +1,14 @@
 import { useMemo } from 'react';
 
+import generateID from '../../../data/utilities/generateID';
+
 function useMapRanges(data) {
   return useMemo(() => {
     const _rangesData = [];
     data.forEach((range, i) => {
       if (range.signal.length === 1) {
         _rangesData.push({
+          rowKey: generateID(),
           ...range,
           tableMetaInfo: {
             ...range.tableMetaInfo,
@@ -30,6 +33,7 @@ function useMapRanges(data) {
           }
 
           _rangesData.push({
+            rowKey: generateID(),
             ...range,
             tableMetaInfo: {
               ...range.tableMetaInfo,

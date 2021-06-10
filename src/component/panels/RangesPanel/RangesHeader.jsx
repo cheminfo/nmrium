@@ -237,7 +237,7 @@ function RangesHeader({
       </ToggleButton>
 
       <ToggleButton
-        popupTitle="Constant Sum"
+        popupTitle="fix integral values"
         popupPlacement="right"
         onClick={changeSumContantFlagHandler}
       >

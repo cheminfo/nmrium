@@ -240,7 +240,7 @@ function handleChangeRangesSumFlag(draft, action) {
   const flag = action.payload;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    draft.data[index].ranges.options.isSumConstant = flag;
+    draft.data[index].ranges.options.isSumConstant = !flag;
   }
 }
 

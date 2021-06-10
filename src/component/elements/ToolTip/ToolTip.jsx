@@ -29,7 +29,7 @@ const styles = {
 
 function ToolTip({
   style,
-  className,
+  className = '',
   popupPlacement = 'right',
   children,
   title,

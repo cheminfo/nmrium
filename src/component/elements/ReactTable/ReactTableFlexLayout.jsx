@@ -16,7 +16,11 @@ function ReactTableFlexLayout({ data, columns, onMouseDown }) {
       useFlexLayout,
     );
   return (
-    <table {...getTableProps()} css={ReactTableStyle}>
+    <table
+      {...getTableProps()}
+      css={ReactTableStyle}
+      style={{ height: '100%' }}
+    >
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr

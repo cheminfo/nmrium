@@ -19,6 +19,11 @@ export default class NmriumPage {
     await this.page.click('text=1H spectrum test');
   }
 
+  public async open2D() {
+    await this.page.click('text=General');
+    await this.page.click('text=2D cosy');
+  }
+
   public async clickPanel(title: string) {
     await this.page.click(`data-test-id=panel-title-${title}`);
   }

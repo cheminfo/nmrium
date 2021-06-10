@@ -203,7 +203,11 @@ function EditRangeModal({
 
                   <CloseButton onClick={handleOnClose} />
                 </div>
-                <SignalsForm />
+                <SignalsForm
+                  rangeLabel={`${format(rangeData.from)} ppm - ${format(
+                    rangeData.to,
+                  )} ppm`}
+                />
               </Form>
             );
           }}

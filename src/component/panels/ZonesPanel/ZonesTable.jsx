@@ -5,6 +5,7 @@ import { FaLink } from 'react-icons/fa';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import ContextMenu from '../../elements/ContextMenu';
+import useTableSortBy from '../../hooks/useTableSortBy';
 
 import ZonesTableRow from './ZonesTableRow';
 
@@ -114,18 +115,21 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
     return _data;
   }, [tableData]);
 
+  const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
+
   const rows = useMemo(
     () =>
-      data.map((rowData) => (
+      sortedData.map((rowData, index) => (
         <ZonesTableRow
-          key={`zonesTableRow_${rowData.tableMetaInfo.id}`}
+          rowIndex={index}
+          key={`${rowData.tableMetaInfo.id}`}
           rowData={rowData}
           onUnlink={onUnlink}
           onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
           preferences={preferences}
         />
       )),
-    [contextMenuHandler, data, onUnlink, preferences],
+    [contextMenuHandler, sortedData, onUnlink, preferences],
   );
 
   return (
@@ -143,8 +147,12 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
             <th rowSpan={2}>{''}</th>
           </tr>
           <tr>
-            <th>{nuclei[0]}</th>
-            <th>{nuclei[1]}</th>
+            <th id="tableMetaInfo.signal.x.delta" {...onSort}>
+              {nuclei[0]} {isSortedDesc('tableMetaInfo.signal.x.delta').content}
+            </th>
+            <th id="tableMetaInfo.signal.y.delta" {...onSort}>
+              {nuclei[1]} {isSortedDesc('tableMetaInfo.signal.y.delta').content}
+            </th>
             <th>{nuclei[0]}</th>
             <th>{nuclei[1]}</th>
             <th>{nuclei[0]}</th>
