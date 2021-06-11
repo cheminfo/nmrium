@@ -212,16 +212,6 @@ function innerSpectrumReducer(draft, action) {
       return LoadActions.setIsLoading(draft, action.isLoading);
     case types.LOAD_JSON_FILE:
       return LoadActions.handleLoadJsonFile(draft, action);
-    case types.LOAD_JCAMP_FILE:
-      return LoadActions.loadJcampFile(draft, action);
-    case types.LOAD_JDF_FILE:
-      return LoadActions.loadJDFFile(draft, action);
-    case types.LOAD_MOL_FILE:
-      return LoadActions.handleLoadMOLFile(draft, action);
-    case types.LOAD_ZIP_FILE:
-      return LoadActions.handleLoadZIPFile(draft, action);
-    case types.LOAD_NMREDATA_FILE:
-      return LoadActions.handleLoadNmredata(draft, action);
     case types.ADD_PEAK:
       return PeaksActions.addPeak(draft, action.mouseCoordinates);
     case types.ADD_PEAKS:
