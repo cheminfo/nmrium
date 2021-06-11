@@ -40,7 +40,7 @@ function FiltersTableRow({ filters, spectraCounter }: FiltersTableRowProps) {
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
-  const [selectedFilterIndex, setSelectedFilter] = useState<number>(0);
+  const [selectedFilterIndex, setSelectedFilter] = useState<number>(-1);
 
   const handelFilterCheck = useCallback(
     async (id, checked) => {
@@ -102,7 +102,7 @@ function FiltersTableRow({ filters, spectraCounter }: FiltersTableRowProps) {
         setSelectedFilter((prevIndex) => {
           const id = prevIndex === index ? null : newID;
           dispatch({ type: SET_FILTER_SNAPSHOT, id });
-          return id ? index : null;
+          return id ? index : -1;
         });
         hideLoading();
       }, 0);
@@ -115,7 +115,7 @@ function FiltersTableRow({ filters, spectraCounter }: FiltersTableRowProps) {
         key={d.id}
         style={{
           ...(index === selectedFilterIndex && styles.active),
-          ...(selectedFilterIndex != null && index > selectedFilterIndex
+          ...(selectedFilterIndex !== -1 && index > selectedFilterIndex
             ? { opacity: 0.3 }
             : {}),
         }}
