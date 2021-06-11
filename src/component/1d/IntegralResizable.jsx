@@ -55,7 +55,7 @@ function IntegralResizable({ integralData }) {
     (resized) => {
       dispatch({
         type: RESIZE_INTEGRAL,
-        data: { ...integralData, ...resized },
+        payload: { data: { ...integralData, ...resized } },
       });
     },
     [dispatch, integralData],
