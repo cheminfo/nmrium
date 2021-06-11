@@ -33,7 +33,6 @@ export default function ToolBarWrapper(WrappedComponent) {
             if (activeSpectrum && dataInfo.id === activeSpectrum.id) {
               info = dataInfo.info;
               datum = dataInfo.data;
-
             }
           }
         }

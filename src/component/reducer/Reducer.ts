@@ -142,7 +142,7 @@ export interface State {
   overDisplayer: boolean;
 
   toolOptions: {
-    selectedTool: any;
+    selectedTool: string | number;
     selectedOptionPanel: any;
 
     data: {
@@ -152,6 +152,7 @@ export interface State {
       };
       pivot: { value: number; index: number };
       zonesNoiseFactor: number;
+      activeFilterID?: string | number | null;
     };
   };
 }

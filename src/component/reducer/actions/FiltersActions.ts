@@ -1,4 +1,4 @@
-import { Draft } from 'immer';
+import { current, Draft } from 'immer';
 
 import { Filters } from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
@@ -93,6 +93,7 @@ function applyAbsoluteFilter(draft: Draft<State>) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.absolute.id, options: {} },
     ]);
+
     resetSelectedTool(draft);
     setDataBy1DFilter(draft.data[index] as Datum1D);
     draft.tempData = null;
@@ -109,6 +110,7 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.phaseCorrection.id, options: { ph0, ph1 } },
     ]);
+
     resetSelectedTool(draft);
     setDataBy1DFilter(draft.data[index] as Datum1D);
     draft.tempData = null;
@@ -229,35 +231,100 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
     draft.xDomain = xDomainSnapshot;
   }
 }
-function resetDataToFilterSavePoint(draft, filterId) {
-  if (draft.activeSpectrum?.id) {
-    const index = draft.activeSpectrum.index;
+
+/**
+ * reset spectrum data for specific point of time (Filter)
+ * @param {object} draft
+ * @param {string} id Filter id
+ * @param {object} options
+ * @param {boolean=} options.resetTool
+ * @param {boolean=} options.updateDomain
+ * @param {boolean=} options.rollback
+ */
+function resetSpectrumByFilter(
+  draft,
+  id: string | null = null,
+  options: {
+    rollback?: boolean;
+    resetTool?: boolean;
+    updateDomain?: boolean;
+    returnCurrentDatum?: boolean;
+    searchBy?: 'id' | 'name';
+  } = {},
+  activeSpectrum = null,
+) {
+  const {
+    updateDomain = true,
+    rollback = false,
+    searchBy = 'id',
+    returnCurrentDatum = false,
+  } = options;
+
+  let currentDatum: any = null;
+
+  const currentActiveSpectrum = activeSpectrum
+    ? activeSpectrum
+    : draft.activeSpectrum;
+
+  if (currentActiveSpectrum?.id) {
+    const index = currentActiveSpectrum.index;
     const datum = draft.data[index] as Datum1D | Datum2D;
 
-    if (filterId) {
-      const filterIndex = datum.filters.findIndex((f) => f.id === filterId);
-      const filters = datum.filters.slice(0, filterIndex + 1);
-      FiltersManager.reapplyFilters(datum, filters);
+    if (id && draft.toolOptions.data.activeFilterID !== id) {
+      const filterIndex = datum.filters.findIndex((f) => f[searchBy] === id);
+      let filters: any[] = [];
+      if (filterIndex !== -1) {
+        filters = datum.filters.slice(
+          0,
+          rollback ? filterIndex : filterIndex + 1,
+        );
+
+        if (filters.length > 1) {
+          draft.toolOptions.data.activeFilterID =
+            datum.filters[rollback ? filterIndex - 1 : filterIndex]?.id;
+        } else {
+          draft.toolOptions.data.activeFilterID = null;
+        }
+
+        FiltersManager.reapplyFilters(datum, filters);
+        // setDataBy1DFilter(datum as Datum1D);
+
+        if (returnCurrentDatum) {
+          const { name, value: options } = datum.filters[filterIndex];
+          const newDatum = current(draft).data[index];
+          if (newDatum.info?.dimension === 1) {
+            FiltersManager.applyFilter(newDatum, [{ name, options }]);
+            (newDatum as Datum1D).data.y = (newDatum as Datum1D).data.re;
+          }
+
+          currentDatum = { datum: newDatum, index };
+        }
+      }
     } else {
       //close filter snapshot mode and replay all enabled filters
+      draft.toolOptions.data.activeFilterID = null;
       FiltersManager.reapplyFilters(datum);
     }
 
     if (datum.info?.dimension === 1) {
-      updateXShift(datum as Datum1D);
       setDataBy1DFilter(datum as Datum1D);
+      updateXShift(datum as Datum1D);
     } else if (datum.info?.dimension === 2) {
       update2dShift(datum as Datum2D);
     }
-    // const activeObject = AnalysisObj.getDatum(id);
 
-    resetSelectedTool(draft);
-    setDomain(draft);
-    setMode(draft);
+    if (updateDomain) {
+      setDomain(draft);
+      setMode(draft);
+    }
+  }
+  if (returnCurrentDatum) {
+    return currentDatum;
   }
 }
+
 function filterSnapshotHandler(draft: Draft<State>, action) {
-  resetDataToFilterSavePoint(draft, action.id);
+  resetSpectrumByFilter(draft, action.id);
 }
 
 function handleMultipleSpectraFilter(draft: Draft<State>, action) {
@@ -302,5 +369,5 @@ export {
   deleteSpectraFilter,
   handleBaseLineCorrectionFilter,
   filterSnapshotHandler,
-  resetDataToFilterSavePoint,
+  resetSpectrumByFilter,
 };

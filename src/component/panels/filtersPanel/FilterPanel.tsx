@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useMemo, memo } from 'react';
 
 import {
@@ -10,7 +12,7 @@ import {
 import FiltersWrapper from '../../hoc/FiltersWrapper';
 import NoTableData from '../extra/placeholder/NoTableData';
 
-import FiltersTableRow from './FiltersTableRow';
+import FiltersTable from './FiltersTable';
 
 export interface FiltersProps {
   id: number;
@@ -27,9 +29,52 @@ export interface FiltersProps {
 interface FilterPanelProps {
   filters: Array<FiltersProps>;
   spectraCounter: number;
+  selectedTool: string | number;
+  activeFilterID: string | number;
 }
 
-function FilterPanel({ filters, spectraCounter }: FilterPanelProps) {
+const styles = css`
+  .btn {
+    background-color: transparent;
+    border: none;
+    height: 25;
+    width: 25;
+    padding: 5px;
+  }
+  .filter-row {
+    padding: 5px !important;
+  }
+  .filter-active {
+    background-color: #f7f7f7;
+    div,
+    span,
+    .btn {
+      color: black !important;
+    }
+
+    li {
+      background-color: transparent !important;
+    }
+  }
+  .filter-current {
+    background-color: #707070;
+    div,
+    span,
+    .btn {
+      color: white !important;
+    }
+
+    li {
+      background-color: transparent !important;
+    }
+  }
+
+  .filter-deactive {
+    opacity: 0.3;
+  }
+`;
+
+function FilterPanel({ filters }: FilterPanelProps) {
   const filtersTable = useMemo(() => {
     return filters ? (
       <Table>
@@ -43,14 +88,14 @@ function FilterPanel({ filters, spectraCounter }: FilterPanelProps) {
             </TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          <FiltersTableRow filters={filters} spectraCounter={spectraCounter} />
+        <TableBody css={styles}>
+          <FiltersTable />
         </TableBody>
       </Table>
     ) : (
       <NoTableData />
     );
-  }, [filters, spectraCounter]);
+  }, [filters]);
 
   return filtersTable;
 }

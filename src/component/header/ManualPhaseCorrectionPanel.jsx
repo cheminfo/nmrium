@@ -115,7 +115,7 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
 
   const calcPhaseCorrectionHandler = useCallback(
     (newValues, filedName) => {
-      if (filedName === 'ph1') {
+      if (filedName === 'ph1' && datum.y && Array.isArray(datum.y)) {
         const diff0 = newValues.ph0 - valueRef.current.ph0;
         const diff1 = newValues.ph1 - valueRef.current.ph1;
         newValues.ph0 += diff0 - (diff1 * pivot.index) / datum.y.length;
@@ -126,7 +126,7 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
         value: newValues,
       });
     },
-    [datum.y.length, dispatch, pivot.index],
+    [datum, dispatch, pivot.index],
   );
 
   const handleInput = useCallback(

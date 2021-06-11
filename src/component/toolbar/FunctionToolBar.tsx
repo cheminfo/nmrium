@@ -119,7 +119,6 @@ function FunctionToolBar({
     },
     [preferences],
   );
-
   return (
     <div css={styles}>
       <ToggleButtonGroup value={option} onChange={handleChange}>
