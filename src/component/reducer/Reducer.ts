@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 import { buildCorrelationData, Types } from 'nmr-correlation';
+import { read as readDropFiles } from 'nmr-load-save';
 import { predictionProton } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
@@ -7,7 +8,6 @@ import * as SpectraManager from '../../data/SpectraManager';
 import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
-import { nmredataToNmrium } from '../utility/nmredataToNmrium';
 
 import * as CorrelationsActions from './actions/CorrelationsActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
@@ -173,32 +173,11 @@ export function dispatchMiddleware(dispatch) {
         }
         break;
       }
-      case types.LOAD_JSON_FILE: {
-        const data = JSON.parse(action.files[0].binary.toString());
-        void SpectraManager.fromJSON(data.spectra, usedColors).then(
-          (spectra) => {
-            action.payload = Object.assign(data, { spectra });
-            dispatch(action);
-          },
-        );
-        break;
-      }
-      case types.LOAD_ZIP_FILE: {
-        for (let zipFile of action.files) {
-          void SpectraManager.addBruker(
-            { display: { name: zipFile.name } },
-            zipFile.binary,
-            usedColors,
-          ).then((data) => {
-            action.payload = data;
-            dispatch(action);
-          });
-        }
-        break;
-      }
-      case types.LOAD_NMREDATA_FILE: {
-        void nmredataToNmrium(action.file, usedColors).then((data) => {
-          action.payload = data;
+      case types.LOAD_DROP_FILES: {
+        const { files } = action;
+        action.usedColors = usedColors;
+        void readDropFiles(files).then((data) => {
+          action.data = data;
           dispatch(action);
         });
         break;
@@ -213,7 +192,6 @@ export function dispatchMiddleware(dispatch) {
 
         break;
       }
-
       default:
         action.usedColors = usedColors;
         dispatch(action);
@@ -228,6 +206,8 @@ function innerSpectrumReducer(draft, action) {
   switch (action.type) {
     case types.INITIATE:
       return LoadActions.initiate(draft, action);
+    case types.LOAD_DROP_FILES:
+      return LoadActions.loadDropFiles(draft, action);
     case types.SET_LOADING_FLAG:
       return LoadActions.setIsLoading(draft, action.isLoading);
     case types.LOAD_JSON_FILE:

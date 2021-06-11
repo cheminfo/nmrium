@@ -3,6 +3,8 @@ import lodashGet from 'lodash/get';
 import { buildCorrelationData, Types } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
+import { initiateDatum1D } from '../../../data/data1d/Spectrum1D';
+import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import generateID from '../../../data/utilities/generateID';
 import { Molecules, NMRiumPreferences, Spectra } from '../../NMRium';
@@ -64,6 +66,26 @@ function initiate(draft: Draft<State>, action) {
   const alignCenter = lodashGet(draft.preferences, 'display.center', null);
   changeSpectrumVerticalAlignment(draft, alignCenter, true);
   setActiveTab(draft);
+  draft.isLoading = false;
+}
+
+function loadDropFiles(draft: Draft<State>, actions) {
+  const { data, usedColors } = actions;
+  const { spectra, molecules } = data;
+  for (let spectrum of spectra) {
+    const { info } = spectrum;
+    if (info.dimension === 1) {
+      draft.data.push(initiateDatum1D(spectrum, usedColors));
+    } else if (info.dimension === 2) {
+      draft.data.push(initiateDatum2D(spectrum, usedColors));
+    }
+  }
+  for (let molecule of molecules) {
+    MoleculeManager.addMolfile(draft.molecules, molecule.molfile);
+  }
+  setActiveTab(draft);
+  initZoom1DHandler(draft.data);
+
   draft.isLoading = false;
 }
 
@@ -133,6 +155,7 @@ function handleLoadNmredata(draft: Draft<State>, action) {
 export {
   setIsLoading,
   initiate,
+  loadDropFiles,
   loadJcampFile,
   loadJDFFile,
   handleLoadJsonFile,
