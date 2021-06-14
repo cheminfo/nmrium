@@ -14,7 +14,7 @@ export default function ToolBarWrapper(WrappedComponent) {
       fidCounter = 0,
     } = useMemo(() => {
       if (data) {
-        let info = null;
+        let info;
         let ftCounter = 0;
         let fidCounter = 0;
 
