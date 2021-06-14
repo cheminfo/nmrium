@@ -16,8 +16,6 @@ import {
   changeRange,
   changeRangesRealtive,
   Datum1D,
-  Range,
-  Signal,
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
 import {
@@ -81,11 +79,9 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
     const { index } = state.activeSpectrum;
     const { rowData, value } = action.payload.data;
     const rangeIndex = getRangeIndex(state, index, rowData.id);
-    const _range = (draft.data[index] as Datum1D).ranges.values[
-      rangeIndex
-    ] as Range;
+    const _range = (draft.data[index] as Datum1D).ranges.values[rangeIndex];
     if (_range?.signal) {
-      (_range.signal[rowData.tableMetaInfo.signalIndex] as Signal).kind = value;
+      _range.signal[rowData.tableMetaInfo.signalIndex].kind = value;
       _range.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal
         : DatumKind.mixed;
