@@ -3,7 +3,7 @@ import { zoneToX } from 'ml-spectra-processing';
 import { Filters } from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DatumKind } from '../constants/SignalsKinds';
-import { initiateDatum1D } from '../data1d/Spectrum1D';
+import { Datum1D, initiateDatum1D } from '../data1d/Spectrum1D';
 import generateID from '../utilities/generateID';
 import { get2DColor } from '../utilities/getColor';
 
@@ -57,6 +57,7 @@ export interface Info {
   isComplex: boolean;
   dimension: number;
   isFt: boolean;
+  experiment?: any;
 }
 
 export interface Signal {
@@ -84,21 +85,21 @@ export interface Zone {
 }
 
 export interface Zones {
-  values: Array<Partial<Zone>>;
-  options?: Partial<{ sum: number }>;
+  values: Array<Zone>;
+  options?: { sum?: number };
 }
 
 export interface Datum2D {
   id: string;
-  source: Partial<Source>;
+  source: Source;
   display: Display;
-  info: Partial<Info>;
-  originalInfo?: Partial<Info>;
+  info: Info;
+  originalInfo?: Info;
   meta: any;
   data: Data2D;
   originalData?: Data2D;
   zones: Zones;
-  filters: Array<Partial<FiltersManager.Filter>>;
+  filters: Array<FiltersManager.Filter>;
   processingController: Processing2D;
 }
 
@@ -553,4 +554,8 @@ export function getSubMatrix(datum, selectedZone) {
   dataMatrix.minZ = minZ;
   dataMatrix.maxZ = maxZ;
   return dataMatrix;
+}
+
+export function isSpectrum2D(spectrum: Datum1D | Datum2D): spectrum is Datum2D {
+  return spectrum.info.dimension === 2;
 }
