@@ -2,7 +2,7 @@ import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import { useCallback, useEffect, useState } from 'react';
 
-export function useStateWithLocalStorage(localStorageKey, key = null) {
+export function useStateWithLocalStorage(localStorageKey, key?: string) {
   const [value, setValue] = useState(
     localStorage.getItem(localStorageKey) || '{}',
   );

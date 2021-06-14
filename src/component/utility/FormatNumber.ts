@@ -8,19 +8,26 @@ function FormatNumber(value, format, prefix = '', suffix = '') {
   return prefix + Numeral(value).format(format) + suffix;
 }
 
-/**
- *
- * @param {string|Array} nucleus
- */
-export function useFormatNumberByNucleus(nucleus) {
+type ReturnFunction = (
+  value: any,
+  formatKey?: string,
+  prefix?: string,
+  suffix?: string,
+) => string;
+
+export function useFormatNumberByNucleus(
+  nucleus?: Array<string>,
+): Array<ReturnFunction>;
+export function useFormatNumberByNucleus(nucleus?: string): ReturnFunction;
+export function useFormatNumberByNucleus(nucleus?: string | Array<string>) {
   const preferences = usePreferences();
   const nucleusByKey = lodashGet(preferences, `formatting.nucleusByKey`, {
     ppm: '0.0',
     hz: '0.0',
   });
 
-  function formatFun(n) {
-    return function (value, formatKey = 'ppm', prefix = '', suffix = '') {
+  function formatFun(n: string) {
+    return function (value: any, formatKey = 'ppm', prefix = '', suffix = '') {
       return (
         prefix +
         Numeral(Number(value)).format(
@@ -32,7 +39,7 @@ export function useFormatNumberByNucleus(nucleus) {
   }
 
   if (!nucleus) {
-    return;
+    return () => undefined;
   }
 
   if (typeof nucleus === 'string') {
@@ -44,10 +51,7 @@ export function useFormatNumberByNucleus(nucleus) {
   }
 }
 
-/**
- * @param {number|string} value
- */
-export function getNumberOfDecimals(value) {
+export function getNumberOfDecimals(value: number | string) {
   value = String(value).trim();
   const lastIndex = value.lastIndexOf('.');
   return lastIndex > 0 ? value.substr(lastIndex).split('').length - 1 : 0;
