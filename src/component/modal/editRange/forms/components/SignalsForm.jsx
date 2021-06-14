@@ -67,7 +67,7 @@ function SignalsForm({ rangeLabel }) {
       if (activeField && frequency) {
         setFieldValue(
           activeField,
-          Math.abs(event.range[0] - event.range[1]) * frequency,
+          Number(format(Math.abs(event.range[0] - event.range[1]) * frequency)),
         );
       }
     });
@@ -75,7 +75,7 @@ function SignalsForm({ rangeLabel }) {
     return () => {
       Events.off('brushEnd');
     };
-  }, [activeField, setFieldValue, frequency, values.activeTab]);
+  }, [activeField, setFieldValue, frequency, values.activeTab, format]);
 
   useEffect(() => {
     Events.on('mouseClick', (event) => {
@@ -144,7 +144,7 @@ function SignalsForm({ rangeLabel }) {
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}
               tabid={`${i}`}
-              tablabel={`𝛅: ${format(signal.delta)} (${signal.j
+              tablabel={`𝛅: ${Number(format(signal.delta))} (${signal.j
                 .map((_coupling) => translateMultiplet(_coupling.multiplicity))
                 .join('')})`}
               tabstyles={tabContainsErrors(i) ? tabStylesAddition : null}

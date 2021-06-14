@@ -140,7 +140,7 @@ function EditRangeModal({
       _signal.multiplicity.split('').forEach((_multiplicity) => {
         if (hasCouplingConstant(_multiplicity)) {
           coupling = { ..._signal.j[counterJ] };
-          coupling.coupling = format(coupling.coupling);
+          coupling.coupling = Number(format(coupling.coupling));
           counterJ++;
         } else {
           coupling = { multiplicity: _multiplicity, coupling: '' };

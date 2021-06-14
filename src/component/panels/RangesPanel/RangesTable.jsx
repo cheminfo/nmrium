@@ -71,7 +71,6 @@ function RangesTable({
   const [relativeFlags, toggleRelativeColumn] = useToggleStatus('id', data);
   const [signalFlags, toggleSignalColumn] = useToggleStatus('id', data);
   const { rootRef } = useGlobal();
-
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
 
   const isVisible = (key) => {
