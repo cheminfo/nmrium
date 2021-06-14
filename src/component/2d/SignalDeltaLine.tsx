@@ -12,7 +12,13 @@ const lineStyle = css`
   opacity: 0.5;
 `;
 
-function SignalDeltaLine({ delta, axis, show }) {
+interface SignalDeltaLineProps {
+  delta: number;
+  axis: 'X' | 'Y';
+  show: boolean;
+}
+
+function SignalDeltaLine({ delta, axis, show }: SignalDeltaLineProps) {
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
