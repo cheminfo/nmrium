@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 
@@ -31,7 +32,7 @@ function IntegralsSeries() {
   }, [activeSpectrum, height, integralsYDomains, margin, verticalAlign]);
 
   const Integrals = useMemo(() => {
-    const IsActive = (id) => {
+    const isActive = (id) => {
       return activeSpectrum === null
         ? true
         : id === activeSpectrum.id
@@ -40,31 +41,28 @@ function IntegralsSeries() {
     };
 
     return (
-      data &&
-      data[0] &&
+      data?.[0] &&
       data
         .filter(
           (d) =>
             d.display.isVisible === true &&
             d.display.isVisibleInDomain === true,
         )
-        .map(
-          (spectrum) =>
-            spectrum.integrals &&
-            spectrum.integrals.values &&
-            spectrum.integrals.values.map((integral) => (
-              <Integral
-                key={integral.id}
-                spectrumID={spectrum.id}
-                integralData={integral}
-                x={spectrum.data.x}
-                y={spectrum.data.y}
-                isActive={IsActive(spectrum.id)}
-                xDomain={xDomain}
-                scaleY={scaleY}
-                scaleX={scaleX}
-              />
-            )),
+        .filter(isSpectrum1D)
+        .map((spectrum) =>
+          spectrum.integrals.values.map((integral) => (
+            <Integral
+              key={integral.id}
+              spectrumID={spectrum.id}
+              integralData={integral}
+              x={spectrum.data.x}
+              y={spectrum.data.y}
+              isActive={isActive(spectrum.id)}
+              xDomain={xDomain}
+              scaleY={scaleY}
+              scaleX={scaleX}
+            />
+          )),
         )
     );
   }, [activeSpectrum, data, scaleX, scaleY, xDomain]);

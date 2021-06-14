@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 
@@ -40,10 +41,10 @@ function PeaksNotations() {
             d.display.isVisible === true &&
             d.display.isVisibleInDomain === true,
         )
+        .filter(isSpectrum1D)
         .map((d) => {
           return (
-            d.peaks &&
-            d.peaks.values &&
+            d.peaks?.values &&
             d.display.isPeaksMarkersVisible && (
               <g
                 key={d.id}
@@ -56,7 +57,6 @@ function PeaksNotations() {
                     y={scaleY(d.id)(intensity) - 5}
                     sign={Math.sign(intensity)}
                     id={id}
-                    spectrumID={d.id}
                     value={delta}
                     color="#730000"
                     nucleus={d.info.nucleus}

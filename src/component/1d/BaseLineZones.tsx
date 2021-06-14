@@ -46,28 +46,30 @@ function BaseLineZones() {
   }, [toolOptions]);
 
   return (
-    baseLineZones.length > 0 && (
-      <g>
-        {baseLineZones.map((zone) => (
-          <g
-            key={zone.id}
-            transform={`translate(${scaleX()(zone.to)},0)`}
-            css={styles}
-          >
-            <DeleteButton
-              x={-20}
-              y={10}
-              onDelete={() => deleteRangeHandler(zone.id)}
-            />
-            <rect
-              x="0"
-              width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
-              className="zone-area"
-            />
-          </g>
-        ))}
-      </g>
-    )
+    <>
+      {baseLineZones.length > 0 && (
+        <g>
+          {baseLineZones.map((zone) => (
+            <g
+              key={zone.id}
+              transform={`translate(${scaleX()(zone.to)},0)`}
+              css={styles}
+            >
+              <DeleteButton
+                x={-20}
+                y={10}
+                onDelete={() => deleteRangeHandler(zone.id)}
+              />
+              <rect
+                x="0"
+                width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
+                className="zone-area"
+              />
+            </g>
+          ))}
+        </g>
+      )}
+    </>
   );
 }
 

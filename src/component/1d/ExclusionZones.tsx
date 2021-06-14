@@ -21,7 +21,7 @@ const styles = css`
   }
 `;
 
-const ExclusionZone = ({ zone }) => {
+function ExclusionZone({ zone }) {
   const { scaleX } = useScale();
   const highlight = useHighlight([zone.id], TYPES.EXCLUSION_ZONE);
   return (
@@ -38,7 +38,7 @@ const ExclusionZone = ({ zone }) => {
       />
     </g>
   );
-};
+}
 
 function ExclusionZones({ exclusionZones }) {
   if (!exclusionZones) return null;

@@ -1,12 +1,16 @@
 import { xFindClosestIndex } from 'ml-spectra-processing';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { CSSProperties, useContext, useEffect, useMemo, useState } from 'react';
 
+import { Datum1D } from '../../data/data1d/Spectrum1D';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import Events from '../utility/Events';
 
-const styles = {
+const styles: Record<
+  'container' | 'value' | 'colorIndicator' | 'name',
+  CSSProperties
+> = {
   container: {
     position: 'absolute',
     left: '10px',
@@ -30,7 +34,14 @@ const styles = {
   },
 };
 
-function YTracker({ datum }) {
+interface YTrackerProps {
+  datum: {
+    x: Array<number>;
+    y: Array<number>;
+  };
+}
+
+function YTracker({ datum }: YTrackerProps) {
   const { scaleX } = useScale();
   const position = useContext(MouseContext);
 
@@ -46,12 +57,17 @@ function YTracker({ datum }) {
 function SpectraTracker() {
   const { data, activeTab } = useChartData();
   const [isVisible, ToggleVisiblility] = useState(false);
-  useEffect(() => {
-    Events.on('showYSpectraTrackers', (flag) => {
-      ToggleVisiblility(flag);
-    });
 
-    return () => Events.off('showYSpectraTrackers');
+  useEffect(() => {
+    function handler(flag) {
+      ToggleVisiblility(flag);
+    }
+
+    Events.on('showYSpectraTrackers', handler);
+
+    return () => {
+      Events.off('showYSpectraTrackers', handler);
+    };
   }, []);
 
   const trackers = useMemo(() => {
@@ -66,10 +82,10 @@ function SpectraTracker() {
               <span
                 style={{
                   ...styles.colorIndicator,
-                  borderColor: datum.display.color,
+                  borderColor: (datum as Datum1D).display.color,
                 }}
               />
-              <YTracker datum={datum.data} />
+              <YTracker datum={(datum as Datum1D).data} />
               <span style={styles.value}>{datum.display.name}</span>
             </div>
           ),
