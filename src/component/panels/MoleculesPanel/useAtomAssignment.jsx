@@ -191,6 +191,7 @@ export default function useAtomAssignment({
               });
             }
           }
+          activeAssignment.onClick(activeAssignment.activeAxis);
         } else {
           alert.info(
             'Not assigned! Different atom type or no attached hydrogens found!',
