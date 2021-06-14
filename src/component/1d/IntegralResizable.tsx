@@ -41,7 +41,16 @@ const stylesHighlighted = css`
   }
 `;
 
-function IntegralResizable({ integralData }) {
+interface IntegralResizableProps {
+  integralData: {
+    id: number;
+    from: number;
+    to: number;
+    integral: number;
+  };
+}
+
+function IntegralResizable({ integralData }: IntegralResizableProps) {
   const { height, margin } = useChartData();
   const { scaleX } = useScale();
 

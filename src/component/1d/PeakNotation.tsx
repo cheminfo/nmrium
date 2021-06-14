@@ -86,6 +86,17 @@ const styles = css`
   }
 `;
 
+interface PeakNotationProps {
+  id: string;
+  x: number;
+  y: number;
+  sign: number;
+  color: string;
+  isActive: boolean;
+  value: any;
+  nucleus: string;
+}
+
 function PeakNotation({
   id,
   x,
@@ -95,8 +106,8 @@ function PeakNotation({
   color,
   isActive,
   nucleus,
-}) {
-  const refText = useRef();
+}: PeakNotationProps) {
+  const refText = useRef<SVGTextElement>(null);
   const [isSelected, setIsSelected] = useState(false);
   const [_value, setValue] = useState(value);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
@@ -111,8 +122,11 @@ function PeakNotation({
   );
 
   useLayoutEffect(() => {
-    const textBox = refText.current.getBBox();
-    setContainerSize({ width: textBox.width, height: textBox.height });
+    const textBox = refText.current?.getBBox();
+    setContainerSize({
+      width: textBox?.width || 0,
+      height: textBox?.height || 0,
+    });
   }, [isSelected]);
 
   useEffect(() => {
@@ -222,7 +236,6 @@ function PeakNotation({
               height: '100%',
               paddingRight: 5,
             }}
-            xmlns="http://www.w3.org/1999/xhtml"
           >
             <input
               onClick={handleSelectPeakNotation}
