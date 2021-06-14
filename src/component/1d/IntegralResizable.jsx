@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, Fragment, useState } from 'react';
+import { useCallback, Fragment, useState, useEffect } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -44,12 +44,14 @@ const stylesHighlighted = css`
 function IntegralResizable({ integralData }) {
   const { height, margin } = useChartData();
   const { scaleX } = useScale();
+  const dispatch = useDispatch();
 
   const [{ id, integral, from, to }, setIntgral] = useState(integralData);
-
   const highlight = useHighlight([id], TYPES.INTEGRAL);
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    setIntgral(integralData);
+  }, [integralData]);
 
   const handleOnStopResizing = useCallback(
     (resized) => {
