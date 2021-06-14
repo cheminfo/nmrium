@@ -7,7 +7,13 @@ import ContoursWrapper from '../hoc/ContoursWrapper';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
-function ContoursPaths({ id: spectrumID, sign, color }) {
+interface ContoursPathsProps {
+  id: string;
+  color: string;
+  sign: string;
+}
+
+function ContoursPaths({ id: spectrumID, sign, color }: ContoursPathsProps) {
   const { margin, width, height, xDomain, yDomain, contours, activeSpectrum } =
     useChartData();
 
@@ -25,9 +31,10 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
     const _scaleX = get2DXScale({ margin, width, xDomain });
     const _scaleY = get2DYScale({ margin, height, yDomain });
     let path = '';
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].lines) {
-        const lines = data[i].lines;
+
+    for (const element of data) {
+      if (element.lines) {
+        const lines = element.lines;
         if (lines.length < 1e6) {
           for (let i = 0; i < lines.length; i += 4) {
             path += `M${_scaleX(lines[i])} ${_scaleY(lines[i + 1])} `;
@@ -35,20 +42,23 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
           }
         }
       } else {
-        path += `M${_scaleX(data[i][0].x)} ${_scaleY(data[i][0].y)} `;
-        for (let j = 1; j < data[i].length; j++) {
-          path += `L${_scaleX(data[i][j].x)} ${_scaleY(data[i][j].y)} `;
+        path += `M${_scaleX(element[0].x)} ${_scaleY(element[0].y)} `;
+        for (let j = 1; j < element.length; j++) {
+          path += `L${_scaleX(element[j].x)} ${_scaleY(element[j].y)} `;
         }
       }
     }
+
     if (!path) path = 'M0 0 ';
     path += 'Z';
 
     return path;
   }
+
   const data = useMemo(() => {
     return get(contours, `${spectrumID}.${sign}`, []);
   }, [contours, sign, spectrumID]);
+
   return (
     <path
       fill="none"
@@ -64,7 +74,23 @@ function ContoursPaths({ id: spectrumID, sign, color }) {
   );
 }
 
-function Contours({ data, displayerKey }) {
+interface ContoursData {
+  info: { dimension: number };
+  id: string;
+  display: {
+    isPositiveVisible: boolean;
+    positiveColor: string;
+    isNegativeVisible: boolean;
+    negativeColor: string;
+  };
+}
+
+interface ContoursProps {
+  data: Array<ContoursData>;
+  displayerKey: string;
+}
+
+function Contours({ data, displayerKey }: ContoursProps) {
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
       {data

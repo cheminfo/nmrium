@@ -13,7 +13,6 @@ import {
   detectZones,
   detectZonesManual,
   updateShift,
-  Zone,
 } from '../../../data/data2d/Spectrum2D';
 import {
   getPubIntegral,
@@ -96,9 +95,7 @@ function handleChangeZoneSignalKind(draft: Draft<State>, action) {
     const { index } = state.activeSpectrum;
     const { rowData, value } = action.payload;
     const zoneIndex = getZoneIndex(state, index, rowData.id);
-    const _zone = (draft.data[index] as Datum2D).zones.values[
-      zoneIndex
-    ] as Zone;
+    const _zone = (draft.data[index] as Datum2D).zones.values[zoneIndex];
     _zone.signal[rowData.tableMetaInfo.signalIndex].kind = value;
     _zone.kind = SignalKindsToInclude.includes(value)
       ? DatumKind.signal
@@ -171,9 +168,7 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
     const { zoneData, diaID, axis, signalIndex } = action.payload;
 
     const zoneIndex = getZoneIndex(state, index, zoneData.id);
-    const _zone = (draft.data[index] as Datum2D).zones.values[
-      zoneIndex
-    ] as Zone;
+    const _zone = (draft.data[index] as Datum2D).zones.values[zoneIndex];
     if (signalIndex === undefined) {
       _zone[axis].diaID = diaID;
     } else {

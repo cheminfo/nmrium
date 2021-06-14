@@ -5,10 +5,9 @@ import { LAYOUT } from './DimensionLayout';
 /***
  * @param {object} props
  * @param {number}  props.width
- * @param {number}  props.margin
- * @param {number}  props.xDomain
+ * @param {object}  props.margin
+ * @param {number[]}  props.xDomain
  */
-
 function get2DXScale(props) {
   const { width, margin, xDomain } = props;
   return scaleLinear(xDomain, [width - margin.right, margin.left]);

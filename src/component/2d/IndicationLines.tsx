@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { useState, useEffect, useMemo } from 'react';
 
 import { SignalKindsToInclude } from '../../data/constants/SignalsKinds';
+import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
 import { useChartData } from '../context/ChartContext';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 
@@ -13,7 +14,12 @@ const lineStyle = css`
   opacity: 0.7;
 `;
 
-function IndicationLines({ axis, show }) {
+interface IndicationLinesProps {
+  show: boolean;
+  axis: 'X' | 'Y';
+}
+
+function IndicationLines({ axis, show }: IndicationLinesProps) {
   const {
     data,
     activeTab,
@@ -24,7 +30,7 @@ function IndicationLines({ axis, show }) {
     yDomain,
     displayerMode,
   } = useChartData();
-  const [deltas1D, setDeltas1D] = useState([]);
+  const [deltas1D, setDeltas1D] = useState<Array<number>>([]);
 
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
@@ -42,8 +48,10 @@ function IndicationLines({ axis, show }) {
               _datum.info.nucleus === nucleus &&
               _datum.info.experiment === '1d',
           )
+          .filter(isSpectrum1D)
           .map((_datum) => _datum.ranges.values)
           .flat();
+
         const deltas = ranges
           .map((_range) =>
             _range.signal

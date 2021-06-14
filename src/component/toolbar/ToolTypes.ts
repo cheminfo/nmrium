@@ -1,6 +1,32 @@
 import { Filters } from '../../data/Filters';
 
-export const options = {
+interface OptionItem {
+  id: string;
+  label: string;
+  hasOptionPanel: boolean;
+  isFilter: boolean;
+}
+
+type RecordOptions = Record<
+  | 'zoom'
+  | 'peakPicking'
+  | 'integral'
+  | 'zone2D'
+  | 'slicingTool'
+  | 'HMove'
+  | 'equalizerTool'
+  | 'rangesPicking'
+  | 'zeroFilling'
+  | 'phaseCorrection'
+  | 'baseLineCorrection'
+  | 'generalSelector'
+  | 'editRange'
+  | 'multipleSpectraAnalysis'
+  | 'exclusionZones',
+  OptionItem
+>;
+
+export const options: RecordOptions = {
   zoom: {
     id: 'zoom',
     label: 'Zoom',

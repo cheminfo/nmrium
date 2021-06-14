@@ -90,6 +90,25 @@ const helpStyles = css`
   }
 `;
 
+interface FooterBannerProps {
+  margin: {
+    top: number;
+    left: number;
+    right: number;
+    bottom: number;
+  };
+  width: number;
+  height: number;
+  activeSpectrum: {
+    index: number;
+  };
+  data: Array<{
+    info: { originFrequency: any };
+    data: { x: Array<number>; y: Array<number> };
+  }>;
+  activeTab: string;
+}
+
 function FooterBanner({
   margin,
   width,
@@ -97,14 +116,14 @@ function FooterBanner({
   activeSpectrum,
   data,
   activeTab,
-}) {
+}: FooterBannerProps) {
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
   const { scaleX } = useScale();
   const { helpText } = useHelptData();
   const { originFrequency: frequency } = activeSpectrum
     ? data[activeSpectrum.index].info
-    : {};
+    : { originFrequency: undefined };
 
   const format = useFormatNumberByNucleus(activeTab);
 
