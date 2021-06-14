@@ -34,7 +34,12 @@ const styles = css`
   }
 `;
 
-function DropDownList({ data = [], onSelect }) {
+interface DropDownListProps {
+  data: Array<any>;
+  onSelect: (element: any) => void;
+}
+
+function DropDownList({ data = [], onSelect }: DropDownListProps) {
   return (
     <div css={styles}>
       <ul>
