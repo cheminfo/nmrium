@@ -1,16 +1,16 @@
+import { CSSProperties } from 'react';
+
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';
 import { options } from '../../toolbar/ToolTypes';
 
-const styles = {
-  container: {
-    transformOrigin: 'top left',
-    position: 'absolute',
-    top: '0px',
-    left: '0px',
-    width: 1,
-    backgroundColor: 'red',
-  },
+const styles: CSSProperties = {
+  transformOrigin: 'top left',
+  position: 'absolute',
+  top: '0px',
+  left: '0px',
+  width: 1,
+  backgroundColor: 'red',
 };
 
 function VerticalIndicator() {
@@ -27,7 +27,7 @@ function VerticalIndicator() {
   return (
     <div
       style={{
-        ...styles.container,
+        ...styles,
         transform: `translate(${scaleX()(pivot)}px, 0px)`,
         height: height,
       }}

@@ -1,6 +1,7 @@
 import max from 'ml-array-max';
 import { useContext, useEffect, useState } from 'react';
 
+import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
@@ -14,6 +15,12 @@ const styles = {
   fillOpacity: 0,
   SVGPadding: 1,
 };
+
+interface PeakPosition {
+  x: number;
+  y: number;
+  xIndex: number;
+}
 
 function PeakPointer() {
   const {
@@ -30,7 +37,7 @@ function PeakPointer() {
 
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
-  const [closePeakPosition, setPosition] = useState();
+  const [closePeakPosition, setPosition] = useState<PeakPosition | null>();
 
   useEffect(() => {
     function getVerticalAlign() {
@@ -58,7 +65,11 @@ function PeakPointer() {
         });
 
         //get the active sepectrum data by looking for it by id
-        const spectrumData = data.find((d) => d.id === activeSpectrum.id);
+        const spectrumData = data.find(
+          (d) => d.id === activeSpectrum.id,
+        ) as Datum1D;
+
+        if (!spectrumData) throw new Error('Unreachable');
 
         const maxIndex =
           spectrumData.data.x.findIndex((number) => number >= range[1]) - 1;
