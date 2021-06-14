@@ -1,4 +1,4 @@
-function getHelpList(baseURL) {
+function getHelpList(baseURL = '') {
   return {
     zoomIn: {
       text: 'Zoom Tool',
@@ -22,4 +22,5 @@ function getHelpList(baseURL) {
     },
   };
 }
+
 export default getHelpList;
