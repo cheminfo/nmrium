@@ -3,7 +3,7 @@ import { Draft } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../../data/data1d/Spectrum1D';
-import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { Datum2D, isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -117,28 +117,22 @@ function get2DDomain(state) {
   try {
     xArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
       if (
-        datum.info.dimension === 2 &&
+        isSpectrum2D(datum) &&
         datum.info.nucleus?.join(',') === activeTab &&
         datum.info.isFt
       ) {
-        acc = acc.concat([
-          (datum as Datum2D).data.minX,
-          (datum as Datum2D).data.maxX,
-        ]);
+        acc = acc.concat([datum.data.minX, datum.data.maxX]);
       }
       return acc;
     }, []);
 
     yArray = data.reduce((acc, datum: Datum1D | Datum2D) => {
       if (
-        datum.info.dimension === 2 &&
+        isSpectrum2D(datum) &&
         datum.info.nucleus?.join(',') === activeTab &&
         datum.info.isFt
       ) {
-        acc = acc.concat([
-          (datum as Datum2D).data.minY,
-          (datum as Datum2D).data.maxY,
-        ]);
+        acc = acc.concat([datum.data.minY, datum.data.maxY]);
       }
       return acc;
     }, []);
