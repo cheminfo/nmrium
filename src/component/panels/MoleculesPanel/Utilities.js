@@ -46,36 +46,34 @@ export function findDatumAndSignalIndex(spectraData, id) {
   return { datum, signalIndex };
 }
 
-export function getHighlightsOnHover(assignmentData, oclIDs, spectraData) {
+export function getHighlightsOnHover(assignmentData, oclIDs, data) {
   // set all IDs to highlight when hovering over an atom from assignment data
   let highlights = [];
   for (let key in assignmentData.assignment.assignment) {
     let datum, signalIndex;
     let stop = false;
     if (
-      assignmentData.assignment.assignment[key].x &&
-      assignmentData.assignment.assignment[key].x.some((_assigned) =>
+      (assignmentData.assignment.assignment[key].x || []).some((_assigned) =>
         oclIDs.includes(_assigned),
       )
     ) {
       highlights = highlights.concat(
         assignmentData.assignment.assignment[key].x,
       );
-      const result = findDatumAndSignalIndex(spectraData, key);
+      const result = findDatumAndSignalIndex(data, key);
       datum = result.datum;
       signalIndex = result.signalIndex;
       stop = true;
     }
     if (
-      assignmentData.assignment.assignment[key].y &&
-      assignmentData.assignment.assignment[key].y.some((_assigned) =>
+      (assignmentData.assignment.assignment[key].y || []).some((_assigned) =>
         oclIDs.includes(_assigned),
       )
     ) {
       highlights = highlights.concat(
         assignmentData.assignment.assignment[key].y,
       );
-      const result = findDatumAndSignalIndex(spectraData, key);
+      const result = findDatumAndSignalIndex(data, key);
       datum = result.datum;
       signalIndex = result.signalIndex;
       stop = true;
