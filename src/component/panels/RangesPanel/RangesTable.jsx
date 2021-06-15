@@ -67,11 +67,11 @@ function RangesTable({
 }) {
   const element = activeTab && activeTab.replace(/[0-9]/g, '');
   const contextRef = useRef();
-  const data = useMapRanges(tableData);
+  const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
+  const data = useMapRanges(sortedData);
   const [relativeFlags, toggleRelativeColumn] = useToggleStatus('id', data);
   const [signalFlags, toggleSignalColumn] = useToggleStatus('id', data);
   const { rootRef } = useGlobal();
-  const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
 
   const isVisible = (key) => {
     return lodashGet(preferences, key, false);
@@ -149,13 +149,12 @@ function RangesTable({
           </tr>
         </thead>
         <tbody>
-          {sortedData &&
-            sortedData.map((range, index) => {
+          {data &&
+            data.map((range) => {
               return (
                 <RangesTableRow
-                  rowIndex={index}
-                  key={sortedData[index].rowKey}
-                  rowData={sortedData[index]}
+                  key={range.rowKey}
+                  rowData={range}
                   onChangeKind={onChangeKind}
                   onDelete={onDelete}
                   onUnlink={onUnlink}
