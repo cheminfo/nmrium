@@ -58,7 +58,11 @@ export default function TestHighlight() {
   );
 }
 
-function HighlightTable(props) {
+interface HighlightTableProps {
+  data: Array<{ id: string; highlight: Array<number | string> }>;
+}
+
+function HighlightTable(props: HighlightTableProps) {
   return (
     <table css={table}>
       <thead>
@@ -76,7 +80,11 @@ function HighlightTable(props) {
   );
 }
 
-function Tr(props) {
+interface TrProps {
+  value: { id: string; highlight: Array<number | string> };
+}
+
+function Tr(props: TrProps) {
   const { value } = props;
 
   const highlight = useHighlight([value.id, ...value.highlight]);
