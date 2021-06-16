@@ -36,7 +36,7 @@ export function wheel(
     });
   }
 }
-export function getScaleByID(id) {
+export function getScaleByID(id: number) {
   return { [id]: spectraZoomHanlders[id].getScale(id) };
 }
 

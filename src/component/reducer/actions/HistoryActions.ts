@@ -31,8 +31,7 @@ function handleHistoryUndo(draft) {
 
 function handleHistoryRedo(draft) {
   const { history } = draft;
-  // eslint-disable-next-line no-unused-vars
-  const next = history.future[0];
+  // const next = history.future[0];
   const newPresent = history.future.shift();
   history.past.push(history.present);
   history.present = newPresent;
