@@ -80,8 +80,6 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
 
   let refreshDomain = false;
 
-  draft.tempData = null;
-
   const currentActiveSpectrum = draft.activeSpectrum;
 
   if (activeSpectrum) {
@@ -112,9 +110,13 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
     draft.activeSpectrum = null;
     draft.tabActiveSpectrum[draft.activeTab] = null;
     refreshDomain = false;
+  }
+
+  if (options[draft.toolOptions.selectedTool].isFilter) {
     draft.toolOptions.selectedTool = options.zoom.id;
     draft.toolOptions.data.baseLineZones = [];
     draft.toolOptions.selectedOptionPanel = null;
+    draft.tempData = null;
   }
 
   /**
