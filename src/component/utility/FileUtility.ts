@@ -21,9 +21,7 @@ function getFileSignature(fileArrayBuffer) {
 async function loadFile(file, options = { asBuffer: false }) {
   const response = await fetch(file);
   checkStatus(response);
-  const data = (await options.asBuffer)
-    ? response.arrayBuffer()
-    : response.text();
+  const data = options.asBuffer ? response.arrayBuffer() : response.text();
   return data;
 }
 
@@ -57,9 +55,9 @@ function extractFileMetaFromPath(path) {
  * @param {boolean} options.asBuffer
  * @returns
  */
-function loadFiles(acceptedFiles, options = {}) {
+function loadFiles(acceptedFiles, options: { asBuffer?: boolean } = {}) {
   return Promise.all(
-    [].map.call(acceptedFiles, (file) => {
+    [].map.call(acceptedFiles, (file: any) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onabort = (e) => reject(e);
@@ -82,8 +80,8 @@ function loadFiles(acceptedFiles, options = {}) {
   );
 }
 
-async function loadFilesFromZip(files, options = {}) {
-  const result = [];
+async function loadFilesFromZip(files, options: { asBuffer?: boolean } = {}) {
+  const result: Array<{ binary: any; name: string; extension: string }> = [];
   for (const file of files) {
     try {
       const binary = await file.async(options.asBuffer ? 'uint8array' : 'text');
