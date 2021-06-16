@@ -16,8 +16,6 @@ import {
   changeRange,
   changeRangesRealtive,
   Datum1D,
-  Range,
-  Signal,
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
 import {
@@ -62,9 +60,8 @@ function handleDeleteRange(draft: Draft<State>, action) {
     const { id = null, assignmentData } = action.payload.data;
     const datum = draft.data[index] as Datum1D;
     if (id) {
-      const range = datum.ranges.values.find((range) => range.id === id);
-      unlinkInAssignmentData(assignmentData, [range]);
-      const rangeIndex = getRangeIndex(state, index, id);
+      const rangeIndex = getRangeIndex(draft, index, id);
+      unlinkInAssignmentData(assignmentData, [datum.ranges.values[rangeIndex]]);
       datum.ranges.values.splice(rangeIndex, 1);
     } else {
       unlinkInAssignmentData(assignmentData, datum.ranges.values);
@@ -81,11 +78,9 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
     const { index } = state.activeSpectrum;
     const { rowData, value } = action.payload.data;
     const rangeIndex = getRangeIndex(state, index, rowData.id);
-    const _range = (draft.data[index] as Datum1D).ranges.values[
-      rangeIndex
-    ] as Range;
+    const _range = (draft.data[index] as Datum1D).ranges.values[rangeIndex];
     if (_range?.signal) {
-      (_range.signal[rowData.tableMetaInfo.signalIndex] as Signal).kind = value;
+      _range.signal[rowData.tableMetaInfo.signalIndex].kind = value;
       _range.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal
         : DatumKind.mixed;
@@ -105,10 +100,10 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
     const _editedRowData = unlink(editedRowData);
 
     delete _editedRowData.tableMetaInfo;
+    delete _editedRowData.rowKey;
     // remove assignments in assignment hook data
     // for now: clear all assignments for this range because signals or levels to store might have changed
     unlinkInAssignmentData(assignmentData, [_editedRowData]);
-
     const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
     (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _editedRowData;
     updateIntegralRanges(draft.data[index]);

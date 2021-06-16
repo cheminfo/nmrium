@@ -192,11 +192,15 @@ export type NMRiumPreferences = Partial<{
 }>;
 
 export type Molecules = Array<{ molfile: string }>;
-export type Spectra = Array<Partial<Datum1D> | Partial<Datum2D>>;
+export type Spectra = Array<Datum1D | Datum2D>;
+
+type DeepPartial<T> = {
+  [P in keyof T]?: DeepPartial<T[P]>;
+};
 
 export interface NMRiumData {
   molecules?: Molecules;
-  spectra: Spectra;
+  spectra: DeepPartial<Spectra>;
 }
 
 function NMRium({

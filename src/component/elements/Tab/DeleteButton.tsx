@@ -28,7 +28,12 @@ const styles = css`
   }
 `;
 
-function DeleteButton({ onDelete, className = 'delete' }) {
+interface DeleteButtonProps {
+  onDelete: (element: any) => void;
+  className?: string;
+}
+
+function DeleteButton({ onDelete, className = 'delete' }: DeleteButtonProps) {
   return (
     <button css={styles} className={className} type="button" onClick={onDelete}>
       <FaTimes className="icon" />

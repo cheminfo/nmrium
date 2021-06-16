@@ -1,12 +1,13 @@
-import { useContext, useCallback, useMemo } from 'react';
+import { useContext, useCallback, useMemo, CSSProperties } from 'react';
 
+import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 
-const style = {
+const style: CSSProperties = {
   cursor: 'crosshair',
   transformOrigin: 'bottom right',
   position: 'absolute',
@@ -29,8 +30,9 @@ function XLabelPointer() {
       : null;
     return spectrumData;
   }, [activeSpectrum, data]);
+
   const format = useFormatNumberByNucleus(
-    activeSpectrumData && activeSpectrumData.info.nucleus,
+    (activeSpectrumData as Datum1D)?.info.nucleus,
   );
 
   const getXValue = useCallback(

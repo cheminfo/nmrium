@@ -10,6 +10,7 @@ import {
 import { Filters as FiltersTypes } from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
+import { Datum2D } from '../data2d/Spectrum2D';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 import get1dColor from '../utilities/getColor';
@@ -40,20 +41,22 @@ export interface Display {
 }
 
 export interface Info {
-  nucleus: Array<string>;
+  nucleus: string;
   isFid: boolean;
   isComplex: boolean;
   dimension: number;
   isFt: boolean;
+  experiment?: any;
 }
 export interface Peak {
   id: string;
   delta: number;
   originDelta: number;
-  width: number;
+  width?: number;
+  intensity: number;
 }
 export interface Peaks {
-  values: Array<Partial<Peak>>;
+  values: Array<Peak>;
   options: any;
 }
 export interface Integral {
@@ -63,12 +66,12 @@ export interface Integral {
   from: number;
   to: number;
   absolute: number;
-  integral: number;
+  integral?: number;
   kind: string;
 }
 export interface Integrals {
-  values: Array<Partial<Integral>>;
-  options: Partial<{ sum: number }>;
+  values: Array<Integral>;
+  options: { sum?: number };
 }
 
 export interface Signal {
@@ -77,7 +80,7 @@ export interface Signal {
   originDelta?: number;
   delta: number;
   multiplicity: string;
-  peak?: Array<Partial<{ x: number; intensity: number; width: number }>>;
+  peak?: Array<{ x: number; intensity: number; width: number }>;
 }
 export interface Range {
   id: string;
@@ -88,12 +91,12 @@ export interface Range {
   absolute: number;
   integral: number;
   kind: string;
-  signal?: Array<Partial<Signal>>;
+  signal: Array<Signal>;
 }
 
 export interface Ranges {
-  values: Array<Partial<Range>>;
-  options: Partial<{ sum: number }>;
+  values: Array<Range>;
+  options: { sum?: number };
 }
 
 export interface Source {
@@ -103,17 +106,17 @@ export interface Source {
 
 export interface Datum1D {
   id: string | number;
-  source: Partial<Source>;
-  display: Partial<Display>;
-  info: Partial<Info>;
-  originalInfo?: Partial<Info>;
+  source: Source;
+  display: Display;
+  info: Info;
+  originalInfo?: Info;
   meta: any;
   data: Data1D;
   originalData?: Data1D;
   peaks: Peaks;
   integrals: Integrals;
   ranges: Ranges;
-  filters: Array<Partial<FiltersManager.Filter>>;
+  filters: Array<FiltersManager.Filter>;
 }
 
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
@@ -547,4 +550,8 @@ export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
     datum.ranges.values[rangeIndex].signal[signalIndex].delta = newSignalValue;
   }
   return shiftValue;
+}
+
+export function isSpectrum1D(spectrum: Datum1D | Datum2D): spectrum is Datum1D {
+  return spectrum.info.dimension === 1;
 }

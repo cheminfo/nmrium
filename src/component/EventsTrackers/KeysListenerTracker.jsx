@@ -156,6 +156,12 @@ function KeysListenerTracker() {
             handleChangeOption(toolID);
             break;
           }
+          case 'a': {
+            if (allow1DTool) {
+              handleChangeOption(options.phaseCorrection.id);
+            }
+            break;
+          }
           case 'b': {
             if (allow1DTool) {
               handleChangeOption(options.baseLineCorrection.id);

@@ -38,7 +38,7 @@ import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
 
 export const initialState = {
-  data: null,
+  data: [],
   contours: null,
   tempData: null,
   xDomain: [],
@@ -110,19 +110,19 @@ export interface State {
   integralsYDomains: any;
   originIntegralYDomain: any;
   activeTab: any;
-  width: any;
-  height: any;
-  margin: Partial<{ top: number; right: number; bottom: number; left: number }>;
+  width: number;
+  height: number;
+  margin: { top: number; right: number; bottom: number; left: number };
   activeSpectrum: any;
   mode: string;
   zoomFactor: Partial<{ scale: number }>;
   integralZoomFactor: Partial<{ scale: number }>;
   molecules: Array<any>;
-  verticalAlign: Partial<{
+  verticalAlign: {
     flag: boolean;
     stacked: boolean;
     value: number;
-  }>;
+  };
   history: Partial<{
     past: Array<any>;
     present: any;
@@ -133,7 +133,7 @@ export interface State {
   isLoading: boolean;
   preferences: any;
   keysPreferences: any;
-  displayerMode: any;
+  displayerMode: DISPLAYER_MODE;
   tabActiveSpectrum: any;
   spectraAnalysis: any;
   displayerKey: any;

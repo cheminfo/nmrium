@@ -47,6 +47,7 @@ const styles = css`
     }
   }
 `;
+
 function FooterBanner({ layout, data1D }) {
   const position = useContext(MouseContext);
   const { startX, endX, startY, endY, step } = useContext(BrushContext);
