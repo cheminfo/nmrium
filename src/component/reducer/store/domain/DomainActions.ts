@@ -2,9 +2,9 @@ import { extent } from 'd3';
 import { produce } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import GroupByInfoKey from '../../../utility/GroupByInfoKey';
+import { DISPLAYER_MODE } from '../../core/Constants';
 // import { AnalysisObj } from '../core/Analysis';
-import { DISPLAYER_MODE } from '../core/Constants';
 
 function getActiveData(draft) {
   if (draft.activeTab) {
@@ -107,9 +107,7 @@ function get2DDomain(state) {
     (datum) => datum.id === tabActiveSpectrum[activeTab].id,
   );
 
-  const spectrumsIDs = nucleus.map(
-    (n) => tabActiveSpectrum[n] && tabActiveSpectrum[n].id,
-  );
+  const spectrumsIDs = nucleus.map((n) => tabActiveSpectrum[n]?.id);
   const filteredData = data.reduce((acc, datum) => {
     return spectrumsIDs.includes(datum.id) && datum.info.dimension === 1
       ? acc.concat(datum)
@@ -204,7 +202,7 @@ export function setMode(draft) {
   const data = getActiveData(draft).filter(
     (datum) => datum.isVisibleInDomain === true,
   );
-  draft.mode = data && data[0] && data[0].info.isFid ? 'LTR' : 'RTL';
+  draft.mode = data?.[0]?.info.isFid ? 'LTR' : 'RTL';
 }
 
 export function handleChangeIntegralYDomain(state, newYDomain) {
