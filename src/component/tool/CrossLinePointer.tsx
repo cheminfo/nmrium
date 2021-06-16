@@ -1,14 +1,14 @@
-import { useContext } from 'react';
+import { CSSProperties, useContext } from 'react';
 
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { options } from '../toolbar/ToolTypes';
 
-const styles = {
+const styles: Record<'line', CSSProperties> = {
   line: {
     stroke: 'black',
-    strokeOpacity: '1',
+    strokeOpacity: 1,
     shapeRendering: 'crispEdges',
     strokeWidth: '1',
     willChange: 'transform',
