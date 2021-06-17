@@ -1,10 +1,21 @@
 import { addSource } from './addSource';
 import { getToFix } from './getToFix';
 
-export async function get1DSignals(data, nmrRecord, options = {}) {
-  let { prefix, labels } = options;
+interface Get1DSignalsOptions {
+  prefix?: string;
+  labels: {
+    byDiaID: Array<{ label: string }>;
+  };
+}
+
+export async function get1DSignals(
+  data,
+  nmrRecord,
+  options: Get1DSignalsOptions = { labels: { byDiaID: [] } },
+) {
+  let { prefix = '', labels } = options;
   let str = '';
-  let nucleusArray = [];
+  let nucleusArray: Array<Array<any>> = [];
   for (let spectrum of data) {
     const { info } = spectrum;
     if (info.isFid || info.dimension > 1) continue;
@@ -70,12 +81,13 @@ export async function get1DSignals(data, nmrRecord, options = {}) {
           let jCoupling = signal.j;
           if (Array.isArray(jCoupling) && jCoupling.length) {
             let separator = ', J=';
-            for (let i = 0; i < jCoupling.length; i++) {
-              partTag += `${separator}${Number(jCoupling[i].coupling).toFixed(
-                3,
-              )}`;
-              if (jCoupling[i].diaID) {
-                let { diaID } = jCoupling[i];
+
+            for (const jCouplingElement of jCoupling) {
+              partTag += `${separator}${Number(
+                jCouplingElement.coupling,
+              ).toFixed(3)}`;
+              if (jCouplingElement.diaID) {
+                let { diaID } = jCouplingElement;
                 if (!Array.isArray(diaID)) diaID = [diaID];
                 if (!diaID.length) continue;
                 let jCouple =
@@ -98,7 +110,7 @@ export async function get1DSignals(data, nmrRecord, options = {}) {
     }
     partTag += '\n';
 
-    if (partTag.match('\\\n')) str += partTag;
+    if (/\n/.exec(partTag)) str += partTag;
   }
   return str;
 }

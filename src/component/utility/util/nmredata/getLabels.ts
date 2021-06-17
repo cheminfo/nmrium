@@ -3,7 +3,15 @@ import { getShortestPaths } from 'openchemlib-utils';
 import { flat2DSignals } from './flat2DSignals';
 import { getToFix } from './getToFix';
 
-export function getLabels(data, options = {}) {
+interface GetLabelsOptions {
+  molecule?: any;
+  groupedDiaIDs: Array<any>;
+}
+
+export function getLabels(
+  data,
+  options: GetLabelsOptions = { groupedDiaIDs: [] },
+) {
   const { groupedDiaIDs, molecule } = options;
 
   let connections = getShortestPaths(molecule, { toLabel: 'H', maxLength: 1 });
