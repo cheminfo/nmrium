@@ -61,8 +61,14 @@ const moleculeContainerStyle = css`
   }
 `;
 
-function MoleculeSelection({ molecules, onChange }) {
-  const [currentIndex, setCurrentIndex] = useState();
+interface MoleculeSelectionProps {
+  molecules: any;
+  onChange: (element: any) => void;
+}
+
+function MoleculeSelection(props: MoleculeSelectionProps) {
+  const { molecules, onChange = () => null } = props;
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   useEffect(() => {
     if (molecules && molecules.length > 0) {
@@ -89,31 +95,24 @@ function MoleculeSelection({ molecules, onChange }) {
       </div>
       <div css={moleculeContainerStyle}>
         <NextPrev onChange={onChangeHandler}>
-          {molecules &&
-            molecules.map((mol, index) => (
-              <div key={mol.key} className="slider">
-                <div>
-                  <MolfileSvgRenderer
-                    id={`molSVG${index}`}
-                    width={120}
-                    molfile={mol.molfile}
-                  />
-                </div>
-                <p>
-                  <MF mf={mol.mf} /> - {mol.mw.toFixed(2)}
-                </p>
+          {molecules?.map((mol, index) => (
+            <div key={mol.key} className="slider">
+              <div>
+                <MolfileSvgRenderer
+                  id={`molSVG${index}`}
+                  width={120}
+                  molfile={mol.molfile}
+                />
               </div>
-            ))}
+              <p>
+                <MF mf={mol.mf} /> - {mol.mw.toFixed(2)}
+              </p>
+            </div>
+          ))}
         </NextPrev>
       </div>
     </div>
   );
 }
-
-MoleculeSelection.defaultProps = {
-  onChange: () => {
-    return null;
-  },
-};
 
 export default MoleculeSelection;

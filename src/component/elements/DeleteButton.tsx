@@ -1,4 +1,18 @@
-function DeleteButton({ x, y, onDelete, fill }) {
+interface DeleteButtonProps {
+  onDelete?: () => void;
+  fill?: string;
+  x: string;
+  y: string;
+}
+
+function DeleteButton(props: DeleteButtonProps) {
+  const {
+    x = 'intial',
+    y = 'initial',
+    onDelete = () => null,
+    fill = '#c81121',
+  } = props;
+
   return (
     <svg
       className="delete-button"
@@ -12,12 +26,5 @@ function DeleteButton({ x, y, onDelete, fill }) {
     </svg>
   );
 }
-
-DeleteButton.defaultProps = {
-  onDelete: () => null,
-  fill: '#c81121',
-  x: 'initial',
-  y: 'initial',
-};
 
 export default DeleteButton;
