@@ -84,6 +84,13 @@ function Range({ rangeData, showMultiplicityTrees, selectedTool }: RangeProps) {
   const [isBlockedByEditing, setIsBlockedByEditing] = useState(false);
 
   useEffect(() => {
+    setRangeBoundary({
+      from: rangeFrom,
+      to: rangeTo,
+    });
+  }, [rangeFrom, rangeTo]);
+
+  useEffect(() => {
     if (selectedTool && selectedTool === options.editRange.id) {
       setIsBlockedByEditing(true);
     } else {
