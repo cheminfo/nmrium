@@ -114,7 +114,7 @@ export function preferencesReducer(state, action) {
           draft.docsBaseUrl = docsBaseUrl;
           if (localData) {
             Object.entries(localData).forEach(([k, v]) => {
-              if (k !== 'basePreferences') {
+              if (!['dispatch', 'docsBaseUrl', 'basePreferences'].includes(k)) {
                 draft[k] = lodashMerge({}, resProps[k] ? resProps[k] : {}, v);
               }
             });
