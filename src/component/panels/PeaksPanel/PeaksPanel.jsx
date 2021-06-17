@@ -1,9 +1,11 @@
-import { useCallback, useState, useRef, memo } from 'react';
+import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import { useDispatch } from '../../context/DispatchContext';
 import { useModal } from '../../elements/popup/Modal';
+import PeaksWrapper from '../../hoc/PeaksWrapper';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
+import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -18,13 +20,14 @@ const styles = {
   },
 };
 
-function PeaksPanel() {
+function PeaksPanel({ peaks, info, xDomain, activeTab, preferences }) {
   const [filterIsActive, setFilterIsActive] = useState(false);
-  const [peaksCounter, setPeaksCounter] = useState(0);
+  const [isFlipped, setFlipStatus] = useState(false);
+  const format = useFormatNumberByNucleus(info.nucleus);
 
   const dispatch = useDispatch();
   const modal = useModal();
-  const [isFlipped, setFlipStatus] = useState(false);
+
   const settingRef = useRef();
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_PEAK_NOTATION, data: null });
@@ -52,15 +55,44 @@ function PeaksPanel() {
   const handleOnFilter = useCallback(() => {
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
-  const changedHandler = useCallback((val) => {
-    setPeaksCounter(val);
-  }, []);
+
+  const filteredPeaks = useMemo(() => {
+    function isInRange(value) {
+      const factor = 100000;
+      return (
+        value * factor >= xDomain[0] * factor &&
+        value * factor <= xDomain[1] * factor
+      );
+    }
+    if (peaks && peaks.values) {
+      const _peaks = filterIsActive
+        ? peaks.values.filter((peak) => isInRange(peak.delta))
+        : peaks.values;
+
+      return _peaks
+        .map((peak) => {
+          const value = format(peak.delta);
+          return {
+            value: value,
+            valueHz:
+              info && info.originFrequency ? value * info.originFrequency : '',
+            id: peak.id,
+            intensity: peak.intensity,
+            peakWidth: peak.width ? peak.width : '',
+            isConstantlyHighlighted: isInRange(value),
+          };
+        })
+        .sort((prev, next) => prev.value - next.value);
+    }
+
+    return [];
+  }, [filterIsActive, format, info, peaks, xDomain]);
 
   return (
     <div style={styles.container}>
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={peaksCounter}
+          counter={peaks.values && peaks.values.length}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Peaks"
           onFilter={handleOnFilter}
@@ -68,7 +100,7 @@ function PeaksPanel() {
             filterIsActive ? 'Show all peaks' : 'Hide peaks out of view'
           }
           filterIsActive={filterIsActive}
-          counterFiltered={peaksCounter}
+          counterFiltered={filteredPeaks.length}
           showSettingButton="true"
           onSettingClick={settingsPanelHandler}
         />
@@ -87,8 +119,10 @@ function PeaksPanel() {
         >
           <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
             <PeaksTable
-              enableFilter={filterIsActive}
-              onFilter={changedHandler}
+              data={filteredPeaks}
+              activeTab={activeTab}
+              preferences={preferences}
+              info={info}
             />
           </div>
 
@@ -99,4 +133,4 @@ function PeaksPanel() {
   );
 }
 
-export default memo(PeaksPanel);
+export default PeaksWrapper(memo(PeaksPanel));

@@ -43,9 +43,15 @@ const styles = css`
   }
 `;
 
-function IntegralPanel({ integrals, activeTab, molecules }) {
+function IntegralPanel({
+  integrals,
+  info,
+  activeTab,
+  xDomain,
+  preferences,
+  molecules,
+}) {
   const [filterIsActive, setFilterIsActive] = useState(false);
-  const [integralsCounter, setIntegralsCounter] = useState(0);
 
   const dispatch = useDispatch();
   const modal = useModal();
@@ -112,10 +118,6 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
     setFilterIsActive(!filterIsActive);
   }, [filterIsActive]);
 
-  const changedHandler = useCallback((val) => {
-    setIntegralsCounter(val);
-  }, []);
-
   const toggleConstantSumHandler = useCallback(
     (flag) => {
       dispatch({ type: CHANGE_INTEGRALS_SUM_FLAG, payload: flag });
@@ -123,12 +125,39 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
     [dispatch],
   );
 
+  const filteredData = useMemo(() => {
+    function isInRange(from, to) {
+      const factor = 10000;
+      to = to * factor;
+      from = from * factor;
+      return (
+        (to >= xDomain[0] * factor && from <= xDomain[1] * factor) ||
+        (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
+      );
+    }
+    if (info.dimension === 1 && integrals && integrals.values) {
+      const _integrals = filterIsActive
+        ? integrals.values.filter((integral) =>
+            isInRange(integral.from, integral.to),
+          )
+        : integrals.values;
+
+      return _integrals.map((integral) => {
+        return {
+          ...integral,
+          isConstantlyHighlighted: isInRange(integral.from, integral.to),
+        };
+      });
+    }
+    return [];
+  }, [filterIsActive, info.dimension, integrals, xDomain]);
+
   return (
     <Fragment>
       <div css={styles}>
         {!isFlipped && (
           <DefaultPanelHeader
-            counter={integralsCounter}
+            counter={integrals.values && integrals.values.length}
             onDelete={handleDeleteAll}
             deleteToolTip="Delete All Integrals"
             onFilter={handleOnFilter}
@@ -138,7 +167,7 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
                 : 'Hide integrals out of view'
             }
             filterIsActive={filterIsActive}
-            counterFiltered={integralsCounter}
+            counterFiltered={filteredData.length}
             showSettingButton="true"
             onSettingClick={settingsPanelHandler}
           >
@@ -181,8 +210,10 @@ function IntegralPanel({ integrals, activeTab, molecules }) {
           >
             <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
               <IntegralTable
-                enableFilter={filterIsActive}
-                onFilter={changedHandler}
+                data={filteredData}
+                activeTab={activeTab}
+                preferences={preferences}
+                info={info}
               />
             </div>
             <IntegralsPreferences ref={settingRef} />

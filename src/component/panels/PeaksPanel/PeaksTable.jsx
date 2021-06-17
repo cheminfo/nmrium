@@ -1,10 +1,9 @@
-import { useCallback, useMemo, memo, useEffect, useRef } from 'react';
+import { useCallback, useMemo, memo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
 import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';
-import PeaksWrapper from '../../hoc/PeaksWrapper';
 import {
   DELETE_PEAK_NOTATION,
   SHIFT_SPECTRUM,
@@ -16,18 +15,11 @@ import { getValue } from '../../utility/LocalStorage';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
-function PeaksTable({
-  peaks,
-  info,
-  xDomain,
-  activeTab,
-  enableFilter,
-  onFilter,
-  preferences,
-}) {
+function PeaksTable({ activeTab, preferences, data, info }) {
   const dispatch = useDispatch();
   const deltaPPMRefs = useRef([]);
   const format = useFormatNumberByNucleus(info.nucleus);
+
   const deletePeakHandler = useCallback(
     (e, row) => {
       e.preventDefault();
@@ -117,18 +109,15 @@ function PeaksTable({
           formatNumber(row.xIndex, peaksPreferences.peakIndexFormat),
       });
     }
+    // peaksPreferences.deltaPPMFormat
     if (peaksPreferences.showDeltaPPM) {
       setCustomColumn(cols, 3, 'δ (ppm)', {
-        accessor: (row) =>
-          formatNumber(row.value, peaksPreferences.deltaPPMFormat),
+        accessor: (row) => format(row.value),
         Cell: ({ row }) => (
           <EditableColumn
             onEditStart={() => editStartHander(row.index)}
             ref={(ref) => (deltaPPMRefs.current[row.index] = ref)}
-            value={formatNumber(
-              row.original.value,
-              peaksPreferences.deltaPPMFormat,
-            )}
+            value={format(row.original.value)}
             onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
             type="number"
           />
@@ -157,52 +146,17 @@ function PeaksTable({
   }, [
     activeTab,
     editStartHander,
+    format,
     initialColumns,
     preferences,
     saveDeltaPPMRefsHandler,
   ]);
 
-  const _data = useMemo(() => {
-    function isInRange(value) {
-      const factor = 100000;
-      return (
-        value * factor >= xDomain[0] * factor &&
-        value * factor <= xDomain[1] * factor
-      );
-    }
-    if (peaks && peaks.values) {
-      const _peaks = enableFilter
-        ? peaks.values.filter((peak) => isInRange(peak.delta))
-        : peaks.values;
-
-      return _peaks
-        .map((peak) => {
-          const value = format(peak.delta);
-          return {
-            value: value,
-            valueHz:
-              info && info.originFrequency ? value * info.originFrequency : '',
-            id: peak.id,
-            intensity: peak.intensity,
-            peakWidth: peak.width ? peak.width : '',
-            isConstantlyHighlighted: isInRange(value),
-          };
-        })
-        .sort((prev, next) => prev.value - next.value);
-    }
-
-    return [];
-  }, [enableFilter, format, info, peaks, xDomain]);
-
-  useEffect(() => {
-    onFilter(_data.length);
-  }, [_data, onFilter]);
-
-  return _data && _data.length > 0 ? (
-    <ReactTable data={_data} columns={tableColumns} />
+  return data && data.length > 0 ? (
+    <ReactTable data={data} columns={tableColumns} />
   ) : (
     <NoTableData />
   );
 }
 
-export default PeaksWrapper(memo(PeaksTable));
+export default memo(PeaksTable);

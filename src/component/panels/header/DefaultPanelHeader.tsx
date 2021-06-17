@@ -88,7 +88,7 @@ function DefaultPanelHeader({
           popupTitle={filterToolTip}
           popupPlacement="right"
           onClick={onFilter}
-          // defaultValue={filterIsActive && filterIsActive === true}
+          defaultValue={filterIsActive}
         >
           <FaFilter style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ToggleButton>

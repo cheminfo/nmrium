@@ -162,6 +162,7 @@ function PeaksPreferences({ nucleus, preferences }, ref) {
                   label={field.label}
                   checkControllerName={`${nucleusLabel}.${field.checkController}`}
                   formatControllerName={`${nucleusLabel}.${field.formatController}`}
+                  hideFormat={field.formatController === 'deltaPPMFormat'}
                 />
               ))}
             </div>
