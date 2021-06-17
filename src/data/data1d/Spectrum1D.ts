@@ -272,8 +272,13 @@ export function lookupPeak(data, options) {
   return null;
 }
 
-export function updateIntegralIntegrals(datum) {
-  updateRelatives(datum.integrals, 'integral', integralCountingCondition);
+export function updateIntegralIntegrals(datum, forceCalculateIntegral = false) {
+  updateRelatives(
+    datum.integrals,
+    'integral',
+    integralCountingCondition,
+    forceCalculateIntegral,
+  );
 }
 
 export function changeIntegralsRealtive(datum, newIntegral) {
@@ -281,32 +286,23 @@ export function changeIntegralsRealtive(datum, newIntegral) {
     (integral) => integral.id === newIntegral.id,
   );
   if (index !== -1) {
-    if (datum.integrals.options.isSumConstant) {
-      const ratio = datum.integrals.values[index].absolute / newIntegral.value;
-      const { values, sum } = datum.integrals.values.reduce(
-        (acc, integral, index) => {
-          const newIntegralValue = integral.absolute / ratio;
-          acc.sum += newIntegralValue;
-          acc.values[index] = {
-            ...integral,
-            integral: newIntegralValue,
-          };
+    const ratio = datum.integrals.values[index].absolute / newIntegral.value;
+    const { values, sum } = datum.integrals.values.reduce(
+      (acc, integral, index) => {
+        const newIntegralValue = integral.absolute / ratio;
+        acc.sum += newIntegralValue;
+        acc.values[index] = {
+          ...integral,
+          integral: newIntegralValue,
+        };
 
-          return acc;
-        },
-        { values: [], sum: 0 },
-      );
+        return acc;
+      },
+      { values: [], sum: 0 },
+    );
 
-      datum.integrals.values = values;
-      datum.integrals.options.sum = sum;
-    } else {
-      datum.integrals.values[index].integral = newIntegral.value;
-      datum.integrals.options.sum = getSum(
-        datum.integrals.values,
-        'integral',
-        integralCountingCondition,
-      );
-    }
+    datum.integrals.values = values;
+    datum.integrals.options.sum = sum;
   }
 }
 
@@ -326,27 +322,47 @@ function rangeCountingCondition(range) {
   return range.signal && checkSignalKinds(range, SignalKindsToInclude);
 }
 
-function updateRelatives(data, storageKey, countingCondition) {
+function updateRelatives(
+  data,
+  storageKey,
+  countingCondition,
+  forceCalculateIntegral = false,
+) {
   const { values, options } = data;
-  if (data.options.isSumConstant) {
-    const currentSum = getSum(values, 'absolute', countingCondition);
 
-    const factor = currentSum > 0 ? options.sum / currentSum : 0.0;
-    data.values = data.values.map((value) => {
-      return {
-        ...value,
-        ...(countingCondition(value) && {
-          [storageKey]: value.absolute * factor,
-        }),
-      };
-    });
+  const currentSum = getSum(values, 'absolute', countingCondition);
+
+  let factor = 0;
+  if (data.options.isSumConstant || forceCalculateIntegral) {
+    factor = currentSum > 0 ? options.sum / currentSum : 0.0;
   } else {
-    data.options.sum = getSum(values, storageKey, countingCondition);
+    if (data.values?.[0]) {
+      const { [storageKey]: inetgral, absolute } = data.values[0];
+      factor = (inetgral ? inetgral : options.sum) / absolute;
+    }
+  }
+
+  data.values = data.values.map((value) => {
+    return {
+      ...value,
+      ...(countingCondition(value) && {
+        [storageKey]: value.absolute * factor,
+      }),
+    };
+  });
+
+  if (!data.options.isSumConstant && !forceCalculateIntegral) {
+    data.options.sum = getSum(data.values, storageKey, countingCondition);
   }
 }
 
-export function updateIntegralRanges(datum) {
-  updateRelatives(datum.ranges, 'integral', rangeCountingCondition);
+export function updateIntegralRanges(datum, forceCalculateIntegral = false) {
+  updateRelatives(
+    datum.ranges,
+    'integral',
+    rangeCountingCondition,
+    forceCalculateIntegral,
+  );
 }
 
 export function detectRange(datum, options) {
@@ -513,25 +529,16 @@ export function changeRangesRealtive(datum, newRange) {
     (range) => range.id === newRange.id,
   );
   if (index !== -1) {
-    if (datum.ranges.options.isSumConstant) {
-      const ratio = datum.ranges.values[index].absolute / newRange.value;
-      datum.ranges.options.sum =
-        (newRange.value / datum.ranges.values[index].integral) *
-        datum.ranges.options.sum;
-      datum.ranges.values = datum.ranges.values.map((range) => {
-        return {
-          ...range,
-          integral: range.absolute / ratio,
-        };
-      });
-    } else {
-      datum.ranges.values[index].integral = newRange.value;
-      datum.ranges.options.sum = getSum(
-        datum.ranges.values,
-        'integral',
-        rangeCountingCondition,
-      );
-    }
+    const ratio = datum.ranges.values[index].absolute / newRange.value;
+    datum.ranges.options.sum =
+      (newRange.value / datum.ranges.values[index].integral) *
+      datum.ranges.options.sum;
+    datum.ranges.values = datum.ranges.values.map((range) => {
+      return {
+        ...range,
+        integral: range.absolute / ratio,
+      };
+    });
   }
 }
 

@@ -182,7 +182,7 @@ function handleChangeRangeSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     (draft.data[index] as Datum1D).ranges.options.sum = value;
-    updateIntegralRanges(draft.data[index]);
+    updateIntegralRanges(draft.data[index], true);
   }
 }
 function handleAddRange(draft: Draft<State>, action) {
