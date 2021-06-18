@@ -51,7 +51,6 @@ export const preferencesInitialState = {
     panels: {},
   },
   dispatch: null,
-  docsBaseUrl: null,
 };
 
 function mapNucleus(draft) {
@@ -85,7 +84,7 @@ export function preferencesReducer(state, action) {
 
       return produce(state, (draft) => {
         if (action.payload) {
-          const { dispatch, docsBaseUrl, mode, ...resProps } = action.payload;
+          const { dispatch, mode, ...resProps } = action.payload;
 
           draft.basePreferences = lodashMerge(
             {},
@@ -111,10 +110,9 @@ export function preferencesReducer(state, action) {
             hiddenFeatures,
           );
           draft.dispatch = dispatch;
-          draft.docsBaseUrl = docsBaseUrl;
           if (localData) {
             Object.entries(localData).forEach(([k, v]) => {
-              if (!['dispatch', 'docsBaseUrl', 'basePreferences'].includes(k)) {
+              if (!['dispatch', 'basePreferences'].includes(k)) {
                 draft[k] = lodashMerge({}, resProps[k] ? resProps[k] : {}, v);
               }
             });

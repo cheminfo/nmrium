@@ -1,9 +1,8 @@
-import initSetting from '../../constants/InitSetting';
 import { getLocalStorage, getValue } from '../../utility/LocalStorage';
 
 export const zoomDefaultValues = {
-  lowStep: initSetting.controllers.mws.low,
-  highStep: initSetting.controllers.mws.high,
+  lowStep: 2,
+  highStep: 20,
   speedThreshold: 3,
 };
 

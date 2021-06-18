@@ -9,8 +9,8 @@ import {
   FaQuestionCircle,
 } from 'react-icons/fa';
 
+import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
-import { usePreferences } from '../context/PreferencesContext';
 import Button from '../elements/ButtonToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useHelp } from '../elements/popup/Help';
@@ -86,7 +86,6 @@ function Header(props: HeaderProps) {
   const {
     toolOptions: { selectedOptionPanel },
   } = useChartData();
-  const { docsBaseUrl } = usePreferences();
 
   const modal = useModal();
   const alert = useAlert();
@@ -127,9 +126,6 @@ function Header(props: HeaderProps) {
       },
     );
   }, [alert, modal]);
-  const openUserManual = useCallback(() => {
-    window.open(docsBaseUrl, '_blank');
-  }, [docsBaseUrl]);
 
   const openAboutUs = useCallback(() => {
     modal.show(<AboutUsModal />, {
@@ -156,7 +152,7 @@ function Header(props: HeaderProps) {
         <Button
           popupTitle="User Manual"
           popupPlacement="left"
-          onClick={openUserManual}
+          onClick={() => window.open(docsBaseUrl, '_blank')}
           className="windowButton"
         >
           <FaQuestionCircle />
