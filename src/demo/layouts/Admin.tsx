@@ -24,7 +24,12 @@ const mainPanelClosedCss = css`
   margin-left: 20px !important;
 `;
 
-export function Dashboard(props) {
+interface DashboardProps {
+  routes: any[];
+  baseURL: string;
+}
+
+export function Dashboard(props: DashboardProps) {
   const { routes = [], baseURL } = props;
   const routesList = useMemo(() => mapTreeToFlatArray(routes), [routes]);
   const [menuIsClosed, setMenuIsClosed] = useState(false);

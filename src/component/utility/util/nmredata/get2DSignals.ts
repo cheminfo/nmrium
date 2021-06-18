@@ -4,10 +4,19 @@ import { getToFix } from './getToFix';
 
 const isArray = Array.isArray;
 
-export async function get2DSignals(data, nmrRecord, options = {}) {
+interface Get2DSignalsOptions {
+  labels: { byDiaID?: string };
+  prefix?: string;
+}
+
+export async function get2DSignals(
+  data,
+  nmrRecord,
+  options: Get2DSignalsOptions = { labels: {} },
+) {
   const { byDiaID } = options.labels;
   let str = '';
-  let nucleusRecorded = [];
+  let nucleusRecorded: Array<Array<any>> = [];
   const prefix = `\n> <NMREDATA_2D_`;
   for (let spectrum of data) {
     if (spectrum.info.dimension < 2) continue;

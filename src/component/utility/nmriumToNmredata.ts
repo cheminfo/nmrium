@@ -37,7 +37,14 @@ export async function nmriumToNmredata(state, options = {}) {
   return nmrRecord;
 }
 
-async function addNMReDATA(data, nmrRecord, options = {}) {
+interface AddNMReDATAOptions {
+  id?: string;
+  prefix?: string;
+  filename?: string;
+  molecule?: any;
+}
+
+async function addNMReDATA(data, nmrRecord, options: AddNMReDATAOptions = {}) {
   let {
     id,
     prefix = '\n> <NMREDATA_',
@@ -55,7 +62,9 @@ async function addNMReDATA(data, nmrRecord, options = {}) {
     groupedDiaIDs = getGroupedDiastereotopicAtomIDs(molecule);
   }
 
-  let labels = molecule ? getLabels(data, { groupedDiaIDs, molecule }) : {};
+  let labels: { byDiaID: any; byAssignNumber: any } = molecule
+    ? getLabels(data, { groupedDiaIDs, molecule })
+    : { byDiaID: undefined, byAssignNumber: undefined };
 
   sdfResult += `${prefix}VERSION>\n1.1\\\n`;
   sdfResult += putTag(data, 'temperature', { prefix });
@@ -82,7 +91,7 @@ function formatAssignments(labels, options) {
   return str;
 }
 
-function putTag(spectra, tag, options = {}) {
+function putTag(spectra, tag, options: { prefix?: string } = { prefix: '' }) {
   const { prefix } = options;
   let str = '';
   for (let spectrum of spectra) {

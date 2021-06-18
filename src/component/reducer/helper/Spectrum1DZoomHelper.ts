@@ -8,7 +8,19 @@ export const zoomDefaultValues = {
 };
 
 export default class Spectrum1DZoomHelper {
-  constructor(scale = 1, options = {}) {
+  private scale: number;
+  private speedThreshold: any;
+  private slowZoomStep: any;
+  private fastZoomStep: any;
+
+  public constructor(
+    scale = 1,
+    options: {
+      speedThreshold?: any;
+      slowZoomStep?: any;
+      fastZoomStep?: any;
+    } = {},
+  ) {
     this.scale = scale;
     this.speedThreshold =
       options.speedThreshold || zoomDefaultValues.speedThreshold;
@@ -16,8 +28,8 @@ export default class Spectrum1DZoomHelper {
     this.fastZoomStep = options.fastZoomStep || zoomDefaultValues.highStep;
   }
 
-  // eslint-disable-next-line no-unused-vars
-  wheel(deltaY, deltaMode) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public wheel(deltaY, deltaMode) {
     const deltaYValue =
       Math.abs(deltaY).toString().length === 1
         ? Math.abs(deltaY)
@@ -46,11 +58,11 @@ export default class Spectrum1DZoomHelper {
     }
   }
 
-  getScale() {
+  public getScale() {
     return this.scale;
   }
 
-  setScale(scale) {
+  public setScale(scale) {
     this.scale = scale;
   }
 }

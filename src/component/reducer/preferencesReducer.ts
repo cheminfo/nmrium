@@ -118,7 +118,7 @@ export function preferencesReducer(state, action) {
                 draft[k] = lodashMerge({}, resProps[k] ? resProps[k] : {}, v);
               }
             });
-            mapNucleus(draft, state);
+            mapNucleus(draft);
           }
         }
       });
@@ -130,7 +130,7 @@ export function preferencesReducer(state, action) {
           draft.controllers = data.controllers;
           draft.formatting = data.formatting;
           draft.display.panels = data.display.panels;
-          mapNucleus(draft, data);
+          mapNucleus(draft);
         }
       });
     case SET_PANELS_PREFERENCES:

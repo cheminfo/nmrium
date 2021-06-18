@@ -1,4 +1,5 @@
 import {
+  CSSProperties,
   forwardRef,
   useCallback,
   useEffect,
@@ -9,11 +10,29 @@ import {
 
 import Input from './Input';
 
+interface EditableColumnProps {
+  onSave?: (element: any) => void;
+  onEditStart?: (element: any) => void;
+  type?: string;
+  editStatus?: boolean;
+  value: string;
+  style?: CSSProperties;
+}
+
 const EditableColumn = forwardRef(function EditableColumn(
-  { onSave, value, type, style, onEditStart, editStatus },
+  props: EditableColumnProps,
   ref,
 ) {
-  const [enabled, enableEdit] = useState();
+  const {
+    onSave = () => null,
+    value,
+    type = 'text',
+    style,
+    onEditStart = () => null,
+    editStatus = false,
+  } = props;
+
+  const [enabled, enableEdit] = useState<boolean | undefined>();
   const refInput = useRef();
 
   useEffect(() => {
@@ -61,6 +80,7 @@ const EditableColumn = forwardRef(function EditableColumn(
       {enabled && (
         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
           <Input
+            // @ts-expect-error enableAutoSelect exist on jsx but not in ts
             enableAutoSelect
             ref={refInput}
             value={value}
@@ -72,12 +92,5 @@ const EditableColumn = forwardRef(function EditableColumn(
     </div>
   );
 });
-
-EditableColumn.defaultProps = {
-  onSave: () => null,
-  onEditStart: () => null,
-  type: 'text',
-  editStatus: false,
-};
 
 export default EditableColumn;

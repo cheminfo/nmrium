@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { memo, useCallback, useState } from 'react';
+import { CSSProperties, memo, ReactNode, useCallback, useState } from 'react';
 
 import ToolTip from './ToolTip/ToolTip';
 
@@ -19,16 +19,26 @@ const styles = css`
   }
 `;
 
+interface ToggleButtonProps {
+  popupTitle: string;
+  popupPlacement: string;
+  style?: CSSProperties;
+  defaultValue?: boolean;
+  onClick: (element: any) => void;
+  disabled?: boolean;
+  children: ReactNode;
+}
+
 function ToggleButton({
   children,
-  style,
-  onClick,
-  popupTitle,
-  popupPlacement,
-  defaultValue,
-  disabled,
-}) {
-  const [flag, Toggle] = useState(defaultValue);
+  style = {},
+  onClick = () => null,
+  popupTitle = '',
+  popupPlacement = 'right',
+  defaultValue = false,
+  disabled = false,
+}: ToggleButtonProps) {
+  const [flag, Toggle] = useState<boolean>(defaultValue);
 
   const toggleHandler = useCallback(() => {
     onClick(!flag);
@@ -50,14 +60,5 @@ function ToggleButton({
     </ToolTip>
   );
 }
-
-ToggleButton.defaultProps = {
-  popupTitle: '',
-  popupPlacement: 'right',
-  style: {},
-  defaultValue: false,
-  onClick: () => null,
-  disabled: false,
-};
 
 export default memo(ToggleButton);

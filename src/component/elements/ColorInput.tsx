@@ -66,12 +66,21 @@ const style = css`
   }
 `;
 
-const ColorInput = memo(function ColorInput({
-  label,
-  onColorChange,
-  name,
-  value,
-}) {
+interface ColorInputProps {
+  value?: string;
+  label?: string;
+  name: string;
+  onColorChange?: (element: any) => void;
+}
+
+function ColorInput(props: ColorInputProps) {
+  const {
+    label = 'Color: ',
+    onColorChange = () => null,
+    name,
+    value = '#000000',
+  } = props;
+
   const [displayColorPicker, showColorPicker] = useState(false);
   const [selectedColor, setColor] = useState(value);
 
@@ -117,12 +126,6 @@ const ColorInput = memo(function ColorInput({
       </div>
     </div>
   );
-});
+}
 
-ColorInput.defaultProps = {
-  value: '#000000',
-  label: 'Color: ',
-  onColorChange: () => null,
-};
-
-export default ColorInput;
+export default memo(ColorInput);

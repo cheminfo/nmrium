@@ -1,10 +1,10 @@
-import { useContext } from 'react';
+import { CSSProperties, useContext } from 'react';
 
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { useChartData } from '../context/ChartContext';
 import { options } from '../toolbar/ToolTypes';
 
-const styles = {
+const styles: Record<'container', CSSProperties> = {
   container: {
     transformOrigin: 'top left',
     position: 'absolute',
@@ -14,7 +14,7 @@ const styles = {
   },
 };
 
-const allowTools = [
+const allowTools: Array<string | number> = [
   options.zoom.id,
   options.zeroFilling.id,
   options.peakPicking.id,

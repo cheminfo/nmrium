@@ -1,13 +1,13 @@
-export function getToFix(nucleusArray) {
+export function getToFix(nucleusArray: string | Array<string>) {
   if (!Array.isArray(nucleusArray)) nucleusArray = [nucleusArray];
-  let toFix = [];
+  let toFix: Array<number> = [];
   for (let nucleus of nucleusArray) {
     toFix.push(chooseDecimal(nucleus));
   }
   return toFix;
 }
 
-function chooseDecimal(nucleus) {
+function chooseDecimal(nucleus: string) {
   switch (nucleus.toUpperCase()) {
     case '1H':
       return 2;

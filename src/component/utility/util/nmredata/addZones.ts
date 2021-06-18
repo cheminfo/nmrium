@@ -4,7 +4,7 @@ import generateID from '../../../../data/utilities/generateID';
 const axisLabels = ['x', 'y'];
 
 export function addZones(signals, datum) {
-  let zones = [];
+  let zones: Array<any> = [];
   const shift = getShift(datum);
   const { baseFrequency } = datum.info;
   const frequency = { x: baseFrequency[0], y: baseFrequency[1] };

@@ -32,7 +32,15 @@ const inputStyle = css`
   }
 `;
 
-function MolecularFormulaInput({ onSave, previousMF }) {
+interface MolecularFormulaInputProps {
+  onSave?: (element: any) => void;
+  previousMF: string;
+}
+
+function MolecularFormulaInput({
+  onSave = () => null,
+  previousMF,
+}: MolecularFormulaInputProps) {
   const [mf, setMF] = useState('');
   const [isValidMF, setIsValidMF] = useState(true);
   const [hasChanged, setHasChanged] = useState(false);
@@ -73,11 +81,5 @@ function MolecularFormulaInput({ onSave, previousMF }) {
     </div>
   );
 }
-
-MolecularFormulaInput.defaultProps = {
-  onSave: () => {
-    return null;
-  },
-};
 
 export default MolecularFormulaInput;

@@ -36,7 +36,7 @@ export function wheel(
     });
   }
 }
-export function getScaleByID(id) {
+export function getScaleByID(id: number) {
   return { [id]: spectraZoomHanlders[id].getScale(id) };
 }
 
@@ -62,6 +62,7 @@ export function setScale(scale) {
     throw Error('scale must be number or Object');
   }
 }
+
 /**
  *
  * @param {Draft} draft
@@ -69,7 +70,7 @@ export function setScale(scale) {
  * @param {string | null } [spectrumID = null]
  * @param {boolean} [useOrigin = false]
  */
-function setZoom(draft, defaultScale = null, spectrumID = null) {
+function setZoom(draft, defaultScale: number | null = null, spectrumID = null) {
   const { height, margin, activeSpectrum } = draft;
   if (defaultScale) {
     setScale(defaultScale);

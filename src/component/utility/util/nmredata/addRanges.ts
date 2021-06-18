@@ -1,7 +1,7 @@
 import { mapRanges } from '../../../../data/data1d/Spectrum1D';
 
 export function addRanges(signals, datum) {
-  let ranges = [];
+  let ranges: Array<any> = [];
   const { baseFrequency: frequency = 500 } = datum;
   for (const signal of signals) {
     const { jCoupling: j, delta, diaID = [], multiplicity, integral } = signal;
@@ -22,7 +22,14 @@ export function addRanges(signals, datum) {
   datum.ranges.values = mapRanges(joinRanges(ranges), datum);
 }
 
-function computeFromTo(options = {}) {
+interface ComputeFromToOptions {
+  delta?: any;
+  j?: any;
+  couplings?: Array<any>;
+  frequency?: any;
+}
+
+function computeFromTo(options: ComputeFromToOptions = {}) {
   const { delta, j: couplings = [], frequency } = options;
   let width = 0.5;
   for (let j of couplings) {

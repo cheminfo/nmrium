@@ -17,7 +17,7 @@ export async function nmredataToNmrium(file, usedColors) {
 
   let { spectra, molecules = [] } = jsonData;
 
-  let nmrium = {
+  let nmrium: { spectra: any[]; molecules: any[] } = {
     spectra: [],
     molecules,
   };
@@ -25,26 +25,38 @@ export async function nmredataToNmrium(file, usedColors) {
   for (const data of spectra) {
     const { file, jcampURL } = data.source;
 
-    let spectrum = await getSpectra(file, { jcampURL }, usedColors);
+    let spectrum = (await getSpectra(file, { jcampURL }, usedColors)) || [];
 
-    for (let i = 0; i < spectrum.length; i++) {
-      const { info } = spectrum[i];
+    for (const spectrumData of spectrum) {
+      const { info } = spectrumData;
 
       if (info.isFid) continue;
 
       if (info.dimension > 1) {
-        addZones(data.signals, spectrum[i]);
+        addZones(data.signals, spectrumData);
       } else {
-        addRanges(data.signals, spectrum[i]);
+        addRanges(data.signals, spectrumData);
       }
     }
+
     nmrium.spectra.push(...spectrum);
   }
 
   return nmrium;
 }
 
-async function getSpectra(file, options = {}, usedColors = {}) {
+interface GetSpectraOptions {
+  xy?: boolean;
+  noContours?: boolean;
+  keepOriginal?: boolean;
+  jcampURL?: string;
+}
+
+async function getSpectra(
+  file,
+  options: GetSpectraOptions = {},
+  usedColors = {},
+) {
   const {
     xy = true,
     noContours = true,
@@ -70,10 +82,10 @@ async function getSpectra(file, options = {}, usedColors = {}) {
 }
 
 async function getSDF(zipFiles) {
-  let result = [];
+  let result: any[] = [];
   for (const file in zipFiles) {
     const pathFile = file.split('/');
-    if (pathFile[pathFile.length - 1].match(/^[^.].+sdf$/)) {
+    if (/^[^.].+sdf$/.exec(pathFile[pathFile.length - 1])) {
       const filename = pathFile[pathFile.length - 1].replace(/\.sdf/, '');
       const root = pathFile.slice(0, pathFile.length - 1).join('/');
       const sdf = await zipFiles[file].async('string');
