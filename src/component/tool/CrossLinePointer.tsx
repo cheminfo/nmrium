@@ -15,7 +15,7 @@ const styles: Record<'line', CSSProperties> = {
   },
 };
 
-const allowTools = [
+const allowTools: Array<string | number> = [
   options.zoom.id,
   options.equalizerTool.id,
   options.baseLineCorrection.id,

@@ -6,6 +6,7 @@ const isArray = Array.isArray;
 
 interface Get2DSignalsOptions {
   labels: { byDiaID?: string };
+  prefix?: string;
 }
 
 export async function get2DSignals(

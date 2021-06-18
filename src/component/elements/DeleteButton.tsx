@@ -1,8 +1,8 @@
 interface DeleteButtonProps {
   onDelete?: () => void;
   fill?: string;
-  x: string;
-  y: string;
+  x: string | number;
+  y: string | number;
 }
 
 function DeleteButton(props: DeleteButtonProps) {

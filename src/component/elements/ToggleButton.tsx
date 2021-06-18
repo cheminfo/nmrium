@@ -22,10 +22,10 @@ const styles = css`
 interface ToggleButtonProps {
   popupTitle: string;
   popupPlacement: string;
-  style: CSSProperties;
-  defaultValue: boolean;
+  style?: CSSProperties;
+  defaultValue?: boolean;
   onClick: (element: any) => void;
-  disabled: boolean;
+  disabled?: boolean;
   children: ReactNode;
 }
 
