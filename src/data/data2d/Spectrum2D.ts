@@ -202,7 +202,7 @@ function getColor(options, usedColors) {
   return {};
 }
 
-export function toJSON(datum: Datum2D, forceIncludeData = false) {
+export function toJSON(datum: Datum2D, forceIncludeData = true) {
   return {
     id: datum.id,
     source: {

@@ -231,7 +231,7 @@ export async function addMolfileFromURL(molfileURL) {
  *
  * @param {object} state
  */
-export function toJSON(state, forceIncludeData = false) {
+export function toJSON(state, forceIncludeData = true) {
   const {
     data,
     molecules: mols,

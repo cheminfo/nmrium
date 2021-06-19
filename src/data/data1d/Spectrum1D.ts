@@ -212,7 +212,7 @@ function preprocessing(datum) {
   }
 }
 
-export function toJSON(datum1D: Datum1D, forceIncludeData = false) {
+export function toJSON(datum1D: Datum1D, forceIncludeData = true) {
   return {
     id: datum1D.id,
     source: {
