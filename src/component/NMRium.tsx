@@ -387,7 +387,9 @@ function NMRium({
                                         selectedTool={selectedTool}
                                         displayerMode={displayerMode}
                                       />
-                                    ) : null}
+                                    ) : (
+                                      <div />
+                                    )}
                                   </SplitPane>
                                 </DropZone>
                               </div>
