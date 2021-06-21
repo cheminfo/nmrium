@@ -88,7 +88,7 @@ function InformationPanel({ info, meta }) {
               overflow: 'hidden',
             }}
           >
-            {information[row.original].toString()}
+            {`${information[row.original]}`}
           </p>
         ),
       },
