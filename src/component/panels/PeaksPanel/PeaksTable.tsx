@@ -15,9 +15,18 @@ import { getValue } from '../../utility/LocalStorage';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { peaksDefaultValues } from '../extra/preferences/defaultValues';
 
-function PeaksTable({ activeTab, preferences, data, info }) {
+interface PeaksTableProps {
+  activeTab: string;
+  preferences: any;
+  data: any;
+  info: {
+    nucleus: string;
+  };
+}
+
+function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
   const dispatch = useDispatch();
-  const deltaPPMRefs = useRef([]);
+  const deltaPPMRefs = useRef<Array<any>>([]);
   const format = useFormatNumberByNucleus(info.nucleus);
 
   const deletePeakHandler = useCallback(

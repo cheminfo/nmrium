@@ -1,4 +1,11 @@
-import { useCallback, useMemo, useState, useRef, memo } from 'react';
+import {
+  useCallback,
+  useMemo,
+  useState,
+  useRef,
+  memo,
+  CSSProperties,
+} from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import { useDispatch } from '../../context/DispatchContext';
@@ -12,7 +19,7 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import PeaksPreferences from './PeaksPreferences';
 import PeaksTable from './PeaksTable';
 
-const styles = {
+const styles: Record<'container', CSSProperties> = {
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -20,7 +27,24 @@ const styles = {
   },
 };
 
-function PeaksPanel({ peaks, info, xDomain, activeTab, preferences }) {
+interface PeaksPanelProps {
+  peaks: any;
+  xDomain: any;
+  activeTab: string;
+  preferences: any;
+  info: {
+    nucleus: string;
+    originFrequency: number;
+  };
+}
+
+function PeaksPanel({
+  peaks,
+  info,
+  xDomain,
+  activeTab,
+  preferences,
+}: PeaksPanelProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [isFlipped, setFlipStatus] = useState(false);
   const format = useFormatNumberByNucleus(info.nucleus);
@@ -28,7 +52,8 @@ function PeaksPanel({ peaks, info, xDomain, activeTab, preferences }) {
   const dispatch = useDispatch();
   const modal = useModal();
 
-  const settingRef = useRef();
+  const settingRef = useRef<any>();
+
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_PEAK_NOTATION, data: null });
   }, [dispatch]);
@@ -64,7 +89,7 @@ function PeaksPanel({ peaks, info, xDomain, activeTab, preferences }) {
         value * factor <= xDomain[1] * factor
       );
     }
-    if (peaks && peaks.values) {
+    if (peaks?.values) {
       const _peaks = filterIsActive
         ? peaks.values.filter((peak) => isInRange(peak.delta))
         : peaks.values;
@@ -74,8 +99,9 @@ function PeaksPanel({ peaks, info, xDomain, activeTab, preferences }) {
           const value = format(peak.delta);
           return {
             value: value,
-            valueHz:
-              info && info.originFrequency ? value * info.originFrequency : '',
+            valueHz: info?.originFrequency
+              ? Number(value) * info.originFrequency
+              : '',
             id: peak.id,
             intensity: peak.intensity,
             peakWidth: peak.width ? peak.width : '',
@@ -92,7 +118,7 @@ function PeaksPanel({ peaks, info, xDomain, activeTab, preferences }) {
     <div style={styles.container}>
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={peaks.values && peaks.values.length}
+          counter={peaks.values?.length}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Peaks"
           onFilter={handleOnFilter}
@@ -101,7 +127,7 @@ function PeaksPanel({ peaks, info, xDomain, activeTab, preferences }) {
           }
           filterIsActive={filterIsActive}
           counterFiltered={filteredPeaks.length}
-          showSettingButton="true"
+          showSettingButton
           onSettingClick={settingsPanelHandler}
         />
       )}
