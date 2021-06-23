@@ -89,7 +89,7 @@ interface TabsProps {
   children: Array<ReactElement<TabProps>>;
   onClick: (element: any) => void;
   activeTab: string;
-  position: PositionsEnum;
+  position?: PositionsEnum;
   onDelete?: (element: any) => void;
 }
 
