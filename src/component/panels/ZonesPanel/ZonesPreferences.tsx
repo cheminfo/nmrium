@@ -5,10 +5,11 @@ import {
   useImperativeHandle,
   useRef,
   memo,
+  CSSProperties,
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import IsotopesViewer from '../../elements/IsotopesViewer';
+import IsotopesViewer from '../../elements/IsotopesViewert';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
@@ -20,7 +21,10 @@ import {
 } from '../../utility/LocalStorage';
 import { zoneDefaultValues } from '../extra/preferences/defaultValues';
 
-const styles = {
+const styles: Record<
+  'container' | 'groupContainer' | 'row' | 'header' | 'inputLabel' | 'input',
+  CSSProperties
+> = {
   container: {
     padding: 10,
     backgroundColor: '#f1f1f1',
@@ -55,7 +59,12 @@ const styles = {
   },
 };
 
-const formatFields = [
+const formatFields: Array<{
+  id: number;
+  label: string;
+  checkController: string;
+  formatController: string;
+}> = [
   {
     id: 1,
     label: 'From :',
@@ -86,7 +95,7 @@ function ZonesPreferences({ nucleus }, ref) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const preferences = usePreferences();
-  const formRef = useRef();
+  const formRef = useRef<any>();
 
   const updateValues = useCallback(() => {
     if (nucleus) {
@@ -146,20 +155,19 @@ function ZonesPreferences({ nucleus }, ref) {
   return (
     <div style={styles.container}>
       <FormikForm onSubmit={handleSubmit} ref={formRef}>
-        {nucleus &&
-          nucleus.map((nucleusLabel) => (
-            <div key={nucleusLabel} style={styles.groupContainer}>
-              <IsotopesViewer style={styles.header} value={nucleusLabel} />
-              {formatFields.map((field) => (
-                <FormikColumnFormatField
-                  key={field.id}
-                  label={field.label}
-                  checkControllerName={`${nucleusLabel}.${field.checkController}`}
-                  formatControllerName={`${nucleusLabel}.${field.formatController}`}
-                />
-              ))}
-            </div>
-          ))}
+        {nucleus?.map((nucleusLabel) => (
+          <div key={nucleusLabel} style={styles.groupContainer}>
+            <IsotopesViewer style={styles.header} value={nucleusLabel} />
+            {formatFields.map((field) => (
+              <FormikColumnFormatField
+                key={field.id}
+                label={field.label}
+                checkControllerName={`${nucleusLabel}.${field.checkController}`}
+                formatControllerName={`${nucleusLabel}.${field.formatController}`}
+              />
+            ))}
+          </div>
+        ))}
       </FormikForm>
     </div>
   );

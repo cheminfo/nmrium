@@ -28,10 +28,13 @@ import SpectrumListItem from './SpectrumListItem';
 import SpectrumSetting from './base/setting/SpectrumSetting';
 
 function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
-  const contextRef = useRef();
-  const [markersVisible, setMarkersVisible] = useState([]);
+  const contextRef = useRef<any>();
+  const [markersVisible, setMarkersVisible] = useState<Array<{ id: number }>>(
+    [],
+  );
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
-  const [settingModalPosition, setSettingModalPosition] = useState(null);
+  const [settingModalPosition, setSettingModalPosition] =
+    useState<{ x: number; y: number } | null>(null);
   const [isSettingModalDisplayed, setIsSettingModalDisplayed] = useState(false);
 
   const alert = useAlert();
@@ -91,9 +94,9 @@ function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
     () => [
       {
         label: 'Copy to Clipboard',
-        onClick: (spectrumData) => {
+        onClick: async (spectrumData) => {
           const { x, y, info } = spectrumData;
-          const success = copyTextToClipboard(
+          const success = await copyTextToClipboard(
             JSON.stringify({ x, y, info }, undefined, 2),
           );
 
@@ -175,20 +178,19 @@ function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
               key={group}
               tabstyles={{ overflow: 'auto', height: '100%' }}
             >
-              {spectrumsGroupByNucleus[group] &&
-                spectrumsGroupByNucleus[group].map((d) => (
-                  <SpectrumListItem
-                    key={d.id}
-                    activeSpectrum={activeSpectrum}
-                    markersVisible={markersVisible}
-                    data={d}
-                    onChangeVisibility={handleChangeVisibility}
-                    onChangeMarkersVisibility={handleChangeMarkersVisibility}
-                    onChangeActiveSpectrum={handleChangeActiveSpectrum}
-                    onOpenSettingModal={openSettingHandler}
-                    onContextMenu={(e) => contextMenuHandler(e, d)}
-                  />
-                ))}
+              {spectrumsGroupByNucleus[group]?.map((d) => (
+                <SpectrumListItem
+                  key={d.id}
+                  activeSpectrum={activeSpectrum}
+                  markersVisible={markersVisible}
+                  data={d}
+                  onChangeVisibility={handleChangeVisibility}
+                  onChangeMarkersVisibility={handleChangeMarkersVisibility}
+                  onChangeActiveSpectrum={handleChangeActiveSpectrum}
+                  onOpenSettingModal={openSettingHandler}
+                  onContextMenu={(e) => contextMenuHandler(e, d)}
+                />
+              ))}
             </Tab>
           ))}
       </Tabs>

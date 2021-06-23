@@ -1,21 +1,27 @@
-import { useCallback, memo, useState } from 'react';
+import { useCallback, memo, useState, CSSProperties } from 'react';
 
 import SpectraPanelHeader from './SpectraPanelHeader';
 import SpectrumsTabs from './SpectrumsTabs';
 
-const styles = {
+const styles: CSSProperties = {
   overflow: 'hidden',
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
 };
 
+interface SpectrumListPanelProps {
+  data?: any;
+  activeSpectrum?: any;
+  activeTab?: any;
+}
+
 function SpectrumListPanel({
   data,
   activeSpectrum,
   activeTab: activeTabState,
-}) {
-  const [spectrums, setSpectrums] = useState([]);
+}: SpectrumListPanelProps) {
+  const [spectrums, setSpectrums] = useState<Array<any>>([]);
 
   const tabChangeHandler = useCallback((e) => {
     setSpectrums(e.data ? e.data : []);

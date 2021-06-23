@@ -56,8 +56,26 @@ const tableStyle = css`
   }
 `;
 
-function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
-  const contextRef = useRef();
+interface ZonesTableProps {
+  tableData: Array<{
+    signal: Array<any>;
+    tableMetaInfo: any;
+    rowIndex: number;
+    signalIndex: number;
+    id: number;
+  }>;
+  onUnlink: (
+    zoneData: any,
+    isOnZoneLevel: any,
+    signalIndex: any,
+    axis: any,
+  ) => void;
+  context?: any;
+  nuclei: any;
+}
+
+function ZonesTable({ tableData, onUnlink, context, nuclei }: ZonesTableProps) {
+  const contextRef = useRef<any>(null);
 
   const contextMenuHandler = useCallback(
     (e, rowData) => {
@@ -70,7 +88,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
   );
 
   const data = useMemo(() => {
-    const _data = [];
+    const _data: Array<any> = [];
     tableData.forEach((zone, i) => {
       if (zone.signal.length === 1) {
         _data.push({
@@ -86,7 +104,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
       } else if (zone.signal.length > 1) {
         zone.signal.forEach((signal, j) => {
           let hide = false;
-          let rowSpan = null;
+          let rowSpan: number | null = null;
           if (j < zone.signal.length - 1) {
             if (j === 0) {
               rowSpan = zone.signal.length;
@@ -126,10 +144,9 @@ function ZonesTable({ tableData, onUnlink, context, nuclei, preferences }) {
           rowData={rowData}
           onUnlink={onUnlink}
           onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
-          preferences={preferences}
         />
       )),
-    [contextMenuHandler, sortedData, onUnlink, preferences],
+    [contextMenuHandler, sortedData, onUnlink],
   );
 
   return (
