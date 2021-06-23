@@ -1,9 +1,20 @@
-import { useState, useCallback, useEffect, memo, useMemo, useRef } from 'react';
+import {
+  useState,
+  useCallback,
+  useEffect,
+  memo,
+  useMemo,
+  useRef,
+  CSSProperties,
+} from 'react';
 
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
 import InfoWrapper from '../hoc/InfoWrapper';
 
-const styles = {
+const styles: Record<
+  'container' | 'tableContainer' | 'searchInput',
+  CSSProperties
+> = {
   container: {
     height: '100%',
     flexDirection: 'column',
@@ -25,10 +36,16 @@ const styles = {
 };
 
 // information panel
-function InformationPanel({ info, meta }) {
+
+interface InformationPanelProps {
+  info: Array<any>;
+  meta: Array<any>;
+}
+
+function InformationPanel({ info, meta }: InformationPanelProps) {
   const [information, setInformation] = useState({});
-  const [matches, setMatchesData] = useState([]);
-  const searchRef = useRef();
+  const [matches, setMatchesData] = useState<string[]>([]);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const handleSearch = useCallback(
     (e) => {

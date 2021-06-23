@@ -101,19 +101,19 @@ const accordionItems = [
 ];
 
 function Panels({ selectedTool, displayerMode }) {
-  const [panelIndex, setSelectedPanelIndex] = useState(0);
+  const [panelIndex, setSelectedPanelIndex] = useState<number | undefined>(0);
   const preferences = usePreferences();
 
   useEffect(() => {
     function getDefaultIndex() {
-      const index = accordionItems.findIndex(
-        (item) => item.openWhen && item.openWhen.includes(selectedTool),
+      const index = accordionItems.findIndex((item) =>
+        item.openWhen?.includes(selectedTool),
       );
       return index !== -1 ? index : null;
     }
     const index = getDefaultIndex();
     if (selectedTool) {
-      setSelectedPanelIndex(index);
+      setSelectedPanelIndex(index || 0);
     }
   }, [selectedTool]);
 
