@@ -1,6 +1,6 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, ReactNode, CSSProperties } from 'react';
 
-const styles = {
+const styles: Record<'outerContainer' | 'innerContainer', CSSProperties> = {
   outerContainer: {
     position: 'fixed',
     top: 0,
@@ -26,9 +26,21 @@ const styles = {
   },
 };
 
-const Modal = ({ children, open, onClose, style }) => {
+interface ModalProps {
+  children: ReactNode;
+  open?: boolean;
+  onClose?: (element: any) => void;
+  style?: CSSProperties;
+}
+
+const Modal = ({
+  children,
+  open = false,
+  onClose = () => null,
+  style,
+}: ModalProps) => {
   const handleClose = useCallback(
-    (e) => {
+    (e?: any) => {
       onClose(e);
     },
     [onClose],
@@ -55,13 +67,6 @@ const Modal = ({ children, open, onClose, style }) => {
       </div>
     )
   );
-};
-
-Modal.defaultProps = {
-  onClose: function () {
-    return null;
-  },
-  open: false,
 };
 
 export default Modal;
