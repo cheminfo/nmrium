@@ -5,12 +5,14 @@ import {
   useState,
   memo,
   Fragment,
+  CSSProperties,
+  ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useGlobal } from '../../context/GlobalContext';
 
-const styles = {
+const styles: Record<'popup', CSSProperties> = {
   popup: {
     position: 'fixed',
     top: 0,
@@ -27,16 +29,26 @@ const styles = {
   },
 };
 
+interface ToolTipProps {
+  style?: any;
+  className?: string;
+  popupPlacement: string;
+  children: ReactNode;
+  title: string;
+  offset?: { x: number; y: number };
+}
+
 function ToolTip({
-  style,
+  style = { popup: {}, mainContainer: {} },
   className = '',
   popupPlacement = 'right',
   children,
   title,
   offset = { x: 0, y: 0 },
-}) {
-  const refChild = useRef();
-  const refContent = useRef();
+}: ToolTipProps) {
+  const refChild = useRef<HTMLDivElement>(null);
+  const refContent = useRef<HTMLDivElement>(null);
+
   const [placement, setPlacement] = useState({ x: 0, y: 0 });
   const [show, showToolTip] = useState(false);
   const { elementsWraperRef } = useGlobal();
@@ -45,8 +57,14 @@ function ToolTip({
     const getPopupPlacement = () => {
       let x;
       let y;
+
+      // TODO: Maybe, check that ?
+      // @ts-expect-error refChild isn't undefined
       const childBounding = refChild.current.getBoundingClientRect();
+
+      // @ts-expect-error refContent isn't undefined
       const contentBounding = refContent.current.getBoundingClientRect();
+
       switch (popupPlacement) {
         case 'left':
           x = -contentBounding.width;
@@ -135,12 +153,5 @@ function ToolTip({
     </Fragment>
   );
 }
-
-ToolTip.defaultProps = {
-  style: {
-    popup: {},
-    mainContainer: {},
-  },
-};
 
 export default memo(ToolTip);
