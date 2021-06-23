@@ -41,6 +41,6 @@ export function removeData(localStorageKey) {
   localStorage.removeItem(localStorageKey);
 }
 
-export function getValue(object, keyPath, defaultValue = null) {
+export function getValue(object, keyPath, defaultValue: any = null) {
   return lodashGet(object, keyPath, defaultValue);
 }
