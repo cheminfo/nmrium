@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useDispatch } from '../context/DispatchContext';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
-import IsotopesViewer from '../elements/IsotopesViewer';
+import IsotopesViewer from '../elements/IsotopesViewert.tsx';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
