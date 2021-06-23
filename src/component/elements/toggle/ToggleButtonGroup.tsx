@@ -5,23 +5,36 @@ import {
   useEffect,
   Children,
   cloneElement,
+  CSSProperties,
+  ReactNode,
 } from 'react';
 
 import ToggleButton from './ToggleButton';
 
-const style = { display: 'flex', flexDirection: 'column' };
+const style: CSSProperties = { display: 'flex', flexDirection: 'column' };
 
-function ToggleButtonGroup({ children, value, onChange }) {
-  const [toggleButtons, setToggleButtons] = useState([]);
+interface ToggleButtonGroupProps {
+  children: ReactNode;
+  value: string;
+  onChange?: (value: any) => void;
+}
+
+function ToggleButtonGroup({
+  children,
+  value,
+  onChange = () => null,
+}: ToggleButtonGroupProps) {
+  const [toggleButtons, setToggleButtons] = useState<any>([]);
   const handleOnChange = useCallback(
     (val) => {
-      const _toggles = [...toggleButtons];
+      const _toggles: Array<any> = [...toggleButtons];
       const toggles = _toggles.map((toggle) => {
         return {
           value: toggle.value,
           isActive: toggle.value === val ? true : false,
         };
       });
+
       setToggleButtons(toggles);
       onChange(val);
     },
@@ -30,15 +43,12 @@ function ToggleButtonGroup({ children, value, onChange }) {
 
   const mappedChildren = useMemo(() => {
     let index = 0;
-    return Children.map(children, (child) => {
+    return Children.map(children, (child: any) => {
       if (child) {
         if (child.type === ToggleButton) {
           const _child = cloneElement(child, {
             onChange: handleOnChange,
-            isActive:
-              toggleButtons[index] &&
-              toggleButtons[index].isActive &&
-              toggleButtons[index].isActive,
+            isActive: toggleButtons[index]?.isActive,
             index,
           });
           index++;
@@ -51,7 +61,7 @@ function ToggleButtonGroup({ children, value, onChange }) {
   }, [children, handleOnChange, toggleButtons]);
 
   useEffect(() => {
-    const val = Children.map(children, (child) => {
+    const val = Children.map(children, (child: any) => {
       if (child && child.type === ToggleButton) {
         return {
           value: child.props.value,
@@ -65,9 +75,4 @@ function ToggleButtonGroup({ children, value, onChange }) {
   return <div style={style}> {mappedChildren} </div>;
 }
 
-ToggleButtonGroup.defaultProps = {
-  onChange: function () {
-    return null;
-  },
-};
 export default ToggleButtonGroup;
