@@ -115,7 +115,7 @@ function KeysListenerTracker() {
           alert.show(`Configuration Reset, press '${num}' again to reload it.`);
         } else {
           if (!checkModifierKeyActivated(e)) {
-            if (keysPreferences && keysPreferences[num]) {
+            if (keysPreferences?.[num]) {
               dispatch({
                 type: APPLY_KEY_PREFERENCES,
                 keyCode: num,
@@ -205,11 +205,11 @@ function KeysListenerTracker() {
       if (!e.shiftKey && (e.metaKey || e.ctrlKey)) {
         switch (e.key) {
           case 'c':
-            saveToClipboardHandler();
+            void saveToClipboardHandler();
             e.preventDefault();
             break;
           case 's':
-            saveAsJSONHandler();
+            void saveAsJSONHandler();
             e.preventDefault();
             break;
           case 'o':
@@ -223,7 +223,7 @@ function KeysListenerTracker() {
         switch (e.key) {
           case 's':
           case 'S':
-            saveAsHandler();
+            void saveAsHandler();
             e.preventDefault();
             break;
           default:
@@ -258,7 +258,7 @@ function KeysListenerTracker() {
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);
         } else {
-          if ([('Escape', 'Esc', 'Backspace')].includes(e.key) && type) {
+          if (['Escape', 'Esc', 'Backspace'].includes(e.key) && type) {
             deleteHandler(type, { activeKey });
           } else {
             toolsListenerHandler(e);

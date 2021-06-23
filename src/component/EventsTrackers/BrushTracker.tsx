@@ -2,6 +2,8 @@ import lodashDebounce from 'lodash/debounce';
 import lodashMap from 'lodash/map';
 import {
   createContext,
+  CSSProperties,
+  ReactNode,
   useCallback,
   useEffect,
   useReducer,
@@ -9,29 +11,51 @@ import {
   useState,
 } from 'react';
 
-export const BrushContext = createContext();
-
 const initialState = {
   step: 'initial',
   brush: {
     start: null,
     end: null,
   },
+  startX: 0,
+  endX: 0,
+  startY: 0,
+  endY: 0,
 };
+
+export const BrushContext = createContext(initialState);
+
+BrushTracker.defaultProps = {
+  onBrush: () => null,
+  onZoom: () => null,
+  onDoubleClick: () => null,
+  onClick: () => null,
+};
+
+interface BrushTrackerProps {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+  onBrush?: (element: any) => void;
+  onZoom?: (element: any) => void;
+  onDoubleClick?: (element: any) => void;
+  onClick?: (element: any) => void;
+  noPropagation: boolean;
+}
 
 export function BrushTracker({
   children,
   className,
   style,
-  onBrush,
-  onZoom,
-  onDoubleClick,
-  onClick,
+  onBrush = () => null,
+  onZoom = () => null,
+  onDoubleClick = () => null,
+  onClick = () => null,
   noPropagation,
-}) {
+}: BrushTrackerProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [mouseDownTime, setMouseDownTime] = useState();
-  const debounceClickEventsRef = useRef([]);
+  const [mouseDownTime, setMouseDownTime] = useState<number>(0);
+  const debounceClickEventsRef = useRef<Array<any>>([]);
 
   const mouseDownHandler = useCallback(
     (event) => {
@@ -74,6 +98,7 @@ export function BrushTracker({
         }
         debounceClickEventsRef.current = [];
       }, 200);
+
       debounceClickEventsRef.current.push(callback);
 
       callback();
@@ -146,13 +171,6 @@ export function BrushTracker({
     </BrushContext.Provider>
   );
 }
-
-BrushTracker.defaultProps = {
-  onBrush: () => null,
-  onZoom: () => null,
-  onDoubleClick: () => null,
-  onClick: () => null,
-};
 
 function reducer(state, action) {
   switch (action.type) {
