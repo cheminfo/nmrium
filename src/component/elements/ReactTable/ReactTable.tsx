@@ -1,6 +1,4 @@
 /** @jsxImportSource @emotion/react */
-
-import PropTypes from 'prop-types';
 import { Fragment, useRef, useCallback, memo } from 'react';
 import { useTable, useSortBy } from 'react-table';
 
@@ -11,8 +9,15 @@ import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 
-function ReactTable({ data, columns, context }) {
-  const contextRef = useRef();
+interface ReactTableProps {
+  data: any;
+  columns: any;
+  context?: Array<{ label: string; onClick: () => void }> | null;
+}
+
+function ReactTable({ data, columns, context = null }: ReactTableProps) {
+  const contextRef = useRef<any>(null);
+
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
       {
@@ -31,6 +36,7 @@ function ReactTable({ data, columns, context }) {
     },
     [contextRef],
   );
+
   return (
     <Fragment>
       <table {...getTableProps()} css={ReactTableStyle}>
@@ -53,17 +59,5 @@ function ReactTable({ data, columns, context }) {
     </Fragment>
   );
 }
-
-ReactTable.propTypes = {
-  context: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string,
-      onClick: PropTypes.func,
-    }),
-  ),
-};
-ReactTable.defaultProps = {
-  context: null,
-};
 
 export default memo(ReactTable);

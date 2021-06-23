@@ -3,7 +3,12 @@
 import { useHighlight } from '../../../highlight/index';
 import { HighlightedRowStyle, ConstantlyHighlightedRowStyle } from '../Style';
 
-function ReactTableRow({ row, onContextMenu }) {
+interface ReactTableRowProps {
+  row: any;
+  onContextMenu: () => void;
+}
+
+function ReactTableRow({ row, onContextMenu }: ReactTableRowProps) {
   const highlight = useHighlight([
     Object.prototype.hasOwnProperty.call(row.original, 'id')
       ? row.original.id

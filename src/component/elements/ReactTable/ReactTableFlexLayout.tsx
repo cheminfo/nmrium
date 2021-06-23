@@ -5,7 +5,17 @@ import { useTable, useSortBy, useFlexLayout } from 'react-table';
 
 import { ReactTableStyle } from './Style';
 
-function ReactTableFlexLayout({ data, columns, onMouseDown }) {
+interface ReactTableFlexLayoutProps {
+  data: any;
+  columns: any;
+  onMouseDown?: () => void;
+}
+
+function ReactTableFlexLayout({
+  data,
+  columns,
+  onMouseDown = () => null,
+}: ReactTableFlexLayoutProps) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
       {
@@ -71,11 +81,5 @@ function ReactTableFlexLayout({ data, columns, onMouseDown }) {
     </table>
   );
 }
-
-ReactTableFlexLayout.defaultProps = {
-  onMouseDown: () => {
-    return null;
-  },
-};
 
 export default memo(ReactTableFlexLayout);

@@ -1,4 +1,10 @@
-export default function ReactTableHeader({ headerGroups }) {
+interface ReactTableheaderProps {
+  headerGroups: any;
+}
+
+export default function ReactTableHeader({
+  headerGroups,
+}: ReactTableheaderProps) {
   return (
     <thead>
       {headerGroups.map((headerGroup) => (

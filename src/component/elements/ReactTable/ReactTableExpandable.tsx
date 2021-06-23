@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import PropTypes from 'prop-types';
 import { Fragment, useRef, useCallback } from 'react';
 import { useTable, useExpanded, useSortBy } from 'react-table';
 
@@ -10,13 +9,20 @@ import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
 
+interface ReactTableExpandableProps {
+  columns: any;
+  data: any;
+  renderRowSubComponent: (element: any) => void;
+  context: Array<{ label: string; onClick: () => void }> | null;
+}
+
 function ReactTableExpandable({
   columns,
   data,
-  renderRowSubComponent,
-  context,
-}) {
-  const contextRef = useRef();
+  renderRowSubComponent = () => null,
+  context = null,
+}: ReactTableExpandableProps) {
+  const contextRef = useRef<any>(null);
 
   const {
     getTableProps,
@@ -61,10 +67,7 @@ function ReactTableExpandable({
               {row.isExpanded ? (
                 <tr>
                   <td colSpan={flatColumns.length}>
-                    {row &&
-                      row.original &&
-                      row.original.id &&
-                      renderRowSubComponent({ row })}
+                    {row?.original?.id && renderRowSubComponent({ row })}
                   </td>
                 </tr>
               ) : null}
@@ -76,22 +79,5 @@ function ReactTableExpandable({
     </table>
   );
 }
-
-ReactTableExpandable.defaultProps = {
-  context: null,
-  renderRowSubComponent: () => {
-    return null;
-  },
-};
-
-ReactTableExpandable.propTypes = {
-  context: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string,
-      onClick: PropTypes.func,
-    }),
-  ),
-  renderRowSubComponent: PropTypes.func,
-};
 
 export default ReactTableExpandable;
