@@ -71,14 +71,23 @@ const styles = css`
   }
 `;
 
+interface EditRangeModalProps {
+  onSaveEditRangeModal: (value: any) => Promise<void> | null;
+  onCloseEditRangeModal: () => void;
+  onZoomEditRangeModal: (value: any) => void;
+  rangeData: any;
+}
+
 function EditRangeModal({
-  onSaveEditRangeModal,
-  onCloseEditRangeModal,
-  onZoomEditRangeModal,
+  onSaveEditRangeModal = () => null,
+  onCloseEditRangeModal = () => null,
+  onZoomEditRangeModal = () => null,
   rangeData,
-}) {
+}: EditRangeModalProps) {
   const { activeTab } = useChartData();
-  const format = useFormatNumberByNucleus(activeTab);
+
+  // TODO: as string should be usefull here ?
+  const format = useFormatNumberByNucleus(activeTab as string);
 
   const handleOnZoom = useCallback(() => {
     onZoomEditRangeModal(rangeData);
@@ -135,7 +144,7 @@ function EditRangeModal({
     return rangeData.signal.map((_signal) => {
       // counter within j array to access to right j values
       let counterJ = 0;
-      const couplings = [];
+      const couplings: Array<any> = [];
       let coupling;
       _signal.multiplicity.split('').forEach((_multiplicity) => {
         if (hasCouplingConstant(_multiplicity)) {
@@ -179,7 +188,7 @@ function EditRangeModal({
           }}
           validate={(values) => EditRangeValidation(values, rangeData)}
           onSubmit={(values, { setSubmitting }) => {
-            handleOnSave(values);
+            void handleOnSave(values);
             setSubmitting(false);
           }}
         >
@@ -216,17 +225,5 @@ function EditRangeModal({
     </div>
   );
 }
-
-EditRangeModal.defaultProps = {
-  onSave: () => {
-    return null;
-  },
-  onClose: () => {
-    return null;
-  },
-  onZoom: () => {
-    return null;
-  },
-};
 
 export default EditRangeModal;
