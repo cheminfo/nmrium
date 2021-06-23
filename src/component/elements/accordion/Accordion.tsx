@@ -6,11 +6,12 @@ import {
   useEffect,
   Children,
   cloneElement,
+  CSSProperties,
 } from 'react';
 
 import { triggerSource } from './AccordionItem';
 
-const styles = {
+const styles: Record<'container', CSSProperties> = {
   container: {
     height: '100%',
     width: '100%',
@@ -18,15 +19,17 @@ const styles = {
     flexDirection: 'column',
   },
 };
+
 function Accordion({ children, defaultOpenIndex = 0 }) {
-  const [elements, setElements] = useState([]);
-  const refContainer = useRef();
-  const forcedOpenedElementsRef = useRef([]);
-  const alwaysOpenIndexRef = useRef();
+  const [elements, setElements] = useState<Array<any>>([]);
+
+  const refContainer = useRef<HTMLDivElement>(null);
+  const forcedOpenedElementsRef = useRef<Array<any>>([]);
+  const alwaysOpenIndexRef = useRef<any>();
 
   const handleOpen = useCallback(
     (index, trigger) => {
-      let el = elements.slice();
+      let el: boolean[] = elements.slice();
       if (trigger.source === triggerSource.click) {
         el = el.map((e, i) =>
           i === index && alwaysOpenIndexRef.current !== index ? !e : e,
@@ -57,7 +60,7 @@ function Accordion({ children, defaultOpenIndex = 0 }) {
         cloneElement(child, {
           onOpen: handleOpen,
           index,
-          isOpen: elements && elements[index],
+          isOpen: elements?.[index],
         })
       );
     });

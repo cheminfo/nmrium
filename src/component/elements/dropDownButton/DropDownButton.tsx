@@ -26,10 +26,15 @@ function DropDownButton({ data, selectedKey, onSelect, formatSelectedValue }) {
   const [value, setValue] = useState(selectedKey);
   const { rootRef } = useGlobal();
 
-  const drop = useRef(null);
+  const drop = useRef<HTMLDivElement>(null);
+
   const handleClick = useCallback(
     (e) => {
-      if (!e.target.closest(`.${drop.current.className}`) && open) {
+      if (
+        drop.current &&
+        !e.target.closest(`.${drop.current.className}`) &&
+        open
+      ) {
         setTimeout(() => {
           setOpen(false);
         }, 0);

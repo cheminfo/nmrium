@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import PropTypes from 'prop-types';
-import { useCallback } from 'react';
+import { CSSProperties, useCallback } from 'react';
 
 const styles = css`
   display: flex;
@@ -64,7 +63,19 @@ const styles = css`
   }
 `;
 
-const ConfirmationDialog = ({ style, buttons, onClose, message }) => {
+interface ConfirmationDialogProps {
+  style?: CSSProperties;
+  buttons: Array<{ handler: () => void; text: string; style?: CSSProperties }>;
+  onClose: () => void;
+  message: string;
+}
+
+function ConfirmationDialog({
+  style = {},
+  buttons = [],
+  onClose,
+  message,
+}: ConfirmationDialogProps) {
   const optionsHandler = useCallback(
     (e, { handler = () => null }) => {
       handler(e);
@@ -90,22 +101,6 @@ const ConfirmationDialog = ({ style, buttons, onClose, message }) => {
       </div>
     </div>
   );
-};
-
-ConfirmationDialog.defaultProps = {
-  buttons: [],
-  style: {},
-};
-
-ConfirmationDialog.propTypes = {
-  style: PropTypes.object,
-  buttons: PropTypes.arrayOf(
-    PropTypes.shape({
-      handler: PropTypes.func,
-      text: PropTypes.string,
-      style: PropTypes.object,
-    }),
-  ),
-};
+}
 
 export default ConfirmationDialog;

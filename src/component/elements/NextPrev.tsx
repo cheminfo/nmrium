@@ -2,6 +2,7 @@
 
 import { css } from '@emotion/react';
 import {
+  ReactNode,
   useState,
   Children,
   useMemo,
@@ -12,7 +13,12 @@ import {
 import { FaAngleLeft } from 'react-icons/fa';
 import { useMeasure } from 'react-use';
 
-function Arrow({ direction, onClick }) {
+interface ArrowProps {
+  direction: 'right' | 'left';
+  onClick: () => void;
+}
+
+function Arrow({ direction, onClick }: ArrowProps) {
   return (
     <div
       onClick={onClick}
@@ -54,7 +60,19 @@ function Arrow({ direction, onClick }) {
 
 const transition = 0.45;
 
-function NextPrev({ children, loop, defaultIndex, onChange }) {
+interface NextPrevProps {
+  children: ReactNode;
+  loop?: boolean;
+  defaultIndex?: number;
+  onChange?: (element: number) => void;
+}
+
+function NextPrev({
+  children,
+  loop = false,
+  defaultIndex = 0,
+  onChange = () => null,
+}: NextPrevProps) {
   const [ref, { width }] = useMeasure();
   const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
@@ -63,7 +81,7 @@ function NextPrev({ children, loop, defaultIndex, onChange }) {
 
   const Sliders = useMemo(
     () =>
-      Children.map(children, (child) => {
+      Children.map(children, (child: any) => {
         return (
           <div
             key={child.key}
@@ -81,7 +99,7 @@ function NextPrev({ children, loop, defaultIndex, onChange }) {
 
   const nextHandler = useCallback(() => {
     setActiveIndex((preActiveIndex) => {
-      if (preActiveIndex === Sliders.length - 1) {
+      if (Sliders && preActiveIndex === Sliders.length - 1) {
         onChange(preActiveIndex);
 
         if (loop) {
@@ -96,7 +114,7 @@ function NextPrev({ children, loop, defaultIndex, onChange }) {
 
       return nextIndex;
     });
-  }, [Sliders.length, loop, onChange]);
+  }, [Sliders, loop, onChange]);
 
   const prevHandler = useCallback(() => {
     setActiveIndex((preActiveIndex) => {
@@ -127,6 +145,7 @@ function NextPrev({ children, loop, defaultIndex, onChange }) {
         overflow: hidden;
         display: block;
       `}
+      // @ts-expect-error ref from react-use is not good ?
       ref={ref}
     >
       <div
@@ -134,7 +153,7 @@ function NextPrev({ children, loop, defaultIndex, onChange }) {
           transform: translateX(-${width * activeIndex}px);
           transition: transform ease-out ${transition}s;
           height: 100%;
-          width: ${width * Sliders.length}px;
+          width: ${width * (Sliders ? Sliders.length : 1)}px;
           display: flex;
         `}
       >
@@ -142,16 +161,11 @@ function NextPrev({ children, loop, defaultIndex, onChange }) {
       </div>
 
       {activeIndex !== 0 && <Arrow direction="left" onClick={prevHandler} />}
-      {activeIndex !== Sliders.length - 1 && (
+      {Sliders && activeIndex !== Sliders.length - 1 && (
         <Arrow direction="right" onClick={nextHandler} />
       )}
     </div>
   );
 }
 
-NextPrev.defaultProps = {
-  loop: false,
-  defaultIndex: 0,
-  onChange: () => null,
-};
 export default memo(NextPrev);

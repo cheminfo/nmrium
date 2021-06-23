@@ -1,7 +1,13 @@
 /* eslint-disable prefer-named-capture-group */
 /* eslint-disable react/no-danger */
 
-function IsotopesViewer({ value = '', ...othersProps }) {
+import { HTMLAttributes } from 'react';
+
+interface IsotopesViewerProps extends HTMLAttributes<HTMLDivElement> {
+  value?: string;
+}
+
+function IsotopesViewer({ value = '', ...othersProps }: IsotopesViewerProps) {
   return (
     <div
       {...othersProps}

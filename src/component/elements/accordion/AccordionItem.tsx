@@ -1,6 +1,16 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  CSSProperties,
+  ReactNode,
+} from 'react';
 
-const styles = {
+const styles: Record<
+  'container' | 'button' | 'buttonTitle' | 'content',
+  CSSProperties
+> = {
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -46,14 +56,31 @@ export const triggerSource = {
   dbClick: 2,
 };
 
-function AccordionItem({ title, children, index, isOpen, onOpen, style }) {
-  const [active, setActiveState] = useState(null);
-  const timeoutRef = useRef();
+interface AccordionItemProps {
+  title: string;
+  children: ReactNode;
+  index?: number;
+  isOpen?: boolean;
+  onOpen?: (a: any, b: any) => void;
+  style?: any;
+}
+
+function AccordionItem({
+  title,
+  children,
+  index,
+  isOpen,
+  onOpen = () => null,
+  style,
+}: AccordionItemProps) {
+  const [active, setActiveState] = useState<CSSProperties | null>(null);
+  const timeoutRef = useRef<any>();
   const preventEventRef = useRef(false);
   const delay = useRef(200).current;
 
-  const refContent = useRef();
-  const refContainer = useRef();
+  const refContent = useRef<HTMLDivElement>(null);
+  const refContainer = useRef<HTMLDivElement>(null);
+
   const toggleAccordion = useCallback(
     (e) => {
       timeoutRef.current = setTimeout(function () {
@@ -113,11 +140,5 @@ function AccordionItem({ title, children, index, isOpen, onOpen, style }) {
     </div>
   );
 }
-
-AccordionItem.defaultProps = {
-  onOpen: function () {
-    return null;
-  },
-};
 
 export default AccordionItem;
