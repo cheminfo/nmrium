@@ -32,10 +32,15 @@ const styles = css`
 }
 `;
 
+interface NoDataProps {
+  isEmpty?: boolean;
+  emptyText?: string;
+}
+
 function NoData({
   isEmpty = true,
   emptyText = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
-}) {
+}: NoDataProps) {
   const loader = useLoader();
 
   const openFileDialogHadnler = useCallback(() => {

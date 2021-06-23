@@ -5,19 +5,24 @@ import { useChartData } from '../context/ChartContext';
 import NoData from './NoData';
 import { spinnerContext } from './SpinnerContext';
 
-function Spinner({ isLoading = true, emptyText = undefined }) {
+interface SpinnerProps {
+  isLoading?: boolean;
+  emptyText?: string;
+}
+
+function Spinner({ isLoading = true, emptyText = undefined }: SpinnerProps) {
   const { data } = useChartData();
   const [checkEmpty, startCheckEmpty] = useState(false);
 
   useEffect(() => {
-    let timeour = null;
+    let timeout: any = null;
     if (!isLoading) {
-      timeour = setTimeout(() => {
+      timeout = setTimeout(() => {
         startCheckEmpty(true);
       }, 500);
     }
     return () => {
-      clearTimeout(timeour);
+      clearTimeout(timeout);
     };
   }, [isLoading]);
 
