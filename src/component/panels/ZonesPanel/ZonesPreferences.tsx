@@ -9,7 +9,7 @@ import {
 } from 'react';
 
 import { usePreferences } from '../../context/PreferencesContext';
-import IsotopesViewer from '../../elements/IsotopesViewert';
+import IsotopesViewer from '../../elements/IsotopesViewer';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';

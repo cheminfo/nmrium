@@ -7,7 +7,7 @@ import {
   memo,
 } from 'react';
 
-import IsotopesViewer from '../../elements/IsotopesViewert.tsx';
+import IsotopesViewer from '../../elements/IsotopesViewer.tsx';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
