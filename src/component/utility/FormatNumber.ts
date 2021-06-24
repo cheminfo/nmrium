@@ -1,5 +1,6 @@
 import lodashGet from 'lodash/get';
 import Numeral from 'numeral';
+import { useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
 // let getNuclusFormat = memoize(getDefaultNuclusFormat);
@@ -17,8 +18,10 @@ type ReturnFunction = (
 
 export function useFormatNumberByNucleus(
   nucleus?: Array<string>,
-): Array<ReturnFunction>;
-export function useFormatNumberByNucleus(nucleus?: string): ReturnFunction;
+): Array<(p: ReturnFunction) => string>;
+export function useFormatNumberByNucleus(
+  nucleus?: string,
+): (p: ReturnFunction) => string;
 export function useFormatNumberByNucleus(nucleus?: string | Array<string>) {
   const preferences = usePreferences();
   const nucleusByKey = lodashGet(preferences, `formatting.nucleusByKey`, {
@@ -26,29 +29,36 @@ export function useFormatNumberByNucleus(nucleus?: string | Array<string>) {
     hz: '0.0',
   });
 
-  function formatFun(n: string) {
-    return function (value: any, formatKey = 'ppm', prefix = '', suffix = '') {
-      return (
-        prefix +
-        Numeral(Number(value)).format(
-          lodashGet(nucleusByKey, `${n.toLowerCase()}.${formatKey}`, '0.0'),
-        ) +
-        suffix
-      );
-    };
-  }
+  return useMemo(() => {
+    function formatFun(n: string) {
+      return function (
+        value: any,
+        formatKey = 'ppm',
+        prefix = '',
+        suffix = '',
+      ) {
+        return (
+          prefix +
+          Numeral(Number(value)).format(
+            lodashGet(nucleusByKey, `${n.toLowerCase()}.${formatKey}`, '0.0'),
+          ) +
+          suffix
+        );
+      };
+    }
 
-  if (!nucleus) {
-    return () => undefined;
-  }
+    if (!nucleus) {
+      return () => undefined;
+    }
 
-  if (typeof nucleus === 'string') {
-    return formatFun(nucleus);
-  } else if (Array.isArray(nucleus)) {
-    return nucleus.map((n) => formatFun(n));
-  } else {
-    throw Error('nuclus must be string or array of string');
-  }
+    if (typeof nucleus === 'string') {
+      return formatFun(nucleus);
+    } else if (Array.isArray(nucleus)) {
+      return nucleus.map((n) => formatFun(n));
+    } else {
+      throw Error('nuclus must be string or array of string');
+    }
+  }, [nucleus, nucleusByKey]);
 }
 
 export function getNumberOfDecimals(value: number | string) {
