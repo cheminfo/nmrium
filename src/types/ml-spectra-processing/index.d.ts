@@ -59,6 +59,16 @@ declare module 'ml-spectra-processing' {
     },
   ): { x: Array<number>; y: Array<number> };
 
+  declare function xyReduce(
+    integral: { x: Array<number>; y: Array<number> },
+    options: {
+      from: any;
+      to: any;
+      nbPoints?: number;
+      optimize?: boolean;
+    },
+  ): { x: Array<number>; y: Array<number> };
+
   /**
    * Calculate integration
    * @param {DataXY} [data={}] - Object that contains property x (an ordered increasing array) and y (an array)

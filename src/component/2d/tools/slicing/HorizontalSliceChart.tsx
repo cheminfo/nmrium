@@ -6,7 +6,18 @@ import { get2DXScale } from '../../utilities/scale';
 
 import { getYScale } from './SliceScale';
 
-function HorizontalSliceChart({ margin: marginProps, data }) {
+interface HorizontalSliceChartProps {
+  margin: number;
+  data: {
+    x: Array<number>;
+    re: Array<number>;
+  };
+}
+
+function HorizontalSliceChart({
+  margin: marginProps = 10,
+  data,
+}: HorizontalSliceChartProps) {
   const { width, margin: originMargin, xDomain, displayerKey } = useChartData();
 
   const height = originMargin.top;
@@ -32,7 +43,7 @@ function HorizontalSliceChart({ margin: marginProps, data }) {
       }, '');
       return path;
     } else {
-      return null;
+      return undefined;
     }
   }, [data, height, marginProps, originMargin, width, xDomain]);
 
@@ -65,9 +76,5 @@ function HorizontalSliceChart({ margin: marginProps, data }) {
     </svg>
   );
 }
-
-HorizontalSliceChart.defaultProps = {
-  margin: 10,
-};
 
 export default memo(HorizontalSliceChart);

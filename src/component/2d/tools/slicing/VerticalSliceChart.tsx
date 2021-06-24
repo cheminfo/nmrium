@@ -6,7 +6,18 @@ import { get2DYScale } from '../../utilities/scale';
 
 import { getYScale } from './SliceScale';
 
-function VerticalSliceChart({ margin: marignValue, data }) {
+interface VerticalSliceChartProps {
+  margin: number;
+  data: {
+    x: Array<number>;
+    re: Array<number>;
+  };
+}
+
+function VerticalSliceChart({
+  margin: marignValue = 10,
+  data,
+}: VerticalSliceChartProps) {
   const {
     height: originHeight,
     margin,
@@ -43,7 +54,7 @@ function VerticalSliceChart({ margin: marignValue, data }) {
         }, '');
       return path;
     } else {
-      return null;
+      return undefined;
     }
   }, [data, height, margin, marignValue, originHeight, yDomain]);
 
@@ -68,9 +79,5 @@ function VerticalSliceChart({ margin: marignValue, data }) {
     </svg>
   );
 }
-
-VerticalSliceChart.defaultProps = {
-  margin: 10,
-};
 
 export default memo(VerticalSliceChart);

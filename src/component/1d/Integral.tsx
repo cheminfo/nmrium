@@ -7,16 +7,25 @@ import { getValue } from '../utility/LocalStorage';
 
 import IntegralResizable from './IntegralResizable';
 
+interface IntegralProps {
+  integralData: { id: string; from: number; to: number; integral?: number };
+  x: Array<number>;
+  y: Array<number>;
+  xDomain: number[];
+  isActive: boolean;
+  scaleY: any;
+  scaleX: any;
+}
+
 function Integral({
   integralData,
   x,
   y,
   xDomain,
   isActive,
-  spectrumID,
   scaleY,
   scaleX,
-}) {
+}: IntegralProps) {
   const { from, to } = integralData;
   // const { preferences } = useChartData();
   const preferences = usePreferences();
@@ -76,11 +85,7 @@ function Integral({
         // vectorEffect="non-scaling-stroke"
       />
 
-      <IntegralResizable
-        spectrumID={spectrumID}
-        integralData={integralData}
-        scaleY={scaleY}
-      />
+      <IntegralResizable integralData={integralData} />
     </Fragment>
   );
 }

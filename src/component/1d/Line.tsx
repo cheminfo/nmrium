@@ -1,12 +1,24 @@
 import get from 'lodash/get';
 import { xyReduce } from 'ml-spectra-processing';
-import { useMemo } from 'react';
+import { CSSProperties, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useScale } from '../context/ScaleContext';
 
-function Line({ data, id, display, index }) {
+interface LineProps {
+  data?: {
+    x: Array<number>;
+    y: Array<number>;
+  };
+  id: string;
+  display: {
+    color: CSSProperties['stroke'];
+  };
+  index: number;
+}
+
+function Line({ data, id, display, index }: LineProps) {
   const { xDomain, activeSpectrum, verticalAlign } = useChartData();
   const preferences = usePreferences();
   const { scaleX, scaleY } = useScale();

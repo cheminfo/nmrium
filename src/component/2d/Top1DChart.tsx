@@ -5,7 +5,21 @@ import { useChartData } from '../context/ChartContext';
 
 import { get1DYScale, get2DXScale } from './utilities/scale';
 
-function Top1DChart({ margin: marginProps, data: spectrum }) {
+interface Top1DChartProps {
+  margin: number;
+  data: {
+    id: number;
+    data: {
+      x: Array<number>;
+      y: Array<number>;
+    };
+  };
+}
+
+function Top1DChart({
+  margin: marginProps = 10,
+  data: spectrum,
+}: Top1DChartProps) {
   const {
     width,
     margin: originMargin,
@@ -37,7 +51,7 @@ function Top1DChart({ margin: marginProps, data: spectrum }) {
       }, '');
       return path;
     } else {
-      return null;
+      return undefined;
     }
   }, [height, marginProps, originMargin, spectrum, width, xDomain, yDomains]);
 
@@ -69,9 +83,5 @@ function Top1DChart({ margin: marginProps, data: spectrum }) {
     </svg>
   );
 }
-
-Top1DChart.defaultProps = {
-  margin: 10,
-};
 
 export default memo(Top1DChart);

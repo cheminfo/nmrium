@@ -5,7 +5,21 @@ import { useChartData } from '../context/ChartContext';
 
 import { get1DYScale, get2DYScale } from './utilities/scale';
 
-function Left1DChart({ margin: marignValue, data: spectrum }) {
+interface Left1DChartProps {
+  margin: number;
+  data: {
+    id: number;
+    data: {
+      x: Array<number>;
+      y: Array<number>;
+    };
+  };
+}
+
+function Left1DChart({
+  margin: marignValue = 10,
+  data: spectrum,
+}: Left1DChartProps) {
   const {
     height: originHeight,
     margin,
@@ -46,7 +60,7 @@ function Left1DChart({ margin: marignValue, data: spectrum }) {
         }, '');
       return path;
     } else {
-      return null;
+      return undefined;
     }
   }, [height, margin, marignValue, originHeight, spectrum, yDomain, yDomains]);
 
@@ -71,9 +85,5 @@ function Left1DChart({ margin: marignValue, data: spectrum }) {
     </svg>
   );
 }
-
-Left1DChart.defaultProps = {
-  margin: 10,
-};
 
 export default memo(Left1DChart);
