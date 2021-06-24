@@ -43,10 +43,10 @@ const stylesHighlighted = css`
 
 interface IntegralResizableProps {
   integralData: {
-    id: number;
+    id: string;
     from: number;
     to: number;
-    integral: number;
+    integral?: number;
   };
 }
 

@@ -53,7 +53,6 @@ function IntegralsSeries() {
           spectrum.integrals.values.map((integral) => (
             <Integral
               key={integral.id}
-              spectrumID={spectrum.id}
               integralData={integral}
               x={spectrum.data.x}
               y={spectrum.data.y}
