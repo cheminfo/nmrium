@@ -18,10 +18,8 @@ type ReturnFunction = (
 
 export function useFormatNumberByNucleus(
   nucleus?: Array<string>,
-): Array<(p: ReturnFunction) => string>;
-export function useFormatNumberByNucleus(
-  nucleus?: string,
-): (p: ReturnFunction) => string;
+): Array<ReturnFunction>;
+export function useFormatNumberByNucleus(nucleus?: string): ReturnFunction;
 export function useFormatNumberByNucleus(nucleus?: string | Array<string>) {
   const preferences = usePreferences();
   const nucleusByKey = lodashGet(preferences, `formatting.nucleusByKey`, {
