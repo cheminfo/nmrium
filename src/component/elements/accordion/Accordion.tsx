@@ -1,4 +1,5 @@
 import {
+  ReactNode,
   useState,
   useRef,
   useCallback,
@@ -20,7 +21,12 @@ const styles: Record<'container', CSSProperties> = {
   },
 };
 
-function Accordion({ children, defaultOpenIndex = 0 }) {
+interface AccordionProps {
+  children: Array<ReactNode>;
+  defaultOpenIndex: number | null;
+}
+
+function Accordion({ children, defaultOpenIndex = 0 }: AccordionProps) {
   const [elements, setElements] = useState<Array<any>>([]);
 
   const refContainer = useRef<HTMLDivElement>(null);
@@ -54,7 +60,7 @@ function Accordion({ children, defaultOpenIndex = 0 }) {
   );
 
   const mappedChildren = useMemo(() => {
-    return Children.map(children, (child, index) => {
+    return Children.map(children, (child: any, index) => {
       return (
         child &&
         cloneElement(child, {

@@ -101,7 +101,7 @@ const accordionItems = [
 ];
 
 function Panels({ selectedTool, displayerMode }) {
-  const [panelIndex, setSelectedPanelIndex] = useState<number>(0);
+  const [panelIndex, setSelectedPanelIndex] = useState<number | null>(0);
   const preferences = usePreferences();
 
   useEffect(() => {
@@ -113,7 +113,7 @@ function Panels({ selectedTool, displayerMode }) {
     }
     const index = getDefaultIndex();
     if (selectedTool) {
-      setSelectedPanelIndex(index || 0);
+      setSelectedPanelIndex(index);
     }
   }, [selectedTool]);
 
