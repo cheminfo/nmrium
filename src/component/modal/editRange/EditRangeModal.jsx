@@ -1,22 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Form, Formik } from 'formik';
-import { useCallback, useEffect, useMemo } from 'react';
+// import { Form, Formik } from 'formik';
+import { useCallback, useEffect, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import generateID from '../../../data/utilities/generateID';
 import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/Button';
 import CloseButton from '../../elements/CloseButton';
 import SaveButton from '../../elements/SaveButton';
+import FormikForm from '../../elements/formik/FormikForm';
+import FormikOnChange from '../../elements/formik/FormikOnChange';
 import {
   hasCouplingConstant,
   translateMultiplet,
 } from '../../panels/extra/utilities/MultiplicityUtilities';
+import { CHANGE_TEMP_RANGE } from '../../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 
 import SignalsForm from './forms/components/SignalsForm';
-import EditRangeValidation from './forms/validation/EditRangeValidation';
+import useRangeFormValidation from './forms/validation/EditRangeValidation';
 
 const styles = css`
   overflow: auto;
@@ -77,8 +81,11 @@ function EditRangeModal({
   onZoomEditRangeModal,
   rangeData,
 }) {
+  const formRef = useRef();
   const { activeTab } = useChartData();
+  const dispatch = useDispatch();
   const format = useFormatNumberByNucleus(activeTab);
+  const validation = useRangeFormValidation();
 
   const handleOnZoom = useCallback(() => {
     onZoomEditRangeModal(rangeData);
@@ -131,8 +138,8 @@ function EditRangeModal({
     [getSignals, handleOnClose, onSaveEditRangeModal, rangeData],
   );
 
-  const initialStateSignals = useMemo(() => {
-    return rangeData.signal.map((_signal) => {
+  useEffect(() => {
+    const signals = rangeData.signal.map((_signal) => {
       // counter within j array to access to right j values
       let counterJ = 0;
       const couplings = [];
@@ -151,68 +158,52 @@ function EditRangeModal({
 
       return { ..._signal, j: couplings };
     });
-  }, [format, rangeData.signal]);
+    formRef.current.setValues({ activeTab: '0', signals });
+  }, [format, rangeData]);
 
-  const isSaveButtonDisabled = useCallback((errors) => {
-    const errorKeys = Object.keys(errors);
-    if (errorKeys.length > 0) {
-      if (
-        // ignore non-relevant newSignalDelta field
-        errorKeys.length === 1 &&
-        errorKeys[0] === 'newSignalDelta'
-      ) {
-        return false;
-      }
-      return true;
-    }
-    return false;
-  }, []);
+  const changeHandler = useCallback(
+    (values) => {
+      const { signals } = values;
+      const signal = getSignals(signals);
+      dispatch({
+        type: CHANGE_TEMP_RANGE,
+        payload: { tempRange: Object.assign({}, rangeData, { signal }) },
+      });
+    },
+    [dispatch, getSignals, rangeData],
+  );
 
   return (
     <div css={styles}>
-      {rangeData && (
-        <Formik
-          initialValues={{
-            signals: initialStateSignals,
-            newSignalDelta: (rangeData.from + rangeData.to) / 2,
-            activeTab: '0',
-          }}
-          validate={(values) => EditRangeValidation(values, rangeData)}
-          onSubmit={(values, { setSubmitting }) => {
-            handleOnSave(values);
-            setSubmitting(false);
-          }}
-        >
-          {({ values, errors }) => {
-            return (
-              <Form>
-                <div className="header handle">
-                  <Button onClick={handleOnZoom} className="zoom-button">
-                    <FaSearchPlus title="Set to default view on range in spectrum" />
-                  </Button>
-                  <span>
-                    {` Range and Signal edition: ${format(
-                      rangeData.from,
-                    )} ppm to ${format(rangeData.to)} ppm`}
-                  </span>
-                  <SaveButton
-                    onClick={() => handleOnSave(values)}
-                    disabled={isSaveButtonDisabled(errors)}
-                    popupTitle="Save and exit"
-                  />
+      <FormikForm
+        ref={formRef}
+        initialValues={{
+          signals: [],
+          activeTab: '0',
+        }}
+        validationSchema={validation}
+        onSubmit={handleOnSave}
+      >
+        <div className="header handle">
+          <Button onClick={handleOnZoom} className="zoom-button">
+            <FaSearchPlus title="Set to default view on range in spectrum" />
+          </Button>
+          <span>
+            {` Range and Signal edition: ${format(
+              rangeData.from,
+            )} ppm to ${format(rangeData.to)} ppm`}
+          </span>
+          <SaveButton
+            onClick={() => formRef.current.submitForm()}
+            // disabled={formRef.current.errors}
+            popupTitle="Save and exit"
+          />
 
-                  <CloseButton onClick={handleOnClose} />
-                </div>
-                <SignalsForm
-                  rangeLabel={`${format(rangeData.from)} ppm - ${format(
-                    rangeData.to,
-                  )} ppm`}
-                />
-              </Form>
-            );
-          }}
-        </Formik>
-      )}
+          <CloseButton onClick={handleOnClose} />
+        </div>
+        <SignalsForm rangeData={rangeData} format={format} />
+        <FormikOnChange onChange={changeHandler} />
+      </FormikForm>
     </div>
   );
 }

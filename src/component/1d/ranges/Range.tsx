@@ -13,6 +13,7 @@ import Resizable from '../Resizable';
 import MultiplicityTree, {
   SignalNodeProps,
 } from '../multiplicityTree/MultiplicityTree';
+import TempMultiplicityTree from '../multiplicityTree/TempMultiplicityTree';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -52,7 +53,7 @@ const stylesHighlighted = css`
 `;
 
 export interface RangeData {
-  id: number;
+  id: string;
   from: number;
   to: number;
   integral: number;
@@ -63,9 +64,15 @@ interface RangeProps {
   showMultiplicityTrees: boolean;
   selectedTool: string;
   rangeData: RangeData;
+  startEditMode: boolean;
 }
 
-function Range({ rangeData, showMultiplicityTrees, selectedTool }: RangeProps) {
+function Range({
+  rangeData,
+  showMultiplicityTrees,
+  selectedTool,
+  startEditMode,
+}: RangeProps) {
   const { id, from: rangeFrom, to: rangeTo, integral, signal } = rangeData;
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -194,16 +201,21 @@ function Range({ rangeData, showMultiplicityTrees, selectedTool }: RangeProps) {
         onDrop={handleOnStopResizing}
         onDrag={dragHandler}
       />
-      {showMultiplicityTrees && signal && signal.length > 0
-        ? signal.map((_signal) => (
-            <MultiplicityTree
-              rangeFrom={from}
-              rangeTo={to}
-              signal={_signal}
-              key={_signal.id}
-            />
-          ))
-        : null}
+      {startEditMode ? (
+        <TempMultiplicityTree />
+      ) : (
+        showMultiplicityTrees &&
+        signal &&
+        signal.length > 0 &&
+        signal.map((_signal) => (
+          <MultiplicityTree
+            rangeFrom={from}
+            rangeTo={to}
+            signal={_signal}
+            key={_signal.id}
+          />
+        ))
+      )}
     </g>
   );
 }

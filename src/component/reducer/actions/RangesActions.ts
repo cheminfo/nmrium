@@ -95,6 +95,10 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
     const { editedRowData, assignmentData } = action.payload;
+
+    // reset temp range
+    draft.toolOptions.data.tempRange = null;
+
     // remove assignments in global state
 
     const _editedRowData = unlink(editedRowData);
@@ -239,6 +243,10 @@ function handleChangeRangesSumFlag(draft, action) {
   }
 }
 
+function handleChangeTempRange(draft: Draft<State>, action) {
+  draft.toolOptions.data.tempRange = action.payload.tempRange;
+}
+
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
@@ -252,4 +260,5 @@ export {
   handleUnlinkRange,
   handleSetDiaIDRange,
   handleChangeRangesSumFlag,
+  handleChangeTempRange,
 };

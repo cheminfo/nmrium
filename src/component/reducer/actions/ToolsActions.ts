@@ -72,6 +72,9 @@ function setFilterChanges(draft: Draft<State>, selectedFilter) {
 }
 
 function resetTool(draft: Draft<State>, setDefaultTool = true) {
+  // reset temp range
+  draft.toolOptions.data.tempRange = null;
+
   draft.toolOptions.selectedOptionPanel = null;
   if (setDefaultTool) {
     draft.toolOptions.selectedTool = options.zoom.id;
@@ -97,12 +100,22 @@ function resetSelectedTool(draft: Draft<State>, filterOnly = false) {
   }
 }
 
-function setSelectedTool(draft: Draft<State>, selectedTool) {
+function setSelectedTool(draft: Draft<State>, action) {
+  const { selectedTool } = action.payload;
+
   if (draft?.data.length > 0) {
     if (selectedTool) {
+      // start Range edit mode
+      if (selectedTool === options.editRange.id) {
+        draft.toolOptions.data.tempRange = action.payload.tempRange;
+      } else {
+        draft.toolOptions.data.tempRange = null;
+      }
+
       if (selectedTool !== draft.toolOptions.selectedTool) {
         resetTool(draft, false);
       }
+
       draft.toolOptions.selectedTool = selectedTool;
 
       if (options[selectedTool].hasOptionPanel) {
