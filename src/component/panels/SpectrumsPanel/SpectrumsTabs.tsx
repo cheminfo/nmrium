@@ -33,8 +33,10 @@ function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
     [],
   );
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
-  const [settingModalPosition, setSettingModalPosition] =
-    useState<{ x: number; y: number } | null>(null);
+  const [settingModalPosition, setSettingModalPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const [isSettingModalDisplayed, setIsSettingModalDisplayed] = useState(false);
 
   const alert = useAlert();

@@ -27,8 +27,10 @@ export function MouseTracker({
   style,
   noPropagation,
 }: MouseTrackerProps) {
-  const [mouseTrackerState, setMouseTrackerState] =
-    useState<{ x: number; y: number } | null>(null);
+  const [mouseTrackerState, setMouseTrackerState] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const mouseMoveHandler = useCallback(
     (e) => {
       const boundingRect = e.currentTarget.getBoundingClientRect();
