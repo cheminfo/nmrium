@@ -55,14 +55,14 @@ function ToolTip({
 
   useLayoutEffect(() => {
     const getPopupPlacement = () => {
-      let x;
-      let y;
+      let x: number;
+      let y: number;
 
-      // TODO: Maybe, check that ?
-      // @ts-expect-error refChild isn't undefined
+      if (refChild.current === null || refContent.current === null) {
+        return null;
+      }
+
       const childBounding = refChild.current.getBoundingClientRect();
-
-      // @ts-expect-error refContent isn't undefined
       const contentBounding = refContent.current.getBoundingClientRect();
 
       switch (popupPlacement) {
@@ -101,9 +101,13 @@ function ToolTip({
       }
       return { x: x + childBounding.x, y: y + childBounding.y };
     };
+
     if (show) {
       const pl = getPopupPlacement();
-      setPlacement(pl);
+
+      if (pl) {
+        setPlacement(pl);
+      }
     }
   }, [popupPlacement, show]);
 

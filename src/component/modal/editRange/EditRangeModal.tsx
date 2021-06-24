@@ -85,8 +85,6 @@ function EditRangeModal({
   rangeData,
 }: EditRangeModalProps) {
   const { activeTab } = useChartData();
-
-  // TODO: as string should be usefull here ?
   const format = useFormatNumberByNucleus(activeTab as string);
 
   const handleOnZoom = useCallback(() => {
