@@ -15,6 +15,7 @@ function FormikInput({
   className,
   value,
   format,
+  checkErrorAfterInputTouched,
   ...resProps
 }) {
   const { values, handleChange, setFieldValue, errors, touched } =
@@ -34,8 +35,11 @@ function FormikInput({
   }, [name, setFieldValue, value]);
 
   const isInvalid = useMemo(() => {
-    return lodashGet(errors, name) && lodashGet(touched, name);
-  }, [errors, name, touched]);
+    if (checkErrorAfterInputTouched) {
+      return lodashGet(errors, name) && lodashGet(touched, name);
+    }
+    return lodashGet(errors, name);
+  }, [checkErrorAfterInputTouched, errors, name, touched]);
   return (
     <Input
       label={label}
@@ -68,6 +72,7 @@ FormikInput.propTypes = {
   className: PropTypes.string,
   value: PropTypes.any,
   format: PropTypes.func,
+  checkErrorAfterInputTouched: PropTypes.bool,
 };
 
 FormikInput.defaultProps = {
@@ -83,6 +88,7 @@ FormikInput.defaultProps = {
   className: '',
   value: null,
   format: () => (val) => val,
+  checkErrorAfterInputTouched: true,
 };
 
 export default FormikInput;

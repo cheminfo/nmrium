@@ -33,7 +33,7 @@ export default function useToolsFunctions() {
           'Press Shift + Left Mouse button to select zone for integral and peak picking',
         );
       }
-      dispatch({ type: SET_SELECTED_TOOL, selectedTool });
+      dispatch({ type: SET_SELECTED_TOOL, payload: { selectedTool } });
     },
     [alert, dispatch],
   );

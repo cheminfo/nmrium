@@ -24,10 +24,10 @@ function createTreeNodes(signal, spectrumData) {
     const jIndex = jIndices.findIndex(
       (_jIndex) => _jIndex === multiplicityIndex,
     );
-
     const frequency = lodashGet(spectrumData, 'info.originFrequency', 0);
+
     const coupling =
-      jIndex >= 0 && frequency > 0
+      jIndex >= 0 && frequency > 0 && signal.j[jIndex]
         ? signal.j[jIndex].coupling / frequency // convert to ppm
         : null;
 

@@ -13,7 +13,10 @@ export default function RangesWrapper(WrappedComponent) {
       molecules,
       tabActiveSpectrum,
       displayerKey,
-      toolOptions: { selectedTool },
+      toolOptions: {
+        selectedTool,
+        data: { tempRange },
+      },
     } = useChartData();
     const preferences = usePreferences();
 
@@ -57,6 +60,7 @@ export default function RangesWrapper(WrappedComponent) {
         nucleus={nucleus}
         displayerKey={displayerKey}
         selectedTool={selectedTool}
+        editRangeID={tempRange?.id}
         ref={forwardedRef}
       />
     );

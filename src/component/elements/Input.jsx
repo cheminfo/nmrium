@@ -31,6 +31,8 @@ const Input = forwardRef(function Input(
     enableAutoSelect,
     className,
     format,
+    onBlur,
+    onFocus,
     ...prop
   },
   ref,
@@ -159,6 +161,8 @@ const Input = forwardRef(function Input(
         onKeyPress={preventPropagate}
         onDoubleClick={(e) => e.stopPropagation()}
         className={`input ${className}`}
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
     </div>
   );
@@ -181,6 +185,8 @@ Input.propTypes = {
   type: PropTypes.oneOf(['text', 'number']),
   enableAutoSelect: PropTypes.bool,
   debounceTime: PropTypes.number,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
 };
 
 Input.defaultProps = {
@@ -200,6 +206,8 @@ Input.defaultProps = {
   enableAutoSelect: false,
   format: () => (val) => val,
   debounceTime: 0,
+  onFocus: () => null,
+  onBlur: () => null,
 };
 
 export default Input;

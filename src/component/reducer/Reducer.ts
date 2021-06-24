@@ -94,6 +94,7 @@ export const initialState = {
       exclusionZones: {},
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
+      tempRange: null,
     },
   },
 };
@@ -153,6 +154,7 @@ export interface State {
       pivot: { value: number; index: number };
       zonesNoiseFactor: number;
       activeFilterID?: string | number | null;
+      tempRange: any;
     };
   };
 }
@@ -284,7 +286,7 @@ function innerSpectrumReducer(draft, action) {
       return handleSetDimensions(draft, action.width, action.height);
 
     case types.SET_SELECTED_TOOL:
-      return ToolsActions.setSelectedTool(draft, action.selectedTool);
+      return ToolsActions.setSelectedTool(draft, action);
     case types.RESET_SELECTED_TOOL:
       return ToolsActions.resetSelectedTool(draft);
     case types.SET_SELECTED_OPTIONS_PANEL:
@@ -423,6 +425,8 @@ function innerSpectrumReducer(draft, action) {
       return RangesActions.handleUnlinkRange(draft, action);
     case types.SET_DIAID_RANGE:
       return RangesActions.handleSetDiaIDRange(draft, action);
+    case types.CHANGE_TEMP_RANGE:
+      return RangesActions.handleChangeTempRange(draft, action);
 
     case types.SET_PREFERENCES:
       return handelSetPreferences(draft, action.data);

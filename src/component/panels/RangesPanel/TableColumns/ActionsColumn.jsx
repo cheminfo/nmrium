@@ -21,6 +21,7 @@ import {
   SAVE_EDITED_RANGE,
   DELETE_RANGE,
 } from '../../../reducer/types/Types';
+import { options } from '../../../toolbar/ToolTypes';
 
 const styles = css`
   width: 66px;
@@ -95,7 +96,10 @@ function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
   }, [dispatch, modal]);
 
   const openEditRangeHandler = useCallback(() => {
-    dispatch({ type: SET_SELECTED_TOOL, selectedTool: 'editRange' });
+    dispatch({
+      type: SET_SELECTED_TOOL,
+      payload: { selectedTool: options.editRange.id, tempRange: rowData },
+    });
     modal.show(
       <EditRangeModal
         onCloseEditRangeModal={closeEditRangeHandler}
