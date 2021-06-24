@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-// import { Form, Formik } from 'formik';
-import { useCallback, useEffect, useRef } from 'react';
+import { useMemo, useCallback, useEffect, useRef } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 
 import generateID from '../../../data/utilities/generateID';
@@ -145,27 +144,31 @@ function EditRangeModal({
     [getSignals, handleOnClose, onSaveEditRangeModal, rangeData],
   );
 
-  useEffect(() => {
-    const signals = rangeData.signal.map((_signal) => {
+  const data = useMemo(() => {
+    const signals = rangeData.signal.map((signal) => {
       // counter within j array to access to right j values
       let counterJ = 0;
-      const couplings: Array<any> = [];
-      let coupling;
-      _signal.multiplicity.split('').forEach((_multiplicity) => {
+      const couplings: Array<{ multiplicity: any; coupling: string | number }> =
+        [];
+      signal.multiplicity.split('').forEach((_multiplicity) => {
+        let coupling: { multiplicity: any; coupling: string | number } = {
+          multiplicity: _multiplicity,
+          coupling: '',
+        };
+
         if (hasCouplingConstant(_multiplicity)) {
-          coupling = { ..._signal.j[counterJ] };
+          coupling = { ...signal.j[counterJ] };
           coupling.coupling = Number(format(coupling.coupling));
           counterJ++;
-        } else {
-          coupling = { multiplicity: _multiplicity, coupling: '' };
         }
+
         coupling.multiplicity = translateMultiplet(coupling.multiplicity);
         couplings.push(coupling);
       });
 
-      return { ..._signal, j: couplings };
+      return { ...signal, j: couplings };
     });
-    formRef.current.setValues({ activeTab: '0', signals });
+    return { activeTab: '0', signals };
   }, [format, rangeData]);
 
   const changeHandler = useCallback(
@@ -184,10 +187,7 @@ function EditRangeModal({
     <div css={styles}>
       <FormikForm
         ref={formRef}
-        initialValues={{
-          signals: [],
-          activeTab: '0',
-        }}
+        initialValues={data}
         validationSchema={validation}
         onSubmit={handleOnSave}
       >
