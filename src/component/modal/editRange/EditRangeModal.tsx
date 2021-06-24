@@ -81,7 +81,7 @@ interface EditRangeModalProps {
   rangeData: any;
 }
 
-interface MulCouplong {
+interface Coupling {
   multiplicity: any;
   coupling: string | number;
 }
@@ -153,9 +153,9 @@ function EditRangeModal({
     const signals = rangeData.signal.map((signal) => {
       // counter within j array to access to right j values
       let counterJ = 0;
-      const couplings: Array<MulCouplong> = [];
+      const couplings: Array<Coupling> = [];
       signal.multiplicity.split('').forEach((_multiplicity) => {
-        let coupling: MulCouplong = {
+        let coupling: Coupling = {
           multiplicity: _multiplicity,
           coupling: '',
         };
