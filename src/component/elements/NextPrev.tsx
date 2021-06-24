@@ -73,7 +73,7 @@ function NextPrev({
   defaultIndex = 0,
   onChange = () => null,
 }: NextPrevProps) {
-  const [ref, { width }] = useMeasure();
+  const [ref, { width }] = useMeasure<HTMLDivElement>();
   const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
     setActiveIndex(defaultIndex);
@@ -145,7 +145,6 @@ function NextPrev({
         overflow: hidden;
         display: block;
       `}
-      // @ts-expect-error ref from react-use is not good ?
       ref={ref}
     >
       <div

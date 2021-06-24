@@ -25,13 +25,6 @@ const initialState = {
 
 export const BrushContext = createContext(initialState);
 
-BrushTracker.defaultProps = {
-  onBrush: () => null,
-  onZoom: () => null,
-  onDoubleClick: () => null,
-  onClick: () => null,
-};
-
 interface BrushTrackerProps {
   children: ReactNode;
   className?: string;

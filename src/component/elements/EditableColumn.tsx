@@ -80,6 +80,7 @@ const EditableColumn = forwardRef(function EditableColumn(
       {enabled && (
         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
           <Input
+            // TODO: should check that (with type of Input)
             // @ts-expect-error enableAutoSelect exist on jsx but not in ts
             enableAutoSelect
             ref={refInput}
