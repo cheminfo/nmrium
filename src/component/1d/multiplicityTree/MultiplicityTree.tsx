@@ -5,7 +5,7 @@ import { useMemo, useState, useEffect, CSSProperties } from 'react';
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';
-import { useHighlight } from '../../highlight';
+import { TYPES, useHighlight } from '../../highlight';
 import {
   hasCouplingConstant,
   checkMultiplicity,
@@ -58,6 +58,7 @@ function MultiplicityTree({
   const assignment = useAssignment(signal.id);
   const highlight = useHighlight(
     [assignment.id].concat(assignment.assigned.x || []),
+    TYPES.SIGNAL,
   );
 
   const spectrumData = useMemo(

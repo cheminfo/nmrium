@@ -3,8 +3,12 @@ import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
 import { useMemo, useCallback, useState } from 'react';
 
-import { useAssignment } from '../../assignment';
-import { useHighlight, useHighlightData } from '../../highlight';
+import {
+  filterForIDsWithAssignment,
+  useAssignment,
+  useAssignmentData,
+} from '../../assignment';
+import { TYPES, useHighlight, useHighlightData } from '../../highlight';
 import { isColumnVisible } from '../extra/preferences/ColumnsHelper';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn';
@@ -33,16 +37,27 @@ function RangesTableRow({
   preferences,
   editFlags: { relativeFlags, signalFlags },
 }) {
+  const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(rowData.id);
   const highlightRange = useHighlight(
-    [assignmentRange.id].concat(assignmentRange.assigned.x || []),
+    [assignmentRange.id].concat(assignmentRange.assigned.x || []).concat(
+      filterForIDsWithAssignment(
+        assignmentData,
+        rowData.signal.map((_signal) => _signal.id),
+      ),
+    ),
+    TYPES.RANGE,
+  );
+  const highlightRangeAssignmentsColumn = useHighlight(
+    assignmentRange.assigned.x || [],
+    TYPES.RANGE,
   );
   const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
   const highlightSignal = useHighlight(
     [assignmentSignal.id].concat(assignmentSignal.assigned.x || []),
+    TYPES.SIGNAL,
   );
   const highlightData = useHighlightData();
-
   const [unlinkRangeButtonVisibility, showUnlinkRangeButton] = useState(false);
   const [unlinkSignalButtonVisibility, showUnlinkSignalButton] =
     useState(false);
@@ -104,6 +119,19 @@ function RangesTableRow({
     };
   }, [assignmentRange, highlightRange]);
 
+  const onHoverRangeAssignmentsColumn = useMemo(() => {
+    return {
+      onMouseEnter: () => {
+        assignmentRange.onMouseEnter('x');
+        highlightRangeAssignmentsColumn.show();
+      },
+      onMouseLeave: () => {
+        assignmentRange.onMouseLeave('x');
+        highlightRangeAssignmentsColumn.hide();
+      },
+    };
+  }, [assignmentRange, highlightRangeAssignmentsColumn]);
+
   const onHoverSignal = useMemo(() => {
     return {
       onMouseEnter: () => {
@@ -126,11 +154,7 @@ function RangesTableRow({
   }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
 
   return (
-    <tr
-      onContextMenu={(e) => onContextMenu(e, rowData)}
-      css={trCss}
-      {...highlightRange.onHover}
-    >
+    <tr onContextMenu={(e) => onContextMenu(e, rowData)} css={trCss}>
       <td {...rowSpanTags} {...onHoverRange}>
         {rowData.tableMetaInfo.rowIndex + 1}
       </td>
@@ -200,8 +224,8 @@ function RangesTableRow({
       <RangeAssignmentsColumn
         rowData={rowData}
         assignment={assignmentRange}
-        highlight={highlightRange}
-        onHover={onHoverRange}
+        highlight={highlightRangeAssignmentsColumn}
+        onHover={onHoverRangeAssignmentsColumn}
         unlinkVisibility={unlinkRangeButtonVisibility}
         onUnlinkVisibilityChange={(flag) => showUnlinkRangeButton(flag)}
         onLink={linkHandler}

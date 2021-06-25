@@ -2,10 +2,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ConcatenationString } from '../../../data/utilities/Concatenation';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
-import { useAssignment, useAssignmentData } from '../../assignment';
+import {
+  filterForIDsWithAssignment,
+  useAssignment,
+  useAssignmentData,
+} from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
-import { useHighlightData } from '../../highlight';
+import { TYPES, useHighlightData } from '../../highlight';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { SET_DIAID_RANGE, SET_DIAID_ZONE } from '../../reducer/types/Types';
 
@@ -103,8 +107,40 @@ export default function useAtomAssignment({
   );
 
   const currentDiaIDsToHighlight = useMemo(() => {
-    return getCurrentDiaIDsToHighlight(assignmentData, displayerMode);
-  }, [assignmentData, displayerMode]);
+    let highlights = [];
+    highlightData.highlight.highlighted.forEach((highlightID) => {
+      const temp = assignmentData.assignment.assignment[highlightID];
+      if (temp) {
+        const { datum } = findDatumAndSignalIndex(data, highlightID);
+        if (
+          datum &&
+          (highlightData.highlight.type === TYPES.RANGE ||
+            highlightData.highlight.type === TYPES.ZONE)
+        ) {
+          // we are on range/zone level only, so add the belonging signal IDs to highlight too
+          highlights = highlights.concat(
+            datum.signal
+              .map((_signal) =>
+                filterForIDsWithAssignment(assignmentData, [_signal.id])
+                  .length > 0
+                  ? _signal.diaID
+                  : [],
+              )
+              .flat(),
+          );
+        }
+      }
+    });
+    return getCurrentDiaIDsToHighlight(assignmentData, displayerMode).concat(
+      highlights,
+    );
+  }, [
+    assignmentData,
+    data,
+    displayerMode,
+    highlightData.highlight.highlighted,
+    highlightData.highlight.type,
+  ]);
 
   const toggleAssignment = useCallback(
     (diaID, atomInformation) => {
@@ -193,6 +229,7 @@ export default function useAtomAssignment({
                 });
               }
             }
+            activeAssignment.onClick(activeAssignment.activeAxis);
           } else {
             alert.info(
               'Not assigned! Different atom type or no attached hydrogens found!',
