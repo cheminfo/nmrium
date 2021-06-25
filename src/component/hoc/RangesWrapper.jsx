@@ -15,7 +15,7 @@ export default function RangesWrapper(WrappedComponent) {
       displayerKey,
       toolOptions: {
         selectedTool,
-        data: { tempRange },
+        data: { tempRange, showMultiplicityTrees },
       },
     } = useChartData();
     const preferences = usePreferences();
@@ -61,6 +61,7 @@ export default function RangesWrapper(WrappedComponent) {
         displayerKey={displayerKey}
         selectedTool={selectedTool}
         editRangeID={tempRange?.id}
+        showMultiplicityTrees={showMultiplicityTrees}
         ref={forwardedRef}
       />
     );

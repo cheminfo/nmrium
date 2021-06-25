@@ -95,6 +95,7 @@ export const initialState = {
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       tempRange: null,
+      showMultiplicityTrees: false,
     },
   },
 };
@@ -155,6 +156,7 @@ export interface State {
       zonesNoiseFactor: number;
       activeFilterID?: string | number | null;
       tempRange: any;
+      showMultiplicityTrees: boolean;
     };
   };
 }
@@ -427,6 +429,8 @@ function innerSpectrumReducer(draft, action) {
       return RangesActions.handleSetDiaIDRange(draft, action);
     case types.CHANGE_TEMP_RANGE:
       return RangesActions.handleChangeTempRange(draft, action);
+    case types.SHOW_MULTIPLICTY_TREES:
+      return RangesActions.handleShowMultiplicityTrees(draft);
 
     case types.SET_PREFERENCES:
       return handelSetPreferences(draft, action.data);

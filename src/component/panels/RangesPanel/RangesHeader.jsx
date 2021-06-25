@@ -1,7 +1,7 @@
 import { SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 
@@ -18,8 +18,8 @@ import {
   CHANGE_RANGES_SUM_FLAG,
   CHANGE_RANGE_SUM,
   DELETE_RANGE,
+  SHOW_MULTIPLICTY_TREES,
 } from '../../reducer/types/Types';
-import Events from '../../utility/Events';
 import { copyHTMLToClipboard } from '../../utility/Export';
 import { getNumberOfDecimals } from '../../utility/FormatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -59,13 +59,13 @@ function RangesHeader({
   onSettingClick,
   isFilterActive,
   filterCounter,
+  showMultiplicityTrees,
 }) {
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
   const preferences = usePreferences();
   const assignmentData = useAssignmentData();
-  const [isMultiplicityTreesVisible, showMultiplicityTrees] = useState(false);
 
   const currentSum = lodashGet(ranges, 'options.sum', null);
 
@@ -125,10 +125,9 @@ function RangesHeader({
     });
   }, [assignmentData, dispatch, modal]);
 
-  const handleSetShowMultiplicityTrees = useCallback((flag) => {
-    Events.emit('showMultiplicityTrees', flag);
-    showMultiplicityTrees(flag);
-  }, []);
+  const handleSetShowMultiplicityTrees = useCallback(() => {
+    dispatch({ type: SHOW_MULTIPLICTY_TREES });
+  }, [dispatch]);
 
   const saveToClipboardHandler = useCallback(
     (value) => {
@@ -225,7 +224,7 @@ function RangesHeader({
 
       <ToggleButton
         popupTitle={
-          isMultiplicityTreesVisible
+          showMultiplicityTrees
             ? 'Hide Multiplicity Trees in Spectrum'
             : 'Show Multiplicity Trees in Spectrum'
         }

@@ -247,6 +247,11 @@ function handleChangeTempRange(draft: Draft<State>, action) {
   draft.toolOptions.data.tempRange = action.payload.tempRange;
 }
 
+function handleShowMultiplicityTrees(draft: Draft<State>) {
+  draft.toolOptions.data.showMultiplicityTrees =
+    !draft.toolOptions.data.showMultiplicityTrees;
+}
+
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
@@ -261,4 +266,5 @@ export {
   handleSetDiaIDRange,
   handleChangeRangesSumFlag,
   handleChangeTempRange,
+  handleShowMultiplicityTrees,
 };

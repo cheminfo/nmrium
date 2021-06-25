@@ -77,6 +77,7 @@ function RangesTablePanel({
   activeTab,
   molecules,
   nucleus,
+  showMultiplicityTrees,
 }) {
   const [isFilterActive, setFilterIsActive] = useState(false);
   const assignmentData = useAssignmentData();
@@ -210,6 +211,7 @@ function RangesTablePanel({
             onSettingClick={settingsPanelHandler}
             isFilterActive={isFilterActive}
             filterCounter={rangesData.length}
+            showMultiplicityTrees={showMultiplicityTrees}
           />
         )}
         {isFlipped && (

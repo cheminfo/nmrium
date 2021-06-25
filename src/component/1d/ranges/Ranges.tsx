@@ -1,7 +1,6 @@
-import { memo, useEffect, useState } from 'react';
+import { memo } from 'react';
 
 import RangesWrapper from '../../hoc/RangesWrapper';
-import Events from '../../utility/Events';
 
 import Range, { RangeData } from './Range';
 
@@ -12,6 +11,7 @@ interface RangesProps {
     values: Array<RangeData>;
   };
   editRangeID: string;
+  showMultiplicityTrees: boolean;
 }
 
 function Ranges({
@@ -19,15 +19,8 @@ function Ranges({
   displayerKey,
   selectedTool,
   editRangeID,
+  showMultiplicityTrees,
 }: RangesProps) {
-  const [isMultiplicityTreesVisibile, showMultiplicityTrees] = useState(false);
-
-  useEffect(() => {
-    Events.on('showMultiplicityTrees', (flag) => {
-      showMultiplicityTrees(flag);
-    });
-  }, []);
-
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {ranges?.values?.map((range) => (
@@ -35,7 +28,7 @@ function Ranges({
           key={range.id}
           rangeData={range}
           selectedTool={selectedTool}
-          showMultiplicityTrees={isMultiplicityTreesVisibile}
+          showMultiplicityTrees={showMultiplicityTrees}
           startEditMode={editRangeID && editRangeID === range.id ? true : false}
         />
       ))}
