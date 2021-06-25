@@ -258,7 +258,7 @@ function KeysListenerTracker() {
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);
         } else {
-          if (['Escape', 'Esc', 'Backspace'].includes(e.key) && type) {
+          if (['Delete', 'Backspace'].includes(e.key) && type) {
             deleteHandler(type, { activeKey });
           } else {
             toolsListenerHandler(e);
