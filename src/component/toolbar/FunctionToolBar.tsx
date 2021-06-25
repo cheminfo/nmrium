@@ -64,12 +64,14 @@ interface FunctionToolBarProps {
   ftCounter: number;
   displayerMode: any;
   info: any;
+  datum: any;
 }
 
 function FunctionToolBar({
   defaultValue = options.zoom.id,
   activeSpectrum,
   info,
+  datum,
   displayerMode,
   ftCounter,
   fidCounter,
@@ -117,7 +119,6 @@ function FunctionToolBar({
     },
     [preferences],
   );
-
   return (
     <div css={styles}>
       <ToggleButtonGroup value={option} onChange={handleChange}>
@@ -299,7 +300,8 @@ function FunctionToolBar({
               isVisible={
                 activeSpectrum &&
                 selectedSpectrumInfo &&
-                Filters.phaseCorrection.isApplicable(selectedSpectrumInfo)
+                Filters.phaseCorrection.isApplicable(selectedSpectrumInfo) &&
+                datum.im
               }
             >
               <ToolTip

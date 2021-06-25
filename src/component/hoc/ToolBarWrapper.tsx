@@ -10,11 +10,13 @@ export default function ToolBarWrapper(WrappedComponent) {
 
     const {
       info = {},
+      datum = {},
       ftCounter = 0,
       fidCounter = 0,
     } = useMemo(() => {
       if (data) {
-        let info = null;
+        let info = {};
+        let datum = {};
         let ftCounter = 0;
         let fidCounter = 0;
 
@@ -30,12 +32,14 @@ export default function ToolBarWrapper(WrappedComponent) {
             }
             if (activeSpectrum && dataInfo.id === activeSpectrum.id) {
               info = dataInfo.info;
+              datum = dataInfo.data;
             }
           }
         }
 
         return {
-          info: info ? info : {},
+          info,
+          datum,
           ftCounter,
           fidCounter,
         };
@@ -49,6 +53,7 @@ export default function ToolBarWrapper(WrappedComponent) {
         {...rest}
         {...{
           info,
+          datum,
           activeSpectrum,
           verticalAlign,
           displayerMode,

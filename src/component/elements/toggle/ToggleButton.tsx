@@ -51,7 +51,7 @@ function ToggleButton({
   onChange = () => null,
   className = '',
   style = {},
-  isVisible = false,
+  isVisible = true,
   onMouseEnter,
   onMouseLeave,
   helpID,

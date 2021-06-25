@@ -18,7 +18,7 @@ function handleChangeIntegralSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
     const { index, id } = draft.activeSpectrum;
     (draft.data[index] as Datum1D).integrals.options.sum = value;
-    updateIntegralIntegrals(draft.data[index] as Datum1D);
+    updateIntegralIntegrals(draft.data[index] as Datum1D, true);
 
     if (!draft.integralsYDomains) {
       draft.integralsYDomains[id] = draft.yDomains[id];

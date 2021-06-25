@@ -5,7 +5,15 @@ import nucluesToString from '../utility/nucluesToString';
 
 export default function FiltersWrapper(WrappedComponent) {
   function Wrapper(props) {
-    const { data, activeSpectrum, activeTab } = useChartData();
+    const {
+      data,
+      activeSpectrum,
+      activeTab,
+      toolOptions: {
+        selectedTool,
+        data: { activeFilterID = null },
+      },
+    } = useChartData();
 
     const spectraPerTab = useMemo(() => {
       const spectra =
@@ -33,6 +41,8 @@ export default function FiltersWrapper(WrappedComponent) {
         {...rest}
         filters={filters}
         spectraCounter={spectraPerTab && spectraPerTab.length}
+        selectedTool={selectedTool}
+        activeFilterID={activeFilterID}
         ref={forwardedRef}
       />
     );

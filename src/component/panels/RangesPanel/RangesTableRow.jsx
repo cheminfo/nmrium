@@ -26,7 +26,6 @@ const ConstantlyHighlightedRowStyle = css`
 `;
 
 function RangesTableRow({
-  rowIndex,
   rowData,
   onUnlink,
   onContextMenu,
@@ -151,7 +150,7 @@ function RangesTableRow({
       css={trCss}
     >
       <td {...rowSpanTags} {...onHoverRange}>
-        {rowIndex + 1}
+        {rowData.tableMetaInfo.rowIndex + 1}
       </td>
 
       {isColumnVisible(preferences, 'showFrom') && (

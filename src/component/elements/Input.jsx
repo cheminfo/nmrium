@@ -1,5 +1,6 @@
+import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
-import { forwardRef, useState, useEffect, useCallback } from 'react';
+import { forwardRef, useState, useEffect, useCallback, useRef } from 'react';
 
 const styles = {
   label: {
@@ -10,7 +11,9 @@ const styles = {
     height: '100%',
     width: '100px',
     borderRadius: '5px',
-    border: '0.55px solid #c7c7c7',
+    borderWidth: '0.55px',
+    borderColor: '#c7c7c7',
+    borderStyle: 'solid',
     margin: '0px 5px 0px 5px',
     textAlign: 'center',
   },
@@ -23,17 +26,26 @@ const Input = forwardRef(function Input(
     name,
     style,
     onChange,
+    debounceTime,
     onKeyDown,
     checkValue,
     type,
     enableAutoSelect,
     className,
     format,
+    onBlur,
+    onFocus,
     ...prop
   },
   ref,
 ) {
   const [val, setVal] = useState(value);
+  const debounceOnChange = useRef(
+    debounce((value) => {
+      onChange(value);
+    }, debounceTime),
+  ).current;
+
   useEffect(() => {
     setVal(value);
   }, [value]);
@@ -78,13 +90,28 @@ const Input = forwardRef(function Input(
         const formatValue = format();
 
         setVal(formatValue(_value));
-        onChange({
+
+        const val = {
           ...e,
           target: { name: e.target.name, value: getValue(_value) },
-        });
+        };
+
+        if (debounceTime) {
+          debounceOnChange(val);
+        } else {
+          onChange(val);
+        }
       }
     },
-    [checkValue, format, getValue, onChange, type],
+    [
+      checkValue,
+      debounceOnChange,
+      debounceTime,
+      format,
+      getValue,
+      onChange,
+      type,
+    ],
   );
 
   const handleKeyDown = useCallback(
@@ -136,6 +163,8 @@ const Input = forwardRef(function Input(
         onKeyPress={preventPropagate}
         onDoubleClick={(e) => e.stopPropagation()}
         className={`input ${className}`}
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
     </div>
   );
@@ -157,6 +186,9 @@ Input.propTypes = {
   format: PropTypes.func,
   type: PropTypes.oneOf(['text', 'number']),
   enableAutoSelect: PropTypes.bool,
+  debounceTime: PropTypes.number,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
 };
 
 Input.defaultProps = {
@@ -175,6 +207,9 @@ Input.defaultProps = {
   className: '',
   enableAutoSelect: false,
   format: () => (val) => val,
+  debounceTime: 0,
+  onFocus: () => null,
+  onBlur: () => null,
 };
 
 export default Input;

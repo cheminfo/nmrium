@@ -5,10 +5,12 @@ import { applyFilter } from '../../../data/FiltersManager';
 import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import getReferenceShift from '../../../data/data1d/getReferenceShift';
 import { getMissingProjection, Datum2D } from '../../../data/data2d/Spectrum2D';
+import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { State } from '../Reducer';
 
 import { setDomain, setMode } from './DomainActions';
+import { resetSpectrumByFilter } from './FiltersActions';
 import { setTab, setActiveTab } from './ToolsActions';
 import { initZoom1DHandler } from './Zoom';
 
@@ -77,6 +79,9 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
   // const state = original(draft);
 
   let refreshDomain = false;
+
+  const currentActiveSpectrum = draft.activeSpectrum;
+
   if (activeSpectrum) {
     // AnalysisObj.getDatum(activeSpectrum.id).setDisplay({ isVisible: true });
     const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
@@ -107,11 +112,20 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
     refreshDomain = false;
   }
 
+  if (options[draft.toolOptions.selectedTool].isFilter) {
+    draft.toolOptions.selectedTool = options.zoom.id;
+    draft.toolOptions.data.baseLineZones = [];
+    draft.toolOptions.selectedOptionPanel = null;
+    draft.tempData = null;
+  }
+
   /**
    * if the active spectrum not is FID then dont refresh the domain and the mode when the first time you activate soectrum
    * if the new active spectrum different than the previous active spectrum fid then refresh the domain andf the mode.
    */
-  if (refreshDomain) {
+  if (draft.toolOptions.data.activeFilterID) {
+    resetSpectrumByFilter(draft, null, {}, currentActiveSpectrum);
+  } else if (refreshDomain) {
     setDomain(draft);
     // const tab = draft.activeTab;
     // delete draft.tabActiveSpectrum[tab];

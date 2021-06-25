@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ConcatenationString } from '../../../data/utilities/Concatenation';
-import {
-  filterForIDsWithAssignment,
-  useAssignment,
-  useAssignmentData,
-} from '../../assignment';
+import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
+import { filterForIDsWithAssignment, useAssignment, useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { TYPES, useHighlightData } from '../../highlight';
@@ -154,77 +151,79 @@ export default function useAtomAssignment({
   );
 
   const handleOnClickAtom = useCallback(
-    (atom) => {
-      if (activeAssignment.isActive) {
-        const atomInformation = extractFromAtom(
-          atom,
-          elements,
-          activeAssignment.activeAxis,
-        );
-        if (atomInformation.nbAtoms > 0) {
-          // save assignment in assignment hook
-          atomInformation.oclIDs.forEach((_oclID) => {
-            activeAssignment.toggle(_oclID);
-          });
-          // save assignment (diaIDs) in range/zone data
-          const { datum, signalIndex } = findDatumAndSignalIndex(
-            data,
-            activeAssignment.id,
+    (atom, event) => {
+      if (!checkModifierKeyActivated(event)) {
+        if (activeAssignment.isActive) {
+          const atomInformation = extractFromAtom(
+            atom,
+            elements,
+            activeAssignment.activeAxis,
           );
-          if (datum) {
-            // determine the level of setting the diaID array (range vs. signal level) and save there
-            let _diaID = [];
-            // on range/zone level
-            if (signalIndex === undefined) {
-              if (displayerMode === DISPLAYER_MODE.DM_1D) {
-                _diaID = toggleAssignment(datum.diaID || [], atomInformation);
-              } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-                _diaID = toggleAssignment(
-                  datum[activeAssignment.activeAxis].diaID || [],
-                  atomInformation,
-                );
+          if (atomInformation.nbAtoms > 0) {
+            // save assignment in assignment hook
+            atomInformation.oclIDs.forEach((_oclID) => {
+              activeAssignment.toggle(_oclID);
+            });
+            // save assignment (diaIDs) in range/zone data
+            const { datum, signalIndex } = findDatumAndSignalIndex(
+              data,
+              activeAssignment.id,
+            );
+            if (datum) {
+              // determine the level of setting the diaID array (range vs. signal level) and save there
+              let _diaID = [];
+              // on range/zone level
+              if (signalIndex === undefined) {
+                if (displayerMode === DISPLAYER_MODE.DM_1D) {
+                  _diaID = toggleAssignment(datum.diaID || [], atomInformation);
+                } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
+                  _diaID = toggleAssignment(
+                    datum[activeAssignment.activeAxis].diaID || [],
+                    atomInformation,
+                  );
+                }
+              } else if (datum.signal && datum.signal[signalIndex]) {
+                // on signal level
+                if (displayerMode === DISPLAYER_MODE.DM_1D) {
+                  _diaID = toggleAssignment(
+                    datum.signal[signalIndex].diaID || [],
+                    atomInformation,
+                  );
+                } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
+                  _diaID = toggleAssignment(
+                    datum.signal[signalIndex][activeAssignment.activeAxis]
+                      .diaID || [],
+                    atomInformation,
+                  );
+                }
               }
-            } else if (datum.signal && datum.signal[signalIndex]) {
-              // on signal level
               if (displayerMode === DISPLAYER_MODE.DM_1D) {
-                _diaID = toggleAssignment(
-                  datum.signal[signalIndex].diaID || [],
-                  atomInformation,
-                );
+                dispatch({
+                  type: SET_DIAID_RANGE,
+                  payload: {
+                    rangeData: datum,
+                    diaID: _diaID,
+                    signalIndex,
+                  },
+                });
               } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-                _diaID = toggleAssignment(
-                  datum.signal[signalIndex][activeAssignment.activeAxis]
-                    .diaID || [],
-                  atomInformation,
-                );
+                dispatch({
+                  type: SET_DIAID_ZONE,
+                  payload: {
+                    zoneData: datum,
+                    diaID: _diaID,
+                    axis: activeAssignment.activeAxis,
+                    signalIndex,
+                  },
+                });
               }
             }
-            if (displayerMode === DISPLAYER_MODE.DM_1D) {
-              dispatch({
-                type: SET_DIAID_RANGE,
-                payload: {
-                  rangeData: datum,
-                  diaID: _diaID,
-                  signalIndex,
-                },
-              });
-            } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-              dispatch({
-                type: SET_DIAID_ZONE,
-                payload: {
-                  zoneData: datum,
-                  diaID: _diaID,
-                  axis: activeAssignment.activeAxis,
-                  signalIndex,
-                },
-              });
-            }
+            activeAssignment.onClick(activeAssignment.activeAxis);
+          } else {
+            alert.info(
+              'Not assigned! Different atom type or no attached hydrogens found!',
+            );
           }
-          activeAssignment.onClick(activeAssignment.activeAxis);
-        } else {
-          alert.info(
-            'Not assigned! Different atom type or no attached hydrogens found!',
-          );
         }
       }
     },

@@ -20,6 +20,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
+import { helpList } from '../constants';
 import { Datum1D } from '../data/data1d/Spectrum1D';
 import { Datum2D } from '../data/data2d/Spectrum2D';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
@@ -29,7 +30,6 @@ import Viewer2D from './2d/Viewer2D';
 import ErrorOverlay from './ErrorOverlay';
 import KeysListenerTracker from './EventsTrackers/KeysListenerTracker';
 import { AssignmentProvider } from './assignment';
-import helpList from './constants/help';
 import { ChartDataProvider } from './context/ChartContext';
 import { DispatchProvider } from './context/DispatchContext';
 import { GlobalProvider } from './context/GlobalContext';
@@ -144,7 +144,6 @@ export enum NMRiumMode {
 
 export interface NMRiumProps {
   data?: NMRiumData;
-  docsBaseUrl?: string;
   onDataChange?: (data: any) => void;
   mode?: NMRiumMode;
   preferences?: NMRiumPreferences;
@@ -192,18 +191,21 @@ export type NMRiumPreferences = Partial<{
 }>;
 
 export type Molecules = Array<{ molfile: string }>;
-export type Spectra = Array<Partial<Datum1D> | Partial<Datum2D>>;
+export type Spectra = Array<Datum1D | Datum2D>;
+
+type DeepPartial<T> = {
+  [P in keyof T]?: DeepPartial<T[P]>;
+};
 
 export interface NMRiumData {
   molecules?: Molecules;
-  spectra: Spectra;
+  spectra: DeepPartial<Spectra>;
 }
 
 function NMRium({
   data: dataProp,
   mode,
   onDataChange,
-  docsBaseUrl,
   preferences,
   getSpinner = defaultGetSpinner,
   emptyText = undefined,
@@ -218,7 +220,6 @@ function NMRium({
   });
   const [isRightPanelHide, hideRightPanel] = useState(false);
   const [isResizeEventStart, setResizeEventStart] = useState(false);
-  const [helpData, setHelpData] = useState(helpList);
 
   const [state, dispatch] = useReducer<Reducer<any, any>>(
     spectrumReducer,
@@ -255,21 +256,15 @@ function NMRium({
       payload: {
         display: preferences,
         mode,
-        docsBaseUrl,
         dispatch: dispatchPreferences,
       },
     });
-  }, [preferences, docsBaseUrl, mode]);
+  }, [preferences, mode]);
 
   useEffect(() => {
     dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
     dispatchMiddleWare({ type: INITIATE, payload: dataProp });
   }, [dataProp, dispatchMiddleWare]);
-
-  useEffect(() => {
-    // setBaseUrl(docsBaseUrl);
-    setHelpData(helpList(docsBaseUrl));
-  }, [docsBaseUrl]);
 
   const handleSplitPanelDragFinished = useCallback(
     (size) => {
@@ -322,7 +317,7 @@ function NMRium({
           >
             {/* @ts-expect-error: TODO remove when HelpProvider is migrated */}
             <HelpProvider
-              data={helpData}
+              data={helpList}
               wrapperRef={elementsWraperRef.current}
               preventAutoHelp={preventAutoHelp}
             >
@@ -392,7 +387,9 @@ function NMRium({
                                         selectedTool={selectedTool}
                                         displayerMode={displayerMode}
                                       />
-                                    ) : null}
+                                    ) : (
+                                      <div />
+                                    )}
                                   </SplitPane>
                                 </DropZone>
                               </div>
@@ -427,7 +424,6 @@ function NMRium({
 }
 
 NMRium.propTypes = {
-  docsBaseUrl: PropTypes.string,
   onDataChange: PropTypes.func,
   mode: PropTypes.oneOf(Object.values(NMRiumMode)),
   preferences: PropTypes.shape({
@@ -465,7 +461,6 @@ NMRium.propTypes = {
 };
 
 NMRium.defaultProps = {
-  docsBaseUrl: 'https://docs.nmrium.org',
   onDataChange: () => null,
   mode: NMRiumMode.DEFAULT,
   preferences: {},

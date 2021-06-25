@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import Input from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Select from '../elements/Select';
+import ManualPhaseCorrectionWrapper from '../hoc/ManualPhaseCorrectionWrapper';
 import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   APPLY_AUTO_PHASE_CORRECTION_FILTER,
@@ -61,12 +62,29 @@ const algorithms = [
   },
 ];
 
-function ManualPhaseCorrectionPanel() {
+function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
   const dispatch = useDispatch();
-  const [value, setValue] = useState({ ph0: 0, ph1: 0, pivotIndex: 1 });
+  const [value, setValue] = useState({ ph0: 0, ph1: 0 });
+  const valueRef = useRef({ ph0: 0, ph1: 0 });
+
+  const ph0Ref = useRef();
+  const ph1Ref = useRef();
+
   const [phaseCorrectionType, setPhaseCorrectionType] = useState(
     phaseCorrectionTypes.manual,
   );
+
+  useEffect(() => {
+    if (filter) {
+      valueRef.current = filter.value;
+      setValue(filter.value);
+      ph0Ref.current.setValue(filter.value.ph0);
+      ph1Ref.current.setValue(filter.value.ph1);
+    } else {
+      ph0Ref.current.setValue(valueRef.current.ph0);
+      ph1Ref.current.setValue(valueRef.current.ph1);
+    }
+  }, [filter]);
 
   const handleApplyFilter = useCallback(() => {
     switch (phaseCorrectionType) {
@@ -80,7 +98,7 @@ function ManualPhaseCorrectionPanel() {
       case phaseCorrectionTypes.manual: {
         dispatch({
           type: APPLY_MANUAL_PHASE_CORRECTION_FILTER,
-          value: value,
+          value,
         });
         break;
       }
@@ -95,56 +113,45 @@ function ManualPhaseCorrectionPanel() {
     }
   }, [dispatch, phaseCorrectionType, value]);
 
+  const calcPhaseCorrectionHandler = useCallback(
+    (newValues, filedName) => {
+      if (filedName === 'ph1' && datum.y) {
+        const diff0 = newValues.ph0 - valueRef.current.ph0;
+        const diff1 = newValues.ph1 - valueRef.current.ph1;
+        newValues.ph0 += diff0 - (diff1 * pivot.index) / datum.y.length;
+      }
+
+      dispatch({
+        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
+        value: newValues,
+      });
+    },
+    [datum, dispatch, pivot.index],
+  );
+
   const handleInput = useCallback(
     (e) => {
-      const fieldName = e.target.name;
+      const { name, value } = e.target;
       if (e.target) {
-        const inputValue = e.target.value;
-
-        setValue((prevValue) => {
-          const _value = {
-            ...prevValue,
-            [fieldName]: inputValue,
-          };
-
-          if (inputValue !== '-') {
-            const newValue = {
-              ...value,
-              [fieldName]: inputValue - prevValue[fieldName],
-            };
-            for (let key in prevValue) {
-              if (prevValue[key] === newValue[key]) {
-                newValue[key] -= prevValue[key];
-              }
-            }
-
-            dispatch({
-              type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-              value: newValue,
-            });
-          }
-
-          return _value;
-        });
+        const newValue = { ...valueRef.current, [name]: value };
+        if (String(value).trim() !== '-') {
+          calcPhaseCorrectionHandler(newValue, name);
+        }
+        valueRef.current = newValue;
+        setValue(valueRef.current);
       }
     },
-    [dispatch, value],
+    [calcPhaseCorrectionHandler],
   );
 
   const handleRangeChange = useCallback(
     (e) => {
-      const _value = { ...value, [e.name]: e.value };
-      let diff = {};
-      for (let key in value) {
-        diff[key] = _value[key] - value[key];
-      }
-      dispatch({
-        type: CALCULATE_MANUAL_PHASE_CORRECTION_FILTER,
-        value: diff,
-      });
-      setValue(_value);
+      const newValue = { ...valueRef.current, [e.name]: e.value };
+      calcPhaseCorrectionHandler(newValue, e.name);
+      valueRef.current = newValue;
+      setValue(valueRef.current);
     },
-    [dispatch, value],
+    [calcPhaseCorrectionHandler],
   );
 
   const handleCancelFilter = useCallback(() => {
@@ -175,6 +182,7 @@ function ManualPhaseCorrectionPanel() {
             onChange={handleInput}
             value={value.ph0}
             type="number"
+            debounceTime={500}
           />
           <Input
             label="PH1:"
@@ -183,18 +191,19 @@ function ManualPhaseCorrectionPanel() {
             onChange={handleInput}
             value={value.ph1}
             type="number"
+            debounceTime={500}
           />
 
           <InputRange
+            ref={ph0Ref}
             name="ph0"
-            value={value.ph0}
             label="Change Ph0 By mouse click and drag"
             style={{ width: '20%' }}
             onChange={handleRangeChange}
           />
           <InputRange
+            ref={ph1Ref}
             name="ph1"
-            value={value.ph1}
             label="Change Ph1 By mouse click and drag"
             style={{ width: '20%' }}
             onChange={handleRangeChange}
@@ -227,4 +236,4 @@ function ManualPhaseCorrectionPanel() {
   );
 }
 
-export default ManualPhaseCorrectionPanel;
+export default ManualPhaseCorrectionWrapper(memo(ManualPhaseCorrectionPanel));

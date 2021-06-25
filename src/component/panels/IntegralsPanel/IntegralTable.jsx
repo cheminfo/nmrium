@@ -22,15 +22,7 @@ import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
 const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
-function IntegralTable({
-  integrals,
-  info,
-  activeTab,
-  xDomain,
-  enableFilter,
-  onFilter,
-  preferences,
-}) {
+function IntegralTable({ activeTab, data, preferences }) {
   const dispatch = useDispatch();
   const relativeRefs = useRef([]);
   const { rootRef } = useGlobal();
@@ -232,39 +224,8 @@ function IntegralTable({
     saveRealtiveHandler,
   ]);
 
-  const tableData = useMemo(() => {
-    function isInRange(from, to) {
-      const factor = 10000;
-      to = to * factor;
-      from = from * factor;
-      return (
-        (to >= xDomain[0] * factor && from <= xDomain[1] * factor) ||
-        (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
-      );
-    }
-    if (info.dimension === 1 && integrals && integrals.values) {
-      const _integrals = enableFilter
-        ? integrals.values.filter((integral) =>
-            isInRange(integral.from, integral.to),
-          )
-        : integrals.values;
-
-      return _integrals.map((integral) => {
-        return {
-          ...integral,
-          isConstantlyHighlighted: isInRange(integral.from, integral.to),
-        };
-      });
-    }
-    return [];
-  }, [enableFilter, info.dimension, integrals, xDomain]);
-
-  useEffect(() => {
-    onFilter(tableData.length);
-  }, [tableData, onFilter]);
-
-  return tableData && tableData.length > 0 ? (
-    <ReactTable data={tableData} columns={tableColumns} />
+  return data && data.length > 0 ? (
+    <ReactTable data={data} columns={tableColumns} />
   ) : (
     <NoTableData />
   );

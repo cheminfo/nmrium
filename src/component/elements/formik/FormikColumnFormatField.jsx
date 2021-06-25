@@ -26,8 +26,11 @@ function FormikColumnFormatField({
   label,
   checkControllerName,
   formatControllerName,
+  disableFormat = false,
+  hideFormat = false,
 }) {
   const { values, handleChange, setFieldValue } = useFormikContext();
+
   const changeHandler = useCallback(
     (e) => {
       handleChange(e);
@@ -58,15 +61,18 @@ function FormikColumnFormatField({
           style={{ margin: '0px 5px' }}
           name={checkControllerName}
           onChange={checkChangeHandler}
-          checked={lodashGet(values, checkControllerName)}
+          checked={lodashGet(values, checkControllerName, false)}
         />
-        <Input
-          style={{ container: styles.input }}
-          name={formatControllerName}
-          value={lodashGet(values, formatControllerName)}
-          onChange={changeHandler}
-          type="text"
-        />
+        {!hideFormat && (
+          <Input
+            style={{ container: styles.input }}
+            name={formatControllerName}
+            value={lodashGet(values, formatControllerName, '')}
+            onChange={changeHandler}
+            type="text"
+            disabled={disableFormat}
+          />
+        )}
       </div>
     </div>
   );

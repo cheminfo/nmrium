@@ -37,7 +37,7 @@ const tabStylesAddition = css`
   color: red;
 `;
 
-function SignalsForm({ rangeLabel }) {
+function SignalsForm({ rangeData }) {
   const { values, setFieldValue, errors } = useFormikContext();
 
   const { data: spectraData, activeSpectrum, activeTab } = useChartData();
@@ -67,7 +67,7 @@ function SignalsForm({ rangeLabel }) {
       if (activeField && frequency) {
         setFieldValue(
           activeField,
-          Math.abs(event.range[0] - event.range[1]) * frequency,
+          Number(format(Math.abs(event.range[0] - event.range[1]) * frequency)),
         );
       }
     });
@@ -75,7 +75,7 @@ function SignalsForm({ rangeLabel }) {
     return () => {
       Events.off('brushEnd');
     };
-  }, [activeField, setFieldValue, frequency, values.activeTab]);
+  }, [activeField, setFieldValue, frequency, values.activeTab, format]);
 
   useEffect(() => {
     Events.on('mouseClick', (event) => {
@@ -90,8 +90,8 @@ function SignalsForm({ rangeLabel }) {
   }, [values.activeTab, activeField, setFieldValue]);
 
   const handleOnFocus = useCallback(
-    (name) => {
-      setActiveField(name);
+    (event) => {
+      setActiveField(event.target.name);
     },
     [setActiveField],
   );
@@ -144,10 +144,11 @@ function SignalsForm({ rangeLabel }) {
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}
               tabid={`${i}`}
-              tablabel={`𝛅: ${format(signal.delta)} (${signal.j
+              tablabel={`𝛅: ${Number(format(signal.delta))} (${signal.j
                 .map((_coupling) => translateMultiplet(_coupling.multiplicity))
                 .join('')})`}
               tabstyles={tabContainsErrors(i) ? tabStylesAddition : null}
+              canDelete
             >
               <SignalFormTab onFocus={handleOnFocus} />
             </Tab>
@@ -162,12 +163,12 @@ function SignalsForm({ rangeLabel }) {
         key="addSignalTab"
         className="add-signal-tab"
       >
-        <AddSignalFormTab onFocus={handleOnFocus} rangeLabel={rangeLabel} />
+        <AddSignalFormTab onFocus={handleOnFocus} rangeData={rangeData} />
       </Tab>
     );
 
     return signalTabs.concat(addSignalTab);
-  }, [format, handleOnFocus, rangeLabel, tabContainsErrors, values.signals]);
+  }, [format, handleOnFocus, rangeData, tabContainsErrors, values.signals]);
 
   const editSignalInfoText = (
     <p className="infoText">
@@ -204,7 +205,6 @@ function SignalsForm({ rangeLabel }) {
       <Tabs
         activeTab={values.activeTab}
         onClick={tapClickHandler}
-        canDelete
         onDelete={handleDeleteSignal}
       >
         {signalFormTabs}

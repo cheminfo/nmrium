@@ -5,7 +5,11 @@ function CouplingColumn({ rowData, onHoverSignal }) {
   return (
     <td {...onHoverSignal}>
       {result &&
-        result.map((coupling) => coupling.coupling.toFixed(1)).join(',')}
+        result
+          .map((coupling) =>
+            !isNaN(coupling.coupling) ? coupling.coupling.toFixed(1) : '',
+          )
+          .join(',')}
     </td>
   );
 }

@@ -2,13 +2,13 @@
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { memo, useEffect, useCallback } from 'react';
+import { memo, useMemo, useCallback } from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
 import { Multiplets } from '../../../../../data/constants/Multiplets';
 import Button from '../../../../elements/Button';
-import Input from '../../../../elements/formik/Input';
-import SelectBox from '../../../../elements/formik/SelectBox';
+import FormikInput from '../../../../elements/formik/FormikInput';
+import FormikSelect from '../../../../elements/formik/FormikSelect';
 import {
   hasCouplingConstant,
   translateMultiplet,
@@ -25,9 +25,8 @@ const CouplingsTableStyle = css`
   td {
     text-align: center;
     margin: 0;
-    padding: 0.4rem;
-    border-bottom: 1px solid #dedede;
-    border-right: 1px solid #dedede;
+    padding: 0.3rem;
+    border-bottom: 1px solid #f5f5f5;
 
     button {
       background-color: transparent;
@@ -68,6 +67,7 @@ const CouplingsTableStyle = css`
       height: 100%;
       width: 100%;
       text-align: center;
+      margin: 0;
     }
   }
 
@@ -78,32 +78,25 @@ const CouplingsTableStyle = css`
   }
 `;
 
-const errorStyle = {
-  border: '1px solid red',
-};
-
 function CouplingsTable({ push, remove, onFocus, onBlur }) {
-  const { values, setFieldValue, errors } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext();
 
-  useEffect(() => {
-    if (values.signals[values.activeTab]) {
-      values.signals[values.activeTab].j.forEach((_coupling, i) => {
-        if (!hasCouplingConstant(_coupling.multiplicity)) {
-          setFieldValue(`signals.${values.activeTab}.j.${i}.coupling`, '');
-        }
-      });
-    }
-  }, [setFieldValue, values.activeTab, values.signals]);
-
-  const hasMissingCouplingValue = useCallback(
-    (i) =>
-      lodashGet(
-        errors,
-        `signals[${values.activeTab}].missingCouplings`,
-        [],
-      ).some((_error) => _error.index === i),
-    [errors, values.activeTab],
+  const multiplicityChangeHandler = useCallback(
+    (value, name) => {
+      if (!hasCouplingConstant(value)) {
+        setFieldValue(name, '');
+      }
+    },
+    [setFieldValue],
   );
+
+  const multipletsList = useMemo(() => {
+    return Multiplets.map((multiplet) => ({
+      key: multiplet.value,
+      ...multiplet,
+      value: multiplet.label,
+    }));
+  }, []);
 
   return (
     <table css={CouplingsTableStyle}>
@@ -122,21 +115,36 @@ function CouplingsTable({ push, remove, onFocus, onBlur }) {
             >
               <td>{i + 1}</td>
               <td>
-                <SelectBox
+                <FormikSelect
                   className="selectBox"
                   name={`signals.${values.activeTab}.j.${i}.multiplicity`}
-                  values={Multiplets.map((_multiplet) => _multiplet.label)}
+                  data={multipletsList}
+                  onChange={(value) =>
+                    multiplicityChangeHandler(
+                      value,
+                      `signals.${values.activeTab}.j.${i}.coupling`,
+                    )
+                  }
                 />
               </td>
               <td>
-                <Input
+                <FormikInput
                   name={`signals.${values.activeTab}.j.${i}.coupling`}
                   type="number"
                   placeholder={'J (Hz)'}
                   disabled={!hasCouplingConstant(_coupling.multiplicity)}
                   onFocus={onFocus}
                   onBlur={onBlur}
-                  style={hasMissingCouplingValue(i) ? errorStyle : null}
+                  style={{
+                    input: {
+                      width: '100%',
+                      height: '26px',
+                    },
+                    container: {
+                      height: '100%',
+                    },
+                  }}
+                  checkErrorAfterInputTouched={false}
                 />
               </td>
               <td>

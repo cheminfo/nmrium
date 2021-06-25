@@ -52,10 +52,21 @@ declare module 'ml-spectra-processing' {
     data: { x: Array<any>; y: Array<any> },
     options: {
       from: number;
-      fromIndex?: number;
       to: number;
+      fromIndex?: number;
       toIndex?: number;
       reverse?: boolean;
+    },
+  ): { x: Array<number>; y: Array<number> };
+
+  declare function xyReduce(
+    integral: { x: Array<number>; y: Array<number> },
+    options: {
+      from?: number;
+      to?: number;
+      nbPoints?: number;
+      zones?: Array<{ from; number; to: number }>;
+      optimize?: boolean;
     },
   ): { x: Array<number>; y: Array<number> };
 

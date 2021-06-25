@@ -38,7 +38,7 @@ import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
 
 export const initialState = {
-  data: null,
+  data: [],
   contours: null,
   tempData: null,
   xDomain: [],
@@ -92,8 +92,9 @@ export const initialState = {
     data: {
       baseLineZones: [],
       exclusionZones: {},
-      pivot: 0,
+      pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
+      tempRange: null,
     },
   },
 };
@@ -110,19 +111,19 @@ export interface State {
   integralsYDomains: any;
   originIntegralYDomain: any;
   activeTab: any;
-  width: any;
-  height: any;
-  margin: Partial<{ top: number; right: number; bottom: number; left: number }>;
+  width: number;
+  height: number;
+  margin: { top: number; right: number; bottom: number; left: number };
   activeSpectrum: any;
   mode: string;
   zoomFactor: Partial<{ scale: number }>;
   integralZoomFactor: Partial<{ scale: number }>;
   molecules: Array<any>;
-  verticalAlign: Partial<{
+  verticalAlign: {
     flag: boolean;
     stacked: boolean;
     value: number;
-  }>;
+  };
   history: Partial<{
     past: Array<any>;
     present: any;
@@ -133,7 +134,7 @@ export interface State {
   isLoading: boolean;
   preferences: any;
   keysPreferences: any;
-  displayerMode: any;
+  displayerMode: DISPLAYER_MODE;
   tabActiveSpectrum: any;
   spectraAnalysis: any;
   displayerKey: any;
@@ -142,7 +143,7 @@ export interface State {
   overDisplayer: boolean;
 
   toolOptions: {
-    selectedTool: any;
+    selectedTool: string | number;
     selectedOptionPanel: any;
 
     data: {
@@ -150,8 +151,10 @@ export interface State {
       exclusionZones: {
         [key: string]: Array<{ id: string; from: number; to: number }>;
       };
-      pivot: number;
+      pivot: { value: number; index: number };
       zonesNoiseFactor: number;
+      activeFilterID?: string | number | null;
+      tempRange: any;
     };
   };
 }
@@ -283,7 +286,7 @@ function innerSpectrumReducer(draft, action) {
       return handleSetDimensions(draft, action.width, action.height);
 
     case types.SET_SELECTED_TOOL:
-      return ToolsActions.setSelectedTool(draft, action.selectedTool);
+      return ToolsActions.setSelectedTool(draft, action);
     case types.RESET_SELECTED_TOOL:
       return ToolsActions.resetSelectedTool(draft);
     case types.SET_SELECTED_OPTIONS_PANEL:
@@ -422,6 +425,8 @@ function innerSpectrumReducer(draft, action) {
       return RangesActions.handleUnlinkRange(draft, action);
     case types.SET_DIAID_RANGE:
       return RangesActions.handleSetDiaIDRange(draft, action);
+    case types.CHANGE_TEMP_RANGE:
+      return RangesActions.handleChangeTempRange(draft, action);
 
     case types.SET_PREFERENCES:
       return handelSetPreferences(draft, action.data);

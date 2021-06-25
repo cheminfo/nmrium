@@ -56,7 +56,7 @@ interface DefaultPanelHeaderProps {
   filterIsActive?: boolean;
   canDelete?: boolean;
   showSettingButton?: boolean;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 function DefaultPanelHeader({
@@ -88,7 +88,7 @@ function DefaultPanelHeader({
           popupTitle={filterToolTip}
           popupPlacement="right"
           onClick={onFilter}
-          // defaultValue={filterIsActive && filterIsActive === true}
+          defaultValue={filterIsActive}
         >
           <FaFilter style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ToggleButton>
@@ -109,6 +109,7 @@ function DefaultPanelHeader({
       ) : (
         <p style={{ flex: 1 }} />
       )}
+
       {showSettingButton && (
         <ToolTip title="preferences" popupPlacement="left">
           <button type="button" onClick={onSettingClick}>

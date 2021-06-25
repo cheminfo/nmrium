@@ -11,9 +11,15 @@ interface RangesProps {
   ranges: {
     values: Array<RangeData>;
   };
+  editRangeID: string;
 }
 
-function Ranges({ ranges, displayerKey, selectedTool }: RangesProps) {
+function Ranges({
+  ranges,
+  displayerKey,
+  selectedTool,
+  editRangeID,
+}: RangesProps) {
   const [isMultiplicityTreesVisibile, showMultiplicityTrees] = useState(false);
 
   useEffect(() => {
@@ -30,6 +36,7 @@ function Ranges({ ranges, displayerKey, selectedTool }: RangesProps) {
           rangeData={range}
           selectedTool={selectedTool}
           showMultiplicityTrees={isMultiplicityTreesVisibile}
+          startEditMode={editRangeID && editRangeID === range.id ? true : false}
         />
       ))}
     </g>

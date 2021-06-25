@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import routes from '../samples';
 
-import AdminLayout from './Admin.jsx';
+import AdminLayout from './Admin.tsx';
 import SingleDisplayerLayout from './SingleDisplayerLayout.jsx';
 
 const styles = {

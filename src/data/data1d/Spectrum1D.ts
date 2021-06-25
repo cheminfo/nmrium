@@ -10,6 +10,7 @@ import {
 import { Filters as FiltersTypes } from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
+import { Datum2D } from '../data2d/Spectrum2D';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 import get1dColor from '../utilities/getColor';
@@ -40,20 +41,22 @@ export interface Display {
 }
 
 export interface Info {
-  nucleus: Array<string>;
+  nucleus: string;
   isFid: boolean;
   isComplex: boolean;
   dimension: number;
   isFt: boolean;
+  experiment?: any;
 }
 export interface Peak {
   id: string;
   delta: number;
   originDelta: number;
-  width: number;
+  width?: number;
+  intensity: number;
 }
 export interface Peaks {
-  values: Array<Partial<Peak>>;
+  values: Array<Peak>;
   options: any;
 }
 export interface Integral {
@@ -63,12 +66,12 @@ export interface Integral {
   from: number;
   to: number;
   absolute: number;
-  integral: number;
+  integral?: number;
   kind: string;
 }
 export interface Integrals {
-  values: Array<Partial<Integral>>;
-  options: Partial<{ sum: number }>;
+  values: Array<Integral>;
+  options: { sum?: number };
 }
 
 export interface Signal {
@@ -77,7 +80,7 @@ export interface Signal {
   originDelta?: number;
   delta: number;
   multiplicity: string;
-  peak?: Array<Partial<{ x: number; intensity: number; width: number }>>;
+  peak?: Array<{ x: number; intensity: number; width: number }>;
 }
 export interface Range {
   id: string;
@@ -88,12 +91,12 @@ export interface Range {
   absolute: number;
   integral: number;
   kind: string;
-  signal?: Array<Partial<Signal>>;
+  signal: Array<Signal>;
 }
 
 export interface Ranges {
-  values: Array<Partial<Range>>;
-  options: Partial<{ sum: number }>;
+  values: Array<Range>;
+  options: { sum?: number };
 }
 
 export interface Source {
@@ -103,17 +106,17 @@ export interface Source {
 
 export interface Datum1D {
   id: string | number;
-  source: Partial<Source>;
-  display: Partial<Display>;
-  info: Partial<Info>;
-  originalInfo?: Partial<Info>;
+  source: Source;
+  display: Display;
+  info: Info;
+  originalInfo?: Info;
   meta: any;
   data: Data1D;
   originalData?: Data1D;
   peaks: Peaks;
   integrals: Integrals;
   ranges: Ranges;
-  filters: Array<Partial<FiltersManager.Filter>>;
+  filters: Array<FiltersManager.Filter>;
 }
 
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
@@ -209,7 +212,7 @@ function preprocessing(datum) {
   }
 }
 
-export function toJSON(datum1D: Datum1D, forceIncludeData = false) {
+export function toJSON(datum1D: Datum1D, forceIncludeData = true) {
   return {
     id: datum1D.id,
     source: {
@@ -269,8 +272,13 @@ export function lookupPeak(data, options) {
   return null;
 }
 
-export function updateIntegralIntegrals(datum) {
-  updateRelatives(datum.integrals, 'integral', integralCountingCondition);
+export function updateIntegralIntegrals(datum, forceCalculateIntegral = false) {
+  updateRelatives(
+    datum.integrals,
+    'integral',
+    integralCountingCondition,
+    forceCalculateIntegral,
+  );
 }
 
 export function changeIntegralsRealtive(datum, newIntegral) {
@@ -278,32 +286,23 @@ export function changeIntegralsRealtive(datum, newIntegral) {
     (integral) => integral.id === newIntegral.id,
   );
   if (index !== -1) {
-    if (datum.integrals.options.isSumConstant) {
-      const ratio = datum.integrals.values[index].absolute / newIntegral.value;
-      const { values, sum } = datum.integrals.values.reduce(
-        (acc, integral, index) => {
-          const newIntegralValue = integral.absolute / ratio;
-          acc.sum += newIntegralValue;
-          acc.values[index] = {
-            ...integral,
-            integral: newIntegralValue,
-          };
+    const ratio = datum.integrals.values[index].absolute / newIntegral.value;
+    const { values, sum } = datum.integrals.values.reduce(
+      (acc, integral, index) => {
+        const newIntegralValue = integral.absolute / ratio;
+        acc.sum += newIntegralValue;
+        acc.values[index] = {
+          ...integral,
+          integral: newIntegralValue,
+        };
 
-          return acc;
-        },
-        { values: [], sum: 0 },
-      );
+        return acc;
+      },
+      { values: [], sum: 0 },
+    );
 
-      datum.integrals.values = values;
-      datum.integrals.options.sum = sum;
-    } else {
-      datum.integrals.values[index].integral = newIntegral.value;
-      datum.integrals.options.sum = getSum(
-        datum.integrals.values,
-        'integral',
-        integralCountingCondition,
-      );
-    }
+    datum.integrals.values = values;
+    datum.integrals.options.sum = sum;
   }
 }
 
@@ -323,27 +322,47 @@ function rangeCountingCondition(range) {
   return range.signal && checkSignalKinds(range, SignalKindsToInclude);
 }
 
-function updateRelatives(data, storageKey, countingCondition) {
+function updateRelatives(
+  data,
+  storageKey,
+  countingCondition,
+  forceCalculateIntegral = false,
+) {
   const { values, options } = data;
-  if (data.options.isSumConstant) {
-    const currentSum = getSum(values, 'absolute', countingCondition);
 
-    const factor = currentSum > 0 ? options.sum / currentSum : 0.0;
-    data.values = data.values.map((value) => {
-      return {
-        ...value,
-        ...(countingCondition(value) && {
-          [storageKey]: value.absolute * factor,
-        }),
-      };
-    });
+  const currentSum = getSum(values, 'absolute', countingCondition);
+
+  let factor = 0;
+  if (data.options.isSumConstant || forceCalculateIntegral) {
+    factor = currentSum > 0 ? options.sum / currentSum : 0.0;
   } else {
-    data.options.sum = getSum(values, storageKey, countingCondition);
+    if (data.values?.[0]) {
+      const { [storageKey]: inetgral, absolute } = data.values[0];
+      factor = (inetgral ? inetgral : options.sum) / absolute;
+    }
+  }
+
+  data.values = data.values.map((value) => {
+    return {
+      ...value,
+      ...(countingCondition(value) && {
+        [storageKey]: value.absolute * factor,
+      }),
+    };
+  });
+
+  if (!data.options.isSumConstant && !forceCalculateIntegral) {
+    data.options.sum = getSum(data.values, storageKey, countingCondition);
   }
 }
 
-export function updateIntegralRanges(datum) {
-  updateRelatives(datum.ranges, 'integral', rangeCountingCondition);
+export function updateIntegralRanges(datum, forceCalculateIntegral = false) {
+  updateRelatives(
+    datum.ranges,
+    'integral',
+    rangeCountingCondition,
+    forceCalculateIntegral,
+  );
 }
 
 export function detectRange(datum, options) {
@@ -510,25 +529,16 @@ export function changeRangesRealtive(datum, newRange) {
     (range) => range.id === newRange.id,
   );
   if (index !== -1) {
-    if (datum.ranges.options.isSumConstant) {
-      const ratio = datum.ranges.values[index].absolute / newRange.value;
-      datum.ranges.options.sum =
-        (newRange.value / datum.ranges.values[index].integral) *
-        datum.ranges.options.sum;
-      datum.ranges.values = datum.ranges.values.map((range) => {
-        return {
-          ...range,
-          integral: range.absolute / ratio,
-        };
-      });
-    } else {
-      datum.ranges.values[index].integral = newRange.value;
-      datum.ranges.options.sum = getSum(
-        datum.ranges.values,
-        'integral',
-        rangeCountingCondition,
-      );
-    }
+    const ratio = datum.ranges.values[index].absolute / newRange.value;
+    datum.ranges.options.sum =
+      (newRange.value / datum.ranges.values[index].integral) *
+      datum.ranges.options.sum;
+    datum.ranges.values = datum.ranges.values.map((range) => {
+      return {
+        ...range,
+        integral: range.absolute / ratio,
+      };
+    });
   }
 }
 
@@ -547,4 +557,8 @@ export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
     datum.ranges.values[rangeIndex].signal[signalIndex].delta = newSignalValue;
   }
   return shiftValue;
+}
+
+export function isSpectrum1D(spectrum: Datum1D | Datum2D): spectrum is Datum1D {
+  return spectrum.info.dimension === 1;
 }
