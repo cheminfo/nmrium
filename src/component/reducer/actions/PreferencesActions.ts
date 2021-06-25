@@ -5,7 +5,7 @@ import lodashGet from 'lodash/get';
 import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { Datum2D } from '../../../data/data2d/Spectrum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
-import nucluesToString from '../../utility/nucluesToString';
+import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 
@@ -105,7 +105,7 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
   if (preferences) {
     draft.activeTab = preferences.activeTab;
     (state.data as Datum1D[] | Datum2D[]).forEach((datum, index) => {
-      if (nucluesToString(datum.info.nucleus) === preferences.activeTab) {
+      if (nucleusToString(datum.info.nucleus) === preferences.activeTab) {
         draft.data[index].display = Object.assign(
           cloneDeep(datum.display),
           preferences.data[datum.id].display,

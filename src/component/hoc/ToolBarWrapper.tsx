@@ -1,7 +1,7 @@
 import { useMemo, memo, forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
-import nucluesToString from '../utility/nucluesToString';
+import nucleusToString from '../utility/nucleusToString';
 
 export default function ToolBarWrapper(WrappedComponent) {
   function Wrapper(props) {
@@ -23,7 +23,7 @@ export default function ToolBarWrapper(WrappedComponent) {
         for (const dataInfo of data) {
           const { isFid, isFt, nucleus } = dataInfo.info;
 
-          if (activeTab === nucluesToString(nucleus)) {
+          if (activeTab === nucleusToString(nucleus)) {
             if (isFid) {
               fidCounter++;
             }

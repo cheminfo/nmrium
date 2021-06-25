@@ -9,7 +9,7 @@ import {
   Datum2D,
   updateShift as update2dShift,
 } from '../../../data/data2d/Spectrum2D';
-import nucluesToString from '../../utility/nucluesToString';
+import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
@@ -185,7 +185,7 @@ function deleteSpectraFilter(draft: Draft<State>, actions) {
 
   if (draft.activeTab) {
     for (const datum of draft.data) {
-      if (nucluesToString(datum?.info?.nucleus) === draft.activeTab) {
+      if (nucleusToString(datum?.info?.nucleus) === draft.activeTab) {
         const filtersResult =
           datum.filters?.filter((filter) => filter.name === filterType) || [];
 

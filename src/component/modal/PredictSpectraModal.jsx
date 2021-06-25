@@ -28,7 +28,7 @@ const styles = css`
     font-weight: 500;
   }
 
-  .nuclues-label {
+  .nucleus-label {
     padding: 0 10px;
     color: black;
     font-weight: 700;
@@ -174,23 +174,23 @@ function PredictSpectraModal({ onClose, molfile }) {
           >
             <div className="row">
               <FormikCheckBox name="spectra.1h" />
-              <IsotopesViewer value="1H" className="nuclues-label" />
+              <IsotopesViewer value="1H" className="nucleus-label" />
             </div>
             <div className="row">
               <FormikCheckBox disabled name="spectra.13c" />
-              <IsotopesViewer value="13C" className="nuclues-label disabled" />
+              <IsotopesViewer value="13C" className="nucleus-label disabled" />
             </div>
             <div className="row">
               <FormikCheckBox disabled name="spectra.cosy" />
-              <IsotopesViewer value="COSY" className="nuclues-label disabled" />
+              <IsotopesViewer value="COSY" className="nucleus-label disabled" />
             </div>
             <div className="row">
               <FormikCheckBox disabled name="spectra.hsqc" />
-              <IsotopesViewer value="HSQC" className="nuclues-label disabled" />
+              <IsotopesViewer value="HSQC" className="nucleus-label disabled" />
             </div>
             <div className="row">
               <FormikCheckBox disabled name="spectra.hmbc" />
-              <IsotopesViewer value="HMBC" className="nuclues-label disabled" />
+              <IsotopesViewer value="HMBC" className="nucleus-label disabled" />
             </div>
           </div>
         </FormikForm>

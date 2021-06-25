@@ -1,7 +1,7 @@
 import { forwardRef, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
-import nucluesToString from '../utility/nucluesToString';
+import nucleusToString from '../utility/nucleusToString';
 
 export default function FiltersWrapper(WrappedComponent) {
   function Wrapper(props) {
@@ -19,7 +19,7 @@ export default function FiltersWrapper(WrappedComponent) {
       const spectra =
         data &&
         data.filter(
-          (spectrum) => activeTab === nucluesToString(spectrum.info.nucleus),
+          (spectrum) => activeTab === nucleusToString(spectrum.info.nucleus),
         );
       return spectra;
     }, [activeTab, data]);
