@@ -2,6 +2,8 @@ import lodashGet from 'lodash/get';
 import { useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
+import { TYPES } from '../../../highlight';
+
 const spanStyle = {
   color: 'red',
   fontWeight: 'bold',
@@ -34,10 +36,8 @@ function RangeAssignmentsColumn({
     const flag =
       assignment.isActive ||
       assignment.isOnHover ||
-      (highlight.isActive &&
-        !highlightData.highlight.highlighted.find((_highlighted) => {
-          return _highlighted === assignment.id;
-        }));
+        (highlight.isActive && highlightData.highlight.type !== TYPES.SIGNAL)
+        ;
 
     return flag
       ? {
@@ -45,13 +45,7 @@ function RangeAssignmentsColumn({
           fontWeight: 'bold',
         }
       : { color: 'black', fontWeight: 'normal' };
-  }, [
-    assignment.id,
-    assignment.isActive,
-    assignment.isOnHover,
-    highlight.isActive,
-    highlightData.highlight.highlighted,
-  ]);
+  }, [assignment.isActive, assignment.isOnHover, highlight.isActive, highlightData.highlight.type]);
 
   return (
     <td

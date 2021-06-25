@@ -10,6 +10,7 @@ import {
 export const TYPES = {
   PEAK: 'PEAK',
   INTEGRAL: 'INTEGRAL',
+  SIGNAL: "SIGNAL",
   RANGE: 'RANGE',
   ZONE: 'ZONE',
   EXCLUSION_ZONE: 'EXCLUSION_ZONE',

@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { useCallback, useState, useEffect } from 'react';
 
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
-import { useAssignment } from '../../assignment';
+import { filterForIDsWithAssignment, useAssignment, useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScale } from '../../context/ScaleContext';
 import { TYPES, useHighlight } from '../../highlight';
@@ -67,9 +67,10 @@ interface RangeProps {
 
 function Range({ rangeData, showMultiplicityTrees, selectedTool }: RangeProps) {
   const { id, from: rangeFrom, to: rangeTo, integral, signal } = rangeData;
+  const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
-    [assignmentRange.id].concat(assignmentRange.assigned.x || []),
+    [assignmentRange.id].concat(assignmentRange.assigned.x || []).concat(filterForIDsWithAssignment(assignmentData, signal.map((_signal) => _signal.id))),
     TYPES.RANGE,
   );
   const [rangeBoundary, setRangeBoundary] = useState({
