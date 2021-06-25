@@ -56,7 +56,7 @@ const AddSignalFormTabStyle = css`
   }
 `;
 
-function AddSignalFormTab({ onFocus, onBlur, rangeData, format }, ref) {
+function AddSignalFormTab({ onFocus, onBlur, range, format }, ref) {
   const { values, setFieldValue } = useFormikContext();
 
   const saveHandler = useCallback(
@@ -80,7 +80,7 @@ function AddSignalFormTab({ onFocus, onBlur, rangeData, format }, ref) {
       newSignalDelta: Yup.number()
         .test(`test-range`, '', function (value) {
           const { path, createError } = this;
-          if (value > rangeData.from && value < rangeData.to) {
+          if (value > range.from && value < range.to) {
             return true;
           }
           const errorMessage = ` ${value.toFixed(5)} ppm out of the range`;
@@ -88,7 +88,7 @@ function AddSignalFormTab({ onFocus, onBlur, rangeData, format }, ref) {
         })
         .required(),
     });
-  }, [rangeData]);
+  }, [range]);
 
   const triggerSubmitHandler = useCallback(() => {
     ref.current.submitForm();
@@ -104,7 +104,7 @@ function AddSignalFormTab({ onFocus, onBlur, rangeData, format }, ref) {
           ref={ref}
           validationSchema={validation}
           initialValues={{
-            newSignalDelta: (rangeData.from + rangeData.to) / 2,
+            newSignalDelta: (range.from + range.to) / 2,
           }}
           onSubmit={saveHandler}
         >
@@ -126,7 +126,7 @@ function AddSignalFormTab({ onFocus, onBlur, rangeData, format }, ref) {
             checkErrorAfterInputTouched={false}
           />
           <p className="input-notes">
-            [ {`${format(rangeData.from)} ppm - ${format(rangeData.to)} ppm`} ]
+            [ {`${format(range.from)} ppm - ${format(range.to)} ppm`} ]
           </p>
 
           <Button className="addSignalButton" onClick={triggerSubmitHandler}>

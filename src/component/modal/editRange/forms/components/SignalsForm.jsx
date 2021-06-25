@@ -35,7 +35,7 @@ const tabStylesAddition = css`
   color: red;
 `;
 
-function SignalsForm({ rangeData, format, info }) {
+function SignalsForm({ range, format, info }) {
   const newSignalFormRef = useRef();
 
   const { values, setFieldValue, errors } = useFormikContext();
@@ -153,14 +153,14 @@ function SignalsForm({ rangeData, format, info }) {
       >
         <AddSignalFormTab
           onFocus={handleOnFocus}
-          rangeData={rangeData}
+          range={range}
           ref={newSignalFormRef}
         />
       </Tab>
     );
 
     return signalTabs.concat(addSignalTab);
-  }, [format, handleOnFocus, rangeData, tabContainsErrors, values.signals]);
+  }, [format, handleOnFocus, range, tabContainsErrors, values.signals]);
 
   const editSignalInfoText = (
     <p className="infoText">

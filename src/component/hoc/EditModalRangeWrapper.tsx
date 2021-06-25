@@ -1,21 +1,27 @@
-import { useMemo, memo, forwardRef } from 'react';
+import { useMemo, forwardRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
+
+interface WrapperProps {
+  info?: any;
+  format?: (value: any) => string;
+  range?: any;
+}
 
 export default function EditModalRangeWrapper(WrappedComponent) {
   function Wrapper(props) {
     const { data, activeSpectrum, activeTab } = useChartData();
     const format = useFormatNumberByNucleus(activeTab);
 
-    const { info = {} } = useMemo(() => {
+    const { info } = useMemo(() => {
       if (data && activeSpectrum && activeSpectrum.id) {
         const datum = data.find((datum) => datum.id === activeSpectrum.id) || {
           info: {},
         };
         return datum;
       }
-      return {};
+      return { info: {} };
     }, [activeSpectrum, data]);
 
     const { forwardedRef, ...rest } = props;
@@ -29,9 +35,7 @@ export default function EditModalRangeWrapper(WrappedComponent) {
     );
   }
 
-  return memo(
-    forwardRef((props, ref) => {
-      return <Wrapper {...props} forwardedRef={ref} />;
-    }),
-  );
+  return forwardRef((props: WrapperProps, ref) => {
+    return <Wrapper {...props} forwardedRef={ref} />;
+  });
 }

@@ -18,7 +18,7 @@ import {
 import { CHANGE_TEMP_RANGE } from '../../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 
-import SignalsForm from './forms/components/SignalsForm';
+import SignalsForm from './forms/components/SignalsForm.jsx';
 import useRangeFormValidation from './forms/validation/EditRangeValidation';
 
 const styles = css`
@@ -78,7 +78,7 @@ interface EditRangeModalProps {
   onSaveEditRangeModal: (value: any) => Promise<void> | null;
   onCloseEditRangeModal: () => void;
   onZoomEditRangeModal: (value: any) => void;
-  rangeData: any;
+  range: any;
 }
 
 interface Coupling {
@@ -90,7 +90,7 @@ function EditRangeModal({
   onSaveEditRangeModal = () => null,
   onCloseEditRangeModal = () => null,
   onZoomEditRangeModal = () => null,
-  rangeData,
+  range,
 }: EditRangeModalProps) {
   const formRef = useRef<any>(null);
   const { activeTab } = useChartData();
@@ -99,8 +99,8 @@ function EditRangeModal({
   const validation = useRangeFormValidation();
 
   const handleOnZoom = useCallback(() => {
-    onZoomEditRangeModal(rangeData);
-  }, [onZoomEditRangeModal, rangeData]);
+    onZoomEditRangeModal(range);
+  }, [onZoomEditRangeModal, range]);
 
   useEffect(() => {
     handleOnZoom();
@@ -141,16 +141,16 @@ function EditRangeModal({
 
   const handleOnSave = useCallback(
     async (formValues) => {
-      const _range = { ...rangeData };
+      const _range = { ...range };
       _range.signal = getSignals(formValues.signals);
       await onSaveEditRangeModal(_range);
       handleOnClose();
     },
-    [getSignals, handleOnClose, onSaveEditRangeModal, rangeData],
+    [getSignals, handleOnClose, onSaveEditRangeModal, range],
   );
 
   const data = useMemo(() => {
-    const signals = rangeData.signal.map((signal) => {
+    const signals = range.signal.map((signal) => {
       // counter within j array to access to right j values
       let counterJ = 0;
       const couplings: Array<Coupling> = [];
@@ -173,7 +173,7 @@ function EditRangeModal({
       return { ...signal, j: couplings };
     });
     return { activeTab: '0', signals };
-  }, [format, rangeData]);
+  }, [format, range]);
 
   const changeHandler = useCallback(
     (values) => {
@@ -181,10 +181,10 @@ function EditRangeModal({
       const signal = getSignals(signals);
       dispatch({
         type: CHANGE_TEMP_RANGE,
-        payload: { tempRange: Object.assign({}, rangeData, { signal }) },
+        payload: { tempRange: Object.assign({}, range, { signal }) },
       });
     },
-    [dispatch, getSignals, rangeData],
+    [dispatch, getSignals, range],
   );
 
   return (
@@ -200,9 +200,9 @@ function EditRangeModal({
             <FaSearchPlus title="Set to default view on range in spectrum" />
           </Button>
           <span>
-            {` Range and Signal edition: ${format(
-              rangeData.from,
-            )} ppm to ${format(rangeData.to)} ppm`}
+            {` Range and Signal edition: ${format(range.from)} ppm to ${format(
+              range.to,
+            )} ppm`}
           </span>
           <SaveButton
             onClick={() => formRef.current.submitForm()}
@@ -212,7 +212,7 @@ function EditRangeModal({
 
           <CloseButton onClick={handleOnClose} />
         </div>
-        <SignalsForm rangeData={rangeData} />
+        <SignalsForm range={range} />
         <FormikOnChange onChange={changeHandler} />
       </FormikForm>
     </div>

@@ -105,7 +105,7 @@ function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
         onCloseEditRangeModal={closeEditRangeHandler}
         onSaveEditRangeModal={saveEditRangeHandler}
         onZoomEditRangeModal={zoomRangeHandler}
-        rangeData={rowData}
+        range={rowData}
       />,
       {
         position: positions.CENTER_RIGHT,
