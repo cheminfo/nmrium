@@ -39,7 +39,9 @@ function TreeNodes({
       const _startYNode = startY + (edgeLevel + 1) * levelHeight;
 
       return (
-        <g key={`treeNode_${signalID}_${startX}_${_startX}_${ratio}`}>
+        <g
+          key={`${multiplicityIndex}_${signalID}_${startX}_${_startX}_${ratio}`}
+        >
           {/* ratio text */}
           <text
             textAnchor="middle"

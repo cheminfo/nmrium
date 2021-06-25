@@ -233,6 +233,9 @@ function Viewer1D({ emptyText = undefined }) {
               mouseCoordinates: position,
             });
             break;
+          case options.editRange.id:
+            propagateEvent();
+            break;
           default:
             break;
         }
@@ -243,11 +246,6 @@ function Viewer1D({ emptyText = undefined }) {
               type: SET_VERTICAL_INDICATOR_X_POSITION,
               position: position.x,
             });
-            break;
-          case 'editRange':
-            if (position.shiftKey) {
-              propagateEvent();
-            }
             break;
 
           default:

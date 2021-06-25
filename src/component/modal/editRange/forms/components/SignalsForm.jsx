@@ -1,15 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
-import lodashGet from 'lodash/get';
-import { useCallback, useMemo, memo, useEffect, useState } from 'react';
+import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
 
-import { useChartData } from '../../../../context/ChartContext';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
+import EditModalRangeWrapper from '../../../../hoc/EditModalRangeWrapper';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import Events from '../../../../utility/Events';
-import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import SignalFormTab from './SignalFormTab';
@@ -37,50 +35,46 @@ const tabStylesAddition = css`
   color: red;
 `;
 
-function SignalsForm({ rangeData }) {
+function SignalsForm({ rangeData, format, info }) {
+  const newSignalFormRef = useRef();
+
   const { values, setFieldValue, errors } = useFormikContext();
 
-  const { data: spectraData, activeSpectrum, activeTab } = useChartData();
-  const format = useFormatNumberByNucleus(activeTab);
-
   const [activeField, setActiveField] = useState(null);
-  const [frequency, setFrequency] = useState(null);
-
-  useEffect(() => {
-    if (
-      spectraData &&
-      activeSpectrum &&
-      lodashGet(
-        spectraData,
-        `[${activeSpectrum.index}].info.originFrequency`,
-        undefined,
-      )
-    ) {
-      setFrequency(spectraData[activeSpectrum.index].info.originFrequency);
-    } else {
-      setFrequency(null);
-    }
-  }, [activeSpectrum, spectraData]);
 
   useEffect(() => {
     Events.on('brushEnd', (event) => {
-      if (activeField && frequency) {
-        setFieldValue(
-          activeField,
-          Number(format(Math.abs(event.range[0] - event.range[1]) * frequency)),
-        );
+      if (info.originFrequency) {
+        if (activeField) {
+          if (values.activeTab === 'addSignalTab') {
+            newSignalFormRef.current.setValues({
+              [activeField]:
+                (event.range[1] - event.range[0]) / 2 + event.range[0],
+            });
+          } else {
+            const value = Number(
+              format(
+                Math.abs(event.range[0] - event.range[1]) *
+                  info.originFrequency,
+              ),
+            );
+            setFieldValue(activeField, value);
+          }
+        }
       }
     });
 
     return () => {
       Events.off('brushEnd');
     };
-  }, [activeField, setFieldValue, frequency, values.activeTab, format]);
+  }, [activeField, setFieldValue, values.activeTab, format, info]);
 
   useEffect(() => {
     Events.on('mouseClick', (event) => {
-      if (values.activeTab === 'addSignalTab' && activeField) {
-        setFieldValue(activeField, event.xPPM);
+      if (activeField) {
+        if (values.activeTab === 'addSignalTab') {
+          newSignalFormRef.current.setValues({ [activeField]: event.xPPM });
+        }
       }
     });
 
@@ -125,13 +119,7 @@ function SignalsForm({ rangeData }) {
 
   const tabContainsErrors = useCallback(
     (i) => {
-      return (
-        errors.signals &&
-        (lodashGet(errors, 'signals.noCouplings', []).some(
-          (_error) => _error.index === i,
-        ) ||
-          lodashGet(errors, `signals[${i}].missingCouplings`, []).length > 0)
-      );
+      return errors?.signals && errors?.signals[i] ? true : false;
     },
     [errors],
   );
@@ -163,7 +151,11 @@ function SignalsForm({ rangeData }) {
         key="addSignalTab"
         className="add-signal-tab"
       >
-        <AddSignalFormTab onFocus={handleOnFocus} rangeData={rangeData} />
+        <AddSignalFormTab
+          onFocus={handleOnFocus}
+          rangeData={rangeData}
+          ref={newSignalFormRef}
+        />
       </Tab>
     );
 
@@ -213,4 +205,4 @@ function SignalsForm({ rangeData }) {
   );
 }
 
-export default memo(SignalsForm);
+export default EditModalRangeWrapper(memo(SignalsForm));

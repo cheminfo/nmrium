@@ -1,16 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
-import { memo, useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, forwardRef } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
-import { useChartData } from '../../../../context/ChartContext';
 import Button from '../../../../elements/Button';
 import FormikForm from '../../../../elements/formik/FormikForm';
 import FormikInput from '../../../../elements/formik/FormikInput';
+import EditModalRangeWrapper from '../../../../hoc/EditModalRangeWrapper';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
-import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
 
 const AddSignalFormTabStyle = css`
   text-align: center;
@@ -57,11 +56,8 @@ const AddSignalFormTabStyle = css`
   }
 `;
 
-function AddSignalFormTab({ onFocus, onBlur, rangeData }) {
-  const formRef = useRef();
+function AddSignalFormTab({ onFocus, onBlur, rangeData, format }, ref) {
   const { values, setFieldValue } = useFormikContext();
-  const { activeTab } = useChartData();
-  const format = useFormatNumberByNucleus(activeTab);
 
   const saveHandler = useCallback(
     (val) => {
@@ -95,8 +91,8 @@ function AddSignalFormTab({ onFocus, onBlur, rangeData }) {
   }, [rangeData]);
 
   const triggerSubmitHandler = useCallback(() => {
-    formRef.current.submitForm();
-  }, []);
+    ref.current.submitForm();
+  }, [ref]);
 
   return (
     <div css={AddSignalFormTabStyle}>
@@ -105,7 +101,7 @@ function AddSignalFormTab({ onFocus, onBlur, rangeData }) {
           Edit or select a delta value of new signal (ppm):
         </p>
         <FormikForm
-          ref={formRef}
+          ref={ref}
           validationSchema={validation}
           initialValues={{
             newSignalDelta: (rangeData.from + rangeData.to) / 2,
@@ -142,4 +138,4 @@ function AddSignalFormTab({ onFocus, onBlur, rangeData }) {
   );
 }
 
-export default memo(AddSignalFormTab);
+export default EditModalRangeWrapper(forwardRef(AddSignalFormTab));
