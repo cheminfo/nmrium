@@ -100,6 +100,12 @@ export const initialState = {
   },
 };
 
+export interface ExclusionZoneState {
+  id: string;
+  from: number;
+  to: number;
+}
+
 export interface State {
   data: Spectra;
   contours: any;
@@ -149,9 +155,7 @@ export interface State {
 
     data: {
       baseLineZones: any;
-      exclusionZones: {
-        [key: string]: Array<{ id: string; from: number; to: number }>;
-      };
+      exclusionZones: Record<string, Array<ExclusionZoneState>>;
       pivot: { value: number; index: number };
       zonesNoiseFactor: number;
       activeFilterID?: string | number | null;

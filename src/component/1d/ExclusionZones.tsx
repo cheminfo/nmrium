@@ -1,55 +1,24 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { useChartData } from '../context/ChartContext';
 
-import { useScale } from '../context/ScaleContext';
-import { TYPES, useHighlight } from '../highlight';
-import ExclusionZonesWrapper from '../hoc/ExclusionZonesWrapper';
+import ExclusionZone from './ExclusionZone';
 
-const styles = css`
-  pointer-events: bounding-box;
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
+export default function ExclusionZones() {
+  const {
+    toolOptions: {
+      data: { exclusionZones },
+    },
+    activeTab,
+  } = useChartData();
 
-  .zone-area {
-    height: 100%;
-    fill: #dddddd;
-    cursor: pointer;
-  }
-  .zone-area.active {
-    fill: #ff6f0057;
-  }
-`;
+  const exclusionZonesForNucleus = exclusionZones[activeTab];
 
-function ExclusionZone({ zone }) {
-  const { scaleX } = useScale();
-  const highlight = useHighlight([zone.id], TYPES.EXCLUSION_ZONE);
-  return (
-    <g
-      key={zone.id}
-      transform={`translate(${scaleX()(zone.to)},0)`}
-      css={styles}
-      {...highlight.onHover}
-    >
-      <rect
-        x="0"
-        width={`${scaleX()(zone.from) - scaleX()(zone.to)}`}
-        className={`zone-area ${highlight.isActive && 'active'}`}
-      />
-    </g>
-  );
-}
-
-function ExclusionZones({ exclusionZones }) {
-  if (!exclusionZones) return null;
+  if (!exclusionZonesForNucleus) return null;
 
   return (
     <g className="exclusionZones">
-      {exclusionZones.map((zone) => (
+      {exclusionZonesForNucleus.map((zone) => (
         <ExclusionZone key={zone.id} zone={zone} />
       ))}
     </g>
   );
 }
-
-export default ExclusionZonesWrapper(ExclusionZones);
