@@ -76,7 +76,7 @@
     "react-card-flip": "^1.1.1",
     "react-color": "2.17.2",
     "react-draggable": "^4.4.3",
-    "react-dropzone": "^11.3.2",
+    "react-dropzone": "^11.3.4",
     "react-error-boundary": "^3.1.3",
     "react-icons": "^4.2.0",
     "react-inspector": "^5.1.1",
@@ -96,7 +96,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.14.5",
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.14.5",
-    "@types/d3": "^6.7.1",
+    "@types/d3": "^6.7.3",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.12.4",
     "@types/react": "^17.0.11",
@@ -106,7 +106,7 @@
     "@zakodium/eslint-config": "^3.0.2",
     "cross-env": "^7.0.3",
     "eslint": "^7.29.0",
-    "jest": "^27.0.4",
+    "jest": "^27.0.5",
     "modern-normalize": "^1.1.0",
     "playwright": "^1.12.2",
     "prettier": "^2.3.1",
@@ -123,6 +123,6 @@
     "vite": "^2.3.8"
   },
   "volta": {
-    "node": "16.3.0"
+    "node": "16.4.0"
   }
 }
