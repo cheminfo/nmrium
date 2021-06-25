@@ -58,7 +58,7 @@ function MultiplicityTree({
   const assignment = useAssignment(signal.id);
   const highlight = useHighlight(
     [assignment.id].concat(assignment.assigned.x || []),
-    TYPES.SIGNAL
+    TYPES.SIGNAL,
   );
 
   const spectrumData = useMemo(

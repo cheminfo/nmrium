@@ -36,16 +36,19 @@ function RangeAssignmentsColumn({
     const flag =
       assignment.isActive ||
       assignment.isOnHover ||
-        (highlight.isActive && highlightData.highlight.type !== TYPES.SIGNAL)
-        ;
-
+      (highlight.isActive && highlightData.highlight.type !== TYPES.SIGNAL);
     return flag
       ? {
           color: 'red',
           fontWeight: 'bold',
         }
       : { color: 'black', fontWeight: 'normal' };
-  }, [assignment.isActive, assignment.isOnHover, highlight.isActive, highlightData.highlight.type]);
+  }, [
+    assignment.isActive,
+    assignment.isOnHover,
+    highlight.isActive,
+    highlightData.highlight.type,
+  ]);
 
   return (
     <td

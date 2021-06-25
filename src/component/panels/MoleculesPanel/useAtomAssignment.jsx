@@ -2,7 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ConcatenationString } from '../../../data/utilities/Concatenation';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
-import { filterForIDsWithAssignment, useAssignment, useAssignmentData } from '../../assignment';
+import {
+  filterForIDsWithAssignment,
+  useAssignment,
+  useAssignmentData,
+} from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
 import { TYPES, useHighlightData } from '../../highlight';
@@ -107,11 +111,12 @@ export default function useAtomAssignment({
     highlightData.highlight.highlighted.forEach((highlightID) => {
       const temp = assignmentData.assignment.assignment[highlightID];
       if (temp) {
-        const { datum } = findDatumAndSignalIndex(
-          data,
-          highlightID,
-        );
-        if (datum && (highlightData.highlight.type === TYPES.RANGE || highlightData.highlight.type === TYPES.ZONE) ){
+        const { datum } = findDatumAndSignalIndex(data, highlightID);
+        if (
+          datum &&
+          (highlightData.highlight.type === TYPES.RANGE ||
+            highlightData.highlight.type === TYPES.ZONE)
+        ) {
           // we are on range/zone level only, so add the belonging signal IDs to highlight too
           highlights = highlights.concat(
             datum.signal
@@ -129,7 +134,13 @@ export default function useAtomAssignment({
     return getCurrentDiaIDsToHighlight(assignmentData, displayerMode).concat(
       highlights,
     );
-  }, [assignmentData, data, displayerMode, highlightData.highlight.highlighted, highlightData.highlight.type]);
+  }, [
+    assignmentData,
+    data,
+    displayerMode,
+    highlightData.highlight.highlighted,
+    highlightData.highlight.type,
+  ]);
 
   const toggleAssignment = useCallback(
     (diaID, atomInformation) => {

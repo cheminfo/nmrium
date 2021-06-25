@@ -3,7 +3,11 @@ import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
 import { useMemo, useCallback, useState } from 'react';
 
-import { filterForIDsWithAssignment, useAssignment, useAssignmentData } from '../../assignment';
+import {
+  filterForIDsWithAssignment,
+  useAssignment,
+  useAssignmentData,
+} from '../../assignment';
 import { TYPES, useHighlight, useHighlightData } from '../../highlight';
 import { isColumnVisible } from '../extra/preferences/ColumnsHelper';
 
@@ -36,17 +40,22 @@ function RangesTableRow({
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(rowData.id);
   const highlightRange = useHighlight(
-    [assignmentRange.id].concat(assignmentRange.assigned.x || []).concat(filterForIDsWithAssignment(assignmentData, rowData.signal.map((_signal) => _signal.id))),
-    TYPES.RANGE
+    [assignmentRange.id].concat(assignmentRange.assigned.x || []).concat(
+      filterForIDsWithAssignment(
+        assignmentData,
+        rowData.signal.map((_signal) => _signal.id),
+      ),
+    ),
+    TYPES.RANGE,
   );
   const highlightRangeAssignmentsColumn = useHighlight(
     assignmentRange.assigned.x || [],
-    TYPES.RANGE
+    TYPES.RANGE,
   );
   const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
   const highlightSignal = useHighlight(
     [assignmentSignal.id].concat(assignmentSignal.assigned.x || []),
-    TYPES.SIGNAL
+    TYPES.SIGNAL,
   );
   const highlightData = useHighlightData();
   const [unlinkRangeButtonVisibility, showUnlinkRangeButton] = useState(false);
@@ -145,10 +154,7 @@ function RangesTableRow({
   }, [assignmentRange.isActive, highlightRange.isActive, rowData]);
 
   return (
-    <tr
-      onContextMenu={(e) => onContextMenu(e, rowData)}
-      css={trCss}
-    >
+    <tr onContextMenu={(e) => onContextMenu(e, rowData)} css={trCss}>
       <td {...rowSpanTags} {...onHoverRange}>
         {rowData.tableMetaInfo.rowIndex + 1}
       </td>
