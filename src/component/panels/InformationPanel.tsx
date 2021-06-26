@@ -8,8 +8,8 @@ import {
   CSSProperties,
 } from 'react';
 
+import { useChartData } from '../context/ChartContext';
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
-import InfoWrapper from '../hoc/InfoWrapper';
 
 const styles: Record<
   'container' | 'tableContainer' | 'searchInput',
@@ -35,14 +35,12 @@ const styles: Record<
   },
 };
 
-// information panel
-
-interface InformationPanelProps {
-  info: Array<any>;
-  meta: Array<any>;
+interface InformationPanelInnerProps {
+  info: any;
+  meta: any;
 }
 
-function InformationPanel({ info, meta }: InformationPanelProps) {
+function InformationPanelInner({ info, meta }: InformationPanelInnerProps) {
   const [information, setInformation] = useState({});
   const [matches, setMatchesData] = useState<string[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -131,4 +129,21 @@ function InformationPanel({ info, meta }: InformationPanelProps) {
   );
 }
 
-export default InfoWrapper(memo(InformationPanel));
+const MemoizedInformationPanel = memo(InformationPanelInner);
+
+const emptyData = { info: {}, meta: {} };
+
+export default function InformationPanel() {
+  const { data, activeSpectrum } = useChartData();
+
+  const memoizedData = useMemo(() => {
+    if (data && activeSpectrum && activeSpectrum.id) {
+      const datum =
+        data.find((datum) => datum.id === activeSpectrum.id) || emptyData;
+      return datum;
+    }
+    return emptyData;
+  }, [activeSpectrum, data]);
+
+  return <MemoizedInformationPanel {...memoizedData} />;
+}
