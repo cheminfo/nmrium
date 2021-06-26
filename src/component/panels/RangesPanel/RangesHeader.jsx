@@ -204,7 +204,7 @@ function RangesHeader({
         popupPlacement="right"
       >
         <button
-          css={styles.button}
+          style={styles.button}
           type="button"
           onClick={showChangeRangesSumModal}
         >
