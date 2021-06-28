@@ -1,10 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { Field, useField } from 'formik';
-import PropTypes from 'prop-types';
 
-import ErrorMessage from './ErrorMessage';
+import ErrorMessage, { ErrorMessageProps } from './ErrorMessage';
 
-function SelectBox({ values, ...props }) {
+interface SelectBoxProps extends ErrorMessageProps {
+  values: Array<any>;
+}
+
+function SelectBox({ values, ...props }: SelectBoxProps) {
   const [field] = useField(props);
 
   return values && values.length > 0 ? (
@@ -25,10 +28,5 @@ function SelectBox({ values, ...props }) {
     </div>
   ) : null;
 }
-
-SelectBox.protoTypes = {
-  valuePath: PropTypes.instanceOf(Array).isRequired,
-  valueSelectionTemplate: PropTypes.func,
-};
 
 export default SelectBox;

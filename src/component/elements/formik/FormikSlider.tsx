@@ -3,7 +3,14 @@ import lodashGet from 'lodash/get';
 import { useCallback, memo } from 'react';
 import ReactSlider from 'react-slider';
 
-function FormikSlider({ onAfterChange, name, ...props }) {
+interface FormikSliderProps {
+  name: string;
+  onAfterChange?: (element: any) => void;
+}
+
+function FormikSlider(props: FormikSliderProps) {
+  const { onAfterChange = () => null, name, ...sliderProps } = props;
+
   const { values, setFieldValue } = useFormikContext();
 
   const changeHandler = useCallback(
@@ -30,13 +37,9 @@ function FormikSlider({ onAfterChange, name, ...props }) {
       )}
       pearling
       minDistance={10}
-      {...props}
+      {...sliderProps}
     />
   );
 }
-
-FormikSlider.defaultProps = {
-  onColorChange: () => null,
-};
 
 export default memo(FormikSlider);

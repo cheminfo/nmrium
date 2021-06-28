@@ -2,8 +2,23 @@ import { useField } from 'formik';
 
 import ErrorMessage from './ErrorMessage';
 
-function Input({ onFocus, onBlur, enableErrorMessage, ...props }) {
-  const [field] = useField(props);
+interface InputProps {
+  name: string;
+  onFocus?: (element: string) => void;
+  onBlur?: (element: string) => void;
+  enableErrorMessage?: boolean;
+}
+
+function Input(props: InputProps) {
+  const {
+    onFocus = () => null,
+    onBlur = () => null,
+    enableErrorMessage,
+    ...inputProps
+  } = props;
+
+  const [field] = useField(inputProps);
+
   return (
     <div>
       <input
@@ -13,7 +28,7 @@ function Input({ onFocus, onBlur, enableErrorMessage, ...props }) {
         onBlur={() => onBlur(field.name)}
       />
       {enableErrorMessage && enableErrorMessage === true ? (
-        <ErrorMessage {...props} />
+        <ErrorMessage {...inputProps} />
       ) : null}
     </div>
   );

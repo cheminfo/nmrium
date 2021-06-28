@@ -1,25 +1,43 @@
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo } from 'react';
 
-import Input from '../Input';
+import Input, { InputProps } from '../Input';
 
-function FormikInput({
-  label,
-  name,
-  style,
-  onChange,
-  checkValue,
-  type,
-  className,
-  value,
-  format,
-  checkErrorAfterInputTouched,
-  ...resProps
-}) {
+interface FormikInputProps extends InputProps {
+  name: string;
+  label?: string;
+  styleInput?: {
+    label?: any;
+    input?: any;
+  };
+  onChange?: (element: any) => void;
+  checkValue?: () => void;
+  type?: 'text' | 'number';
+  className?: string;
+  value?: any;
+  format?: () => (element: any) => any;
+  checkErrorAfterInputTouched?: boolean;
+}
+
+function FormikInput(props: FormikInputProps) {
+  const {
+    label,
+    name,
+    styleInput = { label: {}, input: {} },
+    onChange = () => null,
+    checkValue = () => true,
+    type = 'text',
+    className = '',
+    value = null,
+    format = () => (value) => value,
+    checkErrorAfterInputTouched = true,
+    ...resProps
+  } = props;
+
   const { values, handleChange, setFieldValue, errors, touched } =
     useFormikContext();
+
   const changeHandler = useCallback(
     (e) => {
       onChange(e);
@@ -40,6 +58,7 @@ function FormikInput({
     }
     return lodashGet(errors, name);
   }, [checkErrorAfterInputTouched, errors, name, touched]);
+
   return (
     <Input
       label={label}
@@ -47,9 +66,12 @@ function FormikInput({
       value={value ? value : lodashGet(values, name)}
       onChange={changeHandler}
       type={type}
-      style={{
-        ...style,
-        input: { ...style.input, ...(isInvalid && { borderColor: 'red' }) },
+      styleInput={{
+        ...styleInput,
+        input: {
+          ...styleInput.input,
+          ...(isInvalid && { borderColor: 'red' }),
+        },
       }}
       checkValue={checkValue}
       className={className}
@@ -58,37 +80,5 @@ function FormikInput({
     />
   );
 }
-
-FormikInput.propTypes = {
-  label: PropTypes.string,
-  name: PropTypes.string,
-  style: PropTypes.shape({
-    label: PropTypes.object,
-    input: PropTypes.object,
-  }),
-  onChange: PropTypes.func,
-  checkValue: PropTypes.func,
-  type: PropTypes.oneOf(['text', 'number']),
-  className: PropTypes.string,
-  value: PropTypes.any,
-  format: PropTypes.func,
-  checkErrorAfterInputTouched: PropTypes.bool,
-};
-
-FormikInput.defaultProps = {
-  style: {
-    label: {},
-    input: {},
-  },
-  onChange: () => {
-    return null;
-  },
-  checkValue: () => true,
-  type: 'text',
-  className: '',
-  value: null,
-  format: () => (val) => val,
-  checkErrorAfterInputTouched: true,
-};
 
 export default FormikInput;

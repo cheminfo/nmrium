@@ -2,14 +2,13 @@ import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
 import { useCallback, useEffect } from 'react';
 
-import Select from '../Select';
+import Select, { SelectProps } from '../Select';
 
-const FormikSelect = function FormikSelect({
-  name,
-  value,
-  onChange,
-  ...resProps
-}) {
+const FormikSelect = function FormikSelect(
+  props: SelectProps & { value?: string },
+) {
+  const { name = '', value, onChange = () => null, ...resProps } = props;
+
   const { values, setFieldValue } = useFormikContext();
   const changeHandler = useCallback(
     (value) => {
@@ -34,8 +33,5 @@ const FormikSelect = function FormikSelect({
     />
   );
 };
-// eslint-disable-next-line react/forbid-foreign-prop-types
-FormikSelect.propTypes = Select.propTypes;
-FormikSelect.defaultProps = Select.defaultProps;
 
 export default FormikSelect;
