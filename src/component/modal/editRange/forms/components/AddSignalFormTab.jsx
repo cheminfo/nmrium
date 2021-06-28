@@ -118,7 +118,7 @@ function AddSignalFormTab({ onFocus, onBlur, rangeData }) {
             placeholder={`𝛅 (ppm)`}
             onFocus={onFocus}
             onBlur={onBlur}
-            style={{
+            styleInput={{
               input: {
                 width: '250px',
                 height: '30px',

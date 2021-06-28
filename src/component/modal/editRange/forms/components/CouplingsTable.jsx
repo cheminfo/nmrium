@@ -135,7 +135,7 @@ function CouplingsTable({ push, remove, onFocus, onBlur }) {
                   disabled={!hasCouplingConstant(_coupling.multiplicity)}
                   onFocus={onFocus}
                   onBlur={onBlur}
-                  style={{
+                  styleInput={{
                     input: {
                       width: '100%',
                       height: '26px',
