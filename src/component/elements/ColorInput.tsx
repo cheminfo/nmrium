@@ -66,7 +66,7 @@ const style = css`
   }
 `;
 
-interface ColorInputProps {
+export interface ColorInputProps {
   value?: string;
   label?: string;
   name: string;

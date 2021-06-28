@@ -1,6 +1,12 @@
-import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
+import {
+  CSSProperties,
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 
-const styles = {
+const styles: Record<'container' | 'label', CSSProperties> = {
   container: {
     width: '100%',
     height: '100%',
@@ -23,10 +29,18 @@ const styles = {
     maxWidth: '100%',
   },
 };
-function InputRange(
-  { name, value = 0, onChange, label, style, className },
-  ref,
-) {
+
+interface InputRangeProps {
+  name: string;
+  value?: number;
+  onChange: (element: any) => void;
+  label?: string;
+  style?: CSSProperties;
+  className?: string;
+}
+
+function InputRange(props: InputRangeProps, ref) {
+  const { name, value = 0, onChange, label, style, className } = props;
   const previousPosition = useRef(0);
   const valueRef = useRef(value);
 
