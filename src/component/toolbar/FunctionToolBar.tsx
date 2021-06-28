@@ -15,13 +15,17 @@ import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
 import { Filters } from '../../data/Filters';
+import { Info as Datum1DInfo, Data1D } from '../../data/data1d/Spectrum1D';
+import { Info as Datum2DInfo, Data2D } from '../../data/data2d/Spectrum2D';
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { useHelp } from '../elements/popup/Help/Context';
 import { ToggleButton, ToggleButtonGroup } from '../elements/toggle';
-import ToolBarWrapper from '../hoc/ToolBarWrapper';
+import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useToolsFunctions from '../hooks/useToolsFunctions';
+import { ActiveSpectrum } from '../reducer/Reducer';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { APPLY_FFT_FILTER, SET_SELECTED_FILTER } from '../reducer/types/Types';
 
@@ -40,7 +44,8 @@ const styles = css`
     outline: outline;
     :focus {
       outline: none !important;
-    }
+    }import { Datum1D } from './../../data/data1d/Spectrum1D';
+
 
     &.fa {
       svg {
@@ -55,36 +60,31 @@ const styles = css`
   }
 `;
 
-// let debounceClickEvents = [];
-
-interface FunctionToolBarProps {
-  defaultValue?: string;
-  activeSpectrum: boolean;
+interface FunctionToolBarInnerProps {
+  defaultValue: string;
+  activeSpectrum: ActiveSpectrum | null;
   fidCounter: number;
   ftCounter: number;
-  displayerMode: any;
-  info: any;
-  datum: any;
+  displayerMode: DISPLAYER_MODE;
+  info: Datum1DInfo | Datum2DInfo;
+  datum: Data1D | Data2D;
 }
 
-function FunctionToolBar({
-  defaultValue = options.zoom.id,
+function FunctionToolBarInner({
+  defaultValue,
   activeSpectrum,
   info,
   datum,
   displayerMode,
   ftCounter,
   fidCounter,
-}: FunctionToolBarProps) {
+}: FunctionToolBarInnerProps) {
   const [option, setOption] = useState<any>();
   const help = useHelp();
   const preferences = usePreferences();
 
   const dispatch = useDispatch();
 
-  const selectedSpectrumInfo = {
-    info: { isComplex: false, isFid: false, ...info },
-  };
   const { handleChangeOption, handleFullZoomOut } = useToolsFunctions();
 
   const handleChange = useCallback(
@@ -158,11 +158,7 @@ function FunctionToolBar({
               key={options.peakPicking.id}
               value={options.peakPicking.id}
               className="cheminfo"
-              isVisible={
-                activeSpectrum &&
-                selectedSpectrumInfo &&
-                !selectedSpectrumInfo.info.isFid
-              }
+              isVisible={activeSpectrum && !info?.isFid ? true : false}
               {...help.onHover}
               helpID="peakPicking"
             >
@@ -181,11 +177,7 @@ function FunctionToolBar({
               key={options.integral.id}
               value={options.integral.id}
               className="cheminfo"
-              isVisible={
-                activeSpectrum &&
-                selectedSpectrumInfo &&
-                !selectedSpectrumInfo.info.isFid
-              }
+              isVisible={activeSpectrum && !info?.isFid ? true : false}
               {...help.onHover}
               helpID="integralPicking"
             >
@@ -204,7 +196,7 @@ function FunctionToolBar({
               key={options.zone2D.id}
               value={options.zone2D.id}
               className="fa"
-              isVisible={activeSpectrum}
+              isVisible={activeSpectrum ? true : false}
             >
               <ToolTip
                 title={`${options.zone2D.label} ( Press r )`}
@@ -219,7 +211,7 @@ function FunctionToolBar({
           <ToggleButton
             key={options.slicingTool.id}
             value={options.slicingTool.id}
-            isVisible={activeSpectrum}
+            isVisible={activeSpectrum ? true : false}
           >
             <ToolTip
               title={`${options.slicingTool.label}`}
@@ -236,11 +228,7 @@ function FunctionToolBar({
               key={options.rangesPicking.id}
               value={options.rangesPicking.id}
               className="cheminfo"
-              isVisible={
-                activeSpectrum &&
-                selectedSpectrumInfo &&
-                !selectedSpectrumInfo.info.isFid
-              }
+              isVisible={activeSpectrum && !info?.isFid ? true : false}
             >
               <ToolTip
                 title={options.rangesPicking.label}
@@ -253,9 +241,7 @@ function FunctionToolBar({
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideMultipleSpectraAnalysisTool') &&
-          ((activeSpectrum &&
-            !selectedSpectrumInfo?.info?.isFid &&
-            ftCounter > 1) ||
+          ((activeSpectrum && !info?.isFid && ftCounter > 1) ||
             (!activeSpectrum && fidCounter === 0)) && (
             <ToggleButton
               key={options.multipleSpectraAnalysis.id}
@@ -277,10 +263,7 @@ function FunctionToolBar({
               key={options.zeroFilling.id}
               value={options.zeroFilling.id}
               className="cheminfo"
-              isVisible={
-                selectedSpectrumInfo &&
-                Filters.zeroFilling.isApplicable(selectedSpectrumInfo)
-              }
+              isVisible={Filters.zeroFilling.isApplicable({ info })}
             >
               <ToolTip
                 title={options.zeroFilling.label}
@@ -299,9 +282,11 @@ function FunctionToolBar({
               className="cheminfo"
               isVisible={
                 activeSpectrum &&
-                selectedSpectrumInfo &&
-                Filters.phaseCorrection.isApplicable(selectedSpectrumInfo) &&
-                datum.im
+                info &&
+                Filters.phaseCorrection.isApplicable({ info }) &&
+                (datum as Data1D).im
+                  ? true
+                  : false
               }
             >
               <ToolTip
@@ -322,8 +307,10 @@ function FunctionToolBar({
               className="cheminfo"
               isVisible={
                 activeSpectrum &&
-                selectedSpectrumInfo &&
-                Filters.baselineCorrection.isApplicable(selectedSpectrumInfo)
+                info &&
+                Filters.baselineCorrection.isApplicable({ info })
+                  ? true
+                  : false
               }
             >
               <ToolTip
@@ -339,7 +326,7 @@ function FunctionToolBar({
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideExclusionZonesTool') &&
           isPanelVisible('hideMultipleSpectraAnalysisPanel') &&
-          !selectedSpectrumInfo.info.isFid && (
+          !info?.isFid && (
             <ToggleButton
               key={options.exclusionZones.id}
               value={options.exclusionZones.id}
@@ -358,8 +345,8 @@ function FunctionToolBar({
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('hideFFTTool') &&
-        selectedSpectrumInfo &&
-        Filters.fft.isApplicable(selectedSpectrumInfo) && (
+        info &&
+        Filters.fft.isApplicable({ info }) && (
           <button
             className="cheminfo"
             type="button"
@@ -378,4 +365,28 @@ function FunctionToolBar({
   );
 }
 
-export default ToolBarWrapper(memo(FunctionToolBar));
+const MemoizedFunctionToolBar = memo(FunctionToolBarInner);
+
+export default function FunctionToolBar({
+  defaultValue = options.zoom.id,
+}: {
+  defaultValue?: string;
+}) {
+  const { activeSpectrum, verticalAlign, displayerMode, activeTab } =
+    useChartData();
+
+  const data = useDatumWithSpectraStatistics();
+
+  return (
+    <MemoizedFunctionToolBar
+      {...{
+        ...data,
+        activeSpectrum,
+        verticalAlign,
+        displayerMode,
+        activeTab,
+        defaultValue,
+      }}
+    />
+  );
+}

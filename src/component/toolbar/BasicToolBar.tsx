@@ -19,6 +19,9 @@ import {
   FaFileImport,
 } from 'react-icons/fa';
 
+import { Info as InfoDatum1D } from '../../data/data1d/Spectrum1D';
+import { Info as InfoDatum2D } from '../../data/data2d/Spectrum2D';
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
@@ -26,10 +29,11 @@ import MenuButton from '../elements/MenuButton';
 import ToolTip from '../elements/ToolTip/ToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
-import ToolBarWrapper from '../hoc/ToolBarWrapper';
+import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
+import { ActiveSpectrum } from '../reducer/Reducer';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
 
@@ -105,26 +109,26 @@ const EXPORT_MENU = [
   },
 ];
 
-interface BasicToolBarProps {
-  activeSpectrum: boolean;
+interface BasicToolBarInnerProps {
+  activeSpectrum: ActiveSpectrum | null;
   fidCounter: number;
   ftCounter: number;
-  displayerMode: any;
-  info: any;
+  displayerMode: DISPLAYER_MODE;
+  info: InfoDatum1D | InfoDatum2D;
   verticalAlign: {
     flag: boolean;
     stacked: boolean;
   };
 }
 
-function BasicToolBar({
+function BasicToolBarInner({
   info,
   verticalAlign,
   displayerMode,
   ftCounter,
   fidCounter,
   activeSpectrum,
-}: BasicToolBarProps) {
+}: BasicToolBarInnerProps) {
   const dispatch = useDispatch();
   const preferences = usePreferences();
   const alert = useAlert();
@@ -147,10 +151,6 @@ function BasicToolBar({
     saveToClipboardHandler,
     saveAsHandler,
   } = useExport();
-
-  const selectedSpectrumInfo = {
-    info: { isComplex: false, isFid: false, ...info },
-  };
 
   const LoadJacmpHandler = useCallback(
     (file) => {
@@ -274,9 +274,7 @@ function BasicToolBar({
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('hideSpectraStackAlignments') &&
-        ((activeSpectrum &&
-          !selectedSpectrumInfo?.info?.isFid &&
-          ftCounter > 1) ||
+        ((activeSpectrum && !info?.isFid && ftCounter > 1) ||
           (!activeSpectrum && fidCounter === 0)) && (
           <button
             type="button"
@@ -298,8 +296,7 @@ function BasicToolBar({
         )}
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('hideRealImaginary') &&
-        selectedSpectrumInfo &&
-        selectedSpectrumInfo.info.isComplex && (
+        info.isComplex && (
           <button
             css={styles}
             className="cheminfo"
@@ -344,4 +341,24 @@ function BasicToolBar({
   );
 }
 
-export default ToolBarWrapper(memo(BasicToolBar));
+const MemoizedBasicToolBar = memo(BasicToolBarInner);
+
+export default function BasicToolBar() {
+  const { activeSpectrum, verticalAlign, displayerMode, activeTab } =
+    useChartData();
+
+  const { info, fidCounter, ftCounter } = useDatumWithSpectraStatistics();
+  return (
+    <MemoizedBasicToolBar
+      {...{
+        info,
+        fidCounter,
+        ftCounter,
+        activeSpectrum,
+        verticalAlign,
+        displayerMode,
+        activeTab,
+      }}
+    />
+  );
+}
