@@ -10,7 +10,7 @@ import {
   updateShift as update2dShift,
 } from '../../../data/data2d/Spectrum2D';
 import nucleusToString from '../../utility/nucleusToString';
-import { State } from '../Reducer';
+import { ActiveSpectrum, State } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
 import { setDomain, setMode } from './DomainActions';
@@ -24,7 +24,7 @@ function setDataBy1DFilter(datum: Datum1D) {
 function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   //apply filter into the spectrum
   if (draft.activeSpectrum?.id) {
-    const index = draft.activeSpectrum.index;
+    const index = draft.activeSpectrum?.index;
 
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.shiftX.id, options: shiftValue },
@@ -119,19 +119,21 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
 }
 
 function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
-  const { index } = draft.activeSpectrum;
-  const {
-    data: { x, re, im },
-    info,
-  } = draft.data[index] as Datum1D;
+  if (draft.activeSpectrum) {
+    const { index } = draft.activeSpectrum;
+    const {
+      data: { x, re, im },
+      info,
+    } = draft.data[index] as Datum1D;
 
-  const { ph0, ph1 } = filterOptions;
-  let _data = { data: { x: x, re: re, im }, info };
-  phaseCorrection(_data, { ph0, ph1 });
-  const { im: newIm, re: newRe } = _data.data;
-  draft.tempData[index].data.im = newIm;
-  draft.tempData[index].data.re = newRe;
-  draft.tempData[index].data.y = newRe;
+    const { ph0, ph1 } = filterOptions;
+    let _data = { data: { x: x, re: re, im }, info };
+    phaseCorrection(_data, { ph0, ph1 });
+    const { im: newIm, re: newRe } = _data.data;
+    draft.tempData[index].data.im = newIm;
+    draft.tempData[index].data.re = newRe;
+    draft.tempData[index].data.y = newRe;
+  }
 }
 
 function enableFilter(draft: Draft<State>, filterID, checked) {
@@ -251,7 +253,7 @@ function resetSpectrumByFilter(
     returnCurrentDatum?: boolean;
     searchBy?: 'id' | 'name';
   } = {},
-  activeSpectrum = null,
+  activeSpectrum: ActiveSpectrum | null = null,
 ) {
   const {
     updateDomain = true,

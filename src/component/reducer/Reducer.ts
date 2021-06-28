@@ -37,6 +37,11 @@ import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
 
+export interface ActiveSpectrum {
+  id: string;
+  index: number;
+}
+
 export const initialState = {
   data: [],
   contours: null,
@@ -122,7 +127,7 @@ export interface State {
   width: number;
   height: number;
   margin: { top: number; right: number; bottom: number; left: number };
-  activeSpectrum: any;
+  activeSpectrum: ActiveSpectrum | null;
   mode: string;
   zoomFactor: Partial<{ scale: number }>;
   integralZoomFactor: Partial<{ scale: number }>;
@@ -151,7 +156,7 @@ export interface State {
   overDisplayer: boolean;
 
   toolOptions: {
-    selectedTool: string | null;
+    selectedTool: string;
     selectedOptionPanel: any;
 
     data: {

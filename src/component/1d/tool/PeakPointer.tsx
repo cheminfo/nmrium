@@ -44,7 +44,7 @@ function PeakPointer() {
       if (activeSpectrum) {
         return verticalAlign.flag
           ? verticalAlign.stacked
-            ? activeSpectrum.index * verticalAlign.value
+            ? activeSpectrum?.index * verticalAlign.value
             : 0
           : 0;
       }

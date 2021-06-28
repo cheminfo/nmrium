@@ -80,7 +80,7 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
 
   let refreshDomain = false;
 
-  const currentActiveSpectrum = draft.activeSpectrum;
+  const currentActiveSpectrum = draft.activeSpectrum || null;
 
   if (activeSpectrum) {
     // AnalysisObj.getDatum(activeSpectrum.id).setDisplay({ isVisible: true });

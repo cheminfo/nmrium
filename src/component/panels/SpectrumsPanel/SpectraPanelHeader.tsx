@@ -6,11 +6,14 @@ import {
   FaEyeSlash,
 } from 'react-icons/fa';
 
+import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import SpectraWrapper from '../../hoc/SpectraWrapper';
+import { ActiveSpectrum } from '../../reducer/Reducer';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   ADD_MISSING_PROJECTION,
@@ -21,13 +24,24 @@ import {
 } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
-function SpectraPanelHeader({
+interface SpectraPanelHeaderProps {
+  spectrums: Array<Datum1D | Datum2D>;
+}
+
+interface SpectraPanelHeaderInnerProps extends SpectraPanelHeaderProps {
+  data: Array<Datum1D | Datum2D>;
+  activeTab: string;
+  activeSpectrum: ActiveSpectrum | null;
+  displayerMode: string;
+}
+
+function SpectraPanelHeaderInner({
   data,
   activeSpectrum,
   activeTab,
   displayerMode,
   spectrums,
-}) {
+}: SpectraPanelHeaderInnerProps) {
   const modal = useModal();
   const alert = useAlert();
   const dispatch = useDispatch();
@@ -62,7 +76,7 @@ function SpectraPanelHeader({
     function getMissingProjection(SpectrumsData) {
       let nucleus = activeTab.split(',');
       nucleus = nucleus[0] === nucleus[1] ? [nucleus[0]] : nucleus;
-      const missingNucleus = [];
+      const missingNucleus: Array<string> = [];
       for (const n of nucleus) {
         const hasSpectrums = SpectrumsData.some((d) => d.info.nucleus === n);
         if (!hasSpectrums) {
@@ -89,7 +103,7 @@ function SpectraPanelHeader({
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
-      counter={spectrums && spectrums.length}
+      counter={spectrums?.length}
       deleteToolTip="Delete all spectra"
     >
       <Button popupTitle="Hide all spectra" onClick={hideAllSpectrumsHandler}>
@@ -120,4 +134,14 @@ function SpectraPanelHeader({
   );
 }
 
-export default SpectraWrapper(memo(SpectraPanelHeader));
+const MemoizedSpectraPanelHeader = memo(SpectraPanelHeaderInner);
+
+export default function SpectrumsTabs({ spectrums }: SpectraPanelHeaderProps) {
+  const { data, activeSpectrum, activeTab, displayerMode } = useChartData();
+
+  return (
+    <MemoizedSpectraPanelHeader
+      {...{ data, activeSpectrum, activeTab, displayerMode, spectrums }}
+    />
+  );
+}

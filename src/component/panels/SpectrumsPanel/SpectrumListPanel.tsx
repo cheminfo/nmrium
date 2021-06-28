@@ -10,17 +10,7 @@ const styles: CSSProperties = {
   flexDirection: 'column',
 };
 
-interface SpectrumListPanelProps {
-  data?: any;
-  activeSpectrum?: any;
-  activeTab?: any;
-}
-
-function SpectrumListPanel({
-  data,
-  activeSpectrum,
-  activeTab: activeTabState,
-}: SpectrumListPanelProps) {
+function SpectrumListPanel() {
   const [spectrums, setSpectrums] = useState<Array<any>>([]);
 
   const tabChangeHandler = useCallback((e) => {
@@ -30,12 +20,7 @@ function SpectrumListPanel({
   return (
     <div style={styles}>
       <SpectraPanelHeader spectrums={spectrums} />
-      <SpectrumsTabs
-        onTabChange={tabChangeHandler}
-        data={data}
-        activeSpectrum={activeSpectrum}
-        activeTab={activeTabState}
-      />
+      <SpectrumsTabs onTabChange={tabChangeHandler} />
     </div>
   );
 }

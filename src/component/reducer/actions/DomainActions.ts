@@ -17,7 +17,7 @@ function getActiveData(draft: Draft<State>) {
     } else {
       if (draft.activeSpectrum && data) {
         const activeSpectrumIndex = data.findIndex(
-          (datum) => datum.id === draft.activeSpectrum.id,
+          (datum) => datum.id === draft.activeSpectrum?.id,
         );
         if (activeSpectrumIndex !== -1) {
           const isFid = data[activeSpectrumIndex].info.isFid || false;

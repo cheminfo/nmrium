@@ -5,15 +5,19 @@ import {
   useRef,
   Fragment,
   useEffect,
+  memo,
 } from 'react';
 
+import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import ContextMenu from '../../elements/ContextMenu';
 import Tab from '../../elements/Tab/Tab';
 import Tabs from '../../elements/Tab/Tabs';
 import { useAlert } from '../../elements/popup/Alert';
-import SpectraWrapper from '../../hoc/SpectraWrapper';
+import { ActiveSpectrum } from '../../reducer/Reducer';
 import {
   CHANGE_PEAKS_MARKERS_VISIBILITY,
   SET_ACTIVE_TAB,
@@ -27,9 +31,28 @@ import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import SpectrumListItem from './SpectrumListItem';
 import SpectrumSetting from './base/setting/SpectrumSetting';
 
-function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
+interface TabChangeProps {
+  tab: string;
+  data: Array<Datum1D | Datum2D>;
+}
+
+interface SpectrumsTabsProps {
+  onTabChange: (data: TabChangeProps) => void;
+}
+interface SpectrumsTabsInnerProps extends SpectrumsTabsProps {
+  data: Array<Datum1D | Datum2D>;
+  activeTab: string;
+  activeSpectrum: ActiveSpectrum | null;
+}
+
+function SpectrumsTabsInner({
+  data,
+  activeSpectrum,
+  activeTab,
+  onTabChange,
+}: SpectrumsTabsInnerProps) {
   const contextRef = useRef<any>();
-  const [markersVisible, setMarkersVisible] = useState<Array<{ id: number }>>(
+  const [markersVisible, setMarkersVisible] = useState<Array<{ id: string }>>(
     [],
   );
   const [selectedSpectrumData, setSelectedSpectrum] = useState(null);
@@ -44,9 +67,15 @@ function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
 
   useEffect(() => {
     if (data) {
-      const visibleMarkers = data
-        ? data.filter((d) => d.display.isPeaksMarkersVisible === true)
-        : [];
+      const visibleMarkers = data.reduce((acc: any, datum) => {
+        if (
+          datum.info.dimension === 1 &&
+          (datum as Datum1D).display.isPeaksMarkersVisible === true
+        ) {
+          acc.push({ id: datum.id });
+        }
+        return acc;
+      }, []);
 
       setMarkersVisible(visibleMarkers);
     }
@@ -209,4 +238,12 @@ function SpectrumsTabs({ data, activeSpectrum, activeTab, onTabChange }) {
   );
 }
 
-export default SpectraWrapper(SpectrumsTabs);
+const MemoizedSpectra = memo(SpectrumsTabsInner);
+
+export default function SpectrumsTabs({ onTabChange }: SpectrumsTabsProps) {
+  const { data, activeSpectrum, activeTab } = useChartData();
+
+  return (
+    <MemoizedSpectra {...{ data, activeSpectrum, activeTab, onTabChange }} />
+  );
+}

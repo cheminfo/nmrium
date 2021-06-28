@@ -67,16 +67,18 @@ function addPeaks(draft: Draft<State>, action) {
 }
 
 function deletePeak(draft: Draft<State>, peakData) {
-  const { index } = draft.activeSpectrum;
-  const state = original(draft) as State;
+  if (draft.activeSpectrum) {
+    const { index } = draft.activeSpectrum;
+    const state = original(draft) as State;
 
-  if (peakData == null) {
-    (draft.data[index] as Datum1D).peaks.values = [];
-  } else {
-    const peakIndex = (state.data[index] as Datum1D).peaks.values.findIndex(
-      (p) => p.id === peakData.id,
-    );
-    (draft.data[index] as Datum1D).peaks.values.splice(peakIndex, 1);
+    if (peakData == null) {
+      (draft.data[index] as Datum1D).peaks.values = [];
+    } else {
+      const peakIndex = (state.data[index] as Datum1D).peaks.values.findIndex(
+        (p) => p.id === peakData.id,
+      );
+      (draft.data[index] as Datum1D).peaks.values.splice(peakIndex, 1);
+    }
   }
 }
 

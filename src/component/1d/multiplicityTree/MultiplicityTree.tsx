@@ -62,7 +62,9 @@ function MultiplicityTree({
   );
 
   const spectrumData = useMemo(
-    () => lodashGet(spectraData, `${activeSpectrum.index}`, null),
+    () =>
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      lodashGet(spectraData, `${activeSpectrum?.index}`, null),
     [activeSpectrum, spectraData],
   );
 

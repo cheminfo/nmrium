@@ -1,11 +1,14 @@
 import { SvgNmrFid, SvgNmrFt, SvgNmr2D } from 'cheminfo-font';
-import { memo } from 'react';
+import { CSSProperties, memo } from 'react';
 
 import ColorIndicator from './base/ColorIndicator';
 import ShowHideMarkersButton from './base/ShowHideMarkersButton';
 import ShowHideSpectrumButton from './base/ShowHideSpectrumButton';
 
-const styles = {
+const styles: Record<
+  'button' | 'row' | 'name' | 'info' | 'icon',
+  CSSProperties
+> = {
   button: {
     backgroundColor: 'transparent',
     border: 'none',
@@ -100,12 +103,12 @@ function SpectrumListItem({
               paddingRight: '5px',
             }}
           />
-          {data.info && data.info.experiment}
+          {data.info?.experiment}
         </span>
 
         {/* {data.info && data.info.solvent} */}
         {/* </div> */}
-        <span style={styles.info}>{data.info && data.info.pulse}</span>
+        <span style={styles.info}>{data.info?.pulse}</span>
       </div>
 
       <ShowHideMarkersButton

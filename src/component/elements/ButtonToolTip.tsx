@@ -4,11 +4,11 @@ import ToolTip from './ToolTip/ToolTip';
 
 interface ButtonToolTipProps
   extends Omit<InputHTMLAttributes<HTMLButtonElement>, 'type'> {
-  popupTitle: string;
-  popupPlacement: string;
+  popupTitle?: string;
+  popupPlacement?: string;
   style?: CSSProperties;
-  onClick: () => void;
-  children: ReactNode;
+  onClick?: (e: any) => void;
+  children?: ReactNode;
 }
 
 function ButtonToolTip({

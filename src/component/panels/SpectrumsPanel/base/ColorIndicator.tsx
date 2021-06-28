@@ -58,12 +58,12 @@ type ColorIndicatorProps = BaseColorIndicatorProps &
 
 interface BaseColorIndicatorProps {
   activated: boolean;
-  onClick: () => void;
+  onClick: (e: any) => void;
   style: CSSProperties;
 }
 
 function ColorIndicator(props: ColorIndicatorProps) {
-  const { style, onClick, activated } = props;
+  const { style, onClick = () => null, activated } = props;
 
   return (
     <button

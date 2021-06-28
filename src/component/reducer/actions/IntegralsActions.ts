@@ -76,20 +76,22 @@ function addIntegral(draft: Draft<State>, action) {
 }
 
 function deleteIntegral(draft: Draft<State>, action) {
-  const state = original(draft) as State;
-  const { index } = draft.activeSpectrum;
-  const { integralID } = action;
+  if (draft.activeSpectrum) {
+    const state = original(draft) as State;
+    const { index } = draft.activeSpectrum;
+    const { integralID } = action;
 
-  const datum = draft.data[index] as Datum1D;
+    const datum = draft.data[index] as Datum1D;
 
-  if (integralID == null) {
-    datum.integrals.values = [];
-  } else {
-    const peakIndex = (state.data[index] as Datum1D).integrals.values.findIndex(
-      (p) => p.id === integralID,
-    );
-    datum.integrals.values.splice(peakIndex, 1);
-    updateIntegralIntegrals(datum);
+    if (integralID == null) {
+      datum.integrals.values = [];
+    } else {
+      const peakIndex = (
+        state.data[index] as Datum1D
+      ).integrals.values.findIndex((p) => p.id === integralID);
+      datum.integrals.values.splice(peakIndex, 1);
+      updateIntegralIntegrals(datum);
+    }
   }
 }
 

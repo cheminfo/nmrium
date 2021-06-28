@@ -26,18 +26,20 @@ import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
 
 function getStrongestPeak(draft: Draft<State>) {
   const { activeSpectrum, data } = draft;
-  const activeData = data[activeSpectrum.index].data as Data1D;
-  const strongestPeakValue = max(activeData.y);
-  const index = activeData.y.findIndex((val) => val === strongestPeakValue);
-  return {
-    xValue: activeData.x[index],
-    yValue: strongestPeakValue,
-    index: index,
-  };
+  if (activeSpectrum) {
+    const activeData = data[activeSpectrum?.index].data as Data1D;
+    const strongestPeakValue = max(activeData.y);
+    const index = activeData.y.findIndex((val) => val === strongestPeakValue);
+    return {
+      xValue: activeData.x[index],
+      yValue: strongestPeakValue,
+      index: index,
+    };
+  }
 }
 
 function setFilterChanges(draft: Draft<State>, selectedFilter) {
-  const activeSpectrumId = draft.activeSpectrum.id;
+  const activeSpectrumId = draft.activeSpectrum?.id;
 
   //save reduced snapshot
   //select the equalizer tool when you enable manual phase correction filter
@@ -56,7 +58,10 @@ function setFilterChanges(draft: Draft<State>, selectedFilter) {
       draft.tempData[datumAfterPhaseCorrection?.index] =
         datumAfterPhaseCorrection?.datum;
     }
-    const { xValue, index } = getStrongestPeak(draft);
+    const { xValue, index } = getStrongestPeak(draft) || {
+      xValue: 0,
+      index: 0,
+    };
 
     draft.toolOptions.data.pivot = { value: xValue, index };
   } else {
