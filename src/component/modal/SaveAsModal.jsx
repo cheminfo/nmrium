@@ -68,7 +68,7 @@ function SaveAsModal({ onClose, onSave, name }) {
               label=""
               name="name"
               className="name"
-              styleInput={{
+              style={{
                 container: { width: '100%' },
               }}
             />

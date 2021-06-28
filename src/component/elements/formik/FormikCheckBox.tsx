@@ -17,7 +17,7 @@ function FormikCheckBox(props: FormikCheckBoxProps) {
     label,
     name,
     onChange = () => null,
-    className = '',
+    className = 'checkbox',
     reverse = false,
     ...resProps
   } = props;

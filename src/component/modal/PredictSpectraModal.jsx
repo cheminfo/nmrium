@@ -141,13 +141,13 @@ function PredictSpectraModal({ onClose, molfile }) {
               label="From"
               name="1h.from"
               type="number"
-              styleInput={{ label: { padding: '0 10px 0 0' } }}
+              style={{ label: { padding: '0 10px 0 0' } }}
             />
             <FormikInput
               label="To"
               name="1h.to"
               type="number"
-              styleInput={{ label: { padding: '0 10px' } }}
+              style={{ label: { padding: '0 10px' } }}
             />
           </div>
           <div className="row margin-10">
@@ -156,13 +156,13 @@ function PredictSpectraModal({ onClose, molfile }) {
               label="From"
               name="13c.from"
               type="number"
-              styleInput={{ label: { padding: '0 10px 0 0' } }}
+              style={{ label: { padding: '0 10px 0 0' } }}
             />
             <FormikInput
               label="To"
               name="13c.to"
               type="number"
-              styleInput={{ label: { padding: '0 10px' } }}
+              style={{ label: { padding: '0 10px' } }}
             />
           </div>
           <div className="row margin-10">

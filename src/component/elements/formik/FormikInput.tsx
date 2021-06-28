@@ -7,7 +7,7 @@ import Input, { InputProps } from '../Input';
 interface FormikInputProps extends InputProps {
   name: string;
   label?: string;
-  styleInput?: {
+  style?: {
     label?: any;
     input?: any;
   };
@@ -24,7 +24,7 @@ function FormikInput(props: FormikInputProps) {
   const {
     label,
     name,
-    styleInput = { label: {}, input: {} },
+    style: styleInput = { label: {}, input: {} },
     onChange = () => null,
     checkValue = () => true,
     type = 'text',
@@ -66,7 +66,7 @@ function FormikInput(props: FormikInputProps) {
       value={value ? value : lodashGet(values, name)}
       onChange={changeHandler}
       type={type}
-      styleInput={{
+      style={{
         ...styleInput,
         input: {
           ...styleInput.input,

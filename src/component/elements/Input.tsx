@@ -21,11 +21,11 @@ const styles: Record<'label' | 'input', CSSProperties> = {
 };
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'style'> {
   name?: string;
   label?: string;
   value?: any;
-  styleInput?: {
+  style?: {
     label?: any;
     input?: any;
     container?: any;
@@ -48,7 +48,7 @@ const Input = forwardRefWithAs(
       label,
       value = '',
       name,
-      styleInput = { label: {}, input: {}, container: {} },
+      style: styleInput = { label: {}, input: {}, container: {} },
       onChange = () => null,
       debounceTime = 0,
       onKeyDown = () => null,
