@@ -8,8 +8,8 @@ import {
   CSSProperties,
 } from 'react';
 
-import { useChartData } from '../context/ChartContext';
 import ReactTableFlexLayout from '../elements/ReactTable/ReactTableFlexLayout';
+import useSpectrum from '../hooks/useSpectrum';
 
 const styles: Record<
   'container' | 'tableContainer' | 'searchInput',
@@ -134,16 +134,7 @@ const MemoizedInformationPanel = memo(InformationPanelInner);
 const emptyData = { info: {}, meta: {} };
 
 export default function InformationPanel() {
-  const { data, activeSpectrum } = useChartData();
+  const { info, meta } = useSpectrum(emptyData);
 
-  const memoizedData = useMemo(() => {
-    if (data && activeSpectrum && activeSpectrum.id) {
-      const datum =
-        data.find((datum) => datum.id === activeSpectrum.id) || emptyData;
-      return datum;
-    }
-    return emptyData;
-  }, [activeSpectrum, data]);
-
-  return <MemoizedInformationPanel {...memoizedData} />;
+  return <MemoizedInformationPanel {...{ info, meta }} />;
 }
