@@ -118,7 +118,7 @@ function PeaksPanelInner({
     <div style={styles.container}>
       {!isFlipped && (
         <DefaultPanelHeader
-          counter={peaks.values?.length}
+          counter={peaks?.values?.length}
           onDelete={handleDeleteAll}
           deleteToolTip="Delete All Peaks"
           onFilter={handleOnFilter}
@@ -161,7 +161,7 @@ function PeaksPanelInner({
 
 const MemoizedPeaksPanel = memo(PeaksPanelInner);
 
-const emptyData = { peaks: {}, info: {} };
+const emptyData = { peaks: null, info: {} };
 
 export default function PeaksPanel() {
   const { xDomain, activeTab } = useChartData();
