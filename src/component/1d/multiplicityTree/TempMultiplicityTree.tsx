@@ -1,10 +1,14 @@
 import { memo } from 'react';
 
-import TempRangeWrapper from '../../hoc/TempRangeWrapper';
+import { useChartData } from '../../context/ChartContext';
 
 import MultiplicityTree from './MultiplicityTree';
 
-function TempMultiplicityTree({ range }) {
+interface TempMultiplicityTreeInnerProps {
+  range: any;
+}
+
+function TempMultiplicityTreeInner({ range }: TempMultiplicityTreeInnerProps) {
   return (
     range?.signal &&
     range.signal.length > 0 &&
@@ -19,4 +23,14 @@ function TempMultiplicityTree({ range }) {
   );
 }
 
-export default TempRangeWrapper(memo(TempMultiplicityTree));
+const MemoizedTempMultiplicityTree = memo(TempMultiplicityTreeInner);
+
+export default function TempMultiplicityTree() {
+  const {
+    toolOptions: {
+      data: { tempRange },
+    },
+  } = useChartData();
+
+  return <MemoizedTempMultiplicityTree range={tempRange} />;
+}
