@@ -8,9 +8,12 @@ import {
 } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
+import { Datum1D, Info, Peaks } from '../../../data/data1d/Spectrum1D';
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import { useModal } from '../../elements/popup/Modal';
-import PeaksWrapper from '../../hoc/PeaksWrapper';
+import useSpectrum from '../../hooks/useSpectrum';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
@@ -27,24 +30,21 @@ const styles: Record<'container', CSSProperties> = {
   },
 };
 
-interface PeaksPanelProps {
-  peaks: any;
-  xDomain: any;
+interface PeaksPanelInnerProps {
+  peaks: Peaks;
+  xDomain: number[];
   activeTab: string;
   preferences: any;
-  info: {
-    nucleus: string;
-    originFrequency: number;
-  };
+  info: Info;
 }
 
-function PeaksPanel({
+function PeaksPanelInner({
   peaks,
   info,
   xDomain,
   activeTab,
   preferences,
-}: PeaksPanelProps) {
+}: PeaksPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
   const [isFlipped, setFlipStatus] = useState(false);
   const format = useFormatNumberByNucleus(info.nucleus);
@@ -96,7 +96,7 @@ function PeaksPanel({
 
       return _peaks
         .map((peak) => {
-          const value = format(peak.delta);
+          const value = Number(format(peak.delta));
           return {
             value: value,
             valueHz: info?.originFrequency
@@ -159,4 +159,16 @@ function PeaksPanel({
   );
 }
 
-export default PeaksWrapper(memo(PeaksPanel));
+const MemoizedPeaksPanel = memo(PeaksPanelInner);
+
+const emptyData = { peaks: {}, info: {} };
+
+export default function PeaksPanel() {
+  const { xDomain, activeTab } = useChartData();
+  const { peaks, info } = useSpectrum(emptyData) as Datum1D;
+  const preferences = usePreferences();
+
+  return (
+    <MemoizedPeaksPanel {...{ peaks, info, xDomain, activeTab, preferences }} />
+  );
+}

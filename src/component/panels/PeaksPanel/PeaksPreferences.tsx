@@ -5,13 +5,16 @@ import {
   useImperativeHandle,
   useRef,
   CSSProperties,
+  memo,
+  useMemo,
 } from 'react';
 
+import { useChartData } from '../../context/ChartContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
-import PeaksWrapper from '../../hoc/PeaksWrapper';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import {
   useStateWithLocalStorage,
@@ -100,8 +103,15 @@ const formatFields: Array<{
     formatController: 'intensityFormat',
   },
 ];
+interface PeaksPreferencesInnerProps {
+  nucleus: string[];
+  preferences: any;
+}
 
-function PeaksPreferences({ nucleus, preferences }, ref) {
+function PeaksPreferencesInner(
+  { nucleus, preferences }: PeaksPreferencesInnerProps,
+  ref,
+) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const formRef = useRef<any>(null);
@@ -180,4 +190,17 @@ function PeaksPreferences({ nucleus, preferences }, ref) {
   );
 }
 
-export default PeaksWrapper(forwardRef(PeaksPreferences));
+const MemoizedPeaksPreferences = memo(forwardRef(PeaksPreferencesInner));
+
+export default function PeaksPreferences(props) {
+  const { tabActiveSpectrum } = useChartData();
+  const nucleus = useMemo(() => {
+    if (tabActiveSpectrum && Object.keys(tabActiveSpectrum).length > 0) {
+      return Object.keys(tabActiveSpectrum);
+    }
+    return [];
+  }, [tabActiveSpectrum]);
+
+  const preferences = usePreferences();
+  return <MemoizedPeaksPreferences {...{ nucleus, preferences, ...props }} />;
+}

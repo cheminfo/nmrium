@@ -47,6 +47,7 @@ export interface Info {
   dimension: number;
   isFt: boolean;
   experiment?: any;
+  originFrequency: number;
 }
 export interface Peak {
   id: string;
