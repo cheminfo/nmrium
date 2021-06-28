@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { useMemo, memo } from 'react';
 
+import { Filter } from '../../../data/FiltersManager';
 import {
   Table,
   TableHead,
@@ -9,29 +10,10 @@ import {
   TableBody,
   TableRow,
 } from '../../elements/Table';
-import FiltersWrapper from '../../hoc/FiltersWrapper';
+import useSpectrum from '../../hooks/useSpectrum';
 import NoTableData from '../extra/placeholder/NoTableData';
 
 import FiltersTable from './FiltersTable';
-
-export interface FiltersProps {
-  id: number;
-  name: string;
-
-  flag: boolean;
-  label: string;
-  isDeleteAllow: boolean;
-
-  error?: any;
-  value: any;
-}
-
-interface FilterPanelProps {
-  filters: Array<FiltersProps>;
-  spectraCounter: number;
-  selectedTool: string | number;
-  activeFilterID: string | number;
-}
 
 const styles = css`
   .btn {
@@ -74,7 +56,15 @@ const styles = css`
   }
 `;
 
-function FilterPanel({ filters }: FilterPanelProps) {
+export interface FiltersProps extends Filter {
+  error?: any;
+}
+
+interface FiltersPanelInnerProps {
+  filters: Array<FiltersProps>;
+}
+
+function FilterPanelInner({ filters }: FiltersPanelInnerProps) {
   const filtersTable = useMemo(() => {
     return filters ? (
       <Table>
@@ -100,4 +90,12 @@ function FilterPanel({ filters }: FilterPanelProps) {
   return filtersTable;
 }
 
-export default FiltersWrapper(memo(FilterPanel));
+const emptyData = { filters: [] };
+
+const MemoizedFilterPanel = memo(FilterPanelInner);
+
+export default function FilterPanel() {
+  const { filters } = useSpectrum(emptyData);
+
+  return <MemoizedFilterPanel filters={filters} />;
+}

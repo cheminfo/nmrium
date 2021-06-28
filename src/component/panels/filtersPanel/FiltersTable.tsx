@@ -2,12 +2,14 @@ import { useMemo, useCallback, memo, useRef } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { ObjectInspector } from 'react-inspector';
 
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import CheckBox from '../../elements/CheckBox';
 import { TableCell, TableRow } from '../../elements/Table';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import FiltersWrapper from '../../hoc/FiltersWrapper';
+import useSpectraByActiveNucleus from '../../hooks/useSpectraPerNucleus';
+import useSpectrum from '../../hooks/useSpectrum';
 import {
   ENABLE_FILTER,
   DELETE_FILTER,
@@ -17,19 +19,19 @@ import {
 
 import { FiltersProps } from './FilterPanel';
 
-interface FiltersTableProps {
+interface FiltersTableInnerProps {
   filters: Array<FiltersProps>;
   spectraCounter: number;
-  selectedTool: string | number;
-  activeFilterID: string | number;
+  selectedTool: string | null;
+  activeFilterID: string | null;
 }
 
-function FiltersTable({
+function FiltersTableInner({
   filters,
   spectraCounter,
   selectedTool,
   activeFilterID,
-}: FiltersTableProps) {
+}: FiltersTableInnerProps) {
   const dispatch = useDispatch();
   const modal = useModal();
   const alert = useAlert();
@@ -175,4 +177,23 @@ function FiltersTable({
   return <>{filtersTableRow}</>;
 }
 
-export default FiltersWrapper(memo(FiltersTable));
+const emptyData = { filters: [] };
+
+const MemoizedFiltersTable = memo(FiltersTableInner);
+
+export default function FilterTable() {
+  const {
+    toolOptions: {
+      selectedTool,
+      data: { activeFilterID },
+    },
+  } = useChartData();
+  const { filters } = useSpectrum(emptyData);
+  const spectraCounter = useSpectraByActiveNucleus().length;
+
+  return (
+    <MemoizedFiltersTable
+      {...{ selectedTool, filters, spectraCounter, activeFilterID }}
+    />
+  );
+}

@@ -94,6 +94,7 @@ export const initialState = {
       exclusionZones: {},
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
+      activeFilterID: null,
       tempRange: null,
       showMultiplicityTrees: false,
     },
@@ -150,7 +151,7 @@ export interface State {
   overDisplayer: boolean;
 
   toolOptions: {
-    selectedTool: string | number;
+    selectedTool: string | null;
     selectedOptionPanel: any;
 
     data: {
@@ -158,7 +159,7 @@ export interface State {
       exclusionZones: Record<string, Array<ExclusionZoneState>>;
       pivot: { value: number; index: number };
       zonesNoiseFactor: number;
-      activeFilterID?: string | number | null;
+      activeFilterID: string | null;
       tempRange: any;
       showMultiplicityTrees: boolean;
     };
