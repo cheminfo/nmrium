@@ -1,10 +1,22 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useMemo,
+  CSSProperties,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
+import { Filters } from '../../data/Filters';
+import { Filter } from '../../data/FiltersManager';
+import { Data1D, Datum1D } from '../../data/data1d/Spectrum1D';
+import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Input from '../elements/Input';
 import InputRange from '../elements/InputRange';
 import Select from '../elements/Select';
-import ManualPhaseCorrectionWrapper from '../hoc/ManualPhaseCorrectionWrapper';
+import useSpectrum from '../hooks/useSpectrum';
 import {
   APPLY_MANUAL_PHASE_CORRECTION_FILTER,
   APPLY_AUTO_PHASE_CORRECTION_FILTER,
@@ -13,7 +25,10 @@ import {
   APPLY_ABSOLUTE_FILTER,
 } from '../reducer/types/Types';
 
-const styles = {
+const styles: Record<
+  'container' | 'input' | 'actionButton' | 'select',
+  CSSProperties
+> = {
   container: {
     padding: '5px',
     height: '100%',
@@ -62,13 +77,23 @@ const algorithms = [
   },
 ];
 
-function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
+interface ManualPhaseCorrectionPanelInnerProps {
+  data: Data1D;
+  pivot: { index: number };
+  filter: Filter | null;
+}
+
+function ManualPhaseCorrectionPanelInner({
+  data,
+  pivot,
+  filter,
+}: ManualPhaseCorrectionPanelInnerProps) {
   const dispatch = useDispatch();
   const [value, setValue] = useState({ ph0: 0, ph1: 0 });
   const valueRef = useRef({ ph0: 0, ph1: 0 });
 
-  const ph0Ref = useRef();
-  const ph1Ref = useRef();
+  const ph0Ref = useRef<any>();
+  const ph1Ref = useRef<any>();
 
   const [phaseCorrectionType, setPhaseCorrectionType] = useState(
     phaseCorrectionTypes.manual,
@@ -115,10 +140,10 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
 
   const calcPhaseCorrectionHandler = useCallback(
     (newValues, filedName) => {
-      if (filedName === 'ph1' && datum.y) {
+      if (filedName === 'ph1' && data.y) {
         const diff0 = newValues.ph0 - valueRef.current.ph0;
         const diff1 = newValues.ph1 - valueRef.current.ph1;
-        newValues.ph0 += diff0 - (diff1 * pivot.index) / datum.y.length;
+        newValues.ph0 += diff0 - (diff1 * pivot?.index) / data.y.length;
       }
 
       dispatch({
@@ -126,7 +151,7 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
         value: newValues,
       });
     },
-    [datum, dispatch, pivot.index],
+    [data?.y, dispatch, pivot?.index],
   );
 
   const handleInput = useCallback(
@@ -169,7 +194,7 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
       <Select
         onChange={onChangeHandler}
         data={algorithms}
-        value={phaseCorrectionTypes.manual}
+        defaultValue={phaseCorrectionTypes.manual}
         style={styles.select}
       />
 
@@ -236,4 +261,26 @@ function ManualPhaseCorrectionPanel({ datum, pivot, filter }) {
   );
 }
 
-export default ManualPhaseCorrectionWrapper(memo(ManualPhaseCorrectionPanel));
+const MemoizedManualPhaseCorrectionPanel = memo(
+  ManualPhaseCorrectionPanelInner,
+);
+
+const emptyData = { datum: {}, filter: null };
+export default function ManualPhaseCorrectionPanel() {
+  const {
+    toolOptions: {
+      data: { pivot },
+    },
+  } = useChartData();
+
+  const { data, filters } = useSpectrum(emptyData) as Datum1D;
+
+  const filter = useMemo(() => {
+    return (
+      filters.find((filter) => filter.name === Filters.phaseCorrection.id) ||
+      null
+    );
+  }, [filters]);
+
+  return <MemoizedManualPhaseCorrectionPanel {...{ data, filter, pivot }} />;
+}
