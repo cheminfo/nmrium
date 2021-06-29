@@ -5,11 +5,14 @@ import { useContext, useCallback, Fragment, memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
 
+import { Datum1D } from '../../data/data1d/Spectrum1D';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
+import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
 import { useHelptData } from '../elements/popup/Help';
-import FooterWrapper from '../hoc/FooterWrapper';
+import useSpectrum from '../hooks/useSpectrum';
+import { ActiveSpectrum } from '../reducer/Reducer';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
@@ -90,7 +93,7 @@ const helpStyles = css`
   }
 `;
 
-interface FooterBannerProps {
+interface FooterBannerInnerProps {
   margin: {
     top: number;
     left: number;
@@ -99,46 +102,38 @@ interface FooterBannerProps {
   };
   width: number;
   height: number;
-  activeSpectrum: {
-    index: number;
-  };
-  data: Array<{
-    info: { originFrequency: any };
-    data: { x: Array<number>; y: Array<number> };
-  }>;
+  activeSpectrum: ActiveSpectrum | null;
+  spectrum: Datum1D;
   activeTab: string;
 }
 
-function FooterBanner({
+function FooterBannerInner({
   margin,
   width,
   height,
   activeSpectrum,
-  data,
+  spectrum,
   activeTab,
-}: FooterBannerProps) {
+}: FooterBannerInnerProps) {
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
   const { scaleX } = useScale();
   const { helpText } = useHelptData();
-  const { originFrequency: frequency } = activeSpectrum
-    ? data[activeSpectrum.index].info
-    : { originFrequency: undefined };
 
   const format = useFormatNumberByNucleus(activeTab);
 
   const getYValue = useCallback(
     (xPosition) => {
-      if (activeSpectrum) {
+      if (spectrum.data) {
         const xIndex = xFindClosestIndex(
-          data[activeSpectrum.index].data.x,
+          spectrum.data.x,
           scaleX().invert(xPosition),
         );
-        return data[activeSpectrum.index].data.y[xIndex];
+        return spectrum.data.y[xIndex];
       }
       return 1;
     },
-    [activeSpectrum, data, scaleX],
+    [spectrum, scaleX],
   );
 
   if (helpText) {
@@ -166,10 +161,14 @@ function FooterBanner({
         <span className="label"> 𝛅: </span>
         <span className="value">{format(scaleX().invert(position.x))}</span>
         <span className="unit">ppm</span>
-        {activeSpectrum && frequency && (
+        {activeSpectrum && spectrum?.info?.originFrequency && (
           <>
             <span className="value">
-              &nbsp;({format(scaleX().invert(position.x) * frequency, 'hz')}
+              &nbsp;(
+              {format(
+                scaleX().invert(position.x) * spectrum?.info?.originFrequency,
+                'hz',
+              )}
             </span>
             <span className="unit">Hz</span>
             <span className="value">) </span>
@@ -187,13 +186,13 @@ function FooterBanner({
       )}
       {activeSpectrum && (
         <Fragment>
-          {frequency && step === 'brushing' && (
+          {spectrum?.info?.originFrequency && step === 'brushing' && (
             <div>
               <span className="label"> ΔHz: </span>
               <span className="value">
                 {(
                   (scaleX().invert(startX) - scaleX().invert(endX)) *
-                  frequency
+                  spectrum?.info?.originFrequency
                 ).toPrecision(5)}
               </span>
             </div>
@@ -228,4 +227,16 @@ function FooterBanner({
   );
 }
 
-export default FooterWrapper(memo(FooterBanner));
+const MemoizedFooterBanner = memo(FooterBannerInner);
+
+const emptyData = { info: {}, data: {} };
+
+export default function FooterBanner() {
+  const { margin, width, height, activeSpectrum, activeTab } = useChartData();
+  const spectrum = useSpectrum(emptyData) as Datum1D;
+  return (
+    <MemoizedFooterBanner
+      {...{ margin, width, height, activeSpectrum, spectrum, activeTab }}
+    />
+  );
+}
