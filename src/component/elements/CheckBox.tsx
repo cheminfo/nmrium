@@ -2,7 +2,7 @@ import { useState, useCallback, Ref, ChangeEvent } from 'react';
 
 import { forwardRefWithAs } from '../../utils';
 
-interface CheckBoxProps {
+export interface CheckBoxProps {
   onChange?: (value: ChangeEvent<HTMLInputElement>) => void;
   name?: string;
   disabled?: boolean;

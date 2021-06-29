@@ -4,7 +4,6 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
-  useRef,
   useState,
 } from 'react';
 
@@ -13,7 +12,7 @@ import Input from './Input';
 interface EditableColumnProps {
   onSave?: (element: any) => void;
   onEditStart?: (element: any) => void;
-  type?: string;
+  type?: 'number' | 'text';
   editStatus?: boolean;
   value: string;
   style?: CSSProperties;
@@ -33,7 +32,6 @@ const EditableColumn = forwardRef(function EditableColumn(
   } = props;
 
   const [enabled, enableEdit] = useState<boolean | undefined>();
-  const refInput = useRef();
 
   useEffect(() => {
     enableEdit(editStatus);
@@ -80,10 +78,7 @@ const EditableColumn = forwardRef(function EditableColumn(
       {enabled && (
         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
           <Input
-            // TODO: should check that (with type of Input)
-            // @ts-expect-error enableAutoSelect exist on jsx but not in ts
             enableAutoSelect
-            ref={refInput}
             value={value}
             type={type}
             onKeyDown={(e) => editModeHandler(false, e)}

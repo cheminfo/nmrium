@@ -1,18 +1,27 @@
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import PropTypes from 'prop-types';
 import { useCallback } from 'react';
 
-import CheckBox from '../CheckBox';
+import CheckBox, { CheckBoxProps } from '../CheckBox';
 
-function FormikCheckBox({
-  label,
-  name,
-  onChange,
-  className,
-  reverse,
-  ...resProps
-}) {
+interface FormikCheckBoxProps extends CheckBoxProps {
+  name: string;
+  label?: string;
+  className?: string;
+  onChange?: (element: any) => void;
+  reverse?: boolean;
+}
+
+function FormikCheckBox(props: FormikCheckBoxProps) {
+  const {
+    label,
+    name,
+    onChange = () => null,
+    className = 'checkbox',
+    reverse = false,
+    ...resProps
+  } = props;
+
   const { values, setFieldValue } = useFormikContext();
   const value = reverse ? !lodashGet(values, name) : lodashGet(values, name);
 
@@ -24,35 +33,20 @@ function FormikCheckBox({
     },
     [name, onChange, reverse, setFieldValue, value],
   );
+
   return (
     <div className={`${className} check-${value}`}>
       <label htmlFor={name} className="checkbox-lable">
         {label}
       </label>
       <CheckBox
-        id={name}
+        {...resProps}
         name={name}
         checked={value}
         onChange={changeHandler}
-        className="checkbox"
-        {...resProps}
       />
     </div>
   );
 }
-
-FormikCheckBox.propTypes = {
-  label: PropTypes.string,
-  name: PropTypes.string,
-  className: PropTypes.string,
-  onChange: PropTypes.func,
-  reverse: PropTypes.bool,
-};
-
-FormikCheckBox.defaultProps = {
-  className: '',
-  onChange: () => null,
-  reverse: false,
-};
 
 export default FormikCheckBox;

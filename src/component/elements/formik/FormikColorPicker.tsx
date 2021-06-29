@@ -5,7 +5,14 @@ import { SketchPicker } from 'react-color';
 
 import { COLORS } from '../../../data/utilities/getColor';
 
-function FormikColorPicker({ onColorChange, name, ...props }) {
+interface FormikColorPickerProps {
+  name: string;
+  onColorChange?: (element: any) => void;
+}
+
+function FormikColorPicker(props: FormikColorPickerProps) {
+  const { onColorChange = () => null, name } = props;
+
   const { values, setFieldValue } = useFormikContext();
 
   const colorchangeHandler = useCallback(
@@ -24,13 +31,8 @@ function FormikColorPicker({ onColorChange, name, ...props }) {
       color={{ hex: lodashGet(values, name, '#000') }}
       presetColors={COLORS}
       onChangeComplete={(e) => colorchangeHandler(e)}
-      {...props}
     />
   );
 }
-
-FormikColorPicker.defaultProps = {
-  onColorChange: () => null,
-};
 
 export default memo(FormikColorPicker);

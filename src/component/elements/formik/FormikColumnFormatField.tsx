@@ -1,10 +1,10 @@
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { memo, useCallback } from 'react';
+import { CSSProperties, memo, useCallback } from 'react';
 
 import Input from '../Input';
 
-const styles = {
+const styles: Record<'row' | 'inputLabel' | 'input', CSSProperties> = {
   row: {
     display: 'flex',
     margin: '5px 0px',
@@ -22,13 +22,23 @@ const styles = {
   },
 };
 
-function FormikColumnFormatField({
-  label,
-  checkControllerName,
-  formatControllerName,
-  disableFormat = false,
-  hideFormat = false,
-}) {
+interface FormikColumnFormatFieldProps {
+  label: string;
+  checkControllerName: string;
+  formatControllerName: string;
+  disableFormat?: boolean;
+  hideFormat?: boolean;
+}
+
+function FormikColumnFormatField(props: FormikColumnFormatFieldProps) {
+  const {
+    label,
+    checkControllerName,
+    formatControllerName,
+    disableFormat = false,
+    hideFormat = false,
+  } = props;
+
   const { values, handleChange, setFieldValue } = useFormikContext();
 
   const changeHandler = useCallback(

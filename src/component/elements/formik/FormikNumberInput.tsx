@@ -2,10 +2,17 @@ import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
 import { useCallback } from 'react';
 
-import NumberInput from '../NumberInput';
+import NumberInput, { NumberInputProps } from '../NumberInput';
 
-function FormikNumberInput({ label, name, ...resProps }) {
+interface FormikNumberInputProps extends NumberInputProps {
+  label: string;
+  name: string;
+}
+
+function FormikNumberInput(props: FormikNumberInputProps) {
+  const { label, name, ...resProps } = props;
   const { values, handleChange } = useFormikContext();
+
   const changeHandler = useCallback(
     (e) => {
       handleChange(e);
