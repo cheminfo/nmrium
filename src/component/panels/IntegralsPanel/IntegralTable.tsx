@@ -3,13 +3,15 @@ import { useCallback, useMemo, memo, useRef, useEffect } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../data/constants/SignalsKinds';
-import { integralCountingCondition } from '../../../data/data1d/Spectrum1D';
+import {
+  Integral,
+  integralCountingCondition,
+} from '../../../data/data1d/Spectrum1D';
 import { useDispatch } from '../../context/DispatchContext';
 import { useGlobal } from '../../context/GlobalContext';
 import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import Select from '../../elements/Select';
-import IntegralsWrapper from '../../hoc/IntegralsWrapper';
 import {
   DELETE_INTEGRAL,
   CHANGE_INTEGRAL_DATA,
@@ -20,11 +22,18 @@ import { getValue } from '../../utility/LocalStorage';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
+import { IntegralPanelInnerProps } from './IntegralPanel';
+
 const selectStyle = { marginLeft: 10, marginRight: 10, border: 'none' };
 
-function IntegralTable({ activeTab, data, preferences }) {
+interface IntegralTableProps
+  extends Pick<IntegralPanelInnerProps, 'activeTab' | 'preferences'> {
+  data: Array<Integral>;
+}
+
+function IntegralTable({ activeTab, data, preferences }: IntegralTableProps) {
   const dispatch = useDispatch();
-  const relativeRefs = useRef([]);
+  const relativeRefs = useRef<any>([]);
   const { rootRef } = useGlobal();
   const deleteIntegralHandler = useCallback(
     (e, row) => {
@@ -177,7 +186,7 @@ function IntegralTable({ activeTab, data, preferences }) {
         integralDefaultValues.showRelative,
       )
     ) {
-      const n = activeTab && activeTab.replace(/[0-9]/g, '');
+      const n = activeTab?.replace(/[0-9]/g, '');
       setCustomColumn(cols, 5, `Relative ${n}`, {
         accessor: (row) =>
           formatNumber(
@@ -231,4 +240,4 @@ function IntegralTable({ activeTab, data, preferences }) {
   );
 }
 
-export default IntegralsWrapper(memo(IntegralTable));
+export default memo(IntegralTable);

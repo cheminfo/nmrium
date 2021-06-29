@@ -6,11 +6,15 @@ import { useCallback, useMemo, useState, useRef, memo, Fragment } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { ImLink } from 'react-icons/im';
 
+import { Datum1D, Info, Integrals } from '../../../data/data1d/Spectrum1D';
+import { Molecule } from '../../../data/molecules/Molecule';
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
-import IntegralsWrapper from '../../hoc/IntegralsWrapper';
+import useSpectrum from '../../hooks/useSpectrum';
 import ChangeSumModal from '../../modal/changeSum/ChangeSumModal';
 import {
   DELETE_INTEGRAL,
@@ -43,20 +47,29 @@ const styles = css`
   }
 `;
 
-function IntegralPanel({
+export interface IntegralPanelInnerProps {
+  integrals: Integrals;
+  info: Info;
+  activeTab: string;
+  xDomain: Array<number>;
+  preferences: any;
+  molecules: Array<Molecule>;
+}
+
+function IntegralPanelInner({
   integrals,
   info,
   activeTab,
   xDomain,
   preferences,
   molecules,
-}) {
+}: IntegralPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
   const dispatch = useDispatch();
   const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
-  const settingRef = useRef();
+  const settingRef = useRef<any>();
 
   const yesHandler = useCallback(() => {
     dispatch({ type: DELETE_INTEGRAL, integralID: null });
@@ -157,7 +170,7 @@ function IntegralPanel({
       <div css={styles}>
         {!isFlipped && (
           <DefaultPanelHeader
-            counter={integrals.values && integrals.values.length}
+            counter={integrals.values?.length}
             onDelete={handleDeleteAll}
             deleteToolTip="Delete All Integrals"
             onFilter={handleOnFilter}
@@ -168,7 +181,7 @@ function IntegralPanel({
             }
             filterIsActive={filterIsActive}
             counterFiltered={filteredData.length}
-            showSettingButton="true"
+            showSettingButton
             onSettingClick={settingsPanelHandler}
           >
             <ToolTip
@@ -213,7 +226,6 @@ function IntegralPanel({
                 data={filteredData}
                 activeTab={activeTab}
                 preferences={preferences}
-                info={info}
               />
             </div>
             <IntegralsPreferences ref={settingRef} />
@@ -224,4 +236,27 @@ function IntegralPanel({
   );
 }
 
-export default IntegralsWrapper(memo(IntegralPanel));
+const MemoizedIntegralPanel = memo(IntegralPanelInner);
+
+const emptyData = { integrals: {}, info: {} };
+
+export default function IntegralPanel() {
+  const { xDomain, activeTab, molecules } = useChartData();
+
+  const preferences = usePreferences();
+
+  const { integrals, info } = useSpectrum(emptyData) as Datum1D;
+
+  return (
+    <MemoizedIntegralPanel
+      {...{
+        integrals,
+        info,
+        preferences,
+        xDomain,
+        activeTab,
+        molecules,
+      }}
+    />
+  );
+}

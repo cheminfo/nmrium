@@ -4,15 +4,18 @@ import {
   forwardRef,
   useImperativeHandle,
   useRef,
+  CSSProperties,
+  memo,
 } from 'react';
 import { MF } from 'react-mf';
 
+import { usePreferences } from '../../context/PreferencesContext';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikNumberInput from '../../elements/formik/FormikNumberInput';
 import { useAlert } from '../../elements/popup/Alert';
-import IntegralsWrapper from '../../hoc/IntegralsWrapper';
+import useNucleus from '../../hooks/useNucleus';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import {
   useStateWithLocalStorage,
@@ -20,7 +23,16 @@ import {
 } from '../../utility/LocalStorage';
 import { integralDefaultValues } from '../extra/preferences/defaultValues';
 
-const styles = {
+const styles: Record<
+  | 'container'
+  | 'groupContainer'
+  | 'row'
+  | 'header'
+  | 'inputLabel'
+  | 'input'
+  | 'inputLabel',
+  CSSProperties
+> = {
   container: {
     padding: 10,
     backgroundColor: '#f1f1f1',
@@ -69,11 +81,20 @@ const formatFields = [
     formatController: 'relativeFormat',
   },
 ];
-function IntegralsPreferences({ nucleus, preferences }, ref) {
+
+interface IntegralsPreferencesInnerProps {
+  nucleus: Array<string>;
+  preferences: any;
+}
+
+function IntegralsPreferencesInner(
+  { nucleus, preferences }: IntegralsPreferencesInnerProps,
+  ref,
+) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
-  const formRef = useRef();
+  const formRef = useRef<any>();
 
   const updateValues = useCallback(() => {
     if (nucleus) {
@@ -154,25 +175,43 @@ function IntegralsPreferences({ nucleus, preferences }, ref) {
           />
         </div>
 
-        {nucleus &&
-          nucleus.map((nucleusLabel) => (
-            <div key={nucleusLabel} style={styles.groupContainer}>
-              <p style={styles.header}>
-                <MF mf={nucleusLabel} />
-              </p>
-              {formatFields.map((field) => (
-                <FormikColumnFormatField
-                  key={field.id}
-                  label={field.label}
-                  checkControllerName={`${nucleusLabel}.${field.checkController}`}
-                  formatControllerName={`${nucleusLabel}.${field.formatController}`}
-                />
-              ))}
-            </div>
-          ))}
+        {nucleus?.map((nucleusLabel) => (
+          <div key={nucleusLabel} style={styles.groupContainer}>
+            <p style={styles.header}>
+              <MF mf={nucleusLabel} />
+            </p>
+            {formatFields.map((field) => (
+              <FormikColumnFormatField
+                key={field.id}
+                label={field.label}
+                checkControllerName={`${nucleusLabel}.${field.checkController}`}
+                formatControllerName={`${nucleusLabel}.${field.formatController}`}
+              />
+            ))}
+          </div>
+        ))}
       </FormikForm>
     </div>
   );
 }
 
-export default IntegralsWrapper(forwardRef(IntegralsPreferences));
+const MemoizedIntegralsPreferences = memo(
+  forwardRef(IntegralsPreferencesInner),
+);
+
+function IntegralsPreferences(props, ref) {
+  const preferences = usePreferences();
+  const nucleus = useNucleus();
+
+  return (
+    <MemoizedIntegralsPreferences
+      ref={ref}
+      {...{
+        nucleus,
+        preferences,
+      }}
+    />
+  );
+}
+
+export default forwardRef(IntegralsPreferences);
