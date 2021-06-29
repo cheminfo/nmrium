@@ -1,9 +1,9 @@
 import get from 'lodash/get';
 import { memo, useMemo } from 'react';
 
+import { Datum2D } from '../../data/data2d/Spectrum2D';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
-import ContoursWrapper from '../hoc/ContoursWrapper';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
@@ -74,47 +74,45 @@ function ContoursPaths({ id: spectrumID, sign, color }: ContoursPathsProps) {
   );
 }
 
-interface ContoursData {
-  info: { dimension: number };
-  id: string;
-  display: {
-    isPositiveVisible: boolean;
-    positiveColor: string;
-    isNegativeVisible: boolean;
-    negativeColor: string;
-  };
-}
-
-interface ContoursProps {
-  data: Array<ContoursData>;
+interface ContoursInnerProps {
+  data: Array<Datum2D>;
   displayerKey: string;
 }
 
-function Contours({ data, displayerKey }: ContoursProps) {
+function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-2d)`} className="contours">
-      {data
-        .filter((datum) => datum.info.dimension === 2)
-        .map((datum, index) => (
-          <g key={`${datum.id + index}`}>
-            {datum.display.isPositiveVisible && (
-              <ContoursPaths
-                id={datum.id}
-                sign="positive"
-                color={datum.display.positiveColor}
-              />
-            )}
-            {datum.display.isNegativeVisible && (
-              <ContoursPaths
-                id={datum.id}
-                sign="negative"
-                color={datum.display.negativeColor}
-              />
-            )}
-          </g>
-        ))}
+      {data?.map((datum, index) => (
+        <g key={`${datum.id + index}`}>
+          {datum.display.isPositiveVisible && (
+            <ContoursPaths
+              id={datum.id}
+              sign="positive"
+              color={datum.display.positiveColor}
+            />
+          )}
+          {datum.display.isNegativeVisible && (
+            <ContoursPaths
+              id={datum.id}
+              sign="negative"
+              color={datum.display.negativeColor}
+            />
+          )}
+        </g>
+      ))}
     </g>
   );
 }
 
-export default ContoursWrapper(memo(Contours));
+const MemoizedContours = memo(ContoursInner);
+
+export default function Contours() {
+  const { data: spectra, displayerKey } = useChartData();
+  const data = useMemo<Array<Datum2D>>(() => {
+    return spectra.filter(
+      (datum) => datum.info.dimension === 2,
+    ) as Array<Datum2D>;
+  }, [spectra]);
+
+  return <MemoizedContours {...{ data, displayerKey }} />;
+}
