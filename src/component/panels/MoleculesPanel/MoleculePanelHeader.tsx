@@ -70,12 +70,19 @@ const MOL_EXPORT_MENU = [
   },
 ];
 
+interface MoleculePanelHeaderProps {
+  currentIndex: number;
+  molecules: Array<any>;
+  onMoleculeIndexChange: (index: number) => void;
+  onOpenMoleculeEditor: () => void;
+}
+
 export default function MoleculePanelHeader({
   currentIndex,
   molecules,
   onMoleculeIndexChange = () => null,
   onOpenMoleculeEditor = () => null,
-}) {
+}: MoleculePanelHeaderProps) {
   const alert = useAlert();
   const dispatch = useDispatch();
   const modal = useModal();
@@ -92,12 +99,13 @@ export default function MoleculePanelHeader({
 
   const saveAsMolHandler = useCallback(() => {
     if (molecules[currentIndex]) {
-      const flag = copyTextToClipboard(molecules[currentIndex].molfile);
-      if (flag) {
-        alert.success('MOLFile copied to clipboard');
-      } else {
-        alert.error('copied not completed');
-      }
+      void copyTextToClipboard(molecules[currentIndex].molfile).then((flag) => {
+        if (flag) {
+          alert.success('MOLFile copied to clipboard');
+        } else {
+          alert.error('copied not completed');
+        }
+      });
     }
   }, [alert, currentIndex, molecules]);
 
@@ -121,13 +129,13 @@ export default function MoleculePanelHeader({
   );
 
   const handlePaste = useCallback(() => {
-    navigator.clipboard.readText().then((molfile) => {
+    void navigator.clipboard.readText().then((molfile) => {
       dispatch({ type: ADD_MOLECULE, molfile });
     });
   }, [dispatch]);
 
   const handleDelete = useCallback(() => {
-    if (molecules[currentIndex] && molecules[currentIndex].key) {
+    if (molecules[currentIndex]?.key) {
       onMoleculeIndexChange(0);
       dispatch({
         type: DELETE_MOLECULE,
@@ -145,9 +153,9 @@ export default function MoleculePanelHeader({
   const openPredicSpectraModal = useCallback(() => {
     modal.show(
       <PredictSpectraModal
-        onSave={() => {
-          modal.close();
-        }}
+        // onSave={() => {
+        //   modal.close();
+        // }}
         molfile={molecules[currentIndex]}
       />,
       {

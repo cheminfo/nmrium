@@ -6,11 +6,16 @@ import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
 import { useMeasure } from 'react-use';
 
+import { Datum1D, Ranges } from '../../../data/data1d/Spectrum1D';
+import { Datum2D, Zones } from '../../../data/data2d/Spectrum2D';
+import { Molecule } from '../../../data/molecules/Molecule';
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import NextPrev from '../../elements/NextPrev';
 import { positions, useModal } from '../../elements/popup/Modal';
-import MoleculeWrapper from '../../hoc/MoleculeWrapper';
+import useSpectrum from '../../hooks/useSpectrum';
 import MoleculeStructureEditorModal from '../../modal/MoleculeStructureEditorModal';
+import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { SET_MOLECULE } from '../../reducer/types/Types';
 
 import MoleculePanelHeader from './MoleculePanelHeader';
@@ -53,21 +58,32 @@ const styles = css`
 
       svg polygon {
         fill: gray !important;
-      }
+      }import useSpectrum from './../../hooks/useSpectrum';
+import { Datum1D } from './../../../data/data1d/Spectrum1D';
+import { Zones } from './../../../data/data2d/Spectrum2D';
+
     }
   }
 `;
 
-function MoleculePanel({
+interface MoleculePanelInnerProps {
+  zones: Zones;
+  ranges: Ranges;
+  molecules: Array<Molecule>;
+  activeTab: string;
+  displayerMode: DISPLAYER_MODE;
+}
+
+function MoleculePanelInner({
   zones,
   ranges,
   molecules: moleculesProp,
   activeTab,
   displayerMode,
-}) {
-  const [refContainer, { width, height }] = useMeasure();
+}: MoleculePanelInnerProps) {
+  const [refContainer, { width, height }] = useMeasure<any>();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [molecules, setMolecules] = useState([]);
+  const [molecules, setMolecules] = useState<any>([]);
 
   const dispatch = useDispatch();
   const modal = useModal();
@@ -98,12 +114,12 @@ function MoleculePanel({
   );
 
   const openMoleculeEditorHandler = useCallback(
-    (event, moleclue) => {
+    (moleclue = null) => {
       modal.show(
         <MoleculeStructureEditorModal
-          onClose={() => {
-            modal.close();
-          }}
+          // onSave={() => {
+          //   modal.close();
+          // }}
           selectedMolecule={moleclue}
         />,
         {
@@ -125,7 +141,7 @@ function MoleculePanel({
       <MoleculePanelHeader
         currentIndex={currentIndex}
         molecules={molecules}
-        onOpenMoleculeEditor={openMoleculeEditorHandler}
+        onOpenMoleculeEditor={() => openMoleculeEditorHandler()}
         onMoleculeIndexChange={moleculeIndexHandler}
       />
 
@@ -135,11 +151,11 @@ function MoleculePanel({
           defaultIndex={currentIndex}
         >
           {molecules && molecules.length > 0 ? (
-            molecules.map((mol, index) => (
+            molecules.map((mol: Molecule, index) => (
               <div
                 className="slider"
                 key={mol.key}
-                onDoubleClick={(event) => openMoleculeEditorHandler(event, mol)}
+                onDoubleClick={() => openMoleculeEditorHandler(mol)}
                 style={{
                   backgroundColor: (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
                 }}
@@ -150,7 +166,7 @@ function MoleculePanel({
                     id={`molSVG${index}`}
                     width={width > 0 ? width : 100}
                     height={height > 0 ? height : 100}
-                    molfile={mol.molfile}
+                    molfile={mol.molfile || ''}
                     setMolfile={(molfile) =>
                       handleReplaceMolecule(mol.key, molfile)
                     }
@@ -172,14 +188,14 @@ function MoleculePanel({
                   />
                 </div>
                 <p>
-                  <MF mf={mol.mf} /> - {mol.mw.toFixed(2)}
+                  <MF mf={mol.mf} /> - {mol.mw?.toFixed(2)}
                 </p>
               </div>
             ))
           ) : (
             <div
               style={{ width: '100%', height: '100%' }}
-              onClick={openMoleculeEditorHandler}
+              onClick={() => openMoleculeEditorHandler()}
             />
           )}
         </NextPrev>
@@ -188,4 +204,25 @@ function MoleculePanel({
   );
 }
 
-export default MoleculeWrapper(memo(MoleculePanel));
+const MemoizedMoleculePanel = memo(MoleculePanelInner);
+const emptyData = { ranges: {}, zones: {} };
+
+export default function MoleculePanel() {
+  const { molecules, displayerMode, activeTab } = useChartData();
+
+  const data = useSpectrum(emptyData);
+  const ranges: Ranges = (data as Datum1D)?.ranges || {};
+  const zones: Zones = (data as Datum2D)?.zones || {};
+
+  return (
+    <MemoizedMoleculePanel
+      {...{
+        molecules,
+        displayerMode,
+        activeTab,
+        ranges,
+        zones,
+      }}
+    />
+  );
+}

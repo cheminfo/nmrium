@@ -87,7 +87,7 @@ const INITIAL_VALUE = {
   },
 };
 
-function PredictSpectraModal({ onClose, molfile }) {
+function PredictSpectraModal({ onClose = () => null, molfile }) {
   const refForm = useRef();
   const dispatch = useDispatch();
   const [isApproved, setApproved] = useState(false);

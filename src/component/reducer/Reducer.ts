@@ -4,6 +4,7 @@ import { predictionProton } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
 import * as SpectraManager from '../../data/SpectraManager';
+import { Molecule } from '../../data/molecules/Molecule';
 import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
@@ -131,7 +132,7 @@ export interface State {
   mode: string;
   zoomFactor: Partial<{ scale: number }>;
   integralZoomFactor: Partial<{ scale: number }>;
-  molecules: Array<any>;
+  molecules: Array<Molecule>;
   verticalAlign: {
     flag: boolean;
     stacked: boolean;

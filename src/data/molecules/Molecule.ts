@@ -8,11 +8,24 @@ import getAtomsFromMF from '../utilities/getAtomsFromMF';
  * @param {object} [options.molfile='']
  * @param {object} [options.key=Math.random()] Optional unique identifier
  */
-export function initMolecule(options = {}) {
-  const molecule = {};
+
+interface MoleculeInnerProps {
+  key?: string;
+  molfile?: string;
+}
+export interface Molecule extends MoleculeInnerProps {
+  mf?: any;
+  em?: number;
+  mw?: number;
+  svg?: any;
+  atoms?: any;
+}
+
+export function initMolecule(options: MoleculeInnerProps = {}) {
+  const molecule: Molecule = {};
   molecule.key = options.key || generateID();
   molecule.molfile = options.molfile || '';
-  const mol = new OCLMolecule.fromMolfile(molecule.molfile);
+  const mol = OCLMolecule.fromMolfile(molecule.molfile);
   const mfInfo = mol.getMolecularFormula();
   molecule.mf = mfInfo.formula;
   molecule.em = mfInfo.absoluteWeight;
