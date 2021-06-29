@@ -191,8 +191,10 @@ function PeaksPreferencesInner(
 
 const MemoizedPeaksPreferences = memo(forwardRef(PeaksPreferencesInner));
 
-export default function PeaksPreferences(props) {
+function PeaksPreferences(props, ref) {
   const nucleus = useNucleus();
   const preferences = usePreferences();
-  return <MemoizedPeaksPreferences {...{ nucleus, preferences, ...props }} />;
+  return <MemoizedPeaksPreferences ref={ref} {...{ nucleus, preferences }} />;
 }
+
+export default forwardRef(PeaksPreferences);
