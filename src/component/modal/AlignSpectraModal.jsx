@@ -14,7 +14,7 @@ import { ModalStyles } from './ModalStyle';
 
 const baseList = [{ key: 1, value: 'manual', label: 'Manual' }];
 
-function AlignSpectraModal({ onClose, nucleus }) {
+function AlignSpectraModal({ onClose = () => null, nucleus }) {
   const refForm = useRef();
   const dispatch = useDispatch();
   const List = useMemo(() => {

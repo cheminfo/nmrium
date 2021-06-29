@@ -1,20 +1,20 @@
 import { memo, useMemo } from 'react';
 
-import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
+import { useChartData } from '../../context/ChartContext';
 
 import AnalysisRange from './AnalysisRange';
 
-interface MultiAnalysisRangesProps {
+interface MultiAnalysisRangesInnerProps {
   activeTab: string;
   displayerKey: string;
   spectraAnalysis: Record<string, { options: { columns: Array<number> } }>;
 }
 
-function MultiAnalysisRanges({
+function MultiAnalysisRangesInner({
   activeTab,
   spectraAnalysis,
   displayerKey,
-}: MultiAnalysisRangesProps) {
+}: MultiAnalysisRangesInnerProps) {
   const columns = useMemo(() => {
     const {
       options: { columns },
@@ -45,4 +45,14 @@ function MultiAnalysisRanges({
   );
 }
 
-export default MultiAnalysisWrapper(memo(MultiAnalysisRanges));
+const MemoizedMultiAnalysisRanges = memo(MultiAnalysisRangesInner);
+
+export default function MultiAnalysisRanges() {
+  const { activeTab, spectraAnalysis, displayerKey } = useChartData();
+
+  return (
+    <MemoizedMultiAnalysisRanges
+      {...{ activeTab, spectraAnalysis, displayerKey }}
+    />
+  );
+}

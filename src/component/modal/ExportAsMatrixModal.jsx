@@ -12,7 +12,7 @@ import { ModalStyles } from './ModalStyle';
 
 const INITIAL_VALUE = { from: -1, to: 1, nbPoints: 1024 };
 
-function ExportAsMatrixModal({ onClose }) {
+function ExportAsMatrixModal({ onClose = () => null }) {
   const refForm = useRef();
   const { data } = useChartData();
 

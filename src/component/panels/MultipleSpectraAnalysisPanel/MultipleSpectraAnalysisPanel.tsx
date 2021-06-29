@@ -3,18 +3,25 @@ import {
   SvgNmrAddFilter,
   SvgNmrExportAsMatrix,
 } from 'cheminfo-font';
-import { useCallback, useState, useRef, memo, useMemo } from 'react';
+import {
+  useCallback,
+  useState,
+  useRef,
+  memo,
+  useMemo,
+  CSSProperties,
+} from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
 
 import { getDataAsString } from '../../../data/data1d/MulitpleAnalysis';
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
 import { positions, useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
-import MultiAnalysisWrapper from '../../hoc/MultiAnalysisWrapper';
 import AlignSpectraModal from '../../modal/AlignSpectraModal';
 import ExportAsMatrixModal from '../../modal/ExportAsMatrixModal';
 import MultipleSpectraFiltersModal from '../../modal/MultipleSpectraFiltersModal';
@@ -27,7 +34,7 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import MultipleSpectraAnalysisPreferences from './MultipleSpectraAnalysisPreferences';
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
 
-const styles = {
+const styles: Record<'container' | 'button', CSSProperties> = {
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -39,14 +46,25 @@ const styles = {
   },
 };
 
-function MultipleSpectraAnalysisPanel({ spectraAnalysis, activeTab }) {
+interface MultipleSpectraAnalysisPanelInnerProps {
+  activeTab: string;
+  spectraAnalysis: Record<
+    string,
+    { values: any; options: { columns: Array<number>; code: any } }
+  >;
+}
+
+function MultipleSpectraAnalysisPanelInner({
+  activeTab,
+  spectraAnalysis,
+}: MultipleSpectraAnalysisPanelInnerProps) {
   const [isFlipped, setFlipStatus] = useState(false);
-  const settingRef = useRef();
+  const settingRef = useRef<any>();
   const alert = useAlert();
   const modal = useModal();
   const dispatch = useDispatch();
 
-  const data = useMemo(() => {
+  const data = useMemo<any>(() => {
     const {
       values,
       options: { columns, code },
@@ -93,9 +111,9 @@ function MultipleSpectraAnalysisPanel({ spectraAnalysis, activeTab }) {
     });
   }, [modal, dispatch]);
 
-  const copyToClipboardHandler = useCallback(() => {
+  const copyToClipboardHandler = useCallback(async () => {
     const data = getDataAsString(spectraAnalysis, activeTab);
-    const success = copyTextToClipboard(data);
+    const success = await copyTextToClipboard(data);
     if (success) {
       alert.success('Data copied to clipboard');
     } else {
@@ -117,7 +135,7 @@ function MultipleSpectraAnalysisPanel({ spectraAnalysis, activeTab }) {
       {!isFlipped && (
         <DefaultPanelHeader
           deleteToolTip="Delete All Peaks"
-          showSettingButton="true"
+          showSettingButton
           canDelete={false}
           onSettingClick={settingsPanelHandler}
         >
@@ -182,4 +200,16 @@ function MultipleSpectraAnalysisPanel({ spectraAnalysis, activeTab }) {
   );
 }
 
-export default MultiAnalysisWrapper(memo(MultipleSpectraAnalysisPanel));
+const MemoizedMultipleSpectraAnalysisPanel = memo(
+  MultipleSpectraAnalysisPanelInner,
+);
+
+export default function MultipleSpectraAnalysisPanel() {
+  const { activeTab, spectraAnalysis, displayerKey } = useChartData();
+
+  return (
+    <MemoizedMultipleSpectraAnalysisPanel
+      {...{ activeTab, spectraAnalysis, displayerKey }}
+    />
+  );
+}

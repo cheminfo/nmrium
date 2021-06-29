@@ -50,7 +50,7 @@ const styles = css`
   }
 `;
 
-function MultipleSpectraFiltersModal({ onClose, nucleus }) {
+function MultipleSpectraFiltersModal({ onClose = () => null, nucleus = '' }) {
   const refForm = useRef();
   const dispatch = useDispatch();
   const [filter, setFilter] = useState(0);
