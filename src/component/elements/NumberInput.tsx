@@ -38,10 +38,10 @@ export interface NumberInputProps {
   max?: any;
   defaultValue?: number;
   style?: {
-    container: any;
-    label: any;
-    inputContainer: any;
-    input: any;
+    container?: any;
+    label?: any;
+    inputContainer?: any;
+    input?: any;
   };
   onChange?: (element: any) => void;
   onInput?: () => void;
