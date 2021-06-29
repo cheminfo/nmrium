@@ -148,7 +148,7 @@ function IntegralPanelInner({
         (from <= xDomain[0] * factor && to >= xDomain[1] * factor)
       );
     }
-    if (info.dimension === 1 && integrals && integrals.values) {
+    if (info.dimension === 1 && integrals?.values) {
       const _integrals = filterIsActive
         ? integrals.values.filter((integral) =>
             isInRange(integral.from, integral.to),
@@ -170,7 +170,7 @@ function IntegralPanelInner({
       <div css={styles}>
         {!isFlipped && (
           <DefaultPanelHeader
-            counter={integrals.values?.length}
+            counter={integrals?.values?.length}
             onDelete={handleDeleteAll}
             deleteToolTip="Delete All Integrals"
             onFilter={handleOnFilter}
