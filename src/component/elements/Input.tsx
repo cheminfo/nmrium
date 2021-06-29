@@ -48,11 +48,11 @@ const Input = forwardRefWithAs(
       label,
       value = '',
       name,
-      style: styleInput = { label: {}, input: {}, container: {} },
+      style = { label: {}, input: {}, container: {} },
       onChange = () => null,
       debounceTime = 0,
       onKeyDown = () => null,
-      checkValue = () => null,
+      checkValue = () => true,
       type = 'text',
       enableAutoSelect = false,
       className,
@@ -99,6 +99,7 @@ const Input = forwardRefWithAs(
         e.persist();
         e.stopPropagation();
         e.preventDefault();
+
         function check(value) {
           if (type === 'number') {
             const pattern = /^(?:-?[0-9]*|[0-9]\d*)(?:\.\d{0,20})?$/;
@@ -109,6 +110,7 @@ const Input = forwardRefWithAs(
           }
           return true;
         }
+
         const _value = e.target.value;
         if (check(_value) && checkValue(_value)) {
           const formatValue = format();
@@ -158,14 +160,14 @@ const Input = forwardRefWithAs(
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          ...(styleInput?.container ? styleInput.container : {}),
+          ...(style?.container ? style.container : {}),
         }}
       >
         {label && (
           <span
             style={{
               ...styles.label,
-              ...(styleInput?.label ? styleInput.label : {}),
+              ...(style?.label ? style.label : {}),
             }}
             className="label"
           >
@@ -178,7 +180,7 @@ const Input = forwardRefWithAs(
           name={name}
           style={{
             ...styles.input,
-            ...(styleInput?.input ? styleInput.input : {}),
+            ...(style?.input ? style.input : {}),
           }}
           type="text"
           value={val}

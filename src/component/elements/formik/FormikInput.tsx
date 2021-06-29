@@ -24,7 +24,7 @@ function FormikInput(props: FormikInputProps) {
   const {
     label,
     name,
-    style: styleInput = { label: {}, input: {} },
+    style = { label: {}, input: {} },
     onChange = () => null,
     checkValue = () => true,
     type = 'text',
@@ -67,9 +67,9 @@ function FormikInput(props: FormikInputProps) {
       onChange={changeHandler}
       type={type}
       style={{
-        ...styleInput,
+        ...style,
         input: {
-          ...styleInput.input,
+          ...style.input,
           ...(isInvalid && { borderColor: 'red' }),
         },
       }}
