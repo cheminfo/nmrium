@@ -43,7 +43,11 @@ export function unlink(zone, isOnZoneLevel, signalIndex, axis) {
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {
       delete zone[axis].diaID;
-    } else if (signalIndex !== undefined) {
+    } else if (
+      typeof signalIndex === 'number' &&
+      signalIndex !== -1 &&
+      zone.signal[signalIndex]
+    ) {
       delete zone.signal[signalIndex][axis].diaID;
     }
     setPubIntegral(zone, axis);

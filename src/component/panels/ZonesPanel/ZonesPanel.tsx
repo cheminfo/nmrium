@@ -1,14 +1,23 @@
-import lodashGet from 'lodash/get';
-import { useState, useMemo, useCallback, useRef, memo } from 'react';
+import {
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+  memo,
+  CSSProperties,
+} from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaUnlink } from 'react-icons/fa';
 
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
 import { useAssignmentData } from '../../assignment';
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
-import ZonesWrapper from '../../hoc/ZonesWrapper';
+import useSpectrum from '../../hooks/useSpectrum';
 import { DELETE_2D_ZONE, UNLINK_ZONE } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -18,7 +27,10 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import ZonesPreferences from './ZonesPreferences';
 import ZonesTable from './ZonesTable';
 
-const styles = {
+const styles: Record<
+  'container' | 'removeAssignmentsButton' | 'button' | 'toggle',
+  CSSProperties
+> = {
   container: {
     flexDirection: 'column',
     height: '100%',
@@ -49,7 +61,7 @@ const styles = {
   },
 };
 
-function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
+function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
   const assignmentData = useAssignmentData();
@@ -57,7 +69,7 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
   const dispatch = useDispatch();
   const modal = useModal();
   const [isFlipped, setFlipStatus] = useState(false);
-  const settingRef = useRef();
+  const settingRef = useRef<any>();
 
   const tableData = useMemo(() => {
     const isInView = (xFrom, xTo, yFrom, yTo) => {
@@ -105,7 +117,12 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
   }, [filterIsActive]);
 
   const unlinkZoneHandler = useCallback(
-    (zoneData, isOnZoneLevel, signalIndex, axis) => {
+    (
+      zoneData = null,
+      isOnZoneLevel = undefined,
+      signalIndex = -1,
+      axis = undefined,
+    ) => {
       dispatch({
         type: UNLINK_ZONE,
         payload: {
@@ -121,8 +138,8 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
   );
 
   const removeAssignments = useCallback(() => {
-    zones.values.forEach((zone) => unlinkZoneHandler(zone));
-  }, [zones.values, unlinkZoneHandler]);
+    unlinkZoneHandler();
+  }, [unlinkZoneHandler]);
 
   const handleOnRemoveAssignments = useCallback(() => {
     modal.showConfirmDialog({
@@ -146,11 +163,11 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
     });
   }, [assignmentData, dispatch, modal]);
 
-  const zonesPreferences = useMemo(() => {
-    const _preferences = lodashGet(preferences, `panels.zones.[${activeTab}]`);
+  // const zonesPreferences = useMemo(() => {
+  //   const _preferences = lodashGet(preferences, `panels.zones.[${activeTab}]`);
 
-    return _preferences;
-  }, [activeTab, preferences]);
+  //   return _preferences;
+  // }, [activeTab, preferences]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -181,8 +198,8 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
               filterIsActive ? 'Show all zones' : 'Hide zones out of view'
             }
             filterIsActive={filterIsActive}
-            counterFiltered={tableData && tableData.length}
-            showSettingButton="true"
+            counterFiltered={tableData?.length}
+            showSettingButton
             onSettingClick={settingsPanelHandler}
           >
             <ToolTip title={`Remove all Assignments`} popupPlacement="right">
@@ -241,7 +258,6 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
                 <ZonesTable
                   tableData={tableData}
                   onUnlink={unlinkZoneHandler}
-                  preferences={zonesPreferences}
                   nuclei={
                     activeTab && activeTab.split(',').length === 2
                       ? activeTab.split(',')
@@ -260,4 +276,17 @@ function ZonesPanel({ zones, activeTab, preferences, xDomain, yDomain }) {
   );
 }
 
-export default ZonesWrapper(memo(ZonesPanel));
+const MemoizedZonesPanel = memo(ZonesPanelInner);
+
+const emptyData = { zones: {} };
+
+export default function ZonesPanel() {
+  const { displayerKey, xDomain, yDomain, activeTab } = useChartData();
+  const { zones } = useSpectrum(emptyData) as Datum2D;
+  const preferences = usePreferences();
+  return (
+    <MemoizedZonesPanel
+      {...{ xDomain, yDomain, activeTab, displayerKey, preferences, zones }}
+    />
+  );
+}

@@ -13,7 +13,7 @@ import IsotopesViewer from '../../elements/IsotopesViewer';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
-import ZonesWrapper from '../../hoc/ZonesWrapper';
+import useNucleus from '../../hooks/useNucleus';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import {
   useStateWithLocalStorage,
@@ -91,7 +91,7 @@ const formatFields: Array<{
   },
 ];
 
-function ZonesPreferences({ nucleus }, ref) {
+function ZonesPreferencesInner({ nucleus }: { nucleus: Array<string> }, ref) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const preferences = usePreferences();
@@ -173,4 +173,11 @@ function ZonesPreferences({ nucleus }, ref) {
   );
 }
 
-export default ZonesWrapper(memo(forwardRef(ZonesPreferences)));
+const MemoizedZonesPreferences = memo(forwardRef(ZonesPreferencesInner));
+
+function ZonesPreferences(props, ref) {
+  const nucleus = useNucleus();
+  return <MemoizedZonesPreferences ref={ref} {...{ nucleus }} />;
+}
+
+export default forwardRef(ZonesPreferences);

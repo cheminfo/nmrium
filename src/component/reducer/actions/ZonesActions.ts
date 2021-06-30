@@ -131,32 +131,37 @@ function handleUnlinkZone(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
-    const { zoneData, assignmentData, isOnZoneLevel, signalIndex, axis } =
-      action.payload;
+    const {
+      zoneData = null,
+      assignmentData,
+      isOnZoneLevel = undefined,
+      signalIndex = -1,
+      axis = undefined,
+    } = action.payload;
 
-    for (let zone of zoneData
-      ? [zoneData]
-      : (state.data[index] as Datum2D).zones.values) {
+    if (zoneData) {
       // remove assignments in global state
-      const _zoneData = unlink(
-        cloneDeep(zone),
-        isOnZoneLevel,
-        signalIndex,
+
+      const zoneIndex = getZoneIndex(state, index, zoneData.id);
+
+      const zone = cloneDeep(
+        (draft.data[index] as Datum2D).zones.values[zoneIndex],
+      );
+      const _zoneData = unlink(zone, isOnZoneLevel, signalIndex, axis);
+
+      unlinkInAssignmentData(
+        assignmentData,
+        [{ id: zoneData.signal[signalIndex].id }],
         axis,
       );
-      // remove assignments in assignment hook data
-      if (isOnZoneLevel) {
-        unlinkInAssignmentData(assignmentData, [{ id: _zoneData.id }], axis);
-      } else {
-        unlinkInAssignmentData(
-          assignmentData,
-          [{ id: _zoneData.signal[signalIndex].id }],
-          axis,
-        );
-      }
-
-      const zoneIndex = getZoneIndex(state, index, _zoneData.id);
       (draft.data[index] as Datum2D).zones.values[zoneIndex] = _zoneData;
+    } else {
+      const zones = (draft.data[index] as Datum2D).zones.values.map((zone) => {
+        return unlink(zone);
+      });
+      (draft.data[index] as Datum2D).zones.values = zones;
+
+      unlinkInAssignmentData(assignmentData, zones);
     }
   }
 }
