@@ -5,11 +5,12 @@ import { useCallback, useMemo, forwardRef } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
+import { useChartData } from '../../../../context/ChartContext';
 import Button from '../../../../elements/Button';
 import FormikForm from '../../../../elements/formik/FormikForm';
 import FormikInput from '../../../../elements/formik/FormikInput';
-import EditModalRangeWrapper from '../../../../hoc/EditModalRangeWrapper';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
+import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
 
 const AddSignalFormTabStyle = css`
   text-align: center;
@@ -56,8 +57,10 @@ const AddSignalFormTabStyle = css`
   }
 `;
 
-function AddSignalFormTab({ onFocus, onBlur, range, format }, ref) {
+function AddSignalFormTab({ onFocus, onBlur, range }, ref) {
   const { values, setFieldValue } = useFormikContext();
+  const { activeTab } = useChartData();
+  const format = useFormatNumberByNucleus(activeTab);
 
   const saveHandler = useCallback(
     (val) => {
@@ -138,4 +141,4 @@ function AddSignalFormTab({ onFocus, onBlur, range, format }, ref) {
   );
 }
 
-export default EditModalRangeWrapper(forwardRef(AddSignalFormTab));
+export default forwardRef(AddSignalFormTab);

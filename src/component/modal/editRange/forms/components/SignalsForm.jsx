@@ -3,11 +3,13 @@ import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
 import { useCallback, useMemo, memo, useEffect, useState, useRef } from 'react';
 
+import { useChartData } from '../../../../context/ChartContext';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
-import EditModalRangeWrapper from '../../../../hoc/EditModalRangeWrapper';
+import useSpectrum from '../../../../hooks/useSpectrum';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import Events from '../../../../utility/Events';
+import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
 
 import AddSignalFormTab from './AddSignalFormTab';
 import SignalFormTab from './SignalFormTab';
@@ -35,12 +37,14 @@ const tabStylesAddition = css`
   color: red;
 `;
 
-function SignalsForm({ range, format, info }) {
+function SignalsForm({ range }) {
   const newSignalFormRef = useRef();
+  const [activeField, setActiveField] = useState(null);
 
   const { values, setFieldValue, errors } = useFormikContext();
-
-  const [activeField, setActiveField] = useState(null);
+  const { activeTab } = useChartData();
+  const { info } = useSpectrum({ info: {} });
+  const format = useFormatNumberByNucleus(activeTab);
 
   useEffect(() => {
     Events.on('brushEnd', (event) => {
@@ -205,4 +209,4 @@ function SignalsForm({ range, format, info }) {
   );
 }
 
-export default EditModalRangeWrapper(memo(SignalsForm));
+export default memo(SignalsForm);
