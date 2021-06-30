@@ -8,19 +8,19 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 function useToggleStatus(key, data) {
   const [status, setStatus] = useState({});
-  const oldIdRef = useRef();
+  const oldIdRef = useRef<any>();
 
   useEffect(() => {
     let statusflags = {};
     if (data && Array.isArray(data)) {
-      for (let i = 0; i < data.length; i++) {
-        statusflags[data[i][key]] = false;
+      for (const item of data) {
+        statusflags[item[key]] = false;
       }
       setStatus(statusflags);
     }
   }, [data, key]);
 
-  const toggle = useCallback(
+  const toggle = useCallback<any>(
     (id) => {
       const newStatus = { ...status };
       if (oldIdRef.current) {

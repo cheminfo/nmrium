@@ -5,12 +5,15 @@ import {
   useImperativeHandle,
   useRef,
   memo,
+  CSSProperties,
 } from 'react';
 
-import IsotopesViewer from '../../elements/IsotopesViewer.tsx';
+import { usePreferences } from '../../context/PreferencesContext';
+import IsotopesViewer from '../../elements/IsotopesViewer';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
 import { useAlert } from '../../elements/popup/Alert';
+import useNucleus from '../../hooks/useNucleus';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import {
   useStateWithLocalStorage,
@@ -18,7 +21,10 @@ import {
 } from '../../utility/LocalStorage';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
 
-const styles = {
+const styles: Record<
+  'container' | 'groupContainer' | 'row' | 'header' | 'inputLabel' | 'input',
+  CSSProperties
+> = {
   container: {
     padding: 10,
     backgroundColor: '#f1f1f1',
@@ -80,10 +86,18 @@ const formatFields = [
   },
 ];
 
-function RangesPreferences({ nucleus, preferences }, ref) {
+interface RangesPreferencesInnerProps {
+  nucleus: Array<string>;
+  preferences: any;
+}
+
+function RangesPreferencesInner(
+  { nucleus, preferences }: RangesPreferencesInnerProps,
+  ref,
+) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
-  const formRef = useRef();
+  const formRef = useRef<any>();
 
   const updateValues = useCallback(() => {
     if (nucleus) {
@@ -143,23 +157,39 @@ function RangesPreferences({ nucleus, preferences }, ref) {
   return (
     <div style={styles.container}>
       <FormikForm onSubmit={handleSubmit} ref={formRef}>
-        {nucleus &&
-          nucleus.map((nucleusLabel) => (
-            <div key={nucleusLabel} style={styles.groupContainer}>
-              <IsotopesViewer style={styles.header} value={nucleusLabel} />
-              {formatFields.map((field) => (
-                <FormikColumnFormatField
-                  key={field.id}
-                  label={field.label}
-                  checkControllerName={`${nucleusLabel}.${field.checkController}`}
-                  formatControllerName={`${nucleusLabel}.${field.formatController}`}
-                />
-              ))}
-            </div>
-          ))}
+        {nucleus?.map((nucleusLabel) => (
+          <div key={nucleusLabel} style={styles.groupContainer}>
+            <IsotopesViewer style={styles.header} value={nucleusLabel} />
+            {formatFields.map((field) => (
+              <FormikColumnFormatField
+                key={field.id}
+                label={field.label}
+                checkControllerName={`${nucleusLabel}.${field.checkController}`}
+                formatControllerName={`${nucleusLabel}.${field.formatController}`}
+              />
+            ))}
+          </div>
+        ))}
       </FormikForm>
     </div>
   );
 }
 
-export default memo(forwardRef(RangesPreferences));
+const MemoizedRangesPreferences = memo(forwardRef(RangesPreferencesInner));
+
+function RangesPreferences(prop, ref) {
+  const nucleus = useNucleus();
+
+  const preferences = usePreferences();
+  return (
+    <MemoizedRangesPreferences
+      ref={ref}
+      {...{
+        preferences,
+        nucleus,
+      }}
+    />
+  );
+}
+
+export default forwardRef(RangesPreferences);

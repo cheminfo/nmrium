@@ -76,7 +76,7 @@ const Input = forwardRefWithAs(
 
     useEffect(() => {
       if (enableAutoSelect) {
-        ref.current.select();
+        ref?.current?.select();
       }
     }, [enableAutoSelect, ref]);
 

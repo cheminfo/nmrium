@@ -1,12 +1,23 @@
 import lodashGet from 'lodash/get';
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import { useCallback, useMemo, memo, useState, useRef } from 'react';
+import {
+  useCallback,
+  useMemo,
+  memo,
+  useState,
+  useRef,
+  CSSProperties,
+} from 'react';
 import ReactCardFlip from 'react-card-flip';
 
+import { Data1D, Datum1D, Info, Ranges } from '../../../data/data1d/Spectrum1D';
+import { Molecule } from '../../../data/molecules/Molecule';
 import { useAssignmentData } from '../../assignment';
+import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import { useAlert } from '../../elements/popup/Alert';
-import RangesWrapper from '../../hoc/RangesWrapper';
+import useSpectrum from '../../hooks/useSpectrum';
 import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -17,7 +28,15 @@ import RangesHeader from './RangesHeader';
 import RangesPreferences from './RangesPreferences';
 import RangesTable from './RangesTable';
 
-const styles = {
+const styles: Record<
+  | 'toolbar'
+  | 'container'
+  | 'sumButton'
+  | 'removeAssignmentsButton'
+  | 'setShowMultiplicityTreesButton'
+  | 'button',
+  CSSProperties
+> = {
   toolbar: {
     display: 'flex',
     flexDirection: 'row',
@@ -67,18 +86,27 @@ const styles = {
   },
 };
 
-function RangesTablePanel({
+interface RangesTablePanelInnerProps {
+  ranges: Ranges;
+  data: Data1D;
+  info: Info;
+  xDomain: Array<number>;
+  activeTab: string;
+  molecules: Array<Molecule>;
+  showMultiplicityTrees: boolean;
+  preferences: any;
+}
+
+function RangesTablePanelInner({
   ranges,
-  x,
-  y,
+  data,
   info,
   xDomain,
   preferences,
   activeTab,
   molecules,
-  nucleus,
   showMultiplicityTrees,
-}) {
+}: RangesTablePanelInnerProps) {
   const [isFilterActive, setFilterIsActive] = useState(false);
   const assignmentData = useAssignmentData();
 
@@ -86,7 +114,7 @@ function RangesTablePanel({
   const alert = useAlert();
   const [isFlipped, setFlipStatus] = useState(false);
 
-  const settingRef = useRef();
+  const settingRef = useRef<any>();
 
   const rangesData = useMemo(() => {
     const isInView = (from, to) => {
@@ -135,21 +163,22 @@ function RangesTablePanel({
   );
 
   const saveJSONToClipboardHandler = useCallback(
-    (value) => {
-      if (x && y) {
+    async (value) => {
+      if (data.x && data.y) {
+        const { x, y } = data;
         const { from, to } = value;
+
         const { fromIndex, toIndex } = xGetFromToIndex(x, {
           from,
           to,
         });
-
         const dataToClipboard = {
           x: x.slice(fromIndex, toIndex),
           y: y.slice(fromIndex, toIndex),
           ...value,
         };
 
-        const success = copyTextToClipboard(
+        const success = await copyTextToClipboard(
           JSON.stringify(dataToClipboard, undefined, 2),
         );
 
@@ -160,7 +189,7 @@ function RangesTablePanel({
         }
       }
     },
-    [x, y, alert],
+    [data, alert],
   );
 
   const rangesPreferences = useMemo(() => {
@@ -239,12 +268,7 @@ function RangesTablePanel({
                 <NoTableData />
               )}
             </div>
-            <RangesPreferences
-              ranges={ranges}
-              ref={settingRef}
-              nucleus={nucleus}
-              preferences={preferences}
-            />
+            <RangesPreferences ref={settingRef} />
           </ReactCardFlip>
         </div>
       </div>
@@ -252,4 +276,39 @@ function RangesTablePanel({
   );
 }
 
-export default RangesWrapper(memo(RangesTablePanel));
+const MemoizedRangesTablePanel = memo(RangesTablePanelInner);
+
+const empyData = { ranges: {}, data: {}, info: {} };
+
+export default function RangesTablePanel() {
+  const {
+    displayerKey,
+    xDomain,
+    activeTab,
+    molecules,
+    toolOptions: {
+      selectedTool,
+      data: { showMultiplicityTrees },
+    },
+  } = useChartData();
+
+  const { ranges, data, info } = useSpectrum(empyData) as Datum1D;
+  const preferences = usePreferences();
+
+  return (
+    <MemoizedRangesTablePanel
+      {...{
+        ranges,
+        data,
+        info,
+        showMultiplicityTrees,
+        selectedTool,
+        displayerKey,
+        preferences,
+        xDomain,
+        activeTab,
+        molecules,
+      }}
+    />
+  );
+}

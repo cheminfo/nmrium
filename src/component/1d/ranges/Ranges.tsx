@@ -1,26 +1,29 @@
 import { memo } from 'react';
 
-import RangesWrapper from '../../hoc/RangesWrapper';
+import {
+  Datum1D,
+  Ranges as RangesProps,
+} from '../../../data/data1d/Spectrum1D';
+import { useChartData } from '../../context/ChartContext';
+import useSpectrum from '../../hooks/useSpectrum';
 
-import Range, { RangeData } from './Range';
+import Range from './Range';
 
-interface RangesProps {
+interface RangesInnerProps {
   displayerKey: string;
   selectedTool: string;
-  ranges: {
-    values: Array<RangeData>;
-  };
+  ranges: RangesProps;
   editRangeID: string;
   showMultiplicityTrees: boolean;
 }
 
-function Ranges({
+function RangesInner({
   ranges,
   displayerKey,
   selectedTool,
   editRangeID,
   showMultiplicityTrees,
-}: RangesProps) {
+}: RangesInnerProps) {
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {ranges?.values?.map((range) => (
@@ -36,4 +39,30 @@ function Ranges({
   );
 }
 
-export default RangesWrapper(memo(Ranges));
+const MemoizedRanges = memo(RangesInner);
+
+const empyData = { ranges: {} };
+
+export default function Ranges() {
+  const {
+    displayerKey,
+    toolOptions: {
+      selectedTool,
+      data: { tempRange, showMultiplicityTrees },
+    },
+  } = useChartData();
+
+  const { ranges } = useSpectrum(empyData) as Datum1D;
+
+  return (
+    <MemoizedRanges
+      {...{
+        ranges,
+        showMultiplicityTrees,
+        selectedTool,
+        displayerKey,
+        editRangeID: tempRange?.id,
+      }}
+    />
+  );
+}

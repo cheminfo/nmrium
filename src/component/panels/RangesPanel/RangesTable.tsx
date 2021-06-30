@@ -54,19 +54,9 @@ const tableStyle = css`
   }
 `;
 
-function RangesTable({
-  tableData,
-  onChangeKind,
-  onDelete,
-  onUnlink,
-  onZoom,
-  onEdit,
-  context,
-  activeTab,
-  preferences,
-}) {
-  const element = activeTab && activeTab.replace(/[0-9]/g, '');
-  const contextRef = useRef();
+function RangesTable({ tableData, onUnlink, context, activeTab, preferences }) {
+  const element = activeTab?.replace(/[0-9]/g, '');
+  const contextRef = useRef<any>();
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
   const data = useMapRanges(sortedData);
   const [relativeFlags, toggleRelativeColumn] = useToggleStatus('id', data);
@@ -149,24 +139,19 @@ function RangesTable({
           </tr>
         </thead>
         <tbody>
-          {data &&
-            data.map((range) => {
-              return (
-                <RangesTableRow
-                  key={range.rowKey}
-                  rowData={range}
-                  onChangeKind={onChangeKind}
-                  onDelete={onDelete}
-                  onUnlink={onUnlink}
-                  onZoom={onZoom}
-                  onEdit={onEdit}
-                  onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
-                  preferences={preferences}
-                  onColumnEditStart={columnEditStartHandler}
-                  editFlags={{ relativeFlags, signalFlags }}
-                />
-              );
-            })}
+          {data?.map((range) => {
+            return (
+              <RangesTableRow
+                key={range.rowKey}
+                rowData={range}
+                onUnlink={onUnlink}
+                onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
+                preferences={preferences}
+                onColumnEditStart={columnEditStartHandler}
+                editFlags={{ relativeFlags, signalFlags }}
+              />
+            );
+          })}
         </tbody>
       </table>
       <ContextMenu ref={contextRef} context={context} />
