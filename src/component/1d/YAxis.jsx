@@ -24,7 +24,8 @@ const axisStyles = css`
   }
 `;
 
-function YAxis({ show, label }) {
+function YAxis(props) {
+  const { show = true, label = '' } = props;
   const refAxis = useRef();
   const { yDomain, width, height, margin } = useChartData();
   const { scaleY } = useScale();
@@ -72,7 +73,6 @@ function YAxis({ show, label }) {
 export default YAxis;
 
 YAxis.contextTypes = {
-  showGrid: PropTypes.bool,
   show: PropTypes.bool,
   label: PropTypes.string,
   margin: PropTypes.shape({
@@ -81,10 +81,4 @@ YAxis.contextTypes = {
     bottom: PropTypes.number,
     left: PropTypes.number,
   }),
-};
-
-YAxis.defaultProps = {
-  showGrid: false,
-  show: true,
-  label: '',
 };

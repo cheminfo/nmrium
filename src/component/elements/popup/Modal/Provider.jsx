@@ -35,11 +35,11 @@ const transitionStyles = {
 
 function Provider({
   children,
-  style,
-  offset,
-  position,
-  transition,
-  wrapperRef,
+  style = undefined,
+  offset = '0px',
+  position = positions.CENTER,
+  transition = transitions.SCALE,
+  wrapperRef = null,
 }) {
   const root = useRef();
   const [modal, setModal] = useState();
@@ -250,13 +250,5 @@ function Provider({
     </ModalProvider>
   );
 }
-
-Provider.defaultProps = {
-  offset: '0px',
-  position: positions.CENTER,
-  transition: transitions.SCALE,
-  wrapperRef: null,
-  style: {},
-};
 
 export default Provider;

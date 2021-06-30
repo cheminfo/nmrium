@@ -74,7 +74,12 @@ const modalContainer = css`
   }
 `;
 
-function SetMolecularFormulaModal({ onClose, onSave, molecules, previousMF }) {
+export default function SetMolecularFormulaModal({
+  onClose,
+  onSave,
+  molecules,
+  previousMF,
+}) {
   const [currentIndex, setCurrentIndex] = useState();
 
   useEffect(() => {
@@ -85,15 +90,15 @@ function SetMolecularFormulaModal({ onClose, onSave, molecules, previousMF }) {
 
   const onSaveHandlerMolecularFormulaInput = useCallback(
     (mf) => {
-      onSave(mf);
-      onClose();
+      onSave?.(mf);
+      onClose?.();
     },
     [onClose, onSave],
   );
 
   const onSaveHandlerMoleculeSelection = useCallback(() => {
-    onSave(molecules[currentIndex].mf);
-    onClose();
+    onSave?.(molecules[currentIndex].mf);
+    onClose?.();
   }, [currentIndex, molecules, onClose, onSave]);
 
   const onChangeHandlerMoleculeSelection = useCallback((index) => {
@@ -126,14 +131,3 @@ function SetMolecularFormulaModal({ onClose, onSave, molecules, previousMF }) {
     </div>
   );
 }
-
-SetMolecularFormulaModal.defaultProps = {
-  onSave: () => {
-    return null;
-  },
-  onClose: () => {
-    return null;
-  },
-};
-
-export default SetMolecularFormulaModal;

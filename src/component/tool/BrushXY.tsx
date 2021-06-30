@@ -35,9 +35,19 @@ export const BRUSH_TYPE = {
   XY: 3,
 };
 
-function BrushXY({
-  brushType,
-  dimensionBorder,
+const defaultDimensionBorder: {
+  startX: number;
+  startY: number;
+  endX?: number;
+  endY?: number;
+} = {
+  startX: 0,
+  startY: 0,
+};
+
+export default function BrushXY({
+  brushType = BRUSH_TYPE.XY,
+  dimensionBorder = defaultDimensionBorder,
   width: widthProps,
   height: heightProps,
 }) {
@@ -57,7 +67,9 @@ function BrushXY({
     ((dimensionBorder.endX && Math.sign(endX - startX) === 1
       ? endX > dimensionBorder.endX
       : endX < dimensionBorder.startX) &&
-      (dimensionBorder.endX && Math.sign(endY - startY) === 1
+      (dimensionBorder.endX &&
+      dimensionBorder.endY &&
+      Math.sign(endY - startY) === 1
         ? endY > dimensionBorder.endY
         : endY < dimensionBorder.startY))
   ) {
@@ -115,15 +127,3 @@ function BrushXY({
     </div>
   );
 }
-
-BrushXY.defaultProps = {
-  brushType: BRUSH_TYPE.XY,
-  dimensionBorder: {
-    startX: 0,
-    startY: 0,
-  },
-  width: null,
-  height: null,
-};
-
-export default BrushXY;

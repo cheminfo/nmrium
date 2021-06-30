@@ -37,14 +37,14 @@ const gridStyles = css`
   }
 `;
 
-function XAxis({ label, show, showGrid, mode }) {
+function XAxis({ show = true, showGrid = false, mode, label: labelProp }) {
   const { xDomain, height, width, margin } = useChartData();
   const { scaleX } = useScale();
 
   const refAxis = useRef();
   const refGrid = useRef();
 
-  label = label ? label : mode === 'RTL' ? 'δ [ppm]' : 'time [s]';
+  const label = labelProp ? labelProp : mode === 'RTL' ? 'δ [ppm]' : 'time [s]';
 
   useEffect(() => {
     const xAxis = d3.axisBottom().ticks(8).tickFormat(d3.format('0'));
@@ -108,12 +108,6 @@ XAxis.propTypes = {
   showGrid: PropTypes.bool,
   show: PropTypes.bool,
   label: PropTypes.string,
-};
-
-XAxis.defaultProps = {
-  showGrid: false,
-  show: true,
-  label: '',
 };
 
 export default XAxis;

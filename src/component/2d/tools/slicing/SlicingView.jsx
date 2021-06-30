@@ -1,4 +1,3 @@
-import PropsTypes from 'prop-types';
 import { useMemo } from 'react';
 
 import { getSlice } from '../../../../data/data2d/Spectrum2D';
@@ -68,12 +67,5 @@ function SlicingView() {
 
   return chart2d;
 }
-SlicingView.defaultProps = {
-  onDimensionChange: () => null,
-};
-
-SlicingView.propsTypes = {
-  onDimensionChange: PropsTypes.func.isRequired,
-};
 
 export default SlicingView;

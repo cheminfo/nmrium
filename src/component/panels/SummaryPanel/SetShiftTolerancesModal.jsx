@@ -63,7 +63,11 @@ const modalContainer = css`
   }
 `;
 
-function SetShiftToleranceModal({ onClose, onSave, previousTolerance }) {
+export default function SetShiftToleranceModal({
+  onClose,
+  onSave,
+  previousTolerance,
+}) {
   const [tolerance, setTolerance] = useState();
 
   useEffect(() => {
@@ -75,8 +79,8 @@ function SetShiftToleranceModal({ onClose, onSave, previousTolerance }) {
   }, [previousTolerance]);
 
   const onSaveHandler = useCallback(() => {
-    onSave(tolerance);
-    onClose();
+    onSave?.(tolerance);
+    onClose?.();
   }, [onClose, onSave, tolerance]);
 
   const onChangeHandler = useCallback(
@@ -120,14 +124,3 @@ function SetShiftToleranceModal({ onClose, onSave, previousTolerance }) {
     </div>
   );
 }
-
-SetShiftToleranceModal.defaultProps = {
-  onSave: () => {
-    return null;
-  },
-  onClose: () => {
-    return null;
-  },
-};
-
-export default SetShiftToleranceModal;

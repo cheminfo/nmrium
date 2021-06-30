@@ -54,15 +54,14 @@ const styles = css`
 `;
 const allowedExtensions = ['dx', 'jdx'];
 
-function LoadJCAMPModal({ onLoadClick, onClose, startLoading }) {
+export default function LoadJCAMPModal({ onLoadClick, onClose, startLoading }) {
   const pathReft = useRef();
 
   const loadJCAMPHandler = useCallback(() => {
-    // ./data/xtc/XTC-814d_zg30.jdx
     const path = pathReft.current.value;
     const { name, extension } = extractFileMetaFromPath(path);
     if (allowedExtensions.includes(extension)) {
-      startLoading();
+      startLoading?.();
       loadFile(path, { asBuffer: true }).then((data) => {
         const file = {
           binary: data,
@@ -96,16 +95,3 @@ function LoadJCAMPModal({ onLoadClick, onClose, startLoading }) {
     </div>
   );
 }
-
-LoadJCAMPModal.defaultProps = {
-  onLoadButtonClick: () => {
-    return null;
-  },
-  onClose: () => {
-    return null;
-  },
-  startLoading: () => {
-    return null;
-  },
-};
-export default LoadJCAMPModal;

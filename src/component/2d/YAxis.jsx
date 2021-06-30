@@ -24,7 +24,14 @@ const axisStyles = css`
   }
 `;
 
-function YAxis({ show, label, margin: marginProps }) {
+const defaultMargin = { right: 50, top: 0, bottom: 0, left: 0 };
+
+function YAxis(props) {
+  const {
+    show = true,
+    label = '',
+    margin: marginProps = defaultMargin,
+  } = props;
   const refAxis = useRef();
   const state = useChartData();
   const { yDomain, width, height, activeTab, tabActiveSpectrum, margin } =
@@ -74,11 +81,5 @@ function YAxis({ show, label, margin: marginProps }) {
 
   return Axis;
 }
-
-YAxis.defaultProps = {
-  show: true,
-  label: '',
-  margin: { right: 50, top: 0, bottom: 0, left: 0 },
-};
 
 export default memo(YAxis);

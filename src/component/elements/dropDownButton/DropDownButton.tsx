@@ -8,7 +8,6 @@ import { useGlobal } from '../../context/GlobalContext';
 import DropDownList from './DropDownList';
 
 const styles = css`
-  // position: absolute;
   padding: 2px;
   border-radius: 10px;
   width: auto;
@@ -21,7 +20,17 @@ const styles = css`
   }
 `;
 
-function DropDownButton({ data, selectedKey, onSelect, formatSelectedValue }) {
+function defaultFormatSelectedValue(val) {
+  return val;
+}
+
+function DropDownButton(props) {
+  const {
+    data = null,
+    selectedKey,
+    onSelect,
+    formatSelectedValue = defaultFormatSelectedValue,
+  } = props;
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(selectedKey);
   const { rootRef } = useGlobal();
@@ -66,11 +75,5 @@ function DropDownButton({ data, selectedKey, onSelect, formatSelectedValue }) {
     </div>
   );
 }
-
-DropDownButton.defaultProps = {
-  data: null,
-  formatSelectedValue: (val) => val,
-  value: null,
-};
 
 export default DropDownButton;

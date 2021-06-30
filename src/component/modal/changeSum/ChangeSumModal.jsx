@@ -11,17 +11,23 @@ const modalContainer = css`
   padding: 5px;
 `;
 
-function ChangeSumModal({ onSave, onClose, header, molecules, element }) {
+export default function ChangeSumModal({
+  onSave,
+  onClose,
+  header,
+  molecules,
+  element,
+}) {
   const saveInputValueHandler = useCallback(
     (inputValue) => {
-      onSave(inputValue);
+      onSave?.(inputValue);
     },
     [onSave],
   );
 
   const saveSelectMoleculeHandler = useCallback(
     (sum) => {
-      onSave(sum);
+      onSave?.(sum);
     },
     [onSave],
   );
@@ -42,13 +48,3 @@ function ChangeSumModal({ onSave, onClose, header, molecules, element }) {
     </div>
   );
 }
-
-ChangeSumModal.defaultProps = {
-  onSave: () => {
-    return null;
-  },
-  onClose: () => {
-    return null;
-  },
-};
-export default ChangeSumModal;

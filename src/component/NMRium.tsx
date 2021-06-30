@@ -202,13 +202,15 @@ export interface NMRiumData {
   spectra: DeepPartial<Spectra>;
 }
 
+const defaultPreferences = {};
+
 function NMRium({
   data: dataProp,
-  mode,
-  onDataChange,
-  preferences,
+  mode = NMRiumMode.DEFAULT,
+  preferences = defaultPreferences,
   getSpinner = defaultGetSpinner,
-  emptyText = undefined,
+  onDataChange,
+  emptyText,
 }: NMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWraperRef = useRef<HTMLDivElement>(null);
@@ -458,12 +460,6 @@ NMRium.propTypes = {
       hideExclusionZonesTool: PropTypes.bool,
     }),
   }),
-};
-
-NMRium.defaultProps = {
-  onDataChange: () => null,
-  mode: NMRiumMode.DEFAULT,
-  preferences: {},
 };
 
 export default memo(NMRium);

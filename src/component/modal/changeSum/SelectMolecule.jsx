@@ -65,7 +65,7 @@ const moleculeContainerStyle = css`
   }
 `;
 
-function SelectMolecule({ onSave, molecules, element }) {
+export default function SelectMolecule({ onSave, molecules, element }) {
   const [currentIndex, setCurrentIndex] = useState();
   const {
     display: { general, panels },
@@ -90,7 +90,7 @@ function SelectMolecule({ onSave, molecules, element }) {
   const saveSelectMoleculeHandler = useCallback(
     (e) => {
       e.preventDefault();
-      onSave(newSum);
+      onSave?.(newSum);
     },
     [newSum, onSave],
   );
@@ -126,10 +126,3 @@ function SelectMolecule({ onSave, molecules, element }) {
     </div>
   ) : null;
 }
-
-SelectMolecule.defaultProps = {
-  onSave: () => {
-    return null;
-  },
-};
-export default SelectMolecule;

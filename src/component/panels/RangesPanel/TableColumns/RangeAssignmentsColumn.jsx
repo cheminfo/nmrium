@@ -27,7 +27,7 @@ function RangeAssignmentsColumn({
 
   const visibilityChangeHandler = useCallback(
     (flag) => {
-      onUnlinkVisibilityChange(flag);
+      onUnlinkVisibilityChange?.(flag);
     },
     [onUnlinkVisibilityChange],
   );
@@ -54,7 +54,7 @@ function RangeAssignmentsColumn({
     <td
       {...rowSpanTags}
       {...onHover}
-      {...{ onClick: (e) => onLink(e, assignment) }}
+      {...{ onClick: (e) => onLink?.(e, assignment) }}
     >
       {rowData.pubIntegral !== undefined && rowData.pubIntegral > 0 ? (
         rowData.diaID && rowData.diaID.length > 0 ? (
@@ -73,7 +73,7 @@ function RangeAssignmentsColumn({
                   padding: 0,
                   margin: 0,
                 }}
-                onClick={(e) => onUnlink(e, true)}
+                onClick={(e) => onUnlink?.(e, true)}
               >
                 <FaMinusCircle color="red" />
               </button>
@@ -100,12 +100,5 @@ function RangeAssignmentsColumn({
     </td>
   );
 }
-
-RangeAssignmentsColumn.defaultProps = {
-  onHover: () => null,
-  onUnlinkVisibilityChange: () => null,
-  onLink: () => null,
-  onUnlink: () => null,
-};
 
 export default memo(RangeAssignmentsColumn);

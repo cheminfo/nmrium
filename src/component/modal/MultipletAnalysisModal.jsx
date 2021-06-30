@@ -93,7 +93,7 @@ const loaderStyles = css`
   }
 `;
 
-function MultipletAnalysisModal({
+export default function MultipletAnalysisModal({
   data,
   activeSpectrum,
   scaleX,
@@ -240,10 +240,3 @@ function MultipletAnalysisModal({
     </div>
   );
 }
-
-MultipletAnalysisModal.defaultProps = {
-  onClose: () => {
-    return null;
-  },
-};
-export default MultipletAnalysisModal;

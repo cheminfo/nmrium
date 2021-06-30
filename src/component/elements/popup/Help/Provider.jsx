@@ -57,19 +57,23 @@ const styles = {
   },
 };
 
+const defaultContainerStyle = {
+  zIndex: 100,
+};
+
 function Provider({
   children,
   data,
-  offset,
-  position,
-  timeout,
-  delay,
+  offset = '10px',
+  position = positions.TOP_RIGHT,
+  timeout = 0,
+  delay = 2000,
   type,
-  transition,
-  containerStyle,
-  wrapperRef,
-  multiple,
-  preventAutoHelp,
+  transition = transitions.SCALE,
+  containerStyle = defaultContainerStyle,
+  wrapperRef = null,
+  multiple = false,
+  preventAutoHelp = false,
 }) {
   const root = useRef();
   const timersId = useRef([]);
@@ -267,19 +271,5 @@ function Provider({
     </HelpProvider>
   );
 }
-
-Provider.defaultProps = {
-  offset: '10px',
-  position: positions.TOP_RIGHT,
-  timeout: 0,
-  delay: 2000,
-  transition: transitions.SCALE,
-  containerStyle: {
-    zIndex: 100,
-  },
-  wrapperRef: null,
-  multiple: false,
-  preventAutoHelp: false,
-};
 
 export default memo(Provider);

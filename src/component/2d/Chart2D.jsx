@@ -1,4 +1,3 @@
-import PropsTypes from 'prop-types';
 import { useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
@@ -67,12 +66,5 @@ function Chart2D({ data }) {
 
   return chart2d;
 }
-Chart2D.defaultProps = {
-  onDimensionChange: () => null,
-};
-
-Chart2D.propsTypes = {
-  onDimensionChange: PropsTypes.func.isRequired,
-};
 
 export default Chart2D;

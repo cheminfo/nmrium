@@ -32,7 +32,7 @@ const defaultTransitionStyles = {
 export default function Transtion({
   children,
   type,
-  transitionStyles,
+  transitionStyles = defaultTransitionStyles,
   ...props
 }) {
   const ref = useRef(null);
@@ -53,7 +53,3 @@ export default function Transtion({
     </ContainerTransition>
   );
 }
-
-Transtion.defaultProps = {
-  transitionStyles: defaultTransitionStyles,
-};

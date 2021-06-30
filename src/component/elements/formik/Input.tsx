@@ -34,9 +34,4 @@ function Input(props: InputProps) {
   );
 }
 
-Input.defaultProps = {
-  onFocus: () => null,
-  onBlur: () => null,
-};
-
 export default Input;

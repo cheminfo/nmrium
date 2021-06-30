@@ -21,12 +21,12 @@ import ProgressIndicator from './ProgressIndicator';
 
 function Provider({
   children,
-  wrapperRef,
-  offset,
-  position,
-  timeout,
+  wrapperRef = null,
+  offset = '5px',
+  position = positions.BOTTOM_CENTER,
+  timeout = 3000,
   type,
-  transition,
+  transition = transitions.FADE,
   ...props
 }) {
   const root = useRef(null);
@@ -266,14 +266,6 @@ Provider.propTypes = {
     Provider: PropTypes.object,
     Consumer: PropTypes.object,
   }),
-};
-
-Provider.defaultProps = {
-  offset: '5px',
-  position: positions.BOTTOM_CENTER,
-  transition: transitions.FADE,
-  wrapperRef: null,
-  timeout: 3000,
 };
 
 export default Provider;

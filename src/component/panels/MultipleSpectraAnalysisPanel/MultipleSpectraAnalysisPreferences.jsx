@@ -71,7 +71,7 @@ const styles = css`
   }
 `;
 
-const MultipleSpectraAnalysisPreferences = ({ data, onAfterSave }, ref) => {
+function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref) {
   const dispatch = useDispatch();
   const refForm = useRef();
   const [columns, setColumns] = useState({});
@@ -121,8 +121,6 @@ const MultipleSpectraAnalysisPreferences = ({ data, onAfterSave }, ref) => {
       }, {});
     }
 
-    //   console.log(columnSchema());
-
     return Yup.object().shape({
       columns: Yup.object().shape(columnSchema()),
     });
@@ -130,7 +128,7 @@ const MultipleSpectraAnalysisPreferences = ({ data, onAfterSave }, ref) => {
 
   const submitHandler = useCallback(
     (values) => {
-      onAfterSave(true);
+      onAfterSave?.(true);
       const result = Object.entries(values.columns).reduce(
         (acc, [key, value]) => {
           acc[key] = { ...columns[key], ...value };
@@ -226,9 +224,6 @@ const MultipleSpectraAnalysisPreferences = ({ data, onAfterSave }, ref) => {
       <MulipleAnalysisCodeEditor data={data} />
     </FormikForm>
   );
-};
+}
 
-MultipleSpectraAnalysisPreferences.defaultProps = {
-  onAfterSave: () => false,
-};
 export default forwardRef(MultipleSpectraAnalysisPreferences);

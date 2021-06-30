@@ -52,17 +52,17 @@ const styles = css`
   }
 `;
 
-function NumberInput({ onSave, onClose, header }) {
+export default function NumberInput({ onSave, onClose, header }) {
   const valueReft = useRef();
 
   const saveHandler = useCallback(() => {
-    onSave(valueReft.current.value);
+    onSave?.(valueReft.current.value);
   }, [onSave]);
 
   const handleKeyDown = useCallback(
     (event) => {
       if (event.key === 'Enter') {
-        onSave(valueReft.current.value);
+        onSave?.(valueReft.current.value);
       }
     },
     [onSave],
@@ -89,13 +89,3 @@ function NumberInput({ onSave, onClose, header }) {
     </div>
   );
 }
-
-NumberInput.defaultProps = {
-  onSave: () => {
-    return null;
-  },
-  onClose: () => {
-    return null;
-  },
-};
-export default NumberInput;

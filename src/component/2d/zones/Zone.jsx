@@ -19,13 +19,6 @@ const stylesOnHover = css`
   -webkit-user-select: none; /* Chrome all / Safari all */
   -moz-user-select: none; /* Firefox all */
 
-  // // disabled because Resizable component appears now when hovering over it
-  // :hover .range-area {
-  //   height: 100%;
-  //   fill: #ff6f0057;
-  //   cursor: pointer;
-  // }
-
   .delete-button {
     visibility: hidden;
   }
@@ -38,7 +31,6 @@ const stylesHighlighted = css`
     pointer-events: fill;
   }
   .Integral-area {
-    // height: 100%;
     fill: #ff6f0057;
   }
   .delete-button {
@@ -98,10 +90,6 @@ const Zone = ({ zoneData, isVisible }) => {
       ))}
     </g>
   );
-};
-
-Zone.defaultProps = {
-  onDelete: () => null,
 };
 
 export default Zone;

@@ -131,8 +131,4 @@ function SpectrumListItem({
   );
 }
 
-SpectrumListItem.defaultProps = {
-  onContextMenu: () => null,
-};
-
 export default memo(SpectrumListItem);

@@ -21,7 +21,14 @@ const axisStyles = css`
   }
 `;
 
-function XAxis({ show, label, margin: marginProps }) {
+const defaultMargin = { right: 100, top: 0, left: 0, bottom: 0 };
+
+function XAxis(props) {
+  const {
+    show = true,
+    label = 'δ [ppm]',
+    margin: marginProps = defaultMargin,
+  } = props;
   const state = useChartData();
   const { xDomain, height, width, margin, tabActiveSpectrum, activeTab } =
     state;
@@ -86,12 +93,6 @@ XAxis.propTypes = {
   }),
   show: PropTypes.bool,
   label: PropTypes.string,
-};
-
-XAxis.defaultProps = {
-  show: true,
-  label: 'δ [ppm]',
-  margin: { right: 100, top: 0, left: 0, bottom: 0 },
 };
 
 export default memo(XAxis);

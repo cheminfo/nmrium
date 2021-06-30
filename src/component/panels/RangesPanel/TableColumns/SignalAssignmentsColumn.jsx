@@ -27,13 +27,13 @@ function SignalAssignmentsColumn({
 
   const visibilityChangeHandler = useCallback(
     (flag) => {
-      onUnlinkVisibilityChange(flag);
+      onUnlinkVisibilityChange?.(flag);
     },
     [onUnlinkVisibilityChange],
   );
   const assignHandler = useCallback(
     (e) => {
-      onLink(e, assignment);
+      onLink?.(e, assignment);
     },
     [assignment, onLink],
   );
@@ -54,7 +54,7 @@ function SignalAssignmentsColumn({
                 padding: 0,
                 margin: 0,
               }}
-              onClick={(e) => onUnlink(e, false)}
+              onClick={(e) => onUnlink?.(e, false)}
             >
               <FaMinusCircle color="red" />
             </button>
@@ -68,12 +68,5 @@ function SignalAssignmentsColumn({
     </td>
   );
 }
-
-SignalAssignmentsColumn.defaultProps = {
-  onHover: () => null,
-  onUnlinkVisibilityChange: () => null,
-  onLink: () => null,
-  onUnlink: () => null,
-};
 
 export default memo(SignalAssignmentsColumn);
