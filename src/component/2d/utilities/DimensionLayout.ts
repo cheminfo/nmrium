@@ -4,7 +4,22 @@ const LAYOUT = {
   CENTER_2D: 'CENTER_2D',
 };
 
-function get2DDimensionLayout({ width, height, margin }) {
+interface MarginProps {
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+}
+
+function get2DDimensionLayout({
+  width,
+  height,
+  margin,
+}: {
+  width: number;
+  height: number;
+  margin: MarginProps;
+}) {
   return {
     CENTER_2D: {
       startX: margin.left,
@@ -27,7 +42,35 @@ function get2DDimensionLayout({ width, height, margin }) {
   };
 }
 
-function getLayoutID(dimension, brushData) {
+interface StartEndProps {
+  startX: number;
+  endX?: number;
+  startY: number;
+  endY?: number;
+}
+
+interface DimensionType {
+  CENTER_2D: {
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
+  };
+  TOP_1D: {
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
+  };
+  LEFT_1D: {
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
+  };
+}
+
+function getLayoutID(dimension: DimensionType, brushData: StartEndProps) {
   for (const key of Object.keys(dimension)) {
     if (
       brushData.startX >= dimension[key].startX &&
