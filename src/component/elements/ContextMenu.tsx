@@ -49,13 +49,17 @@ const styles = css`
     border: none;
   }
 `;
+
 function ContextMenu({ context }, ref) {
-  const [position, setPosition] = useState({ lef: 0, top: 0 });
+  const [position, setPosition] = useState<{ lef: any; top: any }>({
+    lef: 0,
+    top: 0,
+  });
   const { rootRef, elementsWraperRef } = useGlobal();
   const [data, setData] = useState();
-  const [isVisible, show] = useState();
+  const [isVisible, show] = useState<boolean>();
   const [sourceElement, setSourceElement] = useState(null);
-  const root = useRef();
+  const root = useRef<any>();
 
   useEffect(() => {
     root.current = document.createElement('div');
@@ -82,8 +86,8 @@ function ContextMenu({ context }, ref) {
     const rootH = 0;
 
     const right = screenW - clickX > rootW;
-    let left = !right;
-    let top = screenH - clickY > rootH;
+    let left: any = !right;
+    let top: any = screenH - clickY > rootH;
     const bottom = !top;
     if (right) {
       left = `${clickX + 5}px`;
@@ -101,7 +105,7 @@ function ContextMenu({ context }, ref) {
       top = `${clickY - rootH - 5}px`;
     }
 
-    setPosition({ left, top });
+    setPosition({ lef: left, top });
   };
 
   useImperativeHandle(ref, () => ({
