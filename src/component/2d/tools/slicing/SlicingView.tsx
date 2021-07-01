@@ -21,7 +21,7 @@ function SlicingView() {
   const position = useMouseTracker();
 
   const chart2d = useMemo(() => {
-    if (position && activeSpectrum.id) {
+    if (position && activeSpectrum && activeSpectrum.id) {
       const { x, y } = position;
       const scale2dX = get2DXScale({ margin, width, xDomain });
       const scale2dY = get2DYScale({ margin, height, yDomain });
@@ -39,20 +39,17 @@ function SlicingView() {
             backgroundColor: 'rgba(255,255,255,0.8)',
           }}
         >
-          {data && data.horizontal && (
+          {data?.horizontal && (
             <HorizontalSliceChart data={data.horizontal.data} />
           )}
-          {data && data.vertical && (
-            <VerticalSliceChart data={data.vertical.data} />
-          )}
+          {data?.vertical && <VerticalSliceChart data={data.vertical.data} />}
         </svg>
       );
     }
     return null;
   }, [
     position,
-    activeSpectrum.id,
-    activeSpectrum.index,
+    activeSpectrum,
     margin,
     width,
     xDomain,
