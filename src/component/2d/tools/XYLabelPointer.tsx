@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, CSSProperties } from 'react';
 
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
@@ -7,7 +7,7 @@ import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import { getLayoutID, LAYOUT } from '../utilities/DimensionLayout';
 import { get2DXScale, get2DYScale, get1DYScale } from '../utilities/scale';
 
-const style = {
+const style: CSSProperties = {
   cursor: 'crosshair',
   transformOrigin: 'bottom right',
   position: 'absolute',
@@ -49,6 +49,7 @@ function XYLabelPointer({ layout, data1D }) {
     if (!data1D || data1D.length === 0) {
       return get2DXScale({ width, margin, xDomain });
     }
+
     switch (trackID) {
       case LAYOUT.TOP_1D:
       case LAYOUT.CENTER_2D: {
@@ -102,10 +103,10 @@ function XYLabelPointer({ layout, data1D }) {
     switch (trackID) {
       case LAYOUT.CENTER_2D:
       case LAYOUT.TOP_1D: {
-        return scaleX.invert(x ? x : position.x);
+        return scaleX?.invert(x ? x : position.x);
       }
       case LAYOUT.LEFT_1D: {
-        return scaleX.invert(x ? x : position.y);
+        return scaleX?.invert(x ? x : position.y);
       }
       default:
         return 0;
@@ -116,10 +117,10 @@ function XYLabelPointer({ layout, data1D }) {
     switch (trackID) {
       case LAYOUT.CENTER_2D:
       case LAYOUT.TOP_1D: {
-        return scaleY.invert(position.y);
+        return scaleY?.invert(position.y);
       }
       case LAYOUT.LEFT_1D: {
-        return scaleY.invert(position.x);
+        return scaleY?.invert(position.x);
       }
       default:
         return 0;
