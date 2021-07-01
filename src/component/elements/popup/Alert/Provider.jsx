@@ -6,6 +6,7 @@ import {
   useEffect,
   useCallback,
   useMemo,
+  memo,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
@@ -268,4 +269,4 @@ Provider.propTypes = {
   }),
 };
 
-export default Provider;
+export default memo(Provider);

@@ -65,80 +65,86 @@ function mapNucleus(draft) {
   }
 }
 
-export function preferencesReducer(state, action) {
-  switch (action.type) {
-    case INIT_PREFERENCES: {
-      const nmrLocalStorageVersion = getLocalStorage(
-        'nmr-local-storage-version',
-        false,
-      );
-      if (
-        !nmrLocalStorageVersion ||
-        nmrLocalStorageVersion !== LOCAL_STORGAE_VERSION
-      ) {
-        removeData('nmr-general-settings');
-        storeData('nmr-local-storage-version', LOCAL_STORGAE_VERSION);
-      }
+function handleIniti(draft, action) {
+  const nmrLocalStorageVersion = getLocalStorage(
+    'nmr-local-storage-version',
+    false,
+  );
+  if (
+    !nmrLocalStorageVersion ||
+    nmrLocalStorageVersion !== LOCAL_STORGAE_VERSION
+  ) {
+    removeData('nmr-general-settings');
+    storeData('nmr-local-storage-version', LOCAL_STORGAE_VERSION);
+  }
 
-      const localData = getLocalStorage('nmr-general-settings');
+  const localData = getLocalStorage('nmr-general-settings');
 
-      return produce(state, (draft) => {
-        if (action.payload) {
-          const { dispatch, mode, ...resProps } = action.payload;
+  if (action.payload) {
+    const { dispatch, mode, ...resProps } = action.payload;
 
-          draft.basePreferences = lodashMerge(
-            {},
-            {
-              display:
-                mode === NMRiumMode.DEFAULT ? {} : getPreferencesbyMode(mode),
-            },
-            resProps,
-          );
+    draft.basePreferences = lodashMerge(
+      {},
+      {
+        display: mode === NMRiumMode.DEFAULT ? {} : getPreferencesbyMode(mode),
+      },
+      resProps,
+    );
 
-          const hiddenFeatures = JSON.parse(
-            JSON.stringify(draft.basePreferences.display),
-            (key, value) => {
-              if (value) {
-                return value;
-              }
-            },
-          );
+    const hiddenFeatures = JSON.parse(
+      JSON.stringify(draft.basePreferences.display),
+      (key, value) => {
+        if (value) {
+          return value;
+        }
+      },
+    );
 
-          draft.display = lodashMerge(
-            {},
-            getPreferencesbyMode(NMRiumMode.DEFAULT),
-            hiddenFeatures,
-          );
-          draft.dispatch = dispatch;
-          if (localData) {
-            Object.entries(localData).forEach(([k, v]) => {
-              if (!['dispatch', 'basePreferences'].includes(k)) {
-                draft[k] = lodashMerge({}, resProps[k] ? resProps[k] : {}, v);
-              }
-            });
-            mapNucleus(draft);
-          }
+    draft.display = lodashMerge(
+      {},
+      getPreferencesbyMode(NMRiumMode.DEFAULT),
+      hiddenFeatures,
+    );
+    draft.dispatch = dispatch;
+    if (localData) {
+      Object.entries(localData).forEach(([k, v]) => {
+        if (!['dispatch', 'basePreferences'].includes(k)) {
+          draft[k] = lodashMerge({}, resProps[k] ? resProps[k] : {}, v);
         }
       });
+      mapNucleus(draft);
     }
-    case SET_PREFERENCES:
-      return produce(state, (draft) => {
-        if (action.payload) {
-          const data = action.payload;
-          draft.controllers = data.controllers;
-          draft.formatting = data.formatting;
-          draft.display.panels = data.display.panels;
-          mapNucleus(draft);
-        }
-      });
-    case SET_PANELS_PREFERENCES:
-      return produce(state, (draft) => {
-        if (action.payload) {
-          const { key, value } = action.payload;
-          draft.formatting.panels[key] = value;
-        }
-      });
-    default:
-      return state;
   }
 }
+
+function handleSetPreferences(draft, action) {
+  if (action.payload) {
+    const data = action.payload;
+    draft.controllers = data.controllers;
+    draft.formatting = data.formatting;
+    draft.display.panels = data.display.panels;
+    mapNucleus(draft);
+  }
+}
+function handleSetPanelsPreferences(draft, action) {
+  if (action.payload) {
+    const { key, value } = action.payload;
+    draft.formatting.panels[key] = value;
+  }
+}
+
+function innerPreferencesReducer(drfat, action) {
+  switch (action.type) {
+    case INIT_PREFERENCES:
+      return handleIniti(drfat, action);
+    case SET_PREFERENCES:
+      return handleSetPreferences(drfat, action);
+    case SET_PANELS_PREFERENCES:
+      return handleSetPanelsPreferences;
+    default:
+      return drfat;
+  }
+}
+const preferencesReducer = produce(innerPreferencesReducer);
+
+export default preferencesReducer;

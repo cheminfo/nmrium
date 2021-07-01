@@ -1,5 +1,7 @@
 import { CSSProperties, memo } from 'react';
 
+import { useChartData } from '../context/ChartContext';
+
 import BasicToolBar from './BasicToolBar';
 import FunctionToolBar from './FunctionToolBar';
 
@@ -13,11 +15,11 @@ const styles: CSSProperties = {
   height: '100%',
 };
 
-interface ToolBarProps {
+interface ToolBarInnerProps {
   selectedTool: string;
 }
 
-function ToolBar({ selectedTool }: ToolBarProps) {
+function ToolBarInner({ selectedTool }: ToolBarInnerProps) {
   return (
     <div style={styles}>
       <FunctionToolBar defaultValue={selectedTool} />
@@ -27,4 +29,12 @@ function ToolBar({ selectedTool }: ToolBarProps) {
   );
 }
 
-export default memo(ToolBar);
+const MemoizedToolBar = memo(ToolBarInner);
+
+export default function ToolBar() {
+  const {
+    toolOptions: { selectedTool },
+  } = useChartData();
+
+  return <MemoizedToolBar {...{ selectedTool }} />;
+}

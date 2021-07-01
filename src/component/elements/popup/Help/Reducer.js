@@ -1,18 +1,25 @@
+import { produce } from 'immer';
+
 export const initState = {
   helpText: null,
   helpObject: null,
 };
-export default function helpReducer(state, action) {
+function innerHelpReducer(draft, action) {
   switch (action.type) {
     case 'SHOW': {
-      const helpText = state.data[action.id].text;
-      return { ...state, helpText };
+      if (draft.data[action.id]) {
+        draft.helpText = draft.data[action.id].text;
+      }
+      break;
     }
     case 'HIDE': {
-      return { ...state, helpText: null };
+      draft.helpText = null;
+      break;
     }
     default: {
       throw new Error(`unknown action type: ${action.type}`);
     }
   }
 }
+
+export default produce(innerHelpReducer);

@@ -49,9 +49,8 @@ import {
   dispatchMiddleware,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
-import {
+import preferencesReducer, {
   preferencesInitialState,
-  preferencesReducer,
   INIT_PREFERENCES,
 } from './reducer/preferencesReducer';
 import {
@@ -131,7 +130,8 @@ const containerStyles = css`
 
   .Resizer.vertical:hover {
     background-color: #dfdfdf !important;
-    border-left: 0.55px #bbbbbb solid;
+    border-left: 0.55px #bbbbbbimport preferencesReducer from './reducer/preferencesReducer';
+ solid;
     border-right: 0.55px #bbbbbb solid;
   }
 `;
@@ -215,6 +215,7 @@ function NMRium({
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWraperRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
+
   const isFullscreen = useFullscreen(rootRef, show, {
     onClose: () => {
       toggle(false);
@@ -232,11 +233,7 @@ function NMRium({
     preferencesInitialState,
   );
 
-  const {
-    toolOptions: { selectedTool },
-    displayerMode,
-    data: spectraData,
-  } = state;
+  const { displayerMode, data: spectraData } = state;
 
   useEffect(() => {
     if (checkActionType(state.actionType)) {
@@ -351,7 +348,7 @@ function NMRium({
                                 <DropZone>
                                   <KeysListenerTracker />
 
-                                  <ToolBar selectedTool={selectedTool} />
+                                  <ToolBar />
                                   <SplitPane
                                     style={splitPaneStyles.container}
                                     resizerStyle={splitPaneStyles.resizer}
@@ -384,14 +381,7 @@ function NMRium({
                                     ) : (
                                       <Viewer2D emptyText={emptyText} />
                                     )}
-                                    {!isRightPanelHide ? (
-                                      <Panels
-                                        selectedTool={selectedTool}
-                                        displayerMode={displayerMode}
-                                      />
-                                    ) : (
-                                      <div />
-                                    )}
+                                    {!isRightPanelHide ? <Panels /> : <div />}
                                   </SplitPane>
                                 </DropZone>
                               </div>

@@ -11,9 +11,8 @@ import { useModal } from '../elements/popup/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
 import { ZoomType } from '../reducer/actions/Zoom';
-import {
+import scaleReducer, {
   scaleInitialState,
-  scaleReducer,
   SET_SCALE,
 } from '../reducer/scaleReducer';
 import {

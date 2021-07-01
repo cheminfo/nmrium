@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext } from 'react';
+import { useMemo, createContext, useCallback, useContext } from 'react';
 
 const HelpContext = createContext();
 
@@ -28,10 +28,12 @@ export function useHelp() {
     context.clear();
   }, [context]);
 
-  const onHover = {
-    onMouseEnter: show,
-    onMouseLeave: hide,
-  };
+  return useMemo(() => {
+    const onHover = {
+      onMouseEnter: show,
+      onMouseLeave: hide,
+    };
 
-  return { show, hide, onHover };
+    return { show, hide, onHover };
+  }, [hide, show]);
 }

@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 import { SvgLogoNmrium } from 'cheminfo-font';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, memo } from 'react';
 import {
   FaRegWindowMaximize,
   FaWrench,
@@ -75,21 +75,18 @@ const headerStyle = css`
   }
 `;
 
-interface HeaderProps {
+interface HeaderInnerProps {
   onMaximize?: () => void;
   isFullscreen: boolean;
+  selectedOptionPanel: string;
 }
 
-function Header(props: HeaderProps) {
-  const { isFullscreen, onMaximize = () => null } = props;
+function HeaderInner(props: HeaderInnerProps) {
+  const { isFullscreen, onMaximize = () => null, selectedOptionPanel } = props;
 
-  const {
-    toolOptions: { selectedOptionPanel },
-  } = useChartData();
-
-  const modal = useModal();
-  const alert = useAlert();
   const help = useHelp();
+  const alert = useAlert();
+  const modal = useModal();
 
   const selectedPanel = useMemo(() => {
     switch (selectedOptionPanel) {
@@ -184,4 +181,14 @@ function Header(props: HeaderProps) {
   );
 }
 
-export default Header;
+const MemoizedHeader = memo(HeaderInner);
+
+export default function ({ isFullscreen, onMaximize }) {
+  const {
+    toolOptions: { selectedOptionPanel },
+  } = useChartData();
+
+  return (
+    <MemoizedHeader {...{ selectedOptionPanel, isFullscreen, onMaximize }} />
+  );
+}
