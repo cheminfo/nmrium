@@ -43,7 +43,11 @@ import PeakPointer from './tool/PeakPointer';
 import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
 
-function Viewer1D({ emptyText = undefined }) {
+interface Viewer1DProps {
+  emptyText?: string;
+}
+
+function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   const {
     display: { general },
   } = usePreferences();
@@ -108,7 +112,7 @@ function Viewer1D({ emptyText = undefined }) {
         const endXPPM = scaleState.scaleX().invert(endX);
         Events.emit('brushEnd', {
           ...brushData,
-          range: [startXPPM, endXPPM].sort(),
+          range: [startXPPM, endXPPM].sort((a, b) => a - b),
         });
       };
 
@@ -178,8 +182,7 @@ function Viewer1D({ emptyText = undefined }) {
             break;
 
           default:
-            propagateEvent(brushData);
-
+            propagateEvent();
             break;
         }
       } else {
@@ -296,10 +299,13 @@ function Viewer1D({ emptyText = undefined }) {
         )}
       </Fragment>
     );
-  }, []);
+  }, [] as any);
 
-  const [finalSize, setFinalSize] = useState();
+  const [finalSize, setFinalSize] =
+    useState<{ width: number; height: number }>();
+
   useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
+
   useEffect(() => {
     if (finalSize && isFinite(finalSize.width) && isFinite(finalSize.height)) {
       dispatch({
