@@ -10,7 +10,17 @@ import XAxis from './XAxis';
 import YAxis from './YAxis';
 import Zones from './zones/Zones';
 
-function Chart2D({ data }) {
+interface Chart2DProps {
+  data?: Array<{
+    id: number;
+    data: {
+      x: number[];
+      y: number[];
+    };
+  }>;
+}
+
+function Chart2D({ data }: Chart2DProps) {
   const { width, height, margin, displayerKey } = useChartData();
 
   const chart2d = useMemo(() => {
@@ -40,8 +50,8 @@ function Chart2D({ data }) {
           strokeWidth="1"
           fill="transparent"
         />
-        {data && data[0] && <Top1DChart data={data[0]} />}
-        {data && data[1] && <Left1DChart data={data[1]} />}
+        {data?.[0] && <Top1DChart data={data[0]} />}
+        {data?.[1] && <Left1DChart data={data[1]} />}
         <Contours />
         <Zones />
         <IndicationLines axis="X" show />

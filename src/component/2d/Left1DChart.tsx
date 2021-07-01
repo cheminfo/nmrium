@@ -6,7 +6,7 @@ import { useChartData } from '../context/ChartContext';
 import { get1DYScale, get2DYScale } from './utilities/scale';
 
 interface Left1DChartProps {
-  margin: number;
+  margin?: number;
   data: {
     id: number;
     data: {

@@ -40,7 +40,7 @@ function Viewer2D({ emptyText = undefined }) {
   const spectrumData = useMemo(() => {
     const nucleuses = activeTab.split(',');
     return nucleuses.reduce((acc, n) => {
-      if (tabActiveSpectrum[n] && tabActiveSpectrum[n].id) {
+      if (tabActiveSpectrum[n]?.id) {
         const id = tabActiveSpectrum[n].id;
         const spectrum = data.find(
           (datum) => datum.id === id && !datum.info.isFid,
@@ -117,7 +117,7 @@ function Viewer2D({ emptyText = undefined }) {
 
   const mouseClick = useCallback(
     (position) => {
-      // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { x, y } = position;
       switch (selectedTool) {
         default:
@@ -163,14 +163,14 @@ function Viewer2D({ emptyText = undefined }) {
                 dimensionBorder={DIMENSION.CENTER_2D}
               />
               <>
-                {spectrumData && spectrumData[0] && (
+                {spectrumData?.[0] && (
                   <BrushXY
                     brushType={BRUSH_TYPE.X}
                     dimensionBorder={DIMENSION.TOP_1D}
                     height={margin.top}
                   />
                 )}
-                {spectrumData && spectrumData[1] && (
+                {spectrumData?.[1] && (
                   <BrushXY
                     brushType={BRUSH_TYPE.Y}
                     dimensionBorder={DIMENSION.LEFT_1D}
@@ -188,10 +188,13 @@ function Viewer2D({ emptyText = undefined }) {
         )}
       </Fragment>
     );
-  }, []);
+  }, [] as any);
 
-  const [finalSize, setFinalSize] = useState();
+  const [finalSize, setFinalSize] =
+    useState<{ width: number; height: number }>();
+
   useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
+
   useEffect(() => {
     if (finalSize && isFinite(finalSize.width) && isFinite(finalSize.height)) {
       dispatch({

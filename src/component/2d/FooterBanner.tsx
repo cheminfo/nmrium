@@ -131,7 +131,7 @@ function FooterBanner({ layout, data1D }) {
     return <div css={styles} />;
   }
   const getRealYValue = (cordinate) => {
-    let index = null;
+    let index: number | null = null;
     if (trackID === LAYOUT.TOP_1D) {
       index = 0;
     } else if (trackID === LAYOUT.LEFT_1D) {
@@ -147,7 +147,7 @@ function FooterBanner({ layout, data1D }) {
     return 1;
   };
 
-  const getXValue = (x = null) => {
+  const getXValue = (x: number | null = null) => {
     if (scaleX != null) {
       switch (trackID) {
         case LAYOUT.CENTER_2D:
@@ -225,7 +225,8 @@ function FooterBanner({ layout, data1D }) {
 
   const getZValue = () => {
     if (trackID === LAYOUT.CENTER_2D) {
-      const { maxX, maxY, minX, minY, z } = data[activeSpectrum.index].data;
+      const { maxX, maxY, minX, minY, z } = data[activeSpectrum.index]
+        .data as any;
 
       const xStep = (maxX - minX) / (z[0].length - 1);
       const yStep = (maxY - minY) / (z.length - 1);
