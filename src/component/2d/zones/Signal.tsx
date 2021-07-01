@@ -10,7 +10,30 @@ import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import SignalCrosshair from './SignalCrosshair';
 
-const Signal = memo(({ signal, isVisible }) => {
+export interface SignalType {
+  id: number;
+  peak: Array<{
+    x: number;
+    y: number;
+  }>;
+  x: {
+    delta: number;
+  };
+  y: {
+    delta: number;
+  };
+}
+
+interface SignalProps {
+  signal: SignalType;
+  isVisible: {
+    signals?: boolean;
+    peaks?: boolean;
+    zones?: boolean;
+  };
+}
+
+const Signal = memo(({ signal, isVisible }: SignalProps) => {
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });

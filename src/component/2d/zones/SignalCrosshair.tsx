@@ -6,13 +6,21 @@ import { buildID } from '../../../data/utilities/Concatenation';
 import { useHighlight } from '../../highlight';
 import SignalDeltaLine from '../SignalDeltaLine';
 
-function SignalCrosshair({ signal }) {
+import { SignalType } from './Signal';
+
+interface SignalCrosshairProps {
+  signal: SignalType;
+}
+
+function SignalCrosshair({ signal }: SignalCrosshairProps) {
   const highlightIDsX = useMemo(() => {
     return [buildID(signal.id, 'Crosshair'), buildID(signal.id, 'Crosshair_X')];
   }, [signal.id]);
+
   const highlightIDsY = useMemo(() => {
     return [buildID(signal.id, 'Crosshair'), buildID(signal.id, 'Crosshair_Y')];
   }, [signal.id]);
+
   const highlightX = useHighlight(highlightIDsX);
   const highlightY = useHighlight(highlightIDsY);
 

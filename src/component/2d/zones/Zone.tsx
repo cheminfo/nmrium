@@ -8,7 +8,7 @@ import { useChartData } from '../../context/ChartContext';
 import { TYPES, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
-import Signal from './Signal';
+import Signal, { SignalType } from './Signal';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -39,7 +39,19 @@ const stylesHighlighted = css`
   }
 `;
 
-const Zone = ({ zoneData, isVisible }) => {
+interface ZoneProps {
+  zoneData: {
+    x: { from: number; to: number };
+    y: { from: number; to: number };
+    id: number;
+    signal: Array<SignalType>;
+  };
+  isVisible: {
+    zones: boolean;
+  };
+}
+
+const Zone = ({ zoneData, isVisible }: ZoneProps) => {
   const { x, y, id, signal } = zoneData;
   const assignmentZone = useAssignment(id);
   const highlightZone = useHighlight([assignmentZone.id], TYPES.ZONE);
