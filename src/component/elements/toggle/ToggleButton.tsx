@@ -86,6 +86,7 @@ function ToggleButton({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       data-helpid={helpID}
+      data-test-id={`tool-${value}`}
     >
       {cloneElement(children, { style: { fontSize: '10px' } })}
     </button>

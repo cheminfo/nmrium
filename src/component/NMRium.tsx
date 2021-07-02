@@ -329,6 +329,7 @@ function NMRium({
                         <AssignmentProvider spectraData={spectraData}>
                           <SpinnerProvider value={getSpinner}>
                             <div
+                              className="nmrium-container"
                               ref={rootRef}
                               css={containerStyles}
                               onContextMenu={preventContextMenuHandler}

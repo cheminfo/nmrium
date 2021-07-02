@@ -7,7 +7,7 @@ function LinesSeries() {
   const _data = tempData ? tempData : data;
 
   return (
-    <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
+    <g clipPath={`url(#${displayerKey}clip-chart-1d)`} className="spectrums">
       {_data
         ?.filter(
           (d) =>

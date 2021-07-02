@@ -30,6 +30,7 @@ export default function ShowHideSpectrumButton({
     <>
       {data.info.dimension === 1 && (
         <button
+          data-test-id="hide-show-spectrum-button"
           style={style}
           type="button"
           onClick={() => onChangeVisibility(data, 'isVisible')}
