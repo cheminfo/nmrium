@@ -1,4 +1,4 @@
-import { useHelp, useHelptData } from './Context';
+import { useHelp, useHelpText } from './Context';
 import HelpProvider from './Provider';
 
-export { HelpProvider, useHelp, useHelptData };
+export { HelpProvider, useHelp, useHelpText };

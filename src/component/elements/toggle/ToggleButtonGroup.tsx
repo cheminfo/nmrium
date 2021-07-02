@@ -19,7 +19,7 @@ interface ToggleButtonGroupProps {
   onChange?: (value: any) => void;
 }
 
-function ToggleButtonGroup({
+export default function ToggleButtonGroup({
   children,
   value,
   onChange = () => null,
@@ -74,5 +74,3 @@ function ToggleButtonGroup({
 
   return <div style={style}> {mappedChildren} </div>;
 }
-
-export default ToggleButtonGroup;

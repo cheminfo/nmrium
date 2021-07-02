@@ -20,7 +20,6 @@ import { ErrorBoundary } from 'react-error-boundary';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
-import { helpList } from '../constants';
 import { Datum1D } from '../data/data1d/Spectrum1D';
 import { Datum2D } from '../data/data2d/Spectrum2D';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
@@ -316,7 +315,6 @@ function NMRium({
           >
             {/* @ts-expect-error: TODO remove when HelpProvider is migrated */}
             <HelpProvider
-              data={helpList}
               wrapperRef={elementsWraperRef.current}
               preventAutoHelp={preventAutoHelp}
             >
