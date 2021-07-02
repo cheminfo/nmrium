@@ -9,6 +9,8 @@ test('Should 1d spectrum hide/show', async () => {
     ':nth-match([data-test-id="hide-show-spectrum-button"], 1)',
   );
 
+  await nmrium.page.waitForTimeout(500);
+
   expect(
     await nmrium.page.isVisible(':nth-match([data-test-id="spectrum-line"],1)'),
   ).toBe(false);
@@ -17,6 +19,9 @@ test('Should 1d spectrum hide/show', async () => {
   await nmrium.page.click(
     ':nth-match([data-test-id="hide-show-spectrum-button"], 1)',
   );
+
+  await nmrium.page.waitForTimeout(500);
+
   //check if the spectrum is visible again
   expect(
     await nmrium.page.isVisible(':nth-match([data-test-id="spectrum-line"],1)'),
