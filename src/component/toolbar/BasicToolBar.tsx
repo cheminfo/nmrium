@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useWhatChanged } from '@simbathesailor/use-what-changed';
 import {
   SvgNmrRealImag,
   SvgNmrOverlay3,
@@ -134,6 +135,8 @@ function BasicToolBarInner({
   const alert = useAlert();
   const modal = useModal();
   const openLoader = useLoader();
+
+  useWhatChanged([alert, modal, openLoader], 'alert,modal,loader');
 
   const {
     isRealSpectrumShown,

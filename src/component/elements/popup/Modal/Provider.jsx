@@ -59,9 +59,12 @@ function Provider({
     };
   }, [wrapperRef]);
 
-  function remove() {
-    setModal(null);
-  }
+  const close = useCallback(
+    function close() {
+      setModal(null);
+    },
+    [setModal],
+  );
 
   const parentStyle = useMemo(() => {
     return wrapperRef
@@ -74,9 +77,6 @@ function Provider({
         };
   }, [wrapperRef]);
 
-  const closeHandler = useCallback(() => {
-    remove();
-  }, []);
   /**
    *
    * @param {*} component  <component />
@@ -86,18 +86,21 @@ function Provider({
    * @param {boolean} options.isBackgroundBlur
    * @param {boolean} options.enableResizing
    */
-  const show = useCallback((component, options = {}) => {
-    const _modal = {
-      component,
-      options: { isBackgroundBlur: true, enableResizing: false, ...options },
-    };
+  const show = useCallback(
+    (component, options = {}) => {
+      const _modal = {
+        component,
+        options: { isBackgroundBlur: true, enableResizing: false, ...options },
+      };
 
-    _modal.close = () => remove();
+      _modal.close = close;
 
-    setModal(_modal);
-    if (_modal.options.onOpen) _modal.options.onOpen();
-    return _modal;
-  }, []);
+      setModal(_modal);
+      if (_modal.options.onOpen) _modal.options.onOpen();
+      return _modal;
+    },
+    [close],
+  );
 
   /**
    * @param {object} dialogOptions
@@ -112,29 +115,25 @@ function Provider({
         options: { isBackgroundBlur: true, ...options },
       };
 
-      _modal.close = () => remove();
+      _modal.close = close;
 
       setModal(_modal);
       if (_modal.options.onOpen) _modal.options.onOpen();
 
       return _modal;
     },
-    [],
+    [close],
   );
-
-  function close() {
-    closeHandler();
-  }
 
   useEffect(() => {
     function keyHandler(e) {
       if (['Escape', 'Esc'].includes(e.key)) {
-        closeHandler();
+        close();
       }
     }
     document.addEventListener('keydown', keyHandler, false);
     return () => document.removeEventListener('keydown', keyHandler, false);
-  }, [closeHandler]);
+  }, [close]);
 
   const styles = css`
     position: absolute;
@@ -161,8 +160,13 @@ function Provider({
       ? { backgroundColor: 'rgba(255,255,255,0.8)' }
       : { pointerEvents: 'none' };
 
+  const modalContextValue = useMemo(
+    () => ({ show, close, showConfirmDialog }),
+    [show, close, showConfirmDialog],
+  );
+
   return (
-    <ModalProvider value={{ show, close, modal, showConfirmDialog }}>
+    <ModalProvider value={modalContextValue}>
       {children}
       {root.current &&
         createPortal(
@@ -236,7 +240,7 @@ function Provider({
                       {modal.options &&
                         cloneElement(modal.component, {
                           ...modal.options,
-                          onClose: closeHandler,
+                          onClose: close,
                           style: { cursor: 'default' },
                         })}
                     </Rnd>
