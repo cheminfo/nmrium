@@ -26,7 +26,7 @@ function KeysListenerTracker() {
     useChartData();
   const dispatch = useDispatch();
   const alert = useAlert();
-  const loader = useLoader();
+  const openLoader = useLoader();
 
   const {
     handleChangeOption,
@@ -213,7 +213,7 @@ function KeysListenerTracker() {
             e.preventDefault();
             break;
           case 'o':
-            loader.open();
+            openLoader();
             e.preventDefault();
             break;
           default:
@@ -237,7 +237,7 @@ function KeysListenerTracker() {
       changeDisplayViewModeHandler,
       handleChangeOption,
       handleFullZoomOut,
-      loader,
+      openLoader,
       saveAsHandler,
       saveAsJSONHandler,
       saveToClipboardHandler,

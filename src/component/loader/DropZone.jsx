@@ -274,7 +274,7 @@ function DropZone(props) {
   }, [openImportDialog]);
 
   return (
-    <LoaderProvider value={{ open }}>
+    <LoaderProvider value={open}>
       <div {...getRootProps()} css={containerStyle}>
         <input {...getInputProps()} />
         {isDragActive && (

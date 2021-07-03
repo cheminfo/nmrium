@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback } from 'react';
 
 import { useLoader } from '../context/LoaderContext';
 
@@ -41,18 +40,14 @@ function NoData({
   isEmpty = true,
   emptyText = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
 }: NoDataProps) {
-  const loader = useLoader();
-
-  const openFileDialogHadnler = useCallback(() => {
-    loader.open();
-  }, [loader]);
+  const openLoader = useLoader();
 
   if (!isEmpty) {
     return null;
   }
 
   return (
-    <div css={styles} onClick={openFileDialogHadnler}>
+    <div css={styles} onClick={openLoader}>
       <p>{emptyText}</p>
     </div>
   );

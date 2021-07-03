@@ -133,7 +133,7 @@ function BasicToolBarInner({
   const preferences = usePreferences();
   const alert = useAlert();
   const modal = useModal();
-  const loader = useLoader();
+  const openLoader = useLoader();
 
   const {
     isRealSpectrumShown,
@@ -187,15 +187,11 @@ function BasicToolBarInner({
     [preferences],
   );
 
-  const importFromFileSystemHandler = useCallback(() => {
-    loader.open();
-  }, [loader]);
-
   const importHandler = useCallback(
     ({ id }) => {
       switch (id) {
         case 'importFile':
-          importFromFileSystemHandler();
+          openLoader();
           break;
         case 'importJDX':
           importJCAMPFile();
@@ -204,7 +200,7 @@ function BasicToolBarInner({
           return;
       }
     },
-    [importFromFileSystemHandler, importJCAMPFile],
+    [openLoader, importJCAMPFile],
   );
 
   const exportHandler = useCallback(
