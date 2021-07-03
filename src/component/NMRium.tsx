@@ -299,6 +299,11 @@ function NMRium({
     dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
   }, [dispatchMiddleWare]);
 
+  const chartDataContextValue = useMemo(
+    () => ({ ...state, isResizeEventStart }),
+    [state, isResizeEventStart],
+  );
+
   return (
     <ErrorBoundary FallbackComponent={ErrorOverlay}>
       <GlobalProvider
@@ -321,7 +326,7 @@ function NMRium({
               {/* @ts-expect-error: TODO remove when AlertProvider is migrated */}
               <AlertProvider wrapperRef={elementsWraperRef.current}>
                 <DispatchProvider value={dispatchMiddleWare}>
-                  <ChartDataProvider value={{ ...state, isResizeEventStart }}>
+                  <ChartDataProvider value={chartDataContextValue}>
                     <ModalProvider wrapperRef={elementsWraperRef.current}>
                       <HighlightProvider>
                         <AssignmentProvider spectraData={spectraData}>
