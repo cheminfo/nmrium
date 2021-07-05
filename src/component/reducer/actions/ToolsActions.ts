@@ -479,6 +479,8 @@ function setActiveTab(
   tab = null,
   refreshTabActiveSpectrums = false,
 ) {
+
+  console.log('set active tab')
   const groupByNucleus = GroupByInfoKey('nucleus');
   const dataGroupByNucleus = groupByNucleus(draft.data);
   const tabs = Object.keys(dataGroupByNucleus);

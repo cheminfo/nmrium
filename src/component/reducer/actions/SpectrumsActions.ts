@@ -12,7 +12,7 @@ import { State } from '../Reducer';
 import { setDomain, setMode } from './DomainActions';
 import { resetSpectrumByFilter } from './FiltersActions';
 import { setTab, setActiveTab } from './ToolsActions';
-import { initZoom1DHandler } from './Zoom';
+// import { initZoom1DHandler } from './Zoom';
 
 function checkIsVisible2D(datum: Datum2D): boolean {
   if (
@@ -170,7 +170,7 @@ function addMissingProjectionHander(draft, action) {
     }
     const groupByNucleus = GroupByInfoKey('nucleus');
     const dataGroupByNucleus = groupByNucleus(draft.data);
-    initZoom1DHandler(draft.data);
+    // initZoom1DHandler(draft.data);
     setTab(draft, dataGroupByNucleus, draft.activeTab, true);
     setDomain(draft);
     setMode(draft);

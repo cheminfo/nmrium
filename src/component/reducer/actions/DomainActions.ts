@@ -28,16 +28,28 @@ function getActiveData(draft: Draft<State>) {
       } else {
         data = data ? data.filter((datum) => datum.info.isFid === false) : [];
       }
-      return currentData.map((datum) => {
-        let isVisibleInDomain = false;
-        if (data.some((activeData: any) => activeData.id === datum.id)) {
-          isVisibleInDomain = true;
+
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
+      for (let i = 0; i < currentData.length; i++) {
+        if (
+          data.some((activeData: any) => activeData.id === currentData[i].id)
+        ) {
+          currentData[i].display.isVisibleInDomain = true;
+        } else {
+          currentData[i].display.isVisibleInDomain = false;
         }
-        return {
-          ...datum,
-          display: { ...datum.display, isVisibleInDomain },
-        };
-      });
+      }
+      return currentData;
+      // return currentData.map((datum) => {
+      //   let isVisibleInDomain = false;
+      //   if (data.some((activeData: any) => activeData.id === datum.id)) {
+      //     isVisibleInDomain = true;
+      //   }
+      //   return {
+      //     ...datum,
+      //     display: { ...datum.display, isVisibleInDomain },
+      //   };
+      // });
     }
   } else {
     return draft.data;

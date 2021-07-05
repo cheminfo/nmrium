@@ -46,6 +46,7 @@ import {
   spectrumReducer,
   initialState,
   dispatchMiddleware,
+  initState,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
@@ -223,9 +224,10 @@ function NMRium({
   const [isRightPanelHide, hideRightPanel] = useState(false);
   const [isResizeEventStart, setResizeEventStart] = useState(false);
 
-  const [state, dispatch] = useReducer<Reducer<any, any>>(
+  const [state, dispatch] = useReducer<Reducer<any, any>, any>(
     spectrumReducer,
     initialState,
+    initState,
   );
   const [preferencesState, dispatchPreferences] = useReducer<Reducer<any, any>>(
     preferencesReducer,

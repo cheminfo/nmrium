@@ -37,6 +37,7 @@ import * as ZonesActions from './actions/ZonesActions';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
+import generateID from '../../data/utilities/generateID';
 
 export interface ActiveSpectrum {
   id: string;
@@ -170,6 +171,12 @@ export interface State {
       showMultiplicityTrees: boolean;
     };
   };
+}
+
+export function initState(state: State): State {
+  state.displayerKey = generateID();
+
+  return state;
 }
 
 export function dispatchMiddleware(dispatch) {

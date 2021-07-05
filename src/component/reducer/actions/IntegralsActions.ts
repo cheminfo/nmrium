@@ -12,7 +12,7 @@ import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
-import { setIntegralZoom, integralZoomHanlder } from './Zoom';
+import { setIntegralZoom } from './Zoom';
 
 function handleChangeIntegralSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
@@ -28,8 +28,8 @@ function handleChangeIntegralSum(draft: Draft<State>, value) {
 
 function handleChangeIntegralZoom(draft: Draft<State>, action) {
   const { deltaY, deltaMode } = action;
-  integralZoomHanlder.wheel(deltaY, deltaMode);
-  setIntegralZoom(integralZoomHanlder.getScale(), draft);
+  // integralZoomHanlder.wheel(deltaY, deltaMode);
+  // setIntegralZoom(integralZoomHanlder.getScale(), draft);
 }
 
 function addIntegral(draft: Draft<State>, action) {

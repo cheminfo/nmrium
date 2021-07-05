@@ -1,9 +1,9 @@
 import { zoomIdentity, scaleLinear } from 'd3';
 
-import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
+// import Spectrum1DZoomHelper from '../helper/Spectrum1DZoomHelper';
 
-export const spectraZoomHanlders = {};
-export const integralZoomHanlder = new Spectrum1DZoomHelper(0.5);
+// export const spectraZoomHanlders = {};
+// export const integralZoomHanlder = new Spectrum1DZoomHelper(0.5);
 
 export const ZoomType = {
   HORIZONTAL: 'HORIZONTAL',
@@ -14,9 +14,9 @@ export const ZoomType = {
 
 export function initZoom1DHandler(data) {
   data.forEach((datum) => {
-    if (!spectraZoomHanlders[datum.id] && datum.info.dimension === 1) {
-      spectraZoomHanlders[datum.id] = new Spectrum1DZoomHelper();
-    }
+    // if (!spectraZoomHanlders[datum.id] && datum.info.dimension === 1) {
+    //   spectraZoomHanlders[datum.id] = new Spectrum1DZoomHelper();
+    // }
   });
 }
 
@@ -27,23 +27,23 @@ export function wheel(
   id = null,
 ) {
   if (activeSpectrum || id) {
-    spectraZoomHanlders[id ? id : activeSpectrum.id].wheel(deltaY, deltaMode);
+    // spectraZoomHanlders[id ? id : activeSpectrum.id].wheel(deltaY, deltaMode);
   } else {
     data.forEach((datum) => {
       if (datum.info.dimension === 1 && activeTab === datum.info.nucleus) {
-        spectraZoomHanlders[datum.id].wheel(deltaY, deltaMode);
+        // spectraZoomHanlders[datum.id].wheel(deltaY, deltaMode);
       }
     });
   }
 }
 export function getScaleByID(id: number) {
-  return { [id]: spectraZoomHanlders[id].getScale(id) };
+  // return { [id]: spectraZoomHanlders[id].getScale(id) };
 }
 
 export function getScale({ data, activeTab }) {
   return data.reduce((acc, datum) => {
     if (datum.info.dimension === 1 && activeTab === datum.info.nucleus) {
-      acc[datum.id] = spectraZoomHanlders[datum.id].getScale();
+      // acc[datum.id] = spectraZoomHanlders[datum.id].getScale();
     }
     return acc;
   }, {});
@@ -51,12 +51,12 @@ export function getScale({ data, activeTab }) {
 
 export function setScale(scale) {
   if (typeof scale === 'number') {
-    Object.keys(spectraZoomHanlders).forEach((id) => {
-      spectraZoomHanlders[id].setScale(scale);
-    });
+    // Object.keys(spectraZoomHanlders).forEach((id) => {
+    //   spectraZoomHanlders[id].setScale(scale);
+    // });
   } else if (typeof scale === 'object') {
     Object.keys(scale).forEach((id) => {
-      spectraZoomHanlders[id].setScale(scale[id]);
+      // spectraZoomHanlders[id].setScale(scale[id]);
     });
   } else {
     throw Error('scale must be number or Object');
