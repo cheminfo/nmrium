@@ -1,5 +1,6 @@
-import { useCallback, useRef, useState } from 'react';
+import { CSSProperties, useCallback, useRef, useState } from 'react';
 
+import { Data1D } from '../../data/data1d/Spectrum1D';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Select from '../elements/Select';
@@ -8,7 +9,10 @@ import {
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
 
-const styles = {
+const styles: Record<
+  'container' | 'input' | 'actionButton' | 'label',
+  CSSProperties
+> = {
   container: {
     padding: '5px',
     height: '100%',
@@ -38,7 +42,8 @@ const styles = {
 };
 
 function generateSizes(start = 8, end = 21) {
-  let values = [];
+  let values: Array<{ key: number; label: string | number; value: number }> =
+    [];
   for (let i = start; i <= end; i++) {
     const result = 2 ** i;
     values.push({
@@ -49,7 +54,8 @@ function generateSizes(start = 8, end = 21) {
   }
   return values;
 }
-function formatNumber(number) {
+
+function formatNumber(number: number): string | number {
   if (number >= 1024 * 1024) {
     return `${number / (1024 * 1024)}M`;
   } else if (number >= 1024) {
@@ -64,7 +70,7 @@ const Sizes = generateSizes();
 function ZeroFillingOptionsPanel() {
   const dispatch = useDispatch();
   const { data, activeSpectrum } = useChartData();
-  const sizeTextInputRef = useRef();
+  const sizeTextInputRef = useRef<any>();
   const [lineBroadeningValue, setLineBroadeningValue] = useState(1);
 
   const handleApplyFilter = useCallback(() => {
@@ -80,7 +86,10 @@ function ZeroFillingOptionsPanel() {
   const getDefaultValue = useCallback(() => {
     if (data && activeSpectrum?.id) {
       return (
-        2 ** Math.round(Math.log2(data[activeSpectrum.index].data.x.length))
+        2 **
+        Math.round(
+          Math.log2((data[activeSpectrum.index].data as Data1D).x.length),
+        )
       );
     }
     return '';

@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import NumberInput from '../elements/NumberInput';
@@ -8,7 +8,10 @@ import {
   CHANGE_ZONES_NOISE_FACTOR,
 } from '../reducer/types/Types';
 
-const styles = {
+const styles: Record<
+  'container' | 'input' | 'inputContainer' | 'label' | 'actionButton',
+  CSSProperties
+> = {
   container: {
     padding: '5px',
     height: '100%',
@@ -35,7 +38,7 @@ const styles = {
 
 function Zones2DOptionPanel() {
   const dispatch = useDispatch();
-  const thresholdFactor = useRef();
+  const thresholdFactor = useRef<any>();
 
   const handleApplyFilter = useCallback(() => {
     dispatch({

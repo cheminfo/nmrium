@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, Fragment } from 'react';
+import { useCallback, useRef, useState, Fragment, CSSProperties } from 'react';
 
 import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
 import { useDispatch } from '../context/DispatchContext';
@@ -9,7 +9,7 @@ import {
   APPLY_BASE_LINE_CORRECTION_FILTER,
 } from '../reducer/types/Types';
 
-const styles = {
+const styles: Record<'container' | 'label' | 'actionButton', CSSProperties> = {
   container: {
     padding: '5px',
     height: '100%',
@@ -31,10 +31,12 @@ const styles = {
 
 function BaseLineCorrectionPanel() {
   const dispatch = useDispatch();
-  const algorithmRef = useRef();
-  const maxIterationsRef = useRef();
-  const toleranceRef = useRef();
-  const degreeRef = useRef();
+
+  const algorithmRef = useRef<any>();
+  const maxIterationsRef = useRef<any>();
+  const toleranceRef = useRef<any>();
+  const degreeRef = useRef<any>();
+
   const [algorithm, setAlgorithm] = useState('polynomial');
 
   const handleApplyFilter = useCallback(() => {

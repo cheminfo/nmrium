@@ -1,11 +1,14 @@
-import { useCallback, useRef } from 'react';
+import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import CheckBox from '../elements/CheckBox';
 import NumberInput from '../elements/NumberInput';
 import { AUTO_PEAK_PICKING, RESET_SELECTED_TOOL } from '../reducer/types/Types';
 
-const styles = {
+const styles: Record<
+  'container' | 'input' | 'inputContainer' | 'label' | 'actionButton',
+  CSSProperties
+> = {
   container: {
     padding: '5px',
     height: '100%',
@@ -33,10 +36,10 @@ const styles = {
 
 function AutoPeakPickingOptionPanel() {
   const dispatch = useDispatch();
-  const minMaxRatioRef = useRef();
-  const maxNumberOfPeaksRef = useRef();
-  const noiseFactor = useRef();
-  const lookNegativeRef = useRef();
+  const minMaxRatioRef = useRef<any>();
+  const maxNumberOfPeaksRef = useRef<any>();
+  const noiseFactor = useRef<any>();
+  const lookNegativeRef = useRef<any>();
 
   const handleApplyFilter = useCallback(() => {
     dispatch({
