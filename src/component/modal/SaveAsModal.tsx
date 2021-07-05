@@ -35,8 +35,14 @@ const INITIAL_VALUE = {
   includeData: true,
 };
 
-function SaveAsModal({ onClose, onSave, name }) {
-  const refForm = useRef();
+interface SaveAsModalProps {
+  onClose: (element?: any) => void;
+  onSave: (element: any) => void;
+  name: string;
+}
+
+function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
+  const refForm = useRef<any>();
 
   const handleSave = useCallback(() => {
     refForm.current.submitForm();

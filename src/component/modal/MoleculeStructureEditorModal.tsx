@@ -7,10 +7,20 @@ import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 
 import { ModalStyles } from './ModalStyle';
 
-function MoleculeStructureEditorModal(props) {
+interface MoleculeStructureEditorModalProps {
+  onClose: (element?: string) => void;
+  selectedMolecule: {
+    key: any;
+    molfile: string;
+  };
+}
+
+function MoleculeStructureEditorModal(
+  props: MoleculeStructureEditorModalProps,
+) {
   const { onClose, selectedMolecule } = props;
 
-  const [molfile, setMolfile] = useState(null);
+  const [molfile, setMolfile] = useState<string | null>(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -45,7 +55,7 @@ function MoleculeStructureEditorModal(props) {
   return (
     <div css={ModalStyles}>
       <StructureEditor
-        initialMolfile={selectedMolecule && selectedMolecule.molfile}
+        initialMolfile={selectedMolecule?.molfile}
         svgMenu
         fragment={false}
         onChange={cb}

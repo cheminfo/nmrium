@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useDispatch } from '../context/DispatchContext';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
-import IsotopesViewer from '../elements/IsotopesViewer.tsx';
+import IsotopesViewer from '../elements/IsotopesViewer';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
@@ -61,7 +61,7 @@ const styles = css`
   }
 `;
 
-const FREQUENCIES = [
+const FREQUENCIES: Array<{ key: number; value: number; label: string }> = [
   { key: 1, value: 60, label: '60 MHz' },
   { key: 2, value: 100, label: '100 MHz' },
   { key: 3, value: 200, label: '200 MHz' },
@@ -87,8 +87,16 @@ const INITIAL_VALUE = {
   },
 };
 
-function PredictSpectraModal({ onClose = () => null, molfile }) {
-  const refForm = useRef();
+interface PredictSpectraModalProps {
+  onClose?: (element?: string) => void;
+  molfile: any;
+}
+
+function PredictSpectraModal({
+  onClose = () => null,
+  molfile,
+}: PredictSpectraModalProps) {
+  const refForm = useRef<any>();
   const dispatch = useDispatch();
   const [isApproved, setApproved] = useState(false);
 

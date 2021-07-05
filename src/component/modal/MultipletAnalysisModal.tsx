@@ -93,6 +93,15 @@ const loaderStyles = css`
   }
 `;
 
+interface MultipletAnalysisModalProps {
+  data: any;
+  activeSpectrum: any;
+  scaleX: any;
+  startX: any;
+  endX: any;
+  onClose: (element?: string) => void;
+}
+
 export default function MultipletAnalysisModal({
   data,
   activeSpectrum,
@@ -100,8 +109,8 @@ export default function MultipletAnalysisModal({
   startX,
   endX,
   onClose,
-}) {
-  const [analysisData, setAnalysisData] = useState();
+}: MultipletAnalysisModalProps) {
+  const [analysisData, setAnalysisData] = useState<any>();
   const [calcStart, setCalcStartStatus] = useState(false);
   const [isCalcFinished, setCalcFinished] = useState(false);
 
@@ -167,75 +176,63 @@ export default function MultipletAnalysisModal({
         <CloseButton onClick={onClose} />
       </div>
       <div className="container">
-        {analysisData &&
-          analysisData.debug &&
-          analysisData.debug.steps.map((d, index) => {
-            return (
-              // eslint-disable-next-line react/no-array-index-key
-              <div key={index} className="row">
-                <Plot
-                  width={400}
-                  height={200}
-                  svgStyle={{ overflow: 'visible' }}
-                  seriesViewportStyle={{ stroke: 'black' }}
-                  margin={{ left: 10, bottom: 40, right: 10 }}
-                >
-                  <LineSeries data={xyToXYObject(d.multiplet)} />
-                  <Axis
-                    id="y"
-                    position="left"
-                    tickEmbedded
-                    displayGridLines
-                    hiddenTicks
-                    paddingStart={0.1}
-                    paddingEnd={0.1}
-                  />
-                  <Axis
-                    id="x"
-                    position="bottom"
-                    tickEmbedded
-                    displayGridLines
-                  />
-                </Plot>
-                <div className="multiplicity">
-                  <p>
-                    {analysisData.j[index]
-                      ? `${
-                          analysisData.j[index]?.multiplicity
-                        }: ${analysisData.j[index]?.coupling.toFixed(3)} Hz`
-                      : ''}
-                  </p>
-                </div>
-                <Plot
-                  width={400}
-                  height={200}
-                  style={{ overflow: 'auto' }}
-                  seriesViewportStyle={{ stroke: 'black' }}
-                  margin={{ left: 10, bottom: 40, right: 10 }}
-                >
-                  <LineSeries
-                    data={xyToXYObject(d.errorFunction)}
-                    lineStyle={{ strokeWidth: 1 }}
-                  />
-                  <Axis
-                    id="y"
-                    position="left"
-                    tickEmbedded
-                    displayGridLines
-                    hiddenTicks
-                    paddingStart={0.1}
-                    paddingEnd={0.1}
-                  />
-                  <Axis
-                    id="x"
-                    position="bottom"
-                    tickEmbedded
-                    displayGridLines
-                  />
-                </Plot>
+        {analysisData?.debug?.steps.map((d, index) => {
+          return (
+            // eslint-disable-next-line react/no-array-index-key
+            <div key={index} className="row">
+              <Plot
+                width={400}
+                height={200}
+                svgStyle={{ overflow: 'visible' }}
+                seriesViewportStyle={{ stroke: 'black' }}
+                margin={{ left: 10, bottom: 40, right: 10 }}
+              >
+                <LineSeries data={xyToXYObject(d.multiplet)} />
+                <Axis
+                  id="y"
+                  position="left"
+                  tickEmbedded
+                  displayGridLines
+                  hiddenTicks
+                  paddingStart={0.1}
+                  paddingEnd={0.1}
+                />
+                <Axis id="x" position="bottom" tickEmbedded displayGridLines />
+              </Plot>
+              <div className="multiplicity">
+                <p>
+                  {analysisData.j[index]
+                    ? `${analysisData.j[index]?.multiplicity}: ${analysisData.j[
+                        index
+                      ]?.coupling.toFixed(3)} Hz`
+                    : ''}
+                </p>
               </div>
-            );
-          })}
+              <Plot
+                width={400}
+                height={200}
+                style={{ overflow: 'auto' }}
+                seriesViewportStyle={{ stroke: 'black' }}
+                margin={{ left: 10, bottom: 40, right: 10 }}
+              >
+                <LineSeries
+                  data={xyToXYObject(d.errorFunction)}
+                  lineStyle={{ strokeWidth: 1 }}
+                />
+                <Axis
+                  id="y"
+                  position="left"
+                  tickEmbedded
+                  displayGridLines
+                  hiddenTicks
+                  paddingStart={0.1}
+                  paddingEnd={0.1}
+                />
+                <Axis id="x" position="bottom" tickEmbedded displayGridLines />
+              </Plot>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

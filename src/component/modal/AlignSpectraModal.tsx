@@ -14,8 +14,16 @@ import { ModalStyles } from './ModalStyle';
 
 const baseList = [{ key: 1, value: 'manual', label: 'Manual' }];
 
-function AlignSpectraModal({ onClose = () => null, nucleus }) {
-  const refForm = useRef();
+interface AlignSpectraModalProps {
+  onClose?: (element?: string) => void;
+  nucleus: any;
+}
+
+function AlignSpectraModal({
+  onClose = () => null,
+  nucleus,
+}: AlignSpectraModalProps) {
+  const refForm = useRef<any>();
   const dispatch = useDispatch();
   const List = useMemo(() => {
     const list = REFERENCES[nucleus]
@@ -29,7 +37,7 @@ function AlignSpectraModal({ onClose = () => null, nucleus }) {
         )
       : [];
 
-    return baseList.concat(list);
+    return baseList.concat(list as any);
   }, [nucleus]);
   const handleSave = useCallback(() => {
     refForm.current.submitForm();
@@ -44,13 +52,15 @@ function AlignSpectraModal({ onClose = () => null, nucleus }) {
   );
 
   useEffect(() => {
-    Events.on('brushEnd', (event) => {
+    function handler(event: any) {
       const [from, to] = event.range;
       refForm.current.setValues({ ...refForm.current.values, from, to });
-    });
+    }
+
+    Events.on('brushEnd', handler);
 
     return () => {
-      Events.off('brushEnd');
+      Events.off('brushEnd', handler);
     };
   }, []);
 

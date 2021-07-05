@@ -12,8 +12,14 @@ import { ModalStyles } from './ModalStyle';
 
 const INITIAL_VALUE = { from: -1, to: 1, nbPoints: 1024 };
 
-function ExportAsMatrixModal({ onClose = () => null }) {
-  const refForm = useRef();
+interface ExportAsMatrixModalProps {
+  onClose?: (element?: string) => void;
+}
+
+function ExportAsMatrixModal({
+  onClose = () => null,
+}: ExportAsMatrixModalProps) {
+  const refForm = useRef<any>();
   const { data } = useChartData();
 
   const handleSave = useCallback(() => {
@@ -29,13 +35,15 @@ function ExportAsMatrixModal({ onClose = () => null }) {
   );
 
   useEffect(() => {
-    Events.on('brushEnd', (event) => {
+    function handler(event: any) {
       const [from, to] = event.range;
       refForm.current.setValues({ ...refForm.current.values, from, to });
-    });
+    }
+
+    Events.on('brushEnd', handler);
 
     return () => {
-      Events.off('brushEnd');
+      Events.off('brushEnd', handler);
     };
   }, []);
 

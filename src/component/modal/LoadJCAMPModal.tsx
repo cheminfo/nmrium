@@ -54,15 +54,25 @@ const styles = css`
 `;
 const allowedExtensions = ['dx', 'jdx'];
 
-export default function LoadJCAMPModal({ onLoadClick, onClose, startLoading }) {
-  const pathReft = useRef();
+interface LoadJCAMPModalProps {
+  onLoadClick: (element: any) => void;
+  startLoading: () => void;
+  onClose: (element?: string) => void;
+}
+
+export default function LoadJCAMPModal({
+  onLoadClick,
+  onClose,
+  startLoading,
+}: LoadJCAMPModalProps) {
+  const pathReft = useRef<any>();
 
   const loadJCAMPHandler = useCallback(() => {
     const path = pathReft.current.value;
     const { name, extension } = extractFileMetaFromPath(path);
     if (allowedExtensions.includes(extension)) {
       startLoading?.();
-      loadFile(path, { asBuffer: true }).then((data) => {
+      void loadFile(path, { asBuffer: true }).then((data) => {
         const file = {
           binary: data,
           name,
