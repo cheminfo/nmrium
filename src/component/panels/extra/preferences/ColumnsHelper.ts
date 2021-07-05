@@ -3,22 +3,26 @@ import lodashGet from 'lodash/get';
 import FormatNumber from '../../../utility/FormatNumber';
 
 export default class ColumnsHelper {
-  constructor(preferences, defaultPreference) {
+  private preferences: any;
+  private defaultPreference: any;
+
+  public constructor(preferences, defaultPreference) {
     this.preferences = preferences;
     this.defaultPreference = defaultPreference;
   }
 
-  checkPreferences(preferencesToCheck, key) {
+  public checkPreferences(preferencesToCheck, key) {
     const val =
       preferencesToCheck === undefined ||
       Object.keys(preferencesToCheck).length === 0 ||
       (preferencesToCheck && preferencesToCheck[key] === true)
         ? true
         : false;
+
     return val;
   }
 
-  setCustomColumn(array, index, columnLabel, cellHandler) {
+  public setCustomColumn(array, index, columnLabel, cellHandler) {
     array.push({
       orderIndex: index,
       Header: columnLabel,
@@ -26,33 +30,19 @@ export default class ColumnsHelper {
       Cell: ({ row }) => cellHandler(row),
     });
   }
-  /**
-   * @callback hasPrefix
-   * @param {...any}
-   * @returns {boolean}
-   */
 
-  /**
-   *
-   * @param {string} columns
-   * @param {string} flagKey
-   * @param {string} formatKey
-   * @param {string} columnKey
-   * @param {string} columnLabel
-   * @param {string} columnIndex
-   * @param {Object=} [option = {}]
-   * @param {string} [option.formatPrefix = '']
-   * @param {string} [option.formatSuffix = '']
-   * @param {hasPrefix}   [option.showPrefixSuffixCallback = ()=>true]
-   */
-  addColumn(
-    columns,
-    flagKey,
-    formatKey,
-    columnKey,
-    columnLabel,
-    columnIndex,
-    options = {},
+  public addColumn(
+    columns: string,
+    flagKey: string,
+    formatKey: string,
+    columnKey: string,
+    columnLabel: string,
+    columnIndex: string,
+    options: {
+      formatPrefix?: string;
+      formatSuffix?: string;
+      showPrefixSuffixCallback?: (element: any) => boolean;
+    } = {},
   ) {
     const preferences = this.preferences || this.defaultPreference;
 

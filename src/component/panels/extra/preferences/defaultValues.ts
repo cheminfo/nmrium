@@ -17,6 +17,7 @@ const zoneDefaultValues = {
   showRelative: true,
   relativeFormat: '0.00',
 };
+
 const rangeDefaultValues = {
   showFrom: false,
   fromFormat: '0.00',
