@@ -1,4 +1,4 @@
-import { Fragment, useCallback } from 'react';
+import { CSSProperties, Fragment, useCallback } from 'react';
 import { FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../../data/constants/SignalsKinds';
@@ -12,14 +12,39 @@ import {
   SET_Y_DOMAIN,
 } from '../../../reducer/types/Types';
 
-const selectBoxStyle = {
+const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
   marginRight: 2,
   border: 'none',
   height: '20px',
 };
 
-function ActionsColumn({ rowData, rowSpanTags }) {
+export interface RowDataProps {
+  id: number;
+  tableMetaInfo: {
+    id: number;
+    signalIndex: number;
+    rowSpan: any;
+    signal: {
+      kind: any;
+    };
+  };
+  x: {
+    from: number;
+    to: number;
+  };
+  y: {
+    from: number;
+    to: number;
+  };
+}
+
+interface ActionsColumnProps {
+  rowData: RowDataProps;
+  rowSpanTags: any;
+}
+
+function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
   const dispatch = useDispatch();
   const assignmentData = useAssignmentData();
 

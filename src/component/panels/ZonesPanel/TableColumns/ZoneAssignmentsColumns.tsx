@@ -1,6 +1,32 @@
 import { Fragment } from 'react';
 
+import { RowDataProps } from './ActionsColumn';
 import ZoneAssignmentColumn from './ZoneAssignmentsColumn';
+
+interface ZoneAssignmentsColumnsProps {
+  rowData: RowDataProps;
+  onHoverZoneX: any;
+  onHoverZoneY: any;
+  onClick: (a: any, b: any, c: any) => void;
+  onUnlink: (a: any, b: any, c: any) => void;
+  rowSpanTags: any;
+  showUnlinkButtonZoneX: boolean;
+  showUnlinkButtonZoneY: boolean;
+  setShowUnlinkButtonZoneX: (element: boolean) => void;
+  setShowUnlinkButtonZoneY: (element: boolean) => void;
+  assignmentZone: {
+    activeAxis: any;
+    onHoverAxis: any;
+    isActive: boolean;
+    isOnHover: boolean;
+  };
+  highlightZoneX: {
+    isActive: any;
+  };
+  highlightZoneY: {
+    isActive: any;
+  };
+}
 
 function ZoneAssignmentsColumns({
   rowData,
@@ -16,7 +42,7 @@ function ZoneAssignmentsColumns({
   onUnlink,
   highlightZoneX,
   highlightZoneY,
-}) {
+}: ZoneAssignmentsColumnsProps) {
   return (
     <Fragment>
       <ZoneAssignmentColumn

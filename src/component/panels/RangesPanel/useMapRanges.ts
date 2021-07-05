@@ -2,9 +2,14 @@ import { useMemo } from 'react';
 
 import generateID from '../../../data/utilities/generateID';
 
+interface RangeDataProps {
+  rowKey: string;
+  tableMetaInfo: any;
+}
+
 function useMapRanges(data) {
   return useMemo(() => {
-    const _rangesData = [];
+    const _rangesData: Array<RangeDataProps> = [];
     data.forEach((range, i) => {
       if (range.signal.length === 1) {
         _rangesData.push({

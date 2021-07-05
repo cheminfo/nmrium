@@ -1,6 +1,28 @@
 import lodashGet from 'lodash/get';
 import { FaMinusCircle } from 'react-icons/fa';
 
+import { RowDataProps } from './ActionsColumn';
+
+export interface ZoneAssignmentColumnProps {
+  rowData: RowDataProps;
+  axis: any;
+  onHover: () => void;
+  onClick: (a: any, b: any, c: any) => void;
+  onUnlink: (a: any, b: any, c: any) => void;
+  highlight: {
+    isActive: any;
+  };
+  assignment: {
+    activeAxis: any;
+    onHoverAxis: any;
+    isActive: boolean;
+    isOnHover: boolean;
+  };
+  showUnlinkButton: boolean;
+  setShowUnlinkButton: (element: boolean) => void;
+  rowSpanTags: any;
+}
+
 function ZoneAssignmentColumn({
   rowData,
   assignment,
@@ -12,7 +34,7 @@ function ZoneAssignmentColumn({
   showUnlinkButton,
   setShowUnlinkButton,
   rowSpanTags,
-}) {
+}: ZoneAssignmentColumnProps) {
   return (
     <td
       {...rowSpanTags}
@@ -28,8 +50,8 @@ function ZoneAssignmentColumn({
             {rowData[axis].pubIntegral} {`(`}
             <span
               style={
-                assignment.isActive & (assignment.activeAxis === axis) ||
-                assignment.isOnHover & (assignment.onHoverAxis === axis) ||
+                (assignment.isActive && assignment.activeAxis === axis) ||
+                (assignment.isOnHover && assignment.onHoverAxis === axis) ||
                 highlight.isActive
                   ? {
                       color: 'red',

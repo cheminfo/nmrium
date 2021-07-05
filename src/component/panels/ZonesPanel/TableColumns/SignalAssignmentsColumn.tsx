@@ -1,6 +1,25 @@
 import lodashGet from 'lodash/get';
 import { FaMinusCircle } from 'react-icons/fa';
 
+import { RowDataProps } from './ActionsColumn';
+
+export interface SignalAssignmentsColumnProps {
+  rowData: RowDataProps;
+  assignment: {
+    isActive: any;
+    activeAxis: any;
+  };
+  highlight: {
+    isActive: any;
+  };
+  onHover: () => void;
+  onClick: (a: any, b: any, c: any) => void;
+  onUnlink: (a: any, b: any, c: any) => void;
+  showUnlinkButton: boolean;
+  axis: any;
+  setShowUnlinkButton: (element: boolean) => void;
+}
+
 function SignalAssignmentsColumn({
   rowData,
   assignment,
@@ -11,7 +30,7 @@ function SignalAssignmentsColumn({
   axis,
   showUnlinkButton,
   setShowUnlinkButton,
-}) {
+}: SignalAssignmentsColumnProps) {
   return (
     <td
       {...onHover}
@@ -23,7 +42,7 @@ function SignalAssignmentsColumn({
               color: 'red',
               fontWeight: 'bold',
             }
-          : null
+          : undefined
       }
     >
       {lodashGet(rowData, `tableMetaInfo.signal.${axis}.diaID`, []).length >

@@ -1,6 +1,31 @@
 import { Fragment } from 'react';
 
+import { RowDataProps } from './ActionsColumn';
 import SignalAssignmentsColumn from './SignalAssignmentsColumn';
+
+interface SignalAssignmentsColumnsProps {
+  rowData: RowDataProps;
+  onHoverSignalX: any;
+  onHoverSignalY: any;
+  showUnlinkButtonSignalX: boolean;
+  showUnlinkButtonSignalY: boolean;
+  setShowUnlinkButtonSignalX: (element: boolean) => void;
+  setShowUnlinkButtonSignalY: (element: boolean) => void;
+  onClick: (a: any, b: any, c: any) => void;
+  onUnlink: (a: any, b: any, c: any) => void;
+  highlightSignalX: {
+    isActive: any;
+  };
+  highlightSignalY: {
+    isActive: any;
+  };
+  assignmentSignal: {
+    activeAxis: any;
+    onHoverAxis: any;
+    isActive: boolean;
+    isOnHover: boolean;
+  };
+}
 
 function SignalAssignmentsColumns({
   rowData,
@@ -15,7 +40,7 @@ function SignalAssignmentsColumns({
   onUnlink,
   highlightSignalX,
   highlightSignalY,
-}) {
+}: SignalAssignmentsColumnsProps) {
   return (
     <Fragment>
       <SignalAssignmentsColumn

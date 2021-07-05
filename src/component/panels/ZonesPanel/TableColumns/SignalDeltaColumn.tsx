@@ -5,7 +5,19 @@ import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
 import { CHANGE_ZONE_SIGNAL_VALUE } from '../../../reducer/types/Types';
 
-function SignalDeltaColumn({ rowData, onHoverSignalX, onHoverSignalY }) {
+import { RowDataProps } from './ActionsColumn';
+
+interface SignalDeltaColumnProps {
+  rowData: RowDataProps;
+  onHoverSignalX: any;
+  onHoverSignalY: any;
+}
+
+function SignalDeltaColumn({
+  rowData,
+  onHoverSignalX,
+  onHoverSignalY,
+}: SignalDeltaColumnProps) {
   const dispatch = useDispatch();
 
   const signalDeltaX = lodashGet(rowData, 'tableMetaInfo.signal.x.delta', null);

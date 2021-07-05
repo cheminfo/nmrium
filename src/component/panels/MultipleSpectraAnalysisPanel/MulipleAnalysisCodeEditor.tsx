@@ -11,8 +11,12 @@ const initCode = `function run(data) {
 }(args);
 `;
 
-function MulipleAnalysisCodeEditor({ data }) {
-  const { values, setFieldValue } = useFormikContext();
+interface MulipleAnalysisCodeEditorProps {
+  data: any;
+}
+
+function MulipleAnalysisCodeEditor({ data }: MulipleAnalysisCodeEditorProps) {
+  const { values, setFieldValue } = useFormikContext<any>();
   const [code, setCode] = useState(values.code ? values.code : initCode);
   const [result, setResult] = useState('');
 

@@ -38,9 +38,9 @@ export default function useAtomAssignment({
       : ConcatenationString, // dummy value
   );
 
-  const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState([]);
-  const [onAtomHoverAction, setOnAtomHoverAction] = useState(null);
-  const [elements, setElements] = useState([]);
+  const [onAtomHoverHighlights, setOnAtomHoverHighlights] = useState<any>([]);
+  const [onAtomHoverAction, setOnAtomHoverAction] = useState<any>(null);
+  const [elements, setElements] = useState<Array<any>>([]);
 
   useEffect(() => {
     if (activeTab) {
@@ -87,7 +87,7 @@ export default function useAtomAssignment({
   }, [displayerMode, ranges, zones]);
 
   const assignedDiaIDs = useMemo(() => {
-    const assignedDiaID = { x: [], y: [] };
+    const assignedDiaID: { x: Array<any>; y: Array<any> } = { x: [], y: [] };
     for (let id in assignmentData.assignment.assignment) {
       if (assignmentData.assignment.assignment[id].x) {
         assignedDiaID.x.push(...assignmentData.assignment.assignment[id].x);
@@ -193,7 +193,7 @@ export default function useAtomAssignment({
                     atomInformation,
                   );
                 }
-              } else if (datum.signal && datum.signal[signalIndex]) {
+              } else if (datum.signal?.[signalIndex]) {
                 // on signal level
                 if (displayerMode === DISPLAYER_MODE.DM_1D) {
                   _diaID = toggleAssignment(

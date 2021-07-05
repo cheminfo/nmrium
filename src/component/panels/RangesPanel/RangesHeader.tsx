@@ -130,8 +130,8 @@ function RangesHeader({
   }, [dispatch]);
 
   const saveToClipboardHandler = useCallback(
-    (value) => {
-      const success = copyHTMLToClipboard(value);
+    async (value) => {
+      const success = await copyHTMLToClipboard(value);
       if (success) {
         alert.success('Data copied to clipboard');
       } else {
@@ -178,7 +178,7 @@ function RangesHeader({
 
   return (
     <DefaultPanelHeader
-      counter={ranges && ranges.values && ranges.values.length}
+      counter={ranges?.values?.length}
       onDelete={handleDeleteAll}
       deleteToolTip="Delete All Ranges"
       onFilter={onFilterActivated}
@@ -187,7 +187,7 @@ function RangesHeader({
       }
       filterIsActive={isFilterActive}
       counterFiltered={filterCounter}
-      showSettingButton="true"
+      showSettingButton
       onSettingClick={onSettingClick}
     >
       <ToolTip title="Preview publication string" popupPlacement="right">

@@ -1,27 +1,40 @@
 /** @jsxImportSource @emotion/react */
 
 import lodashGet from 'lodash/get';
-import { useMemo, useCallback, useState } from 'react';
+import { CSSProperties, useMemo, useCallback, useState } from 'react';
 
 import { buildID } from '../../../data/utilities/Concatenation';
 import { useAssignment } from '../../assignment';
 import { useHighlight } from '../../highlight';
 
-import ActionsColumn from './TableColumns/ActionsColumn';
+import ActionsColumn, { RowDataProps } from './TableColumns/ActionsColumn';
 import SignalAssignmentsColumns from './TableColumns/SignalAssignmentsColumns';
 import SignalDeltaColumn from './TableColumns/SignalDeltaColumn';
 import ZoneAssignmentsColumns from './TableColumns/ZoneAssignmentsColumns';
 
-const HighlightedRowStyle = { backgroundColor: '#ff6f0057' };
+const HighlightedRowStyle: CSSProperties = { backgroundColor: '#ff6f0057' };
 
 const ConstantlyHighlightedRowStyle = { backgroundColor: '#f5f5dc' };
 
-function ZonesTableRow({ rowData, onUnlink, onContextMenu, rowIndex }) {
+interface ZonesTableRowProps {
+  rowData: RowDataProps;
+  onUnlink: (a: any, b: any, c: any, d: any) => void;
+  onContextMenu: (a: any, rowData: RowDataProps) => void;
+  rowIndex: number;
+}
+
+function ZonesTableRow({
+  rowData,
+  onUnlink,
+  onContextMenu,
+  rowIndex,
+}: ZonesTableRowProps) {
   const assignmentZone = useAssignment(rowData.id);
   const highlightZone = useHighlight([assignmentZone.id]);
   const highlightZoneX = useHighlight(
     [buildID(assignmentZone.id, 'X')].concat(assignmentZone.assigned.x || []),
   );
+
   const highlightZoneY = useHighlight(
     [buildID(assignmentZone.id, 'Y')].concat(assignmentZone.assigned.y || []),
   );
@@ -164,7 +177,7 @@ function ZonesTableRow({ rowData, onUnlink, onContextMenu, rowIndex }) {
       onContextMenu={(e) => onContextMenu(e, rowData)}
       style={
         highlightZone.isActive || assignmentZone.isActive
-          ? HighlightedRowStyle
+          ? (HighlightedRowStyle as any)
           : lodashGet(
               rowData,
               'tableMetaInfo.isConstantlyHighlighted',
@@ -175,7 +188,7 @@ function ZonesTableRow({ rowData, onUnlink, onContextMenu, rowIndex }) {
       }
       {...highlightZone.onHover}
     >
-      <td {...rowSpanTags}>{rowIndex + 1}</td>
+      <td {...(rowSpanTags as any)}>{rowIndex + 1}</td>
       <SignalDeltaColumn
         rowData={rowData}
         onHoverSignalX={onHoverSignalX}

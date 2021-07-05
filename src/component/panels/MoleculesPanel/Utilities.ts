@@ -32,12 +32,10 @@ export function findDatumAndSignalIndex(spectraData, id) {
   let signalIndex;
   if (!datum) {
     // figure out the datum via id
-    for (let i = 0; i < spectraData.length; i++) {
-      signalIndex = spectraData[i].signal.findIndex(
-        (_signal) => _signal.id === id,
-      );
+    for (const data of spectraData) {
+      signalIndex = data.signal.findIndex((_signal) => _signal.id === id);
       if (signalIndex >= 0) {
-        datum = spectraData[i];
+        datum = data;
         break;
       }
     }
@@ -48,7 +46,7 @@ export function findDatumAndSignalIndex(spectraData, id) {
 
 export function getHighlightsOnHover(assignmentData, oclIDs, data) {
   // set all IDs to highlight when hovering over an atom from assignment data
-  let highlights = [];
+  let highlights: Array<number> = [];
   for (let key in assignmentData.assignment.assignment) {
     let datum, signalIndex;
     let stop = false;

@@ -23,10 +23,12 @@ const styles = (styles) => css`
     padding: 0;
     margin: 0;
   }
+
   .dropDown-container {
     justify-content: flex-start;
     align-items: flex-start;
   }
+
   .label-container {
     flex: 1;
     display: flex;
@@ -43,14 +45,29 @@ const styles = (styles) => css`
   ${styles}
 `;
 
-const columnsFilters = [
+const columnsFilters: Array<{ key: string; label: string }> = [
   { key: 'relative', label: 'Relative' },
   { key: 'absolute', label: 'Absolute' },
   { key: 'min', label: 'Min Intensity' },
   { key: 'max', label: 'Max Intensity' },
 ];
 
-function ColumnHeader({ charLabel, rangeLabel, data, onColumnFilter }) {
+interface ColumnHeaderProps {
+  charLabel: string;
+  rangeLabel: string;
+  onColumnFilter: () => void;
+  data: {
+    type: string;
+    valueKey: string;
+  };
+}
+
+function ColumnHeader({
+  charLabel,
+  rangeLabel,
+  data,
+  onColumnFilter,
+}: ColumnHeaderProps) {
   const dispatch = useDispatch();
 
   const deleteHandler = useCallback(() => {
