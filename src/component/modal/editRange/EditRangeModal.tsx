@@ -171,8 +171,7 @@ function EditRangeModal({
         couplings.push(coupling);
       });
 
-      const delta = Number(format(signal.delta));
-      return { ...signal, delta, j: couplings };
+      return { ...signal, j: couplings };
     });
     return { activeTab: '0', signals };
   }, [format, range]);
