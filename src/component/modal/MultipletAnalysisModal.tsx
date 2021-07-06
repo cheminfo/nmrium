@@ -211,7 +211,6 @@ export default function MultipletAnalysisModal({
               <Plot
                 width={400}
                 height={200}
-                style={{ overflow: 'auto' }}
                 seriesViewportStyle={{ stroke: 'black' }}
                 margin={{ left: 10, bottom: 40, right: 10 }}
               >
