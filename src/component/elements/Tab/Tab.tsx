@@ -24,6 +24,15 @@ export interface InternalTabProps {
   canDelete?: boolean;
   onDelete?: (element: any) => void;
   onClick?: (element: any) => void;
+  render?: ({
+    isActive,
+    title,
+    id,
+  }: {
+    isActive: boolean;
+    title: string;
+    id: string | number;
+  }) => any;
 }
 
 export interface TabProps {
@@ -43,6 +52,7 @@ export function InternalTab({
   canDelete,
   onDelete = () => null,
   tabstyles,
+  render,
 }: InternalTabProps) {
   let className = 'tab-list-item';
 
@@ -71,7 +81,7 @@ export function InternalTab({
   return (
     <li className={className} onClick={clickHandler} css={styles(tabstyles)}>
       {canDelete && <DeleteButton onDelete={deleteHandler} />}
-      {tablabel}
+      {render ? render({ isActive, title: tablabel, id: tabid }) : tablabel}
     </li>
   );
 }
