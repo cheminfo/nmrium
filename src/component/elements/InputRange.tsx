@@ -1,10 +1,6 @@
-import {
-  CSSProperties,
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-} from 'react';
+import { CSSProperties, useCallback, useImperativeHandle, useRef } from 'react';
+
+import { forwardRefWithAs } from '../../utils';
 
 const styles: Record<'container' | 'label', CSSProperties> = {
   container: {
@@ -88,4 +84,4 @@ function InputRange(props: InputRangeProps, ref) {
   );
 }
 
-export default forwardRef(InputRange);
+export default forwardRefWithAs(InputRange);

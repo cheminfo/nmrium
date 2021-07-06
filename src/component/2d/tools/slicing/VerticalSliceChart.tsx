@@ -7,7 +7,7 @@ import { get2DYScale } from '../../utilities/scale';
 import { getYScale } from './SliceScale';
 
 interface VerticalSliceChartProps {
-  margin: number;
+  margin?: number;
   data: {
     x: Array<number>;
     re: Array<number>;

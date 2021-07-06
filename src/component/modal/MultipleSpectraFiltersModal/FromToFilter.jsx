@@ -1,5 +1,4 @@
-import { forwardRef } from 'react';
-
+import { forwardRefWithAs } from '../../../utils';
 import { useChartData } from '../../context/ChartContext';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
@@ -21,4 +20,4 @@ function FromToFilter({ onSubmit }, ref) {
   );
 }
 
-export default forwardRef(FromToFilter);
+export default forwardRefWithAs(FromToFilter);

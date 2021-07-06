@@ -1,13 +1,13 @@
 import {
   useEffect,
   useCallback,
-  forwardRef,
   useImperativeHandle,
   useRef,
   memo,
   CSSProperties,
 } from 'react';
 
+import { forwardRefWithAs } from '../../../utils';
 import { usePreferences } from '../../context/PreferencesContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
@@ -89,12 +89,14 @@ const formatFields = [
 interface RangesPreferencesInnerProps {
   nucleus: Array<string>;
   preferences: any;
+  innerRef: any;
 }
 
-function RangesPreferencesInner(
-  { nucleus, preferences }: RangesPreferencesInnerProps,
-  ref,
-) {
+function RangesPreferencesInner({
+  nucleus,
+  preferences,
+  innerRef,
+}: RangesPreferencesInnerProps) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const formRef = useRef<any>();
@@ -137,7 +139,7 @@ function RangesPreferencesInner(
   );
 
   useImperativeHandle(
-    ref,
+    innerRef,
     () => ({
       saveSetting: () => {
         formRef.current.submitForm();
@@ -175,7 +177,7 @@ function RangesPreferencesInner(
   );
 }
 
-const MemoizedRangesPreferences = memo(forwardRef(RangesPreferencesInner));
+const MemoizedRangesPreferences = memo(RangesPreferencesInner);
 
 function RangesPreferences(prop, ref) {
   const nucleus = useNucleus();
@@ -183,7 +185,7 @@ function RangesPreferences(prop, ref) {
   const preferences = usePreferences();
   return (
     <MemoizedRangesPreferences
-      ref={ref}
+      innerRef={ref}
       {...{
         preferences,
         nucleus,
@@ -192,4 +194,4 @@ function RangesPreferences(prop, ref) {
   );
 }
 
-export default forwardRef(RangesPreferences);
+export default forwardRefWithAs(RangesPreferences);

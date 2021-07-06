@@ -13,6 +13,7 @@ export interface SelectProps {
   defaultValue?: any;
   name?: string;
   className?: string;
+  ref?: any;
 }
 
 const Select = forwardRefWithAs(function Select(props: SelectProps, ref) {

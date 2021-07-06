@@ -1,6 +1,7 @@
-import { forwardRef, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { checkRangeKind } from '../../../../data/utilities/RangeUtilities';
+import { forwardRefWithAs } from '../../../../utils';
 import { useDispatch } from '../../../context/DispatchContext';
 import EditableColumn from '../../../elements/EditableColumn';
 import { CHANGE_RANGE_RELATIVE } from '../../../reducer/types/Types';
@@ -44,4 +45,4 @@ function RelativeColumn(
   );
 }
 
-export default forwardRef(RelativeColumn);
+export default forwardRefWithAs(RelativeColumn);

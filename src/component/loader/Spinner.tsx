@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect, useContext } from 'react';
+import { useState, Fragment, useEffect, useContext, ReactNode } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 
@@ -7,7 +7,7 @@ import { spinnerContext } from './SpinnerContext';
 
 interface SpinnerProps {
   isLoading?: boolean;
-  emptyText?: string;
+  emptyText?: ReactNode;
 }
 
 function Spinner({ isLoading = true, emptyText = undefined }: SpinnerProps) {

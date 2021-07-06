@@ -33,7 +33,7 @@ interface BrushTrackerProps {
   onZoom?: (element: any) => void;
   onDoubleClick?: (element: any) => void;
   onClick?: (element: any) => void;
-  noPropagation: boolean;
+  noPropagation?: boolean;
 }
 
 export function BrushTracker({

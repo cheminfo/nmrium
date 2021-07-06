@@ -1,13 +1,13 @@
 import {
   useEffect,
   useCallback,
-  forwardRef,
   useImperativeHandle,
   useRef,
   memo,
   CSSProperties,
 } from 'react';
 
+import { forwardRefWithAs } from '../../../utils';
 import { usePreferences } from '../../context/PreferencesContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
@@ -91,7 +91,15 @@ const formatFields: Array<{
   },
 ];
 
-function ZonesPreferencesInner({ nucleus }: { nucleus: Array<string> }, ref) {
+interface ZonesPreferencesInnerProps {
+  nucleus: Array<string>;
+  innerRef: any;
+}
+
+function ZonesPreferencesInner({
+  nucleus,
+  innerRef,
+}: ZonesPreferencesInnerProps) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const preferences = usePreferences();
@@ -135,7 +143,7 @@ function ZonesPreferencesInner({ nucleus }: { nucleus: Array<string> }, ref) {
   );
 
   useImperativeHandle(
-    ref,
+    innerRef,
     () => ({
       saveSetting: () => {
         formRef.current.submitForm();
@@ -173,11 +181,11 @@ function ZonesPreferencesInner({ nucleus }: { nucleus: Array<string> }, ref) {
   );
 }
 
-const MemoizedZonesPreferences = memo(forwardRef(ZonesPreferencesInner));
+const MemoizedZonesPreferences = memo(ZonesPreferencesInner);
 
 function ZonesPreferences(props, ref) {
   const nucleus = useNucleus();
-  return <MemoizedZonesPreferences ref={ref} {...{ nucleus }} />;
+  return <MemoizedZonesPreferences innerRef={ref} {...{ nucleus }} />;
 }
 
-export default forwardRef(ZonesPreferences);
+export default forwardRefWithAs(ZonesPreferences);

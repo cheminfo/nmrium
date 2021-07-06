@@ -3,7 +3,8 @@ import { useCallback, useState, useEffect, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { Accordion, AccordionItem } from '../elements/accordion';
+import Accordion from '../elements/accordion/Accordion';
+import AccordionItem from '../elements/accordion/AccordionItem';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { options } from '../toolbar/ToolTypes';
 

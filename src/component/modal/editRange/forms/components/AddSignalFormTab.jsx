@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
-import { useCallback, useMemo, forwardRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
+import { forwardRefWithAs } from '../../../../../utils';
 import { useChartData } from '../../../../context/ChartContext';
 import Button from '../../../../elements/Button';
 import FormikForm from '../../../../elements/formik/FormikForm';
@@ -141,4 +142,4 @@ function AddSignalFormTab({ onFocus, onBlur, range }, ref) {
   );
 }
 
-export default forwardRef(AddSignalFormTab);
+export default forwardRefWithAs(AddSignalFormTab);

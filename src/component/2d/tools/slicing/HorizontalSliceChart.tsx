@@ -7,7 +7,7 @@ import { get2DXScale } from '../../utilities/scale';
 import { getYScale } from './SliceScale';
 
 interface HorizontalSliceChartProps {
-  margin: number;
+  margin?: number;
   data: {
     x: Array<number>;
     re: Array<number>;
