@@ -1,13 +1,13 @@
 import {
   useEffect,
   useCallback,
-  forwardRef,
   useImperativeHandle,
   useRef,
   CSSProperties,
   memo,
 } from 'react';
 
+import { forwardRefWithAs } from '../../../utils';
 import { usePreferences } from '../../context/PreferencesContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
@@ -105,12 +105,14 @@ const formatFields: Array<{
 interface PeaksPreferencesInnerProps {
   nucleus: Array<string>;
   preferences: any;
+  innerRef: any;
 }
 
-function PeaksPreferencesInner(
-  { nucleus, preferences }: PeaksPreferencesInnerProps,
-  ref,
-) {
+function PeaksPreferencesInner({
+  nucleus,
+  preferences,
+  innerRef,
+}: PeaksPreferencesInnerProps) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
   const formRef = useRef<any>(null);
@@ -147,7 +149,7 @@ function PeaksPreferencesInner(
   );
 
   useImperativeHandle(
-    ref,
+    innerRef,
     () => ({
       saveSetting: () => {
         formRef.current.submitForm();
@@ -189,12 +191,14 @@ function PeaksPreferencesInner(
   );
 }
 
-const MemoizedPeaksPreferences = memo(forwardRef(PeaksPreferencesInner));
+const MemoizedPeaksPreferences = memo(PeaksPreferencesInner);
 
 function PeaksPreferences(props, ref) {
   const nucleus = useNucleus();
   const preferences = usePreferences();
-  return <MemoizedPeaksPreferences ref={ref} {...{ nucleus, preferences }} />;
+  return (
+    <MemoizedPeaksPreferences innerRef={ref} {...{ nucleus, preferences }} />
+  );
 }
 
-export default forwardRef(PeaksPreferences);
+export default forwardRefWithAs(PeaksPreferences);

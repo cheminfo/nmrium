@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import {
-  forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -13,6 +12,7 @@ import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
 import { COLUMNS_TYPES } from '../../../data/data1d/MulitpleAnalysis';
+import { forwardRefWithAs } from '../../../utils';
 import { useDispatch } from '../../context/DispatchContext';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
@@ -224,4 +224,4 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref) {
   );
 }
 
-export default forwardRef(MultipleSpectraAnalysisPreferences);
+export default forwardRefWithAs(MultipleSpectraAnalysisPreferences);

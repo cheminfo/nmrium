@@ -1,7 +1,6 @@
 import {
   useEffect,
   useCallback,
-  forwardRef,
   useImperativeHandle,
   useRef,
   CSSProperties,
@@ -9,6 +8,7 @@ import {
 } from 'react';
 import { MF } from 'react-mf';
 
+import { forwardRefWithAs } from '../../../utils';
 import { usePreferences } from '../../context/PreferencesContext';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
@@ -85,12 +85,14 @@ const formatFields = [
 interface IntegralsPreferencesInnerProps {
   nucleus: Array<string>;
   preferences: any;
+  innerRef: any;
 }
 
-function IntegralsPreferencesInner(
-  { nucleus, preferences }: IntegralsPreferencesInnerProps,
-  ref,
-) {
+function IntegralsPreferencesInner({
+  nucleus,
+  preferences,
+  innerRef,
+}: IntegralsPreferencesInnerProps) {
   const alert = useAlert();
   const [, setSettingsData] = useStateWithLocalStorage('nmr-general-settings');
 
@@ -138,7 +140,7 @@ function IntegralsPreferencesInner(
     [alert, preferences],
   );
 
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle(innerRef, () => ({
     saveSetting: () => {
       formRef.current.submitForm();
     },
@@ -195,9 +197,7 @@ function IntegralsPreferencesInner(
   );
 }
 
-const MemoizedIntegralsPreferences = memo(
-  forwardRef(IntegralsPreferencesInner),
-);
+const MemoizedIntegralsPreferences = memo(IntegralsPreferencesInner);
 
 function IntegralsPreferences(props, ref) {
   const preferences = usePreferences();
@@ -205,7 +205,7 @@ function IntegralsPreferences(props, ref) {
 
   return (
     <MemoizedIntegralsPreferences
-      ref={ref}
+      innerRef={ref}
       {...{
         nucleus,
         preferences,
@@ -214,4 +214,4 @@ function IntegralsPreferences(props, ref) {
   );
 }
 
-export default forwardRef(IntegralsPreferences);
+export default forwardRefWithAs(IntegralsPreferences);

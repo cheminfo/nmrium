@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import {
-  forwardRef,
   useState,
   useImperativeHandle,
   useCallback,
@@ -10,6 +9,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
+import { forwardRefWithAs } from '../../utils';
 import { useGlobal } from '../context/GlobalContext';
 
 const styles = css`
@@ -168,4 +168,4 @@ function ContextMenu({ context }, ref) {
   );
 }
 
-export default forwardRef(ContextMenu);
+export default forwardRefWithAs(ContextMenu);
