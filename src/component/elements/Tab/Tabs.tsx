@@ -14,7 +14,6 @@ const topStyles = css`
     border-bottom: 1px solid #ccc;
     padding-left: 0;
     margin: 0;
-
   }
 
   .tab-list li:first-of-type {
