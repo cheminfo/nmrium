@@ -27,7 +27,6 @@ const topStyles = css`
   .tab-list-item {
     display: inline-block;
     list-style: none;
-    margin-bottom: -1px;
     padding: 0.5rem 2rem;
   }
 

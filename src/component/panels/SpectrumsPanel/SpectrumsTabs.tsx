@@ -1,12 +1,4 @@
-import {
-  useCallback,
-  useState,
-  useMemo,
-  useRef,
-  Fragment,
-  useEffect,
-  memo,
-} from 'react';
+import { useCallback, useState, useMemo, useRef, useEffect, memo } from 'react';
 
 import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { Datum2D } from '../../../data/data2d/Spectrum2D';
@@ -199,16 +191,11 @@ function SpectrumsTabsInner({
   }, []);
 
   return (
-    <Fragment>
+    <div style={{ height: 'calc(100% - 25px)' }}>
       <Tabs activeTab={activeTab} onClick={onTabChangeHandler}>
         {spectrumsGroupByNucleus &&
           Object.keys(spectrumsGroupByNucleus).map((group) => (
-            <Tab
-              tablabel={group}
-              tabid={group}
-              key={group}
-              tabstyles={{ overflow: 'auto', height: '100%' }}
-            >
+            <Tab tablabel={group} tabid={group} key={group}>
               {spectrumsGroupByNucleus[group]?.map((d) => (
                 <SpectrumListItem
                   key={d.id}
@@ -234,7 +221,7 @@ function SpectrumsTabsInner({
           position={settingModalPosition}
         />
       ) : null}
-    </Fragment>
+    </div>
   );
 }
 
