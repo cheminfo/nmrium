@@ -3,6 +3,7 @@ import NmriumPage from '../NmriumPage';
 test('Should Add Integral', async () => {
   const nmrium = await NmriumPage.create();
   await nmrium.open1D();
+
   const containerElemment = await nmrium.page.waitForSelector('.Pane1');
 
   //select integral tool
@@ -29,9 +30,8 @@ test('Should Add Integral', async () => {
   await nmrium.page.mouse.up({ button: 'left' });
 
   //should have integral with at least 1000 point
-  await nmrium.page.waitForSelector('g.integrals');
   const path = (await nmrium.page.getAttribute(
-    'g.integrals path',
+    ':nth-match([data-test-id="integral-path"],1)',
     'd',
   )) as string;
   expect(path.length).toBeGreaterThan(1000);

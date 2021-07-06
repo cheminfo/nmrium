@@ -73,6 +73,7 @@ function Integral({
     <Fragment>
       <path
         className="line"
+        data-test-id="integral-path"
         stroke={integralSettings.color}
         strokeWidth={integralSettings.strokeWidth}
         fill="none"
