@@ -30,7 +30,6 @@ export function apply(datum1D, options = {}) {
     case 'polynomial':
       {
         const baselineOptions = {
-          // regression: polynomialRegression,
           regressionOptions: options.degree,
         };
         let reduced = equallySpaced(

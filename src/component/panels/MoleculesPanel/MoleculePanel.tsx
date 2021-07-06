@@ -115,19 +115,11 @@ function MoleculePanelInner({
 
   const openMoleculeEditorHandler = useCallback(
     (moleclue = null) => {
-      modal.show(
-        <MoleculeStructureEditorModal
-          // onSave={() => {
-          //   modal.close();
-          // }}
-          selectedMolecule={moleclue}
-        />,
-        {
-          position: positions.TOP_CENTER,
-          width: 700,
-          height: 500,
-        },
-      );
+      modal.show(<MoleculeStructureEditorModal selectedMolecule={moleclue} />, {
+        position: positions.TOP_CENTER,
+        width: 700,
+        height: 500,
+      });
     },
     [modal],
   );

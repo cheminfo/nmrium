@@ -195,7 +195,6 @@ function PeakNotation({
         transform={`translate(${x}, ${y})`}
         onMouseEnter={handleOnEnterNotation}
         onMouseLeave={handleOnMouseLeaveNotation}
-        // onKeyDown={keyDownHandler}
       >
         <line
           x1="0"

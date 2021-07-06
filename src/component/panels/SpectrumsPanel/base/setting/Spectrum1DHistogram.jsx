@@ -48,9 +48,6 @@ const Spectrum1DHistogram = memo(({ color = 'red', data, options = {} }) => {
   return (
     <div
       style={{
-        // borderTop: '1px solid #ededed',
-        // marginTop: '10px',
-        // paddingTop: '10px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -62,7 +59,6 @@ const Spectrum1DHistogram = memo(({ color = 'red', data, options = {} }) => {
           width={180}
           height={220}
           margin={{ bottom: 40, left: 40, top: 50, right: 13 }}
-          // seriesViewportStyle={{ stroke: 'gray' }}
         >
           <Heading title="Sanplot" />
           <LineSeries
@@ -116,7 +112,6 @@ const Spectrum1DHistogram = memo(({ color = 'red', data, options = {} }) => {
           width={180}
           height={180}
           margin={{ bottom: 50, left: 40, top: 10, right: 13 }}
-          // seriesViewportStyle={{ stroke: 'gray' }}
         >
           <LineSeries
             data={processedData.sanPlot.negative}

@@ -163,12 +163,6 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
     });
   }, [assignmentData, dispatch, modal]);
 
-  // const zonesPreferences = useMemo(() => {
-  //   const _preferences = lodashGet(preferences, `panels.zones.[${activeTab}]`);
-
-  //   return _preferences;
-  // }, [activeTab, preferences]);
-
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
     if (!isFlipped) {

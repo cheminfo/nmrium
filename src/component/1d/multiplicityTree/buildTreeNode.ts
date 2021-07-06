@@ -84,6 +84,5 @@ function createTreeNodes(signal, spectrumData) {
   }
   return buildTreeNodesData;
 }
-//   [signal.multiplicity, signal.j, spectrumData],
 
 export default createTreeNodes;

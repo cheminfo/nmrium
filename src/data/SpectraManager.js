@@ -7,7 +7,6 @@ import * as Datum2D from './data2d/Spectrum2D';
 import * as Molecule from './molecules/Molecule';
 
 export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
-  // { credentials: 'include' }
   return fetch(jcampURL)
     .then((response) => response.arrayBuffer())
     .then((jcamp) => {

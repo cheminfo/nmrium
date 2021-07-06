@@ -28,13 +28,6 @@ const stylesOnHover = css`
   -webkit-user-select: none; /* Chrome all / Safari all */
   -moz-user-select: none; /* Firefox all */
 
-  // // disabled because Resizable component appears now when hovering over it
-  // :hover .range-area {
-  //   height: 100%;
-  //   fill: #ff6f0057;
-  //   cursor: pointer;
-  // }
-
   .delete-button {
     visibility: hidden;
   }
@@ -159,7 +152,6 @@ function Range({
 
   return (
     <g
-      // tabIndex="0"
       style={{ outline: 'none' }}
       css={
         isBlockedByEditing ||

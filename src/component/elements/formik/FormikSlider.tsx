@@ -28,8 +28,6 @@ function FormikSlider(props: FormikSliderProps) {
       trackClassName="track"
       defaultValue={lodashGet(values, name, [0, 100])}
       onAfterChange={changeHandler}
-      // ariaLabel={['Lower thumb', 'Upper thumb']}
-      // ariaValuetext={(state) => ` ${state.valueNow}`}
       renderThumb={(props, state) => (
         <div {...props}>
           <span>{state.valueNow}</span>

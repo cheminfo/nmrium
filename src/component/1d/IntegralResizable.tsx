@@ -15,11 +15,6 @@ const stylesOnHover = css`
   @-moz-document url-prefix() {
     pointer-events: fill;
   }
-  // // disabled because Resizable component appears now when hovering over it
-  // :hover .target {
-  //   visibility: visible !important;
-  //   cursor: pointer;
-  // }
   .highlight {
     fill: transparent;
   }

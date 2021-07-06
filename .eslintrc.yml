@@ -7,5 +7,7 @@ rules:
     - error
     - name: lodash
       message: "Use a deep import instead, like for example 'lodash/get'"
+    - name: '@simbathesailor/use-what-changed'
+      message: 'Remove use-what-changed before committing the code'
 parserOptions:
   sourceType: module

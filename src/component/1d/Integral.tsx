@@ -27,7 +27,6 @@ function Integral({
   scaleX,
 }: IntegralProps) {
   const { from, to } = integralData;
-  // const { preferences } = useChartData();
   const preferences = usePreferences();
 
   const integralSettings = useMemo(() => {
@@ -82,7 +81,6 @@ function Integral({
           opacity: isActive ? 1 : 0.2,
         }}
         d={makePath()}
-        // vectorEffect="non-scaling-stroke"
       />
 
       <IntegralResizable integralData={integralData} />

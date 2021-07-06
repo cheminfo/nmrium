@@ -22,10 +22,7 @@ import {
 import { State } from '../Reducer';
 import get2DRange from '../helper/get2DRange';
 
-// eslint-disable-next-line import/order
 import { handleUpdateCorrelations } from './CorrelationsActions';
-// import { AnalysisObj } from '../core/Analysis';
-
 import { setDomain } from './DomainActions';
 
 function changeZonesFactorHandler(draft: Draft<State>, action) {
