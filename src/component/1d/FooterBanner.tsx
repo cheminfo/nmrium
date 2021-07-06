@@ -10,7 +10,7 @@ import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
-import { useHelptData } from '../elements/popup/Help';
+import { useHelpText } from '../elements/popup/Help/Context';
 import useSpectrum from '../hooks/useSpectrum';
 import { ActiveSpectrum } from '../reducer/Reducer';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
@@ -118,7 +118,7 @@ function FooterBannerInner({
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
   const { scaleX } = useScale();
-  const { helpText } = useHelptData();
+  const helpText = useHelpText();
 
   const format = useFormatNumberByNucleus(activeTab);
 

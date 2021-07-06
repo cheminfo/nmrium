@@ -15,7 +15,7 @@ const style = css`
   height:100%;
   left:0;
   top:0;
-  .ineer-conatiner{
+  .inner-conatiner{
     position:absolute;
     display: flex;
     flex-direction: row-reverse;
@@ -95,9 +95,10 @@ function SpectrumSetting({ position, data, onClose }) {
   return (
     <div css={style} onClick={clickHandler}>
       <div
-        className="ineer-conatiner"
+        className="inner-conatiner"
         style={{
-          left: info.dimension === 2 ? x - 450 : x - 220,
+          left: info.dimension === 2 ? x - 450 : x - 240,
+          width: info.dimension === 2 ? 450 : 240,
           padding: info.dimension === 2 ? '10px 0' : '',
           top: y,
         }}

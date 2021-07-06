@@ -1,5 +1,4 @@
 import {
-  useReducer,
   useRef,
   useEffect,
   useCallback,
@@ -13,13 +12,13 @@ import { FaTimes } from 'react-icons/fa';
 import { Rnd } from 'react-rnd';
 import { TransitionGroup } from 'react-transition-group';
 
+import { helpList } from '../../../../constants';
 import Transition from '../Transition';
 import Wrapper from '../Wrapper';
 import { groupBy } from '../helpers';
 import { positions, transitions } from '../options';
 
 import { HelpProvider } from './Context';
-import helpReducer, { initState } from './Reducer';
 
 const transitionStyles = {
   [transitions.FADE]: {
@@ -63,7 +62,6 @@ const defaultContainerStyle = {
 
 function Provider({
   children,
-  data,
   offset = '10px',
   position = positions.TOP_RIGHT,
   timeout = 0,
@@ -181,18 +179,20 @@ function Provider({
         };
   }, [wrapperRef]);
 
-  const [helpState, dispatch] = useReducer(helpReducer, {
-    ...initState,
-    data,
-  });
-
   const modalsByPosition = groupBy(
     modals,
     (modal) => modal.options && modal.options.position,
   );
 
+  const [helpText, setHelpText] = useState(null);
+
+  const helpContextValue = useMemo(
+    () => ({ helpText, setHelpText, show, clear, preventAutoHelp }),
+    [helpText, setHelpText, show, clear, preventAutoHelp],
+  );
+
   return (
-    <HelpProvider value={{ helpState, dispatch, show, clear, preventAutoHelp }}>
+    <HelpProvider value={helpContextValue}>
       {children}
       {root.current &&
         createPortal(
@@ -240,7 +240,7 @@ function Provider({
                                   <FaTimes />
                                 </button>
                               </div>
-                              {data[modal.helpid].filePath && (
+                              {helpList[modal.helpid].url && (
                                 <div
                                   style={{
                                     cursor: 'default',
@@ -250,7 +250,7 @@ function Provider({
                                 >
                                   <iframe
                                     title="Tool User Manual"
-                                    src={data[modal.helpid].filePath}
+                                    src={helpList[modal.helpid].url}
                                     frameBorder="0"
                                     scrolling="auto"
                                     style={{ width: '100%', height: '100%' }}

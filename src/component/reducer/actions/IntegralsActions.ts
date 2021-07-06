@@ -111,7 +111,6 @@ function changeIntegral(draft: Draft<State>, action) {
     );
     if (integralIndex !== -1) {
       datum.integrals.values[integralIndex] = {
-        // ...draft.data[index].integrals.values[integralIndex],
         originFrom: integral.from,
         originTo: integral.to,
         ...integral,

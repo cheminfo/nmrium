@@ -22,7 +22,6 @@ const styles = css`
     display: flex;
     flex-direction: row-reverse;
     align-items: flex-end;
-    // justify-content: flex-end;
     padding: 5px;
     border-top: 1px solid #efefef;
 

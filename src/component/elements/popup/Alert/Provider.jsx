@@ -6,6 +6,7 @@ import {
   useEffect,
   useCallback,
   useMemo,
+  memo,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
@@ -30,7 +31,6 @@ function Provider({
   ...props
 }) {
   const root = useRef(null);
-  const alertContext = useRef(null);
   const timersId = useRef([]);
   const [alerts, setAlerts] = useState([]);
 
@@ -65,10 +65,6 @@ function Provider({
       return filteredAlerts;
     });
   }, []);
-
-  const removeAll = useCallback(() => {
-    alertContext.current.alerts.forEach(remove);
-  }, [remove]);
 
   const show = useCallback(
     (message = '', options = {}) => {
@@ -173,19 +169,13 @@ function Provider({
         };
   }, [wrapperRef]);
 
+  const alertContextValue = useMemo(
+    () => ({ show, success, error, info, showLoading }),
+    [show, success, error, info, showLoading],
+  );
+
   return (
-    <AlertProvider
-      value={{
-        alerts,
-        show,
-        remove,
-        removeAll,
-        success,
-        error,
-        info,
-        showLoading,
-      }}
-    >
+    <AlertProvider value={alertContextValue}>
       {children}
       {root.current &&
         createPortal(
@@ -268,4 +258,4 @@ Provider.propTypes = {
   }),
 };
 
-export default Provider;
+export default memo(Provider);

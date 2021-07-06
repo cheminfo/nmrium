@@ -11,25 +11,27 @@ export const scaleInitialState = {
   scaleY: null,
 };
 
-export function scaleReducer(state, action) {
+function innerScaleReducer(draft, action) {
   switch (action.type) {
     case SET_X_SCALE:
-      return produce(state, (draft) => {
-        draft.scaleX = (spectrumId = null) => getXScale(action, spectrumId);
-      });
-    case SET_Y_SCALE:
-      return produce(state, (draft) => {
-        draft.scaleY = (spectrumId = null) => getYScale(action, spectrumId);
-      });
-    case SET_SCALE:
-      return produce(state, (draft) => {
-        draft.scaleX = (spectrumId = null) =>
-          getXScale(action.payload, spectrumId);
-        draft.scaleY = (spectrumId = null) =>
-          getYScale(action.payload, spectrumId);
-      });
+      draft.scaleX = (spectrumId = null) => getXScale(action, spectrumId);
+      break;
 
+    case SET_Y_SCALE:
+      draft.scaleY = (spectrumId = null) => getYScale(action, spectrumId);
+      break;
+
+    case SET_SCALE: {
+      draft.scaleX = (spectrumId = null) =>
+        getXScale(action.payload, spectrumId);
+      draft.scaleY = (spectrumId = null) =>
+        getYScale(action.payload, spectrumId);
+      break;
+    }
     default:
-      return state;
+      return draft;
   }
 }
+
+const scaleReducer = produce(innerScaleReducer);
+export default scaleReducer;

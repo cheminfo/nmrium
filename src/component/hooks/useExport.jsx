@@ -114,15 +114,6 @@ export default function useExport() {
         width: 400,
         height: 280,
       });
-
-      // const hideLoading = await alert.showLoading(
-      //   'Exporting as PNG process in progress',
-      // );
-      // setTimeout(() => {
-      //   const fileName = state.data[0]?.display?.name;
-      //   exportAsPng(fileName, 'nmrSVG');
-      //   hideLoading();
-      // }, 0);
     }
   }, [modal, saveHandler, state.data]);
 

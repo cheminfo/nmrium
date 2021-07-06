@@ -118,7 +118,6 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
           formatNumber(row.xIndex, peaksPreferences.peakIndexFormat),
       });
     }
-    // peaksPreferences.deltaPPMFormat
     if (peaksPreferences.showDeltaPPM) {
       setCustomColumn(cols, 3, 'δ (ppm)', {
         accessor: (row) => format(row.value),

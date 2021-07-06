@@ -20,7 +20,6 @@ import { ErrorBoundary } from 'react-error-boundary';
 import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
-import { helpList } from '../constants';
 import { Datum1D } from '../data/data1d/Spectrum1D';
 import { Datum2D } from '../data/data2d/Spectrum2D';
 import checkModifierKeyActivated from '../data/utilities/checkModifierKeyActivated';
@@ -49,9 +48,8 @@ import {
   dispatchMiddleware,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
-import {
+import preferencesReducer, {
   preferencesInitialState,
-  preferencesReducer,
   INIT_PREFERENCES,
 } from './reducer/preferencesReducer';
 import {
@@ -131,7 +129,8 @@ const containerStyles = css`
 
   .Resizer.vertical:hover {
     background-color: #dfdfdf !important;
-    border-left: 0.55px #bbbbbb solid;
+    border-left: 0.55px #bbbbbbimport preferencesReducer from './reducer/preferencesReducer';
+ solid;
     border-right: 0.55px #bbbbbb solid;
   }
 `;
@@ -215,6 +214,7 @@ function NMRium({
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWraperRef = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
+
   const isFullscreen = useFullscreen(rootRef, show, {
     onClose: () => {
       toggle(false);
@@ -232,11 +232,7 @@ function NMRium({
     preferencesInitialState,
   );
 
-  const {
-    toolOptions: { selectedTool },
-    displayerMode,
-    data: spectraData,
-  } = state;
+  const { displayerMode, data: spectraData } = state;
 
   useEffect(() => {
     if (checkActionType(state.actionType)) {
@@ -303,6 +299,11 @@ function NMRium({
     dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
   }, [dispatchMiddleWare]);
 
+  const chartDataContextValue = useMemo(
+    () => ({ ...state, isResizeEventStart }),
+    [state, isResizeEventStart],
+  );
+
   return (
     <ErrorBoundary FallbackComponent={ErrorOverlay}>
       <GlobalProvider
@@ -319,19 +320,19 @@ function NMRium({
           >
             {/* @ts-expect-error: TODO remove when HelpProvider is migrated */}
             <HelpProvider
-              data={helpList}
               wrapperRef={elementsWraperRef.current}
               preventAutoHelp={preventAutoHelp}
             >
               {/* @ts-expect-error: TODO remove when AlertProvider is migrated */}
               <AlertProvider wrapperRef={elementsWraperRef.current}>
                 <DispatchProvider value={dispatchMiddleWare}>
-                  <ChartDataProvider value={{ ...state, isResizeEventStart }}>
+                  <ChartDataProvider value={chartDataContextValue}>
                     <ModalProvider wrapperRef={elementsWraperRef.current}>
                       <HighlightProvider>
                         <AssignmentProvider spectraData={spectraData}>
                           <SpinnerProvider value={getSpinner}>
                             <div
+                              className="nmrium-container"
                               ref={rootRef}
                               css={containerStyles}
                               onContextMenu={preventContextMenuHandler}
@@ -351,7 +352,7 @@ function NMRium({
                                 <DropZone>
                                   <KeysListenerTracker />
 
-                                  <ToolBar selectedTool={selectedTool} />
+                                  <ToolBar />
                                   <SplitPane
                                     style={splitPaneStyles.container}
                                     resizerStyle={splitPaneStyles.resizer}
@@ -384,14 +385,7 @@ function NMRium({
                                     ) : (
                                       <Viewer2D emptyText={emptyText} />
                                     )}
-                                    {!isRightPanelHide ? (
-                                      <Panels
-                                        selectedTool={selectedTool}
-                                        displayerMode={displayerMode}
-                                      />
-                                    ) : (
-                                      <div />
-                                    )}
+                                    {!isRightPanelHide ? <Panels /> : <div />}
                                   </SplitPane>
                                 </DropZone>
                               </div>

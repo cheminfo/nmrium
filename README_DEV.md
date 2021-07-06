@@ -27,6 +27,30 @@ https://dev.to/glebec/four-ways-to-immutability-in-javascript-3b3l
 
 And in particular we use Immer: https://github.com/immerjs/immer
 
+### Debug what changed to trigger a re-render
+
+If you have a component that re-renders because of a hook that changed but you
+don't know which hook it was, you can temporarily add a call to
+[`useWhatChanged`](https://github.com/simbathesailor/use-what-changed).
+
+It will print to the console what changed at each render.
+
+Do not forget to remove the call and the import when you have finished to debug!
+
+```js
+import { useWhatChanged } from '@simbathesailor/use-what-changed';
+
+export default function SomeComponent() {
+  const [state, setState] = useState();
+  const context1 = useSomeContext();
+  const context2 = useSomeOtherContext();
+
+  useWhatChanged([state, context1, context2], 'state,context1,context2');
+
+  return <div />;
+}
+```
+
 ## Testing
 
 We use the [Jest](https://jestjs.io/docs/getting-started) test runner.

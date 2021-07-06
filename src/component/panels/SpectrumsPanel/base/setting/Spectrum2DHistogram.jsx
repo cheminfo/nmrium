@@ -63,7 +63,6 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
           width={220}
           height={180}
           margin={{ bottom: 50, left: 40, top: 10, right: 13 }}
-          // seriesViewportStyle={{ stroke: 'gray' }}
         >
           <LineSeries
             data={processedData.sanPlot.positive}
@@ -115,7 +114,6 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
           width={220}
           height={180}
           margin={{ bottom: 50, left: 40, top: 10, right: 13 }}
-          // seriesViewportStyle={{ stroke: 'gray' }}
         >
           <LineSeries
             data={processedData.sanPlot.negative}

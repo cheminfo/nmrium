@@ -1,6 +1,7 @@
 import lodashGet from 'lodash/get';
 import { useCallback, useState, useEffect, memo } from 'react';
 
+import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import Accordion from '../elements/accordion/Accordion';
 import AccordionItem from '../elements/accordion/AccordionItem';
@@ -101,10 +102,9 @@ const accordionItems = [
   },
 ];
 
-function Panels({ selectedTool, displayerMode }) {
+function PanelsInner({ selectedTool, displayerMode }) {
   const [panelIndex, setSelectedPanelIndex] = useState<number | null>(0);
   const preferences = usePreferences();
-
   useEffect(() => {
     function getDefaultIndex() {
       const index = accordionItems.findIndex((item) =>
@@ -147,4 +147,13 @@ function Panels({ selectedTool, displayerMode }) {
   );
 }
 
-export default memo(Panels);
+const MemoizedPanels = memo(PanelsInner);
+
+export default function Panels() {
+  const {
+    displayerMode,
+    toolOptions: { selectedTool },
+  } = useChartData();
+
+  return <MemoizedPanels {...{ displayerMode, selectedTool }} />;
+}

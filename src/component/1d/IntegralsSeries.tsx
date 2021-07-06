@@ -41,28 +41,30 @@ function IntegralsSeries() {
     };
 
     return (
-      data?.[0] &&
-      data
-        .filter(
-          (d) =>
-            d.display.isVisible === true &&
-            d.display.isVisibleInDomain === true,
-        )
-        .filter(isSpectrum1D)
-        .map((spectrum) =>
-          spectrum.integrals.values.map((integral) => (
-            <Integral
-              key={integral.id}
-              integralData={integral}
-              x={spectrum.data.x}
-              y={spectrum.data.y}
-              isActive={isActive(spectrum.id)}
-              xDomain={xDomain}
-              scaleY={scaleY}
-              scaleX={scaleX}
-            />
-          )),
-        )
+      <g className="integrals">
+        {data?.[0] &&
+          data
+            .filter(
+              (d) =>
+                d.display.isVisible === true &&
+                d.display.isVisibleInDomain === true,
+            )
+            .filter(isSpectrum1D)
+            .map((spectrum) =>
+              spectrum.integrals.values.map((integral) => (
+                <Integral
+                  key={integral.id}
+                  integralData={integral}
+                  x={spectrum.data.x}
+                  y={spectrum.data.y}
+                  isActive={isActive(spectrum.id)}
+                  xDomain={xDomain}
+                  scaleY={scaleY}
+                  scaleX={scaleX}
+                />
+              )),
+            )}
+      </g>
     );
   }, [activeSpectrum, data, scaleX, scaleY, xDomain]);
 

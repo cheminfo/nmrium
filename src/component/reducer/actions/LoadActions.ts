@@ -53,8 +53,6 @@ function setData(
   } else {
     draft.correlations = correlations;
   }
-
-  // const spectraAnalysis = AnalysisObj.getMultipleAnalysis();
 }
 
 function initiate(draft: Draft<State>, action) {

@@ -25,7 +25,6 @@ function getStyles(position, containerStyle) {
     case positions.TOP_LEFT:
       return {
         ...initialStyles,
-        // top: 0,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
       };

@@ -1,10 +1,10 @@
 import { createContext, useContext } from 'react';
 
-interface Loader {
-  open: () => void;
+function defaultLoader() {
+  // Empty
 }
 
-const LoaderContext = createContext<Loader>({ open: () => null });
+const LoaderContext = createContext<() => void>(defaultLoader);
 
 export const LoaderProvider = LoaderContext.Provider;
 

@@ -65,6 +65,7 @@ function Line({ data, id, display, index }: LineProps) {
   return (
     <path
       className="line"
+      data-test-id="spectrum-line"
       key={id}
       stroke={display.color}
       fill="none"

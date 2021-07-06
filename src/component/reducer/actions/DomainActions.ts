@@ -1,5 +1,5 @@
 import { extent } from 'd3';
-import { Draft } from 'immer';
+import { Draft, current } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../../data/data1d/Spectrum1D';
@@ -9,9 +9,11 @@ import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 
 function getActiveData(draft: Draft<State>) {
+  const currentData = current(draft).data;
+
   if (draft.activeTab) {
     const groupByNucleus = GroupByInfoKey('nucleus');
-    let data = groupByNucleus(draft.data)[draft.activeTab];
+    let data = groupByNucleus(currentData)[draft.activeTab];
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
       return data;
     } else {
@@ -26,17 +28,16 @@ function getActiveData(draft: Draft<State>) {
       } else {
         data = data ? data.filter((datum) => datum.info.isFid === false) : [];
       }
-
-      for (let datum of draft.data) {
+      return currentData.map((datum) => {
+        let isVisibleInDomain = false;
         if (data.some((activeData: any) => activeData.id === datum.id)) {
-          // AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
-          (datum as Datum2D | Datum1D).display.isVisibleInDomain = true;
-        } else {
-          // AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
-          (datum as Datum2D | Datum1D).display.isVisibleInDomain = false;
+          isVisibleInDomain = true;
         }
-      }
-      return draft.data;
+        return {
+          ...datum,
+          display: { ...datum.display, isVisibleInDomain },
+        };
+      });
     }
   } else {
     return draft.data;

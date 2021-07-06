@@ -7,6 +7,7 @@ beforeAll(async () => {
   // Create a browser instance for all tests.
   globalThis.nmriumBrowser = await browserType.launch({
     // slowMo: 500
+    // headless: false
   });
   // Create a default context.
   globalThis.nmriumMainContext = await globalThis.nmriumBrowser.newContext({

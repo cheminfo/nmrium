@@ -329,12 +329,6 @@ export function changeZoneSignal(
           ? newSignal.y - originalSignal.y.delta
           : 0;
 
-      // if (newSignal.x) {
-      //   datum.zones.values[zoneIndex].signal[signalIndex].x.delta = newSignal.x;
-      // }
-      // if (newSignal.y) {
-      //   datum.zones.values[zoneIndex].signal[signalIndex].y.delta = newSignal.y;
-      // }
       return { xShift, yShift };
     }
   }

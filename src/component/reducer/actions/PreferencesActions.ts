@@ -127,8 +127,6 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     draft.yDomains = preferences.yDomains;
 
     if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-      // draft.yDomains = preferences.yDomains;
-
       for (const datumID of Object.keys(preferences.level)) {
         const { levelPositive, levelNegative } = preferences.level[datumID];
         const index = state.data.findIndex((datum) => datum.id === datumID);
@@ -138,15 +136,7 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
         draft.contours[datumID] = processController.drawContours();
       }
     } else {
-      setZoom(
-        // {
-        //   ...state,
-        //   activeSpectrum: draft.activeSpectrum,
-        //   activeTab: draft.activeTab,
-        // },
-        draft,
-        preferences.zoomFactor.scale,
-      );
+      setZoom(draft, preferences.zoomFactor.scale);
     }
   }
 }

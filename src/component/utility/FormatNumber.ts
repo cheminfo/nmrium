@@ -3,7 +3,6 @@ import Numeral from 'numeral';
 import { useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
-// let getNuclusFormat = memoize(getDefaultNuclusFormat);
 
 function FormatNumber(value, format, prefix = '', suffix = '') {
   return prefix + Numeral(value).format(format) + suffix;

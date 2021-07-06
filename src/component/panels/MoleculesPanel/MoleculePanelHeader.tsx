@@ -151,20 +151,12 @@ export default function MoleculePanelHeader({
   ]);
 
   const openPredicSpectraModal = useCallback(() => {
-    modal.show(
-      <PredictSpectraModal
-        // onSave={() => {
-        //   modal.close();
-        // }}
-        molfile={molecules[currentIndex]}
-      />,
-      {
-        position: positions.TOP_CENTER,
-        enableResizing: true,
-        width: 600,
-        height: 400,
-      },
-    );
+    modal.show(<PredictSpectraModal molfile={molecules[currentIndex]} />, {
+      position: positions.TOP_CENTER,
+      enableResizing: true,
+      width: 600,
+      height: 400,
+    });
   }, [modal, molecules, currentIndex]);
 
   return (

@@ -1,11 +1,13 @@
-import { createContext, useCallback, useContext } from 'react';
+import { useMemo, createContext, useCallback, useContext } from 'react';
+
+import { helpList } from '../../../../constants';
 
 const HelpContext = createContext();
 
 export const HelpProvider = HelpContext.Provider;
 
-export function useHelptData() {
-  return useContext(HelpContext).helpState;
+export function useHelpText() {
+  return useContext(HelpContext).helpText;
 }
 export function useHelp() {
   const context = useContext(HelpContext);
@@ -16,7 +18,7 @@ export function useHelp() {
       if (id) {
         e.target.style.cursor =
           !context.preventAutoHelp || e.ctrlKey ? 'help' : 'pointer';
-        context.dispatch({ type: 'SHOW', id });
+        context.setHelpText(helpList[id].text);
         context.show(id, { delay: e.ctrlKey ? 0 : null });
       }
     },
@@ -24,14 +26,16 @@ export function useHelp() {
   );
 
   const hide = useCallback(() => {
-    context.dispatch({ type: 'HIDE' });
+    context.setHelpText(null);
     context.clear();
   }, [context]);
 
-  const onHover = {
-    onMouseEnter: show,
-    onMouseLeave: hide,
-  };
+  return useMemo(() => {
+    const onHover = {
+      onMouseEnter: show,
+      onMouseLeave: hide,
+    };
 
-  return { show, hide, onHover };
+    return { show, hide, onHover };
+  }, [hide, show]);
 }
