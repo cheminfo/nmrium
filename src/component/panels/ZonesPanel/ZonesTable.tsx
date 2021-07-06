@@ -14,7 +14,6 @@ const tableStyle = css`
   border: 1px solid #dedede;
   width: 100%;
   font-size: 12px;
-  // height: 100%;
   .react-contextmenu-wrapper {
     display: contents;
   }

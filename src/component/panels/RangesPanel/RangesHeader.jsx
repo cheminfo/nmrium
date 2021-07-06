@@ -39,7 +39,6 @@ const styles = {
   removeAssignmentsButton: {
     border: 'none',
     height: '16px',
-    // width: '18px',
     fontSize: '12px',
     backgroundColor: 'transparent',
   },

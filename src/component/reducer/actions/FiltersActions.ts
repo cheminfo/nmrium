@@ -39,7 +39,6 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
 function applyZeroFillingFilter(draft: Draft<State>, filterOptions) {
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum.index;
-    // const activeObject = AnalysisObj.getDatum(activeSpectrumId);
     const filters = [
       { name: Filters.zeroFilling.id, options: filterOptions.zeroFillingSize },
       {
@@ -57,8 +56,6 @@ function applyZeroFillingFilter(draft: Draft<State>, filterOptions) {
 function applyFFTFilter(draft: Draft<State>) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-
-    // const activeObject = AnalysisObj.getDatum(activeSpectrumId);
 
     //apply filter into the spectrum
     FiltersManager.applyFilter(draft.data[index], [
@@ -289,7 +286,6 @@ function resetSpectrumByFilter(
         }
 
         FiltersManager.reapplyFilters(datum, filters);
-        // setDataBy1DFilter(datum as Datum1D);
 
         if (returnCurrentDatum) {
           const { name, value: options } = datum.filters[filterIndex];

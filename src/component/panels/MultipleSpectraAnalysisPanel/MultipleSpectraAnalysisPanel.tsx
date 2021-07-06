@@ -95,9 +95,7 @@ function MultipleSpectraAnalysisPanelInner({
     modal.show(<AlignSpectraModal nucleus={activeTab} />, {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,
-      // enableResizing: false,
       width: 500,
-      // height: 600,
     });
   }, [activeTab, modal, dispatch]);
   const openFiltersModal = useCallback(() => {
@@ -105,9 +103,7 @@ function MultipleSpectraAnalysisPanelInner({
     modal.show(<MultipleSpectraFiltersModal />, {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,
-      // enableResizing: false,
       width: 500,
-      // height: 600,
     });
   }, [modal, dispatch]);
 

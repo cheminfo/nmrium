@@ -485,7 +485,6 @@ function setActiveTab(
   const currentTab = !tab || !tabs.includes(tab ?? '') ? tabs[0] : tab;
   setTab(draft, dataGroupByNucleus, currentTab, refreshTabActiveSpectrums);
   resetTool(draft);
-  // resetFilterTool(draft);
 
   Processing2DData(draft, dataGroupByNucleus);
   setDomain(draft);
@@ -509,11 +508,8 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
   try {
     if (draft.activeSpectrum?.id) {
       const { index, id } = draft.activeSpectrum;
-      // const datum2dObject = AnalysisObj.getDatum(id);
-      // if (datum2dObject instanceof Datum2D) {
       const processingController = (draft.data[index] as Datum2D)
         .processingController;
-      // const processing2dController = processingController.drawContours;
       if (shiftKey) {
         processingController.shiftWheel(deltaY);
       } else {
@@ -521,7 +517,6 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
       }
       const contours = Object.freeze(processingController.drawContours());
       draft.contours[id] = contours;
-      // }
     }
   } catch (e) {
     // eslint-disable-next-line no-console

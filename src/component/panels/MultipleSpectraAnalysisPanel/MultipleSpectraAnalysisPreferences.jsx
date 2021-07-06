@@ -39,11 +39,9 @@ const styles = css`
   }
 
   .input {
-    // border: 0.55px solid rgb(237 237 237) !important;
     height: 25px !important;
     width: 100% !important;
     margin: 0 !important;
-    // text-transform: uppercase;
   }
 
   .input.disbale {

@@ -12,8 +12,6 @@ import { options } from '../../toolbar/ToolTypes';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
-// import { AnalysisObj } from '../core/Analysis';
-
 function addPeak(draft: Draft<State>, mouseCoordinates) {
   const state = original(draft) as State;
   if (draft.activeSpectrum?.id && state) {

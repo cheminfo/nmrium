@@ -4,7 +4,6 @@ import { xyIntegral } from 'ml-spectra-processing';
 
 import GroupByInfoKey from '../../../utility/GroupByInfoKey';
 import { DISPLAYER_MODE } from '../../core/Constants';
-// import { AnalysisObj } from '../core/Analysis';
 
 function getActiveData(draft) {
   if (draft.activeTab) {
@@ -27,10 +26,8 @@ function getActiveData(draft) {
 
       for (let datum of draft.data) {
         if (data.some((activeData) => activeData.id === datum.id)) {
-          // AnalysisObj.getDatum(datum.id).isVisibleInDomain = true;
           datum.display.isVisibleInDomain = true;
         } else {
-          // AnalysisObj.getDatum(datum.id).isVisibleInDomain = false;
           datum.display.isVisibleInDomain = false;
         }
       }
