@@ -8,7 +8,7 @@ import { SET_MOLECULE, ADD_MOLECULE } from '../reducer/types/Types';
 import { ModalStyles } from './ModalStyle';
 
 interface MoleculeStructureEditorModalProps {
-  onClose: (element?: string) => void;
+  onClose?: (element?: string) => void;
   selectedMolecule: {
     key: any;
     molfile: string;
@@ -18,7 +18,7 @@ interface MoleculeStructureEditorModalProps {
 function MoleculeStructureEditorModal(
   props: MoleculeStructureEditorModalProps,
 ) {
-  const { onClose, selectedMolecule } = props;
+  const { onClose = () => null, selectedMolecule } = props;
 
   const [molfile, setMolfile] = useState<string | null>(null);
   const dispatch = useDispatch();

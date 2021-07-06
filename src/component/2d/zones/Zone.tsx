@@ -2,13 +2,14 @@
 import { css } from '@emotion/react';
 import { useState, useEffect } from 'react';
 
+import { Zone as ZoneDataProps } from '../../../data/data2d/Spectrum2D';
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { TYPES, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
-import Signal, { SignalType } from './Signal';
+import Signal from './Signal';
 
 const stylesOnHover = css`
   pointer-events: bounding-box;
@@ -40,12 +41,7 @@ const stylesHighlighted = css`
 `;
 
 interface ZoneProps {
-  zoneData: {
-    x: { from: number; to: number };
-    y: { from: number; to: number };
-    id: number;
-    signal: Array<SignalType>;
-  };
+  zoneData: ZoneDataProps;
   isVisible: {
     zones: boolean;
   };
@@ -85,11 +81,11 @@ const Zone = ({ zoneData, isVisible }: ZoneProps) => {
       }}
     >
       {isVisible.zones && (
-        <g transform={`translate(${scaleX(x2)},${scaleY(y1)})`}>
+        <g transform={`translate(${scaleX(x2 as any)},${scaleY(y1 as any)})`}>
           <rect
             x="0"
-            width={scaleX(x1) - scaleX(x2)}
-            height={scaleY(y2) - scaleY(y1)}
+            width={scaleX(x1 as any) - scaleX(x2 as any)}
+            height={scaleY(y2 as any) - scaleY(y1 as any)}
             className="Integral-area"
             fill="#0000000f"
             stroke={reduceOpacity ? '#343a40' : 'darkgreen'}

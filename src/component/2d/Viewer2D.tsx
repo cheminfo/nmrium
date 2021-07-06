@@ -1,4 +1,11 @@
-import { useCallback, Fragment, useEffect, useState, useMemo } from 'react';
+import {
+  useCallback,
+  Fragment,
+  useEffect,
+  useState,
+  useMemo,
+  ReactNode,
+} from 'react';
 import { useSize, useDebounce } from 'react-use';
 
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
@@ -24,7 +31,11 @@ import XYLabelPointer from './tools/XYLabelPointer';
 import SlicingView from './tools/slicing/SlicingView';
 import { get2DDimensionLayout, getLayoutID } from './utilities/DimensionLayout';
 
-function Viewer2D({ emptyText = undefined }) {
+interface Viewer2DProps {
+  emptyText: ReactNode;
+}
+
+function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
   const state = useChartData();
   const {
     toolOptions: { selectedTool },

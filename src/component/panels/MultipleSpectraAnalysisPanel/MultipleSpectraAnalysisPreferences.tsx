@@ -73,7 +73,7 @@ const styles = css`
 
 function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref) {
   const dispatch = useDispatch();
-  const refForm = useRef();
+  const refForm = useRef<any>();
   const [columns, setColumns] = useState({});
 
   useImperativeHandle(ref, () => ({
@@ -106,7 +106,7 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref) {
               return (
                 Object.keys(formData).reduce((acc, colKey) => {
                   if (formData[colKey].tempKey === colmnName) {
-                    acc.push(colmnName);
+                    (acc as any[]).push(colmnName);
                   }
                   return acc;
                 }, []).length === 1
@@ -131,7 +131,7 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref) {
       onAfterSave?.(true);
       const result = Object.entries(values.columns).reduce(
         (acc, [key, value]) => {
-          acc[key] = { ...columns[key], ...value };
+          acc[key] = { ...columns[key], ...(value as any) };
           return acc;
         },
         {},

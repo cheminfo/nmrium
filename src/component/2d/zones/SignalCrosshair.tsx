@@ -2,14 +2,13 @@
 
 import { useMemo } from 'react';
 
+import { Signal as SignalDataProps } from '../../../data/data2d/Spectrum2D';
 import { buildID } from '../../../data/utilities/Concatenation';
 import { useHighlight } from '../../highlight';
 import SignalDeltaLine from '../SignalDeltaLine';
 
-import { SignalType } from './Signal';
-
 interface SignalCrosshairProps {
-  signal: SignalType;
+  signal: SignalDataProps;
 }
 
 function SignalCrosshair({ signal }: SignalCrosshairProps) {
@@ -27,12 +26,12 @@ function SignalCrosshair({ signal }: SignalCrosshairProps) {
   return (
     <g>
       <SignalDeltaLine
-        delta={signal.x.delta}
+        delta={signal.x.delta as any}
         axis="X"
         show={highlightX.isActive}
       />
       <SignalDeltaLine
-        delta={signal.y.delta}
+        delta={signal.y.delta as any}
         axis="Y"
         show={highlightY.isActive}
       />

@@ -2,6 +2,7 @@
 
 import { memo, useState, useEffect, useCallback } from 'react';
 
+import { Signal as SignalDataProps } from '../../../data/data2d/Spectrum2D';
 import { buildID } from '../../../data/utilities/Concatenation';
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
@@ -10,22 +11,8 @@ import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import SignalCrosshair from './SignalCrosshair';
 
-export interface SignalType {
-  id: number;
-  peak: Array<{
-    x: number;
-    y: number;
-  }>;
-  x: {
-    delta: number;
-  };
-  y: {
-    delta: number;
-  };
-}
-
 interface SignalProps {
-  signal: SignalType;
+  signal: SignalDataProps;
   isVisible: {
     signals?: boolean;
     peaks?: boolean;
@@ -84,8 +71,8 @@ const Signal = memo(({ signal, isVisible }: SignalProps) => {
         <g>
           <circle
             key={signal.id}
-            cx={scaleX(signal.x.delta)}
-            cy={scaleY(signal.y.delta)}
+            cx={scaleX(signal.x.delta as any)}
+            cy={scaleY(signal.y.delta as any)}
             r={isHighlighted ? 6 : 4}
             fill={isHighlighted ? 'green' : 'darkgreen'}
           />

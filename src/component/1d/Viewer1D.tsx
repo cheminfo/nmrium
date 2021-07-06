@@ -1,4 +1,11 @@
-import { useCallback, Fragment, useEffect, useState, useReducer } from 'react';
+import {
+  useCallback,
+  Fragment,
+  useEffect,
+  useState,
+  useReducer,
+  ReactNode,
+} from 'react';
 import { useSize, useDebounce } from 'react-use';
 
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
@@ -44,7 +51,7 @@ import VerticalIndicator from './tool/VerticalIndicator';
 import XLabelPointer from './tool/XLabelPointer';
 
 interface Viewer1DProps {
-  emptyText?: string;
+  emptyText?: ReactNode;
 }
 
 function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
