@@ -7,11 +7,11 @@ import { useChartData } from '../../../../context/ChartContext';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs from '../../../../elements/Tab/Tabs';
 import useSpectrum from '../../../../hooks/useSpectrum';
-import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 import Events from '../../../../utility/Events';
 import { useFormatNumberByNucleus } from '../../../../utility/FormatNumber';
 
 import AddSignalFormTab from './AddSignalFormTab';
+import DeltaInput from './DeltaInput';
 import SignalFormTab from './SignalFormTab';
 
 const textStyles = css`
@@ -36,6 +36,11 @@ const textStyles = css`
 const tabStylesAddition = css`
   color: red;
 `;
+const tabStyles = css`
+  display: inline-grid;
+  list-style: none;
+  padding: 0.5rem 1.5rem;
+`;
 
 function SignalsForm({ range }) {
   const newSignalFormRef = useRef();
@@ -48,24 +53,28 @@ function SignalsForm({ range }) {
 
   useEffect(() => {
     Events.on('brushEnd', (event) => {
-      if (info.originFrequency) {
-        if (activeField) {
-          if (values.activeTab === 'addSignalTab') {
-            newSignalFormRef.current.setValues({
-              [activeField]:
-                (event.range[1] - event.range[0]) / 2 + event.range[0],
-            });
-          } else {
-            const value = Number(
-              format(
-                Math.abs(event.range[0] - event.range[1]) *
-                  info.originFrequency,
-              ),
-            );
-            setFieldValue(activeField, value);
-          }
+      if (info?.originFrequency && activeField) {
+        if (values.activeTab === 'addSignalTab') {
+          newSignalFormRef.current.setValues({
+            [activeField]:
+              (event.range[1] - event.range[0]) / 2 + event.range[0],
+          });
+        } else if (activeField.includes('delta')) {
+          setFieldValue(
+            activeField,
+            (event.range[1] - event.range[0]) / 2 + event.range[0],
+          );
+        } else {
+          const value = Number(
+            format(
+              Math.abs(event.range[0] - event.range[1]) * info.originFrequency,
+            ),
+          );
+          setFieldValue(activeField, value);
         }
       }
+
+      setActiveField(null);
     });
 
     return () => {
@@ -78,8 +87,11 @@ function SignalsForm({ range }) {
       if (activeField) {
         if (values.activeTab === 'addSignalTab') {
           newSignalFormRef.current.setValues({ [activeField]: event.xPPM });
+        } else if (activeField.includes('delta')) {
+          setFieldValue(activeField, event.xPPM);
         }
       }
+      setActiveField(null);
     });
 
     return () => {
@@ -97,7 +109,6 @@ function SignalsForm({ range }) {
   const tapClickHandler = useCallback(
     ({ tabid }) => {
       setFieldValue('activeTab', tabid);
-      setActiveField(null);
     },
     [setFieldValue],
   );
@@ -136,11 +147,11 @@ function SignalsForm({ range }) {
               // eslint-disable-next-line react/no-array-index-key
               key={`signalForm${i}`}
               tabid={`${i}`}
-              tablabel={`𝛅: ${Number(format(signal.delta))} (${signal.j
-                .map((_coupling) => translateMultiplet(_coupling.multiplicity))
-                .join('')})`}
-              tabstyles={tabContainsErrors(i) ? tabStylesAddition : null}
+              tabstyles={tabContainsErrors(i) ? tabStylesAddition : tabStyles}
               canDelete
+              render={() => (
+                <DeltaInput signal={signal} index={i} onFocus={handleOnFocus} />
+              )}
             >
               <SignalFormTab onFocus={handleOnFocus} />
             </Tab>
@@ -164,7 +175,7 @@ function SignalsForm({ range }) {
     );
 
     return signalTabs.concat(addSignalTab);
-  }, [format, handleOnFocus, range, tabContainsErrors, values.signals]);
+  }, [handleOnFocus, range, tabContainsErrors, values.signals]);
 
   const editSignalInfoText = (
     <p className="infoText">

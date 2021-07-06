@@ -152,6 +152,7 @@ function EditRangeModal({
   const data = useMemo(() => {
     const signals = range.signal.map((signal) => {
       // counter within j array to access to right j values
+
       let counterJ = 0;
       const couplings: Array<Coupling> = [];
       signal.multiplicity.split('').forEach((_multiplicity) => {
@@ -170,7 +171,8 @@ function EditRangeModal({
         couplings.push(coupling);
       });
 
-      return { ...signal, j: couplings };
+      const delta = Number(format(signal.delta));
+      return { ...signal, delta, j: couplings };
     });
     return { activeTab: '0', signals };
   }, [format, range]);
