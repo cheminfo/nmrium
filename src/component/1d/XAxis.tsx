@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
-import PropTypes from 'prop-types';
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
@@ -37,32 +36,51 @@ const gridStyles = css`
   }
 `;
 
-function XAxis({ show = true, showGrid = false, mode, label: labelProp }) {
+interface XAxisProps {
+  show?: boolean;
+  showGrid?: boolean;
+  mode?: string;
+  label?: string;
+}
+
+function XAxis(props: XAxisProps) {
+  const { show = true, showGrid = false, mode, label: labelProp } = props;
   const { xDomain, height, width, margin } = useChartData();
   const { scaleX } = useScale();
 
-  const refAxis = useRef();
-  const refGrid = useRef();
+  const refAxis = useRef<SVGGElement>(null);
+  const refGrid = useRef<SVGGElement>(null);
 
   const label = labelProp ? labelProp : mode === 'RTL' ? 'δ [ppm]' : 'time [s]';
 
   useEffect(() => {
-    const xAxis = d3.axisBottom().ticks(8).tickFormat(d3.format('0'));
+    if (!show || !scaleX) return;
+
+    const xAxis = d3
+      .axisBottom(scaleX().domain(xDomain))
+      .ticks(8)
+      .tickFormat(d3.format('0'));
+
     const grid = d3
-      .axisBottom()
+      .axisBottom(scaleX().domain(xDomain))
       .ticks(50)
       .tickSize(-(height - margin.top - margin.bottom))
-      .tickFormat('');
-    if (show && scaleX) {
-      d3.select(refAxis.current).call(xAxis.scale(scaleX().domain(xDomain)));
-      d3.select(refGrid.current).call(grid.scale(scaleX().domain(xDomain)));
-    }
+      .tickFormat(() => '');
+
+    // @ts-expect-error This line of code is actually well typed ...
+    d3.select(refAxis.current).call(xAxis);
+
+    // @ts-expect-error ditto
+    d3.select(refGrid.current).call(grid);
   }, [height, margin.bottom, margin.top, scaleX, show, xDomain]);
 
-  const Axis = useMemo(
-    () =>
-      show &&
-      show === true && (
+  if (!width || !height || !scaleX) {
+    return null;
+  }
+
+  return (
+    <>
+      {show && (
         <g
           className="x"
           css={axisStyles}
@@ -73,41 +91,17 @@ function XAxis({ show = true, showGrid = false, mode, label: labelProp }) {
             {label}
           </text>
         </g>
-      ),
-
-    [height, label, margin.bottom, show, width],
-  );
-
-  const Grid = useMemo(
-    () =>
-      showGrid &&
-      showGrid === true && (
+      )}
+      {showGrid && (
         <g
           css={gridStyles}
           className="grid"
           ref={refGrid}
           transform={`translate(0,${height - margin.bottom})`}
         />
-      ),
-
-    [showGrid, height, margin.bottom],
-  );
-  if (!width || !height || !scaleX) {
-    return null;
-  }
-
-  return (
-    <>
-      {Axis}
-      {Grid}
+      )}
     </>
   );
 }
-
-XAxis.propTypes = {
-  showGrid: PropTypes.bool,
-  show: PropTypes.bool,
-  label: PropTypes.string,
-};
 
 export default XAxis;

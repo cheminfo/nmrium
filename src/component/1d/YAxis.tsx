@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import * as d3 from 'd3';
-import PropTypes from 'prop-types';
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
@@ -24,23 +23,34 @@ const axisStyles = css`
   }
 `;
 
-function YAxis(props) {
+interface YAxisProps {
+  show?: boolean;
+  label?: string;
+}
+
+function YAxis(props: YAxisProps) {
   const { show = true, label = '' } = props;
-  const refAxis = useRef();
+  const refAxis = useRef<SVGGElement>(null);
+
   const { yDomain, width, height, margin } = useChartData();
   const { scaleY } = useScale();
 
   useEffect(() => {
-    if (show && yDomain && scaleY()) {
-      const axis = d3.axisRight().ticks(10).tickFormat(d3.format('~s'));
+    if (show && yDomain && scaleY) {
+      const axis = d3.axisRight(scaleY()).ticks(10).tickFormat(d3.format('~s'));
 
-      d3.select(refAxis.current).call(axis.scale(scaleY()));
+      // @ts-expect-error this line of code is well typed
+      d3.select(refAxis.current).call(axis);
     }
   }, [show, yDomain, scaleY]);
 
-  const Axis = useMemo(
-    () =>
-      show && (
+  if (!width || !height) {
+    return null;
+  }
+
+  return (
+    <>
+      {show && (
         <g
           className="y"
           css={axisStyles}
@@ -58,27 +68,9 @@ function YAxis(props) {
             {label}
           </text>
         </g>
-      ),
-
-    [label, margin.right, margin.top, show, width],
+      )}
+    </>
   );
-
-  if (!width || !height) {
-    return null;
-  }
-
-  return Axis;
 }
 
 export default YAxis;
-
-YAxis.contextTypes = {
-  show: PropTypes.bool,
-  label: PropTypes.string,
-  margin: PropTypes.shape({
-    top: PropTypes.number,
-    right: PropTypes.number,
-    bottom: PropTypes.number,
-    left: PropTypes.number,
-  }),
-};
