@@ -233,7 +233,7 @@ function handleBrushEnd(draft: Draft<State>, action) {
   const endY = yScale.invert(action.endY);
   const domainX = startX > endX ? [endX, startX] : [startX, endX];
   const domainY = startY > endY ? [endY, startY] : [startY, endY];
-  const brushHistory = zoomHistoryManager(draft.ZoomHistory, draft.activeTab);
+  const brushHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
   if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
     switch (action.trackID) {
       case LAYOUT.CENTER_2D:
@@ -301,7 +301,7 @@ function handleZoom(draft: Draft<State>, action) {
 function zoomOut(draft: Draft<State>, action) {
   if (draft?.data.length > 0) {
     const { zoomType, trackID } = action;
-    const zoomHistory = zoomHistoryManager(draft.ZoomHistory, draft.activeTab);
+    const zoomHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
 
     if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
       switch (zoomType) {
@@ -487,9 +487,10 @@ function setActiveTab(
   resetTool(draft);
 
   Processing2DData(draft, dataGroupByNucleus);
+
   setDomain(draft);
 
-  const zoomHistory = zoomHistoryManager(draft.ZoomHistory, draft.activeTab);
+  const zoomHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
   const zoomValue = zoomHistory.getLast();
   if (zoomValue) {
     draft.xDomain = zoomValue.xDomain;

@@ -1,46 +1,36 @@
 import { extent } from 'd3';
-import { Draft, current } from 'immer';
+import { Draft } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { Datum2D, isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 
-function getActiveData(draft: Draft<State>) {
-  const currentData = current(draft).data;
+function change1DSpectraDomainVisibility(draft: Draft<State>) {
+  const groupByNucleus = GroupByInfoKey('nucleus');
+  let data = groupByNucleus(draft.data)[draft.activeTab];
 
-  if (draft.activeTab) {
-    const groupByNucleus = GroupByInfoKey('nucleus');
-    let data = groupByNucleus(currentData)[draft.activeTab];
-    if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-      return data;
-    } else {
-      if (draft.activeSpectrum && data) {
-        const activeSpectrumIndex = data.findIndex(
-          (datum) => datum.id === draft.activeSpectrum?.id,
-        );
-        if (activeSpectrumIndex !== -1) {
-          const isFid = data[activeSpectrumIndex].info.isFid || false;
-          data = data.filter((datum) => datum.info.isFid === isFid);
-        }
-      } else {
-        data = data ? data.filter((datum) => datum.info.isFid === false) : [];
-      }
-      return currentData.map((datum) => {
-        let isVisibleInDomain = false;
-        if (data.some((activeData: any) => activeData.id === datum.id)) {
-          isVisibleInDomain = true;
-        }
-        return {
-          ...datum,
-          display: { ...datum.display, isVisibleInDomain },
-        };
-      });
+  if (draft.activeSpectrum && data) {
+    const activeSpectrumIndex = data.findIndex(
+      (datum) => datum.id === draft.activeSpectrum?.id,
+    );
+    if (activeSpectrumIndex !== -1) {
+      const isFid = data[activeSpectrumIndex].info.isFid || false;
+      data = data.filter((datum) => datum.info.isFid === isFid);
     }
   } else {
-    return draft.data;
+    data = data ? data.filter((datum) => datum.info.isFid === false) : [];
+  }
+
+  for (const datum of draft.data as Array<Datum1D>) {
+    let isVisibleInDomain = false;
+    if (data.some((activeData: any) => activeData.id === datum.id)) {
+      isVisibleInDomain = true;
+    }
+    datum.display.isVisibleInDomain = isVisibleInDomain;
   }
 }
 
@@ -177,18 +167,18 @@ function get2DDomain(state) {
 
 function setDomain(draft: Draft<State>, isYDomainChanged = true) {
   let domain;
-  const data = getActiveData(draft);
 
-  if (
-    draft.activeTab &&
-    [DISPLAYER_MODE.DM_1D, DISPLAYER_MODE.DM_2D].includes(draft.displayerMode)
-  ) {
-    domain =
-      draft.displayerMode === DISPLAYER_MODE.DM_1D
-        ? getDomain(data)
-        : get2DDomain(draft);
+  if (draft.activeTab) {
+    if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+      change1DSpectraDomainVisibility(draft);
+      domain = getDomain(draft.data);
+    } else {
+      domain = get2DDomain(draft);
+    }
+
     draft.xDomain = domain.xDomain;
     draft.xDomains = domain.xDomains;
+
     if (isYDomainChanged) {
       draft.yDomain = domain.yDomain;
 
@@ -241,9 +231,11 @@ function handelResetDomain(draft: Draft<State>) {
   draft.yDomains = yDomains;
 }
 
-function setMode(draft) {
-  const data = getActiveData(draft).filter(
-    (datum) => datum.display.isVisibleInDomain === true,
+function setMode(draft: Draft<State>) {
+  const data = draft.data.filter(
+    (datum) =>
+      datum.display.isVisibleInDomain === true &&
+      nucleusToString(datum.info.nucleus) === draft.activeTab,
   );
   draft.mode = (data[0] as Datum1D)?.info.isFid ? 'LTR' : 'RTL';
 }

@@ -46,6 +46,7 @@ import {
   spectrumReducer,
   initialState,
   dispatchMiddleware,
+  intiState,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
@@ -223,9 +224,10 @@ function NMRium({
   const [isRightPanelHide, hideRightPanel] = useState(false);
   const [isResizeEventStart, setResizeEventStart] = useState(false);
 
-  const [state, dispatch] = useReducer<Reducer<any, any>>(
+  const [state, dispatch] = useReducer<Reducer<any, any>, any>(
     spectrumReducer,
     initialState,
+    intiState,
   );
   const [preferencesState, dispatchPreferences] = useReducer<Reducer<any, any>>(
     preferencesReducer,
@@ -261,7 +263,9 @@ function NMRium({
 
   useEffect(() => {
     dispatchMiddleWare({ type: SET_LOADING_FLAG, isLoading: true });
-    dispatchMiddleWare({ type: INITIATE, payload: dataProp });
+    if (dataProp) {
+      dispatchMiddleWare({ type: INITIATE, payload: dataProp });
+    }
   }, [dataProp, dispatchMiddleWare]);
 
   const handleSplitPanelDragFinished = useCallback(

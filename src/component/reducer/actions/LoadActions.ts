@@ -4,14 +4,12 @@ import { buildCorrelationData, Types } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
-import generateID from '../../../data/utilities/generateID';
 import { Molecules, NMRiumPreferences, Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import { State } from '../Reducer';
 
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setActiveTab } from './ToolsActions';
-import { initZoom1DHandler } from './Zoom';
 
 function setIsLoading(draft: Draft<State>, isLoading: boolean) {
   draft.isLoading = isLoading;
@@ -33,14 +31,18 @@ function setData(
     preferences,
     correlations,
     exclusionZones = {},
-  } = data || {
-    spectra: [],
-    molecules: [],
-    preferences: {},
-    correlations: {},
-    multipleAnalysis: {},
-    exclusionZones: {},
-  };
+  } = Object.assign(
+    {},
+    {
+      spectra: [],
+      molecules: [],
+      preferences: {},
+      correlations: {},
+      multipleAnalysis: {},
+      exclusionZones: {},
+    },
+    data,
+  );
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;
@@ -56,9 +58,7 @@ function setData(
 }
 
 function initiate(draft: Draft<State>, action) {
-  draft.displayerKey = generateID();
   setData(draft, action.payload);
-  initZoom1DHandler(draft.data);
   const alignCenter = lodashGet(draft.preferences, 'display.center', null);
   changeSpectrumVerticalAlignment(draft, alignCenter, true);
   setActiveTab(draft);
@@ -73,7 +73,6 @@ function loadJDFFile(draft: Draft<State>, actions) {
   }
 
   setActiveTab(draft);
-  initZoom1DHandler(draft.data);
 
   draft.isLoading = false;
 }
@@ -86,7 +85,6 @@ function loadJcampFile(draft: Draft<State>, actions) {
   }
   changeSpectrumVerticalAlignment(draft, false, true);
   setActiveTab(draft);
-  initZoom1DHandler(draft.data);
 
   draft.isLoading = false;
 }
@@ -100,7 +98,6 @@ function handleLoadJsonFile(draft: Draft<State>, actions) {
   changeSpectrumVerticalAlignment(draft, alignCenter, true);
 
   setActiveTab(draft);
-  initZoom1DHandler(draft.data);
 
   draft.isLoading = false;
 }
@@ -116,7 +113,6 @@ function handleLoadMOLFile(draft: Draft<State>, actions) {
 function handleLoadZIPFile(draft: Draft<State>, action) {
   draft.data = action.payload;
   setActiveTab(draft);
-  initZoom1DHandler(draft.data);
   draft.isLoading = false;
 }
 
@@ -124,7 +120,6 @@ function handleLoadNmredata(draft: Draft<State>, action) {
   setData(draft, action.payload);
   changeSpectrumVerticalAlignment(draft, false, true);
   setActiveTab(draft);
-  initZoom1DHandler(draft.data);
   draft.isLoading = false;
 }
 

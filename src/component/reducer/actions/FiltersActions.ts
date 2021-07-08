@@ -151,7 +151,7 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
     setDomain(draft);
     setMode(draft);
 
-    const zoomHistory = zoomHistoryManager(draft.ZoomHistory, draft.activeTab);
+    const zoomHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
     const zoomValue = zoomHistory.getLast();
     if (zoomValue) {
       draft.xDomain = zoomValue.xDomain;

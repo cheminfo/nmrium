@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
 import { useChartData } from '../context/ChartContext';
@@ -20,16 +20,19 @@ function IntegralsSeries() {
   } = useChartData();
   const { scaleX } = useScale();
 
-  const scaleY = useMemo(() => {
-    if (activeSpectrum && integralsYDomains[activeSpectrum.id]) {
-      return getIntegralYScale(
-        { height, margin, verticalAlign, integralsYDomains },
-        activeSpectrum.id,
-      );
-    } else {
-      return null;
-    }
-  }, [activeSpectrum, height, integralsYDomains, margin, verticalAlign]);
+  const scaleY = useCallback(
+    (id) => {
+      if (activeSpectrum && integralsYDomains[id]) {
+        return getIntegralYScale(
+          { height, margin, verticalAlign, integralsYDomains },
+          id,
+        );
+      } else {
+        return null;
+      }
+    },
+    [activeSpectrum, height, integralsYDomains, margin, verticalAlign],
+  );
 
   const Integrals = useMemo(() => {
     const isActive = (id) => {
@@ -59,7 +62,7 @@ function IntegralsSeries() {
                   y={spectrum.data.y}
                   isActive={isActive(spectrum.id)}
                   xDomain={xDomain}
-                  scaleY={scaleY}
+                  scaleY={scaleY(spectrum.id)}
                   scaleX={scaleX}
                 />
               )),
