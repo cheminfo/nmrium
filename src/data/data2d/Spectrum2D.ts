@@ -48,7 +48,6 @@ export interface Display {
   isPositiveVisible: boolean;
   isNegativeVisible: boolean;
   contourOptions: ContourOptions;
-  isVisibleInDomain: boolean;
 }
 
 export interface Info {

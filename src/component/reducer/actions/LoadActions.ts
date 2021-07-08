@@ -31,18 +31,15 @@ function setData(
     preferences,
     correlations,
     exclusionZones = {},
-  } = Object.assign(
-    {},
-    {
-      spectra: [],
-      molecules: [],
-      preferences: {},
-      correlations: {},
-      multipleAnalysis: {},
-      exclusionZones: {},
-    },
-    data,
-  );
+  } = data || {
+    spectra: [],
+    molecules: [],
+    preferences: {},
+    correlations: {},
+    multipleAnalysis: {},
+    exclusionZones: {},
+  };
+
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.preferences = preferences;

@@ -9,6 +9,7 @@ import { getIntegralYScale } from './utilities/scale';
 
 function IntegralsSeries() {
   const {
+    xDomains,
     xDomain,
     activeSpectrum,
     data,
@@ -47,11 +48,7 @@ function IntegralsSeries() {
       <g className="integrals">
         {data?.[0] &&
           data
-            .filter(
-              (d) =>
-                d.display.isVisible === true &&
-                d.display.isVisibleInDomain === true,
-            )
+            .filter((d) => d.display.isVisible === true && xDomains[d.id])
             .filter(isSpectrum1D)
             .map((spectrum) =>
               spectrum.integrals.values.map((integral) => (
@@ -69,7 +66,7 @@ function IntegralsSeries() {
             )}
       </g>
     );
-  }, [activeSpectrum, data, scaleX, scaleY, xDomain]);
+  }, [activeSpectrum, data, scaleX, scaleY, xDomain, xDomains]);
 
   return <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>{Integrals}</g>;
 }
