@@ -29,6 +29,8 @@ test('Should Add Integral', async () => {
   await nmrium.page.keyboard.up('Shift');
   await nmrium.page.mouse.up({ button: 'left' });
 
+  await nmrium.page.waitForTimeout(1000);
+
   //should have integral with at least 1000 point
   const path = (await nmrium.page.getAttribute(
     ':nth-match([data-test-id="integral-path"],1)',
