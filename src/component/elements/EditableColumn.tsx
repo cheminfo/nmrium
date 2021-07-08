@@ -1,11 +1,12 @@
 import {
   CSSProperties,
-  forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
   useState,
 } from 'react';
+
+import { forwardRefWithAs } from '../../utils';
 
 import Input from './Input';
 
@@ -18,10 +19,7 @@ interface EditableColumnProps {
   style?: CSSProperties;
 }
 
-const EditableColumn = forwardRef(function EditableColumn(
-  props: EditableColumnProps,
-  ref,
-) {
+function EditableColumn(props: EditableColumnProps, ref) {
   const {
     onSave = () => null,
     value,
@@ -87,6 +85,6 @@ const EditableColumn = forwardRef(function EditableColumn(
       )}
     </div>
   );
-});
+}
 
-export default EditableColumn;
+export default forwardRefWithAs(EditableColumn);

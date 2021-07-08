@@ -6,13 +6,14 @@ export interface CheckBoxProps {
   onChange?: (value: ChangeEvent<HTMLInputElement>) => void;
   name?: string;
   disabled?: boolean;
-  checked: boolean;
+  checked?: boolean;
+  ref?: any;
 }
 
 const CheckBox = forwardRefWithAs(
   (props: CheckBoxProps, ref: Ref<HTMLInputElement>) => {
     const {
-      checked: checkProps,
+      checked: checkProps = false,
       disabled = false,
       name = '',
       onChange = () => null,

@@ -45,12 +45,24 @@ const defaultDimensionBorder: {
   startY: 0,
 };
 
+interface BrushXYProps {
+  brushType: number;
+  dimensionBorder?: {
+    startX: number;
+    startY: number;
+    endX?: number;
+    endY?: number;
+  };
+  width?: any;
+  height?: any;
+}
+
 export default function BrushXY({
   brushType = BRUSH_TYPE.XY,
   dimensionBorder = defaultDimensionBorder,
   width: widthProps,
   height: heightProps,
-}) {
+}: BrushXYProps) {
   let {
     width,
     height,

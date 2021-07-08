@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { ReactNode } from 'react';
 
 import { useLoader } from '../context/LoaderContext';
 
@@ -33,7 +34,7 @@ const styles = css`
 
 interface NoDataProps {
   isEmpty?: boolean;
-  emptyText?: string;
+  emptyText?: ReactNode;
 }
 
 function NoData({

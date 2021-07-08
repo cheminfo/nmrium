@@ -31,6 +31,10 @@ declare module 'ml-spectra-processing' {
     },
   ): { fromIndex: number; toIndex: number };
 
+  declare function xyToXYObject(
+    data: Array<{ x: Array<number>; y: Array<number> }>,
+  ): Array<{ x: number; y: number }>;
+
   declare function zoneToX(
     zone: { from: number; to: number },
     size: number,

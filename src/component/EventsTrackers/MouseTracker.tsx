@@ -18,7 +18,7 @@ interface MouseTrackerProps {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
-  noPropagation: boolean;
+  noPropagation?: boolean;
 }
 
 export function MouseTracker({

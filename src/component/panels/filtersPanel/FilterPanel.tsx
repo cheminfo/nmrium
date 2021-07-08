@@ -3,13 +3,11 @@ import { css } from '@emotion/react';
 import { useMemo, memo } from 'react';
 
 import { Filter } from '../../../data/FiltersManager';
-import {
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-  TableRow,
-} from '../../elements/Table';
+import Table from '../../elements/Table/Table';
+import TableBody from '../../elements/Table/TableBody';
+import TableCell from '../../elements/Table/TableCell';
+import TableHead from '../../elements/Table/TableHead';
+import TableRow from '../../elements/Table/TableRow';
 import useSpectrum from '../../hooks/useSpectrum';
 import NoTableData from '../extra/placeholder/NoTableData';
 
