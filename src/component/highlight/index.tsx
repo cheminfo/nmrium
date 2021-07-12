@@ -16,7 +16,14 @@ export const TYPES = {
   EXCLUSION_ZONE: 'EXCLUSION_ZONE',
 };
 
-const highlightContext = createContext();
+const emptyState = {
+  highlights: {},
+  highlighted: [],
+  highlightedPermanently: [],
+  type: null,
+};
+
+const highlightContext = createContext<any>(emptyState);
 
 function highlightReducer(state, action) {
   switch (action.type) {
@@ -46,6 +53,7 @@ function highlightReducer(state, action) {
       };
       for (const value of convertedHighlights) {
         if (value in newState.highlights) {
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete newState.highlights[value];
         }
       }
@@ -75,13 +83,6 @@ function highlightReducer(state, action) {
   }
 }
 
-const emptyState = {
-  highlights: {},
-  highlighted: [],
-  highlightedPermanently: [],
-  type: null,
-};
-
 export function HighlightProvider(props) {
   const [highlight, dispatch] = useReducer(highlightReducer, emptyState);
   const contextValue = useMemo(() => ({ highlight, dispatch }), [highlight]);
@@ -96,7 +97,7 @@ export function useHighlightData() {
   return useContext(highlightContext);
 }
 
-export function useHighlight(highlights, type = null) {
+export function useHighlight(highlights, type: string | null = null) {
   if (!Array.isArray(highlights)) {
     throw new Error('highlights must be an array');
   }
@@ -104,7 +105,7 @@ export function useHighlight(highlights, type = null) {
   const context = useHighlightData();
 
   const convertedHighlights = useMemo(() => {
-    const newHighlights = [];
+    const newHighlights: Array<any> = [];
     for (const highlight of highlights) {
       if (typeof highlight !== 'string' && typeof highlight !== 'number') {
         throw new Error(`highlight key must be a string or number`);
