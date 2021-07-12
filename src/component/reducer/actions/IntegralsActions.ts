@@ -10,9 +10,10 @@ import {
 } from '../../../data/data1d/Spectrum1D';
 import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
+import zoom1DManager from '../helper/Zoom1DManager';
 import getRange from '../helper/getRange';
 
-import { setIntegralZoom, integralZoomHanlder } from './Zoom';
+import { setIntegralZoom } from './Zoom';
 
 function handleChangeIntegralSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
@@ -27,9 +28,15 @@ function handleChangeIntegralSum(draft: Draft<State>, value) {
 }
 
 function handleChangeIntegralZoom(draft: Draft<State>, action) {
-  const { deltaY, deltaMode } = action;
-  integralZoomHanlder.wheel(deltaY, deltaMode);
-  setIntegralZoom(integralZoomHanlder.getScale(), draft);
+  if (draft.activeSpectrum?.id) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { deltaY, deltaMode } = action;
+    const scale = zoom1DManager(draft.zoom.integral, 0.5).wheel(
+      deltaY,
+      draft.activeSpectrum?.id,
+    );
+    setIntegralZoom(scale, draft);
+  }
 }
 
 function addIntegral(draft: Draft<State>, action) {
@@ -70,7 +77,7 @@ function addIntegral(draft: Draft<State>, action) {
       const integralYDomain = extent(integralResult.y);
       draft.integralsYDomains[id] = integralYDomain;
       draft.originIntegralYDomain[id] = integralYDomain;
-      setIntegralZoom(draft.integralZoomFactor.scale, draft);
+      setIntegralZoom(0.5, draft);
     }
   }
 }

@@ -55,7 +55,7 @@ function YTracker({ datum }: YTrackerProps) {
 }
 
 function SpectraTracker() {
-  const { data, activeTab } = useChartData();
+  const { data, activeTab, xDomains } = useChartData();
   const [isVisible, ToggleVisiblility] = useState(false);
 
   useEffect(() => {
@@ -76,7 +76,7 @@ function SpectraTracker() {
       data.map(
         (datum) =>
           datum.display.isVisible &&
-          datum.display.isVisibleInDomain &&
+          xDomains[datum.id] &&
           datum.info.nucleus === activeTab && (
             <div style={{ display: 'block' }} key={datum.id}>
               <span
@@ -92,7 +92,7 @@ function SpectraTracker() {
         [],
       )
     );
-  }, [activeTab, data, isVisible]);
+  }, [activeTab, data, isVisible, xDomains]);
 
   if (!isVisible) return null;
 

@@ -1,96 +1,76 @@
 import { extent } from 'd3';
-import { Draft, current } from 'immer';
+import { Draft } from 'immer';
 import { xyIntegral } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { Datum2D, isSpectrum2D } from '../../../data/data2d/Spectrum2D';
-import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 
-function getActiveData(draft: Draft<State>) {
-  const currentData = current(draft).data;
+function getActiveData(draft: Draft<State>): Array<Datum1D> {
+  let data = draft.data.filter(
+    (datum) =>
+      nucleusToString(datum.info.nucleus) === draft.activeTab &&
+      datum.info.dimension === 1,
+  );
 
-  if (draft.activeTab) {
-    const groupByNucleus = GroupByInfoKey('nucleus');
-    let data = groupByNucleus(currentData)[draft.activeTab];
-    if (draft.displayerMode === DISPLAYER_MODE.DM_2D) {
-      return data;
-    } else {
-      if (draft.activeSpectrum && data) {
-        const activeSpectrumIndex = data.findIndex(
-          (datum) => datum.id === draft.activeSpectrum?.id,
-        );
-        if (activeSpectrumIndex !== -1) {
-          const isFid = data[activeSpectrumIndex].info.isFid || false;
-          data = data.filter((datum) => datum.info.isFid === isFid);
-        }
-      } else {
-        data = data ? data.filter((datum) => datum.info.isFid === false) : [];
-      }
-      return currentData.map((datum) => {
-        let isVisibleInDomain = false;
-        if (data.some((activeData: any) => activeData.id === datum.id)) {
-          isVisibleInDomain = true;
-        }
-        return {
-          ...datum,
-          display: { ...datum.display, isVisibleInDomain },
-        };
-      });
+  if (draft.activeSpectrum) {
+    const activeSpectrumIndex = data.findIndex(
+      (datum) => datum.id === draft.activeSpectrum?.id,
+    );
+    if (activeSpectrumIndex !== -1) {
+      const isFid = data[activeSpectrumIndex].info.isFid || false;
+      data = data.filter((datum) => datum.info.isFid === isFid);
     }
   } else {
-    return draft.data;
+    data = data.filter((datum) => datum.info.isFid === false);
   }
+
+  return data as Array<Datum1D>;
 }
 
-function getDomain(data) {
-  let xArray = [];
-  let yArray = [];
+function getDomain(drfat: Draft<State>) {
+  let xArray: Array<number> = [];
+  let yArray: Array<number> = [];
   let yDomains = {};
   let xDomains = {};
   let integralYDomain = {};
+
+  const data = getActiveData(drfat);
   try {
-    xArray = data.reduce((acc, d: Datum1D) => {
-      const { display, data } = d;
-      if (display.isVisibleInDomain) {
-        const domain = [data.x[0], data.x[data.x.length - 1]];
-        xDomains[d.id] = domain;
-        if (display.isVisible) {
-          acc = acc.concat(domain);
-        }
-        return acc;
-      } else {
-        return acc.concat([]);
+    xArray = data.reduce<Array<number>>((acc, d: Datum1D) => {
+      const { display, data: datum } = d;
+      const domain = [datum.x[0], datum.x[datum.x.length - 1]];
+      xDomains[d.id] = domain;
+      if (display.isVisible) {
+        acc = acc.concat(domain);
       }
+      return acc;
     }, []);
 
-    yArray = data.reduce((acc, d: Datum1D) => {
+    yArray = data.reduce<Array<number>>((acc, d: Datum1D) => {
       const { display, data, integrals } = d;
-      if (display.isVisibleInDomain) {
-        const _extent = extent(data.y);
-        yDomains[d.id] = _extent;
-        if (integrals.values && integrals.values.length > 0) {
-          const values = integrals.values;
-          const { from = 0, to = 0 } = values[0];
-          const { x, y } = data;
-          const integralResult = xyIntegral(
-            { x: x, y: y },
-            {
-              from: from,
-              to: to,
-              reverse: true,
-            },
-          );
-          integralYDomain[d.id] = extent(integralResult.y);
-        }
-        if (display.isVisible) {
-          acc = acc.concat(_extent);
-        }
-        return acc;
-      } else {
-        return acc.concat([]);
+      const _extent = extent(data.y) as Array<number>;
+      yDomains[d.id] = _extent;
+      if (integrals.values && integrals.values.length > 0) {
+        const values = integrals.values;
+        const { from = 0, to = 0 } = values[0];
+        const { x, y } = data;
+        const integralResult = xyIntegral(
+          { x: x, y: y },
+          {
+            from: from,
+            to: to,
+            reverse: true,
+          },
+        );
+        integralYDomain[d.id] = extent(integralResult.y);
       }
+      if (display.isVisible) {
+        acc = acc.concat(_extent);
+      }
+      return acc;
     }, []);
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -177,18 +157,17 @@ function get2DDomain(state) {
 
 function setDomain(draft: Draft<State>, isYDomainChanged = true) {
   let domain;
-  const data = getActiveData(draft);
 
-  if (
-    draft.activeTab &&
-    [DISPLAYER_MODE.DM_1D, DISPLAYER_MODE.DM_2D].includes(draft.displayerMode)
-  ) {
-    domain =
-      draft.displayerMode === DISPLAYER_MODE.DM_1D
-        ? getDomain(data)
-        : get2DDomain(draft);
+  if (draft.activeTab) {
+    if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+      domain = getDomain(draft);
+    } else {
+      domain = get2DDomain(draft);
+    }
+
     draft.xDomain = domain.xDomain;
     draft.xDomains = domain.xDomains;
+
     if (isYDomainChanged) {
       draft.yDomain = domain.yDomain;
 
@@ -241,9 +220,11 @@ function handelResetDomain(draft: Draft<State>) {
   draft.yDomains = yDomains;
 }
 
-function setMode(draft) {
-  const data = getActiveData(draft).filter(
-    (datum) => datum.display.isVisibleInDomain === true,
+function setMode(draft: Draft<State>) {
+  const data = draft.data.filter(
+    (datum) =>
+      draft.xDomains[datum.id] &&
+      nucleusToString(datum.info.nucleus) === draft.activeTab,
   );
   draft.mode = (data[0] as Datum1D)?.info.isFid ? 'LTR' : 'RTL';
 }

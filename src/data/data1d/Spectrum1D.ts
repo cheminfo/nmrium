@@ -37,7 +37,6 @@ export interface Display {
   isVisible: boolean;
   isPeaksMarkersVisible: boolean;
   isRealSpectrumVisible: boolean;
-  isVisibleInDomain: boolean;
 }
 
 export interface Info {
@@ -144,7 +143,6 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
       isVisible: true,
       isPeaksMarkersVisible: true,
       isRealSpectrumVisible: true,
-      isVisibleInDomain: true,
     },
     options.display,
   );

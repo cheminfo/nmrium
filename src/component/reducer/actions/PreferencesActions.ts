@@ -48,7 +48,7 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
     activeTab,
     data,
     activeSpectrum,
-    zoomFactor,
+    zoom,
     xDomain,
     xDomains,
     yDomain,
@@ -76,7 +76,7 @@ function setKeyPreferencesHandler(draft: Draft<State>, keyCode) {
       activeSpectrum,
       displayerMode,
       tabActiveSpectrum,
-      zoomFactor,
+      zoom,
       xDomain,
       xDomains,
       yDomain,
@@ -136,7 +136,8 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
         draft.contours[datumID] = processController.drawContours();
       }
     } else {
-      setZoom(draft, preferences.zoomFactor.scale);
+      draft.zoom = preferences.zoom;
+      setZoom(draft);
     }
   }
 }

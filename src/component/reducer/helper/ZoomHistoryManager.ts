@@ -1,19 +1,34 @@
-export default function zoomHistoryManager(ZoomHistoryObject, nucleus) {
-  if (
-    !ZoomHistoryObject[nucleus] &&
-    !Array.isArray(ZoomHistoryObject[nucleus])
-  ) {
-    ZoomHistoryObject[nucleus] = [];
+interface HistoryItem {
+  xDomain: Array<number>;
+  yDomain: Array<number>;
+}
+
+export interface ZoomHistory {
+  [key: string]: Array<HistoryItem>;
+}
+interface ZoomHistoryManager {
+  historyStack: Array<HistoryItem>;
+  push: (value: HistoryItem) => void;
+  pop: () => HistoryItem;
+  getLast: () => HistoryItem;
+}
+
+export default function zoomHistoryManager(
+  zoomHistory: ZoomHistory,
+  nucleus: string,
+): ZoomHistoryManager {
+  if (!zoomHistory[nucleus] && !Array.isArray(zoomHistory[nucleus])) {
+    zoomHistory[nucleus] = [];
   }
 
-  const push = preparePush(ZoomHistoryObject[nucleus]);
-  const pop = preparePop(ZoomHistoryObject[nucleus]);
-  const getLast = prepareGetLast(ZoomHistoryObject[nucleus]);
-  return { historyStack: ZoomHistoryObject[nucleus], push, pop, getLast };
+  const push = preparePush(zoomHistory[nucleus]);
+  const pop = preparePop(zoomHistory[nucleus]);
+  const getLast = prepareGetLast(zoomHistory[nucleus]);
+  return { historyStack: zoomHistory[nucleus], push, pop, getLast };
 }
 
 function preparePush(historyStack) {
-  return (val) => {
+  return (val: HistoryItem) => {
     historyStack.push(val);
   };
 }

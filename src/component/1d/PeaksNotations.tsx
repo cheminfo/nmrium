@@ -7,7 +7,8 @@ import { useScaleChecked } from '../context/ScaleContext';
 import PeakNotation from './PeakNotation';
 
 function PeaksNotations() {
-  const { data, activeSpectrum, verticalAlign, displayerKey } = useChartData();
+  const { data, activeSpectrum, verticalAlign, displayerKey, xDomains } =
+    useChartData();
   const { scaleX, scaleY } = useScaleChecked();
 
   const Peaks = useMemo(() => {
@@ -36,11 +37,7 @@ function PeaksNotations() {
     return (
       data &&
       reSortData()
-        .filter(
-          (d) =>
-            d.display.isVisible === true &&
-            d.display.isVisibleInDomain === true,
-        )
+        .filter((d) => d.display.isVisible === true && xDomains[d.id])
         .filter(isSpectrum1D)
         .map((d) => {
           return (
@@ -80,6 +77,7 @@ function PeaksNotations() {
     verticalAlign.stacked,
     verticalAlign.value,
     activeSpectrum,
+    xDomains,
     scaleX,
     scaleY,
   ]);

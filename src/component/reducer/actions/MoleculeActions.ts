@@ -13,7 +13,7 @@ import { DISPLAYER_MODE } from '../core/Constants';
 import { handleUnlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
 import { handleUnlinkZone } from './ZonesActions';
-import { initZoom1DHandler, setZoom } from './Zoom';
+import { setZoom } from './Zoom';
 
 function addMoleculeHandler(draft: Draft<State>, molfile) {
   MoleculeManager.addMolfile(draft.molecules, molfile);
@@ -59,7 +59,6 @@ function predictSpectraFromMolculeHandler(draft: Draft<State>, action) {
     draft.activeSpectrum = activeSpectrum;
   }
   setActiveTab(draft);
-  initZoom1DHandler(draft.data);
   setZoom(draft, 0.9, id);
 
   draft.isLoading = false;

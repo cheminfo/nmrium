@@ -5,6 +5,7 @@ import OCL from 'openchemlib/full';
 
 import * as SpectraManager from '../../data/SpectraManager';
 import { Molecule } from '../../data/molecules/Molecule';
+import generateID from '../../data/utilities/generateID';
 import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
@@ -35,6 +36,8 @@ import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from './core/Constants';
+import { initZoom1D, Zoom1D } from './helper/Zoom1DManager';
+import { ZoomHistory } from './helper/ZoomHistoryManager';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
 
@@ -65,8 +68,6 @@ export const initialState = {
   },
   activeSpectrum: null,
   mode: 'RTL',
-  zoomFactor: { scale: 1 },
-  integralZoomFactor: { scale: 0.5 },
   molecules: [],
   verticalAlign: {
     flag: false,
@@ -86,11 +87,13 @@ export const initialState = {
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
   spectraAnalysis: {},
-  correlations: buildCorrelationData([], {
-    tolerance: DefaultTolerance,
-  }),
+  correlations: {},
   displayerKey: '',
-  ZoomHistory: {},
+  zoom: {
+    history: {} as ZoomHistory,
+    spectra: {} as Zoom1D,
+    integral: {} as Zoom1D,
+  },
   overDisplayer: false,
   toolOptions: {
     selectedTool: options.zoom.id,
@@ -130,8 +133,6 @@ export interface State {
   margin: { top: number; right: number; bottom: number; left: number };
   activeSpectrum: ActiveSpectrum | null;
   mode: string;
-  zoomFactor: Partial<{ scale: number }>;
-  integralZoomFactor: Partial<{ scale: number }>;
   molecules: Array<Molecule>;
   verticalAlign: {
     flag: boolean;
@@ -153,7 +154,11 @@ export interface State {
   spectraAnalysis: any;
   displayerKey: any;
   correlations: Types.CorrelationData;
-  ZoomHistory: any;
+  zoom: {
+    history: ZoomHistory;
+    spectra: Zoom1D;
+    integral: Zoom1D;
+  };
   overDisplayer: boolean;
 
   toolOptions: {
@@ -172,6 +177,24 @@ export interface State {
   };
 }
 
+export function intiState(state: State) {
+  const displayerKey = generateID();
+  const correlations = buildCorrelationData([], {
+    tolerance: DefaultTolerance,
+  });
+
+  const spectra = initZoom1D();
+  const integral = initZoom1D();
+
+  const zoom = { spectra, integral, history: {} };
+  return {
+    ...state,
+    correlations,
+    displayerKey,
+    zoom,
+  };
+}
+
 export function dispatchMiddleware(dispatch) {
   const usedColors = { '1d': [], '2d': [] };
 
@@ -184,9 +207,8 @@ export function dispatchMiddleware(dispatch) {
             action.payload = { spectra: data, ...res };
             dispatch(action);
           });
-        } else {
-          dispatch(action);
         }
+
         break;
       }
       case types.LOAD_JSON_FILE: {
