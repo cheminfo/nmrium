@@ -29,7 +29,7 @@ const defaultMargin = { right: 50, top: 0, bottom: 0, left: 0 };
 interface YAxisProps {
   show?: boolean;
   label?: string;
-  margin: {
+  margin?: {
     right: number;
     top: number;
     bottom: number;

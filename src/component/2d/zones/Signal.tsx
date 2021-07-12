@@ -59,11 +59,11 @@ const Signal = memo(({ signal, isVisible }: SignalProps) => {
     <g
       className="zone-signal"
       onMouseEnter={() => {
-        assignment.onMouseEnter();
+        assignment.onMouseEnter(undefined);
         highlight.show();
       }}
       onMouseLeave={() => {
-        assignment.onMouseLeave();
+        assignment.onMouseLeave(undefined);
         highlight.hide();
       }}
     >
