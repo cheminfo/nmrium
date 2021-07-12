@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-prop-types */
 import { CSSProperties, useCallback } from 'react';
 
-import { useScale } from '../../context/ScaleContext';
+import { useScaleChecked } from '../../context/ScaleContext';
 
 interface NodeData {
   startX: number;
@@ -31,7 +31,7 @@ function TreeNodes({
   labelOptions,
   showLabels,
 }: TreeNodesProps) {
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
   const buildTreeNodeAndEdge = useCallback(
     ({ startX, _startX, ratio, multiplicityIndex, color }: NodeData) => {
       const edgeLevel = 2 * multiplicityIndex + 2;
@@ -53,7 +53,7 @@ function TreeNodes({
           >
             {ratio}
           </text>
-          {/* edge line */}
+
           <line
             x1={scaleX()(startX)}
             y1={_startYEdge}
@@ -61,7 +61,7 @@ function TreeNodes({
             y2={_startYNode}
             stroke={color}
           />
-          {/* node line */}
+
           <line
             x1={scaleX()(_startX)}
             y1={_startYNode}

@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect, CSSProperties } from 'react';
 
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
-import { useScale } from '../../context/ScaleContext';
+import { useScaleChecked } from '../../context/ScaleContext';
 import { TYPES, useHighlight } from '../../highlight';
 import {
   hasCouplingConstant,
@@ -48,7 +48,7 @@ function MultiplicityTree({
     fontSize: 11,
   },
 }: MultiplicityTreeProps) {
-  const { scaleX, scaleY } = useScale();
+  const { scaleX, scaleY } = useScaleChecked();
   const {
     data: spectraData,
     activeSpectrum,
@@ -187,7 +187,7 @@ function MultiplicityTree({
     // third tree level
     _startY += levelHeight;
 
-    if (drawInFullRange) {
+    if (drawInFullRange && scaleX) {
       const _rangeFrom = scaleX()(rangeFrom);
       const _rangeTo = scaleX()(rangeTo);
 
