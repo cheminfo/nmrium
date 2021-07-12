@@ -71,13 +71,13 @@ function DropZone(props) {
 
         switch (extension) {
           case FILES_TYPES.MOL:
-            loadFilesFromZip(selectedFilesByExtensions).then((files) =>
+            void loadFilesFromZip(selectedFilesByExtensions).then((files) =>
               dispatch({ type: LOAD_MOL_FILE, files }),
             );
             break;
           case FILES_TYPES.NMRIUM:
           case FILES_TYPES.JSON:
-            loadFilesFromZip(selectedFilesByExtensions, {
+            void loadFilesFromZip(selectedFilesByExtensions, {
               asBuffer: true,
             }).then((files) => {
               if (selectedFilesByExtensions.length === 1) {
@@ -93,13 +93,13 @@ function DropZone(props) {
             break;
           case FILES_TYPES.JDX:
           case FILES_TYPES.DX:
-            loadFilesFromZip(selectedFilesByExtensions, {
+            void loadFilesFromZip(selectedFilesByExtensions, {
               asBuffer: true,
             }).then((files) => dispatch({ type: LOAD_JCAMP_FILE, files }));
 
             break;
           case FILES_TYPES.JDF:
-            loadFilesFromZip(selectedFilesByExtensions, {
+            void loadFilesFromZip(selectedFilesByExtensions, {
               asBuffer: true,
             }).then((files) => dispatch({ type: LOAD_JDF_FILE, files }));
             break;
@@ -138,7 +138,7 @@ function DropZone(props) {
           case FILES_TYPES.JSON:
             if (selectedFilesByExtensions.length === 1) {
               loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
-                async (files) => {
+                async (files: Array<any>) => {
                   const fileSignature = getFileSignature(files[0].binary);
                   if (fileSignature === FILES_SIGNATURES.ZIP) {
                     const unzipResult = await Zip.loadAsync(files[0].binary);
@@ -187,7 +187,7 @@ function DropZone(props) {
             break;
           case FILES_TYPES.ZIP:
             loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
-              async (files) => {
+              async (files: Array<any>) => {
                 for (const zipFile of files) {
                   const unzipResult = await Zip.loadAsync(zipFile.binary);
 
@@ -227,7 +227,7 @@ function DropZone(props) {
             );
             break;
           case FILES_TYPES.NMREDATA:
-            loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
+            void loadFiles(selectedFilesByExtensions, { asBuffer: true }).then(
               async (files) => {
                 for (const zipFile of files) {
                   dispatch({
