@@ -5,7 +5,7 @@ import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
-import { useScale } from '../../context/ScaleContext';
+import { useScaleChecked } from '../../context/ScaleContext';
 import { options } from '../../toolbar/ToolTypes';
 
 const styles = {
@@ -33,7 +33,7 @@ function PeakPointer() {
     toolOptions: { selectedTool },
     verticalAlign,
   } = useChartData();
-  const { scaleX, scaleY } = useScale();
+  const { scaleX, scaleY } = useScaleChecked();
 
   let position = useContext(MouseContext);
   const brushState = useContext(BrushContext);
