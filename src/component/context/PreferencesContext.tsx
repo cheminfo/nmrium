@@ -1,7 +1,13 @@
 import { createContext, useContext } from 'react';
 
-export const PreferencesConext = createContext();
+import {
+  preferencesInitialState,
+  PreferencesState,
+} from '../reducer/preferencesReducer';
 
+export const PreferencesConext = createContext<PreferencesState>(
+  preferencesInitialState,
+);
 export const PreferencesProvider = PreferencesConext.Provider;
 
 export function usePreferences() {
