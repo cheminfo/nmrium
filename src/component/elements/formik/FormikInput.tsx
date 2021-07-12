@@ -71,7 +71,7 @@ function FormikInput(props: FormikInputProps) {
         ...style,
         input: {
           ...style.input,
-          ...(isInvalid && { borderColor: 'red' }),
+          ...(isInvalid && { borderColor: 'red', outline: 'none' }),
         },
       }}
       checkValue={checkValue}

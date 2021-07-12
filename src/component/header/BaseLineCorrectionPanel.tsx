@@ -1,9 +1,11 @@
-import { useCallback, useRef, useState, Fragment, CSSProperties } from 'react';
+import { useCallback, useRef, useState, CSSProperties, useMemo } from 'react';
+import * as Yup from 'yup';
 
 import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
 import { useDispatch } from '../context/DispatchContext';
-import NumberInput from '../elements/NumberInput';
 import Select from '../elements/Select';
+import FormikForm from '../elements/formik/FormikForm';
+import FormikInput from '../elements/formik/FormikInput';
 import {
   RESET_SELECTED_TOOL,
   APPLY_BASE_LINE_CORRECTION_FILTER,
@@ -31,38 +33,37 @@ const styles: Record<'container' | 'label' | 'actionButton', CSSProperties> = {
 
 function BaseLineCorrectionPanel() {
   const dispatch = useDispatch();
-
+  const formRef = useRef<any>();
   const algorithmRef = useRef<any>();
-  const maxIterationsRef = useRef<any>();
-  const toleranceRef = useRef<any>();
-  const degreeRef = useRef<any>();
 
   const [algorithm, setAlgorithm] = useState('polynomial');
 
-  const handleApplyFilter = useCallback(() => {
-    let options = {};
-    switch (algorithm) {
-      case 'airpls':
-        options = {
-          algorithm: algorithmRef.current.value,
-          maxIterations: Number(maxIterationsRef.current.value),
-          tolerance: Number(toleranceRef.current.value),
-        };
-        break;
-      case 'polynomial':
-        options = {
-          algorithm: algorithmRef.current.value,
-          degree: Number(degreeRef.current.value),
-        };
-        break;
-      default:
-        break;
-    }
-    dispatch({
-      type: APPLY_BASE_LINE_CORRECTION_FILTER,
-      options,
-    });
-  }, [algorithm, dispatch]);
+  const handleApplyFilter = useCallback(
+    (values) => {
+      let options = {};
+      switch (algorithm) {
+        case 'airpls':
+          options = {
+            algorithm: algorithmRef.current.value,
+            ...values,
+          };
+          break;
+        case 'polynomial':
+          options = {
+            algorithm: algorithmRef.current.value,
+            ...values,
+          };
+          break;
+        default:
+          break;
+      }
+      dispatch({
+        type: APPLY_BASE_LINE_CORRECTION_FILTER,
+        options,
+      });
+    },
+    [algorithm, dispatch],
+  );
 
   const handleCancelFilter = useCallback(() => {
     dispatch({
@@ -80,6 +81,31 @@ function BaseLineCorrectionPanel() {
     setAlgorithm(val);
   }, []);
 
+  const formData = useMemo(() => {
+    switch (algorithm) {
+      case 'airpls': {
+        const validation = Yup.object().shape({
+          maxIterations: Yup.number().integer().min(1).required(),
+          tolerance: Yup.number().moreThan(0).required(),
+        });
+        return {
+          validation,
+          initialValue: { maxIterations: 100, tolerance: 0.001 },
+        };
+      }
+      case 'autoPolynomial':
+      case 'polynomial': {
+        const validation = Yup.object().shape({
+          degree: Yup.number().integer().min(1).max(6).required(),
+        });
+
+        return { validation, initialValue: { degree: 3 } };
+      }
+      default:
+        return { validation: {}, initialValue: {} };
+    }
+  }, [algorithm]);
+
   return (
     <div style={styles.container}>
       <span style={styles.label}>Algorithm: </span>
@@ -90,39 +116,40 @@ function BaseLineCorrectionPanel() {
         onChange={changeAlgorithmHandler}
         defaultValue="polynomial"
       />
-      {algorithm && algorithm === 'airpls' && (
-        <Fragment>
-          <NumberInput
-            label="maxIterations:"
-            ref={maxIterationsRef}
-            name="maxIterations"
-            defaultValue={100}
-          />
-          <NumberInput
-            label="tolerance:"
-            ref={toleranceRef}
-            name="tolerance"
-            defaultValue={0.001}
-          />
-        </Fragment>
-      )}
 
-      {algorithm && ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-        <NumberInput
-          label="degree:"
-          ref={degreeRef}
-          name="degree"
-          defaultValue={3}
-          min={1}
-          max={6}
-          pattern="[1-6]+"
-        />
-      )}
+      <FormikForm
+        ref={formRef}
+        onSubmit={handleApplyFilter}
+        key={JSON.stringify(formData.initialValue)}
+        initialValues={formData.initialValue}
+        validationSchema={formData.validation}
+      >
+        {algorithm && algorithm === 'airpls' && (
+          <div style={{ display: 'flex' }}>
+            <FormikInput
+              type="number"
+              label="maxIterations:"
+              name="maxIterations"
+            />
+            <FormikInput type="number" label="tolerance:" name="tolerance" />
+          </div>
+        )}
 
+        {algorithm && ['autoPolynomial', 'polynomial'].includes(algorithm) && (
+          <FormikInput
+            type="number"
+            label="degree [ 1 - 6 ]:"
+            name="degree"
+            min={1}
+            max={6}
+            style={{ container: { height: '100%' } }}
+          />
+        )}
+      </FormikForm>
       <button
         type="button"
         style={styles.actionButton}
-        onClick={handleApplyFilter}
+        onClick={() => formRef.current.submitForm()}
       >
         Apply
       </button>
