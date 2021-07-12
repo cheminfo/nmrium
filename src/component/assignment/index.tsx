@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-dynamic-delete */
 import {
   createContext,
   useReducer,
@@ -7,7 +8,7 @@ import {
   useEffect,
 } from 'react';
 
-const assignmentContext = createContext();
+const assignmentContext = createContext<any>({});
 
 function assignmentReducer(state, action) {
   switch (action.type) {
@@ -44,9 +45,8 @@ function assignmentReducer(state, action) {
         assignment: { ...state.assignment },
       };
       if (
-        newState.assignment[action.payload.id[0]] !== undefined &&
-        newState.assignment[action.payload.id[0]][action.payload.axis] !==
-          undefined
+        newState.assignment[action.payload.id[0]]?.[action.payload.axis] !==
+        undefined
       ) {
         newState.assignment[action.payload.id[0]][action.payload.axis] =
           newState.assignment[action.payload.id[0]][action.payload.axis].filter(
@@ -75,10 +75,7 @@ function assignmentReducer(state, action) {
       };
       // takes an array now to delete multiple identifiers
       action.payload.id.forEach((_id) => {
-        if (
-          newState.assignment[_id] !== undefined &&
-          newState.assignment[_id][action.payload.axis] !== undefined
-        ) {
+        if (newState.assignment[_id]?.[action.payload.axis] !== undefined) {
           delete newState.assignment[_id][action.payload.axis];
           if (Object.keys(newState.assignment[_id]).length === 0) {
             delete newState.assignment[_id];
@@ -110,6 +107,7 @@ function assignmentReducer(state, action) {
         ...state,
         assignment: { ...state.assignment },
       };
+
       delete newState.assignment[action.payload.id];
 
       if (newState.isActive && newState.activeID === action.payload.id) {
