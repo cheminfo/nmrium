@@ -19,7 +19,7 @@ export default function useToolsFunctions() {
   const alert = useAlert();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
 
-  const debounceClickEventsRef = useRef({ clicks: [] });
+  const debounceClickEventsRef = useRef<{ clicks: Array<any> }>({ clicks: [] });
   const handleChangeOption = useCallback(
     (selectedTool) => {
       if (

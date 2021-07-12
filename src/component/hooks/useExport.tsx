@@ -38,12 +38,22 @@ export default function useExport() {
         const hideLoading = await alert.showLoading(
           'Exporting as numrium process in progress',
         );
-        setTimeout(async () => {
-          //exported file name by default will be the first spectrum name
-          const fileName = state.data[0]?.display?.name;
-          const exportedData = toJSON(state);
-          await exportAsJSON(exportedData, fileName, spaceIndent, isCompressed);
-          hideLoading();
+
+        setTimeout(() => {
+          async function handle() {
+            //exported file name by default will be the first spectrum name
+            const fileName = state.data[0]?.display?.name;
+            const exportedData = toJSON(state);
+            await exportAsJSON(
+              exportedData,
+              fileName,
+              spaceIndent,
+              isCompressed,
+            );
+            hideLoading();
+          }
+
+          void handle();
         }, 0);
       }
     },
@@ -55,11 +65,15 @@ export default function useExport() {
       const hideLoading = await alert.showLoading(
         'Exporting as NMRE process in progress',
       );
-      setTimeout(async () => {
-        const fileName = state.data[0]?.display?.name;
-        const exportedData = await nmriumToNmredata(state);
-        exportAsNMRE(exportedData, fileName);
-        hideLoading();
+      setTimeout(() => {
+        async function handle() {
+          const fileName = state.data[0]?.display?.name;
+          const exportedData = await nmriumToNmredata(state);
+          exportAsNMRE(exportedData, fileName);
+          hideLoading();
+        }
+
+        void handle();
       }, 0);
     }
   }, [alert, state]);
@@ -71,7 +85,7 @@ export default function useExport() {
       );
       setTimeout(() => {
         const fileName = state.data[0]?.display?.name;
-        exportAsSVG(fileName, 'nmrSVG');
+        exportAsSVG('nmrSVG', fileName);
         hideLoading();
       }, 0);
     }
@@ -84,7 +98,7 @@ export default function useExport() {
       );
       setTimeout(() => {
         const fileName = state.data[0]?.display?.name;
-        exportAsPng(fileName, 'nmrSVG');
+        exportAsPng('nmrSVG', fileName);
         hideLoading();
       }, 0);
     }
@@ -96,11 +110,15 @@ export default function useExport() {
       const hideLoading = await alert.showLoading(
         `Exporting as ${name}.numrium process in progress`,
       );
-      setTimeout(async () => {
-        const exportedData = toJSON(state, includeData);
-        const spaceIndent = pretty ? 2 : 0;
-        await exportAsJSON(exportedData, name, spaceIndent, compressed);
-        hideLoading();
+      setTimeout(() => {
+        async function handle() {
+          const exportedData = toJSON(state, includeData);
+          const spaceIndent = pretty ? 2 : 0;
+          await exportAsJSON(exportedData, name, spaceIndent, compressed);
+          hideLoading();
+        }
+
+        void handle();
       }, 0);
     },
     [alert, state],
