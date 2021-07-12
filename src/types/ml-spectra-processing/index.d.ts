@@ -143,4 +143,29 @@ import { xHistogram } from '../x/xHistogram';
     matrix: Array<Array<number>>,
     options: any = {},
   ): { x: Array<number>; y: Array<number> };
+
+  /**
+   * Determine noise level by san plot methodology (https://doi.org/10.1002/mrc.4882)
+   * @param {Array} data - real or magnitude spectra data.
+   * @param {object} [options = {}]
+   * @param {array} [options.mask] - boolean array to filter data, if the i-th element is true then the i-th element of the distribution will be ignored.
+   * @param {number} [options.scaleFactor=1] - factor to scale the data input[i]*=scaleFactor.
+   * @param {number} [options.cutOff] - percent of positive signal distribution where the noise level will be determined, if it is not defined the program calculate it.
+   * @param {number} [options.factorStd=5] - factor times std to determine what will be marked as signals.
+   * @param {boolean} [options.refine=true] - if true the noise level will be recalculated get out the signals using factorStd.
+   * @param {boolean} [options.fixOffset=true] - If the baseline is correct, the midpoint of distribution should be zero. if true, the distribution will be centered.
+   * @param {number} [options.logBaseY=2] - log scale to apply in the intensity axis in order to avoid big numbers.
+   */
+  declare function xNoiseSanPlot(
+    data: any,
+    options: {
+      mask: any;
+      scaleFactor: number;
+      cutOff: number;
+      factorStd: number;
+      refine: boolean;
+      fixOffset: boolean;
+      logBaseY: number;
+    },
+  );
 }
