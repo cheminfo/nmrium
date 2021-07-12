@@ -1,4 +1,3 @@
-/* eslint-disable default-param-last */
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
@@ -10,7 +9,7 @@ function copyFormattedHtml(html) {
   // Hide element
   container.style.position = 'fixed';
   container.style.pointerEvents = 'none';
-  container.style.opacity = 0;
+  container.style.opacity = '0';
 
   // Detect all style sheets of the page
   let activeSheets = Array.prototype.slice
@@ -23,19 +22,20 @@ function copyFormattedHtml(html) {
   document.body.appendChild(container);
 
   // Copy to clipboard
-  window.getSelection().removeAllRanges();
+  window.getSelection()?.removeAllRanges();
 
   let range = document.createRange();
   range.selectNode(container);
-  window.getSelection().addRange(range);
+  window.getSelection()?.addRange(range);
 
   document.execCommand('copy');
-  for (let i = 0; i < activeSheets.length; i++) {
-    activeSheets[i].disabled = true;
+  for (const active of activeSheets) {
+    active.disabled = true;
   }
+
   document.execCommand('copy');
-  for (let i = 0; i < activeSheets.length; i++) {
-    activeSheets[i].disabled = false;
+  for (const active of activeSheets) {
+    active.disabled = false;
   }
 
   // Remove the iframe
@@ -70,7 +70,8 @@ async function exportAsJSON(
 ) {
   const fileData = JSON.stringify(
     data,
-    (key, value) => (ArrayBuffer.isView(value) ? Array.from(value) : value),
+    (key, value) =>
+      ArrayBuffer.isView(value) ? Array.from(value as any) : value,
     spaceIndent,
   );
   if (!isCompressed) {
@@ -96,7 +97,7 @@ async function exportAsJSON(
 }
 
 function exportAsMatrix(data, options, fileName = 'experiment') {
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { from, to, nbPoints } = options;
 
   //columns labels
@@ -136,24 +137,28 @@ function exportAsMol(data, fileName = 'mol') {
 /**
  * export the vitalization result as SVG, if you need to remove some content during exportation process enclose the the content with <!-- export-remove --> ${content} <!-- export-remove -->
  */
-function exportAsSVG(fileName = 'experiment', elementID) {
+function exportAsSVG(elementID, fileName = 'experiment') {
   const { blob } = getBlob(elementID);
   saveAs(blob, `${fileName}.svg`);
 }
 
-function exportAsPng(fileName = 'experiment', elementID) {
+function exportAsPng(elementID, fileName = 'experiment') {
   const { blob, width, height } = getBlob(elementID);
   try {
     let canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     let context = canvas.getContext('2d');
-    context.fillStyle = 'white';
-    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (context) {
+      context.fillStyle = 'white';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
     let img = new Image();
     let url = URL.createObjectURL(blob);
     img.onload = async function () {
-      context.drawImage(img, 0, 0);
+      context?.drawImage(img, 0, 0);
       let png = canvas.toDataURL('image/png', 1);
       saveAs(png, `${fileName}.png`);
       URL.revokeObjectURL(png);
@@ -171,22 +176,24 @@ function copyDataURLCliboard(image) {
 
   img.style.position = 'fixed';
   img.style.pointerEvents = 'none';
-  img.style.opacity = 0;
+  img.style.opacity = '0';
 
   document.body.appendChild(img);
   const range = document.createRange();
   range.selectNode(img);
-  window.getSelection().addRange(range);
+  window.getSelection()?.addRange(range);
   document.execCommand('Copy');
   document.body.removeChild(img);
 }
 
 function copyBlobToCliboard(canvas) {
   canvas.toBlob((b) => {
-    //eslint-disable-next-line no-undef
+    // @ts-expect-error ClipboardItem is undefined ?
     const clip = new ClipboardItem({
       [b.type]: b,
     });
+
+    // @ts-expect-error write exists on some browser where ClipboardItem exists
     navigator.clipboard.write([clip]).then(
       () => {
         // eslint-disable-next-line no-console
@@ -207,13 +214,19 @@ function copyPNGToClipboard(elementID) {
     canvas.width = width;
     canvas.height = height;
     let context = canvas.getContext('2d');
-    context.fillStyle = 'white';
-    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (context) {
+      context.fillStyle = 'white';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
     let img = new Image();
     const url = URL.createObjectURL(blob);
     img.onload = async function () {
-      context.drawImage(img, 0, 0);
+      context?.drawImage(img, 0, 0);
       const png = canvas.toDataURL('image/png', 1);
+
+      // @ts-expect-error this write actually exists on some browsers
       if (navigator.clipboard.write) {
         copyBlobToCliboard(canvas);
       } else {
@@ -237,9 +250,9 @@ function copyPNGToClipboard(elementID) {
 
 function getBlob(elementID) {
   // nmrSVG
-  let _svg = document.getElementById(elementID).cloneNode(true);
-  const width = _svg.getAttribute('width').replace('px', '');
-  const height = _svg.getAttribute('height').replace('px', '');
+  let _svg: any = document.getElementById(elementID)?.cloneNode(true);
+  const width = _svg?.getAttribute('width').replace('px', '');
+  const height = _svg?.getAttribute('height').replace('px', '');
   _svg
     .querySelectorAll('[data-no-export="true"]')
     .forEach((element) => element.remove());

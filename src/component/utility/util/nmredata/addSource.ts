@@ -1,7 +1,16 @@
 import Jszip from 'jszip';
 
 const jszip = new Jszip();
-export async function addSource(nmrRecord, options = {}) {
+
+interface addSourceOptionsProps {
+  spectrum?: any;
+  source?: any;
+}
+
+export async function addSource(
+  nmrRecord,
+  options: addSourceOptionsProps = {},
+) {
   const { spectrum, source } = options;
   const { file = {}, jcampURL } = source;
   let tag = '';
@@ -22,7 +31,7 @@ export async function addSource(nmrRecord, options = {}) {
           if (file.endsWith('/')) continue;
           nmrRecord.file(
             `Bruker/${file}`,
-            await zip.file(file).async('arraybuffer'),
+            await zip.file(file)?.async('arraybuffer'),
           );
         }
         tag += `\nSpectrum_Location=file:Bruker/${getPathFromZip(zip)}\\`;
