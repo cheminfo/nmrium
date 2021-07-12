@@ -8,7 +8,7 @@ export const SET_Y_SCALE = 'SET_Y_SCALE';
 export const SET_SCALE = 'SET_SCALE';
 
 type ScaleLinearNumberFunction = (
-  spectrumId?: number | null,
+  spectrumId?: number | null | string,
 ) => ScaleLinear<number, number, number>;
 
 export interface ScaleState {
