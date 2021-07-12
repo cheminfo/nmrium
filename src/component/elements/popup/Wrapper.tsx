@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { positions } from './options';
 
-function getStyles(position, containerStyle) {
+function getStyles(position, containerStyle): any {
   const initialStyles = {
     position: 'fixed',
     display: 'flex',

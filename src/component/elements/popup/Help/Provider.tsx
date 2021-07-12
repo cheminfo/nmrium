@@ -6,6 +6,8 @@ import {
   useState,
   memo,
   useMemo,
+  CSSProperties,
+  ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
@@ -20,7 +22,7 @@ import { positions, transitions } from '../options';
 
 import { HelpProvider } from './Context';
 
-const transitionStyles = {
+const transitionStyles: any = {
   [transitions.FADE]: {
     entering: { opacity: 0 },
     entered: { opacity: 1 },
@@ -33,7 +35,10 @@ const transitionStyles = {
   },
 };
 
-const styles = {
+const styles: Record<
+  'innerContainer' | 'outerContainer' | 'closeButton',
+  CSSProperties
+> = {
   innerContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -60,6 +65,20 @@ const defaultContainerStyle = {
   zIndex: 100,
 };
 
+interface ProviderProps {
+  children: ReactNode;
+  offset?: string;
+  position?: string;
+  timeout?: number;
+  delay?: number;
+  type?: string;
+  transition?: any;
+  containerStyle?: CSSProperties;
+  wrapperRef?: any;
+  multiple?: boolean;
+  preventAutoHelp?: boolean;
+}
+
 function Provider({
   children,
   offset = '10px',
@@ -72,11 +91,11 @@ function Provider({
   wrapperRef = null,
   multiple = false,
   preventAutoHelp = false,
-}) {
-  const root = useRef();
-  const timersId = useRef([]);
-  const [modals, setModals] = useState([]);
-  const timeoutRef = useRef();
+}: ProviderProps) {
+  const root = useRef<any>();
+  const timersId = useRef<any>([]);
+  const [modals, setModals] = useState<any[]>([]);
+  const timeoutRef = useRef<any>();
 
   useEffect(() => {
     root.current = document.createElement('div');
@@ -121,7 +140,7 @@ function Provider({
             ...options,
           };
 
-          const modal = {
+          const modal: any = {
             helpid,
             id,
             options: modalOptions,
@@ -179,10 +198,7 @@ function Provider({
         };
   }, [wrapperRef]);
 
-  const modalsByPosition = groupBy(
-    modals,
-    (modal) => modal.options && modal.options.position,
-  );
+  const modalsByPosition = groupBy(modals, (modal) => modal.options?.position);
 
   const [helpText, setHelpText] = useState(null);
 

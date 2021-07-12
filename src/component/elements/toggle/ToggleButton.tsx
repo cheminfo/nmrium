@@ -38,7 +38,7 @@ interface ToggleButtonProps {
 
   children: ReactElement<any, string | JSXElementConstructor<any>>;
   style?: CSSProperties;
-  onMouseEnter?: () => void;
+  onMouseEnter?: (element: any) => void;
   onMouseLeave?: () => void;
   helpID?: string;
 }

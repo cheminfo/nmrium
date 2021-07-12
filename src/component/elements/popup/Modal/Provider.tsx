@@ -8,6 +8,8 @@ import {
   Fragment,
   cloneElement,
   useMemo,
+  CSSProperties,
+  ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Rnd } from 'react-rnd';
@@ -20,7 +22,7 @@ import { positions, transitions } from '../options';
 import ConfirmDialog from './ConfirmDialog';
 import { ModalProvider } from './Context';
 
-const transitionStyles = {
+const transitionStyles: any = {
   [transitions.FADE]: {
     entering: { opacity: 0 },
     entered: { opacity: 1 },
@@ -33,16 +35,25 @@ const transitionStyles = {
   },
 };
 
+interface ProviderProps {
+  children: ReactNode;
+  style?: CSSProperties;
+  offset?: string;
+  position?: any;
+  transition?: any;
+  wrapperRef?: any;
+}
+
 function Provider({
   children,
   style = undefined,
   offset = '0px',
-  position = positions.CENTER,
+  position = positions.MIDDLE,
   transition = transitions.SCALE,
   wrapperRef = null,
-}) {
-  const root = useRef();
-  const [modal, setModal] = useState();
+}: ProviderProps) {
+  const root = useRef<any>();
+  const [modal, setModal] = useState<any>();
 
   useEffect(() => {
     root.current = document.createElement('div');
@@ -88,7 +99,7 @@ function Provider({
    */
   const show = useCallback(
     (component, options = {}) => {
-      const _modal = {
+      const _modal: any = {
         component,
         options: { isBackgroundBlur: true, enableResizing: false, ...options },
       };
@@ -110,7 +121,7 @@ function Provider({
    */
   const showConfirmDialog = useCallback(
     (dialogOptions, options = { enableResizing: false }) => {
-      const _modal = {
+      const _modal: any = {
         component: <ConfirmDialog {...dialogOptions} />,
         options: { isBackgroundBlur: true, ...options },
       };
@@ -155,10 +166,9 @@ function Provider({
     }
   `;
 
-  const outerStyle =
-    modal && modal.options.isBackgroundBlur
-      ? { backgroundColor: 'rgba(255,255,255,0.8)' }
-      : { pointerEvents: 'none' };
+  const outerStyle: CSSProperties = modal?.options.isBackgroundBlur
+    ? { backgroundColor: 'rgba(255,255,255,0.8)' }
+    : { pointerEvents: 'none' };
 
   const modalContextValue = useMemo(
     () => ({ show, close, showConfirmDialog }),
@@ -230,7 +240,6 @@ function Provider({
                         ...style,
                         margin: offset,
                         pointerEvents: 'all',
-                        position: 'none',
                         userSelect: 'none',
                       }}
                       enableResizing={modal.options.enableResizing}

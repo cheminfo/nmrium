@@ -2,13 +2,14 @@ import { useMemo, createContext, useCallback, useContext } from 'react';
 
 import { helpList } from '../../../../constants';
 
-const HelpContext = createContext();
+const HelpContext = createContext<any>({});
 
 export const HelpProvider = HelpContext.Provider;
 
 export function useHelpText() {
   return useContext(HelpContext).helpText;
 }
+
 export function useHelp() {
   const context = useContext(HelpContext);
 

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import {
   Fragment,
   useState,
@@ -7,6 +6,8 @@ import {
   useCallback,
   useMemo,
   memo,
+  CSSProperties,
+  ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
@@ -20,6 +21,21 @@ import { positions, transitions, types } from '../options';
 import { AlertProvider } from './Context';
 import ProgressIndicator from './ProgressIndicator';
 
+interface ProviderProps {
+  children: ReactNode;
+  offset?: string;
+  position?: any;
+  timeout?: number;
+  type?: any;
+  transition?: any;
+  containerStyle?: CSSProperties;
+  wrapperRef?: any;
+  context?: {
+    Provider?: any;
+    Consumer?: any;
+  };
+}
+
 function Provider({
   children,
   wrapperRef = null,
@@ -29,10 +45,10 @@ function Provider({
   type,
   transition = transitions.FADE,
   ...props
-}) {
-  const root = useRef(null);
-  const timersId = useRef([]);
-  const [alerts, setAlerts] = useState([]);
+}: ProviderProps) {
+  const root = useRef<any>(null);
+  const timersId = useRef<any>([]);
+  const [alerts, setAlerts] = useState<any[]>([]);
 
   useEffect(() => {
     root.current = document.createElement('div');
@@ -79,7 +95,7 @@ function Provider({
         ...options,
       };
 
-      const alert = {
+      const alert: any = {
         id,
         message,
         options: alertOptions,
@@ -239,23 +255,5 @@ function Provider({
     </AlertProvider>
   );
 }
-
-Provider.propTypes = {
-  offset: PropTypes.string,
-  position: PropTypes.oneOf(
-    Object.keys(positions).map((position) => positions[position]),
-  ),
-  timeout: PropTypes.number,
-  type: PropTypes.oneOf(Object.keys(types).map((type) => types[type])),
-  transition: PropTypes.oneOf(
-    Object.keys(transitions).map((transition) => transitions[transition]),
-  ),
-  containerStyle: PropTypes.object,
-  wrapperRef: PropTypes.object,
-  context: PropTypes.shape({
-    Provider: PropTypes.object,
-    Consumer: PropTypes.object,
-  }),
-};
 
 export default memo(Provider);

@@ -1,11 +1,11 @@
-import { useRef } from 'react';
+import { CSSProperties, ReactNode, useRef } from 'react';
 import { Transition as ContainerTransition } from 'react-transition-group';
 
 import { transitions } from './options';
 
 const duration = 250;
 
-const defaultStyle = {
+const defaultStyle: Record<string, CSSProperties> = {
   [transitions.FADE]: {
     transition: `opacity ${duration}ms ease`,
     opacity: 0,
@@ -16,7 +16,7 @@ const defaultStyle = {
   },
 };
 
-const defaultTransitionStyles = {
+const defaultTransitionStyles: Record<string, any> = {
   [transitions.FADE]: {
     entering: { opacity: 0 },
     entered: { opacity: 1 },
@@ -29,12 +29,18 @@ const defaultTransitionStyles = {
   },
 };
 
+interface TransitionProps {
+  children: ReactNode;
+  type: string;
+  transitionStyles?: any;
+}
+
 export default function Transtion({
   children,
   type,
   transitionStyles = defaultTransitionStyles,
   ...props
-}) {
+}: TransitionProps) {
   const ref = useRef(null);
   return (
     <ContainerTransition nodeRef={ref} {...props} timeout={duration}>
