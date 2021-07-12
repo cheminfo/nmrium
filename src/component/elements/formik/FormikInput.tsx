@@ -13,7 +13,7 @@ interface FormikInputProps extends InputProps {
     container?: any;
   };
   onChange?: (element: any) => void;
-  checkValue?: () => void;
+  checkValue?: (element: any) => void;
   type?: 'text' | 'number';
   className?: string;
   value?: any;
