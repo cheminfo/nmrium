@@ -318,12 +318,10 @@ function NMRium({
             onMouseLeave={mouseLeaveHandler}
             style={{ height: '100%', position: 'relative' }}
           >
-            {/* @ts-expect-error: TODO remove when HelpProvider is migrated */}
             <HelpProvider
               wrapperRef={elementsWraperRef.current}
               preventAutoHelp={preventAutoHelp}
             >
-              {/* @ts-expect-error: TODO remove when AlertProvider is migrated */}
               <AlertProvider wrapperRef={elementsWraperRef.current}>
                 <DispatchProvider value={dispatchMiddleWare}>
                   <ChartDataProvider value={chartDataContextValue}>
