@@ -9,7 +9,7 @@ import {
   useAssignmentData,
 } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
-import { useScale } from '../../context/ScaleContext';
+import { useScaleChecked } from '../../context/ScaleContext';
 import { TYPES, useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
@@ -87,7 +87,7 @@ function Range({
     to: rangeTo,
   });
 
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
 
   const [reduceOpacity, setReduceOpacity] = useState(false);
@@ -126,6 +126,7 @@ function Range({
     assignmentRange.onMouseEnter('x');
     highlightRange.show();
   }, [assignmentRange, highlightRange]);
+
   const mouseLeaveHandler = useCallback(() => {
     assignmentRange.onMouseLeave('x');
     highlightRange.hide();
