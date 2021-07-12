@@ -42,17 +42,34 @@ const tabStyles = css`
   padding: 0.5rem 1.5rem;
 `;
 
-function SignalsForm({ range }) {
-  const newSignalFormRef = useRef();
-  const [activeField, setActiveField] = useState(null);
+interface SignalsFormProps {
+  range: number;
+}
 
-  const { values, setFieldValue, errors } = useFormikContext();
+function SignalsForm({ range }: SignalsFormProps) {
+  const newSignalFormRef = useRef<any>();
+  const [activeField, setActiveField] = useState<string | null>(null);
+
+  const {
+    values,
+    setFieldValue,
+    errors,
+  }: {
+    values: any;
+    setFieldValue: (
+      field: string,
+      value: any,
+      shouldValidate?: boolean | undefined,
+    ) => void;
+    errors: any;
+  } = useFormikContext<any>();
+
   const { activeTab } = useChartData();
-  const { info } = useSpectrum({ info: {} });
-  const format = useFormatNumberByNucleus(activeTab);
+  const { info }: { info: any } = useSpectrum({ info: {} });
+  const format = useFormatNumberByNucleus(activeTab as string);
 
   useEffect(() => {
-    Events.on('brushEnd', (event) => {
+    function handle(event) {
       if (info?.originFrequency && activeField) {
         if (values.activeTab === 'addSignalTab') {
           newSignalFormRef.current.setValues({
@@ -75,15 +92,17 @@ function SignalsForm({ range }) {
       }
 
       setActiveField(null);
-    });
+    }
+
+    Events.on('brushEnd', handle);
 
     return () => {
-      Events.off('brushEnd');
+      Events.off('brushEnd', handle);
     };
   }, [activeField, setFieldValue, values.activeTab, format, info]);
 
   useEffect(() => {
-    Events.on('mouseClick', (event) => {
+    function handle(event) {
       if (activeField) {
         if (values.activeTab === 'addSignalTab') {
           newSignalFormRef.current.setValues({ [activeField]: event.xPPM });
@@ -92,10 +111,12 @@ function SignalsForm({ range }) {
         }
       }
       setActiveField(null);
-    });
+    }
+
+    Events.on('mouseClick', handle);
 
     return () => {
-      Events.off('mouseClick');
+      Events.off('mouseClick', handle);
     };
   }, [values.activeTab, activeField, setFieldValue]);
 
@@ -162,7 +183,7 @@ function SignalsForm({ range }) {
       <Tab
         tablabel="+"
         tabid="addSignalTab"
-        candelete={false}
+        canDelete={false}
         key="addSignalTab"
         className="add-signal-tab"
       >

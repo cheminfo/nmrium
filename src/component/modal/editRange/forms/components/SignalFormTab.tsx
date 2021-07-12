@@ -16,8 +16,13 @@ const SignalFormTabStyle = css`
   text-align: center;
 `;
 
-function SignalFormTab({ onFocus, onBlur }) {
-  const { values } = useFormikContext();
+interface SignalFormTabProps {
+  onFocus: (element: any) => void;
+  onBlur?: () => void;
+}
+
+function SignalFormTab({ onFocus, onBlur }: SignalFormTabProps) {
+  const { values } = useFormikContext<{ activeTab: string }>();
 
   return (
     <div css={SignalFormTabStyle}>

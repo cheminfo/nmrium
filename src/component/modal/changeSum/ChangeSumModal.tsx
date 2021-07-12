@@ -11,13 +11,21 @@ const modalContainer = css`
   padding: 5px;
 `;
 
+interface ChangeSumModalProps {
+  onSave?: (element: any) => void;
+  onClose: () => void;
+  header: any;
+  molecules: any;
+  element: any;
+}
+
 export default function ChangeSumModal({
   onSave,
   onClose,
   header,
   molecules,
   element,
-}) {
+}: ChangeSumModalProps) {
   const saveInputValueHandler = useCallback(
     (inputValue) => {
       onSave?.(inputValue);

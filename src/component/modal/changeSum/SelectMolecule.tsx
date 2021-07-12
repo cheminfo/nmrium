@@ -65,8 +65,18 @@ const moleculeContainerStyle = css`
   }
 `;
 
-export default function SelectMolecule({ onSave, molecules, element }) {
-  const [currentIndex, setCurrentIndex] = useState();
+interface SelectMoleculeProps {
+  onSave?: (element: any) => void;
+  molecules: any;
+  element: any;
+}
+
+export default function SelectMolecule({
+  onSave,
+  molecules,
+  element,
+}: SelectMoleculeProps) {
+  const [currentIndex, setCurrentIndex] = useState<number>();
   const {
     display: { general, panels },
   } = usePreferences();

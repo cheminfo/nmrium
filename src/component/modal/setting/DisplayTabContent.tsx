@@ -1,8 +1,9 @@
 import lodashGet from 'lodash/get';
 
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
+import { PreferencesState } from '../../reducer/preferencesReducer';
 
-const LIST = [
+const LIST: Array<{ label: string; name: string }> = [
   {
     label: 'Spectra selection panel',
     name: 'display.panels.hideSpectraPanel',
@@ -45,7 +46,11 @@ const LIST = [
   },
 ];
 
-function DisplayTabContent({ preferences }) {
+interface DisplayTabContentProps {
+  preferences: PreferencesState;
+}
+
+function DisplayTabContent({ preferences }: DisplayTabContentProps) {
   return (
     <>
       <p className="section-header">Show / Hide Panels</p>

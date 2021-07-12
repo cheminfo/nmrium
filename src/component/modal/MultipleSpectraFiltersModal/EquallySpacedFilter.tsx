@@ -1,9 +1,15 @@
+import { FormikHelpers } from 'formik';
+
 import { forwardRefWithAs } from '../../../utils';
 import { useChartData } from '../../context/ChartContext';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 
-function EquallySpacedFilter({ onSubmit }, ref) {
+interface EquallySpacedFilterProps {
+  onSubmit: (values: any, helper: FormikHelpers<any>) => void;
+}
+
+function EquallySpacedFilter({ onSubmit }: EquallySpacedFilterProps, ref) {
   const { xDomain } = useChartData();
   return (
     <FormikForm

@@ -78,8 +78,20 @@ const CouplingsTableStyle = css`
   }
 `;
 
-function CouplingsTable({ push, remove, onFocus, onBlur }) {
-  const { values, setFieldValue } = useFormikContext();
+interface CouplingsTableProps {
+  push: (element: { multiplicity?: string; coupling: string }) => void;
+  remove: (element: number) => void;
+  onFocus: (element: any) => void;
+  onBlur?: () => void;
+}
+
+function CouplingsTable({
+  push,
+  remove,
+  onFocus,
+  onBlur,
+}: CouplingsTableProps) {
+  const { values, setFieldValue } = useFormikContext<any>();
 
   const multiplicityChangeHandler = useCallback(
     (value, name) => {

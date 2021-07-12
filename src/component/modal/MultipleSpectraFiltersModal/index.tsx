@@ -15,7 +15,11 @@ import { ModalStyles } from '../ModalStyle';
 import EquallySpacedFilter from './EquallySpacedFilter';
 import FromToFilter from './FromToFilter';
 
-const baseList = [
+const baseList: Array<{
+  key: string | number;
+  value: number | string;
+  label: string;
+}> = [
   { key: 0, value: 0, label: 'Select Filter' },
   {
     key: Filters.fromTo.id,
@@ -50,10 +54,20 @@ const styles = css`
   }
 `;
 
-function MultipleSpectraFiltersModal({ onClose = () => null, nucleus = '' }) {
-  const refForm = useRef();
+interface MultipleSpectraFiltersModalProps {
+  onClose?: () => void;
+  nucleus?: string;
+}
+
+function MultipleSpectraFiltersModal({
+  onClose = () => null,
+  nucleus = '',
+}: MultipleSpectraFiltersModalProps) {
+  const refForm = useRef<any>();
+
   const dispatch = useDispatch();
   const [filter, setFilter] = useState(0);
+
   const List = useMemo(() => {
     const list = REFERENCES[nucleus]
       ? Object.entries(REFERENCES[nucleus]).map(
@@ -66,8 +80,9 @@ function MultipleSpectraFiltersModal({ onClose = () => null, nucleus = '' }) {
         )
       : [];
 
-    return baseList.concat(list);
+    return baseList.concat(list as any);
   }, [nucleus]);
+
   const handleSave = useCallback((e) => {
     e.preventDefault();
     if (refForm.current) {
@@ -90,15 +105,17 @@ function MultipleSpectraFiltersModal({ onClose = () => null, nucleus = '' }) {
   );
 
   useEffect(() => {
-    Events.on('brushEnd', (event) => {
+    function handle(event: any) {
       const [from, to] = event.range;
       if (refForm.current) {
         refForm.current.setValues({ ...refForm.current.values, from, to });
       }
-    });
+    }
+
+    Events.on('brushEnd', handle);
 
     return () => {
-      Events.off('brushEnd');
+      Events.off('brushEnd', handle);
     };
   }, []);
 
@@ -107,7 +124,7 @@ function MultipleSpectraFiltersModal({ onClose = () => null, nucleus = '' }) {
   }, []);
 
   const filterOptions = useMemo(() => {
-    switch (filter) {
+    switch (String(filter)) {
       case Filters.fromTo.id:
         return <FromToFilter onSubmit={submitHandler} ref={refForm} />;
       case Filters.equallySpaced.id:

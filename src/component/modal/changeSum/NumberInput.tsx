@@ -52,8 +52,18 @@ const styles = css`
   }
 `;
 
-export default function NumberInput({ onSave, onClose, header }) {
-  const valueReft = useRef();
+interface NumberInputProps {
+  onSave?: (element: any) => void;
+  onClose: () => void;
+  header: any;
+}
+
+export default function NumberInput({
+  onSave,
+  onClose,
+  header,
+}: NumberInputProps) {
+  const valueReft = useRef<any>(null);
 
   const saveHandler = useCallback(() => {
     onSave?.(valueReft.current.value);

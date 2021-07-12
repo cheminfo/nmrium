@@ -58,10 +58,19 @@ const AddSignalFormTabStyle = css`
   }
 `;
 
-function AddSignalFormTab({ onFocus, onBlur, range }, ref) {
-  const { values, setFieldValue } = useFormikContext();
+interface AddSignalFormTabProps {
+  onFocus: (element: any) => void;
+  onBlur?: () => void;
+  range: any;
+}
+
+function AddSignalFormTab(
+  { onFocus, onBlur, range }: AddSignalFormTabProps,
+  ref,
+) {
+  const { values, setFieldValue } = useFormikContext<any>();
   const { activeTab } = useChartData();
-  const format = useFormatNumberByNucleus(activeTab);
+  const format = useFormatNumberByNucleus(activeTab as string);
 
   const saveHandler = useCallback(
     (val) => {
@@ -84,10 +93,13 @@ function AddSignalFormTab({ onFocus, onBlur, range }, ref) {
       newSignalDelta: Yup.number()
         .test(`test-range`, '', function (value) {
           const { path, createError } = this;
-          if (value > range.from && value < range.to) {
+          if (value && value > range.from && value < range.to) {
             return true;
           }
-          const errorMessage = ` ${value.toFixed(5)} ppm out of the range`;
+
+          const errorMessage = ` ${
+            value ? value.toFixed(5) : 0
+          } ppm out of the range`;
           return createError({ path, message: errorMessage });
         })
         .required(),
