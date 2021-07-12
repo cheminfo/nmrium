@@ -8,7 +8,7 @@ function getMultiplicityNumber(string) {
   return multiplet ? multiplet.multiplicity : null;
 }
 
-function checkMultiplet(multiplet, rejected = []) {
+function checkMultiplet(multiplet, rejected: Array<any> = []) {
   // options to determine whether a massive (m), for example, should be considered as rejected multiplet
   if (multiplet === undefined || multiplet.length === 0) {
     return false;
@@ -23,7 +23,7 @@ function checkMultiplet(multiplet, rejected = []) {
   );
 }
 
-function checkMultiplicity(multiplicity, rejected = []) {
+function checkMultiplicity(multiplicity, rejected: Array<string> = []) {
   // options to determine whether a massive (m), for example, should be considered as rejected multiplicity
   if (multiplicity === undefined || multiplicity.length === 0) {
     return false;
@@ -35,8 +35,8 @@ function checkMultiplicity(multiplicity, rejected = []) {
 
 function translateMultiplet(multiplet) {
   return multiplet.length === 1
-    ? Multiplets.find((_multiplet) => _multiplet.value === multiplet).label
-    : Multiplets.find((_multiplet) => _multiplet.label === multiplet).value;
+    ? Multiplets.find((_multiplet) => _multiplet.value === multiplet)?.label
+    : Multiplets.find((_multiplet) => _multiplet.label === multiplet)?.value;
 }
 
 function hasCouplingConstant(multiplet) {
@@ -50,7 +50,7 @@ function hasCouplingConstant(multiplet) {
 function getPascal(n, spin) {
   if (n === undefined || n === 0 || spin === undefined) return [1];
   let mult = 2 * spin + 1;
-  let previousLine = [];
+  let previousLine: Array<any> = [];
   for (let j = 0; j < mult - 1; j++) previousLine.push(1);
   // complete with "1 1" or "1 1 1" for spin 1/2 and 1 respectively
   for (let i = 0; i < n - 1; i++) {

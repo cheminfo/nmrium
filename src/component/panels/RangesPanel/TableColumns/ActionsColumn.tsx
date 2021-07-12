@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Fragment, useCallback } from 'react';
+import { Fragment, useCallback, CSSProperties } from 'react';
 import { FaRegTrashAlt, FaSearchPlus, FaEdit } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../../data/constants/SignalsKinds';
@@ -36,14 +36,40 @@ const styles = css`
     opacity: 0.6;
   }
 `;
-const selectBoxStyle = {
+
+const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
   marginRight: 2,
   border: 'none',
   height: '20px',
 };
 
-function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
+interface ActionsColumnProps {
+  rowData: {
+    id: number;
+    from: number;
+    to: number;
+    tableMetaInfo: any;
+  };
+  rowSpanTags: {
+    rowSpan: any;
+    style: CSSProperties;
+  };
+  onHoverSignal?: {
+    onMouseEnter: () => void;
+    onMouseLeave: () => void;
+  };
+  onHoverRange?: {
+    onMouseEnter: () => void;
+    onMouseLeave: () => void;
+  };
+}
+
+function ActionsColumn({
+  rowData,
+  onHoverSignal,
+  rowSpanTags,
+}: ActionsColumnProps) {
   const dispatch = useDispatch();
   const modal = useModal();
   const assignmentData = useAssignmentData();
@@ -108,7 +134,7 @@ function ActionsColumn({ rowData, onHoverSignal, rowSpanTags }) {
         range={rowData}
       />,
       {
-        position: positions.CENTER_RIGHT,
+        position: positions.MIDDLE_RIGHT,
         transition: transitions.SCALE,
         isBackgroundBlur: false,
       },

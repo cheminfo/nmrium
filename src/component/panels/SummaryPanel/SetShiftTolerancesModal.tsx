@@ -63,12 +63,18 @@ const modalContainer = css`
   }
 `;
 
+interface SetShiftToleranceModalProps {
+  onClose: () => void;
+  onSave?: (element: any) => void;
+  previousTolerance: any;
+}
+
 export default function SetShiftToleranceModal({
   onClose,
   onSave,
   previousTolerance,
-}) {
-  const [tolerance, setTolerance] = useState();
+}: SetShiftToleranceModalProps) {
+  const [tolerance, setTolerance] = useState<any>();
 
   useEffect(() => {
     if (previousTolerance) {

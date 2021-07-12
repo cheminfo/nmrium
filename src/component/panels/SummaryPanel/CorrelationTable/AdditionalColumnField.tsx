@@ -21,11 +21,11 @@ function AdditionalColumnField({
   spectraData,
   onEdit,
 }) {
-  const contextRef = useRef();
+  const contextRef = useRef<any>();
   const [isEdited, setIsEdited] = useState(false);
 
   const highlightIDsCommonLinks = useMemo(() => {
-    const ids = [];
+    const ids: Array<any> = [];
     commonLinks.forEach((link) => {
       if (link.pseudo === false) {
         ids.push(link.signal.id);
@@ -148,7 +148,7 @@ function AdditionalColumnField({
             {
               label: 'add HSQC',
               onClick: () => {
-                onEditHandler('hsqc', 'add');
+                onEditHandler('hsqc', 'add', undefined);
               },
             },
           ]

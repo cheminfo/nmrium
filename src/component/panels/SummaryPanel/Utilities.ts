@@ -2,7 +2,7 @@ import lodashGet from 'lodash/get';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
 
-function getAtomType(nucleus) {
+function getAtomType(nucleus: string): string {
   return nucleus.split(/\d+/)[1];
 }
 
@@ -13,6 +13,7 @@ function getLabelColor(correlationData, correlation) {
     null,
   );
   if (error) {
+    // eslint-disable-next-line @typescript-eslint/no-for-in-array
     for (let errorIndex in Errors) {
       if (
         ErrorColors[errorIndex].key !== 'incomplete' && // do not consider this for a single atom type
@@ -39,34 +40,34 @@ function findSpectrum(spectraData, value) {
 }
 
 function findSignal(spectrum, value) {
-  for (let i = 0; i < spectrum.zones.values.length; i++) {
-    const signalIndex = spectrum.zones.values[i].signal.findIndex(
+  for (let zone of spectrum.zones.values) {
+    const signalIndex = zone.signal.findIndex(
       (_signal) => _signal.id === value.signal.id,
     );
     if (signalIndex >= 0) {
-      return spectrum.zones.values[i].signal[signalIndex];
+      return zone.signal[signalIndex];
     }
   }
 }
 
 function findRange(spectrum, value) {
-  for (let i = 0; i < spectrum.ranges.values.length; i++) {
-    const signalIndex = spectrum.ranges.values[i].signal.findIndex(
+  for (let range of spectrum.ranges.values) {
+    const signalIndex = range.signal.findIndex(
       (_signal) => _signal.id === value.signal.id,
     );
     if (signalIndex >= 0) {
-      return spectrum.ranges.values[i];
+      return range;
     }
   }
 }
 
 function findZone(spectrum, value) {
-  for (let i = 0; i < spectrum.zones.values.length; i++) {
-    const signalIndex = spectrum.zones.values[i].signal.findIndex(
+  for (let zone of spectrum.zones.values) {
+    const signalIndex = zone.signal.findIndex(
       (_signal) => _signal.id === value.signal.id,
     );
     if (signalIndex >= 0) {
-      return spectrum.zones.values[i];
+      return zone;
     }
   }
 }

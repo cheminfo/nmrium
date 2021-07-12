@@ -74,13 +74,20 @@ const modalContainer = css`
   }
 `;
 
+interface SetMolecularFormulaModalProps {
+  onClose: () => void;
+  onSave?: (element: any) => void;
+  molecules: any;
+  previousMF: any;
+}
+
 export default function SetMolecularFormulaModal({
   onClose,
   onSave,
   molecules,
   previousMF,
-}) {
-  const [currentIndex, setCurrentIndex] = useState();
+}: SetMolecularFormulaModalProps) {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   useEffect(() => {
     if (molecules && molecules.length > 0) {

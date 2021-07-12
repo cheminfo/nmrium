@@ -1,6 +1,6 @@
 import lodashGet from 'lodash/get';
 import { buildLink, getLabel } from 'nmr-correlation';
-import { useCallback, useMemo } from 'react';
+import { CSSProperties, useCallback, useMemo } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import EditableColumn from '../../../elements/EditableColumn';
@@ -11,7 +11,7 @@ import { findRangeOrZoneID } from '../Utilities';
 import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
 
-const selectBoxStyle = {
+const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
   marginRight: 2,
   border: 'none',
@@ -38,10 +38,12 @@ function CorrelationTableRow({
       correlation.signal.id,
       buildID(correlation.signal.id, 'Crosshair_Y'),
     ];
+
     const id = findRangeOrZoneID(spectraData, correlation);
     if (id) {
       ids.push(id);
     }
+
     correlation.link.forEach((link) => {
       if (link.pseudo === false) {
         ids.push(link.signal.id);
@@ -73,7 +75,7 @@ function CorrelationTableRow({
 
   const additionalColumnFields = useMemo(() => {
     return additionalColumnData.map((_correlation) => {
-      const commonLinks = [];
+      const commonLinks: any[] = [];
       correlation.link.forEach((link) => {
         _correlation.link.forEach((_link) => {
           if (
@@ -154,6 +156,7 @@ function CorrelationTableRow({
       },
       title:
         correlation.pseudo === false &&
+        // eslint-disable-next-line @typescript-eslint/require-array-sort-compare
         [correlation.experimentType.toUpperCase()]
           .concat(
             correlation.link.reduce((arr, link) => {
@@ -182,22 +185,26 @@ function CorrelationTableRow({
     styleRow,
   ]);
 
+  const { title, ...otherTableDataProps } = tableDataProps;
+  const t = !title ? '' : title;
+
   return (
     <tr style={styleRow}>
       <td
+        title={t}
         {...{
-          ...tableDataProps,
+          ...otherTableDataProps,
           style: { ...tableDataProps.style, styleLabel },
         }}
       >
         {getLabel(correlations, correlation)}
       </td>
-      <td {...tableDataProps}>
+      <td title={t} {...otherTableDataProps}>
         {lodashGet(correlation.signal, 'delta', false)
           ? correlation.signal.delta.toFixed(2)
           : ''}
       </td>
-      <td {...tableDataProps}>
+      <td title={t} {...otherTableDataProps}>
         {correlation.pseudo === false ? (
           correlation.atomType !== 'H' ? (
             <EditableColumn
@@ -213,7 +220,7 @@ function CorrelationTableRow({
           ''
         )}
       </td>
-      <td {...tableDataProps}>
+      <td title={t} {...otherTableDataProps}>
         {correlation.atomType !== 'H' ? (
           <EditableColumn
             type="text"
@@ -230,8 +237,9 @@ function CorrelationTableRow({
         )}
       </td>
       <td
+        title={t}
         {...{
-          ...tableDataProps,
+          ...otherTableDataProps,
           style: { ...tableDataProps.style, borderRight: '1px solid' },
         }}
       >

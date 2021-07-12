@@ -9,8 +9,16 @@ import FormikSlider from '../../../../elements/formik/FormikSlider';
 
 import Spectrum2DHistogram from './Spectrum2DHistogram';
 
-function Spectrum2DSetting({ data: SpectrumData, onSubmit }) {
-  const refForm = useRef();
+interface Spectrum2DSettingProps {
+  data: any;
+  onSubmit: (values: any, helpers: any) => void;
+}
+
+function Spectrum2DSetting({
+  data: SpectrumData,
+  onSubmit,
+}: Spectrum2DSettingProps) {
+  const refForm = useRef<any>(null);
 
   const style = css`
     .positive {

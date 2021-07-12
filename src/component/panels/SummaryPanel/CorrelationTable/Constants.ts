@@ -1,5 +1,5 @@
 // error colors in priority order
-const ErrorColors = [
+const ErrorColors: Array<{ key: string; color: string }> = [
   { key: 'outOfLimit', color: 'red' },
   { key: 'ambiguousAttachment', color: 'orange' },
   { key: 'notAttached', color: 'blue' },
@@ -8,7 +8,7 @@ const ErrorColors = [
 
 const Errors = ErrorColors.map((errorColor) => errorColor.key);
 
-const Hybridizations = [
+const Hybridizations: Array<{ key: string; label: string; value: string }> = [
   {
     key: '-',
     label: '',
@@ -31,7 +31,7 @@ const Hybridizations = [
   },
 ];
 
-const DefaultTolerance = {
+const DefaultTolerance: Record<'C' | 'H' | 'N' | 'F' | 'Si' | 'P', number> = {
   C: 0.25,
   H: 0.02,
   N: 0.25,

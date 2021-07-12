@@ -1,6 +1,24 @@
 import lodashGet from 'lodash/get';
-import { useMemo, useCallback, memo } from 'react';
+import { CSSProperties, useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
+
+interface SignalAssignmentsColumnProps {
+  rowData: any;
+  onHover: {
+    onMouseEnter: () => void;
+    onMouseLeave: () => void;
+  };
+  assignment: {
+    isActive: boolean;
+  };
+  highlight: {
+    isActive: boolean;
+  };
+  onUnlinkVisibilityChange?: (element: any) => void;
+  unlinkVisibility: boolean;
+  onLink?: (a: any, b: any) => void;
+  onUnlink?: (element: any, b: boolean) => void;
+}
 
 function SignalAssignmentsColumn({
   rowData,
@@ -11,18 +29,18 @@ function SignalAssignmentsColumn({
   unlinkVisibility,
   onLink,
   onUnlink,
-}) {
+}: SignalAssignmentsColumnProps) {
   const diaIDs = useMemo(() => {
     return lodashGet(rowData, 'tableMetaInfo.signal.diaID', []);
   }, [rowData]);
 
-  const tdCss = useMemo(() => {
+  const tdCss: CSSProperties | undefined = useMemo(() => {
     return assignment.isActive || highlight.isActive
       ? {
           color: 'red',
           fontWeight: 'bold',
         }
-      : null;
+      : undefined;
   }, [assignment.isActive, highlight.isActive]);
 
   const visibilityChangeHandler = useCallback(

@@ -55,7 +55,7 @@ function AdditionalColumnHeader({
   const tableHeaderProps = useMemo(() => {
     return {
       style: {
-        ...{ color: getLabelColor(correlationsData, correlation) },
+        ...{ color: getLabelColor(correlationsData, correlation) || undefined },
         backgroundColor: highlightAdditionalColumn.isActive
           ? '#ff6f0057'
           : 'inherit',
@@ -75,7 +75,7 @@ function AdditionalColumnHeader({
               return arr;
             }, []),
           )
-          .sort()
+          .sort((a, b) => a - b)
           .join('/'),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
@@ -100,12 +100,14 @@ function AdditionalColumnHeader({
         };
   }, [correlation]);
 
+  const { title, ...thProps } = tableHeaderProps;
+
   return (
-    <th {...tableHeaderProps}>
+    <th {...thProps} title={title === false ? undefined : title}>
       <div style={{ display: 'block' }}>
         <p>{correlation.label.origin}</p>
         <p>
-          {correlation && correlation.signal && correlation.signal.delta
+          {correlation?.signal?.delta
             ? correlation.signal.delta.toFixed(2)
             : ''}
         </p>

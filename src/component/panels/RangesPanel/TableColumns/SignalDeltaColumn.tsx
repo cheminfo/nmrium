@@ -7,13 +7,24 @@ import { checkMultiplicity } from '../../extra/utilities/MultiplicityUtilities';
 
 import useFormat from './format';
 
+interface SignalDeltaColumnProps {
+  rowData: any;
+  onHoverSignal: {
+    onMouseEnter: () => void;
+    onMouseLeave: () => void;
+  };
+  preferences: string;
+  onEditStart: (element: any) => void;
+  editStatus?: boolean;
+}
+
 function SignalDeltaColumn({
   rowData,
   onHoverSignal,
   preferences,
   onEditStart,
   editStatus,
-}) {
+}: SignalDeltaColumnProps) {
   const dispatch = useDispatch();
   const signal = rowData.tableMetaInfo.signal;
   const format = useFormat(preferences);

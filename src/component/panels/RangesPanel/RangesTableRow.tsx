@@ -29,6 +29,18 @@ const ConstantlyHighlightedRowStyle = css`
   background-color: #f5f5dc;
 `;
 
+interface RangesTableRowProps {
+  rowData: any;
+  onUnlink: (a: any, b?: any) => void;
+  onContextMenu: (element: any, data: any) => void;
+  onColumnEditStart: (a: string, b: string) => void;
+  preferences: string;
+  editFlags: {
+    relativeFlags: any;
+    signalFlags: any;
+  };
+}
+
 function RangesTableRow({
   rowData,
   onUnlink,
@@ -36,7 +48,7 @@ function RangesTableRow({
   onColumnEditStart,
   preferences,
   editFlags: { relativeFlags, signalFlags },
-}) {
+}: RangesTableRowProps) {
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(rowData.id);
   const highlightRange = useHighlight(
@@ -64,12 +76,12 @@ function RangesTableRow({
 
   const getFormat = useFormat(preferences);
 
-  const rowSpanTags = useMemo(() => {
+  const rowSpanTags: any = useMemo(() => {
     return {
       rowSpan: rowData.tableMetaInfo.rowSpan,
       style: lodashGet(rowData.tableMetaInfo, 'hide', false)
         ? { display: 'none' }
-        : null,
+        : undefined,
     };
   }, [rowData.tableMetaInfo]);
 
@@ -164,7 +176,7 @@ function RangesTableRow({
           value={rowData.from}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('showFrom')}
+          format={getFormat('showFrom', undefined)}
         />
       )}
       {isColumnVisible(preferences, 'showTo') && (
@@ -172,7 +184,7 @@ function RangesTableRow({
           value={rowData.to}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('toFormat')}
+          format={getFormat('toFormat', undefined)}
         />
       )}
 
@@ -189,7 +201,7 @@ function RangesTableRow({
           rowData={rowData}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('relativeFormat')}
+          format={getFormat('relativeFormat', undefined)}
           onEditStart={() => onColumnEditStart('relative', rowData.id)}
           editStatus={relativeFlags[rowData.id]}
         />
@@ -200,7 +212,7 @@ function RangesTableRow({
           value={rowData.absolute}
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
-          format={getFormat('absoluteFormat')}
+          format={getFormat('absoluteFormat', undefined)}
         />
       )}
 

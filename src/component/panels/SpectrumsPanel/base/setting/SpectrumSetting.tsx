@@ -72,9 +72,17 @@ const style = css`
  
   }
 `;
-function SpectrumSetting({ position, data, onClose }) {
+
+interface SpectrumSettingProps {
+  position: { x: number; y: number } | null;
+  data: any;
+  onClose: () => void;
+}
+
+function SpectrumSetting({ position, data, onClose }: SpectrumSettingProps) {
   const dispatch = useDispatch();
   const { id, info } = data;
+
   const submitHandler = useCallback(
     (values) => {
       dispatch({ type: CHANGE_SPECTRUM_SETTING, id, display: values });
@@ -91,7 +99,9 @@ function SpectrumSetting({ position, data, onClose }) {
     [onClose],
   );
 
+  if (!position) return null;
   const { x, y } = position;
+
   return (
     <div css={style} onClick={clickHandler}>
       <div

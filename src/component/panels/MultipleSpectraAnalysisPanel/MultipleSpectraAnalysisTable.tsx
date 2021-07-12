@@ -10,7 +10,15 @@ import NoTableData from '../extra/placeholder/NoTableData';
 
 import ColumnHeader from './ColumnHeader';
 
-function MultipleSpectraAnalysisTable({ data, activeTab }) {
+interface MultipleSpectraAnalysisTableProps {
+  data: any;
+  activeTab: string;
+}
+
+function MultipleSpectraAnalysisTable({
+  data,
+  activeTab,
+}: MultipleSpectraAnalysisTableProps) {
   const format = useFormatNumberByNucleus(activeTab);
 
   const codeEvaluation = useMemo(() => {

@@ -5,8 +5,16 @@ import FormikForm from '../../../../elements/formik/FormikForm';
 
 import Spectrum1DHistogram from './Spectrum1DHistogram';
 
-function Spectrum1DSetting({ data: SpectrumData, onSubmit }) {
-  const refForm = useRef();
+interface Spectrum1DSettingProps {
+  data: any;
+  onSubmit: (values: any, helpers: any) => void;
+}
+
+function Spectrum1DSetting({
+  data: SpectrumData,
+  onSubmit,
+}: Spectrum1DSettingProps) {
+  const refForm = useRef<any>(null);
 
   const triggerSubmitHandler = useCallback(() => {
     if (refForm.current) {

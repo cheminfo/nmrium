@@ -391,9 +391,7 @@ function SummaryPanel() {
             : 'Hide correlations out of view'
         }
         filterIsActive={filterIsActive}
-        counterFiltered={
-          filteredCorrelationsData && filteredCorrelationsData.values.length
-        }
+        counterFiltered={filteredCorrelationsData?.values.length}
       >
         <ToolTip
           title={`Set molecular formula (${correlationsData.options.mf})`}

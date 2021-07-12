@@ -12,6 +12,7 @@ function RelativeColumn(
   ref,
 ) {
   const dispatch = useDispatch();
+
   const integralVal = useMemo(() => {
     const flag = checkRangeKind(rowData);
     const formattedValue = FormatNumber(rowData.integral, format);

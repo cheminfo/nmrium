@@ -1,15 +1,14 @@
 import { xNoiseSanPlot } from 'ml-spectra-processing';
 import { memo, useMemo } from 'react';
-import { Axis, LineSeries, Legend, Plot } from 'react-plot';
+import { Axis, LineSeries, Legend, Heading, Plot } from 'react-plot';
 
-function prepareData(matrix) {
-  let cols = matrix[0].length;
-  let rows = matrix.length;
-  let jump = Math.floor((cols * rows) / 204800) || 1;
-  const array = new Float64Array(((cols * rows) / jump) >> 0);
+function prepareData(input) {
+  const length = input.length;
+  const jump = Math.floor(length / 307200) || 1;
+  const array = new Float64Array((length / jump) >> 0);
   let index = 0;
   for (let i = 0; i < array.length; i += jump) {
-    array[index++] = matrix[(i / rows) >> 0][i % rows];
+    array[index++] = input[i];
   }
   return array;
 }
@@ -17,23 +16,33 @@ function prepareData(matrix) {
 function getLine(value, data, options) {
   const { log10, abs } = Math;
   const { yLogBase } = options;
-  const first = data.length > 0 ? data[0].x : 0;
-  const last = data.length > 0 ? data[data.length - 1].x : 0;
   const inLogScale = log10(abs(value)) / log10(yLogBase);
   return [
-    { x: first, y: inLogScale },
-    { x: last, y: inLogScale },
+    { x: data[0].x, y: inLogScale },
+    { x: data[data.length - 1].x, y: inLogScale },
   ];
 }
 
-const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
-  const { yLogBase = 2 } = options;
+interface Spectrum1DHistogramProps {
+  color?: string;
+  data: any;
+  options?: any;
+}
 
+function Spectrum1DHistogram({
+  color = 'red',
+  data,
+  options = {},
+}: Spectrum1DHistogramProps) {
+  //factorStd = 5,
+  const { yLogBase = 2 } = options;
   const processedData = useMemo(() => {
-    const input = prepareData(data.z);
+    const input = prepareData(data.re);
+
     const sanResult = xNoiseSanPlot(input, options);
-    const sanPlot = {};
-    const lines = {};
+
+    const sanPlot: any = {};
+    const lines: any = {};
     for (let plotKey in sanResult.sanplot) {
       const { x, y } = sanResult.sanplot[plotKey];
       let result = new Array(x.length);
@@ -44,26 +53,24 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
       lines[plotKey] = getLine(sanResult[plotKey], result, { yLogBase });
     }
     return { sanPlot, lines };
-  }, [data.z, options, yLogBase]);
+  }, [data.re, options, yLogBase]);
 
   return (
-    <div>
-      <span style={{ padding: '0 200px' }}>San Plot</span>
-
-      <div
-        style={{
-          borderTop: '1px solid #ededed',
-          marginTop: '10px',
-          paddingTop: '10px',
-          display: 'flex',
-          flexDirection: 'row',
-        }}
-      >
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <div style={{ display: 'block' }}>
         <Plot
-          width={220}
-          height={180}
-          margin={{ bottom: 50, left: 40, top: 10, right: 13 }}
+          width={180}
+          height={220}
+          margin={{ bottom: 40, left: 40, top: 50, right: 13 }}
         >
+          <Heading title="Sanplot" />
           <LineSeries
             data={processedData.sanPlot.positive}
             xAxis="x"
@@ -86,7 +93,7 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
             lineStyle={{
               stroke: 'blue',
               strokeWidth: 0.8,
-              strokeDasharray: [3, 3],
+              strokeDasharray: '3, 3',
             }}
             markerStyle={{
               fill: color,
@@ -102,16 +109,17 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
           />
           <Axis
             id="y"
-            label={`Intensity [Log ${yLogBase}]`}
+            label={`Intensity [Log${yLogBase}]`}
             position="left"
             tickStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.7rem' }}
           />
-          <Legend position="embedded" bottom={90} right={5} />
+          <Legend position="embedded" bottom={5} right={60} />
         </Plot>
-
+      </div>
+      <div style={{ display: 'block', width: 180, height: 180 }}>
         <Plot
-          width={220}
+          width={180}
           height={180}
           margin={{ bottom: 50, left: 40, top: 10, right: 13 }}
         >
@@ -138,7 +146,7 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
             lineStyle={{
               stroke: 'blue',
               strokeWidth: 0.8,
-              strokeDasharray: [3, 3],
+              strokeDasharray: '3, 3',
             }}
             markerStyle={{
               fill: color,
@@ -155,15 +163,16 @@ const Spectrum2DHistogram = memo(({ color = 'red', data, options = {} }) => {
           />
           <Axis
             id="y"
+            label={`Intensity [Log${yLogBase}]`}
             position="left"
             tickStyle={{ fontSize: '0.6rem' }}
             labelStyle={{ fontSize: '0.7rem' }}
           />
-          <Legend position="embedded" bottom={90} right={5} />
+          <Legend position="embedded" bottom={5} right={60} />
         </Plot>
       </div>
     </div>
   );
-});
+}
 
-export default Spectrum2DHistogram;
+export default memo(Spectrum1DHistogram);

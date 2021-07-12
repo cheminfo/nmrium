@@ -1,10 +1,10 @@
 import lodashGet from 'lodash/get';
-import { useMemo, useCallback, memo } from 'react';
+import { CSSProperties, useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
 import { TYPES } from '../../../highlight';
 
-const spanStyle = {
+const spanStyle: CSSProperties = {
   color: 'red',
   fontWeight: 'bold',
 };
@@ -32,7 +32,7 @@ function RangeAssignmentsColumn({
     [onUnlinkVisibilityChange],
   );
 
-  const spanCss = useMemo(() => {
+  const spanCss: CSSProperties = useMemo(() => {
     const flag =
       assignment.isActive ||
       assignment.isOnHover ||
