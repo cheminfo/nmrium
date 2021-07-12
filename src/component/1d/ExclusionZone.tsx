@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { memo } from 'react';
 
-import { useScale } from '../context/ScaleContext';
+import { useScaleChecked } from '../context/ScaleContext';
 import { TYPES, useHighlight } from '../highlight';
 import { ExclusionZoneState } from '../reducer/Reducer';
 
@@ -27,8 +27,9 @@ interface ExclusionZoneProps {
 }
 
 function ExclusionZone({ zone }: ExclusionZoneProps) {
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
   const highlight = useHighlight([zone.id], TYPES.EXCLUSION_ZONE);
+
   return (
     <g
       key={zone.id}

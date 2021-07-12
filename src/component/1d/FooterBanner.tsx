@@ -9,7 +9,7 @@ import { Datum1D } from '../../data/data1d/Spectrum1D';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
-import { useScale } from '../context/ScaleContext';
+import { useScaleChecked } from '../context/ScaleContext';
 import { useHelpText } from '../elements/popup/Help/Context';
 import useSpectrum from '../hooks/useSpectrum';
 import { ActiveSpectrum } from '../reducer/Reducer';
@@ -117,7 +117,7 @@ function FooterBannerInner({
 }: FooterBannerInnerProps) {
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
   const helpText = useHelpText();
 
   const format = useFormatNumberByNucleus(activeTab);
@@ -189,12 +189,14 @@ function FooterBannerInner({
           {spectrum?.info?.originFrequency && step === 'brushing' && (
             <div>
               <span className="label"> ΔHz: </span>
-              <span className="value">
-                {(
-                  (scaleX().invert(startX) - scaleX().invert(endX)) *
-                  spectrum?.info?.originFrequency
-                ).toPrecision(5)}
-              </span>
+              {scaleX && (
+                <span className="value">
+                  {(
+                    (scaleX().invert(startX) - scaleX().invert(endX)) *
+                    spectrum?.info?.originFrequency
+                  ).toPrecision(5)}
+                </span>
+              )}
             </div>
           )}
           {step === 'brushing' && (

@@ -4,7 +4,7 @@ import { CSSProperties, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
-import { useScale } from '../context/ScaleContext';
+import { useScaleChecked } from '../context/ScaleContext';
 
 interface LineProps {
   data?: {
@@ -21,7 +21,7 @@ interface LineProps {
 function Line({ data, id, display, index }: LineProps) {
   const { xDomain, activeSpectrum, verticalAlign } = useChartData();
   const preferences = usePreferences();
-  const { scaleX, scaleY } = useScale();
+  const { scaleX, scaleY } = useScaleChecked();
 
   const isActive = useMemo(() => {
     return activeSpectrum === null

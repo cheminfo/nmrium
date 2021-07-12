@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { useScale } from '../context/ScaleContext';
+import { useScaleChecked } from '../context/ScaleContext';
 import DeleteButton from '../elements/DeleteButton';
 import { DELETE_BASE_LINE_ZONE } from '../reducer/types/Types';
 
@@ -31,7 +31,7 @@ const styles = css`
 function BaseLineZones() {
   const { toolOptions } = useChartData();
 
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
 
   const deleteRangeHandler = useCallback(
