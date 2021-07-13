@@ -152,6 +152,7 @@ function Range({
 
   return (
     <g
+      data-test-id="range"
       style={{ outline: 'none' }}
       css={
         isBlockedByEditing ||
