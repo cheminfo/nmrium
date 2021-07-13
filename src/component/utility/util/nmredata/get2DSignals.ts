@@ -34,7 +34,6 @@ export async function get2DSignals(
 
     partTag += await addSource(nmrRecord, {
       spectrum,
-      tag: partTag,
       source,
     });
 

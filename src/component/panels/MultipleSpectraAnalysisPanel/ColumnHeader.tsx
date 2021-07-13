@@ -55,7 +55,7 @@ const columnsFilters: Array<{ key: string; label: string }> = [
 interface ColumnHeaderProps {
   charLabel: string;
   rangeLabel: string;
-  onColumnFilter: () => void;
+  onColumnFilter: (element: any) => void;
   data: {
     type: string;
     valueKey: string;

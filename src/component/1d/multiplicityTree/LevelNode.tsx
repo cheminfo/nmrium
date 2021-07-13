@@ -1,4 +1,4 @@
-import { useScale } from '../../context/ScaleContext';
+import { useScaleChecked } from '../../context/ScaleContext';
 
 import { SignalNodeProps } from './MultiplicityTree';
 import { TREE_LEVEL_COLORS } from './TreeColors';
@@ -10,7 +10,8 @@ interface LevelNodeProps {
 }
 
 function LevelNode({ signal, startY, levelHeight }: LevelNodeProps) {
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
+
   return (
     <line
       key={`startLevelNode_${signal.id}`}

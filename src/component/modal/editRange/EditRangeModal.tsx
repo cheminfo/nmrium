@@ -18,7 +18,7 @@ import {
 import { CHANGE_TEMP_RANGE } from '../../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 
-import SignalsForm from './forms/components/SignalsForm.jsx';
+import SignalsForm from './forms/components/SignalsForm';
 import useRangeFormValidation from './forms/validation/EditRangeValidation';
 
 const styles = css`
@@ -75,7 +75,7 @@ const styles = css`
 `;
 
 interface EditRangeModalProps {
-  onSaveEditRangeModal: (value: any) => Promise<void> | null;
+  onSaveEditRangeModal: (value: any) => Promise<void> | null | void;
   onCloseEditRangeModal: () => void;
   onZoomEditRangeModal: (value: any) => void;
   range: any;

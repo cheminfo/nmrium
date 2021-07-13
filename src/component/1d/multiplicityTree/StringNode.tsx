@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-import { useScale } from '../../context/ScaleContext';
+import { useScaleChecked } from '../../context/ScaleContext';
 
 import { SignalNodeProps } from './MultiplicityTree';
 
@@ -19,7 +19,7 @@ function StringNode({
   fontSize,
   showLabels,
 }: StringNodeProps) {
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
   return (
     <text
       key={`multiplicityString_${signal.id}`}

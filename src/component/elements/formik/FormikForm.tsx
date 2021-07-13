@@ -7,7 +7,7 @@ interface FormikFormProps {
   initialValues?: any;
   onSubmit?: (values: any, helpers: FormikHelpers<any>) => void;
   validationSchema?: any;
-  children: Array<ReactNode> | ReactNode;
+  children?: Array<ReactNode> | ReactNode;
   ref: any;
 }
 

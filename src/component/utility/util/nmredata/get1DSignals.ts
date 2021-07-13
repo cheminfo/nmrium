@@ -42,7 +42,6 @@ export async function get1DSignals(
 
     partTag += await addSource(nmrRecord, {
       spectrum,
-      tag: partTag,
       source,
     });
 

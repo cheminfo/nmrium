@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 
 import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
 import { useChartData } from '../context/ChartContext';
-import { useScale } from '../context/ScaleContext';
+import { useScaleChecked } from '../context/ScaleContext';
 
 import PeakNotation from './PeakNotation';
 
 function PeaksNotations() {
   const { data, activeSpectrum, verticalAlign, displayerKey, xDomains } =
     useChartData();
-  const { scaleX, scaleY } = useScale();
+  const { scaleX, scaleY } = useScaleChecked();
 
   const Peaks = useMemo(() => {
     const getVerticalAlign = (id) => {

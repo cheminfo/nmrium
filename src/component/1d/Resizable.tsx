@@ -3,7 +3,7 @@ import { Fragment, useCallback, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 
 import { useChartData } from '../context/ChartContext';
-import { useScale } from '../context/ScaleContext';
+import { useScaleChecked } from '../context/ScaleContext';
 
 interface ResizableProps {
   from: number;
@@ -20,19 +20,21 @@ function Resizable({ from, to, onDrag = () => null, onDrop }: ResizableProps) {
   const draggableRightRef = useRef(null);
   const draggableLeftRef = useRef(null);
 
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
 
   const handleRightStart = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     setRightDragVisibility(true);
   }, []);
+
   const handleRightDrag = useCallback(
     (e) => {
       onDrag({ from: scaleX().invert(e.layerX) });
     },
     [onDrag, scaleX],
   );
+
   const handleRightStop = useCallback(
     (e) => {
       e.preventDefault();
@@ -68,12 +70,14 @@ function Resizable({ from, to, onDrag = () => null, onDrop }: ResizableProps) {
     e.stopPropagation();
     setLeftDragVisibility(true);
   }, []);
+
   const handleLeftDrag = useCallback(
     (e) => {
       onDrag({ to: scaleX().invert(e.layerX) });
     },
     [onDrag, scaleX],
   );
+
   const handleLeftStop = useCallback(
     (e) => {
       e.preventDefault();
@@ -108,9 +112,11 @@ function Resizable({ from, to, onDrag = () => null, onDrop }: ResizableProps) {
       setEnable(false);
     }
   }, []);
+
   const mouseUpCaptureHandler = useCallback(() => {
     setEnable(true);
   }, []);
+
   const mouseOverHandler = useCallback(({ target, shiftKey }) => {
     if (shiftKey) {
       target.style.cursor = 'crosshair';

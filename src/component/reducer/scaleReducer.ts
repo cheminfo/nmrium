@@ -1,3 +1,4 @@
+import { ScaleLinear } from 'd3';
 import { produce } from 'immer';
 
 import { getXScale, getYScale } from '../1d/utilities/scale';
@@ -6,12 +7,21 @@ export const SET_X_SCALE = 'SET_X_SCALE';
 export const SET_Y_SCALE = 'SET_Y_SCALE';
 export const SET_SCALE = 'SET_SCALE';
 
-export const scaleInitialState = {
+type ScaleLinearNumberFunction = (
+  spectrumId?: number | null | string,
+) => ScaleLinear<number, number, number>;
+
+export interface ScaleState {
+  scaleX: ScaleLinearNumberFunction | null;
+  scaleY: ScaleLinearNumberFunction | null;
+}
+
+export const scaleInitialState: ScaleState = {
   scaleX: null,
   scaleY: null,
 };
 
-function innerScaleReducer(draft, action) {
+function innerScaleReducer(draft: ScaleState, action) {
   switch (action.type) {
     case SET_X_SCALE:
       draft.scaleX = (spectrumId = null) => getXScale(action, spectrumId);

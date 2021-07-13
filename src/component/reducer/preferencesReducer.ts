@@ -28,7 +28,28 @@ function getPreferencesbyMode(mode) {
   }
 }
 
-export const preferencesInitialState = {
+export interface PreferencesState {
+  basePreferences: any;
+  display: any;
+  controllers: {
+    mws: {
+      low: number;
+      high: number;
+    };
+    help: {
+      preventAutoHelp: boolean;
+    };
+    dimmedSpectraTransparency: number;
+  };
+  formatting: {
+    nucleus: Array<{ key: string; name: string; ppm: string; hz: string }>;
+    nucleusByKey: any;
+    panels: any;
+  };
+  dispatch: any;
+}
+
+export const preferencesInitialState: PreferencesState = {
   basePreferences: {},
   display: basic,
   controllers: {
@@ -65,7 +86,7 @@ function mapNucleus(draft) {
   }
 }
 
-function handleIniti(draft, action) {
+function handleIniti(draft: PreferencesState, action) {
   const nmrLocalStorageVersion = getLocalStorage(
     'nmr-local-storage-version',
     false,

@@ -113,6 +113,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   const handelBrushEnd = useCallback(
     (brushData) => {
       const propagateEvent = () => {
+        if (!scaleState.scaleX || !scaleState.scaleY) return;
+
         const { startX, endX } = brushData;
         const startXPPM = scaleState.scaleX().invert(startX);
         const endXPPM = scaleState.scaleX().invert(endX);
@@ -227,6 +229,8 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   const mouseClick = useCallback(
     (position) => {
       const propagateEvent = () => {
+        if (!scaleState.scaleX) return;
+
         const xPPM = scaleState.scaleX().invert(position.x);
         Events.emit('mouseClick', {
           ...position,

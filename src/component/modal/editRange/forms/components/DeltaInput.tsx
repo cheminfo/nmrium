@@ -14,7 +14,13 @@ const style: Record<'input' | 'container', CSSProperties> = {
   },
 };
 
-const DeltaInput = ({ signal, index, onFocus }) => {
+interface DeltaInputProps {
+  signal: any;
+  index: number;
+  onFocus: (element: any) => void;
+}
+
+function DeltaInput({ signal, index, onFocus }: DeltaInputProps) {
   return (
     <div style={{ display: 'flex' }}>
       <span>𝛅:</span>
@@ -33,6 +39,6 @@ const DeltaInput = ({ signal, index, onFocus }) => {
       </span>
     </div>
   );
-};
+}
 
 export default DeltaInput;

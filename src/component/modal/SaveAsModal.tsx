@@ -36,7 +36,7 @@ const INITIAL_VALUE = {
 };
 
 interface SaveAsModalProps {
-  onClose: (element?: any) => void;
+  onClose?: (element?: any) => void;
   onSave: (element: any) => void;
   name: string;
 }
@@ -51,7 +51,7 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
   const submitHandler = useCallback(
     (values) => {
       onSave(values);
-      onClose();
+      onClose?.();
     },
     [onClose, onSave],
   );

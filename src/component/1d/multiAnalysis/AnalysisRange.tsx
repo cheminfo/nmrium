@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { useCallback } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';
-import { useScale } from '../../context/ScaleContext';
+import { useScaleChecked } from '../../context/ScaleContext';
 import DeleteButton from '../../elements/DeleteButton';
 import { useHighlight } from '../../highlight';
 import {
@@ -53,7 +53,7 @@ interface AnalysisRangeProps {
 function AnalysisRange({ rangeData, columnKey }: AnalysisRangeProps) {
   const { from, to } = rangeData;
   const highlight = useHighlight([columnKey]);
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
 
   const deleteHandler = useCallback(() => {
@@ -95,6 +95,7 @@ function AnalysisRange({ rangeData, columnKey }: AnalysisRangeProps) {
           {columnKey}
         </text>
       </g>
+
       <Resizable
         from={rangeData.from}
         to={rangeData.to}

@@ -1,7 +1,7 @@
 import { CSSProperties } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
-import { useScale } from '../../context/ScaleContext';
+import { useScaleChecked } from '../../context/ScaleContext';
 import { options } from '../../toolbar/ToolTypes';
 
 const styles: CSSProperties = {
@@ -21,7 +21,7 @@ function VerticalIndicator() {
       data: { pivot },
     },
   } = useChartData();
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
 
   if (options.phaseCorrection.id !== selectedTool) return null;
   return (
