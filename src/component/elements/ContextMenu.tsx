@@ -51,8 +51,8 @@ const styles = css`
 `;
 
 function ContextMenu({ context }, ref) {
-  const [position, setPosition] = useState<{ lef: any; top: any }>({
-    lef: 0,
+  const [position, setPosition] = useState<{ left: any; top: any }>({
+    left: 0,
     top: 0,
   });
   const { rootRef, elementsWraperRef } = useGlobal();
@@ -105,7 +105,7 @@ function ContextMenu({ context }, ref) {
       top = `${clickY - rootH - 5}px`;
     }
 
-    setPosition({ lef: left, top });
+    setPosition({ left, top });
   };
 
   useImperativeHandle(ref, () => ({
