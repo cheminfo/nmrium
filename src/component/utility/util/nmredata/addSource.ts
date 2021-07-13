@@ -2,15 +2,12 @@ import Jszip from 'jszip';
 
 const jszip = new Jszip();
 
-interface addSourceOptionsProps {
+interface addSourceOptions {
   spectrum?: any;
   source?: any;
 }
 
-export async function addSource(
-  nmrRecord,
-  options: addSourceOptionsProps = {},
-) {
+export async function addSource(nmrRecord, options: addSourceOptions = {}) {
   const { spectrum, source } = options;
   const { file = {}, jcampURL } = source;
   let tag = '';

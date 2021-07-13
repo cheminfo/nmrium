@@ -31,7 +31,7 @@ const Hybridizations: Array<{ key: string; label: string; value: string }> = [
   },
 ];
 
-const DefaultTolerance: Record<'C' | 'H' | 'N' | 'F' | 'Si' | 'P', number> = {
+const DefaultTolerance = {
   C: 0.25,
   H: 0.02,
   N: 0.25,

@@ -1,6 +1,6 @@
 import lodashGet from 'lodash/get';
 
-import { ErrorColors, Errors } from './CorrelationTable/Constants';
+import { ErrorColors } from './CorrelationTable/Constants';
 
 function getAtomType(nucleus: string): string {
   return nucleus.split(/\d+/)[1];
@@ -12,18 +12,17 @@ function getLabelColor(correlationData, correlation) {
     `state.${correlation.atomType}.error`,
     null,
   );
+
   if (error) {
-    // eslint-disable-next-line @typescript-eslint/no-for-in-array
-    for (let errorIndex in Errors) {
+    for (let { key, color } of ErrorColors) {
       if (
-        ErrorColors[errorIndex].key !== 'incomplete' && // do not consider this for a single atom type
-        (ErrorColors[errorIndex].key === 'notAttached' ||
-          ErrorColors[errorIndex].key === 'ambiguousAttachment') &&
-        lodashGet(error, `${ErrorColors[errorIndex].key}`, []).some(
+        key !== 'incomplete' && // do not consider this for a single atom type
+        (key === 'notAttached' || key === 'ambiguousAttachment') &&
+        lodashGet(error, `${key}`, []).some(
           (index) => correlationData.values[index].id === correlation.id,
         )
       ) {
-        return ErrorColors[errorIndex].color;
+        return color;
       }
     }
   }

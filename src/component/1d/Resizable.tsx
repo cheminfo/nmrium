@@ -37,7 +37,6 @@ function Resizable({ from, to, onDrag = () => null, onDrop }: ResizableProps) {
 
   const handleRightStop = useCallback(
     (e) => {
-      if (!scaleX) return;
       e.preventDefault();
       e.stopPropagation();
 
@@ -74,7 +73,6 @@ function Resizable({ from, to, onDrag = () => null, onDrop }: ResizableProps) {
 
   const handleLeftDrag = useCallback(
     (e) => {
-      if (!scaleX) return;
       onDrag({ to: scaleX().invert(e.layerX) });
     },
     [onDrag, scaleX],

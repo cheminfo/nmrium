@@ -187,7 +187,7 @@ function MultiplicityTree({
     // third tree level
     _startY += levelHeight;
 
-    if (drawInFullRange && scaleX) {
+    if (drawInFullRange) {
       const _rangeFrom = scaleX()(rangeFrom);
       const _rangeTo = scaleX()(rangeTo);
 

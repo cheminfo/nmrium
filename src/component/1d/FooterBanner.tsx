@@ -189,14 +189,12 @@ function FooterBannerInner({
           {spectrum?.info?.originFrequency && step === 'brushing' && (
             <div>
               <span className="label"> ΔHz: </span>
-              {scaleX && (
-                <span className="value">
-                  {(
-                    (scaleX().invert(startX) - scaleX().invert(endX)) *
-                    spectrum?.info?.originFrequency
-                  ).toPrecision(5)}
-                </span>
-              )}
+              <span className="value">
+                {(
+                  (scaleX().invert(startX) - scaleX().invert(endX)) *
+                  spectrum?.info?.originFrequency
+                ).toPrecision(5)}
+              </span>
             </div>
           )}
           {step === 'brushing' && (

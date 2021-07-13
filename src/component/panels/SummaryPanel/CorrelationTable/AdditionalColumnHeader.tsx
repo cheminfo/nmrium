@@ -62,6 +62,7 @@ function AdditionalColumnHeader({
       },
       title:
         correlation.pseudo === false &&
+        // eslint-disable-next-line @typescript-eslint/require-array-sort-compare
         [correlation.experimentType.toUpperCase()]
           .concat(
             correlation.link.reduce((arr, link) => {
@@ -75,7 +76,7 @@ function AdditionalColumnHeader({
               return arr;
             }, []),
           )
-          .sort((a, b) => a - b)
+          .sort()
           .join('/'),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,

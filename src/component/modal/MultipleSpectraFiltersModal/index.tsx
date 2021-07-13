@@ -66,7 +66,7 @@ function MultipleSpectraFiltersModal({
   const refForm = useRef<any>();
 
   const dispatch = useDispatch();
-  const [filter, setFilter] = useState(0);
+  const [filter, setFilter] = useState('');
 
   const List = useMemo(() => {
     const list = REFERENCES[nucleus]
@@ -124,7 +124,7 @@ function MultipleSpectraFiltersModal({
   }, []);
 
   const filterOptions = useMemo(() => {
-    switch (String(filter)) {
+    switch (filter) {
       case Filters.fromTo.id:
         return <FromToFilter onSubmit={submitHandler} ref={refForm} />;
       case Filters.equallySpaced.id:

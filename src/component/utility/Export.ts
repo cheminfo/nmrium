@@ -188,12 +188,12 @@ function copyDataURLCliboard(image) {
 
 function copyBlobToCliboard(canvas) {
   canvas.toBlob((b) => {
-    // @ts-expect-error ClipboardItem is undefined ?
+    // @ts-expect-error ClipboardItem exists in some browsers
     const clip = new ClipboardItem({
       [b.type]: b,
     });
 
-    // @ts-expect-error write exists on some browser where ClipboardItem exists
+    // @ts-expect-error write exists in some browsers
     navigator.clipboard.write([clip]).then(
       () => {
         // eslint-disable-next-line no-console
@@ -226,7 +226,7 @@ function copyPNGToClipboard(elementID) {
       context?.drawImage(img, 0, 0);
       const png = canvas.toDataURL('image/png', 1);
 
-      // @ts-expect-error this write actually exists on some browsers
+      // @ts-expect-error write exists in some browsers
       if (navigator.clipboard.write) {
         copyBlobToCliboard(canvas);
       } else {
