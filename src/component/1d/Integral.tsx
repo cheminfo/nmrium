@@ -1,5 +1,5 @@
 import { xyReduce, xyIntegral } from 'ml-spectra-processing';
-import { useCallback, Fragment, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { usePreferences } from '../context/PreferencesContext';
 import { integralDefaultValues } from '../panels/extra/preferences/defaultValues';
@@ -70,10 +70,9 @@ function Integral({
   }, [integral, scaleX, scaleY, xDomain]);
 
   return (
-    <Fragment>
+    <g data-test-id="integral">
       <path
         className="line"
-        data-test-id="integral-path"
         stroke={integralSettings.color}
         strokeWidth={integralSettings.strokeWidth}
         fill="none"
@@ -85,7 +84,7 @@ function Integral({
       />
 
       <IntegralResizable integralData={integralData} />
-    </Fragment>
+    </g>
   );
 }
 

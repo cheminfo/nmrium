@@ -40,7 +40,7 @@ test('Check if the color picker is visible after click on the color-indicator', 
 test('Should Zoom', async () => {
   const nmrium = await NmriumPage.create();
   await nmrium.open1D();
-  const containerElemment = await nmrium.page.waitForSelector('.Pane1');
+  const containerElemment = await nmrium.waitForViewer();
 
   const boundingBox = (await containerElemment?.boundingBox()) as BoundingBox;
 
@@ -74,7 +74,7 @@ test('Check change spectrum color, Should be white', async () => {
   const nmrium = await NmriumPage.create();
   await nmrium.open1D();
 
-  await nmrium.page.waitForSelector('.Pane1');
+  await nmrium.waitForViewer();
 
   //open Change color modal
   await nmrium.page.click(':nth-match([data-test-id="color-indicator"], 1)');

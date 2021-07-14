@@ -27,4 +27,10 @@ export default class NmriumPage {
   public async clickPanel(title: string) {
     await this.page.click(`data-test-id=panel-title-${title}`);
   }
+
+  public async waitForViewer(timeout = 20000) {
+    return this.page.waitForSelector(`data-test-id=viewer`, {
+      timeout,
+    });
+  }
 }

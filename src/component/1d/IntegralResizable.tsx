@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, Fragment, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
@@ -83,39 +83,37 @@ function IntegralResizable({ integralData }: IntegralResizableProps) {
   const x1 = to ? scaleX()(to) : 0;
 
   return (
-    <Fragment>
-      <g
-        css={highlight.isActive ? stylesHighlighted : stylesOnHover}
-        onMouseEnter={handleOnEnterNotation}
-        onMouseLeave={handleOnMouseLeaveNotation}
+    <g
+      css={highlight.isActive ? stylesHighlighted : stylesOnHover}
+      onMouseEnter={handleOnEnterNotation}
+      onMouseLeave={handleOnMouseLeaveNotation}
+    >
+      <rect
+        data-no-export="true"
+        x={`${x1}`}
+        y="0"
+        width={`${x0 - x1}`}
+        height={height - margin.bottom}
+        className="highlight"
+      />
+      {/* {highlight.isActive && ( */}
+      <text
+        x={x1}
+        y={height - margin.bottom + 30}
+        fill="black"
+        style={{ fontSize: '12px', fontWeight: 'bold' }}
       >
-        <rect
-          data-no-export="true"
-          x={`${x1}`}
-          y="0"
-          width={`${x0 - x1}`}
-          height={height - margin.bottom}
-          className="highlight"
-        />
-        {/* {highlight.isActive && ( */}
-        <text
-          x={x1}
-          y={height - margin.bottom + 30}
-          fill="black"
-          style={{ fontSize: '12px', fontWeight: 'bold' }}
-        >
-          {integral !== undefined ? integral.toFixed(2) : ''}
-        </text>
-        {/* )} */}
-        <Resizable
-          from={integralData.from}
-          to={integralData.to}
-          onDrag={dragHandler}
-          onDrop={handleOnStopResizing}
-          data-no-export="true"
-        />
-      </g>
-    </Fragment>
+        {integral !== undefined ? integral.toFixed(2) : ''}
+      </text>
+      {/* )} */}
+      <Resizable
+        from={integralData.from}
+        to={integralData.to}
+        onDrag={dragHandler}
+        onDrop={handleOnStopResizing}
+        data-no-export="true"
+      />
+    </g>
   );
 }
 

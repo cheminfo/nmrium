@@ -384,11 +384,17 @@ function NMRium({
                                       setResizeEventStart(true);
                                     }}
                                   >
-                                    {displayerMode === DISPLAYER_MODE.DM_1D ? (
-                                      <Viewer1D emptyText={emptyText} />
-                                    ) : (
-                                      <Viewer2D emptyText={emptyText} />
-                                    )}
+                                    <div
+                                      style={{ width: '100%', height: '100%' }}
+                                      data-test-id="viewer"
+                                    >
+                                      {displayerMode ===
+                                      DISPLAYER_MODE.DM_1D ? (
+                                        <Viewer1D emptyText={emptyText} />
+                                      ) : (
+                                        <Viewer2D emptyText={emptyText} />
+                                      )}
+                                    </div>
                                     {!isRightPanelHide ? <Panels /> : <div />}
                                   </SplitPane>
                                 </DropZone>
