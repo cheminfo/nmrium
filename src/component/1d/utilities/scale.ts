@@ -1,6 +1,6 @@
 import { scaleLinear } from 'd3';
 
-function getXScale(state, spectrumId: number | null = null) {
+function getXScale(state, spectrumId: number | null | string = null) {
   const { width, margin, xDomains, xDomain, mode } = state;
   const range =
     mode === 'RTL'
@@ -9,7 +9,7 @@ function getXScale(state, spectrumId: number | null = null) {
   return scaleLinear(spectrumId ? xDomains[spectrumId] : xDomain, range);
 }
 
-function getYScale(state, spectrumId: number | null = null) {
+function getYScale(state, spectrumId: number | null | string = null) {
   const { height, margin, verticalAlign, yDomain, yDomains } = state;
   const _height =
     verticalAlign.flag && !verticalAlign.stacked

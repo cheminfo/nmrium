@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { css, SerializedStyles } from '@emotion/react';
 import { CSSProperties, ReactNode, useCallback } from 'react';
 
 import DeleteButton from './DeleteButton';
@@ -18,9 +18,9 @@ const styles = (styles) => css`
 
 export interface InternalTabProps {
   tabid: string;
-  tablabel: string;
+  tablabel?: string;
   isActive: boolean;
-  tabstyles?: CSSProperties;
+  tabstyles?: CSSProperties | SerializedStyles;
   canDelete?: boolean;
   onDelete?: (element: any) => void;
   onClick?: (element: any) => void;
@@ -37,11 +37,13 @@ export interface InternalTabProps {
 
 export interface TabProps {
   tabid: string;
-  tablabel: string;
+  tablabel?: string;
   canDelete?: boolean;
   onDelete?: (element: any) => void;
-  tabstyles?: CSSProperties;
+  tabstyles?: CSSProperties | SerializedStyles;
   children: ReactNode;
+  render?: () => ReactNode;
+  className?: string;
 }
 
 export function InternalTab({
@@ -81,7 +83,9 @@ export function InternalTab({
   return (
     <li className={className} onClick={clickHandler} css={styles(tabstyles)}>
       {canDelete && <DeleteButton onDelete={deleteHandler} />}
-      {render ? render({ isActive, title: tablabel, id: tabid }) : tablabel}
+      {render
+        ? render({ isActive, title: tablabel || '', id: tabid })
+        : tablabel}
     </li>
   );
 }

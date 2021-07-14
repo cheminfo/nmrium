@@ -89,7 +89,7 @@ export default function MoleculePanelHeader({
   const assignmentData = useAssignmentData();
 
   const saveAsSVGHandler = useCallback(() => {
-    exportAsSVG('molFile', `molSVG${currentIndex}`);
+    exportAsSVG(`molSVG${currentIndex}`, 'molFile');
   }, [currentIndex]);
 
   const saveAsPNGHandler = useCallback(() => {

@@ -4,7 +4,7 @@ import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
-import { useScale } from '../../context/ScaleContext';
+import { useScaleChecked } from '../../context/ScaleContext';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 
 const style: CSSProperties = {
@@ -20,7 +20,7 @@ const style: CSSProperties = {
 
 function XLabelPointer() {
   const { height, width, margin, data, activeSpectrum } = useChartData();
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
 
   const position = useContext(MouseContext);
   const brushState = useContext(BrushContext);

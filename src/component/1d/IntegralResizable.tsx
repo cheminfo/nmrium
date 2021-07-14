@@ -4,7 +4,7 @@ import { useCallback, useState, useEffect } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
-import { useScale } from '../context/ScaleContext';
+import { useScaleChecked } from '../context/ScaleContext';
 import { TYPES, useHighlight } from '../highlight/index';
 import { RESIZE_INTEGRAL } from '../reducer/types/Types';
 
@@ -47,7 +47,7 @@ interface IntegralResizableProps {
 
 function IntegralResizable({ integralData }: IntegralResizableProps) {
   const { height, margin } = useChartData();
-  const { scaleX } = useScale();
+  const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
 
   const [{ id, integral, from, to }, setIntgral] = useState(integralData);

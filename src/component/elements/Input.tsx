@@ -34,7 +34,7 @@ export interface InputProps
   type?: 'text' | 'number';
   enableAutoSelect?: boolean;
   debounceTime?: number;
-  onFocus?: () => void;
+  onFocus?: (element?: any) => void;
   onBlur?: () => void;
   onChange?: (element: any) => void;
   checkValue?: (element: any) => void;

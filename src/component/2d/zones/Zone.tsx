@@ -72,11 +72,11 @@ const Zone = ({ zoneData, isVisible }: ZoneProps) => {
       }
       key={id}
       onMouseEnter={() => {
-        assignmentZone.onMouseEnter();
+        assignmentZone.onMouseEnter(undefined);
         highlightZone.show();
       }}
       onMouseLeave={() => {
-        assignmentZone.onMouseLeave();
+        assignmentZone.onMouseLeave(undefined);
         highlightZone.hide();
       }}
     >

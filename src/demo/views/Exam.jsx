@@ -7,7 +7,7 @@ import { MF } from 'react-mf';
 import { StructureEditor } from 'react-ocl/full';
 
 import NMRium from '../../component/NMRium';
-import { copyTextToClipboard } from '../../component/utility/Export.js';
+import { copyTextToClipboard } from '../../component/utility/Export';
 
 let answers = JSON.parse(localStorage.getItem('nmrium-exams') || '{}');
 
