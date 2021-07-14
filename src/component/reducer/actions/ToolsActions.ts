@@ -482,7 +482,7 @@ function setActiveTab(
   const groupByNucleus = GroupByInfoKey('nucleus');
   const dataGroupByNucleus = groupByNucleus(draft.data);
   const tabs = Object.keys(dataGroupByNucleus);
-  const currentTab = !tab || !tabs.includes(tab ?? '') ? tabs[0] : tab;
+  const currentTab = !tab || !tabs.includes(tab || '') ? tabs[0] : tab;
   setTab(draft, dataGroupByNucleus, currentTab, refreshTabActiveSpectrums);
   resetTool(draft);
 
