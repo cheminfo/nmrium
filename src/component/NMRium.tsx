@@ -203,9 +203,12 @@ export interface NMRiumData {
 }
 
 const defaultPreferences = {};
+const defaultData: NMRiumData = {
+  spectra: [],
+};
 
 function NMRium({
-  data: dataProp,
+  data: dataProp = defaultData,
   mode = NMRiumMode.DEFAULT,
   preferences = defaultPreferences,
   getSpinner = defaultGetSpinner,
