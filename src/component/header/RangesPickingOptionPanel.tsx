@@ -84,6 +84,7 @@ function RangesPickingOptionPanel() {
         type="button"
         style={styles.actionButton}
         onClick={handleApplyFilter}
+        data-test-id="auto-ranges-detection-btn"
       >
         Auto ranges picking
       </button>

@@ -76,3 +76,20 @@ test('Should ranges Add/resize/delete', async () => {
   // test delete the second range
   await deleteRange(nmrium);
 });
+
+test('Automatic ranges detection should work', async () => {
+  const nmrium = await NmriumPage.create();
+  await nmrium.open1D();
+
+  await nmrium.waitForViewer();
+
+  //select range tool
+  await nmrium.page.click('data-test-id=tool-rangesPicking');
+
+  //apply auto ranges detection
+  await nmrium.page.click('data-test-id=auto-ranges-detection-btn');
+
+  expect(
+    (await nmrium.page.$$('data-test-id=range')).length,
+  ).toBeGreaterThanOrEqual(10);
+});
