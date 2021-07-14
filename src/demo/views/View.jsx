@@ -30,11 +30,11 @@ export default function View(props) {
         setData(_d);
       });
     } else {
-      setData({});
+      setData(undefined);
     }
   }, [baseURL, file, props]);
 
-  const changeHadnler = useCallback((logData) => {
+  const changeHandler = useCallback((logData) => {
     setCallbackData((prevLogs) => {
       return prevLogs.concat({
         datetime: new Date().toLocaleTimeString(),
@@ -113,7 +113,7 @@ export default function View(props) {
       >
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
           <div style={{ width: isCallbackVisible ? '75%' : '100%' }}>
-            <NMRium data={data} onDataChange={changeHadnler} />
+            <NMRium data={data} onDataChange={changeHandler} />
           </div>
           {process.env.NODE_ENV !== 'production' && (
             <div
