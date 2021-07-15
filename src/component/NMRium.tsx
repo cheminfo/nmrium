@@ -2,7 +2,6 @@
 
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
-import PropTypes from 'prop-types';
 import {
   useEffect,
   useCallback,
@@ -148,6 +147,7 @@ export interface NMRiumProps {
   mode?: NMRiumMode;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
+  initialShowPanels?: boolean;
   /**
    * Returns a custom spinner that will be rendered while loading data.
    */
@@ -214,6 +214,7 @@ function NMRium({
   getSpinner = defaultGetSpinner,
   onDataChange,
   emptyText,
+  initialShowPanels = true,
 }: NMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWraperRef = useRef<HTMLDivElement>(null);
@@ -224,7 +225,7 @@ function NMRium({
       toggle(false);
     },
   });
-  const [isRightPanelHide, hideRightPanel] = useState(false);
+  const [isRightPanelHide, hideRightPanel] = useState(!initialShowPanels);
   const [isResizeEventStart, setResizeEventStart] = useState(false);
 
   const [state, dispatch] = useReducer<Reducer<any, any>, any>(
@@ -232,6 +233,7 @@ function NMRium({
     initialState,
     intiState,
   );
+
   const [preferencesState, dispatchPreferences] = useReducer<Reducer<any, any>>(
     preferencesReducer,
     preferencesInitialState,
@@ -429,42 +431,5 @@ function NMRium({
     </ErrorBoundary>
   );
 }
-
-NMRium.propTypes = {
-  onDataChange: PropTypes.func,
-  mode: PropTypes.oneOf(Object.values(NMRiumMode)),
-  preferences: PropTypes.shape({
-    general: PropTypes.shape({
-      disableMultipletAnalysis: PropTypes.bool,
-      hideSetSumFromMolecule: PropTypes.bool,
-    }),
-    panels: PropTypes.shape({
-      hideSpectraPanel: PropTypes.bool,
-      hideInformationPanel: PropTypes.bool,
-      hidePeaksPanel: PropTypes.bool,
-      hideIntegralsPanel: PropTypes.bool,
-      hideRangesPanel: PropTypes.bool,
-      hideStructuresPanel: PropTypes.bool,
-      hideFiltersPanel: PropTypes.bool,
-    }),
-    toolBarButtons: PropTypes.shape({
-      hideZoomTool: PropTypes.bool,
-      hideZoomOutTool: PropTypes.bool,
-      hideImport: PropTypes.bool,
-      hideExportAs: PropTypes.bool,
-      hideSpectraStackAlignments: PropTypes.bool,
-      hideSpectraCenterAlignments: PropTypes.bool,
-      hideRealImaginary: PropTypes.bool,
-      hidePeakTool: PropTypes.bool,
-      hideIntegralTool: PropTypes.bool,
-      hideAutoRangesTool: PropTypes.bool,
-      hideZeroFillingTool: PropTypes.bool,
-      hidePhaseCorrectionTool: PropTypes.bool,
-      hideBaseLineCorrectionTool: PropTypes.bool,
-      hideFFTTool: PropTypes.bool,
-      hideExclusionZonesTool: PropTypes.bool,
-    }),
-  }),
-};
 
 export default memo(NMRium);

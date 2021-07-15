@@ -1,12 +1,21 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, CSSProperties } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
-import routes from '../samples';
+import routes from '../samples.json';
 
-import AdminLayout from './Admin.tsx';
-import SingleDisplayerLayout from './SingleDisplayerLayout.jsx';
+import AdminLayout from './Admin';
+import SingleDisplayerLayout from './SingleDisplayerLayout';
 
-const styles = {
+const styles: Record<
+  | 'bodyContainer'
+  | 'container'
+  | 'normal'
+  | 'error'
+  | 'errorHeader'
+  | 'normalHeader'
+  | 'loadButton',
+  CSSProperties
+> = {
   bodyContainer: {
     display: 'flex',
     justifyContent: 'center',
@@ -15,7 +24,6 @@ const styles = {
     width: '100vw',
     backgroundColor: '#e3e3e3',
   },
-
   container: {
     width: '30%',
     height: '40%',
@@ -49,6 +57,7 @@ const styles = {
     cursor: 'pointer',
   },
 };
+
 async function loadData(url) {
   const response = await fetch(url);
   try {
@@ -70,11 +79,18 @@ function checkStatus(response) {
 }
 
 const Main = (props) => {
-  const [data, setRoutes] = useState({
+  const [data, setRoutes] = useState<{
+    isLoaded: boolean;
+    status: number;
+    routes?: Array<any>;
+    baseURL?: string;
+    path?: string;
+  }>({
     isLoaded: false,
     status: 200,
     routes: [],
   });
+
   const [dashBoardType, setDashBoardType] = useState('');
 
   const loadHandler = useCallback(() => {
@@ -90,11 +106,13 @@ const Main = (props) => {
     const qs = new URL(href).searchParams;
     if (qs.has('sampleURL')) {
       const sampleURL = qs.get('sampleURL');
+      if (!sampleURL) return;
+
       const extention = getFileExtension(sampleURL).toLowerCase();
       switch (extention) {
         case 'json': {
           setDashBoardType('multi');
-          loadData(sampleURL).then((remoteRoutes) => {
+          void loadData(sampleURL).then((remoteRoutes) => {
             if (remoteRoutes) {
               const baseURL = sampleURL.replace(
                 // eslint-disable-next-line no-useless-escape

@@ -1,11 +1,11 @@
 import { SubMenu, MenuItem } from 'rc-menu';
 import { createElement, cloneElement } from 'react';
 
-function buildMenu(array = []) {
-  let menu = [];
+function buildMenu(array: Array<any> = []) {
+  let menu: Array<any> = [];
   for (const item of array) {
     if (item.children && Array.isArray(item.children)) {
-      menu.push(getMenu([item], [], item.groupName));
+      menu.push(getMenu(item.groupName, [item], []));
     } else {
       menu.push(
         createElement(MenuItem, { key: item.title, ...item }, item.title),
@@ -15,15 +15,20 @@ function buildMenu(array = []) {
   return menu;
 }
 
-// eslint-disable-next-line default-param-last
-function getMenu(array = [], nodes = [], key, parentIndex = 0) {
+function getMenu(
+  key,
+  array: Array<any> = [],
+  nodes: Array<any> = [],
+  parentIndex = 0,
+) {
   let _nodes = nodes;
-  let children = [];
+  let children: Array<any> = [];
 
   if (parentIndex !== -1 && _nodes[parentIndex]) {
     _nodes[parentIndex] = cloneElement(_nodes[parentIndex], {}, children);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-for-in-array
   for (const index in array) {
     if (array[index].children && Array.isArray(array[index].children)) {
       const node = createElement(SubMenu, {
@@ -31,7 +36,7 @@ function getMenu(array = [], nodes = [], key, parentIndex = 0) {
         title: array[index].groupName,
       });
       _nodes.push(node);
-      return getMenu(array[index].children, _nodes, index + key, 0);
+      return getMenu(index + key, array[index].children, _nodes, 0);
     } else {
       children.push(
         createElement(
@@ -45,8 +50,8 @@ function getMenu(array = [], nodes = [], key, parentIndex = 0) {
   return _nodes;
 }
 
-function mapTreeToFlatArray(array = []) {
-  let routes = [];
+function mapTreeToFlatArray(array: Array<any> = []) {
+  let routes: Array<any> = [];
   for (const item of array) {
     if (item.children && Array.isArray(item.children)) {
       routes = routes.concat(getFlatArray([item], []));
@@ -57,7 +62,7 @@ function mapTreeToFlatArray(array = []) {
   return routes;
 }
 
-function getFlatArray(inputArray = [], children = []) {
+function getFlatArray(inputArray: Array<any> = [], children: Array<any> = []) {
   let _children = children;
 
   for (const item of inputArray) {

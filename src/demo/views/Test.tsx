@@ -17,12 +17,12 @@ function checkStatus(response) {
 }
 
 export default function Test(props) {
-  const [data, setData] = useState();
+  const [data, setData] = useState<any>();
   const { file, title } = props;
 
   useEffect(() => {
     if (file) {
-      loadData(file).then((d) => {
+      void loadData(file).then((d) => {
         setData(d);
       });
     } else {

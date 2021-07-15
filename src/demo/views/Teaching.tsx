@@ -17,12 +17,12 @@ function checkStatus(response) {
 }
 
 export default function Teaching(props) {
-  const [data, setData] = useState();
+  const [data, setData] = useState<any>();
   const { file, title, baseURL } = props;
 
   useEffect(() => {
     if (file) {
-      loadData(file).then((d) => {
+      void loadData(file).then((d) => {
         const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
         setData(_d);
       });
