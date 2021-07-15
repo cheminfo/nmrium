@@ -195,6 +195,7 @@ function PeakNotation({
         transform={`translate(${x}, ${y})`}
         onMouseEnter={handleOnEnterNotation}
         onMouseLeave={handleOnMouseLeaveNotation}
+        data-test-id="peak"
       >
         <line
           x1="0"
