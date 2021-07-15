@@ -137,6 +137,7 @@ function ZeroFillingOptionsPanel() {
         type="button"
         style={styles.actionButton}
         onClick={handleApplyFilter}
+        data-test-id="apply-zero-filling-btn"
       >
         Apply
       </button>

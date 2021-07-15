@@ -352,6 +352,7 @@ function FunctionToolBarInner({
             className="cheminfo"
             type="button"
             onClick={handleOnFFTFilter}
+            data-test-id="tool-FFT-filter"
           >
             <ToolTip
               title={`FFT Filter`}

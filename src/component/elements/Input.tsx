@@ -178,6 +178,7 @@ const Input = forwardRefWithAs(
           {...props}
           ref={ref}
           name={name}
+          data-test-id={name ? `input-${name}` : ''}
           style={{
             ...styles.input,
             ...(style?.input ? style.input : {}),
