@@ -3,7 +3,9 @@ import { useState, useEffect } from 'react';
 import NMRium from '../../component/NMRium';
 
 export default function SingleView(props) {
-  const [data, setData] = useState();
+  const [data, setData] = useState<
+    { spectra: Array<{ source: { jcampURL: string } }> } | undefined
+  >();
   const { path } = props;
 
   useEffect(() => {
@@ -20,7 +22,7 @@ export default function SingleView(props) {
     if (_data) {
       setData(_data);
     } else {
-      setData({});
+      setData(undefined);
     }
   }, [path, props]);
 

@@ -104,8 +104,8 @@ const styles = css`
 `;
 
 export default function Exercise(props) {
-  const [data, setData] = useState();
-  const [resultFlag, setResultFlag] = useState(null);
+  const [data, setData] = useState<any>();
+  const [resultFlag, setResultFlag] = useState<boolean | null>(null);
   const [answerAreaVisible, showAnswerArea] = useState(false);
   const { file, title, baseURL } = props;
 
@@ -130,10 +130,10 @@ export default function Exercise(props) {
 
   useEffect(() => {
     if (file) {
-      loadData(file).then((d) => {
+      void loadData(file).then((d) => {
         const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
 
-        if (_d && _d.molecules && _d.molecules[0] && _d.molecules[0].molfile) {
+        if (_d?.molecules?.[0]?.molfile) {
           const molecule = Molecule.fromMolfile(_d.molecules[0].molfile);
           const idCode = molecule.getIDCode();
           let currentAnswer = answers[idCode];
@@ -210,20 +210,20 @@ export default function Exercise(props) {
               svgMenu
               fragment={false}
               onChange={checkAnswer}
-              initialMolfile={data && data.answer && data.answer.currentAnswer}
+              initialMolfile={data?.answer?.currentAnswer}
             />
           </div>
           <div css={bottomRightContainer}>
             <div css={mfCss}>
               <MF
                 style={{ color: 'navy', fontSize: 30 }}
-                mf={data && data.answer && data.answer.mf}
+                mf={data?.answer?.mf}
               />
             </div>
             <div css={resultContainer}>
               <div
                 style={{
-                  ...styles.result,
+                  ...styles,
                   backgroundColor:
                     resultFlag == null ? 'white' : resultFlag ? 'green' : 'red',
                   color: resultFlag == null ? 'black' : 'white',

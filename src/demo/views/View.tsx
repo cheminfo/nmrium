@@ -20,12 +20,12 @@ function checkStatus(response) {
 export default function View(props) {
   const [data, setData] = useState();
   const { file, title, baseURL } = props;
-  const [callbackData, setCallbackData] = useState([]);
+  const [callbackData, setCallbackData] = useState<Array<any>>([]);
   const [isCallbackVisible, showCallback] = useState(false);
 
   useEffect(() => {
     if (file) {
-      loadData(file).then((d) => {
+      void loadData(file).then((d) => {
         const _d = JSON.parse(JSON.stringify(d).replace(/\.\/+?/g, baseURL));
         setData(_d);
       });
@@ -42,9 +42,11 @@ export default function View(props) {
       });
     });
   }, []);
+
   const showCallbackHandler = useCallback(() => {
     showCallback((prevflag) => !prevflag);
   }, []);
+
   const clearHandler = useCallback(() => {
     setCallbackData([]);
   }, []);
