@@ -1,7 +1,7 @@
 declare module 'nmr-processing' {
   import type { Molecule } from 'openchemlib/full';
 
-  declare function predictionProton(
+  declare function predictProton(
     molecule: Molecule,
     options: any,
   ): Promise<any>;
