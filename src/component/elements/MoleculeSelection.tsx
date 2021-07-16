@@ -100,11 +100,13 @@ export default function MoleculeSelection(props: MoleculeSelectionProps) {
           {molecules?.map((mol, index) => (
             <div key={mol.key} className="slider">
               <div>
-                <MolfileSvgRenderer
-                  id={`molSVG${index}`}
-                  width={120}
-                  molfile={mol.molfile}
-                />
+                {mol.molfile && (
+                  <MolfileSvgRenderer
+                    id={`molSVG${index}`}
+                    width={120}
+                    molfile={mol.molfile}
+                  />
+                )}
               </div>
               <p>
                 <MF mf={mol.mf} /> - {mol.mw?.toFixed(2)}
