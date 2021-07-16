@@ -27,7 +27,7 @@
     "test": "npm run test-only && npm run build && npm run test-e2e && npm run eslint && npm run prettier && npm run check-types",
     "test-only": "jest --coverage",
     "test-e2e": "start-server-and-test test-e2e-server http://localhost:3000 test-e2e-jest",
-    "test-e2e-jest": "cd test-e2e && jest",
+    "test-e2e-jest": "cd test-e2e && jest --runInBand",
     "test-e2e-server": "serve -l 3000 build"
   },
   "bugs": {
