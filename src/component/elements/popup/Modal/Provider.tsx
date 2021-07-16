@@ -239,6 +239,7 @@ function Provider({
                       style={{
                         ...style,
                         margin: offset,
+                        position: 'static',
                         pointerEvents: 'all',
                         userSelect: 'none',
                       }}
