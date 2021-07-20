@@ -46,9 +46,20 @@ function EditableColumn(props: EditableColumnProps, ref) {
 
   const editModeHandler = useCallback(
     (flag, event = null) => {
+      function mouseClickCallback(e: MouseEvent) {
+        if (
+          !(e.target as HTMLInputElement).classList.contains('editable-column')
+        ) {
+          enableEdit(false);
+          window.removeEventListener('mousedown', mouseClickCallback);
+        }
+      }
+
       if (!flag) {
-        if (event.keyCode === 13) {
-          // when press Enter
+        window.removeEventListener('mousedown', mouseClickCallback);
+        // 13 enter, 9 tab
+        if ([13, 9].includes(event.keyCode)) {
+          // when press Enter or Tab
           onSave(event);
           enableEdit(flag);
         } else if (event.keyCode === 27) {
@@ -56,6 +67,7 @@ function EditableColumn(props: EditableColumnProps, ref) {
           enableEdit(flag);
         }
       } else {
+        window.addEventListener('mousedown', mouseClickCallback);
         onEditStart(event);
         enableEdit(flag);
       }
@@ -77,6 +89,7 @@ function EditableColumn(props: EditableColumnProps, ref) {
         <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
           <Input
             enableAutoSelect
+            className="editable-column"
             value={value}
             type={type}
             onKeyDown={(e) => editModeHandler(false, e)}
