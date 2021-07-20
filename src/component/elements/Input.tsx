@@ -2,6 +2,7 @@ import debounce from 'lodash/debounce';
 import { useState, useEffect, useCallback, useRef, CSSProperties } from 'react';
 
 import { forwardRefWithAs } from '../../utils';
+import useCombinedRefs from "../hooks/useCombinedRefs";
 
 const styles: Record<'label' | 'input', CSSProperties> = {
   label: {
@@ -64,6 +65,9 @@ const Input = forwardRefWithAs(
     ref,
   ) => {
     const [val, setVal] = useState(value);
+    const localRef = useRef<any>();
+    const combinedRef = useCombinedRefs([ref, localRef]);
+
     const debounceOnChange = useRef(
       debounce((value) => {
         onChange(value);
@@ -76,9 +80,9 @@ const Input = forwardRefWithAs(
 
     useEffect(() => {
       if (enableAutoSelect) {
-        ref?.current?.select();
+        combinedRef?.current?.select();
       }
-    }, [enableAutoSelect, ref]);
+    }, [enableAutoSelect, combinedRef]);
 
     const getValue = useCallback(
       (value) => {
@@ -176,7 +180,7 @@ const Input = forwardRefWithAs(
         )}
         <input
           {...props}
-          ref={ref}
+          ref={combinedRef}
           name={name}
           data-test-id={name ? `input-${name}` : ''}
           style={{
