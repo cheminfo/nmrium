@@ -2,7 +2,7 @@ import debounce from 'lodash/debounce';
 import { useState, useEffect, useCallback, useRef, CSSProperties } from 'react';
 
 import { forwardRefWithAs } from '../../utils';
-import useCombinedRefs from "../hooks/useCombinedRefs";
+import useCombinedRefs from '../hooks/useCombinedRefs';
 
 const styles: Record<'label' | 'input', CSSProperties> = {
   label: {

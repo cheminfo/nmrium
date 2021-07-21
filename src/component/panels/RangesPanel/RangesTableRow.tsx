@@ -33,21 +33,14 @@ interface RangesTableRowProps {
   rowData: any;
   onUnlink: (a: any, b?: any) => void;
   onContextMenu: (element: any, data: any) => void;
-  onColumnEditStart: (a: string, b: string) => void;
   preferences: string;
-  editFlags: {
-    relativeFlags: any;
-    signalFlags: any;
-  };
 }
 
 function RangesTableRow({
   rowData,
   onUnlink,
   onContextMenu,
-  onColumnEditStart,
   preferences,
-  editFlags: { relativeFlags, signalFlags },
 }: RangesTableRowProps) {
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(rowData.id);
@@ -192,8 +185,6 @@ function RangesTableRow({
         rowData={rowData}
         onHoverSignal={onHoverSignal}
         preferences={preferences}
-        onEditStart={(signalId) => onColumnEditStart('signal', `${signalId}`)}
-        editStatus={signalFlags[rowData.tableMetaInfo.signal.id]}
       />
 
       {isColumnVisible(preferences, 'showRelative') && (
@@ -202,8 +193,6 @@ function RangesTableRow({
           rowSpanTags={rowSpanTags}
           onHoverRange={onHoverRange}
           format={getFormat('relativeFormat', undefined)}
-          onEditStart={() => onColumnEditStart('relative', rowData.id)}
-          editStatus={relativeFlags[rowData.id]}
         />
       )}
 

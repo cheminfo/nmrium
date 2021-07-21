@@ -1,14 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
-import { Fragment, useCallback, useEffect, useRef } from 'react';
+import { Fragment, useCallback, useRef } from 'react';
 import { FaLink } from 'react-icons/fa';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
-import { useGlobal } from '../../context/GlobalContext';
 import ContextMenu from '../../elements/ContextMenu';
 import useTableSortBy from '../../hooks/useTableSortBy';
-import useToggleStatus from '../extra/utilities/UseToggleStatus';
 
 import RangesTableRow from './RangesTableRow';
 import useMapRanges from './useMapRanges';
@@ -58,9 +56,6 @@ function RangesTable({ tableData, onUnlink, context, activeTab, preferences }) {
   const contextRef = useRef<any>();
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(tableData);
   const data = useMapRanges(sortedData);
-  const [relativeFlags, toggleRelativeColumn] = useToggleStatus('id', data);
-  const [signalFlags, toggleSignalColumn] = useToggleStatus('id', data);
-  const { rootRef } = useGlobal();
 
   const isVisible = (key) => {
     return lodashGet(preferences, key, false);
@@ -75,32 +70,6 @@ function RangesTable({ tableData, onUnlink, context, activeTab, preferences }) {
     },
     [contextRef],
   );
-
-  const columnEditStartHandler = useCallback(
-    (columnKey, id) => {
-      if (columnKey === 'relative') {
-        toggleRelativeColumn(id);
-      } else if (columnKey === 'signal') {
-        toggleSignalColumn(id);
-      }
-    },
-    [toggleRelativeColumn, toggleSignalColumn],
-  );
-
-  useEffect(() => {
-    const handleEditStart = () => {
-      columnEditStartHandler('realtive', null);
-      columnEditStartHandler('signal', null);
-    };
-    if (rootRef) {
-      rootRef.addEventListener('mousedown', handleEditStart);
-    }
-    return () => {
-      if (rootRef) {
-        rootRef.removeEventListener('mousedown', handleEditStart);
-      }
-    };
-  }, [columnEditStartHandler, rootRef]);
 
   return (
     <Fragment>
@@ -146,8 +115,6 @@ function RangesTable({ tableData, onUnlink, context, activeTab, preferences }) {
                 onUnlink={onUnlink}
                 onContextMenu={(e, rowData) => contextMenuHandler(e, rowData)}
                 preferences={preferences}
-                onColumnEditStart={columnEditStartHandler}
-                editFlags={{ relativeFlags, signalFlags }}
               />
             );
           })}
