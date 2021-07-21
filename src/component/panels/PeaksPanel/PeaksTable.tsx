@@ -1,4 +1,4 @@
-import { useCallback, useMemo, memo, useRef } from 'react';
+import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { useDispatch } from '../../context/DispatchContext';
@@ -26,7 +26,6 @@ interface PeaksTableProps {
 
 function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
   const dispatch = useDispatch();
-  const deltaPPMRefs = useRef<Array<any>>([]);
   const format = useFormatNumberByNucleus(info.nucleus);
 
   const deletePeakHandler = useCallback(
@@ -64,14 +63,6 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
     ],
     [deletePeakHandler],
   );
-
-  const editStartHander = useCallback((index) => {
-    deltaPPMRefs.current.forEach((ref, i) => {
-      if (index !== i && ref) {
-        ref.closeEdit();
-      }
-    });
-  }, []);
 
   const saveDeltaPPMRefsHandler = useCallback(
     (event, row) => {
@@ -123,8 +114,6 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
         accessor: (row) => format(row.value),
         Cell: ({ row }) => (
           <EditableColumn
-            onEditStart={() => editStartHander(row.index)}
-            ref={(ref) => (deltaPPMRefs.current[row.index] = ref)}
             value={format(row.original.value)}
             onSave={(event) => saveDeltaPPMRefsHandler(event, row.original)}
             type="number"
@@ -151,14 +140,7 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
       });
     }
     return cols.sort((object1, object2) => object1.index - object2.index);
-  }, [
-    activeTab,
-    editStartHander,
-    format,
-    initialColumns,
-    preferences,
-    saveDeltaPPMRefsHandler,
-  ]);
+  }, [activeTab, format, initialColumns, preferences, saveDeltaPPMRefsHandler]);
 
   return data && data.length > 0 ? (
     <ReactTable data={data} columns={tableColumns} />
