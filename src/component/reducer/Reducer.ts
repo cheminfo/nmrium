@@ -46,6 +46,13 @@ export interface ActiveSpectrum {
   index: number;
 }
 
+export interface Margin {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
 export const initialState = {
   data: [],
   contours: null,
@@ -130,7 +137,7 @@ export interface State {
   activeTab: any;
   width: number;
   height: number;
-  margin: { top: number; right: number; bottom: number; left: number };
+  margin: Margin;
   activeSpectrum: ActiveSpectrum | null;
   mode: string;
   molecules: Array<Molecule>;

@@ -197,7 +197,7 @@ function FunctionToolBarInner({
               key={options.zone2D.id}
               value={options.zone2D.id}
               className="fa"
-              isVisible={activeSpectrum ? true : false}
+              isVisible={activeSpectrum && !info?.isFid ? true : false}
             >
               <ToolTip
                 title={`${options.zone2D.label} ( Press r )`}
@@ -212,7 +212,7 @@ function FunctionToolBarInner({
           <ToggleButton
             key={options.slicingTool.id}
             value={options.slicingTool.id}
-            isVisible={activeSpectrum ? true : false}
+            isVisible={activeSpectrum && !info?.isFid ? true : false}
           >
             <ToolTip
               title={`${options.slicingTool.label}`}

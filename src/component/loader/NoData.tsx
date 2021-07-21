@@ -34,12 +34,14 @@ const styles = css`
 
 interface NoDataProps {
   isEmpty?: boolean;
+  canOpenLoader?: boolean;
   emptyText?: ReactNode;
 }
 
 function NoData({
   isEmpty = true,
   emptyText = 'Drag and drop here a JCAMP-DX, zipped Bruker folder, Jeol jdf or NMRium file',
+  canOpenLoader = true,
 }: NoDataProps) {
   const openLoader = useLoader();
 
@@ -48,7 +50,7 @@ function NoData({
   }
 
   return (
-    <div css={styles} onClick={openLoader}>
+    <div css={styles} {...(canOpenLoader && { onClick: openLoader })}>
       <p>{emptyText}</p>
     </div>
   );
