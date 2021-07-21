@@ -44,35 +44,34 @@ function EditableColumn(props: EditableColumnProps, ref) {
     },
   }));
 
+  const mouseClickCallback = useCallback((e: MouseEvent) => {
+    if (!(e.target as HTMLInputElement).classList.contains('editable-column')) {
+      enableEdit(false);
+      window.removeEventListener('mousedown', mouseClickCallback);
+    }
+  }, []);
+
   const editModeHandler = useCallback(
     (flag, event = null) => {
-      function mouseClickCallback(e: MouseEvent) {
-        if (
-          !(e.target as HTMLInputElement).classList.contains('editable-column')
-        ) {
-          enableEdit(false);
-          window.removeEventListener('mousedown', mouseClickCallback);
-        }
-      }
-
       if (!flag) {
-        window.removeEventListener('mousedown', mouseClickCallback);
         // 13 enter, 9 tab
         if ([13, 9].includes(event.keyCode)) {
           // when press Enter or Tab
           onSave(event);
+        }
+        // close edit mode if press Enter, Tab or Escape
+        if ([13, 9, 27].includes(event.keyCode)) {
           enableEdit(flag);
-        } else if (event.keyCode === 27) {
-          // when press Escape
-          enableEdit(flag);
+          window.removeEventListener('mousedown', mouseClickCallback);
         }
       } else {
+        // start edit mode and add mouse listener to handle mouse click outside the input to finish the mode
         window.addEventListener('mousedown', mouseClickCallback);
         onEditStart(event);
         enableEdit(flag);
       }
     },
-    [onEditStart, onSave],
+    [mouseClickCallback, onEditStart, onSave],
   );
 
   return (
