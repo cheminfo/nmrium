@@ -48,7 +48,7 @@ export async function get1DSignals(
     let toFix = getToFix(nucleus)[0];
 
     for (let range of ranges) {
-      let signals = range.signal;
+      let signals = range.signals;
 
       for (let signal of signals) {
         let { multiplicity } = signal;
@@ -96,12 +96,12 @@ export async function get1DSignals(
               separator = ', ';
             }
           }
-          if (range.integral) {
-            partTag += `, E=${Number(range.integral).toFixed(toFix)}`;
+          if (range.integration) {
+            partTag += `, E=${Number(range.integration).toFixed(toFix)}`;
           } else if (range.pubIntegral) {
             partTag += `, E=${range.putIntegral.toFixed(toFix)}`;
-          } else if (range.signal[0].nbAtoms !== undefined) {
-            partTag += `, E=${range.signal[0].nbAtoms}`;
+          } else if (range.signals[0].nbAtoms !== undefined) {
+            partTag += `, E=${range.signals[0].nbAtoms}`;
           }
         }
       }

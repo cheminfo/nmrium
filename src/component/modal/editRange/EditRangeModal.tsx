@@ -142,7 +142,7 @@ function EditRangeModal({
   const handleOnSave = useCallback(
     async (formValues) => {
       const _range = { ...range };
-      _range.signal = getSignals(formValues.signals);
+      _range.signals = getSignals(formValues.signals);
       await onSaveEditRangeModal(_range);
       handleOnClose();
     },
@@ -150,7 +150,7 @@ function EditRangeModal({
   );
 
   const data = useMemo(() => {
-    const signals = range.signal.map((signal) => {
+    const signals = range.signals.map((signal) => {
       // counter within j array to access to right j values
 
       let counterJ = 0;

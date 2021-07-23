@@ -40,6 +40,7 @@ import { initZoom1D, Zoom1D } from './helper/Zoom1DManager';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
+import { Range } from '../../data/data1d/Spectrum1D';
 
 export interface ActiveSpectrum {
   id: string;
@@ -178,7 +179,7 @@ export interface State {
       pivot: { value: number; index: number };
       zonesNoiseFactor: number;
       activeFilterID: string | null;
-      tempRange: any;
+      tempRange: Range;
       showMultiplicityTrees: boolean;
     };
   };
