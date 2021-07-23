@@ -79,7 +79,6 @@ export function fromParsedJcamp(parsedJcamp, options, usedColors) {
   const { dependentVariables, info, meta } = parsedJcamp;
   let data = getData(dependentVariables[0].components);
   if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
-
   const datum1D = initiateDatum1D(
     {
       ...options,

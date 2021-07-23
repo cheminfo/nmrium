@@ -178,6 +178,7 @@ export function dispatchMiddleware(dispatch) {
         action.usedColors = usedColors;
         void readDropFiles(files).then((data) => {
           action.data = data;
+          console.log('data', data)
           dispatch(action);
         });
         break;

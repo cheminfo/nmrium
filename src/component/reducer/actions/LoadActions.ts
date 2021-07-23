@@ -74,6 +74,7 @@ function loadDropFiles(draft: Draft<State>, actions) {
   const { spectra, molecules } = data;
   for (let spectrum of spectra) {
     const { info } = spectrum;
+    console.log('info load Drop', info)
     if (info.dimension === 1) {
       draft.data.push(initiateDatum1D(spectrum, usedColors));
     } else if (info.dimension === 2) {

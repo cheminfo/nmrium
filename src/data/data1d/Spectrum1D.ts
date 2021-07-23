@@ -188,6 +188,7 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
 
   preprocessing(datum);
   (datum.data as Data1D).y = datum.data.re;
+  console.log('result', datum)
   return datum;
 }
 

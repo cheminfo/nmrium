@@ -57,6 +57,7 @@ export default function useExport() {
       );
       setTimeout(async () => {
         const fileName = state.data[0]?.display?.name;
+        state.spectra = state.data;
         const exportedData = await writeNmredata(state);
         exportAsNMRE(exportedData, fileName);
         hideLoading();
