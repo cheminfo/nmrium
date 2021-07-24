@@ -4,6 +4,7 @@ import { predictProton } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
 import * as SpectraManager from '../../data/SpectraManager';
+import { Range } from '../../data/data1d/Spectrum1D';
 import { Molecule } from '../../data/molecules/Molecule';
 import generateID from '../../data/utilities/generateID';
 import { Spectra } from '../NMRium';
@@ -40,7 +41,6 @@ import { initZoom1D, Zoom1D } from './helper/Zoom1DManager';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
-import { Range } from '../../data/data1d/Spectrum1D';
 
 export interface ActiveSpectrum {
   id: string;

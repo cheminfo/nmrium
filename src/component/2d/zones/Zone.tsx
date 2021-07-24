@@ -48,7 +48,7 @@ interface ZoneProps {
 }
 
 const Zone = ({ zoneData, isVisible }: ZoneProps) => {
-  const { x, y, id, signal } = zoneData;
+  const { x, y, id, signals } = zoneData;
   const assignmentZone = useAssignment(id);
   const highlightZone = useHighlight([assignmentZone.id], TYPES.ZONE);
   const { margin, width, height, xDomain, yDomain } = useChartData();
@@ -93,7 +93,7 @@ const Zone = ({ zoneData, isVisible }: ZoneProps) => {
           />
         </g>
       )}
-      {signal.map((_signal, i) => (
+      {signals.map((_signal, i) => (
         <Signal key={`${id + i}`} signal={_signal} isVisible={isVisible} />
       ))}
     </g>
