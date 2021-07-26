@@ -27,8 +27,8 @@ function createTreeNodes(signal, spectrumData) {
     const frequency = lodashGet(spectrumData, 'info.originFrequency', 0);
 
     const coupling =
-      jIndex >= 0 && frequency > 0 && signal.j[jIndex]
-        ? signal.j[jIndex].coupling / frequency // convert to ppm
+      jIndex >= 0 && frequency > 0 && signal.js[jIndex]
+        ? signal.js[jIndex].coupling / frequency // convert to ppm
         : null;
 
     // in case of "s": no coupling constant and build one tree node only

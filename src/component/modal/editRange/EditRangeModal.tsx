@@ -125,14 +125,14 @@ function EditRangeModal({
 
   const getSignals = useCallback(
     (signals) => {
-      return signals.map((_signal) => {
+      return signals.map((signal) => {
         return {
           id: generateID(),
-          ..._signal,
-          multiplicity: _signal.j
+          ...signal,
+          multiplicity: signal.js
             .map((_coupling) => translateMultiplet(_coupling.multiplicity))
             .join(''),
-          j: getCouplings(_signal.j),
+          js: getCouplings(signal.js),
         };
       });
     },
@@ -162,7 +162,7 @@ function EditRangeModal({
         };
 
         if (hasCouplingConstant(_multiplicity)) {
-          coupling = { ...signal.j[counterJ] };
+          coupling = { ...signal.js[counterJ] };
           coupling.coupling = Number(format(coupling.coupling));
           counterJ++;
         }
@@ -171,18 +171,17 @@ function EditRangeModal({
         couplings.push(coupling);
       });
 
-      return { ...signal, j: couplings };
+      return { ...signal, js: couplings };
     });
     return { activeTab: '0', signals };
   }, [format, range]);
 
   const changeHandler = useCallback(
     (values) => {
-      const { signals } = values;
-      const signal = getSignals(signals);
+      const signals = getSignals(values.signals);
       dispatch({
         type: CHANGE_TEMP_RANGE,
-        payload: { tempRange: Object.assign({}, range, { signal }) },
+        payload: { tempRange: Object.assign({}, range, { signals }) },
       });
     },
     [dispatch, getSignals, range],

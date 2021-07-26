@@ -77,7 +77,7 @@ export async function get1DSignals(
         if (nucleus === '1H') {
           if (signal.multiplicity) partTag += `, S=${signal.multiplicity}`;
 
-          let jCoupling = signal.j;
+          let jCoupling = signal.js;
           if (Array.isArray(jCoupling) && jCoupling.length) {
             let separator = ', J=';
 
