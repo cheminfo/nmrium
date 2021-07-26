@@ -20,4 +20,9 @@ declare module 'nmr-processing' {
       nbDecimalJ?: number;
     },
   ): any;
+
+  declare function predictAll(
+    molecule: Molecule,
+    options?: any
+  ): any
 }
