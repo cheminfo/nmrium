@@ -62,7 +62,7 @@ const Select = forwardRefWithAs(function Select(props: SelectProps, ref) {
   return (
     <select
       ref={ref}
-      css={[styles]}
+      css={styles}
       name={name}
       onChange={handleOnChanged}
       defaultValue={defaultValue}

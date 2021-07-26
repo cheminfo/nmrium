@@ -71,8 +71,8 @@ const Signal = memo(({ signal, isVisible }: SignalProps) => {
         <g>
           <circle
             key={signal.id}
-            cx={scaleX(Number(signal.x.delta))}
-            cy={scaleY(Number(signal.y.delta))}
+            cx={scaleX(signal.x.delta)}
+            cy={scaleY(signal.y.delta)}
             r={isHighlighted ? 6 : 4}
             fill={isHighlighted ? 'green' : 'darkgreen'}
           />

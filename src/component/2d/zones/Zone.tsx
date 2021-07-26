@@ -55,10 +55,8 @@ const Zone = ({ zoneData, isVisible }: ZoneProps) => {
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
 
-  const {
-    x: { from: x1, to: x2 },
-    y: { from: y1, to: y2 },
-  } = getNumberFromPartial(x, y);
+  const { from: x1, to: x2 } = x;
+  const { from: y1, to: y2 } = y;
 
   const [reduceOpacity, setReduceOpacity] = useState(false);
 
@@ -102,29 +100,5 @@ const Zone = ({ zoneData, isVisible }: ZoneProps) => {
     </g>
   );
 };
-
-interface FromTo {
-  from: number;
-  to: number;
-}
-
-function getNumberFromPartial(
-  x: Partial<FromTo>,
-  y: Partial<FromTo>,
-): { x: FromTo; y: FromTo } {
-  const { from: x1, to: x2 } = x;
-  const { from: y1, to: y2 } = y;
-
-  return {
-    x: {
-      from: Number(x1),
-      to: Number(x2),
-    },
-    y: {
-      from: Number(y1),
-      to: Number(y2),
-    },
-  };
-}
 
 export default Zone;
