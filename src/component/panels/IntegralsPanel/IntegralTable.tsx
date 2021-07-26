@@ -1,5 +1,5 @@
 import lodashGet from 'lodash/get';
-import { useCallback, useMemo, memo, useRef, useEffect } from 'react';
+import { useCallback, useMemo, memo } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../data/constants/SignalsKinds';
@@ -8,7 +8,6 @@ import {
   integralCountingCondition,
 } from '../../../data/data1d/Spectrum1D';
 import { useDispatch } from '../../context/DispatchContext';
-import { useGlobal } from '../../context/GlobalContext';
 import EditableColumn from '../../elements/EditableColumn';
 import ReactTable from '../../elements/ReactTable/ReactTable';
 import Select from '../../elements/Select';
@@ -33,8 +32,6 @@ interface IntegralTableProps
 
 function IntegralTable({ activeTab, data, preferences }: IntegralTableProps) {
   const dispatch = useDispatch();
-  const relativeRefs = useRef<any>([]);
-  const { rootRef } = useGlobal();
   const deleteIntegralHandler = useCallback(
     (e, row) => {
       e.preventDefault();
@@ -126,24 +123,6 @@ function IntegralTable({ activeTab, data, preferences }: IntegralTableProps) {
     },
     [dispatch],
   );
-  const editStartHander = useCallback((index) => {
-    relativeRefs.current.forEach((ref, i) => {
-      if (index !== i && ref) {
-        ref.closeEdit();
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    if (rootRef) {
-      rootRef.addEventListener('mousedown', editStartHander);
-    }
-    return () => {
-      if (rootRef) {
-        rootRef.removeEventListener('mousedown', editStartHander);
-      }
-    };
-  }, [editStartHander, rootRef]);
 
   const tableColumns = useMemo(() => {
     const setCustomColumn = (array, index, columnLabel, extraParams) => {
@@ -211,8 +190,6 @@ function IntegralTable({ activeTab, data, preferences }: IntegralTableProps) {
 
           return (
             <EditableColumn
-              onEditStart={() => editStartHander(row.index)}
-              ref={(ref) => (relativeRefs.current[row.index] = ref)}
               value={intergal}
               onSave={(event) => saveRealtiveHandler(event, row.original)}
               type="number"
@@ -225,13 +202,7 @@ function IntegralTable({ activeTab, data, preferences }: IntegralTableProps) {
     return cols.sort(
       (object1, object2) => object1.orderIndex - object2.orderIndex,
     );
-  }, [
-    activeTab,
-    defaultColumns,
-    editStartHander,
-    preferences,
-    saveRealtiveHandler,
-  ]);
+  }, [activeTab, defaultColumns, preferences, saveRealtiveHandler]);
 
   return data && data.length > 0 ? (
     <ReactTable data={data} columns={tableColumns} />

@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import { buildCorrelationData, Types } from 'nmr-correlation';
-import { predictionProton } from 'nmr-processing';
+import { predictProton } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
 import * as SpectraManager from '../../data/SpectraManager';
@@ -44,6 +44,13 @@ import * as types from './types/Types';
 export interface ActiveSpectrum {
   id: string;
   index: number;
+}
+
+export interface Margin {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
 }
 
 export const initialState = {
@@ -130,7 +137,7 @@ export interface State {
   activeTab: any;
   width: number;
   height: number;
-  margin: { top: number; right: number; bottom: number; left: number };
+  margin: Margin;
   activeSpectrum: ActiveSpectrum | null;
   mode: string;
   molecules: Array<Molecule>;
@@ -243,7 +250,7 @@ export function dispatchMiddleware(dispatch) {
       }
       case types.PREDICT_SPECTRA: {
         const molecule = OCL.Molecule.fromMolfile(action.payload.mol.molfile);
-        void predictionProton(molecule, {}).then((result) => {
+        void predictProton(molecule, {}).then((result) => {
           action.payload.fromMolfile = result;
           action.payload.usedColors = usedColors;
           dispatch(action);

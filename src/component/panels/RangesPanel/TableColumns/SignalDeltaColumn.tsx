@@ -14,16 +14,12 @@ interface SignalDeltaColumnProps {
     onMouseLeave: () => void;
   };
   preferences: string;
-  onEditStart: (element: any) => void;
-  editStatus?: boolean;
 }
 
 function SignalDeltaColumn({
   rowData,
   onHoverSignal,
   preferences,
-  onEditStart,
-  editStatus,
 }: SignalDeltaColumnProps) {
   const dispatch = useDispatch();
   const signal = rowData.tableMetaInfo.signal;
@@ -42,9 +38,6 @@ function SignalDeltaColumn({
     },
     [dispatch, rowData.id, signal.id],
   );
-  const editStartHandler = useCallback(() => {
-    onEditStart(signal.id);
-  }, [onEditStart, signal.id]);
 
   if (!signal) return <td>{''}</td>;
 
@@ -57,12 +50,10 @@ function SignalDeltaColumn({
         )}`
       ) : (
         <EditableColumn
-          onEditStart={editStartHandler}
           value={signal.delta.toFixed(3)}
           onSave={saveHandler}
           type="number"
           style={{ padding: '0.1rem 0.4rem' }}
-          editStatus={editStatus}
         />
       )}
     </td>
