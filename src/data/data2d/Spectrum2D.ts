@@ -62,23 +62,23 @@ export interface Info {
 export interface Signal {
   id: number;
   peak: any;
-  x: Partial<{
+  x: {
     originDelta: number;
     delta: number;
     diaID: any;
-  }>;
-  y: Partial<{
+  };
+  y: {
     originDelta: number;
     delta: number;
     diaID: any;
-  }>;
+  };
   kind: string;
 }
 
 export interface Zone {
   id: number;
-  x: Partial<{ from: number; to: number }>;
-  y: Partial<{ from: number; to: number }>;
+  x: { from: number; to: number };
+  y: { from: number; to: number };
   signal: Array<Signal>;
   kind: string;
 }
