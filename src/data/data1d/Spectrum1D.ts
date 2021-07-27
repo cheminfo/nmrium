@@ -549,7 +549,7 @@ export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
     (range) => range.id === rangeID,
   );
   if (rangeIndex !== -1) {
-    const signalIndex = datum.ranges.values[rangeIndex].signal.findIndex(
+    const signalIndex = datum.ranges.values[rangeIndex].signals.findIndex(
       (signal) => signal.id === signalID,
     );
     shiftValue =
