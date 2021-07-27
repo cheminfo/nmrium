@@ -1,6 +1,20 @@
-import * as nmrProcessing from 'nmr-processing';
+import {
+  predictCOSY,
+  predictHMBC,
+  predictHSQC,
+  predictProton,
+  predictCarbon,
+  predictAll,
+} from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
+const predictor = {
+  proton: predictProton,
+  carbon: predictCarbon,
+  cosy: predictCOSY,
+  hmbc: predictHMBC,
+  hsqc: predictHSQC,
+};
 
 export async function handlePrediction(action) {
   const { mol, options } = action;
@@ -10,27 +24,26 @@ export async function handlePrediction(action) {
   const nbTwoD = howManySpectra(spectra['2d']);
 
   if (nbTwoD > 1) {
-    let prediction = await nmrProcessing.predictAll(molecule);
+    let prediction = await predictAll(molecule);
     return filterPrediction(prediction, spectra);
   }
   let storage = {};
   if (nbTwoD > 0) {
-    storage = await predictThose(spectra['2d'], storage);
+    storage = await predictThose(molecule, spectra['2d'], storage);
   }
 
-  storage = predictThose(spectra, storage);
+  storage = predictThose(molecule, spectra['1d'], storage);
 
   return filterPrediction(storage, spectra);
 }
 
-async function predictThose(spectra, storage) {
+async function predictThose(molecule, spectra, storage) {
   for (const exp in spectra) {
     if (storage[exp]) continue;
-      if (!nmrProcessing[`predict${exp.toUpperCase()}`]) {
-        throw new Error(`predictor for ${exp} does not exist`);
-      }
-      let prediction = await nmrProcessing[`predict${exp.toUpperCase()}`];
-      storage = { ...storage, ...prediction };
+    if (!predictor[`${exp}`]) {
+      throw new Error(`predictor for ${exp} does not exist`);
+    }
+    storage[exp] = await predictor[`${exp}`](molecule);
   }
   return storage;
 }

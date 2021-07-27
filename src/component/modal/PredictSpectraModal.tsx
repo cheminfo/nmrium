@@ -75,15 +75,19 @@ const FREQUENCIES: Array<{ key: number; value: number; label: string }> = [
 ];
 
 const INITIAL_VALUE = {
-  '1h': { from: -1, to: 12 },
-  '13c': { from: -5, to: 220 },
+  proton: { from: -1, to: 12 },
+  carbon: { from: -5, to: 220 },
   frequency: 400,
   spectra: {
-    '1h': true,
-    '13c': false,
-    cosy: false,
-    hsqc: false,
-    hmbc: false,
+    '1d': {
+      proton: true,
+      carbon: false,
+    },
+    '2d': {
+      cosy: false,
+      hsqc: false,
+      hmbc: false,
+    },
   },
 };
 

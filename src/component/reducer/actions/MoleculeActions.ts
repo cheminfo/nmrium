@@ -57,7 +57,7 @@ function predictSpectraFromMolculeHandler(draft: Draft<State>, action) {
   const { fromMolfile, usedColors } = action.payload;
   const options = action.payload.options as predictionOptions;
   const { spectra } = options;
-  const createDatum = {}
+  const createDatum = { '1d': createDatum1D, '2d': () => {} };
   for (const dim in spectra) {
     for (const exp in spectra[dim]) {
       const datum = createDatum[dim](fromMolfile[exp], {
@@ -70,11 +70,13 @@ function predictSpectraFromMolculeHandler(draft: Draft<State>, action) {
   }
   const index = draft.data.length - 1;
   const datum = draft.data[index] as Datum1D | Datum2D;
-  const activeSpectrum = { id: datum.id, index };
+
+  let id: any = datum.id;
+  const activeSpectrum: any = { id, index };
   draft.tabActiveSpectrum['1H'] = activeSpectrum;
   draft.activeSpectrum = activeSpectrum;
-  // setActiveTab(draft);
-  // setZoom(draft, 0.9, id);
+  setActiveTab(draft);
+  setZoom(draft, 0.9, id);
 
   draft.isLoading = false;
 }
@@ -85,8 +87,11 @@ function getNucleusFromExperiment(experiment) {
       return '1H';
     case 'carbon':
       return '13C';
+    default:
+      return getNucleusFrom2DExperiment(experiment);
   }
 }
+
 function createDatum1D(prediction, options) {
   const { nucleus, spectrumOptions = {}, usedColors } = options;
   const { x, y } = signalsToXY(prediction.signals, spectrumOptions);
