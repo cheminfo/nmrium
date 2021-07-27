@@ -4,14 +4,14 @@ export function addRanges(signals, datum) {
   let ranges: Array<any> = [];
   const { baseFrequency: frequency = 500 } = datum;
   for (const signal of signals) {
-    const { jCoupling: j, delta, diaID = [], multiplicity, integral } = signal;
-    const fromTo = computeFromTo({ delta, j, frequency });
+    const { jCoupling: js, delta, diaID = [], multiplicity, integral } = signal;
+    const fromTo = computeFromTo({ delta, js, frequency });
     ranges.push({
       ...fromTo,
       integral,
-      signal: [
+      signals: [
         {
-          j,
+          js,
           delta,
           diaID,
           multiplicity,
@@ -24,13 +24,13 @@ export function addRanges(signals, datum) {
 
 interface ComputeFromToOptions {
   delta?: any;
-  j?: any;
+  js?: any;
   couplings?: Array<any>;
   frequency?: any;
 }
 
 function computeFromTo(options: ComputeFromToOptions = {}) {
-  const { delta, j: couplings = [], frequency } = options;
+  const { delta, js: couplings = [], frequency } = options;
   let width = 0.5;
   for (let j of couplings) {
     width += j.coupling;
