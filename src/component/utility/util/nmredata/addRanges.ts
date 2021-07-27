@@ -6,6 +6,14 @@ export function addRanges(signals, datum) {
   for (const signal of signals) {
     const { jCoupling: js, delta, diaID = [], multiplicity, integral } = signal;
     const fromTo = computeFromTo({ delta, js, frequency });
+    if (js && multiplicity) {
+      if (js.length === multiplicity.length) {
+        js.sort((a, b) => b - a);
+        for (let i = 0; i < js.length; i++) {
+          js[i].multiplicity = multiplicity[i];
+        }
+      }
+    }
     ranges.push({
       ...fromTo,
       integral,

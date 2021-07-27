@@ -166,7 +166,6 @@ function EditRangeModal({
           coupling.coupling = Number(format(coupling.coupling));
           counterJ++;
         }
-
         coupling.multiplicity = translateMultiplet(coupling.multiplicity);
         couplings.push(coupling);
       });
