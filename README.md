@@ -15,6 +15,7 @@ React component to display and process nuclear magnetic resonance (NMR) spectra.
 [![NPM version][npm-image]][npm-url]
 [![build status][ci-image]][ci-url]
 [![npm download][download-image]][download-url]
+[![DOI](https://www.zenodo.org/badge/192117023.svg)](https://www.zenodo.org/badge/latestdoi/192117023)
 
 </h3>
 

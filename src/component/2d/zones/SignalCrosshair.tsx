@@ -26,12 +26,12 @@ function SignalCrosshair({ signal }: SignalCrosshairProps) {
   return (
     <g>
       <SignalDeltaLine
-        delta={signal.x.delta as any}
+        delta={signal.x.delta}
         axis="X"
         show={highlightX.isActive}
       />
       <SignalDeltaLine
-        delta={signal.y.delta as any}
+        delta={signal.y.delta}
         axis="Y"
         show={highlightY.isActive}
       />

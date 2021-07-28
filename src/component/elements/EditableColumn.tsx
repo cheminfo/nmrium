@@ -54,13 +54,12 @@ function EditableColumn(props: EditableColumnProps, ref) {
   const editModeHandler = useCallback(
     (flag, event = null) => {
       if (!flag) {
-        // 13 enter, 9 tab
-        if ([13, 9].includes(event.keyCode)) {
-          // when press Enter or Tab
+        // when press Enter or Tab
+        if (['Enter', 'Tab'].includes(event.key)) {
           onSave(event);
         }
         // close edit mode if press Enter, Tab or Escape
-        if ([13, 9, 27].includes(event.keyCode)) {
+        if (['Enter', 'Tab', 'Escape'].includes(event.key)) {
           enableEdit(flag);
           window.removeEventListener('mousedown', mouseClickCallback);
         }
