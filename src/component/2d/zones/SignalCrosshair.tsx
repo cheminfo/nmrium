@@ -23,6 +23,8 @@ function SignalCrosshair({ signal }: SignalCrosshairProps) {
   const highlightX = useHighlight(highlightIDsX);
   const highlightY = useHighlight(highlightIDsY);
 
+  if (!signal?.x?.delta || !signal?.y?.delta) return null;
+
   return (
     <g>
       <SignalDeltaLine

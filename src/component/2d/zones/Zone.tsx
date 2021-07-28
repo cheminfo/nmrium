@@ -55,8 +55,8 @@ const Zone = ({ zoneData, isVisible }: ZoneProps) => {
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
 
-  const { from: x1, to: x2 } = x;
-  const { from: y1, to: y2 } = y;
+  const { from: x1 = 0, to: x2 = 0 } = x;
+  const { from: y1 = 0, to: y2 = 0 } = y;
 
   const [reduceOpacity, setReduceOpacity] = useState(false);
 
