@@ -61,8 +61,8 @@ export interface Info {
 
 export interface Signal {
   id: number;
-  peak: any;
-  x: {
+  peaks: any;
+  x: Partial<{
     originDelta: number;
     delta: number;
     diaID: any;
@@ -77,9 +77,9 @@ export interface Signal {
 
 export interface Zone {
   id: number;
-  x: { from: number; to: number };
-  y: { from: number; to: number };
-  signal: Array<Signal>;
+  x: Partial<{ from: number; to: number }>;
+  y: Partial<{ from: number; to: number }>;
+  signals: Array<Signal>;
   kind: string;
 }
 
@@ -291,7 +291,7 @@ export function updateShift(datum: Datum2D) {
 export function updateZonesShift(datum: Datum2D, { xShift, yShift }) {
   datum.zones.values = datum.zones.values.map((zone) => ({
     ...zone,
-    signal: zone.signal?.map((signal) => ({
+    signals: zone.signals?.map((signal) => ({
       ...signal,
       x: { ...signal.x, delta: signal.x.originDelta + xShift },
       y: { ...signal.y, delta: signal.y.originDelta + yShift },
@@ -314,11 +314,11 @@ export function changeZoneSignal(
 ): { xShift: number; yShift: number } {
   const zoneIndex = datum.zones.values.findIndex((zone) => zone.id === zoneID);
   if (zoneIndex !== -1) {
-    const signalIndex = datum.zones.values[zoneIndex].signal.findIndex(
+    const signalIndex = datum.zones.values[zoneIndex].signals.findIndex(
       (s) => s.id === newSignal.id,
     );
     if (signalIndex !== -1) {
-      const originalSignal = datum.zones.values[zoneIndex].signal[signalIndex];
+      const originalSignal = datum.zones.values[zoneIndex].signals[signalIndex];
       const xShift =
         newSignal?.x || newSignal?.x === 0
           ? newSignal.x - originalSignal.x.delta
@@ -354,10 +354,10 @@ export function detectZonesManual(datum, options) {
       id: generateID(),
       x: fromTo[0],
       y: fromTo[1],
-      signal: [
+      signals: [
         {
           id: generateID(),
-          peak: signal.peaks,
+          peaks: signal.peaks,
           x: {
             originDelta: signal.shiftX - xShift,
             delta: signal.shiftX,
@@ -476,10 +476,10 @@ export function detectZones(datum, options) {
       id: generateID(),
       x: { from: newXRange.from, to: newXRange.to },
       y: { from: newYRange.from, to: newYRange.to },
-      signal: [
+      signals: [
         {
           id: generateID(),
-          peak: zone.peaks,
+          peaks: zone.peaks,
           x: {
             originDelta: zone.shiftX - xShift,
             delta: zone.shiftX,

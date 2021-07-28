@@ -155,7 +155,7 @@ export function AssignmentProvider(props) {
         payload: { id: [range.id, _diaID], axis: 'x' },
       }),
     );
-    range.signal.forEach((signal) =>
+    range.signals.forEach((signal) =>
       (signal.diaID || []).forEach((_diaID) =>
         _contextValue.dispatch({
           type: 'ADD',
@@ -182,7 +182,7 @@ export function AssignmentProvider(props) {
         payload: { id: [zone.id, _diaID], axis: 'x' },
       }),
     );
-    zone.signal.forEach((signal) => {
+    zone.signals.forEach((signal) => {
       (signal.x.diaID || []).forEach((_diaID) =>
         _contextValue.dispatch({
           type: 'ADD',

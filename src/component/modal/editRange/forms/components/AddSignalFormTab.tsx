@@ -78,7 +78,7 @@ function AddSignalFormTab(
         multiplicity: 'm',
         kind: 'signal',
         delta: Number(val.newSignalDelta),
-        j: [{ multiplicity: translateMultiplet('m'), coupling: '' }],
+        js: [{ multiplicity: translateMultiplet('m'), coupling: '' }],
       };
       const _signals = values.signals.slice().concat(newSignal);
 

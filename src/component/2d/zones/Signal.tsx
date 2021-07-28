@@ -81,7 +81,7 @@ const Signal = memo(({ signal, isVisible }: SignalProps) => {
       )}
       <g className="zone-signal-peak">
         {isVisible.peaks &&
-          signal.peak.map((peak, i) => (
+          signal.peaks.map((peak, i) => (
             <circle
               key={`${signal.id + i}`}
               cx={scaleX(peak.x)}

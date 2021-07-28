@@ -53,8 +53,8 @@ export interface RangeData {
   id: string;
   from: number;
   to: number;
-  integral: number;
-  signal: Array<SignalNodeProps>;
+  integration: number;
+  signals: Array<SignalNodeProps>;
 }
 
 interface RangeProps {
@@ -70,14 +70,14 @@ function Range({
   selectedTool,
   startEditMode,
 }: RangeProps) {
-  const { id, from: rangeFrom, to: rangeTo, integral, signal } = rangeData;
+  const { id, from: rangeFrom, to: rangeTo, integration, signals } = rangeData;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
     [assignmentRange.id].concat(assignmentRange.assigned.x || []).concat(
       filterForIDsWithAssignment(
         assignmentData,
-        signal.map((_signal) => _signal.id),
+        signals.map((_signal) => _signal.id),
       ),
     ),
     TYPES.RANGE,
@@ -196,7 +196,7 @@ function Range({
               : 0.6
           }
         >
-          {integral !== undefined ? integral.toFixed(2) : ''}
+          {integration !== undefined ? integration.toFixed(2) : ''}
         </text>
       </g>
       <Resizable
@@ -209,9 +209,9 @@ function Range({
         <TempMultiplicityTree />
       ) : (
         showMultiplicityTrees &&
-        signal &&
-        signal.length > 0 &&
-        signal.map((_signal) => (
+        signals &&
+        signals.length > 0 &&
+        signals.map((_signal) => (
           <MultiplicityTree
             rangeFrom={from}
             rangeTo={to}
