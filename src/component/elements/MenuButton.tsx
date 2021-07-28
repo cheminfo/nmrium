@@ -60,11 +60,17 @@ interface MenuItemProps {
   icon: any;
   label: string;
   onClick: () => void;
+  id: string | number;
 }
 
-function MenuItem({ icon, label, onClick }: MenuItemProps) {
+function MenuItem({ icon, label, id, onClick }: MenuItemProps) {
   return (
-    <button type="button" className="menu-item" onClick={onClick}>
+    <button
+      data-test-id={id}
+      type="button"
+      className="menu-item"
+      onClick={onClick}
+    >
       {icon}
       <span>{label}</span>
     </button>
@@ -105,6 +111,7 @@ interface MenuButtonProps {
   className?: string;
   items: Array<any>;
   onClick: (element: any) => void;
+  testId?: string;
 }
 
 function MenuButton({
@@ -113,6 +120,7 @@ function MenuButton({
   toolTip = '',
   className,
   items = [],
+  testId,
   onClick = () => null,
 }: MenuButtonProps) {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -142,6 +150,7 @@ function MenuButton({
         onClick={handleClick}
         className={className}
         style={{ boxSizing: 'border-box' }}
+        {...{ 'data-test-id': testId }}
       >
         <ToolTip title={toolTip} popupPlacement="right">
           {component}
