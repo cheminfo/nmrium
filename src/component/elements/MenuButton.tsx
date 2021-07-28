@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useState, useCallback, useRef } from 'react';
+import { ReactNode, useState, useCallback, useRef } from 'react';
 
 import ToolTip from './ToolTip/ToolTip';
 
@@ -57,7 +57,7 @@ const menuStyles = css`
 `;
 
 interface MenuItemProps {
-  icon: any;
+  icon: ReactNode;
   label: string;
   onClick: () => void;
   id: string | number;
@@ -78,9 +78,9 @@ function MenuItem({ icon, label, id, onClick }: MenuItemProps) {
 }
 
 interface MenuListProps {
-  items: any;
+  items: Array<MenuItemProps & { id: number }>;
+  onClick: (element: MenuItemProps & { id: number }) => void;
   boxBounding: any;
-  onClick: (element: any) => void;
 }
 
 function MenuList({ items, boxBounding, onClick }: MenuListProps) {
@@ -114,7 +114,7 @@ interface MenuButtonProps {
   testId?: string;
 }
 
-function MenuButton({
+export default function MenuButton({
   style,
   component,
   toolTip = '',
@@ -168,5 +168,3 @@ function MenuButton({
     </div>
   );
 }
-
-export default MenuButton;

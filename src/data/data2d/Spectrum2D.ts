@@ -66,12 +66,12 @@ export interface Signal {
     originDelta: number;
     delta: number;
     diaID: any;
-  }>;
-  y: Partial<{
+  };
+  y: {
     originDelta: number;
     delta: number;
     diaID: any;
-  }>;
+  };
   kind: string;
 }
 
