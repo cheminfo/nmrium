@@ -4,6 +4,7 @@ import * as Data1DManager from './data1d/Data1DManager';
 import * as Datum1D from './data1d/Spectrum1D';
 import * as Data2DManager from './data2d/Data2DManager';
 import * as Datum2D from './data2d/Spectrum2D';
+import { CURRENT_EXPORT_VERSION } from './migration';
 import * as Molecule from './molecules/Molecule';
 
 export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
@@ -263,5 +264,6 @@ export function toJSON(state, forceIncludeData = true) {
     correlations,
     multipleAnalysis,
     exclusionZones,
+    version: CURRENT_EXPORT_VERSION,
   };
 }
