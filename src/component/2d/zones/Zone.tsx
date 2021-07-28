@@ -48,15 +48,15 @@ interface ZoneProps {
 }
 
 const Zone = ({ zoneData, isVisible }: ZoneProps) => {
-  const { x, y, id, signal } = zoneData;
+  const { x, y, id, signals } = zoneData;
   const assignmentZone = useAssignment(id);
   const highlightZone = useHighlight([assignmentZone.id], TYPES.ZONE);
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });
 
-  const { from: x1, to: x2 } = x;
-  const { from: y1, to: y2 } = y;
+  const { from: x1 = 0, to: x2 = 0 } = x;
+  const { from: y1 = 0, to: y2 = 0 } = y;
 
   const [reduceOpacity, setReduceOpacity] = useState(false);
 
@@ -94,7 +94,7 @@ const Zone = ({ zoneData, isVisible }: ZoneProps) => {
           />
         </g>
       )}
-      {signal.map((_signal, i) => (
+      {signals.map((_signal, i) => (
         <Signal key={`${id + i}`} signal={_signal} isVisible={isVisible} />
       ))}
     </g>

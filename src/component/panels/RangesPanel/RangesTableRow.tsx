@@ -48,7 +48,7 @@ function RangesTableRow({
     [assignmentRange.id].concat(assignmentRange.assigned.x || []).concat(
       filterForIDsWithAssignment(
         assignmentData,
-        rowData.signal.map((_signal) => _signal.id),
+        rowData.signals.map((_signal) => _signal.id),
       ),
     ),
     TYPES.RANGE,

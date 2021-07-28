@@ -33,7 +33,7 @@ export function findDatumAndSignalIndex(spectraData, id) {
   if (!datum) {
     // figure out the datum via id
     for (const data of spectraData) {
-      signalIndex = data.signal.findIndex((_signal) => _signal.id === id);
+      signalIndex = data.signals.findIndex((signal) => signal.id === id);
       if (signalIndex >= 0) {
         datum = data;
         break;
@@ -79,7 +79,7 @@ export function getHighlightsOnHover(assignmentData, oclIDs, data) {
     if (datum) {
       highlights.push(datum.id);
       if (signalIndex !== undefined) {
-        highlights.push(datum.signal[signalIndex].id);
+        highlights.push(datum.signals[signalIndex].id);
       }
     }
     if (stop) {

@@ -48,12 +48,12 @@ export async function get2DSignals(
 
     let zones = spectrum.zones.values || [];
     for (let zone of zones) {
-      let signals = zone.signal;
+      let signals = zone.signals;
       for (let signal of signals) {
-        let { x, y, peak } = signal;
+        let { x, y, peaks } = signal;
         let xLabel = getAssignment(x, byDiaID, toFix[0]);
         let yLabel = getAssignment(y, byDiaID, toFix[1]);
-        let intensity = Math.max(...peak.map((e) => e.z));
+        let intensity = Math.max(...peaks.map((e) => e.z));
         partTag += `\n${xLabel}/${yLabel}, I=${intensity.toFixed(2)}\\`;
       }
     }

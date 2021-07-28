@@ -71,8 +71,8 @@ const Signal = memo(({ signal, isVisible }: SignalProps) => {
         <g>
           <circle
             key={signal.id}
-            cx={scaleX(signal.x.delta)}
-            cy={scaleY(signal.y.delta)}
+            cx={scaleX(signal.x.delta || 0)}
+            cy={scaleY(signal.y.delta || 0)}
             r={isHighlighted ? 6 : 4}
             fill={isHighlighted ? 'green' : 'darkgreen'}
           />
@@ -81,7 +81,7 @@ const Signal = memo(({ signal, isVisible }: SignalProps) => {
       )}
       <g className="zone-signal-peak">
         {isVisible.peaks &&
-          signal.peak.map((peak, i) => (
+          signal.peaks.map((peak, i) => (
             <circle
               key={`${signal.id + i}`}
               cx={scaleX(peak.x)}

@@ -3,8 +3,8 @@ import { DatumKind } from '../constants/SignalsKinds';
 export function getDiaIDs(range) {
   return [].concat(
     range.diaID || [],
-    range.signal
-      ? range.signal.map((_signal) => _signal.diaID || []).flat()
+    range.signals
+      ? range.signals.map((_signal) => _signal.diaID || []).flat()
       : [],
   );
 }
@@ -22,7 +22,7 @@ export function setPubIntegral(range) {
 
 export function resetDiaIDs(range) {
   delete range.diaID;
-  range.signal.forEach((_signal) => {
+  range.signals.forEach((_signal) => {
     delete _signal.diaID;
   });
   delete range.pubIntegral;
@@ -47,7 +47,7 @@ export function unlink(range, unlinkType = 'both', options = {}) {
 
       break;
     case 'signal':
-      delete range.signal[options.signalIndex].diaID;
+      delete range.signals[options.signalIndex].diaID;
 
       break;
 
@@ -61,7 +61,7 @@ export function unlink(range, unlinkType = 'both', options = {}) {
 }
 
 export function addDefaultSignal(range) {
-  range.signal.push({
+  range.signals.push({
     multiplicity: 'm',
     kind: 'signal',
     delta: (range.to + range.from) / 2,
@@ -73,7 +73,7 @@ export function checkRangeKind(range) {
 }
 
 export function checkSignalKinds(range, kinds) {
-  return !range.signal.some(
+  return !range.signals.some(
     (_signal) => _signal.kind === undefined || !kinds.includes(_signal.kind),
   );
 }
@@ -81,8 +81,8 @@ export function checkSignalKinds(range, kinds) {
 export function unlinkInAssignmentData(assignmentData, ranges) {
   const ids = ranges.reduce((acc, range) => {
     acc.push(range.id);
-    if (range.signal) {
-      acc = acc.concat(range.signal.map((signal) => signal.id, []));
+    if (range.signals) {
+      acc = acc.concat(range.signals.map((signal) => signal.id, []));
     }
     return acc;
   }, []);

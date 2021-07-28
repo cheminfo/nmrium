@@ -57,7 +57,7 @@ const tableStyle = css`
 
 interface ZonesTableProps {
   tableData: Array<{
-    signal: Array<any>;
+    signals: Array<any>;
     tableMetaInfo: any;
     rowIndex: number;
     signalIndex: number;
@@ -89,24 +89,24 @@ function ZonesTable({ tableData, onUnlink, context, nuclei }: ZonesTableProps) {
   const data = useMemo(() => {
     const _data: Array<any> = [];
     tableData.forEach((zone, i) => {
-      if (zone.signal.length === 1) {
+      if (zone.signals.length === 1) {
         _data.push({
           ...zone,
           tableMetaInfo: {
             ...zone.tableMetaInfo,
-            signal: zone.signal[0],
+            signal: zone.signals[0],
             rowIndex: i,
             signalIndex: 0,
-            id: zone.signal[0].id,
+            id: zone.signals[0].id,
           },
         });
-      } else if (zone.signal.length > 1) {
-        zone.signal.forEach((signal, j) => {
+      } else if (zone.signals.length > 1) {
+        zone.signals.forEach((signal, j) => {
           let hide = false;
           let rowSpan: number | null = null;
-          if (j < zone.signal.length - 1) {
+          if (j < zone.signals.length - 1) {
             if (j === 0) {
-              rowSpan = zone.signal.length;
+              rowSpan = zone.signals.length;
             } else {
               hide = true;
             }

@@ -27,7 +27,7 @@ export function getLabels(
 
     let rois = spectrum[roiKey].values || [];
     for (let roi of rois) {
-      let signals = flatSignals(roi.signal);
+      let signals = flatSignals(roi.signals);
       for (let i = 0; i < signals.length; i++) {
         let diaIDs = signals[i].diaID || [];
         for (let diaID of diaIDs) {
