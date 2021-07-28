@@ -53,7 +53,7 @@ export interface RangeData {
   id: string;
   from: number;
   to: number;
-  integral: number;
+  integration: number;
   signals: Array<SignalNodeProps>;
 }
 
@@ -70,7 +70,7 @@ function Range({
   selectedTool,
   startEditMode,
 }: RangeProps) {
-  const { id, from: rangeFrom, to: rangeTo, integral, signals } = rangeData;
+  const { id, from: rangeFrom, to: rangeTo, integration, signals } = rangeData;
   const assignmentData = useAssignmentData();
   const assignmentRange = useAssignment(id);
   const highlightRange = useHighlight(
@@ -196,7 +196,7 @@ function Range({
               : 0.6
           }
         >
-          {integral !== undefined ? integral.toFixed(2) : ''}
+          {integration !== undefined ? integration.toFixed(2) : ''}
         </text>
       </g>
       <Resizable

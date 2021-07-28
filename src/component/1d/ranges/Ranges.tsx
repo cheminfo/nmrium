@@ -61,7 +61,7 @@ export default function Ranges() {
         showMultiplicityTrees,
         selectedTool,
         displayerKey,
-        editRangeID: tempRange?.id,
+        editRangeID: tempRange?.id || '',
       }}
     />
   );
