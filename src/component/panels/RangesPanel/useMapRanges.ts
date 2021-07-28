@@ -11,25 +11,25 @@ function useMapRanges(data) {
   return useMemo(() => {
     const _rangesData: Array<RangeDataProps> = [];
     data.forEach((range, i) => {
-      if (range.signals.length === 1) {
+      if (range.signal.length === 1) {
         _rangesData.push({
           rowKey: generateID(),
           ...range,
           tableMetaInfo: {
             ...range.tableMetaInfo,
-            signal: range.signals[0],
+            signal: range.signal[0],
             rowIndex: i,
             signalIndex: 0,
-            id: range.signals[0].id,
+            id: range.signal[0].id,
           },
         });
-      } else if (range.signals.length > 1) {
-        range.signals.forEach((signal, j) => {
+      } else if (range.signal.length > 1) {
+        range.signal.forEach((signal, j) => {
           let hide = false;
           let rowSpan = null;
-          if (j < range.signals.length - 1) {
+          if (j < range.signal.length - 1) {
             if (j === 0) {
-              rowSpan = range.signals.length;
+              rowSpan = range.signal.length;
             } else {
               hide = true;
             }

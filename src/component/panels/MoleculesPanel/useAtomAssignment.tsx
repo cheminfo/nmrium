@@ -119,11 +119,11 @@ export default function useAtomAssignment({
         ) {
           // we are on range/zone level only, so add the belonging signal IDs to highlight too
           highlights = highlights.concat(
-            datum.signals
-              .map((signal) =>
-                filterForIDsWithAssignment(assignmentData, [signal.id]).length >
-                0
-                  ? signal.diaID
+            datum.signal
+              .map((_signal) =>
+                filterForIDsWithAssignment(assignmentData, [_signal.id])
+                  .length > 0
+                  ? _signal.diaID
                   : [],
               )
               .flat(),
@@ -193,16 +193,16 @@ export default function useAtomAssignment({
                     atomInformation,
                   );
                 }
-              } else if (datum.signals?.[signalIndex]) {
+              } else if (datum.signal?.[signalIndex]) {
                 // on signal level
                 if (displayerMode === DISPLAYER_MODE.DM_1D) {
                   _diaID = toggleAssignment(
-                    datum.signals[signalIndex].diaID || [],
+                    datum.signal[signalIndex].diaID || [],
                     atomInformation,
                   );
                 } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
                   _diaID = toggleAssignment(
-                    datum.signals[signalIndex][activeAssignment.activeAxis]
+                    datum.signal[signalIndex][activeAssignment.activeAxis]
                       .diaID || [],
                     atomInformation,
                   );

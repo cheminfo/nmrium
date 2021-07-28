@@ -251,7 +251,6 @@ function BasicToolBarInner({
             return null;
           }}
           items={IMPORT_MENU}
-          testId="import"
         />
       )}
       {isButtonVisible('hideExportAs') && (

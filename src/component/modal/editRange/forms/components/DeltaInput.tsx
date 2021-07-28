@@ -33,7 +33,7 @@ function DeltaInput({ signal, index, onFocus }: DeltaInputProps) {
         checkErrorAfterInputTouched={false}
       />
       <span>
-        {signal.js
+        {signal.j
           .map((_coupling) => translateMultiplet(_coupling.multiplicity))
           .join('')}
       </span>

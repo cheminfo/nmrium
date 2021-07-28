@@ -93,7 +93,7 @@ function handleChangeZoneSignalKind(draft: Draft<State>, action) {
     const { rowData, value } = action.payload;
     const zoneIndex = getZoneIndex(state, index, rowData.id);
     const _zone = (draft.data[index] as Datum2D).zones.values[zoneIndex];
-    _zone.signals[rowData.tableMetaInfo.signalIndex].kind = value;
+    _zone.signal[rowData.tableMetaInfo.signalIndex].kind = value;
     _zone.kind = SignalKindsToInclude.includes(value)
       ? DatumKind.signal
       : DatumKind.mixed;
@@ -174,7 +174,7 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
     if (signalIndex === undefined) {
       _zone[axis].diaID = diaID;
     } else {
-      _zone.signals[signalIndex][axis].diaID = diaID;
+      _zone.signal[signalIndex][axis].diaID = diaID;
     }
     _zone[axis].pubIntegral = getPubIntegral(_zone, axis);
   }

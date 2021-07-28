@@ -80,7 +80,7 @@ export interface Signal {
   originDelta?: number;
   delta: number;
   multiplicity: string;
-  peaks?: Array<{ x: number; intensity: number; width: number }>;
+  peak?: Array<{ x: number; intensity: number; width: number }>;
 }
 export interface Range {
   id: string;
@@ -89,9 +89,9 @@ export interface Range {
   from: number;
   to: number;
   absolute: number;
-  integration: number;
+  integral: number;
   kind: string;
-  signals: Array<Signal>;
+  signal: Array<Signal>;
 }
 
 export interface Ranges {
@@ -313,12 +313,12 @@ function getSum(values, key, countingCondition) {
   }, 0);
 }
 
-export function integralCountingCondition(integral: Integral) {
+export function integralCountingCondition(integral) {
   return integral.kind && SignalKindsToInclude.includes(integral.kind);
 }
 
-function rangeCountingCondition(range: Range) {
-  return range.signals && checkSignalKinds(range, SignalKindsToInclude);
+function rangeCountingCondition(range) {
+  return range.signal && checkSignalKinds(range, SignalKindsToInclude);
 }
 
 function updateRelatives(
@@ -358,7 +358,7 @@ function updateRelatives(
 export function updateIntegralRanges(datum, forceCalculateIntegral = false) {
   updateRelatives(
     datum.ranges,
-    'integration',
+    'integral',
     rangeCountingCondition,
     forceCalculateIntegral,
   );
@@ -386,13 +386,13 @@ export function detectRange(datum, options) {
   };
 }
 
-export function mapRanges(ranges: Array<Range>, datum) {
+export function mapRanges(ranges, datum) {
   const { x, re } = datum.data;
   const shiftX = getShiftX(datum);
 
   const error = (x[x.length - 1] - x[0]) / 10000;
 
-  return ranges.reduce<Array<Range>>((acc, newRange) => {
+  return ranges.reduce((acc, newRange) => {
     // check if the range is already exists
     for (const { from, to } of datum.ranges.values) {
       if (
@@ -407,23 +407,22 @@ export function mapRanges(ranges: Array<Range>, datum) {
       { x, y: re },
       { from: newRange.from, to: newRange.to, reverse: true },
     );
-    const signals = newRange.signals.map((signal) => {
-      const { kind, id, ...resSignal } = signal;
+    const signal = newRange.signal.map((_signal) => {
       return {
-        kind: kind || 'signal',
-        id: id || generateID(),
-        originDelta: signal.delta - shiftX,
-        ...resSignal,
+        kind: 'signal',
+        id: generateID(),
+        originDelta: _signal.delta - shiftX,
+        ..._signal,
       };
     });
     acc.push({
-      ...newRange,
-      kind: newRange.signals[0].kind || DatumKind.signal,
+      kind: newRange.signal[0].kind || DatumKind.signal,
       originFrom: newRange.from - shiftX,
       originTo: newRange.to - shiftX,
+      ...newRange,
       id: generateID(),
       absolute,
-      signals,
+      signal,
     });
 
     return acc;
@@ -470,9 +469,8 @@ export function addRange(datum, options) {
       from,
       to,
       absolute, // the real value,
-      signals: [{ id: generateID(), ...signals }],
+      signal: [{ id: generateID(), ...signals }],
       kind: DatumKind.signal,
-      integration: 0,
     };
     datum.ranges.values = datum.ranges.values.concat(mapRanges([range], datum));
     updateIntegralRanges(datum);
@@ -488,7 +486,7 @@ export function updateXShift(datum: Datum1D) {
   updateIntegralXShift(datum, shiftX);
 }
 
-export function getShiftX(datum: Datum1D): number {
+export function getShiftX(datum: Datum1D) {
   const filter =
     datum?.filters &&
     datum?.filters.find((filter) => filter.name === FiltersTypes.shiftX.id);
@@ -512,9 +510,9 @@ export function updateRangesXShift(datum: Datum1D, shiftValue) {
     ...range,
     from: range.originFrom + shiftValue,
     to: range.originTo + shiftValue,
-    signals:
-      range?.signals &&
-      range.signals.map((s) => ({ ...s, delta: s.originDelta + shiftValue })),
+    signal:
+      range?.signal &&
+      range.signal.map((s) => ({ ...s, delta: s.originDelta + shiftValue })),
   }));
 }
 export function updateIntegralXShift(datum: Datum1D, shiftValue) {
@@ -532,12 +530,12 @@ export function changeRangesRealtive(datum, newRange) {
   if (index !== -1) {
     const ratio = datum.ranges.values[index].absolute / newRange.value;
     datum.ranges.options.sum =
-      (newRange.value / datum.ranges.values[index].integration) *
+      (newRange.value / datum.ranges.values[index].integral) *
       datum.ranges.options.sum;
     datum.ranges.values = datum.ranges.values.map((range) => {
       return {
         ...range,
-        integration: range.absolute / ratio,
+        integral: range.absolute / ratio,
       };
     });
   }
@@ -549,13 +547,13 @@ export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
     (range) => range.id === rangeID,
   );
   if (rangeIndex !== -1) {
-    const signalIndex = datum.ranges.values[rangeIndex].signals.findIndex(
+    const signalIndex = datum.ranges.values[rangeIndex].signal.findIndex(
       (signal) => signal.id === signalID,
     );
     shiftValue =
       newSignalValue -
-      datum.ranges.values[rangeIndex].signals[signalIndex].delta;
-    datum.ranges.values[rangeIndex].signals[signalIndex].delta = newSignalValue;
+      datum.ranges.values[rangeIndex].signal[signalIndex].delta;
+    datum.ranges.values[rangeIndex].signal[signalIndex].delta = newSignalValue;
   }
   return shiftValue;
 }

@@ -11,7 +11,7 @@ function RelativeColumn({ rowData, rowSpanTags, onHoverRange, format }) {
 
   const integralVal = useMemo(() => {
     const flag = checkRangeKind(rowData);
-    const formattedValue = FormatNumber(rowData.integration, format);
+    const formattedValue = FormatNumber(rowData.integral, format);
     return flag ? formattedValue : `[ ${formattedValue} ]`;
   }, [format, rowData]);
 

@@ -54,7 +54,7 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
 
         const deltas = ranges
           .map((_range) =>
-            _range.signals
+            _range.signal
               .filter((_signal) =>
                 SignalKindsToInclude.some((_kind) => _signal.kind === _kind),
               )

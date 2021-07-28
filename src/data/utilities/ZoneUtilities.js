@@ -3,8 +3,8 @@ import { DatumKind } from '../constants/SignalsKinds';
 export function getDiaIDs(zone, axis) {
   return [].concat(
     zone[axis].diaID || [],
-    zone.signals
-      ? zone.signals.map((signal) => signal[axis].diaID || []).flat()
+    zone.signal
+      ? zone.signal.map((_signal) => _signal[axis].diaID || []).flat()
       : [],
   );
 }
@@ -23,8 +23,8 @@ export function setPubIntegral(zone, axis) {
 export function resetDiaIDs(zone, axis) {
   delete zone[axis].diaID;
   delete zone.pubIntegral;
-  zone.signals.forEach((signal) => {
-    delete signal[axis].diaID;
+  zone.signal.forEach((_signal) => {
+    delete _signal[axis].diaID;
   });
   return zone;
 }
@@ -34,7 +34,7 @@ export function checkZoneKind(zone) {
 }
 
 export function checkSignalKinds(zone, kinds) {
-  return !zone.signals.some(
+  return !zone.signal.some(
     (_signal) => _signal.kind === undefined || !kinds.includes(_signal.kind),
   );
 }
@@ -46,9 +46,9 @@ export function unlink(zone, isOnZoneLevel, signalIndex, axis) {
     } else if (
       typeof signalIndex === 'number' &&
       signalIndex !== -1 &&
-      zone.signals[signalIndex]
+      zone.signal[signalIndex]
     ) {
-      delete zone.signals[signalIndex][axis].diaID;
+      delete zone.signal[signalIndex][axis].diaID;
     }
     setPubIntegral(zone, axis);
   } else if (axis !== undefined) {
@@ -66,8 +66,8 @@ export function unlink(zone, isOnZoneLevel, signalIndex, axis) {
 export function unlinkInAssignmentData(assignmentData, zones, axis) {
   const ids = zones.reduce((acc, zone) => {
     acc.push(zone.id);
-    if (zone.signals) {
-      acc.concat(zone.signals.map((signal) => signal.id, []));
+    if (zone.signal) {
+      acc.concat(zone.signal.map((signal) => signal.id, []));
     }
     return acc;
   }, []);

@@ -10,9 +10,9 @@ interface TempMultiplicityTreeInnerProps {
 
 function TempMultiplicityTreeInner({ range }: TempMultiplicityTreeInnerProps) {
   return (
-    range?.signals &&
-    range.signals.length > 0 &&
-    range.signals.map((signal) => (
+    range?.signal &&
+    range.signal.length > 0 &&
+    range.signal.map((signal) => (
       <MultiplicityTree
         rangeFrom={range.from}
         rangeTo={range.to}

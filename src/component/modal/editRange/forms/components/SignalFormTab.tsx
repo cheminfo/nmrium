@@ -27,7 +27,7 @@ function SignalFormTab({ onFocus, onBlur }: SignalFormTabProps) {
   return (
     <div css={SignalFormTabStyle}>
       <FieldArray
-        name={`signals.${values.activeTab}.js`}
+        name={`signals.${values.activeTab}.j`}
         render={({ push, remove }) => (
           <div>
             <CouplingsTable

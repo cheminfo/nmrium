@@ -79,8 +79,8 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
     const { rowData, value } = action.payload.data;
     const rangeIndex = getRangeIndex(state, index, rowData.id);
     const _range = (draft.data[index] as Datum1D).ranges.values[rangeIndex];
-    if (_range?.signals) {
-      _range.signals[rowData.tableMetaInfo.signalIndex].kind = value;
+    if (_range?.signal) {
+      _range.signal[rowData.tableMetaInfo.signalIndex].kind = value;
       _range.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal
         : DatumKind.mixed;
@@ -137,7 +137,7 @@ function handleUnlinkRange(draft: Draft<State>, action) {
         newRange = unlink(range, 'range');
       } else {
         newRange = unlink(range, 'signal', { signalIndex });
-        id = rangeData.signals[signalIndex].id;
+        id = rangeData.signal[signalIndex].id;
       }
       // remove assignments in assignment hook data
       unlinkInAssignmentData(assignmentData, [
@@ -169,7 +169,7 @@ function handleSetDiaIDRange(draft, action) {
     if (signalIndex === undefined) {
       _range.diaID = diaID;
     } else {
-      _range.signals[signalIndex].diaID = diaID;
+      _range.signal[signalIndex].diaID = diaID;
     }
     _range.pubIntegral = getPubIntegral(_range);
   }

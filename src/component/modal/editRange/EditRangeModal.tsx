@@ -125,14 +125,14 @@ function EditRangeModal({
 
   const getSignals = useCallback(
     (signals) => {
-      return signals.map((signal) => {
+      return signals.map((_signal) => {
         return {
           id: generateID(),
-          ...signal,
-          multiplicity: signal.js
+          ..._signal,
+          multiplicity: _signal.j
             .map((_coupling) => translateMultiplet(_coupling.multiplicity))
             .join(''),
-          js: getCouplings(signal.js),
+          j: getCouplings(_signal.j),
         };
       });
     },
@@ -142,7 +142,7 @@ function EditRangeModal({
   const handleOnSave = useCallback(
     async (formValues) => {
       const _range = { ...range };
-      _range.signals = getSignals(formValues.signals);
+      _range.signal = getSignals(formValues.signals);
       await onSaveEditRangeModal(_range);
       handleOnClose();
     },
@@ -150,7 +150,7 @@ function EditRangeModal({
   );
 
   const data = useMemo(() => {
-    const signals = range.signals.map((signal) => {
+    const signals = range.signal.map((signal) => {
       // counter within j array to access to right j values
 
       let counterJ = 0;
@@ -162,25 +162,27 @@ function EditRangeModal({
         };
 
         if (hasCouplingConstant(_multiplicity)) {
-          coupling = { ...signal.js[counterJ] };
+          coupling = { ...signal.j[counterJ] };
           coupling.coupling = Number(format(coupling.coupling));
           counterJ++;
         }
+
         coupling.multiplicity = translateMultiplet(coupling.multiplicity);
         couplings.push(coupling);
       });
 
-      return { ...signal, js: couplings };
+      return { ...signal, j: couplings };
     });
     return { activeTab: '0', signals };
   }, [format, range]);
 
   const changeHandler = useCallback(
     (values) => {
-      const signals = getSignals(values.signals);
+      const { signals } = values;
+      const signal = getSignals(signals);
       dispatch({
         type: CHANGE_TEMP_RANGE,
-        payload: { tempRange: Object.assign({}, range, { signals }) },
+        payload: { tempRange: Object.assign({}, range, { signal }) },
       });
     },
     [dispatch, getSignals, range],

@@ -40,18 +40,18 @@ function findSpectrum(spectraData, value) {
 
 function findSignal(spectrum, value) {
   for (let zone of spectrum.zones.values) {
-    const signalIndex = zone.signals.findIndex(
+    const signalIndex = zone.signal.findIndex(
       (_signal) => _signal.id === value.signal.id,
     );
     if (signalIndex >= 0) {
-      return zone.signals[signalIndex];
+      return zone.signal[signalIndex];
     }
   }
 }
 
 function findRange(spectrum, value) {
   for (let range of spectrum.ranges.values) {
-    const signalIndex = range.signals.findIndex(
+    const signalIndex = range.signal.findIndex(
       (_signal) => _signal.id === value.signal.id,
     );
     if (signalIndex >= 0) {
@@ -62,7 +62,7 @@ function findRange(spectrum, value) {
 
 function findZone(spectrum, value) {
   for (let zone of spectrum.zones.values) {
-    const signalIndex = zone.signals.findIndex(
+    const signalIndex = zone.signal.findIndex(
       (_signal) => _signal.id === value.signal.id,
     );
     if (signalIndex >= 0) {

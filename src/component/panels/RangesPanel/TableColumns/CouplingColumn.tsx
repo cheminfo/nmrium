@@ -14,7 +14,7 @@ interface CouplingColumnProps {
 }
 
 function CouplingColumn({ rowData, onHoverSignal }: CouplingColumnProps) {
-  const result = lodashGet(rowData, 'tableMetaInfo.signal.js');
+  const result = lodashGet(rowData, 'tableMetaInfo.signal.j');
   return (
     <td {...onHoverSignal}>
       {result
