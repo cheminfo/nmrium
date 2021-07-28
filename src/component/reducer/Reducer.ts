@@ -5,6 +5,7 @@ import OCL from 'openchemlib/full';
 
 import * as SpectraManager from '../../data/SpectraManager';
 import { Range } from '../../data/data1d/Spectrum1D';
+import migrateData from '../../data/migration';
 import { Molecule } from '../../data/molecules/Molecule';
 import generateID from '../../data/utilities/generateID';
 import { Spectra } from '../NMRium';
@@ -179,7 +180,7 @@ export interface State {
       pivot: { value: number; index: number };
       zonesNoiseFactor: number;
       activeFilterID: string | null;
-      tempRange: Range;
+      tempRange: Range | null;
       showMultiplicityTrees: boolean;
     };
   };
@@ -210,7 +211,7 @@ export function dispatchMiddleware(dispatch) {
     switch (action.type) {
       case types.INITIATE: {
         if (action.payload) {
-          const { spectra, ...res } = action.payload;
+          const { spectra, ...res } = migrateData(action.payload);
           void SpectraManager.fromJSON(spectra, usedColors).then((data) => {
             action.payload = { spectra: data, ...res };
             dispatch(action);
@@ -220,7 +221,8 @@ export function dispatchMiddleware(dispatch) {
         break;
       }
       case types.LOAD_JSON_FILE: {
-        const data = JSON.parse(action.files[0].binary.toString());
+        const parsedData = JSON.parse(action.files[0].binary.toString());
+        const data = migrateData(parsedData);
         void SpectraManager.fromJSON(data.spectra, usedColors).then(
           (spectra) => {
             action.payload = Object.assign(data, { spectra });
