@@ -67,12 +67,12 @@
     "ml-spectra-processing": "^6.8.0",
     "ml-stat": "^1.3.3",
     "multiplet-analysis": "^1.0.1",
-    "nmr-correlation": "^2.0.0",
+    "nmr-correlation": "^2.0.1",
     "nmr-parser": "^1.6.0",
     "nmr-processing": "^2.1.2",
     "nmredata": "^0.4.1",
     "numeral": "^2.0.6",
-    "openchemlib": "^7.4.0",
+    "openchemlib": "^7.4.1",
     "openchemlib-utils": "^1.2.0",
     "re-resizable": "^6.9.0",
     "react-card-flip": "^1.1.1",
@@ -101,11 +101,11 @@
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.0.0",
     "@types/jest": "^26.0.24",
-    "@types/node": "^16.4.3",
+    "@types/node": "^16.4.5",
     "@types/react": "^17.0.15",
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.8",
-    "@vitejs/plugin-react-refresh": "^1.3.5",
+    "@vitejs/plugin-react-refresh": "^1.3.6",
     "@zakodium/eslint-config": "^3.0.3",
     "cross-env": "^7.0.3",
     "eslint": "^7.31.0",
@@ -123,6 +123,6 @@
     "serve": "^12.0.0",
     "start-server-and-test": "^1.13.1",
     "typescript": "~4.3.5",
-    "vite": "^2.4.3"
+    "vite": "^2.4.4"
   }
 }
