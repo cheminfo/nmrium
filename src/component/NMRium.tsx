@@ -45,12 +45,14 @@ import {
   spectrumReducer,
   initialState,
   dispatchMiddleware,
-  intiState,
+  initState,
+  State,
 } from './reducer/Reducer';
 import { DISPLAYER_MODE } from './reducer/core/Constants';
 import preferencesReducer, {
   preferencesInitialState,
   INIT_PREFERENCES,
+  PreferencesState,
 } from './reducer/preferencesReducer';
 import {
   INITIATE,
@@ -143,7 +145,7 @@ export enum NMRiumMode {
 
 export interface NMRiumProps {
   data?: NMRiumData;
-  onDataChange?: (data: any) => void;
+  onDataChange?: (data: State) => void;
   mode?: NMRiumMode;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
@@ -228,16 +230,15 @@ function NMRium({
   const [isRightPanelHide, hideRightPanel] = useState(!initialShowPanels);
   const [isResizeEventStart, setResizeEventStart] = useState(false);
 
-  const [state, dispatch] = useReducer<Reducer<any, any>, any>(
+  const [state, dispatch] = useReducer<Reducer<State, any>, State>(
     spectrumReducer,
     initialState,
-    intiState,
+    initState,
   );
 
-  const [preferencesState, dispatchPreferences] = useReducer<Reducer<any, any>>(
-    preferencesReducer,
-    preferencesInitialState,
-  );
+  const [preferencesState, dispatchPreferences] = useReducer<
+    Reducer<PreferencesState, any>
+  >(preferencesReducer, preferencesInitialState);
 
   const { displayerMode, data: spectraData } = state;
 

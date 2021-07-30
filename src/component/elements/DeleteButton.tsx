@@ -7,7 +7,7 @@ interface DeleteButtonProps {
 
 function DeleteButton(props: DeleteButtonProps) {
   const {
-    x = 'intial',
+    x = 'initial',
     y = 'initial',
     onDelete = () => null,
     fill = '#c81121',

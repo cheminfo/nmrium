@@ -1,4 +1,4 @@
-import { produce } from 'immer';
+import { Draft, produce } from 'immer';
 import lodashMerge from 'lodash/merge';
 
 import { NMRiumMode } from '../NMRium';
@@ -17,7 +17,7 @@ export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
 
 const LOCAL_STORGAE_VERSION = '1.1';
 
-function getPreferencesbyMode(mode) {
+function getPreferencesbyMode(mode: NMRiumMode) {
   switch (mode) {
     case NMRiumMode.EXERCISE_1D:
       return exercise1D;
@@ -74,7 +74,7 @@ export const preferencesInitialState: PreferencesState = {
   dispatch: null,
 };
 
-function mapNucleus(draft) {
+function mapNucleus(draft: Draft<PreferencesState>) {
   if (draft.formatting.nucleus && Array.isArray(draft.formatting.nucleus)) {
     draft.formatting.nucleusByKey = draft.formatting.nucleus.reduce(
       (acc, item) => {
@@ -86,7 +86,7 @@ function mapNucleus(draft) {
   }
 }
 
-function handleIniti(draft: PreferencesState, action) {
+function handleInit(draft: Draft<PreferencesState>, action) {
   const nmrLocalStorageVersion = getLocalStorage(
     'nmr-local-storage-version',
     false,
@@ -138,7 +138,7 @@ function handleIniti(draft: PreferencesState, action) {
   }
 }
 
-function handleSetPreferences(draft, action) {
+function handleSetPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     const data = action.payload;
     draft.controllers = data.controllers;
@@ -147,23 +147,23 @@ function handleSetPreferences(draft, action) {
     mapNucleus(draft);
   }
 }
-function handleSetPanelsPreferences(draft, action) {
+function handleSetPanelsPreferences(draft: Draft<PreferencesState>, action) {
   if (action.payload) {
     const { key, value } = action.payload;
     draft.formatting.panels[key] = value;
   }
 }
 
-function innerPreferencesReducer(drfat, action) {
+function innerPreferencesReducer(draft: Draft<PreferencesState>, action) {
   switch (action.type) {
     case INIT_PREFERENCES:
-      return handleIniti(drfat, action);
+      return handleInit(draft, action);
     case SET_PREFERENCES:
-      return handleSetPreferences(drfat, action);
+      return handleSetPreferences(draft, action);
     case SET_PANELS_PREFERENCES:
       return handleSetPanelsPreferences;
     default:
-      return drfat;
+      return draft;
   }
 }
 const preferencesReducer = produce(innerPreferencesReducer);

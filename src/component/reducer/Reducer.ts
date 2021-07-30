@@ -1,4 +1,4 @@
-import { produce } from 'immer';
+import { Draft, produce } from 'immer';
 import { buildCorrelationData, Types } from 'nmr-correlation';
 import { predictProton } from 'nmr-processing';
 import OCL from 'openchemlib/full';
@@ -55,7 +55,8 @@ export interface Margin {
   left: number;
 }
 
-export const initialState = {
+export const initialState: State = {
+  actionType: '',
   data: [],
   contours: null,
   tempData: null,
@@ -126,6 +127,7 @@ export interface ExclusionZoneState {
 }
 
 export interface State {
+  actionType: string;
   data: Spectra;
   contours: any;
   tempData: any;
@@ -186,7 +188,7 @@ export interface State {
   };
 }
 
-export function intiState(state: State) {
+export function initState(state: State): State {
   const displayerKey = generateID();
   const correlations = buildCorrelationData([], {
     tolerance: DefaultTolerance,
@@ -271,7 +273,7 @@ export function dispatchMiddleware(dispatch) {
   };
 }
 
-function innerSpectrumReducer(draft, action) {
+function innerSpectrumReducer(draft: Draft<State>, action) {
   draft.actionType = action.type;
   switch (action.type) {
     case types.INITIATE:
