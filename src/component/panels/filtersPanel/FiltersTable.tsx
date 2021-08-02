@@ -59,7 +59,7 @@ function FiltersTableInner({
           text: 'Yes',
           handler: async () => {
             const hideLoading = await alert.showLoading(
-              'Delete filter processs in progress',
+              'Delete filter process in progress',
             );
             dispatch({ type: DELETE_FILTER, payload: { id } });
             hideLoading();
@@ -73,7 +73,7 @@ function FiltersTableInner({
           text: 'Yes, for all spectra',
           handler: async () => {
             const hideLoading = await alert.showLoading(
-              'Delete all spectra filter processs in progress',
+              'Delete all spectra filter process in progress',
             );
             dispatch({
               type: DELETE_SPECTRA_FILTER,
@@ -94,7 +94,7 @@ function FiltersTableInner({
   const filterSnapShotHandler = useCallback(
     async (newID) => {
       const hideLoading = await alert.showLoading(
-        'Filter snapshot processs in progress',
+        'Filter snapshot process in progress',
       );
       setTimeout(() => {
         dispatch({ type: SET_FILTER_SNAPSHOT, id: newID });
