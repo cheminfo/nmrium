@@ -13,7 +13,6 @@ import { DISPLAYER_MODE } from '../core/Constants';
 import { handleUnlinkRange } from './RangesActions';
 import { setActiveTab } from './ToolsActions';
 import { handleUnlinkZone } from './ZonesActions';
-import { setZoom } from './Zoom';
 
 function addMoleculeHandler(draft: Draft<State>, molfile) {
   MoleculeManager.addMolfile(draft.molecules, molfile);
@@ -38,28 +37,32 @@ function deleteMoleculeHandler(draft: Draft<State>, action) {
   draft.molecules.splice(moleculeIndex, 1);
 }
 
-function predictSpectraFromMolculeHandler(draft: Draft<State>, action) {
-  const { fromMolfile, options, usedColors } = action.payload;
-  const { x, y } = signalsToXY(fromMolfile.signals, {});
-  let id: any = null;
-  if (options.spectra['1h']) {
-    const datum = initiateDatum1D(
-      {
-        data: { x, im: null, re: y },
-        info: { nucleus: '1H' },
-      },
-      usedColors,
-    );
-    id = datum.id;
-    datum.ranges.values = mapRanges(fromMolfile.ranges, datum);
-    updateIntegralRanges(datum);
-    draft.data.push(datum);
-    const activeSpectrum = { id, index: draft.data.length - 1 };
-    draft.tabActiveSpectrum['1H'] = activeSpectrum;
-    draft.activeSpectrum = activeSpectrum;
+function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
+  const { data, options, usedColors } = action.payload;
+
+  for (const predictedDatum of data) {
+    const { nucleus, signals, ranges } = predictedDatum;
+    if (['1H', '13C'].includes(nucleus)) {
+      const { x, y } = signalsToXY(signals, { ...options[nucleus] });
+      const datum = initiateDatum1D(
+        {
+          data: { x, im: null, re: y },
+          info: { nucleus },
+        },
+        usedColors,
+      );
+      datum.ranges.values = mapRanges(ranges, datum);
+      updateIntegralRanges(datum);
+      draft.data.push(datum);
+
+      draft.tabActiveSpectrum[nucleus] = {
+        id: datum.id,
+        index: draft.data.length - 1,
+      };
+    }
   }
+
   setActiveTab(draft);
-  setZoom(draft, 0.9, id);
 
   draft.isLoading = false;
 }
@@ -68,5 +71,5 @@ export {
   addMoleculeHandler,
   setMoleculeHandler,
   deleteMoleculeHandler,
-  predictSpectraFromMolculeHandler,
+  predictSpectraFromMoleculeHandler,
 };

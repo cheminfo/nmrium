@@ -1,8 +1,7 @@
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, Types } from 'nmr-correlation';
-import { predictProton } from 'nmr-processing';
-import OCL from 'openchemlib/full';
 
+import predictSpectrum from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
 import { Range } from '../../data/data1d/Spectrum1D';
 import migrateData from '../../data/migration';
@@ -254,9 +253,12 @@ export function dispatchMiddleware(dispatch) {
         break;
       }
       case types.PREDICT_SPECTRA: {
-        const molecule = OCL.Molecule.fromMolfile(action.payload.mol.molfile);
-        void predictProton(molecule, {}).then((result) => {
-          action.payload.fromMolfile = result;
+        const {
+          mol: { molfile },
+          options,
+        } = action.payload;
+        void predictSpectrum(molfile, options).then((result) => {
+          action.payload.data = result;
           action.payload.usedColors = usedColors;
           dispatch(action);
         });
@@ -413,7 +415,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return MoleculeActions.deleteMoleculeHandler(draft, action);
 
     case types.PREDICT_SPECTRA:
-      return MoleculeActions.predictSpectraFromMolculeHandler(draft, action);
+      return MoleculeActions.predictSpectraFromMoleculeHandler(draft, action);
 
     case types.SET_CORRELATIONS_MF:
       return CorrelationsActions.handleSetMF(draft, action.payload);

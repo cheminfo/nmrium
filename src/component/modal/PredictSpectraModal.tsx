@@ -75,12 +75,12 @@ const FREQUENCIES: Array<{ key: number; value: number; label: string }> = [
 ];
 
 const INITIAL_VALUE = {
-  '1h': { from: -1, to: 12 },
-  '13c': { from: -5, to: 220 },
+  '1H': { from: -1, to: 12 },
+  '13C': { from: -5, to: 220 },
   frequency: 400,
   spectra: {
-    '1h': true,
-    '13c': false,
+    '1H': true,
+    '13C': false,
     cosy: false,
     hsqc: false,
     hmbc: false,
@@ -147,13 +147,13 @@ function PredictSpectraModal({
             <IsotopesViewer value="1H" className="custom-label" />
             <FormikInput
               label="From"
-              name="1h.from"
+              name="1H.from"
               type="number"
               style={{ label: { padding: '0 10px 0 0' } }}
             />
             <FormikInput
               label="To"
-              name="1h.to"
+              name="1H.to"
               type="number"
               style={{ label: { padding: '0 10px' } }}
             />
@@ -162,13 +162,13 @@ function PredictSpectraModal({
             <IsotopesViewer value="13C" className="custom-label" />
             <FormikInput
               label="From"
-              name="13c.from"
+              name="13C.from"
               type="number"
               style={{ label: { padding: '0 10px 0 0' } }}
             />
             <FormikInput
               label="To"
-              name="13c.to"
+              name="13C.to"
               type="number"
               style={{ label: { padding: '0 10px' } }}
             />
@@ -181,12 +181,12 @@ function PredictSpectraModal({
             style={{ justifyContent: 'space-between' }}
           >
             <div className="row">
-              <FormikCheckBox name="spectra.1h" />
+              <FormikCheckBox name="spectra.1H" />
               <IsotopesViewer value="1H" className="nucleus-label" />
             </div>
             <div className="row">
-              <FormikCheckBox disabled name="spectra.13c" />
-              <IsotopesViewer value="13C" className="nucleus-label disabled" />
+              <FormikCheckBox name="spectra.13C" />
+              <IsotopesViewer value="13C" className="nucleus-label" />
             </div>
             <div className="row">
               <FormikCheckBox disabled name="spectra.cosy" />
