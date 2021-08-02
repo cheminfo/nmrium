@@ -63,8 +63,6 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   }
 
   setActiveTab(draft);
-
-  draft.isLoading = false;
 }
 
 export {

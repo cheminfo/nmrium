@@ -10,7 +10,8 @@ import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikSelect from '../elements/formik/FormikSelect';
-import { PREDICT_SPECTRA, SET_LOADING_FLAG } from '../reducer/types/Types';
+import { useAlert } from '../elements/popup/Alert';
+import { PREDICT_SPECTRA } from '../reducer/types/Types';
 
 import { ModalStyles } from './ModalStyle';
 
@@ -98,6 +99,7 @@ function PredictSpectraModal({
 }: PredictSpectraModalProps) {
   const refForm = useRef<any>();
   const dispatch = useDispatch();
+  const alert = useAlert();
   const [isApproved, setApproved] = useState(false);
 
   const handleSave = useCallback(() => {
@@ -105,18 +107,29 @@ function PredictSpectraModal({
   }, []);
 
   const submitHandler = useCallback(
-    (values) => {
-      dispatch({
-        type: SET_LOADING_FLAG,
-        isLoading: true,
-      });
+    async (values) => {
+      const predictedSpectra = Object.entries(values.spectra)
+        .reduce<Array<string>>((acc, [key, value]) => {
+          if (value) {
+            acc.push(key);
+          }
+          return acc;
+        }, [])
+        .join(' , ');
+
+      const hideLoading = await alert.showLoading(
+        `Predict ${predictedSpectra} in progress`,
+      );
+
       dispatch({
         type: PREDICT_SPECTRA,
         payload: { mol: molfile, options: values },
       });
+
+      hideLoading();
       onClose();
     },
-    [dispatch, molfile, onClose],
+    [alert, dispatch, molfile, onClose],
   );
 
   const approveCheckHandler = useCallback((e) => {

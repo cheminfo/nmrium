@@ -20,7 +20,7 @@ async function predictProton(molfile: string): Promise<any> {
   return predictProtonSpectrum(molecule, {});
 }
 
-export default async function predictSpectrum(molfile: string, options) {
+export default async function predictSpectra(molfile: string, options) {
   const promises: any = [];
   if (options.spectra['1H']) {
     const promises1H = predictProton(molfile).then((result) => ({

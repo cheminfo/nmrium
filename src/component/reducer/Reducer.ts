@@ -1,7 +1,7 @@
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, Types } from 'nmr-correlation';
 
-import predictSpectrum from '../../data/PredictionManager';
+import predictSpectra from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
 import { Range } from '../../data/data1d/Spectrum1D';
 import migrateData from '../../data/migration';
@@ -257,7 +257,7 @@ export function dispatchMiddleware(dispatch) {
           mol: { molfile },
           options,
         } = action.payload;
-        void predictSpectrum(molfile, options).then((result) => {
+        void predictSpectra(molfile, options).then((result) => {
           action.payload.data = result;
           action.payload.usedColors = usedColors;
           dispatch(action);
