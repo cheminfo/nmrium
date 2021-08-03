@@ -11,7 +11,7 @@ import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikSelect from '../elements/formik/FormikSelect';
 import { useAlert } from '../elements/popup/Alert';
-import { PREDICT_SPECTRA } from '../reducer/types/Types';
+import { PREDICT_SPECTRA, SET_LOADING_FLAG } from '../reducer/types/Types';
 
 import { ModalStyles } from './ModalStyle';
 
@@ -80,8 +80,8 @@ const INITIAL_VALUE = {
   '13C': { from: -5, to: 220 },
   frequency: 400,
   spectra: {
-    '1H': true,
-    '13C': false,
+    proton: true,
+    carbon: false,
     cosy: false,
     hsqc: false,
     hmbc: false,
@@ -108,6 +108,11 @@ function PredictSpectraModal({
 
   const submitHandler = useCallback(
     async (values) => {
+      dispatch({
+        type: SET_LOADING_FLAG,
+        isLoading: true,
+      });
+
       const predictedSpectra = Object.entries(values.spectra)
         .reduce<Array<string>>((acc, [key, value]) => {
           if (value) {
@@ -194,11 +199,11 @@ function PredictSpectraModal({
             style={{ justifyContent: 'space-between' }}
           >
             <div className="row">
-              <FormikCheckBox name="spectra.1H" />
+              <FormikCheckBox name="spectra.proton" />
               <IsotopesViewer value="1H" className="nucleus-label" />
             </div>
             <div className="row">
-              <FormikCheckBox name="spectra.13C" />
+              <FormikCheckBox name="spectra.carbon" />
               <IsotopesViewer value="13C" className="nucleus-label" />
             </div>
             <div className="row">

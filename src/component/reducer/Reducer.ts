@@ -257,11 +257,16 @@ export function dispatchMiddleware(dispatch) {
           mol: { molfile },
           options,
         } = action.payload;
-        void predictSpectra(molfile, options).then((result) => {
-          action.payload.data = result;
-          action.payload.usedColors = usedColors;
-          dispatch(action);
-        });
+        void predictSpectra(molfile, options).then(
+          (result) => {
+            action.payload.data = result;
+            action.payload.usedColors = usedColors;
+            dispatch(action);
+          },
+          () => {
+            dispatch(action);
+          },
+        );
 
         break;
       }

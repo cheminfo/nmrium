@@ -40,29 +40,38 @@ function deleteMoleculeHandler(draft: Draft<State>, action) {
 function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   const { data, options, usedColors } = action.payload;
 
-  for (const predictedDatum of data) {
-    const { nucleus, signals, ranges } = predictedDatum;
-    if (['1H', '13C'].includes(nucleus)) {
-      const { x, y } = signalsToXY(signals, { ...options[nucleus] });
-      const datum = initiateDatum1D(
-        {
-          data: { x, im: null, re: y },
-          info: { nucleus },
-        },
-        usedColors,
-      );
-      datum.ranges.values = mapRanges(ranges, datum);
-      updateIntegralRanges(datum);
-      draft.data.push(datum);
+  if (!data) {
+    draft.isLoading = false;
+  } else {
+    for (const predictedDatum of data) {
+      for (const key in predictedDatum) {
+        if (['proton', 'carbon'].includes(key) && options.spectra[key]) {
+          const { signals, ranges, nucleus } = predictedDatum[key];
+          const { x, y } = signalsToXY(signals, {
+            ...options[nucleus],
+          });
+          const datum = initiateDatum1D(
+            {
+              data: { x, im: null, re: y },
+              info: { nucleus },
+            },
+            usedColors,
+          );
+          datum.ranges.values = mapRanges(ranges, datum);
+          updateIntegralRanges(datum);
+          draft.data.push(datum);
 
-      draft.tabActiveSpectrum[nucleus] = {
-        id: datum.id,
-        index: draft.data.length - 1,
-      };
+          draft.tabActiveSpectrum[nucleus] = {
+            id: datum.id,
+            index: draft.data.length - 1,
+          };
+        }
+      }
     }
-  }
 
-  setActiveTab(draft);
+    setActiveTab(draft);
+    draft.isLoading = false;
+  }
 }
 
 export {
