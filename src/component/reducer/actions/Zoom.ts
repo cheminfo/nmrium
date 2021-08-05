@@ -24,7 +24,7 @@ export function wheel(deltaY, deltaMode, draft: Draft<State>, id = null) {
         datum.info.dimension === 1 &&
         draft.activeTab === datum.info.nucleus
       ) {
-        zoomManager.wheel(deltaY, datum.id as string);
+        zoomManager.wheel(deltaY, datum.id);
       }
     });
   }
