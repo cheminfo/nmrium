@@ -105,7 +105,7 @@ export interface Source {
 }
 
 export interface Datum1D {
-  id: string | number;
+  id: string;
   source: Source;
   display: Display;
   info: Info;
