@@ -1,5 +1,4 @@
 import { Draft } from 'immer';
-import lodashGet from 'lodash/get';
 import { buildCorrelationData, Types } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
@@ -28,13 +27,11 @@ function setData(
   const {
     spectra,
     molecules,
-    preferences,
     correlations,
     exclusionZones = {},
   } = data || {
     spectra: [],
     molecules: [],
-    preferences: {},
     correlations: {},
     multipleAnalysis: {},
     exclusionZones: {},
@@ -42,7 +39,6 @@ function setData(
 
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
-  draft.preferences = preferences;
   draft.toolOptions.data.exclusionZones = exclusionZones;
 
   if (!correlations || Object.keys(correlations).length === 0) {
@@ -56,8 +52,7 @@ function setData(
 
 function initiate(draft: Draft<State>, action) {
   setData(draft, action.payload);
-  const alignCenter = lodashGet(draft.preferences, 'display.center', null);
-  changeSpectrumVerticalAlignment(draft, alignCenter, true);
+  changeSpectrumVerticalAlignment(draft, { checkData: true });
   setActiveTab(draft);
   draft.isLoading = false;
 }
@@ -80,7 +75,7 @@ function loadJcampFile(draft: Draft<State>, actions) {
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
-  changeSpectrumVerticalAlignment(draft, false, true);
+  changeSpectrumVerticalAlignment(draft, { checkData: true });
   setActiveTab(draft);
 
   draft.isLoading = false;
@@ -90,9 +85,7 @@ function handleLoadJsonFile(draft: Draft<State>, actions) {
   const data = actions.payload;
   setData(draft, data);
 
-  const alignCenter = lodashGet(draft.preferences, 'display.center', null);
-
-  changeSpectrumVerticalAlignment(draft, alignCenter, true);
+  changeSpectrumVerticalAlignment(draft, { checkData: true });
 
   setActiveTab(draft);
 
@@ -115,7 +108,7 @@ function handleLoadZIPFile(draft: Draft<State>, action) {
 
 function handleLoadNmredata(draft: Draft<State>, action) {
   setData(draft, action.payload);
-  changeSpectrumVerticalAlignment(draft, false, true);
+  changeSpectrumVerticalAlignment(draft, { checkData: true });
   setActiveTab(draft);
   draft.isLoading = false;
 }

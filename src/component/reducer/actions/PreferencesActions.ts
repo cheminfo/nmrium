@@ -1,6 +1,5 @@
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
-import lodashGet from 'lodash/get';
 
 import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { Datum2D } from '../../../data/data2d/Spectrum2D';
@@ -12,17 +11,16 @@ import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 import { setDomain } from './DomainActions';
 import { setZoom } from './Zoom';
 
-function handelSetPreferences(draft: Draft<State>, action) {
-  const { type, values } = action;
-  const panelsPreferences = lodashGet(draft.preferences, 'panels', {});
-  draft.preferences.panels = { ...panelsPreferences, [type]: values };
+interface options {
+  center?: boolean;
+  checkData?: boolean;
 }
 
 function changeSpectrumVerticalAlignment(
   draft: Draft<State>,
-  center,
-  checkData = false,
+  options: options = {},
 ) {
+  const { center = false, checkData = false } = options || {};
   if (draft.data && draft.data.length > 0) {
     if (
       center ||
@@ -133,6 +131,7 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
         const processController = (draft.data[index] as Datum2D)
           .processingController;
         processController.setLevel(levelPositive, levelNegative);
+
         draft.contours[datumID] = processController.drawContours();
       }
     } else {
@@ -144,7 +143,6 @@ function applyKeyPreferencesHandler(draft: Draft<State>, keyCode) {
 
 export {
   changeSpectrumVerticalAlignment,
-  handelSetPreferences,
   setKeyPreferencesHandler,
   applyKeyPreferencesHandler,
 };

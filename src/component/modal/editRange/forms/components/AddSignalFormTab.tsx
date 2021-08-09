@@ -70,7 +70,7 @@ function AddSignalFormTab(
 ) {
   const { values, setFieldValue } = useFormikContext<any>();
   const { activeTab } = useChartData();
-  const format = useFormatNumberByNucleus(activeTab as string);
+  const format = useFormatNumberByNucleus(activeTab);
 
   const saveHandler = useCallback(
     (val) => {

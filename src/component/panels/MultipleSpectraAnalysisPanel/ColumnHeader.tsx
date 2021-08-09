@@ -2,7 +2,10 @@
 import { css } from '@emotion/react';
 import { useCallback } from 'react';
 
-import { COLUMNS_TYPES } from '../../../data/data1d/MulitpleAnalysis';
+import {
+  COLUMNS_TYPES,
+  COLUMNS_VALUES_KEYS,
+} from '../../../data/data1d/MultipleAnalysis';
 import { useDispatch } from '../../context/DispatchContext';
 import DeleteButton from '../../elements/Tab/DeleteButton';
 import DropDownButton from '../../elements/dropDownButton/DropDownButton';
@@ -46,10 +49,10 @@ const styles = (styles) => css`
 `;
 
 const columnsFilters: Array<{ key: string; label: string }> = [
-  { key: 'relative', label: 'Relative' },
-  { key: 'absolute', label: 'Absolute' },
-  { key: 'min', label: 'Min Intensity' },
-  { key: 'max', label: 'Max Intensity' },
+  { key: COLUMNS_VALUES_KEYS.RELATIVE, label: 'Relative' },
+  { key: COLUMNS_VALUES_KEYS.ABSOLUTE, label: 'Absolute' },
+  { key: COLUMNS_VALUES_KEYS.MIN, label: 'Min Intensity' },
+  { key: COLUMNS_VALUES_KEYS.MAX, label: 'Max Intensity' },
 ];
 
 interface ColumnHeaderProps {

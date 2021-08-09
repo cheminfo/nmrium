@@ -3,7 +3,9 @@ import { buildCorrelationData, Types } from 'nmr-correlation';
 
 import predictSpectra from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
+import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { Range } from '../../data/data1d/Spectrum1D';
+import { Contours } from '../../data/data2d/Spectrum2D';
 import migrateData from '../../data/migration';
 import { Molecule } from '../../data/molecules/Molecule';
 import generateID from '../../data/utilities/generateID';
@@ -27,7 +29,6 @@ import * as LoadActions from './actions/LoadActions';
 import * as MoleculeActions from './actions/MoleculeActions';
 import * as PeaksActions from './actions/PeaksActions';
 import {
-  handelSetPreferences,
   setKeyPreferencesHandler,
   applyKeyPreferencesHandler,
 } from './actions/PreferencesActions';
@@ -57,16 +58,22 @@ export interface Margin {
 export const initialState: State = {
   actionType: '',
   data: [],
-  contours: null,
+  contours: {} as Contours,
   tempData: null,
   xDomain: [],
   yDomain: [],
   yDomains: {},
   xDomains: {},
-  originDomain: {},
+  originDomain: {
+    xDomain: [],
+    yDomain: [],
+    xDomains: {},
+    yDomains: {},
+    shareYDomain: false,
+  },
   integralsYDomains: {},
   originIntegralYDomain: {},
-  activeTab: null,
+  activeTab: '',
   width: 0,
   height: 0,
   margin: {
@@ -91,7 +98,6 @@ export const initialState: State = {
     hasRedo: false,
   },
   isLoading: false,
-  preferences: {},
   keysPreferences: {},
   displayerMode: DISPLAYER_MODE.DM_1D,
   tabActiveSpectrum: {},
@@ -126,29 +132,119 @@ export interface ExclusionZoneState {
 }
 
 export interface State {
+  /**
+   * Last action type
+   *  base on the action type we can decide to trigger or not the callback function (onDataChange)
+   */
   actionType: string;
+  /**
+   * spectra list (1d and 2d)
+   */
   data: Spectra;
-  contours: any;
+  /**
+   * calculated contours for 2d spectra
+   */
+  contours: Contours;
+  /**
+   * snapshot of the spectra data once phase correction activated
+   *
+   */
   tempData: any;
+  /**
+   * X axis domain
+   * value change when zooming in/out
+   * @default []
+   */
   xDomain: Array<number>;
+  /**
+   * Y axis domain
+   * value change when vertical scale change for all spectra
+   * @default []
+   */
   yDomain: Array<number>;
-  yDomains: any;
-  xDomains: any;
-  originDomain: any;
-  integralsYDomains: any;
-  originIntegralYDomain: any;
-  activeTab: any;
+
+  /**
+   * Y axis domain per spectrum
+   * value change when vertical scale change for the selected spectrum
+   * @default {}
+   */
+  yDomains: Record<string, Array<number>>;
+  /**
+   * X axis domain per spectrum
+   * value change when zooming in/out for the selected spectrum
+   * @default {}
+   */
+  xDomains: Record<string, Array<number>>;
+  /**
+   * Domain for X and Y axis once it calculated and it change in one case  when we load new spectra
+   * @default {}
+   */
+  originDomain: {
+    xDomain: Array<number>;
+    yDomain: Array<number>;
+    xDomains: Record<string, Array<number>>;
+    yDomains: Record<string, Array<number>>;
+    shareYDomain: boolean;
+  };
+  /**
+   * X axis domain for Integrals
+   * value change when vertical scale change for the selected integral
+   * @default {}
+   */
+  integralsYDomains: Record<string, Array<number>>;
+
+  /**
+   * X axis domain for Integrals
+   * @default {}
+   */
+  originIntegralYDomain: Record<string, Array<number>>;
+  /**
+   * current select tab (nucleus)
+   * @default null
+   */
+  activeTab: string;
+  /**
+   * plot chart area width
+   * @default 0
+   */
   width: number;
+  /**
+   * plot chart area height
+   * @default 0
+   */
   height: number;
+  /**
+   * The margin Around the plot chart area
+   * @default {top: 10,right: 20,bottom: 70,left: 0}
+   */
   margin: Margin;
+  /**
+   * current active spectrum
+   * @default null
+   */
   activeSpectrum: ActiveSpectrum | null;
-  mode: string;
+  /**
+   * Scale direction
+   * @default 'RTL'
+   */
+  mode: 'RTL' | 'LTR';
+  /**
+   * molecules
+   * @default []
+   */
   molecules: Array<Molecule>;
+  /**
+   * options to control spectra vertical alignment
+   * @default {flag: false,stacked: false,value: DEFAULT_YAXIS_SHIFT_VALUE}
+   */
   verticalAlign: {
     flag: boolean;
     stacked: boolean;
     value: number;
   };
+  /**
+   * @todo for undo /redo features
+   */
   history: Partial<{
     past: Array<any>;
     present: any;
@@ -156,32 +252,115 @@ export interface State {
     hasUndo: boolean;
     hasRedo: boolean;
   }>;
+
+  /**
+   * hide/show main loading indicator
+   * @default false
+   */
   isLoading: boolean;
-  preferences: any;
+
+  /**
+   * temporary snapshot of state once the user press on number from 1-9
+   */
   keysPreferences: any;
+
+  /**
+   * displayer mode '1D' or '2D'
+   * @default '1D'
+   */
   displayerMode: DISPLAYER_MODE;
-  tabActiveSpectrum: any;
-  spectraAnalysis: any;
-  displayerKey: any;
+
+  /**
+   * active spectrum per nucleus
+   * @default {}
+   */
+  tabActiveSpectrum: Record<string, ActiveSpectrum | null>;
+
+  /**
+   * Multiple spectra analysis data
+   */
+
+  spectraAnalysis: SpectraAnalysis;
+  /**
+   * unique key identifier per Displayer instance
+   */
+  displayerKey: string;
+
+  /**
+   * Correlation data
+   */
   correlations: Types.CorrelationData;
+
+  /**
+   * Zoom Manager for vertical scale for spectra, integral, And undo zoom in per tab (nucleus)
+   * @default  {history: {},spectra: {},integral: {}}
+   */
   zoom: {
     history: ZoomHistory;
     spectra: Zoom1D;
     integral: Zoom1D;
   };
+
+  /**
+   * boolean indicator to check if the mouse over the displayer or not
+   * value change to true once the mouse come over the displayer and vice versa true once the mouse out of the displayer
+   * @default false
+   */
   overDisplayer: boolean;
 
+  /**
+   * Basic options for the tools
+   */
   toolOptions: {
+    /**
+     * The current selected tool
+     * @default `options.zoom.id`
+     */
     selectedTool: string;
-    selectedOptionPanel: any;
+    /**
+     * The current active options panel
+     * Part of tools has an options panel for more control over the tool, once the user select the tool then the options panel will be shown in the header
+     * @default null
+     */
+    selectedOptionPanel: string | null;
 
+    /**
+     * extra data for tools
+     */
     data: {
+      /**
+       * list of zones for Baseline correction filter
+       */
       baseLineZones: any;
+      /**
+       * list of exclusive zones per nucleus
+       */
       exclusionZones: Record<string, Array<ExclusionZoneState>>;
+      /**
+       * pivot point for manual phase correction
+       * @default {value:0,index:0}
+       */
       pivot: { value: number; index: number };
+      /**
+       * Noise factor for auto zones detection
+       * @default 1
+       */
       zonesNoiseFactor: number;
+
+      /**
+       * The current active Filter
+       * @default null
+       */
       activeFilterID: string | null;
+
+      /**
+       * copy of the range that the user start editing for multiplicity tree live updating
+       */
       tempRange: Range | null;
+      /**
+       * boolean indicator to hid/show multiplicity tree
+       * @default false
+       */
       showMultiplicityTrees: boolean;
     };
   };
@@ -484,8 +663,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.SHOW_MULTIPLICTY_TREES:
       return RangesActions.handleShowMultiplicityTrees(draft);
 
-    case types.SET_PREFERENCES:
-      return handelSetPreferences(draft, action.data);
     case types.SET_ACTIVE_TAB:
       return ToolsActions.handelSetActiveTab(draft, action.tab);
     case types.ADD_BASE_LINE_ZONE:
@@ -529,9 +706,9 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.RESIZE_ANALYZE_SPECTRA_RANGE:
       return SpectraAanalysisActions.handleResizeSpectraRange(draft, action);
     case types.SET_ANALYZE_SPECTRA_COLUMNS:
-      return SpectraAanalysisActions.handleSetcolumns(draft, action);
+      return SpectraAanalysisActions.handleSetColumns(draft, action);
     case types.FILTER_SPECTRA_COLUMN:
-      return SpectraAanalysisActions.handleFiltercolumn(draft, action);
+      return SpectraAanalysisActions.handleFilterColumn(draft, action);
 
     case UNDO:
       return handleHistoryUndo(draft);

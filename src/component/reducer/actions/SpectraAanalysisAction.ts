@@ -1,12 +1,12 @@
 import { Draft } from 'immer';
 
-import * as MulitpleAnalysis from '../../../data/data1d/MulitpleAnalysis';
+import * as MultipleAnalysis from '../../../data/data1d/MultipleAnalysis';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
 function analyzeSpectra(draft: Draft<State>, action) {
   const [from, to] = getRange(draft, action);
-  MulitpleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
+  MultipleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
     from,
     to,
     nucleus: draft.activeTab,
@@ -15,7 +15,8 @@ function analyzeSpectra(draft: Draft<State>, action) {
 
 function handleDeleteSpectraRanges(draft: Draft<State>, action) {
   const { colKey } = action;
-  MulitpleAnalysis.deleteSpectraAnalysis(
+
+  MultipleAnalysis.deleteSpectraAnalysis(
     draft.spectraAnalysis,
     colKey,
     draft.activeTab,
@@ -23,20 +24,22 @@ function handleDeleteSpectraRanges(draft: Draft<State>, action) {
 }
 function handleResizeSpectraRange(draft: Draft<State>, action) {
   const { columnKey, from, to } = action.payload;
-  MulitpleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
+  MultipleAnalysis.analyzeSpectra(draft.data, draft.spectraAnalysis, {
     from,
     to,
     nucleus: draft.activeTab,
     columnKey,
   });
 }
-function handleSetcolumns(draft: Draft<State>, action) {
+function handleSetColumns(draft: Draft<State>, action) {
   const data = action.payload;
-  MulitpleAnalysis.setColumn(draft.spectraAnalysis, draft.activeTab, data);
+
+  MultipleAnalysis.setColumn(draft.spectraAnalysis, draft.activeTab, data);
 }
-function handleFiltercolumn(draft: Draft<State>, action) {
+function handleFilterColumn(draft: Draft<State>, action) {
   const { columnKey, valueKey } = action.payload;
-  MulitpleAnalysis.changeColumnValueKey(
+
+  MultipleAnalysis.changeColumnValueKey(
     draft.spectraAnalysis,
     draft.activeTab,
     columnKey,
@@ -48,6 +51,6 @@ export {
   analyzeSpectra,
   handleDeleteSpectraRanges,
   handleResizeSpectraRange,
-  handleSetcolumns,
-  handleFiltercolumn,
+  handleSetColumns,
+  handleFilterColumn,
 };

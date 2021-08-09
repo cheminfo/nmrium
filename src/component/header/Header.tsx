@@ -78,7 +78,7 @@ const headerStyle = css`
 interface HeaderInnerProps {
   onMaximize?: () => void;
   isFullscreen: boolean;
-  selectedOptionPanel: string;
+  selectedOptionPanel: string | null;
 }
 
 function HeaderInner(props: HeaderInnerProps) {

@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react';
 
+import { SpectraAnalysis } from '../../../data/data1d/MultipleAnalysis';
 import { useChartData } from '../../context/ChartContext';
 
 import AnalysisRange from './AnalysisRange';
@@ -7,7 +8,7 @@ import AnalysisRange from './AnalysisRange';
 interface MultiAnalysisRangesInnerProps {
   activeTab: string;
   displayerKey: string;
-  spectraAnalysis: Record<string, { options: { columns: Array<number> } }>;
+  spectraAnalysis: SpectraAnalysis;
 }
 
 function MultiAnalysisRangesInner({

@@ -164,26 +164,19 @@ function setDomain(draft: Draft<State>, isYDomainChanged = true) {
     } else {
       domain = get2DDomain(draft);
     }
-
     draft.xDomain = domain.xDomain;
     draft.xDomains = domain.xDomains;
+    draft.originDomain = domain;
 
     if (isYDomainChanged) {
       draft.yDomain = domain.yDomain;
-
       if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
         draft.yDomains = Object.keys(domain.yDomains).reduce((acc, key) => {
           acc[key] = domain.yDomain;
           return acc;
         }, {});
-        draft.originDomain = {
-          ...domain,
-          yDomains: draft.yDomains,
-          originYDomains: domain.yDomains,
-        };
       } else {
         draft.yDomains = domain.yDomains;
-        draft.originDomain = domain;
       }
 
       draft.integralsYDomains =

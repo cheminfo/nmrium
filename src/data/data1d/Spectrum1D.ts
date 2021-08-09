@@ -119,6 +119,13 @@ export interface Datum1D {
   filters: Array<FiltersManager.Filter>;
 }
 
+export interface RangeDetectionObject
+  extends Omit<Range, 'integration' | 'kind' | 'signals'> {
+  absolute: number;
+  min: number;
+  max: number;
+}
+
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   const datum: any = {};
   datum.shiftX = options.shiftX || 0;
@@ -364,7 +371,7 @@ export function updateIntegralRanges(datum, forceCalculateIntegral = false) {
   );
 }
 
-export function detectRange(datum, options) {
+export function detectRange(datum, options): RangeDetectionObject {
   const { from, to } = options;
   const { x, re: y } = datum.data;
 

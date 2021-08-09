@@ -95,7 +95,7 @@ function EditRangeModal({
   const formRef = useRef<any>(null);
   const { activeTab } = useChartData();
   const dispatch = useDispatch();
-  const format = useFormatNumberByNucleus(activeTab as string);
+  const format = useFormatNumberByNucleus(activeTab);
   const validation = useRangeFormValidation();
 
   const handleOnZoom = useCallback(() => {

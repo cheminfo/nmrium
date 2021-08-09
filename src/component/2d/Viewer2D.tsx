@@ -54,9 +54,9 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
 
   const spectrumData = useMemo(() => {
     const nucleuses = activeTab.split(',');
-    return nucleuses.reduce((acc, n) => {
+    return nucleuses.reduce<any>((acc, n) => {
       if (tabActiveSpectrum[n]?.id) {
-        const id = tabActiveSpectrum[n].id;
+        const id = tabActiveSpectrum[n]?.id;
         const spectrum = data.find(
           (datum) => datum.id === id && !datum.info.isFid,
         );

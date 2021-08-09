@@ -21,7 +21,7 @@ function handleChangeIntegralSum(draft: Draft<State>, value) {
     (draft.data[index] as Datum1D).integrals.options.sum = value;
     updateIntegralIntegrals(draft.data[index] as Datum1D, true);
 
-    if (!draft.integralsYDomains) {
+    if (Object.keys(draft.integralsYDomains).length === 0) {
       draft.integralsYDomains[id] = draft.yDomains[id];
     }
   }
@@ -74,7 +74,7 @@ function addIntegral(draft: Draft<State>, action) {
           reverse: true,
         },
       );
-      const integralYDomain = extent(integralResult.y);
+      const integralYDomain = extent(integralResult.y) as number[];
       draft.integralsYDomains[id] = integralYDomain;
       draft.originIntegralYDomain[id] = integralYDomain;
       setIntegralZoom(0.5, draft);

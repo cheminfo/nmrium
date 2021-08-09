@@ -66,7 +66,7 @@ function SignalsForm({ range }: SignalsFormProps) {
 
   const { activeTab } = useChartData();
   const { info }: { info: any } = useSpectrum({ info: {} });
-  const format = useFormatNumberByNucleus(activeTab as string);
+  const format = useFormatNumberByNucleus(activeTab);
 
   useEffect(() => {
     function handle(event) {

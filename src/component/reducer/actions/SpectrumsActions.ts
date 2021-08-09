@@ -78,7 +78,6 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
   let refreshDomain = false;
 
   const currentActiveSpectrum = draft.activeSpectrum || null;
-
   if (activeSpectrum) {
     const newIndex = draft.data.findIndex((d) => d.id === activeSpectrum.id);
     const oldIndex = draft.data.findIndex(
@@ -143,7 +142,6 @@ function handleChangeSpectrumColor(draft: Draft<State>, { id, color, key }) {
 }
 
 function handleDeleteSpectra(draft: Draft<State>, action) {
-  const { activeTab } = draft;
   const state = original(draft) as State;
   if (action.id) {
     const index = state.data.findIndex((d) => d.id === action.id);
@@ -151,7 +149,7 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
   } else {
     draft.data = [];
   }
-  setActiveTab(draft, activeTab, true);
+  setActiveTab(draft, draft.activeTab, true);
 }
 function addMissingProjectionHander(draft, action) {
   const state = original(draft);

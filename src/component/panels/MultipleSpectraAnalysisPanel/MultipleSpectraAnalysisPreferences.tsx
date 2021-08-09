@@ -11,7 +11,7 @@ import {
 import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
-import { COLUMNS_TYPES } from '../../../data/data1d/MulitpleAnalysis';
+import { COLUMNS_TYPES } from '../../../data/data1d/MultipleAnalysis';
 import { forwardRefWithAs } from '../../../utils';
 import { useDispatch } from '../../context/DispatchContext';
 import FormikForm from '../../elements/formik/FormikForm';

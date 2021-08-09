@@ -15,7 +15,10 @@ import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
 
-import { getDataAsString } from '../../../data/data1d/MulitpleAnalysis';
+import {
+  getDataAsString,
+  SpectraAnalysis,
+} from '../../../data/data1d/MultipleAnalysis';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Button from '../../elements/ButtonToolTip';
@@ -48,10 +51,7 @@ const styles: Record<'container' | 'button', CSSProperties> = {
 
 interface MultipleSpectraAnalysisPanelInnerProps {
   activeTab: string;
-  spectraAnalysis: Record<
-    string,
-    { values: any; options: { columns: Array<number>; code: any } }
-  >;
+  spectraAnalysis: SpectraAnalysis;
 }
 
 function MultipleSpectraAnalysisPanelInner({
@@ -202,6 +202,10 @@ const MemoizedMultipleSpectraAnalysisPanel = memo(
 
 export default function MultipleSpectraAnalysisPanel() {
   const { activeTab, spectraAnalysis, displayerKey } = useChartData();
+
+  if (!activeTab) {
+    return <div />;
+  }
 
   return (
     <MemoizedMultipleSpectraAnalysisPanel

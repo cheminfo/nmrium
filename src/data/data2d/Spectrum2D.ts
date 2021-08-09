@@ -10,6 +10,12 @@ import { get2DColor } from '../utilities/getColor';
 import Processing2D, { defaultContourOptions } from './Processing2D';
 import autoZonesDetection from './autoZonesDetection';
 
+export interface Contour {
+  negative: Array<Array<number>>;
+  positive: Array<Array<number>>;
+}
+export type Contours = Record<string, Contour>;
+
 export interface File {
   binary: ArrayBuffer;
   name: string;

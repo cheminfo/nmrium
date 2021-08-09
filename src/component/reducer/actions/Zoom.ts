@@ -11,7 +11,12 @@ export const ZoomType = {
   FULL: 'FULL',
 };
 
-export function wheel(deltaY, deltaMode, draft: Draft<State>, id = null) {
+export function wheel(
+  deltaY,
+  deltaMode,
+  draft: Draft<State>,
+  id: string | null = null,
+) {
   if (draft.activeSpectrum?.id || id) {
     Zoom1DManager(draft.zoom.spectra).wheel(
       deltaY,
@@ -32,24 +37,29 @@ export function wheel(deltaY, deltaMode, draft: Draft<State>, id = null) {
 
 function setZoom(
   draft: Draft<State>,
-  defaultScale: number | null = null,
-  spectrumID = null,
+  options: {
+    scale?: number;
+    spectrumID?: string;
+    shareYDomain?: boolean;
+  } = {},
 ) {
   const { height, margin, activeSpectrum } = draft;
+  const { scale = null, spectrumID = null } = options;
 
-  if (defaultScale) {
-    setAllScales(draft.zoom.spectra, defaultScale);
+  if (scale) {
+    setAllScales(draft.zoom.spectra, scale);
   }
 
   if (activeSpectrum === null && spectrumID === null) {
     const zoomManager = Zoom1DManager(draft.zoom.spectra);
+    const { shareYDomain, yDomain, yDomains } = draft.originDomain;
     draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
       const scale = zoomManager.getScale(id);
-      const _scale = scaleLinear(draft.originDomain.yDomains[id], [
+      const _scale = scaleLinear(shareYDomain ? yDomain : yDomains[id], [
         height - margin.bottom,
         margin.top,
       ]);
-      const [min, max] = draft.originDomain.yDomains[id];
+      const [min, max] = shareYDomain ? yDomain : yDomains[id];
       const maxPoint = Math.max(Math.abs(max), Math.abs(min));
       const scalePoint = maxPoint === max ? 0 : min;
       const t = zoomIdentity
@@ -59,8 +69,8 @@ function setZoom(
         )
         .scale(scale)
         .translate(0, -_scale(0));
-      const yDomain = t.rescaleY(_scale).domain();
-      acc[id] = yDomain;
+      const newYDomain = t.rescaleY(_scale).domain();
+      acc[id] = newYDomain;
       return acc;
     }, {});
   } else {

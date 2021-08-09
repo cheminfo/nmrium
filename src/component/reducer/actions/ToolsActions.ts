@@ -142,7 +142,7 @@ function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
 }
 
 function setSpectrumsVerticalAlign(draft: Draft<State>) {
-  changeSpectrumVerticalAlignment(draft, !draft.verticalAlign.flag);
+  changeSpectrumVerticalAlignment(draft, { center: !draft.verticalAlign.flag });
 }
 
 function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
@@ -269,8 +269,9 @@ function setVerticalIndicatorXPosition(draft: Draft<State>, position) {
   }
 }
 
-function getSpectrumID(draft: Draft<State>, index) {
-  return draft.tabActiveSpectrum[draft.activeTab.split(',')[index]].id;
+function getSpectrumID(draft: Draft<State>, index): string | null {
+  const spectrum = draft.tabActiveSpectrum[draft.activeTab.split(',')[index]];
+  return spectrum?.id ? spectrum.id : null;
 }
 
 function handleZoom(draft: Draft<State>, action) {
@@ -310,19 +311,19 @@ function zoomOut(draft: Draft<State>, action) {
           break;
         }
         case ZoomType.VERTICAL:
-          setZoom(draft, 0.8);
+          setZoom(draft, { scale: 0.8 });
           break;
         case ZoomType.STEP_HROZENTAL: {
           const zoomValue = zoomHistory.pop();
           draft.xDomain = zoomValue
             ? zoomValue.xDomain
             : draft.originDomain.xDomain;
-          setZoom(draft, 0.8);
+          setZoom(draft, { scale: 0.8 });
           break;
         }
         default: {
           draft.xDomain = draft.originDomain.xDomain;
-          setZoom(draft, 0.8);
+          setZoom(draft, { scale: 0.8 });
           break;
         }
       }
@@ -330,16 +331,21 @@ function zoomOut(draft: Draft<State>, action) {
       const { xDomain, yDomain, yDomains } = draft.originDomain;
       switch (trackID) {
         case LAYOUT.TOP_1D: {
-          const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[0]];
+          const activeSpectrum =
+            draft.tabActiveSpectrum[draft.activeTab.split(',')[0]];
           draft.xDomain = xDomain;
-          draft.yDomains[id] = yDomains[id];
+          if (activeSpectrum?.id) {
+            draft.yDomains[activeSpectrum.id] = yDomains[activeSpectrum.id];
+          }
           break;
         }
         case LAYOUT.LEFT_1D: {
-          const { id } = draft.tabActiveSpectrum[draft.activeTab.split(',')[1]];
+          const activeSpectrum =
+            draft.tabActiveSpectrum[draft.activeTab.split(',')[1]];
           draft.yDomain = yDomain;
-          draft.yDomains[id] = yDomains[id];
-
+          if (activeSpectrum?.id) {
+            draft.yDomains[activeSpectrum.id] = yDomains[activeSpectrum.id];
+          }
           break;
         }
         case LAYOUT.CENTER_2D: {
@@ -360,10 +366,10 @@ function zoomOut(draft: Draft<State>, action) {
 
 function hasAcceptedSpectrum(draft: Draft<State>, index) {
   const nucleuses = draft.activeTab.split(',');
+  const activeSpectrum = draft.tabActiveSpectrum[nucleuses[index]];
   return (
-    draft.tabActiveSpectrum[nucleuses[index]] &&
-    !(draft.data[draft.tabActiveSpectrum[nucleuses[index]].index] as Datum1D)
-      .info.isFid
+    activeSpectrum?.id &&
+    !(draft.data[activeSpectrum.index] as Datum1D).info.isFid
   );
 }
 
@@ -476,7 +482,7 @@ function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
 
 function setActiveTab(
   draft: Draft<State>,
-  tab = null,
+  tab: string | null = null,
   refreshTabActiveSpectrums = false,
 ) {
   const groupByNucleus = GroupByInfoKey('nucleus');
@@ -527,19 +533,15 @@ function levelChangeHandler(draft: Draft<State>, { deltaY, shiftKey }) {
 
 function setSpectraSameTopHandler(draft: Draft<State>) {
   if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
-    draft.originDomain.yDomains = draft.originDomain.originYDomains;
-    setZoom(draft, 0.8);
+    draft.originDomain.shareYDomain = false;
+    setZoom(draft, { scale: 0.8 });
   }
 }
 function resetSpectraScale(draft: Draft<State>) {
-  if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
-    draft.yDomains = Object.keys(draft.yDomains).reduce((acc, key) => {
-      acc[key] = draft.originDomain.yDomain;
-      return acc;
-    }, {});
-    draft.originDomain.yDomains = draft.yDomains;
-    draft.yDomain = draft.originDomain.yDomain;
-  }
+  draft.originDomain.shareYDomain = true;
+  draft.yDomains = draft.originDomain.yDomains;
+  draft.yDomain = draft.originDomain.yDomain;
+  setZoom(draft, { scale: 0.8 });
 }
 
 function handleAddExclusionZone(draft: Draft<State>, action) {
