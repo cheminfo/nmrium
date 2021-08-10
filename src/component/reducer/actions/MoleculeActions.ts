@@ -1,11 +1,13 @@
 import { Draft } from 'immer';
 import { signalsToXY } from 'nmr-processing';
+import { generateSpectrum2D } from 'spectrum-generator';
 
 import {
   initiateDatum1D,
   mapRanges,
   updateIntegralRanges,
 } from '../../../data/data1d/Spectrum1D';
+import { initiateDatum2D } from '../../../data/data2d/Spectrum2D';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -45,26 +47,63 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   } else {
     for (const predictedDatum of data) {
       for (const key in predictedDatum) {
-        if (['proton', 'carbon'].includes(key) && options.spectra[key]) {
-          const { signals, ranges, nucleus } = predictedDatum[key];
-          const { x, y } = signalsToXY(signals, {
-            ...options[nucleus],
-          });
-          const datum = initiateDatum1D(
-            {
-              data: { x, im: null, re: y },
-              info: { nucleus },
-            },
-            usedColors,
-          );
-          datum.ranges.values = mapRanges(ranges, datum);
-          updateIntegralRanges(datum);
-          draft.data.push(datum);
+        if (options.spectra[key]) {
+          switch (key) {
+            case 'proton':
+            case 'carbon':
+              {
+                const { signals, ranges, nucleus } = predictedDatum[key];
+                const { x, y } = signalsToXY(signals, {
+                  ...options[nucleus],
+                });
+                const datum = initiateDatum1D(
+                  {
+                    data: { x, im: null, re: y },
+                    info: { nucleus },
+                  },
+                  usedColors,
+                );
+                datum.ranges.values = mapRanges(ranges, datum);
+                updateIntegralRanges(datum);
+                draft.data.push(datum);
 
-          draft.tabActiveSpectrum[nucleus] = {
-            id: datum.id,
-            index: draft.data.length - 1,
-          };
+                draft.tabActiveSpectrum[nucleus] = {
+                  id: datum.id,
+                  index: draft.data.length - 1,
+                };
+              }
+
+              break;
+
+            case 'cosy':
+            case 'hsqc':
+            case 'hmbc':
+              {
+                const { signals, nucleus } = predictedDatum[key];
+                const peaks = signals.reduce(
+                  (acc, { x, y }) => {
+                    acc.x.push(x.delta);
+                    acc.y.push(y.delta);
+                    acc.z.push(1);
+                    return acc;
+                  },
+                  { x: [], y: [], z: [] },
+                );
+
+                const spectrumData = generateSpectrum2D(peaks);
+                const datum = initiateDatum2D(
+                  {
+                    data: spectrumData,
+                    info: { nucleus },
+                  },
+                  usedColors,
+                );
+                draft.data.push(datum);
+              }
+              break;
+            default:
+              break;
+          }
         }
       }
     }

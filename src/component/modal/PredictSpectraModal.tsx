@@ -207,16 +207,16 @@ function PredictSpectraModal({
               <IsotopesViewer value="13C" className="nucleus-label" />
             </div>
             <div className="row">
-              <FormikCheckBox disabled name="spectra.cosy" />
-              <IsotopesViewer value="COSY" className="nucleus-label disabled" />
+              <FormikCheckBox name="spectra.cosy" />
+              <IsotopesViewer value="COSY" className="nucleus-label" />
             </div>
             <div className="row">
-              <FormikCheckBox disabled name="spectra.hsqc" />
-              <IsotopesViewer value="HSQC" className="nucleus-label disabled" />
+              <FormikCheckBox name="spectra.hsqc" />
+              <IsotopesViewer value="HSQC" className="nucleus-label" />
             </div>
             <div className="row">
-              <FormikCheckBox disabled name="spectra.hmbc" />
-              <IsotopesViewer value="HMBC" className="nucleus-label disabled" />
+              <FormikCheckBox name="spectra.hmbc" />
+              <IsotopesViewer value="HMBC" className="nucleus-label" />
             </div>
           </div>
         </FormikForm>

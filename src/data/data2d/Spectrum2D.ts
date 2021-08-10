@@ -138,8 +138,10 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   datum.info = Object.assign(
     {
       nucleus: ['1H', '1H'],
+      isFt: true,
       isFid: false,
       isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+      dimension: 2,
     },
     options.info,
   );
