@@ -92,7 +92,7 @@
     "react-table": "7.6.0",
     "react-transition-group": "^4.4.2",
     "react-use": "^17.2.4",
-    "spectrum-generator": "^5.0.0",
+    "spectrum-generator": "^5.0.1",
     "yup": "^0.32.9"
   },
   "devDependencies": {
