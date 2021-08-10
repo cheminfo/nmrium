@@ -89,8 +89,14 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
                   },
                   { x: [], y: [], z: [] },
                 );
-
-                const spectrumData = generateSpectrum2D(peaks);
+                const xOption = options[nucleus[0]];
+                const yOption = options[nucleus[1]];
+                const spectrumData = generateSpectrum2D(peaks, {
+                  generator: {
+                    from: { x: xOption.from, y: yOption.from },
+                    to: { x: xOption.to, y: yOption.to },
+                  },
+                });
                 const datum = initiateDatum2D(
                   {
                     data: spectrumData,
