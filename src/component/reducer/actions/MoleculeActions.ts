@@ -39,6 +39,62 @@ function deleteMoleculeHandler(draft: Draft<State>, action) {
   draft.molecules.splice(moleculeIndex, 1);
 }
 
+function setGenerated1DSpectrum(draft: Draft<State>, params) {
+  const { spectrum, options, usedColors } = params;
+
+  const { signals, ranges, nucleus } = spectrum;
+  const { x, y } = signalsToXY(signals, {
+    ...options[nucleus],
+  });
+  const datum = initiateDatum1D(
+    {
+      data: { x, im: null, re: y },
+      info: { nucleus },
+    },
+    usedColors,
+  );
+  datum.ranges.values = mapRanges(ranges, datum);
+  updateIntegralRanges(datum);
+  draft.data.push(datum);
+
+  draft.tabActiveSpectrum[nucleus] = {
+    id: datum.id,
+    index: draft.data.length - 1,
+  };
+}
+
+function setGenerated2DSpectrum(draft: Draft<State>, params) {
+  const { spectrum, options, usedColors } = params;
+  const { signals, nucleus } = spectrum;
+  const peaks = signals.reduce(
+    (acc, { x, y }) => {
+      acc.x.push(x.delta);
+      acc.y.push(y.delta);
+      acc.z.push(1);
+      return acc;
+    },
+    { x: [], y: [], z: [] },
+  );
+  const xOption = options[nucleus[0]];
+  const yOption = options[nucleus[1]];
+  const spectrumData = generateSpectrum2D(peaks, {
+    generator: {
+      from: { x: xOption.from, y: yOption.from },
+      to: { x: xOption.to, y: yOption.to },
+      nbPoints: 256,
+      peakWidthFct: () => 0.05,
+    },
+  });
+  const datum = initiateDatum2D(
+    {
+      data: { ...spectrumData, noise: 0 },
+      info: { nucleus },
+    },
+    usedColors,
+  );
+  draft.data.push(datum);
+}
+
 function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   const { data, options, usedColors } = action.payload;
 
@@ -48,64 +104,27 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
     for (const predictedDatum of data) {
       for (const key in predictedDatum) {
         if (options.spectra[key]) {
+          const spectrum = predictedDatum[key];
           switch (key) {
             case 'proton':
             case 'carbon':
-              {
-                const { signals, ranges, nucleus } = predictedDatum[key];
-                const { x, y } = signalsToXY(signals, {
-                  ...options[nucleus],
-                });
-                const datum = initiateDatum1D(
-                  {
-                    data: { x, im: null, re: y },
-                    info: { nucleus },
-                  },
-                  usedColors,
-                );
-                datum.ranges.values = mapRanges(ranges, datum);
-                updateIntegralRanges(datum);
-                draft.data.push(datum);
-
-                draft.tabActiveSpectrum[nucleus] = {
-                  id: datum.id,
-                  index: draft.data.length - 1,
-                };
-              }
+              setGenerated1DSpectrum(draft, {
+                spectrum,
+                options,
+                usedColors,
+              });
 
               break;
 
             case 'cosy':
             case 'hsqc':
             case 'hmbc':
-              {
-                const { signals, nucleus } = predictedDatum[key];
-                const peaks = signals.reduce(
-                  (acc, { x, y }) => {
-                    acc.x.push(x.delta);
-                    acc.y.push(y.delta);
-                    acc.z.push(1);
-                    return acc;
-                  },
-                  { x: [], y: [], z: [] },
-                );
-                const xOption = options[nucleus[0]];
-                const yOption = options[nucleus[1]];
-                const spectrumData = generateSpectrum2D(peaks, {
-                  generator: {
-                    from: { x: xOption.from, y: yOption.from },
-                    to: { x: xOption.to, y: yOption.to },
-                  },
-                });
-                const datum = initiateDatum2D(
-                  {
-                    data: spectrumData,
-                    info: { nucleus },
-                  },
-                  usedColors,
-                );
-                draft.data.push(datum);
-              }
+              setGenerated2DSpectrum(draft, {
+                spectrum,
+                options,
+                usedColors,
+              });
+
               break;
             default:
               break;
