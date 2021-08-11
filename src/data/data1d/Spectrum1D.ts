@@ -6,6 +6,7 @@ import {
   xyMaxYPoint,
   xFindClosestIndex,
 } from 'ml-spectra-processing';
+import { signalsToXY } from 'nmr-processing';
 
 import { Filters as FiltersTypes } from '../Filters';
 import * as FiltersManager from '../FiltersManager';
@@ -569,4 +570,23 @@ export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
 
 export function isSpectrum1D(spectrum: Datum1D | Datum2D): spectrum is Datum1D {
   return spectrum.info.dimension === 1;
+}
+
+export function generated1DSpectrum(params) {
+  const { spectrum, options, usedColors } = params;
+
+  const { signals, ranges, nucleus } = spectrum;
+  const { x, y } = signalsToXY(signals, {
+    ...options[nucleus],
+  });
+  const datum = initiateDatum1D(
+    {
+      data: { x, im: null, re: y },
+      info: { nucleus },
+    },
+    usedColors,
+  );
+  datum.ranges.values = mapRanges(ranges, datum);
+  updateIntegralRanges(datum);
+  return datum;
 }
