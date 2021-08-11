@@ -1,4 +1,5 @@
 import { zoneToX } from 'ml-spectra-processing';
+import { generateSpectrum2D } from 'spectrum-generator';
 
 import { Filters } from '../Filters';
 import * as FiltersManager from '../FiltersManager';
@@ -9,7 +10,6 @@ import { get2DColor } from '../utilities/getColor';
 
 import Processing2D, { defaultContourOptions } from './Processing2D';
 import autoZonesDetection from './autoZonesDetection';
-import { generateSpectrum2D } from 'spectrum-generator';
 
 export interface Contour {
   negative: Array<Array<number>>;
@@ -67,7 +67,7 @@ export interface Info {
 }
 
 export interface Signal {
-  id: number;
+  id: string;
   peaks: any;
   x: Partial<{
     originDelta: number;
@@ -562,9 +562,29 @@ export function isSpectrum2D(spectrum: Datum1D | Datum2D): spectrum is Datum2D {
   return spectrum.info.dimension === 2;
 }
 
+function mapZones(zones: Array<Partial<Zone>>) {
+  return zones.reduce<Array<Zone>>((zonesAcc, zone: any) => {
+    const { signals, ...resZone } = zone;
+    const newSignals = (signals as Array<Partial<Signal>>).reduce<
+      Array<Partial<Signal>>
+    >((signalsAcc, signal) => {
+      signalsAcc.push({ id: generateID(), kind: 'signal', ...signal });
+      return signalsAcc;
+    }, []);
+
+    zonesAcc.push({
+      id: generateID(),
+      ...resZone,
+      signals: newSignals,
+      kind: DatumKind.signal,
+    });
+    return zonesAcc;
+  }, []);
+}
+
 export function generated2DSpectrum(params) {
   const { spectrum, options, usedColors } = params;
-  const { signals, nucleus } = spectrum;
+  const { signals, zones, nucleus } = spectrum;
   const peaks = signals.reduce(
     (acc, { x, y }) => {
       acc.x.push(x.delta);
@@ -587,9 +607,13 @@ export function generated2DSpectrum(params) {
   const datum = initiateDatum2D(
     {
       data: { ...spectrumData, noise: 0 },
-      info: { nucleus },
+      info: {
+        nucleus,
+      },
     },
     usedColors,
   );
+
+  datum.zones.values = mapZones(zones);
   return datum;
 }

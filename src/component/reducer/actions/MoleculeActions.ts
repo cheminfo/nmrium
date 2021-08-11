@@ -1,19 +1,7 @@
 import { Draft } from 'immer';
-import { signalsToXY } from 'nmr-processing';
-import { generateSpectrum2D } from 'spectrum-generator';
 
-import {
-  Datum1D,
-  generated1DSpectrum,
-  initiateDatum1D,
-  mapRanges,
-  updateIntegralRanges,
-} from '../../../data/data1d/Spectrum1D';
-import {
-  Datum2D,
-  generated2DSpectrum,
-  initiateDatum2D,
-} from '../../../data/data2d/Spectrum2D';
+import { Datum1D, generated1DSpectrum } from '../../../data/data1d/Spectrum1D';
+import { Datum2D, generated2DSpectrum } from '../../../data/data2d/Spectrum2D';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -54,16 +42,17 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
     let datum: Datum1D | Datum2D | null = null;
 
     for (const predictedDatum of data) {
-      for (const key in predictedDatum) {
-        if (options.spectra[key]) {
-          const spectrum = predictedDatum[key];
-          switch (key) {
+      for (const experiment in predictedDatum) {
+        if (options.spectra[experiment]) {
+          const spectrum = predictedDatum[experiment];
+          switch (experiment) {
             case 'proton':
             case 'carbon':
               datum = generated1DSpectrum({
                 spectrum,
                 options,
                 usedColors,
+                experiment,
               });
 
               break;
@@ -75,6 +64,7 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
                 spectrum,
                 options,
                 usedColors,
+                experiment,
               });
               break;
             default:
