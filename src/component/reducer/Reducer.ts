@@ -434,9 +434,8 @@ export function dispatchMiddleware(dispatch) {
       case types.PREDICT_SPECTRA: {
         const {
           mol: { molfile },
-          options,
         } = action.payload;
-        void predictSpectra(molfile, options).then(
+        void predictSpectra(molfile).then(
           (result) => {
             action.payload.data = result;
             action.payload.usedColors = usedColors;

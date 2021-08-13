@@ -1,5 +1,4 @@
 import { zoneToX } from 'ml-spectra-processing';
-import { generateSpectrum2D } from 'spectrum-generator';
 
 import { Filters } from '../Filters';
 import * as FiltersManager from '../FiltersManager';
@@ -560,60 +559,4 @@ export function getSubMatrix(datum, selectedZone) {
 
 export function isSpectrum2D(spectrum: Datum1D | Datum2D): spectrum is Datum2D {
   return spectrum.info.dimension === 2;
-}
-
-function mapZones(zones: Array<Partial<Zone>>) {
-  return zones.reduce<Array<Zone>>((zonesAcc, zone: any) => {
-    const { signals, ...resZone } = zone;
-    const newSignals = (signals as Array<Partial<Signal>>).reduce<
-      Array<Partial<Signal>>
-    >((signalsAcc, signal) => {
-      signalsAcc.push({ id: generateID(), kind: 'signal', ...signal });
-      return signalsAcc;
-    }, []);
-
-    zonesAcc.push({
-      id: generateID(),
-      ...resZone,
-      signals: newSignals,
-      kind: DatumKind.signal,
-    });
-    return zonesAcc;
-  }, []);
-}
-
-export function generated2DSpectrum(params) {
-  const { spectrum, options, usedColors } = params;
-  const { signals, zones, nucleus } = spectrum;
-  const peaks = signals.reduce(
-    (acc, { x, y }) => {
-      acc.x.push(x.delta);
-      acc.y.push(y.delta);
-      acc.z.push(1);
-      return acc;
-    },
-    { x: [], y: [], z: [] },
-  );
-  const xOption = options[nucleus[0]];
-  const yOption = options[nucleus[1]];
-  const spectrumData = generateSpectrum2D(peaks, {
-    generator: {
-      from: { x: xOption.from, y: yOption.from },
-      to: { x: xOption.to, y: yOption.to },
-      nbPoints: 256,
-      peakWidthFct: () => 0.05,
-    },
-  });
-  const datum = initiateDatum2D(
-    {
-      data: { ...spectrumData, noise: 0 },
-      info: {
-        nucleus,
-      },
-    },
-    usedColors,
-  );
-
-  datum.zones.values = mapZones(zones);
-  return datum;
 }

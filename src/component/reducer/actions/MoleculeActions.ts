@@ -1,8 +1,8 @@
 import { Draft } from 'immer';
 
-import { Datum1D, generated1DSpectrum } from '../../../data/data1d/Spectrum1D';
-import { Datum2D, generated2DSpectrum } from '../../../data/data2d/Spectrum2D';
+import { generateSpectra } from '../../../data/PredictionManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
+import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 
@@ -39,51 +39,17 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   if (!data) {
     draft.isLoading = false;
   } else {
-    let datum: Datum1D | Datum2D | null = null;
-
-    for (const predictedDatum of data) {
-      for (const experiment in predictedDatum) {
-        if (options.spectra[experiment]) {
-          const spectrum = predictedDatum[experiment];
-          switch (experiment) {
-            case 'proton':
-            case 'carbon':
-              datum = generated1DSpectrum({
-                spectrum,
-                options,
-                usedColors,
-                experiment,
-              });
-
-              break;
-
-            case 'cosy':
-            case 'hsqc':
-            case 'hmbc':
-              datum = generated2DSpectrum({
-                spectrum,
-                options,
-                usedColors,
-                experiment,
-              });
-              break;
-            default:
-              break;
-          }
-          if (datum) {
-            draft.data.push(datum);
-            draft.tabActiveSpectrum[spectrum.nucleus] = {
-              id: datum.id,
-              index: draft.data.length - 1,
-            };
-          }
-        }
-      }
+    for (const spectrum of generateSpectra(data, options, usedColors)) {
+      draft.data.push(spectrum);
+      draft.tabActiveSpectrum[nucleusToString(spectrum.info.nucleus)] = {
+        id: spectrum.id,
+        index: draft.data.length - 1,
+      };
     }
-
-    setActiveTab(draft);
-    draft.isLoading = false;
   }
+
+  setActiveTab(draft);
+  draft.isLoading = false;
 }
 
 export {
