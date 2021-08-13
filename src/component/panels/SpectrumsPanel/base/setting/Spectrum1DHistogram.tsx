@@ -16,10 +16,12 @@ function prepareData(input) {
 function getLine(value, data, options) {
   const { log10, abs } = Math;
   const { yLogBase } = options;
+  const first = data.length > 0 ? data[0].x : 0;
+  const last = data.length > 0 ? data[data.length - 1].x : 0;
   const inLogScale = log10(abs(value)) / log10(yLogBase);
   return [
-    { x: data[0].x, y: inLogScale },
-    { x: data[data.length - 1].x, y: inLogScale },
+    { x: first, y: inLogScale },
+    { x: last, y: inLogScale },
   ];
 }
 
@@ -40,7 +42,6 @@ function Spectrum1DHistogram({
     const input = prepareData(data.re);
 
     const sanResult = xNoiseSanPlot(input, options);
-
     const sanPlot: any = {};
     const lines: any = {};
     for (let plotKey in sanResult.sanplot) {

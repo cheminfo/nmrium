@@ -133,7 +133,7 @@ function generated2DSpectrum(params) {
     (acc, { x, y }) => {
       acc.x.push(x.delta);
       acc.y.push(y.delta);
-      acc.z.push(1);
+      acc.z.push(100);
       return acc;
     },
     { x: [], y: [], z: [] },
@@ -144,13 +144,13 @@ function generated2DSpectrum(params) {
     generator: {
       from: { x: xOption.from, y: yOption.from },
       to: { x: xOption.to, y: yOption.to },
-      nbPoints: 256,
-      peakWidthFct: () => 0.05,
+      nbPoints: 512,
+      peakWidthFct: () => ({ x: 0.01, y: 0.1}),
     },
   });
   const datum = initiateDatum2D(
     {
-      data: { ...spectrumData, noise: 0 },
+      data: { ...spectrumData, noise: 0.01 },
       info: {
         nucleus,
         pulseSequence: experiment,
