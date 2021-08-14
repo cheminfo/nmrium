@@ -1,3 +1,4 @@
+import { interval } from 'd3';
 import { predictAll, signalsToXY } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { generateSpectrum2D } from 'spectrum-generator';
@@ -140,12 +141,18 @@ function generated2DSpectrum(params) {
   );
   const xOption = inputOptions[nucleus[0]];
   const yOption = inputOptions[nucleus[1]];
+  const interval = { x: 0.02, y: 0.02 };
+  if (nucleus[0] !== nucleus[1]) interval.y = 0.05;
+  const width = nucleus[0] === nucleus[1] ? 0.02 : { x: 0.02, y: 0.08 };
   const spectrumData = generateSpectrum2D(peaks, {
     generator: {
       from: { x: xOption.from, y: yOption.from },
       to: { x: xOption.to, y: yOption.to },
-      nbPoints: 512,
-      peakWidthFct: () => ({ x: 0.01, y: 0.1}),
+      nbPoints: {
+        x: getNbPoints(xOption.from, xOption.to, interval.x),
+        y: getNbPoints(yOption.from, yOption.to, interval.y),
+      },
+      peakWidthFct: () => width,
     },
   });
   const datum = initiateDatum2D(
@@ -162,4 +169,8 @@ function generated2DSpectrum(params) {
 
   datum.zones.values = mapZones(zones);
   return datum;
+}
+
+function getNbPoints(from, to, interval) {
+  return Math.ceil(Math.abs(from - to) / interval - 1);
 }
