@@ -108,7 +108,7 @@ const predictionFormValidation = Yup.object().shape({
     hmbc: Yup.boolean(),
   }).test(
     'check-options',
-    'You must check of one the options to start prediction',
+    'You must check one of the options to start prediction',
     (obj) => {
       if (Object.values(obj).includes(true)) {
         return true;
