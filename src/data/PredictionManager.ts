@@ -1,4 +1,3 @@
-import { interval } from 'd3';
 import { predictAll, signalsToXY } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 import { generateSpectrum2D } from 'spectrum-generator';

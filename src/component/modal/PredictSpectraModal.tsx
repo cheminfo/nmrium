@@ -1,12 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useRef, useState } from 'react';
+import * as Yup from 'yup';
 
 import { useDispatch } from '../context/DispatchContext';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
 import IsotopesViewer from '../elements/IsotopesViewer';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
+import FormikErrorsSummary from '../elements/formik/FormikErrorsSummary';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import FormikSelect from '../elements/formik/FormikSelect';
@@ -88,6 +90,34 @@ const INITIAL_VALUE = {
   },
 };
 
+const predictionFormValidation = Yup.object().shape({
+  '1H': Yup.object({
+    from: Yup.number().integer().required(),
+    to: Yup.number().integer().required(),
+  }),
+  '13C': Yup.object().shape({
+    from: Yup.number().integer().required(),
+    to: Yup.number().integer().required(),
+  }),
+  frequency: Yup.number().integer().required(),
+  spectra: Yup.object({
+    proton: Yup.boolean(),
+    carbon: Yup.boolean(),
+    cosy: Yup.boolean(),
+    hsqc: Yup.boolean(),
+    hmbc: Yup.boolean(),
+  }).test(
+    'check-options',
+    'You must check of one the options to start prediction',
+    (obj) => {
+      if (Object.values(obj).includes(true)) {
+        return true;
+      }
+      return false;
+    },
+  ),
+});
+
 interface PredictSpectraModalProps {
   onClose?: (element?: string) => void;
   molfile: any;
@@ -143,15 +173,17 @@ function PredictSpectraModal({
   return (
     <div css={[ModalStyles, styles]}>
       <div className="header handle">
-        <span>Prediciton of NMR spectrum</span>
+        <span>Prediction of NMR spectrum</span>
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
         <FormikForm
           ref={refForm}
           initialValues={INITIAL_VALUE}
+          validationSchema={predictionFormValidation}
           onSubmit={submitHandler}
         >
+          <FormikErrorsSummary />
           <div className="row margin-10">
             <span className="custom-label">Spectrometer Frequency :</span>
 
