@@ -1,12 +1,8 @@
 import { Draft } from 'immer';
-import { signalsToXY } from 'nmr-processing';
 
-import {
-  initiateDatum1D,
-  mapRanges,
-  updateIntegralRanges,
-} from '../../../data/data1d/Spectrum1D';
+import { generateSpectra } from '../../../data/PredictionManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
+import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
 
@@ -43,35 +39,17 @@ function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
   if (!data) {
     draft.isLoading = false;
   } else {
-    for (const predictedDatum of data) {
-      for (const key in predictedDatum) {
-        if (['proton', 'carbon'].includes(key) && options.spectra[key]) {
-          const { signals, ranges, nucleus } = predictedDatum[key];
-          const { x, y } = signalsToXY(signals, {
-            ...options[nucleus],
-          });
-          const datum = initiateDatum1D(
-            {
-              data: { x, im: null, re: y },
-              info: { nucleus },
-            },
-            usedColors,
-          );
-          datum.ranges.values = mapRanges(ranges, datum);
-          updateIntegralRanges(datum);
-          draft.data.push(datum);
-
-          draft.tabActiveSpectrum[nucleus] = {
-            id: datum.id,
-            index: draft.data.length - 1,
-          };
-        }
-      }
+    for (const spectrum of generateSpectra(data, options, usedColors)) {
+      draft.data.push(spectrum);
+      draft.tabActiveSpectrum[nucleusToString(spectrum.info.nucleus)] = {
+        id: spectrum.id,
+        index: draft.data.length - 1,
+      };
     }
-
-    setActiveTab(draft);
-    draft.isLoading = false;
   }
+
+  setActiveTab(draft);
+  draft.isLoading = false;
 }
 
 export {

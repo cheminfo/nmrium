@@ -278,7 +278,7 @@ function RangesTablePanelInner({
 
 const MemoizedRangesTablePanel = memo(RangesTablePanelInner);
 
-const empyData = { ranges: {}, data: {}, info: {} };
+const emptyData = { ranges: {}, data: {}, info: {} };
 
 export default function RangesTablePanel() {
   const {
@@ -292,7 +292,7 @@ export default function RangesTablePanel() {
     },
   } = useChartData();
 
-  const { ranges, data, info } = useSpectrum(empyData) as Datum1D;
+  const { ranges, data, info } = useSpectrum(emptyData) as Datum1D;
   const preferences = usePreferences();
 
   return (
