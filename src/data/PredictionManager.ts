@@ -14,7 +14,7 @@ import generateID from './utilities/generateID';
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
 
-export default async function predictSpectra(molfile: string): Promise<any> {
+export async function predictSpectra(molfile: string): Promise<any> {
   const molecule = OCL.Molecule.fromMolfile(molfile);
 
   return predictAll(molecule, {

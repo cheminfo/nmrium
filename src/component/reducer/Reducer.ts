@@ -1,7 +1,7 @@
 import { Draft, produce } from 'immer';
 import { buildCorrelationData, Types } from 'nmr-correlation';
 
-import predictSpectra from '../../data/PredictionManager';
+import { predictSpectra } from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
 import { Range } from '../../data/data1d/Spectrum1D';
