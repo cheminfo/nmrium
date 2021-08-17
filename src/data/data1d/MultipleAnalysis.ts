@@ -33,6 +33,7 @@ interface AnalysisOptions {
   sum: number;
   code: string | null;
   columns: Columns;
+  columnIndex: number;
 }
 
 interface AnalysisRow extends RangeDetectionObject {
@@ -54,9 +55,12 @@ function addColumnKey(
   columnProps: Column,
   columnKey: string,
 ) {
-  const index = Object.keys(spectraAnalysis[nucleus].options.columns).length;
-  const key = columnKey ? columnKey : generateChar(index).toUpperCase();
+  // const index = Object.keys(spectraAnalysis[nucleus].options.columns).length;
+  const key = columnKey
+    ? columnKey
+    : generateChar(spectraAnalysis[nucleus].options.columnIndex).toUpperCase();
   spectraAnalysis[nucleus].options.columns[key] = columnProps;
+  spectraAnalysis[nucleus].options.columnIndex++;
   return key;
 }
 
@@ -97,6 +101,7 @@ function init(spectraAnalysis: SpectraAnalysis, nucleus: string) {
         sum: 100,
         code: null,
         columns: {},
+        columnIndex: 0,
       },
       values: {},
     };
@@ -272,8 +277,16 @@ export function deleteSpectraAnalysis(
     {},
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-  delete spectraAnalysis[nucleus].options.columns[colKey];
+  const { [colKey]: deletedColumnKey, ...resColumns } =
+    spectraAnalysis[nucleus].options.columns;
+
+  const currentColumns = Object.keys(spectraAnalysis[nucleus].options.columns);
+
+  if (currentColumns.length === 1) {
+    spectraAnalysis[nucleus].options.columnIndex = 0;
+  }
+
+  spectraAnalysis[nucleus].options.columns = resColumns;
   spectraAnalysis[nucleus].values = result;
   spectraAnalysis[nucleus].values = refreshCalculation(
     spectraAnalysis,
