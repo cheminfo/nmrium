@@ -1,5 +1,5 @@
 import { useFormikContext } from 'formik';
-import { CSSProperties } from 'react';
+import { CSSProperties, useMemo } from 'react';
 
 const styles: Record<'container' | 'text', CSSProperties> = {
   container: {
@@ -19,17 +19,38 @@ export interface FormikErrorsSummaryProps {
   style?: Record<'container' | 'text', CSSProperties>;
 }
 
+const getErrors = (errorObj: Record<string, any>): string[] => {
+  const result: string[] = [];
+  function errorsIterators(obj) {
+    Object.keys(obj).forEach((key) => {
+      if (typeof obj[key] === 'object') {
+        errorsIterators(obj[key]);
+      } else {
+        result.push(obj[key]);
+      }
+    });
+  }
+
+  errorsIterators(errorObj);
+  return result;
+};
+
 function FormikErrorsSummary({ style }: FormikErrorsSummaryProps) {
   const { errors, isValid } = useFormikContext();
+
+  const errorList = useMemo(() => {
+    return getErrors(errors);
+  }, [errors]);
 
   if (isValid) return <div />;
 
   return (
     <ul style={{ ...styles.container, ...style?.container }}>
-      {Object.entries(errors).map(([key, errorText]) => {
+      {errorList.map((errorText, index) => {
         return (
-          <li key={key} style={{ ...styles.text, ...style?.text }}>
-            {errorText as string}
+          // eslint-disable-next-line react/no-array-index-key
+          <li key={index} style={{ ...styles.text, ...style?.text }}>
+            {errorText}
           </li>
         );
       })}
