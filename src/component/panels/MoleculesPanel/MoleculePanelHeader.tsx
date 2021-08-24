@@ -155,7 +155,7 @@ export default function MoleculePanelHeader({
       position: positions.TOP_CENTER,
       enableResizing: true,
       width: 600,
-      height: 400,
+      height: 500,
     });
   }, [modal, molecules, currentIndex]);
 
