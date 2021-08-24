@@ -17,7 +17,10 @@ declare module 'nmr-processing' {
     },
   ): Promise<any>;
 
-  declare function signalsToXY(signals: any, options: any): any;
+  declare function signalsToXY(
+    signals: any,
+    options: { from: number; to: number; frequency: number; nbPoints: number },
+  ): any;
 
   type Item2DOption = number | { x: number; y: number };
   declare function signals2DToZ(

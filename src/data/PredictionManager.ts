@@ -80,14 +80,13 @@ function generated1DSpectrum(params: {
 
   const { signals, ranges, nucleus } = spectrum;
 
-  const frequency =
-    nucleus === '13C'
-      ? inputOptions['1d'].frequency * 0.25
-      : inputOptions['1d'].frequency;
+  const { frequency: freq, nbPoints } = inputOptions['1d'];
+  const frequency = nucleus === '13C' ? freq * 0.25 : freq;
 
   const { x, y } = signalsToXY(signals, {
     ...inputOptions['1d'][nucleus],
     frequency,
+    nbPoints,
   });
   const datum = initiateDatum1D(
     {
