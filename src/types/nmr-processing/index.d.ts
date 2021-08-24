@@ -19,6 +19,17 @@ declare module 'nmr-processing' {
 
   declare function signalsToXY(signals: any, options: any): any;
 
+  type Item2DOption = number | { x: number; y: number };
+  declare function signals2DToZ(
+    signals: any,
+    options: {
+      from: Item2DOption;
+      to: Item2DOption;
+      width: Item2DOption;
+      nbPoints: Item2DOption;
+    },
+  ): any;
+
   declare function xyAutoRangesPicking(data: any, options: any): any;
 
   declare function rangesToACS(

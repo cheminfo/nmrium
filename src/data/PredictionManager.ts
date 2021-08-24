@@ -1,6 +1,7 @@
-import { predictAll, signalsToXY } from 'nmr-processing';
+import { predictAll, signalsToXY, signals2DToZ } from 'nmr-processing';
 import OCL from 'openchemlib/full';
-import { generateSpectrum2D } from 'spectrum-generator';
+
+import { PredictionProps } from '../component/modal/PredictSpectraModal';
 
 import { DatumKind } from './constants/SignalsKinds';
 import {
@@ -28,11 +29,7 @@ export async function predictSpectra(molfile: string): Promise<any> {
 
 export function generateSpectra(
   data: Record<string, any>,
-  inputOptions: {
-    spectra: Record<string, boolean>;
-    '1H': { from: number; to: number };
-    '13C': { from: number; to: number };
-  },
+  inputOptions: PredictionProps,
   usedColors: Array<string> = [],
 ): Array<Datum1D | Datum2D> {
   const spectra: Array<Datum1D | Datum2D> = [];
@@ -73,20 +70,32 @@ export function generateSpectra(
   return spectra;
 }
 
-function generated1DSpectrum(params) {
+function generated1DSpectrum(params: {
+  inputOptions: PredictionProps;
+  spectrum: any;
+  experiment: string;
+  usedColors: string[];
+}) {
   const { spectrum, inputOptions, experiment, usedColors } = params;
 
   const { signals, ranges, nucleus } = spectrum;
+
+  const frequency =
+    nucleus === '13C'
+      ? inputOptions['1d'].frequency * 0.25
+      : inputOptions['1d'].frequency;
+
   const { x, y } = signalsToXY(signals, {
-    ...inputOptions[nucleus],
+    ...inputOptions['1d'][nucleus],
+    frequency,
   });
   const datum = initiateDatum1D(
     {
       data: { x, im: null, re: y },
       info: {
         nucleus,
-        originFrequency: 600,
-        baseFrequency: 600,
+        originFrequency: frequency,
+        baseFrequency: frequency,
         pulseSequence: 'prediction',
         solvent: '',
         experiment,
@@ -126,34 +135,29 @@ function mapZones(zones: Array<Partial<Zone>>) {
   }, []);
 }
 
-function generated2DSpectrum(params) {
+function generated2DSpectrum(params: {
+  inputOptions: PredictionProps;
+  spectrum: any;
+  experiment: string;
+  usedColors: string[];
+}) {
   const { spectrum, inputOptions, experiment, usedColors } = params;
   const { signals, zones, nucleus } = spectrum;
-  const peaks = signals.reduce(
-    (acc, { x, y }) => {
-      acc.x.push(x.delta);
-      acc.y.push(y.delta);
-      acc.z.push(100);
-      return acc;
+
+  const xOption = inputOptions['1d'][nucleus[0]];
+  const yOption = inputOptions['1d'][nucleus[1]];
+
+  const width = nucleus[0] === nucleus[1] ? 0.06 : { x: 0.06, y: 0.32 };
+  const spectrumData = signals2DToZ(signals, {
+    from: { x: xOption.from, y: yOption.from },
+    to: { x: xOption.to, y: yOption.to },
+    nbPoints: {
+      x: inputOptions['2d'].nbPoints.x,
+      y: inputOptions['2d'].nbPoints.y,
     },
-    { x: [], y: [], z: [] },
-  );
-  const xOption = inputOptions[nucleus[0]];
-  const yOption = inputOptions[nucleus[1]];
-  const interval = { x: 0.02, y: 0.02 };
-  if (nucleus[0] !== nucleus[1]) interval.y = 0.05;
-  const width = nucleus[0] === nucleus[1] ? 0.02 : { x: 0.02, y: 0.08 };
-  const spectrumData = generateSpectrum2D(peaks, {
-    generator: {
-      from: { x: xOption.from, y: yOption.from },
-      to: { x: xOption.to, y: yOption.to },
-      nbPoints: {
-        x: getNbPoints(xOption.from, xOption.to, interval.x),
-        y: getNbPoints(yOption.from, yOption.to, interval.y),
-      },
-      peakWidthFct: () => width,
-    },
+    width,
   });
+
   const datum = initiateDatum2D(
     {
       data: { ...spectrumData, noise: 0.01 },
@@ -168,8 +172,4 @@ function generated2DSpectrum(params) {
 
   datum.zones.values = mapZones(zones);
   return datum;
-}
-
-function getNbPoints(from, to, interval) {
-  return Math.ceil(Math.abs(from - to) / interval - 1);
 }
