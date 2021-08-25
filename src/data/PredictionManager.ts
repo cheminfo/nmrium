@@ -182,7 +182,7 @@ function generated2DSpectrum(params: {
 }
 
 function get2DWidth(nucleus: string[]) {
-  return nucleus[0] === nucleus[1] ? 0.06 : { x: 0.06, y: 0.32 };
+  return nucleus[0] === nucleus[1] ? 0.03 : { x: 0.03, y: 0.32 };
 }
 
 function getFrequency(
