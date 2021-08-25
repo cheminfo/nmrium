@@ -2,9 +2,9 @@ import { DatumKind } from '../constants/SignalsKinds';
 
 export function getDiaIDs(range) {
   return [].concat(
-    range.diaID || [],
+    range.diaIDs || [],
     range.signals
-      ? range.signals.map((_signal) => _signal.diaID || []).flat()
+      ? range.signals.map((_signal) => _signal.diaIDs || []).flat()
       : [],
   );
 }
@@ -21,9 +21,9 @@ export function setPubIntegral(range) {
 }
 
 export function resetDiaIDs(range) {
-  delete range.diaID;
+  delete range.diaIDs;
   range.signals.forEach((_signal) => {
-    delete _signal.diaID;
+    delete _signal.diaIDs;
   });
   delete range.pubIntegral;
 }
@@ -43,11 +43,11 @@ export function unlink(range, unlinkType = 'both', options = {}) {
 
       break;
     case 'range':
-      delete range.diaID;
+      delete range.diaIDs;
 
       break;
     case 'signal':
-      delete range.signals[options.signalIndex].diaID;
+      delete range.signals[options.signalIndex].diaIDs;
 
       break;
 

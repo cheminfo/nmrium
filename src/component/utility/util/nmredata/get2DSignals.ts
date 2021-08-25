@@ -63,12 +63,12 @@ export async function get2DSignals(
 }
 
 function getAssignment(axis, labels, toFix) {
-  let { diaID, delta } = axis;
-  if (diaID) {
-    if (!isArray(diaID)) diaID = [diaID];
-    if (diaID.length < 1) return Number(delta).toFixed(toFix);
-    let label = diaID.map((diaID) => labels[diaID].label).join(',');
-    return diaID.length > 1 ? `(${label})` : label;
+  let { diaIDs, delta } = axis;
+  if (diaIDs) {
+    if (!isArray(diaIDs)) diaIDs = [diaIDs];
+    if (diaIDs.length < 1) return Number(delta).toFixed(toFix);
+    let label = diaIDs.map((diaID) => labels[diaID].label).join(',');
+    return diaIDs.length > 1 ? `(${label})` : label;
   }
   return Number(delta).toFixed(toFix);
 }

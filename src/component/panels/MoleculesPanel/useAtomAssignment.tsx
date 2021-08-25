@@ -123,7 +123,7 @@ export default function useAtomAssignment({
               .map((signal) =>
                 filterForIDsWithAssignment(assignmentData, [signal.id]).length >
                 0
-                  ? signal.diaID
+                  ? signal.diaIDs
                   : [],
               )
               .flat(),
@@ -181,15 +181,18 @@ export default function useAtomAssignment({
               activeAssignment.id,
             );
             if (datum) {
-              // determine the level of setting the diaID array (range vs. signal level) and save there
+              // determine the level of setting the diaIDs array (range vs. signal level) and save there
               let _diaID = [];
               // on range/zone level
               if (signalIndex === undefined) {
                 if (displayerMode === DISPLAYER_MODE.DM_1D) {
-                  _diaID = toggleAssignment(datum.diaID || [], atomInformation);
+                  _diaID = toggleAssignment(
+                    datum.diaIDs || [],
+                    atomInformation,
+                  );
                 } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
                   _diaID = toggleAssignment(
-                    datum[activeAssignment.activeAxis].diaID || [],
+                    datum[activeAssignment.activeAxis].diaIDs || [],
                     atomInformation,
                   );
                 }
@@ -197,13 +200,13 @@ export default function useAtomAssignment({
                 // on signal level
                 if (displayerMode === DISPLAYER_MODE.DM_1D) {
                   _diaID = toggleAssignment(
-                    datum.signals[signalIndex].diaID || [],
+                    datum.signals[signalIndex].diaIDs || [],
                     atomInformation,
                   );
                 } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
                   _diaID = toggleAssignment(
                     datum.signals[signalIndex][activeAssignment.activeAxis]
-                      .diaID || [],
+                      .diaIDs || [],
                     atomInformation,
                   );
                 }
@@ -213,7 +216,7 @@ export default function useAtomAssignment({
                   type: SET_DIAID_RANGE,
                   payload: {
                     rangeData: datum,
-                    diaID: _diaID,
+                    diaIDs: _diaID,
                     signalIndex,
                   },
                 });
@@ -222,7 +225,7 @@ export default function useAtomAssignment({
                   type: SET_DIAID_ZONE,
                   payload: {
                     zoneData: datum,
-                    diaID: _diaID,
+                    diaIDs: _diaID,
                     axis: activeAssignment.activeAxis,
                     signalIndex,
                   },

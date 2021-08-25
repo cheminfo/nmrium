@@ -2,9 +2,9 @@ import { DatumKind } from '../constants/SignalsKinds';
 
 export function getDiaIDs(zone, axis) {
   return [].concat(
-    zone[axis].diaID || [],
+    zone[axis].diaIDs || [],
     zone.signals
-      ? zone.signals.map((signal) => signal[axis].diaID || []).flat()
+      ? zone.signals.map((signal) => signal[axis].diaIDs || []).flat()
       : [],
   );
 }
@@ -21,10 +21,10 @@ export function setPubIntegral(zone, axis) {
 }
 
 export function resetDiaIDs(zone, axis) {
-  delete zone[axis].diaID;
+  delete zone[axis].diaIDs;
   delete zone.pubIntegral;
   zone.signals.forEach((signal) => {
-    delete signal[axis].diaID;
+    delete signal[axis].diaIDs;
   });
   return zone;
 }
@@ -42,13 +42,13 @@ export function checkSignalKinds(zone, kinds) {
 export function unlink(zone, isOnZoneLevel, signalIndex, axis) {
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {
-      delete zone[axis].diaID;
+      delete zone[axis].diaIDs;
     } else if (
       typeof signalIndex === 'number' &&
       signalIndex !== -1 &&
       zone.signals[signalIndex]
     ) {
-      delete zone.signals[signalIndex][axis].diaID;
+      delete zone.signals[signalIndex][axis].diaIDs;
     }
     setPubIntegral(zone, axis);
   } else if (axis !== undefined) {

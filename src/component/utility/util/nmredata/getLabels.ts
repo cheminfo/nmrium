@@ -29,7 +29,7 @@ export function getLabels(
     for (let roi of rois) {
       let signals = flatSignals(roi.signals);
       for (let i = 0; i < signals.length; i++) {
-        let diaIDs = signals[i].diaID || [];
+        let diaIDs = signals[i].diaIDs || [];
         for (let diaID of diaIDs) {
           let delta = Number(signals[i].delta).toFixed(toFix[i % dimension]);
           // get atomLabel
