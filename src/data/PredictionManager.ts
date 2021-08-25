@@ -86,7 +86,6 @@ function generated1DSpectrum(params: {
   } = inputOptions;
 
   const frequency = getFrequency(nucleus, freq);
-
   const { x, y } = signalsToXY(signals, {
     ...inputOptions['1d'][nucleus],
     frequency,
@@ -176,7 +175,6 @@ function generated2DSpectrum(params: {
     },
     usedColors,
   );
-
   datum.zones.values = mapZones(zones);
   return datum;
 }
