@@ -20,10 +20,10 @@ import { useStateWithLocalStorage } from '../utility/LocalStorage';
 import { ModalStyles } from './ModalStyle';
 
 export interface PredictionProps {
+  frequency: number;
   '1d': {
     '1H': { from: number; to: number };
     '13C': { from: number; to: number };
-    frequency: number;
     nbPoints: number;
     lineWidth: number;
   };
@@ -118,10 +118,10 @@ const NUMBER_OF_POINTS_2D = generateNumbersPowerOfX(10, 10, {
 });
 
 const INITIAL_VALUE: PredictionProps = {
+  frequency: 400,
   '1d': {
     '1H': { from: -1, to: 12 },
     '13C': { from: -5, to: 220 },
-    frequency: 400,
     nbPoints: 2 ** 17,
     lineWidth: 1,
   },
@@ -252,17 +252,18 @@ function PredictSpectraModal({
         >
           <FormikErrorsSummary />
 
-          <span className="group-label">1D Options </span>
-
-          <div className="row margin-10 padding-h-10">
+          <div className="row margin-10">
             <span className="custom-label">Spectrometer Frequency :</span>
 
             <FormikSelect
               data={FREQUENCIES}
               style={{ width: 290, height: 30, margin: 0 }}
-              name="1d.frequency"
+              name="frequency"
             />
           </div>
+
+          <span className="group-label">1D Options </span>
+
           <div className="row margin-10 padding-h-10">
             <IsotopesViewer value="1H" className="custom-label" />
             <FormikInput

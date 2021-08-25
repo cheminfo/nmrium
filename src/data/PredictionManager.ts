@@ -80,8 +80,12 @@ function generated1DSpectrum(params: {
 
   const { signals, ranges, nucleus } = spectrum;
 
-  const { frequency: freq, nbPoints } = inputOptions['1d'];
-  const frequency = nucleus === '13C' ? freq * 0.25 : freq;
+  const {
+    '1d': { nbPoints },
+    frequency: freq,
+  } = inputOptions;
+
+  const frequency = getFrequency(nucleus, freq);
 
   const { x, y } = signalsToXY(signals, {
     ...inputOptions['1d'][nucleus],
@@ -146,7 +150,9 @@ function generated2DSpectrum(params: {
   const xOption = inputOptions['1d'][nucleus[0]];
   const yOption = inputOptions['1d'][nucleus[1]];
 
-  const width = nucleus[0] === nucleus[1] ? 0.06 : { x: 0.06, y: 0.32 };
+  const width = get2DWidth(nucleus);
+  const frequency = getFrequency(nucleus, inputOptions.frequency);
+
   const spectrumData = signals2DToZ(signals, {
     from: { x: xOption.from, y: yOption.from },
     to: { x: xOption.to, y: yOption.to },
@@ -162,6 +168,8 @@ function generated2DSpectrum(params: {
       data: { ...spectrumData, noise: 0.01 },
       info: {
         nucleus,
+        originFrequency: frequency,
+        baseFrequency: frequency,
         pulseSequence: experiment,
         experiment: '2d',
       },
@@ -171,4 +179,25 @@ function generated2DSpectrum(params: {
 
   datum.zones.values = mapZones(zones);
   return datum;
+}
+
+function get2DWidth(nucleus: string[]) {
+  return nucleus[0] === nucleus[1] ? 0.06 : { x: 0.06, y: 0.32 };
+}
+
+function getFrequency(
+  nucleus: string | string[],
+  inputFrequency: number,
+): number | string {
+  const ration13C = 0.25;
+
+  if (typeof nucleus === 'string') {
+    return nucleus === '13C' ? inputFrequency * ration13C : inputFrequency;
+  } else {
+    if (nucleus[0] === nucleus[1]) {
+      return `${inputFrequency},${inputFrequency}`;
+    } else {
+      return `${inputFrequency},${inputFrequency * ration13C}`;
+    }
+  }
 }
