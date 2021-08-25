@@ -148,7 +148,7 @@ function handleUnlinkZone(draft: Draft<State>, action) {
 
       unlinkInAssignmentData(
         assignmentData,
-        [{ id: zoneData.signal[signalIndex].id }],
+        [{ id: zoneData.signals[signalIndex].id }],
         axis,
       );
       (draft.data[index] as Datum2D).zones.values[zoneIndex] = _zoneData;
