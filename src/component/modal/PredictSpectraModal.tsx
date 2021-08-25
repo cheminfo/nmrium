@@ -138,6 +138,7 @@ const INITIAL_VALUE: PredictionProps = {
 };
 
 const predictionFormValidation = Yup.object().shape({
+  frequency: Yup.number().integer().required().label('Frequency'),
   '1d': Yup.object({
     '1H': Yup.object({
       from: Yup.number().integer().required().label("1H ' From ' "),
@@ -147,7 +148,6 @@ const predictionFormValidation = Yup.object().shape({
       from: Yup.number().integer().required().label("13C ' From ' "),
       to: Yup.number().integer().required().label("13C ' To ' "),
     }),
-    frequency: Yup.number().integer().required().label('Frequency'),
     lineWidth: Yup.number().integer().min(1).required().label('Line Width'),
     nbPoints: Yup.number().integer().required().label('1D Number Of Points'),
   }),
