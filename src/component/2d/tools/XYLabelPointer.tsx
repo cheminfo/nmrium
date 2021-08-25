@@ -24,16 +24,8 @@ const style: CSSProperties = {
 function XYLabelPointer({ layout, data1D }) {
   const position = useContext(MouseContext);
   const { step } = useContext(BrushContext);
-  const {
-    margin,
-    width,
-    height,
-    activeSpectrum,
-    xDomain,
-    yDomain,
-    yDomains,
-    activeTab,
-  } = useChartData();
+  const { margin, width, height, xDomain, yDomain, yDomains, activeTab } =
+    useChartData();
 
   const trackID =
     position &&
@@ -88,7 +80,6 @@ function XYLabelPointer({ layout, data1D }) {
   }, [data1D, height, margin, trackID, yDomain, yDomains]);
 
   if (
-    !activeSpectrum ||
     step === 'brushing' ||
     !position ||
     position.y < margin.top ||
