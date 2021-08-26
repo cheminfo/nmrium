@@ -130,7 +130,6 @@ export default function useExport() {
         isBackgroundBlur: false,
         position: positions.TOP_CENTER,
         width: 400,
-        height: 280,
       });
     }
   }, [modal, saveHandler, state.data]);
