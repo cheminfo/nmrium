@@ -31,7 +31,7 @@ function SignalAssignmentsColumn({
   onUnlink,
 }: SignalAssignmentsColumnProps) {
   const diaIDs = useMemo(() => {
-    return lodashGet(rowData, 'tableMetaInfo.signal.diaID', []);
+    return lodashGet(rowData, 'tableMetaInfo.signal.diaIDs', []);
   }, [rowData]);
 
   const tdCss: CSSProperties | undefined = useMemo(() => {

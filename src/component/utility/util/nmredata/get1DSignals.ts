@@ -64,8 +64,8 @@ export async function get1DSignals(
 
         let signalLabel = '';
 
-        if (signal.diaID && signal.diaID.length > 0) {
-          signal.diaID.forEach((diaID, i, arr) => {
+        if (signal.diaIDs && signal.diaIDs.length > 0) {
+          signal.diaIDs.forEach((diaID, i, arr) => {
             let separator = ', ';
             if (i === arr.length - 1) separator = '';
             let label = labels.byDiaID[diaID].label || diaID;
@@ -85,12 +85,12 @@ export async function get1DSignals(
               partTag += `${separator}${Number(
                 jCouplingElement.coupling,
               ).toFixed(3)}`;
-              if (jCouplingElement.diaID) {
-                let { diaID } = jCouplingElement;
-                if (!Array.isArray(diaID)) diaID = [diaID];
-                if (!diaID.length) continue;
+              if (jCouplingElement.diaIDs) {
+                let { diaIDs } = jCouplingElement;
+                if (!Array.isArray(diaIDs)) diaIDs = [diaIDs];
+                if (!diaIDs.length) continue;
                 let jCouple =
-                  labels.byDiaID[diaID[0]].label || String(diaID[0]);
+                  labels.byDiaID[diaIDs[0]].label || String(diaIDs[0]);
                 partTag += `(${jCouple})`;
               }
               separator = ', ';

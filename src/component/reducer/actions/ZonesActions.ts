@@ -148,7 +148,7 @@ function handleUnlinkZone(draft: Draft<State>, action) {
 
       unlinkInAssignmentData(
         assignmentData,
-        [{ id: zoneData.signal[signalIndex].id }],
+        [{ id: zoneData.signals[signalIndex].id }],
         axis,
       );
       (draft.data[index] as Datum2D).zones.values[zoneIndex] = _zoneData;
@@ -167,14 +167,14 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
     const { index } = state.activeSpectrum;
-    const { zoneData, diaID, axis, signalIndex } = action.payload;
+    const { zoneData, diaIDs, axis, signalIndex } = action.payload;
 
     const zoneIndex = getZoneIndex(state, index, zoneData.id);
     const _zone = (draft.data[index] as Datum2D).zones.values[zoneIndex];
     if (signalIndex === undefined) {
-      _zone[axis].diaID = diaID;
+      _zone[axis].diaIDs = diaIDs;
     } else {
-      _zone.signals[signalIndex][axis].diaID = diaID;
+      _zone.signals[signalIndex][axis].diaIDs = diaIDs;
     }
     _zone[axis].pubIntegral = getPubIntegral(_zone, axis);
   }

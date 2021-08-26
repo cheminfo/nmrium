@@ -45,13 +45,13 @@ function SignalAssignmentsColumn({
           : undefined
       }
     >
-      {lodashGet(rowData, `tableMetaInfo.signal.${axis}.diaID`, []).length >
+      {lodashGet(rowData, `tableMetaInfo.signal.${axis}.diaIDs`, []).length >
       0 ? (
         <div
           onMouseEnter={() => setShowUnlinkButton(true)}
           onMouseLeave={() => setShowUnlinkButton(false)}
         >
-          {rowData.tableMetaInfo.signal[axis].diaID.length}{' '}
+          {rowData.tableMetaInfo.signal[axis].diaIDs.length}{' '}
           <sup>
             <button
               type="button"

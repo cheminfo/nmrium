@@ -4,7 +4,13 @@ export function addRanges(signals, datum) {
   let ranges: Array<any> = [];
   const { baseFrequency: frequency = 500 } = datum;
   for (const signal of signals) {
-    const { jCoupling: js, delta, diaID = [], multiplicity, integral } = signal;
+    const {
+      jCoupling: js,
+      delta,
+      diaIDs = [],
+      multiplicity,
+      integral,
+    } = signal;
     const fromTo = computeFromTo({ delta, js, frequency });
     if (js && multiplicity) {
       if (js.length === multiplicity.length) {
@@ -21,7 +27,7 @@ export function addRanges(signals, datum) {
         {
           js,
           delta,
-          diaID,
+          diaIDs,
           multiplicity,
         },
       ],

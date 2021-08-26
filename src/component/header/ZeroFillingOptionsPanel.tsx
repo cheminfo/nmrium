@@ -1,6 +1,7 @@
 import { CSSProperties, useCallback, useRef, useState } from 'react';
 
 import { Data1D } from '../../data/data1d/Spectrum1D';
+import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Select from '../elements/Select';
@@ -41,31 +42,7 @@ const styles: Record<
   },
 };
 
-function generateSizes(start = 8, end = 21) {
-  let values: Array<{ key: number; label: string | number; value: number }> =
-    [];
-  for (let i = start; i <= end; i++) {
-    const result = 2 ** i;
-    values.push({
-      key: result,
-      label: formatNumber(result),
-      value: result,
-    });
-  }
-  return values;
-}
-
-function formatNumber(number: number): string | number {
-  if (number >= 1024 * 1024) {
-    return `${number / (1024 * 1024)}M`;
-  } else if (number >= 1024) {
-    return `${number / 1024}K`;
-  } else {
-    return number;
-  }
-}
-
-const Sizes = generateSizes();
+const Sizes = generateNumbersPowerOfX(8, 21);
 
 function ZeroFillingOptionsPanel() {
   const dispatch = useDispatch();

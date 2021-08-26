@@ -95,6 +95,9 @@ export const ModalStyles = css`
   .margin-10 {
     margin: 10px 0;
   }
+  .padding-h-10 {
+    margin: 10px;
+  }
 
   .input {
     font-size: 14px;

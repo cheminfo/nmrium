@@ -149,14 +149,14 @@ export function AssignmentProvider(props) {
       type: 'DELETE_RECORD',
       payload: { id: range.id },
     });
-    (range.diaID || []).forEach((_diaID) =>
+    (range.diaIDs || []).forEach((_diaID) =>
       _contextValue.dispatch({
         type: 'ADD',
         payload: { id: [range.id, _diaID], axis: 'x' },
       }),
     );
     range.signals.forEach((signal) =>
-      (signal.diaID || []).forEach((_diaID) =>
+      (signal.diaIDs || []).forEach((_diaID) =>
         _contextValue.dispatch({
           type: 'ADD',
           payload: { id: [signal.id, _diaID], axis: 'x' },
@@ -170,26 +170,26 @@ export function AssignmentProvider(props) {
       type: 'DELETE_RECORD',
       payload: { id: zone.id },
     });
-    (zone.y.diaID || []).forEach((_diaID) =>
+    (zone.y.diaIDs || []).forEach((_diaID) =>
       _contextValue.dispatch({
         type: 'ADD',
         payload: { id: [zone.id, _diaID], axis: 'y' },
       }),
     );
-    (zone.x.diaID || []).forEach((_diaID) =>
+    (zone.x.diaIDs || []).forEach((_diaID) =>
       _contextValue.dispatch({
         type: 'ADD',
         payload: { id: [zone.id, _diaID], axis: 'x' },
       }),
     );
     zone.signals.forEach((signal) => {
-      (signal.x.diaID || []).forEach((_diaID) =>
+      (signal.x.diaIDs || []).forEach((_diaID) =>
         _contextValue.dispatch({
           type: 'ADD',
           payload: { id: [signal.id, _diaID], axis: 'x' },
         }),
       );
-      (signal.y.diaID || []).forEach((_diaID) =>
+      (signal.y.diaIDs || []).forEach((_diaID) =>
         _contextValue.dispatch({
           type: 'ADD',
           payload: { id: [signal.id, _diaID], axis: 'y' },

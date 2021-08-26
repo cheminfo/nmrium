@@ -162,14 +162,14 @@ function handleUnlinkRange(draft: Draft<State>, action) {
 function handleSetDiaIDRange(draft, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    const { rangeData, diaID, signalIndex } = action.payload;
+    const { rangeData, diaIDs, signalIndex } = action.payload;
 
     const rangeIndex = getRangeIndex(draft, index, rangeData.id);
     const _range = draft.data[index].ranges.values[rangeIndex];
     if (signalIndex === undefined) {
-      _range.diaID = diaID;
+      _range.diaIDs = diaIDs;
     } else {
-      _range.signals[signalIndex].diaID = diaID;
+      _range.signals[signalIndex].diaIDs = diaIDs;
     }
     _range.pubIntegral = getPubIntegral(_range);
   }

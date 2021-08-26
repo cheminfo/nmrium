@@ -14,7 +14,7 @@ export function addZones(signals, datum) {
     let signalFormated = { id: generateID(), kind: 'signal', peak: [] };
     let width = { x: 10, y: 10 };
     for (let axis of axisLabels) {
-      let { coupling = [], delta, diaID = [] } = signal[axis];
+      let { coupling = [], delta, diaIDs = [] } = signal[axis];
       for (let j of coupling) {
         width[axis] += j.coupling;
       }
@@ -33,7 +33,7 @@ export function addZones(signals, datum) {
 
       signalFormated[axis] = {
         delta,
-        diaID,
+        diaIDs,
         originDelta: delta - shift[`${axis}Shift`],
       };
     }
