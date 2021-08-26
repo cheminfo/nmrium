@@ -150,7 +150,7 @@ export default function MoleculePanelHeader({
     assignmentData,
   ]);
 
-  const openPredicSpectraModal = useCallback(() => {
+  const openPredictSpectraModal = useCallback(() => {
     modal.show(<PredictSpectraModal molfile={molecules[currentIndex]} />, {
       position: positions.TOP_CENTER,
       enableResizing: true,
@@ -188,14 +188,15 @@ export default function MoleculePanelHeader({
           <FaRegTrashAlt />
         </button>
       </ToolTip>
-      <ButtonToolTip
-        popupTitle="Predict Spectra"
-        popupPlacement="left"
-        onClick={openPredicSpectraModal}
-        disabled={!molecules || molecules.length === 0}
-      >
-        <SvgNmrFt />
-      </ButtonToolTip>
+      {molecules && molecules.length > 0 && (
+        <ButtonToolTip
+          popupTitle="Predict Spectra"
+          popupPlacement="left"
+          onClick={openPredictSpectraModal}
+        >
+          <SvgNmrFt />
+        </ButtonToolTip>
+      )}
       <p>
         {molecules &&
           molecules.length > 0 &&
