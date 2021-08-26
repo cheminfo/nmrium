@@ -6,7 +6,6 @@ import {
   useEffect,
   useCallback,
   Fragment,
-  cloneElement,
   useMemo,
   CSSProperties,
   ReactNode,
@@ -21,6 +20,7 @@ import { positions, transitions } from '../options';
 
 import ConfirmDialog from './ConfirmDialog';
 import { ModalProvider } from './Context';
+import ModalContent from './ModalContent';
 
 const transitionStyles: any = {
   [transitions.FADE]: {
@@ -53,6 +53,7 @@ function Provider({
   wrapperRef = null,
 }: ProviderProps) {
   const root = useRef<any>();
+  const modalRef = useRef<any>();
   const [modal, setModal] = useState<any>();
 
   useEffect(() => {
@@ -175,6 +176,24 @@ function Provider({
     [show, close, showConfirmDialog],
   );
 
+  const contentLayoutHandler = useCallback(
+    ({ modal, layout }) => {
+      const width = modal.options.width
+        ? modal.options.width
+        : layout.width > parentStyle.width
+        ? parentStyle.width
+        : layout.width;
+      const height = modal.options.height
+        ? modal.options.height
+        : layout.height > parentStyle.height
+        ? parentStyle.height
+        : layout.height;
+
+      modalRef.current.updateSize({ width, height });
+    },
+    [parentStyle.height, parentStyle.width],
+  );
+
   return (
     <ModalProvider value={modalContextValue}>
       {children}
@@ -225,6 +244,9 @@ function Provider({
                     key={modal.id}
                   >
                     <Rnd
+                      maxWidth={parentStyle.width}
+                      maxHeight={parentStyle.height}
+                      ref={modalRef}
                       default={{
                         width: modal.options.width
                           ? modal.options.width
@@ -247,12 +269,11 @@ function Provider({
                       dragHandleClassName="handle"
                       enableUserSelectHack={false}
                     >
-                      {modal.options &&
-                        cloneElement(modal.component, {
-                          ...modal.options,
-                          onClose: close,
-                          style: { cursor: 'default' },
-                        })}
+                      <ModalContent
+                        modal={modal}
+                        onClose={close}
+                        onLayout={contentLayoutHandler}
+                      />
                     </Rnd>
                   </Transition>
                 </TransitionGroup>
