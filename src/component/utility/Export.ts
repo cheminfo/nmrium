@@ -188,12 +188,10 @@ function copyDataURLCliboard(image) {
 
 function copyBlobToCliboard(canvas) {
   canvas.toBlob((b) => {
-    // @ts-expect-error ClipboardItem exists in some browsers
     const clip = new ClipboardItem({
       [b.type]: b,
     });
 
-    // @ts-expect-error write exists in some browsers
     navigator.clipboard.write([clip]).then(
       () => {
         // eslint-disable-next-line no-console

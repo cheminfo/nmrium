@@ -104,7 +104,7 @@ function enableFilter(datum, id, checked, filters = null) {
     if (filter.flag) {
       try {
         Filters[filter.name].apply(datum, filter.value);
-      } catch (error) {
+      } catch (error: any) {
         datum.filters[filterIndex] = {
           ...datum.filters[filterIndex],
           error: error.message,
@@ -129,7 +129,7 @@ function deleteFilter(datum, id) {
     if (filter.flag) {
       try {
         Filters[filter.name].apply(datum, filter.value);
-      } catch (error) {
+      } catch (error: any) {
         datum.filters[filterIndex] = {
           ...datum.filters[filterIndex],
           error: error.message,
