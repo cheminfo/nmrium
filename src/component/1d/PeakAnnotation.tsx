@@ -6,7 +6,6 @@ import {
   useCallback,
   useLayoutEffect,
   useEffect,
-  Fragment,
   useMemo,
 } from 'react';
 
@@ -86,7 +85,7 @@ const styles = css`
   }
 `;
 
-interface PeakNotationProps {
+interface PeakAnnotationProps {
   id: string;
   x: number;
   y: number;
@@ -97,7 +96,7 @@ interface PeakNotationProps {
   nucleus: string;
 }
 
-function PeakNotation({
+function PeakAnnotation({
   id,
   x,
   y,
@@ -106,7 +105,7 @@ function PeakNotation({
   color,
   isActive,
   nucleus,
-}: PeakNotationProps) {
+}: PeakAnnotationProps) {
   const refText = useRef<SVGTextElement>(null);
   const [isSelected, setIsSelected] = useState(false);
   const [_value, setValue] = useState(value);
@@ -161,7 +160,7 @@ function PeakNotation({
     setValue(event.target.value);
   }, []);
 
-  const handleSelectPeakNotation = useCallback((e) => {
+  const handleSelectPeakAnnotation = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsSelected(true);
@@ -186,81 +185,78 @@ function PeakNotation({
   );
 
   return (
-    <Fragment>
-      <g
-        css={styles}
-        id={id}
-        style={{ outline: 'none' }}
-        transform={`translate(${x}, ${y})`}
-        onMouseEnter={handleOnEnterNotation}
-        onMouseLeave={handleOnMouseLeaveNotation}
-        data-test-id="peak"
+    <g
+      css={styles}
+      id={id}
+      style={{ outline: 'none' }}
+      transform={`translate(${x}, ${y})`}
+      onMouseEnter={handleOnEnterNotation}
+      onMouseLeave={handleOnMouseLeaveNotation}
+    >
+      <line
+        x1="0"
+        x2="0"
+        y1={sign === -1 ? 10 : 0}
+        y2={sign === -1 ? 28 : -18}
+        stroke={color}
+        strokeWidth={highlight.isActive ? '7px' : '1px'}
+      />
+      <text
+        ref={refText}
+        className="peaks-text"
+        x="0"
+        y={sign === -1 ? 28 : -12}
+        dy="0"
+        dx="0.35em"
+        fill="transparent"
+        fontSize="10px"
+        fontWeight="100"
+        style={{
+          position: 'absolute',
+        }}
       >
-        <line
-          x1="0"
-          x2="0"
-          y1={sign === -1 ? 10 : 0}
-          y2={sign === -1 ? 28 : -18}
-          stroke={color}
-          strokeWidth={highlight.isActive ? '7px' : '1px'}
-        />
-        <text
-          ref={refText}
-          className="peaks-text"
-          x="0"
-          y={sign === -1 ? 28 : -12}
-          dy="0"
-          dx="0.35em"
-          fill="transparent"
-          fontSize="10px"
-          fontWeight="100"
+        {newValue}
+      </text>
+      <foreignObject
+        x="0"
+        y={sign === -1 ? 16 : -22}
+        dy="0.1em"
+        dx="0.35em"
+        width={containerSize.width + 20}
+        height="40px"
+        data-no-export="true"
+      >
+        <div
           style={{
-            position: 'absolute',
+            width: containerSize.width + 20,
+            height: '100%',
+            paddingRight: 5,
           }}
         >
-          {newValue}
-        </text>
-        <foreignObject
-          x="0"
-          y={sign === -1 ? 16 : -22}
-          dy="0.1em"
-          dx="0.35em"
-          width={containerSize.width + 20}
-          height="40px"
-          data-no-export="true"
-        >
-          <div
+          <input
+            onClick={handleSelectPeakAnnotation}
+            className={
+              isSelected
+                ? 'notification-input input-over'
+                : 'notification-input-normal'
+            }
             style={{
-              width: containerSize.width + 20,
-              height: '100%',
-              paddingRight: 5,
+              width: 'inherit',
+              border: isSelected ? `1px solid ${color}` : `0`,
+              opacity: isActive ? 1 : 0.2,
+              userSelect: 'none',
+              color: color,
             }}
-          >
-            <input
-              onClick={handleSelectPeakNotation}
-              className={
-                isSelected
-                  ? 'notification-input input-over'
-                  : 'notification-input-normal'
-              }
-              style={{
-                width: 'inherit',
-                border: isSelected ? `1px solid ${color}` : `0`,
-                opacity: isActive ? 1 : 0.2,
-                userSelect: 'none',
-                color: color,
-              }}
-              value={oldValue}
-              onKeyDown={handleKeyDown}
-              onChange={handleChange}
-              type="number"
-              disabled={!isActive}
-            />
-          </div>
-        </foreignObject>
-      </g>
-    </Fragment>
+            value={oldValue}
+            onKeyDown={handleKeyDown}
+            onChange={handleChange}
+            type="number"
+            disabled={!isActive}
+          />
+        </div>
+      </foreignObject>
+    </g>
   );
 }
 
-export default PeakNotation;
+export default PeakAnnotation;

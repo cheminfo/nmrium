@@ -1,74 +1,70 @@
-// import { ElementHandle } from 'playwright';
+import { setTimeout } from 'timers/promises';
+
+import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { mouseClick } from '../utilities/mouseClick';
-import { selectRange } from '../utilities/selectRange';
+import { createPeakInRange } from '../utilities/selectRange';
 
 async function addPeaks(nmrium: NmriumPage) {
-  const containerElement = await nmrium.waitForViewer();
+  const peakAnnotationLocator = nmrium.page.locator('_react=PeakAnnotation');
 
   // select peak picking tool
   await nmrium.page.click('data-test-id=tool-peakPicking');
 
   // add peak by select range
-  await selectRange(nmrium, containerElement, {
+  await createPeakInRange(nmrium, {
     axis: 'X',
     startX: 50,
     endX: 100,
   });
 
-  await mouseClick(nmrium, containerElement, 200, 20, {
-    keyboardKey: 'Shift',
+  await expect(peakAnnotationLocator).toHaveCount(1);
+
+  // TODO: Get rid of this timeout.
+  // Without it, the click seems to have no effect.
+  await setTimeout(500);
+
+  await nmrium.viewerLocator.click({
+    modifiers: ['Shift'],
+    position: {
+      x: 200,
+      y: 20,
+    },
   });
 
-  await nmrium.page.waitForSelector(':nth-match([data-test-id="peak"],2)');
-
-  expect(await nmrium.page.$$('data-test-id=peak')).toHaveLength(2);
+  await expect(peakAnnotationLocator).toHaveCount(2);
 }
 
 async function shiftX(nmrium: NmriumPage) {
-  //add peak by press left mouse button
-
-  const peakInputElement = await nmrium.page.waitForSelector(
-    ':nth-match([data-test-id="peak"],1) input',
+  const peakInputLocator = nmrium.page.locator(
+    '_react=PeakAnnotation >> nth=0 >> input',
   );
 
-  const { x, width, y, height } =
-    (await peakInputElement.boundingBox()) as BoundingBox;
+  await peakInputLocator.click();
+  await peakInputLocator.selectText();
+  await peakInputLocator.type('10');
+  await peakInputLocator.press('Enter');
 
-  await nmrium.page.mouse.click(x + width / 2, y + height / 2);
-  await peakInputElement.selectText();
-  await peakInputElement.type('10');
-
-  await nmrium.page.keyboard.press('Enter');
-
-  const value = await nmrium.page.$eval(
-    ':nth-match([data-test-id="peak"],1) input',
-    (el: HTMLInputElement) => el.value,
-  );
-
-  expect(Number(value)).toBe(10);
+  await expect(peakInputLocator).toHaveValue(/10\.00?/);
 }
 
 async function deletePeak(nmrium: NmriumPage) {
-  //add peak by press left mouse button
-  const peakInputElement = await nmrium.page.waitForSelector(
-    ':nth-match([data-test-id="peak"],2) input',
+  const peakAnnotationLocator = nmrium.page.locator(
+    '_react=PeakAnnotation >> nth=1',
   );
 
   const { x, width, y, height } =
-    (await peakInputElement.boundingBox()) as BoundingBox;
+    (await peakAnnotationLocator.boundingBox()) as BoundingBox;
 
   await nmrium.page.mouse.move(x + width / 2, y + height / 2);
-
   await nmrium.page.keyboard.press('Backspace');
 
-  // test that the peak deleted
-  expect(await nmrium.page.$$('data-test-id=peak')).toHaveLength(1);
+  // Test that the peak deleted
+  await expect(nmrium.page.locator('_react=PeakAnnotation')).toHaveCount(1);
 }
 
-test('add/shift/delete peaks', async () => {
-  const nmrium = await NmriumPage.create();
+test('add/shift/delete peaks', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
   await addPeaks(nmrium);
@@ -76,19 +72,15 @@ test('add/shift/delete peaks', async () => {
   await deletePeak(nmrium);
 });
 
-test('Automatic peak picking should work', async () => {
-  const nmrium = await NmriumPage.create();
+test('Automatic peak picking should work', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
-
-  await nmrium.waitForViewer();
 
   //select range tool
   await nmrium.page.click('data-test-id=tool-peakPicking');
 
   //apply auto ranges detection
-  await nmrium.page.click('data-test-id=auto-peak-picking-btn');
+  await nmrium.page.click('button >> text=Apply');
 
-  expect(
-    (await nmrium.page.$$('data-test-id=peak')).length,
-  ).toBeGreaterThanOrEqual(10);
+  await expect(nmrium.page.locator('_react=PeakAnnotation')).toHaveCount(50);
 });

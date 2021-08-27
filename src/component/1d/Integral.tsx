@@ -71,7 +71,7 @@ function Integral({
   }, [integral, scaleX, scaleY, xDomain]);
 
   return (
-    <g data-test-id="integral">
+    <g>
       <path
         className="line"
         stroke={integralSettings.color}

@@ -2,7 +2,7 @@ import BaseLineZones from './BaseLineZones';
 import ExclusionZones from './ExclusionZones';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
-import PeaksNotations from './PeaksNotations';
+import PeakAnnotations from './PeakAnnotations';
 import XAxis from './XAxis';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
@@ -28,7 +28,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
 
       <LinesSeries />
       <IntegralsSeries />
-      <PeaksNotations />
+      <PeakAnnotations />
       <Ranges />
       <MultiAnalysisRanges />
       <BaseLineZones />

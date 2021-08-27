@@ -240,7 +240,6 @@ function ManualPhaseCorrectionPanelInner({
         type="button"
         style={styles.actionButton}
         onClick={handleApplyFilter}
-        data-test-id="apply-phase-correction-btn"
       >
         Apply
       </button>

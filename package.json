@@ -12,11 +12,12 @@
   ],
   "scripts": {
     "build": "vite build --outDir build",
+    "build-no-minify": "NO_MINIFY=true npm run build",
     "build-with-profiling": "npm run build -- --mode profiling --sourcemap",
     "check-types": "tsc --noEmit",
     "compile": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json",
     "clean-lib": "rimraf lib lib-cjs",
-    "dev": "vite --open",
+    "dev": "vite --host localhost --strictPort --open",
     "eslint": "eslint . --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
@@ -24,11 +25,10 @@
     "prettier": "prettier --check src",
     "prettier-write": "prettier --write src",
     "start": "npm run dev",
-    "test": "npm run test-only && npm run build && npm run test-e2e && npm run eslint && npm run prettier && npm run check-types",
+    "test": "npm run test-only && npm run build-no-minify && npm run test-e2e && npm run eslint && npm run prettier && npm run check-types",
     "test-only": "jest --coverage",
-    "test-e2e": "start-server-and-test test-e2e-server http://localhost:3000 test-e2e-jest",
-    "test-e2e-jest": "cd test-e2e && jest --runInBand",
-    "test-e2e-server": "serve -l 3000 build"
+    "test-e2e": "playwright test",
+    "test-e2e-server": "serve -l tcp://localhost:3000 build"
   },
   "bugs": {
     "url": "https://github.com/cheminfo/nmrium/issues"
@@ -99,6 +99,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.15.0",
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.15.0",
+    "@playwright/test": "^1.14.1",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/d3": "^7.0.0",
     "@types/jest": "^27.0.1",
@@ -112,7 +113,6 @@
     "eslint": "^7.32.0",
     "jest": "^27.0.6",
     "modern-normalize": "^1.1.0",
-    "playwright": "^1.14.1",
     "prettier": "^2.3.2",
     "rc-menu": "^9.0.12",
     "react": "^17.0.2",
@@ -122,7 +122,6 @@
     "rimraf": "^3.0.2",
     "rollup-plugin-analyzer": "^4.0.0",
     "serve": "^12.0.0",
-    "start-server-and-test": "^1.13.1",
     "typescript": "~4.4.2",
     "vite": "^2.5.1"
   }

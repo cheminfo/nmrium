@@ -26,6 +26,7 @@ export default ({ mode }) => {
       rollupOptions: {
         plugins: process.env.ANALYZE ? [analyze()] : [],
       },
+      minify: process.env.NO_MINIFY ? false : 'esbuild',
     },
     plugins: [reactRefresh()],
     resolve: {

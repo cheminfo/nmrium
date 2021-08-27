@@ -4,9 +4,9 @@ import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 
-import PeakNotation from './PeakNotation';
+import PeakAnnotation from './PeakAnnotation';
 
-function PeaksNotations() {
+function PeakAnnotations() {
   const { data, activeSpectrum, verticalAlign, displayerKey, xDomains } =
     useChartData();
   const { scaleX, scaleY } = useScaleChecked();
@@ -48,7 +48,7 @@ function PeaksNotations() {
                 transform={`translate(0,-${getVerticalAlign(d.id)})`}
               >
                 {d.peaks.values.map(({ delta, intensity, id }) => (
-                  <PeakNotation
+                  <PeakAnnotation
                     key={id}
                     x={scaleX()(delta)}
                     y={scaleY(d.id)(intensity) - 5}
@@ -89,4 +89,4 @@ function PeaksNotations() {
   );
 }
 
-export default PeaksNotations;
+export default PeakAnnotations;

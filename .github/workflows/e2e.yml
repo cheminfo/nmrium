@@ -2,8 +2,6 @@ name: E2E tests
 
 on:
   push:
-    branches:
-      - master
   pull_request:
 
 jobs:
@@ -22,8 +20,9 @@ jobs:
         run: |
           npm ci
           npx playwright install-deps
+          npx playwright install
       - name: Build test application
-        run: npm run build
+        run: npm run build-no-minify
       - name: Run E2E tests on ${{ matrix.browser }}
         run: npm run test-e2e
         env:

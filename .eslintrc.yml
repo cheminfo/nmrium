@@ -1,3 +1,4 @@
+root: true
 extends: '@zakodium/eslint-config/typescript-react'
 rules:
   'import/default': off

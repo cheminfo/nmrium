@@ -1,53 +1,51 @@
+import { test, expect } from '@playwright/test';
+
 import NmriumPage from '../NmriumPage';
 
-test('Should 1d spectrum hide/show', async () => {
-  const nmrium = await NmriumPage.create();
+test('Should 1d spectrum hide/show', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  // Click on hide/show spectrum button.
-  await nmrium.page.click(
-    ':nth-match([data-test-id="hide-show-spectrum-button"], 1)',
+  const spectrumButtonLocator = nmrium.page.locator(
+    'data-test-id=hide-show-spectrum-button',
   );
-
-  await nmrium.page.waitForTimeout(500);
-
-  expect(
-    await nmrium.page.isVisible(':nth-match([data-test-id="spectrum-line"],1)'),
-  ).toBe(false);
+  const spectrumLineLocator = nmrium.page.locator('data-test-id=spectrum-line');
 
   // Click on hide/show spectrum button.
-  await nmrium.page.click(
-    ':nth-match([data-test-id="hide-show-spectrum-button"], 1)',
-  );
+  await spectrumButtonLocator.click();
 
-  await nmrium.page.waitForTimeout(500);
+  await expect(spectrumLineLocator).toBeHidden();
+
+  // Click on hide/show spectrum button.
+  await spectrumButtonLocator.click();
 
   //check if the spectrum is visible again
-  expect(
-    await nmrium.page.isVisible(':nth-match([data-test-id="spectrum-line"],1)'),
-  ).toBe(true);
+  await expect(spectrumLineLocator).toBeVisible();
 });
 
-test('Check if the color picker is visible after click on the color-indicator', async () => {
-  const nmrium = await NmriumPage.create();
+test('Check if the color picker is visible after click on the ColorIndicator', async ({
+  page,
+}) => {
+  const nmrium = await NmriumPage.create(page);
   await nmrium.open2D();
 
-  expect(await nmrium.page.isVisible('.sketch-picker')).toBe(false);
-  await nmrium.page.click(':nth-match([data-test-id="color-indicator"], 2)');
-  expect(await nmrium.page.isVisible('.sketch-picker')).toBe(true);
+  const sketchPicker = nmrium.page.locator('.sketch-picker');
+
+  await expect(sketchPicker).toHaveCount(0);
+  await nmrium.page.click('_react=ColorIndicator >> nth=0');
+  await expect(sketchPicker).toHaveCount(2);
 });
 
-test('Should Zoom', async () => {
-  const nmrium = await NmriumPage.create();
+test('Should Zoom', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
-  const containerElemment = await nmrium.waitForViewer();
 
-  const boundingBox = (await containerElemment?.boundingBox()) as BoundingBox;
+  const boundingBox = (await nmrium.viewerLocator.boundingBox()) as BoundingBox;
 
   const cursorStartX = boundingBox.x + boundingBox.width / 2;
   const cursorStartY = boundingBox.y + boundingBox.height / 2;
   const previousPath = (await nmrium.page.getAttribute(
-    ':nth-match([data-test-id="spectrum-line"],1)',
+    'data-test-id=spectrum-line',
     'd',
   )) as string;
 
@@ -58,10 +56,8 @@ test('Should Zoom', async () => {
   });
   await nmrium.page.mouse.up();
 
-  await nmrium.page.waitForTimeout(1000);
-
   const path = (await nmrium.page.getAttribute(
-    ':nth-match([data-test-id="spectrum-line"],1)',
+    'data-test-id=spectrum-line',
     'd',
   )) as string;
 
@@ -70,26 +66,25 @@ test('Should Zoom', async () => {
   expect(path).not.toMatch(previousPath);
 });
 
-test('Check change spectrum color, Should be white', async () => {
-  const nmrium = await NmriumPage.create();
+test('Check change spectrum color, Should be white', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  await nmrium.waitForViewer();
+  const whiteSpectrumLine = nmrium.page.locator(
+    '_react=Line[display.color = "#ffffffff"]',
+  );
 
-  //open Change color modal
-  await nmrium.page.click(':nth-match([data-test-id="color-indicator"], 1)');
+  // There should be no white spectrum line at the beginning.
+  await expect(whiteSpectrumLine).toBeHidden();
 
-  const colorSelector = await nmrium.page.$('.sketch-picker > div');
-  const boundingBox = (await colorSelector?.boundingBox()) as BoundingBox;
+  // Open Change color modal
+  await nmrium.page.click('_react=ColorIndicator');
 
-  await nmrium.page.mouse.click(boundingBox.x, boundingBox.y, {
-    button: 'left',
+  // Click on the top-left of the color picker (white)
+  await nmrium.page.click('.sketch-picker > div >> nth=0', {
+    position: { x: 0, y: 0 },
   });
-  await nmrium.page.waitForTimeout(1000);
 
-  const color = (await nmrium.page.getAttribute(
-    ':nth-match([data-test-id="spectrum-line"],1)',
-    'stroke',
-  )) as string;
-  expect(color).toMatch('#ffffffff');
+  // The line should now be white.
+  await expect(whiteSpectrumLine).toBeVisible();
 });
