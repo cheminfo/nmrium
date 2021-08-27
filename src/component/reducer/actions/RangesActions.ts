@@ -47,6 +47,25 @@ function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
   }
 }
 
+function handleAutoSpectraRangesDetection(draft: Draft<State>) {
+  const peakPicking = {
+    factorStd: 8,
+    minMaxRatio: 0.1,
+    nH: 100,
+    compile: true,
+    frequencyCluster: 16,
+    clean: true,
+    keepPeaks: true,
+  };
+  // eslint-disable-next-line @typescript-eslint/prefer-for-of
+  for (let index = 0; index < draft.data.length; index++) {
+    if (draft.data[index].info.dimension === 1) {
+      detectRanges(draft.data[index] as Datum1D, { peakPicking });
+      handleOnChangeRangesData(draft);
+    }
+  }
+}
+
 function getRangeIndex(drfat: Draft<State>, spectrumIndex, rangeID) {
   return (drfat.data[spectrumIndex] as Datum1D).ranges.values.findIndex(
     (range) => range.id === rangeID,
@@ -267,4 +286,5 @@ export {
   handleChangeRangesSumFlag,
   handleChangeTempRange,
   handleShowMultiplicityTrees,
+  handleAutoSpectraRangesDetection,
 };

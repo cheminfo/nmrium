@@ -53,6 +53,21 @@ function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
     handleOnChangeZonesData(draft);
   }
 }
+function handleAutoSpectraZonesDetection(draft: Draft<State>) {
+  // eslint-disable-next-line @typescript-eslint/prefer-for-of
+  for (let index = 0; index < draft.data.length; index++) {
+    if (draft.data[index].info.dimension === 2) {
+      const { minX, maxX, minY, maxY } = (draft.data[index] as Datum2D).data;
+      const detectionOptions = {
+        selectedZone: { fromX: minX, toX: maxX, fromY: minY, toY: maxY },
+        thresholdFactor: 1,
+      };
+
+      detectZones(draft.data[index], detectionOptions);
+      handleOnChangeZonesData(draft);
+    }
+  }
+}
 
 function changeZoneSignalDelta(draft: Draft<State>, action) {
   const { zoneID, signal } = action.payload;
@@ -193,4 +208,5 @@ export {
   handleUnlinkZone,
   handleSetDiaIDZone,
   changeZonesFactorHandler,
+  handleAutoSpectraZonesDetection,
 };

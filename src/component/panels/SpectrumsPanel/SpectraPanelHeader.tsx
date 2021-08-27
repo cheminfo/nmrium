@@ -1,4 +1,8 @@
-import { SvgNmrSameTop, SvgNmrResetScale } from 'cheminfo-font';
+import {
+  SvgNmrSameTop,
+  SvgNmrResetScale,
+  SvgNmrRangePicking,
+} from 'cheminfo-font';
 import { memo, useCallback } from 'react';
 import {
   FaCreativeCommonsSamplingPlus,
@@ -21,6 +25,8 @@ import {
   DELETE_SPECTRA,
   RESET_SPECTRA_SCALE,
   SET_SPECTRA_SAME_TOP,
+  AUTO_RANGES_SPECTRA_PICKING,
+  AUTO_ZONES_SPECTRA_PICKING,
 } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
@@ -100,6 +106,17 @@ function SpectraPanelHeaderInner({
     dispatch({ type: RESET_SPECTRA_SCALE });
   }, [dispatch]);
 
+  const automaticPickingHandler = useCallback(async () => {
+    const hideLoading = await alert.showLoading(
+      'Automatic Ranges/Zones detection for all spectra in progress',
+    );
+    setTimeout(() => {
+      dispatch({ type: AUTO_RANGES_SPECTRA_PICKING });
+      dispatch({ type: AUTO_ZONES_SPECTRA_PICKING });
+      hideLoading();
+    }, 0);
+  }, [dispatch, alert]);
+
   return (
     <DefaultPanelHeader
       onDelete={handleDelete}
@@ -130,6 +147,12 @@ function SpectraPanelHeaderInner({
           </Button>
         </>
       )}
+      <Button
+        popupTitle="Automatic Ranges/Zones picking for all spectra"
+        onClick={automaticPickingHandler}
+      >
+        <SvgNmrRangePicking />
+      </Button>
     </DefaultPanelHeader>
   );
 }

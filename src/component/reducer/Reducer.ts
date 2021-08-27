@@ -661,6 +661,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return RangesActions.handleChangeTempRange(draft, action);
     case types.SHOW_MULTIPLICTY_TREES:
       return RangesActions.handleShowMultiplicityTrees(draft);
+    case types.AUTO_RANGES_SPECTRA_PICKING:
+      return RangesActions.handleAutoSpectraRangesDetection(draft);
 
     case types.SET_ACTIVE_TAB:
       return ToolsActions.handelSetActiveTab(draft, action.tab);
@@ -697,6 +699,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleUnlinkZone(draft, action);
     case types.SET_DIAID_ZONE:
       return ZonesActions.handleSetDiaIDZone(draft, action);
+    case types.AUTO_ZONES_SPECTRA_PICKING:
+      return ZonesActions.handleAutoSpectraZonesDetection(draft);
 
     case types.ANALYZE_SPECTRA:
       return SpectraAanalysisActions.analyzeSpectra(draft, action);
