@@ -24,8 +24,16 @@ const style: CSSProperties = {
 function XYLabelPointer({ layout, data1D }) {
   const position = useContext(MouseContext);
   const { step } = useContext(BrushContext);
-  const { margin, width, height, xDomain, yDomain, yDomains, activeTab } =
-    useChartData();
+  const {
+    margin,
+    width,
+    height,
+    xDomain,
+    yDomain,
+    yDomains,
+    activeTab,
+    activeSpectrum,
+  } = useChartData();
 
   const trackID =
     position &&
@@ -38,7 +46,7 @@ function XYLabelPointer({ layout, data1D }) {
   const [formatX, formatY] = useFormatNumberByNucleus(nucleuses);
 
   const scaleX = useMemo(() => {
-    if (!data1D || data1D.length === 0) {
+    if (!activeSpectrum || !data1D || data1D.length === 0) {
       return get2DXScale({ width, margin, xDomain });
     }
 
@@ -53,10 +61,19 @@ function XYLabelPointer({ layout, data1D }) {
       default:
         return null;
     }
-  }, [data1D, height, margin, trackID, width, xDomain, yDomain]);
+  }, [
+    activeSpectrum,
+    data1D,
+    height,
+    margin,
+    trackID,
+    width,
+    xDomain,
+    yDomain,
+  ]);
 
   const scaleY = useMemo(() => {
-    if (!data1D || data1D.length === 0) {
+    if (!activeSpectrum || !data1D || data1D.length === 0) {
       return get2DYScale({ height, margin, yDomain });
     }
 
@@ -77,7 +94,7 @@ function XYLabelPointer({ layout, data1D }) {
       default:
         return null;
     }
-  }, [data1D, height, margin, trackID, yDomain, yDomains]);
+  }, [activeSpectrum, data1D, height, margin, trackID, yDomain, yDomains]);
 
   if (
     step === 'brushing' ||
