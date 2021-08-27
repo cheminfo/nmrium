@@ -4,11 +4,11 @@ import { useChartData } from '../context/ChartContext';
 import { Margin } from '../reducer/Reducer';
 
 import Contours from './Contours';
-import IndicationLines from './IndicationLines';
 import Left1DChart from './Left1DChart';
 import Top1DChart from './Top1DChart';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
+import IndicationLines from './zones/IndicationLines';
 import Zones from './zones/Zones';
 
 interface Chart2DProps {

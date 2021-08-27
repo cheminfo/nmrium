@@ -2,12 +2,10 @@
 import { css } from '@emotion/react';
 import { useState, useEffect, useMemo } from 'react';
 
-import { SignalKindsToInclude } from '../../data/constants/SignalsKinds';
-import { isSpectrum1D } from '../../data/data1d/Spectrum1D';
-import { useChartData } from '../context/ChartContext';
-import { DISPLAYER_MODE } from '../reducer/core/Constants';
-
-import { get2DXScale, get2DYScale } from './utilities/scale';
+import { SignalKindsToInclude } from '../../../data/constants/SignalsKinds';
+import { isSpectrum1D } from '../../../data/data1d/Spectrum1D';
+import { useChartData } from '../../context/ChartContext';
+import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 const lineStyle = css`
   stroke: lightgrey;
@@ -37,34 +35,29 @@ function IndicationLines({ axis, show }: IndicationLinesProps) {
 
   useEffect(() => {
     const split = activeTab.split(',');
-    if (displayerMode === DISPLAYER_MODE.DM_2D && split.length === 2) {
-      const nucleus = axis === 'X' ? split[0] : axis === 'Y' ? split[1] : null;
-      if (nucleus !== null) {
-        const ranges = data
-          .filter(
-            (_datum) =>
-              _datum.info.dimension === 1 &&
-              _datum.display.isVisible === true &&
-              _datum.info.nucleus === nucleus &&
-              _datum.info.experiment === '1d',
-          )
-          .filter(isSpectrum1D)
-          .map((_datum) => _datum.ranges.values)
-          .flat();
 
-        const deltas = ranges
-          .map((_range) =>
-            _range.signals
-              .filter((_signal) =>
-                SignalKindsToInclude.some((_kind) => _signal.kind === _kind),
-              )
-              .map((_signal) => _signal.delta),
-          )
-          .flat();
-        setDeltas1D(deltas);
-      } else {
-        setDeltas1D([]);
-      }
+    const nucleus = axis === 'X' ? split[0] : axis === 'Y' ? split[1] : null;
+    if (nucleus !== null) {
+      const ranges = data
+        .filter(
+          (_datum) =>
+            _datum.display.isVisible === true &&
+            _datum.info.nucleus === nucleus,
+        )
+        .filter(isSpectrum1D)
+        .map((_datum) => _datum.ranges.values)
+        .flat();
+
+      const deltas = ranges
+        .map((_range) =>
+          _range.signals
+            .filter((_signal) =>
+              SignalKindsToInclude.some((_kind) => _signal.kind === _kind),
+            )
+            .map((_signal) => _signal.delta),
+        )
+        .flat();
+      setDeltas1D(deltas);
     } else {
       setDeltas1D([]);
     }
