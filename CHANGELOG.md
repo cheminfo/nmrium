@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.18.0](https://www.github.com/cheminfo/nmrium/compare/v0.17.1...v0.18.0) (2021-08-27)
+
+
+### Features
+
+* 1d and 2d prediction ([#1194](https://www.github.com/cheminfo/nmrium/issues/1194)) ([f5cb228](https://www.github.com/cheminfo/nmrium/commit/f5cb228a0927d059daa107b099b19c136228a45b))
+* add prop to hide panel on initial load ([#1171](https://www.github.com/cheminfo/nmrium/issues/1171)) ([b0cdd08](https://www.github.com/cheminfo/nmrium/commit/b0cdd08a1b427ce6d73b5f84dd721a1d14113dcd))
+* Automatic ranges / zones picking in all spectra ([31302a2](https://www.github.com/cheminfo/nmrium/commit/31302a2ed36726d028c3435bef47db62e45a0e50)), closes [#1212](https://www.github.com/cheminfo/nmrium/issues/1212)
+* integrate with new carbon prediction service ([943432e](https://www.github.com/cheminfo/nmrium/commit/943432ef6dffba3a4c747d7a0d1fb3b6a2a52286))
+* predict carbon from molfile ([8706b0e](https://www.github.com/cheminfo/nmrium/commit/8706b0ec6aeaa62f74bc2ffb335b46157a019b3a))
+
+
+### Bug Fixes
+
+* displayer crash when cursor come over 1d trace in 2d mode ([e8080a9](https://www.github.com/cheminfo/nmrium/commit/e8080a9206de27a2f6b68de1e41dd8973b6e94a6))
+* gray lines indicators do not appear on prediction ([5e33fc7](https://www.github.com/cheminfo/nmrium/commit/5e33fc7ad8efa80c1d83ce9649d946e91f2882eb)), closes [#1211](https://www.github.com/cheminfo/nmrium/issues/1211)
+* Range edition not working anymore ([2469601](https://www.github.com/cheminfo/nmrium/commit/2469601f3cd946edcfb6bb78cbebfe2718d3d2f4))
+
 ### [0.17.1](https://www.github.com/cheminfo/nmrium/compare/v0.17.0...v0.17.1) (2021-07-14)
 
 
