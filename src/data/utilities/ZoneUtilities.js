@@ -10,7 +10,12 @@ export function getDiaIDs(zone, axis) {
 }
 
 export function getPubIntegral(zone, axis) {
-  return getDiaIDs(zone, axis).length;
+  return (
+    zone.nbAtoms ||
+    (zone.signals
+      ? zone.signals.reduce((sum, signal) => sum + signal[axis].nbAtoms, 0)
+      : 0)
+  );
 }
 
 export function setPubIntegral(zone, axis) {
@@ -22,9 +27,11 @@ export function setPubIntegral(zone, axis) {
 
 export function resetDiaIDs(zone, axis) {
   delete zone[axis].diaIDs;
+  delete zone[axis].nbAtoms;
   delete zone.pubIntegral;
   zone.signals.forEach((signal) => {
     delete signal[axis].diaIDs;
+    delete signal[axis].nbAtoms;
   });
   return zone;
 }
@@ -43,12 +50,14 @@ export function unlink(zone, isOnZoneLevel, signalIndex, axis) {
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {
       delete zone[axis].diaIDs;
+      delete zone[axis].nbAtoms;
     } else if (
       typeof signalIndex === 'number' &&
       signalIndex !== -1 &&
       zone.signals[signalIndex]
     ) {
       delete zone.signals[signalIndex][axis].diaIDs;
+      delete zone.signals[signalIndex][axis].nbAtoms;
     }
     setPubIntegral(zone, axis);
   } else if (axis !== undefined) {

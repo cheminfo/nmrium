@@ -183,15 +183,16 @@ export default function useAtomAssignment({
             if (datum) {
               // determine the level of setting the diaIDs array (range vs. signal level) and save there
               let _diaID = [];
+              let nbAtoms = 0;
               // on range/zone level
               if (signalIndex === undefined) {
                 if (displayerMode === DISPLAYER_MODE.DM_1D) {
-                  _diaID = toggleAssignment(
+                  [_diaID, nbAtoms] = toggleAssignment(
                     datum.diaIDs || [],
                     atomInformation,
                   );
                 } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-                  _diaID = toggleAssignment(
+                  [_diaID, nbAtoms] = toggleAssignment(
                     datum[activeAssignment.activeAxis].diaIDs || [],
                     atomInformation,
                   );
@@ -199,12 +200,12 @@ export default function useAtomAssignment({
               } else if (datum.signals?.[signalIndex]) {
                 // on signal level
                 if (displayerMode === DISPLAYER_MODE.DM_1D) {
-                  _diaID = toggleAssignment(
+                  [_diaID, nbAtoms] = toggleAssignment(
                     datum.signals[signalIndex].diaIDs || [],
                     atomInformation,
                   );
                 } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-                  _diaID = toggleAssignment(
+                  [_diaID, nbAtoms] = toggleAssignment(
                     datum.signals[signalIndex][activeAssignment.activeAxis]
                       .diaIDs || [],
                     atomInformation,
@@ -215,6 +216,7 @@ export default function useAtomAssignment({
                 dispatch({
                   type: SET_DIAID_RANGE,
                   payload: {
+                    nbAtoms,
                     rangeData: datum,
                     diaIDs: _diaID,
                     signalIndex,
@@ -224,6 +226,7 @@ export default function useAtomAssignment({
                 dispatch({
                   type: SET_DIAID_ZONE,
                   payload: {
+                    nbAtoms,
                     zoneData: datum,
                     diaIDs: _diaID,
                     axis: activeAssignment.activeAxis,

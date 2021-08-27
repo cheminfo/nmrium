@@ -22,7 +22,7 @@ function RangeAssignmentsColumn({
   highlightData,
 }) {
   const diaIDs = useMemo(() => {
-    return lodashGet(rowData, 'diaIDs', []);
+    return lodashGet(rowData, 'nbAtoms', 0);
   }, [rowData]);
 
   const visibilityChangeHandler = useCallback(
