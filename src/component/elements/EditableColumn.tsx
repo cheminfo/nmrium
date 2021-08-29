@@ -1,12 +1,11 @@
 import {
   CSSProperties,
+  forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
   useState,
 } from 'react';
-
-import { forwardRefWithAs } from '../../utils';
 
 import Input from './Input';
 
@@ -19,7 +18,8 @@ interface EditableColumnProps {
   style?: CSSProperties;
 }
 
-function EditableColumn(props: EditableColumnProps, ref) {
+// TODO: remove this hacky ref usage.
+function EditableColumn(props: EditableColumnProps, ref: any) {
   const {
     onSave = () => null,
     value,
@@ -98,4 +98,4 @@ function EditableColumn(props: EditableColumnProps, ref) {
   );
 }
 
-export default forwardRefWithAs(EditableColumn);
+export default forwardRef(EditableColumn);

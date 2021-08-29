@@ -10,9 +10,5 @@ rules:
       message: "Use a deep import instead, like for example 'lodash/get'"
     - name: '@simbathesailor/use-what-changed'
       message: 'Remove use-what-changed before committing the code'
-  no-restricted-syntax:
-    - error
-    - selector: "CallExpression[callee.name='forwardRef']"
-      message: 'forwardRef() must not be invoked. use forwardRefWithAs instead.'
 parserOptions:
   sourceType: module

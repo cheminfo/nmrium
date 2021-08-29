@@ -1,6 +1,10 @@
-import { useState, useCallback, Ref, ChangeEvent } from 'react';
-
-import { forwardRefWithAs } from '../../utils';
+import {
+  useState,
+  useCallback,
+  ChangeEvent,
+  forwardRef,
+  ForwardedRef,
+} from 'react';
 
 export interface CheckBoxProps {
   onChange?: (value: ChangeEvent<HTMLInputElement>) => void;
@@ -9,8 +13,8 @@ export interface CheckBoxProps {
   checked?: boolean;
 }
 
-const CheckBox = forwardRefWithAs(
-  (props: CheckBoxProps, ref: Ref<HTMLInputElement>) => {
+const CheckBox = forwardRef(
+  (props: CheckBoxProps, ref: ForwardedRef<HTMLInputElement>) => {
     const {
       checked: checkProps = false,
       disabled = false,

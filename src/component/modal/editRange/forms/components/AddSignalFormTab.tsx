@@ -1,11 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useFormikContext } from 'formik';
-import { useCallback, useMemo } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
-import { forwardRefWithAs } from '../../../../../utils';
 import { useChartData } from '../../../../context/ChartContext';
 import Button from '../../../../elements/Button';
 import FormikForm from '../../../../elements/formik/FormikForm';
@@ -64,9 +63,10 @@ interface AddSignalFormTabProps {
   range: any;
 }
 
+// TODO: this seems to be a hacky use of ref.
 function AddSignalFormTab(
   { onFocus, onBlur, range }: AddSignalFormTabProps,
-  ref,
+  ref: any,
 ) {
   const { values, setFieldValue } = useFormikContext<any>();
   const { activeTab } = useChartData();
@@ -154,4 +154,4 @@ function AddSignalFormTab(
   );
 }
 
-export default forwardRefWithAs(AddSignalFormTab);
+export default forwardRef(AddSignalFormTab);

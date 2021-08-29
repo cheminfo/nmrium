@@ -5,10 +5,10 @@ import {
   useRef,
   CSSProperties,
   memo,
+  forwardRef,
 } from 'react';
 import { MF } from 'react-mf';
 
-import { forwardRefWithAs } from '../../../utils';
 import { usePreferences } from '../../context/PreferencesContext';
 import FormikColorInput from '../../elements/formik/FormikColorInput';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
@@ -199,6 +199,7 @@ function IntegralsPreferencesInner({
 
 const MemoizedIntegralsPreferences = memo(IntegralsPreferencesInner);
 
+// TODO: remove this hacky use of ref.
 function IntegralsPreferences(props, ref) {
   const preferences = usePreferences();
   const nucleus = useNucleus();
@@ -214,4 +215,4 @@ function IntegralsPreferences(props, ref) {
   );
 }
 
-export default forwardRefWithAs(IntegralsPreferences);
+export default forwardRef(IntegralsPreferences);

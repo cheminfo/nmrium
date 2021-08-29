@@ -5,9 +5,9 @@ import {
   useRef,
   CSSProperties,
   memo,
+  forwardRef,
 } from 'react';
 
-import { forwardRefWithAs } from '../../../utils';
 import { usePreferences } from '../../context/PreferencesContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
@@ -193,7 +193,8 @@ function PeaksPreferencesInner({
 
 const MemoizedPeaksPreferences = memo(PeaksPreferencesInner);
 
-function PeaksPreferences(props, ref) {
+// TODO: remove this hacky use of ref.
+function PeaksPreferences(props, ref: any) {
   const nucleus = useNucleus();
   const preferences = usePreferences();
   return (
@@ -201,4 +202,4 @@ function PeaksPreferences(props, ref) {
   );
 }
 
-export default forwardRefWithAs(PeaksPreferences);
+export default forwardRef(PeaksPreferences);

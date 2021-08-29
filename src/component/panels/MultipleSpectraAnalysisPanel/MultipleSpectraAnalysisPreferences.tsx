@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import {
+  forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -12,7 +13,6 @@ import { FaPlus } from 'react-icons/fa';
 import * as Yup from 'yup';
 
 import { COLUMNS_TYPES } from '../../../data/data1d/MultipleAnalysis';
-import { forwardRefWithAs } from '../../../utils';
 import { useDispatch } from '../../context/DispatchContext';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
@@ -69,7 +69,8 @@ const styles = css`
   }
 `;
 
-function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref) {
+// TODO: remove this hacky use of ref.
+function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
   const dispatch = useDispatch();
   const refForm = useRef<any>();
   const [columns, setColumns] = useState({});
@@ -224,4 +225,4 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref) {
   );
 }
 
-export default forwardRefWithAs(MultipleSpectraAnalysisPreferences);
+export default forwardRef(MultipleSpectraAnalysisPreferences);
