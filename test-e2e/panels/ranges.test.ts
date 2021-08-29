@@ -3,7 +3,12 @@ import { test, expect } from '@playwright/test';
 import NmriumPage from '../NmriumPage';
 import { createPeakInRange } from '../utilities/selectRange';
 
-async function addRange(nmrium: NmriumPage, startX, endX, childIndex) {
+async function addRange(
+  nmrium: NmriumPage,
+  startX: number,
+  endX: number,
+  childIndex: number,
+) {
   await createPeakInRange(nmrium, {
     axis: 'X',
     startX,

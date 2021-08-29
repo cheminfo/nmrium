@@ -1,9 +1,9 @@
 import reactRefresh from '@vitejs/plugin-react-refresh';
 import analyze from 'rollup-plugin-analyzer';
-import { AliasOptions, defineConfig } from 'vite';
+import { AliasOptions, ConfigEnv, defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
-export default ({ mode }) => {
+export default ({ mode }: ConfigEnv) => {
   let resolveAliases: AliasOptions = [];
   if (mode === 'profiling') {
     resolveAliases = [
