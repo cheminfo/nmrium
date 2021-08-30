@@ -7,16 +7,14 @@ async function addRange(
   nmrium: NmriumPage,
   startX: number,
   endX: number,
-  childIndex: number,
+  count: number,
 ) {
   await createPeakInRange(nmrium, {
     axis: 'X',
     startX,
     endX,
   });
-  await expect(
-    nmrium.page.locator(`data-test-id=range >> nth=${childIndex}`),
-  ).toBeVisible();
+  await expect(nmrium.page.locator(`data-test-id=range`)).toHaveCount(count);
 }
 
 async function resizeRange(nmrium: NmriumPage) {
@@ -50,7 +48,7 @@ async function deleteRange(nmrium: NmriumPage) {
   const { x, height, width } =
     (await rightResizer.boundingBox()) as BoundingBox;
   await nmrium.page.mouse.move(x + width / 2, height / 2, { steps: 15 });
-  await nmrium.page.keyboard.press('Backspace');
+  await nmrium.page.keyboard.press('Delete');
   await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(1);
 }
 
@@ -62,8 +60,8 @@ test('Should ranges Add/resize/delete', async ({ page }) => {
   await nmrium.page.click('data-test-id=tool-rangesPicking');
 
   //add two ranges
-  await addRange(nmrium, 50, 60, 0);
-  await addRange(nmrium, 110, 120, 1);
+  await addRange(nmrium, 50, 60, 1);
+  await addRange(nmrium, 110, 120, 2);
 
   //test resize the first range
   await resizeRange(nmrium);

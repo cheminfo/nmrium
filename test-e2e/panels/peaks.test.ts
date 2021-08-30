@@ -57,7 +57,7 @@ async function deletePeak(nmrium: NmriumPage) {
     (await peakAnnotationLocator.boundingBox()) as BoundingBox;
 
   await nmrium.page.mouse.move(x + width / 2, y + height / 2);
-  await nmrium.page.keyboard.press('Backspace');
+  await nmrium.page.keyboard.press('Delete');
 
   // Test that the peak deleted
   await expect(nmrium.page.locator('_react=PeakAnnotation')).toHaveCount(1);
