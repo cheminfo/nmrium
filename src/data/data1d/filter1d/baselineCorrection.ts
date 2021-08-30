@@ -63,12 +63,3 @@ export function reduce() {
     reduce: null,
   };
 }
-
-/**
- * Will extract x/y points based on zones
- * @param {*} x
- * @param {*} re
- * @param {*} zones
- */
-// eslint-disable-next-line no-unused-vars,no-empty-function
-function getZones(x, re, zones = []) {}
