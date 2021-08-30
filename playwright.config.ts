@@ -7,6 +7,7 @@ const browserName = (process.env.BROWSER || 'chromium') as BrowserName;
 const config: PlaywrightTestConfig = {
   testDir: 'test-e2e',
   retries: 0,
+  workers: 1,
   use: {
     browserName,
     headless: true,
