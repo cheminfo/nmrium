@@ -8,7 +8,7 @@ export const name = 'From/To';
  * @param {Datum1d} datum1d
  */
 
-export function apply(datum1D, options = {}) {
+export function apply(datum1D, options: any = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('From/To filter not applicable on this data');
   }

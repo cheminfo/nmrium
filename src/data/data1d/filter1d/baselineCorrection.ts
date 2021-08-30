@@ -15,7 +15,7 @@ export const baselineAlgorithms = {
   polynomial: 'Polynomial',
 };
 
-export function apply(datum1D, options = {}) {
+export function apply(datum1D, options: any = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('baselineCorrection not applicable on this data');
   }

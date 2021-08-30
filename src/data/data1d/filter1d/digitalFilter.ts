@@ -6,7 +6,7 @@ export const name = 'Digital Filter';
  * @param {Datum1d} datum1d
  */
 
-export function apply(datum1D, options = {}) {
+export function apply(datum1D, options: any = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('Digital Filter is not applicable on this data');
   }

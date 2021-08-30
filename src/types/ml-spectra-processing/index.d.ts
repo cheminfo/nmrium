@@ -170,4 +170,11 @@ import { xHistogram } from '../x/xHistogram';
   );
 
   declare function xyCalibrate(a: any, b: any, c: any): any;
+
+  declare function reimAbsolute(a: any): any;
+  declare function reimFFT(a: any, b: any): any;
+  declare function reimPhaseCorrection(a: any, b: any, c: any): any;
+  declare function reimAutoPhaseCorrection(a: any, b: any): any;
+
+  declare function xParetoNormalization(a: any): any;
 }

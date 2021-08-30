@@ -8,10 +8,6 @@ export const id = 'shiftX';
 export const name = 'Shift X';
 
 export function apply(datum1D, shiftValue = 0) {
-  if (!isApplicable(datum1D)) {
-    throw new Error('shiftX not applicable on this data');
-  }
-
   datum1D.data.x = datum1D.data.x.map((val) => val + shiftValue);
 }
 

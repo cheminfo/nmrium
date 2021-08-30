@@ -28,7 +28,7 @@ export const name = 'Equally Spaced';
  * @param {Array<{from:number;to:number}>} options.exclusions
  */
 
-export function apply(datum1D, options = {}) {
+export function apply(datum1D, options: any = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('Equally Spaced is not applicable on this data');
   }
