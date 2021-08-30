@@ -1,7 +1,7 @@
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 
-import { Filters } from '../../../data/Filters';
+import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
 import {
   DatumKind,

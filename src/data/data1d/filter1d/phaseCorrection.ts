@@ -11,7 +11,7 @@ export const name = 'Phase correction';
  * @param {number} [options.ph1=0]
  */
 
-export function apply(datum1D, options = {}) {
+export function apply(datum1D, options: any = {}) {
   if (!isApplicable(datum1D)) {
     throw new Error('phaseCorrection not applicable on this data');
   }

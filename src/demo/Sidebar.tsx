@@ -97,7 +97,7 @@ const sidebarWrapperCss = css`
 
 function Sidebar(props) {
   const routes = useMemo(() => {
-    return buildMenu(props.routes, []);
+    return buildMenu(props.routes);
   }, [props.routes]);
 
   const subDisplay = props.menuIsClosed ? 'none' : 'block';
@@ -124,6 +124,7 @@ function Sidebar(props) {
               `/SamplesDashboard/${Math.random()
                 .toString(36)
                 .replace('0.', '')}/${
+                // @ts-expect-error This will be fixed by updating use of rc-menu
                 e.item.props.view + getKey(e.item.props.file)
               }`,
             );

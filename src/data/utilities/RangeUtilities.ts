@@ -36,7 +36,7 @@ export function resetDiaIDs(range) {
  * @param {number} [options.signalIndex]
  * @returns {object}
  */
-export function unlink(range, unlinkType = 'both', options = {}) {
+export function unlink(range, unlinkType = 'both', options: any = {}) {
   switch (unlinkType) {
     case 'both':
       resetDiaIDs(range);

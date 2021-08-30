@@ -1,4 +1,5 @@
-import { Filters } from './Filters';
+/* eslint-disable import/namespace */
+import * as Filters from './Filters';
 import generateID from './utilities/generateID';
 
 export interface Filter {

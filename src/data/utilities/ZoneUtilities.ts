@@ -39,7 +39,12 @@ export function checkSignalKinds(zone, kinds) {
   );
 }
 
-export function unlink(zone, isOnZoneLevel, signalIndex, axis) {
+export function unlink(
+  zone,
+  isOnZoneLevel?: any,
+  signalIndex?: any,
+  axis?: any,
+) {
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {
       delete zone[axis].diaIDs;
@@ -63,7 +68,7 @@ export function unlink(zone, isOnZoneLevel, signalIndex, axis) {
   return zone;
 }
 
-export function unlinkInAssignmentData(assignmentData, zones, axis) {
+export function unlinkInAssignmentData(assignmentData, zones, axis?: any) {
   const ids = zones.reduce((acc, zone) => {
     acc.push(zone.id);
     if (zone.signals) {

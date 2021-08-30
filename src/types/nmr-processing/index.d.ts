@@ -35,6 +35,10 @@ declare module 'nmr-processing' {
 
   declare function xyAutoRangesPicking(data: any, options: any): any;
 
+  declare function xyAutoPeaksPicking(data: any, options?: any): any;
+
+  declare function xyzAutoPeaksPicking(data: any, options?: any): any;
+
   declare function rangesToACS(
     ranges: Array<{ from: number; to: number }>,
     options: {

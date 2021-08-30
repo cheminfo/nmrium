@@ -1,6 +1,6 @@
 import { zoneToX } from 'ml-spectra-processing';
 
-import { Filters } from '../Filters';
+import * as Filters from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DatumKind } from '../constants/SignalsKinds';
 import { Datum1D, initiateDatum1D } from '../data1d/Spectrum1D';
@@ -105,7 +105,8 @@ export interface Datum2D {
   originalData?: Data2D;
   zones: Zones;
   filters: Array<FiltersManager.Filter>;
-  processingController: Processing2D;
+  // TODO: this is in fact a Processing2D instance. That's not allowed due to state mutabilitty.
+  processingController: any;
 }
 
 export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
@@ -200,7 +201,7 @@ function getColor(options, usedColors) {
     options.display.negativeColor === undefined ||
     options.display.positiveColor === undefined
   ) {
-    const color = get2DColor(options.info.experiment, usedColors['2d'] || []);
+    const color = get2DColor(options.info.experiment, usedColors['2d']);
     if (usedColors['2d']) {
       usedColors['2d'].push(color.positiveColor);
     }

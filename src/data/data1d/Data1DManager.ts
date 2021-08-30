@@ -32,14 +32,14 @@ export function fromCSD(result, options = {}, usedColors = {}) {
   let offset = dimension.coordinatesOffset.magnitude;
 
   let buffer = dependentVariables[0].components[0];
-  let re = [];
-  let im = [];
+  let re: number[] = [];
+  let im: number[] = [];
   for (let i = buffer.length - 1; i > 0; i -= 2) {
     re.push(buffer[i - 1]);
     im.push(buffer[i]);
   }
 
-  let data = {};
+  let data: any = {};
   let i, x0;
   switch (quantityName) {
     case 'frequency':
@@ -58,7 +58,7 @@ export function fromCSD(result, options = {}, usedColors = {}) {
       break;
   }
 
-  let scale = [];
+  let scale: number[] = [];
   for (let x = 0; x < n; x++) {
     scale.push(x0 + x * i);
   }
@@ -94,14 +94,9 @@ export function fromParsedJcamp(parsedJcamp, options, usedColors) {
 }
 
 function getData(spectra) {
-  let x =
-    spectra[0] && spectra[0].data && spectra[0].data.x ? spectra[0].data.x : [];
-  let re =
-    spectra[0] && spectra[0].data && spectra[0].data.y ? spectra[0].data.y : [];
-  let im =
-    spectra[1] && spectra[1].data && spectra[1].data.y
-      ? spectra[1].data.y
-      : null;
+  let x = spectra[0]?.data?.x ? spectra[0].data.x : [];
+  let re = spectra[0]?.data?.y ? spectra[0].data.y : [];
+  let im = spectra[1]?.data?.y ? spectra[1].data.y : null;
 
   if (x[0] > x[1]) {
     x.reverse();

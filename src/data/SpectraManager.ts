@@ -57,7 +57,7 @@ function addData(spectra, datum) {
   }
 }
 
-export function addJDF(spectra, jdf, options = {}, usedColors = {}) {
+export function addJDF(spectra, jdf, options: any = {}, usedColors: any = {}) {
   // need to parse the jcamp
   let converted = fromJEOL(jdf, {});
   let info = converted.description;
@@ -106,9 +106,9 @@ export function addJDF(spectra, jdf, options = {}, usedColors = {}) {
   }
 }
 
-export async function fromJSON(data = [], usedColors = {}) {
-  const spectra = [];
-  let promises = [];
+export async function fromJSON(data: any[] = [], usedColors: any = {}) {
+  const spectra: any[] = [];
+  let promises: any[] = [];
 
   for (let datum of data) {
     if (datum.source.jcampURL != null) {
@@ -116,7 +116,7 @@ export async function fromJSON(data = [], usedColors = {}) {
         addJcampFromURL(spectra, datum.source.jcampURL, datum, usedColors),
       );
     } else {
-      addData(spectra, datum, usedColors);
+      addData(spectra, datum);
     }
   }
   await Promise.all(promises);
@@ -124,7 +124,7 @@ export async function fromJSON(data = [], usedColors = {}) {
 }
 
 export async function addBruker(options, data, usedColors) {
-  const spectra = [];
+  const spectra: any[] = [];
   let result = await fromBruker(data, {
     xy: true,
     noContours: true,
@@ -220,11 +220,6 @@ export function addJcamps(files, usedColors) {
     );
   }
   return spectra;
-}
-
-export async function addMolfileFromURL(molfileURL) {
-  let molfile = await fetch(molfileURL).then((response) => response.text());
-  this.addMolfile(molfile);
 }
 
 /**

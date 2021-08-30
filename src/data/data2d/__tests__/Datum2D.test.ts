@@ -5,7 +5,7 @@ import { addJcamp } from '../../SpectraManager';
 
 test('Datum2D', () => {
   const jcamp = readFileSync(join(__dirname, './data/cosy.jdx'), 'utf8');
-  const spectra = [];
+  const spectra: any[] = [];
 
   addJcamp(
     spectra,

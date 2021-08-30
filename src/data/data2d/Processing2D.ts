@@ -12,10 +12,17 @@ export const defaultContourOptions = {
 };
 
 export default class Processing2D {
-  constructor(
-    minMax,
-    options = defaultContourOptions,
-    defaultLevel = {
+  private options: any;
+  private currentLevelPositive: number;
+  private currentLevelNegative: number;
+  private conrec: Conrec;
+  private median: number;
+  private minMax: any;
+
+  public constructor(
+    minMax: any,
+    options: any = defaultContourOptions,
+    defaultLevel: any = {
       positive: 10,
       negative: 10,
     },
@@ -37,19 +44,19 @@ export default class Processing2D {
     this.minMax = minMax;
   }
 
-  getLevel() {
+  public getLevel() {
     return {
       levelPositive: this.currentLevelPositive,
       levelNegative: this.currentLevelNegative,
     };
   }
 
-  setLevel(levelPositive, levelNegative) {
+  public setLevel(levelPositive, levelNegative) {
     this.currentLevelPositive = levelPositive;
     this.currentLevelNegative = levelNegative;
   }
 
-  setOptions(options) {
+  public setOptions(options) {
     const positiveBoundary = options.positive.contourLevels;
     const negativeBoundary = options.negative.contourLevels;
 
@@ -68,7 +75,7 @@ export default class Processing2D {
     this.options = options;
   }
 
-  wheel(value) {
+  public wheel(value) {
     const sign = Math.sign(value);
     const positiveBoundary = this.options.positive.contourLevels;
     const negativeBoundary = this.options.negative.contourLevels;
@@ -88,7 +95,7 @@ export default class Processing2D {
     }
   }
 
-  shiftWheel(value) {
+  public shiftWheel(value) {
     const sign = Math.sign(value);
     const [min, max] = this.options.positive.contourLevels;
     if (
@@ -102,7 +109,7 @@ export default class Processing2D {
     return [];
   }
 
-  drawContours() {
+  public drawContours() {
     const zoomPositive = this.currentLevelPositive / 2 + 1;
     const zoomNegative = this.currentLevelNegative / 2 + 1;
     const {
@@ -120,7 +127,7 @@ export default class Processing2D {
     };
   }
 
-  getContours(zoomLevel, options = {}) {
+  public getContours(zoomLevel, options: any = {}) {
     const { negative = false, timeout = 2000, nbLevels = 10 } = options;
 
     const max = Math.max(
@@ -155,9 +162,9 @@ export default class Processing2D {
   }
 }
 
-function getRange(min, max, length, exp) {
-  if (exp) {
-    let factors = [];
+function getRange(min: number, max: number, length: number, exp?: number) {
+  if (exp !== undefined) {
+    const factors: number[] = [];
 
     factors[0] = 0;
 
@@ -181,8 +188,8 @@ function getRange(min, max, length, exp) {
   }
 }
 
-function range(from, to, step) {
-  const result = [];
+function range(from: number, to: number, step: number) {
+  const result: number[] = [];
 
   for (let i = from; i < to; i += step) {
     result.push(i);

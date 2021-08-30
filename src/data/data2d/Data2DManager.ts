@@ -31,7 +31,8 @@ export function fromBruker(result, options = {}, usedColors = {}) {
   return datum2D;
 }
 
-// eslint-disable-next-line no-unused-vars
+// TODO: implement this.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function fromCSD(result, options = {}, usedColors = {}) {
   const datum2D = initiateDatum2D({}, usedColors);
   return datum2D;

@@ -3,40 +3,39 @@ import { Molecule as OCLMolecule } from 'openchemlib/full';
 import generateID from '../utilities/generateID';
 import getAtomsFromMF from '../utilities/getAtomsFromMF';
 
-/**
- * @param {object} [options={}]
- * @param {object} [options.molfile='']
- * @param {object} [options.key=Math.random()] Optional unique identifier
- */
-
 interface MoleculeInnerProps {
-  key?: string;
-  molfile?: string;
+  key: string;
+  molfile: string;
 }
 export interface Molecule extends MoleculeInnerProps {
-  mf?: any;
-  em?: number;
-  mw?: number;
-  svg?: any;
-  atoms?: any;
+  mf: string;
+  em: number;
+  mw: number;
+  svg: string;
+  atoms: Record<string, number>;
 }
 
-export function initMolecule(options: MoleculeInnerProps = {}) {
-  const molecule: Molecule = {};
-  molecule.key = options.key || generateID();
-  molecule.molfile = options.molfile || '';
-  const mol = OCLMolecule.fromMolfile(molecule.molfile);
+export function initMolecule(
+  options: Partial<MoleculeInnerProps> = {},
+): Molecule {
+  const key = options.key || generateID();
+  const molfile = options.molfile || '';
+
+  const mol = OCLMolecule.fromMolfile(molfile);
   const mfInfo = mol.getMolecularFormula();
-  molecule.mf = mfInfo.formula;
-  molecule.em = mfInfo.absoluteWeight;
-  molecule.mw = mfInfo.relativeWeight;
-  molecule.svg = mol.toSVG(50, 50);
 
-  molecule.atoms = getAtomsFromMF(molecule.mf);
-  return molecule;
+  return {
+    key,
+    molfile,
+    mf: mfInfo.formula,
+    em: mfInfo.absoluteWeight,
+    mw: mfInfo.relativeWeight,
+    svg: mol.toSVG(50, 50),
+    atoms: getAtomsFromMF(mfInfo.formula),
+  };
 }
 
-export function toJSON(molecule) {
+export function toJSON(molecule: Molecule): { molfile: string } {
   return {
     molfile: molecule.molfile,
   };

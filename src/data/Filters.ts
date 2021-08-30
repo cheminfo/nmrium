@@ -15,7 +15,7 @@ import * as zeroFilling from './data1d/filter1d/zeroFilling';
 import * as shift2DX from './data2d/filter2d/shiftX';
 import * as shift2DY from './data2d/filter2d/shiftY';
 
-export const Filters = {
+export {
   absolute,
   baselineCorrection,
   lineBroadening,
