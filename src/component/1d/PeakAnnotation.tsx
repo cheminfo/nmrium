@@ -15,12 +15,11 @@ import { SHIFT_SPECTRUM } from '../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
-  text,
   input {
-    -webkit-user-select: none; /* Safari 3.1+ */
-    -moz-user-select: none; /* Firefox 2+ */
-    -ms-user-select: none; /* IE 10+ */
-    user-select: none; /* Standard syntax */
+    -webkit-user-select: text; /* Safari 3.1+ */
+    -moz-user-select: text; /* Firefox 2+ */
+    -ms-user-select: text; /* IE 10+ */
+    user-select: text; /* Standard syntax */
   }
 
   input[type='number']::-webkit-outer-spin-button,
@@ -33,22 +32,12 @@ const styles = css`
     -moz-appearance: textfield;
   }
 
-  .notification-input {
-    width: calc(100% - 10px) !important;
-    user-select: 'none';
-    -webkit-user-select: none; /* Chrome all / Safari all */
-    -moz-user-select: none; /* Firefox all */
-  }
-
   .notification-input-normal {
     opacity: 1;
     left: 4px;
-    position: absolute;
+    position: fixed;
     font-size: 10px;
     outline: none;
-    user-select: 'none';
-    -webkit-user-select: none; /* Chrome all / Safari all */
-    -moz-user-select: none; /* Firefox all */
     background-color: transparent;
   }
 
@@ -60,28 +49,6 @@ const styles = css`
   .input-over {
     background-color: white;
     outline: none;
-  }
-
-  .notification-label {
-    display: none;
-  }
-
-  .notification-group-over {
-    z-index: 9999999999;
-  }
-
-  .notification-group {
-    z-index: 1;
-  }
-
-  .notifcate-selected {
-    opacity: 0;
-  }
-
-  input[type='number']::-webkit-inner-spin-button,
-  input[type='number']::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
   }
 `;
 
@@ -136,17 +103,19 @@ function PeakAnnotation({
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
         const newValue = event.currentTarget.valueAsNumber;
-        const shiftValue = newValue - value;
+        if (!isNaN(newValue)) {
+          const shiftValue = newValue - value;
 
-        handleOnPeakChange({
-          id,
-          value: newValue,
-          oldValue: value,
-          shiftValue: shiftValue,
-        });
+          handleOnPeakChange({
+            id,
+            value: newValue,
+            oldValue: value,
+            shiftValue: shiftValue,
+          });
 
-        event.currentTarget.blur();
-        setIsSelected(false);
+          event.currentTarget.blur();
+          setIsSelected(false);
+        }
       } else if (event.key === 'Escape') {
         setValue(value);
         event.currentTarget.blur();
@@ -161,7 +130,6 @@ function PeakAnnotation({
   }, []);
 
   const handleSelectPeakAnnotation = useCallback((e) => {
-    e.preventDefault();
     e.stopPropagation();
     setIsSelected(true);
     return false;
@@ -235,11 +203,7 @@ function PeakAnnotation({
         >
           <input
             onClick={handleSelectPeakAnnotation}
-            className={
-              isSelected
-                ? 'notification-input input-over'
-                : 'notification-input-normal'
-            }
+            className={isSelected ? 'input-over' : 'notification-input-normal'}
             style={{
               width: 'inherit',
               border: isSelected ? `1px solid ${color}` : `0`,
