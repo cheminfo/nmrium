@@ -1,6 +1,6 @@
 import { zoneToX } from 'ml-spectra-processing';
 
-import { Filters } from '../Filters';
+import * as Filters from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DatumKind } from '../constants/SignalsKinds';
 import { Datum1D, initiateDatum1D } from '../data1d/Spectrum1D';

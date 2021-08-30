@@ -1,4 +1,4 @@
-import { Filters } from '../../data/Filters';
+import * as Filters from '../../data/Filters';
 
 interface OptionItem {
   id: string;

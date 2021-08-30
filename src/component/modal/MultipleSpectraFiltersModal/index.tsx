@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Filters } from '../../../data/Filters';
+import * as Filters from '../../../data/Filters';
 import { REFERENCES } from '../../../data/constants/References';
 import { useDispatch } from '../../context/DispatchContext';
 import CloseButton from '../../elements/CloseButton';

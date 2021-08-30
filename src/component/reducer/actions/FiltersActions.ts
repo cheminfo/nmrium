@@ -1,6 +1,6 @@
 import { current, Draft } from 'immer';
 
-import { Filters } from '../../../data/Filters';
+import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
 import { Datum1D, updateXShift } from '../../../data/data1d/Spectrum1D';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';

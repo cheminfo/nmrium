@@ -7,7 +7,7 @@ import {
   xFindClosestIndex,
 } from 'ml-spectra-processing';
 
-import { Filters as FiltersTypes } from '../Filters';
+import * as FiltersTypes from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
 import { Datum2D } from '../data2d/Spectrum2D';
