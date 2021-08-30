@@ -55,7 +55,6 @@ function addColumnKey(
   columnProps: Column,
   columnKey: string,
 ) {
-  // const index = Object.keys(spectraAnalysis[nucleus].options.columns).length;
   const key = columnKey
     ? columnKey
     : generateChar(spectraAnalysis[nucleus].options.columnIndex).toUpperCase();

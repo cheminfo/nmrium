@@ -1,4 +1,4 @@
-export default function getChar(index) {
+export default function generateChar(index: number): string {
   const aPotions = 'a'.charCodeAt(0);
   const zPostion = 'z'.charCodeAt(0);
   const len = zPostion - aPotions + 1;

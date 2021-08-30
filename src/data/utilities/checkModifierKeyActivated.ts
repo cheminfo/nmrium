@@ -1,4 +1,8 @@
-export default function checkModifierKeyActivated(event) {
+import { KeyboardEvent, MouseEvent } from 'react';
+
+export default function checkModifierKeyActivated(
+  event: KeyboardEvent | MouseEvent,
+): boolean {
   const modifiersKeys = [
     'Alt',
     'AltGraph',
