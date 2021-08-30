@@ -71,9 +71,4 @@ You can run all unit tests with `npm run test-only`.
 
 ### End-to-end tests
 
-End-to-end (e2e) tests are written in the `test-e2e` directory.
-
-We use [Playwright](https://playwright.dev/docs/intro) to run the tests in real browsers.
-
-You can run all e2e tests with `npm run test-e2e-jest`.
-Note that a server with the application should be running. It can be the dev server (`npm run dev`) or a server with the production build (`npm run build && npm run test-e2e-server`).
+See https://docs.nmrium.org/for-developers/e2e-tests
