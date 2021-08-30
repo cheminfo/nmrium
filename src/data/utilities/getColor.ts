@@ -1,4 +1,4 @@
-export const COLORS = [
+export const COLORS: string[] = [
   '#C10020',
   '#007D34',
   '#803E75',
@@ -21,7 +21,12 @@ export const COLORS = [
   '#F13A13',
 ];
 
-const color2D = {
+interface TwoDColors {
+  positiveColor: string;
+  negativeColor: string;
+}
+
+const color2D: Record<string, TwoDColors> = {
   cosy: { positiveColor: 'darkblue', negativeColor: 'blue' },
   roesy: { positiveColor: '#e75480', negativeColor: 'yellow' },
   noesy: { positiveColor: '#e75480', negativeColor: 'yellow' },
@@ -30,11 +35,7 @@ const color2D = {
   hmbc: { positiveColor: 'darkviolet', negativeColor: 'yellow' },
 };
 
-export function hasPredefine2DColor(experiment) {
-  return color2D[experiment] ? true : false;
-}
-
-export function get2DColor(experiment, colors = []) {
+export function get2DColor(experiment: string, colors = []): TwoDColors {
   if (!color2D[experiment]) {
     const positiveColor = getColor(false, colors);
     const negativeColor = adjustAlpha(positiveColor, 50);
@@ -43,20 +44,20 @@ export function get2DColor(experiment, colors = []) {
   return color2D[experiment];
 }
 
-export function percentToHex(p) {
+function percentToHex(p: number): string {
   const percent = Math.max(0, Math.min(100, p));
   const intValue = Math.round((percent / 100) * 255);
   const hexValue = intValue.toString(16);
   return percent === 100 ? '' : hexValue.padStart(2, '0');
 }
 
-export function adjustAlpha(color, factor) {
+function adjustAlpha(color: string, factor: number): string {
   return color + percentToHex(factor);
 }
 
 export default function getColor(
   isRandom = false,
-  usedColors = [],
+  usedColors: string[] = [],
   opacity = 100,
 ) {
   const resetColors = COLORS.filter((c) => !usedColors.includes(c));
@@ -71,9 +72,8 @@ export default function getColor(
       hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
     }
     let rgb = '#';
-    let c;
-    let i;
-    for (i = 0; i < 3; i++) {
+    let c: number | string;
+    for (let i = 0; i < 3; i++) {
       c = parseInt(hex.substr(i * 2, 2), 16);
       c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
       rgb += `00${c}`.substr(c.length);

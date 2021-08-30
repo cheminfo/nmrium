@@ -200,7 +200,7 @@ function getColor(options, usedColors) {
     options.display.negativeColor === undefined ||
     options.display.positiveColor === undefined
   ) {
-    const color = get2DColor(options.info.experiment, usedColors['2d'] || []);
+    const color = get2DColor(options.info.experiment, usedColors['2d']);
     if (usedColors['2d']) {
       usedColors['2d'].push(color.positiveColor);
     }
