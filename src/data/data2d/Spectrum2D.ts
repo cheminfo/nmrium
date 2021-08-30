@@ -105,7 +105,8 @@ export interface Datum2D {
   originalData?: Data2D;
   zones: Zones;
   filters: Array<FiltersManager.Filter>;
-  processingController: Processing2D;
+  // TODO: this is in fact a Processing2D instance. That's not allowed due to state mutabilitty.
+  processingController: any;
 }
 
 export function initiateDatum2D(options: any, usedColors = {}): Datum2D {

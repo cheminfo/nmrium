@@ -11,7 +11,7 @@ const defaultPeakPickingOptions = {
   sgOptions: { windowSize: 7, polynomial: 3 },
 };
 
-export default function autoRangesDetection(datum1D, options = {}) {
+export default function autoRangesDetection(datum1D, options: any = {}) {
   // we calculate the noise but this could be improved
 
   let { re, x } = datum1D.data;

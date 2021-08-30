@@ -8,7 +8,7 @@ describe('test Datum1D', () => {
     join(__dirname, './data/ethylbenzene-1h.jdx'),
     'utf8',
   );
-  const spectra = [];
+  const spectra: any[] = [];
 
   addJcamp(
     spectra,

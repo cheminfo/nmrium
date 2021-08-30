@@ -32,14 +32,14 @@ export function fromCSD(result, options = {}, usedColors = {}) {
   let offset = dimension.coordinatesOffset.magnitude;
 
   let buffer = dependentVariables[0].components[0];
-  let re = [];
-  let im = [];
+  let re: number[] = [];
+  let im: number[] = [];
   for (let i = buffer.length - 1; i > 0; i -= 2) {
     re.push(buffer[i - 1]);
     im.push(buffer[i]);
   }
 
-  let data = {};
+  let data: any = {};
   let i, x0;
   switch (quantityName) {
     case 'frequency':
@@ -58,7 +58,7 @@ export function fromCSD(result, options = {}, usedColors = {}) {
       break;
   }
 
-  let scale = [];
+  let scale: number[] = [];
   for (let x = 0; x < n; x++) {
     scale.push(x0 + x * i);
   }

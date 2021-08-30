@@ -168,4 +168,6 @@ import { xHistogram } from '../x/xHistogram';
       logBaseY: number;
     },
   );
+
+  declare function xyCalibrate(a: any, b: any, c: any): any;
 }
