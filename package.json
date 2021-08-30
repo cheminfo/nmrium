@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "vite build --outDir build",
-    "build-no-minify": "NO_MINIFY=true npm run build",
+    "build-no-minify": "cross-env NO_MINIFY=true npm run build",
     "build-with-profiling": "npm run build -- --mode profiling --sourcemap",
     "check-types": "tsc --noEmit",
     "compile": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json",
