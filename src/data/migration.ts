@@ -18,7 +18,7 @@ function migrateToVersion1(data: any): any {
   };
 
   function changeKeys(data) {
-    return JSON.parse(JSON.stringify(data), function (key, value) {
+    return JSON.parse(JSON.stringify(data), function reviver(key, value) {
       if (key in changedKeys) {
         this[changedKeys[key]] = value;
         return;

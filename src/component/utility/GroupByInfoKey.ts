@@ -8,7 +8,7 @@ function getNucleusSum(input) {
 }
 
 export default function GroupByInfoKey(key) {
-  return function (array, orderByNucleus = false) {
+  return (array, orderByNucleus = false) => {
     const unorderedGroup = array.reduce((objectsByKeyValue, obj) => {
       const value = obj.info[key];
       objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);

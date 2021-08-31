@@ -60,7 +60,7 @@ function PeakPointer() {
         const range = [
           scaleX().invert(mouseCoordinates.x - xShift),
           scaleX().invert(mouseCoordinates.x + xShift),
-        ].sort(function (a, b) {
+        ].sort((a, b) => {
           return a - b;
         });
 

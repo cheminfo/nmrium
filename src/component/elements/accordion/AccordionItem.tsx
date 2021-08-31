@@ -83,7 +83,7 @@ function AccordionItem({
 
   const toggleAccordion = useCallback(
     (e) => {
-      timeoutRef.current = setTimeout(function () {
+      timeoutRef.current = setTimeout(() => {
         if (!preventEventRef.current) {
           onOpen(index, { source: triggerSource.click, shiftKey: e.shiftKey });
         }

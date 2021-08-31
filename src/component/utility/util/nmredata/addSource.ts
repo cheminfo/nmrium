@@ -49,7 +49,7 @@ export async function addSource(nmrRecord, options: addSourceOptions = {}) {
 }
 
 function getPathFromZip(zip) {
-  let files = zip.filter(function (relativePath) {
+  let files = zip.filter((relativePath) => {
     if (relativePath.match('__MACOSX')) return false;
     if (
       relativePath.endsWith('fid') ||

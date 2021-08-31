@@ -14,7 +14,7 @@ function copyFormattedHtml(html) {
   // Detect all style sheets of the page
   let activeSheets = Array.prototype.slice
     .call(document.styleSheets)
-    .filter(function (sheet) {
+    .filter((sheet) => {
       return !sheet.disabled;
     });
 
@@ -157,7 +157,7 @@ function exportAsPng(elementID, fileName = 'experiment') {
 
     let img = new Image();
     let url = URL.createObjectURL(blob);
-    img.onload = async function () {
+    img.onload = async () => {
       context?.drawImage(img, 0, 0);
       let png = canvas.toDataURL('image/png', 1);
       saveAs(png, `${fileName}.png`);
@@ -220,7 +220,7 @@ function copyPNGToClipboard(elementID) {
 
     let img = new Image();
     const url = URL.createObjectURL(blob);
-    img.onload = async function () {
+    img.onload = async () => {
       context?.drawImage(img, 0, 0);
       const png = canvas.toDataURL('image/png', 1);
 

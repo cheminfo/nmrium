@@ -16,7 +16,7 @@ const useValidation = () =>
                   coupling: Yup.mixed().test(
                     'checkValue',
                     '',
-                    function (value) {
+                    function testCoupling(value) {
                       const { path, createError } = this;
                       const hasCoupling = hasCouplingConstant(
                         this.parent.multiplicity,

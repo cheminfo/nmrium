@@ -71,7 +71,7 @@ function prepareGetScale(Zoom1DObject: Zoom1D, defaultScale) {
 }
 
 function prepareSetScale(Zoom1DObject: Zoom1D, defaultScale: number) {
-  return function (newScale: number, spectrumID: string) {
+  return (newScale: number, spectrumID: string) => {
     initZoomManager(Zoom1DObject, spectrumID, defaultScale);
     Zoom1DObject.scales[spectrumID] = newScale;
   };
