@@ -60,6 +60,7 @@ function addData(spectra, datum) {
 export function addJDF(spectra, jdf, options: any = {}, usedColors: any = {}) {
   // need to parse the jcamp
   let converted = fromJEOL(jdf, {});
+  converted = converted[0];
   let info = converted.description;
   let metadata = info.metadata;
   delete info.metadata;
