@@ -204,7 +204,8 @@ function preprocessing(datum) {
   if (
     datum.info.isFid &&
     datum.filters.findIndex((f) => f.name === FiltersTypes.digitalFilter.id) ===
-      -1
+      -1 &&
+    datum.info.digitalFilter
   ) {
     FiltersManager.applyFilter(datum, [
       {
