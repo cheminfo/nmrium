@@ -143,7 +143,6 @@ export default function MultipletAnalysisModal({
           frequency: info.originFrequency,
           takeBestPartMultiplet: true,
           symmetrizeEachStep: true,
-          debug: true,
         });
         setCalcFinished(true);
         setAnalysisData(result);
