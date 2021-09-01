@@ -71,12 +71,12 @@ export interface Signal {
   x: Partial<{
     originDelta: number;
     delta: number;
-    diaID: any;
+    diaIDs: any;
   }>;
   y: Partial<{
     originDelta: number;
     delta: number;
-    diaID: any;
+    diaIDs: any;
   }>;
   kind: string;
 }
@@ -369,12 +369,12 @@ export function detectZonesManual(datum, options) {
           x: {
             originDelta: signal.shiftX - xShift,
             delta: signal.shiftX,
-            diaID: [],
+            diaIDs: [],
           },
           y: {
             originDelta: signal.shiftY - yShift,
             delta: signal.shiftY,
-            diaID: [],
+            diaIDs: [],
           },
           kind: 'signal',
         },
@@ -491,12 +491,12 @@ export function detectZones(datum, options) {
           x: {
             originDelta: zone.shiftX - xShift,
             delta: zone.shiftX,
-            diaID: [],
+            diaIDs: [],
           },
           y: {
             originDelta: zone.shiftY - yShift,
             delta: zone.shiftY,
-            diaID: [],
+            diaIDs: [],
           },
           kind: 'signal',
         },
