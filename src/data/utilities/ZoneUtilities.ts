@@ -13,7 +13,11 @@ export function getPubIntegral(zone, axis) {
   return (
     zone.nbAtoms ||
     (zone.signals
-      ? zone.signals.reduce((sum, signal) => sum + signal[axis].nbAtoms, 0)
+      ? zone.signals.reduce(
+          (sum, signal) =>
+            signal[axis].nbAtoms ? sum + signal[axis].nbAtoms : sum,
+          0,
+        )
       : 0)
   );
 }

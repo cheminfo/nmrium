@@ -42,7 +42,7 @@ function ZoneAssignmentColumn({
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
     >
       {lodashGet(rowData, `${axis}.pubIntegral`, 0) > 0 ? (
-        lodashGet(rowData, `${axis}.diaIDs`, []).length > 0 ? (
+        lodashGet(rowData, `${axis}.diaIDs`, 0).length > 0 ? (
           <div
             onMouseEnter={() => setShowUnlinkButton(true)}
             onMouseLeave={() => setShowUnlinkButton(false)}
@@ -60,7 +60,7 @@ function ZoneAssignmentColumn({
                   : { color: 'black', fontWeight: 'normal' }
               }
             >
-              {lodashGet(rowData, `${axis}.diaIDs`, []).length}
+              {lodashGet(rowData, `${axis}.nbAtoms`, 0)}
             </span>
             {`)`}{' '}
             <sup>
