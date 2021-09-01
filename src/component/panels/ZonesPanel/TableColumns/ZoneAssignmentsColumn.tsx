@@ -60,7 +60,7 @@ function ZoneAssignmentColumn({
                   : { color: 'black', fontWeight: 'normal' }
               }
             >
-              {lodashGet(rowData, `${axis}.nbAtoms`, 0 )}
+              {lodashGet(rowData, `${axis}.nbAtoms`, 0)}
             </span>
             {`)`}{' '}
             <sup>
