@@ -13,7 +13,10 @@ export function getPubIntegral(range) {
   return (
     range.nbAtoms ||
     (range.signals
-      ? range.signals.reduce((sum, signal) => signal.nbAtoms + sum, 0)
+      ? range.signals.reduce(
+          (sum, signal) => (signal.nbAtoms ? signal.nbAtoms + sum : sum),
+          0,
+        )
       : 0)
   );
 }
