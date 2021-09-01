@@ -18,9 +18,9 @@ export default function detectSignal(x, re, from, to, frequency) {
   });
 
   return {
-    multiplicity: result.j.map((j) => j.multiplicity).join(''),
+    multiplicity: result.js.map((j) => j.multiplicity).join(''),
     kind: 'signal',
     delta: result.chemShift,
-    j: result.j,
+    js: result.js,
   };
 }
