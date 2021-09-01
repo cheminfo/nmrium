@@ -15,6 +15,7 @@ function migrateToVersion1(data: any): any {
     signal: 'signals',
     integral: 'integration',
     peak: 'peaks',
+    diaID: 'diaIDs',
   };
 
   function changeKeys(data) {
