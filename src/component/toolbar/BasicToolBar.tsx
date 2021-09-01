@@ -32,6 +32,7 @@ import { useModal } from '../elements/popup/Modal';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
+import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { ActiveSpectrum } from '../reducer/Reducer';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
@@ -73,6 +74,11 @@ const IMPORT_MENU = [
     id: 'importJDX',
     icon: <FaFile />,
     label: 'Add JCAMP-DX from URL',
+  },
+  {
+    id: 'importPublicationString',
+    icon: <FaFile />,
+    label: 'Import from publication string',
   },
 ];
 
@@ -179,6 +185,13 @@ function BasicToolBarInner({
     );
   }, [LoadJacmpHandler, modal, startLoadingHandler]);
 
+  const openImportPublicationStringModal = useCallback(() => {
+    modal.show(
+      <ImportPublicationStringModal onClose={() => modal.close()} />,
+      {},
+    );
+  }, [modal]);
+
   const isButtonVisible = useCallback(
     (key) => {
       return !lodashGet(preferences, `display.toolBarButtons.${key}`);
@@ -195,11 +208,14 @@ function BasicToolBarInner({
         case 'importJDX':
           importJCAMPFile();
           break;
+        case 'importPublicationString':
+          openImportPublicationStringModal();
+          break;
         default:
           return;
       }
     },
-    [openLoader, importJCAMPFile],
+    [openLoader, importJCAMPFile, openImportPublicationStringModal],
   );
 
   const exportHandler = useCallback(

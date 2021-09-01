@@ -11,11 +11,11 @@ const initCode = `function run(data) {
 }(args);
 `;
 
-interface MulipleAnalysisCodeEditorProps {
+interface MultipleAnalysisCodeEditorProps {
   data: any;
 }
 
-function MulipleAnalysisCodeEditor({ data }: MulipleAnalysisCodeEditorProps) {
+function MultipleAnalysisCodeEditor({ data }: MultipleAnalysisCodeEditorProps) {
   const { values, setFieldValue } = useFormikContext<any>();
   const [code, setCode] = useState(values.code ? values.code : initCode);
   const [result, setResult] = useState('');
@@ -68,4 +68,4 @@ function MulipleAnalysisCodeEditor({ data }: MulipleAnalysisCodeEditorProps) {
   );
 }
 
-export default memo(MulipleAnalysisCodeEditor);
+export default memo(MultipleAnalysisCodeEditor);

@@ -91,7 +91,7 @@ function AddSignalFormTab(
   const validation = useMemo(() => {
     return Yup.object().shape({
       newSignalDelta: Yup.number()
-        .test(`test-range`, '', function (value) {
+        .test(`test-range`, '', function testNewSignalDelta(value) {
           const { path, createError } = this;
           if (value && value > range.from && value < range.to) {
             return true;

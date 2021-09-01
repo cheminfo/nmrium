@@ -28,12 +28,7 @@ export function useFormatNumberByNucleus(nucleus?: string | Array<string>) {
 
   return useMemo(() => {
     function formatFun(n: string) {
-      return function (
-        value: any,
-        formatKey = 'ppm',
-        prefix = '',
-        suffix = '',
-      ) {
+      return (value: any, formatKey = 'ppm', prefix = '', suffix = '') => {
         return (
           prefix +
           Numeral(Number(value)).format(

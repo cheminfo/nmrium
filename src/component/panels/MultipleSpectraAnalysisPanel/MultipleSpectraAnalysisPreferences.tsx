@@ -18,7 +18,7 @@ import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 import { SET_ANALYZE_SPECTRA_COLUMNS } from '../../reducer/types/Types';
 
-import MulipleAnalysisCodeEditor from './MulipleAnalysisCodeEditor';
+import MultipleAnalysisCodeEditor from './MultipleAnalysisCodeEditor';
 
 const styles = css`
   width: 100%;
@@ -220,7 +220,7 @@ function MultipleSpectraAnalysisPreferences({ data, onAfterSave }, ref: any) {
           </tbody>
         </table>
       )}
-      <MulipleAnalysisCodeEditor data={data} />
+      <MultipleAnalysisCodeEditor data={data} />
     </FormikForm>
   );
 }
