@@ -22,7 +22,6 @@ import SignalsForm from './forms/components/SignalsForm';
 import useRangeFormValidation from './forms/validation/EditRangeValidation';
 
 const styles = css`
-  overflow: auto;
   width: 600px;
   height: 500px;
   padding: 5px;
