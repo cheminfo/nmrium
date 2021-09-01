@@ -10,7 +10,12 @@ export function getDiaIDs(range) {
 }
 
 export function getPubIntegral(range) {
-  return getDiaIDs(range).length;
+  return (
+    range.nbAtoms ||
+    (range.signals
+      ? range.signals.reduce((sum, signal) => signal.nbAtoms + sum, 0)
+      : 0)
+  );
 }
 
 export function setPubIntegral(range) {
@@ -24,8 +29,10 @@ export function resetDiaIDs(range) {
   delete range.diaIDs;
   range.signals.forEach((_signal) => {
     delete _signal.diaIDs;
+    delete _signal.nbAtoms;
   });
   delete range.pubIntegral;
+  delete range.nbAtoms;
 }
 
 /**
@@ -40,17 +47,15 @@ export function unlink(range, unlinkType = 'both', options: any = {}) {
   switch (unlinkType) {
     case 'both':
       resetDiaIDs(range);
-
       break;
     case 'range':
       delete range.diaIDs;
-
+      delete range.nbAtoms;
       break;
     case 'signal':
       delete range.signals[options.signalIndex].diaIDs;
-
+      delete range.signals[options.signalIndex].nbAtoms;
       break;
-
     default:
       break;
   }

@@ -115,22 +115,15 @@ export function getCurrentDiaIDsToHighlight(assignmentData, displayerMode) {
 
 export function toggleDiaIDs(diaID, atomInformation) {
   let _diaID = diaID ? diaID.slice() : [];
-  if (atomInformation.oclIDs.length === 1) {
-    if (_diaID.includes(atomInformation.oclIDs[0])) {
-      _diaID = _diaID.filter((_id) => _id !== atomInformation.oclIDs[0]);
+  const { nbAtoms, oclIDs } = atomInformation;
+  let tempNbAtoms = nbAtoms;
+  oclIDs.forEach((_oclID) => {
+    if (_diaID.includes(_oclID)) {
+      tempNbAtoms *= -1;
+      _diaID = _diaID.filter((_id) => _id !== _oclID);
     } else {
-      for (let i = 0; i < atomInformation.nbAtoms; i++) {
-        _diaID.push(atomInformation.oclIDs[0]);
-      }
+      _diaID.push(_oclID);
     }
-  } else if (atomInformation.oclIDs.length > 1) {
-    atomInformation.oclIDs.forEach((_oclID) => {
-      if (_diaID.includes(_oclID)) {
-        _diaID = _diaID.filter((_id) => _id !== _oclID);
-      } else {
-        _diaID.push(_oclID);
-      }
-    });
-  }
-  return _diaID;
+  });
+  return [_diaID, tempNbAtoms];
 }
