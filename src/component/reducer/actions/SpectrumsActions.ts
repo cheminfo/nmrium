@@ -1,6 +1,6 @@
 import { Draft, original } from 'immer';
 
-import { Filters } from '../../../data/Filters';
+import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
 import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import getReferenceShift from '../../../data/data1d/getReferenceShift';

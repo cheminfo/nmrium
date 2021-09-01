@@ -182,7 +182,7 @@ function HeaderInner(props: HeaderInnerProps) {
 
 const MemoizedHeader = memo(HeaderInner);
 
-export default function ({ isFullscreen, onMaximize }) {
+export default function Header({ isFullscreen, onMaximize }) {
   const {
     toolOptions: { selectedOptionPanel },
   } = useChartData();

@@ -1,28 +1,25 @@
-import { ElementHandle } from 'playwright';
+import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { selectRange } from '../utilities/selectRange';
+import { createPeakInRange } from '../utilities/selectRange';
 
 async function addRange(
   nmrium: NmriumPage,
-  containerElemment: ElementHandle<SVGElement | HTMLElement>,
-  startX,
-  endX,
-  childIndex,
+  startX: number,
+  endX: number,
+  count: number,
 ) {
-  await selectRange(nmrium, containerElemment, {
+  await createPeakInRange(nmrium, {
     axis: 'X',
     startX,
     endX,
   });
-  await nmrium.page.isVisible(
-    `:nth-match([data-test-id="range"],${childIndex})`,
-  );
+  await expect(nmrium.page.locator(`data-test-id=range`)).toHaveCount(count);
 }
 
 async function resizeRange(nmrium: NmriumPage) {
-  const rightResizer = await nmrium.page.waitForSelector(
-    ':nth-match([data-test-id="range"] .handle,1)',
+  const rightResizer = nmrium.page.locator(
+    'data-test-id=range >> nth=0 >> .handle >> nth=0',
   );
 
   const { x, height } = (await rightResizer.boundingBox()) as BoundingBox;
@@ -36,8 +33,8 @@ async function resizeRange(nmrium: NmriumPage) {
   });
   await nmrium.page.mouse.up();
 
-  const greenArea = await nmrium.page.waitForSelector(
-    ':nth-match([data-test-id="range"],1) rect',
+  const greenArea = nmrium.page.locator(
+    'data-test-id=range >> nth=0 >> rect >> nth=0',
   );
 
   const { width } = (await greenArea.boundingBox()) as BoundingBox;
@@ -46,29 +43,25 @@ async function resizeRange(nmrium: NmriumPage) {
 }
 
 async function deleteRange(nmrium: NmriumPage) {
-  const rightResizer = await nmrium.page.waitForSelector(
-    ':nth-match([data-test-id="range"],2)',
-  );
+  const rightResizer = nmrium.page.locator('data-test-id=range').nth(1);
 
   const { x, height, width } =
     (await rightResizer.boundingBox()) as BoundingBox;
   await nmrium.page.mouse.move(x + width / 2, height / 2, { steps: 15 });
-  await nmrium.page.keyboard.press('Backspace');
-  expect(await nmrium.page.$$('data-test-id=range')).toHaveLength(1);
+  await nmrium.page.keyboard.press('Delete');
+  await expect(nmrium.page.locator('data-test-id=range')).toHaveCount(1);
 }
 
-test('Should ranges Add/resize/delete', async () => {
-  const nmrium = await NmriumPage.create();
+test('Should ranges Add/resize/delete', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
-
-  const containerElemment = await nmrium.waitForViewer();
 
   //select range tool
   await nmrium.page.click('data-test-id=tool-rangesPicking');
 
   //add two ranges
-  await addRange(nmrium, containerElemment, 50, 60, 1);
-  await addRange(nmrium, containerElemment, 110, 120, 2);
+  await addRange(nmrium, 50, 60, 1);
+  await addRange(nmrium, 110, 120, 2);
 
   //test resize the first range
   await resizeRange(nmrium);
@@ -77,11 +70,9 @@ test('Should ranges Add/resize/delete', async () => {
   await deleteRange(nmrium);
 });
 
-test('Automatic ranges detection should work', async () => {
-  const nmrium = await NmriumPage.create();
+test('Automatic ranges detection should work', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
-
-  await nmrium.waitForViewer();
 
   //select range tool
   await nmrium.page.click('data-test-id=tool-rangesPicking');
@@ -90,6 +81,6 @@ test('Automatic ranges detection should work', async () => {
   await nmrium.page.click('data-test-id=auto-ranges-detection-btn');
 
   expect(
-    (await nmrium.page.$$('data-test-id=range')).length,
+    await nmrium.page.locator('data-test-id=range').count(),
   ).toBeGreaterThanOrEqual(10);
 });

@@ -101,6 +101,7 @@ function generated1DSpectrum(params: {
         pulseSequence: 'prediction',
         solvent: '',
         experiment,
+        isFt: true,
       },
     },
     usedColors,

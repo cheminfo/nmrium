@@ -14,7 +14,7 @@ import lodashGet from 'lodash/get';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
-import { Filters } from '../../data/Filters';
+import * as Filters from '../../data/Filters';
 import { Info as Datum1DInfo, Data1D } from '../../data/data1d/Spectrum1D';
 import { Info as Datum2DInfo, Data2D } from '../../data/data2d/Spectrum2D';
 import { useChartData } from '../context/ChartContext';

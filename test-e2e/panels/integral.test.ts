@@ -1,24 +1,23 @@
-import { ElementHandle } from 'playwright';
+import { test, expect } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
-import { selectRange } from '../utilities/selectRange';
+import { createPeakInRange } from '../utilities/selectRange';
 
 async function addIntegral(
   nmrium: NmriumPage,
-  containerElemment: ElementHandle<SVGElement | HTMLElement>,
-  startX,
-  endX,
-  childIndex,
+  startX: number,
+  endX: number,
+  childIndex: number,
 ) {
-  await selectRange(nmrium, containerElemment, {
+  await createPeakInRange(nmrium, {
     axis: 'X',
     startX,
     endX,
   });
 
-  //should have integral with at least 1000 point
+  // Should have integral with at least 1000 points
   const path = (await nmrium.page.getAttribute(
-    `:nth-match([data-test-id="integral"] path,${childIndex})`,
+    `_react=Integral >> nth=${childIndex} >> path`,
     'd',
   )) as string;
   expect(path.length).toBeGreaterThan(1000);
@@ -26,8 +25,8 @@ async function addIntegral(
 }
 
 async function resizeIntegral(nmrium: NmriumPage) {
-  const rightResizer = await nmrium.page.waitForSelector(
-    ':nth-match([data-test-id="integral"] .handle,1)',
+  const rightResizer = nmrium.page.locator(
+    '_react=Integral >> nth=0 >> .handle >> nth=0',
   );
 
   const { x, height } = (await rightResizer.boundingBox()) as BoundingBox;
@@ -42,49 +41,44 @@ async function resizeIntegral(nmrium: NmriumPage) {
   await nmrium.page.mouse.up();
 
   const path = (await nmrium.page.getAttribute(
-    ':nth-match([data-test-id="integral"] path,1)',
+    '_react=Integral >> nth=0 >> path',
     'd',
   )) as string;
 
   expect(path.length).toBeGreaterThan(1000);
   expect(path).not.toContain('NaN');
 
-  const container = await nmrium.page.waitForSelector(
-    ':nth-match([data-test-id="integral"],1) rect',
+  const container = nmrium.page.locator(
+    '_react=Integral >> nth=0 >> rect >> nth=0',
   );
   const { width } = (await container.boundingBox()) as BoundingBox;
-
   expect(width).toBe(40);
 }
 
 async function deleteIntegral(nmrium: NmriumPage) {
-  const rightResizer = await nmrium.page.waitForSelector(
-    ':nth-match([data-test-id="integral"],1)',
-  );
+  const rightResizer = nmrium.page.locator('_react=Integral').first();
 
   const { x, height, width } =
     (await rightResizer.boundingBox()) as BoundingBox;
   await nmrium.page.mouse.move(x + width / 2, height / 2, { steps: 15 });
-  await nmrium.page.keyboard.press('Backspace');
-  expect(await nmrium.page.$$('data-test-id=integral')).toHaveLength(1);
+  await nmrium.page.keyboard.press('Delete');
+  await expect(nmrium.page.locator('_react=Integral')).toHaveCount(1);
 }
 
-test('Should Integrals Add/resize/delete', async () => {
-  const nmrium = await NmriumPage.create();
+test('Should Integrals Add/resize/delete', async ({ page }) => {
+  const nmrium = await NmriumPage.create(page);
   await nmrium.open1D();
 
-  const containerElemment = await nmrium.waitForViewer();
-
-  // select integral tool
+  // Select integral tool
   await nmrium.page.click('data-test-id=tool-integral');
 
-  // test add two inetgrals
-  await addIntegral(nmrium, containerElemment, 50, 70, 1);
-  await addIntegral(nmrium, containerElemment, 110, 130, 2);
+  // Test add two integrals
+  await addIntegral(nmrium, 50, 70, 0);
+  await addIntegral(nmrium, 110, 130, 1);
 
-  // test resize the first integral
+  // Test resize the first integral
   await resizeIntegral(nmrium);
 
-  // test delete the first integral
+  // Test delete the first integral
   await deleteIntegral(nmrium);
 });

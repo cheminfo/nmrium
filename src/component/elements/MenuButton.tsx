@@ -60,17 +60,11 @@ interface MenuItemProps {
   icon: ReactNode;
   label: string;
   onClick: () => void;
-  id: string | number;
 }
 
-function MenuItem({ icon, label, id, onClick }: MenuItemProps) {
+function MenuItem({ icon, label, onClick }: MenuItemProps) {
   return (
-    <button
-      data-test-id={id}
-      type="button"
-      className="menu-item"
-      onClick={onClick}
-    >
+    <button type="button" className="menu-item" onClick={onClick}>
       {icon}
       <span>{label}</span>
     </button>
@@ -78,8 +72,8 @@ function MenuItem({ icon, label, id, onClick }: MenuItemProps) {
 }
 
 interface MenuListProps {
-  items: Array<MenuItemProps & { id: number }>;
-  onClick: (element: MenuItemProps & { id: number }) => void;
+  items: Array<MenuItemProps & { id: string }>;
+  onClick: (element: MenuItemProps & { id: string }) => void;
   boxBounding: any;
 }
 
@@ -93,11 +87,7 @@ function MenuList({ items, boxBounding, onClick }: MenuListProps) {
     >
       {items?.map((item) => {
         return (
-          <MenuItem
-            key={`${item.id}`}
-            {...item}
-            onClick={() => onClick(item)}
-          />
+          <MenuItem key={item.id} {...item} onClick={() => onClick(item)} />
         );
       })}
     </div>
@@ -111,7 +101,6 @@ interface MenuButtonProps {
   className?: string;
   items: Array<any>;
   onClick: (element: any) => void;
-  testId?: string;
 }
 
 export default function MenuButton({
@@ -120,7 +109,6 @@ export default function MenuButton({
   toolTip = '',
   className,
   items = [],
-  testId,
   onClick = () => null,
 }: MenuButtonProps) {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -150,7 +138,6 @@ export default function MenuButton({
         onClick={handleClick}
         className={className}
         style={{ boxSizing: 'border-box' }}
-        {...{ 'data-test-id': testId }}
       >
         <ToolTip title={toolTip} popupPlacement="right">
           {component}

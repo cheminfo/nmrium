@@ -7,7 +7,7 @@ import {
   xFindClosestIndex,
 } from 'ml-spectra-processing';
 
-import { Filters as FiltersTypes } from '../Filters';
+import * as FiltersTypes from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
 import { Datum2D } from '../data2d/Spectrum2D';
@@ -204,7 +204,8 @@ function preprocessing(datum) {
   if (
     datum.info.isFid &&
     datum.filters.findIndex((f) => f.name === FiltersTypes.digitalFilter.id) ===
-      -1
+      -1 &&
+    datum.info.digitalFilter
   ) {
     FiltersManager.applyFilter(datum, [
       {

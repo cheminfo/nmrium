@@ -1,6 +1,10 @@
-import { CSSProperties, useCallback, useRef } from 'react';
-
-import { forwardRefWithAs } from '../../utils';
+import {
+  CSSProperties,
+  ForwardedRef,
+  forwardRef,
+  useCallback,
+  useRef,
+} from 'react';
 
 const styles: Record<
   'container' | 'label' | 'inputContainer' | 'input',
@@ -48,7 +52,7 @@ export interface NumberInputProps {
   onInput?: () => void;
 }
 
-const NumberInput = forwardRefWithAs(
+const NumberInput = forwardRef(
   (
     {
       label,
@@ -62,7 +66,7 @@ const NumberInput = forwardRefWithAs(
       min = 'any',
       max = 'any',
     }: NumberInputProps,
-    ref,
+    ref: ForwardedRef<HTMLInputElement>,
   ) => {
     const localRef = useRef<HTMLInputElement>(null);
     const changeHander = useCallback(

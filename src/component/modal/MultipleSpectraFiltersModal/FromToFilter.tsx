@@ -1,6 +1,6 @@
-import { FormikHelpers } from 'formik';
+import { FormikHelpers, FormikProps } from 'formik';
+import { ForwardedRef, forwardRef } from 'react';
 
-import { forwardRefWithAs } from '../../../utils';
 import { useChartData } from '../../context/ChartContext';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
@@ -9,7 +9,10 @@ interface FromToFilterProps {
   onSubmit: (values: any, helper: FormikHelpers<any>) => void;
 }
 
-function FromToFilter({ onSubmit }: FromToFilterProps, ref) {
+function FromToFilter(
+  { onSubmit }: FromToFilterProps,
+  ref: ForwardedRef<FormikProps<any>>,
+) {
   const { xDomain } = useChartData();
   return (
     <FormikForm
@@ -26,4 +29,4 @@ function FromToFilter({ onSubmit }: FromToFilterProps, ref) {
   );
 }
 
-export default forwardRefWithAs(FromToFilter);
+export default forwardRef(FromToFilter);

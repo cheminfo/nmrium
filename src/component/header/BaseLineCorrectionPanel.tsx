@@ -150,7 +150,6 @@ function BaseLineCorrectionPanel() {
         type="button"
         style={styles.actionButton}
         onClick={() => formRef.current.submitForm()}
-        data-test-id="apply-baseline-correction-btn"
       >
         Apply
       </button>

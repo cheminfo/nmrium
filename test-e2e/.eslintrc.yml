@@ -1,4 +1,6 @@
-env:
-  jest: true
-globals:
-  globalThis: false
+overrides:
+  - files: ['*.test.{js,jsx,ts,tsx}']
+    env:
+      jest: false
+    rules:
+      jest/no-done-callback: off

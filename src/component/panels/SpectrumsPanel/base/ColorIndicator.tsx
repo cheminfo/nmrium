@@ -66,12 +66,7 @@ function ColorIndicator(props: ColorIndicatorProps) {
   const { style, onClick = () => null, activated } = props;
 
   return (
-    <button
-      style={style}
-      type="button"
-      onClick={onClick}
-      data-test-id="color-indicator"
-    >
+    <button style={style} type="button" onClick={onClick}>
       {props.dimension === 2 ? (
         <ColorIndicator2D {...props.color} activated={activated} />
       ) : (

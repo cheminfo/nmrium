@@ -1,6 +1,10 @@
-import { CSSProperties, useCallback, useImperativeHandle, useRef } from 'react';
-
-import { forwardRefWithAs } from '../../utils';
+import {
+  CSSProperties,
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 
 const styles: Record<'container' | 'label', CSSProperties> = {
   container: {
@@ -35,7 +39,8 @@ interface InputRangeProps {
   className?: string;
 }
 
-function InputRange(props: InputRangeProps, ref) {
+// TODO: remove this hacky ref usage.
+function InputRange(props: InputRangeProps, ref: any) {
   const { name, value = 0, onChange, label, style, className } = props;
   const previousPosition = useRef(0);
   const valueRef = useRef(value);
@@ -84,4 +89,4 @@ function InputRange(props: InputRangeProps, ref) {
   );
 }
 
-export default forwardRefWithAs(InputRange);
+export default forwardRef(InputRange);

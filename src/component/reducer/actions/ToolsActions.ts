@@ -2,7 +2,7 @@ import { max } from 'd3';
 import { original, Draft, current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import { Filters } from '../../../data/Filters';
+import * as Filters from '../../../data/Filters';
 import { Data1D, Datum1D } from '../../../data/data1d/Spectrum1D';
 import { Datum2D } from '../../../data/data2d/Spectrum2D';
 import generateID from '../../../data/utilities/generateID';

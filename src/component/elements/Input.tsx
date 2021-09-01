@@ -1,7 +1,14 @@
 import debounce from 'lodash/debounce';
-import { useState, useEffect, useCallback, useRef, CSSProperties } from 'react';
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  CSSProperties,
+  forwardRef,
+  ForwardedRef,
+} from 'react';
 
-import { forwardRefWithAs } from '../../utils';
 import useCombinedRefs from '../hooks/useCombinedRefs';
 
 const styles: Record<'label' | 'input', CSSProperties> = {
@@ -35,7 +42,7 @@ export interface InputProps
   format?: () => (element: string) => number | string;
 }
 
-const Input = forwardRefWithAs(
+const Input = forwardRef(
   (
     {
       label,
@@ -54,7 +61,7 @@ const Input = forwardRefWithAs(
       onFocus = () => null,
       ...props
     }: InputProps,
-    ref,
+    ref: ForwardedRef<HTMLInputElement>,
   ) => {
     const [val, setVal] = useState(value);
     const localRef = useRef<any>();

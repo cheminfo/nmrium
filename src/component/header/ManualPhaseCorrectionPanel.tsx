@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 
-import { Filters } from '../../data/Filters';
+import * as Filters from '../../data/Filters';
 import { Filter } from '../../data/FiltersManager';
 import { Data1D, Datum1D } from '../../data/data1d/Spectrum1D';
 import { useChartData } from '../context/ChartContext';
@@ -240,7 +240,6 @@ function ManualPhaseCorrectionPanelInner({
         type="button"
         style={styles.actionButton}
         onClick={handleApplyFilter}
-        data-test-id="apply-phase-correction-btn"
       >
         Apply
       </button>

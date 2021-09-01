@@ -254,6 +254,7 @@ function KeysListenerTracker() {
         !['input', 'textarea'].includes(e.target.localName) &&
         overDisplayer
       ) {
+        e.preventDefault();
         const num = Number(e.code.substr(e.code.length - 1)) || 0;
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);

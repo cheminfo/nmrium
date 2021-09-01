@@ -1,4 +1,4 @@
-import { ElementHandle } from 'playwright';
+import { Locator } from '@playwright/test';
 
 import NmriumPage from '../NmriumPage';
 
@@ -27,11 +27,11 @@ interface XYOptions extends Options {
 }
 
 async function getBoundary(
-  element: ElementHandle<SVGElement | HTMLElement>,
+  locator: Locator,
   options: XOptions | XYOptions | YOptions,
 ): Promise<{ x1: number; x2: number; y1: number; y2: number }> {
-  // get the bounding box {x,y,width,hegith} for the drawing area
-  const boundingBox = (await element?.boundingBox()) as BoundingBox;
+  // Get the bounding box {x,y,width,height} for the drawing area.
+  const boundingBox = (await locator.boundingBox()) as BoundingBox;
 
   switch (options.axis) {
     case 'X': {
@@ -66,27 +66,26 @@ async function getBoundary(
   }
 }
 
-export async function selectRange(
+export async function createPeakInRange(
   nmrium: NmriumPage,
-  element: ElementHandle<SVGElement | HTMLElement>,
   options: XOptions | XYOptions | YOptions,
 ) {
   const { steps = 15 } = options;
 
-  const { x1, x2, y1, y2 } = await getBoundary(element, options);
+  const { x1, x2, y1, y2 } = await getBoundary(nmrium.viewerLocator, options);
 
-  //move the custose to the center of the draw area
+  // Move the cursor to the center of the draw area
   await nmrium.page.mouse.move(x1, y1, { steps });
-  // press shift + left mouse down
+  // Hold shift + left mouse down
   await nmrium.page.keyboard.down('Shift');
   await nmrium.page.mouse.down({ button: 'left' });
 
-  //move the cusrose to new postion and still hold shift and left mouse button
+  // Move the cursor to new position and still hold shift and left mouse button
   await nmrium.page.mouse.move(x2, y2, {
     steps,
   });
 
-  //release shift and left mouse button
+  // Release shift and left mouse button
   await nmrium.page.keyboard.up('Shift');
   await nmrium.page.mouse.up({ button: 'left' });
 }

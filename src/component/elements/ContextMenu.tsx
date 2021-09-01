@@ -6,10 +6,10 @@ import {
   useCallback,
   useRef,
   useEffect,
+  forwardRef,
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { forwardRefWithAs } from '../../utils';
 import { useGlobal } from '../context/GlobalContext';
 
 const styles = css`
@@ -50,7 +50,8 @@ const styles = css`
   }
 `;
 
-function ContextMenu({ context }, ref) {
+// TODO: remove this hacky ref usage.
+function ContextMenu({ context }, ref: any) {
   const [position, setPosition] = useState<{ left: any; top: any }>({
     left: 0,
     top: 0,
@@ -168,4 +169,4 @@ function ContextMenu({ context }, ref) {
   );
 }
 
-export default forwardRefWithAs(ContextMenu);
+export default forwardRef(ContextMenu);
