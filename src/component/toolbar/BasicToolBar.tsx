@@ -141,6 +141,8 @@ function BasicToolBarInner({
   const modal = useModal();
   const openLoader = useLoader();
 
+  console.log(ftCounter);
+
   const {
     isRealSpectrumShown,
     changeSpectrumViewHandler,
@@ -285,8 +287,8 @@ function BasicToolBarInner({
 
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('hideSpectraStackAlignments') &&
-        ((activeSpectrum && !info?.isFid && ftCounter > 1) ||
-          (!activeSpectrum && fidCounter === 0)) && (
+        ftCounter > 1 &&
+        (info?.isFt || !activeSpectrum) && (
           <button
             type="button"
             css={styles}
