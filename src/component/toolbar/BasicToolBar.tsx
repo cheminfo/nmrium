@@ -141,8 +141,6 @@ function BasicToolBarInner({
   const modal = useModal();
   const openLoader = useLoader();
 
-  console.log(ftCounter);
-
   const {
     isRealSpectrumShown,
     changeSpectrumViewHandler,
@@ -327,7 +325,8 @@ function BasicToolBarInner({
           </button>
         )}
       {displayerMode === DISPLAYER_MODE.DM_1D &&
-        isButtonVisible('hideSpectraCenterAlignments') && (
+        isButtonVisible('hideSpectraCenterAlignments') &&
+        (ftCounter > 0 || fidCounter > 0) && (
           <button
             css={styles}
             className="cheminfo"
