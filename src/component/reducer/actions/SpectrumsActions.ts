@@ -102,9 +102,13 @@ function handleChangeActiveSpectrum(draft: Draft<State>, activeSpectrum) {
     draft.activeSpectrum = activeSpectrum;
     draft.tabActiveSpectrum[draft.activeTab] = activeSpectrum;
   } else {
+    const newIndex = draft.data.findIndex(
+      (d) => d.id === currentActiveSpectrum.id,
+    );
+    refreshDomain = draft.data[newIndex].info.isFid;
+
     draft.activeSpectrum = null;
     draft.tabActiveSpectrum[draft.activeTab] = null;
-    refreshDomain = false;
   }
 
   if (options[draft.toolOptions.selectedTool].isFilter) {
