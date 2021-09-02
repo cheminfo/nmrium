@@ -3,11 +3,11 @@ import { css } from '@emotion/react';
 import { CSSProperties, useCallback } from 'react';
 
 const styles = css`
-  display: flex;
-  flex-direction: column;
-  border-top: 10px solid #ed0000;
-  flex: 1;
+  display: block;
   border-radius: 5px;
+  overflow: hidden;
+  width: 300px;
+  border-top: 10px solid #ed0000;
 
   .message {
     font-weight: bold;
@@ -15,8 +15,8 @@ const styles = css`
     text-align: center;
     color: #af0000;
     text-align: center;
-    padding: 35px;
-    flex: 1;
+    padding: 25px;
+    display: block;
   }
   .buttons-container {
     display: flex;
