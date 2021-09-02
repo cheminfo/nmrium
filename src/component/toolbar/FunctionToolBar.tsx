@@ -64,7 +64,6 @@ const styles = css`
 interface FunctionToolBarInnerProps {
   defaultValue: string;
   activeSpectrum: ActiveSpectrum | null;
-  fidCounter: number;
   ftCounter: number;
   displayerMode: DISPLAYER_MODE;
   info: Datum1DInfo | Datum2DInfo;
@@ -78,7 +77,6 @@ function FunctionToolBarInner({
   datum,
   displayerMode,
   ftCounter,
-  fidCounter,
 }: FunctionToolBarInnerProps) {
   const [option, setOption] = useState<string>('');
   const help = useHelp();
