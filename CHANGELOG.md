@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.18.2](https://www.github.com/cheminfo/nmrium/compare/v0.18.1...v0.18.2) (2021-09-02)
+
+
+### Bug Fixes
+
+* add playwright* in tsconfig exclude ([f4eebc0](https://www.github.com/cheminfo/nmrium/commit/f4eebc0d39dacf9bff9ed8072486eaefac85f1dd))
+
 ### [0.18.1](https://www.github.com/cheminfo/nmrium/compare/v0.18.0...v0.18.1) (2021-09-02)
 
 
