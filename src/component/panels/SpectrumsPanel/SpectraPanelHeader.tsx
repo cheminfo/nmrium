@@ -147,12 +147,14 @@ function SpectraPanelHeaderInner({
           </Button>
         </>
       )}
-      <Button
-        popupTitle="Automatic Ranges/Zones picking for all spectra"
-        onClick={automaticPickingHandler}
-      >
-        <SvgNmrRangePicking />
-      </Button>
+      {data && data.length > 0 && (
+        <Button
+          popupTitle="Automatic Ranges/Zones picking for all spectra"
+          onClick={automaticPickingHandler}
+        >
+          <SvgNmrRangePicking />
+        </Button>
+      )}
     </DefaultPanelHeader>
   );
 }
