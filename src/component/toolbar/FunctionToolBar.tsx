@@ -242,8 +242,8 @@ function FunctionToolBarInner({
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideMultipleSpectraAnalysisTool') &&
-          ((activeSpectrum && !info?.isFid && ftCounter > 1) ||
-            (!activeSpectrum && fidCounter === 0)) && (
+          ftCounter > 1 &&
+          (info?.isFt || !activeSpectrum) && (
             <ToggleButton
               key={options.multipleSpectraAnalysis.id}
               value={options.multipleSpectraAnalysis.id}
