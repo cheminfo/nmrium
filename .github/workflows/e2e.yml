@@ -25,5 +25,6 @@ jobs:
         run: npm run build-no-minify
       - name: Run E2E tests on ${{ matrix.browser }}
         run: npm run test-e2e
+        continue-on-error: ${{ matrix.browser == 'webkit' }}
         env:
           BROWSER: ${{ matrix.browser }}
