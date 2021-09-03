@@ -8,7 +8,7 @@ import {
   SvgNmrAlignCenter,
 } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
-import { Fragment, useCallback, memo } from 'react';
+import { Fragment, useCallback, memo, useMemo } from 'react';
 import {
   FaDownload,
   FaFileDownload,
@@ -37,6 +37,7 @@ import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { ActiveSpectrum } from '../reducer/Reducer';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 
 const styles = css`
   background-color: transparent;
@@ -140,6 +141,14 @@ function BasicToolBarInner({
   const alert = useAlert();
   const modal = useModal();
   const openLoader = useLoader();
+
+  const isExperimentalFeature = useCheckExperimentalFeature();
+
+  const importMenu = useMemo(() => {
+    return isExperimentalFeature
+      ? IMPORT_MENU.filter((item) => item.id !== 'importPublicationString')
+      : IMPORT_MENU;
+  }, [isExperimentalFeature]);
 
   const {
     isRealSpectrumShown,
@@ -266,7 +275,7 @@ function BasicToolBarInner({
             importHandler(element);
             return null;
           }}
-          items={IMPORT_MENU}
+          items={importMenu}
         />
       )}
       {isButtonVisible('hideExportAs') && (
