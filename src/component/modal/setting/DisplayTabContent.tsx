@@ -44,6 +44,10 @@ const LIST: Array<{ label: string; name: string }> = [
     label: 'Multiple Spectra Analysis Panel',
     name: 'display.panels.hideMultipleSpectraAnalysisPanel',
   },
+  {
+    label: 'Experimental Features',
+    name: 'display.hideExperimentalFeatures',
+  },
 ];
 
 interface DisplayTabContentProps {

@@ -17,7 +17,7 @@ export const SET_PANELS_PREFERENCES = 'SET_PANELS_PREFERENCES';
 
 const LOCAL_STORGAE_VERSION = '1.1';
 
-function getPreferencesbyMode(mode: NMRiumMode) {
+function getPreferencesByMode(mode: NMRiumMode) {
   switch (mode) {
     case NMRiumMode.EXERCISE_1D:
       return exercise1D;
@@ -107,7 +107,7 @@ function handleInit(draft: Draft<PreferencesState>, action) {
     draft.basePreferences = lodashMerge(
       {},
       {
-        display: mode === NMRiumMode.DEFAULT ? {} : getPreferencesbyMode(mode),
+        display: mode === NMRiumMode.DEFAULT ? {} : getPreferencesByMode(mode),
       },
       resProps,
     );
@@ -123,7 +123,7 @@ function handleInit(draft: Draft<PreferencesState>, action) {
 
     draft.display = lodashMerge(
       {},
-      getPreferencesbyMode(NMRiumMode.DEFAULT),
+      getPreferencesByMode(NMRiumMode.DEFAULT),
       hiddenFeatures,
     );
     draft.dispatch = dispatch;
@@ -144,6 +144,8 @@ function handleSetPreferences(draft: Draft<PreferencesState>, action) {
     draft.controllers = data.controllers;
     draft.formatting = data.formatting;
     draft.display.panels = data.display.panels;
+    draft.display.hideExperimentalFeatures =
+      data.display.hideExperimentalFeatures;
     mapNucleus(draft);
   }
 }

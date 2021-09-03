@@ -34,4 +34,5 @@ export default {
     hideFFTTool: false,
     hideMultipleSpectraAnalysisTool: false,
   },
+  hideExperimentalFeatures: true,
 };
