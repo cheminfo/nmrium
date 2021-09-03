@@ -1,5 +1,24 @@
 # Changelog
 
+### [0.18.2](https://www.github.com/cheminfo/nmrium/compare/v0.18.1...v0.18.2) (2021-09-02)
+
+
+### Bug Fixes
+
+* add playwright* in tsconfig exclude ([f4eebc0](https://www.github.com/cheminfo/nmrium/commit/f4eebc0d39dacf9bff9ed8072486eaefac85f1dd))
+
+### [0.18.1](https://www.github.com/cheminfo/nmrium/compare/v0.18.0...v0.18.1) (2021-09-02)
+
+
+### Bug Fixes
+
+* diaID to diaIDs in spectrum2D ([dd737c5](https://www.github.com/cheminfo/nmrium/commit/dd737c5c3fcc71487502a36aa6c6ddfe38922053))
+* ensure plural js in multiplet-analysis ([eeb68f0](https://www.github.com/cheminfo/nmrium/commit/eeb68f0a1833c41380bc28871b98afc2e00acc7d))
+* **jeol:** update nmr-parser to 1.6.2 ([b741c65](https://www.github.com/cheminfo/nmrium/commit/b741c65c0027f471b03bcd62736515923bbea23a))
+* Peak annotations are not displayed correctly in Safari ([9233c9d](https://www.github.com/cheminfo/nmrium/commit/9233c9d7c30438bc9d8ce6314ee25f7898b32845)), closes [#1219](https://www.github.com/cheminfo/nmrium/issues/1219)
+* update nmredata to 0.5.0 ([8c9b530](https://www.github.com/cheminfo/nmrium/commit/8c9b53083963390a4e6e0f081537bc72a0717971))
+* wrong behavior in integration of the assigned signal ([#1224](https://www.github.com/cheminfo/nmrium/issues/1224)) ([b720846](https://www.github.com/cheminfo/nmrium/commit/b7208464da3c7b0b4e8300ce0626d8ae3270ea0b))
+
 ## [0.18.0](https://www.github.com/cheminfo/nmrium/compare/v0.17.1...v0.18.0) (2021-08-27)
 
 
