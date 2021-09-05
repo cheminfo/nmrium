@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.18.3](https://www.github.com/cheminfo/nmrium/compare/v0.18.2...v0.18.3) (2021-09-05)
+
+
+### Bug Fixes
+
+* calculate the chart for NMR multiplet analysis ([b8279eb](https://www.github.com/cheminfo/nmrium/commit/b8279eb4993bcd5ef0df035a7a19a398be30b75c))
+
 ### [0.18.2](https://www.github.com/cheminfo/nmrium/compare/v0.18.1...v0.18.2) (2021-09-02)
 
 
