@@ -143,6 +143,7 @@ export default function MultipletAnalysisModal({
           frequency: info.originFrequency,
           takeBestPartMultiplet: true,
           symmetrizeEachStep: true,
+          debug: true,
         });
         setCalcFinished(true);
         setAnalysisData(result);
@@ -200,10 +201,10 @@ export default function MultipletAnalysisModal({
               </Plot>
               <div className="multiplicity">
                 <p>
-                  {analysisData.j[index]
-                    ? `${analysisData.j[index]?.multiplicity}: ${analysisData.j[
-                        index
-                      ]?.coupling.toFixed(3)} Hz`
+                  {analysisData.js[index]
+                    ? `${
+                        analysisData.js[index]?.multiplicity
+                      }: ${analysisData.js[index]?.coupling.toFixed(3)} Hz`
                     : ''}
                 </p>
               </div>
