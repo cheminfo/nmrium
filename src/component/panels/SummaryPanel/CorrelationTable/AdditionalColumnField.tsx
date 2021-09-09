@@ -178,6 +178,10 @@ function AdditionalColumnField({
         commonLink.experimentType === 'roesy'
       ) {
         linkSet.add('NOE');
+      } else if(commonLink.experimentType === 'inadequate') {
+        linkSet.add("I");
+      } else if(commonLink.experimentType === 'adequate') {
+        linkSet.add("A");
       }
     });
 
