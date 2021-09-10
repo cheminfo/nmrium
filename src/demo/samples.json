@@ -6,6 +6,10 @@
     "groupName": "General",
     "children": [
       {
+        "file": "./data/eserine/eserine_1H_13C_ASAP_HSQC_DEPT.json",
+        "title": "ASAP HSQC eserine"
+      },
+      {
         "file": "./data/cytisine/1H.json",
         "title": "1H spectrum test"
       },
