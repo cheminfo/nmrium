@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
+import { RootLayout, SplitPane, Toolbar } from 'analysis-ui-components';
 import lodashGet from 'lodash/get';
 import {
   useEffect,
@@ -11,12 +12,10 @@ import {
   useRef,
   memo,
   Reducer,
-  CSSProperties,
   ReactElement,
   ReactNode,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import SplitPane from 'react-split-pane';
 import { useToggle, useFullscreen } from 'react-use';
 
 import { Datum1D } from '../data/data1d/Spectrum1D';
@@ -56,25 +55,9 @@ import preferencesReducer, {
 } from './reducer/preferencesReducer';
 import {
   INITIATE,
-  SET_WIDTH,
   SET_LOADING_FLAG,
   SET_MOUSE_OVER_DISPLAYER,
 } from './reducer/types/Types';
-import ToolBar from './toolbar/ToolBar';
-
-const splitPaneStyles: Record<'container' | 'resizer' | 'pane', CSSProperties> =
-  {
-    container: {
-      position: 'relative',
-      height: 'none',
-    },
-    resizer: {
-      width: 10,
-      backgroundColor: '#f7f7f7',
-      cursor: 'ew-resize',
-    },
-    pane: { overflow: 'hidden' },
-  };
 
 const containerStyles = css`
   background-color: white;
@@ -216,7 +199,6 @@ function NMRium({
   getSpinner = defaultGetSpinner,
   onDataChange,
   emptyText,
-  initialShowPanels = true,
 }: NMRiumProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const elementsWraperRef = useRef<HTMLDivElement>(null);
@@ -227,8 +209,8 @@ function NMRium({
       toggle(false);
     },
   });
-  const [isRightPanelHide, hideRightPanel] = useState(!initialShowPanels);
-  const [isResizeEventStart, setResizeEventStart] = useState(false);
+
+  const [isResizeEventStart] = useState(false);
 
   const [state, dispatch] = useReducer<Reducer<State, any>, State>(
     spectrumReducer,
@@ -274,16 +256,6 @@ function NMRium({
     }
   }, [dataProp, dispatchMiddleWare]);
 
-  const handleSplitPanelDragFinished = useCallback(
-    (size) => {
-      if (size && !isRightPanelHide) {
-        setResizeEventStart(false);
-        dispatch({ type: SET_WIDTH, width: size });
-      }
-    },
-    [isRightPanelHide],
-  );
-
   const preventAutoHelp = useMemo(() => {
     return lodashGet(
       preferencesState,
@@ -291,11 +263,6 @@ function NMRium({
       false,
     );
   }, [preferencesState]);
-
-  const rightPanelHandler = useCallback((e) => {
-    e.stopPropagation();
-    hideRightPanel((prevFlag) => !prevFlag);
-  }, []);
 
   const preventContextMenuHandler = useCallback((e) => {
     if (!checkModifierKeyActivated(e)) {
@@ -344,79 +311,71 @@ function NMRium({
                               ref={rootRef}
                               css={containerStyles}
                               onContextMenu={preventContextMenuHandler}
+                              style={{ height: '100%', width: '100%' }}
                             >
-                              <Header
-                                isFullscreen={isFullscreen}
-                                onMaximize={toggle}
-                              />
-
-                              <div
+                              <RootLayout
                                 style={{
-                                  height: 'calc(100% - 36px)',
-                                  width: '100%',
+                                  display: 'flex',
+                                  flexDirection: 'column',
                                   backgroundColor: 'white',
                                 }}
                               >
-                                <DropZone>
-                                  <KeysListenerTracker />
+                                <Header
+                                  isFullscreen={isFullscreen}
+                                  onMaximize={toggle}
+                                />
 
-                                  <ToolBar />
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    height: '100%',
+                                  }}
+                                >
+                                  <Toolbar orientation="vertical">
+                                    <Toolbar.Item id="A" title="AA">
+                                      A
+                                    </Toolbar.Item>
+                                  </Toolbar>
                                   <SplitPane
-                                    style={splitPaneStyles.container}
-                                    resizerStyle={splitPaneStyles.resizer}
-                                    paneStyle={splitPaneStyles.pane}
-                                    pane1Style={
-                                      isRightPanelHide
-                                        ? {
-                                            maxWidth: '100%',
-                                            width: 'calc(100% - 10px)',
-                                          }
-                                        : { maxWidth: '80%' }
-                                    }
-                                    split="vertical"
-                                    defaultSize={
-                                      isRightPanelHide
-                                        ? '99%'
-                                        : 'calc(100% - 600px)'
-                                    }
-                                    minSize="80%"
-                                    onDragFinished={
-                                      handleSplitPanelDragFinished
-                                    }
-                                    onResizerDoubleClick={rightPanelHandler}
-                                    onDragStarted={() => {
-                                      setResizeEventStart(true);
-                                    }}
+                                    initialSeparation="70%"
+                                    orientation="horizontal"
                                   >
-                                    <div
-                                      style={{ width: '100%', height: '100%' }}
-                                      data-test-id="viewer"
-                                    >
-                                      {displayerMode ===
-                                      DISPLAYER_MODE.DM_1D ? (
-                                        <Viewer1D emptyText={emptyText} />
-                                      ) : (
-                                        <Viewer2D emptyText={emptyText} />
-                                      )}
-                                    </div>
-                                    {!isRightPanelHide ? <Panels /> : <div />}
+                                    <DropZone>
+                                      <KeysListenerTracker />
+                                      <div
+                                        style={{
+                                          width: '100%',
+                                          height: '100%',
+                                        }}
+                                      >
+                                        {displayerMode ===
+                                        DISPLAYER_MODE.DM_1D ? (
+                                          <Viewer1D emptyText={emptyText} />
+                                        ) : (
+                                          <Viewer2D emptyText={emptyText} />
+                                        )}
+                                      </div>
+                                    </DropZone>
+                                    <Panels />
                                   </SplitPane>
-                                </DropZone>
-                              </div>
-                              <div
-                                ref={elementsWraperRef}
-                                key={String(isFullscreen)}
-                                id="main-wrapper"
-                                style={{
-                                  position: 'absolute',
-                                  pointerEvents: 'none',
-                                  zIndex: 0,
-                                  left: 0,
-                                  right: 0,
-                                  top: 0,
-                                  bottom: 0,
-                                }}
-                              />
+
+                                  <div
+                                    ref={elementsWraperRef}
+                                    key={String(isFullscreen)}
+                                    id="main-wrapper"
+                                    style={{
+                                      position: 'absolute',
+                                      pointerEvents: 'none',
+                                      zIndex: 0,
+                                      left: 0,
+                                      right: 0,
+                                      top: 0,
+                                      bottom: 0,
+                                    }}
+                                  />
+                                </div>
+                              </RootLayout>
                             </div>
                           </SpinnerProvider>
                         </AssignmentProvider>

@@ -1,10 +1,9 @@
+import { Accordion } from 'analysis-ui-components';
 import lodashGet from 'lodash/get';
 import { useCallback, useState, useEffect, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
-import Accordion from '../elements/accordion/Accordion';
-import AccordionItem from '../elements/accordion/AccordionItem';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { options } from '../toolbar/ToolTypes';
 
@@ -129,17 +128,17 @@ function PanelsInner({ selectedTool, displayerMode }) {
   );
 
   return (
-    <Accordion defaultOpenIndex={panelIndex}>
-      {accordionItems.map((item) => {
+    <Accordion>
+      {accordionItems.map((item, index) => {
         return (
           check(item) && (
-            <AccordionItem
-              key={item.title}
+            <Accordion.Item
+              key={`${item.title}-${index}`}
               title={item.title}
-              style={item.style}
+              defaultOpened={index === panelIndex}
             >
               {item.component}
-            </AccordionItem>
+            </Accordion.Item>
           )
         );
       })}

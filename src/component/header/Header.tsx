@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-
-import { css } from '@emotion/react';
+import { Header, Toolbar } from 'analysis-ui-components';
 import { SvgLogoNmrium } from 'cheminfo-font';
 import { useMemo, useCallback, memo } from 'react';
 import {
@@ -11,9 +9,7 @@ import {
 
 import { docsBaseUrl } from '../../constants';
 import { useChartData } from '../context/ChartContext';
-import Button from '../elements/ButtonToolTip';
 import { useAlert } from '../elements/popup/Alert';
-import { useHelp } from '../elements/popup/Help';
 import { useModal, positions } from '../elements/popup/Modal';
 import AboutUsModal from '../modal/AboutUsModal';
 import GeneralSettings from '../modal/setting/GeneralSettings';
@@ -26,55 +22,6 @@ import RangesPickingOptionPanel from './RangesPickingOptionPanel';
 import ZeroFillingOptionsPanel from './ZeroFillingOptionsPanel';
 import Zones2DOptionPanel from './Zones2DOptionPanel';
 
-const headerStyle = css`
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  height: 36px;
-  min-height: 36px;
-  border-width: 1px 1px 0px 1px;
-  border-style: solid;
-  border-color: rgb(213, 213, 213);
-  outline: none;
-  transition: background-color 0.2s ease-in 0s;
-  box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px inset;
-  background: linear-gradient(rgb(255, 255, 255) 5%, rgb(246, 246, 246) 100%)
-    rgb(255, 255, 255);
-  color: rgb(102, 102, 102);
-  font-family: Arial;
-  font-weight: bold;
-  text-decoration: none;
-  text-shadow: rgb(255, 255, 255) 0px 1px 0px;
-
-  .toolOptionsPanel {
-    flex: 10;
-    padding: 0px;
-    margin: 0px;
-    height: 100%;
-  }
-
-  .windowButtonsContainer {
-    flex: 0.5;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    height: 100%;
-  }
-
-  .windowButton {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent;
-    border: none;
-  }
-  button:focus {
-    outline: 0;
-  }
-`;
-
 interface HeaderInnerProps {
   onMaximize?: () => void;
   isFullscreen: boolean;
@@ -84,7 +31,6 @@ interface HeaderInnerProps {
 function HeaderInner(props: HeaderInnerProps) {
   const { isFullscreen, onMaximize = () => null, selectedOptionPanel } = props;
 
-  const help = useHelp();
   const alert = useAlert();
   const modal = useModal();
 
@@ -133,50 +79,65 @@ function HeaderInner(props: HeaderInnerProps) {
   }, [modal]);
 
   return (
-    <div css={headerStyle}>
-      <Button
-        popupTitle="About NMRium"
-        popupPlacement="right"
-        style={{ width: '36px' }}
-        onClick={openAboutUs}
-        className="windowButton"
+    <Header>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
       >
-        <SvgLogoNmrium />
-      </Button>
-      <div className="toolOptionsPanel">{selectedPanel}</div>
-      <div className="windowButtonsContainer">
-        <Button
-          popupTitle="User Manual"
-          popupPlacement="left"
+        <div>
+          <Toolbar orientation="horizontal">
+            <Toolbar.Item
+              onClick={openAboutUs}
+              titleOrientation="horizontal"
+              id="logo"
+              title="About NMRium"
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <SvgLogoNmrium />
+              </div>
+            </Toolbar.Item>
+          </Toolbar>
+        </div>
+        <div className="toolOptionsPanel">{selectedPanel}</div>
+      </div>
+
+      <Toolbar orientation="horizontal">
+        <Toolbar.Item
+          id="user-manual"
+          title="User manual"
           onClick={() => window.open(docsBaseUrl, '_blank')}
-          className="windowButton"
         >
           <FaQuestionCircle />
-        </Button>
-        <Button
-          popupTitle="General Settings"
-          popupPlacement="left"
+        </Toolbar.Item>
+        <Toolbar.Item
+          id="general-settings"
           onClick={openGeneralSettingsHandler}
-          className="windowButton"
+          title="General settings"
         >
           <FaWrench />
-        </Button>
-        {!isFullscreen ? (
-          <Button
-            popupTitle="Full Screen"
-            popupPlacement="left"
+        </Toolbar.Item>
+
+        {!isFullscreen && (
+          <Toolbar.Item
+            id="full-screen"
             onClick={onMaximize}
+            title="Full Screen"
             className="windowButton"
-            data-helpid="fullScreen"
-            {...help.onHover}
           >
             <FaRegWindowMaximize />
-          </Button>
-        ) : (
-          ''
+          </Toolbar.Item>
         )}
-      </div>
-    </div>
+      </Toolbar>
+    </Header>
   );
 }
 
