@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Toolbar } from 'analysis-ui-components';
 import {
   SvgNmrBaselineCorrection,
   SvgNmrFourierTransform,
@@ -141,14 +142,13 @@ function FunctionToolBarInner({
         )}
 
         {isButtonVisible('hideZoomOutTool') && (
-          <button className="fa" type="button" onClick={handleFullZoomOut}>
-            <ToolTip
-              title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
-              popupPlacement="right"
-            >
-              <FaExpand />
-            </ToolTip>
-          </button>
+          <Toolbar.Item
+            id="zoom-out"
+            onClick={handleFullZoomOut}
+            title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
+          >
+            <FaExpand />
+          </Toolbar.Item>
         )}
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -346,20 +346,14 @@ function FunctionToolBarInner({
         isButtonVisible('hideFFTTool') &&
         info &&
         Filters.fft.isApplicable({ info }) && (
-          <button
+          <Toolbar.Item
+            id="fft-filter"
             className="cheminfo"
-            type="button"
+            title="FFT Filter"
             onClick={handleOnFFTFilter}
-            data-test-id="tool-FFT-filter"
           >
-            <ToolTip
-              title={`FFT Filter`}
-              popupPlacement="right"
-              offset={{ x: 10, y: 0 }}
-            >
-              <SvgNmrFourierTransform />
-            </ToolTip>
-          </button>
+            <SvgNmrFourierTransform />
+          </Toolbar.Item>
         )}
     </div>
   );

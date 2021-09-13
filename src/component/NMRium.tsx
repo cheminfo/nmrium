@@ -58,6 +58,7 @@ import {
   SET_LOADING_FLAG,
   SET_MOUSE_OVER_DISPLAYER,
 } from './reducer/types/Types';
+import ToolBar from './toolbar/ToolBar';
 
 const containerStyles = css`
   background-color: white;
@@ -332,11 +333,7 @@ function NMRium({
                                     height: '100%',
                                   }}
                                 >
-                                  <Toolbar orientation="vertical">
-                                    <Toolbar.Item id="A" title="AA">
-                                      A
-                                    </Toolbar.Item>
-                                  </Toolbar>
+                                  <ToolBar />
                                   <SplitPane
                                     initialSeparation="70%"
                                     orientation="horizontal"
