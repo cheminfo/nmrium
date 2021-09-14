@@ -1,65 +1,39 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { Toolbar } from 'analysis-ui-components';
 import {
   useCallback,
   useState,
   useEffect,
-  cloneElement,
-  CSSProperties,
   ReactElement,
   JSXElementConstructor,
 } from 'react';
 
-const styles = css`
-  width: 35px;
-  height: 35px;
-  background-color: white;
-  padding: 5px;
-  margin: 0px;
-  border: none;
-  outline: none;
-
-  :focus {
-    outline: none !important;
-  }
-`;
-const activeStyles = css`
-  color: black;
-  background-color: #f3f3f3 !important;
-`;
-
 interface ToggleButtonProps {
   isActive?: boolean;
-  disabled?: boolean;
-  isVisible?: boolean;
-  className?: string;
   value?: any;
   onChange?: (value: any) => null;
-
   children: ReactElement<any, string | JSXElementConstructor<any>>;
-  style?: CSSProperties;
-  onMouseEnter?: (element: any) => void;
-  onMouseLeave?: () => void;
-  helpID?: string;
+  isVisible?: boolean;
 }
 
-function ToggleButton({
-  children,
-  value = null,
-  disabled = false,
-  isActive = false,
-  onChange = () => null,
-  className = '',
-  style = {},
-  isVisible = true,
-  onMouseEnter,
-  onMouseLeave,
-  helpID,
-}: ToggleButtonProps) {
-  const [active, setActive] = useState(isActive);
+export default function ToggleButton(
+  props: ToggleButtonProps & { title: string; id: string },
+) {
+  const {
+    children,
+    value = null,
+    isActive = false,
+    onChange = () => null,
+    isVisible = true,
+    id,
+    title,
+  } = props;
+
+  const [active, setActive] = useState(props.isActive);
+
   const toggleButton = useCallback(() => {
     const _isActive = !active;
     setActive(_isActive);
+
     if (_isActive) {
       onChange(value);
     } else {
@@ -76,21 +50,8 @@ function ToggleButton({
   }
 
   return (
-    <button
-      type="button"
-      onClick={toggleButton}
-      css={[styles, active && activeStyles]}
-      style={style}
-      className={active ? ` ${className}  active` : ` ${className} `}
-      disabled={disabled}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      data-helpid={helpID}
-      data-test-id={`tool-${value}`}
-    >
-      {cloneElement(children, { style: { fontSize: '10px' } })}
-    </button>
+    <Toolbar.Item onClick={toggleButton} title={title} id={id} active={active}>
+      {children}
+    </Toolbar.Item>
   );
 }
-
-export default ToggleButton;

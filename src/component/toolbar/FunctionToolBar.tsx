@@ -21,8 +21,6 @@ import { Info as Datum2DInfo, Data2D } from '../../data/data2d/Spectrum2D';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
-import ToolTip from '../elements/ToolTip/ToolTip';
-import { useHelp } from '../elements/popup/Help/Context';
 import ToggleButton from '../elements/toggle/ToggleButton';
 import ToggleButtonGroup from '../elements/toggle/ToggleButtonGroup';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
@@ -35,19 +33,17 @@ import { options } from './ToolTypes';
 
 const styles = css`
   button {
-    background-color: transparent;
     border: none;
-    width: 35px;
-    height: 35px;
-    min-height: 35px;
+    width: 30px;
+    height: 30px;
+    min-height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     outline: outline;
     :focus {
       outline: none !important;
-    }import { Datum1D } from './../../data/data1d/Spectrum1D';
-
+    }
 
     &.fa {
       svg {
@@ -80,7 +76,6 @@ function FunctionToolBarInner({
   ftCounter,
 }: FunctionToolBarInnerProps) {
   const [option, setOption] = useState<string>('');
-  const help = useHelp();
   const preferences = usePreferences();
 
   const dispatch = useDispatch();
@@ -126,18 +121,12 @@ function FunctionToolBarInner({
           <ToggleButton
             key={options.zoom.id}
             value={options.zoom.id}
-            {...help.onHover}
-            helpID="zoomIn"
-            className="fa"
+            id="zoomIn"
+            title={`${options.zoom.label} ( Press z )`}
           >
-            <ToolTip
-              title={`${options.zoom.label} ( Press z )`}
-              popupPlacement="right"
-              offset={{ x: 10, y: 0 }}
-              style={{ display: 'flex' }}
-            >
+            <div style={{ fontSize: 14 }}>
               <FaSearchPlus />
-            </ToolTip>
+            </div>
           </ToggleButton>
         )}
 
@@ -147,7 +136,9 @@ function FunctionToolBarInner({
             onClick={handleFullZoomOut}
             title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
           >
-            <FaExpand />
+            <div style={{ fontSize: 14 }}>
+              <FaExpand />
+            </div>
           </Toolbar.Item>
         )}
 
@@ -156,18 +147,11 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.peakPicking.id}
               value={options.peakPicking.id}
-              className="cheminfo"
+              title={`${options.peakPicking.label} ( Press p )`}
               isVisible={activeSpectrum && !info?.isFid ? true : false}
-              {...help.onHover}
-              helpID="peakPicking"
+              id="peakPicking"
             >
-              <ToolTip
-                title={`${options.peakPicking.label} ( Press p )`}
-                popupPlacement="right"
-                offset={{ x: 10, y: 0 }}
-              >
-                <SvgNmrPeakPicking />
-              </ToolTip>
+              <SvgNmrPeakPicking />
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -175,18 +159,11 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.integral.id}
               value={options.integral.id}
-              className="cheminfo"
               isVisible={activeSpectrum && !info?.isFid ? true : false}
-              {...help.onHover}
-              helpID="integralPicking"
+              id="integralPicking"
+              title={`${options.integral.label} ( Press i )`}
             >
-              <ToolTip
-                title={`${options.integral.label} ( Press i )`}
-                popupPlacement="right"
-                offset={{ x: 10, y: 0 }}
-              >
-                <SvgNmrIntegrate />
-              </ToolTip>
+              <SvgNmrIntegrate />
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_2D &&
@@ -194,16 +171,11 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.zone2D.id}
               value={options.zone2D.id}
-              className="fa"
+              id="zone2d"
               isVisible={activeSpectrum && !info?.isFid ? true : false}
+              title={`${options.zone2D.label} ( Press r )`}
             >
-              <ToolTip
-                title={`${options.zone2D.label} ( Press r )`}
-                popupPlacement="right"
-                offset={{ x: 10, y: 0 }}
-              >
-                <FaDiceFour />
-              </ToolTip>
+              <FaDiceFour />
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_2D && (
@@ -211,14 +183,10 @@ function FunctionToolBarInner({
             key={options.slicingTool.id}
             value={options.slicingTool.id}
             isVisible={activeSpectrum && !info?.isFid ? true : false}
+            id="slic"
+            title={`${options.slicingTool.label}`}
           >
-            <ToolTip
-              title={`${options.slicingTool.label}`}
-              popupPlacement="right"
-              offset={{ x: 10, y: 0 }}
-            >
-              Slic
-            </ToolTip>
+            <p>Slic</p>
           </ToggleButton>
         )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -226,16 +194,11 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.rangesPicking.id}
               value={options.rangesPicking.id}
-              className="cheminfo"
               isVisible={activeSpectrum && !info?.isFid ? true : false}
+              title={options.rangesPicking.label}
+              id="ranges-pick"
             >
-              <ToolTip
-                title={options.rangesPicking.label}
-                popupPlacement="right"
-                offset={{ x: 10, y: 0 }}
-              >
-                <SvgNmrRangePicking />
-              </ToolTip>
+              <SvgNmrRangePicking />
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -245,15 +208,10 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.multipleSpectraAnalysis.id}
               value={options.multipleSpectraAnalysis.id}
-              className="cheminfo"
+              id="multipleSpectraAnalysis"
+              title={options.multipleSpectraAnalysis.label}
             >
-              <ToolTip
-                title={options.multipleSpectraAnalysis.label}
-                popupPlacement="right"
-                offset={{ x: 10, y: 0 }}
-              >
-                <SvgNmrMultipleAnalysis />
-              </ToolTip>
+              <SvgNmrMultipleAnalysis />
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -261,16 +219,11 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.zeroFilling.id}
               value={options.zeroFilling.id}
-              className="cheminfo"
               isVisible={Filters.zeroFilling.isApplicable({ info })}
+              id="zeroFilling"
+              title={options.zeroFilling.label}
             >
-              <ToolTip
-                title={options.zeroFilling.label}
-                popupPlacement="right"
-                offset={{ x: 10, y: 0 }}
-              >
-                <SvgNmrZeroFilling />
-              </ToolTip>
+              <SvgNmrZeroFilling />
             </ToggleButton>
           )}
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -278,7 +231,8 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.phaseCorrection.id}
               value={options.phaseCorrection.id}
-              className="cheminfo"
+              id="phaseCorrection"
+              title={options.phaseCorrection.label}
               isVisible={
                 activeSpectrum &&
                 info &&
@@ -288,13 +242,7 @@ function FunctionToolBarInner({
                   : false
               }
             >
-              <ToolTip
-                title={options.phaseCorrection.label}
-                popupPlacement="right"
-                offset={{ x: 10, y: 0 }}
-              >
-                <SvgNmrPhaseCorrection />
-              </ToolTip>
+              <SvgNmrPhaseCorrection />
             </ToggleButton>
           )}
 
@@ -303,7 +251,8 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.baseLineCorrection.id}
               value={options.baseLineCorrection.id}
-              className="cheminfo"
+              id="baseLineCorrection"
+              title={options.baseLineCorrection.label}
               isVisible={
                 activeSpectrum &&
                 info &&
@@ -312,13 +261,7 @@ function FunctionToolBarInner({
                   : false
               }
             >
-              <ToolTip
-                title={options.baseLineCorrection.label}
-                popupPlacement="right"
-                offset={{ x: 10, y: 0 }}
-              >
-                <SvgNmrBaselineCorrection />
-              </ToolTip>
+              <SvgNmrBaselineCorrection />
             </ToggleButton>
           )}
 
@@ -329,15 +272,12 @@ function FunctionToolBarInner({
             <ToggleButton
               key={options.exclusionZones.id}
               value={options.exclusionZones.id}
-              className="cheminfo"
+              title={options.exclusionZones.label}
+              id="exclusionZones"
             >
-              <ToolTip
-                title={options.exclusionZones.label}
-                popupPlacement="right"
-                offset={{ x: 10, y: 0 }}
-              >
+              <div style={{ fontSize: 18 }}>
                 <SvgNmrMultipleAnalysis />
-              </ToolTip>
+              </div>
             </ToggleButton>
           )}
       </ToggleButtonGroup>

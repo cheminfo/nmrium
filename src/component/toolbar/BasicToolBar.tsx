@@ -42,9 +42,9 @@ import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
 const styles = css`
   background-color: transparent;
   border: none;
-  width: 35px;
-  height: 35px;
-  min-height: 35px;
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -334,11 +334,13 @@ function BasicToolBarInner({
             onClick={alignSpectrumsVerticallyHandler}
             className="cheminfo"
           >
-            {!verticalAlign.flag ? (
-              <SvgNmrAlignCenter />
-            ) : (
-              <SvgNmrAlignBottom />
-            )}
+            <div style={{ fontSize: 24 }}>
+              {!verticalAlign.flag ? (
+                <SvgNmrAlignCenter />
+              ) : (
+                <SvgNmrAlignBottom />
+              )}
+            </div>
           </Toolbar.Item>
         )}
     </Fragment>

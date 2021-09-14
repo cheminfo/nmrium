@@ -12,11 +12,13 @@ interface ToolBarInnerProps {
 
 function ToolBarInner({ selectedTool }: ToolBarInnerProps) {
   return (
-    <Toolbar orientation="vertical">
-      <FunctionToolBar defaultValue={selectedTool} />
-      {/* <HistoryToolBar /> */}
-      <BasicToolBar />
-    </Toolbar>
+    <div style={{ fontSize: 18 }}>
+      <Toolbar orientation="vertical">
+        <FunctionToolBar defaultValue={selectedTool} />
+        {/* <HistoryToolBar /> */}
+        <BasicToolBar />
+      </Toolbar>
+    </div>
   );
 }
 

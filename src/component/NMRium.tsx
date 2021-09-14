@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import { RootLayout, SplitPane, Toolbar } from 'analysis-ui-components';
+import { RootLayout, SplitPane } from 'analysis-ui-components';
 import lodashGet from 'lodash/get';
 import {
   useEffect,
@@ -335,7 +335,7 @@ function NMRium({
                                 >
                                   <ToolBar />
                                   <SplitPane
-                                    initialSeparation="70%"
+                                    initialSeparation="50%"
                                     orientation="horizontal"
                                   >
                                     <DropZone>

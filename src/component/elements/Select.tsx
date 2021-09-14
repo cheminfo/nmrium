@@ -54,6 +54,7 @@ const Select = forwardRef(function Select(
     background-size: 15px 15px;
     border-radius: 5px;
     margin: 0px 5px;
+    align-self: center;
     :focus,
     input:focus {
       outline: none;
