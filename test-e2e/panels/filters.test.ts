@@ -8,7 +8,7 @@ async function open13CFidSpectrum(nmrium: NmriumPage) {
 }
 
 async function zeroFillingFilter(nmrium: NmriumPage) {
-  await nmrium.page.click('data-test-id=tool-zeroFilling');
+  await nmrium.clickTool('zeroFilling');
   await nmrium.page.click('button >> text=Apply');
 
   await expect(
@@ -20,7 +20,7 @@ async function zeroFillingFilter(nmrium: NmriumPage) {
 }
 
 async function fourierTransformFilter(nmrium: NmriumPage) {
-  await nmrium.page.click('data-test-id=tool-FFT-filter');
+  await nmrium.clickTool('fft-filter');
 
   await expect(
     nmrium.page.locator('data-test-id=filters-table >> text=FFT'),
@@ -28,7 +28,7 @@ async function fourierTransformFilter(nmrium: NmriumPage) {
 }
 
 async function phaseCorrectionFilter(nmrium: NmriumPage) {
-  await nmrium.page.click('data-test-id=tool-phaseCorrection');
+  await nmrium.clickTool('phaseCorrection');
   await nmrium.page.fill('data-test-id=input-ph1', '-100');
   await nmrium.page.fill('data-test-id=input-ph0', '-104');
   await nmrium.page.click('button >> text=Apply');
@@ -40,7 +40,7 @@ async function phaseCorrectionFilter(nmrium: NmriumPage) {
 }
 
 async function baselineCorrectionFilter(nmrium: NmriumPage) {
-  await nmrium.page.click('data-test-id=tool-baseLineCorrection');
+  await nmrium.clickTool('baseLineCorrection');
   await nmrium.page.click('button >> text=Apply');
   /* TODO: Find out why this is flaky.
   await expect(

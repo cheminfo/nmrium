@@ -282,7 +282,12 @@ function DropZone(props) {
         {isDragActive && (
           <div
             css={style}
-            style={{ width: `${width + 41}px`, height: `${height}px` }}
+            style={{
+              width: `${width}px`,
+              height: `${height}px`,
+              marginTop: '30px',
+              marginLeft: '30px',
+            }}
           >
             <FaUpload />
             <p>Drop your files here</p>

@@ -40,7 +40,6 @@ const styles = css`
       height: 100%;
       padding: 0px;
       .mol-svg-container {
-        height: calc(100% - 25px);
         width: 100%;
         div {
           width: 100%;
@@ -58,10 +57,7 @@ const styles = css`
 
       svg polygon {
         fill: gray !important;
-      }import useSpectrum from './../../hooks/useSpectrum';
-import { Datum1D } from './../../../data/data1d/Spectrum1D';
-import { Zones } from './../../../data/data2d/Spectrum2D';
-
+      }
     }
   }
 `;

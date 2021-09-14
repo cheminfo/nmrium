@@ -60,6 +60,15 @@ import {
 } from './reducer/types/Types';
 import ToolBar from './toolbar/ToolBar';
 
+const viewerContainerStyle = css`
+  border: 0.55px #e6e6e6 solid;
+  display: flex;
+  flex: 1;
+  flex-direction: 'column';
+  height: 100%;
+  margin-left: -1px;
+`;
+
 const containerStyles = css`
   background-color: white;
   width: 100%;
@@ -314,65 +323,68 @@ function NMRium({
                               onContextMenu={preventContextMenuHandler}
                               style={{ height: '100%', width: '100%' }}
                             >
-                              <RootLayout
-                                style={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  backgroundColor: 'white',
-                                }}
-                              >
-                                <Header
-                                  isFullscreen={isFullscreen}
-                                  onMaximize={toggle}
-                                />
-
-                                <div
+                              <DropZone>
+                                <RootLayout
                                   style={{
                                     display: 'flex',
-                                    flexDirection: 'row',
-                                    height: '100%',
+                                    flexDirection: 'column',
+                                    backgroundColor: 'white',
                                   }}
                                 >
-                                  <ToolBar />
-                                  <SplitPane
-                                    initialSeparation="50%"
-                                    orientation="horizontal"
-                                  >
-                                    <DropZone>
-                                      <KeysListenerTracker />
-                                      <div
-                                        style={{
-                                          width: '100%',
-                                          height: '100%',
-                                        }}
-                                      >
-                                        {displayerMode ===
-                                        DISPLAYER_MODE.DM_1D ? (
-                                          <Viewer1D emptyText={emptyText} />
-                                        ) : (
-                                          <Viewer2D emptyText={emptyText} />
-                                        )}
-                                      </div>
-                                    </DropZone>
-                                    <Panels />
-                                  </SplitPane>
+                                  <Header
+                                    isFullscreen={isFullscreen}
+                                    onMaximize={toggle}
+                                  />
 
                                   <div
-                                    ref={elementsWraperRef}
-                                    key={String(isFullscreen)}
-                                    id="main-wrapper"
                                     style={{
-                                      position: 'absolute',
-                                      pointerEvents: 'none',
-                                      zIndex: 0,
-                                      left: 0,
-                                      right: 0,
-                                      top: 0,
-                                      bottom: 0,
+                                      display: 'flex',
+                                      flexDirection: 'row',
+                                      height: '100%',
                                     }}
-                                  />
-                                </div>
-                              </RootLayout>
+                                  >
+                                    <ToolBar />
+                                    <SplitPane
+                                      initialSeparation="50%"
+                                      orientation="horizontal"
+                                    >
+                                      <div css={viewerContainerStyle}>
+                                        <KeysListenerTracker />
+                                        <div
+                                          data-test-id="viewer"
+                                          style={{
+                                            width: '100%',
+                                            height: '100%',
+                                          }}
+                                        >
+                                          {displayerMode ===
+                                          DISPLAYER_MODE.DM_1D ? (
+                                            <Viewer1D emptyText={emptyText} />
+                                          ) : (
+                                            <Viewer2D emptyText={emptyText} />
+                                          )}
+                                        </div>
+                                      </div>
+                                      <Panels />
+                                    </SplitPane>
+
+                                    <div
+                                      ref={elementsWraperRef}
+                                      key={String(isFullscreen)}
+                                      id="main-wrapper"
+                                      style={{
+                                        position: 'absolute',
+                                        pointerEvents: 'none',
+                                        zIndex: 0,
+                                        left: 0,
+                                        right: 0,
+                                        top: 0,
+                                        bottom: 0,
+                                      }}
+                                    />
+                                  </div>
+                                </RootLayout>
+                              </DropZone>
                             </div>
                           </SpinnerProvider>
                         </AssignmentProvider>
@@ -388,5 +400,4 @@ function NMRium({
     </ErrorBoundary>
   );
 }
-
 export default memo(NMRium);

@@ -9,7 +9,7 @@ async function addPeaks(nmrium: NmriumPage) {
   const peakAnnotationLocator = nmrium.page.locator('_react=PeakAnnotation');
 
   // select peak picking tool
-  await nmrium.page.click('data-test-id=tool-peakPicking');
+  await nmrium.clickTool('peakPicking');
 
   // add peak by select range
   await createPeakInRange(nmrium, {
@@ -77,7 +77,7 @@ test('Automatic peak picking should work', async ({ page }) => {
   await nmrium.open1D();
 
   //select range tool
-  await nmrium.page.click('data-test-id=tool-peakPicking');
+  await nmrium.clickTool('peakPicking');
 
   //apply auto ranges detection
   await nmrium.page.click('button >> text=Apply');
