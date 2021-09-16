@@ -35,6 +35,7 @@ const styles: Record<
     flexDirection: 'column',
     height: '100%',
     display: 'flex',
+    width: '100%',
   },
   removeAssignmentsButton: {
     borderRadius: '5px',

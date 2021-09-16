@@ -19,6 +19,7 @@ const styles: Record<
     height: '100%',
     flexDirection: 'column',
     display: 'flex',
+    width: '100%',
   },
   tableContainer: {
     height: 'calc(100% - 30px)',

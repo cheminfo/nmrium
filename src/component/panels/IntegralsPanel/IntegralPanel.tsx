@@ -31,7 +31,7 @@ const styles = css`
   display: flex;
   flex-direction: column;
   height: 100%;
-
+  width: 100%;
   .sum-button {
     width: 22px;
     height: 22px;

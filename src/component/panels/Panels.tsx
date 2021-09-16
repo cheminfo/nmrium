@@ -128,21 +128,23 @@ function PanelsInner({ selectedTool, displayerMode }) {
   );
 
   return (
-    <Accordion>
-      {accordionItems.map((item, index) => {
-        return (
-          check(item) && (
-            <Accordion.Item
-              key={`${item.title}-${index}`}
-              title={item.title}
-              defaultOpened={index === panelIndex}
-            >
-              {item.component}
-            </Accordion.Item>
-          )
-        );
-      })}
-    </Accordion>
+    <div style={{ width: '100%', height: '100%', flex: '1 1 0%' }}>
+      <Accordion>
+        {accordionItems.map((item, index) => {
+          return (
+            check(item) && (
+              <Accordion.Item
+                key={`${item.title}-${index}`}
+                title={item.title}
+                defaultOpened={index === panelIndex}
+              >
+                {item.component}
+              </Accordion.Item>
+            )
+          );
+        })}
+      </Accordion>
+    </div>
   );
 }
 
