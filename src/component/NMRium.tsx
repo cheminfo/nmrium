@@ -345,8 +345,9 @@ function NMRium({
                                   >
                                     <ToolBar />
                                     <SplitPane
-                                      initialSeparation="50%"
+                                      initialSeparation="35%"
                                       orientation="horizontal"
+                                      sideSeparation="end"
                                     >
                                       <div css={viewerContainerStyle}>
                                         <KeysListenerTracker />
