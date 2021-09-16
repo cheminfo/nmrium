@@ -104,6 +104,7 @@ const accordionItems = [
 function PanelsInner({ selectedTool, displayerMode }) {
   const [panelIndex, setSelectedPanelIndex] = useState<number | null>(0);
   const preferences = usePreferences();
+
   useEffect(() => {
     function getDefaultIndex() {
       const index = accordionItems.findIndex((item) =>
@@ -131,12 +132,19 @@ function PanelsInner({ selectedTool, displayerMode }) {
     <div style={{ width: '100%', height: '100%', flex: '1 1 0%' }}>
       <Accordion>
         {accordionItems.map((item, index) => {
+          let isOpen = false;
+          if (index === 0 && panelIndex === null) {
+            isOpen = true;
+          } else {
+            isOpen = index === panelIndex;
+          }
+
           return (
             check(item) && (
               <Accordion.Item
                 key={`${item.title}-${index}`}
                 title={item.title}
-                defaultOpened={index === panelIndex}
+                defaultOpened={isOpen}
               >
                 {item.component}
               </Accordion.Item>
