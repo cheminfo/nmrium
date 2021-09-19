@@ -345,7 +345,7 @@ function NMRium({
                                   >
                                     <ToolBar />
                                     <SplitPane
-                                      initialSeparation="35%"
+                                      initialSeparation="590px"
                                       orientation="horizontal"
                                       sideSeparation="end"
                                     >

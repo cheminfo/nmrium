@@ -10,7 +10,6 @@ const styles: Record<
   CSSProperties
 > = {
   container: {
-    padding: '5px',
     height: '100%',
     display: 'flex',
     fontSize: '12px',
