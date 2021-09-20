@@ -7,7 +7,6 @@ import {
   useEffect,
   useCallback,
   useReducer,
-  useState,
   useMemo,
   useRef,
   memo,
@@ -220,8 +219,6 @@ function NMRium({
     },
   });
 
-  const [isResizeEventStart] = useState(false);
-
   const [state, dispatch] = useReducer<Reducer<State, any>, State>(
     spectrumReducer,
     initialState,
@@ -286,11 +283,6 @@ function NMRium({
     dispatchMiddleWare({ type: SET_MOUSE_OVER_DISPLAYER, payload: false });
   }, [dispatchMiddleWare]);
 
-  const chartDataContextValue = useMemo(
-    () => ({ ...state, isResizeEventStart }),
-    [state, isResizeEventStart],
-  );
-
   return (
     <ErrorBoundary FallbackComponent={ErrorOverlay}>
       <GlobalProvider
@@ -311,7 +303,7 @@ function NMRium({
             >
               <AlertProvider wrapperRef={elementsWraperRef.current}>
                 <DispatchProvider value={dispatchMiddleWare}>
-                  <ChartDataProvider value={chartDataContextValue}>
+                  <ChartDataProvider value={state}>
                     <ModalProvider wrapperRef={elementsWraperRef.current}>
                       <HighlightProvider>
                         <AssignmentProvider spectraData={spectraData}>
