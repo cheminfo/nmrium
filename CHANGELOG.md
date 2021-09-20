@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.18.4](https://www.github.com/cheminfo/nmrium/compare/v0.18.3...v0.18.4) (2021-09-20)
+
+
+### Bug Fixes
+
+* crashes due to missing plural name of peak in nmr-correlation ([#1237](https://www.github.com/cheminfo/nmrium/issues/1237)) ([907ade3](https://www.github.com/cheminfo/nmrium/commit/907ade3e0a1f1e9535f3ddc7f60164c64ceab868))
+
 ### [0.18.3](https://www.github.com/cheminfo/nmrium/compare/v0.18.2...v0.18.3) (2021-09-05)
 
 
