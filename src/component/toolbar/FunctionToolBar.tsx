@@ -65,6 +65,7 @@ interface FunctionToolBarInnerProps {
   displayerMode: DISPLAYER_MODE;
   info: Datum1DInfo | Datum2DInfo;
   datum: Data1D | Data2D;
+  mode: string;
 }
 
 function FunctionToolBarInner({
@@ -74,6 +75,7 @@ function FunctionToolBarInner({
   datum,
   displayerMode,
   ftCounter,
+  mode,
 }: FunctionToolBarInnerProps) {
   const [option, setOption] = useState<string>('');
   const preferences = usePreferences();
@@ -204,7 +206,7 @@ function FunctionToolBarInner({
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideMultipleSpectraAnalysisTool') &&
           ftCounter > 1 &&
-          (info?.isFt || !activeSpectrum) && (
+          mode === 'RTL' && (
             <ToggleButton
               key={options.multipleSpectraAnalysis.id}
               value={options.multipleSpectraAnalysis.id}
@@ -306,7 +308,7 @@ export default function FunctionToolBar({
 }: {
   defaultValue?: string;
 }) {
-  const { activeSpectrum, verticalAlign, displayerMode, activeTab } =
+  const { activeSpectrum, verticalAlign, displayerMode, activeTab, mode } =
     useChartData();
 
   const data = useDatumWithSpectraStatistics();
@@ -320,6 +322,7 @@ export default function FunctionToolBar({
         displayerMode,
         activeTab,
         defaultValue,
+        mode,
       }}
     />
   );
