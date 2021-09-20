@@ -1,10 +1,9 @@
+import { Accordion } from 'analysis-ui-components';
 import lodashGet from 'lodash/get';
 import { useCallback, useState, useEffect, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
-import Accordion from '../elements/accordion/Accordion';
-import AccordionItem from '../elements/accordion/AccordionItem';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { options } from '../toolbar/ToolTypes';
 
@@ -105,6 +104,7 @@ const accordionItems = [
 function PanelsInner({ selectedTool, displayerMode }) {
   const [panelIndex, setSelectedPanelIndex] = useState<number | null>(0);
   const preferences = usePreferences();
+
   useEffect(() => {
     function getDefaultIndex() {
       const index = accordionItems.findIndex((item) =>
@@ -129,21 +129,30 @@ function PanelsInner({ selectedTool, displayerMode }) {
   );
 
   return (
-    <Accordion defaultOpenIndex={panelIndex}>
-      {accordionItems.map((item) => {
-        return (
-          check(item) && (
-            <AccordionItem
-              key={item.title}
-              title={item.title}
-              style={item.style}
-            >
-              {item.component}
-            </AccordionItem>
-          )
-        );
-      })}
-    </Accordion>
+    <div style={{ width: '100%', height: '100%', flex: '1 1 0%' }}>
+      <Accordion>
+        {accordionItems.map((item, index) => {
+          let isOpen = false;
+          if (index === 0 && panelIndex === null) {
+            isOpen = true;
+          } else {
+            isOpen = index === panelIndex;
+          }
+
+          return (
+            check(item) && (
+              <Accordion.Item
+                key={`${item.title}-${index}`}
+                title={item.title}
+                defaultOpened={isOpen}
+              >
+                {item.component}
+              </Accordion.Item>
+            )
+          );
+        })}
+      </Accordion>
+    </div>
   );
 }
 

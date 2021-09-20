@@ -46,6 +46,7 @@ const styles: Record<
     flexDirection: 'column',
     height: '100%',
     display: 'flex',
+    width: '100%',
   },
   sumButton: {
     borderRadius: '5px',

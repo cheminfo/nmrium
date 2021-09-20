@@ -9,7 +9,6 @@ import {
 const styles: Record<'container' | 'label', CSSProperties> = {
   container: {
     width: '100%',
-    height: '100%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -27,6 +26,8 @@ const styles: Record<'container' | 'label', CSSProperties> = {
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     maxWidth: '100%',
+    paddingLeft: '5px',
+    paddingRight: '5px',
   },
 };
 

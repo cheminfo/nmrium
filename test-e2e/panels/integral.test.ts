@@ -70,7 +70,7 @@ test('Should Integrals Add/resize/delete', async ({ page }) => {
   await nmrium.open1D();
 
   // Select integral tool
-  await nmrium.page.click('data-test-id=tool-integral');
+  await nmrium.clickTool('integralPicking');
 
   // Test add two integrals
   await addIntegral(nmrium, 50, 70, 0);

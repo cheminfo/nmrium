@@ -10,9 +10,9 @@ const styles = {
   button: {
     backgroundColor: 'transparent',
     border: 'none',
-    width: '35px',
-    height: '35px',
-    minHeight: '35px',
+    width: '30px',
+    height: '30px',
+    minHeight: '30px',
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: '20px',

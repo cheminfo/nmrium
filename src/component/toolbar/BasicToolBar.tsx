@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Toolbar } from 'analysis-ui-components';
 import {
   SvgNmrRealImag,
   SvgNmrOverlay3,
@@ -26,9 +27,9 @@ import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
 import MenuButton from '../elements/MenuButton';
-import ToolTip from '../elements/ToolTip/ToolTip';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import useDatumWithSpectraStatistics from '../hooks/useDatumWithSpectraStatistics';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
@@ -37,14 +38,13 @@ import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { ActiveSpectrum } from '../reducer/Reducer';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
-import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 
 const styles = css`
   background-color: transparent;
   border: none;
-  width: 35px;
-  height: 35px;
-  min-height: 35px;
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -296,67 +296,52 @@ function BasicToolBarInner({
         isButtonVisible('hideSpectraStackAlignments') &&
         ftCounter > 1 &&
         (info?.isFt || !activeSpectrum) && (
-          <button
-            type="button"
-            css={styles}
+          <Toolbar.Item
+            id="spectra-alignment"
             className="cheminfo"
+            title="Spectra alignment ( Press s )"
             onClick={changeDisplayViewModeHandler}
           >
-            <ToolTip
-              title="Spectra alignment ( Press s )"
-              popupPlacement="right"
-            >
-              {verticalAlign.stacked ? (
-                <SvgNmrOverlay3Aligned />
-              ) : (
-                <SvgNmrOverlay3 />
-              )}
-            </ToolTip>
-          </button>
+            {verticalAlign.stacked ? (
+              <SvgNmrOverlay3Aligned />
+            ) : (
+              <SvgNmrOverlay3 />
+            )}
+          </Toolbar.Item>
         )}
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('hideRealImaginary') &&
         info.isComplex && (
-          <button
-            css={styles}
-            className="cheminfo"
-            type="button"
+          <Toolbar.Item
+            id="display"
+            title={isRealSpectrumShown ? 'Display Real ' : 'Display Imaginary'}
             onClick={changeSpectrumViewHandler}
+            className="cheminfo"
           >
-            <ToolTip
-              title={
-                isRealSpectrumShown ? 'Display Real ' : 'Display Imaginary '
-              }
-              popupPlacement="right"
-            >
-              <SvgNmrRealImag />
-            </ToolTip>
-          </button>
+            <SvgNmrRealImag />
+          </Toolbar.Item>
         )}
       {displayerMode === DISPLAYER_MODE.DM_1D &&
         isButtonVisible('hideSpectraCenterAlignments') &&
         (ftCounter > 0 || fidCounter > 0) && (
-          <button
-            css={styles}
-            className="cheminfo"
-            type="button"
+          <Toolbar.Item
+            id="baseline-position"
+            title={
+              !verticalAlign.flag
+                ? 'Baseline  Center ( Press c )'
+                : 'Baseline  Bottom ( Press c )'
+            }
             onClick={alignSpectrumsVerticallyHandler}
+            className="cheminfo"
           >
-            <ToolTip
-              title={
-                !verticalAlign.flag
-                  ? 'Baseline  Center ( Press c )'
-                  : 'Baseline  Bottom ( Press c )'
-              }
-              popupPlacement="right"
-            >
+            <div style={{ fontSize: 24 }}>
               {!verticalAlign.flag ? (
                 <SvgNmrAlignCenter />
               ) : (
                 <SvgNmrAlignBottom />
               )}
-            </ToolTip>
-          </button>
+            </div>
+          </Toolbar.Item>
         )}
     </Fragment>
   );

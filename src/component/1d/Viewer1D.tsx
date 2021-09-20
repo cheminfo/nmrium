@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  Fragment,
-  useEffect,
-  useState,
-  useReducer,
-  ReactNode,
-} from 'react';
+import { useCallback, useEffect, useState, useReducer, ReactNode } from 'react';
 import { useSize, useDebounce } from 'react-use';
 
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
@@ -270,7 +263,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
   const [sizedNMRChart, { width, height }] = useSize(() => {
     return (
-      <Fragment>
+      <div style={{ height: '100%' }}>
         <Spinner isLoading={isLoading} emptyText={emptyText} />
 
         {scaleState.scaleX && scaleState.scaleY && data && data.length > 0 && (
@@ -307,7 +300,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
             </MouseTracker>
           </BrushTracker>
         )}
-      </Fragment>
+      </div>
     );
   });
 

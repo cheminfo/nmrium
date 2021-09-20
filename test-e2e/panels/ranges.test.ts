@@ -57,7 +57,7 @@ test('Should ranges Add/resize/delete', async ({ page }) => {
   await nmrium.open1D();
 
   //select range tool
-  await nmrium.page.click('data-test-id=tool-rangesPicking');
+  await nmrium.clickTool('ranges-pick');
 
   //add two ranges
   await addRange(nmrium, 50, 60, 1);
@@ -75,7 +75,7 @@ test('Automatic ranges detection should work', async ({ page }) => {
   await nmrium.open1D();
 
   //select range tool
-  await nmrium.page.click('data-test-id=tool-rangesPicking');
+  await nmrium.clickTool('ranges-pick');
 
   //apply auto ranges detection
   await nmrium.page.click('data-test-id=auto-ranges-detection-btn');

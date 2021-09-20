@@ -42,6 +42,7 @@ const styles: Record<'container' | 'button', CSSProperties> = {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+    width: '100%',
   },
   button: {
     backgroundColor: 'transparent',

@@ -25,6 +25,10 @@ export default class NmriumPage {
   }
 
   public async clickPanel(title: string) {
-    await this.page.click(`data-test-id=panel-title-${title}`);
+    await this.page.click(`_react=AccordionItem[title="${title}"]`);
+  }
+
+  public async clickTool(id: string) {
+    await this.page.click(`_react=ToolbarItem[id="${id}"]`);
   }
 }
