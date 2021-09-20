@@ -13,7 +13,7 @@
   "scripts": {
     "build": "vite build --outDir build",
     "build-no-minify": "cross-env NO_MINIFY=true npm run build",
-    "build-with-profiling": "npm run build -- --mode profiling --sourcemap",
+    "build-with-profiling": "cross-env WITH_PROFILING=true npm run build",
     "check-types": "tsc --noEmit",
     "compile": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json",
     "clean-lib": "rimraf lib lib-cjs",
