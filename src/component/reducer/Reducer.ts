@@ -121,6 +121,7 @@ export const initialState: State = {
       activeFilterID: null,
       tempRange: null,
       showMultiplicityTrees: false,
+      showRangesIntegrals: false,
     },
   },
 };
@@ -358,10 +359,15 @@ export interface State {
        */
       tempRange: Range | null;
       /**
-       * boolean indicator to hid/show multiplicity tree
+       * boolean indicator to hide/show multiplicity tree
        * @default false
        */
       showMultiplicityTrees: boolean;
+      /**
+       * boolean indicator to hide/show integrals for the spectrum ranges
+       * @default false
+       */
+      showRangesIntegrals: boolean;
     };
   };
 }
@@ -646,7 +652,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.CHANGE_RANGES_SUM_FLAG:
       return RangesActions.handleChangeRangesSumFlag(draft, action);
     case types.CHANGE_RANGE_RELATIVE:
-      return RangesActions.handleChangeRangeRaltiveValue(draft, action);
+      return RangesActions.handleChangeRangeRelativeValue(draft, action);
     case types.CHANGE_RANGE_SIGNAL_VALUE:
       return RangesActions.handleChangeRangeSignalValue(draft, action);
     case types.CHANGE_RANGE_SIGNAL_KIND:
@@ -661,6 +667,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return RangesActions.handleChangeTempRange(draft, action);
     case types.SHOW_MULTIPLICTY_TREES:
       return RangesActions.handleShowMultiplicityTrees(draft);
+    case types.SHOW_RANGES_INTEGRALS:
+      return RangesActions.handleShowRangesIntegrals(draft);
     case types.AUTO_RANGES_SPECTRA_PICKING:
       return RangesActions.handleAutoSpectraRangesDetection(draft);
 

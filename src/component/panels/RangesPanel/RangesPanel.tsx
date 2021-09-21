@@ -95,6 +95,7 @@ interface RangesTablePanelInnerProps {
   activeTab: string;
   molecules: Array<Molecule>;
   showMultiplicityTrees: boolean;
+  showRangesIntegrals: boolean;
   preferences: any;
 }
 
@@ -107,6 +108,7 @@ function RangesTablePanelInner({
   activeTab,
   molecules,
   showMultiplicityTrees,
+  showRangesIntegrals,
 }: RangesTablePanelInnerProps) {
   const [isFilterActive, setFilterIsActive] = useState(false);
   const assignmentData = useAssignmentData();
@@ -232,16 +234,19 @@ function RangesTablePanelInner({
       <div style={styles.container}>
         {!isFlipped && (
           <RangesHeader
-            ranges={ranges}
-            info={info}
-            activeTab={activeTab}
-            molecules={molecules}
+            {...{
+              ranges,
+              info,
+              activeTab,
+              molecules,
+              showRangesIntegrals,
+              showMultiplicityTrees,
+              isFilterActive,
+            }}
             onUnlink={unlinkRangeHandler}
             onFilterActivated={filterHandler}
             onSettingClick={settingsPanelHandler}
-            isFilterActive={isFilterActive}
             filterCounter={rangesData.length}
-            showMultiplicityTrees={showMultiplicityTrees}
           />
         )}
         {isFlipped && (
@@ -289,7 +294,7 @@ export default function RangesTablePanel() {
     molecules,
     toolOptions: {
       selectedTool,
-      data: { showMultiplicityTrees },
+      data: { showMultiplicityTrees, showRangesIntegrals },
     },
   } = useChartData();
 
@@ -303,6 +308,7 @@ export default function RangesTablePanel() {
         data,
         info,
         showMultiplicityTrees,
+        showRangesIntegrals,
         selectedTool,
         displayerKey,
         preferences,

@@ -1,4 +1,4 @@
-import { SvgNmrSum } from 'cheminfo-font';
+import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
 import { useCallback } from 'react';
@@ -19,6 +19,7 @@ import {
   CHANGE_RANGE_SUM,
   DELETE_RANGE,
   SHOW_MULTIPLICTY_TREES,
+  SHOW_RANGES_INTEGRALS,
 } from '../../reducer/types/Types';
 import { copyHTMLToClipboard } from '../../utility/Export';
 import { getNumberOfDecimals } from '../../utility/FormatNumber';
@@ -59,6 +60,7 @@ function RangesHeader({
   isFilterActive,
   filterCounter,
   showMultiplicityTrees,
+  showRangesIntegrals,
 }) {
   const dispatch = useDispatch();
   const modal = useModal();
@@ -126,6 +128,9 @@ function RangesHeader({
 
   const handleSetShowMultiplicityTrees = useCallback(() => {
     dispatch({ type: SHOW_MULTIPLICTY_TREES });
+  }, [dispatch]);
+  const handleShowIntegrals = useCallback(() => {
+    dispatch({ type: SHOW_RANGES_INTEGRALS });
   }, [dispatch]);
 
   const saveToClipboardHandler = useCallback(
@@ -232,6 +237,14 @@ function RangesHeader({
         disabled={!ranges || !ranges.values || ranges.values.length === 0}
       >
         <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
+      </ToggleButton>
+      <ToggleButton
+        popupTitle={showRangesIntegrals ? 'Hide integrals' : 'Show integrals'}
+        popupPlacement="right"
+        onClick={handleShowIntegrals}
+        disabled={!ranges || !ranges.values || ranges.values.length === 0}
+      >
+        <SvgNmrIntegrate style={{ pointerEvents: 'none', fontSize: '12px' }} />
       </ToggleButton>
 
       <ToggleButton

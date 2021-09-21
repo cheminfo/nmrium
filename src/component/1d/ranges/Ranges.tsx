@@ -8,6 +8,7 @@ import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 
 import Range from './Range';
+import RangeIntegral from './RangeIntegral';
 
 interface RangesInnerProps {
   displayerKey: string;
@@ -15,6 +16,7 @@ interface RangesInnerProps {
   ranges: RangesProps;
   editRangeID: string;
   showMultiplicityTrees: boolean;
+  showRangesIntegrals: boolean;
 }
 
 function RangesInner({
@@ -23,17 +25,23 @@ function RangesInner({
   selectedTool,
   editRangeID,
   showMultiplicityTrees,
+  showRangesIntegrals,
 }: RangesInnerProps) {
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {ranges?.values?.map((range) => (
-        <Range
-          key={range.id}
-          rangeData={range}
-          selectedTool={selectedTool}
-          showMultiplicityTrees={showMultiplicityTrees}
-          startEditMode={editRangeID && editRangeID === range.id ? true : false}
-        />
+        <>
+          <Range
+            key={range.id}
+            rangeData={range}
+            selectedTool={selectedTool}
+            showMultiplicityTrees={showMultiplicityTrees}
+            startEditMode={
+              editRangeID && editRangeID === range.id ? true : false
+            }
+          />
+          {showRangesIntegrals && <RangeIntegral range={range} />}
+        </>
       ))}
     </g>
   );
@@ -48,7 +56,7 @@ export default function Ranges() {
     displayerKey,
     toolOptions: {
       selectedTool,
-      data: { tempRange, showMultiplicityTrees },
+      data: { tempRange, showMultiplicityTrees, showRangesIntegrals },
     },
   } = useChartData();
 
@@ -59,6 +67,7 @@ export default function Ranges() {
       {...{
         ranges,
         showMultiplicityTrees,
+        showRangesIntegrals,
         selectedTool,
         displayerKey,
         editRangeID: tempRange?.id || '',

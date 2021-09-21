@@ -14,7 +14,7 @@ import {
   detectRanges,
   updateIntegralRanges,
   changeRange,
-  changeRangesRealtive,
+  changeRangesRelative,
   Datum1D,
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
@@ -225,11 +225,11 @@ function handleAddRange(draft: Draft<State>, action) {
   }
 }
 
-function handleChangeRangeRaltiveValue(draft, action) {
+function handleChangeRangeRelativeValue(draft, action) {
   const data = action.payload.data;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeRangesRealtive(draft.data[index], data);
+    changeRangesRelative(draft.data[index], data);
   }
 }
 
@@ -276,13 +276,18 @@ function handleShowMultiplicityTrees(draft: Draft<State>) {
     !draft.toolOptions.data.showMultiplicityTrees;
 }
 
+function handleShowRangesIntegrals(draft: Draft<State>) {
+  draft.toolOptions.data.showRangesIntegrals =
+    !draft.toolOptions.data.showRangesIntegrals;
+}
+
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
   handleChangeRangeSum,
   handleAddRange,
   handleResizeRange,
-  handleChangeRangeRaltiveValue,
+  handleChangeRangeRelativeValue,
   handleChangeRangeSignalValue,
   handleChangeRangeSignalKind,
   handleSaveEditedRange,
@@ -291,5 +296,6 @@ export {
   handleChangeRangesSumFlag,
   handleChangeTempRange,
   handleShowMultiplicityTrees,
+  handleShowRangesIntegrals,
   handleAutoSpectraRangesDetection,
 };

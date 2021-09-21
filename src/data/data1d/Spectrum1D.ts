@@ -533,7 +533,7 @@ export function updateIntegralXShift(datum: Datum1D, shiftValue) {
   }));
 }
 
-export function changeRangesRealtive(datum, newRange) {
+export function changeRangesRelative(datum, newRange) {
   const index = datum.ranges.values.findIndex(
     (range) => range.id === newRange.id,
   );

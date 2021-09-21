@@ -50,11 +50,11 @@ function IntegralResizable({ integralData }: IntegralResizableProps) {
   const { scaleX } = useScaleChecked();
   const dispatch = useDispatch();
 
-  const [{ id, integral, from, to }, setIntgral] = useState(integralData);
+  const [{ id, integral, from, to }, setIntegral] = useState(integralData);
   const highlight = useHighlight([id], TYPES.INTEGRAL);
 
   useEffect(() => {
-    setIntgral(integralData);
+    setIntegral(integralData);
   }, [integralData]);
 
   const handleOnStopResizing = useCallback(
@@ -76,7 +76,7 @@ function IntegralResizable({ integralData }: IntegralResizableProps) {
   }, [highlight]);
 
   const dragHandler = useCallback((boundary) => {
-    setIntgral((integral) => ({ ...integral, ...boundary }));
+    setIntegral((integral) => ({ ...integral, ...boundary }));
   }, []);
 
   const x0 = from ? scaleX()(from) : 0;

@@ -1,4 +1,4 @@
-import { scaleLinear } from 'd3';
+import { scaleLinear, zoomIdentity } from 'd3';
 
 function getXScale(state, spectrumId: number | null | string = null) {
   const { width, margin, xDomains, xDomain, mode } = state;
@@ -36,4 +36,15 @@ function getIntegralYScale(state, spectrumId) {
   ]);
 }
 
-export { getXScale, getYScale, getIntegralYScale };
+function reScaleY(scale: number, { domain, height, margin }) {
+  const _scale = scaleLinear(domain, [height - margin.bottom, margin.top]);
+
+  const t = zoomIdentity
+    .translate(0, _scale(0))
+    .scale(scale)
+    .translate(0, -_scale(0));
+
+  return t.rescaleY(_scale).domain();
+}
+
+export { getXScale, getYScale, getIntegralYScale, reScaleY };
