@@ -1,9 +1,11 @@
+import { useToggleAccordion } from 'analysis-ui-components';
 import lodashDebounce from 'lodash/debounce';
 import lodashMap from 'lodash/map';
 import { useCallback, useRef, useState } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import { useAlert } from '../elements/popup/Alert';
+import { PANELS_ACCORDION } from '../panels/Panels';
 import { ZoomType } from '../reducer/actions/Zoom';
 import {
   CHANGE_SPECTRUM_DISPLAY_VIEW_MODE,
@@ -17,6 +19,8 @@ import { options } from '../toolbar/ToolTypes';
 export default function useToolsFunctions() {
   const dispatch = useDispatch();
   const alert = useAlert();
+
+  const { open: openPanel } = useToggleAccordion();
   const [isRealSpectrumShown, setIsRealSpectrumShown] = useState(false);
 
   const debounceClickEventsRef = useRef<{ clicks: Array<any> }>({ clicks: [] });
@@ -33,9 +37,20 @@ export default function useToolsFunctions() {
           'Press Shift + Left Mouse button to select zone for integral and peak picking',
         );
       }
-      dispatch({ type: SET_SELECTED_TOOL, payload: { selectedTool } });
+
+      if (
+        options[selectedTool].hasOptionPanel &&
+        Object.keys(PANELS_ACCORDION).includes(selectedTool)
+      ) {
+        openPanel(PANELS_ACCORDION[selectedTool]);
+      }
+
+      dispatch({
+        type: SET_SELECTED_TOOL,
+        payload: { selectedTool },
+      });
     },
-    [alert, dispatch],
+    [alert, dispatch, openPanel],
   );
 
   const handleFullZoomOut = useCallback(() => {

@@ -80,7 +80,7 @@ function resetTool(draft: Draft<State>, setDefaultTool = true) {
   // reset temp range
   draft.toolOptions.data.tempRange = null;
 
-  draft.toolOptions.selectedOptionPanel = null;
+  setSelectedOptionPanel(draft, null);
   if (setDefaultTool) {
     draft.toolOptions.selectedTool = options.zoom.id;
   }
@@ -124,7 +124,7 @@ function setSelectedTool(draft: Draft<State>, action) {
       draft.toolOptions.selectedTool = selectedTool;
 
       if (options[selectedTool].hasOptionPanel) {
-        draft.toolOptions.selectedOptionPanel = selectedTool;
+        setSelectedOptionPanel(draft, selectedTool);
       }
 
       if (options[selectedTool].isFilter) {

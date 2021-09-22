@@ -7,7 +7,7 @@ test('should load and migrate .nmrium data from version 0 to version 1', async (
 }) => {
   const nmrium = await NmriumPage.create(page);
 
-  await nmrium.page.click('_react=MenuButton[toolTip = "Import"]');
+  await nmrium.clickTool('menu-Import');
 
   const [fileChooser] = await Promise.all([
     nmrium.page.waitForEvent('filechooser'),
