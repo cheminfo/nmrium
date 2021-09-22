@@ -38,7 +38,10 @@ export default function useToolsFunctions() {
         );
       }
 
-      if (options[selectedTool].hasOptionPanel) {
+      if (
+        options[selectedTool].hasOptionPanel &&
+        Object.keys(PANELS_ACCORDION).includes(selectedTool)
+      ) {
         openPanel(PANELS_ACCORDION[selectedTool]);
       }
 
