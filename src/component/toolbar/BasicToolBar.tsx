@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { Toolbar } from 'analysis-ui-components';
 import {
   SvgNmrRealImag,
@@ -26,7 +24,7 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { usePreferences } from '../context/PreferencesContext';
-import MenuButton from '../elements/MenuButton';
+import ToolbarMenu from '../elements/ToolbarMenu';
 import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
@@ -38,32 +36,6 @@ import LoadJCAMPModal from '../modal/LoadJCAMPModal';
 import { ActiveSpectrum } from '../reducer/Reducer';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
-
-const styles = css`
-  background-color: transparent;
-  border: none;
-  width: 30px;
-  height: 30px;
-  min-height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  outline: outline;
-  :focus {
-    outline: none !important;
-  }
-
-  &.fa {
-    svg {
-      font-size: 14px;
-    }
-  }
-  &.cheminfo {
-    svg {
-      font-size: 24px;
-    }
-  }
-`;
 
 const IMPORT_MENU = [
   {
@@ -266,9 +238,7 @@ function BasicToolBarInner({
   return (
     <Fragment>
       {isButtonVisible('hideImport') && (
-        <MenuButton
-          style={styles}
-          className="fa"
+        <ToolbarMenu
           component={<FaFileImport />}
           toolTip="Import"
           onClick={(element) => {
@@ -279,9 +249,7 @@ function BasicToolBarInner({
         />
       )}
       {isButtonVisible('hideExportAs') && (
-        <MenuButton
-          style={styles}
-          className="fa"
+        <ToolbarMenu
           component={<FaFileExport />}
           toolTip="Export As"
           onClick={(element) => {
