@@ -1,6 +1,6 @@
 import { Accordion } from 'analysis-ui-components';
 import lodashGet from 'lodash/get';
-import { useCallback, useState, useEffect, memo } from 'react';
+import { useCallback, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
@@ -101,22 +101,15 @@ const accordionItems = [
   },
 ];
 
-function PanelsInner({ selectedTool, displayerMode }) {
-  const [panelIndex, setSelectedPanelIndex] = useState<number | null>(0);
-  const preferences = usePreferences();
+export const PANELS_ACCORDION: Record<string, string> = {
+  null: 'Spectra',
+  peakPicking: 'Peaks',
+  integral: 'Integrals',
+  rangesPicking: 'Ranges',
+};
 
-  useEffect(() => {
-    function getDefaultIndex() {
-      const index = accordionItems.findIndex((item) =>
-        item.openWhen?.includes(selectedTool),
-      );
-      return index !== -1 ? index : null;
-    }
-    const index = getDefaultIndex();
-    if (selectedTool) {
-      setSelectedPanelIndex(index);
-    }
-  }, [selectedTool]);
+function PanelsInner({ displayerMode }) {
+  const preferences = usePreferences();
 
   const check = useCallback(
     (item) => {
@@ -132,19 +125,12 @@ function PanelsInner({ selectedTool, displayerMode }) {
     <div style={{ width: '100%', height: '100%', flex: '1 1 0%' }}>
       <Accordion>
         {accordionItems.map((item, index) => {
-          let isOpen = false;
-          if (index === 0 && panelIndex === null) {
-            isOpen = true;
-          } else {
-            isOpen = index === panelIndex;
-          }
-
           return (
             check(item) && (
               <Accordion.Item
                 key={`${item.title}-${index}`}
                 title={item.title}
-                defaultOpened={isOpen}
+                defaultOpened={index === 0}
               >
                 {item.component}
               </Accordion.Item>
