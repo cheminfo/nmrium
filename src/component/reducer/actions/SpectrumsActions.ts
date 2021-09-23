@@ -158,7 +158,7 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
   }
   setActiveTab(draft, draft.activeTab, true);
 }
-function addMissingProjectionHander(draft, action) {
+function addMissingProjectionHandler(draft, action) {
   const state = original(draft);
   const { nucleus, usedColors } = action;
   if (draft.activeSpectrum?.id) {
@@ -197,6 +197,14 @@ function alignSpectraHandler(draft: Draft<State>, action) {
   setMode(draft);
 }
 
+function generateSpectrumFromPublicationStringHandler(
+  draft: Draft<State>,
+  action,
+) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const publicationString = action.payload.publicationText;
+}
+
 export {
   handleSpectrumVisibility,
   handleChangePeaksMarkersVisibility,
@@ -204,6 +212,7 @@ export {
   handleChangeSpectrumColor,
   changeSpectrumSetting,
   handleDeleteSpectra,
-  addMissingProjectionHander,
+  addMissingProjectionHandler,
   alignSpectraHandler,
+  generateSpectrumFromPublicationStringHandler,
 };

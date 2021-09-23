@@ -578,6 +578,16 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return SpectrumsActions.changeSpectrumSetting(draft, action);
     case types.ALIGN_SPECTRA:
       return SpectrumsActions.alignSpectraHandler(draft, action);
+    case types.DELETE_SPECTRA:
+      return SpectrumsActions.handleDeleteSpectra(draft, action);
+    case types.ADD_MISSING_PROJECTION:
+      return SpectrumsActions.addMissingProjectionHandler(draft, action);
+    case types.GENERATE_SPECTRUM_FROM_PUBLICATION_STRING:
+      return SpectrumsActions.generateSpectrumFromPublicationStringHandler(
+        draft,
+        action,
+      );
+
     case types.TOGGLE_REAL_IMAGINARY_VISIBILITY:
       return ToolsActions.handleToggleRealImaginaryVisibility(draft);
     case types.SET_ZOOM_FACTOR:
@@ -617,9 +627,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.SET_CORRELATIONS:
       return CorrelationsActions.handleSetCorrelations(draft, action.payload);
-
-    case types.DELETE_SPECTRA:
-      return SpectrumsActions.handleDeleteSpectra(draft, action);
 
     case types.SET_INTEGRAL_Y_DOMAIN:
       return DomainActions.handleChangeIntegralYDomain(draft, action.yDomain);
@@ -695,8 +702,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.add2dZoneHandler(draft, action);
     case types.DELETE_2D_ZONE:
       return ZonesActions.handleDeleteZone(draft, action);
-    case types.ADD_MISSING_PROJECTION:
-      return SpectrumsActions.addMissingProjectionHander(draft, action);
     case types.RESET_DOMAIN:
       return DomainActions.handelResetDomain(draft);
     case types.CHANGE_ZONE_SIGNAL_VALUE:

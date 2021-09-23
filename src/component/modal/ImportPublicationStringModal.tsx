@@ -1,8 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useRef } from 'react';
+import * as yup from 'yup';
 
+import { useDispatch } from '../context/DispatchContext';
 import CloseButton from '../elements/CloseButton';
+import FormikForm from '../elements/formik/FormikForm';
+import FormikTextarea from '../elements/formik/FormikTextarea';
+import { GENERATE_SPECTRUM_FROM_PUBLICATION_STRING } from '../reducer/types/Types';
 
 import { ModalStyles } from './ModalStyle';
 
@@ -13,8 +18,8 @@ const styles = css`
   .inner-content {
     flex: 1;
     border: none;
-    padding: 0 0 0 15px;
     overflow: hidden;
+    padding: 0px;
   }
 
   .text-area {
@@ -22,8 +27,13 @@ const styles = css`
     height: 100%;
     outline: none;
     resize: none;
+    padding: 0 0 0 15px;
   }
 `;
+
+const validationSchema = yup.object({
+  publicationText: yup.string().required(),
+});
 
 interface ImportPublicationStringModalProps {
   onClose: () => void;
@@ -32,12 +42,17 @@ interface ImportPublicationStringModalProps {
 function ImportPublicationStringModal({
   onClose,
 }: ImportPublicationStringModalProps) {
-  const textRef = useRef<any>();
-
-  const publicationStringHandler = useCallback(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const pString = textRef.current.value;
-  }, []);
+  const formRef = useRef<any>();
+  const dispatch = useDispatch();
+  const publicationStringHandler = useCallback(
+    (values) => {
+      dispatch({
+        type: GENERATE_SPECTRUM_FROM_PUBLICATION_STRING,
+        payload: values,
+      });
+    },
+    [dispatch],
+  );
 
   return (
     <div css={[ModalStyles, styles]}>
@@ -46,16 +61,26 @@ function ImportPublicationStringModal({
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content">
-        <textarea
-          ref={textRef}
-          className="text-area"
-          placeholder="Enter publication string"
-        />
+        <FormikForm
+          ref={formRef}
+          initialValues={{
+            publicationText:
+              '1H NMR (CDCl3, 400MHz) δ 10.58 (b, 1H), 7.40 (d, 1H, J = 8.0 Hz), 6.19 (d, 1H, J = 7.6 Hz), 4.88 (s, 1H), 2.17 (s, 3H), 1.02 (s, 9H), 1.01 (s, 9H), 0.89 (s, 9H)',
+          }}
+          validationSchema={validationSchema}
+          onSubmit={publicationStringHandler}
+        >
+          <FormikTextarea
+            name="publicationText"
+            className="text-area"
+            placeholder="Enter publication string"
+          />
+        </FormikForm>
       </div>
       <div className="footer-container">
         <button
           type="button"
-          onClick={publicationStringHandler}
+          onClick={() => formRef.current.submitForm()}
           className="btn primary"
         >
           Import
