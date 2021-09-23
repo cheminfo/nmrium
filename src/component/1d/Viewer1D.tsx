@@ -21,7 +21,6 @@ import {
   ADD_BASE_LINE_ZONE,
   BRUSH_END,
   FULL_ZOOM_OUT,
-  CHANGE_INTEGRAL_ZOOM,
   SET_ZOOM_FACTOR,
   ADD_PEAK,
   SET_VERTICAL_INDICATOR_X_POSITION,
@@ -200,21 +199,12 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
   );
 
   const handelOnDoubleClick = useCallback(() => {
-    dispatch({ type: FULL_ZOOM_OUT, zoomType: ZoomType.STEP_HROZENTAL });
+    dispatch({ type: FULL_ZOOM_OUT, zoomType: ZoomType.STEP_HORIZONTAL });
   }, [dispatch]);
 
   const handleZoom = useCallback(
     (event) => {
-      switch (selectedTool) {
-        case options.integral.id:
-          dispatch({ type: CHANGE_INTEGRAL_ZOOM, ...event });
-          break;
-
-        default:
-          dispatch({ type: SET_ZOOM_FACTOR, ...event });
-
-          return;
-      }
+      dispatch({ type: SET_ZOOM_FACTOR, ...event, selectedTool });
     },
     [dispatch, selectedTool],
   );

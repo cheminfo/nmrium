@@ -28,7 +28,6 @@ function IntegralsSeries() {
                 <Integral
                   key={integral.id}
                   integral={integral}
-                  spectrum={spectrum}
                   isActive={isActive(spectrum.id)}
                 />
               )),

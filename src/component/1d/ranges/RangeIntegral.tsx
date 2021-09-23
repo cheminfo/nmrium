@@ -6,11 +6,8 @@ interface IntegralProps {
 }
 
 function RangeIntegral({ range }: IntegralProps) {
-  const path = useIntegralPath(range, {
-    useActiveSpectrum: true,
-    useConstantScale: true,
-  });
-  const { height } = useChartData();
+  const path = useIntegralPath(range);
+  const { height, margin } = useChartData();
 
   return (
     <path
@@ -19,8 +16,7 @@ function RangeIntegral({ range }: IntegralProps) {
       strokeWidth="1"
       fill="none"
       style={{
-        transformOrigin: 'center center',
-        transform: `translateY(-${height / 4}px)`,
+        transform: `translateY(-${margin.bottom + height * 0.3}px)`,
       }}
       d={path}
     />

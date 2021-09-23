@@ -2,98 +2,58 @@ import { extent } from 'd3';
 import { xyIntegral, xyReduce } from 'ml-spectra-processing';
 import { useCallback, useMemo } from 'react';
 
-import { Data1D, Datum1D } from '../../../data/data1d/Spectrum1D';
+import { Data1D } from '../../../data/data1d/Spectrum1D';
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';
 
-import { getIntegralYScale, getYScale, reScaleY } from './scale';
+import { getYScale, reScaleY } from './scale';
 
-export default function useIntegralPath(
-  integralOptions: { from: number; to: number },
-  options:
-    | {
-        useConstantScale?: boolean;
-        useActiveSpectrum?: false;
-        spectrum: Datum1D;
-      }
-    | {
-        useConstantScale?: boolean;
-        useActiveSpectrum: true;
-        spectrum?: Datum1D;
-      },
-) {
-  const {
-    useConstantScale = false,
-    useActiveSpectrum = false,
-    spectrum,
-  } = options;
-  const {
-    xDomain,
-    integralsYDomains,
-    height,
-    margin,
-    verticalAlign,
-    data,
-    activeSpectrum,
-  } = useChartData();
+export default function useIntegralPath(integralOptions: {
+  from: number;
+  to: number;
+}) {
+  const { xDomain, height, margin, verticalAlign, data, activeSpectrum, zoom } =
+    useChartData();
 
   const { scaleX } = useScale();
 
   const scaleY = useCallback(
     (ySeries: number[] = []) => {
-      if (!useConstantScale) {
-        return getIntegralYScale(
-          { integralsYDomains, height, margin, verticalAlign },
-          useActiveSpectrum ? activeSpectrum?.id : spectrum?.id,
-        );
-      } else {
-        const yDomain = extent(ySeries) as number[];
-        const scaledYDomain = reScaleY(0.5, {
+      const yDomain = extent(ySeries) as number[];
+      const scale = zoom.integral.scales[activeSpectrum?.id || ''];
+      const scaledYDomain = reScaleY(
+        scale === undefined ? 0.3 : scale < 0.1 ? 0.05 : scale,
+        {
           domain: yDomain,
           height,
           margin,
-        });
-        return getYScale({
-          height,
-          margin,
-          verticalAlign,
-          yDomain: scaledYDomain,
-        });
-      }
+        },
+      );
+      return getYScale({
+        height,
+        margin,
+        verticalAlign,
+        yDomain: scaledYDomain,
+      });
     },
-    [
-      useConstantScale,
-      integralsYDomains,
-      height,
-      margin,
-      verticalAlign,
-      useActiveSpectrum,
-      activeSpectrum?.id,
-      spectrum?.id,
-    ],
+    [activeSpectrum, height, margin, verticalAlign, zoom.integral.scales],
   );
 
   const integral = useMemo(() => {
-    const { x, y } =
-      useActiveSpectrum && activeSpectrum
-        ? (data[activeSpectrum?.index].data as Data1D)
-        : (spectrum?.data as Data1D);
-    const { from, to } = integralOptions;
-    return xyIntegral(
-      { x, y },
-      {
-        from,
-        to,
-        reverse: true,
-      },
-    );
-  }, [
-    useActiveSpectrum,
-    activeSpectrum,
-    data,
-    spectrum?.data,
-    integralOptions,
-  ]);
+    if (activeSpectrum) {
+      const { x, y } = data[activeSpectrum?.index].data as Data1D;
+      const { from, to } = integralOptions;
+      return xyIntegral(
+        { x, y },
+        {
+          from,
+          to,
+          reverse: true,
+        },
+      );
+    }
+    return { x: [], y: [] };
+  }, [activeSpectrum, data, integralOptions]);
 
   const path = useMemo(() => {
     if (integral && scaleX) {

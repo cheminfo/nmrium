@@ -242,6 +242,7 @@ function RangesHeader({
         popupTitle={showRangesIntegrals ? 'Hide integrals' : 'Show integrals'}
         popupPlacement="right"
         onClick={handleShowIntegrals}
+        defaultValue={showRangesIntegrals}
         disabled={!ranges || !ranges.values || ranges.values.length === 0}
       >
         <SvgNmrIntegrate style={{ pointerEvents: 'none', fontSize: '12px' }} />

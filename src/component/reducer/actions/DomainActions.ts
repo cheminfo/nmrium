@@ -1,6 +1,5 @@
 import { extent } from 'd3';
 import { Draft } from 'immer';
-import { xyIntegral } from 'ml-spectra-processing';
 
 import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { Datum2D, isSpectrum2D } from '../../../data/data2d/Spectrum2D';
@@ -35,7 +34,6 @@ function getDomain(drfat: Draft<State>) {
   let yArray: Array<number> = [];
   let yDomains = {};
   let xDomains = {};
-  let integralYDomain = {};
 
   const data = getActiveData(drfat);
   try {
@@ -50,23 +48,10 @@ function getDomain(drfat: Draft<State>) {
     }, []);
 
     yArray = data.reduce<Array<number>>((acc, d: Datum1D) => {
-      const { display, data, integrals } = d;
+      const { display, data } = d;
       const _extent = extent(data.y) as Array<number>;
       yDomains[d.id] = _extent;
-      if (integrals.values && integrals.values.length > 0) {
-        const values = integrals.values;
-        const { from = 0, to = 0 } = values[0];
-        const { x, y } = data;
-        const integralResult = xyIntegral(
-          { x: x, y: y },
-          {
-            from: from,
-            to: to,
-            reverse: true,
-          },
-        );
-        integralYDomain[d.id] = extent(integralResult.y);
-      }
+
       if (display.isVisible) {
         acc = acc.concat(_extent);
       }
@@ -82,7 +67,6 @@ function getDomain(drfat: Draft<State>) {
     yDomain: extent(yArray),
     yDomains,
     xDomains,
-    integralYDomain,
   };
 }
 function get2DDomain(state) {
@@ -178,11 +162,6 @@ function setDomain(draft: Draft<State>, isYDomainChanged = true) {
       } else {
         draft.yDomains = domain.yDomains;
       }
-
-      draft.integralsYDomains =
-        domain.integralYDomain && domain.integralYDomain;
-      draft.originIntegralYDomain =
-        domain.integralYDomain && domain.integralYDomain;
     } else {
       draft.originDomain = {
         ...draft.originDomain,
@@ -222,13 +201,6 @@ function setMode(draft: Draft<State>) {
   draft.mode = (data[0] as Datum1D)?.info.isFid ? 'LTR' : 'RTL';
 }
 
-function handleChangeIntegralYDomain(draft, newYDomain) {
-  const activeSpectrum = draft.activeSpectrum;
-  if (activeSpectrum) {
-    draft.integralsYDomains[activeSpectrum.id] = newYDomain;
-  }
-}
-
 export {
   getDomain,
   setOriginalDomain,
@@ -237,5 +209,4 @@ export {
   handelResetDomain,
   setDomain,
   setMode,
-  handleChangeIntegralYDomain,
 };

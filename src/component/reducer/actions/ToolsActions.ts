@@ -17,6 +17,7 @@ import {
   DISPLAYER_MODE,
   MARGIN,
 } from '../core/Constants';
+import Zoom1DManager from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
 import { setDomain, setMode } from './DomainActions';
@@ -275,7 +276,13 @@ function getSpectrumID(draft: Draft<State>, index): string | null {
 }
 
 function handleZoom(draft: Draft<State>, action) {
-  const { deltaY, deltaMode, trackID } = action;
+  const { deltaY, deltaMode, trackID, shiftKey, selectedTool } = action;
+  const {
+    activeSpectrum,
+    toolOptions: {
+      data: { showRangesIntegrals },
+    },
+  } = draft;
   if (trackID) {
     switch (trackID) {
       case LAYOUT.TOP_1D: {
@@ -293,6 +300,12 @@ function handleZoom(draft: Draft<State>, action) {
       default:
         break;
     }
+  } else if (
+    activeSpectrum?.id &&
+    shiftKey &&
+    (showRangesIntegrals || selectedTool === options.integral.id)
+  ) {
+    Zoom1DManager(draft.zoom.integral, 0.5).wheel(deltaY, activeSpectrum?.id);
   } else {
     wheel(deltaY, deltaMode, draft);
     setZoom(draft);
@@ -313,7 +326,7 @@ function zoomOut(draft: Draft<State>, action) {
         case ZoomType.VERTICAL:
           setZoom(draft, { scale: 0.8 });
           break;
-        case ZoomType.STEP_HROZENTAL: {
+        case ZoomType.STEP_HORIZONTAL: {
           const zoomValue = zoomHistory.pop();
           draft.xDomain = zoomValue
             ? zoomValue.xDomain

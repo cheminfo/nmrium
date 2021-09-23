@@ -71,8 +71,6 @@ export const initialState: State = {
     yDomains: {},
     shareYDomain: false,
   },
-  integralsYDomains: {},
-  originIntegralYDomain: {},
   activeTab: '',
   width: 0,
   height: 0,
@@ -121,7 +119,7 @@ export const initialState: State = {
       activeFilterID: null,
       tempRange: null,
       showMultiplicityTrees: false,
-      showRangesIntegrals: false,
+      showRangesIntegrals: true,
     },
   },
 };
@@ -187,18 +185,7 @@ export interface State {
     yDomains: Record<string, Array<number>>;
     shareYDomain: boolean;
   };
-  /**
-   * X axis domain for Integrals
-   * value change when vertical scale change for the selected integral
-   * @default {}
-   */
-  integralsYDomains: Record<string, Array<number>>;
 
-  /**
-   * X axis domain for Integrals
-   * @default {}
-   */
-  originIntegralYDomain: Record<string, Array<number>>;
   /**
    * current select tab (nucleus)
    * @default null
@@ -499,8 +486,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return IntegralsActions.changeIntegral(draft, action);
     case types.RESIZE_INTEGRAL:
       return IntegralsActions.changeIntegral(draft, action);
-    case types.CHANGE_INTEGRAL_ZOOM:
-      return IntegralsActions.handleChangeIntegralZoom(draft, action);
     case types.CHANGE_INTEGRAL_SUM:
       return IntegralsActions.handleChangeIntegralSum(draft, action.value);
     case types.CHANGE_INTEGRALS_SUM_FLAG:
@@ -627,9 +612,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
 
     case types.SET_CORRELATIONS:
       return CorrelationsActions.handleSetCorrelations(draft, action.payload);
-
-    case types.SET_INTEGRAL_Y_DOMAIN:
-      return DomainActions.handleChangeIntegralYDomain(draft, action.yDomain);
 
     case types.BRUSH_END:
       return ToolsActions.handleBrushEnd(draft, action);

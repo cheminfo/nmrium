@@ -7,7 +7,7 @@ import Zoom1DManager, { setAllScales } from '../helper/Zoom1DManager';
 export const ZoomType = {
   HORIZONTAL: 'HORIZONTAL',
   VERTICAL: 'VERTICAL',
-  STEP_HROZENTAL: 'STEP_HROZENTAL',
+  STEP_HORIZONTAL: 'STEP_HORIZONTAL',
   FULL: 'FULL',
 };
 
@@ -117,28 +117,4 @@ function setZoom1D(draft, height, margin, index, defaultScale?: number) {
   draft.yDomains[id] = yDomain;
 }
 
-function setIntegralZoom(scale, draft) {
-  if (draft.activeSpectrum) {
-    const { height, margin } = draft;
-    if (draft.originIntegralYDomain[draft.activeSpectrum.id]) {
-      const _scale = scaleLinear(
-        draft.originIntegralYDomain[draft.activeSpectrum.id],
-        [height - margin.bottom, margin.top],
-      );
-
-      const scaleValue = scale < 0.1 ? 0.05 : scale;
-
-      const t = zoomIdentity
-        .translate(0, _scale(0))
-        .scale(scaleValue)
-        .translate(0, -_scale(0));
-
-      const newYDomain = t.rescaleY(_scale).domain();
-
-      const activeSpectrum = draft.activeSpectrum;
-      draft.integralsYDomains[activeSpectrum.id] = newYDomain;
-    }
-  }
-}
-
-export { setZoom, setZoom1D, setIntegralZoom };
+export { setZoom, setZoom1D };
