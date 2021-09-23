@@ -23,7 +23,7 @@ const FormikForm = forwardRef(
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
-        <div>{props.children}</div>
+        <>{props.children}</>
       </Formik>
     );
   },
