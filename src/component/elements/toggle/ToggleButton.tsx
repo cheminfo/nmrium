@@ -50,8 +50,15 @@ export default function ToggleButton(
   }
 
   return (
-    <Toolbar.Item onClick={toggleButton} title={title} id={id} active={active}>
-      {children}
-    </Toolbar.Item>
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <Toolbar.Item
+        onClick={toggleButton}
+        title={title}
+        id={id}
+        active={active}
+      >
+        {children}
+      </Toolbar.Item>
+    </div>
   );
 }

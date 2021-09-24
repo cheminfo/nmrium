@@ -11,7 +11,10 @@ import {
 
 import ToggleButton from './ToggleButton';
 
-const style: CSSProperties = { display: 'flex', flexDirection: 'column' };
+const style: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+};
 
 interface ToggleButtonGroupProps {
   children: ReactNode;

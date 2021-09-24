@@ -133,15 +133,17 @@ function FunctionToolBarInner({
         )}
 
         {isButtonVisible('hideZoomOutTool') && (
-          <Toolbar.Item
-            id="zoom-out"
-            onClick={handleFullZoomOut}
-            title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
-          >
-            <div style={{ fontSize: 14 }}>
-              <FaExpand />
-            </div>
-          </Toolbar.Item>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Toolbar.Item
+              id="zoom-out"
+              onClick={handleFullZoomOut}
+              title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
+            >
+              <div style={{ fontSize: 14 }}>
+                <FaExpand />
+              </div>
+            </Toolbar.Item>
+          </div>
         )}
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
