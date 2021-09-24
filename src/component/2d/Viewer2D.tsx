@@ -1,12 +1,5 @@
-import {
-  useCallback,
-  Fragment,
-  useEffect,
-  useState,
-  useMemo,
-  ReactNode,
-} from 'react';
-import { useSize, useDebounce } from 'react-use';
+import { useCallback, useEffect, useMemo, ReactNode } from 'react';
+import { ResponsiveChart } from 'react-d3-utils';
 
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
@@ -142,83 +135,6 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     [selectedTool],
   );
 
-  const [sizedNMRChart, { width, height }] = useSize(() => {
-    return (
-      <Fragment>
-        <Spinner isLoading={isLoading} emptyText={emptyText} />
-
-        {data && data.length > 0 && (
-          <BrushTracker
-            onBrush={handelBrushEnd}
-            onDoubleClick={handelOnDoubleClick}
-            onClick={mouseClick}
-            onZoom={handleZoom}
-            style={{
-              width: '100%',
-              height: '100%',
-              margin: 'auto',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
-            <MouseTracker
-              style={{ width: '100%', height: `100%`, position: 'absolute' }}
-            >
-              {selectedTool && selectedTool === options.slicingTool.id && (
-                <SlicingView />
-              )}
-
-              <CrossLinePointer />
-              {spectrumData && (
-                <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
-              )}
-
-              <BrushXY
-                brushType={BRUSH_TYPE.XY}
-                dimensionBorder={DIMENSION.CENTER_2D}
-              />
-              <>
-                {spectrumData?.[0] && (
-                  <BrushXY
-                    brushType={BRUSH_TYPE.X}
-                    dimensionBorder={DIMENSION.TOP_1D}
-                    height={margin.top}
-                  />
-                )}
-                {spectrumData?.[1] && (
-                  <BrushXY
-                    brushType={BRUSH_TYPE.Y}
-                    dimensionBorder={DIMENSION.LEFT_1D}
-                    width={margin.left}
-                  />
-                )}
-              </>
-              {spectrumData && (
-                <FooterBanner data1D={spectrumData} layout={DIMENSION} />
-              )}
-
-              <Chart2D data={spectrumData} />
-            </MouseTracker>
-          </BrushTracker>
-        )}
-      </Fragment>
-    );
-  });
-
-  const [finalSize, setFinalSize] =
-    useState<{ width: number; height: number }>();
-
-  useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
-
-  useEffect(() => {
-    if (finalSize && isFinite(finalSize.width) && isFinite(finalSize.height)) {
-      dispatch({
-        type: SET_DIMENSIONS,
-        ...finalSize,
-      });
-    }
-  }, [dispatch, finalSize]);
-
   if (!isVisible) {
     return (
       <NoData
@@ -228,7 +144,86 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
     );
   }
 
-  return sizedNMRChart;
+  return (
+    <ResponsiveChart>
+      {({ width, height }) => (
+        <ViewerResponsiveWrapper width={width} height={height}>
+          <Spinner isLoading={isLoading} emptyText={emptyText} />
+          {data && data.length > 0 && (
+            <BrushTracker
+              onBrush={handelBrushEnd}
+              onDoubleClick={handelOnDoubleClick}
+              onClick={mouseClick}
+              onZoom={handleZoom}
+              style={{
+                width: '100%',
+                height: '100%',
+                margin: 'auto',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <MouseTracker
+                style={{ width: '100%', height: `100%`, position: 'absolute' }}
+              >
+                {selectedTool && selectedTool === options.slicingTool.id && (
+                  <SlicingView />
+                )}
+
+                <CrossLinePointer />
+                {spectrumData && (
+                  <XYLabelPointer data1D={spectrumData} layout={DIMENSION} />
+                )}
+
+                <BrushXY
+                  brushType={BRUSH_TYPE.XY}
+                  dimensionBorder={DIMENSION.CENTER_2D}
+                />
+                <>
+                  {spectrumData?.[0] && (
+                    <BrushXY
+                      brushType={BRUSH_TYPE.X}
+                      dimensionBorder={DIMENSION.TOP_1D}
+                      height={margin.top}
+                    />
+                  )}
+                  {spectrumData?.[1] && (
+                    <BrushXY
+                      brushType={BRUSH_TYPE.Y}
+                      dimensionBorder={DIMENSION.LEFT_1D}
+                      width={margin.left}
+                    />
+                  )}
+                </>
+                {spectrumData && (
+                  <FooterBanner data1D={spectrumData} layout={DIMENSION} />
+                )}
+
+                <Chart2D data={spectrumData} />
+              </MouseTracker>
+            </BrushTracker>
+          )}
+        </ViewerResponsiveWrapper>
+      )}
+    </ResponsiveChart>
+  );
+}
+
+interface ViewerResponsiveWrapperProps {
+  width: number;
+  height: number;
+  children: any;
+}
+
+export function ViewerResponsiveWrapper(props: ViewerResponsiveWrapperProps) {
+  const dispatch = useDispatch();
+  const { width, height, children } = props;
+
+  useEffect(() => {
+    dispatch({ type: SET_DIMENSIONS, ...{ width, height } });
+  }, [width, height, dispatch]);
+
+  return children;
 }
 
 export default Viewer2D;

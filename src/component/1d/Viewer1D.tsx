@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState, useReducer, ReactNode } from 'react';
-import { useSize, useDebounce } from 'react-use';
+import { useCallback, useEffect, useReducer, ReactNode } from 'react';
+import { ResponsiveChart } from 'react-d3-utils';
 
+import { ViewerResponsiveWrapper } from '../2d/Viewer2D';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
@@ -24,7 +25,6 @@ import {
   SET_ZOOM_FACTOR,
   ADD_PEAK,
   SET_VERTICAL_INDICATOR_X_POSITION,
-  SET_DIMENSIONS,
   ADD_RANGE,
   ANALYZE_SPECTRA,
   ADD_EXCLUSION_ZONE,
@@ -251,64 +251,61 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     [dispatch, scaleState, selectedTool],
   );
 
-  const [sizedNMRChart, { width, height }] = useSize(() => {
-    return (
-      <div style={{ height: '100%' }}>
-        <Spinner isLoading={isLoading} emptyText={emptyText} />
+  return (
+    <ScaleProvider value={scaleState}>
+      <ResponsiveChart>
+        {({ height, width }) => (
+          <ViewerResponsiveWrapper height={height} width={width}>
+            <div style={{ height: '100%', position: 'relative' }}>
+              <Spinner isLoading={isLoading} emptyText={emptyText} />
 
-        {scaleState.scaleX && scaleState.scaleY && data && data.length > 0 && (
-          <BrushTracker
-            onBrush={handelBrushEnd}
-            onDoubleClick={handelOnDoubleClick}
-            onClick={mouseClick}
-            onZoom={handleZoom}
-            style={{
-              width: '100%',
-              height: '100%',
-              margin: 'auto',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
-            <MouseTracker
-              style={{ width: '100%', height: `100%`, position: 'absolute' }}
-            >
-              <SpectraTracker />
-              <CrossLinePointer />
-              <BrushXY brushType={BRUSH_TYPE.X} />
-              <XLabelPointer />
-              <PeakPointer />
-              <VerticalIndicator />
-              <FooterBanner />
-              <Chart1D
-                width={widthProp}
-                height={heightProp}
-                margin={margin}
-                mode={mode}
-                displayerKey={displayerKey}
-              />
-            </MouseTracker>
-          </BrushTracker>
+              {scaleState.scaleX &&
+                scaleState.scaleY &&
+                data &&
+                data.length > 0 && (
+                  <BrushTracker
+                    onBrush={handelBrushEnd}
+                    onDoubleClick={handelOnDoubleClick}
+                    onClick={mouseClick}
+                    onZoom={handleZoom}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      margin: 'auto',
+                      position: 'relative',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <MouseTracker
+                      style={{
+                        width: '100%',
+                        height: `100%`,
+                        position: 'absolute',
+                      }}
+                    >
+                      <SpectraTracker />
+                      <CrossLinePointer />
+                      <BrushXY brushType={BRUSH_TYPE.X} />
+                      <XLabelPointer />
+                      <PeakPointer />
+                      <VerticalIndicator />
+                      <FooterBanner />
+                      <Chart1D
+                        width={widthProp}
+                        height={heightProp}
+                        margin={margin}
+                        mode={mode}
+                        displayerKey={displayerKey}
+                      />
+                    </MouseTracker>
+                  </BrushTracker>
+                )}
+            </div>
+          </ViewerResponsiveWrapper>
         )}
-      </div>
-    );
-  });
-
-  const [finalSize, setFinalSize] =
-    useState<{ width: number; height: number }>();
-
-  useDebounce(() => setFinalSize({ width, height }), 400, [width, height]);
-
-  useEffect(() => {
-    if (finalSize && isFinite(finalSize.width) && isFinite(finalSize.height)) {
-      dispatch({
-        type: SET_DIMENSIONS,
-        ...finalSize,
-      });
-    }
-  }, [dispatch, finalSize]);
-
-  return <ScaleProvider value={scaleState}>{sizedNMRChart}</ScaleProvider>;
+      </ResponsiveChart>
+    </ScaleProvider>
+  );
 }
 
 export default Viewer1D;
