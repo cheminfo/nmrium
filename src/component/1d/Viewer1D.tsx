@@ -256,7 +256,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
       <ResponsiveChart>
         {({ height, width }) => (
           <ViewerResponsiveWrapper height={height} width={width}>
-            <div style={{ height: '100%' }}>
+            <div style={{ height: '100%', position: 'relative' }}>
               <Spinner isLoading={isLoading} emptyText={emptyText} />
 
               {scaleState.scaleX &&
