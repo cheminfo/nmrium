@@ -1,7 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Toolbar } from 'analysis-ui-components';
-import { ReactNode, useState, useCallback, useRef } from 'react';
+import {
+  ReactNode,
+  useState,
+  useCallback,
+  useRef,
+  useLayoutEffect,
+} from 'react';
 
 const menuStyles = css`
   .menu {
@@ -77,11 +83,32 @@ interface MenuListProps {
 }
 
 function MenuList({ items, boxBounding, onClick }: MenuListProps) {
+  const listRef = useRef<any>();
+  const [translate, setTranslate] = useState({
+    x: boxBounding.width,
+    y: boxBounding.height,
+  });
+
+  useLayoutEffect(() => {
+    const boxSize = listRef.current.getBoundingClientRect();
+    setTranslate((oldTransform) => {
+      let y = boxBounding.height;
+      if (boxSize.bottom > window.innerHeight) {
+        y = boxBounding.height * 2 + (boxSize.bottom - window.innerHeight);
+      }
+      return {
+        ...oldTransform,
+        y,
+      };
+    });
+  }, [boxBounding.height]);
+
   return (
     <div
+      ref={listRef}
       className="menu"
       style={{
-        transform: `translate(${boxBounding.width}px, -${boxBounding.height}px) `,
+        transform: `translate(${translate.x}px, -${translate.y}px) `,
       }}
     >
       {items?.map((item) => {
@@ -125,6 +152,10 @@ export default function ToolbarMenu({
     [onClick],
   );
 
+  const boxBounding = useCallback(() => {
+    return menuButtonRef.current?.getBoundingClientRect();
+  }, []);
+
   return (
     <div style={{ height: 'auto' }} css={menuStyles}>
       <div ref={menuButtonRef}>
@@ -140,7 +171,7 @@ export default function ToolbarMenu({
       {isShown && (
         <MenuList
           items={items}
-          boxBounding={menuButtonRef.current?.getBoundingClientRect()}
+          boxBounding={boxBounding()}
           onClick={clickHandler}
         />
       )}
