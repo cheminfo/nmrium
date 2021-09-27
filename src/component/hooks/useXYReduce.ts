@@ -18,7 +18,10 @@ export default function useXYReduce(domainAxis: XYReducerDomainAxisType) {
       const { x, y } = data;
       const [from, to] =
         domainAxis === XYReducerDomainAxis.XAxis ? xDomain : yDomain;
-      return xyReduce({ x, y }, { from, to, nbPoints: width * 4 });
+      return xyReduce(
+        { x, y },
+        { from, to, nbPoints: width * 4, optimize: true },
+      );
     },
     [domainAxis, width, xDomain, yDomain],
   );
