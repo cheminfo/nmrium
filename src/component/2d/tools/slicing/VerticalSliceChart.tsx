@@ -1,7 +1,7 @@
-import { xyReduce } from 'ml-spectra-processing';
 import { useMemo, memo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
+import useXYReduce, { XYReducerDomainAxis } from '../../../hooks/useXYReduce';
 import { get2DYScale } from '../../utilities/scale';
 
 import { getYScale } from './SliceScale';
@@ -24,6 +24,7 @@ function VerticalSliceChart({
     yDomain,
     displayerKey,
   } = useChartData();
+  const xyReduce = useXYReduce(XYReducerDomainAxis.YAxis);
 
   const height = margin.left;
 
@@ -34,13 +35,8 @@ function VerticalSliceChart({
 
       const scaleY = getYScale(height, y, marignValue);
 
-      const pathPoints = xyReduce(
-        { x, y },
-        {
-          from: yDomain[0],
-          to: yDomain[1],
-        },
-      );
+      const pathPoints = xyReduce({ x, y });
+
       const lastXIndex = pathPoints.x.length - 1;
       const lastYIndex = pathPoints.y.length - 1;
       let path = `M  ${scaleY(pathPoints.y[lastYIndex])} ${scaleX(
@@ -56,7 +52,7 @@ function VerticalSliceChart({
     } else {
       return undefined;
     }
-  }, [data, height, margin, marignValue, originHeight, yDomain]);
+  }, [data, height, margin, marignValue, originHeight, xyReduce, yDomain]);
 
   const mainHeight = originHeight - margin.bottom - margin.top;
 

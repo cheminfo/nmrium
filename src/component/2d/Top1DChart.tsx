@@ -1,7 +1,7 @@
-import { xyReduce } from 'ml-spectra-processing';
 import { useMemo, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
+import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 
 import { get1DYScale, get2DXScale } from './utilities/scale';
 
@@ -27,6 +27,7 @@ function Top1DChart({
     yDomains,
     displayerKey,
   } = useChartData();
+  const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const height = originMargin.top;
 
   const paths = useMemo(() => {
@@ -35,14 +36,7 @@ function Top1DChart({
 
       const scaleY = get1DYScale(yDomains[spectrum.id], height, marginProps);
 
-      const { x, y } = spectrum.data;
-      const pathPoints = xyReduce(
-        { x, y },
-        {
-          from: xDomain[0],
-          to: xDomain[1],
-        },
-      );
+      const pathPoints = xyReduce(spectrum.data);
 
       let path = `M ${scaleX(pathPoints.x[0])} ${scaleY(pathPoints.y[0])} `;
       path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
@@ -53,7 +47,16 @@ function Top1DChart({
     } else {
       return undefined;
     }
-  }, [height, marginProps, originMargin, spectrum, width, xDomain, yDomains]);
+  }, [
+    height,
+    marginProps,
+    originMargin,
+    spectrum,
+    width,
+    xDomain,
+    xyReduce,
+    yDomains,
+  ]);
 
   if (!width || !height) {
     return null;

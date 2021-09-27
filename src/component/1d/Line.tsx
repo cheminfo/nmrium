@@ -1,10 +1,10 @@
 import get from 'lodash/get';
-import { xyReduce } from 'ml-spectra-processing';
 import { CSSProperties, useMemo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useScaleChecked } from '../context/ScaleContext';
+import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 
 interface LineProps {
   data?: {
@@ -19,10 +19,10 @@ interface LineProps {
 }
 
 function Line({ data, id, display, index }: LineProps) {
-  const { xDomain, activeSpectrum, verticalAlign } = useChartData();
+  const { activeSpectrum, verticalAlign } = useChartData();
   const preferences = usePreferences();
   const { scaleX, scaleY } = useScaleChecked();
-
+  const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
   const isActive = useMemo(() => {
     return activeSpectrum === null
       ? true
@@ -43,13 +43,7 @@ function Line({ data, id, display, index }: LineProps) {
     const _scaleX = scaleX();
     const _scaleY = scaleY(id);
     if (data?.x && data?.y && _scaleX(0)) {
-      const pathPoints = xyReduce(
-        { x: data.x, y: data.y },
-        {
-          from: xDomain[0],
-          to: xDomain[1],
-        },
-      );
+      const pathPoints = xyReduce(data);
 
       let path = `M ${_scaleX(pathPoints.x[0])} ${_scaleY(pathPoints.y[0])} `;
       path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
@@ -60,7 +54,7 @@ function Line({ data, id, display, index }: LineProps) {
     } else {
       return '';
     }
-  }, [id, scaleX, scaleY, data, xDomain]);
+  }, [scaleX, scaleY, id, data, xyReduce]);
 
   return (
     <path

@@ -1,7 +1,7 @@
-import { xyReduce } from 'ml-spectra-processing';
 import { useMemo, memo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
+import useXYReduce, { XYReducerDomainAxis } from '../../../hooks/useXYReduce';
 import { get2DXScale } from '../../utilities/scale';
 
 import { getYScale } from './SliceScale';
@@ -19,6 +19,7 @@ function HorizontalSliceChart({
   data,
 }: HorizontalSliceChartProps) {
   const { width, margin: originMargin, xDomain, displayerKey } = useChartData();
+  const xyReduce = useXYReduce(XYReducerDomainAxis.XAxis);
 
   const height = originMargin.top;
 
@@ -28,13 +29,7 @@ function HorizontalSliceChart({
       const scaleX = get2DXScale({ margin: originMargin, width, xDomain });
 
       const scaleY = getYScale(height, y, marginProps);
-      const pathPoints = xyReduce(
-        { x, y },
-        {
-          from: xDomain[0],
-          to: xDomain[1],
-        },
-      );
+      const pathPoints = xyReduce({ x, y });
 
       let path = `M ${scaleX(pathPoints.x[0])} ${scaleY(pathPoints.y[0])} `;
       path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
@@ -45,7 +40,7 @@ function HorizontalSliceChart({
     } else {
       return undefined;
     }
-  }, [data, height, marginProps, originMargin, width, xDomain]);
+  }, [data, height, marginProps, originMargin, width, xDomain, xyReduce]);
 
   if (!width || !height) {
     return null;
