@@ -358,26 +358,23 @@ export function detectZonesManual(datum, options) {
   const signals = getDetectionZones(datum, options);
   const { xShift, yShift } = getShift(datum);
   for (let signal of signals) {
-    let { fromTo } = signal;
     datum.zones.values.push({
       id: generateID(),
-      x: fromTo[0],
-      y: fromTo[1],
+      x: signal.x.fromTo,
+      y: signal.y.fromTo,
       signals: [
         {
           id: generateID(),
           peaks: signal.peaks,
           x: {
-            originDelta: signal.shiftX - xShift,
-            delta: signal.shiftX,
-            diaIDs: [],
+            originDelta: signal.x.delta - xShift,
+            ...signal.x
           },
           y: {
-            originDelta: signal.shiftY - yShift,
-            delta: signal.shiftY,
-            diaIDs: [],
+            originDelta: signal.y.delta - yShift,
+            ...signal.y
           },
-          kind: 'signal',
+          kind: signal.kind || 'signal',
         },
       ],
       kind: DatumKind.signal,
@@ -467,7 +464,8 @@ export function detectZones(datum, options) {
   const yError = Math.abs(maxY - minY) / 10000;
 
   const formattedZones = zones.reduce((acc, zone) => {
-    const [newXRange, newYRange] = zone.fromTo;
+    const newXRange = zone.x.fromTo
+    const newYRange = zone.y.fromTo;
 
     // check if the zone is already exists
     for (const { x, y } of datum.zones.values) {
@@ -490,14 +488,12 @@ export function detectZones(datum, options) {
           id: generateID(),
           peaks: zone.peaks,
           x: {
-            originDelta: zone.shiftX - xShift,
-            delta: zone.shiftX,
-            diaIDs: [],
+            originDelta: zone.x.delta - xShift,
+            ...zone.x,
           },
           y: {
-            originDelta: zone.shiftY - yShift,
-            delta: zone.shiftY,
-            diaIDs: [],
+            originDelta: zone.y.delta - yShift,
+            ...zone.y
           },
           kind: 'signal',
         },
