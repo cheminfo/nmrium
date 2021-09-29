@@ -368,11 +368,11 @@ export function detectZonesManual(datum, options) {
           peaks: signal.peaks,
           x: {
             originDelta: signal.x.delta - xShift,
-            ...signal.x
+            ...signal.x,
           },
           y: {
             originDelta: signal.y.delta - yShift,
-            ...signal.y
+            ...signal.y,
           },
           kind: signal.kind || 'signal',
         },
@@ -464,7 +464,7 @@ export function detectZones(datum, options) {
   const yError = Math.abs(maxY - minY) / 10000;
 
   const formattedZones = zones.reduce((acc, zone) => {
-    const newXRange = zone.x.fromTo
+    const newXRange = zone.x.fromTo;
     const newYRange = zone.y.fromTo;
 
     // check if the zone is already exists
@@ -493,7 +493,7 @@ export function detectZones(datum, options) {
           },
           y: {
             originDelta: zone.y.delta - yShift,
-            ...zone.y
+            ...zone.y,
           },
           kind: 'signal',
         },
