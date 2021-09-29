@@ -305,7 +305,7 @@ function handleZoom(draft: Draft<State>, action) {
     shiftKey &&
     (showRangesIntegrals || selectedTool === options.integral.id)
   ) {
-    Zoom1DManager(draft.zoom.integral, 0.5).wheel(deltaY, activeSpectrum?.id);
+    Zoom1DManager(draft.zoom.integral).wheel(deltaY, activeSpectrum?.id);
   } else {
     wheel(deltaY, deltaMode, draft);
     setZoom(draft);

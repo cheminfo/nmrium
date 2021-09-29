@@ -1,6 +1,5 @@
-import { extent } from 'd3';
 import { xyIntegral, xyReduce } from 'ml-spectra-processing';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { Data1D } from '../../../data/data1d/Spectrum1D';
 import { useChartData } from '../../context/ChartContext';
@@ -12,32 +11,43 @@ export default function useIntegralPath(integralOptions: {
   from: number;
   to: number;
 }) {
-  const { xDomain, height, margin, verticalAlign, data, activeSpectrum, zoom } =
-    useChartData();
+  const {
+    xDomain,
+    height,
+    yDomain,
+    margin,
+    verticalAlign,
+    data,
+    activeSpectrum,
+    zoom,
+  } = useChartData();
 
   const { scaleX } = useScale();
 
-  const scaleY = useCallback(
-    (ySeries: number[] = []) => {
-      const yDomain = extent(ySeries) as number[];
-      const scale = zoom.integral.scales[activeSpectrum?.id || ''];
-      const scaledYDomain = reScaleY(
-        scale === undefined ? 0.3 : scale < 0.1 ? 0.05 : scale,
-        {
-          domain: yDomain,
-          height,
-          margin,
-        },
-      );
-      return getYScale({
+  const scaleY = useMemo(() => {
+    const scale = zoom.integral.scales[activeSpectrum?.id || ''];
+    const scaledYDomain = reScaleY(
+      scale === undefined ? 1 : scale < 0.1 ? 0.05 : scale,
+      {
+        domain: [yDomain[0], yDomain[1] / 20],
         height,
         margin,
-        verticalAlign,
-        yDomain: scaledYDomain,
-      });
-    },
-    [activeSpectrum, height, margin, verticalAlign, zoom.integral.scales],
-  );
+      },
+    );
+    return getYScale({
+      height,
+      margin,
+      verticalAlign,
+      yDomain: scaledYDomain,
+    });
+  }, [
+    activeSpectrum?.id,
+    height,
+    margin,
+    verticalAlign,
+    yDomain,
+    zoom.integral.scales,
+  ]);
 
   const integral = useMemo(() => {
     if (activeSpectrum) {
@@ -64,13 +74,9 @@ export default function useIntegralPath(integralOptions: {
         optimize: true,
       });
 
-      let path = `M ${scaleX()(xySeries.x[0])} ${scaleY(xySeries.y)(
-        xySeries.y[0],
-      )}`;
+      let path = `M ${scaleX()(xySeries.x[0])} ${scaleY(xySeries.y[0])}`;
       path += xySeries.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${scaleX()(point)} ${scaleY(xySeries.y)(
-          xySeries.y[i + 1],
-        )}`;
+        accumulator += ` L ${scaleX()(point)} ${scaleY(xySeries.y[i + 1])}`;
         return accumulator;
       }, '');
 
