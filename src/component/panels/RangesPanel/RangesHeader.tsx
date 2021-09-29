@@ -146,7 +146,7 @@ function RangesHeader({
   );
 
   const saveAsHTMLHandler = useCallback(() => {
-    const { originFrequency: observedFrequency, nucleus } = info;
+    const { originFrequency: frequencyObserved, nucleus } = info;
     const format = lodashGet(
       preferences,
       `formatting.nucleusByKey[${nucleus.toLowerCase()}]`,
@@ -158,7 +158,7 @@ function RangesHeader({
       nucleus, // '19f'
       nbDecimalDelta, // 2
       nbDecimalJ, // 1
-      observedFrequency, //400
+      frequencyObserved, //400
     });
     modal.show(
       <CopyClipboardModal
