@@ -1,4 +1,4 @@
-import reactRefresh from '@vitejs/plugin-react-refresh';
+import react from '@vitejs/plugin-react';
 import analyze from 'rollup-plugin-analyzer';
 import { AliasOptions, defineConfig } from 'vite';
 
@@ -15,21 +15,16 @@ export default () => {
   return defineConfig({
     base: './',
     esbuild: {
-      // Import jsx for Emotion and React for Fragment.
-      jsxFactory: 'jsx',
-      jsxInject: `
-      import { jsx } from '@emotion/react';
-      import React from 'react';
-    `,
       sourcemap: true,
     },
     build: {
+      sourcemap: true,
       rollupOptions: {
         plugins: process.env.ANALYZE ? [analyze()] : [],
       },
       minify: process.env.NO_MINIFY ? false : 'esbuild',
     },
-    plugins: [reactRefresh()],
+    plugins: [react()],
     resolve: {
       alias: resolveAliases,
     },
