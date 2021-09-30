@@ -33,11 +33,16 @@ function add2dZoneHandler(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     const drawnZone = get2DRange(draft, action);
-    detectZonesManual(draft.data[index], {
+    const datum = draft.data[index] as Datum2D;
+
+    const zones = detectZonesManual(original(datum), {
       selectedZone: drawnZone,
       thresholdFactor: draft.toolOptions.data.zonesNoiseFactor,
       convolutionByFFT: false,
     });
+
+    datum.zones.values = datum.zones.values.concat(zones);
+
     handleOnChangeZonesData(draft);
   }
 }
@@ -48,8 +53,9 @@ function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
     const [fromX, toX] = draft.xDomain;
     const [fromY, toY] = draft.yDomain;
     detectionOptions.selectedZone = { fromX, toX, fromY, toY };
-
-    detectZones(draft.data[index], detectionOptions);
+    const datum = draft.data[index] as Datum2D;
+    const zones = detectZones(original(datum), detectionOptions);
+    datum.zones.values = datum.zones.values.concat(zones);
     handleOnChangeZonesData(draft);
   }
 }
@@ -62,8 +68,11 @@ function handleAutoSpectraZonesDetection(draft: Draft<State>) {
         selectedZone: { fromX: minX, toX: maxX, fromY: minY, toY: maxY },
         thresholdFactor: 1,
       };
+      const datum = draft.data[index] as Datum2D;
 
-      detectZones(draft.data[index], detectionOptions);
+      const zones = detectZones(original(datum), detectionOptions);
+      datum.zones.values = datum.zones.values.concat(zones);
+
       handleOnChangeZonesData(draft);
     }
   }
