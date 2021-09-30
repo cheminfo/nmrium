@@ -41,13 +41,13 @@ function ZoneAssignmentColumn({
       {...onHover}
       {...{ onClick: (e) => onClick(e, assignment, axis) }}
     >
-      {lodashGet(rowData, `${axis}.pubIntegral`, 0) > 0 ? (
+      {lodashGet(rowData, `${axis}.nbAtoms`, 0) > 0 ? (
         lodashGet(rowData, `${axis}.diaIDs`, 0).length > 0 ? (
           <div
             onMouseEnter={() => setShowUnlinkButton(true)}
             onMouseLeave={() => setShowUnlinkButton(false)}
           >
-            {rowData[axis].pubIntegral} {`(`}
+            {rowData[axis].nbAtoms} {`(`}
             <span
               style={
                 (assignment.isActive && assignment.activeAxis === axis) ||
@@ -60,7 +60,7 @@ function ZoneAssignmentColumn({
                   : { color: 'black', fontWeight: 'normal' }
               }
             >
-              {lodashGet(rowData, `${axis}.nbAtoms`, 0)}
+              {lodashGet(rowData, `${axis}.diaIDs`, []).length}
             </span>
             {`)`}{' '}
             <sup>
@@ -79,7 +79,7 @@ function ZoneAssignmentColumn({
           </div>
         ) : assignment.isActive && assignment.activeAxis === axis ? (
           <div>
-            {`${lodashGet(rowData, `${axis}.pubIntegral`, '')} (`}
+            {`${lodashGet(rowData, `${axis}.nbAtoms`, '')} (`}
             <span
               style={{
                 color: 'red',
@@ -91,7 +91,7 @@ function ZoneAssignmentColumn({
             {')'}
           </div>
         ) : (
-          rowData[axis].pubIntegral
+          rowData[axis].nbAtoms
         )
       ) : assignment.isActive && assignment.activeAxis === axis ? (
         <div>

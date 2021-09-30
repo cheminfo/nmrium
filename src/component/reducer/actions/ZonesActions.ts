@@ -15,7 +15,6 @@ import {
   updateShift,
 } from '../../../data/data2d/Spectrum2D';
 import {
-  getPubIntegral,
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities';
@@ -125,7 +124,7 @@ function handleDeleteZone(draft: Draft<State>, action) {
       const zone = (draft.data[index] as Datum2D).zones.values.find(
         (zone) => zone.id === id,
       );
-      unlinkInAssignmentData(assignmentData, [zone]);
+      unlinkInAssignmentData(assignmentData, [zone || {}]);
       const zoneIndex = getZoneIndex(state, index, id);
       (draft.data[index] as Datum2D).zones.values.splice(zoneIndex, 1);
     } else {
@@ -136,6 +135,43 @@ function handleDeleteZone(draft: Draft<State>, action) {
       (draft.data[index] as Datum2D).zones.values = [];
     }
     handleOnChangeZonesData(draft);
+  }
+}
+
+function handleDeleteSignal2D(draft: Draft<State>, action) {
+  const { spectrumID, zoneID, signalID, assignmentData } = action.payload;
+  if (spectrumID) {
+    const datum2D = draft.data.find(
+      (datum) => datum.id === spectrumID,
+    ) as Datum2D;
+    const zoneIndex = datum2D.zones.values.findIndex(
+      (zone) => zone.id === zoneID,
+    );
+    if (zoneIndex >= 0) {
+      const zone = cloneDeep(datum2D.zones.values[zoneIndex]);
+      const signalIndex = zone.signals.findIndex(
+        (signal) => signal.id === signalID,
+      );
+      if (signalIndex >= 0) {
+        const signal = zone.signals[signalIndex];
+        // remove assignments for the signal in global state
+        const _zone = unlink(zone, false, signalIndex, undefined);
+        unlinkInAssignmentData(
+          assignmentData,
+          [{ signals: [signal] }],
+          undefined,
+        );
+        _zone.signals.splice(signalIndex, 1);
+        datum2D.zones.values[zoneIndex] = _zone;
+        // if no signals are existing in a zone anymore then delete this zone
+        if (_zone.signals.length === 0) {
+          unlinkInAssignmentData(assignmentData, [_zone]);
+          datum2D.zones.values.splice(zoneIndex, 1);
+        }
+
+        handleOnChangeZonesData(draft);
+      }
+    }
   }
 }
 
@@ -196,7 +232,7 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
         _zone.signals[signalIndex][axis].nbAtoms,
       );
     }
-    _zone[axis].pubIntegral = getPubIntegral(_zone, axis);
+    // _zone[axis].nbAtoms = getNbAtoms(_zone, axis);
   }
 }
 
@@ -207,6 +243,7 @@ function handleOnChangeZonesData(draft) {
 export {
   add2dZoneHandler,
   handleAutoZonesDetection,
+  handleDeleteSignal2D,
   handleDeleteZone,
   changeZoneSignalDelta,
   handleChangeZoneSignalKind,

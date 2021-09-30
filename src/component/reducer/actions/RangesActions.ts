@@ -19,7 +19,6 @@ import {
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
 import {
-  getPubIntegral,
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
@@ -120,7 +119,7 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
 
     // remove assignments in global state
 
-    const _editedRowData = unlink(editedRowData);
+    const _editedRowData: any = unlink(editedRowData);
 
     delete _editedRowData.tableMetaInfo;
     delete _editedRowData.rowKey;
@@ -178,13 +177,13 @@ function handleUnlinkRange(draft: Draft<State>, action) {
   }
 }
 
-function handleSetDiaIDRange(draft, action) {
+function handleSetDiaIDRange(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     const { rangeData, diaIDs, signalIndex, nbAtoms } = action.payload;
     const getNbAtoms = (input, current = 0) => input + current;
     const rangeIndex = getRangeIndex(draft, index, rangeData.id);
-    const _range = draft.data[index].ranges.values[rangeIndex];
+    const _range = (draft.data[index] as Datum1D).ranges.values[rangeIndex];
     if (signalIndex === undefined) {
       _range.diaIDs = diaIDs;
       _range.nbAtoms = getNbAtoms(nbAtoms, _range.nbAtoms);
@@ -195,7 +194,7 @@ function handleSetDiaIDRange(draft, action) {
         _range.signals[signalIndex].nbAtoms,
       );
     }
-    _range.pubIntegral = getPubIntegral(_range);
+    // _range.nbAtoms = getNbAtoms(_range);
   }
 }
 

@@ -39,7 +39,7 @@ function CorrelationTableRow({
       buildID(correlation.signal.id, 'Crosshair_Y'),
     ];
 
-    const id = findRangeOrZoneID(spectraData, correlation);
+    const id = findRangeOrZoneID(spectraData, correlation, true);
     if (id) {
       ids.push(id);
     }
@@ -48,7 +48,7 @@ function CorrelationTableRow({
       if (link.pseudo === false) {
         ids.push(link.signal.id);
         ids.push(buildID(link.signal.id, 'Crosshair_Y'));
-        const _id = findRangeOrZoneID(spectraData, link);
+        const _id = findRangeOrZoneID(spectraData, link, true);
         if (_id) {
           ids.push(_id);
         }
@@ -85,13 +85,14 @@ function CorrelationTableRow({
           ) {
             let experimentLabel = link.experimentType;
             if (link.signal && link.signal.sign !== 0) {
-              experimentLabel += ' (edited)';
+              experimentLabel += ' (DEPT)';
             }
             commonLinks.push(
               buildLink({
                 ...link,
                 experimentLabel,
                 axis: undefined,
+                id: `${link.id}_${_link.id}`,
               }),
             );
           }

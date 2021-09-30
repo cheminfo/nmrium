@@ -1,5 +1,9 @@
 import lodashGet from 'lodash/get';
 
+import { Datum1D, Range } from '../../../data/data1d/Spectrum1D';
+import { Datum2D, Signal, Zone } from '../../../data/data2d/Spectrum2D';
+import { Spectra } from '../../NMRium';
+
 import { ErrorColors } from './CorrelationTable/Constants';
 
 function getAtomType(nucleus: string): string {
@@ -30,15 +34,19 @@ function getLabelColor(correlationData, correlation) {
   return null;
 }
 
-function findSpectrum(spectraData, value) {
-  return spectraData.filter(
+function findSpectrum(spectraData: Spectra, value, checkIsVisible: boolean): Datum1D | Datum2D | undefined {
+  const spectrum = spectraData.find(
     (_spectrum) =>
-      _spectrum.id === value.experimentID &&
-      _spectrum.display.isVisible === true,
-  )[0];
+      _spectrum.id === value.experimentID
+  );
+  if(spectrum && checkIsVisible === true && spectrum.display.isVisible === false) {
+    return undefined;
+  }
+
+   return spectrum;
 }
 
-function findSignal(spectrum, value) {
+function findSignal2D(spectrum: Datum2D, value): Signal | undefined{
   for (let zone of spectrum.zones.values) {
     const signalIndex = zone.signals.findIndex(
       (_signal) => _signal.id === value.signal.id,
@@ -49,7 +57,7 @@ function findSignal(spectrum, value) {
   }
 }
 
-function findRange(spectrum, value) {
+function findRange(spectrum: Datum1D, value): Range | undefined {
   for (let range of spectrum.ranges.values) {
     const signalIndex = range.signals.findIndex(
       (_signal) => _signal.id === value.signal.id,
@@ -60,7 +68,7 @@ function findRange(spectrum, value) {
   }
 }
 
-function findZone(spectrum, value) {
+function findZone(spectrum: Datum2D, value): Zone | undefined {
   for (let zone of spectrum.zones.values) {
     const signalIndex = zone.signals.findIndex(
       (_signal) => _signal.id === value.signal.id,
@@ -71,22 +79,22 @@ function findZone(spectrum, value) {
   }
 }
 
-function findRangeOrZoneID(spectraData, value) {
-  const spectrum = findSpectrum(spectraData, value);
+function findRangeOrZoneID(spectraData: Spectra, value, checkIsVisible: boolean) {
+  const spectrum = findSpectrum(spectraData, value, checkIsVisible);
   if (spectrum) {
     if (spectrum.info.dimension === 1) {
-      const range = findRange(spectrum, value);
+      const range = findRange(spectrum as Datum1D, value);
       if (range) return range.id;
     } else if (spectrum.info.dimension === 2) {
-      const zone = findZone(spectrum, value);
+      const zone = findZone(spectrum as Datum2D, value);
       if (zone) return zone.id;
     }
   }
 }
 
-function findSignalMatch1D(spectrum, link, factor, xDomain0, xDomain1) {
+function findSignalMatch1D(spectrum: Datum2D, link, factor: number, xDomain0: number, xDomain1: number) {
   if (spectrum && spectrum.info.dimension === 2) {
-    const signal = findSignal(spectrum, link);
+    const signal = findSignal2D(spectrum, link);
     if (signal) {
       const otherAxis = link.axis === 'x' ? 'y' : 'x';
       return (
@@ -99,16 +107,16 @@ function findSignalMatch1D(spectrum, link, factor, xDomain0, xDomain1) {
 }
 
 function findSignalMatch2D(
-  spectrum,
+  spectrum: Datum2D,
   value,
-  factor,
-  xDomain0,
-  xDomain1,
-  yDomain0,
-  yDomain1,
-) {
+  factor: number,
+  xDomain0: number,
+  xDomain1: number,
+  yDomain0: number,
+  yDomain1: number,
+): boolean {
   if (spectrum && spectrum.info.dimension === 2) {
-    const signal = findSignal(spectrum, value);
+    const signal = findSignal2D(spectrum, value);
     if (signal) {
       return (
         signal.x.delta * factor >= xDomain0 &&
@@ -121,13 +129,43 @@ function findSignalMatch2D(
   return false;
 }
 
+function getAbbreviation(link): string {
+      if (
+        link.experimentType === 'hsqc' ||
+        link.experimentType === 'hmqc'
+      ) {
+        return !link.signal || link.signal.sign === 0
+            ? 'S'
+            : `S${link.signal.sign === 1 ? '+' : '-'}`;
+      } else if (
+        link.experimentType === 'hmbc' ||
+        link.experimentType === 'cosy' ||
+        link.experimentType === 'tocsy'
+      ) {
+        return 'M';
+      } else if (
+        link.experimentType === 'noesy' ||
+        link.experimentType === 'roesy'
+      ) {
+        return 'NOE';
+      } else if(link.experimentType === 'inadequate') {
+        return "I";
+      } else if(link.experimentType === 'adequate') {
+        return "A";
+      }
+
+      return "X";
+}
+
 export {
   findRange,
   findRangeOrZoneID,
+  findSignal2D,
   findSignalMatch1D,
   findSignalMatch2D,
   findSpectrum,
   findZone,
+  getAbbreviation,
   getAtomType,
   getLabelColor,
 };

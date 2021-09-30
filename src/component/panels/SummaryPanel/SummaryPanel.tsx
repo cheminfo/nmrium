@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
@@ -108,7 +109,7 @@ function SummaryPanel() {
 
       if (displayerMode === DISPLAYER_MODE.DM_1D) {
         const delta = value.signal.delta * factor;
-        const spectrum = findSpectrum(spectraData, value);
+        const spectrum = findSpectrum(spectraData, value, true);
         if (
           spectrum &&
           atomTypesInView[0] === value.atomType &&
@@ -120,7 +121,7 @@ function SummaryPanel() {
         // try to find a link which contains the belonging 2D signal in the spectra in view
         if (
           value.link.some((link) => {
-            const spectrum = findSpectrum(spectraData, link);
+            const spectrum = findSpectrum(spectraData, link, true) as Datum2D;
             return findSignalMatch1D(
               spectrum,
               link,
@@ -136,7 +137,7 @@ function SummaryPanel() {
         if (!atomTypesInView.includes(value.atomType)) {
           return false;
         }
-        const spectrum = findSpectrum(spectraData, value);
+        const spectrum = findSpectrum(spectraData, value, true) as Datum2D;
         // correlation is represented by a 2D signal
         if (
           findSignalMatch2D(
@@ -154,7 +155,7 @@ function SummaryPanel() {
           // try to find a link which contains the belonging 2D signal in the spectra in view
           if (
             value.link.some((link) => {
-              const spectrum = findSpectrum(spectraData, link);
+              const spectrum = findSpectrum(spectraData, link, true) as Datum2D;
               return findSignalMatch2D(
                 spectrum,
                 link,

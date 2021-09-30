@@ -7,11 +7,21 @@ import {
 } from 'nmr-correlation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { Datum2D } from '../../../../data/data2d/Spectrum2D';
 import { buildID } from '../../../../data/utilities/Concatenation';
 import generateID from '../../../../data/utilities/generateID';
+import { useAssignmentData } from '../../../assignment';
+import { useDispatch } from '../../../context/DispatchContext';
 import ContextMenu from '../../../elements/ContextMenu';
 import { useHighlight } from '../../../highlight';
-import { findRangeOrZoneID } from '../Utilities';
+import { DELETE_2D_SIGNAL } from '../../../reducer/types/Types';
+import {
+  findRangeOrZoneID,
+  findSignal2D,
+  findSpectrum,
+  findZone,
+  getAbbreviation,
+} from '../Utilities';
 
 function AdditionalColumnField({
   rowCorrelation,
@@ -23,6 +33,8 @@ function AdditionalColumnField({
 }) {
   const contextRef = useRef<any>();
   const [isEdited, setIsEdited] = useState(false);
+  const dispatch = useDispatch();
+  const assignmentData = useAssignmentData();
 
   const highlightIDsCommonLinks = useMemo(() => {
     const ids: Array<any> = [];
@@ -30,7 +42,7 @@ function AdditionalColumnField({
       if (link.pseudo === false) {
         ids.push(link.signal.id);
         ids.push(buildID(link.signal.id, 'Crosshair'));
-        const _id = findRangeOrZoneID(spectraData, link);
+        const _id = findRangeOrZoneID(spectraData, link, true);
         if (_id) {
           ids.push(_id);
         }
@@ -73,7 +85,7 @@ function AdditionalColumnField({
   );
 
   const onEditHandler = useCallback(
-    (experimentType, action, commonLink) => {
+    (experimentType: string, action: string, commonLink) => {
       const _rowCorrelation = lodashCloneDeep(rowCorrelation);
       const _columnCorrelation = lodashCloneDeep(columnCorrelation);
       const pseudoLinkCountHSQC = _rowCorrelation.link.filter(
@@ -84,7 +96,7 @@ function AdditionalColumnField({
       if (action === 'add') {
         const pseudoLinkID = generateID();
         const pseudoExperimentID = generateID();
-        const pseudoCommonLink = buildLink({
+        const commonPseudoLink = buildLink({
           experimentType,
           experimentID: pseudoExperimentID,
           atomType: [_columnCorrelation.atomType, _rowCorrelation.atomType],
@@ -96,7 +108,7 @@ function AdditionalColumnField({
         addLink(
           _columnCorrelation,
           buildLink({
-            ...pseudoCommonLink,
+            ...commonPseudoLink,
             axis: 'x',
             match: [getCorrelationIndex(correlations, _rowCorrelation)],
           }),
@@ -104,7 +116,7 @@ function AdditionalColumnField({
         addLink(
           _rowCorrelation,
           buildLink({
-            ...pseudoCommonLink,
+            ...commonPseudoLink,
             axis: 'y',
             match: [getCorrelationIndex(correlations, _columnCorrelation)],
           }),
@@ -113,76 +125,110 @@ function AdditionalColumnField({
           _rowCorrelation.protonsCount = [pseudoLinkCountHSQC + 1];
         }
       } else if (action === 'remove') {
-        removeLink(_rowCorrelation, commonLink.id);
-        removeLink(_columnCorrelation, commonLink.id);
+        const split = commonLink.id.split('_');
+        const rowLinkID = split[0];
+        const columnLinkID = split[1];
+        removeLink(_rowCorrelation, rowLinkID);
+        removeLink(_columnCorrelation, columnLinkID);
+        const spectrum = findSpectrum(
+          spectraData,
+          commonLink,
+          false,
+        ) as Datum2D;
+        const zone = findZone(spectrum, commonLink);
+        const signal = findSignal2D(spectrum, commonLink);
+
+        dispatch({
+          type: DELETE_2D_SIGNAL,
+          payload: {
+            spectrumID: spectrum.id,
+            zoneID: zone?.id,
+            signalID: signal?.id,
+            assignmentData,
+          },
+        });
+
         if (!_rowCorrelation.edited.protonsCount) {
           _rowCorrelation.protonsCount =
             pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [];
         }
+      } else if (action === 'move') {
+        console.log('MOVE action');
       }
 
       onEdit(_rowCorrelation, _columnCorrelation);
     },
-    [rowCorrelation, onEdit, columnCorrelation, correlations],
+    [
+      rowCorrelation,
+      columnCorrelation,
+      onEdit,
+      correlations,
+      spectraData,
+      dispatch,
+      assignmentData,
+    ],
   );
 
   const contextMenu = useMemo(() => {
-    // allow the edition of pseudo correlations and pseudo HSQC only (for now)
-    // assumption here that only one pseudo HSQC can be added to a pseudo correlation
-    const commonLinkHSQC = commonLinks.find(
+    // allow the movement or deletion of correlations
+    const commonLinksMenu = commonLinks
+      .map((commonLink) =>
+        commonLink.pseudo === false
+          ? [
+              {
+                label: `move ${getAbbreviation(
+                  commonLink,
+                )} (${commonLink.experimentType.toUpperCase()})`,
+                onClick: () =>
+                  onEditHandler(commonLink.experimentType, 'move', commonLink),
+              },
+              {
+                label: `delete ${getAbbreviation(
+                  commonLink,
+                )} (${commonLink.experimentType.toUpperCase()})`,
+                onClick: () => {
+                  onEditHandler(
+                    commonLink.experimentType,
+                    'remove',
+                    commonLink,
+                  );
+                },
+              },
+            ]
+          : [],
+      )
+      .flat();
+    // allow addition or removal of a pseudo HSQC link between pseudo heavy atom and proton
+    const commonPseudoLinkHSQC = commonLinks.find(
       (commonLink) =>
-        commonLink.experimentType === 'hsqc' && commonLink.pseudo === true,
+        commonLink.pseudo === true && commonLink.experimentType === 'hsqc',
     );
 
-    return rowCorrelation.pseudo === true
-      ? commonLinkHSQC
-        ? [
-            {
-              label: 'remove HSQC',
-              onClick: () => {
-                onEditHandler('hsqc', 'remove', commonLinkHSQC);
-              },
-            },
-          ]
-        : [
-            {
-              label: 'add HSQC',
-              onClick: () => {
-                onEditHandler('hsqc', 'add', undefined);
-              },
-            },
-          ]
-      : [];
-  }, [commonLinks, onEditHandler, rowCorrelation]);
+    if (rowCorrelation.pseudo === true) {
+      if (commonPseudoLinkHSQC) {
+        commonLinksMenu.push({
+          label: 'remove pseudo HSQC',
+          onClick: () => {
+            onEditHandler('hsqc', 'remove', commonPseudoLinkHSQC);
+          },
+        });
+      } else {
+        commonLinksMenu.push({
+          label: 'add pseudo HSQC',
+          onClick: () => {
+            onEditHandler('hsqc', 'add', undefined);
+          },
+        });
+      }
+    }
+
+    return commonLinksMenu;
+  }, [commonLinks, onEditHandler, rowCorrelation.pseudo]);
 
   const content = useMemo(() => {
     const linkSet = new Set();
     commonLinks.forEach((commonLink) => {
-      if (
-        commonLink.experimentType === 'hsqc' ||
-        commonLink.experimentType === 'hmqc'
-      ) {
-        linkSet.add(
-          !commonLink.signal || commonLink.signal.sign === 0
-            ? 'S'
-            : `S${commonLink.signal.sign === 1 ? '+' : '-'}`,
-        );
-      } else if (
-        commonLink.experimentType === 'hmbc' ||
-        commonLink.experimentType === 'cosy' ||
-        commonLink.experimentType === 'tocsy'
-      ) {
-        linkSet.add('M');
-      } else if (
-        commonLink.experimentType === 'noesy' ||
-        commonLink.experimentType === 'roesy'
-      ) {
-        linkSet.add('NOE');
-      } else if(commonLink.experimentType === 'inadequate') {
-        linkSet.add("I");
-      } else if(commonLink.experimentType === 'adequate') {
-        linkSet.add("A");
-      }
+      linkSet.add(getAbbreviation(commonLink));
     });
 
     return [...linkSet];
