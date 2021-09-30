@@ -32,7 +32,6 @@ export default function autoPeakPicking(datum1D, options) {
       noiseLevel: noise * noiseFactor,
       minMaxRatio: minMaxRatio, // Threshold to determine if a given peak should be considered as a noise
       realTopDetection: true,
-      maxCriteria: true,
       smoothY: false,
       sgOptions: { windowSize: 15, polynomial: 3 },
     },
