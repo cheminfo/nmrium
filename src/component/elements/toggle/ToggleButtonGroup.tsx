@@ -5,16 +5,10 @@ import {
   useEffect,
   Children,
   cloneElement,
-  CSSProperties,
   ReactNode,
 } from 'react';
 
 import ToggleButton from './ToggleButton';
-
-const style: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-};
 
 interface ToggleButtonGroupProps {
   children: ReactNode;
@@ -75,5 +69,5 @@ export default function ToggleButtonGroup({
     setToggleButtons(val);
   }, [children, value]);
 
-  return <div style={style}> {mappedChildren} </div>;
+  return <>{mappedChildren}</>;
 }

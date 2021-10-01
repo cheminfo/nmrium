@@ -3,10 +3,10 @@ import ExclusionZones from './ExclusionZones';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
 import PeakAnnotations from './PeakAnnotations';
+import ResurrectedDatabaseRanges from './ResurrectedDatabaseRanges';
 import XAxis from './XAxis';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
-import ResurrectedDatabaseRanges from './ResurrectedDatabaseRanges';
 
 function Chart1D({ mode, width, height, margin, displayerKey }) {
   return (

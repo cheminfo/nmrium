@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useMemo, memo, CSSProperties } from 'react';
 import { FaPlus } from 'react-icons/fa';
-import { SmilesSvgRenderer } from 'react-ocl';
+import { SmilesSvgRenderer } from 'react-ocl/full';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';

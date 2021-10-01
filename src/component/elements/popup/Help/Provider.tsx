@@ -176,7 +176,7 @@ function Provider({
           return modal;
         } catch (e) {
           // eslint-disable-next-line no-console
-          console.log(e);
+          console.error(e);
         }
       }
     },

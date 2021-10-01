@@ -55,8 +55,7 @@ function SpectrumListItem({
 }) {
   const formatValueAsHTML = (value) => {
     if (value) {
-      // eslint-disable-next-line prefer-named-capture-group
-      value = value.replace(/([0-9]+)/g, '<sub>$1</sub>');
+      value = value.replace(/(?<value>[0-9]+)/g, '<sub>$<value></sub>');
     }
     return value;
   };

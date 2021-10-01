@@ -420,9 +420,8 @@ export function getMissingProjection(datum, nucleus, usedColors: UsedColors) {
     }
   } else {
     for (let i = 0; i < datum.data.z[0].length; i++) {
-      // eslint-disable-next-line @typescript-eslint/prefer-for-of
-      for (let j = 0; j < datum.data.z.length; j++) {
-        projection[i] += datum.data.z[j][i];
+      for (const z of datum.data.z) {
+        projection[i] += z[i];
       }
     }
   }

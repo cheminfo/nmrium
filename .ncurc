@@ -1,7 +1,13 @@
 {
   "dep": "prod,dev",
   "reject": [
+    "// TODO: Wait for a fix on https://github.com/vitejs/vite/issues/5438",
+    "@vitejs/plugin-react",
     "react-color",
-    "react-table"
+    "// TODO: Migrate to v6",
+    "react-router-dom",
+    "react-table",
+    "// TODO: Migrate out of reactstrap",
+    "reactstrap"
   ]
 }

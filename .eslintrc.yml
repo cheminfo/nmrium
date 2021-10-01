@@ -4,11 +4,18 @@ rules:
   'import/default': off
   'import/no-unresolved': off
   '@typescript-eslint/no-explicit-any': off
+  '@typescript-eslint/naming-convention': off
+  '@typescript-eslint/no-implied-eval': off
+  no-new-func: off
   no-restricted-imports:
     - error
     - name: lodash
       message: "Use a deep import instead, like for example 'lodash/get'"
     - name: '@simbathesailor/use-what-changed'
       message: 'Remove use-what-changed before committing the code'
+    - name: openchemlib
+      message: "Use 'openchemlib/full'"
+    - name: react-ocl
+      message: "Use 'react-ocl/full"
 parserOptions:
   sourceType: module
