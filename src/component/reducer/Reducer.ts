@@ -639,6 +639,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return RangesActions.handleAddRange(draft, action);
     case types.DELETE_RANGE:
       return RangesActions.handleDeleteRange(draft, action);
+    case types.DELETE_1D_SIGNAL:
+      return RangesActions.handleDeleteSignal(draft, action);
     case types.RESIZE_RANGE:
       return RangesActions.handleResizeRange(draft, action);
     case types.CHANGE_RANGE_SUM:
@@ -688,7 +690,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.DELETE_2D_ZONE:
       return ZonesActions.handleDeleteZone(draft, action);
     case types.DELETE_2D_SIGNAL:
-      return ZonesActions.handleDeleteSignal2D(draft, action);
+      return ZonesActions.handleDeleteSignal(draft, action);
     case types.ADD_MISSING_PROJECTION:
       return SpectrumsActions.addMissingProjectionHander(draft, action);
     case types.RESET_DOMAIN:

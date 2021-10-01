@@ -133,6 +133,39 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
   }
 }
 
+function handleDeleteSignal(draft: Draft<State>, action) {
+  const { spectrumID, rangeID, signalID, assignmentData } = action.payload;
+  if (spectrumID) {
+    const datum1D = draft.data.find(
+      (datum) => datum.id === spectrumID,
+    ) as Datum1D;
+    const rangeIndex = datum1D.ranges.values.findIndex(
+      (range) => range.id === rangeID,
+    );
+    if (rangeIndex >= 0) {
+      const range = cloneDeep(datum1D.ranges.values[rangeIndex]);
+      const signalIndex = range.signals.findIndex(
+        (signal) => signal.id === signalID,
+      );
+      if (signalIndex >= 0) {
+        const signal = range.signals[signalIndex];
+        // remove assignments for the signal in global state
+        const _range = unlink(range, 'signal', { signalIndex });
+        unlinkInAssignmentData(assignmentData, [{ signals: [signal] }]);
+        _range.signals.splice(signalIndex, 1);
+        datum1D.ranges.values[rangeIndex] = _range;
+        // if no signals are existing in a range anymore then delete this range
+        if (_range.signals.length === 0) {
+          unlinkInAssignmentData(assignmentData, [_range]);
+          datum1D.ranges.values.splice(rangeIndex, 1);
+        }
+
+        handleOnChangeRangesData(draft);
+      }
+    }
+  }
+}
+
 function handleUnlinkRange(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
@@ -278,6 +311,7 @@ function handleShowMultiplicityTrees(draft: Draft<State>) {
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
+  handleDeleteSignal,
   handleChangeRangeSum,
   handleAddRange,
   handleResizeRange,

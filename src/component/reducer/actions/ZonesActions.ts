@@ -138,7 +138,7 @@ function handleDeleteZone(draft: Draft<State>, action) {
   }
 }
 
-function handleDeleteSignal2D(draft: Draft<State>, action) {
+function handleDeleteSignal(draft: Draft<State>, action) {
   const { spectrumID, zoneID, signalID, assignmentData } = action.payload;
   if (spectrumID) {
     const datum2D = draft.data.find(
@@ -243,7 +243,7 @@ function handleOnChangeZonesData(draft) {
 export {
   add2dZoneHandler,
   handleAutoZonesDetection,
-  handleDeleteSignal2D,
+  handleDeleteSignal,
   handleDeleteZone,
   changeZoneSignalDelta,
   handleChangeZoneSignalKind,

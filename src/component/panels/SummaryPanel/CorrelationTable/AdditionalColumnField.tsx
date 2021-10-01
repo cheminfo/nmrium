@@ -1,10 +1,5 @@
 import lodashCloneDeep from 'lodash/cloneDeep';
-import {
-  addLink,
-  buildLink,
-  getCorrelationIndex,
-  removeLink,
-} from 'nmr-correlation';
+import { addLink, buildLink, getCorrelationIndex } from 'nmr-correlation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Datum2D } from '../../../../data/data2d/Spectrum2D';
@@ -125,11 +120,11 @@ function AdditionalColumnField({
           _rowCorrelation.protonsCount = [pseudoLinkCountHSQC + 1];
         }
       } else if (action === 'remove') {
-        const split = commonLink.id.split('_');
-        const rowLinkID = split[0];
-        const columnLinkID = split[1];
-        removeLink(_rowCorrelation, rowLinkID);
-        removeLink(_columnCorrelation, columnLinkID);
+        // const split = commonLink.id.split('_');
+        // const rowLinkID = split[0];
+        // const columnLinkID = split[1];
+        // removeLink(_rowCorrelation, rowLinkID);
+        // removeLink(_columnCorrelation, columnLinkID);
         const spectrum = findSpectrum(
           spectraData,
           commonLink,
