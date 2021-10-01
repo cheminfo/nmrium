@@ -439,6 +439,7 @@ export function getMissingProjection(datum, nucleus, usedColors) {
 export function getDetectionZones(datum, options) {
   let dataMatrix = {};
   if (options.selectedZone) {
+    options.enhanceSymmetry = false;
     dataMatrix = getSubMatrix(datum, options.selectedZone);
   } else {
     dataMatrix = datum.data;

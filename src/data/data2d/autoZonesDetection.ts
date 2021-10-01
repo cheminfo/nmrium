@@ -5,7 +5,7 @@ export default function autoZonesDetection(data, options) {
     options;
 
   const { nucleus, originFrequency } = options.info;
-  const enhanceSymmetry = nucleus[0] === nucleus[1];
+  const { enhanceSymmetry = nucleus[0] === nucleus[1] } = options;
 
   let zones = xyzAutoPeaksPicking(data, {
     nucleus,
