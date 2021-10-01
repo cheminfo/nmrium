@@ -6,6 +6,7 @@ import {
   xyMaxYPoint,
   xFindClosestIndex,
 } from 'ml-spectra-processing';
+import { resurrect, rangesToXY } from 'nmr-processing';
 
 import * as FiltersTypes from '../Filters';
 import * as FiltersManager from '../FiltersManager';
@@ -566,6 +567,36 @@ export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
     datum.ranges.values[rangeIndex].signals[signalIndex].delta = newSignalValue;
   }
   return shiftValue;
+}
+
+export function generateSpectrumFromPublicationString(
+  publicationString: string,
+  usedColors,
+) {
+  const {
+    ranges,
+    experiment: { nucleus, solvent },
+  } = resurrect(publicationString);
+
+  const { x, y } = rangesToXY(ranges, {
+    frequency: 400,
+    nbPoints: 524288,
+  });
+  const datum = initiateDatum1D(
+    {
+      data: { x, im: null, re: y },
+      info: {
+        nucleus,
+        originFrequency: 400,
+        baseFrequency: 400,
+        pulseSequence: 'publication string',
+        solvent,
+        isFt: true,
+      },
+    },
+    usedColors,
+  );
+  return datum;
 }
 
 export function isSpectrum1D(spectrum: Datum1D | Datum2D): spectrum is Datum1D {

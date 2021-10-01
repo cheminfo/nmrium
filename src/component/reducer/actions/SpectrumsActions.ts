@@ -2,7 +2,10 @@ import { Draft, original } from 'immer';
 
 import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
-import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import {
+  Datum1D,
+  generateSpectrumFromPublicationString,
+} from '../../../data/data1d/Spectrum1D';
 import getReferenceShift from '../../../data/data1d/getReferenceShift';
 import { getMissingProjection, Datum2D } from '../../../data/data2d/Spectrum2D';
 import { options } from '../../toolbar/ToolTypes';
@@ -201,8 +204,13 @@ function generateSpectrumFromPublicationStringHandler(
   draft: Draft<State>,
   action,
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const publicationString = action.payload.publicationText;
+  const spectrum = generateSpectrumFromPublicationString(
+    publicationString,
+    action.usedColors,
+  );
+  draft.data.push(spectrum);
+  setActiveTab(draft);
 }
 
 export {

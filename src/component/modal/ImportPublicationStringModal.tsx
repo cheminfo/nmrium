@@ -7,6 +7,7 @@ import { useDispatch } from '../context/DispatchContext';
 import CloseButton from '../elements/CloseButton';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikTextarea from '../elements/formik/FormikTextarea';
+import { useAlert } from '../elements/popup/Alert';
 import { GENERATE_SPECTRUM_FROM_PUBLICATION_STRING } from '../reducer/types/Types';
 
 import { ModalStyles } from './ModalStyle';
@@ -44,14 +45,22 @@ function ImportPublicationStringModal({
 }: ImportPublicationStringModalProps) {
   const formRef = useRef<any>();
   const dispatch = useDispatch();
+  const alert = useAlert();
   const publicationStringHandler = useCallback(
-    (values) => {
-      dispatch({
-        type: GENERATE_SPECTRUM_FROM_PUBLICATION_STRING,
-        payload: values,
+    async (values) => {
+      const hideLoading = await alert.showLoading(
+        'Generate spectrum from publication string in progress',
+      );
+      setTimeout(() => {
+        dispatch({
+          type: GENERATE_SPECTRUM_FROM_PUBLICATION_STRING,
+          payload: values,
+        });
+        hideLoading();
       });
+      onClose();
     },
-    [dispatch],
+    [alert, dispatch, onClose],
   );
 
   return (

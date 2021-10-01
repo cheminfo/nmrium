@@ -84,7 +84,6 @@ function generated1DSpectrum(params: {
     '1d': { nbPoints },
     frequency: freq,
   } = inputOptions;
-
   const frequency = getFrequency(nucleus, freq);
   const { x, y } = signalsToXY(signals, {
     ...inputOptions['1d'][nucleus],
