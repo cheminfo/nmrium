@@ -11,19 +11,16 @@ export function getDiaIDs(range: Range): string[] {
 }
 
 export function getNbAtoms(range: Range, signalIndex?: number): number {
-  if(signalIndex === undefined){
-    return (
-    range.signals
+  if (signalIndex === undefined) {
+    return range.signals
       ? range.signals.reduce(
           (sum, signal) => (signal.nbAtoms ? signal.nbAtoms + sum : sum),
           0,
         )
-      : 0
-  );
+      : 0;
   }
 
   return range.signals[signalIndex].nbAtoms || 0;
-
 }
 
 export function setNbAtoms(range: Range, signalIndex?: number): void {
@@ -51,7 +48,11 @@ export function resetDiaIDs(range: Range): void {
  * @param {number} [options.signalIndex]
  * @returns {object}
  */
-export function unlink(range: Range, unlinkType = 'both', options: any = {}): Range {
+export function unlink(
+  range: Range,
+  unlinkType = 'both',
+  options: any = {},
+): Range {
   switch (unlinkType) {
     case 'both':
       resetDiaIDs(range);
@@ -91,9 +92,12 @@ export function checkSignalKinds(range, kinds) {
   );
 }
 
-export function unlinkInAssignmentData(assignmentData, ranges: Partial<Range>[]) {
+export function unlinkInAssignmentData(
+  assignmentData,
+  ranges: Partial<Range>[],
+) {
   const ids = ranges.reduce((acc: string[], range) => {
-    if(range.id){
+    if (range.id) {
       acc.push(range.id);
     }
     if (range.signals) {

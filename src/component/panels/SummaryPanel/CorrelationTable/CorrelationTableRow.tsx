@@ -1,11 +1,15 @@
 import lodashGet from 'lodash/get';
 import { buildLink, getLabel } from 'nmr-correlation';
-import { CSSProperties, useCallback, useMemo } from 'react';
+import { CSSProperties, useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
+import { useAssignmentData } from '../../../assignment';
+import { useDispatch } from '../../../context/DispatchContext';
+import ContextMenu from '../../../elements/ContextMenu';
 import EditableColumn from '../../../elements/EditableColumn';
 import Select from '../../../elements/Select';
 import { useHighlight } from '../../../highlight';
+import { DELETE_CORRELATION } from '../../../reducer/types/Types';
 import { findRangeOrZoneID } from '../Utilities';
 
 import AdditionalColumnField from './AdditionalColumnField';
@@ -30,6 +34,10 @@ function CorrelationTableRow({
   onEditAdditionalColumnField,
   spectraData,
 }) {
+  const contextRef = useRef<any>();
+  const dispatch = useDispatch();
+  const assignmentData = useAssignmentData();
+
   const highlightIDsRow = useMemo(() => {
     if (correlation.pseudo === true) {
       return [];
@@ -186,6 +194,42 @@ function CorrelationTableRow({
     styleRow,
   ]);
 
+  const onClickContextMenuOption = useCallback(
+    (action: string) => {
+      if (action === 'remove') {
+        dispatch({
+          type: DELETE_CORRELATION,
+          payload: {
+            correlation,
+            assignmentData,
+          },
+        });
+      }
+    },
+    [assignmentData, correlation, dispatch],
+  );
+
+  const contextMenu = useMemo(() => {
+    return correlation.pseudo === false
+      ? [
+          {
+            label: `delete ${correlation.label.origin}`,
+            onClick: () => {
+              onClickContextMenuOption('remove');
+            },
+          },
+        ]
+      : [];
+  }, [correlation.label.origin, correlation.pseudo, onClickContextMenuOption]);
+
+  const contextMenuHandler = useCallback(
+    (e) => {
+      e.preventDefault();
+      contextRef.current.handleContextMenu(e);
+    },
+    [contextRef],
+  );
+
   const { title, ...otherTableDataProps } = tableDataProps;
   const t = !title ? '' : title;
 
@@ -197,8 +241,14 @@ function CorrelationTableRow({
           ...otherTableDataProps,
           style: { ...tableDataProps.style, styleLabel },
         }}
+        onContextMenu={(e) => {
+          if (contextMenu.length > 0) {
+            contextMenuHandler(e);
+          }
+        }}
       >
         {getLabel(correlations, correlation)}
+        <ContextMenu ref={contextRef} context={contextMenu} />
       </td>
       <td title={t} {...otherTableDataProps}>
         {lodashGet(correlation.signal, 'delta', false)

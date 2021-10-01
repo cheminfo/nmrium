@@ -612,6 +612,9 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.SET_CORRELATIONS:
       return CorrelationsActions.handleSetCorrelations(draft, action.payload);
 
+    case types.DELETE_CORRELATION:
+      return CorrelationsActions.handleDeleteCorrelation(draft, action.payload);
+
     case types.DELETE_SPECTRA:
       return SpectrumsActions.handleDeleteSpectra(draft, action);
 

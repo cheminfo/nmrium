@@ -72,9 +72,9 @@ function AdditionalColumnField({
   }, [commonLinks]);
 
   const contextMenuHandler = useCallback(
-    (e, rowData) => {
+    (e) => {
       e.preventDefault();
-      contextRef.current.handleContextMenu(e, rowData);
+      contextRef.current.handleContextMenu(e);
     },
     [contextRef],
   );
@@ -247,7 +247,7 @@ function AdditionalColumnField({
     <td
       onContextMenu={(e) => {
         if (contextMenu.length > 0) {
-          contextMenuHandler(e, rowCorrelation);
+          contextMenuHandler(e);
         }
       }}
       style={{

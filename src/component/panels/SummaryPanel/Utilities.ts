@@ -1,7 +1,15 @@
 import lodashGet from 'lodash/get';
 
-import { Datum1D, Range } from '../../../data/data1d/Spectrum1D';
-import { Datum2D, Signal, Zone } from '../../../data/data2d/Spectrum2D';
+import {
+  Datum1D,
+  Range,
+  Signal as Signal1D,
+} from '../../../data/data1d/Spectrum1D';
+import {
+  Datum2D,
+  Signal as Signal2D,
+  Zone,
+} from '../../../data/data2d/Spectrum2D';
 import { Spectra } from '../../NMRium';
 
 import { ErrorColors } from './CorrelationTable/Constants';
@@ -34,19 +42,37 @@ function getLabelColor(correlationData, correlation) {
   return null;
 }
 
-function findSpectrum(spectraData: Spectra, value, checkIsVisible: boolean): Datum1D | Datum2D | undefined {
+function findSpectrum(
+  spectraData: Spectra,
+  value,
+  checkIsVisible: boolean,
+): Datum1D | Datum2D | undefined {
   const spectrum = spectraData.find(
-    (_spectrum) =>
-      _spectrum.id === value.experimentID
+    (_spectrum) => _spectrum.id === value.experimentID,
   );
-  if(spectrum && checkIsVisible === true && spectrum.display.isVisible === false) {
+  if (
+    spectrum &&
+    checkIsVisible === true &&
+    spectrum.display.isVisible === false
+  ) {
     return undefined;
   }
 
-   return spectrum;
+  return spectrum;
 }
 
-function findSignal2D(spectrum: Datum2D, value): Signal | undefined{
+function findSignal1D(spectrum: Datum1D, value): Signal1D | undefined {
+  for (let range of spectrum.ranges.values) {
+    const signalIndex = range.signals.findIndex(
+      (_signal) => _signal.id === value.signal.id,
+    );
+    if (signalIndex >= 0) {
+      return range.signals[signalIndex];
+    }
+  }
+}
+
+function findSignal2D(spectrum: Datum2D, value): Signal2D | undefined {
   for (let zone of spectrum.zones.values) {
     const signalIndex = zone.signals.findIndex(
       (_signal) => _signal.id === value.signal.id,
@@ -79,7 +105,11 @@ function findZone(spectrum: Datum2D, value): Zone | undefined {
   }
 }
 
-function findRangeOrZoneID(spectraData: Spectra, value, checkIsVisible: boolean) {
+function findRangeOrZoneID(
+  spectraData: Spectra,
+  value,
+  checkIsVisible: boolean,
+) {
   const spectrum = findSpectrum(spectraData, value, checkIsVisible);
   if (spectrum) {
     if (spectrum.info.dimension === 1) {
@@ -92,7 +122,13 @@ function findRangeOrZoneID(spectraData: Spectra, value, checkIsVisible: boolean)
   }
 }
 
-function findSignalMatch1D(spectrum: Datum2D, link, factor: number, xDomain0: number, xDomain1: number) {
+function findSignalMatch1D(
+  spectrum: Datum2D,
+  link,
+  factor: number,
+  xDomain0: number,
+  xDomain1: number,
+) {
   if (spectrum && spectrum.info.dimension === 2) {
     const signal = findSignal2D(spectrum, link);
     if (signal) {
@@ -130,36 +166,34 @@ function findSignalMatch2D(
 }
 
 function getAbbreviation(link): string {
-      if (
-        link.experimentType === 'hsqc' ||
-        link.experimentType === 'hmqc'
-      ) {
-        return !link.signal || link.signal.sign === 0
-            ? 'S'
-            : `S${link.signal.sign === 1 ? '+' : '-'}`;
-      } else if (
-        link.experimentType === 'hmbc' ||
-        link.experimentType === 'cosy' ||
-        link.experimentType === 'tocsy'
-      ) {
-        return 'M';
-      } else if (
-        link.experimentType === 'noesy' ||
-        link.experimentType === 'roesy'
-      ) {
-        return 'NOE';
-      } else if(link.experimentType === 'inadequate') {
-        return "I";
-      } else if(link.experimentType === 'adequate') {
-        return "A";
-      }
+  if (link.experimentType === 'hsqc' || link.experimentType === 'hmqc') {
+    return !link.signal || link.signal.sign === 0
+      ? 'S'
+      : `S${link.signal.sign === 1 ? '+' : '-'}`;
+  } else if (
+    link.experimentType === 'hmbc' ||
+    link.experimentType === 'cosy' ||
+    link.experimentType === 'tocsy'
+  ) {
+    return 'M';
+  } else if (
+    link.experimentType === 'noesy' ||
+    link.experimentType === 'roesy'
+  ) {
+    return 'NOE';
+  } else if (link.experimentType === 'inadequate') {
+    return 'I';
+  } else if (link.experimentType === 'adequate') {
+    return 'A';
+  }
 
-      return "X";
+  return 'X';
 }
 
 export {
   findRange,
   findRangeOrZoneID,
+  findSignal1D,
   findSignal2D,
   findSignalMatch1D,
   findSignalMatch2D,

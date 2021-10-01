@@ -1,8 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
+import { useAssignmentData } from '../../../assignment';
+import { useDispatch } from '../../../context/DispatchContext';
+import ContextMenu from '../../../elements/ContextMenu';
 import { useHighlight } from '../../../highlight';
+import { DELETE_CORRELATION } from '../../../reducer/types/Types';
 import { findRangeOrZoneID, getLabelColor } from '../Utilities';
 
 function AdditionalColumnHeader({
@@ -10,6 +14,10 @@ function AdditionalColumnHeader({
   correlationsData,
   correlation,
 }) {
+  const contextRef = useRef<any>();
+  const dispatch = useDispatch();
+  const assignmentData = useAssignmentData();
+
   const highlightIDsAdditionalColumn = useMemo(() => {
     if (correlation.pseudo === true) {
       return [];
@@ -101,11 +109,54 @@ function AdditionalColumnHeader({
         };
   }, [correlation]);
 
+  const onClickContextMenuOption = useCallback(
+    (action: string) => {
+      if (action === 'remove') {
+        dispatch({
+          type: DELETE_CORRELATION,
+          payload: {
+            correlation,
+            assignmentData,
+          },
+        });
+      }
+    },
+    [assignmentData, correlation, dispatch],
+  );
+
+  const contextMenu = useMemo(() => {
+    return correlation.pseudo === false
+      ? [
+          {
+            label: `delete ${correlation.label.origin}`,
+            onClick: () => {
+              onClickContextMenuOption('remove');
+            },
+          },
+        ]
+      : [];
+  }, [correlation.label.origin, correlation.pseudo, onClickContextMenuOption]);
+
+  const contextMenuHandler = useCallback(
+    (e) => {
+      e.preventDefault();
+      contextRef.current.handleContextMenu(e);
+    },
+    [contextRef],
+  );
+
   const { title, ...thProps } = tableHeaderProps;
 
   return (
     <th {...thProps} title={title === false ? undefined : title}>
-      <div style={{ display: 'block' }}>
+      <div
+        style={{ display: 'block' }}
+        onContextMenu={(e) => {
+          if (contextMenu.length > 0) {
+            contextMenuHandler(e);
+          }
+        }}
+      >
         <p>{correlation.label.origin}</p>
         <p>
           {correlation?.signal?.delta
@@ -117,6 +168,7 @@ function AdditionalColumnHeader({
             ? correlation.equivalence
             : correlation.equivalence.toFixed(2)}
         </p>
+        <ContextMenu ref={contextRef} context={contextMenu} />
       </div>
     </th>
   );

@@ -2,7 +2,19 @@ import { original, Draft } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import { buildCorrelationData, setCorrelation, Types } from 'nmr-correlation';
 
+import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import {
+  findRange,
+  findSignal1D,
+  findSignal2D,
+  findSpectrum,
+  findZone,
+} from '../../panels/SummaryPanel/Utilities';
 import { State } from '../Reducer';
+
+import { handleDeleteSignal as handleDeleteSignal1D } from './RangesActions';
+import { handleDeleteSignal as handleDeleteSignal2D } from './ZonesActions';
 
 function handleUpdateCorrelations(draft: Draft<State>) {
   const { data: spectra, correlations } = draft;
@@ -63,10 +75,62 @@ function handleSetCorrelations(
   handleUpdateCorrelations(draft);
 }
 
+function handleDeleteCorrelation(
+  draft: Draft<State>,
+  payload: { correlation: Types.Correlation; assignmentData },
+) {
+  const { correlation, assignmentData } = payload;
+  // delete all signals linked to the correlation
+  correlation.link.forEach((link) => {
+    const spectrum = findSpectrum(draft.data, link, false);
+    if (spectrum) {
+      if (spectrum.info.dimension === 1) {
+        const range = findRange(spectrum as Datum1D, link);
+        const signal = findSignal1D(spectrum as Datum1D, link);
+        handleDeleteSignal1D(draft, {
+          payload: {
+            spectrumID: spectrum.id,
+            rangeID: range?.id,
+            signalID: signal?.id,
+            assignmentData,
+          },
+        });
+      } else if (spectrum.info.dimension === 2) {
+        const zone = findZone(spectrum as Datum2D, link);
+        const signal = findSignal2D(spectrum as Datum2D, link);
+        handleDeleteSignal2D(draft, {
+          payload: {
+            spectrumID: spectrum.id,
+            zoneID: zone?.id,
+            signalID: signal?.id,
+            assignmentData,
+          },
+        });
+      }
+    }
+  });
+  // delete last representing signal of correlation if it still exists, i.e. in case of diagonal signals like in COSY
+  const spectrum = findSpectrum(draft.data, correlation, false);
+  if (spectrum) {
+    if (spectrum.info.dimension === 2) {
+      const zone = findZone(spectrum as Datum2D, correlation);
+      handleDeleteSignal2D(draft, {
+        payload: {
+          spectrumID: spectrum.id,
+          zoneID: zone?.id,
+          signalID: correlation.signal.id,
+          assignmentData,
+        },
+      });
+    }
+  }
+}
+
 export {
-  handleUpdateCorrelations,
+  handleDeleteCorrelation,
   handleSetCorrelation,
   handleSetCorrelations,
   handleSetMF,
   handleSetTolerance,
+  handleUpdateCorrelations,
 };
