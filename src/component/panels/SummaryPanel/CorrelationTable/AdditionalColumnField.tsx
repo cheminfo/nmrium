@@ -4,19 +4,19 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Datum2D } from '../../../../data/data2d/Spectrum2D';
 import { buildID } from '../../../../data/utilities/Concatenation';
+import {
+  findRangeOrZoneID,
+  findSignal2D,
+  findSpectrum,
+  findZone,
+} from '../../../../data/utilities/FindUtilities';
 import generateID from '../../../../data/utilities/generateID';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
 import ContextMenu from '../../../elements/ContextMenu';
 import { useHighlight } from '../../../highlight';
 import { DELETE_2D_SIGNAL } from '../../../reducer/types/Types';
-import {
-  findRangeOrZoneID,
-  findSignal2D,
-  findSpectrum,
-  findZone,
-  getAbbreviation,
-} from '../Utilities';
+import { getAbbreviation } from '../Utilities';
 
 function AdditionalColumnField({
   rowCorrelation,
@@ -37,7 +37,12 @@ function AdditionalColumnField({
       if (link.pseudo === false) {
         ids.push(link.signal.id);
         ids.push(buildID(link.signal.id, 'Crosshair'));
-        const _id = findRangeOrZoneID(spectraData, link, true);
+        const _id = findRangeOrZoneID(
+          spectraData,
+          link.experimentID,
+          link.signal.id,
+          true,
+        );
         if (_id) {
           ids.push(_id);
         }
@@ -127,11 +132,11 @@ function AdditionalColumnField({
         // removeLink(_columnCorrelation, columnLinkID);
         const spectrum = findSpectrum(
           spectraData,
-          commonLink,
+          commonLink.experimentID,
           false,
         ) as Datum2D;
-        const zone = findZone(spectrum, commonLink);
-        const signal = findSignal2D(spectrum, commonLink);
+        const zone = findZone(spectrum, commonLink.signal.id);
+        const signal = findSignal2D(spectrum, commonLink.signal.id);
 
         dispatch({
           type: DELETE_2D_SIGNAL,

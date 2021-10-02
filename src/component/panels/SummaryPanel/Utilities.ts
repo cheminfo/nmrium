@@ -1,16 +1,8 @@
 import lodashGet from 'lodash/get';
+import { Types } from 'nmr-correlation';
 
-import {
-  Datum1D,
-  Range,
-  Signal as Signal1D,
-} from '../../../data/data1d/Spectrum1D';
-import {
-  Datum2D,
-  Signal as Signal2D,
-  Zone,
-} from '../../../data/data2d/Spectrum2D';
-import { Spectra } from '../../NMRium';
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { findSignal2D } from '../../../data/utilities/FindUtilities';
 
 import { ErrorColors } from './CorrelationTable/Constants';
 
@@ -42,95 +34,15 @@ function getLabelColor(correlationData, correlation) {
   return null;
 }
 
-function findSpectrum(
-  spectraData: Spectra,
-  value,
-  checkIsVisible: boolean,
-): Datum1D | Datum2D | undefined {
-  const spectrum = spectraData.find(
-    (_spectrum) => _spectrum.id === value.experimentID,
-  );
-  if (
-    spectrum &&
-    checkIsVisible === true &&
-    spectrum.display.isVisible === false
-  ) {
-    return undefined;
-  }
-
-  return spectrum;
-}
-
-function findSignal1D(spectrum: Datum1D, value): Signal1D | undefined {
-  for (let range of spectrum.ranges.values) {
-    const signalIndex = range.signals.findIndex(
-      (_signal) => _signal.id === value.signal.id,
-    );
-    if (signalIndex >= 0) {
-      return range.signals[signalIndex];
-    }
-  }
-}
-
-function findSignal2D(spectrum: Datum2D, value): Signal2D | undefined {
-  for (let zone of spectrum.zones.values) {
-    const signalIndex = zone.signals.findIndex(
-      (_signal) => _signal.id === value.signal.id,
-    );
-    if (signalIndex >= 0) {
-      return zone.signals[signalIndex];
-    }
-  }
-}
-
-function findRange(spectrum: Datum1D, value): Range | undefined {
-  for (let range of spectrum.ranges.values) {
-    const signalIndex = range.signals.findIndex(
-      (_signal) => _signal.id === value.signal.id,
-    );
-    if (signalIndex >= 0) {
-      return range;
-    }
-  }
-}
-
-function findZone(spectrum: Datum2D, value): Zone | undefined {
-  for (let zone of spectrum.zones.values) {
-    const signalIndex = zone.signals.findIndex(
-      (_signal) => _signal.id === value.signal.id,
-    );
-    if (signalIndex >= 0) {
-      return zone;
-    }
-  }
-}
-
-function findRangeOrZoneID(
-  spectraData: Spectra,
-  value,
-  checkIsVisible: boolean,
-) {
-  const spectrum = findSpectrum(spectraData, value, checkIsVisible);
-  if (spectrum) {
-    if (spectrum.info.dimension === 1) {
-      const range = findRange(spectrum as Datum1D, value);
-      if (range) return range.id;
-    } else if (spectrum.info.dimension === 2) {
-      const zone = findZone(spectrum as Datum2D, value);
-      if (zone) return zone.id;
-    }
-  }
-}
-
 function findSignalMatch1D(
   spectrum: Datum2D,
-  link,
+  link: Types.Link,
   factor: number,
   xDomain0: number,
   xDomain1: number,
 ) {
   if (spectrum && spectrum.info.dimension === 2) {
-    const signal = findSignal2D(spectrum, link);
+    const signal = findSignal2D(spectrum, link.signal.id);
     if (signal) {
       const otherAxis = link.axis === 'x' ? 'y' : 'x';
       return (
@@ -144,7 +56,7 @@ function findSignalMatch1D(
 
 function findSignalMatch2D(
   spectrum: Datum2D,
-  value,
+  link: Types.Link,
   factor: number,
   xDomain0: number,
   xDomain1: number,
@@ -152,7 +64,7 @@ function findSignalMatch2D(
   yDomain1: number,
 ): boolean {
   if (spectrum && spectrum.info.dimension === 2) {
-    const signal = findSignal2D(spectrum, value);
+    const signal = findSignal2D(spectrum, link.signal.id);
     if (signal) {
       return (
         signal.x.delta * factor >= xDomain0 &&
@@ -165,7 +77,7 @@ function findSignalMatch2D(
   return false;
 }
 
-function getAbbreviation(link): string {
+function getAbbreviation(link: Types.Link): string {
   if (link.experimentType === 'hsqc' || link.experimentType === 'hmqc') {
     return !link.signal || link.signal.sign === 0
       ? 'S'
@@ -191,14 +103,8 @@ function getAbbreviation(link): string {
 }
 
 export {
-  findRange,
-  findRangeOrZoneID,
-  findSignal1D,
-  findSignal2D,
   findSignalMatch1D,
   findSignalMatch2D,
-  findSpectrum,
-  findZone,
   getAbbreviation,
   getAtomType,
   getLabelColor,

@@ -3,6 +3,7 @@ import { buildLink, getLabel } from 'nmr-correlation';
 import { CSSProperties, useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
+import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
 import ContextMenu from '../../../elements/ContextMenu';
@@ -10,7 +11,6 @@ import EditableColumn from '../../../elements/EditableColumn';
 import Select from '../../../elements/Select';
 import { useHighlight } from '../../../highlight';
 import { DELETE_CORRELATION } from '../../../reducer/types/Types';
-import { findRangeOrZoneID } from '../Utilities';
 
 import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
@@ -47,7 +47,12 @@ function CorrelationTableRow({
       buildID(correlation.signal.id, 'Crosshair_Y'),
     ];
 
-    const id = findRangeOrZoneID(spectraData, correlation, true);
+    const id = findRangeOrZoneID(
+      spectraData,
+      correlation.experimentID,
+      correlation.signal.id,
+      true,
+    );
     if (id) {
       ids.push(id);
     }
@@ -56,7 +61,12 @@ function CorrelationTableRow({
       if (link.pseudo === false) {
         ids.push(link.signal.id);
         ids.push(buildID(link.signal.id, 'Crosshair_Y'));
-        const _id = findRangeOrZoneID(spectraData, link, true);
+        const _id = findRangeOrZoneID(
+          spectraData,
+          link.experimentID,
+          link.signal.id,
+          true,
+        );
         if (_id) {
           ids.push(_id);
         }

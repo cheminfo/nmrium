@@ -2,12 +2,13 @@
 import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
+import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
 import ContextMenu from '../../../elements/ContextMenu';
 import { useHighlight } from '../../../highlight';
 import { DELETE_CORRELATION } from '../../../reducer/types/Types';
-import { findRangeOrZoneID, getLabelColor } from '../Utilities';
+import { getLabelColor } from '../Utilities';
 
 function AdditionalColumnHeader({
   spectraData,
@@ -26,7 +27,12 @@ function AdditionalColumnHeader({
       correlation.signal.id,
       buildID(correlation.signal.id, 'Crosshair_X'),
     ];
-    const id = findRangeOrZoneID(spectraData, correlation, true);
+    const id = findRangeOrZoneID(
+      spectraData,
+      correlation.experimentID,
+      correlation.signal.id,
+      true,
+    );
     if (id) {
       ids.push(id);
     }
@@ -34,7 +40,12 @@ function AdditionalColumnHeader({
       if (link.pseudo === false) {
         ids.push(link.signal.id);
         ids.push(buildID(link.signal.id, 'Crosshair_X'));
-        const _id = findRangeOrZoneID(spectraData, link, true);
+        const _id = findRangeOrZoneID(
+          spectraData,
+          link.experimentID,
+          link.signal.id,
+          true,
+        );
         if (_id) {
           ids.push(_id);
         }
