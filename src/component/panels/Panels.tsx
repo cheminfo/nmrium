@@ -17,6 +17,7 @@ import RangesPanel from './RangesPanel/RangesPanel';
 import SpectrumListPanel from './SpectrumsPanel/SpectrumListPanel';
 import SummaryPanel from './SummaryPanel/SummaryPanel';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
+import DatabasePanel from './databasePanel/DatabasePanel';
 import FilterPanel from './filtersPanel/FilterPanel';
 
 const accordionItems = [
@@ -102,7 +103,7 @@ const accordionItems = [
   },
   {
     title: 'Database',
-    component: <div />,
+    component: <DatabasePanel />,
     openWhen: [],
     style: '',
     hidePreferenceKey: null,

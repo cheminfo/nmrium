@@ -44,9 +44,19 @@ const peaksDefaultValues = {
   intensityFormat: '0.00',
 };
 
+const databaseDefaultValues = {
+  showSmiles: true,
+  showSolvent: false,
+  showNames: false,
+  showMeta: false,
+  showRanges: true,
+  rowHeight: 80,
+};
+
 export {
   peaksDefaultValues,
   integralDefaultValues,
   rangeDefaultValues,
   zoneDefaultValues,
+  databaseDefaultValues,
 };
