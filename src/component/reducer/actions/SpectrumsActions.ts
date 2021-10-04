@@ -205,9 +205,10 @@ function generateSpectrumFromPublicationStringHandler(
   action,
 ) {
   const publicationString = action.payload.publicationText;
+
   const spectrum = generateSpectrumFromPublicationString(
     publicationString,
-    action.usedColors,
+    action.usedColors['1d'],
   );
   draft.data.push(spectrum);
   setActiveTab(draft);

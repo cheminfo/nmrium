@@ -345,8 +345,8 @@ function updateRelatives(
     factor = currentSum > 0 ? options.sum / currentSum : 0.0;
   } else {
     if (data.values?.[0]) {
-      const { [storageKey]: inetgral, absolute } = data.values[0];
-      factor = (inetgral ? inetgral : options.sum) / absolute;
+      const { [storageKey]: integral, absolute } = data.values[0];
+      factor = (integral ? integral : options.sum) / absolute;
     }
   }
 
@@ -596,6 +596,9 @@ export function generateSpectrumFromPublicationString(
     },
     usedColors,
   );
+  datum.ranges.values = mapRanges(ranges, datum);
+  updateIntegralRanges(datum);
+
   return datum;
 }
 
