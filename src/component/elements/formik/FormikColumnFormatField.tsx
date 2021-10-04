@@ -25,7 +25,7 @@ const styles: Record<'row' | 'inputLabel' | 'input', CSSProperties> = {
 interface FormikColumnFormatFieldProps {
   label: string;
   checkControllerName: string;
-  formatControllerName: string;
+  formatControllerName?: string;
   disableFormat?: boolean;
   hideFormat?: boolean;
 }
@@ -73,7 +73,7 @@ function FormikColumnFormatField(props: FormikColumnFormatFieldProps) {
           onChange={checkChangeHandler}
           checked={lodashGet(values, checkControllerName, false)}
         />
-        {!hideFormat && (
+        {!hideFormat && formatControllerName && (
           <Input
             style={{ container: styles.input }}
             name={formatControllerName}
