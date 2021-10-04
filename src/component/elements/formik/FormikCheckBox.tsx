@@ -9,7 +9,7 @@ interface FormikCheckBoxProps extends Omit<CheckBoxProps, 'style'> {
   label?: string;
   className?: string;
   reverse?: boolean;
-  style: { label?: CSSProperties; checkbox?: CSSProperties };
+  style?: { label?: CSSProperties; checkbox?: CSSProperties };
 }
 
 function FormikCheckBox(props: FormikCheckBoxProps) {
