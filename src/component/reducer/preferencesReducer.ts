@@ -163,7 +163,7 @@ function innerPreferencesReducer(draft: Draft<PreferencesState>, action) {
     case SET_PREFERENCES:
       return handleSetPreferences(draft, action);
     case SET_PANELS_PREFERENCES:
-      return handleSetPanelsPreferences;
+      return handleSetPanelsPreferences(draft, action);
     default:
       return draft;
   }
