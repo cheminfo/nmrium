@@ -11,10 +11,14 @@ import {
 
 import useCombinedRefs from '../hooks/useCombinedRefs';
 
-const styles: Record<'label' | 'input', CSSProperties> = {
+const styles: Record<'label' | 'input' | 'inputContainer', CSSProperties> = {
   label: {
     lineHeight: 2,
     userSelect: 'none',
+  },
+  inputContainer: {
+    height: '100%',
+    margin: '0px 5px 0px 5px',
   },
   input: {
     height: '100%',
@@ -23,7 +27,6 @@ const styles: Record<'label' | 'input', CSSProperties> = {
     borderWidth: '0.55px',
     borderColor: '#c7c7c7',
     borderStyle: 'solid',
-    margin: '0px 5px 0px 5px',
     textAlign: 'center',
   },
 };
@@ -35,6 +38,7 @@ export interface InputProps
     label?: CSSProperties;
     input?: CSSProperties;
     container?: CSSProperties;
+    inputContainer?: CSSProperties;
   };
   enableAutoSelect?: boolean;
   debounceTime?: number;
@@ -48,7 +52,7 @@ const Input = forwardRef(
       label,
       value = '',
       name,
-      style = { label: {}, input: {}, container: {} },
+      style = { label: {}, input: {}, inputContainer: {}, container: {} },
       onChange = () => null,
       debounceTime = 0,
       onKeyDown = () => null,
@@ -177,25 +181,33 @@ const Input = forwardRef(
             {label}
           </span>
         )}
-        <input
-          {...props}
-          ref={combinedRef}
-          name={name}
-          data-test-id={name ? `input-${name}` : ''}
+        <div
+          className="input-container"
           style={{
-            ...styles.input,
-            ...(style?.input ? style.input : {}),
+            ...styles.inputContainer,
+            ...(style?.inputContainer ? style.inputContainer : {}),
           }}
-          type="text"
-          value={val}
-          onChange={onChangeHandler}
-          onKeyDown={handleKeyDown}
-          onKeyPress={preventPropagate}
-          onDoubleClick={(e) => e.stopPropagation()}
-          className={`input ${className || ''}`}
-          onFocus={onFocus}
-          onBlur={onBlur}
-        />
+        >
+          <input
+            {...props}
+            ref={combinedRef}
+            name={name}
+            className={`input ${className || ''}`}
+            style={{
+              ...styles.input,
+              ...(style?.input ? style.input : {}),
+            }}
+            data-test-id={name ? `input-${name}` : ''}
+            type="text"
+            value={val}
+            onChange={onChangeHandler}
+            onKeyDown={handleKeyDown}
+            onKeyPress={preventPropagate}
+            onDoubleClick={(e) => e.stopPropagation()}
+            onFocus={onFocus}
+            onBlur={onBlur}
+          />
+        </div>
       </div>
     );
   },
