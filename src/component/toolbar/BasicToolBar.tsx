@@ -118,8 +118,8 @@ function BasicToolBarInner({
 
   const importMenu = useMemo(() => {
     return isExperimentalFeature
-      ? IMPORT_MENU.filter((item) => item.id !== 'importPublicationString')
-      : IMPORT_MENU;
+      ? IMPORT_MENU
+      : IMPORT_MENU.filter((item) => item.id !== 'importPublicationString');
   }, [isExperimentalFeature]);
 
   const {

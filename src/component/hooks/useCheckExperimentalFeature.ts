@@ -6,6 +6,6 @@ export default function useCheckExperimentalFeature(): boolean {
   const preferences = usePreferences();
 
   return useMemo(() => {
-    return preferences?.display.hideExperimentalFeatures;
+    return !preferences?.display.hideExperimentalFeatures === true;
   }, [preferences]);
 }
