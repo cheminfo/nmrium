@@ -127,13 +127,13 @@ const styles = css`
     height: 30px;
   }
 
-  .checkbox-lable {
+  .checkbox-label{
     min-width: 300px;
     display: inline-block;
   }
 
   .help-checkbox-element {
-    .checkbox-lable {
+    .checkbox-label {
       width: 260px;
     }
   }
