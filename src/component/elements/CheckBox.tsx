@@ -4,6 +4,7 @@ import {
   ChangeEvent,
   forwardRef,
   ForwardedRef,
+  CSSProperties,
 } from 'react';
 
 export interface CheckBoxProps {
@@ -11,6 +12,7 @@ export interface CheckBoxProps {
   name?: string;
   disabled?: boolean;
   checked?: boolean;
+  style?: CSSProperties;
 }
 
 const CheckBox = forwardRef(
@@ -20,6 +22,7 @@ const CheckBox = forwardRef(
       disabled = false,
       name = '',
       onChange = () => null,
+      style = {},
     } = props;
 
     const [checked, setCheck] = useState<boolean>(checkProps);
@@ -41,6 +44,7 @@ const CheckBox = forwardRef(
         onChange={handleCheck}
         defaultChecked={checkProps}
         disabled={disabled}
+        style={style}
       />
     );
   },

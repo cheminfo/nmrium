@@ -1,14 +1,15 @@
 import { useFormikContext } from 'formik';
 import lodashGet from 'lodash/get';
-import { useCallback } from 'react';
+import { CSSProperties, useCallback } from 'react';
 
 import CheckBox, { CheckBoxProps } from '../CheckBox';
 
-interface FormikCheckBoxProps extends CheckBoxProps {
+interface FormikCheckBoxProps extends Omit<CheckBoxProps, 'style'> {
   name: string;
   label?: string;
   className?: string;
   reverse?: boolean;
+  style: { label?: CSSProperties; checkbox?: CSSProperties };
 }
 
 function FormikCheckBox(props: FormikCheckBoxProps) {
@@ -18,6 +19,7 @@ function FormikCheckBox(props: FormikCheckBoxProps) {
     onChange = () => null,
     className = 'checkbox',
     reverse = false,
+    style = { label: {}, checkbox: {} },
     ...resProps
   } = props;
 
@@ -35,7 +37,11 @@ function FormikCheckBox(props: FormikCheckBoxProps) {
 
   return (
     <div className={`${className} check-${value}`}>
-      <label htmlFor={name} className="checkbox-lable">
+      <label
+        htmlFor={name}
+        className="checkbox-label"
+        style={style.label ? style.label : {}}
+      >
         {label}
       </label>
       <CheckBox
@@ -43,6 +49,7 @@ function FormikCheckBox(props: FormikCheckBoxProps) {
         name={name}
         checked={value}
         onChange={changeHandler}
+        style={style.checkbox ? style.checkbox : {}}
       />
     </div>
   );
