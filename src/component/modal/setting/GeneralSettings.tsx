@@ -127,7 +127,7 @@ const styles = css`
     height: 30px;
   }
 
-  .checkbox-label{
+  .checkbox-label {
     min-width: 300px;
     display: inline-block;
   }
