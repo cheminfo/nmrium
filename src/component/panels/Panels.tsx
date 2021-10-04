@@ -4,6 +4,7 @@ import { useCallback, memo } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
+import useCheckExperimentalFeature from '../hooks/useCheckExperimentalFeature';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { options } from '../toolbar/ToolTypes';
 
@@ -99,6 +100,15 @@ const accordionItems = [
     hidePreferenceKey: 'hideStructuresPanel',
     mode: null,
   },
+  {
+    title: 'Database',
+    component: <div />,
+    openWhen: [],
+    style: '',
+    hidePreferenceKey: null,
+    mode: null,
+    isExperimental: true,
+  },
 ];
 
 export const PANELS_ACCORDION: Record<string, string> = {
@@ -110,15 +120,17 @@ export const PANELS_ACCORDION: Record<string, string> = {
 
 function PanelsInner({ displayerMode }) {
   const preferences = usePreferences();
-
+  const isExperimental = useCheckExperimentalFeature();
   const check = useCallback(
     (item) => {
       return (
-        !lodashGet(preferences, `display.panels.${item.hidePreferenceKey}`) &&
-        (item.mode == null || item.mode === displayerMode)
+        (!lodashGet(preferences, `display.panels.${item.hidePreferenceKey}`) &&
+          item.isExperimental === undefined &&
+          (item.mode == null || item.mode === displayerMode)) ||
+        (item.isExperimental && isExperimental)
       );
     },
-    [displayerMode, preferences],
+    [displayerMode, isExperimental, preferences],
   );
 
   return (
