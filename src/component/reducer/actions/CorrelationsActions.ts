@@ -72,6 +72,7 @@ function handleSetCorrelations(
     const { correlations: correlationsData } = draft;
     draft.correlations = setCorrelation(correlationsData, id, correlations[i]);
   });
+
   handleUpdateCorrelations(draft);
 }
 
@@ -89,9 +90,9 @@ function handleDeleteCorrelation(
         const signal = findSignal1D(spectrum as Datum1D, link.signal.id);
         handleDeleteSignal1D(draft, {
           payload: {
-            spectrumID: spectrum.id,
-            rangeID: range?.id,
-            signalID: signal?.id,
+            spectrum,
+            range,
+            signal,
             assignmentData,
           },
         });
@@ -100,30 +101,15 @@ function handleDeleteCorrelation(
         const signal = findSignal2D(spectrum as Datum2D, link.signal.id);
         handleDeleteSignal2D(draft, {
           payload: {
-            spectrumID: spectrum.id,
-            zoneID: zone?.id,
-            signalID: signal?.id,
+            spectrum,
+            zone,
+            signal,
             assignmentData,
           },
         });
       }
     }
   });
-  // delete last representing signal of correlation if it still exists, i.e. in case of diagonal signals like in COSY
-  const spectrum = findSpectrum(draft.data, correlation.experimentID, false);
-  if (spectrum) {
-    if (spectrum.info.dimension === 2) {
-      const zone = findZone(spectrum as Datum2D, correlation.signal.id);
-      handleDeleteSignal2D(draft, {
-        payload: {
-          spectrumID: spectrum.id,
-          zoneID: zone?.id,
-          signalID: correlation.signal.id,
-          assignmentData,
-        },
-      });
-    }
-  }
 }
 
 export {

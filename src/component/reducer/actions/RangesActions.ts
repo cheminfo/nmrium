@@ -134,35 +134,38 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
 }
 
 function handleDeleteSignal(draft: Draft<State>, action) {
-  const { spectrumID, rangeID, signalID, assignmentData } = action.payload;
-  if (spectrumID) {
+  const {
+    spectrum,
+    range,
+    signal,
+    assignmentData,
+    unlinkSignalInAssignmentData = true,
+  } = action.payload;
+
+  if (spectrum && range) {
     const datum1D = draft.data.find(
-      (datum) => datum.id === spectrumID,
+      (datum) => datum.id === spectrum.id,
     ) as Datum1D;
     const rangeIndex = datum1D.ranges.values.findIndex(
-      (range) => range.id === rangeID,
+      (_range) => _range.id === range.id,
     );
-    if (rangeIndex >= 0) {
-      const range = cloneDeep(datum1D.ranges.values[rangeIndex]);
-      const signalIndex = range.signals.findIndex(
-        (signal) => signal.id === signalID,
-      );
-      if (signalIndex >= 0) {
-        const signal = range.signals[signalIndex];
-        // remove assignments for the signal in global state
-        const _range = unlink(range, 'signal', { signalIndex });
-        unlinkInAssignmentData(assignmentData, [{ signals: [signal] }]);
-        _range.signals.splice(signalIndex, 1);
-        datum1D.ranges.values[rangeIndex] = _range;
-        // if no signals are existing in a range anymore then delete this range
-        if (_range.signals.length === 0) {
-          unlinkInAssignmentData(assignmentData, [_range]);
-          datum1D.ranges.values.splice(rangeIndex, 1);
-        }
-
-        handleOnChangeRangesData(draft);
-      }
+    const signalIndex = range.signals.findIndex(
+      (_signal) => _signal.id === signal.id,
+    );
+    // remove assignments for the signal range object in global state
+    const _range = unlink(cloneDeep(range), 'signal', { signalIndex });
+    if (unlinkSignalInAssignmentData === true) {
+      unlinkInAssignmentData(assignmentData, [{ signals: [signal] }]);
     }
+    _range.signals.splice(signalIndex, 1);
+    datum1D.ranges.values[rangeIndex] = _range;
+    // if no signals are existing in a range anymore then delete this range
+    if (_range.signals.length === 0) {
+      unlinkInAssignmentData(assignmentData, [_range]);
+      datum1D.ranges.values.splice(rangeIndex, 1);
+    }
+
+    handleOnChangeRangesData(draft);
   }
 }
 

@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { getCorrelationDelta } from 'nmr-correlation';
 import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
@@ -23,19 +24,7 @@ function AdditionalColumnHeader({
     if (correlation.pseudo === true) {
       return [];
     }
-    const ids = [
-      correlation.signal.id,
-      buildID(correlation.signal.id, 'Crosshair_X'),
-    ];
-    const id = findRangeOrZoneID(
-      spectraData,
-      correlation.experimentID,
-      correlation.signal.id,
-      true,
-    );
-    if (id) {
-      ids.push(id);
-    }
+    const ids: string[] = [];
     correlation.link.forEach((link) => {
       if (link.pseudo === false) {
         ids.push(link.signal.id);
@@ -81,20 +70,16 @@ function AdditionalColumnHeader({
       },
       title:
         correlation.pseudo === false &&
-        // eslint-disable-next-line @typescript-eslint/require-array-sort-compare
-        [correlation.experimentType.toUpperCase()]
-          .concat(
-            correlation.link.reduce((arr, link) => {
-              if (
-                link.pseudo === false &&
-                link.experimentType !== correlation.experimentType &&
-                !arr.includes(link.experimentType.toUpperCase())
-              ) {
-                arr.push(link.experimentType.toUpperCase());
-              }
-              return arr;
-            }, []),
-          )
+        correlation.link
+          .reduce((arr, link) => {
+            if (
+              link.pseudo === false &&
+              !arr.includes(link.experimentType.toUpperCase())
+            ) {
+              arr.push(link.experimentType.toUpperCase());
+            }
+            return arr;
+          }, [])
           .sort()
           .join('/'),
       onMouseEnter: mouseEnterHandler,
@@ -170,8 +155,8 @@ function AdditionalColumnHeader({
       >
         <p>{correlation.label.origin}</p>
         <p>
-          {correlation?.signal?.delta
-            ? correlation.signal.delta.toFixed(2)
+          {getCorrelationDelta(correlation)
+            ? getCorrelationDelta(correlation).toFixed(2)
             : ''}
         </p>
         <p style={equivalenceTextStyle}>

@@ -1,22 +1,14 @@
-import lodashCloneDeep from 'lodash/cloneDeep';
-import { addLink, buildLink, getCorrelationIndex } from 'nmr-correlation';
+import { Types } from 'nmr-correlation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Datum2D } from '../../../../data/data2d/Spectrum2D';
 import { buildID } from '../../../../data/utilities/Concatenation';
-import {
-  findRangeOrZoneID,
-  findSignal2D,
-  findSpectrum,
-  findZone,
-} from '../../../../data/utilities/FindUtilities';
-import generateID from '../../../../data/utilities/generateID';
-import { useAssignmentData } from '../../../assignment';
-import { useDispatch } from '../../../context/DispatchContext';
+import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
 import ContextMenu from '../../../elements/ContextMenu';
+import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
-import { DELETE_2D_SIGNAL } from '../../../reducer/types/Types';
 import { getAbbreviation } from '../Utilities';
+
+import EditLinkModal from './EditLinkModal';
 
 function AdditionalColumnField({
   rowCorrelation,
@@ -28,8 +20,7 @@ function AdditionalColumnField({
 }) {
   const contextRef = useRef<any>();
   const [isEdited, setIsEdited] = useState(false);
-  const dispatch = useDispatch();
-  const assignmentData = useAssignmentData();
+  const modal = useModal();
 
   const highlightIDsCommonLinks = useMemo(() => {
     const ids: Array<any> = [];
@@ -85,154 +76,104 @@ function AdditionalColumnField({
   );
 
   const onEditHandler = useCallback(
-    (experimentType: string, action: string, commonLink) => {
-      const _rowCorrelation = lodashCloneDeep(rowCorrelation);
-      const _columnCorrelation = lodashCloneDeep(columnCorrelation);
-      const pseudoLinkCountHSQC = _rowCorrelation.link.filter(
-        (link) =>
-          link.experimentType === 'hsqc' || link.experimentType === 'hmqc',
-      ).length;
-
-      if (action === 'add') {
-        const pseudoLinkID = generateID();
-        const pseudoExperimentID = generateID();
-        const commonPseudoLink = buildLink({
-          experimentType,
-          experimentID: pseudoExperimentID,
-          atomType: [_columnCorrelation.atomType, _rowCorrelation.atomType],
-          id: pseudoLinkID,
-          pseudo: true,
-          signal: { id: generateID(), sign: 0 }, // pseudo signal
-        });
-
-        addLink(
-          _columnCorrelation,
-          buildLink({
-            ...commonPseudoLink,
-            axis: 'x',
-            match: [getCorrelationIndex(correlations, _rowCorrelation)],
-          }),
-        );
-        addLink(
-          _rowCorrelation,
-          buildLink({
-            ...commonPseudoLink,
-            axis: 'y',
-            match: [getCorrelationIndex(correlations, _columnCorrelation)],
-          }),
-        );
-        if (!_rowCorrelation.edited.protonsCount) {
-          _rowCorrelation.protonsCount = [pseudoLinkCountHSQC + 1];
-        }
-      } else if (action === 'remove') {
-        // const split = commonLink.id.split('_');
-        // const rowLinkID = split[0];
-        // const columnLinkID = split[1];
-        // removeLink(_rowCorrelation, rowLinkID);
-        // removeLink(_columnCorrelation, columnLinkID);
-        const spectrum = findSpectrum(
-          spectraData,
-          commonLink.experimentID,
-          false,
-        ) as Datum2D;
-        const zone = findZone(spectrum, commonLink.signal.id);
-        const signal = findSignal2D(spectrum, commonLink.signal.id);
-
-        dispatch({
-          type: DELETE_2D_SIGNAL,
-          payload: {
-            spectrumID: spectrum.id,
-            zoneID: zone?.id,
-            signalID: signal?.id,
-            assignmentData,
-          },
-        });
-
-        if (!_rowCorrelation.edited.protonsCount) {
-          _rowCorrelation.protonsCount =
-            pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [];
-        }
-      } else if (action === 'move') {
-        console.log('MOVE action');
-      }
-
-      onEdit(_rowCorrelation, _columnCorrelation);
-    },
-    [
-      rowCorrelation,
-      columnCorrelation,
-      onEdit,
-      correlations,
-      spectraData,
-      dispatch,
-      assignmentData,
-    ],
+    (
+      editedColumnCorrelation: Types.Correlation,
+      editedRowCorrelation: Types.Correlation,
+      experimentType: string,
+      action: string,
+      commonLink?: Types.Link,
+      newColumnCorrelation?: Types.Correlation,
+      newRowCorrelation?: Types.Correlation,
+    ) =>
+      onEdit(
+        editedColumnCorrelation,
+        editedRowCorrelation,
+        experimentType,
+        action,
+        commonLink,
+        newColumnCorrelation,
+        newRowCorrelation,
+      ),
+    [onEdit],
   );
 
   const contextMenu = useMemo(() => {
-    // allow the movement or deletion of correlations
+    // allow the edition of correlations
     const commonLinksMenu = commonLinks
-      .map((commonLink) =>
-        commonLink.pseudo === false
+      .map((commonLink) => {
+        const commonLinkContextMenuLabel = `${getAbbreviation(commonLink)} (${
+          commonLink.signal.x ? commonLink.signal.x.delta.toFixed(2) : '?'
+        }, ${
+          commonLink.signal.y ? commonLink.signal.y.delta.toFixed(2) : '?'
+        })`;
+
+        return commonLink.pseudo === false
           ? [
               {
-                label: `move ${getAbbreviation(
-                  commonLink,
-                )} (${commonLink.experimentType.toUpperCase()})`,
+                label: `edit ${commonLinkContextMenuLabel}`,
                 onClick: () =>
-                  onEditHandler(commonLink.experimentType, 'move', commonLink),
-              },
-              {
-                label: `delete ${getAbbreviation(
-                  commonLink,
-                )} (${commonLink.experimentType.toUpperCase()})`,
-                onClick: () => {
-                  onEditHandler(
-                    commonLink.experimentType,
-                    'remove',
-                    commonLink,
-                  );
-                },
+                  modal.show(
+                    <EditLinkModal
+                      onClose={() => modal.close()}
+                      onEdit={onEditHandler}
+                      link={commonLink}
+                      rowCorrelation={rowCorrelation}
+                      columnCorrelation={columnCorrelation}
+                      correlations={correlations}
+                    />,
+                    { position: positions.TOP_LEFT, isBackgroundBlur: false },
+                  ),
               },
             ]
-          : [],
-      )
+          : [];
+      })
       .flat();
     // allow addition or removal of a pseudo HSQC link between pseudo heavy atom and proton
     const commonPseudoLinkHSQC = commonLinks.find(
       (commonLink) =>
         commonLink.pseudo === true && commonLink.experimentType === 'hsqc',
     );
-
     if (rowCorrelation.pseudo === true) {
       if (commonPseudoLinkHSQC) {
         commonLinksMenu.push({
           label: 'remove pseudo HSQC',
           onClick: () => {
-            onEditHandler('hsqc', 'remove', commonPseudoLinkHSQC);
+            onEditHandler(columnCorrelation, rowCorrelation, 'hsqc', 'remove', {
+              ...commonPseudoLinkHSQC,
+              id: commonPseudoLinkHSQC.id.split('_')[0],
+            });
           },
         });
       } else {
         commonLinksMenu.push({
           label: 'add pseudo HSQC',
           onClick: () => {
-            onEditHandler('hsqc', 'add', undefined);
+            onEditHandler(
+              columnCorrelation,
+              rowCorrelation,
+              'hsqc',
+              'add',
+              undefined,
+            );
           },
         });
       }
     }
 
     return commonLinksMenu;
-  }, [commonLinks, onEditHandler, rowCorrelation.pseudo]);
+  }, [
+    columnCorrelation,
+    commonLinks,
+    correlations,
+    modal,
+    onEditHandler,
+    rowCorrelation,
+  ]);
 
-  const content = useMemo(() => {
-    const linkSet = new Set();
-    commonLinks.forEach((commonLink) => {
-      linkSet.add(getAbbreviation(commonLink));
-    });
-
-    return [...linkSet];
-  }, [commonLinks]);
+  const content = useMemo(
+    () => commonLinks.map((commonLink) => getAbbreviation(commonLink)),
+    [commonLinks],
+  );
 
   const title = useMemo(
     () =>

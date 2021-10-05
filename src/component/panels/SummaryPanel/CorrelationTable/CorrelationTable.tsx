@@ -60,7 +60,7 @@ function CorrelationTable({
   editEquivalencesSaveHandler,
   changeHybridizationSaveHandler,
   editProtonsCountSaveHandler,
-  editAdditionalColumnFieldSaveHandler,
+  editAdditionalColumnFieldHandler,
   showProtonsAsRows,
   spectraData,
 }) {
@@ -92,7 +92,7 @@ function CorrelationTable({
           onSaveEditEquivalences={editEquivalencesSaveHandler}
           onChangeHybridization={changeHybridizationSaveHandler}
           onSaveEditProtonsCount={editProtonsCountSaveHandler}
-          onEditAdditionalColumnField={editAdditionalColumnFieldSaveHandler}
+          onEditAdditionalColumnField={editAdditionalColumnFieldHandler}
           spectraData={spectraData}
         />
       ));
@@ -104,7 +104,7 @@ function CorrelationTable({
     editEquivalencesSaveHandler,
     changeHybridizationSaveHandler,
     editProtonsCountSaveHandler,
-    editAdditionalColumnFieldSaveHandler,
+    editAdditionalColumnFieldHandler,
     spectraData,
   ]);
 

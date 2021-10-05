@@ -1,5 +1,9 @@
-import lodashGet from 'lodash/get';
-import { buildLink, getLabel } from 'nmr-correlation';
+import {
+  buildLink,
+  getCorrelationDelta,
+  getLabel,
+  Types,
+} from 'nmr-correlation';
 import { CSSProperties, useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
@@ -42,20 +46,7 @@ function CorrelationTableRow({
     if (correlation.pseudo === true) {
       return [];
     }
-    const ids = [
-      correlation.signal.id,
-      buildID(correlation.signal.id, 'Crosshair_Y'),
-    ];
-
-    const id = findRangeOrZoneID(
-      spectraData,
-      correlation.experimentID,
-      correlation.signal.id,
-      true,
-    );
-    if (id) {
-      ids.push(id);
-    }
+    const ids: string[] = [];
 
     correlation.link.forEach((link) => {
       if (link.pseudo === false) {
@@ -93,24 +84,27 @@ function CorrelationTableRow({
 
   const additionalColumnFields = useMemo(() => {
     return additionalColumnData.map((_correlation) => {
-      const commonLinks: any[] = [];
+      const commonLinks: Types.Link[] = [];
       correlation.link.forEach((link) => {
         _correlation.link.forEach((_link) => {
           if (
             link.axis !== _link.axis &&
             link.experimentID === _link.experimentID &&
-            link.signal.id === _link.signal.id
+            link.signal.id === _link.signal.id &&
+            !commonLinks.some(
+              (_commonLink) => _commonLink.signal.id === link.signal.id,
+            )
           ) {
             let experimentLabel = link.experimentType;
             if (link.signal && link.signal.sign !== 0) {
-              experimentLabel += ' (DEPT)';
+              experimentLabel += link.signal.sign === 1 ? ' (+)' : ' (-)';
             }
             commonLinks.push(
               buildLink({
                 ...link,
                 experimentLabel,
                 axis: undefined,
-                id: `${link.id}_${_link.id}`,
+                id: `${_link.id}_${link.id}`,
               }),
             );
           }
@@ -175,27 +169,22 @@ function CorrelationTableRow({
       },
       title:
         correlation.pseudo === false &&
-        // eslint-disable-next-line @typescript-eslint/require-array-sort-compare
-        [correlation.experimentType.toUpperCase()]
-          .concat(
-            correlation.link.reduce((arr, link) => {
-              if (
-                link.pseudo === false &&
-                link.experimentType !== correlation.experimentType &&
-                !arr.includes(link.experimentType.toUpperCase())
-              ) {
-                arr.push(link.experimentType.toUpperCase());
-              }
-              return arr;
-            }, []),
-          )
+        correlation.link
+          .reduce((arr, link) => {
+            if (
+              link.pseudo === false &&
+              !arr.includes(link.experimentType.toUpperCase())
+            ) {
+              arr.push(link.experimentType.toUpperCase());
+            }
+            return arr;
+          }, [])
           .sort()
           .join('/'),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
   }, [
-    correlation.experimentType,
     correlation.link,
     correlation.pseudo,
     highlightRow.isActive,
@@ -261,8 +250,8 @@ function CorrelationTableRow({
         <ContextMenu ref={contextRef} context={contextMenu} />
       </td>
       <td title={t} {...otherTableDataProps}>
-        {lodashGet(correlation.signal, 'delta', false)
-          ? correlation.signal.delta.toFixed(2)
+        {getCorrelationDelta(correlation)
+          ? getCorrelationDelta(correlation).toFixed(2)
           : ''}
       </td>
       <td title={t} {...otherTableDataProps}>

@@ -1,10 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import lodashCloneDeep from 'lodash/cloneDeep';
+import {
+  addLink,
+  buildLink,
+  getCorrelationIndex,
+  getLinkDelta,
+  getLinkDim,
+  removeLink,
+  Types,
+} from 'nmr-correlation';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
 import { Datum2D } from '../../../data/data2d/Spectrum2D';
-import { findSpectrum } from '../../../data/utilities/FindUtilities';
+import {
+  findSignal2D,
+  findSpectrum,
+  findZone,
+} from '../../../data/utilities/FindUtilities';
+import generateID from '../../../data/utilities/generateID';
+import { useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
@@ -12,6 +28,7 @@ import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
+  DELETE_2D_SIGNAL,
   SET_CORRELATION,
   SET_CORRELATIONS,
   SET_CORRELATIONS_MF,
@@ -79,6 +96,7 @@ function SummaryPanel() {
 
   const dispatch = useDispatch();
   const modal = useModal();
+  const assignmentData = useAssignmentData();
 
   const [additionalColumnData, setAdditionalColumnData] = useState([]);
   const [
@@ -89,8 +107,8 @@ function SummaryPanel() {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
   const filteredCorrelationsData = useMemo(() => {
-    const isInView = (value) => {
-      if (value.pseudo === true) {
+    const isInView = (correlation: Types.Correlation) => {
+      if (correlation.pseudo === true) {
         return false;
       }
       const atomTypesInView = activeTab
@@ -104,11 +122,21 @@ function SummaryPanel() {
       const yDomain1 = yDomain[1] * factor;
 
       if (displayerMode === DISPLAYER_MODE.DM_1D) {
-        const delta = value.signal.delta * factor;
-        const spectrum = findSpectrum(spectraData, value.experimentID, true);
+        const firstLink1D = correlation.link.find(
+          (link) => getLinkDim(link) === 1,
+        );
+        if (!firstLink1D) {
+          return false;
+        }
+        const delta = getLinkDelta(firstLink1D) * factor;
+        const spectrum = findSpectrum(
+          spectraData,
+          firstLink1D.experimentID,
+          true,
+        );
         if (
           spectrum &&
-          atomTypesInView[0] === value.atomType &&
+          atomTypesInView[0] === correlation.atomType &&
           delta >= xDomain0 &&
           delta <= xDomain1
         ) {
@@ -116,7 +144,7 @@ function SummaryPanel() {
         }
         // try to find a link which contains the belonging 2D signal in the spectra in view
         if (
-          value.link.some((link) => {
+          correlation.link.some((link) => {
             const spectrum = findSpectrum(
               spectraData,
               link.experimentID,
@@ -134,19 +162,25 @@ function SummaryPanel() {
           return true;
         }
       } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-        if (!atomTypesInView.includes(value.atomType)) {
+        if (!atomTypesInView.includes(correlation.atomType)) {
+          return false;
+        }
+        const firstLink2D = correlation.link.find(
+          (link) => getLinkDim(link) === 2,
+        );
+        if (!firstLink2D) {
           return false;
         }
         const spectrum = findSpectrum(
           spectraData,
-          value.experimentID,
+          firstLink2D.experimentID,
           true,
         ) as Datum2D;
         // correlation is represented by a 2D signal
         if (
           findSignalMatch2D(
             spectrum,
-            value,
+            firstLink2D,
             factor,
             xDomain0,
             xDomain1,
@@ -158,7 +192,7 @@ function SummaryPanel() {
         } else {
           // try to find a link which contains the belonging 2D signal in the spectra in view
           if (
-            value.link.some((link) => {
+            correlation.link.some((link) => {
               const spectrum = findSpectrum(
                 spectraData,
                 link.experimentID,
@@ -185,7 +219,7 @@ function SummaryPanel() {
 
     if (correlationsData) {
       const _values = filterIsActive
-        ? correlationsData.values.filter((value) => isInView(value))
+        ? correlationsData.values.filter((correlation) => isInView(correlation))
         : correlationsData.values;
 
       return { ...correlationsData, values: _values };
@@ -356,32 +390,137 @@ function SummaryPanel() {
     [dispatch],
   );
 
-  const editAdditionalColumnFieldSaveHandler = useCallback(
-    (rowCorrelation, columnCorrelation) => {
+  const setCorrelationsHandler = useCallback(
+    (correlations: Types.Values) => {
+      const ids = correlations.map((correlation) => correlation.id);
+
       dispatch({
         type: SET_CORRELATIONS,
         payload: {
-          ids: [rowCorrelation.id, columnCorrelation.id],
-          correlations: [
-            {
-              ...rowCorrelation,
+          ids: ids,
+          correlations: correlations.map((correlation) => {
+            return {
+              ...correlation,
               edited: {
-                ...rowCorrelation.edited,
+                ...correlation.edited,
                 additionalColumnField: true,
               },
-            },
-            {
-              ...columnCorrelation,
-              edited: {
-                ...columnCorrelation.edited,
-                additionalColumnField: true,
-              },
-            },
-          ],
+            };
+          }),
         },
       });
     },
     [dispatch],
+  );
+
+  const deleteSignal2DHandler = useCallback(
+    (commonLink: Types.Link) => {
+      // remove linking signal in spectrum
+      const spectrum = findSpectrum(
+        spectraData,
+        commonLink.experimentID,
+        false,
+      ) as Datum2D;
+      const zone = findZone(spectrum, commonLink.signal.id);
+      const signal = findSignal2D(spectrum, commonLink.signal.id);
+
+      dispatch({
+        type: DELETE_2D_SIGNAL,
+        payload: {
+          spectrum,
+          zone,
+          signal,
+          assignmentData,
+        },
+      });
+    },
+    [assignmentData, dispatch, spectraData],
+  );
+
+  const editAdditionalColumnFieldHandler = useCallback(
+    (
+      columnCorrelation: Types.Correlation,
+      rowCorrelation: Types.Correlation,
+      experimentType: string,
+      action: string,
+      commonLink?: Types.Link,
+      newColumnCorrelation?: Types.Correlation,
+      newRowCorrelation?: Types.Correlation,
+    ) => {
+      if (action === 'add') {
+        const _rowCorrelation = lodashCloneDeep(rowCorrelation);
+        const _columnCorrelation = lodashCloneDeep(columnCorrelation);
+        // only pseudo links can be added manually
+        const pseudoLinkCountHSQC = _rowCorrelation.link.filter(
+          (link) =>
+            link.experimentType === 'hsqc' || link.experimentType === 'hmqc',
+        ).length;
+        const pseudoLinkID = generateID();
+        const pseudoExperimentID = generateID();
+        const commonPseudoLink = buildLink({
+          experimentType,
+          experimentID: pseudoExperimentID,
+          atomType: [_columnCorrelation.atomType, _rowCorrelation.atomType],
+          id: pseudoLinkID,
+          pseudo: true,
+          signal: { id: generateID(), sign: 0 }, // pseudo signal
+        });
+
+        addLink(
+          _columnCorrelation,
+          buildLink({
+            ...commonPseudoLink,
+            axis: 'x',
+            match: [
+              getCorrelationIndex(correlationsData.values, _rowCorrelation),
+            ],
+          }),
+        );
+        addLink(
+          _rowCorrelation,
+          buildLink({
+            ...commonPseudoLink,
+            axis: 'y',
+            match: [
+              getCorrelationIndex(correlationsData.values, _columnCorrelation),
+            ],
+          }),
+        );
+        if (!_rowCorrelation.edited.protonsCount) {
+          _rowCorrelation.protonsCount = [pseudoLinkCountHSQC + 1];
+        }
+        setCorrelationsHandler([_rowCorrelation, _columnCorrelation]);
+      } else if (action === 'remove') {
+        if (commonLink.pseudo === false) {
+          deleteSignal2DHandler(commonLink);
+        } else {
+          const _rowCorrelation = lodashCloneDeep(rowCorrelation);
+          const _columnCorrelation = lodashCloneDeep(columnCorrelation);
+          const pseudoLinkCountHSQC = _rowCorrelation.link.filter(
+            (link) =>
+              link.experimentType === 'hsqc' || link.experimentType === 'hmqc',
+          ).length;
+          // remove pseudo link
+          removeLink(_rowCorrelation, commonLink.id);
+          removeLink(_columnCorrelation, commonLink.id);
+          if (!_rowCorrelation.edited.protonsCount) {
+            _rowCorrelation.protonsCount =
+              pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [];
+          }
+          setCorrelationsHandler([_rowCorrelation, _columnCorrelation]);
+        }
+      } else if (action === 'move') {
+        if (newColumnCorrelation && newRowCorrelation) {
+          setCorrelationsHandler([
+            rowCorrelation,
+            columnCorrelation,
+            newColumnCorrelation,
+            newRowCorrelation,
+          ]);
+        }
+      }
+    },
+    [correlationsData.values, deleteSignal2DHandler, setCorrelationsHandler],
   );
 
   const handleOnFilter = useCallback(() => {
@@ -445,9 +584,7 @@ function SummaryPanel() {
         editEquivalencesSaveHandler={editEquivalencesSaveHandler}
         changeHybridizationSaveHandler={changeHybridizationSaveHandler}
         editProtonsCountSaveHandler={editProtonsCountSaveHandler}
-        editAdditionalColumnFieldSaveHandler={
-          editAdditionalColumnFieldSaveHandler
-        }
+        editAdditionalColumnFieldHandler={editAdditionalColumnFieldHandler}
         showProtonsAsRows={showProtonsAsRows}
         spectraData={spectraData}
       />

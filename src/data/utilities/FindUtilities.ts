@@ -4,12 +4,10 @@ import { Datum2D, Signal as Signal2D, Zone } from '../data2d/Spectrum2D';
 
 function findSpectrum(
   spectraData: Spectra,
-  experimentID: string,
+  spectrumID: string,
   checkIsVisible: boolean,
 ): Datum1D | Datum2D | undefined {
-  const spectrum = spectraData.find(
-    (_spectrum) => _spectrum.id === experimentID,
-  );
+  const spectrum = spectraData.find((_spectrum) => _spectrum.id === spectrumID);
   if (
     spectrum &&
     checkIsVisible === true &&
