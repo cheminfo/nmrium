@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { memo, ReactNode } from 'react';
+import { CSSProperties, memo, ReactNode } from 'react';
 import { FaRegTrashAlt, FaCog, FaFilter } from 'react-icons/fa';
 
 import ToggleButton from '../../elements/ToggleButton';
@@ -13,6 +13,11 @@ const styles = css`
   border-bottom: 0.55px solid rgb(240, 240, 240);
   padding: 0px 5px;
 
+  .left-container{
+    display: flex;
+    flex-direction: row;
+    flex:1;  
+  }
   button {
     background-color: transparent;
     border: none;
@@ -56,11 +61,14 @@ interface DefaultPanelHeaderProps {
   filterIsActive?: boolean;
   canDelete?: boolean;
   showSettingButton?: boolean;
+  showCounter?: boolean;
   children?: ReactNode;
+  style?: CSSProperties;
+  className?: string;
 }
 
 function DefaultPanelHeader({
-  counter = 0,
+  counter,
   onDelete = () => null,
   deleteToolTip = 'Delete',
   onFilter = () => null,
@@ -71,45 +79,46 @@ function DefaultPanelHeader({
   onSettingClick = () => null,
   showSettingButton = false,
   canDelete = true,
+  style = {},
+  className = '',
 }: DefaultPanelHeaderProps) {
   return (
-    <div css={styles}>
-      {canDelete && (
-        <ToolTip title={deleteToolTip} popupPlacement="right">
-          <button type="button" onClick={onDelete} disabled={counter === 0}>
-            <FaRegTrashAlt />
-          </button>
-        </ToolTip>
-      )}
+    <div css={styles} {...{ style, className }}>
+      <div className="left-container">
+        {canDelete && (
+          <ToolTip title={deleteToolTip} popupPlacement="right">
+            <button type="button" onClick={onDelete} disabled={counter === 0}>
+              <FaRegTrashAlt />
+            </button>
+          </ToolTip>
+        )}
 
-      {/* Optional if there is no filter needed, e.g. in spectra panel */}
-      {filterToolTip ? (
-        <ToggleButton
-          popupTitle={filterToolTip}
-          popupPlacement="right"
-          onClick={onFilter}
-          defaultValue={filterIsActive}
-        >
-          <FaFilter style={{ pointerEvents: 'none', fontSize: '12px' }} />
-        </ToggleButton>
-      ) : null}
+        {/* Optional if there is no filter needed, e.g. in spectra panel */}
+        {filterToolTip ? (
+          <ToggleButton
+            popupTitle={filterToolTip}
+            popupPlacement="right"
+            onClick={onFilter}
+            defaultValue={filterIsActive}
+          >
+            <FaFilter style={{ pointerEvents: 'none', fontSize: '12px' }} />
+          </ToggleButton>
+        ) : null}
 
-      {children}
+        {children}
 
-      {counter ? (
-        <p className="counter-label">
-          [{' '}
-          {filterIsActive &&
-          filterIsActive === true &&
-          counterFiltered !== undefined
-            ? `${counterFiltered}/${counter}`
-            : counter}{' '}
-          ]
-        </p>
-      ) : (
-        <p style={{ flex: 1 }} />
-      )}
-
+        {counter && (
+          <p className="counter-label">
+            [{' '}
+            {filterIsActive &&
+            filterIsActive === true &&
+            counterFiltered !== undefined
+              ? `${counterFiltered}/${counter}`
+              : counter}{' '}
+            ]
+          </p>
+        )}
+      </div>
       {showSettingButton && (
         <ToolTip title="preferences" popupPlacement="left">
           <button type="button" onClick={onSettingClick}>
