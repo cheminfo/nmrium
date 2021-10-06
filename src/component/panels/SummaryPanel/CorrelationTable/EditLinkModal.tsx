@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import {
   addLink,
+  buildCorrelation,
   buildLink,
   getCorrelationDelta,
   getCorrelationIndex,
@@ -127,9 +128,9 @@ export default function EditLinkModal({
   columnCorrelation,
   correlations,
 }: EditLinkModalProps) {
-  const [selectedColumnCorrelationID, setSelectedColumnCorrelationID] =
+  const [selectedColumnCorrelationValue, setSelectedColumnCorrelationValue] =
     useState<string>(columnCorrelation.id);
-  const [selectedRowCorrelationID, setSelectedRowCorrelationID] =
+  const [selectedRowCorrelationValue, setSelectedRowCorrelationValue] =
     useState<string>(rowCorrelation.id);
 
   const getLinkLabel = useCallback(() => {
@@ -156,36 +157,83 @@ export default function EditLinkModal({
   const onEditHandler = useCallback(
     (action: string) => {
       if (action === 'move') {
-        const selectedColumnCorrelation = correlations.find(
-          (correlation) => correlation.id === selectedColumnCorrelationID,
-        );
-        const selectedRowCorrelation = correlations.find(
-          (correlation) => correlation.id === selectedRowCorrelationID,
-        );
+        // modify current correlations
         const _columnCorrelation = lodashCloneDeep(columnCorrelation);
         const _rowCorrelation = lodashCloneDeep(rowCorrelation);
         const linkIDs = link.id.split('_');
         removeLink(_columnCorrelation, linkIDs[0]);
         removeLink(_rowCorrelation, linkIDs[1]);
 
-        const newColumnCorrelation = lodashCloneDeep(selectedColumnCorrelation);
-        const newRowCorrelation = lodashCloneDeep(selectedRowCorrelation);
-        addLink(
-          newColumnCorrelation,
-          buildLink({
-            ...link,
-            id: linkIDs[0],
-            axis: 'x',
-            match: [getCorrelationIndex(correlations, newRowCorrelation)],
-            edited: {
-              ...link.edited,
-              moved: true,
-            },
-          }),
+        // modify/create selected correlations
+        const selectedColumnCorrelation = correlations.find(
+          (correlation) => correlation.id === selectedColumnCorrelationValue,
         );
-        addLink(
-          newRowCorrelation,
-          buildLink({
+        const selectedRowCorrelation = correlations.find(
+          (correlation) => correlation.id === selectedRowCorrelationValue,
+        );
+
+        if (selectedColumnCorrelation && selectedRowCorrelation) {
+          const newColumnCorrelation = lodashCloneDeep(
+            selectedColumnCorrelation,
+          );
+          const newRowCorrelation = lodashCloneDeep(selectedRowCorrelation);
+          addLink(
+            newColumnCorrelation,
+            buildLink({
+              ...link,
+              id: linkIDs[0],
+              axis: 'x',
+              match: [getCorrelationIndex(correlations, newRowCorrelation)],
+              edited: {
+                ...link.edited,
+                moved: true,
+              },
+            }),
+          );
+          addLink(
+            newRowCorrelation,
+            buildLink({
+              ...link,
+              id: linkIDs[1],
+              axis: 'y',
+              match: [getCorrelationIndex(correlations, newColumnCorrelation)],
+              edited: {
+                ...link.edited,
+                moved: true,
+              },
+            }),
+          );
+          onEdit(
+            _columnCorrelation,
+            _rowCorrelation,
+            link.experimentType,
+            action,
+            link,
+            newColumnCorrelation,
+            newRowCorrelation,
+          );
+        }
+        if (
+          selectedColumnCorrelation &&
+          selectedRowCorrelationValue === 'new'
+        ) {
+          const newColumnCorrelation = lodashCloneDeep(
+            selectedColumnCorrelation,
+          );
+          addLink(
+            newColumnCorrelation,
+            buildLink({
+              ...link,
+              id: linkIDs[0],
+              axis: 'x',
+              match: [],
+              edited: {
+                ...link.edited,
+                moved: true,
+              },
+            }),
+          );
+          const newRowLink = buildLink({
             ...link,
             id: linkIDs[1],
             axis: 'y',
@@ -194,18 +242,103 @@ export default function EditLinkModal({
               ...link.edited,
               moved: true,
             },
-          }),
-        );
+          });
+          const newRowCorrelation = buildCorrelation({
+            atomType: rowCorrelation.atomType,
+            link: [newRowLink],
+          });
 
-        onEdit(
-          _columnCorrelation,
-          _rowCorrelation,
-          link.experimentType,
-          action,
-          link,
-          newColumnCorrelation,
-          newRowCorrelation,
-        );
+          onEdit(
+            _columnCorrelation,
+            _rowCorrelation,
+            link.experimentType,
+            action,
+            link,
+            newColumnCorrelation,
+            newRowCorrelation,
+          );
+        } else if (
+          selectedColumnCorrelationValue === 'new' &&
+          selectedRowCorrelation
+        ) {
+          const newRowCorrelation = lodashCloneDeep(selectedRowCorrelation);
+          addLink(
+            newRowCorrelation,
+            buildLink({
+              ...link,
+              id: linkIDs[1],
+              axis: 'y',
+              match: [],
+              edited: {
+                ...link.edited,
+                moved: true,
+              },
+            }),
+          );
+          const newColumnLink = buildLink({
+            ...link,
+            id: linkIDs[0],
+            axis: 'x',
+            match: [getCorrelationIndex(correlations, newRowCorrelation)],
+            edited: {
+              ...link.edited,
+              moved: true,
+            },
+          });
+          const newColumnCorrelation = buildCorrelation({
+            atomType: columnCorrelation.atomType,
+            link: [newColumnLink],
+          });
+
+          onEdit(
+            _columnCorrelation,
+            _rowCorrelation,
+            link.experimentType,
+            action,
+            link,
+            newColumnCorrelation,
+            newRowCorrelation,
+          );
+        } else if (!selectedColumnCorrelation && !selectedRowCorrelation) {
+          const newColumnLink = buildLink({
+            ...link,
+            id: linkIDs[0],
+            axis: 'x',
+            match: [],
+            edited: {
+              ...link.edited,
+              moved: true,
+            },
+          });
+          const newColumnCorrelation = buildCorrelation({
+            atomType: columnCorrelation.atomType,
+            link: [newColumnLink],
+          });
+          const newRowLink = buildLink({
+            ...link,
+            id: linkIDs[1],
+            axis: 'y',
+            match: [],
+            edited: {
+              ...link.edited,
+              moved: true,
+            },
+          });
+          const newRowCorrelation = buildCorrelation({
+            atomType: rowCorrelation.atomType,
+            link: [newRowLink],
+          });
+
+          onEdit(
+            _columnCorrelation,
+            _rowCorrelation,
+            link.experimentType,
+            action,
+            link,
+            newColumnCorrelation,
+            newRowCorrelation,
+          );
+        }
       } else {
         onEdit(
           columnCorrelation,
@@ -225,38 +358,45 @@ export default function EditLinkModal({
       onClose,
       onEdit,
       rowCorrelation,
-      selectedColumnCorrelationID,
-      selectedRowCorrelationID,
+      selectedColumnCorrelationValue,
+      selectedRowCorrelationValue,
     ],
   );
 
   const getSelection = useCallback(
     (correlation: Types.Correlation, axis: 0 | 1) => {
+      const selectionData = correlations.reduce((arr, _correlation) => {
+        if (
+          _correlation.pseudo === false &&
+          _correlation.atomType === link.atomType[axis]
+        ) {
+          arr.push({
+            key: _correlation.id,
+            value: _correlation.id,
+            label: `${_correlation.label.origin}: ${getCorrelationLabel(
+              _correlation,
+            )}`,
+          });
+        }
+        return arr;
+      }, []);
+      selectionData.push({
+        key: 'new',
+        value: 'new',
+        label: 'new',
+      });
+
       return (
         <Select
           className="selection-box"
           onChange={(selection: string) => {
             if (axis === 0) {
-              setSelectedColumnCorrelationID(selection);
+              setSelectedColumnCorrelationValue(selection);
             } else {
-              setSelectedRowCorrelationID(selection);
+              setSelectedRowCorrelationValue(selection);
             }
           }}
-          data={correlations.reduce((arr, _correlation) => {
-            if (
-              _correlation.pseudo === false &&
-              _correlation.atomType === link.atomType[axis]
-            ) {
-              arr.push({
-                key: _correlation.id,
-                value: _correlation.id,
-                label: `${_correlation.label.origin}: ${getCorrelationLabel(
-                  _correlation,
-                )}`,
-              });
-            }
-            return arr;
-          }, [])}
+          data={selectionData}
           defaultValue={correlation.id}
         />
       );
@@ -274,7 +414,6 @@ export default function EditLinkModal({
         Delete
       </button>
       <p className="optional">OR</p>
-      <p className="optional2">Move it to: </p>
       <div>
         <div className="selection-container">
           {getSelection(columnCorrelation, 0)}
