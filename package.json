@@ -93,6 +93,7 @@
     "react-table": "7.6.0",
     "react-transition-group": "^4.4.2",
     "react-use": "^17.3.1",
+    "smart-array-filter": "^2.0.3",
     "spectrum-generator": "^5.4.0",
     "yup": "^0.32.9"
   },
