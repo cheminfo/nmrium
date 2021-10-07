@@ -40,7 +40,9 @@ function RangesInner({
               editRangeID && editRangeID === range.id ? true : false
             }
           />
-          {showRangesIntegrals && <RangeIntegral range={range} />}
+          {showRangesIntegrals && (
+            <RangeIntegral key={`integral-${range.id}`} range={range} />
+          )}
         </>
       ))}
     </g>
