@@ -2,16 +2,17 @@
 import { css } from '@emotion/react';
 import { useAccordionContext } from 'analysis-ui-components';
 import { DatabaseNMREntry } from 'nmr-processing/lib/databases/DatabaseNMREntry';
-import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
+import { useCallback, useState, useRef, memo, useEffect } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import {
   initiateDatabase,
   getDatabasesNames,
+  InitiateDatabaseResult,
 } from '../../../data/data1d/database';
 import { useChartData } from '../../context/ChartContext';
 import Input from '../../elements/Input';
-import Select from '../../elements/Select';
+import Select, { SelectEntry } from '../../elements/Select';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -44,12 +45,22 @@ export interface DatabaseInnerProps {
   nucleus: string;
 }
 
+interface ResultEntry {
+  data: DatabaseNMREntry[];
+  databases: SelectEntry[];
+  solvents: SelectEntry[];
+}
+
 function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
   const [isFlipped, setFlipStatus] = useState(false);
-  const [data, setData] = useState<DatabaseNMREntry[]>([]);
   const settingRef = useRef<any>();
   const searchKeywords = useRef<[string, string]>(['', '']);
-  const databaseInstance = useRef(initiateDatabase('solvent', nucleus));
+  const databaseInstance = useRef<InitiateDatabaseResult | null>(null);
+  const [result, setResult] = useState<ResultEntry>({
+    data: [],
+    databases: [],
+    solvents: [],
+  });
   const { item } = useAccordionContext('Database');
 
   const settingsPanelHandler = useCallback(() => {
@@ -64,36 +75,18 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
     setFlipStatus(false);
   }, []);
 
-  const databaseList = useMemo(() => {
-    return getDatabasesNames().map(({ id, name }) => ({
-      key: id,
-      value: id,
-      label: name,
-    }));
-  }, []);
-
-  const solventsList = useMemo(() => {
-    let result: any = [];
-    const solvents = databaseInstance.current.getSolvents();
-    result = solvents.map((key) => {
-      return {
-        key,
-        label: key,
-        value: key,
-      };
-    }, []);
-    result.unshift({ key: '-1', label: 'All', value: '-1' });
-    return result;
-  }, []);
-
   useEffect(() => {
     if (item?.isOpen) {
-      const result = databaseInstance.current.search(searchKeywords.current);
-      setTimeout(() => {
-        setData(result);
-      });
+      const databases = mapDatabasesToSelect(getDatabasesNames());
+      databaseInstance.current = initiateDatabase(databases[0].key, nucleus);
+      const data = databaseInstance.current.data;
+      const solvents = mapSolventsToSelect(
+        databaseInstance.current.getSolvents(),
+      );
+
+      setResult({ data, databases, solvents });
     }
-  }, [item?.isOpen]);
+  }, [item?.isOpen, nucleus]);
 
   const handleSearch = useCallback((input) => {
     if (typeof input === 'string' || input === -1) {
@@ -101,16 +94,21 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
     } else {
       searchKeywords.current[1] = input.target.value;
     }
-    const result = databaseInstance.current.search(searchKeywords.current);
-    setData(result);
+    if (databaseInstance.current) {
+      const data = databaseInstance.current.search(searchKeywords.current);
+      setResult((prevResult) => ({ ...prevResult, data }));
+    }
   }, []);
 
   const handleChangeDatabase = useCallback(
     (databaseKey) => {
       databaseInstance.current = initiateDatabase(databaseKey, nucleus);
-      const result = databaseInstance.current.search();
+      const data = databaseInstance.current.data;
+      const solvents = mapSolventsToSelect(
+        databaseInstance.current.getSolvents(),
+      );
       searchKeywords.current = ['', ''];
-      setData(result);
+      setResult((prevResult) => ({ ...prevResult, data, solvents }));
     },
     [nucleus],
   );
@@ -126,12 +124,12 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
         >
           <Select
             style={{ flex: 2 }}
-            data={databaseList}
+            data={result.databases}
             onChange={handleChangeDatabase}
           />
           <Select
             style={{ flex: 1 }}
-            data={solventsList}
+            data={result.solvents}
             onChange={handleSearch}
           />
           <Input
@@ -156,7 +154,7 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
           containerStyle={{ overflow: 'hidden', height: '100%' }}
         >
           <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
-            <DatabaseTable data={data} />
+            <DatabaseTable data={result.data} />
           </div>
           <DatabasePreferences ref={settingRef} />
         </ReactCardFlip>
@@ -171,4 +169,24 @@ export default function PeaksPanel() {
   const { activeTab } = useChartData();
   if (!activeTab) return <div />;
   return <MemoizedDatabasePanel nucleus={activeTab} />;
+}
+
+function mapSolventsToSelect(solvents: string[]) {
+  const result = solvents.map((key) => {
+    return {
+      key,
+      label: key,
+      value: key,
+    };
+  }, []);
+  result.unshift({ key: '-1', label: 'All', value: '-1' });
+  return result;
+}
+
+function mapDatabasesToSelect(databases) {
+  return databases.map(({ id, name }) => ({
+    key: id,
+    value: id,
+    label: name,
+  }));
 }

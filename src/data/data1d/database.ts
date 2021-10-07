@@ -32,7 +32,7 @@ export const database: DataBase = {
   },
 };
 
-interface initiateDatabaseResult {
+export interface InitiateDatabaseResult {
   data: DatabaseNMREntry[];
   getSolvents: () => string[];
   search: (keywords?: string[]) => DatabaseNMREntry[];
@@ -41,7 +41,7 @@ interface initiateDatabaseResult {
 export function initiateDatabase(
   databaseKey: string,
   nucleus: string,
-): initiateDatabaseResult {
+): InitiateDatabaseResult {
   const databaseData = database.data[databaseKey]
     ? database.data[databaseKey].value
     : [];
