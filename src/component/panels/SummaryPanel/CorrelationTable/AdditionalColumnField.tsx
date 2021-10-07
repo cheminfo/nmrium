@@ -1,4 +1,3 @@
-import { Types } from 'nmr-correlation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
@@ -75,28 +74,6 @@ function AdditionalColumnField({
     [contextRef],
   );
 
-  const onEditHandler = useCallback(
-    (
-      editedColumnCorrelation: Types.Correlation,
-      editedRowCorrelation: Types.Correlation,
-      experimentType: string,
-      action: string,
-      commonLink?: Types.Link,
-      newColumnCorrelation?: Types.Correlation,
-      newRowCorrelation?: Types.Correlation,
-    ) =>
-      onEdit(
-        editedColumnCorrelation,
-        editedRowCorrelation,
-        experimentType,
-        action,
-        commonLink,
-        newColumnCorrelation,
-        newRowCorrelation,
-      ),
-    [onEdit],
-  );
-
   const contextMenu = useMemo(() => {
     // allow the edition of correlations
     const commonLinksMenu = commonLinks
@@ -115,10 +92,10 @@ function AdditionalColumnField({
                   modal.show(
                     <EditLinkModal
                       onClose={() => modal.close()}
-                      onEdit={onEditHandler}
+                      onEdit={onEdit}
                       link={commonLink}
-                      rowCorrelation={rowCorrelation}
-                      columnCorrelation={columnCorrelation}
+                      correlationDim1={columnCorrelation}
+                      correlationDim2={rowCorrelation}
                       correlations={correlations}
                     />,
                     { position: positions.TOP_LEFT, isBackgroundBlur: false },
@@ -138,21 +115,31 @@ function AdditionalColumnField({
         commonLinksMenu.push({
           label: 'remove pseudo HSQC',
           onClick: () => {
-            onEditHandler(columnCorrelation, rowCorrelation, 'hsqc', 'remove', {
-              ...commonPseudoLinkHSQC,
-              id: commonPseudoLinkHSQC.id.split('_')[0],
-            });
+            onEdit(
+              columnCorrelation,
+              rowCorrelation,
+              'hsqc',
+              'remove',
+              {
+                ...commonPseudoLinkHSQC,
+                id: commonPseudoLinkHSQC.id.split('_')[0],
+              },
+              undefined,
+              undefined,
+            );
           },
         });
       } else {
         commonLinksMenu.push({
           label: 'add pseudo HSQC',
           onClick: () => {
-            onEditHandler(
+            onEdit(
               columnCorrelation,
               rowCorrelation,
               'hsqc',
               'add',
+              undefined,
+              undefined,
               undefined,
             );
           },
@@ -166,7 +153,7 @@ function AdditionalColumnField({
     commonLinks,
     correlations,
     modal,
-    onEditHandler,
+    onEdit,
     rowCorrelation,
   ]);
 

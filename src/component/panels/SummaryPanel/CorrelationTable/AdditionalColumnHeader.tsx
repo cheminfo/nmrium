@@ -1,24 +1,24 @@
 /** @jsxImportSource @emotion/react */
-import { getCorrelationDelta } from 'nmr-correlation';
+import { getCorrelationDelta, getLinkDim } from 'nmr-correlation';
 import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
-import { useAssignmentData } from '../../../assignment';
-import { useDispatch } from '../../../context/DispatchContext';
 import ContextMenu from '../../../elements/ContextMenu';
+import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
-import { DELETE_CORRELATION } from '../../../reducer/types/Types';
 import { getLabelColor } from '../Utilities';
+
+import EditLinkModal from './EditLinkModal';
 
 function AdditionalColumnHeader({
   spectraData,
   correlationsData,
   correlation,
+  onEdit,
 }) {
   const contextRef = useRef<any>();
-  const dispatch = useDispatch();
-  const assignmentData = useAssignmentData();
+  const modal = useModal();
 
   const highlightIDsAdditionalColumn = useMemo(() => {
     if (correlation.pseudo === true) {
@@ -105,33 +105,46 @@ function AdditionalColumnHeader({
         };
   }, [correlation]);
 
-  const onClickContextMenuOption = useCallback(
-    (action: string) => {
-      if (action === 'remove') {
-        dispatch({
-          type: DELETE_CORRELATION,
-          payload: {
-            correlation,
-            assignmentData,
-          },
-        });
-      }
-    },
-    [assignmentData, correlation, dispatch],
-  );
-
   const contextMenu = useMemo(() => {
     return correlation.pseudo === false
-      ? [
-          {
-            label: `delete ${correlation.label.origin}`,
-            onClick: () => {
-              onClickContextMenuOption('remove');
+      ? correlation.link
+          .filter((link) => getLinkDim(link) === 1 && link.pseudo === false)
+          .map((link) => {
+            return {
+              label: `edit 1D (${link.signal.delta.toFixed(3)})`,
+              onClick: () => {
+                modal.show(
+                  <EditLinkModal
+                    onClose={() => modal.close()}
+                    onEdit={onEdit}
+                    link={link}
+                    correlationDim1={correlation}
+                    correlationDim2={undefined}
+                    correlations={correlationsData.values}
+                  />,
+                  { position: positions.TOP_LEFT, isBackgroundBlur: false },
+                );
+              },
+            };
+          })
+          .concat([
+            {
+              label: `delete all (${correlation.label.origin})`,
+              onClick: () => {
+                onEdit(
+                  correlation,
+                  undefined,
+                  undefined,
+                  'removeAll',
+                  undefined,
+                  undefined,
+                  undefined,
+                );
+              },
             },
-          },
-        ]
+          ])
       : [];
-  }, [correlation.label.origin, correlation.pseudo, onClickContextMenuOption]);
+  }, [correlation, correlationsData.values, modal, onEdit]);
 
   const contextMenuHandler = useCallback(
     (e) => {
@@ -156,7 +169,7 @@ function AdditionalColumnHeader({
         <p>{correlation.label.origin}</p>
         <p>
           {getCorrelationDelta(correlation)
-            ? getCorrelationDelta(correlation).toFixed(2)
+            ? getCorrelationDelta(correlation)?.toFixed(2)
             : ''}
         </p>
         <p style={equivalenceTextStyle}>

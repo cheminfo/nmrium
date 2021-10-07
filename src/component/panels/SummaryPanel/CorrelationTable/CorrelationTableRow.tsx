@@ -2,6 +2,7 @@ import {
   buildLink,
   getCorrelationDelta,
   getLabel,
+  getLinkDim,
   Types,
 } from 'nmr-correlation';
 import { CSSProperties, useCallback, useMemo, useRef } from 'react';
@@ -13,11 +14,13 @@ import { useDispatch } from '../../../context/DispatchContext';
 import ContextMenu from '../../../elements/ContextMenu';
 import EditableColumn from '../../../elements/EditableColumn';
 import Select from '../../../elements/Select';
+import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
 import { DELETE_CORRELATION } from '../../../reducer/types/Types';
 
 import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
+import EditLinkModal from './EditLinkModal';
 
 const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
@@ -35,12 +38,13 @@ function CorrelationTableRow({
   onSaveEditEquivalences,
   onChangeHybridization,
   onSaveEditProtonsCount,
-  onEditAdditionalColumnField,
+  onEditCorrelationTableCellHandler,
   spectraData,
 }) {
   const contextRef = useRef<any>();
   const dispatch = useDispatch();
   const assignmentData = useAssignmentData();
+  const modal = useModal();
 
   const highlightIDsRow = useMemo(() => {
     if (correlation.pseudo === true) {
@@ -119,7 +123,7 @@ function CorrelationTableRow({
           commonLinks={commonLinks}
           correlations={correlations}
           spectraData={spectraData}
-          onEdit={onEditAdditionalColumnField}
+          onEdit={onEditCorrelationTableCellHandler}
         />
       );
     });
@@ -127,7 +131,7 @@ function CorrelationTableRow({
     additionalColumnData,
     correlation,
     correlations,
-    onEditAdditionalColumnField,
+    onEditCorrelationTableCellHandler,
     spectraData,
   ]);
 
@@ -210,16 +214,42 @@ function CorrelationTableRow({
 
   const contextMenu = useMemo(() => {
     return correlation.pseudo === false
-      ? [
-          {
-            label: `delete ${correlation.label.origin}`,
-            onClick: () => {
-              onClickContextMenuOption('remove');
+      ? correlation.link
+          .filter((link) => getLinkDim(link) === 1 && link.pseudo === false)
+          .map((link) => {
+            return {
+              label: `edit 1D (${link.signal.delta.toFixed(3)})`,
+              onClick: () => {
+                modal.show(
+                  <EditLinkModal
+                    onClose={() => modal.close()}
+                    onEdit={onEditCorrelationTableCellHandler}
+                    link={link}
+                    correlationDim1={correlation}
+                    correlationDim2={undefined}
+                    correlations={correlations}
+                  />,
+                  { position: positions.TOP_LEFT, isBackgroundBlur: false },
+                );
+              },
+            };
+          })
+          .concat([
+            {
+              label: `delete ${correlation.label.origin}`,
+              onClick: () => {
+                onClickContextMenuOption('remove');
+              },
             },
-          },
-        ]
+          ])
       : [];
-  }, [correlation.label.origin, correlation.pseudo, onClickContextMenuOption]);
+  }, [
+    correlation,
+    correlations,
+    onEditCorrelationTableCellHandler,
+    modal,
+    onClickContextMenuOption,
+  ]);
 
   const contextMenuHandler = useCallback(
     (e) => {
@@ -251,7 +281,7 @@ function CorrelationTableRow({
       </td>
       <td title={t} {...otherTableDataProps}>
         {getCorrelationDelta(correlation)
-          ? getCorrelationDelta(correlation).toFixed(2)
+          ? getCorrelationDelta(correlation)?.toFixed(2)
           : ''}
       </td>
       <td title={t} {...otherTableDataProps}>
