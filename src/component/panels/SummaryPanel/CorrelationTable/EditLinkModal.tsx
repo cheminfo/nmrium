@@ -115,7 +115,7 @@ export default function EditLinkModal({
   const [selectedCorrelationValueDim1, setSelectedCorrelationValueDim1] =
     useState<string>(correlationDim1.id);
   const [selectedCorrelationValueDim2, setSelectedCorrelationValueDim2] =
-    useState<string>(correlationDim2?.id || '');
+    useState<string>(correlationDim2?.id || undefined);
 
   const getLinkLabel = useCallback(() => {
     const linkDim = getLinkDim(link);
@@ -140,71 +140,77 @@ export default function EditLinkModal({
   const onEditHandler = useCallback(
     (action: string) => {
       if (action === 'move') {
-        // modify current correlation in first dimension
-        const linkIDs = link.id.split('_');
-        const _correlationDim1 = lodashCloneDeep(correlationDim1);
-        removeLink(_correlationDim1, linkIDs[0]);
-
-        // modify/create selected correlations
         const selectedCorrelationDim1 = correlations.find(
           (correlation) => correlation.id === selectedCorrelationValueDim1,
         );
+        const selectedCorrelationDim2 = correlations.find(
+          (correlation) => correlation.id === selectedCorrelationValueDim2,
+        );
+        const linkIDs = link.id.split('_');
         const linkDim = getLinkDim(link);
-
         if (linkDim === 1) {
-          if (selectedCorrelationDim1) {
-            const newCorrelationDim1 = lodashCloneDeep(selectedCorrelationDim1);
-            addLink(
-              newCorrelationDim1,
-              buildLink({
+          // check whether we would move to same correlation
+          if (selectedCorrelationDim1?.id !== correlationDim1.id) {
+            // modify current cell correlation
+            const _correlationDim1 = lodashCloneDeep(correlationDim1);
+            removeLink(_correlationDim1, linkIDs[0]);
+            // modify selected correlation
+            if (selectedCorrelationDim1) {
+              const newCorrelationDim1 = lodashCloneDeep(
+                selectedCorrelationDim1,
+              );
+              addLink(
+                newCorrelationDim1,
+                buildLink({
+                  ...link,
+                  edited: {
+                    ...link.edited,
+                    moved: true,
+                  },
+                }),
+              );
+
+              onEdit(
+                _correlationDim1,
+                undefined,
+                link.experimentType,
+                action,
+                link,
+                newCorrelationDim1,
+                undefined,
+              );
+            } else {
+              const newLinkDim1 = buildLink({
                 ...link,
                 edited: {
                   ...link.edited,
                   moved: true,
                 },
-              }),
-            );
+              });
+              const newCorrelationDim1 = buildCorrelation({
+                atomType: correlationDim1.atomType,
+                link: [newLinkDim1],
+              });
 
-            onEdit(
-              _correlationDim1,
-              undefined,
-              link.experimentType,
-              action,
-              link,
-              newCorrelationDim1,
-              undefined,
-            );
-          } else {
-            const newLinkDim1 = buildLink({
-              ...link,
-              edited: {
-                ...link.edited,
-                moved: true,
-              },
-            });
-            const newCorrelationDim1 = buildCorrelation({
-              atomType: correlationDim1.atomType,
-              link: [newLinkDim1],
-            });
-
-            onEdit(
-              _correlationDim1,
-              undefined,
-              link.experimentType,
-              action,
-              link,
-              newCorrelationDim1,
-              undefined,
-            );
+              onEdit(
+                _correlationDim1,
+                undefined,
+                link.experimentType,
+                action,
+                link,
+                newCorrelationDim1,
+                undefined,
+              );
+            }
           }
         } else if (linkDim === 2) {
-          // modify current correlation in second dimension
+          // modify current cell correlations
+          const _correlationDim1 = lodashCloneDeep(correlationDim1);
+          removeLink(_correlationDim1, linkIDs[0]);
           const _correlationDim2 = lodashCloneDeep(correlationDim2);
           removeLink(_correlationDim2, linkIDs[1]);
 
-          const selectedCorrelationDim2 = correlations.find(
-            (correlation) => correlation.id === selectedCorrelationValueDim2,
-          );
+          // modify selected correlations
           if (selectedCorrelationDim1 && selectedCorrelationDim2) {
             const newCorrelationDim1 = lodashCloneDeep(selectedCorrelationDim1);
             const newCorrelationDim2 = lodashCloneDeep(selectedCorrelationDim2);
