@@ -15,6 +15,7 @@ import { options } from '../toolbar/ToolTypes';
 import { nmredataToNmrium } from '../utility/nmredataToNmrium';
 
 import * as CorrelationsActions from './actions/CorrelationsActions';
+import * as DatabaseActions from './actions/DatabaseActions';
 import { setWidth, handleSetDimensions } from './actions/DimensionsActions';
 import * as DomainActions from './actions/DomainActions';
 import * as FiltersActions from './actions/FiltersActions';
@@ -33,7 +34,7 @@ import {
   applyKeyPreferencesHandler,
 } from './actions/PreferencesActions';
 import * as RangesActions from './actions/RangesActions';
-import * as SpectraAanalysisActions from './actions/SpectraAanalysisAction';
+import * as SpectraAnalysisActions from './actions/SpectraAnalysisAction';
 import * as SpectrumsActions from './actions/SpectrumsActions';
 import * as ToolsActions from './actions/ToolsActions';
 import * as ZonesActions from './actions/ZonesActions';
@@ -698,15 +699,18 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleAutoSpectraZonesDetection(draft);
 
     case types.ANALYZE_SPECTRA:
-      return SpectraAanalysisActions.analyzeSpectra(draft, action);
+      return SpectraAnalysisActions.analyzeSpectra(draft, action);
     case types.DELETE_ANALYZE_SPECTRA_RANGE:
-      return SpectraAanalysisActions.handleDeleteSpectraRanges(draft, action);
+      return SpectraAnalysisActions.handleDeleteSpectraRanges(draft, action);
     case types.RESIZE_ANALYZE_SPECTRA_RANGE:
-      return SpectraAanalysisActions.handleResizeSpectraRange(draft, action);
+      return SpectraAnalysisActions.handleResizeSpectraRange(draft, action);
     case types.SET_ANALYZE_SPECTRA_COLUMNS:
-      return SpectraAanalysisActions.handleSetColumns(draft, action);
+      return SpectraAnalysisActions.handleSetColumns(draft, action);
     case types.FILTER_SPECTRA_COLUMN:
-      return SpectraAanalysisActions.handleFilterColumn(draft, action);
+      return SpectraAnalysisActions.handleFilterColumn(draft, action);
+
+    case types.RESURRECTING_SPECTRUM_FROM_RANGES:
+      return DatabaseActions.handleRangeResurrecting(draft, action);
 
     case UNDO:
       return handleHistoryUndo(draft);

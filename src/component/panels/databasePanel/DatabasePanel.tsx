@@ -154,7 +154,7 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
           containerStyle={{ overflow: 'hidden', height: '100%' }}
         >
           <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
-            <DatabaseTable data={result.data} />
+            <DatabaseTable data={result.data} nucleus={nucleus} />
           </div>
           <DatabasePreferences ref={settingRef} />
         </ReactCardFlip>
