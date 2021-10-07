@@ -1,8 +1,12 @@
-import { useMemo, memo } from 'react';
+/** @jsxImportSource @emotion/react */
+import { useMemo, memo, useCallback } from 'react';
+import { FaPlus } from 'react-icons/fa';
+import { useDispatch } from '../../../context/DispatchContext';
 
 import { usePreferences } from '../../../context/PreferencesContext';
 import ReactTable from '../../../elements/ReactTable/ReactTable';
 import setCustomColumn from '../../../elements/ReactTable/setCustomColumn';
+import { RESURRECTING_SPECTRUM_FROM_RANGES } from '../../../reducer/types/Types';
 import { getValue } from '../../../utility/LocalStorage';
 import NoTableData from '../../extra/placeholder/NoTableData';
 import { databaseDefaultValues } from '../../extra/preferences/defaultValues';
@@ -12,10 +16,24 @@ import { RangesRenderer } from './RangesRenderer';
 
 interface DatabaseTableProps {
   data: any;
+  nucleus: string;
 }
 
-function DatabaseTable({ data }: DatabaseTableProps) {
+function DatabaseTable({ data, nucleus }: DatabaseTableProps) {
   const preferences = usePreferences();
+  const dispatch = useDispatch();
+
+  const resurrectHandler = useCallback(
+    (data) => {
+      const { ranges, solvent } = data.original;
+      dispatch({
+        type: RESURRECTING_SPECTRUM_FROM_RANGES,
+        payload: { ranges, info: { solvent, nucleus } },
+      });
+    },
+    [dispatch, nucleus],
+  );
+
   const initialColumns = useMemo(
     () => [
       {
@@ -25,8 +43,25 @@ function DatabaseTable({ data }: DatabaseTableProps) {
         minWidth: '24px',
         Cell: ({ row }) => row.index + 1,
       },
+      {
+        index: 20,
+        Header: '',
+        width: '1%',
+        maxWidth: '24px',
+        minWidth: '24px',
+        id: 'add-button',
+        Cell: ({ row }) => (
+          <button
+            type="button"
+            className="add-button"
+            onClick={() => resurrectHandler(row)}
+          >
+            <FaPlus />
+          </button>
+        ),
+      },
     ],
-    [],
+    [resurrectHandler],
   );
 
   const tableColumns = useMemo(() => {
