@@ -46,12 +46,12 @@ function setZoom(
   const { height, margin, activeSpectrum } = draft;
   const { scale = null, spectrumID = null } = options;
 
-  if (scale) {
+  if (scale && !spectrumID) {
     setAllScales(draft.zoom.spectra, scale);
   }
+  const zoomManager = Zoom1DManager(draft.zoom.spectra);
 
   if (activeSpectrum === null && spectrumID === null) {
-    const zoomManager = Zoom1DManager(draft.zoom.spectra);
     const { shareYDomain, yDomain, yDomains } = draft.originDomain;
     draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
       const scale = zoomManager.getScale(id);
@@ -76,17 +76,21 @@ function setZoom(
   } else {
     const spectrumId = spectrumID || activeSpectrum?.id;
     if (spectrumId) {
-      const scale = Zoom1DManager(draft.zoom.spectra).getScale(spectrumId);
+      if (scale) {
+        zoomManager.setScale(scale, spectrumId);
+      }
+      const scaleFactor = scale ? scale : zoomManager.getScale(spectrumId);
+
       const _scale = scaleLinear(draft.originDomain.yDomains[spectrumId], [
         height - margin.bottom,
         margin.top,
       ]);
       const t = zoomIdentity
         .translate(0, _scale(0))
-        .scale(scale)
+        .scale(scaleFactor)
         .translate(0, -_scale(0));
-
       const yDomain = t.rescaleY(_scale).domain();
+
       draft.yDomains = {
         ...draft.yDomains,
         [spectrumId]: yDomain,
