@@ -65,14 +65,19 @@ function handleSetCorrelation(
 
 function handleSetCorrelations(
   draft: Draft<State>,
-  payload: { ids: Array<string>; correlations: Types.Values },
+  payload: { correlations: Types.Values },
 ) {
-  const { ids, correlations } = payload;
-  ids.forEach((id, i) => {
-    const { correlations: correlationsData } = draft;
-    draft.correlations = setCorrelation(correlationsData, id, correlations[i]);
+  const { correlations } = payload;
+  const state = original(draft) as State;
+  let correlationsData = lodashCloneDeep(state.correlations);
+  correlations.forEach((correlation) => {
+    correlationsData = setCorrelation(
+      correlationsData,
+      correlation.id,
+      correlation,
+    );
   });
-
+  draft.correlations = correlationsData;
   handleUpdateCorrelations(draft);
 }
 

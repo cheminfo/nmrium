@@ -9,14 +9,11 @@ import { CSSProperties, useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
-import { useAssignmentData } from '../../../assignment';
-import { useDispatch } from '../../../context/DispatchContext';
 import ContextMenu from '../../../elements/ContextMenu';
 import EditableColumn from '../../../elements/EditableColumn';
 import Select from '../../../elements/Select';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
-import { DELETE_CORRELATION } from '../../../reducer/types/Types';
 
 import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
@@ -42,8 +39,6 @@ function CorrelationTableRow({
   spectraData,
 }) {
   const contextRef = useRef<any>();
-  const dispatch = useDispatch();
-  const assignmentData = useAssignmentData();
   const modal = useModal();
 
   const highlightIDsRow = useMemo(() => {
@@ -197,21 +192,6 @@ function CorrelationTableRow({
     styleRow,
   ]);
 
-  const onClickContextMenuOption = useCallback(
-    (action: string) => {
-      if (action === 'remove') {
-        dispatch({
-          type: DELETE_CORRELATION,
-          payload: {
-            correlation,
-            assignmentData,
-          },
-        });
-      }
-    },
-    [assignmentData, correlation, dispatch],
-  );
-
   const contextMenu = useMemo(() => {
     return correlation.pseudo === false
       ? correlation.link
@@ -238,18 +218,12 @@ function CorrelationTableRow({
             {
               label: `delete ${correlation.label.origin}`,
               onClick: () => {
-                onClickContextMenuOption('remove');
+                onEditCorrelationTableCellHandler([correlation], 'removeAll');
               },
             },
           ])
       : [];
-  }, [
-    correlation,
-    correlations,
-    onEditCorrelationTableCellHandler,
-    modal,
-    onClickContextMenuOption,
-  ]);
+  }, [correlation, correlations, onEditCorrelationTableCellHandler, modal]);
 
   const contextMenuHandler = useCallback(
     (e) => {

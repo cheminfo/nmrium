@@ -131,15 +131,7 @@ function AdditionalColumnHeader({
             {
               label: `delete all (${correlation.label.origin})`,
               onClick: () => {
-                onEdit(
-                  correlation,
-                  undefined,
-                  undefined,
-                  'removeAll',
-                  undefined,
-                  undefined,
-                  undefined,
-                );
+                onEdit([correlation], 'removeAll');
               },
             },
           ])

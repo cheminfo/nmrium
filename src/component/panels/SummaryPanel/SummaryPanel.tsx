@@ -1,15 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodashCloneDeep from 'lodash/cloneDeep';
-import {
-  addLink,
-  buildLink,
-  getCorrelationIndex,
-  getLinkDelta,
-  getLinkDim,
-  removeLink,
-  Types,
-} from 'nmr-correlation';
+import { getLinkDelta, getLinkDim, Types } from 'nmr-correlation';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
@@ -22,7 +13,6 @@ import {
   findSpectrum,
   findZone,
 } from '../../../data/utilities/FindUtilities';
-import generateID from '../../../data/utilities/generateID';
 import { useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -401,12 +391,9 @@ function SummaryPanel() {
 
   const setCorrelationsHandler = useCallback(
     (correlations: Types.Values) => {
-      const ids = correlations.map((correlation) => correlation.id);
-
       dispatch({
         type: SET_CORRELATIONS,
         payload: {
-          ids: ids,
           correlations: correlations.map((correlation) => {
             return {
               ...correlation,
@@ -482,116 +469,20 @@ function SummaryPanel() {
 
   const editCorrelationTableCellHandler = useCallback(
     (
-      correlationDim1: Types.Correlation,
-      correlationDim2: Types.Correlation | undefined,
-      experimentType: string | undefined,
+      editedCorrelations: Types.Correlation[],
       action: string,
-      link: Types.Link | undefined,
-      newCorrelationDim1: Types.Correlation | undefined,
-      newCorrelationDim2: Types.Correlation | undefined,
+      link?: Types.Link,
     ) => {
-      if (action === 'add') {
-        const _correlationDim1 = lodashCloneDeep(correlationDim1);
-        const _correlationDim2 = lodashCloneDeep(correlationDim2);
-        // only pseudo links can be added manually
-        const pseudoLinkCountHSQC = _correlationDim1.link.filter(
-          (link) =>
-            link.experimentType === 'hsqc' || link.experimentType === 'hmqc',
-        ).length;
-        const pseudoLinkID = generateID();
-        const pseudoExperimentID = generateID();
-        const commonPseudoLink = buildLink({
-          experimentType,
-          experimentID: pseudoExperimentID,
-          atomType: [_correlationDim2.atomType, _correlationDim1.atomType],
-          id: pseudoLinkID,
-          pseudo: true,
-          signal: { id: generateID(), sign: 0 }, // pseudo signal
-        });
-
-        addLink(
-          _correlationDim2,
-          buildLink({
-            ...commonPseudoLink,
-            axis: 'x',
-            match: [
-              getCorrelationIndex(correlationsData.values, _correlationDim1),
-            ],
-          }),
-        );
-        addLink(
-          _correlationDim1,
-          buildLink({
-            ...commonPseudoLink,
-            axis: 'y',
-            match: [
-              getCorrelationIndex(correlationsData.values, _correlationDim2),
-            ],
-          }),
-        );
-        if (!_correlationDim1.edited.protonsCount) {
-          _correlationDim1.protonsCount = [pseudoLinkCountHSQC + 1];
-        }
-        setCorrelationsHandler([_correlationDim1, _correlationDim2]);
-      } else if (action === 'remove') {
-        if (link.pseudo === false) {
-          const linkIDs = link.id.split('_');
-          const _correlationDim1 = lodashCloneDeep(correlationDim1);
-          removeLink(_correlationDim1, linkIDs[0]);
-
+      if (action === 'add' || action === 'move' || action === 'remove') {
+        if (action === 'remove' && link && link.pseudo === false) {
           deleteSignalHandler(link);
-
-          const linkDim = getLinkDim(link);
-          if (linkDim === 1) {
-            setCorrelationsHandler([_correlationDim1]);
-          } else if (linkDim === 2) {
-            const _correlationDim2 = lodashCloneDeep(correlationDim2);
-            removeLink(_correlationDim2, linkIDs[1]);
-
-            setCorrelationsHandler([_correlationDim1, _correlationDim2]);
-          }
-        } else {
-          const _correlationDim1 = lodashCloneDeep(correlationDim1);
-          const _correlationDim2 = lodashCloneDeep(correlationDim2);
-          const pseudoLinkCountHSQC = _correlationDim2.link.filter(
-            (link) =>
-              link.experimentType === 'hsqc' || link.experimentType === 'hmqc',
-          ).length;
-          // remove pseudo link
-          removeLink(_correlationDim1, link.id);
-          removeLink(_correlationDim2, link.id);
-          if (!_correlationDim2.edited.protonsCount) {
-            _correlationDim2.protonsCount =
-              pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [];
-          }
-          setCorrelationsHandler([_correlationDim2, _correlationDim1]);
         }
+        setCorrelationsHandler(editedCorrelations);
       } else if (action === 'removeAll') {
-        deleteCorrelationHandler(correlationDim1);
-      } else if (action === 'move') {
-        const linkDim = getLinkDim(link);
-        if (linkDim === 1) {
-          if (newCorrelationDim1) {
-            setCorrelationsHandler([correlationDim1, newCorrelationDim1]);
-          }
-        } else if (linkDim === 2) {
-          if (newCorrelationDim1 && newCorrelationDim2) {
-            setCorrelationsHandler([
-              correlationDim1,
-              correlationDim2,
-              newCorrelationDim1,
-              newCorrelationDim2,
-            ]);
-          }
-        }
+        deleteCorrelationHandler(editedCorrelations[0]);
       }
     },
-    [
-      correlationsData.values,
-      deleteCorrelationHandler,
-      deleteSignalHandler,
-      setCorrelationsHandler,
-    ],
+    [deleteCorrelationHandler, deleteSignalHandler, setCorrelationsHandler],
   );
 
   const handleOnFilter = useCallback(() => {
