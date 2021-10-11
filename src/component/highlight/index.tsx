@@ -101,8 +101,7 @@ export function useHighlight(highlights, type: string | null = null) {
   if (!Array.isArray(highlights)) {
     throw new Error('highlights must be an array');
   }
-
-  const context = useHighlightData();
+  const { dispatch, highlight } = useHighlightData();
 
   const convertedHighlights = useMemo(() => {
     const newHighlights: Array<any> = [];
@@ -120,66 +119,65 @@ export function useHighlight(highlights, type: string | null = null) {
   useEffect(() => {
     // if deletion of component then also delete its highlight information -> componentWillUnmount
     return () => {
-      context.dispatch({
+      dispatch({
         type: 'HIDE',
-        payload: { convertedHighlights },
+        payload: { convertedHighlights: [] },
       });
-      context.dispatch({
+      dispatch({
         type: 'UNSET_PERMANENT',
       });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
 
   const isActive = useMemo(() => {
-    return context.highlight.highlighted.some((key) =>
+    return highlight.highlighted.some((key) =>
       convertedHighlights.includes(key),
     );
-  }, [context.highlight.highlighted, convertedHighlights]);
+  }, [convertedHighlights, highlight.highlighted]);
 
   const isActivePermanently = useMemo(() => {
-    return context.highlight.highlightedPermanently.some((key) =>
+    return highlight.highlightedPermanently.some((key) =>
       convertedHighlights.includes(key),
     );
-  }, [context.highlight.highlightedPermanently, convertedHighlights]);
+  }, [convertedHighlights, highlight.highlightedPermanently]);
 
   const show = useCallback(() => {
-    context.dispatch({
+    dispatch({
       type: 'SHOW',
       payload: {
         convertedHighlights,
         type,
       },
     });
-  }, [context, convertedHighlights, type]);
+  }, [convertedHighlights, dispatch, type]);
 
   const hide = useCallback(() => {
-    context.dispatch({
+    dispatch({
       type: 'HIDE',
       payload: {
         convertedHighlights,
       },
     });
-  }, [context, convertedHighlights]);
+  }, [convertedHighlights, dispatch]);
 
   const add = useCallback(
     (id) => {
-      context.dispatch({
+      dispatch({
         type: 'SHOW',
         payload: { convertedHighlights: [], id },
       });
     },
-    [context],
+    [dispatch],
   );
 
   const remove = useCallback(
     (id) => {
-      context.dispatch({
+      dispatch({
         type: 'HIDE',
         payload: { convertedHighlights: [], id },
       });
     },
-    [context],
+    [dispatch],
   );
 
   const click = useCallback(
@@ -190,37 +188,33 @@ export function useHighlight(highlights, type: string | null = null) {
       }
 
       if (!isActivePermanently) {
-        context.dispatch({
+        dispatch({
           type: 'SET_PERMANENT',
           payload: convertedHighlights,
         });
       } else {
-        context.dispatch({
+        dispatch({
           type: 'UNSET_PERMANENT',
         });
       }
     },
-    [context, convertedHighlights, isActivePermanently],
+    [convertedHighlights, dispatch, isActivePermanently],
   );
 
-  const onHover = {
-    onMouseEnter: show,
-    onMouseLeave: hide,
-  };
-
-  const onClick = {
-    onClick: click,
-  };
-
-  return {
-    isActive,
-    show,
-    hide,
-    onHover,
-    onClick,
-    isActivePermanently,
-    click,
-    add,
-    remove,
-  };
+  return useMemo(() => {
+    return {
+      isActive,
+      onHover: {
+        onMouseEnter: show,
+        onMouseLeave: hide,
+      },
+      onClick: click,
+      show,
+      hide,
+      isActivePermanently,
+      click,
+      add,
+      remove,
+    };
+  }, [add, click, hide, isActive, isActivePermanently, remove, show]);
 }
