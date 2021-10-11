@@ -47,9 +47,12 @@ const peaksDefaultValues = {
 const databaseDefaultValues = {
   showSmiles: true,
   showSolvent: false,
-  showNames: false,
+  showNames: true,
   showMeta: false,
-  showRanges: true,
+  showRange: true,
+  showDelta: true,
+  showCoupling: true,
+  showMultiplicity: true,
   rowHeight: 80,
 };
 

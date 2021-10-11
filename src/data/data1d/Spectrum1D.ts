@@ -430,7 +430,7 @@ export function mapRanges(ranges: Array<Range>, datum) {
       kind: newRange.signals[0].kind || DatumKind.signal,
       originFrom: newRange.from - shiftX,
       originTo: newRange.to - shiftX,
-      id: generateID(),
+      id: newRange.id || generateID(),
       absolute,
       signals,
     });
@@ -595,6 +595,7 @@ export function generateSpectrumFromRanges(
     usedColors,
   );
   datum.ranges.values = mapRanges(ranges, datum);
+
   updateIntegralRanges(datum);
   return datum;
 }

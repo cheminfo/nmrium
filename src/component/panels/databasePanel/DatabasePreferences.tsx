@@ -140,8 +140,23 @@ function DatabasePreferences(props, ref) {
             hideFormat
           />
           <FormikColumnFormatField
-            label="Ranges"
-            checkControllerName="showRanges"
+            label="Range"
+            checkControllerName="showRange"
+            hideFormat
+          />
+          <FormikColumnFormatField
+            label="δ (ppm)"
+            checkControllerName="showDelta"
+            hideFormat
+          />
+          <FormikColumnFormatField
+            label="J (Hz)"
+            checkControllerName="showCoupling"
+            hideFormat
+          />
+          <FormikColumnFormatField
+            label="Multiplicity"
+            checkControllerName="showMultiplicity"
             hideFormat
           />
 

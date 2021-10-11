@@ -2,17 +2,21 @@
 import { css } from '@emotion/react';
 import { useAccordionContext } from 'analysis-ui-components';
 import { DatabaseNMREntry } from 'nmr-processing/lib/databases/DatabaseNMREntry';
-import { useCallback, useState, useRef, memo, useEffect } from 'react';
+// import { DatabaseNMREntry } from 'nmr-processing/lib/databases/DatabaseNMREntry';
+import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import {
   initiateDatabase,
   getDatabasesNames,
   InitiateDatabaseResult,
+  prepareData,
 } from '../../../data/data1d/database';
 import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
 import Input from '../../elements/Input';
 import Select, { SelectEntry } from '../../elements/Select';
+import { RESURRECTING_SPECTRUM_FROM_RANGES } from '../../reducer/types/Types';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
@@ -52,6 +56,7 @@ interface ResultEntry {
 }
 
 function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
+  const dispatch = useDispatch();
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
   const searchKeywords = useRef<[string, string]>(['', '']);
@@ -77,14 +82,16 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
 
   useEffect(() => {
     if (item?.isOpen) {
-      const databases = mapDatabasesToSelect(getDatabasesNames());
-      databaseInstance.current = initiateDatabase(databases[0].key, nucleus);
-      const data = databaseInstance.current.data;
-      const solvents = mapSolventsToSelect(
-        databaseInstance.current.getSolvents(),
-      );
+      setTimeout(() => {
+        const databases = mapDatabasesToSelect(getDatabasesNames());
+        databaseInstance.current = initiateDatabase(databases[0].key, nucleus);
+        const data = databaseInstance.current.data;
+        const solvents = mapSolventsToSelect(
+          databaseInstance.current.getSolvents(),
+        );
 
-      setResult({ data, databases, solvents });
+        setResult({ data, databases, solvents });
+      });
     }
   }, [item?.isOpen, nucleus]);
 
@@ -94,10 +101,12 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
     } else {
       searchKeywords.current[1] = input.target.value;
     }
-    if (databaseInstance.current) {
-      const data = databaseInstance.current.search(searchKeywords.current);
-      setResult((prevResult) => ({ ...prevResult, data }));
-    }
+    setTimeout(() => {
+      if (databaseInstance.current) {
+        const data = databaseInstance.current.search(searchKeywords.current);
+        setResult((prevResult) => ({ ...prevResult, data }));
+      }
+    });
   }, []);
 
   const handleChangeDatabase = useCallback(
@@ -111,6 +120,22 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
       setResult((prevResult) => ({ ...prevResult, data, solvents }));
     },
     [nucleus],
+  );
+
+  const tableData = useMemo(() => {
+    return prepareData(result.data);
+  }, [result.data]);
+
+  const resurrectHandler = useCallback(
+    (row) => {
+      const { index } = row.original;
+      const { ranges, solvent } = result.data[index];
+      dispatch({
+        type: RESURRECTING_SPECTRUM_FROM_RANGES,
+        payload: { ranges, info: { solvent, nucleus } },
+      });
+    },
+    [dispatch, nucleus, result.data],
   );
 
   return (
@@ -135,7 +160,7 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
           <Input
             style={{ container: { flex: 3 } }}
             className="search-input"
-            debounceTime={500}
+            debounceTime={1000}
             placeholder="Search for parameter..."
             onChange={handleSearch}
           />
@@ -154,7 +179,7 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
           containerStyle={{ overflow: 'hidden', height: '100%' }}
         >
           <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
-            <DatabaseTable data={result.data} nucleus={nucleus} />
+            <DatabaseTable data={tableData} onAdd={resurrectHandler} />
           </div>
           <DatabasePreferences ref={settingRef} />
         </ReactCardFlip>

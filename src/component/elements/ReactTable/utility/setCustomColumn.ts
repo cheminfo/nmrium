@@ -1,6 +1,6 @@
-interface CustomColumn {
+export interface CustomColumn {
   index: number;
-  columnLabel: string;
+  Header: string;
   sortType?: string;
   Cell?: (rowData: { row?: { original: any } }) => any;
   accessor?: ((row?: any) => any) | string;
@@ -11,7 +11,7 @@ interface CustomColumn {
 export default function setCustomColumn(array, options: CustomColumn) {
   const {
     index,
-    columnLabel,
+    Header,
     extraParams,
     accessor = null,
     Cell = null,
@@ -23,7 +23,7 @@ export default function setCustomColumn(array, options: CustomColumn) {
     index,
     ...{ ...(accessor ? { accessor } : {}) },
     ...{ ...(Cell ? { Cell } : {}) },
-    Header: columnLabel,
+    Header,
     sortType,
     enableRowSpan,
     ...extraParams,
