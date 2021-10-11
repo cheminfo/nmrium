@@ -8,6 +8,7 @@ import ContextMenu from '../ContextMenu';
 import ReactTableHeader from './Elements/ReactTableHeader';
 import ReactTableRow from './Elements/ReactTableRow';
 import { ReactTableStyle } from './Style';
+import useRowSpan, { prepareRowSpan } from './utility/useRowSpan';
 
 interface ReactTableProps {
   data: any;
@@ -18,15 +19,21 @@ interface ReactTableProps {
 function ReactTable({ data, columns, context = null }: ReactTableProps) {
   const contextRef = useRef<any>(null);
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
-      {
-        columns,
-        data,
-      },
-      useSortBy,
-    );
-
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    rowSpanHeaders,
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useSortBy,
+    useRowSpan,
+  );
   const contextMenuHandler = useCallback(
     (e, row) => {
       if (!checkModifierKeyActivated(e)) {
@@ -42,8 +49,10 @@ function ReactTable({ data, columns, context = null }: ReactTableProps) {
       <table {...getTableProps()} css={ReactTableStyle}>
         <ReactTableHeader headerGroups={headerGroups} />
         <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
+          {rows.map((row, index) => {
             prepareRow(row);
+            prepareRowSpan(rows, index, rowSpanHeaders);
+
             return (
               <ReactTableRow
                 key={row.key}

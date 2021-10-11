@@ -3,7 +3,8 @@ interface CustomColumn {
   columnLabel: string;
   sortType?: string;
   Cell?: (rowData: { row?: { original: any } }) => any;
-  accessor?: (row?: any) => any | string;
+  accessor?: ((row?: any) => any) | string;
+  enableRowSpan?: boolean;
   extraParams?: any;
 }
 
@@ -15,6 +16,7 @@ export default function setCustomColumn(array, options: CustomColumn) {
     accessor = null,
     Cell = null,
     sortType = 'basic',
+    enableRowSpan = false,
   } = options || {};
 
   array.push({
@@ -23,6 +25,7 @@ export default function setCustomColumn(array, options: CustomColumn) {
     ...{ ...(Cell ? { Cell } : {}) },
     Header: columnLabel,
     sortType,
+    enableRowSpan,
     ...extraParams,
   });
 }

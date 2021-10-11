@@ -40,9 +40,9 @@ const ReactTableStyle = css`
     border-bottom: 1px solid #dedede;
     border-right: 1px solid #dedede;
 
-    :last-child {
-      border-right: 0;
-    }
+    // :last-child {
+    //   border-right: 0;
+    // }
     button {
       background-color: transparent;
       border: none;
