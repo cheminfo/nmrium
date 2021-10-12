@@ -28,7 +28,7 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
     showWhen: 'showRange',
     index: 3,
     Header: 'From - To',
-    accessor: (row) => `${row.from} - ${row.to}`,
+    accessor: (row) => `${row.from.toFixed(2)} - ${row.to.toFixed(2)}`,
     enableRowSpan: true,
   },
   {
@@ -48,6 +48,12 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
     index: 6,
     Header: 'J (Hz)',
     accessor: 'coupling',
+  },
+  {
+    showWhen: 'showSolvent',
+    index: 6,
+    Header: 'Solvent',
+    accessor: 'solvent',
   },
 ];
 
