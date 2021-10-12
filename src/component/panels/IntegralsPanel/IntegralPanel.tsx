@@ -21,17 +21,14 @@ import {
   CHANGE_INTEGRAL_SUM,
   CHANGE_INTEGRALS_SUM_FLAG,
 } from '../../reducer/types/Types';
+import { tablePanelStyle } from '../extra/basicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import IntegralTable from './IntegralTable';
 import IntegralsPreferences from './IntegralsPreferences';
 
-const styles = css`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
+const style = css`
   .sum-button {
     width: 22px;
     height: 22px;
@@ -167,7 +164,18 @@ function IntegralPanelInner({
 
   return (
     <Fragment>
-      <div css={styles}>
+      <div
+        css={[
+          tablePanelStyle,
+          style,
+          isFlipped &&
+            css`
+              th {
+                position: relative;
+              }
+            `,
+        ]}
+      >
         {!isFlipped && (
           <DefaultPanelHeader
             counter={integrals?.values?.length}
@@ -215,13 +223,13 @@ function IntegralPanelInner({
             onClose={settingsPanelHandler}
           />
         )}
-        <div style={{ height: '100%', overflow: 'hidden' }}>
+        <div className="inner-container">
           <ReactCardFlip
             isFlipped={isFlipped}
             infinite
             containerStyle={{ overflow: 'hidden', height: '100%' }}
           >
-            <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
+            <div className="table-container">
               <IntegralTable
                 data={filteredData}
                 activeTab={activeTab}

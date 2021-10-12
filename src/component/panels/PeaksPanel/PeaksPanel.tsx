@@ -1,11 +1,6 @@
-import {
-  useCallback,
-  useMemo,
-  useState,
-  useRef,
-  memo,
-  CSSProperties,
-} from 'react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import { Datum1D, Info, Peaks } from '../../../data/data1d/Spectrum1D';
@@ -16,20 +11,12 @@ import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
+import { tablePanelStyle } from '../extra/basicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import PeaksPreferences from './PeaksPreferences';
 import PeaksTable from './PeaksTable';
-
-const styles: Record<'container', CSSProperties> = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    width: '100%',
-  },
-};
 
 interface PeaksPanelInnerProps {
   peaks: Peaks;
@@ -116,7 +103,17 @@ function PeaksPanelInner({
   }, [filterIsActive, format, info, peaks, xDomain]);
 
   return (
-    <div style={styles.container}>
+    <div
+      css={[
+        tablePanelStyle,
+        isFlipped &&
+          css`
+            th {
+              position: relative;
+            }
+          `,
+      ]}
+    >
       {!isFlipped && (
         <DefaultPanelHeader
           counter={peaks?.values?.length}
@@ -138,13 +135,13 @@ function PeaksPanelInner({
           onClose={settingsPanelHandler}
         />
       )}
-      <div style={{ height: '100%', overflow: 'hidden' }}>
+      <div className="inner-container">
         <ReactCardFlip
           isFlipped={isFlipped}
           infinite
           containerStyle={{ overflow: 'hidden', height: '100%' }}
         >
-          <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
+          <div className="table-container">
             <PeaksTable
               data={filteredPeaks}
               activeTab={activeTab}

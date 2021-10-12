@@ -1,13 +1,8 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
 import { xGetFromToIndex } from 'ml-spectra-processing';
-import {
-  useCallback,
-  useMemo,
-  memo,
-  useState,
-  useRef,
-  CSSProperties,
-} from 'react';
+import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 import { Data1D, Datum1D, Info, Ranges } from '../../../data/data1d/Spectrum1D';
@@ -20,6 +15,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import useSpectrum from '../../hooks/useSpectrum';
 import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
+import { tablePanelStyle } from '../extra/basicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -27,65 +23,6 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import RangesHeader from './RangesHeader';
 import RangesPreferences from './RangesPreferences';
 import RangesTable from './RangesTable';
-
-const styles: Record<
-  | 'toolbar'
-  | 'container'
-  | 'sumButton'
-  | 'removeAssignmentsButton'
-  | 'setShowMultiplicityTreesButton'
-  | 'button',
-  CSSProperties
-> = {
-  toolbar: {
-    display: 'flex',
-    flexDirection: 'row',
-    borderBottom: '0.55px solid rgb(240, 240, 240)',
-  },
-  container: {
-    flexDirection: 'column',
-    height: '100%',
-    display: 'flex',
-    width: '100%',
-  },
-  sumButton: {
-    borderRadius: '5px',
-    marginTop: '3px',
-    color: 'white',
-    backgroundColor: '#6d6d6d',
-    border: 'none',
-    height: '16px',
-    width: '18px',
-    fontSize: '12px',
-    padding: 0,
-  },
-  removeAssignmentsButton: {
-    borderRadius: '5px',
-    marginTop: '3px',
-    marginLeft: '2px',
-    border: 'none',
-    height: '16px',
-    width: '18px',
-    fontSize: '12px',
-    padding: 0,
-  },
-  setShowMultiplicityTreesButton: {
-    borderRadius: '5px',
-    marginTop: '3px',
-    marginLeft: '5px',
-    color: 'black',
-    backgroundColor: 'transparent',
-    border: 'none',
-    height: '16px',
-    width: '18px',
-    fontSize: '12px',
-    padding: 0,
-  },
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-  },
-};
 
 interface RangesTablePanelInnerProps {
   ranges: Ranges;
@@ -231,7 +168,17 @@ function RangesTablePanelInner({
 
   return (
     <>
-      <div style={styles.container}>
+      <div
+        css={[
+          tablePanelStyle,
+          isFlipped &&
+            css`
+              th {
+                position: relative;
+              }
+            `,
+        ]}
+      >
         {!isFlipped && (
           <RangesHeader
             {...{
@@ -255,13 +202,13 @@ function RangesTablePanelInner({
             onClose={settingsPanelHandler}
           />
         )}
-        <div style={{ height: '100%', overflow: 'hidden' }}>
+        <div className="inner-container">
           <ReactCardFlip
             isFlipped={isFlipped}
             infinite
             containerStyle={{ overflow: 'hidden', height: '100%' }}
           >
-            <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
+            <div className="table-container">
               {rangesData && rangesData.length > 0 ? (
                 <RangesTable
                   activeTab={activeTab}
