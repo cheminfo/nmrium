@@ -1,7 +1,11 @@
 import { reimAbsolute } from 'ml-spectra-processing';
 
+import { isApplicable, reduceNull as reduce } from './utilities';
+
 export const id = 'absolute';
 export const name = 'Absolute';
+
+export { isApplicable, reduce };
 
 /**
  *
@@ -16,16 +20,4 @@ export function apply(datum1D) {
   datum1D.data.re = reimAbsolute(datum1D.data);
   datum1D.data.im = new Float64Array(0);
   datum1D.info = { ...datum1D.info, isComplex: false };
-}
-
-export function isApplicable(datum1D) {
-  if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
-  return false;
-}
-
-export function reduce() {
-  return {
-    once: false,
-    reduce: null,
-  };
 }

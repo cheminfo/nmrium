@@ -1,7 +1,11 @@
 import equallySpaced from 'ml-array-xy-equally-spaced';
 
+import { isApplicable, reduceNull as reduce } from './utilities';
+
 export const id = 'equallySpaced';
 export const name = 'Equally Spaced';
+
+export { isApplicable, reduce };
 
 /**
  * Equally Spaced
@@ -48,16 +52,4 @@ export function apply(datum1D, options: any = {}) {
     );
     datum1D.data.im = XIMdata.y;
   }
-}
-
-export function isApplicable(datum1D) {
-  if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
-  return false;
-}
-
-export function reduce() {
-  return {
-    once: false,
-    reduce: null,
-  };
 }

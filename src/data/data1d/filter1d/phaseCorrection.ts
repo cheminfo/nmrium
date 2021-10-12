@@ -1,8 +1,11 @@
 import { reimPhaseCorrection } from 'ml-spectra-processing';
 
+import { isApplicable, reduceWithNewValue as reduce } from './utilities';
+
 export const id = 'phaseCorrection';
 export const name = 'Phase correction';
 
+export { isApplicable, reduce };
 /**
  *
  * @param {Datum1d} datum1d
@@ -21,14 +24,4 @@ export function apply(datum1D, options: any = {}) {
   Object.assign(datum1D.data, reimPhaseCorrection(datum1D.data, ph0, ph1));
 }
 
-export function isApplicable(datum1D) {
-  if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
-  return false;
-}
 
-export function reduce(previousValue, newValue) {
-  return {
-    once: true,
-    reduce: newValue,
-  };
-}

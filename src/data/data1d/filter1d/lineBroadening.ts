@@ -1,5 +1,9 @@
+import { reduceCombinePreviusAndNew as reduce } from './utilities';
+
 export const id = 'lineBroadening';
 export const name = 'Line broadening';
+
+export { reduce };
 
 /**
  *
@@ -53,11 +57,4 @@ export function apply(datum1D, value) {
 export function isApplicable(datum1D) {
   if (datum1D.info.isComplex && datum1D.info.isFid) return true;
   return false;
-}
-
-export function reduce(previousValue, newValue) {
-  return {
-    once: true,
-    reduce: previousValue + newValue,
-  };
 }

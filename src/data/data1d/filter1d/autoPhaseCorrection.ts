@@ -1,7 +1,11 @@
 import { reimAutoPhaseCorrection } from 'ml-spectra-processing';
 
+import { isApplicable } from './utilities';
+
 export const id = 'autoPhaseCorrection';
 export const name = 'Automatic phase correction';
+
+export { isApplicable };
 
 /**
  *
@@ -26,11 +30,6 @@ export function apply(datum1D, options = {}) {
     ...defaultOptions,
     ...options,
   });
-}
-
-export function isApplicable(datum1D) {
-  if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
-  return false;
 }
 
 export function reduce(previousValue, newValue) {

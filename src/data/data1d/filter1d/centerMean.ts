@@ -1,7 +1,11 @@
 import { mean } from 'ml-stat/array';
 
+import { isApplicable, reduceNull as reduce } from './utilities';
+
 export const id = 'centerMean';
 export const name = 'Center Mean';
+
+export { isApplicable, reduce };
 
 /**
  * Computes the arithmetic mean of the given values
@@ -31,16 +35,4 @@ export function apply(datum1D) {
   if (im) {
     datum1D.data.im = im;
   }
-}
-
-export function isApplicable(datum1D) {
-  if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
-  return false;
-}
-
-export function reduce() {
-  return {
-    once: false,
-    reduce: null,
-  };
 }

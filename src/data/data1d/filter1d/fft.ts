@@ -1,7 +1,11 @@
 import { reimFFT, reimPhaseCorrection } from 'ml-spectra-processing';
 
+import { isApplicable } from './utilities';
+
 export const id = 'fft';
 export const name = 'FFT';
+
+export { isApplicable };
 
 /**
  *
@@ -27,11 +31,6 @@ export function apply(datum1D) {
 
   datum1D.data.x = generateXAxis(datum1D);
   datum1D.info = { ...datum1D.info, isFid: false };
-}
-
-export function isApplicable(datum1D) {
-  if (datum1D.info.isComplex && datum1D.info.isFid) return true;
-  return false;
 }
 
 export function reduce() {

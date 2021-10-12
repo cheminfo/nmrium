@@ -2,8 +2,12 @@ import airPLS from 'ml-airpls';
 import equallySpaced from 'ml-array-xy-equally-spaced';
 import baselineRegression from 'ml-baseline-correction-regression';
 
+import { reduceNull as reduce } from './utilities';
+
 export const id = 'baselineCorrection';
 export const name = 'Baseline correction';
+
+export { reduce };
 
 /**
  *
@@ -55,11 +59,4 @@ export function apply(datum1D, options: any = {}) {
 export function isApplicable(datum1D) {
   if (!datum1D.info.isFid) return true;
   return false;
-}
-
-export function reduce() {
-  return {
-    once: false,
-    reduce: null,
-  };
 }

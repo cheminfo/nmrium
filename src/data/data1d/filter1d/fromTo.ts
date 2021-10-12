@@ -1,7 +1,11 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
 
+import { isApplicable, reduceWithNewValue as reduce } from './utilities';
+
 export const id = 'fromTo';
 export const name = 'From/To';
+
+export { isApplicable, reduce };
 
 /**
  *
@@ -21,16 +25,4 @@ export function apply(datum1D, options: any = {}) {
   if (im) {
     datum1D.data.im = im.slice(fromIndex, toIndex);
   }
-}
-
-export function isApplicable(datum1D) {
-  if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
-  return false;
-}
-
-export function reduce(previousValue, newValue) {
-  return {
-    once: true,
-    reduce: newValue,
-  };
 }

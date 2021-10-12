@@ -1,8 +1,11 @@
 import { xParetoNormalization } from 'ml-spectra-processing';
 
+import { isApplicable, reduceNull as reduce } from './utilities';
+
 export const id = 'pareto';
 export const name = 'Pareto';
 
+export { isApplicable, reduce };
 /**
  * Computes the arithmetic mean of the given values
  * @param {Datum1d} datum1d
@@ -20,16 +23,4 @@ export function apply(datum1D) {
   if (im) {
     datum1D.data.im = xParetoNormalization(im);
   }
-}
-
-export function isApplicable(datum1D) {
-  if (datum1D.info.isComplex && !datum1D.info.isFid) return true;
-  return false;
-}
-
-export function reduce() {
-  return {
-    once: false,
-    reduce: null,
-  };
 }
