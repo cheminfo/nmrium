@@ -2,7 +2,6 @@
 import { css } from '@emotion/react';
 import { useAccordionContext } from 'analysis-ui-components';
 import { DatabaseNMREntry } from 'nmr-processing/lib/databases/DatabaseNMREntry';
-// import { DatabaseNMREntry } from 'nmr-processing/lib/databases/DatabaseNMREntry';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
@@ -17,18 +16,14 @@ import { useDispatch } from '../../context/DispatchContext';
 import Input from '../../elements/Input';
 import Select, { SelectEntry } from '../../elements/Select';
 import { RESURRECTING_SPECTRUM_FROM_RANGES } from '../../reducer/types/Types';
+import { tablePanelStyle } from '../extra/basicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import DatabasePreferences from './DatabasePreferences';
 import DatabaseTable from './DatabaseTable';
 
-const styles = css`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-
+const style = css`
   .header {
     height: 36px;
     padding: 2px 0px;
@@ -139,7 +134,18 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
   );
 
   return (
-    <div css={styles}>
+    <div
+      css={[
+        tablePanelStyle,
+        style,
+        isFlipped &&
+          css`
+            th {
+              position: relative;
+            }
+          `,
+      ]}
+    >
       {!isFlipped && (
         <DefaultPanelHeader
           showSettingButton
@@ -172,13 +178,13 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
           onClose={settingsPanelHandler}
         />
       )}
-      <div style={{ height: '100%', overflow: 'hidden' }}>
+      <div className="inner-container">
         <ReactCardFlip
           isFlipped={isFlipped}
           infinite
           containerStyle={{ overflow: 'hidden', height: '100%' }}
         >
-          <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
+          <div className="table-container">
             <DatabaseTable data={tableData} onAdd={resurrectHandler} />
           </div>
           <DatabasePreferences ref={settingRef} />

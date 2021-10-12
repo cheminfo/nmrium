@@ -1,11 +1,6 @@
-import {
-  useState,
-  useMemo,
-  useCallback,
-  useRef,
-  memo,
-  CSSProperties,
-} from 'react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+import { useState, useMemo, useCallback, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaUnlink } from 'react-icons/fa';
 
@@ -20,6 +15,7 @@ import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import { DELETE_2D_ZONE, UNLINK_ZONE } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
+import { tablePanelStyle } from '../extra/basicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -27,40 +23,27 @@ import PreferencesHeader from '../header/PreferencesHeader';
 import ZonesPreferences from './ZonesPreferences';
 import ZonesTable from './ZonesTable';
 
-const styles: Record<
-  'container' | 'removeAssignmentsButton' | 'button' | 'toggle',
-  CSSProperties
-> = {
-  container: {
-    flexDirection: 'column',
-    height: '100%',
-    display: 'flex',
-    width: '100%',
-  },
-  removeAssignmentsButton: {
-    borderRadius: '5px',
-    marginTop: '3px',
-    marginLeft: '2px',
-    border: 'none',
-    height: '16px',
-    width: '18px',
-    fontSize: '12px',
-    padding: 0,
-    backgroundColor: 'transparent',
-  },
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-  },
-  toggle: {
-    width: '22px',
-    height: '22px',
-    marginLeft: '2px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-};
+const style = css`
+  .remove-assignments-btn {
+    border-radius: 5px;
+    margin-top: 3px;
+    margin-left: 2px;
+    border: none;
+    height: 16px;
+    width: 18px;
+    font-size: 12px;
+    padding: 0;
+    background-color: transparent;
+  }
+  .toggle {
+    width: 22px;
+    height: 22px;
+    margin-left: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
 
 function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
   const [filterIsActive, setFilterIsActive] = useState(false);
@@ -182,7 +165,18 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
 
   return (
     <>
-      <div style={styles.container}>
+      <div
+        css={[
+          tablePanelStyle,
+          style,
+          isFlipped &&
+            css`
+              th {
+                position: relative;
+              }
+            `,
+        ]}
+      >
         {!isFlipped && (
           <DefaultPanelHeader
             counter={zones.values ? zones.values.length : 0}
@@ -199,7 +193,7 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
           >
             <ToolTip title={`Remove all Assignments`} popupPlacement="right">
               <button
-                style={styles.removeAssignmentsButton}
+                className="remove-assignments-btn"
                 type="button"
                 onClick={handleOnRemoveAssignments}
                 disabled={!zones.values || zones.values.length === 0}
@@ -210,7 +204,6 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
             <ToggleButton
               popupTitle="show/hide zones"
               popupPlacement="right"
-              style={styles.toggle}
               defaultValue
               onClick={() => visibilityHandler('zones')}
             >
@@ -219,7 +212,6 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
             <ToggleButton
               popupTitle="show/hide signals"
               popupPlacement="right"
-              style={styles.toggle}
               defaultValue
               onClick={() => visibilityHandler('signals')}
             >
@@ -228,7 +220,6 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
             <ToggleButton
               popupTitle="show/hide peaks"
               popupPlacement="right"
-              style={styles.toggle}
               defaultValue
               onClick={() => visibilityHandler('peaks')}
             >
@@ -242,13 +233,13 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
             onClose={settingsPanelHandler}
           />
         )}
-        <div style={{ height: '100%', overflow: 'hidden' }}>
+        <div className="inner-container">
           <ReactCardFlip
             isFlipped={isFlipped}
             infinite
             containerStyle={{ overflow: 'hidden', height: '100%' }}
           >
-            <div style={{ overflow: 'auto', height: '100%', display: 'block' }}>
+            <div className="table-container">
               {tableData && tableData.length > 0 ? (
                 <ZonesTable
                   tableData={tableData}

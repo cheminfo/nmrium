@@ -27,6 +27,7 @@ interface ToggleButtonProps {
   onClick: (element: boolean) => void;
   disabled?: boolean;
   children: ReactNode;
+  className?: string;
 }
 
 function ToggleButton({
@@ -37,6 +38,7 @@ function ToggleButton({
   popupPlacement = 'right',
   defaultValue = false,
   disabled = false,
+  className = '',
 }: ToggleButtonProps) {
   const [flag, Toggle] = useState<boolean>(defaultValue);
 
@@ -51,7 +53,7 @@ function ToggleButton({
         disabled={disabled}
         css={styles}
         style={style}
-        className={flag ? 'toogle toggle-active' : 'toggle'}
+        className={(flag ? 'toggle toggle-active ' : 'toggle ') + className}
         type="button"
         onClick={toggleHandler}
       >

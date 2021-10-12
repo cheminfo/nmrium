@@ -1,16 +1,11 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import {
   SvgNmrOverlay,
   SvgNmrAddFilter,
   SvgNmrExportAsMatrix,
 } from 'cheminfo-font';
-import {
-  useCallback,
-  useState,
-  useRef,
-  memo,
-  useMemo,
-  CSSProperties,
-} from 'react';
+import { useCallback, useState, useRef, memo, useMemo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { FaFileExport } from 'react-icons/fa';
 import { IoPulseOutline } from 'react-icons/io5';
@@ -31,24 +26,12 @@ import MultipleSpectraFiltersModal from '../../modal/MultipleSpectraFiltersModal
 import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { copyTextToClipboard } from '../../utility/Export';
+import { tablePanelStyle } from '../extra/basicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import MultipleSpectraAnalysisPreferences from './MultipleSpectraAnalysisPreferences';
 import MultipleSpectraAnalysisTable from './MultipleSpectraAnalysisTable';
-
-const styles: Record<'container' | 'button', CSSProperties> = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    width: '100%',
-  },
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-  },
-};
 
 interface MultipleSpectraAnalysisPanelInnerProps {
   activeTab: string;
@@ -128,7 +111,17 @@ function MultipleSpectraAnalysisPanelInner({
   }, [modal, dispatch]);
 
   return (
-    <div style={styles.container}>
+    <div
+      css={[
+        tablePanelStyle,
+        isFlipped &&
+          css`
+            .table-container th {
+              position: relative;
+            }
+          `,
+      ]}
+    >
       {!isFlipped && (
         <DefaultPanelHeader
           deleteToolTip="Delete All Peaks"
@@ -138,14 +131,14 @@ function MultipleSpectraAnalysisPanelInner({
         >
           <Button
             popupTitle="Copy To Clipboard"
-            style={styles.button}
+            // style={styles.button}
             onClick={copyToClipboardHandler}
           >
             <FaFileExport />
           </Button>
           <Button
             popupTitle="Spectra calibration"
-            style={styles.button}
+            // style={styles.button}
             onClick={openAlignSpectra}
           >
             <SvgNmrOverlay style={{ fontSize: '18px' }} />
@@ -160,7 +153,7 @@ function MultipleSpectraAnalysisPanelInner({
 
           <Button
             popupTitle="Add Filter"
-            style={styles.button}
+            // style={styles.button}
             onClick={openFiltersModal}
           >
             <SvgNmrAddFilter style={{ fontSize: '18px' }} />
@@ -179,13 +172,15 @@ function MultipleSpectraAnalysisPanelInner({
           onClose={settingsPanelHandler}
         />
       )}
-      <div style={{ height: '100%', overflow: 'auto' }}>
+      <div className="inner-container">
         <ReactCardFlip
           isFlipped={isFlipped}
           infinite
           containerStyle={{ overflow: 'hidden' }}
         >
-          <MultipleSpectraAnalysisTable data={data} activeTab={activeTab} />
+          <div className="table-container">
+            <MultipleSpectraAnalysisTable data={data} activeTab={activeTab} />
+          </div>
           <MultipleSpectraAnalysisPreferences
             data={data}
             onAfterSave={afterSaveHandler}
