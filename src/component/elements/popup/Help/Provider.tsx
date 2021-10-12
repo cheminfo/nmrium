@@ -18,22 +18,9 @@ import { helpList } from '../../../../constants';
 import Transition from '../Transition';
 import Wrapper from '../Wrapper';
 import { groupBy } from '../helpers';
-import { positions, transitions } from '../options';
+import { positions, transitions, transitionStyles } from '../options';
 
 import { HelpProvider } from './Context';
-
-const transitionStyles: any = {
-  [transitions.FADE]: {
-    entering: { opacity: 0 },
-    entered: { opacity: 1 },
-  },
-  [transitions.SCALE]: {
-    entering: { transform: 'scale(0)' },
-    entered: { transform: 'scale(1)' },
-    exiting: { transform: 'scale(0)' },
-    exited: { transform: 'scale(0)' },
-  },
-};
 
 const styles: Record<
   'innerContainer' | 'outerContainer' | 'closeButton',

@@ -16,24 +16,11 @@ import { TransitionGroup } from 'react-transition-group';
 
 import Transition from '../Transition';
 import Wrapper from '../Wrapper';
-import { positions, transitions } from '../options';
+import { positions, transitions, transitionStyles } from '../options';
 
 import ConfirmDialog from './ConfirmDialog';
 import { ModalProvider } from './Context';
 import ModalContent from './ModalContent';
-
-const transitionStyles: any = {
-  [transitions.FADE]: {
-    entering: { opacity: 0 },
-    entered: { opacity: 1 },
-  },
-  [transitions.SCALE]: {
-    entering: { transform: 'scale(0)' },
-    entered: { transform: 'scale(1)' },
-    exiting: { transform: 'scale(0)' },
-    exited: { transform: 'scale(0)' },
-  },
-};
 
 interface ProviderProps {
   children: ReactNode;

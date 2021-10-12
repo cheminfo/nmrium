@@ -25,3 +25,16 @@ export const transitions = {
   SLIDE_TOP: 'slide_top',
   SLIDE_BOTTOM: 'slide_bottom',
 };
+
+export const transitionStyles: any = {
+  [transitions.FADE]: {
+    entering: { opacity: 0 },
+    entered: { opacity: 1 },
+  },
+  [transitions.SCALE]: {
+    entering: { transform: 'scale(0)' },
+    entered: { transform: 'scale(1)' },
+    exiting: { transform: 'scale(0)' },
+    exited: { transform: 'scale(0)' },
+  },
+};
