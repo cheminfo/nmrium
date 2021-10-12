@@ -11,7 +11,7 @@ export function getDiaIDs(zone, axis) {
 
 export function getPubIntegral(zone, axis) {
   return (
-    zone.nbAtoms ||
+    zone[axis].nbAtoms ||
     (zone.signals
       ? zone.signals.reduce(
           (sum, signal) =>
