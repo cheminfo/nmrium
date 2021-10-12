@@ -10,6 +10,7 @@ import { findRangeOrZoneID } from '../Utilities';
 
 import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
+import getTitle from './getTitle';
 
 const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
@@ -154,31 +155,12 @@ function CorrelationTableRow({
         ...styleRow,
         backgroundColor: highlightRow.isActive ? '#ff6f0057' : 'inherit',
       },
-      title:
-        correlation.pseudo === false &&
-        // eslint-disable-next-line @typescript-eslint/require-array-sort-compare
-        [correlation.experimentType.toUpperCase()]
-          .concat(
-            correlation.link.reduce((arr, link) => {
-              if (
-                link.pseudo === false &&
-                link.experimentType !== correlation.experimentType &&
-                !arr.includes(link.experimentType.toUpperCase())
-              ) {
-                arr.push(link.experimentType.toUpperCase());
-              }
-              return arr;
-            }, []),
-          )
-          .sort()
-          .join('/'),
+      title: getTitle(correlation),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
   }, [
-    correlation.experimentType,
-    correlation.link,
-    correlation.pseudo,
+    correlation,
     highlightRow.isActive,
     mouseEnterHandler,
     mouseLeaveHandler,
