@@ -15,7 +15,7 @@ import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import { DELETE_2D_ZONE, UNLINK_ZONE } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
-import { tablePanelStyle } from '../extra/basicPanelStyle';
+import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';

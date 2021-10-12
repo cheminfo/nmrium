@@ -26,7 +26,7 @@ import MultipleSpectraFiltersModal from '../../modal/MultipleSpectraFiltersModal
 import { RESET_SELECTED_TOOL } from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { copyTextToClipboard } from '../../utility/Export';
-import { tablePanelStyle } from '../extra/basicPanelStyle';
+import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 

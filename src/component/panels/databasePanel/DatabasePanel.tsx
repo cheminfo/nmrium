@@ -16,7 +16,7 @@ import { useDispatch } from '../../context/DispatchContext';
 import Input from '../../elements/Input';
 import Select, { SelectEntry } from '../../elements/Select';
 import { RESURRECTING_SPECTRUM_FROM_RANGES } from '../../reducer/types/Types';
-import { tablePanelStyle } from '../extra/basicPanelStyle';
+import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 

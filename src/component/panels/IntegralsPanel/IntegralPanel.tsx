@@ -21,7 +21,7 @@ import {
   CHANGE_INTEGRAL_SUM,
   CHANGE_INTEGRALS_SUM_FLAG,
 } from '../../reducer/types/Types';
-import { tablePanelStyle } from '../extra/basicPanelStyle';
+import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 

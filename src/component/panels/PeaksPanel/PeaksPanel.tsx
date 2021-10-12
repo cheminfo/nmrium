@@ -11,7 +11,7 @@ import { useModal } from '../../elements/popup/Modal';
 import useSpectrum from '../../hooks/useSpectrum';
 import { DELETE_PEAK_NOTATION } from '../../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
-import { tablePanelStyle } from '../extra/basicPanelStyle';
+import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
 

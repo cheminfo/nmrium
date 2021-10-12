@@ -15,7 +15,7 @@ import { useAlert } from '../../elements/popup/Alert';
 import useSpectrum from '../../hooks/useSpectrum';
 import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
-import { tablePanelStyle } from '../extra/basicPanelStyle';
+import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { rangeDefaultValues } from '../extra/preferences/defaultValues';
 import PreferencesHeader from '../header/PreferencesHeader';
