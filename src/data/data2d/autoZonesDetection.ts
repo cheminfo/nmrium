@@ -4,11 +4,11 @@ export default function autoZonesDetection(data, options) {
   const { thresholdFactor, clean, maxPercentCutOff, convolutionByFFT } =
     options;
 
-  const { nucleus, originFrequency } = options.info;
-  const { enhanceSymmetry = nucleus[0] === nucleus[1] } = options;
+  const { nucleus: nuclei, originFrequency } = options.info;
+  const { enhanceSymmetry = nuclei[0] === nuclei[1] } = options;
 
   let zones = xyzAutoPeaksPicking(data, {
-    nucleus,
+    nuclei,
     observedFrequencies: originFrequency,
     thresholdFactor,
     clean,
