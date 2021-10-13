@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useMemo, memo } from 'react';
 import { FaPlus } from 'react-icons/fa';
+import { SmilesSvgRenderer } from 'react-ocl';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
@@ -19,23 +20,29 @@ interface DatabaseTableProps {
 const COLUMNS: (CustomColumn & { showWhen: string })[] = [
   {
     showWhen: 'showNames',
-    index: 2,
+    index: 1,
     Header: 'names',
     accessor: (row) => (row.names ? row.names.join(',') : ''),
     enableRowSpan: true,
   },
   {
     showWhen: 'showRange',
-    index: 3,
+    index: 2,
     Header: 'From - To',
     accessor: (row) => `${row.from.toFixed(2)} - ${row.to.toFixed(2)}`,
     enableRowSpan: true,
   },
   {
     showWhen: 'showDelta',
-    index: 4,
+    index: 3,
     Header: 'δ (ppm)',
     accessor: 'delta',
+  },
+  {
+    showWhen: 'showAssignment',
+    index: 4,
+    Header: 'Assignment',
+    accessor: 'assignment',
   },
   {
     showWhen: 'showMultiplicity',
@@ -51,9 +58,30 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
   },
   {
     showWhen: 'showSolvent',
-    index: 6,
+    index: 7,
     Header: 'Solvent',
     accessor: 'solvent',
+  },
+  {
+    showWhen: 'showSmiles',
+    index: 8,
+    Header: 'Smiles',
+    accessor: 'index',
+    enableRowSpan: true,
+    Cell: ({ row }) => (
+      <div
+        className="smiles-container"
+        style={{ width: '100px', display: 'block', overflow: 'hidden' }}
+      >
+        {row?.original.smiles && (
+          <SmilesSvgRenderer
+            height={60}
+            width={60}
+            smiles={row.original.smiles}
+          />
+        )}
+      </div>
+    ),
   },
 ];
 
@@ -63,7 +91,7 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
   const initialColumns = useMemo(
     () => [
       {
-        index: 20,
+        index: 10,
         Header: '',
         width: '1%',
         maxWidth: '24px',

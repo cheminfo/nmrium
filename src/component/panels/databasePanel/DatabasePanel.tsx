@@ -38,6 +38,10 @@ const style = css`
     padding: 5px;
     outline: none;
   }
+  .smiles-container svg {
+    display: block;
+    margin: 0 auto;
+  }
 `;
 
 export interface DatabaseInnerProps {

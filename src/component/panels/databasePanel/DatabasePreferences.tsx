@@ -135,11 +135,6 @@ function DatabasePreferences(props, ref) {
             hideFormat
           />
           <FormikColumnFormatField
-            label="Meta"
-            checkControllerName="showMeta"
-            hideFormat
-          />
-          <FormikColumnFormatField
             label="Range"
             checkControllerName="showRange"
             hideFormat
@@ -147,6 +142,11 @@ function DatabasePreferences(props, ref) {
           <FormikColumnFormatField
             label="δ (ppm)"
             checkControllerName="showDelta"
+            hideFormat
+          />
+          <FormikColumnFormatField
+            label="Assignment"
+            checkControllerName="showAssignment"
             hideFormat
           />
           <FormikColumnFormatField

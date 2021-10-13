@@ -136,7 +136,7 @@ function mapJs(js: DataBaseJ[]) {
   if (js && js.length > 0) {
     const { coupling, multiplicity } = js.reduce<any>(
       (acc, { coupling, multiplicity }) => {
-        acc.coupling.push(coupling);
+        acc.coupling.push(coupling.toFixed(1));
         acc.multiplicity += multiplicity;
         return acc;
       },
@@ -144,6 +144,6 @@ function mapJs(js: DataBaseJ[]) {
     );
     return { multiplicity, coupling: coupling.join(',') };
   } else {
-    return { multiplicity: '', coupling: '' };
+    return { multiplicity: 's', coupling: '' };
   }
 }

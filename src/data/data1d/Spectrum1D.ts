@@ -596,7 +596,6 @@ export function generateSpectrumFromRanges(
   );
   datum.ranges.values = mapRanges(ranges, datum);
 
-  updateIntegralRanges(datum);
   return datum;
 }
 
