@@ -571,10 +571,10 @@ export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
 
 export function generateSpectrumFromRanges(
   ranges,
-  info: { nucleus: string; solvent: string },
+  info: { nucleus: string; solvent: string; name?: string },
   usedColors: string[],
 ) {
-  const { nucleus, solvent } = info;
+  const { nucleus, solvent, name = null } = info;
   const { x, y } = rangesToXY(ranges, {
     frequency: 400,
     nbPoints: 524288,
@@ -583,6 +583,7 @@ export function generateSpectrumFromRanges(
   const datum = initiateDatum1D(
     {
       data: { x, im: null, re: y },
+      display: { name },
       info: {
         nucleus,
         originFrequency: 400,
@@ -606,9 +607,13 @@ export function generateSpectrumFromPublicationString(
   const {
     ranges,
     experiment: { nucleus, solvent },
+    parts,
   } = resurrect(publicationString);
-
-  return generateSpectrumFromRanges(ranges, { nucleus, solvent }, usedColors);
+  return generateSpectrumFromRanges(
+    ranges,
+    { nucleus, solvent, name: parts[0] },
+    usedColors,
+  );
 }
 
 export function isSpectrum1D(spectrum: Datum1D | Datum2D): spectrum is Datum1D {

@@ -55,6 +55,7 @@ function setZoom(
     const { shareYDomain, yDomain, yDomains } = draft.originDomain;
     draft.yDomains = Object.keys(draft.yDomains).reduce((acc, id) => {
       const scale = zoomManager.getScale(id);
+
       const _scale = scaleLinear(shareYDomain ? yDomain : yDomains[id], [
         height - margin.bottom,
         margin.top,

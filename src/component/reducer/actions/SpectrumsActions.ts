@@ -15,6 +15,7 @@ import { State } from '../Reducer';
 import { setDomain, setMode } from './DomainActions';
 import { resetSpectrumByFilter } from './FiltersActions';
 import { setTab, setActiveTab } from './ToolsActions';
+import { setZoom } from './Zoom';
 
 function checkIsVisible2D(datum: Datum2D): boolean {
   if (
@@ -159,7 +160,7 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
   } else {
     draft.data = [];
   }
-  setActiveTab(draft, draft.activeTab, true);
+  setActiveTab(draft, { tab: draft.activeTab, refreshActiveTab: true });
 }
 function addMissingProjectionHandler(draft, action) {
   const state = original(draft);
@@ -212,6 +213,7 @@ function generateSpectrumFromPublicationStringHandler(
   );
   draft.data.push(spectrum);
   setActiveTab(draft);
+  setZoom(draft, { scale: 0.8, spectrumID: spectrum.id });
 }
 
 export {

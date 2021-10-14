@@ -128,10 +128,10 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
   const resurrectHandler = useCallback(
     (row) => {
       const { index } = row.original;
-      const { ranges, solvent } = result.data[index];
+      const { ranges, solvent, names = [] } = result.data[index];
       dispatch({
         type: RESURRECTING_SPECTRUM_FROM_RANGES,
-        payload: { ranges, info: { solvent, nucleus } },
+        payload: { ranges, info: { solvent, nucleus, name: names[0] } },
       });
     },
     [dispatch, nucleus, result.data],

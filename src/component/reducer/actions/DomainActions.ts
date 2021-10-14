@@ -139,7 +139,15 @@ function get2DDomain(state) {
   };
 }
 
-function setDomain(draft: Draft<State>, isYDomainChanged = true) {
+export interface SetDomainOptions {
+  yDomain?: {
+    isChanged?: boolean;
+    isShared?: boolean;
+  };
+}
+
+function setDomain(draft: Draft<State>, options?: SetDomainOptions) {
+  const { yDomain = { isChanged: true, isShared: true } } = options || {};
   let domain;
 
   if (draft.activeTab) {
@@ -152,9 +160,9 @@ function setDomain(draft: Draft<State>, isYDomainChanged = true) {
     draft.xDomains = domain.xDomains;
     draft.originDomain = domain;
 
-    if (isYDomainChanged) {
+    if (yDomain.isChanged) {
       draft.yDomain = domain.yDomain;
-      if (draft.displayerMode === DISPLAYER_MODE.DM_1D) {
+      if (draft.displayerMode === DISPLAYER_MODE.DM_1D && yDomain.isShared) {
         draft.yDomains = Object.keys(domain.yDomains).reduce((acc, key) => {
           acc[key] = domain.yDomain;
           return acc;

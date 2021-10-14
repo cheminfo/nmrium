@@ -20,7 +20,7 @@ import {
 import Zoom1DManager from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
-import { setDomain, setMode } from './DomainActions';
+import { setDomain, SetDomainOptions, setMode } from './DomainActions';
 import { resetSpectrumByFilter } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
@@ -493,21 +493,29 @@ function setTab(draft: Draft<State>, dataGroupByTab, tab, refresh = false) {
   setMargin(draft);
 }
 
-function setActiveTab(
-  draft: Draft<State>,
-  tab: string | null = null,
-  refreshTabActiveSpectrums = false,
-) {
+interface SetActiveTabOptions {
+  tab?: string | null;
+  refreshActiveTab?: boolean;
+  domainOptions?: SetDomainOptions;
+}
+
+function setActiveTab(draft: Draft<State>, options?: SetActiveTabOptions) {
+  const {
+    tab = null,
+    refreshActiveTab = false,
+    domainOptions = {},
+  } = options || {};
+
   const groupByNucleus = GroupByInfoKey('nucleus');
   const dataGroupByNucleus = groupByNucleus(draft.data);
   const tabs = Object.keys(dataGroupByNucleus);
   const currentTab = !tab || !tabs.includes(tab || '') ? tabs[0] : tab;
-  setTab(draft, dataGroupByNucleus, currentTab, refreshTabActiveSpectrums);
+  setTab(draft, dataGroupByNucleus, currentTab, refreshActiveTab);
   resetTool(draft);
 
   Processing2DData(draft, dataGroupByNucleus);
 
-  setDomain(draft);
+  setDomain(draft, domainOptions);
 
   const zoomHistory = zoomHistoryManager(draft.zoom.history, draft.activeTab);
   const zoomValue = zoomHistory.getLast();
@@ -520,7 +528,7 @@ function setActiveTab(
 
 function handelSetActiveTab(draft: Draft<State>, tab) {
   if (tab) {
-    setActiveTab(draft, tab);
+    setActiveTab(draft, { tab });
   }
 }
 

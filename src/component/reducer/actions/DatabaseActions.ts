@@ -14,8 +14,8 @@ function handleRangeResurrecting(draft: Draft<State>, action) {
 
   const datum = generateSpectrumFromRanges(ranges, info, usedColors['1d']);
   draft.data.push(datum);
-  setDomain(draft);
-  setZoom(draft, { scale: 0.8 });
+  setDomain(draft, { yDomain: { isShared: false } });
+  setZoom(draft, { scale: 0.8, spectrumID: datum.id });
 }
 
 export { handleRangeResurrecting };
