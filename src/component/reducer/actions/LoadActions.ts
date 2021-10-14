@@ -102,6 +102,7 @@ function handleLoadMOLFile(draft: Draft<State>, actions) {
 
 function handleLoadZIPFile(draft: Draft<State>, action) {
   draft.data = action.payload;
+  changeSpectrumVerticalAlignment(draft, { checkData: true });
   setActiveTab(draft);
   draft.isLoading = false;
 }

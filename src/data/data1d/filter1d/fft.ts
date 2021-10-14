@@ -26,7 +26,7 @@ export function apply(datum1D) {
   }
 
   datum1D.data.x = generateXAxis(datum1D);
-  datum1D.info = { ...datum1D.info, isFid: false };
+  datum1D.info = { ...datum1D.info, isFid: false, isFt: true };
 }
 
 export function isApplicable(datum1D) {
