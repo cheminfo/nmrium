@@ -65,9 +65,12 @@ function handleSetCorrelation(
 
 function handleSetCorrelations(
   draft: Draft<State>,
-  payload: { correlations: Types.Values },
+  payload: {
+    correlations: Types.Values;
+    options: Types.Options;
+  },
 ) {
-  const { correlations } = payload;
+  const { correlations, options } = payload;
   const state = original(draft) as State;
   let correlationsData = lodashCloneDeep(state.correlations);
   correlations.forEach((correlation) => {
@@ -78,6 +81,12 @@ function handleSetCorrelations(
     );
   });
   draft.correlations = correlationsData;
+  if (options) {
+    draft.correlations = {
+      ...draft.correlations,
+      options: { ...draft.correlations.options, ...options },
+    };
+  }
   handleUpdateCorrelations(draft);
 }
 

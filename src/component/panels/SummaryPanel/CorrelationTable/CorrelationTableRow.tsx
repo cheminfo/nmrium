@@ -139,7 +139,7 @@ function CorrelationTableRow({
 
   const equivalenceCellStyle = useMemo(() => {
     return correlation.edited.equivalence
-      ? { backgroundColor: '#F7F2E0' }
+      ? { color: 'blue' }
       : {
           color: correlation.equivalence === 1 ? '#bebebe' : 'black',
         };
@@ -279,11 +279,7 @@ function CorrelationTableRow({
           <EditableColumn
             type="text"
             value={correlation.protonsCount.join(',')}
-            style={
-              correlation.edited.protonsCount
-                ? { backgroundColor: '#F7F2E0' }
-                : {}
-            }
+            style={correlation.edited.protonsCount ? { color: 'blue' } : {}}
             onSave={onSaveProtonsCountHandler}
           />
         ) : (
@@ -304,8 +300,9 @@ function CorrelationTableRow({
             defaultValue={correlation.hybridization}
             style={{
               ...selectBoxStyle,
+              color: correlation.edited.hybridization ? 'blue' : 'black',
               backgroundColor: correlation.edited.hybridization
-                ? '#F7F2E0'
+                ? 'inherit'
                 : styleRow.backgroundColor,
               width: '50px',
             }}

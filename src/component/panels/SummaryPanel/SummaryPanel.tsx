@@ -390,19 +390,12 @@ function SummaryPanel() {
   );
 
   const setCorrelationsHandler = useCallback(
-    (correlations: Types.Values) => {
+    (correlations: Types.Values, options?: { skipAddFromData: boolean }) => {
       dispatch({
         type: SET_CORRELATIONS,
         payload: {
-          correlations: correlations.map((correlation) => {
-            return {
-              ...correlation,
-              edited: {
-                ...correlation.edited,
-                additionalColumnField: true,
-              },
-            };
-          }),
+          correlations,
+          options,
         },
       });
     },
@@ -472,12 +465,18 @@ function SummaryPanel() {
       editedCorrelations: Types.Correlation[],
       action: string,
       link?: Types.Link,
+      options?: Types.Options,
     ) => {
-      if (action === 'add' || action === 'move' || action === 'remove') {
+      if (
+        action === 'add' ||
+        action === 'move' ||
+        action === 'remove' ||
+        action === 'unmove'
+      ) {
         if (action === 'remove' && link && link.pseudo === false) {
           deleteSignalHandler(link);
         }
-        setCorrelationsHandler(editedCorrelations);
+        setCorrelationsHandler(editedCorrelations, options);
       } else if (action === 'removeAll') {
         deleteCorrelationHandler(editedCorrelations[0]);
       }

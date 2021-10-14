@@ -1,5 +1,5 @@
 import { buildLink, Types } from 'nmr-correlation';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
 import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
@@ -7,10 +7,7 @@ import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
-import {
-  cloneCorrelationAndAddOrRemoveLink,
-  getAbbreviation,
-} from '../Utilities';
+import { cloneCorrelationAndEditLink, getAbbreviation } from '../Utilities';
 
 import EditLinkModal from './EditLinkModal';
 
@@ -23,7 +20,6 @@ function AdditionalColumnField({
   onEdit,
 }) {
   const contextRef = useRef<any>();
-  const [isEdited, setIsEdited] = useState(false);
   const modal = useModal();
 
   const highlightIDsCommonLinks = useMemo(() => {
@@ -63,14 +59,6 @@ function AdditionalColumnField({
     [highlightCommonLinks],
   );
 
-  useEffect(() => {
-    if (commonLinks.some((commonLink) => commonLink.pseudo === true)) {
-      setIsEdited(true);
-    } else {
-      setIsEdited(false);
-    }
-  }, [commonLinks]);
-
   const contextMenuHandler = useCallback(
     (e) => {
       e.preventDefault();
@@ -99,13 +87,13 @@ function AdditionalColumnField({
           pseudo: true,
           signal: { id: generateID(), sign: 0 }, // pseudo signal
         });
-        _correlationDim1 = cloneCorrelationAndAddOrRemoveLink(
+        _correlationDim1 = cloneCorrelationAndEditLink(
           columnCorrelation,
           commonPseudoLink,
           'x',
           'add',
         );
-        _correlationDim2 = cloneCorrelationAndAddOrRemoveLink(
+        _correlationDim2 = cloneCorrelationAndEditLink(
           rowCorrelation,
           commonPseudoLink,
           'y',
@@ -116,13 +104,13 @@ function AdditionalColumnField({
           _correlationDim2.protonsCount = [pseudoLinkCountHSQC + 1];
         }
       } else {
-        _correlationDim1 = cloneCorrelationAndAddOrRemoveLink(
+        _correlationDim1 = cloneCorrelationAndEditLink(
           columnCorrelation,
           link,
           'x',
           'remove',
         );
-        _correlationDim2 = cloneCorrelationAndAddOrRemoveLink(
+        _correlationDim2 = cloneCorrelationAndEditLink(
           rowCorrelation,
           link,
           'y',
@@ -148,7 +136,7 @@ function AdditionalColumnField({
           commonLink.signal.x ? commonLink.signal.x.delta.toFixed(2) : '?'
         }, ${
           commonLink.signal.y ? commonLink.signal.y.delta.toFixed(2) : '?'
-        })`;
+        })${commonLink.edited?.moved === true ? '[MOVED]' : ''}`;
 
         return commonLink.pseudo === false
           ? [
@@ -201,8 +189,23 @@ function AdditionalColumnField({
     rowCorrelation,
   ]);
 
-  const content = useMemo(
-    () => commonLinks.map((commonLink) => getAbbreviation(commonLink)),
+  const contentLabel = useMemo(
+    () =>
+      commonLinks.map((commonLink, i) => (
+        <label key={commonLink.id}>
+          <label
+            style={{
+              color:
+                commonLink.pseudo === true || commonLink.edited?.moved === true
+                  ? 'blue'
+                  : 'black',
+            }}
+          >
+            {getAbbreviation(commonLink)}
+          </label>
+          {i < commonLinks.length - 1 && <label>/</label>}
+        </label>
+      )),
     [commonLinks],
   );
 
@@ -229,15 +232,13 @@ function AdditionalColumnField({
       style={{
         backgroundColor: highlightCommonLinks.isActive
           ? '#ff6f0057'
-          : isEdited
-          ? '#F7F2E0'
           : 'inherit',
       }}
       title={title}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
     >
-      {content.join('/')}
+      {contentLabel}
       <ContextMenu ref={contextRef} context={contextMenu} />
     </td>
   );
