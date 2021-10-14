@@ -53,9 +53,7 @@ export function initiateDatabase(
     ? database.data[databaseKey].value
     : [];
 
-  const data = filter(databaseData, {
-    keywords: [nucleus],
-  });
+  const data = databaseData.filter((datum) => datum.nucleus === nucleus);
 
   const getSolvents = () => prepareGetSolvents(data);
   const search = (keywords: string[] = []) => prepareSearch(data, keywords);
