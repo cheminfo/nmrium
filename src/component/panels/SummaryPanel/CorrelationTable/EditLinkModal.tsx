@@ -178,7 +178,7 @@ export default function EditLinkModal({
             }
 
             onEdit([_correlationDim1, newCorrelationDim1], action, link, {
-              skipAddFromData: true,
+              skipDataUpdate: true,
             });
           }
         } else if (linkDim === 2) {
@@ -272,7 +272,7 @@ export default function EditLinkModal({
           }
 
           onEdit(editedCorrelations, action, link, {
-            skipAddFromData: true,
+            skipDataUpdate: true,
           });
         }
       } else if (action === 'remove') {

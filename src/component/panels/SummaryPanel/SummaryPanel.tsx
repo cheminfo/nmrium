@@ -390,7 +390,7 @@ function SummaryPanel() {
   );
 
   const setCorrelationsHandler = useCallback(
-    (correlations: Types.Values, options?: { skipAddFromData: boolean }) => {
+    (correlations: Types.Values, options?: Types.Options) => {
       dispatch({
         type: SET_CORRELATIONS,
         payload: {
