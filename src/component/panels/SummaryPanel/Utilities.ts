@@ -52,10 +52,10 @@ function findSignalMatch1D(
     const signal = findSignal2D(spectrum, link.signal.id);
     if (signal) {
       const otherAxis = link.axis === 'x' ? 'y' : 'x';
-      return (
-        signal[otherAxis].delta * factor >= xDomain0 &&
-        signal[otherAxis].delta * factor <= xDomain1
-      );
+      const delta = signal[otherAxis]?.delta;
+      if (delta !== undefined) {
+        return delta * factor >= xDomain0 && delta * factor <= xDomain1;
+      }
     }
   }
   return false;
@@ -72,7 +72,7 @@ function findSignalMatch2D(
 ): boolean {
   if (spectrum && spectrum.info.dimension === 2) {
     const signal = findSignal2D(spectrum, link.signal.id);
-    if (signal) {
+    if (signal?.x.delta && signal?.y.delta) {
       return (
         signal.x.delta * factor >= xDomain0 &&
         signal.x.delta * factor <= xDomain1 &&
