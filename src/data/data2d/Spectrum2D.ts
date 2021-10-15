@@ -85,8 +85,8 @@ export interface Signal {
 
 export interface Zone {
   id: string;
-  x: Partial<{ from: number; to: number, diaIDs?: string[], nbAtoms?: number }>;
-  y: Partial<{ from: number; to: number, diaIDs?: string[], nbAtoms?: number }>;
+  x: Partial<{ from: number; to: number; diaIDs?: string[]; nbAtoms?: number }>;
+  y: Partial<{ from: number; to: number; diaIDs?: string[]; nbAtoms?: number }>;
   signals: Array<Signal>;
   kind: string;
 }
