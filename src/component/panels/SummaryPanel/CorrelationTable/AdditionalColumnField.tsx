@@ -1,17 +1,15 @@
-import lodashCloneDeep from 'lodash/cloneDeep';
-import {
-  addLink,
-  buildLink,
-  getCorrelationIndex,
-  removeLink,
-} from 'nmr-correlation';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { buildLink, Types } from 'nmr-correlation';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
+import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
 import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
+import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
-import { findRangeOrZoneID } from '../Utilities';
+import { cloneCorrelationAndEditLink, getAbbreviation } from '../Utilities';
+
+import EditLinkModal from './EditLinkModal';
 
 function AdditionalColumnField({
   rowCorrelation,
@@ -22,7 +20,7 @@ function AdditionalColumnField({
   onEdit,
 }) {
   const contextRef = useRef<any>();
-  const [isEdited, setIsEdited] = useState(false);
+  const modal = useModal();
 
   const highlightIDsCommonLinks = useMemo(() => {
     const ids: Array<any> = [];
@@ -30,7 +28,12 @@ function AdditionalColumnField({
       if (link.pseudo === false) {
         ids.push(link.signal.id);
         ids.push(buildID(link.signal.id, 'Crosshair'));
-        const _id = findRangeOrZoneID(spectraData, link);
+        const _id = findRangeOrZoneID(
+          spectraData,
+          link.experimentID,
+          link.signal.id,
+          true,
+        );
         if (_id) {
           ids.push(_id);
         }
@@ -56,133 +59,155 @@ function AdditionalColumnField({
     [highlightCommonLinks],
   );
 
-  useEffect(() => {
-    if (commonLinks.some((commonLink) => commonLink.pseudo === true)) {
-      setIsEdited(true);
-    } else {
-      setIsEdited(false);
-    }
-  }, [commonLinks]);
-
   const contextMenuHandler = useCallback(
-    (e, rowData) => {
+    (e) => {
       e.preventDefault();
-      contextRef.current.handleContextMenu(e, rowData);
+      contextRef.current.handleContextMenu(e);
     },
     [contextRef],
   );
 
-  const onEditHandler = useCallback(
-    (experimentType, action, commonLink) => {
-      const _rowCorrelation = lodashCloneDeep(rowCorrelation);
-      const _columnCorrelation = lodashCloneDeep(columnCorrelation);
-      const pseudoLinkCountHSQC = _rowCorrelation.link.filter(
-        (link) =>
-          link.experimentType === 'hsqc' || link.experimentType === 'hmqc',
+  const handleEditPseudoHSQC = useCallback(
+    (action: 'add' | 'remove', link?: Types.Link) => {
+      const pseudoLinkCountHSQC = rowCorrelation.link.filter(
+        (_link) =>
+          (_link.experimentType === 'hsqc' ||
+            _link.experimentType === 'hmqc') &&
+          _link.pseudo === true,
       ).length;
 
+      let _correlationDim1: Types.Correlation;
+      let _correlationDim2: Types.Correlation;
       if (action === 'add') {
-        const pseudoLinkID = generateID();
-        const pseudoExperimentID = generateID();
-        const pseudoCommonLink = buildLink({
-          experimentType,
-          experimentID: pseudoExperimentID,
-          atomType: [_columnCorrelation.atomType, _rowCorrelation.atomType],
-          id: pseudoLinkID,
+        const commonPseudoLink = buildLink({
+          experimentType: 'hsqc',
+          experimentID: generateID(),
+          atomType: [columnCorrelation.atomType, rowCorrelation.atomType],
+          id: generateID(),
           pseudo: true,
           signal: { id: generateID(), sign: 0 }, // pseudo signal
         });
-
-        addLink(
-          _columnCorrelation,
-          buildLink({
-            ...pseudoCommonLink,
-            axis: 'x',
-            match: [getCorrelationIndex(correlations, _rowCorrelation)],
-          }),
+        _correlationDim1 = cloneCorrelationAndEditLink(
+          columnCorrelation,
+          commonPseudoLink,
+          'x',
+          'add',
         );
-        addLink(
-          _rowCorrelation,
-          buildLink({
-            ...pseudoCommonLink,
-            axis: 'y',
-            match: [getCorrelationIndex(correlations, _columnCorrelation)],
-          }),
+        _correlationDim2 = cloneCorrelationAndEditLink(
+          rowCorrelation,
+          commonPseudoLink,
+          'y',
+          'add',
         );
-        if (!_rowCorrelation.edited.protonsCount) {
-          _rowCorrelation.protonsCount = [pseudoLinkCountHSQC + 1];
+        // increase number of attached protons if no value was specified manually before
+        if (!_correlationDim2.edited.protonsCount) {
+          _correlationDim2.protonsCount = [pseudoLinkCountHSQC + 1];
         }
-      } else if (action === 'remove') {
-        removeLink(_rowCorrelation, commonLink.id);
-        removeLink(_columnCorrelation, commonLink.id);
-        if (!_rowCorrelation.edited.protonsCount) {
-          _rowCorrelation.protonsCount =
+      } else {
+        _correlationDim1 = cloneCorrelationAndEditLink(
+          columnCorrelation,
+          link,
+          'x',
+          'remove',
+        );
+        _correlationDim2 = cloneCorrelationAndEditLink(
+          rowCorrelation,
+          link,
+          'y',
+          'remove',
+        );
+        // decrease number of attached protons if no value was specified manually before
+        if (!_correlationDim2.edited.protonsCount) {
+          _correlationDim2.protonsCount =
             pseudoLinkCountHSQC - 1 > 0 ? [pseudoLinkCountHSQC - 1] : [];
         }
       }
 
-      onEdit(_rowCorrelation, _columnCorrelation);
+      onEdit([_correlationDim1, _correlationDim2], action, link);
     },
-    [rowCorrelation, onEdit, columnCorrelation, correlations],
+    [columnCorrelation, onEdit, rowCorrelation],
   );
 
   const contextMenu = useMemo(() => {
-    // allow the edition of pseudo correlations and pseudo HSQC only (for now)
-    // assumption here that only one pseudo HSQC can be added to a pseudo correlation
-    const commonLinkHSQC = commonLinks.find(
+    // allow the edition of correlations
+    const commonLinksMenu = commonLinks
+      .map((commonLink) => {
+        const commonLinkContextMenuLabel = `${getAbbreviation(commonLink)} (${
+          commonLink.signal.x ? commonLink.signal.x.delta.toFixed(2) : '?'
+        }, ${
+          commonLink.signal.y ? commonLink.signal.y.delta.toFixed(2) : '?'
+        })${commonLink.edited?.moved === true ? '[MOVED]' : ''}`;
+
+        return commonLink.pseudo === false
+          ? [
+              {
+                label: `edit ${commonLinkContextMenuLabel}`,
+                onClick: () =>
+                  modal.show(
+                    <EditLinkModal
+                      onClose={() => modal.close()}
+                      onEdit={onEdit}
+                      link={commonLink}
+                      correlationDim1={columnCorrelation}
+                      correlationDim2={rowCorrelation}
+                      correlations={correlations}
+                    />,
+                    { position: positions.TOP_LEFT, isBackgroundBlur: false },
+                  ),
+              },
+            ]
+          : [];
+      })
+      .flat();
+    // allow addition or removal of a pseudo HSQC link between pseudo heavy atom and proton
+    const commonPseudoLinkHSQC = commonLinks.find(
       (commonLink) =>
-        commonLink.experimentType === 'hsqc' && commonLink.pseudo === true,
+        commonLink.pseudo === true && commonLink.experimentType === 'hsqc',
     );
-
-    return rowCorrelation.pseudo === true
-      ? commonLinkHSQC
-        ? [
-            {
-              label: 'remove HSQC',
-              onClick: () => {
-                onEditHandler('hsqc', 'remove', commonLinkHSQC);
-              },
-            },
-          ]
-        : [
-            {
-              label: 'add HSQC',
-              onClick: () => {
-                onEditHandler('hsqc', 'add', undefined);
-              },
-            },
-          ]
-      : [];
-  }, [commonLinks, onEditHandler, rowCorrelation]);
-
-  const content = useMemo(() => {
-    const linkSet = new Set();
-    commonLinks.forEach((commonLink) => {
-      if (
-        commonLink.experimentType === 'hsqc' ||
-        commonLink.experimentType === 'hmqc'
-      ) {
-        linkSet.add(
-          !commonLink.signal || commonLink.signal.sign === 0
-            ? 'S'
-            : `S${commonLink.signal.sign === 1 ? '+' : '-'}`,
-        );
-      } else if (
-        commonLink.experimentType === 'hmbc' ||
-        commonLink.experimentType === 'cosy' ||
-        commonLink.experimentType === 'tocsy'
-      ) {
-        linkSet.add('M');
-      } else if (
-        commonLink.experimentType === 'noesy' ||
-        commonLink.experimentType === 'roesy'
-      ) {
-        linkSet.add('NOE');
+    if (rowCorrelation.pseudo === true) {
+      if (commonPseudoLinkHSQC) {
+        commonLinksMenu.push({
+          label: 'remove pseudo HSQC',
+          onClick: () => handleEditPseudoHSQC('remove', commonPseudoLinkHSQC),
+        });
+      } else {
+        commonLinksMenu.push({
+          label: 'add pseudo HSQC',
+          onClick: () => handleEditPseudoHSQC('add'),
+        });
       }
-    });
+    }
 
-    return [...linkSet];
-  }, [commonLinks]);
+    return commonLinksMenu;
+  }, [
+    columnCorrelation,
+    commonLinks,
+    correlations,
+    handleEditPseudoHSQC,
+    modal,
+    onEdit,
+    rowCorrelation,
+  ]);
+
+  const contentLabel = useMemo(
+    () =>
+      commonLinks.map((commonLink, i) => (
+        <label key={commonLink.id}>
+          <label
+            style={{
+              color:
+                commonLink.pseudo === true || commonLink.edited?.moved === true
+                  ? 'blue'
+                  : 'black',
+            }}
+          >
+            {getAbbreviation(commonLink)}
+          </label>
+          {i < commonLinks.length - 1 && <label>/</label>}
+        </label>
+      )),
+    [commonLinks],
+  );
 
   const title = useMemo(
     () =>
@@ -193,7 +218,6 @@ function AdditionalColumnField({
           }
           return arr;
         }, [])
-        .sort()
         .join('/'),
     [commonLinks],
   );
@@ -202,21 +226,19 @@ function AdditionalColumnField({
     <td
       onContextMenu={(e) => {
         if (contextMenu.length > 0) {
-          contextMenuHandler(e, rowCorrelation);
+          contextMenuHandler(e);
         }
       }}
       style={{
         backgroundColor: highlightCommonLinks.isActive
           ? '#ff6f0057'
-          : isEdited
-          ? '#F7F2E0'
           : 'inherit',
       }}
       title={title}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
     >
-      {content.join('/')}
+      {contentLabel}
       <ContextMenu ref={contextRef} context={contextMenu} />
     </td>
   );

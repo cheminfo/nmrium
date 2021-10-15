@@ -82,6 +82,8 @@ export interface Signal {
   delta: number;
   multiplicity: string;
   peaks?: Array<{ x: number; intensity: number; width: number }>;
+  diaIDs?: string[];
+  nbAtoms?: number;
 }
 export interface Range {
   id: string;
@@ -93,6 +95,8 @@ export interface Range {
   integration: number;
   kind: string;
   signals: Array<Signal>;
+  diaIDs?: string[];
+  nbAtoms?: number;
 }
 
 export interface Ranges {

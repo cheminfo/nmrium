@@ -1,4 +1,15 @@
+import lodashCloneDeep from 'lodash/cloneDeep';
 import lodashGet from 'lodash/get';
+import {
+  addLink,
+  buildLink,
+  getLinkDim,
+  removeLink,
+  Types,
+} from 'nmr-correlation';
+
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { findSignal2D } from '../../../data/utilities/FindUtilities';
 
 import { ErrorColors } from './CorrelationTable/Constants';
 
@@ -30,63 +41,15 @@ function getLabelColor(correlationData, correlation) {
   return null;
 }
 
-function findSpectrum(spectraData, value) {
-  return spectraData.filter(
-    (_spectrum) =>
-      _spectrum.id === value.experimentID &&
-      _spectrum.display.isVisible === true,
-  )[0];
-}
-
-function findSignal(spectrum, value) {
-  for (let zone of spectrum.zones.values) {
-    const signalIndex = zone.signals.findIndex(
-      (_signal) => _signal.id === value.signal.id,
-    );
-    if (signalIndex >= 0) {
-      return zone.signals[signalIndex];
-    }
-  }
-}
-
-function findRange(spectrum, value) {
-  for (let range of spectrum.ranges.values) {
-    const signalIndex = range.signals.findIndex(
-      (_signal) => _signal.id === value.signal.id,
-    );
-    if (signalIndex >= 0) {
-      return range;
-    }
-  }
-}
-
-function findZone(spectrum, value) {
-  for (let zone of spectrum.zones.values) {
-    const signalIndex = zone.signals.findIndex(
-      (_signal) => _signal.id === value.signal.id,
-    );
-    if (signalIndex >= 0) {
-      return zone;
-    }
-  }
-}
-
-function findRangeOrZoneID(spectraData, value) {
-  const spectrum = findSpectrum(spectraData, value);
-  if (spectrum) {
-    if (spectrum.info.dimension === 1) {
-      const range = findRange(spectrum, value);
-      if (range) return range.id;
-    } else if (spectrum.info.dimension === 2) {
-      const zone = findZone(spectrum, value);
-      if (zone) return zone.id;
-    }
-  }
-}
-
-function findSignalMatch1D(spectrum, link, factor, xDomain0, xDomain1) {
+function findSignalMatch1D(
+  spectrum: Datum2D,
+  link: Types.Link,
+  factor: number,
+  xDomain0: number,
+  xDomain1: number,
+) {
   if (spectrum && spectrum.info.dimension === 2) {
-    const signal = findSignal(spectrum, link);
+    const signal = findSignal2D(spectrum, link.signal.id);
     if (signal) {
       const otherAxis = link.axis === 'x' ? 'y' : 'x';
       return (
@@ -99,16 +62,16 @@ function findSignalMatch1D(spectrum, link, factor, xDomain0, xDomain1) {
 }
 
 function findSignalMatch2D(
-  spectrum,
-  value,
-  factor,
-  xDomain0,
-  xDomain1,
-  yDomain0,
-  yDomain1,
-) {
+  spectrum: Datum2D,
+  link: Types.Link,
+  factor: number,
+  xDomain0: number,
+  xDomain1: number,
+  yDomain0: number,
+  yDomain1: number,
+): boolean {
   if (spectrum && spectrum.info.dimension === 2) {
-    const signal = findSignal(spectrum, value);
+    const signal = findSignal2D(spectrum, link.signal.id);
     if (signal) {
       return (
         signal.x.delta * factor >= xDomain0 &&
@@ -121,13 +84,90 @@ function findSignalMatch2D(
   return false;
 }
 
+function getAbbreviation(link: Types.Link): string {
+  if (link.experimentType === 'hsqc' || link.experimentType === 'hmqc') {
+    return !link.signal || link.signal.sign === 0
+      ? 'S'
+      : `S${link.signal.sign === 1 ? '+' : '-'}`;
+  } else if (
+    link.experimentType === 'hmbc' ||
+    link.experimentType === 'cosy' ||
+    link.experimentType === 'tocsy'
+  ) {
+    return 'M';
+  } else if (
+    link.experimentType === 'noesy' ||
+    link.experimentType === 'roesy'
+  ) {
+    return 'NOE';
+  } else if (link.experimentType === 'inadequate') {
+    return 'I';
+  } else if (link.experimentType === 'adequate') {
+    return 'A';
+  }
+
+  return 'X';
+}
+
+function buildNewLink1D(link) {
+  return buildLink({
+    ...link,
+    edited: {
+      ...link.edited,
+      moved: true,
+    },
+  });
+}
+
+function buildNewLink2D(link: Types.Link, axis: 'x' | 'y') {
+  const linkIDs = link.id.split('_');
+  return buildLink({
+    ...link,
+    id: linkIDs[axis === 'x' ? 0 : 1],
+    axis,
+    match: [],
+    edited: {
+      ...link.edited,
+      moved: true,
+    },
+  });
+}
+
+function cloneCorrelationAndEditLink(
+  correlation: Types.Correlation,
+  link: Types.Link,
+  axis: 'x' | 'y',
+  action: 'add' | 'remove' | 'unmove',
+): Types.Correlation {
+  const linkDim = getLinkDim(link);
+  const _correlation = lodashCloneDeep(correlation);
+  const split = link.id.split('_');
+  if (action === 'add') {
+    addLink(
+      _correlation,
+      linkDim === 1 ? buildNewLink1D(link) : buildNewLink2D(link, axis),
+    );
+  } else if (action === 'remove') {
+    removeLink(_correlation, axis === 'x' ? split[0] : split[1]);
+  } else if (action === 'unmove') {
+    const _link = _correlation.link.find((_link) =>
+      axis === 'x' ? _link.id === split[0] : _link.id === split[1],
+    );
+    if (_link) {
+      delete _link.edited.moved;
+    }
+  }
+
+  return _correlation;
+}
+
 export {
-  findRange,
-  findRangeOrZoneID,
+  buildNewLink1D,
+  buildNewLink2D,
+  cloneCorrelationAndEditLink,
   findSignalMatch1D,
   findSignalMatch2D,
-  findSpectrum,
-  findZone,
+  getAbbreviation,
   getAtomType,
   getLabelColor,
 };

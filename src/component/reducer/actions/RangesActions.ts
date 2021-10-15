@@ -19,7 +19,6 @@ import {
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
 import {
-  getPubIntegral,
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/RangeUtilities';
@@ -120,7 +119,7 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
 
     // remove assignments in global state
 
-    const _editedRowData = unlink(editedRowData);
+    const _editedRowData: any = unlink(editedRowData);
 
     delete _editedRowData.tableMetaInfo;
     delete _editedRowData.rowKey;
@@ -130,6 +129,42 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
     const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
     (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _editedRowData;
     updateIntegralRanges(draft.data[index]);
+    handleOnChangeRangesData(draft);
+  }
+}
+
+function handleDeleteSignal(draft: Draft<State>, action) {
+  const {
+    spectrum,
+    range,
+    signal,
+    assignmentData,
+    unlinkSignalInAssignmentData = true,
+  } = action.payload;
+
+  if (spectrum && range) {
+    const datum1D = draft.data.find(
+      (datum) => datum.id === spectrum.id,
+    ) as Datum1D;
+    const rangeIndex = datum1D.ranges.values.findIndex(
+      (_range) => _range.id === range.id,
+    );
+    const signalIndex = range.signals.findIndex(
+      (_signal) => _signal.id === signal.id,
+    );
+    // remove assignments for the signal range object in global state
+    const _range = unlink(cloneDeep(range), 'signal', { signalIndex });
+    if (unlinkSignalInAssignmentData === true) {
+      unlinkInAssignmentData(assignmentData, [{ signals: [signal] }]);
+    }
+    _range.signals.splice(signalIndex, 1);
+    datum1D.ranges.values[rangeIndex] = _range;
+    // if no signals are existing in a range anymore then delete this range
+    if (_range.signals.length === 0) {
+      unlinkInAssignmentData(assignmentData, [_range]);
+      datum1D.ranges.values.splice(rangeIndex, 1);
+    }
+
     handleOnChangeRangesData(draft);
   }
 }
@@ -178,13 +213,13 @@ function handleUnlinkRange(draft: Draft<State>, action) {
   }
 }
 
-function handleSetDiaIDRange(draft, action) {
+function handleSetDiaIDRange(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     const { rangeData, diaIDs, signalIndex, nbAtoms } = action.payload;
     const getNbAtoms = (input, current = 0) => input + current;
     const rangeIndex = getRangeIndex(draft, index, rangeData.id);
-    const _range = draft.data[index].ranges.values[rangeIndex];
+    const _range = (draft.data[index] as Datum1D).ranges.values[rangeIndex];
     if (signalIndex === undefined) {
       _range.diaIDs = diaIDs;
       _range.nbAtoms = getNbAtoms(nbAtoms, _range.nbAtoms);
@@ -195,7 +230,7 @@ function handleSetDiaIDRange(draft, action) {
         _range.signals[signalIndex].nbAtoms,
       );
     }
-    _range.pubIntegral = getPubIntegral(_range);
+    // _range.nbAtoms = getNbAtoms(_range);
   }
 }
 
@@ -284,6 +319,7 @@ function handleShowRangesIntegrals(draft: Draft<State>) {
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
+  handleDeleteSignal,
   handleChangeRangeSum,
   handleAddRange,
   handleResizeRange,

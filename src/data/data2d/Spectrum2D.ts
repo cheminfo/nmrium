@@ -71,20 +71,22 @@ export interface Signal {
   x: Partial<{
     originDelta: number;
     delta: number;
-    diaIDs: any;
+    diaIDs?: string[];
+    nbAtoms?: number;
   }>;
   y: Partial<{
     originDelta: number;
     delta: number;
-    diaIDs: any;
+    diaIDs?: string[];
+    nbAtoms?: number;
   }>;
   kind: string;
 }
 
 export interface Zone {
   id: string;
-  x: Partial<{ from: number; to: number }>;
-  y: Partial<{ from: number; to: number }>;
+  x: Partial<{ from: number; to: number, diaIDs?: string[], nbAtoms?: number }>;
+  y: Partial<{ from: number; to: number, diaIDs?: string[], nbAtoms?: number }>;
   signals: Array<Signal>;
   kind: string;
 }

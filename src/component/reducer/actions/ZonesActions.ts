@@ -1,5 +1,5 @@
 import { Draft, original } from 'immer';
-import cloneDeep from 'lodash/cloneDeep';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
@@ -15,7 +15,6 @@ import {
   updateShift,
 } from '../../../data/data2d/Spectrum2D';
 import {
-  getPubIntegral,
   unlink,
   unlinkInAssignmentData,
 } from '../../../data/utilities/ZoneUtilities';
@@ -134,7 +133,7 @@ function handleDeleteZone(draft: Draft<State>, action) {
       const zone = (draft.data[index] as Datum2D).zones.values.find(
         (zone) => zone.id === id,
       );
-      unlinkInAssignmentData(assignmentData, [zone]);
+      unlinkInAssignmentData(assignmentData, [zone || {}]);
       const zoneIndex = getZoneIndex(state, index, id);
       (draft.data[index] as Datum2D).zones.values.splice(zoneIndex, 1);
     } else {
@@ -144,6 +143,46 @@ function handleDeleteZone(draft: Draft<State>, action) {
       );
       (draft.data[index] as Datum2D).zones.values = [];
     }
+    handleOnChangeZonesData(draft);
+  }
+}
+
+function handleDeleteSignal(draft: Draft<State>, action) {
+  const {
+    spectrum,
+    zone,
+    signal,
+    assignmentData,
+    unlinkSignalInAssignmentData = true,
+  } = action.payload;
+
+  if (spectrum && zone) {
+    const datum2D = draft.data.find(
+      (datum) => datum.id === spectrum.id,
+    ) as Datum2D;
+    const zoneIndex = datum2D.zones.values.findIndex(
+      (_zone) => _zone.id === zone.id,
+    );
+    const signalIndex = zone.signals.findIndex(
+      (_signal) => _signal.id === signal.id,
+    );
+    // remove assignments for the signal in zone object and global state
+    const _zone = unlink(lodashCloneDeep(zone), false, signalIndex, undefined);
+    if (unlinkSignalInAssignmentData === true) {
+      unlinkInAssignmentData(
+        assignmentData,
+        [{ signals: [signal] }],
+        undefined,
+      );
+    }
+    _zone.signals.splice(signalIndex, 1);
+    datum2D.zones.values[zoneIndex] = _zone;
+    // if no signals are existing in a zone anymore then delete this zone
+    if (_zone.signals.length === 0) {
+      unlinkInAssignmentData(assignmentData, [_zone]);
+      datum2D.zones.values.splice(zoneIndex, 1);
+    }
+
     handleOnChangeZonesData(draft);
   }
 }
@@ -165,7 +204,7 @@ function handleUnlinkZone(draft: Draft<State>, action) {
 
       const zoneIndex = getZoneIndex(state, index, zoneData.id);
 
-      const zone = cloneDeep(
+      const zone = lodashCloneDeep(
         (draft.data[index] as Datum2D).zones.values[zoneIndex],
       );
       const _zoneData = unlink(zone, isOnZoneLevel, signalIndex, axis);
@@ -205,7 +244,7 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
         _zone.signals[signalIndex][axis].nbAtoms,
       );
     }
-    _zone[axis].pubIntegral = getPubIntegral(_zone, axis);
+    // _zone[axis].nbAtoms = getNbAtoms(_zone, axis);
   }
 }
 
@@ -216,6 +255,7 @@ function handleOnChangeZonesData(draft) {
 export {
   add2dZoneHandler,
   handleAutoZonesDetection,
+  handleDeleteSignal,
   handleDeleteZone,
   changeZoneSignalDelta,
   handleChangeZoneSignalKind,
