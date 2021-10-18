@@ -198,7 +198,9 @@ function CorrelationTableRow({
           .filter((link) => getLinkDim(link) === 1 && link.pseudo === false)
           .map((link) => {
             return {
-              label: `edit 1D (${link.signal.delta.toFixed(3)})`,
+              label: `edit 1D (${link.signal.delta.toFixed(3)})${
+                link.edited?.moved === true ? '[MOVED]' : ''
+              }`,
               onClick: () => {
                 modal.show(
                   <EditLinkModal

@@ -145,12 +145,12 @@ export default function EditLinkModal({
       const selectedCorrelationDim2 = correlations.find(
         (correlation) => correlation.id === selectedCorrelationValueDim2,
       );
-
       const hasChangedDim1 = selectedCorrelationDim1?.id !== correlationDim1.id;
-      const hasChangedDim2 = selectedCorrelationDim2?.id !== correlationDim2.id;
+      const hasChangedDim2 =
+        correlationDim2 && selectedCorrelationDim2?.id !== correlationDim2?.id;
+      const linkDim = getLinkDim(link);
 
       if (action === 'move') {
-        const linkDim = getLinkDim(link);
         if (linkDim === 1) {
           // check whether we would move to same correlation
           if (hasChangedDim1) {
@@ -296,24 +296,38 @@ export default function EditLinkModal({
         onEdit(editedCorrelations, action, link);
       } else if (action === 'unmove') {
         const editedCorrelations: Types.Correlation[] = [];
-        if (selectedCorrelationDim1 && selectedCorrelationDim2) {
-          editedCorrelations.push(
-            cloneCorrelationAndEditLink(
-              selectedCorrelationDim1,
-              link,
-              'x',
-              'unmove',
-            ),
-          );
-          editedCorrelations.push(
-            cloneCorrelationAndEditLink(
-              selectedCorrelationDim2,
-              link,
-              'y',
-              'unmove',
-            ),
-          );
-
+        if (linkDim === 1) {
+          if (selectedCorrelationDim1) {
+            editedCorrelations.push(
+              cloneCorrelationAndEditLink(
+                selectedCorrelationDim1,
+                link,
+                'x',
+                'unmove',
+              ),
+            );
+          }
+        } else if (linkDim === 2) {
+          if (selectedCorrelationDim1 && selectedCorrelationDim2) {
+            editedCorrelations.push(
+              cloneCorrelationAndEditLink(
+                selectedCorrelationDim1,
+                link,
+                'x',
+                'unmove',
+              ),
+            );
+            editedCorrelations.push(
+              cloneCorrelationAndEditLink(
+                selectedCorrelationDim2,
+                link,
+                'y',
+                'unmove',
+              ),
+            );
+          }
+        }
+        if (editedCorrelations.length > 0) {
           onEdit(editedCorrelations, action, link);
         }
       }
