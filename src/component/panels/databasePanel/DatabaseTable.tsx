@@ -8,6 +8,7 @@ import ReactTable from '../../elements/ReactTable/ReactTable';
 import setCustomColumn, {
   CustomColumn,
 } from '../../elements/ReactTable/utility/setCustomColumn';
+import { HighlightedSource } from '../../highlight';
 import { getValue } from '../../utility/LocalStorage';
 import NoTableData from '../extra/placeholder/NoTableData';
 import { databaseDefaultValues } from '../extra/preferences/defaultValues';
@@ -132,7 +133,11 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
   }, [initialColumns, preferences]);
 
   return data && data.length > 0 ? (
-    <ReactTable data={data} columns={tableColumns} />
+    <ReactTable
+      data={data}
+      columns={tableColumns}
+      highlightedSource={HighlightedSource.DATABASE}
+    />
   ) : (
     <NoTableData />
   );

@@ -6,6 +6,7 @@ import PeakAnnotations from './PeakAnnotations';
 import XAxis from './XAxis';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
+import ResurrectedDatabaseRanges from './ResurrectedDatabaseRanges';
 
 function Chart1D({ mode, width, height, margin, displayerKey }) {
   return (
@@ -33,6 +34,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <MultiAnalysisRanges />
       <BaseLineZones />
       <ExclusionZones />
+      <ResurrectedDatabaseRanges />
 
       <g className="container" style={{ pointerEvents: 'none' }}>
         <XAxis showGrid mode={mode} />

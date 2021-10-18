@@ -571,12 +571,18 @@ export function changeRangeSignal(datum, rangeID, signalID, newSignalValue) {
 
 export function generateSpectrumFromRanges(
   ranges,
-  info: { nucleus: string; solvent: string; name?: string },
+  info: {
+    nucleus: string;
+    solvent: string;
+    name?: string;
+    frequency?: number;
+    color?: string;
+  },
   usedColors: string[],
 ) {
-  const { nucleus, solvent, name = null } = info;
+  const { nucleus, solvent, name = null, frequency = 400 } = info;
   const { x, y } = rangesToXY(ranges, {
-    frequency: 400,
+    frequency,
     nbPoints: 524288,
   });
 
@@ -586,9 +592,9 @@ export function generateSpectrumFromRanges(
       display: { name },
       info: {
         nucleus,
-        originFrequency: 400,
-        baseFrequency: 400,
-        pulseSequence: 'publication string',
+        originFrequency: frequency,
+        baseFrequency: frequency,
+        pulseSequence: '',
         solvent,
         isFt: true,
       },
