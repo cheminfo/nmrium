@@ -3,6 +3,7 @@ import { Fragment, useRef, useCallback, memo } from 'react';
 import { useTable, useSortBy } from 'react-table';
 
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
+import { HighlightedSource } from '../../highlight';
 import ContextMenu from '../ContextMenu';
 
 import ReactTableHeader from './Elements/ReactTableHeader';
@@ -13,10 +14,16 @@ import useRowSpan, { prepareRowSpan } from './utility/useRowSpan';
 interface ReactTableProps {
   data: any;
   columns: any;
+  highlightedSource?: HighlightedSource;
   context?: Array<{ label: string; onClick: () => void }> | null;
 }
 
-function ReactTable({ data, columns, context = null }: ReactTableProps) {
+function ReactTable({
+  data,
+  columns,
+  highlightedSource,
+  context = null,
+}: ReactTableProps) {
   const contextRef = useRef<any>(null);
 
   const {
@@ -59,6 +66,7 @@ function ReactTable({ data, columns, context = null }: ReactTableProps) {
                 row={row}
                 {...row.getRowProps()}
                 onContextMenu={(e) => contextMenuHandler(e, row)}
+                highlightedSource={highlightedSource}
               />
             );
           })}
