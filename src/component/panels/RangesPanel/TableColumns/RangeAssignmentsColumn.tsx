@@ -44,7 +44,12 @@ function RangeAssignmentsColumn({
           fontWeight: 'bold',
         }
       : { color: 'black', fontWeight: 'normal' };
-  }, [assignment.isActive, assignment.isOnHover, highlight.isActive, highlightData.highlight.sourceData?.type]);
+  }, [
+    assignment.isActive,
+    assignment.isOnHover,
+    highlight.isActive,
+    highlightData.highlight.sourceData?.type,
+  ]);
 
   return (
     <td
