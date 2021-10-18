@@ -6,7 +6,7 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
 import { useAlert } from '../elements/popup/Alert';
-import { TYPES, useHighlightData } from '../highlight/index';
+import { HighlightedSource, useHighlightData } from '../highlight/index';
 import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
@@ -38,9 +38,9 @@ function KeysListenerTracker() {
   const { saveToClipboardHandler, saveAsJSONHandler, saveAsHandler } =
     useExport();
 
-  const { highlight } = useHighlightData();
-  const assignmentData = useAssignmentData();
+  const { highlight, remove } = useHighlightData();
 
+  const assignmentData = useAssignmentData();
   const allow1DTool = useMemo(() => {
     return displayerMode === DISPLAYER_MODE.DM_1D && data && data.length > 0;
   }, [data, displayerMode]);
@@ -50,58 +50,78 @@ function KeysListenerTracker() {
   }, [data, displayerMode]);
 
   const deleteHandler = useCallback(
-    (type, data) => {
+    (sourceData) => {
+      const {
+        type,
+        extra: { id },
+      } = sourceData;
+
       switch (type) {
-        case TYPES.INTEGRAL: {
+        case HighlightedSource.INTEGRAL: {
           dispatch({
             type: DELETE_INTEGRAL,
-            integralID: data.activeKey,
+            integralID: id,
           });
+          // remove keys from the highlighted list after delete
+          remove();
+
           break;
         }
-        case TYPES.PEAK: {
+        case HighlightedSource.PEAK: {
           dispatch({
             type: DELETE_PEAK_NOTATION,
-            data: { id: data.activeKey },
+            data: { id },
           });
+          // remove keys from the highlighted list after delete
+          remove();
+
           break;
         }
-        case TYPES.RANGE: {
+        case HighlightedSource.RANGE: {
           dispatch({
             type: DELETE_RANGE,
             payload: {
               data: {
-                id: data.activeKey,
+                id,
                 assignmentData,
               },
             },
           });
+          // remove keys from the highlighted list after delete
+          remove();
+
           break;
         }
-        case TYPES.ZONE: {
+        case HighlightedSource.ZONE: {
           dispatch({
             type: DELETE_2D_ZONE,
             payload: {
-              id: data.activeKey,
+              id,
               assignmentData,
             },
           });
+          // remove keys from the highlighted list after delete
+          remove();
+
           break;
         }
-        case TYPES.EXCLUSION_ZONE: {
+        case HighlightedSource.EXCLUSION_ZONE: {
           dispatch({
             type: DELETE_EXCLUSION_ZONE,
             payload: {
-              id: data.activeKey,
+              id,
             },
           });
+          // remove keys from the highlighted list after delete
+          remove();
+
           break;
         }
         default:
           break;
       }
     },
-    [assignmentData, dispatch],
+    [assignmentData, dispatch, remove],
   );
 
   const keysPreferencesListenerHandler = useCallback(
@@ -243,13 +263,8 @@ function KeysListenerTracker() {
       saveToClipboardHandler,
     ],
   );
-
   const handleOnKeyDown = useCallback(
     (e) => {
-      const {
-        highlighted: [activeKey],
-        type,
-      } = highlight;
       if (
         !['input', 'textarea'].includes(e.target.localName) &&
         overDisplayer
@@ -258,9 +273,9 @@ function KeysListenerTracker() {
         if (num > 0) {
           keysPreferencesListenerHandler(e, num);
         } else {
-          if (['Delete', 'Backspace'].includes(e.key) && type) {
+          if (['Delete', 'Backspace'].includes(e.key) && highlight.sourceData) {
             e.preventDefault();
-            deleteHandler(type, { activeKey });
+            deleteHandler(highlight.sourceData);
           } else {
             toolsListenerHandler(e);
           }

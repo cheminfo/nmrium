@@ -5,7 +5,7 @@ import { useMemo, useState, useEffect, CSSProperties } from 'react';
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { TYPES, useHighlight } from '../../highlight';
+import { HighlightedSource, useHighlight } from '../../highlight';
 import {
   hasCouplingConstant,
   checkMultiplicity,
@@ -39,6 +39,10 @@ interface MultiplicityTreeProps {
   };
 }
 
+function extractID(assignment) {
+  return [assignment.id].concat(assignment.assigned.x || []);
+}
+
 function MultiplicityTree({
   rangeFrom,
   rangeTo,
@@ -56,10 +60,10 @@ function MultiplicityTree({
     width,
   } = useChartData();
   const assignment = useAssignment(signal.id);
-  const highlight = useHighlight(
-    [assignment.id].concat(assignment.assigned.x || []),
-    TYPES.SIGNAL,
-  );
+  const highlight = useHighlight(extractID(assignment), {
+    type: HighlightedSource.SIGNAL,
+    extra: extractID(assignment),
+  });
 
   const spectrumData = useMemo(
     () =>

@@ -2,7 +2,7 @@ import lodashGet from 'lodash/get';
 import { CSSProperties, useMemo, useCallback, memo } from 'react';
 import { FaMinusCircle } from 'react-icons/fa';
 
-import { TYPES } from '../../../highlight';
+import { HighlightedSource } from '../../../highlight';
 
 const spanStyle: CSSProperties = {
   color: 'red',
@@ -36,19 +36,15 @@ function RangeAssignmentsColumn({
     const flag =
       assignment.isActive ||
       assignment.isOnHover ||
-      (highlight.isActive && highlightData.highlight.type !== TYPES.SIGNAL);
+      (highlight.isActive &&
+        highlightData.highlight.sourceData?.type !== HighlightedSource.SIGNAL);
     return flag
       ? {
           color: 'red',
           fontWeight: 'bold',
         }
       : { color: 'black', fontWeight: 'normal' };
-  }, [
-    assignment.isActive,
-    assignment.isOnHover,
-    highlight.isActive,
-    highlightData.highlight.type,
-  ]);
+  }, [assignment.isActive, assignment.isOnHover, highlight.isActive, highlightData.highlight.sourceData?.type]);
 
   return (
     <td
