@@ -142,11 +142,11 @@ export function useHighlightData() {
 }
 
 /**
- * @param {string[]}  highlights
+ * @param {Array<string | number>}  highlights
  * @param {SourceData = null} sourceData
  */
 export function useHighlight(
-  highlights: string[],
+  highlights: (string | number)[],
   sourceData: SourceData | null = null,
 ) {
   if (!Array.isArray(highlights)) {
