@@ -2,6 +2,7 @@ import { zoneToX } from 'ml-spectra-processing';
 
 import * as Filters from '../Filters';
 import * as FiltersManager from '../FiltersManager';
+import { DataExportOptions, DataExportOptionsType } from '../SpectraManager';
 import { DatumKind } from '../constants/SignalsKinds';
 import { Datum1D, initiateDatum1D } from '../data1d/Spectrum1D';
 import generateID from '../utilities/generateID';
@@ -210,21 +211,29 @@ function getColor(options, usedColors) {
   return {};
 }
 
-export function toJSON(datum: Datum2D, forceIncludeData = true) {
+export function toJSON(
+  datum: Datum2D,
+  dataExportOption: DataExportOptionsType,
+) {
   return {
     id: datum.id,
-    source: {
-      jcampURL: datum.source.jcampURL,
-    },
-    ...(forceIncludeData
-      ? !datum.source.jcampURL
-        ? {
-            data: datum.originalData,
-            info: datum.originalInfo,
-            meta: datum.meta,
-          }
-        : {}
-      : {}),
+
+    ...(dataExportOption === DataExportOptions.ROW_DATA ||
+    (dataExportOption === DataExportOptions.DATA_SOURCE &&
+      !datum.source.jcampURL)
+      ? {
+          data: datum.originalData,
+          info: datum.originalInfo,
+          meta: datum.meta,
+          source: {
+            jcampURL: null,
+          },
+        }
+      : {
+          source: {
+            jcampURL: datum.source.jcampURL,
+          },
+        }),
     zones: datum.zones,
     filters: datum.filters,
     display: datum.display,

@@ -10,6 +10,7 @@ import { resurrect, rangesToXY } from 'nmr-processing';
 
 import * as FiltersTypes from '../Filters';
 import * as FiltersManager from '../FiltersManager';
+import { DataExportOptions, DataExportOptionsType } from '../SpectraManager';
 import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
 import { Datum2D } from '../data2d/Spectrum2D';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
@@ -220,22 +221,29 @@ function preprocessing(datum) {
   }
 }
 
-export function toJSON(datum1D: Datum1D, forceIncludeData = true) {
+export function toJSON(
+  datum1D: Datum1D,
+  dataExportOption: DataExportOptionsType,
+) {
   return {
     id: datum1D.id,
-    source: {
-      jcampURL: datum1D.source.jcampURL,
-    },
     display: datum1D.display,
-    ...(forceIncludeData
-      ? !datum1D.source.jcampURL
-        ? {
-            data: datum1D.originalData,
-            info: datum1D.originalInfo,
-            meta: datum1D.meta,
-          }
-        : {}
-      : {}),
+    ...(dataExportOption === DataExportOptions.ROW_DATA ||
+    (dataExportOption === DataExportOptions.DATA_SOURCE &&
+      !datum1D.source.jcampURL)
+      ? {
+          data: datum1D.originalData,
+          info: datum1D.originalInfo,
+          meta: datum1D.meta,
+          source: {
+            jcampURL: null,
+          },
+        }
+      : {
+          source: {
+            jcampURL: datum1D.source.jcampURL,
+          },
+        }),
     peaks: datum1D.peaks,
     integrals: datum1D.integrals,
     ranges: datum1D.ranges,

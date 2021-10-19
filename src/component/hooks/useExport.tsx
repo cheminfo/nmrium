@@ -106,13 +106,13 @@ export default function useExport() {
 
   const saveHandler = useCallback(
     async (options) => {
-      const { name, pretty, compressed, includeData } = options;
+      const { name, pretty, compressed, dataExportOption } = options;
       const hideLoading = await alert.showLoading(
         `Exporting as ${name}.numrium process in progress`,
       );
       setTimeout(() => {
         async function handle() {
-          const exportedData = toJSON(state, includeData);
+          const exportedData = toJSON(state, dataExportOption);
           const spaceIndent = pretty ? 2 : 0;
           await exportAsJSON(exportedData, name, spaceIndent, compressed);
           hideLoading();
