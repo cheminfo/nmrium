@@ -65,16 +65,15 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
   }
 }
 
-function getRangeIndex(drfat: Draft<State>, spectrumIndex, rangeID) {
-  return (drfat.data[spectrumIndex] as Datum1D).ranges.values.findIndex(
+function getRangeIndex(draft: Draft<State>, spectrumIndex, rangeID) {
+  return (draft.data[spectrumIndex] as Datum1D).ranges.values.findIndex(
     (range) => range.id === rangeID,
   );
 }
 
 function handleDeleteRange(draft: Draft<State>, action) {
-  const state = original(draft) as State;
-  if (state.activeSpectrum?.id) {
-    const { index } = state.activeSpectrum;
+  if (draft.activeSpectrum?.id) {
+    const { index } = draft.activeSpectrum;
     const { id = null, assignmentData } = action.payload.data;
     const datum = draft.data[index] as Datum1D;
     if (id) {
@@ -85,7 +84,7 @@ function handleDeleteRange(draft: Draft<State>, action) {
       unlinkInAssignmentData(assignmentData, datum.ranges.values);
       datum.ranges.values = [];
     }
-    updateIntegralRanges(draft.data[index]);
+    updateIntegralRanges(datum);
     handleOnChangeRangesData(draft);
   }
 }

@@ -7,32 +7,63 @@ import {
   useEffect,
 } from 'react';
 
-export const TYPES = {
-  PEAK: 'PEAK',
-  INTEGRAL: 'INTEGRAL',
-  SIGNAL: 'SIGNAL',
-  RANGE: 'RANGE',
-  ZONE: 'ZONE',
-  EXCLUSION_ZONE: 'EXCLUSION_ZONE',
-};
+export enum HighlightedSource {
+  PEAK = 'PEAK',
+  INTEGRAL = 'INTEGRAL',
+  SIGNAL = 'SIGNAL',
+  RANGE = 'RANGE',
+  ZONE = 'ZONE',
+  EXCLUSION_ZONE = 'EXCLUSION_ZONE',
+  DATABASE = 'DATABASE',
+  UNKNOWN = 'UNKNOWN',
+}
+
+type HighlightedSourceType = keyof typeof HighlightedSource;
+
+interface SourceData {
+  type: HighlightedSourceType;
+  extra?: any;
+}
+
+type HighlightActions = 'HIDE' | 'SHOW' | 'SET_PERMANENT' | 'UNSET_PERMANENT';
+
+interface HighlightState {
+  highlights: Record<string, number>;
+  highlighted: string[];
+  highlightedPermanently: string[];
+  sourceData: SourceData | null;
+}
+
+interface HighlightContextProps {
+  highlight: HighlightState;
+  dispatch: (props: { type: HighlightActions; payload?: any }) => void;
+  remove: () => void;
+}
 
 const emptyState = {
-  highlights: {},
-  highlighted: [],
-  highlightedPermanently: [],
-  type: null,
+  highlight: {
+    highlights: {},
+    highlighted: [],
+    highlightedPermanently: [],
+    sourceData: null,
+  },
+  dispatch: () => null,
+  remove: () => null,
 };
 
-const highlightContext = createContext<any>(emptyState);
+const highlightContext = createContext<HighlightContextProps>(emptyState);
 
 function highlightReducer(state, action) {
   switch (action.type) {
     case 'SHOW': {
-      const { convertedHighlights, type } = action.payload;
+      const { convertedHighlights, sourceData } = action.payload;
+      const { type = HighlightedSource.UNKNOWN, extra = null } =
+        sourceData || {};
+
       const newState = {
         ...state,
         highlights: { ...state.highlights },
-        type,
+        sourceData: { type, extra },
       };
       for (const value of convertedHighlights) {
         if (!(value in newState.highlights)) {
@@ -49,7 +80,7 @@ function highlightReducer(state, action) {
       const newState = {
         ...state,
         highlights: { ...state.highlights },
-        type: null,
+        sourceData: null,
       };
       for (const value of convertedHighlights) {
         if (value in newState.highlights) {
@@ -84,8 +115,21 @@ function highlightReducer(state, action) {
 }
 
 export function HighlightProvider(props) {
-  const [highlight, dispatch] = useReducer(highlightReducer, emptyState);
-  const contextValue = useMemo(() => ({ highlight, dispatch }), [highlight]);
+  const [highlight, dispatch] = useReducer(
+    highlightReducer,
+    emptyState.highlight,
+  );
+
+  const contextValue = useMemo(() => {
+    function remove() {
+      dispatch({
+        type: 'HIDE',
+        payload: { convertedHighlights: highlight.highlighted },
+      });
+    }
+    return { highlight, dispatch, remove };
+  }, [highlight]);
+
   return (
     <highlightContext.Provider value={contextValue}>
       {props.children}
@@ -97,7 +141,14 @@ export function useHighlightData() {
   return useContext(highlightContext);
 }
 
-export function useHighlight(highlights, type: string | null = null) {
+/**
+ * @param {Array<string | number>}  highlights
+ * @param {SourceData = null} sourceData
+ */
+export function useHighlight(
+  highlights: (string | number)[],
+  sourceData: SourceData | null = null,
+) {
   if (!Array.isArray(highlights)) {
     throw new Error('highlights must be an array');
   }
@@ -146,10 +197,10 @@ export function useHighlight(highlights, type: string | null = null) {
       type: 'SHOW',
       payload: {
         convertedHighlights,
-        type,
+        sourceData,
       },
     });
-  }, [convertedHighlights, dispatch, type]);
+  }, [dispatch, convertedHighlights, sourceData]);
 
   const hide = useCallback(() => {
     dispatch({

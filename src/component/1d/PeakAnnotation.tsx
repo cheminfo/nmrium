@@ -10,7 +10,7 @@ import {
 } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
-import { TYPES, useHighlight } from '../highlight';
+import { HighlightedSource, useHighlight } from '../highlight';
 import { SHIFT_SPECTRUM } from '../reducer/types/Types';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
@@ -78,7 +78,10 @@ function PeakAnnotation({
   const [_value, setValue] = useState(value);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const format = useFormatNumberByNucleus(nucleus);
-  const highlight = useHighlight([id], TYPES.PEAK);
+  const highlight = useHighlight([id], {
+    type: HighlightedSource.PEAK,
+    extra: { id },
+  });
 
   const dispatch = useDispatch();
 

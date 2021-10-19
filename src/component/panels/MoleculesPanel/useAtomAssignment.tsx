@@ -9,7 +9,7 @@ import {
 } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useAlert } from '../../elements/popup/Alert';
-import { TYPES, useHighlightData } from '../../highlight';
+import { HighlightedSource, useHighlightData } from '../../highlight';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import { SET_DIAID_RANGE, SET_DIAID_ZONE } from '../../reducer/types/Types';
 
@@ -112,10 +112,10 @@ export default function useAtomAssignment({
       const temp = assignmentData.assignment.assignment[highlightID];
       if (temp) {
         const { datum } = findDatumAndSignalIndex(data, highlightID);
+        const type = highlightData.highlight.sourceData?.type;
         if (
           datum &&
-          (highlightData.highlight.type === TYPES.RANGE ||
-            highlightData.highlight.type === TYPES.ZONE)
+          (type === HighlightedSource.ZONE || type === HighlightedSource.RANGE)
         ) {
           // we are on range/zone level only, so add the belonging signal IDs to highlight too
           highlights = highlights.concat(
@@ -134,13 +134,7 @@ export default function useAtomAssignment({
     return getCurrentDiaIDsToHighlight(assignmentData, displayerMode).concat(
       highlights,
     );
-  }, [
-    assignmentData,
-    data,
-    displayerMode,
-    highlightData.highlight.highlighted,
-    highlightData.highlight.type,
-  ]);
+  }, [assignmentData, data, displayerMode, highlightData.highlight]);
 
   const toggleAssignment = useCallback(
     (diaID, atomInformation) => {
