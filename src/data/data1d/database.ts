@@ -121,6 +121,7 @@ export function prepareData(
           ...jsResult,
           index,
           id: ids,
+          ranges,
         };
         result.push(data);
       }

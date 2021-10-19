@@ -8,7 +8,11 @@ import {
   useAssignment,
   useAssignmentData,
 } from '../../assignment';
-import { TYPES, useHighlight, useHighlightData } from '../../highlight';
+import {
+  HighlightedSource,
+  useHighlight,
+  useHighlightData,
+} from '../../highlight';
 import { isColumnVisible } from '../extra/preferences/ColumnsHelper';
 
 import AbsoluteColumn from './TableColumns/AbsoluteColumn';
@@ -51,16 +55,16 @@ function RangesTableRow({
         rowData.signals.map((_signal) => _signal.id),
       ),
     ),
-    TYPES.RANGE,
+    { type: HighlightedSource.RANGE },
   );
   const highlightRangeAssignmentsColumn = useHighlight(
     assignmentRange.assigned.x || [],
-    TYPES.RANGE,
+    { type: HighlightedSource.RANGE },
   );
   const assignmentSignal = useAssignment(rowData.tableMetaInfo.id);
   const highlightSignal = useHighlight(
     [assignmentSignal.id].concat(assignmentSignal.assigned.x || []),
-    TYPES.SIGNAL,
+    { type: HighlightedSource.SIGNAL },
   );
   const highlightData = useHighlightData();
   const [unlinkRangeButtonVisibility, showUnlinkRangeButton] = useState(false);

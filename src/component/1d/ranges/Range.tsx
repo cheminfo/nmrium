@@ -10,7 +10,7 @@ import {
 } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import { TYPES, useHighlight } from '../../highlight';
+import { HighlightedSource, useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Resizable from '../Resizable';
@@ -80,7 +80,7 @@ function Range({
         signals.map((_signal) => _signal.id),
       ),
     ),
-    TYPES.RANGE,
+    { type: HighlightedSource.RANGE, extra: { id } },
   );
   const [rangeBoundary, setRangeBoundary] = useState({
     from: rangeFrom,

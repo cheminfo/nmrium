@@ -6,7 +6,7 @@ import { Zone as ZoneDataProps } from '../../../data/data2d/Spectrum2D';
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
-import { TYPES, useHighlight } from '../../highlight';
+import { HighlightedSource, useHighlight } from '../../highlight';
 import { get2DXScale, get2DYScale } from '../utilities/scale';
 
 import Signal from './Signal';
@@ -50,7 +50,10 @@ interface ZoneProps {
 const Zone = ({ zoneData, isVisible }: ZoneProps) => {
   const { x, y, id, signals } = zoneData;
   const assignmentZone = useAssignment(id);
-  const highlightZone = useHighlight([assignmentZone.id], TYPES.ZONE);
+  const highlightZone = useHighlight([assignmentZone.id], {
+    type: HighlightedSource.ZONE,
+    extra: { id: assignmentZone.id },
+  });
   const { margin, width, height, xDomain, yDomain } = useChartData();
   const scaleX = get2DXScale({ margin, width, xDomain });
   const scaleY = get2DYScale({ margin, height, yDomain });

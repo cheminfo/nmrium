@@ -5,7 +5,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useScaleChecked } from '../context/ScaleContext';
-import { TYPES, useHighlight } from '../highlight/index';
+import { HighlightedSource, useHighlight } from '../highlight/index';
 import { RESIZE_INTEGRAL } from '../reducer/types/Types';
 
 import Resizable from './Resizable';
@@ -51,7 +51,10 @@ function IntegralResizable({ integralData }: IntegralResizableProps) {
   const dispatch = useDispatch();
 
   const [{ id, integral, from, to }, setIntegral] = useState(integralData);
-  const highlight = useHighlight([id], TYPES.INTEGRAL);
+  const highlight = useHighlight([id], {
+    type: HighlightedSource.INTEGRAL,
+    extra: { id },
+  });
 
   useEffect(() => {
     setIntegral(integralData);

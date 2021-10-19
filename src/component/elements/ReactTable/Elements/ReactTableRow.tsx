@@ -2,11 +2,12 @@
 
 import { useMemo } from 'react';
 
-import { useHighlight } from '../../../highlight/index';
+import { HighlightedSource, useHighlight } from '../../../highlight/index';
 import { HighlightedRowStyle, ConstantlyHighlightedRowStyle } from '../Style';
 
 interface ReactTableRowProps {
   row: any;
+  highlightedSource?: HighlightedSource;
   onContextMenu: () => void;
 }
 
@@ -22,8 +23,19 @@ function getIDs(row: any): string[] {
   return [''];
 }
 
-function ReactTableRow({ row, onContextMenu }: ReactTableRowProps) {
-  const highlight = useHighlight(getIDs(row));
+function ReactTableRow({
+  row,
+  highlightedSource = HighlightedSource.UNKNOWN,
+  onContextMenu,
+}: ReactTableRowProps) {
+  const data = useMemo(
+    () => ({
+      type: highlightedSource,
+      extra: row.original,
+    }),
+    [highlightedSource, row],
+  );
+  const highlight = useHighlight(getIDs(row), data);
   return useMemo(() => {
     return (
       <tr
