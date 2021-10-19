@@ -123,7 +123,9 @@ function AdditionalColumnField({
         }
       }
 
-      onEdit([_correlationDim1, _correlationDim2], action, link);
+      onEdit([_correlationDim1, _correlationDim2], action, link, {
+        skipDataUpdate: true,
+      });
     },
     [columnCorrelation, onEdit, rowCorrelation],
   );

@@ -365,6 +365,9 @@ function SummaryPanel() {
               protonsCount: values,
               edited: { ...correlation.edited, protonsCount: true },
             },
+            options: {
+              skipDataUpdate: true,
+            },
           },
         });
       }
@@ -382,6 +385,9 @@ function SummaryPanel() {
             ...correlation,
             hybridization: value,
             edited: { ...correlation.edited, hybridization: true },
+          },
+          options: {
+            skipDataUpdate: true,
           },
         },
       });
