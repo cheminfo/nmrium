@@ -7,11 +7,15 @@ import {
   CSSProperties,
   forwardRef,
   ForwardedRef,
+  ReactElement,
 } from 'react';
 
 import useCombinedRefs from '../hooks/useCombinedRefs';
 
-const styles: Record<'label' | 'input' | 'inputContainer', CSSProperties> = {
+const styles: Record<
+  'label' | 'input' | 'inputContainer' | 'inputInnerContainer' | 'clearButton',
+  CSSProperties
+> = {
   label: {
     lineHeight: 2,
     userSelect: 'none',
@@ -20,14 +24,32 @@ const styles: Record<'label' | 'input' | 'inputContainer', CSSProperties> = {
     height: '100%',
     margin: '0px 5px 0px 5px',
   },
-  input: {
+  inputInnerContainer: {
     height: '100%',
     width: '100px',
     borderRadius: '5px',
     borderWidth: '0.55px',
     borderColor: '#c7c7c7',
     borderStyle: 'solid',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  input: {
+    outline: 'none',
+    width: '100%',
+    height: '100%',
     textAlign: 'center',
+  },
+  clearButton: {
+    height: 'calc(100% - 4px)',
+    borderRadius: '50%',
+    backgroundColor: 'gray',
+    color: 'white',
+    aspectRatio: '1',
+    fontSize: '60%',
+    padding: 0,
   },
 };
 
@@ -44,6 +66,9 @@ export interface InputProps
   debounceTime?: number;
   checkValue?: (element: number | string) => boolean;
   format?: () => (element: string) => number | string;
+  renderIcon?: (() => ReactElement) | null;
+  canClear?: boolean;
+  onClear?: () => void;
 }
 
 const Input = forwardRef(
@@ -63,6 +88,9 @@ const Input = forwardRef(
       format = () => (value) => value,
       onBlur = () => null,
       onFocus = () => null,
+      renderIcon = null,
+      canClear = false,
+      onClear,
       ...props
     }: InputProps,
     ref: ForwardedRef<HTMLInputElement>,
@@ -106,7 +134,6 @@ const Input = forwardRef(
         e.persist();
         e.stopPropagation();
         e.preventDefault();
-
         function check(value) {
           if (type === 'number') {
             const pattern = /^(?:-?[0-9]*|[0-9]\d*)(?:\.\d{0,20})?$/;
@@ -161,6 +188,11 @@ const Input = forwardRef(
       event.stopPropagation();
     }, []);
 
+    const clearHandler = useCallback(() => {
+      setVal('');
+      onClear?.();
+    }, [onClear]);
+
     return (
       <div
         style={{
@@ -188,25 +220,41 @@ const Input = forwardRef(
             ...(style?.inputContainer ? style.inputContainer : {}),
           }}
         >
-          <input
-            {...props}
-            ref={combinedRef}
-            name={name}
+          <div
+            style={styles.inputInnerContainer}
             className={`input ${className || ''}`}
-            style={{
-              ...styles.input,
-              ...(style?.input ? style.input : {}),
-            }}
-            data-test-id={name ? `input-${name}` : ''}
-            type="text"
-            value={val}
-            onChange={onChangeHandler}
-            onKeyDown={handleKeyDown}
-            onKeyPress={preventPropagate}
-            onDoubleClick={(e) => e.stopPropagation()}
-            onFocus={onFocus}
-            onBlur={onBlur}
-          />
+          >
+            {renderIcon?.()}
+            <input
+              {...props}
+              ref={combinedRef}
+              name={name}
+              style={{
+                ...styles.input,
+                ...(style?.input ? style.input : {}),
+              }}
+              data-test-id={name ? `input-${name}` : ''}
+              type="text"
+              value={val}
+              onChange={onChangeHandler}
+              onKeyDown={handleKeyDown}
+              onKeyPress={preventPropagate}
+              onDoubleClick={(e) => e.stopPropagation()}
+              onFocus={onFocus}
+              onBlur={onBlur}
+            />
+            {canClear && val && (
+              <button
+                type="button"
+                style={styles.clearButton}
+                onClick={clearHandler}
+              >
+                <span style={{ display: 'block', margin: '0 auto' }}>
+                  &#10005;
+                </span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
