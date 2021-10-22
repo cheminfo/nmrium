@@ -148,15 +148,8 @@ function cloneCorrelationAndEditLink(
       _correlation,
       linkDim === 1 ? buildNewLink1D(link) : buildNewLink2D(link, axis),
     );
-  } else if (action === 'remove') {
+  } else if (action === 'remove' || action === 'unmove') {
     removeLink(_correlation, axis === 'x' ? split[0] : split[1]);
-  } else if (action === 'unmove') {
-    const _link = _correlation.link.find((_link) =>
-      axis === 'x' ? _link.id === split[0] : _link.id === split[1],
-    );
-    if (_link) {
-      delete _link.edited.moved;
-    }
   }
 
   return _correlation;
