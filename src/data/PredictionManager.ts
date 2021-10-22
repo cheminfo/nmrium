@@ -144,13 +144,13 @@ function generated2DSpectrum(params: {
   usedColors: string[];
 }) {
   const { spectrum, inputOptions, experiment, usedColors } = params;
-  const { signals, zones, nucleus } = spectrum;
+  const { signals, zones, nuclei } = spectrum;
 
-  const xOption = inputOptions['1d'][nucleus[0]];
-  const yOption = inputOptions['1d'][nucleus[1]];
+  const xOption = inputOptions['1d'][nuclei[0]];
+  const yOption = inputOptions['1d'][nuclei[1]];
 
-  const width = get2DWidth(nucleus);
-  const frequency = getFrequency(nucleus, inputOptions.frequency);
+  const width = get2DWidth(nuclei);
+  const frequency = getFrequency(nuclei, inputOptions.frequency);
 
   const spectrumData = signals2DToZ(signals, {
     from: { x: xOption.from, y: yOption.from },
@@ -166,7 +166,7 @@ function generated2DSpectrum(params: {
     {
       data: { ...spectrumData, noise: 0.01 },
       info: {
-        nucleus,
+        nuclei,
         originFrequency: frequency,
         baseFrequency: frequency,
         pulseSequence: experiment,
@@ -179,8 +179,8 @@ function generated2DSpectrum(params: {
   return datum;
 }
 
-function get2DWidth(nucleus: string[]) {
-  return nucleus[0] === nucleus[1] ? 0.03 : { x: 0.03, y: 0.32 };
+function get2DWidth(nuclei: string[]) {
+  return nuclei[0] === nuclei[1] ? 0.03 : { x: 0.03, y: 0.32 };
 }
 
 function getFrequency(
