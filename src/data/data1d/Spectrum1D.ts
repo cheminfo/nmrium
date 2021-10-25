@@ -406,9 +406,7 @@ export function detectRange(datum, options): RangeDetectionObject {
 export function mapRanges(ranges: Array<Range>, datum) {
   const { x, re } = datum.data;
   const shiftX = getShiftX(datum);
-
   const error = (x[x.length - 1] - x[0]) / 10000;
-
   return ranges.reduce<Array<Range>>((acc, newRange) => {
     // check if the range is already exists
     for (const { from, to } of datum.ranges.values) {
@@ -425,7 +423,7 @@ export function mapRanges(ranges: Array<Range>, datum) {
       { from: newRange.from, to: newRange.to, reverse: true },
     );
     const signals = newRange.signals.map((signal) => {
-      const { kind, id, ...resSignal } = signal;
+      const { kind = null, id, ...resSignal } = signal;
       return {
         kind: kind || 'signal',
         id: id || generateID(),
@@ -433,9 +431,10 @@ export function mapRanges(ranges: Array<Range>, datum) {
         ...resSignal,
       };
     });
+
     acc.push({
       ...newRange,
-      kind: newRange.signals[0].kind || DatumKind.signal,
+      kind: signals?.[0].kind || DatumKind.signal,
       originFrom: newRange.from - shiftX,
       originTo: newRange.to - shiftX,
       id: newRange.id || generateID(),
