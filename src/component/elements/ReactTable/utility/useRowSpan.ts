@@ -20,18 +20,22 @@ function reducer(instance) {
   });
 }
 
-export function prepareRowSpan(rows, index, rowSpanHeaders) {
+export function prepareRowSpan(rows, index, rowSpanHeaders, groupKey?: string) {
   const row = rows[index];
   for (let j = 0; j < row.allCells.length; j++) {
     const cell = row.allCells[j];
     const rowSpanHeader = rowSpanHeaders.find((x) => x.id === cell.column.id);
     if (rowSpanHeader !== undefined) {
+      const cellValue = groupKey
+        ? `${cell.value}-${row.original[groupKey]}`
+        : cell.value;
+
       if (
         rowSpanHeader.cellValue === null ||
-        rowSpanHeader.cellValue !== `${cell.value}-${row.original.index}`
+        rowSpanHeader.cellValue !== cellValue
       ) {
         cell.isRowSpanned = false;
-        rowSpanHeader.cellValue = `${cell.value}-${row.original.index}`;
+        rowSpanHeader.cellValue = cellValue;
         rowSpanHeader.cellIndex = index;
         cell.rowSpan = 1;
       } else {
