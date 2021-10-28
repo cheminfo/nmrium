@@ -111,7 +111,7 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
                   name="dataExportOption"
                   value={DataExportOptions.ROW_DATA}
                 />
-                Row Data
+                Raw Data
               </label>
               <label>
                 <Field
