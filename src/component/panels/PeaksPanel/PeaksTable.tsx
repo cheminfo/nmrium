@@ -143,7 +143,12 @@ function PeaksTable({ activeTab, preferences, data, info }: PeaksTableProps) {
   }, [activeTab, format, initialColumns, preferences, saveDeltaPPMRefsHandler]);
 
   return data && data.length > 0 ? (
-    <ReactTable data={data} columns={tableColumns} />
+    <ReactTable
+      data={data}
+      columns={tableColumns}
+      approxItemHeight={20}
+      enableVirtualScroll
+    />
   ) : (
     <NoTableData />
   );

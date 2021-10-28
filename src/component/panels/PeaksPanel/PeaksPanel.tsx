@@ -141,14 +141,14 @@ function PeaksPanelInner({
           infinite
           containerStyle={{ overflow: 'hidden', height: '100%' }}
         >
-          <div className="table-container">
-            <PeaksTable
-              data={filteredPeaks}
-              activeTab={activeTab}
-              preferences={preferences}
-              info={info}
-            />
-          </div>
+          {/* <div className="table-container"> */}
+          <PeaksTable
+            data={filteredPeaks}
+            activeTab={activeTab}
+            preferences={preferences}
+            info={info}
+          />
+          {/* </div> */}
 
           <PeaksPreferences ref={settingRef} />
         </ReactCardFlip>

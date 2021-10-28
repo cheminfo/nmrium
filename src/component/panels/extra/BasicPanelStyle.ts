@@ -5,18 +5,16 @@ export const tablePanelStyle = css`
   flex-direction: column;
   height: 100%;
   width: 100%;
-   
-  .inner-container{
-     height 100%;
-     overflow: hidden; 
+
+  .inner-container {
+    height: 100%;
+    overflow: hidden;
   }
 
-  .table-container{
-     overflow: auto;
-     height: 100%;
-     display: block;
-     background-color: white;
-
+  .table-container {
+    overflow: auto;
+    height: 100%;
+    display: block;
+    background-color: white;
   }
-
 `;

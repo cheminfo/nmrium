@@ -270,9 +270,9 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
           infinite
           containerStyle={{ overflow: 'hidden', height: '100%' }}
         >
-          <div className="table-container">
-            <DatabaseTable data={tableData} onAdd={resurrectHandler} />
-          </div>
+          {/* <div className="table-container"> */}
+          <DatabaseTable data={tableData} onAdd={resurrectHandler} />
+          {/* </div> */}
           <DatabasePreferences ref={settingRef} />
         </ReactCardFlip>
       </div>

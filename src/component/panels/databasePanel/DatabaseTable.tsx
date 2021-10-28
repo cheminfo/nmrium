@@ -137,6 +137,9 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
       data={data}
       columns={tableColumns}
       highlightedSource={HighlightedSource.DATABASE}
+      groupKey="index"
+      approxItemHeight={30}
+      enableVirtualScroll
     />
   ) : (
     <NoTableData />

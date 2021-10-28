@@ -229,13 +229,11 @@ function IntegralPanelInner({
             infinite
             containerStyle={{ overflow: 'hidden', height: '100%' }}
           >
-            <div className="table-container">
-              <IntegralTable
-                data={filteredData}
-                activeTab={activeTab}
-                preferences={preferences}
-              />
-            </div>
+            <IntegralTable
+              data={filteredData}
+              activeTab={activeTab}
+              preferences={preferences}
+            />
             <IntegralsPreferences ref={settingRef} />
           </ReactCardFlip>
         </div>
