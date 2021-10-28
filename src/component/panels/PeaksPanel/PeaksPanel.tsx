@@ -108,8 +108,11 @@ function PeaksPanelInner({
         tablePanelStyle,
         isFlipped &&
           css`
-            th {
-              position: relative;
+            .table-container {
+              table,
+              th {
+                position: relative !important;
+              }
             }
           `,
       ]}
@@ -141,14 +144,12 @@ function PeaksPanelInner({
           infinite
           containerStyle={{ overflow: 'hidden', height: '100%' }}
         >
-          {/* <div className="table-container"> */}
           <PeaksTable
             data={filteredPeaks}
             activeTab={activeTab}
             preferences={preferences}
             info={info}
           />
-          {/* </div> */}
 
           <PeaksPreferences ref={settingRef} />
         </ReactCardFlip>

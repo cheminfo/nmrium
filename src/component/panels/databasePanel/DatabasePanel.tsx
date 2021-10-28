@@ -208,8 +208,11 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
         style,
         isFlipped &&
           css`
-            th {
-              position: relative;
+            .table-container {
+              table,
+              th {
+                position: relative !important;
+              }
             }
           `,
       ]}
