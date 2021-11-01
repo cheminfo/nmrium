@@ -1,10 +1,10 @@
-interface ReactTableheaderProps {
+import { memo } from 'react';
+
+interface ReactTableHeaderProps {
   headerGroups: any;
 }
 
-export default function ReactTableHeader({
-  headerGroups,
-}: ReactTableheaderProps) {
+function ReactTableHeader({ headerGroups }: ReactTableHeaderProps) {
   return (
     <thead>
       {headerGroups.map((headerGroup) => (
@@ -16,6 +16,7 @@ export default function ReactTableHeader({
             <th
               key={column.getHeaderProps().key}
               {...column.getHeaderProps(column.getSortByToggleProps())}
+              style={column.style}
             >
               {column.render('Header')}
               <span>
@@ -28,3 +29,5 @@ export default function ReactTableHeader({
     </thead>
   );
 }
+
+export default memo(ReactTableHeader);

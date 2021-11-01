@@ -143,6 +143,7 @@ function PeaksPanelInner({
           isFlipped={isFlipped}
           infinite
           containerStyle={{ overflow: 'hidden', height: '100%' }}
+          cardStyles={{ front: !isFlipped ? { transformStyle: 'unset' } : {} }}
         >
           <PeaksTable
             data={filteredPeaks}

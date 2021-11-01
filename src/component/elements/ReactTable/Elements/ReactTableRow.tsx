@@ -65,7 +65,7 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
         {...highlight.onHover}
       >
         {row.cells.map((cell) => {
-          const { minWidth, maxWidth, width, padding } = cell.column;
+          const { style, padding } = cell.column;
 
           if (cell.isRowSpanned) {
             return null;
@@ -80,12 +80,7 @@ function ReactTableRow(props: ReactTableRowProps, ref) {
 
                   return false;
                 }}
-                style={{
-                  minWidth,
-                  maxWidth,
-                  width,
-                  padding,
-                }}
+                style={{ padding, ...style }}
               >
                 {cell.render('Cell')}
               </td>

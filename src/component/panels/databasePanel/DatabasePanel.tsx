@@ -272,10 +272,9 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
           isFlipped={isFlipped}
           infinite
           containerStyle={{ overflow: 'hidden', height: '100%' }}
+          cardStyles={{ front: !isFlipped ? { transformStyle: 'unset' } : {} }}
         >
-          {/* <div className="table-container"> */}
           <DatabaseTable data={tableData} onAdd={resurrectHandler} />
-          {/* </div> */}
           <DatabasePreferences ref={settingRef} />
         </ReactCardFlip>
       </div>
