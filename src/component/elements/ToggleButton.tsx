@@ -5,12 +5,13 @@ import { CSSProperties, memo, ReactNode, useCallback, useState } from 'react';
 import ToolTip from './ToolTip/ToolTip';
 
 const styles = css`
-  background-color: transparent;
+  background-color: #f5f5f5;
   border: none;
   border-radius: 5px;
 
   &:hover {
-    background-color: lightgray;
+    background-color: lightgray !important;
+    color: black !important;
   }
 
   &.toggle-active {
