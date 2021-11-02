@@ -18,7 +18,9 @@ import { useDispatch } from '../../context/DispatchContext';
 import Input from '../../elements/Input';
 import Select, { SelectEntry } from '../../elements/Select';
 import ToggleButton from '../../elements/ToggleButton';
+import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { RESURRECTING_SPECTRUM_FROM_RANGES } from '../../reducer/types/Types';
+import { options } from '../../toolbar/ToolTypes';
 import Events from '../../utility/Events';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
@@ -51,6 +53,7 @@ const style = css`
 
 export interface DatabaseInnerProps {
   nucleus: string;
+  selectedTool: string;
 }
 
 interface ResultEntry {
@@ -64,11 +67,11 @@ const emptyKeywords = {
   searchKeywords: '',
 };
 
-function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
+function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
   const dispatch = useDispatch();
+  const { handleChangeOption } = useToolsFunctions();
   const format = useFormatNumberByNucleus(nucleus);
 
-  const [isFilterByRangesActive, enableFilterByRanges] = useState(false);
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
   const [keywords, setKeywords] = useState<{
@@ -147,7 +150,7 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
 
   useEffect(() => {
     function handle(event) {
-      if (isFilterByRangesActive) {
+      if (selectedTool === options.databaseRangesSelection.id) {
         setKeywords((prevState) => {
           const oldKeywords = prevState.searchKeywords
             ? prevState.searchKeywords.split(',')
@@ -167,7 +170,7 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
     return () => {
       Events.off('brushEnd', handle);
     };
-  }, [format, isFilterByRangesActive]);
+  }, [format, selectedTool]);
 
   const handleChangeDatabase = useCallback(
     (databaseKey) => {
@@ -197,9 +200,13 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
     setKeywords((prevState) => ({ ...prevState, searchKeywords: '' }));
   }, []);
 
-  const enableFilterHandler = useCallback(() => {
-    enableFilterByRanges((prevStatus) => !prevStatus);
-  }, []);
+  const enableFilterHandler = useCallback(
+    (flag) => {
+      const tool = !flag ? options.zoom.id : options.databaseRangesSelection.id;
+      handleChangeOption(tool);
+    },
+    [handleChangeOption],
+  );
 
   return (
     <div
@@ -225,6 +232,8 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
           className="header"
         >
           <ToggleButton
+            key={`${selectedTool}`}
+            defaultValue={selectedTool === options.databaseRangesSelection.id}
             popupTitle="Filter by select ranges"
             popupPlacement="right"
             onClick={enableFilterHandler}
@@ -285,9 +294,14 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
 const MemoizedDatabasePanel = memo(DatabasePanelInner);
 
 export default function PeaksPanel() {
-  const { activeTab } = useChartData();
+  const {
+    activeTab,
+    toolOptions: { selectedTool },
+  } = useChartData();
   if (!activeTab) return <div />;
-  return <MemoizedDatabasePanel nucleus={activeTab} />;
+  return (
+    <MemoizedDatabasePanel nucleus={activeTab} selectedTool={selectedTool} />
+  );
 }
 
 function mapSolventsToSelect(solvents: string[]) {
