@@ -164,6 +164,7 @@ export type NMRiumPreferences = Partial<{
     hideZonesPanel: boolean;
     hideSummaryPanel: boolean;
     hideMultipleSpectraAnalysisPanel: boolean;
+    hideDatabasePanel: boolean;
   }>;
   toolBarButtons: Partial<{
     hideZoomTool: boolean;
