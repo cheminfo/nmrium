@@ -253,7 +253,7 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
             style={{ container: { flex: 3 } }}
             className="search-input"
             type="text"
-            debounceTime={1000}
+            debounceTime={250}
             placeholder="Search for parameter..."
             onChange={handleSearch}
             onClear={clearHandler}
