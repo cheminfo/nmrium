@@ -8,6 +8,7 @@ import {
 } from 'ml-spectra-processing';
 import { resurrect, rangesToXY } from 'nmr-processing';
 
+import { UsedColors } from '../../types/UsedColors';
 import * as FiltersTypes from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DataExportOptions, DataExportOptionsType } from '../SpectraManager';
@@ -258,8 +259,10 @@ function getColor(options, usedColors) {
       usedColors['1d'].push(color);
     }
     return { color };
+  } else {
+    usedColors['1d'].push(options.display.color);
+    return {};
   }
-  return {};
 }
 
 // with mouse move
@@ -585,7 +588,7 @@ export function generateSpectrumFromRanges(
     frequency?: number;
     color?: string;
   },
-  usedColors: string[],
+  usedColors: UsedColors,
 ) {
   const { nucleus, solvent, name = null, frequency = 400 } = info;
   const { x, y } = rangesToXY(ranges, {
@@ -615,7 +618,7 @@ export function generateSpectrumFromRanges(
 
 export function generateSpectrumFromPublicationString(
   publicationString: string,
-  usedColors,
+  usedColors: UsedColors,
 ) {
   const {
     ranges,

@@ -1,5 +1,6 @@
 import { zoneToX } from 'ml-spectra-processing';
 
+import { UsedColors } from '../../types/UsedColors';
 import * as Filters from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DataExportOptions, DataExportOptionsType } from '../SpectraManager';
@@ -396,7 +397,7 @@ export function detectZonesManual(datum, options) {
 /** calculate the missing projection
  * @param {string[]} nucleus
  */
-export function getMissingProjection(datum, nucleus, usedColors) {
+export function getMissingProjection(datum, nucleus, usedColors: UsedColors) {
   let index = datum.info.nucleus.indexOf(nucleus);
   // temporary because nuclus was undefined;
   if (index === -1) index = 0;
