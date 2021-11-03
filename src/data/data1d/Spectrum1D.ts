@@ -148,7 +148,6 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   datum.display = Object.assign(
     {
       name: options.display?.name ? options.display.name : generateID(),
-      color: 'black',
       ...getColor(options, usedColors),
       isVisible: true,
       isPeaksMarkersVisible: true,
@@ -253,16 +252,16 @@ export function toJSON(
 }
 
 function getColor(options, usedColors) {
+  let color = 'black';
   if (options.display === undefined || options.display.color === undefined) {
-    const color = get1dColor(false, usedColors['1d'] || []);
-    if (usedColors['1d']) {
-      usedColors['1d'].push(color);
-    }
-    return { color };
-  } else {
-    usedColors['1d'].push(options.display.color);
-    return {};
+    color = get1dColor(false, usedColors['1d'] || []);
   }
+
+  if (usedColors['1d']) {
+    usedColors['1d'].push(color);
+  }
+
+  return { color };
 }
 
 // with mouse move

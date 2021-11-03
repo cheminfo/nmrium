@@ -126,8 +126,6 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   datum.display = Object.assign(
     {
       name: options.display?.name ? options.display.name : generateID(),
-      positiveColor: 'red',
-      negativeColor: 'blue',
       ...getColor(options, usedColors),
       isPositiveVisible: true,
       isNegativeVisible: true,
@@ -198,18 +196,19 @@ export function getShift(datum: Datum2D): { xShift: number; yShift: number } {
 }
 
 function getColor(options, usedColors) {
+  let color = { positiveColor: 'red', negativeColor: 'blue' };
   if (
     options.display === undefined ||
     options.display.negativeColor === undefined ||
     options.display.positiveColor === undefined
   ) {
-    const color = get2DColor(options.info.experiment, usedColors['2d']);
-    if (usedColors['2d']) {
-      usedColors['2d'].push(color.positiveColor);
-    }
-    return color;
+    color = get2DColor(options.info.experiment, usedColors['2d'] || []);
   }
-  return {};
+
+  if (usedColors['2d']) {
+    usedColors['2d'].push(color.positiveColor);
+  }
+  return color;
 }
 
 export function toJSON(
