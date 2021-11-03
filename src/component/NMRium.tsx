@@ -141,7 +141,6 @@ export interface NMRiumProps {
   mode?: NMRiumMode;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
-  initialShowPanels?: boolean;
   /**
    * Returns a custom spinner that will be rendered while loading data.
    */
