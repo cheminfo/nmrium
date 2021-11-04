@@ -117,9 +117,7 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   datum.id = options.id || generateID();
   datum.source = Object.assign(
     {
-      jcamp: null,
       jcampURL: null,
-      original: [],
     },
     options.source,
   );

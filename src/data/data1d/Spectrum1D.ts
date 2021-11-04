@@ -131,7 +131,6 @@ export interface RangeDetectionObject
 
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   const datum: any = {};
-  datum.shiftX = options.shiftX || 0;
   datum.id = options.id || generateID();
   datum.source = Object.assign(
     {
