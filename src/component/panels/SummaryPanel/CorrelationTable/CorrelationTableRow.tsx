@@ -238,6 +238,7 @@ function CorrelationTableRow({
                     { text: 'No' },
                   ],
                 });
+                highlightRow.hide();
               },
             },
           ])

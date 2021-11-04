@@ -148,6 +148,7 @@ function AdditionalColumnHeader({
                     { text: 'No' },
                   ],
                 });
+                highlightAdditionalColumn.hide();
               },
             },
           ])
