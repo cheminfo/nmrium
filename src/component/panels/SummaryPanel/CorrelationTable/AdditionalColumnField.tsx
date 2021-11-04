@@ -188,6 +188,7 @@ function AdditionalColumnField({
     commonLinks,
     correlations,
     handleEditPseudoHSQC,
+    highlightCommonLinks,
     modal,
     onEdit,
     rowCorrelation,

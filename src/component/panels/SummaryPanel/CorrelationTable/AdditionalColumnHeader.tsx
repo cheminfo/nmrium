@@ -139,7 +139,13 @@ function AdditionalColumnHeader({
             },
           ])
       : [];
-  }, [correlation, correlationsData.values, modal, onEdit]);
+  }, [
+    correlation,
+    correlationsData.values,
+    highlightAdditionalColumn,
+    modal,
+    onEdit,
+  ]);
 
   const contextMenuHandler = useCallback(
     (e) => {

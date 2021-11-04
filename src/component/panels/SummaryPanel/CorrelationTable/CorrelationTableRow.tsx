@@ -226,7 +226,13 @@ function CorrelationTableRow({
             },
           ])
       : [];
-  }, [correlation, correlations, onEditCorrelationTableCellHandler, modal]);
+  }, [
+    correlation,
+    highlightRow,
+    modal,
+    onEditCorrelationTableCellHandler,
+    correlations,
+  ]);
 
   const contextMenuHandler = useCallback(
     (e) => {
