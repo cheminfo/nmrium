@@ -202,6 +202,7 @@ function CorrelationTableRow({
                 link.edited?.moved === true ? '[MOVED]' : ''
               }`,
               onClick: () => {
+                highlightRow.hide();
                 modal.show(
                   <EditLinkModal
                     onClose={() => modal.close()}

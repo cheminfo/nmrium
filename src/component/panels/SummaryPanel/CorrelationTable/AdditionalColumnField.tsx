@@ -144,7 +144,8 @@ function AdditionalColumnField({
           ? [
               {
                 label: `edit ${commonLinkContextMenuLabel}`,
-                onClick: () =>
+                onClick: () => {
+                  highlightCommonLinks.hide();
                   modal.show(
                     <EditLinkModal
                       onClose={() => modal.close()}
@@ -155,7 +156,8 @@ function AdditionalColumnField({
                       correlations={correlations}
                     />,
                     { position: positions.TOP_LEFT, isBackgroundBlur: false },
-                  ),
+                  );
+                },
               },
             ]
           : [];

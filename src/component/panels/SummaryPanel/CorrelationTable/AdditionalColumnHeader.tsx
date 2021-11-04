@@ -115,6 +115,7 @@ function AdditionalColumnHeader({
                 link.edited?.moved === true ? '[MOVED]' : ''
               })`,
               onClick: () => {
+                highlightAdditionalColumn.hide();
                 modal.show(
                   <EditLinkModal
                     onClose={() => modal.close()}
