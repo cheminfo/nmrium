@@ -221,7 +221,23 @@ function CorrelationTableRow({
             {
               label: `delete ${correlation.label.origin}`,
               onClick: () => {
-                onEditCorrelationTableCellHandler([correlation], 'removeAll');
+                modal.showConfirmDialog({
+                  message: `All signals of ${correlation.label.origin} (${(
+                    getCorrelationDelta(correlation) as number
+                  ).toFixed(2)}) will be deleted. Are you sure?`,
+                  buttons: [
+                    {
+                      text: 'Yes',
+                      handler: () => {
+                        onEditCorrelationTableCellHandler(
+                          [correlation],
+                          'removeAll',
+                        );
+                      },
+                    },
+                    { text: 'No' },
+                  ],
+                });
               },
             },
           ])

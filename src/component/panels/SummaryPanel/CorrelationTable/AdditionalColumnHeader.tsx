@@ -134,7 +134,20 @@ function AdditionalColumnHeader({
             {
               label: `delete all (${correlation.label.origin})`,
               onClick: () => {
-                onEdit([correlation], 'removeAll');
+                modal.showConfirmDialog({
+                  message: `All signals of ${correlation.label.origin} (${(
+                    getCorrelationDelta(correlation) as number
+                  ).toFixed(2)}) will be deleted. Are you sure?`,
+                  buttons: [
+                    {
+                      text: 'Yes',
+                      handler: () => {
+                        onEdit([correlation], 'removeAll');
+                      },
+                    },
+                    { text: 'No' },
+                  ],
+                });
               },
             },
           ])
