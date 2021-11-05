@@ -1,7 +1,21 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { getAtomCounts } from 'nmr-correlation';
 import { memo } from 'react';
 
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
+
+const styles = css`
+  width: 100%;
+  height: 22px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 15px;
+  white-space: nowrap;
+  span {
+    margin-left: 8px;
+  }
+`;
 
 interface OverviewProps {
   correlationsData?: {
@@ -55,7 +69,7 @@ function Overview({ correlationsData }: OverviewProps) {
       </p>
     );
 
-  return <>{elements}</>;
+  return <div css={styles}>{elements}</div>;
 }
 
 export default memo(Overview);
