@@ -9,7 +9,7 @@ import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
 import { getLabelColor } from '../Utilities';
 
-import EditLinkModal from './EditLinkModal';
+import EditLinkModal from './editLink/EditLinkModal';
 
 function AdditionalColumnHeader({
   spectraData,
@@ -125,7 +125,7 @@ function AdditionalColumnHeader({
                     correlationDim2={undefined}
                     correlations={correlationsData.values}
                   />,
-                  { position: positions.TOP_LEFT, isBackgroundBlur: false },
+                  { position: positions.MIDDLE_RIGHT, isBackgroundBlur: false },
                 );
               },
             };

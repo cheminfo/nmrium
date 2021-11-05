@@ -9,7 +9,7 @@ import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
 import { cloneCorrelationAndEditLink, getAbbreviation } from '../Utilities';
 
-import EditLinkModal from './EditLinkModal';
+import EditLinkModal from './editLink/EditLinkModal';
 
 function AdditionalColumnField({
   rowCorrelation,
@@ -155,7 +155,10 @@ function AdditionalColumnField({
                       correlationDim2={rowCorrelation}
                       correlations={correlations}
                     />,
-                    { position: positions.TOP_LEFT, isBackgroundBlur: false },
+                    {
+                      position: positions.MIDDLE_RIGHT,
+                      isBackgroundBlur: false,
+                    },
                   );
                 },
               },

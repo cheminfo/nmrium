@@ -40,4 +40,17 @@ const DefaultTolerance = {
   P: 0.25,
 };
 
-export { DefaultTolerance, Errors, ErrorColors, Hybridizations };
+const EditLinkActions = [
+  { key: '-', value: '-', label: 'Select Action' },
+  { key: 'delete', value: 'delete', label: 'Delete' },
+  { key: 'move', value: 'move', label: 'Move' },
+  { key: 'unmove', value: 'unmove', label: 'Unmove' },
+];
+
+export {
+  DefaultTolerance,
+  EditLinkActions,
+  Errors,
+  ErrorColors,
+  Hybridizations,
+};

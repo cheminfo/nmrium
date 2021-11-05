@@ -17,7 +17,7 @@ import { useHighlight } from '../../../highlight';
 
 import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
-import EditLinkModal from './EditLinkModal';
+import EditLinkModal from './editLink/EditLinkModal';
 
 const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
@@ -212,7 +212,10 @@ function CorrelationTableRow({
                     correlationDim2={undefined}
                     correlations={correlations}
                   />,
-                  { position: positions.TOP_LEFT, isBackgroundBlur: false },
+                  {
+                    position: positions.MIDDLE_RIGHT,
+                    isBackgroundBlur: false,
+                  },
                 );
               },
             };
