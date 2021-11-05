@@ -26,6 +26,7 @@ const allowTools: Array<string | number> = [
   options.editRange.id,
   options.multipleSpectraAnalysis.id,
   options.exclusionZones.id,
+  options.databaseRangesSelection.id,
 ];
 
 function CrossLinePointer() {

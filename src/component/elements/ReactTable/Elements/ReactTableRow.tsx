@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useMemo } from 'react';
+import { useMemo, forwardRef, useEffect } from 'react';
 
 import { HighlightedSource, useHighlight } from '../../../highlight/index';
 import { HighlightedRowStyle, ConstantlyHighlightedRowStyle } from '../Style';
@@ -9,6 +9,7 @@ interface ReactTableRowProps {
   row: any;
   highlightedSource?: HighlightedSource;
   onContextMenu: () => void;
+  isVisible: boolean;
 }
 
 function getIDs(row: any): string[] {
@@ -22,12 +23,12 @@ function getIDs(row: any): string[] {
   }
   return [''];
 }
-
-function ReactTableRow({
-  row,
-  highlightedSource = HighlightedSource.UNKNOWN,
-  onContextMenu,
-}: ReactTableRowProps) {
+function ReactTableRow(props: ReactTableRowProps, ref) {
+  const {
+    row,
+    highlightedSource = HighlightedSource.UNKNOWN,
+    onContextMenu,
+  } = props;
   const data = useMemo(
     () => ({
       type: highlightedSource,
@@ -36,9 +37,18 @@ function ReactTableRow({
     [highlightedSource, row],
   );
   const highlight = useHighlight(getIDs(row), data);
+
+  useEffect(() => {
+    return () => {
+      highlight.hide();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return useMemo(() => {
     return (
       <tr
+        ref={ref}
         onContextMenu={onContextMenu}
         key={row.getRowProps().key}
         css={
@@ -55,7 +65,7 @@ function ReactTableRow({
         {...highlight.onHover}
       >
         {row.cells.map((cell) => {
-          const { minWidth, maxWidth, width, padding } = cell.column;
+          const { style, padding } = cell.column;
 
           if (cell.isRowSpanned) {
             return null;
@@ -70,7 +80,7 @@ function ReactTableRow({
 
                   return false;
                 }}
-                style={{ minWidth, maxWidth, width, padding }}
+                style={{ padding, ...style }}
               >
                 {cell.render('Cell')}
               </td>
@@ -79,7 +89,7 @@ function ReactTableRow({
         })}
       </tr>
     );
-  }, [highlight.isActive, highlight.onHover, onContextMenu, row]);
+  }, [highlight.isActive, highlight.onHover, onContextMenu, ref, row]);
 }
 
-export default ReactTableRow;
+export default forwardRef(ReactTableRow);

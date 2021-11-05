@@ -34,12 +34,11 @@ function deleteMoleculeHandler(draft: Draft<State>, action) {
 }
 
 function predictSpectraFromMoleculeHandler(draft: Draft<State>, action) {
-  const { data, options, usedColors } = action.payload;
-
+  const { data, options } = action.payload;
   if (!data) {
     draft.isLoading = false;
   } else {
-    for (const spectrum of generateSpectra(data, options, usedColors)) {
+    for (const spectrum of generateSpectra(data, options, draft.usedColors)) {
       draft.data.push(spectrum);
       draft.tabActiveSpectrum[nucleusToString(spectrum.info.nucleus)] = {
         id: spectrum.id,

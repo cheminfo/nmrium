@@ -7,12 +7,9 @@ import { setDomain } from './DomainActions';
 import { setZoom } from './Zoom';
 
 function handleRangeResurrecting(draft: Draft<State>, action) {
-  const {
-    payload: { ranges, info },
-    usedColors,
-  } = action;
+  const { ranges, info } = action.payload;
 
-  const datum = generateSpectrumFromRanges(ranges, info, usedColors['1d']);
+  const datum = generateSpectrumFromRanges(ranges, info, draft.usedColors);
   draft.data.push(datum);
   setDomain(draft, { yDomain: { isShared: false } });
   setZoom(draft, { scale: 0.8, spectrumID: datum.id });

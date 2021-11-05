@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Field } from 'formik';
 import { useCallback, useRef } from 'react';
 
+import { DataExportOptions } from '../../data/SpectraManager';
 import CloseButton from '../elements/CloseButton';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikForm from '../elements/formik/FormikForm';
@@ -26,13 +28,25 @@ const styles = css`
     width: 100% !important;
     text-align: left !important;
   }
+
+  .data-export-group {
+    label:first-child {
+      margin-right: 10px;
+    }
+    label {
+      display: inline-block;
+    }
+    input[type='radio'] {
+      margin-right: 5px;
+    }
+  }
 `;
 
 const INITIAL_VALUE = {
   name: '',
   compressed: false,
   pretty: false,
-  includeData: true,
+  dataExportOption: DataExportOptions.ROW_DATA,
 };
 
 interface SaveAsModalProps {
@@ -89,8 +103,25 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
             <FormikCheckBox name="pretty" />
           </div>
           <div className="row margin-10">
-            <span className="custom-label">Include Data</span>
-            <FormikCheckBox name="includeData" />
+            <span className="custom-label"> Include </span>
+            <div className="data-export-group">
+              <label>
+                <Field
+                  type="radio"
+                  name="dataExportOption"
+                  value={DataExportOptions.ROW_DATA}
+                />
+                Raw Data
+              </label>
+              <label>
+                <Field
+                  type="radio"
+                  name="dataExportOption"
+                  value={DataExportOptions.DATA_SOURCE}
+                />
+                Data Source
+              </label>
+            </div>
           </div>
         </FormikForm>
       </div>

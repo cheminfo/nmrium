@@ -107,7 +107,7 @@ function DefaultPanelHeader({
 
         {children}
 
-        {counter && (
+        {counter !== undefined && (
           <p className="counter-label">
             [{' '}
             {filterIsActive &&

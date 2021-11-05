@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
@@ -8,8 +10,8 @@ import { ImLink } from 'react-icons/im';
 import { useAssignmentData } from '../../assignment';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
+import Button from '../../elements/ButtonToolTip';
 import ToggleButton from '../../elements/ToggleButton';
-import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useAlert } from '../../elements/popup/Alert';
 import { useModal } from '../../elements/popup/Modal';
 import CopyClipboardModal from '../../modal/CopyClipboardModal';
@@ -25,29 +27,24 @@ import { copyHTMLToClipboard } from '../../utility/Export';
 import { getNumberOfDecimals } from '../../utility/FormatNumber';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 
-const styles = {
-  toolbar: {
-    display: 'flex',
-    flexDirection: 'row',
-    borderBottom: '0.55px solid rgb(240, 240, 240)',
-  },
-  center: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '5px',
-  },
-  removeAssignmentsButton: {
-    border: 'none',
-    height: '16px',
-    fontSize: '12px',
-    backgroundColor: 'transparent',
-  },
-  button: {
-    backgroundColor: 'transparent',
-    border: 'none',
-  },
-};
+const style = css`
+  .btn {
+    background-color: transparent;
+    border: none;
+  }
+
+  .icon svg {
+    font-size: 12px;
+  }
+
+  .preview-publication-icon svg {
+    font-size: 13px;
+  }
+
+  button {
+    margin-right: 2px;
+  }
+`;
 
 function RangesHeader({
   ranges,
@@ -170,7 +167,7 @@ function RangesHeader({
     );
   }, [info, modal, preferences, ranges.values, saveToClipboardHandler]);
 
-  const changeSumContantFlagHandler = useCallback(
+  const changeSumConstantFlagHandler = useCallback(
     (flag) => {
       dispatch({
         type: CHANGE_RANGES_SUM_FLAG,
@@ -181,81 +178,83 @@ function RangesHeader({
   );
 
   return (
-    <DefaultPanelHeader
-      counter={ranges?.values?.length}
-      onDelete={handleDeleteAll}
-      deleteToolTip="Delete All Ranges"
-      onFilter={onFilterActivated}
-      filterToolTip={
-        isFilterActive ? 'Show all ranges' : 'Hide ranges out of view'
-      }
-      filterIsActive={isFilterActive}
-      counterFiltered={filterCounter}
-      showSettingButton
-      onSettingClick={onSettingClick}
-    >
-      <ToolTip title="Preview publication string" popupPlacement="right">
-        <button style={styles.button} type="button" onClick={saveAsHTMLHandler}>
-          <FaFileExport />
-        </button>
-      </ToolTip>
-      <ToolTip
-        title={
-          currentSum
-            ? `Change Ranges Sum (${Number(currentSum).toFixed(2)})`
-            : 'Change Ranges Sum'
+    <div css={style}>
+      <DefaultPanelHeader
+        counter={ranges?.values?.length}
+        onDelete={handleDeleteAll}
+        deleteToolTip="Delete All Ranges"
+        onFilter={onFilterActivated}
+        filterToolTip={
+          isFilterActive ? 'Show all ranges' : 'Hide ranges out of view'
         }
-        popupPlacement="right"
+        filterIsActive={isFilterActive}
+        counterFiltered={filterCounter}
+        showSettingButton
+        onSettingClick={onSettingClick}
       >
-        <button
-          style={styles.button}
-          type="button"
+        <Button
+          popupTitle="Preview publication string"
+          popupPlacement="right"
+          onClick={saveAsHTMLHandler}
+          className="btn preview-publication-icon"
+        >
+          <FaFileExport />
+        </Button>
+        <Button
+          popupTitle={
+            currentSum
+              ? `Change Ranges Sum (${Number(currentSum).toFixed(2)})`
+              : 'Change Ranges Sum'
+          }
+          popupPlacement="right"
           onClick={showChangeRangesSumModal}
+          className="btn icon"
         >
           <SvgNmrSum />
-        </button>
-      </ToolTip>
-      <ToolTip title={`Remove all Assignments`} popupPlacement="right">
-        <button
-          style={{ ...styles.center, ...styles.removeAssignmentsButton }}
-          type="button"
+        </Button>
+        <Button
+          popupTitle="Remove all Assignments"
+          popupPlacement="right"
           onClick={handleOnRemoveAssignments}
           disabled={!ranges || !ranges.values || ranges.values.length === 0}
+          className="btn icon"
         >
           <FaUnlink />
-        </button>
-      </ToolTip>
+        </Button>
+        <ToggleButton
+          popupTitle={
+            showMultiplicityTrees
+              ? 'Hide Multiplicity Trees in Spectrum'
+              : 'Show Multiplicity Trees in Spectrum'
+          }
+          popupPlacement="right"
+          onClick={handleSetShowMultiplicityTrees}
+          disabled={!ranges || !ranges.values || ranges.values.length === 0}
+        >
+          <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
+        </ToggleButton>
+        <ToggleButton
+          popupTitle={showRangesIntegrals ? 'Hide integrals' : 'Show integrals'}
+          popupPlacement="right"
+          onClick={handleShowIntegrals}
+          defaultValue={showRangesIntegrals}
+          disabled={!ranges || !ranges.values || ranges.values.length === 0}
+        >
+          <SvgNmrIntegrate
+            style={{ pointerEvents: 'none', fontSize: '12px' }}
+          />
+        </ToggleButton>
 
-      <ToggleButton
-        popupTitle={
-          showMultiplicityTrees
-            ? 'Hide Multiplicity Trees in Spectrum'
-            : 'Show Multiplicity Trees in Spectrum'
-        }
-        popupPlacement="right"
-        onClick={handleSetShowMultiplicityTrees}
-        disabled={!ranges || !ranges.values || ranges.values.length === 0}
-      >
-        <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
-      </ToggleButton>
-      <ToggleButton
-        popupTitle={showRangesIntegrals ? 'Hide integrals' : 'Show integrals'}
-        popupPlacement="right"
-        onClick={handleShowIntegrals}
-        defaultValue={showRangesIntegrals}
-        disabled={!ranges || !ranges.values || ranges.values.length === 0}
-      >
-        <SvgNmrIntegrate style={{ pointerEvents: 'none', fontSize: '12px' }} />
-      </ToggleButton>
-
-      <ToggleButton
-        popupTitle="fix integral values"
-        popupPlacement="right"
-        onClick={changeSumContantFlagHandler}
-      >
-        <ImLink />
-      </ToggleButton>
-    </DefaultPanelHeader>
+        <ToggleButton
+          className="icon"
+          popupTitle="fix integral values"
+          popupPlacement="right"
+          onClick={changeSumConstantFlagHandler}
+        >
+          <ImLink />
+        </ToggleButton>
+      </DefaultPanelHeader>
+    </div>
   );
 }
 

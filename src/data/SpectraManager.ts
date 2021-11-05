@@ -7,6 +7,13 @@ import * as Datum2D from './data2d/Spectrum2D';
 import { CURRENT_EXPORT_VERSION } from './migration';
 import * as Molecule from './molecules/Molecule';
 
+export enum DataExportOptions {
+  ROW_DATA = 'ROW_DATA',
+  DATA_SOURCE = 'DATA_SOURCE',
+}
+
+export type DataExportOptionsType = keyof typeof DataExportOptions;
+
 export function addJcampFromURL(spectra, jcampURL, options, usedColors) {
   return fetch(jcampURL)
     .then((response) => response.arrayBuffer())
@@ -47,13 +54,13 @@ function addJcampSS(spectra, entry, options, usedColors) {
   }
 }
 
-function addData(spectra, datum) {
+function addData(spectra, datum, usedColors) {
   const dimension = datum.info.dimension;
   if (dimension === 1) {
-    spectra.push(Datum1D.initiateDatum1D(datum));
+    spectra.push(Datum1D.initiateDatum1D(datum, usedColors));
   }
   if (dimension === 2) {
-    spectra.push(Datum2D.initiateDatum2D(datum));
+    spectra.push(Datum2D.initiateDatum2D(datum, usedColors));
   }
 }
 
@@ -117,7 +124,7 @@ export async function fromJSON(data: any[] = [], usedColors: any = {}) {
         addJcampFromURL(spectra, datum.source.jcampURL, datum, usedColors),
       );
     } else {
-      addData(spectra, datum);
+      addData(spectra, datum, usedColors);
     }
   }
   await Promise.all(promises);
@@ -227,7 +234,10 @@ export function addJcamps(files, usedColors) {
  *
  * @param {object} state
  */
-export function toJSON(state, forceIncludeData = true) {
+export function toJSON(
+  state,
+  dataExportOption: DataExportOptionsType = DataExportOptions.DATA_SOURCE,
+) {
   const {
     data,
     molecules: mols,
@@ -247,8 +257,8 @@ export function toJSON(state, forceIncludeData = true) {
   };
   const spectra = data.map((ob) => {
     return ob.info.dimension === 1
-      ? Datum1D.toJSON(ob, forceIncludeData)
-      : Datum2D.toJSON(ob, forceIncludeData);
+      ? Datum1D.toJSON(ob, dataExportOption)
+      : Datum2D.toJSON(ob, dataExportOption);
   });
 
   const molecules = mols.map((mol) => Molecule.toJSON(mol));

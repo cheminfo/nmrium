@@ -37,9 +37,9 @@ const style = css`
     justify-content: center;
   }
 
-  .constant-sum-button {
+  .fix-integral-toggle-btn {
     svg {
-      font-size: 10px !important;
+      font-size: 12px !important;
     }
   }
 `;
@@ -209,6 +209,7 @@ function IntegralPanelInner({
               </button>
             </ToolTip>
             <ToggleButton
+              className="fix-integral-toggle-btn"
               popupTitle="fix integral values"
               popupPlacement="right"
               onClick={toggleConstantSumHandler}
@@ -229,13 +230,11 @@ function IntegralPanelInner({
             infinite
             containerStyle={{ overflow: 'hidden', height: '100%' }}
           >
-            <div className="table-container">
-              <IntegralTable
-                data={filteredData}
-                activeTab={activeTab}
-                preferences={preferences}
-              />
-            </div>
+            <IntegralTable
+              data={filteredData}
+              activeTab={activeTab}
+              preferences={preferences}
+            />
             <IntegralsPreferences ref={settingRef} />
           </ReactCardFlip>
         </div>

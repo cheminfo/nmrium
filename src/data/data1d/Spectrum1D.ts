@@ -8,8 +8,10 @@ import {
 } from 'ml-spectra-processing';
 import { resurrect, rangesToXY } from 'nmr-processing';
 
+import { UsedColors } from '../../types/UsedColors';
 import * as FiltersTypes from '../Filters';
 import * as FiltersManager from '../FiltersManager';
+import { DataExportOptions, DataExportOptionsType } from '../SpectraManager';
 import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
 import { Datum2D } from '../data2d/Spectrum2D';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
@@ -133,7 +135,6 @@ export interface RangeDetectionObject
 
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   const datum: any = {};
-  datum.shiftX = options.shiftX || 0;
   datum.id = options.id || generateID();
   datum.source = Object.assign(
     {
@@ -150,7 +151,6 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   datum.display = Object.assign(
     {
       name: options.display?.name ? options.display.name : generateID(),
-      color: 'black',
       ...getColor(options, usedColors),
       isVisible: true,
       isPeaksMarkersVisible: true,
@@ -224,22 +224,29 @@ function preprocessing(datum) {
   }
 }
 
-export function toJSON(datum1D: Datum1D, forceIncludeData = true) {
+export function toJSON(
+  datum1D: Datum1D,
+  dataExportOption: DataExportOptionsType,
+) {
   return {
     id: datum1D.id,
-    source: {
-      jcampURL: datum1D.source.jcampURL,
-    },
     display: datum1D.display,
-    ...(forceIncludeData
-      ? !datum1D.source.jcampURL
-        ? {
-            data: datum1D.originalData,
-            info: datum1D.originalInfo,
-            meta: datum1D.meta,
-          }
-        : {}
-      : {}),
+    ...(dataExportOption === DataExportOptions.ROW_DATA ||
+    (dataExportOption === DataExportOptions.DATA_SOURCE &&
+      !datum1D.source.jcampURL)
+      ? {
+          data: datum1D.originalData,
+          info: datum1D.originalInfo,
+          meta: datum1D.meta,
+          source: {
+            jcampURL: null,
+          },
+        }
+      : {
+          source: {
+            jcampURL: datum1D.source.jcampURL,
+          },
+        }),
     peaks: datum1D.peaks,
     integrals: datum1D.integrals,
     ranges: datum1D.ranges,
@@ -248,14 +255,16 @@ export function toJSON(datum1D: Datum1D, forceIncludeData = true) {
 }
 
 function getColor(options, usedColors) {
+  let color = 'black';
   if (options.display === undefined || options.display.color === undefined) {
-    const color = get1dColor(false, usedColors['1d'] || []);
-    if (usedColors['1d']) {
-      usedColors['1d'].push(color);
-    }
-    return { color };
+    color = get1dColor(false, usedColors['1d'] || []);
   }
-  return {};
+
+  if (usedColors['1d']) {
+    usedColors['1d'].push(color);
+  }
+
+  return { color };
 }
 
 // with mouse move
@@ -402,9 +411,7 @@ export function detectRange(datum, options): RangeDetectionObject {
 export function mapRanges(ranges: Array<Range>, datum) {
   const { x, re } = datum.data;
   const shiftX = getShiftX(datum);
-
   const error = (x[x.length - 1] - x[0]) / 10000;
-
   return ranges.reduce<Array<Range>>((acc, newRange) => {
     // check if the range is already exists
     for (const { from, to } of datum.ranges.values) {
@@ -421,7 +428,7 @@ export function mapRanges(ranges: Array<Range>, datum) {
       { from: newRange.from, to: newRange.to, reverse: true },
     );
     const signals = newRange.signals.map((signal) => {
-      const { kind, id, ...resSignal } = signal;
+      const { kind = null, id, ...resSignal } = signal;
       return {
         kind: kind || 'signal',
         id: id || generateID(),
@@ -429,9 +436,10 @@ export function mapRanges(ranges: Array<Range>, datum) {
         ...resSignal,
       };
     });
+
     acc.push({
       ...newRange,
-      kind: newRange.signals[0].kind || DatumKind.signal,
+      kind: signals?.[0].kind || DatumKind.signal,
       originFrom: newRange.from - shiftX,
       originTo: newRange.to - shiftX,
       id: newRange.id || generateID(),
@@ -582,7 +590,7 @@ export function generateSpectrumFromRanges(
     frequency?: number;
     color?: string;
   },
-  usedColors: string[],
+  usedColors: UsedColors,
 ) {
   const { nucleus, solvent, name = null, frequency = 400 } = info;
   const { x, y } = rangesToXY(ranges, {
@@ -612,7 +620,7 @@ export function generateSpectrumFromRanges(
 
 export function generateSpectrumFromPublicationString(
   publicationString: string,
-  usedColors,
+  usedColors: UsedColors,
 ) {
   const {
     ranges,

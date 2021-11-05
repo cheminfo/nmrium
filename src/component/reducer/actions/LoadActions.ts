@@ -3,6 +3,7 @@ import { buildCorrelationData, Types } from 'nmr-correlation';
 
 import { addJcamps, addJDFs } from '../../../data/SpectraManager';
 import * as MoleculeManager from '../../../data/molecules/MoleculeManager';
+import { UsedColors } from '../../../types/UsedColors';
 import { Molecules, NMRiumPreferences, Spectra } from '../../NMRium';
 import { DefaultTolerance } from '../../panels/SummaryPanel/CorrelationTable/Constants';
 import { State } from '../Reducer';
@@ -14,6 +15,11 @@ function setIsLoading(draft: Draft<State>, isLoading: boolean) {
   draft.isLoading = isLoading;
 }
 
+function setColors(draft: Draft<State>, colors: UsedColors) {
+  draft.usedColors['1d'] = draft.usedColors['1d'].concat(colors['1d']);
+  draft.usedColors['2d'] = draft.usedColors['2d'].concat(colors['2d']);
+}
+
 function setData(
   draft: Draft<State>,
   data: {
@@ -22,6 +28,7 @@ function setData(
     preferences: NMRiumPreferences;
     correlations: Types.CorrelationData;
     exclusionZones: any;
+    usedColors: UsedColors;
   },
 ) {
   const {
@@ -29,6 +36,7 @@ function setData(
     molecules,
     correlations,
     exclusionZones = {},
+    usedColors,
   } = data || {
     spectra: [],
     molecules: [],
@@ -36,7 +44,7 @@ function setData(
     multipleAnalysis: {},
     exclusionZones: {},
   };
-
+  setColors(draft, usedColors);
   draft.data = spectra;
   draft.molecules = MoleculeManager.fromJSON(molecules);
   draft.toolOptions.data.exclusionZones = exclusionZones;
@@ -58,8 +66,8 @@ function initiate(draft: Draft<State>, action) {
 }
 
 function loadJDFFile(draft: Draft<State>, actions) {
-  const { files, usedColors } = actions;
-  const spectra = addJDFs(files, usedColors);
+  const { files } = actions;
+  const spectra = addJDFs(files, draft.usedColors);
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
@@ -70,8 +78,8 @@ function loadJDFFile(draft: Draft<State>, actions) {
 }
 
 function loadJcampFile(draft: Draft<State>, actions) {
-  const { files, usedColors } = actions;
-  const spectra = addJcamps(files, usedColors);
+  const { files } = actions;
+  const spectra = addJcamps(files, draft.usedColors);
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
@@ -81,9 +89,8 @@ function loadJcampFile(draft: Draft<State>, actions) {
   draft.isLoading = false;
 }
 
-function handleLoadJsonFile(draft: Draft<State>, actions) {
-  const data = actions.payload;
-  setData(draft, data);
+function handleLoadJsonFile(draft: Draft<State>, action) {
+  setData(draft, action.payload);
 
   changeSpectrumVerticalAlignment(draft, { checkData: true });
 
@@ -101,7 +108,10 @@ function handleLoadMOLFile(draft: Draft<State>, actions) {
 }
 
 function handleLoadZIPFile(draft: Draft<State>, action) {
-  draft.data = action.payload;
+  const { data, usedColors } = action.payload;
+  draft.data = draft.data.concat(data);
+  setColors(draft, usedColors);
+
   changeSpectrumVerticalAlignment(draft, { checkData: true });
   setActiveTab(draft);
   draft.isLoading = false;

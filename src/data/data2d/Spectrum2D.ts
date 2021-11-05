@@ -1,7 +1,9 @@
 import { zoneToX } from 'ml-spectra-processing';
 
+import { UsedColors } from '../../types/UsedColors';
 import * as Filters from '../Filters';
 import * as FiltersManager from '../FiltersManager';
+import { DataExportOptions, DataExportOptionsType } from '../SpectraManager';
 import { DatumKind } from '../constants/SignalsKinds';
 import { Datum1D, initiateDatum1D } from '../data1d/Spectrum1D';
 import generateID from '../utilities/generateID';
@@ -117,17 +119,13 @@ export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   datum.id = options.id || generateID();
   datum.source = Object.assign(
     {
-      jcamp: null,
       jcampURL: null,
-      original: [],
     },
     options.source,
   );
   datum.display = Object.assign(
     {
       name: options.display?.name ? options.display.name : generateID(),
-      positiveColor: 'red',
-      negativeColor: 'blue',
       ...getColor(options, usedColors),
       isPositiveVisible: true,
       isNegativeVisible: true,
@@ -198,35 +196,44 @@ export function getShift(datum: Datum2D): { xShift: number; yShift: number } {
 }
 
 function getColor(options, usedColors) {
+  let color = { positiveColor: 'red', negativeColor: 'blue' };
   if (
     options.display === undefined ||
     options.display.negativeColor === undefined ||
     options.display.positiveColor === undefined
   ) {
-    const color = get2DColor(options.info.experiment, usedColors['2d']);
-    if (usedColors['2d']) {
-      usedColors['2d'].push(color.positiveColor);
-    }
-    return color;
+    color = get2DColor(options.info.experiment, usedColors['2d'] || []);
   }
-  return {};
+
+  if (usedColors['2d']) {
+    usedColors['2d'].push(color.positiveColor);
+  }
+  return color;
 }
 
-export function toJSON(datum: Datum2D, forceIncludeData = true) {
+export function toJSON(
+  datum: Datum2D,
+  dataExportOption: DataExportOptionsType,
+) {
   return {
     id: datum.id,
-    source: {
-      jcampURL: datum.source.jcampURL,
-    },
-    ...(forceIncludeData
-      ? !datum.source.jcampURL
-        ? {
-            data: datum.originalData,
-            info: datum.originalInfo,
-            meta: datum.meta,
-          }
-        : {}
-      : {}),
+
+    ...(dataExportOption === DataExportOptions.ROW_DATA ||
+    (dataExportOption === DataExportOptions.DATA_SOURCE &&
+      !datum.source.jcampURL)
+      ? {
+          data: datum.originalData,
+          info: datum.originalInfo,
+          meta: datum.meta,
+          source: {
+            jcampURL: null,
+          },
+        }
+      : {
+          source: {
+            jcampURL: datum.source.jcampURL,
+          },
+        }),
     zones: datum.zones,
     filters: datum.filters,
     display: datum.display,
@@ -389,7 +396,7 @@ export function detectZonesManual(datum, options) {
 /** calculate the missing projection
  * @param {string[]} nucleus
  */
-export function getMissingProjection(datum, nucleus, usedColors) {
+export function getMissingProjection(datum, nucleus, usedColors: UsedColors) {
   let index = datum.info.nucleus.indexOf(nucleus);
   // temporary because nuclus was undefined;
   if (index === -1) index = 0;

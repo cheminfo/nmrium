@@ -164,11 +164,15 @@ function handleDeleteSpectra(draft: Draft<State>, action) {
 }
 function addMissingProjectionHandler(draft, action) {
   const state = original(draft);
-  const { nucleus, usedColors } = action;
+  const { nucleus } = action;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     for (let n of nucleus) {
-      const datum1D = getMissingProjection(state.data[index], n, usedColors);
+      const datum1D = getMissingProjection(
+        state.data[index],
+        n,
+        draft.usedColors,
+      );
       draft.data.push(datum1D);
     }
     const groupByNucleus = GroupByInfoKey('nucleus');
@@ -209,7 +213,7 @@ function generateSpectrumFromPublicationStringHandler(
 
   const spectrum = generateSpectrumFromPublicationString(
     publicationString,
-    action.usedColors['1d'],
+    draft.usedColors,
   );
   draft.data.push(spectrum);
   setActiveTab(draft);

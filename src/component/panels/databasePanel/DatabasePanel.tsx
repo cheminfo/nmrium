@@ -4,6 +4,8 @@ import { useAccordionContext } from 'analysis-ui-components';
 import { DatabaseNMREntry } from 'nmr-processing/lib/databases/DatabaseNMREntry';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
 import ReactCardFlip from 'react-card-flip';
+import { FaICursor } from 'react-icons/fa';
+import { IoSearchOutline } from 'react-icons/io5';
 
 import {
   initiateDatabase,
@@ -15,7 +17,12 @@ import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Input from '../../elements/Input';
 import Select, { SelectEntry } from '../../elements/Select';
+import ToggleButton from '../../elements/ToggleButton';
+import useToolsFunctions from '../../hooks/useToolsFunctions';
 import { RESURRECTING_SPECTRUM_FROM_RANGES } from '../../reducer/types/Types';
+import { options } from '../../toolbar/ToolTypes';
+import Events from '../../utility/Events';
+import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import DefaultPanelHeader from '../header/DefaultPanelHeader';
 import PreferencesHeader from '../header/PreferencesHeader';
@@ -25,8 +32,8 @@ import DatabaseTable from './DatabaseTable';
 
 const style = css`
   .header {
-    height: 36px;
-    padding: 2px 0px;
+    height: 30px;
+    padding: 2px 0px 2px 5px;
   }
   .input-container {
     width: 100%;
@@ -35,7 +42,7 @@ const style = css`
     width: 100% !important;
     border-radius: 5px;
     border: 0.55px solid gray;
-    padding: 5px;
+    padding: 0 5px;
     outline: none;
   }
   .smiles-container svg {
@@ -46,6 +53,7 @@ const style = css`
 
 export interface DatabaseInnerProps {
   nucleus: string;
+  selectedTool: string;
 }
 
 interface ResultEntry {
@@ -54,11 +62,22 @@ interface ResultEntry {
   solvents: SelectEntry[];
 }
 
-function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
+const emptyKeywords = {
+  solvent: '',
+  searchKeywords: '',
+};
+
+function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
   const dispatch = useDispatch();
+  const { handleChangeOption } = useToolsFunctions();
+  const format = useFormatNumberByNucleus(nucleus);
+
   const [isFlipped, setFlipStatus] = useState(false);
   const settingRef = useRef<any>();
-  const searchKeywords = useRef<[string, string]>(['', '']);
+  const [keywords, setKeywords] = useState<{
+    solvent: string;
+    searchKeywords: string;
+  }>(emptyKeywords);
   const databaseInstance = useRef<InitiateDatabaseResult | null>(null);
   const [result, setResult] = useState<ResultEntry>({
     data: [],
@@ -79,6 +98,18 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
     setFlipStatus(false);
   }, []);
 
+  const handleSearch = useCallback((input) => {
+    if (typeof input === 'string' || input === -1) {
+      const solvent = String(input);
+      setKeywords((prevState) => ({ ...prevState, solvent }));
+    } else {
+      setKeywords((prevState) => ({
+        ...prevState,
+        searchKeywords: input.target.value,
+      }));
+    }
+  }, []);
+
   useEffect(() => {
     if (item?.isOpen) {
       setTimeout(() => {
@@ -94,29 +125,57 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
     }
   }, [item?.isOpen, nucleus]);
 
-  const handleSearch = useCallback((input) => {
-    if (typeof input === 'string' || input === -1) {
-      searchKeywords.current[0] = input === -1 ? '' : input;
-    } else {
-      searchKeywords.current[1] = input.target.value;
-    }
+  useEffect(() => {
+    const { solvent, searchKeywords } = keywords;
     setTimeout(() => {
       if (databaseInstance.current) {
-        const data = databaseInstance.current.search(searchKeywords.current);
-        setResult((prevResult) => ({ ...prevResult, data }));
+        if (!solvent && !searchKeywords) {
+          const data = databaseInstance.current.data;
+          const solvents = mapSolventsToSelect(
+            databaseInstance.current.getSolvents(),
+          );
+          setResult((prevResult) => ({ ...prevResult, data, solvents }));
+        } else {
+          const values = [...searchKeywords.split(',')];
+          if (solvent !== '-1') {
+            values.unshift(`solvent:${solvent}`);
+          }
+
+          const data = databaseInstance.current.search(values);
+          setResult((prevResult) => ({ ...prevResult, data }));
+        }
       }
     });
-  }, []);
+  }, [keywords]);
+
+  useEffect(() => {
+    function handle(event) {
+      if (selectedTool === options.databaseRangesSelection.id) {
+        setKeywords((prevState) => {
+          const oldKeywords = prevState.searchKeywords
+            ? prevState.searchKeywords.split(',')
+            : [];
+          const [from, to] = event.range;
+          const searchKeywords = [
+            ...oldKeywords,
+            `delta:${format(from)}..${format(to)}`,
+          ].join(',');
+          return { ...prevState, searchKeywords };
+        });
+      }
+    }
+
+    Events.on('brushEnd', handle);
+
+    return () => {
+      Events.off('brushEnd', handle);
+    };
+  }, [format, selectedTool]);
 
   const handleChangeDatabase = useCallback(
     (databaseKey) => {
       databaseInstance.current = initiateDatabase(databaseKey, nucleus);
-      const data = databaseInstance.current.data;
-      const solvents = mapSolventsToSelect(
-        databaseInstance.current.getSolvents(),
-      );
-      searchKeywords.current = ['', ''];
-      setResult((prevResult) => ({ ...prevResult, data, solvents }));
+      setKeywords(emptyKeywords);
     },
     [nucleus],
   );
@@ -137,6 +196,18 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
     [dispatch, nucleus, result.data],
   );
 
+  const clearHandler = useCallback(() => {
+    setKeywords((prevState) => ({ ...prevState, searchKeywords: '' }));
+  }, []);
+
+  const enableFilterHandler = useCallback(
+    (flag) => {
+      const tool = !flag ? options.zoom.id : options.databaseRangesSelection.id;
+      handleChangeOption(tool);
+    },
+    [handleChangeOption],
+  );
+
   return (
     <div
       css={[
@@ -144,8 +215,11 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
         style,
         isFlipped &&
           css`
-            th {
-              position: relative;
+            .table-container {
+              table,
+              th {
+                position: relative !important;
+              }
             }
           `,
       ]}
@@ -157,6 +231,21 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
           canDelete={false}
           className="header"
         >
+          <ToggleButton
+            key={`${selectedTool}`}
+            defaultValue={selectedTool === options.databaseRangesSelection.id}
+            popupTitle="Filter by select ranges"
+            popupPlacement="right"
+            onClick={enableFilterHandler}
+          >
+            <FaICursor
+              style={{
+                pointerEvents: 'none',
+                fontSize: '12px',
+                transform: 'rotate(90deg)',
+              }}
+            />
+          </ToggleButton>
           <Select
             style={{ flex: 2 }}
             data={result.databases}
@@ -168,11 +257,16 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
             onChange={handleSearch}
           />
           <Input
+            value={keywords.searchKeywords}
+            renderIcon={() => <IoSearchOutline />}
             style={{ container: { flex: 3 } }}
             className="search-input"
-            debounceTime={1000}
+            type="text"
+            debounceTime={250}
             placeholder="Search for parameter..."
             onChange={handleSearch}
+            onClear={clearHandler}
+            canClear
           />
         </DefaultPanelHeader>
       )}
@@ -187,10 +281,9 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
           isFlipped={isFlipped}
           infinite
           containerStyle={{ overflow: 'hidden', height: '100%' }}
+          cardStyles={{ front: !isFlipped ? { transformStyle: 'unset' } : {} }}
         >
-          <div className="table-container">
-            <DatabaseTable data={tableData} onAdd={resurrectHandler} />
-          </div>
+          <DatabaseTable data={tableData} onAdd={resurrectHandler} />
           <DatabasePreferences ref={settingRef} />
         </ReactCardFlip>
       </div>
@@ -201,9 +294,14 @@ function DatabasePanelInner({ nucleus }: DatabaseInnerProps) {
 const MemoizedDatabasePanel = memo(DatabasePanelInner);
 
 export default function PeaksPanel() {
-  const { activeTab } = useChartData();
+  const {
+    activeTab,
+    toolOptions: { selectedTool },
+  } = useChartData();
   if (!activeTab) return <div />;
-  return <MemoizedDatabasePanel nucleus={activeTab} />;
+  return (
+    <MemoizedDatabasePanel nucleus={activeTab} selectedTool={selectedTool} />
+  );
 }
 
 function mapSolventsToSelect(solvents: string[]) {

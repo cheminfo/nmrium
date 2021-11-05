@@ -15,6 +15,7 @@ export default {
     hideZonesPanel: false,
     hideSummaryPanel: true,
     hideMultipleSpectraAnalysisPanel: true,
+    hideDatabasePanel: false,
   },
 
   toolBarButtons: {

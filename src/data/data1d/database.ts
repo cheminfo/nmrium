@@ -56,13 +56,10 @@ export function initiateDatabase(
   const data = databaseData.filter((datum) => datum.nucleus === nucleus);
 
   const getSolvents = () => prepareGetSolvents(data);
-  const search = (keywords: string[] = []) => prepareSearch(data, keywords);
+  const search = (keywords: string | string[] = []) =>
+    filter(data, { keywords });
 
   return { data, getSolvents, search };
-}
-
-function prepareSearch(data, keywords: string[]): Array<DatabaseNMREntry> {
-  return filter(data, { keywords });
 }
 
 function prepareGetSolvents(data) {
@@ -95,7 +92,7 @@ function prepareDataBase(array: Array<DatabaseNMREntry>) {
 }
 
 export type PrepareDataResult = Partial<
-  DataBaseRange & DataBaseSignal & DataBaseJ
+  DataBaseRange | DataBaseSignal | DataBaseJ
 >;
 
 export function prepareData(
