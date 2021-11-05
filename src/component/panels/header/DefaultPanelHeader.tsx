@@ -34,6 +34,7 @@ const styles = css`
     width: 100%;
     line-height: 22px;
     padding: 0px 10px;
+    white-space: nowrap;
   }
 
   filter-button{
@@ -107,7 +108,7 @@ function DefaultPanelHeader({
 
         {children}
 
-        {counter && (
+        {counter !== undefined && (
           <p className="counter-label">
             [{' '}
             {filterIsActive &&
