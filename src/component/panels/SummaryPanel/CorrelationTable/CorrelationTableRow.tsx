@@ -1,15 +1,23 @@
-import lodashGet from 'lodash/get';
-import { buildLink, getLabel } from 'nmr-correlation';
-import { CSSProperties, useCallback, useMemo } from 'react';
+import {
+  buildLink,
+  getCorrelationDelta,
+  getLabel,
+  getLinkDim,
+  Types,
+} from 'nmr-correlation';
+import { CSSProperties, useCallback, useMemo, useRef } from 'react';
 
 import { buildID } from '../../../../data/utilities/Concatenation';
+import { findRangeOrZoneID } from '../../../../data/utilities/FindUtilities';
+import ContextMenu from '../../../elements/ContextMenu';
 import EditableColumn from '../../../elements/EditableColumn';
 import Select from '../../../elements/Select';
+import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
-import { findRangeOrZoneID } from '../Utilities';
 
 import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
+import EditLinkModal from './editLink/EditLinkModal';
 
 const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
@@ -27,28 +35,28 @@ function CorrelationTableRow({
   onSaveEditEquivalences,
   onChangeHybridization,
   onSaveEditProtonsCount,
-  onEditAdditionalColumnField,
+  onEditCorrelationTableCellHandler,
   spectraData,
 }) {
+  const contextRef = useRef<any>();
+  const modal = useModal();
+
   const highlightIDsRow = useMemo(() => {
     if (correlation.pseudo === true) {
       return [];
     }
-    const ids = [
-      correlation.signal.id,
-      buildID(correlation.signal.id, 'Crosshair_Y'),
-    ];
-
-    const id = findRangeOrZoneID(spectraData, correlation);
-    if (id) {
-      ids.push(id);
-    }
+    const ids: string[] = [];
 
     correlation.link.forEach((link) => {
       if (link.pseudo === false) {
         ids.push(link.signal.id);
         ids.push(buildID(link.signal.id, 'Crosshair_Y'));
-        const _id = findRangeOrZoneID(spectraData, link);
+        const _id = findRangeOrZoneID(
+          spectraData,
+          link.experimentID,
+          link.signal.id,
+          true,
+        );
         if (_id) {
           ids.push(_id);
         }
@@ -75,23 +83,27 @@ function CorrelationTableRow({
 
   const additionalColumnFields = useMemo(() => {
     return additionalColumnData.map((_correlation) => {
-      const commonLinks: any[] = [];
+      const commonLinks: Types.Link[] = [];
       correlation.link.forEach((link) => {
         _correlation.link.forEach((_link) => {
           if (
             link.axis !== _link.axis &&
             link.experimentID === _link.experimentID &&
-            link.signal.id === _link.signal.id
+            link.signal.id === _link.signal.id &&
+            !commonLinks.some(
+              (_commonLink) => _commonLink.signal.id === link.signal.id,
+            )
           ) {
             let experimentLabel = link.experimentType;
             if (link.signal && link.signal.sign !== 0) {
-              experimentLabel += ' (edited)';
+              experimentLabel += link.signal.sign === 1 ? ' (+)' : ' (-)';
             }
             commonLinks.push(
               buildLink({
                 ...link,
                 experimentLabel,
                 axis: undefined,
+                id: `${_link.id}_${link.id}`,
               }),
             );
           }
@@ -106,7 +118,7 @@ function CorrelationTableRow({
           commonLinks={commonLinks}
           correlations={correlations}
           spectraData={spectraData}
-          onEdit={onEditAdditionalColumnField}
+          onEdit={onEditCorrelationTableCellHandler}
         />
       );
     });
@@ -114,7 +126,7 @@ function CorrelationTableRow({
     additionalColumnData,
     correlation,
     correlations,
-    onEditAdditionalColumnField,
+    onEditCorrelationTableCellHandler,
     spectraData,
   ]);
 
@@ -127,7 +139,7 @@ function CorrelationTableRow({
 
   const equivalenceCellStyle = useMemo(() => {
     return correlation.edited.equivalence
-      ? { backgroundColor: '#F7F2E0' }
+      ? { color: 'blue' }
       : {
           color: correlation.equivalence === 1 ? '#bebebe' : 'black',
         };
@@ -156,27 +168,22 @@ function CorrelationTableRow({
       },
       title:
         correlation.pseudo === false &&
-        // eslint-disable-next-line @typescript-eslint/require-array-sort-compare
-        [correlation.experimentType.toUpperCase()]
-          .concat(
-            correlation.link.reduce((arr, link) => {
-              if (
-                link.pseudo === false &&
-                link.experimentType !== correlation.experimentType &&
-                !arr.includes(link.experimentType.toUpperCase())
-              ) {
-                arr.push(link.experimentType.toUpperCase());
-              }
-              return arr;
-            }, []),
-          )
+        correlation.link
+          .reduce((arr, link) => {
+            if (
+              link.pseudo === false &&
+              !arr.includes(link.experimentType.toUpperCase())
+            ) {
+              arr.push(link.experimentType.toUpperCase());
+            }
+            return arr;
+          }, [])
           .sort()
           .join('/'),
       onMouseEnter: mouseEnterHandler,
       onMouseLeave: mouseLeaveHandler,
     };
   }, [
-    correlation.experimentType,
     correlation.link,
     correlation.pseudo,
     highlightRow.isActive,
@@ -184,6 +191,76 @@ function CorrelationTableRow({
     mouseLeaveHandler,
     styleRow,
   ]);
+
+  const contextMenu = useMemo(() => {
+    return correlation.pseudo === false
+      ? correlation.link
+          .filter((link) => getLinkDim(link) === 1 && link.pseudo === false)
+          .map((link) => {
+            return {
+              label: `edit 1D (${link.signal.delta.toFixed(3)})${
+                link.edited?.moved === true ? '[MOVED]' : ''
+              }`,
+              onClick: () => {
+                highlightRow.hide();
+                modal.show(
+                  <EditLinkModal
+                    onClose={() => modal.close()}
+                    onEdit={onEditCorrelationTableCellHandler}
+                    link={link}
+                    correlationDim1={correlation}
+                    correlationDim2={undefined}
+                    correlations={correlations}
+                  />,
+                  {
+                    position: positions.MIDDLE_RIGHT,
+                    isBackgroundBlur: false,
+                  },
+                );
+              },
+            };
+          })
+          .concat([
+            {
+              label: `delete ${correlation.label.origin}`,
+              onClick: () => {
+                modal.showConfirmDialog({
+                  message: `All signals of ${correlation.label.origin} (${(
+                    getCorrelationDelta(correlation) as number
+                  ).toFixed(2)}) will be deleted. Are you sure?`,
+                  buttons: [
+                    {
+                      text: 'Yes',
+                      handler: () => {
+                        onEditCorrelationTableCellHandler(
+                          [correlation],
+                          'removeAll',
+                        );
+                      },
+                    },
+                    { text: 'No' },
+                  ],
+                });
+                highlightRow.hide();
+              },
+            },
+          ])
+      : [];
+  }, [
+    correlation,
+    highlightRow,
+    modal,
+    onEditCorrelationTableCellHandler,
+    correlations,
+  ]);
+
+  const contextMenuHandler = useCallback(
+    (e) => {
+      e.preventDefault();
+      contextRef.current.handleContextMenu(e);
+    },
+    [contextRef],
+  );
 
   const { title, ...otherTableDataProps } = tableDataProps;
   const t = !title ? '' : title;
@@ -196,12 +273,18 @@ function CorrelationTableRow({
           ...otherTableDataProps,
           style: { ...tableDataProps.style, styleLabel },
         }}
+        onContextMenu={(e) => {
+          if (contextMenu.length > 0) {
+            contextMenuHandler(e);
+          }
+        }}
       >
         {getLabel(correlations, correlation)}
+        <ContextMenu ref={contextRef} context={contextMenu} />
       </td>
       <td title={t} {...otherTableDataProps}>
-        {lodashGet(correlation.signal, 'delta', false)
-          ? correlation.signal.delta.toFixed(2)
+        {getCorrelationDelta(correlation)
+          ? getCorrelationDelta(correlation)?.toFixed(2)
           : ''}
       </td>
       <td title={t} {...otherTableDataProps}>
@@ -225,11 +308,7 @@ function CorrelationTableRow({
           <EditableColumn
             type="text"
             value={correlation.protonsCount.join(',')}
-            style={
-              correlation.edited.protonsCount
-                ? { backgroundColor: '#F7F2E0' }
-                : {}
-            }
+            style={correlation.edited.protonsCount ? { color: 'blue' } : {}}
             onSave={onSaveProtonsCountHandler}
           />
         ) : (
@@ -250,8 +329,9 @@ function CorrelationTableRow({
             defaultValue={correlation.hybridization}
             style={{
               ...selectBoxStyle,
+              color: correlation.edited.hybridization ? 'blue' : 'black',
               backgroundColor: correlation.edited.hybridization
-                ? '#F7F2E0'
+                ? 'inherit'
                 : styleRow.backgroundColor,
               width: '50px',
             }}

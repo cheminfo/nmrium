@@ -1,8 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { getLinkDelta, getLinkDim, Types } from 'nmr-correlation';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
+import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import {
+  findRange,
+  findSignal1D,
+  findSignal2D,
+  findSpectrum,
+  findZone,
+} from '../../../data/utilities/FindUtilities';
+import { useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
@@ -10,6 +21,9 @@ import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
 import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
+  DELETE_1D_SIGNAL,
+  DELETE_2D_SIGNAL,
+  DELETE_CORRELATION,
   SET_CORRELATION,
   SET_CORRELATIONS,
   SET_CORRELATIONS_MF,
@@ -21,12 +35,7 @@ import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
 import SetMolecularFormulaModal from './SetMolecularFormulaModal';
 import SetShiftToleranceModal from './SetShiftTolerancesModal';
-import {
-  findSignalMatch1D,
-  findSignalMatch2D,
-  findSpectrum,
-  getAtomType,
-} from './Utilities';
+import { findSignalMatch1D, findSignalMatch2D, getAtomType } from './Utilities';
 
 const panelStyle = css`
   display: flex;
@@ -34,8 +43,7 @@ const panelStyle = css`
   text-align: center;
   height: 100%;
   width: 100%;
-  justify-content: center,
-  align-items: 'center',
+  justify-content: center;
 
   button {
     border-radius: 5px;
@@ -49,24 +57,17 @@ const panelStyle = css`
     background-color: transparent;
   }
 
-  .overview-container {
+  .table-view-selection {
     width: 100%;
-    margin-left: 15px;
     white-space: nowrap;
-    span {
-      margin-left: 8px;
-    }
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
-
-  .homoHeteroKinds-container {
-    width: 100%;
-    margin-left: 15px;
-    span {
-      margin-left: 7px;
-    }
-  }
-
-
 `;
 
 function SummaryPanel() {
@@ -82,18 +83,19 @@ function SummaryPanel() {
 
   const dispatch = useDispatch();
   const modal = useModal();
+  const assignmentData = useAssignmentData();
 
   const [additionalColumnData, setAdditionalColumnData] = useState([]);
   const [
     selectedAdditionalColumnsAtomType,
     setSelectedAdditionalColumnsAtomType,
-  ] = useState<string>('-');
+  ] = useState<string>('H');
   const [showProtonsAsRows, setShowProtonsAsRows] = useState(false);
   const [filterIsActive, setFilterIsActive] = useState(false);
 
   const filteredCorrelationsData = useMemo(() => {
-    const isInView = (value) => {
-      if (value.pseudo === true) {
+    const isInView = (correlation: Types.Correlation): boolean => {
+      if (correlation.pseudo === true) {
         return false;
       }
       const atomTypesInView = activeTab
@@ -107,11 +109,25 @@ function SummaryPanel() {
       const yDomain1 = yDomain[1] * factor;
 
       if (displayerMode === DISPLAYER_MODE.DM_1D) {
-        const delta = value.signal.delta * factor;
-        const spectrum = findSpectrum(spectraData, value);
+        const firstLink1D = correlation.link.find(
+          (link) => getLinkDim(link) === 1,
+        );
+        if (!firstLink1D) {
+          return false;
+        }
+        let delta = getLinkDelta(firstLink1D);
+        if (delta === undefined) {
+          return false;
+        }
+        delta *= factor;
+        const spectrum = findSpectrum(
+          spectraData,
+          firstLink1D.experimentID,
+          true,
+        );
         if (
           spectrum &&
-          atomTypesInView[0] === value.atomType &&
+          atomTypesInView[0] === correlation.atomType &&
           delta >= xDomain0 &&
           delta <= xDomain1
         ) {
@@ -119,8 +135,12 @@ function SummaryPanel() {
         }
         // try to find a link which contains the belonging 2D signal in the spectra in view
         if (
-          value.link.some((link) => {
-            const spectrum = findSpectrum(spectraData, link);
+          correlation.link.some((link) => {
+            const spectrum = findSpectrum(
+              spectraData,
+              link.experimentID,
+              true,
+            ) as Datum2D;
             return findSignalMatch1D(
               spectrum,
               link,
@@ -133,15 +153,25 @@ function SummaryPanel() {
           return true;
         }
       } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-        if (!atomTypesInView.includes(value.atomType)) {
+        if (!atomTypesInView.includes(correlation.atomType)) {
           return false;
         }
-        const spectrum = findSpectrum(spectraData, value);
+        const firstLink2D = correlation.link.find(
+          (link) => getLinkDim(link) === 2,
+        );
+        if (!firstLink2D) {
+          return false;
+        }
+        const spectrum = findSpectrum(
+          spectraData,
+          firstLink2D.experimentID,
+          true,
+        ) as Datum2D;
         // correlation is represented by a 2D signal
         if (
           findSignalMatch2D(
             spectrum,
-            value,
+            firstLink2D,
             factor,
             xDomain0,
             xDomain1,
@@ -153,8 +183,12 @@ function SummaryPanel() {
         } else {
           // try to find a link which contains the belonging 2D signal in the spectra in view
           if (
-            value.link.some((link) => {
-              const spectrum = findSpectrum(spectraData, link);
+            correlation.link.some((link) => {
+              const spectrum = findSpectrum(
+                spectraData,
+                link.experimentID,
+                true,
+              ) as Datum2D;
               return findSignalMatch2D(
                 spectrum,
                 link,
@@ -176,7 +210,7 @@ function SummaryPanel() {
 
     if (correlationsData) {
       const _values = filterIsActive
-        ? correlationsData.values.filter((value) => isInView(value))
+        ? correlationsData.values.filter((correlation) => isInView(correlation))
         : correlationsData.values;
 
       return { ...correlationsData, values: _values };
@@ -237,23 +271,16 @@ function SummaryPanel() {
   }, [correlationsData, handleOnSetShiftTolerance, modal]);
 
   const additionalColumnTypes = useMemo(() => {
-    const columnTypes = ['-'].concat(
+    const columnTypes = ['H', 'H-H'].concat(
       correlationsData
         ? correlationsData.values
             .map((correlation) => correlation.atomType)
-            .filter((atomType, i, array) => array.indexOf(atomType) === i)
+            .filter(
+              (atomType, i, array) =>
+                atomType !== 'H' && array.indexOf(atomType) === i,
+            )
         : [],
     );
-
-    if (columnTypes.includes('H')) {
-      columnTypes.push('H-H');
-    }
-
-    if (columnTypes.includes('H')) {
-      setSelectedAdditionalColumnsAtomType('H');
-    } else {
-      setSelectedAdditionalColumnsAtomType('-');
-    }
 
     return columnTypes.map((columnType) => {
       return {
@@ -323,6 +350,9 @@ function SummaryPanel() {
               protonsCount: values,
               edited: { ...correlation.edited, protonsCount: true },
             },
+            options: {
+              skipDataUpdate: true,
+            },
           },
         });
       }
@@ -341,38 +371,108 @@ function SummaryPanel() {
             hybridization: value,
             edited: { ...correlation.edited, hybridization: true },
           },
+          options: {
+            skipDataUpdate: true,
+          },
         },
       });
     },
     [dispatch],
   );
 
-  const editAdditionalColumnFieldSaveHandler = useCallback(
-    (rowCorrelation, columnCorrelation) => {
+  const setCorrelationsHandler = useCallback(
+    (correlations: Types.Values, options?: Types.Options) => {
       dispatch({
         type: SET_CORRELATIONS,
         payload: {
-          ids: [rowCorrelation.id, columnCorrelation.id],
-          correlations: [
-            {
-              ...rowCorrelation,
-              edited: {
-                ...rowCorrelation.edited,
-                additionalColumnField: true,
-              },
-            },
-            {
-              ...columnCorrelation,
-              edited: {
-                ...columnCorrelation.edited,
-                additionalColumnField: true,
-              },
-            },
-          ],
+          correlations,
+          options,
         },
       });
     },
     [dispatch],
+  );
+
+  const deleteCorrelationHandler = useCallback(
+    (correlation: Types.Correlation) => {
+      dispatch({
+        type: DELETE_CORRELATION,
+        payload: {
+          correlation,
+          assignmentData,
+        },
+      });
+    },
+    [assignmentData, dispatch],
+  );
+
+  const deleteSignalHandler = useCallback(
+    (link: Types.Link) => {
+      // remove linking signal in spectrum
+      const linkDim = getLinkDim(link);
+      if (linkDim === 1) {
+        const spectrum = findSpectrum(
+          spectraData,
+          link.experimentID,
+          false,
+        ) as Datum1D;
+        const range = findRange(spectrum, link.signal.id);
+        const signal = findSignal1D(spectrum, link.signal.id);
+
+        dispatch({
+          type: DELETE_1D_SIGNAL,
+          payload: {
+            spectrum,
+            range,
+            signal,
+            assignmentData,
+          },
+        });
+      } else if (linkDim === 2) {
+        const spectrum = findSpectrum(
+          spectraData,
+          link.experimentID,
+          false,
+        ) as Datum2D;
+        const zone = findZone(spectrum, link.signal.id);
+        const signal = findSignal2D(spectrum, link.signal.id);
+
+        dispatch({
+          type: DELETE_2D_SIGNAL,
+          payload: {
+            spectrum,
+            zone,
+            signal,
+            assignmentData,
+          },
+        });
+      }
+    },
+    [assignmentData, dispatch, spectraData],
+  );
+
+  const editCorrelationTableCellHandler = useCallback(
+    (
+      editedCorrelations: Types.Correlation[],
+      action: string,
+      link?: Types.Link,
+      options?: Types.Options,
+    ) => {
+      if (
+        action === 'add' ||
+        action === 'move' ||
+        action === 'remove' ||
+        action === 'unmove'
+      ) {
+        if (action === 'remove' && link && link.pseudo === false) {
+          deleteSignalHandler(link);
+        }
+        setCorrelationsHandler(editedCorrelations, options);
+      } else if (action === 'removeAll') {
+        deleteCorrelationHandler(editedCorrelations[0]);
+      }
+    },
+    [deleteCorrelationHandler, deleteSignalHandler, setCorrelationsHandler],
   );
 
   const handleOnFilter = useCallback(() => {
@@ -406,27 +506,28 @@ function SummaryPanel() {
             <FaSlidersH />
           </button>
         </ToolTip>
-        <div className="overview-container">
-          <Overview correlationsData={correlationsData} />
-        </div>
-        <div className="homoHeteroKinds-container">
-          <Select
-            onChange={(selection) => {
-              setSelectedAdditionalColumnsAtomType(selection);
-              if (selection === 'H-H') {
-                setShowProtonsAsRows(true);
-              } else {
-                setShowProtonsAsRows(false);
-              }
-            }}
-            data={additionalColumnTypes}
-            defaultValue={selectedAdditionalColumnsAtomType}
-            style={{
-              width: '65px',
-              height: '20px',
-              border: '1px solid grey',
-            }}
-          />
+        <Overview correlationsData={correlationsData} />
+        <div className="table-view-selection">
+          <span>
+            <label>View:</label>
+            <Select
+              onChange={(selection) => {
+                setSelectedAdditionalColumnsAtomType(selection);
+                if (selection === 'H-H') {
+                  setShowProtonsAsRows(true);
+                } else {
+                  setShowProtonsAsRows(false);
+                }
+              }}
+              data={additionalColumnTypes}
+              defaultValue={selectedAdditionalColumnsAtomType}
+              style={{
+                width: '70px',
+                height: '22px',
+                border: '1px solid grey',
+              }}
+            />
+          </span>
         </div>
       </DefaultPanelHeader>
       <CorrelationTable
@@ -436,9 +537,7 @@ function SummaryPanel() {
         editEquivalencesSaveHandler={editEquivalencesSaveHandler}
         changeHybridizationSaveHandler={changeHybridizationSaveHandler}
         editProtonsCountSaveHandler={editProtonsCountSaveHandler}
-        editAdditionalColumnFieldSaveHandler={
-          editAdditionalColumnFieldSaveHandler
-        }
+        onEditCorrelationTableCellHandler={editCorrelationTableCellHandler}
         showProtonsAsRows={showProtonsAsRows}
         spectraData={spectraData}
       />

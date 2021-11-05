@@ -1,7 +1,8 @@
 import { DatumKind } from '../constants/SignalsKinds';
+import { Range } from '../data1d/Spectrum1D';
 
-export function getDiaIDs(range) {
-  return [].concat(
+export function getDiaIDs(range: Range): string[] {
+  return ([] as string[]).concat(
     range.diaIDs || [],
     range.signals
       ? range.signals.map((_signal) => _signal.diaIDs || []).flat()
@@ -9,32 +10,33 @@ export function getDiaIDs(range) {
   );
 }
 
-export function getPubIntegral(range) {
-  return (
-    range.nbAtoms ||
-    (range.signals
+export function getNbAtoms(range: Range, signalIndex?: number): number {
+  if (signalIndex === undefined) {
+    return range.signals
       ? range.signals.reduce(
           (sum, signal) => (signal.nbAtoms ? signal.nbAtoms + sum : sum),
           0,
         )
-      : 0)
-  );
+      : 0;
+  }
+
+  return range.signals[signalIndex].nbAtoms || 0;
 }
 
-export function setPubIntegral(range) {
-  range.pubIntegral = getPubIntegral(range);
-  if (range.pubIntegral === 0) {
-    delete range.pubIntegral;
+export function setNbAtoms(range: Range, signalIndex?: number): void {
+  range.nbAtoms = getNbAtoms(range, signalIndex);
+  if (range.nbAtoms === 0) {
+    delete range.nbAtoms;
   }
 }
 
-export function resetDiaIDs(range) {
+export function resetDiaIDs(range: Range): void {
   delete range.diaIDs;
+  delete range.nbAtoms;
   range.signals.forEach((_signal) => {
     delete _signal.diaIDs;
     delete _signal.nbAtoms;
   });
-  delete range.pubIntegral;
   delete range.nbAtoms;
 }
 
@@ -46,7 +48,11 @@ export function resetDiaIDs(range) {
  * @param {number} [options.signalIndex]
  * @returns {object}
  */
-export function unlink(range, unlinkType = 'both', options: any = {}) {
+export function unlink(
+  range: Range,
+  unlinkType = 'both',
+  options: any = {},
+): Range {
   switch (unlinkType) {
     case 'both':
       resetDiaIDs(range);
@@ -63,7 +69,7 @@ export function unlink(range, unlinkType = 'both', options: any = {}) {
       break;
   }
 
-  setPubIntegral(range);
+  setNbAtoms(range);
 
   return range;
 }
@@ -86,9 +92,14 @@ export function checkSignalKinds(range, kinds) {
   );
 }
 
-export function unlinkInAssignmentData(assignmentData, ranges) {
-  const ids = ranges.reduce((acc, range) => {
-    acc.push(range.id);
+export function unlinkInAssignmentData(
+  assignmentData,
+  ranges: Partial<Range>[],
+) {
+  const ids = ranges.reduce((acc: string[], range) => {
+    if (range.id) {
+      acc.push(range.id);
+    }
     if (range.signals) {
       acc = acc.concat(range.signals.map((signal) => signal.id, []));
     }

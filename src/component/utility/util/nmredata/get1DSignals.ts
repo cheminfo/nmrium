@@ -98,8 +98,8 @@ export async function get1DSignals(
           }
           if (range.integration) {
             partTag += `, E=${Number(range.integration).toFixed(toFix)}`;
-          } else if (range.pubIntegral) {
-            partTag += `, E=${range.putIntegral.toFixed(toFix)}`;
+          } else if (range.nbAtoms) {
+            partTag += `, E=${range.nbAtoms.toFixed(toFix)}`;
           } else if (range.signals[0].nbAtoms !== undefined) {
             partTag += `, E=${range.signals[0].nbAtoms}`;
           }

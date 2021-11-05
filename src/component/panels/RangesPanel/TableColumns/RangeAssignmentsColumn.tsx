@@ -22,7 +22,7 @@ function RangeAssignmentsColumn({
   highlightData,
 }) {
   const diaIDs = useMemo(() => {
-    return lodashGet(rowData, 'nbAtoms', 0);
+    return lodashGet(rowData, 'diaIDs', 0);
   }, [rowData]);
 
   const visibilityChangeHandler = useCallback(
@@ -57,13 +57,13 @@ function RangeAssignmentsColumn({
       {...onHover}
       {...{ onClick: (e) => onLink?.(e, assignment) }}
     >
-      {rowData.pubIntegral !== undefined && rowData.pubIntegral > 0 ? (
+      {rowData.nbAtoms !== undefined && rowData.nbAtoms > 0 ? (
         rowData.diaIDs && rowData.diaIDs.length > 0 ? (
           <div
             onMouseEnter={() => visibilityChangeHandler(true)}
             onMouseLeave={() => visibilityChangeHandler(false)}
           >
-            {rowData.pubIntegral} {' ( '}
+            {rowData.nbAtoms} {' ( '}
             <span style={spanCss}>{diaIDs.length}</span>
             {' ) '}
             <sup>
@@ -82,12 +82,12 @@ function RangeAssignmentsColumn({
           </div>
         ) : assignment.isActive ? (
           <div>
-            {`${rowData.pubIntegral} (`}
+            {`${rowData.nbAtoms} (`}
             <span style={spanStyle}>0</span>
             {')'}
           </div>
         ) : (
-          rowData.pubIntegral
+          rowData.nbAtoms
         )
       ) : assignment.isActive ? (
         <div>

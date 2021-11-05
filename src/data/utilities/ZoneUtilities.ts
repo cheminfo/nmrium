@@ -1,7 +1,8 @@
 import { DatumKind } from '../constants/SignalsKinds';
+import { Zone } from '../data2d/Spectrum2D';
 
-export function getDiaIDs(zone, axis) {
-  return [].concat(
+export function getDiaIDs(zone: Zone, axis: string): string[] {
+  return ([] as string[]).concat(
     zone[axis].diaIDs || [],
     zone.signals
       ? zone.signals.map((signal) => signal[axis].diaIDs || []).flat()
@@ -9,30 +10,26 @@ export function getDiaIDs(zone, axis) {
   );
 }
 
-export function getPubIntegral(zone, axis) {
-  return (
-    zone[axis].nbAtoms ||
-    (zone.signals
-      ? zone.signals.reduce(
-          (sum, signal) =>
-            signal[axis].nbAtoms ? sum + signal[axis].nbAtoms : sum,
-          0,
-        )
-      : 0)
-  );
+export function getNbAtoms(zone: Zone, axis: string) {
+  return zone.signals
+    ? zone.signals.reduce(
+        (sum, signal) =>
+          signal[axis].nbAtoms ? sum + signal[axis].nbAtoms : sum,
+        0,
+      )
+    : 0;
 }
 
-export function setPubIntegral(zone, axis) {
-  zone[axis].pubIntegral = getPubIntegral(zone, axis);
-  if (zone[axis].pubIntegral === 0) {
-    delete zone[axis].pubIntegral;
+export function setNbAtoms(zone: Zone, axis: string): void {
+  zone[axis].nbAtoms = getNbAtoms(zone, axis);
+  if (zone[axis].nbAtoms === 0) {
+    delete zone[axis].nbAtoms;
   }
 }
 
-export function resetDiaIDs(zone, axis) {
+export function resetDiaIDs(zone: Zone, axis: string) {
   delete zone[axis].diaIDs;
   delete zone[axis].nbAtoms;
-  delete zone.pubIntegral;
   zone.signals.forEach((signal) => {
     delete signal[axis].diaIDs;
     delete signal[axis].nbAtoms;
@@ -40,22 +37,22 @@ export function resetDiaIDs(zone, axis) {
   return zone;
 }
 
-export function checkZoneKind(zone) {
+export function checkZoneKind(zone: Zone): boolean {
   return zone.kind === DatumKind.signal;
 }
 
-export function checkSignalKinds(zone, kinds) {
+export function checkSignalKinds(zone: Zone, kinds: string[]): boolean {
   return !zone.signals.some(
     (_signal) => _signal.kind === undefined || !kinds.includes(_signal.kind),
   );
 }
 
 export function unlink(
-  zone,
-  isOnZoneLevel?: any,
-  signalIndex?: any,
-  axis?: any,
-) {
+  zone: Zone,
+  isOnZoneLevel?: boolean,
+  signalIndex?: number,
+  axis?: string,
+): Zone {
   if (isOnZoneLevel !== undefined && axis !== undefined) {
     if (isOnZoneLevel === true) {
       delete zone[axis].diaIDs;
@@ -68,24 +65,30 @@ export function unlink(
       delete zone.signals[signalIndex][axis].diaIDs;
       delete zone.signals[signalIndex][axis].nbAtoms;
     }
-    setPubIntegral(zone, axis);
+    setNbAtoms(zone, axis);
   } else if (axis !== undefined) {
     resetDiaIDs(zone, axis);
-    setPubIntegral(zone, axis);
+    setNbAtoms(zone, axis);
   } else {
     ['x', 'y'].forEach((key) => {
       resetDiaIDs(zone, key);
-      setPubIntegral(zone, key);
+      setNbAtoms(zone, key);
     });
   }
   return zone;
 }
 
-export function unlinkInAssignmentData(assignmentData, zones, axis?: any) {
-  const ids = zones.reduce((acc, zone) => {
-    acc.push(zone.id);
+export function unlinkInAssignmentData(
+  assignmentData,
+  zones: Partial<Zone>[],
+  axis?: string,
+): void {
+  const ids = zones.reduce((acc: string[], zone) => {
+    if (zone.id) {
+      acc.push(zone.id);
+    }
     if (zone.signals) {
-      acc.concat(zone.signals.map((signal) => signal.id, []));
+      acc = acc.concat(zone.signals.map((signal) => signal.id, []));
     }
     return acc;
   }, []);
