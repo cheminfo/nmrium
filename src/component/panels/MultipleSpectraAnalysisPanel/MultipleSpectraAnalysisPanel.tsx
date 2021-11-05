@@ -176,11 +176,9 @@ function MultipleSpectraAnalysisPanelInner({
         <ReactCardFlip
           isFlipped={isFlipped}
           infinite
-          containerStyle={{ overflow: 'hidden' }}
+          containerStyle={{ overflow: 'hidden', height: '100%' }}
         >
-          <div className="table-container">
-            <MultipleSpectraAnalysisTable data={data} activeTab={activeTab} />
-          </div>
+          <MultipleSpectraAnalysisTable data={data} activeTab={activeTab} />
           <MultipleSpectraAnalysisPreferences
             data={data}
             onAfterSave={afterSaveHandler}

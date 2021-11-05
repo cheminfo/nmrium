@@ -2,6 +2,7 @@ import { predictAll, signalsToXY, signals2DToZ } from 'nmr-processing';
 import OCL from 'openchemlib/full';
 
 import { PredictionProps } from '../component/modal/PredictSpectraModal';
+import { UsedColors } from '../types/UsedColors';
 
 import { DatumKind } from './constants/SignalsKinds';
 import {
@@ -30,7 +31,7 @@ export async function predictSpectra(molfile: string): Promise<any> {
 export function generateSpectra(
   data: Record<string, any>,
   inputOptions: PredictionProps,
-  usedColors: Array<string> = [],
+  usedColors: UsedColors,
 ): Array<Datum1D | Datum2D> {
   const spectra: Array<Datum1D | Datum2D> = [];
   for (const experiment in data) {
@@ -74,7 +75,7 @@ function generated1DSpectrum(params: {
   inputOptions: PredictionProps;
   spectrum: any;
   experiment: string;
-  usedColors: string[];
+  usedColors: UsedColors;
 }) {
   const { spectrum, inputOptions, experiment, usedColors } = params;
 
@@ -141,16 +142,16 @@ function generated2DSpectrum(params: {
   inputOptions: PredictionProps;
   spectrum: any;
   experiment: string;
-  usedColors: string[];
+  usedColors: UsedColors;
 }) {
   const { spectrum, inputOptions, experiment, usedColors } = params;
-  const { signals, zones, nucleus } = spectrum;
+  const { signals, zones, nuclei } = spectrum;
 
-  const xOption = inputOptions['1d'][nucleus[0]];
-  const yOption = inputOptions['1d'][nucleus[1]];
+  const xOption = inputOptions['1d'][nuclei[0]];
+  const yOption = inputOptions['1d'][nuclei[1]];
 
-  const width = get2DWidth(nucleus);
-  const frequency = getFrequency(nucleus, inputOptions.frequency);
+  const width = get2DWidth(nuclei);
+  const frequency = getFrequency(nuclei, inputOptions.frequency);
 
   const spectrumData = signals2DToZ(signals, {
     from: { x: xOption.from, y: yOption.from },
@@ -166,7 +167,7 @@ function generated2DSpectrum(params: {
     {
       data: { ...spectrumData, noise: 0.01 },
       info: {
-        nucleus,
+        nucleus: nuclei,
         originFrequency: frequency,
         baseFrequency: frequency,
         pulseSequence: experiment,

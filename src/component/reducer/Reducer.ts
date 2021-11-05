@@ -9,6 +9,7 @@ import { Contours } from '../../data/data2d/Spectrum2D';
 import migrateData from '../../data/migration';
 import { Molecule } from '../../data/molecules/Molecule';
 import generateID from '../../data/utilities/generateID';
+import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
 import { DefaultTolerance } from '../panels/SummaryPanel/CorrelationTable/Constants';
 import { options } from '../toolbar/ToolTypes';
@@ -123,6 +124,7 @@ export const initialState: State = {
       showRangesIntegrals: true,
     },
   },
+  usedColors: { '1d': [], '2d': [] },
 };
 
 export interface ExclusionZoneState {
@@ -358,6 +360,8 @@ export interface State {
       showRangesIntegrals: boolean;
     };
   };
+
+  usedColors: UsedColors;
 }
 
 export function initState(state: State): State {
@@ -379,7 +383,7 @@ export function initState(state: State): State {
 }
 
 export function dispatchMiddleware(dispatch) {
-  const usedColors = { '1d': [], '2d': [] };
+  const usedColors: UsedColors = { '1d': [], '2d': [] };
 
   return (action) => {
     switch (action.type) {
@@ -387,7 +391,7 @@ export function dispatchMiddleware(dispatch) {
         if (action.payload) {
           const { spectra, ...res } = migrateData(action.payload);
           void SpectraManager.fromJSON(spectra, usedColors).then((data) => {
-            action.payload = { spectra: data, ...res };
+            action.payload = { spectra: data, ...res, usedColors };
             dispatch(action);
           });
         }
@@ -399,7 +403,7 @@ export function dispatchMiddleware(dispatch) {
         const data = migrateData(parsedData);
         void SpectraManager.fromJSON(data.spectra, usedColors).then(
           (spectra) => {
-            action.payload = Object.assign(data, { spectra });
+            action.payload = Object.assign(data, { spectra, usedColors });
             dispatch(action);
           },
         );
@@ -412,7 +416,7 @@ export function dispatchMiddleware(dispatch) {
             zipFile.binary,
             usedColors,
           ).then((data) => {
-            action.payload = data;
+            action.payload = { data, usedColors };
             dispatch(action);
           });
         }
@@ -420,7 +424,7 @@ export function dispatchMiddleware(dispatch) {
       }
       case types.LOAD_NMREDATA_FILE: {
         void nmredataToNmrium(action.file, usedColors).then((data) => {
-          action.payload = data;
+          action.payload = Object.assign(data, { usedColors });
           dispatch(action);
         });
         break;
@@ -428,11 +432,11 @@ export function dispatchMiddleware(dispatch) {
       case types.PREDICT_SPECTRA: {
         const {
           mol: { molfile },
+          options,
         } = action.payload;
         void predictSpectra(molfile).then(
-          (result) => {
-            action.payload.data = result;
-            action.payload.usedColors = usedColors;
+          (data) => {
+            action.payload = { data, options };
             dispatch(action);
           },
           () => {

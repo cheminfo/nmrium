@@ -141,7 +141,6 @@ export interface NMRiumProps {
   mode?: NMRiumMode;
   preferences?: NMRiumPreferences;
   emptyText?: ReactNode;
-  initialShowPanels?: boolean;
   /**
    * Returns a custom spinner that will be rendered while loading data.
    */
@@ -164,6 +163,7 @@ export type NMRiumPreferences = Partial<{
     hideZonesPanel: boolean;
     hideSummaryPanel: boolean;
     hideMultipleSpectraAnalysisPanel: boolean;
+    hideDatabasePanel: boolean;
   }>;
   toolBarButtons: Partial<{
     hideZoomTool: boolean;

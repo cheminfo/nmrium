@@ -1,6 +1,6 @@
 import { Accordion } from 'analysis-ui-components';
 import lodashGet from 'lodash/get';
-import { useCallback, memo } from 'react';
+import { useCallback, memo, ReactElement, CSSProperties } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
@@ -20,12 +20,21 @@ import ZonesPanel from './ZonesPanel/ZonesPanel';
 import DatabasePanel from './databasePanel/DatabasePanel';
 import FilterPanel from './filtersPanel/FilterPanel';
 
-const accordionItems = [
+interface AccordionItem {
+  title: string;
+  component: ReactElement;
+  openWhen: Array<string | number> | null;
+  style?: CSSProperties;
+  hidePreferenceKey: string;
+  mode: '1D' | '2D' | null;
+  isExperimental?: boolean;
+}
+
+const accordionItems: AccordionItem[] = [
   {
     title: 'Spectra',
     component: <SpectrumListPanel />,
     openWhen: null,
-    style: '',
     hidePreferenceKey: 'hideSpectraPanel',
     mode: null,
   },
@@ -41,7 +50,6 @@ const accordionItems = [
     title: 'Peaks',
     component: <PeaksPanel />,
     openWhen: [options.peakPicking.id],
-    style: '',
     hidePreferenceKey: 'hidePeaksPanel',
     mode: null,
   },
@@ -49,7 +57,6 @@ const accordionItems = [
     title: 'Filters',
     component: <FilterPanel />,
     openWhen: null,
-    style: '',
     hidePreferenceKey: 'hideFiltersPanel',
     mode: null,
   },
@@ -57,7 +64,6 @@ const accordionItems = [
     title: 'Integrals',
     component: <IntegralPanel />,
     openWhen: [options.integral.id],
-    style: '',
     hidePreferenceKey: 'hideIntegralsPanel',
     mode: null,
   },
@@ -65,7 +71,6 @@ const accordionItems = [
     title: 'Ranges',
     component: <RangesPanel />,
     openWhen: [options.rangesPicking.id],
-    style: '',
     hidePreferenceKey: 'hideRangesPanel',
     mode: DISPLAYER_MODE.DM_1D,
   },
@@ -73,7 +78,6 @@ const accordionItems = [
     title: 'Multiple Spectra Analysis',
     component: <MultipleSpectraAnalysisPanel />,
     openWhen: [options.multipleSpectraAnalysis.id],
-    style: '',
     hidePreferenceKey: 'hideMultipleSpectraAnalysisPanel',
     mode: null,
   },
@@ -81,7 +85,6 @@ const accordionItems = [
     title: 'Zones',
     component: <ZonesPanel />,
     openWhen: [options.zone2D.id],
-    style: '',
     hidePreferenceKey: 'hideZonesPanel',
     mode: DISPLAYER_MODE.DM_2D,
   },
@@ -89,7 +92,6 @@ const accordionItems = [
     title: 'Summary',
     component: <SummaryPanel />,
     openWhen: [],
-    style: '',
     hidePreferenceKey: 'hideSummaryPanel',
     mode: null,
   },
@@ -97,7 +99,6 @@ const accordionItems = [
     title: 'Structures',
     component: <MoleculePanel />,
     openWhen: [options.rangesPicking.id],
-    style: '',
     hidePreferenceKey: 'hideStructuresPanel',
     mode: null,
   },
@@ -105,10 +106,8 @@ const accordionItems = [
     title: 'Database',
     component: <DatabasePanel />,
     openWhen: [],
-    style: '',
-    hidePreferenceKey: null,
+    hidePreferenceKey: 'hideDatabasePanel',
     mode: null,
-    isExperimental: true,
   },
 ];
 
@@ -141,7 +140,7 @@ function PanelsInner({ displayerMode }) {
           return (
             check(item) && (
               <Accordion.Item
-                key={`${item.title}-${index}`}
+                key={item.title}
                 title={item.title}
                 defaultOpened={index === 0}
               >

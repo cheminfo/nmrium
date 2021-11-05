@@ -13,7 +13,7 @@ declare module 'smart-array-filter' {
   interface filterOptions {
     limit?: number;
     caseSensitive?: boolean;
-    keywords?: string[];
+    keywords?: string | string[];
     index?: boolean;
     predicate?: 'AMD' | 'OR';
   }

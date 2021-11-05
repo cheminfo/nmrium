@@ -3,6 +3,9 @@ import { useMemo, memo, useCallback, Fragment } from 'react';
 
 import { useDispatch } from '../../context/DispatchContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
+import addCustomColumn, {
+  CustomColumn,
+} from '../../elements/ReactTable/utility/addCustomColumn';
 import { FILTER_SPECTRA_COLUMN } from '../../reducer/types/Types';
 import Eval from '../../utility/Evaluate';
 import { useFormatNumberByNucleus } from '../../utility/FormatNumber';
@@ -42,7 +45,7 @@ function MultipleSpectraAnalysisTable({
   );
 
   const tableColumns = useMemo(() => {
-    const initColumns = [
+    const columns: CustomColumn[] = [
       {
         Header: '#',
         index: 0,
@@ -50,49 +53,46 @@ function MultipleSpectraAnalysisTable({
       },
     ];
 
-    const columns = initColumns;
-    const setCustomColumn = (array, index, columnLabel, cellHandler) => {
-      const columnData = data.columns[columnLabel];
-      array.push({
-        index: index,
-        Header: () => (
-          <ColumnHeader
-            charLabel={columnLabel}
-            data={columnData}
-            onColumnFilter={(valueKey) =>
-              columnFilterHandler(columnLabel, valueKey)
-            }
-            rangeLabel={
-              columnData.from && columnData.to
-                ? `${format(columnData.from)} - ${format(columnData.to)}`
-                : ''
-            }
-          />
-        ),
-        id: columnLabel,
-        sortType: 'basic',
-        Cell: ({ row }) => cellHandler(row),
-      });
-    };
+    function cellHandler(row, columnKey, valueKey) {
+      const value = row.original[columnKey][valueKey];
+      const result =
+        value instanceof Error ? (
+          <span style={{ color: 'red' }}>{value.message}</span>
+        ) : (
+          format(value)
+        );
+      return result;
+    }
+
+    function headerHandler(columnData, columnKey) {
+      return (
+        <ColumnHeader
+          charLabel={columnKey}
+          data={columnData}
+          onColumnFilter={(valueKey) =>
+            columnFilterHandler(columnKey, valueKey)
+          }
+          rangeLabel={
+            columnData.from && columnData.to
+              ? `${format(columnData.from)} - ${format(columnData.to)}`
+              : ''
+          }
+        />
+      );
+    }
+
     if (data.columns) {
-      Object.keys(data.columns).forEach((key) => {
-        const { valueKey, index: columnIndex } = data.columns[key];
-        setCustomColumn(columns, columnIndex + 1, key, (row) => {
-          const value = row.original[key][valueKey];
-          const result =
-            value instanceof Error ? (
-              <span style={{ color: 'red' }}>{value.message}</span>
-            ) : (
-              format(value)
-            );
-          return result;
+      Object.keys(data.columns).forEach((columnKey) => {
+        const { valueKey, index: columnIndex } = data.columns[columnKey];
+        addCustomColumn(columns, {
+          index: columnIndex + 1,
+          Cell: ({ row }) => cellHandler(row, columnKey, valueKey),
+          Header: () => headerHandler(data.columns[columnKey], columnKey),
+          id: columnKey,
         });
       });
     }
-    const resultColumns = columns ? columns : initColumns;
-    return resultColumns.sort(
-      (object1, object2) => object1.index - object2.index,
-    );
+    return columns.sort((object1, object2) => object1.index - object2.index);
   }, [columnFilterHandler, data.columns, format]);
 
   return data.values && data.values.length > 0 ? (

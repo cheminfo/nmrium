@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import { useMemo, memo } from 'react';
+import { useMemo, memo, CSSProperties } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { SmilesSvgRenderer } from 'react-ocl';
 
 import { usePreferences } from '../../context/PreferencesContext';
 import ReactTable from '../../elements/ReactTable/ReactTable';
-import setCustomColumn, {
+import addCustomColumn, {
   CustomColumn,
-} from '../../elements/ReactTable/utility/setCustomColumn';
+} from '../../elements/ReactTable/utility/addCustomColumn';
 import { HighlightedSource } from '../../highlight';
 import { getValue } from '../../utility/LocalStorage';
 import NoTableData from '../extra/placeholder/NoTableData';
@@ -18,6 +18,12 @@ interface DatabaseTableProps {
   onAdd: (row: any) => void;
 }
 
+const overFlowStyle: CSSProperties = {
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
+};
+
 const COLUMNS: (CustomColumn & { showWhen: string })[] = [
   {
     showWhen: 'showNames',
@@ -25,6 +31,12 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
     Header: 'names',
     accessor: (row) => (row.names ? row.names.join(',') : ''),
     enableRowSpan: true,
+    style: {
+      width: '100px',
+      minWidth: '100px',
+      maxWidth: '100px',
+      ...overFlowStyle,
+    },
   },
   {
     showWhen: 'showRange',
@@ -56,12 +68,22 @@ const COLUMNS: (CustomColumn & { showWhen: string })[] = [
     index: 6,
     Header: 'J (Hz)',
     accessor: 'coupling',
+    style: {
+      width: '60px',
+      minWidth: '60px',
+      ...overFlowStyle,
+    },
   },
   {
     showWhen: 'showSolvent',
     index: 7,
     Header: 'Solvent',
     accessor: 'solvent',
+    style: {
+      width: '80px',
+      minWidth: '80px',
+      ...overFlowStyle,
+    },
   },
   {
     showWhen: 'showSmiles',
@@ -125,7 +147,7 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
     for (const col of COLUMNS) {
       const { showWhen, ...colParams } = col;
       if (databasePreferences[showWhen]) {
-        setCustomColumn(columns, colParams);
+        addCustomColumn(columns, colParams);
       }
     }
 
@@ -137,6 +159,9 @@ function DatabaseTable({ data, onAdd }: DatabaseTableProps) {
       data={data}
       columns={tableColumns}
       highlightedSource={HighlightedSource.DATABASE}
+      groupKey="index"
+      approxItemHeight={30}
+      enableVirtualScroll
     />
   ) : (
     <NoTableData />
