@@ -9,7 +9,7 @@ export function addRanges(signals, datum) {
       delta,
       diaIDs = [],
       multiplicity,
-      integral,
+      integration,
     } = signal;
     const fromTo = computeFromTo({ delta, js, frequency });
     if (js && multiplicity) {
@@ -20,9 +20,10 @@ export function addRanges(signals, datum) {
         }
       }
     }
+
     ranges.push({
       ...fromTo,
-      integral,
+      integration,
       signals: [
         {
           js,
