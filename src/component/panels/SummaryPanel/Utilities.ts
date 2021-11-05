@@ -2,6 +2,7 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 import lodashGet from 'lodash/get';
 import {
   addLink,
+  buildCorrelation,
   buildLink,
   getLinkDim,
   removeLink,
@@ -52,10 +53,10 @@ function findSignalMatch1D(
     const signal = findSignal2D(spectrum, link.signal.id);
     if (signal) {
       const otherAxis = link.axis === 'x' ? 'y' : 'x';
-      return (
-        signal[otherAxis].delta * factor >= xDomain0 &&
-        signal[otherAxis].delta * factor <= xDomain1
-      );
+      const delta = signal[otherAxis]?.delta;
+      if (delta !== undefined) {
+        return delta * factor >= xDomain0 && delta * factor <= xDomain1;
+      }
     }
   }
   return false;
@@ -72,7 +73,7 @@ function findSignalMatch2D(
 ): boolean {
   if (spectrum && spectrum.info.dimension === 2) {
     const signal = findSignal2D(spectrum, link.signal.id);
-    if (signal) {
+    if (signal?.x.delta && signal?.y.delta) {
       return (
         signal.x.delta * factor >= xDomain0 &&
         signal.x.delta * factor <= xDomain1 &&
@@ -147,18 +148,206 @@ function cloneCorrelationAndEditLink(
       _correlation,
       linkDim === 1 ? buildNewLink1D(link) : buildNewLink2D(link, axis),
     );
-  } else if (action === 'remove') {
+  } else if (action === 'remove' || action === 'unmove') {
     removeLink(_correlation, axis === 'x' ? split[0] : split[1]);
-  } else if (action === 'unmove') {
-    const _link = _correlation.link.find((_link) =>
-      axis === 'x' ? _link.id === split[0] : _link.id === split[1],
-    );
-    if (_link) {
-      delete _link.edited.moved;
-    }
   }
 
   return _correlation;
+}
+
+function getEditedCorrelations({
+  correlationDim1,
+  correlationDim2,
+  selectedCorrelationValueDim1,
+  selectedCorrelationValueDim2,
+  action,
+  link,
+  correlations,
+}) {
+  const selectedCorrelationDim1 = correlations.find(
+    (correlation) => correlation.id === selectedCorrelationValueDim1,
+  );
+  const selectedCorrelationDim2 = correlations.find(
+    (correlation) => correlation.id === selectedCorrelationValueDim2,
+  );
+  const hasChangedDim1 = selectedCorrelationDim1?.id !== correlationDim1.id;
+  const hasChangedDim2 =
+    correlationDim2 && selectedCorrelationDim2?.id !== correlationDim2?.id;
+  const linkDim = getLinkDim(link);
+
+  const editedCorrelations: Types.Correlation[] = [];
+  const buildCorrelationDataOptions: {
+    skipDataUpdate?: boolean;
+  } = {};
+
+  if (action === 'move') {
+    if (linkDim === 1) {
+      // modify current cell correlation
+      const _correlationDim1 = cloneCorrelationAndEditLink(
+        correlationDim1,
+        link,
+        'x',
+        'remove',
+      );
+      // modify selected correlation
+      let newCorrelationDim1: Types.Correlation;
+      if (selectedCorrelationDim1) {
+        newCorrelationDim1 = cloneCorrelationAndEditLink(
+          hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,
+          link,
+          'x',
+          'add',
+        );
+      } else {
+        newCorrelationDim1 = buildCorrelation({
+          atomType: correlationDim1.atomType,
+          link: [buildNewLink1D(link)],
+        });
+      }
+      editedCorrelations.push(_correlationDim1, newCorrelationDim1);
+      buildCorrelationDataOptions.skipDataUpdate = true;
+    } else if (linkDim === 2) {
+      // modify current cell correlations
+      const _correlationDim1 = cloneCorrelationAndEditLink(
+        correlationDim1,
+        link,
+        'x',
+        'remove',
+      );
+      editedCorrelations.push(_correlationDim1);
+      const _correlationDim2 = cloneCorrelationAndEditLink(
+        correlationDim2,
+        link,
+        'y',
+        'remove',
+      );
+      editedCorrelations.push(_correlationDim2);
+
+      // modify selected correlations
+      if (selectedCorrelationDim1 && selectedCorrelationDim2) {
+        editedCorrelations.push(
+          cloneCorrelationAndEditLink(
+            hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,
+            link,
+            'x',
+            'add',
+          ),
+        );
+        editedCorrelations.push(
+          cloneCorrelationAndEditLink(
+            hasChangedDim2 ? selectedCorrelationDim2 : _correlationDim2,
+            link,
+            'y',
+            'add',
+          ),
+        );
+      } else if (
+        selectedCorrelationDim1 &&
+        selectedCorrelationValueDim2 === 'new'
+      ) {
+        editedCorrelations.push(
+          cloneCorrelationAndEditLink(
+            hasChangedDim1 ? selectedCorrelationDim1 : _correlationDim1,
+            link,
+            'x',
+            'add',
+          ),
+        );
+        editedCorrelations.push(
+          buildCorrelation({
+            atomType: correlationDim2.atomType,
+            link: [buildNewLink2D(link, 'y')],
+          }),
+        );
+      } else if (
+        selectedCorrelationValueDim1 === 'new' &&
+        selectedCorrelationDim2
+      ) {
+        editedCorrelations.push(
+          buildCorrelation({
+            atomType: correlationDim1.atomType,
+            link: [buildNewLink2D(link, 'x')],
+          }),
+        );
+        editedCorrelations.push(
+          cloneCorrelationAndEditLink(
+            hasChangedDim2 ? selectedCorrelationDim2 : _correlationDim2,
+            link,
+            'y',
+            'add',
+          ),
+        );
+      } else if (
+        selectedCorrelationValueDim1 === 'new' &&
+        selectedCorrelationValueDim2 === 'new'
+      ) {
+        editedCorrelations.push(
+          buildCorrelation({
+            atomType: correlationDim1.atomType,
+            link: [buildNewLink2D(link, 'x')],
+          }),
+        );
+        editedCorrelations.push(
+          buildCorrelation({
+            atomType: correlationDim2.atomType,
+            link: [buildNewLink2D(link, 'y')],
+          }),
+        );
+      }
+      buildCorrelationDataOptions.skipDataUpdate = true;
+    }
+  } else if (action === 'remove') {
+    const _correlationDim1 = cloneCorrelationAndEditLink(
+      correlationDim1,
+      link,
+      'x',
+      'remove',
+    );
+    editedCorrelations.push(_correlationDim1);
+    if (getLinkDim(link) === 2) {
+      const _correlationDim2 = cloneCorrelationAndEditLink(
+        correlationDim2,
+        link,
+        'y',
+        'remove',
+      );
+      editedCorrelations.push(_correlationDim2);
+    }
+  } else if (action === 'unmove') {
+    if (linkDim === 1) {
+      if (selectedCorrelationDim1) {
+        editedCorrelations.push(
+          cloneCorrelationAndEditLink(
+            selectedCorrelationDim1,
+            link,
+            'x',
+            'unmove',
+          ),
+        );
+      }
+    } else if (linkDim === 2) {
+      if (selectedCorrelationDim1 && selectedCorrelationDim2) {
+        editedCorrelations.push(
+          cloneCorrelationAndEditLink(
+            selectedCorrelationDim1,
+            link,
+            'x',
+            'unmove',
+          ),
+        );
+        editedCorrelations.push(
+          cloneCorrelationAndEditLink(
+            selectedCorrelationDim2,
+            link,
+            'y',
+            'unmove',
+          ),
+        );
+      }
+    }
+  }
+
+  return { editedCorrelations, buildCorrelationDataOptions };
 }
 
 export {
@@ -169,5 +358,6 @@ export {
   findSignalMatch2D,
   getAbbreviation,
   getAtomType,
+  getEditedCorrelations,
   getLabelColor,
 };

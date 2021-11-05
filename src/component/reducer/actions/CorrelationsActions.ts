@@ -54,12 +54,22 @@ function handleSetTolerance(
 
 function handleSetCorrelation(
   draft: Draft<State>,
-  payload: { id: string; correlation: Types.Correlation },
+  payload: {
+    id: string;
+    correlation: Types.Correlation;
+    options: Types.Options;
+  },
 ) {
   const state = original(draft) as State;
   const { correlations } = state;
-  const { id, correlation } = payload;
+  const { id, correlation, options } = payload;
   draft.correlations = setCorrelation(correlations, id, correlation);
+  if (options) {
+    draft.correlations = {
+      ...draft.correlations,
+      options: { ...draft.correlations.options, ...options },
+    };
+  }
   handleUpdateCorrelations(draft);
 }
 

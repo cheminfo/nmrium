@@ -9,7 +9,7 @@ import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
 import { getLabelColor } from '../Utilities';
 
-import EditLinkModal from './EditLinkModal';
+import EditLinkModal from './editLink/EditLinkModal';
 
 function AdditionalColumnHeader({
   spectraData,
@@ -111,8 +111,11 @@ function AdditionalColumnHeader({
           .filter((link) => getLinkDim(link) === 1 && link.pseudo === false)
           .map((link) => {
             return {
-              label: `edit 1D (${link.signal.delta.toFixed(3)})`,
+              label: `edit 1D (${link.signal.delta.toFixed(3)}${
+                link.edited?.moved === true ? '[MOVED]' : ''
+              })`,
               onClick: () => {
+                highlightAdditionalColumn.hide();
                 modal.show(
                   <EditLinkModal
                     onClose={() => modal.close()}
@@ -122,7 +125,7 @@ function AdditionalColumnHeader({
                     correlationDim2={undefined}
                     correlations={correlationsData.values}
                   />,
-                  { position: positions.TOP_LEFT, isBackgroundBlur: false },
+                  { position: positions.MIDDLE_RIGHT, isBackgroundBlur: false },
                 );
               },
             };
@@ -131,12 +134,32 @@ function AdditionalColumnHeader({
             {
               label: `delete all (${correlation.label.origin})`,
               onClick: () => {
-                onEdit([correlation], 'removeAll');
+                modal.showConfirmDialog({
+                  message: `All signals of ${correlation.label.origin} (${(
+                    getCorrelationDelta(correlation) as number
+                  ).toFixed(2)}) will be deleted. Are you sure?`,
+                  buttons: [
+                    {
+                      text: 'Yes',
+                      handler: () => {
+                        onEdit([correlation], 'removeAll');
+                      },
+                    },
+                    { text: 'No' },
+                  ],
+                });
+                highlightAdditionalColumn.hide();
               },
             },
           ])
       : [];
-  }, [correlation, correlationsData.values, modal, onEdit]);
+  }, [
+    correlation,
+    correlationsData.values,
+    highlightAdditionalColumn,
+    modal,
+    onEdit,
+  ]);
 
   const contextMenuHandler = useCallback(
     (e) => {

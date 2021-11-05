@@ -45,7 +45,10 @@ function MolecularFormulaInput({
   const [isValidMF, setIsValidMF] = useState(true);
   const [hasChanged, setHasChanged] = useState(false);
 
-  const checkMF = useCallback((mf) => {
+  const checkMF = useCallback((mf: string) => {
+    if (mf.trim().length === 0) {
+      return false;
+    }
     try {
       getAtomsFromMF(mf);
       return true;
@@ -76,7 +79,7 @@ function MolecularFormulaInput({
     <div css={inputStyle}>
       <input type="text" onChange={onChangeHandler} defaultValue={previousMF} />
       <button type="button" onClick={onSaveHandler} disabled={!isValidMF}>
-        Set
+        {isValidMF ? 'Set' : 'Invalid'}
       </button>
     </div>
   );

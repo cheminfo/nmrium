@@ -17,7 +17,7 @@ import { useHighlight } from '../../../highlight';
 
 import AdditionalColumnField from './AdditionalColumnField';
 import { Hybridizations } from './Constants';
-import EditLinkModal from './EditLinkModal';
+import EditLinkModal from './editLink/EditLinkModal';
 
 const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
@@ -198,8 +198,11 @@ function CorrelationTableRow({
           .filter((link) => getLinkDim(link) === 1 && link.pseudo === false)
           .map((link) => {
             return {
-              label: `edit 1D (${link.signal.delta.toFixed(3)})`,
+              label: `edit 1D (${link.signal.delta.toFixed(3)})${
+                link.edited?.moved === true ? '[MOVED]' : ''
+              }`,
               onClick: () => {
+                highlightRow.hide();
                 modal.show(
                   <EditLinkModal
                     onClose={() => modal.close()}
@@ -209,7 +212,10 @@ function CorrelationTableRow({
                     correlationDim2={undefined}
                     correlations={correlations}
                   />,
-                  { position: positions.TOP_LEFT, isBackgroundBlur: false },
+                  {
+                    position: positions.MIDDLE_RIGHT,
+                    isBackgroundBlur: false,
+                  },
                 );
               },
             };
@@ -218,12 +224,35 @@ function CorrelationTableRow({
             {
               label: `delete ${correlation.label.origin}`,
               onClick: () => {
-                onEditCorrelationTableCellHandler([correlation], 'removeAll');
+                modal.showConfirmDialog({
+                  message: `All signals of ${correlation.label.origin} (${(
+                    getCorrelationDelta(correlation) as number
+                  ).toFixed(2)}) will be deleted. Are you sure?`,
+                  buttons: [
+                    {
+                      text: 'Yes',
+                      handler: () => {
+                        onEditCorrelationTableCellHandler(
+                          [correlation],
+                          'removeAll',
+                        );
+                      },
+                    },
+                    { text: 'No' },
+                  ],
+                });
+                highlightRow.hide();
               },
             },
           ])
       : [];
-  }, [correlation, correlations, onEditCorrelationTableCellHandler, modal]);
+  }, [
+    correlation,
+    highlightRow,
+    modal,
+    onEditCorrelationTableCellHandler,
+    correlations,
+  ]);
 
   const contextMenuHandler = useCallback(
     (e) => {

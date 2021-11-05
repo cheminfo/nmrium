@@ -43,8 +43,7 @@ const panelStyle = css`
   text-align: center;
   height: 100%;
   width: 100%;
-  justify-content: center,
-  align-items: 'center',
+  justify-content: center;
 
   button {
     border-radius: 5px;
@@ -58,24 +57,17 @@ const panelStyle = css`
     background-color: transparent;
   }
 
-  .overview-container {
+  .table-view-selection {
     width: 100%;
-    margin-left: 15px;
     white-space: nowrap;
-    span {
-      margin-left: 8px;
-    }
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
-
-  .homoHeteroKinds-container {
-    width: 100%;
-    margin-left: 15px;
-    span {
-      margin-left: 7px;
-    }
-  }
-
-
 `;
 
 function SummaryPanel() {
@@ -97,7 +89,7 @@ function SummaryPanel() {
   const [
     selectedAdditionalColumnsAtomType,
     setSelectedAdditionalColumnsAtomType,
-  ] = useState<string>('-');
+  ] = useState<string>('H');
   const [showProtonsAsRows, setShowProtonsAsRows] = useState(false);
   const [filterIsActive, setFilterIsActive] = useState(false);
 
@@ -279,23 +271,16 @@ function SummaryPanel() {
   }, [correlationsData, handleOnSetShiftTolerance, modal]);
 
   const additionalColumnTypes = useMemo(() => {
-    const columnTypes = ['-'].concat(
+    const columnTypes = ['H', 'H-H'].concat(
       correlationsData
         ? correlationsData.values
             .map((correlation) => correlation.atomType)
-            .filter((atomType, i, array) => array.indexOf(atomType) === i)
+            .filter(
+              (atomType, i, array) =>
+                atomType !== 'H' && array.indexOf(atomType) === i,
+            )
         : [],
     );
-
-    if (columnTypes.includes('H')) {
-      columnTypes.push('H-H');
-    }
-
-    if (columnTypes.includes('H')) {
-      setSelectedAdditionalColumnsAtomType('H');
-    } else {
-      setSelectedAdditionalColumnsAtomType('-');
-    }
 
     return columnTypes.map((columnType) => {
       return {
@@ -365,6 +350,9 @@ function SummaryPanel() {
               protonsCount: values,
               edited: { ...correlation.edited, protonsCount: true },
             },
+            options: {
+              skipDataUpdate: true,
+            },
           },
         });
       }
@@ -382,6 +370,9 @@ function SummaryPanel() {
             ...correlation,
             hybridization: value,
             edited: { ...correlation.edited, hybridization: true },
+          },
+          options: {
+            skipDataUpdate: true,
           },
         },
       });
@@ -515,27 +506,28 @@ function SummaryPanel() {
             <FaSlidersH />
           </button>
         </ToolTip>
-        <div className="overview-container">
-          <Overview correlationsData={correlationsData} />
-        </div>
-        <div className="homoHeteroKinds-container">
-          <Select
-            onChange={(selection) => {
-              setSelectedAdditionalColumnsAtomType(selection);
-              if (selection === 'H-H') {
-                setShowProtonsAsRows(true);
-              } else {
-                setShowProtonsAsRows(false);
-              }
-            }}
-            data={additionalColumnTypes}
-            defaultValue={selectedAdditionalColumnsAtomType}
-            style={{
-              width: '65px',
-              height: '20px',
-              border: '1px solid grey',
-            }}
-          />
+        <Overview correlationsData={correlationsData} />
+        <div className="table-view-selection">
+          <span>
+            <label>View:</label>
+            <Select
+              onChange={(selection) => {
+                setSelectedAdditionalColumnsAtomType(selection);
+                if (selection === 'H-H') {
+                  setShowProtonsAsRows(true);
+                } else {
+                  setShowProtonsAsRows(false);
+                }
+              }}
+              data={additionalColumnTypes}
+              defaultValue={selectedAdditionalColumnsAtomType}
+              style={{
+                width: '70px',
+                height: '22px',
+                border: '1px solid grey',
+              }}
+            />
+          </span>
         </div>
       </DefaultPanelHeader>
       <CorrelationTable
