@@ -7,7 +7,7 @@ import ToggleButton from '../../elements/ToggleButton';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 
 const styles = css`
-  
+
   display: flex;
   flex-direction: row;
   border-bottom: 0.55px solid rgb(240, 240, 240);
@@ -31,7 +31,6 @@ const styles = css`
   .counter-label {
     margin: 0;
     text-align: right;
-    width: 100%;
     line-height: 22px;
     padding: 0px 10px;
     white-space: nowrap;
@@ -107,19 +106,18 @@ function DefaultPanelHeader({
         ) : null}
 
         {children}
-
-        {counter !== undefined && (
-          <p className="counter-label">
-            [{' '}
-            {filterIsActive &&
-            filterIsActive === true &&
-            counterFiltered !== undefined
-              ? `${counterFiltered}/${counter}`
-              : counter}{' '}
-            ]
-          </p>
-        )}
       </div>
+      {counter !== undefined && (
+        <p className="counter-label">
+          [{' '}
+          {filterIsActive &&
+          filterIsActive === true &&
+          counterFiltered !== undefined
+            ? `${counterFiltered}/${counter}`
+            : counter}{' '}
+          ]
+        </p>
+      )}
       {showSettingButton && (
         <ToolTip title="preferences" popupPlacement="left">
           <button type="button" onClick={onSettingClick}>
