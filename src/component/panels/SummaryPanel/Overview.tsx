@@ -8,7 +8,8 @@ import { ErrorColors, Errors } from './CorrelationTable/Constants';
 const styles = css`
   display: flex;
   width: 100%;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 300;
   white-space: nowrap;
   span {
     margin-left: 8px;

@@ -44,18 +44,6 @@ const panelStyle = css`
   height: 100%;
   width: 100%;
 
-  button {
-    border-radius: 5px;
-    margin-top: 3px;
-    margin-left: 2px;
-    border: none;
-    height: 16px;
-    width: 18px;
-    font-size: 12px;
-    padding: 0;
-    background-color: transparent;
-  }
-
   .extra-header-content {
     display: flex;
     width: 100%;
@@ -77,7 +65,7 @@ const panelStyle = css`
       white-space: nowrap;
 
       label {
-        font-size: 12px;
+        font-size: 13px;
       }
     }
   }
