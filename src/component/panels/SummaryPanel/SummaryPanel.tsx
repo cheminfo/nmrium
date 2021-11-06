@@ -43,30 +43,31 @@ const panelStyle = css`
   text-align: center;
   height: 100%;
   width: 100%;
-  justify-content: center;
 
-  button {
-    border-radius: 5px;
-    margin-top: 3px;
-    margin-left: 2px;
-    border: none;
-    height: 16px;
-    width: 18px;
-    font-size: 12px;
-    padding: 0;
-    background-color: transparent;
-  }
-
-  .table-view-selection {
-    width: 100%;
-    white-space: nowrap;
+  .extra-header-content {
     display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: flex-end;
-    margin-right: 10px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    width: 100%;
+
+    .overview-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+    }
+
+    .table-view-selection {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-right: 2px;
+
+      white-space: nowrap;
+
+      label {
+        font-size: 13px;
+      }
+    }
   }
 `;
 
@@ -506,28 +507,33 @@ function SummaryPanel() {
             <FaSlidersH />
           </button>
         </ToolTip>
-        <Overview correlationsData={correlationsData} />
-        <div className="table-view-selection">
-          <span>
-            <label>View:</label>
-            <Select
-              onChange={(selection) => {
-                setSelectedAdditionalColumnsAtomType(selection);
-                if (selection === 'H-H') {
-                  setShowProtonsAsRows(true);
-                } else {
-                  setShowProtonsAsRows(false);
-                }
-              }}
-              data={additionalColumnTypes}
-              defaultValue={selectedAdditionalColumnsAtomType}
-              style={{
-                width: '70px',
-                height: '22px',
-                border: '1px solid grey',
-              }}
-            />
-          </span>
+        <div className="extra-header-content">
+          <div className="overview-container">
+            <Overview correlationsData={correlationsData} />
+          </div>
+          <div className="table-view-selection">
+            <span>
+              <label>View:</label>
+              <Select
+                onChange={(selection) => {
+                  setSelectedAdditionalColumnsAtomType(selection);
+                  if (selection === 'H-H') {
+                    setShowProtonsAsRows(true);
+                  } else {
+                    setShowProtonsAsRows(false);
+                  }
+                }}
+                data={additionalColumnTypes}
+                defaultValue={selectedAdditionalColumnsAtomType}
+                style={{
+                  fontSize: '12px',
+                  width: '70px',
+                  height: '18px',
+                  border: '1px solid grey',
+                }}
+              />
+            </span>
+          </div>
         </div>
       </DefaultPanelHeader>
       <CorrelationTable
