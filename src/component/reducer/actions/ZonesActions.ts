@@ -59,18 +59,18 @@ function handleAutoZonesDetection(draft: Draft<State>, detectionOptions) {
   }
 }
 function handleAutoSpectraZonesDetection(draft: Draft<State>) {
-  // eslint-disable-next-line @typescript-eslint/prefer-for-of
-  for (let index = 0; index < draft.data.length; index++) {
-    if (draft.data[index].info.dimension === 2) {
-      const { minX, maxX, minY, maxY } = (draft.data[index] as Datum2D).data;
+  for (const datum of draft.data) {
+    if (datum.info.dimension === 2) {
+      const { minX, maxX, minY, maxY } = (datum as Datum2D).data;
       const detectionOptions = {
         selectedZone: { fromX: minX, toX: maxX, fromY: minY, toY: maxY },
         thresholdFactor: 1,
       };
-      const datum = draft.data[index] as Datum2D;
 
       const zones = detectZones(original(datum), detectionOptions);
-      datum.zones.values = datum.zones.values.concat(zones);
+      (datum as Datum2D).zones.values = (datum as Datum2D).zones.values.concat(
+        zones,
+      );
 
       handleOnChangeZonesData(draft);
     }

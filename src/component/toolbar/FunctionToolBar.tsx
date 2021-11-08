@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { Toolbar } from 'analysis-ui-components';
 import {
   SvgNmrBaselineCorrection,
@@ -30,33 +28,6 @@ import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { APPLY_FFT_FILTER, SET_SELECTED_FILTER } from '../reducer/types/Types';
 
 import { options } from './ToolTypes';
-
-const styles = css`
-  button {
-    border: none;
-    width: 30px;
-    height: 30px;
-    min-height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    outline: outline;
-    :focus {
-      outline: none !important;
-    }
-
-    &.fa {
-      svg {
-        font-size: 14px;
-      }
-    }
-    &.cheminfo {
-      svg {
-        font-size: 18px;
-      }
-    }
-  }
-`;
 
 interface FunctionToolBarInnerProps {
   defaultValue: string;
@@ -117,7 +88,7 @@ function FunctionToolBarInner({
     [preferences],
   );
   return (
-    <div css={styles}>
+    <>
       <ToggleButtonGroup value={option} onChange={handleChange}>
         {isButtonVisible('hideZoomTool') && (
           <ToggleButton
@@ -133,17 +104,15 @@ function FunctionToolBarInner({
         )}
 
         {isButtonVisible('hideZoomOutTool') && (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Toolbar.Item
-              id="zoom-out"
-              onClick={handleFullZoomOut}
-              title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
-            >
-              <div style={{ fontSize: 14 }}>
-                <FaExpand />
-              </div>
-            </Toolbar.Item>
-          </div>
+          <Toolbar.Item
+            id="zoom-out"
+            onClick={handleFullZoomOut}
+            title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
+          >
+            <div style={{ fontSize: 14 }}>
+              <FaExpand />
+            </div>
+          </Toolbar.Item>
         )}
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -299,7 +268,7 @@ function FunctionToolBarInner({
             <SvgNmrFourierTransform />
           </Toolbar.Item>
         )}
-    </div>
+    </>
   );
 }
 

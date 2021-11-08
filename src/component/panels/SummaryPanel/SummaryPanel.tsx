@@ -328,8 +328,7 @@ function SummaryPanel() {
   const editProtonsCountSaveHandler = useCallback(
     (correlation, valuesString) => {
       let values;
-      // eslint-disable-next-line prefer-named-capture-group
-      if (valuesString.match(/^([0-9],{0,1})+$/g)) {
+      if (/^(?:[0-9],{0,1})+$/g.test(valuesString)) {
         // allow digits followed by optional comma only
         values = valuesString
           .split(',')

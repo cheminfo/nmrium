@@ -17,6 +17,10 @@ export default () => {
     esbuild: {
       sourcemap: true,
     },
+    define: {
+      // TODO: https://github.com/Wildhoney/ReactShadow/pull/121
+      global: 'globalThis',
+    },
     build: {
       sourcemap: true,
       rollupOptions: {

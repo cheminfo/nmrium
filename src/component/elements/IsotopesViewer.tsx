@@ -1,6 +1,3 @@
-/* eslint-disable prefer-named-capture-group */
-/* eslint-disable react/no-danger */
-
 import { HTMLAttributes } from 'react';
 
 interface IsotopesViewerProps extends HTMLAttributes<HTMLDivElement> {
@@ -11,8 +8,9 @@ function IsotopesViewer({ value = '', ...othersProps }: IsotopesViewerProps) {
   return (
     <div
       {...othersProps}
+      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{
-        __html: value.replace(/([0-9]+)/g, '<sup>$1</sup>'),
+        __html: value.replace(/(?<isotope>[0-9]+)/g, '<sup>$<isotope></sup>'),
       }}
     />
   );
