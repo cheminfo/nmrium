@@ -6,11 +6,10 @@ import { memo } from 'react';
 import { ErrorColors, Errors } from './CorrelationTable/Constants';
 
 const styles = css`
+  display: flex;
   width: 100%;
-  height: 22px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 15px;
+  font-size: 15px;
+  font-weight: 300;
   white-space: nowrap;
   span {
     margin-left: 8px;
