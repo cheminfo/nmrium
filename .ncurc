@@ -1,8 +1,6 @@
 {
   "dep": "prod,dev",
   "reject": [
-    "// TODO: Wait for a fix on https://github.com/vitejs/vite/issues/5438",
-    "@vitejs/plugin-react",
     "react-color",
     "// TODO: Migrate to v6",
     "react-router-dom",
