@@ -63,7 +63,7 @@ function applyFFTFilter(draft: Draft<State>) {
     ]);
     resetSelectedTool(draft);
     setDataBy1DFilter(draft.data[index] as Datum1D);
-    changeSpectrumVerticalAlignment(draft, { center: false });
+    changeSpectrumVerticalAlignment(draft, { align: 'bottom' });
 
     setDomain(draft);
     setMode(draft);

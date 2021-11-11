@@ -6,6 +6,8 @@ import { usePreferences } from '../context/PreferencesContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 
+import getVerticalShift from './utilities/getVerticalShift';
+
 interface LineProps {
   data?: {
     x: Array<number>;
@@ -32,12 +34,8 @@ function Line({ data, id, display, index }: LineProps) {
   }, [activeSpectrum, id]);
 
   const vAlign = useMemo(() => {
-    return verticalAlign.flag
-      ? verticalAlign.stacked
-        ? index * verticalAlign.value
-        : 0
-      : 0;
-  }, [index, verticalAlign.flag, verticalAlign.stacked, verticalAlign.value]);
+    return getVerticalShift(verticalAlign, {index});
+  }, [index, verticalAlign]);
 
   const paths = useMemo(() => {
     const _scaleX = scaleX();

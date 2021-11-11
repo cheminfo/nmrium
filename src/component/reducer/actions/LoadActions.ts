@@ -58,10 +58,27 @@ function setData(
   }
 }
 
+function setPreferences(draft: Draft<State>, data) {
+  const emptyPreferences = {
+    verticalAlign: null,
+  };
+
+  const { verticalAlign = null } = data || emptyPreferences;
+
+  if (verticalAlign) {
+    changeSpectrumVerticalAlignment(draft, {
+      align: verticalAlign,
+    });
+  } else {
+    changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
+  }
+}
+
 function initiate(draft: Draft<State>, action) {
   setData(draft, action.payload);
-  changeSpectrumVerticalAlignment(draft, { checkData: true });
-  setActiveTab(draft);
+  const preferences = action.payload?.preferences || {};
+  setActiveTab(draft, { tab: preferences?.activeTab || '' });
+  setPreferences(draft, action.payload);
   draft.isLoading = false;
 }
 
@@ -83,18 +100,17 @@ function loadJcampFile(draft: Draft<State>, actions) {
   for (const spectrum of spectra) {
     draft.data.push(spectrum);
   }
-  changeSpectrumVerticalAlignment(draft, { checkData: true });
   setActiveTab(draft);
+  changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
 
   draft.isLoading = false;
 }
 
 function handleLoadJsonFile(draft: Draft<State>, action) {
   setData(draft, action.payload);
-
-  changeSpectrumVerticalAlignment(draft, { checkData: true });
-
-  setActiveTab(draft);
+  const preferences = action.payload?.preferences || {};
+  setActiveTab(draft, { tab: preferences?.activeTab || '' });
+  setPreferences(draft, preferences);
 
   draft.isLoading = false;
 }
@@ -112,15 +128,16 @@ function handleLoadZIPFile(draft: Draft<State>, action) {
   draft.data = draft.data.concat(data);
   setColors(draft, usedColors);
 
-  changeSpectrumVerticalAlignment(draft, { checkData: true });
   setActiveTab(draft);
+  changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
+
   draft.isLoading = false;
 }
 
 function handleLoadNmredata(draft: Draft<State>, action) {
   setData(draft, action.payload);
-  changeSpectrumVerticalAlignment(draft, { checkData: true });
   setActiveTab(draft);
+  changeSpectrumVerticalAlignment(draft, { align: 'auto-check' });
   draft.isLoading = false;
 }
 

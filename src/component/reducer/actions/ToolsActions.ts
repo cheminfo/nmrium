@@ -12,11 +12,7 @@ import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { State } from '../Reducer';
-import {
-  DEFAULT_YAXIS_SHIFT_VALUE,
-  DISPLAYER_MODE,
-  MARGIN,
-} from '../core/Constants';
+import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import Zoom1DManager from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
@@ -143,30 +139,15 @@ function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
 }
 
 function setSpectrumsVerticalAlign(draft: Draft<State>) {
-  changeSpectrumVerticalAlignment(draft, { center: !draft.verticalAlign.flag });
+  const align = ['stack', 'center'].includes(draft.verticalAlign.align)
+    ? 'bottom'
+    : 'center';
+  changeSpectrumVerticalAlignment(draft, { align });
 }
 
 function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
-  const state = original(draft) as State;
-  const { activeSpectrum, height, activeTab } = draft;
-  let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
-  if (activeSpectrum) {
-    const { index } = activeSpectrum;
-    if ((state.data[index] as Datum1D).info.isFid) {
-      YAxisShift = height / 2;
-    }
-  }
-  draft.verticalAlign.flag = !draft.verticalAlign.stacked;
-  draft.verticalAlign.stacked = !draft.verticalAlign.stacked;
-
-  if (draft.verticalAlign.stacked) {
-    const count = (state.data as Datum1D[]).filter(
-      (datum) => datum.info.nucleus === activeTab,
-    ).length;
-    draft.verticalAlign.value = Math.floor(height / (count + 2));
-  } else {
-    draft.verticalAlign.value = YAxisShift;
-  }
+  const align = draft.verticalAlign.align === 'stack' ? 'bottom' : 'stack';
+  changeSpectrumVerticalAlignment(draft, { align });
 }
 
 function handleAddBaseLineZone(draft: Draft<State>, { from, to }) {

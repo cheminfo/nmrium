@@ -5,37 +5,65 @@ import { Datum1D } from '../../../data/data1d/Spectrum1D';
 import { Datum2D } from '../../../data/data2d/Spectrum2D';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import nucleusToString from '../../utility/nucleusToString';
-import { State } from '../Reducer';
+import { State, VerticalAlignment } from '../Reducer';
 import { DEFAULT_YAXIS_SHIFT_VALUE, DISPLAYER_MODE } from '../core/Constants';
 
 import { setDomain } from './DomainActions';
 import { setZoom } from './Zoom';
 
-interface options {
-  center?: boolean;
+interface AlignmentOptions {
+  align?: VerticalAlignment | 'auto-check';
   checkData?: boolean;
+  activeTab?: string;
 }
 
 function changeSpectrumVerticalAlignment(
   draft: Draft<State>,
-  options: options = {},
+  options: AlignmentOptions,
 ) {
-  const { center = false, checkData = false } = options || {};
   if (draft.data && draft.data.length > 0) {
-    if (
-      center ||
-      (checkData &&
-        (draft.data[0] as Datum1D).info.isFid &&
-        !(draft.data as Datum1D[]).some((d) => d.info.isFid === false))
-    ) {
-      const YAxisShift = draft.height / 2;
-      draft.verticalAlign.flag = true;
-      draft.verticalAlign.value = YAxisShift;
-      draft.verticalAlign.stacked = false;
-    } else {
-      draft.verticalAlign.flag = false;
-      draft.verticalAlign.value = DEFAULT_YAXIS_SHIFT_VALUE;
-      draft.verticalAlign.stacked = false;
+    let dataPerNucleus: Datum1D[] = [];
+    if (['auto-check', 'stack'].includes(options.align || '')) {
+      dataPerNucleus = (draft.data as Datum1D[]).filter((datum) =>
+        datum.info.nucleus === options?.activeTab
+          ? options.activeTab
+          : draft.activeTab && datum.info.dimension === 1,
+      );
+    }
+
+    switch (options.align) {
+      case 'auto-check':
+      case 'bottom':
+      case 'center': {
+        if (
+          options.align === 'center' ||
+          (options.align === 'auto-check' &&
+            dataPerNucleus[0]?.info.isFid &&
+            !dataPerNucleus.some((d) => d.info.isFid === false))
+        ) {
+          const YAxisShift = draft.height / 2;
+          draft.verticalAlign.align = 'center';
+          draft.verticalAlign.verticalShift = YAxisShift;
+        } else {
+          draft.verticalAlign.align = 'bottom';
+          draft.verticalAlign.verticalShift = DEFAULT_YAXIS_SHIFT_VALUE;
+        }
+        break;
+      }
+
+      case 'stack': {
+        draft.verticalAlign.align = 'stack';
+        const visibleSpectra = dataPerNucleus.filter(
+          (datum) => datum.display.isVisible === true,
+        );
+        draft.verticalAlign.verticalShift = Math.floor(
+          (draft.height - draft.margin.bottom) / (visibleSpectra.length + 2),
+        );
+        break;
+      }
+
+      default:
+        return;
     }
   }
 }

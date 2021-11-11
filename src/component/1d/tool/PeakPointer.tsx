@@ -7,6 +7,7 @@ import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { options } from '../../toolbar/ToolTypes';
+import getVerticalShift from '../utilities/getVerticalShift';
 
 const styles = {
   radius: 10,
@@ -40,16 +41,12 @@ function PeakPointer() {
   const [closePeakPosition, setPosition] = useState<PeakPosition | null>();
 
   useEffect(() => {
-    function getVerticalAlign() {
-      if (activeSpectrum) {
-        return verticalAlign.flag
-          ? verticalAlign.stacked
-            ? activeSpectrum?.index * verticalAlign.value
-            : 0
-          : 0;
-      }
-      return 0;
-    }
+    const vShift = activeSpectrum
+      ? getVerticalShift(verticalAlign, {
+          index: activeSpectrum?.index || 1,
+          align: 'center',
+        })
+      : 0;
 
     const getClosePeak = (xShift, mouseCoordinates) => {
       if (
@@ -84,7 +81,7 @@ function PeakPointer() {
           const xValue = spectrumData.data.x[minIndex + xIndex];
           return {
             x: scaleX()(xValue),
-            y: scaleY(activeSpectrum.id)(yValue) - getVerticalAlign(),
+            y: scaleY(activeSpectrum.id)(yValue) - vShift,
             xIndex: minIndex + xIndex,
           };
         }

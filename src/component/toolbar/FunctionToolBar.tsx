@@ -279,8 +279,7 @@ export default function FunctionToolBar({
 }: {
   defaultValue?: string;
 }) {
-  const { activeSpectrum, verticalAlign, displayerMode, activeTab, mode } =
-    useChartData();
+  const { activeSpectrum, displayerMode, activeTab, mode } = useChartData();
 
   const data = useDatumWithSpectraStatistics();
 
@@ -289,7 +288,6 @@ export default function FunctionToolBar({
       {...{
         ...data,
         activeSpectrum,
-        verticalAlign,
         displayerMode,
         activeTab,
         defaultValue,
