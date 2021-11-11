@@ -121,7 +121,7 @@ export async function fromJSON(data: any[] = [], usedColors: any = {}) {
   let promises: any[] = [];
 
   for (let datum of data) {
-    if (datum.source.jcampURL != null) {
+    if (datum?.source?.jcampURL != null) {
       promises.push(
         addJcampFromURL(spectra, datum.source.jcampURL, datum, usedColors),
       );
