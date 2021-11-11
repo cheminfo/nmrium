@@ -34,7 +34,7 @@ function Line({ data, id, display, index }: LineProps) {
   }, [activeSpectrum, id]);
 
   const vAlign = useMemo(() => {
-    return getVerticalShift(verticalAlign, {index});
+    return getVerticalShift(verticalAlign, { index });
   }, [index, verticalAlign]);
 
   const paths = useMemo(() => {
