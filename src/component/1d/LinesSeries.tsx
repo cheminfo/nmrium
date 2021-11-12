@@ -1,4 +1,5 @@
 import { useChartData } from '../context/ChartContext';
+import get1DDataXY from '../reducer/helper/get1DDataXY';
 
 import Line from './Line';
 
@@ -11,7 +12,7 @@ function LinesSeries() {
       {_data
         ?.filter((d) => d.display.isVisible === true && xDomains[d.id])
         .map((d, i) => (
-          <Line key={d.id} {...d} index={i} />
+          <Line key={d.id} {...d} data={get1DDataXY(d)} index={i} />
         ))}
     </g>
   );

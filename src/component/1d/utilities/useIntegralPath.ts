@@ -51,10 +51,10 @@ export default function useIntegralPath(integralOptions: {
 
   const integral = useMemo(() => {
     if (activeSpectrum) {
-      const { x, y } = data[activeSpectrum?.index].data as Data1D;
+      const { x, re } = data[activeSpectrum?.index].data as Data1D;
       const { from, to } = integralOptions;
       return xyIntegral(
-        { x, y },
+        { x, y: re },
         {
           from,
           to,

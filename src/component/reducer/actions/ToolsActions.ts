@@ -25,8 +25,8 @@ function getStrongestPeak(draft: Draft<State>) {
   const { activeSpectrum, data } = draft;
   if (activeSpectrum) {
     const activeData = data[activeSpectrum?.index].data as Data1D;
-    const strongestPeakValue = max(activeData.y);
-    const index = activeData.y.findIndex((val) => val === strongestPeakValue);
+    const strongestPeakValue = max(activeData.re);
+    const index = activeData.re.findIndex((val) => val === strongestPeakValue);
     return {
       xValue: activeData.x[index],
       yValue: strongestPeakValue,
@@ -186,18 +186,6 @@ function handleToggleRealImaginaryVisibility(draft) {
 
     draft.data[index].display.isRealSpectrumVisible =
       !draft.data[index].display.isRealSpectrumVisible;
-    if (draft.data[index].display.isRealSpectrumVisible) {
-      const re = draft.data[index].data.re;
-      if (re !== null && re !== undefined) {
-        draft.data[index].data.y = re;
-      }
-    } else {
-      const im = draft.data[index].data.im;
-
-      if (im !== null && im !== undefined) {
-        draft.data[index].data.y = im;
-      }
-    }
 
     setDomain(draft);
   }

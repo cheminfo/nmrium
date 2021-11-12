@@ -28,7 +28,6 @@ export interface File {
 }
 
 export interface Data1D {
-  y: Array<number>;
   x: Array<number>;
   re: Array<number>;
   im: Array<number>;
@@ -177,7 +176,6 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
       x: [],
       re: [],
       im: [],
-      y: [],
     },
     options.data,
   );
@@ -201,7 +199,6 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   FiltersManager.reapplyFilters(datum);
 
   preprocessing(datum);
-  (datum.data as Data1D).y = datum.data.re;
   return datum;
 }
 

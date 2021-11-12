@@ -6,6 +6,7 @@ import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
+import get1DDataXY from '../../reducer/helper/get1DDataXY';
 import { options } from '../../toolbar/ToolTypes';
 import getVerticalShift from '../utilities/getVerticalShift';
 
@@ -62,23 +63,20 @@ function PeakPointer() {
         });
 
         //get the active sepectrum data by looking for it by id
-        const spectrumData = data.find(
+        const spectrum = data.find(
           (d) => d.id === activeSpectrum.id,
         ) as Datum1D;
 
-        if (!spectrumData) throw new Error('Unreachable');
+        if (!spectrum) throw new Error('Unreachable');
+        const datum = get1DDataXY(spectrum);
+        const maxIndex = datum.x.findIndex((number) => number >= range[1]) - 1;
+        const minIndex = datum.x.findIndex((number) => number >= range[0]);
 
-        const maxIndex =
-          spectrumData.data.x.findIndex((number) => number >= range[1]) - 1;
-        const minIndex = spectrumData.data.x.findIndex(
-          (number) => number >= range[0],
-        );
-
-        const yDataRange = spectrumData.data.y.slice(minIndex, maxIndex);
+        const yDataRange = datum.y.slice(minIndex, maxIndex);
         if (yDataRange && yDataRange.length > 0) {
           const yValue = max(yDataRange);
           const xIndex = yDataRange.findIndex((value) => value === yValue);
-          const xValue = spectrumData.data.x[minIndex + xIndex];
+          const xValue = datum.x[minIndex + xIndex];
           return {
             x: scaleX()(xValue),
             y: scaleY(activeSpectrum.id)(yValue) - vShift,

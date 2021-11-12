@@ -13,6 +13,7 @@ import { useScaleChecked } from '../context/ScaleContext';
 import { useHelpText } from '../elements/popup/Help/Context';
 import useSpectrum from '../hooks/useSpectrum';
 import { ActiveSpectrum } from '../reducer/Reducer';
+import get1DDataXY from '../reducer/helper/get1DDataXY';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`
@@ -125,11 +126,9 @@ function FooterBannerInner({
   const getYValue = useCallback(
     (xPosition) => {
       if (spectrum.data) {
-        const xIndex = xFindClosestIndex(
-          spectrum.data.x,
-          scaleX().invert(xPosition),
-        );
-        return spectrum.data.y[xIndex];
+        const data = get1DDataXY(spectrum);
+        const xIndex = xFindClosestIndex(data.x, scaleX().invert(xPosition));
+        return data.y[xIndex];
       }
       return 1;
     },

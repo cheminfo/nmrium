@@ -17,10 +17,6 @@ import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { resetSelectedTool } from './ToolsActions';
 
-function setDataBy1DFilter(datum: Datum1D) {
-  datum.data.y = datum.data.re;
-}
-
 function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   //apply filter into the spectrum
   if (draft.activeSpectrum?.id) {
@@ -31,7 +27,6 @@ function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
     ]);
     updateXShift(draft.data[index] as Datum1D);
     resetSelectedTool(draft);
-    setDataBy1DFilter(draft.data[index] as Datum1D);
     setDomain(draft);
   }
 }
@@ -48,7 +43,6 @@ function applyZeroFillingFilter(draft: Draft<State>, filterOptions) {
     ];
     FiltersManager.applyFilter(draft.data[index], filters);
     resetSelectedTool(draft);
-    setDataBy1DFilter(draft.data[index] as Datum1D);
     setDomain(draft);
     setMode(draft);
   }
@@ -62,7 +56,6 @@ function applyFFTFilter(draft: Draft<State>) {
       { name: Filters.fft.id, options: {} },
     ]);
     resetSelectedTool(draft);
-    setDataBy1DFilter(draft.data[index] as Datum1D);
     changeSpectrumVerticalAlignment(draft, { align: 'bottom' });
 
     setDomain(draft);
@@ -79,7 +72,6 @@ function applyManualPhaseCorrectionFilter(draft: Draft<State>, filterOptions) {
     ]);
 
     resetSelectedTool(draft);
-    setDataBy1DFilter(draft.data[index] as Datum1D);
     draft.tempData = null;
     setDomain(draft);
   }
@@ -92,7 +84,6 @@ function applyAbsoluteFilter(draft: Draft<State>) {
     ]);
 
     resetSelectedTool(draft);
-    setDataBy1DFilter(draft.data[index] as Datum1D);
     draft.tempData = null;
     setDomain(draft);
   }
@@ -109,7 +100,6 @@ function applyAutoPhaseCorrectionFilter(draft: Draft<State>) {
     ]);
 
     resetSelectedTool(draft);
-    setDataBy1DFilter(draft.data[index] as Datum1D);
     draft.tempData = null;
     setDomain(draft);
   }
@@ -129,7 +119,6 @@ function calculateManualPhaseCorrection(draft: Draft<State>, filterOptions) {
     const { im: newIm, re: newRe } = _data.data;
     draft.tempData[index].data.im = newIm;
     draft.tempData[index].data.re = newRe;
-    draft.tempData[index].data.y = newRe;
   }
 }
 
@@ -142,7 +131,6 @@ function enableFilter(draft: Draft<State>, filterID, checked) {
 
     if (draft.data[index].info?.dimension === 1) {
       updateXShift(draft.data[index] as Datum1D);
-      setDataBy1DFilter(draft.data[index] as Datum1D);
     } else if (draft.data[index].info?.dimension === 2) {
       update2dShift(draft.data[index] as Datum2D);
     }
@@ -169,7 +157,6 @@ function deleteFilter(draft: Draft<State>, actions) {
 
     if (draft.data[index].info?.dimension === 1) {
       updateXShift(draft.data[index] as Datum1D);
-      setDataBy1DFilter(draft.data[index] as Datum1D);
     } else if (draft.data[index].info?.dimension === 2) {
       update2dShift(draft.data[index] as Datum2D);
     }
@@ -193,7 +180,6 @@ function deleteSpectraFilter(draft: Draft<State>, actions) {
 
           if (datum.info?.dimension === 1) {
             updateXShift(datum as Datum1D);
-            setDataBy1DFilter(datum as Datum1D);
           } else if (datum.info?.dimension === 2) {
             update2dShift(datum as Datum2D);
           }
@@ -225,7 +211,6 @@ function handleBaseLineCorrectionFilter(draft: Draft<State>, action) {
     const xDomainSnapshot = draft.xDomain.slice();
 
     resetSelectedTool(draft);
-    setDataBy1DFilter(draft.data[index] as Datum1D);
     setDomain(draft);
     draft.xDomain = xDomainSnapshot;
   }
@@ -292,7 +277,6 @@ function resetSpectrumByFilter(
           const newDatum = current(draft).data[index];
           if (newDatum.info?.dimension === 1) {
             FiltersManager.applyFilter(newDatum, [{ name, options }]);
-            (newDatum as Datum1D).data.y = (newDatum as Datum1D).data.re;
           }
 
           currentDatum = { datum: newDatum, index };
@@ -305,7 +289,6 @@ function resetSpectrumByFilter(
     }
 
     if (datum.info?.dimension === 1) {
-      setDataBy1DFilter(datum as Datum1D);
       updateXShift(datum as Datum1D);
     } else if (datum.info?.dimension === 2) {
       update2dShift(datum as Datum2D);
@@ -346,7 +329,6 @@ function handleMultipleSpectraFilter(draft: Draft<State>, action) {
         });
 
         FiltersManager.applyFilter(datum, filters);
-        (datum as Datum1D).data.y = (datum as Datum1D).data.re;
       }
     }
   }

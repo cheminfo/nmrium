@@ -104,8 +104,8 @@ function RangesTablePanelInner({
 
   const saveJSONToClipboardHandler = useCallback(
     async (value) => {
-      if (data.x && data.y) {
-        const { x, y } = data;
+      if (data.x && data.re) {
+        const { x, re } = data;
         const { from, to } = value;
 
         const { fromIndex, toIndex } = xGetFromToIndex(x, {
@@ -114,7 +114,7 @@ function RangesTablePanelInner({
         });
         const dataToClipboard = {
           x: x.slice(fromIndex, toIndex),
-          y: y.slice(fromIndex, toIndex),
+          y: re.slice(fromIndex, toIndex),
           ...value,
         };
 

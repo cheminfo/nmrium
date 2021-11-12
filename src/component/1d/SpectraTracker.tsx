@@ -5,7 +5,9 @@ import { Datum1D } from '../../data/data1d/Spectrum1D';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
+import get1DDataXY from "../reducer/helper/get1DDataXY";
 import Events from '../utility/Events';
+
 
 const styles: Record<
   'container' | 'value' | 'colorIndicator' | 'name',
@@ -56,11 +58,11 @@ function YTracker({ datum }: YTrackerProps) {
 
 function SpectraTracker() {
   const { data, activeTab, xDomains } = useChartData();
-  const [isVisible, ToggleVisiblility] = useState(false);
+  const [isVisible, ToggleVisibility] = useState(false);
 
   useEffect(() => {
     function handler(flag) {
-      ToggleVisiblility(flag);
+      ToggleVisibility(flag);
     }
 
     Events.on('showYSpectraTrackers', handler);
@@ -74,19 +76,19 @@ function SpectraTracker() {
     return (
       isVisible &&
       data.map(
-        (datum) =>
-          datum.display.isVisible &&
-          xDomains[datum.id] &&
-          datum.info.nucleus === activeTab && (
-            <div style={{ display: 'block' }} key={datum.id}>
+        (spectrum) =>
+          spectrum.display.isVisible &&
+          xDomains[spectrum.id] &&
+          spectrum.info.nucleus === activeTab && (
+            <div style={{ display: 'block' }} key={spectrum.id}>
               <span
                 style={{
                   ...styles.colorIndicator,
-                  borderColor: (datum as Datum1D).display.color,
+                  borderColor: (spectrum as Datum1D).display.color,
                 }}
               />
-              <YTracker datum={(datum as Datum1D).data} />
-              <span style={styles.value}>{datum.display.name}</span>
+              <YTracker datum={get1DDataXY(spectrum as Datum1D)} />
+              <span style={styles.value}>{spectrum.display.name}</span>
             </div>
           ),
         [],

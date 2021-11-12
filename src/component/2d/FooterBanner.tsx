@@ -7,6 +7,7 @@ import { MF } from 'react-mf';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
+import get1DDataXY from '../reducer/helper/get1DDataXY';
 import { options } from '../toolbar/ToolTypes';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
@@ -138,11 +139,9 @@ function FooterBanner({ layout, data1D }) {
       index = 1;
     }
     if (index != null && scaleX != null) {
-      const xIndex = xFindClosestIndex(
-        data1D[index].data.x,
-        scaleX.invert(cordinate),
-      );
-      return data1D[index].data.y[xIndex];
+      const datum = get1DDataXY(data1D[index]);
+      const xIndex = xFindClosestIndex(datum.x, scaleX.invert(cordinate));
+      return datum.y[xIndex];
     }
     return 1;
   };
