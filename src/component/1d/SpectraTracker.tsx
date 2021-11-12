@@ -5,9 +5,8 @@ import { Datum1D } from '../../data/data1d/Spectrum1D';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
-import get1DDataXY from "../reducer/helper/get1DDataXY";
+import get1DDataXY from '../reducer/helper/get1DDataXY';
 import Events from '../utility/Events';
-
 
 const styles: Record<
   'container' | 'value' | 'colorIndicator' | 'name',

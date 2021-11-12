@@ -129,7 +129,15 @@ function MultiplicityTree({
     });
 
     return scaleY(spectrumData.id)(yMax) - treeProps.height - 30;
-  }, [spectrumData.data.x, spectrumData.data.re, spectrumData.id, scaleY, treeProps.height, rangeFrom, rangeTo]);
+  }, [
+    spectrumData.data.x,
+    spectrumData.data.re,
+    spectrumData.id,
+    scaleY,
+    treeProps.height,
+    rangeFrom,
+    rangeTo,
+  ]);
 
   const treeNodesData = useMemo(() => {
     const buildTreeNodesData = createTreeNodes(signal, spectrumData);
