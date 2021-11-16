@@ -1,7 +1,7 @@
 import { useCallback, useState, useMemo, useRef, useEffect, memo } from 'react';
 
-import { Datum1D } from '../../../data/data1d/Spectrum1D';
-import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { Datum1D } from '../../../data/types/data1d';
+import { Datum2D } from '../../../data/types/data2d';
 import checkModifierKeyActivated from '../../../data/utilities/checkModifierKeyActivated';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';

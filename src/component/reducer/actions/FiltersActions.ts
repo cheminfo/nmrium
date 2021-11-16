@@ -2,13 +2,12 @@ import { current, Draft } from 'immer';
 
 import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
-import { Datum1D, updateXShift } from '../../../data/data1d/Spectrum1D';
+import { updateXShift } from '../../../data/data1d/Spectrum1D';
 import { apply as autoPhaseCorrection } from '../../../data/data1d/filter1d/autoPhaseCorrection';
 import { apply as phaseCorrection } from '../../../data/data1d/filter1d/phaseCorrection';
-import {
-  Datum2D,
-  updateShift as update2dShift,
-} from '../../../data/data2d/Spectrum2D';
+import { updateShift as update2dShift } from '../../../data/data2d/Spectrum2D';
+import { Datum1D } from '../../../data/types/data1d';
+import { Datum2D } from '../../../data/types/data2d';
 import nucleusToString from '../../utility/nucleusToString';
 import { ActiveSpectrum, State } from '../Reducer';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';

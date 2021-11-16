@@ -1,6 +1,6 @@
 import { useContext, useCallback, useMemo, CSSProperties } from 'react';
 
-import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum1D } from '../../../data/types/data1d';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';

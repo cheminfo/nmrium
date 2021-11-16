@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
-import { Datum1D, Info, Peaks } from '../../../data/data1d/Spectrum1D';
+import { Datum1D, Info1D, Peaks } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
@@ -23,7 +23,7 @@ interface PeaksPanelInnerProps {
   xDomain: number[];
   activeTab: string;
   preferences: any;
-  info: Info;
+  info: Info1D;
 }
 
 function PeaksPanelInner({

@@ -1,5 +1,5 @@
 import { DatumKind } from '../constants/SignalsKinds';
-import { Range } from '../data1d/Spectrum1D';
+import { Range } from '../types/data1d';
 
 export function getDiaIDs(range: Range): string[] {
   return ([] as string[]).concat(

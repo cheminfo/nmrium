@@ -1,12 +1,12 @@
 import max from 'ml-array-max';
 import { useContext, useEffect, useState } from 'react';
 
-import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import get1DDataXY from '../../../data/data1d/get1DDataXY';
+import { Datum1D } from '../../../data/types/data1d';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
-import get1DDataXY from '../../reducer/helper/get1DDataXY';
 import { options } from '../../toolbar/ToolTypes';
 import getVerticalShift from '../utilities/getVerticalShift';
 

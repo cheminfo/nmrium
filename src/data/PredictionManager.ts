@@ -6,12 +6,13 @@ import { UsedColors } from '../types/UsedColors';
 
 import { DatumKind } from './constants/SignalsKinds';
 import {
-  Datum1D,
   initiateDatum1D,
   mapRanges,
   updateIntegralRanges,
 } from './data1d/Spectrum1D';
-import { Datum2D, initiateDatum2D, Signal, Zone } from './data2d/Spectrum2D';
+import { initiateDatum2D } from './data2d/Spectrum2D';
+import { Datum1D } from './types/data1d';
+import { Datum2D, Signal2D, Zone } from './types/data2d';
 import generateID from './utilities/generateID';
 
 const baseURL = 'https://nmr-prediction.service.zakodium.com';
@@ -114,8 +115,8 @@ function generated1DSpectrum(params: {
 function mapZones(zones: Array<Partial<Zone>>) {
   return zones.reduce<Array<Zone>>((zonesAcc, zone: any) => {
     const { signals, ...resZone } = zone;
-    const newSignals = (signals as Array<Partial<Signal>>).reduce<
-      Array<Partial<Signal>>
+    const newSignals = (signals as Array<Partial<Signal2D>>).reduce<
+      Array<Partial<Signal2D>>
     >((signalsAcc, signal) => {
       const { x, y, ...resSignal } = signal;
       signalsAcc.push({

@@ -2,13 +2,13 @@
 
 import { useMemo } from 'react';
 
-import { Signal as SignalDataProps } from '../../../data/data2d/Spectrum2D';
+import { Signal2D } from '../../../data/types/data2d';
 import { buildID } from '../../../data/utilities/Concatenation';
 import { useHighlight } from '../../highlight';
 import SignalDeltaLine from '../SignalDeltaLine';
 
 interface SignalCrosshairProps {
-  signal: SignalDataProps;
+  signal: Signal2D;
 }
 
 function SignalCrosshair({ signal }: SignalCrosshairProps) {

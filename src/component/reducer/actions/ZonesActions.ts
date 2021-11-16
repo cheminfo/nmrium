@@ -9,11 +9,11 @@ import {
 } from '../../../data/constants/SignalsKinds';
 import {
   changeZoneSignal,
-  Datum2D,
   detectZones,
   detectZonesManual,
   updateShift,
 } from '../../../data/data2d/Spectrum2D';
+import { Datum2D } from '../../../data/types/data2d';
 import {
   unlink,
   unlinkInAssignmentData,

@@ -4,10 +4,10 @@ import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useContext, useMemo, Fragment } from 'react';
 import { MF } from 'react-mf';
 
+import get1DDataXY from '../../data/data1d/get1DDataXY';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
-import get1DDataXY from '../reducer/helper/get1DDataXY';
 import { options } from '../toolbar/ToolTypes';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 

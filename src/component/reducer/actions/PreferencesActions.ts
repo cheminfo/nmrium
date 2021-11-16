@@ -1,8 +1,8 @@
 import { Draft, original } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 
-import { Datum1D } from '../../../data/data1d/Spectrum1D';
-import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { Datum1D } from '../../../data/types/data1d';
+import { Datum2D } from '../../../data/types/data2d';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import nucleusToString from '../../utility/nucleusToString';
 import { State, VerticalAlignment } from '../Reducer';

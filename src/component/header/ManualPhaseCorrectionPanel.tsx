@@ -10,7 +10,7 @@ import {
 
 import * as Filters from '../../data/Filters';
 import { Filter } from '../../data/FiltersManager';
-import { Data1D, Datum1D } from '../../data/data1d/Spectrum1D';
+import { Data1D, Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Input from '../elements/Input';

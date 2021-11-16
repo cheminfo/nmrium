@@ -1,5 +1,5 @@
 import { DatumKind } from '../constants/SignalsKinds';
-import { Zone } from '../data2d/Spectrum2D';
+import { Zone } from '../types/data2d';
 
 export function getDiaIDs(zone: Zone, axis: string): string[] {
   return ([] as string[]).concat(

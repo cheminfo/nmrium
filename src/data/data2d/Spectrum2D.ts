@@ -5,7 +5,9 @@ import * as Filters from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DataExportOptions, DataExportOptionsType } from '../SpectraManager';
 import { DatumKind } from '../constants/SignalsKinds';
-import { Datum1D, initiateDatum1D } from '../data1d/Spectrum1D';
+import { initiateDatum1D } from '../data1d/Spectrum1D';
+import { Datum1D } from '../types/data1d';
+import { Datum2D, Zone } from '../types/data2d';
 import generateID from '../utilities/generateID';
 import { get2DColor } from '../utilities/getColor';
 
@@ -17,101 +19,6 @@ export interface Contour {
   positive: Array<Array<number>>;
 }
 export type Contours = Record<string, Contour>;
-
-export interface File {
-  binary: ArrayBuffer;
-  name: string;
-  extension?: string;
-}
-
-export interface Source {
-  jcampURL: string;
-  file: File;
-}
-
-export interface Data2D {
-  z: Array<Array<number>>;
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
-
-export interface ContourOptions {
-  positive: {
-    contourLevels: [number, number];
-    numberOfLayers: number;
-  };
-  negative: {
-    contourLevels: [number, number];
-    numberOfLayers: number;
-  };
-}
-
-export interface Display {
-  name: string;
-  positiveColor: string;
-  negativeColor: string;
-  isVisible: boolean;
-  isPositiveVisible: boolean;
-  isNegativeVisible: boolean;
-  contourOptions: ContourOptions;
-}
-
-export interface Info {
-  nucleus: Array<string>;
-  isFid: boolean;
-  isComplex: boolean;
-  dimension: number;
-  isFt: boolean;
-  experiment?: any;
-}
-
-export interface Signal {
-  id: string;
-  peaks: any;
-  x: Partial<{
-    originDelta: number;
-    delta: number;
-    diaIDs?: string[];
-    nbAtoms?: number;
-  }>;
-  y: Partial<{
-    originDelta: number;
-    delta: number;
-    diaIDs?: string[];
-    nbAtoms?: number;
-  }>;
-  kind: string;
-}
-
-export interface Zone {
-  id: string;
-  x: Partial<{ from: number; to: number; diaIDs?: string[]; nbAtoms?: number }>;
-  y: Partial<{ from: number; to: number; diaIDs?: string[]; nbAtoms?: number }>;
-  signals: Array<Signal>;
-  kind: string;
-}
-
-export interface Zones {
-  values: Array<Zone>;
-  options?: { sum?: number };
-}
-
-export interface Datum2D {
-  id: string;
-  source: Source;
-  display: Display;
-  info: Info;
-  originalInfo?: Info;
-  meta: any;
-  data: Data2D;
-  originalData?: Data2D;
-  zones: Zones;
-  filters: Array<FiltersManager.Filter>;
-  // TODO: this is in fact a Processing2D instance. That's not allowed due to state mutabilitty.
-  processingController: any;
-}
 
 export function initiateDatum2D(options: any, usedColors = {}): Datum2D {
   const datum: any = {};

@@ -2,7 +2,7 @@
 
 import { memo, useState, useEffect, useCallback } from 'react';
 
-import { Signal as SignalDataProps } from '../../../data/data2d/Spectrum2D';
+import { Signal2D } from '../../../data/types/data2d';
 import { buildID } from '../../../data/utilities/Concatenation';
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
@@ -12,7 +12,7 @@ import { get2DXScale, get2DYScale } from '../utilities/scale';
 import SignalCrosshair from './SignalCrosshair';
 
 interface SignalProps {
-  signal: SignalDataProps;
+  signal: Signal2D;
   isVisible: {
     signals?: boolean;
     peaks?: boolean;

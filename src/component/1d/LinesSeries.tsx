@@ -1,5 +1,5 @@
+import get1DDataXY from '../../data/data1d/get1DDataXY';
 import { useChartData } from '../context/ChartContext';
-import get1DDataXY from '../reducer/helper/get1DDataXY';
 
 import Line from './Line';
 

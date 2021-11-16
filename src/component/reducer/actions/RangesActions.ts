@@ -15,9 +15,9 @@ import {
   updateIntegralRanges,
   changeRange,
   changeRangesRelative,
-  Datum1D,
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
+import { Datum1D } from '../../../data/types/data1d';
 import {
   unlink,
   unlinkInAssignmentData,

@@ -1,6 +1,6 @@
 import { Spectra } from '../../component/NMRium';
-import { Datum1D, Range, Signal as Signal1D } from '../data1d/Spectrum1D';
-import { Datum2D, Signal as Signal2D, Zone } from '../data2d/Spectrum2D';
+import { Datum1D, Range, Signal1D } from '../types/data1d';
+import { Datum2D, Signal2D, Zone } from '../types/data2d';
 
 function findSpectrum(
   spectraData: Spectra,

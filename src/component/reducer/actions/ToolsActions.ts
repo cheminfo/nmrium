@@ -3,8 +3,8 @@ import { original, Draft, current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import * as Filters from '../../../data/Filters';
-import { Data1D, Datum1D } from '../../../data/data1d/Spectrum1D';
-import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { Data1D, Datum1D } from '../../../data/types/data1d';
+import { Datum2D } from '../../../data/types/data2d';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';

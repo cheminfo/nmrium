@@ -2,8 +2,8 @@ import { original, Draft } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import { buildCorrelationData, setCorrelation, Types } from 'nmr-correlation';
 
-import { Datum1D } from '../../../data/data1d/Spectrum1D';
-import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { Datum1D } from '../../../data/types/data1d';
+import { Datum2D } from '../../../data/types/data2d';
 import {
   findRange,
   findSignal1D,

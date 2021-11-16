@@ -1,11 +1,11 @@
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { CSSProperties, useContext, useEffect, useMemo, useState } from 'react';
 
-import { Datum1D } from '../../data/data1d/Spectrum1D';
+import get1DDataXY from '../../data/data1d/get1DDataXY';
+import { Datum1D } from '../../data/types/data1d';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScale } from '../context/ScaleContext';
-import get1DDataXY from '../reducer/helper/get1DDataXY';
 import Events from '../utility/Events';
 
 const styles: Record<

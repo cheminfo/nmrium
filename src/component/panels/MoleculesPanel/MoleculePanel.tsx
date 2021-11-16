@@ -6,9 +6,9 @@ import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
 import { useMeasure } from 'react-use';
 
-import { Datum1D, Ranges } from '../../../data/data1d/Spectrum1D';
-import { Datum2D, Zones } from '../../../data/data2d/Spectrum2D';
 import { Molecule } from '../../../data/molecules/Molecule';
+import { Datum1D, Ranges } from '../../../data/types/data1d';
+import { Datum2D, Zones } from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import NextPrev from '../../elements/NextPrev';

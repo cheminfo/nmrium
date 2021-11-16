@@ -1,7 +1,7 @@
 import { xyIntegral, xyReduce } from 'ml-spectra-processing';
 import { useMemo } from 'react';
 
-import { Data1D } from '../../../data/data1d/Spectrum1D';
+import { Data1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';
 

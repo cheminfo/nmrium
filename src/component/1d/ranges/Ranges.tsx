@@ -1,9 +1,6 @@
 import { memo } from 'react';
 
-import {
-  Datum1D,
-  Ranges as RangesProps,
-} from '../../../data/data1d/Spectrum1D';
+import { Datum1D, Ranges as RangesProps } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 

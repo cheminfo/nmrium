@@ -1,4 +1,4 @@
-import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import { Datum1D } from '../types/data1d';
 
 /**
  * @typedef {Object} datum

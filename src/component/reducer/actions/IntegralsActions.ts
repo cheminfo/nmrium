@@ -4,9 +4,9 @@ import { xyIntegration } from 'ml-spectra-processing';
 import {
   updateIntegralIntegrals,
   changeIntegralsRealtive,
-  Datum1D,
   getShiftX,
 } from '../../../data/data1d/Spectrum1D';
+import { Datum1D } from '../../../data/types/data1d';
 import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';

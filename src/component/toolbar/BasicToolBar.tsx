@@ -18,8 +18,8 @@ import {
   FaFileImport,
 } from 'react-icons/fa';
 
-import { Info as InfoDatum1D } from '../../data/data1d/Spectrum1D';
-import { Info as InfoDatum2D } from '../../data/data2d/Spectrum2D';
+import { Info1D } from '../../data/types/data1d';
+import { Info2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
@@ -93,7 +93,7 @@ interface BasicToolBarInnerProps {
   fidCounter: number;
   ftCounter: number;
   displayerMode: DISPLAYER_MODE;
-  info: InfoDatum1D | InfoDatum2D;
+  info: Info1D | Info2D;
   verticalAlign: {
     align: VerticalAlignment;
   };

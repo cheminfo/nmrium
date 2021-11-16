@@ -5,7 +5,8 @@ import { useContext, useCallback, Fragment, memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
 
-import { Datum1D } from '../../data/data1d/Spectrum1D';
+import get1DDataXY from '../../data/data1d/get1DDataXY';
+import { Datum1D } from '../../data/types/data1d';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
@@ -13,7 +14,6 @@ import { useScaleChecked } from '../context/ScaleContext';
 import { useHelpText } from '../elements/popup/Help/Context';
 import useSpectrum from '../hooks/useSpectrum';
 import { ActiveSpectrum } from '../reducer/Reducer';
-import get1DDataXY from '../reducer/helper/get1DDataXY';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
 
 const styles = css`

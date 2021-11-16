@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useState, useEffect } from 'react';
 
-import { Zone as ZoneDataProps } from '../../../data/data2d/Spectrum2D';
+import { Zone as ZoneDataProps } from '../../../data/types/data2d';
 import { checkZoneKind } from '../../../data/utilities/ZoneUtilities';
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';

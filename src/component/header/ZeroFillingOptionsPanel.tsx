@@ -1,6 +1,6 @@
 import { CSSProperties, useCallback, useRef, useState } from 'react';
 
-import { Data1D } from '../../data/data1d/Spectrum1D';
+import { Data1D } from '../../data/types/data1d';
 import generateNumbersPowerOfX from '../../data/utilities/generateNumbersPowerOfX';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
