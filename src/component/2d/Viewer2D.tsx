@@ -199,7 +199,7 @@ function Viewer2D({ emptyText = undefined }: Viewer2DProps) {
                   <FooterBanner data1D={spectrumData} layout={DIMENSION} />
                 )}
 
-                <Chart2D data={spectrumData} />
+                <Chart2D spectra={spectrumData} />
               </MouseTracker>
             </BrushTracker>
           )}

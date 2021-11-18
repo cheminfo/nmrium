@@ -97,9 +97,6 @@ async function exportAsJSON(
 }
 
 function exportAsMatrix(data, options, fileName = 'experiment') {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { from, to, nbPoints } = options;
-
   //columns labels
   const columnsLables = ['name', 'experiment'];
   for (const value of data[0].data.x) {

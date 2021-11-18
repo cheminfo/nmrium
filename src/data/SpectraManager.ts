@@ -1,5 +1,7 @@
 import { fromJEOL, fromJCAMP, fromBruker } from 'nmr-parser';
 
+import { DISPLAYER_MODE } from '../component/reducer/core/Constants';
+
 import * as Data1DManager from './data1d/Data1DManager';
 import * as Datum1D from './data1d/Spectrum1D';
 import * as Data2DManager from './data2d/Data2DManager';
@@ -119,7 +121,7 @@ export async function fromJSON(data: any[] = [], usedColors: any = {}) {
   let promises: any[] = [];
 
   for (let datum of data) {
-    if (datum.source.jcampURL != null) {
+    if (datum?.source?.jcampURL != null) {
       promises.push(
         addJcampFromURL(spectra, datum.source.jcampURL, datum, usedColors),
       );
@@ -230,6 +232,19 @@ export function addJcamps(files, usedColors) {
   return spectra;
 }
 
+function getPreferences(state) {
+  const {
+    activeTab,
+    verticalAlign: { align },
+  } = state;
+  return {
+    activeTab,
+    ...(state.displayerMode === DISPLAYER_MODE.DM_1D
+      ? { verticalAlign: align }
+      : {}),
+  };
+}
+
 /**
  *
  * @param {object} state
@@ -241,7 +256,6 @@ export function toJSON(
   const {
     data,
     molecules: mols,
-    preferences,
     correlations,
     multipleAnalysis,
     toolOptions: {
@@ -250,7 +264,6 @@ export function toJSON(
   } = state || {
     data: [],
     molecules: [],
-    preferences: {},
     correlations: {},
     multipleAnalysis: {},
     exclusionZones: {},
@@ -261,15 +274,16 @@ export function toJSON(
       : Datum2D.toJSON(ob, dataExportOption);
   });
 
+  const preferences = getPreferences(state);
   const molecules = mols.map((mol) => Molecule.toJSON(mol));
 
   return {
     spectra,
     molecules,
-    preferences,
     correlations,
     multipleAnalysis,
     exclusionZones,
     version: CURRENT_EXPORT_VERSION,
+    preferences,
   };
 }

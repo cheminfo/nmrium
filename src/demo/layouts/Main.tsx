@@ -66,7 +66,7 @@ async function loadData(url) {
     return data;
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.log(e);
+    console.error(e);
     return null;
   }
 }
@@ -115,8 +115,7 @@ const Main = (props) => {
           void loadData(sampleURL).then((remoteRoutes) => {
             if (remoteRoutes) {
               const baseURL = sampleURL.replace(
-                // eslint-disable-next-line no-useless-escape
-                /^(?<url>.*[\\\/])?(?<filename>.*?\.[^.]*?|)$/g,
+                /^(?<url>.*[\\/])?(?<filename>.*?\.[^.]*?|)$/g,
                 '$1',
               );
 

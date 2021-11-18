@@ -15,9 +15,9 @@ import {
   updateIntegralRanges,
   changeRange,
   changeRangesRelative,
-  Datum1D,
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
+import { Datum1D } from '../../../data/types/data1d';
 import {
   unlink,
   unlinkInAssignmentData,
@@ -56,10 +56,9 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
     clean: true,
     keepPeaks: true,
   };
-  // eslint-disable-next-line @typescript-eslint/prefer-for-of
-  for (let index = 0; index < draft.data.length; index++) {
-    if (draft.data[index].info.dimension === 1) {
-      detectRanges(draft.data[index] as Datum1D, { peakPicking });
+  for (const datum of draft.data) {
+    if (datum.info.dimension === 1) {
+      detectRanges(datum as Datum1D, { peakPicking });
       handleOnChangeRangesData(draft);
     }
   }

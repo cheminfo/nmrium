@@ -5,6 +5,7 @@ import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 
 import PeakAnnotation from './PeakAnnotation';
+import getVerticalShift from './utilities/getVerticalShift';
 
 function PeakAnnotations() {
   const { data, activeSpectrum, verticalAlign, displayerKey, xDomains } =
@@ -13,12 +14,8 @@ function PeakAnnotations() {
 
   const Peaks = useMemo(() => {
     const getVerticalAlign = (id) => {
-      const i = data.findIndex((d) => d.id === id);
-      return verticalAlign.flag
-        ? verticalAlign.stacked
-          ? i * verticalAlign.value
-          : 0
-        : 0;
+      const index = data.findIndex((d) => d.id === id);
+      return getVerticalShift(verticalAlign, { index });
     };
 
     const reSortData = () => {
@@ -71,16 +68,7 @@ function PeakAnnotations() {
           );
         })
     );
-  }, [
-    data,
-    verticalAlign.flag,
-    verticalAlign.stacked,
-    verticalAlign.value,
-    activeSpectrum,
-    xDomains,
-    scaleX,
-    scaleY,
-  ]);
+  }, [data, verticalAlign, activeSpectrum, xDomains, scaleX, scaleY]);
 
   return (
     <g className="peaks" clipPath={`url(#${displayerKey}clip-chart-1d)`}>

@@ -1,7 +1,7 @@
 import get from 'lodash/get';
 import { memo, useMemo } from 'react';
 
-import { Datum2D } from '../../data/data2d/Spectrum2D';
+import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 

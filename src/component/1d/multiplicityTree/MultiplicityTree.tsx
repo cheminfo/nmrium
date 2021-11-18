@@ -122,16 +122,16 @@ function MultiplicityTree({
       if (
         _x >= rangeFrom &&
         _x <= rangeTo &&
-        (!yMax || spectrumData.data.y[i] > yMax)
+        (!yMax || spectrumData.data.re[i] > yMax)
       ) {
-        yMax = spectrumData.data.y[i];
+        yMax = spectrumData.data.re[i];
       }
     });
 
     return scaleY(spectrumData.id)(yMax) - treeProps.height - 30;
   }, [
     spectrumData.data.x,
-    spectrumData.data.y,
+    spectrumData.data.re,
     spectrumData.id,
     scaleY,
     treeProps.height,

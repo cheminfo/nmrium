@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
-import { Info as Datum1DInfo, Data1D } from '../../data/data1d/Spectrum1D';
-import { Info as Datum2DInfo, Data2D } from '../../data/data2d/Spectrum2D';
+import { Info1D as Datum1DInfo, Data1D } from '../../data/types/data1d';
+import { Info2D as Datum2DInfo, Data2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import nucleusToString from '../utility/nucleusToString';
 

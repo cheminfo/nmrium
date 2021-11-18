@@ -18,8 +18,8 @@ import {
   FaFileImport,
 } from 'react-icons/fa';
 
-import { Info as InfoDatum1D } from '../../data/data1d/Spectrum1D';
-import { Info as InfoDatum2D } from '../../data/data2d/Spectrum2D';
+import { Info1D } from '../../data/types/data1d';
+import { Info2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { useLoader } from '../context/LoaderContext';
@@ -33,7 +33,7 @@ import useExport from '../hooks/useExport';
 import useToolsFunctions from '../hooks/useToolsFunctions';
 import ImportPublicationStringModal from '../modal/ImportPublicationStringModal';
 import LoadJCAMPModal from '../modal/LoadJCAMPModal';
-import { ActiveSpectrum } from '../reducer/Reducer';
+import { ActiveSpectrum, VerticalAlignment } from '../reducer/Reducer';
 import { DISPLAYER_MODE } from '../reducer/core/Constants';
 import { LOAD_JCAMP_FILE, SET_LOADING_FLAG } from '../reducer/types/Types';
 
@@ -93,10 +93,9 @@ interface BasicToolBarInnerProps {
   fidCounter: number;
   ftCounter: number;
   displayerMode: DISPLAYER_MODE;
-  info: InfoDatum1D | InfoDatum2D;
+  info: Info1D | Info2D;
   verticalAlign: {
-    flag: boolean;
-    stacked: boolean;
+    align: VerticalAlignment;
   };
 }
 
@@ -270,7 +269,7 @@ function BasicToolBarInner({
             title="Spectra alignment ( Press s )"
             onClick={changeDisplayViewModeHandler}
           >
-            {verticalAlign.stacked ? (
+            {verticalAlign.align === 'stack' ? (
               <SvgNmrOverlay3Aligned />
             ) : (
               <SvgNmrOverlay3 />
@@ -295,7 +294,7 @@ function BasicToolBarInner({
           <Toolbar.Item
             id="baseline-position"
             title={
-              !verticalAlign.flag
+              verticalAlign.align === 'bottom'
                 ? 'Baseline  Center ( Press c )'
                 : 'Baseline  Bottom ( Press c )'
             }
@@ -303,7 +302,7 @@ function BasicToolBarInner({
             className="cheminfo"
           >
             <div style={{ fontSize: 24 }}>
-              {!verticalAlign.flag ? (
+              {verticalAlign.align === 'bottom' ? (
                 <SvgNmrAlignCenter />
               ) : (
                 <SvgNmrAlignBottom />

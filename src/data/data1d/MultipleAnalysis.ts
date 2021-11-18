@@ -1,9 +1,10 @@
 import lodashGet from 'lodash/get';
 
 import { Spectra } from '../../component/NMRium';
+import { RangeDetectionResult } from '../types/data1d';
 import generateChar from '../utilities/generateChar';
 
-import { RangeDetectionObject, detectRange } from './Spectrum1D';
+import { detectRange } from './Spectrum1D';
 
 export enum COLUMNS_TYPES {
   NORMAL = 'NORMAL',
@@ -36,7 +37,7 @@ interface AnalysisOptions {
   columnIndex: number;
 }
 
-interface AnalysisRow extends RangeDetectionObject {
+interface AnalysisRow extends RangeDetectionResult {
   SID: string;
   colKey?: string;
   value?: number;
@@ -311,11 +312,10 @@ function calculate(columns: Columns, data: AnalysisRow, formula = '') {
 
   let result;
   try {
-    // eslint-disable-next-line no-new-func
     result = new Function(...variables, `return ${formula}`)(...params);
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.log(e);
+    console.error(e);
     result = new Error(`Invalid Formula ( ${formula} ) `);
   }
   return result;

@@ -9,7 +9,7 @@ import {
   Types,
 } from 'nmr-correlation';
 
-import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { Datum2D } from '../../../data/types/data2d';
 import { findSignal2D } from '../../../data/utilities/FindUtilities';
 
 import { ErrorColors } from './CorrelationTable/Constants';

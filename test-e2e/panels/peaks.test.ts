@@ -1,4 +1,4 @@
-import { setTimeout } from 'timers/promises';
+import { setTimeout as wait } from 'timers/promises';
 
 import { test, expect } from '@playwright/test';
 
@@ -22,7 +22,7 @@ async function addPeaks(nmrium: NmriumPage) {
 
   // TODO: Get rid of this timeout.
   // Without it, the click seems to have no effect.
-  await setTimeout(500);
+  await wait(500);
 
   await nmrium.viewerLocator.click({
     modifiers: ['Shift'],

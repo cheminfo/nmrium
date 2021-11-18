@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { Toolbar } from 'analysis-ui-components';
 import {
   SvgNmrBaselineCorrection,
@@ -16,8 +14,8 @@ import { useState, useEffect, useCallback, memo } from 'react';
 import { FaSearchPlus, FaExpand, FaDiceFour } from 'react-icons/fa';
 
 import * as Filters from '../../data/Filters';
-import { Info as Datum1DInfo, Data1D } from '../../data/data1d/Spectrum1D';
-import { Info as Datum2DInfo, Data2D } from '../../data/data2d/Spectrum2D';
+import { Info1D, Data1D } from '../../data/types/data1d';
+import { Info2D, Data2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
@@ -31,39 +29,12 @@ import { APPLY_FFT_FILTER, SET_SELECTED_FILTER } from '../reducer/types/Types';
 
 import { options } from './ToolTypes';
 
-const styles = css`
-  button {
-    border: none;
-    width: 30px;
-    height: 30px;
-    min-height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    outline: outline;
-    :focus {
-      outline: none !important;
-    }
-
-    &.fa {
-      svg {
-        font-size: 14px;
-      }
-    }
-    &.cheminfo {
-      svg {
-        font-size: 18px;
-      }
-    }
-  }
-`;
-
 interface FunctionToolBarInnerProps {
   defaultValue: string;
   activeSpectrum: ActiveSpectrum | null;
   ftCounter: number;
   displayerMode: DISPLAYER_MODE;
-  info: Datum1DInfo | Datum2DInfo;
+  info: Info1D | Info2D;
   datum: Data1D | Data2D;
   mode: string;
 }
@@ -117,7 +88,7 @@ function FunctionToolBarInner({
     [preferences],
   );
   return (
-    <div css={styles}>
+    <>
       <ToggleButtonGroup value={option} onChange={handleChange}>
         {isButtonVisible('hideZoomTool') && (
           <ToggleButton
@@ -133,17 +104,15 @@ function FunctionToolBarInner({
         )}
 
         {isButtonVisible('hideZoomOutTool') && (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Toolbar.Item
-              id="zoom-out"
-              onClick={handleFullZoomOut}
-              title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
-            >
-              <div style={{ fontSize: 14 }}>
-                <FaExpand />
-              </div>
-            </Toolbar.Item>
-          </div>
+          <Toolbar.Item
+            id="zoom-out"
+            onClick={handleFullZoomOut}
+            title="Horizontal zoom out ( Press f ), Horizontal and Vertical zoom out, double click ( Press ff )"
+          >
+            <div style={{ fontSize: 14 }}>
+              <FaExpand />
+            </div>
+          </Toolbar.Item>
         )}
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
@@ -299,7 +268,7 @@ function FunctionToolBarInner({
             <SvgNmrFourierTransform />
           </Toolbar.Item>
         )}
-    </div>
+    </>
   );
 }
 
@@ -310,8 +279,7 @@ export default function FunctionToolBar({
 }: {
   defaultValue?: string;
 }) {
-  const { activeSpectrum, verticalAlign, displayerMode, activeTab, mode } =
-    useChartData();
+  const { activeSpectrum, displayerMode, activeTab, mode } = useChartData();
 
   const data = useDatumWithSpectraStatistics();
 
@@ -320,7 +288,6 @@ export default function FunctionToolBar({
       {...{
         ...data,
         activeSpectrum,
-        verticalAlign,
         displayerMode,
         activeTab,
         defaultValue,

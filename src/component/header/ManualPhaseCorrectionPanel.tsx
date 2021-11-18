@@ -10,7 +10,7 @@ import {
 
 import * as Filters from '../../data/Filters';
 import { Filter } from '../../data/FiltersManager';
-import { Data1D, Datum1D } from '../../data/data1d/Spectrum1D';
+import { Data1D, Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Input from '../elements/Input';
@@ -140,10 +140,10 @@ function ManualPhaseCorrectionPanelInner({
 
   const calcPhaseCorrectionHandler = useCallback(
     (newValues, filedName) => {
-      if (filedName === 'ph1' && data.y) {
+      if (filedName === 'ph1' && data.re) {
         const diff0 = newValues.ph0 - valueRef.current.ph0;
         const diff1 = newValues.ph1 - valueRef.current.ph1;
-        newValues.ph0 += diff0 - (diff1 * pivot?.index) / data.y.length;
+        newValues.ph0 += diff0 - (diff1 * pivot?.index) / data.re.length;
       }
 
       dispatch({
@@ -151,7 +151,7 @@ function ManualPhaseCorrectionPanelInner({
         value: newValues,
       });
     },
-    [data?.y, dispatch, pivot?.index],
+    [data.re, dispatch, pivot?.index],
   );
 
   const handleInput = useCallback(

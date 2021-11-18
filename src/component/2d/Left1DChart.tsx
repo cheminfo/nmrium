@@ -1,5 +1,6 @@
 import { useMemo, memo } from 'react';
 
+import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 
@@ -7,13 +8,7 @@ import { get1DYScale, get2DYScale } from './utilities/scale';
 
 interface Left1DChartProps {
   margin?: number;
-  data: {
-    id: number;
-    data: {
-      x: Array<number>;
-      y: Array<number>;
-    };
-  };
+  data: Datum1D;
 }
 
 function Left1DChart({
@@ -40,7 +35,8 @@ function Left1DChart({
       });
       const scaleY = get1DYScale(yDomains[spectrum.id], height, marignValue);
 
-      const pathPoints = xyReduce(spectrum.data);
+      const { x, re: y } = spectrum.data;
+      const pathPoints = xyReduce({ x, y });
 
       const lastXIndex = pathPoints.x.length - 1;
       const lastYIndex = pathPoints.y.length - 1;

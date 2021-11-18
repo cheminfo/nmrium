@@ -1,5 +1,6 @@
 import { useMemo, memo } from 'react';
 
+import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
 
@@ -7,13 +8,7 @@ import { get1DYScale, get2DXScale } from './utilities/scale';
 
 interface Top1DChartProps {
   margin?: number;
-  data: {
-    id: number;
-    data: {
-      x: Array<number>;
-      y: Array<number>;
-    };
-  };
+  data: Datum1D;
 }
 
 function Top1DChart({
@@ -35,8 +30,8 @@ function Top1DChart({
       const scaleX = get2DXScale({ width, xDomain, margin: originMargin });
 
       const scaleY = get1DYScale(yDomains[spectrum.id], height, marginProps);
-
-      const pathPoints = xyReduce(spectrum.data);
+      const { x, re: y } = spectrum.data;
+      const pathPoints = xyReduce({ x, y });
 
       let path = `M ${scaleX(pathPoints.x[0])} ${scaleY(pathPoints.y[0])} `;
       path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {

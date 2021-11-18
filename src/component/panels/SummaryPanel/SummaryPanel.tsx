@@ -4,8 +4,8 @@ import { getLinkDelta, getLinkDim, Types } from 'nmr-correlation';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
-import { Datum1D } from '../../../data/data1d/Spectrum1D';
-import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { Datum1D } from '../../../data/types/data1d';
+import { Datum2D } from '../../../data/types/data2d';
 import {
   findRange,
   findSignal1D,
@@ -328,8 +328,7 @@ function SummaryPanel() {
   const editProtonsCountSaveHandler = useCallback(
     (correlation, valuesString) => {
       let values;
-      // eslint-disable-next-line prefer-named-capture-group
-      if (valuesString.match(/^([0-9],{0,1})+$/g)) {
+      if (/^(?:[0-9],{0,1})+$/g.test(valuesString)) {
         // allow digits followed by optional comma only
         values = valuesString
           .split(',')

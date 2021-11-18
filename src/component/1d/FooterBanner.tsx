@@ -5,7 +5,8 @@ import { useContext, useCallback, Fragment, memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
 
-import { Datum1D } from '../../data/data1d/Spectrum1D';
+import get1DDataXY from '../../data/data1d/get1DDataXY';
+import { Datum1D } from '../../data/types/data1d';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
@@ -125,11 +126,9 @@ function FooterBannerInner({
   const getYValue = useCallback(
     (xPosition) => {
       if (spectrum.data) {
-        const xIndex = xFindClosestIndex(
-          spectrum.data.x,
-          scaleX().invert(xPosition),
-        );
-        return spectrum.data.y[xIndex];
+        const data = get1DDataXY(spectrum);
+        const xIndex = xFindClosestIndex(data.x, scaleX().invert(xPosition));
+        return data.y[xIndex];
       }
       return 1;
     },

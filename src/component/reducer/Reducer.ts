@@ -4,10 +4,10 @@ import { buildCorrelationData, Types } from 'nmr-correlation';
 import { predictSpectra } from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
-import { Range } from '../../data/data1d/Spectrum1D';
-import { Contours } from '../../data/data2d/Spectrum2D';
 import migrateData from '../../data/migration';
 import { Molecule } from '../../data/molecules/Molecule';
+import { Range } from '../../data/types/data1d';
+import { Contours } from '../../data/types/data2d/Contours';
 import generateID from '../../data/utilities/generateID';
 import { UsedColors } from '../../types/UsedColors';
 import { Spectra } from '../NMRium';
@@ -86,9 +86,8 @@ export const initialState: State = {
   mode: 'RTL',
   molecules: [],
   verticalAlign: {
-    flag: false,
-    stacked: false,
-    value: DEFAULT_YAXIS_SHIFT_VALUE,
+    align: 'bottom',
+    verticalShift: DEFAULT_YAXIS_SHIFT_VALUE,
   },
   history: {
     past: [],
@@ -133,6 +132,11 @@ export interface ExclusionZoneState {
   to: number;
 }
 
+export type VerticalAlignment = 'bottom' | 'center' | 'stack';
+export interface VerticalAlign {
+  align: VerticalAlignment;
+  verticalShift: number;
+}
 export interface State {
   /**
    * Last action type
@@ -226,13 +230,9 @@ export interface State {
   molecules: Array<Molecule>;
   /**
    * options to control spectra vertical alignment
-   * @default {flag: false,stacked: false,value: DEFAULT_YAXIS_SHIFT_VALUE}
+   * @default {align: 'bottom',value: DEFAULT_YAXIS_SHIFT_VALUE}
    */
-  verticalAlign: {
-    flag: boolean;
-    stacked: boolean;
-    value: number;
-  };
+  verticalAlign: VerticalAlign;
   /**
    * @todo for undo /redo features
    */

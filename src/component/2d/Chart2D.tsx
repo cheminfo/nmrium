@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { Margin } from '../reducer/Reducer';
 
@@ -12,13 +13,7 @@ import IndicationLines from './zones/IndicationLines';
 import Zones from './zones/Zones';
 
 interface Chart2DProps {
-  data?: Array<{
-    id: number;
-    data: {
-      x: number[];
-      y: number[];
-    };
-  }>;
+  spectra?: Datum1D[];
 }
 
 interface Chart2DInnerProps extends Chart2DProps {
@@ -29,7 +24,7 @@ interface Chart2DInnerProps extends Chart2DProps {
 }
 
 function chart2DInner({
-  data,
+  spectra,
   width,
   height,
   margin,
@@ -61,8 +56,8 @@ function chart2DInner({
         strokeWidth="1"
         fill="transparent"
       />
-      {data?.[0] && <Top1DChart data={data[0]} />}
-      {data?.[1] && <Left1DChart data={data[1]} />}
+      {spectra?.[0] && <Top1DChart data={spectra[0]} />}
+      {spectra?.[1] && <Left1DChart data={spectra[1]} />}
       <Contours />
       <Zones />
       <IndicationLines axis="X" show />
@@ -78,8 +73,10 @@ function chart2DInner({
 
 const MemoizedChart2D = memo(chart2DInner);
 
-export default function Chart2D({ data }: Chart2DProps) {
+export default function Chart2D({ spectra }: Chart2DProps) {
   const { width, height, margin, displayerKey } = useChartData();
 
-  return <MemoizedChart2D {...{ data, width, height, margin, displayerKey }} />;
+  return (
+    <MemoizedChart2D {...{ spectra, width, height, margin, displayerKey }} />
+  );
 }

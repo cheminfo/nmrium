@@ -41,10 +41,7 @@ function getFileName(name) {
 }
 
 function extractFileMetaFromPath(path) {
-  const meta = path
-    // eslint-disable-next-line no-useless-escape
-    .replace(/^.*[\\\/]/, '')
-    .split('.');
+  const meta = path.replace(/^.*[\\/]/, '').split('.');
 
   return { name: meta[0].toLowerCase(), extension: meta[1].toLowerCase() };
 }
@@ -93,7 +90,7 @@ async function loadFilesFromZip(files, options: { asBuffer?: boolean } = {}) {
       result.push({ binary, name, extension });
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.log(e);
+      console.error(e);
     }
   }
   return result;

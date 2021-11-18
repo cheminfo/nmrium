@@ -1,8 +1,10 @@
 import { extent } from 'd3';
 import { Draft } from 'immer';
 
-import { Datum1D } from '../../../data/data1d/Spectrum1D';
-import { Datum2D, isSpectrum2D } from '../../../data/data2d/Spectrum2D';
+import get1DDataXYs from '../../../data/data1d/get1DDataXY';
+import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
+import { Datum1D } from '../../../data/types/data1d';
+import { Datum2D } from '../../../data/types/data2d';
 import nucleusToString from '../../utility/nucleusToString';
 import { State } from '../Reducer';
 import { DISPLAYER_MODE } from '../core/Constants';
@@ -38,8 +40,8 @@ function getDomain(drfat: Draft<State>) {
   const data = getActiveData(drfat);
   try {
     xArray = data.reduce<Array<number>>((acc, d: Datum1D) => {
-      const { display, data: datum } = d;
-      const domain = [datum.x[0], datum.x[datum.x.length - 1]];
+      const { display, data } = d;
+      const domain = [data.x[0], data.x[data.x.length - 1]];
       xDomains[d.id] = domain;
       if (display.isVisible) {
         acc = acc.concat(domain);
@@ -48,7 +50,9 @@ function getDomain(drfat: Draft<State>) {
     }, []);
 
     yArray = data.reduce<Array<number>>((acc, d: Datum1D) => {
-      const { display, data } = d;
+      const { display } = d;
+      const data = get1DDataXYs(d);
+
       const _extent = extent(data.y) as Array<number>;
       yDomains[d.id] = _extent;
 
@@ -122,7 +126,7 @@ function get2DDomain(state) {
     }, {});
 
     yDomains = filteredData.reduce((acc, d: Datum1D) => {
-      const _extent = extent(d.data.y);
+      const _extent = extent(d.data.re);
       acc[d.id] = _extent;
       return acc;
     }, {});

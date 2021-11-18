@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { getSlice } from '../../../../data/data2d/Spectrum2D';
+import { Datum2D } from '../../../../data/types/data2d/Datum2D';
 import { useMouseTracker } from '../../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../../context/ChartContext';
 import { get2DXScale, get2DYScale } from '../../utilities/scale';
@@ -25,7 +26,7 @@ function SlicingView() {
       const { x, y } = position;
       const scale2dX = get2DXScale({ margin, width, xDomain });
       const scale2dY = get2DYScale({ margin, height, yDomain });
-      const data = getSlice(spectra[activeSpectrum.index], {
+      const data = getSlice(spectra[activeSpectrum.index] as Datum2D, {
         x: scale2dX.invert(x),
         y: scale2dY.invert(y),
       });

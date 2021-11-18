@@ -6,8 +6,8 @@ import { useCallback, useMemo, useState, useRef, memo, Fragment } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { ImLink } from 'react-icons/im';
 
-import { Datum1D, Info, Integrals } from '../../../data/data1d/Spectrum1D';
 import { Molecule } from '../../../data/molecules/Molecule';
+import { Datum1D, Info1D, Integrals } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
 import { usePreferences } from '../../context/PreferencesContext';
@@ -46,7 +46,7 @@ const style = css`
 
 export interface IntegralPanelInnerProps {
   integrals: Integrals;
-  info: Info;
+  info: Info1D;
   activeTab: string;
   xDomain: Array<number>;
   preferences: any;

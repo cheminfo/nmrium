@@ -4,6 +4,7 @@ import { xFindClosestIndex } from 'ml-spectra-processing';
 import { useContext, useMemo, Fragment } from 'react';
 import { MF } from 'react-mf';
 
+import get1DDataXY from '../../data/data1d/get1DDataXY';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
@@ -138,11 +139,9 @@ function FooterBanner({ layout, data1D }) {
       index = 1;
     }
     if (index != null && scaleX != null) {
-      const xIndex = xFindClosestIndex(
-        data1D[index].data.x,
-        scaleX.invert(cordinate),
-      );
-      return data1D[index].data.y[xIndex];
+      const datum = get1DDataXY(data1D[index]);
+      const xIndex = xFindClosestIndex(datum.x, scaleX.invert(cordinate));
+      return datum.y[xIndex];
     }
     return 1;
   };

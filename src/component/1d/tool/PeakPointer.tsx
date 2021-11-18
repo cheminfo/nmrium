@@ -1,12 +1,14 @@
 import max from 'ml-array-max';
 import { useContext, useEffect, useState } from 'react';
 
-import { Datum1D } from '../../../data/data1d/Spectrum1D';
+import get1DDataXY from '../../../data/data1d/get1DDataXY';
+import { Datum1D } from '../../../data/types/data1d';
 import { BrushContext } from '../../EventsTrackers/BrushTracker';
 import { MouseContext } from '../../EventsTrackers/MouseTracker';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
 import { options } from '../../toolbar/ToolTypes';
+import getVerticalShift from '../utilities/getVerticalShift';
 
 const styles = {
   radius: 10,
@@ -40,16 +42,12 @@ function PeakPointer() {
   const [closePeakPosition, setPosition] = useState<PeakPosition | null>();
 
   useEffect(() => {
-    function getVerticalAlign() {
-      if (activeSpectrum) {
-        return verticalAlign.flag
-          ? verticalAlign.stacked
-            ? activeSpectrum?.index * verticalAlign.value
-            : 0
-          : 0;
-      }
-      return 0;
-    }
+    const vShift = activeSpectrum
+      ? getVerticalShift(verticalAlign, {
+          index: activeSpectrum?.index || 1,
+          align: 'center',
+        })
+      : 0;
 
     const getClosePeak = (xShift, mouseCoordinates) => {
       if (
@@ -65,26 +63,23 @@ function PeakPointer() {
         });
 
         //get the active sepectrum data by looking for it by id
-        const spectrumData = data.find(
+        const spectrum = data.find(
           (d) => d.id === activeSpectrum.id,
         ) as Datum1D;
 
-        if (!spectrumData) throw new Error('Unreachable');
+        if (!spectrum) throw new Error('Unreachable');
+        const datum = get1DDataXY(spectrum);
+        const maxIndex = datum.x.findIndex((number) => number >= range[1]) - 1;
+        const minIndex = datum.x.findIndex((number) => number >= range[0]);
 
-        const maxIndex =
-          spectrumData.data.x.findIndex((number) => number >= range[1]) - 1;
-        const minIndex = spectrumData.data.x.findIndex(
-          (number) => number >= range[0],
-        );
-
-        const yDataRange = spectrumData.data.y.slice(minIndex, maxIndex);
+        const yDataRange = datum.y.slice(minIndex, maxIndex);
         if (yDataRange && yDataRange.length > 0) {
           const yValue = max(yDataRange);
           const xIndex = yDataRange.findIndex((value) => value === yValue);
-          const xValue = spectrumData.data.x[minIndex + xIndex];
+          const xValue = datum.x[minIndex + xIndex];
           return {
             x: scaleX()(xValue),
-            y: scaleY(activeSpectrum.id)(yValue) - getVerticalAlign(),
+            y: scaleY(activeSpectrum.id)(yValue) - vShift,
             xIndex: minIndex + xIndex,
           };
         }

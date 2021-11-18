@@ -1,12 +1,9 @@
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import {
-  lookupPeak,
-  Datum1D,
-  getShiftX,
-} from '../../../data/data1d/Spectrum1D';
+import { lookupPeak, getShiftX } from '../../../data/data1d/Spectrum1D';
 import autoPeakPicking from '../../../data/data1d/autoPeakPicking';
+import { Datum1D } from '../../../data/types/data1d';
 import generateID from '../../../data/utilities/generateID';
 import { options } from '../../toolbar/ToolTypes';
 import { State } from '../Reducer';

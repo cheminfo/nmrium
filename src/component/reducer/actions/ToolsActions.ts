@@ -3,8 +3,8 @@ import { original, Draft, current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import * as Filters from '../../../data/Filters';
-import { Data1D, Datum1D } from '../../../data/data1d/Spectrum1D';
-import { Datum2D } from '../../../data/data2d/Spectrum2D';
+import { Data1D, Datum1D } from '../../../data/types/data1d';
+import { Datum2D } from '../../../data/types/data2d';
 import generateID from '../../../data/utilities/generateID';
 import { getYScale, getXScale } from '../../1d/utilities/scale';
 import { LAYOUT } from '../../2d/utilities/DimensionLayout';
@@ -12,11 +12,7 @@ import { get2DYScale } from '../../2d/utilities/scale';
 import { options } from '../../toolbar/ToolTypes';
 import GroupByInfoKey from '../../utility/GroupByInfoKey';
 import { State } from '../Reducer';
-import {
-  DEFAULT_YAXIS_SHIFT_VALUE,
-  DISPLAYER_MODE,
-  MARGIN,
-} from '../core/Constants';
+import { DISPLAYER_MODE, MARGIN } from '../core/Constants';
 import Zoom1DManager from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
@@ -29,8 +25,8 @@ function getStrongestPeak(draft: Draft<State>) {
   const { activeSpectrum, data } = draft;
   if (activeSpectrum) {
     const activeData = data[activeSpectrum?.index].data as Data1D;
-    const strongestPeakValue = max(activeData.y);
-    const index = activeData.y.findIndex((val) => val === strongestPeakValue);
+    const strongestPeakValue = max(activeData.re);
+    const index = activeData.re.findIndex((val) => val === strongestPeakValue);
     return {
       xValue: activeData.x[index],
       yValue: strongestPeakValue,
@@ -143,30 +139,15 @@ function setSelectedOptionPanel(draft: Draft<State>, selectedOptionPanel) {
 }
 
 function setSpectrumsVerticalAlign(draft: Draft<State>) {
-  changeSpectrumVerticalAlignment(draft, { center: !draft.verticalAlign.flag });
+  const align = ['stack', 'center'].includes(draft.verticalAlign.align)
+    ? 'bottom'
+    : 'center';
+  changeSpectrumVerticalAlignment(draft, { align });
 }
 
 function handleChangeSpectrumDisplayMode(draft: Draft<State>) {
-  const state = original(draft) as State;
-  const { activeSpectrum, height, activeTab } = draft;
-  let YAxisShift = DEFAULT_YAXIS_SHIFT_VALUE;
-  if (activeSpectrum) {
-    const { index } = activeSpectrum;
-    if ((state.data[index] as Datum1D).info.isFid) {
-      YAxisShift = height / 2;
-    }
-  }
-  draft.verticalAlign.flag = !draft.verticalAlign.stacked;
-  draft.verticalAlign.stacked = !draft.verticalAlign.stacked;
-
-  if (draft.verticalAlign.stacked) {
-    const count = (state.data as Datum1D[]).filter(
-      (datum) => datum.info.nucleus === activeTab,
-    ).length;
-    draft.verticalAlign.value = Math.floor(height / (count + 2));
-  } else {
-    draft.verticalAlign.value = YAxisShift;
-  }
+  const align = draft.verticalAlign.align === 'stack' ? 'bottom' : 'stack';
+  changeSpectrumVerticalAlignment(draft, { align });
 }
 
 function handleAddBaseLineZone(draft: Draft<State>, { from, to }) {
@@ -205,18 +186,6 @@ function handleToggleRealImaginaryVisibility(draft) {
 
     draft.data[index].display.isRealSpectrumVisible =
       !draft.data[index].display.isRealSpectrumVisible;
-    if (draft.data[index].display.isRealSpectrumVisible) {
-      const re = draft.data[index].data.re;
-      if (re !== null && re !== undefined) {
-        draft.data[index].data.y = re;
-      }
-    } else {
-      const im = draft.data[index].data.im;
-
-      if (im !== null && im !== undefined) {
-        draft.data[index].data.y = im;
-      }
-    }
 
     setDomain(draft);
   }

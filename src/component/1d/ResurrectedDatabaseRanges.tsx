@@ -1,7 +1,7 @@
 import { extent } from 'd3';
 import { rangesToXY } from 'nmr-processing';
 
-import { Datum1D } from '../../data/data1d/Spectrum1D';
+import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import { HighlightedSource, useHighlightData } from '../highlight';

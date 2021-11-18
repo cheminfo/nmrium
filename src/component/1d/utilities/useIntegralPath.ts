@@ -1,7 +1,7 @@
 import { xyIntegral, xyReduce } from 'ml-spectra-processing';
 import { useMemo } from 'react';
 
-import { Data1D } from '../../../data/data1d/Spectrum1D';
+import { Data1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';
 
@@ -51,10 +51,10 @@ export default function useIntegralPath(integralOptions: {
 
   const integral = useMemo(() => {
     if (activeSpectrum) {
-      const { x, y } = data[activeSpectrum?.index].data as Data1D;
+      const { x, re } = data[activeSpectrum?.index].data as Data1D;
       const { from, to } = integralOptions;
       return xyIntegral(
-        { x, y },
+        { x, y: re },
         {
           from,
           to,

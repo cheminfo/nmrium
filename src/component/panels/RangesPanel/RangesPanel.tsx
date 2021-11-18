@@ -5,8 +5,8 @@ import { xGetFromToIndex } from 'ml-spectra-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
-import { Data1D, Datum1D, Info, Ranges } from '../../../data/data1d/Spectrum1D';
 import { Molecule } from '../../../data/molecules/Molecule';
+import { Data1D, Datum1D, Info1D, Ranges } from '../../../data/types/data1d';
 import { useAssignmentData } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -27,7 +27,7 @@ import RangesTable from './RangesTable';
 interface RangesTablePanelInnerProps {
   ranges: Ranges;
   data: Data1D;
-  info: Info;
+  info: Info1D;
   xDomain: Array<number>;
   activeTab: string;
   molecules: Array<Molecule>;
@@ -104,8 +104,8 @@ function RangesTablePanelInner({
 
   const saveJSONToClipboardHandler = useCallback(
     async (value) => {
-      if (data.x && data.y) {
-        const { x, y } = data;
+      if (data.x && data.re) {
+        const { x, re } = data;
         const { from, to } = value;
 
         const { fromIndex, toIndex } = xGetFromToIndex(x, {
@@ -114,7 +114,7 @@ function RangesTablePanelInner({
         });
         const dataToClipboard = {
           x: x.slice(fromIndex, toIndex),
-          y: y.slice(fromIndex, toIndex),
+          y: re.slice(fromIndex, toIndex),
           ...value,
         };
 

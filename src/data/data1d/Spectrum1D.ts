@@ -13,125 +13,19 @@ import * as FiltersTypes from '../Filters';
 import * as FiltersManager from '../FiltersManager';
 import { DataExportOptions, DataExportOptionsType } from '../SpectraManager';
 import { DatumKind, SignalKindsToInclude } from '../constants/SignalsKinds';
-import { Datum2D } from '../data2d/Spectrum2D';
+import {
+  Datum1D,
+  Integral,
+  Range,
+  RangeDetectionResult,
+} from '../types/data1d';
+import { Datum2D } from '../types/data2d';
 import { checkSignalKinds } from '../utilities/RangeUtilities';
 import generateID from '../utilities/generateID';
 import get1dColor from '../utilities/getColor';
 
 import autoRangesDetection from './autoRangesDetection';
 import detectSignal from './detectSignal';
-
-export interface File {
-  binary: ArrayBuffer;
-  name: string;
-  extension?: string;
-}
-
-export interface Data1D {
-  y: Array<number>;
-  x: Array<number>;
-  re: Array<number>;
-  im: Array<number>;
-}
-
-export interface Display {
-  name: string;
-  color: string;
-  isVisible: boolean;
-  isPeaksMarkersVisible: boolean;
-  isRealSpectrumVisible: boolean;
-}
-
-export interface Info {
-  nucleus: string;
-  isFid: boolean;
-  isComplex: boolean;
-  dimension: number;
-  isFt: boolean;
-  experiment?: any;
-  originFrequency: number;
-}
-export interface Peak {
-  id: string;
-  delta: number;
-  originDelta: number;
-  width?: number;
-  intensity: number;
-}
-export interface Peaks {
-  values: Array<Peak>;
-  options: any;
-}
-export interface Integral {
-  id: string;
-  originFrom: number;
-  originTo: number;
-  from: number;
-  to: number;
-  absolute: number;
-  integral?: number;
-  kind: string;
-}
-export interface Integrals {
-  values: Array<Integral>;
-  options: { sum?: number };
-}
-
-export interface Signal {
-  id: string;
-  kind: string;
-  originDelta?: number;
-  delta: number;
-  multiplicity: string;
-  peaks?: Array<{ x: number; intensity: number; width: number }>;
-  diaIDs?: string[];
-  nbAtoms?: number;
-}
-export interface Range {
-  id: string;
-  originFrom?: number;
-  originTo?: number;
-  from: number;
-  to: number;
-  absolute: number;
-  integration: number;
-  kind: string;
-  signals: Array<Signal>;
-  diaIDs?: string[];
-  nbAtoms?: number;
-}
-
-export interface Ranges {
-  values: Array<Range>;
-  options: { sum?: number };
-}
-
-export interface Source {
-  jcampURL: string;
-  file: File;
-}
-
-export interface Datum1D {
-  id: string;
-  source: Source;
-  display: Display;
-  info: Info;
-  originalInfo?: Info;
-  meta: any;
-  data: Data1D;
-  originalData?: Data1D;
-  peaks: Peaks;
-  integrals: Integrals;
-  ranges: Ranges;
-  filters: Array<FiltersManager.Filter>;
-}
-
-export interface RangeDetectionObject
-  extends Omit<Range, 'integration' | 'kind' | 'signals'> {
-  absolute: number;
-  min: number;
-  max: number;
-}
 
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   const datum: any = {};
@@ -177,7 +71,6 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
       x: [],
       re: [],
       im: [],
-      y: [],
     },
     options.data,
   );
@@ -201,7 +94,6 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   FiltersManager.reapplyFilters(datum);
 
   preprocessing(datum);
-  (datum.data as Data1D).y = datum.data.re;
   return datum;
 }
 
@@ -386,7 +278,7 @@ export function updateIntegralRanges(datum, forceCalculateIntegral = false) {
   );
 }
 
-export function detectRange(datum, options): RangeDetectionObject {
+export function detectRange(datum, options): RangeDetectionResult {
   const { from, to } = options;
   const { x, re: y } = datum.data;
 

@@ -2,9 +2,9 @@ import { useEffect, useState, memo } from 'react';
 
 import {
   Datum2D,
-  Display,
+  Display2D,
   Zones as ZonesProps,
-} from '../../../data/data2d/Spectrum2D';
+} from '../../../data/types/data2d';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 import Events from '../../utility/Events';
@@ -13,7 +13,7 @@ import Zone from './Zone';
 
 interface ZonesInnerProps {
   zones: ZonesProps;
-  display: Display;
+  display: Display2D;
   displayerKey: string;
 }
 
