@@ -82,7 +82,7 @@ function changeZoneSignalDelta(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     const { xShift, yShift } = changeZoneSignal(
-      draft.data[index],
+      draft.data[index] as Datum2D,
       zoneID,
       signal,
     );
