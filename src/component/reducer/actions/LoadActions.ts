@@ -54,8 +54,34 @@ function setData(
       tolerance: DefaultTolerance,
     });
   } else {
-    draft.correlations = correlations;
+    // in case of older NMRium data are imported, convert hybridization string to number array
+    // @TODO remove following command to overwrite correlations at some point in future
+    draft.correlations =
+      convertHybridizationStringValuesInCorrelations(correlations);
+
+    // draft.correlations = correlations // original command without overwriting
   }
+}
+
+function convertHybridizationStringValuesInCorrelations(
+  correlations: Types.CorrelationData,
+): Types.CorrelationData {
+  return {
+    ...correlations,
+    values: correlations.values.map((correlation) => {
+      if (typeof correlation.hybridization === 'string') {
+        let values: number[] = [];
+        if (correlation.hybridization.length > 0) {
+          const hybridizationString: string =
+            correlation.hybridization.replaceAll('SP', '');
+          const value = Number(hybridizationString);
+          values.push(value);
+        }
+        correlation.hybridization = values;
+      }
+      return correlation;
+    }),
+  };
 }
 
 function setPreferences(draft: Draft<State>, data) {
