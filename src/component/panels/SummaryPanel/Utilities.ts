@@ -350,10 +350,45 @@ function getEditedCorrelations({
   return { editedCorrelations, buildCorrelationDataOptions };
 }
 
+function convertValuesString(
+  valuesString: string,
+  key: 'protonsCount' | 'hybridization',
+): number[] {
+  valuesString = valuesString
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .split(',')
+    .map((token) => (token === 'sp' ? 'sp1' : token))
+    .join(',');
+  valuesString = valuesString.replaceAll('sp', '');
+
+  let values: number[] = [];
+  const regex = /^(?:[0-9],{0,1})+$/g;
+  if (regex.test(valuesString)) {
+    // allow digits followed by optional comma only
+    values = valuesString
+      .split(',')
+      .filter((char) => char.length > 0)
+      .map((char) => Number(char));
+  }
+
+  // allow key specific values only
+  // protonsCount: [0, 1, 2, 3, ...], hybridization: [1, 2, 3]
+  values = values.filter(
+    (value) =>
+      value >= (key === 'protonsCount' ? 0 : 1) &&
+      (key === 'protonsCount' || value <= 3),
+  );
+
+  // unique values
+  return values.filter((index, i, a) => a.indexOf(index) === i);
+}
+
 export {
   buildNewLink1D,
   buildNewLink2D,
   cloneCorrelationAndEditLink,
+  convertValuesString,
   findSignalMatch1D,
   findSignalMatch2D,
   getAbbreviation,
