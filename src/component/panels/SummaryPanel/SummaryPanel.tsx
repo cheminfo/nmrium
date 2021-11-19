@@ -325,51 +325,24 @@ function SummaryPanel() {
     [dispatch],
   );
 
-  const editProtonsCountSaveHandler = useCallback(
-    (correlation, valuesString) => {
-      let values;
-      if (/^(?:[0-9],{0,1})+$/g.test(valuesString)) {
-        // allow digits followed by optional comma only
-        values = valuesString
-          .split(',')
-          .filter((char) => char.length > 0)
-          .map((char) => Number(char));
-      } else if (valuesString.trim().length === 0) {
-        // set values to default
-        values = [];
-      }
-
-      if (values) {
-        // ignore not supported text input
-        dispatch({
-          type: SET_CORRELATION,
-          payload: {
-            id: correlation.id,
-            correlation: {
-              ...correlation,
-              protonsCount: values,
-              edited: { ...correlation.edited, protonsCount: true },
-            },
-            options: {
-              skipDataUpdate: true,
-            },
-          },
-        });
-      }
-    },
-    [dispatch],
-  );
-
-  const changeHybridizationSaveHandler = useCallback(
-    (correlation, value) => {
+  const editNumericValuesSaveHandler = useCallback(
+    ({
+      correlation,
+      values,
+      key,
+    }: {
+      correlation: Types.Correlation;
+      values: number[];
+      key: 'hybridization' | 'protonsCount';
+    }) => {
       dispatch({
         type: SET_CORRELATION,
         payload: {
           id: correlation.id,
           correlation: {
             ...correlation,
-            hybridization: value,
-            edited: { ...correlation.edited, hybridization: true },
+            [key]: values,
+            edited: { ...correlation.edited, [key]: true },
           },
           options: {
             skipDataUpdate: true,
@@ -540,8 +513,7 @@ function SummaryPanel() {
         filteredCorrelationsData={filteredCorrelationsData}
         additionalColumnData={additionalColumnData}
         editEquivalencesSaveHandler={editEquivalencesSaveHandler}
-        changeHybridizationSaveHandler={changeHybridizationSaveHandler}
-        editProtonsCountSaveHandler={editProtonsCountSaveHandler}
+        onSaveEditNumericValues={editNumericValuesSaveHandler}
         onEditCorrelationTableCellHandler={editCorrelationTableCellHandler}
         showProtonsAsRows={showProtonsAsRows}
         spectraData={spectraData}
