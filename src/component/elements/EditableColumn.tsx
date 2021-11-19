@@ -14,7 +14,7 @@ interface EditableColumnProps {
   onEditStart?: (element: any) => void;
   type?: 'number' | 'text';
   editStatus?: boolean;
-  value: string;
+  value: string | number;
   style?: CSSProperties;
 }
 
