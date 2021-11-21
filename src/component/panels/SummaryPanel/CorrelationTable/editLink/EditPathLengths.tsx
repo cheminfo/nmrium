@@ -4,6 +4,7 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 import { Types } from 'nmr-correlation';
 import { useCallback, useState } from 'react';
 
+import PathLength from '../../../../../data/types/data2d/PathLength';
 import Input from '../../../../elements/Input';
 import { DefaultPathLengths } from '../Constants';
 
@@ -55,7 +56,12 @@ function EditPathLengths({ link, onEdit }: InputProps) {
 
   const handleOnEdit = useCallback(() => {
     const editedLink = lodashCloneDeep(link);
-    editedLink.signal.pathLength = { values: [min, max], source: 'manual' };
+    const newPathLength: PathLength = {
+      min,
+      max,
+      source: 'manual',
+    };
+    editedLink.signal.pathLength = newPathLength;
     onEdit(editedLink);
   }, [link, max, min, onEdit]);
 

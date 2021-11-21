@@ -1,4 +1,5 @@
 export default interface PathLength {
-  values: number[];
+  min: number;
+  max: number;
   source: 'automatic' | 'manual';
 }
