@@ -39,17 +39,17 @@ const DefaultTolerance = {
   Si: 0.25,
   P: 0.25,
 };
-
-const EditLinkActions = [
-  { key: '-', value: '-', label: 'Select Action' },
-  { key: 'delete', value: 'delete', label: 'Delete' },
-  { key: 'move', value: 'move', label: 'Move' },
-  { key: 'unmove', value: 'unmove', label: 'Unmove' },
-];
+const DefaultPathLengths = {
+  hmbc: { min: 2, max: 3 },
+  cosy: { min: 3, max: 4 },
+  hsqc: { min: 1, max: 1 },
+  hmqc: { min: 1, max: 1 },
+  inadequate: { min: 1, max: 1 },
+};
 
 export {
+  DefaultPathLengths,
   DefaultTolerance,
-  EditLinkActions,
   Errors,
   ErrorColors,
   Hybridizations,

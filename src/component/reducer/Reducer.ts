@@ -696,6 +696,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleDeleteZone(draft, action);
     case types.DELETE_2D_SIGNAL:
       return ZonesActions.handleDeleteSignal(draft, action);
+    case types.SET_2D_SIGNAL_PATH_LENGTH:
+      return ZonesActions.handleSetSignalPathLength(draft, action);
     case types.RESET_DOMAIN:
       return DomainActions.handelResetDomain(draft);
     case types.CHANGE_ZONE_SIGNAL_VALUE:

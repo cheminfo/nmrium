@@ -158,17 +158,25 @@ function cloneCorrelationAndEditLink(
 function getEditedCorrelations({
   correlationDim1,
   correlationDim2,
-  selectedCorrelationValueDim1,
-  selectedCorrelationValueDim2,
+  selectedCorrelationIdDim1,
+  selectedCorrelationIdDim2,
   action,
   link,
   correlations,
+}: {
+  correlationDim1: Types.Correlation;
+  correlationDim2: Types.Correlation;
+  action: string;
+  selectedCorrelationIdDim1: string | undefined;
+  selectedCorrelationIdDim2: string | undefined;
+  link: Types.Link;
+  correlations: Types.Correlation[];
 }) {
   const selectedCorrelationDim1 = correlations.find(
-    (correlation) => correlation.id === selectedCorrelationValueDim1,
+    (correlation) => correlation.id === selectedCorrelationIdDim1,
   );
   const selectedCorrelationDim2 = correlations.find(
-    (correlation) => correlation.id === selectedCorrelationValueDim2,
+    (correlation) => correlation.id === selectedCorrelationIdDim2,
   );
   const hasChangedDim1 = selectedCorrelationDim1?.id !== correlationDim1.id;
   const hasChangedDim2 =
@@ -243,7 +251,7 @@ function getEditedCorrelations({
         );
       } else if (
         selectedCorrelationDim1 &&
-        selectedCorrelationValueDim2 === 'new'
+        selectedCorrelationIdDim2 === 'new'
       ) {
         editedCorrelations.push(
           cloneCorrelationAndEditLink(
@@ -260,7 +268,7 @@ function getEditedCorrelations({
           }),
         );
       } else if (
-        selectedCorrelationValueDim1 === 'new' &&
+        selectedCorrelationIdDim1 === 'new' &&
         selectedCorrelationDim2
       ) {
         editedCorrelations.push(
@@ -278,8 +286,8 @@ function getEditedCorrelations({
           ),
         );
       } else if (
-        selectedCorrelationValueDim1 === 'new' &&
-        selectedCorrelationValueDim2 === 'new'
+        selectedCorrelationIdDim1 === 'new' &&
+        selectedCorrelationIdDim2 === 'new'
       ) {
         editedCorrelations.push(
           buildCorrelation({

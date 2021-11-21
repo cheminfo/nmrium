@@ -187,6 +187,26 @@ function handleDeleteSignal(draft: Draft<State>, action) {
   }
 }
 
+function handleSetSignalPathLength(draft: Draft<State>, action) {
+  const { spectrum, zone, signal, pathLength } = action.payload;
+  if (spectrum && zone) {
+    const datum2D = draft.data.find(
+      (datum) => datum.id === spectrum.id,
+    ) as Datum2D;
+    const zoneIndex = datum2D.zones.values.findIndex(
+      (_zone) => _zone.id === zone.id,
+    );
+    const signalIndex = zone.signals.findIndex(
+      (_signal) => _signal.id === signal.id,
+    );
+    const _zone = unlink(lodashCloneDeep(zone), false, signalIndex, undefined);
+    _zone.signals[signalIndex].pathLength = pathLength;
+    datum2D.zones.values[zoneIndex] = _zone;
+
+    handleOnChangeZonesData(draft);
+  }
+}
+
 function handleUnlinkZone(draft: Draft<State>, action) {
   const state = original(draft) as State;
   if (state.activeSpectrum?.id) {
@@ -261,6 +281,7 @@ export {
   handleChangeZoneSignalKind,
   handleUnlinkZone,
   handleSetDiaIDZone,
+  handleSetSignalPathLength,
   changeZonesFactorHandler,
   handleAutoSpectraZonesDetection,
 };
