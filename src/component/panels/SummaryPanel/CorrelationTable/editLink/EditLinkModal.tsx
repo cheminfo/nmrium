@@ -13,7 +13,7 @@ import EditPathLengths from './EditPathLengths';
 import MoveLink from './MoveLink';
 
 const modalContainer = css`
-  width: 475px;
+  width: 490px;
   height: 220px;
   padding: 5px;
 
@@ -99,7 +99,7 @@ export default function EditLinkModal({
 
   const handleOnEdit = useCallback(
     (
-      action: string,
+      action: 'move' | 'remove' | 'unmove' | 'setPathLength',
       selectedCorrelationIdDim1: string | undefined,
       selectedCorrelationIdDim2: string | undefined,
       editedLink?: Types.Link,
@@ -111,7 +111,7 @@ export default function EditLinkModal({
           selectedCorrelationIdDim1,
           selectedCorrelationIdDim2,
           action,
-          link,
+          link: editedLink || link,
           correlations,
         });
       onEdit(
@@ -140,7 +140,9 @@ export default function EditLinkModal({
               correlationDim2={correlationDim2}
               link={link}
               correlations={correlations}
-              onEdit={handleOnEdit}
+              onEdit={(correlationIdDim1, correlationIdDim2) =>
+                handleOnEdit('move', correlationIdDim1, correlationIdDim2)
+              }
             />
           </Tab>
           <Tab tablabel="Unmove" tabid="unmove">
@@ -151,7 +153,7 @@ export default function EditLinkModal({
               }
             />
           </Tab>
-          <Tab tablabel="Delete" tabid={'delete'}>
+          <Tab tablabel="Remove" tabid={'remove'}>
             <EditLinkConfirmation
               description="Deletion of signal."
               onConfirm={() => handleOnEdit('remove', undefined, undefined)}
@@ -161,7 +163,12 @@ export default function EditLinkModal({
             <EditPathLengths
               link={link}
               onEdit={(editedLink) =>
-                handleOnEdit('setPathLength', undefined, undefined, editedLink)
+                handleOnEdit(
+                  'setPathLength',
+                  correlationDim1,
+                  correlationDim2,
+                  editedLink,
+                )
               }
             />
           </Tab>

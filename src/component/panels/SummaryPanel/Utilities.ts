@@ -10,9 +10,10 @@ import {
 } from 'nmr-correlation';
 
 import { Datum2D } from '../../../data/types/data2d';
+import PathLength from '../../../data/types/data2d/PathLength';
 import { findSignal2D } from '../../../data/utilities/FindUtilities';
 
-import { ErrorColors } from './CorrelationTable/Constants';
+import { DefaultPathLengths, ErrorColors } from './CorrelationTable/Constants';
 
 function getAtomType(nucleus: string): string {
   return nucleus.split(/\d+/)[1];
@@ -166,7 +167,7 @@ function getEditedCorrelations({
 }: {
   correlationDim1: Types.Correlation;
   correlationDim2: Types.Correlation;
-  action: string;
+  action: 'move' | 'remove' | 'unmove' | 'setPathLength';
   selectedCorrelationIdDim1: string | undefined;
   selectedCorrelationIdDim2: string | undefined;
   link: Types.Link;
@@ -353,9 +354,46 @@ function getEditedCorrelations({
         );
       }
     }
+  } else if (action === 'setPathLength') {
+    editedCorrelations.push(
+      cloneCorrelationAndSetPathLength(correlationDim1, link, 'x'),
+    );
+    editedCorrelations.push(
+      cloneCorrelationAndSetPathLength(correlationDim2, link, 'y'),
+    );
   }
 
   return { editedCorrelations, buildCorrelationDataOptions };
+}
+
+function cloneCorrelationAndSetPathLength(
+  correlation: Types.Correlation,
+  editedLink: Types.Link,
+  axis: 'x' | 'y',
+): Types.Correlation {
+  const _correlation = lodashCloneDeep(correlation);
+  const linkDim = getLinkDim(editedLink);
+  if (linkDim === 2) {
+    const editedLinkID = editedLink.id.split('_')[axis === 'x' ? 0 : 1];
+    const _link = _correlation.link.find((link) => link.id === editedLinkID);
+    if (_link) {
+      const newPathLength = editedLink.signal.pathLength as PathLength;
+      // remove (previous) pathLength if it is same as default
+      if (
+        DefaultPathLengths[_link.experimentType] !== undefined &&
+        DefaultPathLengths[_link.experimentType].min === newPathLength.min &&
+        DefaultPathLengths[_link.experimentType].max === newPathLength.max
+      ) {
+        delete _link.signal.pathLength;
+        delete _link.edited.pathLength;
+      } else {
+        _link.signal.pathLength = newPathLength;
+        _link.edited.pathLength = true;
+      }
+    }
+  }
+
+  return _correlation;
 }
 
 export {

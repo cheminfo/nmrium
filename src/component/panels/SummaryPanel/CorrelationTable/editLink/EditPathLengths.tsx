@@ -2,9 +2,10 @@
 import { css } from '@emotion/react';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import { Types } from 'nmr-correlation';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import PathLength from '../../../../../data/types/data2d/PathLength';
+import Button from '../../../../elements/Button';
 import Input from '../../../../elements/Input';
 import { DefaultPathLengths } from '../Constants';
 
@@ -48,11 +49,16 @@ interface InputProps {
 
 function EditPathLengths({ link, onEdit }: InputProps) {
   const [min, setMin] = useState<number>(
-    DefaultPathLengths[link.experimentType]?.min || 0,
+    link.signal.pathLength?.min ||
+      DefaultPathLengths[link.experimentType]?.min ||
+      0,
   );
   const [max, setMax] = useState<number>(
-    DefaultPathLengths[link.experimentType]?.max || 0,
+    link.signal.pathLength?.max ||
+      DefaultPathLengths[link.experimentType]?.max ||
+      0,
   );
+  const [isError, setIsError] = useState<boolean>(false);
 
   const handleOnEdit = useCallback(() => {
     const editedLink = lodashCloneDeep(link);
@@ -65,6 +71,10 @@ function EditPathLengths({ link, onEdit }: InputProps) {
     onEdit(editedLink);
   }, [link, max, min, onEdit]);
 
+  useEffect(() => {
+    setIsError(min <= 0 || min > max);
+  }, [max, min]);
+
   return (
     <div css={editPathLengthsStyles}>
       <p>Setting of the minimum and maximum path length.</p>
@@ -76,7 +86,7 @@ function EditPathLengths({ link, onEdit }: InputProps) {
           onChange={(e) => {
             setMin(Number(e.target.value));
           }}
-          style={{ container: { textAlign: 'center' } }}
+          style={{ input: { color: isError ? 'red' : 'black' } }}
         />
         <Input
           type="number"
@@ -87,9 +97,9 @@ function EditPathLengths({ link, onEdit }: InputProps) {
           }}
         />
       </div>
-      <button type="button" onClick={handleOnEdit}>
+      <Button type="button" onClick={handleOnEdit} disabled={isError}>
         Set
-      </button>
+      </Button>
     </div>
   );
 }
