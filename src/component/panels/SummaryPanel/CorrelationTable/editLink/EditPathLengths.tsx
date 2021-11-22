@@ -40,6 +40,11 @@ const editPathLengthsStyles = css`
     color: white;
     background-color: gray;
   }
+
+  .warning {
+    margin-top: 5px;
+    color: red;
+  }
 `;
 
 interface InputProps {
@@ -97,9 +102,15 @@ function EditPathLengths({ link, onEdit }: InputProps) {
           }}
         />
       </div>
-      <Button type="button" onClick={handleOnEdit} disabled={isError}>
-        Set
-      </Button>
+      {isError ? (
+        <p className="warning">
+          Minimum must not be 0 or higher than the maximum value.{' '}
+        </p>
+      ) : (
+        <Button type="button" onClick={handleOnEdit} disabled={isError}>
+          Set
+        </Button>
+      )}
     </div>
   );
 }
