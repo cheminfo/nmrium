@@ -9,8 +9,11 @@ import {
   Types,
 } from 'nmr-correlation';
 
+import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
 import { Datum2D } from '../../../data/types/data2d';
+import PathLength from '../../../data/types/data2d/PathLength';
 import { findSignal2D } from '../../../data/utilities/FindUtilities';
+import isDefaultPathLength from '../../modal/editZone/validation/isDefaultPathLength';
 
 import { ErrorColors } from './CorrelationTable/Constants';
 
@@ -86,28 +89,42 @@ function findSignalMatch2D(
 }
 
 function getAbbreviation(link: Types.Link): string {
+  let abbreviation = 'X';
   if (link.experimentType === 'hsqc' || link.experimentType === 'hmqc') {
-    return !link.signal || link.signal.sign === 0
-      ? 'S'
-      : `S${link.signal.sign === 1 ? '+' : '-'}`;
+    abbreviation =
+      !link.signal || link.signal.sign === 0
+        ? 'S'
+        : `S${link.signal.sign === 1 ? '+' : '-'}`;
   } else if (
     link.experimentType === 'hmbc' ||
     link.experimentType === 'cosy' ||
     link.experimentType === 'tocsy'
   ) {
-    return 'M';
+    abbreviation = 'M';
   } else if (
     link.experimentType === 'noesy' ||
     link.experimentType === 'roesy'
   ) {
-    return 'NOE';
+    abbreviation = 'NOE';
   } else if (link.experimentType === 'inadequate') {
-    return 'I';
+    abbreviation = 'I';
   } else if (link.experimentType === 'adequate') {
-    return 'A';
+    abbreviation = 'A';
   }
 
-  return 'X';
+  const pathLength = link.signal.pathLength;
+  if (pathLength) {
+    const isDefaultCorrelation =
+      DefaultPathLengths[link.experimentType] &&
+      pathLength.min >= DefaultPathLengths[link.experimentType].min &&
+      pathLength.min <= DefaultPathLengths[link.experimentType].max &&
+      pathLength.max >= DefaultPathLengths[link.experimentType].min &&
+      pathLength.max <= DefaultPathLengths[link.experimentType].max;
+
+    return `${abbreviation}${isDefaultCorrelation ? '' : '*'}`;
+  }
+
+  return abbreviation;
 }
 
 function buildNewLink1D(link) {
@@ -158,17 +175,25 @@ function cloneCorrelationAndEditLink(
 function getEditedCorrelations({
   correlationDim1,
   correlationDim2,
-  selectedCorrelationValueDim1,
-  selectedCorrelationValueDim2,
+  selectedCorrelationIdDim1,
+  selectedCorrelationIdDim2,
   action,
   link,
   correlations,
+}: {
+  correlationDim1: Types.Correlation;
+  correlationDim2: Types.Correlation;
+  action: 'move' | 'remove' | 'unmove' | 'setPathLength';
+  selectedCorrelationIdDim1: string | undefined;
+  selectedCorrelationIdDim2: string | undefined;
+  link: Types.Link;
+  correlations: Types.Correlation[];
 }) {
   const selectedCorrelationDim1 = correlations.find(
-    (correlation) => correlation.id === selectedCorrelationValueDim1,
+    (correlation) => correlation.id === selectedCorrelationIdDim1,
   );
   const selectedCorrelationDim2 = correlations.find(
-    (correlation) => correlation.id === selectedCorrelationValueDim2,
+    (correlation) => correlation.id === selectedCorrelationIdDim2,
   );
   const hasChangedDim1 = selectedCorrelationDim1?.id !== correlationDim1.id;
   const hasChangedDim2 =
@@ -243,7 +268,7 @@ function getEditedCorrelations({
         );
       } else if (
         selectedCorrelationDim1 &&
-        selectedCorrelationValueDim2 === 'new'
+        selectedCorrelationIdDim2 === 'new'
       ) {
         editedCorrelations.push(
           cloneCorrelationAndEditLink(
@@ -260,7 +285,7 @@ function getEditedCorrelations({
           }),
         );
       } else if (
-        selectedCorrelationValueDim1 === 'new' &&
+        selectedCorrelationIdDim1 === 'new' &&
         selectedCorrelationDim2
       ) {
         editedCorrelations.push(
@@ -278,8 +303,8 @@ function getEditedCorrelations({
           ),
         );
       } else if (
-        selectedCorrelationValueDim1 === 'new' &&
-        selectedCorrelationValueDim2 === 'new'
+        selectedCorrelationIdDim1 === 'new' &&
+        selectedCorrelationIdDim2 === 'new'
       ) {
         editedCorrelations.push(
           buildCorrelation({
@@ -345,9 +370,42 @@ function getEditedCorrelations({
         );
       }
     }
+  } else if (action === 'setPathLength') {
+    editedCorrelations.push(
+      cloneCorrelationAndSetPathLength(correlationDim1, link, 'x'),
+    );
+    editedCorrelations.push(
+      cloneCorrelationAndSetPathLength(correlationDim2, link, 'y'),
+    );
   }
 
   return { editedCorrelations, buildCorrelationDataOptions };
+}
+
+function cloneCorrelationAndSetPathLength(
+  correlation: Types.Correlation,
+  editedLink: Types.Link,
+  axis: 'x' | 'y',
+): Types.Correlation {
+  const _correlation = lodashCloneDeep(correlation);
+  const linkDim = getLinkDim(editedLink);
+  if (linkDim === 2) {
+    const editedLinkID = editedLink.id.split('_')[axis === 'x' ? 0 : 1];
+    const _link = _correlation.link.find((link) => link.id === editedLinkID);
+    if (_link) {
+      const newPathLength = editedLink.signal.pathLength as PathLength;
+      // remove (previous) pathLength if it is same as default
+      if (isDefaultPathLength(newPathLength, _link.experimentType)) {
+        delete _link.signal.pathLength;
+        delete _link.edited.pathLength;
+      } else {
+        _link.signal.pathLength = newPathLength;
+        _link.edited.pathLength = true;
+      }
+    }
+  }
+
+  return _correlation;
 }
 
 function convertValuesString(

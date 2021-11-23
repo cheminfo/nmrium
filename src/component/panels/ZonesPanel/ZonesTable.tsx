@@ -70,10 +70,17 @@ interface ZonesTableProps {
     axis: any,
   ) => void;
   context?: any;
-  nuclei: any;
+  nuclei: string[];
+  experiment: string;
 }
 
-function ZonesTable({ tableData, onUnlink, context, nuclei }: ZonesTableProps) {
+function ZonesTable({
+  tableData,
+  onUnlink,
+  context,
+  nuclei,
+  experiment,
+}: ZonesTableProps) {
   const contextRef = useRef<any>(null);
 
   const contextMenuHandler = useCallback(
@@ -98,6 +105,8 @@ function ZonesTable({ tableData, onUnlink, context, nuclei }: ZonesTableProps) {
             rowIndex: i,
             signalIndex: 0,
             id: zone.signals[0].id,
+            experiment,
+            nuclei,
           },
         });
       } else if (zone.signals.length > 1) {
@@ -123,6 +132,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei }: ZonesTableProps) {
               rowIndex: i,
               signalIndex: j,
               id: signal.id,
+              experiment,
             },
           });
         });
@@ -130,7 +140,7 @@ function ZonesTable({ tableData, onUnlink, context, nuclei }: ZonesTableProps) {
     });
 
     return _data;
-  }, [tableData]);
+  }, [experiment, nuclei, tableData]);
 
   const { items: sortedData, isSortedDesc, onSort } = useTableSortBy(data);
 

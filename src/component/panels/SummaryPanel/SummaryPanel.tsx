@@ -24,6 +24,7 @@ import {
   DELETE_1D_SIGNAL,
   DELETE_2D_SIGNAL,
   DELETE_CORRELATION,
+  SET_2D_SIGNAL_PATH_LENGTH,
   SET_CORRELATION,
   SET_CORRELATIONS,
   SET_CORRELATIONS_MF,
@@ -424,6 +425,32 @@ function SummaryPanel() {
     [assignmentData, dispatch, spectraData],
   );
 
+  const changeSignalPathLengthHandler = useCallback(
+    (link: Types.Link) => {
+      const linkDim = getLinkDim(link);
+      if (linkDim === 2) {
+        const spectrum = findSpectrum(
+          spectraData,
+          link.experimentID,
+          false,
+        ) as Datum2D;
+        const zone = findZone(spectrum, link.signal.id);
+        const signal = findSignal2D(spectrum, link.signal.id);
+
+        dispatch({
+          type: SET_2D_SIGNAL_PATH_LENGTH,
+          payload: {
+            spectrum,
+            zone,
+            signal,
+            pathLength: link.signal.pathLength,
+          },
+        });
+      }
+    },
+    [dispatch, spectraData],
+  );
+
   const editCorrelationTableCellHandler = useCallback(
     (
       editedCorrelations: Types.Correlation[],
@@ -435,17 +462,27 @@ function SummaryPanel() {
         action === 'add' ||
         action === 'move' ||
         action === 'remove' ||
-        action === 'unmove'
+        action === 'unmove' ||
+        action === 'setPathLength'
       ) {
-        if (action === 'remove' && link && link.pseudo === false) {
-          deleteSignalHandler(link);
+        if (link && link.pseudo === false) {
+          if (action === 'remove') {
+            deleteSignalHandler(link);
+          } else if (action === 'setPathLength') {
+            changeSignalPathLengthHandler(link);
+          }
         }
         setCorrelationsHandler(editedCorrelations, options);
       } else if (action === 'removeAll') {
         deleteCorrelationHandler(editedCorrelations[0]);
       }
     },
-    [deleteCorrelationHandler, deleteSignalHandler, setCorrelationsHandler],
+    [
+      changeSignalPathLengthHandler,
+      deleteCorrelationHandler,
+      deleteSignalHandler,
+      setCorrelationsHandler,
+    ],
   );
 
   const handleOnFilter = useCallback(() => {

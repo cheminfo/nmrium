@@ -696,6 +696,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleDeleteZone(draft, action);
     case types.DELETE_2D_SIGNAL:
       return ZonesActions.handleDeleteSignal(draft, action);
+    case types.SET_2D_SIGNAL_PATH_LENGTH:
+      return ZonesActions.handleSetSignalPathLength(draft, action);
     case types.RESET_DOMAIN:
       return DomainActions.handelResetDomain(draft);
     case types.CHANGE_ZONE_SIGNAL_VALUE:
@@ -708,6 +710,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleSetDiaIDZone(draft, action);
     case types.AUTO_ZONES_SPECTRA_PICKING:
       return ZonesActions.handleAutoSpectraZonesDetection(draft);
+    case types.SAVE_EDITED_ZONE:
+      return ZonesActions.handleSaveEditedZone(draft, action);
 
     case types.ANALYZE_SPECTRA:
       return SpectraAnalysisActions.analyzeSpectra(draft, action);

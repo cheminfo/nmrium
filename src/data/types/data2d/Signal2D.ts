@@ -1,3 +1,5 @@
+import PathLength from './PathLength';
+
 export interface Signal2D {
   id: string;
   peaks: any;
@@ -14,4 +16,5 @@ export interface Signal2D {
     nbAtoms?: number;
   }>;
   kind: string;
+  pathLength: PathLength;
 }

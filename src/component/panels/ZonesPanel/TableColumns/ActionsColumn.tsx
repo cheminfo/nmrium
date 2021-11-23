@@ -1,16 +1,25 @@
 import { CSSProperties, Fragment, useCallback } from 'react';
-import { FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
+import { FaEdit, FaRegTrashAlt, FaSearchPlus } from 'react-icons/fa';
 
 import { SignalKinds } from '../../../../data/constants/SignalsKinds';
 import { useAssignmentData } from '../../../assignment';
 import { useDispatch } from '../../../context/DispatchContext';
 import Select from '../../../elements/Select';
 import {
+  useModal,
+  positions,
+  transitions,
+} from '../../../elements/popup/Modal';
+import EditZoneModal from '../../../modal/editZone/EditZoneModal';
+import {
   CHANGE_ZONE_SIGNAL_KIND,
   DELETE_2D_ZONE,
+  SAVE_EDITED_ZONE,
+  SET_SELECTED_TOOL,
   SET_X_DOMAIN,
   SET_Y_DOMAIN,
 } from '../../../reducer/types/Types';
+import { options } from '../../../toolbar/ToolTypes';
 
 const selectBoxStyle: CSSProperties = {
   marginLeft: 2,
@@ -28,6 +37,7 @@ export interface RowDataProps {
     signal: {
       kind: any;
     };
+    experiment: string;
   };
   x: {
     from: number;
@@ -47,6 +57,7 @@ interface ActionsColumnProps {
 function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
   const dispatch = useDispatch();
   const assignmentData = useAssignmentData();
+  const modal = useModal();
 
   const changeSignalKindHandler = useCallback(
     (value) => {
@@ -90,6 +101,38 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
     });
   }, [dispatch, rowData.x.from, rowData.x.to, rowData.y.from, rowData.y.to]);
 
+  const saveEditZoneHandler = useCallback(
+    (editedRowData) => {
+      dispatch({
+        type: SAVE_EDITED_ZONE,
+        payload: {
+          editedRowData,
+        },
+      });
+    },
+    [dispatch],
+  );
+
+  const openEditZoneHandler = useCallback(() => {
+    dispatch({
+      type: SET_SELECTED_TOOL,
+      payload: { selectedTool: options.editRange.id, tempRange: rowData },
+    });
+    modal.show(
+      <EditZoneModal
+        onCloseEditZoneModal={() => modal.close()}
+        onSaveEditZoneModal={saveEditZoneHandler}
+        onZoomEditZoneModal={() => zoomZoneHandler()}
+        rowData={rowData}
+      />,
+      {
+        position: positions.MIDDLE_RIGHT,
+        transition: transitions.SCALE,
+        isBackgroundBlur: false,
+      },
+    );
+  }, [dispatch, modal, rowData, saveEditZoneHandler, zoomZoneHandler]);
+
   return (
     <Fragment>
       <td>
@@ -112,6 +155,13 @@ function ActionsColumn({ rowData, rowSpanTags }: ActionsColumnProps) {
         </button>
         <button type="button" className="zoom-button" onClick={zoomZoneHandler}>
           <FaSearchPlus title="Zoom to zone in spectrum" />
+        </button>
+        <button
+          type="button"
+          className="edit-button"
+          onClick={openEditZoneHandler}
+        >
+          <FaEdit color="blue" />
         </button>
       </td>
     </Fragment>

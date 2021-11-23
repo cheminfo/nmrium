@@ -43,9 +43,8 @@ interface MoveLinkProps {
   link: Types.Link;
   correlations: Types.Correlation[];
   onEdit: (
-    action: string,
-    valueDim1: string,
-    valueDim2: string | undefined,
+    correlationIdDim1: string,
+    correlationIdDim2: string | undefined,
   ) => void;
 }
 
@@ -127,7 +126,7 @@ function MoveLink({
       <button
         type="button"
         onClick={() =>
-          onEdit('move', selectedCorrelationIdDim1, selectedCorrelationIdDim2)
+          onEdit(selectedCorrelationIdDim1, selectedCorrelationIdDim2)
         }
       >
         Move
