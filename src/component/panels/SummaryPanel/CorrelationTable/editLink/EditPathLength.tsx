@@ -78,7 +78,7 @@ function EditPathLength({ signal, experimentType, onEdit }: InputProps) {
 
   return (
     <div css={editPathLengthsStyles}>
-      <p>Setting of the minimum and maximum path length.</p>
+      <p>Setting of the minimum and maximum path length (J coupling).</p>
       <div className="input-container">
         <Input
           type="number"
