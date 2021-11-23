@@ -115,11 +115,6 @@ function EditPathLengthFormik({ signalIndex }: InputProps) {
           pattern="[1-9]+"
         />
       </div>
-      {/* {isError ? (
-        <p className="warning">
-          Minimum must not be 0 or higher than the maximum value.{' '}
-        </p>
-      ) : null} */}
     </div>
   );
 }
