@@ -1,5 +1,6 @@
 import { Draft, original } from 'immer';
 import lodashCloneDeep from 'lodash/cloneDeep';
+import { setPathLength } from 'nmr-correlation';
 
 import * as Filters from '../../../data/Filters';
 import * as FiltersManager from '../../../data/FiltersManager';
@@ -268,6 +269,27 @@ function handleSetDiaIDZone(draft: Draft<State>, action) {
   }
 }
 
+function handleSaveEditedZone(draft: Draft<State>, action) {
+  const state = original(draft) as State;
+  if (state.activeSpectrum?.id) {
+    const { index } = state.activeSpectrum;
+    const { editedRowData } = action.payload;
+
+    delete editedRowData.tableMetaInfo;
+
+    const zoneIndex = getZoneIndex(state, index, editedRowData.id);
+    (draft.data[index] as Datum2D).zones.values[zoneIndex] = editedRowData;
+
+    if (editedRowData.signals) {
+      editedRowData.signals.forEach((signal) => {
+        setPathLength(draft.correlations.values, signal.id, signal.pathLength);
+      });
+    }
+
+    handleOnChangeZonesData(draft);
+  }
+}
+
 function handleOnChangeZonesData(draft) {
   handleUpdateCorrelations(draft);
 }
@@ -280,6 +302,7 @@ export {
   changeZoneSignalDelta,
   handleChangeZoneSignalKind,
   handleUnlinkZone,
+  handleSaveEditedZone,
   handleSetDiaIDZone,
   handleSetSignalPathLength,
   changeZonesFactorHandler,

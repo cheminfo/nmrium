@@ -45,7 +45,7 @@ const style = css`
   }
 `;
 
-function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
+function ZonesPanelInner({ zones, activeTab, xDomain, yDomain, experiment }) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
   const assignmentData = useAssignmentData();
@@ -249,6 +249,7 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
                       ? activeTab.split(',')
                       : ['?', '?']
                   }
+                  experiment={experiment}
                 />
               ) : (
                 <NoTableData />
@@ -268,11 +269,19 @@ const emptyData = { zones: {} };
 
 export default function ZonesPanel() {
   const { displayerKey, xDomain, yDomain, activeTab } = useChartData();
-  const { zones } = useSpectrum(emptyData) as Datum2D;
+  const { zones, info } = useSpectrum(emptyData) as Datum2D;
   const preferences = usePreferences();
   return (
     <MemoizedZonesPanel
-      {...{ xDomain, yDomain, activeTab, displayerKey, preferences, zones }}
+      {...{
+        xDomain,
+        yDomain,
+        activeTab,
+        displayerKey,
+        preferences,
+        zones,
+        experiment: info.experiment,
+      }}
     />
   );
 }

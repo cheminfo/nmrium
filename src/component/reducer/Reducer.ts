@@ -710,6 +710,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ZonesActions.handleSetDiaIDZone(draft, action);
     case types.AUTO_ZONES_SPECTRA_PICKING:
       return ZonesActions.handleAutoSpectraZonesDetection(draft);
+    case types.SAVE_EDITED_ZONE:
+      return ZonesActions.handleSaveEditedZone(draft, action);
 
     case types.ANALYZE_SPECTRA:
       return SpectraAnalysisActions.analyzeSpectra(draft, action);

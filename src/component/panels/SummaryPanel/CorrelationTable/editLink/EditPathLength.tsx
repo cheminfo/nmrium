@@ -1,13 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import lodashCloneDeep from 'lodash/cloneDeep';
-import { Types } from 'nmr-correlation';
 import { useCallback, useEffect, useState } from 'react';
 
+import DefaultPathLengths from '../../../../../data/constants/DefaultPathLengths';
+import { Signal2D } from '../../../../../data/types/data2d';
 import PathLength from '../../../../../data/types/data2d/PathLength';
 import Button from '../../../../elements/Button';
 import Input from '../../../../elements/Input';
-import { DefaultPathLengths } from '../Constants';
 
 const editPathLengthsStyles = css`
   width: 100%;
@@ -48,33 +47,30 @@ const editPathLengthsStyles = css`
 `;
 
 interface InputProps {
-  link: Types.Link;
-  onEdit: (editedLink: Types.Link) => void;
+  signal: Signal2D;
+  experimentType: string;
+  onEdit: (editedSignal: Signal2D) => void;
 }
 
-function EditPathLengths({ link, onEdit }: InputProps) {
+function EditPathLength({ signal, experimentType, onEdit }: InputProps) {
   const [min, setMin] = useState<number>(
-    link.signal.pathLength?.min ||
-      DefaultPathLengths[link.experimentType]?.min ||
-      0,
+    signal.pathLength?.min || DefaultPathLengths[experimentType]?.min || 0,
   );
   const [max, setMax] = useState<number>(
-    link.signal.pathLength?.max ||
-      DefaultPathLengths[link.experimentType]?.max ||
-      0,
+    signal.pathLength?.max || DefaultPathLengths[experimentType]?.max || 0,
   );
   const [isError, setIsError] = useState<boolean>(false);
 
   const handleOnEdit = useCallback(() => {
-    const editedLink = lodashCloneDeep(link);
     const newPathLength: PathLength = {
       min,
       max,
       source: 'manual',
     };
-    editedLink.signal.pathLength = newPathLength;
-    onEdit(editedLink);
-  }, [link, max, min, onEdit]);
+    const editedSignal = { ...signal, pathLength: newPathLength };
+
+    onEdit(editedSignal);
+  }, [max, min, onEdit, signal]);
 
   useEffect(() => {
     setIsError(min <= 0 || min > max);
@@ -115,4 +111,4 @@ function EditPathLengths({ link, onEdit }: InputProps) {
   );
 }
 
-export default EditPathLengths;
+export default EditPathLength;

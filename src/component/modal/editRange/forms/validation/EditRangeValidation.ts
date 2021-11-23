@@ -36,7 +36,7 @@ const useValidation = () =>
                   ),
                 }),
               )
-              .min(1, 'There must be at least one coupling in a sginal'),
+              .min(1, 'There must be at least one coupling in a signal'),
           }),
         )
         .min(1, 'There must be at least one signal in a range!'),

@@ -9,7 +9,7 @@ import Tabs, { PositionsEnum } from '../../../../elements/Tab/Tabs';
 import { getEditedCorrelations } from '../../Utilities';
 
 import EditLinkConfirmation from './Confirmation';
-import EditPathLengths from './EditPathLengths';
+import EditPathLength from './EditPathLength';
 import MoveLink from './MoveLink';
 
 const modalContainer = css`
@@ -160,16 +160,18 @@ export default function EditLinkModal({
             />
           </Tab>
           <Tab tablabel="J Coupling" tabid={'setPathLength'}>
-            <EditPathLengths
-              link={link}
-              onEdit={(editedLink) =>
+            <EditPathLength
+              signal={link.signal}
+              experimentType={link.experimentType}
+              onEdit={(editedSignal) => {
+                const editedLink = { ...link, signal: editedSignal };
                 handleOnEdit(
                   'setPathLength',
                   correlationDim1,
                   correlationDim2,
                   editedLink,
-                )
-              }
+                );
+              }}
             />
           </Tab>
         </Tabs>

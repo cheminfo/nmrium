@@ -9,11 +9,13 @@ import {
   Types,
 } from 'nmr-correlation';
 
+import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
 import { Datum2D } from '../../../data/types/data2d';
 import PathLength from '../../../data/types/data2d/PathLength';
 import { findSignal2D } from '../../../data/utilities/FindUtilities';
+import isDefaultPathLength from '../../modal/editZone/validation/isDefaultPathLength';
 
-import { DefaultPathLengths, ErrorColors } from './CorrelationTable/Constants';
+import { ErrorColors } from './CorrelationTable/Constants';
 
 function getAtomType(nucleus: string): string {
   return nucleus.split(/\d+/)[1];
@@ -393,11 +395,7 @@ function cloneCorrelationAndSetPathLength(
     if (_link) {
       const newPathLength = editedLink.signal.pathLength as PathLength;
       // remove (previous) pathLength if it is same as default
-      if (
-        DefaultPathLengths[_link.experimentType] !== undefined &&
-        DefaultPathLengths[_link.experimentType].min === newPathLength.min &&
-        DefaultPathLengths[_link.experimentType].max === newPathLength.max
-      ) {
+      if (isDefaultPathLength(newPathLength, _link.experimentType)) {
         delete _link.signal.pathLength;
         delete _link.edited.pathLength;
       } else {
