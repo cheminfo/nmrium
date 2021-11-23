@@ -16,5 +16,5 @@ export interface Signal2D {
     nbAtoms?: number;
   }>;
   kind: string;
-  pathLength: PathLength;
+  pathLength?: PathLength;
 }
