@@ -496,7 +496,7 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
     case types.CHANGE_INTEGRALS_SUM_FLAG:
       return IntegralsActions.handleChangeIntegralsSumFlag(draft, action);
     case types.CHANGE_INTEGRAL_RELATIVE:
-      return IntegralsActions.handleChangeIntegralsRaltiveValue(draft, action);
+      return IntegralsActions.handleChangeIntegralsRelativeValue(draft, action);
 
     case types.SET_ORIGINAL_DOMAIN:
       return DomainActions.setOriginalDomain(draft, action.domain);

@@ -1,8 +1,11 @@
 import { Draft, original } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import { lookupPeak, getShiftX } from '../../../data/data1d/Spectrum1D';
-import autoPeakPicking from '../../../data/data1d/autoPeakPicking';
+import {
+  getShiftX,
+  lookupPeak,
+  autoPeakPicking,
+} from '../../../data/data1d/Spectrum1D';
 import { Datum1D } from '../../../data/types/data1d';
 import generateID from '../../../data/utilities/generateID';
 import { options } from '../../toolbar/ToolTypes';
@@ -88,7 +91,7 @@ function handleAutoPeakPicking(draft: Draft<State>, autOptions) {
     const windowFromIndex = xFindClosestIndex(datum.data.x, from);
     const windowToIndex = xFindClosestIndex(datum.data.x, to);
 
-    const peaks = autoPeakPicking(draft.data[index], {
+    const peaks = autoPeakPicking(draft.data[index] as Datum1D, {
       ...autOptions,
       windowFromIndex,
       windowToIndex,

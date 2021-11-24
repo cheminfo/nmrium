@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-import autoPeakPicking from '../autoPeakPicking';
+import { autoPeakPicking, initiateDatum1D } from '../Spectrum1D';
 
 describe('test peakPicking', () => {
   let data = JSON.parse(
@@ -9,10 +9,11 @@ describe('test peakPicking', () => {
   );
 
   it('check baseline', () => {
-    let peaks = autoPeakPicking(
-      { data },
-      { maxNumberOfPeaks: 20, minMaxRatio: 0.1 },
-    );
+    const datum = initiateDatum1D({ data });
+    let peaks = autoPeakPicking(datum, {
+      maxNumberOfPeaks: 20,
+      minMaxRatio: 0.1,
+    });
     expect(peaks).toHaveLength(20);
   });
 });

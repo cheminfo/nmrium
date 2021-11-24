@@ -5,7 +5,7 @@ import { useContext, useCallback, Fragment, memo } from 'react';
 import { BsCursor } from 'react-icons/bs';
 import { IoPulseSharp } from 'react-icons/io5';
 
-import get1DDataXY from '../../data/data1d/get1DDataXY';
+import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { Datum1D } from '../../data/types/data1d';
 import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';

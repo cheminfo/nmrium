@@ -2,8 +2,8 @@ import { Draft, original } from 'immer';
 import { xyIntegration } from 'ml-spectra-processing';
 
 import {
-  updateIntegralIntegrals,
-  changeIntegralsRealtive,
+  updateIntegralsRelativeValues,
+  changeIntegralsRelative,
   getShiftX,
 } from '../../../data/data1d/Spectrum1D';
 import { Datum1D } from '../../../data/types/data1d';
@@ -15,7 +15,7 @@ function handleChangeIntegralSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     (draft.data[index] as Datum1D).integrals.options.sum = value;
-    updateIntegralIntegrals(draft.data[index] as Datum1D, true);
+    updateIntegralsRelativeValues(draft.data[index] as Datum1D, true);
   }
 }
 
@@ -42,7 +42,7 @@ function addIntegral(draft: Draft<State>, action) {
       kind: 'signal',
     };
     datum.integrals.values.push(integral);
-    updateIntegralIntegrals(datum);
+    updateIntegralsRelativeValues(datum);
   }
 }
 
@@ -61,7 +61,7 @@ function deleteIntegral(draft: Draft<State>, action) {
         state.data[index] as Datum1D
       ).integrals.values.findIndex((p) => p.id === integralID);
       datum.integrals.values.splice(peakIndex, 1);
-      updateIntegralIntegrals(datum);
+      updateIntegralsRelativeValues(datum);
     }
   }
 }
@@ -73,13 +73,14 @@ function changeIntegral(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
 
-    const orignalDatum = state.data[index] as Datum1D;
+    const originalDatum = state.data[index] as Datum1D;
     const datum = draft.data[index] as Datum1D;
 
-    const { x, re } = orignalDatum.data;
-    const integralIndex = orignalDatum.integrals.values.findIndex(
+    const { x, re } = originalDatum.data;
+    const integralIndex = originalDatum.integrals.values.findIndex(
       (i) => i.id === integral.id,
     );
+
     if (integralIndex !== -1) {
       datum.integrals.values[integralIndex] = {
         originFrom: integral.from,
@@ -90,16 +91,16 @@ function changeIntegral(draft: Draft<State>, action) {
           { from: integral.from, to: integral.to, reverse: true },
         ),
       };
-      updateIntegralIntegrals(datum);
+      updateIntegralsRelativeValues(datum);
     }
   }
 }
 
-function handleChangeIntegralsRaltiveValue(draft: Draft<State>, action) {
+function handleChangeIntegralsRelativeValue(draft: Draft<State>, action) {
   const data = action.payload.data;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeIntegralsRealtive(draft.data[index] as Datum1D, data);
+    changeIntegralsRelative(draft.data[index] as Datum1D, data);
   }
 }
 
@@ -116,6 +117,6 @@ export {
   addIntegral,
   deleteIntegral,
   changeIntegral,
-  handleChangeIntegralsRaltiveValue,
+  handleChangeIntegralsRelativeValue,
   handleChangeIntegralsSumFlag,
 };

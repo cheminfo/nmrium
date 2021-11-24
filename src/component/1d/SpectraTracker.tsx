@@ -1,7 +1,7 @@
 import { xFindClosestIndex } from 'ml-spectra-processing';
 import { CSSProperties, useContext, useEffect, useMemo, useState } from 'react';
 
-import get1DDataXY from '../../data/data1d/get1DDataXY';
+import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { Datum1D } from '../../data/types/data1d';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
