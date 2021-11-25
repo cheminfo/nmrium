@@ -1,11 +1,11 @@
+/* eslint-disable import/order */
 import { CSSProperties } from 'react';
 
 import { useScaleChecked } from '../../context/ScaleContext';
-
-import { SignalNodeProps } from './MultiplicityTree';
+import { Signal1D } from "../../../data/types/data1d/Signal1D";
 
 interface StringNodeProps {
-  signal: SignalNodeProps;
+  signal: Signal1D;
   startY: number;
   levelHeight: number;
   fontSize: CSSProperties['fontSize'];

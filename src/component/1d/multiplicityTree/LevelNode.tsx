@@ -1,10 +1,10 @@
+import { Signal1D } from '../../../data/types/data1d';
 import { useScaleChecked } from '../../context/ScaleContext';
 
-import { SignalNodeProps } from './MultiplicityTree';
 import { TREE_LEVEL_COLORS } from './TreeColors';
 
 interface LevelNodeProps {
-  signal: SignalNodeProps;
+  signal: Signal1D;
   startY: number;
   levelHeight: number;
 }

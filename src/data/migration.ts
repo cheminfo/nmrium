@@ -48,6 +48,10 @@ function migrateToVersion2(data: any): any {
       originDelta: 'originalX',
       intensity: 'y',
     },
+    signals: {
+      atomIDs: 'atoms', // signal
+      intensity: 'y', // signal > peaks
+    },
   };
 
   function changeKeys(data, setKey: string) {
