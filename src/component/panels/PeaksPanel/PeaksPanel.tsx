@@ -79,19 +79,19 @@ function PeaksPanelInner({
     }
     if (peaks?.values) {
       const _peaks = filterIsActive
-        ? peaks.values.filter((peak) => isInRange(peak.delta))
+        ? peaks.values.filter((peak) => isInRange(peak.x))
         : peaks.values;
 
       return _peaks
         .map((peak) => {
-          const value = Number(format(peak.delta));
+          const value = Number(format(peak.x));
           return {
             value: value,
             valueHz: info?.originFrequency
               ? Number(value) * info.originFrequency
               : '',
             id: peak.id,
-            intensity: peak.intensity,
+            intensity: peak.y,
             peakWidth: peak.width ? peak.width : '',
             isConstantlyHighlighted: isInRange(value),
           };

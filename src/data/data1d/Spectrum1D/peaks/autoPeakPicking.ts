@@ -1,7 +1,7 @@
 import median from 'ml-array-median';
 import { xyAutoPeaksPicking } from 'nmr-processing';
 
-import { Datum1D } from '../../../types/data1d';
+import { Datum1D, Peak } from '../../../types/data1d';
 import generateID from '../../../utilities/generateID';
 import { getShiftX } from '../shift/getShiftX';
 
@@ -43,19 +43,19 @@ export function autoPeakPicking(datum1D: Datum1D, options) {
 
   const error = (x[x.length - 1] - x[0]) / 10000;
 
-  return peaks.reduce((acc, newPeak) => {
+  return peaks.reduce<Peak[]>((acc, newPeak) => {
     // check if the peak is already exists
-    for (const { delta } of currentPeaks) {
-      if (Math.abs(newPeak.x - delta) < error) {
+    for (const { x } of currentPeaks) {
+      if (Math.abs(newPeak.x - x) < error) {
         return acc;
       }
     }
 
     acc.push({
       id: generateID(),
-      originDelta: newPeak.x - shiftX,
-      delta: newPeak.x,
-      intensity: newPeak.y,
+      originalX: newPeak.x - shiftX,
+      x: newPeak.x,
+      y: newPeak.y,
       width: newPeak.width,
     });
 

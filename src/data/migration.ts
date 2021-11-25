@@ -38,3 +38,33 @@ function migrateToVersion1(data: any): any {
 
   return newData;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function migrateToVersion2(data: any): any {
+  const newData = { ...data };
+  const changedKeys = {
+    peaks: {
+      delta: 'x',
+      originDelta: 'originalX',
+      intensity: 'y',
+    },
+  };
+
+  function changeKeys(data, setKey: string) {
+    return JSON.parse(JSON.stringify(data), function reviver(key, value) {
+      if (key in changedKeys[setKey]) {
+        this[changedKeys[key]] = value;
+        return;
+      }
+      return value;
+    });
+  }
+
+  for (const spectrum of newData.spectra) {
+    if (spectrum.peaks) {
+      spectrum.peaks = changeKeys(spectrum.peaks, 'peaks');
+    }
+  }
+
+  return newData;
+}
