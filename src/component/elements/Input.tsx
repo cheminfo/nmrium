@@ -13,7 +13,7 @@ import {
 import useCombinedRefs from '../hooks/useCombinedRefs';
 
 const styles: Record<
-  'label' | 'input' | 'inputContainer' | 'inputInnerContainer' | 'clearButton',
+  'label' | 'input' | 'inputContainer' | 'inputWrapper' | 'clearButton',
   CSSProperties
 > = {
   label: {
@@ -24,7 +24,7 @@ const styles: Record<
     height: '100%',
     margin: '0px 5px 0px 5px',
   },
-  inputInnerContainer: {
+  inputWrapper: {
     height: '100%',
     width: '100px',
     borderRadius: '5px',
@@ -59,8 +59,9 @@ export interface InputProps
   style?: {
     label?: CSSProperties;
     input?: CSSProperties;
-    container?: CSSProperties;
+    inputWrapper?: CSSProperties;
     inputContainer?: CSSProperties;
+    container?: CSSProperties;
   };
   enableAutoSelect?: boolean;
   debounceTime?: number;
@@ -77,7 +78,13 @@ const Input = forwardRef(
       label,
       value = '',
       name,
-      style = { label: {}, input: {}, inputContainer: {}, container: {} },
+      style = {
+        label: {},
+        input: {},
+        inputWrapper: {},
+        inputContainer: {},
+        container: {},
+      },
       onChange = () => null,
       debounceTime = 0,
       onKeyDown = () => null,
@@ -221,7 +228,10 @@ const Input = forwardRef(
           }}
         >
           <div
-            style={styles.inputInnerContainer}
+            style={{
+              ...styles.inputWrapper,
+              ...(style?.inputWrapper ? style.inputWrapper : {}),
+            }}
             className={`input ${className || ''}`}
           >
             {renderIcon?.()}

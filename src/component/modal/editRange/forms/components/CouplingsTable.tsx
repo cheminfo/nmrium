@@ -65,7 +65,7 @@ const CouplingsTableStyle = css`
       background-color: transparent;
       border: 0.5px solid #dedede;
       height: 100%;
-      width: 100%;
+      width: 100% !important;
       text-align: center;
       margin: 0;
     }
@@ -148,9 +148,12 @@ function CouplingsTable({
                   onFocus={onFocus}
                   onBlur={onBlur}
                   style={{
-                    input: {
+                    inputWrapper: {
                       width: '100%',
                       height: '26px',
+                    },
+                    inputContainer: {
+                      width: '100%',
                     },
                     container: {
                       height: '100%',

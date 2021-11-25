@@ -3,8 +3,8 @@ import { CSSProperties } from 'react';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 
-const style: Record<'input' | 'container', CSSProperties> = {
-  input: {
+const style: Record<'inputWrapper' | 'container', CSSProperties> = {
+  inputWrapper: {
     width: '50px',
     height: '26px',
     borderWidth: 0,
