@@ -87,7 +87,8 @@ function MultipleSpectraAnalysisPanelInner({
     modal.show(<MultipleSpectraFiltersModal />, {
       isBackgroundBlur: false,
       position: positions.TOP_CENTER,
-      width: 500,
+      width: 550,
+      height: 250,
     });
   }, [modal, dispatch]);
 
