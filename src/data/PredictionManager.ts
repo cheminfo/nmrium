@@ -115,19 +115,20 @@ function generated1DSpectrum(params: {
 function mapZones(zones: Array<Partial<Zone>>) {
   return zones.reduce<Array<Zone>>((zonesAcc, zone: any) => {
     const { signals, ...resZone } = zone;
-    const newSignals = (signals as Array<Partial<Signal2D>>).reduce<
-      Array<Partial<Signal2D>>
-    >((signalsAcc, signal) => {
-      const { x, y, ...resSignal } = signal;
-      signalsAcc.push({
-        id: generateID(),
-        kind: 'signal',
-        x: { ...x, originDelta: x?.delta },
-        y: { ...y, originDelta: y?.delta },
-        ...resSignal,
-      });
-      return signalsAcc;
-    }, []);
+    const newSignals = signals.reduce(
+      (signalsAcc: Signal2D[], signal: Signal2D) => {
+        const { x, y, id, ...resSignal } = signal;
+        signalsAcc.push({
+          id: id || generateID(),
+          kind: 'signal',
+          x: { ...x, originDelta: x.delta || 0 },
+          y: { ...y, originDelta: y.delta || 0 },
+          ...resSignal,
+        });
+        return signalsAcc;
+      },
+      [],
+    );
 
     zonesAcc.push({
       id: generateID(),

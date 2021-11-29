@@ -2,7 +2,7 @@
 import { CSSProperties } from 'react';
 
 import { useScaleChecked } from '../../context/ScaleContext';
-import { Signal1D } from "../../../data/types/data1d/Signal1D";
+import { Signal1D } from '../../../data/types/data1d/Signal1D';
 
 interface StringNodeProps {
   signal: Signal1D;

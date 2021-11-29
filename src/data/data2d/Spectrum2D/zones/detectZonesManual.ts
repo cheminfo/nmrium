@@ -22,8 +22,8 @@ export function detectZonesManual(datum, options: DetectionZonesOptions) {
   const zones: Zone[] = signals.map((signal) => {
     return {
       id: generateID(),
-      x: signal.x.fromTo,
-      y: signal.y.fromTo,
+      x: signal.x,
+      y: signal.y,
       signals: [
         {
           id: generateID(),

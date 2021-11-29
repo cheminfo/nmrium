@@ -1,17 +1,9 @@
-export interface Signal2D {
+import { NMRSignal2D } from 'nmr-processing';
+
+import { Signal2DAxisData } from './Signal2DAxisData';
+
+export interface Signal2D extends Omit<NMRSignal2D, 'id' | 'x' | 'y'> {
   id: string;
-  peaks: any;
-  x: Partial<{
-    originDelta: number;
-    delta: number;
-    diaIDs?: string[];
-    nbAtoms?: number;
-  }>;
-  y: Partial<{
-    originDelta: number;
-    delta: number;
-    diaIDs?: string[];
-    nbAtoms?: number;
-  }>;
-  kind: string;
+  x: Signal2DAxisData;
+  y: Signal2DAxisData;
 }
