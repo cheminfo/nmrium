@@ -313,6 +313,10 @@ function handleShowRangesIntegrals(draft: Draft<State>) {
     !draft.toolOptions.data.showRangesIntegrals;
 }
 
+function handleShowJGraph(draft: Draft<State>) {
+  draft.toolOptions.data.showJGraph = !draft.toolOptions.data.showJGraph;
+}
+
 export {
   handleAutoRangesDetection,
   handleDeleteRange,
@@ -331,4 +335,5 @@ export {
   handleShowMultiplicityTrees,
   handleShowRangesIntegrals,
   handleAutoSpectraRangesDetection,
+  handleShowJGraph,
 };

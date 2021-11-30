@@ -32,6 +32,7 @@ interface RangesTablePanelInnerProps {
   activeTab: string;
   molecules: Array<Molecule>;
   showMultiplicityTrees: boolean;
+  showJGraph: boolean;
   showRangesIntegrals: boolean;
   preferences: any;
 }
@@ -45,6 +46,7 @@ function RangesTablePanelInner({
   activeTab,
   molecules,
   showMultiplicityTrees,
+  showJGraph,
   showRangesIntegrals,
 }: RangesTablePanelInnerProps) {
   const [isFilterActive, setFilterIsActive] = useState(false);
@@ -188,6 +190,7 @@ function RangesTablePanelInner({
               molecules,
               showRangesIntegrals,
               showMultiplicityTrees,
+              showJGraph,
               isFilterActive,
             }}
             onUnlink={unlinkRangeHandler}
@@ -241,7 +244,7 @@ export default function RangesTablePanel() {
     molecules,
     toolOptions: {
       selectedTool,
-      data: { showMultiplicityTrees, showRangesIntegrals },
+      data: { showMultiplicityTrees, showRangesIntegrals, showJGraph },
     },
   } = useChartData();
 
@@ -255,6 +258,7 @@ export default function RangesTablePanel() {
         data,
         info,
         showMultiplicityTrees,
+        showJGraph,
         showRangesIntegrals,
         selectedTool,
         displayerKey,

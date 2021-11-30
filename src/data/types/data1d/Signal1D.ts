@@ -1,3 +1,5 @@
+import { Jcoupling } from 'nmr-processing';
+
 export interface Signal1D {
   id: string;
   kind: string;
@@ -7,4 +9,5 @@ export interface Signal1D {
   peaks?: Array<{ x: number; intensity: number; width: number }>;
   diaIDs?: string[];
   nbAtoms?: number;
+  js?: Jcoupling[];
 }
