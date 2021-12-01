@@ -5,6 +5,7 @@ import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 
+import { JGraphVerticalAxis } from './JGraphVerticalAxis';
 import JsCoupling from './JsCoupling';
 import JCouplingLinks from './JsCouplingLinks';
 import generateJGraphData, { CouplingLinks } from './generateJGraphData';
@@ -14,15 +15,16 @@ interface innerJGraphProps {
   links: CouplingLinks;
 }
 
-const arrowSize = 10;
 const marginTop = 40;
 
 const JGraphContext = React.createContext<{
   scaleY: (value: number) => number;
   height: number;
+  maxValue: number;
 }>({
   scaleY: (value) => value,
   height: 0,
+  maxValue: 0,
 });
 
 const JGraphContextProvider = JGraphContext.Provider;
@@ -35,6 +37,7 @@ function InnerJGraph(props: innerJGraphProps) {
   const { signals, links } = props;
   return (
     <g className="j-graph" transform={`translate(0,${marginTop})`}>
+      <JGraphVerticalAxis />
       <JCouplingLinks links={links} />
       <JsCoupling signals={signals} />
     </g>
@@ -55,7 +58,11 @@ export default function JGraph() {
   const graphHeight = height / 4;
   const { ranges } = useSpectrum(emptyData) as Datum1D;
 
-  const { signals, jCouplingMax, links } = useMemo(
+  const {
+    signals,
+    jCouplingMax: maxValue,
+    links,
+  } = useMemo(
     () =>
       generateJGraphData(ranges.values) || {
         signals: [],
@@ -67,16 +74,14 @@ export default function JGraph() {
 
   const scaleY = useCallback(
     (value) => {
-      return (
-        graphHeight - ((graphHeight - arrowSize - 10) / jCouplingMax) * value
-      );
+      return graphHeight - (graphHeight / maxValue) * value;
     },
-    [graphHeight, jCouplingMax],
+    [graphHeight, maxValue],
   );
 
   const JGraphState = useMemo(() => {
-    return { scaleY, height: graphHeight };
-  }, [graphHeight, scaleY]);
+    return { scaleY, height: graphHeight, maxValue };
+  }, [graphHeight, scaleY, maxValue]);
 
   if (!showJGraph) return null;
 

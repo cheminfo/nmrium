@@ -2,7 +2,6 @@ import { Signal1D } from '../../../data/types/data1d';
 import { useScaleChecked } from '../../context/ScaleContext';
 
 import { useJGraph } from './JGraph';
-import { VerticalLine } from './VerticalLine';
 
 interface JsCouplingProps {
   signals: Signal1D[];
@@ -20,7 +19,14 @@ export default function JsCoupling(props: JsCouplingProps) {
             key={signal.id}
             transform={`translate(${scaleX()(signal.delta)},0)`}
           >
-            <VerticalLine length={height} />
+            <line
+              x1="0"
+              y1={height}
+              x2="0"
+              y2={0}
+              stroke="black"
+              strokeWidth="1"
+            />
             {signal.js?.map((j) => {
               return (
                 <circle
