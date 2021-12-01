@@ -6,8 +6,8 @@ import { useChartData } from '../../context/ChartContext';
 import useSpectrum from '../../hooks/useSpectrum';
 
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';
-import JsCoupling from './JsCoupling';
 import JCouplingLinks from './JsCouplingLinks';
+import JsCouplings from './JsCouplings';
 import generateJGraphData, { CouplingLinks } from './generateJGraphData';
 
 interface innerJGraphProps {
@@ -39,7 +39,7 @@ function InnerJGraph(props: innerJGraphProps) {
     <g className="j-graph" transform={`translate(0,${marginTop})`}>
       <JGraphVerticalAxis />
       <JCouplingLinks links={links} />
-      <JsCoupling signals={signals} />
+      <JsCouplings signals={signals} />
     </g>
   );
 }

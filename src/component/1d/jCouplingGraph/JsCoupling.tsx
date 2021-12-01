@@ -1,48 +1,51 @@
-import { Signal1D } from '../../../data/types/data1d';
-import { useScaleChecked } from '../../context/ScaleContext';
+import { useState } from 'react';
 
 import { useJGraph } from './JGraph';
 
 interface JsCouplingProps {
-  signals: Signal1D[];
+  value: number;
 }
 
-export default function JsCoupling(props: JsCouplingProps) {
-  const { scaleX } = useScaleChecked();
-  const { scaleY, height } = useJGraph();
+export default function JsCoupling({ value }: JsCouplingProps) {
+  const { scaleY } = useJGraph();
+  const [isOver, setOver] = useState<boolean>(false);
 
   return (
-    <g className="js-coupling">
-      {props.signals.map((signal) => {
-        return (
-          <g
-            key={signal.id}
-            transform={`translate(${scaleX()(signal.delta)},0)`}
-          >
-            <line
-              x1="0"
-              y1={height}
-              x2="0"
-              y2={0}
-              stroke="black"
-              strokeWidth="1"
-            />
-            {signal.js?.map((j) => {
-              return (
-                <circle
-                  key={`${j.coupling}`}
-                  cx={0}
-                  cy={scaleY(j.coupling)}
-                  r={5}
-                  fill="#a4a4a4"
-                  strokeWidth="1"
-                  stroke="black"
-                />
-              );
-            })}
-          </g>
-        );
-      })}
+    <g
+      className="coupling"
+      style={{ transform: `translate(0px,${scaleY(value)}px)` }}
+    >
+      <circle
+        onMouseEnter={() => setOver(true)}
+        onMouseLeave={() => setOver(false)}
+        cx={0}
+        cy={0}
+        r={5}
+        fill={isOver ? 'red' : '#a4a4a4'}
+        strokeWidth="1"
+        stroke="black"
+        pointerEvents="all"
+      />
+      {isOver && (
+        <g style={{ transform: `translate(0px,15px)` }}>
+          <text
+            pointerEvents="none"
+            stroke="white"
+            strokeWidth="0.6em"
+            fontSize="10px"
+            dominantBaseline="middle"
+            textAnchor="middle"
+          >{`${value.toFixed(1)} Hz`}</text>
+          <text
+            pointerEvents="none"
+            stroke="red"
+            strokeWidth="1px"
+            fontSize="10px"
+            dominantBaseline="middle"
+            textAnchor="middle"
+          >{`${value.toFixed(1)} Hz`}</text>
+        </g>
+      )}
     </g>
   );
 }
