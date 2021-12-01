@@ -1,4 +1,4 @@
-import { Datum1D } from '../types/data1d';
+import { Datum1D } from '../../types/data1d';
 
 /**
  * @typedef {Object} datum
@@ -12,7 +12,7 @@ import { Datum1D } from '../types/data1d';
  * @returns {datum} datum object includes x and y series
  */
 
-export default function get1DDataXY(spectrum: Datum1D): {
+export function get1DDataXY(spectrum: Datum1D): {
   x: number[];
   y: number[];
 } {

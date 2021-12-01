@@ -12,9 +12,9 @@ import {
   addRange,
   changeRangeSignal,
   detectRanges,
-  updateIntegralRanges,
+  updateIntegralsRelativeValues,
   changeRange,
-  changeRangesRelative,
+  changeRangeRelativeValue,
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
 import { Datum1D } from '../../../data/types/data1d';
@@ -83,7 +83,7 @@ function handleDeleteRange(draft: Draft<State>, action) {
       unlinkInAssignmentData(assignmentData, datum.ranges.values);
       datum.ranges.values = [];
     }
-    updateIntegralRanges(datum);
+    updateIntegralsRelativeValues(datum);
     handleOnChangeRangesData(draft);
   }
 }
@@ -100,7 +100,7 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
       _range.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal
         : DatumKind.mixed;
-      updateIntegralRanges(draft.data[index]);
+      updateIntegralsRelativeValues(draft.data[index] as Datum1D);
       handleOnChangeRangesData(draft);
     }
   }
@@ -126,7 +126,7 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
     unlinkInAssignmentData(assignmentData, [_editedRowData]);
     const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
     (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _editedRowData;
-    updateIntegralRanges(draft.data[index]);
+    updateIntegralsRelativeValues(draft.data[index] as Datum1D);
     handleOnChangeRangesData(draft);
   }
 }
@@ -235,7 +235,7 @@ function handleSetDiaIDRange(draft: Draft<State>, action) {
 function handleResizeRange(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeRange(draft.data[index], action.data);
+    changeRange(draft.data[index] as Datum1D, action.data);
   }
 }
 
@@ -243,7 +243,7 @@ function handleChangeRangeSum(draft: Draft<State>, value) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     (draft.data[index] as Datum1D).ranges.options.sum = value;
-    updateIntegralRanges(draft.data[index], true);
+    updateIntegralsRelativeValues(draft.data[index] as Datum1D, true);
   }
 }
 function handleAddRange(draft: Draft<State>, action) {
@@ -253,7 +253,7 @@ function handleAddRange(draft: Draft<State>, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
     const [from, to] = range;
-    addRange(draft.data[index], { from, to });
+    addRange(draft.data[index] as Datum1D, { from, to });
     handleOnChangeRangesData(draft);
   }
 }
@@ -262,7 +262,7 @@ function handleChangeRangeRelativeValue(draft, action) {
   const data = action.payload.data;
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
-    changeRangesRelative(draft.data[index], data);
+    changeRangeRelativeValue(draft.data[index], data);
   }
 }
 
@@ -271,12 +271,11 @@ function handleChangeRangeSignalValue(draft, action) {
   if (draft.activeSpectrum?.id) {
     const { index } = draft.activeSpectrum;
 
-    const shift = changeRangeSignal(
-      draft.data[index],
+    const shift = changeRangeSignal(draft.data[index], {
       rangeID,
       signalID,
-      value,
-    );
+      newSignalValue: value,
+    });
     FiltersManager.applyFilter(draft.data[index], [
       { name: Filters.shiftX.id, options: shift },
     ]);

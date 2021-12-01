@@ -1,4 +1,4 @@
-import get1DDataXY from '../../data/data1d/get1DDataXY';
+import { get1DDataXY } from '../../data/data1d/Spectrum1D/get1DDataXY';
 import { useChartData } from '../context/ChartContext';
 
 import Line from './Line';

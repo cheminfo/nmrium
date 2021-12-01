@@ -6,4 +6,5 @@ export interface Info1D {
   isFt: boolean;
   experiment?: any;
   originFrequency: number;
+  solvent?: string;
 }

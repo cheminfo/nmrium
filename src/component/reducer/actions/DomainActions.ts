@@ -1,7 +1,7 @@
 import { extent } from 'd3';
 import { Draft } from 'immer';
 
-import get1DDataXYs from '../../../data/data1d/get1DDataXY';
+import { get1DDataXY } from '../../../data/data1d/Spectrum1D/get1DDataXY';
 import { isSpectrum2D } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
@@ -51,7 +51,7 @@ function getDomain(drfat: Draft<State>) {
 
     yArray = data.reduce<Array<number>>((acc, d: Datum1D) => {
       const { display } = d;
-      const data = get1DDataXYs(d);
+      const data = get1DDataXY(d);
 
       const _extent = extent(data.y) as Array<number>;
       yDomains[d.id] = _extent;

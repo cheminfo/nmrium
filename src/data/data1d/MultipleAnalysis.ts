@@ -4,7 +4,7 @@ import { Spectra } from '../../component/NMRium';
 import { RangeDetectionResult } from '../types/data1d';
 import generateChar from '../utilities/generateChar';
 
-import { detectRange } from './Spectrum1D';
+import { detectRange, isSpectrum1D } from './Spectrum1D';
 
 export enum COLUMNS_TYPES {
   NORMAL = 'NORMAL',
@@ -80,7 +80,7 @@ export function getSpectraAnalysis(
   return spectra.reduce<{ values: Array<AnalysisRow>; sum: number }>(
     (acc, datum) => {
       if (
-        datum.info.dimension === 1 &&
+        isSpectrum1D(datum) &&
         datum.info.nucleus === nucleus &&
         !datum.info.isFid
       ) {

@@ -8,7 +8,7 @@ import { DatumKind } from './constants/SignalsKinds';
 import {
   initiateDatum1D,
   mapRanges,
-  updateIntegralRanges,
+  updateIntegralsRelativeValues,
 } from './data1d/Spectrum1D';
 import { initiateDatum2D } from './data2d/Spectrum2D';
 import { Datum1D } from './types/data1d';
@@ -108,7 +108,7 @@ function generated1DSpectrum(params: {
     usedColors,
   );
   datum.ranges.values = mapRanges(ranges, datum);
-  updateIntegralRanges(datum);
+  updateIntegralsRelativeValues(datum);
   return datum;
 }
 

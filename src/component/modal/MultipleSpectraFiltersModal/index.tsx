@@ -52,6 +52,10 @@ const styles = css`
   .row {
     align-items: center;
   }
+
+  .container {
+    flex: 1;
+  }
 `;
 
 interface MultipleSpectraFiltersModalProps {
@@ -145,7 +149,7 @@ function MultipleSpectraFiltersModal({
         <span>Apply filters</span>
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
-      <div className="inner-content">
+      <div className="inner-content container">
         <div className="row margin-10">
           <span className="custom-label">Filter :</span>
 

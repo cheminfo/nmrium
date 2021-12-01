@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { generateSpectrumFromRanges } from '../../../data/data1d/Spectrum1D';
+import { generateSpectrumFromRanges } from '../../../data/data1d/Spectrum1D/ranges/generateSpectrumFromRanges';
 import { State } from '../Reducer';
 
 import { setDomain } from './DomainActions';

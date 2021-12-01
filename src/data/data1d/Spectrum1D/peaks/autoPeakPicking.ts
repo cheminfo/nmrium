@@ -1,11 +1,11 @@
 import median from 'ml-array-median';
 import { xyAutoPeaksPicking } from 'nmr-processing';
 
-import generateID from '../utilities/generateID';
+import { Datum1D } from '../../../types/data1d';
+import generateID from '../../../utilities/generateID';
+import { getShiftX } from '../shift/getShiftX';
 
-import { getShiftX } from './Spectrum1D';
-
-export default function autoPeakPicking(datum1D, options) {
+export function autoPeakPicking(datum1D: Datum1D, options) {
   const {
     minMaxRatio,
     maxNumberOfPeaks,

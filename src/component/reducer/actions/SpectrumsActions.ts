@@ -2,8 +2,10 @@ import { Draft, original } from 'immer';
 
 import * as Filters from '../../../data/Filters';
 import { applyFilter } from '../../../data/FiltersManager';
-import { generateSpectrumFromPublicationString } from '../../../data/data1d/Spectrum1D';
-import getReferenceShift from '../../../data/data1d/getReferenceShift';
+import {
+  generateSpectrumFromPublicationString,
+  getReferenceShift,
+} from '../../../data/data1d/Spectrum1D';
 import { getMissingProjection } from '../../../data/data2d/Spectrum2D';
 import { Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';

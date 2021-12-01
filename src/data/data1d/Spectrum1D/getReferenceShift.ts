@@ -1,6 +1,6 @@
 import { xyCalibrate } from 'ml-spectra-processing';
 
-import { getRange } from '../constants/References';
+import { getRange } from '../../constants/References';
 /**
  *
  * @param {*} datum1D
@@ -13,7 +13,7 @@ import { getRange } from '../constants/References';
  * @param {string} [options.reference]
  */
 
-export default function getReferenceShift(datum1D, options) {
+export function getReferenceShift(datum1D, options) {
   let { from, to, nbPeaks, targetX, reference } = options;
   if (reference) {
     let data = getRange({ reference: reference, nucleus: datum1D.nucleus });
