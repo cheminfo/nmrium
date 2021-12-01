@@ -207,7 +207,7 @@ function SummaryPanel() {
   }, [filteredCorrelationsData, selectedAdditionalColumnsAtomType]);
 
   const editEquivalencesSaveHandler = useCallback(
-    (correlation, value) => {
+    (correlation: Types.Correlation, value: number) => {
       dispatch({
         type: SET_CORRELATION,
         payload: {
@@ -215,7 +215,7 @@ function SummaryPanel() {
           correlation: {
             ...correlation,
             equivalence: value,
-            edited: { ...correlation.edited, equivalence: true },
+            edited: { ...correlation.edited, equivalence: value !== 1 },
           },
         },
       });
