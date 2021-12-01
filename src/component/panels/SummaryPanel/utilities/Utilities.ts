@@ -4,18 +4,24 @@ import {
   addLink,
   buildCorrelation,
   buildLink,
+  getLinkDelta,
   getLinkDim,
   removeLink,
   Types,
 } from 'nmr-correlation';
 
-import DefaultPathLengths from '../../../data/constants/DefaultPathLengths';
-import { Datum2D } from '../../../data/types/data2d';
-import PathLength from '../../../data/types/data2d/PathLength';
-import { findSignal2D } from '../../../data/utilities/FindUtilities';
-import isDefaultPathLength from '../../modal/editZone/validation/isDefaultPathLength';
-
-import { ErrorColors } from './CorrelationTable/Constants';
+import DefaultPathLengths from '../../../../data/constants/DefaultPathLengths';
+import { Datum2D } from '../../../../data/types/data2d';
+import PathLength from '../../../../data/types/data2d/PathLength';
+import {
+  findSignal2D,
+  findSpectrum,
+} from '../../../../data/utilities/FindUtilities';
+import { Spectra } from '../../../NMRium';
+import isDefaultPathLength from '../../../modal/editZone/validation/isDefaultPathLength';
+import { ActiveSpectrum } from '../../../reducer/Reducer';
+import { DISPLAYER_MODE } from '../../../reducer/core/Constants';
+import { ErrorColors } from '../CorrelationTable/Constants';
 
 function getAtomType(nucleus: string): string {
   return nucleus.split(/\d+/)[1];
@@ -442,6 +448,120 @@ function convertValuesString(
   return values.filter((index, i, a) => a.indexOf(index) === i);
 }
 
+function isInView(
+  spectraData: Spectra,
+  activeTab: string,
+  activeSpectrum: ActiveSpectrum | null,
+  xDomain: number[],
+  yDomain: number[],
+  displayerMode: string,
+  correlation: Types.Correlation,
+): boolean {
+  if (correlation.pseudo === true) {
+    return false;
+  }
+
+  if (
+    activeSpectrum === null ||
+    !correlation.link.some((link) => link.experimentID === activeSpectrum.id)
+  ) {
+    return false;
+  }
+
+  const atomTypesInView = activeTab.split(',').map((tab) => getAtomType(tab));
+
+  const factor = 10000;
+  const xDomain0 = xDomain[0] * factor;
+  const xDomain1 = xDomain[1] * factor;
+  const yDomain0 = yDomain[0] * factor;
+  const yDomain1 = yDomain[1] * factor;
+
+  if (displayerMode === DISPLAYER_MODE.DM_1D) {
+    const firstLink1D = correlation.link.find((link) => getLinkDim(link) === 1);
+    if (!firstLink1D) {
+      return false;
+    }
+    let delta = getLinkDelta(firstLink1D);
+    if (delta === undefined) {
+      return false;
+    }
+    delta *= factor;
+    const spectrum = findSpectrum(spectraData, firstLink1D.experimentID, true);
+    if (
+      spectrum &&
+      atomTypesInView[0] === correlation.atomType &&
+      delta >= xDomain0 &&
+      delta <= xDomain1
+    ) {
+      return true;
+    }
+    // try to find a link which contains the belonging 2D signal in the spectra in view
+    if (
+      correlation.link.some((link) => {
+        const spectrum = findSpectrum(
+          spectraData,
+          link.experimentID,
+          true,
+        ) as Datum2D;
+        return findSignalMatch1D(spectrum, link, factor, xDomain0, xDomain1);
+      })
+    ) {
+      return true;
+    }
+  } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
+    if (!atomTypesInView.includes(correlation.atomType)) {
+      return false;
+    }
+    const firstLink2D = correlation.link.find((link) => getLinkDim(link) === 2);
+    if (!firstLink2D) {
+      return false;
+    }
+    const spectrum = findSpectrum(
+      spectraData,
+      firstLink2D.experimentID,
+      true,
+    ) as Datum2D;
+    // correlation is represented by a 2D signal
+    if (
+      findSignalMatch2D(
+        spectrum,
+        firstLink2D,
+        factor,
+        xDomain0,
+        xDomain1,
+        yDomain0,
+        yDomain1,
+      )
+    ) {
+      return true;
+    } else {
+      // try to find a link which contains the belonging 2D signal in the spectra in view
+      if (
+        correlation.link.some((link) => {
+          const spectrum = findSpectrum(
+            spectraData,
+            link.experimentID,
+            true,
+          ) as Datum2D;
+          return findSignalMatch2D(
+            spectrum,
+            link,
+            factor,
+            xDomain0,
+            xDomain1,
+            yDomain0,
+            yDomain1,
+          );
+        })
+      ) {
+        return true;
+      }
+    }
+  }
+  // do not show correlation
+  return false;
+}
+
 export {
   buildNewLink1D,
   buildNewLink2D,
@@ -453,4 +573,5 @@ export {
   getAtomType,
   getEditedCorrelations,
   getLabelColor,
+  isInView,
 };

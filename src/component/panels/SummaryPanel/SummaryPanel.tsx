@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { getLinkDelta, getLinkDim, Types } from 'nmr-correlation';
+import { getLinkDim, Types } from 'nmr-correlation';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFlask, FaSlidersH } from 'react-icons/fa';
 
@@ -19,7 +19,6 @@ import { useDispatch } from '../../context/DispatchContext';
 import Select from '../../elements/Select';
 import ToolTip from '../../elements/ToolTip/ToolTip';
 import { useModal } from '../../elements/popup/Modal';
-import { DISPLAYER_MODE } from '../../reducer/core/Constants';
 import {
   DELETE_1D_SIGNAL,
   DELETE_2D_SIGNAL,
@@ -36,7 +35,7 @@ import CorrelationTable from './CorrelationTable/CorrelationTable';
 import Overview from './Overview';
 import SetMolecularFormulaModal from './SetMolecularFormulaModal';
 import SetShiftToleranceModal from './SetShiftTolerancesModal';
-import { findSignalMatch1D, findSignalMatch2D, getAtomType } from './Utilities';
+import { isInView } from './utilities/Utilities';
 
 const panelStyle = css`
   display: flex;
@@ -81,6 +80,7 @@ function SummaryPanel() {
     yDomain,
     displayerMode,
     activeTab,
+    activeSpectrum,
   } = useChartData();
 
   const dispatch = useDispatch();
@@ -96,128 +96,25 @@ function SummaryPanel() {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
   const filteredCorrelationsData = useMemo(() => {
-    const isInView = (correlation: Types.Correlation): boolean => {
-      if (correlation.pseudo === true) {
-        return false;
-      }
-      const atomTypesInView = activeTab
-        .split(',')
-        .map((tab) => getAtomType(tab));
-
-      const factor = 10000;
-      const xDomain0 = xDomain[0] * factor;
-      const xDomain1 = xDomain[1] * factor;
-      const yDomain0 = yDomain[0] * factor;
-      const yDomain1 = yDomain[1] * factor;
-
-      if (displayerMode === DISPLAYER_MODE.DM_1D) {
-        const firstLink1D = correlation.link.find(
-          (link) => getLinkDim(link) === 1,
-        );
-        if (!firstLink1D) {
-          return false;
-        }
-        let delta = getLinkDelta(firstLink1D);
-        if (delta === undefined) {
-          return false;
-        }
-        delta *= factor;
-        const spectrum = findSpectrum(
-          spectraData,
-          firstLink1D.experimentID,
-          true,
-        );
-        if (
-          spectrum &&
-          atomTypesInView[0] === correlation.atomType &&
-          delta >= xDomain0 &&
-          delta <= xDomain1
-        ) {
-          return true;
-        }
-        // try to find a link which contains the belonging 2D signal in the spectra in view
-        if (
-          correlation.link.some((link) => {
-            const spectrum = findSpectrum(
-              spectraData,
-              link.experimentID,
-              true,
-            ) as Datum2D;
-            return findSignalMatch1D(
-              spectrum,
-              link,
-              factor,
-              xDomain0,
-              xDomain1,
-            );
-          })
-        ) {
-          return true;
-        }
-      } else if (displayerMode === DISPLAYER_MODE.DM_2D) {
-        if (!atomTypesInView.includes(correlation.atomType)) {
-          return false;
-        }
-        const firstLink2D = correlation.link.find(
-          (link) => getLinkDim(link) === 2,
-        );
-        if (!firstLink2D) {
-          return false;
-        }
-        const spectrum = findSpectrum(
-          spectraData,
-          firstLink2D.experimentID,
-          true,
-        ) as Datum2D;
-        // correlation is represented by a 2D signal
-        if (
-          findSignalMatch2D(
-            spectrum,
-            firstLink2D,
-            factor,
-            xDomain0,
-            xDomain1,
-            yDomain0,
-            yDomain1,
-          )
-        ) {
-          return true;
-        } else {
-          // try to find a link which contains the belonging 2D signal in the spectra in view
-          if (
-            correlation.link.some((link) => {
-              const spectrum = findSpectrum(
-                spectraData,
-                link.experimentID,
-                true,
-              ) as Datum2D;
-              return findSignalMatch2D(
-                spectrum,
-                link,
-                factor,
-                xDomain0,
-                xDomain1,
-                yDomain0,
-                yDomain1,
-              );
-            })
-          ) {
-            return true;
-          }
-        }
-      }
-      // do not show correlation
-      return false;
-    };
-
     if (correlationsData) {
       const _values = filterIsActive
-        ? correlationsData.values.filter((correlation) => isInView(correlation))
+        ? correlationsData.values.filter((correlation) =>
+            isInView(
+              spectraData,
+              activeTab,
+              activeSpectrum,
+              xDomain,
+              yDomain,
+              displayerMode,
+              correlation,
+            ),
+          )
         : correlationsData.values;
 
       return { ...correlationsData, values: _values };
     }
   }, [
+    activeSpectrum,
     activeTab,
     correlationsData,
     displayerMode,

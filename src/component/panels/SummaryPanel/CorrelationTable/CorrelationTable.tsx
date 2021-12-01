@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useMemo } from 'react';
 
-import { getLabelColor } from '../Utilities';
+import { getLabelColor } from '../utilities/Utilities';
 
 import AdditionalColumnHeader from './AdditionalColumnHeader';
 import CorrelationTableRow from './CorrelationTableRow';

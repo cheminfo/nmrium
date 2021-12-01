@@ -13,7 +13,8 @@ import ContextMenu from '../../../elements/ContextMenu';
 import EditableColumn from '../../../elements/EditableColumn';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
-import { convertValuesString } from '../Utilities';
+import IsInView from '../utilities/IsInView';
+import { convertValuesString } from '../utilities/Utilities';
 
 import AdditionalColumnField from './AdditionalColumnField';
 import EditLinkModal from './editLink/EditLinkModal';
@@ -148,11 +149,17 @@ function CorrelationTableRow({
     [highlightRow],
   );
 
+  const isInView = IsInView({ correlation });
+
   const tableDataProps = useMemo(() => {
     return {
       style: {
         ...styleRow,
-        backgroundColor: highlightRow.isActive ? '#ff6f0057' : 'inherit',
+        backgroundColor: highlightRow.isActive
+          ? '#ff6f0057'
+          : isInView
+          ? '#f5f5dc'
+          : 'inherit',
       },
       title:
         correlation.pseudo === false &&
@@ -175,6 +182,7 @@ function CorrelationTableRow({
     correlation.link,
     correlation.pseudo,
     highlightRow.isActive,
+    isInView,
     mouseEnterHandler,
     mouseLeaveHandler,
     styleRow,

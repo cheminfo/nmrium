@@ -7,7 +7,11 @@ import generateID from '../../../../data/utilities/generateID';
 import ContextMenu from '../../../elements/ContextMenu';
 import { positions, useModal } from '../../../elements/popup/Modal';
 import { useHighlight } from '../../../highlight';
-import { cloneCorrelationAndEditLink, getAbbreviation } from '../Utilities';
+import IsInView from '../utilities/IsInView';
+import {
+  cloneCorrelationAndEditLink,
+  getAbbreviation,
+} from '../utilities/Utilities';
 
 import EditLinkModal from './editLink/EditLinkModal';
 
@@ -230,6 +234,9 @@ function AdditionalColumnField({
     [commonLinks],
   );
 
+  const isInViewRow = IsInView({ correlation: rowCorrelation });
+  const isInViewColumn = IsInView({ correlation: columnCorrelation });
+
   return (
     <td
       onContextMenu={(e) => {
@@ -240,6 +247,8 @@ function AdditionalColumnField({
       style={{
         backgroundColor: highlightCommonLinks.isActive
           ? '#ff6f0057'
+          : isInViewColumn || isInViewRow
+          ? '#f5f5dc'
           : 'inherit',
       }}
       title={title}

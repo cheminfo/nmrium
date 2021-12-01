@@ -6,7 +6,7 @@ import { useCallback, useMemo, useState } from 'react';
 import CloseButton from '../../../../elements/CloseButton';
 import Tab from '../../../../elements/Tab/Tab';
 import Tabs, { PositionsEnum } from '../../../../elements/Tab/Tabs';
-import { getEditedCorrelations } from '../../Utilities';
+import { getEditedCorrelations } from '../../utilities/Utilities';
 
 import EditLinkConfirmation from './Confirmation';
 import EditPathLength from './EditPathLength';
