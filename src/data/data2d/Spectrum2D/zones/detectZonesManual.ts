@@ -17,31 +17,32 @@ import { DetectionZonesOptions, getDetectionZones } from './getDetectionZones';
  * @param {boolean} options.convolutionByFFT
  */
 export function detectZonesManual(datum, options: DetectionZonesOptions) {
-  const signals = getDetectionZones(datum, options);
+  const zones = getDetectionZones(datum, options);
   const { xShift, yShift } = getShift(datum);
-  const zones: Zone[] = signals.map((signal) => {
+  const formattedZones: Zone[] = zones.map((zone) => {
+    const signals = zone.signals.map((signal) => {
+      return {
+        id: generateID(),
+        peaks: signal.peaks,
+        x: {
+          originDelta: signal.x.delta - xShift,
+          ...signal.x,
+        },
+        y: {
+          originDelta: signal.y.delta - yShift,
+          ...signal.y,
+        },
+        kind: signal.kind || 'signal',
+      }
+    })
     return {
       id: generateID(),
-      x: signal.x,
-      y: signal.y,
-      signals: [
-        {
-          id: generateID(),
-          peaks: signal.peaks,
-          x: {
-            originDelta: signal.x.delta - xShift,
-            ...signal.x,
-          },
-          y: {
-            originDelta: signal.y.delta - yShift,
-            ...signal.y,
-          },
-          kind: signal.kind || 'signal',
-        },
-      ],
+      x: zone.x,
+      y: zone.y,
+      signals,
       kind: DatumKind.signal,
     };
   }, []);
 
-  return zones;
+  return formattedZones;
 }
