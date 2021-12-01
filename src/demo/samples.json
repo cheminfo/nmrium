@@ -18,6 +18,10 @@
         "title": "COSY ethylbenzene"
       },
       {
+        "file": "./data/ethylbenzene/full.json",
+        "title": "FULL ethylbenzene"
+      },
+      {
         "file": "./data/cytisine/2d/hsqc.json",
         "title": "HSQC cytisine"
       },
