@@ -17,7 +17,7 @@ import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
-import { rangeDefaultValues } from '../extra/preferences/defaultValues';
+import { getRangeDefaultValues } from '../extra/preferences/defaultValues';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import RangesHeader from './RangesHeader';
@@ -137,7 +137,7 @@ function RangesTablePanelInner({
   const rangesPreferences = useMemo(() => {
     const _preferences =
       lodashGet(preferences, `formatting.panels.ranges.[${activeTab}]`) ||
-      rangeDefaultValues;
+      getRangeDefaultValues(activeTab);
 
     return _preferences;
   }, [activeTab, preferences]);

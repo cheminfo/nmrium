@@ -24,7 +24,7 @@ export default function JsCouplings(props: JsCouplingsProps) {
               x1="0"
               y1={height}
               x2="0"
-              y2={0}
+              y2="0"
               stroke="black"
               strokeWidth="1"
             />

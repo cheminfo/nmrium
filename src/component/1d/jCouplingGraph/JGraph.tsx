@@ -1,18 +1,21 @@
+import lodashGet from 'lodash/get';
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
 import { Signal1D } from '../../../data/types/data1d';
 import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import useSpectrum from '../../hooks/useSpectrum';
+import { getRangeDefaultValues } from '../../panels/extra/preferences/defaultValues';
 
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';
 import JCouplingLinks from './JsCouplingLinks';
 import JsCouplings from './JsCouplings';
-import generateJGraphData, { CouplingLinks } from './generateJGraphData';
+import generateJGraphData, { CouplingLink } from './generateJGraphData';
 
 interface innerJGraphProps {
   signals: Signal1D[];
-  links: CouplingLinks;
+  links: CouplingLink[];
 }
 
 const marginTop = 40;
@@ -48,15 +51,27 @@ const emptyData = { ranges: {} };
 const MemoizedJGraph = memo(InnerJGraph);
 
 export default function JGraph() {
+  const preferences = usePreferences();
+
   const {
     height,
     toolOptions: {
       data: { showJGraph },
     },
+    activeTab,
   } = useChartData();
 
   const graphHeight = height / 4;
+
   const { ranges } = useSpectrum(emptyData) as Datum1D;
+
+  const jGraphTolerance = useMemo(() => {
+    const _preferences =
+      lodashGet(preferences, `formatting.panels.ranges.[${activeTab}]`) ||
+      getRangeDefaultValues(activeTab);
+
+    return _preferences.jGraphTolerance;
+  }, [activeTab, preferences]);
 
   const {
     signals,
@@ -64,12 +79,12 @@ export default function JGraph() {
     links,
   } = useMemo(
     () =>
-      generateJGraphData(ranges.values) || {
+      generateJGraphData(ranges.values, jGraphTolerance) || {
         signals: [],
         jCouplingMax: 0,
-        links: {},
+        links: [],
       },
-    [ranges.values],
+    [jGraphTolerance, ranges.values],
   );
 
   const scaleY = useCallback(

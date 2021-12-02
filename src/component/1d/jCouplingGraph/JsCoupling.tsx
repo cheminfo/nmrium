@@ -7,7 +7,7 @@ interface JsCouplingProps {
 }
 
 export default function JsCoupling({ value }: JsCouplingProps) {
-  const { scaleY } = useJGraph();
+  const { scaleY, maxValue } = useJGraph();
   const [isOver, setOver] = useState<boolean>(false);
 
   return (
@@ -20,10 +20,8 @@ export default function JsCoupling({ value }: JsCouplingProps) {
         onMouseLeave={() => setOver(false)}
         cx={0}
         cy={0}
-        r={5}
-        fill={isOver ? 'red' : '#a4a4a4'}
-        strokeWidth="1"
-        stroke="black"
+        r={4}
+        fill={`hsl(${(value * 360) / maxValue},100%,${isOver ? 45 : 50}%)`}
         pointerEvents="all"
       />
       {isOver && (
@@ -32,17 +30,16 @@ export default function JsCoupling({ value }: JsCouplingProps) {
             pointerEvents="none"
             stroke="white"
             strokeWidth="0.6em"
-            fontSize="10px"
+            fontSize="11px"
             dominantBaseline="middle"
-            textAnchor="middle"
+            textAnchor="end"
           >{`${value.toFixed(1)} Hz`}</text>
           <text
             pointerEvents="none"
-            stroke="red"
-            strokeWidth="1px"
-            fontSize="10px"
+            stroke="black"
+            fontSize="11px"
             dominantBaseline="middle"
-            textAnchor="middle"
+            textAnchor="end"
           >{`${value.toFixed(1)} Hz`}</text>
         </g>
       )}
