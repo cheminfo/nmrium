@@ -15,11 +15,7 @@ export default function JsCouplingLinks(props: JsCouplingLinksProps) {
   const { scaleY, maxValue } = useJGraph();
   const generatePath = useCallback(
     (link: CouplingLink): string => {
-      /**
-       * We get the first and last only to have straight line because couplings constant are difference
-       */
-
-      const { from, to, couplings } = link; // first coupling
+      const { from, to, couplings } = link;
       let paths: string[] = [];
       for (const coupling of couplings) {
         paths.push(
@@ -35,20 +31,22 @@ export default function JsCouplingLinks(props: JsCouplingLinksProps) {
 
   return (
     <g className="js-coupling-links">
-      {links.map((link) => {
-        return (
-          <path
-            key={`${link.from}${link.to}`}
-            d={generatePath(link)}
-            style={{
-              stroke: `hsl(${
-                (link.couplings[0].coupling * 360) / maxValue
-              },100%,50%)`,
-            }}
-            strokeWidth="1"
-          />
-        );
-      })}
+      {links
+        .filter((link) => link.couplings.length > 1)
+        .map((link) => {
+          return (
+            <path
+              key={link.id}
+              d={generatePath(link)}
+              style={{
+                stroke: `hsl(${
+                  (link.couplings[0].coupling * 360) / maxValue
+                },100%,50%)`,
+              }}
+              strokeWidth="1"
+            />
+          );
+        })}
     </g>
   );
 }

@@ -1,6 +1,7 @@
 import { Jcoupling } from 'nmr-processing';
 
 import { Range, Signal1D } from '../../../data/types/data1d';
+import generateID from '../../../data/utilities/generateID';
 /**
  * Links object that use coupling as key and value is an array of objects {id:signal id ,x:signal delta,y:coupling}
  */
@@ -11,6 +12,7 @@ interface Coupling {
 }
 
 export interface CouplingLink {
+  id: string;
   couplings: Coupling[];
   from: number;
   to: number;
@@ -69,6 +71,7 @@ function getCouplings(ranges: Range[]): Coupling[] {
 function initLink(coupling: Coupling): CouplingLink {
   const { delta } = coupling;
   return {
+    id: generateID(),
     from: delta,
     to: delta,
     couplings: [coupling],
