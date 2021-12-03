@@ -18,10 +18,17 @@ export default function JsCouplingLinks(props: JsCouplingLinksProps) {
       /**
        * We get the first and last only to have straight line because couplings constant are difference
        */
+
       const { from, to, couplings } = link; // first coupling
-      return `M${scaleX()(from)},${scaleY(
-        couplings[couplings.length - 1].coupling,
-      )} L${scaleX()(to)},${scaleY(couplings[couplings.length - 1].coupling)} `;
+      let paths: string[] = [];
+      for (const coupling of couplings) {
+        paths.push(
+          `M${scaleX()(from)},${scaleY(coupling.coupling)} L${scaleX()(
+            to,
+          )},${scaleY(coupling.coupling)}`,
+        );
+      }
+      return paths.join(' ');
     },
     [scaleX, scaleY],
   );
@@ -35,7 +42,7 @@ export default function JsCouplingLinks(props: JsCouplingLinksProps) {
             d={generatePath(link)}
             style={{
               stroke: `hsl(${
-                (link.couplings[1].coupling * 360) / maxValue
+                (link.couplings[0].coupling * 360) / maxValue
               },100%,50%)`,
             }}
             strokeWidth="1"

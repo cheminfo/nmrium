@@ -31,7 +31,6 @@ export default function generateJGraphData(
   let signals: Signal1D[] = [];
   let jCouplingMax = 0;
   let links: CouplingLink[] = createLinks(ranges, jGraphTolerance);
-
   for (const range of ranges) {
     for (const signal of range.signals) {
       const { id: signalId, ...restSignal } = signal;
@@ -83,31 +82,41 @@ function createLinks(ranges: Range[], jGraphTolerance = 0) {
 
   if (!couplings || couplings.length === 0) return [];
 
-  const links: CouplingLink[] = [];
+  const links: CouplingLink[] = [initLink(couplings[0])];
 
-  for (let i = 0; i < couplings.length; i++) {
-    let link: CouplingLink = initLink(couplings[i]);
+  let index = 0;
+  let start = index;
+  let end = 1;
 
-    for (let j = i; j < couplings.length; j++) {
-      const nextCoupling = couplings[j];
+  while (end < couplings.length) {
+    const nextCoupling = couplings[end];
+    if (
+      Math.abs(couplings[start].coupling - nextCoupling.coupling) <
+      jGraphTolerance
+    ) {
+      links[index].couplings.push(nextCoupling);
 
+      if (nextCoupling.delta > links[index].to) {
+        links[index].to = nextCoupling.delta;
+      } else if (nextCoupling.delta < links[index].from) {
+        links[index].from = nextCoupling.delta;
+      }
+
+      end++;
+    } else {
       if (
-        Math.abs(couplings[i].coupling - nextCoupling.coupling) <
+        Math.abs(couplings[end - 1].coupling - nextCoupling.coupling) <
         jGraphTolerance
       ) {
-        link.couplings.push(nextCoupling);
+        start = end - 1;
       } else {
-        break;
+        index++;
+        links[index] = initLink(couplings[end]);
+        start = end;
+        end = end + 1;
       }
     }
-    if (link.couplings.length >= 2) {
-      const couplingsSortByDelta = link.couplings.sort(
-        (a, b) => a.delta - b.delta,
-      );
-      link.from = couplingsSortByDelta[0].delta;
-      link.to = couplingsSortByDelta[couplingsSortByDelta.length - 1].delta;
-    }
-    links.push(link);
   }
+
   return links;
 }
