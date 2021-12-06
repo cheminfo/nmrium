@@ -33,8 +33,8 @@ export function detectZonesManual(datum, options: DetectionZonesOptions) {
           ...signal.y,
         },
         kind: signal.kind || 'signal',
-      }
-    })
+      };
+    });
     return {
       id: generateID(),
       x: zone.x,
