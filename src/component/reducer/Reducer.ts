@@ -4,7 +4,7 @@ import { buildCorrelationData, Types } from 'nmr-correlation';
 import { predictSpectra } from '../../data/PredictionManager';
 import * as SpectraManager from '../../data/SpectraManager';
 import { SpectraAnalysis } from '../../data/data1d/MultipleAnalysis';
-import migrateData from '../../data/migration';
+import {migrate} from '../../data/migration/MigrationManager';
 import { Molecule } from '../../data/molecules/Molecule';
 import { Range } from '../../data/types/data1d';
 import { Contours } from '../../data/types/data2d/Contours';
@@ -389,7 +389,7 @@ export function dispatchMiddleware(dispatch) {
     switch (action.type) {
       case types.INITIATE: {
         if (action.payload) {
-          const { spectra, ...res } = migrateData(action.payload);
+          const { spectra, ...res } = migrate(action.payload);
           void SpectraManager.fromJSON(spectra, usedColors).then((data) => {
             action.payload = { spectra: data, ...res, usedColors };
             dispatch(action);
@@ -400,7 +400,7 @@ export function dispatchMiddleware(dispatch) {
       }
       case types.LOAD_JSON_FILE: {
         const parsedData = JSON.parse(action.files[0].binary.toString());
-        const data = migrateData(parsedData);
+        const data = migrate(parsedData);
         void SpectraManager.fromJSON(data.spectra, usedColors).then(
           (spectra) => {
             action.payload = Object.assign(data, { spectra, usedColors });

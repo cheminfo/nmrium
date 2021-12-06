@@ -55,7 +55,7 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   );
   datum.originalData = datum.data;
 
-  datum.peaks = Object.assign({ values: [], options: {} }, options.peaks);
+  datum.peaks = merge({ values: [], options: {} }, options.peaks);
   // array of object {index: xIndex, xShift}
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
