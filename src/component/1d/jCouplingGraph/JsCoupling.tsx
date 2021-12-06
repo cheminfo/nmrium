@@ -10,6 +10,8 @@ export default function JsCoupling({ value }: JsCouplingProps) {
   const { scaleY, maxValue } = useJGraph();
   const [isOver, setOver] = useState<boolean>(false);
 
+  if (!scaleY) return null;
+
   return (
     <g
       className="coupling"

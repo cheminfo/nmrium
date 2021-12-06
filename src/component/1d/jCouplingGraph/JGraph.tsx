@@ -1,7 +1,10 @@
+import { scaleLinear, ScaleLinear } from 'd3';
 import lodashGet from 'lodash/get';
-import React, { memo, useCallback, useContext, useMemo } from 'react';
+import React, { memo, useContext, useMemo } from 'react';
 
-import generateJGraphData, { CouplingLink } from '../../../data/data1d/Spectrum1D/generateJGraphData';
+import generateJGraphData, {
+  CouplingLink,
+} from '../../../data/data1d/Spectrum1D/generateJGraphData';
 import { Signal1D } from '../../../data/types/data1d';
 import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
@@ -18,14 +21,16 @@ interface innerJGraphProps {
   links: CouplingLink[];
 }
 
-const marginTop = 40;
+const marginTop = 50;
 
-const JGraphContext = React.createContext<{
-  scaleY: (value: number) => number;
+interface JGraphState {
+  scaleY: ScaleLinear<number, number, never> | null;
   height: number;
   maxValue: number;
-}>({
-  scaleY: (value) => value,
+}
+
+const JGraphContext = React.createContext<JGraphState>({
+  scaleY: null,
   height: 0,
   maxValue: 0,
 });
@@ -33,7 +38,12 @@ const JGraphContext = React.createContext<{
 const JGraphContextProvider = JGraphContext.Provider;
 
 export function useJGraph() {
-  return useContext(JGraphContext);
+  const jGraphState = useContext(JGraphContext);
+  if (!jGraphState.scaleY) {
+    throw new Error('scale cannot be null');
+  }
+
+  return jGraphState;
 }
 
 function InnerJGraph(props: innerJGraphProps) {
@@ -87,12 +97,10 @@ export default function JGraph() {
     [jGraphTolerance, ranges.values],
   );
 
-  const scaleY = useCallback(
-    (value) => {
-      return graphHeight - (graphHeight / maxValue) * value;
-    },
-    [graphHeight, maxValue],
-  );
+  const scaleY = useMemo(() => {
+    const maxRange = maxValue + maxValue * 0.1;
+    return scaleLinear().range([graphHeight, 0]).domain([0, maxRange]);
+  }, [graphHeight, maxValue]);
 
   const JGraphState = useMemo(() => {
     return { scaleY, height: graphHeight, maxValue };
