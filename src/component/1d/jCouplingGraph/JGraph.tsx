@@ -1,6 +1,7 @@
 import lodashGet from 'lodash/get';
 import React, { memo, useCallback, useContext, useMemo } from 'react';
 
+import generateJGraphData, { CouplingLink } from '../../../data/data1d/Spectrum1D/generateJGraphData';
 import { Signal1D } from '../../../data/types/data1d';
 import { Datum1D } from '../../../data/types/data1d/Datum1D';
 import { useChartData } from '../../context/ChartContext';
@@ -11,7 +12,6 @@ import { getRangeDefaultValues } from '../../panels/extra/preferences/defaultVal
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';
 import JCouplingLinks from './JsCouplingLinks';
 import JsCouplings from './JsCouplings';
-import generateJGraphData, { CouplingLink } from '../../../data/data1d/Spectrum1D/generateJGraphData';
 
 interface innerJGraphProps {
   signals: Signal1D[];
