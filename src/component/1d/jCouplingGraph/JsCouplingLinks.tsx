@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useScaleChecked } from '../../context/ScaleContext';
 
 import { useJGraph } from './JGraph';
-import { CouplingLink } from './generateJGraphData';
+import { CouplingLink } from '../../../data/data1d/Spectrum1D/generateJGraphData';
 
 interface JsCouplingLinksProps {
   links: CouplingLink[];

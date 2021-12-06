@@ -11,7 +11,7 @@ import { getRangeDefaultValues } from '../../panels/extra/preferences/defaultVal
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';
 import JCouplingLinks from './JsCouplingLinks';
 import JsCouplings from './JsCouplings';
-import generateJGraphData, { CouplingLink } from './generateJGraphData';
+import generateJGraphData, { CouplingLink } from '../../../data/data1d/Spectrum1D/generateJGraphData';
 
 interface innerJGraphProps {
   signals: Signal1D[];
