@@ -24,7 +24,7 @@ export default function autoRangesDetection(datum1D, options: any = {}) {
     ...defaultPeakPickingOptions,
     ...peakPicking,
   };
-  console.log('freq', originFrequency)
+
   const rangesOptions = {
     frequency: originFrequency,
     nucleus,
