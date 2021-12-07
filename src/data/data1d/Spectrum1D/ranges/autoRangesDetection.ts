@@ -34,7 +34,7 @@ export default function autoRangesDetection(
     frequency: originFrequency,
     nucleus,
     compile: true,
-    frequencyCluster: 8,
+    frequencyCluster: 13,
     keepPeaks: true,
   };
 
