@@ -12,6 +12,7 @@ import { usePreferences } from '../../context/PreferencesContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
+import FormikInput from '../../elements/formik/FormikInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
@@ -19,10 +20,16 @@ import {
   useStateWithLocalStorage,
   getValue as getValueByKeyPath,
 } from '../../utility/LocalStorage';
-import { rangeDefaultValues } from '../extra/preferences/defaultValues';
+import { getRangeDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles: Record<
-  'container' | 'groupContainer' | 'row' | 'header' | 'inputLabel' | 'input',
+  | 'container'
+  | 'groupContainer'
+  | 'row'
+  | 'header'
+  | 'inputLabel'
+  | 'inputContainer'
+  | 'input',
   CSSProperties
 > = {
   container: {
@@ -53,8 +60,12 @@ const styles: Record<
     fontWeight: 'bold',
     color: '#232323',
   },
+  inputContainer: {
+    flex: 4,
+    borderRadius: '5px',
+  },
   input: {
-    width: '30%',
+    width: '100px',
     textAlign: 'center',
   },
 };
@@ -104,7 +115,7 @@ function RangesPreferencesInner({
   const updateValues = useCallback(() => {
     if (nucleus) {
       const defaultValues = nucleus.reduce((acc, nucleusLabel) => {
-        acc[nucleusLabel] = rangeDefaultValues;
+        acc[nucleusLabel] = getRangeDefaultValues(nucleusLabel);
         return acc;
       }, {});
       const rangesPreferences = getValueByKeyPath(
@@ -170,6 +181,16 @@ function RangesPreferencesInner({
                 formatControllerName={`${nucleusLabel}.${field.formatController}`}
               />
             ))}
+            <FormikInput
+              name={`${nucleusLabel}.jGraphTolerance`}
+              label="J Graph tolerance (Hz) :"
+              type="number"
+              style={{
+                inputContainer: styles.inputContainer,
+                label: styles.inputLabel,
+                input: styles.input,
+              }}
+            />
           </div>
         ))}
       </FormikForm>
