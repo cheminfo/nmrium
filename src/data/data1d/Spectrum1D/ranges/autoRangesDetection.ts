@@ -29,7 +29,7 @@ export default function autoRangesDetection(datum1D, options: any = {}) {
     frequency: originFrequency,
     nucleus,
     compile: true,
-    frequencyCluster: 8,
+    frequencyCluster: 13,
     keepPeaks: true,
   };
 
