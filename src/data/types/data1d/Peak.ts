@@ -1,7 +1,6 @@
-export interface Peak {
+import { NMRPeak1D } from 'nmr-processing';
+
+export interface Peak extends NMRPeak1D {
   id: string;
-  delta: number;
-  originDelta: number;
-  width?: number;
-  intensity: number;
+  originalX: number;
 }

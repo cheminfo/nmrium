@@ -1,4 +1,4 @@
-import { xyzAutoPeaksPicking } from 'nmr-processing';
+import { xyzAutoZonesPicking } from 'nmr-processing';
 
 import { Datum2D } from '../../../types/data2d';
 
@@ -46,7 +46,7 @@ function autoZonesDetection(data, options) {
   const { nucleus: nuclei, originFrequency } = options.info;
   const { enhanceSymmetry = nuclei[0] === nuclei[1] } = options;
 
-  let zones = xyzAutoPeaksPicking(data, {
+  let zones = xyzAutoZonesPicking(data, {
     nuclei,
     observedFrequencies: originFrequency,
     thresholdFactor,
