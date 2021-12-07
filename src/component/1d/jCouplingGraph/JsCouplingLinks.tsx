@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { CouplingLink } from '../../../data/data1d/Spectrum1D/generateJGraphData';
 import { useScaleChecked } from '../../context/ScaleContext';
 
-import { useJGraph } from './JGraph';
+import { useJGraph } from './JGraphContext';
 
 interface JsCouplingLinksProps {
   links: CouplingLink[];
@@ -15,6 +15,8 @@ export default function JsCouplingLinks(props: JsCouplingLinksProps) {
   const { scaleY, maxValue } = useJGraph();
   const generatePath = useCallback(
     (link: CouplingLink): string => {
+      if (!scaleY) return '';
+
       const { from, to, couplings } = link;
       let paths: string[] = [];
       for (const coupling of couplings) {

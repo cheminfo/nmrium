@@ -1,6 +1,6 @@
-import { scaleLinear, ScaleLinear } from 'd3';
+import { scaleLinear } from 'd3';
 import lodashGet from 'lodash/get';
-import React, { memo, useContext, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 import generateJGraphData, {
   CouplingLink,
@@ -12,38 +12,16 @@ import { usePreferences } from '../../context/PreferencesContext';
 import useSpectrum from '../../hooks/useSpectrum';
 import { getRangeDefaultValues } from '../../panels/extra/preferences/defaultValues';
 
+import { JGraphContextProvider } from './JGraphContext';
 import { JGraphVerticalAxis } from './JGraphVerticalAxis';
 import JCouplingLinks from './JsCouplingLinks';
 import JsCouplings from './JsCouplings';
 
+const marginTop = 50;
+
 interface innerJGraphProps {
   signals: Signal1D[];
   links: CouplingLink[];
-}
-
-const marginTop = 50;
-
-interface JGraphState {
-  scaleY: ScaleLinear<number, number, never> | null;
-  height: number;
-  maxValue: number;
-}
-
-const JGraphContext = React.createContext<JGraphState>({
-  scaleY: null,
-  height: 0,
-  maxValue: 0,
-});
-
-const JGraphContextProvider = JGraphContext.Provider;
-
-export function useJGraph() {
-  const jGraphState = useContext(JGraphContext);
-  if (!jGraphState.scaleY) {
-    throw new Error('scale cannot be null');
-  }
-
-  return jGraphState;
 }
 
 function InnerJGraph(props: innerJGraphProps) {

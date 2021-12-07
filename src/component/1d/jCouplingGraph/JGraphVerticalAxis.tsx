@@ -1,7 +1,7 @@
 import { useChartData } from '../../context/ChartContext';
 import { LinearVerticalAxis } from '../../elements/linearAxis/LinearVerticalAxis';
 
-import { useJGraph } from './JGraph';
+import { useJGraph } from './JGraphContext';
 
 export function JGraphVerticalAxis() {
   const { width, margin } = useChartData();

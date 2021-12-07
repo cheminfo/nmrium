@@ -1,7 +1,7 @@
 import { Signal1D } from '../../../data/types/data1d';
 import { useScaleChecked } from '../../context/ScaleContext';
 
-import { useJGraph } from './JGraph';
+import { useJGraph } from './JGraphContext';
 import JsCoupling from './JsCoupling';
 
 interface JsCouplingsProps {
