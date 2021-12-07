@@ -44,14 +44,14 @@ function PeakAnnotations() {
                 key={d.id}
                 transform={`translate(0,-${getVerticalAlign(d.id)})`}
               >
-                {d.peaks.values.map(({ delta, intensity, id }) => (
+                {d.peaks.values.map(({ x, y, id }) => (
                   <PeakAnnotation
                     key={id}
-                    x={scaleX()(delta)}
-                    y={scaleY(d.id)(intensity) - 5}
-                    sign={Math.sign(intensity)}
+                    x={scaleX()(x)}
+                    y={scaleY(d.id)(y) - 5}
+                    sign={Math.sign(y)}
                     id={id}
-                    value={delta}
+                    value={x}
                     color="#730000"
                     nucleus={d.info.nucleus}
                     isActive={

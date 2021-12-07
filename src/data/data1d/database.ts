@@ -1,13 +1,8 @@
-import { protonImpurities, carbonImpurities } from 'nmr-processing';
+import { protonImpurities, carbonImpurities, Jcoupling } from 'nmr-processing';
 import { DatabaseNMREntry } from 'nmr-processing/lib/databases/DatabaseNMREntry';
 import { filter } from 'smart-array-filter';
 
 import generateID from '../utilities/generateID';
-
-export interface DataBaseJ {
-  coupling: number;
-  multiplicity: string;
-}
 
 export interface DataBaseSignal {
   assignment: string;
@@ -92,7 +87,7 @@ function prepareDataBase(array: Array<DatabaseNMREntry>) {
 }
 
 export type PrepareDataResult = Partial<
-  DataBaseRange | DataBaseSignal | DataBaseJ
+  DataBaseRange | DataBaseSignal | Jcoupling
 >;
 
 export function prepareData(
@@ -105,10 +100,10 @@ export function prepareData(
     const { ranges, ...restItemKeys } = item;
 
     for (const range of ranges) {
-      ids.push(range.id);
-      const { signals, ...restRangKeys } = range;
+      ids.push(range.id || generateID());
+      const { signals = [], ...restRangKeys } = range;
       for (const signal of signals) {
-        const { js, ...restSignalKeys } = signal;
+        const { js = [], ...restSignalKeys } = signal;
         const jsResult = mapJs(js);
 
         const data = {
@@ -128,7 +123,7 @@ export function prepareData(
   return result;
 }
 
-function mapJs(js: DataBaseJ[]) {
+function mapJs(js: Jcoupling[]) {
   if (js && js.length > 0) {
     const { coupling, multiplicity } = js.reduce<any>(
       (acc, { coupling, multiplicity }) => {

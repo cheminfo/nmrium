@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { useCallback, useState, useEffect } from 'react';
 
+import { Signal1D } from '../../../data/types/data1d';
 import { checkRangeKind } from '../../../data/utilities/RangeUtilities';
 import {
   filterForIDsWithAssignment,
@@ -14,9 +15,7 @@ import { HighlightedSource, useHighlight } from '../../highlight';
 import { RESIZE_RANGE } from '../../reducer/types/Types';
 import { options } from '../../toolbar/ToolTypes';
 import Resizable from '../Resizable';
-import MultiplicityTree, {
-  SignalNodeProps,
-} from '../multiplicityTree/MultiplicityTree';
+import MultiplicityTree from '../multiplicityTree/MultiplicityTree';
 import TempMultiplicityTree from '../multiplicityTree/TempMultiplicityTree';
 
 const stylesOnHover = css`
@@ -54,7 +53,7 @@ export interface RangeData {
   from: number;
   to: number;
   integration: number;
-  signals: Array<SignalNodeProps>;
+  signals: Signal1D[];
 }
 
 interface RangeProps {

@@ -1,9 +1,10 @@
 import { Signal2D } from './Signal2D';
+import { Zone2DAxisData } from './Zone2DAxisData';
 
 export interface Zone {
   id: string;
-  x: Partial<{ from: number; to: number; diaIDs?: string[]; nbAtoms?: number }>;
-  y: Partial<{ from: number; to: number; diaIDs?: string[]; nbAtoms?: number }>;
+  x: Zone2DAxisData;
+  y: Zone2DAxisData;
   signals: Array<Signal2D>;
   kind: string;
 }

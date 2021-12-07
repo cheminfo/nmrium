@@ -15,10 +15,10 @@ export function changeRangeRelativeValue(datum: Datum1D, newRange: RangeProps) {
     (range) => range.id === newRange.id,
   );
   if (index !== -1) {
-    const ratio = datum.ranges.values[index].absolute / newRange.value;
+    const { absolute, integration } = datum.ranges.values[index];
+    const ratio = absolute / newRange.value;
     datum.ranges.options.sum =
-      (newRange.value / datum.ranges.values[index].integration) *
-      datum.ranges.options.sum;
+      (newRange.value / integration) * datum.ranges.options.sum;
     datum.ranges.values = datum.ranges.values.map((range) => {
       return {
         ...range,

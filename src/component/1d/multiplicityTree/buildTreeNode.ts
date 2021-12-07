@@ -1,5 +1,6 @@
 import lodashGet from 'lodash/get';
 
+import { Signal1D } from '../../../data/types/data1d';
 import {
   getMultiplicityNumber,
   getPascal,
@@ -7,13 +8,17 @@ import {
 
 import { TREE_LEVEL_COLORS } from './TreeColors';
 
-function createTreeNodes(signal, spectrumData) {
+function createTreeNodes(signal: Signal1D, spectrumData) {
   function buildTreeNodesData(
     multiplicityIndex,
     jIndices,
     treeNodesData,
     startX,
   ) {
+    if (!signal.multiplicity) {
+      return null;
+    }
+
     if (multiplicityIndex >= signal.multiplicity.length) {
       return treeNodesData;
     }
@@ -27,7 +32,7 @@ function createTreeNodes(signal, spectrumData) {
     const frequency = lodashGet(spectrumData, 'info.originFrequency', 0);
 
     const coupling =
-      jIndex >= 0 && frequency > 0 && signal.js[jIndex]
+      jIndex >= 0 && frequency > 0 && signal?.js?.[jIndex]
         ? signal.js[jIndex].coupling / frequency // convert to ppm
         : null;
 
@@ -49,8 +54,9 @@ function createTreeNodes(signal, spectrumData) {
       );
     } else {
       // in case of other multiplets
+      const multiplicity = signal.multiplicity || '';
       const pascal = getPascal(
-        getMultiplicityNumber(signal.multiplicity.charAt(multiplicityIndex)),
+        getMultiplicityNumber(multiplicity.charAt(multiplicityIndex)),
         0.5,
       ); // @TODO for now we use the default spin of 1 / 2 only
 

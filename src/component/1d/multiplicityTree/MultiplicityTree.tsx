@@ -2,6 +2,7 @@
 import lodashGet from 'lodash/get';
 import { useMemo, useState, useEffect, CSSProperties } from 'react';
 
+import { Signal1D } from '../../../data/types/data1d';
 import { useAssignment } from '../../assignment';
 import { useChartData } from '../../context/ChartContext';
 import { useScaleChecked } from '../../context/ScaleContext';
@@ -23,16 +24,16 @@ const styles = {
   strokeWidth: 1,
 };
 
-export interface SignalNodeProps {
-  id: string;
-  delta: number;
-  multiplicity: string;
-}
+// export interface SignalNodeProps {
+//   id: string;
+//   delta: number;
+//   multiplicity: string;
+// }
 
 interface MultiplicityTreeProps {
   rangeFrom: number;
   rangeTo: number;
-  signal: SignalNodeProps;
+  signal: Signal1D;
   labelOptions?: {
     distance: number;
     fontSize: CSSProperties['fontSize'];
@@ -90,9 +91,10 @@ function MultiplicityTree({
     const _treeHeight = _drawInFullRange ? _treeWidth / 3 : _treeWidth / 2;
     // +2 because of multiplicity text and start level node before the actual tree starts
     // 2* for levels between nodes (edges)
+    const length = signal?.multiplicity?.length || 0;
     const _treeLevelHeight = _drawInFullRange
-      ? _treeHeight / (signal.multiplicity.length + 2)
-      : _treeHeight / (2 * signal.multiplicity.length + 2);
+      ? _treeHeight / (length + 2)
+      : _treeHeight / (2 * length + 2);
 
     setTreeProps({
       width: _treeWidth,
@@ -140,13 +142,16 @@ function MultiplicityTree({
   ]);
 
   const treeNodesData = useMemo(() => {
-    const buildTreeNodesData = createTreeNodes(signal, spectrumData);
-    const jIndices = signal.multiplicity
-      .split('')
-      .map((_mult, i) => (hasCouplingConstant(_mult) ? i : undefined))
-      .filter((_i) => _i !== undefined);
+    if (signal.multiplicity) {
+      const buildTreeNodesData = createTreeNodes(signal, spectrumData);
+      const jIndices = signal.multiplicity
+        .split('')
+        .map((_mult, i) => (hasCouplingConstant(_mult) ? i : undefined))
+        .filter((_i) => _i !== undefined);
 
-    return buildTreeNodesData(0, jIndices, [], signal.delta);
+      return buildTreeNodesData(0, jIndices, [], signal.delta);
+    }
+    return [];
   }, [signal, spectrumData]);
 
   useEffect(() => {

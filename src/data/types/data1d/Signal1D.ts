@@ -1,13 +1,6 @@
-import { Jcoupling } from 'nmr-processing';
+import { NMRSignal1D } from 'nmr-processing';
 
-export interface Signal1D {
+export interface Signal1D extends Omit<NMRSignal1D, 'id'> {
   id: string;
-  kind: string;
   originDelta?: number;
-  delta: number;
-  multiplicity: string;
-  peaks?: Array<{ x: number; intensity: number; width: number }>;
-  diaIDs?: string[];
-  nbAtoms?: number;
-  js?: Jcoupling[];
 }

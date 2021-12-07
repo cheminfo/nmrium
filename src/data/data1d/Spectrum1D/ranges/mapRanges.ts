@@ -5,7 +5,7 @@ import { Datum1D, Range } from '../../../types/data1d';
 import generateID from '../../../utilities/generateID';
 import { getShiftX } from '../shift/getShiftX';
 
-export function mapRanges(ranges: Array<Range>, datum: Datum1D) {
+export function mapRanges(ranges: Range[], datum: Datum1D) {
   const { x, re } = datum.data;
   const shiftX = getShiftX(datum);
   const error = (x[x.length - 1] - x[0]) / 10000;
