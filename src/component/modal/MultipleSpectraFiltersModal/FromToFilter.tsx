@@ -2,10 +2,9 @@ import { FormikHelpers, FormikProps } from 'formik';
 import { ForwardedRef, forwardRef } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
-import Label from "../../elements/Label";
+import Label from '../../elements/Label';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
-
 
 interface FromToFilterProps {
   onSubmit: (values: any, helper: FormikHelpers<any>) => void;

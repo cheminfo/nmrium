@@ -8,7 +8,7 @@ import { useDispatch } from '../context/DispatchContext';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
 import IsotopesViewer from '../elements/IsotopesViewer';
-import Label from "../elements/Label";
+import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikErrorsSummary from '../elements/formik/FormikErrorsSummary';
 import FormikForm from '../elements/formik/FormikForm';

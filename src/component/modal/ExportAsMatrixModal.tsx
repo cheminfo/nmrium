@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import CloseButton from '../elements/CloseButton';
-import Label from "../elements/Label";
+import Label from '../elements/Label';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import Events from '../utility/Events';

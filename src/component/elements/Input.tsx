@@ -38,7 +38,7 @@ const styles: Record<
     flex: 1,
     height: '100%',
     textAlign: 'center',
-    width: "100%",
+    width: '100%',
   },
   clearButton: {
     height: 'calc(100% - 4px)',

@@ -1,7 +1,6 @@
-import Label from "../../elements/Label";
+import Label from '../../elements/Label';
 import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
-
 
 function ControllersTabContent() {
   return (
