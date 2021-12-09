@@ -3,6 +3,7 @@ import { xyIntegration } from 'ml-spectra-processing';
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { Datum1D } from '../../../types/data1d/Datum1D';
 import generateID from '../../../utilities/generateID';
+import { initSumOptions, SumParams } from '../SumHelper';
 
 import detectSignal from './detectSignal';
 import { mapRanges } from './mapRanges';
@@ -13,8 +14,8 @@ interface AddRangeOptions {
   to: number;
 }
 
-export function addRange(datum: Datum1D, options: AddRangeOptions) {
-  const { from, to } = options;
+export function addRange(datum: Datum1D, options: AddRangeOptions & SumParams) {
+  const { from, to, molecules, nucleus } = options;
   const { x, re } = datum.data;
   const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
 
@@ -30,6 +31,11 @@ export function addRange(datum: Datum1D, options: AddRangeOptions) {
       kind: DatumKind.signal,
       integration: 0,
     };
+
+    datum.ranges.options = initSumOptions(datum.ranges.options, {
+      molecules,
+      nucleus,
+    });
     datum.ranges.values = datum.ranges.values.concat(mapRanges([range], datum));
     updateRangesRelativeValues(datum);
   } catch (e) {

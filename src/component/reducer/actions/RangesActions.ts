@@ -12,11 +12,12 @@ import {
   addRange,
   changeRangeSignal,
   detectRanges,
-  updateIntegralsRelativeValues,
+  updateRangesRelativeValues,
   changeRange,
   changeRangeRelativeValue,
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
+import { setSumOptions } from '../../../data/data1d/Spectrum1D/SumHelper';
 import { Datum1D } from '../../../data/types/data1d';
 import {
   unlink,
@@ -29,11 +30,18 @@ import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain } from './DomainActions';
 
 function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
-    const datum = draft.data[index] as Datum1D;
+  const {
+    activeSpectrum,
+    data,
+    xDomain,
+    molecules,
+    activeTab: nucleus,
+  } = draft;
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
+    const datum = data[index] as Datum1D;
 
-    const [from, to] = draft.xDomain;
+    const [from, to] = xDomain;
     const windowFromIndex = xFindClosestIndex(datum.data.x, from);
     const windowToIndex = xFindClosestIndex(datum.data.x, to);
 
@@ -41,6 +49,8 @@ function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
       ...detectionOptions,
       windowFromIndex,
       windowToIndex,
+      molecules,
+      nucleus,
     });
     handleOnChangeRangesData(draft);
   }
@@ -56,9 +66,10 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
     clean: true,
     keepPeaks: true,
   };
-  for (const datum of draft.data) {
+  const { data, activeTab: nucleus, molecules } = draft;
+  for (const datum of data) {
     if (datum.info.dimension === 1) {
-      detectRanges(datum as Datum1D, { peakPicking });
+      detectRanges(datum as Datum1D, { peakPicking, molecules, nucleus });
       handleOnChangeRangesData(draft);
     }
   }
@@ -83,7 +94,7 @@ function handleDeleteRange(draft: Draft<State>, action) {
       unlinkInAssignmentData(assignmentData, datum.ranges.values);
       datum.ranges.values = [];
     }
-    updateIntegralsRelativeValues(datum);
+    updateRangesRelativeValues(datum);
     handleOnChangeRangesData(draft);
   }
 }
@@ -100,7 +111,7 @@ function handleChangeRangeSignalKind(draft: Draft<State>, action) {
       _range.kind = SignalKindsToInclude.includes(value)
         ? DatumKind.signal
         : DatumKind.mixed;
-      updateIntegralsRelativeValues(draft.data[index] as Datum1D);
+      updateRangesRelativeValues(draft.data[index] as Datum1D);
       handleOnChangeRangesData(draft);
     }
   }
@@ -126,7 +137,7 @@ function handleSaveEditedRange(draft: Draft<State>, action) {
     unlinkInAssignmentData(assignmentData, [_editedRowData]);
     const rangeIndex = getRangeIndex(state, index, _editedRowData.id);
     (draft.data[index] as Datum1D).ranges.values[rangeIndex] = _editedRowData;
-    updateIntegralsRelativeValues(draft.data[index] as Datum1D);
+    updateRangesRelativeValues(draft.data[index] as Datum1D);
     handleOnChangeRangesData(draft);
   }
 }
@@ -239,21 +250,24 @@ function handleResizeRange(draft: Draft<State>, action) {
   }
 }
 
-function handleChangeRangeSum(draft: Draft<State>, value) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
-    (draft.data[index] as Datum1D).ranges.options.sum = value;
-    updateIntegralsRelativeValues(draft.data[index] as Datum1D, true);
+function handleChangeRangeSum(draft: Draft<State>, options) {
+  const { data, activeSpectrum, activeTab: nucleus } = draft;
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
+    const datum = data[index] as Datum1D;
+    setSumOptions(datum.ranges, { options, nucleus });
+    updateRangesRelativeValues(datum, true);
   }
 }
 function handleAddRange(draft: Draft<State>, action) {
   const { startX, endX } = action;
+  const { activeSpectrum, activeTab: nucleus, molecules } = draft;
   const range = getRange(draft, { startX, endX });
 
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
     const [from, to] = range;
-    addRange(draft.data[index] as Datum1D, { from, to });
+    addRange(draft.data[index] as Datum1D, { from, to, nucleus, molecules });
     handleOnChangeRangesData(draft);
   }
 }

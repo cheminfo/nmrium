@@ -7,7 +7,7 @@ import generateID from '../../utilities/generateID';
 import get1dColor from '../../utilities/getColor';
 
 export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
-  const datum: any = {};
+  const datum: Partial<Datum1D> = {};
   datum.id = options.id || generateID();
   datum.source = Object.assign(
     {
@@ -60,12 +60,24 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   // in case the peak does not exactly correspond to the point value
   // we can think about a second attributed `xShift`
   datum.integrals = merge(
-    { values: [], options: { sum: 100, isSumConstant: true } },
+    {
+      values: [],
+      options: {
+        sum: undefined,
+        isSumConstant: true,
+      },
+    },
     options.integrals,
   ); // array of object (from: xIndex, to: xIndex)
   datum.filters = Object.assign([], options.filters); //array of object {name: "FilterName", options: FilterOptions = {value | object} }
   datum.ranges = merge(
-    { values: [], options: { sum: 100, isSumConstant: true } },
+    {
+      values: [],
+      options: {
+        sum: undefined,
+        isSumConstant: true,
+      },
+    },
     options.ranges,
   );
 
@@ -73,7 +85,7 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
   FiltersManager.reapplyFilters(datum);
 
   preprocessing(datum);
-  return datum;
+  return datum as Datum1D;
 }
 
 function getColor(options, usedColors) {

@@ -1,6 +1,7 @@
 import { Integral } from './Integral';
+import { Options } from './Options';
 
 export interface Integrals {
-  values: Array<Integral>;
-  options: { sum: number; isSumConstant: boolean };
+  values: Integral[];
+  options: Options;
 }

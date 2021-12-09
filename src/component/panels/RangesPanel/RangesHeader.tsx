@@ -49,8 +49,6 @@ const style = css`
 function RangesHeader({
   ranges,
   info,
-  activeTab,
-  molecules,
   onUnlink,
   onFilterActivated,
   onSettingClick,
@@ -69,10 +67,7 @@ function RangesHeader({
 
   const changeRangesSumHandler = useCallback(
     (value) => {
-      if (value !== undefined) {
-        dispatch({ type: CHANGE_RANGE_SUM, value });
-      }
-
+      dispatch({ type: CHANGE_RANGE_SUM, value });
       modal.close();
     },
     [dispatch, modal],
@@ -88,11 +83,9 @@ function RangesHeader({
             ? `Set new Ranges Sum (Current: ${Number(currentSum).toFixed(2)})`
             : 'Set new Ranges Sum'
         }
-        molecules={molecules}
-        element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
       />,
     );
-  }, [activeTab, changeRangesSumHandler, currentSum, modal, molecules]);
+  }, [changeRangesSumHandler, currentSum, modal]);
 
   const removeAssignments = useCallback(() => {
     onUnlink();
