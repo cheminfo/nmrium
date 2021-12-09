@@ -53,7 +53,6 @@ const databaseDefaultValues = {
   showAssignment: false,
   showCoupling: true,
   showMultiplicity: true,
-  rowHeight: 80,
 };
 
 export {

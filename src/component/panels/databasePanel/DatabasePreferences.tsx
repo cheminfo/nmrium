@@ -10,7 +10,6 @@ import {
 import { usePreferences } from '../../context/PreferencesContext';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
-import FormikInput from '../../elements/formik/FormikInput';
 import { useAlert } from '../../elements/popup/Alert';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
 import {
@@ -158,17 +157,6 @@ function DatabasePreferences(props, ref) {
             label="Multiplicity"
             checkControllerName="showMultiplicity"
             hideFormat
-          />
-
-          <FormikInput
-            name="rowHeight"
-            label="Row Height (px) :"
-            type="number"
-            style={{
-              inputContainer: styles.inputContainer,
-              label: styles.inputLabel,
-              input: styles.input,
-            }}
           />
         </div>
       </FormikForm>
