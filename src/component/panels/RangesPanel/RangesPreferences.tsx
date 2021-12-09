@@ -21,7 +21,7 @@ import {
   useStateWithLocalStorage,
   getValue as getValueByKeyPath,
 } from '../../utility/LocalStorage';
-import { rangeDefaultValues } from '../extra/preferences/defaultValues';
+import { getRangeDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles: Record<
   | 'container'
@@ -110,7 +110,7 @@ function RangesPreferencesInner({
   const updateValues = useCallback(() => {
     if (nucleus) {
       const defaultValues = nucleus.reduce((acc, nucleusLabel) => {
-        acc[nucleusLabel] = rangeDefaultValues;
+        acc[nucleusLabel] = getRangeDefaultValues(nucleusLabel);
         return acc;
       }, {});
       const rangesPreferences = getValueByKeyPath(

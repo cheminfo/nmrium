@@ -121,6 +121,7 @@ export const initialState: State = {
       tempRange: null,
       showMultiplicityTrees: false,
       showRangesIntegrals: true,
+      showJGraph: false,
     },
   },
   usedColors: { '1d': [], '2d': [] },
@@ -358,6 +359,13 @@ export interface State {
        * @default false
        */
       showRangesIntegrals: boolean;
+
+      /**
+       * boolean indicator to hide/show J graph for spectrum signals
+       * @default false
+       */
+
+      showJGraph: boolean;
     };
   };
 
@@ -670,6 +678,8 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return RangesActions.handleShowRangesIntegrals(draft);
     case types.AUTO_RANGES_SPECTRA_PICKING:
       return RangesActions.handleAutoSpectraRangesDetection(draft);
+    case types.SHOW_J_GRAPH:
+      return RangesActions.handleShowJGraph(draft);
 
     case types.SET_ACTIVE_TAB:
       return ToolsActions.handelSetActiveTab(draft, action.tab);

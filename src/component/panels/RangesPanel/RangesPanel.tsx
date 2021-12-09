@@ -17,7 +17,7 @@ import { UNLINK_RANGE } from '../../reducer/types/Types';
 import { copyTextToClipboard } from '../../utility/Export';
 import { tablePanelStyle } from '../extra/BasicPanelStyle';
 import NoTableData from '../extra/placeholder/NoTableData';
-import { rangeDefaultValues } from '../extra/preferences/defaultValues';
+import { getRangeDefaultValues } from '../extra/preferences/defaultValues';
 import PreferencesHeader from '../header/PreferencesHeader';
 
 import RangesHeader from './RangesHeader';
@@ -32,6 +32,7 @@ interface RangesTablePanelInnerProps {
   activeTab: string;
   molecules: Array<Molecule>;
   showMultiplicityTrees: boolean;
+  showJGraph: boolean;
   showRangesIntegrals: boolean;
   preferences: any;
 }
@@ -45,6 +46,7 @@ function RangesTablePanelInner({
   activeTab,
   molecules,
   showMultiplicityTrees,
+  showJGraph,
   showRangesIntegrals,
 }: RangesTablePanelInnerProps) {
   const [isFilterActive, setFilterIsActive] = useState(false);
@@ -135,7 +137,7 @@ function RangesTablePanelInner({
   const rangesPreferences = useMemo(() => {
     const _preferences =
       lodashGet(preferences, `formatting.panels.ranges.[${activeTab}]`) ||
-      rangeDefaultValues;
+      getRangeDefaultValues(activeTab);
 
     return _preferences;
   }, [activeTab, preferences]);
@@ -188,6 +190,7 @@ function RangesTablePanelInner({
               molecules,
               showRangesIntegrals,
               showMultiplicityTrees,
+              showJGraph,
               isFilterActive,
             }}
             onUnlink={unlinkRangeHandler}
@@ -241,7 +244,7 @@ export default function RangesTablePanel() {
     molecules,
     toolOptions: {
       selectedTool,
-      data: { showMultiplicityTrees, showRangesIntegrals },
+      data: { showMultiplicityTrees, showRangesIntegrals, showJGraph },
     },
   } = useChartData();
 
@@ -255,6 +258,7 @@ export default function RangesTablePanel() {
         data,
         info,
         showMultiplicityTrees,
+        showJGraph,
         showRangesIntegrals,
         selectedTool,
         displayerKey,
