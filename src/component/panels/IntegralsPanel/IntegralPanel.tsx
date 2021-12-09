@@ -6,7 +6,6 @@ import { useCallback, useMemo, useState, useRef, memo, Fragment } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { ImLink } from 'react-icons/im';
 
-import { Molecule } from '../../../data/molecules/Molecule';
 import { Datum1D, Info1D, Integrals } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useDispatch } from '../../context/DispatchContext';
@@ -50,7 +49,6 @@ export interface IntegralPanelInnerProps {
   activeTab: string;
   xDomain: Array<number>;
   preferences: any;
-  molecules: Array<Molecule>;
 }
 
 function IntegralPanelInner({
@@ -59,7 +57,6 @@ function IntegralPanelInner({
   activeTab,
   xDomain,
   preferences,
-  molecules,
 }: IntegralPanelInnerProps) {
   const [filterIsActive, setFilterIsActive] = useState(false);
 
@@ -106,11 +103,9 @@ function IntegralPanelInner({
               )})`
             : 'Set new Integrals Sum'
         }
-        molecules={molecules}
-        element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
       />,
     );
-  }, [activeTab, changeIntegralSumHandler, currentSum, modal, molecules]);
+  }, [changeIntegralSumHandler, currentSum, modal]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);
@@ -248,7 +243,7 @@ const MemoizedIntegralPanel = memo(IntegralPanelInner);
 const emptyData = { integrals: {}, info: {} };
 
 export default function IntegralPanel() {
-  const { xDomain, activeTab, molecules } = useChartData();
+  const { xDomain, activeTab } = useChartData();
 
   const preferences = usePreferences();
 
@@ -262,7 +257,6 @@ export default function IntegralPanel() {
         preferences,
         xDomain,
         activeTab,
-        molecules,
       }}
     />
   );

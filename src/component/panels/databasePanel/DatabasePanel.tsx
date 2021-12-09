@@ -259,7 +259,7 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
           <Input
             value={keywords.searchKeywords}
             renderIcon={() => <IoSearchOutline />}
-            style={{ container: { flex: 3 } }}
+            style={{ inputWrapper: { flex: 3 } }}
             className="search-input"
             type="text"
             debounceTime={250}

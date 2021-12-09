@@ -75,7 +75,7 @@ function FormikColumnFormatField(props: FormikColumnFormatFieldProps) {
         />
         {!hideFormat && formatControllerName && (
           <Input
-            style={{ container: styles.input }}
+            style={{ inputWrapper: styles.input }}
             name={formatControllerName}
             value={lodashGet(values, formatControllerName, '')}
             onChange={changeHandler}

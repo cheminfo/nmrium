@@ -85,11 +85,10 @@ function SaveAsModal({ onClose, onSave, name }: SaveAsModalProps) {
           <div className="row margin-10">
             <span className="custom-label">Name</span>
             <FormikInput
-              label=""
               name="name"
               className="name"
               style={{
-                container: { width: '100%' },
+                inputWrapper: { width: '100%' },
               }}
             />
           </div>
