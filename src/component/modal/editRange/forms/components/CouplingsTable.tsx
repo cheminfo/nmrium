@@ -152,12 +152,6 @@ function CouplingsTable({
                       width: '100%',
                       height: '26px',
                     },
-                    inputContainer: {
-                      width: '100%',
-                    },
-                    container: {
-                      height: '100%',
-                    },
                   }}
                   checkErrorAfterInputTouched={false}
                 />

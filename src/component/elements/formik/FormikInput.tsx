@@ -11,7 +11,6 @@ interface FormikInputProps extends InputProps {
 
 function FormikInput(props: FormikInputProps) {
   const {
-    label,
     name,
     style = { label: {}, input: {} },
     onChange = () => null,
@@ -50,14 +49,13 @@ function FormikInput(props: FormikInputProps) {
 
   return (
     <Input
-      label={label}
       name={name}
       value={value ? value : lodashGet(values, name)}
       onChange={changeHandler}
       type={type}
       style={{
         ...style,
-        input: {
+        inputWrapper: {
           ...style.input,
           ...(isInvalid && { borderColor: 'red', outline: 'none' }),
         },

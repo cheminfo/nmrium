@@ -3,14 +3,12 @@ import { CSSProperties } from 'react';
 import FormikInput from '../../../../elements/formik/FormikInput';
 import { translateMultiplet } from '../../../../panels/extra/utilities/MultiplicityUtilities';
 
-const style: Record<'inputWrapper' | 'container', CSSProperties> = {
+const style: Record<'inputWrapper', CSSProperties> = {
   inputWrapper: {
     width: '50px',
     height: '26px',
     borderWidth: 0,
-  },
-  container: {
-    height: '100%',
+    margin: '0 5px',
   },
 };
 
@@ -22,7 +20,7 @@ interface DeltaInputProps {
 
 function DeltaInput({ signal, index, onFocus }: DeltaInputProps) {
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
       <span>𝛅:</span>
       <FormikInput
         name={`signals.${index}.delta`}

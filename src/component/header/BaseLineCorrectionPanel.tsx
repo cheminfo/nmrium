@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 
 import { baselineAlgorithms } from '../../data/data1d/filter1d/baselineCorrection';
 import { useDispatch } from '../context/DispatchContext';
+import Label from '../elements/Label';
 import Select from '../elements/Select';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
@@ -16,6 +17,7 @@ const styles: Record<'container' | 'label' | 'actionButton', CSSProperties> = {
     padding: '5px',
     height: '100%',
     display: 'flex',
+    alignItems: 'center',
   },
   label: {
     lineHeight: 2,
@@ -126,24 +128,25 @@ function BaseLineCorrectionPanel() {
       >
         {algorithm && algorithm === 'airpls' && (
           <div style={{ display: 'flex' }}>
-            <FormikInput
-              type="number"
-              label="maxIterations:"
-              name="maxIterations"
-            />
-            <FormikInput type="number" label="tolerance:" name="tolerance" />
+            <Label title="maxIterations:">
+              <FormikInput type="number" name="maxIterations" />
+            </Label>
+            <Label title="tolerance:" style={{ label: { padding: '0 5px' } }}>
+              <FormikInput type="number" name="tolerance" />
+            </Label>
           </div>
         )}
 
         {algorithm && ['autoPolynomial', 'polynomial'].includes(algorithm) && (
-          <FormikInput
-            type="number"
-            label="degree [ 1 - 6 ]:"
-            name="degree"
-            min={1}
-            max={6}
-            style={{ container: { height: '100%' } }}
-          />
+          <Label title="degree [ 1 - 6 ]:">
+            <FormikInput
+              type="number"
+              name="degree"
+              min={1}
+              max={6}
+              style={{ inputWrapper: { height: '100%' } }}
+            />
+          </Label>
         )}
       </FormikForm>
       <button

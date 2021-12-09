@@ -131,13 +131,13 @@ function AddSignalFormTab(
             onFocus={onFocus}
             onBlur={onBlur}
             style={{
-              input: {
+              inputWrapper: {
                 width: '250px',
                 height: '30px',
               },
-              container: {
-                justifyContent: 'center',
-              },
+              // container: {
+              //   justifyContent: 'center',
+              // },
             }}
             checkErrorAfterInputTouched={false}
           />
