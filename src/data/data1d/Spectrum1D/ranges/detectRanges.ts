@@ -1,5 +1,5 @@
 import { Datum1D } from '../../../types/data1d/Datum1D';
-import { initSumOptions, SumParams } from '../SumHelper';
+import { initSumOptions, SumParams } from '../SumManager';
 
 import autoRangesDetection from './autoRangesDetection';
 import { mapRanges } from './mapRanges';

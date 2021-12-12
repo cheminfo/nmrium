@@ -3,7 +3,7 @@ import { xyIntegration } from 'ml-spectra-processing';
 import { DatumKind } from '../../../constants/SignalsKinds';
 import { Datum1D } from '../../../types/data1d/Datum1D';
 import generateID from '../../../utilities/generateID';
-import { initSumOptions, SumParams } from '../SumHelper';
+import { initSumOptions, SumParams } from '../SumManager';
 
 import detectSignal from './detectSignal';
 import { mapRanges } from './mapRanges';

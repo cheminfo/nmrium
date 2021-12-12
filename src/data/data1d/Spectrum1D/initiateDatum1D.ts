@@ -65,6 +65,7 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
       options: {
         sum: undefined,
         isSumConstant: true,
+        sumAuto: true,
       },
     },
     options.integrals,
@@ -76,6 +77,7 @@ export function initiateDatum1D(options: any, usedColors = {}): Datum1D {
       options: {
         sum: undefined,
         isSumConstant: true,
+        sumAuto: true,
       },
     },
     options.ranges,

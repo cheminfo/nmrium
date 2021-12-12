@@ -78,10 +78,7 @@ function IntegralPanelInner({
 
   const changeIntegralSumHandler = useCallback(
     (value) => {
-      if (value !== undefined) {
-        dispatch({ type: CHANGE_INTEGRAL_SUM, value });
-      }
-
+      dispatch({ type: CHANGE_INTEGRAL_SUM, value });
       modal.close();
     },
     [dispatch, modal],
@@ -103,9 +100,10 @@ function IntegralPanelInner({
               )})`
             : 'Set new Integrals Sum'
         }
+        sumOptions={integrals.options}
       />,
     );
-  }, [changeIntegralSumHandler, currentSum, modal]);
+  }, [changeIntegralSumHandler, currentSum, integrals.options, modal]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);

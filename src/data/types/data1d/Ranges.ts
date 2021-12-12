@@ -1,7 +1,7 @@
-import { Options } from './Options';
 import { Range } from './Range';
+import { SumOptions } from './SumOptions';
 
 export interface Ranges {
   values: Range[];
-  options: Options;
+  options: SumOptions;
 }

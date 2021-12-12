@@ -17,7 +17,7 @@ import {
   changeRangeRelativeValue,
   updateXShift,
 } from '../../../data/data1d/Spectrum1D';
-import { setSumOptions } from '../../../data/data1d/Spectrum1D/SumHelper';
+import { setSumOptions } from '../../../data/data1d/Spectrum1D/SumManager';
 import { Datum1D } from '../../../data/types/data1d';
 import {
   unlink,

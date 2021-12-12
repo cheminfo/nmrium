@@ -1,7 +1,7 @@
 import { Integral } from './Integral';
-import { Options } from './Options';
+import { SumOptions } from './SumOptions';
 
 export interface Integrals {
   values: Integral[];
-  options: Options;
+  options: SumOptions;
 }

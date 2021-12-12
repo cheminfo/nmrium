@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as Yup from 'yup';
 
+import { SumOptions } from '../../../data/types/data1d/SumOptions';
 import { usePreferences } from '../../context/PreferencesContext';
 import CloseButton from '../../elements/CloseButton';
 import Tab from '../../elements/Tab/Tab';
@@ -15,7 +16,7 @@ import SelectMolecule from './SelectMolecule';
 
 const styles = css`
   width: 450px;
-  min-height: 350px;
+  height: 400px;
   .header {
     display: flex;
     padding: 10px;
@@ -62,24 +63,29 @@ enum SumSetOptions {
   Manual = 'manual',
 }
 
-interface SaveInput {
-  sum: number | null;
-  mf: {
-    value: string;
-    moleculeKey: string;
-  } | null;
-}
+type SaveInput =
+  | {
+      sum: number;
+      sumAuto: false;
+    }
+  | {
+      moleculeKey: string;
+      mf: string;
+      sumAuto: true;
+    };
 
 interface ChangeSumModalProps {
   onSave: (saveInput: SaveInput) => void;
   onClose: () => void;
-  header: any;
+  header: string;
+  sumOptions: SumOptions;
 }
 
 export default function ChangeSumModal({
   onSave,
   onClose,
   header,
+  sumOptions,
 }: ChangeSumModalProps) {
   const {
     display: { general, panels },
@@ -98,15 +104,34 @@ export default function ChangeSumModal({
     setActiveOption(tab.tabid);
   }, []);
 
+  useEffect(() => {
+    if (sumOptions.sumAuto) {
+      setActiveOption(SumSetOptions.Auto);
+      const { mf, moleculeKey: key } = sumOptions;
+      formRef.current.setValues({
+        sum: null,
+        molecule: key && mf ? { mf, key } : null,
+      });
+    } else {
+      setActiveOption(SumSetOptions.Manual);
+      formRef.current.setValues({ sum: sumOptions.sum, molecule: null });
+    }
+  }, [sumOptions]);
+
   const saveHandler = useCallback(
     (values) => {
       switch (setOption) {
         case SumSetOptions.Auto: {
-          onSave({ ...values, sum: null });
+          const {
+            molecule: { mf, key: moleculeKey },
+          } = values;
+
+          onSave({ sumAuto: true, mf, moleculeKey });
           break;
         }
         case SumSetOptions.Manual: {
-          onSave({ ...values, mf: null });
+          const { sum } = values;
+          onSave({ sum, sumAuto: false });
           break;
         }
         default:
@@ -121,10 +146,7 @@ export default function ChangeSumModal({
     switch (setOption) {
       case SumSetOptions.Auto: {
         return Yup.object({
-          mf: Yup.object({
-            value: Yup.string().required(),
-            moleculeKey: Yup.string().required(),
-          }).required(),
+          molecule: Yup.object().required(),
         });
       }
       case SumSetOptions.Manual: {
@@ -149,13 +171,13 @@ export default function ChangeSumModal({
         <FormikForm
           ref={formRef}
           onSubmit={saveHandler}
-          initialValues={{ sum: null, mf: null }}
+          initialValues={{ sum: null, molecule: null }}
           validationSchema={validationSchema}
         >
           <Tabs activeTab={setOption} onClick={onTabChangeHandler}>
             {!general.hideSetSumFromMolecule && !panels.hideStructuresPanel && (
               <Tab tablabel="Auto" tabid={SumSetOptions.Auto}>
-                <SelectMolecule name="mf" />
+                <SelectMolecule name="molecule" />
               </Tab>
             )}
 

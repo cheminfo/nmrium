@@ -46,7 +46,10 @@ interface SelectMoleculeProps {
 
 export default function SelectMolecule(props: SelectMoleculeProps) {
   const [currentIndex, setCurrentIndex] = useState<number>();
-  const { setFieldValue, errors } = useFormikContext();
+  const { setFieldValue, errors, values } = useFormikContext<{
+    molecule: { mf: string; key: string } | null;
+    sum: number;
+  }>();
   const { molecules, activeTab } = useChartData();
   const element = getAtom(activeTab);
   const newSum = useMemo(() => {
@@ -62,17 +65,21 @@ export default function SelectMolecule(props: SelectMoleculeProps) {
   const setValue = useCallback(
     (index: number) => {
       setCurrentIndex(index);
-      const { mf, key } = molecules[index];
-      setFieldValue(props.name, { value: mf, moleculeKey: key });
+      setFieldValue(props.name, molecules[index]);
     },
     [molecules, props.name, setFieldValue],
   );
 
   useEffect(() => {
     if (molecules && molecules.length > 0) {
-      setValue(0);
+      const index = values[props.name]
+        ? molecules.findIndex(
+            (molecule) => molecule.key === values[props.name].key,
+          )
+        : -1;
+      setValue(index !== -1 ? index : 0);
     }
-  }, [molecules, setValue]);
+  }, [molecules, props.name, setValue, values]);
 
   const onChangeMoleculeSelectionHandler = useCallback(
     (index) => {
@@ -89,6 +96,7 @@ export default function SelectMolecule(props: SelectMoleculeProps) {
 
           <div className="molecule-selection-container">
             <MoleculeSelection
+              index={currentIndex}
               molecules={molecules}
               onChange={onChangeMoleculeSelectionHandler}
             />

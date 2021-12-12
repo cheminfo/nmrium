@@ -9,7 +9,7 @@ import {
 import {
   initSumOptions,
   setSumOptions,
-} from '../../../data/data1d/Spectrum1D/SumHelper';
+} from '../../../data/data1d/Spectrum1D/SumManager';
 import { Datum1D } from '../../../data/types/data1d';
 import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
