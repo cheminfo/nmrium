@@ -27,6 +27,12 @@ export function changeIntegralsRelative(
     );
 
     datum.integrals.values = values;
-    datum.integrals.options.sum = sum;
+    datum.integrals.options = {
+      ...datum.integrals.options,
+      mf: undefined,
+      moleculeKey: undefined,
+      sumAuto: false,
+      sum,
+    };
   }
 }
