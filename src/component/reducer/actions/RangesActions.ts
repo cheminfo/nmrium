@@ -59,7 +59,7 @@ function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
 function handleAutoSpectraRangesDetection(draft: Draft<State>) {
   const peakPicking = {
     factorStd: 8,
-    minMaxRatio: 0.1,
+    minMaxRatio: 0.05,
     nH: 100,
     compile: true,
     frequencyCluster: 16,
