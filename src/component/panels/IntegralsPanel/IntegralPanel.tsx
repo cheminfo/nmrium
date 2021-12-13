@@ -100,10 +100,10 @@ function IntegralPanelInner({
               )})`
             : 'Set new Integrals Sum'
         }
-        sumOptions={integrals.options}
+        sumOptions={integrals?.options}
       />,
     );
-  }, [changeIntegralSumHandler, currentSum, integrals.options, modal]);
+  }, [changeIntegralSumHandler, currentSum, integrals?.options, modal]);
 
   const settingsPanelHandler = useCallback(() => {
     setFlipStatus(!isFlipped);

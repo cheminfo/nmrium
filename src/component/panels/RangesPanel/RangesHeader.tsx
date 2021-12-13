@@ -85,10 +85,10 @@ function RangesHeader({
             ? `Set new Ranges Sum (Current: ${Number(currentSum).toFixed(2)})`
             : 'Set new Ranges Sum'
         }
-        sumOptions={ranges.options}
+        sumOptions={ranges?.options}
       />,
     );
-  }, [changeRangesSumHandler, currentSum, modal, ranges.options]);
+  }, [changeRangesSumHandler, currentSum, modal, ranges?.options]);
 
   const removeAssignments = useCallback(() => {
     onUnlink();
