@@ -29,7 +29,7 @@ import getRange from '../helper/getRange';
 import { handleUpdateCorrelations } from './CorrelationsActions';
 import { setDomain } from './DomainActions';
 
-function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
+function handleAutoRangesDetection(draft: Draft<State>, options) {
   const {
     activeSpectrum,
     data,
@@ -44,6 +44,16 @@ function handleAutoRangesDetection(draft: Draft<State>, detectionOptions) {
     const [from, to] = xDomain;
     const windowFromIndex = xFindClosestIndex(datum.data.x, from);
     const windowToIndex = xFindClosestIndex(datum.data.x, to);
+
+    const detectionOptions = {
+      factorStd: 8,
+      nH: 100,
+      compile: true,
+      frequencyCluster: 16,
+      clean: true,
+      keepPeaks: true,
+      ...options, // minMaxRatio default 0.05, lookNegative default false,
+    };
 
     detectRanges(datum, {
       ...detectionOptions,
