@@ -11,7 +11,7 @@ interface DetectRangesOptions {
   peakPicking: {
     factorStd: number; // default 8
     minMaxRatio: number; // default 0.1
-    nH: number; // default 100
+    integrationSum: number; // default 100
     compile: boolean; //default true
     frequencyCluster: number; // default 16
     clean: boolean; // default true

@@ -7,7 +7,7 @@ const defaultPeakPickingOptions = {
   realTopDetection: true,
   maxCriteria: true,
   smoothY: false,
-  nH: 100,
+  integrationSum: 100,
   factorStd: 5,
   clean: true,
   sgOptions: { windowSize: 7, polynomial: 3 },
