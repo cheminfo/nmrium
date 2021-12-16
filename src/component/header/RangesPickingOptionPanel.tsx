@@ -59,7 +59,7 @@ function RangesPickingOptionPanel() {
       type: AUTO_RANGES_DETECTION,
       options: {
         peakPicking: {
-          minMaxRatio: minMaxRatioRef.current.value,
+          minMaxRatio: Number(minMaxRatioRef.current.value) || 0.05,
           lookNegative: lookNegativeRef.current.checked,
         },
       },
