@@ -47,7 +47,7 @@ function handleAutoRangesDetection(draft: Draft<State>, options) {
 
     const detectionOptions = {
       factorStd: 8,
-      nH: 100,
+      integrationSum: 100,
       compile: true,
       frequencyCluster: 16,
       clean: true,
@@ -70,7 +70,7 @@ function handleAutoSpectraRangesDetection(draft: Draft<State>) {
   const peakPicking = {
     factorStd: 8,
     minMaxRatio: 0.05,
-    nH: 100,
+    integrationSum: 100,
     compile: true,
     frequencyCluster: 16,
     clean: true,

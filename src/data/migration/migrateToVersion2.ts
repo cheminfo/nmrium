@@ -98,7 +98,7 @@ function mapZones(zones) {
             deltaY,
             resolutionY,
             nucleusY,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
             shiftX,
             shiftY,
             ...resSignal

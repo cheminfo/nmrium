@@ -5,9 +5,9 @@ import LinesSeries from './LinesSeries';
 import PeakAnnotations from './PeakAnnotations';
 import ResurrectedDatabaseRanges from './ResurrectedDatabaseRanges';
 import XAxis from './XAxis';
+import JGraph from './jCouplingGraph/JGraph';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
-import JGraph from './jCouplingGraph/JGraph';
 
 function Chart1D({ mode, width, height, margin, displayerKey }) {
   return (
