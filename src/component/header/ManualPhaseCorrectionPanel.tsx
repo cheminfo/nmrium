@@ -201,7 +201,7 @@ function ManualPhaseCorrectionPanelInner({
 
       {phaseCorrectionType === phaseCorrectionTypes.manual && (
         <>
-          <Label title="PH0 :">
+          <Label title="PH0 :" style={{ wrapper: { marginRight: '5px' } }}>
             <Input
               name="ph0"
               style={{ input: styles.input }}

@@ -21,6 +21,7 @@ export default function Label(props: LabelProps) {
           fontWeight: 'bold',
           color: '#232323',
           paddingRight: '10px',
+          width: 'max-content',
           ...style?.label,
         }}
       >
