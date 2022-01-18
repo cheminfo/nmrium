@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { REFERENCES } from '../../data/constants/References';
 import { useDispatch } from '../context/DispatchContext';
 import CloseButton from '../elements/CloseButton';
+import Label from '../elements/Label';
 import Select from '../elements/Select';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
@@ -83,7 +84,7 @@ function AlignSpectraModal({
         <span>Spectra calibration</span>
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
-      <div className="inner-content">
+      <div className="inner-content" style={{ flex: 1 }}>
         <FormikForm
           ref={refForm}
           initialValues={{ from: -1, to: 1, nbPeaks: 1, targetX: 0 }}
@@ -100,16 +101,22 @@ function AlignSpectraModal({
           </div>
           <div className="row margin-10">
             <span className="custom-label">Range :</span>
-            <FormikInput label="From : " name="from" type="number" />
-            <FormikInput label="To :" name="to" type="number" />
+            <Label title="From : ">
+              <FormikInput name="from" type="number" />
+            </Label>
+            <Label title="To : ">
+              <FormikInput name="to" type="number" />
+            </Label>
           </div>
-          <div className="row margin-10">
-            <span className="custom-label">Number of Peaks : </span>
-            <FormikInput name="nbPeaks" type="number" />
+          <div className=" margin-10">
+            <Label className="custom-label" title="Number of Peaks : ">
+              <FormikInput name="nbPeaks" type="number" />
+            </Label>
           </div>
-          <div className="row margin-10">
-            <span className="custom-label">Target PPM :</span>
-            <FormikInput name="targetX" type="number" />
+          <div className=" margin-10">
+            <Label className="custom-label" title="Target PPM :">
+              <FormikInput name="targetX" type="number" />
+            </Label>
           </div>
         </FormikForm>
       </div>

@@ -4,7 +4,7 @@ import { SvgNmrIntegrate, SvgNmrSum } from 'cheminfo-font';
 import lodashGet from 'lodash/get';
 import { rangesToACS } from 'nmr-processing';
 import { useCallback } from 'react';
-import { FaFileExport, FaUnlink, FaSitemap } from 'react-icons/fa';
+import { FaFileExport, FaUnlink, FaSitemap, FaChartBar } from 'react-icons/fa';
 import { ImLink } from 'react-icons/im';
 
 import { useAssignmentData } from '../../assignment';
@@ -20,6 +20,7 @@ import {
   CHANGE_RANGES_SUM_FLAG,
   CHANGE_RANGE_SUM,
   DELETE_RANGE,
+  SHOW_J_GRAPH,
   SHOW_MULTIPLICTY_TREES,
   SHOW_RANGES_INTEGRALS,
 } from '../../reducer/types/Types';
@@ -49,14 +50,13 @@ const style = css`
 function RangesHeader({
   ranges,
   info,
-  activeTab,
-  molecules,
   onUnlink,
   onFilterActivated,
   onSettingClick,
   isFilterActive,
   filterCounter,
   showMultiplicityTrees,
+  showJGraph,
   showRangesIntegrals,
 }) {
   const dispatch = useDispatch();
@@ -69,10 +69,7 @@ function RangesHeader({
 
   const changeRangesSumHandler = useCallback(
     (value) => {
-      if (value !== undefined) {
-        dispatch({ type: CHANGE_RANGE_SUM, value });
-      }
-
+      dispatch({ type: CHANGE_RANGE_SUM, value });
       modal.close();
     },
     [dispatch, modal],
@@ -88,11 +85,10 @@ function RangesHeader({
             ? `Set new Ranges Sum (Current: ${Number(currentSum).toFixed(2)})`
             : 'Set new Ranges Sum'
         }
-        molecules={molecules}
-        element={activeTab ? activeTab.replace(/[0-9]/g, '') : null}
+        sumOptions={ranges?.options}
       />,
     );
-  }, [activeTab, changeRangesSumHandler, currentSum, modal, molecules]);
+  }, [changeRangesSumHandler, currentSum, modal, ranges?.options]);
 
   const removeAssignments = useCallback(() => {
     onUnlink();
@@ -126,8 +122,13 @@ function RangesHeader({
   const handleSetShowMultiplicityTrees = useCallback(() => {
     dispatch({ type: SHOW_MULTIPLICTY_TREES });
   }, [dispatch]);
+
   const handleShowIntegrals = useCallback(() => {
     dispatch({ type: SHOW_RANGES_INTEGRALS });
+  }, [dispatch]);
+
+  const handleShowJGraph = useCallback(() => {
+    dispatch({ type: SHOW_J_GRAPH });
   }, [dispatch]);
 
   const saveToClipboardHandler = useCallback(
@@ -232,6 +233,14 @@ function RangesHeader({
           disabled={!ranges || !ranges.values || ranges.values.length === 0}
         >
           <FaSitemap style={{ pointerEvents: 'none', fontSize: '12px' }} />
+        </ToggleButton>
+        <ToggleButton
+          popupTitle={showJGraph ? 'Hide J Graph' : 'Show J Graph'}
+          popupPlacement="right"
+          onClick={handleShowJGraph}
+          disabled={!ranges || !ranges.values || ranges.values.length === 0}
+        >
+          <FaChartBar style={{ pointerEvents: 'none', fontSize: '12px' }} />
         </ToggleButton>
         <ToggleButton
           popupTitle={showRangesIntegrals ? 'Hide integrals' : 'Show integrals'}

@@ -18,7 +18,7 @@ const zoneDefaultValues = {
   relativeFormat: '0.00',
 };
 
-const rangeDefaultValues = {
+const getRangeDefaultValues = (nucleus?: string) => ({
   showFrom: false,
   fromFormat: '0.00',
   showTo: false,
@@ -27,7 +27,8 @@ const rangeDefaultValues = {
   absoluteFormat: '0.00',
   showRelative: true,
   relativeFormat: '0.00',
-};
+  jGraphTolerance: nucleus === '1H' ? 0.2 : nucleus === '13C' ? 2 : 0, //J Graph tolerance for: 1H: 0.2Hz 13C: 2Hz
+});
 
 const peaksDefaultValues = {
   showPeakNumber: true,
@@ -53,13 +54,12 @@ const databaseDefaultValues = {
   showAssignment: false,
   showCoupling: true,
   showMultiplicity: true,
-  rowHeight: 80,
 };
 
 export {
   peaksDefaultValues,
   integralDefaultValues,
-  rangeDefaultValues,
+  getRangeDefaultValues,
   zoneDefaultValues,
   databaseDefaultValues,
 };

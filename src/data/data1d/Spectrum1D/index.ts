@@ -17,6 +17,7 @@ import { detectRange } from './ranges/detectRange';
 import { detectRanges } from './ranges/detectRanges';
 import { generateSpectrumFromRanges } from './ranges/generateSpectrumFromRanges';
 import { mapRanges } from './ranges/mapRanges';
+import { updateRangesRelativeValues } from './ranges/updateRangesRelativeValues';
 import { getShiftX } from './shift/getShiftX';
 import { updateXShift } from './shift/updateXShift';
 import { toJSON } from './toJSON';
@@ -33,6 +34,7 @@ export {
   generateSpectrumFromPublicationString,
   getReferenceShift,
   updateIntegralsRelativeValues,
+  updateRangesRelativeValues,
   changeIntegralsRelative,
   addRange,
   changeRangeSignal,

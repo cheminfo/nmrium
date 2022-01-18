@@ -66,17 +66,19 @@ const moleculeContainerStyle = css`
 interface MoleculeSelectionProps {
   molecules: Array<Molecule>;
   onChange: (element: number) => void;
+  index?: number;
 }
 
 export default function MoleculeSelection(props: MoleculeSelectionProps) {
-  const { molecules, onChange = () => null } = props;
+  const { molecules, onChange = () => null, index } = props;
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   useEffect(() => {
+    const _index = index && index < molecules.length ? index : 0;
     if (molecules && molecules.length > 0) {
-      setCurrentIndex(0);
+      setCurrentIndex(_index);
     }
-  }, [molecules]);
+  }, [index, molecules]);
 
   const onChangeHandler = useCallback(
     (slideIndex) => {
@@ -96,7 +98,7 @@ export default function MoleculeSelection(props: MoleculeSelectionProps) {
         </p>
       </div>
       <div css={moleculeContainerStyle}>
-        <NextPrev onChange={onChangeHandler}>
+        <NextPrev defaultIndex={currentIndex} onChange={onChangeHandler}>
           {molecules?.map((mol, index) => (
             <div key={mol.key} className="slider">
               <div>

@@ -8,6 +8,7 @@ import { useDispatch } from '../context/DispatchContext';
 import CheckBox from '../elements/CheckBox';
 import CloseButton from '../elements/CloseButton';
 import IsotopesViewer from '../elements/IsotopesViewer';
+import Label from '../elements/Label';
 import FormikCheckBox from '../elements/formik/FormikCheckBox';
 import FormikErrorsSummary from '../elements/formik/FormikErrorsSummary';
 import FormikForm from '../elements/formik/FormikForm';
@@ -265,33 +266,21 @@ function PredictSpectraModal({
 
           <div className="row margin-10 padding-h-10">
             <IsotopesViewer value="1H" className="custom-label" />
-            <FormikInput
-              label="From"
-              name="1d.1H.from"
-              type="number"
-              style={{ label: { padding: '0 10px 0 0' } }}
-            />
-            <FormikInput
-              label="To"
-              name="1d.1H.to"
-              type="number"
-              style={{ label: { padding: '0 10px' } }}
-            />
+            <Label title="From">
+              <FormikInput name="1d.1H.from" type="number" />
+            </Label>
+            <Label title="To" style={{ label: { padding: '0 10px' } }}>
+              <FormikInput name="1d.1H.to" type="number" />
+            </Label>
           </div>
           <div className="row margin-10 padding-h-10">
             <IsotopesViewer value="13C" className="custom-label" />
-            <FormikInput
-              label="From"
-              name="1d.13C.from"
-              type="number"
-              style={{ label: { padding: '0 10px 0 0' } }}
-            />
-            <FormikInput
-              label="To"
-              name="1d.13C.to"
-              type="number"
-              style={{ label: { padding: '0 10px' } }}
-            />
+            <Label title="From">
+              <FormikInput name="1d.13C.from" type="number" />
+            </Label>
+            <Label title="To" style={{ label: { padding: '0 10px' } }}>
+              <FormikInput name="1d.13C.to" type="number" />
+            </Label>
           </div>
           <div className="row margin-10 padding-h-10">
             <span className="custom-label">Line Width : </span>

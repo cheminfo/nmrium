@@ -1,15 +1,15 @@
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
-import { Datum1D } from '../../../../types/data1d';
+import { Datum1D, Peak } from '../../../../types/data1d';
 
 export function updatePeaksXShift(datum: Datum1D, shiftValue: number) {
-  datum.peaks.values = datum.peaks.values.map((peak) => {
-    const delta = peak.originDelta + shiftValue;
+  datum.peaks.values = datum.peaks.values.map<Peak>((peak) => {
+    const delta = peak.originalX + shiftValue;
     const xIndex = xFindClosestIndex(datum.data.x, delta);
     return {
       ...peak,
-      intensity: datum.data.re[xIndex],
-      delta: peak.originDelta + shiftValue,
+      y: datum.data.re[xIndex],
+      x: peak.originalX + shiftValue,
     };
   });
 }

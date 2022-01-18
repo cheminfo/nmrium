@@ -1,6 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useMemo, Children, memo, ReactElement } from 'react';
+import {
+  isValidElement,
+  useCallback,
+  useMemo,
+  Children,
+  memo,
+  ReactElement,
+} from 'react';
 
 import { InternalTab, TabProps } from './Tab';
 
@@ -85,7 +92,7 @@ export enum PositionsEnum {
 }
 
 interface TabsProps {
-  children: Array<ReactElement<TabProps>>;
+  children: Array<ReactElement<TabProps> | boolean>;
   onClick: (element: any) => void;
   activeTab: string;
   position?: PositionsEnum;
@@ -109,6 +116,8 @@ function Tabs({
 
   let contentChild;
   const tabs = Children.map(children, (child) => {
+    if (!isValidElement(child)) return null;
+
     const { tabid } = child.props;
 
     if (tabid === activeTab) {

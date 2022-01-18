@@ -2,13 +2,14 @@ import { CSSProperties, useCallback, useRef } from 'react';
 
 import { useDispatch } from '../context/DispatchContext';
 import CheckBox from '../elements/CheckBox';
+import NumberInput from '../elements/NumberInput';
 import {
   AUTO_RANGES_DETECTION,
   RESET_SELECTED_TOOL,
 } from '../reducer/types/Types';
 
 const styles: Record<
-  'container' | 'input' | 'actionButton' | 'hint',
+  'container' | 'input' | 'inputContainer' | 'label' | 'actionButton' | 'hint',
   CSSProperties
 > = {
   container: {
@@ -26,6 +27,12 @@ const styles: Record<
     margin: '0px 5px 0px 5px',
     textAlign: 'center',
   },
+  inputContainer: {
+    flex: 2,
+  },
+  label: {
+    flex: 5,
+  },
   actionButton: {
     height: '100%',
     minWidth: '60px',
@@ -33,6 +40,7 @@ const styles: Record<
     border: '0.55px solid #c7c7c7',
     margin: '0px 5px',
     userSelect: 'none',
+    padding: '3px',
   },
   hint: {
     lineHeight: 2,
@@ -44,19 +52,14 @@ const styles: Record<
 function RangesPickingOptionPanel() {
   const dispatch = useDispatch();
   const lookNegativeRef = useRef<any>();
+  const minMaxRatioRef = useRef<any>();
 
   const handleApplyFilter = useCallback(() => {
     dispatch({
       type: AUTO_RANGES_DETECTION,
       options: {
         peakPicking: {
-          factorStd: 8,
-          minMaxRatio: 0.1,
-          nH: 100,
-          compile: true,
-          frequencyCluster: 16,
-          clean: true,
-          keepPeaks: true,
+          minMaxRatio: Number(minMaxRatioRef.current.value) || 0.05,
           lookNegative: lookNegativeRef.current.checked,
         },
       },
@@ -80,6 +83,18 @@ function RangesPickingOptionPanel() {
         </label>
         <CheckBox name="lookNegative" ref={lookNegativeRef} />
       </div>
+      <NumberInput
+        ref={minMaxRatioRef}
+        label="Min Max Ratio:"
+        name="minMaxRatio"
+        style={{
+          input: styles.input,
+          inputContainer: styles.inputContainer,
+          label: styles.label,
+        }}
+        defaultValue={0.05}
+        step="0.01"
+      />
       <button
         type="button"
         style={styles.actionButton}

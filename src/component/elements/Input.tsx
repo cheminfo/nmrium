@@ -13,17 +13,14 @@ import {
 import useCombinedRefs from '../hooks/useCombinedRefs';
 
 const styles: Record<
-  'label' | 'input' | 'inputContainer' | 'inputWrapper' | 'clearButton',
+  'label' | 'input' | 'inputWrapper' | 'clearButton',
   CSSProperties
 > = {
   label: {
     lineHeight: 2,
     userSelect: 'none',
   },
-  inputContainer: {
-    height: '100%',
-    margin: '0px 5px 0px 5px',
-  },
+
   inputWrapper: {
     height: '100%',
     width: '100px',
@@ -38,9 +35,10 @@ const styles: Record<
   },
   input: {
     outline: 'none',
-    width: '100%',
+    flex: 1,
     height: '100%',
     textAlign: 'center',
+    width: '100%',
   },
   clearButton: {
     height: 'calc(100% - 4px)',
@@ -55,13 +53,9 @@ const styles: Record<
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'style'> {
-  label?: string;
   style?: {
-    label?: CSSProperties;
     input?: CSSProperties;
     inputWrapper?: CSSProperties;
-    inputContainer?: CSSProperties;
-    container?: CSSProperties;
   };
   enableAutoSelect?: boolean;
   debounceTime?: number;
@@ -75,15 +69,11 @@ export interface InputProps
 const Input = forwardRef(
   (
     {
-      label,
       value = '',
       name,
       style = {
-        label: {},
         input: {},
         inputWrapper: {},
-        inputContainer: {},
-        container: {},
       },
       onChange = () => null,
       debounceTime = 0,
@@ -203,69 +193,39 @@ const Input = forwardRef(
     return (
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          ...(style?.container ? style.container : {}),
+          ...styles.inputWrapper,
+          ...(style?.inputWrapper ? style.inputWrapper : {}),
         }}
+        className={`input ${className || ''}`}
       >
-        {label && (
-          <span
-            style={{
-              ...styles.label,
-              ...(style?.label ? style.label : {}),
-            }}
-            className="label"
-          >
-            {label}
-          </span>
-        )}
-        <div
-          className="input-container"
+        {renderIcon?.()}
+        <input
+          {...props}
+          ref={combinedRef}
+          name={name}
           style={{
-            ...styles.inputContainer,
-            ...(style?.inputContainer ? style.inputContainer : {}),
+            ...styles.input,
+            ...(style?.input ? style.input : {}),
           }}
-        >
-          <div
-            style={{
-              ...styles.inputWrapper,
-              ...(style?.inputWrapper ? style.inputWrapper : {}),
-            }}
-            className={`input ${className || ''}`}
+          data-test-id={name ? `input-${name}` : ''}
+          type="text"
+          value={val}
+          onChange={onChangeHandler}
+          onKeyDown={handleKeyDown}
+          onKeyPress={preventPropagate}
+          onDoubleClick={(e) => e.stopPropagation()}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        />
+        {canClear && val && (
+          <button
+            type="button"
+            style={styles.clearButton}
+            onClick={clearHandler}
           >
-            {renderIcon?.()}
-            <input
-              {...props}
-              ref={combinedRef}
-              name={name}
-              style={{
-                ...styles.input,
-                ...(style?.input ? style.input : {}),
-              }}
-              data-test-id={name ? `input-${name}` : ''}
-              type="text"
-              value={val}
-              onChange={onChangeHandler}
-              onKeyDown={handleKeyDown}
-              onKeyPress={preventPropagate}
-              onDoubleClick={(e) => e.stopPropagation()}
-              onFocus={onFocus}
-              onBlur={onBlur}
-            />
-            {canClear && val && (
-              <button
-                type="button"
-                style={styles.clearButton}
-                onClick={clearHandler}
-              >
-                <span style={{ display: 'block', margin: '0 auto' }}>
-                  &#10005;
-                </span>
-              </button>
-            )}
-          </div>
-        </div>
+            <span style={{ display: 'block', margin: '0 auto' }}>&#10005;</span>
+          </button>
+        )}
       </div>
     );
   },

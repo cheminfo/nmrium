@@ -1,17 +1,22 @@
 import { xyAutoRangesPicking } from 'nmr-processing';
 
+import { Datum1D, Range } from '../../../types/data1d';
+
 const defaultPeakPickingOptions = {
   minMaxRatio: 1,
   realTopDetection: true,
   maxCriteria: true,
   smoothY: false,
-  nH: 100,
+  integrationSum: 100,
   factorStd: 5,
   clean: true,
   sgOptions: { windowSize: 7, polynomial: 3 },
 };
 
-export default function autoRangesDetection(datum1D, options: any = {}) {
+export default function autoRangesDetection(
+  datum1D: Datum1D,
+  options: any = {},
+): Range[] {
   // we calculate the noise but this could be improved
 
   let { re, x } = datum1D.data;
@@ -29,7 +34,7 @@ export default function autoRangesDetection(datum1D, options: any = {}) {
     frequency: originFrequency,
     nucleus,
     compile: true,
-    frequencyCluster: 8,
+    frequencyCluster: 13,
     keepPeaks: true,
   };
 
@@ -53,5 +58,5 @@ export default function autoRangesDetection(datum1D, options: any = {}) {
       ranges: rangesOptions,
     },
   );
-  return ranges;
+  return ranges as Range[];
 }

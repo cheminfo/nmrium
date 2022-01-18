@@ -10,8 +10,10 @@ import {
 
 import { usePreferences } from '../../context/PreferencesContext';
 import IsotopesViewer from '../../elements/IsotopesViewer';
+import Label from '../../elements/Label';
 import FormikColumnFormatField from '../../elements/formik/FormikColumnFormatField';
 import FormikForm from '../../elements/formik/FormikForm';
+import FormikInput from '../../elements/formik/FormikInput';
 import { useAlert } from '../../elements/popup/Alert';
 import useNucleus from '../../hooks/useNucleus';
 import { SET_PANELS_PREFERENCES } from '../../reducer/preferencesReducer';
@@ -19,10 +21,15 @@ import {
   useStateWithLocalStorage,
   getValue as getValueByKeyPath,
 } from '../../utility/LocalStorage';
-import { rangeDefaultValues } from '../extra/preferences/defaultValues';
+import { getRangeDefaultValues } from '../extra/preferences/defaultValues';
 
 const styles: Record<
-  'container' | 'groupContainer' | 'row' | 'header' | 'inputLabel' | 'input',
+  | 'container'
+  | 'groupContainer'
+  | 'row'
+  | 'header'
+  | 'inputLabel'
+  | 'inputWrapper',
   CSSProperties
 > = {
   container: {
@@ -49,13 +56,12 @@ const styles: Record<
   },
   inputLabel: {
     flex: 2,
-    fontSize: '11px',
-    fontWeight: 'bold',
-    color: '#232323',
   },
-  input: {
-    width: '30%',
-    textAlign: 'center',
+
+  inputWrapper: {
+    width: '100px',
+    flex: '4',
+    borderRadius: '5px',
   },
 };
 
@@ -104,7 +110,7 @@ function RangesPreferencesInner({
   const updateValues = useCallback(() => {
     if (nucleus) {
       const defaultValues = nucleus.reduce((acc, nucleusLabel) => {
-        acc[nucleusLabel] = rangeDefaultValues;
+        acc[nucleusLabel] = getRangeDefaultValues(nucleusLabel);
         return acc;
       }, {});
       const rangesPreferences = getValueByKeyPath(
@@ -170,6 +176,15 @@ function RangesPreferencesInner({
                 formatControllerName={`${nucleusLabel}.${field.formatController}`}
               />
             ))}
+            <Label
+              title="J Graph tolerance (Hz) :"
+              style={{ label: styles.inputLabel, wrapper: styles.inputWrapper }}
+            >
+              <FormikInput
+                name={`${nucleusLabel}.jGraphTolerance`}
+                type="number"
+              />
+            </Label>
           </div>
         ))}
       </FormikForm>

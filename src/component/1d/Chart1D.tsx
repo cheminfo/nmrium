@@ -5,6 +5,7 @@ import LinesSeries from './LinesSeries';
 import PeakAnnotations from './PeakAnnotations';
 import ResurrectedDatabaseRanges from './ResurrectedDatabaseRanges';
 import XAxis from './XAxis';
+import JGraph from './jCouplingGraph/JGraph';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
 
@@ -31,6 +32,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <IntegralsSeries />
       <PeakAnnotations />
       <Ranges />
+      <JGraph />
       <MultiAnalysisRanges />
       <BaseLineZones />
       <ExclusionZones />

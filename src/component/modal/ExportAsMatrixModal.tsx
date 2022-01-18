@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useChartData } from '../context/ChartContext';
 import CloseButton from '../elements/CloseButton';
+import Label from '../elements/Label';
 import FormikForm from '../elements/formik/FormikForm';
 import FormikInput from '../elements/formik/FormikInput';
 import Events from '../utility/Events';
@@ -61,12 +62,17 @@ function ExportAsMatrixModal({
         >
           <div className="row margin-10">
             <span className="custom-label">Range :</span>
-            <FormikInput label="From : " name="from" type="number" />
-            <FormikInput label="To :" name="to" type="number" />
+            <Label title="From : ">
+              <FormikInput name="from" type="number" />
+            </Label>
+            <Label title="To : ">
+              <FormikInput name="to" type="number" />
+            </Label>
           </div>
           <div className="row margin-10">
-            <span className="custom-label">Number of Points : </span>
-            <FormikInput name="nbPoints" type="number" />
+            <Label title="Number of Points :" className="custom-label">
+              <FormikInput name="nbPoints" type="number" />
+            </Label>
           </div>
         </FormikForm>
       </div>

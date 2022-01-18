@@ -6,27 +6,32 @@ import {
   changeIntegralsRelative,
   getShiftX,
 } from '../../../data/data1d/Spectrum1D';
+import {
+  initSumOptions,
+  setSumOptions,
+} from '../../../data/data1d/Spectrum1D/SumManager';
 import { Datum1D } from '../../../data/types/data1d';
 import generateID from '../../../data/utilities/generateID';
 import { State } from '../Reducer';
 import getRange from '../helper/getRange';
 
-function handleChangeIntegralSum(draft: Draft<State>, value) {
-  if (draft.activeSpectrum?.id) {
-    const { index } = draft.activeSpectrum;
-    (draft.data[index] as Datum1D).integrals.options.sum = value;
-    updateIntegralsRelativeValues(draft.data[index] as Datum1D, true);
+function handleChangeIntegralSum(draft: Draft<State>, options) {
+  const { data, activeSpectrum, activeTab: nucleus } = draft;
+  if (activeSpectrum?.id) {
+    const { index } = activeSpectrum;
+    const datum = data[index] as Datum1D;
+    setSumOptions(datum.integrals, { options, nucleus });
+    updateIntegralsRelativeValues(datum, true);
   }
 }
 
 function addIntegral(draft: Draft<State>, action) {
-  const state = original(draft);
   const { startX, endX } = action;
+  const { data, molecules, activeTab: nucleus, activeSpectrum } = draft;
   const [from, to] = getRange(draft, { startX, endX });
 
-  if (draft.activeSpectrum?.id && state) {
-    const { index } = draft.activeSpectrum;
-    const datum = draft.data[index] as Datum1D;
+  if (activeSpectrum?.id) {
+    const datum = data[activeSpectrum.index] as Datum1D;
 
     const { x, re } = datum.data;
 
@@ -42,6 +47,10 @@ function addIntegral(draft: Draft<State>, action) {
       kind: 'signal',
     };
     datum.integrals.values.push(integral);
+    datum.integrals.options = initSumOptions(datum.integrals.options, {
+      molecules,
+      nucleus,
+    });
     updateIntegralsRelativeValues(datum);
   }
 }

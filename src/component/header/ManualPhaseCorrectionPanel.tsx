@@ -15,6 +15,7 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import Input from '../elements/Input';
 import InputRange from '../elements/InputRange';
+import Label from '../elements/Label';
 import Select from '../elements/Select';
 import useSpectrum from '../hooks/useSpectrum';
 import {
@@ -200,25 +201,26 @@ function ManualPhaseCorrectionPanelInner({
 
       {phaseCorrectionType === phaseCorrectionTypes.manual && (
         <>
-          <Input
-            label="PH0:"
-            name="ph0"
-            style={{ input: styles.input }}
-            onChange={handleInput}
-            value={value.ph0}
-            type="number"
-            debounceTime={500}
-          />
-          <Input
-            label="PH1:"
-            name="ph1"
-            style={{ input: styles.input }}
-            onChange={handleInput}
-            value={value.ph1}
-            type="number"
-            debounceTime={500}
-          />
-
+          <Label title="PH0 :" style={{ wrapper: { marginRight: '5px' } }}>
+            <Input
+              name="ph0"
+              style={{ input: styles.input }}
+              onChange={handleInput}
+              value={value.ph0}
+              type="number"
+              debounceTime={500}
+            />
+          </Label>
+          <Label title="PH1 :">
+            <Input
+              name="ph1"
+              style={{ input: styles.input }}
+              onChange={handleInput}
+              value={value.ph1}
+              type="number"
+              debounceTime={500}
+            />
+          </Label>
           <InputRange
             ref={ph0Ref}
             name="ph0"

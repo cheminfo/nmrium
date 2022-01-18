@@ -1,86 +1,57 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useFormikContext } from 'formik';
 import { useCallback, useState, useEffect, useMemo } from 'react';
 
-import { usePreferences } from '../../context/PreferencesContext';
+import getAtom from '../../../data/utilities/getAtom';
+import { useChartData } from '../../context/ChartContext';
 import MoleculeSelection from '../../elements/MoleculeSelection';
 
-const selectMoleculeContainerStyle = css`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-`;
+const styles = css`
+  .molecule-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    .title {
+      padding: 0px 10px;
+      width: 100%;
+      text-align: center;
+    }
 
-const optionalTextStyle = css`
-  display: flex;
-  flex-direction: column;
-  padding: 5px;
+    .molecule-selection-container {
+      width: 450px;
+      display: block;
+      margin: 0 auto;
+    }
 
-  .optional {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    padding: 0px 10px;
+    .newSumText {
+      margin-top: 15px;
+      padding: 0px 10px;
+      width: 100%;
 
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
+      text-align: center;
+    }
   }
-  .optional2 {
-    margin-top: 5px;
-    margin-bottom: 25px;
-    padding: 0px 10px;
+
+  .empty {
     width: 100%;
-
-    text-align: center;
-  }
-`;
-
-const moleculeContainerStyle = css`
-  .molecule-selection-container {
-    width: 450px;
-    disblay: block;
-    margin: 0 auto;
-  }
-  button {
-    flex: 2;
-    padding: 5px;
-    border: 1px solid gray;
-    border-radius: 5px;
-    height: 36px;
-    margin: 0 auto;
-    margin-top: 15px;
-    display: block;
-    width: 20%;
-
-    color: white;
-    background-color: gray;
-  }
-
-  .newSumText {
-    margin-top: 15px;
-    padding: 0px 10px;
-    width: 100%;
-
+    padding: 20%;
     text-align: center;
   }
 `;
 
 interface SelectMoleculeProps {
-  onSave?: (element: any) => void;
-  molecules: any;
-  element: any;
+  name: string;
 }
 
-export default function SelectMolecule({
-  onSave,
-  molecules,
-  element,
-}: SelectMoleculeProps) {
+export default function SelectMolecule(props: SelectMoleculeProps) {
   const [currentIndex, setCurrentIndex] = useState<number>();
-  const {
-    display: { general, panels },
-  } = usePreferences();
-
+  const { setFieldValue, errors, values } = useFormikContext<{
+    molecule: { mf: string; key: string } | null;
+    sum: number;
+  }>();
+  const { molecules, activeTab } = useChartData();
+  const element = getAtom(activeTab);
   const newSum = useMemo(() => {
     return element &&
       molecules &&
@@ -91,48 +62,57 @@ export default function SelectMolecule({
       : 0;
   }, [currentIndex, element, molecules]);
 
-  useEffect(() => {
-    if (molecules && molecules.length > 0) {
-      setCurrentIndex(0);
-    }
-  }, [molecules]);
-
-  const saveSelectMoleculeHandler = useCallback(
-    (e) => {
-      e.preventDefault();
-      onSave?.(newSum);
+  const setValue = useCallback(
+    (index: number) => {
+      setCurrentIndex(index);
+      setFieldValue(props.name, molecules[index]);
     },
-    [newSum, onSave],
+    [molecules, props.name, setFieldValue],
   );
 
-  const onChangeMoleculeSelectionHandler = useCallback((index) => {
-    setCurrentIndex(index);
-  }, []);
+  useEffect(() => {
+    if (molecules && molecules.length > 0) {
+      const index = values[props.name]
+        ? molecules.findIndex(
+            (molecule) => molecule.key === values[props.name].key,
+          )
+        : -1;
+      setValue(index !== -1 ? index : 0);
+    }
+  }, [molecules, props.name, setValue, values]);
 
-  return !general.hideSetSumFromMolecule &&
-    !panels.hideStructuresPanel &&
-    element &&
-    molecules &&
-    molecules.length > 0 ? (
-    <div css={selectMoleculeContainerStyle}>
-      <div css={optionalTextStyle}>
-        <p className="optional">OR</p>
-        <p className="optional2">Select a molecule as reference!</p>
-      </div>
-      <div css={moleculeContainerStyle}>
-        <div className="molecule-selection-container">
-          <MoleculeSelection
-            molecules={molecules}
-            onChange={onChangeMoleculeSelectionHandler}
-          />
+  const onChangeMoleculeSelectionHandler = useCallback(
+    (index) => {
+      setValue(index);
+    },
+    [setValue],
+  );
+
+  return (
+    <div css={styles}>
+      {element && molecules && molecules.length > 0 ? (
+        <div className="molecule-container">
+          <p className="title">Select a molecule as reference!</p>
+
+          <div className="molecule-selection-container">
+            <MoleculeSelection
+              index={currentIndex}
+              molecules={molecules}
+              onChange={onChangeMoleculeSelectionHandler}
+            />
+            <p className="newSumText">
+              New sum for {element} will be {newSum}!
+            </p>
+          </div>
         </div>
-        <button type="button" onClick={saveSelectMoleculeHandler}>
-          Set
-        </button>
-        <p className="newSumText">
-          New sum for {element} will be {newSum}!
+      ) : (
+        <p
+          className="empty"
+          style={{ color: errors[props.name] ? 'red' : 'black' }}
+        >
+          Add a molecule first from Structure panel to select as a reference!
         </p>
-      </div>
+      )}
     </div>
-  ) : null;
+  );
 }

@@ -6,7 +6,7 @@ import * as Data1DManager from './data1d/Data1DManager';
 import * as Datum1D from './data1d/Spectrum1D';
 import * as Data2DManager from './data2d/Data2DManager';
 import * as Datum2D from './data2d/Spectrum2D';
-import { CURRENT_EXPORT_VERSION } from './migration';
+import { CURRENT_EXPORT_VERSION } from './migration/MigrationManager';
 import * as Molecule from './molecules/Molecule';
 
 export enum DataExportOptions {

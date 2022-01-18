@@ -2,6 +2,7 @@ import { FormikHelpers, FormikProps } from 'formik';
 import { ForwardedRef, forwardRef } from 'react';
 
 import { useChartData } from '../../context/ChartContext';
+import Label from '../../elements/Label';
 import FormikForm from '../../elements/formik/FormikForm';
 import FormikInput from '../../elements/formik/FormikInput';
 
@@ -26,12 +27,17 @@ function EquallySpacedFilter(
     >
       <div className="row margin-10">
         <span className="custom-label">Range :</span>
-        <FormikInput label="From : " name="from" type="number" />
-        <FormikInput label="To :" name="to" type="number" />
+        <Label title="From : ">
+          <FormikInput name="from" type="number" />
+        </Label>
+        <Label title="To : ">
+          <FormikInput name="to" type="number" />
+        </Label>
       </div>
       <div className="row margin-10">
-        <span className="custom-label">Number of points :</span>
-        <FormikInput label="" name="numberOfPoints" type="number" />
+        <Label className="custom-label" title="Number of points : ">
+          <FormikInput name="numberOfPoints" type="number" />
+        </Label>
       </div>
     </FormikForm>
   );

@@ -1,6 +1,7 @@
 import { Range } from './Range';
+import { SumOptions } from './SumOptions';
 
 export interface Ranges {
-  values: Array<Range>;
-  options: { sum: number; isSumConstant: boolean };
+  values: Range[];
+  options: SumOptions;
 }

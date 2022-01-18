@@ -1,12 +1,28 @@
 import max from 'ml-array-max';
 
+import { Data1D } from '../../../types/data1d/Data1D';
+
 // Lookup for apeak while the mouse move
 /**
  *
  * @param {object<{x:Array<number>,re:Array<number>}>} data
  * @param  {object<{from:number,to:number}>} options
  */
-export function lookupPeak(data, options) {
+
+interface LookupPeakOptions {
+  from: number;
+  to: number;
+}
+interface LookupPeakResult {
+  x: number;
+  y: number;
+  xIndex: number;
+}
+
+export function lookupPeak(
+  data: Data1D,
+  options: LookupPeakOptions,
+): LookupPeakResult | null {
   const { from, to } = options;
   let minIndex = data.x.findIndex((number) => number >= from);
   let maxIndex = data.x.findIndex((number) => number >= to) - 1;
