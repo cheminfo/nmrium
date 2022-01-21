@@ -36,9 +36,6 @@ export interface PreferencesState {
       low: number;
       high: number;
     };
-    help: {
-      preventAutoHelp: boolean;
-    };
     dimmedSpectraTransparency: number;
   };
   formatting: {
@@ -54,9 +51,6 @@ export const preferencesInitialState: PreferencesState = {
   display: basic,
   controllers: {
     mws: { low: 2, high: 20 },
-    help: {
-      preventAutoHelp: true,
-    },
     dimmedSpectraTransparency: 0.1,
   },
   formatting: {

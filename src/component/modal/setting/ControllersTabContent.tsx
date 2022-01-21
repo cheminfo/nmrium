@@ -1,5 +1,4 @@
 import Label from '../../elements/Label';
-import FormikCheckBox from '../../elements/formik/FormikCheckBox';
 import FormikInput from '../../elements/formik/FormikInput';
 
 function ControllersTabContent() {
@@ -15,11 +14,9 @@ function ControllersTabContent() {
       <p className="section-header" style={{ marginTop: '40px' }}>
         Show / Hide Panels
       </p>
-      <FormikCheckBox
-        className="help-checkbox-element"
-        label="Prevent automatic show help "
-        name="controllers.help.preventAutoHelp"
-      />
+      <p style={{ fontStyle: 'italic' }}>
+        There is nothing in this section for now.
+      </p>
 
       <p className="section-header" style={{ marginTop: '40px' }}>
         Spectra

@@ -11,7 +11,6 @@ import { BrushContext } from '../EventsTrackers/BrushTracker';
 import { MouseContext } from '../EventsTrackers/MouseTracker';
 import { useChartData } from '../context/ChartContext';
 import { useScaleChecked } from '../context/ScaleContext';
-import { useHelpText } from '../elements/popup/Help/Context';
 import useSpectrum from '../hooks/useSpectrum';
 import { ActiveSpectrum } from '../reducer/Reducer';
 import { useFormatNumberByNucleus } from '../utility/FormatNumber';
@@ -31,11 +30,6 @@ const styles = css`
   position: absolute;
   width: 100%;
   bottom: 0;
-
-  .help {
-    font-size: 6px;
-    color: black;
-  }
 
   div {
     margin: 0px 10px;
@@ -71,29 +65,6 @@ const styles = css`
   }
 `;
 
-const helpStyles = css`
-  pointer-events: bounding-box;
-  user-select: 'none';
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
-  background-color: #f7f7f7;
-  height: 30px;
-  padding: 6px;
-  color: #8d0018;
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  span {
-    font-size: 10px;
-    color: black;
-    display: inline-block;
-    text-overflow: ellipsis;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-`;
-
 interface FooterBannerInnerProps {
   margin: {
     top: number;
@@ -119,7 +90,6 @@ function FooterBannerInner({
   let position = useContext(MouseContext);
   const { startX, endX, step } = useContext(BrushContext);
   const { scaleX } = useScaleChecked();
-  const helpText = useHelpText();
 
   const format = useFormatNumberByNucleus(activeTab);
 
@@ -134,14 +104,6 @@ function FooterBannerInner({
     },
     [spectrum, scaleX],
   );
-
-  if (helpText) {
-    return (
-      <div css={helpStyles}>
-        <span className="help">{helpText}</span>
-      </div>
-    );
-  }
 
   if (
     !position ||
@@ -183,6 +145,7 @@ function FooterBannerInner({
           </span>
         </div>
       )}
+
       {activeSpectrum && (
         <Fragment>
           {spectrum?.info?.originFrequency && step === 'brushing' && (
@@ -210,6 +173,7 @@ function FooterBannerInner({
           )}
         </Fragment>
       )}
+
       {activeSpectrum && (
         <Fragment>
           <div className="separator" />
