@@ -22,7 +22,7 @@ export default function useExport() {
   const saveToClipboardHandler = useCallback(async () => {
     if (state.data.length > 0) {
       const hideLoading = await alert.showLoading(
-        'Exporting as numrium process in progress',
+        'Exporting as NMRium process in progress',
       );
       setTimeout(() => {
         copyPNGToClipboard('nmrSVG');
@@ -36,7 +36,7 @@ export default function useExport() {
     async (spaceIndent = 0, isCompressed = true) => {
       if (state.data.length > 0) {
         const hideLoading = await alert.showLoading(
-          'Exporting as numrium process in progress',
+          'Exporting as NMRium process in progress',
         );
 
         setTimeout(() => {
@@ -108,7 +108,7 @@ export default function useExport() {
     async (options) => {
       const { name, pretty, compressed, dataExportOption } = options;
       const hideLoading = await alert.showLoading(
-        `Exporting as ${name}.numrium process in progress`,
+        `Exporting as ${name}.nmrium process in progress`,
       );
       setTimeout(() => {
         async function handle() {
