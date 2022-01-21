@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useMemo, useState, useRef, memo } from 'react';
-import ReactCardFlip from 'react-card-flip';
 
 import { Datum1D, Info1D, Peaks } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
@@ -139,21 +138,16 @@ function PeaksPanelInner({
         />
       )}
       <div className="inner-container">
-        <ReactCardFlip
-          isFlipped={isFlipped}
-          infinite
-          containerStyle={{ overflow: 'hidden', height: '100%' }}
-          cardStyles={{ front: !isFlipped ? { transformStyle: 'unset' } : {} }}
-        >
+        {!isFlipped ? (
           <PeaksTable
             data={filteredPeaks}
             activeTab={activeTab}
             preferences={preferences}
             info={info}
           />
-
+        ) : (
           <PeaksPreferences ref={settingRef} />
-        </ReactCardFlip>
+        )}
       </div>
     </div>
   );

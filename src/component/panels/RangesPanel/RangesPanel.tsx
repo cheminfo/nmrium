@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import lodashGet from 'lodash/get';
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { useCallback, useMemo, memo, useState, useRef } from 'react';
-import ReactCardFlip from 'react-card-flip';
 
 import { Molecule } from '../../../data/molecules/Molecule';
 import { Data1D, Datum1D, Info1D, Ranges } from '../../../data/types/data1d';
@@ -206,11 +205,7 @@ function RangesTablePanelInner({
           />
         )}
         <div className="inner-container">
-          <ReactCardFlip
-            isFlipped={isFlipped}
-            infinite
-            containerStyle={{ overflow: 'hidden', height: '100%' }}
-          >
+          {!isFlipped ? (
             <div className="table-container">
               {rangesData && rangesData.length > 0 ? (
                 <RangesTable
@@ -224,8 +219,9 @@ function RangesTablePanelInner({
                 <NoTableData />
               )}
             </div>
+          ) : (
             <RangesPreferences ref={settingRef} />
-          </ReactCardFlip>
+          )}
         </div>
       </div>
     </>
