@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useState, useMemo, useCallback, useRef, memo } from 'react';
-import ReactCardFlip from 'react-card-flip';
 import { FaUnlink } from 'react-icons/fa';
 
 import { Datum2D } from '../../../data/types/data2d';
@@ -234,11 +233,7 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
           />
         )}
         <div className="inner-container">
-          <ReactCardFlip
-            isFlipped={isFlipped}
-            infinite
-            containerStyle={{ overflow: 'hidden', height: '100%' }}
-          >
+          {!isFlipped ? (
             <div className="table-container">
               {tableData && tableData.length > 0 ? (
                 <ZonesTable
@@ -254,8 +249,9 @@ function ZonesPanelInner({ zones, activeTab, xDomain, yDomain }) {
                 <NoTableData />
               )}
             </div>
+          ) : (
             <ZonesPreferences ref={settingRef} />
-          </ReactCardFlip>
+          )}
         </div>
       </div>
     </>

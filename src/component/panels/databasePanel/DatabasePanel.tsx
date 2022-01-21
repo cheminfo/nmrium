@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { useAccordionContext } from 'analysis-ui-components';
 import { DatabaseNMREntry } from 'nmr-processing/lib/databases/DatabaseNMREntry';
 import { useCallback, useState, useRef, memo, useEffect, useMemo } from 'react';
-import ReactCardFlip from 'react-card-flip';
 import { FaICursor } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 
@@ -277,15 +276,11 @@ function DatabasePanelInner({ nucleus, selectedTool }: DatabaseInnerProps) {
         />
       )}
       <div className="inner-container">
-        <ReactCardFlip
-          isFlipped={isFlipped}
-          infinite
-          containerStyle={{ overflow: 'hidden', height: '100%' }}
-          cardStyles={{ front: !isFlipped ? { transformStyle: 'unset' } : {} }}
-        >
+        {!isFlipped ? (
           <DatabaseTable data={tableData} onAdd={resurrectHandler} />
+        ) : (
           <DatabasePreferences ref={settingRef} />
-        </ReactCardFlip>
+        )}
       </div>
     </div>
   );
