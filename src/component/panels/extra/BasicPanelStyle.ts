@@ -9,6 +9,7 @@ export const tablePanelStyle = css`
   .inner-container {
     height: 100%;
     overflow: hidden;
+    isolation: isolate;
   }
 
   .table-container {
