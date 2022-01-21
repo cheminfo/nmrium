@@ -39,15 +39,17 @@ function VerticalSliceChart({
 
       const lastXIndex = pathPoints.x.length - 1;
       const lastYIndex = pathPoints.y.length - 1;
+      // TODO: use d3-path and remove type assertion.
       let path = `M  ${scaleY(pathPoints.y[lastYIndex])} ${scaleX(
         lastXIndex,
       )} `;
-      path += pathPoints.x
-        .slice(0, lastXIndex)
-        .reduceRight((accumulator, point, index) => {
+      path += (pathPoints.x.slice(0, lastXIndex) as number[]).reduceRight(
+        (accumulator, point, index) => {
           accumulator += ` L  ${scaleY(pathPoints.y[index])} ${scaleX(point)}`;
           return accumulator;
-        }, '');
+        },
+        '',
+      );
       return path;
     } else {
       return undefined;

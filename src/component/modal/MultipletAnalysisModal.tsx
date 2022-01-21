@@ -5,7 +5,10 @@ import { analyseMultiplet } from 'multiplet-analysis';
 import { useState, useEffect } from 'react';
 import { Plot, LineSeries, Axis } from 'react-plot';
 
+import { isSpectrum2D } from '../../data/data2d/Spectrum2D';
+import { Spectra } from '../NMRium';
 import CloseButton from '../elements/CloseButton';
+import { ActiveSpectrum } from '../reducer/Reducer';
 
 const styles = css`
   display: flex;
@@ -94,8 +97,8 @@ const loaderStyles = css`
 `;
 
 interface MultipletAnalysisModalProps {
-  data: any;
-  activeSpectrum: any;
+  data: Spectra;
+  activeSpectrum: ActiveSpectrum;
   scaleX: any;
   startX: any;
   endX: any;
@@ -122,10 +125,15 @@ export default function MultipletAnalysisModal({
 
   useEffect(() => {
     if (activeSpectrum && startX && endX && calcStart) {
+      const spectrum = data[activeSpectrum.index];
+      if (isSpectrum2D(spectrum)) {
+        throw new Error('unreachable');
+      }
+
       const {
-        data: { x, y },
+        data: { x, re },
         info,
-      } = data[activeSpectrum.index];
+      } = spectrum;
 
       const from = scaleX().invert(startX);
       const to = scaleX().invert(endX);
@@ -136,7 +144,7 @@ export default function MultipletAnalysisModal({
       });
       const analysesProps = {
         x: x.slice(fromIndex, toIndex),
-        y: y.slice(fromIndex, toIndex),
+        y: re.slice(fromIndex, toIndex),
       };
       try {
         const result = analyseMultiplet(analysesProps, {
@@ -185,19 +193,23 @@ export default function MultipletAnalysisModal({
                 height={200}
                 svgStyle={{ overflow: 'visible' }}
                 seriesViewportStyle={{ stroke: 'black' }}
-                margin={{ left: 10, bottom: 40, right: 10 }}
               >
                 <LineSeries data={xyToXYObject(d.multiplet)} />
                 <Axis
                   id="y"
                   position="left"
-                  tickEmbedded
-                  displayGridLines
+                  tickPosition="inner"
+                  displayPrimaryGridLines
                   hiddenTicks
                   paddingStart={0.1}
                   paddingEnd={0.1}
                 />
-                <Axis id="x" position="bottom" tickEmbedded displayGridLines />
+                <Axis
+                  id="x"
+                  position="bottom"
+                  tickPosition="inner"
+                  displayPrimaryGridLines
+                />
               </Plot>
               <div className="multiplicity">
                 <p>
@@ -212,7 +224,6 @@ export default function MultipletAnalysisModal({
                 width={400}
                 height={200}
                 seriesViewportStyle={{ stroke: 'black' }}
-                margin={{ left: 10, bottom: 40, right: 10 }}
               >
                 <LineSeries
                   data={xyToXYObject(d.errorFunction)}
@@ -221,13 +232,18 @@ export default function MultipletAnalysisModal({
                 <Axis
                   id="y"
                   position="left"
-                  tickEmbedded
-                  displayGridLines
+                  tickPosition="inner"
+                  displayPrimaryGridLines
                   hiddenTicks
                   paddingStart={0.1}
                   paddingEnd={0.1}
                 />
-                <Axis id="x" position="bottom" tickEmbedded displayGridLines />
+                <Axis
+                  id="x"
+                  position="bottom"
+                  tickPosition="inner"
+                  displayPrimaryGridLines
+                />
               </Plot>
             </div>
           );

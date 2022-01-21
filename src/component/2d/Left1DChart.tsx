@@ -43,12 +43,14 @@ function Left1DChart({
       let path = `M  ${scaleY(pathPoints.y[lastYIndex])} ${scaleX(
         lastXIndex,
       )} `;
-      path += pathPoints.x
-        .slice(0, lastXIndex)
-        .reduceRight((accumulator, point, index) => {
+      // TODO: use d3-path and remove type assertion.
+      path += (pathPoints.x.slice(0, lastXIndex) as number[]).reduceRight(
+        (accumulator, point, index) => {
           accumulator += ` L  ${scaleY(pathPoints.y[index])} ${scaleX(point)}`;
           return accumulator;
-        }, '');
+        },
+        '',
+      );
       return path;
     } else {
       return undefined;

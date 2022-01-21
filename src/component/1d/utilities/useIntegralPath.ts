@@ -67,6 +67,7 @@ export default function useIntegralPath(integralOptions: {
 
   const path = useMemo(() => {
     if (integral && scaleX) {
+      // @ts-expect-error Types will be fixed in ml-spectra-processing.
       const xySeries = xyReduce(integral, {
         from: xDomain[0],
         to: xDomain[1],
@@ -74,11 +75,15 @@ export default function useIntegralPath(integralOptions: {
         optimize: true,
       });
 
+      // TODO: use d3-path and remove type assertion.
       let path = `M ${scaleX()(xySeries.x[0])} ${scaleY(xySeries.y[0])}`;
-      path += xySeries.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${scaleX()(point)} ${scaleY(xySeries.y[i + 1])}`;
-        return accumulator;
-      }, '');
+      path += (xySeries.x.slice(1) as number[]).reduce(
+        (accumulator, point, i) => {
+          accumulator += ` L ${scaleX()(point)} ${scaleY(xySeries.y[i + 1])}`;
+          return accumulator;
+        },
+        '',
+      );
 
       return path;
     } else {

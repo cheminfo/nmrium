@@ -43,11 +43,14 @@ function Line({ data, id, display, index }: LineProps) {
     if (data?.x && data?.y && _scaleX(0)) {
       const pathPoints = xyReduce(data);
 
+      // TODO: use d3-path and remove type assertion.
       let path = `M ${_scaleX(pathPoints.x[0])} ${_scaleY(pathPoints.y[0])} `;
-      path += pathPoints.x.slice(1).reduce((accumulator, point, i) => {
-        accumulator += ` L ${_scaleX(point)} ${_scaleY(pathPoints.y[i + 1])}`;
-        return accumulator;
-      }, '');
+      path += (pathPoints.x as number[])
+        .slice(1)
+        .reduce((accumulator, point, i) => {
+          accumulator += ` L ${_scaleX(point)} ${_scaleY(pathPoints.y[i + 1])}`;
+          return accumulator;
+        }, '');
       return path;
     } else {
       return '';
