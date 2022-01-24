@@ -28,10 +28,15 @@ function Spectrum1DSetting({
       initialValues={SpectrumData.display}
       onSubmit={onSubmit}
     >
-      <div style={{ display: 'block', position: 'relative' }}>
-        <FormikColorPicker name="color" onColorChange={triggerSubmitHandler} />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <div style={{ display: 'block', position: 'relative' }}>
+          <FormikColorPicker
+            name="color"
+            onColorChange={triggerSubmitHandler}
+          />
+        </div>
+        <Spectrum1DHistogram color="red" data={SpectrumData.data} />
       </div>
-      <Spectrum1DHistogram color="red" data={SpectrumData.data} />
     </FormikForm>
   );
 }
