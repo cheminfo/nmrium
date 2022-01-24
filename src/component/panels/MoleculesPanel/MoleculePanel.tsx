@@ -2,9 +2,9 @@
 import { css } from '@emotion/react';
 import OCL from 'openchemlib/full';
 import { useState, useCallback, useEffect, memo } from 'react';
+import { ResponsiveChart } from 'react-d3-utils';
 import { MF } from 'react-mf';
 import OCLnmr from 'react-ocl-nmr';
-import { useMeasure } from 'react-use';
 
 import { Molecule } from '../../../data/molecules/Molecule';
 import { Datum1D, Ranges } from '../../../data/types/data1d';
@@ -31,6 +31,7 @@ const styles = css`
   .molecule-container {
     width: 100%;
     height: 100%;
+    max-height: calc(100% - 25px);
 
     .slider {
       display: flex;
@@ -62,6 +63,21 @@ const styles = css`
   }
 `;
 
+const toolbarStyle = css`
+  display: flex;
+  flex-direction: row;
+  border-bottom: 0.55px solid rgb(240, 240, 240);
+  padding: 0px 5px;
+
+  p {
+    margin: 0;
+    text-align: right;
+    width: 100%;
+    line-height: 22px;
+    padding: 0px 10px;
+  }
+`;
+
 interface MoleculePanelInnerProps {
   zones: Zones;
   ranges: Ranges;
@@ -77,7 +93,6 @@ function MoleculePanelInner({
   activeTab,
   displayerMode,
 }: MoleculePanelInnerProps) {
-  const [refContainer, { width, height }] = useMeasure<any>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [molecules, setMolecules] = useState<any>([]);
 
@@ -134,59 +149,70 @@ function MoleculePanelInner({
       />
 
       <div className="molecule-container">
-        <NextPrev
-          onChange={(slideIndex) => setCurrentIndex(slideIndex)}
-          defaultIndex={currentIndex}
-        >
-          {molecules && molecules.length > 0 ? (
-            molecules.map((mol: Molecule, index) => (
-              <div
-                className="slider"
-                key={mol.key}
-                onDoubleClick={() => openMoleculeEditorHandler(mol)}
-                style={{
-                  backgroundColor: (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
-                }}
+        <ResponsiveChart>
+          {({ height, width }) => {
+            return (
+              <NextPrev
+                onChange={(slideIndex) => setCurrentIndex(slideIndex)}
+                defaultIndex={currentIndex}
               >
-                <div className="mol-svg-container" ref={refContainer}>
-                  <OCLnmr
-                    OCL={OCL}
-                    id={`molSVG${index}`}
-                    width={width > 0 ? width : 100}
-                    height={height > 0 ? height : 100}
-                    molfile={mol.molfile || ''}
-                    setMolfile={(molfile) =>
-                      handleReplaceMolecule(mol.key, molfile)
-                    }
-                    setSelectedAtom={handleOnClickAtom}
-                    atomHighlightColor={
-                      currentDiaIDsToHighlight &&
-                      currentDiaIDsToHighlight.length > 0
-                        ? 'red'
-                        : '#FFD700'
-                    }
-                    atomHighlightOpacity={0.35}
-                    highlights={
-                      currentDiaIDsToHighlight &&
-                      currentDiaIDsToHighlight.length > 0
-                        ? currentDiaIDsToHighlight
-                        : assignedDiaIDsMerged
-                    }
-                    setHoverAtom={handleOnAtomHover}
+                {molecules && molecules.length > 0 ? (
+                  molecules.map((mol: Molecule, index) => (
+                    <>
+                      <div css={toolbarStyle}>
+                        <p>
+                          <MF mf={mol.mf} /> - {mol.mw?.toFixed(2)}
+                        </p>
+                      </div>
+                      <div
+                        className="slider"
+                        key={mol.key}
+                        onDoubleClick={() => openMoleculeEditorHandler(mol)}
+                        style={{
+                          backgroundColor:
+                            (index + 1) % 2 !== 0 ? '#fafafa' : 'white',
+                        }}
+                      >
+                        <div className="mol-svg-container">
+                          <OCLnmr
+                            OCL={OCL}
+                            id={`molSVG${index}`}
+                            width={width}
+                            height={height}
+                            molfile={mol.molfile || ''}
+                            setMolfile={(molfile) =>
+                              handleReplaceMolecule(mol.key, molfile)
+                            }
+                            setSelectedAtom={handleOnClickAtom}
+                            atomHighlightColor={
+                              currentDiaIDsToHighlight &&
+                              currentDiaIDsToHighlight.length > 0
+                                ? 'red'
+                                : '#FFD700'
+                            }
+                            atomHighlightOpacity={0.35}
+                            highlights={
+                              currentDiaIDsToHighlight &&
+                              currentDiaIDsToHighlight.length > 0
+                                ? currentDiaIDsToHighlight
+                                : assignedDiaIDsMerged
+                            }
+                            setHoverAtom={handleOnAtomHover}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ))
+                ) : (
+                  <div
+                    style={{ width: '100%', height: '100%' }}
+                    onClick={() => openMoleculeEditorHandler()}
                   />
-                </div>
-                <p>
-                  <MF mf={mol.mf} /> - {mol.mw?.toFixed(2)}
-                </p>
-              </div>
-            ))
-          ) : (
-            <div
-              style={{ width: '100%', height: '100%' }}
-              onClick={() => openMoleculeEditorHandler()}
-            />
-          )}
-        </NextPrev>
+                )}
+              </NextPrev>
+            );
+          }}
+        </ResponsiveChart>
       </div>
     </div>
   );
