@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.19.1](https://www.github.com/cheminfo/nmrium/compare/v0.19.0...v0.19.1) (2022-01-24)
+
+
+### Bug Fixes
+
+* rescale the molecule according to available space ([#1339](https://www.github.com/cheminfo/nmrium/issues/1339)) ([72b6642](https://www.github.com/cheminfo/nmrium/commit/72b6642b25146bff10476f7a9f42a378cea8eb0e))
+
 ## [0.19.0](https://www.github.com/cheminfo/nmrium/compare/v0.18.3...v0.19.0) (2022-01-24)
 
 
