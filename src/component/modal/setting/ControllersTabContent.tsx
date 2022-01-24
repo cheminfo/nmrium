@@ -11,12 +11,6 @@ function ControllersTabContent() {
       <Label title="high">
         <FormikInput type="number" name="controllers.mws.high" />
       </Label>
-      <p className="section-header" style={{ marginTop: '40px' }}>
-        Show / Hide Panels
-      </p>
-      <p style={{ fontStyle: 'italic' }}>
-        There is nothing in this section for now.
-      </p>
 
       <p className="section-header" style={{ marginTop: '40px' }}>
         Spectra
