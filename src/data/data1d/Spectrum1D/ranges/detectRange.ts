@@ -17,7 +17,6 @@ export function detectRange(
   const { x, re: y } = datum.data;
 
   const absolute = xyIntegration({ x, y }, { from, to, reverse: true });
-  // @ts-expect-error Types will be fixed in ml-spectra-processing.
   const min = xyMinYPoint({ x, y }, { from, to }).y;
   const max = xyMaxYPoint({ x, y }, { from, to }).y;
 
