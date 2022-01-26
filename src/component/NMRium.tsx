@@ -199,7 +199,17 @@ const defaultData: NMRiumData = {
   spectra: [],
 };
 
-function NMRium({
+function NMRium(props: NMRiumProps) {
+  return (
+    <RootLayout style={{ width: '100%' }}>
+      <ErrorBoundary FallbackComponent={ErrorOverlay}>
+        <InnerNMRium {...props} />
+      </ErrorBoundary>
+    </RootLayout>
+  );
+}
+
+function InnerNMRium({
   data: dataProp = defaultData,
   mode = NMRiumMode.DEFAULT,
   preferences = defaultPreferences,
@@ -274,111 +284,107 @@ function NMRium({
   }, [dispatchMiddleWare]);
 
   return (
-    <RootLayout style={{ width: '100%' }}>
-      <ErrorBoundary FallbackComponent={ErrorOverlay}>
-        <GlobalProvider
-          value={{
-            rootRef: rootRef.current,
-            elementsWraperRef: elementsWraperRef.current,
-          }}
+    <GlobalProvider
+      value={{
+        rootRef: rootRef.current,
+        elementsWraperRef: elementsWraperRef.current,
+      }}
+    >
+      <PreferencesProvider value={preferencesState}>
+        <div
+          onMouseEnter={mouseEnterHandler}
+          onMouseLeave={mouseLeaveHandler}
+          style={{ height: '100%', position: 'relative' }}
         >
-          <PreferencesProvider value={preferencesState}>
-            <div
-              onMouseEnter={mouseEnterHandler}
-              onMouseLeave={mouseLeaveHandler}
-              style={{ height: '100%', position: 'relative' }}
-            >
-              <AlertProvider wrapperRef={elementsWraperRef.current}>
-                <DispatchProvider value={dispatchMiddleWare}>
-                  <ChartDataProvider value={state}>
-                    <ModalProvider wrapperRef={elementsWraperRef.current}>
-                      <HighlightProvider>
-                        <AssignmentProvider spectraData={spectraData}>
-                          <SpinnerProvider value={getSpinner}>
+          <AlertProvider wrapperRef={elementsWraperRef.current}>
+            <DispatchProvider value={dispatchMiddleWare}>
+              <ChartDataProvider value={state}>
+                <ModalProvider wrapperRef={elementsWraperRef.current}>
+                  <HighlightProvider>
+                    <AssignmentProvider spectraData={spectraData}>
+                      <SpinnerProvider value={getSpinner}>
+                        <div
+                          className="nmrium-container"
+                          ref={rootRef}
+                          css={containerStyles}
+                          onContextMenu={preventContextMenuHandler}
+                          style={{ height: '100%', width: '100%' }}
+                        >
+                          <DropZone>
                             <div
-                              className="nmrium-container"
-                              ref={rootRef}
-                              css={containerStyles}
-                              onContextMenu={preventContextMenuHandler}
-                              style={{ height: '100%', width: '100%' }}
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                backgroundColor: 'white',
+                                width: '100%',
+                              }}
                             >
-                              <DropZone>
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    backgroundColor: 'white',
-                                    width: '100%',
-                                  }}
+                              <Header
+                                isFullscreen={isFullscreen}
+                                onMaximize={toggle}
+                              />
+
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  height: '100%',
+                                }}
+                              >
+                                <ToolBar />
+                                <SplitPane
+                                  initialSeparation="590px"
+                                  orientation="horizontal"
+                                  sideSeparation="end"
                                 >
-                                  <Header
-                                    isFullscreen={isFullscreen}
-                                    onMaximize={toggle}
-                                  />
-
-                                  <div
-                                    style={{
-                                      display: 'flex',
-                                      flexDirection: 'row',
-                                      height: '100%',
-                                    }}
-                                  >
-                                    <ToolBar />
-                                    <SplitPane
-                                      initialSeparation="590px"
-                                      orientation="horizontal"
-                                      sideSeparation="end"
-                                    >
-                                      <div css={viewerContainerStyle}>
-                                        <KeysListenerTracker />
-                                        <div
-                                          data-test-id="viewer"
-                                          style={{
-                                            width: '100%',
-                                            height: '100%',
-                                          }}
-                                        >
-                                          {displayerMode ===
-                                          DISPLAYER_MODE.DM_1D ? (
-                                            <Viewer1D emptyText={emptyText} />
-                                          ) : (
-                                            <Viewer2D emptyText={emptyText} />
-                                          )}
-                                        </div>
-                                      </div>
-                                      <Panels />
-                                    </SplitPane>
-
+                                  <div css={viewerContainerStyle}>
+                                    <KeysListenerTracker />
                                     <div
-                                      ref={elementsWraperRef}
-                                      key={String(isFullscreen)}
-                                      id="main-wrapper"
+                                      data-test-id="viewer"
                                       style={{
-                                        position: 'absolute',
-                                        pointerEvents: 'none',
-                                        zIndex: 0,
-                                        left: 0,
-                                        right: 0,
-                                        top: 0,
-                                        bottom: 0,
+                                        width: '100%',
+                                        height: '100%',
                                       }}
-                                    />
+                                    >
+                                      {displayerMode ===
+                                      DISPLAYER_MODE.DM_1D ? (
+                                        <Viewer1D emptyText={emptyText} />
+                                      ) : (
+                                        <Viewer2D emptyText={emptyText} />
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              </DropZone>
+                                  <Panels />
+                                </SplitPane>
+
+                                <div
+                                  ref={elementsWraperRef}
+                                  key={String(isFullscreen)}
+                                  id="main-wrapper"
+                                  style={{
+                                    position: 'absolute',
+                                    pointerEvents: 'none',
+                                    zIndex: 0,
+                                    left: 0,
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0,
+                                  }}
+                                />
+                              </div>
                             </div>
-                          </SpinnerProvider>
-                        </AssignmentProvider>
-                      </HighlightProvider>
-                    </ModalProvider>
-                  </ChartDataProvider>
-                </DispatchProvider>
-              </AlertProvider>
-            </div>
-          </PreferencesProvider>
-        </GlobalProvider>
-      </ErrorBoundary>
-    </RootLayout>
+                          </DropZone>
+                        </div>
+                      </SpinnerProvider>
+                    </AssignmentProvider>
+                  </HighlightProvider>
+                </ModalProvider>
+              </ChartDataProvider>
+            </DispatchProvider>
+          </AlertProvider>
+        </div>
+      </PreferencesProvider>
+    </GlobalProvider>
   );
 }
 export default memo(NMRium);
