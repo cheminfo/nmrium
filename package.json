@@ -17,7 +17,7 @@
     "check-types": "tsc --noEmit",
     "compile": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json",
     "clean-lib": "rimraf lib lib-cjs",
-    "dev": "vite --host localhost --strictPort --open",
+    "dev": "vite --host localhost --port 4000 --strictPort --open",
     "eslint": "eslint . --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
