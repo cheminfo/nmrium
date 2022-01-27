@@ -58,7 +58,9 @@ function Spectrum2DHistogram({
 
   return (
     <div>
-      <span style={{ padding: '0 200px' }}>San Plot</span>
+      <div style={{ textAlign: 'center', paddingBottom: 5, paddingTop: 5 }}>
+        San Plot
+      </div>
 
       <div
         style={{
