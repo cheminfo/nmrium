@@ -27,9 +27,8 @@ function RangesInner({
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {ranges?.values?.map((range) => (
-        <Fragment key={`container-${range.id}`}>
+        <Fragment key={range.id}>
           <Range
-            key={range.id}
             rangeData={range}
             selectedTool={selectedTool}
             showMultiplicityTrees={showMultiplicityTrees}
@@ -37,9 +36,7 @@ function RangesInner({
               editRangeID && editRangeID === range.id ? true : false
             }
           />
-          {showRangesIntegrals && (
-            <RangeIntegral key={`integral-${range.id}`} range={range} />
-          )}
+          {showRangesIntegrals && <RangeIntegral range={range} />}
         </Fragment>
       ))}
     </g>
