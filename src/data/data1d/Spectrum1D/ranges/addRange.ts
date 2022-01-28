@@ -19,15 +19,16 @@ export function addRange(datum: Datum1D, options: AddRangeOptions & SumParams) {
   const { x, re } = datum.data;
   const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
 
-  const signals = detectSignal(x, re, from, to, datum.info.originFrequency);
-
+  // detectSignal use the advance multiplet-analysis that can crash if too many points
+  const signal = detectSignal(x, re, from, to, datum.info.originFrequency);
+  if (!signal) return;
   try {
     const range = {
       id: generateID(),
       from,
       to,
       absolute, // the real value,
-      signals: [{ id: generateID(), ...signals }],
+      signals: [{ id: generateID(), ...signal }],
       kind: DatumKind.signal,
       integration: 0,
     };

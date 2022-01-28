@@ -16,7 +16,7 @@ export default function detectSignal(x, re, from, to, frequency) {
     takeBestPartMultiplet: true,
     symmetrizeEachStep: true,
   });
-
+  if (result && result.chemShift === undefined) return;
   return {
     multiplicity: result.js.map((j) => j.multiplicity).join(''),
     kind: 'signal',
