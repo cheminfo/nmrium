@@ -67,7 +67,6 @@ export default function useIntegralPath(integralOptions: {
 
   const path = useMemo(() => {
     if (integral && scaleX) {
-      // @ts-expect-error Types will be fixed in ml-spectra-processing.
       const xySeries = xyReduce(integral, {
         from: xDomain[0],
         to: xDomain[1],
