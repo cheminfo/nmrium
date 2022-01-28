@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { Fragment, memo } from 'react';
 
 import { Datum1D, Ranges as RangesProps } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
@@ -27,7 +27,7 @@ function RangesInner({
   return (
     <g clipPath={`url(#${displayerKey}clip-chart-1d)`}>
       {ranges?.values?.map((range) => (
-        <>
+        <Fragment key={`container-${range.id}`}>
           <Range
             key={range.id}
             rangeData={range}
@@ -40,7 +40,7 @@ function RangesInner({
           {showRangesIntegrals && (
             <RangeIntegral key={`integral-${range.id}`} range={range} />
           )}
-        </>
+        </Fragment>
       ))}
     </g>
   );
