@@ -1,8 +1,8 @@
-import { path } from 'd3';
 import { useMemo, memo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
 import useXYReduce, { XYReducerDomainAxis } from '../../../hooks/useXYReduce';
+import { PathBuilder } from '../../../utility/PathBuilder';
 import { get2DXScale } from '../../utilities/scale';
 
 import { getYScale } from './SliceScale';
@@ -32,14 +32,10 @@ function HorizontalSliceChart({
       const scaleY = getYScale(height, y, marginProps);
       const pathPoints = xyReduce({ x, y });
 
-      const pathBuilder = path();
-
+      const pathBuilder = new PathBuilder();
       pathBuilder.moveTo(scaleX(pathPoints.x[0]), scaleY(pathPoints.y[0]));
       for (let i = 1; i < pathPoints.x.length; i++) {
-        pathBuilder.lineTo(
-          scaleX(pathPoints.x[i]),
-          scaleY(pathPoints.y[i + 1]),
-        );
+        pathBuilder.lineTo(scaleX(pathPoints.x[i]), scaleY(pathPoints.y[i]));
       }
 
       return pathBuilder.toString();

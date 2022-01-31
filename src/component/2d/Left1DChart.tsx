@@ -1,9 +1,9 @@
-import { path } from 'd3';
 import { useMemo, memo } from 'react';
 
 import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
+import { PathBuilder } from '../utility/PathBuilder';
 
 import { get1DYScale, get2DYScale } from './utilities/scale';
 
@@ -41,13 +41,12 @@ function Left1DChart({
 
       const lastXIndex = pathPoints.x.length - 1;
       const lastYIndex = pathPoints.y.length - 1;
-      const pathBuilder = path();
 
+      const pathBuilder = new PathBuilder();
       pathBuilder.moveTo(scaleY(pathPoints.y[lastYIndex]), scaleX(lastXIndex));
-      const items = pathPoints.x.slice(0, lastXIndex);
 
-      for (let i = items.length - 1; i > 0; i--) {
-        pathBuilder.lineTo(scaleY(pathPoints.y[i]), scaleX(items[i]));
+      for (let i = pathPoints.x.length - 2; i > 0; i--) {
+        pathBuilder.lineTo(scaleY(pathPoints.y[i]), scaleX(pathPoints.x[i]));
       }
 
       return pathBuilder.toString();

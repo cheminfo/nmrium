@@ -1,10 +1,10 @@
-import { path } from 'd3';
 import { xyIntegral, xyReduce } from 'ml-spectra-processing';
 import { useMemo } from 'react';
 
 import { Data1D } from '../../../data/types/data1d';
 import { useChartData } from '../../context/ChartContext';
 import { useScale } from '../../context/ScaleContext';
+import { PathBuilder } from '../../utility/PathBuilder';
 
 import { getYScale, reScaleY } from './scale';
 
@@ -68,18 +68,17 @@ export default function useIntegralPath(integralOptions: {
 
   const paths = useMemo(() => {
     if (integral && scaleX) {
-      const xySeries = xyReduce(integral as any, {
+      const xySeries = xyReduce(integral, {
         from: xDomain[0],
         to: xDomain[1],
         nbPoints: 200,
         optimize: true,
       });
 
-      const pathBuilder = path();
-
+      const pathBuilder = new PathBuilder();
       pathBuilder.moveTo(scaleX()(xySeries.x[0]), scaleY(xySeries.y[0]));
       for (let i = 1; i < xySeries.x.length; i++) {
-        pathBuilder.lineTo(scaleX()(xySeries.x[i]), scaleY(xySeries.y[i + 1]));
+        pathBuilder.lineTo(scaleX()(xySeries.x[i]), scaleY(xySeries.y[i]));
       }
 
       return pathBuilder.toString();

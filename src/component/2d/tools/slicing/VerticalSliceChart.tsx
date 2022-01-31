@@ -1,8 +1,8 @@
-import { path } from 'd3';
 import { useMemo, memo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
 import useXYReduce, { XYReducerDomainAxis } from '../../../hooks/useXYReduce';
+import { PathBuilder } from '../../../utility/PathBuilder';
 import { get2DYScale } from '../../utilities/scale';
 
 import { getYScale } from './SliceScale';
@@ -41,12 +41,11 @@ function VerticalSliceChart({
       const lastXIndex = pathPoints.x.length - 1;
       const lastYIndex = pathPoints.y.length - 1;
 
-      const pathBuilder = path();
-      pathBuilder.moveTo(scaleY(pathPoints.y[lastYIndex]), scaleX(lastXIndex));
+      const pathBuilder = new PathBuilder();
 
-      const items = pathPoints.x.slice(0, lastXIndex);
-      for (let i = items.length - 1; i > 0; i--) {
-        pathBuilder.lineTo(scaleY(pathPoints.y[i]), scaleX(items[i]));
+      pathBuilder.moveTo(scaleY(pathPoints.y[lastYIndex]), scaleX(lastXIndex));
+      for (let i = pathPoints.x.length - 2; i > 0; i--) {
+        pathBuilder.lineTo(scaleY(pathPoints.y[i]), scaleX(pathPoints.x[i]));
       }
 
       return pathBuilder.toString();

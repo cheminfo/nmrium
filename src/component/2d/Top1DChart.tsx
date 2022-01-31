@@ -1,9 +1,9 @@
-import { path } from 'd3';
 import { useMemo, memo } from 'react';
 
 import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
+import { PathBuilder } from '../utility/PathBuilder';
 
 import { get1DYScale, get2DXScale } from './utilities/scale';
 
@@ -34,14 +34,10 @@ function Top1DChart({
       const { x, re: y } = spectrum.data;
       const pathPoints = xyReduce({ x, y });
 
-      const pathBuilder = path();
-
+      const pathBuilder = new PathBuilder();
       pathBuilder.moveTo(scaleX(pathPoints.x[0]), scaleY(pathPoints.y[0]));
       for (let i = 1; i < pathPoints.x.length; i++) {
-        pathBuilder.lineTo(
-          scaleX(pathPoints.x[i]),
-          scaleY(pathPoints.y[i + 1]),
-        );
+        pathBuilder.lineTo(scaleX(pathPoints.x[i]), scaleY(pathPoints.y[i]));
       }
 
       return pathBuilder.toString();

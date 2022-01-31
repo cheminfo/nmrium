@@ -1,4 +1,3 @@
-import { path } from 'd3';
 import get from 'lodash/get';
 import { CSSProperties, useMemo } from 'react';
 
@@ -6,6 +5,7 @@ import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { useScaleChecked } from '../context/ScaleContext';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
+import { PathBuilder } from '../utility/PathBuilder';
 
 import getVerticalShift from './utilities/getVerticalShift';
 
@@ -41,8 +41,8 @@ function Line({ data, id, display, index }: LineProps) {
   const paths = useMemo(() => {
     const _scaleX = scaleX();
     const _scaleY = scaleY(id);
-    const pathBuilder = path();
 
+    const pathBuilder = new PathBuilder();
     if (data?.x && data?.y && _scaleX(0)) {
       const pathPoints = xyReduce(data);
 
