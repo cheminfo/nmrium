@@ -1,3 +1,4 @@
+import { path } from 'd3';
 import { useMemo, memo } from 'react';
 
 import { useChartData } from '../../../context/ChartContext';
@@ -31,16 +32,17 @@ function HorizontalSliceChart({
       const scaleY = getYScale(height, y, marginProps);
       const pathPoints = xyReduce({ x, y });
 
-      // TODO: use d3-path and remove type assertion.
-      let path = `M ${scaleX(pathPoints.x[0])} ${scaleY(pathPoints.y[0])} `;
-      path += (pathPoints.x.slice(1) as number[]).reduce(
-        (accumulator, point, i) => {
-          accumulator += ` L ${scaleX(point)} ${scaleY(pathPoints.y[i + 1])}`;
-          return accumulator;
-        },
-        '',
-      );
-      return path;
+      const pathBuilder = path();
+
+      pathBuilder.moveTo(scaleX(pathPoints.x[0]), scaleY(pathPoints.y[0]));
+      for (let i = 1; i < pathPoints.x.length; i++) {
+        pathBuilder.lineTo(
+          scaleX(pathPoints.x[i]),
+          scaleY(pathPoints.y[i + 1]),
+        );
+      }
+
+      return pathBuilder.toString();
     } else {
       return undefined;
     }

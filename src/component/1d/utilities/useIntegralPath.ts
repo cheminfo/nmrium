@@ -1,3 +1,4 @@
+import { path } from 'd3';
 import { xyIntegral, xyReduce } from 'ml-spectra-processing';
 import { useMemo } from 'react';
 
@@ -65,30 +66,27 @@ export default function useIntegralPath(integralOptions: {
     return { x: [], y: [] };
   }, [activeSpectrum, data, integralOptions]);
 
-  const path = useMemo(() => {
+  const paths = useMemo(() => {
     if (integral && scaleX) {
-      const xySeries = xyReduce(integral, {
+      const xySeries = xyReduce(integral as any, {
         from: xDomain[0],
         to: xDomain[1],
         nbPoints: 200,
         optimize: true,
       });
 
-      // TODO: use d3-path and remove type assertion.
-      let path = `M ${scaleX()(xySeries.x[0])} ${scaleY(xySeries.y[0])}`;
-      path += (xySeries.x.slice(1) as number[]).reduce(
-        (accumulator, point, i) => {
-          accumulator += ` L ${scaleX()(point)} ${scaleY(xySeries.y[i + 1])}`;
-          return accumulator;
-        },
-        '',
-      );
+      const pathBuilder = path();
 
-      return path;
+      pathBuilder.moveTo(scaleX()(xySeries.x[0]), scaleY(xySeries.y[0]));
+      for (let i = 1; i < xySeries.x.length; i++) {
+        pathBuilder.lineTo(scaleX()(xySeries.x[i]), scaleY(xySeries.y[i + 1]));
+      }
+
+      return pathBuilder.toString();
     } else {
       return '';
     }
   }, [integral, scaleX, scaleY, xDomain]);
 
-  return path;
+  return paths;
 }
