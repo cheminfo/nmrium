@@ -3,6 +3,7 @@ import { useMemo, memo } from 'react';
 import { Datum1D } from '../../data/types/data1d';
 import { useChartData } from '../context/ChartContext';
 import useXYReduce, { XYReducerDomainAxis } from '../hooks/useXYReduce';
+import { PathBuilder } from '../utility/PathBuilder';
 
 import { get1DYScale, get2DYScale } from './utilities/scale';
 
@@ -40,18 +41,15 @@ function Left1DChart({
 
       const lastXIndex = pathPoints.x.length - 1;
       const lastYIndex = pathPoints.y.length - 1;
-      let path = `M  ${scaleY(pathPoints.y[lastYIndex])} ${scaleX(
-        lastXIndex,
-      )} `;
-      // TODO: use d3-path and remove type assertion.
-      path += (pathPoints.x.slice(0, lastXIndex) as number[]).reduceRight(
-        (accumulator, point, index) => {
-          accumulator += ` L  ${scaleY(pathPoints.y[index])} ${scaleX(point)}`;
-          return accumulator;
-        },
-        '',
-      );
-      return path;
+
+      const pathBuilder = new PathBuilder();
+      pathBuilder.moveTo(scaleY(pathPoints.y[lastYIndex]), scaleX(lastXIndex));
+
+      for (let i = pathPoints.x.length - 2; i > 0; i--) {
+        pathBuilder.lineTo(scaleY(pathPoints.y[i]), scaleX(pathPoints.x[i]));
+      }
+
+      return pathBuilder.toString();
     } else {
       return undefined;
     }
