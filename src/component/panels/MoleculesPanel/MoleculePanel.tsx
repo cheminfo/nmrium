@@ -28,10 +28,17 @@ const styles = css`
   width: 100%;
   height: 100%;
 
+  .mol-svg-container {
+    max-height: 100%;
+    flex: 1;
+  }
+
   .molecule-container {
-    width: 100%;
-    height: 100%;
-    max-height: calc(100% - 25px);
+    flex-direction: column;
+    display: flex;
+    flex: 1 1 0%;
+
+    max-height: 100%;
 
     .slider {
       display: flex;
@@ -141,14 +148,13 @@ function MoleculePanelInner({
 
   return (
     <div css={styles}>
-      <MoleculePanelHeader
-        currentIndex={currentIndex}
-        molecules={molecules}
-        onOpenMoleculeEditor={() => openMoleculeEditorHandler()}
-        onMoleculeIndexChange={moleculeIndexHandler}
-      />
-
       <div className="molecule-container">
+        <MoleculePanelHeader
+          currentIndex={currentIndex}
+          molecules={molecules}
+          onOpenMoleculeEditor={() => openMoleculeEditorHandler()}
+          onMoleculeIndexChange={moleculeIndexHandler}
+        />
         <ResponsiveChart>
           {({ height, width }) => {
             return (
