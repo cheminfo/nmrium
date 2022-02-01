@@ -39,13 +39,14 @@ function Left1DChart({
       const { x, re: y } = spectrum.data;
       const pathPoints = xyReduce({ x, y });
 
-      const lastXIndex = pathPoints.x.length - 1;
-      const lastYIndex = pathPoints.y.length - 1;
-
       const pathBuilder = new PathBuilder();
-      pathBuilder.moveTo(scaleY(pathPoints.y[lastYIndex]), scaleX(lastXIndex));
 
-      for (let i = pathPoints.x.length - 2; i > 0; i--) {
+      pathBuilder.moveTo(
+        scaleY(pathPoints.y[pathPoints.y.length - 1]),
+        scaleX(pathPoints.x.length - 1),
+      );
+
+      for (let i = pathPoints.x.length - 2; i >= 0; i--) {
         pathBuilder.lineTo(scaleY(pathPoints.y[i]), scaleX(pathPoints.x[i]));
       }
 
