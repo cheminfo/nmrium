@@ -136,7 +136,5 @@ export default function Contours() {
     ) as Array<Datum2D>;
   }, [spectra]);
 
-  // console.log('all', useChartData());
-
   return <MemoizedContours {...{ data, displayerKey }} />;
 }
