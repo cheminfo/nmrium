@@ -36,6 +36,7 @@ const styles: Record<
     display: 'flex',
     flex: '1 1 0%',
     flexDirection: 'column',
+    minHeight: 0,
   }),
   toolbar: css({
     display: 'flex',
@@ -50,12 +51,14 @@ const styles: Record<
     justifyContent: 'center',
     alignItems: 'center',
     flexGrow: 1,
+    minHeight: 0,
   }),
   items: css({
     display: 'flex',
     flexDirection: 'column',
     flex: '1 1 0%',
     height: '100%',
+    minHeight: 0,
   }),
 };
 
