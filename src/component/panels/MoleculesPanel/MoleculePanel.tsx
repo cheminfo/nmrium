@@ -144,6 +144,7 @@ function MoleculePanelInner({
                 </span>
                 <div
                   css={styles.slider}
+                  className="mol-svg-container"
                   onDoubleClick={() => openMoleculeEditorHandler(mol)}
                   style={{
                     backgroundColor:
