@@ -270,14 +270,18 @@ function handleChangeRangeSum(draft: Draft<State>, options) {
   }
 }
 function handleAddRange(draft: Draft<State>, action) {
-  const { startX, endX } = action;
+  const { startX, endX, alert } = action.payload;
   const { activeSpectrum, activeTab: nucleus, molecules } = draft;
   const range = getRange(draft, { startX, endX });
 
   if (activeSpectrum?.id) {
     const { index } = activeSpectrum;
     const [from, to] = range;
-    addRange(draft.data[index] as Datum1D, { from, to, nucleus, molecules });
+    addRange(
+      draft.data[index] as Datum1D,
+      { from, to, nucleus, molecules },
+      alert,
+    );
     handleOnChangeRangesData(draft);
   }
 }

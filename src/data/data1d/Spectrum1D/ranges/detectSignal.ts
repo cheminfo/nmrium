@@ -9,6 +9,7 @@ export default function detectSignal(
   from,
   to,
   frequency,
+  alert: any,
 ) {
   const { fromIndex, toIndex } = xGetFromToIndex(x, {
     from: from,
@@ -33,9 +34,8 @@ export default function detectSignal(
       js: result.js,
     };
   } else {
-    console.log('Too big');
-    // we should display here a message like in
-    // https://github.com/cheminfo/nmrium/blob/1c01a78e1249ad7fe2955f454264162b0ef4dc0f/src/component/panels/SpectrumsPanel/SpectraPanelHeader.tsx#L110-L113
-    // Message is: 'Advanced peak picking only available for area up to ${} points'
+    alert.error(
+      `Advanced peak picking only available for area up to ${MAX_LENGTH} points`,
+    );
   }
 }

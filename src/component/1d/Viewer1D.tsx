@@ -8,6 +8,7 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
+import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
@@ -50,6 +51,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     display: { general },
   } = usePreferences();
   const state = useChartData();
+
   const {
     toolOptions: { selectedTool },
     isLoading,
@@ -66,8 +68,11 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     verticalAlign,
     displayerKey,
   } = state;
+
   const dispatch = useDispatch();
   const modal = useModal();
+  const alert = useAlert();
+
   const [scaleState, dispatchScale] = useReducer(
     scaleReducer,
     scaleInitialState,
@@ -150,7 +155,10 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           case options.rangesPicking.id:
             dispatch({
               type: ADD_RANGE,
-              ...brushData,
+              payload: {
+                ...brushData,
+                alert,
+              },
             });
             break;
           case options.multipleSpectraAnalysis.id:
@@ -195,7 +203,16 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         }
       }
     },
-    [scaleState, selectedTool, general, modal, data, activeSpectrum, dispatch],
+    [
+      scaleState,
+      selectedTool,
+      general.disableMultipletAnalysis,
+      modal,
+      data,
+      activeSpectrum,
+      dispatch,
+      alert,
+    ],
   );
 
   const handelOnDoubleClick = useCallback(() => {

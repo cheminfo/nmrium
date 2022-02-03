@@ -14,13 +14,24 @@ interface AddRangeOptions {
   to: number;
 }
 
-export function addRange(datum: Datum1D, options: AddRangeOptions & SumParams) {
+export function addRange(
+  datum: Datum1D,
+  options: AddRangeOptions & SumParams,
+  alert: any,
+) {
   const { from, to, molecules, nucleus } = options;
   const { x, re } = datum.data;
   const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
 
   // detectSignal use the advance multiplet-analysis that can crash if too many points
-  const signal = detectSignal(x, re, from, to, datum.info.originFrequency);
+  const signal = detectSignal(
+    x as unknown as Float64Array,
+    re as unknown as Float64Array,
+    from,
+    to,
+    datum.info.originFrequency,
+    alert,
+  );
   if (!signal) return;
   try {
     const range = {
