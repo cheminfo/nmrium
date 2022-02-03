@@ -1,5 +1,21 @@
 # Changelog
 
+### [0.19.2](https://www.github.com/cheminfo/nmrium/compare/v0.19.1...v0.19.2) (2022-02-03)
+
+
+### Bug Fixes
+
+* autoRanges detection for HR spectra ([bc9f475](https://www.github.com/cheminfo/nmrium/commit/bc9f4759efa4b283dc5d398d7745b642010d91a7))
+* change san plot text to be displayed in line ([#1350](https://www.github.com/cheminfo/nmrium/issues/1350)) ([efe0f0a](https://www.github.com/cheminfo/nmrium/commit/efe0f0a4b4f94df2535fc51390956f5320db840b))
+* make the "Structures" responsive ([#1361](https://www.github.com/cheminfo/nmrium/issues/1361)) ([59df13f](https://www.github.com/cheminfo/nmrium/commit/59df13f1bf85ec9f873e72ffd9392f715487729e))
+* prevent crash if range picking without finding peaks ([e472eaa](https://www.github.com/cheminfo/nmrium/commit/e472eaa15cfb887abecd6c08f6e51cadf460d955))
+* prevent crash in auto-range picking ([2b52066](https://www.github.com/cheminfo/nmrium/commit/2b520663186c1b50cd6574525c873e6c581d1851))
+* resolve crash on recall zoom level ([#1349](https://www.github.com/cheminfo/nmrium/issues/1349)) ([cc13abc](https://www.github.com/cheminfo/nmrium/commit/cc13abc18f77b6787b923e3c4edaef51750d9e90))
+* resolve missing key error ([#1355](https://www.github.com/cheminfo/nmrium/issues/1355)) ([3436331](https://www.github.com/cheminfo/nmrium/commit/3436331a82c04f743cc12adb458b6fb3a5c41de0))
+* resolve shifting issue with chart 2D ([#1364](https://www.github.com/cheminfo/nmrium/issues/1364)) ([4b219b5](https://www.github.com/cheminfo/nmrium/commit/4b219b5b4240101c0b10090e91cf72a7292c4606))
+* we remove the condition that an atom may only be assigned once ([035887c](https://www.github.com/cheminfo/nmrium/commit/035887c2c383eebec463128734908490e9b84760))
+* wrap main nmrium component in error boundary ([f5d8de1](https://www.github.com/cheminfo/nmrium/commit/f5d8de13b932d739de1e8a5fff361f02346a2d9e))
+
 ### [0.19.1](https://www.github.com/cheminfo/nmrium/compare/v0.19.0...v0.19.1) (2022-01-24)
 
 
