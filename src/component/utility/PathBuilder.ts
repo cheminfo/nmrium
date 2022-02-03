@@ -9,6 +9,10 @@ export class PathBuilder {
     this.array.push(`L ${x} ${y}`);
   }
 
+  public closePath() {
+    this.array.push('Z');
+  }
+
   public toString() {
     return this.array.join(' ');
   }
