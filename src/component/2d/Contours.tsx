@@ -1,9 +1,11 @@
 import get from 'lodash/get';
 import { memo, useMemo } from 'react';
 
+import { getShift } from '../../data/data2d/Spectrum2D';
 import { Datum2D } from '../../data/types/data2d';
 import { useChartData } from '../context/ChartContext';
 import { usePreferences } from '../context/PreferencesContext';
+import { PathBuilder } from '../utility/PathBuilder';
 
 import { get2DXScale, get2DYScale } from './utilities/scale';
 
@@ -11,13 +13,20 @@ interface ContoursPathsProps {
   id: string;
   color: string;
   sign: string;
+  datum: Datum2D;
 }
 
-function ContoursPaths({ id: spectrumID, sign, color }: ContoursPathsProps) {
+function ContoursPaths({
+  id: spectrumID,
+  sign,
+  color,
+  datum,
+}: ContoursPathsProps) {
   const { margin, width, height, xDomain, yDomain, contours, activeSpectrum } =
     useChartData();
 
   const preferences = usePreferences();
+  const { xShift, yShift } = getShift(datum);
 
   const isActive = useMemo(() => {
     return activeSpectrum === null
@@ -30,29 +39,40 @@ function ContoursPaths({ id: spectrumID, sign, color }: ContoursPathsProps) {
   function buildContourPath(data) {
     const _scaleX = get2DXScale({ margin, width, xDomain });
     const _scaleY = get2DYScale({ margin, height, yDomain });
-    let path = '';
+    const path = new PathBuilder();
 
     for (const element of data) {
       if (element.lines) {
         const lines = element.lines;
         if (lines.length < 1e6) {
           for (let i = 0; i < lines.length; i += 4) {
-            path += `M${_scaleX(lines[i])} ${_scaleY(lines[i + 1])} `;
-            path += `L${_scaleX(lines[i + 2])} ${_scaleY(lines[i + 3])} `;
+            path.moveTo(
+              _scaleX(lines[i] + xShift),
+              _scaleY(lines[i + 1] + yShift),
+            );
+            path.lineTo(
+              _scaleX(lines[i + 2] + xShift),
+              _scaleY(lines[i + 3] + yShift),
+            );
           }
         }
       } else {
-        path += `M${_scaleX(element[0].x)} ${_scaleY(element[0].y)} `;
+        path.moveTo(
+          _scaleX(element[0].x + xShift),
+          _scaleY(element[0].y + yShift),
+        );
+
         for (let j = 1; j < element.length; j++) {
-          path += `L${_scaleX(element[j].x)} ${_scaleY(element[j].y)} `;
+          path.lineTo(
+            _scaleX(element[j].x + xShift),
+            _scaleY(element[j].y + yShift),
+          );
         }
       }
     }
 
-    if (!path) path = 'M0 0 ';
-    path += 'Z';
-
-    return path;
+    path.closePath();
+    return path.toString();
   }
 
   const data = useMemo(() => {
@@ -88,6 +108,7 @@ function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
             <ContoursPaths
               id={datum.id}
               sign="positive"
+              datum={datum}
               color={datum.display.positiveColor}
             />
           )}
@@ -95,6 +116,7 @@ function ContoursInner({ data, displayerKey }: ContoursInnerProps) {
             <ContoursPaths
               id={datum.id}
               sign="negative"
+              datum={datum}
               color={datum.display.negativeColor}
             />
           )}
