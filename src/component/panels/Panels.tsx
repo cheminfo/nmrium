@@ -116,6 +116,7 @@ export const PANELS_ACCORDION: Record<string, string> = {
   peakPicking: 'Peaks',
   integral: 'Integrals',
   rangesPicking: 'Ranges',
+  zone2D: 'Zones',
 };
 
 function PanelsInner({ displayerMode }) {
