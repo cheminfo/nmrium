@@ -266,6 +266,7 @@ export default function ZonesPanel() {
   const { displayerKey, xDomain, yDomain, activeTab } = useChartData();
   const { zones } = useSpectrum(emptyData) as Datum2D;
   const preferences = usePreferences();
+
   return (
     <MemoizedZonesPanel
       {...{ xDomain, yDomain, activeTab, displayerKey, preferences, zones }}
