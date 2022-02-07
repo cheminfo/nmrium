@@ -14,11 +14,7 @@ interface AddRangeOptions {
   to: number;
 }
 
-export function addRange(
-  datum: Datum1D,
-  options: AddRangeOptions & SumParams,
-  alert: any,
-) {
+export function addRange(datum: Datum1D, options: AddRangeOptions & SumParams) {
   const { from, to, molecules, nucleus } = options;
   const { x, re } = datum.data;
   const absolute = xyIntegration({ x, y: re }, { from, to, reverse: true });
@@ -30,7 +26,6 @@ export function addRange(
     from,
     to,
     datum.info.originFrequency,
-    alert,
   );
   if (!signal) return;
   try {
@@ -48,6 +43,7 @@ export function addRange(
       molecules,
       nucleus,
     });
+
     datum.ranges.values = datum.ranges.values.concat(mapRanges([range], datum));
     updateRangesRelativeValues(datum);
   } catch (e) {

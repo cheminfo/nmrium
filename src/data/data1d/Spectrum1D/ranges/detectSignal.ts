@@ -1,7 +1,7 @@
 import { xGetFromToIndex } from 'ml-spectra-processing';
 import { analyseMultiplet } from 'multiplet-analysis';
 
-const MAX_LENGTH = 2048;
+export const MAX_LENGTH = 2048;
 
 export default function detectSignal(
   x: Float64Array,
@@ -9,12 +9,12 @@ export default function detectSignal(
   from,
   to,
   frequency,
-  alert: any,
 ) {
   const { fromIndex, toIndex } = xGetFromToIndex(x, {
     from: from,
     to: to,
   });
+
   if (toIndex - fromIndex < MAX_LENGTH) {
     const data = {
       x: x.subarray(fromIndex, toIndex),
@@ -34,8 +34,6 @@ export default function detectSignal(
       js: result.js,
     };
   } else {
-    alert.error(
-      `Advanced peak picking only available for area up to ${MAX_LENGTH} points`,
-    );
+    throw new Error('max lenght is equal to 2048.');
   }
 }
