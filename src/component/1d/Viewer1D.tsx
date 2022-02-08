@@ -1,6 +1,9 @@
+import { xGetFromToIndex } from 'ml-spectra-processing';
 import { useCallback, useEffect, useReducer, ReactNode } from 'react';
 import { ResponsiveChart } from 'react-d3-utils';
 
+import { MAX_LENGTH } from '../../data/data1d/Spectrum1D/ranges/detectSignal';
+import { Datum1D } from '../../data/types/data1d';
 import { ViewerResponsiveWrapper } from '../2d/Viewer2D';
 import { BrushTracker } from '../EventsTrackers/BrushTracker';
 import { MouseTracker } from '../EventsTrackers/MouseTracker';
@@ -8,10 +11,12 @@ import { useChartData } from '../context/ChartContext';
 import { useDispatch } from '../context/DispatchContext';
 import { usePreferences } from '../context/PreferencesContext';
 import { ScaleProvider } from '../context/ScaleContext';
+import { useAlert } from '../elements/popup/Alert';
 import { useModal } from '../elements/popup/Modal';
 import Spinner from '../loader/Spinner';
 import MultipletAnalysisModal from '../modal/MultipletAnalysisModal';
 import { ZoomType } from '../reducer/actions/Zoom';
+import getRange from '../reducer/helper/getRange';
 import scaleReducer, {
   scaleInitialState,
   SET_SCALE,
@@ -50,6 +55,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     display: { general },
   } = usePreferences();
   const state = useChartData();
+
   const {
     toolOptions: { selectedTool },
     isLoading,
@@ -66,8 +72,11 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
     verticalAlign,
     displayerKey,
   } = state;
+
   const dispatch = useDispatch();
   const modal = useModal();
+  const alert = useAlert();
+
   const [scaleState, dispatchScale] = useReducer(
     scaleReducer,
     scaleInitialState,
@@ -147,12 +156,35 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
               ...brushData,
             });
             break;
-          case options.rangesPicking.id:
-            dispatch({
-              type: ADD_RANGE,
-              ...brushData,
+          case options.rangesPicking.id: {
+            const [from, to] = getRange(state, {
+              startX: brushData.startX,
+              endX: brushData.endX,
             });
+
+            if (!activeSpectrum) break;
+
+            const {
+              data: { x },
+            } = state.data[activeSpectrum.index] as Datum1D;
+
+            const { fromIndex, toIndex } = xGetFromToIndex(x, { from, to });
+
+            if (toIndex - fromIndex <= MAX_LENGTH) {
+              dispatch({
+                type: ADD_RANGE,
+                payload: {
+                  ...brushData,
+                },
+              });
+            } else {
+              alert.error(
+                `Advanced peak picking only available for area up to ${MAX_LENGTH} points`,
+              );
+            }
+
             break;
+          }
           case options.multipleSpectraAnalysis.id:
             dispatch({
               type: ANALYZE_SPECTRA,
@@ -195,7 +227,17 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
         }
       }
     },
-    [scaleState, selectedTool, general, modal, data, activeSpectrum, dispatch],
+    [
+      scaleState,
+      selectedTool,
+      general.disableMultipletAnalysis,
+      modal,
+      data,
+      activeSpectrum,
+      dispatch,
+      state,
+      alert,
+    ],
   );
 
   const handelOnDoubleClick = useCallback(() => {
