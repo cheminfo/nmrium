@@ -170,7 +170,7 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
 
             const { fromIndex, toIndex } = xGetFromToIndex(x, { from, to });
 
-            if (toIndex - fromIndex < MAX_LENGTH) {
+            if (toIndex - fromIndex <= MAX_LENGTH) {
               dispatch({
                 type: ADD_RANGE,
                 payload: {
