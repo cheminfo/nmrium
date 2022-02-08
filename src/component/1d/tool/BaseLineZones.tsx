@@ -2,11 +2,11 @@
 import { css } from '@emotion/react';
 import { useCallback, useMemo } from 'react';
 
-import { useChartData } from '../context/ChartContext';
-import { useDispatch } from '../context/DispatchContext';
-import { useScaleChecked } from '../context/ScaleContext';
-import DeleteButton from '../elements/DeleteButton';
-import { DELETE_BASE_LINE_ZONE } from '../reducer/types/Types';
+import { useChartData } from '../../context/ChartContext';
+import { useDispatch } from '../../context/DispatchContext';
+import { useScaleChecked } from '../../context/ScaleContext';
+import DeleteButton from '../../elements/DeleteButton';
+import { DELETE_BASE_LINE_ZONE } from '../../reducer/types/Types';
 
 const styles = css`
   pointer-events: bounding-box;
