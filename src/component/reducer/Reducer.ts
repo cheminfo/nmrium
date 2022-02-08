@@ -44,6 +44,7 @@ import { initZoom1D, Zoom1D } from './helper/Zoom1DManager';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
+import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 
 export interface ActiveSpectrum {
   id: string;
@@ -114,7 +115,7 @@ export const initialState: State = {
     selectedOptionPanel: null,
     data: {
       baseLineZones: [],
-      exclusionZones: {},
+      exclusionZones: [],
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       activeFilterID: null,
@@ -126,12 +127,6 @@ export const initialState: State = {
   },
   usedColors: { '1d': [], '2d': [] },
 };
-
-export interface ExclusionZoneState {
-  id: string;
-  from: number;
-  to: number;
-}
 
 export type VerticalAlignment = 'bottom' | 'center' | 'stack';
 export interface VerticalAlign {
@@ -327,7 +322,7 @@ export interface State {
       /**
        * list of exclusive zones per nucleus
        */
-      exclusionZones: Record<string, Array<ExclusionZoneState>>;
+      exclusionZones: ExclusionZone[];
       /**
        * pivot point for manual phase correction
        * @default {value:0,index:0}
@@ -559,6 +554,10 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return FiltersActions.filterSnapshotHandler(draft, action);
     case types.APPLY_MULTIPLE_SPECTRA_FILTER:
       return FiltersActions.handleMultipleSpectraFilter(draft, action);
+    case types.ADD_EXCLUSION_ZONE:
+      return FiltersActions.handleAddExclusionZone(draft, action);
+    case types.DELETE_EXCLUSION_ZONE:
+      return FiltersActions.handleDeleteExclusionZone(draft, action);
 
     case types.CHANGE_VISIBILITY:
       return SpectrumsActions.handleSpectrumVisibility(draft, action);
@@ -687,10 +686,10 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ToolsActions.handleAddBaseLineZone(draft, action.zone);
     case types.DELETE_BASE_LINE_ZONE:
       return ToolsActions.handleDeleteBaseLineZone(draft, action.id);
-    case types.ADD_EXCLUSION_ZONE:
-      return ToolsActions.handleAddExclusionZone(draft, action);
-    case types.DELETE_EXCLUSION_ZONE:
-      return ToolsActions.handleDeleteExclusionZone(draft, action);
+    case types.ADD_TEMP_EXCLUSION_ZONE:
+      return ToolsActions.handleAddTempExclusionZone(draft, action);
+    case types.DELETE_TEMP_EXCLUSION_ZONE:
+      return ToolsActions.handleDeleteTempExclusionZone(draft, action);
 
     case types.APPLY_BASE_LINE_CORRECTION_FILTER:
       return FiltersActions.handleBaseLineCorrectionFilter(draft, action);

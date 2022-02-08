@@ -1,5 +1,5 @@
-import BaseLineZones from './BaseLineZones';
-import ExclusionZones from './ExclusionZones';
+import BaseLineZones from './tool/BaseLineZones';
+import ExclusionZones from './tool/ExclusionZones';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
 import PeakAnnotations from './PeakAnnotations';
@@ -8,6 +8,7 @@ import XAxis from './XAxis';
 import JGraph from './jCouplingGraph/JGraph';
 import MultiAnalysisRanges from './multiAnalysis/MultiAnalysisRanges';
 import Ranges from './ranges/Ranges';
+import ExclusionZonesAnnotations from './ExclusionZonesAnnotations';
 
 function Chart1D({ mode, width, height, margin, displayerKey }) {
   return (
@@ -36,6 +37,7 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <MultiAnalysisRanges />
       <BaseLineZones />
       <ExclusionZones />
+      <ExclusionZonesAnnotations />
       <ResurrectedDatabaseRanges />
 
       <g className="container" style={{ pointerEvents: 'none' }}>

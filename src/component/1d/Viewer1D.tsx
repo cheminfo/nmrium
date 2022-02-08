@@ -28,6 +28,7 @@ import {
   ADD_RANGE,
   ANALYZE_SPECTRA,
   ADD_EXCLUSION_ZONE,
+  ADD_TEMP_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import BrushXY, { BRUSH_TYPE } from '../tool/BrushXY';
 import CrossLinePointer from '../tool/CrossLinePointer';
@@ -177,6 +178,13 @@ function Viewer1D({ emptyText = undefined }: Viewer1DProps) {
           case options.exclusionZones.id:
             dispatch({
               type: ADD_EXCLUSION_ZONE,
+              payload: { from: brushData.startX, to: brushData.endX },
+            });
+            break;
+
+          case options.selectExclusionZones.id:
+            dispatch({
+              type: ADD_TEMP_EXCLUSION_ZONE,
               payload: { from: brushData.startX, to: brushData.endX },
             });
             break;

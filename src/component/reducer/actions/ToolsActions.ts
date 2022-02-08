@@ -3,6 +3,8 @@ import { original, Draft, current } from 'immer';
 import { xFindClosestIndex } from 'ml-spectra-processing';
 
 import * as Filters from '../../../data/Filters';
+import * as FiltersManager from '../../../data/FiltersManager';
+
 import { Data1D, Datum1D } from '../../../data/types/data1d';
 import { Datum2D } from '../../../data/types/data2d';
 import generateID from '../../../data/utilities/generateID';
@@ -17,9 +19,11 @@ import Zoom1DManager from '../helper/Zoom1DManager';
 import zoomHistoryManager from '../helper/ZoomHistoryManager';
 
 import { setDomain, SetDomainOptions, setMode } from './DomainActions';
-import { resetSpectrumByFilter } from './FiltersActions';
+import { deleteFilter, resetSpectrumByFilter } from './FiltersActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { setZoom1D, setZoom, ZoomType, wheel } from './Zoom';
+import getRange from './../helper/getRange';
+import { filter } from 'smart-array-filter';
 
 function getStrongestPeak(draft: Draft<State>) {
   const { activeSpectrum, data } = draft;
@@ -82,6 +86,8 @@ function resetTool(draft: Draft<State>, setDefaultTool = true) {
     draft.toolOptions.selectedTool = options.zoom.id;
   }
   draft.toolOptions.data.baseLineZones = [];
+  draft.toolOptions.data.exclusionZones = [];
+
   if (draft.toolOptions.data.activeFilterID) {
     resetSpectrumByFilter(draft);
   }
@@ -534,39 +540,28 @@ function resetSpectraScale(draft: Draft<State>) {
   setZoom(draft, { scale: 0.8 });
 }
 
-function handleAddExclusionZone(draft: Draft<State>, action) {
-  const { from, to } = action.payload;
-  const scaleX = getXScale(draft);
+function handleAddTempExclusionZone(draft: Draft<State>, action) {
+  const { from: startX, to: endX } = action.payload;
+  const range = getRange(draft, { startX, endX });
 
-  const start = scaleX.invert(from);
-  const end = scaleX.invert(to);
-
-  let zone: any = [];
-  if (start > end) {
-    zone = [end, start];
-  } else {
-    zone = [start, end];
-  }
-  const newExclusionZone = {
+  const zone = {
     id: generateID(),
-    from: zone[0],
-    to: zone[1],
+    from: range[0],
+    to: range[1],
   };
-  if (draft.toolOptions.data.exclusionZones[draft.activeTab]) {
-    draft.toolOptions.data.exclusionZones[draft.activeTab].push(
-      newExclusionZone,
-    );
-  } else {
-    draft.toolOptions.data.exclusionZones[draft.activeTab] = [newExclusionZone];
-  }
+  draft.toolOptions.data.exclusionZones.push(zone);
 }
 
-function handleDeleteExclusionZone(draft: Draft<State>, action) {
-  const id = action.payload.id;
-  const index = draft.toolOptions.data.exclusionZones[
-    draft.activeTab
-  ].findIndex((zone) => zone.id === id);
-  draft.toolOptions.data.exclusionZones[draft.activeTab].splice(index, 1);
+function handleDeleteTempExclusionZone(draft: Draft<State>, action) {
+  const { id } = action.payload;
+  if (id) {
+    const index = draft.toolOptions.data.exclusionZones.findIndex(
+      (zone) => zone.id === id,
+    );
+    draft.toolOptions.data.exclusionZones.splice(index, 1);
+  } else {
+    draft.toolOptions.data.exclusionZones = [];
+  }
 }
 
 export {
@@ -588,6 +583,6 @@ export {
   setTab,
   setSpectraSameTopHandler,
   resetSpectraScale,
-  handleAddExclusionZone,
-  handleDeleteExclusionZone,
+  handleAddTempExclusionZone,
+  handleDeleteTempExclusionZone,
 };

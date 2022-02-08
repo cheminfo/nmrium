@@ -1,4 +1,4 @@
-import { useChartData } from '../context/ChartContext';
+import { useChartData } from '../../context/ChartContext';
 
 import ExclusionZone from './ExclusionZone';
 
@@ -7,16 +7,13 @@ export default function ExclusionZones() {
     toolOptions: {
       data: { exclusionZones },
     },
-    activeTab,
   } = useChartData();
 
-  const exclusionZonesForNucleus = exclusionZones[activeTab];
-
-  if (!exclusionZonesForNucleus) return null;
+  if (!exclusionZones) return null;
 
   return (
-    <g className="exclusionZones">
-      {exclusionZonesForNucleus.map((zone) => (
+    <g className="temp-exclusion-zones-group">
+      {exclusionZones.map((zone) => (
         <ExclusionZone key={zone.id} zone={zone} />
       ))}
     </g>

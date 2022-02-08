@@ -18,6 +18,7 @@ import {
   DELETE_RANGE,
   DELETE_2D_ZONE,
   DELETE_EXCLUSION_ZONE,
+  DELETE_TEMP_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
@@ -50,7 +51,7 @@ function KeysListenerTracker() {
   }, [data, displayerMode]);
 
   const deleteHandler = useCallback(
-    (sourceData) => {
+    async (sourceData) => {
       const {
         type,
         extra: { id },
@@ -106,8 +107,25 @@ function KeysListenerTracker() {
           break;
         }
         case HighlightedSource.EXCLUSION_ZONE: {
+          const hideLoading = await alert.showLoading(
+            `Exclusion filter in progress`,
+          );
           dispatch({
             type: DELETE_EXCLUSION_ZONE,
+            payload: {
+              id,
+              spectrumID: sourceData.extra.spectrumID,
+            },
+          });
+          hideLoading();
+          // remove keys from the highlighted list after delete
+          remove();
+
+          break;
+        }
+        case HighlightedSource.TEMP_EXCLUSION_ZONE: {
+          dispatch({
+            type: DELETE_TEMP_EXCLUSION_ZONE,
             payload: {
               id,
             },
@@ -121,7 +139,7 @@ function KeysListenerTracker() {
           break;
       }
     },
-    [assignmentData, dispatch, remove],
+    [assignmentData, dispatch, remove, alert],
   );
 
   const keysPreferencesListenerHandler = useCallback(

@@ -15,6 +15,8 @@ import zoomHistoryManager from '../helper/ZoomHistoryManager';
 import { setDomain, setMode } from './DomainActions';
 import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { resetSelectedTool } from './ToolsActions';
+import getRange from './../helper/getRange';
+import generateID from './../../../data/utilities/generateID';
 
 function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   //apply filter into the spectrum
@@ -334,6 +336,48 @@ function handleMultipleSpectraFilter(draft: Draft<State>, action) {
   setDomain(draft);
 }
 
+function handleAddExclusionZone(draft: Draft<State>, action) {
+  const { from: startX, to: endX } = action.payload;
+  const range = getRange(draft, { startX, endX });
+  if (draft.activeSpectrum?.id) {
+    const index = draft.activeSpectrum?.index;
+
+    const zone = {
+      id: generateID(),
+      from: range[0],
+      to: range[1],
+    };
+
+    FiltersManager.applyFilter(draft.data[index], [
+      { name: Filters.exclusionZones.id, options: [zone] },
+    ]);
+  }
+}
+
+function handleDeleteExclusionZone(draft: Draft<State>, action) {
+  const { id, spectrumID } = action.payload;
+  console.log(id, spectrumID);
+  const spectrumIndex = draft.data.findIndex(
+    (spectrum) => spectrum.id === spectrumID,
+  );
+  const exclusionZonesFilter = draft.data[spectrumIndex].filters.find(
+    (filter) => filter.name === Filters.exclusionZones.id,
+  );
+  if (exclusionZonesFilter) {
+    if (exclusionZonesFilter.value.length === 1) {
+      FiltersManager.deleteFilter(
+        draft.data[spectrumIndex],
+        exclusionZonesFilter.id,
+      );
+    } else {
+      exclusionZonesFilter.value = exclusionZonesFilter.value.filter(
+        (zone) => zone.id !== id,
+      );
+      FiltersManager.reapplyFilters(draft.data[spectrumIndex]);
+    }
+  }
+}
+
 export {
   shiftSpectrumAlongXAxis,
   applyZeroFillingFilter,
@@ -349,4 +393,6 @@ export {
   handleBaseLineCorrectionFilter,
   filterSnapshotHandler,
   resetSpectrumByFilter,
+  handleAddExclusionZone,
+  handleDeleteExclusionZone,
 };

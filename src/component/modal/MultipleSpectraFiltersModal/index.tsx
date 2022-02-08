@@ -8,12 +8,17 @@ import { useDispatch } from '../../context/DispatchContext';
 import CloseButton from '../../elements/CloseButton';
 import Select from '../../elements/Select';
 import FormikForm from '../../elements/formik/FormikForm';
-import { APPLY_MULTIPLE_SPECTRA_FILTER } from '../../reducer/types/Types';
+import {
+  APPLY_MULTIPLE_SPECTRA_FILTER,
+  RESET_SELECTED_TOOL,
+  SET_SELECTED_TOOL,
+} from '../../reducer/types/Types';
 import Events from '../../utility/Events';
 import { ModalStyles } from '../ModalStyle';
 
 import EquallySpacedFilter from './EquallySpacedFilter';
 import FromToFilter from './FromToFilter';
+import { options } from '../../toolbar/ToolTypes';
 
 const baseList: Array<{
   key: string | number;
@@ -109,6 +114,11 @@ function MultipleSpectraFiltersModal({
   );
 
   useEffect(() => {
+    dispatch({
+      type: SET_SELECTED_TOOL,
+      payload: { selectedTool: options.selectExclusionZones.id },
+    });
+
     function handle(event: any) {
       const [from, to] = event.range;
       if (refForm.current) {
@@ -119,6 +129,9 @@ function MultipleSpectraFiltersModal({
     Events.on('brushEnd', handle);
 
     return () => {
+      dispatch({
+        type: RESET_SELECTED_TOOL,
+      });
       Events.off('brushEnd', handle);
     };
   }, []);

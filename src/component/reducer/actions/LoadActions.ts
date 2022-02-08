@@ -35,14 +35,14 @@ function setData(
     spectra,
     molecules,
     correlations,
-    exclusionZones = {},
+    exclusionZones = [],
     usedColors,
   } = data || {
     spectra: [],
     molecules: [],
     correlations: {},
     multipleAnalysis: {},
-    exclusionZones: {},
+    exclusionZones: [],
   };
   setColors(draft, usedColors);
   draft.data = spectra;

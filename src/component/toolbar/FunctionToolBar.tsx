@@ -240,7 +240,7 @@ function FunctionToolBarInner({
 
         {displayerMode === DISPLAYER_MODE.DM_1D &&
           isButtonVisible('hideExclusionZonesTool') &&
-          isPanelVisible('hideMultipleSpectraAnalysisPanel') &&
+          // isPanelVisible('hideMultipleSpectraAnalysisPanel') &&
           !info?.isFid && (
             <ToggleButton
               key={options.exclusionZones.id}
