@@ -12,6 +12,8 @@ import * as phaseCorrection from './data1d/filter1d/phaseCorrection';
 import * as shiftX from './data1d/filter1d/shiftX';
 import * as standardDeviation from './data1d/filter1d/standardDeviation';
 import * as zeroFilling from './data1d/filter1d/zeroFilling';
+import * as exclusionZones from './data1d/filter1d/exclusionZones';
+
 import * as shift2DX from './data2d/filter2d/shiftX';
 import * as shift2DY from './data2d/filter2d/shiftY';
 
@@ -30,6 +32,7 @@ export {
   standardDeviation,
   centerMean,
   pareto,
+  exclusionZones,
   shift2DX,
   shift2DY,
 };
