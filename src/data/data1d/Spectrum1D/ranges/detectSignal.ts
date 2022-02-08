@@ -15,7 +15,7 @@ export default function detectSignal(
     to: to,
   });
 
-  if (toIndex - fromIndex < MAX_LENGTH) {
+  if (toIndex - fromIndex <= MAX_LENGTH) {
     const data = {
       x: x.subarray(fromIndex, toIndex),
       y: re.subarray(fromIndex, toIndex),
@@ -34,6 +34,6 @@ export default function detectSignal(
       js: result.js,
     };
   } else {
-    throw new Error('max lenght is equal to 2048.');
+    throw new Error(`length of signal should not exceed ${MAX_LENGTH} points`);
   }
 }
