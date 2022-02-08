@@ -120,16 +120,9 @@ export function BrushTracker({
   );
 
   useEffect(() => {
-    const { step, startX, endX } = state;
+    const { step, startX, endX, startY, endY } = state;
 
-    if (step === 'end') {
-      const shouldZoom =
-        Math.hypot(startX, endX) === Math.sqrt(startX ** 2 + endX ** 2);
-
-      if (!shouldZoom) {
-        return;
-      }
-
+    if (step === 'end' && Math.hypot(endX - startX, endY - startY) > 5) {
       onBrush(state);
       dispatch({
         type: 'DONE',
