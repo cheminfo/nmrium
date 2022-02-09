@@ -19,6 +19,7 @@ import SummaryPanel from './SummaryPanel/SummaryPanel';
 import ZonesPanel from './ZonesPanel/ZonesPanel';
 import DatabasePanel from './databasePanel/DatabasePanel';
 import FilterPanel from './filtersPanel/FilterPanel';
+import MatrixGenerationPanel from './MatrixGenerationPanel/MatrixGenerationPanel';
 
 interface AccordionItem {
   title: string;
@@ -80,6 +81,14 @@ const accordionItems: AccordionItem[] = [
     openWhen: [options.multipleSpectraAnalysis.id],
     hidePreferenceKey: 'hideMultipleSpectraAnalysisPanel',
     mode: null,
+  },
+  {
+    title: 'Matrix Generation',
+    component: <MatrixGenerationPanel />,
+    openWhen: [],
+    hidePreferenceKey: '',
+    mode: null,
+    isExperimental: true,
   },
   {
     title: 'Zones',
