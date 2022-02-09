@@ -17,6 +17,9 @@ import { changeSpectrumVerticalAlignment } from './PreferencesActions';
 import { resetSelectedTool } from './ToolsActions';
 import getRange from './../helper/getRange';
 import generateID from './../../../data/utilities/generateID';
+import GroupByInfoKey from '../../utility/GroupByInfoKey';
+import { isSpectrum1D } from './../../../data/data1d/Spectrum1D/isSpectrum1D';
+import { getSpectraByNucleus } from './../../utility/getSpectraByNucleus';
 
 function shiftSpectrumAlongXAxis(draft: Draft<State>, shiftValue) {
   //apply filter into the spectrum
@@ -310,27 +313,25 @@ function filterSnapshotHandler(draft: Draft<State>, action) {
 }
 
 function handleMultipleSpectraFilter(draft: Draft<State>, action) {
-  if (draft.data && draft.data.length > 0) {
-    for (let datum of draft.data) {
-      if (
-        datum.info?.dimension === 1 &&
-        datum.info.nucleus === draft.activeTab &&
-        Array.isArray(action.payload)
-      ) {
-        const filters = action.payload.map((filter) => {
-          if (filter.name === Filters.equallySpaced.id) {
-            const exclusions =
-              draft.toolOptions.data.exclusionZones[draft.activeTab] || [];
-            return {
-              ...filter,
-              options: { ...filter.options, exclusions },
-            };
-          }
-          return filter;
-        });
+  const spectra = getSpectraByNucleus(draft.activeTab, draft.data);
 
-        FiltersManager.applyFilter(datum, filters);
-      }
+  if (spectra && spectra.length > 0 && Array.isArray(action.payload)) {
+    const exclusions =
+      spectra[0].filters.find((f) => f.name === Filters.exclusionZones.id)
+        ?.value || [];
+
+    for (const spectrum of spectra) {
+      const filters = action.payload.map((filter) => {
+        if (filter.name === Filters.equallySpaced.id) {
+          return {
+            ...filter,
+            options: { ...filter.options, exclusions },
+          };
+        }
+        return filter;
+      });
+
+      FiltersManager.applyFilter(spectrum, filters);
     }
   }
   setDomain(draft);
@@ -339,24 +340,36 @@ function handleMultipleSpectraFilter(draft: Draft<State>, action) {
 function handleAddExclusionZone(draft: Draft<State>, action) {
   const { from: startX, to: endX } = action.payload;
   const range = getRange(draft, { startX, endX });
+
+  let spectra: Datum1D[];
+
   if (draft.activeSpectrum?.id) {
     const index = draft.activeSpectrum?.index;
+    spectra = [draft.data[index] as Datum1D];
+  } else {
+    spectra = getSpectraByNucleus(draft.activeTab, draft.data) as Datum1D[];
+  }
 
-    const zone = {
-      id: generateID(),
-      from: range[0],
-      to: range[1],
-    };
-
-    FiltersManager.applyFilter(draft.data[index], [
-      { name: Filters.exclusionZones.id, options: [zone] },
+  for (const spectrum of spectra) {
+    FiltersManager.applyFilter(spectrum, [
+      {
+        name: Filters.exclusionZones.id,
+        options: [
+          {
+            id: generateID(),
+            from: range[0],
+            to: range[1],
+          },
+        ],
+      },
     ]);
   }
+
+  setDomain(draft);
 }
 
 function handleDeleteExclusionZone(draft: Draft<State>, action) {
   const { id, spectrumID } = action.payload;
-  console.log(id, spectrumID);
   const spectrumIndex = draft.data.findIndex(
     (spectrum) => spectrum.id === spectrumID,
   );
