@@ -18,7 +18,6 @@ import {
   DELETE_RANGE,
   DELETE_2D_ZONE,
   DELETE_EXCLUSION_ZONE,
-  DELETE_TEMP_EXCLUSION_ZONE,
 } from '../reducer/types/Types';
 import { options } from '../toolbar/ToolTypes';
 
@@ -123,18 +122,7 @@ function KeysListenerTracker() {
 
           break;
         }
-        case HighlightedSource.TEMP_EXCLUSION_ZONE: {
-          dispatch({
-            type: DELETE_TEMP_EXCLUSION_ZONE,
-            payload: {
-              id,
-            },
-          });
-          // remove keys from the highlighted list after delete
-          remove();
 
-          break;
-        }
         default:
           break;
       }

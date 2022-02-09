@@ -44,7 +44,6 @@ import { initZoom1D, Zoom1D } from './helper/Zoom1DManager';
 import { ZoomHistory } from './helper/ZoomHistoryManager';
 import { UNDO, REDO, RESET } from './types/HistoryTypes';
 import * as types from './types/Types';
-import { ExclusionZone } from '../../data/types/data1d/ExclusionZone';
 
 export interface ActiveSpectrum {
   id: string;
@@ -115,7 +114,6 @@ export const initialState: State = {
     selectedOptionPanel: null,
     data: {
       baseLineZones: [],
-      exclusionZones: [],
       pivot: { value: 0, index: 0 },
       zonesNoiseFactor: 1,
       activeFilterID: null,
@@ -319,10 +317,6 @@ export interface State {
        * list of zones for Baseline correction filter
        */
       baseLineZones: any;
-      /**
-       * list of exclusive zones per nucleus
-       */
-      exclusionZones: ExclusionZone[];
       /**
        * pivot point for manual phase correction
        * @default {value:0,index:0}
@@ -686,10 +680,6 @@ function innerSpectrumReducer(draft: Draft<State>, action) {
       return ToolsActions.handleAddBaseLineZone(draft, action.zone);
     case types.DELETE_BASE_LINE_ZONE:
       return ToolsActions.handleDeleteBaseLineZone(draft, action.id);
-    case types.ADD_TEMP_EXCLUSION_ZONE:
-      return ToolsActions.handleAddTempExclusionZone(draft, action);
-    case types.DELETE_TEMP_EXCLUSION_ZONE:
-      return ToolsActions.handleDeleteTempExclusionZone(draft, action);
 
     case types.APPLY_BASE_LINE_CORRECTION_FILTER:
       return FiltersActions.handleBaseLineCorrectionFilter(draft, action);

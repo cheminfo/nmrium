@@ -23,7 +23,6 @@ type RecordOptions = Record<
   | 'editRange'
   | 'multipleSpectraAnalysis'
   | 'exclusionZones'
-  | 'selectExclusionZones'
   | 'databaseRangesSelection',
   OptionItem
 >;
@@ -118,12 +117,6 @@ export const options: RecordOptions = {
   exclusionZones: {
     id: 'exclusionZones',
     label: 'Exclusion Zones',
-    hasOptionPanel: false,
-    isFilter: true,
-  },
-  selectExclusionZones: {
-    id: 'selectExclusionZones',
-    label: 'Select Exclusion Zones',
     hasOptionPanel: false,
     isFilter: false,
   },

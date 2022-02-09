@@ -1,5 +1,4 @@
 import BaseLineZones from './tool/BaseLineZones';
-import ExclusionZones from './tool/ExclusionZones';
 import IntegralsSeries from './IntegralsSeries';
 import LinesSeries from './LinesSeries';
 import PeakAnnotations from './PeakAnnotations';
@@ -36,7 +35,6 @@ function Chart1D({ mode, width, height, margin, displayerKey }) {
       <JGraph />
       <MultiAnalysisRanges />
       <BaseLineZones />
-      <ExclusionZones />
       <ExclusionZonesAnnotations />
       <ResurrectedDatabaseRanges />
 

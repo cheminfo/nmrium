@@ -26,7 +26,6 @@ const allowTools: Array<string | number> = [
   options.editRange.id,
   options.multipleSpectraAnalysis.id,
   options.exclusionZones.id,
-  options.selectExclusionZones.id,
   options.databaseRangesSelection.id,
 ];
 
