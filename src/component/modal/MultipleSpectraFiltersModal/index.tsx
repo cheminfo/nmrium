@@ -61,6 +61,15 @@ const styles = css`
   .container {
     flex: 1;
   }
+
+  .infoText {
+    padding: 10px;
+    font-size: 12px;
+    text-align: left;
+    color: white;
+    background-color: #5f5f5f;
+    border-radius: 5px;
+  }
 `;
 
 interface MultipleSpectraFiltersModalProps {
@@ -163,6 +172,10 @@ function MultipleSpectraFiltersModal({
         <CloseButton onClick={onClose} className="close-bt" />
       </div>
       <div className="inner-content container">
+        <p className="infoText">
+          This filter will use the exclusions zones defined in the first
+          spectrum.
+        </p>
         <div className="row margin-10">
           <span className="custom-label">Filter :</span>
 
