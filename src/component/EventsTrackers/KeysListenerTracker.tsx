@@ -206,6 +206,12 @@ function KeysListenerTracker() {
             }
             break;
           }
+          case 'e': {
+            if (allow1DTool) {
+              handleChangeOption(options.exclusionZones.id);
+            }
+            break;
+          }
           default:
         }
       }
