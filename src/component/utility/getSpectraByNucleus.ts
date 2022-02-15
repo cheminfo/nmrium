@@ -1,4 +1,4 @@
-import { Datum1D } from "../../data/types/data1d/Datum1D";
+import { Datum1D } from '../../data/types/data1d/Datum1D';
 import { Datum2D } from '../../data/types/data2d';
 
 import nucleusToString from './nucleusToString';
