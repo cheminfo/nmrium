@@ -65,7 +65,7 @@
     "ml-baseline-correction-regression": "^1.0.0",
     "ml-conrec": "^3.2.1",
     "ml-gsd": "^9.1.0",
-    "ml-spectra-processing": "^9.1.0",
+    "ml-spectra-processing": "^10.1.1",
     "ml-stat": "^1.3.3",
     "multiplet-analysis": "^2.0.0",
     "nmr-correlation": "^2.2.0",
