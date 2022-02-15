@@ -1,4 +1,4 @@
-import { xySetYValue } from 'ml-spectra-processing';
+import { xySetYValue, zonesNormalize } from 'ml-spectra-processing';
 import { Datum1D } from './../../types/data1d/Datum1D';
 
 export const id = 'exclusionZones';
@@ -28,6 +28,6 @@ export function isApplicable(datum1D: Datum1D) {
 export function reduce(previousValue, newValue) {
   return {
     once: true,
-    reduce: [...previousValue, ...newValue],
+    reduce: zonesNormalize(previousValue.concat(newValue)),
   };
 }
